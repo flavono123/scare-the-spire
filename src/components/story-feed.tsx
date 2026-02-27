@@ -82,21 +82,25 @@ function StoryCard({
 
   return (
     <article className="border-b border-border/50 last:border-b-0">
-      <div className="px-4 py-5">
-        {/* Sentence + engagement */}
+      <div className="px-4 py-6">
+        {/* Sentence */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="w-full text-left"
+          className="w-full"
         >
-          <p className="text-lg sm:text-xl font-medium leading-snug">
+          <p className="text-lg sm:text-xl font-medium leading-snug text-center">
             &ldquo;{story.sentence}&rdquo;
           </p>
-          <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-            <span>♥ 0</span>
-            <span>💬 0</span>
-            {story.tags && story.tags.length > 0 && (
-              <div className="flex gap-1.5 ml-auto">
-                {story.tags.map((tag) => (
+        </button>
+
+        {/* Expanded: tags, engagement, card, change detail */}
+        {expanded && (
+          <div className="mt-4 space-y-3">
+            <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+              <span>♥ 0</span>
+              <span>💬 0</span>
+              {story.tags && story.tags.length > 0 &&
+                story.tags.map((tag) => (
                   <span
                     key={tag}
                     className="rounded-full bg-zinc-800 px-2 py-0.5"
@@ -104,15 +108,8 @@ function StoryCard({
                     {tag}
                   </span>
                 ))}
-              </div>
-            )}
-          </div>
-        </button>
-
-        {/* Expanded: card + change detail */}
-        {expanded && change && (
-          <div className="mt-4">
-            <ChangeDetail change={change} card={card} />
+            </div>
+            {change && <ChangeDetail change={change} card={card} />}
           </div>
         )}
       </div>

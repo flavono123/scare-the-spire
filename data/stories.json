@@ -33,7 +33,7 @@
   },
   {
     "id": "evolve-rework",
-    "sentence": "진화는 원래 부상에만 반응하고 부상을 주기까지 했다",
+    "sentence": "진화는 원래 부상에만 드로우하고 부상도 넣었다",
     "entityType": "card",
     "entityId": "evolve",
     "changeId": "evolve-wp18-rework",
