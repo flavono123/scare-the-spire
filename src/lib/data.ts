@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import type { Card, Change, Story, Relic, CardClass, CardType, CharacterClass } from "./types";
+import type { Card, Change, Story, Relic, Potion, CardClass, CardType, CharacterClass, PotionRarity } from "./types";
 
 function toSlug(name: string, cardClass?: string): string {
   const base = name
@@ -70,6 +70,28 @@ export async function getRelics(): Promise<Relic[]> {
     character: r.character as CharacterClass | null,
     description: r.description,
     deprecated: r.deprecated,
+  }));
+}
+
+interface RawPotion {
+  name: string;
+  nameKo: string;
+  rarity: string;
+  character: string | null;
+  description: string;
+}
+
+export async function getPotions(): Promise<Potion[]> {
+  const raw: RawPotion[] = JSON.parse(
+    await fs.readFile(path.join(DATA_DIR, "potions.json"), "utf-8"),
+  );
+  return raw.map((r) => ({
+    id: toSlug(r.name),
+    name: r.name,
+    nameKo: r.nameKo,
+    rarity: r.rarity as PotionRarity,
+    character: r.character as CharacterClass | null,
+    description: r.description,
   }));
 }
 

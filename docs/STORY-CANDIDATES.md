@@ -35,6 +35,20 @@
 | 환영 살인마 | "환영 살인마는 원래 코스트가 2였다" | V2.2 | phantasmal-killer-v22-cost |
 | 강철의 폭풍 | "강철의 폭풍은 원래 코스트가 2였다" | V2.2 | storm-of-steel-v22-cost |
 
+## 유물 등급 변경 (성능 vs 등급 불일치)
+
+| 유물 | 이야기 | 패치 | changeId |
+|------|--------|------|----------|
+| 도마뱀 꼬리 | "도꼬는 원래 보스 유물이었다" | V2.0 | lizard-tail-v20-rarity |
+| 표본 | "표본은 원래 보스 유물이었다" | WP19 | the-specimen-wp19-rarity |
+| 전경기 | "전경기는 원래 일반 유물이었다" | WP25 | prayer-wheel-wp25-rework |
+| 하얀 짐승 석상 | "하얀 짐승 석상은 원래 보스 유물이었다" | V2.0 | white-beast-statue-v20-rarity |
+| 식권 | "식권은 원래 7힐이었다" | WP44 | meal-ticket-wp44-heal |
+| 태양계 모형 | "태양계 모형은 보스→고급→보스→상점을 거쳤다" | V2.0 | orrery-v20-rarity |
+| 소주 | "소주는 원래 물약 사용을 막았다" | WP13 | sozu-wp13-rework |
+| 룬 피라미드 | "룬 피라미드는 원래 드로우가 1장 줄었다" | WP28 | runic-pyramid-wp28-buff |
+| 영원의 깃털 | "영원의 깃털은 원래 보스 유물이었다" | V2.0 | eternal-feather-v20-rarity |
+
 ## 등록 완료
 
 - [x] 검무 (blade-dance-shivs)
@@ -42,3 +56,12 @@
 - [x] 제물 (offering-draw)
 - [x] 타락 (corruption-rarity)
 - [x] 진화 (evolve-rework)
+- [x] 합하기 (aggregate-cards-per-energy)
+- [x] 식권 (meal-ticket-heal)
+- [x] 도꼬 (lizard-tail-rarity)
+- [x] 표본 (the-specimen-rarity)
+- [x] 전경기 (prayer-wheel-rarity)
+- [x] 하얀 짐승 석상 (white-beast-statue-rarity)
+- [x] 소주 (sozu-rework)
+- [x] 룬 피라미드 (runic-pyramid-nerf)
+- [x] 태양계 모형 (orrery-rarity)

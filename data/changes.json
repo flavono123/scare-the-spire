@@ -2474,7 +2474,7 @@
   },
   {
     "id": "blood-potion-v11-heal",
-    "entityType": "relic",
+    "entityType": "potion",
     "entityId": "blood-potion",
     "patch": "Patch V1.1: The Dealer",
     "date": "2019-07-01",
@@ -2491,7 +2491,7 @@
   },
   {
     "id": "blood-potion-v20-buff",
-    "entityType": "relic",
+    "entityType": "potion",
     "entityId": "blood-potion",
     "patch": "Patch V2.0: The Watcher",
     "date": "2020-01-14",
@@ -2515,7 +2515,7 @@
   },
   {
     "id": "fairy-in-a-bottle-v20-heal",
-    "entityType": "relic",
+    "entityType": "potion",
     "entityId": "fairy-in-a-bottle",
     "patch": "Patch V2.0: The Watcher",
     "date": "2020-01-14",
@@ -2532,7 +2532,7 @@
   },
   {
     "id": "focus-potion-v20-rarity",
-    "entityType": "relic",
+    "entityType": "potion",
     "entityId": "focus-potion",
     "patch": "Patch V2.0: The Watcher",
     "date": "2020-01-14",
@@ -2549,7 +2549,7 @@
   },
   {
     "id": "ghost-in-a-jar-v20-rarity",
-    "entityType": "relic",
+    "entityType": "potion",
     "entityId": "ghost-in-a-jar",
     "patch": "Patch V2.0: The Watcher",
     "date": "2020-01-14",
@@ -2561,6 +2561,142 @@
         "before": "Uncommon",
         "after": "Rare",
         "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "the-specimen-wp19-rarity",
+    "entityType": "relic",
+    "entityId": "the-specimen",
+    "patch": "Weekly Patch 19: Seed",
+    "date": "2018-03-13",
+    "summary": "The Specimen rarity changed from Boss to Rare.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Boss",
+        "after": "Rare",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "fire-potion-weekly-patch-3-balance-balance-balance-damage",
+    "entityType": "potion",
+    "entityId": "fire-potion",
+    "patch": "Weekly Patch 3: Balance Balance Balance",
+    "date": "2017-11-30",
+    "summary": "Fire Potion nerf: Damage 25 → 20",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 25,
+        "after": 20,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "explosive-potion-weekly-patch-3-balance-balance-balance-damage",
+    "entityType": "potion",
+    "entityId": "explosive-potion",
+    "patch": "Weekly Patch 3: Balance Balance Balance",
+    "date": "2017-11-30",
+    "summary": "Explosive Potion nerf: Damage 15 → 10",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 15,
+        "after": 10,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "poison-potion-weekly-patch-3-balance-balance-balance-poison",
+    "entityType": "potion",
+    "entityId": "poison-potion",
+    "patch": "Weekly Patch 3: Balance Balance Balance",
+    "date": "2017-11-30",
+    "summary": "Poison Potion nerf: Poison 7 → 6",
+    "diffs": [
+      {
+        "attribute": "poison",
+        "displayName": "Poison",
+        "before": 7,
+        "after": 6,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "block-potion-weekly-patch-3-balance-balance-balance-block",
+    "entityType": "potion",
+    "entityId": "block-potion",
+    "patch": "Weekly Patch 3: Balance Balance Balance",
+    "date": "2017-11-30",
+    "summary": "Block Potion buff: Block 10 → 12",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 10,
+        "after": 12,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "dexterity-potion-weekly-patch-3-balance-balance-balance-dexterity",
+    "entityType": "potion",
+    "entityId": "dexterity-potion",
+    "patch": "Weekly Patch 3: Balance Balance Balance",
+    "date": "2017-11-30",
+    "summary": "Dexterity Potion buff: Dexterity 1 → 2",
+    "diffs": [
+      {
+        "attribute": "dexterity",
+        "displayName": "Dexterity",
+        "before": 1,
+        "after": 2,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "strength-potion-weekly-patch-3-balance-balance-balance-strength",
+    "entityType": "potion",
+    "entityId": "strength-potion",
+    "patch": "Weekly Patch 3: Balance Balance Balance",
+    "date": "2017-11-30",
+    "summary": "Strength Potion buff: Strength 1 → 2",
+    "diffs": [
+      {
+        "attribute": "strength",
+        "displayName": "Strength",
+        "before": 1,
+        "after": 2,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "fairy-in-a-bottle-weekly-patch-20-immolate-heal",
+    "entityType": "potion",
+    "entityId": "fairy-in-a-bottle",
+    "patch": "Weekly Patch 20: Immolate",
+    "date": "2018-04-12",
+    "summary": "Fairy in a Bottle nerf: Heal 40% → 30% Max HP",
+    "diffs": [
+      {
+        "attribute": "heal",
+        "displayName": "Heal",
+        "before": "40%",
+        "after": "30%",
+        "diffType": "number"
       }
     ]
   }

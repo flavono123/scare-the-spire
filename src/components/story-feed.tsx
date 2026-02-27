@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import type { Story, Card, Change } from "@/lib/types";
+import Link from "next/link";
+import type { Story, Card, Change, Relic, Potion } from "@/lib/types";
 
 function DiffLine({ diff }: { diff: Change["diffs"][0] }) {
   return (
@@ -18,28 +19,68 @@ function DiffLine({ diff }: { diff: Change["diffs"][0] }) {
   );
 }
 
-function ChangeDetail({ change, card }: { change: Change; card?: Card }) {
+function EntityInfo({ story, card, relic, potion }: { story: Story; card?: Card; relic?: Relic; potion?: Potion }) {
+  if (story.entityType === "card" && card) {
+    return (
+      <Link href={`/cards/${card.id}`} className="flex gap-3 items-start group">
+        <Image
+          src={`/images/cards/${card.id}.webp`}
+          alt={card.name}
+          width={85}
+          height={110}
+          className="rounded-md shrink-0 group-hover:scale-105 transition-transform"
+        />
+        <div>
+          <p className="font-medium group-hover:text-yellow-500 transition-colors">{card.nameKo}</p>
+          <p className="text-xs text-muted-foreground">{card.name}</p>
+        </div>
+      </Link>
+    );
+  }
+  if (story.entityType === "relic" && relic) {
+    return (
+      <Link href={`/relics/${relic.id}`} className="flex gap-3 items-start group">
+        <Image
+          src={`/images/relics/${relic.id}.webp`}
+          alt={relic.name}
+          width={48}
+          height={48}
+          className="shrink-0 group-hover:scale-110 transition-transform"
+        />
+        <div>
+          <p className="font-medium group-hover:text-yellow-500 transition-colors">{relic.nameKo}</p>
+          <p className="text-xs text-muted-foreground">{relic.name}</p>
+        </div>
+      </Link>
+    );
+  }
+  if (story.entityType === "potion" && potion) {
+    return (
+      <Link href={`/potions/${potion.id}`} className="flex gap-3 items-start group">
+        <Image
+          src={`/images/potions/${potion.id}.webp`}
+          alt={potion.name}
+          width={48}
+          height={48}
+          className="shrink-0 group-hover:scale-110 transition-transform"
+        />
+        <div>
+          <p className="font-medium group-hover:text-yellow-500 transition-colors">{potion.nameKo}</p>
+          <p className="text-xs text-muted-foreground">{potion.name}</p>
+        </div>
+      </Link>
+    );
+  }
+  return null;
+}
+
+function ChangeDetail({ change, story, card, relic, potion }: { change: Change; story: Story; card?: Card; relic?: Relic; potion?: Potion }) {
   const baseDiffs = change.diffs.filter((d) => !d.upgraded);
   const upgradedDiffs = change.diffs.filter((d) => d.upgraded);
 
   return (
     <div className="space-y-3">
-      {/* Card info */}
-      {card && (
-        <div className="flex gap-3 items-start">
-          <Image
-            src={`/images/cards/${card.id}.webp`}
-            alt={card.name}
-            width={85}
-            height={110}
-            className="rounded-md shrink-0"
-          />
-          <div>
-            <p className="font-medium">{card.nameKo}</p>
-            <p className="text-xs text-muted-foreground">{card.name}</p>
-          </div>
-        </div>
-      )}
+      <EntityInfo story={story} card={card} relic={relic} potion={potion} />
 
       {/* Patch info */}
       <div className="rounded-lg border border-border bg-card/30 p-4">
@@ -72,10 +113,14 @@ function ChangeDetail({ change, card }: { change: Change; card?: Card }) {
 function StoryCard({
   story,
   card,
+  relic,
+  potion,
   change,
 }: {
   story: Story;
   card?: Card;
+  relic?: Relic;
+  potion?: Potion;
   change?: Change;
 }) {
   const [expanded, setExpanded] = useState(false);
@@ -109,7 +154,7 @@ function StoryCard({
                   </span>
                 ))}
             </div>
-            {change && <ChangeDetail change={change} card={card} />}
+            {change && <ChangeDetail change={change} story={story} card={card} relic={relic} potion={potion} />}
           </div>
         )}
       </div>
@@ -120,13 +165,19 @@ function StoryCard({
 export function StoryFeed({
   stories,
   cards,
+  relics,
+  potions,
   changes,
 }: {
   stories: Story[];
   cards: Card[];
+  relics: Relic[];
+  potions: Potion[];
   changes: Change[];
 }) {
   const cardMap = new Map(cards.map((c) => [c.id, c]));
+  const relicMap = new Map(relics.map((r) => [r.id, r]));
+  const potionMap = new Map(potions.map((p) => [p.id, p]));
   const changeMap = new Map(changes.map((c) => [c.id, c]));
 
   return (
@@ -136,6 +187,8 @@ export function StoryFeed({
           key={story.id}
           story={story}
           card={cardMap.get(story.entityId)}
+          relic={relicMap.get(story.entityId)}
+          potion={potionMap.get(story.entityId)}
           change={changeMap.get(story.changeId)}
         />
       ))}

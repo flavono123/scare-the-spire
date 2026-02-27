@@ -1,10 +1,12 @@
-import { getStories, getCards, getChanges } from "@/lib/data";
+import { getStories, getCards, getRelics, getPotions, getChanges } from "@/lib/data";
 import { StoryFeed } from "@/components/story-feed";
 
 export default async function Home() {
-  const [stories, cards, changes] = await Promise.all([
+  const [stories, cards, relics, potions, changes] = await Promise.all([
     getStories(),
     getCards(),
+    getRelics(),
+    getPotions(),
     getChanges(),
   ]);
 
@@ -18,7 +20,7 @@ export default async function Home() {
               아직 이야기가 없습니다
             </div>
           ) : (
-            <StoryFeed stories={stories} cards={cards} changes={changes} />
+            <StoryFeed stories={stories} cards={cards} relics={relics} potions={potions} changes={changes} />
           )}
         </div>
       </main>

@@ -40,6 +40,12 @@ export default function RootLayout({
               >
                 유물
               </Link>
+              <Link
+                href="/potions"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                포션
+              </Link>
             </nav>
           </div>
         </header>

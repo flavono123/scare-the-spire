@@ -46,5 +46,53 @@
     "entityId": "aggregate",
     "changeId": "aggregate-v22-buff",
     "tags": ["버프", "디펙트"]
+  },
+  {
+    "id": "meal-ticket-heal",
+    "sentence": "식권은 원래 7힐이었다",
+    "entityType": "relic",
+    "entityId": "meal-ticket",
+    "changeId": "meal-ticket-wp44-heal",
+    "tags": ["버프", "유물"]
+  },
+  {
+    "id": "lizard-tail-rarity",
+    "sentence": "도꼬는 원래 보스 유물이었다",
+    "entityType": "relic",
+    "entityId": "lizard-tail",
+    "changeId": "lizard-tail-v20-rarity",
+    "tags": ["변경", "유물"]
+  },
+  {
+    "id": "the-specimen-rarity",
+    "sentence": "표본은 원래 보스 유물이었다",
+    "entityType": "relic",
+    "entityId": "the-specimen",
+    "changeId": "the-specimen-wp19-rarity",
+    "tags": ["변경", "유물", "사일런트"]
+  },
+  {
+    "id": "runic-pyramid-nerf",
+    "sentence": "룬 피라미드는 원래 드로우가 1장 줄었다",
+    "entityType": "relic",
+    "entityId": "runic-pyramid",
+    "changeId": "runic-pyramid-wp28-buff",
+    "tags": ["버프", "유물"]
+  },
+  {
+    "id": "orrery-rarity",
+    "sentence": "태양계 모형은 원래 보스 유물이었다",
+    "entityType": "relic",
+    "entityId": "orrery",
+    "changeId": "orrery-v20-rarity",
+    "tags": ["변경", "유물"]
+  },
+  {
+    "id": "question-card-rarity",
+    "sentence": "물음표 카드는 원래 보스 유물이었다",
+    "entityType": "relic",
+    "entityId": "question-card",
+    "changeId": "question-card-wp18-rarity",
+    "tags": ["변경", "유물"]
   }
 ]

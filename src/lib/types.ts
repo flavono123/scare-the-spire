@@ -18,6 +18,7 @@ export interface Card {
   imageBeta?: string;
 }
 
+export type PotionRarity = "common" | "uncommon" | "rare";
 export type CharacterClass = "Ironclad" | "Silent" | "Defect" | "Watcher";
 
 export interface Relic {
@@ -28,6 +29,15 @@ export interface Relic {
   character: CharacterClass | null;
   description: string;
   deprecated?: boolean;
+}
+
+export interface Potion {
+  id: string;
+  name: string;
+  nameKo: string;
+  rarity: PotionRarity;
+  character: CharacterClass | null;
+  description: string;
 }
 
 export interface AttributeDiff {
@@ -41,7 +51,7 @@ export interface AttributeDiff {
 
 export interface Change {
   id: string;
-  entityType: "card" | "relic";
+  entityType: "card" | "relic" | "potion";
   entityId: string;
   patch: string;
   date?: string;
@@ -52,7 +62,7 @@ export interface Change {
 export interface Story {
   id: string;
   sentence: string;
-  entityType: "card" | "relic";
+  entityType: "card" | "relic" | "potion";
   entityId: string;
   changeId: string;
   tags?: string[];

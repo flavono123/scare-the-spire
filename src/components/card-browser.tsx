@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import type { Card, CardClass, CardType, Rarity, Change } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
+import { ChangeList } from "@/components/change-list";
 
 const CLASS_TABS: { value: CardClass; label: string; color: string }[] = [
   { value: "ironclad", label: "아이언클래드", color: "text-red-400" },
@@ -38,25 +39,6 @@ const RARITY_BORDER: Record<string, string> = {
   rare: "border-yellow-500/60",
   special: "border-pink-500/60",
 };
-
-function StoryButton() {
-  const [clicked, setClicked] = useState(false);
-  return (
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        setClicked(true);
-      }}
-      className={`mt-2 w-full rounded py-1 text-xs font-medium transition-colors ${
-        clicked
-          ? "bg-zinc-800 text-muted-foreground cursor-default"
-          : "bg-yellow-500/10 text-yellow-500 border border-yellow-500/30 hover:bg-yellow-500/20"
-      }`}
-    >
-      {clicked ? "Coming Soon ✨" : "이야기 만들기"}
-    </button>
-  );
-}
 
 function ChangeModal({
   card,
@@ -131,69 +113,7 @@ function ChangeModal({
             <h3 className="mb-3 text-sm font-semibold text-yellow-500">
               변경 이력 ({changes.length})
             </h3>
-            <div className="relative pl-4">
-              <div className="absolute left-1.5 top-1 bottom-1 w-px bg-border" />
-              {changes.map((c) => (
-                <div key={c.id} className="relative mb-4 last:mb-0">
-                  <div className="absolute -left-2.5 top-1.5 h-2 w-2 rounded-full border-2 border-yellow-500 bg-background" />
-                  <div className="rounded border border-border bg-card/50 p-3">
-                    <div className="flex items-center gap-2 text-xs">
-                      <span className="font-medium text-yellow-500">
-                        {c.patch}
-                      </span>
-                      {c.date && (
-                        <span className="text-muted-foreground">{c.date}</span>
-                      )}
-                    </div>
-                    {c.summary && (
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {c.summary}
-                      </p>
-                    )}
-                    <div className="mt-1.5 space-y-0.5">
-                      {c.diffs.filter((d) => !d.upgraded).length > 0 && (
-                        <div className="space-y-0.5">
-                          {c.diffs.filter((d) => !d.upgraded).map((d, i) => (
-                            <div key={i} className="flex items-center gap-1 text-xs">
-                              <span className="text-muted-foreground">
-                                {d.displayName}:
-                              </span>
-                              <span className="text-red-400">
-                                {String(d.before)}
-                              </span>
-                              <span className="text-muted-foreground">→</span>
-                              <span className="text-green-400">
-                                {String(d.after)}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      {c.diffs.filter((d) => d.upgraded).length > 0 && (
-                        <div className="mt-1 space-y-0.5 border-l-2 border-green-500/30 pl-2">
-                          <span className="text-[10px] font-medium text-green-400/70">+</span>
-                          {c.diffs.filter((d) => d.upgraded).map((d, i) => (
-                            <div key={i} className="flex items-center gap-1 text-xs">
-                              <span className="text-muted-foreground">
-                                {d.displayName}:
-                              </span>
-                              <span className="text-red-400">
-                                {String(d.before)}
-                              </span>
-                              <span className="text-muted-foreground">→</span>
-                              <span className="text-green-400">
-                                {String(d.after)}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <StoryButton />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ChangeList changes={changes} />
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">변경 이력 없음</p>

@@ -4,6 +4,8 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import type { Relic, Rarity, Change } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
+import { ChangeList } from "@/components/change-list";
+import { CharacterBadge, characterRing } from "@/components/character-badge";
 
 const RARITY_SECTIONS: { value: Rarity; label: string; description: string; color: string }[] = [
   { value: "starter", label: "시작", description: "각 캐릭터가 처음부터 갖고 시작하는 유물입니다.", color: "text-green-400" },
@@ -15,20 +17,6 @@ const RARITY_SECTIONS: { value: Rarity; label: string; description: string; colo
   { value: "event", label: "이벤트", description: "특정 이벤트에서만 얻을 수 있는 유물입니다.", color: "text-purple-400" },
   { value: "special", label: "특수", description: "특수한 방법으로만 얻을 수 있는 유물입니다.", color: "text-pink-400" },
 ];
-
-function DiffLine({ diff }: { diff: Change["diffs"][0] }) {
-  return (
-    <div className="flex items-center gap-1.5 text-xs">
-      {diff.upgraded && (
-        <span className="text-[10px] font-medium text-green-400 bg-green-500/10 rounded px-1">+</span>
-      )}
-      <span className="text-muted-foreground">{diff.displayName}</span>
-      <span className="text-red-400">{String(diff.before)}</span>
-      <span className="text-muted-foreground">→</span>
-      <span className="text-green-400">{String(diff.after)}</span>
-    </div>
-  );
-}
 
 function RelicModal({
   relic,
@@ -66,9 +54,7 @@ function RelicModal({
               )}
             </div>
             <p className="text-sm text-muted-foreground">{relic.name}</p>
-            {relic.character && (
-              <Badge variant="outline" className="mt-1 text-xs">{relic.character}</Badge>
-            )}
+            <CharacterBadge character={relic.character} className="mt-1 text-xs" />
           </div>
           <button
             onClick={onClose}
@@ -85,28 +71,7 @@ function RelicModal({
             <h3 className="mb-3 text-sm font-semibold text-yellow-500">
               변경 이력 ({changes.length})
             </h3>
-            <div className="relative pl-4">
-              <div className="absolute left-1.5 top-1 bottom-1 w-px bg-border" />
-              {changes.map((c) => (
-                <div key={c.id} className="relative mb-3 last:mb-0">
-                  <div className="absolute -left-2.5 top-1.5 h-2 w-2 rounded-full border-2 border-yellow-500 bg-background" />
-                  <div className="rounded border border-border bg-card/50 p-3">
-                    <div className="flex items-center gap-2 text-xs mb-1">
-                      <span className="font-medium text-yellow-500">{c.patch}</span>
-                      {c.date && <span className="text-muted-foreground">{c.date}</span>}
-                    </div>
-                    {c.summary && (
-                      <p className="text-xs text-muted-foreground mb-1">{c.summary}</p>
-                    )}
-                    <div className="space-y-0.5">
-                      {c.diffs.map((d, i) => (
-                        <DiffLine key={i} diff={d} />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ChangeList changes={changes} />
           </div>
         )}
       </div>
@@ -124,12 +89,13 @@ function RelicIcon({
   const [modalOpen, setModalOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
   const hasChanges = changes.length > 0;
+  const charRing = characterRing(relic.character);
 
   return (
     <>
       <button
         onClick={() => setModalOpen(true)}
-        className={`group relative flex h-16 w-16 items-center justify-center rounded-lg transition-all hover:scale-110 hover:bg-card/50 ${
+        className={`group relative flex h-16 w-16 items-center justify-center rounded-lg transition-all hover:scale-110 hover:bg-card/50 ${charRing} ${
           relic.deprecated ? "opacity-50 grayscale" : ""
         }`}
         title={`${relic.nameKo} (${relic.name})`}
