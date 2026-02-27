@@ -34,6 +34,12 @@ export default function RootLayout({
               >
                 카드
               </Link>
+              <Link
+                href="/relics"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                유물
+              </Link>
             </nav>
           </div>
         </header>

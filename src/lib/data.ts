@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import type { Card, Change, Story, CardClass, CardType } from "./types";
+import type { Card, Change, Story, Relic, CardClass, CardType, CharacterClass } from "./types";
 
 function toSlug(name: string, cardClass?: string): string {
   const base = name
@@ -46,6 +46,30 @@ export async function getCards(): Promise<Card[]> {
     costUpgraded: r.costUpgraded as Card["costUpgraded"],
     description: r.description,
     descriptionUpgraded: r.descriptionUpgraded,
+  }));
+}
+
+interface RawRelic {
+  name: string;
+  nameKo: string;
+  rarity: string;
+  character: string | null;
+  description: string;
+  deprecated?: boolean;
+}
+
+export async function getRelics(): Promise<Relic[]> {
+  const raw: RawRelic[] = JSON.parse(
+    await fs.readFile(path.join(DATA_DIR, "relics.json"), "utf-8"),
+  );
+  return raw.map((r) => ({
+    id: toSlug(r.name),
+    name: r.name,
+    nameKo: r.nameKo,
+    rarity: r.rarity as Relic["rarity"],
+    character: r.character as CharacterClass | null,
+    description: r.description,
+    deprecated: r.deprecated,
   }));
 }
 

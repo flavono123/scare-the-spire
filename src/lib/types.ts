@@ -18,6 +18,18 @@ export interface Card {
   imageBeta?: string;
 }
 
+export type CharacterClass = "Ironclad" | "Silent" | "Defect" | "Watcher";
+
+export interface Relic {
+  id: string;
+  name: string;
+  nameKo: string;
+  rarity: Rarity;
+  character: CharacterClass | null;
+  description: string;
+  deprecated?: boolean;
+}
+
 export interface AttributeDiff {
   attribute: string;
   displayName: string;

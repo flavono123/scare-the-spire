@@ -1258,5 +1258,21 @@
     "rarity": "special",
     "character": null,
     "description": "Unique. Obtained when you would get a Circlet but already have one."
+  },
+  {
+    "name": "Discerning Monocle",
+    "nameKo": "감별 외알안경",
+    "rarity": "shop",
+    "character": null,
+    "description": "[DEPRECATED] Shop prices are reduced by 20%.",
+    "deprecated": true
+  },
+  {
+    "name": "Runic Dodecahedron",
+    "nameKo": "룬 십이면체",
+    "rarity": "boss",
+    "character": null,
+    "description": "[DEPRECATED] At the start of your turn, if your HP is full, gain 1 Energy.",
+    "deprecated": true
   }
 ]
