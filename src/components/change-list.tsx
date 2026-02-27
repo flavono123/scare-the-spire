@@ -2,11 +2,20 @@
 
 import type { Change } from "@/lib/types";
 
-const REPORT_FORM_URL = "https://forms.gle/placeholder"; // TODO: replace with actual Google Form URL
+const FORM_BASE = "https://docs.google.com/forms/d/e/1FAIpQLSfLZydnMSOswE22Z5P_BwVk5Jhxm_zfaytknV2_wIk444--NQ/viewform";
+const ENTRY_TYPE = "entry.818237632";
+const ENTRY_STORY = "entry.451392234";
+
+const ENTITY_TYPE_LABEL: Record<string, string> = {
+  card: "카드 (Card)",
+  relic: "유물 (Relic)",
+  potion: "포션 (Potion)",
+};
 
 function ReportButton({ change }: { change: Change }) {
-  const prefill = `[${change.patch}] ${change.summary || change.entityId}`;
-  const url = `${REPORT_FORM_URL}?entry.0=${encodeURIComponent(prefill)}`;
+  const typeLabel = ENTITY_TYPE_LABEL[change.entityType] ?? change.entityType;
+  const story = `[${change.patch}] ${change.summary || change.entityId}`;
+  const url = `${FORM_BASE}?${ENTRY_TYPE}=${encodeURIComponent(typeLabel)}&${ENTRY_STORY}=${encodeURIComponent(story)}`;
   return (
     <a
       href={url}
