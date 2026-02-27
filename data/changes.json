@@ -2699,5 +2699,942 @@
         "diffType": "number"
       }
     ]
+  },
+  {
+    "id": "cleave-wp20-damage",
+    "entityType": "card",
+    "entityId": "cleave",
+    "patch": "Weekly Patch 20: Immolate",
+    "date": "2018-04-06",
+    "summary": "Cleave damage buffed from 7 to 8 (upgraded: 10 to 11).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 7,
+        "after": 8,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 10,
+        "after": 11,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "flame-barrier-wp5-upgrade-buff",
+    "entityType": "card",
+    "entityId": "flame-barrier",
+    "patch": "Weekly Patch 5: Happy Holidays!",
+    "date": "2017-12-28",
+    "summary": "Flame Barrier+ buffed to deal 2 more damage back per attack.",
+    "diffs": [
+      {
+        "attribute": "returnDamage",
+        "displayName": "Return Damage",
+        "before": 4,
+        "after": 6,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "die-die-die-wp3-rework",
+    "entityType": "card",
+    "entityId": "die-die-die",
+    "patch": "Weekly Patch 3: Balance Balance Balance",
+    "date": "2017-12-14",
+    "summary": "Die Die Die reworked: now Exhausts instead of subtracting 2 Dexterity.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Deal 13 damage to ALL enemies. Lose 2 Dexterity.",
+        "after": "Deal 13 damage to ALL enemies. Exhaust.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "grand-finale-wp2-cost",
+    "entityType": "card",
+    "entityId": "grand-finale",
+    "patch": "Weekly Patch 2: Slimes!",
+    "date": "2017-12-07",
+    "summary": "Grand Finale cost reduced from 2 to 1.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 2,
+        "after": 1,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "grand-finale-wp19-cost",
+    "entityType": "card",
+    "entityId": "grand-finale",
+    "patch": "Weekly Patch 19: Seed",
+    "date": "2018-03-29",
+    "summary": "Grand Finale cost reduced from 1 to 0.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 1,
+        "after": 0,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "grand-finale-wp46-damage",
+    "entityType": "card",
+    "entityId": "grand-finale",
+    "patch": "Weekly Patch 46: Adrenaline",
+    "date": "2018-10-18",
+    "summary": "Grand Finale damage increased from 40 to 50 (upgraded: 50 to 60).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 40,
+        "after": 50,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 50,
+        "after": 60,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "leg-sweep-wp37-block",
+    "entityType": "card",
+    "entityId": "leg-sweep",
+    "patch": "Weekly Patch 37: Darkness",
+    "date": "2018-08-09",
+    "summary": "Leg Sweep block nerfed from 12 to 11 (upgraded: 15 to 14).",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 12,
+        "after": 11,
+        "diffType": "number"
+      },
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 15,
+        "after": 14,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "tools-of-the-trade-wp1-nerf",
+    "entityType": "card",
+    "entityId": "tools-of-the-trade",
+    "patch": "Weekly Patch 1: The First of Many!",
+    "date": "2017-11-30",
+    "summary": "Tools of the Trade nerfed: no longer Innate.",
+    "diffs": [
+      {
+        "attribute": "innate",
+        "displayName": "Innate",
+        "before": true,
+        "after": false,
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "hand-of-greed-wp38-added",
+    "entityType": "card",
+    "entityId": "hand-of-greed",
+    "patch": "Weekly Patch 38: Bane",
+    "date": "2018-08-16",
+    "summary": "Hand of Greed added as a new colorless card.",
+    "diffs": [
+      {
+        "attribute": "availability",
+        "displayName": "Availability",
+        "before": "Not in game",
+        "after": "Added to game",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "hand-of-greed-wp46-damage",
+    "entityType": "card",
+    "entityId": "hand-of-greed",
+    "patch": "Weekly Patch 46: Adrenaline",
+    "date": "2018-10-18",
+    "summary": "Hand of Greed damage increased from 15 to 20 (upgraded: 20 to 25).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 15,
+        "after": 20,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 20,
+        "after": 25,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "the-bomb-wp38-added",
+    "entityType": "card",
+    "entityId": "the-bomb",
+    "patch": "Weekly Patch 38: Bane",
+    "date": "2018-08-16",
+    "summary": "The Bomb added as a new colorless card.",
+    "diffs": [
+      {
+        "attribute": "availability",
+        "displayName": "Availability",
+        "before": "Not in game",
+        "after": "Added to game",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "the-bomb-wp46-upgrade-damage",
+    "entityType": "card",
+    "entityId": "the-bomb",
+    "patch": "Weekly Patch 46: Adrenaline",
+    "date": "2018-10-18",
+    "summary": "The Bomb+ damage increased from 36 to 40.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 36,
+        "after": 40,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "the-bomb-wp55-damage",
+    "entityType": "card",
+    "entityId": "the-bomb",
+    "patch": "Weekly Patch 55: Blur",
+    "date": "2019-01-10",
+    "summary": "The Bomb base damage increased from 30 to 40 (upgraded: 40 to 50).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 30,
+        "after": 40,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 40,
+        "after": 50,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "unload-wp34-damage",
+    "entityType": "card",
+    "entityId": "unload",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Unload damage increased from 12 to 14 (upgraded: 16 to 18).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 12,
+        "after": 14,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 16,
+        "after": 18,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "juggernaut-wp34-damage",
+    "entityType": "card",
+    "entityId": "juggernaut",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Juggernaut damage increased from 3 to 5 (upgraded: 5 to 6).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 3,
+        "after": 5,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 5,
+        "after": 6,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "juggernaut-wp37-upgrade-damage",
+    "entityType": "card",
+    "entityId": "juggernaut",
+    "patch": "Weekly Patch 37: Darkness",
+    "date": "2018-08-09",
+    "summary": "Juggernaut+ upgrade amount increased from 1 to 2 (damage 6 to 7).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 6,
+        "after": 7,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "fission-wp41-cost-rework",
+    "entityType": "card",
+    "entityId": "fission",
+    "patch": "Weekly Patch 41: Chill",
+    "date": "2018-09-06",
+    "summary": "Fission now costs 0. Fission+ now Evokes all orbs rather than removing them.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 1,
+        "after": 0,
+        "diffType": "number"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Upgraded Mechanic",
+        "before": "Remove all Orbs",
+        "after": "Evoke all Orbs",
+        "diffType": "rework",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "apotheosis-wp8-cost",
+    "entityType": "card",
+    "entityId": "apotheosis",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-11",
+    "summary": "Apotheosis cost changed from 0 to 2. Upgraded cost changed from 0 to 1. Colorless cards gained upgrades.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 0,
+        "after": 2,
+        "diffType": "number"
+      },
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 0,
+        "after": 1,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "enlightenment-wp37-rarity",
+    "entityType": "card",
+    "entityId": "enlightenment",
+    "patch": "Weekly Patch 37: Darkness",
+    "date": "2018-08-09",
+    "summary": "Enlightenment rarity changed from Rare to Uncommon.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Rare",
+        "after": "Uncommon",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "panacea-wp8-rework",
+    "entityType": "card",
+    "entityId": "panacea",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-11",
+    "summary": "Panacea reworked to: Gain 1 Artifact. Exhaust. Upgrades to gain 2 Artifact.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Remove all Weak and Vulnerable from yourself",
+        "after": "Gain 1 Artifact. Exhaust. (Upgraded: Gain 2 Artifact.)",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "madness-wp8-cost",
+    "entityType": "card",
+    "entityId": "madness",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-11",
+    "summary": "Madness nerfed from cost 2 to cost 1; upgrade now reduces cost to 0.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 2,
+        "after": 1,
+        "diffType": "number"
+      },
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 1,
+        "after": 0,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "masterful-stab-wp39-rework",
+    "entityType": "card",
+    "entityId": "masterful-stab",
+    "patch": "Weekly Patch 39: We Meet Again!",
+    "date": "2018-08-23",
+    "summary": "Masterful Stab reworked: previously could only be played with empty hand for 16(21) damage. Now costs 0 but gains 1 energy cost each time you lose HP.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Can only be played if hand is empty. Deal 16 damage. (Upgraded: 21 damage.)",
+        "after": "Deal 12 damage. Costs 1 more energy for each time you lose HP this combat. (Upgraded: 16 damage.)",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "stone-calendar-wp54-damage",
+    "entityType": "relic",
+    "entityId": "stone-calendar",
+    "patch": "Weekly Patch 54: Loop",
+    "date": "2018-12-20",
+    "summary": "Stone Calendar damage increased from 40 to 50.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 40,
+        "after": 50,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "stone-calendar-wp55-damage",
+    "entityType": "relic",
+    "entityId": "stone-calendar",
+    "patch": "Weekly Patch 55: Blur",
+    "date": "2019-01-10",
+    "summary": "Stone Calendar damage increased from 50 to 52 for flavor.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 50,
+        "after": 52,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "brimstone-wp41-added",
+    "entityType": "relic",
+    "entityId": "brimstone",
+    "patch": "Weekly Patch 41: Chill",
+    "date": "2018-09-06",
+    "summary": "Brimstone added as a new shop relic.",
+    "diffs": [
+      {
+        "attribute": "availability",
+        "displayName": "Availability",
+        "before": "Not in game",
+        "after": "Added to game",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "brimstone-wp44-buff",
+    "entityType": "relic",
+    "entityId": "brimstone",
+    "patch": "Weekly Patch 44: Chrysalis",
+    "date": "2018-10-04",
+    "summary": "Brimstone buffed: now gives player 2 Strength and enemies 1 Strength (was 1 and 1).",
+    "diffs": [
+      {
+        "attribute": "playerStrength",
+        "displayName": "Player Strength Gain",
+        "before": 1,
+        "after": 2,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "philosopher-stone-wp49-nerf",
+    "entityType": "relic",
+    "entityId": "philosophers-stone",
+    "patch": "Weekly Patch 49: The Designer",
+    "date": "2018-11-08",
+    "summary": "Philosopher's Stone enemy Strength gain reduced from 2 to 1.",
+    "diffs": [
+      {
+        "attribute": "enemyStrength",
+        "displayName": "Enemy Strength Gain",
+        "before": 2,
+        "after": 1,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "incense-burner-wp38-nerf",
+    "entityType": "relic",
+    "entityId": "incense-burner",
+    "patch": "Weekly Patch 38: Bane",
+    "date": "2018-08-16",
+    "summary": "Incense Burner nerfed: cooldown increased from 5 to 6 turns.",
+    "diffs": [
+      {
+        "attribute": "cooldown",
+        "displayName": "Cooldown (turns)",
+        "before": 5,
+        "after": 6,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "thread-and-needle-wp37-nerf",
+    "entityType": "relic",
+    "entityId": "thread-and-needle",
+    "patch": "Weekly Patch 37: Darkness",
+    "date": "2018-08-09",
+    "summary": "Thread and Needle nerfed: Plated Armor reduced from 5 to 4.",
+    "diffs": [
+      {
+        "attribute": "platedArmor",
+        "displayName": "Plated Armor",
+        "before": 5,
+        "after": 4,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "singing-bowl-wp33-rarity",
+    "entityType": "relic",
+    "entityId": "singing-bowl",
+    "patch": "Weekly Patch 33: Terror",
+    "date": "2018-07-12",
+    "summary": "Singing Bowl rarity changed from Common to Uncommon.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Common",
+        "after": "Uncommon",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "tough-bandages-wp33-rarity",
+    "entityType": "relic",
+    "entityId": "tough-bandages",
+    "patch": "Weekly Patch 33: Terror",
+    "date": "2018-07-12",
+    "summary": "Tough Bandages rarity changed from Uncommon to Rare.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Rare",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "red-skull-wp33-rarity",
+    "entityType": "relic",
+    "entityId": "red-skull",
+    "patch": "Weekly Patch 33: Terror",
+    "date": "2018-07-12",
+    "summary": "Red Skull is now Common rarity.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Common",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "bronze-scales-wp5-buff",
+    "entityType": "relic",
+    "entityId": "bronze-scales",
+    "patch": "Weekly Patch 5: Happy Holidays!",
+    "date": "2017-12-28",
+    "summary": "Bronze Scales Thorns increased from 2 to 3.",
+    "diffs": [
+      {
+        "attribute": "thorns",
+        "displayName": "Thorns",
+        "before": 2,
+        "after": 3,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "unceasing-top-wp1-rarity",
+    "entityType": "relic",
+    "entityId": "unceasing-top",
+    "patch": "Weekly Patch 1: The First of Many!",
+    "date": "2017-11-30",
+    "summary": "Unceasing Top rarity changed from Uncommon to Rare.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Rare",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "membership-card-wp44-nerf",
+    "entityType": "relic",
+    "entityId": "membership-card",
+    "patch": "Weekly Patch 44: Chrysalis",
+    "date": "2018-10-04",
+    "summary": "Membership Card changed to only apply a discount (no longer increases shop appearance).",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Shop prices reduced by 50%. Shop appears more often.",
+        "after": "50% discount on all products!",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "warcry-wp10-buff",
+    "entityType": "card",
+    "entityId": "warcry",
+    "patch": "Weekly Patch 10: Quality of Life",
+    "date": "2018-01-18",
+    "summary": "Warcry unupgraded form buffed: cost reduced to 0, draws 1 card, places 1 card on draw pile.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 1,
+        "after": 0,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "concentrate-wp1-rework",
+    "entityType": "card",
+    "entityId": "concentrate",
+    "patch": "Weekly Patch 1: The First of Many!",
+    "date": "2017-11-30",
+    "summary": "Concentrate card reworked.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Unknown (pre-rework)",
+        "after": "Discard 3 cards. Gain 2 Energy. Upgraded: Discard 2 cards.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "calculated-gamble-wp4-nerf",
+    "entityType": "card",
+    "entityId": "calculated-gamble",
+    "patch": "Weekly Patch 4: Full speed ahead!",
+    "date": "2017-12-21",
+    "summary": "Calculated Gamble card nerfed.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Unknown (pre-nerf)",
+        "after": "Nerfed (details not documented on wiki)",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "dark-shackles-wp8-upgrade-buff",
+    "entityType": "card",
+    "entityId": "dark-shackles",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-11",
+    "summary": "Dark Shackles+ Strength reduction increased from 9 to 15.",
+    "diffs": [
+      {
+        "attribute": "strengthReduction",
+        "displayName": "Strength Reduction",
+        "before": 9,
+        "after": 15,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "finesse-wp8-upgrade-buff",
+    "entityType": "card",
+    "entityId": "finesse",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-11",
+    "summary": "Finesse+ block increased from 2 to 4.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 2,
+        "after": 4,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "flash-of-steel-wp8-upgrade-buff",
+    "entityType": "card",
+    "entityId": "flash-of-steel",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-11",
+    "summary": "Flash of Steel+ damage increased from 3 to 6.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 3,
+        "after": 6,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "thinking-ahead-wp8-nerf",
+    "entityType": "card",
+    "entityId": "thinking-ahead",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-11",
+    "summary": "Thinking Ahead nerfed to now Exhaust. Upgrade removes the Exhaust.",
+    "diffs": [
+      {
+        "attribute": "exhaust",
+        "displayName": "Exhaust",
+        "before": false,
+        "after": true,
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "enlightenment-wp8-upgrade-buff",
+    "entityType": "card",
+    "entityId": "enlightenment",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-11",
+    "summary": "Enlightenment+ changed from 'this turn' to 'this combat'.",
+    "diffs": [
+      {
+        "attribute": "duration",
+        "displayName": "Duration",
+        "before": "This turn",
+        "after": "This combat",
+        "diffType": "text",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "brutality-wp1-buff",
+    "entityType": "card",
+    "entityId": "brutality",
+    "patch": "Weekly Patch 1: The First of Many!",
+    "date": "2017-11-30",
+    "summary": "Brutality card buffed.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Unknown (pre-buff)",
+        "after": "Buffed (details not documented on wiki)",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "maw-bank-wp34-added",
+    "entityType": "relic",
+    "entityId": "maw-bank",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Maw Bank added as a new common relic.",
+    "diffs": [
+      {
+        "attribute": "availability",
+        "displayName": "Availability",
+        "before": "Not in game",
+        "after": "Added to game",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "preserved-insect-wp41-added",
+    "entityType": "relic",
+    "entityId": "preserved-insect",
+    "patch": "Weekly Patch 41: Chill",
+    "date": "2018-09-06",
+    "summary": "Preserved Insect added as a new common relic.",
+    "diffs": [
+      {
+        "attribute": "availability",
+        "displayName": "Availability",
+        "before": "Not in game",
+        "after": "Added to game",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "chemical-x-wp35-added",
+    "entityType": "relic",
+    "entityId": "chemical-x",
+    "patch": "Weekly Patch 35: Aggregate",
+    "date": "2018-07-26",
+    "summary": "Chemical X added as a new shop relic.",
+    "diffs": [
+      {
+        "attribute": "availability",
+        "displayName": "Availability",
+        "before": "Not in game",
+        "after": "Added to game",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "stone-calendar-wp35-added",
+    "entityType": "relic",
+    "entityId": "stone-calendar",
+    "patch": "Weekly Patch 35: Aggregate",
+    "date": "2018-07-26",
+    "summary": "Stone Calendar added as a new rare relic.",
+    "diffs": [
+      {
+        "attribute": "availability",
+        "displayName": "Availability",
+        "before": "Not in game",
+        "after": "Added to game",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "incense-burner-wp29-added",
+    "entityType": "relic",
+    "entityId": "incense-burner",
+    "patch": "Weekly Patch 29: TURBO",
+    "date": "2018-06-07",
+    "summary": "Incense Burner added as a new rare relic.",
+    "diffs": [
+      {
+        "attribute": "availability",
+        "displayName": "Availability",
+        "before": "Not in game",
+        "after": "Added to game",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "busted-crown-wp28-added",
+    "entityType": "relic",
+    "entityId": "busted-crown",
+    "patch": "Weekly Patch 28: The Ritual",
+    "date": "2018-05-31",
+    "summary": "Busted Crown added as a new boss relic.",
+    "diffs": [
+      {
+        "attribute": "availability",
+        "displayName": "Availability",
+        "before": "Not in game",
+        "after": "Added to game",
+        "diffType": "text"
+      }
+    ]
   }
 ]
