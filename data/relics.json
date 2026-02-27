@@ -1,0 +1,1262 @@
+[
+  {
+    "name": "Burning Blood",
+    "nameKo": "불타는 혈액",
+    "rarity": "starter",
+    "character": "Ironclad",
+    "description": "At the end of combat, heal 6 HP."
+  },
+  {
+    "name": "Ring of the Snake",
+    "nameKo": "뱀의 반지",
+    "rarity": "starter",
+    "character": "Silent",
+    "description": "At the start of each combat, draw 2 additional cards."
+  },
+  {
+    "name": "Cracked Core",
+    "nameKo": "부서진 핵",
+    "rarity": "starter",
+    "character": "Defect",
+    "description": "At the start of each combat, Channel 1 Lightning orb."
+  },
+  {
+    "name": "Pure Water",
+    "nameKo": "순수한 물",
+    "rarity": "starter",
+    "character": "Watcher",
+    "description": "At the start of each combat, add a Miracle into your hand."
+  },
+  {
+    "name": "Akabeko",
+    "nameKo": "아카베코",
+    "rarity": "common",
+    "character": null,
+    "description": "Your first Attack each combat deals 8 additional damage."
+  },
+  {
+    "name": "Anchor",
+    "nameKo": "닻",
+    "rarity": "common",
+    "character": null,
+    "description": "Start each combat with 10 Block."
+  },
+  {
+    "name": "Ancient Tea Set",
+    "nameKo": "고대의 차 세트",
+    "rarity": "common",
+    "character": null,
+    "description": "Whenever you enter a Rest Site, start the next combat with 2 extra Energy."
+  },
+  {
+    "name": "Art of War",
+    "nameKo": "병법서",
+    "rarity": "common",
+    "character": null,
+    "description": "If you do not play any Attacks during your turn, gain an extra Energy next turn."
+  },
+  {
+    "name": "Bag of Marbles",
+    "nameKo": "구슬 주머니",
+    "rarity": "common",
+    "character": null,
+    "description": "At the start of each combat, apply 1 Vulnerable to ALL enemies."
+  },
+  {
+    "name": "Bag of Preparation",
+    "nameKo": "준비된 가방",
+    "rarity": "common",
+    "character": null,
+    "description": "At the start of each combat, draw 2 additional cards."
+  },
+  {
+    "name": "Blood Vial",
+    "nameKo": "피가 담긴 병",
+    "rarity": "common",
+    "character": null,
+    "description": "At the start of each combat, heal 2 HP."
+  },
+  {
+    "name": "Bronze Scales",
+    "nameKo": "청동 비늘",
+    "rarity": "common",
+    "character": null,
+    "description": "Start each combat with 3 Thorns."
+  },
+  {
+    "name": "Centennial Puzzle",
+    "nameKo": "백년퍼즐",
+    "rarity": "common",
+    "character": null,
+    "description": "The first time you lose HP each combat, draw 3 cards."
+  },
+  {
+    "name": "Ceramic Fish",
+    "nameKo": "물고기 도자기",
+    "rarity": "common",
+    "character": null,
+    "description": "Whenever you add a card to your deck, gain 9 Gold."
+  },
+  {
+    "name": "Damaru",
+    "nameKo": "다마루",
+    "rarity": "common",
+    "character": "Watcher",
+    "description": "At the start of your turn, gain 1 Mantra."
+  },
+  {
+    "name": "Data Disk",
+    "nameKo": "데이터 디스크",
+    "rarity": "common",
+    "character": "Defect",
+    "description": "Start each combat with 1 Focus."
+  },
+  {
+    "name": "Dream Catcher",
+    "nameKo": "드림 캐쳐",
+    "rarity": "common",
+    "character": null,
+    "description": "Whenever you Rest, you may add a card to your deck."
+  },
+  {
+    "name": "Happy Flower",
+    "nameKo": "행복한 꽃",
+    "rarity": "common",
+    "character": null,
+    "description": "Every 3 turns, gain 1 Energy."
+  },
+  {
+    "name": "Juzu Bracelet",
+    "nameKo": "염주",
+    "rarity": "common",
+    "character": null,
+    "description": "Regular enemy combats are no longer encountered in ? rooms."
+  },
+  {
+    "name": "Lantern",
+    "nameKo": "전등",
+    "rarity": "common",
+    "character": null,
+    "description": "Gain 1 Energy on the first turn of each combat."
+  },
+  {
+    "name": "Maw Bank",
+    "nameKo": "아귀 저금통",
+    "rarity": "common",
+    "character": null,
+    "description": "Whenever you climb a floor, gain 12 Gold. No longer works when you spend Gold at a shop."
+  },
+  {
+    "name": "Meal Ticket",
+    "nameKo": "식권",
+    "rarity": "common",
+    "character": null,
+    "description": "Whenever you enter a shop, heal 15 HP."
+  },
+  {
+    "name": "Nunchaku",
+    "nameKo": "쌍절곤",
+    "rarity": "common",
+    "character": null,
+    "description": "Every time you play 10 Attacks, gain 1 Energy."
+  },
+  {
+    "name": "Oddly Smooth Stone",
+    "nameKo": "매끄러운 돌",
+    "rarity": "common",
+    "character": null,
+    "description": "At the start of each combat, gain 1 Dexterity."
+  },
+  {
+    "name": "Omamori",
+    "nameKo": "부적",
+    "rarity": "common",
+    "character": null,
+    "description": "Negate the next 2 Curses you obtain."
+  },
+  {
+    "name": "Orichalcum",
+    "nameKo": "오리하르콘",
+    "rarity": "common",
+    "character": null,
+    "description": "If you end your turn without Block, gain 6 Block."
+  },
+  {
+    "name": "Pen Nib",
+    "nameKo": "펜 촉",
+    "rarity": "common",
+    "character": null,
+    "description": "Every 10th Attack you play deals double damage."
+  },
+  {
+    "name": "Potion Belt",
+    "nameKo": "포션 벨트",
+    "rarity": "common",
+    "character": null,
+    "description": "Upon pickup, gain 2 Potion slots."
+  },
+  {
+    "name": "Preserved Insect",
+    "nameKo": "곤충 박제",
+    "rarity": "common",
+    "character": null,
+    "description": "Enemies in Elite combats have 25% less HP."
+  },
+  {
+    "name": "Red Skull",
+    "nameKo": "붉은 해골",
+    "rarity": "common",
+    "character": "Ironclad",
+    "description": "While your HP is at or below 50%, you have 3 additional Strength."
+  },
+  {
+    "name": "Regal Pillow",
+    "nameKo": "호화로운 베개",
+    "rarity": "common",
+    "character": null,
+    "description": "Heal an additional 15 HP when you Rest."
+  },
+  {
+    "name": "Smiling Mask",
+    "nameKo": "미소짓는 가면",
+    "rarity": "common",
+    "character": null,
+    "description": "The merchant's card removal service now always costs 50 Gold."
+  },
+  {
+    "name": "Snecko Skull",
+    "nameKo": "스네코의 해골",
+    "rarity": "common",
+    "character": "Silent",
+    "description": "Whenever you apply Poison, apply an additional 1 Poison."
+  },
+  {
+    "name": "Strawberry",
+    "nameKo": "딸기",
+    "rarity": "common",
+    "character": null,
+    "description": "Upon pickup, raise your Max HP by 7."
+  },
+  {
+    "name": "The Boot",
+    "nameKo": "장화",
+    "rarity": "common",
+    "character": null,
+    "description": "Whenever you would deal 4 or less unblocked Attack damage, increase it to 5."
+  },
+  {
+    "name": "Tiny Chest",
+    "nameKo": "작은 상자",
+    "rarity": "common",
+    "character": null,
+    "description": "Every 4th ? room is a Treasure room."
+  },
+  {
+    "name": "Toy Ornithopter",
+    "nameKo": "장난감 비행기",
+    "rarity": "common",
+    "character": null,
+    "description": "Whenever you use a potion, heal 5 HP."
+  },
+  {
+    "name": "Vajra",
+    "nameKo": "금강저",
+    "rarity": "common",
+    "character": null,
+    "description": "At the start of each combat, gain 1 Strength."
+  },
+  {
+    "name": "War Paint",
+    "nameKo": "위장 크림",
+    "rarity": "common",
+    "character": null,
+    "description": "Upon pickup, Upgrade 2 random Skills."
+  },
+  {
+    "name": "Whetstone",
+    "nameKo": "숫돌",
+    "rarity": "common",
+    "character": null,
+    "description": "Upon pickup, Upgrade 2 random Attacks."
+  },
+  {
+    "name": "Blue Candle",
+    "nameKo": "푸른 양초",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Curse cards can now be played. Playing a Curse will Exhaust it and lose 1 HP."
+  },
+  {
+    "name": "Bottled Flame",
+    "nameKo": "병 속의 불꽃",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Upon pickup, choose an Attack. At the start of each combat, this card will be in your hand."
+  },
+  {
+    "name": "Bottled Lightning",
+    "nameKo": "병 속의 번개",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Upon pickup, choose a Skill. At the start of each combat, this card will be in your hand."
+  },
+  {
+    "name": "Bottled Tornado",
+    "nameKo": "병 속의 폭풍",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Upon pickup, choose a Power. At the start of each combat, this card will be in your hand."
+  },
+  {
+    "name": "Darkstone Periapt",
+    "nameKo": "흑옥 부적",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Whenever you obtain a Curse, increase your Max HP by 6."
+  },
+  {
+    "name": "Duality",
+    "nameKo": "음양성",
+    "rarity": "uncommon",
+    "character": "Watcher",
+    "description": "Whenever you play an Attack, gain 1 temporary Dexterity."
+  },
+  {
+    "name": "Eternal Feather",
+    "nameKo": "영원의 깃털",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "For every 5 cards in your deck, heal 3 HP whenever you enter a Rest Site."
+  },
+  {
+    "name": "Frozen Egg",
+    "nameKo": "얼어붙은 알",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Whenever you add a Power card to your deck, it is Upgraded."
+  },
+  {
+    "name": "Gold-Plated Cables",
+    "nameKo": "판금 케이블",
+    "rarity": "uncommon",
+    "character": "Defect",
+    "description": "Your rightmost Orb triggers its passive an additional time."
+  },
+  {
+    "name": "Gremlin Horn",
+    "nameKo": "그렘린 뿔",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Whenever an enemy dies, gain 1 Energy and draw 1 card."
+  },
+  {
+    "name": "Horn Cleat",
+    "nameKo": "소뿔모양 걸이",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "At the start of your 2nd turn, gain 14 Block."
+  },
+  {
+    "name": "Ink Bottle",
+    "nameKo": "잉크병",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Whenever you play 10 cards, draw 1 card."
+  },
+  {
+    "name": "Kunai",
+    "nameKo": "수리검",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Every time you play 3 Attacks in a single turn, gain 1 Dexterity."
+  },
+  {
+    "name": "Letter Opener",
+    "nameKo": "편지 칼",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Every time you play 3 Skills in a single turn, deal 5 damage to ALL enemies."
+  },
+  {
+    "name": "Matryoshka",
+    "nameKo": "마트료시카",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "The next 2 non-boss chests you open contain 2 Relics."
+  },
+  {
+    "name": "Meat on the Bone",
+    "nameKo": "고기 덩어리",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "If your HP is at or below 50% at the end of combat, heal 12 HP."
+  },
+  {
+    "name": "Mercury Hourglass",
+    "nameKo": "수은 모래시계",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "At the start of your turn, deal 3 damage to ALL enemies."
+  },
+  {
+    "name": "Molten Egg",
+    "nameKo": "녹아내린 알",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Whenever you add an Attack card to your deck, it is Upgraded."
+  },
+  {
+    "name": "Mummified Hand",
+    "nameKo": "미라의 손",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Whenever you play a Power card, a random card in your hand costs 0 that turn."
+  },
+  {
+    "name": "Ninja Scroll",
+    "nameKo": "닌자 두루마리",
+    "rarity": "uncommon",
+    "character": "Silent",
+    "description": "At the start of each combat, add 3 Shivs into your hand."
+  },
+  {
+    "name": "Ornamental Fan",
+    "nameKo": "장식용 부채",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Every time you play 3 Attacks in a single turn, gain 4 Block."
+  },
+  {
+    "name": "Pantograph",
+    "nameKo": "팬터그래프",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "At the start of Boss combats, heal 25 HP."
+  },
+  {
+    "name": "Paper Krane",
+    "nameKo": "종이 학",
+    "rarity": "uncommon",
+    "character": "Silent",
+    "description": "Enemies with Weak deal 40% less damage rather than 25%."
+  },
+  {
+    "name": "Paper Phrog",
+    "nameKo": "종이 개구리",
+    "rarity": "uncommon",
+    "character": "Ironclad",
+    "description": "Enemies with Vulnerable take 75% more damage rather than 50%."
+  },
+  {
+    "name": "Pear",
+    "nameKo": "배",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Upon pickup, raise your Max HP by 10."
+  },
+  {
+    "name": "Question Card",
+    "nameKo": "물음표 카드",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Future card rewards have 1 additional card to choose from."
+  },
+  {
+    "name": "Self-Forming Clay",
+    "nameKo": "자가 형성 점토",
+    "rarity": "uncommon",
+    "character": "Ironclad",
+    "description": "Whenever you lose HP in combat, gain 3 Block next turn."
+  },
+  {
+    "name": "Shuriken",
+    "nameKo": "표창",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Every time you play 3 Attacks in a single turn, gain 1 Strength."
+  },
+  {
+    "name": "Singing Bowl",
+    "nameKo": "노래하는 그릇",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "When adding cards to your deck, you may gain +2 Max HP instead."
+  },
+  {
+    "name": "Strike Dummy",
+    "nameKo": "타격용 인형",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Cards containing \"Strike\" deal 3 additional damage."
+  },
+  {
+    "name": "Sundial",
+    "nameKo": "해시계",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Every 3 times you shuffle your draw pile, gain 2 Energy."
+  },
+  {
+    "name": "Symbiotic Virus",
+    "nameKo": "공생 바이러스",
+    "rarity": "uncommon",
+    "character": "Defect",
+    "description": "At the start of each combat, Channel 1 Dark orb."
+  },
+  {
+    "name": "Teardrop Locket",
+    "nameKo": "눈물 모양 목걸이",
+    "rarity": "uncommon",
+    "character": "Watcher",
+    "description": "Start each combat in Calm."
+  },
+  {
+    "name": "The Courier",
+    "nameKo": "배달원",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "The Merchant restocks once. Card and relic prices are reduced by 20%."
+  },
+  {
+    "name": "Toxic Egg",
+    "nameKo": "유독성 알",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Whenever you add a Skill card to your deck, it is Upgraded."
+  },
+  {
+    "name": "White Beast Statue",
+    "nameKo": "하얀 짐승 석상",
+    "rarity": "uncommon",
+    "character": null,
+    "description": "Potions always drop after combat."
+  },
+  {
+    "name": "Bird-Faced Urn",
+    "nameKo": "새 머리 항아리",
+    "rarity": "rare",
+    "character": null,
+    "description": "Whenever you play a Power card, heal 2 HP."
+  },
+  {
+    "name": "Calipers",
+    "nameKo": "캘리퍼스",
+    "rarity": "rare",
+    "character": null,
+    "description": "At the start of your turn, lose 15 Block rather than all of your Block."
+  },
+  {
+    "name": "Captain's Wheel",
+    "nameKo": "선장의 타륜",
+    "rarity": "rare",
+    "character": null,
+    "description": "At the start of your 3rd turn, gain 18 Block."
+  },
+  {
+    "name": "Champion Belt",
+    "nameKo": "챔피언 벨트",
+    "rarity": "rare",
+    "character": "Ironclad",
+    "description": "Whenever you apply Vulnerable, also apply 1 Weak."
+  },
+  {
+    "name": "Charon's Ashes",
+    "nameKo": "카론의 유골",
+    "rarity": "rare",
+    "character": "Ironclad",
+    "description": "Whenever you Exhaust a card, deal 3 damage to ALL enemies."
+  },
+  {
+    "name": "Cloak Clasp",
+    "nameKo": "잠금 걸쇠",
+    "rarity": "rare",
+    "character": "Watcher",
+    "description": "At the end of your turn, gain 1 Block for each card in your hand."
+  },
+  {
+    "name": "Dead Branch",
+    "nameKo": "말라죽은 가지",
+    "rarity": "rare",
+    "character": null,
+    "description": "Whenever you Exhaust a card, add a random card to your hand."
+  },
+  {
+    "name": "Du-Vu Doll",
+    "nameKo": "저주 인형",
+    "rarity": "rare",
+    "character": null,
+    "description": "For each Curse in your deck, start each combat with 1 additional Strength."
+  },
+  {
+    "name": "Emotion Chip",
+    "nameKo": "감정의 조각",
+    "rarity": "rare",
+    "character": "Defect",
+    "description": "If you lost HP during the previous turn, trigger the passive ability of all Orbs at the start of your turn."
+  },
+  {
+    "name": "Fossilized Helix",
+    "nameKo": "조개화석",
+    "rarity": "rare",
+    "character": null,
+    "description": "Prevent the first time you would lose HP in combat."
+  },
+  {
+    "name": "Gambling Chip",
+    "nameKo": "도박 칩",
+    "rarity": "rare",
+    "character": null,
+    "description": "At the start of each combat, discard any number of cards, then draw that many."
+  },
+  {
+    "name": "Ginger",
+    "nameKo": "생강",
+    "rarity": "rare",
+    "character": null,
+    "description": "You can no longer become Weakened."
+  },
+  {
+    "name": "Girya",
+    "nameKo": "케틀벨",
+    "rarity": "rare",
+    "character": null,
+    "description": "You can now gain Strength at Rest Sites. (Up to 3 times.)"
+  },
+  {
+    "name": "Golden Eye",
+    "nameKo": "황금 눈",
+    "rarity": "rare",
+    "character": "Watcher",
+    "description": "Whenever you Scry, Scry 2 additional cards."
+  },
+  {
+    "name": "Ice Cream",
+    "nameKo": "아이스크림",
+    "rarity": "rare",
+    "character": null,
+    "description": "Energy is now conserved between turns."
+  },
+  {
+    "name": "Incense Burner",
+    "nameKo": "향로",
+    "rarity": "rare",
+    "character": null,
+    "description": "Every 6 turns, gain 1 Intangible."
+  },
+  {
+    "name": "Lizard Tail",
+    "nameKo": "도마뱀 꼬리",
+    "rarity": "rare",
+    "character": null,
+    "description": "When you would die, heal to 50% of your Max HP instead. (Works once.)"
+  },
+  {
+    "name": "Magic Flower",
+    "nameKo": "마법 꽃",
+    "rarity": "rare",
+    "character": "Ironclad",
+    "description": "Healing is 50% more effective during combat."
+  },
+  {
+    "name": "Mango",
+    "nameKo": "망고",
+    "rarity": "rare",
+    "character": null,
+    "description": "Upon pickup, raise your Max HP by 14."
+  },
+  {
+    "name": "Old Coin",
+    "nameKo": "낡은 동전",
+    "rarity": "rare",
+    "character": null,
+    "description": "Upon pickup, gain 300 Gold."
+  },
+  {
+    "name": "Peace Pipe",
+    "nameKo": "평화의 담뱃대",
+    "rarity": "rare",
+    "character": null,
+    "description": "You can now remove cards at Rest Sites."
+  },
+  {
+    "name": "Pocketwatch",
+    "nameKo": "회중시계",
+    "rarity": "rare",
+    "character": null,
+    "description": "Whenever you play 3 or fewer cards during your turn, draw 3 additional cards next turn."
+  },
+  {
+    "name": "Prayer Wheel",
+    "nameKo": "전경기",
+    "rarity": "rare",
+    "character": null,
+    "description": "Normal enemies drop an additional card reward."
+  },
+  {
+    "name": "Shovel",
+    "nameKo": "삽",
+    "rarity": "rare",
+    "character": null,
+    "description": "You can now Dig for relics at Rest Sites."
+  },
+  {
+    "name": "Stone Calendar",
+    "nameKo": "석재 달력",
+    "rarity": "rare",
+    "character": null,
+    "description": "At the end of turn 7, deal 52 damage to ALL enemies."
+  },
+  {
+    "name": "The Specimen",
+    "nameKo": "표본",
+    "rarity": "rare",
+    "character": "Silent",
+    "description": "Whenever an enemy dies, transfer its Poison to a random enemy."
+  },
+  {
+    "name": "Thread and Needle",
+    "nameKo": "실과 바늘",
+    "rarity": "rare",
+    "character": null,
+    "description": "At the start of each combat, gain 4 Plated Armor."
+  },
+  {
+    "name": "Tingsha",
+    "nameKo": "팅샤",
+    "rarity": "rare",
+    "character": "Silent",
+    "description": "Whenever you discard a card during your turn, deal 3 damage to a random enemy."
+  },
+  {
+    "name": "Torii",
+    "nameKo": "토리이",
+    "rarity": "rare",
+    "character": null,
+    "description": "Whenever you would receive 5 or less unblocked Attack damage, reduce it to 1."
+  },
+  {
+    "name": "Tough Bandages",
+    "nameKo": "질긴 붕대",
+    "rarity": "rare",
+    "character": "Silent",
+    "description": "Whenever you discard a card during your turn, gain 3 Block."
+  },
+  {
+    "name": "Tungsten Rod",
+    "nameKo": "텅스텐 막대",
+    "rarity": "rare",
+    "character": null,
+    "description": "Whenever you would lose HP, lose 1 less."
+  },
+  {
+    "name": "Turnip",
+    "nameKo": "순무",
+    "rarity": "rare",
+    "character": null,
+    "description": "You can no longer become Frail."
+  },
+  {
+    "name": "Unceasing Top",
+    "nameKo": "멈추지 않는 팽이",
+    "rarity": "rare",
+    "character": null,
+    "description": "Whenever you have no cards in hand during your turn, draw a card."
+  },
+  {
+    "name": "Wing Boots",
+    "nameKo": "윙 부츠",
+    "rarity": "rare",
+    "character": null,
+    "description": "You may ignore paths when choosing the next room to travel to 3 times."
+  },
+  {
+    "name": "Astrolabe",
+    "nameKo": "아스트롤라베",
+    "rarity": "boss",
+    "character": null,
+    "description": "Upon pickup, choose and Transform 3 cards, then Upgrade them."
+  },
+  {
+    "name": "Black Blood",
+    "nameKo": "어두운 피",
+    "rarity": "boss",
+    "character": "Ironclad",
+    "description": "Replaces Burning Blood. At the end of combat, heal 12 HP."
+  },
+  {
+    "name": "Black Star",
+    "nameKo": "검은 별",
+    "rarity": "boss",
+    "character": null,
+    "description": "Elites now drop an additional relic."
+  },
+  {
+    "name": "Busted Crown",
+    "nameKo": "부서진 왕관",
+    "rarity": "boss",
+    "character": null,
+    "description": "Gain 1 Energy at the start of each turn. On Card Reward screens, you have 2 fewer cards to choose from."
+  },
+  {
+    "name": "Calling Bell",
+    "nameKo": "방울",
+    "rarity": "boss",
+    "character": null,
+    "description": "Upon pickup, obtain a unique Curse and 3 relics."
+  },
+  {
+    "name": "Coffee Dripper",
+    "nameKo": "커피 드리퍼",
+    "rarity": "boss",
+    "character": null,
+    "description": "Gain 1 Energy at the start of each turn. You can no longer Rest at Rest Sites."
+  },
+  {
+    "name": "Cursed Key",
+    "nameKo": "저주받은 열쇠",
+    "rarity": "boss",
+    "character": null,
+    "description": "Gain 1 Energy at the start of each turn. Whenever you open a non-boss chest, obtain a Curse."
+  },
+  {
+    "name": "Ectoplasm",
+    "nameKo": "외형질",
+    "rarity": "boss",
+    "character": null,
+    "description": "Gain 1 Energy at the start of each turn. You can no longer gain Gold."
+  },
+  {
+    "name": "Empty Cage",
+    "nameKo": "빈 새장",
+    "rarity": "boss",
+    "character": null,
+    "description": "Upon pickup, remove 2 cards from your deck."
+  },
+  {
+    "name": "Frozen Core",
+    "nameKo": "얼어붙은 핵",
+    "rarity": "boss",
+    "character": "Defect",
+    "description": "Replaces Cracked Core. If you end your turn with empty Orb slots, Channel 1 Frost."
+  },
+  {
+    "name": "Fusion Hammer",
+    "nameKo": "핵융합 망치",
+    "rarity": "boss",
+    "character": null,
+    "description": "Gain 1 Energy at the start of each turn. You can no longer Smith at Rest Sites."
+  },
+  {
+    "name": "Holy Water",
+    "nameKo": "성수",
+    "rarity": "boss",
+    "character": "Watcher",
+    "description": "Replaces Pure Water. At the start of each combat, add 3 Miracles into your hand."
+  },
+  {
+    "name": "Hovering Kite",
+    "nameKo": "배회하는 연",
+    "rarity": "boss",
+    "character": "Silent",
+    "description": "The first time you discard a card each turn, gain 1 Energy."
+  },
+  {
+    "name": "Inserter",
+    "nameKo": "투입기",
+    "rarity": "boss",
+    "character": "Defect",
+    "description": "Every 2 turns, gain 1 Orb slot."
+  },
+  {
+    "name": "Mark of Pain",
+    "nameKo": "고통의 표식",
+    "rarity": "boss",
+    "character": "Ironclad",
+    "description": "Gain 1 Energy at the start of each turn. Start each combat with 2 Wounds shuffled into your draw pile."
+  },
+  {
+    "name": "Nuclear Battery",
+    "nameKo": "핵 배터리",
+    "rarity": "boss",
+    "character": "Defect",
+    "description": "At the start of each combat, Channel 1 Plasma orb."
+  },
+  {
+    "name": "Pandora's Box",
+    "nameKo": "판도라의 상자",
+    "rarity": "boss",
+    "character": null,
+    "description": "Upon pickup, Transform all Strikes and Defends."
+  },
+  {
+    "name": "Philosopher's Stone",
+    "nameKo": "현자의 돌",
+    "rarity": "boss",
+    "character": null,
+    "description": "Gain 1 Energy at the start of each turn. ALL enemies start with 1 Strength."
+  },
+  {
+    "name": "Ring of the Serpent",
+    "nameKo": "구렁이의 반지",
+    "rarity": "boss",
+    "character": "Silent",
+    "description": "Replaces Ring of the Snake. At the start of your turn, draw 1 additional card."
+  },
+  {
+    "name": "Runic Cube",
+    "nameKo": "룬 큐브",
+    "rarity": "boss",
+    "character": "Ironclad",
+    "description": "Whenever you lose HP, draw 1 card."
+  },
+  {
+    "name": "Runic Dome",
+    "nameKo": "룬 반구",
+    "rarity": "boss",
+    "character": null,
+    "description": "Gain 1 Energy at the start of each turn. You can no longer see enemy intents."
+  },
+  {
+    "name": "Runic Pyramid",
+    "nameKo": "룬 피라미드",
+    "rarity": "boss",
+    "character": null,
+    "description": "At the end of your turn, you no longer discard your hand."
+  },
+  {
+    "name": "Sacred Bark",
+    "nameKo": "성스러운 나무껍질",
+    "rarity": "boss",
+    "character": null,
+    "description": "Double the effectiveness of potions."
+  },
+  {
+    "name": "Slaver's Collar",
+    "nameKo": "노예 상인의 목걸이",
+    "rarity": "boss",
+    "character": null,
+    "description": "During Boss and Elite combats, gain 1 Energy at the start of each turn."
+  },
+  {
+    "name": "Snecko Eye",
+    "nameKo": "스네코의 눈",
+    "rarity": "boss",
+    "character": null,
+    "description": "Draw 2 additional cards each turn. Start each combat Confused."
+  },
+  {
+    "name": "Sozu",
+    "nameKo": "소주",
+    "rarity": "boss",
+    "character": null,
+    "description": "Gain 1 Energy at the start of each turn. You can no longer obtain potions."
+  },
+  {
+    "name": "Tiny House",
+    "nameKo": "작은 집",
+    "rarity": "boss",
+    "character": null,
+    "description": "Upon pickup, obtain 1 potion, gain 50 Gold, raise Max HP by 5, obtain 1 card, and Upgrade 1 random card."
+  },
+  {
+    "name": "Velvet Choker",
+    "nameKo": "벨벳 초커",
+    "rarity": "boss",
+    "character": null,
+    "description": "Gain 1 Energy at the start of each turn. You cannot play more than 6 cards per turn."
+  },
+  {
+    "name": "Violet Lotus",
+    "nameKo": "보라색 연꽃",
+    "rarity": "boss",
+    "character": "Watcher",
+    "description": "Whenever you exit Calm, gain an additional Energy."
+  },
+  {
+    "name": "Wrist Blade",
+    "nameKo": "손목검",
+    "rarity": "boss",
+    "character": "Silent",
+    "description": "Attacks that cost 0 deal 4 additional damage."
+  },
+  {
+    "name": "Brimstone",
+    "nameKo": "유황",
+    "rarity": "shop",
+    "character": "Ironclad",
+    "description": "At the start of your turn, gain 2 Strength and ALL enemies gain 1 Strength."
+  },
+  {
+    "name": "Cauldron",
+    "nameKo": "가마솥",
+    "rarity": "shop",
+    "character": null,
+    "description": "Upon pickup, brews 5 random potions."
+  },
+  {
+    "name": "Chemical X",
+    "nameKo": "케미컬 X",
+    "rarity": "shop",
+    "character": null,
+    "description": "Whenever you play an X-cost card, its effects are increased by 2."
+  },
+  {
+    "name": "Clockwork Souvenir",
+    "nameKo": "태엽장치 기념물",
+    "rarity": "shop",
+    "character": null,
+    "description": "At the start of each combat, gain 1 Artifact."
+  },
+  {
+    "name": "Dolly's Mirror",
+    "nameKo": "돌리의 거울",
+    "rarity": "shop",
+    "character": null,
+    "description": "Upon pickup, obtain an additional copy of a card in your deck."
+  },
+  {
+    "name": "Frozen Eye",
+    "nameKo": "얼어붙은 눈",
+    "rarity": "shop",
+    "character": null,
+    "description": "When viewing your draw pile, the cards are now shown in order."
+  },
+  {
+    "name": "Hand Drill",
+    "nameKo": "핸드 드릴",
+    "rarity": "shop",
+    "character": null,
+    "description": "Whenever you break an enemy's Block, apply 2 Vulnerable."
+  },
+  {
+    "name": "Lee's Waffle",
+    "nameKo": "리의 와플",
+    "rarity": "shop",
+    "character": null,
+    "description": "Upon pickup, raise your Max HP by 7 and heal all of your HP."
+  },
+  {
+    "name": "Medical Kit",
+    "nameKo": "구급 상자",
+    "rarity": "shop",
+    "character": null,
+    "description": "Unplayable Status cards can now be played. Playing a Status card will Exhaust it."
+  },
+  {
+    "name": "Melange",
+    "nameKo": "혼합물",
+    "rarity": "shop",
+    "character": "Watcher",
+    "description": "Whenever you shuffle your draw pile, Scry 3."
+  },
+  {
+    "name": "Membership Card",
+    "nameKo": "멤버십 카드",
+    "rarity": "shop",
+    "character": null,
+    "description": "50% discount on all products!"
+  },
+  {
+    "name": "Orange Pellets",
+    "nameKo": "오렌지 알약",
+    "rarity": "shop",
+    "character": null,
+    "description": "Whenever you play a Power, Attack, and Skill in the same turn, remove all of your debuffs."
+  },
+  {
+    "name": "Orrery",
+    "nameKo": "태양계 모형",
+    "rarity": "shop",
+    "character": null,
+    "description": "Upon pickup, choose and add 5 cards to your deck."
+  },
+  {
+    "name": "Prismatic Shard",
+    "nameKo": "프리즘 조각",
+    "rarity": "shop",
+    "character": null,
+    "description": "Combat reward screens now contain colorless cards and cards from other colors."
+  },
+  {
+    "name": "Runic Capacitor",
+    "nameKo": "룬 축전기",
+    "rarity": "shop",
+    "character": "Defect",
+    "description": "At the start of each combat, gain 3 additional Orb slots."
+  },
+  {
+    "name": "Sling of Courage",
+    "nameKo": "용기의 투석구",
+    "rarity": "shop",
+    "character": null,
+    "description": "Start each Elite combat with 2 Strength."
+  },
+  {
+    "name": "Strange Spoon",
+    "nameKo": "이상한 숟가락",
+    "rarity": "shop",
+    "character": null,
+    "description": "Cards which Exhaust when played will instead discard 50% of the time."
+  },
+  {
+    "name": "The Abacus",
+    "nameKo": "주판",
+    "rarity": "shop",
+    "character": null,
+    "description": "Whenever you shuffle your draw pile, gain 6 Block."
+  },
+  {
+    "name": "Toolbox",
+    "nameKo": "공구함",
+    "rarity": "shop",
+    "character": null,
+    "description": "At the start of each combat, choose 1 of 3 random Colorless cards to add to your hand."
+  },
+  {
+    "name": "Twisted Funnel",
+    "nameKo": "뒤틀린 깔때기",
+    "rarity": "shop",
+    "character": "Silent",
+    "description": "At the start of each combat, apply 4 Poison to ALL enemies."
+  },
+  {
+    "name": "Bloody Idol",
+    "nameKo": "피묻은 우상",
+    "rarity": "event",
+    "character": null,
+    "description": "Whenever you gain Gold, heal 5 HP."
+  },
+  {
+    "name": "Cultist Headpiece",
+    "nameKo": "광신자 머리",
+    "rarity": "event",
+    "character": null,
+    "description": "You feel more talkative."
+  },
+  {
+    "name": "Enchiridion",
+    "nameKo": "교본",
+    "rarity": "event",
+    "character": null,
+    "description": "At the start of each combat, add a random Power card to your hand. It costs 0 that turn."
+  },
+  {
+    "name": "Face of Cleric",
+    "nameKo": "성직자의 얼굴",
+    "rarity": "event",
+    "character": null,
+    "description": "At the end of combat, raise your Max HP by 1."
+  },
+  {
+    "name": "Golden Idol",
+    "nameKo": "황금 우상",
+    "rarity": "event",
+    "character": null,
+    "description": "Enemies drop 25% more Gold."
+  },
+  {
+    "name": "Gremlin Visage",
+    "nameKo": "그렘린 얼굴",
+    "rarity": "event",
+    "character": null,
+    "description": "Start each combat with 1 Weak."
+  },
+  {
+    "name": "Mark of the Bloom",
+    "nameKo": "개화의 표식",
+    "rarity": "event",
+    "character": null,
+    "description": "You can no longer heal."
+  },
+  {
+    "name": "Mutagenic Strength",
+    "nameKo": "돌연변이의 힘",
+    "rarity": "event",
+    "character": null,
+    "description": "Start each combat with 3 Strength. At the end of turn 1, lose 3 Strength."
+  },
+  {
+    "name": "N'loth's Gift",
+    "nameKo": "느로스의 선물",
+    "rarity": "event",
+    "character": null,
+    "description": "Triple the chance of finding Rare cards in combat rewards."
+  },
+  {
+    "name": "N'loth's Hungry Face",
+    "nameKo": "느로스의 배고픈 얼굴",
+    "rarity": "event",
+    "character": null,
+    "description": "The next non-boss chest you open is empty."
+  },
+  {
+    "name": "Necronomicon",
+    "nameKo": "네크로노미콘",
+    "rarity": "event",
+    "character": null,
+    "description": "The first Attack played each turn that costs 2 or more is played twice."
+  },
+  {
+    "name": "Neow's Lament",
+    "nameKo": "니오우의 비탄",
+    "rarity": "event",
+    "character": null,
+    "description": "Enemies in your first 3 combats have 1 HP."
+  },
+  {
+    "name": "Nilry's Codex",
+    "nameKo": "닐리의 고서",
+    "rarity": "event",
+    "character": null,
+    "description": "At the end of each turn, you may choose 1 of 3 random cards to shuffle into your draw pile."
+  },
+  {
+    "name": "Odd Mushroom",
+    "nameKo": "이상한 버섯",
+    "rarity": "event",
+    "character": null,
+    "description": "When Vulnerable, take 25% more damage rather than 50%."
+  },
+  {
+    "name": "Red Mask",
+    "nameKo": "붉은 가면",
+    "rarity": "event",
+    "character": null,
+    "description": "At the start of each combat, apply 1 Weak to ALL enemies."
+  },
+  {
+    "name": "Spirit Poop",
+    "nameKo": "정령의 똥",
+    "rarity": "event",
+    "character": null,
+    "description": "It's unpleasant."
+  },
+  {
+    "name": "Ssserpent Head",
+    "nameKo": "배애애애앰 머리",
+    "rarity": "event",
+    "character": null,
+    "description": "Whenever you enter a ? room, gain 50 Gold."
+  },
+  {
+    "name": "Warped Tongs",
+    "nameKo": "휘어진 집게",
+    "rarity": "event",
+    "character": null,
+    "description": "At the start of your turn, Upgrade a random card in your hand for the rest of combat."
+  },
+  {
+    "name": "Circlet",
+    "nameKo": "관",
+    "rarity": "special",
+    "character": null,
+    "description": "Unique. Obtained when all relics of a pool have been collected."
+  },
+  {
+    "name": "Red Circlet",
+    "nameKo": "붉은 관",
+    "rarity": "special",
+    "character": null,
+    "description": "Unique. Obtained when you would get a Circlet but already have one."
+  }
+]

@@ -1,0 +1,2204 @@
+{
+  "strike-ironclad": {
+    "current": "/images/cards/strike-ironclad.png",
+    "beta": "/images/cards/strike-ironclad_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/strike-ironclad_upgraded.png"
+  },
+  "defend-ironclad": {
+    "current": "/images/cards/defend-ironclad.png",
+    "beta": "/images/cards/defend-ironclad_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/defend-ironclad_upgraded.png"
+  },
+  "bash": {
+    "current": "/images/cards/bash.png",
+    "beta": "/images/cards/bash_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/bash_upgraded.png"
+  },
+  "anger": {
+    "current": "/images/cards/anger.png",
+    "beta": "/images/cards/anger_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/anger_upgraded.png"
+  },
+  "armaments": {
+    "current": "/images/cards/armaments.png",
+    "beta": "/images/cards/armaments_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/armaments_upgraded.png"
+  },
+  "body-slam": {
+    "current": "/images/cards/body-slam.png",
+    "beta": "/images/cards/body-slam_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/body-slam_upgraded.png"
+  },
+  "clash": {
+    "current": "/images/cards/clash.png",
+    "beta": "/images/cards/clash_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/clash_upgraded.png"
+  },
+  "cleave": {
+    "current": "/images/cards/cleave.png",
+    "beta": "/images/cards/cleave_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/cleave_upgraded.png"
+  },
+  "clothesline": {
+    "current": "/images/cards/clothesline.png",
+    "beta": "/images/cards/clothesline_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/clothesline_upgraded.png"
+  },
+  "flex": {
+    "current": "/images/cards/flex.png",
+    "beta": "/images/cards/flex_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/flex_upgraded.png"
+  },
+  "havoc": {
+    "current": "/images/cards/havoc.png",
+    "beta": "/images/cards/havoc_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/havoc_upgraded.png"
+  },
+  "headbutt": {
+    "current": "/images/cards/headbutt.png",
+    "beta": "/images/cards/headbutt_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/headbutt_upgraded.png"
+  },
+  "heavy-blade": {
+    "current": "/images/cards/heavy-blade.png",
+    "beta": "/images/cards/heavy-blade_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/heavy-blade_upgraded.png"
+  },
+  "iron-wave": {
+    "current": "/images/cards/iron-wave.png",
+    "beta": "/images/cards/iron-wave_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/iron-wave_upgraded.png"
+  },
+  "perfected-strike": {
+    "current": "/images/cards/perfected-strike.png",
+    "beta": "/images/cards/perfected-strike_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/perfected-strike_upgraded.png"
+  },
+  "pommel-strike": {
+    "current": "/images/cards/pommel-strike.png",
+    "beta": "/images/cards/pommel-strike_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/pommel-strike_upgraded.png"
+  },
+  "shrug-it-off": {
+    "current": "/images/cards/shrug-it-off.png",
+    "beta": "/images/cards/shrug-it-off_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/shrug-it-off_upgraded.png"
+  },
+  "sword-boomerang": {
+    "current": "/images/cards/sword-boomerang.png",
+    "beta": "/images/cards/sword-boomerang_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/sword-boomerang_upgraded.png"
+  },
+  "thunderclap": {
+    "current": "/images/cards/thunderclap.png",
+    "beta": "/images/cards/thunderclap_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/thunderclap_upgraded.png"
+  },
+  "true-grit": {
+    "current": "/images/cards/true-grit.png",
+    "beta": "/images/cards/true-grit_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/true-grit_upgraded.png"
+  },
+  "twin-strike": {
+    "current": "/images/cards/twin-strike.png",
+    "beta": "/images/cards/twin-strike_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/twin-strike_upgraded.png"
+  },
+  "warcry": {
+    "current": "/images/cards/warcry.png",
+    "beta": "/images/cards/warcry_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/warcry_upgraded.png"
+  },
+  "wild-strike": {
+    "current": "/images/cards/wild-strike.png",
+    "beta": "/images/cards/wild-strike_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/wild-strike_upgraded.png"
+  },
+  "battle-trance": {
+    "current": "/images/cards/battle-trance.png",
+    "beta": "/images/cards/battle-trance_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/battle-trance_upgraded.png"
+  },
+  "blood-for-blood": {
+    "current": "/images/cards/blood-for-blood.png",
+    "beta": "/images/cards/blood-for-blood_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/blood-for-blood_upgraded.png"
+  },
+  "bloodletting": {
+    "current": "/images/cards/bloodletting.png",
+    "beta": "/images/cards/bloodletting_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/bloodletting_upgraded.png"
+  },
+  "burning-pact": {
+    "current": "/images/cards/burning-pact.png",
+    "beta": "/images/cards/burning-pact_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/burning-pact_upgraded.png"
+  },
+  "carnage": {
+    "current": "/images/cards/carnage.png",
+    "beta": "/images/cards/carnage_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/carnage_upgraded.png"
+  },
+  "combust": {
+    "current": "/images/cards/combust.png",
+    "beta": "/images/cards/combust_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/combust_upgraded.png"
+  },
+  "dark-embrace": {
+    "current": "/images/cards/dark-embrace.png",
+    "beta": "/images/cards/dark-embrace_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/dark-embrace_upgraded.png"
+  },
+  "disarm": {
+    "current": "/images/cards/disarm.png",
+    "beta": "/images/cards/disarm_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/disarm_upgraded.png"
+  },
+  "dropkick": {
+    "current": "/images/cards/dropkick.png",
+    "beta": "/images/cards/dropkick_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/dropkick_upgraded.png"
+  },
+  "dual-wield": {
+    "current": "/images/cards/dual-wield.png",
+    "beta": "/images/cards/dual-wield_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/dual-wield_upgraded.png"
+  },
+  "entrench": {
+    "current": "/images/cards/entrench.png",
+    "beta": "/images/cards/entrench_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/entrench_upgraded.png"
+  },
+  "evolve": {
+    "current": "/images/cards/evolve.png",
+    "beta": "/images/cards/evolve_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/evolve_upgraded.png"
+  },
+  "feel-no-pain": {
+    "current": "/images/cards/feel-no-pain.png",
+    "beta": "/images/cards/feel-no-pain_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/feel-no-pain_upgraded.png"
+  },
+  "fire-breathing": {
+    "current": "/images/cards/fire-breathing.png",
+    "beta": "/images/cards/fire-breathing_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/fire-breathing_upgraded.png"
+  },
+  "flame-barrier": {
+    "current": "/images/cards/flame-barrier.png",
+    "beta": "/images/cards/flame-barrier_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/flame-barrier_upgraded.png"
+  },
+  "ghostly-armor": {
+    "current": "/images/cards/ghostly-armor.png",
+    "beta": "/images/cards/ghostly-armor_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/ghostly-armor_upgraded.png"
+  },
+  "hemokinesis": {
+    "current": "/images/cards/hemokinesis.png",
+    "beta": "/images/cards/hemokinesis_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/hemokinesis_upgraded.png"
+  },
+  "infernal-blade": {
+    "current": "/images/cards/infernal-blade.png",
+    "beta": "/images/cards/infernal-blade_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/infernal-blade_upgraded.png"
+  },
+  "inflame": {
+    "current": "/images/cards/inflame.png",
+    "beta": "/images/cards/inflame_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/inflame_upgraded.png"
+  },
+  "intimidate": {
+    "current": "/images/cards/intimidate.png",
+    "beta": "/images/cards/intimidate_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/intimidate_upgraded.png"
+  },
+  "metallicize": {
+    "current": "/images/cards/metallicize.png",
+    "beta": "/images/cards/metallicize_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/metallicize_upgraded.png"
+  },
+  "power-through": {
+    "current": "/images/cards/power-through.png",
+    "beta": "/images/cards/power-through_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/power-through_upgraded.png"
+  },
+  "pummel": {
+    "current": "/images/cards/pummel.png",
+    "beta": "/images/cards/pummel_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/pummel_upgraded.png"
+  },
+  "rage": {
+    "current": "/images/cards/rage.png",
+    "beta": "/images/cards/rage_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/rage_upgraded.png"
+  },
+  "rampage": {
+    "current": "/images/cards/rampage.png",
+    "beta": "/images/cards/rampage_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/rampage_upgraded.png"
+  },
+  "reckless-charge": {
+    "current": "/images/cards/reckless-charge.png",
+    "beta": "/images/cards/reckless-charge_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/reckless-charge_upgraded.png"
+  },
+  "rupture": {
+    "current": "/images/cards/rupture.png",
+    "beta": "/images/cards/rupture_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/rupture_upgraded.png"
+  },
+  "searing-blow": {
+    "current": "/images/cards/searing-blow.png",
+    "beta": "/images/cards/searing-blow_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/searing-blow_upgraded.png"
+  },
+  "second-wind": {
+    "current": "/images/cards/second-wind.png",
+    "beta": "/images/cards/second-wind_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/second-wind_upgraded.png"
+  },
+  "seeing-red": {
+    "current": "/images/cards/seeing-red.png",
+    "beta": "/images/cards/seeing-red_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/seeing-red_upgraded.png"
+  },
+  "sentinel": {
+    "current": "/images/cards/sentinel.png",
+    "beta": "/images/cards/sentinel_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/sentinel_upgraded.png"
+  },
+  "sever-soul": {
+    "current": "/images/cards/sever-soul.png",
+    "beta": "/images/cards/sever-soul_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/sever-soul_upgraded.png"
+  },
+  "shockwave": {
+    "current": "/images/cards/shockwave.png",
+    "beta": "/images/cards/shockwave_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/shockwave_upgraded.png"
+  },
+  "spot-weakness": {
+    "current": "/images/cards/spot-weakness.png",
+    "beta": "/images/cards/spot-weakness_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/spot-weakness_upgraded.png"
+  },
+  "uppercut": {
+    "current": "/images/cards/uppercut.png",
+    "beta": "/images/cards/uppercut_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/uppercut_upgraded.png"
+  },
+  "whirlwind": {
+    "current": "/images/cards/whirlwind.png",
+    "beta": "/images/cards/whirlwind_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/whirlwind_upgraded.png"
+  },
+  "barricade": {
+    "current": "/images/cards/barricade.png",
+    "beta": "/images/cards/barricade_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/barricade_upgraded.png"
+  },
+  "berserk": {
+    "current": "/images/cards/berserk.png",
+    "beta": "/images/cards/berserk_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/berserk_upgraded.png"
+  },
+  "bludgeon": {
+    "current": "/images/cards/bludgeon.png",
+    "beta": "/images/cards/bludgeon_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/bludgeon_upgraded.png"
+  },
+  "brutality": {
+    "current": "/images/cards/brutality.png",
+    "beta": "/images/cards/brutality_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/brutality_upgraded.png"
+  },
+  "corruption": {
+    "current": "/images/cards/corruption.png",
+    "beta": "/images/cards/corruption_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/corruption_upgraded.png"
+  },
+  "demon-form": {
+    "current": "/images/cards/demon-form.png",
+    "beta": "/images/cards/demon-form_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/demon-form_upgraded.png"
+  },
+  "double-tap": {
+    "current": "/images/cards/double-tap.png",
+    "beta": "/images/cards/double-tap_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/double-tap_upgraded.png"
+  },
+  "exhume": {
+    "current": "/images/cards/exhume.png",
+    "beta": "/images/cards/exhume_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/exhume_upgraded.png"
+  },
+  "feed": {
+    "current": "/images/cards/feed.png",
+    "beta": "/images/cards/feed_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/feed_upgraded.png"
+  },
+  "fiend-fire": {
+    "current": "/images/cards/fiend-fire.png",
+    "beta": "/images/cards/fiend-fire_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/fiend-fire_upgraded.png"
+  },
+  "immolate": {
+    "current": "/images/cards/immolate.png",
+    "beta": "/images/cards/immolate_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/immolate_upgraded.png"
+  },
+  "impervious": {
+    "current": "/images/cards/impervious.png",
+    "beta": "/images/cards/impervious_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/impervious_upgraded.png"
+  },
+  "juggernaut": {
+    "current": "/images/cards/juggernaut.png",
+    "beta": "/images/cards/juggernaut_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/juggernaut_upgraded.png"
+  },
+  "limit-break": {
+    "current": "/images/cards/limit-break.png",
+    "beta": "/images/cards/limit-break_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/limit-break_upgraded.png"
+  },
+  "offering": {
+    "current": "/images/cards/offering.png",
+    "beta": "/images/cards/offering_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/offering_upgraded.png"
+  },
+  "reaper": {
+    "current": "/images/cards/reaper.png",
+    "beta": "/images/cards/reaper_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/reaper_upgraded.png"
+  },
+  "strike-silent": {
+    "current": "/images/cards/strike-silent.png",
+    "beta": "/images/cards/strike-silent_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/strike-silent_upgraded.png"
+  },
+  "defend-silent": {
+    "current": "/images/cards/defend-silent.png",
+    "beta": "/images/cards/defend-silent_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/defend-silent_upgraded.png"
+  },
+  "neutralize": {
+    "current": "/images/cards/neutralize.png",
+    "beta": "/images/cards/neutralize_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/neutralize_upgraded.png"
+  },
+  "survivor": {
+    "current": "/images/cards/survivor.png",
+    "beta": "/images/cards/survivor_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/survivor_upgraded.png"
+  },
+  "acrobatics": {
+    "current": "/images/cards/acrobatics.png",
+    "beta": "/images/cards/acrobatics_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/acrobatics_upgraded.png"
+  },
+  "backflip": {
+    "current": "/images/cards/backflip.png",
+    "beta": "/images/cards/backflip_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/backflip_upgraded.png"
+  },
+  "bane": {
+    "current": "/images/cards/bane.png",
+    "beta": "/images/cards/bane_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/bane_upgraded.png"
+  },
+  "blade-dance": {
+    "current": "/images/cards/blade-dance.png",
+    "beta": "/images/cards/blade-dance_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/blade-dance_upgraded.png"
+  },
+  "cloak-and-dagger": {
+    "current": "/images/cards/cloak-and-dagger.png",
+    "beta": "/images/cards/cloak-and-dagger_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/cloak-and-dagger_upgraded.png"
+  },
+  "dagger-spray": {
+    "current": "/images/cards/dagger-spray.png",
+    "beta": "/images/cards/dagger-spray_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/dagger-spray_upgraded.png"
+  },
+  "dagger-throw": {
+    "current": "/images/cards/dagger-throw.png",
+    "beta": "/images/cards/dagger-throw_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/dagger-throw_upgraded.png"
+  },
+  "deadly-poison": {
+    "current": "/images/cards/deadly-poison.png",
+    "beta": "/images/cards/deadly-poison_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/deadly-poison_upgraded.png"
+  },
+  "deflect": {
+    "current": "/images/cards/deflect.png",
+    "beta": "/images/cards/deflect_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/deflect_upgraded.png"
+  },
+  "dodge-and-roll": {
+    "current": "/images/cards/dodge-and-roll.png",
+    "beta": "/images/cards/dodge-and-roll_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/dodge-and-roll_upgraded.png"
+  },
+  "flying-knee": {
+    "current": "/images/cards/flying-knee.png",
+    "beta": "/images/cards/flying-knee_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/flying-knee_upgraded.png"
+  },
+  "outmaneuver": {
+    "current": "/images/cards/outmaneuver.png",
+    "beta": "/images/cards/outmaneuver_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/outmaneuver_upgraded.png"
+  },
+  "piercing-wail": {
+    "current": "/images/cards/piercing-wail.png",
+    "beta": "/images/cards/piercing-wail_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/piercing-wail_upgraded.png"
+  },
+  "poisoned-stab": {
+    "current": "/images/cards/poisoned-stab.png",
+    "beta": "/images/cards/poisoned-stab_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/poisoned-stab_upgraded.png"
+  },
+  "prepared": {
+    "current": "/images/cards/prepared.png",
+    "beta": "/images/cards/prepared_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/prepared_upgraded.png"
+  },
+  "quick-slash": {
+    "current": "/images/cards/quick-slash.png",
+    "beta": "/images/cards/quick-slash_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/quick-slash_upgraded.png"
+  },
+  "slice": {
+    "current": "/images/cards/slice.png",
+    "beta": "/images/cards/slice_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/slice_upgraded.png"
+  },
+  "sneaky-strike": {
+    "current": "/images/cards/sneaky-strike.png",
+    "beta": "/images/cards/sneaky-strike_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/sneaky-strike_upgraded.png"
+  },
+  "sucker-punch": {
+    "current": "/images/cards/sucker-punch.png",
+    "beta": "/images/cards/sucker-punch_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/sucker-punch_upgraded.png"
+  },
+  "accuracy": {
+    "current": "/images/cards/accuracy.png",
+    "beta": "/images/cards/accuracy_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/accuracy_upgraded.png"
+  },
+  "all-out-attack": {
+    "current": "/images/cards/all-out-attack.png",
+    "beta": "/images/cards/all-out-attack_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/all-out-attack_upgraded.png"
+  },
+  "backstab": {
+    "current": "/images/cards/backstab.png",
+    "beta": "/images/cards/backstab_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/backstab_upgraded.png"
+  },
+  "blur": {
+    "current": "/images/cards/blur.png",
+    "beta": "/images/cards/blur_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/blur_upgraded.png"
+  },
+  "bouncing-flask": {
+    "current": "/images/cards/bouncing-flask.png",
+    "beta": "/images/cards/bouncing-flask_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/bouncing-flask_upgraded.png"
+  },
+  "calculated-gamble": {
+    "current": "/images/cards/calculated-gamble.png",
+    "beta": "/images/cards/calculated-gamble_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/calculated-gamble_upgraded.png"
+  },
+  "caltrops": {
+    "current": "/images/cards/caltrops.png",
+    "beta": "/images/cards/caltrops_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/caltrops_upgraded.png"
+  },
+  "catalyst": {
+    "current": "/images/cards/catalyst.png",
+    "beta": "/images/cards/catalyst_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/catalyst_upgraded.png"
+  },
+  "choke": {
+    "current": "/images/cards/choke.png",
+    "beta": "/images/cards/choke_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/choke_upgraded.png"
+  },
+  "concentrate": {
+    "current": "/images/cards/concentrate.png",
+    "beta": "/images/cards/concentrate_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/concentrate_upgraded.png"
+  },
+  "crippling-cloud": {
+    "current": "/images/cards/crippling-cloud.png",
+    "beta": "/images/cards/crippling-cloud_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/crippling-cloud_upgraded.png"
+  },
+  "dash": {
+    "current": "/images/cards/dash.png",
+    "beta": "/images/cards/dash_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/dash_upgraded.png"
+  },
+  "distraction": {
+    "current": "/images/cards/distraction.png",
+    "beta": "/images/cards/distraction_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/distraction_upgraded.png"
+  },
+  "endless-agony": {
+    "current": "/images/cards/endless-agony.png",
+    "beta": "/images/cards/endless-agony_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/endless-agony_upgraded.png"
+  },
+  "escape-plan": {
+    "current": "/images/cards/escape-plan.png",
+    "beta": "/images/cards/escape-plan_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/escape-plan_upgraded.png"
+  },
+  "eviscerate": {
+    "current": "/images/cards/eviscerate.png",
+    "beta": "/images/cards/eviscerate_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/eviscerate_upgraded.png"
+  },
+  "expertise": {
+    "current": "/images/cards/expertise.png",
+    "beta": "/images/cards/expertise_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/expertise_upgraded.png"
+  },
+  "finisher": {
+    "current": "/images/cards/finisher.png",
+    "beta": "/images/cards/finisher_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/finisher_upgraded.png"
+  },
+  "flechettes": {
+    "current": "/images/cards/flechettes.png",
+    "beta": "/images/cards/flechettes_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/flechettes_upgraded.png"
+  },
+  "footwork": {
+    "current": "/images/cards/footwork.png",
+    "beta": "/images/cards/footwork_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/footwork_upgraded.png"
+  },
+  "heel-hook": {
+    "current": "/images/cards/heel-hook.png",
+    "beta": "/images/cards/heel-hook_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/heel-hook_upgraded.png"
+  },
+  "infinite-blades": {
+    "current": "/images/cards/infinite-blades.png",
+    "beta": "/images/cards/infinite-blades_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/infinite-blades_upgraded.png"
+  },
+  "leg-sweep": {
+    "current": "/images/cards/leg-sweep.png",
+    "beta": "/images/cards/leg-sweep_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/leg-sweep_upgraded.png"
+  },
+  "masterful-stab": {
+    "current": "/images/cards/masterful-stab.png",
+    "beta": "/images/cards/masterful-stab_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/masterful-stab_upgraded.png"
+  },
+  "noxious-fumes": {
+    "current": "/images/cards/noxious-fumes.png",
+    "beta": "/images/cards/noxious-fumes_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/noxious-fumes_upgraded.png"
+  },
+  "predator": {
+    "current": "/images/cards/predator.png",
+    "beta": "/images/cards/predator_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/predator_upgraded.png"
+  },
+  "reflex": {
+    "current": "/images/cards/reflex.png",
+    "beta": "/images/cards/reflex_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/reflex_upgraded.png"
+  },
+  "riddle-with-holes": {
+    "current": "/images/cards/riddle-with-holes.png",
+    "beta": "/images/cards/riddle-with-holes_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/riddle-with-holes_upgraded.png"
+  },
+  "setup": {
+    "current": "/images/cards/setup.png",
+    "beta": "/images/cards/setup_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/setup_upgraded.png"
+  },
+  "skewer": {
+    "current": "/images/cards/skewer.png",
+    "beta": "/images/cards/skewer_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/skewer_upgraded.png"
+  },
+  "tactician": {
+    "current": "/images/cards/tactician.png",
+    "beta": "/images/cards/tactician_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/tactician_upgraded.png"
+  },
+  "terror": {
+    "current": "/images/cards/terror.png",
+    "beta": "/images/cards/terror_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/terror_upgraded.png"
+  },
+  "well-laid-plans": {
+    "current": "/images/cards/well-laid-plans.png",
+    "beta": "/images/cards/well-laid-plans_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/well-laid-plans_upgraded.png"
+  },
+  "a-thousand-cuts": {
+    "current": "/images/cards/a-thousand-cuts.png",
+    "beta": "/images/cards/a-thousand-cuts_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/a-thousand-cuts_upgraded.png"
+  },
+  "adrenaline": {
+    "current": "/images/cards/adrenaline.png",
+    "beta": "/images/cards/adrenaline_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/adrenaline_upgraded.png"
+  },
+  "after-image": {
+    "current": "/images/cards/after-image.png",
+    "beta": "/images/cards/after-image_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/after-image_upgraded.png"
+  },
+  "alchemize": {
+    "current": "/images/cards/alchemize.png",
+    "beta": "/images/cards/alchemize_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/alchemize_upgraded.png"
+  },
+  "bullet-time": {
+    "current": "/images/cards/bullet-time.png",
+    "beta": "/images/cards/bullet-time_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/bullet-time_upgraded.png"
+  },
+  "burst": {
+    "current": "/images/cards/burst.png",
+    "beta": "/images/cards/burst_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/burst_upgraded.png"
+  },
+  "corpse-explosion": {
+    "current": "/images/cards/corpse-explosion.png",
+    "beta": "/images/cards/corpse-explosion_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/corpse-explosion_upgraded.png"
+  },
+  "die-die-die": {
+    "current": "/images/cards/die-die-die.png",
+    "beta": "/images/cards/die-die-die_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/die-die-die_upgraded.png"
+  },
+  "doppelganger": {
+    "current": "/images/cards/doppelganger.png",
+    "beta": "/images/cards/doppelganger_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/doppelganger_upgraded.png"
+  },
+  "envenom": {
+    "current": "/images/cards/envenom.png",
+    "beta": "/images/cards/envenom_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/envenom_upgraded.png"
+  },
+  "glass-knife": {
+    "current": "/images/cards/glass-knife.png",
+    "beta": "/images/cards/glass-knife_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/glass-knife_upgraded.png"
+  },
+  "grand-finale": {
+    "current": "/images/cards/grand-finale.png",
+    "beta": "/images/cards/grand-finale_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/grand-finale_upgraded.png"
+  },
+  "malaise": {
+    "current": "/images/cards/malaise.png",
+    "beta": "/images/cards/malaise_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/malaise_upgraded.png"
+  },
+  "nightmare": {
+    "current": "/images/cards/nightmare.png",
+    "beta": "/images/cards/nightmare_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/nightmare_upgraded.png"
+  },
+  "phantasmal-killer": {
+    "current": "/images/cards/phantasmal-killer.png",
+    "beta": "/images/cards/phantasmal-killer_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/phantasmal-killer_upgraded.png"
+  },
+  "storm-of-steel": {
+    "current": "/images/cards/storm-of-steel.png",
+    "beta": "/images/cards/storm-of-steel_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/storm-of-steel_upgraded.png"
+  },
+  "tools-of-the-trade": {
+    "current": "/images/cards/tools-of-the-trade.png",
+    "beta": "/images/cards/tools-of-the-trade_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/tools-of-the-trade_upgraded.png"
+  },
+  "unload": {
+    "current": "/images/cards/unload.png",
+    "beta": "/images/cards/unload_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/unload_upgraded.png"
+  },
+  "wraith-form": {
+    "current": "/images/cards/wraith-form.png",
+    "beta": "/images/cards/wraith-form_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/wraith-form_upgraded.png"
+  },
+  "strike-defect": {
+    "current": "/images/cards/strike-defect.png",
+    "beta": "/images/cards/strike-defect_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/strike-defect_upgraded.png"
+  },
+  "defend-defect": {
+    "current": "/images/cards/defend-defect.png",
+    "beta": "/images/cards/defend-defect_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/defend-defect_upgraded.png"
+  },
+  "zap": {
+    "current": "/images/cards/zap.png",
+    "beta": "/images/cards/zap_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/zap_upgraded.png"
+  },
+  "dualcast": {
+    "current": "/images/cards/dualcast.png",
+    "beta": "/images/cards/dualcast_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/dualcast_upgraded.png"
+  },
+  "ball-lightning": {
+    "current": "/images/cards/ball-lightning.png",
+    "beta": "/images/cards/ball-lightning_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/ball-lightning_upgraded.png"
+  },
+  "barrage": {
+    "current": "/images/cards/barrage.png",
+    "beta": "/images/cards/barrage_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/barrage_upgraded.png"
+  },
+  "beam-cell": {
+    "current": "/images/cards/beam-cell.png",
+    "beta": "/images/cards/beam-cell_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/beam-cell_upgraded.png"
+  },
+  "charge-battery": {
+    "current": "/images/cards/charge-battery.png",
+    "beta": "/images/cards/charge-battery_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/charge-battery_upgraded.png"
+  },
+  "claw": {
+    "current": "/images/cards/claw.png",
+    "beta": "/images/cards/claw_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/claw_upgraded.png"
+  },
+  "cold-snap": {
+    "current": "/images/cards/cold-snap.png",
+    "beta": "/images/cards/cold-snap_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/cold-snap_upgraded.png"
+  },
+  "compile-driver": {
+    "current": "/images/cards/compile-driver.png",
+    "beta": "/images/cards/compile-driver_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/compile-driver_upgraded.png"
+  },
+  "coolheaded": {
+    "current": "/images/cards/coolheaded.png",
+    "beta": "/images/cards/coolheaded_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/coolheaded_upgraded.png"
+  },
+  "go-for-the-eyes": {
+    "current": "/images/cards/go-for-the-eyes.png",
+    "beta": "/images/cards/go-for-the-eyes_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/go-for-the-eyes_upgraded.png"
+  },
+  "hologram": {
+    "current": "/images/cards/hologram.png",
+    "beta": "/images/cards/hologram_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/hologram_upgraded.png"
+  },
+  "leap": {
+    "current": "/images/cards/leap.png",
+    "beta": "/images/cards/leap_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/leap_upgraded.png"
+  },
+  "rebound": {
+    "current": "/images/cards/rebound.png",
+    "beta": "/images/cards/rebound_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/rebound_upgraded.png"
+  },
+  "recursion": {
+    "current": "/images/cards/recursion.png",
+    "beta": "/images/cards/recursion_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/recursion_upgraded.png"
+  },
+  "stack": {
+    "current": "/images/cards/stack.png",
+    "beta": "/images/cards/stack_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/stack_upgraded.png"
+  },
+  "steam-barrier": {
+    "current": "/images/cards/steam-barrier.png",
+    "beta": "/images/cards/steam-barrier_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/steam-barrier_upgraded.png"
+  },
+  "streamline": {
+    "current": "/images/cards/streamline.png",
+    "beta": "/images/cards/streamline_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/streamline_upgraded.png"
+  },
+  "sweeping-beam": {
+    "current": "/images/cards/sweeping-beam.png",
+    "beta": "/images/cards/sweeping-beam_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/sweeping-beam_upgraded.png"
+  },
+  "turbo": {
+    "current": "/images/cards/turbo.png",
+    "beta": "/images/cards/turbo_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/turbo_upgraded.png"
+  },
+  "aggregate": {
+    "current": "/images/cards/aggregate.png",
+    "beta": "/images/cards/aggregate_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/aggregate_upgraded.png"
+  },
+  "auto-shields": {
+    "current": "/images/cards/auto-shields.png",
+    "beta": "/images/cards/auto-shields_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/auto-shields_upgraded.png"
+  },
+  "blizzard": {
+    "current": "/images/cards/blizzard.png",
+    "beta": "/images/cards/blizzard_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/blizzard_upgraded.png"
+  },
+  "boot-sequence": {
+    "current": "/images/cards/boot-sequence.png",
+    "beta": "/images/cards/boot-sequence_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/boot-sequence_upgraded.png"
+  },
+  "bullseye": {
+    "current": "/images/cards/bullseye.png",
+    "beta": "/images/cards/bullseye_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/bullseye_upgraded.png"
+  },
+  "capacitor": {
+    "current": "/images/cards/capacitor.png",
+    "beta": "/images/cards/capacitor_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/capacitor_upgraded.png"
+  },
+  "chaos": {
+    "current": "/images/cards/chaos.png",
+    "beta": "/images/cards/chaos_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/chaos_upgraded.png"
+  },
+  "chill": {
+    "current": "/images/cards/chill.png",
+    "beta": "/images/cards/chill_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/chill_upgraded.png"
+  },
+  "consume": {
+    "current": "/images/cards/consume.png",
+    "beta": "/images/cards/consume_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/consume_upgraded.png"
+  },
+  "darkness": {
+    "current": "/images/cards/darkness.png",
+    "beta": "/images/cards/darkness_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/darkness_upgraded.png"
+  },
+  "defragment": {
+    "current": "/images/cards/defragment.png",
+    "beta": "/images/cards/defragment_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/defragment_upgraded.png"
+  },
+  "doom-and-gloom": {
+    "current": "/images/cards/doom-and-gloom.png",
+    "beta": "/images/cards/doom-and-gloom_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/doom-and-gloom_upgraded.png"
+  },
+  "double-energy": {
+    "current": "/images/cards/double-energy.png",
+    "beta": "/images/cards/double-energy_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/double-energy_upgraded.png"
+  },
+  "equilibrium": {
+    "current": "/images/cards/equilibrium.png",
+    "beta": "/images/cards/equilibrium_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/equilibrium_upgraded.png"
+  },
+  "ftl": {
+    "current": "/images/cards/ftl.png",
+    "beta": "/images/cards/ftl_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/ftl_upgraded.png"
+  },
+  "force-field": {
+    "current": "/images/cards/force-field.png",
+    "beta": "/images/cards/force-field_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/force-field_upgraded.png"
+  },
+  "fusion": {
+    "current": "/images/cards/fusion.png",
+    "beta": "/images/cards/fusion_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/fusion_upgraded.png"
+  },
+  "genetic-algorithm": {
+    "current": "/images/cards/genetic-algorithm.png",
+    "beta": "/images/cards/genetic-algorithm_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/genetic-algorithm_upgraded.png"
+  },
+  "glacier": {
+    "current": "/images/cards/glacier.png",
+    "beta": "/images/cards/glacier_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/glacier_upgraded.png"
+  },
+  "heatsinks": {
+    "current": "/images/cards/heatsinks.png",
+    "beta": "/images/cards/heatsinks_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/heatsinks_upgraded.png"
+  },
+  "hello-world": {
+    "current": "/images/cards/hello-world.png",
+    "beta": "/images/cards/hello-world_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/hello-world_upgraded.png"
+  },
+  "loop": {
+    "current": "/images/cards/loop.png",
+    "beta": "/images/cards/loop_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/loop_upgraded.png"
+  },
+  "melter": {
+    "current": "/images/cards/melter.png",
+    "beta": "/images/cards/melter_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/melter_upgraded.png"
+  },
+  "overclock": {
+    "current": "/images/cards/overclock.png",
+    "beta": "/images/cards/overclock_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/overclock_upgraded.png"
+  },
+  "recycle": {
+    "current": "/images/cards/recycle.png",
+    "beta": "/images/cards/recycle_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/recycle_upgraded.png"
+  },
+  "reinforced-body": {
+    "current": "/images/cards/reinforced-body.png",
+    "beta": "/images/cards/reinforced-body_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/reinforced-body_upgraded.png"
+  },
+  "reprogram": {
+    "current": "/images/cards/reprogram.png",
+    "beta": "/images/cards/reprogram_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/reprogram_upgraded.png"
+  },
+  "rip-and-tear": {
+    "current": "/images/cards/rip-and-tear.png",
+    "beta": "/images/cards/rip-and-tear_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/rip-and-tear_upgraded.png"
+  },
+  "scrape": {
+    "current": "/images/cards/scrape.png",
+    "beta": "/images/cards/scrape_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/scrape_upgraded.png"
+  },
+  "self-repair": {
+    "current": "/images/cards/self-repair.png",
+    "beta": "/images/cards/self-repair_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/self-repair_upgraded.png"
+  },
+  "skim": {
+    "current": "/images/cards/skim.png",
+    "beta": "/images/cards/skim_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/skim_upgraded.png"
+  },
+  "static-discharge": {
+    "current": "/images/cards/static-discharge.png",
+    "beta": "/images/cards/static-discharge_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/static-discharge_upgraded.png"
+  },
+  "storm": {
+    "current": "/images/cards/storm.png",
+    "beta": "/images/cards/storm_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/storm_upgraded.png"
+  },
+  "sunder": {
+    "current": "/images/cards/sunder.png",
+    "beta": "/images/cards/sunder_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/sunder_upgraded.png"
+  },
+  "tempest": {
+    "current": "/images/cards/tempest.png",
+    "beta": "/images/cards/tempest_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/tempest_upgraded.png"
+  },
+  "white-noise": {
+    "current": "/images/cards/white-noise.png",
+    "beta": "/images/cards/white-noise_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/white-noise_upgraded.png"
+  },
+  "all-for-one": {
+    "current": "/images/cards/all-for-one.png",
+    "beta": "/images/cards/all-for-one_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/all-for-one_upgraded.png"
+  },
+  "amplify": {
+    "current": "/images/cards/amplify.png",
+    "beta": "/images/cards/amplify_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/amplify_upgraded.png"
+  },
+  "biased-cognition": {
+    "current": "/images/cards/biased-cognition.png",
+    "beta": "/images/cards/biased-cognition_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/biased-cognition_upgraded.png"
+  },
+  "buffer": {
+    "current": "/images/cards/buffer.png",
+    "beta": "/images/cards/buffer_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/buffer_upgraded.png"
+  },
+  "core-surge": {
+    "current": "/images/cards/core-surge.png",
+    "beta": "/images/cards/core-surge_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/core-surge_upgraded.png"
+  },
+  "creative-ai": {
+    "current": "/images/cards/creative-ai.png",
+    "beta": "/images/cards/creative-ai_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/creative-ai_upgraded.png"
+  },
+  "echo-form": {
+    "current": "/images/cards/echo-form.png",
+    "beta": "/images/cards/echo-form_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/echo-form_upgraded.png"
+  },
+  "electrodynamics": {
+    "current": "/images/cards/electrodynamics.png",
+    "beta": "/images/cards/electrodynamics_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/electrodynamics_upgraded.png"
+  },
+  "fission": {
+    "current": "/images/cards/fission.png",
+    "beta": "/images/cards/fission_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/fission_upgraded.png"
+  },
+  "hyperbeam": {
+    "current": "/images/cards/hyperbeam.png",
+    "beta": "/images/cards/hyperbeam_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/hyperbeam_upgraded.png"
+  },
+  "machine-learning": {
+    "current": "/images/cards/machine-learning.png",
+    "beta": "/images/cards/machine-learning_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/machine-learning_upgraded.png"
+  },
+  "meteor-strike": {
+    "current": "/images/cards/meteor-strike.png",
+    "beta": "/images/cards/meteor-strike_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/meteor-strike_upgraded.png"
+  },
+  "multi-cast": {
+    "current": "/images/cards/multi-cast.png",
+    "beta": "/images/cards/multi-cast_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/multi-cast_upgraded.png"
+  },
+  "rainbow": {
+    "current": "/images/cards/rainbow.png",
+    "beta": "/images/cards/rainbow_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/rainbow_upgraded.png"
+  },
+  "reboot": {
+    "current": "/images/cards/reboot.png",
+    "beta": "/images/cards/reboot_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/reboot_upgraded.png"
+  },
+  "seek": {
+    "current": "/images/cards/seek.png",
+    "beta": "/images/cards/seek_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/seek_upgraded.png"
+  },
+  "thunder-strike": {
+    "current": "/images/cards/thunder-strike.png",
+    "beta": "/images/cards/thunder-strike_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/thunder-strike_upgraded.png"
+  },
+  "strike-watcher": {
+    "current": "/images/cards/strike-watcher.png",
+    "beta": "/images/cards/strike-watcher_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/strike-watcher_upgraded.png"
+  },
+  "defend-watcher": {
+    "current": "/images/cards/defend-watcher.png",
+    "beta": "/images/cards/defend-watcher_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/defend-watcher_upgraded.png"
+  },
+  "eruption": {
+    "current": "/images/cards/eruption.png",
+    "beta": "/images/cards/eruption_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/eruption_upgraded.png"
+  },
+  "vigilance": {
+    "current": "/images/cards/vigilance.png",
+    "beta": "/images/cards/vigilance_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/vigilance_upgraded.png"
+  },
+  "bowling-bash": {
+    "current": "/images/cards/bowling-bash.png",
+    "beta": "/images/cards/bowling-bash_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/bowling-bash_upgraded.png"
+  },
+  "consecrate": {
+    "current": "/images/cards/consecrate.png",
+    "beta": "/images/cards/consecrate_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/consecrate_upgraded.png"
+  },
+  "crescendo": {
+    "current": "/images/cards/crescendo.png",
+    "beta": "/images/cards/crescendo_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/crescendo_upgraded.png"
+  },
+  "crush-joints": {
+    "current": "/images/cards/crush-joints.png",
+    "beta": "/images/cards/crush-joints_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/crush-joints_upgraded.png"
+  },
+  "cut-through-fate": {
+    "current": "/images/cards/cut-through-fate.png",
+    "beta": "/images/cards/cut-through-fate_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/cut-through-fate_upgraded.png"
+  },
+  "empty-body": {
+    "current": "/images/cards/empty-body.png",
+    "beta": "/images/cards/empty-body_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/empty-body_upgraded.png"
+  },
+  "empty-fist": {
+    "current": "/images/cards/empty-fist.png",
+    "beta": "/images/cards/empty-fist_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/empty-fist_upgraded.png"
+  },
+  "evaluate": {
+    "current": "/images/cards/evaluate.png",
+    "beta": "/images/cards/evaluate_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/evaluate_upgraded.png"
+  },
+  "flurry-of-blows": {
+    "current": "/images/cards/flurry-of-blows.png",
+    "beta": "/images/cards/flurry-of-blows_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/flurry-of-blows_upgraded.png"
+  },
+  "flying-sleeves": {
+    "current": "/images/cards/flying-sleeves.png",
+    "beta": "/images/cards/flying-sleeves_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/flying-sleeves_upgraded.png"
+  },
+  "follow-up": {
+    "current": "/images/cards/follow-up.png",
+    "beta": "/images/cards/follow-up_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/follow-up_upgraded.png"
+  },
+  "halt": {
+    "current": "/images/cards/halt.png",
+    "beta": "/images/cards/halt_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/halt_upgraded.png"
+  },
+  "just-lucky": {
+    "current": "/images/cards/just-lucky.png",
+    "beta": "/images/cards/just-lucky_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/just-lucky_upgraded.png"
+  },
+  "pressure-points": {
+    "current": "/images/cards/pressure-points.png",
+    "beta": "/images/cards/pressure-points_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/pressure-points_upgraded.png"
+  },
+  "prostrate": {
+    "current": "/images/cards/prostrate.png",
+    "beta": "/images/cards/prostrate_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/prostrate_upgraded.png"
+  },
+  "protect": {
+    "current": "/images/cards/protect.png",
+    "beta": "/images/cards/protect_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/protect_upgraded.png"
+  },
+  "sash-whip": {
+    "current": "/images/cards/sash-whip.png",
+    "beta": "/images/cards/sash-whip_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/sash-whip_upgraded.png"
+  },
+  "third-eye": {
+    "current": "/images/cards/third-eye.png",
+    "beta": "/images/cards/third-eye_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/third-eye_upgraded.png"
+  },
+  "tranquility": {
+    "current": "/images/cards/tranquility.png",
+    "beta": "/images/cards/tranquility_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/tranquility_upgraded.png"
+  },
+  "battle-hymn": {
+    "current": "/images/cards/battle-hymn.png",
+    "beta": "/images/cards/battle-hymn_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/battle-hymn_upgraded.png"
+  },
+  "carve-reality": {
+    "current": "/images/cards/carve-reality.png",
+    "beta": "/images/cards/carve-reality_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/carve-reality_upgraded.png"
+  },
+  "collect": {
+    "current": "/images/cards/collect.png",
+    "beta": "/images/cards/collect_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/collect_upgraded.png"
+  },
+  "conclude": {
+    "current": "/images/cards/conclude.png",
+    "beta": "/images/cards/conclude_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/conclude_upgraded.png"
+  },
+  "deceive-reality": {
+    "current": "/images/cards/deceive-reality.png",
+    "beta": "/images/cards/deceive-reality_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/deceive-reality_upgraded.png"
+  },
+  "empty-mind": {
+    "current": "/images/cards/empty-mind.png",
+    "beta": "/images/cards/empty-mind_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/empty-mind_upgraded.png"
+  },
+  "fasting": {
+    "current": "/images/cards/fasting.png",
+    "beta": "/images/cards/fasting_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/fasting_upgraded.png"
+  },
+  "fear-no-evil": {
+    "current": "/images/cards/fear-no-evil.png",
+    "beta": "/images/cards/fear-no-evil_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/fear-no-evil_upgraded.png"
+  },
+  "foreign-influence": {
+    "current": "/images/cards/foreign-influence.png",
+    "beta": "/images/cards/foreign-influence_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/foreign-influence_upgraded.png"
+  },
+  "foresight": {
+    "current": "/images/cards/foresight.png",
+    "beta": "/images/cards/foresight_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/foresight_upgraded.png"
+  },
+  "indignation": {
+    "current": "/images/cards/indignation.png",
+    "beta": "/images/cards/indignation_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/indignation_upgraded.png"
+  },
+  "inner-peace": {
+    "current": "/images/cards/inner-peace.png",
+    "beta": "/images/cards/inner-peace_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/inner-peace_upgraded.png"
+  },
+  "like-water": {
+    "current": "/images/cards/like-water.png",
+    "beta": "/images/cards/like-water_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/like-water_upgraded.png"
+  },
+  "meditate": {
+    "current": "/images/cards/meditate.png",
+    "beta": "/images/cards/meditate_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/meditate_upgraded.png"
+  },
+  "mental-fortress": {
+    "current": "/images/cards/mental-fortress.png",
+    "beta": "/images/cards/mental-fortress_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/mental-fortress_upgraded.png"
+  },
+  "nirvana": {
+    "current": "/images/cards/nirvana.png",
+    "beta": "/images/cards/nirvana_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/nirvana_upgraded.png"
+  },
+  "perseverance": {
+    "current": "/images/cards/perseverance.png",
+    "beta": "/images/cards/perseverance_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/perseverance_upgraded.png"
+  },
+  "pray": {
+    "current": "/images/cards/pray.png",
+    "beta": "/images/cards/pray_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/pray_upgraded.png"
+  },
+  "reach-heaven": {
+    "current": "/images/cards/reach-heaven.png",
+    "beta": "/images/cards/reach-heaven_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/reach-heaven_upgraded.png"
+  },
+  "rushdown": {
+    "current": "/images/cards/rushdown.png",
+    "beta": "/images/cards/rushdown_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/rushdown_upgraded.png"
+  },
+  "sanctity": {
+    "current": "/images/cards/sanctity.png",
+    "beta": "/images/cards/sanctity_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/sanctity_upgraded.png"
+  },
+  "sands-of-time": {
+    "current": "/images/cards/sands-of-time.png",
+    "beta": "/images/cards/sands-of-time_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/sands-of-time_upgraded.png"
+  },
+  "signature-move": {
+    "current": "/images/cards/signature-move.png",
+    "beta": "/images/cards/signature-move_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/signature-move_upgraded.png"
+  },
+  "simmering-fury": {
+    "current": "/images/cards/simmering-fury.png",
+    "beta": "/images/cards/simmering-fury_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/simmering-fury_upgraded.png"
+  },
+  "study": {
+    "current": "/images/cards/study.png",
+    "beta": "/images/cards/study_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/study_upgraded.png"
+  },
+  "swivel": {
+    "current": "/images/cards/swivel.png",
+    "beta": "/images/cards/swivel_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/swivel_upgraded.png"
+  },
+  "talk-to-the-hand": {
+    "current": "/images/cards/talk-to-the-hand.png",
+    "beta": "/images/cards/talk-to-the-hand_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/talk-to-the-hand_upgraded.png"
+  },
+  "tantrum": {
+    "current": "/images/cards/tantrum.png",
+    "beta": "/images/cards/tantrum_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/tantrum_upgraded.png"
+  },
+  "wallop": {
+    "current": "/images/cards/wallop.png",
+    "beta": "/images/cards/wallop_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/wallop_upgraded.png"
+  },
+  "wave-of-the-hand": {
+    "current": "/images/cards/wave-of-the-hand.png",
+    "beta": "/images/cards/wave-of-the-hand_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/wave-of-the-hand_upgraded.png"
+  },
+  "weave": {
+    "current": "/images/cards/weave.png",
+    "beta": "/images/cards/weave_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/weave_upgraded.png"
+  },
+  "wheel-kick": {
+    "current": "/images/cards/wheel-kick.png",
+    "beta": "/images/cards/wheel-kick_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/wheel-kick_upgraded.png"
+  },
+  "windmill-strike": {
+    "current": "/images/cards/windmill-strike.png",
+    "beta": "/images/cards/windmill-strike_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/windmill-strike_upgraded.png"
+  },
+  "worship": {
+    "current": "/images/cards/worship.png",
+    "beta": "/images/cards/worship_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/worship_upgraded.png"
+  },
+  "wreath-of-flame": {
+    "current": "/images/cards/wreath-of-flame.png",
+    "beta": "/images/cards/wreath-of-flame_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/wreath-of-flame_upgraded.png"
+  },
+  "alpha": {
+    "current": "/images/cards/alpha.png",
+    "beta": "/images/cards/alpha_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/alpha_upgraded.png"
+  },
+  "blasphemy": {
+    "current": "/images/cards/blasphemy.png",
+    "beta": "/images/cards/blasphemy_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/blasphemy_upgraded.png"
+  },
+  "brilliance": {
+    "current": "/images/cards/brilliance.png",
+    "beta": "/images/cards/brilliance_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/brilliance_upgraded.png"
+  },
+  "conjure-blade": {
+    "current": "/images/cards/conjure-blade.png",
+    "beta": "/images/cards/conjure-blade_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/conjure-blade_upgraded.png"
+  },
+  "deus-ex-machina": {
+    "current": "/images/cards/deus-ex-machina.png",
+    "beta": "/images/cards/deus-ex-machina_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/deus-ex-machina_upgraded.png"
+  },
+  "deva-form": {
+    "current": "/images/cards/deva-form.png",
+    "beta": "/images/cards/deva-form_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/deva-form_upgraded.png"
+  },
+  "devotion": {
+    "current": "/images/cards/devotion.png",
+    "beta": "/images/cards/devotion_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/devotion_upgraded.png"
+  },
+  "establishment": {
+    "current": "/images/cards/establishment.png",
+    "beta": "/images/cards/establishment_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/establishment_upgraded.png"
+  },
+  "judgment": {
+    "current": "/images/cards/judgment.png",
+    "beta": "/images/cards/judgment_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/judgment_upgraded.png"
+  },
+  "lesson-learned": {
+    "current": "/images/cards/lesson-learned.png",
+    "beta": "/images/cards/lesson-learned_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/lesson-learned_upgraded.png"
+  },
+  "master-reality": {
+    "current": "/images/cards/master-reality.png",
+    "beta": "/images/cards/master-reality_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/master-reality_upgraded.png"
+  },
+  "omniscience": {
+    "current": "/images/cards/omniscience.png",
+    "beta": "/images/cards/omniscience_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/omniscience_upgraded.png"
+  },
+  "ragnarok": {
+    "current": "/images/cards/ragnarok.png",
+    "beta": "/images/cards/ragnarok_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/ragnarok_upgraded.png"
+  },
+  "scrawl": {
+    "current": "/images/cards/scrawl.png",
+    "beta": "/images/cards/scrawl_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/scrawl_upgraded.png"
+  },
+  "spirit-shield": {
+    "current": "/images/cards/spirit-shield.png",
+    "beta": "/images/cards/spirit-shield_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/spirit-shield_upgraded.png"
+  },
+  "vault": {
+    "current": "/images/cards/vault.png",
+    "beta": "/images/cards/vault_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/vault_upgraded.png"
+  },
+  "wish": {
+    "current": "/images/cards/wish.png",
+    "beta": "/images/cards/wish_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/wish_upgraded.png"
+  },
+  "bandage-up": {
+    "current": "/images/cards/bandage-up.png",
+    "beta": "/images/cards/bandage-up_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/bandage-up_upgraded.png"
+  },
+  "blind": {
+    "current": "/images/cards/blind.png",
+    "beta": "/images/cards/blind_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/blind_upgraded.png"
+  },
+  "dark-shackles": {
+    "current": "/images/cards/dark-shackles.png",
+    "beta": "/images/cards/dark-shackles_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/dark-shackles_upgraded.png"
+  },
+  "deep-breath": {
+    "current": "/images/cards/deep-breath.png",
+    "beta": "/images/cards/deep-breath_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/deep-breath_upgraded.png"
+  },
+  "discovery": {
+    "current": "/images/cards/discovery.png",
+    "beta": "/images/cards/discovery_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/discovery_upgraded.png"
+  },
+  "dramatic-entrance": {
+    "current": "/images/cards/dramatic-entrance.png",
+    "beta": "/images/cards/dramatic-entrance_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/dramatic-entrance_upgraded.png"
+  },
+  "enlightenment": {
+    "current": "/images/cards/enlightenment.png",
+    "beta": "/images/cards/enlightenment_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/enlightenment_upgraded.png"
+  },
+  "finesse": {
+    "current": "/images/cards/finesse.png",
+    "beta": "/images/cards/finesse_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/finesse_upgraded.png"
+  },
+  "flash-of-steel": {
+    "current": "/images/cards/flash-of-steel.png",
+    "beta": "/images/cards/flash-of-steel_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/flash-of-steel_upgraded.png"
+  },
+  "forethought": {
+    "current": "/images/cards/forethought.png",
+    "beta": "/images/cards/forethought_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/forethought_upgraded.png"
+  },
+  "good-instincts": {
+    "current": "/images/cards/good-instincts.png",
+    "beta": "/images/cards/good-instincts_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/good-instincts_upgraded.png"
+  },
+  "impatience": {
+    "current": "/images/cards/impatience.png",
+    "beta": "/images/cards/impatience_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/impatience_upgraded.png"
+  },
+  "jack-of-all-trades": {
+    "current": "/images/cards/jack-of-all-trades.png",
+    "beta": "/images/cards/jack-of-all-trades_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/jack-of-all-trades_upgraded.png"
+  },
+  "madness": {
+    "current": "/images/cards/madness.png",
+    "beta": "/images/cards/madness_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/madness_upgraded.png"
+  },
+  "mind-blast": {
+    "current": "/images/cards/mind-blast.png",
+    "beta": "/images/cards/mind-blast_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/mind-blast_upgraded.png"
+  },
+  "panacea": {
+    "current": "/images/cards/panacea.png",
+    "beta": "/images/cards/panacea_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/panacea_upgraded.png"
+  },
+  "panic-button": {
+    "current": "/images/cards/panic-button.png",
+    "beta": "/images/cards/panic-button_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/panic-button_upgraded.png"
+  },
+  "purity": {
+    "current": "/images/cards/purity.png",
+    "beta": "/images/cards/purity_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/purity_upgraded.png"
+  },
+  "swift-strike": {
+    "current": "/images/cards/swift-strike.png",
+    "beta": "/images/cards/swift-strike_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/swift-strike_upgraded.png"
+  },
+  "trip": {
+    "current": "/images/cards/trip.png",
+    "beta": "/images/cards/trip_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/trip_upgraded.png"
+  },
+  "apotheosis": {
+    "current": "/images/cards/apotheosis.png",
+    "beta": "/images/cards/apotheosis_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/apotheosis_upgraded.png"
+  },
+  "chrysalis": {
+    "current": "/images/cards/chrysalis.png",
+    "beta": "/images/cards/chrysalis_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/chrysalis_upgraded.png"
+  },
+  "hand-of-greed": {
+    "current": "/images/cards/hand-of-greed.png",
+    "beta": "/images/cards/hand-of-greed_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/hand-of-greed_upgraded.png"
+  },
+  "magnetism": {
+    "current": "/images/cards/magnetism.png",
+    "beta": "/images/cards/magnetism_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/magnetism_upgraded.png"
+  },
+  "master-of-strategy": {
+    "current": "/images/cards/master-of-strategy.png",
+    "beta": "/images/cards/master-of-strategy_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/master-of-strategy_upgraded.png"
+  },
+  "mayhem": {
+    "current": "/images/cards/mayhem.png",
+    "beta": "/images/cards/mayhem_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/mayhem_upgraded.png"
+  },
+  "metamorphosis": {
+    "current": "/images/cards/metamorphosis.png",
+    "beta": "/images/cards/metamorphosis_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/metamorphosis_upgraded.png"
+  },
+  "panache": {
+    "current": "/images/cards/panache.png",
+    "beta": "/images/cards/panache_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/panache_upgraded.png"
+  },
+  "sadistic-nature": {
+    "current": "/images/cards/sadistic-nature.png",
+    "beta": "/images/cards/sadistic-nature_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/sadistic-nature_upgraded.png"
+  },
+  "secret-technique": {
+    "current": "/images/cards/secret-technique.png",
+    "beta": "/images/cards/secret-technique_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/secret-technique_upgraded.png"
+  },
+  "secret-weapon": {
+    "current": "/images/cards/secret-weapon.png",
+    "beta": "/images/cards/secret-weapon_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/secret-weapon_upgraded.png"
+  },
+  "the-bomb": {
+    "current": "/images/cards/the-bomb.png",
+    "beta": "/images/cards/the-bomb_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/the-bomb_upgraded.png"
+  },
+  "thinking-ahead": {
+    "current": "/images/cards/thinking-ahead.png",
+    "beta": "/images/cards/thinking-ahead_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/thinking-ahead_upgraded.png"
+  },
+  "transmutation": {
+    "current": "/images/cards/transmutation.png",
+    "beta": "/images/cards/transmutation_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/transmutation_upgraded.png"
+  },
+  "violence": {
+    "current": "/images/cards/violence.png",
+    "beta": "/images/cards/violence_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/violence_upgraded.png"
+  },
+  "apparition": {
+    "current": "/images/cards/apparition.png",
+    "beta": "/images/cards/apparition_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/apparition_upgraded.png"
+  },
+  "beta": {
+    "current": "/images/cards/beta.png",
+    "beta": "/images/cards/beta_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/beta_upgraded.png"
+  },
+  "bite": {
+    "current": "/images/cards/bite.png",
+    "beta": "/images/cards/bite_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/bite_upgraded.png"
+  },
+  "expunger": {
+    "current": "/images/cards/expunger.png",
+    "beta": "/images/cards/expunger_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/expunger_upgraded.png"
+  },
+  "insight": {
+    "current": "/images/cards/insight.png",
+    "beta": "/images/cards/insight_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/insight_upgraded.png"
+  },
+  "jax": {
+    "current": "/images/cards/jax.png",
+    "beta": "/images/cards/jax_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/jax_upgraded.png"
+  },
+  "miracle": {
+    "current": "/images/cards/miracle.png",
+    "beta": "/images/cards/miracle_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/miracle_upgraded.png"
+  },
+  "omega": {
+    "current": "/images/cards/omega.png",
+    "beta": "/images/cards/omega_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/omega_upgraded.png"
+  },
+  "ritual-dagger": {
+    "current": "/images/cards/ritual-dagger.png",
+    "beta": "/images/cards/ritual-dagger_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/ritual-dagger_upgraded.png"
+  },
+  "safety": {
+    "current": "/images/cards/safety.png",
+    "beta": "/images/cards/safety_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/safety_upgraded.png"
+  },
+  "shiv": {
+    "current": "/images/cards/shiv.png",
+    "beta": "/images/cards/shiv_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/shiv_upgraded.png"
+  },
+  "smite": {
+    "current": "/images/cards/smite.png",
+    "beta": "/images/cards/smite_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/smite_upgraded.png"
+  },
+  "through-violence": {
+    "current": "/images/cards/through-violence.png",
+    "beta": "/images/cards/through-violence_beta.png",
+    "old": null,
+    "upgraded": "/images/cards/through-violence_upgraded.png"
+  },
+  "ascenders-bane": {
+    "current": "/images/cards/ascenders-bane.png",
+    "beta": "/images/cards/ascenders-bane_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "clumsy": {
+    "current": "/images/cards/clumsy.png",
+    "beta": "/images/cards/clumsy_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "curse-of-the-bell": {
+    "current": "/images/cards/curse-of-the-bell.png",
+    "beta": "/images/cards/curse-of-the-bell_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "decay": {
+    "current": "/images/cards/decay.png",
+    "beta": "/images/cards/decay_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "doubt": {
+    "current": "/images/cards/doubt.png",
+    "beta": "/images/cards/doubt_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "injury": {
+    "current": "/images/cards/injury.png",
+    "beta": "/images/cards/injury_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "necronomicurse": {
+    "current": "/images/cards/necronomicurse.png",
+    "beta": "/images/cards/necronomicurse_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "normality": {
+    "current": "/images/cards/normality.png",
+    "beta": "/images/cards/normality_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "pain": {
+    "current": "/images/cards/pain.png",
+    "beta": "/images/cards/pain_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "parasite": {
+    "current": "/images/cards/parasite.png",
+    "beta": "/images/cards/parasite_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "pride": {
+    "current": "/images/cards/pride.png",
+    "beta": "/images/cards/pride_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "regret": {
+    "current": "/images/cards/regret.png",
+    "beta": "/images/cards/regret_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "shame": {
+    "current": "/images/cards/shame.png",
+    "beta": "/images/cards/shame_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "writhe": {
+    "current": "/images/cards/writhe.png",
+    "beta": "/images/cards/writhe_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "burn": {
+    "current": "/images/cards/burn.png",
+    "beta": "/images/cards/burn_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "dazed": {
+    "current": "/images/cards/dazed.png",
+    "beta": "/images/cards/dazed_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "slimed": {
+    "current": "/images/cards/slimed.png",
+    "beta": "/images/cards/slimed_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "void": {
+    "current": "/images/cards/void.png",
+    "beta": "/images/cards/void_beta.png",
+    "old": null,
+    "upgraded": null
+  },
+  "wound": {
+    "current": "/images/cards/wound.png",
+    "beta": "/images/cards/wound_beta.png",
+    "old": null,
+    "upgraded": null
+  }
+}

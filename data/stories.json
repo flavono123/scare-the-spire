@@ -1,0 +1,42 @@
+[
+  {
+    "id": "blade-dance-shivs",
+    "sentence": "검무는 원래 2뎀 단도 3장이었다",
+    "entityType": "card",
+    "entityId": "blade-dance",
+    "changeId": "blade-dance-v22-shivs",
+    "tags": ["버프", "사일런트"]
+  },
+  {
+    "id": "well-laid-plans-cost",
+    "sentence": "괜찮은 전략은 원래 코스트가 0이었다",
+    "entityType": "card",
+    "entityId": "well-laid-plans",
+    "changeId": "well-laid-plans-v20-cost",
+    "tags": ["너프", "사일런트"]
+  },
+  {
+    "id": "offering-draw",
+    "sentence": "제물은 원래 카드를 3장만 뽑았다",
+    "entityType": "card",
+    "entityId": "offering",
+    "changeId": "offering-wp6-buff",
+    "tags": ["버프", "아이언클래드"]
+  },
+  {
+    "id": "corruption-rarity",
+    "sentence": "타락은 원래 고급 카드였다",
+    "entityType": "card",
+    "entityId": "corruption",
+    "changeId": "corruption-v20-rarity",
+    "tags": ["변경", "아이언클래드"]
+  },
+  {
+    "id": "evolve-rework",
+    "sentence": "진화는 원래 부상에만 반응하고 부상을 주기까지 했다",
+    "entityType": "card",
+    "entityId": "evolve",
+    "changeId": "evolve-wp18-rework",
+    "tags": ["리워크", "아이언클래드"]
+  }
+]

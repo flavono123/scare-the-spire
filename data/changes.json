@@ -1,0 +1,2567 @@
+[
+  {
+    "id": "anger-wp21-damage",
+    "entityType": "card",
+    "entityId": "anger",
+    "patch": "Weekly Patch 21: Channel Lightning",
+    "date": "2018-04-20",
+    "summary": "Anger card damage buffed by 1.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 5,
+        "after": 6,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "anger-wp34-damage",
+    "entityType": "card",
+    "entityId": "anger",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Anger damage increased from 5 to 6",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 5,
+        "after": 6,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 7,
+        "after": 8,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "backstab-wp10-cost-damage",
+    "entityType": "card",
+    "entityId": "backstab",
+    "patch": "Weekly Patch 10: Quality of Life",
+    "date": "2018-01-18",
+    "summary": "Backstab cost lowered to 0, damage decreased to 11.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 1,
+        "after": 0,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 15,
+        "after": 11,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "berserk-wp1-buff",
+    "entityType": "card",
+    "entityId": "berserk",
+    "patch": "Weekly Patch 1: The First of Many!",
+    "date": "2017-11-23",
+    "summary": "Berserk card received a buff.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "(unknown)",
+        "after": "Buffed",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "berserk-wp5-trigger",
+    "entityType": "card",
+    "entityId": "berserk",
+    "patch": "Weekly Patch 5: Happy Holidays!",
+    "date": "2017-12-22",
+    "summary": "Berserk trigger condition adjusted to activate at ≤50% health.",
+    "diffs": [
+      {
+        "attribute": "trigger",
+        "displayName": "Trigger Condition",
+        "before": "(previous trigger)",
+        "after": "≤50% HP",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "berserk-wp32-rework",
+    "entityType": "card",
+    "entityId": "berserk",
+    "patch": "Weekly Patch 32: Face Trader",
+    "date": "2018-07-05",
+    "summary": "Berserk reworked: now grants Vulnerable for multiple turns in exchange for +1 Energy per turn.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Conditional energy gain at low HP",
+        "after": "Gain Vulnerable. At the start of your turn, gain 1 Energy.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "berserk-wp33-vulnerable",
+    "entityType": "card",
+    "entityId": "berserk",
+    "patch": "Weekly Patch 33: Terror",
+    "date": "2018-07-12",
+    "summary": "Berserk self-inflicted Vulnerable decreased from 5 to 3.",
+    "diffs": [
+      {
+        "attribute": "vulnerable",
+        "displayName": "Self Vulnerable",
+        "before": 5,
+        "after": 3,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "berserk-wp34-cost-vulnerable",
+    "entityType": "card",
+    "entityId": "berserk",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Berserk cost reduced from 1 to 0. Upgrade effect changed: Vulnerable penalty reduced from 3 to 2.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 1,
+        "after": 0,
+        "diffType": "number"
+      },
+      {
+        "attribute": "vulnerable",
+        "displayName": "Self Vulnerable",
+        "before": 3,
+        "after": 2,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "berserk-v11-vulnerable",
+    "entityType": "card",
+    "entityId": "berserk",
+    "patch": "Patch V1.1: The Dealer",
+    "date": "2019-07-01",
+    "summary": "Berserk card buffed. Self Vulnerable 3 -> 2.",
+    "diffs": [
+      {
+        "attribute": "vulnerable",
+        "displayName": "Self Vulnerable",
+        "before": 3,
+        "after": 2,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "blade-dance-wp36-rarity",
+    "entityType": "card",
+    "entityId": "blade-dance",
+    "patch": "Weekly Patch 36: Power Through",
+    "date": "2018-08-02",
+    "summary": "Blade Dance rarity lowered from Uncommon to Common.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Common",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "blade-dance-v22-shivs",
+    "entityType": "card",
+    "entityId": "blade-dance",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Blade Dance buffed: 2→3 Shivs. Blade Dance+ 3→4 Shivs.",
+    "diffs": [
+      {
+        "attribute": "shivs",
+        "displayName": "Shivs Generated",
+        "before": 2,
+        "after": 3,
+        "diffType": "number"
+      },
+      {
+        "attribute": "shivs",
+        "displayName": "Shivs Generated",
+        "before": 3,
+        "after": 4,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "blood-for-blood-wp18-damage",
+    "entityType": "card",
+    "entityId": "blood-for-blood",
+    "patch": "Weekly Patch 18: Paranormal",
+    "date": "2018-03-16",
+    "summary": "Blood for Blood damage increased from 16 to 18",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 16,
+        "after": 18,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 18,
+        "after": 22,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "bloodletting-wp4-hp-loss",
+    "entityType": "card",
+    "entityId": "bloodletting",
+    "patch": "Weekly Patch 4: Full speed ahead!",
+    "date": "2017-12-14",
+    "summary": "Bloodletting HP loss reduced from 4 to 3.",
+    "diffs": [
+      {
+        "attribute": "hpLoss",
+        "displayName": "HP Loss",
+        "before": 4,
+        "after": 3,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "bloodletting-v22-energy",
+    "entityType": "card",
+    "entityId": "bloodletting",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Bloodletting energy gain increased from 1 to 2. Bloodletting+ from 2 to 3.",
+    "diffs": [
+      {
+        "attribute": "energy",
+        "displayName": "Energy Gain",
+        "before": 1,
+        "after": 2,
+        "diffType": "number"
+      },
+      {
+        "attribute": "energy",
+        "displayName": "Energy Gain",
+        "before": 2,
+        "after": 3,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "carnage-wp18-damage",
+    "entityType": "card",
+    "entityId": "carnage",
+    "patch": "Weekly Patch 18: Paranormal",
+    "date": "2018-03-16",
+    "summary": "Carnage damage increased from 18 to 20",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 18,
+        "after": 20,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 26,
+        "after": 28,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "combust-wp19-damage",
+    "entityType": "card",
+    "entityId": "combust",
+    "patch": "Weekly Patch 19: Seed",
+    "date": "2018-03-23",
+    "summary": "Combust card damage buffed from 4 to 5.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 4,
+        "after": 5,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "combust-wp20-damage-plus",
+    "entityType": "card",
+    "entityId": "combust",
+    "patch": "Weekly Patch 20: Immolate",
+    "date": "2018-04-06",
+    "summary": "Combust+ damage increased from 6 to 7.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 6,
+        "after": 7,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "corruption-v20-rarity",
+    "entityType": "card",
+    "entityId": "corruption",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Corruption rarity changed from Uncommon to Rare (undocumented change).",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Rare",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "dark-embrace-v20-rarity",
+    "entityType": "card",
+    "entityId": "dark-embrace",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Dark Embrace rarity changed from Rare to Uncommon (undocumented change).",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Rare",
+        "after": "Uncommon",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "dual-wield-wp1-rework",
+    "entityType": "card",
+    "entityId": "dual-wield",
+    "patch": "Weekly Patch 1: The First of Many!",
+    "date": "2017-11-23",
+    "summary": "Dual Wield card reworked and buffed.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "(original)",
+        "after": "Reworked and buffed",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "dual-wield-wp2-type-restriction",
+    "entityType": "card",
+    "entityId": "dual-wield",
+    "patch": "Weekly Patch 2: Slimes!",
+    "date": "2017-12-01",
+    "summary": "Dual Wield can no longer duplicate skills, stopping the easy infinites.",
+    "diffs": [
+      {
+        "attribute": "target",
+        "displayName": "Target Cards",
+        "before": "Any card",
+        "after": "Attacks only",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "dual-wield-wp8-rarity",
+    "entityType": "card",
+    "entityId": "dual-wield",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-04",
+    "summary": "Dual Wield rarity changed from Common to Uncommon.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Common",
+        "after": "Uncommon",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "evolve-wp18-rework",
+    "entityType": "card",
+    "entityId": "evolve",
+    "patch": "Weekly Patch 18: Paranormal",
+    "date": "2018-03-16",
+    "summary": "Evolve reworked: no longer gives Wounds, now triggers on any Status card (not just Wounds).",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Triggers on Wounds only, gives Wounds",
+        "after": "Triggers on any Status card, no longer gives Wounds",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "feel-no-pain-wp21-block",
+    "entityType": "card",
+    "entityId": "feel-no-pain",
+    "patch": "Weekly Patch 21: Channel Lightning",
+    "date": "2018-04-20",
+    "summary": "Feel No Pain block reduced from 4 to 3",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 4,
+        "after": 3,
+        "diffType": "number"
+      },
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 6,
+        "after": 5,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "feel-no-pain-wp23-upgrade-nerf",
+    "entityType": "card",
+    "entityId": "feel-no-pain",
+    "patch": "Weekly Patch 23: Testing Continues...",
+    "date": "2018-05-04",
+    "summary": "Feel No Pain+ upgrade is now +1 rather than +2.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 5,
+        "after": 4,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "fire-breathing-v20-rework",
+    "entityType": "card",
+    "entityId": "fire-breathing",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Fire Breathing reworked. Previously dealt 1 damage per attack played at end of turn. Now deals 6 (10) damage to all enemies whenever a Status or Curse card is drawn.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "At end of turn, deal 1 damage to all enemies for each Attack played this turn",
+        "after": "Whenever you draw a Status or Curse card, deal 6 (10) damage to all enemies",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "hemokinesis-v22-buff",
+    "entityType": "card",
+    "entityId": "hemokinesis",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Hemokinesis damage increased from 14 to 15, HP loss decreased from 3 to 2. Hemokinesis+ damage increased from 18 to 20.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 14,
+        "after": 15,
+        "diffType": "number"
+      },
+      {
+        "attribute": "hpLoss",
+        "displayName": "HP Loss",
+        "before": 3,
+        "after": 2,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 18,
+        "after": 20,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "immolate-wp20-rework",
+    "entityType": "card",
+    "entityId": "immolate",
+    "patch": "Weekly Patch 20: Immolate",
+    "date": "2018-04-06",
+    "summary": "Immolate completely redesigned: changed from conditional exhaust to dealing 18 (24) damage to all enemies, adding a Burn to draw pile.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Exhaust 1 Card. If Status/Curse, deal 10 (15) damage to all enemies",
+        "after": "Deal 18 (24) damage to ALL enemies. Add a Burn to draw pile.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "immolate-wp21-buff",
+    "entityType": "card",
+    "entityId": "immolate",
+    "patch": "Weekly Patch 21: Channel Lightning",
+    "date": "2018-04-20",
+    "summary": "Immolate Burn now goes to discard pile instead of draw pile. Damage buffed from 18 to 21",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 18,
+        "after": 21,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 24,
+        "after": 28,
+        "diffType": "number",
+        "upgraded": true
+      },
+      {
+        "attribute": "burnTarget",
+        "displayName": "Burn Placement",
+        "before": "Draw pile",
+        "after": "Discard pile",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "offering-wp6-buff",
+    "entityType": "card",
+    "entityId": "offering",
+    "patch": "Weekly Patch 6: We're Back!",
+    "date": "2017-12-29",
+    "summary": "Offering HP loss reduced from 6 to 4, card draw increased from 3 to 5.",
+    "diffs": [
+      {
+        "attribute": "hpLoss",
+        "displayName": "HP Loss",
+        "before": 6,
+        "after": 4,
+        "diffType": "number"
+      },
+      {
+        "attribute": "draw",
+        "displayName": "Card Draw",
+        "before": 3,
+        "after": 5,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "offering-wp34-hp-loss",
+    "entityType": "card",
+    "entityId": "offering",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Offering self damage increased from 4 to 5.",
+    "diffs": [
+      {
+        "attribute": "hpLoss",
+        "displayName": "HP Loss",
+        "before": 4,
+        "after": 5,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "offering-wp37-hp-loss",
+    "entityType": "card",
+    "entityId": "offering",
+    "patch": "Weekly Patch 37: Darkness",
+    "date": "2018-08-16",
+    "summary": "Offering HP loss increased from 5 to 6.",
+    "diffs": [
+      {
+        "attribute": "hpLoss",
+        "displayName": "HP Loss",
+        "before": 5,
+        "after": 6,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "rage-wp16-cost-block",
+    "entityType": "card",
+    "entityId": "rage",
+    "patch": "Weekly Patch 16: Back to Work",
+    "date": "2018-02-28",
+    "summary": "Rage cost changed from 1 to 0, block per Attack changed from 4 to 3.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 1,
+        "after": 0,
+        "diffType": "number"
+      },
+      {
+        "attribute": "block",
+        "displayName": "Block per Attack",
+        "before": 4,
+        "after": 3,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "rampage-wp34-damage",
+    "entityType": "card",
+    "entityId": "rampage",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Rampage damage scaling per play increased from 4 to 5.",
+    "diffs": [
+      {
+        "attribute": "damageScaling",
+        "displayName": "Damage Scaling Per Play",
+        "before": 4,
+        "after": 5,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "reckless-charge-wp20-rework",
+    "entityType": "card",
+    "entityId": "reckless-charge",
+    "patch": "Weekly Patch 20: Immolate",
+    "date": "2018-04-06",
+    "summary": "Reckless Charge reworked: now shuffles a Dazed into draw pile rather than making you Vulnerable.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Apply Vulnerable to self",
+        "after": "Shuffle a Dazed into your draw pile",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "reckless-charge-wp21-rarity",
+    "entityType": "card",
+    "entityId": "reckless-charge",
+    "patch": "Weekly Patch 21: Channel Lightning",
+    "date": "2018-04-20",
+    "summary": "Reckless Charge is now Uncommon. Reckless Charge+ damage nerfed by 1.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Common",
+        "after": "Uncommon",
+        "diffType": "enum"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 11,
+        "after": 10,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "rupture-v22-upgrade",
+    "entityType": "card",
+    "entityId": "rupture",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Rupture+ Strength gain increased from 1 to 2, cost increased from 0 to 1.",
+    "diffs": [
+      {
+        "attribute": "strength",
+        "displayName": "Strength Gain",
+        "before": 1,
+        "after": 2,
+        "diffType": "number",
+        "upgraded": true
+      },
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 0,
+        "after": 1,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "sever-soul-v20-damage",
+    "entityType": "card",
+    "entityId": "sever-soul",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Sever Soul+ damage increased from 20 to 22.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 20,
+        "after": 22,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "wild-strike-wp20-rarity",
+    "entityType": "card",
+    "entityId": "wild-strike",
+    "patch": "Weekly Patch 20: Immolate",
+    "date": "2018-04-06",
+    "summary": "Wild Strike changed to Uncommon rarity.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Common",
+        "after": "Uncommon",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "wild-strike-wp21-rarity",
+    "entityType": "card",
+    "entityId": "wild-strike",
+    "patch": "Weekly Patch 21: Channel Lightning",
+    "date": "2018-04-20",
+    "summary": "Wild Strike changed to Common rarity.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Common",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "wraith-form-wp20-rework",
+    "entityType": "card",
+    "entityId": "wraith-form",
+    "patch": "Weekly Patch 20: Immolate",
+    "date": "2018-04-06",
+    "summary": "Wraith Form completely reworked: changed from dealing 3 (5) damage to random enemies when playing skills, to granting Intangible while reducing Dexterity each turn.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Deal 3 (5) damage to random enemies when playing skills",
+        "after": "Gain 3 (4) Intangible. At the end of your turn, lose 1 Dexterity.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "wraith-form-wp37-nerf",
+    "entityType": "card",
+    "entityId": "wraith-form",
+    "patch": "Weekly Patch 37: Darkness",
+    "date": "2018-08-16",
+    "summary": "Wraith Form nerf: 3→2 Intangible. Wraith Form+: 4→3 Intangible.",
+    "diffs": [
+      {
+        "attribute": "intangible",
+        "displayName": "Intangible",
+        "before": 3,
+        "after": 2,
+        "diffType": "number"
+      },
+      {
+        "attribute": "intangible",
+        "displayName": "Intangible",
+        "before": 4,
+        "after": 3,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "corpse-explosion-wp32-rework",
+    "entityType": "card",
+    "entityId": "corpse-explosion",
+    "patch": "Weekly Patch 32: Face Trader",
+    "date": "2018-07-05",
+    "summary": "Corpse Explosion reworked: changed to 'Apply 6 Poison. When this enemy dies, deal damage to ALL enemies equal to its max HP.'",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "(previous mechanic)",
+        "after": "Apply 6 Poison. When this enemy dies, deal damage equal to its max HP to ALL enemies.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "crippling-cloud-wp21-rework",
+    "entityType": "card",
+    "entityId": "crippling-cloud",
+    "patch": "Weekly Patch 21: Channel Lightning",
+    "date": "2018-04-20",
+    "summary": "Crippling Poison reworked and renamed to Crippling Cloud. Apply 4 (7) Poison and 2 Weak to ALL enemies. Exhaust.",
+    "diffs": [
+      {
+        "attribute": "name",
+        "displayName": "Name",
+        "before": "Crippling Poison",
+        "after": "Crippling Cloud",
+        "diffType": "text"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Apply 3 (5) Poison and 3 (5) Weak",
+        "after": "Apply 4 (7) Poison and 2 Weak to ALL enemies. Exhaust.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "crippling-poison-wp5-upgrade",
+    "entityType": "card",
+    "entityId": "crippling-cloud",
+    "patch": "Weekly Patch 5: Happy Holidays!",
+    "date": "2017-12-22",
+    "summary": "Crippling Poison+ poison and weak values increased from 4 to 5.",
+    "diffs": [
+      {
+        "attribute": "poison",
+        "displayName": "Poison",
+        "before": 4,
+        "after": 5,
+        "diffType": "number",
+        "upgraded": true
+      },
+      {
+        "attribute": "weak",
+        "displayName": "Weak",
+        "before": 4,
+        "after": 5,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "deadly-poison-wp18-buff",
+    "entityType": "card",
+    "entityId": "deadly-poison",
+    "patch": "Weekly Patch 18: Paranormal",
+    "date": "2018-03-16",
+    "summary": "Deadly Poison buffed from 4 to 5",
+    "diffs": [
+      {
+        "attribute": "poison",
+        "displayName": "Poison",
+        "before": 4,
+        "after": 5,
+        "diffType": "number"
+      },
+      {
+        "attribute": "poison",
+        "displayName": "Poison",
+        "before": 6,
+        "after": 7,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "malaise-wp34-rarity",
+    "entityType": "card",
+    "entityId": "malaise",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Malaise rarity increased from Uncommon to Rare.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Rare",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "nightmare-wp8-upgrade-nerf",
+    "entityType": "card",
+    "entityId": "nightmare",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-04",
+    "summary": "Nightmare+ nerfed: previously added 4 copies of cards, now reduces energy cost to 2 instead.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "before": "Add 4 copies",
+        "after": "Cost reduced to 2",
+        "diffType": "rework",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "sneaky-strike-wp16-rework",
+    "entityType": "card",
+    "entityId": "sneaky-strike",
+    "patch": "Weekly Patch 16: Back to Work",
+    "date": "2018-02-28",
+    "summary": "Card reworked with new cost and effect structure. Cost set to 2, dealing 8 damage with conditional energy gain upon discard.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "(previous mechanic)",
+        "after": "Cost 2, deal 8 damage. If discarded, gain 2 Energy.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "sneaky-strike-wp17-rename",
+    "entityType": "card",
+    "entityId": "sneaky-strike",
+    "patch": "Weekly Patch 17: Patched in the Face",
+    "date": "2018-03-09",
+    "summary": "Card renamed from Underhand Strike to Sneaky Strike.",
+    "diffs": [
+      {
+        "attribute": "name",
+        "displayName": "Name",
+        "before": "Underhand Strike",
+        "after": "Sneaky Strike",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "sneaky-strike-wp21-damage",
+    "entityType": "card",
+    "entityId": "sneaky-strike",
+    "patch": "Weekly Patch 21: Channel Lightning",
+    "date": "2018-04-20",
+    "summary": "Sneaky Strike damage increased from 8 to 10",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 8,
+        "after": 10,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 12,
+        "after": 14,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "sneaky-strike-v22-damage",
+    "entityType": "card",
+    "entityId": "sneaky-strike",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Sneaky Strike damage increased from 10 to 12",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 10,
+        "after": 12,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 14,
+        "after": 16,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "storm-of-steel-wp8-upgrade",
+    "entityType": "card",
+    "entityId": "storm-of-steel",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-04",
+    "summary": "Storm of Steel+ reworked to provide upgraded Shivs instead of lowering cost.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "before": "Reduced cost",
+        "after": "Generates upgraded Shivs (Shiv+)",
+        "diffType": "rework",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "storm-of-steel-v22-cost",
+    "entityType": "card",
+    "entityId": "storm-of-steel",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Storm of Steel cost reduced from 2 to 1. Storm of Steel+ cost reduced from 2 to 1.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 2,
+        "after": 1,
+        "diffType": "number"
+      },
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 2,
+        "after": 1,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "tactician-wp34-rarity",
+    "entityType": "card",
+    "entityId": "tactician",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Tactician rarity changed to Uncommon.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Common",
+        "after": "Uncommon",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "well-laid-plans-wp1-rework",
+    "entityType": "card",
+    "entityId": "well-laid-plans",
+    "patch": "Weekly Patch 1: The First of Many!",
+    "date": "2017-11-23",
+    "summary": "Well-Laid Plans completely reworked.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "(original)",
+        "after": "Reworked",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "well-laid-plans-v20-cost",
+    "entityType": "card",
+    "entityId": "well-laid-plans",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Well-Laid Plans cost increased from 0 to 1.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 0,
+        "after": 1,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "accuracy-v22-damage",
+    "entityType": "card",
+    "entityId": "accuracy",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Accuracy card buffed. Damage increased from 3 to 4. Accuracy+ from 5 to 6.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Shiv Bonus Damage",
+        "before": 3,
+        "after": 4,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Shiv Bonus Damage",
+        "before": 5,
+        "after": 6,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "all-out-attack-wp17-rework",
+    "entityType": "card",
+    "entityId": "all-out-attack",
+    "patch": "Weekly Patch 17: Patched in the Face",
+    "date": "2018-03-09",
+    "summary": "All-Out Attack reworked and buffed. Discard effect changed to 'discard 1 card at random'.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Draw reduction as penalty",
+        "after": "Discard 1 card at random",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "bullet-time-wp5-rework",
+    "entityType": "card",
+    "entityId": "bullet-time",
+    "patch": "Weekly Patch 5: Happy Holidays!",
+    "date": "2017-12-22",
+    "summary": "Bullet Time now affects all cards in hand, works with Madness, and no longer applies a Power to you.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Applies a Power that reduces costs",
+        "after": "All cards in hand cost 0 this turn. You can no longer draw cards this turn.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "eviscerate-v22-damage",
+    "entityType": "card",
+    "entityId": "eviscerate",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Eviscerate damage increased from 6 to 7. Eviscerate+ from 8 to 9.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage (per hit)",
+        "before": 6,
+        "after": 7,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage (per hit)",
+        "before": 8,
+        "after": 9,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "good-instincts-wp8-upgrade",
+    "entityType": "card",
+    "entityId": "good-instincts",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-04",
+    "summary": "Good Instincts+ block increased from 4 to 7.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 4,
+        "after": 7,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "good-instincts-wp46-block",
+    "entityType": "card",
+    "entityId": "good-instincts",
+    "patch": "Weekly Patch 46: Adrenaline",
+    "date": "2018-10-25",
+    "summary": "Good Instincts block increased from 4 to 5. Good Instincts+ from 7 to 8.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 4,
+        "after": 5,
+        "diffType": "number"
+      },
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 7,
+        "after": 8,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "good-instincts-v22-block",
+    "entityType": "card",
+    "entityId": "good-instincts",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Good Instincts block increased from 5 to 6. Good Instincts+ from 8 to 9.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 5,
+        "after": 6,
+        "diffType": "number"
+      },
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 8,
+        "after": 9,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "heel-hook-v11-damage",
+    "entityType": "card",
+    "entityId": "heel-hook",
+    "patch": "Patch V1.1: The Dealer",
+    "date": "2019-07-01",
+    "summary": "Heel Hook+ damage increased from 7 to 8.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 7,
+        "after": 8,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "phantasmal-killer-v22-cost",
+    "entityType": "card",
+    "entityId": "phantasmal-killer",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Phantasmal Killer cost reduced from 2 to 1. Phantasmal Killer+ cost from 1 to 0.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 2,
+        "after": 1,
+        "diffType": "number"
+      },
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 1,
+        "after": 0,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "reflex-v22-draw",
+    "entityType": "card",
+    "entityId": "reflex",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Reflex card draw increased from 1 to 2. Reflex+ from 2 to 3.",
+    "diffs": [
+      {
+        "attribute": "draw",
+        "displayName": "Card Draw",
+        "before": 1,
+        "after": 2,
+        "diffType": "number"
+      },
+      {
+        "attribute": "draw",
+        "displayName": "Card Draw",
+        "before": 2,
+        "after": 3,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "sadistic-nature-wp8-upgrade",
+    "entityType": "card",
+    "entityId": "sadistic-nature",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-04",
+    "summary": "Sadistic Nature+ damage increased from 3 to 4.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 3,
+        "after": 4,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "sadistic-nature-v22-damage",
+    "entityType": "card",
+    "entityId": "sadistic-nature",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Sadistic Nature damage increased from 3 to 5. Sadistic Nature+ from 4 to 7.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 3,
+        "after": 5,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 4,
+        "after": 7,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "slice-v22-damage",
+    "entityType": "card",
+    "entityId": "slice",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Slice damage increased from 5 to 6. Slice+ from 8 to 9.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 5,
+        "after": 6,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 8,
+        "after": 9,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "swift-strike-wp8-upgrade",
+    "entityType": "card",
+    "entityId": "swift-strike",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-04",
+    "summary": "Swift Strike+ damage increased from 5 to 8.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 5,
+        "after": 8,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "swift-strike-wp46-damage",
+    "entityType": "card",
+    "entityId": "swift-strike",
+    "patch": "Weekly Patch 46: Adrenaline",
+    "date": "2018-10-25",
+    "summary": "Swift Strike damage increased from 5 to 6. Swift Strike+ from 8 to 9.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 5,
+        "after": 6,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 8,
+        "after": 9,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "swift-strike-v22-damage",
+    "entityType": "card",
+    "entityId": "swift-strike",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Swift Strike damage increased from 6 to 7. Swift Strike+ from 9 to 10.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 6,
+        "after": 7,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 9,
+        "after": 10,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "dramatic-entrance-wp8-upgrade",
+    "entityType": "card",
+    "entityId": "dramatic-entrance",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-04",
+    "summary": "Dramatic Entrance+ damage increased from 6 to 8.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 6,
+        "after": 8,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "dramatic-entrance-v22-damage",
+    "entityType": "card",
+    "entityId": "dramatic-entrance",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Dramatic Entrance damage increased from 6 to 8. Dramatic Entrance+ from 8 to 12.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 6,
+        "after": 8,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 8,
+        "after": 12,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "mind-blast-wp8-upgrade",
+    "entityType": "card",
+    "entityId": "mind-blast",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-04",
+    "summary": "Mind Blast+ now grants Innate status.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Effect",
+        "before": "(none)",
+        "after": "Innate",
+        "diffType": "text",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "mind-blast-wp32-rework",
+    "entityType": "card",
+    "entityId": "mind-blast",
+    "patch": "Weekly Patch 32: Face Trader",
+    "date": "2018-07-05",
+    "summary": "Mind Blast is now always Innate, costs 2, upgrade reduces cost to 1.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 0,
+        "after": 2,
+        "diffType": "number"
+      },
+      {
+        "attribute": "innate",
+        "displayName": "Innate",
+        "before": "Upgrade only",
+        "after": "Always Innate",
+        "diffType": "text"
+      },
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "before": 0,
+        "after": 1,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "trip-wp8-upgrade",
+    "entityType": "card",
+    "entityId": "trip",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-04",
+    "summary": "Trip+ now applies 2 Vulnerable to ALL enemies instead of single target.",
+    "diffs": [
+      {
+        "attribute": "target",
+        "displayName": "Target",
+        "before": "Single enemy",
+        "after": "ALL enemies",
+        "diffType": "text",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "transmutation-wp8-rework",
+    "entityType": "card",
+    "entityId": "transmutation",
+    "patch": "Weekly Patch 8: Ooh Shiny!",
+    "date": "2018-01-04",
+    "summary": "Transmutation reworked from 'Transform your Hand' to 'Gain X random colorless cards'.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Cost X → Transform your Hand. Exhaust.",
+        "after": "Cost X → Gain X random colorless cards. Exhaust.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "transmutation-wp37-free",
+    "entityType": "card",
+    "entityId": "transmutation",
+    "patch": "Weekly Patch 37: Darkness",
+    "date": "2018-08-16",
+    "summary": "Cards acquired by Transmutation now cost 0 for the turn.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Gain X random colorless cards",
+        "after": "Gain X random colorless cards that cost 0 this turn",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "deflect-wp46-block",
+    "entityType": "card",
+    "entityId": "deflect",
+    "patch": "Weekly Patch 46: Adrenaline",
+    "date": "2018-10-25",
+    "summary": "Deflect+ block increased from 6 to 7.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 6,
+        "after": 7,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "glacier-wp34-block",
+    "entityType": "card",
+    "entityId": "glacier",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Glacier block nerfed from 9 to 8.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 9,
+        "after": 8,
+        "diffType": "number"
+      },
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 12,
+        "after": 11,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "glacier-wp37-block",
+    "entityType": "card",
+    "entityId": "glacier",
+    "patch": "Weekly Patch 37: Darkness",
+    "date": "2018-08-16",
+    "summary": "Glacier block nerfed from 8 to 7.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 8,
+        "after": 7,
+        "diffType": "number"
+      },
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "before": 11,
+        "after": 10,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "hyperbeam-wp34-damage",
+    "entityType": "card",
+    "entityId": "hyperbeam",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Hyperbeam damage buffed from 25 to 26.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 25,
+        "after": 26,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 32,
+        "after": 34,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "ball-lightning-wp36-upgrade-nerf",
+    "entityType": "card",
+    "entityId": "ball-lightning",
+    "patch": "Weekly Patch 36: Power Through",
+    "date": "2018-08-02",
+    "summary": "Ball Lightning+ damage nerfed from 4 to 3 additional damage on upgrade.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 11,
+        "after": 10,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "reprogram-v20-rework",
+    "entityType": "card",
+    "entityId": "reprogram",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Reprogram card reworked.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "(previous mechanic)",
+        "after": "Lose 1 Focus. Gain 1 Strength. Gain 1 Dexterity.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "reprogram-v22-buff",
+    "entityType": "card",
+    "entityId": "reprogram",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Reprogram Focus loss decreased from 2 to 1. Reprogram+ Focus loss, Strength, and Dexterity changed from 1 to 2.",
+    "diffs": [
+      {
+        "attribute": "focusLoss",
+        "displayName": "Focus Loss",
+        "before": 2,
+        "after": 1,
+        "diffType": "number"
+      },
+      {
+        "attribute": "focusLoss",
+        "displayName": "Focus Loss",
+        "before": 1,
+        "after": 2,
+        "diffType": "number",
+        "upgraded": true
+      },
+      {
+        "attribute": "strength",
+        "displayName": "Strength",
+        "before": 1,
+        "after": 2,
+        "diffType": "number",
+        "upgraded": true
+      },
+      {
+        "attribute": "dexterity",
+        "displayName": "Dexterity",
+        "before": 1,
+        "after": 2,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "aggregate-v22-buff",
+    "entityType": "card",
+    "entityId": "aggregate",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Aggregate energy gained every 6 cards changed to every 4 cards. Aggregate+ from every 5 to every 3.",
+    "diffs": [
+      {
+        "attribute": "cardsPerEnergy",
+        "displayName": "Cards Per Energy",
+        "before": 6,
+        "after": 4,
+        "diffType": "number"
+      },
+      {
+        "attribute": "cardsPerEnergy",
+        "displayName": "Cards Per Energy",
+        "before": 5,
+        "after": 3,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "scrape-v22-buff",
+    "entityType": "card",
+    "entityId": "scrape",
+    "patch": "Patch V2.2: Happy Holidays!",
+    "date": "2020-12-15",
+    "summary": "Scrape draw increased from 3 to 4. Scrape+ damage 9→10, draw 4→5.",
+    "diffs": [
+      {
+        "attribute": "draw",
+        "displayName": "Card Draw",
+        "before": 3,
+        "after": 4,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 9,
+        "after": 10,
+        "diffType": "number",
+        "upgraded": true
+      },
+      {
+        "attribute": "draw",
+        "displayName": "Card Draw",
+        "before": 4,
+        "after": 5,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "bullseye-wp39-rework",
+    "entityType": "card",
+    "entityId": "bullseye",
+    "patch": "Weekly Patch 39: We Meet Again!",
+    "date": "2018-09-06",
+    "summary": "Lock-On card reworked and renamed to Bullseye.",
+    "diffs": [
+      {
+        "attribute": "name",
+        "displayName": "Name",
+        "before": "Lock-On",
+        "after": "Bullseye",
+        "diffType": "text"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Deal 9 (12) damage. Target receives 50% more damage from Orbs.",
+        "after": "Deal 8 (11) damage. Apply 1 (2) Lock-On.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "bullseye-v11-buff",
+    "entityType": "card",
+    "entityId": "bullseye",
+    "patch": "Patch V1.1: The Dealer",
+    "date": "2019-07-01",
+    "summary": "Bullseye buffed. Lock-On 1→2. Bullseye+ damage 10→11.",
+    "diffs": [
+      {
+        "attribute": "lockOn",
+        "displayName": "Lock-On",
+        "before": 1,
+        "after": 2,
+        "diffType": "number"
+      },
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 10,
+        "after": 11,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "ritual-dagger-wp34-damage",
+    "entityType": "card",
+    "entityId": "ritual-dagger",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Ritual Dagger base damage increased from 9 to 12.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 9,
+        "after": 12,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "ritual-dagger-wp37-damage",
+    "entityType": "card",
+    "entityId": "ritual-dagger",
+    "patch": "Weekly Patch 37: Darkness",
+    "date": "2018-08-16",
+    "summary": "Ritual Dagger base damage increased from 12 to 15. Upgrade bonus amount from 1 to 2.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "before": 12,
+        "after": 15,
+        "diffType": "number"
+      },
+      {
+        "attribute": "scalingPerKill",
+        "displayName": "Scaling Per Kill",
+        "before": 1,
+        "after": 2,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "black-blood-v20-heal",
+    "entityType": "relic",
+    "entityId": "black-blood",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Black Blood relic buffed. Heal increased from 10 to 12.",
+    "diffs": [
+      {
+        "attribute": "heal",
+        "displayName": "Heal",
+        "before": 10,
+        "after": 12,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "calling-bell-v20-rework",
+    "entityType": "relic",
+    "entityId": "calling-bell",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Calling Bell reworked. Previously gave 3 curses and 3 relics. Now gives a unique 'Curse of the Bell' and 3 relics.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Obtain 3 random relics. Obtain 3 random Curses.",
+        "after": "Obtain 3 random relics. Obtain Curse of the Bell.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "centennial-puzzle-wp32-rarity",
+    "entityType": "relic",
+    "entityId": "centennial-puzzle",
+    "patch": "Weekly Patch 32: Face Trader",
+    "date": "2018-07-05",
+    "summary": "Centennial Puzzle relic rarity changed from Uncommon to Common.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Common",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "eternal-feather-wp34-heal",
+    "entityType": "relic",
+    "entityId": "eternal-feather",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Eternal Feather healing buffed from 2 to 3 HP per 5 cards.",
+    "diffs": [
+      {
+        "attribute": "heal",
+        "displayName": "Heal Per 5 Cards",
+        "before": 2,
+        "after": 3,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "eternal-feather-v20-rarity",
+    "entityType": "relic",
+    "entityId": "eternal-feather",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Eternal Feather rarity changed from Boss to Uncommon.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Boss",
+        "after": "Uncommon",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "hovering-kite-wp34-nerf",
+    "entityType": "relic",
+    "entityId": "hovering-kite",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Hovering Kite nerfed: discard requirement increased from 1 to 2.",
+    "diffs": [
+      {
+        "attribute": "discards",
+        "displayName": "Discards Required",
+        "before": 1,
+        "after": 2,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "hovering-kite-v20-rework",
+    "entityType": "relic",
+    "entityId": "hovering-kite",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Hovering Kite reworked. Old: 'Gain 1 Energy and discard 2 cards at the start of your turn'. New: 'The first time you discard a card each turn, gain 1 Energy'.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "At the start of your turn, gain 1 Energy and discard 2 cards.",
+        "after": "The first time you discard a card each turn, gain 1 Energy.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "lizard-tail-v20-rarity",
+    "entityType": "relic",
+    "entityId": "lizard-tail",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Lizard Tail rarity changed from Boss to Rare.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Boss",
+        "after": "Rare",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "meal-ticket-wp32-added",
+    "entityType": "relic",
+    "entityId": "meal-ticket",
+    "patch": "Weekly Patch 32: Face Trader",
+    "date": "2018-07-05",
+    "summary": "Meal Ticket relic added as a shop relic.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Status",
+        "before": "(not in game)",
+        "after": "Added to game as Shop rarity",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "meal-ticket-wp44-heal",
+    "entityType": "relic",
+    "entityId": "meal-ticket",
+    "patch": "Weekly Patch 44: Chrysalis",
+    "date": "2018-10-11",
+    "summary": "Meal Ticket healing increased from 7 to 10 HP.",
+    "diffs": [
+      {
+        "attribute": "heal",
+        "displayName": "Heal",
+        "before": 7,
+        "after": 10,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "meal-ticket-wp55-heal",
+    "entityType": "relic",
+    "entityId": "meal-ticket",
+    "patch": "Weekly Patch 55: Blur",
+    "date": "2019-01-31",
+    "summary": "Meal Ticket healing increased from 10 to 15 HP.",
+    "diffs": [
+      {
+        "attribute": "heal",
+        "displayName": "Heal",
+        "before": 10,
+        "after": 15,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "meal-ticket-v20-rarity",
+    "entityType": "relic",
+    "entityId": "meal-ticket",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Meal Ticket rarity changed from Shop to Common.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Shop",
+        "after": "Common",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "orrery-wp3-rarity",
+    "entityType": "relic",
+    "entityId": "orrery",
+    "patch": "Weekly Patch 3: Balance Balance Balance",
+    "date": "2017-12-08",
+    "summary": "Orrery rarity changed to Uncommon (temporarily removed due to crashes).",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Boss",
+        "after": "Uncommon",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "orrery-wp4-reverted",
+    "entityType": "relic",
+    "entityId": "orrery",
+    "patch": "Weekly Patch 4: Full speed ahead!",
+    "date": "2017-12-14",
+    "summary": "Orrery reverted back to Boss relic status.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Boss",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "orrery-v20-rarity",
+    "entityType": "relic",
+    "entityId": "orrery",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Orrery rarity changed from Boss to Shop.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Boss",
+        "after": "Shop",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "prayer-wheel-wp25-rework",
+    "entityType": "relic",
+    "entityId": "prayer-wheel",
+    "patch": "Weekly Patch 25: Building Blocks",
+    "date": "2018-05-18",
+    "summary": "Prayer Wheel reworked and changed from Common to Rare. Now doubles normal combat card drops instead of adding cards to chests.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Common",
+        "after": "Rare",
+        "diffType": "enum"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Chests also contain cards",
+        "after": "Normal combat card rewards are doubled",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "question-card-wp18-rarity",
+    "entityType": "relic",
+    "entityId": "question-card",
+    "patch": "Weekly Patch 18: Paranormal",
+    "date": "2018-03-16",
+    "summary": "Question Card rarity changed from Boss to Uncommon.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Boss",
+        "after": "Uncommon",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "runic-pyramid-wp28-buff",
+    "entityType": "relic",
+    "entityId": "runic-pyramid",
+    "patch": "Weekly Patch 28: The Ritual",
+    "date": "2018-06-07",
+    "summary": "Runic Pyramid no longer has a downside. Previously -1 card draw per turn.",
+    "diffs": [
+      {
+        "attribute": "drawPenalty",
+        "displayName": "Draw Penalty",
+        "before": -1,
+        "after": 0,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "snecko-eye-wp3-added",
+    "entityType": "relic",
+    "entityId": "snecko-eye",
+    "patch": "Weekly Patch 3: Balance Balance Balance",
+    "date": "2017-12-08",
+    "summary": "Snecko Eye added as a new Boss relic.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Status",
+        "before": "(not in game)",
+        "after": "Added to game as Boss relic",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "sozu-wp13-rework",
+    "entityType": "relic",
+    "entityId": "sozu",
+    "patch": "Weekly Patch 13: Thinking Ahead",
+    "date": "2018-02-08",
+    "summary": "Sozu now prevents acquiring new potions rather than preventing usage (similar to Ectoplasm).",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "You can no longer use potions",
+        "after": "You can no longer obtain potions",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "tiny-chest-v20-rework",
+    "entityType": "relic",
+    "entityId": "tiny-chest",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Tiny Chest relic reworked.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "(previous mechanic)",
+        "after": "Every 4th ? room is a Treasure room",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "toolbox-wp32-rarity",
+    "entityType": "relic",
+    "entityId": "toolbox",
+    "patch": "Weekly Patch 32: Face Trader",
+    "date": "2018-07-05",
+    "summary": "Toolbox relic rarity changed from Uncommon to Shop.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Shop",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "toolbox-v20-buff",
+    "entityType": "relic",
+    "entityId": "toolbox",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Toolbox buffed: choose 1 of 3 Colorless cards instead of obtaining a random one.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "before": "Obtain a random Colorless card",
+        "after": "Choose 1 of 3 Colorless cards",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "toy-ornithopter-wp39-heal",
+    "entityType": "relic",
+    "entityId": "toy-ornithopter",
+    "patch": "Weekly Patch 39: We Meet Again!",
+    "date": "2018-09-06",
+    "summary": "Toy Ornithopter healing increased from 3 to 5.",
+    "diffs": [
+      {
+        "attribute": "heal",
+        "displayName": "Heal",
+        "before": 3,
+        "after": 5,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "toy-ornithopter-v20-rarity",
+    "entityType": "relic",
+    "entityId": "toy-ornithopter",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Toy Ornithopter rarity changed from Shop to Common.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Shop",
+        "after": "Common",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "white-beast-statue-v20-rarity",
+    "entityType": "relic",
+    "entityId": "white-beast-statue",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "White Beast Statue rarity changed from Boss to Uncommon.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Boss",
+        "after": "Uncommon",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "wrist-blade-wp34-added",
+    "entityType": "relic",
+    "entityId": "wrist-blade",
+    "patch": "Weekly Patch 34: Malaise",
+    "date": "2018-07-19",
+    "summary": "Wrist Blade added as Silent Boss relic.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Status",
+        "before": "(not in game)",
+        "after": "Added as Silent Boss relic. +3 damage on 0-cost attacks.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "wrist-blade-v20-damage",
+    "entityType": "relic",
+    "entityId": "wrist-blade",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Wrist Blade additional damage increased from 3 to 4.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Additional Damage",
+        "before": 3,
+        "after": 4,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "shop-relics-v20-price",
+    "entityType": "relic",
+    "entityId": "shop-relics-general",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Shop rarity relics base price reduced from 200 to 150.",
+    "diffs": [
+      {
+        "attribute": "basePrice",
+        "displayName": "Base Price",
+        "before": 200,
+        "after": 150,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "blood-potion-v11-heal",
+    "entityType": "relic",
+    "entityId": "blood-potion",
+    "patch": "Patch V1.1: The Dealer",
+    "date": "2019-07-01",
+    "summary": "Blood Potion healing increased from 10% to 25%.",
+    "diffs": [
+      {
+        "attribute": "heal",
+        "displayName": "Heal Percent",
+        "before": "10%",
+        "after": "25%",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "blood-potion-v20-buff",
+    "entityType": "relic",
+    "entityId": "blood-potion",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Blood Potion healing changed from 25% to 20%. Rarity changed from Uncommon to Common.",
+    "diffs": [
+      {
+        "attribute": "heal",
+        "displayName": "Heal Percent",
+        "before": "25%",
+        "after": "20%",
+        "diffType": "text"
+      },
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Common",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "fairy-in-a-bottle-v20-heal",
+    "entityType": "relic",
+    "entityId": "fairy-in-a-bottle",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Fairy in the Bottle healing buffed from 10% to 30% HP.",
+    "diffs": [
+      {
+        "attribute": "heal",
+        "displayName": "Heal Percent",
+        "before": "10%",
+        "after": "30%",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "focus-potion-v20-rarity",
+    "entityType": "relic",
+    "entityId": "focus-potion",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Focus Potion rarity changed from Uncommon to Common.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Common",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "ghost-in-a-jar-v20-rarity",
+    "entityType": "relic",
+    "entityId": "ghost-in-a-jar",
+    "patch": "Patch V2.0: The Watcher",
+    "date": "2020-01-14",
+    "summary": "Ghost in a Jar rarity changed from Uncommon to Rare.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "before": "Uncommon",
+        "after": "Rare",
+        "diffType": "enum"
+      }
+    ]
+  }
+]
