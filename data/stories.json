@@ -94,5 +94,13 @@
     "entityId": "question-card",
     "changeId": "question-card-wp18-rarity",
     "tags": ["변경", "유물"]
+  },
+  {
+    "id": "runic-dodecahedron-removed",
+    "sentence": "어째서 룬물이...",
+    "entityType": "relic",
+    "entityId": "runic-dodecahedron",
+    "changeId": "runic-dodecahedron-removed",
+    "tags": ["삭제", "유물"]
   }
 ]

@@ -3636,5 +3636,22 @@
         "diffType": "text"
       }
     ]
+  },
+  {
+    "id": "runic-dodecahedron-removed",
+    "entityType": "relic",
+    "entityId": "runic-dodecahedron",
+    "patch": "Weekly Patch 6: We're Back!",
+    "date": "2018-01-12",
+    "summary": "Runic Dodecahedron removed from the game.",
+    "diffs": [
+      {
+        "attribute": "status",
+        "displayName": "Status",
+        "before": "Active",
+        "after": "Removed",
+        "diffType": "enum"
+      }
+    ]
   }
 ]

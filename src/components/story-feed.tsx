@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Story, Card, Change, Relic, Potion } from "@/lib/types";
+import { useAuth } from "@/hooks/use-auth";
+import { LikeButton } from "@/components/like-button";
+import { CommentSection } from "@/components/comment-section";
 
 function DiffLine({ diff }: { diff: Change["diffs"][0] }) {
   return (
@@ -45,7 +48,7 @@ function EntityInfo({ story, card, relic, potion }: { story: Story; card?: Card;
           alt={relic.name}
           width={48}
           height={48}
-          className="shrink-0 group-hover:scale-110 transition-transform"
+          className="shrink-0 w-auto h-auto group-hover:scale-110 transition-transform"
         />
         <div>
           <p className="font-medium group-hover:text-yellow-500 transition-colors">{relic.nameKo}</p>
@@ -62,7 +65,7 @@ function EntityInfo({ story, card, relic, potion }: { story: Story; card?: Card;
           alt={potion.name}
           width={48}
           height={48}
-          className="shrink-0 group-hover:scale-110 transition-transform"
+          className="shrink-0 w-auto h-auto group-hover:scale-110 transition-transform"
         />
         <div>
           <p className="font-medium group-hover:text-yellow-500 transition-colors">{potion.nameKo}</p>
@@ -116,45 +119,40 @@ function StoryCard({
   relic,
   potion,
   change,
+  userId,
+  expanded,
+  onToggle,
 }: {
   story: Story;
   card?: Card;
   relic?: Relic;
   potion?: Potion;
   change?: Change;
+  userId: string | null;
+  expanded: boolean;
+  onToggle: (storyId: string) => void;
 }) {
-  const [expanded, setExpanded] = useState(false);
-
   return (
     <article className="border-b border-border/50 last:border-b-0">
       <div className="px-4 py-6">
         {/* Sentence */}
         <button
-          onClick={() => setExpanded(!expanded)}
-          className="w-full"
+          onClick={() => onToggle(story.id)}
+          className="w-full cursor-pointer hover:opacity-80 transition-opacity"
         >
           <p className="text-lg sm:text-xl font-medium leading-snug text-center">
             &ldquo;{story.sentence}&rdquo;
           </p>
         </button>
 
-        {/* Expanded: tags, engagement, card, change detail */}
+        {/* Expanded: engagement, card, change detail, comments */}
         {expanded && (
           <div className="mt-4 space-y-3">
             <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-              <span>♥ 0</span>
-              <span>💬 0</span>
-              {story.tags && story.tags.length > 0 &&
-                story.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-zinc-800 px-2 py-0.5"
-                  >
-                    {tag}
-                  </span>
-                ))}
+              <LikeButton storyId={story.id} userId={userId} />
             </div>
             {change && <ChangeDetail change={change} story={story} card={card} relic={relic} potion={potion} />}
+            <CommentSection storyId={story.id} userId={userId} />
           </div>
         )}
       </div>
@@ -175,6 +173,41 @@ export function StoryFeed({
   potions: Potion[];
   changes: Change[];
 }) {
+  const { userId } = useAuth();
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      setExpandedIds(new Set(hash.split(",")));
+    }
+  }, []);
+
+  const toggle = useCallback((storyId: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(storyId)) next.delete(storyId);
+      else next.add(storyId);
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    const hash = [...expandedIds].join(",");
+    window.history.replaceState(null, "", hash ? `#${hash}` : " ");
+  }, [expandedIds]);
+
+  const [shuffled, setShuffled] = useState(stories);
+
+  useEffect(() => {
+    const arr = [...stories];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    setShuffled(arr);
+  }, [stories]);
+
   const cardMap = new Map(cards.map((c) => [c.id, c]));
   const relicMap = new Map(relics.map((r) => [r.id, r]));
   const potionMap = new Map(potions.map((p) => [p.id, p]));
@@ -182,7 +215,7 @@ export function StoryFeed({
 
   return (
     <div className="divide-y divide-border/50">
-      {stories.map((story) => (
+      {shuffled.map((story) => (
         <StoryCard
           key={story.id}
           story={story}
@@ -190,6 +223,9 @@ export function StoryFeed({
           relic={relicMap.get(story.entityId)}
           potion={potionMap.get(story.entityId)}
           change={changeMap.get(story.changeId)}
+          userId={userId}
+          expanded={expandedIds.has(story.id)}
+          onToggle={toggle}
         />
       ))}
     </div>
