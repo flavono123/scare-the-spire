@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useComments } from "@/hooks/use-comments";
 
 const NICKNAME_KEY = "sts-nickname";
@@ -24,8 +24,14 @@ function setDraft(storyId: string, value: string) {
   else sessionStorage.removeItem(`sts-draft:${storyId}`);
 }
 
-export function CommentSection({ storyId, userId }: { storyId: string; userId: string | null }) {
+export function CommentSection({ storyId, userId, onCountChange }: { storyId: string; userId: string | null; onCountChange?: (count: number) => void }) {
   const { comments, loading, add, remove } = useComments(storyId, userId);
+
+  const prevCount = useRef(0);
+  if (comments.length !== prevCount.current) {
+    prevCount.current = comments.length;
+    onCountChange?.(comments.length);
+  }
   const [nickname, setNickname] = useState(getNickname);
   const [content, setContent] = useState(() => getDraft(storyId));
   const [submitting, setSubmitting] = useState(false);

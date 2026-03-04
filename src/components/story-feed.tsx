@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Story, Card, Change, Relic, Potion } from "@/lib/types";
 import { useAuth } from "@/hooks/use-auth";
+import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { LikeButton } from "@/components/like-button";
 import { CommentSection } from "@/components/comment-section";
 
@@ -122,6 +123,8 @@ function StoryCard({
   userId,
   expanded,
   onToggle,
+  likeCount,
+  commentCount,
 }: {
   story: Story;
   card?: Card;
@@ -131,28 +134,38 @@ function StoryCard({
   userId: string | null;
   expanded: boolean;
   onToggle: (storyId: string) => void;
+  likeCount: number;
+  commentCount: number;
 }) {
+  const [liveCommentCount, setLiveCommentCount] = useState<number | null>(null);
+  const displayCommentCount = liveCommentCount ?? commentCount;
+
   return (
     <article className="border-b border-border/50 last:border-b-0">
       <div className="px-4 py-6">
-        {/* Sentence */}
-        <button
-          onClick={() => onToggle(story.id)}
-          className="w-full cursor-pointer hover:opacity-80 transition-opacity"
-        >
-          <p className="text-lg sm:text-xl font-medium leading-snug text-center">
-            &ldquo;{story.sentence}&rdquo;
-          </p>
-        </button>
+        {/* Sentence + engagement */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => onToggle(story.id)}
+            className="flex-1 min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
+          >
+            <p className="text-lg sm:text-xl font-medium leading-snug text-center">
+              &ldquo;{story.sentence}&rdquo;
+              {displayCommentCount > 0 && (
+                <span className="ml-2 text-xs font-normal text-muted-foreground/50">[{displayCommentCount}]</span>
+              )}
+            </p>
+          </button>
+          <div className="shrink-0">
+            <LikeButton storyId={story.id} userId={userId} />
+          </div>
+        </div>
 
-        {/* Expanded: engagement, card, change detail, comments */}
+        {/* Expanded: card, change detail, comments */}
         {expanded && (
           <div className="mt-4 space-y-3">
-            <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-              <LikeButton storyId={story.id} userId={userId} />
-            </div>
             {change && <ChangeDetail change={change} story={story} card={card} relic={relic} potion={potion} />}
-            <CommentSection storyId={story.id} userId={userId} />
+            <CommentSection storyId={story.id} userId={userId} onCountChange={setLiveCommentCount} />
           </div>
         )}
       </div>
@@ -174,6 +187,7 @@ export function StoryFeed({
   changes: Change[];
 }) {
   const { userId } = useAuth();
+  const counts = useEngagementCounts();
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -226,6 +240,8 @@ export function StoryFeed({
           userId={userId}
           expanded={expandedIds.has(story.id)}
           onToggle={toggle}
+          likeCount={counts.likes[story.id] ?? 0}
+          commentCount={counts.comments[story.id] ?? 0}
         />
       ))}
     </div>
