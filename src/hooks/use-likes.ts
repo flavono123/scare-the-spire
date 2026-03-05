@@ -6,7 +6,7 @@ import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 interface UseLikesReturn {
   count: number;
   liked: boolean;
-  toggle: () => Promise<void>;
+  toggle: () => void;
 }
 
 export function useLikes(storyId: string, userId: string | null): UseLikesReturn {
