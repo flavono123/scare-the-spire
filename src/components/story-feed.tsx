@@ -123,7 +123,6 @@ function StoryCard({
   userId,
   expanded,
   onToggle,
-  likeCount,
   commentCount,
 }: {
   story: Story;
@@ -188,14 +187,11 @@ export function StoryFeed({
 }) {
   const { userId } = useAuth();
   const counts = useEngagementCounts();
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(() => {
+    if (typeof window === "undefined") return new Set();
     const hash = window.location.hash.slice(1);
-    if (hash) {
-      setExpandedIds(new Set(hash.split(",")));
-    }
-  }, []);
+    return hash ? new Set(hash.split(",")) : new Set();
+  });
 
   const toggle = useCallback((storyId: string) => {
     setExpandedIds((prev) => {
@@ -211,16 +207,14 @@ export function StoryFeed({
     window.history.replaceState(null, "", hash ? `#${hash}` : " ");
   }, [expandedIds]);
 
-  const [shuffled, setShuffled] = useState(stories);
-
-  useEffect(() => {
+  const [shuffled] = useState(() => {
     const arr = [...stories];
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    setShuffled(arr);
-  }, [stories]);
+    return arr;
+  });
 
   const cardMap = new Map(cards.map((c) => [c.id, c]));
   const relicMap = new Map(relics.map((r) => [r.id, r]));

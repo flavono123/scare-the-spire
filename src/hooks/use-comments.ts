@@ -21,15 +21,11 @@ interface UseCommentsReturn {
 
 export function useComments(storyId: string, userId: string | null): UseCommentsReturn {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(supabaseEnabled);
 
   useEffect(() => {
-    if (!supabaseEnabled) {
-      setLoading(false);
-      return;
-    }
+    if (!supabaseEnabled) return;
 
-    setLoading(true);
     supabase
       .from("comments")
       .select("*")

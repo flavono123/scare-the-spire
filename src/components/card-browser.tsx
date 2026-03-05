@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import type { Card, CardClass, CardType, Rarity, Change } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
@@ -134,7 +134,6 @@ function CardTile({
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
-  useEffect(() => setImgError(false), [upgraded]);
   const hasChanges = changes.length > 0;
   const wantUpgraded = upgraded && card.class !== "curse";
   const imgSrc = wantUpgraded && !imgError
@@ -327,7 +326,7 @@ export function CardBrowser({
           <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
             {filtered.map((card) => (
               <CardTile
-                key={card.id}
+                key={`${card.id}-${showUpgraded}`}
                 card={card}
                 changes={changeIndex.get(card.id) ?? []}
                 upgraded={showUpgraded}
