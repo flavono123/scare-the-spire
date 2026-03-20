@@ -50,6 +50,7 @@ function ChangeModal({
   onClose: () => void;
 }) {
   const [showBeta, setShowBeta] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <div
@@ -63,26 +64,40 @@ function ChangeModal({
         {/* Header */}
         <div className="flex items-start gap-4 mb-4">
           <div className="relative w-24 shrink-0">
-            <Image
-              src={
-                showBeta
-                  ? `/images/cards/${card.id}_beta.webp`
-                  : `/images/cards/${card.id}.webp`
-              }
-              alt={card.name}
-              width={170}
-              height={219}
-              className="rounded"
-            />
-            <button
-              onClick={() => setShowBeta(!showBeta)}
-              className="mt-1 w-full rounded bg-zinc-800 px-1 py-0.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {showBeta ? "일반 아트" : "베타 아트"}
-            </button>
+            {imgError ? (
+              <div className="w-full aspect-[170/219] rounded bg-zinc-900 flex items-center justify-center">
+                <span className="text-xs text-muted-foreground text-center px-2">{card.nameKo}</span>
+              </div>
+            ) : (
+              <Image
+                src={
+                  showBeta
+                    ? `/images/cards/${card.id}_beta.webp`
+                    : `/images/cards/${card.id}.webp`
+                }
+                alt={card.name}
+                width={170}
+                height={219}
+                className={`rounded ${card.deprecated ? "opacity-50 grayscale" : ""}`}
+                onError={() => setImgError(true)}
+              />
+            )}
+            {!imgError && (
+              <button
+                onClick={() => setShowBeta(!showBeta)}
+                className="mt-1 w-full rounded bg-zinc-800 px-1 py-0.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {showBeta ? "일반 아트" : "베타 아트"}
+              </button>
+            )}
           </div>
           <div className="flex-1">
-            <h2 className="text-lg font-bold">{card.nameKo}</h2>
+            <h2 className="text-lg font-bold">
+              {card.nameKo}
+              {card.deprecated && (
+                <span className="ml-2 text-xs font-medium text-red-400 bg-red-500/10 rounded px-1.5 py-0.5">삭제됨</span>
+              )}
+            </h2>
             <p className="text-sm text-muted-foreground">{card.name}</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               <Badge variant="outline" className="text-xs">
@@ -139,6 +154,7 @@ function CardTile({
   const imgSrc = wantUpgraded && !imgError
     ? `/images/cards/${card.id}_upgraded.webp`
     : `/images/cards/${card.id}.webp`;
+  const showPlaceholder = card.deprecated && imgError;
 
   return (
     <>
@@ -148,14 +164,26 @@ function CardTile({
           RARITY_BORDER[card.rarity] ?? "border-border"
         } bg-card/30 transition-all hover:scale-105 hover:shadow-lg hover:shadow-black/30`}
       >
-        <Image
-          src={imgSrc}
-          alt={card.name}
-          width={170}
-          height={219}
-          className="w-full"
-          onError={() => setImgError(true)}
-        />
+        {showPlaceholder ? (
+          <div className="w-full aspect-[170/219] bg-zinc-900 flex items-center justify-center">
+            <span className="text-xs text-muted-foreground text-center px-2">{card.nameKo}</span>
+          </div>
+        ) : (
+          <Image
+            src={imgSrc}
+            alt={card.name}
+            width={170}
+            height={219}
+            className={`w-full ${card.deprecated ? "opacity-50 grayscale" : ""}`}
+            onError={() => setImgError(true)}
+          />
+        )}
+        {/* Deprecated badge */}
+        {card.deprecated && (
+          <div className="absolute top-1 left-1 rounded bg-red-900/80 px-1.5 py-0.5 text-[9px] font-bold text-red-300">
+            삭제됨
+          </div>
+        )}
         {/* Change indicator */}
         {hasChanges && (
           <div className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-500 text-[10px] font-bold text-black">

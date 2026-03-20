@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { existsSync } from "fs";
+import path from "path";
 import { getCards, getChanges } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { ChangeList } from "@/components/change-list";
@@ -23,6 +25,7 @@ export default async function CardDetailPage({
   const cardChanges = changes.filter(
     (c) => c.entityType === "card" && c.entityId === id,
   );
+  const hasImage = existsSync(path.join(process.cwd(), "public", "images", "cards", `${card.id}.webp`));
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
@@ -34,15 +37,26 @@ export default async function CardDetailPage({
       </Link>
 
       <div className="mt-4 flex gap-6">
-        <Image
-          src={`/images/cards/${card.id}.webp`}
-          alt={card.name}
-          width={170}
-          height={219}
-          className="rounded-lg shrink-0"
-        />
+        {hasImage ? (
+          <Image
+            src={`/images/cards/${card.id}.webp`}
+            alt={card.name}
+            width={170}
+            height={219}
+            className={`rounded-lg shrink-0 ${card.deprecated ? "opacity-50 grayscale" : ""}`}
+          />
+        ) : (
+          <div className="w-[170px] h-[219px] rounded-lg shrink-0 bg-zinc-900 border border-border flex items-center justify-center">
+            <span className="text-sm text-muted-foreground text-center px-4">{card.nameKo}</span>
+          </div>
+        )}
         <div>
-          <h1 className="text-2xl font-bold">{card.nameKo}</h1>
+          <h1 className="text-2xl font-bold">
+            {card.nameKo}
+            {card.deprecated && (
+              <span className="ml-2 text-sm font-medium text-red-400 bg-red-500/10 rounded px-2 py-0.5">삭제됨</span>
+            )}
+          </h1>
           <p className="text-sm text-muted-foreground">{card.name}</p>
           <div className="mt-2 flex flex-wrap gap-1.5">
             <Badge variant="outline">

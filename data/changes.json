@@ -3653,5 +3653,22 @@
         "diffType": "enum"
       }
     ]
+  },
+  {
+    "id": "allocate-wp23-removed",
+    "entityType": "card",
+    "entityId": "allocate",
+    "patch": "Weekly Patch 23: Testing Continues...",
+    "date": "2018-05-04",
+    "summary": "Allocate removed from the game. Replaced by Consume.",
+    "diffs": [
+      {
+        "attribute": "status",
+        "displayName": "Status",
+        "before": "Active",
+        "after": "Removed",
+        "diffType": "enum"
+      }
+    ]
   }
 ]

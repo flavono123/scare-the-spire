@@ -51,6 +51,24 @@ public/images/
 - 강화: `_upgraded` suffix
 - 베타: `_beta` suffix
 
+## 삭제된 카드 이미지
+
+삭제된 카드는 원본 아트가 wiki에 남아있지 않으므로,
+대체/후속 카드의 이미지를 복사하여 사용.
+UI에서 `deprecated` 카드는 반투명+grayscale 처리되므로 원본과 구분됨.
+
+| 삭제 카드 | 이미지 소스 | 사유 |
+|-----------|-------------|------|
+| Allocate | Consume | 대체 카드 |
+| Blaster | Compile Driver | 대체 카드 |
+| Flux Capacitor | Fusion | 대체 카드 |
+| Reprieve | Boot Sequence | 같은 패치에 추가된 유사 카드 |
+| Venomology | Alchemize | 아트 재사용 (wiki 확인) |
+| Conserve Battery | Charge Battery | 이름 변경 (동일 카드) |
+| Nova | Creative AI | 파워 시너지 테마 유사 |
+| Lock-On | Bullseye | 이름 변경+리워크 |
+| Undo | Equilibrium | 이름 변경 |
+
 ## 프로덕션 아트 변경
 
 얼리 액세스 이후 프로덕션 카드/유물 아트가 변경된 이력 없음.

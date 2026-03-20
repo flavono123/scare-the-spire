@@ -16,6 +16,7 @@ export interface Card {
   descriptionUpgraded?: string;
   image?: string;
   imageBeta?: string;
+  deprecated?: boolean;
 }
 
 export type PotionRarity = "common" | "uncommon" | "rare";
@@ -59,11 +60,19 @@ export interface Change {
   diffs: AttributeDiff[];
 }
 
+export interface LinkedEntity {
+  entityType: "card" | "relic" | "potion";
+  entityId: string;
+  changeId?: string;
+  label?: string;  // e.g. "삭제", "대체"
+}
+
 export interface Story {
   id: string;
   sentence: string;
   entityType: "card" | "relic" | "potion";
   entityId: string;
   changeId: string;
+  linkedEntities?: LinkedEntity[];
   tags?: string[];
 }

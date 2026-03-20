@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { Story, Card, Change, Relic, Potion } from "@/lib/types";
+import type { Story, Card, Change, Relic, Potion, LinkedEntity } from "@/lib/types";
 import { useAuth } from "@/hooks/use-auth";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { LikeButton } from "@/components/like-button";
@@ -23,113 +23,196 @@ function DiffLine({ diff }: { diff: Change["diffs"][0] }) {
   );
 }
 
-function EntityInfo({ story, card, relic, potion }: { story: Story; card?: Card; relic?: Relic; potion?: Potion }) {
-  if (story.entityType === "card" && card) {
-    return (
-      <Link href={`/cards/${card.id}`} className="flex gap-3 items-start group">
-        <Image
-          src={`/images/cards/${card.id}.webp`}
-          alt={card.name}
-          width={85}
-          height={110}
-          className="rounded-md shrink-0 group-hover:scale-105 transition-transform"
-        />
-        <div>
-          <p className="font-medium group-hover:text-yellow-500 transition-colors">{card.nameKo}</p>
-          <p className="text-xs text-muted-foreground">{card.name}</p>
+function EntityImage({ entityType, entityId, name, deprecated }: {
+  entityType: string;
+  entityId: string;
+  name: string;
+  deprecated?: boolean;
+}) {
+  const [imgError, setImgError] = useState(false);
+
+  if (entityType === "card") {
+    if (imgError) {
+      return (
+        <div className="w-[85px] h-[110px] rounded-md shrink-0 bg-zinc-900 border border-border flex items-center justify-center">
+          <span className="text-[10px] text-muted-foreground text-center px-1">{name}</span>
         </div>
-      </Link>
+      );
+    }
+    return (
+      <Image
+        src={`/images/cards/${entityId}.webp`}
+        alt={name}
+        width={85}
+        height={110}
+        className={`rounded-md shrink-0 group-hover:scale-105 transition-transform ${deprecated ? "opacity-50 grayscale" : ""}`}
+        onError={() => setImgError(true)}
+      />
     );
   }
-  if (story.entityType === "relic" && relic) {
+
+  const folder = entityType === "relic" ? "relics" : "potions";
+  if (imgError) {
     return (
-      <Link href={`/relics/${relic.id}`} className="flex gap-3 items-start group">
-        <Image
-          src={`/images/relics/${relic.id}.webp`}
-          alt={relic.name}
-          width={48}
-          height={48}
-          className="shrink-0 w-auto h-auto group-hover:scale-110 transition-transform"
-        />
-        <div>
-          <p className="font-medium group-hover:text-yellow-500 transition-colors">{relic.nameKo}</p>
-          <p className="text-xs text-muted-foreground">{relic.name}</p>
-        </div>
-      </Link>
+      <div className="w-12 h-12 shrink-0 bg-zinc-900 border border-border rounded flex items-center justify-center">
+        <span className="text-[8px] text-muted-foreground">{name}</span>
+      </div>
     );
   }
-  if (story.entityType === "potion" && potion) {
-    return (
-      <Link href={`/potions/${potion.id}`} className="flex gap-3 items-start group">
-        <Image
-          src={`/images/potions/${potion.id}.webp`}
-          alt={potion.name}
-          width={48}
-          height={48}
-          className="shrink-0 w-auto h-auto group-hover:scale-110 transition-transform"
-        />
-        <div>
-          <p className="font-medium group-hover:text-yellow-500 transition-colors">{potion.nameKo}</p>
-          <p className="text-xs text-muted-foreground">{potion.name}</p>
-        </div>
-      </Link>
-    );
-  }
-  return null;
+  return (
+    <Image
+      src={`/images/${folder}/${entityId}.webp`}
+      alt={name}
+      width={48}
+      height={48}
+      className={`shrink-0 w-auto h-auto group-hover:scale-110 transition-transform ${deprecated ? "opacity-50 grayscale" : ""}`}
+      onError={() => setImgError(true)}
+    />
+  );
 }
 
-function ChangeDetail({ change, story, card, relic, potion }: { change: Change; story: Story; card?: Card; relic?: Relic; potion?: Potion }) {
+function EntityInfoBlock({ entityType, entityId, card, relic, potion, label }: {
+  entityType: string;
+  entityId: string;
+  card?: Card;
+  relic?: Relic;
+  potion?: Potion;
+  label?: string;
+}) {
+  const entity = entityType === "card" ? card : entityType === "relic" ? relic : potion;
+  if (!entity) return null;
+
+  const href = `/${entityType}s/${entityId}`;
+  const nameKo = "nameKo" in entity ? entity.nameKo : "";
+  const name = entity.name;
+  const deprecated = "deprecated" in entity ? entity.deprecated : false;
+
+  return (
+    <Link href={href} className="flex gap-3 items-start group">
+      <EntityImage entityType={entityType} entityId={entityId} name={nameKo || name} deprecated={deprecated} />
+      <div>
+        <p className="font-medium group-hover:text-yellow-500 transition-colors">
+          {nameKo}
+          {label && (
+            <span className="ml-1.5 text-[10px] font-medium text-red-400 bg-red-500/10 rounded px-1 py-0.5">{label}</span>
+          )}
+          {deprecated && !label && (
+            <span className="ml-1.5 text-[10px] font-medium text-red-400 bg-red-500/10 rounded px-1 py-0.5">삭제됨</span>
+          )}
+        </p>
+        <p className="text-xs text-muted-foreground">{name}</p>
+      </div>
+    </Link>
+  );
+}
+
+function ChangeBlock({ change }: { change: Change }) {
   const baseDiffs = change.diffs.filter((d) => !d.upgraded);
   const upgradedDiffs = change.diffs.filter((d) => d.upgraded);
 
   return (
-    <div className="space-y-3">
-      <EntityInfo story={story} card={card} relic={relic} potion={potion} />
-
-      {/* Patch info */}
-      <div className="rounded-lg border border-border bg-card/30 p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-sm font-medium text-yellow-500">{change.patch}</span>
-          {change.date && (
-            <span className="text-xs text-muted-foreground">{change.date}</span>
-          )}
-        </div>
-        {change.summary && (
-          <p className="text-xs text-muted-foreground mb-2">{change.summary}</p>
+    <div className="rounded-lg border border-border bg-card/30 p-4">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-sm font-medium text-yellow-500">{change.patch}</span>
+        {change.date && (
+          <span className="text-xs text-muted-foreground">{change.date}</span>
         )}
-        <div className="space-y-1">
-          {baseDiffs.map((d, i) => (
-            <DiffLine key={i} diff={d} />
-          ))}
-          {upgradedDiffs.length > 0 && (
-            <div className="mt-1.5 border-l-2 border-green-500/30 pl-2 space-y-1">
-              {upgradedDiffs.map((d, i) => (
-                <DiffLine key={i} diff={d} />
-              ))}
-            </div>
-          )}
-        </div>
       </div>
+      {change.summary && (
+        <p className="text-xs text-muted-foreground mb-2">{change.summary}</p>
+      )}
+      <div className="space-y-1">
+        {baseDiffs.map((d, i) => (
+          <DiffLine key={i} diff={d} />
+        ))}
+        {upgradedDiffs.length > 0 && (
+          <div className="mt-1.5 border-l-2 border-green-500/30 pl-2 space-y-1">
+            {upgradedDiffs.map((d, i) => (
+              <DiffLine key={i} diff={d} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function StoryExpanded({
+  story,
+  entityChanges,
+  cardMap,
+  relicMap,
+  potionMap,
+  changeMap,
+}: {
+  story: Story;
+  entityChanges: Change[];
+  cardMap: Map<string, Card>;
+  relicMap: Map<string, Relic>;
+  potionMap: Map<string, Potion>;
+  changeMap: Map<string, Change>;
+}) {
+  return (
+    <div className="space-y-3">
+      {/* Main entity info */}
+      <EntityInfoBlock
+        entityType={story.entityType}
+        entityId={story.entityId}
+        card={cardMap.get(story.entityId)}
+        relic={relicMap.get(story.entityId)}
+        potion={potionMap.get(story.entityId)}
+      />
+
+      {/* All changes for this entity */}
+      {entityChanges.map((c) => (
+        <ChangeBlock key={c.id} change={c} />
+      ))}
+
+      {/* Linked entities */}
+      {story.linkedEntities?.map((linked: LinkedEntity) => {
+        const linkedChanges = linked.changeId ? [changeMap.get(linked.changeId)].filter(Boolean) as Change[] : [];
+        return (
+          <div key={`${linked.entityType}-${linked.entityId}`} className="border-t border-border/30 pt-3 space-y-3">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <span>↳</span>
+              <span>관련 {linked.entityType === "card" ? "카드" : linked.entityType === "relic" ? "유물" : "포션"}</span>
+            </div>
+            <EntityInfoBlock
+              entityType={linked.entityType}
+              entityId={linked.entityId}
+              card={cardMap.get(linked.entityId)}
+              relic={relicMap.get(linked.entityId)}
+              potion={potionMap.get(linked.entityId)}
+              label={linked.label}
+            />
+            {linkedChanges.map((c) => (
+              <ChangeBlock key={c.id} change={c} />
+            ))}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
 function StoryCard({
   story,
-  card,
-  relic,
-  potion,
-  change,
+  entityChanges,
+  cardMap,
+  relicMap,
+  potionMap,
+  changeMap,
   userId,
   expanded,
   onToggle,
   commentCount,
 }: {
   story: Story;
-  card?: Card;
-  relic?: Relic;
-  potion?: Potion;
-  change?: Change;
+  entityChanges: Change[];
+  cardMap: Map<string, Card>;
+  relicMap: Map<string, Relic>;
+  potionMap: Map<string, Potion>;
+  changeMap: Map<string, Change>;
   userId: string | null;
   expanded: boolean;
   onToggle: (storyId: string) => void;
@@ -160,10 +243,17 @@ function StoryCard({
           </div>
         </div>
 
-        {/* Expanded: card, change detail, comments */}
+        {/* Expanded: entity info, all changes, linked entities, comments */}
         {expanded && (
           <div className="mt-4 space-y-3">
-            {change && <ChangeDetail change={change} story={story} card={card} relic={relic} potion={potion} />}
+            <StoryExpanded
+              story={story}
+              entityChanges={entityChanges}
+              cardMap={cardMap}
+              relicMap={relicMap}
+              potionMap={potionMap}
+              changeMap={changeMap}
+            />
             <CommentSection storyId={story.id} userId={userId} onCountChange={setLiveCommentCount} />
           </div>
         )}
@@ -216,28 +306,43 @@ export function StoryFeed({
     return arr;
   });
 
-  const cardMap = new Map(cards.map((c) => [c.id, c]));
-  const relicMap = new Map(relics.map((r) => [r.id, r]));
-  const potionMap = new Map(potions.map((p) => [p.id, p]));
-  const changeMap = new Map(changes.map((c) => [c.id, c]));
+  const cardMap = useMemo(() => new Map(cards.map((c) => [c.id, c])), [cards]);
+  const relicMap = useMemo(() => new Map(relics.map((r) => [r.id, r])), [relics]);
+  const potionMap = useMemo(() => new Map(potions.map((p) => [p.id, p])), [potions]);
+  const changeMap = useMemo(() => new Map(changes.map((c) => [c.id, c])), [changes]);
+
+  // Index: entityId -> all changes for that entity
+  const entityChangeIndex = useMemo(() => {
+    const idx = new Map<string, Change[]>();
+    for (const c of changes) {
+      const key = `${c.entityType}:${c.entityId}`;
+      if (!idx.has(key)) idx.set(key, []);
+      idx.get(key)!.push(c);
+    }
+    return idx;
+  }, [changes]);
 
   return (
     <div className="divide-y divide-border/50">
-      {shuffled.map((story) => (
-        <StoryCard
-          key={story.id}
-          story={story}
-          card={cardMap.get(story.entityId)}
-          relic={relicMap.get(story.entityId)}
-          potion={potionMap.get(story.entityId)}
-          change={changeMap.get(story.changeId)}
-          userId={userId}
-          expanded={expandedIds.has(story.id)}
-          onToggle={toggle}
-          likeCount={counts.likes[story.id] ?? 0}
-          commentCount={counts.comments[story.id] ?? 0}
-        />
-      ))}
+      {shuffled.map((story) => {
+        const key = `${story.entityType}:${story.entityId}`;
+        return (
+          <StoryCard
+            key={story.id}
+            story={story}
+            entityChanges={entityChangeIndex.get(key) ?? []}
+            cardMap={cardMap}
+            relicMap={relicMap}
+            potionMap={potionMap}
+            changeMap={changeMap}
+            userId={userId}
+            expanded={expandedIds.has(story.id)}
+            onToggle={toggle}
+            likeCount={counts.likes[story.id] ?? 0}
+            commentCount={counts.comments[story.id] ?? 0}
+          />
+        );
+      })}
     </div>
   );
 }

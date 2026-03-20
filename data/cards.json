@@ -4035,5 +4035,111 @@
     "description": "Unplayable.",
     "descriptionUpgraded": "Unplayable.",
     "costUpgraded": "unplayable"
+  },
+  {
+    "name": "Allocate",
+    "nameKo": "할당",
+    "class": "defect",
+    "type": "skill",
+    "rarity": "uncommon",
+    "cost": 1,
+    "description": "Lose 1 Strength and 1 Dexterity. Gain 1 Focus.",
+    "descriptionUpgraded": "Lose 1 Strength and 1 Dexterity. Gain 2 Focus.",
+    "costUpgraded": 1,
+    "deprecated": true
+  },
+  {
+    "name": "Blaster",
+    "nameKo": "블래스터",
+    "class": "defect",
+    "type": "attack",
+    "rarity": "uncommon",
+    "cost": 3,
+    "description": "Deal damage to ALL enemies. Gain 1 Energy for each Orb channeled.",
+    "costUpgraded": 3,
+    "deprecated": true
+  },
+  {
+    "name": "Flux Capacitor",
+    "nameKo": "유동 축전기",
+    "class": "defect",
+    "type": "power",
+    "rarity": "uncommon",
+    "cost": 1,
+    "description": "At the start of each combat, Channel 1 Plasma.",
+    "costUpgraded": 1,
+    "deprecated": true
+  },
+  {
+    "name": "Reprieve",
+    "nameKo": "유예",
+    "class": "defect",
+    "type": "skill",
+    "rarity": "uncommon",
+    "cost": 2,
+    "description": "If the enemy is not intending to attack, gain 1 Focus.",
+    "descriptionUpgraded": "If the enemy is not intending to attack, gain 2 Focus.",
+    "costUpgraded": 2,
+    "deprecated": true
+  },
+  {
+    "name": "Venomology",
+    "nameKo": "독물학",
+    "class": "silent",
+    "type": "power",
+    "rarity": "rare",
+    "cost": 1,
+    "description": "Poison on enemies no longer decays. Instead, it grows by 1 each turn.",
+    "descriptionUpgraded": "Poison on enemies no longer decays. Instead, it grows by 3 each turn.",
+    "costUpgraded": 1,
+    "deprecated": true
+  },
+  {
+    "name": "Conserve Battery",
+    "nameKo": "배터리 절약",
+    "class": "defect",
+    "type": "skill",
+    "rarity": "common",
+    "cost": 1,
+    "description": "Gain 7 Block. Conserve Energy.",
+    "descriptionUpgraded": "Gain 10 Block. Conserve Energy.",
+    "costUpgraded": 1,
+    "deprecated": true
+  },
+  {
+    "name": "Nova",
+    "nameKo": "신성",
+    "class": "defect",
+    "type": "attack",
+    "rarity": "rare",
+    "cost": 2,
+    "description": "Deal damage to ALL enemies equal to the number of Powers you have.",
+    "descriptionUpgraded": "Deal damage to ALL enemies equal to 2x the number of Powers you have.",
+    "costUpgraded": 2,
+    "deprecated": true
+  },
+  {
+    "name": "Lock-On",
+    "nameKo": "조준 고정",
+    "class": "defect",
+    "type": "attack",
+    "rarity": "uncommon",
+    "cost": 1,
+    "description": "Deal 8 damage. Apply 1 Lock-On.",
+    "descriptionUpgraded": "Deal 11 damage. Apply 1 Lock-On.",
+    "costUpgraded": 1,
+    "deprecated": true
+  },
+  {
+    "name": "Undo",
+    "nameKo": "되돌리기",
+    "class": "defect",
+    "type": "skill",
+    "rarity": "uncommon",
+    "cost": 2,
+    "description": "Gain 13 Block. Retain your hand this turn.",
+    "descriptionUpgraded": "Gain 16 Block. Retain your hand this turn.",
+    "costUpgraded": 2,
+    "deprecated": true
   }
 ]

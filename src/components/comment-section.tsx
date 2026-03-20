@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { useComments } from "@/hooks/use-comments";
+import { useCommentLikes } from "@/hooks/use-comment-likes";
 
 const NICKNAME_KEY = "sts-nickname";
 
@@ -34,9 +36,13 @@ export function CommentSection({ storyId, userId, onCountChange }: { storyId: st
       onCountChange?.(comments.length);
     }
   }, [comments.length, onCountChange]);
+
   const [nickname, setNickname] = useState(getNickname);
   const [content, setContent] = useState(() => getDraft(storyId));
   const [submitting, setSubmitting] = useState(false);
+
+  const commentIds = useMemo(() => comments.map((c) => c.id), [comments]);
+  const { counts: likeCounts, liked: likedSet, toggle: toggleLike } = useCommentLikes(commentIds, userId);
 
   const handleContentChange = (value: string) => {
     setContent(value);
@@ -73,6 +79,20 @@ export function CommentSection({ storyId, userId, onCountChange }: { storyId: st
                 <span className="text-[10px] text-muted-foreground">
                   {new Date(c.created_at).toLocaleDateString("ko-KR")}
                 </span>
+                <button
+                  onClick={() => toggleLike(c.id)}
+                  disabled={!userId}
+                  className="flex items-center gap-0.5 text-[10px] text-muted-foreground transition-all disabled:opacity-30"
+                >
+                  <Image
+                    src="/images/relics/runic-dodecahedron.webp"
+                    alt="like"
+                    width={14}
+                    height={14}
+                    className={`transition-all ${likedSet.has(c.id) ? "" : "opacity-40 grayscale"}`}
+                  />
+                  {(likeCounts.get(c.id) ?? 0) > 0 && <span>{likeCounts.get(c.id)}</span>}
+                </button>
                 {userId === c.user_id && (
                   <button
                     onClick={() => remove(c.id)}
@@ -126,7 +146,7 @@ export function CommentCount({ storyId, userId }: { storyId: string; userId: str
   const { comments } = useComments(storyId, userId);
   return (
     <span className="text-xs text-muted-foreground">
-      💬 {comments.length}
+      {comments.length}
     </span>
   );
 }

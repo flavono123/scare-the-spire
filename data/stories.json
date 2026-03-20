@@ -102,5 +102,21 @@
     "entityId": "runic-dodecahedron",
     "changeId": "runic-dodecahedron-removed",
     "tags": ["삭제", "유물"]
+  },
+  {
+    "id": "reprogram-from-allocate",
+    "sentence": "재구성은 사기 카드였다",
+    "entityType": "card",
+    "entityId": "reprogram",
+    "changeId": "reprogram-v20-rework",
+    "linkedEntities": [
+      {
+        "entityType": "card",
+        "entityId": "allocate",
+        "changeId": "allocate-wp23-removed",
+        "label": "삭제"
+      }
+    ],
+    "tags": ["리워크", "디펙트"]
   }
 ]

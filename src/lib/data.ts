@@ -27,6 +27,7 @@ interface RawCard {
   costUpgraded?: number | string;
   description?: string;
   descriptionUpgraded?: string;
+  deprecated?: boolean;
 }
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -46,6 +47,7 @@ export async function getCards(): Promise<Card[]> {
     costUpgraded: r.costUpgraded as Card["costUpgraded"],
     description: r.description,
     descriptionUpgraded: r.descriptionUpgraded,
+    deprecated: r.deprecated,
   }));
 }
 

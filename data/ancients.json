@@ -1,0 +1,1542 @@
+[
+  {
+    "id": "DARV",
+    "name": "Darv",
+    "nameKo": null,
+    "epithet": "The Hoarder",
+    "epithetKo": null,
+    "description": "...where did I put... Oh!\nCome to see my collection!? Take anything from that pile over there, put it to good use!",
+    "relics": [
+      "DUSTY_TOME",
+      "ASTROLABE",
+      "BLACK_STAR",
+      "CALLING_BELL",
+      "EMPTY_CAGE",
+      "PANDORAS_BOX",
+      "RUNIC_PYRAMID",
+      "SNECKO_EYE",
+      "ECTOPLASM",
+      "SOZU",
+      "PHILOSOPHERS_STONE",
+      "VELVET_CHOKER"
+    ],
+    "dialogue": {
+      "Returning": [
+        {
+          "order": "0-0r",
+          "speaker": "ancient",
+          "text": "Here, take one of these forgotten gems with ya!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "I’ve got things to do today!\nTake whatever ya want from that pile!!"
+        }
+      ],
+      "Defect": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "You’re a beautiful hunk of junk, you know that?"
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "<3"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Still keeping at it, I see... Let’s see if we can upgrade ya!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "I’ve been holding on to your friend’s uhh... um.\nNevermind nevermind!!"
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "<Inquisitive beeps>"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "My scrappy scrapper, forget I said all that!"
+        }
+      ],
+      "Ironclad": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "The flaming warrior has returned!\nI’ve got just the thing for ya!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Good to see ya still kickin’ and bashin’ em heads in!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "I’m still holding on to that heavy blade of yours... but I can’t find no one to restore it."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "The Ironclad stares at Darv."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "Maybe the Architect knows somethin’."
+        }
+      ],
+      "Necrobinder": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "I can tell you’re a serious one. What can I do for ya missy?"
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "Anything to help me kill a most loathsome man."
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "Very well then... have a gander!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Still on that warpath? I ain’t gonna stop ya!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "This book seems tied to ya, been around longer than you have."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "How did you come into possession of that?"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "Scary things have a way of ending up in my collection."
+        }
+      ],
+      "Regent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "What brings the likes of you up here? Wanna take a look at my collection?"
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "I do enjoy fine wares..."
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "Yeah!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Back for more your highness?!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "To my new friend, do I have somethin’ for ya!"
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "I’m listening!"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "I’d give it but the Architect nabbed it from me!!\nHelp a buddy out! Do me a favor will ya?"
+        }
+      ],
+      "Silent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Back in the Spire for you too huh?\nCan’t resist those shinies right?!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "I’ll trade ya somethin’ nice for that trophy you got there!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "Pity ya don’t remember all my generosity!\nYeah yeah, you know how Neow is..."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "..."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "Well! Let’s get you equipped for that final showdown or whatevah!"
+        }
+      ],
+      "First Visit": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "...where did I put... Oh!\nCome to see my collection!? Take anything from that pile over there, put it to good use!"
+        }
+      ]
+    }
+  },
+  {
+    "id": "NEOW",
+    "name": "Neow",
+    "nameKo": null,
+    "epithet": "Mother of Resurrection (Exiled)",
+    "epithetKo": null,
+    "description": "I’ve... remade you....\n...go... ..up.....",
+    "relics": [
+      "ARCANE_SCROLL",
+      "BOOMING_CONCH",
+      "POMANDER",
+      "GOLDEN_PEARL",
+      "LEAD_PAPERWEIGHT",
+      "NEW_LEAF",
+      "NEOWS_TORMENT",
+      "PRECISE_SCISSORS",
+      "LOST_COFFER",
+      "NUTRITIOUS_OYSTER",
+      "STONE_HUMIDIFIER",
+      "MASSIVE_SCROLL",
+      "LAVA_ROCK",
+      "SMALL_CAPSULE",
+      "SILVER_CRUCIBLE",
+      "CURSED_PEARL",
+      "LARGE_CAPSULE",
+      "LEAFY_POULTICE",
+      "PRECARIOUS_SHEARS",
+      "SCROLL_BOXES"
+    ],
+    "dialogue": {
+      "Returning": [
+        {
+          "order": "0-0r",
+          "speaker": "ancient",
+          "text": "...hello... ..again....."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "...awaken...\n..Awaken....."
+        },
+        {
+          "order": "2-0r",
+          "speaker": "ancient",
+          "text": "..receive.... this....\n..blessing.. ...go......"
+        },
+        {
+          "order": "3-0r",
+          "speaker": "ancient",
+          "text": "..I’ve... ..brought... ..you back..."
+        },
+        {
+          "order": "4-0r",
+          "speaker": "ancient",
+          "text": "...kill.. the... ARCHITECT"
+        }
+      ],
+      "Defect": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "...construct.. what...\n....have you.. become...?"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "...he.. can...\n....fix.. you.. ...everything...."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "...I.. can’t... ..make...\n...you.. forget...."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "<resolute beeping sounds>"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "...good...."
+        }
+      ],
+      "Ironclad": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "..arise.. my.. warrior...\n..time... to fight...again..."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "..still.. lost.. to rage... good..."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "..remember.. the.. first..time\n...you ..came...before me.."
+        },
+        {
+          "order": "2-1",
+          "speaker": "ancient",
+          "text": "..so..furious..."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "...so..useful..."
+        }
+      ],
+      "Necrobinder": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "...we.... share... ..the same... ..goal...."
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "HE KILLED ALL THAT I LOVE!!"
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "...my power..... is yours..."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "He... still.. ....breathes..."
+        },
+        {
+          "order": "2-0",
+          "speaker": "character",
+          "text": "Is... it.. ...even... possible...?"
+        },
+        {
+          "order": "2-1",
+          "speaker": "ancient",
+          "text": "... Architect.... ..weakening....\n..we.... stronger..."
+        }
+      ],
+      "Regent": [
+        {
+          "order": "0-0",
+          "speaker": "character",
+          "text": "Oversized blue creature, I am the future King!"
+        },
+        {
+          "order": "0-1",
+          "speaker": "ancient",
+          "text": "..cute...\n...you... will see.. ..me... ...again...."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "...again..?"
+        },
+        {
+          "order": "2-0",
+          "speaker": "character",
+          "text": "Why can’t I win?!"
+        },
+        {
+          "order": "2-1",
+          "speaker": "ancient",
+          "text": "...receive.. this... ..blessing..."
+        },
+        {
+          "order": "2-2",
+          "speaker": "character",
+          "text": "...yes, thank you Neow."
+        }
+      ],
+      "Silent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "...returned.. from... outside?\n..knew... you’d... be back..."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "...your..\n ...trophy.. awaits..."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "..both...know..agony..of..family..."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "..."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "..still...seeking..approval...?\n...FOOLISH..."
+        }
+      ],
+      "First Visit": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "I’ve... remade you....\n...go... ..up....."
+        }
+      ]
+    }
+  },
+  {
+    "id": "NONUPEIPE",
+    "name": "Nonupeipe",
+    "nameKo": null,
+    "epithet": "Serendipity Incarnate",
+    "epithetKo": null,
+    "description": "I haven’t had a visitor in a millennia!\nYou’re looking quite drab, here, let’s find something delightful for you to wear.",
+    "relics": [
+      "BLESSED_ANTLER",
+      "BRILLIANT_SCARF",
+      "DELICATE_FROND",
+      "DIAMOND_DIADEM",
+      "FUR_COAT",
+      "GLITTER",
+      "JEWELRY_BOX",
+      "LOOMING_FRUIT",
+      "SIGNET_RING",
+      "BEAUTIFUL_BRACELET"
+    ],
+    "dialogue": {
+      "Returning": [
+        {
+          "order": "0-0r",
+          "speaker": "ancient",
+          "text": "Madness awaits at the top. Don my power and vanquish."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "You’ve traveled so far to reach me!\nCome closer, receive my blessing."
+        }
+      ],
+      "Defect": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Could a construct truly be worthy of my blessings?\nCome forward, Defect. You will be the most beautiful of all automata."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "My poor, battered machine, let me refine you."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "I usually don’t like the Architect’s things, but I admit you’re growing on me."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "<embarrassed chirp>"
+        }
+      ],
+      "Ironclad": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Ah, the Ironclad finally arrives before me.\nCome forth and I shall endow you with my power."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Ironclad ironclad... was my previous gift not enough?"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "You return again my champion? How many times?\nWere you not strong enough to wipe out entire clans before?"
+        }
+      ],
+      "Necrobinder": [
+        {
+          "order": "0-0",
+          "speaker": "character",
+          "text": "Your guards are dead, rumors say you can bestow blessings for those who wish the Architect dead."
+        },
+        {
+          "order": "0-1",
+          "speaker": "ancient",
+          "text": "I appreciate someone capable and shall grant a measure of my power.\nNext time, don’t kill my guards."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "A mage needs fine accouterments for battle. Come forth, Necrobinder."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "The Architect won’t be pleased to see that pet of yours."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "Do you mean Osty? He will be the one to deliver the final blow."
+        }
+      ],
+      "Regent": [
+        {
+          "order": "0-0",
+          "speaker": "character",
+          "text": "I seek audience with Nonupeipe!"
+        },
+        {
+          "order": "0-1",
+          "speaker": "ancient",
+          "text": "Such beautiful robes you’ve brought from faraway lands!\nHave your minions bring you closer and I will bless thee."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Royal blessings for royal visitors.\nServants! Fetch some tea for us."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "The Architect has gone mad! If only a noble champion could save us from this plight..."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "Fear not! I, the Regent, will put an end to the madness!\nBut first, tea!"
+        }
+      ],
+      "Silent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "A little thief has snuck into my domain?\nDon’t think I can’t see you? Come on out!"
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "The Silent steps out of the shadows..."
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "A huntress, what beckons your return to the Spire?\nApproach and don these blessings."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "I have prepared gifts for you, assassin, don’t be shy."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "Of all of her puppets, you surprise me most."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "..."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "What took your first life? Did Neow find you?\nA shame you don’t speak."
+        }
+      ],
+      "First Visit": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "I haven’t had a visitor in a millennia!\nYou’re looking quite drab, here, let’s find something delightful for you to wear."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OROBAS",
+    "name": "Orobas",
+    "nameKo": null,
+    "epithet": "Living Rainbow",
+    "epithetKo": null,
+    "description": "Puppet puppet!! All the way up here?! Take these, take take!",
+    "relics": [
+      "ELECTRIC_SHRYMP",
+      "GLASS_EYE",
+      "SAND_CASTLE",
+      "ALCHEMICAL_COFFER",
+      "DRIFTWOOD",
+      "RADIANT_PEARL",
+      "SEA_GLASS",
+      "PRISMATIC_GEM",
+      "TOUCH_OF_OROBAS",
+      "ARCHAIC_TOOTH"
+    ],
+    "dialogue": {
+      "Returning": [
+        {
+          "order": "0-0r",
+          "speaker": "ancient",
+          "text": "Try this!!!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Very good finds!! Look look!"
+        }
+      ],
+      "Defect": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "What! Servant construct?! Still working!!\nWhy here? Why not at Factory??"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Shiny orbs! How work?\nOuch!!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "Core broken? Neow use broken construct?\nManipulated?"
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "<quietly beeps>"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "Architect fix you?"
+        }
+      ],
+      "Ironclad": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "An Ironclad!? How possible?? Scary. Very scary!!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Contract signer? Why!? Bad choice? Yes. Mistake!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "Wishing you freedom!! Wishing hard!\nVakuu bad. Very bad! Architect free you?"
+        }
+      ],
+      "Necrobinder": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Dead?! Not dead! Why puppet? Big hand!!"
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "I’m no puppet. There’s a man I must kill.\nWhat can you do for me?"
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "Killing bad!! Take this instead!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Not dead one! Good gifts for you!! Violence bad."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "No violence! Collect shiny instead... Shiny!!"
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "My quest will only end when the Architect is no more.\nViolence is inevitable."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "Architect not bad! Maybe talk? Talking good!! Very good!"
+        }
+      ],
+      "Regent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Traveller! From space!? Where in space?\nHow from space? Pointy head! Little friends!!"
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "The Regent monologues for hours."
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "Exciting! Impressive!! More! More!!!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "More stories! Found these for you!\nNow tell more story!!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "character",
+          "text": "My number one fan! Orobas, friend!\nLovely to see you’re still alive!"
+        },
+        {
+          "order": "2-1",
+          "speaker": "ancient",
+          "text": "Stories?!"
+        },
+        {
+          "order": "2-2",
+          "speaker": "character",
+          "text": "Of course of course... but have you found any trinkets for me?"
+        }
+      ],
+      "Silent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Infection...? BLIGHT!? Take and go!!"
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "..."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Not contagious? Very dying? Architect help you?"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "Where sisters? Scary mean sisters!\nBe good person! Don’t be like sisters!!"
+        }
+      ],
+      "First Visit": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Puppet puppet!! All the way up here?! Take these, take take!"
+        }
+      ]
+    }
+  },
+  {
+    "id": "PAEL",
+    "name": "Pael",
+    "nameKo": null,
+    "epithet": "Melting Dragon",
+    "epithetKo": null,
+    "description": "A puppet has arrived?\nCan you check on Father? I’m too tired...",
+    "relics": [
+      "PAELS_CLAW",
+      "PAELS_TOOTH",
+      "PAELS_GROWTH",
+      "PAELS_LEGION",
+      "PAELS_FLESH",
+      "PAELS_HORN",
+      "PAELS_TEARS",
+      "PAELS_WING",
+      "PAELS_EYE",
+      "PAELS_BLOOD"
+    ],
+    "dialogue": {
+      "Returning": [
+        {
+          "order": "0-0r",
+          "speaker": "ancient",
+          "text": "Welcome back friend. Let my flesh help you..."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Pael is sleeping. His snoring shakes the room."
+        }
+      ],
+      "Defect": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Troubled automaton, looking for your friend?\nLet me help..."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Do constructs dream?\nWatch and copy me..."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "I dreamt of your friend...\nFather can restore Flaw..."
+        }
+      ],
+      "Ironclad": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "You contain such rage. Take from me and find some peace..."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Do you remember how it feels to dream?\nIt is good to sleep..."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "You must quell your flames.\nFather can free you..."
+        }
+      ],
+      "Necrobinder": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Such malice paints your heart."
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "We would share the same paint if you knew what’s befallen me."
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "There is no peace on your path.\nTake a part of me to ease your burdens..."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "The one with the Hand returns.\nPainful memories. Take my strength and leave..."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "Killing Father won’t bring peace."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "You call that thing your father!?"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "We do not choose our family..."
+        }
+      ],
+      "Regent": [
+        {
+          "order": "0-0",
+          "speaker": "character",
+          "text": "Hello! I am the Regent.\nHellooo?? HELLO!?"
+        },
+        {
+          "order": "0-1",
+          "speaker": "ancient",
+          "text": "Quiet down now.\nTake a part of me and be on your way..."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "character",
+          "text": "I’m back! Ah, you’re asleep of course.\nLet’s see here..."
+        },
+        {
+          "order": "2-0",
+          "speaker": "character",
+          "text": "Why do you give yourself away?"
+        },
+        {
+          "order": "2-1",
+          "speaker": "ancient",
+          "text": "Why not give when I have an abundance of flesh?"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "When you return, I will be replenished anew.\nThat’s what sleep does..."
+        }
+      ],
+      "Silent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Murderous creature, no need for violence here.\nHave part of me and find peace..."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Trophy hunting? Sure, take a part of me...\nWhatever grants you comfort..."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "You’ve poisoned me...?\nWhat is this going to...? zZZzz..."
+        }
+      ],
+      "First Visit": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "A puppet has arrived?\nCan you check on Father? I’m too tired..."
+        }
+      ]
+    }
+  },
+  {
+    "id": "TANX",
+    "name": "Tanx",
+    "nameKo": null,
+    "epithet": "Khimera King",
+    "epithetKo": null,
+    "description": "SO WEAK! BUT YOU HAVE POTENTIAL!\nUSE THIS WEAPON!!",
+    "relics": [
+      "CLAWS",
+      "CROSSBOW",
+      "IRON_CLUB",
+      "MEAT_CLEAVER",
+      "SAI",
+      "SPIKED_GAUNTLETS",
+      "TANXS_WHISTLE",
+      "THROWING_AXE",
+      "WAR_HAMMER",
+      "TRI_BOOMERANG"
+    ],
+    "dialogue": {
+      "Returning": [
+        {
+          "order": "0-0r",
+          "speaker": "ancient",
+          "text": "GROW STRONGER SO WE CAN FIGHT!!!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "YOU CAN NEVER HAVE TOO MANY WEAPONS!!"
+        }
+      ],
+      "Defect": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "CONSTRUCT! NO WEAPONS!? HAVE THIS!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "ORBS ARE NOT WEAPONS!!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "FIGHT ME, DEFECT!!"
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "The Defect valiantly fights."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "ORBS ARE WEAPONS!?"
+        }
+      ],
+      "Ironclad": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "IMPRESSIVE SWORD, WARRIOR! YOU CAN USE MORE WEAPONS!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "WEAPONS FOR THE WARRIOR! GRAB A WEAPON! LET’S FIGHT!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "FIGHT ME, IRONCLAD!!"
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "The Ironclad fights Tanx."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "YEEES!! MIGHTY FIGHT, TAKE WEAPON!"
+        }
+      ],
+      "Necrobinder": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "WHAT A MIGHTY SCYTHE!"
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "Yes, it’s special-made for vengeance."
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "DOES THE HAND NEED A WEAPON!?"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "FIGHT ME, OSTY!!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "FIGHT ME, NECROBINDER!!"
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "The Necrobinder and Osty scuffle with Tanx."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "MIGHTY TEAMWORK!! HAVE A WEAPON!"
+        }
+      ],
+      "Regent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "ORANGE!? HOW IS THIS BEING ORANGE!??"
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "All know that orange is the most regal color!"
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "INCREDIBLE! SO MIGHTY!!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "ORANGE ONE!! CHOOSE A MIGHTY WEAPON!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "FIGHT ME, REGENT!!"
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "No! We fought last time I was here!"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "FIGHT ME AGAIN!!"
+        }
+      ],
+      "Silent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "A HUNTRESS! I WILL SHARPEN YOUR CLAW!!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "WHY DAGGERS!! UNMIGHTY!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "FIGHT ME, SILENT!!"
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "The Silent escapes, stealing a weapon on the way."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "WHERE DID YOU GO!!!"
+        }
+      ],
+      "First Visit": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "SO WEAK! BUT YOU HAVE POTENTIAL!\nUSE THIS WEAPON!!"
+        }
+      ]
+    }
+  },
+  {
+    "id": "TEZCATARA",
+    "name": "Tezcatara",
+    "nameKo": null,
+    "epithet": "It Which Feeds the Fire",
+    "epithetKo": null,
+    "description": "Oh, a visitor! Do come in, dear!\nWhat can Tezcatara do for you?",
+    "relics": [
+      "NUTRITIOUS_SOUP",
+      "VERY_HOT_COCOA",
+      "YUMMY_COOKIE",
+      "BIIIG_HUG",
+      "STORYBOOK",
+      "SEAL_OF_GOLD",
+      "TOASTY_MITTENS",
+      "GOLDEN_COMPASS",
+      "PUMPKIN_CANDLE",
+      "TOY_BOX"
+    ],
+    "dialogue": {
+      "Returning": [
+        {
+          "order": "0-0r",
+          "speaker": "ancient",
+          "text": "Welcome back, sweetie. Let me burn away your flaws."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Do come in, dear! What can Tezcatara do for you today?"
+        }
+      ],
+      "Defect": [
+        {
+          "order": "0-0",
+          "speaker": "character",
+          "text": "<greetings beep>"
+        },
+        {
+          "order": "0-1",
+          "speaker": "ancient",
+          "text": "Not here to annoy me? What an unusual little construct..."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Now how silly would it be if he were unmade by one of his own?"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "Are you sure you want to be fixed up?"
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "<inquisitive beep>"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "Well, if you’re really certain."
+        }
+      ],
+      "Ironclad": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "You burn so pretty! Come in, come in!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Such a strong boy you are! Come and eat something.\nCan’t slaughter on an empty stomach!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "Ohh, Architect still alive? Kill him quickly would you?\nI’ll be waiting right here!"
+        }
+      ],
+      "Necrobinder": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Now what’s a skeleton doing inside these walls?"
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "My aim is simple. Vengeance for my family.\nI’ll reach the top and make him pay."
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "Wonderful!"
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Come in, come in! Let’s make your flames burn brighter."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "Those flames around you remind me of something forbidden."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "What do you know?"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "I know who wrote that book."
+        }
+      ],
+      "Regent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Oh my, what an exotic visitor! Who might you be, sweetie?"
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "I’m no sweetie! Address me with respect, giant... thing-person!"
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "Where are my manners?\nTezcatara cackles with delight."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "You and your friends are back again?\nI’ve made treats for you!"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "Welcome back regal boy! Looks like you’re doing great out there."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "Yes of course! Just some minor setbacks at the upper levels... like dying."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "We all need to learn from our mistakes."
+        }
+      ],
+      "Silent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Come closer, quiet one. I can’t see well..."
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "..."
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "You can trust me."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Such a nasty sickness you have. Let’s take care of you."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "I’ve met your sisters, you know? Such lovely girls they are."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "..."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "Oh dear... you haven’t been fighting have you?"
+        }
+      ],
+      "First Visit": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Oh, a visitor! Do come in, dear!\nWhat can Tezcatara do for you?"
+        }
+      ]
+    }
+  },
+  {
+    "id": "VAKUU",
+    "name": "Vakuu",
+    "nameKo": null,
+    "epithet": "The First Demon",
+    "epithetKo": null,
+    "description": "Give yourself to me and you will be feared as much as I.",
+    "relics": [
+      "BLOOD_SOAKED_ROSE",
+      "WHISPERING_EARRING",
+      "FIDDLE",
+      "PRESERVED_FOG",
+      "SERE_TALON",
+      "DISTINGUISHED_CAPE",
+      "CHOICES_PARADOX",
+      "MUSIC_BOX",
+      "LORDS_PARASOL",
+      "JEWELED_MASK"
+    ],
+    "dialogue": {
+      "Returning": [
+        {
+          "order": "0-0r",
+          "speaker": "ancient",
+          "text": "Seeking glory in the Spire are we? I have some propositions for you..."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "143. 143 times you’ve been here."
+        },
+        {
+          "order": "2-0r",
+          "speaker": "ancient",
+          "text": "You realize this never ends?"
+        }
+      ],
+      "Defect": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Broken one, let me perfect you."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Do you find it strange that your fellow constructs want you dead?"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "If you bring me the Architect’s heart, I will restore your companion."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "<fearful beeping>"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "What’s more important? Your creator or your friend?"
+        }
+      ],
+      "Ironclad": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Imagine seeing you again after so long."
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "SACRED DEMON!\nWhat have you done to me!?"
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "Exactly what you bargained for."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Do the lost tribes weigh on you...?\nVakuu howls with laughter."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "My puppet of puppets... why haven’t you killed the Architect yet?"
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "After I kill the Architect, I will kill YOU!"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "Yawn\nI look forward to watching you fail."
+        }
+      ],
+      "Necrobinder": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "We both seek vengeance. It will have a cost to pay."
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "I accept any cost. Every cost for his death."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "I know where you got that Hand."
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "The Architect has gravely wounded us both."
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "Get on with it, demon. Show me your contracts."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "Straight to business. Very well..."
+        }
+      ],
+      "Regent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "A being from the stars? Within these accursed walls?"
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "Do you know of me?"
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "Yes, I think we can help each other."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "More of my power can be yours for a small price."
+        },
+        {
+          "order": "2-0",
+          "speaker": "character",
+          "text": "I don’t think these deals are good. I’m not feeling great."
+        },
+        {
+          "order": "2-1",
+          "speaker": "ancient",
+          "text": "You read the contracts thoroughly have you not?\nYou have signed them with full intent and responsibility no?"
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "Are you not going to fulfill your end of the bargain?\nHow about another contract? Isn’t that better?"
+        }
+      ],
+      "Silent": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Killer."
+        },
+        {
+          "order": "0-1",
+          "speaker": "character",
+          "text": "..."
+        },
+        {
+          "order": "0-2",
+          "speaker": "ancient",
+          "text": "This won’t end well for you."
+        },
+        {
+          "order": "1-0r",
+          "speaker": "ancient",
+          "text": "Vakuu displays his various contracts to the Silent"
+        },
+        {
+          "order": "2-0",
+          "speaker": "ancient",
+          "text": "The Architect is not enough, kill your sisters too!"
+        },
+        {
+          "order": "2-1",
+          "speaker": "character",
+          "text": "..."
+        },
+        {
+          "order": "2-2",
+          "speaker": "ancient",
+          "text": "No need for words, we are the same."
+        }
+      ],
+      "First Visit": [
+        {
+          "order": "0-0",
+          "speaker": "ancient",
+          "text": "Give yourself to me and you will be feared as much as I."
+        }
+      ]
+    }
+  }
+]
