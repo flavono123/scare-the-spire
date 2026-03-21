@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import Image from "next/image";
 import {
   CodexCard,
@@ -13,15 +13,6 @@ import {
 } from "@/lib/codex-types";
 import { CardTile } from "./card-tile";
 import { SearchBar } from "./search-bar";
-
-// Character card color -> character id mapping
-const COLOR_TO_CHAR_ID: Record<string, string> = {
-  ironclad: "IRONCLAD",
-  silent: "SILENT",
-  defect: "DEFECT",
-  necrobinder: "NECROBINDER",
-  regent: "REGENT",
-};
 
 // Filter icon paths for non-character categories
 const CATEGORY_ICONS: Record<string, string> = {
@@ -37,15 +28,10 @@ const RARITY_COLORS: Record<string, string> = {
   일반: "#b0b0b0",
   고급: "#4fc3f7",
   희귀: "#ffd740",
-  고대의_존재: "#e040fb",
-  이벤트: "#81c784",
-  토큰: "#a1887f",
-  저주: "#e57373",
-  상태이상: "#ff8a65",
-  퀘스트: "#ce93d8",
+  기타: "#81c784",
 };
 
-const COST_OPTIONS = [0, 1, 2, 3, 4, 5, "6+", "X"] as const;
+const COST_OPTIONS = [0, 1, 2, 3, "3+", "X"] as const;
 
 interface CardLibraryProps {
   cards: CodexCard[];
@@ -53,7 +39,6 @@ interface CardLibraryProps {
 }
 
 export function CardLibrary({ cards, characters }: CardLibraryProps) {
-  // Filter state
   const [selectedColors, setSelectedColors] = useState<Set<CardFilterCategory>>(
     new Set()
   );
@@ -67,12 +52,24 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showUpgrades, setShowUpgrades] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
-  const [sortAZ, setSortAZ] = useState(false);
+  const [showMultiplayer, setShowMultiplayer] = useState(true);
 
-  // Parse search query into text + token filters
+  // Cmd+K to focus search
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        document.getElementById("codex-search")?.focus();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+  // Parse search query
   const parsedSearch = useMemo(() => {
     const tokens: { type: "color" | "type" | "cost"; value: string }[] = [];
-    let textParts: string[] = [];
+    const textParts: string[] = [];
 
     const parts = searchQuery.split(/\s+/).filter(Boolean);
     for (const part of parts) {
@@ -96,29 +93,27 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
     return { text: textParts.join(" ").toLowerCase(), tokens };
   }, [searchQuery]);
 
-  // Fuzzy substring match
   const fuzzyMatch = useCallback((text: string, query: string): boolean => {
     if (!query) return true;
-    const lowerText = text.toLowerCase();
-    const lowerQuery = query.toLowerCase();
-
-    // Exact substring
-    if (lowerText.includes(lowerQuery)) return true;
-
-    // Subsequence match
+    const lt = text.toLowerCase();
+    const lq = query.toLowerCase();
+    if (lt.includes(lq)) return true;
     let qi = 0;
-    for (let i = 0; i < lowerText.length && qi < lowerQuery.length; i++) {
-      if (lowerText[i] === lowerQuery[qi]) qi++;
+    for (let i = 0; i < lt.length && qi < lq.length; i++) {
+      if (lt[i] === lq[qi]) qi++;
     }
-    return qi === lowerQuery.length;
+    return qi === lq.length;
   }, []);
 
-  // Cost matching helper
   const matchCost = useCallback(
     (card: CodexCard, costFilter: string): boolean => {
       if (costFilter.endsWith("+")) {
         const min = parseInt(costFilter);
         return !isNaN(min) && card.cost >= min;
+      }
+      if (costFilter.endsWith("-")) {
+        const max = parseInt(costFilter);
+        return !isNaN(max) && card.cost >= 0 && card.cost <= max;
       }
       if (costFilter === "X" || costFilter === "x") return card.isXCost;
       const num = parseInt(costFilter);
@@ -128,75 +123,72 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
     []
   );
 
-  // Determine card's filter category (for ancient vs event distinction)
   const getCardCategory = useCallback((card: CodexCard): CardFilterCategory => {
     if (card.rarity === "고대의 존재") return "ancient";
     if (card.color === "event") return "event";
     return card.color as CardFilterCategory;
   }, []);
 
-  // Filtered cards
+  // Filtered & sorted cards (always sorted by name)
   const filteredCards = useMemo(() => {
     let result = cards;
 
-    // Color/category filter (multiselect, empty = all)
+    // Color/category filter
     if (selectedColors.size > 0) {
-      result = result.filter((card) => {
-        const category = getCardCategory(card);
-        return selectedColors.has(category);
-      });
+      result = result.filter((c) => selectedColors.has(getCardCategory(c)));
     }
 
-    // Search token filters (additive to sidebar filters)
+    // Search token filters
     for (const token of parsedSearch.tokens) {
       if (token.type === "color") {
         const cat = token.value as CardFilterCategory;
-        result = result.filter((card) => {
-          if (cat === "ancient") return card.rarity === "고대의 존재";
-          return card.color === cat;
-        });
+        result = result.filter((c) =>
+          cat === "ancient" ? c.rarity === "고대의 존재" : c.color === cat
+        );
       } else if (token.type === "type") {
-        result = result.filter((card) => card.type === token.value);
+        result = result.filter((c) => c.type === token.value);
       } else if (token.type === "cost") {
-        result = result.filter((card) => matchCost(card, token.value));
+        result = result.filter((c) => matchCost(c, token.value));
       }
     }
 
     // Type filter
     if (selectedTypes.size > 0) {
-      result = result.filter((card) => selectedTypes.has(card.type));
+      result = result.filter((c) => selectedTypes.has(c.type));
     }
 
     // Rarity filter
     if (selectedRarities.size > 0) {
-      result = result.filter((card) => selectedRarities.has(card.rarity));
+      result = result.filter((c) => {
+        if (selectedRarities.has("기타")) {
+          return selectedRarities.has(c.rarity) ||
+            !["기본", "일반", "고급", "희귀"].includes(c.rarity);
+        }
+        return selectedRarities.has(c.rarity);
+      });
     }
 
     // Cost filter
     if (selectedCosts.size > 0) {
-      result = result.filter((card) => {
-        for (const c of selectedCosts) {
-          if (matchCost(card, c)) return true;
+      result = result.filter((c) => {
+        for (const cost of selectedCosts) {
+          if (matchCost(c, cost)) return true;
         }
         return false;
       });
     }
 
-    // Text search (fuzzy)
+    // Text search
     if (parsedSearch.text) {
       result = result.filter(
-        (card) =>
-          fuzzyMatch(card.name, parsedSearch.text) ||
-          fuzzyMatch(card.nameEn, parsedSearch.text)
+        (c) =>
+          fuzzyMatch(c.name, parsedSearch.text) ||
+          fuzzyMatch(c.nameEn, parsedSearch.text)
       );
     }
 
-    // Sort
-    if (sortAZ) {
-      result = [...result].sort((a, b) => a.name.localeCompare(b.name, "ko"));
-    }
-
-    return result;
+    // Always sort by Korean name
+    return [...result].sort((a, b) => a.name.localeCompare(b.name, "ko"));
   }, [
     cards,
     selectedColors,
@@ -204,7 +196,6 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
     selectedRarities,
     selectedCosts,
     parsedSearch,
-    sortAZ,
     fuzzyMatch,
     matchCost,
     getCardCategory,
@@ -247,134 +238,73 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
     });
   }, []);
 
-  // Character filter buttons
-  const characterFilters: {
-    key: CardFilterCategory;
-    label: string;
-    icon: string;
-  }[] = characters.map((c) => ({
+  // Character filters
+  const characterFilters = characters.map((c) => ({
     key: c.id.toLowerCase() as CardFilterCategory,
     label: c.name,
     icon: c.imageUrl,
   }));
 
-  // Extra category filters
-  const extraFilters: {
-    key: CardFilterCategory;
-    label: string;
-    icon: string;
-  }[] = [
-    {
-      key: "colorless",
-      label: COLOR_LABELS.colorless,
-      icon: CATEGORY_ICONS.colorless,
-    },
-    { key: "event", label: COLOR_LABELS.event, icon: CATEGORY_ICONS.event },
-    { key: "curse", label: COLOR_LABELS.curse, icon: CATEGORY_ICONS.curse },
-    { key: "status", label: COLOR_LABELS.status, icon: CATEGORY_ICONS.status },
-    {
-      key: "ancient",
-      label: COLOR_LABELS.ancient,
-      icon: CATEGORY_ICONS.ancient,
-    },
+  const extraFilters = [
+    { key: "colorless" as const, label: COLOR_LABELS.colorless, icon: CATEGORY_ICONS.colorless },
+    { key: "event" as const, label: COLOR_LABELS.event, icon: CATEGORY_ICONS.event },
+    { key: "curse" as const, label: COLOR_LABELS.curse, icon: CATEGORY_ICONS.curse },
+    { key: "status" as const, label: COLOR_LABELS.status, icon: CATEGORY_ICONS.status },
+    { key: "ancient" as const, label: COLOR_LABELS.ancient, icon: CATEGORY_ICONS.ancient },
   ];
 
-  // Available types for filter (only show types present in cards)
   const availableTypes: CardTypeKo[] = ["공격", "스킬", "파워"];
 
-  // Playable rarities for filter
   const rarityFilters = [
-    { key: "기본", label: "기본", color: RARITY_COLORS["기본"] },
     { key: "일반", label: "일반", color: RARITY_COLORS["일반"] },
     { key: "고급", label: "고급", color: RARITY_COLORS["고급"] },
     { key: "희귀", label: "희귀", color: RARITY_COLORS["희귀"] },
+    { key: "기타", label: "기타", color: RARITY_COLORS["기타"] },
   ];
 
   return (
     <div className="flex h-screen bg-[#1a1a2e] text-gray-200 overflow-hidden">
       {/* Left Sidebar */}
-      <aside className="w-56 shrink-0 border-r border-white/10 bg-[#16162a] flex flex-col gap-3 p-3 overflow-y-auto">
-        {/* Search */}
-        <SearchBar value={searchQuery} onChange={setSearchQuery} />
-
+      <aside className="w-52 shrink-0 border-r border-white/10 bg-[#16162a] flex flex-col gap-2 p-3 overflow-y-auto">
         {/* Character Filters */}
-        <div className="flex flex-col gap-2">
-          <span className="text-xs text-gray-500 uppercase tracking-wider">
-            캐릭터
-          </span>
+        <FilterSection trigger="@" label="캐릭터">
           <div className="flex flex-wrap gap-1.5">
             {characterFilters.map((cf) => (
-              <button
+              <IconFilterButton
                 key={cf.key}
+                icon={cf.icon}
+                label={cf.label}
+                active={selectedColors.has(cf.key)}
                 onClick={() => toggleColor(cf.key)}
-                className={`group relative w-10 h-10 rounded-lg border-2 transition-all ${
-                  selectedColors.has(cf.key)
-                    ? "border-yellow-500 bg-yellow-500/20"
-                    : "border-white/10 hover:border-white/30 bg-white/5"
-                }`}
-                title={cf.label}
-              >
-                <Image
-                  src={cf.icon}
-                  alt={cf.label}
-                  width={32}
-                  height={32}
-                  className={`w-full h-full object-contain p-0.5 ${
-                    selectedColors.has(cf.key) ? "" : "opacity-60 group-hover:opacity-100"
-                  }`}
-                />
-                <Tooltip text={cf.label} />
-              </button>
+              />
             ))}
           </div>
-        </div>
+        </FilterSection>
 
-        {/* Extra Category Filters */}
-        <div className="flex flex-col gap-2">
-          <span className="text-xs text-gray-500 uppercase tracking-wider">
-            기타
-          </span>
+        <FilterSection trigger="@" label="기타">
           <div className="flex flex-wrap gap-1.5">
             {extraFilters.map((ef) => (
-              <button
+              <IconFilterButton
                 key={ef.key}
+                icon={ef.icon}
+                label={ef.label}
+                active={selectedColors.has(ef.key)}
                 onClick={() => toggleColor(ef.key)}
-                className={`group relative w-10 h-10 rounded-lg border-2 transition-all ${
-                  selectedColors.has(ef.key)
-                    ? "border-yellow-500 bg-yellow-500/20"
-                    : "border-white/10 hover:border-white/30 bg-white/5"
-                }`}
-                title={ef.label}
-              >
-                <Image
-                  src={ef.icon}
-                  alt={ef.label}
-                  width={32}
-                  height={32}
-                  className={`w-full h-full object-contain p-0.5 ${
-                    selectedColors.has(ef.key) ? "" : "opacity-60 group-hover:opacity-100"
-                  }`}
-                />
-                <Tooltip text={ef.label} />
-              </button>
+              />
             ))}
           </div>
-        </div>
+        </FilterSection>
 
-        {/* Divider */}
         <div className="border-t border-white/10" />
 
-        {/* Card Type Filter */}
-        <div className="flex flex-col gap-2">
-          <span className="text-xs text-gray-500 uppercase tracking-wider">
-            카드 유형
-          </span>
-          <div className="flex flex-col gap-1">
+        {/* Card Type */}
+        <FilterSection trigger="#" label="카드 유형">
+          <div className="flex flex-col gap-0.5">
             {availableTypes.map((type) => (
               <button
                 key={type}
                 onClick={() => toggleType(type)}
-                className={`text-left text-sm px-3 py-1.5 rounded-md transition-all ${
+                className={`text-left text-sm px-2.5 py-1 rounded transition-all ${
                   selectedTypes.has(type)
                     ? "bg-yellow-500/20 text-yellow-400"
                     : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
@@ -384,19 +314,16 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
               </button>
             ))}
           </div>
-        </div>
+        </FilterSection>
 
-        {/* Rarity Filter */}
-        <div className="flex flex-col gap-2">
-          <span className="text-xs text-gray-500 uppercase tracking-wider">
-            희귀도
-          </span>
-          <div className="flex flex-col gap-1">
+        {/* Rarity */}
+        <FilterSection label="희귀도">
+          <div className="flex flex-col gap-0.5">
             {rarityFilters.map((r) => (
               <button
                 key={r.key}
                 onClick={() => toggleRarity(r.key)}
-                className={`flex items-center gap-2 text-left text-sm px-3 py-1.5 rounded-md transition-all ${
+                className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
                   selectedRarities.has(r.key)
                     ? "bg-yellow-500/20 text-yellow-400"
                     : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
@@ -410,13 +337,10 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
               </button>
             ))}
           </div>
-        </div>
+        </FilterSection>
 
-        {/* Cost Filter */}
-        <div className="flex flex-col gap-2">
-          <span className="text-xs text-gray-500 uppercase tracking-wider">
-            비용
-          </span>
+        {/* Cost */}
+        <FilterSection trigger="!" label="비용">
           <div className="flex flex-wrap gap-1">
             {COST_OPTIONS.map((cost) => {
               const key = String(cost);
@@ -424,7 +348,7 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
                 <button
                   key={key}
                   onClick={() => toggleCost(key)}
-                  className={`w-8 h-8 rounded-md text-sm font-bold transition-all ${
+                  className={`w-8 h-7 rounded text-xs font-bold transition-all ${
                     selectedCosts.has(key)
                       ? "bg-yellow-500/30 text-yellow-400 border border-yellow-500"
                       : "bg-white/5 text-gray-400 border border-white/10 hover:border-white/30"
@@ -435,20 +359,19 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
               );
             })}
           </div>
-        </div>
+        </FilterSection>
 
-        {/* Divider */}
         <div className="border-t border-white/10" />
 
-        {/* Sort & Toggles */}
-        <div className="flex flex-col gap-2">
+        {/* Toggles */}
+        <div className="flex flex-col gap-1">
           <ToggleButton
-            label="가나다순"
-            active={sortAZ}
-            onClick={() => setSortAZ((v) => !v)}
+            label="멀티플레이 카드"
+            active={showMultiplayer}
+            onClick={() => setShowMultiplayer((v) => !v)}
           />
           <ToggleButton
-            label="업그레이드"
+            label="강화 보기"
             active={showUpgrades}
             onClick={() => setShowUpgrades((v) => !v)}
           />
@@ -462,16 +385,23 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
-        <div className="flex items-center justify-between px-6 py-3 border-b border-white/10 bg-[#16162a]/80">
-          <h1 className="text-lg font-bold text-yellow-500">카드 도서관</h1>
-          <span className="text-sm text-gray-500">
+        {/* Top Bar with Search */}
+        <div className="flex items-center gap-4 px-4 py-2 border-b border-white/10 bg-[#16162a]/80">
+          <h1 className="text-base font-bold text-yellow-500 shrink-0">카드 도서관</h1>
+          <div className="flex-1 max-w-xl mx-auto">
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              inputId="codex-search"
+            />
+          </div>
+          <span className="text-sm text-gray-500 shrink-0 tabular-nums">
             {filteredCards.length}장
           </span>
         </div>
 
         {/* Card Grid */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto p-3">
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
             {filteredCards.map((card) => (
               <CardTile
@@ -493,11 +423,66 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
   );
 }
 
-function Tooltip({ text }: { text: string }) {
+function FilterSection({
+  trigger,
+  label,
+  children,
+}: {
+  trigger?: string;
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
-    <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-black/90 px-2 py-1 text-xs text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-50">
-      {text}
-    </span>
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center gap-1.5">
+        {trigger && (
+          <span className="text-[10px] font-mono font-bold text-yellow-500/70 bg-yellow-500/10 rounded px-1 py-0.5 leading-none">
+            {trigger}
+          </span>
+        )}
+        <span className="text-[11px] text-gray-500 font-medium uppercase tracking-wider">
+          {label}
+        </span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function IconFilterButton({
+  icon,
+  label,
+  active,
+  onClick,
+}: {
+  icon: string;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`group relative w-9 h-9 rounded-lg border-2 transition-all ${
+        active
+          ? "border-yellow-500 bg-yellow-500/20"
+          : "border-white/10 hover:border-white/30 bg-white/5"
+      }`}
+      title={label}
+    >
+      <Image
+        src={icon}
+        alt={label}
+        width={28}
+        height={28}
+        className={`w-full h-full object-contain p-0.5 ${
+          active ? "" : "opacity-50 group-hover:opacity-100"
+        }`}
+      />
+      <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-black/90 px-2 py-0.5 text-[10px] text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-50">
+        {label}
+      </span>
+    </button>
   );
 }
 
@@ -513,23 +498,19 @@ function ToggleButton({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-md transition-all ${
+      className={`flex items-center gap-2 text-xs px-2.5 py-1 rounded transition-all ${
         active
-          ? "bg-yellow-500/20 text-yellow-400"
-          : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
+          ? "bg-yellow-500/15 text-yellow-400"
+          : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
       }`}
     >
       <span
-        className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
+        className={`w-3.5 h-3.5 rounded border-[1.5px] flex items-center justify-center transition-all ${
           active ? "border-yellow-500 bg-yellow-500" : "border-gray-600"
         }`}
       >
         {active && (
-          <svg
-            className="w-3 h-3 text-black"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-          >
+          <svg className="w-2.5 h-2.5 text-black" viewBox="0 0 16 16" fill="currentColor">
             <path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
           </svg>
         )}
