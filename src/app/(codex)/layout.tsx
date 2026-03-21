@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Cinzel } from "next/font/google";
+import { Cinzel, Noto_Serif_KR } from "next/font/google";
 
 const cinzel = Cinzel({
   variable: "--font-cinzel",
   subsets: ["latin"],
   weight: ["400", "600", "700"],
+});
+
+const notoSerifKR = Noto_Serif_KR({
+  variable: "--font-spire",
+  subsets: ["latin"],
+  weight: ["500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -15,5 +21,5 @@ export const metadata: Metadata = {
 export default function CodexLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  return <div className={cinzel.variable}>{children}</div>;
+  return <div className={`${cinzel.variable} ${notoSerifKR.variable}`}>{children}</div>;
 }

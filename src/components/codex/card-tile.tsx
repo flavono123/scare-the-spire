@@ -148,8 +148,9 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
                 <line x1="10" y1="4" x2="190" y2="4" stroke="white" strokeOpacity="0.25" strokeWidth="1" />
               </svg>
               <span
-                className="absolute inset-0 flex items-center justify-center truncate px-5 font-[family-name:var(--font-cinzel)]"
+                className="absolute inset-0 flex items-center justify-center truncate px-5"
                 style={{
+                  fontFamily: "var(--font-cinzel), var(--font-spire), serif",
                   fontSize: "12px",
                   fontWeight: 700,
                   color: "#333333",
@@ -193,6 +194,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
               <div
                 className="px-2.5 py-0.5 rounded text-[8px] font-bold text-gray-800"
                 style={{
+                  fontFamily: "var(--font-spire), serif",
                   background: `linear-gradient(180deg, ${rarity.ribbon}cc, ${rarity.ribbon}88)`,
                   boxShadow: `0 1px 3px rgba(0,0,0,0.4)`,
                 }}
@@ -205,7 +207,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
           {/* --- Description area --- */}
           <div
             className="flex-1 flex flex-col justify-center px-2 py-1.5 min-h-0 overflow-hidden rounded-b-md"
-            style={{ background: frame.desc, borderTop: `1px solid ${frame.base}40` }}
+            style={{ background: frame.desc, borderTop: `1px solid ${frame.base}40`, fontFamily: "var(--font-spire), serif" }}
           >
             {/* Keywords (centered, gold, own line) */}
             {hasKeywords && (
