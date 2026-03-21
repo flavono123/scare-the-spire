@@ -44,22 +44,25 @@ const ENERGY_ICONS: Record<string, string> = {
 };
 
 // Type banner SVG icons
+// Sword icon for Attack
 function AttackIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M6.92 5L5 6.92l4.06 4.06L5 15.03l1.94 1.94 4.06-4.06 4.03 4.03L17 15l-4.03-4.03L17 6.94 15.06 5l-4.03 4.03L6.92 5z" />
+      <path d="M14.1 4L12 2l-2.1 2L8.5 5.4l3.5 3.5 3.5-3.5L14.1 4zM4 8.5l1.4 1.4L8.9 13l-3.5 3.5L4 18.1 5.9 20l1.6-1.4L11 15.1l3.5 3.5 1.6 1.4L18.1 18l-1.4-1.5L13.1 13l3.5-3.5L18 8.1 16.1 6.5l-1.6 1.4L11 11.5 7.5 8 5.9 6.5 4 8.5z" />
     </svg>
   );
 }
 
+// Shield icon for Skill
 function SkillIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2C9.2 2 7 4.2 7 7c0 1.8 1.1 3.4 2.6 4.2L8 22h8l-1.6-10.8C15.9 10.4 17 8.8 17 7c0-2.8-2.2-5-5-5z" />
+      <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
     </svg>
   );
 }
 
+// Star/gem icon for Power
 function PowerIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -155,10 +158,10 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
       <div
         className="relative overflow-hidden rounded-lg"
         style={{
-          // Fixed aspect ratio card
-          height: "280px",
+          // Portrait aspect ratio matching in-game (~2:3)
+          height: "320px",
           background: `linear-gradient(135deg, ${charColor.dark} 0%, ${charColor.primary}40 50%, ${charColor.dark} 100%)`,
-          boxShadow: `inset 0 0 0 2px ${charColor.primary}80, 0 0 0 1px ${rarityTrim}60, 0 4px 12px rgba(0,0,0,0.6)`,
+          boxShadow: `inset 0 0 0 2px ${charColor.primary}80, 0 0 0 1.5px ${rarityTrim}90, 0 0 8px ${rarityTrim}30, 0 4px 12px rgba(0,0,0,0.6)`,
         }}
       >
         {/* === Card name banner (top) === */}
@@ -178,7 +181,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
         <div
           className="relative mx-2 mt-1 overflow-hidden rounded-sm"
           style={{
-            height: "100px",
+            height: "120px",
             border: `1px solid ${charColor.primary}60`,
           }}
         >
@@ -262,6 +265,8 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
                     <TermTooltip name={part.text} desc={GOLD_TERM_DESC[part.text]} />
                   )}
                 </span>
+              ) : part.type === "energy" ? (
+                <Image key={i} src={energyIcon} alt="energy" width={12} height={12} className="inline-block align-text-bottom mx-0.5" />
               ) : part.type === "newline" ? (
                 <br key={i} />
               ) : (
@@ -307,13 +312,27 @@ function TermTooltip({ name, desc }: { name: string; desc: string }) {
 }
 
 interface DescPart {
-  type: "text" | "gold" | "newline";
+  type: "text" | "gold" | "newline" | "energy";
   text: string;
 }
 
-function parseDescription(desc: string): DescPart[] {
+// Pre-process description to resolve game template strings
+function cleanDescription(desc: string): string {
+  let text = desc;
+  // Resolve choose(N):option1|option2} — pick first option (singleplayer)
+  // Pattern: choose(1):A|B} or choose(Attack|Skill|Power):A|B|C}
+  text = text.replace(/choose\([^)]*\):([^|}]*)\|[^}]*\}/g, "$1");
+  // Remove remaining unresolved template patterns like {var:...} or [tag]...[/tag]
+  text = text.replace(/\{[^}]*\}/g, "");
+  // Remove [InCombat]..., [HasRider]..., etc. bracket conditions
+  text = text.replace(/\[[A-Z][a-zA-Z]*\]/g, "");
+  return text;
+}
+
+function parseDescription(rawDesc: string): DescPart[] {
+  const desc = cleanDescription(rawDesc);
   const parts: DescPart[] = [];
-  const regex = /\[gold\](.*?)\[\/gold\]|\[energy:\d+\]|\[\/?\w+(?::?\w*)*\]|\n/g;
+  const regex = /\[gold\](.*?)\[\/gold\]|\[energy:(\d+)\]|\[\/?\w+(?::?\w*)*\]|\n/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
 
@@ -325,6 +344,9 @@ function parseDescription(desc: string): DescPart[] {
       parts.push({ type: "newline", text: "" });
     } else if (match[1] !== undefined) {
       parts.push({ type: "gold", text: match[1] });
+    } else if (match[2] !== undefined) {
+      // [energy:N] — render as energy icon placeholder
+      parts.push({ type: "energy", text: match[2] });
     }
     // Skip other BBCode tags
     lastIndex = match.index + match[0].length;

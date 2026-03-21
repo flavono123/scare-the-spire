@@ -187,13 +187,14 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
       });
     }
 
-    // Text search (name + description)
+    // Text search (name + description + keywords)
     if (parsedSearch.text) {
       result = result.filter(
         (c) =>
           fuzzyMatch(c.name, parsedSearch.text) ||
           fuzzyMatch(c.nameEn, parsedSearch.text) ||
-          c.description.replace(/\[\/?\w+(?::?\w*)*\]/g, "").toLowerCase().includes(parsedSearch.text)
+          c.description.replace(/\[\/?\w+(?::?\w*)*\]/g, "").toLowerCase().includes(parsedSearch.text) ||
+          c.keywords.some((kw) => kw.toLowerCase().includes(parsedSearch.text))
       );
     }
 
@@ -502,20 +503,22 @@ function IconFilterButton({
 function TypeFilterIcon({ type, active }: { type: string; active: boolean }) {
   const color = active ? "#fbbf24" : "#9ca3af";
   if (type === "공격") {
+    // Sword icon
     return (
       <svg className="w-5 h-5" viewBox="0 0 24 24" fill={color}>
-        <path d="M6.92 5L5 6.92l4.06 4.06L5 15.03l1.94 1.94 4.06-4.06 4.03 4.03L17 15l-4.03-4.03L17 6.94 15.06 5l-4.03 4.03L6.92 5z" />
+        <path d="M14.1 4L12 2l-2.1 2L8.5 5.4l3.5 3.5 3.5-3.5L14.1 4zM4 8.5l1.4 1.4L8.9 13l-3.5 3.5L4 18.1 5.9 20l1.6-1.4L11 15.1l3.5 3.5 1.6 1.4L18.1 18l-1.4-1.5L13.1 13l3.5-3.5L18 8.1 16.1 6.5l-1.6 1.4L11 11.5 7.5 8 5.9 6.5 4 8.5z" />
       </svg>
     );
   }
   if (type === "스킬") {
+    // Shield icon
     return (
       <svg className="w-5 h-5" viewBox="0 0 24 24" fill={color}>
-        <path d="M12 2C9.2 2 7 4.2 7 7c0 1.8 1.1 3.4 2.6 4.2L8 22h8l-1.6-10.8C15.9 10.4 17 8.8 17 7c0-2.8-2.2-5-5-5z" />
+        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
       </svg>
     );
   }
-  // 파워
+  // 파워 - Star icon
   return (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill={color}>
       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
