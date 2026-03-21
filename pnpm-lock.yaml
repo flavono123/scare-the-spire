@@ -17,6 +17,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      es-hangul:
+        specifier: ^2.3.8
+        version: 2.3.8
       lucide-react:
         specifier: ^0.575.0
         version: 0.575.0(react@19.2.3)
@@ -2022,6 +2025,9 @@ packages:
   es-errors@1.3.0:
     resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
     engines: {node: '>= 0.4'}
+
+  es-hangul@2.3.8:
+    resolution: {integrity: sha512-VrJuqYBC7W04aKYjCnswomuJNXQRc0q33SG1IltVrRofi2YEE6FwVDPlsEJIdKbHwsOpbBL/mk9sUaBxVpbd+w==}
 
   es-iterator-helpers@1.2.2:
     resolution: {integrity: sha512-BrUQ0cPTB/IwXj23HtwHjS9n7O4h9FX94b4xc5zlTHxeLgTAdzYUDyy6KdExAl9lbN5rtfe44xpjpmj9grxs5w==}
@@ -5799,6 +5805,8 @@ snapshots:
   es-define-property@1.0.1: {}
 
   es-errors@1.3.0: {}
+
+  es-hangul@2.3.8: {}
 
   es-iterator-helpers@1.2.2:
     dependencies:

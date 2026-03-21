@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Image from "next/image";
+import { getChoseong } from "es-hangul";
 import {
   CodexCard,
   CodexCharacter,
@@ -97,7 +98,15 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
     if (!query) return true;
     const lt = text.toLowerCase();
     const lq = query.toLowerCase();
+    // Exact substring
     if (lt.includes(lq)) return true;
+    // Korean choseong (jamo) match: ㅇㅋ matches 아이언클래드
+    const isAllJamo = /^[ㄱ-ㅎ]+$/.test(query);
+    if (isAllJamo) {
+      const choseong = getChoseong(text);
+      if (choseong.includes(query)) return true;
+    }
+    // Subsequence match
     let qi = 0;
     for (let i = 0; i < lt.length && qi < lq.length; i++) {
       if (lt[i] === lq[qi]) qi++;
@@ -178,12 +187,13 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
       });
     }
 
-    // Text search
+    // Text search (name + description)
     if (parsedSearch.text) {
       result = result.filter(
         (c) =>
           fuzzyMatch(c.name, parsedSearch.text) ||
-          fuzzyMatch(c.nameEn, parsedSearch.text)
+          fuzzyMatch(c.nameEn, parsedSearch.text) ||
+          c.description.replace(/\[\/?\w+(?::?\w*)*\]/g, "").toLowerCase().includes(parsedSearch.text)
       );
     }
 
@@ -297,20 +307,23 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
 
         <div className="border-t border-white/10" />
 
-        {/* Card Type */}
+        {/* Card Type (icon buttons) */}
         <FilterSection trigger="#" label="카드 유형">
-          <div className="flex flex-col gap-0.5">
+          <div className="flex gap-1.5">
             {availableTypes.map((type) => (
               <button
                 key={type}
                 onClick={() => toggleType(type)}
-                className={`text-left text-sm px-2.5 py-1 rounded transition-all ${
+                className={`group relative w-9 h-9 rounded-lg border-2 flex items-center justify-center transition-all ${
                   selectedTypes.has(type)
-                    ? "bg-yellow-500/20 text-yellow-400"
-                    : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
+                    ? "border-yellow-500 bg-yellow-500/20"
+                    : "border-white/10 hover:border-white/30 bg-white/5"
                 }`}
               >
-                {type}
+                <TypeFilterIcon type={type} active={selectedTypes.has(type)} />
+                <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-black/90 px-2 py-0.5 text-[10px] text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-50">
+                  {type}
+                </span>
               </button>
             ))}
           </div>
@@ -483,6 +496,30 @@ function IconFilterButton({
         {label}
       </span>
     </button>
+  );
+}
+
+function TypeFilterIcon({ type, active }: { type: string; active: boolean }) {
+  const color = active ? "#fbbf24" : "#9ca3af";
+  if (type === "공격") {
+    return (
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill={color}>
+        <path d="M6.92 5L5 6.92l4.06 4.06L5 15.03l1.94 1.94 4.06-4.06 4.03 4.03L17 15l-4.03-4.03L17 6.94 15.06 5l-4.03 4.03L6.92 5z" />
+      </svg>
+    );
+  }
+  if (type === "스킬") {
+    return (
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill={color}>
+        <path d="M12 2C9.2 2 7 4.2 7 7c0 1.8 1.1 3.4 2.6 4.2L8 22h8l-1.6-10.8C15.9 10.4 17 8.8 17 7c0-2.8-2.2-5-5-5z" />
+      </svg>
+    );
+  }
+  // 파워
+  return (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill={color}>
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </svg>
   );
 }
 
