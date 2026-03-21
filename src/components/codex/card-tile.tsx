@@ -4,46 +4,65 @@ import { useState } from "react";
 import Image from "next/image";
 import { CodexCard } from "@/lib/codex-types";
 
-// === Character frame colors (extracted from slaythespire2.gg composites) ===
-// base: main frame, light: bevel highlight, dark: bevel shadow, desc: description bg
-const CHAR_FRAME: Record<string, { base: string; light: string; dark: string; desc: string }> = {
-  ironclad:    { base: "#893322", light: "#d8493a", dark: "#742b1d", desc: "#433933" },
-  silent:      { base: "#2a6635", light: "#3a9848", dark: "#1a4422", desc: "#333d33" },
-  defect:      { base: "#11618b", light: "#448bce", dark: "#0c4f71", desc: "#353f45" },
-  necrobinder: { base: "#6b2a60", light: "#a848a0", dark: "#4a1840", desc: "#3d3340" },
-  regent:      { base: "#8b5520", light: "#c88030", dark: "#5a3810", desc: "#403833" },
-  colorless:   { base: "#555555", light: "#808080", dark: "#353535", desc: "#383838" },
-  curse:       { base: "#4a1838", light: "#6a3050", dark: "#301020", desc: "#352830" },
-  event:       { base: "#3a5525", light: "#5a8038", dark: "#253818", desc: "#333833" },
-  status:      { base: "#5a4520", light: "#806838", dark: "#3a2a10", desc: "#383330" },
-  token:       { base: "#484848", light: "#686868", dark: "#2a2a2a", desc: "#353535" },
-  quest:       { base: "#384060", light: "#506090", dark: "#202838", desc: "#333540" },
+// === Card type -> frame asset path ===
+const FRAME_ASSETS: Record<string, string> = {
+  공격: "/images/game-assets/card-frames/card_frame_attack.png",
+  스킬: "/images/game-assets/card-frames/card_frame_skill.png",
+  파워: "/images/game-assets/card-frames/card_frame_power.png",
+  저주: "/images/game-assets/card-frames/card_frame_skill.png",
+  상태이상: "/images/game-assets/card-frames/card_frame_skill.png",
+  퀘스트: "/images/game-assets/card-frames/card_frame_quest.png",
 };
 
-// === Rarity colors (ribbon, inner frame, type badge) ===
-// Extracted: Basic/Common=silver #a5a5a5, Uncommon=blue #5ab0d0, Rare=gold #d4a843, Ancient=green-gold #90a860
-const RARITY_FRAME: Record<string, { ribbon: string; frame: string; glow: string }> = {
-  기본:        { ribbon: "#a5a5a5", frame: "#8a8a8a", glow: "transparent" },
-  일반:        { ribbon: "#a5a5a5", frame: "#8a8a8a", glow: "rgba(165,165,165,0.08)" },
-  고급:        { ribbon: "#5ab0d8", frame: "#4a90c0", glow: "rgba(90,176,216,0.15)" },
-  희귀:        { ribbon: "#d4a843", frame: "#c89830", glow: "rgba(212,168,67,0.2)" },
-  "고대의 존재": { ribbon: "#90a860", frame: "#80a050", glow: "rgba(144,168,96,0.15)" },
-  이벤트:      { ribbon: "#80a060", frame: "#60884a", glow: "rgba(128,160,96,0.1)" },
-  토큰:        { ribbon: "#8a8070", frame: "#706050", glow: "transparent" },
-  저주:        { ribbon: "#705050", frame: "#604040", glow: "rgba(112,80,80,0.1)" },
-  상태이상:     { ribbon: "#807060", frame: "#685840", glow: "rgba(128,112,96,0.08)" },
-  퀘스트:      { ribbon: "#7080a0", frame: "#506888", glow: "rgba(112,128,160,0.1)" },
+// === Character color -> CSS filter to recolor red base frame ===
+// Base frame is ironclad red. Transform with hue-rotate/saturate/brightness.
+const CHAR_FILTER: Record<string, string> = {
+  ironclad:    "hue-rotate(0deg) saturate(1) brightness(1)",
+  silent:      "hue-rotate(121deg) saturate(0.8) brightness(0.75)",
+  defect:      "hue-rotate(-169deg) saturate(1.2) brightness(1)",
+  necrobinder: "hue-rotate(-60deg) saturate(0.8) brightness(0.8)",
+  regent:      "hue-rotate(20deg) saturate(1) brightness(1)",
+  colorless:   "hue-rotate(0deg) saturate(0) brightness(0.65)",
+  curse:       "hue-rotate(-48deg) saturate(0.9) brightness(0.55)",
+  event:       "hue-rotate(84deg) saturate(0.8) brightness(0.65)",
+  status:      "hue-rotate(28deg) saturate(0.9) brightness(0.7)",
+  token:       "hue-rotate(0deg) saturate(0) brightness(0.6)",
+  quest:       "hue-rotate(-169deg) saturate(0.8) brightness(0.7)",
 };
 
-// Energy icon paths
+// === Rarity -> banner hue filter ===
+// Base banner is cyan (#5BC8D8). Transform to rarity colors.
+const RARITY_BANNER_FILTER: Record<string, string> = {
+  기본:        "hue-rotate(0deg) saturate(0) brightness(0.7)",       // gray
+  일반:        "hue-rotate(0deg) saturate(0) brightness(0.75)",      // silver
+  고급:        "hue-rotate(-10deg) saturate(0.8) brightness(0.85)",  // blue (close to base)
+  희귀:        "hue-rotate(-140deg) saturate(1.2) brightness(0.9)",  // gold
+  "고대의 존재": "hue-rotate(-100deg) saturate(0.6) brightness(0.7)", // greenish
+  이벤트:      "hue-rotate(-80deg) saturate(0.5) brightness(0.6)",
+  토큰:        "hue-rotate(0deg) saturate(0) brightness(0.5)",
+  저주:        "hue-rotate(150deg) saturate(0.6) brightness(0.4)",
+  상태이상:     "hue-rotate(-120deg) saturate(0.4) brightness(0.5)",
+  퀘스트:      "hue-rotate(-30deg) saturate(0.7) brightness(0.7)",
+};
+
+// === Energy icon paths (extracted from game) ===
 const ENERGY_ICONS: Record<string, string> = {
-  ironclad: "/images/spire-codex/icons/ironclad_energy_icon.png",
-  silent: "/images/spire-codex/icons/silent_energy_icon.png",
-  defect: "/images/spire-codex/icons/defect_energy_icon.png",
-  necrobinder: "/images/spire-codex/icons/necrobinder_energy_icon.png",
-  regent: "/images/spire-codex/icons/regent_energy_icon.png",
-  colorless: "/images/spire-codex/icons/colorless_energy_icon.png",
+  ironclad: "/images/game-assets/card-misc/energy_ironclad.png",
+  silent: "/images/game-assets/card-misc/energy_silent.png",
+  defect: "/images/game-assets/card-misc/energy_defect.png",
+  necrobinder: "/images/game-assets/card-misc/energy_necrobinder.png",
+  regent: "/images/game-assets/card-misc/energy_regent.png",
+  colorless: "/images/game-assets/card-misc/energy_colorless.png",
+  curse: "/images/game-assets/card-misc/energy_colorless.png",
+  event: "/images/game-assets/card-misc/energy_colorless.png",
+  status: "/images/game-assets/card-misc/energy_colorless.png",
+  token: "/images/game-assets/card-misc/energy_colorless.png",
+  quest: "/images/game-assets/card-misc/energy_quest.png",
 };
+
+// Font style for card text (actual game fonts)
+const CARD_FONT = "var(--font-gc-batang), var(--font-kreon), serif";
+const TITLE_FONT = "var(--font-spectral), var(--font-gc-batang), serif";
 
 // Keyword descriptions
 const KEYWORD_DESC: Record<string, string> = {
@@ -66,7 +85,6 @@ const GOLD_TERM_DESC: Record<string, string> = {
   가시: "피격 시 공격자에게 피해를 줍니다.",
   소환: "하수인을 소환합니다.",
   강화: "카드를 영구적으로 강화합니다.",
-  소멸: "카드가 게임에서 제거됩니다.",
 };
 
 interface CardTileProps {
@@ -93,204 +111,222 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
       ? String(card.upgrade.cost) : String(card.cost);
   }
 
-  const starCost = card.starCost;
+  const frameAsset = FRAME_ASSETS[card.type] ?? FRAME_ASSETS["스킬"];
+  const charFilter = CHAR_FILTER[card.color] ?? CHAR_FILTER.colorless;
+  const bannerFilter = RARITY_BANNER_FILTER[card.rarity] ?? RARITY_BANNER_FILTER["일반"];
   const energyIcon = ENERGY_ICONS[card.color] ?? ENERGY_ICONS.colorless;
-  const frame = CHAR_FRAME[card.color] ?? CHAR_FRAME.colorless;
-  const rarity = RARITY_FRAME[card.rarity] ?? RARITY_FRAME["일반"];
   const descParts = parseDescription(card.description);
   const upgradeInfo = showUpgrade && card.upgrade ? formatUpgrade(card) : null;
   const hasKeywords = card.keywords.length > 0;
 
+  // Art area positioning based on frame shape analysis (598x844)
+  // Attack V-notch: art ~5%-55%, desc starts ~57%
+  // Skill straight: art ~5%-58%, desc starts ~58%
+  // Power hex-cut: art ~5%-52%, desc starts ~54%
+  const artHeightPct = card.type === "공격" ? "52%" : card.type === "파워" ? "48%" : "55%";
+  const descTopPct = card.type === "공격" ? "55%" : card.type === "파워" ? "52%" : "57%";
+
   return (
     <div className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none">
-      {/* === Outer card frame (character color, beveled) === */}
-      <div
-        className="relative rounded-xl overflow-hidden"
-        style={{
-          aspectRatio: "3/4.2",
-          // Embossed/beveled border effect
-          background: `linear-gradient(145deg, ${frame.light} 0%, ${frame.base} 30%, ${frame.base} 70%, ${frame.dark} 100%)`,
-          boxShadow: `
-            inset 2px 2px 3px ${frame.light}60,
-            inset -2px -2px 3px ${frame.dark}80,
-            0 4px 16px rgba(0,0,0,0.7)
-          `,
-          padding: "6px",
-        }}
-      >
-        {/* === Inner card area === */}
+      <div className="relative" style={{ aspectRatio: "598/844" }}>
+        {/* Layer 1: Card frame (game asset, color-shifted) */}
+        <Image
+          src={frameAsset}
+          alt=""
+          fill
+          className="object-contain pointer-events-none"
+          style={{ filter: charFilter }}
+          sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 14vw"
+          priority={false}
+        />
+
+        {/* Layer 2: Card art (positioned within frame art area) */}
         <div
-          className="relative h-full rounded-lg overflow-hidden flex flex-col"
+          className="absolute overflow-hidden"
           style={{
-            background: `linear-gradient(180deg, ${frame.base}40 0%, ${frame.desc} 40%, ${frame.desc} 100%)`,
-            boxShadow: `inset 0 0 0 2px ${rarity.frame}90, 0 0 6px ${rarity.glow}`,
+            top: "10%",
+            left: "7%",
+            right: "7%",
+            height: artHeightPct,
           }}
         >
-          {/* --- Name ribbon (rarity-colored scroll) --- */}
-          <div className="relative z-10 flex-shrink-0">
-            <div className="relative mx-0.5 -mt-0.5">
-              <svg viewBox="0 0 200 36" className="w-full" style={{ height: "28px" }} preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id={`rib-${card.id}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={rarity.ribbon} />
-                    <stop offset="40%" stopColor={rarity.ribbon} />
-                    <stop offset="100%" stopColor={`${rarity.ribbon}cc`} />
-                  </linearGradient>
-                </defs>
-                {/* Ribbon with curled ends extending past card */}
-                <path
-                  d="M0,8 Q0,0 10,2 L90,2 Q100,0 100,2 L110,2 Q120,0 120,2 L190,2 Q200,0 200,8 L200,24 Q200,32 194,34 L180,36 Q170,36 170,30 L170,28 Q168,24 162,24 L38,24 Q32,24 30,28 L30,30 Q30,36 20,36 L6,34 Q0,32 0,24 Z"
-                  fill={`url(#rib-${card.id})`}
-                  stroke={`${rarity.ribbon}80`}
-                  strokeWidth="0.5"
-                />
-                {/* Highlight line at top */}
-                <line x1="10" y1="4" x2="190" y2="4" stroke="white" strokeOpacity="0.25" strokeWidth="1" />
-              </svg>
-              <span
-                className="absolute inset-0 flex items-center justify-center truncate px-5"
-                style={{
-                  fontFamily: "var(--font-cinzel), var(--font-spire), serif",
-                  fontSize: "12px",
-                  fontWeight: 700,
-                  color: "#333333",
-                  textShadow: "0 1px 0 rgba(255,255,255,0.3)",
-                  paddingBottom: "3px",
-                }}
-              >
-                {card.name}
-              </span>
+          {imageSrc && !imgError ? (
+            <Image
+              src={imageSrc}
+              alt={card.name}
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 40vw, (max-width: 1024px) 20vw, 12vw"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full bg-black/30 text-gray-500 text-[10px]">
+              No Image
             </div>
-          </div>
+          )}
+        </div>
 
-          {/* --- Card art area (pentagon bottom clip) --- */}
-          <div className="relative flex-shrink-0 mx-1.5 mt-0.5" style={{ height: "48%" }}>
-            <div
-              className="relative w-full h-full overflow-hidden"
+        {/* Layer 3: Name banner (game asset, rarity-colored) */}
+        <div
+          className="absolute flex items-center justify-center"
+          style={{
+            top: "1%",
+            left: "-4%",
+            right: "-4%",
+            height: "12%",
+          }}
+        >
+          <Image
+            src="/images/game-assets/card-misc/card_banner.png"
+            alt=""
+            fill
+            className="object-contain pointer-events-none"
+            style={{ filter: bannerFilter }}
+          />
+          <span
+            className="relative z-10 text-center truncate px-[18%]"
+            style={{
+              fontFamily: TITLE_FONT,
+              fontSize: "clamp(10px, 1.4vw, 14px)",
+              fontWeight: 700,
+              color: "#2a2a2a",
+              textShadow: "0 1px 0 rgba(255,255,255,0.25)",
+              marginTop: "1%",
+            }}
+          >
+            {card.name}
+          </span>
+        </div>
+
+        {/* Layer 4: Type badge (small plaque at art/desc boundary) */}
+        <div
+          className="absolute left-1/2 -translate-x-1/2 z-10"
+          style={{ top: `calc(${descTopPct} - 2%)` }}
+        >
+          <div className="relative">
+            <Image
+              src="/images/game-assets/card-misc/card_portrait_border_plaque.png"
+              alt=""
+              width={60}
+              height={36}
+              className="pointer-events-none"
+              style={{ filter: bannerFilter }}
+            />
+            <span
+              className="absolute inset-0 flex items-center justify-center"
               style={{
-                clipPath: "polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%)",
-                border: `2px solid ${rarity.frame}60`,
-                borderRadius: "4px 4px 0 0",
+                fontFamily: CARD_FONT,
+                fontSize: "8px",
+                fontWeight: 700,
+                color: "#2a2a2a",
               }}
             >
-              {imageSrc && !imgError ? (
-                <Image
-                  src={imageSrc}
-                  alt={card.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 14vw"
-                  onError={() => setImgError(true)}
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full bg-black/50 text-gray-600 text-[10px]">
-                  No Image
-                </div>
-              )}
-            </div>
-
-            {/* Type badge at pentagon bottom vertex */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1">
-              <div
-                className="px-2.5 py-0.5 rounded text-[8px] font-bold text-gray-800"
-                style={{
-                  fontFamily: "var(--font-spire), serif",
-                  background: `linear-gradient(180deg, ${rarity.ribbon}cc, ${rarity.ribbon}88)`,
-                  boxShadow: `0 1px 3px rgba(0,0,0,0.4)`,
-                }}
-              >
-                {card.type}
-              </div>
-            </div>
-          </div>
-
-          {/* --- Description area --- */}
-          <div
-            className="flex-1 flex flex-col justify-center px-2 py-1.5 min-h-0 overflow-hidden rounded-b-md"
-            style={{ background: frame.desc, borderTop: `1px solid ${frame.base}40`, fontFamily: "var(--font-spire), serif" }}
-          >
-            {/* Keywords (centered, gold, own line) */}
-            {hasKeywords && (
-              <div className="text-center mb-0.5 flex-shrink-0">
-                {card.keywords.map((kw, i) => (
-                  <span key={i}>
-                    {i > 0 && <span className="text-gray-600 text-[9px]"> · </span>}
-                    <span
-                      className="relative text-[10px] font-bold text-yellow-500 cursor-help italic"
-                      onMouseEnter={() => setHoveredTerm(kw)}
-                      onMouseLeave={() => setHoveredTerm(null)}
-                    >
-                      {kw}
-                      {hoveredTerm === kw && KEYWORD_DESC[kw] && (
-                        <TermTooltip name={kw} desc={KEYWORD_DESC[kw]} />
-                      )}
-                    </span>
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Description text */}
-            <div className="text-center text-[10px] leading-[1.45] text-gray-100 overflow-hidden flex-1">
-              {descParts.map((part, i) =>
-                part.type === "gold" ? (
-                  <span
-                    key={i}
-                    className="relative text-yellow-500 font-semibold cursor-help"
-                    onMouseEnter={() => setHoveredTerm(part.text)}
-                    onMouseLeave={() => setHoveredTerm(null)}
-                  >
-                    {part.text}
-                    {hoveredTerm === part.text && GOLD_TERM_DESC[part.text] && (
-                      <TermTooltip name={part.text} desc={GOLD_TERM_DESC[part.text]} />
-                    )}
-                  </span>
-                ) : part.type === "energy" ? (
-                  <Image
-                    key={i}
-                    src={energyIcon}
-                    alt="energy"
-                    width={12}
-                    height={12}
-                    className="inline-block align-text-bottom mx-0.5"
-                  />
-                ) : part.type === "newline" ? (
-                  <br key={i} />
-                ) : (
-                  <span key={i}>{part.text}</span>
-                )
-              )}
-            </div>
-
-            {upgradeInfo && (
-              <p className="text-center text-[8px] text-green-400 mt-0.5 flex-shrink-0">
-                ▲ {upgradeInfo}
-              </p>
-            )}
+              {card.type}
+            </span>
           </div>
         </div>
 
-        {/* === Cost orb (protruding top-left outside frame) === */}
+        {/* Layer 5: Description area (text over frame's dark area) */}
+        <div
+          className="absolute left-[8%] right-[8%] bottom-[5%] overflow-hidden flex flex-col justify-center"
+          style={{
+            top: `calc(${descTopPct} + 2%)`,
+            fontFamily: CARD_FONT,
+          }}
+        >
+          {/* Keywords */}
+          {hasKeywords && (
+            <div className="text-center mb-0.5 flex-shrink-0">
+              {card.keywords.map((kw, i) => (
+                <span key={i}>
+                  {i > 0 && <span className="text-gray-500 text-[8px]"> · </span>}
+                  <span
+                    className="relative text-[10px] font-bold text-yellow-500 italic cursor-help"
+                    onMouseEnter={() => setHoveredTerm(kw)}
+                    onMouseLeave={() => setHoveredTerm(null)}
+                  >
+                    {kw}
+                    {hoveredTerm === kw && KEYWORD_DESC[kw] && (
+                      <TermTooltip name={kw} desc={KEYWORD_DESC[kw]} />
+                    )}
+                  </span>
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Description */}
+          <div className="text-center text-[10px] leading-[1.45] text-gray-100 overflow-hidden flex-1">
+            {descParts.map((part, i) =>
+              part.type === "gold" ? (
+                <span
+                  key={i}
+                  className="relative text-yellow-500 font-bold cursor-help"
+                  onMouseEnter={() => setHoveredTerm(part.text)}
+                  onMouseLeave={() => setHoveredTerm(null)}
+                >
+                  {part.text}
+                  {hoveredTerm === part.text && GOLD_TERM_DESC[part.text] && (
+                    <TermTooltip name={part.text} desc={GOLD_TERM_DESC[part.text]} />
+                  )}
+                </span>
+              ) : part.type === "energy" ? (
+                <Image
+                  key={i}
+                  src={energyIcon}
+                  alt="energy"
+                  width={14}
+                  height={14}
+                  className="inline-block align-text-bottom mx-0.5"
+                />
+              ) : part.type === "newline" ? (
+                <br key={i} />
+              ) : (
+                <span key={i}>{part.text}</span>
+              )
+            )}
+          </div>
+
+          {upgradeInfo && (
+            <p className="text-center text-[8px] text-green-400 mt-0.5 flex-shrink-0">
+              ▲ {upgradeInfo}
+            </p>
+          )}
+        </div>
+
+        {/* Layer 6: Cost orb (protruding top-left) */}
         {costDisplay && (
-          <div className="absolute -top-1.5 -left-1.5 z-20">
-            <div className="relative w-9 h-9 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
-              <Image src={energyIcon} alt="cost" width={36} height={36} className="w-full h-full" />
-              <span className="absolute inset-0 flex items-center justify-center text-sm font-black text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+          <div className="absolute z-20" style={{ top: "-5%", left: "-5%" }}>
+            <div className="relative" style={{ width: "20%", paddingBottom: "20%" }}>
+              <Image
+                src={energyIcon}
+                alt="cost"
+                fill
+                className="object-contain drop-shadow-lg"
+              />
+              <span
+                className="absolute inset-0 flex items-center justify-center font-black text-white"
+                style={{
+                  fontSize: "clamp(11px, 1.5vw, 16px)",
+                  textShadow: "0 1px 3px rgba(0,0,0,0.9)",
+                  fontFamily: TITLE_FONT,
+                }}
+              >
                 {costDisplay}
               </span>
             </div>
-            {/* Star cost below energy orb for Regent */}
-            {starCost !== null && (
-              <div className="relative w-6 h-6 -mt-1 mx-auto">
+            {/* Star cost below for Regent */}
+            {card.starCost !== null && (
+              <div className="relative mx-auto -mt-1" style={{ width: "60%" }}>
                 <Image
-                  src="/images/spire-codex/icons/star_icon.png"
+                  src="/images/game-assets/card-misc/energy_regent.png"
                   alt="star"
-                  width={24}
-                  height={24}
-                  className="w-full h-full drop-shadow-md"
+                  width={28}
+                  height={28}
+                  className="w-full h-auto drop-shadow-md"
                 />
-                <span className="absolute inset-0 flex items-center justify-center text-[9px] font-black text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-                  {starCost}
+                <span className="absolute inset-0 flex items-center justify-center text-[9px] font-black text-white">
+                  {card.starCost}
                 </span>
               </div>
             )}
@@ -305,10 +341,12 @@ function TermTooltip({ name, desc }: { name: string; desc: string }) {
   return (
     <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-44 bg-[#0a0a1a]/95 border border-yellow-500/30 rounded px-2 py-1.5 text-left z-50 pointer-events-none shadow-xl">
       <span className="font-bold text-yellow-400 text-[10px] block">{name}</span>
-      <span className="text-[9px] text-gray-300 font-normal leading-relaxed">{desc}</span>
+      <span className="text-[9px] text-gray-300 font-normal leading-relaxed not-italic">{desc}</span>
     </span>
   );
 }
+
+// === Description parsing ===
 
 interface DescPart {
   type: "text" | "gold" | "newline" | "energy";
