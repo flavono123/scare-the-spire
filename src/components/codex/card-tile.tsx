@@ -4,33 +4,35 @@ import { useState } from "react";
 import Image from "next/image";
 import { CodexCard } from "@/lib/codex-types";
 
-// === Character frame colors (outer border + bevel) ===
-const CHAR_FRAME: Record<string, { base: string; light: string; dark: string; inner: string }> = {
-  ironclad:    { base: "#8b4533", light: "#b86b55", dark: "#5a2a1a", inner: "#6b3525" },
-  silent:      { base: "#3a6b45", light: "#5a9b65", dark: "#1a3a20", inner: "#2a5535" },
-  defect:      { base: "#3a5580", light: "#5a80b0", dark: "#1a2a45", inner: "#2a4565" },
-  necrobinder: { base: "#6b3a6b", light: "#9b5a9b", dark: "#3a1a3a", inner: "#552a55" },
-  regent:      { base: "#8b6030", light: "#b88850", dark: "#5a3a10", inner: "#6b4a20" },
-  colorless:   { base: "#5a5a5a", light: "#808080", dark: "#303030", inner: "#454545" },
-  curse:       { base: "#4a2040", light: "#6a3860", dark: "#2a1020", inner: "#3a1830" },
-  event:       { base: "#4a5a30", light: "#6a8050", dark: "#2a3518", inner: "#3a4a25" },
-  status:      { base: "#5a4a30", light: "#807050", dark: "#352a18", inner: "#4a3a25" },
-  token:       { base: "#505050", light: "#707070", dark: "#2a2a2a", inner: "#404040" },
-  quest:       { base: "#3a4060", light: "#5a6890", dark: "#1a2035", inner: "#2a3050" },
+// === Character frame colors (extracted from slaythespire2.gg composites) ===
+// base: main frame, light: bevel highlight, dark: bevel shadow, desc: description bg
+const CHAR_FRAME: Record<string, { base: string; light: string; dark: string; desc: string }> = {
+  ironclad:    { base: "#893322", light: "#d8493a", dark: "#742b1d", desc: "#433933" },
+  silent:      { base: "#2a6635", light: "#3a9848", dark: "#1a4422", desc: "#333d33" },
+  defect:      { base: "#11618b", light: "#448bce", dark: "#0c4f71", desc: "#353f45" },
+  necrobinder: { base: "#6b2a60", light: "#a848a0", dark: "#4a1840", desc: "#3d3340" },
+  regent:      { base: "#8b5520", light: "#c88030", dark: "#5a3810", desc: "#403833" },
+  colorless:   { base: "#555555", light: "#808080", dark: "#353535", desc: "#383838" },
+  curse:       { base: "#4a1838", light: "#6a3050", dark: "#301020", desc: "#352830" },
+  event:       { base: "#3a5525", light: "#5a8038", dark: "#253818", desc: "#333833" },
+  status:      { base: "#5a4520", light: "#806838", dark: "#3a2a10", desc: "#383330" },
+  token:       { base: "#484848", light: "#686868", dark: "#2a2a2a", desc: "#353535" },
+  quest:       { base: "#384060", light: "#506090", dark: "#202838", desc: "#333540" },
 };
 
-// === Rarity inner frame colors ===
-const RARITY_FRAME: Record<string, { border: string; glow: string }> = {
-  기본:        { border: "#6a6a6a", glow: "transparent" },
-  일반:        { border: "#8a8a8a", glow: "rgba(180,180,180,0.1)" },
-  고급:        { border: "#4a90d0", glow: "rgba(74,144,208,0.2)" },
-  희귀:        { border: "#d4a843", glow: "rgba(212,168,67,0.25)" },
-  "고대의 존재": { border: "#b060e0", glow: "rgba(176,96,224,0.2)" },
-  이벤트:      { border: "#60a050", glow: "rgba(96,160,80,0.15)" },
-  토큰:        { border: "#706050", glow: "transparent" },
-  저주:        { border: "#8a3030", glow: "rgba(138,48,48,0.15)" },
-  상태이상:     { border: "#8a6a30", glow: "rgba(138,106,48,0.15)" },
-  퀘스트:      { border: "#6060a0", glow: "rgba(96,96,160,0.15)" },
+// === Rarity colors (ribbon, inner frame, type badge) ===
+// Extracted: Basic/Common=silver #a5a5a5, Uncommon=blue #5ab0d0, Rare=gold #d4a843, Ancient=green-gold #90a860
+const RARITY_FRAME: Record<string, { ribbon: string; frame: string; glow: string }> = {
+  기본:        { ribbon: "#a5a5a5", frame: "#8a8a8a", glow: "transparent" },
+  일반:        { ribbon: "#a5a5a5", frame: "#8a8a8a", glow: "rgba(165,165,165,0.08)" },
+  고급:        { ribbon: "#5ab0d8", frame: "#4a90c0", glow: "rgba(90,176,216,0.15)" },
+  희귀:        { ribbon: "#d4a843", frame: "#c89830", glow: "rgba(212,168,67,0.2)" },
+  "고대의 존재": { ribbon: "#90a860", frame: "#80a050", glow: "rgba(144,168,96,0.15)" },
+  이벤트:      { ribbon: "#80a060", frame: "#60884a", glow: "rgba(128,160,96,0.1)" },
+  토큰:        { ribbon: "#8a8070", frame: "#706050", glow: "transparent" },
+  저주:        { ribbon: "#705050", frame: "#604040", glow: "rgba(112,80,80,0.1)" },
+  상태이상:     { ribbon: "#807060", frame: "#685840", glow: "rgba(128,112,96,0.08)" },
+  퀘스트:      { ribbon: "#7080a0", frame: "#506888", glow: "rgba(112,128,160,0.1)" },
 };
 
 // Energy icon paths
@@ -120,8 +122,8 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
         <div
           className="relative h-full rounded-lg overflow-hidden flex flex-col"
           style={{
-            background: `linear-gradient(180deg, ${frame.inner} 0%, #252025 35%, #1e1a1e 100%)`,
-            boxShadow: `inset 0 0 0 1.5px ${rarity.border}90, 0 0 6px ${rarity.glow}`,
+            background: `linear-gradient(180deg, ${frame.base}40 0%, ${frame.desc} 40%, ${frame.desc} 100%)`,
+            boxShadow: `inset 0 0 0 2px ${rarity.frame}90, 0 0 6px ${rarity.glow}`,
           }}
         >
           {/* --- Name ribbon (silver scroll shape) --- */}
@@ -131,16 +133,16 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
               <svg viewBox="0 0 200 32" className="w-full h-auto" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id={`ribbon-${card.id}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={rarity.border} stopOpacity="0.9" />
-                    <stop offset="50%" stopColor={rarity.border} stopOpacity="0.6" />
-                    <stop offset="100%" stopColor={rarity.border} stopOpacity="0.4" />
+                    <stop offset="0%" stopColor={rarity.ribbon} stopOpacity="0.9" />
+                    <stop offset="50%" stopColor={rarity.ribbon} stopOpacity="0.6" />
+                    <stop offset="100%" stopColor={rarity.ribbon} stopOpacity="0.4" />
                   </linearGradient>
                 </defs>
                 {/* Ribbon shape: curving down at edges */}
                 <path
                   d="M8,6 Q0,6 2,16 L6,28 Q8,32 16,30 L184,30 Q192,32 194,28 L198,16 Q200,6 192,6 Z"
                   fill={`url(#ribbon-${card.id})`}
-                  stroke={rarity.border}
+                  stroke={rarity.ribbon}
                   strokeWidth="0.5"
                   strokeOpacity="0.5"
                 />
@@ -157,7 +159,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
               className="relative w-full h-full overflow-hidden"
               style={{
                 clipPath: "polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%)",
-                border: `2px solid ${rarity.border}50`,
+                border: `2px solid ${rarity.frame}60`,
                 borderRadius: "4px 4px 0 0",
               }}
             >
@@ -182,7 +184,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
               <div
                 className="px-2.5 py-0.5 rounded text-[8px] font-bold text-gray-800"
                 style={{
-                  background: `linear-gradient(180deg, ${rarity.border}cc, ${rarity.border}88)`,
+                  background: `linear-gradient(180deg, ${rarity.ribbon}cc, ${rarity.ribbon}88)`,
                   boxShadow: `0 1px 3px rgba(0,0,0,0.4)`,
                 }}
               >
@@ -194,7 +196,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
           {/* --- Description area --- */}
           <div
             className="flex-1 flex flex-col justify-center px-2.5 py-1.5 min-h-0 overflow-hidden"
-            style={{ background: "#1e1a1e" }}
+            style={{ background: frame.desc }}
           >
             {/* Keywords (centered, gold, own line) */}
             {hasKeywords && (
