@@ -126,28 +126,37 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
             boxShadow: `inset 0 0 0 2px ${rarity.frame}90, 0 0 6px ${rarity.glow}`,
           }}
         >
-          {/* --- Name ribbon (silver scroll shape) --- */}
+          {/* --- Name ribbon (rarity-colored scroll) --- */}
           <div className="relative z-10 flex-shrink-0">
-            {/* Ribbon SVG background */}
-            <div className="relative mx-1 mt-1">
-              <svg viewBox="0 0 200 32" className="w-full h-auto" preserveAspectRatio="none">
+            <div className="relative mx-0.5 -mt-0.5">
+              <svg viewBox="0 0 200 36" className="w-full" style={{ height: "28px" }} preserveAspectRatio="none">
                 <defs>
-                  <linearGradient id={`ribbon-${card.id}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={rarity.ribbon} stopOpacity="0.9" />
-                    <stop offset="50%" stopColor={rarity.ribbon} stopOpacity="0.6" />
-                    <stop offset="100%" stopColor={rarity.ribbon} stopOpacity="0.4" />
+                  <linearGradient id={`rib-${card.id}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={rarity.ribbon} />
+                    <stop offset="40%" stopColor={rarity.ribbon} />
+                    <stop offset="100%" stopColor={`${rarity.ribbon}cc`} />
                   </linearGradient>
                 </defs>
-                {/* Ribbon shape: curving down at edges */}
+                {/* Ribbon with curled ends extending past card */}
                 <path
-                  d="M8,6 Q0,6 2,16 L6,28 Q8,32 16,30 L184,30 Q192,32 194,28 L198,16 Q200,6 192,6 Z"
-                  fill={`url(#ribbon-${card.id})`}
-                  stroke={rarity.ribbon}
+                  d="M0,8 Q0,0 10,2 L90,2 Q100,0 100,2 L110,2 Q120,0 120,2 L190,2 Q200,0 200,8 L200,24 Q200,32 194,34 L180,36 Q170,36 170,30 L170,28 Q168,24 162,24 L38,24 Q32,24 30,28 L30,30 Q30,36 20,36 L6,34 Q0,32 0,24 Z"
+                  fill={`url(#rib-${card.id})`}
+                  stroke={`${rarity.ribbon}80`}
                   strokeWidth="0.5"
-                  strokeOpacity="0.5"
                 />
+                {/* Highlight line at top */}
+                <line x1="10" y1="4" x2="190" y2="4" stroke="white" strokeOpacity="0.25" strokeWidth="1" />
               </svg>
-              <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-gray-900 drop-shadow-[0_1px_0_rgba(255,255,255,0.3)] truncate px-4 font-[var(--font-cinzel)]">
+              <span
+                className="absolute inset-0 flex items-center justify-center truncate px-5 font-[family-name:var(--font-cinzel)]"
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  color: "#333333",
+                  textShadow: "0 1px 0 rgba(255,255,255,0.3)",
+                  paddingBottom: "3px",
+                }}
+              >
                 {card.name}
               </span>
             </div>
@@ -195,17 +204,17 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
 
           {/* --- Description area --- */}
           <div
-            className="flex-1 flex flex-col justify-center px-2.5 py-1.5 min-h-0 overflow-hidden"
-            style={{ background: frame.desc }}
+            className="flex-1 flex flex-col justify-center px-2 py-1.5 min-h-0 overflow-hidden rounded-b-md"
+            style={{ background: frame.desc, borderTop: `1px solid ${frame.base}40` }}
           >
             {/* Keywords (centered, gold, own line) */}
             {hasKeywords && (
-              <div className="text-center mb-1 flex-shrink-0">
+              <div className="text-center mb-0.5 flex-shrink-0">
                 {card.keywords.map((kw, i) => (
                   <span key={i}>
                     {i > 0 && <span className="text-gray-600 text-[9px]"> · </span>}
                     <span
-                      className="relative text-[10px] font-bold text-yellow-500 cursor-help"
+                      className="relative text-[10px] font-bold text-yellow-500 cursor-help italic"
                       onMouseEnter={() => setHoveredTerm(kw)}
                       onMouseLeave={() => setHoveredTerm(null)}
                     >
@@ -220,7 +229,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
             )}
 
             {/* Description text */}
-            <div className="text-center text-[9px] leading-[1.4] text-gray-200 overflow-hidden flex-1">
+            <div className="text-center text-[10px] leading-[1.45] text-gray-100 overflow-hidden flex-1">
               {descParts.map((part, i) =>
                 part.type === "gold" ? (
                   <span
