@@ -4,7 +4,10 @@ import { useState } from "react";
 import Image from "next/image";
 import { CodexCard } from "@/lib/codex-types";
 
-// === Card type -> frame asset path ===
+// =============================================================================
+// Game-extracted asset paths
+// =============================================================================
+
 const FRAME_ASSETS: Record<string, string> = {
   공격: "/images/game-assets/card-frames/card_frame_attack.png",
   스킬: "/images/game-assets/card-frames/card_frame_skill.png",
@@ -14,38 +17,15 @@ const FRAME_ASSETS: Record<string, string> = {
   퀘스트: "/images/game-assets/card-frames/card_frame_quest.png",
 };
 
-// === Character color -> CSS filter to recolor red base frame ===
-// Base frame is ironclad red. Transform with hue-rotate/saturate/brightness.
-const CHAR_FILTER: Record<string, string> = {
-  ironclad:    "hue-rotate(0deg) saturate(1) brightness(1)",
-  silent:      "hue-rotate(121deg) saturate(0.8) brightness(0.75)",
-  defect:      "hue-rotate(-169deg) saturate(1.2) brightness(1)",
-  necrobinder: "hue-rotate(-60deg) saturate(0.8) brightness(0.8)",
-  regent:      "hue-rotate(20deg) saturate(1) brightness(1)",
-  colorless:   "hue-rotate(0deg) saturate(0) brightness(0.65)",
-  curse:       "hue-rotate(-48deg) saturate(0.9) brightness(0.55)",
-  event:       "hue-rotate(84deg) saturate(0.8) brightness(0.65)",
-  status:      "hue-rotate(28deg) saturate(0.9) brightness(0.7)",
-  token:       "hue-rotate(0deg) saturate(0) brightness(0.6)",
-  quest:       "hue-rotate(-169deg) saturate(0.8) brightness(0.7)",
+const PORTRAIT_BORDER_ASSETS: Record<string, string> = {
+  공격: "/images/game-assets/card-portraits/card_portrait_border_attack.png",
+  스킬: "/images/game-assets/card-portraits/card_portrait_border_skill.png",
+  파워: "/images/game-assets/card-portraits/card_portrait_border_power.png",
+  저주: "/images/game-assets/card-portraits/card_portrait_border_skill.png",
+  상태이상: "/images/game-assets/card-portraits/card_portrait_border_skill.png",
+  퀘스트: "/images/game-assets/card-portraits/card_portrait_border_skill.png",
 };
 
-// === Rarity -> banner hue filter ===
-// Base banner is cyan (#5BC8D8). Transform to rarity colors.
-const RARITY_BANNER_FILTER: Record<string, string> = {
-  기본:        "hue-rotate(0deg) saturate(0) brightness(0.7)",       // gray
-  일반:        "hue-rotate(0deg) saturate(0) brightness(0.75)",      // silver
-  고급:        "hue-rotate(-10deg) saturate(0.8) brightness(0.85)",  // blue (close to base)
-  희귀:        "hue-rotate(-140deg) saturate(1.2) brightness(0.9)",  // gold
-  "고대의 존재": "hue-rotate(-100deg) saturate(0.6) brightness(0.7)", // greenish
-  이벤트:      "hue-rotate(-80deg) saturate(0.5) brightness(0.6)",
-  토큰:        "hue-rotate(0deg) saturate(0) brightness(0.5)",
-  저주:        "hue-rotate(150deg) saturate(0.6) brightness(0.4)",
-  상태이상:     "hue-rotate(-120deg) saturate(0.4) brightness(0.5)",
-  퀘스트:      "hue-rotate(-30deg) saturate(0.7) brightness(0.7)",
-};
-
-// === Energy icon paths (extracted from game) ===
 const ENERGY_ICONS: Record<string, string> = {
   ironclad: "/images/game-assets/card-misc/energy_ironclad.png",
   silent: "/images/game-assets/card-misc/energy_silent.png",
@@ -60,11 +40,90 @@ const ENERGY_ICONS: Record<string, string> = {
   quest: "/images/game-assets/card-misc/energy_quest.png",
 };
 
-// Font style for card text (actual game fonts)
+// =============================================================================
+// Game-extracted HSV shader parameters (from .tres material files)
+// =============================================================================
+
+interface HSV { h: number; s: number; v: number }
+
+const CHAR_HSV: Record<string, HSV> = {
+  ironclad: { h: 0.025, s: 0.85, v: 1.0 },
+  silent: { h: 0.32, s: 0.45, v: 1.2 },
+  defect: { h: 0.55, s: 0.9, v: 1.0 },
+  necrobinder: { h: 0.965, s: 0.55, v: 1.2 },  // card_frame_pink_mat (purple)
+  regent: { h: 0.12, s: 1.5, v: 1.2 },         // card_frame_orange_mat (orange/gold)
+  colorless: { h: 1.0, s: 0.0, v: 1.2 },
+  curse: { h: 0.85, s: 0.05, v: 0.55 },
+  quest: { h: 1.0, s: 1.0, v: 1.0 },
+  event: { h: 1.0, s: 0.0, v: 1.0 },
+  status: { h: 0.12, s: 0.3, v: 0.7 },
+  token: { h: 1.0, s: 0.0, v: 0.8 },
+};
+
+function hsvToFilter(hsv: HSV): string {
+  const hueDeg = Math.round(hsv.h * 360) % 360;
+  return `hue-rotate(${hueDeg}deg) saturate(${hsv.s}) brightness(${hsv.v})`;
+}
+
+// =============================================================================
+// Rarity colors — used for banner filter AND text outline
+// Base banner asset is teal (~180° hue)
+// =============================================================================
+
+const RARITY_BANNER_FILTER: Record<string, string> = {
+  기본: "saturate(0) brightness(0.7)",
+  일반: "saturate(0) brightness(0.8)",
+  고급: "hue-rotate(-10deg) saturate(0.8) brightness(0.85)",
+  희귀: "hue-rotate(-140deg) saturate(1.2) brightness(0.9)",
+  "고대의 존재": "hue-rotate(-100deg) saturate(0.6) brightness(0.7)",
+  이벤트: "hue-rotate(-80deg) saturate(0.5) brightness(0.6)",
+  토큰: "saturate(0) brightness(0.5)",
+  저주: "hue-rotate(150deg) saturate(0.6) brightness(0.4)",
+  상태이상: "hue-rotate(-120deg) saturate(0.4) brightness(0.5)",
+  퀘스트: "hue-rotate(-30deg) saturate(0.7) brightness(0.7)",
+};
+
+// Rarity -> darker outline color for card name text
+// In-game, outline follows the rarity banner color but darker
+const RARITY_OUTLINE: Record<string, string> = {
+  기본: "#2a2a2a",
+  일반: "#303030",
+  고급: "#1a3a5a",
+  희귀: "#4a3010",
+  "고대의 존재": "#1a3020",
+  이벤트: "#1a2a20",
+  토큰: "#1a1a1a",
+  저주: "#2a1020",
+  상태이상: "#1a1a2a",
+  퀘스트: "#1a2a3a",
+};
+
+// Energy orb outline colors (darker shade of each orb's dominant color)
+const ENERGY_OUTLINE: Record<string, string> = {
+  ironclad: "#3a1008",
+  silent: "#0a2a10",
+  defect: "#081830",
+  necrobinder: "#3a0820",
+  regent: "#2a1a08",
+  colorless: "#1a1a1a",
+  curse: "#1a1a1a",
+  event: "#1a1a1a",
+  status: "#1a1a1a",
+  token: "#1a1a1a",
+  quest: "#081830",
+};
+
+// =============================================================================
+// Fonts
+// =============================================================================
+
 const CARD_FONT = "var(--font-gc-batang), var(--font-kreon), serif";
 const TITLE_FONT = "var(--font-spectral), var(--font-gc-batang), serif";
 
-// Keyword descriptions
+// =============================================================================
+// Keyword / gold-term tooltips
+// =============================================================================
+
 const KEYWORD_DESC: Record<string, string> = {
   교활: "교활 카드는 사일런트 카드 더미에 합류합니다.",
   보존: "이 카드는 턴 종료 시 버려지지 않습니다.",
@@ -87,6 +146,68 @@ const GOLD_TERM_DESC: Record<string, string> = {
   강화: "카드를 영구적으로 강화합니다.",
 };
 
+// =============================================================================
+// Layout config (% of 598x844 card frame)
+// Measured from actual game assets pixel dimensions.
+// banner: 653x145 → w=109%, h=17.2% of card
+// frame: 598x844
+// portrait border: 551x420 → w=92%, h=49.8% of card
+// plaque: 123x75 → w=20.6%, aspect 123/75
+// energy orb: ~74x74 → 12.4% of card width
+// =============================================================================
+
+const L = {
+  art: {
+    top: 10,
+    left: 5,
+    right: 5,
+    bottom: 56,
+  },
+  portraitBorder: {
+    width: 92,
+    height: 50,
+    top: 10,
+  },
+  banner: {
+    top: 4,
+    height: 17,
+    overhangX: 9,
+  },
+  plaque: {
+    width: 22,
+    top: 55,
+  },
+  desc: {
+    top: 64,
+    bottom: 95,
+    paddingX: 12,
+  },
+  cost: {
+    top: -3,
+    left: -3,
+    size: 16,
+  },
+  starCost: {
+    top: 12,
+    left: 0,
+    size: 11,
+  },
+};
+
+
+// Build text-shadow outline from a single color
+function outlineShadow(color: string, px: number = 1): string {
+  const offsets = [
+    [-px, -px], [px, -px], [-px, px], [px, px],
+    [0, -px], [0, px], [-px, 0], [px, 0],
+  ];
+  return offsets.map(([x, y]) => `${x}px ${y}px 0 ${color}`).join(", ");
+}
+
+// =============================================================================
+// Component
+// =============================================================================
+
 interface CardTileProps {
   card: CodexCard;
   showUpgrade: boolean;
@@ -97,13 +218,12 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
   const [imgError, setImgError] = useState(false);
   const [hoveredTerm, setHoveredTerm] = useState<string | null>(null);
 
-  // Image selection
+  // === Derived values ===
   let imageSrc: string | null = null;
   if (showBeta && card.betaImageUrl) imageSrc = card.betaImageUrl;
   else if (card.imageUrl) imageSrc = card.imageUrl;
   else if (card.betaImageUrl) imageSrc = card.betaImageUrl;
 
-  // Cost
   let costDisplay = "";
   if (card.isXCost) costDisplay = "X";
   else if (card.cost >= 0) {
@@ -112,42 +232,33 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
   }
 
   const frameAsset = FRAME_ASSETS[card.type] ?? FRAME_ASSETS["스킬"];
-  const charFilter = CHAR_FILTER[card.color] ?? CHAR_FILTER.colorless;
+  const portraitBorderAsset = PORTRAIT_BORDER_ASSETS[card.type] ?? PORTRAIT_BORDER_ASSETS["스킬"];
+  const charHsv = CHAR_HSV[card.color] ?? CHAR_HSV.colorless;
+  const frameFilter = hsvToFilter(charHsv);
   const bannerFilter = RARITY_BANNER_FILTER[card.rarity] ?? RARITY_BANNER_FILTER["일반"];
+  const nameOutline = RARITY_OUTLINE[card.rarity] ?? RARITY_OUTLINE["일반"];
+  const costOutline = ENERGY_OUTLINE[card.color] ?? ENERGY_OUTLINE.colorless;
   const energyIcon = ENERGY_ICONS[card.color] ?? ENERGY_ICONS.colorless;
-  const descParts = parseDescription(card.description);
-  const upgradeInfo = showUpgrade && card.upgrade ? formatUpgrade(card) : null;
-  const hasKeywords = card.keywords.length > 0;
+  // Build description: when upgraded, substitute vars with upgraded values
+  const isUpgraded = showUpgrade && card.upgrade != null;
+  const descText = isUpgraded
+    ? renderUpgradedDescription(card)
+    : card.description;
+  const descParts = parseDescription(descText);
 
-  // Art area positioning based on frame shape analysis (598x844)
-  // Attack V-notch: art ~5%-55%, desc starts ~57%
-  // Skill straight: art ~5%-58%, desc starts ~58%
-  // Power hex-cut: art ~5%-52%, desc starts ~54%
-  const artHeightPct = card.type === "공격" ? "52%" : card.type === "파워" ? "48%" : "55%";
-  const descTopPct = card.type === "공격" ? "55%" : card.type === "파워" ? "52%" : "57%";
 
   return (
     <div className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none">
       <div className="relative" style={{ aspectRatio: "598/844" }}>
-        {/* Layer 1: Card frame (game asset, color-shifted) */}
-        <Image
-          src={frameAsset}
-          alt=""
-          fill
-          className="object-contain pointer-events-none"
-          style={{ filter: charFilter }}
-          sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 14vw"
-          priority={false}
-        />
 
-        {/* Layer 2: Card art (positioned within frame art area) */}
+        {/* ── Layer 0: Card portrait ── */}
         <div
           className="absolute overflow-hidden"
           style={{
-            top: "10%",
-            left: "7%",
-            right: "7%",
-            height: artHeightPct,
+            top: `${L.art.top}%`,
+            left: `${L.art.left}%`,
+            right: `${L.art.right}%`,
+            height: `${L.art.bottom - L.art.top}%`,
           }}
         >
           {imageSrc && !imgError ? (
@@ -155,7 +266,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
               src={imageSrc}
               alt={card.name}
               fill
-              className="object-cover"
+              className="object-contain object-center"
               sizes="(max-width: 640px) 40vw, (max-width: 1024px) 20vw, 12vw"
               onError={() => setImgError(true)}
             />
@@ -166,14 +277,43 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
           )}
         </div>
 
-        {/* Layer 3: Name banner (game asset, rarity-colored) */}
+        {/* ── Layer 1: Card frame (HSV-tinted) ── */}
+        <Image
+          src={frameAsset}
+          alt=""
+          fill
+          className="object-contain pointer-events-none z-[1]"
+          style={{ filter: frameFilter }}
+          sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 14vw"
+          priority={false}
+        />
+
+        {/* ── Layer 2: Portrait border ── */}
         <div
-          className="absolute flex items-center justify-center"
+          className="absolute z-[2] pointer-events-none left-1/2 -translate-x-1/2"
           style={{
-            top: "1%",
-            left: "-4%",
-            right: "-4%",
-            height: "12%",
+            top: `${L.portraitBorder.top}%`,
+            width: `${L.portraitBorder.width}%`,
+            height: `${L.portraitBorder.height}%`,
+          }}
+        >
+          <Image
+            src={portraitBorderAsset}
+            alt=""
+            fill
+            className="object-contain"
+            style={{ filter: bannerFilter }}
+          />
+        </div>
+
+        {/* ── Layer 3: Name banner (653x145, wider & taller than frame top) ── */}
+        <div
+          className="absolute z-[3] flex items-center justify-center"
+          style={{
+            top: `${L.banner.top}%`,
+            left: `-${L.banner.overhangX}%`,
+            right: `-${L.banner.overhangX}%`,
+            height: `${L.banner.height}%`,
           }}
         >
           <Image
@@ -184,41 +324,43 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
             style={{ filter: bannerFilter }}
           />
           <span
-            className="relative z-10 text-center truncate px-[18%]"
+            className="relative z-10 text-center truncate px-[18%] w-full"
             style={{
+              marginTop: "-10%",
               fontFamily: TITLE_FONT,
-              fontSize: "clamp(10px, 1.4vw, 14px)",
-              fontWeight: 700,
-              color: "#2a2a2a",
-              textShadow: "0 1px 0 rgba(255,255,255,0.25)",
-              marginTop: "1%",
+              fontSize: "clamp(9px, 1.4vw, 16px)",
+              fontWeight: 800,
+              color: isUpgraded ? "#6ee67a" : "#ffffff",
+              textShadow: outlineShadow(isUpgraded ? "#1a3a1a" : nameOutline, 1),
             }}
           >
-            {card.name}
+            {card.name}{isUpgraded && "+"}
           </span>
         </div>
 
-        {/* Layer 4: Type badge (small plaque at art/desc boundary) */}
+        {/* ── Layer 4: Type plaque ── */}
         <div
-          className="absolute left-1/2 -translate-x-1/2 z-10"
-          style={{ top: `calc(${descTopPct} - 2%)` }}
+          className="absolute left-1/2 -translate-x-1/2 z-[4]"
+          style={{
+            top: `${L.plaque.top}%`,
+            width: `${L.plaque.width}%`,
+          }}
         >
-          <div className="relative">
+          <div className="relative w-full" style={{ aspectRatio: "123/75" }}>
             <Image
               src="/images/game-assets/card-misc/card_portrait_border_plaque.png"
               alt=""
-              width={60}
-              height={36}
-              className="pointer-events-none"
+              fill
+              className="pointer-events-none object-contain"
               style={{ filter: bannerFilter }}
             />
             <span
               className="absolute inset-0 flex items-center justify-center"
               style={{
                 fontFamily: CARD_FONT,
-                fontSize: "8px",
+                fontSize: "clamp(6px, 0.8vw, 10px)",
                 fontWeight: 700,
-                color: "#2a2a2a",
+                color: "#3a2a1a",
               }}
             >
               {card.type}
@@ -226,37 +368,18 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
           </div>
         </div>
 
-        {/* Layer 5: Description area (text over frame's dark area) */}
+        {/* ── Layer 5: Description text ── */}
         <div
-          className="absolute left-[8%] right-[8%] bottom-[5%] overflow-hidden flex flex-col justify-center"
+          className="absolute z-[5] overflow-hidden flex flex-col items-center justify-center"
           style={{
-            top: `calc(${descTopPct} + 2%)`,
+            top: `${L.desc.top}%`,
+            bottom: `${100 - L.desc.bottom}%`,
+            left: `${L.desc.paddingX}%`,
+            right: `${L.desc.paddingX}%`,
             fontFamily: CARD_FONT,
           }}
         >
-          {/* Keywords */}
-          {hasKeywords && (
-            <div className="text-center mb-0.5 flex-shrink-0">
-              {card.keywords.map((kw, i) => (
-                <span key={i}>
-                  {i > 0 && <span className="text-gray-500 text-[8px]"> · </span>}
-                  <span
-                    className="relative text-[10px] font-bold text-yellow-500 italic cursor-help"
-                    onMouseEnter={() => setHoveredTerm(kw)}
-                    onMouseLeave={() => setHoveredTerm(null)}
-                  >
-                    {kw}
-                    {hoveredTerm === kw && KEYWORD_DESC[kw] && (
-                      <TermTooltip name={kw} desc={KEYWORD_DESC[kw]} />
-                    )}
-                  </span>
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Description */}
-          <div className="text-center text-[10px] leading-[1.45] text-gray-100 overflow-hidden flex-1">
+          <div className="text-center text-[10px] leading-[1.15] text-gray-100">
             {descParts.map((part, i) =>
               part.type === "gold" ? (
                 <span
@@ -285,57 +408,98 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
                 <span key={i}>{part.text}</span>
               )
             )}
+            {/* Keywords at end of description */}
+            {card.keywords.length > 0 && (
+              <>
+                <br />
+                {card.keywords.map((kw, i) => (
+                  <span key={`kw-${i}`}>
+                    {i > 0 && <span className="text-gray-500"> · </span>}
+                    <span
+                      className="relative font-bold text-yellow-500 cursor-help"
+                      onMouseEnter={() => setHoveredTerm(kw)}
+                      onMouseLeave={() => setHoveredTerm(null)}
+                    >
+                      {kw}
+                      {hoveredTerm === kw && KEYWORD_DESC[kw] && (
+                        <TermTooltip name={kw} desc={KEYWORD_DESC[kw]} />
+                      )}
+                    </span>
+                  </span>
+                ))}
+              </>
+            )}
           </div>
 
-          {upgradeInfo && (
-            <p className="text-center text-[8px] text-green-400 mt-0.5 flex-shrink-0">
-              ▲ {upgradeInfo}
-            </p>
-          )}
         </div>
 
-        {/* Layer 6: Cost orb (protruding top-left) */}
+        {/* ── Layer 6: Energy cost orb ── */}
         {costDisplay && (
-          <div className="absolute z-20" style={{ top: "-5%", left: "-5%" }}>
-            <div className="relative" style={{ width: "20%", paddingBottom: "20%" }}>
-              <Image
-                src={energyIcon}
-                alt="cost"
-                fill
-                className="object-contain drop-shadow-lg"
-              />
-              <span
-                className="absolute inset-0 flex items-center justify-center font-black text-white"
-                style={{
-                  fontSize: "clamp(11px, 1.5vw, 16px)",
-                  textShadow: "0 1px 3px rgba(0,0,0,0.9)",
-                  fontFamily: TITLE_FONT,
-                }}
-              >
-                {costDisplay}
-              </span>
-            </div>
-            {/* Star cost below for Regent */}
-            {card.starCost !== null && (
-              <div className="relative mx-auto -mt-1" style={{ width: "60%" }}>
-                <Image
-                  src="/images/game-assets/card-misc/energy_regent.png"
-                  alt="star"
-                  width={28}
-                  height={28}
-                  className="w-full h-auto drop-shadow-md"
-                />
-                <span className="absolute inset-0 flex items-center justify-center text-[9px] font-black text-white">
-                  {card.starCost}
-                </span>
-              </div>
-            )}
+          <div
+            className="absolute z-[6]"
+            style={{
+              top: `${L.cost.top}%`,
+              left: `${L.cost.left}%`,
+              width: `${L.cost.size}%`,
+              aspectRatio: "1",
+            }}
+          >
+            <Image
+              src={energyIcon}
+              alt="cost"
+              fill
+              className="object-contain drop-shadow-lg"
+            />
+            <span
+              className="absolute inset-0 flex items-center justify-center font-black text-white"
+              style={{
+                fontSize: "clamp(12px, 1.5vw, 18px)",
+                fontFamily: TITLE_FONT,
+                textShadow: outlineShadow(costOutline, 2),
+              }}
+            >
+              {costDisplay}
+            </span>
+          </div>
+        )}
+
+        {/* ── Layer 7: Star cost (Regent) ── */}
+        {card.starCost !== null && (
+          <div
+            className="absolute z-[6]"
+            style={{
+              top: `${L.starCost.top}%`,
+              left: `${L.starCost.left}%`,
+              width: `${L.starCost.size}%`,
+              aspectRatio: "1",
+            }}
+          >
+            <Image
+              src="/images/game-assets/card-misc/energy_regent.png"
+              alt="star cost"
+              fill
+              className="object-contain drop-shadow-md"
+            />
+            <span
+              className="absolute inset-0 flex items-center justify-center font-black text-white"
+              style={{
+                fontSize: "clamp(9px, 1vw, 13px)",
+                fontFamily: TITLE_FONT,
+                textShadow: outlineShadow("#3a0820", 1),
+              }}
+            >
+              {card.starCost}
+            </span>
           </div>
         )}
       </div>
     </div>
   );
 }
+
+// =============================================================================
+// Tooltip
+// =============================================================================
 
 function TermTooltip({ name, desc }: { name: string; desc: string }) {
   return (
@@ -346,7 +510,9 @@ function TermTooltip({ name, desc }: { name: string; desc: string }) {
   );
 }
 
-// === Description parsing ===
+// =============================================================================
+// Description parsing
+// =============================================================================
 
 interface DescPart {
   type: "text" | "gold" | "newline" | "energy";
@@ -387,16 +553,35 @@ function parseDescription(rawDesc: string): DescPart[] {
   return parts;
 }
 
-function formatUpgrade(card: CodexCard): string | null {
-  if (!card.upgrade) return null;
-  const parts: string[] = [];
-  for (const [key, val] of Object.entries(card.upgrade)) {
-    if (key === "cost") parts.push(`비용→${val}`);
-    else if (key === "add_retain") parts.push("+보존");
-    else if (key === "add_innate") parts.push("+선천성");
-    else if (key === "remove_ethereal") parts.push("-휘발성");
-    else if (key === "remove_exhaust") parts.push("-소멸");
-    else if (typeof val === "string" && val.startsWith("+")) parts.push(`${key}${val}`);
+// Build upgraded description by substituting {Var:diff()} templates with upgraded values
+function renderUpgradedDescription(card: CodexCard): string {
+  if (!card.upgrade || !card.descriptionRaw) return card.description;
+
+  // Apply upgrade diffs to base vars
+  const upgradedVars: Record<string, number> = { ...card.vars };
+  for (const [key, diff] of Object.entries(card.upgrade)) {
+    if (typeof diff === "string" && diff.match(/^[+-]\d+/)) {
+      const delta = parseInt(diff, 10);
+      // upgrade keys are lowercase, vars keys are mixed case — match case-insensitively
+      const varKey = Object.keys(upgradedVars).find(
+        (k) => k.toLowerCase() === key.toLowerCase()
+      );
+      if (varKey) {
+        upgradedVars[varKey] = (upgradedVars[varKey] ?? 0) + delta;
+      }
+    }
   }
-  return parts.length > 0 ? parts.join(" ") : null;
+
+  // Substitute {VarName:diff()} or {VarName} with upgraded values
+  return card.descriptionRaw.replace(
+    /\{(\w+)(?::diff\(\))?\}/g,
+    (match, varName: string) => {
+      if (varName in upgradedVars) return String(upgradedVars[varName]);
+      // Case-insensitive fallback
+      const key = Object.keys(upgradedVars).find(
+        (k) => k.toLowerCase() === varName.toLowerCase()
+      );
+      return key ? String(upgradedVars[key]) : match;
+    }
+  );
 }

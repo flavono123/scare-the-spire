@@ -9,6 +9,8 @@ interface RawCard {
   id: string;
   name: string;
   description: string;
+  description_raw: string;
+  vars: Record<string, number> | null;
   cost: number;
   is_x_cost: boolean | null;
   is_x_star_cost: boolean | null;
@@ -51,6 +53,8 @@ function mapCard(kor: RawCard, eng: RawCard): CodexCard {
     name: kor.name,
     nameEn: eng.name,
     description: kor.description,
+    descriptionRaw: kor.description_raw,
+    vars: kor.vars ?? {},
     cost: kor.cost,
     isXCost: kor.is_x_cost ?? false,
     isXStarCost: kor.is_x_star_cost ?? false,

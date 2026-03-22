@@ -33,6 +33,8 @@ export interface CodexCard {
   name: string; // Korean
   nameEn: string; // English
   description: string; // Korean, with BBCode markup
+  descriptionRaw: string; // Korean, with {Var:diff()} templates
+  vars: Record<string, number>; // Base variable values for description template
   cost: number;
   isXCost: boolean;
   isXStarCost: boolean;
