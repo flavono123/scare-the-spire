@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
-import { COLOR_ALIASES, COLOR_LABELS, TYPE_ALIASES, CardFilterCategory, CardTypeKo } from "@/lib/codex-types";
+import { useRef, useState, useCallback, useMemo } from "react";
+import { COLOR_ALIASES, TYPE_ALIASES } from "@/lib/codex-types";
 
 interface SearchBarProps {
   value: string;
@@ -56,16 +56,30 @@ export function SearchBar({ value, onChange, inputId }: SearchBarProps) {
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // Detect current trigger being typed
+  // Detect current trigger being typed (derived, no effect needed)
   const currentTrigger = getCurrentTrigger(value);
-  const autocompleteItems = currentTrigger
-    ? getFilteredItems(currentTrigger.trigger, currentTrigger.query)
-    : [];
+  const autocompleteItems = useMemo(
+    () =>
+      currentTrigger
+        ? getFilteredItems(currentTrigger.trigger, currentTrigger.query)
+        : [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentTrigger?.trigger, currentTrigger?.query]
+  );
 
-  useEffect(() => {
-    setSelectedIndex(0);
-    setShowAutocomplete(autocompleteItems.length > 0);
-  }, [autocompleteItems.length]);
+  // Handle input change: reset autocomplete state in the event handler
+  const handleInputChange = useCallback(
+    (newValue: string) => {
+      onChange(newValue);
+      const trigger = getCurrentTrigger(newValue);
+      const items = trigger
+        ? getFilteredItems(trigger.trigger, trigger.query)
+        : [];
+      setSelectedIndex(0);
+      setShowAutocomplete(items.length > 0);
+    },
+    [onChange]
+  );
 
   const completeItem = useCallback(
     (item: { value: string }) => {
@@ -130,7 +144,7 @@ export function SearchBar({ value, onChange, inputId }: SearchBarProps) {
           id={inputId}
           type="text"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => handleInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => {
             if (autocompleteItems.length > 0) setShowAutocomplete(true);
