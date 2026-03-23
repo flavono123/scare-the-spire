@@ -273,10 +273,39 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
     { key: "기타", label: "기타", color: RARITY_COLORS["기타"] },
   ];
 
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Auto-collapse on mobile, expand on desktop
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = (e: { matches: boolean }) => {
+      setIsMobile(e.matches);
+      setSidebarOpen(!e.matches);
+    };
+    update(mq);
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   return (
     <div className="flex h-screen bg-[#1a1a2e] text-gray-200 overflow-hidden">
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && isMobile && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Left Sidebar */}
-      <aside className="w-52 shrink-0 border-r border-white/10 bg-[#16162a] flex flex-col gap-2 p-3 overflow-y-auto">
+      <aside className={`
+        border-r border-white/10 bg-[#16162a] flex flex-col gap-2 overflow-y-auto transition-all duration-200 shrink-0
+        ${isMobile
+          ? `fixed z-50 inset-y-0 left-0 w-52 ${sidebarOpen ? "translate-x-0 p-3" : "-translate-x-full p-3"}`
+          : `relative ${sidebarOpen ? "w-52 p-3" : "w-0 p-0 overflow-hidden border-r-0"}`
+        }
+      `}>
         {/* Character Filters */}
         <FilterSection trigger="@" label="캐릭터">
           <div className="flex flex-wrap gap-1.5">
@@ -400,7 +429,20 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar with Search */}
-        <div className="flex items-center gap-4 px-4 py-2 border-b border-white/10 bg-[#16162a]/80">
+        <div className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2 border-b border-white/10 bg-[#16162a]/80">
+          <button
+            onClick={() => setSidebarOpen((v) => !v)}
+            className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/10 text-gray-400"
+            aria-label={sidebarOpen ? "필터 닫기" : "필터 열기"}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {sidebarOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              )}
+            </svg>
+          </button>
           <h1 className="text-base font-bold text-yellow-500 shrink-0">카드 도서관</h1>
           <div className="flex-1 max-w-xl mx-auto">
             <SearchBar
@@ -416,7 +458,7 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
 
         {/* Card Grid */}
         <div className="flex-1 overflow-y-auto p-3">
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2 sm:gap-3">
             {filteredCards.map((card) => (
               <CardTile
                 key={card.id}
