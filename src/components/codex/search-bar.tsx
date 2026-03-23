@@ -55,6 +55,7 @@ export function SearchBar({ value, onChange, inputId }: SearchBarProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isFocused, setIsFocused] = useState(false);
 
   // Detect current trigger being typed (derived, no effect needed)
   const currentTrigger = getCurrentTrigger(value);
@@ -147,9 +148,13 @@ export function SearchBar({ value, onChange, inputId }: SearchBarProps) {
           onChange={(e) => handleInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => {
+            setIsFocused(true);
             if (autocompleteItems.length > 0) setShowAutocomplete(true);
           }}
-          onBlur={() => setTimeout(() => setShowAutocomplete(false), 150)}
+          onBlur={() => setTimeout(() => {
+            setShowAutocomplete(false);
+            setIsFocused(false);
+          }, 150)}
           placeholder="검색..."
           className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-16 py-1.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-all"
         />
@@ -217,6 +222,55 @@ export function SearchBar({ value, onChange, inputId }: SearchBarProps) {
               );
             }
             return null;
+          })}
+        </div>
+      )}
+
+      {/* Trigger hints (shown on focus when input is empty) */}
+      {isFocused && !value && !showAutocomplete && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-[#1e1e3a] border border-white/10 rounded-lg shadow-xl z-50 overflow-hidden p-2.5 flex flex-col gap-2">
+          {AUTOCOMPLETE_ITEMS.map(({ trigger, items }) => {
+            const preview = items.slice(0, trigger === "@" ? 4 : items.length);
+            const remaining = items.length - preview.length;
+            return (
+              <div key={trigger} className="flex items-center gap-2 flex-wrap">
+                <button
+                  onMouseDown={() => {
+                    handleInputChange(trigger);
+                    inputRef.current?.focus();
+                  }}
+                  className="shrink-0 text-[11px] font-mono font-bold text-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/20 rounded px-1.5 py-0.5 transition-colors"
+                >
+                  {trigger}
+                </button>
+                <span className="shrink-0 text-[11px] text-gray-500 w-10">
+                  {trigger === "@" ? "캐릭터" : trigger === "#" ? "유형" : "비용"}
+                </span>
+                {preview.map((item) => (
+                  <button
+                    key={item.value}
+                    onMouseDown={() => {
+                      onChange(`${trigger}${item.value} `);
+                      inputRef.current?.focus();
+                    }}
+                    className="text-[11px] text-gray-400 hover:text-gray-200 bg-white/5 hover:bg-white/10 rounded px-1.5 py-0.5 transition-colors"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+                {remaining > 0 && (
+                  <button
+                    onMouseDown={() => {
+                      handleInputChange(trigger);
+                      inputRef.current?.focus();
+                    }}
+                    className="text-[10px] text-gray-600 hover:text-gray-400 transition-colors"
+                  >
+                    +{remaining}
+                  </button>
+                )}
+              </div>
+            );
           })}
         </div>
       )}
