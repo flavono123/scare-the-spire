@@ -259,7 +259,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
   const costOutline = ENERGY_OUTLINE[card.color] ?? ENERGY_OUTLINE.colorless;
   const energyIcon = ENERGY_ICONS[card.color] ?? ENERGY_ICONS.colorless;
   const annotation = annotateCard(card);
-  const isUniqueCard = annotation.rarityDetail === "unique";
+  const isAncientCard = card.rarity === "고대의 존재";
   // Build description: when upgraded, substitute vars with upgraded values
   const isUpgraded = showUpgrade && card.upgrade != null;
   const descText = isUpgraded
@@ -347,7 +347,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
     </div>
   ) : null;
 
-  // ─── Shared star cost (Regent) ───
+  // ─── Shared star cost (Regent) — star shape, below energy orb ───
   const renderStarCost = () => card.starCost !== null ? (
     <div
       className="absolute z-[6]"
@@ -358,13 +358,22 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
         aspectRatio: "1",
       }}
     >
-      <Image src="/images/game-assets/card-misc/energy_regent.png" alt="star cost" fill className="object-contain drop-shadow-md" />
+      {/* Star shape SVG */}
+      <svg viewBox="0 0 48 48" className="absolute inset-0 w-full h-full drop-shadow-md">
+        <path
+          d="M24 2 L29.5 17.5 L46 17.5 L32.5 28 L37.5 44 L24 34 L10.5 44 L15.5 28 L2 17.5 L18.5 17.5 Z"
+          fill="#e8920a"
+          stroke="#7a4a00"
+          strokeWidth="1.5"
+        />
+      </svg>
       <span
         className="absolute inset-0 flex items-center justify-center font-black text-white"
         style={{
-          fontSize: "clamp(9px, 1vw, 13px)",
+          fontSize: "clamp(8px, 0.9vw, 11px)",
           fontFamily: TITLE_FONT,
-          textShadow: outlineShadow("#3a0820", 1),
+          textShadow: outlineShadow("#3a1a00", 1),
+          marginTop: "5%",
         }}
       >
         {card.starCost}
@@ -376,7 +385,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
   // UNIQUE CARD — full-art layout
   // Art fills entire card, description floats with frame-cutout shadow
   // =====================================================================
-  if (isUniqueCard) {
+  if (isAncientCard) {
     return (
       <div className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none">
         <div className="relative" style={{ aspectRatio: "598/844" }}>
@@ -409,7 +418,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
             />
           </div>
 
-          {/* ── Name banner ── */}
+          {/* ── Name banner (ancient: gray, semi-transparent) ── */}
           <div
             className="absolute z-[3] flex items-center justify-center"
             style={{
@@ -417,14 +426,15 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
               left: `-${L.banner.overhangX}%`,
               right: `-${L.banner.overhangX}%`,
               height: `${L.banner.height}%`,
+              opacity: 0.8,
             }}
           >
             <Image
-              src="/images/game-assets/card-misc/card_banner.png"
+              src="/images/game-assets/card-misc/ancient_banner.png"
               alt=""
               fill
               className="object-contain pointer-events-none"
-              style={{ filter: bannerFilter }}
+              style={{ filter: "saturate(0) brightness(0.7)" }}
             />
             <span
               className="relative z-10 text-center truncate px-[18%] w-full"
@@ -433,8 +443,8 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
                 fontFamily: TITLE_FONT,
                 fontSize: "clamp(9px, 1.4vw, 16px)",
                 fontWeight: 800,
-                color: isUpgraded ? "#6ee67a" : "#ffffff",
-                textShadow: outlineShadow(isUpgraded ? "#1a3a1a" : nameOutline, 1),
+                color: isUpgraded ? "#6ee67a" : "rgba(255,255,255,0.9)",
+                textShadow: outlineShadow(isUpgraded ? "#1a3a1a" : "#1a1a1a", 1),
               }}
             >
               {card.name}{isUpgraded && "+"}
