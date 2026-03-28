@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# dev artifacts
+.dev-screenshots/
+.playwright-mcp/
+docs/CARD_UI_REVIEW.md
