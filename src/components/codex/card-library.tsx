@@ -188,7 +188,8 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
           if (!isEtcRarity(c)) return false;
           // If detail sub-filters active, only show matching details
           if (selectedRarityDetails.size > 0) {
-            return selectedRarityDetails.has(annotateCard(c).rarityDetail);
+            const detail = annotateCard(c).rarityDetail;
+            return detail !== null && selectedRarityDetails.has(detail);
           }
           // "기타" selected with no detail filters → show all etc cards
           return selectedRarities.has("기타");

@@ -15,7 +15,7 @@ export type RarityDetail =
   | "quest";    // Quest items (퀘스트)
 
 export interface CardAnnotation {
-  rarityDetail: RarityDetail;
+  rarityDetail: RarityDetail | null;
 }
 
 // Derive annotation from existing card fields — no manual mapping needed
@@ -33,8 +33,8 @@ export function annotateCard(card: CodexCard): CardAnnotation {
   if (card.rarity === "저주") return { rarityDetail: "curse" };
   if (card.rarity === "상태이상") return { rarityDetail: "status" };
   if (card.rarity === "퀘스트") return { rarityDetail: "quest" };
-  // Standard rarities (일반, 고급, 희귀) don't need detail
-  return { rarityDetail: "unique" }; // fallback, shouldn't reach
+  // Standard rarities (일반, 고급, 희귀) have no detail annotation
+  return { rarityDetail: null };
 }
 
 // Check if a card is in the "기타" bucket (not 일반/고급/희귀)

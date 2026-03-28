@@ -379,31 +379,35 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
   if (isUniqueCard) {
     return (
       <div className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none">
-        <div className="relative overflow-hidden rounded-[4%]" style={{ aspectRatio: "598/844" }}>
+        <div className="relative" style={{ aspectRatio: "598/844" }}>
 
-          {/* ── Full-bleed portrait art ── */}
-          {imageSrc && !imgError ? (
-            <Image
-              src={imageSrc}
-              alt={card.name}
-              fill
-              className="object-cover object-center"
-              sizes="(max-width: 640px) 40vw, (max-width: 1024px) 20vw, 12vw"
-              onError={() => setImgError(true)}
+          {/* ── Full-bleed portrait art (clipped to card shape) ── */}
+          <div className="absolute inset-0 overflow-hidden rounded-[4%]">
+            {imageSrc && !imgError ? (
+              <Image
+                src={imageSrc}
+                alt={card.name}
+                fill
+                className="object-cover object-center"
+                sizes="(max-width: 640px) 40vw, (max-width: 1024px) 20vw, 12vw"
+                onError={() => setImgError(true)}
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/30 text-gray-500 text-[10px]">
+                No Image
+              </div>
+            )}
+          </div>
+
+          {/* ── Thin border frame (no fill, just edge, inside clip) ── */}
+          <div className="absolute inset-0 overflow-hidden rounded-[4%]">
+            <div
+              className="absolute inset-0 z-[1] rounded-[4%] pointer-events-none"
+              style={{
+                boxShadow: `inset 0 0 0 3px rgba(0,0,0,0.5), inset 0 0 0 5px ${charHsvToColor(charHsv)}33`,
+              }}
             />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30 text-gray-500 text-[10px]">
-              No Image
-            </div>
-          )}
-
-          {/* ── Thin border frame (no fill, just edge) ── */}
-          <div
-            className="absolute inset-0 z-[1] rounded-[4%] pointer-events-none"
-            style={{
-              boxShadow: `inset 0 0 0 3px rgba(0,0,0,0.5), inset 0 0 0 5px ${charHsvToColor(charHsv)}33`,
-            }}
-          />
+          </div>
 
           {/* ── Name banner ── */}
           <div
@@ -439,7 +443,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
 
           {/* ── Floating description panel with frame-cutout top ── */}
           <div
-            className="absolute z-[5] left-0 right-0 bottom-0"
+            className="absolute z-[5] left-0 right-0 bottom-0 overflow-hidden rounded-b-[4%]"
             style={{ top: "50%" }}
           >
             {/* Frame-cutout arch at top of description area */}
