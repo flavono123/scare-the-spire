@@ -3,9 +3,12 @@ import Link from "next/link";
 import fs from "fs/promises";
 import path from "path";
 import { getSTS2Patches } from "@/lib/data";
-import { getCodexCards } from "@/lib/codex-data";
+import { getCodexCards, getCodexRelics, getCodexPotions } from "@/lib/codex-data";
 import { Badge } from "@/components/ui/badge";
-import { PatchNoteRenderer, type CardInfo } from "@/components/patch-note-renderer";
+import {
+  PatchNoteRenderer,
+  type EntityInfo,
+} from "@/components/patch-note-renderer";
 import type { PatchType } from "@/lib/types";
 
 const PATCH_TYPE_STYLES: Record<PatchType, { label: string; className: string }> = {
@@ -28,33 +31,57 @@ export default async function PatchDetailPage({
   params: Promise<{ version: string }>;
 }) {
   const { version } = await params;
-  const [patches, codexCards] = await Promise.all([
+  const [patches, codexCards, codexRelics, codexPotions] = await Promise.all([
     getSTS2Patches(),
     getCodexCards(),
+    getCodexRelics(),
+    getCodexPotions(),
   ]);
 
   const patch = patches.find((p) => p.version === version);
   if (!patch) notFound();
 
-  // Read markdown patch notes
+  // Read Korean patch notes first, fallback to English
   let markdown = "";
+  const koPath = path.join(NOTES_DIR, `v${patch.version}.ko.md`);
+  const enPath = path.join(NOTES_DIR, `v${patch.version}.md`);
   try {
-    markdown = await fs.readFile(
-      path.join(NOTES_DIR, `v${patch.version}.md`),
-      "utf-8",
-    );
+    markdown = await fs.readFile(koPath, "utf-8");
   } catch {
-    // No patch notes file yet
+    try {
+      markdown = await fs.readFile(enPath, "utf-8");
+    } catch {
+      // No patch notes file yet
+    }
   }
 
-  // Build card info for the renderer
-  const cards: CardInfo[] = codexCards.map((c) => ({
-    id: c.id,
-    nameEn: c.nameEn,
-    nameKo: c.name,
-    imageUrl: c.imageUrl,
-    color: c.color,
-  }));
+  // Build entity info for the renderer (cards + relics + potions)
+  const entities: EntityInfo[] = [
+    ...codexCards.map((c) => ({
+      id: c.id,
+      nameEn: c.nameEn,
+      nameKo: c.name,
+      imageUrl: c.imageUrl,
+      color: c.color,
+      type: "card" as const,
+    })),
+    ...codexRelics.map((r) => ({
+      id: r.id,
+      nameEn: r.nameEn,
+      nameKo: r.name,
+      imageUrl: r.imageUrl,
+      color: r.pool,
+      type: "relic" as const,
+    })),
+    ...codexPotions.map((p) => ({
+      id: p.id,
+      nameEn: p.nameEn,
+      nameKo: p.name,
+      imageUrl: p.imageUrl,
+      color: p.pool,
+      type: "potion" as const,
+    })),
+  ];
 
   const style = PATCH_TYPE_STYLES[patch.type];
 
@@ -99,7 +126,7 @@ export default async function PatchDetailPage({
       {/* Patch notes body */}
       {markdown ? (
         <section className="mt-6">
-          <PatchNoteRenderer markdown={markdown} cards={cards} />
+          <PatchNoteRenderer markdown={markdown} entities={entities} />
         </section>
       ) : (
         <div className="mt-8 rounded-lg border border-border bg-card/30 p-6 text-center text-sm text-muted-foreground">
