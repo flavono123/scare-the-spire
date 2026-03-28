@@ -38,14 +38,14 @@ const STORY_COLORS: Record<string, { bg: string; text: string; border: string }>
 };
 
 const STORY_LABELS: Record<string, string> = {
-  Magnum_Opus: "Magnum Opus",
-  Silent: "Silent",
-  Ironclad: "Ironclad",
-  Defect: "Defect",
-  Necrobinder: "Necrobinder",
-  Regent: "Regent",
-  Reopening: "Reopening",
-  Tales_From_The_Spire: "Tales",
+  Magnum_Opus: "마그눔 오푸스",
+  Silent: "사일런트",
+  Ironclad: "아이언클래드",
+  Defect: "디펙트",
+  Necrobinder: "네크로바인더",
+  Regent: "리젠트",
+  Reopening: "다시 열리다",
+  Tales_From_The_Spire: "첨탑의 이야기들",
 };
 
 function formatImageName(filename: string): string {
@@ -58,7 +58,7 @@ function formatImageName(filename: string): string {
 
 export default async function AncientsDevPage() {
   // Read epoch data
-  const epochsPath = path.join(process.cwd(), "data/spire-codex/eng/epochs.json");
+  const epochsPath = path.join(process.cwd(), "data/spire-codex/kor/epochs.json");
   const epochsRaw = await fs.readFile(epochsPath, "utf-8");
   const epochs: Epoch[] = JSON.parse(epochsRaw);
   epochs.sort((a, b) => a.sort_order - b.sort_order);
@@ -368,7 +368,7 @@ export default async function AncientsDevPage() {
                     <h3 className="text-xl font-bold text-amber-300">{group.name}</h3>
                     {group.year && (
                       <span className="font-mono text-sm text-amber-500/70">
-                        Year {group.year}
+                        연도 {group.year}
                       </span>
                     )}
                   </div>
@@ -441,7 +441,7 @@ export default async function AncientsDevPage() {
                           {epoch.unlock_info && (
                             <div className="mb-3 rounded-lg border border-zinc-700/40 bg-zinc-800/50 px-4 py-2">
                               <span className="mr-2 text-xs font-semibold tracking-wider text-zinc-500">
-                                UNLOCK
+                                해금
                               </span>
                               <span className="text-sm text-zinc-400">
                                 <RichText text={epoch.unlock_info} />
@@ -453,7 +453,7 @@ export default async function AncientsDevPage() {
                           {epoch.unlock_text && (
                             <div className="mb-3 rounded-lg border border-amber-800/30 bg-amber-950/20 px-4 py-2">
                               <span className="mr-2 text-xs font-semibold tracking-wider text-amber-600">
-                                REWARD
+                                보상
                               </span>
                               <span className="text-sm text-amber-300/80">
                                 <RichText text={epoch.unlock_text} />
@@ -467,7 +467,7 @@ export default async function AncientsDevPage() {
                               {epoch.unlocks_cards.length > 0 && (
                                 <div>
                                   <span className="mr-1 text-xs font-semibold text-zinc-500">
-                                    Cards:
+                                    카드:
                                   </span>
                                   {epoch.unlocks_cards.map((c) => (
                                     <span
@@ -482,7 +482,7 @@ export default async function AncientsDevPage() {
                               {epoch.unlocks_relics.length > 0 && (
                                 <div>
                                   <span className="mr-1 text-xs font-semibold text-zinc-500">
-                                    Relics:
+                                    유물:
                                   </span>
                                   {epoch.unlocks_relics.map((r) => (
                                     <span
@@ -497,7 +497,7 @@ export default async function AncientsDevPage() {
                               {epoch.unlocks_potions.length > 0 && (
                                 <div>
                                   <span className="mr-1 text-xs font-semibold text-zinc-500">
-                                    Potions:
+                                    포션:
                                   </span>
                                   {epoch.unlocks_potions.map((p) => (
                                     <span
@@ -516,7 +516,7 @@ export default async function AncientsDevPage() {
                           {epoch.expands_timeline.length > 0 && (
                             <div className="mt-3 text-sm">
                               <span className="mr-1 text-xs font-semibold text-zinc-500">
-                                Expands:
+                                확장:
                               </span>
                               {epoch.expands_timeline.map((t) => (
                                 <span
