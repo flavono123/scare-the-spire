@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import Image from "next/image";
 import { CodexCard } from "@/lib/codex-types";
 import { annotateCard } from "@/lib/card-annotations";
@@ -240,7 +240,7 @@ interface CardTileProps {
   showBeta: boolean;
 }
 
-export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
+export const CardTile = memo(function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
   const [imgError, setImgError] = useState(false);
   const [hoveredTerm, setHoveredTerm] = useState<string | null>(null);
 
@@ -675,7 +675,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
       </div>
     </div>
   );
-}
+});
 
 // =============================================================================
 // Tooltip

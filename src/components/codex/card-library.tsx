@@ -242,6 +242,34 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
     getCardCategory,
   ]);
 
+  // Progressive rendering — render cards in batches to avoid initial jank
+  const BATCH_SIZE = 42; // ~6 rows of 7
+  const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  // Reset visible count when filters change
+  useEffect(() => {
+    setVisibleCount(BATCH_SIZE);
+  }, [filteredCards]);
+
+  // IntersectionObserver to load more cards on scroll
+  useEffect(() => {
+    const el = loadMoreRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisibleCount((prev) => Math.min(prev + BATCH_SIZE, filteredCards.length));
+        }
+      },
+      { rootMargin: "400px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [filteredCards.length]);
+
+  const visibleCards = filteredCards.slice(0, visibleCount);
+
   // Toggle helpers
   const toggleColor = useCallback((color: CardFilterCategory) => {
     setSelectedColors((prev) => {
@@ -529,11 +557,11 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
         {/* Card Grid */}
         <div className="flex-1 overflow-y-auto p-3">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2 sm:gap-3">
-            {filteredCards.map((card, i) => (
+            {visibleCards.map((card, i) => (
               <div
                 key={card.id}
                 className="animate-card-enter"
-                style={{ animationDelay: `${Math.min(i * 15, 300)}ms` }}
+                style={{ animationDelay: `${Math.min(i * 12, 250)}ms` }}
               >
                 <CardTile
                   card={card}
@@ -543,6 +571,10 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
               </div>
             ))}
           </div>
+          {/* Sentinel for infinite scroll */}
+          {visibleCount < filteredCards.length && (
+            <div ref={loadMoreRef} className="h-8" />
+          )}
           {filteredCards.length === 0 && (
             <div className="flex items-center justify-center h-64 text-gray-500">
               검색 결과가 없습니다
