@@ -7,6 +7,7 @@ const items = [
   { href: "/cards", label: "카드" },
   { href: "/relics", label: "유물" },
   { href: "/potions", label: "포션" },
+  { href: "/patches", label: "패치 노트" },
 ];
 
 export function EncyclopediaDropdown() {

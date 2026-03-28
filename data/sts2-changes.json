@@ -1,0 +1,611 @@
+[
+  {
+    "id": "prepared-v100-rework",
+    "entityType": "card",
+    "entityId": "PREPARED",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "silent",
+    "summary": "Prepared reworked into Prepare: now costs 1 energy, discards 2 cards, grants 2 energy next turn (3 upgraded).",
+    "summaryKo": "준비(Prepared)가 준비(Prepare)로 리워크: 1에너지, 카드 2장 버리기, 다음 턴 에너지 2(강화 시 3) 획득.",
+    "diffs": [
+      {
+        "attribute": "name",
+        "displayName": "Name",
+        "displayNameKo": "이름",
+        "before": "Prepared",
+        "after": "Prepare",
+        "diffType": "text"
+      },
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": 0,
+        "after": 1,
+        "diffType": "number"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Draw 1 card. Discard 1 card.",
+        "after": "Discard 2 cards. Next turn, gain 2 Energy.",
+        "diffType": "rework"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Draw 2 cards. Discard 1 card.",
+        "after": "Discard 2 cards. Next turn, gain 3 Energy.",
+        "diffType": "rework",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "dominate-v100-rework",
+    "entityType": "card",
+    "entityId": "DOMINATE",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "ironclad",
+    "summary": "Dominate reworked: now a 1-cost Uncommon Skill. Apply 1(2) Vulnerable, gain 1 Strength per Vulnerable on enemy, Exhaust.",
+    "summaryKo": "지배 리워크: 1비용 고급 스킬로 변경. 취약 1(2) 부여, 적의 취약 수치만큼 힘 획득, 소멸.",
+    "diffs": [
+      {
+        "attribute": "cardType",
+        "displayName": "Type",
+        "displayNameKo": "유형",
+        "before": "Attack",
+        "after": "Skill",
+        "diffType": "enum"
+      },
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Common",
+        "after": "Uncommon",
+        "diffType": "enum"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Previous effect",
+        "after": "Apply 1 Vulnerable. Gain 1 Strength for each Vulnerable on enemy. Exhaust.",
+        "diffType": "rework"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Previous effect",
+        "after": "Apply 2 Vulnerable. Gain 1 Strength for each Vulnerable on enemy. Exhaust.",
+        "diffType": "rework",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "spite-v100-rework",
+    "entityType": "card",
+    "entityId": "SPITE",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "ironclad",
+    "summary": "Spite reworked: now 0-cost Uncommon Attack. 5 damage, hits 2(3) times if you lost HP this turn. Removed card draw.",
+    "summaryKo": "악의 리워크: 0비용 고급 공격으로 변경. 5 데미지, 이번 턴 HP를 잃었다면 2(3)번 타격. 카드 드로우 제거.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": "Previous cost",
+        "after": 0,
+        "diffType": "number"
+      },
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Common",
+        "after": "Uncommon",
+        "diffType": "enum"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Previous effect (with card draw)",
+        "after": "Deal 5 damage. Hits 2 times if you lost HP this turn.",
+        "diffType": "rework"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Previous effect (with card draw)",
+        "after": "Deal 5 damage. Hits 3 times if you lost HP this turn.",
+        "diffType": "rework",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "expect-a-fight-v100-nerf",
+    "entityType": "card",
+    "entityId": "EXPECT_A_FIGHT",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "ironclad",
+    "summary": "Expect a Fight now prevents additional energy gain for the rest of the turn.",
+    "summaryKo": "싸움에 대비하라: 이번 턴 추가 에너지 획득을 방지하는 제한 추가.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Gain 1 energy per attack in hand",
+        "after": "Gain 1 energy per attack in hand. Prevents additional energy gain this turn.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "stoke-v100-nerf",
+    "entityType": "card",
+    "entityId": "STOKE",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "ironclad",
+    "summary": "Stoke no longer draws cards; adds random card instead (upgraded gives upgraded cards).",
+    "summaryKo": "불씨: 카드 드로우 제거, 대신 랜덤 카드 추가 (강화 시 강화된 카드).",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Draws cards",
+        "after": "Adds a random card (upgraded version if card is upgraded)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "hotfix-card-v100-exhaust",
+    "entityType": "card",
+    "entityId": "HOTFIX",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "defect",
+    "summary": "Hotfix now Exhausts unless upgraded. No longer adds extra Focus.",
+    "summaryKo": "핫픽스: 강화하지 않으면 소멸. 추가 집중 부여 제거.",
+    "diffs": [
+      {
+        "attribute": "exhaust",
+        "displayName": "Exhaust",
+        "displayNameKo": "소멸",
+        "before": false,
+        "after": true,
+        "diffType": "boolean"
+      },
+      {
+        "attribute": "focus",
+        "displayName": "Focus Gain",
+        "displayNameKo": "집중 획득",
+        "before": "Gains Focus",
+        "after": "No longer gains Focus",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "glow-v100-rework",
+    "entityType": "card",
+    "entityId": "GLOW",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "regent",
+    "summary": "Glow reworked: gain 1(2) Stars, draw 1 card now and 1 next turn (was both immediately).",
+    "summaryKo": "빛: 별 1(2)개 획득, 카드 1장 즉시 드로우 + 다음 턴 1장 드로우 (기존: 즉시 2장 드로우).",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Gain 1(2) Stars. Draw 2 cards.",
+        "after": "Gain 1(2) Stars. Draw 1 card. Next turn, draw 1 card.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "alignment-v100-cost",
+    "entityType": "card",
+    "entityId": "ALIGNMENT",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "regent",
+    "summary": "Alignment star cost increased from 2 to 3.",
+    "summaryKo": "정렬: 별 비용 2에서 3으로 증가.",
+    "diffs": [
+      {
+        "attribute": "starCost",
+        "displayName": "Star Cost",
+        "displayNameKo": "별 비용",
+        "before": 2,
+        "after": 3,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "begone-charge-v100-swap",
+    "entityType": "card",
+    "entityId": "BEGONE",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "regent",
+    "summary": "Begone & Charge: summoned minions swapped between cards (buffs Begone, nerfs Charge).",
+    "summaryKo": "꺼져 & 돌격: 소환 미니언이 두 카드 사이에서 교환 (꺼져 버프, 돌격 너프).",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Previous minion assignment",
+        "after": "Summoned minions swapped between Begone and Charge",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "void-form-v100-ethereal",
+    "entityType": "card",
+    "entityId": "VOID_FORM",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "regent",
+    "summary": "Void Form is now Ethereal.",
+    "summaryKo": "공허의 형상: 미사용 시 소멸 (미완) 키워드 추가.",
+    "diffs": [
+      {
+        "attribute": "ethereal",
+        "displayName": "Ethereal",
+        "displayNameKo": "미완",
+        "before": false,
+        "after": true,
+        "diffType": "boolean"
+      }
+    ]
+  },
+  {
+    "id": "defy-v100-change",
+    "entityType": "card",
+    "entityId": "DEFY",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "necrobinder",
+    "summary": "Defy upgrade: removed extra Weak turn; grants more block instead.",
+    "summaryKo": "저항: 강화 시 추가 약화 턴 제거, 대신 방어도 증가.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Upgrade Effect",
+        "displayNameKo": "강화 효과",
+        "before": "Extra Weak turn on upgrade",
+        "after": "More Block on upgrade",
+        "diffType": "text",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "dirge-v100-exhaust",
+    "entityType": "card",
+    "entityId": "DIRGE",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "necrobinder",
+    "summary": "Dirge now Exhausts.",
+    "summaryKo": "장송곡: 소멸 키워드 추가.",
+    "diffs": [
+      {
+        "attribute": "exhaust",
+        "displayName": "Exhaust",
+        "displayNameKo": "소멸",
+        "before": false,
+        "after": true,
+        "diffType": "boolean"
+      }
+    ]
+  },
+  {
+    "id": "grave-warden-v100-nerf",
+    "entityType": "card",
+    "entityId": "GRAVE_WARDEN",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "necrobinder",
+    "summary": "Grave Warden no longer upgrades Soul cards generated.",
+    "summaryKo": "묘지기: 생성되는 영혼 카드가 더 이상 강화되지 않음.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Soul Generation",
+        "displayNameKo": "영혼 생성",
+        "before": "Generates upgraded Soul cards",
+        "after": "Generates normal Soul cards",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "seance-v100-nerf",
+    "entityType": "card",
+    "entityId": "SEANCE",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "necrobinder",
+    "summary": "Seance no longer upgrades Soul cards generated.",
+    "summaryKo": "교령회: 생성되는 영혼 카드가 더 이상 강화되지 않음.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Soul Generation",
+        "displayNameKo": "영혼 생성",
+        "before": "Generates upgraded Soul cards",
+        "after": "Generates normal Soul cards",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "borrowed-time-v100-change",
+    "entityType": "card",
+    "entityId": "BORROWED_TIME",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "necrobinder",
+    "summary": "Borrowed Time: grants more self-Doom (less when upgraded); removed energy gain.",
+    "summaryKo": "빌린 시간: 자가 멸망 증가 (강화 시 감소), 에너지 획득 제거.",
+    "diffs": [
+      {
+        "attribute": "doom",
+        "displayName": "Self-Doom",
+        "displayNameKo": "자가 멸망",
+        "before": "Less Doom",
+        "after": "More Doom (less when upgraded)",
+        "diffType": "text"
+      },
+      {
+        "attribute": "energy",
+        "displayName": "Energy Gain",
+        "displayNameKo": "에너지 획득",
+        "before": "Grants energy",
+        "after": "No longer grants energy",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "hidden-gem-v100-nerf",
+    "entityType": "card",
+    "entityId": "HIDDEN_GEM",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "colorless",
+    "summary": "Hidden Gem cannot grant Replay to cards already possessing it.",
+    "summaryKo": "숨겨진 보석: 이미 재생을 가진 카드에는 재생 부여 불가.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Replay",
+        "displayNameKo": "재생",
+        "before": "Can grant Replay to any card",
+        "after": "Cannot grant Replay to cards that already have it",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "huddle-up-v100-exhaust",
+    "entityType": "card",
+    "entityId": "HUDDLE_UP",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "colorless",
+    "summary": "Huddle Up now Exhausts (Multiplayer card).",
+    "summaryKo": "모여라: 소멸 키워드 추가 (멀티플레이 카드).",
+    "diffs": [
+      {
+        "attribute": "exhaust",
+        "displayName": "Exhaust",
+        "displayNameKo": "소멸",
+        "before": false,
+        "after": true,
+        "diffType": "boolean"
+      }
+    ]
+  },
+  {
+    "id": "beacon-of-hope-v100-nerf",
+    "entityType": "card",
+    "entityId": "BEACON_OF_HOPE",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "colorless",
+    "summary": "Beacon of Hope: block-sharing no longer stacks (Multiplayer card).",
+    "summaryKo": "희망의 등대: 방어도 공유가 더 이상 중첩되지 않음 (멀티플레이 카드).",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Block Sharing",
+        "displayNameKo": "방어도 공유",
+        "before": "Block sharing stacks",
+        "after": "Block sharing no longer stacks",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "believe-in-you-v100-nerf",
+    "entityType": "card",
+    "entityId": "BELIEVE_IN_YOU",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": "colorless",
+    "summary": "Believe in You: energy reduced by 1 (now 2 base, 3 upgraded). Multiplayer card.",
+    "summaryKo": "너를 믿어: 에너지 1 감소 (기본 2, 강화 3). 멀티플레이 카드.",
+    "diffs": [
+      {
+        "attribute": "energy",
+        "displayName": "Energy",
+        "displayNameKo": "에너지",
+        "before": 3,
+        "after": 2,
+        "diffType": "number"
+      },
+      {
+        "attribute": "energy",
+        "displayName": "Energy",
+        "displayNameKo": "에너지",
+        "before": 4,
+        "after": 3,
+        "diffType": "number",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "shop-relics-v100-price",
+    "entityType": "relic",
+    "entityId": "_SHOP_ALL",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "summary": "All shop relic costs reduced by 25 Gold. Gold-generating relics removed from shop pool.",
+    "summaryKo": "모든 상점 유물 가격 25골드 인하. 골드 생성 유물이 상점 풀에서 제거.",
+    "diffs": [
+      {
+        "attribute": "shopCost",
+        "displayName": "Shop Cost",
+        "displayNameKo": "상점 가격",
+        "before": "Original price",
+        "after": "-25 Gold",
+        "diffType": "text"
+      },
+      {
+        "attribute": "shopPool",
+        "displayName": "Shop Pool",
+        "displayNameKo": "상점 풀",
+        "before": "Gold-generating relics available",
+        "after": "Gold-generating relics removed",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "neow-hefty-tablet-v100",
+    "entityType": "blessing",
+    "entityId": "HEFTY_TABLET",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "summary": "New Neow blessing: Hefty Tablet — choose 1 of 3 rare cards; grants Injury curse.",
+    "summaryKo": "새 네오의 축복: 무거운 석판 — 희귀 카드 3장 중 1장 선택, 부상 저주 획득.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Choose 1 of 3 rare cards; grants Injury curse",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "neow-talisman-v100",
+    "entityType": "blessing",
+    "entityId": "NEOWS_TALISMAN",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "summary": "New Neow blessing: Neow's Talisman — upgrades one Strike and one Defend.",
+    "summaryKo": "새 네오의 축복: 네오의 부적 — 타격 1장과 수비 1장 강화.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Upgrades one Strike and one Defend",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "neow-fury-v100-buff",
+    "entityType": "blessing",
+    "entityId": "NEOWS_FURY",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "summary": "Neow's Fury now returns 3 cards (was 2).",
+    "summaryKo": "네오의 분노: 반환 카드 수 2장에서 3장으로 증가.",
+    "diffs": [
+      {
+        "attribute": "cards",
+        "displayName": "Cards Returned",
+        "displayNameKo": "반환 카드 수",
+        "before": 2,
+        "after": 3,
+        "diffType": "number"
+      }
+    ]
+  },
+  {
+    "id": "doormaker-v100-buff",
+    "entityType": "enemy",
+    "entityId": "DOORMAKER",
+    "patch": "v0.100.0",
+    "date": "2026-03-20",
+    "character": null,
+    "summary": "Doormaker now permanently removes every 10th drawn card; gains 1 Strength when it does.",
+    "summaryKo": "도어메이커: 10번째로 드로우한 카드를 영구 제거하고, 제거 시 힘 1 획득.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Previous behavior",
+        "after": "Permanently removes every 10th drawn card; gains 1 Strength when it does",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "hp-cap-v99",
+    "entityType": "enemy",
+    "entityId": "_GLOBAL",
+    "patch": "v0.99",
+    "date": "2026-03-13",
+    "character": null,
+    "summary": "HP cap: Players, enemies, and pets capped at 999,999,999 HP.",
+    "summaryKo": "HP 상한: 플레이어, 적, 펫 모두 999,999,999 HP 상한.",
+    "diffs": [
+      {
+        "attribute": "maxHp",
+        "displayName": "Max HP",
+        "displayNameKo": "최대 HP",
+        "before": "No limit",
+        "after": "999,999,999",
+        "diffType": "text"
+      }
+    ]
+  }
+]

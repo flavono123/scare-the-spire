@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import type { Card, Change, Story, Relic, Potion, CardClass, CardType, CharacterClass, PotionRarity } from "./types";
+import type { Card, Change, Story, Relic, Potion, CardClass, CardType, CharacterClass, PotionRarity, STS2Patch, STS2Change } from "./types";
 
 function toSlug(name: string, cardClass?: string): string {
   const base = name
@@ -106,5 +106,17 @@ export async function getChanges(): Promise<Change[]> {
 export async function getStories(): Promise<Story[]> {
   return JSON.parse(
     await fs.readFile(path.join(DATA_DIR, "stories.json"), "utf-8"),
+  );
+}
+
+export async function getSTS2Patches(): Promise<STS2Patch[]> {
+  return JSON.parse(
+    await fs.readFile(path.join(DATA_DIR, "sts2-patches.json"), "utf-8"),
+  );
+}
+
+export async function getSTS2Changes(): Promise<STS2Change[]> {
+  return JSON.parse(
+    await fs.readFile(path.join(DATA_DIR, "sts2-changes.json"), "utf-8"),
   );
 }
