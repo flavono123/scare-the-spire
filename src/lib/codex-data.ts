@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import { CodexCard, CodexCharacter, CardColor } from "./codex-types";
+import { CodexCard, CodexCharacter, CodexRelic, CardColor, RelicRarityKo, RelicPool } from "./codex-types";
 
 const DATA_DIR = path.join(process.cwd(), "data/spire-codex");
 
@@ -93,6 +93,46 @@ export async function getCodexCards(): Promise<CodexCard[]> {
       const eng = engById.get(kor.id) ?? kor;
       return mapCard(kor, eng);
     });
+}
+
+// Raw spire-codex JSON relic shape
+interface RawRelic {
+  id: string;
+  name: string;
+  description: string;
+  description_raw: string;
+  flavor: string;
+  rarity: string;
+  pool: string;
+  image_url: string | null;
+}
+
+function mapRelic(kor: RawRelic, eng: RawRelic): CodexRelic {
+  return {
+    id: kor.id,
+    name: kor.name,
+    nameEn: eng.name,
+    description: kor.description,
+    descriptionRaw: kor.description_raw,
+    flavor: kor.flavor,
+    rarity: kor.rarity as RelicRarityKo,
+    pool: kor.pool as RelicPool,
+    imageUrl: spireCodexImageToLocal(kor.image_url),
+  };
+}
+
+export async function getCodexRelics(): Promise<CodexRelic[]> {
+  const [korRelics, engRelics] = await Promise.all([
+    readJson<RawRelic[]>("kor/relics.json"),
+    readJson<RawRelic[]>("eng/relics.json"),
+  ]);
+
+  const engById = new Map(engRelics.map((r) => [r.id, r]));
+
+  return korRelics.map((kor) => {
+    const eng = engById.get(kor.id) ?? kor;
+    return mapRelic(kor, eng);
+  });
 }
 
 // Game order for characters

@@ -115,6 +115,132 @@ export const COLOR_ALIASES: Record<string, CardFilterCategory> = {
   ancient: "ancient",
 };
 
+// Relic types
+export type RelicRarityKo =
+  | "시작 유물"
+  | "일반 유물"
+  | "고급 유물"
+  | "희귀 유물"
+  | "상점 유물"
+  | "이벤트 유물"
+  | "고대 유물"
+  | "None";
+
+export type RelicPool =
+  | "shared"
+  | "ironclad"
+  | "silent"
+  | "defect"
+  | "necrobinder"
+  | "regent";
+
+export interface CodexRelic {
+  id: string;
+  name: string; // Korean
+  nameEn: string; // English
+  description: string; // Korean, with BBCode markup
+  descriptionRaw: string; // Korean, with {Var} templates
+  flavor: string;
+  rarity: RelicRarityKo;
+  pool: RelicPool;
+  imageUrl: string | null; // local path
+}
+
+// Relic rarity display order and labels
+export const RELIC_RARITY_ORDER: RelicRarityKo[] = [
+  "시작 유물",
+  "일반 유물",
+  "고급 유물",
+  "희귀 유물",
+  "상점 유물",
+  "이벤트 유물",
+  "고대 유물",
+  "None",
+];
+
+export const RELIC_RARITY_LABELS: Record<RelicRarityKo, string> = {
+  "시작 유물": "시작",
+  "일반 유물": "일반",
+  "고급 유물": "고급",
+  "희귀 유물": "희귀",
+  "상점 유물": "상점",
+  "이벤트 유물": "이벤트",
+  "고대 유물": "고대",
+  None: "기타",
+};
+
+export const RELIC_RARITY_COLORS: Record<RelicRarityKo, string> = {
+  "시작 유물": "#ffd740", // gold
+  "일반 유물": "#b0b0b0", // gray
+  "고급 유물": "#4fc3f7", // blue
+  "희귀 유물": "#ffd740", // gold
+  "상점 유물": "#81c784", // green
+  "이벤트 유물": "#ce93d8", // purple
+  "고대 유물": "#ff8a65", // orange
+  None: "#8b8b8b", // dim gray
+};
+
+export const RELIC_RARITY_DESCRIPTIONS: Record<RelicRarityKo, string> = {
+  "시작 유물": "각 캐릭터가 도전 시작 시 가지고 시작하는 유물들입니다.",
+  "일반 유물": "흔하게 발견되는 약한 유물들입니다.",
+  "고급 유물": "일반 유물보다 드물게 나타나는 강력한 유물들입니다.",
+  "희귀 유물": "매우 드물게 나타나는 가장 강력한 유물들입니다.",
+  "상점 유물": "상점에서만 구매할 수 있는 유물들입니다.",
+  "이벤트 유물": "특정 이벤트를 통해서만 획득할 수 있는 유물들입니다.",
+  "고대 유물": "고대의 존재를 처치하면 획득할 수 있는 유물들입니다.",
+  None: "특수 유물입니다.",
+};
+
+// Pool filter for relics (character or shared)
+export type RelicFilterPool = "shared" | "ironclad" | "silent" | "defect" | "necrobinder" | "regent";
+
+export const POOL_LABELS: Record<RelicFilterPool, string> = {
+  shared: "공용",
+  ironclad: "아이언클래드",
+  silent: "사일런트",
+  defect: "디펙트",
+  necrobinder: "네크로바인더",
+  regent: "리젠트",
+};
+
+export const POOL_ALIASES: Record<string, RelicFilterPool> = {
+  공용: "shared",
+  shared: "shared",
+  아클: "ironclad",
+  아이언클래드: "ironclad",
+  ironclad: "ironclad",
+  사일: "silent",
+  사일런트: "silent",
+  silent: "silent",
+  디펙: "defect",
+  디펙트: "defect",
+  defect: "defect",
+  네크로: "necrobinder",
+  네크로바인더: "necrobinder",
+  necrobinder: "necrobinder",
+  리젠: "regent",
+  리젠트: "regent",
+  regent: "regent",
+};
+
+export const RARITY_ALIASES: Record<string, RelicRarityKo> = {
+  시작: "시작 유물",
+  starter: "시작 유물",
+  일반: "일반 유물",
+  common: "일반 유물",
+  고급: "고급 유물",
+  uncommon: "고급 유물",
+  희귀: "희귀 유물",
+  rare: "희귀 유물",
+  상점: "상점 유물",
+  shop: "상점 유물",
+  이벤트: "이벤트 유물",
+  event: "이벤트 유물",
+  고대: "고대 유물",
+  ancient: "고대 유물",
+  boss: "고대 유물",
+};
+
 export const TYPE_ALIASES: Record<string, CardTypeKo> = {
   공격: "공격",
   attack: "공격",
