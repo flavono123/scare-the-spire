@@ -23,8 +23,8 @@ const gcBatang = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "카드 도서관 — Spire Codex",
-  description: "슬레이 더 스파이어 2 카드 백과사전",
+  title: "Spire Codex — 슬레이 더 스파이어 2 백과사전",
+  description: "슬레이 더 스파이어 2 카드, 유물, 포션, 에인션트 백과사전",
 };
 
 export default function CodexLayout({

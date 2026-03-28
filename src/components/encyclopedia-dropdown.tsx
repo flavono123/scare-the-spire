@@ -4,10 +4,11 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 const items = [
-  { href: "/cards", label: "카드" },
-  { href: "/relics", label: "유물" },
-  { href: "/potions", label: "포션" },
-  { href: "/patches", label: "패치 노트" },
+  { href: "/codex", label: "전체 보기" },
+  { href: "/codex/cards", label: "카드" },
+  { href: "/codex/relics", label: "유물" },
+  { href: "/codex/potions", label: "포션" },
+  { href: "/codex/ancients", label: "에인션트" },
 ];
 
 export function EncyclopediaDropdown() {
