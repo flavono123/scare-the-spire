@@ -12,6 +12,14 @@ import {
   COLOR_ALIASES,
   TYPE_ALIASES,
 } from "@/lib/codex-types";
+import {
+  annotateCard,
+  isEtcRarity,
+  RarityDetail,
+  RARITY_DETAIL_LABELS,
+  RARITY_DETAIL_ORDER,
+  RARITY_DETAIL_COLORS,
+} from "@/lib/card-annotations";
 import { CardTile } from "./card-tile";
 import { SearchBar } from "./search-bar";
 import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
@@ -48,6 +56,9 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
     new Set()
   );
   const [selectedRarities, setSelectedRarities] = useState<Set<string>>(
+    new Set()
+  );
+  const [selectedRarityDetails, setSelectedRarityDetails] = useState<Set<RarityDetail>>(
     new Set()
   );
   const [selectedCosts, setSelectedCosts] = useState<Set<string>>(new Set());
@@ -167,14 +178,22 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
       result = result.filter((c) => selectedTypes.has(c.type));
     }
 
-    // Rarity filter
-    if (selectedRarities.size > 0) {
+    // Rarity filter (with detail sub-filters)
+    if (selectedRarities.size > 0 || selectedRarityDetails.size > 0) {
       result = result.filter((c) => {
-        if (selectedRarities.has("기타")) {
-          return selectedRarities.has(c.rarity) ||
-            !["기본", "일반", "고급", "희귀"].includes(c.rarity);
+        // Standard rarities (일반/고급/희귀) — direct match
+        if (selectedRarities.has(c.rarity)) return true;
+        // "기타" bucket — check detail sub-filters if any are active
+        if (selectedRarities.has("기타") || selectedRarityDetails.size > 0) {
+          if (!isEtcRarity(c)) return false;
+          // If detail sub-filters active, only show matching details
+          if (selectedRarityDetails.size > 0) {
+            return selectedRarityDetails.has(annotateCard(c).rarityDetail);
+          }
+          // "기타" selected with no detail filters → show all etc cards
+          return selectedRarities.has("기타");
         }
-        return selectedRarities.has(c.rarity);
+        return false;
       });
     }
 
@@ -206,6 +225,7 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
     selectedColors,
     selectedTypes,
     selectedRarities,
+    selectedRarityDetails,
     selectedCosts,
     parsedSearch,
     fuzzyMatch,
@@ -237,7 +257,25 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
       const next = new Set(prev);
       if (next.has(rarity)) next.delete(rarity);
       else next.add(rarity);
+      // When "기타" is deselected, also clear detail sub-filters
+      if (rarity === "기타" && !next.has("기타")) {
+        setSelectedRarityDetails(new Set());
+      }
       return next;
+    });
+  }, []);
+
+  const toggleRarityDetail = useCallback((detail: RarityDetail) => {
+    setSelectedRarityDetails((prev) => {
+      const next = new Set(prev);
+      if (next.has(detail)) next.delete(detail);
+      else next.add(detail);
+      return next;
+    });
+    // Auto-activate "기타" when a detail is selected
+    setSelectedRarities((prev) => {
+      if (prev.has("기타")) return prev;
+      return new Set([...prev, "기타"]);
     });
   }, []);
 
@@ -380,6 +418,28 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
                 {r.label}
               </button>
             ))}
+            {/* Rarity detail sub-filters (visible when 기타 is active) */}
+            {selectedRarities.has("기타") && (
+              <div className="ml-4 mt-0.5 flex flex-col gap-0.5 border-l border-white/10 pl-2">
+                {RARITY_DETAIL_ORDER.map((detail) => (
+                  <button
+                    key={detail}
+                    onClick={() => toggleRarityDetail(detail)}
+                    className={`flex items-center gap-2 text-left text-xs px-2 py-0.5 rounded transition-all ${
+                      selectedRarityDetails.has(detail)
+                        ? "bg-yellow-500/20 text-yellow-400"
+                        : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
+                    }`}
+                  >
+                    <span
+                      className="w-1.5 h-1.5 rounded-full shrink-0"
+                      style={{ backgroundColor: RARITY_DETAIL_COLORS[detail] }}
+                    />
+                    {RARITY_DETAIL_LABELS[detail]}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </FilterSection>
 
