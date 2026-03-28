@@ -1,6 +1,16 @@
 import fs from "fs/promises";
 import path from "path";
-import { CodexCard, CodexCharacter, CodexRelic, CardColor, RelicRarityKo, RelicPool } from "./codex-types";
+import {
+  CodexCard,
+  CodexCharacter,
+  CodexRelic,
+  CodexPotion,
+  CardColor,
+  RelicRarityKo,
+  RelicPool,
+  PotionRarityKo,
+  PotionPool,
+} from "./codex-types";
 
 const DATA_DIR = path.join(process.cwd(), "data/spire-codex");
 
@@ -132,6 +142,44 @@ export async function getCodexRelics(): Promise<CodexRelic[]> {
   return korRelics.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
     return mapRelic(kor, eng);
+  });
+}
+
+// Raw spire-codex JSON potion shape
+interface RawPotion {
+  id: string;
+  name: string;
+  description: string;
+  description_raw: string;
+  rarity: string;
+  pool: string;
+  image_url: string;
+}
+
+function mapPotion(kor: RawPotion, eng: RawPotion): CodexPotion {
+  return {
+    id: kor.id,
+    name: kor.name,
+    nameEn: eng.name,
+    description: kor.description,
+    descriptionRaw: kor.description_raw,
+    rarity: kor.rarity as PotionRarityKo,
+    pool: kor.pool as PotionPool,
+    imageUrl: spireCodexImageToLocal(kor.image_url) ?? "",
+  };
+}
+
+export async function getCodexPotions(): Promise<CodexPotion[]> {
+  const [korPotions, engPotions] = await Promise.all([
+    readJson<RawPotion[]>("kor/potions.json"),
+    readJson<RawPotion[]>("eng/potions.json"),
+  ]);
+
+  const engById = new Map(engPotions.map((p) => [p.id, p]));
+
+  return korPotions.map((kor) => {
+    const eng = engById.get(kor.id) ?? kor;
+    return mapPotion(kor, eng);
   });
 }
 

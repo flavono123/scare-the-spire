@@ -241,6 +241,83 @@ export const RARITY_ALIASES: Record<string, RelicRarityKo> = {
   boss: "고대 유물",
 };
 
+// Potion types
+export type PotionRarityKo = "일반" | "고급" | "희귀" | "이벤트" | "토큰";
+export type PotionPool =
+  | "shared"
+  | "ironclad"
+  | "silent"
+  | "defect"
+  | "necrobinder"
+  | "regent"
+  | "event";
+
+export interface CodexPotion {
+  id: string;
+  name: string; // Korean
+  nameEn: string; // English
+  description: string; // Korean, with BBCode markup
+  descriptionRaw: string; // Korean, with {Var:diff()} templates
+  rarity: PotionRarityKo;
+  pool: PotionPool;
+  imageUrl: string; // local path
+}
+
+export const POTION_RARITY_ORDER: PotionRarityKo[] = [
+  "일반",
+  "고급",
+  "희귀",
+  "이벤트",
+  "토큰",
+];
+
+export const POTION_RARITY_CONFIG: Record<
+  PotionRarityKo,
+  { label: string; color: string; description: string }
+> = {
+  일반: {
+    label: "일반",
+    color: "#b0b0b0",
+    description: "첨탑에서 가장 자주 발견되는 포션들입니다.",
+  },
+  고급: {
+    label: "고급",
+    color: "#4fc3f7",
+    description: "일반 포션보다 드물게 나타나는 강력한 포션들입니다.",
+  },
+  희귀: {
+    label: "희귀",
+    color: "#ffd740",
+    description: "아주 드물게 만나볼 수 있는 희귀하고 강력한 포션들입니다.",
+  },
+  이벤트: {
+    label: "특별",
+    color: "#81c784",
+    description:
+      "이벤트에서 얻거나 다른 수단을 통해 생성할 수 있는 포션들입니다.",
+  },
+  토큰: {
+    label: "특별",
+    color: "#81c784",
+    description:
+      "이벤트에서 얻거나 다른 수단을 통해 생성할 수 있는 포션들입니다.",
+  },
+};
+
+export const POTION_RARITY_ALIASES: Record<string, PotionRarityKo> = {
+  일반: "일반",
+  common: "일반",
+  고급: "고급",
+  uncommon: "고급",
+  희귀: "희귀",
+  rare: "희귀",
+  특별: "이벤트",
+  이벤트: "이벤트",
+  event: "이벤트",
+  토큰: "토큰",
+  token: "토큰",
+};
+
 export const TYPE_ALIASES: Record<string, CardTypeKo> = {
   공격: "공격",
   attack: "공격",
