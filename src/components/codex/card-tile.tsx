@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { CodexCard } from "@/lib/codex-types";
+import { annotateCard } from "@/lib/card-annotations";
 
 // =============================================================================
 // Game-extracted asset paths
@@ -63,6 +64,24 @@ const CHAR_HSV: Record<string, HSV> = {
 function hsvToFilter(hsv: HSV): string {
   const hueDeg = Math.round(hsv.h * 360) % 360;
   return `hue-rotate(${hueDeg}deg) saturate(${hsv.s}) brightness(${hsv.v})`;
+}
+
+// Convert HSV to approximate hex color for border effects
+function charHsvToColor(hsv: HSV): string {
+  const h = hsv.h, s = hsv.s, v = hsv.v;
+  const c = v * Math.min(s, 1);
+  const x = c * (1 - Math.abs(((h * 6) % 2) - 1));
+  const m = v - c;
+  let r = 0, g = 0, b = 0;
+  const hi = Math.floor(h * 6) % 6;
+  if (hi === 0) { r = c; g = x; }
+  else if (hi === 1) { r = x; g = c; }
+  else if (hi === 2) { g = c; b = x; }
+  else if (hi === 3) { g = x; b = c; }
+  else if (hi === 4) { r = x; b = c; }
+  else { r = c; b = x; }
+  const toHex = (n: number) => Math.round(Math.min(1, n + m) * 255).toString(16).padStart(2, "0");
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
 // =============================================================================
@@ -239,6 +258,8 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
   const nameOutline = RARITY_OUTLINE[card.rarity] ?? RARITY_OUTLINE["일반"];
   const costOutline = ENERGY_OUTLINE[card.color] ?? ENERGY_OUTLINE.colorless;
   const energyIcon = ENERGY_ICONS[card.color] ?? ENERGY_ICONS.colorless;
+  const annotation = annotateCard(card);
+  const isUniqueCard = annotation.rarityDetail === "unique";
   // Build description: when upgraded, substitute vars with upgraded values
   const isUpgraded = showUpgrade && card.upgrade != null;
   const descText = isUpgraded
@@ -247,6 +268,259 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
   const descParts = parseDescription(descText);
 
 
+  // ─── Shared description renderer ───
+  const renderDescription = (extraClass?: string) => (
+    <div className={`text-center text-[10px] leading-[1.15] text-gray-100 ${extraClass ?? ""}`}>
+      {descParts.map((part, i) =>
+        part.type === "gold" ? (
+          <span
+            key={i}
+            className="relative text-yellow-500 font-bold cursor-help"
+            onMouseEnter={() => setHoveredTerm(part.text)}
+            onMouseLeave={() => setHoveredTerm(null)}
+          >
+            {part.text}
+            {hoveredTerm === part.text && GOLD_TERM_DESC[part.text] && (
+              <TermTooltip name={part.text} desc={GOLD_TERM_DESC[part.text]} />
+            )}
+          </span>
+        ) : part.type === "energy" ? (
+          <Image
+            key={i}
+            src={energyIcon}
+            alt="energy"
+            width={14}
+            height={14}
+            className="inline-block align-text-bottom mx-0.5"
+          />
+        ) : part.type === "newline" ? (
+          <br key={i} />
+        ) : (
+          <span key={i}>{part.text}</span>
+        )
+      )}
+      {card.keywords.length > 0 && (
+        <>
+          <br />
+          {card.keywords.map((kw, i) => (
+            <span key={`kw-${i}`}>
+              {i > 0 && <span className="text-gray-500"> · </span>}
+              <span
+                className="relative font-bold text-yellow-500 cursor-help"
+                onMouseEnter={() => setHoveredTerm(kw)}
+                onMouseLeave={() => setHoveredTerm(null)}
+              >
+                {kw}
+                {hoveredTerm === kw && KEYWORD_DESC[kw] && (
+                  <TermTooltip name={kw} desc={KEYWORD_DESC[kw]} />
+                )}
+              </span>
+            </span>
+          ))}
+        </>
+      )}
+    </div>
+  );
+
+  // ─── Shared energy cost orb ───
+  const renderCostOrb = () => costDisplay ? (
+    <div
+      className="absolute z-[6]"
+      style={{
+        top: `${L.cost.top}%`,
+        left: `${L.cost.left}%`,
+        width: `${L.cost.size}%`,
+        aspectRatio: "1",
+      }}
+    >
+      <Image src={energyIcon} alt="cost" fill className="object-contain drop-shadow-lg" />
+      <span
+        className="absolute inset-0 flex items-center justify-center font-black text-white"
+        style={{
+          fontSize: "clamp(12px, 1.5vw, 18px)",
+          fontFamily: TITLE_FONT,
+          textShadow: outlineShadow(costOutline, 2),
+        }}
+      >
+        {costDisplay}
+      </span>
+    </div>
+  ) : null;
+
+  // ─── Shared star cost (Regent) ───
+  const renderStarCost = () => card.starCost !== null ? (
+    <div
+      className="absolute z-[6]"
+      style={{
+        top: `${L.starCost.top}%`,
+        left: `${L.starCost.left}%`,
+        width: `${L.starCost.size}%`,
+        aspectRatio: "1",
+      }}
+    >
+      <Image src="/images/game-assets/card-misc/energy_regent.png" alt="star cost" fill className="object-contain drop-shadow-md" />
+      <span
+        className="absolute inset-0 flex items-center justify-center font-black text-white"
+        style={{
+          fontSize: "clamp(9px, 1vw, 13px)",
+          fontFamily: TITLE_FONT,
+          textShadow: outlineShadow("#3a0820", 1),
+        }}
+      >
+        {card.starCost}
+      </span>
+    </div>
+  ) : null;
+
+  // =====================================================================
+  // UNIQUE CARD — full-art layout
+  // Art fills entire card, description floats with frame-cutout shadow
+  // =====================================================================
+  if (isUniqueCard) {
+    return (
+      <div className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none">
+        <div className="relative overflow-hidden rounded-[4%]" style={{ aspectRatio: "598/844" }}>
+
+          {/* ── Full-bleed portrait art ── */}
+          {imageSrc && !imgError ? (
+            <Image
+              src={imageSrc}
+              alt={card.name}
+              fill
+              className="object-cover object-center"
+              sizes="(max-width: 640px) 40vw, (max-width: 1024px) 20vw, 12vw"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30 text-gray-500 text-[10px]">
+              No Image
+            </div>
+          )}
+
+          {/* ── Thin border frame (no fill, just edge) ── */}
+          <div
+            className="absolute inset-0 z-[1] rounded-[4%] pointer-events-none"
+            style={{
+              boxShadow: `inset 0 0 0 3px rgba(0,0,0,0.5), inset 0 0 0 5px ${charHsvToColor(charHsv)}33`,
+            }}
+          />
+
+          {/* ── Name banner ── */}
+          <div
+            className="absolute z-[3] flex items-center justify-center"
+            style={{
+              top: `${L.banner.top}%`,
+              left: `-${L.banner.overhangX}%`,
+              right: `-${L.banner.overhangX}%`,
+              height: `${L.banner.height}%`,
+            }}
+          >
+            <Image
+              src="/images/game-assets/card-misc/card_banner.png"
+              alt=""
+              fill
+              className="object-contain pointer-events-none"
+              style={{ filter: bannerFilter }}
+            />
+            <span
+              className="relative z-10 text-center truncate px-[18%] w-full"
+              style={{
+                marginTop: "-10%",
+                fontFamily: TITLE_FONT,
+                fontSize: "clamp(9px, 1.4vw, 16px)",
+                fontWeight: 800,
+                color: isUpgraded ? "#6ee67a" : "#ffffff",
+                textShadow: outlineShadow(isUpgraded ? "#1a3a1a" : nameOutline, 1),
+              }}
+            >
+              {card.name}{isUpgraded && "+"}
+            </span>
+          </div>
+
+          {/* ── Floating description panel with frame-cutout top ── */}
+          <div
+            className="absolute z-[5] left-0 right-0 bottom-0"
+            style={{ top: "50%" }}
+          >
+            {/* Frame-cutout arch at top of description area */}
+            <div
+              className="absolute left-[4%] right-[4%] pointer-events-none z-[2]"
+              style={{ top: "-2px", height: "18%" }}
+            >
+              <Image
+                src={PORTRAIT_BORDER_ASSETS[card.type] ?? PORTRAIT_BORDER_ASSETS["스킬"]}
+                alt=""
+                fill
+                className="object-contain object-bottom"
+                style={{
+                  filter: bannerFilter,
+                  maskImage: "linear-gradient(to bottom, transparent 0%, black 60%)",
+                  WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 60%)",
+                }}
+              />
+            </div>
+
+            {/* Semi-transparent background with top fade */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: "linear-gradient(to bottom, transparent 0%, rgba(10,10,20,0.75) 15%, rgba(10,10,20,0.88) 30%, rgba(10,10,20,0.92) 100%)",
+              }}
+            />
+
+            {/* Type plaque */}
+            <div
+              className="absolute left-1/2 -translate-x-1/2 z-[4]"
+              style={{ top: "8%", width: `${L.plaque.width}%` }}
+            >
+              <div className="relative w-full" style={{ aspectRatio: "123/75" }}>
+                <Image
+                  src="/images/game-assets/card-misc/card_portrait_border_plaque.png"
+                  alt=""
+                  fill
+                  className="pointer-events-none object-contain"
+                  style={{ filter: bannerFilter }}
+                />
+                <span
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{
+                    fontFamily: CARD_FONT,
+                    fontSize: "clamp(6px, 0.8vw, 10px)",
+                    fontWeight: 700,
+                    color: "#3a2a1a",
+                  }}
+                >
+                  {card.type}
+                </span>
+              </div>
+            </div>
+
+            {/* Description text */}
+            <div
+              className="absolute z-[5] overflow-hidden flex flex-col items-center justify-center"
+              style={{
+                top: "28%",
+                bottom: "8%",
+                left: `${L.desc.paddingX}%`,
+                right: `${L.desc.paddingX}%`,
+                fontFamily: CARD_FONT,
+              }}
+            >
+              {renderDescription()}
+            </div>
+          </div>
+
+          {/* ── Energy cost orb ── */}
+          {renderCostOrb()}
+          {renderStarCost()}
+        </div>
+      </div>
+    );
+  }
+
+  // =====================================================================
+  // STANDARD CARD — normal framed layout
+  // =====================================================================
   return (
     <div className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none">
       <div className="relative" style={{ aspectRatio: "598/844" }}>
@@ -379,119 +653,14 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
             fontFamily: CARD_FONT,
           }}
         >
-          <div className="text-center text-[10px] leading-[1.15] text-gray-100">
-            {descParts.map((part, i) =>
-              part.type === "gold" ? (
-                <span
-                  key={i}
-                  className="relative text-yellow-500 font-bold cursor-help"
-                  onMouseEnter={() => setHoveredTerm(part.text)}
-                  onMouseLeave={() => setHoveredTerm(null)}
-                >
-                  {part.text}
-                  {hoveredTerm === part.text && GOLD_TERM_DESC[part.text] && (
-                    <TermTooltip name={part.text} desc={GOLD_TERM_DESC[part.text]} />
-                  )}
-                </span>
-              ) : part.type === "energy" ? (
-                <Image
-                  key={i}
-                  src={energyIcon}
-                  alt="energy"
-                  width={14}
-                  height={14}
-                  className="inline-block align-text-bottom mx-0.5"
-                />
-              ) : part.type === "newline" ? (
-                <br key={i} />
-              ) : (
-                <span key={i}>{part.text}</span>
-              )
-            )}
-            {/* Keywords at end of description */}
-            {card.keywords.length > 0 && (
-              <>
-                <br />
-                {card.keywords.map((kw, i) => (
-                  <span key={`kw-${i}`}>
-                    {i > 0 && <span className="text-gray-500"> · </span>}
-                    <span
-                      className="relative font-bold text-yellow-500 cursor-help"
-                      onMouseEnter={() => setHoveredTerm(kw)}
-                      onMouseLeave={() => setHoveredTerm(null)}
-                    >
-                      {kw}
-                      {hoveredTerm === kw && KEYWORD_DESC[kw] && (
-                        <TermTooltip name={kw} desc={KEYWORD_DESC[kw]} />
-                      )}
-                    </span>
-                  </span>
-                ))}
-              </>
-            )}
-          </div>
-
+          {renderDescription()}
         </div>
 
         {/* ── Layer 6: Energy cost orb ── */}
-        {costDisplay && (
-          <div
-            className="absolute z-[6]"
-            style={{
-              top: `${L.cost.top}%`,
-              left: `${L.cost.left}%`,
-              width: `${L.cost.size}%`,
-              aspectRatio: "1",
-            }}
-          >
-            <Image
-              src={energyIcon}
-              alt="cost"
-              fill
-              className="object-contain drop-shadow-lg"
-            />
-            <span
-              className="absolute inset-0 flex items-center justify-center font-black text-white"
-              style={{
-                fontSize: "clamp(12px, 1.5vw, 18px)",
-                fontFamily: TITLE_FONT,
-                textShadow: outlineShadow(costOutline, 2),
-              }}
-            >
-              {costDisplay}
-            </span>
-          </div>
-        )}
+        {renderCostOrb()}
 
         {/* ── Layer 7: Star cost (Regent) ── */}
-        {card.starCost !== null && (
-          <div
-            className="absolute z-[6]"
-            style={{
-              top: `${L.starCost.top}%`,
-              left: `${L.starCost.left}%`,
-              width: `${L.starCost.size}%`,
-              aspectRatio: "1",
-            }}
-          >
-            <Image
-              src="/images/game-assets/card-misc/energy_regent.png"
-              alt="star cost"
-              fill
-              className="object-contain drop-shadow-md"
-            />
-            <span
-              className="absolute inset-0 flex items-center justify-center font-black text-white"
-              style={{
-                fontSize: "clamp(9px, 1vw, 13px)",
-                fontFamily: TITLE_FONT,
-                textShadow: outlineShadow("#3a0820", 1),
-              }}
-            >
-              {card.starCost}
-            </span>
-          </div>
-        )}
+        {renderStarCost()}
       </div>
     </div>
   );
