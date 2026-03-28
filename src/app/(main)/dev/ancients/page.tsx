@@ -71,7 +71,10 @@ export default async function AncientsDevPage() {
   const epochsImgDir = path.join(process.cwd(), "public/images/spire-codex/epochs");
   const ancientNodesDir = path.join(process.cwd(), "public/images/spire-codex/ancient-nodes");
 
+  const ancientsBgDir = path.join(process.cwd(), "public/images/spire-codex/ancients-bg");
+
   const ancientFiles = (await fs.readdir(ancientsDir)).filter((f) => f.endsWith(".png")).sort();
+  const ancientBgFiles = (await fs.readdir(ancientsBgDir)).filter((f) => f.endsWith(".png")).sort();
   const bossFiles = (await fs.readdir(bossesDir)).filter((f) => f.endsWith(".png")).sort();
   const npcFiles = (await fs.readdir(npcsDir)).filter((f) => f.endsWith(".png")).sort();
   const renderFiles = (await fs.readdir(rendersDir)).filter((f) => f.endsWith(".png")).sort();
@@ -138,6 +141,39 @@ export default async function AncientsDevPage() {
                   unoptimized
                   className="object-contain"
                   sizes="150px"
+                />
+              </div>
+              <span className="text-sm font-semibold text-amber-300">
+                {formatImageName(file)}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Ancient Background Images Gallery */}
+      <section className="mb-16">
+        <div className="mb-6 flex items-baseline gap-3">
+          <h2 className="text-2xl font-bold text-amber-400">고대 존재 배경 (Ancient Backgrounds)</h2>
+          <span className="text-sm text-zinc-500">{ancientBgFiles.length}장</span>
+        </div>
+        <p className="mb-6 text-sm text-zinc-500">
+          고대 존재 인카운터 시 표시되는 대형 배경 이미지 (2560×1200)
+        </p>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {ancientBgFiles.map((file) => (
+            <div
+              key={file}
+              className="flex flex-col items-center gap-3 rounded-xl border border-amber-800/40 bg-zinc-900/60 p-4"
+            >
+              <div className="relative aspect-[2560/1200] w-full overflow-hidden rounded-lg">
+                <Image
+                  src={`/images/spire-codex/ancients-bg/${file}`}
+                  alt={formatImageName(file)}
+                  fill
+                  unoptimized
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </div>
               <span className="text-sm font-semibold text-amber-300">
