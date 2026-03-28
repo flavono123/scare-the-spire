@@ -3,19 +3,28 @@
 import { useRef, useState, useCallback, useMemo } from "react";
 import { COLOR_ALIASES, TYPE_ALIASES } from "@/lib/codex-types";
 
+export interface TriggerGroup {
+  trigger: string;
+  label: string; // display label for hint row
+  items: { value: string; label: string; desc: string }[];
+  // validator: given a raw token value, return the resolved value or null
+  validate?: (val: string) => string | null;
+  chipColor?: string; // tailwind bg/text classes for token chip
+}
+
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
   inputId?: string;
+  triggerGroups?: TriggerGroup[];
+  placeholder?: string;
 }
 
-// Autocomplete items for triggers
-const AUTOCOMPLETE_ITEMS: {
-  trigger: string;
-  items: { value: string; label: string; desc: string }[];
-}[] = [
+// Default trigger groups for card library
+const CARD_AUTOCOMPLETE: TriggerGroup[] = [
   {
     trigger: "@",
+    label: "캐릭터",
     items: [
       { value: "아이언클래드", label: "아이언클래드", desc: "Ironclad" },
       { value: "사일런트", label: "사일런트", desc: "Silent" },
@@ -28,17 +37,23 @@ const AUTOCOMPLETE_ITEMS: {
       { value: "상태이상", label: "상태이상", desc: "Status" },
       { value: "고대", label: "고대의 존재", desc: "Ancient" },
     ],
+    validate: (val) => COLOR_ALIASES[val] ?? null,
+    chipColor: "bg-blue-500/20 text-blue-400",
   },
   {
     trigger: "#",
+    label: "유형",
     items: [
       { value: "공격", label: "공격", desc: "Attack" },
       { value: "스킬", label: "스킬", desc: "Skill" },
       { value: "파워", label: "파워", desc: "Power" },
     ],
+    validate: (val) => TYPE_ALIASES[val] ?? null,
+    chipColor: "bg-green-500/20 text-green-400",
   },
   {
     trigger: "!",
+    label: "비용",
     items: [
       { value: "0", label: "0", desc: "비용 0" },
       { value: "1", label: "1", desc: "비용 1" },
@@ -48,21 +63,23 @@ const AUTOCOMPLETE_ITEMS: {
       { value: "2-", label: "2-", desc: "비용 2 이하" },
       { value: "X", label: "X", desc: "X 비용" },
     ],
+    chipColor: "bg-amber-500/20 text-amber-400",
   },
 ];
 
-export function SearchBar({ value, onChange, inputId }: SearchBarProps) {
+export function SearchBar({ value, onChange, inputId, triggerGroups, placeholder = "검색..." }: SearchBarProps) {
+  const AUTOCOMPLETE_ITEMS = triggerGroups ?? CARD_AUTOCOMPLETE;
   const inputRef = useRef<HTMLInputElement>(null);
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
 
   // Detect current trigger being typed (derived, no effect needed)
-  const currentTrigger = getCurrentTrigger(value);
+  const currentTrigger = getCurrentTrigger(value, AUTOCOMPLETE_ITEMS);
   const autocompleteItems = useMemo(
     () =>
       currentTrigger
-        ? getFilteredItems(currentTrigger.trigger, currentTrigger.query)
+        ? getFilteredItems(currentTrigger.trigger, currentTrigger.query, AUTOCOMPLETE_ITEMS)
         : [],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentTrigger?.trigger, currentTrigger?.query]
@@ -72,9 +89,9 @@ export function SearchBar({ value, onChange, inputId }: SearchBarProps) {
   const handleInputChange = useCallback(
     (newValue: string) => {
       onChange(newValue);
-      const trigger = getCurrentTrigger(newValue);
+      const trigger = getCurrentTrigger(newValue, AUTOCOMPLETE_ITEMS);
       const items = trigger
-        ? getFilteredItems(trigger.trigger, trigger.query)
+        ? getFilteredItems(trigger.trigger, trigger.query, AUTOCOMPLETE_ITEMS)
         : [];
       setSelectedIndex(0);
       setShowAutocomplete(items.length > 0);
@@ -155,7 +172,7 @@ export function SearchBar({ value, onChange, inputId }: SearchBarProps) {
             setShowAutocomplete(false);
             setIsFocused(false);
           }, 150)}
-          placeholder="검색..."
+          placeholder={placeholder}
           className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-16 py-1.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-all"
         />
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -176,52 +193,25 @@ export function SearchBar({ value, onChange, inputId }: SearchBarProps) {
       </div>
 
       {/* Token chips */}
-      {tokens.some((t) => t.startsWith("@") || t.startsWith("#") || t.startsWith("!")) && (
+      {tokens.some((t) => AUTOCOMPLETE_ITEMS.some((g) => t.startsWith(g.trigger))) && (
         <div className="flex flex-wrap gap-1 mt-1">
           {tokens.map((token, i) => {
-            if (token.startsWith("@")) {
-              const val = token.slice(1).toLowerCase();
-              const match = COLOR_ALIASES[val];
-              return (
-                <span
-                  key={i}
-                  className={`inline-flex items-center text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
-                    match
-                      ? "bg-blue-500/20 text-blue-400"
-                      : "bg-red-500/15 text-red-400/70"
-                  }`}
-                >
-                  @{token.slice(1)}
-                </span>
-              );
-            }
-            if (token.startsWith("#")) {
-              const val = token.slice(1).toLowerCase();
-              const match = TYPE_ALIASES[val];
-              return (
-                <span
-                  key={i}
-                  className={`inline-flex items-center text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
-                    match
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-red-500/15 text-red-400/70"
-                  }`}
-                >
-                  #{token.slice(1)}
-                </span>
-              );
-            }
-            if (token.startsWith("!")) {
-              return (
-                <span
-                  key={i}
-                  className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded-full font-medium bg-amber-500/20 text-amber-400"
-                >
-                  !{token.slice(1)}
-                </span>
-              );
-            }
-            return null;
+            const group = AUTOCOMPLETE_ITEMS.find((g) => token.startsWith(g.trigger));
+            if (!group) return null;
+            const val = token.slice(group.trigger.length).toLowerCase();
+            const isValid = group.validate ? group.validate(val) !== null : true;
+            return (
+              <span
+                key={i}
+                className={`inline-flex items-center text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                  isValid
+                    ? (group.chipColor ?? "bg-blue-500/20 text-blue-400")
+                    : "bg-red-500/15 text-red-400/70"
+                }`}
+              >
+                {group.trigger}{token.slice(group.trigger.length)}
+              </span>
+            );
           })}
         </div>
       )}
@@ -229,7 +219,8 @@ export function SearchBar({ value, onChange, inputId }: SearchBarProps) {
       {/* Trigger hints (shown on focus when input is empty) */}
       {isFocused && !value && !showAutocomplete && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-[#1e1e3a] border border-white/10 rounded-lg shadow-xl z-50 overflow-hidden p-2.5 flex flex-col gap-2">
-          {AUTOCOMPLETE_ITEMS.map(({ trigger, items }) => {
+          {AUTOCOMPLETE_ITEMS.map((group) => {
+            const { trigger, items } = group;
             const preview = items.slice(0, trigger === "@" ? 4 : items.length);
             const remaining = items.length - preview.length;
             return (
@@ -244,7 +235,7 @@ export function SearchBar({ value, onChange, inputId }: SearchBarProps) {
                   {trigger}
                 </button>
                 <span className="shrink-0 text-[11px] text-gray-500 w-10">
-                  {trigger === "@" ? "캐릭터" : trigger === "#" ? "유형" : "비용"}
+                  {group.label}
                 </span>
                 {preview.map((item) => (
                   <button
@@ -299,14 +290,15 @@ export function SearchBar({ value, onChange, inputId }: SearchBarProps) {
 }
 
 function getCurrentTrigger(
-  value: string
+  value: string,
+  groups: TriggerGroup[]
 ): { trigger: string; query: string; startIndex: number } | null {
   // Find the last word being typed
   const lastSpaceIndex = value.lastIndexOf(" ");
   const currentWord = value.slice(lastSpaceIndex + 1);
   const startIndex = lastSpaceIndex + 1;
 
-  for (const { trigger } of AUTOCOMPLETE_ITEMS) {
+  for (const { trigger } of groups) {
     if (currentWord.startsWith(trigger) && currentWord.length > trigger.length) {
       return {
         trigger,
@@ -324,9 +316,10 @@ function getCurrentTrigger(
 
 function getFilteredItems(
   trigger: string,
-  query: string
+  query: string,
+  groups: TriggerGroup[]
 ): { value: string; label: string; desc: string }[] {
-  const group = AUTOCOMPLETE_ITEMS.find((g) => g.trigger === trigger);
+  const group = groups.find((g) => g.trigger === trigger);
   if (!group) return [];
   if (!query) return group.items;
   return group.items.filter(
