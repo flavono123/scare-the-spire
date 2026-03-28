@@ -82,5 +82,17 @@
     "summary": "Anti-infinite pass, Phobia Mode, card reworks, relic shop price cuts, Neow blessings.",
     "summaryKo": "무한 콤보 견제, 공포증 모드, 카드 리워크, 유물 상점 가격 인하, 네오의 축복 추가.",
     "hasBalanceChanges": true
+  },
+  {
+    "id": "v0.101.0",
+    "version": "0.101.0",
+    "date": "2026-03-24",
+    "title": "Beta v0.101.0 - Regent Buffs & Relic Rarity Pass",
+    "titleKo": "베타 v0.101.0 - 리젠트 버프 및 유물 희귀도 조정",
+    "type": "beta",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/1828441623103381",
+    "summary": "Regent card buffs (7 cards), Prepared revert, relic rarity shuffle, Skulking Colony nerf, Doormaker rework, Voltaic nerf.",
+    "summaryKo": "리젠트 카드 버프 (7장), 예비 되돌림, 유물 희귀도 재조정, 잠행 군체 너프, 문을 만드는 자 리워크, 동전기 너프.",
+    "hasBalanceChanges": true
   }
 ]
