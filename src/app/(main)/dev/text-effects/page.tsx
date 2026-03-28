@@ -6,14 +6,14 @@ export const metadata = {
 };
 
 const COLOR_SAMPLES = [
-  { tag: "gold", hex: "#d4a843", label: "Gold", desc: "게임 키워드 (Vulnerable, Block, Strength, Deck 등)" },
-  { tag: "blue", hex: "#60a5fa", label: "Blue", desc: "수치 값 (데미지, 방어도, 카운트)" },
-  { tag: "red", hex: "#f87171", label: "Red", desc: "부정적 효과, 저주, 위험 텍스트" },
-  { tag: "green", hex: "#34d399", label: "Green", desc: "회복량, 자연 요소, 긍정적 효과" },
-  { tag: "purple", hex: "#c084fc", label: "Purple", desc: "인챈트 이름, 신비로운 텍스트" },
-  { tag: "orange", hex: "#fb923c", label: "Orange", desc: "캐릭터, 크리처, 불 관련" },
-  { tag: "pink", hex: "#f472b6", label: "Pink", desc: "캐릭터 이름 (네크로바인더 등)" },
-  { tag: "aqua", hex: "#22d3ee", label: "Aqua", desc: "물/정령 관련, 특수 NPC" },
+  { tag: "gold", hex: "#d4a843", label: "Gold", desc: "게임 엔티티 강조 (카드, 유물, 파워, 토큰: 취약, 방어도, 힘 등)" },
+  { tag: "red", hex: "#f87171", label: "Red", desc: "아이언클래드 캐릭터 색상 / 너프 표현" },
+  { tag: "green", hex: "#34d399", label: "Green", desc: "사일런트 캐릭터 색상 / 버프 표현" },
+  { tag: "aqua", hex: "#22d3ee", label: "Aqua", desc: "디펙트 캐릭터 색상" },
+  { tag: "orange", hex: "#fb923c", label: "Orange", desc: "리젠트 캐릭터 색상" },
+  { tag: "pink", hex: "#f472b6", label: "Pink", desc: "네크로바인더 캐릭터 색상" },
+  { tag: "blue", hex: "#60a5fa", label: "Blue", desc: "고대의 존재 (Ancient) 색상" },
+  { tag: "purple", hex: "#c084fc", label: "Purple", desc: "예비 (미사용)" },
 ];
 
 const EFFECT_SAMPLES = [
@@ -35,24 +35,16 @@ const EFFECT_SAMPLES = [
   },
 ];
 
-const CUSTOM_EFFECTS = [
+const BUFF_NERF_EXAMPLES = [
   {
-    css: "rich-nerf-shake",
-    label: "Nerf Shake (너프 흔들림)",
-    desc: "패치 노트에서 너프된 수치에 사용. 좌우로 떨리는 효과.",
-    keyframes: "translate(-2px,0) → (2px,0) → (-1px,0) → (1px,0), 0.5s infinite",
+    label: "버프 (Green + Sine)",
+    bbcode: "[green][sine]버프된 값이나 텍스트[/sine][/green]",
+    desc: "패치노트 원문에서 명시적으로 버프된 항목에 적용.",
   },
   {
-    css: "rich-buff-pulse",
-    label: "Buff Pulse (버프 맥동)",
-    desc: "패치 노트에서 버프된 수치에 사용. 글자 주변에 빛이 맥동.",
-    keyframes: "text-shadow: 0 0 0 → 0 0 8px currentColor, 2s ease-in-out infinite",
-  },
-  {
-    css: "rich-rainbow",
-    label: "Rainbow (무지개)",
-    desc: "특수 텍스트. 색이 연속으로 변화.",
-    keyframes: "color: red → orange → yellow → green → blue → purple, 3s linear infinite",
+    label: "너프 (Red + Jitter)",
+    bbcode: "[red][jitter]너프된 값이나 텍스트[/jitter][/red]",
+    desc: "패치노트 원문에서 명시적으로 너프된 항목에 적용.",
   },
 ];
 
@@ -64,23 +56,26 @@ const NESTING_EXAMPLES = [
   { bbcode: "[aqua][sine]eerily-glowing water[/sine][/aqua]", label: "Aqua + Sine" },
 ];
 
-const PATCH_NOTE_EXAMPLES = [
+const USAGE_EXAMPLES = [
+  {
+    label: "엔티티 강조",
+    bbcode: "이제 [gold]소멸[/gold]됨. [gold]집중[/gold]을 더 이상 부여하지 않음.",
+  },
+  {
+    label: "캐릭터 섹션",
+    bbcode: "[red]아이언클래드[/red] / [green]사일런트[/green] / [aqua]디펙트[/aqua] / [orange]리젠트[/orange] / [pink]네크로바인더[/pink]",
+  },
+  {
+    label: "고대의 존재",
+    bbcode: "[blue]고대의 존재[/blue] 관련 변경",
+  },
+  {
+    label: "버프 표현",
+    bbcode: "[gold]영혼 포획[/gold]: 적 HP [green][sine]3(4)[/sine][/green] 감소 (이전: 2(3))",
+  },
   {
     label: "너프 표현",
-    bbcode: "Cost: [red][b]0[/b][/red] → [green][b]1[/b][/green]",
-    desc: "숫자 변경 시 before=red, after=green 으로 표현",
-  },
-  {
-    label: "너프 (흔들림 적용)",
-    html: '<span class="rich-nerf-shake spire-red">Prepared</span> → <span class="spire-green">Prepare</span>',
-  },
-  {
-    label: "버프 (맥동 적용)",
-    html: '<span class="rich-buff-pulse spire-green">3장</span>',
-  },
-  {
-    label: "키워드",
-    bbcode: "이제 [gold]소멸[/gold]됨. [gold]집중[/gold]을 더 이상 부여하지 않음.",
+    bbcode: "[gold]정렬[/gold]: 비용 [red][jitter]별 3개[/jitter][/red]로 증가 (이전: 별 2개)",
   },
 ];
 
@@ -96,7 +91,7 @@ export default function TextEffectsPage() {
 
       <h1 className="text-2xl font-bold">텍스트 효과 레퍼런스</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Spire BBCode 텍스트 컬러, 애니메이션, 패치노트 전용 효과 카탈로그
+        인게임 BBCode 색상 + 애니메이션 기반 텍스트 효과 카탈로그
       </p>
 
       {/* Colors */}
@@ -158,29 +153,26 @@ export default function TextEffectsPage() {
         </div>
       </section>
 
-      {/* Custom Patch Effects */}
+      {/* Buff/Nerf Indicators */}
       <section className="mt-8">
-        <h2 className="text-lg font-semibold text-yellow-500 mb-4">패치노트 전용 효과 (Custom Effects)</h2>
+        <h2 className="text-lg font-semibold text-yellow-500 mb-4">버프 / 너프 표현</h2>
         <p className="text-xs text-muted-foreground mb-3">
-          인게임에 없는 커스텀 효과. 패치노트 밸런스 변경 표시용.
+          인게임 애니메이션 + 캐릭터 색상을 조합. 패치노트 원문에서 명시적 버프/너프에만 적용.
         </p>
         <div className="space-y-3">
-          {CUSTOM_EFFECTS.map((e) => (
+          {BUFF_NERF_EXAMPLES.map((e, i) => (
             <div
-              key={e.css}
+              key={i}
               className="rounded border border-border bg-card/50 px-4 py-3"
             >
-              <div className="flex items-center gap-3 mb-2">
-                <code className="text-xs bg-zinc-800 px-2 py-0.5 rounded">.{e.css}</code>
-                <span className="text-sm font-medium">{e.label}</span>
-              </div>
+              <span className="text-xs font-medium text-muted-foreground mb-1 block">
+                {e.label}
+              </span>
               <p className="text-xs text-muted-foreground mb-2">{e.desc}</p>
               <div className="text-lg mb-2">
-                <span className={e.css}>
-                  이 텍스트에 {e.label} 효과가 적용됩니다
-                </span>
+                <RichText text={e.bbcode} />
               </div>
-              <code className="text-[10px] text-muted-foreground/60">{e.keyframes}</code>
+              <code className="text-[10px] text-muted-foreground/60">{e.bbcode}</code>
             </div>
           ))}
         </div>
@@ -212,14 +204,14 @@ export default function TextEffectsPage() {
         </div>
       </section>
 
-      {/* Patch Note Patterns */}
+      {/* Usage Examples */}
       <section className="mt-8">
-        <h2 className="text-lg font-semibold text-yellow-500 mb-4">패치노트 표현 패턴</h2>
+        <h2 className="text-lg font-semibold text-yellow-500 mb-4">슬서운변경 사용 예시</h2>
         <p className="text-xs text-muted-foreground mb-3">
-          밸런스 변경을 표현할 때 사용할 패턴. 너프=흔들림, 버프=맥동.
+          Rich 패치노트에서의 실제 사용 패턴.
         </p>
         <div className="space-y-3">
-          {PATCH_NOTE_EXAMPLES.map((p, i) => (
+          {USAGE_EXAMPLES.map((p, i) => (
             <div
               key={i}
               className="rounded border border-border bg-card/50 px-4 py-3"
@@ -227,13 +219,10 @@ export default function TextEffectsPage() {
               <span className="text-xs font-medium text-muted-foreground mb-1 block">
                 {p.label}
               </span>
-              <div className="text-sm">
-                {p.bbcode ? (
-                  <RichText text={p.bbcode} />
-                ) : p.html ? (
-                  <span dangerouslySetInnerHTML={{ __html: p.html }} />
-                ) : null}
+              <div className="text-sm mb-2">
+                <RichText text={p.bbcode} />
               </div>
+              <code className="text-[10px] text-muted-foreground/60">{p.bbcode}</code>
             </div>
           ))}
         </div>
@@ -244,14 +233,14 @@ export default function TextEffectsPage() {
         <h2 className="text-lg font-semibold text-yellow-500 mb-4">사용법</h2>
         <div className="rounded border border-border bg-card/50 px-4 py-3 text-xs text-muted-foreground space-y-2">
           <p>
-            <code className="bg-zinc-800 px-1 rounded">{`<RichText text="[gold]Block[/gold]을 [blue]5[/blue] 획득" />`}</code>
+            <code className="bg-zinc-800 px-1 rounded">{`<RichText text="[gold]방어도[/gold]를 [gold]5[/gold] 획득" />`}</code>
           </p>
-          <p>CSS 클래스 직접 사용:</p>
+          <p>버프/너프 BBCode:</p>
           <p>
-            <code className="bg-zinc-800 px-1 rounded">{`<span className="spire-gold">Block</span>`}</code>
+            <code className="bg-zinc-800 px-1 rounded">{`<RichText text="[green][sine]버프된 값[/sine][/green]" />`}</code>
           </p>
           <p>
-            <code className="bg-zinc-800 px-1 rounded">{`<span className="rich-nerf-shake spire-red">너프된 값</span>`}</code>
+            <code className="bg-zinc-800 px-1 rounded">{`<RichText text="[red][jitter]너프된 값[/jitter][/red]" />`}</code>
           </p>
         </div>
       </section>

@@ -18,6 +18,13 @@ const FRAME_ASSETS: Record<string, string> = {
   퀘스트: "/images/game-assets/card-frames/card_frame_quest.png",
 };
 
+// Ancient card text background — type-specific top cutout shape
+const ANCIENT_TEXT_BG: Record<string, string> = {
+  공격: "/images/game-assets/card-misc/ancient_card_text_bg_attack.png",
+  스킬: "/images/game-assets/card-misc/ancient_card_text_bg_skill.png",
+  파워: "/images/game-assets/card-misc/ancient_card_text_bg_power.png",
+};
+
 const PORTRAIT_BORDER_ASSETS: Record<string, string> = {
   공격: "/images/game-assets/card-portraits/card_portrait_border_attack.png",
   스킬: "/images/game-assets/card-portraits/card_portrait_border_skill.png",
@@ -347,7 +354,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
     </div>
   ) : null;
 
-  // ─── Shared star cost (Regent) — star shape, below energy orb ───
+  // ─── Shared star cost (Regent) — energy_star.png (aqua diamond) ───
   const renderStarCost = () => card.starCost !== null ? (
     <div
       className="absolute z-[6]"
@@ -358,22 +365,18 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
         aspectRatio: "1",
       }}
     >
-      {/* Star shape SVG */}
-      <svg viewBox="0 0 48 48" className="absolute inset-0 w-full h-full drop-shadow-md">
-        <path
-          d="M24 2 L29.5 17.5 L46 17.5 L32.5 28 L37.5 44 L24 34 L10.5 44 L15.5 28 L2 17.5 L18.5 17.5 Z"
-          fill="#e8920a"
-          stroke="#7a4a00"
-          strokeWidth="1.5"
-        />
-      </svg>
+      <Image
+        src="/images/game-assets/card-misc/energy_star.png"
+        alt="star cost"
+        fill
+        className="object-contain drop-shadow-md"
+      />
       <span
         className="absolute inset-0 flex items-center justify-center font-black text-white"
         style={{
           fontSize: "clamp(8px, 0.9vw, 11px)",
           fontFamily: TITLE_FONT,
-          textShadow: outlineShadow("#3a1a00", 1),
-          marginTop: "5%",
+          textShadow: outlineShadow("#0a3040", 1),
         }}
       >
         {card.starCost}
@@ -382,16 +385,21 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
   ) : null;
 
   // =====================================================================
-  // UNIQUE CARD — full-art layout
-  // Art fills entire card, description floats with frame-cutout shadow
+  // ANCIENT CARD — full-art with game-extracted frame assets
+  // Uses: card_frame_ancient.png, ancient_banner.png,
+  //       ancient_card_text_bg_{attack|skill|power}.png
   // =====================================================================
   if (isAncientCard) {
+    const ancientTextBg = ANCIENT_TEXT_BG[card.type] ?? ANCIENT_TEXT_BG["스킬"];
+    // Ancient banner HSV from card_banner_ancient_mat.tres: h=0.0 s=0.2 v=0.9
+    const ancientBannerFilter = "hue-rotate(0deg) saturate(0.2) brightness(0.9)";
+
     return (
       <div className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none">
         <div className="relative" style={{ aspectRatio: "598/844" }}>
 
-          {/* ── Full-bleed portrait art (clipped to card shape) ── */}
-          <div className="absolute inset-0 overflow-hidden rounded-[4%]">
+          {/* ── Layer 0: Full-bleed portrait art ── */}
+          <div className="absolute inset-0 overflow-hidden rounded-[3%]">
             {imageSrc && !imgError ? (
               <Image
                 src={imageSrc}
@@ -408,17 +416,36 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
             )}
           </div>
 
-          {/* ── Thin border frame (no fill, just edge, inside clip) ── */}
-          <div className="absolute inset-0 overflow-hidden rounded-[4%]">
-            <div
-              className="absolute inset-0 z-[1] rounded-[4%] pointer-events-none"
-              style={{
-                boxShadow: `inset 0 0 0 3px rgba(0,0,0,0.5), inset 0 0 0 5px ${charHsvToColor(charHsv)}33`,
-              }}
+          {/* ── Layer 1: Ancient card frame (HSV-tinted by character) ── */}
+          <Image
+            src="/images/game-assets/card-frames/card_frame_ancient.png"
+            alt=""
+            fill
+            className="object-contain pointer-events-none z-[1]"
+            style={{ filter: frameFilter }}
+            sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 14vw"
+          />
+
+          {/* ── Layer 2: Type-specific text background (cutout shape) ── */}
+          <div
+            className="absolute z-[2] pointer-events-none"
+            style={{
+              left: "5%",
+              right: "5%",
+              bottom: "1%",
+              height: "45%",
+            }}
+          >
+            <Image
+              src={ancientTextBg}
+              alt=""
+              fill
+              className="object-contain object-bottom"
+              style={{ filter: frameFilter, opacity: 0.92 }}
             />
           </div>
 
-          {/* ── Name banner (ancient: gray, semi-transparent) ── */}
+          {/* ── Layer 3: Ancient banner (rainbow foil, same size as normal) ── */}
           <div
             className="absolute z-[3] flex items-center justify-center"
             style={{
@@ -426,7 +453,6 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
               left: `-${L.banner.overhangX}%`,
               right: `-${L.banner.overhangX}%`,
               height: `${L.banner.height}%`,
-              opacity: 0.8,
             }}
           >
             <Image
@@ -434,7 +460,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
               alt=""
               fill
               className="object-contain pointer-events-none"
-              style={{ filter: "saturate(0) brightness(0.7)" }}
+              style={{ filter: ancientBannerFilter }}
             />
             <span
               className="relative z-10 text-center truncate px-[18%] w-full"
@@ -443,7 +469,7 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
                 fontFamily: TITLE_FONT,
                 fontSize: "clamp(9px, 1.4vw, 16px)",
                 fontWeight: 800,
-                color: isUpgraded ? "#6ee67a" : "rgba(255,255,255,0.9)",
+                color: isUpgraded ? "#6ee67a" : "#ffffff",
                 textShadow: outlineShadow(isUpgraded ? "#1a3a1a" : "#1a1a1a", 1),
               }}
             >
@@ -451,80 +477,51 @@ export function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
             </span>
           </div>
 
-          {/* ── Floating description panel with frame-cutout top ── */}
+          {/* ── Layer 4: Type plaque (same position as standard cards) ── */}
           <div
-            className="absolute z-[5] left-0 right-0 bottom-0 overflow-hidden rounded-b-[4%]"
-            style={{ top: "50%" }}
+            className="absolute left-1/2 -translate-x-1/2 z-[4]"
+            style={{
+              top: `${L.plaque.top}%`,
+              width: `${L.plaque.width}%`,
+            }}
           >
-            {/* Frame-cutout arch at top of description area */}
-            <div
-              className="absolute left-[4%] right-[4%] pointer-events-none z-[2]"
-              style={{ top: "-2px", height: "18%" }}
-            >
+            <div className="relative w-full" style={{ aspectRatio: "123/75" }}>
               <Image
-                src={PORTRAIT_BORDER_ASSETS[card.type] ?? PORTRAIT_BORDER_ASSETS["스킬"]}
+                src="/images/game-assets/card-misc/card_portrait_border_plaque.png"
                 alt=""
                 fill
-                className="object-contain object-bottom"
-                style={{
-                  filter: bannerFilter,
-                  maskImage: "linear-gradient(to bottom, transparent 0%, black 60%)",
-                  WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 60%)",
-                }}
+                className="pointer-events-none object-contain"
+                style={{ filter: ancientBannerFilter }}
               />
-            </div>
-
-            {/* Semi-transparent background with top fade */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: "linear-gradient(to bottom, transparent 0%, rgba(10,10,20,0.75) 15%, rgba(10,10,20,0.88) 30%, rgba(10,10,20,0.92) 100%)",
-              }}
-            />
-
-            {/* Type plaque */}
-            <div
-              className="absolute left-1/2 -translate-x-1/2 z-[4]"
-              style={{ top: "8%", width: `${L.plaque.width}%` }}
-            >
-              <div className="relative w-full" style={{ aspectRatio: "123/75" }}>
-                <Image
-                  src="/images/game-assets/card-misc/card_portrait_border_plaque.png"
-                  alt=""
-                  fill
-                  className="pointer-events-none object-contain"
-                  style={{ filter: bannerFilter }}
-                />
-                <span
-                  className="absolute inset-0 flex items-center justify-center"
-                  style={{
-                    fontFamily: CARD_FONT,
-                    fontSize: "clamp(6px, 0.8vw, 10px)",
-                    fontWeight: 700,
-                    color: "#3a2a1a",
-                  }}
-                >
-                  {card.type}
-                </span>
-              </div>
-            </div>
-
-            {/* Description text */}
-            <div
-              className="absolute z-[5] overflow-hidden flex flex-col items-center justify-center"
-              style={{
-                top: "28%",
-                bottom: "8%",
-                left: `${L.desc.paddingX}%`,
-                right: `${L.desc.paddingX}%`,
-                fontFamily: CARD_FONT,
-              }}
-            >
-              {renderDescription()}
+              <span
+                className="absolute inset-0 flex items-center justify-center"
+                style={{
+                  fontFamily: CARD_FONT,
+                  fontSize: "clamp(6px, 0.8vw, 10px)",
+                  fontWeight: 700,
+                  color: "#3a2a1a",
+                }}
+              >
+                {card.type}
+              </span>
             </div>
           </div>
 
-          {/* ── Energy cost orb ── */}
+          {/* ── Layer 5: Description text ── */}
+          <div
+            className="absolute z-[5] overflow-hidden flex flex-col items-center justify-center"
+            style={{
+              top: `${L.desc.top}%`,
+              bottom: `${100 - L.desc.bottom}%`,
+              left: `${L.desc.paddingX}%`,
+              right: `${L.desc.paddingX}%`,
+              fontFamily: CARD_FONT,
+            }}
+          >
+            {renderDescription()}
+          </div>
+
+          {/* ── Layer 6: Energy cost orb ── */}
           {renderCostOrb()}
           {renderStarCost()}
         </div>

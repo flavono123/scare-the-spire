@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { getChoseong } from "es-hangul";
 import {
@@ -63,6 +63,14 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
   );
   const [selectedCosts, setSelectedCosts] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  // Debounce text search (150ms)
+  useEffect(() => {
+    debounceRef.current = setTimeout(() => setDebouncedQuery(searchQuery), 150);
+    return () => clearTimeout(debounceRef.current);
+  }, [searchQuery]);
   const [showUpgrades, setShowUpgrades] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
   const [showMultiplayer, setShowMultiplayer] = useState(true);
@@ -79,12 +87,12 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  // Parse search query
+  // Parse search query (uses debounced value)
   const parsedSearch = useMemo(() => {
     const tokens: { type: "color" | "type" | "cost"; value: string }[] = [];
     const textParts: string[] = [];
 
-    const parts = searchQuery.split(/\s+/).filter(Boolean);
+    const parts = debouncedQuery.split(/\s+/).filter(Boolean);
     for (const part of parts) {
       if (part.startsWith("@")) {
         const val = part.slice(1).toLowerCase();
@@ -104,7 +112,7 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
     }
 
     return { text: textParts.join(" ").toLowerCase(), tokens };
-  }, [searchQuery]);
+  }, [debouncedQuery]);
 
   const fuzzyMatch = useCallback((text: string, query: string): boolean => {
     if (!query) return true;
@@ -521,13 +529,18 @@ export function CardLibrary({ cards, characters }: CardLibraryProps) {
         {/* Card Grid */}
         <div className="flex-1 overflow-y-auto p-3">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2 sm:gap-3">
-            {filteredCards.map((card) => (
-              <CardTile
+            {filteredCards.map((card, i) => (
+              <div
                 key={card.id}
-                card={card}
-                showUpgrade={showUpgrades}
-                showBeta={showBeta}
-              />
+                className="animate-card-enter"
+                style={{ animationDelay: `${Math.min(i * 15, 300)}ms` }}
+              >
+                <CardTile
+                  card={card}
+                  showUpgrade={showUpgrades}
+                  showBeta={showBeta}
+                />
+              </div>
             ))}
           </div>
           {filteredCards.length === 0 && (

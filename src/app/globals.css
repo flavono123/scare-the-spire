@@ -125,6 +125,22 @@
   }
 }
 
+/* Card grid enter animation */
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-card-enter {
+  animation: card-enter 0.3s ease-out both;
+}
+
 /* Spire text effects — matches in-game BBCode rendering */
 @keyframes rich-sine {
   0%, 100% { transform: translateY(0); }
@@ -138,29 +154,6 @@
   75% { transform: translate(-1px, -1px); }
 }
 
-@keyframes rich-nerf-shake {
-  0%, 100% { transform: translate(0, 0); }
-  10% { transform: translate(-2px, 0); }
-  20% { transform: translate(2px, 0); }
-  30% { transform: translate(-1px, 0); }
-  40% { transform: translate(1px, 0); }
-  50% { transform: translate(0, 0); }
-}
-
-@keyframes rich-buff-pulse {
-  0%, 100% { text-shadow: 0 0 0 transparent; }
-  50% { text-shadow: 0 0 8px currentColor; }
-}
-
-@keyframes rich-rainbow {
-  0% { color: #ef4444; }
-  16% { color: #f97316; }
-  33% { color: #eab308; }
-  50% { color: #22c55e; }
-  66% { color: #3b82f6; }
-  83% { color: #a855f7; }
-  100% { color: #ef4444; }
-}
 
 .rich-sine {
   display: inline-block;
@@ -172,20 +165,6 @@
   animation: rich-jitter 0.15s ease-in-out infinite;
 }
 
-.rich-nerf-shake {
-  display: inline-block;
-  animation: rich-nerf-shake 0.5s ease-in-out infinite;
-}
-
-.rich-buff-pulse {
-  display: inline-block;
-  animation: rich-buff-pulse 2s ease-in-out infinite;
-}
-
-.rich-rainbow {
-  display: inline-block;
-  animation: rich-rainbow 3s linear infinite;
-}
 
 /* Spire text colors */
 .spire-gold { color: #d4a843; }
