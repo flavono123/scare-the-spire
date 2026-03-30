@@ -276,7 +276,14 @@ function renderLine(
   // Skip HTML comments (<!-- TODO: ... -->)
   if (trimmed.startsWith("<!--")) return null;
 
-  // Heading levels
+  // Heading levels (check longer prefixes first)
+  if (trimmed.startsWith("#### ")) {
+    return (
+      <h4 key={key} className="text-sm font-semibold mt-4 mb-1 text-yellow-600">
+        {enrichLine(trimmed.slice(5), lookup, key)}
+      </h4>
+    );
+  }
   if (trimmed.startsWith("### ")) {
     return (
       <h3 key={key} className="text-base font-semibold mt-6 mb-2 text-yellow-500">
