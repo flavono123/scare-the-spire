@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="ko" className="dark">
       <body
-        className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} antialiased bg-background text-foreground`}
+        className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} font-sans antialiased bg-background text-foreground`}
       >
         {children}
       </body>
