@@ -259,13 +259,22 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
 
   // Progressive rendering — render cards in batches to avoid initial jank
   const BATCH_SIZE = 42; // ~6 rows of 7
+  // Build a stable key from filter inputs to reset visibleCount on change
+  const filterKey = useMemo(
+    () =>
+      `${[...selectedColors].sort()}-${[...selectedTypes].sort()}-${[...selectedRarities].sort()}-${[...selectedRarityDetails].sort()}-${[...selectedCosts].sort()}-${parsedSearch.text}`,
+    [selectedColors, selectedTypes, selectedRarities, selectedRarityDetails, selectedCosts, parsedSearch],
+  );
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const filterKeyRef = useRef(filterKey);
 
-  // Reset visible count when filters change
   useEffect(() => {
-    setVisibleCount(BATCH_SIZE);
-  }, [filteredCards]);
+    if (filterKeyRef.current !== filterKey) {
+      filterKeyRef.current = filterKey;
+      setVisibleCount(BATCH_SIZE); // eslint-disable-line react-hooks/set-state-in-effect -- reset batch on filter change
+    }
+  }, [filterKey]);
 
   // IntersectionObserver to load more cards on scroll
   useEffect(() => {

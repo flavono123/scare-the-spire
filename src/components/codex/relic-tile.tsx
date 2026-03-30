@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { CodexRelic } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
@@ -22,15 +22,11 @@ export function RelicTile({ relic }: RelicTileProps) {
     setTooltipSide(spaceRight < 280 ? "left" : "right");
   }, []);
 
-  useEffect(() => {
-    if (hovered) updateTooltipSide();
-  }, [hovered, updateTooltipSide]);
-
   return (
     <div
       ref={tileRef}
       className="relative group"
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={() => { updateTooltipSide(); setHovered(true); }}
       onMouseLeave={() => setHovered(false)}
     >
       <div
