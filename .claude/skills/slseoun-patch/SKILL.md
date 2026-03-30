@@ -63,8 +63,10 @@ To fetch a specific version's content, filter by title containing the version st
 
 From the raw plain text:
 1. **Keep**: Bullet-point items, card/relic/enemy change descriptions, balance numbers
-2. **Skip**: Greeting paragraphs ("Hey everyone..."), community messages, image references
-3. **Structure** as markdown with sections:
+2. **Skip**: Greeting paragraphs ("Hey everyone..."), community messages, image references (`{STEAM_CLAN_IMAGE}`)
+3. **Title**: Use the Steam API `title` field exactly as-is (e.g. `# Beta Patch Notes - v0.101.0`). Do NOT add subtitles, summaries, or annotations below the title.
+4. **No annotations**: Do NOT add descriptive lines between the title and the first section (e.g. "This patch is live on the Beta Branch", "Design commentary from Anthony included"). Go straight from `# Title` to `## First Section`.
+5. **Structure** as markdown with sections:
    - Use `##` for major sections (CONTENT, BALANCE, BUG FIXES, etc.)
    - Use `###` for sub-sections (Card Changes - Silent, Relic Changes, etc.)
    - Use `- **Name**: description` for individual changes
@@ -118,8 +120,8 @@ Add/update entry in `data/sts2-patches.json`:
   "id": "v0.101.0",
   "version": "0.101.0",
   "date": "2026-03-24",
-  "title": "Beta v0.101.0",
-  "titleKo": "베타 v0.101.0",
+  "title": "Beta Patch Notes - v0.101.0",
+  "titleKo": "베타 패치 노트 - v0.101.0",
   "type": "beta",
   "steamUrl": "https://store.steampowered.com/news/app/2868840/view/{gid}",
   "summary": "...",
@@ -127,6 +129,12 @@ Add/update entry in `data/sts2-patches.json`:
   "hasBalanceChanges": true
 }
 ```
+
+**Rules:**
+- `title`: Use Steam API `title` field exactly as-is. Do NOT invent subtitles or add descriptions after the version.
+- `titleKo`: Direct Korean translation of the Steam title only. Do NOT add content summaries.
+- `steamUrl`: Construct from API `gid` field. Format: `https://store.steampowered.com/news/app/2868840/view/{gid}`. Do NOT guess or fabricate gid values.
+- `summary`/`summaryKo`: Brief factual list of key changes. Keep to what the patch actually says.
 
 ### Step 6: Speculative Commit
 
