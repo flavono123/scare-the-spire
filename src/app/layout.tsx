@@ -1,8 +1,27 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const geist = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+// STS2 game fonts extracted from PCK
+const spectral = localFont({
+  src: "../../public/fonts/spectral_bold.ttf",
+  variable: "--font-spectral",
+  weight: "700",
+});
+
+const kreon = localFont({
+  src: [
+    { path: "../../public/fonts/kreon_regular.ttf", weight: "400" },
+    { path: "../../public/fonts/kreon_bold.ttf", weight: "700" },
+  ],
+  variable: "--font-kreon",
+});
+
+const gcBatang = localFont({
+  src: "../../public/fonts/GyeonggiCheonnyeonBatangBold.ttf",
+  variable: "--font-gc-batang",
+  weight: "700",
+});
 
 export const metadata: Metadata = {
   title: "슬서운 이야기",
@@ -14,7 +33,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko" className="dark">
-      <body className={`${geist.variable} antialiased bg-background text-foreground`}>
+      <body
+        className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} antialiased bg-background text-foreground`}
+      >
         {children}
       </body>
     </html>
