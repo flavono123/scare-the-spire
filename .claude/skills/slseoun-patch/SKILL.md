@@ -112,7 +112,19 @@ When the original patch note clearly indicates a buff or nerf:
 - Buff: `[green][sine]버프된 값[/sine][/green]`
 - Nerf: `[red][jitter]너프된 값[/jitter][/red]`
 
-### Step 5: Update Patch Index
+### Step 5: Get Steam Store URL
+
+The Steam API `gid` does NOT match the Steam store page URL. You cannot construct the URL automatically.
+
+Use `AskUserQuestion` to ask the user for the Steam store URL:
+```
+이 패치의 Steam 스토어 URL을 알려주세요 (예: https://store.steampowered.com/news/app/2868840/view/...).
+모르면 "skip"을 입력하세요 — steamUrl을 null로 설정합니다.
+```
+
+If the user provides a URL, use it as-is. If "skip", set `steamUrl: null`.
+
+### Step 6: Update Patch Index
 
 Add/update entry in `data/sts2-patches.json`:
 ```json
@@ -123,7 +135,7 @@ Add/update entry in `data/sts2-patches.json`:
   "title": "Beta Patch Notes - v0.101.0",
   "titleKo": "베타 패치 노트 - v0.101.0",
   "type": "beta",
-  "steamUrl": "https://store.steampowered.com/news/app/2868840/view/{gid}",
+  "steamUrl": null,
   "summary": "...",
   "summaryKo": "...",
   "hasBalanceChanges": true
@@ -133,10 +145,10 @@ Add/update entry in `data/sts2-patches.json`:
 **Rules:**
 - `title`: Use Steam API `title` field exactly as-is. Do NOT invent subtitles or add descriptions after the version.
 - `titleKo`: Direct Korean translation of the Steam title only. Do NOT add content summaries.
-- `steamUrl`: Construct from API `gid` field. Format: `https://store.steampowered.com/news/app/2868840/view/{gid}`. Do NOT guess or fabricate gid values.
+- `steamUrl`: Only use user-provided URL from Step 5. NEVER construct from API gid — they don't match.
 - `summary`/`summaryKo`: Brief factual list of key changes. Keep to what the patch actually says.
 
-### Step 6: Speculative Commit
+### Step 7: Speculative Commit
 
 Per CLAUDE.md rules, commit after each meaningful edit:
 - Commit raw English notes first
