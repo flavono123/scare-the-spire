@@ -72,7 +72,6 @@ python3 scripts/extract-card-portraits.py --force --character ironclad
 
 ## Notes
 
-- This replaces the old spire-codex.com download pipeline for card images
 - The PCK contains ~588 official + ~265 beta card portraits
-- Some cards (~24) only exist in spire-codex data (Spine-rendered etc.) and are not overwritten
-- Card portrait dimensions in-game are 500×380 but spire-codex serves 1000×760 upscaled versions. The PCK extraction produces 1000×760 images (native resolution varies by card)
+- Some cards (~24) use Spine-rendered art and are not available as static images in the PCK
+- Card portrait dimensions vary by card (native resolution from PCK)

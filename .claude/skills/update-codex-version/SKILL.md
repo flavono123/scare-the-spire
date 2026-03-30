@@ -5,90 +5,28 @@ Full pipeline for updating the codex baseline when a new STS2 patch is released.
 This skill should be used when:
 - "새 패치 적용", "코덱스 업데이트", "버전 업데이트", "0.102 적용"
 - "update codex", "new patch", "update baseline", "apply new version"
-- A new STS2 patch has been released and spire-codex.com has updated
+- A new STS2 patch has been released
 - User says something like "0.102.0 나왔어" or "새 버전 적용해"
+
+## Data Sources (SSOT)
+
+**NEVER use spire-codex.com** — its data is unreliable and frequently out of date.
+
+Primary sources in priority order:
+1. **Steam patch notes** (balance changes, card reworks, numeric values)
+2. **Game files** (PCK/DLL extraction via GDRE Tools + ILSpy for new entities)
+3. **In-game verification** by the user
 
 ## Prerequisites
 
-- spire-codex.com must already have the new version's data available
-- `npx tsx` must be available (comes with the project's devDependencies)
-- The download script needs `curl` and `jq`
+- `npx tsx` available (project devDependencies)
+- Steam API accessible (`curl`)
 
 ## Workflow
 
 The user provides the new version number (e.g. `0.102.0`). If not provided, ask.
 
-### Step 1: Backup Current Data
-
-```bash
-cp -r data/spire-codex data/spire-codex-old
-```
-
-This preserves the current baseline for diff comparison. The `-old` directory is gitignored and temporary.
-
-**Verify**: Check that `data/spire-codex-old/meta.json` exists and contains the old version.
-
-### Step 2: Download New Data from spire-codex.com
-
-The existing download script skips files that already exist. To force re-download:
-
-```bash
-# Remove existing data files (keep directory structure)
-rm -f data/spire-codex/kor/*.json data/spire-codex/eng/*.json
-# Re-download
-bash scripts/download-spire-codex.sh
-```
-
-**Important**: Only re-download data JSONs, NOT images. Images are handled separately by `/update-game-assets`.
-
-**Wait for download to complete** — this takes ~2 minutes due to rate limiting.
-
-**Verify**: Spot-check a few cards in the new `data/spire-codex/kor/cards.json` to confirm it reflects the new version.
-
-### Step 3: Generate Entity Diffs
-
-Run the diff generator to compare old vs new data:
-
-```bash
-npx tsx scripts/generate-entity-diffs.ts \
-  --old data/spire-codex-old \
-  --new data/spire-codex \
-  --patch v{NEW_VERSION}
-```
-
-**Review the output carefully:**
-- Check the summary (cards/relics/potions changed counts)
-- Verify a few diffs against the Steam patch notes to confirm accuracy
-- Look for any `[WARN]` about removed entities
-
-If the output looks correct, re-run with `--write` to persist:
-
-```bash
-npx tsx scripts/generate-entity-diffs.ts \
-  --old data/spire-codex-old \
-  --new data/spire-codex \
-  --patch v{NEW_VERSION} \
-  --write
-```
-
-**Speculative commit**: Commit `data/sts2-entity-versions.json` changes.
-
-### Step 4: Update meta.json
-
-Update `data/spire-codex/meta.json` with the new version and today's date:
-
-```json
-{
-  "version": "{NEW_VERSION}",
-  "extractedAt": "{TODAY_ISO}"
-}
-```
-
-**Speculative commit**: Commit meta.json change.
-
-### Step 5: Update Patch Index
-
-Add a new entry to `data/sts2-patches.json`. To get accurate metadata, fetch from Steam API:
+### Step 1: Fetch Steam Patch Notes
 
 ```bash
 curl -s "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2868840&count=10&maxlength=300000&format=json&feeds=steam_community_announcements" | python3 -c "
@@ -100,7 +38,85 @@ for item in data['appnews']['newsitems']:
 " 2>/dev/null | head -5
 ```
 
-Create the entry using **exact Steam API values** (do NOT fabricate titles or summaries):
+Find the matching patch and extract the full BALANCE section. This is the SSOT for all numeric changes.
+
+### Step 2: Backup Current Data
+
+```bash
+cp -r data/spire-codex data/spire-codex-old
+```
+
+The `-old` directory is gitignored and temporary.
+
+### Step 3: Apply Balance Changes to Baseline
+
+Using the Steam patch notes BALANCE section, write a Python script to patch `data/spire-codex/kor/cards.json` (and relics/potions if changed).
+
+For each card/relic/potion change in the patch notes:
+1. Find the entity by ID in the JSON
+2. Update the affected fields (cost, vars.*, upgrade, keywords, etc.)
+3. Track before/after values for entity-versions
+
+**Field mapping** (patch notes → JSON fields):
+- "Cost X -> Y" → `cost` field
+- "Damage X(Y) -> A(B)" → `vars.Damage` = A (base)
+- "Block X(Y) -> A(B)" → `vars.Block` = A (base)
+- "now Exhausts" → add "소멸" to `keywords`
+- "now Ethereal" → add "휘발성" to `keywords`
+- "Upgrade changed from X -> Y" → `upgrade` field
+
+**For reworked cards**: Update all fields (type, rarity, vars, description, keywords, upgrade). For description, use the in-game Korean text if the user can provide it, or translate from patch notes.
+
+**For new entities**: If the patch adds new cards/relics, the user needs to provide the full entity data (from game files or manual entry).
+
+**Speculative commit** after each batch of changes.
+
+### Step 4: Generate Entity Version Diffs
+
+Create entries in `data/sts2-entity-versions.json` for each changed entity:
+
+```json
+{
+  "entityType": "card",
+  "entityId": "CARD_ID",
+  "patch": "v{NEW_VERSION}",
+  "diffs": [
+    { "field": "cost", "before": OLD_VALUE, "after": NEW_VALUE }
+  ]
+}
+```
+
+The `before` value is what the field was BEFORE this patch (= old baseline value).
+The `after` value is what the field became AFTER this patch (= new baseline value).
+
+Use `scripts/generate-entity-diffs.ts` if you have both old and new JSON data:
+
+```bash
+npx tsx scripts/generate-entity-diffs.ts \
+  --old data/spire-codex-old \
+  --new data/spire-codex \
+  --patch v{NEW_VERSION} \
+  --write
+```
+
+Or manually add diffs when patching cards by hand from patch notes.
+
+**Speculative commit**.
+
+### Step 5: Update meta.json
+
+```json
+{
+  "version": "{NEW_VERSION}",
+  "extractedAt": "{TODAY_ISO}"
+}
+```
+
+**Speculative commit**.
+
+### Step 6: Update Patch Index
+
+Add entry to `data/sts2-patches.json` using **exact Steam API values**:
 
 ```json
 {
@@ -117,47 +133,34 @@ Create the entry using **exact Steam API values** (do NOT fabricate titles or su
 }
 ```
 
-Set `hasBalanceChanges: true` if there are any entity diffs from Step 3.
+**Do NOT fabricate** titles, summaries, or gid values.
 
-**Speculative commit**: Commit patches.json update.
+**Speculative commit**.
 
-### Step 6: Clean Up Backup
+### Step 7: Clean Up
 
 ```bash
 rm -rf data/spire-codex-old
 ```
 
-### Step 7: Optional — Rich Patch Notes
+### Step 8: Optional — Rich Patch Notes
 
-If the user wants rich patch notes, invoke the `/slseoun-patch` skill for the new version.
+Invoke `/slseoun-patch` for the new version.
 
-### Step 8: Optional — Update Game Assets
+### Step 9: Optional — Update Game Assets
 
-If new cards were added or card art changed, invoke `/update-game-assets`.
-
-### Step 9: Optional — Update Image Format
-
-If new images were downloaded as PNG, convert them to WebP:
-
-```bash
-# Check for new PNG files that need conversion
-find public/images/spire-codex -name "*.png" -newer data/spire-codex/meta.json
-```
+If new cards/relics were added, invoke `/update-game-assets` for images.
 
 ## Verification
 
-After completing all steps:
-
-1. **Build check**: `pnpm --dir . build` should succeed
-2. **Visual check**: Run dev server and verify:
-   - Card library shows correct data for the new version
+1. **Build check**: `pnpm --dir . build`
+2. **Visual check** on dev server:
+   - Card library shows correct new values
    - Version selector includes the new version
-   - Selecting an old version correctly shows historical data
-   - Diffs display properly (before/after values make sense)
+   - Old versions reconstruct correctly via backward compaction
+   - Diffs display proper before/after values
 
 ## Rollback
-
-If something goes wrong and you still have `data/spire-codex-old`:
 
 ```bash
 rm -rf data/spire-codex
@@ -165,19 +168,15 @@ mv data/spire-codex-old data/spire-codex
 git checkout -- data/sts2-entity-versions.json data/sts2-patches.json
 ```
 
-## Gitignore
-
-Add `data/spire-codex-old/` to `.gitignore` if not already present.
-
 ## File Changes Summary
 
 | File | Action |
 |------|--------|
-| `data/spire-codex/kor/*.json` | Overwritten with new version data |
-| `data/spire-codex/eng/*.json` | Overwritten with new version data |
+| `data/spire-codex/kor/*.json` | Balance values patched |
+| `data/spire-codex/eng/*.json` | Balance values patched (if applicable) |
 | `data/spire-codex/meta.json` | Version + date updated |
-| `data/sts2-entity-versions.json` | New diffs appended |
+| `data/sts2-entity-versions.json` | New diffs added |
 | `data/sts2-patches.json` | New patch entry added |
 | `data/sts2-patch-notes/v{X}.md` | (Optional) New patch notes |
 
-No TypeScript code changes are needed — the system is entirely data-driven.
+No TypeScript code changes needed — the system is entirely data-driven.

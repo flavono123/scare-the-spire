@@ -76,6 +76,8 @@ All task instructions must be followed by an immediate speculative commit after 
 
 ### STS2 (메인)
 - 카드 612장, 유물 314개, 포션 63개, 에인션트 8개
-- 이미지: `public/images/spire-codex/` (spire-codex.com에서 추출)
+- 이미지: `public/images/spire-codex/` (게임 PCK에서 추출)
 - 데이터: `src/lib/codex-data.ts`, `src/lib/codex-types.ts`
+- 데이터 SSOT: Steam 패치노트 (밸런스) + 게임 파일 (신규 카드/유물)
+- **spire-codex.com 데이터 사용 금지** — 밸런스 패치 미반영으로 부정확
 - 한국어 이름은 게임 공식 번역 사용
