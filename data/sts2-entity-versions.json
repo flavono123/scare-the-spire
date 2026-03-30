@@ -1,0 +1,217 @@
+[
+  {
+    "entityType": "card",
+    "entityId": "VOLTAIC",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "cost", "before": 2, "after": 3 }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "FALLING_STAR",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "vars.Damage", "before": 7, "after": 8 }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "GLITTERSTREAM",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "vars.BlockNextTurn", "before": 4, "after": 5 }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "PARRY",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "vars.ParryPower", "before": 8, "after": 10 },
+      { "field": "vars.Parry", "before": 8, "after": 10 }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "REFINE_BLADE",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "vars.Forge", "before": 6, "after": 9 }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "CELESTIAL_MIGHT",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "upgrade", "before": { "damage": "+2" }, "after": { "repeat": "+1" } }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "SERPENT_FORM",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "upgrade.serpentformpower", "before": "+1", "after": "+2" }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "PREPARED",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "cost", "before": 1, "after": 0 },
+      { "field": "description", "before": "카드를 2장 버립니다.\n다음 턴에, [gold]에너지[/gold]를 2 얻습니다.", "after": "카드를 {Cards:diff()}장 뽑습니다.\n카드를 {Cards:diff()}장 버립니다." },
+      { "field": "descriptionRaw", "before": "카드를 2장 버립니다.\n다음 턴에, [gold]에너지[/gold]를 {Energy:diff()} 얻습니다.", "after": "카드를 {Cards:diff()}장 뽑습니다.\n카드를 {Cards:diff()}장 버립니다." },
+      { "field": "vars", "before": { "Energy": 2 }, "after": { "Cards": 1 } },
+      { "field": "upgrade", "before": { "energy": "+1" }, "after": { "cards": "+1" } }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "PREPARED",
+    "patch": "v0.100.0",
+    "diffs": [
+      { "field": "cost", "before": 0, "after": 1 },
+      { "field": "description", "before": "카드를 1장 뽑습니다.\n카드를 1장 버립니다.", "after": "카드를 2장 버립니다.\n다음 턴에, [gold]에너지[/gold]를 2 얻습니다." },
+      { "field": "descriptionRaw", "before": "카드를 {Cards:diff()}장 뽑습니다.\n카드를 {Cards:diff()}장 버립니다.", "after": "카드를 2장 버립니다.\n다음 턴에, [gold]에너지[/gold]를 {Energy:diff()} 얻습니다." },
+      { "field": "vars", "before": { "Cards": 1 }, "after": { "Energy": 2 } },
+      { "field": "upgrade", "before": { "cards": "+1" }, "after": { "energy": "+1" } }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "CAPTURE_SPIRIT",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "vars.Damage", "before": 2, "after": 3 },
+      { "field": "vars.Cards", "before": 2, "after": 3 }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "BORROWED_TIME",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "vars.DoomPower", "before": 6, "after": 3 },
+      { "field": "vars.Doom", "before": 6, "after": 3 },
+      { "field": "vars.Energy", "before": 1, "after": 1 },
+      { "field": "upgrade", "before": { "doompower": "-3" }, "after": { "energy": "+1" } }
+    ]
+  },
+  {
+    "entityType": "relic",
+    "entityId": "PENDULUM",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "description", "before": "[gold]뽑을 카드 더미[/gold]를 섞을 때마다, 카드를 1장 뽑습니다.", "after": "3턴마다, 카드를 1장 뽑습니다." },
+      { "field": "descriptionRaw", "before": "[gold]뽑을 카드 더미[/gold]를 섞을 때마다, 카드를 1장 뽑습니다.", "after": "3턴마다, 카드를 1장 뽑습니다." }
+    ]
+  },
+  {
+    "entityType": "relic",
+    "entityId": "TINY_MAILBOX",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "rarity", "before": "일반 유물", "after": "고급 유물" }
+    ]
+  },
+  {
+    "entityType": "relic",
+    "entityId": "PERMAFROST",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "rarity", "before": "일반 유물", "after": "고급 유물" }
+    ]
+  },
+  {
+    "entityType": "relic",
+    "entityId": "BAG_OF_MARBLES",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "rarity", "before": "고급 유물", "after": "일반 유물" }
+    ]
+  },
+  {
+    "entityType": "relic",
+    "entityId": "RED_MASK",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "rarity", "before": "고급 유물", "after": "일반 유물" }
+    ]
+  },
+  {
+    "entityType": "relic",
+    "entityId": "BELLOWS",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "rarity", "before": "고급 유물", "after": "희귀 유물" }
+    ]
+  },
+  {
+    "entityType": "relic",
+    "entityId": "LASTING_CANDY",
+    "patch": "v0.101.0",
+    "diffs": [
+      { "field": "rarity", "before": "희귀 유물", "after": "고급 유물" }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "DOMINATE",
+    "patch": "v0.100.0",
+    "diffs": [
+      { "field": "type", "before": "공격", "after": "스킬" },
+      { "field": "rarity", "before": "일반", "after": "고급" }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "HOTFIX",
+    "patch": "v0.100.0",
+    "diffs": [
+      { "field": "keywords", "before": [], "after": ["소멸"] }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "VOID_FORM",
+    "patch": "v0.100.0",
+    "diffs": [
+      { "field": "keywords", "before": [], "after": ["휘발성"] }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "DIRGE",
+    "patch": "v0.100.0",
+    "diffs": [
+      { "field": "keywords", "before": [], "after": ["소멸"] }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "HUDDLE_UP",
+    "patch": "v0.100.0",
+    "diffs": [
+      { "field": "keywords", "before": [], "after": ["소멸"] }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "ALIGNMENT",
+    "patch": "v0.100.0",
+    "diffs": [
+      { "field": "vars.StarCost", "before": 2, "after": 3 }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "BELIEVE_IN_YOU",
+    "patch": "v0.100.0",
+    "diffs": [
+      { "field": "vars.Energy", "before": 3, "after": 2 }
+    ]
+  }
+]
