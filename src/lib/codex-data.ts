@@ -48,14 +48,15 @@ interface RawCharacter {
 
 function spireCodexImageToLocal(url: string | null): string | null {
   if (!url) return null;
-  // /static/images/cards/abrasive.png -> /images/spire-codex/cards/abrasive.png
-  // /static/images/cards/beta/abrasive.png -> /images/spire-codex/cards-beta/abrasive.png
+  // /static/images/cards/abrasive.png -> /images/spire-codex/cards/abrasive.webp
+  // /static/images/cards/beta/abrasive.png -> /images/spire-codex/cards-beta/abrasive.webp
   const match = url.match(/\/static\/images\/(.+)/);
   if (!match) return null;
   const relativePath = match[1];
   // Map cards/beta/ subdirectory to cards-beta/
   const mapped = relativePath.replace(/^cards\/beta\//, "cards-beta/");
-  return `/images/spire-codex/${mapped}`;
+  // Convert .png extension to .webp
+  return `/images/spire-codex/${mapped.replace(/\.png$/, ".webp")}`;
 }
 
 function mapCard(kor: RawCard, eng: RawCard): CodexCard {

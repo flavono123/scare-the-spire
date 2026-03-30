@@ -82,7 +82,7 @@ function toLocalImagePath(url: string): string {
 function getEventImagePath(eventId: string, imageFiles: Set<string>): string | null {
   const key = eventId.toLowerCase();
   if (imageFiles.has(key)) {
-    return `/images/spire-codex/events/${key}.png`;
+    return `/images/spire-codex/events/${key}.webp`;
   }
   return null;
 }
@@ -98,7 +98,7 @@ async function loadEvents(): Promise<GameEvent[]> {
 async function loadEventImageFiles(): Promise<Set<string>> {
   const files = await fs.readdir(EVENTS_IMG_DIR);
   return new Set(
-    files.filter((f) => f.endsWith(".png")).map((f) => f.replace(".png", "")),
+    files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", "")),
   );
 }
 
@@ -301,7 +301,7 @@ function EventImageGallery({
             >
               <div className="relative h-[100px] w-full">
                 <Image
-                  src={`/images/spire-codex/events/${fileKey}.png`}
+                  src={`/images/spire-codex/events/${fileKey}.webp`}
                   alt={name}
                   fill
                   unoptimized

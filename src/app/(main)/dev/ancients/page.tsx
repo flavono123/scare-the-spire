@@ -50,7 +50,7 @@ const STORY_LABELS: Record<string, string> = {
 
 function formatImageName(filename: string): string {
   return filename
-    .replace(/\.png$/, "")
+    .replace(/\.(png|webp)$/, "")
     .split("_")
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
@@ -67,22 +67,24 @@ export default async function AncientsDevPage() {
   const ancientsDir = path.join(process.cwd(), "public/images/spire-codex/ancients");
   const bossesDir = path.join(process.cwd(), "public/images/spire-codex/bosses");
   const npcsDir = path.join(process.cwd(), "public/images/spire-codex/npcs");
-  const rendersDir = path.join(process.cwd(), "public/images/spire-codex/renders");
-  const epochsImgDir = path.join(process.cwd(), "public/images/spire-codex/epochs");
   const ancientNodesDir = path.join(process.cwd(), "public/images/spire-codex/ancient-nodes");
 
   const ancientsBgDir = path.join(process.cwd(), "public/images/spire-codex/ancients-bg");
 
-  const ancientFiles = (await fs.readdir(ancientsDir)).filter((f) => f.endsWith(".png")).sort();
-  const ancientBgFiles = (await fs.readdir(ancientsBgDir)).filter((f) => f.endsWith(".png")).sort();
-  const bossFiles = (await fs.readdir(bossesDir)).filter((f) => f.endsWith(".png")).sort();
-  const npcFiles = (await fs.readdir(npcsDir)).filter((f) => f.endsWith(".png")).sort();
-  const renderFiles = (await fs.readdir(rendersDir)).filter((f) => f.endsWith(".png")).sort();
-  const epochImageFiles = new Set(
-    (await fs.readdir(epochsImgDir)).filter((f) => f.endsWith(".png")).map((f) => f.replace(".png", ""))
-  );
-  const ancientNodeFiles = (await fs.readdir(ancientNodesDir)).filter((f) => f.endsWith(".png")).sort();
-  const allEpochFiles = (await fs.readdir(epochsImgDir)).filter((f) => f.endsWith(".png")).sort();
+  // Safe readdir that returns [] for missing directories
+  const safeReaddir = async (dir: string) => {
+    try { return await fs.readdir(dir); } catch { return []; }
+  };
+  const imgExt = /\.(png|webp)$/;
+
+  const ancientFiles = (await safeReaddir(ancientsDir)).filter((f) => imgExt.test(f)).sort();
+  const ancientBgFiles = (await safeReaddir(ancientsBgDir)).filter((f) => imgExt.test(f)).sort();
+  const bossFiles = (await safeReaddir(bossesDir)).filter((f) => imgExt.test(f)).sort();
+  const npcFiles = (await safeReaddir(npcsDir)).filter((f) => imgExt.test(f)).sort();
+  const renderFiles: string[] = []; // renders directory removed
+  const epochImageFiles = new Set<string>(); // epochs directory removed
+  const ancientNodeFiles = (await safeReaddir(ancientNodesDir)).filter((f) => imgExt.test(f)).sort();
+  const allEpochFiles: string[] = []; // epochs directory removed
 
   // Group epochs by era_name (use era as fallback key)
   const eraGroups: { name: string | null; year: string | null; epochs: Epoch[] }[] = [];
