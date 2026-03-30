@@ -291,6 +291,8 @@ export const CardTile = memo(function CardTile({ card, showUpgrade, showBeta }: 
               <TermTooltip name={part.text} desc={GOLD_TERM_DESC[part.text]} />
             )}
           </span>
+        ) : part.type === "upgrade" ? (
+          <span key={i} className="text-[#6ee67a] font-bold">{part.text}</span>
         ) : part.type === "energy" ? (
           <Image
             key={i}
@@ -695,7 +697,7 @@ function TermTooltip({ name, desc }: { name: string; desc: string }) {
 // =============================================================================
 
 interface DescPart {
-  type: "text" | "gold" | "newline" | "energy";
+  type: "text" | "gold" | "newline" | "energy" | "upgrade";
   text: string;
 }
 
@@ -710,7 +712,7 @@ function cleanDescription(desc: string): string {
 function parseDescription(rawDesc: string): DescPart[] {
   const desc = cleanDescription(rawDesc);
   const parts: DescPart[] = [];
-  const regex = /\[gold\](.*?)\[\/gold\]|\[energy:(\d+)\]|\[\/?\w+(?::?\w*)*\]|\n/g;
+  const regex = /\[gold\](.*?)\[\/gold\]|\[green\](.*?)\[\/green\]|\[energy:(\d+)\]|\[\/?\w+(?::?\w*)*\]|\n/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
 
@@ -723,7 +725,9 @@ function parseDescription(rawDesc: string): DescPart[] {
     } else if (match[1] !== undefined) {
       parts.push({ type: "gold", text: match[1] });
     } else if (match[2] !== undefined) {
-      parts.push({ type: "energy", text: match[2] });
+      parts.push({ type: "upgrade", text: match[2] });
+    } else if (match[3] !== undefined) {
+      parts.push({ type: "energy", text: match[3] });
     }
     lastIndex = match.index + match[0].length;
   }
@@ -733,9 +737,13 @@ function parseDescription(rawDesc: string): DescPart[] {
   return parts;
 }
 
-// Build upgraded description by substituting {Var:diff()} templates with upgraded values
+// Build upgraded description by substituting {Var:diff()} templates with upgraded values.
+// Changed values are wrapped in [green]...[/green] for highlight rendering.
 function renderUpgradedDescription(card: CodexCard): string {
   if (!card.upgrade || !card.descriptionRaw) return card.description;
+
+  // Collect which var keys are actually changed by the upgrade (lowercase set)
+  const changedKeys = new Set<string>();
 
   // Apply upgrade diffs to base vars
   const upgradedVars: Record<string, number> = { ...card.vars };
@@ -746,22 +754,30 @@ function renderUpgradedDescription(card: CodexCard): string {
       const varKey = Object.keys(upgradedVars).find(
         (k) => k.toLowerCase() === key.toLowerCase()
       );
-      if (varKey) {
+      if (varKey && delta !== 0) {
         upgradedVars[varKey] = (upgradedVars[varKey] ?? 0) + delta;
+        changedKeys.add(varKey.toLowerCase());
       }
     }
   }
 
-  // Substitute {VarName:diff()} or {VarName} with upgraded values
+  // Substitute {VarName:diff()} or {VarName} with upgraded values.
+  // Wrap changed values in [green] for visual highlight.
   return card.descriptionRaw.replace(
     /\{(\w+)(?::diff\(\))?\}/g,
     (match, varName: string) => {
-      if (varName in upgradedVars) return String(upgradedVars[varName]);
+      const exactVal = varName in upgradedVars ? upgradedVars[varName] : undefined;
       // Case-insensitive fallback
-      const key = Object.keys(upgradedVars).find(
-        (k) => k.toLowerCase() === varName.toLowerCase()
-      );
-      return key ? String(upgradedVars[key]) : match;
+      const key = exactVal !== undefined
+        ? varName
+        : Object.keys(upgradedVars).find((k) => k.toLowerCase() === varName.toLowerCase());
+      if (!key) return match;
+      const val = String(upgradedVars[key]);
+      // Highlight if this var was changed by the upgrade
+      if (changedKeys.has(key.toLowerCase())) {
+        return `[green]${val}[/green]`;
+      }
+      return val;
     }
   );
 }
