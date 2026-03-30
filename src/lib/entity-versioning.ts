@@ -141,9 +141,13 @@ export function getVersionsWithDiffs(
   versionDiffs: EntityVersionDiff[],
 ): string[] {
   const patchVersionsWithDiffs = new Set(versionDiffs.map((d) => d.patch));
-  // Always include the current (latest) version
+  // Include: release (base), patches with balance changes, patches with version diffs
   const allVersions = patches
-    .filter((p) => p.hasBalanceChanges || patchVersionsWithDiffs.has(normalizeVersion(p.version)))
+    .filter((p) =>
+      p.type === "release" ||
+      p.hasBalanceChanges ||
+      patchVersionsWithDiffs.has(normalizeVersion(p.version)),
+    )
     .map((p) => p.version)
     .sort((a, b) => compareVersions(b, a)); // newest first
 
