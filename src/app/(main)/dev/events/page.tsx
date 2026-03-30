@@ -70,19 +70,19 @@ const UNKNOWN_ACT_CONFIG = {
   bg: "bg-zinc-500/10",
 };
 
-const DATA_DIR = path.join(process.cwd(), "data/spire-codex");
-const EVENTS_IMG_DIR = path.join(process.cwd(), "public/images/spire-codex/events");
+const DATA_DIR = path.join(process.cwd(), "data/sts2");
+const EVENTS_IMG_DIR = path.join(process.cwd(), "public/images/sts2/events");
 
-/** Map spire-codex static URLs to local public paths */
+/** Map STS2 static URLs to local public paths */
 function toLocalImagePath(url: string): string {
-  return url.replace("/static/images/misc/ancients/", "/images/spire-codex/ancients/");
+  return url.replace("/static/images/misc/ancients/", "/images/sts2/ancients/");
 }
 
 /** Get event image path from extracted game assets (lowercase ID match) */
 function getEventImagePath(eventId: string, imageFiles: Set<string>): string | null {
   const key = eventId.toLowerCase();
   if (imageFiles.has(key)) {
-    return `/images/spire-codex/events/${key}.webp`;
+    return `/images/sts2/events/${key}.webp`;
   }
   return null;
 }
@@ -301,7 +301,7 @@ function EventImageGallery({
             >
               <div className="relative h-[100px] w-full">
                 <Image
-                  src={`/images/spire-codex/events/${fileKey}.webp`}
+                  src={`/images/sts2/events/${fileKey}.webp`}
                   alt={name}
                   fill
                   unoptimized

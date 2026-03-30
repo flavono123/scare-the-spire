@@ -129,6 +129,6 @@ export async function getEntityVersionDiffs(): Promise<EntityVersionDiff[]> {
 
 export async function getCodexMeta(): Promise<CodexMeta> {
   return JSON.parse(
-    await fs.readFile(path.join(DATA_DIR, "spire-codex/meta.json"), "utf-8"),
+    await fs.readFile(path.join(DATA_DIR, "sts2/meta.json"), "utf-8"),
   );
 }

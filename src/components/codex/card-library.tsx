@@ -28,11 +28,11 @@ import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
 
 // Filter icon paths for non-character categories
 const CATEGORY_ICONS: Record<string, string> = {
-  colorless: "/images/spire-codex/icons/colorless_energy_icon.webp",
-  event: "/images/spire-codex/icons/chest_icon.webp",
-  curse: "/images/spire-codex/cards/ascenders_bane.webp",
-  status: "/images/spire-codex/cards/burn.webp",
-  ancient: "/images/spire-codex/cards/apparition.webp",
+  colorless: "/images/sts2/icons/colorless_energy_icon.webp",
+  event: "/images/sts2/icons/chest_icon.webp",
+  curse: "/images/sts2/cards/ascenders_bane.webp",
+  status: "/images/sts2/cards/burn.webp",
+  ancient: "/images/sts2/cards/apparition.webp",
 };
 
 const RARITY_COLORS: Record<string, string> = {

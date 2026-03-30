@@ -7,7 +7,7 @@ export const metadata = {
   description: "개발 전용: 승천, 모디파이어, 키워드, 고난, 의도, 막 데이터",
 };
 
-const DATA_DIR = path.join(process.cwd(), "data/spire-codex");
+const DATA_DIR = path.join(process.cwd(), "data/sts2");
 
 async function readJson<T>(relPath: string): Promise<T> {
   const raw = await fs.readFile(path.join(DATA_DIR, relPath), "utf-8");
@@ -255,7 +255,7 @@ export default async function ReferencePage() {
       </Section>
 
       <div className="mt-8 mb-12 text-center text-xs text-muted-foreground/40">
-        spire-codex 데이터 기반 · 패치노트 번역 시 이 페이지의 공식 용어를 사용할 것
+        STS2 데이터 기반 · 패치노트 번역 시 이 페이지의 공식 용어를 사용할 것
       </div>
     </div>
   );

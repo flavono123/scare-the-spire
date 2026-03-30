@@ -46,7 +46,7 @@ interface Encounter {
 // Data loading
 // ---------------------------------------------------------------------------
 
-const DATA_DIR = path.join(process.cwd(), "data/spire-codex");
+const DATA_DIR = path.join(process.cwd(), "data/sts2");
 
 async function readJson<T>(relativePath: string): Promise<T> {
   return JSON.parse(await fs.readFile(path.join(DATA_DIR, relativePath), "utf-8"));
@@ -84,7 +84,7 @@ function hpLabel(min: number | null, max: number | null): string {
   return `${min}-${max}`;
 }
 
-/** Transform spire-codex image_url to local path, with boss fallback */
+/** Transform STS2 image_url to local path, with boss fallback */
 function resolveImageUrl(monster: Monster, bossImageNames: Set<string>): string {
   // Base path from image_url: "/static/images/monsters/X.png" -> "X.png"
   const filename = monster.image_url.split("/").pop() ?? "";
@@ -94,11 +94,11 @@ function resolveImageUrl(monster: Monster, bossImageNames: Set<string>): string 
   if (monster.type === "Boss") {
     const bossFilename = `${baseName}_boss.png`;
     if (bossImageNames.has(bossFilename)) {
-      return `/images/spire-codex/bosses/${bossFilename}`;
+      return `/images/sts2/bosses/${bossFilename}`;
     }
   }
 
-  return `/images/spire-codex/monsters/${filename}`;
+  return `/images/sts2/monsters/${filename}`;
 }
 
 const ROOM_BADGE: Record<string, string> = {
@@ -118,19 +118,19 @@ export default async function MonstersDevPage() {
   ]);
 
   // Read boss image directory for fallback lookup
-  const bossDir = path.join(process.cwd(), "public/images/spire-codex/bosses");
+  const bossDir = path.join(process.cwd(), "public/images/sts2/bosses");
   const bossFiles = await fs.readdir(bossDir).catch(() => [] as string[]);
   const bossImageNames = new Set(bossFiles);
 
   // Read render images
-  const rendersDir = path.join(process.cwd(), "public/images/spire-codex/renders");
+  const rendersDir = path.join(process.cwd(), "public/images/sts2/renders");
   const renderFiles = (await fs.readdir(rendersDir).catch(() => [] as string[]))
     .filter((f) => f.endsWith(".png"))
     .sort();
   const renderNamesSet = new Set(renderFiles.map((f) => f.toLowerCase()));
 
   // Read beta monster images
-  const betaDir = path.join(process.cwd(), "public/images/spire-codex/monsters-beta");
+  const betaDir = path.join(process.cwd(), "public/images/sts2/monsters-beta");
   const betaFiles = (await fs.readdir(betaDir).catch(() => [] as string[]))
     .filter((f) => f.endsWith(".png"))
     .sort();
@@ -216,7 +216,7 @@ export default async function MonstersDevPage() {
               >
                 <div className="relative w-[200px] h-[200px] mb-2">
                   <Image
-                    src={`/images/spire-codex/renders/${file}`}
+                    src={`/images/sts2/renders/${file}`}
                     alt={label}
                     fill
                     unoptimized
@@ -252,7 +252,7 @@ export default async function MonstersDevPage() {
                 >
                   <div className="relative w-[120px] h-[120px] mb-2">
                     <Image
-                      src={`/images/spire-codex/monsters-beta/${file}`}
+                      src={`/images/sts2/monsters-beta/${file}`}
                       alt={label}
                       fill
                       unoptimized

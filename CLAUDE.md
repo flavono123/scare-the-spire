@@ -22,7 +22,7 @@ All task instructions must be followed by an immediate speculative commit after 
 - `src/components/` - React 컴포넌트
 - `src/components/codex/` - STS2 Codex 전용 컴포넌트
 - `src/lib/` - 유틸리티, 타입 정의, 데이터 로딩
-- `public/images/spire-codex/` - STS2 게임 에셋 이미지 (cards, relics, potions, ancients 등)
+- `public/images/sts2/` - STS2 게임 에셋 이미지 (cards, relics, potions, ancients 등)
 - `prompts/` - 기획 문서 (PLAN.md, SPEC.md)
 - `docs/` - 설계 문서 (DESIGN.md, ARCHITECTURE.md)
 - `tasks/` - 작업 태스크 파일
@@ -76,8 +76,7 @@ All task instructions must be followed by an immediate speculative commit after 
 
 ### STS2 (메인)
 - 카드 612장, 유물 314개, 포션 63개, 에인션트 8개
-- 이미지: `public/images/spire-codex/` (게임 PCK에서 추출)
+- 이미지: `public/images/sts2/` (게임 PCK에서 추출)
 - 데이터: `src/lib/codex-data.ts`, `src/lib/codex-types.ts`
 - 데이터 SSOT: Steam 패치노트 (밸런스) + 게임 파일 (신규 카드/유물)
-- **spire-codex.com 데이터 사용 금지** — 밸런스 패치 미반영으로 부정확
 - 한국어 이름은 게임 공식 번역 사용

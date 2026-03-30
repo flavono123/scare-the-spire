@@ -51,8 +51,8 @@ python3 scripts/extract-card-portraits.py --force --character ironclad
 | Flag | Description |
 |------|-------------|
 | `--pck PATH` | Custom PCK file path (auto-detected by default) |
-| `--output DIR` | Official art output dir (default: `public/images/spire-codex/cards/`) |
-| `--beta-output DIR` | Beta art output dir (default: `public/images/spire-codex/cards-beta/`) |
+| `--output DIR` | Official art output dir (default: `public/images/sts2/cards/`) |
+| `--beta-output DIR` | Beta art output dir (default: `public/images/sts2/cards-beta/`) |
 | `--dry-run` | List files without extracting |
 | `--diff-only` | Only extract changed files |
 | `--force` | Overwrite existing files |
@@ -60,8 +60,8 @@ python3 scripts/extract-card-portraits.py --force --character ironclad
 
 ## Output
 
-- Official art → `public/images/spire-codex/cards/{name}.png`
-- Beta art → `public/images/spire-codex/cards-beta/{name}.png`
+- Official art → `public/images/sts2/cards/{name}.png`
+- Beta art → `public/images/sts2/cards-beta/{name}.png`
 - Format: 1000×760 RGB PNG
 
 ## Data source

@@ -10,8 +10,6 @@ This skill should be used when:
 
 ## Data Sources (SSOT)
 
-**NEVER use spire-codex.com** — its data is unreliable and frequently out of date.
-
 Primary sources in priority order:
 1. **Steam patch notes** (balance changes, card reworks, numeric values)
 2. **Game files** (PCK/DLL extraction via GDRE Tools + ILSpy for new entities)
@@ -43,14 +41,14 @@ Find the matching patch and extract the full BALANCE section. This is the SSOT f
 ### Step 2: Backup Current Data
 
 ```bash
-cp -r data/spire-codex data/spire-codex-old
+cp -r data/sts2 data/sts2-old
 ```
 
 The `-old` directory is gitignored and temporary.
 
 ### Step 3: Apply Balance Changes to Baseline
 
-Using the Steam patch notes BALANCE section, write a Python script to patch `data/spire-codex/kor/cards.json` (and relics/potions if changed).
+Using the Steam patch notes BALANCE section, write a Python script to patch `data/sts2/kor/cards.json` (and relics/potions if changed).
 
 For each card/relic/potion change in the patch notes:
 1. Find the entity by ID in the JSON
@@ -93,8 +91,8 @@ Use `scripts/generate-entity-diffs.ts` if you have both old and new JSON data:
 
 ```bash
 npx tsx scripts/generate-entity-diffs.ts \
-  --old data/spire-codex-old \
-  --new data/spire-codex \
+  --old data/sts2-old \
+  --new data/sts2 \
   --patch v{NEW_VERSION} \
   --write
 ```
@@ -140,7 +138,7 @@ Add entry to `data/sts2-patches.json` using **exact Steam API values**:
 ### Step 7: Clean Up
 
 ```bash
-rm -rf data/spire-codex-old
+rm -rf data/sts2-old
 ```
 
 ### Step 8: Optional — Rich Patch Notes
@@ -163,8 +161,8 @@ If new cards/relics were added, invoke `/update-game-assets` for images.
 ## Rollback
 
 ```bash
-rm -rf data/spire-codex
-mv data/spire-codex-old data/spire-codex
+rm -rf data/sts2
+mv data/sts2-old data/sts2
 git checkout -- data/sts2-entity-versions.json data/sts2-patches.json
 ```
 
@@ -172,9 +170,9 @@ git checkout -- data/sts2-entity-versions.json data/sts2-patches.json
 
 | File | Action |
 |------|--------|
-| `data/spire-codex/kor/*.json` | Balance values patched |
-| `data/spire-codex/eng/*.json` | Balance values patched (if applicable) |
-| `data/spire-codex/meta.json` | Version + date updated |
+| `data/sts2/kor/*.json` | Balance values patched |
+| `data/sts2/eng/*.json` | Balance values patched (if applicable) |
+| `data/sts2/meta.json` | Version + date updated |
 | `data/sts2-entity-versions.json` | New diffs added |
 | `data/sts2-patches.json` | New patch entry added |
 | `data/sts2-patch-notes/v{X}.md` | (Optional) New patch notes |

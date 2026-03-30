@@ -30,10 +30,10 @@ interface RawPower {
   image_url: string | null;
 }
 
-const DATA_DIR = path.join(process.cwd(), "data/spire-codex");
+const DATA_DIR = path.join(process.cwd(), "data/sts2");
 const ENCHANTMENT_ICONS_DIR = path.join(
   process.cwd(),
-  "public/images/spire-codex/enchantments",
+  "public/images/sts2/enchantments",
 );
 
 async function readJson<T>(relPath: string): Promise<T> {
@@ -66,14 +66,14 @@ function enchantmentIconSrc(
 ): string | null {
   const filename = `${id.toLowerCase()}.png`;
   if (availableIcons.has(filename)) {
-    return `/images/spire-codex/enchantments/${filename}`;
+    return `/images/sts2/enchantments/${filename}`;
   }
   return null;
 }
 
 function powerImageSrc(imageUrl: string | null): string | null {
   if (!imageUrl) return null;
-  return imageUrl.replace("/static/images/powers/", "/images/spire-codex/powers/");
+  return imageUrl.replace("/static/images/powers/", "/images/sts2/powers/");
 }
 
 function CardTypeBadge({ type }: { type: "Attack" | "Skill" }) {
@@ -169,7 +169,7 @@ export default async function EnchantmentsPage() {
           인챈트 아이콘 갤러리
         </h2>
         <p className="mt-1 text-xs text-muted-foreground">
-          {allIconFiles.length}개 아이콘 — public/images/spire-codex/enchantments/
+          {allIconFiles.length}개 아이콘 — public/images/sts2/enchantments/
         </p>
         <div className="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8">
           {allIconFiles.map((filename) => {
@@ -180,7 +180,7 @@ export default async function EnchantmentsPage() {
                 className="flex flex-col items-center gap-1.5 rounded-lg border border-purple-500/10 bg-card/30 p-2"
               >
                 <Image
-                  src={`/images/spire-codex/enchantments/${filename}`}
+                  src={`/images/sts2/enchantments/${filename}`}
                   alt={label}
                   width={64}
                   height={64}
@@ -297,7 +297,7 @@ export default async function EnchantmentsPage() {
       </section>
 
       <div className="mt-8 mb-12 text-center text-xs text-muted-foreground/40">
-        {total} enchantments loaded from spire-codex data
+        {total} enchantments loaded from STS2 data
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════ */}
@@ -431,7 +431,7 @@ function PowersSection({ powers }: { powers: RawPower[] }) {
       )}
 
       <div className="mt-8 mb-12 text-center text-xs text-muted-foreground/40">
-        {totalPowers} powers loaded from spire-codex data
+        {totalPowers} powers loaded from STS2 data
       </div>
     </>
   );

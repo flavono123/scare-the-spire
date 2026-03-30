@@ -10,8 +10,8 @@ Usage:
 
 Options:
     --pck PATH       Path to the STS2 .pck file (auto-detected on macOS/Windows)
-    --output DIR     Output directory (default: public/images/spire-codex/cards/)
-    --beta-output DIR  Beta art output directory (default: public/images/spire-codex/cards-beta/)
+    --output DIR     Output directory (default: public/images/sts2/cards/)
+    --beta-output DIR  Beta art output directory (default: public/images/sts2/cards-beta/)
     --dry-run        List files without extracting
     --diff-only      Only show cards where official art differs from beta art
     --force          Overwrite existing files
@@ -297,8 +297,8 @@ def main():
     # Project root
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(script_dir)
-    output_dir = args.output or os.path.join(project_root, "public/images/spire-codex/cards")
-    beta_output_dir = args.beta_output or os.path.join(project_root, "public/images/spire-codex/cards-beta")
+    output_dir = args.output or os.path.join(project_root, "public/images/sts2/cards")
+    beta_output_dir = args.beta_output or os.path.join(project_root, "public/images/sts2/cards-beta")
 
     game_version = get_game_version(pck_path)
     if game_version:

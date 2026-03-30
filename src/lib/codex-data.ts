@@ -13,9 +13,9 @@ import {
 } from "./codex-types";
 // Version reconstruction functions are in entity-versioning.ts (client-safe, no fs)
 
-const DATA_DIR = path.join(process.cwd(), "data/spire-codex");
+const DATA_DIR = path.join(process.cwd(), "data/sts2");
 
-// Raw spire-codex JSON card shape
+// Raw STS2 JSON card shape (snake_case from API)
 interface RawCard {
   id: string;
   name: string;
@@ -48,15 +48,15 @@ interface RawCharacter {
 
 function spireCodexImageToLocal(url: string | null): string | null {
   if (!url) return null;
-  // /static/images/cards/abrasive.png -> /images/spire-codex/cards/abrasive.webp
-  // /static/images/cards/beta/abrasive.png -> /images/spire-codex/cards-beta/abrasive.webp
+  // /static/images/cards/abrasive.png -> /images/sts2/cards/abrasive.webp
+  // /static/images/cards/beta/abrasive.png -> /images/sts2/cards-beta/abrasive.webp
   const match = url.match(/\/static\/images\/(.+)/);
   if (!match) return null;
   const relativePath = match[1];
   // Map cards/beta/ subdirectory to cards-beta/
   const mapped = relativePath.replace(/^cards\/beta\//, "cards-beta/");
   // Convert .png extension to .webp
-  return `/images/spire-codex/${mapped.replace(/\.png$/, ".webp")}`;
+  return `/images/sts2/${mapped.replace(/\.png$/, ".webp")}`;
 }
 
 function mapCard(kor: RawCard, eng: RawCard): CodexCard {
@@ -107,7 +107,7 @@ export async function getCodexCards(): Promise<CodexCard[]> {
     });
 }
 
-// Raw spire-codex JSON relic shape
+// Raw STS2 JSON relic shape
 interface RawRelic {
   id: string;
   name: string;
@@ -147,7 +147,7 @@ export async function getCodexRelics(): Promise<CodexRelic[]> {
   });
 }
 
-// Raw spire-codex JSON potion shape
+// Raw STS2 JSON potion shape
 interface RawPotion {
   id: string;
   name: string;

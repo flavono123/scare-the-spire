@@ -2,11 +2,11 @@
 /**
  * generate-entity-diffs.ts
  *
- * Compares old (backup) vs new (current) spire-codex data and generates
+ * Compares old (backup) vs new (current) STS2 codex data and generates
  * EntityVersionDiff entries for the backward compaction system.
  *
  * Usage:
- *   npx tsx scripts/generate-entity-diffs.ts --old data/spire-codex-old --new data/spire-codex --patch v0.102.0
+ *   npx tsx scripts/generate-entity-diffs.ts --old data/sts2-old --new data/sts2 --patch v0.102.0
  *
  * The script:
  * 1. Reads old and new cards/relics/potions JSON (kor language, which is the primary)
@@ -36,7 +36,7 @@ interface EntityVersionDiff {
 }
 
 // ---------------------------------------------------------------------------
-// Raw JSON shapes from spire-codex API (snake_case)
+// Raw JSON shapes from STS2 data files (snake_case)
 // ---------------------------------------------------------------------------
 
 interface RawCard {
@@ -303,8 +303,8 @@ function parseArgs(): { oldDir: string; newDir: string; patch: string; write: bo
   if (!oldDir || !newDir || !patch) {
     console.error("Usage: npx tsx scripts/generate-entity-diffs.ts --old <dir> --new <dir> --patch <version> [--write]");
     console.error("");
-    console.error("  --old    Path to old spire-codex data directory (e.g. data/spire-codex-old)");
-    console.error("  --new    Path to new spire-codex data directory (e.g. data/spire-codex)");
+    console.error("  --old    Path to old STS2 data directory (e.g. data/sts2-old)");
+    console.error("  --new    Path to new STS2 data directory (e.g. data/sts2)");
     console.error("  --patch  Patch version string (e.g. v0.102.0)");
     console.error("  --write  Append results to data/sts2-entity-versions.json (default: stdout only)");
     process.exit(1);

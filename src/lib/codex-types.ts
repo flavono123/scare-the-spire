@@ -1,4 +1,4 @@
-// Types for spire-codex card data
+// Types for STS2 codex card data
 
 export type CardColor =
   | "ironclad"

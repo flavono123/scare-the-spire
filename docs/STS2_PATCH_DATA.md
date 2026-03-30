@@ -7,11 +7,11 @@ Research date: 2026-03-21
 ### What exists in the project
 
 Three identical files at:
-- `data/spire-codex/changelogs.json`
-- `data/spire-codex/eng/changelogs.json`
-- `data/spire-codex/kor/changelogs.json`
+- `data/sts2/changelogs.json`
+- `data/sts2/eng/changelogs.json`
+- `data/sts2/kor/changelogs.json`
 
-These track **spire-codex.com website versions**, NOT actual STS2 game patches:
+These track **game patch versions**, NOT actual STS2 game patches:
 
 | Version | Date       | Title                                              |
 |---------|------------|----------------------------------------------------|
@@ -218,7 +218,7 @@ STS2 launched in Early Access on **March 5, 2026** (Steam app ID: 2868840). Init
 
 Reuse the existing `Change` / `AttributeDiff` interface from `src/lib/types.ts` with these adaptations:
 
-1. **`entityId`** must map to spire-codex card/relic IDs (uppercase, snake_case: `PREPARED`, `DOMINATE`, `WHISPERING_EARRING`)
+1. **`entityId`** must map to STS2 card/relic IDs (uppercase, snake_case: `PREPARED`, `DOMINATE`, `WHISPERING_EARRING`)
 2. **`entityType`** expanded: `"card" | "relic" | "potion" | "enemy" | "blessing"` for STS2's broader scope
 3. **New `diffType` values**: add `"rework"` (already used informally in STS1 data) and `"boolean"` (for toggles like "now Exhausts")
 
@@ -307,14 +307,14 @@ Reuse the existing `Change` / `AttributeDiff` interface from `src/lib/types.ts` 
 ]
 ```
 
-### 3.3 Linking changes to spire-codex entities
+### 3.3 Linking changes to STS2 entities
 
-The spire-codex data uses uppercase snake_case IDs (e.g., `PREPARED`, `AKABEKO`). The change `entityId` should use these exact IDs to enable direct lookup.
+The STS2 data uses uppercase snake_case IDs (e.g., `PREPARED`, `AKABEKO`). The change `entityId` should use these exact IDs to enable direct lookup.
 
 Lookup flow:
 ```
 Change.entityId ("PREPARED")
-  -> CodexCard by matching card.id from spire-codex/eng/cards.json
+  -> CodexCard by matching card.id from data/sts2/eng/cards.json
   -> Get Korean name, image, description for display
 ```
 
@@ -376,8 +376,8 @@ STS2 patch notes are written in natural language with inconsistent formatting:
 
 ### 4.4 Entity ID resolution
 
-The tricky part is mapping natural-language card names to spire-codex IDs. Strategy:
-1. Build a name-to-ID lookup from `data/spire-codex/eng/cards.json` and `relics.json`
+The tricky part is mapping natural-language card names to STS2 entity IDs. Strategy:
+1. Build a name-to-ID lookup from `data/sts2/eng/cards.json` and `relics.json`
 2. Fuzzy match patch note card names against this lookup
 3. Flag unresolved names for manual review
 
@@ -406,7 +406,7 @@ Display STS2 patch notes with interactive card/relic links, keyword hover toolti
   - Number diffs: `6 -> 8` with green/red color coding
   - Rework diffs: side-by-side before/after
   - Boolean diffs: badge toggle (e.g., `+Exhaust`)
-- **Keyword hover tooltips**: game keywords (Vulnerable, Exhaust, Ethereal, etc.) show definitions from `data/spire-codex/eng/keywords.json`
+- **Keyword hover tooltips**: game keywords (Vulnerable, Exhaust, Ethereal, etc.) show definitions from `data/sts2/eng/keywords.json`
 
 ### Phase 4: Card/relic page integration (week 3)
 - On each card's codex page, show a "Patch History" section

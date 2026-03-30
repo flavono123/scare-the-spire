@@ -98,7 +98,7 @@ export default function TextEffectsPage() {
       <section className="mt-8">
         <h2 className="text-lg font-semibold text-yellow-500 mb-4">색상 (Colors)</h2>
         <p className="text-xs text-muted-foreground mb-3">
-          spire-codex.com / 인게임 BBCode 색상. [tag]...[/tag] 형식.
+          STS2 인게임 BBCode 색상. [tag]...[/tag] 형식.
         </p>
         <div className="space-y-2">
           {COLOR_SAMPLES.map((c) => (
@@ -131,7 +131,7 @@ export default function TextEffectsPage() {
       <section className="mt-8">
         <h2 className="text-lg font-semibold text-yellow-500 mb-4">인게임 애니메이션 (In-game Effects)</h2>
         <p className="text-xs text-muted-foreground mb-3">
-          spire-codex.com과 동일. STS2 인게임 텍스트 애니메이션.
+          STS2 인게임 텍스트 애니메이션.
         </p>
         <div className="space-y-3">
           {EFFECT_SAMPLES.map((e) => (

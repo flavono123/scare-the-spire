@@ -9,10 +9,10 @@ const categories = [
     count: 612,
     description: "모든 캐릭터의 공격, 스킬, 파워 카드",
     images: [
-      "/images/spire-codex/cards/bash.webp",
-      "/images/spire-codex/cards/backstab.webp",
-      "/images/spire-codex/cards/ball_lightning.webp",
-      "/images/spire-codex/cards/apparition.webp",
+      "/images/sts2/cards/bash.webp",
+      "/images/sts2/cards/backstab.webp",
+      "/images/sts2/cards/ball_lightning.webp",
+      "/images/sts2/cards/apparition.webp",
     ],
   },
   {
@@ -22,10 +22,10 @@ const categories = [
     count: 314,
     description: "일반, 상점, 보스, 이벤트 유물",
     images: [
-      "/images/spire-codex/relics/akabeko.webp",
-      "/images/spire-codex/relics/anchor.webp",
-      "/images/spire-codex/relics/amethyst_aubergine.webp",
-      "/images/spire-codex/relics/amphorae.webp",
+      "/images/sts2/relics/akabeko.webp",
+      "/images/sts2/relics/anchor.webp",
+      "/images/sts2/relics/amethyst_aubergine.webp",
+      "/images/sts2/relics/amphorae.webp",
     ],
   },
   {
@@ -35,10 +35,10 @@ const categories = [
     count: 63,
     description: "전투 중 사용하는 소비 아이템",
     images: [
-      "/images/spire-codex/potions/attack_potion.webp",
-      "/images/spire-codex/potions/block_potion.webp",
-      "/images/spire-codex/potions/ashwater.webp",
-      "/images/spire-codex/potions/beetle_juice.webp",
+      "/images/sts2/potions/attack_potion.webp",
+      "/images/sts2/potions/block_potion.webp",
+      "/images/sts2/potions/ashwater.webp",
+      "/images/sts2/potions/beetle_juice.webp",
     ],
   },
   {
@@ -48,10 +48,10 @@ const categories = [
     count: 8,
     description: "첨탑을 지배하는 고대 존재들",
     images: [
-      "/images/spire-codex/ancients/neow.webp",
-      "/images/spire-codex/ancients/orobas.webp",
-      "/images/spire-codex/ancients/pael.webp",
-      "/images/spire-codex/ancients/darv.webp",
+      "/images/sts2/ancients/neow.webp",
+      "/images/sts2/ancients/orobas.webp",
+      "/images/sts2/ancients/pael.webp",
+      "/images/sts2/ancients/darv.webp",
     ],
   },
 ];

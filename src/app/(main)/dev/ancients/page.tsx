@@ -58,18 +58,18 @@ function formatImageName(filename: string): string {
 
 export default async function AncientsDevPage() {
   // Read epoch data
-  const epochsPath = path.join(process.cwd(), "data/spire-codex/kor/epochs.json");
+  const epochsPath = path.join(process.cwd(), "data/sts2/kor/epochs.json");
   const epochsRaw = await fs.readFile(epochsPath, "utf-8");
   const epochs: Epoch[] = JSON.parse(epochsRaw);
   epochs.sort((a, b) => a.sort_order - b.sort_order);
 
   // Read image directories
-  const ancientsDir = path.join(process.cwd(), "public/images/spire-codex/ancients");
-  const bossesDir = path.join(process.cwd(), "public/images/spire-codex/bosses");
-  const npcsDir = path.join(process.cwd(), "public/images/spire-codex/npcs");
-  const ancientNodesDir = path.join(process.cwd(), "public/images/spire-codex/ancient-nodes");
+  const ancientsDir = path.join(process.cwd(), "public/images/sts2/ancients");
+  const bossesDir = path.join(process.cwd(), "public/images/sts2/bosses");
+  const npcsDir = path.join(process.cwd(), "public/images/sts2/npcs");
+  const ancientNodesDir = path.join(process.cwd(), "public/images/sts2/ancient-nodes");
 
-  const ancientsBgDir = path.join(process.cwd(), "public/images/spire-codex/ancients-bg");
+  const ancientsBgDir = path.join(process.cwd(), "public/images/sts2/ancients-bg");
 
   // Safe readdir that returns [] for missing directories
   const safeReaddir = async (dir: string) => {
@@ -137,7 +137,7 @@ export default async function AncientsDevPage() {
             >
               <div className="relative h-[150px] w-[150px] overflow-hidden rounded-lg">
                 <Image
-                  src={`/images/spire-codex/ancients/${file}`}
+                  src={`/images/sts2/ancients/${file}`}
                   alt={formatImageName(file)}
                   fill
                   unoptimized
@@ -170,7 +170,7 @@ export default async function AncientsDevPage() {
             >
               <div className="relative aspect-[2560/1200] w-full overflow-hidden rounded-lg">
                 <Image
-                  src={`/images/spire-codex/ancients-bg/${file}`}
+                  src={`/images/sts2/ancients-bg/${file}`}
                   alt={formatImageName(file)}
                   fill
                   unoptimized
@@ -200,7 +200,7 @@ export default async function AncientsDevPage() {
             >
               <div className="relative h-[120px] w-[120px] overflow-hidden rounded-lg">
                 <Image
-                  src={`/images/spire-codex/ancient-nodes/${file}`}
+                  src={`/images/sts2/ancient-nodes/${file}`}
                   alt={formatImageName(file)}
                   fill
                   unoptimized
@@ -230,7 +230,7 @@ export default async function AncientsDevPage() {
             >
               <div className="relative h-[150px] w-[150px] overflow-hidden rounded-lg">
                 <Image
-                  src={`/images/spire-codex/bosses/${file}`}
+                  src={`/images/sts2/bosses/${file}`}
                   alt={formatImageName(file)}
                   fill
                   unoptimized
@@ -260,7 +260,7 @@ export default async function AncientsDevPage() {
             >
               <div className="relative h-[150px] w-[150px] overflow-hidden rounded-lg">
                 <Image
-                  src={`/images/spire-codex/npcs/${file}`}
+                  src={`/images/sts2/npcs/${file}`}
                   alt={formatImageName(file)}
                   fill
                   unoptimized
@@ -296,7 +296,7 @@ export default async function AncientsDevPage() {
             >
               <div className="relative h-[200px] w-[200px] overflow-hidden rounded-lg">
                 <Image
-                  src={`/images/spire-codex/renders/${file}`}
+                  src={`/images/sts2/renders/${file}`}
                   alt={formatImageName(file)}
                   fill
                   unoptimized
@@ -332,7 +332,7 @@ export default async function AncientsDevPage() {
             >
               <div className="relative h-[200px] w-[200px] overflow-hidden rounded-lg">
                 <Image
-                  src={`/images/spire-codex/epochs/${file}`}
+                  src={`/images/sts2/epochs/${file}`}
                   alt={formatImageName(file)}
                   fill
                   unoptimized
@@ -407,7 +407,7 @@ export default async function AncientsDevPage() {
                           <div className="flex-shrink-0">
                             <div className="relative h-[200px] w-[200px] overflow-hidden rounded-lg border border-zinc-700/50">
                               <Image
-                                src={`/images/spire-codex/epochs/${epochImgKey}.png`}
+                                src={`/images/sts2/epochs/${epochImgKey}.png`}
                                 alt={epoch.title}
                                 fill
                                 unoptimized
