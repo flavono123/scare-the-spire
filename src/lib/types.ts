@@ -106,6 +106,34 @@ export interface STS2Change {
   diffs: STS2AttributeDiff[];
 }
 
+// =============================================================================
+// Entity versioning — machine-applicable diffs for reconstructing past versions
+// =============================================================================
+
+export type VersionedEntityType = "card" | "relic" | "potion";
+
+/** A single field-level diff that maps to an actual entity field (e.g. CodexCard.cost). */
+export interface EntityFieldDiff {
+  field: string;              // CodexCard/CodexRelic/CodexPotion field name
+  before: unknown;            // Exact value BEFORE this patch
+  after: unknown;             // Exact value AFTER this patch
+  upgraded?: boolean;         // true = applies to upgrade sub-fields only
+}
+
+/** All field-level diffs for one entity in one patch. */
+export interface EntityVersionDiff {
+  entityType: VersionedEntityType;
+  entityId: string;           // e.g. "PREPARED"
+  patch: string;              // e.g. "v0.100.0"
+  diffs: EntityFieldDiff[];
+}
+
+/** Metadata for the current codex data snapshot. */
+export interface CodexMeta {
+  version: string;            // Patch version this snapshot represents
+  extractedAt: string;        // ISO date of extraction
+}
+
 export interface Story {
   id: string;
   sentence: string;
