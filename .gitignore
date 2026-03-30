@@ -45,3 +45,6 @@ next-env.d.ts
 .dev-screenshots/
 .playwright-mcp/
 docs/CARD_UI_REVIEW.md
+
+# codex version update backup
+data/spire-codex-old/
