@@ -5,7 +5,7 @@ import { RichText } from "@/components/rich-text";
 
 export const metadata = {
   title: "인챈트 & 파워 — DEV",
-  description: "개발 전용: 전체 인챈트/파워 데이터 및 효과 미리보기",
+  description: "개발 전용: 전체 인챈트/파워 데이터 및 아이콘 미리보기",
 };
 
 interface Enchantment {
@@ -19,6 +19,11 @@ interface Enchantment {
   image_url: string | null;
 }
 
+interface EnchantmentEn {
+  id: string;
+  name: string;
+}
+
 interface RawPower {
   id: string;
   name: string;
@@ -28,6 +33,11 @@ interface RawPower {
   stack_type: "Counter" | "Duration" | "Intensity" | "Single" | "None" | null;
   allow_negative: boolean | null;
   image_url: string | null;
+}
+
+interface RawPowerEn {
+  id: string;
+  name: string;
 }
 
 const DATA_DIR = path.join(process.cwd(), "data/sts2");
@@ -42,18 +52,26 @@ async function readJson<T>(relPath: string): Promise<T> {
 }
 
 async function loadEnchantments(): Promise<Enchantment[]> {
-  return readJson<Enchantment[]>("eng/enchantments.json");
+  return readJson<Enchantment[]>("kor/enchantments.json");
+}
+
+async function loadEnchantmentsEn(): Promise<EnchantmentEn[]> {
+  return readJson<EnchantmentEn[]>("eng/enchantments.json");
 }
 
 async function loadPowers(): Promise<RawPower[]> {
-  return readJson<RawPower[]>("eng/powers.json");
+  return readJson<RawPower[]>("kor/powers.json");
+}
+
+async function loadPowersEn(): Promise<RawPowerEn[]> {
+  return readJson<RawPowerEn[]>("eng/powers.json");
 }
 
 /** Read enchantment icon filenames available on disk at build time. */
 async function loadEnchantmentIconSet(): Promise<Set<string>> {
   try {
     const files = await fs.readdir(ENCHANTMENT_ICONS_DIR);
-    return new Set(files.filter((f) => f.endsWith(".png")));
+    return new Set(files.filter((f) => f.endsWith(".webp")));
   } catch {
     return new Set();
   }
@@ -64,16 +82,36 @@ function enchantmentIconSrc(
   id: string,
   availableIcons: Set<string>,
 ): string | null {
-  const filename = `${id.toLowerCase()}.png`;
+  const filename = `${id.toLowerCase()}.webp`;
   if (availableIcons.has(filename)) {
     return `/images/sts2/enchantments/${filename}`;
   }
   return null;
 }
 
-function powerImageSrc(imageUrl: string | null): string | null {
+const POWER_ICONS_DIR = path.join(
+  process.cwd(),
+  "public/images/sts2/powers",
+);
+
+async function loadPowerIconSet(): Promise<Set<string>> {
+  try {
+    const files = await fs.readdir(POWER_ICONS_DIR);
+    return new Set(files.filter((f) => f.endsWith(".webp")));
+  } catch {
+    return new Set();
+  }
+}
+
+function powerImageSrc(imageUrl: string | null, iconSet: Set<string>): string | null {
   if (!imageUrl) return null;
-  return imageUrl.replace("/static/images/powers/", "/images/sts2/powers/");
+  const filename = imageUrl
+    .replace("/static/images/powers/", "")
+    .replace(".png", ".webp");
+  if (iconSet.has(filename)) {
+    return `/images/sts2/powers/${filename}`;
+  }
+  return null;
 }
 
 function CardTypeBadge({ type }: { type: "Attack" | "Skill" }) {
@@ -132,11 +170,17 @@ function StackTypeBadge({ stackType }: { stackType: string }) {
 }
 
 export default async function EnchantmentsPage() {
-  const [enchantments, powers, iconSet] = await Promise.all([
+  const [enchantments, enchantmentsEn, powers, powersEn, iconSet, powerIconSet] = await Promise.all([
     loadEnchantments(),
+    loadEnchantmentsEn(),
     loadPowers(),
+    loadPowersEn(),
     loadEnchantmentIconSet(),
+    loadPowerIconSet(),
   ]);
+
+  const enchEnMap = new Map(enchantmentsEn.map((e) => [e.id, e]));
+  const powerEnMap = new Map(powersEn.map((p) => [p.id, p]));
 
   const total = enchantments.length;
   const stackableCount = enchantments.filter((e) => e.is_stackable).length;
@@ -173,7 +217,7 @@ export default async function EnchantmentsPage() {
         </p>
         <div className="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8">
           {allIconFiles.map((filename) => {
-            const label = filename.replace(".png", "").replaceAll("_", " ");
+            const label = filename.replace(".webp", "").replaceAll("_", " ");
             return (
               <div
                 key={filename}
@@ -249,9 +293,16 @@ export default async function EnchantmentsPage() {
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <h3 className="text-base font-semibold text-purple-400">
-                      {ench.name}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-semibold text-purple-400">
+                        {ench.name}
+                      </h3>
+                      {enchEnMap.get(ench.id)?.name && enchEnMap.get(ench.id)!.name !== ench.name && (
+                        <span className="text-xs text-muted-foreground">
+                          {enchEnMap.get(ench.id)!.name}
+                        </span>
+                      )}
+                    </div>
                     <div className="flex shrink-0 items-center gap-1.5">
                       {ench.card_type && (
                         <CardTypeBadge type={ench.card_type} />
@@ -303,12 +354,12 @@ export default async function EnchantmentsPage() {
       {/* ═══════════════════════════════════════════════════════════════ */}
       {/* Powers Section */}
       {/* ═══════════════════════════════════════════════════════════════ */}
-      <PowersSection powers={powers} />
+      <PowersSection powers={powers} powerEnMap={powerEnMap} powerIconSet={powerIconSet} />
     </div>
   );
 }
 
-function PowersSection({ powers }: { powers: RawPower[] }) {
+function PowersSection({ powers, powerEnMap, powerIconSet }: { powers: RawPower[]; powerEnMap: Map<string, RawPowerEn>; powerIconSet: Set<string> }) {
   const totalPowers = powers.length;
   const buffs = powers.filter((p) => p.type === "Buff");
   const debuffs = powers.filter((p) => p.type === "Debuff");
@@ -363,7 +414,8 @@ function PowersSection({ powers }: { powers: RawPower[] }) {
               </h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 {group.items.map((power) => {
-                  const imgSrc = powerImageSrc(power.image_url);
+                  const imgSrc = powerImageSrc(power.image_url, powerIconSet);
+                  const en = powerEnMap.get(power.id);
                   return (
                     <div
                       key={power.id}
@@ -391,6 +443,11 @@ function PowersSection({ powers }: { powers: RawPower[] }) {
                             <h3 className="truncate text-base font-semibold text-cyan-400">
                               {power.name}
                             </h3>
+                            {en && en.name !== power.name && (
+                              <span className="truncate text-xs text-muted-foreground">
+                                {en.name}
+                              </span>
+                            )}
                             <PowerTypeBadge type={power.type} />
                           </div>
                           <code className="mt-0.5 block text-[10px] text-muted-foreground/50">
