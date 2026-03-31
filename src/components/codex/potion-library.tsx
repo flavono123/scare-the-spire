@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
+import { DescriptionText } from "./codex-description";
 import { getChoseong } from "es-hangul";
 import {
   CodexPotion,
@@ -550,62 +551,12 @@ const PotionTooltip = forwardRef<
 
         {/* Description */}
         <div className="text-sm text-gray-300 leading-relaxed">
-          <PotionDescription text={potion.description} />
+          <DescriptionText description={potion.description} />
         </div>
       </div>
     </div>
   );
 });
-
-// Parse BBCode-like markup in potion descriptions
-function PotionDescription({ text }: { text: string }) {
-  const parts: React.ReactNode[] = [];
-  let remaining = text;
-  let key = 0;
-
-  while (remaining.length > 0) {
-    const openMatch = remaining.match(/\[(gold|blue|green|red)\]/);
-    if (!openMatch || openMatch.index === undefined) {
-      parts.push(remaining);
-      break;
-    }
-
-    // Text before the tag
-    if (openMatch.index > 0) {
-      parts.push(remaining.slice(0, openMatch.index));
-    }
-
-    const tag = openMatch[1];
-    const afterOpen = remaining.slice(
-      openMatch.index + openMatch[0].length
-    );
-    const closeTag = `[/${tag}]`;
-    const closeIndex = afterOpen.indexOf(closeTag);
-
-    if (closeIndex === -1) {
-      parts.push(remaining.slice(openMatch.index));
-      break;
-    }
-
-    const inner = afterOpen.slice(0, closeIndex);
-    const colorMap: Record<string, string> = {
-      gold: "#ffd740",
-      blue: "#64b5f6",
-      green: "#81c784",
-      red: "#ef5350",
-    };
-
-    parts.push(
-      <span key={key++} style={{ color: colorMap[tag], fontWeight: 600 }}>
-        {inner}
-      </span>
-    );
-
-    remaining = afterOpen.slice(closeIndex + closeTag.length);
-  }
-
-  return <>{parts}</>;
-}
 
 // Pool color mapping
 function getPoolColor(pool: PotionPool): string {
