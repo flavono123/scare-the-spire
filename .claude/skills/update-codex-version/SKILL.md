@@ -101,6 +101,17 @@ Or manually add diffs when patching cards by hand from patch notes.
 
 **Speculative commit**.
 
+### Step 4.5: Validate Entity Versions
+
+```bash
+pnpm codex:validate
+```
+
+**Must pass with 0 errors before proceeding.** If validation fails:
+- **Baseline mismatch**: Fix field values in `data/sts2/kor/*.json`
+- **Chain break**: Fix before/after values in `data/sts2-entity-versions.json`
+- **Orphaned diff**: Remove entries for non-existent entities
+
 ### Step 5: Update meta.json
 
 ```json
@@ -151,8 +162,9 @@ If new cards/relics were added, invoke `/update-game-assets` for images.
 
 ## Verification
 
-1. **Build check**: `pnpm --dir . build`
-2. **Visual check** on dev server:
+1. **Data integrity**: `pnpm codex:validate` — must pass with 0 errors
+2. **Build check**: `pnpm --dir . build`
+3. **Visual check** on dev server:
    - Card library shows correct new values
    - Version selector includes the new version
    - Old versions reconstruct correctly via backward compaction
