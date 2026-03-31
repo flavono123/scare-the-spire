@@ -922,5 +922,22 @@
         }
       }
     ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "SWORD_SAGE",
+    "patch": "v0.101.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "[gold]군주의 칼날[/gold]의 비용이 1 증가합니다. [gold]군주의 칼날[/gold]이 이제 1번 추가로 적중합니다.",
+        "after": "[gold]군주의 칼날[/gold]이 이제 1번 추가로 적중합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]군주의 칼날[/gold]의 비용이 1 증가합니다. [gold]군주의 칼날[/gold]이 이제 1번 추가로 적중합니다.",
+        "after": "[gold]군주의 칼날[/gold]이 이제 {SwordSagePower:diff()}번 추가로 적중합니다."
+      }
+    ]
   }
 ]

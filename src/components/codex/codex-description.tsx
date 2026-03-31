@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, ReactNode } from "react";
+import { useState } from "react";
 import Image from "next/image";
+import type { CodexCard } from "@/lib/codex-types";
 
 // =============================================================================
 // Description parsing (BBCode -> structured parts)
 // =============================================================================
 
 export interface DescPart {
-  type: "text" | "gold" | "newline" | "energy";
+  type: "text" | "gold" | "newline" | "energy" | "upgrade";
   text: string;
 }
 
@@ -23,7 +24,7 @@ export function cleanDescription(desc: string): string {
 export function parseDescription(rawDesc: string): DescPart[] {
   const desc = cleanDescription(rawDesc);
   const parts: DescPart[] = [];
-  const regex = /\[gold\](.*?)\[\/gold\]|\[energy:(\d+)\]|\[\/?\w+(?::?\w*)*\]|\n/g;
+  const regex = /\[gold\](.*?)\[\/gold\]|\[green\](.*?)\[\/green\]|\[energy:(\d+)\]|\[\/?\w+(?::?\w*)*\]|\n/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
 
@@ -36,7 +37,9 @@ export function parseDescription(rawDesc: string): DescPart[] {
     } else if (match[1] !== undefined) {
       parts.push({ type: "gold", text: match[1] });
     } else if (match[2] !== undefined) {
-      parts.push({ type: "energy", text: match[2] });
+      parts.push({ type: "upgrade", text: match[2] });
+    } else if (match[3] !== undefined) {
+      parts.push({ type: "energy", text: match[3] });
     }
     lastIndex = match.index + match[0].length;
   }
@@ -44,6 +47,48 @@ export function parseDescription(rawDesc: string): DescPart[] {
     parts.push({ type: "text", text: desc.slice(lastIndex) });
   }
   return parts;
+}
+
+// =============================================================================
+// Upgraded description builder
+// =============================================================================
+
+// Substitute {Var:diff()} templates with upgraded values.
+// Changed values are wrapped in [green]...[/green] for highlight rendering.
+export function renderUpgradedDescription(card: CodexCard): string {
+  if (!card.upgrade || !card.descriptionRaw) return card.description;
+
+  const changedKeys = new Set<string>();
+  const upgradedVars: Record<string, number> = { ...card.vars };
+
+  for (const [key, diff] of Object.entries(card.upgrade)) {
+    if (typeof diff === "string" && diff.match(/^[+-]\d+/)) {
+      const delta = parseInt(diff, 10);
+      const varKey = Object.keys(upgradedVars).find(
+        (k) => k.toLowerCase() === key.toLowerCase()
+      );
+      if (varKey && delta !== 0) {
+        upgradedVars[varKey] = (upgradedVars[varKey] ?? 0) + delta;
+        changedKeys.add(varKey.toLowerCase());
+      }
+    }
+  }
+
+  return card.descriptionRaw.replace(
+    /\{(\w+)(?::diff\(\))?\}/g,
+    (match, varName: string) => {
+      const exactVal = varName in upgradedVars ? upgradedVars[varName] : undefined;
+      const key = exactVal !== undefined
+        ? varName
+        : Object.keys(upgradedVars).find((k) => k.toLowerCase() === varName.toLowerCase());
+      if (!key) return match;
+      const val = String(upgradedVars[key]);
+      if (changedKeys.has(key.toLowerCase())) {
+        return `[green]${val}[/green]`;
+      }
+      return val;
+    }
+  );
 }
 
 // =============================================================================
@@ -132,6 +177,8 @@ export function DescriptionText({
               <TermTooltip name={part.text} desc={allTerms[part.text]} />
             )}
           </span>
+        ) : part.type === "upgrade" ? (
+          <span key={i} className="text-[#6ee67a] font-bold">{part.text}</span>
         ) : part.type === "energy" ? (
           <span key={i} className="inline-flex items-baseline gap-0">
             {Array.from({ length: parseInt(part.text, 10) || 1 }, (_, j) => (
