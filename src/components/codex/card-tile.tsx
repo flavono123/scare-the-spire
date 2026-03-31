@@ -294,14 +294,18 @@ export const CardTile = memo(function CardTile({ card, showUpgrade, showBeta }: 
         ) : part.type === "upgrade" ? (
           <span key={i} className="text-[#6ee67a] font-bold">{part.text}</span>
         ) : part.type === "energy" ? (
-          <Image
-            key={i}
-            src={energyIcon}
-            alt="energy"
-            width={14}
-            height={14}
-            className="inline-block align-text-bottom mx-0.5"
-          />
+          <span key={i} className="inline-flex items-baseline gap-0">
+            {Array.from({ length: parseInt(part.text, 10) || 1 }, (_, j) => (
+              <Image
+                key={j}
+                src={energyIcon}
+                alt="energy"
+                width={14}
+                height={14}
+                className="inline-block align-text-bottom mx-0.5"
+              />
+            ))}
+          </span>
         ) : part.type === "newline" ? (
           <br key={i} />
         ) : (
