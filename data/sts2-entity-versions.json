@@ -723,7 +723,7 @@
       {
         "field": "description",
         "before": "카드를 2장 버립니다.\n다음 턴에, [gold]에너지[/gold]를 2 얻습니다.",
-        "after": "카드를 {Cards:diff()}장 뽑습니다.\n카드를 {Cards:diff()}장 버립니다."
+        "after": "카드를 1장 뽑습니다.\n카드를 1장 버립니다."
       },
       {
         "field": "descriptionRaw",
@@ -790,7 +790,7 @@
       {
         "field": "upgrade",
         "before": {
-          "doompower": "-3"
+          "energy": "+1"
         },
         "after": {
           "energy": "+1"
