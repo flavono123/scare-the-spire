@@ -287,6 +287,19 @@ export const CardTile = memo(function CardTile({ card, showUpgrade, showBeta }: 
               />
             ))}
           </span>
+        ) : part.type === "star" ? (
+          <span key={i} className="inline-flex items-baseline gap-0">
+            {Array.from({ length: parseInt(part.text, 10) || 1 }, (_, j) => (
+              <Image
+                key={j}
+                src="/images/game-assets/card-misc/star_icon.png"
+                alt="star"
+                width={14}
+                height={14}
+                className="inline-block align-text-bottom mx-0.5"
+              />
+            ))}
+          </span>
         ) : part.type === "newline" ? (
           <br key={i} />
         ) : (

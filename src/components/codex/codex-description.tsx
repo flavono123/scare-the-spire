@@ -9,22 +9,31 @@ import type { CodexCard } from "@/lib/codex-types";
 // =============================================================================
 
 export interface DescPart {
-  type: "text" | "gold" | "newline" | "energy" | "upgrade";
+  type: "text" | "gold" | "newline" | "energy" | "upgrade" | "star";
   text: string;
 }
 
 export function cleanDescription(desc: string): string {
   let text = desc;
+  // choose() with braces: {Var:choose(N):opt1|opt2} → first option
+  text = text.replace(/\{[^}]*?choose\([^)]*\):([^|]*)\|[^}]*\}/g, "$1");
+  // choose() without braces (residual): choose(N):text|rest} → first option
   text = text.replace(/choose\([^)]*\):([^|}]*)\|[^}]*\}/g, "$1");
+  // choose() bare (no pipe): choose(N):text} or choose(N):text → strip entirely
+  text = text.replace(/choose\([^)]*\):[^}]*\}?/g, "");
+  // Remaining {Var} templates
   text = text.replace(/\{[^}]*\}/g, "");
+  // [Tag] markers like [InCombat], [HasRider], etc.
   text = text.replace(/\[[A-Z][a-zA-Z]*\]/g, "");
+  // Orphaned pipe-brace fragments like "번|{}번}" left from partial template stripping
+  text = text.replace(/[^[\]]*\|\{?\}?[^[\]]*\}/g, "");
   return text;
 }
 
 export function parseDescription(rawDesc: string): DescPart[] {
   const desc = cleanDescription(rawDesc);
   const parts: DescPart[] = [];
-  const regex = /\[gold\](.*?)\[\/gold\]|\[green\](.*?)\[\/green\]|\[energy:(\d+)\]|\[\/?\w+(?::?\w*)*\]|\n/g;
+  const regex = /\[gold\](.*?)\[\/gold\]|\[green\](.*?)\[\/green\]|\[energy:(\d+)\]|\[star:(\d+)\]|\[\/?\w+(?::?\w*)*\]|\n/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
 
@@ -40,6 +49,8 @@ export function parseDescription(rawDesc: string): DescPart[] {
       parts.push({ type: "upgrade", text: match[2] });
     } else if (match[3] !== undefined) {
       parts.push({ type: "energy", text: match[3] });
+    } else if (match[4] !== undefined) {
+      parts.push({ type: "star", text: match[4] });
     }
     lastIndex = match.index + match[0].length;
   }
@@ -186,6 +197,19 @@ export function DescriptionText({
                 key={j}
                 src={energyIcon}
                 alt="energy"
+                width={14}
+                height={14}
+                className="inline-block align-text-bottom mx-0.5"
+              />
+            ))}
+          </span>
+        ) : part.type === "star" ? (
+          <span key={i} className="inline-flex items-baseline gap-0">
+            {Array.from({ length: parseInt(part.text, 10) || 1 }, (_, j) => (
+              <Image
+                key={j}
+                src="/images/game-assets/card-misc/star_icon.png"
+                alt="star"
                 width={14}
                 height={14}
                 className="inline-block align-text-bottom mx-0.5"
