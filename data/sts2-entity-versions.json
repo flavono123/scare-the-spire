@@ -276,6 +276,11 @@
         "after": {
           "forge": "+5"
         }
+      },
+      {
+        "field": "description",
+        "before": "[gold]단조[/gold] 10.",
+        "after": "[gold]단조[/gold] 12."
       }
     ]
   },
@@ -920,6 +925,16 @@
           "forge": "+3",
           "cards": "+1"
         }
+      },
+      {
+        "field": "description",
+        "before": "[gold]단조[/gold] 12.",
+        "after": "카드를 2장 뽑습니다.\n[gold]단조[/gold] 5."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]단조[/gold] {Forge:diff()}.",
+        "after": "카드를 {Cards:diff()}장 뽑습니다.\n[gold]단조[/gold] {Forge:diff()}."
       }
     ]
   },
@@ -937,6 +952,52 @@
         "field": "descriptionRaw",
         "before": "[gold]군주의 칼날[/gold]의 비용이 1 증가합니다. [gold]군주의 칼날[/gold]이 이제 1번 추가로 적중합니다.",
         "after": "[gold]군주의 칼날[/gold]이 이제 {SwordSagePower:diff()}번 추가로 적중합니다."
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "GUIDING_STAR",
+    "patch": "v0.101.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "피해를 12 줍니다.\n다음 턴에, 카드를 2장 뽑습니다.",
+        "after": "피해를 12 줍니다.\n카드를 2장 뽑습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()} 줍니다.\n다음 턴에, 카드를 {Cards:diff()}장 뽑습니다.",
+        "after": "피해를 {Damage:diff()} 줍니다.\n카드를 {Cards:diff()}장 뽑습니다."
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "CINDER",
+    "patch": "v0.101.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "피해를 18 줍니다.\n[gold]뽑을 카드 더미[/gold] 맨 위의 카드를 [gold]소멸[/gold]시킵니다.",
+        "after": "피해를 18 줍니다.\n[gold]손[/gold]에 있는 무작위 카드를 [gold]소멸[/gold]시킵니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()} 줍니다.\n[gold]뽑을 카드 더미[/gold] 맨 위의 카드를 [gold]소멸[/gold]시킵니다.",
+        "after": "피해를 {Damage:diff()} 줍니다.\n[gold]손[/gold]에 있는 무작위 카드를 [gold]소멸[/gold]시킵니다."
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "GLOW",
+    "patch": "v0.100.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "[star:1]을 얻습니다.\n카드를 2장 뽑습니다.",
+        "after": "[star:1]을 얻습니다.\n카드를 1장 뽑습니다.\n다음 턴에, 카드를 1장 뽑습니다."
       }
     ]
   }
