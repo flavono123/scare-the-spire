@@ -108,9 +108,10 @@ All game entities get `[gold]...[/gold]`:
 - Ancient names: `[blue]고대의 존재[/blue]`
 
 #### Buff/Nerf indicators
-When the original patch note clearly indicates a buff or nerf:
-- Buff: `[green][sine]버프된 값[/sine][/green]`
-- Nerf: `[red][jitter]너프된 값[/jitter][/red]`
+When the original patch note clearly indicates a buff or nerf, use a **prefix label** style — the effect goes on the label word only, not on the changed values:
+- Buff: `([green][sine]버프[/sine][/green])` as prefix in the parenthetical tag, e.g. `- [gold]카드명[/gold] ([green][sine]버프[/sine][/green]): 피해량 5 -> 7`
+- Nerf: `([red][jitter]너프[/jitter][/red])` as prefix in the parenthetical tag, e.g. `- [gold]카드명[/gold] ([red][jitter]너프[/jitter][/red]): 코스트 2 -> 3`
+- Do NOT wrap the actual changed values in effects — only the label word (버프/너프) gets the animation.
 
 ### Step 5: Get Steam Store URL
 
