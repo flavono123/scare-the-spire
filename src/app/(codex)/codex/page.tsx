@@ -42,6 +42,32 @@ const categories = [
     ],
   },
   {
+    href: "/codex/powers",
+    label: "파워",
+    labelEn: "Powers",
+    count: 238,
+    description: "버프, 디버프 등 전투 중 적용되는 효과",
+    images: [
+      "/images/sts2/powers/strength_power.webp",
+      "/images/sts2/powers/vulnerable_power.webp",
+      "/images/sts2/powers/demon_form_power.webp",
+      "/images/sts2/powers/poison_power.webp",
+    ],
+  },
+  {
+    href: "/codex/enchantments",
+    label: "인챈트",
+    labelEn: "Enchantments",
+    count: 22,
+    description: "카드에 부여되는 특수 강화 효과",
+    images: [
+      "/images/sts2/enchantments/sharp.webp",
+      "/images/sts2/enchantments/favored.webp",
+      "/images/sts2/enchantments/swift.webp",
+      "/images/sts2/enchantments/steady.webp",
+    ],
+  },
+  {
     href: "/codex/ancients",
     label: "에인션트",
     labelEn: "Ancients",

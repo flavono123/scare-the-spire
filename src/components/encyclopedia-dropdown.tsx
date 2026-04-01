@@ -8,6 +8,8 @@ const items = [
   { href: "/codex/cards", label: "카드" },
   { href: "/codex/relics", label: "유물" },
   { href: "/codex/potions", label: "포션" },
+  { href: "/codex/powers", label: "파워" },
+  { href: "/codex/enchantments", label: "인챈트" },
   { href: "/codex/ancients", label: "에인션트" },
 ];
 
