@@ -318,6 +318,70 @@ export const POTION_RARITY_ALIASES: Record<string, PotionRarityKo> = {
   token: "토큰",
 };
 
+// Power types
+export type PowerType = "Buff" | "Debuff" | "None";
+export type PowerStackType = "Counter" | "Single" | "Duration" | "Intensity" | "None";
+
+export interface CodexPower {
+  id: string;
+  name: string;        // Korean
+  nameEn: string;      // English
+  description: string; // Korean, with BBCode markup
+  descriptionRaw: string | null;
+  type: PowerType;
+  stackType: PowerStackType;
+  allowNegative: boolean;
+  imageUrl: string | null; // local path
+}
+
+export const POWER_TYPE_ORDER: PowerType[] = ["Buff", "Debuff", "None"];
+
+export const POWER_TYPE_CONFIG: Record<PowerType, { label: string; color: string; description: string }> = {
+  Buff: { label: "버프", color: "#81c784", description: "아군에게 유리한 효과를 부여하는 파워입니다." },
+  Debuff: { label: "디버프", color: "#ef5350", description: "적이나 아군에게 불리한 효과를 부여하는 파워입니다." },
+  None: { label: "기타", color: "#8b8b8b", description: "내부 전용 파워입니다." },
+};
+
+export const POWER_TYPE_ALIASES: Record<string, PowerType> = {
+  버프: "Buff", buff: "Buff",
+  디버프: "Debuff", debuff: "Debuff",
+  기타: "None", other: "None", none: "None",
+};
+
+export const POWER_STACK_TYPE_ALIASES: Record<string, PowerStackType> = {
+  카운터: "Counter", counter: "Counter",
+  단일: "Single", single: "Single",
+  지속: "Duration", duration: "Duration",
+  강도: "Intensity", intensity: "Intensity",
+};
+
+// Enchantment types
+export interface CodexEnchantment {
+  id: string;
+  name: string;        // Korean
+  nameEn: string;      // English
+  description: string; // Korean, with BBCode markup
+  descriptionRaw: string | null;
+  extraCardText: string | null;
+  cardType: "Attack" | "Skill" | null; // null = any card type
+  isStackable: boolean;
+  imageUrl: string | null; // local path
+}
+
+export type EnchantmentCardTypeFilter = "Attack" | "Skill" | "Any";
+
+export const ENCHANTMENT_CARD_TYPE_CONFIG: Record<EnchantmentCardTypeFilter, { label: string; color: string }> = {
+  Attack: { label: "공격", color: "#ef5350" },
+  Skill: { label: "스킬", color: "#4fc3f7" },
+  Any: { label: "전체", color: "#b0b0b0" },
+};
+
+export const ENCHANTMENT_CARD_TYPE_ALIASES: Record<string, EnchantmentCardTypeFilter> = {
+  공격: "Attack", attack: "Attack",
+  스킬: "Skill", skill: "Skill",
+  전체: "Any", any: "Any",
+};
+
 export const TYPE_ALIASES: Record<string, CardTypeKo> = {
   공격: "공격",
   attack: "공격",

@@ -5,11 +5,15 @@ import {
   CodexCharacter,
   CodexRelic,
   CodexPotion,
+  CodexPower,
+  CodexEnchantment,
   CardColor,
   RelicRarityKo,
   RelicPool,
   PotionRarityKo,
   PotionPool,
+  PowerType,
+  PowerStackType,
 } from "./codex-types";
 // Version reconstruction functions are in entity-versioning.ts (client-safe, no fs)
 
@@ -206,5 +210,88 @@ export async function getCodexCharacters(): Promise<CodexCharacter[]> {
   });
 
   return mapped;
+}
+
+// Raw STS2 JSON power shape
+interface RawPower {
+  id: string;
+  name: string;
+  description: string;
+  description_raw: string | null;
+  type: string;
+  stack_type: string | null;
+  allow_negative: boolean | null;
+  image_url: string | null;
+}
+
+function mapPower(kor: RawPower, eng: RawPower): CodexPower {
+  return {
+    id: kor.id,
+    name: kor.name,
+    nameEn: eng.name,
+    description: kor.description,
+    descriptionRaw: kor.description_raw,
+    type: kor.type as PowerType,
+    stackType: (kor.stack_type ?? "None") as PowerStackType,
+    allowNegative: kor.allow_negative ?? false,
+    imageUrl: spireCodexImageToLocal(kor.image_url),
+  };
+}
+
+export async function getCodexPowers(): Promise<CodexPower[]> {
+  const [korPowers, engPowers] = await Promise.all([
+    readJson<RawPower[]>("kor/powers.json"),
+    readJson<RawPower[]>("eng/powers.json"),
+  ]);
+
+  const engById = new Map(engPowers.map((p) => [p.id, p]));
+
+  return korPowers
+    .filter((p) => !(p.type === "None" && !p.description))
+    .map((kor) => {
+      const eng = engById.get(kor.id) ?? kor;
+      return mapPower(kor, eng);
+    });
+}
+
+// Raw STS2 JSON enchantment shape
+interface RawEnchantment {
+  id: string;
+  name: string;
+  description: string;
+  description_raw: string | null;
+  extra_card_text: string | null;
+  card_type: string | null;
+  is_stackable: boolean;
+  image_url: string | null;
+}
+
+function mapEnchantment(kor: RawEnchantment, eng: RawEnchantment): CodexEnchantment {
+  return {
+    id: kor.id,
+    name: kor.name,
+    nameEn: eng.name,
+    description: kor.description,
+    descriptionRaw: kor.description_raw,
+    extraCardText: kor.extra_card_text,
+    cardType: (kor.card_type as "Attack" | "Skill" | null),
+    isStackable: kor.is_stackable,
+    // JSON has image_url: null but icons exist on disk as {id_lowercase}.webp
+    imageUrl: `/images/sts2/enchantments/${kor.id.toLowerCase()}.webp`,
+  };
+}
+
+export async function getCodexEnchantments(): Promise<CodexEnchantment[]> {
+  const [korEnchantments, engEnchantments] = await Promise.all([
+    readJson<RawEnchantment[]>("kor/enchantments.json"),
+    readJson<RawEnchantment[]>("eng/enchantments.json"),
+  ]);
+
+  const engById = new Map(engEnchantments.map((e) => [e.id, e]));
+
+  return korEnchantments.map((kor) => {
+    const eng = engById.get(kor.id) ?? kor;
+    return mapEnchantment(kor, eng);
+  });
 }
 
