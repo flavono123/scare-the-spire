@@ -4,8 +4,8 @@ import Image from "next/image";
 import { RichText } from "@/components/rich-text";
 
 export const metadata = {
-  title: "인챈트 & 파워 — DEV",
-  description: "개발 전용: 전체 인챈트/파워 데이터 및 아이콘 미리보기",
+  title: "인챈트 — DEV",
+  description: "개발 전용: 전체 인챈트 데이터 및 아이콘 미리보기",
 };
 
 interface Enchantment {
@@ -20,22 +20,6 @@ interface Enchantment {
 }
 
 interface EnchantmentEn {
-  id: string;
-  name: string;
-}
-
-interface RawPower {
-  id: string;
-  name: string;
-  description: string;
-  description_raw: string | null;
-  type: "Buff" | "Debuff" | string;
-  stack_type: "Counter" | "Duration" | "Intensity" | "Single" | "None" | null;
-  allow_negative: boolean | null;
-  image_url: string | null;
-}
-
-interface RawPowerEn {
   id: string;
   name: string;
 }
@@ -59,14 +43,6 @@ async function loadEnchantmentsEn(): Promise<EnchantmentEn[]> {
   return readJson<EnchantmentEn[]>("eng/enchantments.json");
 }
 
-async function loadPowers(): Promise<RawPower[]> {
-  return readJson<RawPower[]>("kor/powers.json");
-}
-
-async function loadPowersEn(): Promise<RawPowerEn[]> {
-  return readJson<RawPowerEn[]>("eng/powers.json");
-}
-
 /** Read enchantment icon filenames available on disk at build time. */
 async function loadEnchantmentIconSet(): Promise<Set<string>> {
   try {
@@ -85,31 +61,6 @@ function enchantmentIconSrc(
   const filename = `${id.toLowerCase()}.webp`;
   if (availableIcons.has(filename)) {
     return `/images/sts2/enchantments/${filename}`;
-  }
-  return null;
-}
-
-const POWER_ICONS_DIR = path.join(
-  process.cwd(),
-  "public/images/sts2/powers",
-);
-
-async function loadPowerIconSet(): Promise<Set<string>> {
-  try {
-    const files = await fs.readdir(POWER_ICONS_DIR);
-    return new Set(files.filter((f) => f.endsWith(".webp")));
-  } catch {
-    return new Set();
-  }
-}
-
-function powerImageSrc(imageUrl: string | null, iconSet: Set<string>): string | null {
-  if (!imageUrl) return null;
-  const filename = imageUrl
-    .replace("/static/images/powers/", "")
-    .replace(".png", ".webp");
-  if (iconSet.has(filename)) {
-    return `/images/sts2/powers/${filename}`;
   }
   return null;
 }
@@ -140,47 +91,19 @@ function StackableBadge() {
         <path d="M8 1l2 3h4l-3 3 1 4-4-2-4 2 1-4-3-3h4z" />
         <path d="M8 5l1.2 1.8h2.4l-1.8 1.8.6 2.4-2.4-1.2-2.4 1.2.6-2.4-1.8-1.8h2.4z" opacity="0.5" />
       </svg>
-      Stackable
-    </span>
-  );
-}
-
-function PowerTypeBadge({ type }: { type: string }) {
-  const styles =
-    type === "Buff"
-      ? "bg-green-500/15 text-green-400 border-green-500/30"
-      : type === "Debuff"
-        ? "bg-red-500/15 text-red-400 border-red-500/30"
-        : "bg-zinc-500/15 text-zinc-400 border-zinc-500/30";
-  return (
-    <span
-      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium ${styles}`}
-    >
-      {type}
-    </span>
-  );
-}
-
-function StackTypeBadge({ stackType }: { stackType: string }) {
-  return (
-    <span className="inline-flex items-center rounded-full border border-violet-500/30 bg-violet-500/15 px-2 py-0.5 text-[10px] font-medium text-violet-400">
-      {stackType}
+      중첩 가능
     </span>
   );
 }
 
 export default async function EnchantmentsPage() {
-  const [enchantments, enchantmentsEn, powers, powersEn, iconSet, powerIconSet] = await Promise.all([
+  const [enchantments, enchantmentsEn, iconSet] = await Promise.all([
     loadEnchantments(),
     loadEnchantmentsEn(),
-    loadPowers(),
-    loadPowersEn(),
     loadEnchantmentIconSet(),
-    loadPowerIconSet(),
   ]);
 
   const enchEnMap = new Map(enchantmentsEn.map((e) => [e.id, e]));
-  const powerEnMap = new Map(powersEn.map((p) => [p.id, p]));
 
   const total = enchantments.length;
   const stackableCount = enchantments.filter((e) => e.is_stackable).length;
@@ -205,9 +128,7 @@ export default async function EnchantmentsPage() {
         </span>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════════ */}
       {/* Enchantment Icon Gallery */}
-      {/* ═══════════════════════════════════════════════════════════════ */}
       <section className="mb-8">
         <h2 className="text-lg font-bold text-purple-400">
           인챈트 아이콘 갤러리
@@ -250,15 +171,15 @@ export default async function EnchantmentsPage() {
       <section className="mt-6">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
           <StatCard label="전체" value={total} color="text-purple-400" />
-          <StatCard label="Attack" value={attackCount} color="text-red-400" />
-          <StatCard label="Skill" value={skillCount} color="text-blue-400" />
+          <StatCard label="공격" value={attackCount} color="text-red-400" />
+          <StatCard label="스킬" value={skillCount} color="text-blue-400" />
           <StatCard
-            label="Any (타입 없음)"
+            label="전체 (타입 없음)"
             value={anyCount}
             color="text-zinc-400"
           />
           <StatCard
-            label="Stackable"
+            label="중첩 가능"
             value={stackableCount}
             color="text-amber-400"
           />
@@ -326,7 +247,7 @@ export default async function EnchantmentsPage() {
               {ench.extra_card_text && (
                 <div className="mt-3 rounded border border-zinc-700/50 bg-zinc-800/50 px-3 py-2">
                   <span className="mb-1 block text-[10px] font-medium text-muted-foreground">
-                    Card Text
+                    카드 텍스트
                   </span>
                   <div className="text-xs leading-relaxed text-zinc-300">
                     <RichText text={ench.extra_card_text} />
@@ -348,149 +269,9 @@ export default async function EnchantmentsPage() {
       </section>
 
       <div className="mt-8 mb-12 text-center text-xs text-muted-foreground/40">
-        {total} enchantments loaded from STS2 data
+        {total}개 인챈트 — STS2 데이터
       </div>
-
-      {/* ═══════════════════════════════════════════════════════════════ */}
-      {/* Powers Section */}
-      {/* ═══════════════════════════════════════════════════════════════ */}
-      <PowersSection powers={powers} powerEnMap={powerEnMap} powerIconSet={powerIconSet} />
     </div>
-  );
-}
-
-function PowersSection({ powers, powerEnMap, powerIconSet }: { powers: RawPower[]; powerEnMap: Map<string, RawPowerEn>; powerIconSet: Set<string> }) {
-  const totalPowers = powers.length;
-  const buffs = powers.filter((p) => p.type === "Buff");
-  const debuffs = powers.filter((p) => p.type === "Debuff");
-  const others = powers.filter((p) => p.type !== "Buff" && p.type !== "Debuff");
-  const withImage = powers.filter((p) => p.image_url !== null).length;
-
-  const grouped = [
-    { label: "Buffs", items: buffs, color: "border-green-500/20" },
-    { label: "Debuffs", items: debuffs, color: "border-red-500/20" },
-    { label: "Others", items: others, color: "border-zinc-500/20" },
-  ];
-
-  return (
-    <>
-      <div className="mt-12 border-t border-border pt-8">
-        <h1 className="text-2xl font-bold text-cyan-400">
-          파워 / 버프 / 디버프 (Powers)
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          DEV — 전체 파워 데이터 및 아이콘 미리보기
-        </p>
-      </div>
-
-      {/* Power Stats */}
-      <section className="mt-6">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatCard label="전체" value={totalPowers} color="text-cyan-400" />
-          <StatCard label="Buff" value={buffs.length} color="text-green-400" />
-          <StatCard
-            label="Debuff"
-            value={debuffs.length}
-            color="text-red-400"
-          />
-          <StatCard
-            label="이미지 있음"
-            value={withImage}
-            color="text-amber-400"
-          />
-        </div>
-      </section>
-
-      {/* Power groups */}
-      {grouped.map(
-        (group) =>
-          group.items.length > 0 && (
-            <section key={group.label} className="mt-8">
-              <h2 className="mb-4 text-lg font-semibold text-muted-foreground">
-                {group.label}{" "}
-                <span className="text-sm font-normal">
-                  ({group.items.length})
-                </span>
-              </h2>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {group.items.map((power) => {
-                  const imgSrc = powerImageSrc(power.image_url, powerIconSet);
-                  const en = powerEnMap.get(power.id);
-                  return (
-                    <div
-                      key={power.id}
-                      className={`rounded-lg border ${group.color} bg-card/50 p-4`}
-                    >
-                      {/* Header with icon */}
-                      <div className="flex items-start gap-3">
-                        {imgSrc ? (
-                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border border-border bg-zinc-900">
-                            <Image
-                              src={imgSrc}
-                              alt={power.name}
-                              fill
-                              className="object-contain"
-                              unoptimized
-                            />
-                          </div>
-                        ) : (
-                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-border bg-zinc-900 text-xs text-muted-foreground/40">
-                            ?
-                          </div>
-                        )}
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
-                            <h3 className="truncate text-base font-semibold text-cyan-400">
-                              {power.name}
-                            </h3>
-                            {en && en.name !== power.name && (
-                              <span className="truncate text-xs text-muted-foreground">
-                                {en.name}
-                              </span>
-                            )}
-                            <PowerTypeBadge type={power.type} />
-                          </div>
-                          <code className="mt-0.5 block text-[10px] text-muted-foreground/50">
-                            {power.id}
-                          </code>
-                          {power.stack_type &&
-                            power.stack_type !== "None" && (
-                              <div className="mt-1">
-                                <StackTypeBadge
-                                  stackType={power.stack_type}
-                                />
-                              </div>
-                            )}
-                        </div>
-                      </div>
-
-                      {/* Description */}
-                      {power.description && (
-                        <div className="mt-3 text-sm leading-relaxed">
-                          <RichText text={power.description} />
-                        </div>
-                      )}
-
-                      {/* Raw description */}
-                      {power.description_raw && (
-                        <div className="mt-2">
-                          <code className="text-[10px] text-muted-foreground/40">
-                            raw: {power.description_raw}
-                          </code>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          ),
-      )}
-
-      <div className="mt-8 mb-12 text-center text-xs text-muted-foreground/40">
-        {totalPowers} powers loaded from STS2 data
-      </div>
-    </>
   );
 }
 
