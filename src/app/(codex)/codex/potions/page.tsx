@@ -1,11 +1,27 @@
 import { getCodexPotions, getCodexCharacters } from "@/lib/codex-data";
+import { getVersionsWithDiffs } from "@/lib/entity-versioning";
+import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import { PotionLibrary } from "@/components/codex/potion-library";
 
 export default async function CodexPotionsPage() {
-  const [potions, characters] = await Promise.all([
+  const [potions, characters, patches, versionDiffs, meta] = await Promise.all([
     getCodexPotions(),
     getCodexCharacters(),
+    getSTS2Patches(),
+    getEntityVersionDiffs(),
+    getCodexMeta(),
   ]);
 
-  return <PotionLibrary potions={potions} characters={characters} />;
+  const versions = getVersionsWithDiffs(patches, versionDiffs);
+
+  return (
+    <PotionLibrary
+      potions={potions}
+      characters={characters}
+      versions={versions}
+      currentVersion={meta.version}
+      patches={patches}
+      versionDiffs={versionDiffs}
+    />
+  );
 }

@@ -15,9 +15,12 @@ import {
   POOL_ALIASES,
   RARITY_ALIASES,
 } from "@/lib/codex-types";
+import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
+import { reconstructRelicAtVersion } from "@/lib/entity-versioning";
 import { RelicTile } from "./relic-tile";
 import { SearchBar, TriggerGroup } from "./search-bar";
 import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
+import { VersionSelector } from "./version-selector";
 
 // Trigger groups for relic search
 const RELIC_TRIGGERS: TriggerGroup[] = [
@@ -55,12 +58,24 @@ const RELIC_TRIGGERS: TriggerGroup[] = [
 interface RelicLibraryProps {
   relics: CodexRelic[];
   characters: CodexCharacter[];
+  versions?: string[];
+  currentVersion?: string;
+  patches?: STS2Patch[];
+  versionDiffs?: EntityVersionDiff[];
 }
 
-export function RelicLibrary({ relics, characters }: RelicLibraryProps) {
+export function RelicLibrary({ relics, characters, versions, currentVersion, patches, versionDiffs }: RelicLibraryProps) {
   const [selectedPools, setSelectedPools] = useState<Set<RelicFilterPool>>(new Set());
   const [selectedRarities, setSelectedRarities] = useState<Set<RelicRarityKo>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+
+  const versionedRelics = useMemo(() => {
+    if (!currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion) return relics;
+    return relics.map((relic) =>
+      reconstructRelicAtVersion(relic, selectedVersion, currentVersion, versionDiffs, patches),
+    );
+  }, [relics, selectedVersion, currentVersion, versionDiffs, patches]);
 
   // Cmd+K to focus search
   useEffect(() => {
@@ -118,7 +133,7 @@ export function RelicLibrary({ relics, characters }: RelicLibraryProps) {
 
   // Filtered relics
   const filteredRelics = useMemo(() => {
-    let result = relics;
+    let result = versionedRelics;
 
     // Pool filter (sidebar)
     if (selectedPools.size > 0) {
@@ -150,7 +165,7 @@ export function RelicLibrary({ relics, characters }: RelicLibraryProps) {
     }
 
     return result;
-  }, [relics, selectedPools, selectedRarities, parsedSearch, fuzzyMatch]);
+  }, [versionedRelics, selectedPools, selectedRarities, parsedSearch, fuzzyMatch]);
 
   // Group filtered relics by rarity
   const groupedRelics = useMemo(() => {
@@ -301,6 +316,14 @@ export function RelicLibrary({ relics, characters }: RelicLibraryProps) {
           <span className="text-sm text-gray-500 shrink-0 tabular-nums">
             {filteredRelics.length}개
           </span>
+          {versions && versions.length > 0 && currentVersion && (
+            <VersionSelector
+              versions={versions}
+              currentVersion={currentVersion}
+              selectedVersion={selectedVersion}
+              onChange={setSelectedVersion}
+            />
+          )}
         </div>
 
         {/* Relic Grid (grouped by rarity) */}

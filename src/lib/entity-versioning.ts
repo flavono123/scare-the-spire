@@ -1,4 +1,4 @@
-import type { CodexCard, CodexRelic } from "./codex-types";
+import type { CodexCard, CodexRelic, CodexPotion } from "./codex-types";
 import type { EntityVersionDiff, EntityFieldDiff, STS2Patch } from "./types";
 
 /**
@@ -130,6 +130,37 @@ export function reconstructRelicAtVersion(
   }
 
   return result as unknown as CodexRelic;
+}
+
+/**
+ * Reconstruct a potion at a specific version.
+ */
+export function reconstructPotionAtVersion(
+  potion: CodexPotion,
+  targetVersion: string,
+  currentVersion: string,
+  versionDiffs: EntityVersionDiff[],
+  patches: STS2Patch[],
+): CodexPotion {
+  if (compareVersions(normalizeVersion(targetVersion), normalizeVersion(currentVersion)) >= 0) {
+    return potion;
+  }
+
+  const patchesToRevert = getPatchesBetween(targetVersion, currentVersion, patches);
+  const result: Record<string, unknown> = { ...potion };
+
+  for (const patch of patchesToRevert) {
+    const diffs = versionDiffs.filter(
+      (d) => d.entityType === "potion" && d.entityId === potion.id && d.patch === normalizeVersion(patch.version),
+    );
+    for (const vd of diffs) {
+      for (const diff of vd.diffs) {
+        applyReverseDiff(result, diff);
+      }
+    }
+  }
+
+  return result as unknown as CodexPotion;
 }
 
 /**

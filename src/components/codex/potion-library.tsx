@@ -15,6 +15,9 @@ import {
   getCharacterColor,
   characterOutlineFilter,
 } from "@/lib/codex-types";
+import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
+import { reconstructPotionAtVersion } from "@/lib/entity-versioning";
+import { VersionSelector } from "./version-selector";
 
 // Potion pool labels (extends relic pool labels with "event")
 const POTION_POOL_LABELS: Record<PotionPool, string> = {
@@ -78,9 +81,13 @@ const CHARACTER_POOLS: PotionPool[] = [
 interface PotionLibraryProps {
   potions: CodexPotion[];
   characters: CodexCharacter[];
+  versions?: string[];
+  currentVersion?: string;
+  patches?: STS2Patch[];
+  versionDiffs?: EntityVersionDiff[];
 }
 
-export function PotionLibrary({ potions, characters }: PotionLibraryProps) {
+export function PotionLibrary({ potions, characters, versions, currentVersion, patches, versionDiffs }: PotionLibraryProps) {
   const [selectedPools, setSelectedPools] = useState<Set<PotionPool>>(
     new Set()
   );
@@ -88,6 +95,14 @@ export function PotionLibrary({ potions, characters }: PotionLibraryProps) {
     new Set()
   );
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+
+  const versionedPotions = useMemo(() => {
+    if (!currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion) return potions;
+    return potions.map((potion) =>
+      reconstructPotionAtVersion(potion, selectedVersion, currentVersion, versionDiffs, patches),
+    );
+  }, [potions, selectedVersion, currentVersion, versionDiffs, patches]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [hoveredPotion, setHoveredPotion] = useState<CodexPotion | null>(null);
@@ -165,7 +180,7 @@ export function PotionLibrary({ potions, characters }: PotionLibraryProps) {
 
   // Filter potions
   const filteredPotions = useMemo(() => {
-    let result = potions;
+    let result = versionedPotions;
 
     // Pool filter (sidebar)
     if (selectedPools.size > 0) {
@@ -213,7 +228,7 @@ export function PotionLibrary({ potions, characters }: PotionLibraryProps) {
     }
 
     return result;
-  }, [potions, selectedPools, selectedRarities, parsedSearch, fuzzyMatch]);
+  }, [versionedPotions, selectedPools, selectedRarities, parsedSearch, fuzzyMatch]);
 
   // Group by rarity sections
   const sections = useMemo(() => {
@@ -413,6 +428,14 @@ export function PotionLibrary({ potions, characters }: PotionLibraryProps) {
           <span className="text-sm text-gray-500 shrink-0 tabular-nums">
             {filteredPotions.length}개
           </span>
+          {versions && versions.length > 0 && currentVersion && (
+            <VersionSelector
+              versions={versions}
+              currentVersion={currentVersion}
+              selectedVersion={selectedVersion}
+              onChange={setSelectedVersion}
+            />
+          )}
         </div>
 
         {/* Potion Grid by Rarity */}
