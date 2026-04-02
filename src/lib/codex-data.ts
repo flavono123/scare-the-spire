@@ -7,6 +7,10 @@ import {
   CodexPotion,
   CodexPower,
   CodexEnchantment,
+  CodexEvent,
+  EventOption,
+  EventPage,
+  EventAct,
   CardColor,
   RelicRarityKo,
   RelicPool,
@@ -292,6 +296,80 @@ export async function getCodexEnchantments(): Promise<CodexEnchantment[]> {
   return korEnchantments.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
     return mapEnchantment(kor, eng);
+  });
+}
+
+// Raw STS2 JSON event shape
+interface RawEventOption {
+  id: string;
+  title: string;
+  description: string;
+}
+
+interface RawEventPage {
+  id: string;
+  description: string | null;
+  options: RawEventOption[] | null;
+}
+
+interface RawEvent {
+  id: string;
+  name: string;
+  type: string;
+  act: string | null;
+  description: string;
+  options: RawEventOption[] | null;
+  pages: RawEventPage[] | null;
+  dialogue: Record<string, unknown> | null;
+  epithet: string | null;
+  image_url: string | null;
+}
+
+function mapEventOptions(opts: RawEventOption[] | null): EventOption[] | null {
+  if (!opts || opts.length === 0) return null;
+  return opts.map((o) => ({ id: o.id, title: o.title, description: o.description }));
+}
+
+function mapEventPages(pages: RawEventPage[] | null): EventPage[] | null {
+  if (!pages || pages.length === 0) return null;
+  return pages.map((p) => ({
+    id: p.id,
+    description: p.description,
+    options: mapEventOptions(p.options),
+  }));
+}
+
+function mapEvent(kor: RawEvent, eng: RawEvent, imageFiles: Set<string>): CodexEvent {
+  const key = kor.id.toLowerCase();
+  const imageUrl = imageFiles.has(key) ? `/images/sts2/events/${key}.webp` : null;
+  return {
+    id: kor.id,
+    name: kor.name,
+    nameEn: eng.name,
+    description: kor.description,
+    act: (kor.act as EventAct | null),
+    options: mapEventOptions(kor.options),
+    pages: mapEventPages(kor.pages),
+    imageUrl,
+  };
+}
+
+export async function getCodexEvents(): Promise<CodexEvent[]> {
+  const EVENTS_IMG_DIR = path.join(process.cwd(), "public/images/sts2/events");
+  const [korEvents, engEvents, imgFiles] = await Promise.all([
+    readJson<RawEvent[]>("kor/events.json"),
+    readJson<RawEvent[]>("eng/events.json"),
+    fs.readdir(EVENTS_IMG_DIR).then(
+      (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
+      () => new Set<string>(), // fallback if dir doesn't exist
+    ),
+  ]);
+
+  const engById = new Map(engEvents.map((e) => [e.id, e]));
+
+  return korEvents.map((kor) => {
+    const eng = engById.get(kor.id) ?? kor;
+    return mapEvent(kor, eng, imgFiles);
   });
 }
 
