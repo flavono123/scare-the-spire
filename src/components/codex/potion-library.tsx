@@ -242,13 +242,19 @@ export function PotionLibrary({ potions, characters }: PotionLibraryProps) {
     });
   }, []);
 
-  // Hover tooltip positioning
+  // Hover tooltip positioning — dynamic left/right based on viewport half
   const handlePotionHover = useCallback(
     (potion: CodexPotion | null, e?: React.MouseEvent) => {
       setHoveredPotion(potion);
       if (potion && e) {
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-        setTooltipPos({ x: rect.right + 12, y: rect.top });
+        const tooltipW = 288; // w-72
+        const tileCenterX = rect.left + rect.width / 2;
+        const isRightHalf = tileCenterX > window.innerWidth / 2;
+        const x = isRightHalf
+          ? rect.left - tooltipW - 12
+          : rect.right + 12;
+        setTooltipPos({ x, y: rect.top });
       } else {
         setTooltipPos(null);
       }
@@ -468,6 +474,7 @@ function PotionTile({
 }) {
   return (
     <button
+      data-potion-tile={potion.id}
       className="group relative w-14 h-14 sm:w-16 sm:h-16 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/10 hover:border-yellow-500/40 transition-all flex items-center justify-center"
       onMouseEnter={(e) => onHover(potion, e)}
       onMouseLeave={() => onHover(null)}
@@ -498,16 +505,11 @@ const PotionTooltip = forwardRef<
 >(function PotionTooltip({ potion, x, y }, ref) {
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
 
-  // Dynamic tooltip position: show on the side with more space
-  const tooltipWidth = 288; // w-72
-  const tooltipHeight = 200;
-  const isRightHalf = x > window.innerWidth / 2;
+  // Clamp to viewport bounds (position already computed by handler)
   const style: React.CSSProperties = {
     position: "fixed",
-    left: isRightHalf
-      ? Math.max(0, x - tooltipWidth - 12)
-      : Math.min(x + 12, window.innerWidth - tooltipWidth),
-    top: Math.min(y, window.innerHeight - tooltipHeight),
+    left: Math.max(0, Math.min(x, window.innerWidth - 288)),
+    top: Math.min(y, window.innerHeight - 200),
     zIndex: 100,
     pointerEvents: "none",
   };

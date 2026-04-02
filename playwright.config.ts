@@ -2,7 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./scripts",
-  testMatch: "visual-check.spec.ts",
+  testMatch: ["visual-check.spec.ts", "potion-tooltip-position.spec.ts"],
   timeout: 30_000,
   use: {
     baseURL: process.env.BASE_URL ?? "http://localhost:3000",
