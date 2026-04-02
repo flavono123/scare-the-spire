@@ -468,7 +468,13 @@ function PotionTile({
 }) {
   return (
     <button
-      className="group relative w-14 h-14 sm:w-16 sm:h-16 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/10 hover:border-yellow-500/40 transition-all flex items-center justify-center"
+      className="group relative w-14 h-14 sm:w-16 sm:h-16 rounded-lg border bg-white/[0.02] hover:bg-white/10 transition-all flex items-center justify-center"
+      style={{
+        borderColor:
+          potion.pool !== "shared" && potion.pool !== "event"
+            ? getPoolColor(potion.pool)
+            : "rgba(255,255,255,0.05)",
+      }}
       onMouseEnter={(e) => onHover(potion, e)}
       onMouseLeave={() => onHover(null)}
     >
@@ -479,14 +485,6 @@ function PotionTile({
         height={48}
         className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
       />
-      {/* Pool indicator dot for character-specific potions */}
-      {potion.pool !== "shared" && potion.pool !== "event" && (
-        <span
-          className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full border border-[#1a1a2e]"
-          style={{ backgroundColor: getPoolColor(potion.pool) }}
-          title={POTION_POOL_LABELS[potion.pool]}
-        />
-      )}
     </button>
   );
 }
@@ -512,8 +510,14 @@ const PotionTooltip = forwardRef<
   return (
     <div
       ref={ref}
-      className="w-72 bg-[#1a1a3a] border border-white/20 rounded-lg shadow-2xl overflow-hidden"
-      style={style}
+      className="w-72 bg-[#1a1a3a] border rounded-lg shadow-2xl overflow-hidden"
+      style={{
+        ...style,
+        borderColor:
+          potion.pool !== "shared" && potion.pool !== "event"
+            ? getPoolColor(potion.pool)
+            : "rgba(255,255,255,0.2)",
+      }}
     >
       <div className="p-3">
         {/* Header with name and rarity */}
@@ -561,11 +565,11 @@ const PotionTooltip = forwardRef<
 // Pool color mapping
 function getPoolColor(pool: PotionPool): string {
   const colors: Record<string, string> = {
-    ironclad: "#e53935",
-    silent: "#43a047",
-    defect: "#1e88e5",
-    necrobinder: "#8e24aa",
-    regent: "#ff8f00",
+    ironclad: "#f87171",
+    silent: "#34d399",
+    defect: "#22d3ee",
+    necrobinder: "#f472b6",
+    regent: "#fb923c",
   };
   return colors[pool] ?? "#888";
 }
