@@ -68,6 +68,19 @@ const categories = [
     ],
   },
   {
+    href: "/codex/events",
+    label: "이벤트",
+    labelEn: "Events",
+    count: 66,
+    description: "첨탑에서 마주하는 선택의 순간",
+    images: [
+      "/images/sts2/events/abyssal_baths.webp",
+      "/images/sts2/events/doll_room.webp",
+      "/images/sts2/events/crystal_sphere.webp",
+      "/images/sts2/events/trial.webp",
+    ],
+  },
+  {
     href: "/codex/ancients",
     label: "에인션트",
     labelEn: "Ancients",
