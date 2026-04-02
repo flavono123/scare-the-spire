@@ -382,6 +382,70 @@ export const ENCHANTMENT_CARD_TYPE_ALIASES: Record<string, EnchantmentCardTypeFi
   전체: "Any", any: "Any",
 };
 
+// Event types
+export interface EventOption {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface EventPage {
+  id: string;
+  description: string | null;
+  options: EventOption[] | null;
+}
+
+export type EventAct =
+  | "Act 1 - Overgrowth"
+  | "Underdocks"
+  | "Act 2 - Hive"
+  | "Act 3 - Glory";
+
+export interface CodexEvent {
+  id: string;
+  name: string;        // Korean
+  nameEn: string;      // English
+  description: string; // Korean, with BBCode markup
+  act: EventAct | null;
+  options: EventOption[] | null;
+  pages: EventPage[] | null;
+  imageUrl: string | null; // local path to event art
+}
+
+export const EVENT_ACT_ORDER: (EventAct | null)[] = [
+  "Act 1 - Overgrowth",
+  "Underdocks",
+  "Act 2 - Hive",
+  "Act 3 - Glory",
+  null,
+];
+
+export const EVENT_ACT_CONFIG: Record<string, { label: string; labelKo: string; color: string; border: string; bg: string }> = {
+  "Act 1 - Overgrowth": { label: "Overgrowth", labelKo: "1막 — 과성장", color: "text-green-400", border: "border-green-500/40", bg: "bg-green-500/10" },
+  Underdocks: { label: "Underdocks", labelKo: "언더독스", color: "text-blue-400", border: "border-blue-500/40", bg: "bg-blue-500/10" },
+  "Act 2 - Hive": { label: "Hive", labelKo: "2막 — 벌집", color: "text-orange-400", border: "border-orange-500/40", bg: "bg-orange-500/10" },
+  "Act 3 - Glory": { label: "Glory", labelKo: "3막 — 영광", color: "text-yellow-400", border: "border-yellow-500/40", bg: "bg-yellow-500/10" },
+};
+
+export const EVENT_ACT_UNKNOWN = {
+  label: "Unknown", labelKo: "미지정", color: "text-zinc-400", border: "border-zinc-500/40", bg: "bg-zinc-500/10",
+};
+
+export const EVENT_ACT_ALIASES: Record<string, EventAct | "none"> = {
+  "1막": "Act 1 - Overgrowth",
+  과성장: "Act 1 - Overgrowth",
+  overgrowth: "Act 1 - Overgrowth",
+  언더독스: "Underdocks",
+  underdocks: "Underdocks",
+  "2막": "Act 2 - Hive",
+  벌집: "Act 2 - Hive",
+  hive: "Act 2 - Hive",
+  "3막": "Act 3 - Glory",
+  영광: "Act 3 - Glory",
+  glory: "Act 3 - Glory",
+  미지정: "none",
+};
+
 export const TYPE_ALIASES: Record<string, CardTypeKo> = {
   공격: "공격",
   attack: "공격",
