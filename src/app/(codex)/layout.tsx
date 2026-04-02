@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CodexBackButton } from "@/components/codex/back-button";
 
 export const metadata: Metadata = {
   title: "Spire Codex — 슬레이 더 스파이어 2 백과사전",
@@ -8,5 +9,10 @@ export const metadata: Metadata = {
 export default function CodexLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <CodexBackButton />
+    </>
+  );
 }
