@@ -498,11 +498,16 @@ const PotionTooltip = forwardRef<
 >(function PotionTooltip({ potion, x, y }, ref) {
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
 
-  // Clamp tooltip position to viewport
+  // Dynamic tooltip position: show on the side with more space
+  const tooltipWidth = 288; // w-72
+  const tooltipHeight = 200;
+  const isRightHalf = x > window.innerWidth / 2;
   const style: React.CSSProperties = {
     position: "fixed",
-    left: Math.min(x, window.innerWidth - 320),
-    top: Math.min(y, window.innerHeight - 200),
+    left: isRightHalf
+      ? Math.max(0, x - tooltipWidth - 12)
+      : Math.min(x + 12, window.innerWidth - tooltipWidth),
+    top: Math.min(y, window.innerHeight - tooltipHeight),
     zIndex: 100,
     pointerEvents: "none",
   };
@@ -541,7 +546,15 @@ const PotionTooltip = forwardRef<
             {rarityConfig.label}
           </span>
           {potion.pool !== "shared" && (
-            <span className="text-[10px] text-gray-500">
+            <span
+              className="text-[10px] font-medium"
+              style={{
+                color:
+                  potion.pool !== "event"
+                    ? getPoolColor(potion.pool)
+                    : undefined,
+              }}
+            >
               {POTION_POOL_LABELS[potion.pool]}
             </span>
           )}
