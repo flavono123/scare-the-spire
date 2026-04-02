@@ -481,7 +481,7 @@ function PotionTile({
         style={{
           filter:
             potion.pool !== "shared" && potion.pool !== "event"
-              ? `drop-shadow(0 0 3px ${getPoolColor(potion.pool)}) drop-shadow(0 0 6px ${getPoolColor(potion.pool)})`
+              ? `drop-shadow(1px 0 0 ${getPoolColor(potion.pool)}) drop-shadow(-1px 0 0 ${getPoolColor(potion.pool)}) drop-shadow(0 1px 0 ${getPoolColor(potion.pool)}) drop-shadow(0 -1px 0 ${getPoolColor(potion.pool)})`
               : "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
         }}
       />
