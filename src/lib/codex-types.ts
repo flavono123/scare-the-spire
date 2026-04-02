@@ -458,3 +458,30 @@ export const TYPE_ALIASES: Record<string, CardTypeKo> = {
   상태이상: "상태이상",
   퀘스트: "퀘스트",
 };
+
+// Character color mapping (aligned with dev/text-effects reference)
+export const CHARACTER_COLORS: Record<string, string> = {
+  ironclad: "#f87171",
+  silent: "#34d399",
+  defect: "#22d3ee",
+  necrobinder: "#f472b6",
+  regent: "#fb923c",
+};
+
+/**
+ * Get character color for a pool value.
+ * Returns the color hex or undefined for non-character pools (shared, event).
+ */
+export function getCharacterColor(pool: string): string | undefined {
+  return CHARACTER_COLORS[pool];
+}
+
+/**
+ * CSS filter for a solid 1px outline around a transparent PNG image.
+ * Uses 4 directional drop-shadows with 0 blur to create a crisp outline.
+ */
+export function characterOutlineFilter(pool: string): string | undefined {
+  const color = CHARACTER_COLORS[pool];
+  if (!color) return undefined;
+  return `drop-shadow(1px 0 0 ${color}) drop-shadow(-1px 0 0 ${color}) drop-shadow(0 1px 0 ${color}) drop-shadow(0 -1px 0 ${color})`;
+}

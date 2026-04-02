@@ -12,6 +12,8 @@ import {
   POTION_RARITY_CONFIG,
   POOL_ALIASES,
   POTION_RARITY_ALIASES,
+  getCharacterColor,
+  characterOutlineFilter,
 } from "@/lib/codex-types";
 
 // Potion pool labels (extends relic pool labels with "event")
@@ -486,10 +488,7 @@ function PotionTile({
         height={48}
         className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
         style={{
-          filter:
-            potion.pool !== "shared" && potion.pool !== "event"
-              ? `drop-shadow(1px 0 0 ${getPoolColor(potion.pool)}) drop-shadow(-1px 0 0 ${getPoolColor(potion.pool)}) drop-shadow(0 1px 0 ${getPoolColor(potion.pool)}) drop-shadow(0 -1px 0 ${getPoolColor(potion.pool)})`
-              : "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
+          filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
         }}
       />
     </button>
@@ -571,16 +570,9 @@ const PotionTooltip = forwardRef<
   );
 });
 
-// Pool color mapping
+// Pool color mapping (delegates to shared CHARACTER_COLORS)
 function getPoolColor(pool: PotionPool): string {
-  const colors: Record<string, string> = {
-    ironclad: "#f87171",
-    silent: "#34d399",
-    defect: "#22d3ee",
-    necrobinder: "#f472b6",
-    regent: "#fb923c",
-  };
-  return colors[pool] ?? "#888";
+  return getCharacterColor(pool) ?? "#888";
 }
 
 // Potion-specific search bar (simpler than card search)

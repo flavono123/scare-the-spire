@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
-import { CodexRelic } from "@/lib/codex-types";
+import { CodexRelic, characterOutlineFilter, getCharacterColor, POOL_LABELS, type RelicFilterPool } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 
 interface RelicTileProps {
@@ -42,7 +42,10 @@ export function RelicTile({ relic }: RelicTileProps) {
             alt={relic.name}
             width={56}
             height={56}
-            className="w-full h-full object-contain drop-shadow-md"
+            className="w-full h-full object-contain"
+            style={{
+              filter: characterOutlineFilter(relic.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
+            }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-600 text-xs">
@@ -67,6 +70,14 @@ export function RelicTile({ relic }: RelicTileProps) {
           {relic.nameEn !== relic.name && (
             <div className="text-[10px] text-gray-500 mb-1.5">
               {relic.nameEn}
+            </div>
+          )}
+          {relic.pool !== "shared" && (
+            <div
+              className="text-[10px] font-medium mb-1.5"
+              style={{ color: getCharacterColor(relic.pool) }}
+            >
+              {POOL_LABELS[relic.pool as RelicFilterPool]}
             </div>
           )}
           <div className="text-xs text-gray-200 leading-relaxed">
