@@ -1000,5 +1000,80 @@
         "after": "[star:1]을 얻습니다.\n카드를 1장 뽑습니다.\n다음 턴에, 카드를 1장 뽑습니다."
       }
     ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "BLADE_OF_INK",
+    "patch": "v0.102.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "이번 턴에 공격 카드를 사용할 때마다, 이번 턴 동안 [gold]힘[/gold]을 2 얻습니다.",
+        "after": "[gold]잉크 단도[/gold]를 2장 [gold]손[/gold]으로 가져옵니다."
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "BORROWED_TIME",
+    "patch": "v0.102.0",
+    "diffs": [
+      {
+        "field": "cost",
+        "before": 0,
+        "after": 1
+      },
+      {
+        "field": "description",
+        "before": "자신에게 [gold]종말[/gold]을 3 부여합니다.\n[energy:1]를 얻습니다.",
+        "after": "[energy:4]를 얻습니다.\n이번 턴 카드 비용이 1 증가합니다."
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "LEADING_STRIKE",
+    "patch": "v0.102.0",
+    "diffs": [
+      {
+        "field": "vars.Damage",
+        "before": 7,
+        "after": 3
+      },
+      {
+        "field": "vars.Shivs",
+        "before": 1,
+        "after": 2
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "SPEEDSTER",
+    "patch": "v0.102.0",
+    "diffs": [
+      {
+        "field": "vars.SpeedsterPower",
+        "before": 2,
+        "after": 1
+      },
+      {
+        "field": "vars.Speedster",
+        "before": 2,
+        "after": 1
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "UNTOUCHABLE",
+    "patch": "v0.102.0",
+    "diffs": [
+      {
+        "field": "vars.Block",
+        "before": 7,
+        "after": 6
+      }
+    ]
   }
 ]
