@@ -1,5 +1,5 @@
 import type { CodexCard, CodexRelic, CodexPotion } from "./codex-types";
-import type { EntityVersionDiff, EntityFieldDiff, STS2Patch } from "./types";
+import type { EntityVersionDiff, EntityFieldDiff, STS2Patch, VersionedEntityType } from "./types";
 
 /**
  * Compare two version strings (e.g. "0.100.0" vs "0.101.0").
@@ -183,4 +183,53 @@ export function getVersionsWithDiffs(
     .sort((a, b) => compareVersions(b, a)); // newest first
 
   return allVersions;
+}
+
+/**
+ * Generic entity version reconstruction.
+ * Works for any entity type — if no diffs exist, returns the entity unchanged.
+ */
+export function reconstructEntityAtVersion<T extends { id: string }>(
+  entity: T,
+  entityType: VersionedEntityType,
+  targetVersion: string,
+  currentVersion: string,
+  versionDiffs: EntityVersionDiff[],
+  patches: STS2Patch[],
+): T {
+  if (compareVersions(normalizeVersion(targetVersion), normalizeVersion(currentVersion)) >= 0) {
+    return entity;
+  }
+
+  const patchesToRevert = getPatchesBetween(targetVersion, currentVersion, patches);
+  const result: Record<string, unknown> = { ...entity };
+
+  // Deep-copy common mutable fields if they exist
+  if ("vars" in entity && entity.vars && typeof entity.vars === "object") {
+    result.vars = { ...(entity.vars as Record<string, unknown>) };
+  }
+  if ("upgrade" in entity && entity.upgrade && typeof entity.upgrade === "object") {
+    result.upgrade = { ...(entity.upgrade as Record<string, unknown>) };
+  }
+  if ("keywords" in entity && Array.isArray(entity.keywords)) {
+    result.keywords = [...entity.keywords];
+  }
+  if ("tags" in entity && Array.isArray(entity.tags)) {
+    result.tags = [...entity.tags];
+  }
+
+  for (const patch of patchesToRevert) {
+    const diffs = versionDiffs.filter(
+      (d) => d.entityType === entityType && d.entityId === entity.id && d.patch === normalizeVersion(patch.version),
+    );
+    for (const vd of diffs) {
+      for (const diff of vd.diffs) {
+        if (!diff.upgraded) {
+          applyReverseDiff(result, diff);
+        }
+      }
+    }
+  }
+
+  return result as unknown as T;
 }

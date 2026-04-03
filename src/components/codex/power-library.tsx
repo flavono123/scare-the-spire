@@ -9,9 +9,12 @@ import {
   POWER_TYPE_CONFIG,
   POWER_TYPE_ALIASES,
 } from "@/lib/codex-types";
+import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
+import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import { PowerTile } from "./power-tile";
 import { SearchBar, TriggerGroup } from "./search-bar";
 import { FilterSection, ToggleButton } from "./codex-filters";
+import { VersionSelector } from "./version-selector";
 
 const POWER_TRIGGERS: TriggerGroup[] = [
   {
@@ -29,11 +32,23 @@ const POWER_TRIGGERS: TriggerGroup[] = [
 
 interface PowerLibraryProps {
   powers: CodexPower[];
+  versions?: string[];
+  currentVersion?: string;
+  patches?: STS2Patch[];
+  versionDiffs?: EntityVersionDiff[];
 }
 
-export function PowerLibrary({ powers }: PowerLibraryProps) {
+export function PowerLibrary({ powers, versions, currentVersion, patches, versionDiffs }: PowerLibraryProps) {
   const [selectedTypes, setSelectedTypes] = useState<Set<PowerType>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+
+  const versionedPowers = useMemo(() => {
+    if (!currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion) return powers;
+    return powers.map((power) =>
+      reconstructEntityAtVersion(power, "power", selectedVersion, currentVersion, versionDiffs, patches),
+    );
+  }, [powers, selectedVersion, currentVersion, versionDiffs, patches]);
 
   // Cmd+K to focus search
   useEffect(() => {
@@ -86,7 +101,7 @@ export function PowerLibrary({ powers }: PowerLibraryProps) {
 
   // Filtered powers
   const filteredPowers = useMemo(() => {
-    let result = powers;
+    let result = versionedPowers;
 
     // Type filter (sidebar)
     if (selectedTypes.size > 0) {
@@ -111,7 +126,7 @@ export function PowerLibrary({ powers }: PowerLibraryProps) {
     }
 
     return result;
-  }, [powers, selectedTypes, parsedSearch, fuzzyMatch]);
+  }, [versionedPowers, selectedTypes, parsedSearch, fuzzyMatch]);
 
   // Group by type
   const groupedPowers = useMemo(() => {
@@ -228,6 +243,14 @@ export function PowerLibrary({ powers }: PowerLibraryProps) {
           <span className="text-sm text-gray-500 shrink-0 tabular-nums">
             {filteredPowers.length}개
           </span>
+          {versions && versions.length > 0 && currentVersion && (
+            <VersionSelector
+              versions={versions}
+              currentVersion={currentVersion}
+              selectedVersion={selectedVersion}
+              onChange={setSelectedVersion}
+            />
+          )}
         </div>
 
         {/* Power Grid (grouped by type) */}

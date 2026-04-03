@@ -8,9 +8,12 @@ import {
   ENCHANTMENT_CARD_TYPE_CONFIG,
   ENCHANTMENT_CARD_TYPE_ALIASES,
 } from "@/lib/codex-types";
+import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
+import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import { EnchantmentTile } from "./enchantment-tile";
 import { SearchBar, TriggerGroup } from "./search-bar";
 import { FilterSection, ToggleButton } from "./codex-filters";
+import { VersionSelector } from "./version-selector";
 
 const ENCHANTMENT_TRIGGERS: TriggerGroup[] = [
   {
@@ -34,12 +37,24 @@ function getCardTypeFilter(cardType: "Attack" | "Skill" | null): EnchantmentCard
 
 interface EnchantmentLibraryProps {
   enchantments: CodexEnchantment[];
+  versions?: string[];
+  currentVersion?: string;
+  patches?: STS2Patch[];
+  versionDiffs?: EntityVersionDiff[];
 }
 
-export function EnchantmentLibrary({ enchantments }: EnchantmentLibraryProps) {
+export function EnchantmentLibrary({ enchantments, versions, currentVersion, patches, versionDiffs }: EnchantmentLibraryProps) {
   const [selectedCardTypes, setSelectedCardTypes] = useState<Set<EnchantmentCardTypeFilter>>(new Set());
   const [stackableOnly, setStackableOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+
+  const versionedEnchantments = useMemo(() => {
+    if (!currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion) return enchantments;
+    return enchantments.map((ench) =>
+      reconstructEntityAtVersion(ench, "enchantment", selectedVersion, currentVersion, versionDiffs, patches),
+    );
+  }, [enchantments, selectedVersion, currentVersion, versionDiffs, patches]);
 
   // Cmd+K to focus search
   useEffect(() => {
@@ -92,7 +107,7 @@ export function EnchantmentLibrary({ enchantments }: EnchantmentLibraryProps) {
 
   // Filtered enchantments
   const filteredEnchantments = useMemo(() => {
-    let result = enchantments;
+    let result = versionedEnchantments;
 
     // Card type filter (sidebar)
     if (selectedCardTypes.size > 0) {
@@ -122,7 +137,7 @@ export function EnchantmentLibrary({ enchantments }: EnchantmentLibraryProps) {
     }
 
     return result;
-  }, [enchantments, selectedCardTypes, stackableOnly, parsedSearch, fuzzyMatch]);
+  }, [versionedEnchantments, selectedCardTypes, stackableOnly, parsedSearch, fuzzyMatch]);
 
   // Group by card type restriction
   const groupedEnchantments = useMemo(() => {
@@ -250,6 +265,14 @@ export function EnchantmentLibrary({ enchantments }: EnchantmentLibraryProps) {
           <span className="text-sm text-gray-500 shrink-0 tabular-nums">
             {filteredEnchantments.length}개
           </span>
+          {versions && versions.length > 0 && currentVersion && (
+            <VersionSelector
+              versions={versions}
+              currentVersion={currentVersion}
+              selectedVersion={selectedVersion}
+              onChange={setSelectedVersion}
+            />
+          )}
         </div>
 
         {/* Enchantment Grid (grouped by card type) */}

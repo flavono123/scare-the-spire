@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 import { getCodexPowers } from "@/lib/codex-data";
+import { getVersionsWithDiffs } from "@/lib/entity-versioning";
+import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import { PowerLibrary } from "@/components/codex/power-library";
 
 export const metadata: Metadata = {
@@ -9,6 +11,22 @@ export const metadata: Metadata = {
 };
 
 export default async function CodexPowersPage() {
-  const powers = await getCodexPowers();
-  return <PowerLibrary powers={powers} />;
+  const [powers, patches, versionDiffs, meta] = await Promise.all([
+    getCodexPowers(),
+    getSTS2Patches(),
+    getEntityVersionDiffs(),
+    getCodexMeta(),
+  ]);
+
+  const versions = getVersionsWithDiffs(patches, versionDiffs);
+
+  return (
+    <PowerLibrary
+      powers={powers}
+      versions={versions}
+      currentVersion={meta.version}
+      patches={patches}
+      versionDiffs={versionDiffs}
+    />
+  );
 }

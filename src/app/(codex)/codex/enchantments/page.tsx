@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 import { getCodexEnchantments } from "@/lib/codex-data";
+import { getVersionsWithDiffs } from "@/lib/entity-versioning";
+import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import { EnchantmentLibrary } from "@/components/codex/enchantment-library";
 
 export const metadata: Metadata = {
@@ -9,6 +11,22 @@ export const metadata: Metadata = {
 };
 
 export default async function CodexEnchantmentsPage() {
-  const enchantments = await getCodexEnchantments();
-  return <EnchantmentLibrary enchantments={enchantments} />;
+  const [enchantments, patches, versionDiffs, meta] = await Promise.all([
+    getCodexEnchantments(),
+    getSTS2Patches(),
+    getEntityVersionDiffs(),
+    getCodexMeta(),
+  ]);
+
+  const versions = getVersionsWithDiffs(patches, versionDiffs);
+
+  return (
+    <EnchantmentLibrary
+      enchantments={enchantments}
+      versions={versions}
+      currentVersion={meta.version}
+      patches={patches}
+      versionDiffs={versionDiffs}
+    />
+  );
 }
