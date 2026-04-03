@@ -318,7 +318,7 @@ function EventExpanded({
           {/* Header */}
           <div className="flex items-start justify-between gap-3 mb-4">
             <div>
-              <h2 className="font-[family-name:var(--font-spectral)] text-xl text-yellow-400">
+              <h2 className="font-[family-name:var(--font-gc-batang)] text-xl text-yellow-400">
                 {event.name}
               </h2>
               <div className="flex items-center gap-2 mt-1">
