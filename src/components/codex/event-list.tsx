@@ -37,7 +37,7 @@ const EVENT_TRIGGERS: TriggerGroup[] = [
   },
 ];
 
-// --- Option card ---
+// --- Option card (static, non-interactive) ---
 function OptionCard({ option }: { option: EventOption }) {
   return (
     <div className="rounded border border-amber-500/20 bg-amber-500/5 px-3 py-2">
@@ -53,82 +53,164 @@ function OptionCard({ option }: { option: EventOption }) {
   );
 }
 
-// --- Page step (multi-step choices) ---
-function PageStep({
-  page,
-  isActive,
-  onSelect,
+// --- Interactive option card (clickable, navigates to a page) ---
+function InteractiveOptionCard({
+  option,
+  hasPage,
+  onClick,
 }: {
-  page: EventPage;
-  isActive: boolean;
-  onSelect: () => void;
+  option: EventOption;
+  hasPage: boolean;
+  onClick: () => void;
 }) {
+  if (!hasPage) return <OptionCard option={option} />;
   return (
     <button
-      onClick={onSelect}
-      className={`rounded px-2.5 py-1 text-xs font-medium transition-all ${
-        isActive
-          ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/40"
-          : "bg-zinc-800/50 text-zinc-500 border border-zinc-700/30 hover:text-zinc-300 hover:border-zinc-600/40"
-      }`}
+      onClick={onClick}
+      className="w-full text-left rounded border border-amber-500/20 bg-amber-500/5 px-3 py-2 hover:border-amber-400/40 hover:bg-amber-500/10 transition-all cursor-pointer group"
     >
-      {page.id.replace(/_/g, " ")}
+      <div className="mb-0.5 text-xs font-semibold text-amber-400 flex items-center gap-1.5">
+        {option.title}
+        <svg className="w-3 h-3 text-amber-500/50 group-hover:text-amber-400 transition-colors" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z" />
+        </svg>
+      </div>
+      {option.description && (
+        <div className="text-xs leading-relaxed text-zinc-300">
+          <RichText text={option.description} />
+        </div>
+      )}
     </button>
   );
 }
 
-// --- Event page viewer (multi-step) ---
-function EventPageViewer({ pages }: { pages: EventPage[] }) {
-  const [activePageId, setActivePageId] = useState<string | null>(null);
+// --- Event page viewer (interactive, game-like flow) ---
+function EventPageViewer({
+  pages,
+  initialOptions,
+}: {
+  pages: EventPage[];
+  initialOptions: EventOption[] | null;
+}) {
+  const [history, setHistory] = useState<string[]>([]);
 
-  // Filter out INITIAL page (same as main description) and pages without content
-  const viewablePages = useMemo(
-    () =>
-      pages.filter(
-        (p) => p.id !== "INITIAL" && (p.description || (p.options && p.options.length > 0)),
-      ),
+  const pageMap = useMemo(
+    () => new Map(pages.map((p) => [p.id, p])),
     [pages],
   );
 
-  const activePage = useMemo(
-    () => viewablePages.find((p) => p.id === activePageId) ?? null,
-    [viewablePages, activePageId],
+  // Current page based on navigation history
+  const currentPageId = history.length > 0 ? history[history.length - 1] : null;
+  const currentPage = currentPageId ? pageMap.get(currentPageId) ?? null : null;
+
+  // Get options to display: current page's options, or initial options
+  const currentOptions = currentPage?.options ?? initialOptions ?? [];
+
+  // Build breadcrumb labels: map page IDs to the option title that led there
+  const optionLabelMap = useMemo(() => {
+    const map = new Map<string, string>();
+    // From initial options
+    for (const opt of initialOptions ?? []) {
+      map.set(opt.id, opt.title);
+    }
+    // From all page options
+    for (const page of pages) {
+      for (const opt of page.options ?? []) {
+        map.set(opt.id, opt.title);
+      }
+    }
+    return map;
+  }, [pages, initialOptions]);
+
+  const navigateTo = useCallback((pageId: string) => {
+    setHistory((prev) => [...prev, pageId]);
+  }, []);
+
+  const goBack = useCallback(() => {
+    setHistory((prev) => prev.slice(0, -1));
+  }, []);
+
+  const reset = useCallback(() => {
+    setHistory([]);
+  }, []);
+
+  // Check which pages have content worth viewing
+  const viewablePageIds = useMemo(
+    () => new Set(
+      pages
+        .filter((p) => p.id !== "INITIAL" && (p.description || (p.options && p.options.length > 0)))
+        .map((p) => p.id),
+    ),
+    [pages],
   );
 
-  if (viewablePages.length === 0) return null;
+  if (viewablePageIds.size === 0) return null;
 
   return (
     <div className="mt-3">
-      <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-        이야기 갈래
-      </div>
-      <div className="flex flex-wrap gap-1.5 mb-2">
-        {viewablePages.map((page) => (
-          <PageStep
-            key={page.id}
-            page={page}
-            isActive={activePageId === page.id}
-            onSelect={() =>
-              setActivePageId((prev) => (prev === page.id ? null : page.id))
-            }
-          />
-        ))}
-      </div>
-      {activePage && (
-        <div className="rounded border border-zinc-700/50 bg-zinc-800/30 px-3 py-2 animate-in fade-in duration-200">
-          {activePage.description && (
+      {/* Navigation breadcrumb when navigated */}
+      {history.length > 0 && (
+        <div className="flex items-center gap-1.5 mb-2 text-[10px]">
+          <button
+            onClick={reset}
+            className="text-zinc-500 hover:text-yellow-400 transition-colors"
+          >
+            처음
+          </button>
+          {history.map((pageId, i) => (
+            <span key={i} className="flex items-center gap-1.5">
+              <span className="text-zinc-600">›</span>
+              <button
+                onClick={() => setHistory((prev) => prev.slice(0, i + 1))}
+                className={`transition-colors ${
+                  i === history.length - 1
+                    ? "text-yellow-400 font-medium"
+                    : "text-zinc-500 hover:text-yellow-400"
+                }`}
+              >
+                {optionLabelMap.get(pageId) ?? pageId.replace(/_/g, " ")}
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Current page content */}
+      {currentPage && (
+        <div className="rounded border border-zinc-700/50 bg-zinc-800/30 px-3 py-2 mb-2 animate-in fade-in duration-200">
+          {currentPage.description && (
             <div className="text-sm leading-[1.75] text-zinc-300">
-              <RichText text={activePage.description} />
-            </div>
-          )}
-          {activePage.options && activePage.options.length > 0 && (
-            <div className="mt-2 space-y-1.5">
-              {activePage.options.map((opt) => (
-                <OptionCard key={opt.id} option={opt} />
-              ))}
+              <RichText text={currentPage.description} />
             </div>
           )}
         </div>
+      )}
+
+      {/* Interactive options */}
+      {currentOptions.length > 0 && (
+        <div className="space-y-1.5">
+          {currentOptions.map((opt) => (
+            <InteractiveOptionCard
+              key={opt.id}
+              option={opt}
+              hasPage={viewablePageIds.has(opt.id)}
+              onClick={() => navigateTo(opt.id)}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Back button when navigated */}
+      {history.length > 0 && (
+        <button
+          onClick={goBack}
+          className="mt-2 text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1"
+        >
+          <svg className="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M9.78 12.78a.75.75 0 01-1.06 0L4.47 8.53a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L6.06 8l3.72 3.72a.75.75 0 010 1.06z" />
+          </svg>
+          이전
+        </button>
       )}
     </div>
   );
@@ -261,8 +343,13 @@ function EventExpanded({
             </div>
           )}
 
-          {/* Initial options */}
-          {event.options && event.options.length > 0 && (
+          {/* Options + interactive pages */}
+          {event.pages && event.pages.length > 0 ? (
+            <EventPageViewer
+              pages={event.pages}
+              initialOptions={event.options}
+            />
+          ) : event.options && event.options.length > 0 ? (
             <div className="mb-4">
               <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                 선택지
@@ -273,12 +360,7 @@ function EventExpanded({
                 ))}
               </div>
             </div>
-          )}
-
-          {/* Multi-step pages */}
-          {event.pages && event.pages.length > 0 && (
-            <EventPageViewer pages={event.pages} />
-          )}
+          ) : null}
         </div>
       </div>
     </div>
