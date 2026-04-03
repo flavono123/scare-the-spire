@@ -7,7 +7,7 @@ const categories = [
     label: "카드",
     labelEn: "Cards",
     count: 612,
-    description: "모든 캐릭터의 공격, 스킬, 파워 카드",
+    description: null,
     images: [
       "/images/sts2/cards/bash.webp",
       "/images/sts2/cards/backstab.webp",
@@ -20,7 +20,7 @@ const categories = [
     label: "유물",
     labelEn: "Relics",
     count: 314,
-    description: "일반, 상점, 보스, 이벤트 유물",
+    description: null,
     images: [
       "/images/sts2/relics/akabeko.webp",
       "/images/sts2/relics/anchor.webp",
@@ -33,7 +33,7 @@ const categories = [
     label: "포션",
     labelEn: "Potions",
     count: 63,
-    description: "전투 중 사용하는 소비 아이템",
+    description: null,
     images: [
       "/images/sts2/potions/attack_potion.webp",
       "/images/sts2/potions/block_potion.webp",
@@ -46,7 +46,7 @@ const categories = [
     label: "파워",
     labelEn: "Powers",
     count: 238,
-    description: "버프, 디버프 등 전투 중 적용되는 효과",
+    description: null,
     images: [
       "/images/sts2/powers/strength_power.webp",
       "/images/sts2/powers/vulnerable_power.webp",
@@ -59,7 +59,7 @@ const categories = [
     label: "인챈트",
     labelEn: "Enchantments",
     count: 22,
-    description: "카드에 부여되는 특수 강화 효과",
+    description: null,
     images: [
       "/images/sts2/enchantments/sharp.webp",
       "/images/sts2/enchantments/favored.webp",
@@ -72,7 +72,7 @@ const categories = [
     label: "이벤트",
     labelEn: "Events",
     count: 57,
-    description: "첨탑에서 마주하는 선택의 순간",
+    description: null,
     images: [
       "/images/sts2/events/abyssal_baths.webp",
       "/images/sts2/events/doll_room.webp",
@@ -85,7 +85,7 @@ const categories = [
     label: "에인션트",
     labelEn: "Ancients",
     count: 8,
-    description: "첨탑을 지배하는 고대 존재들",
+    description: null,
     images: [
       "/images/sts2/ancients/neow.webp",
       "/images/sts2/ancients/orobas.webp",
@@ -145,9 +145,11 @@ export default function CodexIndexPage() {
                     {cat.labelEn}
                   </span>
                 </h2>
-                <p className="mt-1 text-sm text-yellow-200/40 font-[family-name:var(--font-gc-batang)]">
-                  {cat.description}
-                </p>
+                {cat.description && (
+                  <p className="mt-1 text-sm text-yellow-200/40 font-[family-name:var(--font-gc-batang)]">
+                    {cat.description}
+                  </p>
+                )}
                 <span className="mt-2 inline-block text-xs text-yellow-600/60 font-[family-name:var(--font-kreon)]">
                   {cat.count} entries
                 </span>
