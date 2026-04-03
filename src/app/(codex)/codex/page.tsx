@@ -139,7 +139,7 @@ export default function CodexIndexPage() {
 
               {/* Text */}
               <div className="px-6 pb-6 text-center">
-                <h2 className="font-[family-name:var(--font-spectral)] text-2xl text-yellow-400 group-hover:text-yellow-300 transition-colors">
+                <h2 className="font-[family-name:var(--font-gc-batang)] text-2xl text-yellow-400 group-hover:text-yellow-300 transition-colors">
                   {cat.label}
                   <span className="ml-2 text-base text-yellow-200/30 font-[family-name:var(--font-kreon)]">
                     {cat.labelEn}
