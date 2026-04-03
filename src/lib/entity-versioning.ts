@@ -1,4 +1,4 @@
-import type { CodexCard, CodexRelic, CodexPotion } from "./codex-types";
+import type { CodexCard, CodexRelic, CodexPotion, CodexEvent } from "./codex-types";
 import type { EntityVersionDiff, EntityFieldDiff, STS2Patch, VersionedEntityType } from "./types";
 
 /**
@@ -161,6 +161,49 @@ export function reconstructPotionAtVersion(
   }
 
   return result as unknown as CodexPotion;
+}
+
+/**
+ * Reconstruct an event at a specific version.
+ * Deep-copies options and pages arrays since they are mutable.
+ */
+export function reconstructEventAtVersion(
+  event: CodexEvent,
+  targetVersion: string,
+  currentVersion: string,
+  versionDiffs: EntityVersionDiff[],
+  patches: STS2Patch[],
+): CodexEvent {
+  if (compareVersions(normalizeVersion(targetVersion), normalizeVersion(currentVersion)) >= 0) {
+    return event;
+  }
+
+  const patchesToRevert = getPatchesBetween(targetVersion, currentVersion, patches);
+  const result: Record<string, unknown> = { ...event };
+
+  // Deep-copy mutable fields
+  if (event.options) {
+    result.options = event.options.map((o) => ({ ...o }));
+  }
+  if (event.pages) {
+    result.pages = event.pages.map((p) => ({
+      ...p,
+      options: p.options ? p.options.map((o) => ({ ...o })) : null,
+    }));
+  }
+
+  for (const patch of patchesToRevert) {
+    const diffs = versionDiffs.filter(
+      (d) => d.entityType === "event" && d.entityId === event.id && d.patch === normalizeVersion(patch.version),
+    );
+    for (const vd of diffs) {
+      for (const diff of vd.diffs) {
+        applyReverseDiff(result, diff);
+      }
+    }
+  }
+
+  return result as unknown as CodexEvent;
 }
 
 /**
