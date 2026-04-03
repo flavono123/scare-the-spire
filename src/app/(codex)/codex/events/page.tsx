@@ -1,4 +1,6 @@
 import { getCodexEvents } from "@/lib/codex-data";
+import { getVersionsWithDiffs } from "@/lib/entity-versioning";
+import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import { EventList } from "@/components/codex/event-list";
 
 export const metadata = {
@@ -7,7 +9,22 @@ export const metadata = {
 };
 
 export default async function CodexEventsPage() {
-  const events = await getCodexEvents();
+  const [events, patches, versionDiffs, meta] = await Promise.all([
+    getCodexEvents(),
+    getSTS2Patches(),
+    getEntityVersionDiffs(),
+    getCodexMeta(),
+  ]);
 
-  return <EventList events={events} />;
+  const versions = getVersionsWithDiffs(patches, versionDiffs);
+
+  return (
+    <EventList
+      events={events}
+      versions={versions}
+      currentVersion={meta.version}
+      patches={patches}
+      versionDiffs={versionDiffs}
+    />
+  );
 }

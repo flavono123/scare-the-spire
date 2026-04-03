@@ -13,8 +13,11 @@ import {
   EVENT_ACT_UNKNOWN,
   EVENT_ACT_ALIASES,
 } from "@/lib/codex-types";
+import type { EntityVersionDiff, STS2Patch } from "@/lib/types";
+import { reconstructEventAtVersion } from "@/lib/entity-versioning";
 import { RichText } from "@/components/rich-text";
 import { SearchBar, TriggerGroup } from "./search-bar";
+import { VersionSelector } from "./version-selector";
 import { FilterSection, ToggleButton } from "./codex-filters";
 
 // --- Search triggers ---
@@ -285,12 +288,25 @@ function EventExpanded({
 // --- Main EventList component ---
 interface EventListProps {
   events: CodexEvent[];
+  versions: string[];
+  currentVersion: string;
+  patches: STS2Patch[];
+  versionDiffs: EntityVersionDiff[];
 }
 
-export function EventList({ events }: EventListProps) {
+export function EventList({ events, versions, currentVersion, patches, versionDiffs }: EventListProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedVersion, setSelectedVersion] = useState(currentVersion);
+
+  // Reconstruct events at selected version
+  const versionedEvents = useMemo(() => {
+    if (selectedVersion === currentVersion) return events;
+    return events.map((event) =>
+      reconstructEventAtVersion(event, selectedVersion, currentVersion, versionDiffs, patches),
+    );
+  }, [events, selectedVersion, currentVersion, versionDiffs, patches]);
 
   // Cmd+K to focus search
   useEffect(() => {
@@ -343,7 +359,7 @@ export function EventList({ events }: EventListProps) {
 
   // Filter events
   const filtered = useMemo(() => {
-    return events.filter((e) => {
+    return versionedEvents.filter((e) => {
       // Act filter (sidebar toggles)
       if (selectedActs.size > 0) {
         const actKey = e.act ?? "none";
@@ -365,7 +381,7 @@ export function EventList({ events }: EventListProps) {
 
       return true;
     });
-  }, [events, selectedActs, parsedSearch, fuzzyMatch]);
+  }, [versionedEvents, selectedActs, parsedSearch, fuzzyMatch]);
 
   // Group by act
   const groups = useMemo(() => {
@@ -452,14 +468,22 @@ export function EventList({ events }: EventListProps) {
 
           {/* Main content */}
           <div className="flex-1 min-w-0">
-            {/* Search */}
-            <div className="mb-6">
-              <SearchBar
-                value={searchQuery}
-                onChange={setSearchQuery}
-                inputId="codex-search"
-                triggerGroups={EVENT_TRIGGERS}
-                placeholder="이벤트 검색... (⌘K)"
+            {/* Search + Version */}
+            <div className="mb-6 flex items-center gap-2">
+              <div className="flex-1">
+                <SearchBar
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  inputId="codex-search"
+                  triggerGroups={EVENT_TRIGGERS}
+                  placeholder="이벤트 검색... (⌘K)"
+                />
+              </div>
+              <VersionSelector
+                versions={versions}
+                currentVersion={currentVersion}
+                selectedVersion={selectedVersion}
+                onChange={setSelectedVersion}
               />
             </div>
 
