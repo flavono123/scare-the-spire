@@ -28,7 +28,7 @@ const EVENT_TRIGGERS: TriggerGroup[] = [
     items: [
       { value: "1막", label: "1막 — 과성장", desc: "Act 1 Overgrowth" },
       { value: "언더독스", label: "언더독스", desc: "Underdocks" },
-      { value: "2막", label: "2막 — 벌집", desc: "Act 2 Hive" },
+      { value: "2막", label: "2막 — 군락", desc: "Act 2 Hive" },
       { value: "3막", label: "3막 — 영광", desc: "Act 3 Glory" },
       { value: "미지정", label: "미지정", desc: "No act" },
     ],
@@ -402,7 +402,7 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
         act,
         label: config.labelKo,
         color: config.color,
-        events: items,
+        events: items.sort((a, b) => a.name.localeCompare(b.name, "ko")),
       });
     }
     return ordered;
@@ -432,12 +432,9 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
       {/* Header */}
       <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
         <div className="mx-auto max-w-5xl px-6 py-8 text-center">
-          <h1 className="font-[family-name:var(--font-spectral)] text-3xl md:text-4xl text-yellow-500 mb-2">
+          <h1 className="font-[family-name:var(--font-gc-batang)] text-3xl md:text-4xl text-yellow-500 mb-2">
             이벤트
           </h1>
-          <p className="font-[family-name:var(--font-gc-batang)] text-sm text-yellow-200/50">
-            첨탑에서 마주하는 {events.length}가지 선택의 순간
-          </p>
         </div>
       </div>
 
