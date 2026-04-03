@@ -367,9 +367,17 @@ export async function getCodexEvents(): Promise<CodexEvent[]> {
 
   const engById = new Map(engEvents.map((e) => [e.id, e]));
 
-  return korEvents.map((kor) => {
-    const eng = engById.get(kor.id) ?? kor;
-    return mapEvent(kor, eng, imgFiles);
-  });
+  return korEvents
+    .filter((e) => {
+      // Exclude ancients (have image_url pointing to ancients assets)
+      if (e.image_url?.includes("/ancients/")) return false;
+      // Exclude placeholder events with no description
+      if (!e.description) return false;
+      return true;
+    })
+    .map((kor) => {
+      const eng = engById.get(kor.id) ?? kor;
+      return mapEvent(kor, eng, imgFiles);
+    });
 }
 
