@@ -71,7 +71,7 @@ const categories = [
     href: "/codex/events",
     label: "이벤트",
     labelEn: "Events",
-    count: 66,
+    count: 57,
     description: "첨탑에서 마주하는 선택의 순간",
     images: [
       "/images/sts2/events/abyssal_baths.webp",
