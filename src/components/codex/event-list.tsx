@@ -27,7 +27,7 @@ const EVENT_TRIGGERS: TriggerGroup[] = [
     label: "막",
     items: [
       { value: "1막", label: "1막 — 과성장", desc: "Act 1 Overgrowth" },
-      { value: "언더독스", label: "언더독스", desc: "Underdocks" },
+      { value: "지하 선착장", label: "1막 — 지하 선착장", desc: "Underdocks" },
       { value: "2막", label: "2막 — 군락", desc: "Act 2 Hive" },
       { value: "3막", label: "3막 — 영광", desc: "Act 3 Glory" },
       { value: "미지정", label: "미지정", desc: "No act" },
