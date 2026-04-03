@@ -423,7 +423,7 @@ export const EVENT_ACT_ORDER: (EventAct | null)[] = [
 export const EVENT_ACT_CONFIG: Record<string, { label: string; labelKo: string; color: string; border: string; bg: string }> = {
   "Act 1 - Overgrowth": { label: "Overgrowth", labelKo: "1막 — 과성장", color: "text-green-400", border: "border-green-500/40", bg: "bg-green-500/10" },
   Underdocks: { label: "Underdocks", labelKo: "언더독스", color: "text-blue-400", border: "border-blue-500/40", bg: "bg-blue-500/10" },
-  "Act 2 - Hive": { label: "Hive", labelKo: "2막 — 벌집", color: "text-orange-400", border: "border-orange-500/40", bg: "bg-orange-500/10" },
+  "Act 2 - Hive": { label: "Hive", labelKo: "2막 — 군락", color: "text-orange-400", border: "border-orange-500/40", bg: "bg-orange-500/10" },
   "Act 3 - Glory": { label: "Glory", labelKo: "3막 — 영광", color: "text-yellow-400", border: "border-yellow-500/40", bg: "bg-yellow-500/10" },
 };
 
@@ -438,7 +438,7 @@ export const EVENT_ACT_ALIASES: Record<string, EventAct | "none"> = {
   언더독스: "Underdocks",
   underdocks: "Underdocks",
   "2막": "Act 2 - Hive",
-  벌집: "Act 2 - Hive",
+  군락: "Act 2 - Hive",
   hive: "Act 2 - Hive",
   "3막": "Act 3 - Glory",
   영광: "Act 3 - Glory",
