@@ -94,5 +94,17 @@
     "summary": "Regent card buffs (7 cards), Prepared revert, relic rarity shuffle, Skulking Colony nerf, Doormaker rework, Voltaic nerf.",
     "summaryKo": "리젠트 카드 버프 (7장), 예비 되돌림, 유물 희귀도 재조정, 잠행 군체 너프, 문을 만드는 자 리워크, 동전기 너프.",
     "hasBalanceChanges": true
+  },
+  {
+    "id": "v0.102.0",
+    "version": "0.102.0",
+    "date": "2026-04-03",
+    "title": "Beta Patch Notes - v0.102.0",
+    "titleKo": "베타 패치 노트 - v0.102.0",
+    "type": "beta",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/507357952986842134",
+    "summary": "Badges system, Blade of Ink rework, Borrowed Time rework, Ascension 6 rework, Leading Strike buff, Speedster/Untouchable nerfs, Doormaker Grasp rework.",
+    "summaryKo": "배지 시스템, 잉크 칼날 리워크, 연명 리워크, 승천 6 리워크, 선제 타격 버프, 스피드스터/범접 불가 너프, 문을 만드는 자 움켜잡기 리워크.",
+    "hasBalanceChanges": true
   }
 ]
