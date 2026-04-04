@@ -58,7 +58,7 @@ function EntityPreview({
       setPosition(rect.top < threshold ? "below" : "above");
     }
     setShow(true);
-  }, [entity.cardData, entity.relicData, entity.potionData, entity.powerData, entity.enchantmentData, entity.eventData]);
+  }, [entity.cardData, entity.relicData, entity.potionData, entity.powerData, entity.enchantmentData, entity.eventData, entity.monsterData]);
 
   const hrefMap: Record<EntityType, string> = {
     card: `/codex/cards?card=${entity.id.toLowerCase()}`,
@@ -67,6 +67,7 @@ function EntityPreview({
     power: `/codex/powers?power=${entity.id.toLowerCase()}`,
     enchantment: `/codex/enchantments?enchantment=${entity.id.toLowerCase()}`,
     event: `/codex/events/${entity.id.toLowerCase()}`,
+    monster: `/codex/monsters?monster=${entity.id.toLowerCase()}`,
   };
   const href = hrefMap[entity.type];
 
@@ -322,7 +323,55 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && entity.imageUrl && (
+      {show && entity.type === "monster" && entity.monsterData && (
+        <span
+          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
+            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
+        >
+          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
+            <span className="flex items-center gap-2 mb-1">
+              {(entity.monsterData.bossImageUrl || entity.monsterData.imageUrl) && (
+                <Image
+                  src={entity.monsterData.bossImageUrl ?? entity.monsterData.imageUrl!}
+                  alt={entity.nameKo}
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 object-cover rounded"
+                />
+              )}
+              <span className="block">
+                <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
+                <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+              </span>
+            </span>
+            <span className="flex items-center gap-1.5 mb-2">
+              <span
+                className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                style={{
+                  backgroundColor: `${MONSTER_TYPE_CONFIG[entity.monsterData.type].color}20`,
+                  color: MONSTER_TYPE_CONFIG[entity.monsterData.type].color,
+                }}
+              >
+                {MONSTER_TYPE_CONFIG[entity.monsterData.type].label}
+              </span>
+              {entity.monsterData.minHp != null && entity.monsterData.minHp !== 9999 && (
+                <span className="text-[10px] text-gray-400">
+                  HP {entity.monsterData.maxHp && entity.monsterData.maxHp !== entity.monsterData.minHp
+                    ? `${entity.monsterData.minHp}-${entity.monsterData.maxHp}`
+                    : entity.monsterData.minHp}
+                </span>
+              )}
+            </span>
+            {entity.monsterData.moves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).length > 0 && (
+              <span className="block text-xs text-gray-300 leading-relaxed">
+                {entity.monsterData.moves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).slice(0, 4).map((m) => m.name).join(", ")}
+              </span>
+            )}
+          </span>
+        </span>
+      )}
+      {show && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && entity.imageUrl && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
