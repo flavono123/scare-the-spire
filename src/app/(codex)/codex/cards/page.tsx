@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getCodexCards, getCodexCharacters } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
@@ -15,13 +16,15 @@ export default async function CodexCardsPage() {
   const versions = getVersionsWithDiffs(patches, versionDiffs);
 
   return (
-    <CardLibrary
-      cards={cards}
-      characters={characters}
-      versions={versions}
-      currentVersion={meta.version}
-      patches={patches}
-      versionDiffs={versionDiffs}
-    />
+    <Suspense>
+      <CardLibrary
+        cards={cards}
+        characters={characters}
+        versions={versions}
+        currentVersion={meta.version}
+        patches={patches}
+        versionDiffs={versionDiffs}
+      />
+    </Suspense>
   );
 }
