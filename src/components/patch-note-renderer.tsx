@@ -8,13 +8,13 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent } from "@/lib/codex-types";
 import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, POWER_TYPE_CONFIG, ENCHANTMENT_CARD_TYPE_CONFIG, getCharacterColor, characterOutlineFilter, type RelicFilterPool, type EnchantmentCardTypeFilter } from "@/lib/codex-types";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
 
 // Entity types that can appear in patch notes
-export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment";
+export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "event";
 
 export interface EntityInfo {
   id: string;
@@ -28,6 +28,7 @@ export interface EntityInfo {
   potionData?: CodexPotion; // Full potion data for rich preview
   powerData?: CodexPower; // Full power data for rich preview
   enchantmentData?: CodexEnchantment; // Full enchantment data for rich preview
+  eventData?: CodexEvent; // Full event data for rich preview
 }
 
 // Keep backward compat alias
@@ -55,18 +56,17 @@ function EntityPreview({
       setPosition(rect.top < threshold ? "below" : "above");
     }
     setShow(true);
-  }, [entity.cardData, entity.relicData, entity.potionData, entity.powerData, entity.enchantmentData]);
+  }, [entity.cardData, entity.relicData, entity.potionData, entity.powerData, entity.enchantmentData, entity.eventData]);
 
-  const href =
-    entity.type === "card"
-      ? `/codex/cards?card=${entity.id.toLowerCase()}`
-      : entity.type === "relic"
-        ? `/codex/relics?relic=${entity.id.toLowerCase()}`
-        : entity.type === "potion"
-          ? `/codex/potions?potion=${entity.id.toLowerCase()}`
-          : entity.type === "power"
-            ? `/codex/powers?power=${entity.id.toLowerCase()}`
-            : `/codex/enchantments?enchantment=${entity.id.toLowerCase()}`;
+  const hrefMap: Record<EntityType, string> = {
+    card: `/codex/cards?card=${entity.id.toLowerCase()}`,
+    relic: `/codex/relics?relic=${entity.id.toLowerCase()}`,
+    potion: `/codex/potions?potion=${entity.id.toLowerCase()}`,
+    power: `/codex/powers?power=${entity.id.toLowerCase()}`,
+    enchantment: `/codex/enchantments?enchantment=${entity.id.toLowerCase()}`,
+    event: `/codex/events/${entity.id.toLowerCase()}`,
+  };
+  const href = hrefMap[entity.type];
 
   return (
     <span
@@ -275,7 +275,36 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && entity.imageUrl && (
+      {show && entity.type === "event" && entity.eventData && (
+        <span
+          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
+            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
+        >
+          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95">
+            {entity.eventData.imageUrl && (
+              <span className="block relative w-full h-24">
+                <Image
+                  src={entity.eventData.imageUrl}
+                  alt={entity.nameKo}
+                  fill
+                  sizes="256px"
+                  className="object-cover"
+                />
+              </span>
+            )}
+            <span className="block p-3">
+              <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
+              <span className="block text-[10px] text-gray-500 mb-1">{entity.nameEn}</span>
+              <span className="block text-xs text-gray-200 leading-relaxed line-clamp-3">
+                {entity.eventData.description.replace(/\[.*?\]/g, "").slice(0, 120)}
+                {entity.eventData.description.length > 120 ? "…" : ""}
+              </span>
+            </span>
+          </span>
+        </span>
+      )}
+      {show && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && entity.imageUrl && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
