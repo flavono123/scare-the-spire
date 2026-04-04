@@ -8,6 +8,8 @@ import {
   CodexPower,
   CodexEnchantment,
   CodexEvent,
+  CodexMonster,
+  CodexEncounter,
   EventOption,
   EventPage,
   EventAct,
@@ -18,6 +20,11 @@ import {
   PotionPool,
   PowerType,
   PowerStackType,
+  MonsterType,
+  MonsterMove,
+  DamageValue,
+  EncounterRoomType,
+  EncounterMonsterRef,
 } from "./codex-types";
 // Version reconstruction functions are in entity-versioning.ts (client-safe, no fs)
 
@@ -379,5 +386,154 @@ export async function getCodexEvents(): Promise<CodexEvent[]> {
       const eng = engById.get(kor.id) ?? kor;
       return mapEvent(kor, eng, imgFiles);
     });
+}
+
+// Raw STS2 JSON monster shape
+interface RawMonsterMove {
+  id: string;
+  name: string;
+}
+
+interface RawDamageValue {
+  normal: number | null;
+  ascension: number | null;
+}
+
+interface RawMonster {
+  id: string;
+  name: string;
+  type: string;
+  min_hp: number | null;
+  max_hp: number | null;
+  min_hp_ascension: number | null;
+  max_hp_ascension: number | null;
+  moves: RawMonsterMove[];
+  damage_values: Record<string, RawDamageValue> | null;
+  block_values: Record<string, number> | null;
+  image_url: string | null;
+}
+
+function mapMonster(kor: RawMonster, eng: RawMonster, bossImages: Set<string>): CodexMonster {
+  // Map moves with both languages
+  const moves: MonsterMove[] = kor.moves.map((km, i) => ({
+    id: km.id,
+    name: km.name,
+    nameEn: eng.moves[i]?.name ?? km.name,
+  }));
+
+  // Map damage values
+  const damageValues: Record<string, DamageValue> | null = kor.damage_values
+    ? Object.fromEntries(
+        Object.entries(kor.damage_values).map(([k, v]) => [
+          k,
+          { normal: v.normal, ascension: v.ascension },
+        ]),
+      )
+    : null;
+
+  // Try boss image (encounter-level art in bosses/ dir)
+  let imageUrl: string | null = null;
+  const idLower = kor.id.toLowerCase();
+  if (bossImages.has(`${idLower}_boss`)) {
+    imageUrl = `/images/sts2/bosses/${idLower}_boss.webp`;
+  }
+
+  return {
+    id: kor.id,
+    name: kor.name,
+    nameEn: eng.name,
+    type: kor.type as MonsterType,
+    minHp: kor.min_hp,
+    maxHp: kor.max_hp,
+    minHpAscension: kor.min_hp_ascension,
+    maxHpAscension: kor.max_hp_ascension,
+    moves,
+    damageValues: damageValues,
+    blockValues: kor.block_values,
+    imageUrl,
+  };
+}
+
+export async function getCodexMonsters(): Promise<CodexMonster[]> {
+  const BOSSES_IMG_DIR = path.join(process.cwd(), "public/images/sts2/bosses");
+  const [korMonsters, engMonsters, bossFiles] = await Promise.all([
+    readJson<RawMonster[]>("kor/monsters.json"),
+    readJson<RawMonster[]>("eng/monsters.json"),
+    fs.readdir(BOSSES_IMG_DIR).then(
+      (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
+      () => new Set<string>(),
+    ),
+  ]);
+
+  const engById = new Map(engMonsters.map((m) => [m.id, m]));
+
+  return korMonsters.map((kor) => {
+    const eng = engById.get(kor.id) ?? kor;
+    return mapMonster(kor, eng, bossFiles);
+  });
+}
+
+// Raw STS2 JSON encounter shape
+interface RawEncounterMonster {
+  id: string;
+  name: string;
+}
+
+interface RawEncounter {
+  id: string;
+  name: string;
+  room_type: string;
+  is_weak: boolean;
+  act: string | null;
+  tags: string[] | null;
+  monsters: RawEncounterMonster[];
+  loss_text: string;
+}
+
+function mapEncounter(kor: RawEncounter, eng: RawEncounter, bossImages: Set<string>): CodexEncounter {
+  const monsters: EncounterMonsterRef[] = kor.monsters.map((km, i) => ({
+    id: km.id,
+    name: km.name,
+    nameEn: eng.monsters[i]?.name ?? km.name,
+  }));
+
+  // Check for boss encounter image
+  let imageUrl: string | null = null;
+  const idLower = kor.id.toLowerCase();
+  if (bossImages.has(idLower)) {
+    imageUrl = `/images/sts2/bosses/${idLower}.webp`;
+  }
+
+  return {
+    id: kor.id,
+    name: kor.name,
+    nameEn: eng.name,
+    roomType: kor.room_type as EncounterRoomType,
+    isWeak: kor.is_weak,
+    act: (kor.act as EventAct | null),
+    tags: kor.tags,
+    monsters,
+    lossText: kor.loss_text,
+    imageUrl,
+  };
+}
+
+export async function getCodexEncounters(): Promise<CodexEncounter[]> {
+  const BOSSES_IMG_DIR = path.join(process.cwd(), "public/images/sts2/bosses");
+  const [korEncounters, engEncounters, bossFiles] = await Promise.all([
+    readJson<RawEncounter[]>("kor/encounters.json"),
+    readJson<RawEncounter[]>("eng/encounters.json"),
+    fs.readdir(BOSSES_IMG_DIR).then(
+      (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
+      () => new Set<string>(),
+    ),
+  ]);
+
+  const engById = new Map(engEncounters.map((e) => [e.id, e]));
+
+  return korEncounters.map((kor) => {
+    const eng = engById.get(kor.id) ?? kor;
+    return mapEncounter(kor, eng, bossFiles);
+  });
 }
 
