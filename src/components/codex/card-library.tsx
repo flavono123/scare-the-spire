@@ -22,6 +22,49 @@ import {
   RARITY_DETAIL_ORDER,
   RARITY_DETAIL_COLORS,
 } from "@/lib/card-annotations";
+
+// Sort key definitions
+export type SortKey = "type" | "rarity" | "cost" | "name";
+export type SortDir = "asc" | "desc";
+
+const TYPE_SORT_ORDER: Record<string, number> = {
+  "공격": 0, "스킬": 1, "파워": 2, "저주": 3, "상태이상": 4, "퀘스트": 5,
+};
+
+const RARITY_SORT_ORDER: Record<string, number> = {
+  "기본": 0, "일반": 1, "고급": 2, "희귀": 3,
+  // "기타" bucket
+  "고대의 존재": 4, "이벤트": 4, "토큰": 4, "저주": 4, "상태이상": 4, "퀘스트": 4,
+};
+
+const SORT_LABELS: Record<SortKey, string> = {
+  type: "유형",
+  rarity: "희귀도",
+  cost: "비용",
+  name: "이름순",
+};
+
+// Default sort priority: type → rarity → cost → name
+const DEFAULT_SORT_KEYS: SortKey[] = ["type", "rarity", "cost", "name"];
+
+function compareCards(a: CodexCard, b: CodexCard, key: SortKey, dir: SortDir): number {
+  let cmp = 0;
+  switch (key) {
+    case "type":
+      cmp = (TYPE_SORT_ORDER[a.type] ?? 99) - (TYPE_SORT_ORDER[b.type] ?? 99);
+      break;
+    case "rarity":
+      cmp = (RARITY_SORT_ORDER[a.rarity] ?? 99) - (RARITY_SORT_ORDER[b.rarity] ?? 99);
+      break;
+    case "cost":
+      cmp = a.cost - b.cost;
+      break;
+    case "name":
+      cmp = a.name.localeCompare(b.name, "ko");
+      break;
+  }
+  return dir === "desc" ? -cmp : cmp;
+}
 import { CardTile } from "./card-tile";
 import { SearchBar } from "./search-bar";
 import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
@@ -82,6 +125,12 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
   const [showUpgrades, setShowUpgrades] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
   const [showMultiplayer, setShowMultiplayer] = useState(true);
+
+  // Sort state: ordered priority list of sort keys with directions
+  const [sortKeys, setSortKeys] = useState<SortKey[]>(DEFAULT_SORT_KEYS);
+  const [sortDirs, setSortDirs] = useState<Record<SortKey, SortDir>>({
+    type: "asc", rarity: "asc", cost: "asc", name: "asc",
+  });
 
   // Cmd+K to focus search
   useEffect(() => {
@@ -243,8 +292,14 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
       );
     }
 
-    // Always sort by Korean name
-    return [...result].sort((a, b) => a.name.localeCompare(b.name, "ko"));
+    // Multi-level sort by sortKeys priority
+    return [...result].sort((a, b) => {
+      for (const key of sortKeys) {
+        const cmp = compareCards(a, b, key, sortDirs[key]);
+        if (cmp !== 0) return cmp;
+      }
+      return 0;
+    });
   }, [
     versionedCards,
     selectedColors,
@@ -256,6 +311,8 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
     fuzzyMatch,
     matchCost,
     getCardCategory,
+    sortKeys,
+    sortDirs,
   ]);
 
   // Progressive rendering — render cards in batches to avoid initial jank
@@ -340,6 +397,19 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
       return new Set([...prev, "기타"]);
     });
   }, []);
+
+  // Sort toggle: clicking a sort key promotes it to primary and toggles direction
+  const toggleSort = useCallback((key: SortKey) => {
+    setSortKeys((prev) => {
+      const without = prev.filter((k) => k !== key);
+      return [key, ...without];
+    });
+    setSortDirs((prev) => {
+      // If already primary, toggle direction; otherwise set to asc
+      const isPrimary = sortKeys[0] === key;
+      return { ...prev, [key]: isPrimary ? (prev[key] === "asc" ? "desc" : "asc") : "asc" };
+    });
+  }, [sortKeys]);
 
   const toggleCost = useCallback((cost: string) => {
     setSelectedCosts((prev) => {
@@ -521,6 +591,34 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
                   }`}
                 >
                   {cost}
+                </button>
+              );
+            })}
+          </div>
+        </FilterSection>
+
+        {/* Sort */}
+        <FilterSection label="정렬">
+          <div className="flex flex-col gap-0.5">
+            {(["type", "rarity", "cost", "name"] as SortKey[]).map((key) => {
+              const isPrimary = sortKeys[0] === key;
+              const idx = sortKeys.indexOf(key);
+              const dir = sortDirs[key];
+              return (
+                <button
+                  key={key}
+                  onClick={() => toggleSort(key)}
+                  className={`flex items-center justify-between text-left text-sm px-2.5 py-1 rounded transition-all ${
+                    isPrimary
+                      ? "bg-yellow-500/20 text-yellow-400"
+                      : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-gray-500 w-3 text-center tabular-nums">{idx + 1}</span>
+                    {SORT_LABELS[key]}
+                  </span>
+                  <span className="text-xs opacity-60">{dir === "asc" ? "▲" : "▼"}</span>
                 </button>
               );
             })}
