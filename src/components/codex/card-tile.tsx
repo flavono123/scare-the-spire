@@ -69,7 +69,7 @@ const CHAR_HSV: Record<string, HSV> = {
   regent: { h: 0.12, s: 1.5, v: 1.2 },         // card_frame_orange_mat (orange/gold)
   colorless: { h: 1.0, s: 0.0, v: 1.2 },
   curse: { h: 0.85, s: 0.05, v: 0.55 },
-  quest: { h: 1.0, s: 1.0, v: 1.0 },
+  quest: { h: 0.0, s: 0.0, v: 0.85 },   // stone gray frame
   event: { h: 1.0, s: 0.0, v: 1.0 },
   status: { h: 0.12, s: 0.3, v: 0.7 },
   token: { h: 1.0, s: 0.0, v: 0.8 },
@@ -113,7 +113,7 @@ const RARITY_BANNER_FILTER: Record<string, string> = {
   토큰: "saturate(0) brightness(0.5)",
   저주: "hue-rotate(150deg) saturate(0.6) brightness(0.4)",
   상태이상: "hue-rotate(-120deg) saturate(0.4) brightness(0.5)",
-  퀘스트: "hue-rotate(-30deg) saturate(0.7) brightness(0.7)",
+  퀘스트: "hue-rotate(-150deg) saturate(1.3) brightness(1.0)",
 };
 
 // Rarity -> darker outline color for card name text
@@ -128,7 +128,7 @@ const RARITY_OUTLINE: Record<string, string> = {
   토큰: "#1a1a1a",
   저주: "#2a1020",
   상태이상: "#1a1a2a",
-  퀘스트: "#1a2a3a",
+  퀘스트: "#3a2010",
 };
 
 // Energy orb outline colors (darker shade of each orb's dominant color)
