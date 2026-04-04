@@ -6,10 +6,16 @@ export function FilterSection({
   trigger,
   label,
   children,
+  sortDir,
+  sortPriority,
+  onSortToggle,
 }: {
   trigger?: string;
   label: string;
   children: React.ReactNode;
+  sortDir?: "asc" | "desc";
+  sortPriority?: number; // 1-based priority number
+  onSortToggle?: () => void;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -22,6 +28,25 @@ export function FilterSection({
         <span className="text-[11px] text-gray-500 font-medium uppercase tracking-wider">
           {label}
         </span>
+        {onSortToggle && (
+          <button
+            onClick={onSortToggle}
+            className="ml-auto flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] hover:bg-white/10 transition-colors"
+            title="정렬 기준 변경"
+          >
+            {sortPriority !== undefined && (
+              <span className="text-yellow-500/60 tabular-nums">{sortPriority}</span>
+            )}
+            <svg className="w-3 h-3" viewBox="0 0 16 16" fill="none" stroke={sortDir ? "#eab308" : "#6b7280"} strokeWidth="2" strokeLinecap="round">
+              <path d="M4 6h8M5 9h6M6.5 12h3" />
+              {sortDir === "desc" ? (
+                <path d="M13 4l-1.5 2M13 4l1.5 2" strokeWidth="1.5" />
+              ) : (
+                <path d="M13 13l-1.5-2M13 13l1.5-2" strokeWidth="1.5" />
+              )}
+            </svg>
+          </button>
+        )}
       </div>
       {children}
     </div>
