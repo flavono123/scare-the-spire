@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
 import type {
   CodexEvent,
@@ -18,7 +19,7 @@ import { reconstructEventAtVersion } from "@/lib/entity-versioning";
 import { SearchBar, TriggerGroup } from "./search-bar";
 import { VersionSelector } from "./version-selector";
 import { FilterSection, ToggleButton } from "./codex-filters";
-import { EventContentViewer } from "./event-detail";
+import { EventDetail } from "./event-detail";
 
 // --- Search triggers ---
 const EVENT_TRIGGERS: TriggerGroup[] = [
@@ -100,61 +101,6 @@ function EventThumbnail({
   );
 }
 
-// --- Expanded event card (inline, game-like layout) ---
-function EventExpanded({
-  event,
-  onClose,
-}: {
-  event: CodexEvent;
-  onClose: () => void;
-}) {
-  return (
-    <div className="rounded-xl border border-yellow-900/30 bg-[#12121a] overflow-hidden animate-in slide-in-from-top-1 fade-in duration-200">
-      <div className="flex flex-col md:flex-row">
-        {/* Left: Event art */}
-        {event.imageUrl && (
-          <div className="relative md:w-[360px] h-[200px] md:h-auto md:min-h-[300px] flex-shrink-0">
-            <Image
-              src={event.imageUrl}
-              alt={event.name}
-              fill
-              sizes="360px"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-transparent via-transparent to-[#12121a]" />
-          </div>
-        )}
-
-        {/* Right: Title, description, choices */}
-        <div className="flex-1 p-5 md:p-6 min-w-0">
-          <div className="flex items-start justify-between gap-3 mb-4">
-            <div>
-              <h2 className="font-[family-name:var(--font-gc-batang)] text-xl text-yellow-400">
-                {event.name}
-              </h2>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-xs text-zinc-500">{event.nameEn}</span>
-                <ActBadge act={event.act} />
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-zinc-600 hover:text-zinc-300 transition-colors p-1 flex-shrink-0"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Interactive content (description + options in-place) */}
-          <EventContentViewer event={event} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // --- Main EventList component ---
 interface EventListProps {
   events: CodexEvent[];
@@ -165,10 +111,47 @@ interface EventListProps {
 }
 
 export function EventList({ events, versions, currentVersion, patches, versionDiffs }: EventListProps) {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const searchParams = useSearchParams();
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
+
+  // Event detail modal
+  const initialEventId = searchParams.get("event");
+  const [selectedEvent, setSelectedEvent] = useState<CodexEvent | null>(() => {
+    if (!initialEventId) return null;
+    return events.find((e) => e.id.toLowerCase() === initialEventId.toLowerCase()) ?? null;
+  });
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (selectedEvent) {
+      url.searchParams.set("event", selectedEvent.id.toLowerCase());
+    } else {
+      url.searchParams.delete("event");
+    }
+    if (url.toString() !== window.location.href) {
+      window.history.pushState(null, "", url.toString());
+    }
+  }, [selectedEvent]);
+
+  useEffect(() => {
+    const handler = () => {
+      const url = new URL(window.location.href);
+      const p = url.searchParams.get("event");
+      if (!p) setSelectedEvent(null);
+      else setSelectedEvent(events.find((e) => e.id.toLowerCase() === p.toLowerCase()) ?? null);
+    };
+    window.addEventListener("popstate", handler);
+    return () => window.removeEventListener("popstate", handler);
+  }, [events]);
+
+  useEffect(() => {
+    if (!selectedEvent) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setSelectedEvent(null); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [selectedEvent]);
 
   // Reconstruct events at selected version
   const versionedEvents = useMemo(() => {
@@ -389,21 +372,13 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
                       </span>
                     </h2>
                     <div className="space-y-2">
-                      {group.events.map((event) =>
-                        expandedId === event.id ? (
-                          <EventExpanded
-                            key={event.id}
-                            event={event}
-                            onClose={() => setExpandedId(null)}
-                          />
-                        ) : (
-                          <EventThumbnail
-                            key={event.id}
-                            event={event}
-                            onClick={() => setExpandedId(event.id)}
-                          />
-                        ),
-                      )}
+                      {group.events.map((event) => (
+                        <EventThumbnail
+                          key={event.id}
+                          event={event}
+                          onClick={() => setSelectedEvent(event)}
+                        />
+                      ))}
                     </div>
                   </section>
                 ))}
@@ -414,6 +389,18 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
       </div>
 
       <div className="h-16" />
+
+      {/* Event Detail Modal */}
+      {selectedEvent && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
+          onClick={(e) => { if (e.target === e.currentTarget) setSelectedEvent(null); }}
+        >
+          <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
+            <EventDetail event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

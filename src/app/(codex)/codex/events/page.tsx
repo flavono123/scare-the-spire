@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getCodexEvents } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
@@ -19,12 +20,14 @@ export default async function CodexEventsPage() {
   const versions = getVersionsWithDiffs(patches, versionDiffs);
 
   return (
-    <EventList
-      events={events}
-      versions={versions}
-      currentVersion={meta.version}
-      patches={patches}
-      versionDiffs={versionDiffs}
-    />
+    <Suspense>
+      <EventList
+        events={events}
+        versions={versions}
+        currentVersion={meta.version}
+        patches={patches}
+        versionDiffs={versionDiffs}
+      />
+    </Suspense>
   );
 }
