@@ -8,8 +8,10 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic, CodexPotion } from "@/lib/codex-types";
+import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, getCharacterColor, characterOutlineFilter, type RelicFilterPool } from "@/lib/codex-types";
 import { CardTile } from "@/components/codex/card-tile";
+import { DescriptionText } from "@/components/codex/codex-description";
 
 // Entity types that can appear in patch notes
 export type EntityType = "card" | "relic" | "potion";
@@ -22,6 +24,8 @@ export interface EntityInfo {
   color: string; // card color or pool
   type: EntityType;
   cardData?: CodexCard; // Full card data for rich preview
+  relicData?: CodexRelic; // Full relic data for rich preview
+  potionData?: CodexPotion; // Full potion data for rich preview
 }
 
 // Keep backward compat alias
@@ -43,8 +47,8 @@ function EntityPreview({
   const handleMouseEnter = useCallback(() => {
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
-      // Card tile preview is taller (~340px), need more space
-      const threshold = entity.cardData ? 380 : 260;
+      // Card tile preview is taller (~340px), relic/potion tooltips ~200px
+      const threshold = entity.cardData ? 380 : (entity.relicData || entity.potionData) ? 260 : 260;
       setPosition(rect.top < threshold ? "below" : "above");
     }
     setShow(true);
@@ -54,8 +58,8 @@ function EntityPreview({
     entity.type === "card"
       ? `/codex/cards?card=${entity.id.toLowerCase()}`
       : entity.type === "relic"
-        ? `/codex/relics#${entity.id}`
-        : `/codex/potions#${entity.id}`;
+        ? `/codex/relics?relic=${entity.id.toLowerCase()}`
+        : `/codex/potions?potion=${entity.id.toLowerCase()}`;
 
   return (
     <span
@@ -81,7 +85,105 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && (entity.type !== "card" || !entity.cardData) && entity.imageUrl && (
+      {show && entity.type === "relic" && entity.relicData && (
+        <span
+          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
+            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
+        >
+          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
+            <span className="flex items-center gap-2 mb-1">
+              {entity.relicData.imageUrl && (
+                <Image
+                  src={entity.relicData.imageUrl}
+                  alt={entity.nameKo}
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 object-contain"
+                  style={{
+                    filter: characterOutlineFilter(entity.relicData.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
+                  }}
+                />
+              )}
+              <span className="block">
+                <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
+                <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+              </span>
+            </span>
+            <span className="flex items-center gap-1.5 mb-2">
+              <span
+                className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                style={{
+                  backgroundColor: `${RELIC_RARITY_COLORS[entity.relicData.rarity]}20`,
+                  color: RELIC_RARITY_COLORS[entity.relicData.rarity],
+                }}
+              >
+                {RELIC_RARITY_LABELS[entity.relicData.rarity]}
+              </span>
+              {entity.relicData.pool !== "shared" && (
+                <span
+                  className="text-[10px] font-medium"
+                  style={{ color: getCharacterColor(entity.relicData.pool) }}
+                >
+                  {POOL_LABELS[entity.relicData.pool as RelicFilterPool]}
+                </span>
+              )}
+            </span>
+            <span className="block text-xs text-gray-200 leading-relaxed">
+              <DescriptionText description={entity.relicData.description} />
+            </span>
+          </span>
+        </span>
+      )}
+      {show && entity.type === "potion" && entity.potionData && (
+        <span
+          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
+            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
+        >
+          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
+            <span className="flex items-center gap-2 mb-1">
+              <Image
+                src={entity.potionData.imageUrl}
+                alt={entity.nameKo}
+                width={32}
+                height={32}
+                className="w-8 h-8 object-contain"
+                style={{
+                  filter: characterOutlineFilter(entity.potionData.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
+                }}
+              />
+              <span className="block">
+                <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
+                <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+              </span>
+            </span>
+            <span className="flex items-center gap-1.5 mb-2">
+              <span
+                className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                style={{
+                  backgroundColor: `${POTION_RARITY_CONFIG[entity.potionData.rarity].color}20`,
+                  color: POTION_RARITY_CONFIG[entity.potionData.rarity].color,
+                }}
+              >
+                {POTION_RARITY_CONFIG[entity.potionData.rarity].label}
+              </span>
+              {entity.potionData.pool !== "shared" && (
+                <span
+                  className="text-[10px] font-medium"
+                  style={{ color: getCharacterColor(entity.potionData.pool) }}
+                >
+                  {entity.potionData.pool === "event" ? "이벤트" : POOL_LABELS[entity.potionData.pool as RelicFilterPool]}
+                </span>
+              )}
+            </span>
+            <span className="block text-xs text-gray-200 leading-relaxed">
+              <DescriptionText description={entity.potionData.description} />
+            </span>
+          </span>
+        </span>
+      )}
+      {show && !entity.cardData && !entity.relicData && !entity.potionData && entity.imageUrl && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"

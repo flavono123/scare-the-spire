@@ -73,6 +73,7 @@ export default async function PatchDetailPage({
       imageUrl: r.imageUrl,
       color: r.pool,
       type: "relic" as const,
+      relicData: r,
     })),
     ...codexPotions.map((p) => ({
       id: p.id,
@@ -81,6 +82,7 @@ export default async function PatchDetailPage({
       imageUrl: p.imageUrl,
       color: p.pool,
       type: "potion" as const,
+      potionData: p,
     })),
   ];
 

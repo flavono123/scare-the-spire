@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { getCodexRelics, getCodexCharacters } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
@@ -21,13 +22,15 @@ export default async function CodexRelicsPage() {
   const versions = getVersionsWithDiffs(patches, versionDiffs);
 
   return (
-    <RelicLibrary
-      relics={relics}
-      characters={characters}
-      versions={versions}
-      currentVersion={meta.version}
-      patches={patches}
-      versionDiffs={versionDiffs}
-    />
+    <Suspense>
+      <RelicLibrary
+        relics={relics}
+        characters={characters}
+        versions={versions}
+        currentVersion={meta.version}
+        patches={patches}
+        versionDiffs={versionDiffs}
+      />
+    </Suspense>
   );
 }
