@@ -487,3 +487,73 @@ export function characterOutlineFilter(pool: string): string | undefined {
   if (!color) return undefined;
   return `drop-shadow(1px 0 0 ${color}) drop-shadow(-1px 0 0 ${color}) drop-shadow(0 1px 0 ${color}) drop-shadow(0 -1px 0 ${color})`;
 }
+
+// Monster types
+export type MonsterType = "Normal" | "Elite" | "Boss";
+
+export interface MonsterMove {
+  id: string;
+  name: string; // Korean
+  nameEn: string; // English
+}
+
+export interface DamageValue {
+  normal: number | null;
+  ascension: number | null;
+}
+
+export interface CodexMonster {
+  id: string;
+  name: string;        // Korean
+  nameEn: string;      // English
+  type: MonsterType;
+  minHp: number | null;
+  maxHp: number | null;
+  minHpAscension: number | null;
+  maxHpAscension: number | null;
+  moves: MonsterMove[];
+  damageValues: Record<string, DamageValue> | null;
+  blockValues: Record<string, number> | null;
+  imageUrl: string | null;
+}
+
+export type EncounterRoomType = "Monster" | "Elite" | "Boss";
+
+export interface EncounterMonsterRef {
+  id: string;
+  name: string; // Korean
+  nameEn: string; // English
+}
+
+export interface CodexEncounter {
+  id: string;
+  name: string;        // Korean
+  nameEn: string;      // English
+  roomType: EncounterRoomType;
+  isWeak: boolean;
+  act: EventAct | null;
+  tags: string[] | null;
+  monsters: EncounterMonsterRef[];
+  lossText: string;
+  imageUrl: string | null;
+}
+
+export const MONSTER_TYPE_ORDER: MonsterType[] = ["Normal", "Elite", "Boss"];
+
+export const MONSTER_TYPE_CONFIG: Record<MonsterType, { label: string; color: string; description: string }> = {
+  Normal: { label: "일반", color: "#b0b0b0", description: "첨탑에서 가장 자주 만나게 되는 몬스터들입니다." },
+  Elite: { label: "엘리트", color: "#ffd740", description: "강력한 능력을 가진 상위 몬스터들입니다." },
+  Boss: { label: "보스", color: "#ef5350", description: "각 막의 끝에서 기다리는 강대한 적들입니다." },
+};
+
+export const MONSTER_TYPE_ALIASES: Record<string, MonsterType> = {
+  일반: "Normal", normal: "Normal",
+  엘리트: "Elite", elite: "Elite",
+  보스: "Boss", boss: "Boss",
+};
+
+export const ENCOUNTER_ROOM_TYPE_CONFIG: Record<EncounterRoomType, { label: string; color: string }> = {
+  Monster: { label: "일반 전투", color: "#b0b0b0" },
+  Elite: { label: "엘리트 전투", color: "#ffd740" },
+  Boss: { label: "보스 전투", color: "#ef5350" },
+};
