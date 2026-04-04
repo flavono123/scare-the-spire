@@ -766,28 +766,29 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
 }
 
 
+// Game-style card type icons (matches in-game codex filter shapes)
 function TypeFilterIcon({ type, active }: { type: string; active: boolean }) {
-  const color = active ? "#fbbf24" : "#9ca3af";
+  const fill = active ? "#d4d4d4" : "#6b7280";
   if (type === "공격") {
-    // Sword icon
+    // Pentagon/chevron pointing down (attack shape from game)
     return (
-      <svg className="w-5 h-5" viewBox="0 0 24 24" fill={color}>
-        <path d="M14.1 4L12 2l-2.1 2L8.5 5.4l3.5 3.5 3.5-3.5L14.1 4zM4 8.5l1.4 1.4L8.9 13l-3.5 3.5L4 18.1 5.9 20l1.6-1.4L11 15.1l3.5 3.5 1.6 1.4L18.1 18l-1.4-1.5L13.1 13l3.5-3.5L18 8.1 16.1 6.5l-1.6 1.4L11 11.5 7.5 8 5.9 6.5 4 8.5z" />
+      <svg className="w-5 h-5" viewBox="0 0 24 24">
+        <path d="M4 4h16v12l-8 6-8-6V4z" fill={fill} />
       </svg>
     );
   }
   if (type === "스킬") {
-    // Shield icon
+    // Rounded square (skill shape from game)
     return (
-      <svg className="w-5 h-5" viewBox="0 0 24 24" fill={color}>
-        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+      <svg className="w-5 h-5" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="18" height="18" rx="2" fill={fill} />
       </svg>
     );
   }
-  // 파워 - Star icon
+  // 파워 — Oval/ellipse (power shape from game)
   return (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" fill={color}>
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    <svg className="w-5 h-5" viewBox="0 0 24 24">
+      <ellipse cx="12" cy="12" rx="10" ry="8" fill={fill} />
     </svg>
   );
 }
