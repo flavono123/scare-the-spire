@@ -569,20 +569,13 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
         <FilterSection trigger="#" label="카드 유형" sortDir={sortDirs.type} sortPriority={sortKeys.indexOf("type") + 1} onSortToggle={() => toggleSort("type")}>
           <div className="flex gap-1.5">
             {availableTypes.map((type) => (
-              <button
+              <IconFilterButton
                 key={type}
+                icon={TYPE_SORT_ICONS[type] ?? TYPE_SORT_ICONS["공격"]}
+                label={type}
+                active={selectedTypes.has(type)}
                 onClick={() => toggleType(type)}
-                className={`group relative w-9 h-9 rounded-lg border-2 flex items-center justify-center transition-all ${
-                  selectedTypes.has(type)
-                    ? "border-yellow-500 bg-yellow-500/20"
-                    : "border-white/10 hover:border-white/30 bg-white/5"
-                }`}
-              >
-                <TypeFilterIcon type={type} active={selectedTypes.has(type)} />
-                <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-black/90 px-2 py-0.5 text-[10px] text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-50">
-                  {type}
-                </span>
-              </button>
+              />
             ))}
           </div>
         </FilterSection>
@@ -766,30 +759,10 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
 }
 
 
-// Game-style card type icons (matches in-game codex filter shapes)
-function TypeFilterIcon({ type, active }: { type: string; active: boolean }) {
-  const fill = active ? "#d4d4d4" : "#6b7280";
-  if (type === "공격") {
-    // Pentagon/chevron pointing down (attack shape from game)
-    return (
-      <svg className="w-5 h-5" viewBox="0 0 24 24">
-        <path d="M4 4h16v12l-8 6-8-6V4z" fill={fill} />
-      </svg>
-    );
-  }
-  if (type === "스킬") {
-    // Rounded square (skill shape from game)
-    return (
-      <svg className="w-5 h-5" viewBox="0 0 24 24">
-        <rect x="3" y="3" width="18" height="18" rx="2" fill={fill} />
-      </svg>
-    );
-  }
-  // 파워 — Oval/ellipse (power shape from game)
-  return (
-    <svg className="w-5 h-5" viewBox="0 0 24 24">
-      <ellipse cx="12" cy="12" rx="10" ry="8" fill={fill} />
-    </svg>
-  );
-}
+// Game-extracted card type filter icons
+const TYPE_SORT_ICONS: Record<string, string> = {
+  "공격": "/images/game-assets/card-library/type_sort_attack.webp",
+  "스킬": "/images/game-assets/card-library/type_sort_skill.webp",
+  "파워": "/images/game-assets/card-library/type_sort_power.webp",
+};
 
