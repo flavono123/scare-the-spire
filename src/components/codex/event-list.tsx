@@ -53,78 +53,121 @@ function OptionCard({ option }: { option: EventOption }) {
   );
 }
 
-// --- Interactive option card (clickable, navigates to a page) ---
-function InteractiveOptionCard({
-  option,
-  hasPage,
-  onClick,
-}: {
-  option: EventOption;
-  hasPage: boolean;
-  onClick: () => void;
-}) {
-  if (!hasPage) return <OptionCard option={option} />;
-  return (
-    <button
-      onClick={onClick}
-      className="w-full text-left rounded border border-amber-500/20 bg-amber-500/5 px-3 py-2 hover:border-amber-400/40 hover:bg-amber-500/10 transition-all cursor-pointer group"
-    >
-      <div className="mb-0.5 text-xs font-semibold text-amber-400 flex items-center gap-1.5">
-        {option.title}
-        <svg className="w-3 h-3 text-amber-500/50 group-hover:text-amber-400 transition-colors" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z" />
-        </svg>
-      </div>
-      {option.description && (
-        <div className="text-xs leading-relaxed text-zinc-300">
-          <RichText text={option.description} />
-        </div>
-      )}
-    </button>
-  );
+// --- Navigation history entry ---
+interface NavEntry {
+  pageId: string;    // Resolved page ID (e.g. LINGER3, not LINGER)
+  optionId: string;  // Original option ID used to navigate (e.g. LINGER)
 }
 
-// --- Event page viewer (interactive, game-like flow) ---
-function EventPageViewer({
-  pages,
-  initialOptions,
-}: {
-  pages: EventPage[];
-  initialOptions: EventOption[] | null;
-}) {
-  const [history, setHistory] = useState<string[]>([]);
+// --- Resolve sequence pages (LINGER→LINGER1-9, DECIPHER→DECIPHER_1-5) ---
+function resolveSequencePage(
+  optionId: string,
+  visitCount: number,
+  pageMap: Map<string, EventPage>,
+): string | null {
+  // Direct match - no sequence needed
+  if (pageMap.has(optionId)) {
+    // Check if this is a hub page with numbered children
+    // e.g. DECIPHER hub with DECIPHER_1, DECIPHER_2, ...
+    const idx = visitCount + 1;
+    const underscored = `${optionId}_${idx}`;
+    const suffixed = `${optionId}${idx}`;
+    if (pageMap.has(underscored)) return underscored;
+    if (pageMap.has(suffixed)) return suffixed;
+    // No sequence children - return direct
+    return optionId;
+  }
 
+  // No direct match - try sequence patterns
+  const idx = visitCount + 1;
+  const candidates = [
+    `${optionId}${idx}`,       // LINGER1, LINGER2, ...
+    `${optionId}_${idx}`,      // DECIPHER_1, DECIPHER_2, ...
+    `${optionId}${visitCount}`, // 0-indexed variant
+    `${optionId}_${visitCount}`,
+  ];
+  for (const c of candidates) {
+    if (pageMap.has(c)) return c;
+  }
+
+  // Beyond sequence end - try last available
+  for (let i = idx - 1; i >= 1; i--) {
+    if (pageMap.has(`${optionId}${i}`)) return `${optionId}${i}`;
+    if (pageMap.has(`${optionId}_${i}`)) return `${optionId}_${i}`;
+  }
+
+  return null;
+}
+
+// --- Interactive event content viewer (game-like flow) ---
+function EventContentViewer({ event }: { event: CodexEvent }) {
+  const [history, setHistory] = useState<NavEntry[]>([]);
+
+  const pages = event.pages ?? [];
   const pageMap = useMemo(
     () => new Map(pages.map((p) => [p.id, p])),
     [pages],
   );
 
-  // Current page based on navigation history
-  const currentPageId = history.length > 0 ? history[history.length - 1] : null;
+  // ALL page for fallback options on terminal pages
+  const allPage = pageMap.get("ALL") ?? null;
+
+  // Current state
+  const currentEntry = history.length > 0 ? history[history.length - 1] : null;
+  const currentPageId = currentEntry?.pageId ?? null;
   const currentPage = currentPageId ? pageMap.get(currentPageId) ?? null : null;
 
-  // Get options to display: current page's options, or initial options
-  const currentOptions = currentPage?.options ?? initialOptions ?? [];
+  // Description: current page's or event's initial
+  const description = currentPage?.description ?? event.description;
 
-  // Build breadcrumb labels: map page IDs to the option title that led there
+  // Options: current page's, or ALL page fallback, or initial
+  const rawOptions = useMemo(() => {
+    if (!currentPageId) return event.options ?? [];
+    const page = pageMap.get(currentPageId);
+    if (page?.options && page.options.length > 0) return page.options;
+    // Terminal page - fall back to ALL page options
+    if (allPage?.options && allPage.options.length > 0) return allPage.options;
+    return [];
+  }, [currentPageId, pageMap, event.options, allPage]);
+
+  // Filter out _LOCKED options and "잠김" titled options
+  const options = useMemo(
+    () => rawOptions.filter((o) => !o.id.endsWith("_LOCKED") && o.title !== "잠김"),
+    [rawOptions],
+  );
+
+  // Build label map: option/page ID → Korean title
   const optionLabelMap = useMemo(() => {
     const map = new Map<string, string>();
-    // From initial options
-    for (const opt of initialOptions ?? []) {
-      map.set(opt.id, opt.title);
-    }
-    // From all page options
+    for (const opt of event.options ?? []) map.set(opt.id, opt.title);
     for (const page of pages) {
-      for (const opt of page.options ?? []) {
-        map.set(opt.id, opt.title);
-      }
+      for (const opt of page.options ?? []) map.set(opt.id, opt.title);
     }
     return map;
-  }, [pages, initialOptions]);
+  }, [pages, event.options]);
 
-  const navigateTo = useCallback((pageId: string) => {
-    setHistory((prev) => [...prev, pageId]);
-  }, []);
+  // Check if an option can navigate somewhere
+  const canNavigate = useCallback(
+    (optionId: string): boolean => {
+      if (pageMap.has(optionId)) return true;
+      // Sequence check
+      if (pageMap.has(`${optionId}1`) || pageMap.has(`${optionId}_1`)) return true;
+      if (pageMap.has(`${optionId}0`) || pageMap.has(`${optionId}_0`)) return true;
+      return false;
+    },
+    [pageMap],
+  );
+
+  const navigateTo = useCallback(
+    (optionId: string) => {
+      // Count previous visits to this option ID for sequence tracking
+      const visitCount = history.filter((h) => h.optionId === optionId).length;
+      const resolved = resolveSequencePage(optionId, visitCount, pageMap);
+      if (!resolved) return;
+      setHistory((prev) => [...prev, { pageId: resolved, optionId }]);
+    },
+    [history, pageMap],
+  );
 
   const goBack = useCallback(() => {
     setHistory((prev) => prev.slice(0, -1));
@@ -134,30 +177,37 @@ function EventPageViewer({
     setHistory([]);
   }, []);
 
-  // Check which pages have content worth viewing
-  const viewablePageIds = useMemo(
-    () => new Set(
-      pages
-        .filter((p) => p.id !== "INITIAL" && (p.description || (p.options && p.options.length > 0)))
-        .map((p) => p.id),
-    ),
-    [pages],
+  // Get breadcrumb label for a nav entry
+  const getBreadcrumbLabel = useCallback(
+    (entry: NavEntry) => {
+      // Try option label first (Korean title)
+      const label = optionLabelMap.get(entry.optionId);
+      if (label) return label;
+      // Fall back to resolved page ID
+      return optionLabelMap.get(entry.pageId) ?? entry.pageId.replace(/_/g, " ");
+    },
+    [optionLabelMap],
   );
 
-  if (viewablePageIds.size === 0) return null;
-
   return (
-    <div className="mt-3">
-      {/* Navigation breadcrumb when navigated */}
+    <>
+      {/* Description - changes in-place */}
+      {description && (
+        <div className="text-sm leading-[1.85] text-zinc-300 mb-4">
+          <RichText text={description} />
+        </div>
+      )}
+
+      {/* Breadcrumb navigation */}
       {history.length > 0 && (
-        <div className="flex items-center gap-1.5 mb-2 text-[10px]">
+        <div className="flex items-center gap-1.5 mb-2 text-[10px] flex-wrap">
           <button
             onClick={reset}
             className="text-zinc-500 hover:text-yellow-400 transition-colors"
           >
             처음
           </button>
-          {history.map((pageId, i) => (
+          {history.map((entry, i) => (
             <span key={i} className="flex items-center gap-1.5">
               <span className="text-zinc-600">›</span>
               <button
@@ -168,39 +218,47 @@ function EventPageViewer({
                     : "text-zinc-500 hover:text-yellow-400"
                 }`}
               >
-                {optionLabelMap.get(pageId) ?? pageId.replace(/_/g, " ")}
+                {getBreadcrumbLabel(entry)}
               </button>
             </span>
           ))}
         </div>
       )}
 
-      {/* Current page content */}
-      {currentPage && (
-        <div className="rounded border border-zinc-700/50 bg-zinc-800/30 px-3 py-2 mb-2 animate-in fade-in duration-200">
-          {currentPage.description && (
-            <div className="text-sm leading-[1.75] text-zinc-300">
-              <RichText text={currentPage.description} />
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Interactive options */}
-      {currentOptions.length > 0 && (
+      {/* Options */}
+      {options.length > 0 && (
         <div className="space-y-1.5">
-          {currentOptions.map((opt) => (
-            <InteractiveOptionCard
-              key={opt.id}
-              option={opt}
-              hasPage={viewablePageIds.has(opt.id)}
-              onClick={() => navigateTo(opt.id)}
-            />
-          ))}
+          {options.map((opt) => {
+            const navigable = canNavigate(opt.id);
+            if (!navigable) return <OptionCard key={opt.id} option={opt} />;
+            return (
+              <button
+                key={opt.id}
+                onClick={() => navigateTo(opt.id)}
+                className="w-full text-left rounded border border-amber-500/20 bg-amber-500/5 px-3 py-2 hover:border-amber-400/40 hover:bg-amber-500/10 transition-all cursor-pointer group"
+              >
+                <div className="mb-0.5 text-xs font-semibold text-amber-400 flex items-center gap-1.5">
+                  {opt.title}
+                  <svg
+                    className="w-3 h-3 text-amber-500/50 group-hover:text-amber-400 transition-colors"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                  >
+                    <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z" />
+                  </svg>
+                </div>
+                {opt.description && (
+                  <div className="text-xs leading-relaxed text-zinc-300">
+                    <RichText text={opt.description} />
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
 
-      {/* Back button when navigated */}
+      {/* Back button */}
       {history.length > 0 && (
         <button
           onClick={goBack}
@@ -212,7 +270,7 @@ function EventPageViewer({
           이전
         </button>
       )}
-    </div>
+    </>
   );
 }
 
@@ -336,31 +394,27 @@ function EventExpanded({
             </button>
           </div>
 
-          {/* Description */}
-          {event.description && (
-            <div className="text-sm leading-[1.85] text-zinc-300 mb-4">
-              <RichText text={event.description} />
-            </div>
-          )}
-
-          {/* Options + interactive pages */}
+          {/* Description + interactive options (in-place) */}
           {event.pages && event.pages.length > 0 ? (
-            <EventPageViewer
-              pages={event.pages}
-              initialOptions={event.options}
-            />
-          ) : event.options && event.options.length > 0 ? (
-            <div className="mb-4">
-              <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-                선택지
-              </div>
-              <div className="space-y-1.5">
-                {event.options.map((opt) => (
-                  <OptionCard key={opt.id} option={opt} />
-                ))}
-              </div>
-            </div>
-          ) : null}
+            <EventContentViewer event={event} />
+          ) : (
+            <>
+              {event.description && (
+                <div className="text-sm leading-[1.85] text-zinc-300 mb-4">
+                  <RichText text={event.description} />
+                </div>
+              )}
+              {event.options && event.options.length > 0 && (
+                <div className="space-y-1.5">
+                  {event.options
+                    .filter((o) => !o.id.endsWith("_LOCKED") && o.title !== "잠김")
+                    .map((opt) => (
+                      <OptionCard key={opt.id} option={opt} />
+                    ))}
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
