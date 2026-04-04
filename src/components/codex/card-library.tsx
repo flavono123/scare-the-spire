@@ -447,29 +447,41 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
     { key: "기타", label: "기타", color: RARITY_COLORS["기타"] },
   ];
 
-  // Card detail modal
-  const [selectedCard, setSelectedCard] = useState<CodexCard | null>(null);
+  // Card detail modal — initialize from ?card= query param
+  const initialCardId = searchParams.get("card");
+  const [selectedCard, setSelectedCard] = useState<CodexCard | null>(() => {
+    if (!initialCardId) return null;
+    return cards.find((c) => c.id.toLowerCase() === initialCardId.toLowerCase()) ?? null;
+  });
 
-  // Update URL hash when modal opens/closes (for shareable links)
+  // Update URL query param when modal opens/closes
   useEffect(() => {
+    const url = new URL(window.location.href);
     if (selectedCard) {
-      window.history.pushState(null, "", `/codex/cards/${selectedCard.id.toLowerCase()}`);
+      url.searchParams.set("card", selectedCard.id.toLowerCase());
     } else {
-      // Restore URL only if currently on a card detail path
-      if (window.location.pathname.startsWith("/codex/cards/") && window.location.pathname !== "/codex/cards") {
-        window.history.pushState(null, "", "/codex/cards");
-      }
+      url.searchParams.delete("card");
+    }
+    if (url.toString() !== window.location.href) {
+      window.history.pushState(null, "", url.toString());
     }
   }, [selectedCard]);
 
   // Handle browser back button
   useEffect(() => {
     const handler = () => {
-      if (selectedCard) setSelectedCard(null);
+      const url = new URL(window.location.href);
+      const cardParam = url.searchParams.get("card");
+      if (!cardParam) {
+        setSelectedCard(null);
+      } else {
+        const card = cards.find((c) => c.id.toLowerCase() === cardParam.toLowerCase());
+        setSelectedCard(card ?? null);
+      }
     };
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
-  }, [selectedCard]);
+  }, [cards]);
 
   // Close modal on Escape
   useEffect(() => {
