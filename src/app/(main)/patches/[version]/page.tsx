@@ -3,7 +3,7 @@ import Link from "next/link";
 import fs from "fs/promises";
 import path from "path";
 import { getSTS2Patches } from "@/lib/data";
-import { getCodexCards, getCodexRelics, getCodexPotions } from "@/lib/codex-data";
+import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexEnchantments } from "@/lib/codex-data";
 import { Badge } from "@/components/ui/badge";
 import {
   PatchNoteRenderer,
@@ -31,11 +31,13 @@ export default async function PatchDetailPage({
   params: Promise<{ version: string }>;
 }) {
   const { version } = await params;
-  const [patches, codexCards, codexRelics, codexPotions] = await Promise.all([
+  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments] = await Promise.all([
     getSTS2Patches(),
     getCodexCards(),
     getCodexRelics(),
     getCodexPotions(),
+    getCodexPowers(),
+    getCodexEnchantments(),
   ]);
 
   const patch = patches.find((p) => p.version === version);
@@ -83,6 +85,24 @@ export default async function PatchDetailPage({
       color: p.pool,
       type: "potion" as const,
       potionData: p,
+    })),
+    ...codexPowers.map((p) => ({
+      id: p.id,
+      nameEn: p.nameEn,
+      nameKo: p.name,
+      imageUrl: p.imageUrl,
+      color: p.type,
+      type: "power" as const,
+      powerData: p,
+    })),
+    ...codexEnchantments.map((e) => ({
+      id: e.id,
+      nameEn: e.nameEn,
+      nameKo: e.name,
+      imageUrl: e.imageUrl,
+      color: e.cardType ?? "Any",
+      type: "enchantment" as const,
+      enchantmentData: e,
     })),
   ];
 

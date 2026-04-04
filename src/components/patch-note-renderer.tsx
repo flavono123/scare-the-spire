@@ -8,13 +8,13 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard, CodexRelic, CodexPotion } from "@/lib/codex-types";
-import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, getCharacterColor, characterOutlineFilter, type RelicFilterPool } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment } from "@/lib/codex-types";
+import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, POWER_TYPE_CONFIG, ENCHANTMENT_CARD_TYPE_CONFIG, getCharacterColor, characterOutlineFilter, type RelicFilterPool, type EnchantmentCardTypeFilter } from "@/lib/codex-types";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
 
 // Entity types that can appear in patch notes
-export type EntityType = "card" | "relic" | "potion";
+export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment";
 
 export interface EntityInfo {
   id: string;
@@ -26,6 +26,8 @@ export interface EntityInfo {
   cardData?: CodexCard; // Full card data for rich preview
   relicData?: CodexRelic; // Full relic data for rich preview
   potionData?: CodexPotion; // Full potion data for rich preview
+  powerData?: CodexPower; // Full power data for rich preview
+  enchantmentData?: CodexEnchantment; // Full enchantment data for rich preview
 }
 
 // Keep backward compat alias
@@ -47,19 +49,24 @@ function EntityPreview({
   const handleMouseEnter = useCallback(() => {
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
-      // Card tile preview is taller (~340px), relic/potion tooltips ~200px
-      const threshold = entity.cardData ? 380 : (entity.relicData || entity.potionData) ? 260 : 260;
+      // Card tile preview is taller (~340px), other rich tooltips ~200px
+      const hasRichData = entity.relicData || entity.potionData || entity.powerData || entity.enchantmentData;
+      const threshold = entity.cardData ? 380 : hasRichData ? 260 : 260;
       setPosition(rect.top < threshold ? "below" : "above");
     }
     setShow(true);
-  }, [entity.cardData, entity.relicData, entity.potionData]);
+  }, [entity.cardData, entity.relicData, entity.potionData, entity.powerData, entity.enchantmentData]);
 
   const href =
     entity.type === "card"
       ? `/codex/cards?card=${entity.id.toLowerCase()}`
       : entity.type === "relic"
         ? `/codex/relics?relic=${entity.id.toLowerCase()}`
-        : `/codex/potions?potion=${entity.id.toLowerCase()}`;
+        : entity.type === "potion"
+          ? `/codex/potions?potion=${entity.id.toLowerCase()}`
+          : entity.type === "power"
+            ? `/codex/powers?power=${entity.id.toLowerCase()}`
+            : `/codex/enchantments?enchantment=${entity.id.toLowerCase()}`;
 
   return (
     <span
@@ -183,7 +190,92 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && !entity.cardData && !entity.relicData && !entity.potionData && entity.imageUrl && (
+      {show && entity.type === "power" && entity.powerData && (
+        <span
+          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
+            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
+        >
+          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
+            <span className="flex items-center gap-2 mb-1">
+              {entity.powerData.imageUrl && (
+                <Image
+                  src={entity.powerData.imageUrl}
+                  alt={entity.nameKo}
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 object-contain drop-shadow-md"
+                />
+              )}
+              <span className="block">
+                <span className="block font-bold text-sm" style={{ color: POWER_TYPE_CONFIG[entity.powerData.type].color }}>
+                  {entity.nameKo}
+                </span>
+                <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+              </span>
+            </span>
+            <span className="flex items-center gap-1.5 mb-2">
+              <span
+                className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                style={{
+                  backgroundColor: `${POWER_TYPE_CONFIG[entity.powerData.type].color}20`,
+                  color: POWER_TYPE_CONFIG[entity.powerData.type].color,
+                }}
+              >
+                {POWER_TYPE_CONFIG[entity.powerData.type].label}
+              </span>
+            </span>
+            <span className="block text-xs text-gray-200 leading-relaxed">
+              <DescriptionText description={entity.powerData.description} />
+            </span>
+          </span>
+        </span>
+      )}
+      {show && entity.type === "enchantment" && entity.enchantmentData && (
+        <span
+          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
+            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
+        >
+          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
+            <span className="flex items-center gap-2 mb-1">
+              {entity.enchantmentData.imageUrl && (
+                <Image
+                  src={entity.enchantmentData.imageUrl}
+                  alt={entity.nameKo}
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 object-contain drop-shadow-md"
+                />
+              )}
+              <span className="block">
+                <span className="block font-bold text-sm text-purple-400">{entity.nameKo}</span>
+                <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+              </span>
+            </span>
+            <span className="flex items-center gap-1.5 mb-2">
+              <span
+                className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                style={{
+                  backgroundColor: `${ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].color}20`,
+                  color: ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].color,
+                }}
+              >
+                {ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].label}
+              </span>
+              {entity.enchantmentData.isStackable && (
+                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">
+                  중첩
+                </span>
+              )}
+            </span>
+            <span className="block text-xs text-gray-200 leading-relaxed">
+              <DescriptionText description={entity.enchantmentData.description} />
+            </span>
+          </span>
+        </span>
+      )}
+      {show && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && entity.imageUrl && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
