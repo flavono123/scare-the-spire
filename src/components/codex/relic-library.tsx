@@ -3,9 +3,11 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
+import Image from "next/image";
 import {
   CodexRelic,
   CodexCharacter,
+  CodexAncient,
   RelicRarityKo,
   RelicFilterPool,
   RELIC_RARITY_ORDER,
@@ -60,13 +62,14 @@ const RELIC_TRIGGERS: TriggerGroup[] = [
 interface RelicLibraryProps {
   relics: CodexRelic[];
   characters: CodexCharacter[];
+  ancients?: CodexAncient[];
   versions?: string[];
   currentVersion?: string;
   patches?: STS2Patch[];
   versionDiffs?: EntityVersionDiff[];
 }
 
-export function RelicLibrary({ relics, characters, versions, currentVersion, patches, versionDiffs }: RelicLibraryProps) {
+export function RelicLibrary({ relics, characters, ancients, versions, currentVersion, patches, versionDiffs }: RelicLibraryProps) {
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<RelicFilterPool>>(new Set());
   const [selectedRarities, setSelectedRarities] = useState<Set<RelicRarityKo>>(new Set());
@@ -216,6 +219,18 @@ export function RelicLibrary({ relics, characters, versions, currentVersion, pat
     return result;
   }, [versionedRelics, selectedPools, selectedRarities, parsedSearch, fuzzyMatch]);
 
+  // Build ancient relic mapping: relicId -> ancient
+  const ancientByRelicId = useMemo(() => {
+    const map = new Map<string, CodexAncient>();
+    if (!ancients) return map;
+    for (const ancient of ancients) {
+      for (const relicId of ancient.relicIds) {
+        map.set(relicId, ancient);
+      }
+    }
+    return map;
+  }, [ancients]);
+
   // Group filtered relics by rarity
   const groupedRelics = useMemo(() => {
     const groups: { rarity: RelicRarityKo; relics: CodexRelic[] }[] = [];
@@ -229,6 +244,25 @@ export function RelicLibrary({ relics, characters, versions, currentVersion, pat
     }
     return groups;
   }, [filteredRelics]);
+
+  // Sub-group ancient relics by their ancient boss
+  const ancientSubgroups = useMemo(() => {
+    if (!ancients || ancients.length === 0) return null;
+    const ancientRelics = filteredRelics.filter((r) => r.rarity === "고대 유물");
+    if (ancientRelics.length === 0) return null;
+
+    const groups: { ancient: CodexAncient; relics: CodexRelic[] }[] = [];
+    for (const ancient of ancients) {
+      const relicIds = new Set(ancient.relicIds);
+      const group = ancientRelics
+        .filter((r) => relicIds.has(r.id))
+        .sort((a, b) => a.name.localeCompare(b.name, "ko"));
+      if (group.length > 0) {
+        groups.push({ ancient, relics: group });
+      }
+    }
+    return groups;
+  }, [filteredRelics, ancients]);
 
   // Toggle helpers
   const togglePool = useCallback((pool: RelicFilterPool) => {
@@ -392,12 +426,41 @@ export function RelicLibrary({ relics, characters, versions, currentVersion, pat
                 </h2>
               </div>
 
-              {/* Relic icon grid */}
-              <div className="flex flex-wrap gap-2">
-                {groupRelics.map((relic) => (
-                  <RelicTile key={relic.id} relic={relic} onClick={() => setSelectedRelic(relic)} />
-                ))}
-              </div>
+              {/* Ancient relics: sub-grouped by ancient boss */}
+              {rarity === "고대 유물" && ancientSubgroups ? (
+                <div className="flex flex-col gap-5">
+                  {ancientSubgroups.map(({ ancient, relics: ancientRelics }) => (
+                    <div key={ancient.id}>
+                      <div className="flex items-center gap-2 mb-2">
+                        {ancient.imageUrl && (
+                          <Image
+                            src={ancient.imageUrl}
+                            alt={ancient.name}
+                            width={24}
+                            height={24}
+                            className="w-6 h-6 object-contain rounded-full"
+                          />
+                        )}
+                        <h3 className="text-sm font-bold text-blue-400">
+                          {ancient.name}:
+                        </h3>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {ancientRelics.map((relic) => (
+                          <RelicTile key={relic.id} relic={relic} onClick={() => setSelectedRelic(relic)} />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                /* Regular relic icon grid */
+                <div className="flex flex-wrap gap-2">
+                  {groupRelics.map((relic) => (
+                    <RelicTile key={relic.id} relic={relic} onClick={() => setSelectedRelic(relic)} />
+                  ))}
+                </div>
+              )}
             </section>
           ))}
 
