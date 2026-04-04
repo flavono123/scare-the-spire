@@ -486,14 +486,16 @@ function mapMonster(kor: RawMonster, eng: RawMonster, monsterImages: Set<string>
       )
     : null;
 
-  // Resolve image: monster sprite sheet > boss art > null
-  let imageUrl: string | null = null;
+  // Resolve images separately:
+  // imageUrl = sprite sheet (combat asset) from monsters/ dir
+  // bossImageUrl = boss encounter token icon from bosses/ dir
   const idLower = kor.id.toLowerCase();
-  if (monsterImages.has(idLower)) {
-    imageUrl = `/images/sts2/monsters/${idLower}.webp`;
-  } else if (bossImages.has(`${idLower}_boss`)) {
-    imageUrl = `/images/sts2/bosses/${idLower}_boss.webp`;
-  }
+  const imageUrl = monsterImages.has(idLower)
+    ? `/images/sts2/monsters/${idLower}.webp`
+    : null;
+  const bossImageUrl = bossImages.has(`${idLower}_boss`)
+    ? `/images/sts2/bosses/${idLower}_boss.webp`
+    : null;
 
   return {
     id: kor.id,
@@ -508,6 +510,7 @@ function mapMonster(kor: RawMonster, eng: RawMonster, monsterImages: Set<string>
     damageValues: damageValues,
     blockValues: kor.block_values,
     imageUrl,
+    bossImageUrl,
   };
 }
 

@@ -534,7 +534,8 @@ export interface CodexMonster {
   moves: MonsterMove[];
   damageValues: Record<string, DamageValue> | null;
   blockValues: Record<string, number> | null;
-  imageUrl: string | null;
+  imageUrl: string | null;       // sprite sheet (combat asset)
+  bossImageUrl: string | null;   // boss encounter token icon (bosses/ dir)
 }
 
 export type EncounterRoomType = "Monster" | "Elite" | "Boss";
