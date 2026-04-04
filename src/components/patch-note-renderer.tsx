@@ -52,7 +52,7 @@ function EntityPreview({
       setPosition(rect.top < threshold ? "below" : "above");
     }
     setShow(true);
-  }, [entity.cardData]);
+  }, [entity.cardData, entity.relicData, entity.potionData]);
 
   const href =
     entity.type === "card"
