@@ -66,6 +66,7 @@ function compareCards(a: CodexCard, b: CodexCard, key: SortKey, dir: SortDir): n
   return dir === "desc" ? -cmp : cmp;
 }
 import { CardTile } from "./card-tile";
+import { CardDetail } from "./card-detail";
 import { SearchBar } from "./search-bar";
 import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
@@ -444,6 +445,40 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
     { key: "기타", label: "기타", color: RARITY_COLORS["기타"] },
   ];
 
+  // Card detail modal
+  const [selectedCard, setSelectedCard] = useState<CodexCard | null>(null);
+
+  // Update URL hash when modal opens/closes (for shareable links)
+  useEffect(() => {
+    if (selectedCard) {
+      window.history.pushState(null, "", `/codex/cards/${selectedCard.id.toLowerCase()}`);
+    } else {
+      // Restore URL only if currently on a card detail path
+      if (window.location.pathname.startsWith("/codex/cards/") && window.location.pathname !== "/codex/cards") {
+        window.history.pushState(null, "", "/codex/cards");
+      }
+    }
+  }, [selectedCard]);
+
+  // Handle browser back button
+  useEffect(() => {
+    const handler = () => {
+      if (selectedCard) setSelectedCard(null);
+    };
+    window.addEventListener("popstate", handler);
+    return () => window.removeEventListener("popstate", handler);
+  }, [selectedCard]);
+
+  // Close modal on Escape
+  useEffect(() => {
+    if (!selectedCard) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedCard(null);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [selectedCard]);
+
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -697,6 +732,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
                   card={card}
                   showUpgrade={showUpgrades}
                   showBeta={showBeta}
+                  onClick={() => setSelectedCard(card)}
                 />
               </div>
             ))}
@@ -712,6 +748,20 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
           )}
         </div>
       </main>
+
+      {/* Card Detail Modal */}
+      {selectedCard && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedCard(null);
+          }}
+        >
+          <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#1a1a2e] border border-white/10 rounded-2xl shadow-2xl">
+            <CardDetail card={selectedCard} onClose={() => setSelectedCard(null)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

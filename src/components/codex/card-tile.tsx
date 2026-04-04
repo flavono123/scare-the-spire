@@ -219,9 +219,10 @@ interface CardTileProps {
   card: CodexCard;
   showUpgrade: boolean;
   showBeta: boolean;
+  onClick?: () => void;
 }
 
-export const CardTile = memo(function CardTile({ card, showUpgrade, showBeta }: CardTileProps) {
+export const CardTile = memo(function CardTile({ card, showUpgrade, showBeta, onClick }: CardTileProps) {
   const [imgError, setImgError] = useState(false);
   const [hoveredTerm, setHoveredTerm] = useState<string | null>(null);
 
@@ -395,7 +396,7 @@ export const CardTile = memo(function CardTile({ card, showUpgrade, showBeta }: 
     const ancientBannerFilter = "hue-rotate(0deg) saturate(0.2) brightness(0.9)";
 
     return (
-      <div className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none">
+      <div className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none" onClick={onClick}>
         <div className="relative" style={{ aspectRatio: "598/844" }}>
 
           {/* ── Layer 0: Full-bleed portrait art ── */}
@@ -533,7 +534,7 @@ export const CardTile = memo(function CardTile({ card, showUpgrade, showBeta }: 
   // STANDARD CARD — normal framed layout
   // =====================================================================
   return (
-    <div className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none">
+    <div className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none" onClick={onClick}>
       <div className="relative" style={{ aspectRatio: "598/844" }}>
 
         {/* ── Layer 0: Card portrait ── */}
