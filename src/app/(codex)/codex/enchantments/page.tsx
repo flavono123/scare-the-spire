@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { getCodexEnchantments } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
@@ -21,12 +22,14 @@ export default async function CodexEnchantmentsPage() {
   const versions = getVersionsWithDiffs(patches, versionDiffs);
 
   return (
-    <EnchantmentLibrary
-      enchantments={enchantments}
-      versions={versions}
-      currentVersion={meta.version}
-      patches={patches}
-      versionDiffs={versionDiffs}
-    />
+    <Suspense>
+      <EnchantmentLibrary
+        enchantments={enchantments}
+        versions={versions}
+        currentVersion={meta.version}
+        patches={patches}
+        versionDiffs={versionDiffs}
+      />
+    </Suspense>
   );
 }

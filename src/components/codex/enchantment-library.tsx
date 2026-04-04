@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
 import {
   CodexEnchantment,
@@ -11,6 +12,7 @@ import {
 import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import { EnchantmentTile } from "./enchantment-tile";
+import { EnchantmentDetail } from "./enchantment-detail";
 import { SearchBar, TriggerGroup } from "./search-bar";
 import { FilterSection, ToggleButton } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
@@ -44,10 +46,53 @@ interface EnchantmentLibraryProps {
 }
 
 export function EnchantmentLibrary({ enchantments, versions, currentVersion, patches, versionDiffs }: EnchantmentLibraryProps) {
+  const searchParams = useSearchParams();
   const [selectedCardTypes, setSelectedCardTypes] = useState<Set<EnchantmentCardTypeFilter>>(new Set());
   const [stackableOnly, setStackableOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+
+  // Enchantment detail modal
+  const initialEnchId = searchParams.get("enchantment");
+  const [selectedEnchantment, setSelectedEnchantment] = useState<CodexEnchantment | null>(() => {
+    if (!initialEnchId) return null;
+    return enchantments.find((e) => e.id.toLowerCase() === initialEnchId.toLowerCase()) ?? null;
+  });
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (selectedEnchantment) {
+      url.searchParams.set("enchantment", selectedEnchantment.id.toLowerCase());
+    } else {
+      url.searchParams.delete("enchantment");
+    }
+    if (url.toString() !== window.location.href) {
+      window.history.pushState(null, "", url.toString());
+    }
+  }, [selectedEnchantment]);
+
+  useEffect(() => {
+    const handler = () => {
+      const url = new URL(window.location.href);
+      const param = url.searchParams.get("enchantment");
+      if (!param) {
+        setSelectedEnchantment(null);
+      } else {
+        setSelectedEnchantment(enchantments.find((e) => e.id.toLowerCase() === param.toLowerCase()) ?? null);
+      }
+    };
+    window.addEventListener("popstate", handler);
+    return () => window.removeEventListener("popstate", handler);
+  }, [enchantments]);
+
+  useEffect(() => {
+    if (!selectedEnchantment) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedEnchantment(null);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [selectedEnchantment]);
 
   const versionedEnchantments = useMemo(() => {
     if (!currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion) return enchantments;
@@ -293,7 +338,7 @@ export function EnchantmentLibrary({ enchantments, versions, currentVersion, pat
 
               <div className="flex flex-wrap gap-2">
                 {groupEnchantments.map((ench) => (
-                  <EnchantmentTile key={ench.id} enchantment={ench} />
+                  <EnchantmentTile key={ench.id} enchantment={ench} onClick={() => setSelectedEnchantment(ench)} />
                 ))}
               </div>
             </section>
@@ -306,6 +351,20 @@ export function EnchantmentLibrary({ enchantments, versions, currentVersion, pat
           )}
         </div>
       </main>
+
+      {/* Enchantment Detail Modal */}
+      {selectedEnchantment && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedEnchantment(null);
+          }}
+        >
+          <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
+            <EnchantmentDetail enchantment={selectedEnchantment} onClose={() => setSelectedEnchantment(null)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

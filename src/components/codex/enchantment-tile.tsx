@@ -7,9 +7,10 @@ import { DescriptionText } from "./codex-description";
 
 interface EnchantmentTileProps {
   enchantment: CodexEnchantment;
+  onClick?: () => void;
 }
 
-export const EnchantmentTile = memo(function EnchantmentTile({ enchantment }: EnchantmentTileProps) {
+export const EnchantmentTile = memo(function EnchantmentTile({ enchantment, onClick }: EnchantmentTileProps) {
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
   const [tooltipSide, setTooltipSide] = useState<"right" | "left">("right");
@@ -27,6 +28,7 @@ export const EnchantmentTile = memo(function EnchantmentTile({ enchantment }: En
       className="relative group"
       onMouseEnter={() => { updateTooltipSide(); setHovered(true); }}
       onMouseLeave={() => setHovered(false)}
+      onClick={onClick}
     >
       <div
         className={`w-14 h-14 sm:w-16 sm:h-16 rounded-lg border-2 p-1 transition-all cursor-pointer ${
