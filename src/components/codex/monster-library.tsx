@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 import { MonsterDetail } from "./monster-detail";
 import { getChoseong } from "es-hangul";
 import {
@@ -433,11 +434,23 @@ function MonsterTile({
       onMouseLeave={() => onHover(null)}
       onClick={onClick}
     >
-      {/* Type indicator */}
-      <div
-        className="w-1 h-8 rounded-full shrink-0"
-        style={{ backgroundColor: typeConfig.color }}
-      />
+      {/* Monster sprite thumbnail */}
+      {monster.imageUrl ? (
+        <div className="w-10 h-10 shrink-0 rounded overflow-hidden bg-white/5 flex items-center justify-center">
+          <Image
+            src={monster.imageUrl}
+            alt={monster.name}
+            width={40}
+            height={40}
+            className="w-10 h-10 object-cover"
+          />
+        </div>
+      ) : (
+        <div
+          className="w-1 h-8 rounded-full shrink-0"
+          style={{ backgroundColor: typeConfig.color }}
+        />
+      )}
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
@@ -502,7 +515,11 @@ function MonsterTooltip({
       <div className="p-3">
         {/* Header */}
         <div className="flex items-center gap-2 mb-1">
-          <div className="w-1.5 h-6 rounded-full" style={{ backgroundColor: typeConfig.color }} />
+          {monster.imageUrl ? (
+            <Image src={monster.imageUrl} alt={monster.name} width={32} height={32} className="w-8 h-8 object-cover rounded" />
+          ) : (
+            <div className="w-1.5 h-6 rounded-full" style={{ backgroundColor: typeConfig.color }} />
+          )}
           <div>
             <div className="font-bold text-sm text-gray-100">{monster.name}</div>
             <div className="text-[10px] text-gray-500">{monster.nameEn}</div>

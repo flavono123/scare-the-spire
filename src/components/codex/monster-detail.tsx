@@ -55,15 +55,15 @@ export function MonsterDetail({ monster, encounters, allMonsters, onClose, onMon
         )}
       </div>
 
-      {/* Boss Image (if available) */}
+      {/* Monster Image (sprite sheet or boss art) */}
       {monster.imageUrl && (
-        <div className="w-full max-w-md mx-auto aspect-[16/9] relative rounded-lg overflow-hidden border border-white/10">
+        <div className="w-full max-w-sm mx-auto flex items-center justify-center p-4 rounded-lg border border-white/10 bg-white/[0.02]">
           <Image
             src={monster.imageUrl}
             alt={monster.name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, 448px"
+            width={320}
+            height={240}
+            className="max-w-full max-h-60 object-contain"
           />
         </div>
       )}

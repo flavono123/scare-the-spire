@@ -468,7 +468,7 @@ interface RawMonster {
   image_url: string | null;
 }
 
-function mapMonster(kor: RawMonster, eng: RawMonster, bossImages: Set<string>): CodexMonster {
+function mapMonster(kor: RawMonster, eng: RawMonster, monsterImages: Set<string>, bossImages: Set<string>): CodexMonster {
   // Map moves with both languages
   const moves: MonsterMove[] = kor.moves.map((km, i) => ({
     id: km.id,
@@ -486,10 +486,12 @@ function mapMonster(kor: RawMonster, eng: RawMonster, bossImages: Set<string>): 
       )
     : null;
 
-  // Try boss image (encounter-level art in bosses/ dir)
+  // Resolve image: monster sprite sheet > boss art > null
   let imageUrl: string | null = null;
   const idLower = kor.id.toLowerCase();
-  if (bossImages.has(`${idLower}_boss`)) {
+  if (monsterImages.has(idLower)) {
+    imageUrl = `/images/sts2/monsters/${idLower}.webp`;
+  } else if (bossImages.has(`${idLower}_boss`)) {
     imageUrl = `/images/sts2/bosses/${idLower}_boss.webp`;
   }
 
@@ -510,10 +512,15 @@ function mapMonster(kor: RawMonster, eng: RawMonster, bossImages: Set<string>): 
 }
 
 export async function getCodexMonsters(): Promise<CodexMonster[]> {
+  const MONSTERS_IMG_DIR = path.join(process.cwd(), "public/images/sts2/monsters");
   const BOSSES_IMG_DIR = path.join(process.cwd(), "public/images/sts2/bosses");
-  const [korMonsters, engMonsters, bossFiles] = await Promise.all([
+  const [korMonsters, engMonsters, monsterFiles, bossFiles] = await Promise.all([
     readJson<RawMonster[]>("kor/monsters.json"),
     readJson<RawMonster[]>("eng/monsters.json"),
+    fs.readdir(MONSTERS_IMG_DIR).then(
+      (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
+      () => new Set<string>(),
+    ),
     fs.readdir(BOSSES_IMG_DIR).then(
       (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
       () => new Set<string>(),
@@ -524,7 +531,7 @@ export async function getCodexMonsters(): Promise<CodexMonster[]> {
 
   return korMonsters.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapMonster(kor, eng, bossFiles);
+    return mapMonster(kor, eng, monsterFiles, bossFiles);
   });
 }
 
