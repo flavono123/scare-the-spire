@@ -396,7 +396,7 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => { if (e.target === e.currentTarget) setSelectedEvent(null); }}
         >
-          <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
+          <div className="w-full max-w-3xl my-8 mx-4 bg-[#12121a] rounded-xl border border-yellow-900/30 shadow-2xl">
             <EventDetail event={selectedEvent} onClose={() => setSelectedEvent(null)} />
           </div>
         </div>

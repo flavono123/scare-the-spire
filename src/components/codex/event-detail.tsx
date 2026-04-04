@@ -12,18 +12,6 @@ import {
 } from "@/lib/codex-types";
 import { RichText } from "@/components/rich-text";
 
-// --- Stat badge (shared with other detail pages) ---
-function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
-  return (
-    <div className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-      <span className="text-[10px] text-gray-500 uppercase tracking-wider">{label}</span>
-      <span className="text-sm font-bold" style={color ? { color } : undefined}>
-        {value}
-      </span>
-    </div>
-  );
-}
-
 // --- Option card (static) ---
 function OptionCard({ option }: { option: EventOption }) {
   return (
@@ -239,79 +227,81 @@ export function EventContentViewer({ event }: { event: CodexEvent }) {
   );
 }
 
-// --- Event detail page ---
+// --- Act badge ---
+function ActBadge({ act }: { act: CodexEvent["act"] }) {
+  const config = act
+    ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
+    : EVENT_ACT_UNKNOWN;
+  return (
+    <span
+      className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${config.color} ${config.border} ${config.bg}`}
+    >
+      {config.labelKo}
+    </span>
+  );
+}
+
+// --- Event detail page (game-like: image left, content right) ---
 interface EventDetailProps {
   event: CodexEvent;
   onClose?: () => void;
 }
 
 export function EventDetail({ event, onClose }: EventDetailProps) {
-  const actConfig = event.act
-    ? (EVENT_ACT_CONFIG[event.act] ?? EVENT_ACT_UNKNOWN)
-    : EVENT_ACT_UNKNOWN;
-
   return (
-    <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-lg mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between w-full">
-        <Link
-          href="/codex/events"
-          className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-          onClick={(e) => {
-            if (onClose) {
-              e.preventDefault();
-              onClose();
-            }
-          }}
-        >
-          ← 이벤트
-        </Link>
-        {onClose && (
-          <button
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400"
-            aria-label="닫기"
-          >
-            ✕
-          </button>
+    <div className="rounded-xl bg-[#12121a] overflow-hidden">
+      <div className="flex flex-col md:flex-row">
+        {/* Left: Event art */}
+        {event.imageUrl && (
+          <div className="relative md:w-[340px] h-[200px] md:h-auto md:min-h-[320px] flex-shrink-0">
+            <Image
+              src={event.imageUrl}
+              alt={event.name}
+              fill
+              sizes="340px"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-transparent via-transparent to-[#12121a]" />
+          </div>
         )}
-      </div>
 
-      {/* Event art */}
-      {event.imageUrl && (
-        <div className="w-full aspect-[16/9] relative rounded-lg overflow-hidden">
-          <Image
-            src={event.imageUrl}
-            alt={event.name}
-            fill
-            sizes="(max-width: 512px) 100vw, 512px"
-            className="object-cover"
-          />
+        {/* Right: Title + interactive content */}
+        <div className="flex-1 p-5 md:p-6 min-w-0">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div>
+              <Link
+                href="/codex/events"
+                className="text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors"
+                onClick={(e) => {
+                  if (onClose) { e.preventDefault(); onClose(); }
+                }}
+              >
+                ← 이벤트
+              </Link>
+              <h2 className="font-[family-name:var(--font-gc-batang)] text-xl text-yellow-400 mt-1">
+                {event.name}
+              </h2>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-xs text-zinc-500">{event.nameEn}</span>
+                <ActBadge act={event.act} />
+              </div>
+            </div>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="text-zinc-600 hover:text-zinc-300 transition-colors p-1 flex-shrink-0"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {/* Interactive content: description + choices */}
+          <EventContentViewer event={event} />
         </div>
-      )}
-
-      {/* Name */}
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-100">{event.name}</h1>
-        <p className="text-sm text-gray-500">{event.nameEn}</p>
-      </div>
-
-      {/* Stats */}
-      <div className="flex flex-wrap justify-center gap-2">
-        <StatBadge
-          label="막"
-          value={actConfig.labelKo}
-          color={actConfig.color.includes("green") ? "#4ade80"
-            : actConfig.color.includes("orange") ? "#fb923c"
-            : actConfig.color.includes("yellow") ? "#facc15"
-            : actConfig.color.includes("zinc") ? "#a1a1aa"
-            : undefined}
-        />
-      </div>
-
-      {/* Interactive content */}
-      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <EventContentViewer event={event} />
       </div>
     </div>
   );

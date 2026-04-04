@@ -38,8 +38,10 @@ export default async function EventDetailPage({
   if (!event) notFound();
 
   return (
-    <div className="min-h-screen bg-[#1a1a2e] text-gray-200">
-      <EventDetail event={event} />
+    <div className="min-h-screen bg-[#0a0a0f] flex items-start justify-center py-8 px-4">
+      <div className="w-full max-w-3xl rounded-xl border border-yellow-900/30 shadow-2xl overflow-hidden">
+        <EventDetail event={event} />
+      </div>
     </div>
   );
 }
