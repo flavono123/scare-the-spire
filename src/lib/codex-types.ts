@@ -412,6 +412,26 @@ export interface CodexEvent {
   imageUrl: string | null; // local path to event art
 }
 
+// Dialogue line from an ancient encounter
+export interface AncientDialogueLine {
+  order: string;       // e.g. "0-0", "1-0r" (r = returning)
+  speaker: "ancient" | "character";
+  text: string;        // Korean, with BBCode markup
+}
+
+export interface CodexAncient {
+  id: string;
+  name: string;        // Korean
+  nameEn: string;      // English
+  epithet: string;     // Korean title/alias
+  epithetEn: string;   // English title/alias
+  description: string; // Korean, with BBCode markup
+  act: EventAct | null;
+  relicIds: string[];  // IDs of relics this ancient drops
+  dialogue: Record<string, AncientDialogueLine[]>; // key = character name or "Returning"/"First Visit"
+  imageUrl: string | null;
+}
+
 export const EVENT_ACT_ORDER: (EventAct | null)[] = [
   "Act 1 - Overgrowth",
   "Underdocks",

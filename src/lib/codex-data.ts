@@ -8,6 +8,8 @@ import {
   CodexPower,
   CodexEnchantment,
   CodexEvent,
+  CodexAncient,
+  AncientDialogueLine,
   CodexMonster,
   CodexEncounter,
   EventOption,
@@ -319,6 +321,12 @@ interface RawEventPage {
   options: RawEventOption[] | null;
 }
 
+interface RawDialogueLine {
+  order: string;
+  speaker: string;
+  text: string;
+}
+
 interface RawEvent {
   id: string;
   name: string;
@@ -327,9 +335,10 @@ interface RawEvent {
   description: string;
   options: RawEventOption[] | null;
   pages: RawEventPage[] | null;
-  dialogue: Record<string, unknown> | null;
+  dialogue: Record<string, RawDialogueLine[]> | null;
   epithet: string | null;
   image_url: string | null;
+  relics: string[] | null;
 }
 
 function mapEventOptions(opts: RawEventOption[] | null): EventOption[] | null {
@@ -385,6 +394,52 @@ export async function getCodexEvents(): Promise<CodexEvent[]> {
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
       return mapEvent(kor, eng, imgFiles);
+    });
+}
+
+function mapAncient(kor: RawEvent, eng: RawEvent): CodexAncient {
+  const key = kor.id.toLowerCase();
+  const imageUrl = `/images/sts2/ancients/${key}.webp`;
+
+  // Map dialogue: each key has an array of { order, speaker, text }
+  const dialogue: Record<string, AncientDialogueLine[]> = {};
+  if (kor.dialogue) {
+    for (const [charKey, lines] of Object.entries(kor.dialogue)) {
+      dialogue[charKey] = (lines as RawDialogueLine[]).map((l) => ({
+        order: l.order,
+        speaker: l.speaker as "ancient" | "character",
+        text: l.text,
+      }));
+    }
+  }
+
+  return {
+    id: kor.id,
+    name: kor.name,
+    nameEn: eng.name,
+    epithet: kor.epithet ?? "",
+    epithetEn: eng.epithet ?? "",
+    description: kor.description,
+    act: (kor.act as EventAct) ?? null,
+    relicIds: kor.relics ?? [],
+    dialogue,
+    imageUrl,
+  };
+}
+
+export async function getCodexAncients(): Promise<CodexAncient[]> {
+  const [korEvents, engEvents] = await Promise.all([
+    readJson<RawEvent[]>("kor/events.json"),
+    readJson<RawEvent[]>("eng/events.json"),
+  ]);
+
+  const engById = new Map(engEvents.map((e) => [e.id, e]));
+
+  return korEvents
+    .filter((e) => e.type === "Ancient")
+    .map((kor) => {
+      const eng = engById.get(kor.id) ?? kor;
+      return mapAncient(kor, eng);
     });
 }
 
