@@ -64,6 +64,7 @@ export default async function PatchDetailPage({
       imageUrl: c.imageUrl,
       color: c.color,
       type: "card" as const,
+      cardData: c,
     })),
     ...codexRelics.map((r) => ({
       id: r.id,

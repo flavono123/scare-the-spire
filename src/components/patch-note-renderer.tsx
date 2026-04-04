@@ -8,6 +8,8 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
+import type { CodexCard } from "@/lib/codex-types";
+import { CardTile } from "@/components/codex/card-tile";
 
 // Entity types that can appear in patch notes
 export type EntityType = "card" | "relic" | "potion";
@@ -19,6 +21,7 @@ export interface EntityInfo {
   imageUrl: string | null;
   color: string; // card color or pool
   type: EntityType;
+  cardData?: CodexCard; // Full card data for rich preview
 }
 
 // Keep backward compat alias
@@ -40,14 +43,16 @@ function EntityPreview({
   const handleMouseEnter = useCallback(() => {
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
-      setPosition(rect.top < 260 ? "below" : "above");
+      // Card tile preview is taller (~340px), need more space
+      const threshold = entity.cardData ? 380 : 260;
+      setPosition(rect.top < threshold ? "below" : "above");
     }
     setShow(true);
-  }, []);
+  }, [entity.cardData]);
 
   const href =
     entity.type === "card"
-      ? `/codex/cards#${entity.id}`
+      ? `/codex/cards/${entity.id.toLowerCase()}`
       : entity.type === "relic"
         ? `/codex/relics#${entity.id}`
         : `/codex/potions#${entity.id}`;
@@ -65,7 +70,18 @@ function EntityPreview({
       >
         {children}
       </Link>
-      {show && entity.imageUrl && (
+      {show && entity.type === "card" && entity.cardData && (
+        <span
+          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
+            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
+        >
+          <span className="block w-48 drop-shadow-2xl">
+            <CardTile card={entity.cardData} showUpgrade={false} showBeta={false} />
+          </span>
+        </span>
+      )}
+      {show && (entity.type !== "card" || !entity.cardData) && entity.imageUrl && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
@@ -76,7 +92,7 @@ function EntityPreview({
               src={entity.imageUrl}
               alt={entity.nameKo}
               width={200}
-              height={entity.type === "card" ? 280 : 200}
+              height={200}
               className="block"
               unoptimized
             />
