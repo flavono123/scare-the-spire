@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { DescriptionText } from "./codex-description";
+import { PotionDetail } from "./potion-detail";
 import { getChoseong } from "es-hangul";
 import {
   CodexPotion,
@@ -88,6 +90,7 @@ interface PotionLibraryProps {
 }
 
 export function PotionLibrary({ potions, characters, versions, currentVersion, patches, versionDiffs }: PotionLibraryProps) {
+  const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<PotionPool>>(
     new Set()
   );
@@ -96,6 +99,52 @@ export function PotionLibrary({ potions, characters, versions, currentVersion, p
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+
+  // Potion detail modal — initialize from ?potion= query param
+  const initialPotionId = searchParams.get("potion");
+  const [selectedPotion, setSelectedPotion] = useState<CodexPotion | null>(() => {
+    if (!initialPotionId) return null;
+    return potions.find((p) => p.id.toLowerCase() === initialPotionId.toLowerCase()) ?? null;
+  });
+
+  // Update URL query param when modal opens/closes
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (selectedPotion) {
+      url.searchParams.set("potion", selectedPotion.id.toLowerCase());
+    } else {
+      url.searchParams.delete("potion");
+    }
+    if (url.toString() !== window.location.href) {
+      window.history.pushState(null, "", url.toString());
+    }
+  }, [selectedPotion]);
+
+  // Handle browser back button
+  useEffect(() => {
+    const handler = () => {
+      const url = new URL(window.location.href);
+      const potionParam = url.searchParams.get("potion");
+      if (!potionParam) {
+        setSelectedPotion(null);
+      } else {
+        const potion = potions.find((p) => p.id.toLowerCase() === potionParam.toLowerCase());
+        setSelectedPotion(potion ?? null);
+      }
+    };
+    window.addEventListener("popstate", handler);
+    return () => window.removeEventListener("popstate", handler);
+  }, [potions]);
+
+  // Close modal on Escape
+  useEffect(() => {
+    if (!selectedPotion) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedPotion(null);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [selectedPotion]);
 
   const versionedPotions = useMemo(() => {
     if (!currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion) return potions;
@@ -462,6 +511,7 @@ export function PotionLibrary({ potions, characters, versions, currentVersion, p
                     key={potion.id}
                     potion={potion}
                     onHover={handlePotionHover}
+                    onClick={() => setSelectedPotion(potion)}
                   />
                 ))}
               </div>
@@ -485,6 +535,20 @@ export function PotionLibrary({ potions, characters, versions, currentVersion, p
           y={tooltipPos.y}
         />
       )}
+
+      {/* Potion Detail Modal */}
+      {selectedPotion && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedPotion(null);
+          }}
+        >
+          <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
+            <PotionDetail potion={selectedPotion} onClose={() => setSelectedPotion(null)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -493,9 +557,11 @@ export function PotionLibrary({ potions, characters, versions, currentVersion, p
 function PotionTile({
   potion,
   onHover,
+  onClick,
 }: {
   potion: CodexPotion;
   onHover: (potion: CodexPotion | null, e?: React.MouseEvent) => void;
+  onClick?: () => void;
 }) {
   return (
     <button
@@ -503,6 +569,7 @@ function PotionTile({
       className="group relative w-14 h-14 sm:w-16 sm:h-16 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/10 hover:border-yellow-500/40 transition-all flex items-center justify-center"
       onMouseEnter={(e) => onHover(potion, e)}
       onMouseLeave={() => onHover(null)}
+      onClick={onClick}
     >
       <Image
         src={potion.imageUrl}
