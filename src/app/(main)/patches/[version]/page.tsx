@@ -114,6 +114,21 @@ export default async function PatchDetailPage({
       type: "event" as const,
       eventData: e,
     })),
+    // Event options (choices) — hover shows option rich text
+    ...codexEvents.flatMap((e) =>
+      (e.options ?? [])
+        .filter((o) => !o.id.endsWith("_LOCKED") && o.title !== "잠김" && o.description)
+        .map((o) => ({
+          id: `${e.id}__${o.id}`,
+          nameEn: "",
+          nameKo: o.title,
+          imageUrl: null,
+          color: e.act ?? "none",
+          type: "event" as const,
+          eventData: e,
+          eventOptionDesc: o.description,
+        })),
+    ),
   ];
 
   const style = PATCH_TYPE_STYLES[patch.type];

@@ -8,13 +8,13 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent } from "@/lib/codex-types";
-import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, POWER_TYPE_CONFIG, ENCHANTMENT_CARD_TYPE_CONFIG, getCharacterColor, characterOutlineFilter, type RelicFilterPool, type EnchantmentCardTypeFilter } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent, CodexMonster } from "@/lib/codex-types";
+import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, POWER_TYPE_CONFIG, ENCHANTMENT_CARD_TYPE_CONFIG, MONSTER_TYPE_CONFIG, getCharacterColor, characterOutlineFilter, type RelicFilterPool, type EnchantmentCardTypeFilter } from "@/lib/codex-types";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
 
 // Entity types that can appear in patch notes
-export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "event";
+export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "event" | "monster";
 
 export interface EntityInfo {
   id: string;
@@ -29,6 +29,8 @@ export interface EntityInfo {
   powerData?: CodexPower; // Full power data for rich preview
   enchantmentData?: CodexEnchantment; // Full enchantment data for rich preview
   eventData?: CodexEvent; // Full event data for rich preview
+  eventOptionDesc?: string; // BBCode description for event option tooltips
+  monsterData?: CodexMonster; // Full monster data for rich preview
 }
 
 // Keep backward compat alias
@@ -52,7 +54,7 @@ function EntityPreview({
       const rect = ref.current.getBoundingClientRect();
       // Card tile preview is taller (~340px), other rich tooltips ~200px
       const hasRichData = entity.relicData || entity.potionData || entity.powerData || entity.enchantmentData;
-      const threshold = entity.cardData ? 380 : hasRichData ? 260 : 260;
+      const threshold = entity.cardData ? 380 : entity.eventOptionDesc ? 120 : entity.eventData ? 160 : hasRichData ? 260 : 260;
       setPosition(rect.top < threshold ? "below" : "above");
     }
     setShow(true);
@@ -275,36 +277,52 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && entity.type === "event" && entity.eventData && (
+      {show && entity.type === "event" && entity.eventData && !entity.eventOptionDesc && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
           }`}
         >
-          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95">
+          <span className="block w-56 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95">
             {entity.eventData.imageUrl && (
-              <span className="block relative w-full h-24">
+              <span className="block relative w-full h-28">
                 <Image
                   src={entity.eventData.imageUrl}
                   alt={entity.nameKo}
                   fill
-                  sizes="256px"
+                  sizes="224px"
                   className="object-cover"
                 />
+                <span className="absolute inset-0 bg-gradient-to-t from-[#0c0c20] to-transparent" />
+                <span className="absolute bottom-2 left-3 right-3">
+                  <span className="block font-bold text-sm text-yellow-400 drop-shadow-lg">{entity.nameKo}</span>
+                  {entity.nameEn && <span className="block text-[10px] text-gray-400 drop-shadow-lg">{entity.nameEn}</span>}
+                </span>
               </span>
             )}
-            <span className="block p-3">
-              <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
-              <span className="block text-[10px] text-gray-500 mb-1">{entity.nameEn}</span>
-              <span className="block text-xs text-gray-200 leading-relaxed line-clamp-3">
-                {entity.eventData.description.replace(/\[.*?\]/g, "").slice(0, 120)}
-                {entity.eventData.description.length > 120 ? "…" : ""}
+            {!entity.eventData.imageUrl && (
+              <span className="block p-2">
+                <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
               </span>
+            )}
+          </span>
+        </span>
+      )}
+      {show && entity.eventOptionDesc && (
+        <span
+          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
+            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
+        >
+          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-amber-500/20 bg-[#0c0c20]/95 p-3">
+            <span className="block font-bold text-sm text-amber-400 mb-1">{entity.nameKo}</span>
+            <span className="block text-xs text-gray-200 leading-relaxed">
+              <DescriptionText description={entity.eventOptionDesc} />
             </span>
           </span>
         </span>
       )}
-      {show && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && entity.imageUrl && (
+      {show && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && entity.imageUrl && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
