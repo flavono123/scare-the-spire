@@ -71,6 +71,15 @@ import { SearchBar } from "./search-bar";
 import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
 
+// Character token icons (game-extracted)
+const CHARACTER_TOKEN_ICONS: Record<string, string> = {
+  ironclad: "/images/sts2/characters/character_icon_ironclad.webp",
+  silent: "/images/sts2/characters/character_icon_silent.webp",
+  defect: "/images/sts2/characters/character_icon_defect.webp",
+  necrobinder: "/images/sts2/characters/character_icon_necrobinder.webp",
+  regent: "/images/sts2/characters/character_icon_regent.webp",
+};
+
 // Filter icon paths for non-character categories
 const CATEGORY_ICONS: Record<string, string> = {
   colorless: "/images/sts2/icons/colorless_energy_icon.webp",
@@ -426,7 +435,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
   const characterFilters = characters.map((c) => ({
     key: c.id.toLowerCase() as CardFilterCategory,
     label: c.name,
-    icon: c.imageUrl,
+    icon: CHARACTER_TOKEN_ICONS[c.id.toLowerCase()] ?? c.imageUrl,
   }));
 
   const extraFilters = [
