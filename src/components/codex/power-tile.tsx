@@ -25,9 +25,10 @@ const TYPE_STYLES: Record<string, { border: string; text: string; badge: string 
 
 interface PowerTileProps {
   power: CodexPower;
+  onClick?: () => void;
 }
 
-export const PowerTile = memo(function PowerTile({ power }: PowerTileProps) {
+export const PowerTile = memo(function PowerTile({ power, onClick }: PowerTileProps) {
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
   const [tooltipSide, setTooltipSide] = useState<"right" | "left">("right");
@@ -47,6 +48,7 @@ export const PowerTile = memo(function PowerTile({ power }: PowerTileProps) {
       className="relative group"
       onMouseEnter={() => { updateTooltipSide(); setHovered(true); }}
       onMouseLeave={() => setHovered(false)}
+      onClick={onClick}
     >
       <div
         className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 p-1 transition-all cursor-pointer ${

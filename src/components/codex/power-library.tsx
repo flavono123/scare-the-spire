@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
 import {
   CodexPower,
@@ -12,6 +13,7 @@ import {
 import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import { PowerTile } from "./power-tile";
+import { PowerDetail } from "./power-detail";
 import { SearchBar, TriggerGroup } from "./search-bar";
 import { FilterSection, ToggleButton } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
@@ -39,9 +41,52 @@ interface PowerLibraryProps {
 }
 
 export function PowerLibrary({ powers, versions, currentVersion, patches, versionDiffs }: PowerLibraryProps) {
+  const searchParams = useSearchParams();
   const [selectedTypes, setSelectedTypes] = useState<Set<PowerType>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+
+  // Power detail modal
+  const initialPowerId = searchParams.get("power");
+  const [selectedPower, setSelectedPower] = useState<CodexPower | null>(() => {
+    if (!initialPowerId) return null;
+    return powers.find((p) => p.id.toLowerCase() === initialPowerId.toLowerCase()) ?? null;
+  });
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (selectedPower) {
+      url.searchParams.set("power", selectedPower.id.toLowerCase());
+    } else {
+      url.searchParams.delete("power");
+    }
+    if (url.toString() !== window.location.href) {
+      window.history.pushState(null, "", url.toString());
+    }
+  }, [selectedPower]);
+
+  useEffect(() => {
+    const handler = () => {
+      const url = new URL(window.location.href);
+      const param = url.searchParams.get("power");
+      if (!param) {
+        setSelectedPower(null);
+      } else {
+        setSelectedPower(powers.find((p) => p.id.toLowerCase() === param.toLowerCase()) ?? null);
+      }
+    };
+    window.addEventListener("popstate", handler);
+    return () => window.removeEventListener("popstate", handler);
+  }, [powers]);
+
+  useEffect(() => {
+    if (!selectedPower) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedPower(null);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [selectedPower]);
 
   const versionedPowers = useMemo(() => {
     if (!currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion) return powers;
@@ -271,7 +316,7 @@ export function PowerLibrary({ powers, versions, currentVersion, patches, versio
 
               <div className="flex flex-wrap gap-2">
                 {groupPowers.map((power) => (
-                  <PowerTile key={power.id} power={power} />
+                  <PowerTile key={power.id} power={power} onClick={() => setSelectedPower(power)} />
                 ))}
               </div>
             </section>
@@ -284,6 +329,20 @@ export function PowerLibrary({ powers, versions, currentVersion, patches, versio
           )}
         </div>
       </main>
+
+      {/* Power Detail Modal */}
+      {selectedPower && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedPower(null);
+          }}
+        >
+          <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
+            <PowerDetail power={selectedPower} onClose={() => setSelectedPower(null)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

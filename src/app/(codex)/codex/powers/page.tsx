@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { getCodexPowers } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
@@ -21,12 +22,14 @@ export default async function CodexPowersPage() {
   const versions = getVersionsWithDiffs(patches, versionDiffs);
 
   return (
-    <PowerLibrary
-      powers={powers}
-      versions={versions}
-      currentVersion={meta.version}
-      patches={patches}
-      versionDiffs={versionDiffs}
-    />
+    <Suspense>
+      <PowerLibrary
+        powers={powers}
+        versions={versions}
+        currentVersion={meta.version}
+        patches={patches}
+        versionDiffs={versionDiffs}
+      />
+    </Suspense>
   );
 }
