@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
 import {
   CodexRelic,
@@ -18,6 +19,7 @@ import {
 import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
 import { reconstructRelicAtVersion } from "@/lib/entity-versioning";
 import { RelicTile } from "./relic-tile";
+import { RelicDetail } from "./relic-detail";
 import { SearchBar, TriggerGroup } from "./search-bar";
 import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
@@ -65,10 +67,57 @@ interface RelicLibraryProps {
 }
 
 export function RelicLibrary({ relics, characters, versions, currentVersion, patches, versionDiffs }: RelicLibraryProps) {
+  const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<RelicFilterPool>>(new Set());
   const [selectedRarities, setSelectedRarities] = useState<Set<RelicRarityKo>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+
+  // Relic detail modal — initialize from ?relic= query param
+  const initialRelicId = searchParams.get("relic");
+  const [selectedRelic, setSelectedRelic] = useState<CodexRelic | null>(() => {
+    if (!initialRelicId) return null;
+    return relics.find((r) => r.id.toLowerCase() === initialRelicId.toLowerCase()) ?? null;
+  });
+
+  // Update URL query param when modal opens/closes
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (selectedRelic) {
+      url.searchParams.set("relic", selectedRelic.id.toLowerCase());
+    } else {
+      url.searchParams.delete("relic");
+    }
+    if (url.toString() !== window.location.href) {
+      window.history.pushState(null, "", url.toString());
+    }
+  }, [selectedRelic]);
+
+  // Handle browser back button
+  useEffect(() => {
+    const handler = () => {
+      const url = new URL(window.location.href);
+      const relicParam = url.searchParams.get("relic");
+      if (!relicParam) {
+        setSelectedRelic(null);
+      } else {
+        const relic = relics.find((r) => r.id.toLowerCase() === relicParam.toLowerCase());
+        setSelectedRelic(relic ?? null);
+      }
+    };
+    window.addEventListener("popstate", handler);
+    return () => window.removeEventListener("popstate", handler);
+  }, [relics]);
+
+  // Close modal on Escape
+  useEffect(() => {
+    if (!selectedRelic) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedRelic(null);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [selectedRelic]);
 
   const versionedRelics = useMemo(() => {
     if (!currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion) return relics;
@@ -346,7 +395,7 @@ export function RelicLibrary({ relics, characters, versions, currentVersion, pat
               {/* Relic icon grid */}
               <div className="flex flex-wrap gap-2">
                 {groupRelics.map((relic) => (
-                  <RelicTile key={relic.id} relic={relic} />
+                  <RelicTile key={relic.id} relic={relic} onClick={() => setSelectedRelic(relic)} />
                 ))}
               </div>
             </section>
@@ -359,6 +408,20 @@ export function RelicLibrary({ relics, characters, versions, currentVersion, pat
           )}
         </div>
       </main>
+
+      {/* Relic Detail Modal */}
+      {selectedRelic && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedRelic(null);
+          }}
+        >
+          <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
+            <RelicDetail relic={selectedRelic} onClose={() => setSelectedRelic(null)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

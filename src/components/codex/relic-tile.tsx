@@ -7,9 +7,10 @@ import { DescriptionText } from "./codex-description";
 
 interface RelicTileProps {
   relic: CodexRelic;
+  onClick?: () => void;
 }
 
-export function RelicTile({ relic }: RelicTileProps) {
+export function RelicTile({ relic, onClick }: RelicTileProps) {
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -28,6 +29,7 @@ export function RelicTile({ relic }: RelicTileProps) {
       className="relative group"
       onMouseEnter={() => { updateTooltipSide(); setHovered(true); }}
       onMouseLeave={() => setHovered(false)}
+      onClick={onClick}
     >
       <div
         className={`w-14 h-14 sm:w-16 sm:h-16 rounded-lg border-2 p-1 transition-all cursor-pointer ${
