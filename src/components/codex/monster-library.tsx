@@ -204,6 +204,28 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
     return result;
   }, [monsters, selectedTypes, selectedActs, parsedSearch, fuzzyMatch, monsterActs]);
 
+  // Sort by type > act > name
+  const ACT_SORT_ORDER: Record<string, number> = {
+    "Act 1 - Overgrowth": 0,
+    Underdocks: 1,
+    "Act 2 - Hive": 2,
+    "Act 3 - Glory": 3,
+  };
+
+  const getMonsterActOrder = useCallback(
+    (monsterId: string): number => {
+      const acts = monsterActs.get(monsterId);
+      if (!acts) return 99;
+      let minOrder = 99;
+      for (const act of acts) {
+        const order = ACT_SORT_ORDER[act] ?? 98;
+        if (order < minOrder) minOrder = order;
+      }
+      return minOrder;
+    },
+    [monsterActs],
+  );
+
   // Group by type
   const sections = useMemo(() => {
     return MONSTER_TYPE_ORDER.map((type) => ({
@@ -211,9 +233,14 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
       ...MONSTER_TYPE_CONFIG[type],
       monsters: filteredMonsters
         .filter((m) => m.type === type)
-        .sort((a, b) => a.name.localeCompare(b.name, "ko")),
+        .sort((a, b) => {
+          // Sort by act first, then name
+          const actDiff = getMonsterActOrder(a.id) - getMonsterActOrder(b.id);
+          if (actDiff !== 0) return actDiff;
+          return a.name.localeCompare(b.name, "ko");
+        }),
     })).filter((s) => s.monsters.length > 0);
-  }, [filteredMonsters]);
+  }, [filteredMonsters, getMonsterActOrder]);
 
   const toggleType = useCallback((type: MonsterType) => {
     setSelectedTypes((prev) => {
