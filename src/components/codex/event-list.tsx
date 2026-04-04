@@ -30,7 +30,7 @@ const EVENT_TRIGGERS: TriggerGroup[] = [
       { value: "지하 선착장", label: "1막 — 지하 선착장", desc: "Underdocks" },
       { value: "2막", label: "2막 — 군락", desc: "Act 2 Hive" },
       { value: "3막", label: "3막 — 영광", desc: "Act 3 Glory" },
-      { value: "미지정", label: "미지정", desc: "No act" },
+      { value: "막 무관", label: "막 무관", desc: "Any act" },
     ],
     validate: (val) => EVENT_ACT_ALIASES[val] ?? null,
     chipColor: "bg-blue-500/20 text-blue-400",
@@ -497,13 +497,20 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
   const filtered = useMemo(() => {
     return versionedEvents.filter((e) => {
       // Act filter (sidebar toggles)
-      if (selectedActs.size > 0) {
+      // Events with act=null (막 무관) pass any act filter
+      if (selectedActs.size > 0 && e.act !== null) {
         const actKey = e.act ?? "none";
         if (!selectedActs.has(actKey)) return false;
       }
+      // Only filter out 막 무관 events if "none" is explicitly excluded
+      if (selectedActs.size > 0 && e.act === null && !selectedActs.has("none")) {
+        // Check if any specific act is selected — 막 무관 events pass through
+        const hasSpecificAct = [...selectedActs].some((a) => a !== "none");
+        if (!hasSpecificAct) return false;
+      }
 
       // Search act tokens
-      if (parsedSearch.actTokens.length > 0) {
+      if (parsedSearch.actTokens.length > 0 && e.act !== null) {
         const actKey = e.act ?? "none";
         if (!parsedSearch.actTokens.includes(actKey)) return false;
       }

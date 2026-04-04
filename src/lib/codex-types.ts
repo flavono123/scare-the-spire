@@ -428,7 +428,7 @@ export const EVENT_ACT_CONFIG: Record<string, { label: string; labelKo: string; 
 };
 
 export const EVENT_ACT_UNKNOWN = {
-  label: "Unknown", labelKo: "미지정", color: "text-zinc-400", border: "border-zinc-500/40", bg: "bg-zinc-500/10",
+  label: "Any Act", labelKo: "막 무관", color: "text-zinc-400", border: "border-zinc-500/40", bg: "bg-zinc-500/10",
 };
 
 export const EVENT_ACT_ALIASES: Record<string, EventAct | "none"> = {
@@ -444,6 +444,7 @@ export const EVENT_ACT_ALIASES: Record<string, EventAct | "none"> = {
   "3막": "Act 3 - Glory",
   영광: "Act 3 - Glory",
   glory: "Act 3 - Glory",
+  "막 무관": "none",
   미지정: "none",
 };
 

@@ -52,7 +52,7 @@ function EntityPreview({
 
   const href =
     entity.type === "card"
-      ? `/codex/cards/${entity.id.toLowerCase()}`
+      ? `/codex/cards?card=${entity.id.toLowerCase()}`
       : entity.type === "relic"
         ? `/codex/relics#${entity.id}`
         : `/codex/potions#${entity.id}`;

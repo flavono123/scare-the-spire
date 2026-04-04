@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { getChoseong } from "es-hangul";
 import {
@@ -100,6 +101,7 @@ interface CardLibraryProps {
 }
 
 export function CardLibrary({ cards, characters, versions, currentVersion, patches, versionDiffs }: CardLibraryProps) {
+  const searchParams = useSearchParams();
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
   const [selectedColors, setSelectedColors] = useState<Set<CardFilterCategory>>(
     new Set()
