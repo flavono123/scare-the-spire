@@ -83,10 +83,10 @@ const CHARACTER_TOKEN_ICONS: Record<string, string> = {
 // Filter icon paths for non-character categories
 const CATEGORY_ICONS: Record<string, string> = {
   colorless: "/images/sts2/icons/colorless_energy_icon.webp",
-  event: "/images/sts2/icons/chest_icon.webp",
-  curse: "/images/sts2/cards/ascenders_bane.webp",
-  status: "/images/sts2/cards/burn.webp",
-  ancient: "/images/sts2/cards/apparition.webp",
+  event: "/images/game-assets/card-library/pool_filter_other.webp",
+  curse: "/images/game-assets/card-library/pool_filter_other.webp",
+  status: "/images/game-assets/card-library/pool_filter_other.webp",
+  ancient: "/images/sts2/ancients/neow.webp",
 };
 
 const RARITY_COLORS: Record<string, string> = {
@@ -534,9 +534,9 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
           : `relative ${sidebarOpen ? "w-52 p-3" : "w-0 p-0 overflow-hidden border-r-0"}`
         }
       `}>
-        {/* Character Filters */}
-        <FilterSection trigger="@" label="캐릭터" sortDir={sortDirs.color} sortPriority={sortKeys.indexOf("color") + 1} onSortToggle={() => toggleSort("color")}>
-          <div className="flex flex-wrap gap-1.5">
+        {/* Character + Extra Filters (5 per row, 2 rows) */}
+        <FilterSection trigger="@" label="캐릭터" sortDir={sortDirs.color} onSortToggle={() => toggleSort("color")}>
+          <div className="grid grid-cols-5 gap-1.5">
             {characterFilters.map((cf) => (
               <IconFilterButton
                 key={cf.key}
@@ -546,11 +546,6 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
                 onClick={() => toggleColor(cf.key)}
               />
             ))}
-          </div>
-        </FilterSection>
-
-        <FilterSection trigger="@" label="기타">
-          <div className="flex flex-wrap gap-1.5">
             {extraFilters.map((ef) => (
               <IconFilterButton
                 key={ef.key}
@@ -566,7 +561,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
         <div className="border-t border-white/10" />
 
         {/* Card Type (icon buttons) */}
-        <FilterSection trigger="#" label="카드 유형" sortDir={sortDirs.type} sortPriority={sortKeys.indexOf("type") + 1} onSortToggle={() => toggleSort("type")}>
+        <FilterSection trigger="#" label="카드 유형" sortDir={sortDirs.type} onSortToggle={() => toggleSort("type")}>
           <div className="flex gap-1.5">
             {availableTypes.map((type) => (
               <IconFilterButton
@@ -581,7 +576,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
         </FilterSection>
 
         {/* Rarity */}
-        <FilterSection label="희귀도" sortDir={sortDirs.rarity} sortPriority={sortKeys.indexOf("rarity") + 1} onSortToggle={() => toggleSort("rarity")}>
+        <FilterSection label="희귀도" sortDir={sortDirs.rarity} onSortToggle={() => toggleSort("rarity")}>
           <div className="flex flex-col gap-0.5">
             {rarityFilters.map((r) => (
               <button
@@ -626,7 +621,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
         </FilterSection>
 
         {/* Cost */}
-        <FilterSection trigger="!" label="비용" sortDir={sortDirs.cost} sortPriority={sortKeys.indexOf("cost") + 1} onSortToggle={() => toggleSort("cost")}>
+        <FilterSection trigger="!" label="비용" sortDir={sortDirs.cost} onSortToggle={() => toggleSort("cost")}>
           <div className="flex flex-wrap gap-1">
             {COST_OPTIONS.map((cost) => {
               const key = String(cost);
@@ -648,7 +643,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
         </FilterSection>
 
         {/* Name sort (no filter, just sort toggle) */}
-        <FilterSection label="이름순" sortDir={sortDirs.name} sortPriority={sortKeys.indexOf("name") + 1} onSortToggle={() => toggleSort("name")}>
+        <FilterSection label="이름순" sortDir={sortDirs.name} onSortToggle={() => toggleSort("name")}>
           <span />
         </FilterSection>
 

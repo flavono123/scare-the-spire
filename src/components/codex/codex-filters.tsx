@@ -7,42 +7,48 @@ export function FilterSection({
   label,
   children,
   sortDir,
-  sortPriority,
   onSortToggle,
 }: {
   trigger?: string;
   label: string;
   children: React.ReactNode;
   sortDir?: "asc" | "desc";
-  sortPriority?: number; // 1-based priority number
   onSortToggle?: () => void;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 bg-[#3a5a5a]/60 rounded px-2 py-1">
         {trigger && (
           <span className="text-[10px] font-mono font-bold text-yellow-500/70 bg-yellow-500/10 rounded px-1 py-0.5 leading-none">
             {trigger}
           </span>
         )}
-        <span className="text-[11px] text-gray-500 font-medium uppercase tracking-wider">
+        <span className="text-sm text-gray-200 font-bold tracking-wide">
           {label}
         </span>
         {onSortToggle && (
           <button
             onClick={onSortToggle}
-            className="ml-auto flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] hover:bg-white/10 transition-colors"
+            className="ml-auto flex items-center px-1 py-0.5 rounded hover:bg-white/10 transition-colors"
             title="정렬 기준 변경"
           >
-            {sortPriority !== undefined && (
-              <span className="text-yellow-500/60 tabular-nums">{sortPriority}</span>
-            )}
-            <svg className="w-3 h-3" viewBox="0 0 16 16" fill="none" stroke={sortDir ? "#eab308" : "#6b7280"} strokeWidth="2" strokeLinecap="round">
-              <path d="M4 6h8M5 9h6M6.5 12h3" />
+            {/* Game-style sort icon: stacked bars + arrow */}
+            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none">
+              {/* Stacked horizontal bars */}
+              <rect x="2" y="4" width="10" height="2" rx="0.5" fill="#eab308" />
+              <rect x="2" y="8" width="8" height="2" rx="0.5" fill="#eab308" />
+              <rect x="2" y="12" width="6" height="2" rx="0.5" fill="#eab308" />
+              {/* Arrow */}
               {sortDir === "desc" ? (
-                <path d="M13 4l-1.5 2M13 4l1.5 2" strokeWidth="1.5" />
+                <>
+                  <line x1="15" y1="5" x2="15" y2="14" stroke="#eab308" strokeWidth="1.8" strokeLinecap="round" />
+                  <path d="M12.5 11.5L15 14.5L17.5 11.5" stroke="#eab308" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                </>
               ) : (
-                <path d="M13 13l-1.5-2M13 13l1.5-2" strokeWidth="1.5" />
+                <>
+                  <line x1="15" y1="14" x2="15" y2="5" stroke="#eab308" strokeWidth="1.8" strokeLinecap="round" />
+                  <path d="M12.5 7.5L15 4.5L17.5 7.5" stroke="#eab308" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                </>
               )}
             </svg>
           </button>
