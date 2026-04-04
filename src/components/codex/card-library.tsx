@@ -83,9 +83,9 @@ const CHARACTER_TOKEN_ICONS: Record<string, string> = {
 // Filter icon paths for non-character categories
 const CATEGORY_ICONS: Record<string, string> = {
   colorless: "/images/sts2/icons/colorless_energy_icon.webp",
-  event: "/images/game-assets/card-library/pool_filter_other.webp",
-  curse: "/images/game-assets/card-library/pool_filter_other.webp",
-  status: "/images/game-assets/card-library/pool_filter_other.webp",
+  event: "/images/game-assets/card-library/filter_event.webp",
+  curse: "/images/game-assets/card-library/filter_curse.webp",
+  status: "/images/game-assets/card-library/filter_status.webp",
   ancient: "/images/sts2/ancients/neow.webp",
 };
 
