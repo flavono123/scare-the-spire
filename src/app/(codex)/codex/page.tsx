@@ -68,6 +68,19 @@ const categories = [
     ],
   },
   {
+    href: "/codex/monsters",
+    label: "몬스터",
+    labelEn: "Monsters",
+    count: 111,
+    description: null,
+    images: [
+      "/images/sts2/bosses/ceremonial_beast_boss.webp",
+      "/images/sts2/bosses/knowledge_demon_boss.webp",
+      "/images/sts2/bosses/queen_boss.webp",
+      "/images/sts2/bosses/vantom_boss.webp",
+    ],
+  },
+  {
     href: "/codex/events",
     label: "이벤트",
     labelEn: "Events",
