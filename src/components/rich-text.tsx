@@ -31,6 +31,7 @@ interface TextNode {
   type: "text" | "newline" | "tag";
   text?: string;
   tag?: string;
+  param?: string;
   children?: TextNode[];
 }
 
@@ -41,7 +42,7 @@ function parseBBCode(input: string): TextNode[] {
   const regex = /\[(\/?)(\w+)(?::(\w+))?\]|\n/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
-  const stack: { tag: string; children: TextNode[] }[] = [];
+  const stack: { tag: string; param?: string; children: TextNode[] }[] = [];
 
   function pushText(text: string) {
     const target = stack.length > 0 ? stack[stack.length - 1].children : nodes;
@@ -83,7 +84,7 @@ function parseBBCode(input: string): TextNode[] {
     }
 
     if (!isClosing) {
-      stack.push({ tag: tagName, children: [] });
+      stack.push({ tag: tagName, param: tagParam, children: [] });
     } else {
       // Find matching opening tag
       let found = -1;
@@ -100,6 +101,7 @@ function parseBBCode(input: string): TextNode[] {
           const node: TextNode = {
             type: "tag",
             tag: item.tag,
+            param: item.param,
             children: item.children,
           };
           pushNode(node);
@@ -119,6 +121,7 @@ function parseBBCode(input: string): TextNode[] {
     const node: TextNode = {
       type: "tag",
       tag: item.tag,
+      param: item.param,
       children: item.children,
     };
     const target = stack.length > 0 ? stack[stack.length - 1].children : nodes;

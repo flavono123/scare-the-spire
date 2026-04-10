@@ -406,20 +406,49 @@ function EntityPreview({
 interface EntityLookup {
   byKo: Map<string, EntityInfo>;
   byEn: Map<string, EntityInfo>;
+  allByKo?: Map<string, EntityInfo[]>;
+  allByEn?: Map<string, EntityInfo[]>;
 }
 
 function buildEntityLookup(entities: EntityInfo[]): EntityLookup {
   const byKo = new Map<string, EntityInfo>();
   const byEn = new Map<string, EntityInfo>();
+  const allByKo = new Map<string, EntityInfo[]>();
+  const allByEn = new Map<string, EntityInfo[]>();
   for (const e of entities) {
     byKo.set(e.nameKo.toLowerCase(), e);
     byEn.set(e.nameEn.toLowerCase(), e);
+    const koKey = e.nameKo.toLowerCase();
+    const enKey = e.nameEn.toLowerCase();
+    if (!allByKo.has(koKey)) allByKo.set(koKey, []);
+    allByKo.get(koKey)!.push(e);
+    if (!allByEn.has(enKey)) allByEn.set(enKey, []);
+    allByEn.get(enKey)!.push(e);
   }
-  return { byKo, byEn };
+  return { byKo, byEn, allByKo, allByEn };
 }
 
-function findEntity(text: string, lookup: EntityLookup): EntityInfo | null {
+function findEntity(text: string, lookup: EntityLookup, typeHint?: string): EntityInfo | null {
   const lower = text.toLowerCase();
+  if (typeHint) {
+    // [gold:card], [gold:relic], etc. — filter by entity type
+    const koMatch = lookup.byKo.get(lower);
+    if (koMatch && koMatch.type === typeHint) return koMatch;
+    const enMatch = lookup.byEn.get(lower);
+    if (enMatch && enMatch.type === typeHint) return enMatch;
+    // Fall back to type-specific lists
+    const koAll = lookup.allByKo?.get(lower);
+    if (koAll) {
+      const match = koAll.find((e) => e.type === typeHint);
+      if (match) return match;
+    }
+    const enAll = lookup.allByEn?.get(lower);
+    if (enAll) {
+      const match = enAll.find((e) => e.type === typeHint);
+      if (match) return match;
+    }
+    return null;
+  }
   return lookup.byKo.get(lower) ?? lookup.byEn.get(lower) ?? null;
 }
 
@@ -429,6 +458,7 @@ interface TextNode {
   type: "text" | "newline" | "tag";
   text?: string;
   tag?: string;
+  param?: string;
   children?: TextNode[];
 }
 
@@ -464,7 +494,7 @@ function renderBBNodes(
       // [gold] tag: check if content matches an entity
       if (node.tag === "gold") {
         const plainText = extractPlainText(node.children);
-        const entity = findEntity(plainText, lookup);
+        const entity = findEntity(plainText, lookup, node.param);
 
         if (entity) {
           return (

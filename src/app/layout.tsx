@@ -34,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="ko" className="dark">
       <body
+        suppressHydrationWarning
         className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} font-sans antialiased bg-background text-foreground`}
       >
         {children}
