@@ -127,7 +127,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "스킬",
-    "rarity": "Uncommon",
+    "rarity": "고급",
     "target": "Self",
     "color": "silent",
     "damage": null,
@@ -3428,7 +3428,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "스킬",
-    "rarity": "Uncommon",
+    "rarity": "고급",
     "target": "Self",
     "color": "ironclad",
     "damage": null,
@@ -19774,5 +19774,39 @@
     },
     "image_url": "/static/images/cards/zap.png",
     "beta_image_url": null
+  },
+  {
+    "id": "NOT_YET",
+    "name": "불굴",
+    "description": "체력을 [blue]10[/blue] 회복합니다.",
+    "description_raw": "체력을 {Heal:diff()} 회복합니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "희귀",
+    "target": "자신",
+    "color": "ironclad",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Heal": 10
+    },
+    "upgrade": {
+      "heal": "+3"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/not_yet.png"
   }
 ]

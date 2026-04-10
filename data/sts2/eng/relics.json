@@ -2878,5 +2878,35 @@
     "rarity": "Ancient Relic",
     "pool": "shared",
     "image_url": null
+  },
+  {
+    "id": "NEOWS_BONES",
+    "name": "Neow's Bones",
+    "description": "Upon pickup, gain [blue]2[/blue] random [gold]Neow Relics[/gold]. Add [blue]1[/blue] random [red]Curse[/red] to your [gold]Deck[/gold].",
+    "description_raw": "Upon pickup, gain [blue]{Relics}[/blue] random [gold]Neow {Relics:plural:Relic|Relics}[/gold]. Add [blue]{Curses}[/blue] random [red]{Curses:plural:Curse|Curses}[/red] to your [gold]Deck[/gold].",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": null
+  },
+  {
+    "id": "PHIAL_HOLSTER",
+    "name": "Phial Holster",
+    "description": "Upon pickup, gain [blue]1[/blue] potion slot and procure [blue]2[/blue] random potions.",
+    "description_raw": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion {PotionSlots:plural:slot|slots} and procure [blue]{Potions}[/blue] random {Potions:plural:potion|potions}.",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": null
+  },
+  {
+    "id": "WINGED_BOOTS",
+    "name": "Winged Boots",
+    "description": "You may ignore paths when choosing the next rooms to travel to [blue]3[/blue] times.",
+    "description_raw": "You may ignore paths when choosing the next rooms to travel to [blue]{Rooms}[/blue] times.",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": null
   }
 ]

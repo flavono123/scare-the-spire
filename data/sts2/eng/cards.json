@@ -19765,5 +19765,39 @@
     },
     "image_url": "/static/images/cards/zap.png",
     "beta_image_url": null
+  },
+  {
+    "id": "NOT_YET",
+    "name": "Not Yet",
+    "description": "Heal [blue]10[/blue] HP.",
+    "description_raw": "Heal {Heal:diff()} HP.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "ironclad",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Heal": 10
+    },
+    "upgrade": {
+      "heal": "+3"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/not_yet.png"
   }
 ]

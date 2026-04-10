@@ -2878,5 +2878,35 @@
     "rarity": "고대 유물",
     "pool": "shared",
     "image_url": "/static/images/relics/yummy_cookie.png"
+  },
+  {
+    "id": "NEOWS_BONES",
+    "name": "니오우의 뼈",
+    "description": "획득 시, 무작위 [gold]니오우 유물[/gold]을 [blue]2[/blue]개 획득합니다. [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]1[/blue]장 추가합니다.",
+    "description_raw": "획득 시, 무작위 [gold]니오우 유물[/gold]을 [blue]{Relics}[/blue]개 획득합니다. [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장 추가합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대의 존재 유물",
+    "pool": "공용",
+    "image_url": null
+  },
+  {
+    "id": "PHIAL_HOLSTER",
+    "name": "약병 홀스터",
+    "description": "획득 시, 포션 슬롯을 [blue]1[/blue]개 얻고, 무작위 포션을 [blue]2[/blue]개 생성합니다.",
+    "description_raw": "획득 시, 포션 슬롯을 [blue]{PotionSlots}[/blue]개 얻고, 무작위 포션을 [blue]{Potions}[/blue]개 생성합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대의 존재 유물",
+    "pool": "공용",
+    "image_url": null
+  },
+  {
+    "id": "WINGED_BOOTS",
+    "name": "날개 달린 부츠",
+    "description": "다음 방을 선택할 때, 경로를 [blue]3[/blue]번까지 무시할 수 있습니다.",
+    "description_raw": "다음 방을 선택할 때, 경로를 [blue]{Rooms}[/blue]번까지 무시할 수 있습니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대의 존재 유물",
+    "pool": "공용",
+    "image_url": null
   }
 ]
