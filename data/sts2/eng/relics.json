@@ -2,7 +2,7 @@
   {
     "id": "AKABEKO",
     "name": "Akabeko",
-    "description": "At the start of each combat, gain [blue]8[/blue] [gold]Vigor[/gold].",
+    "description": "At the start of each combat, gain [blue]{VigorPower}[/blue] [gold]Vigor[/gold].",
     "description_raw": "At the start of each combat, gain [blue]{VigorPower}[/blue] [gold]Vigor[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -12,7 +12,7 @@
   {
     "id": "ALCHEMICAL_COFFER",
     "name": "Alchemical Coffer",
-    "description": "Upon pickup, gain [blue]4[/blue] potion slots filled with random potions.",
+    "description": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion slots filled with random potions.",
     "description_raw": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion slots filled with random potions.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -22,7 +22,7 @@
   {
     "id": "AMETHYST_AUBERGINE",
     "name": "Amethyst Aubergine",
-    "description": "Enemies drop [blue]10[/blue] additional [gold]Gold[/gold].",
+    "description": "Enemies drop [blue]{Gold}[/blue] additional [gold]Gold[/gold].",
     "description_raw": "Enemies drop [blue]{Gold}[/blue] additional [gold]Gold[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -32,7 +32,7 @@
   {
     "id": "ANCHOR",
     "name": "Anchor",
-    "description": "Start each combat with [blue]10[/blue] [gold]Block[/gold].",
+    "description": "Start each combat with [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "Start each combat with [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -52,8 +52,8 @@
   {
     "id": "ARCHAIC_TOOTH",
     "name": "Archaic Tooth",
-    "description": "Upon pickup, [gold]Transform[/gold] a starter card with an ancient version.",
-    "description_raw": "Upon pickup, [gold]Transform[/gold] {StarterCard.StringValue:cond:[gold]{StarterCard}[/gold] into [gold]{AncientCard}[/gold]|a starter card with an ancient version}.",
+    "description": "Upon pickup, [gold]Transform[/gold] {StarterCard.StringValue:cond:[gold]{StarterCard}[/gold] into [gold]{AncientCard}[/gold]|a starter card into an ancient version}.",
+    "description_raw": "Upon pickup, [gold]Transform[/gold] {StarterCard.StringValue:cond:[gold]{StarterCard}[/gold] into [gold]{AncientCard}[/gold]|a starter card into an ancient version}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
@@ -62,7 +62,7 @@
   {
     "id": "ART_OF_WAR",
     "name": "Art of War",
-    "description": "If you do not play any Attacks during your turn, gain an additional [energy:1] next turn.",
+    "description": "If you do not play any Attacks during your turn, gain an additional {Energy:energyIcons()} next turn.",
     "description_raw": "If you do not play any Attacks during your turn, gain an additional {Energy:energyIcons()} next turn.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -72,7 +72,7 @@
   {
     "id": "ASTROLABE",
     "name": "Astrolabe",
-    "description": "Upon pickup, [gold]Transform[/gold] [blue]3[/blue] cards, then [gold]Upgrade[/gold] them.",
+    "description": "Upon pickup, [gold]Transform[/gold] [blue]{Cards}[/blue] {Cards:plural:card|cards}, then [gold]Upgrade[/gold] them.",
     "description_raw": "Upon pickup, [gold]Transform[/gold] [blue]{Cards}[/blue] {Cards:plural:card|cards}, then [gold]Upgrade[/gold] them.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -82,17 +82,17 @@
   {
     "id": "BAG_OF_MARBLES",
     "name": "Bag of Marbles",
-    "description": "At the start of each combat, apply [blue]1[/blue] [gold]Vulnerable[/gold] to ALL enemies.",
+    "description": "At the start of each combat, apply [blue]{VulnerablePower}[/blue] [gold]Vulnerable[/gold] to ALL enemies.",
     "description_raw": "At the start of each combat, apply [blue]{VulnerablePower}[/blue] [gold]Vulnerable[/gold] to ALL enemies.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
-    "rarity": "Uncommon Relic",
+    "rarity": "Common Relic",
     "pool": "shared",
     "image_url": "/static/images/relics/bag_of_marbles.png"
   },
   {
     "id": "BAG_OF_PREPARATION",
     "name": "Bag of Preparation",
-    "description": "At the start of each combat, draw [blue]2[/blue] additional cards.",
+    "description": "At the start of each combat, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}.",
     "description_raw": "At the start of each combat, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -112,7 +112,7 @@
   {
     "id": "BEAUTIFUL_BRACELET",
     "name": "Beautiful Bracelet",
-    "description": "Upon pickup, choose [blue]3[/blue] cards in your [gold]Deck[/gold]. [gold]Enchant[/gold] them with [purple]Swift[/purple] [blue]3[/blue].",
+    "description": "Upon pickup, choose [blue]{Cards}[/blue] {Cards:plural:card|cards} in your [gold]Deck[/gold]. [gold]Enchant[/gold] them with [purple]Swift[/purple] [blue]3[/blue].",
     "description_raw": "Upon pickup, choose [blue]{Cards}[/blue] {Cards:plural:card|cards} in your [gold]Deck[/gold]. [gold]Enchant[/gold] them with [purple]Swift[/purple] [blue]3[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -125,14 +125,14 @@
     "description": "The first [gold]Hand[/gold] you draw each combat is [gold]Upgraded[/gold].",
     "description_raw": "The first [gold]Hand[/gold] you draw each combat is [gold]Upgraded[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
-    "rarity": "Uncommon Relic",
+    "rarity": "Rare Relic",
     "pool": "shared",
     "image_url": "/static/images/relics/bellows.png"
   },
   {
     "id": "BELT_BUCKLE",
     "name": "Belt Buckle",
-    "description": "While you have no potions, you have [blue]2[/blue] additional [gold]Dexterity[/gold].",
+    "description": "While you have no potions, you have [blue]{DexterityPower}[/blue] additional [gold]Dexterity[/gold].",
     "description_raw": "While you have no potions, you have [blue]{DexterityPower}[/blue] additional [gold]Dexterity[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -142,7 +142,7 @@
   {
     "id": "BIG_HAT",
     "name": "Big Hat",
-    "description": "At the start of each combat, add [blue]2[/blue] random [gold]Ethereal[/gold] cards into your [gold]Hand[/gold].",
+    "description": "At the start of each combat, add [blue]{Cards}[/blue] random [gold]Ethereal[/gold] {Cards:plural:card|cards} into your [gold]Hand[/gold].",
     "description_raw": "At the start of each combat, add [blue]{Cards}[/blue] random [gold]Ethereal[/gold] {Cards:plural:card|cards} into your [gold]Hand[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -152,7 +152,7 @@
   {
     "id": "BIG_MUSHROOM",
     "name": "Big Mushroom",
-    "description": "Upon pickup, raise your Max HP by [blue]20[/blue]. At the start of each combat, draw [blue]2[/blue] fewer cards.",
+    "description": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue]. At the start of each combat, draw [blue]{Cards}[/blue] fewer {Cards:plural:card|cards}.",
     "description_raw": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue]. At the start of each combat, draw [blue]{Cards}[/blue] fewer {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -162,7 +162,7 @@
   {
     "id": "BIIIG_HUG",
     "name": "Biiig Hug",
-    "description": "Upon pickup, remove [blue]4[/blue] cards from your [gold]Deck[/gold]. Whenever you shuffle your [gold]Draw Pile[/gold], add a [gold]Soot[/gold] into your [gold]Draw Pile[/gold].",
+    "description": "Upon pickup, remove [blue]{Cards}[/blue] cards from your [gold]Deck[/gold]. Whenever you shuffle your [gold]Draw Pile[/gold], add a [gold]Soot[/gold] into your [gold]Draw Pile[/gold].",
     "description_raw": "Upon pickup, remove [blue]{Cards}[/blue] cards from your [gold]Deck[/gold]. Whenever you shuffle your [gold]Draw Pile[/gold], add a [gold]Soot[/gold] into your [gold]Draw Pile[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -182,7 +182,7 @@
   {
     "id": "BLACK_BLOOD",
     "name": "Black Blood",
-    "description": "At the end of combat, heal [green]12[/green] HP.",
+    "description": "At the end of combat, heal [green]{Heal}[/green] HP.",
     "description_raw": "At the end of combat, heal [green]{Heal}[/green] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Starter Relic",
@@ -202,7 +202,7 @@
   {
     "id": "BLESSED_ANTLER",
     "name": "Blessed Antler",
-    "description": "Gain [energy:1] at the start of each turn. At the start of each combat, shuffle [blue]3[/blue] [gold]Dazed[/gold] into your [gold]Draw Pile[/gold].",
+    "description": "Gain {Energy:energyIcons()} at the start of each turn. At the start of each combat, shuffle [blue]{Cards}[/blue] [gold]Dazed[/gold] into your [gold]Draw Pile[/gold].",
     "description_raw": "Gain {Energy:energyIcons()} at the start of each turn. At the start of each combat, shuffle [blue]{Cards}[/blue] [gold]Dazed[/gold] into your [gold]Draw Pile[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -212,7 +212,7 @@
   {
     "id": "BLOOD_SOAKED_ROSE",
     "name": "Blood-Soaked Rose",
-    "description": "Upon pickup, add [blue]1[/blue] [red]Enthralled[/red] to your [gold]Deck[/gold]. Gain [energy:1] at the start of each turn.",
+    "description": "Upon pickup, add [blue]1[/blue] [red]Enthralled[/red] to your [gold]Deck[/gold]. Gain {Energy:energyIcons()} at the start of each turn.",
     "description_raw": "Upon pickup, add [blue]1[/blue] [red]Enthralled[/red] to your [gold]Deck[/gold]. Gain {Energy:energyIcons()} at the start of each turn.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -222,7 +222,7 @@
   {
     "id": "BLOOD_VIAL",
     "name": "Blood Vial",
-    "description": "At the start of each combat, heal [green]2[/green] HP.",
+    "description": "At the start of each combat, heal [green]{Heal}[/green] HP.",
     "description_raw": "At the start of each combat, heal [green]{Heal}[/green] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -232,7 +232,7 @@
   {
     "id": "BONE_FLUTE",
     "name": "Bone Flute",
-    "description": "Whenever [gold]Osty[/gold] attacks, gain [blue]2[/blue] [gold]Block[/gold].",
+    "description": "Whenever [gold]Osty[/gold] attacks, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "Whenever [gold]Osty[/gold] attacks, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -242,7 +242,7 @@
   {
     "id": "BONE_TEA",
     "name": "Bone Tea",
-    "description": "At the start of the next [blue]2[/blue] combats, [gold]Upgrade[/gold] your starting hand.",
+    "description": "At the start of the next {Combats:plural:combat|[blue]{}[/blue] combats}, [gold]Upgrade[/gold] your starting hand.",
     "description_raw": "At the start of the next {Combats:plural:combat|[blue]{}[/blue] combats}, [gold]Upgrade[/gold] your starting hand.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -252,7 +252,7 @@
   {
     "id": "BOOK_OF_FIVE_RINGS",
     "name": "Book of Five Rings",
-    "description": "Every [blue]5[/blue] cards you add to your [gold]Deck[/gold], heal [green]15[/green] HP.",
+    "description": "Every [blue]{Cards}[/blue] {Cards:plural:card|cards} you add to your [gold]Deck[/gold], heal [green]{Heal}[/green] HP.",
     "description_raw": "Every [blue]{Cards}[/blue] {Cards:plural:card|cards} you add to your [gold]Deck[/gold], heal [green]{Heal}[/green] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -262,7 +262,7 @@
   {
     "id": "BOOK_REPAIR_KNIFE",
     "name": "Book Repair Knife",
-    "description": "Whenever a non-Minion enemy dies to [gold]Doom[/gold], heal [green]3[/green] HP.",
+    "description": "Whenever a non-Minion enemy dies to [gold]Doom[/gold], heal [green]{Heal}[/green] HP.",
     "description_raw": "Whenever a non-Minion enemy dies to [gold]Doom[/gold], heal [green]{Heal}[/green] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -282,7 +282,7 @@
   {
     "id": "BOOMING_CONCH",
     "name": "Booming Conch",
-    "description": "At the start of [gold]Elite[/gold] combats, draw [blue]2[/blue] additional cards.",
+    "description": "At the start of [gold]Elite[/gold] combats, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}.",
     "description_raw": "At the start of [gold]Elite[/gold] combats, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -292,7 +292,7 @@
   {
     "id": "BOUND_PHYLACTERY",
     "name": "Bound Phylactery",
-    "description": "At the start of your turn, [gold]Summon[/gold] [blue]1[/blue].",
+    "description": "At the start of your turn, [gold]Summon[/gold] [blue]{Summon}[/blue].",
     "description_raw": "At the start of your turn, [gold]Summon[/gold] [blue]{Summon}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Starter Relic",
@@ -302,8 +302,8 @@
   {
     "id": "BOWLER_HAT",
     "name": "Bowler Hat",
-    "description": "Gain [blue]20%[/blue] additional [gold]Gold[/gold].",
-    "description_raw": "Gain [blue]20%[/blue] additional [gold]Gold[/gold].",
+    "description": "Gain [blue]{GoldIncrease:percentMore()}%[/blue] additional [gold]Gold[/gold].",
+    "description_raw": "Gain [blue]{GoldIncrease:percentMore()}%[/blue] additional [gold]Gold[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
     "pool": "shared",
@@ -312,7 +312,7 @@
   {
     "id": "BREAD",
     "name": "Bread",
-    "description": "At the start of your first turn, lose [energy:2]. At the start of all other turns, gain [energy:1].",
+    "description": "At the start of your first turn, lose {LoseEnergy:energyIcons()}. At the start of all other turns, gain {GainEnergy:energyIcons()}.",
     "description_raw": "At the start of your first turn, lose {LoseEnergy:energyIcons()}. At the start of all other turns, gain {GainEnergy:energyIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -332,7 +332,7 @@
   {
     "id": "BRIMSTONE",
     "name": "Brimstone",
-    "description": "At the start of your turn, gain [blue][SelfStrength][/blue] [gold]Strength[/gold] and ALL enemies gain [blue][EnemyStrength][/blue] [gold]Strength[/gold].",
+    "description": "At the start of your turn, gain [blue]{SelfStrength}[/blue] [gold]Strength[/gold] and ALL enemies gain [blue]{EnemyStrength}[/blue] [gold]Strength[/gold].",
     "description_raw": "At the start of your turn, gain [blue]{SelfStrength}[/blue] [gold]Strength[/gold] and ALL enemies gain [blue]{EnemyStrength}[/blue] [gold]Strength[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -342,7 +342,7 @@
   {
     "id": "BRONZE_SCALES",
     "name": "Bronze Scales",
-    "description": "Start each combat with [blue]3[/blue] [gold]Thorns[/gold].",
+    "description": "Start each combat with [blue]{ThornsPower}[/blue] [gold]Thorns[/gold].",
     "description_raw": "Start each combat with [blue]{ThornsPower}[/blue] [gold]Thorns[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -352,7 +352,7 @@
   {
     "id": "BURNING_BLOOD",
     "name": "Burning Blood",
-    "description": "At the end of combat, heal [green]6[/green] HP.",
+    "description": "At the end of combat, heal [green]{Heal}[/green] HP.",
     "description_raw": "At the end of combat, heal [green]{Heal}[/green] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Starter Relic",
@@ -382,7 +382,7 @@
   {
     "id": "CALLING_BELL",
     "name": "Calling Bell",
-    "description": "Upon pickup, obtain a unique [red]Curse[/red] and [blue]3[/blue] [gold]Relics[/gold].",
+    "description": "Upon pickup, obtain a unique [red]Curse[/red] and [blue]{Relics}[/blue] [gold]Relics[/gold].",
     "description_raw": "Upon pickup, obtain a unique [red]Curse[/red] and [blue]{Relics}[/blue] [gold]Relics[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -392,7 +392,7 @@
   {
     "id": "CANDELABRA",
     "name": "Candelabra",
-    "description": "At the start of your [blue]2nd[/blue] turn, gain [energy:2].",
+    "description": "At the start of your [blue]2nd[/blue] turn, gain {Energy:energyIcons()}.",
     "description_raw": "At the start of your [blue]2nd[/blue] turn, gain {Energy:energyIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -402,7 +402,7 @@
   {
     "id": "CAPTAINS_WHEEL",
     "name": "Captain's Wheel",
-    "description": "At the start of your [blue]3rd[/blue] turn, gain [blue]18[/blue] [gold]Block[/gold].",
+    "description": "At the start of your [blue]3rd[/blue] turn, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "At the start of your [blue]3rd[/blue] turn, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -412,7 +412,7 @@
   {
     "id": "CAULDRON",
     "name": "Cauldron",
-    "description": "Upon pickup, brews [blue]5[/blue] random potions.",
+    "description": "Upon pickup, brews [blue]{Potions}[/blue] random {Potions:plural:potion|potions}.",
     "description_raw": "Upon pickup, brews [blue]{Potions}[/blue] random {Potions:plural:potion|potions}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -422,7 +422,7 @@
   {
     "id": "CENTENNIAL_PUZZLE",
     "name": "Centennial Puzzle",
-    "description": "The first time you lose HP each combat, draw [blue]3[/blue] cards.",
+    "description": "The first time you lose HP each combat, draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "description_raw": "The first time you lose HP each combat, draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -432,7 +432,7 @@
   {
     "id": "CHANDELIER",
     "name": "Chandelier",
-    "description": "At the start of your [blue]3rd[/blue] turn, gain [energy:3].",
+    "description": "At the start of your [blue]3rd[/blue] turn, gain {Energy:energyIcons()}.",
     "description_raw": "At the start of your [blue]3rd[/blue] turn, gain {Energy:energyIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -442,7 +442,7 @@
   {
     "id": "CHARONS_ASHES",
     "name": "Charon's Ashes",
-    "description": "Whenever you [gold]Exhaust[/gold] a card, deal [blue]3[/blue] damage to ALL enemies.",
+    "description": "Whenever you [gold]Exhaust[/gold] a card, deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "description_raw": "Whenever you [gold]Exhaust[/gold] a card, deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -452,7 +452,7 @@
   {
     "id": "CHEMICAL_X",
     "name": "Chemical X",
-    "description": "The effects of your cost [blue]X[/blue] cards are increased by [blue]2[/blue].",
+    "description": "The effects of your cost [blue]X[/blue] cards are increased by [blue]{Increase}[/blue].",
     "description_raw": "The effects of your cost [blue]X[/blue] cards are increased by [blue]{Increase}[/blue].",
     "flavor": "WARNING: Do not combine with sugar, spice, and everything nice.",
     "rarity": "Shop Relic",
@@ -462,7 +462,7 @@
   {
     "id": "CHOICES_PARADOX",
     "name": "Choices Paradox",
-    "description": "At the start of each combat, add [blue]1[/blue] of [blue]5[/blue] random cards into your [gold]Hand[/gold]. Add [gold]Retain[/gold] to the chosen card.",
+    "description": "At the start of each combat, add [blue]1[/blue] of [blue]{Cards}[/blue] random cards into your [gold]Hand[/gold]. Add [gold]Retain[/gold] to the chosen card.",
     "description_raw": "At the start of each combat, add [blue]1[/blue] of [blue]{Cards}[/blue] random cards into your [gold]Hand[/gold]. Add [gold]Retain[/gold] to the chosen card.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -472,7 +472,7 @@
   {
     "id": "CHOSEN_CHEESE",
     "name": "The Chosen Cheese",
-    "description": "At the end of combat, gain [blue]1[/blue] Max HP.",
+    "description": "At the end of combat, gain [blue]{MaxHp}[/blue] Max HP.",
     "description_raw": "At the end of combat, gain [blue]{MaxHp}[/blue] Max HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -492,7 +492,7 @@
   {
     "id": "CLAWS",
     "name": "Claws",
-    "description": "Upon pickup, [gold]Transform[/gold] up to [blue]6[/blue] cards into [gold]Maul[/gold].",
+    "description": "Upon pickup, [gold]Transform[/gold] up to [blue]{Cards}[/blue] {Cards:plural:card|cards} into [gold]Maul[/gold].",
     "description_raw": "Upon pickup, [gold]Transform[/gold] up to [blue]{Cards}[/blue] {Cards:plural:card|cards} into [gold]Maul[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -502,7 +502,7 @@
   {
     "id": "CLOAK_CLASP",
     "name": "Cloak Clasp",
-    "description": "At the end of your turn, gain [blue]1[/blue] [gold]Block[/gold] for each card in your [gold]Hand[/gold].",
+    "description": "At the end of your turn, gain [blue]{Block}[/blue] [gold]Block[/gold] for each card in your [gold]Hand[/gold].",
     "description_raw": "At the end of your turn, gain [blue]{Block}[/blue] [gold]Block[/gold] for each card in your [gold]Hand[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -512,7 +512,7 @@
   {
     "id": "CRACKED_CORE",
     "name": "Cracked Core",
-    "description": "At the start of each combat, [gold]Channel[/gold] [blue]1[/blue] [gold]Lightning[/gold].",
+    "description": "At the start of each combat, [gold]Channel[/gold] [blue]{Lightning}[/blue] [gold]Lightning[/gold].",
     "description_raw": "At the start of each combat, [gold]Channel[/gold] [blue]{Lightning}[/blue] [gold]Lightning[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Starter Relic",
@@ -522,8 +522,8 @@
   {
     "id": "CROSSBOW",
     "name": "Crossbow",
-    "description": "At the start of your turn, add a random [gold]Attack[/gold] into your [gold]Hand[/gold]. It is free to play this turn.",
-    "description_raw": "At the start of your turn, add a random [gold]Attack[/gold] into your [gold]Hand[/gold]. It is free to play this turn.",
+    "description": "At the start of your turn, add a random [gold]Attack[/gold] into your [gold]Hand[/gold]. It's free to play this turn.",
+    "description_raw": "At the start of your turn, add a random [gold]Attack[/gold] into your [gold]Hand[/gold]. It's free to play this turn.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
@@ -532,7 +532,7 @@
   {
     "id": "CURSED_PEARL",
     "name": "Cursed Pearl",
-    "description": "Upon pickup, receive [red]Greed[/red]. Gain [blue]333[/blue] [gold]Gold[/gold].",
+    "description": "Upon pickup, receive [red]Greed[/red]. Gain [blue]{Gold}[/blue] [gold]Gold[/gold].",
     "description_raw": "Upon pickup, receive [red]Greed[/red]. Gain [blue]{Gold}[/blue] [gold]Gold[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -542,7 +542,7 @@
   {
     "id": "DARKSTONE_PERIAPT",
     "name": "Darkstone Periapt",
-    "description": "Whenever you obtain a [red]Curse[/red], raise your Max HP by [blue]6[/blue].",
+    "description": "Whenever you obtain a [red]Curse[/red], raise your Max HP by [blue]{MaxHp}[/blue].",
     "description_raw": "Whenever you obtain a [red]Curse[/red], raise your Max HP by [blue]{MaxHp}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -552,7 +552,7 @@
   {
     "id": "DATA_DISK",
     "name": "Data Disk",
-    "description": "Start each combat with [blue]1[/blue] [gold]Focus[/gold].",
+    "description": "Start each combat with [blue]{FocusPower}[/blue] [gold]Focus[/gold].",
     "description_raw": "Start each combat with [blue]{FocusPower}[/blue] [gold]Focus[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -562,7 +562,7 @@
   {
     "id": "DAUGHTER_OF_THE_WIND",
     "name": "Daughter of the Wind",
-    "description": "Whenever you play an Attack, gain [blue]1[/blue] [gold]Block[/gold].",
+    "description": "Whenever you play an Attack, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "Whenever you play an Attack, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -592,7 +592,7 @@
   {
     "id": "DIAMOND_DIADEM",
     "name": "Diamond Diadem",
-    "description": "Whenever you play [blue]2[/blue] or fewer cards in a turn, take half damage from enemies.",
+    "description": "Whenever you play [blue]{CardThreshold}[/blue] or fewer cards in a turn, take half damage from enemies.",
     "description_raw": "Whenever you play [blue]{CardThreshold}[/blue] or fewer cards in a turn, take half damage from enemies.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -612,8 +612,8 @@
   {
     "id": "DISTINGUISHED_CAPE",
     "name": "Distinguished Cape",
-    "description": "Upon pickup, lose [red]9[/red] Max HP. Add [blue]3[/blue] [gold]Apparitions[/gold] to your [gold]Deck[/gold].",
-    "description_raw": "Upon pickup, lose [red]9[/red] Max HP. Add [blue]{Cards}[/blue] [gold]{Cards:plural:Apparition|Apparitions}[/gold] to your [gold]Deck[/gold].",
+    "description": "Upon pickup, lose [blue]9[/blue] Max HP. Add [blue]{Cards}[/blue] [gold]{Cards:plural:Apparition|Apparitions}[/gold] to your [gold]Deck[/gold].",
+    "description_raw": "Upon pickup, lose [blue]9[/blue] Max HP. Add [blue]{Cards}[/blue] [gold]{Cards:plural:Apparition|Apparitions}[/gold] to your [gold]Deck[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
@@ -622,7 +622,7 @@
   {
     "id": "DIVINE_DESTINY",
     "name": "Divine Destiny",
-    "description": "At the start of each combat, gain [star:6].",
+    "description": "At the start of each combat, gain {Stars:starIcons()}.",
     "description_raw": "At the start of each combat, gain {Stars:starIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Starter Relic",
@@ -632,7 +632,7 @@
   {
     "id": "DIVINE_RIGHT",
     "name": "Divine Right",
-    "description": "At the start of each combat, gain [star:3].",
+    "description": "At the start of each combat, gain {Stars:starIcons()}.",
     "description_raw": "At the start of each combat, gain {Stars:starIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Starter Relic",
@@ -652,7 +652,7 @@
   {
     "id": "DRAGON_FRUIT",
     "name": "Dragon Fruit",
-    "description": "Whenever you gain [gold]Gold[/gold], raise your Max HP by [blue]1[/blue].",
+    "description": "Whenever you gain [gold]Gold[/gold], raise your Max HP by [blue]{MaxHp}[/blue].",
     "description_raw": "Whenever you gain [gold]Gold[/gold], raise your Max HP by [blue]{MaxHp}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -682,7 +682,7 @@
   {
     "id": "DUSTY_TOME",
     "name": "Dusty Tome",
-    "description": "Upon pickup, obtain an [gold]Ancient Card[/gold].",
+    "description": "Upon pickup, obtain {AncientCard.StringValue:cond:[gold]{}[/gold]|an [gold]Ancient Card[/gold]}.",
     "description_raw": "Upon pickup, obtain {AncientCard.StringValue:cond:[gold]{}[/gold]|an [gold]Ancient Card[/gold]}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -692,7 +692,7 @@
   {
     "id": "ECTOPLASM",
     "name": "Ectoplasm",
-    "description": "You can no longer gain [gold]Gold[/gold]. Gain [energy:1] at the start of each turn.",
+    "description": "You can no longer gain [gold]Gold[/gold]. Gain {Energy:energyIcons()} at the start of each turn.",
     "description_raw": "You can no longer gain [gold]Gold[/gold]. Gain {Energy:energyIcons()} at the start of each turn.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -712,7 +712,7 @@
   {
     "id": "EMBER_TEA",
     "name": "Ember Tea",
-    "description": "At the start of the next [blue]2[/blue] combats, gain [blue]2[/blue] [gold]Strength[/gold].",
+    "description": "At the start of the next {Combats:plural:combat|[blue]{}[/blue] combats}, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "description_raw": "At the start of the next {Combats:plural:combat|[blue]{}[/blue] combats}, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -732,7 +732,7 @@
   {
     "id": "EMPTY_CAGE",
     "name": "Empty Cage",
-    "description": "Upon pickup, remove [blue]2[/blue] cards from your [gold]Deck[/gold].",
+    "description": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold].",
     "description_raw": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -742,7 +742,7 @@
   {
     "id": "ETERNAL_FEATHER",
     "name": "Eternal Feather",
-    "description": "For every [blue]5[/blue] cards in your [gold]Deck[/gold], heal [green]3[/green] HP whenever you enter a [gold]Rest Site[/gold].",
+    "description": "For every {Cards:plural:card|[blue]{}[/blue] cards} in your [gold]Deck[/gold], heal [green]{Heal}[/green] HP whenever you enter a [gold]Rest Site[/gold].",
     "description_raw": "For every {Cards:plural:card|[blue]{}[/blue] cards} in your [gold]Deck[/gold], heal [green]{Heal}[/green] HP whenever you enter a [gold]Rest Site[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -752,7 +752,7 @@
   {
     "id": "FAKE_ANCHOR",
     "name": "Anchor???",
-    "description": "Start each combat with [blue]4[/blue] [gold]Block[/gold].",
+    "description": "Start each combat with [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "Start each combat with [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -762,7 +762,7 @@
   {
     "id": "FAKE_BLOOD_VIAL",
     "name": "Blood Vial???",
-    "description": "At the start of each combat, heal [green]1[/green] HP.",
+    "description": "At the start of each combat, heal [green]{Heal}[/green] HP.",
     "description_raw": "At the start of each combat, heal [green]{Heal}[/green] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -772,7 +772,7 @@
   {
     "id": "FAKE_HAPPY_FLOWER",
     "name": "Happy Flower???",
-    "description": "Every [blue]5[/blue] turns, gain [energy:1].",
+    "description": "Every [blue]{Turns}[/blue] {Turns:plural:turn|turns}, gain {Energy:energyIcons()}.",
     "description_raw": "Every [blue]{Turns}[/blue] {Turns:plural:turn|turns}, gain {Energy:energyIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -782,7 +782,7 @@
   {
     "id": "FAKE_LEES_WAFFLE",
     "name": "Lee's Waffle???",
-    "description": "Upon pickup, heal [green]10%[/green] of your HP.",
+    "description": "Upon pickup, heal [green]{Heal}%[/green] of your HP.",
     "description_raw": "Upon pickup, heal [green]{Heal}%[/green] of your HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -792,7 +792,7 @@
   {
     "id": "FAKE_MANGO",
     "name": "Mango???",
-    "description": "Upon pickup, raise your Max HP by [blue]3[/blue].",
+    "description": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue].",
     "description_raw": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -812,7 +812,7 @@
   {
     "id": "FAKE_ORICHALCUM",
     "name": "Orichalcum???",
-    "description": "If you end your turn without [gold]Block[/gold], gain [blue]3[/blue] [gold]Block[/gold].",
+    "description": "If you end your turn without [gold]Block[/gold], gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "If you end your turn without [gold]Block[/gold], gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -832,7 +832,7 @@
   {
     "id": "FAKE_STRIKE_DUMMY",
     "name": "Strike Dummy???",
-    "description": "Cards containing “Strike” deal [blue]1[/blue] additional damage.",
+    "description": "Cards containing “Strike” deal [blue]{ExtraDamage}[/blue] additional damage.",
     "description_raw": "Cards containing “Strike” deal [blue]{ExtraDamage}[/blue] additional damage.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -842,7 +842,7 @@
   {
     "id": "FAKE_VENERABLE_TEA_SET",
     "name": "Venerable Tea Set???",
-    "description": "Whenever you enter a [gold]Rest Site[/gold], start the next combat with an additional [energy:1].",
+    "description": "Whenever you enter a [gold]Rest Site[/gold], start the next combat with an additional {Energy:energyIcons()}.",
     "description_raw": "Whenever you enter a [gold]Rest Site[/gold], start the next combat with an additional {Energy:energyIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -852,7 +852,7 @@
   {
     "id": "FENCING_MANUAL",
     "name": "Fencing Manual",
-    "description": "At the start of each combat, [gold]Forge[/gold] [blue]10[/blue].",
+    "description": "At the start of each combat, [gold]Forge[/gold] [blue]{Forge}[/blue].",
     "description_raw": "At the start of each combat, [gold]Forge[/gold] [blue]{Forge}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -862,7 +862,7 @@
   {
     "id": "FESTIVE_POPPER",
     "name": "Festive Popper",
-    "description": "At the start of each combat, deal [blue]9[/blue] damage to ALL enemies.",
+    "description": "At the start of each combat, deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "description_raw": "At the start of each combat, deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -872,7 +872,7 @@
   {
     "id": "FIDDLE",
     "name": "Fiddle",
-    "description": "At the start of each turn, draw [blue]2[/blue] additional cards. You may not draw cards during your turn.",
+    "description": "At the start of each turn, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}. You may not draw cards during your turn.",
     "description_raw": "At the start of each turn, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}. You may not draw cards during your turn.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -882,7 +882,7 @@
   {
     "id": "FORGOTTEN_SOUL",
     "name": "Forgotten Soul",
-    "description": "Whenever you [gold]Exhaust[/gold] a card, deal [blue]1[/blue] damage to a random enemy.",
+    "description": "Whenever you [gold]Exhaust[/gold] a card, deal [blue]{Damage}[/blue] damage to a random enemy.",
     "description_raw": "Whenever you [gold]Exhaust[/gold] a card, deal [blue]{Damage}[/blue] damage to a random enemy.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -892,8 +892,8 @@
   {
     "id": "FRAGRANT_MUSHROOM",
     "name": "Fragrant Mushroom",
-    "description": "Upon pickup, lose [red]15[/red] HP and [gold]Upgrade[/gold] [blue]3[/blue] random cards.",
-    "description_raw": "Upon pickup, lose [red]{HpLoss}[/red] HP and [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:card|cards}.",
+    "description": "Upon pickup, lose [blue]{HpLoss}[/blue] HP and [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:card|cards}.",
+    "description_raw": "Upon pickup, lose [blue]{HpLoss}[/blue] HP and [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
     "pool": "shared",
@@ -902,7 +902,7 @@
   {
     "id": "FRESNEL_LENS",
     "name": "Fresnel Lens",
-    "description": "Whenever you add a card that gains [gold]Block[/gold] to your [gold]Deck[/gold], [gold]Enchant[/gold] it with [purple]Nimble[/purple] [blue]2[/blue].",
+    "description": "Whenever you add a card that gains [gold]Block[/gold] to your [gold]Deck[/gold], [gold]Enchant[/gold] it with [purple]Nimble[/purple] [blue]{NimbleAmount}[/blue].",
     "description_raw": "Whenever you add a card that gains [gold]Block[/gold] to your [gold]Deck[/gold], [gold]Enchant[/gold] it with [purple]Nimble[/purple] [blue]{NimbleAmount}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -922,7 +922,7 @@
   {
     "id": "FUNERARY_MASK",
     "name": "Funerary Mask",
-    "description": "At the start of each combat, add [blue]3[/blue] [gold]Souls[/gold] into your [gold]Draw Pile[/gold].",
+    "description": "At the start of each combat, add [blue]{Cards}[/blue] [gold]{Cards:plural:Soul|Souls}[/gold] into your [gold]Draw Pile[/gold].",
     "description_raw": "At the start of each combat, add [blue]{Cards}[/blue] [gold]{Cards:plural:Soul|Souls}[/gold] into your [gold]Draw Pile[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -932,7 +932,7 @@
   {
     "id": "FUR_COAT",
     "name": "Fur Coat",
-    "description": "Upon pickup, mark [blue]7[/blue] random combats. Enemies in those rooms have [blue]1[/blue] HP.",
+    "description": "Upon pickup, mark [blue]{Combats}[/blue] random combats. Enemies in those rooms have [blue]1[/blue] HP.",
     "description_raw": "Upon pickup, mark [blue]{Combats}[/blue] random combats. Enemies in those rooms have [blue]1[/blue] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -942,7 +942,7 @@
   {
     "id": "GALACTIC_DUST",
     "name": "Galactic Dust",
-    "description": "For every [blue]10[/blue] [star:1] spent, gain [blue]10[/blue] [gold]Block[/gold].",
+    "description": "For every [blue]{Stars}[/blue] {singleStarIcon} spent, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "For every [blue]{Stars}[/blue] {singleStarIcon} spent, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -962,7 +962,7 @@
   {
     "id": "GAME_PIECE",
     "name": "Game Piece",
-    "description": "Whenever you play a Power, draw [blue]1[/blue] card.",
+    "description": "Whenever you play a Power, draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "description_raw": "Whenever you play a Power, draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1012,7 +1012,7 @@
   {
     "id": "GNARLED_HAMMER",
     "name": "Gnarled Hammer",
-    "description": "Upon pickup, [gold]Enchant[/gold] up to [blue]3[/blue] Attacks with [purple]Sharp[/purple] [blue]3[/blue].",
+    "description": "Upon pickup, [gold]Enchant[/gold] up to [blue]{Cards}[/blue] {Cards:plural:Attack|Attacks} with [purple]Sharp[/purple] [blue]{SharpAmount:diff()}[/blue].",
     "description_raw": "Upon pickup, [gold]Enchant[/gold] up to [blue]{Cards}[/blue] {Cards:plural:Attack|Attacks} with [purple]Sharp[/purple] [blue]{SharpAmount:diff()}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -1042,7 +1042,7 @@
   {
     "id": "GOLDEN_PEARL",
     "name": "Golden Pearl",
-    "description": "Upon pickup, gain [blue]150[/blue] [gold]Gold[/gold].",
+    "description": "Upon pickup, gain [blue]{Gold}[/blue] [gold]Gold[/gold].",
     "description_raw": "Upon pickup, gain [blue]{Gold}[/blue] [gold]Gold[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1052,7 +1052,7 @@
   {
     "id": "GORGET",
     "name": "Gorget",
-    "description": "At the start of each combat, gain [blue]4[/blue] [gold]Plating[/gold].",
+    "description": "At the start of each combat, gain [blue]{PlatingPower}[/blue] [gold]Plating[/gold].",
     "description_raw": "At the start of each combat, gain [blue]{PlatingPower}[/blue] [gold]Plating[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -1062,7 +1062,7 @@
   {
     "id": "GREMLIN_HORN",
     "name": "Gremlin Horn",
-    "description": "Whenever an enemy dies, gain [energy:1] and draw [blue]1[/blue] card.",
+    "description": "Whenever an enemy dies, gain {Energy:energyIcons()} and draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "description_raw": "Whenever an enemy dies, gain {Energy:energyIcons()} and draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1072,7 +1072,7 @@
   {
     "id": "HAND_DRILL",
     "name": "Hand Drill",
-    "description": "Whenever you break an enemy's [gold]Block[/gold], apply [blue]2[/blue] [gold]Vulnerable[/gold].",
+    "description": "Whenever you break an enemy's [gold]Block[/gold], apply [blue]{VulnerablePower}[/blue] [gold]Vulnerable[/gold].",
     "description_raw": "Whenever you break an enemy's [gold]Block[/gold], apply [blue]{VulnerablePower}[/blue] [gold]Vulnerable[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -1082,7 +1082,7 @@
   {
     "id": "HAPPY_FLOWER",
     "name": "Happy Flower",
-    "description": "Every [blue]3[/blue] turns, gain [energy:1].",
+    "description": "Every [blue]{Turns}[/blue] {Turns:plural:turn|turns}, gain {Energy:energyIcons()}.",
     "description_raw": "Every [blue]{Turns}[/blue] {Turns:plural:turn|turns}, gain {Energy:energyIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -1092,7 +1092,7 @@
   {
     "id": "HELICAL_DART",
     "name": "Helical Dart",
-    "description": "Whenever you play a [gold]Shiv[/gold], gain [blue]1[/blue] [gold]Dexterity[/gold] this turn.",
+    "description": "Whenever you play a [gold]Shiv[/gold], gain [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold] this turn.",
     "description_raw": "Whenever you play a [gold]Shiv[/gold], gain [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold] this turn.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1112,7 +1112,7 @@
   {
     "id": "HORN_CLEAT",
     "name": "Horn Cleat",
-    "description": "At the start of your [blue]2nd[/blue] turn, gain [blue]14[/blue] [gold]Block[/gold].",
+    "description": "At the start of your [blue]2nd[/blue] turn, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "At the start of your [blue]2nd[/blue] turn, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1132,7 +1132,7 @@
   {
     "id": "INFUSED_CORE",
     "name": "Infused Core",
-    "description": "At the start of each combat, [gold]Channel[/gold] [blue]3[/blue] [gold]Lightning[/gold].",
+    "description": "At the start of each combat, [gold]Channel[/gold] [blue]{Lightning}[/blue] [gold]Lightning[/gold].",
     "description_raw": "At the start of each combat, [gold]Channel[/gold] [blue]{Lightning}[/blue] [gold]Lightning[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Starter Relic",
@@ -1142,7 +1142,7 @@
   {
     "id": "INTIMIDATING_HELMET",
     "name": "Intimidating Helmet",
-    "description": "Whenever you play a card that costs [energy:2] or more, gain [blue]4[/blue] [gold]Block[/gold].",
+    "description": "Whenever you play a card that costs {Energy:energyIcons()} or more, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "Whenever you play a card that costs {Energy:energyIcons()} or more, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1152,7 +1152,7 @@
   {
     "id": "IRON_CLUB",
     "name": "Iron Club",
-    "description": "Every [blue]4[/blue] cards you play, draw [blue]1[/blue] card.",
+    "description": "Every [blue]{Cards}[/blue] {Cards:plural:card|cards} you play, draw [blue]1[/blue] card.",
     "description_raw": "Every [blue]{Cards}[/blue] {Cards:plural:card|cards} you play, draw [blue]1[/blue] card.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1162,7 +1162,7 @@
   {
     "id": "IVORY_TILE",
     "name": "Ivory Tile",
-    "description": "Whenever you play a card that costs [energy:3] or more, gain [energy:1].",
+    "description": "Whenever you play a card that costs {EnergyThreshold:energyIcons()} or more, gain {Energy:energyIcons()}.",
     "description_raw": "Whenever you play a card that costs {EnergyThreshold:energyIcons()} or more, gain {Energy:energyIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1192,7 +1192,7 @@
   {
     "id": "JOSS_PAPER",
     "name": "Joss Paper",
-    "description": "Every [blue]5[/blue] times you [gold]Exhaust[/gold] a card, draw [blue]1[/blue] card.",
+    "description": "Every [blue]{ExhaustAmount}[/blue] times you [gold]Exhaust[/gold] a card, draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "description_raw": "Every [blue]{ExhaustAmount}[/blue] times you [gold]Exhaust[/gold] a card, draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1212,7 +1212,7 @@
   {
     "id": "KIFUDA",
     "name": "Kifuda",
-    "description": "Upon pickup, [gold]Enchant[/gold] up to [blue]3[/blue] cards with [purple]Adroit[/purple].",
+    "description": "Upon pickup, [gold]Enchant[/gold] up to [blue]{Cards}[/blue] {Cards:plural:card|cards} with [purple]Adroit[/purple].",
     "description_raw": "Upon pickup, [gold]Enchant[/gold] up to [blue]{Cards}[/blue] {Cards:plural:card|cards} with [purple]Adroit[/purple].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -1222,7 +1222,7 @@
   {
     "id": "KUNAI",
     "name": "Kunai",
-    "description": "Every time you play [blue]3[/blue] Attacks in a single turn, gain [blue]1[/blue] [gold]Dexterity[/gold].",
+    "description": "Every time you play [blue]{Cards}[/blue] Attacks in a single turn, gain [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold].",
     "description_raw": "Every time you play [blue]{Cards}[/blue] Attacks in a single turn, gain [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1232,7 +1232,7 @@
   {
     "id": "KUSARIGAMA",
     "name": "Kusarigama",
-    "description": "Every time you play [blue]3[/blue] Attacks in a single turn, deal [blue]6[/blue] damage to a random enemy.",
+    "description": "Every time you play [blue]{Cards}[/blue] {Cards:plural:Attack|Attacks} in a single turn, deal [blue]{Damage}[/blue] damage to a random enemy.",
     "description_raw": "Every time you play [blue]{Cards}[/blue] {Cards:plural:Attack|Attacks} in a single turn, deal [blue]{Damage}[/blue] damage to a random enemy.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1242,7 +1242,7 @@
   {
     "id": "LANTERN",
     "name": "Lantern",
-    "description": "Start each combat with an additional [energy:1].",
+    "description": "Start each combat with an additional {Energy:energyIcons()}.",
     "description_raw": "Start each combat with an additional {Energy:energyIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -1252,7 +1252,7 @@
   {
     "id": "LARGE_CAPSULE",
     "name": "Large Capsule",
-    "description": "Upon pickup, obtain [blue]2[/blue] random [gold]Relics[/gold]. Add an additional [gold]Strike[/gold] and [gold]Defend[/gold] to your [gold]Deck[/gold].",
+    "description": "Upon pickup, obtain [blue]{Relics}[/blue] random [gold]{Relics:plural:Relic|Relics}[/gold]. Add an additional [gold]Strike[/gold] and [gold]Defend[/gold] to your [gold]Deck[/gold].",
     "description_raw": "Upon pickup, obtain [blue]{Relics}[/blue] random [gold]{Relics:plural:Relic|Relics}[/gold]. Add an additional [gold]Strike[/gold] and [gold]Defend[/gold] to your [gold]Deck[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1265,7 +1265,7 @@
     "description": "Every other combat, your card rewards gain an additional Power.",
     "description_raw": "Every other combat, your card rewards gain an additional Power.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
-    "rarity": "Rare Relic",
+    "rarity": "Uncommon Relic",
     "pool": "shared",
     "image_url": "/static/images/relics/lasting_candy.png"
   },
@@ -1282,7 +1282,7 @@
   {
     "id": "LAVA_ROCK",
     "name": "Lava Rock",
-    "description": "The Act 1 Boss drops [blue]2[/blue] [gold]Relics[/gold].",
+    "description": "The Act 1 Boss drops [blue]{Relics}[/blue] [gold]Relics[/gold].",
     "description_raw": "The Act 1 Boss drops [blue]{Relics}[/blue] [gold]Relics[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1302,7 +1302,7 @@
   {
     "id": "LEAFY_POULTICE",
     "name": "Leafy Poultice",
-    "description": "Upon pickup, [gold]Transform[/gold] [blue]1[/blue] of your [gold]Strikes[/gold] and [blue]1[/blue] of your [gold]Defends[/gold] and lose [blue]10[/blue] Max HP.",
+    "description": "Upon pickup, [gold]Transform[/gold] [blue]1[/blue] of your [gold]Strikes[/gold] and [blue]1[/blue] of your [gold]Defends[/gold] and lose [blue]{MaxHp}[/blue] Max HP.",
     "description_raw": "Upon pickup, [gold]Transform[/gold] [blue]1[/blue] of your [gold]Strikes[/gold] and [blue]1[/blue] of your [gold]Defends[/gold] and lose [blue]{MaxHp}[/blue] Max HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1312,7 +1312,7 @@
   {
     "id": "LEES_WAFFLE",
     "name": "Lee's Waffle",
-    "description": "Upon pickup, raise your Max HP by [blue]7[/blue] and heal all of your HP.",
+    "description": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue] and heal all of your HP.",
     "description_raw": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue] and heal all of your HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -1322,7 +1322,7 @@
   {
     "id": "LETTER_OPENER",
     "name": "Letter Opener",
-    "description": "Every time you play [blue]3[/blue] Skills in a single turn, deal [blue]5[/blue] damage to ALL enemies.",
+    "description": "Every time you play [blue]{Cards}[/blue] {Cards:plural:Skill|Skills} in a single turn, deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "description_raw": "Every time you play [blue]{Cards}[/blue] {Cards:plural:Skill|Skills} in a single turn, deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1332,8 +1332,8 @@
   {
     "id": "LIZARD_TAIL",
     "name": "Lizard Tail",
-    "description": "When you would die, heal to [green]50%[/green] of your Max HP instead (works once).",
-    "description_raw": "When you would die, heal to [green]{Heal}%[/green] of your Max HP instead (works once).",
+    "description": "When your HP would be reduced to [blue]0[/blue], heal to [green]{Heal}%[/green] of your Max HP instead (works once).",
+    "description_raw": "When your HP would be reduced to [blue]0[/blue], heal to [green]{Heal}%[/green] of your Max HP instead (works once).",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
     "pool": "shared",
@@ -1342,7 +1342,7 @@
   {
     "id": "LOOMING_FRUIT",
     "name": "Looming Fruit",
-    "description": "Upon pickup, raise your Max HP by [blue]31[/blue].",
+    "description": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue].",
     "description_raw": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1372,7 +1372,7 @@
   {
     "id": "LOST_WISP",
     "name": "Lost Wisp",
-    "description": "Whenever you play a [gold]Power[/gold], deal [blue]8[/blue] damage to ALL enemies.",
+    "description": "Whenever you play a [gold]Power[/gold], deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "description_raw": "Whenever you play a [gold]Power[/gold], deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -1382,7 +1382,7 @@
   {
     "id": "LUCKY_FYSH",
     "name": "Lucky Fysh",
-    "description": "Whenever you add a card to your [gold]Deck[/gold], gain [blue]15[/blue] [gold]Gold[/gold].",
+    "description": "Whenever you add a card to your [gold]Deck[/gold], gain [blue]{Gold}[/blue] [gold]Gold[/gold].",
     "description_raw": "Whenever you add a card to your [gold]Deck[/gold], gain [blue]{Gold}[/blue] [gold]Gold[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1392,7 +1392,7 @@
   {
     "id": "LUNAR_PASTRY",
     "name": "Lunar Pastry",
-    "description": "At the end of your turn, gain [star:1].",
+    "description": "At the end of your turn, gain {Stars:starIcons()}.",
     "description_raw": "At the end of your turn, gain {Stars:starIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1402,7 +1402,7 @@
   {
     "id": "MANGO",
     "name": "Mango",
-    "description": "Upon pickup, raise your Max HP by [blue]14[/blue].",
+    "description": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue].",
     "description_raw": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1412,8 +1412,8 @@
   {
     "id": "MASSIVE_SCROLL",
     "name": "Massive Scroll",
-    "description": "Upon pickup, choose [blue]1[/blue] of [blue]3[/blue] [gold]Multiplayer Colorless Cards[/gold] to add to your [gold]Deck[/gold].",
-    "description_raw": "Upon pickup, choose [blue]1[/blue] of [blue]3[/blue] [gold]Multiplayer Colorless Cards[/gold] to add to your [gold]Deck[/gold].",
+    "description": "Upon pickup, choose [blue]1[/blue] of [blue]3[/blue] [gold]Multiplayer Cards[/gold] to add to your [gold]Deck[/gold].",
+    "description_raw": "Upon pickup, choose [blue]1[/blue] of [blue]3[/blue] [gold]Multiplayer Cards[/gold] to add to your [gold]Deck[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
@@ -1422,7 +1422,7 @@
   {
     "id": "MAW_BANK",
     "name": "Maw Bank",
-    "description": "Whenever you climb a floor, gain [blue]12[/blue] [gold]Gold[/gold]. No longer works when you spend any [gold]Gold[/gold] at the shop.",
+    "description": "Whenever you climb a floor, gain [blue]{Gold}[/blue] [gold]Gold[/gold]. No longer works when you spend any [gold]Gold[/gold] at the shop.",
     "description_raw": "Whenever you climb a floor, gain [blue]{Gold}[/blue] [gold]Gold[/gold]. No longer works when you spend any [gold]Gold[/gold] at the shop.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -1432,7 +1432,7 @@
   {
     "id": "MEAL_TICKET",
     "name": "Meal Ticket",
-    "description": "Whenever you enter a shop room, heal [green]15[/green] HP.",
+    "description": "Whenever you enter a shop room, heal [green]{Heal}[/green] HP.",
     "description_raw": "Whenever you enter a shop room, heal [green]{Heal}[/green] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -1452,7 +1452,7 @@
   {
     "id": "MEAT_ON_THE_BONE",
     "name": "Meat on the Bone",
-    "description": "If your HP is at or below [blue]50%[/blue] at the end of combat, heal [green]12[/green] HP.",
+    "description": "If your HP is at or below [blue]{HpThreshold}%[/blue] at the end of combat, heal [green]{Heal}[/green] HP.",
     "description_raw": "If your HP is at or below [blue]{HpThreshold}%[/blue] at the end of combat, heal [green]{Heal}[/green] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1462,7 +1462,7 @@
   {
     "id": "MEMBERSHIP_CARD",
     "name": "Membership Card",
-    "description": "[blue]50%[/blue] discount on all products!",
+    "description": "[blue]{Discount}%[/blue] discount on all products!",
     "description_raw": "[blue]{Discount}%[/blue] discount on all products!",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -1472,7 +1472,7 @@
   {
     "id": "MERCURY_HOURGLASS",
     "name": "Mercury Hourglass",
-    "description": "At the start of your turn, deal [blue]3[/blue] damage to ALL enemies.",
+    "description": "At the start of your turn, deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "description_raw": "At the start of your turn, deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1482,7 +1482,7 @@
   {
     "id": "METRONOME",
     "name": "Metronome",
-    "description": "The first time you [gold]Channel[/gold] [blue]7[/blue] [gold]Orbs[/gold] each combat, deal [blue]30[/blue] damage to ALL enemies.",
+    "description": "The first time you [gold]Channel[/gold] [blue]{OrbCount}[/blue] [gold]Orbs[/gold] each combat, deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "description_raw": "The first time you [gold]Channel[/gold] [blue]{OrbCount}[/blue] [gold]Orbs[/gold] each combat, deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1492,7 +1492,7 @@
   {
     "id": "MINI_REGENT",
     "name": "Mini Regent",
-    "description": "The first time you spend [star:1] each turn, gain [blue]1[/blue] [gold]Strength[/gold].",
+    "description": "The first time you spend {singleStarIcon} each turn, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "description_raw": "The first time you spend {singleStarIcon} each turn, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1502,7 +1502,7 @@
   {
     "id": "MINIATURE_CANNON",
     "name": "Miniature Cannon",
-    "description": "[gold]Upgraded[/gold] Attacks deal [blue]3[/blue] additional damage.",
+    "description": "[gold]Upgraded[/gold] Attacks deal [blue]{ExtraDamage}[/blue] additional damage.",
     "description_raw": "[gold]Upgraded[/gold] Attacks deal [blue]{ExtraDamage}[/blue] additional damage.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1562,7 +1562,7 @@
   {
     "id": "MYSTIC_LIGHTER",
     "name": "Mystic Lighter",
-    "description": "[gold]Enchanted[/gold] Attacks deal [blue]9[/blue] additional damage.",
+    "description": "[gold]Enchanted[/gold] Attacks deal [blue]{Damage}[/blue] additional damage.",
     "description_raw": "[gold]Enchanted[/gold] Attacks deal [blue]{Damage}[/blue] additional damage.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -1582,7 +1582,7 @@
   {
     "id": "NEW_LEAF",
     "name": "New Leaf",
-    "description": "Upon pickup, [gold]Transform[/gold] [blue]1[/blue] card.",
+    "description": "Upon pickup, [gold]Transform[/gold] [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "description_raw": "Upon pickup, [gold]Transform[/gold] [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1592,7 +1592,7 @@
   {
     "id": "NINJA_SCROLL",
     "name": "Ninja Scroll",
-    "description": "At the start of each combat, add [blue]3[/blue] [gold]Shivs[/gold] into your [gold]Hand[/gold].",
+    "description": "At the start of each combat, add [blue]{Shivs}[/blue] [gold]{Shivs:plural:Shiv|Shivs}[/gold] into your [gold]Hand[/gold].",
     "description_raw": "At the start of each combat, add [blue]{Shivs}[/blue] [gold]{Shivs:plural:Shiv|Shivs}[/gold] into your [gold]Hand[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -1602,7 +1602,7 @@
   {
     "id": "NUNCHAKU",
     "name": "Nunchaku",
-    "description": "Every time you play [blue]10[/blue] Attacks, gain [energy:1].",
+    "description": "Every time you play [blue]{Cards}[/blue] Attacks, gain {Energy:energyIcons()}.",
     "description_raw": "Every time you play [blue]{Cards}[/blue] Attacks, gain {Energy:energyIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1612,7 +1612,7 @@
   {
     "id": "NUTRITIOUS_OYSTER",
     "name": "Nutritious Oyster",
-    "description": "Upon pickup, raise your Max HP by [blue]11[/blue].",
+    "description": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue].",
     "description_raw": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1632,7 +1632,7 @@
   {
     "id": "ODDLY_SMOOTH_STONE",
     "name": "Oddly Smooth Stone",
-    "description": "Start each combat with [blue]1[/blue] [gold]Dexterity[/gold].",
+    "description": "Start each combat with [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold].",
     "description_raw": "Start each combat with [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -1642,7 +1642,7 @@
   {
     "id": "OLD_COIN",
     "name": "Old Coin",
-    "description": "Upon pickup, gain [blue]300[/blue] [gold]Gold[/gold].",
+    "description": "Upon pickup, gain [blue]{Gold}[/blue] [gold]Gold[/gold].",
     "description_raw": "Upon pickup, gain [blue]{Gold}[/blue] [gold]Gold[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1652,7 +1652,7 @@
   {
     "id": "ORANGE_DOUGH",
     "name": "Orange Dough",
-    "description": "At the start of each combat, add [blue]2[/blue] random Colorless cards into your [gold]Hand[/gold].",
+    "description": "At the start of each combat, add [blue]{Cards}[/blue] random Colorless {Cards:plural:card|cards} into your [gold]Hand[/gold].",
     "description_raw": "At the start of each combat, add [blue]{Cards}[/blue] random Colorless {Cards:plural:card|cards} into your [gold]Hand[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1662,7 +1662,7 @@
   {
     "id": "ORICHALCUM",
     "name": "Orichalcum",
-    "description": "If you end your turn without [gold]Block[/gold], gain [blue]6[/blue] [gold]Block[/gold].",
+    "description": "If you end your turn without [gold]Block[/gold], gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "If you end your turn without [gold]Block[/gold], gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1672,7 +1672,7 @@
   {
     "id": "ORNAMENTAL_FAN",
     "name": "Ornamental Fan",
-    "description": "Every time you play [blue]3[/blue] Attacks in a single turn, gain [blue]4[/blue] [gold]Block[/gold].",
+    "description": "Every time you play [blue]{Cards}[/blue] Attacks in a single turn, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "Every time you play [blue]{Cards}[/blue] Attacks in a single turn, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1682,7 +1682,7 @@
   {
     "id": "ORRERY",
     "name": "Orrery",
-    "description": "Upon pickup, gain [blue]5[/blue] card rewards.",
+    "description": "Upon pickup, gain [blue]{Cards}[/blue] card {Cards:plural:reward|rewards}.",
     "description_raw": "Upon pickup, gain [blue]{Cards}[/blue] card {Cards:plural:reward|rewards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -1692,7 +1692,7 @@
   {
     "id": "PAELS_BLOOD",
     "name": "Pael's Blood",
-    "description": "At the start of your turn, draw [blue]1[/blue] additional card.",
+    "description": "At the start of your turn, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}.",
     "description_raw": "At the start of your turn, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1702,7 +1702,7 @@
   {
     "id": "PAELS_CLAW",
     "name": "Pael's Claw",
-    "description": "Upon pickup, [gold]Enchant[/gold] all [gold]Defends[/gold] with [purple][EnchantmentName][/purple].",
+    "description": "Upon pickup, [gold]Enchant[/gold] all [gold]Defends[/gold] with [purple]{EnchantmentName}[/purple].",
     "description_raw": "Upon pickup, [gold]Enchant[/gold] all [gold]Defends[/gold] with [purple]{EnchantmentName}[/purple].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1722,7 +1722,7 @@
   {
     "id": "PAELS_FLESH",
     "name": "Pael's Flesh",
-    "description": "Gain an additional [energy:1] at the start of your [blue]3rd[/blue] turn, and every turn after that.",
+    "description": "Gain an additional {Energy:energyIcons()} at the start of your [blue]3rd[/blue] turn, and every turn after that.",
     "description_raw": "Gain an additional {Energy:energyIcons()} at the start of your [blue]3rd[/blue] turn, and every turn after that.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1732,7 +1732,7 @@
   {
     "id": "PAELS_GROWTH",
     "name": "Pael's Growth",
-    "description": "Upon pickup, [gold]Enchant[/gold] a card with [purple][EnchantmentName][/purple].",
+    "description": "Upon pickup, [gold]Enchant[/gold] a card with [purple]{EnchantmentName}[/purple].",
     "description_raw": "Upon pickup, [gold]Enchant[/gold] a card with [purple]{EnchantmentName}[/purple].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1752,7 +1752,7 @@
   {
     "id": "PAELS_LEGION",
     "name": "Pael's Legion",
-    "description": "Doubles [gold]Block[/gold] gained from a card, then goes to sleep for [blue]2[/blue] turns.",
+    "description": "Doubles [gold]Block[/gold] gained from a card, then goes to sleep for [blue]{Turns}[/blue] {Turns:plural:turn|turns}.",
     "description_raw": "Doubles [gold]Block[/gold] gained from a card, then goes to sleep for [blue]{Turns}[/blue] {Turns:plural:turn|turns}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1762,7 +1762,7 @@
   {
     "id": "PAELS_TEARS",
     "name": "Pael's Tears",
-    "description": "If you end your turn with unspent [energy:1], gain an additional [energy:2] next turn.",
+    "description": "If you end your turn with unspent {energyPrefix:energyIcons(1)}, gain an additional {Energy:energyIcons()} next turn.",
     "description_raw": "If you end your turn with unspent {energyPrefix:energyIcons(1)}, gain an additional {Energy:energyIcons()} next turn.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1772,8 +1772,8 @@
   {
     "id": "PAELS_TOOTH",
     "name": "Pael's Tooth",
-    "description": "Upon pickup, remove [blue]5[/blue] cards from your [gold]Deck[/gold]. After each combat, randomly add [blue]1[/blue] back [gold]Upgraded[/gold].",
-    "description_raw": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold]. After each combat, randomly add [blue]1[/blue] back [gold]Upgraded[/gold].{CardTitles.StringValue:cond:\n\nCards in the Pot:\n{}|}",
+    "description": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold]. After each combat, randomly add [blue]1[/blue] back [gold]Upgraded[/gold].{CardTitles.StringValue:cond:\n\nCards devoured:\n{}|}",
+    "description_raw": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold]. After each combat, randomly add [blue]1[/blue] back [gold]Upgraded[/gold].{CardTitles.StringValue:cond:\n\nCards devoured:\n{}|}",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
@@ -1782,7 +1782,7 @@
   {
     "id": "PAELS_WING",
     "name": "Pael's Wing",
-    "description": "You may sacrifice card rewards to Pael. Every [blue]2[/blue] sacrifices, obtain a [gold]Relic[/gold].",
+    "description": "You may sacrifice card rewards to Pael. Every {Sacrifices:plural:sacrifice|[blue]{}[/blue] sacrifices}, obtain a [gold]Relic[/gold].",
     "description_raw": "You may sacrifice card rewards to Pael. Every {Sacrifices:plural:sacrifice|[blue]{}[/blue] sacrifices}, obtain a [gold]Relic[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1802,7 +1802,7 @@
   {
     "id": "PANTOGRAPH",
     "name": "Pantograph",
-    "description": "At the start of each [gold]Boss[/gold] combat, heal [green]25[/green] HP.",
+    "description": "At the start of each [gold]Boss[/gold] combat, heal [green]{Heal}[/green] HP.",
     "description_raw": "At the start of each [gold]Boss[/gold] combat, heal [green]{Heal}[/green] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1832,7 +1832,7 @@
   {
     "id": "PARRYING_SHIELD",
     "name": "Parrying Shield",
-    "description": "If you end a turn with at least [blue]10[/blue] [gold]Block[/gold], deal [blue]6[/blue] damage to a random enemy.",
+    "description": "If you end a turn with at least [blue]{Block}[/blue] [gold]Block[/gold], deal [blue]{Damage}[/blue] damage to a random enemy.",
     "description_raw": "If you end a turn with at least [blue]{Block}[/blue] [gold]Block[/gold], deal [blue]{Damage}[/blue] damage to a random enemy.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1842,7 +1842,7 @@
   {
     "id": "PEAR",
     "name": "Pear",
-    "description": "Upon pickup, raise your Max HP by [blue]10[/blue].",
+    "description": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue].",
     "description_raw": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1862,8 +1862,8 @@
   {
     "id": "PENDULUM",
     "name": "Pendulum",
-    "description": "Whenever you shuffle your [gold]Draw Pile[/gold], draw a card.",
-    "description_raw": "Whenever you shuffle your [gold]Draw Pile[/gold], draw a card.",
+    "description": "Every [blue]{Turns}[/blue] {Turns:plural:turn|turns}, draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
+    "description_raw": "Every [blue]{Turns}[/blue] {Turns:plural:turn|turns}, draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
     "pool": "shared",
@@ -1872,10 +1872,10 @@
   {
     "id": "PERMAFROST",
     "name": "Permafrost",
-    "description": "The first time you play a Power each combat, gain [blue]6[/blue] [gold]Block[/gold].",
+    "description": "The first time you play a Power each combat, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "The first time you play a Power each combat, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
-    "rarity": "Common Relic",
+    "rarity": "Uncommon Relic",
     "pool": "shared",
     "image_url": "/static/images/relics/permafrost.png"
   },
@@ -1892,7 +1892,7 @@
   {
     "id": "PHILOSOPHERS_STONE",
     "name": "Philosopher's Stone",
-    "description": "Gain [energy:1] at the start of each turn. ALL enemies start combat with [blue]1[/blue] [gold]Strength[/gold].",
+    "description": "Gain {Energy:energyIcons()} at the start of each turn. ALL enemies start combat with [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "description_raw": "Gain {Energy:energyIcons()} at the start of each turn. ALL enemies start combat with [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -1902,7 +1902,7 @@
   {
     "id": "PHYLACTERY_UNBOUND",
     "name": "Phylactery Unbound",
-    "description": "At the start of each combat, [gold]Summon[/gold] [blue]5[/blue]. At the start of your turn, [gold]Summon[/gold] [blue]2[/blue].",
+    "description": "At the start of each combat, [gold]Summon[/gold] [blue]{StartOfCombat}[/blue]. At the start of your turn, [gold]Summon[/gold] [blue]{StartOfTurn}[/blue].",
     "description_raw": "At the start of each combat, [gold]Summon[/gold] [blue]{StartOfCombat}[/blue]. At the start of your turn, [gold]Summon[/gold] [blue]{StartOfTurn}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Starter Relic",
@@ -1912,7 +1912,7 @@
   {
     "id": "PLANISPHERE",
     "name": "Planisphere",
-    "description": "Whenever you enter a [gold]?[/gold] room, heal [green]4[/green] HP.",
+    "description": "Whenever you enter a [gold]?[/gold] room, heal [green]{Heal}[/green] HP.",
     "description_raw": "Whenever you enter a [gold]?[/gold] room, heal [green]{Heal}[/green] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -1922,7 +1922,7 @@
   {
     "id": "POCKETWATCH",
     "name": "Pocketwatch",
-    "description": "Whenever you play [blue]3[/blue] or fewer cards during your turn, draw [blue]3[/blue] additional cards at the start of your next turn.",
+    "description": "Whenever you play [blue]{CardThreshold}[/blue] or fewer {CardThreshold:plural:card|cards} during your turn, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards} at the start of your next turn.",
     "description_raw": "Whenever you play [blue]{CardThreshold}[/blue] or fewer {CardThreshold:plural:card|cards} during your turn, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards} at the start of your next turn.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1932,7 +1932,7 @@
   {
     "id": "POLLINOUS_CORE",
     "name": "Pollinous Core",
-    "description": "Every [blue]4[/blue] turns, draw [blue]2[/blue] additional cards.",
+    "description": "Every [blue]{Turns}[/blue] {Turns:plural:turn|turns}, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}.",
     "description_raw": "Every [blue]{Turns}[/blue] {Turns:plural:turn|turns}, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -1952,7 +1952,7 @@
   {
     "id": "POTION_BELT",
     "name": "Potion Belt",
-    "description": "Upon pickup, gain [blue]2[/blue] potion slots.",
+    "description": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion {PotionSlots:plural:slot|slots}.",
     "description_raw": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion {PotionSlots:plural:slot|slots}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -1962,7 +1962,7 @@
   {
     "id": "POWER_CELL",
     "name": "Power Cell",
-    "description": "At the start of each combat, add [blue]2[/blue] zero-cost cards from your [gold]Draw Pile[/gold] into your [gold]Hand[/gold].",
+    "description": "At the start of each combat, add [blue]{Cards}[/blue] zero-cost cards from your [gold]Draw Pile[/gold] into your [gold]Hand[/gold].",
     "description_raw": "At the start of each combat, add [blue]{Cards}[/blue] zero-cost cards from your [gold]Draw Pile[/gold] into your [gold]Hand[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -1982,8 +1982,8 @@
   {
     "id": "PRECARIOUS_SHEARS",
     "name": "Precarious Shears",
-    "description": "Upon pickup, remove [blue]2[/blue] cards from your [gold]Deck[/gold] and take [red]13[/red] damage.",
-    "description_raw": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold] and take [red]{Damage}[/red] damage.",
+    "description": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold] and lose [blue]{Damage}[/blue] HP.",
+    "description_raw": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold] and lose [blue]{Damage}[/blue] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
@@ -1992,7 +1992,7 @@
   {
     "id": "PRECISE_SCISSORS",
     "name": "Precise Scissors",
-    "description": "Upon pickup, remove [blue]1[/blue] card from your [gold]Deck[/gold].",
+    "description": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold].",
     "description_raw": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2002,7 +2002,7 @@
   {
     "id": "PRESERVED_FOG",
     "name": "Preserved Fog",
-    "description": "Upon pickup, remove [blue]5[/blue] cards from your [gold]Deck[/gold]. Add [red]Folly[/red] to your [gold]Deck[/gold].",
+    "description": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold]. Add [red]Folly[/red] to your [gold]Deck[/gold].",
     "description_raw": "Upon pickup, remove [blue]{Cards}[/blue] {Cards:plural:card|cards} from your [gold]Deck[/gold]. Add [red]Folly[/red] to your [gold]Deck[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2012,7 +2012,7 @@
   {
     "id": "PRISMATIC_GEM",
     "name": "Prismatic Gem",
-    "description": "Gain [energy:1] at the start of each turn. Card rewards now contain cards from other colors.",
+    "description": "Gain {Energy:energyIcons()} at the start of each turn. Card rewards now contain cards from other colors.",
     "description_raw": "Gain {Energy:energyIcons()} at the start of each turn. Card rewards now contain cards from other colors.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2022,7 +2022,7 @@
   {
     "id": "PUMPKIN_CANDLE",
     "name": "Pumpkin Candle",
-    "description": "Gain [energy:1] at the start of each turn. Extinguishes at the start of [gold]Act[/gold] [blue]3[/blue].",
+    "description": "Gain {Energy:energyIcons()} at the start of each turn. Extinguishes at the start of [gold]Act[/gold] [blue]3[/blue].",
     "description_raw": "Gain {Energy:energyIcons()} at the start of each turn. Extinguishes at the start of [gold]Act[/gold] [blue]3[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2032,7 +2032,7 @@
   {
     "id": "PUNCH_DAGGER",
     "name": "Punch Dagger",
-    "description": "Upon pickup, [gold]Enchant[/gold] an Attack with [purple]Momentum[/purple] [blue]5[/blue].",
+    "description": "Upon pickup, [gold]Enchant[/gold] an Attack with [purple]Momentum[/purple] [blue]{Momentum}[/blue].",
     "description_raw": "Upon pickup, [gold]Enchant[/gold] an Attack with [purple]Momentum[/purple] [blue]{Momentum}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -2042,7 +2042,7 @@
   {
     "id": "RADIANT_PEARL",
     "name": "Radiant Pearl",
-    "description": "At the start of each combat, add [blue]1[/blue] [gold]Luminesce[/gold] into your [gold]Hand[/gold].",
+    "description": "At the start of each combat, add [blue]{Cards}[/blue] [gold]{Cards:plural:Luminesce|Luminesces}[/gold] into your [gold]Hand[/gold].",
     "description_raw": "At the start of each combat, add [blue]{Cards}[/blue] [gold]{Cards:plural:Luminesce|Luminesces}[/gold] into your [gold]Hand[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2052,7 +2052,7 @@
   {
     "id": "RAINBOW_RING",
     "name": "Rainbow Ring",
-    "description": "The first time you play an Attack, Skill, and Power each turn, gain [blue]1[/blue] [gold]Strength[/gold] and [blue]1[/blue] [gold]Dexterity[/gold].",
+    "description": "The first time you play an Attack, Skill, and Power each turn, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold] and [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold].",
     "description_raw": "The first time you play an Attack, Skill, and Power each turn, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold] and [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -2072,17 +2072,17 @@
   {
     "id": "RED_MASK",
     "name": "Red Mask",
-    "description": "At the start of each combat, apply [blue]1[/blue] [gold]Weak[/gold] to ALL enemies.",
+    "description": "At the start of each combat, apply [blue]{WeakPower}[/blue] [gold]Weak[/gold] to ALL enemies.",
     "description_raw": "At the start of each combat, apply [blue]{WeakPower}[/blue] [gold]Weak[/gold] to ALL enemies.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
-    "rarity": "Uncommon Relic",
+    "rarity": "Common Relic",
     "pool": "shared",
     "image_url": "/static/images/relics/red_mask.png"
   },
   {
     "id": "RED_SKULL",
     "name": "Red Skull",
-    "description": "While your HP is at or below [blue]50%[/blue], you have [blue]3[/blue] additional [gold]Strength[/gold].",
+    "description": "While your HP is at or below [blue]{HpThreshold}%[/blue], you have [blue]{StrengthPower}[/blue] additional [gold]Strength[/gold].",
     "description_raw": "While your HP is at or below [blue]{HpThreshold}%[/blue], you have [blue]{StrengthPower}[/blue] additional [gold]Strength[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -2092,7 +2092,7 @@
   {
     "id": "REGAL_PILLOW",
     "name": "Regal Pillow",
-    "description": "Whenever you [gold]Rest[/gold], heal an additional [blue]15[/blue] HP.",
+    "description": "Whenever you [gold]Rest[/gold], heal an additional [blue]{Heal}[/blue] HP.",
     "description_raw": "Whenever you [gold]Rest[/gold], heal an additional [blue]{Heal}[/blue] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -2102,8 +2102,8 @@
   {
     "id": "REGALITE",
     "name": "Regalite",
-    "description": "Whenever you create a card, gain [blue]2[/blue] [gold]Block[/gold].",
-    "description_raw": "Whenever you create a Colorless card, gain [blue]{Block}[/blue] [gold]Block[/gold].",
+    "description": "Whenever you create a card, gain [blue]{Block}[/blue] [gold]Block[/gold].",
+    "description_raw": "Whenever you create a card, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
     "pool": "regent",
@@ -2112,7 +2112,7 @@
   {
     "id": "REPTILE_TRINKET",
     "name": "Reptile Trinket",
-    "description": "Whenever you use a potion, gain [blue]3[/blue] [gold]Strength[/gold] this turn.",
+    "description": "Whenever you use a potion, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold] this turn.",
     "description_raw": "Whenever you use a potion, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold] this turn.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -2122,7 +2122,7 @@
   {
     "id": "RING_OF_THE_DRAKE",
     "name": "Ring of the Drake",
-    "description": "At the start of your first [blue]3[/blue] turns, draw [blue]2[/blue] additional cards.",
+    "description": "At the start of your first {Turns:plural:turn|[blue]{}[/blue] turns}, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}.",
     "description_raw": "At the start of your first {Turns:plural:turn|[blue]{}[/blue] turns}, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Starter Relic",
@@ -2132,7 +2132,7 @@
   {
     "id": "RING_OF_THE_SNAKE",
     "name": "Ring of the Snake",
-    "description": "At the start of each combat, draw [blue]2[/blue] additional cards.",
+    "description": "At the start of each combat, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}.",
     "description_raw": "At the start of each combat, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Starter Relic",
@@ -2152,7 +2152,7 @@
   {
     "id": "RIPPLE_BASIN",
     "name": "Ripple Basin",
-    "description": "If you did not play any Attacks during your turn, gain [blue]4[/blue] [gold]Block[/gold].",
+    "description": "If you did not play any Attacks during your turn, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "If you did not play any Attacks during your turn, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -2162,7 +2162,7 @@
   {
     "id": "ROYAL_POISON",
     "name": "Royal Poison",
-    "description": "At the start of each combat, lose [blue]4[/blue] HP.",
+    "description": "At the start of each combat, lose [blue]{Damage}[/blue] HP.",
     "description_raw": "At the start of each combat, lose [blue]{Damage}[/blue] HP.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -2172,7 +2172,7 @@
   {
     "id": "ROYAL_STAMP",
     "name": "Royal Stamp",
-    "description": "Upon pickup, choose an Attack or Skill in your [gold]Deck[/gold] to [gold]Enchant[/gold] with [purple][Enchantment][/purple].",
+    "description": "Upon pickup, choose an Attack or Skill in your [gold]Deck[/gold] to [gold]Enchant[/gold] with [purple]{Enchantment}[/purple].",
     "description_raw": "Upon pickup, choose an Attack or Skill in your [gold]Deck[/gold] to [gold]Enchant[/gold] with [purple]{Enchantment}[/purple].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -2192,7 +2192,7 @@
   {
     "id": "RUNIC_CAPACITOR",
     "name": "Runic Capacitor",
-    "description": "Start each combat with [blue]3[/blue] additional [gold]Orb Slots[/gold].",
+    "description": "Start each combat with [blue]{Repeat}[/blue] additional [gold]Orb Slots[/gold].",
     "description_raw": "Start each combat with [blue]{Repeat}[/blue] additional [gold]Orb Slots[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -2212,7 +2212,7 @@
   {
     "id": "SAI",
     "name": "Sai",
-    "description": "At the start of your turn, gain [blue]7[/blue] [gold]Block[/gold].",
+    "description": "At the start of your turn, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "At the start of your turn, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2222,7 +2222,7 @@
   {
     "id": "SAND_CASTLE",
     "name": "Sand Castle",
-    "description": "Upon pickup, [gold]Upgrade[/gold] [blue]6[/blue] random cards.",
+    "description": "Upon pickup, [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:card|cards}.",
     "description_raw": "Upon pickup, [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2232,7 +2232,7 @@
   {
     "id": "SCREAMING_FLAGON",
     "name": "Screaming Flagon",
-    "description": "If you end your turn with no cards in your [gold]Hand[/gold], deal [blue]20[/blue] damage to ALL enemies.",
+    "description": "If you end your turn with no cards in your [gold]Hand[/gold], deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "description_raw": "If you end your turn with no cards in your [gold]Hand[/gold], deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -2252,7 +2252,7 @@
   {
     "id": "SEA_GLASS",
     "name": "Sea Glass",
-    "description": "See [blue]15[/blue] cards from another character. Choose any number of them to add to your [gold]Deck[/gold].",
+    "description": "See [blue]{Cards}[/blue] cards from {Character.StringValue:cond:[gold]{}[/gold]|another character}. Choose any number of them to add to your [gold]Deck[/gold].",
     "description_raw": "See [blue]{Cards}[/blue] cards from {Character.StringValue:cond:[gold]{}[/gold]|another character}. Choose any number of them to add to your [gold]Deck[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2262,7 +2262,7 @@
   {
     "id": "SEAL_OF_GOLD",
     "name": "Seal of Gold",
-    "description": "At the start of your turn, spend [blue]5[/blue] [gold]Gold[/gold] to gain [energy:1].",
+    "description": "At the start of your turn, spend [blue]{Gold}[/blue] [gold]Gold[/gold] to gain {Energy:energyIcons()}.",
     "description_raw": "At the start of your turn, spend [blue]{Gold}[/blue] [gold]Gold[/gold] to gain {Energy:energyIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2272,7 +2272,7 @@
   {
     "id": "SELF_FORMING_CLAY",
     "name": "Self-Forming Clay",
-    "description": "Whenever you lose HP in combat, gain [blue]3[/blue] [gold]Block[/gold] next turn.",
+    "description": "Whenever you lose HP in combat, gain [blue]{BlockNextTurn}[/blue] [gold]Block[/gold] next turn.",
     "description_raw": "Whenever you lose HP in combat, gain [blue]{BlockNextTurn}[/blue] [gold]Block[/gold] next turn.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -2282,7 +2282,7 @@
   {
     "id": "SERE_TALON",
     "name": "Sere Talon",
-    "description": "Upon pickup, add [blue]2[/blue] random [red]Curses[/red] and [blue]3[/blue] [purple]Wishes[/purple] to your [gold]Deck[/gold].",
+    "description": "Upon pickup, add [blue]{Curses}[/blue] random [red]Curses[/red] and [blue]{Wishes}[/blue] [purple]Wishes[/purple] to your [gold]Deck[/gold].",
     "description_raw": "Upon pickup, add [blue]{Curses}[/blue] random [red]Curses[/red] and [blue]{Wishes}[/blue] [purple]Wishes[/purple] to your [gold]Deck[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2302,7 +2302,7 @@
   {
     "id": "SHURIKEN",
     "name": "Shuriken",
-    "description": "Every time you play [blue]3[/blue] Attacks in a single turn, gain [blue]1[/blue] [gold]Strength[/gold].",
+    "description": "Every time you play [blue]{Cards}[/blue] Attacks in a single turn, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "description_raw": "Every time you play [blue]{Cards}[/blue] Attacks in a single turn, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -2312,7 +2312,7 @@
   {
     "id": "SIGNET_RING",
     "name": "Signet Ring",
-    "description": "Upon pickup, gain [blue]999[/blue] [gold]Gold[/gold].",
+    "description": "Upon pickup, gain [blue]{Gold}[/blue] [gold]Gold[/gold].",
     "description_raw": "Upon pickup, gain [blue]{Gold}[/blue] [gold]Gold[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2322,7 +2322,7 @@
   {
     "id": "SILVER_CRUCIBLE",
     "name": "Silver Crucible",
-    "description": "The first [blue]3[/blue] card rewards you see are [gold]Upgraded[/gold]. The first Treasure Chest you open is [red]empty[/red].",
+    "description": "The first [blue]{Cards}[/blue] card rewards you see are [gold]Upgraded[/gold]. The first Treasure Chest you open is [red]empty[/red].",
     "description_raw": "The first [blue]{Cards}[/blue] card rewards you see are [gold]Upgraded[/gold]. The first Treasure Chest you open is [red]empty[/red].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2332,7 +2332,7 @@
   {
     "id": "SLING_OF_COURAGE",
     "name": "Sling of Courage",
-    "description": "Start each [gold]Elite[/gold] combat with [blue]2[/blue] [gold]Strength[/gold].",
+    "description": "Start each [gold]Elite[/gold] combat with [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "description_raw": "Start each [gold]Elite[/gold] combat with [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -2352,7 +2352,7 @@
   {
     "id": "SNECKO_EYE",
     "name": "Snecko Eye",
-    "description": "At the start of your turn, draw [blue]2[/blue] additional cards. Start each combat [red]Confused[/red].",
+    "description": "At the start of your turn, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}. Start each combat [red]Confused[/red].",
     "description_raw": "At the start of your turn, draw [blue]{Cards}[/blue] additional {Cards:plural:card|cards}. Start each combat [red]Confused[/red].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2362,7 +2362,7 @@
   {
     "id": "SNECKO_SKULL",
     "name": "Snecko Skull",
-    "description": "Whenever you apply [gold]Poison[/gold], apply an additional [blue]1[/blue] [gold]Poison[/gold].",
+    "description": "Whenever you apply [gold]Poison[/gold], apply an additional [blue]{PoisonPower}[/blue] [gold]Poison[/gold].",
     "description_raw": "Whenever you apply [gold]Poison[/gold], apply an additional [blue]{PoisonPower}[/blue] [gold]Poison[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -2372,7 +2372,7 @@
   {
     "id": "SOZU",
     "name": "Sozu",
-    "description": "Gain [energy:1] at the start of each turn. You can no longer obtain potions.",
+    "description": "Gain {Energy:energyIcons()} at the start of each turn. You can no longer obtain potions.",
     "description_raw": "Gain {Energy:energyIcons()} at the start of each turn. You can no longer obtain potions.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2382,7 +2382,7 @@
   {
     "id": "SPARKLING_ROUGE",
     "name": "Sparkling Rouge",
-    "description": "At the start of your [blue]3rd[/blue] turn, gain [blue]1[/blue] [gold]Strength[/gold] and [blue]1[/blue] [gold]Dexterity[/gold].",
+    "description": "At the start of your [blue]3rd[/blue] turn, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold] and [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold].",
     "description_raw": "At the start of your [blue]3rd[/blue] turn, gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold] and [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -2392,7 +2392,7 @@
   {
     "id": "SPIKED_GAUNTLETS",
     "name": "Spiked Gauntlets",
-    "description": "Gain [energy:1] at the start of each turn. Powers cost [blue]1[/blue] more [energy:1].",
+    "description": "Gain {Energy:energyIcons()} at the start of each turn. Powers cost [blue]1[/blue] more {energyPrefix:energyIcons(1)}.",
     "description_raw": "Gain {Energy:energyIcons()} at the start of each turn. Powers cost [blue]1[/blue] more {energyPrefix:energyIcons(1)}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2402,7 +2402,7 @@
   {
     "id": "STONE_CALENDAR",
     "name": "Stone Calendar",
-    "description": "At the end of turn [blue]7[/blue], deal [blue]52[/blue] damage to ALL enemies.",
+    "description": "At the end of turn [blue]{DamageTurn}[/blue], deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "description_raw": "At the end of turn [blue]{DamageTurn}[/blue], deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -2412,8 +2412,8 @@
   {
     "id": "STONE_CRACKER",
     "name": "Stone Cracker",
-    "description": "At the start of [gold]Boss[/gold] combats, [gold]Upgrade[/gold] [blue]3[/blue] random cards in your [gold]Draw Pile[/gold] for the rest of combat.",
-    "description_raw": "At the start of [gold]Boss[/gold] combats, [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:card|cards} in your [gold]Draw Pile[/gold] for the rest of combat.",
+    "description": "At the start of each combat, [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:card|cards} in your [gold]Draw Pile[/gold] for the rest of combat.",
+    "description_raw": "At the start of each combat, [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:card|cards} in your [gold]Draw Pile[/gold] for the rest of combat.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
     "pool": "shared",
@@ -2422,7 +2422,7 @@
   {
     "id": "STONE_HUMIDIFIER",
     "name": "Stone Humidifier",
-    "description": "Whenever you [gold]Rest[/gold] at a [gold]Rest Site[/gold], raise your Max HP by [blue]5[/blue].",
+    "description": "Whenever you [gold]Rest[/gold] at a [gold]Rest Site[/gold], raise your Max HP by [blue]{MaxHp}[/blue].",
     "description_raw": "Whenever you [gold]Rest[/gold] at a [gold]Rest Site[/gold], raise your Max HP by [blue]{MaxHp}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2442,7 +2442,7 @@
   {
     "id": "STRAWBERRY",
     "name": "Strawberry",
-    "description": "Upon pickup, raise your Max HP by [blue]7[/blue].",
+    "description": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue].",
     "description_raw": "Upon pickup, raise your Max HP by [blue]{MaxHp}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -2452,7 +2452,7 @@
   {
     "id": "STRIKE_DUMMY",
     "name": "Strike Dummy",
-    "description": "Cards containing “Strike” deal [blue]3[/blue] additional damage.",
+    "description": "Cards containing “Strike” deal [blue]{ExtraDamage}[/blue] additional damage.",
     "description_raw": "Cards containing “Strike” deal [blue]{ExtraDamage}[/blue] additional damage.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -2462,7 +2462,7 @@
   {
     "id": "STURDY_CLAMP",
     "name": "Sturdy Clamp",
-    "description": "Up to [blue]10[/blue] [gold]Block[/gold] persists across turns.",
+    "description": "Up to [blue]{Block}[/blue] [gold]Block[/gold] persists across turns.",
     "description_raw": "Up to [blue]{Block}[/blue] [gold]Block[/gold] persists across turns.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -2472,7 +2472,7 @@
   {
     "id": "SWORD_OF_JADE",
     "name": "Sword of Jade",
-    "description": "Start each combat with [blue]3[/blue] [gold]Strength[/gold].",
+    "description": "Start each combat with [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "description_raw": "Start each combat with [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -2482,7 +2482,7 @@
   {
     "id": "SWORD_OF_STONE",
     "name": "Sword of Stone",
-    "description": "Transforms into a powerful [gold]Relic[/gold] after defeating [blue]5[/blue] [gold]Elites[/gold].",
+    "description": "Transforms into a powerful [gold]Relic[/gold] after defeating [blue]{Elites}[/blue] [gold]{Elites:plural:Elite|Elites}[/gold].",
     "description_raw": "Transforms into a powerful [gold]Relic[/gold] after defeating [blue]{Elites}[/blue] [gold]{Elites:plural:Elite|Elites}[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -2492,7 +2492,7 @@
   {
     "id": "SYMBIOTIC_VIRUS",
     "name": "Symbiotic Virus",
-    "description": "At the start of each combat, [gold]Channel[/gold] [blue]1[/blue] [gold]Dark[/gold].",
+    "description": "At the start of each combat, [gold]Channel[/gold] [blue]{Dark}[/blue] [gold]Dark[/gold].",
     "description_raw": "At the start of each combat, [gold]Channel[/gold] [blue]{Dark}[/blue] [gold]Dark[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -2512,7 +2512,7 @@
   {
     "id": "TEA_OF_DISCOURTESY",
     "name": "Tea of Discourtesy",
-    "description": "At the start of the next combat, shuffle [blue]2[/blue] [gold]Dazed[/gold] into your [gold]Draw Pile[/gold].",
+    "description": "At the start of the next combat, shuffle [blue]{DazedCount}[/blue] [gold]Dazed[/gold] into your [gold]Draw Pile[/gold].",
     "description_raw": "At the start of the next combat, shuffle [blue]{DazedCount}[/blue] [gold]Dazed[/gold] into your [gold]Draw Pile[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -2522,7 +2522,7 @@
   {
     "id": "THE_ABACUS",
     "name": "The Abacus",
-    "description": "Whenever you shuffle your [gold]Draw Pile[/gold], gain [blue]6[/blue] [gold]Block[/gold].",
+    "description": "Whenever you shuffle your [gold]Draw Pile[/gold], gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "Whenever you shuffle your [gold]Draw Pile[/gold], gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -2532,7 +2532,7 @@
   {
     "id": "THE_BOOT",
     "name": "The Boot",
-    "description": "Whenever you would deal [blue]4[/blue] or less unblocked attack damage, increase it to [blue]5[/blue].",
+    "description": "Whenever you would deal [blue]{DamageThreshold}[/blue] or less unblocked attack damage, increase it to [blue]{DamageMinimum}[/blue].",
     "description_raw": "Whenever you would deal [blue]{DamageThreshold}[/blue] or less unblocked attack damage, increase it to [blue]{DamageMinimum}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -2542,7 +2542,7 @@
   {
     "id": "THE_COURIER",
     "name": "The Courier",
-    "description": "The merchant no longer runs out of cards, relics, or potions and his prices are reduced by [blue]20%[/blue].",
+    "description": "The merchant no longer runs out of cards, relics, or potions and his prices are reduced by [blue]{Discount}%[/blue].",
     "description_raw": "The merchant no longer runs out of cards, relics, or potions and his prices are reduced by [blue]{Discount}%[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -2562,7 +2562,7 @@
   {
     "id": "TINGSHA",
     "name": "Tingsha",
-    "description": "Whenever you discard a card during your turn, deal [blue]3[/blue] damage to a random enemy for each card discarded.",
+    "description": "Whenever you discard a card during your turn, deal [blue]{Damage}[/blue] damage to a random enemy for each card discarded.",
     "description_raw": "Whenever you discard a card during your turn, deal [blue]{Damage}[/blue] damage to a random enemy for each card discarded.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -2572,17 +2572,17 @@
   {
     "id": "TINY_MAILBOX",
     "name": "Tiny Mailbox",
-    "description": "Whenever you [gold]Rest[/gold], procure 2 random potions.",
-    "description_raw": "Whenever you [gold]Rest[/gold], procure {Potions} random potions.",
+    "description": "Whenever you [gold]Rest[/gold], procure [blue]2[/blue] random potions.",
+    "description_raw": "Whenever you [gold]Rest[/gold], procure [blue]2[/blue] random potions.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
-    "rarity": "Common Relic",
+    "rarity": "Uncommon Relic",
     "pool": "shared",
     "image_url": "/static/images/relics/tiny_mailbox.png"
   },
   {
     "id": "TOASTY_MITTENS",
     "name": "Toasty Mittens",
-    "description": "At the start of your turn, [gold]Exhaust[/gold] the top card of your [gold]Draw Pile[/gold] and gain [blue]1[/blue] [gold]Strength[/gold].",
+    "description": "At the start of your turn, [gold]Exhaust[/gold] the top card of your [gold]Draw Pile[/gold] and gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "description_raw": "At the start of your turn, [gold]Exhaust[/gold] the top card of your [gold]Draw Pile[/gold] and gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2592,7 +2592,7 @@
   {
     "id": "TOOLBOX",
     "name": "Toolbox",
-    "description": "At the start of each combat, choose [blue]1[/blue] of [blue]3[/blue] random Colorless cards and add the chosen card into your [gold]Hand[/gold].",
+    "description": "At the start of each combat, choose [blue]1[/blue] of [blue]{Cards}[/blue] random Colorless cards and add the chosen card into your [gold]Hand[/gold].",
     "description_raw": "At the start of each combat, choose [blue]1[/blue] of [blue]{Cards}[/blue] random Colorless cards and add the chosen card into your [gold]Hand[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -2602,7 +2602,7 @@
   {
     "id": "TOUCH_OF_OROBAS",
     "name": "Touch of Orobas",
-    "description": "Upon pickup, replace your starter [gold]Relic[/gold] with an [gold]Ancient[/gold] version.",
+    "description": "Upon pickup, replace {StarterRelic.StringValue:cond:[gold]{StarterRelic}[/gold] with [gold]{UpgradedRelic}[/gold]|your starter [gold]Relic[/gold] with an [gold]Ancient[/gold] version}.",
     "description_raw": "Upon pickup, replace {StarterRelic.StringValue:cond:[gold]{StarterRelic}[/gold] with [gold]{UpgradedRelic}[/gold]|your starter [gold]Relic[/gold] with an [gold]Ancient[/gold] version}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2612,7 +2612,7 @@
   {
     "id": "TOUGH_BANDAGES",
     "name": "Tough Bandages",
-    "description": "Whenever you discard a card during your turn, gain [blue]3[/blue] [gold]Block[/gold].",
+    "description": "Whenever you discard a card during your turn, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "Whenever you discard a card during your turn, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -2632,7 +2632,7 @@
   {
     "id": "TOY_BOX",
     "name": "Toy Box",
-    "description": "Upon pickup, obtain [blue]4[/blue] [gold]Wax Relics[/gold]. Every [blue]3[/blue] combats, your left-most [gold]Wax Relic[/gold] will melt away.",
+    "description": "Upon pickup, obtain [blue]{Relics}[/blue] [gold]Wax {Relics:plural:Relic|Relics}[/gold]. Every [blue]{Combats}[/blue] {Combats:plural:combat|combats}, your left-most [gold]Wax Relic[/gold] will melt away.",
     "description_raw": "Upon pickup, obtain [blue]{Relics}[/blue] [gold]Wax {Relics:plural:Relic|Relics}[/gold]. Every [blue]{Combats}[/blue] {Combats:plural:combat|combats}, your left-most [gold]Wax Relic[/gold] will melt away.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2642,7 +2642,7 @@
   {
     "id": "TRI_BOOMERANG",
     "name": "Tri-Boomerang",
-    "description": "Choose [blue]3[/blue] Attacks in your [gold]Deck[/gold]. [gold]Enchant[/gold] them with [purple]Instinct[/purple].",
+    "description": "Choose [blue]{Cards}[/blue] {Cards:plural:Attack|Attacks} in your [gold]Deck[/gold]. [gold]Enchant[/gold] them with [purple]Instinct[/purple].",
     "description_raw": "Choose [blue]{Cards}[/blue] {Cards:plural:Attack|Attacks} in your [gold]Deck[/gold]. [gold]Enchant[/gold] them with [purple]Instinct[/purple].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2652,7 +2652,7 @@
   {
     "id": "TUNGSTEN_ROD",
     "name": "Tungsten Rod",
-    "description": "Whenever you would lose HP, lose [blue]1[/blue] less.",
+    "description": "Whenever you would lose HP, lose [blue]{HpLossReduction}[/blue] less.",
     "description_raw": "Whenever you would lose HP, lose [blue]{HpLossReduction}[/blue] less.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
@@ -2662,7 +2662,7 @@
   {
     "id": "TUNING_FORK",
     "name": "Tuning Fork",
-    "description": "Every time you play [blue]10[/blue] Skills, gain [blue]7[/blue] [gold]Block[/gold].",
+    "description": "Every time you play [blue]{Cards}[/blue] Skills, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "description_raw": "Every time you play [blue]{Cards}[/blue] Skills, gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -2672,7 +2672,7 @@
   {
     "id": "TWISTED_FUNNEL",
     "name": "Twisted Funnel",
-    "description": "At the start of each combat, apply [blue]4[/blue] [gold]Poison[/gold] to ALL enemies.",
+    "description": "At the start of each combat, apply [blue]{PoisonPower}[/blue] [gold]Poison[/gold] to ALL enemies.",
     "description_raw": "At the start of each combat, apply [blue]{PoisonPower}[/blue] [gold]Poison[/gold] to ALL enemies.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Uncommon Relic",
@@ -2712,7 +2712,7 @@
   {
     "id": "VAJRA",
     "name": "Vajra",
-    "description": "Start each combat with [blue]1[/blue] [gold]Strength[/gold].",
+    "description": "Start each combat with [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "description_raw": "Start each combat with [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -2732,7 +2732,7 @@
   {
     "id": "VELVET_CHOKER",
     "name": "Velvet Choker",
-    "description": "Gain [energy:1] at the start of each turn. You cannot play more than [blue]6[/blue] cards per turn.",
+    "description": "Gain {Energy:energyIcons()} at the start of each turn. You cannot play more than [blue]{Cards}[/blue] {Cards:plural:card|cards} per turn.",
     "description_raw": "Gain {Energy:energyIcons()} at the start of each turn. You cannot play more than [blue]{Cards}[/blue] {Cards:plural:card|cards} per turn.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2742,7 +2742,7 @@
   {
     "id": "VENERABLE_TEA_SET",
     "name": "Venerable Tea Set",
-    "description": "Whenever you enter a [gold]Rest Site[/gold], start the next combat with an additional [energy:2].",
+    "description": "Whenever you enter a [gold]Rest Site[/gold], start the next combat with an additional {Energy:energyIcons()}.",
     "description_raw": "Whenever you enter a [gold]Rest Site[/gold], start the next combat with an additional {Energy:energyIcons()}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -2752,7 +2752,7 @@
   {
     "id": "VERY_HOT_COCOA",
     "name": "Very Hot Cocoa",
-    "description": "Start each combat with an additional [blue][energy:4][/blue].",
+    "description": "Start each combat with an additional [blue]{Energy:energyIcons()}[/blue].",
     "description_raw": "Start each combat with an additional [blue]{Energy:energyIcons()}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2762,8 +2762,8 @@
   {
     "id": "VEXING_PUZZLEBOX",
     "name": "Vexing Puzzlebox",
-    "description": "At the start of each combat, add a random card into your [gold]Hand[/gold]. It is free to play this turn.",
-    "description_raw": "At the start of each combat, add a random card into your [gold]Hand[/gold]. It is free to play this turn.",
+    "description": "At the start of each combat, add a random card into your [gold]Hand[/gold]. It's free to play this turn.",
+    "description_raw": "At the start of each combat, add a random card into your [gold]Hand[/gold]. It's free to play this turn.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Rare Relic",
     "pool": "shared",
@@ -2782,7 +2782,7 @@
   {
     "id": "WAR_HAMMER",
     "name": "War Hammer",
-    "description": "Whenever you kill an [gold]Elite[/gold], [gold]Upgrade[/gold] [blue]4[/blue] random cards.",
+    "description": "Whenever you kill an [gold]Elite[/gold], [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:card|cards}.",
     "description_raw": "Whenever you kill an [gold]Elite[/gold], [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2792,7 +2792,7 @@
   {
     "id": "WAR_PAINT",
     "name": "War Paint",
-    "description": "Upon pickup, [gold]Upgrade[/gold] [blue]2[/blue] random Skills.",
+    "description": "Upon pickup, [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:Skill|Skills}.",
     "description_raw": "Upon pickup, [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:Skill|Skills}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -2802,7 +2802,7 @@
   {
     "id": "WHETSTONE",
     "name": "Whetstone",
-    "description": "Upon pickup, [gold]Upgrade[/gold] [blue]2[/blue] random Attacks.",
+    "description": "Upon pickup, [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:Attack|Attacks}.",
     "description_raw": "Upon pickup, [gold]Upgrade[/gold] [blue]{Cards}[/blue] random {Cards:plural:Attack|Attacks}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Common Relic",
@@ -2812,7 +2812,7 @@
   {
     "id": "WHISPERING_EARRING",
     "name": "Whispering Earring",
-    "description": "Gain [energy:1] at the start of each turn. [red]Vakuu plays your first turn for you.[/red]",
+    "description": "Gain {Energy:energyIcons()} at the start of each turn. [red]Vakuu plays your first turn for you.[/red]",
     "description_raw": "Gain {Energy:energyIcons()} at the start of each turn. [red]Vakuu plays your first turn for you.[/red]",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2842,7 +2842,7 @@
   {
     "id": "WING_CHARM",
     "name": "Wing Charm",
-    "description": "A random card in each card reward is [gold]Enchanted[/gold] with [purple]Swift[/purple] [blue]1[/blue].",
+    "description": "A random card in each card reward is [gold]Enchanted[/gold] with [purple]Swift[/purple] [blue]{SwiftAmount}[/blue].",
     "description_raw": "A random card in each card reward is [gold]Enchanted[/gold] with [purple]Swift[/purple] [blue]{SwiftAmount}[/blue].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Shop Relic",
@@ -2862,7 +2862,7 @@
   {
     "id": "WONGOS_MYSTERY_TICKET",
     "name": "Wongo's Mystery Ticket",
-    "description": "Receive [blue]3[/blue] random [gold]Relics[/gold] after [blue]5[/blue] combats.",
+    "description": "Receive [blue]{Repeat}[/blue] random [gold]{Repeat:plural:Relic|Relics}[/gold] after [blue]{RemainingCombats}[/blue] {RemainingCombats:plural:combat|combats}.",
     "description_raw": "Receive [blue]{Repeat}[/blue] random [gold]{Repeat:plural:Relic|Relics}[/gold] after [blue]{RemainingCombats}[/blue] {RemainingCombats:plural:combat|combats}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Event Relic",
@@ -2872,7 +2872,7 @@
   {
     "id": "YUMMY_COOKIE",
     "name": "Yummy Cookie",
-    "description": "Upon pickup, [gold]Upgrade[/gold] [blue]4[/blue] cards.",
+    "description": "Upon pickup, [gold]Upgrade[/gold] [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "description_raw": "Upon pickup, [gold]Upgrade[/gold] [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2882,7 +2882,7 @@
   {
     "id": "NEOWS_BONES",
     "name": "Neow's Bones",
-    "description": "Upon pickup, gain [blue]2[/blue] random [gold]Neow Relics[/gold]. Add [blue]1[/blue] random [red]Curse[/red] to your [gold]Deck[/gold].",
+    "description": "Upon pickup, gain [blue]{Relics}[/blue] random [gold]Neow {Relics:plural:Relic|Relics}[/gold]. Add [blue]{Curses}[/blue] random [red]{Curses:plural:Curse|Curses}[/red] to your [gold]Deck[/gold].",
     "description_raw": "Upon pickup, gain [blue]{Relics}[/blue] random [gold]Neow {Relics:plural:Relic|Relics}[/gold]. Add [blue]{Curses}[/blue] random [red]{Curses:plural:Curse|Curses}[/red] to your [gold]Deck[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2892,7 +2892,7 @@
   {
     "id": "PHIAL_HOLSTER",
     "name": "Phial Holster",
-    "description": "Upon pickup, gain [blue]1[/blue] potion slot and procure [blue]2[/blue] random potions.",
+    "description": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion {PotionSlots:plural:slot|slots} and procure [blue]{Potions}[/blue] random {Potions:plural:potion|potions}.",
     "description_raw": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion {PotionSlots:plural:slot|slots} and procure [blue]{Potions}[/blue] random {Potions:plural:potion|potions}.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2902,7 +2902,7 @@
   {
     "id": "WINGED_BOOTS",
     "name": "Winged Boots",
-    "description": "You may ignore paths when choosing the next rooms to travel to [blue]3[/blue] times.",
+    "description": "You may ignore paths when choosing the next rooms to travel to [blue]{Rooms}[/blue] times.",
     "description_raw": "You may ignore paths when choosing the next rooms to travel to [blue]{Rooms}[/blue] times.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
@@ -2912,7 +2912,7 @@
   {
     "id": "HEFTY_TABLET",
     "name": "Hefty Tablet",
-    "description": "Upon pickup, choose [blue]1[/blue] of [blue]3[/blue] Rare cards to add to your [gold]Deck[/gold], and add [blue]1[/blue] [red]Injury[/red] to your [gold]Deck[/gold].",
+    "description": "Upon pickup, choose [blue]1[/blue] of [blue]{Cards}[/blue] Rare cards to add to your [gold]Deck[/gold], and add [blue]1[/blue] [red]Injury[/red] to your [gold]Deck[/gold].",
     "description_raw": "Upon pickup, choose [blue]1[/blue] of [blue]{Cards}[/blue] Rare cards to add to your [gold]Deck[/gold], and add [blue]1[/blue] [red]Injury[/red] to your [gold]Deck[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
