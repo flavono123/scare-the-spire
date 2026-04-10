@@ -7338,19 +7338,19 @@
   {
     "id": "FOLLOW_THROUGH",
     "name": "Follow Through",
-    "description": "Deal 6 damage to ALL enemies.\nIf the last card you played this turn was a Skill, apply 1 [gold]Weak[/gold] to ALL enemies.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies.\nIf the last card you played this turn was a Skill, apply {WeakPower:diff()} [gold]Weak[/gold] to ALL enemies.",
+    "description": "Deal 7 damage.\nIf you have 5 or more other cards in your [gold]Hand[/gold], hits an additional time.",
+    "description_raw": "Deal {Damage:diff()} damage.\nIf you have {CardCount} or more other {CardCount:plural:card|cards} in your [gold]Hand[/gold], hits an additional time.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Attack",
-    "rarity": "Uncommon",
+    "rarity": "Common",
     "target": "AllEnemies",
     "color": "silent",
-    "damage": 6,
+    "damage": 7,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": [
       {
         "power": "Weak",
@@ -7360,17 +7360,15 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [],
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 6,
-      "WeakPower": 1,
-      "Weak": 1
+      "Damage": 7,
+      "CardCount": 5
     },
     "upgrade": {
-      "damage": "+2",
-      "weak": "+1"
+      "damage": "+2"
     },
     "image_url": "/static/images/cards/follow_through.png",
     "beta_image_url": null

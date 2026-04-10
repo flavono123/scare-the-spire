@@ -7339,19 +7339,19 @@
   {
     "id": "FOLLOW_THROUGH",
     "name": "완수",
-    "description": "모든 적에게 피해를 6 줍니다.\n이번 턴에 가장 최근에 사용한 카드가 스킬 카드라면, 모든 적에게 [gold]약화[/gold]를 1 부여합니다.",
-    "description_raw": "모든 적에게 피해를 {Damage:diff()} 줍니다.\n이번 턴에 가장 최근에 사용한 카드가 스킬 카드라면, 모든 적에게 [gold]약화[/gold]를 {WeakPower:diff()} 부여합니다.",
+    "description": "피해를 7 줍니다.\n[gold]손[/gold]에 다른 카드가 5장 이상 있다면, 1번 추가로 적중합니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n[gold]손[/gold]에 다른 카드가 {CardCount}장 이상 있다면, 1번 추가로 적중합니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "공격",
-    "rarity": "고급",
+    "rarity": "일반",
     "target": "AllEnemies",
     "color": "silent",
-    "damage": 6,
+    "damage": 7,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": [
       {
         "power": "약화",
@@ -7361,17 +7361,15 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [],
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 6,
-      "WeakPower": 1,
-      "Weak": 1
+      "Damage": 7,
+      "CardCount": 5
     },
     "upgrade": {
-      "damage": "+2",
-      "weak": "+1"
+      "damage": "+2"
     },
     "image_url": "/static/images/cards/follow_through.png",
     "beta_image_url": null
