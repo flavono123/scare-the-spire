@@ -607,5 +607,358 @@
         "diffType": "text"
       }
     ]
+  },
+  {
+    "id": "not-yet-v103-new",
+    "entityType": "card",
+    "entityId": "NOT_YET",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": "ironclad",
+    "summary": "New Ironclad card: Not Yet — Rare Skill, Cost 2, Heal 10(13) HP, Exhaust.",
+    "summaryKo": "아이언클래드 신규 카드: Not Yet — 레어 스킬, 코스트 2, HP 10(13) 회복, 소멸.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Rare Skill - Cost 2 | Heal 10(13) HP. Exhaust.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "grapple-v103-deprecated",
+    "entityType": "card",
+    "entityId": "GRAPPLE",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": "ironclad",
+    "summary": "Grapple removed from the game.",
+    "summaryKo": "그래플링이 게임에서 제거됨.",
+    "diffs": [
+      {
+        "attribute": "deprecated",
+        "displayName": "Deprecated",
+        "displayNameKo": "삭제",
+        "before": false,
+        "after": true,
+        "diffType": "boolean"
+      }
+    ]
+  },
+  {
+    "id": "colossus-v103-rarity",
+    "entityType": "card",
+    "entityId": "COLOSSUS",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": "ironclad",
+    "summary": "Colossus rarity decreased from Rare to Uncommon.",
+    "summaryKo": "거상 희귀도 레어 -> 언커먼으로 하락.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Rare",
+        "after": "Uncommon",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "acrobatics-v103-rarity",
+    "entityType": "card",
+    "entityId": "ACROBATICS",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": "silent",
+    "summary": "Acrobatics rarity increased from Common to Uncommon.",
+    "summaryKo": "곡예 희귀도 커먼 -> 언커먼으로 상승.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Common",
+        "after": "Uncommon",
+        "diffType": "enum"
+      }
+    ]
+  },
+  {
+    "id": "follow-through-v103-rework",
+    "entityType": "card",
+    "entityId": "FOLLOW_THROUGH",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": "silent",
+    "summary": "Follow Through reworked: now Common, deals 7(9) damage, hits additional time if 5+ other cards in hand.",
+    "summaryKo": "완수 리워크: 커먼으로 변경, 7(9) 피해, 손패에 다른 카드 5장 이상이면 추가 타격.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Uncommon",
+        "after": "Common",
+        "diffType": "enum"
+      },
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Deal 6(8) damage to ALL enemies. If the last card you played this turn was a Skill, apply 1(2) Weak to ALL enemies.",
+        "after": "Deal 7(9) damage. If you have 5 or more other cards in your Hand, hits an additional time.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "memento-mori-v103-buff",
+    "entityType": "card",
+    "entityId": "MEMENTO_MORI",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": "silent",
+    "summary": "Memento Mori base damage increased from 8(10) to 9(11).",
+    "summaryKo": "메멘토 모리 기본 피해량 8(10) -> 9(11) 증가.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "8(10)",
+        "after": "9(11)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "speedster-v103-buff",
+    "entityType": "card",
+    "entityId": "SPEEDSTER",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": "silent",
+    "summary": "Speedster damage increased from 1(2) to 2. Upgrade changed from +1 damage to gains Innate.",
+    "summaryKo": "스피드스터 피해량 1(2) -> 2. 업그레이드가 +1 피해 -> 선천성 획득으로 변경.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "1(2)",
+        "after": "2",
+        "diffType": "text"
+      },
+      {
+        "attribute": "upgrade",
+        "displayName": "Upgrade",
+        "displayNameKo": "강화 효과",
+        "before": "+1 damage",
+        "after": "Gains Innate",
+        "diffType": "text",
+        "upgraded": true
+      }
+    ]
+  },
+  {
+    "id": "regalite-v103-change",
+    "entityType": "relic",
+    "entityId": "REGALITE",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": "regent",
+    "summary": "Regalite now grants Block for any card created, not just Colorless cards.",
+    "summaryKo": "리갈라이트: 무색 카드만이 아닌, 생성된 모든 카드에 방어도 부여.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Mechanic",
+        "displayNameKo": "효과",
+        "before": "Grants Block when creating Colorless cards",
+        "after": "Grants Block when creating any card",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "neow-bones-v103-new",
+    "entityType": "blessing",
+    "entityId": "NEOWS_BONES",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": null,
+    "summary": "New Neow blessing: Neow's Bones — gain 2 random Neow Relics, add 1 random Curse.",
+    "summaryKo": "새 니오우 축복: Neow's Bones — 무작위 니오우 유물 2개 획득, 저주 1장 추가.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Gain 2 random Neow Relics. Add 1 random Curse to your Deck.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "phial-holster-v103-new",
+    "entityType": "blessing",
+    "entityId": "PHIAL_HOLSTER",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": null,
+    "summary": "New Neow blessing: Phial Holster — gain 1 potion slot and procure 2 random potions.",
+    "summaryKo": "새 니오우 축복: Phial Holster — 포션 슬롯 1개, 무작위 포션 2개 획득.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Gain 1 potion slot and procure 2 random potions.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "winged-boots-v103-new",
+    "entityType": "blessing",
+    "entityId": "WINGED_BOOTS",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": null,
+    "summary": "New Neow blessing: Winged Boots — ignore paths when choosing next rooms, 3 uses.",
+    "summaryKo": "새 니오우 축복: Winged Boots — 다음 방 선택 시 경로 무시 가능, 3회.",
+    "diffs": [
+      {
+        "attribute": "new",
+        "displayName": "New",
+        "displayNameKo": "신규",
+        "before": "",
+        "after": "Ignore paths when choosing the next rooms to travel to 3 times.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "tunneling-twosome-v103-deprecated",
+    "entityType": "enemy",
+    "entityId": "TUNNELER_NORMAL",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": null,
+    "summary": "Tunneling Twosome fight removed from the Hive.",
+    "summaryKo": "땅굴 2인조 전투가 벌집에서 제거됨.",
+    "diffs": [
+      {
+        "attribute": "deprecated",
+        "displayName": "Deprecated",
+        "displayNameKo": "삭제",
+        "before": false,
+        "after": true,
+        "diffType": "boolean"
+      }
+    ]
+  },
+  {
+    "id": "living-fog-v103-nerf",
+    "entityType": "enemy",
+    "entityId": "LIVING_FOG",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": null,
+    "summary": "Living Fog no longer increases the amount of bombs it spawns over time.",
+    "summaryKo": "살아있는 안개: 시간이 지남에 따라 폭탄 생성량이 증가하지 않음.",
+    "diffs": [
+      {
+        "attribute": "mechanic",
+        "displayName": "Bomb Scaling",
+        "displayNameKo": "폭탄 증가",
+        "before": "Increases bombs spawned over time",
+        "after": "Fixed bomb spawn rate",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "skulking-colony-v103-nerf",
+    "entityType": "enemy",
+    "entityId": "SKULKING_COLONY",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": null,
+    "summary": "Skulking Colony HP decreased from 74(79) to 70(75).",
+    "summaryKo": "잠행 군체 HP 74(79) -> 70(75) 감소.",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "HP",
+        "before": "74(79)",
+        "after": "70(75)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "byrdonis-v103-nerf",
+    "entityType": "enemy",
+    "entityId": "BYRDONIS",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": null,
+    "summary": "Byrdonis HP decreased from 91(99)-94(99) to 81(90)-84(90).",
+    "summaryKo": "섀도니스 HP 91(99)-94(99) -> 81(90)-84(90) 감소.",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "HP",
+        "before": "91(99)-94(99)",
+        "after": "81(90)-84(90)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "doormaker-v103-nerf",
+    "entityType": "enemy",
+    "entityId": "DOORMAKER",
+    "patch": "v0.103.0",
+    "date": "2026-04-10",
+    "character": null,
+    "summary": "Doormaker damage nerfed, moves rearranged, no longer applies debuffs, gains less Strength.",
+    "summaryKo": "문을 만드는 자: 피해 하향, 행동 패턴 재배치, 디버프 제거, 힘 획득량 감소.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "Previous damage values",
+        "after": "Reduced damage values",
+        "diffType": "text"
+      },
+      {
+        "attribute": "debuffs",
+        "displayName": "Debuffs",
+        "displayNameKo": "디버프",
+        "before": "Applies debuffs",
+        "after": "No longer applies debuffs",
+        "diffType": "text"
+      },
+      {
+        "attribute": "strength",
+        "displayName": "Strength Gain",
+        "displayNameKo": "힘 획득",
+        "before": "Previous Strength gain",
+        "after": "Reduced Strength gain",
+        "diffType": "text"
+      }
+    ]
   }
 ]
