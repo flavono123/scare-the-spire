@@ -91,11 +91,20 @@ Create a Korean version alongside the English one. Rules:
 
 Apply text effects to the Korean version for rich rendering:
 
-#### Entity Highlighting (gold)
-All game entities get `[gold]...[/gold]`:
-- Card names: `[gold]준비[/gold]` (Prepared)
+#### Entity Highlighting (gold) & Type Disambiguation
+STS2에서는 카드와 파워가 같은 이름인 경우가 매우 많다 (굴뚝, 발병, 측면 공격, 반사, 쇄도 등 130+개).
+`[gold]이름[/gold]`은 entity lookup에서 **마지막으로 등록된 타입**(보통 파워)으로 연결되므로, 카드를 가리킬 때는 반드시 `[gold:card]`를 사용해야 한다.
+
+**규칙: 충돌 가능한 이름은 항상 타입 힌트를 명시한다.**
+- Card: `[gold:card]측면 공격[/gold]`
+- Power: `[gold:power]굴뚝[/gold]`
+- Enchantment: `[gold:enchantment]주입[/gold]`
+
+**충돌이 없는 이름은 `[gold]`만 쓴다** (유물, 몬스터, 이벤트, 키워드 등 대부분 충돌 없음):
 - Relic names: `[gold]진자[/gold]` (Pendulum)
-- Powers/keywords: `[gold]취약[/gold]`, `[gold]힘[/gold]`, `[gold]방어도[/gold]`
+- Powers/keywords (충돌 없는 것): `[gold]취약[/gold]`, `[gold]힘[/gold]`, `[gold]방어도[/gold]`
+
+**판단 기준**: 패치노트 문맥에서 어떤 타입인지 확인하고, 해당 이름이 카드+파워 양쪽에 존재하면 타입 힌트를 붙인다. 패치노트는 카드 변경이 주류이므로 대부분 `[gold:card]`가 된다.
 
 #### Character Colors (section headers)
 - Ironclad sections: `[red]아이언클래드[/red]`
