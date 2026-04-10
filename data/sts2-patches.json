@@ -106,5 +106,17 @@
     "summary": "Badges system, Blade of Ink rework, Borrowed Time rework, Ascension 6 rework, Leading Strike buff, Speedster/Untouchable nerfs, Doormaker Grasp rework.",
     "summaryKo": "배지 시스템, 잉크 칼날 리워크, 연명 리워크, 승천 6 리워크, 선제 타격 버프, 스피드스터/범접 불가 너프, 문을 만드는 자 움켜잡기 리워크.",
     "hasBalanceChanges": true
+  },
+  {
+    "id": "v0.103.0",
+    "version": "0.103.0",
+    "date": "2026-04-10",
+    "title": "Beta Patch Notes - v0.103.0",
+    "titleKo": "베타 패치 노트 - v0.103.0",
+    "type": "beta",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/511862186617866918",
+    "summary": "Friends-only leaderboards, new Neow relics (Neow's Bones, Phial Holster, Winged Boots), new Ironclad card Not Yet, Grapple deprecated, Colossus to Uncommon, Acrobatics to Uncommon, Follow Through rework, Speedster buff, Act 1 enemy nerfs (Doormaker, Byrdonis, Skulking Colony, Living Fog).",
+    "summaryKo": "친구 전용 리더보드, 새 니오우 유물 3종, 아이언클래드 신규 카드 Not Yet, 그래플링 삭제, 거상 언커먼 하락, 곡예 언커먼 상승, 완수 리워크, 스피드스터 버프, 1막 적 너프 (문을 만드는 자, 섀도니스, 잠행 군체, 살아있는 안개).",
+    "hasBalanceChanges": true
   }
 ]
