@@ -2885,8 +2885,8 @@
     "description": "획득 시, 무작위 [gold]니오우 유물[/gold]을 [blue]2[/blue]개 획득합니다. [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]1[/blue]장 추가합니다.",
     "description_raw": "획득 시, 무작위 [gold]니오우 유물[/gold]을 [blue]{Relics}[/blue]개 획득합니다. [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장 추가합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
-    "rarity": "고대의 존재 유물",
-    "pool": "공용",
+    "rarity": "고대 유물",
+    "pool": "shared",
     "image_url": "/static/images/relics/neows_bones.png"
   },
   {
@@ -2895,8 +2895,8 @@
     "description": "획득 시, 포션 슬롯을 [blue]1[/blue]개 얻고, 무작위 포션을 [blue]2[/blue]개 생성합니다.",
     "description_raw": "획득 시, 포션 슬롯을 [blue]{PotionSlots}[/blue]개 얻고, 무작위 포션을 [blue]{Potions}[/blue]개 생성합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
-    "rarity": "고대의 존재 유물",
-    "pool": "공용",
+    "rarity": "고대 유물",
+    "pool": "shared",
     "image_url": "/static/images/relics/phial_holster.png"
   },
   {
@@ -2905,8 +2905,8 @@
     "description": "다음 방을 선택할 때, 경로를 [blue]3[/blue]번까지 무시할 수 있습니다.",
     "description_raw": "다음 방을 선택할 때, 경로를 [blue]{Rooms}[/blue]번까지 무시할 수 있습니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
-    "rarity": "고대의 존재 유물",
-    "pool": "공용",
+    "rarity": "고대 유물",
+    "pool": "shared",
     "image_url": "/static/images/relics/winged_boots.png"
   },
   {
@@ -2915,8 +2915,8 @@
     "description": "획득 시, [gold]덱[/gold]에 무작위 희귀 카드 [blue]3[/blue]장 중 [blue]1[/blue]장을 선택해 추가하고, [red]상처[/red]를 [blue]1[/blue]장 추가합니다.",
     "description_raw": "획득 시, [gold]덱[/gold]에 무작위 희귀 카드 [blue]{Cards}[/blue]장 중 [blue]1[/blue]장을 선택해 추가하고, [red]상처[/red]를 [blue]1[/blue]장 추가합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
-    "rarity": "고대의 존재 유물",
-    "pool": "공용",
+    "rarity": "고대 유물",
+    "pool": "shared",
     "image_url": "/static/images/relics/hefty_tablet.png"
   },
   {
@@ -2925,8 +2925,8 @@
     "description": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]강화[/gold]합니다.",
     "description_raw": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]강화[/gold]합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
-    "rarity": "고대의 존재 유물",
-    "pool": "공용",
+    "rarity": "고대 유물",
+    "pool": "shared",
     "image_url": "/static/images/relics/neows_talisman.png"
   }
 ]
