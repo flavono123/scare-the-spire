@@ -54,6 +54,7 @@ interface RawCard {
   upgrade: Record<string, string | number> | null;
   image_url: string | null;
   beta_image_url: string | null;
+  deprecated?: boolean;
 }
 
 interface RawCharacter {
@@ -117,7 +118,7 @@ export async function getCodexCards(): Promise<CodexCard[]> {
   const engById = new Map(engCards.map((c) => [c.id, c]));
 
   return korCards
-    .filter((c) => c.image_url || c.beta_image_url) // exclude cards without any images
+    .filter((c) => (c.image_url || c.beta_image_url) && !c.deprecated)
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
       return mapCard(kor, eng);
