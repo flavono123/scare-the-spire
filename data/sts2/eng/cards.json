@@ -19797,7 +19797,7 @@
     "upgrade": {
       "heal": "+3"
     },
-    "image_url": null,
+    "image_url": "/static/images/cards/beta/not_yet.png",
     "beta_image_url": "/static/images/cards/beta/not_yet.png"
   }
 ]

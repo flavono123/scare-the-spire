@@ -2887,7 +2887,7 @@
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
-    "image_url": null
+    "image_url": "/static/images/relics/neows_bones.png"
   },
   {
     "id": "PHIAL_HOLSTER",
@@ -2897,7 +2897,7 @@
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
-    "image_url": null
+    "image_url": "/static/images/relics/phial_holster.png"
   },
   {
     "id": "WINGED_BOOTS",
@@ -2907,6 +2907,26 @@
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
-    "image_url": null
+    "image_url": "/static/images/relics/winged_boots.png"
+  },
+  {
+    "id": "HEFTY_TABLET",
+    "name": "Hefty Tablet",
+    "description": "Upon pickup, choose [blue]1[/blue] of [blue]3[/blue] Rare cards to add to your [gold]Deck[/gold], and add [blue]1[/blue] [red]Injury[/red] to your [gold]Deck[/gold].",
+    "description_raw": "Upon pickup, choose [blue]1[/blue] of [blue]{Cards}[/blue] Rare cards to add to your [gold]Deck[/gold], and add [blue]1[/blue] [red]Injury[/red] to your [gold]Deck[/gold].",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/hefty_tablet.png"
+  },
+  {
+    "id": "NEOWS_TALISMAN",
+    "name": "Neow's Talisman",
+    "description": "Upon pickup, [gold]Upgrade[/gold] [blue]1[/blue] of your [gold]Strikes[/gold] and [blue]1[/blue] of your [gold]Defends[/gold].",
+    "description_raw": "Upon pickup, [gold]Upgrade[/gold] [blue]1[/blue] of your [gold]Strikes[/gold] and [blue]1[/blue] of your [gold]Defends[/gold].",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/neows_talisman.png"
   }
 ]

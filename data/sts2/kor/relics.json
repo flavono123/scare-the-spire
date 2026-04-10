@@ -2887,7 +2887,7 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대의 존재 유물",
     "pool": "공용",
-    "image_url": null
+    "image_url": "/static/images/relics/neows_bones.png"
   },
   {
     "id": "PHIAL_HOLSTER",
@@ -2897,7 +2897,7 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대의 존재 유물",
     "pool": "공용",
-    "image_url": null
+    "image_url": "/static/images/relics/phial_holster.png"
   },
   {
     "id": "WINGED_BOOTS",
@@ -2907,6 +2907,26 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대의 존재 유물",
     "pool": "공용",
-    "image_url": null
+    "image_url": "/static/images/relics/winged_boots.png"
+  },
+  {
+    "id": "HEFTY_TABLET",
+    "name": "묵직한 석판",
+    "description": "획득 시, [gold]덱[/gold]에 무작위 희귀 카드 [blue]3[/blue]장 중 [blue]1[/blue]장을 선택해 추가하고, [red]상처[/red]를 [blue]1[/blue]장 추가합니다.",
+    "description_raw": "획득 시, [gold]덱[/gold]에 무작위 희귀 카드 [blue]{Cards}[/blue]장 중 [blue]1[/blue]장을 선택해 추가하고, [red]상처[/red]를 [blue]1[/blue]장 추가합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대의 존재 유물",
+    "pool": "공용",
+    "image_url": "/static/images/relics/hefty_tablet.png"
+  },
+  {
+    "id": "NEOWS_TALISMAN",
+    "name": "니오우의 호부",
+    "description": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]강화[/gold]합니다.",
+    "description_raw": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]강화[/gold]합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대의 존재 유물",
+    "pool": "공용",
+    "image_url": "/static/images/relics/neows_talisman.png"
   }
 ]

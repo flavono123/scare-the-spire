@@ -117,7 +117,7 @@ export async function getCodexCards(): Promise<CodexCard[]> {
   const engById = new Map(engCards.map((c) => [c.id, c]));
 
   return korCards
-    .filter((c) => c.image_url) // exclude cards without images
+    .filter((c) => c.image_url || c.beta_image_url) // exclude cards without any images
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
       return mapCard(kor, eng);
