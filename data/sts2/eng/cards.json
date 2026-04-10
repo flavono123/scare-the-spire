@@ -127,7 +127,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Skill",
-    "rarity": "Common",
+    "rarity": "Uncommon",
     "target": "Self",
     "color": "silent",
     "damage": null,
@@ -3428,7 +3428,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Skill",
-    "rarity": "Rare",
+    "rarity": "Uncommon",
     "target": "Self",
     "color": "ironclad",
     "damage": null,
@@ -8297,7 +8297,9 @@
       "grapplepower": "+2"
     },
     "image_url": "/static/images/cards/grapple.png",
-    "beta_image_url": null
+    "beta_image_url": null,
+    "deprecated": true,
+    "deprecatedInPatch": "v0.103.0"
   },
   {
     "id": "GRAVE_WARDEN",
