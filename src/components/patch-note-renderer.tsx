@@ -58,7 +58,7 @@ function EntityPreview({
       setPosition(rect.top < threshold ? "below" : "above");
     }
     setShow(true);
-  }, [entity.cardData, entity.relicData, entity.potionData, entity.powerData, entity.enchantmentData, entity.eventData, entity.monsterData]);
+  }, [entity.cardData, entity.relicData, entity.potionData, entity.powerData, entity.enchantmentData, entity.eventData, entity.eventOptionDesc, entity.monsterData]);
 
   const hrefMap: Record<EntityType, string> = {
     card: `/codex/cards?card=${entity.id.toLowerCase()}`,

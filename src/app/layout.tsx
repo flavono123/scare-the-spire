@@ -32,7 +32,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ko" className="dark">
+    <html lang="ko" className="dark" suppressHydrationWarning>
       <body
         suppressHydrationWarning
         className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} font-sans antialiased bg-background text-foreground`}
