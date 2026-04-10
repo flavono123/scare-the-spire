@@ -158,12 +158,64 @@ Add/update entry in `data/sts2-patches.json`:
 - `steamUrl`: Only use user-provided URL from Step 5. NEVER construct from API gid — they don't match.
 - `summary`/`summaryKo`: Brief factual list of key changes. Keep to what the patch actually says.
 
-### Step 7: Speculative Commit
+### Step 7: Apply Entity Data Changes
+
+패치노트에 밸런스/컨텐츠 변경이 있으면, 해당 엔티티 데이터 파일에도 반영해야 한다.
+
+#### 7a. PCK 로컬라이제이션 동기화
+
+게임 PCK 파일 안에 `localization/{lang}/cards.json`, `localization/{lang}/relics.json` 등 최신 설명 텍스트가 있다.
+패치 적용 시 **반드시 PCK에서 최신 description_raw를 추출**하여 데이터 파일을 업데이트한다.
+
+```python
+# PCK에서 카드/유물 설명 텍스트 추출 (v3 format)
+# localization/eng/cards.json → CARD_ID.title, CARD_ID.description
+# localization/kor/cards.json → same
+# localization/eng/relics.json → RELIC_ID.title, RELIC_ID.description
+# localization/kor/relics.json → same
+```
+
+이 단계는 설명 텍스트 변경(Writing 섹션)과 메커닉 변경 모두를 커버한다.
+
+#### 7b. 수치/키워드 변경 수동 적용
+
+PCK 로컬라이제이션에 없는 필드들은 패치노트를 보고 직접 수정:
+
+- **damage, block, cost, star_cost, hit_count, energy_gain**: 숫자 직접 변경
+- **vars**: 카드 변수값 (예: `vars.Damage`, `vars.Forge`, `vars.SpeedsterPower`)
+- **rarity**: 영문(`Common`/`Uncommon`/`Rare`) + 한국어(`일반`/`고급`/`희귀`)
+- **keywords**: `Exhaust`/`소멸`, `Innate`/`선천성`, `Ethereal`/`미완` 등
+- **upgrade**: 강화 효과 변경 (예: `"+2"` → `"+4"`, `{"innate": true}`)
+- **deprecated**: 삭제된 카드는 `"deprecated": true, "deprecatedInPatch": "vX.Y.Z"`
+- **Monster HP**: `min_hp`, `max_hp`, `min_hp_ascension`, `max_hp_ascension`
+
+#### 7c. 신규 엔티티 추가
+
+새 카드/유물이 추가되면:
+1. PCK에서 한국어 이름 확인 (localization/{lang}/cards.json, relics.json)
+2. `data/sts2/{lang}/cards.json` 또는 `relics.json`에 새 항목 추가
+3. 기존 항목의 필드 구조를 참고하여 동일한 스키마 준수
+4. **rarity, pool 등은 영문 키 사용** (한국어 데이터도 `"shared"`, `"Uncommon"` 등 — 단, 한국어 전용 필드인 rarity만 한국어: `"고급"`, `"희귀"` 등)
+5. 유물 이미지가 PCK에 있으면 추출하여 `public/images/sts2/relics/` 에 WebP로 저장
+6. 카드 이미지는 `scripts/extract-card-portraits.py --force` 로 추출
+
+#### 7d. sts2-changes.json 업데이트
+
+`data/sts2-changes.json`에 밸런스 변경 기록을 추가한다. 기존 항목 구조 참고.
+
+#### 7e. meta.json 업데이트
+
+`data/sts2/meta.json`의 `version`과 `extractedAt`을 새 패치 버전으로 업데이트.
+
+### Step 8: Speculative Commit
 
 Per CLAUDE.md rules, commit after each meaningful edit:
 - Commit raw English notes first
 - Commit Korean enriched version
 - Commit patches.json update
+- Commit entity data changes
+- Commit sts2-changes.json
+- Commit meta.json
 
 ## Output Files
 
@@ -172,6 +224,11 @@ Per CLAUDE.md rules, commit after each meaningful edit:
 | `data/sts2-patch-notes/{version}.md` | Structured English patch notes |
 | `data/sts2-patch-notes/{version}.ko.md` | Korean enriched (BBCode) patch notes |
 | `data/sts2-patches.json` | Updated patch index |
+| `data/sts2/{eng,kor}/cards.json` | Updated card data (descriptions, stats, keywords) |
+| `data/sts2/{eng,kor}/relics.json` | Updated relic data |
+| `data/sts2/{eng,kor}/monsters.json` | Updated monster HP |
+| `data/sts2-changes.json` | Balance change tracking entries |
+| `data/sts2/meta.json` | Version + extractedAt |
 
 ## Game Entity Reference
 
