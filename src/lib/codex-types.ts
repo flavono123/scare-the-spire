@@ -534,7 +534,7 @@ export interface CodexMonster {
   moves: MonsterMove[];
   damageValues: Record<string, DamageValue> | null;
   blockValues: Record<string, number> | null;
-  imageUrl: string | null;       // sprite sheet (combat asset)
+  imageUrl: string | null;       // Spine render portrait (512x512)
   bossImageUrl: string | null;   // boss encounter token icon (bosses/ dir)
 }
 

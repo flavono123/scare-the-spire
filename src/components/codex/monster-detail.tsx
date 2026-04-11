@@ -55,27 +55,15 @@ export function MonsterDetail({ monster, encounters, allMonsters, onClose, onMon
         )}
       </div>
 
-      {/* Monster combat sprite sheet */}
-      {monster.imageUrl && (
-        <div className="w-full max-w-sm mx-auto flex items-center justify-center p-4 rounded-lg border border-white/10 bg-white/[0.02]">
+      {/* Monster portrait (Spine render or boss token) */}
+      {(monster.imageUrl || monster.bossImageUrl) && (
+        <div className="w-full max-w-xs mx-auto flex items-center justify-center p-4 rounded-lg border border-white/10 bg-white/[0.02]">
           <Image
-            src={monster.imageUrl}
+            src={monster.imageUrl ?? monster.bossImageUrl!}
             alt={monster.name}
-            width={320}
-            height={240}
-            className="max-w-full max-h-60 object-contain"
-          />
-        </div>
-      )}
-      {/* Boss encounter art (if no sprite sheet but has boss token) */}
-      {!monster.imageUrl && monster.bossImageUrl && (
-        <div className="w-full max-w-sm mx-auto flex items-center justify-center p-4 rounded-lg border border-white/10 bg-white/[0.02]">
-          <Image
-            src={monster.bossImageUrl}
-            alt={monster.name}
-            width={320}
-            height={240}
-            className="max-w-full max-h-60 object-contain"
+            width={256}
+            height={256}
+            className="max-w-full max-h-64 object-contain"
           />
         </div>
       )}

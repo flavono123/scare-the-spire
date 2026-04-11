@@ -488,11 +488,11 @@ function mapMonster(kor: RawMonster, eng: RawMonster, monsterImages: Set<string>
     : null;
 
   // Resolve images separately:
-  // imageUrl = sprite sheet (combat asset) from monsters/ dir
+  // imageUrl = Spine render (512x512 portrait) from monsters-render/ dir
   // bossImageUrl = boss encounter token icon from bosses/ dir
   const idLower = kor.id.toLowerCase();
   const imageUrl = monsterImages.has(idLower)
-    ? `/images/sts2/monsters/${idLower}.webp`
+    ? `/images/sts2/monsters-render/${idLower}.webp`
     : null;
   const bossImageUrl = bossImages.has(`${idLower}_boss`)
     ? `/images/sts2/bosses/${idLower}_boss.webp`
@@ -516,7 +516,7 @@ function mapMonster(kor: RawMonster, eng: RawMonster, monsterImages: Set<string>
 }
 
 export async function getCodexMonsters(): Promise<CodexMonster[]> {
-  const MONSTERS_IMG_DIR = path.join(process.cwd(), "public/images/sts2/monsters");
+  const MONSTERS_IMG_DIR = path.join(process.cwd(), "public/images/sts2/monsters-render");
   const BOSSES_IMG_DIR = path.join(process.cwd(), "public/images/sts2/bosses");
   const [korMonsters, engMonsters, monsterFiles, bossFiles] = await Promise.all([
     readJson<RawMonster[]>("kor/monsters.json"),

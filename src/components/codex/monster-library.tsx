@@ -461,15 +461,15 @@ function MonsterTile({
       onMouseLeave={() => onHover(null)}
       onClick={onClick}
     >
-      {/* Thumbnail: boss token icon for bosses, sprite sheet for others */}
-      {(monster.bossImageUrl || monster.imageUrl) ? (
+      {/* Thumbnail: Spine render or boss token */}
+      {(monster.imageUrl || monster.bossImageUrl) ? (
         <div className="w-10 h-10 shrink-0 rounded overflow-hidden bg-white/5 flex items-center justify-center">
           <Image
-            src={monster.bossImageUrl ?? monster.imageUrl!}
+            src={monster.imageUrl ?? monster.bossImageUrl!}
             alt={monster.name}
             width={40}
             height={40}
-            className={`w-10 h-10 ${monster.bossImageUrl ? "object-cover" : "object-cover"}`}
+            className="w-10 h-10 object-contain"
           />
         </div>
       ) : (
@@ -542,8 +542,8 @@ function MonsterTooltip({
       <div className="p-3">
         {/* Header */}
         <div className="flex items-center gap-2 mb-1">
-          {(monster.bossImageUrl || monster.imageUrl) ? (
-            <Image src={monster.bossImageUrl ?? monster.imageUrl!} alt={monster.name} width={32} height={32} className="w-8 h-8 object-cover rounded" />
+          {(monster.imageUrl || monster.bossImageUrl) ? (
+            <Image src={monster.imageUrl ?? monster.bossImageUrl!} alt={monster.name} width={32} height={32} className="w-8 h-8 object-contain rounded" />
           ) : (
             <div className="w-1.5 h-6 rounded-full" style={{ backgroundColor: typeConfig.color }} />
           )}
