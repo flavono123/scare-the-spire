@@ -109,16 +109,17 @@ async function readJson<T>(relativePath: string): Promise<T> {
   return JSON.parse(raw);
 }
 
-export async function getCodexCards(): Promise<CodexCard[]> {
+export async function getCodexCards(opts?: { includeDeprecated?: boolean }): Promise<CodexCard[]> {
   const [korCards, engCards] = await Promise.all([
     readJson<RawCard[]>("kor/cards.json"),
     readJson<RawCard[]>("eng/cards.json"),
   ]);
 
   const engById = new Map(engCards.map((c) => [c.id, c]));
+  const includeDeprecated = opts?.includeDeprecated ?? false;
 
   return korCards
-    .filter((c) => (c.image_url || c.beta_image_url) && !c.deprecated)
+    .filter((c) => (c.image_url || c.beta_image_url) && (includeDeprecated || !c.deprecated))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
       return mapCard(kor, eng);
@@ -137,7 +138,22 @@ interface RawRelic {
   image_url: string | null;
 }
 
-function mapRelic(kor: RawRelic, eng: RawRelic): CodexRelic {
+// File suffix -> RelicPool mapping for character-variant images
+const VARIANT_SUFFIX_TO_POOL: Record<string, RelicPool> = {
+  ironclad: "ironclad",
+  silent: "silent",
+  defect: "defect",
+  necro: "necrobinder",
+  necrobinder: "necrobinder",
+  regent: "regent",
+};
+
+function mapRelic(
+  kor: RawRelic,
+  eng: RawRelic,
+  variantMap: Partial<Record<RelicPool, string>> | null,
+): CodexRelic {
+  const baseUrl = spireCodexImageToLocal(kor.image_url);
   return {
     id: kor.id,
     name: kor.name,
@@ -147,21 +163,63 @@ function mapRelic(kor: RawRelic, eng: RawRelic): CodexRelic {
     flavor: kor.flavor,
     rarity: kor.rarity as RelicRarityKo,
     pool: kor.pool as RelicPool,
-    imageUrl: spireCodexImageToLocal(kor.image_url),
+    imageUrl: variantMap ? null : baseUrl,
+    variantImageUrls: variantMap,
   };
 }
 
+/**
+ * Scan the relics image directory for character-variant files.
+ * Returns a map: base name -> { pool -> local image url }.
+ * e.g. "yummy_cookie" -> { ironclad: "/images/sts2/relics/yummy_cookie_ironclad.webp", ... }
+ */
+async function scanRelicVariants(): Promise<Map<string, Partial<Record<RelicPool, string>>>> {
+  const relicImgDir = path.join(process.cwd(), "public/images/sts2/relics");
+  const files = await fs.readdir(relicImgDir).catch(() => [] as string[]);
+
+  const variants = new Map<string, Partial<Record<RelicPool, string>>>();
+
+  for (const file of files) {
+    const match = file.match(/^(.+?)_(ironclad|silent|defect|necro|necrobinder|regent)\.webp$/);
+    if (!match) continue;
+    const [, baseName, suffix] = match;
+    const pool = VARIANT_SUFFIX_TO_POOL[suffix];
+    if (!pool) continue;
+
+    let map = variants.get(baseName);
+    if (!map) {
+      map = {};
+      variants.set(baseName, map);
+    }
+    map[pool] = `/images/sts2/relics/${file}`;
+  }
+
+  // Only keep entries with 2+ variants (single suffix is just a character-specific relic)
+  for (const [key, map] of variants) {
+    if (Object.keys(map).length < 2) {
+      variants.delete(key);
+    }
+  }
+
+  return variants;
+}
+
 export async function getCodexRelics(): Promise<CodexRelic[]> {
-  const [korRelics, engRelics] = await Promise.all([
+  const [korRelics, engRelics, variantsByBase] = await Promise.all([
     readJson<RawRelic[]>("kor/relics.json"),
     readJson<RawRelic[]>("eng/relics.json"),
+    scanRelicVariants(),
   ]);
 
   const engById = new Map(engRelics.map((r) => [r.id, r]));
 
   return korRelics.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapRelic(kor, eng);
+    // Extract base name from image_url to match against variants
+    const baseMatch = kor.image_url?.match(/\/([^/]+)\.png$/);
+    const baseName = baseMatch?.[1] ?? null;
+    const variantMap = baseName ? variantsByBase.get(baseName) ?? null : null;
+    return mapRelic(kor, eng, variantMap);
   });
 }
 

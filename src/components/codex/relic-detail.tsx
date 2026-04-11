@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -9,6 +10,8 @@ import {
   POOL_LABELS,
   characterOutlineFilter,
   getCharacterColor,
+  CHARACTER_COLORS,
+  type RelicPool,
   type RelicFilterPool,
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
@@ -29,7 +32,29 @@ interface RelicDetailProps {
   onClose?: () => void;
 }
 
+const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "defect", "necrobinder", "regent"];
+const VARIANT_SHORT_LABELS: Record<RelicPool, string> = {
+  shared: "공용",
+  ironclad: "아클",
+  silent: "사일",
+  defect: "디펙",
+  necrobinder: "네크로",
+  regent: "리젠",
+};
+
 export function RelicDetail({ relic, onClose }: RelicDetailProps) {
+  const variantPools = relic.variantImageUrls
+    ? VARIANT_ORDER.filter((p) => relic.variantImageUrls![p])
+    : [];
+  const [selectedVariant, setSelectedVariant] = useState<RelicPool>(
+    variantPools[0] ?? relic.pool,
+  );
+
+  const displayImageUrl = relic.variantImageUrls
+    ? relic.variantImageUrls[selectedVariant] ?? null
+    : relic.imageUrl;
+  const displayOutlinePool = relic.variantImageUrls ? selectedVariant : relic.pool;
+
   const rarityColor = RELIC_RARITY_COLORS[relic.rarity];
   const poolColor = relic.pool !== "shared" ? getCharacterColor(relic.pool) : undefined;
 
@@ -62,15 +87,15 @@ export function RelicDetail({ relic, onClose }: RelicDetailProps) {
 
       {/* Large Relic Image */}
       <div className="w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center">
-        {relic.imageUrl ? (
+        {displayImageUrl ? (
           <Image
-            src={relic.imageUrl}
+            src={displayImageUrl}
             alt={relic.name}
             width={160}
             height={160}
             className="w-full h-full object-contain"
             style={{
-              filter: characterOutlineFilter(relic.pool) ?? "drop-shadow(0 4px 8px rgba(0,0,0,0.5))",
+              filter: characterOutlineFilter(displayOutlinePool) ?? "drop-shadow(0 4px 8px rgba(0,0,0,0.5))",
             }}
           />
         ) : (
@@ -79,6 +104,30 @@ export function RelicDetail({ relic, onClose }: RelicDetailProps) {
           </div>
         )}
       </div>
+
+      {/* Character variant tabs */}
+      {variantPools.length > 0 && (
+        <div className="flex gap-1.5">
+          {variantPools.map((pool) => {
+            const isSelected = pool === selectedVariant;
+            const color = CHARACTER_COLORS[pool] ?? "#888";
+            return (
+              <button
+                key={pool}
+                onClick={() => setSelectedVariant(pool)}
+                className={`px-2.5 py-1 text-xs font-medium rounded-md border transition-all ${
+                  isSelected
+                    ? "border-current bg-current/15"
+                    : "border-white/10 bg-white/5 hover:bg-white/10"
+                }`}
+                style={{ color }}
+              >
+                {VARIANT_SHORT_LABELS[pool]}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Relic Name */}
       <div className="text-center">
@@ -115,7 +164,7 @@ export function RelicDetail({ relic, onClose }: RelicDetailProps) {
       {/* Flavor text */}
       {relic.flavor && (
         <p className="text-xs text-gray-500 italic text-center max-w-sm">
-          {relic.flavor}
+          <DescriptionText description={relic.flavor} />
         </p>
       )}
     </div>

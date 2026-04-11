@@ -10,7 +10,17 @@ interface RelicTileProps {
   onClick?: () => void;
 }
 
+const VARIANT_DISPLAY_ORDER = ["ironclad", "silent", "defect", "necrobinder", "regent"] as const;
+
 export function RelicTile({ relic, onClick }: RelicTileProps) {
+  // For variant relics, pick the first available character image for tile display
+  const tileImageUrl = relic.imageUrl ?? (relic.variantImageUrls
+    ? VARIANT_DISPLAY_ORDER.reduce<string | null>(
+        (url, pool) => url ?? relic.variantImageUrls?.[pool] ?? null,
+        null,
+      )
+    : null);
+
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -38,9 +48,9 @@ export function RelicTile({ relic, onClick }: RelicTileProps) {
             : "border-transparent bg-white/5 hover:bg-white/10"
         }`}
       >
-        {relic.imageUrl ? (
+        {tileImageUrl ? (
           <Image
-            src={relic.imageUrl}
+            src={tileImageUrl}
             alt={relic.name}
             width={56}
             height={56}

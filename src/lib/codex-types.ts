@@ -144,6 +144,7 @@ export interface CodexRelic {
   rarity: RelicRarityKo;
   pool: RelicPool;
   imageUrl: string | null; // local path
+  variantImageUrls: Partial<Record<RelicPool, string>> | null; // character-specific image variants
 }
 
 // Relic rarity display order and labels
