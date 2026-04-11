@@ -11028,7 +11028,7 @@
   {
     "id": "MEMENTO_MORI",
     "name": "메멘토 모리",
-    "description": "피해를 12 줍니다.\n이번 턴에 버린 카드 1장당 피해량이 4 증가합니다.",
+    "description": "피해를 9 줍니다.\n이번 턴에 버린 카드 1장당 피해량이 4 증가합니다.",
     "description_raw": "피해를 {CalculatedDamage:diff()} 줍니다.\n이번 턴에 버린 카드 1장당 피해량이 {ExtraDamage:diff()} 증가합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -11051,10 +11051,10 @@
     "vars": {
       "CalculationBase": 9,
       "ExtraDamage": 4,
-      "CalculatedDamage": 13
+      "CalculatedDamage": 9
     },
     "upgrade": {
-      "damage": "+1",
+      "calculateddamage": "+2",
       "calculationbase": "+2",
       "extradamage": "+1"
     },

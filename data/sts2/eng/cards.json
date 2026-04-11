@@ -11025,7 +11025,7 @@
   {
     "id": "MEMENTO_MORI",
     "name": "Memento Mori",
-    "description": "Deal 12 damage.\nDeals 4 additional damage for each card discarded this turn.",
+    "description": "Deal 9 damage.\nDeals 4 additional damage for each card discarded this turn.",
     "description_raw": "Deal {CalculatedDamage:diff()} damage.\nDeals {ExtraDamage:diff()} additional damage for each card discarded this turn.",
     "cost": 1,
     "is_x_cost": null,
@@ -11048,10 +11048,10 @@
     "vars": {
       "CalculationBase": 9,
       "ExtraDamage": 4,
-      "CalculatedDamage": 13
+      "CalculatedDamage": 9
     },
     "upgrade": {
-      "damage": "+1",
+      "calculateddamage": "+2",
       "calculationbase": "+2",
       "extradamage": "+1"
     },
