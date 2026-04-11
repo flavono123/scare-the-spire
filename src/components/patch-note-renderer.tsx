@@ -8,13 +8,13 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent, CodexMonster } from "@/lib/codex-types";
-import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, POWER_TYPE_CONFIG, ENCHANTMENT_CARD_TYPE_CONFIG, MONSTER_TYPE_CONFIG, getCharacterColor, characterOutlineFilter, type RelicFilterPool, type EnchantmentCardTypeFilter } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent, CodexMonster, CodexEncounter } from "@/lib/codex-types";
+import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, POWER_TYPE_CONFIG, ENCHANTMENT_CARD_TYPE_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool, type EnchantmentCardTypeFilter } from "@/lib/codex-types";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
 
 // Entity types that can appear in patch notes
-export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "event" | "monster";
+export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "event" | "monster" | "encounter";
 
 export interface EntityInfo {
   id: string;
@@ -31,6 +31,7 @@ export interface EntityInfo {
   eventData?: CodexEvent; // Full event data for rich preview
   eventOptionDesc?: string; // BBCode description for event option tooltips
   monsterData?: CodexMonster; // Full monster data for rich preview
+  encounterData?: CodexEncounter; // Full encounter data for rich preview
 }
 
 // Keep backward compat alias
@@ -54,7 +55,7 @@ function EntityPreview({
       const rect = ref.current.getBoundingClientRect();
       // Card tile preview is taller (~340px), other rich tooltips ~200px
       const hasRichData = entity.relicData || entity.potionData || entity.powerData || entity.enchantmentData;
-      const threshold = entity.cardData ? 380 : entity.eventOptionDesc ? 120 : entity.eventData ? 160 : hasRichData ? 260 : 260;
+      const threshold = entity.cardData ? 380 : entity.eventOptionDesc ? 120 : entity.eventData ? 160 : entity.encounterData ? 260 : hasRichData ? 260 : 260;
       setPosition(rect.top < threshold ? "below" : "above");
     }
     setShow(true);
@@ -68,6 +69,7 @@ function EntityPreview({
     enchantment: `/codex/enchantments?enchantment=${entity.id.toLowerCase()}`,
     event: `/codex/events/${entity.id.toLowerCase()}`,
     monster: `/codex/monsters?monster=${entity.id.toLowerCase()}`,
+    encounter: `/codex/encounters?encounter=${entity.id.toLowerCase()}`,
   };
   const href = hrefMap[entity.type];
 
@@ -371,7 +373,43 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && entity.imageUrl && (
+      {show && entity.type === "encounter" && entity.encounterData && (
+        <span
+          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
+            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
+        >
+          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
+            <span className="block">
+              <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
+              <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+            </span>
+            <span className="flex items-center gap-1.5 mt-1 mb-2">
+              <span
+                className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                style={{
+                  backgroundColor: `${ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].color}20`,
+                  color: ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].color,
+                }}
+              >
+                {ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].label}
+              </span>
+              {entity.encounterData.act && (
+                <span className={`text-[10px] ${(EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).color}`}>
+                  {(EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
+                </span>
+              )}
+              {entity.encounterData.isWeak && (
+                <span className="text-[10px] text-green-400">쉬운 전투</span>
+              )}
+            </span>
+            <span className="block text-xs text-gray-300 leading-relaxed">
+              {Array.from(new Map(entity.encounterData.monsters.map((m) => [m.id, m])).values()).map((m) => m.name).join(", ")}
+            </span>
+          </span>
+        </span>
+      )}
+      {show && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && entity.imageUrl && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
