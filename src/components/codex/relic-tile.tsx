@@ -10,16 +10,14 @@ interface RelicTileProps {
   onClick?: () => void;
 }
 
-const VARIANT_DISPLAY_ORDER = ["ironclad", "silent", "defect", "necrobinder", "regent"] as const;
-
 export function RelicTile({ relic, onClick }: RelicTileProps) {
-  // For variant relics, pick the first available character image for tile display
-  const tileImageUrl = relic.imageUrl ?? (relic.variantImageUrls
-    ? VARIANT_DISPLAY_ORDER.reduce<string | null>(
-        (url, pool) => url ?? relic.variantImageUrls?.[pool] ?? null,
-        null,
-      )
-    : null);
+  // For variant relics, pick a random character image per mount
+  const [tileImageUrl] = useState(() => {
+    if (relic.imageUrl) return relic.imageUrl;
+    if (!relic.variantImageUrls) return null;
+    const urls = Object.values(relic.variantImageUrls);
+    return urls[Math.floor(Math.random() * urls.length)] ?? null;
+  });
 
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);

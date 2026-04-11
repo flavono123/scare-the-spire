@@ -33,13 +33,13 @@ interface RelicDetailProps {
 }
 
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "defect", "necrobinder", "regent"];
-const VARIANT_SHORT_LABELS: Record<RelicPool, string> = {
+const VARIANT_LABELS: Record<RelicPool, string> = {
   shared: "공용",
-  ironclad: "아클",
-  silent: "사일",
-  defect: "디펙",
-  necrobinder: "네크로",
-  regent: "리젠",
+  ironclad: "아이언클래드",
+  silent: "사일런트",
+  defect: "디펙트",
+  necrobinder: "네크로바인더",
+  regent: "리젠트",
 };
 
 export function RelicDetail({ relic, onClose }: RelicDetailProps) {
@@ -122,7 +122,7 @@ export function RelicDetail({ relic, onClose }: RelicDetailProps) {
                 }`}
                 style={{ color }}
               >
-                {VARIANT_SHORT_LABELS[pool]}
+                {VARIANT_LABELS[pool]}
               </button>
             );
           })}
