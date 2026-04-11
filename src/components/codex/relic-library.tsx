@@ -15,7 +15,6 @@ import {
   RELIC_RARITY_LABELS,
   RELIC_RARITY_COLORS,
   RELIC_RARITY_DESCRIPTIONS,
-  POOL_LABELS,
   POOL_ALIASES,
   RARITY_ALIASES,
 } from "@/lib/codex-types";
@@ -24,7 +23,7 @@ import { reconstructRelicAtVersion } from "@/lib/entity-versioning";
 import { RelicTile } from "./relic-tile";
 import { RelicDetail } from "./relic-detail";
 import { SearchBar, TriggerGroup } from "./search-bar";
-import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
+import { FilterSection, IconFilterButton } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
 
 // Trigger groups for relic search
@@ -225,18 +224,6 @@ export function RelicLibrary({ relics, characters, ancients, versions, currentVe
 
     return result;
   }, [versionedRelics, selectedPools, selectedRarities, parsedSearch, fuzzyMatch]);
-
-  // Build ancient relic mapping: relicId -> ancient
-  const ancientByRelicId = useMemo(() => {
-    const map = new Map<string, CodexAncient>();
-    if (!ancients) return map;
-    for (const ancient of ancients) {
-      for (const relicId of ancient.relicIds) {
-        map.set(relicId, ancient);
-      }
-    }
-    return map;
-  }, [ancients]);
 
   // Group filtered relics by rarity
   const groupedRelics = useMemo(() => {

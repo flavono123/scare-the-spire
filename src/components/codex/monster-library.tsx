@@ -205,15 +205,14 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
   }, [monsters, selectedTypes, selectedActs, parsedSearch, fuzzyMatch, monsterActs]);
 
   // Sort by type > act > name
-  const ACT_SORT_ORDER: Record<string, number> = {
-    "Act 1 - Overgrowth": 0,
-    Underdocks: 1,
-    "Act 2 - Hive": 2,
-    "Act 3 - Glory": 3,
-  };
-
   const getMonsterActOrder = useCallback(
     (monsterId: string): number => {
+      const ACT_SORT_ORDER: Record<string, number> = {
+        "Act 1 - Overgrowth": 0,
+        Underdocks: 1,
+        "Act 2 - Hive": 2,
+        "Act 3 - Glory": 3,
+      };
       const acts = monsterActs.get(monsterId);
       if (!acts) return 99;
       let minOrder = 99;

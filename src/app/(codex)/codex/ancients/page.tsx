@@ -1,4 +1,4 @@
-import { getCodexAncients, getCodexRelics } from "@/lib/codex-data";
+import { getCodexAncients } from "@/lib/codex-data";
 import { AncientList } from "@/components/codex/ancient-list";
 
 export const metadata = {
@@ -7,10 +7,7 @@ export const metadata = {
 };
 
 export default async function CodexAncientsPage() {
-  const [ancients, relics] = await Promise.all([
-    getCodexAncients(),
-    getCodexRelics(),
-  ]);
+  const ancients = await getCodexAncients();
 
-  return <AncientList ancients={ancients} relics={relics} />;
+  return <AncientList ancients={ancients} />;
 }

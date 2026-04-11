@@ -59,7 +59,7 @@ function EntityPreview({
       setPosition(rect.top < threshold ? "below" : "above");
     }
     setShow(true);
-  }, [entity.cardData, entity.relicData, entity.potionData, entity.powerData, entity.enchantmentData, entity.eventData, entity.eventOptionDesc, entity.monsterData]);
+  }, [entity.cardData, entity.relicData, entity.potionData, entity.powerData, entity.enchantmentData, entity.eventData, entity.eventOptionDesc, entity.encounterData]);
 
   const hrefMap: Record<EntityType, string> = {
     card: `/codex/cards?card=${entity.id.toLowerCase()}`,
@@ -755,7 +755,7 @@ export function PatchNoteRenderer({
   entities?: EntityInfo[];
   cards?: EntityInfo[];
 }) {
-  const allEntities = entities ?? cards ?? [];
+  const allEntities = useMemo(() => entities ?? cards ?? [], [entities, cards]);
   const lookup = useMemo(() => buildEntityLookup(allEntities), [allEntities]);
   const lines = markdown.split("\n");
 

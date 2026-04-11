@@ -15,7 +15,7 @@ import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import { PowerTile } from "./power-tile";
 import { PowerDetail } from "./power-detail";
 import { SearchBar, TriggerGroup } from "./search-bar";
-import { FilterSection, ToggleButton } from "./codex-filters";
+import { FilterSection } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
 
 const POWER_TRIGGERS: TriggerGroup[] = [

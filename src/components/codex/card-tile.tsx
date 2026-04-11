@@ -3,7 +3,6 @@
 import { useState, memo } from "react";
 import Image from "next/image";
 import { CodexCard } from "@/lib/codex-types";
-import { annotateCard } from "@/lib/card-annotations";
 import {
   parseDescription,
   renderUpgradedDescription,
@@ -78,24 +77,6 @@ const CHAR_HSV: Record<string, HSV> = {
 function hsvToFilter(hsv: HSV): string {
   const hueDeg = Math.round(hsv.h * 360) % 360;
   return `hue-rotate(${hueDeg}deg) saturate(${hsv.s}) brightness(${hsv.v})`;
-}
-
-// Convert HSV to approximate hex color for border effects
-function charHsvToColor(hsv: HSV): string {
-  const h = hsv.h, s = hsv.s, v = hsv.v;
-  const c = v * Math.min(s, 1);
-  const x = c * (1 - Math.abs(((h * 6) % 2) - 1));
-  const m = v - c;
-  let r = 0, g = 0, b = 0;
-  const hi = Math.floor(h * 6) % 6;
-  if (hi === 0) { r = c; g = x; }
-  else if (hi === 1) { r = x; g = c; }
-  else if (hi === 2) { g = c; b = x; }
-  else if (hi === 3) { g = x; b = c; }
-  else if (hi === 4) { r = x; b = c; }
-  else { r = c; b = x; }
-  const toHex = (n: number) => Math.round(Math.min(1, n + m) * 255).toString(16).padStart(2, "0");
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
 // =============================================================================
@@ -247,7 +228,6 @@ export const CardTile = memo(function CardTile({ card, showUpgrade, showBeta, on
   const nameOutline = RARITY_OUTLINE[card.rarity] ?? RARITY_OUTLINE["일반"];
   const costOutline = ENERGY_OUTLINE[card.color] ?? ENERGY_OUTLINE.colorless;
   const energyIcon = ENERGY_ICONS[card.color] ?? ENERGY_ICONS.colorless;
-  const annotation = annotateCard(card);
   const isAncientCard = card.rarity === "고대의 존재";
   // Build description: when upgraded, substitute vars with upgraded values
   const isUpgraded = showUpgrade && card.upgrade != null;

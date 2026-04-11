@@ -96,7 +96,7 @@ export function SearchBar({ value, onChange, inputId, triggerGroups, placeholder
       setSelectedIndex(0);
       setShowAutocomplete(items.length > 0);
     },
-    [onChange]
+    [onChange, AUTOCOMPLETE_ITEMS]
   );
 
   const completeItem = useCallback(

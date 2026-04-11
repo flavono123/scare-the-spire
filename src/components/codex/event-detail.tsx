@@ -68,7 +68,7 @@ function resolveSequencePage(
 // --- Interactive event content viewer (game-like flow) ---
 export function EventContentViewer({ event }: { event: CodexEvent }) {
   const [history, setHistory] = useState<NavEntry[]>([]);
-  const pages = event.pages ?? [];
+  const pages = useMemo(() => event.pages ?? [], [event.pages]);
   const pageMap = useMemo(
     () => new Map(pages.map((p) => [p.id, p])),
     [pages],

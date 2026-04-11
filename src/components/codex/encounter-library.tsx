@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,7 +13,6 @@ import {
   EVENT_ACT_CONFIG,
   EVENT_ACT_UNKNOWN,
   EVENT_ACT_ORDER,
-  EventAct,
 } from "@/lib/codex-types";
 
 // Room type display order and styling
@@ -109,8 +108,8 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
   }, [encounters, selectedRoomTypes, selectedActs, showWeakOnly, searchQuery]);
 
   // Group by act
-  const ACT_ORDER_WITH_NULL = [...EVENT_ACT_ORDER];
   const sections = useMemo(() => {
+    const ACT_ORDER_WITH_NULL = [...EVENT_ACT_ORDER];
     return ACT_ORDER_WITH_NULL.map((act) => {
       const actKey = act ?? "none";
       const config = act ? EVENT_ACT_CONFIG[act] : EVENT_ACT_UNKNOWN;

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import type { CodexAncient, CodexRelic } from "@/lib/codex-types";
+import type { CodexAncient } from "@/lib/codex-types";
 import {
   EVENT_ACT_CONFIG,
   EVENT_ACT_UNKNOWN,
@@ -24,12 +24,9 @@ function ActBadge({ act }: { act: EventAct | null }) {
 
 interface AncientListProps {
   ancients: CodexAncient[];
-  relics: CodexRelic[];
 }
 
-export function AncientList({ ancients, relics }: AncientListProps) {
-  const relicMap = new Map(relics.map((r) => [r.id, r]));
-
+export function AncientList({ ancients }: AncientListProps) {
   return (
     <div className="min-h-screen bg-[#0a0a0f]">
       {/* Header */}
