@@ -1136,5 +1136,27 @@
         "after": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴에 비용 없이 사용할 수 있습니다."
       }
     ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "MEMENTO_MORI",
+    "patch": "v0.103.0",
+    "diffs": [
+      {
+        "field": "vars.CalculatedDamage",
+        "before": 8,
+        "after": 9
+      },
+      {
+        "field": "vars.CalculationBase",
+        "before": 8,
+        "after": 9
+      },
+      {
+        "field": "description",
+        "before": "피해를 8 줍니다.\n이번 턴에 버린 카드 1장당 피해량이 4 증가합니다.",
+        "after": "피해를 9 줍니다.\n이번 턴에 버린 카드 1장당 피해량이 4 증가합니다."
+      }
+    ]
   }
 ]
