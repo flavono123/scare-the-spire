@@ -9,6 +9,7 @@ import {
   CodexCharacter,
   CodexAncient,
   RelicRarityKo,
+  RelicPool,
   RelicFilterPool,
   RELIC_RARITY_ORDER,
   RELIC_RARITY_LABELS,
@@ -82,6 +83,12 @@ export function RelicLibrary({ relics, characters, ancients, versions, currentVe
     if (!initialRelicId) return null;
     return relics.find((r) => r.id.toLowerCase() === initialRelicId.toLowerCase()) ?? null;
   });
+  const [selectedVariantPool, setSelectedVariantPool] = useState<RelicPool | undefined>();
+
+  const selectRelic = useCallback((relic: CodexRelic, variantPool?: RelicPool) => {
+    setSelectedRelic(relic);
+    setSelectedVariantPool(variantPool);
+  }, []);
 
   // Update URL query param when modal opens/closes
   useEffect(() => {
@@ -447,7 +454,7 @@ export function RelicLibrary({ relics, characters, ancients, versions, currentVe
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {ancientRelics.map((relic) => (
-                          <RelicTile key={relic.id} relic={relic} onClick={() => setSelectedRelic(relic)} />
+                          <RelicTile key={relic.id} relic={relic} onClick={(v) => selectRelic(relic, v)} />
                         ))}
                       </div>
                     </div>
@@ -457,7 +464,7 @@ export function RelicLibrary({ relics, characters, ancients, versions, currentVe
                 /* Regular relic icon grid */
                 <div className="flex flex-wrap gap-2">
                   {groupRelics.map((relic) => (
-                    <RelicTile key={relic.id} relic={relic} onClick={() => setSelectedRelic(relic)} />
+                    <RelicTile key={relic.id} relic={relic} onClick={(v) => selectRelic(relic, v)} />
                   ))}
                 </div>
               )}
@@ -481,7 +488,7 @@ export function RelicLibrary({ relics, characters, ancients, versions, currentVe
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <RelicDetail relic={selectedRelic} onClose={() => setSelectedRelic(null)} />
+            <RelicDetail relic={selectedRelic} initialVariant={selectedVariantPool} onClose={() => setSelectedRelic(null)} />
           </div>
         </div>
       )}

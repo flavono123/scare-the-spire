@@ -29,25 +29,27 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 
 interface RelicDetailProps {
   relic: CodexRelic;
+  initialVariant?: RelicPool;
   onClose?: () => void;
 }
 
-const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "defect", "necrobinder", "regent"];
+// Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
+const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
 const VARIANT_LABELS: Record<RelicPool, string> = {
   shared: "공용",
   ironclad: "아이언클래드",
   silent: "사일런트",
-  defect: "디펙트",
-  necrobinder: "네크로바인더",
   regent: "리젠트",
+  necrobinder: "네크로바인더",
+  defect: "디펙트",
 };
 
-export function RelicDetail({ relic, onClose }: RelicDetailProps) {
+export function RelicDetail({ relic, initialVariant, onClose }: RelicDetailProps) {
   const variantPools = relic.variantImageUrls
     ? VARIANT_ORDER.filter((p) => relic.variantImageUrls![p])
     : [];
   const [selectedVariant, setSelectedVariant] = useState<RelicPool>(
-    variantPools[0] ?? relic.pool,
+    initialVariant && relic.variantImageUrls?.[initialVariant] ? initialVariant : variantPools[0] ?? relic.pool,
   );
 
   const displayImageUrl = relic.variantImageUrls

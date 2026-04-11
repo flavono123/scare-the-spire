@@ -2,22 +2,25 @@
 
 import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
-import { CodexRelic, characterOutlineFilter, getCharacterColor, POOL_LABELS, type RelicFilterPool } from "@/lib/codex-types";
+import { CodexRelic, characterOutlineFilter, getCharacterColor, POOL_LABELS, type RelicPool, type RelicFilterPool } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
+
+// Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
+const VARIANT_POOLS: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
 
 interface RelicTileProps {
   relic: CodexRelic;
-  onClick?: () => void;
+  onClick?: (variantPool?: RelicPool) => void;
 }
 
 export function RelicTile({ relic, onClick }: RelicTileProps) {
-  // For variant relics, pick a random character image per mount
-  const [tileImageUrl] = useState(() => {
-    if (relic.imageUrl) return relic.imageUrl;
+  // For variant relics, pick a random character per mount
+  const [tileVariant] = useState<RelicPool | null>(() => {
     if (!relic.variantImageUrls) return null;
-    const urls = Object.values(relic.variantImageUrls);
-    return urls[Math.floor(Math.random() * urls.length)] ?? null;
+    const pools = VARIANT_POOLS.filter((p) => relic.variantImageUrls![p]);
+    return pools[Math.floor(Math.random() * pools.length)] ?? null;
   });
+  const tileImageUrl = relic.imageUrl ?? (tileVariant ? relic.variantImageUrls?.[tileVariant] ?? null : null);
 
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
@@ -37,7 +40,7 @@ export function RelicTile({ relic, onClick }: RelicTileProps) {
       className="relative group"
       onMouseEnter={() => { updateTooltipSide(); setHovered(true); }}
       onMouseLeave={() => setHovered(false)}
-      onClick={onClick}
+      onClick={() => onClick?.(tileVariant ?? undefined)}
     >
       <div
         className={`w-14 h-14 sm:w-16 sm:h-16 rounded-lg border-2 p-1 transition-all cursor-pointer ${
