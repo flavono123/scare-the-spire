@@ -667,6 +667,44 @@ function renderLine(
   );
 }
 
+// --- Developer comment block ---
+
+const DEVNOTE_KO_RE = /^\[devnote\](.*)\[\/devnote\]$/;
+const DEVNOTE_EN_RE = /^\[devnote:en\](.*)\[\/devnote\]$/;
+
+function DevnoteBlock({
+  koContent,
+  enContent,
+  lookup,
+  isItemLevel,
+  keyPrefix,
+}: {
+  koContent: string;
+  enContent: string | null;
+  lookup: EntityLookup;
+  isItemLevel: boolean;
+  keyPrefix: string;
+}) {
+  return (
+    <div key={keyPrefix} className={isItemLevel ? "ml-6 mt-1 mb-2" : "mt-1 mb-3"}>
+      <div className="pl-3 border-l-2 border-zinc-600 text-xs text-zinc-400 leading-relaxed">
+        <span className="text-zinc-500 font-medium mr-1.5">Dev</span>
+        {enrichLine(koContent, lookup, `${keyPrefix}-ko`)}
+      </div>
+      {enContent && (
+        <details className="mt-1">
+          <summary className="pl-3 text-[11px] text-zinc-600 cursor-pointer hover:text-zinc-500 transition-colors select-none">
+            원문 보기
+          </summary>
+          <div className="mt-1 pl-3 border-l-2 border-zinc-700/50 text-[11px] text-zinc-600 italic leading-relaxed">
+            {enContent}
+          </div>
+        </details>
+      )}
+    </div>
+  );
+}
+
 // --- Main Component ---
 
 export function PatchNoteRenderer({
@@ -687,6 +725,7 @@ export function PatchNoteRenderer({
   const elements: ReactNode[] = [];
   let listBuffer: ReactNode[] = [];
   let listKey = 0;
+  let wasInList = false;
 
   function flushList() {
     if (listBuffer.length > 0) {
@@ -702,10 +741,44 @@ export function PatchNoteRenderer({
 
   for (let i = 0; i < lines.length; i++) {
     const trimmed = lines[i].trimStart();
+
+    // Developer comment: [devnote]Korean[/devnote] + optional [devnote:en]English[/devnote]
+    const koMatch = trimmed.match(DEVNOTE_KO_RE);
+    if (koMatch) {
+      const hadList = listBuffer.length > 0;
+      flushList();
+      const koText = koMatch[1];
+      let enText: string | null = null;
+      if (i + 1 < lines.length) {
+        const nextMatch = lines[i + 1].trimStart().match(DEVNOTE_EN_RE);
+        if (nextMatch) {
+          enText = nextMatch[1];
+          i++;
+        }
+      }
+      elements.push(
+        <DevnoteBlock
+          key={`devnote-${i}`}
+          koContent={koText}
+          enContent={enText}
+          lookup={lookup}
+          isItemLevel={hadList || wasInList}
+          keyPrefix={`devnote-${i}`}
+        />,
+      );
+      wasInList = false;
+      continue;
+    }
+
+    // Skip orphaned [devnote:en] lines
+    if (DEVNOTE_EN_RE.test(trimmed)) continue;
+
     if (trimmed.startsWith("- ")) {
       listBuffer.push(renderLine(lines[i], lookup, `line-${i}`));
+      wasInList = true;
     } else {
       flushList();
+      wasInList = false;
       const el = renderLine(lines[i], lookup, `line-${i}`);
       if (el) elements.push(el);
     }

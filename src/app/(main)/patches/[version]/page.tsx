@@ -33,7 +33,7 @@ export default async function PatchDetailPage({
   const { version } = await params;
   const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters] = await Promise.all([
     getSTS2Patches(),
-    getCodexCards(),
+    getCodexCards({ includeDeprecated: true }),
     getCodexRelics(),
     getCodexPotions(),
     getCodexPowers(),
