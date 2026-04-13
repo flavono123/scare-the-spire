@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 // STS2 game fonts extracted from PCK
@@ -38,6 +39,7 @@ export default function RootLayout({
         className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} font-sans antialiased bg-background text-foreground`}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );
