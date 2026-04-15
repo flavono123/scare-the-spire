@@ -22,5 +22,6 @@ export interface ChemicalPost {
   nickname: string;
   content: PostBlock[];
   content_text: string;
+  env: string;
   created_at: string;
 }
