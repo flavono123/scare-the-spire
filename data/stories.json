@@ -120,6 +120,14 @@
     "tags": ["리워크", "디펙트"]
   },
   {
+    "id": "runic-dodecahedron-zero-cost",
+    "sentence": "노코스트 에너지 유물이 존재했었다",
+    "entityType": "relic",
+    "entityId": "runic-dodecahedron",
+    "changeId": "runic-dodecahedron-removed",
+    "tags": ["삭제", "유물"]
+  },
+  {
     "id": "mind-blast-zero-cost",
     "sentence": "정신 공격은 원래 0코스트였다",
     "entityType": "card",
