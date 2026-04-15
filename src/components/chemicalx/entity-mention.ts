@@ -1,6 +1,8 @@
 import Mention from "@tiptap/extension-mention";
+import { ReactNodeViewRenderer } from "@tiptap/react";
 import type { SuggestionMatch } from "@tiptap/suggestion";
 import type { ResolvedPos } from "@tiptap/pm/model";
+import { MentionNodeView } from "./mention-node-view";
 
 /**
  * Custom findSuggestionMatch: detects the current word (2+ chars) being typed
@@ -55,6 +57,10 @@ export const EntityMention = Mention.extend({
         }),
       },
     };
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(MentionNodeView, { as: "span" });
   },
 });
 

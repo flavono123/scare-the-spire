@@ -9,6 +9,8 @@ import type { SuggestionProps, SuggestionKeyDownProps } from "@tiptap/suggestion
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EntityMention, entitySuggestionBase } from "./entity-mention";
 import { MentionList, type MentionListRef } from "./mention-list";
+import { EntityMapProvider } from "./entity-context";
+import { buildEntityMap } from "./post-renderer";
 import { tiptapToBlocks, blocksToPlainText, matchEntities } from "@/lib/chemical-utils";
 
 const MAX_CHARS = 30;
@@ -24,6 +26,8 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
   const [submitting, setSubmitting] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const popupRef = useRef<HTMLDivElement | null>(null);
+  const submitRef = useRef<() => void>(() => {});
+  const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -134,8 +138,10 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
           "min-h-[2.5rem] max-h-[6rem] overflow-y-auto px-3 py-2 text-sm text-gray-200 outline-none",
       },
       handleKeyDown: (_view, event) => {
-        // Block Enter from creating new paragraphs
+        // When suggestion popup is closed and Enter is pressed, submit
+        // (suggestion plugin intercepts Enter first when popup is open)
         if (event.key === "Enter" && !event.shiftKey) {
+          submitRef.current();
           return true;
         }
         return false;
@@ -161,6 +167,9 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
     }
   }, [editor, submitting, onSubmit]);
 
+  // Keep ref in sync for use inside ProseMirror handleKeyDown
+  submitRef.current = handleSubmit;
+
   const isValid = charCount >= MIN_CHARS && charCount <= MAX_CHARS;
 
   const charCountColor = useMemo(() => {
@@ -175,7 +184,9 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
     <div className="border border-border rounded-lg bg-card/30">
       {/* Editor */}
       <div ref={popupRef}>
-        <EditorContent editor={editor} />
+        <EntityMapProvider value={entityMap}>
+          <EditorContent editor={editor} />
+        </EntityMapProvider>
       </div>
 
       {/* Footer: char count + submit */}
@@ -191,7 +202,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
         >
           {submitting ? "..." : "투입"}
           <Image
-            src="/images/sts2/relics/chemical_x.webp"
+            src="/images/relics/inserter.webp"
             alt=""
             width={14}
             height={14}
