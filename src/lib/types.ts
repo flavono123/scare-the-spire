@@ -137,9 +137,11 @@ export interface CodexMeta {
 export interface Story {
   id: string;
   sentence: string;
-  entityType: "card" | "relic" | "potion";
-  entityId: string;
-  changeId: string;
+  entityType?: "card" | "relic" | "potion";
+  entityId?: string;
+  changeId?: string;
   linkedEntities?: LinkedEntity[];
   tags?: string[];
+  /** Patch reference for text-only stories without entity links */
+  source?: string;
 }
