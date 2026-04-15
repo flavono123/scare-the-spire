@@ -346,7 +346,7 @@ export function PotionLibrary({ potions, characters, versions, currentVersion, p
   }));
 
   return (
-    <div className="flex h-screen bg-[#1a1a2e] text-gray-200 overflow-hidden">
+    <div className="flex h-[calc(100dvh-3rem)] bg-[#1a1a2e] text-gray-200 overflow-hidden">
       {/* Mobile overlay */}
       {sidebarOpen && isMobile && (
         <div

@@ -516,7 +516,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
   }, []);
 
   return (
-    <div className="flex h-screen bg-[#1a1a2e] text-gray-200 overflow-hidden">
+    <div className="flex h-[calc(100dvh-3rem)] bg-[#1a1a2e] text-gray-200 overflow-hidden">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && isMobile && (
         <div
