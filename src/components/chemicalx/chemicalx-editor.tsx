@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useMemo } from "react";
 import Image from "next/image";
 import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
 import type { SuggestionProps, SuggestionKeyDownProps } from "@tiptap/suggestion";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -17,6 +18,19 @@ const MAX_CHARS = 30;
 const MIN_CHARS = 2;
 const DEFAULT_NICKNAME = "투입터리안";
 
+// In-game Ancient dialogues as placeholder pool
+const PLACEHOLDERS = [
+  "도울 일이 있을까?",        // 테즈카타라
+  "꼭두각시가 도착한 건가?",    // 파엘
+  "여기까지 올라왔다?!",       // 오로바스
+  "잠시 고민한다",             // 인형의 방
+  "무슨 일이 일어나고 있나요?",  // fallback
+];
+
+function randomPlaceholder() {
+  return PLACEHOLDERS[Math.floor(Math.random() * PLACEHOLDERS.length)];
+}
+
 interface ChemicalXEditorProps {
   entities: EntityInfo[];
   onSubmit: (blocks: ReturnType<typeof tiptapToBlocks>, nickname: string) => Promise<void>;
@@ -27,13 +41,14 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
   const [charCount, setCharCount] = useState(0);
   const popupRef = useRef<HTMLDivElement | null>(null);
   const submitRef = useRef<() => void>(() => {});
+  const suggestionOpenRef = useRef(false);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
+  const [placeholder] = useState(randomPlaceholder);
 
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
       StarterKit.configure({
-        // Disable block-level nodes - micro-blog is single paragraph
         heading: false,
         bulletList: false,
         orderedList: false,
@@ -42,6 +57,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
         horizontalRule: false,
         hardBreak: false,
       }),
+      Placeholder.configure({ placeholder }),
       CharacterCount.configure({ limit: MAX_CHARS }),
       EntityMention.configure({
         HTMLAttributes: {
@@ -56,6 +72,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
 
             return {
               onStart: (props: SuggestionProps) => {
+                suggestionOpenRef.current = true;
                 renderer = new ReactRenderer(MentionList, {
                   props: {
                     items: props.items,
@@ -118,6 +135,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
               },
 
               onExit: () => {
+                suggestionOpenRef.current = false;
                 popup?.remove();
                 renderer?.destroy();
                 popup = null;
@@ -138,9 +156,12 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
           "min-h-[2.5rem] max-h-[6rem] overflow-y-auto px-3 py-2 text-sm text-gray-200 outline-none",
       },
       handleKeyDown: (_view, event) => {
-        // When suggestion popup is closed and Enter is pressed, submit
-        // (suggestion plugin intercepts Enter first when popup is open)
         if (event.key === "Enter" && !event.shiftKey) {
+          if (suggestionOpenRef.current) {
+            // Let suggestion plugin handle Enter for item selection
+            return false;
+          }
+          // Popup closed: submit
           submitRef.current();
           return true;
         }
