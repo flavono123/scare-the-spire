@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useCallback, useRef, useMemo } from "react";
+import Image from "next/image";
 import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
 import type { SuggestionProps, SuggestionKeyDownProps } from "@tiptap/suggestion";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -13,12 +13,7 @@ import { tiptapToBlocks, blocksToPlainText, matchEntities } from "@/lib/chemical
 
 const MAX_CHARS = 30;
 const MIN_CHARS = 2;
-const NICKNAME_KEY = "sts-nickname";
-
-function getNickname(): string {
-  if (typeof window === "undefined") return "";
-  return localStorage.getItem(NICKNAME_KEY) ?? "";
-}
+const DEFAULT_NICKNAME = "투입터리안";
 
 interface ChemicalXEditorProps {
   entities: EntityInfo[];
@@ -26,7 +21,6 @@ interface ChemicalXEditorProps {
 }
 
 export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
-  const [nickname, setNickname] = useState(getNickname);
   const [submitting, setSubmitting] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const popupRef = useRef<HTMLDivElement | null>(null);
@@ -43,9 +37,6 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
         codeBlock: false,
         horizontalRule: false,
         hardBreak: false,
-      }),
-      Placeholder.configure({
-        placeholder: "슬더스 이야기를 들려주세요...",
       }),
       CharacterCount.configure({ limit: MAX_CHARS }),
       EntityMention.configure({
@@ -156,23 +147,21 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
     if (!editor || submitting) return;
     const blocks = tiptapToBlocks(editor.getJSON());
     const text = blocksToPlainText(blocks);
-    const nick = nickname.trim();
 
-    if (text.length < MIN_CHARS || text.length > MAX_CHARS || !nick) return;
+    if (text.length < MIN_CHARS || text.length > MAX_CHARS) return;
 
     setSubmitting(true);
-    localStorage.setItem(NICKNAME_KEY, nick);
 
     try {
-      await onSubmit(blocks, nick);
+      await onSubmit(blocks, DEFAULT_NICKNAME);
       editor.commands.clearContent();
       setCharCount(0);
     } finally {
       setSubmitting(false);
     }
-  }, [editor, nickname, submitting, onSubmit]);
+  }, [editor, submitting, onSubmit]);
 
-  const isValid = charCount >= MIN_CHARS && charCount <= MAX_CHARS && nickname.trim().length > 0;
+  const isValid = charCount >= MIN_CHARS && charCount <= MAX_CHARS;
 
   const charCountColor = useMemo(() => {
     if (charCount === 0) return "text-gray-500";
@@ -184,18 +173,6 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
 
   return (
     <div className="border border-border rounded-lg bg-card/30">
-      {/* Nickname row */}
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-border">
-        <input
-          type="text"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          placeholder="닉네임"
-          maxLength={20}
-          className="bg-transparent text-sm text-gray-300 placeholder:text-gray-600 outline-none w-32"
-        />
-      </div>
-
       {/* Editor */}
       <div ref={popupRef}>
         <EditorContent editor={editor} />
@@ -210,9 +187,16 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
           type="button"
           onClick={handleSubmit}
           disabled={!isValid || submitting}
-          className="px-3 py-1 text-xs font-semibold rounded bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {submitting ? "..." : "투입"}
+          <Image
+            src="/images/sts2/relics/chemical_x.webp"
+            alt=""
+            width={14}
+            height={14}
+            className="object-contain"
+          />
         </button>
       </div>
     </div>

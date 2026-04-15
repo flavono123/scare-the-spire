@@ -1,4 +1,5 @@
 import type { JSONContent } from "@tiptap/react";
+import { getChoseong } from "es-hangul";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 
@@ -35,30 +36,38 @@ export function blocksToPlainText(blocks: PostBlock[]): string {
 }
 
 /**
- * Search entities by query string (Korean or English name).
- * Returns up to `limit` matches, prioritizing prefix matches over includes.
+ * Search entities by query string.
+ * Supports: Korean name, English name, and Korean choseong (jamo) matching.
+ * Triggers from 1 character. Prioritizes prefix > choseong > includes.
  */
 export function matchEntities(
   query: string,
   entities: EntityInfo[],
   limit = 8,
 ): EntityInfo[] {
-  if (query.length < 2) return [];
+  if (query.length < 1) return [];
   const lower = query.toLowerCase();
+  const isAllJamo = /^[ㄱ-ㅎ]+$/.test(query);
 
   const prefixMatches: EntityInfo[] = [];
+  const choseongMatches: EntityInfo[] = [];
   const includesMatches: EntityInfo[] = [];
 
   for (const e of entities) {
     const ko = e.nameKo.toLowerCase();
     const en = e.nameEn.toLowerCase();
+
     if (ko.startsWith(lower) || en.startsWith(lower)) {
       prefixMatches.push(e);
+    } else if (isAllJamo && getChoseong(e.nameKo).includes(query)) {
+      choseongMatches.push(e);
     } else if (ko.includes(lower) || en.includes(lower)) {
       includesMatches.push(e);
     }
-    if (prefixMatches.length + includesMatches.length >= limit * 2) break;
+
+    const total = prefixMatches.length + choseongMatches.length + includesMatches.length;
+    if (total >= limit * 2) break;
   }
 
-  return [...prefixMatches, ...includesMatches].slice(0, limit);
+  return [...prefixMatches, ...choseongMatches, ...includesMatches].slice(0, limit);
 }

@@ -47,7 +47,10 @@ export function ChemicalXClient({ entities }: ChemicalXClientProps) {
           height={32}
           className="object-contain"
         />
-        <h1 className="text-xl font-bold text-yellow-400 font-spectral">케미컬엑스</h1>
+        <div>
+          <h1 className="text-xl font-bold text-yellow-400 font-spectral">케미컬X</h1>
+          <span className="text-xs text-gray-500">(구 투입터)</span>
+        </div>
       </div>
 
       {/* Editor */}
@@ -84,11 +87,6 @@ export function ChemicalXClient({ entities }: ChemicalXClientProps) {
           />
         ))}
 
-        {!loading && posts.length === 0 && (
-          <div className="text-center py-12 text-gray-500 text-sm">
-            아직 아무도 투입하지 않았어요. 첫 번째가 되어보세요!
-          </div>
-        )}
       </div>
     </div>
   );

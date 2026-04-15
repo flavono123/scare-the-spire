@@ -21,9 +21,9 @@ function findSuggestionMatch(config: {
 
   const text = nodeBefore.text ?? "";
 
-  // Find the last non-space word at the end of the text
+  // Find the last non-space word at the end of the text (trigger from 1 char, including jamo)
   const match = text.match(/(\S+)$/);
-  if (!match || match[1].length < 2) return null;
+  if (!match) return null;
 
   const query = match[1];
 
