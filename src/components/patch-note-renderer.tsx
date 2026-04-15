@@ -39,14 +39,17 @@ export type CardInfo = EntityInfo;
 
 // --- Entity Preview (hover card image) ---
 
-function EntityPreview({
+export function EntityPreview({
   entity,
   children,
+  forceShow,
 }: {
   entity: EntityInfo;
   children: ReactNode;
+  forceShow?: boolean;
 }) {
   const [show, setShow] = useState(false);
+  const visible = show || forceShow;
   const [position, setPosition] = useState<"above" | "below">("above");
   const ref = useRef<HTMLSpanElement>(null);
 
@@ -86,7 +89,7 @@ function EntityPreview({
       >
         {children}
       </Link>
-      {show && entity.type === "card" && entity.cardData && (
+      {visible && entity.type === "card" && entity.cardData && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
@@ -97,7 +100,7 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && entity.type === "relic" && entity.relicData && (
+      {visible && entity.type === "relic" && entity.relicData && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
@@ -147,7 +150,7 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && entity.type === "potion" && entity.potionData && (
+      {visible && entity.type === "potion" && entity.potionData && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
@@ -195,7 +198,7 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && entity.type === "power" && entity.powerData && (
+      {visible && entity.type === "power" && entity.powerData && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
@@ -236,7 +239,7 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && entity.type === "enchantment" && entity.enchantmentData && (
+      {visible && entity.type === "enchantment" && entity.enchantmentData && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
@@ -280,7 +283,7 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && entity.type === "event" && entity.eventData && !entity.eventOptionDesc && (
+      {visible && entity.type === "event" && entity.eventData && !entity.eventOptionDesc && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
@@ -311,7 +314,7 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && entity.eventOptionDesc && (
+      {visible && entity.eventOptionDesc && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
@@ -325,7 +328,7 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && entity.type === "monster" && entity.monsterData && (
+      {visible && entity.type === "monster" && entity.monsterData && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
@@ -373,7 +376,7 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && entity.type === "encounter" && entity.encounterData && (
+      {visible && entity.type === "encounter" && entity.encounterData && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
@@ -409,7 +412,7 @@ function EntityPreview({
           </span>
         </span>
       )}
-      {show && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && entity.imageUrl && (
+      {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && entity.imageUrl && (
         <span
           className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
@@ -441,14 +444,14 @@ function EntityPreview({
 
 // --- Entity Lookup ---
 
-interface EntityLookup {
+export interface EntityLookup {
   byKo: Map<string, EntityInfo>;
   byEn: Map<string, EntityInfo>;
   allByKo?: Map<string, EntityInfo[]>;
   allByEn?: Map<string, EntityInfo[]>;
 }
 
-function buildEntityLookup(entities: EntityInfo[]): EntityLookup {
+export function buildEntityLookup(entities: EntityInfo[]): EntityLookup {
   const byKo = new Map<string, EntityInfo>();
   const byEn = new Map<string, EntityInfo>();
   const allByKo = new Map<string, EntityInfo[]>();
@@ -466,7 +469,7 @@ function buildEntityLookup(entities: EntityInfo[]): EntityLookup {
   return { byKo, byEn, allByKo, allByEn };
 }
 
-function findEntity(text: string, lookup: EntityLookup, typeHint?: string): EntityInfo | null {
+export function findEntity(text: string, lookup: EntityLookup, typeHint?: string): EntityInfo | null {
   const lower = text.toLowerCase();
   if (typeHint) {
     // [gold:card], [gold:relic], etc. — filter by entity type
