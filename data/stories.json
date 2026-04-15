@@ -126,5 +126,11 @@
     "entityId": "mind-blast",
     "changeId": "mind-blast-wp32-rework",
     "tags": ["너프", "무색"]
+  },
+  {
+    "id": "shelled-parasite-slaver",
+    "sentence": "고구마 버섯은 원래 고구마 빨간 노예상인이었다",
+    "source": "Weekly Patch 37: Darkness",
+    "tags": ["변경", "인카운터"]
   }
 ]
