@@ -60,8 +60,8 @@ export function PostCard({ post, entityMap, forceShowTooltips, isOwner, onDelete
         </div>
       </div>
 
-      {/* Content */}
-      <div className="text-sm leading-relaxed">
+      {/* Content — extra padding when tooltips are expanded so they're visible */}
+      <div className={`text-sm leading-relaxed ${forceShowTooltips ? "py-4" : ""}`}>
         <PostRenderer
           blocks={post.content}
           entityMap={entityMap}

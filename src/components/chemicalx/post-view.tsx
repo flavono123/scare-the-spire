@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Link2, Camera } from "lucide-react";
+import { ArrowLeft, Link2 } from "lucide-react";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import type { ChemicalPost } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -18,7 +18,6 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
   const [post, setPost] = useState<ChemicalPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  const captureRef = useRef<HTMLDivElement>(null);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
 
   useEffect(() => {
@@ -43,19 +42,6 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }, [postId]);
-
-  const handleCapture = useCallback(async () => {
-    if (!captureRef.current) return;
-    const { toPng } = await import("html-to-image");
-    const dataUrl = await toPng(captureRef.current, {
-      backgroundColor: "#0a0a12",
-      pixelRatio: 2,
-    });
-    const link = document.createElement("a");
-    link.download = `chemicalx-${postId}.png`;
-    link.href = dataUrl;
-    link.click();
   }, [postId]);
 
   if (loading) {
@@ -84,22 +70,23 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
         케미컬X
       </Link>
 
-      {/* Capture target: card + branding */}
-      <div ref={captureRef} className="p-4 rounded-lg bg-[#0a0a12]">
-        <div className="border border-border rounded-lg bg-card/30 px-4 py-3">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-sm font-semibold text-gray-300">{post.nickname}</span>
-            <span className="text-xs text-gray-500">
-              {new Date(post.created_at).toLocaleDateString("ko-KR")}
-            </span>
-          </div>
-          <div className="text-sm leading-relaxed">
-            <PostRenderer blocks={post.content} entityMap={entityMap} forceShowTooltips />
-          </div>
+      {/* Post card — designed to look good as a native screenshot */}
+      <div className="rounded-xl border border-yellow-500/20 bg-[#0c0c16] p-5">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-semibold text-gray-300">{post.nickname}</span>
+          <span className="text-xs text-gray-500">
+            {new Date(post.created_at).toLocaleDateString("ko-KR")}
+          </span>
         </div>
 
-        {/* Branding footer for capture */}
-        <div className="flex items-center justify-between mt-3 px-1">
+        {/* Content with all tooltips expanded, generous padding for tooltip space */}
+        <div className="text-base leading-relaxed py-6">
+          <PostRenderer blocks={post.content} entityMap={entityMap} forceShowTooltips />
+        </div>
+
+        {/* Branding footer */}
+        <div className="flex items-center justify-between pt-3 border-t border-border">
           <div className="flex items-center gap-1.5">
             <Image
               src="/images/sts2/relics/chemical_x.webp"
@@ -108,7 +95,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
               height={14}
               className="object-contain"
             />
-            <span className="text-[10px] text-yellow-500/70 font-semibold">슬서운 이야기</span>
+            <span className="text-[10px] text-yellow-500/60 font-semibold">슬서운 이야기</span>
           </div>
           <span className="text-[10px] text-gray-600">
             scare-the-spire.vercel.app/chemicalx/{postId.slice(0, 8)}
@@ -116,25 +103,15 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
         </div>
       </div>
 
-      {/* Action buttons */}
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={handleCopyUrl}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
-        >
-          <Link2 size={14} />
-          {copied ? "복사됨!" : "링크 복사"}
-        </button>
-        <button
-          type="button"
-          onClick={handleCapture}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
-        >
-          <Camera size={14} />
-          캡처
-        </button>
-      </div>
+      {/* Link copy */}
+      <button
+        type="button"
+        onClick={handleCopyUrl}
+        className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
+      >
+        <Link2 size={14} />
+        {copied ? "복사됨!" : "링크 복사"}
+      </button>
     </div>
   );
 }
