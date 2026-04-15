@@ -32,6 +32,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
   const popupRef = useRef<HTMLDivElement | null>(null);
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         // Disable block-level nodes - micro-blog is single paragraph
