@@ -47,14 +47,14 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
 
   const handleCapture = useCallback(async () => {
     if (!captureRef.current) return;
-    const html2canvas = (await import("html2canvas")).default;
-    const canvas = await html2canvas(captureRef.current, {
+    const { toPng } = await import("html-to-image");
+    const dataUrl = await toPng(captureRef.current, {
       backgroundColor: "#0a0a12",
-      scale: 2,
+      pixelRatio: 2,
     });
     const link = document.createElement("a");
     link.download = `chemicalx-${postId}.png`;
-    link.href = canvas.toDataURL("image/png");
+    link.href = dataUrl;
     link.click();
   }, [postId]);
 

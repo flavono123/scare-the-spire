@@ -43,14 +43,16 @@ export function EntityPreview({
   entity,
   children,
   forceShow,
+  forcePosition,
 }: {
   entity: EntityInfo;
   children: ReactNode;
   forceShow?: boolean;
+  forcePosition?: "above" | "below";
 }) {
   const [show, setShow] = useState(false);
   const visible = show || forceShow;
-  const [position, setPosition] = useState<"above" | "below">("above");
+  const [position, setPosition] = useState<"above" | "below">(forcePosition ?? "above");
   const ref = useRef<HTMLSpanElement>(null);
 
   const handleMouseEnter = useCallback(() => {

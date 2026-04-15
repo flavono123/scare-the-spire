@@ -141,7 +141,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
     editorProps: {
       attributes: {
         class:
-          "min-h-[2.5rem] max-h-[6rem] overflow-y-auto px-3 py-2 text-sm text-gray-200 outline-none",
+          "min-h-[2.5rem] px-3 py-2 text-sm text-gray-200 outline-none",
       },
       handleKeyDown: (_view, event) => {
         if (event.key === "Enter" && !event.shiftKey) {
@@ -190,9 +190,9 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
   }, [charCount]);
 
   return (
-    <div className="border border-border rounded-lg bg-card/30">
-      {/* Editor */}
-      <div ref={popupRef}>
+    <div className="border border-border rounded-lg bg-card/30 overflow-visible">
+      {/* Editor — overflow-visible so entity tooltips are not clipped */}
+      <div ref={popupRef} className="overflow-visible relative">
         <EntityMapProvider value={entityMap}>
           <EditorContent editor={editor} />
         </EntityMapProvider>

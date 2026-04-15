@@ -12,6 +12,9 @@ interface PostRendererProps {
 }
 
 export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRendererProps) {
+  // When force-showing all tooltips, alternate above/below to avoid overlap
+  let entityIndex = 0;
+
   return (
     <span>
       {blocks.map((block, i) => {
@@ -21,16 +24,18 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
 
         const key = `${block.entityType}:${block.entityId}`;
         const entity = entityMap.get(key);
+        const pos: "above" | "below" | undefined = forceShowTooltips
+          ? (entityIndex++ % 2 === 0 ? "above" : "below")
+          : undefined;
 
         if (entity) {
           return (
-            <EntityPreview key={i} entity={entity} forceShow={forceShowTooltips}>
+            <EntityPreview key={i} entity={entity} forceShow={forceShowTooltips} forcePosition={pos}>
               {block.displayText}
             </EntityPreview>
           );
         }
 
-        // Fallback: gold text without link
         return (
           <span key={i} className="spire-gold font-semibold">
             {block.displayText}
