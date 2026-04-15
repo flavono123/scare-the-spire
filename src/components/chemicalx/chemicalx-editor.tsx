@@ -18,18 +18,7 @@ const MAX_CHARS = 30;
 const MIN_CHARS = 2;
 const DEFAULT_NICKNAME = "투입터리안";
 
-// In-game Ancient dialogues as placeholder pool
-const PLACEHOLDERS = [
-  "도울 일이 있을까?",        // 테즈카타라
-  "꼭두각시가 도착한 건가?",    // 파엘
-  "여기까지 올라왔다?!",       // 오로바스
-  "잠시 고민한다",             // 인형의 방
-  "무슨 일이 일어나고 있나요?",  // fallback
-];
-
-function randomPlaceholder() {
-  return PLACEHOLDERS[Math.floor(Math.random() * PLACEHOLDERS.length)];
-}
+const PLACEHOLDER = "오, 이 차는 무례한 사람들에게 내어지는 차입니다...";
 
 interface ChemicalXEditorProps {
   entities: EntityInfo[];
@@ -43,7 +32,6 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
   const submitRef = useRef<() => void>(() => {});
   const suggestionOpenRef = useRef(false);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
-  const [placeholder] = useState(randomPlaceholder);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -57,7 +45,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
         horizontalRule: false,
         hardBreak: false,
       }),
-      Placeholder.configure({ placeholder }),
+      Placeholder.configure({ placeholder: PLACEHOLDER }),
       CharacterCount.configure({ limit: MAX_CHARS }),
       EntityMention.configure({
         HTMLAttributes: {
