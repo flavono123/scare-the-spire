@@ -46,7 +46,18 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
   }, [postId]);
 
   if (loading) {
-    return <div className="text-center py-12 text-gray-500 text-sm">불러오는 중...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center py-12 gap-3">
+        <Image
+          src="/images/sts2/powers/asleep_power.webp"
+          alt="수면"
+          width={48}
+          height={48}
+          className="object-contain animate-pulse"
+        />
+        <span className="text-sm text-gray-500">투입을 불러오는 중...</span>
+      </div>
+    );
   }
 
   if (!post) {

@@ -59,35 +59,49 @@ export function ChemicalXClient({ entities }: ChemicalXClientProps) {
       )}
 
       {/* Toolbar */}
-      <div className="flex items-center justify-between">
-        <span className="text-xs text-gray-500">
-          {loading ? "불러오는 중..." : `${posts.length}개의 투입`}
-        </span>
-        <button
-          type="button"
-          onClick={() => setShowAllTooltips((v) => !v)}
-          className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-yellow-400 transition-colors"
-          title={showAllTooltips ? "툴팁 숨기기" : "전체 툴팁 표시"}
-        >
-          {showAllTooltips ? <EyeOff size={14} /> : <Eye size={14} />}
-          {showAllTooltips ? "툴팁 숨기기" : "전체 툴팁"}
-        </button>
-      </div>
+      {!loading && (
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-gray-500">
+            {posts.length}개의 투입
+          </span>
+          <button
+            type="button"
+            onClick={() => setShowAllTooltips((v) => !v)}
+            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-yellow-400 transition-colors"
+            title={showAllTooltips ? "툴팁 숨기기" : "전체 툴팁 표시"}
+          >
+            {showAllTooltips ? <EyeOff size={14} /> : <Eye size={14} />}
+            {showAllTooltips ? "툴팁 숨기기" : "전체 툴팁"}
+          </button>
+        </div>
+      )}
 
       {/* Feed */}
-      <div className="space-y-3">
-        {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            entityMap={entityMap}
-            forceShowTooltips={showAllTooltips}
-            isOwner={post.user_id === userId}
-            onDelete={handleDelete}
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-12 gap-3">
+          <Image
+            src="/images/sts2/powers/slumber_power.webp"
+            alt="숙면"
+            width={48}
+            height={48}
+            className="object-contain animate-pulse"
           />
-        ))}
-
-      </div>
+          <span className="text-sm text-gray-500">투입을 불러오는 중...</span>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {posts.map((post) => (
+            <PostCard
+              key={post.id}
+              post={post}
+              entityMap={entityMap}
+              forceShowTooltips={showAllTooltips}
+              isOwner={post.user_id === userId}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
