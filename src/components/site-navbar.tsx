@@ -201,11 +201,10 @@ export function SiteNavbar() {
               iconClassName="group-hover:rotate-[8deg]"
             />
             <NavIconLink
-              href="https://docs.google.com/forms/d/e/1FAIpQLSfLZydnMSOswE22Z5P_BwVk5Jhxm_zfaytknV2_wIk444--NQ/viewform"
-              icon="/images/sts2/icons/gold_icon.webp"
-              label="제보"
+              href="/chemicalx"
+              icon="/images/sts2/relics/chemical_x.webp"
+              label="케미컬X"
               iconSize={18}
-              external
             />
           </nav>
         </div>
