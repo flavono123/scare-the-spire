@@ -47,10 +47,7 @@ export function ChemicalXClient({ entities }: ChemicalXClientProps) {
           height={32}
           className="object-contain"
         />
-        <div>
-          <h1 className="text-xl font-bold text-yellow-400 font-spectral">케미컬엑스</h1>
-          <p className="text-xs text-gray-500">슬더스 이야기를 짧게, 강렬하게.</p>
-        </div>
+        <h1 className="text-xl font-bold text-yellow-400 font-spectral">케미컬엑스</h1>
       </div>
 
       {/* Editor */}
