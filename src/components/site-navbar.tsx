@@ -12,7 +12,7 @@ const sts2Items = [
   { href: "/codex/potions", label: "포션", icon: "/images/sts2/nav/stats_potions.png" },
   { href: "/codex/powers", label: "파워", icon: "/images/sts2/powers/strength_power.webp" },
   { href: "/codex/enchantments", label: "인챈트", icon: "/images/sts2/enchantments/sharp.webp" },
-  { href: "/codex/monsters", label: "몬스터", icon: "/images/sts2/monsters-render/cultists.webp" },
+  { href: "/codex/monsters", label: "몬스터", icon: "/images/sts2/nav/happy_cultist.png" },
   { href: "/codex/events", label: "이벤트", icon: "/images/sts2/nav/question_mark.png" },
   { href: "/codex/encounters", label: "인카운터", icon: "/images/sts2/nav/stats_monsters.png" },
   { href: "/codex/ancients", label: "고대의 존재", icon: "/images/sts2/nav/stats_ancients.png" },
