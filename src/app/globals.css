@@ -175,3 +175,17 @@
 .spire-orange { color: #fb923c; }
 .spire-pink { color: #f472b6; }
 .spire-aqua { color: #22d3ee; }
+
+/* TipTap editor */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #4b5563;
+  pointer-events: none;
+  height: 0;
+}
+
+.tiptap [data-type="entity-mention"] {
+  color: #d4a843;
+  font-weight: 600;
+}
