@@ -89,12 +89,14 @@ export function EntityPreview({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setShow(false)}
     >
-      <Link
-        href={href}
-        className="font-semibold spire-gold hover:text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 transition-colors cursor-pointer"
-      >
-        {children}
-      </Link>
+      {!forceShow && (
+        <Link
+          href={href}
+          className="font-semibold spire-gold hover:text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 transition-colors cursor-pointer"
+        >
+          {children}
+        </Link>
+      )}
       {visible && entity.type === "card" && entity.cardData && (
         <span
           className={tooltipPos}
