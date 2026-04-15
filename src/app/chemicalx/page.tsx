@@ -13,7 +13,7 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ChemicalXClient } from "@/components/chemicalx/chemicalx-client";
 
 export const metadata: Metadata = {
-  title: "케미컬엑스 — 슬서운 이야기",
+  title: "케미컬엑스",
   description: "슬더스 이야기를 짧게, 강렬하게. 카드와 유물을 태그하며 공유하세요.",
 };
 
