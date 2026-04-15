@@ -31,12 +31,14 @@ function NavIconLink({
   icon,
   label,
   iconSize = 20,
+  iconClassName,
   external,
 }: {
   href: string;
   icon: string;
   label: string;
   iconSize?: number;
+  iconClassName?: string;
   external?: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
@@ -46,7 +48,7 @@ function NavIconLink({
     : {};
 
   return (
-    <div className="relative">
+    <div className="relative group">
       <Tag
         href={href}
         {...extraProps}
@@ -59,13 +61,29 @@ function NavIconLink({
           alt={label}
           width={iconSize}
           height={iconSize}
-          className="object-contain brightness-90 hover:brightness-110 transition-all"
+          className={`object-contain brightness-90 hover:brightness-110 transition-all ${iconClassName ?? ""}`}
         />
       </Tag>
       {hovered && (
-        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 z-50 pointer-events-none">
-          <div className="bg-[#0c0c20]/95 border border-white/15 rounded-lg shadow-2xl px-3 py-1.5 whitespace-nowrap">
-            <span className="text-xs font-bold text-yellow-400">{label}</span>
+        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-0.5 z-50 pointer-events-none">
+          <div
+            className="relative whitespace-nowrap"
+            style={{
+              borderImage: "url('/images/sts2/ui/hover_tip.png') 43 91 32 55 fill",
+              borderImageWidth: "16px 34px 12px 20px",
+              borderStyle: "solid",
+              padding: "2px 12px 6px 8px",
+            }}
+          >
+            <span
+              className="font-[family-name:var(--font-kreon)] text-xs font-bold"
+              style={{
+                color: "rgb(239, 200, 81)",
+                textShadow: "2px 1px 0 rgba(0,0,0,0.25)",
+              }}
+            >
+              {label}
+            </span>
           </div>
         </div>
       )}
@@ -180,6 +198,7 @@ export function SiteNavbar() {
               icon="/images/sts2/nav/patch_notes_icon.png"
               label="패치노트"
               iconSize={22}
+              iconClassName="group-hover:rotate-[8deg]"
             />
             <NavIconLink
               href="https://docs.google.com/forms/d/e/1FAIpQLSfLZydnMSOswE22Z5P_BwVk5Jhxm_zfaytknV2_wIk444--NQ/viewform"
