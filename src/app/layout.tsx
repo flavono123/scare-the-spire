@@ -27,8 +27,41 @@ const gcBatang = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "슬서운 이야기",
-  description: "슬레이 더 스파이어 밸런스 변경 이력",
+  title: {
+    default: "슬서운 이야기",
+    template: "%s — 슬서운 이야기",
+  },
+  description: "슬레이 더 스파이어 2 패치노트, 백과사전, 커뮤니티",
+  metadataBase: new URL("https://scare-the-spire.vercel.app"),
+  openGraph: {
+    title: "슬서운 이야기",
+    description: "슬레이 더 스파이어 2 패치노트, 백과사전, 커뮤니티",
+    siteName: "슬서운 이야기",
+    images: [
+      {
+        url: "/images/sts2/cards/tag_team.webp",
+        width: 1000,
+        height: 760,
+        alt: "슬서운 이야기 — 협력",
+      },
+    ],
+    locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "슬서운 이야기",
+    description: "슬레이 더 스파이어 2 패치노트, 백과사전, 커뮤니티",
+    images: ["/images/sts2/cards/tag_team.webp"],
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
+  manifest: "/site.webmanifest",
+  other: {
+    "theme-color": "#1a1a2e",
+  },
 };
 
 export default function RootLayout({

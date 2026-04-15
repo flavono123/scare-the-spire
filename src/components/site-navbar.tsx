@@ -113,9 +113,16 @@ export function SiteNavbar() {
         <div className="flex items-center gap-4">
           <Link
             href="/"
-            className="text-base font-bold text-yellow-500 shrink-0"
+            className="flex items-center gap-1.5 text-base font-bold text-yellow-500 shrink-0"
           >
             슬서운 이야기
+            <Image
+              src="/images/bone_tea.png"
+              alt=""
+              width={22}
+              height={22}
+              className="object-contain"
+            />
           </Link>
 
           <nav className="flex items-center gap-3 text-sm">
