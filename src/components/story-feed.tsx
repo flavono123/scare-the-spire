@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { LikeButton } from "@/components/like-button";
 import { CommentSection } from "@/components/comment-section";
+import { EngagementSpinner } from "@/components/engagement-spinner";
 
 function DiffLine({ diff }: { diff: Change["diffs"][0] }) {
   return (
@@ -216,6 +217,7 @@ function StoryCard({
   expanded,
   onToggle,
   commentCount,
+  engagementLoading,
 }: {
   story: Story;
   entityChanges: Change[];
@@ -228,6 +230,7 @@ function StoryCard({
   onToggle: (storyId: string) => void;
   likeCount: number;
   commentCount: number;
+  engagementLoading: boolean;
 }) {
   const [liveCommentCount, setLiveCommentCount] = useState<number | null>(null);
   const displayCommentCount = liveCommentCount ?? commentCount;
@@ -243,9 +246,11 @@ function StoryCard({
           >
             <p className="text-lg sm:text-xl font-medium leading-snug text-center">
               &ldquo;{story.sentence}&rdquo;
-              {displayCommentCount > 0 && (
+              {engagementLoading ? (
+                <span className="ml-2 inline-flex align-middle"><EngagementSpinner size={12} /></span>
+              ) : displayCommentCount > 0 ? (
                 <span className="ml-2 text-xs font-normal text-muted-foreground/50">[{displayCommentCount}]</span>
-              )}
+              ) : null}
             </p>
           </button>
           <div className="shrink-0">
@@ -350,6 +355,7 @@ export function StoryFeed({
             onToggle={toggle}
             likeCount={counts.likes[story.id] ?? 0}
             commentCount={counts.comments[story.id] ?? 0}
+            engagementLoading={counts.loading}
           />
         );
       })}

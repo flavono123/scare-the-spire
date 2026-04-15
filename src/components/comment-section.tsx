@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useComments } from "@/hooks/use-comments";
 import { useCommentLikes } from "@/hooks/use-comment-likes";
+import { EngagementSpinner } from "@/components/engagement-spinner";
 
 const NICKNAME_KEY = "sts-nickname";
 
@@ -67,7 +68,10 @@ export function CommentSection({ storyId, userId, onCountChange }: { storyId: st
     <div className="space-y-3">
       {/* Comment list */}
       {loading ? (
-        <p className="text-xs text-muted-foreground">불러오는 중...</p>
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <EngagementSpinner size={14} />
+          <span>불러오는 중...</span>
+        </div>
       ) : comments.length === 0 ? (
         <p className="text-xs text-muted-foreground">아직 댓글이 없습니다</p>
       ) : (
