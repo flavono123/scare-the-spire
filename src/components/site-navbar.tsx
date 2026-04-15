@@ -8,10 +8,10 @@ import Image from "next/image";
 
 const sts2Items = [
   { href: "/codex/cards", label: "카드", icon: "/images/sts2/nav/stats_cards.png" },
-  { href: "/codex/relics", label: "유물", icon: "/images/sts2/relics/akabeko.webp" },
+  { href: "/codex/relics", label: "유물", icon: "/images/sts2/relics/bing_bong.webp" },
   { href: "/codex/potions", label: "포션", icon: "/images/sts2/nav/stats_potions.png" },
-  { href: "/codex/powers", label: "파워", icon: "/images/sts2/powers/strength_power.webp" },
-  { href: "/codex/enchantments", label: "인챈트", icon: "/images/sts2/enchantments/sharp.webp" },
+  { href: "/codex/powers", label: "파워", icon: "/images/sts2/powers/unmovable_power.webp" },
+  { href: "/codex/enchantments", label: "인챈트", icon: "/images/sts2/enchantments/souls_power.webp" },
   { href: "/codex/monsters", label: "몬스터", icon: "/images/sts2/nav/happy_cultist.png" },
   { href: "/codex/events", label: "이벤트", icon: "/images/sts2/nav/question_mark.png" },
   { href: "/codex/encounters", label: "인카운터", icon: "/images/sts2/nav/stats_monsters.png" },
@@ -20,7 +20,7 @@ const sts2Items = [
 
 const sts1Items = [
   { href: "/cards", label: "카드", icon: "/images/sts2/nav/stats_cards.png" },
-  { href: "/relics", label: "유물", icon: "/images/sts2/relics/akabeko.webp" },
+  { href: "/relics", label: "유물", icon: "/images/sts2/relics/bing_bong.webp" },
   { href: "/potions", label: "포션", icon: "/images/sts2/nav/stats_potions.png" },
 ];
 
