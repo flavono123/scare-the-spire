@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Link2 } from "lucide-react";
+import { ArrowLeft, Link2, Eye, EyeOff } from "lucide-react";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import type { ChemicalPost } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -18,6 +18,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
   const [post, setPost] = useState<ChemicalPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [showTooltips, setShowTooltips] = useState(true);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
 
   useEffect(() => {
@@ -80,9 +81,9 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
           </span>
         </div>
 
-        {/* Content with all tooltips expanded, generous padding for tooltip space */}
-        <div className="text-base leading-relaxed py-6">
-          <PostRenderer blocks={post.content} entityMap={entityMap} forceShowTooltips />
+        {/* Content */}
+        <div className="text-base leading-relaxed py-4">
+          <PostRenderer blocks={post.content} entityMap={entityMap} forceShowTooltips={showTooltips} />
         </div>
 
         {/* Branding footer */}
@@ -103,15 +104,25 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
         </div>
       </div>
 
-      {/* Link copy */}
-      <button
-        type="button"
-        onClick={handleCopyUrl}
-        className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
-      >
-        <Link2 size={14} />
-        {copied ? "복사됨!" : "링크 복사"}
-      </button>
+      {/* Actions */}
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={handleCopyUrl}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
+        >
+          <Link2 size={14} />
+          {copied ? "복사됨!" : "링크 복사"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowTooltips((v) => !v)}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
+        >
+          {showTooltips ? <EyeOff size={14} /> : <Eye size={14} />}
+          {showTooltips ? "툴팁 숨기기" : "전체 툴팁"}
+        </button>
+      </div>
     </div>
   );
 }

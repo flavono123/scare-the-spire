@@ -78,10 +78,14 @@ export function EntityPreview({
   };
   const href = hrefMap[entity.type];
 
+  const tooltipPos = forceShow
+    ? "relative z-50 mt-1"
+    : `absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${position === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
+
   return (
     <span
       ref={ref}
-      className="relative inline"
+      className={forceShow ? "inline-block" : "relative inline"}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setShow(false)}
     >
@@ -93,9 +97,7 @@ export function EntityPreview({
       </Link>
       {visible && entity.type === "card" && entity.cardData && (
         <span
-          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
-            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
-          }`}
+          className={tooltipPos}
         >
           <span className="block w-48 drop-shadow-2xl">
             <CardTile card={entity.cardData} showUpgrade={false} showBeta={false} />
@@ -104,9 +106,7 @@ export function EntityPreview({
       )}
       {visible && entity.type === "relic" && entity.relicData && (
         <span
-          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
-            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
-          }`}
+          className={tooltipPos}
         >
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="flex items-center gap-2 mb-1">
@@ -154,9 +154,7 @@ export function EntityPreview({
       )}
       {visible && entity.type === "potion" && entity.potionData && (
         <span
-          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
-            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
-          }`}
+          className={tooltipPos}
         >
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="flex items-center gap-2 mb-1">
@@ -202,9 +200,7 @@ export function EntityPreview({
       )}
       {visible && entity.type === "power" && entity.powerData && (
         <span
-          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
-            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
-          }`}
+          className={tooltipPos}
         >
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="flex items-center gap-2 mb-1">
@@ -243,9 +239,7 @@ export function EntityPreview({
       )}
       {visible && entity.type === "enchantment" && entity.enchantmentData && (
         <span
-          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
-            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
-          }`}
+          className={tooltipPos}
         >
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="flex items-center gap-2 mb-1">
@@ -287,9 +281,7 @@ export function EntityPreview({
       )}
       {visible && entity.type === "event" && entity.eventData && !entity.eventOptionDesc && (
         <span
-          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
-            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
-          }`}
+          className={tooltipPos}
         >
           <span className="block w-56 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95">
             {entity.eventData.imageUrl && (
@@ -318,9 +310,7 @@ export function EntityPreview({
       )}
       {visible && entity.eventOptionDesc && (
         <span
-          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
-            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
-          }`}
+          className={tooltipPos}
         >
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-amber-500/20 bg-[#0c0c20]/95 p-3">
             <span className="block font-bold text-sm text-amber-400 mb-1">{entity.nameKo}</span>
@@ -332,9 +322,7 @@ export function EntityPreview({
       )}
       {visible && entity.type === "monster" && entity.monsterData && (
         <span
-          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
-            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
-          }`}
+          className={tooltipPos}
         >
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="flex items-center gap-2 mb-1">
@@ -380,9 +368,7 @@ export function EntityPreview({
       )}
       {visible && entity.type === "encounter" && entity.encounterData && (
         <span
-          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
-            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
-          }`}
+          className={tooltipPos}
         >
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="block">
@@ -416,9 +402,7 @@ export function EntityPreview({
       )}
       {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && entity.imageUrl && (
         <span
-          className={`absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${
-            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
-          }`}
+          className={tooltipPos}
         >
           <span className="block rounded-lg overflow-hidden shadow-2xl border border-yellow-500/20 bg-[#0a0a1a]">
             <Image

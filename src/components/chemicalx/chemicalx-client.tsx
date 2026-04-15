@@ -74,8 +74,8 @@ export function ChemicalXClient({ entities }: ChemicalXClientProps) {
         </button>
       </div>
 
-      {/* Feed — wider spacing when tooltips are expanded */}
-      <div className={showAllTooltips ? "space-y-8" : "space-y-3"}>
+      {/* Feed */}
+      <div className="space-y-3">
         {posts.map((post) => (
           <PostCard
             key={post.id}
