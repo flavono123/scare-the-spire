@@ -19,7 +19,6 @@ export function useLikes(storyId: string, userId: string | null): UseLikesReturn
   useEffect(() => {
     if (!supabaseEnabled) return;
 
-    setLoading(true);
     supabase
       .from("likes")
       .select("*", { count: "exact", head: true })
