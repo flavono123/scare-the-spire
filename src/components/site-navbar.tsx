@@ -12,16 +12,16 @@ const sts2Items = [
   { href: "/codex/potions", label: "포션", icon: "/images/sts2/nav/stats_potions.png" },
   { href: "/codex/powers", label: "파워", icon: "/images/sts2/powers/strength_power.webp" },
   { href: "/codex/enchantments", label: "인챈트", icon: "/images/sts2/enchantments/sharp.webp" },
-  { href: "/codex/monsters", label: "몬스터", icon: "/images/sts2/nav/stats_monsters.png" },
-  { href: "/codex/events", label: "이벤트", icon: "/images/sts2/events/abyssal_baths.webp" },
-  { href: "/codex/encounters", label: "인카운터", icon: "/images/sts2/bosses/ceremonial_beast_boss.webp" },
-  { href: "/codex/ancients", label: "에인션트", icon: "/images/sts2/nav/stats_ancients.png" },
+  { href: "/codex/monsters", label: "몬스터", icon: "/images/sts2/monsters-render/cultists.webp" },
+  { href: "/codex/events", label: "이벤트", icon: "/images/sts2/nav/question_mark.png" },
+  { href: "/codex/encounters", label: "인카운터", icon: "/images/sts2/nav/stats_monsters.png" },
+  { href: "/codex/ancients", label: "고대의 존재", icon: "/images/sts2/nav/stats_ancients.png" },
 ];
 
 const sts1Items = [
-  { href: "/cards", label: "카드", icon: "/images/cards/bash.webp" },
-  { href: "/relics", label: "유물", icon: "/images/relics/burning_blood.webp" },
-  { href: "/potions", label: "포션", icon: "/images/potions/fire_potion.webp" },
+  { href: "/cards", label: "카드", icon: "/images/sts2/nav/stats_cards.png" },
+  { href: "/relics", label: "유물", icon: "/images/sts2/relics/akabeko.webp" },
+  { href: "/potions", label: "포션", icon: "/images/sts2/nav/stats_potions.png" },
 ];
 
 // --- Dropdown component ---
