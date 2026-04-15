@@ -152,21 +152,31 @@ function StoryExpanded({
   potionMap: Map<string, Potion>;
   changeMap: Map<string, Change>;
 }) {
+  const hasEntity = story.entityType && story.entityId;
+
   return (
     <div className="space-y-3">
-      {/* Main entity info */}
-      <EntityInfoBlock
-        entityType={story.entityType}
-        entityId={story.entityId}
-        card={cardMap.get(story.entityId)}
-        relic={relicMap.get(story.entityId)}
-        potion={potionMap.get(story.entityId)}
-      />
+      {hasEntity ? (
+        <>
+          {/* Main entity info */}
+          <EntityInfoBlock
+            entityType={story.entityType!}
+            entityId={story.entityId!}
+            card={cardMap.get(story.entityId!)}
+            relic={relicMap.get(story.entityId!)}
+            potion={potionMap.get(story.entityId!)}
+          />
 
-      {/* All changes for this entity */}
-      {entityChanges.map((c) => (
-        <ChangeBlock key={c.id} change={c} />
-      ))}
+          {/* All changes for this entity */}
+          {entityChanges.map((c) => (
+            <ChangeBlock key={c.id} change={c} />
+          ))}
+        </>
+      ) : story.source ? (
+        <div className="rounded-lg border border-border bg-card/30 p-4">
+          <span className="text-sm text-yellow-500">{story.source}</span>
+        </div>
+      ) : null}
 
       {/* Linked entities */}
       {story.linkedEntities?.map((linked: LinkedEntity) => {
@@ -325,7 +335,7 @@ export function StoryFeed({
   return (
     <div className="divide-y divide-border/50">
       {shuffled.map((story) => {
-        const key = `${story.entityType}:${story.entityId}`;
+        const key = story.entityType && story.entityId ? `${story.entityType}:${story.entityId}` : "";
         return (
           <StoryCard
             key={story.id}
