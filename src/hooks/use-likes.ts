@@ -6,33 +6,43 @@ import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 interface UseLikesReturn {
   count: number;
   liked: boolean;
+  loading: boolean;
   toggle: () => void;
 }
 
 export function useLikes(storyId: string, userId: string | null): UseLikesReturn {
   const [count, setCount] = useState(0);
   const [liked, setLiked] = useState(false);
+  const [loading, setLoading] = useState(supabaseEnabled);
 
+  // Count query — independent of auth
   useEffect(() => {
     if (!supabaseEnabled) return;
 
+    setLoading(true);
     supabase
       .from("likes")
       .select("*", { count: "exact", head: true })
       .eq("story_id", storyId)
       .eq("env", supabaseEnv)
-      .then(({ count: c }) => setCount(c ?? 0));
+      .then(({ count: c }) => {
+        setCount(c ?? 0);
+        setLoading(false);
+      });
+  }, [storyId]);
 
-    if (userId) {
-      supabase
-        .from("likes")
-        .select("id")
-        .eq("story_id", storyId)
-        .eq("user_id", userId)
-        .eq("env", supabaseEnv)
-        .maybeSingle()
-        .then(({ data }) => setLiked(!!data));
-    }
+  // User like status — depends on auth
+  useEffect(() => {
+    if (!supabaseEnabled || !userId) return;
+
+    supabase
+      .from("likes")
+      .select("id")
+      .eq("story_id", storyId)
+      .eq("user_id", userId)
+      .eq("env", supabaseEnv)
+      .maybeSingle()
+      .then(({ data }) => setLiked(!!data));
   }, [storyId, userId]);
 
   const toggle = useCallback(() => {
@@ -62,5 +72,5 @@ export function useLikes(storyId: string, userId: string | null): UseLikesReturn
     }
   }, [storyId, userId, liked]);
 
-  return { count, liked, toggle };
+  return { count, liked, loading, toggle };
 }
