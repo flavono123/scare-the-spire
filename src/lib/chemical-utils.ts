@@ -8,19 +8,21 @@ import type { PostBlock } from "@/lib/chemical-types";
  */
 export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
   const blocks: PostBlock[] = [];
-  const paragraph = doc.content?.[0];
-  if (!paragraph?.content) return blocks;
+  if (!doc.content) return blocks;
 
-  for (const node of paragraph.content) {
-    if (node.type === "text" && node.text) {
-      blocks.push({ type: "text", text: node.text });
-    } else if (node.type === "entity-mention") {
-      blocks.push({
-        type: "entity",
-        entityId: node.attrs?.id ?? "",
-        entityType: node.attrs?.entityType ?? "card",
-        displayText: node.attrs?.label ?? "",
-      });
+  for (const paragraph of doc.content) {
+    if (!paragraph.content) continue;
+    for (const node of paragraph.content) {
+      if (node.type === "text" && node.text) {
+        blocks.push({ type: "text", text: node.text });
+      } else if (node.type === "entity-mention") {
+        blocks.push({
+          type: "entity",
+          entityId: node.attrs?.id ?? "",
+          entityType: node.attrs?.entityType ?? "card",
+          displayText: node.attrs?.label ?? "",
+        });
+      }
     }
   }
   return blocks;

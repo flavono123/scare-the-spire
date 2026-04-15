@@ -42,7 +42,10 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
         (payload) => {
           const newPost = payload.new as ChemicalPost;
           if (newPost.env === supabaseEnv) {
-            setPosts((prev) => [newPost, ...prev]);
+            setPosts((prev) => {
+              if (prev.some((p) => p.id === newPost.id)) return prev;
+              return [newPost, ...prev];
+            });
           }
         },
       )

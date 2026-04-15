@@ -120,6 +120,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
 
               onKeyDown: (props: SuggestionKeyDownProps) => {
                 if (props.event.key === "Escape") {
+                  suggestionOpenRef.current = false;
                   popup?.remove();
                   renderer?.destroy();
                   popup = null;
