@@ -118,5 +118,13 @@
       }
     ],
     "tags": ["리워크", "디펙트"]
+  },
+  {
+    "id": "mind-blast-zero-cost",
+    "sentence": "정신 공격은 원래 0코스트였다",
+    "entityType": "card",
+    "entityId": "mind-blast",
+    "changeId": "mind-blast-wp32-rework",
+    "tags": ["너프", "무색"]
   }
 ]
