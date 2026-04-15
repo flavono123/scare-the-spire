@@ -42,7 +42,7 @@ export default async function MonsterDetailPage({
   );
 
   return (
-    <div className="min-h-screen bg-[#1a1a2e] text-gray-200">
+    <div className="min-h-screen bg-background text-foreground">
       <MonsterDetail
         monster={monster}
         encounters={monsterEncounters}

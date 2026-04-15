@@ -141,7 +141,7 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
   }, []);
 
   return (
-    <div className="flex h-[calc(100dvh-3rem)] bg-[#1a1a2e] text-gray-200 overflow-hidden">
+    <div className="flex h-[calc(100dvh-3rem)] bg-background text-foreground overflow-hidden">
       {/* Mobile overlay */}
       {sidebarOpen && isMobile && (
         <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setSidebarOpen(false)} />

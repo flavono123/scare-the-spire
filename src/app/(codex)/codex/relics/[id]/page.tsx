@@ -35,7 +35,7 @@ export default async function RelicDetailPage({
   if (!relic) notFound();
 
   return (
-    <div className="min-h-screen bg-[#1a1a2e] text-gray-200">
+    <div className="min-h-screen bg-background text-foreground">
       <RelicDetail relic={relic} />
     </div>
   );

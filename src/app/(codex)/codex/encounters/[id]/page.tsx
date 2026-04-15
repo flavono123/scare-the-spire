@@ -49,7 +49,7 @@ export default async function EncounterDetailPage({
   );
 
   return (
-    <div className="min-h-screen bg-[#1a1a2e] text-gray-200">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="flex flex-col gap-6 p-4 sm:p-6 max-w-2xl mx-auto">
         {/* Header */}
         <Link href="/codex/encounters" className="text-sm text-gray-400 hover:text-gray-200 transition-colors">

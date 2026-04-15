@@ -36,7 +36,7 @@ export default async function EnchantmentDetailPage({
   if (!ench) notFound();
 
   return (
-    <div className="min-h-screen bg-[#1a1a2e] text-gray-200">
+    <div className="min-h-screen bg-background text-foreground">
       <EnchantmentDetail enchantment={ench} />
     </div>
   );

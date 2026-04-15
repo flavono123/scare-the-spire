@@ -149,7 +149,7 @@ export function AncientDetail({ ancient, relics }: AncientDetailProps) {
     : EVENT_ACT_UNKNOWN;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
+    <div className="min-h-screen bg-background">
       {/* Hero section */}
       <div className="relative border-b border-blue-900/30 bg-[#0d0d14] overflow-hidden">
         {/* Background blur */}
