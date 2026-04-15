@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SiteNavbar } from "@/components/site-navbar";
 import "./globals.css";
 
@@ -42,6 +43,7 @@ export default function RootLayout({
         <SiteNavbar />
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
