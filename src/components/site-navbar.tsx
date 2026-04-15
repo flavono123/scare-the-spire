@@ -24,6 +24,55 @@ const sts1Items = [
   { href: "/potions", label: "포션", icon: "/images/sts2/nav/stats_potions.png" },
 ];
 
+// --- Nav icon with game-style tooltip ---
+
+function NavIconLink({
+  href,
+  icon,
+  label,
+  iconSize = 20,
+  external,
+}: {
+  href: string;
+  icon: string;
+  label: string;
+  iconSize?: number;
+  external?: boolean;
+}) {
+  const [hovered, setHovered] = useState(false);
+  const Tag = external ? "a" : Link;
+  const extraProps = external
+    ? { target: "_blank" as const, rel: "noopener noreferrer" }
+    : {};
+
+  return (
+    <div className="relative">
+      <Tag
+        href={href}
+        {...extraProps}
+        className="flex items-center rounded-md p-1.5 hover:bg-white/5 transition-colors"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <Image
+          src={icon}
+          alt={label}
+          width={iconSize}
+          height={iconSize}
+          className="object-contain brightness-90 hover:brightness-110 transition-all"
+        />
+      </Tag>
+      {hovered && (
+        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 z-50 pointer-events-none">
+          <div className="bg-[#0c0c20]/95 border border-white/15 rounded-lg shadow-2xl px-3 py-1.5 whitespace-nowrap">
+            <span className="text-xs font-bold text-yellow-400">{label}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // --- Dropdown component ---
 
 function GameDropdown({
@@ -125,36 +174,20 @@ export function SiteNavbar() {
             />
           </Link>
 
-          <nav className="flex items-center gap-3 text-sm">
-            <Link
+          <nav className="flex items-center gap-2 text-sm">
+            <NavIconLink
               href="/patches"
-              className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors group"
-            >
-              <Image
-                src="/images/sts2/nav/patch_notes_icon.png"
-                alt=""
-                width={20}
-                height={20}
-                className="transition-transform group-hover:rotate-[8deg]"
-              />
-              패치노트
-            </Link>
-
-            <a
+              icon="/images/sts2/nav/patch_notes_icon.png"
+              label="패치노트"
+              iconSize={22}
+            />
+            <NavIconLink
               href="https://docs.google.com/forms/d/e/1FAIpQLSfLZydnMSOswE22Z5P_BwVk5Jhxm_zfaytknV2_wIk444--NQ/viewform"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <Image
-                src="/images/sts2/icons/gold_icon.webp"
-                alt=""
-                width={16}
-                height={16}
-                className="object-contain"
-              />
-              제보
-            </a>
+              icon="/images/sts2/icons/gold_icon.webp"
+              label="제보"
+              iconSize={18}
+              external
+            />
           </nav>
         </div>
 
