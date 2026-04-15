@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props) {
   const ancient = ancients.find((a) => a.id.toLowerCase() === id.toLowerCase());
   if (!ancient) return { title: "Not Found" };
   return {
-    title: `${ancient.name} — Spire Codex`,
+    title: `${ancient.name} — 슬서운 이야기`,
     description: `슬레이 더 스파이어 2 에인션트: ${ancient.name} (${ancient.epithet})`,
   };
 }

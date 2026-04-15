@@ -5,7 +5,7 @@ import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data"
 import { EventList } from "@/components/codex/event-list";
 
 export const metadata = {
-  title: "이벤트 — Spire Codex",
+  title: "이벤트 — 슬서운 이야기",
   description: "슬레이 더 스파이어 2 이벤트",
 };
 

@@ -114,11 +114,11 @@ export default function CodexIndexPage() {
       {/* Header */}
       <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
         <div className="mx-auto max-w-5xl px-6 py-12 text-center">
-          <h1 className="font-[family-name:var(--font-spectral)] text-4xl md:text-5xl text-yellow-500 mb-3">
-            Spire Codex
+          <h1 className="font-[family-name:var(--font-gc-batang)] text-4xl md:text-5xl text-yellow-500 mb-3">
+            백과사전
           </h1>
           <p className="font-[family-name:var(--font-gc-batang)] text-lg text-yellow-200/60">
-            슬레이 더 스파이어 2 백과사전
+            슬레이 더 스파이어 2
           </p>
         </div>
       </div>
