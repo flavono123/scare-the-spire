@@ -14,7 +14,14 @@ export interface EntityBlock {
   displayText: string;
 }
 
-export type PostBlock = TextBlock | EntityBlock;
+/** A user-defined keyword with custom description tooltip */
+export interface KeywordBlock {
+  type: "keyword";
+  text: string;
+  description: string;
+}
+
+export type PostBlock = TextBlock | EntityBlock | KeywordBlock;
 
 export interface ChemicalPost {
   id: string;

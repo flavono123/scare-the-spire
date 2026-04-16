@@ -22,6 +22,12 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
           entityType: node.attrs?.entityType ?? "card",
           displayText: node.attrs?.label ?? "",
         });
+      } else if (node.type === "custom-keyword") {
+        blocks.push({
+          type: "keyword",
+          text: node.attrs?.text ?? "",
+          description: node.attrs?.description ?? "",
+        });
       }
     }
   }
@@ -33,7 +39,11 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
  */
 export function blocksToPlainText(blocks: PostBlock[]): string {
   return blocks
-    .map((b) => (b.type === "text" ? b.text : b.displayText))
+    .map((b) => {
+      if (b.type === "text") return b.text;
+      if (b.type === "keyword") return b.text;
+      return b.displayText;
+    })
     .join("");
 }
 

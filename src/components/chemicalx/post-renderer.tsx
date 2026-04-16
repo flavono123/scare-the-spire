@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EntityPreview } from "@/components/patch-note-renderer";
@@ -11,17 +12,24 @@ interface PostRendererProps {
 }
 
 export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRendererProps) {
-  // Collect unique entities for the expanded preview section
+  // Collect entities + keywords for the expanded preview section
   const expandedEntities: EntityInfo[] = [];
+  const expandedKeywords: { text: string; description: string }[] = [];
   if (forceShowTooltips) {
     const seen = new Set<string>();
     for (const block of blocks) {
-      if (block.type !== "entity") continue;
-      const key = `${block.entityType}:${block.entityId}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      const entity = entityMap.get(key);
-      if (entity) expandedEntities.push(entity);
+      if (block.type === "entity") {
+        const key = `${block.entityType}:${block.entityId}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const entity = entityMap.get(key);
+        if (entity) expandedEntities.push(entity);
+      } else if (block.type === "keyword") {
+        if (!seen.has(`kw:${block.text}`)) {
+          seen.add(`kw:${block.text}`);
+          expandedKeywords.push({ text: block.text, description: block.description });
+        }
+      }
     }
   }
 
@@ -32,6 +40,10 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
         {blocks.map((block, i) => {
           if (block.type === "text") {
             return <span key={i}>{block.text}</span>;
+          }
+
+          if (block.type === "keyword") {
+            return <KeywordSpan key={i} text={block.text} description={block.description} />;
           }
 
           const key = `${block.entityType}:${block.entityId}`;
@@ -54,16 +66,41 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
       </span>
 
       {/* Expanded tooltip cards below the text — block layout, border grows naturally */}
-      {forceShowTooltips && expandedEntities.length > 0 && (
+      {forceShowTooltips && (expandedEntities.length > 0 || expandedKeywords.length > 0) && (
         <div className="flex flex-wrap gap-2 mt-3">
           {expandedEntities.map((entity) => (
             <EntityPreview key={`${entity.type}:${entity.id}`} entity={entity} forceShow forcePosition="below">
               {entity.nameKo}
             </EntityPreview>
           ))}
+          {expandedKeywords.map((kw) => (
+            <span key={`kw:${kw.text}`} className="block w-fit rounded-lg shadow-2xl border border-yellow-500/20 bg-[#0c0c20]/95 px-3 py-2">
+              <span className="block font-bold text-sm text-yellow-400">{kw.text}</span>
+              <span className="block text-xs text-gray-300 leading-relaxed mt-0.5">{kw.description}</span>
+            </span>
+          ))}
         </div>
       )}
     </div>
+  );
+}
+
+function KeywordSpan({ text, description }: { text: string; description: string }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <span
+      className="relative inline spire-gold font-semibold cursor-help"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {text}
+      {hover && description && (
+        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-44 bg-[#0a0a1a]/95 border border-yellow-500/30 rounded px-2 py-1.5 text-left z-50 pointer-events-none shadow-xl">
+          <span className="font-bold text-yellow-400 text-[10px] block">{text}</span>
+          <span className="text-[9px] text-gray-300 font-normal leading-relaxed">{description}</span>
+        </span>
+      )}
+    </span>
   );
 }
 

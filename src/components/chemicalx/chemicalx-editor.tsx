@@ -9,6 +9,7 @@ import CharacterCount from "@tiptap/extension-character-count";
 import type { SuggestionProps, SuggestionKeyDownProps } from "@tiptap/suggestion";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EntityMention, entitySuggestionBase } from "./entity-mention";
+import { CustomKeyword } from "./custom-keyword";
 import { MentionList, type MentionListRef } from "./mention-list";
 import { EntityMapProvider } from "./entity-context";
 import { buildEntityMap } from "./post-renderer";
@@ -77,6 +78,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
       }),
       Placeholder.configure({ placeholder: PLACEHOLDER }),
       CharacterCount.configure({ limit: MAX_CHARS }),
+      CustomKeyword,
       EntityMention.configure({
         HTMLAttributes: {
           class: "spire-gold font-semibold",
