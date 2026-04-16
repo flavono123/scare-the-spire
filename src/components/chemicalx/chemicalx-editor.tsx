@@ -168,6 +168,24 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
       }),
     ],
     onUpdate: ({ editor }) => {
+      // Scan for custom keyword pattern: keyword{description}
+      const KEYWORD_RE = /(\S+)\{([^}]+)\}/;
+      let found = false;
+      editor.state.doc.descendants((node, pos) => {
+        if (found || !node.isText || !node.text) return;
+        const m = node.text.match(KEYWORD_RE);
+        if (!m || m.index == null) return;
+        found = true;
+        const from = pos + m.index;
+        const to = from + m[0].length;
+        const kwNode = editor.state.schema.nodes["custom-keyword"].create({
+          text: m[1],
+          description: m[2],
+        });
+        editor.view.dispatch(editor.state.tr.replaceWith(from, to, kwNode));
+      });
+      if (found) return; // dispatch triggers another onUpdate, handle charCount then
+
       const json = editor.getJSON();
       const blocks = tiptapToBlocks(json);
       const len = blocksToPlainText(blocks).length;
