@@ -95,9 +95,9 @@ function KeywordSpan({ text, description }: { text: string; description: string 
     >
       {text}
       {hover && description && (
-        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-44 bg-[#0a0a1a]/95 border border-yellow-500/30 rounded px-2 py-1.5 text-left z-50 pointer-events-none shadow-xl">
-          <span className="font-bold text-yellow-400 text-[10px] block">{text}</span>
-          <span className="text-[9px] text-gray-300 font-normal leading-relaxed">{description}</span>
+        <span className="absolute top-full left-0 mt-1 w-48 bg-[#0a0a1a] border border-yellow-500/30 rounded px-2.5 py-2 text-left z-[100] pointer-events-none shadow-xl">
+          <span className="font-bold text-yellow-400 text-xs block">{text}</span>
+          <span className="text-[11px] text-gray-300 font-normal leading-relaxed block mt-0.5">{description}</span>
         </span>
       )}
     </span>
