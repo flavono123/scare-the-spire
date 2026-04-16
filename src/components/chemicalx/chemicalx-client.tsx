@@ -80,8 +80,8 @@ export function ChemicalXClient({ entities }: ChemicalXClientProps) {
       {loading ? (
         <div className="flex flex-col items-center justify-center py-12 gap-3">
           <Image
-            src="/images/sts2/powers/slumber_power.webp"
-            alt="숙면"
+            src="/images/sts2/powers/knockdown_power.webp"
+            alt="때려눕히기"
             width={48}
             height={48}
             className="object-contain animate-pulse"
