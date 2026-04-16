@@ -46,7 +46,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
   }, [postId]);
 
   const handleCopyUrl = useCallback(() => {
-    const url = `${window.location.origin}/chemicalx/${postId}`;
+    const url = `${window.location.origin}/chemical-x/${postId}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -71,7 +71,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-500 text-sm mb-4">글을 찾을 수 없습니다</p>
-        <Link href="/chemicalx" className="text-yellow-400 text-sm hover:underline">
+        <Link href="/chemical-x" className="text-yellow-400 text-sm hover:underline">
           케미컬X로 돌아가기
         </Link>
       </div>
@@ -85,7 +85,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
       {/* Back + actions — outside the card (not in screenshot) */}
       <div className="flex items-center justify-between">
         <Link
-          href="/chemicalx"
+          href="/chemical-x"
           className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-yellow-400 transition-colors"
         >
           <ArrowLeft size={16} />
@@ -145,7 +145,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
             <span className="text-[11px] text-yellow-500/40 font-semibold tracking-wide">슬서운 이야기</span>
           </div>
           <span className="text-[11px] text-gray-600/60 tracking-wide">
-            slseorun.com/chemicalx/{postId.slice(0, 8)}
+            scare-the-spire.vercel.app/chemical-x/{postId.slice(0, 8)}
           </span>
         </div>
       </article>

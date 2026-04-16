@@ -101,7 +101,7 @@ export function EntityPreview({
         <span
           className={tooltipPos}
         >
-          <span className="block w-48 drop-shadow-2xl">
+          <span className="block w-36 drop-shadow-2xl">
             <CardTile card={entity.cardData} showUpgrade={false} showBeta={false} />
           </span>
         </span>
@@ -326,7 +326,7 @@ export function EntityPreview({
         <span
           className={tooltipPos}
         >
-          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
+          <span className="block w-fit max-w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="flex items-center gap-2 mb-1">
               {(entity.monsterData.bossImageUrl || entity.monsterData.imageUrl) && (
                 <Image

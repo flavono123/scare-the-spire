@@ -201,7 +201,7 @@ export function SiteNavbar() {
               iconClassName="group-hover:rotate-[8deg]"
             />
             <NavIconLink
-              href="/chemicalx"
+              href="/chemical-x"
               icon="/images/sts2/relics/chemical_x.webp"
               label="케미컬X"
               iconSize={18}

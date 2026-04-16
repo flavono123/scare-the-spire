@@ -41,7 +41,7 @@ export function PostCard({ post, entityMap, forceShowTooltips, isOwner, onDelete
             {timeAgo(post.created_at)}
           </span>
           <Link
-            href={`/chemicalx/${post.id}`}
+            href={`/chemical-x/${post.id}`}
             className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-yellow-400 transition-all"
             title="공유"
           >
