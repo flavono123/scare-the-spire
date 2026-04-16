@@ -52,7 +52,7 @@ function NavIconLink({
       <Tag
         href={href}
         {...extraProps}
-        className="flex items-center rounded-md p-1.5 hover:bg-white/5 transition-colors"
+        className="flex items-center p-1.5 transition-colors"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
@@ -76,7 +76,7 @@ function NavIconLink({
             }}
           >
             <span
-              className="font-[family-name:var(--font-kreon)] text-xs font-bold"
+              className="text-xs font-bold"
               style={{
                 color: "rgb(239, 200, 81)",
                 textShadow: "2px 1px 0 rgba(0,0,0,0.25)",
@@ -205,6 +205,7 @@ export function SiteNavbar() {
               icon="/images/sts2/relics/chemical_x.webp"
               label="케미컬X"
               iconSize={18}
+              iconClassName="group-hover:rotate-[8deg]"
             />
           </nav>
         </div>
