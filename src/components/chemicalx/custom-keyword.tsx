@@ -24,14 +24,14 @@ export const CustomKeyword = Node.create({
     return [{ tag: "span[data-custom-keyword]" }];
   },
 
-  renderHTML({ HTMLAttributes }) {
+  renderHTML({ node, HTMLAttributes }) {
     return [
       "span",
       mergeAttributes(HTMLAttributes, {
         "data-custom-keyword": "",
         class: "spire-gold font-semibold",
       }),
-      0,
+      node.attrs.text as string,
     ];
   },
 

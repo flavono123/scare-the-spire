@@ -210,6 +210,11 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
       }),
     ],
     onUpdate: ({ editor }) => {
+      // Skip keyword detection during IME composition (Korean input)
+      if (editor.view.composing) {
+        return;
+      }
+
       // Scan for custom keyword pattern in editor JSON: keyword{description}
       const json = editor.getJSON();
       const replaced = replaceKeywordsInJSON(json);
