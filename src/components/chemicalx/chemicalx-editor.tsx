@@ -25,6 +25,20 @@ function getSavedNickname(): string {
 }
 
 const PLACEHOLDER = "오, 이 차는 무례한 사람들에게 내어지는 차입니다...";
+const DRAFT_KEY = "sts-chemicalx-draft";
+
+function getSavedDraft(): string | null {
+  if (typeof window === "undefined") return null;
+  return sessionStorage.getItem(DRAFT_KEY);
+}
+
+function saveDraft(json: string) {
+  sessionStorage.setItem(DRAFT_KEY, json);
+}
+
+function clearDraft() {
+  sessionStorage.removeItem(DRAFT_KEY);
+}
 
 interface ChemicalXEditorProps {
   entities: EntityInfo[];
@@ -34,7 +48,11 @@ interface ChemicalXEditorProps {
 export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
   const [nickname, setNickname] = useState(getSavedNickname);
   const [submitting, setSubmitting] = useState(false);
-  const [charCount, setCharCount] = useState(0);
+  const [charCount, setCharCount] = useState(() => {
+    const draft = getSavedDraft();
+    if (draft) try { return blocksToPlainText(tiptapToBlocks(JSON.parse(draft))).length; } catch { /* ignore */ }
+    return 0;
+  });
   const popupRef = useRef<HTMLDivElement | null>(null);
   const submitRef = useRef<() => void>(() => {});
   const suggestionOpenRef = useRef(false);
@@ -42,6 +60,11 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
 
   const editor = useEditor({
     immediatelyRender: false,
+    content: (() => {
+      const draft = getSavedDraft();
+      if (draft) try { return JSON.parse(draft); } catch { /* ignore */ }
+      return undefined;
+    })(),
     extensions: [
       StarterKit.configure({
         heading: false,
@@ -143,8 +166,12 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
       }),
     ],
     onUpdate: ({ editor }) => {
-      const blocks = tiptapToBlocks(editor.getJSON());
-      setCharCount(blocksToPlainText(blocks).length);
+      const json = editor.getJSON();
+      const blocks = tiptapToBlocks(json);
+      const len = blocksToPlainText(blocks).length;
+      setCharCount(len);
+      if (len > 0) saveDraft(JSON.stringify(json));
+      else clearDraft();
     },
     editorProps: {
       attributes: {
@@ -181,6 +208,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
       await onSubmit(blocks, nick);
       editor.commands.clearContent();
       setCharCount(0);
+      clearDraft();
     } finally {
       setSubmitting(false);
     }

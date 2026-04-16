@@ -55,7 +55,7 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
 
       {/* Expanded tooltip cards below the text — block layout, border grows naturally */}
       {forceShowTooltips && expandedEntities.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-3 justify-center">
+        <div className="flex flex-wrap gap-2 mt-3">
           {expandedEntities.map((entity) => (
             <EntityPreview key={`${entity.type}:${entity.id}`} entity={entity} forceShow forcePosition="below">
               {entity.nameKo}

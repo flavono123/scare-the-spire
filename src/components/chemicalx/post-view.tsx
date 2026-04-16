@@ -8,10 +8,17 @@ import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import type { ChemicalPost } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { PostRenderer, buildEntityMap } from "./post-renderer";
+import { blocksToPlainText } from "@/lib/chemical-utils";
 
 interface PostViewProps {
   postId: string;
   entities: EntityInfo[];
+}
+
+function getTextClass(len: number): string {
+  if (len <= 8) return "text-2xl";
+  if (len <= 18) return "text-xl";
+  return "text-lg";
 }
 
 export function ChemicalXPostView({ postId, entities }: PostViewProps) {
@@ -71,69 +78,77 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
     );
   }
 
+  const textLen = blocksToPlainText(post.content).length;
+
   return (
     <div className="space-y-4">
-      {/* Back link */}
-      <Link
-        href="/chemicalx"
-        className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-yellow-400 transition-colors"
-      >
-        <ArrowLeft size={16} />
-        케미컬X
-      </Link>
+      {/* Back + actions — outside the card (not in screenshot) */}
+      <div className="flex items-center justify-between">
+        <Link
+          href="/chemicalx"
+          className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-yellow-400 transition-colors"
+        >
+          <ArrowLeft size={16} />
+          케미컬X
+        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleCopyUrl}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
+          >
+            <Link2 size={14} />
+            {copied ? "복사됨!" : "링크 복사"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowTooltips((v) => !v)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
+          >
+            {showTooltips ? <EyeOff size={14} /> : <Eye size={14} />}
+            {showTooltips ? "접기" : "펼치기"}
+          </button>
+        </div>
+      </div>
 
-      {/* Post card — designed to look good as a native screenshot */}
-      <div className="rounded-xl border border-yellow-500/20 bg-[#0c0c16] p-5">
+      {/* ===== Screenshot-worthy card ===== */}
+      <article className="relative rounded-2xl overflow-hidden bg-gradient-to-b from-[#0c0c18] via-[#10101e] to-[#0c0c18] border border-yellow-500/15 p-6 pb-5">
+        {/* Ambient gold glow */}
+        <div
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(200,155,60,0.08) 0%, transparent 70%)", filter: "blur(40px)" }}
+        />
+
         {/* Header */}
-        <div className="flex items-center justify-between mb-3">
+        <div className="relative flex items-center justify-between mb-4">
           <span className="text-sm font-semibold text-gray-300">{post.nickname}</span>
           <span className="text-xs text-gray-500">
             {new Date(post.created_at).toLocaleDateString("ko-KR")}
           </span>
         </div>
 
-        {/* Content */}
-        <div className="text-base leading-relaxed py-4">
+        {/* Post text — adaptive size */}
+        <div className={`relative ${getTextClass(textLen)} font-bold leading-relaxed text-[#f0e6d2] py-3`}>
           <PostRenderer blocks={post.content} entityMap={entityMap} forceShowTooltips={showTooltips} />
         </div>
 
-        {/* Branding footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-border">
+        {/* Branding footer — subtle, in-card */}
+        <div className="relative flex items-center justify-between mt-4 pt-3 border-t border-white/5">
           <div className="flex items-center gap-1.5">
             <Image
               src="/images/sts2/relics/chemical_x.webp"
               alt=""
               width={14}
               height={14}
-              className="object-contain"
+              className="object-contain opacity-50"
             />
-            <span className="text-[10px] text-yellow-500/60 font-semibold">슬서운 이야기</span>
+            <span className="text-[11px] text-yellow-500/40 font-semibold tracking-wide">슬서운 이야기</span>
           </div>
-          <span className="text-[10px] text-gray-600">
-            scare-the-spire.vercel.app/chemicalx/{postId.slice(0, 8)}
+          <span className="text-[11px] text-gray-600/60 tracking-wide">
+            slseorun.com/chemicalx/{postId.slice(0, 8)}
           </span>
         </div>
-      </div>
-
-      {/* Actions */}
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={handleCopyUrl}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
-        >
-          <Link2 size={14} />
-          {copied ? "복사됨!" : "링크 복사"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setShowTooltips((v) => !v)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
-        >
-          {showTooltips ? <EyeOff size={14} /> : <Eye size={14} />}
-          {showTooltips ? "툴팁 숨기기" : "전체 툴팁"}
-        </button>
-      </div>
+      </article>
     </div>
   );
 }
