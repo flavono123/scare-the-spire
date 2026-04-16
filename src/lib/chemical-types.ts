@@ -18,7 +18,10 @@ export interface EntityBlock {
 export interface KeywordBlock {
   type: "keyword";
   text: string;
+  keyword?: string;
   description: string;
+  entityId?: string;
+  entityType?: EntityType;
 }
 
 export type PostBlock = TextBlock | EntityBlock | KeywordBlock;

@@ -1,6 +1,6 @@
 import type { JSONContent } from "@tiptap/react";
 import { getChoseong } from "es-hangul";
-import type { EntityInfo } from "@/components/patch-note-renderer";
+import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 
 /**
@@ -23,10 +23,15 @@ export function tiptapToBlocks(doc: JSONContent): PostBlock[] {
           displayText: node.attrs?.label ?? "",
         });
       } else if (node.type === "custom-keyword") {
+        const entityId = node.attrs?.entityId ?? "";
+        const entityType = node.attrs?.entityType ?? "";
         blocks.push({
           type: "keyword",
           text: node.attrs?.text ?? "",
+          keyword: node.attrs?.keyword ?? "",
           description: node.attrs?.description ?? "",
+          entityId: entityId || undefined,
+          entityType: (entityType || undefined) as EntityType | undefined,
         });
       }
     }

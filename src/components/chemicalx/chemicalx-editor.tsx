@@ -3,58 +3,136 @@
 import { useState, useCallback, useRef, useMemo } from "react";
 import Image from "next/image";
 import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
+import type { Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
 import type { SuggestionProps, SuggestionKeyDownProps } from "@tiptap/suggestion";
-import type { EntityInfo } from "@/components/patch-note-renderer";
+import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { EntityMention, entitySuggestionBase } from "./entity-mention";
 import { CustomKeyword } from "./custom-keyword";
 import { MentionList, type MentionListRef } from "./mention-list";
 import { EntityMapProvider } from "./entity-context";
 import { buildEntityMap } from "./post-renderer";
 import { tiptapToBlocks, blocksToPlainText, matchEntities } from "@/lib/chemical-utils";
-import type { JSONContent } from "@tiptap/react";
+import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 
-const KEYWORD_RE = /(\S+)\{([^}]+)\}/;
+const KEYWORD_RE_SOURCE = /(\S+)\{([^{}\n]+)\}/.source;
+const KEYWORD_AT_CURSOR_RE = /(\S+)\{([^{}\n]+)\}$/;
+
+function cleanTooltipText(text: string): string {
+  return text
+    .replace(/\[\/?\w+(?::[^/\]]+)?\]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function sanitizeKeywordPart(text: string): string {
+  return text.replace(/\uFFFC/g, "").trim();
+}
+
+interface KeywordResolution {
+  keyword: string;
+  description: string;
+  entityId?: string;
+  entityType?: EntityType;
+}
 
 /**
- * Walk TipTap JSON, find text nodes matching keyword{description},
- * split them into [before, custom-keyword-node, after].
- * Mutates the JSON in place. Returns true if any replacement was made.
+ * Find text matches in the live ProseMirror doc and replace only those ranges
+ * with inline custom-keyword atom nodes. This avoids full-doc setContent resets,
+ * which break Korean IME composition and can remount NodeViews.
  */
-function replaceKeywordsInJSON(doc: JSONContent): boolean {
-  let replaced = false;
+function replaceKeywordAtCursor(
+  editor: Editor,
+  resolveKeyword: (keyword: string) => KeywordResolution,
+): boolean {
+  const keywordNode = editor.schema.nodes["custom-keyword"];
+  if (!keywordNode) return false;
 
-  function walk(node: JSONContent) {
-    if (!node.content) return;
-    const newContent: JSONContent[] = [];
+  const { from, empty, $from } = editor.state.selection;
+  if (!empty) return false;
 
-    for (const child of node.content) {
-      if (child.type === "text" && child.text) {
-        const m = child.text.match(KEYWORD_RE);
-        if (m && m.index != null) {
-          replaced = true;
-          const before = child.text.slice(0, m.index);
-          const after = child.text.slice(m.index + m[0].length);
-          if (before) newContent.push({ type: "text", text: before });
-          newContent.push({
-            type: "custom-keyword",
-            attrs: { text: m[1], description: m[2] },
-          });
-          if (after) newContent.push({ type: "text", text: after });
-          continue;
-        }
-      }
-      walk(child);
-      newContent.push(child);
-    }
+  const textBefore = $from.parent.textBetween(0, $from.parentOffset, undefined, "\uFFFC");
+  const m = textBefore.match(KEYWORD_AT_CURSOR_RE);
+  if (!m) return false;
 
-    node.content = newContent;
+  const text = sanitizeKeywordPart(m[1] ?? "");
+  const keyword = sanitizeKeywordPart(m[2] ?? "");
+  if (!text || !keyword) return false;
+
+  const resolved = resolveKeyword(keyword);
+  const start = from - m[0].length;
+  const tr = editor.state.tr.replaceWith(
+    start,
+    from,
+    keywordNode.create({
+      text,
+      keyword: resolved.keyword,
+      description: resolved.description,
+      entityId: resolved.entityId ?? "",
+      entityType: resolved.entityType ?? "",
+    }),
+  );
+  editor.view.dispatch(tr);
+  return true;
+}
+
+function replaceKeywordsInEditor(
+  editor: Editor,
+  resolveKeyword: (keyword: string) => KeywordResolution,
+): boolean {
+  if (replaceKeywordAtCursor(editor, resolveKeyword)) {
+    return true;
   }
 
-  walk(doc);
-  return replaced;
+  const keywordNode = editor.schema.nodes["custom-keyword"];
+  if (!keywordNode) return false;
+
+  const replacements: Array<{ from: number; to: number; text: string; keyword: string; description: string; entityId?: string; entityType?: EntityType }> = [];
+
+  editor.state.doc.descendants((node, pos) => {
+    if (!node.isText || !node.text) return;
+    const keywordRe = new RegExp(KEYWORD_RE_SOURCE, "g");
+
+    for (const m of node.text.matchAll(keywordRe)) {
+      if (m.index == null) continue;
+
+      const keywordText = sanitizeKeywordPart(m[1] ?? "");
+      const keyword = sanitizeKeywordPart(m[2] ?? "");
+      if (!keywordText || !keyword) continue;
+      const resolved = resolveKeyword(keyword);
+
+      const from = pos + m.index;
+      const to = from + m[0].length;
+      replacements.push({
+        from,
+        to,
+        text: keywordText,
+        keyword: resolved.keyword,
+        description: resolved.description,
+        entityId: resolved.entityId,
+        entityType: resolved.entityType,
+      });
+    }
+  });
+
+  if (!replacements.length) return false;
+
+  const tr = editor.state.tr;
+  for (let i = replacements.length - 1; i >= 0; i--) {
+    const { from, to, text, keyword, description, entityId, entityType } = replacements[i];
+    tr.replaceWith(from, to, keywordNode.create({
+      text,
+      keyword,
+      description,
+      entityId: entityId ?? "",
+      entityType: entityType ?? "",
+    }));
+  }
+
+  editor.view.dispatch(tr);
+  return true;
 }
 
 const MAX_CHARS = 30;
@@ -97,9 +175,71 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
     return 0;
   });
   const popupRef = useRef<HTMLDivElement | null>(null);
+  const editorRef = useRef<Editor | null>(null);
+  const composeTimeoutRef = useRef<number | null>(null);
   const submitRef = useRef<() => void>(() => {});
   const suggestionOpenRef = useRef(false);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
+  const keywordEntityMap = useMemo(() => {
+    const map = new Map<string, { id: string; type: EntityType }>();
+    for (const entity of entities) {
+      if (entity.nameKo) map.set(entity.nameKo, { id: entity.id, type: entity.type });
+      if (entity.nameEn) map.set(entity.nameEn, { id: entity.id, type: entity.type });
+    }
+    return map;
+  }, [entities]);
+  const keywordDescriptionMap = useMemo(() => {
+    const map = new Map<string, string>();
+
+    for (const [k, v] of Object.entries(KEYWORD_DESC)) {
+      map.set(k, cleanTooltipText(v));
+    }
+    for (const [k, v] of Object.entries(GOLD_TERM_DESC)) {
+      map.set(k, cleanTooltipText(v));
+    }
+
+    for (const entity of entities) {
+      const description =
+        entity.powerData?.description
+        ?? entity.relicData?.description
+        ?? entity.potionData?.description
+        ?? entity.enchantmentData?.description;
+      if (!description) continue;
+      const cleaned = cleanTooltipText(description);
+      if (!cleaned) continue;
+      map.set(entity.nameKo, cleaned);
+      map.set(entity.nameEn, cleaned);
+    }
+
+    return map;
+  }, [entities]);
+
+  const resolveKeyword = useCallback((keyword: string): KeywordResolution => {
+    const cleanKeyword = sanitizeKeywordPart(keyword);
+    const entity = keywordEntityMap.get(cleanKeyword);
+    return {
+      keyword: cleanKeyword,
+      description: keywordDescriptionMap.get(cleanKeyword) ?? cleanKeyword,
+      entityId: entity?.id,
+      entityType: entity?.type,
+    };
+  }, [keywordDescriptionMap, keywordEntityMap]);
+
+  const syncEditorState = useCallback((editor: Editor) => {
+    const json = editor.getJSON();
+    const blocks = tiptapToBlocks(json);
+    const len = blocksToPlainText(blocks).length;
+    setCharCount(len);
+    if (len > 0) saveDraft(JSON.stringify(json));
+    else clearDraft();
+  }, []);
+
+  const processEditorUpdate = useCallback((editor: Editor) => {
+    if (replaceKeywordsInEditor(editor, resolveKeyword)) {
+      return;
+    }
+    syncEditorState(editor);
+  }, [resolveKeyword, syncEditorState]);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -209,39 +349,50 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
         },
       }),
     ],
+    onCreate: ({ editor }) => {
+      editorRef.current = editor;
+    },
+    onDestroy: () => {
+      editorRef.current = null;
+      if (composeTimeoutRef.current != null) {
+        window.clearTimeout(composeTimeoutRef.current);
+        composeTimeoutRef.current = null;
+      }
+    },
     onUpdate: ({ editor }) => {
-      // Skip keyword detection during IME composition (Korean input)
+      // During IME composition, defer conversion until composition settles.
       if (editor.view.composing) {
+        if (composeTimeoutRef.current != null) {
+          window.clearTimeout(composeTimeoutRef.current);
+        }
+        composeTimeoutRef.current = window.setTimeout(() => {
+          const currentEditor = editorRef.current;
+          if (!currentEditor || currentEditor.isDestroyed || currentEditor.view.composing) {
+            return;
+          }
+          processEditorUpdate(currentEditor);
+        }, 0);
         return;
       }
 
-      // Scan for custom keyword pattern in editor JSON: keyword{description}
-      const json = editor.getJSON();
-      const replaced = replaceKeywordsInJSON(json);
-
-      if (replaced) {
-        // Re-set content with keywords replaced — triggers another onUpdate
-        const cursorPos = editor.state.selection.from;
-        editor.commands.setContent(json);
-        // Restore cursor near where it was (may shift slightly)
-        try {
-          const maxPos = editor.state.doc.content.size;
-          editor.commands.focus();
-          editor.commands.setTextSelection(Math.min(cursorPos, maxPos));
-        } catch { /* cursor restore is best-effort */ }
-        return;
-      }
-
-      const blocks = tiptapToBlocks(json);
-      const len = blocksToPlainText(blocks).length;
-      setCharCount(len);
-      if (len > 0) saveDraft(JSON.stringify(json));
-      else clearDraft();
+      processEditorUpdate(editor);
     },
     editorProps: {
       attributes: {
         class:
           "min-h-[2.5rem] px-3 py-2 text-sm text-gray-200 outline-none",
+      },
+      handleDOMEvents: {
+        compositionend: () => {
+          window.setTimeout(() => {
+            const currentEditor = editorRef.current;
+            if (!currentEditor || currentEditor.isDestroyed || currentEditor.view.composing) {
+              return;
+            }
+            processEditorUpdate(currentEditor);
+          }, 0);
+          return false;
+        },
       },
       handleKeyDown: (_view, event) => {
         if (event.key === "Enter" && !event.shiftKey) {

@@ -14,7 +14,7 @@ interface PostRendererProps {
 export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRendererProps) {
   // Collect entities + keywords for the expanded preview section
   const expandedEntities: EntityInfo[] = [];
-  const expandedKeywords: { text: string; description: string }[] = [];
+  const expandedKeywords: { text: string; keyword?: string; description: string }[] = [];
   if (forceShowTooltips) {
     const seen = new Set<string>();
     for (const block of blocks) {
@@ -25,9 +25,22 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
         const entity = entityMap.get(key);
         if (entity) expandedEntities.push(entity);
       } else if (block.type === "keyword") {
-        if (!seen.has(`kw:${block.text}`)) {
-          seen.add(`kw:${block.text}`);
-          expandedKeywords.push({ text: block.text, description: block.description });
+        if (block.entityId && block.entityType) {
+          const entity = entityMap.get(`${block.entityType}:${block.entityId}`);
+          if (entity) {
+            const key = `${entity.type}:${entity.id}`;
+            if (!seen.has(key)) {
+              seen.add(key);
+              expandedEntities.push(entity);
+            }
+            continue;
+          }
+        }
+
+        const keyName = block.keyword || block.text;
+        if (!seen.has(`kw:${keyName}`)) {
+          seen.add(`kw:${keyName}`);
+          expandedKeywords.push({ text: block.text, keyword: block.keyword, description: block.description });
         }
       }
     }
@@ -43,7 +56,17 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
           }
 
           if (block.type === "keyword") {
-            return <KeywordSpan key={i} text={block.text} description={block.description} />;
+            if (block.entityId && block.entityType) {
+              const entity = entityMap.get(`${block.entityType}:${block.entityId}`);
+              if (entity) {
+                return (
+                  <EntityPreview key={i} entity={entity}>
+                    {block.text}
+                  </EntityPreview>
+                );
+              }
+            }
+            return <KeywordSpan key={i} text={block.text} keyword={block.keyword} description={block.description} />;
           }
 
           const key = `${block.entityType}:${block.entityId}`;
@@ -74,8 +97,8 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
             </EntityPreview>
           ))}
           {expandedKeywords.map((kw) => (
-            <span key={`kw:${kw.text}`} className="block w-fit rounded-lg shadow-2xl border border-yellow-500/20 bg-[#0c0c20]/95 px-3 py-2">
-              <span className="block font-bold text-sm text-yellow-400">{kw.text}</span>
+            <span key={`kw:${kw.keyword || kw.text}`} className="block w-fit rounded-lg shadow-2xl border border-yellow-500/20 bg-[#0c0c20]/95 px-3 py-2">
+              <span className="block font-bold text-sm text-yellow-400">{kw.keyword || kw.text}</span>
               <span className="block text-xs text-gray-300 leading-relaxed mt-0.5">{kw.description}</span>
             </span>
           ))}
@@ -85,8 +108,9 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
   );
 }
 
-function KeywordSpan({ text, description }: { text: string; description: string }) {
+function KeywordSpan({ text, keyword, description }: { text: string; keyword?: string; description: string }) {
   const [hover, setHover] = useState(false);
+  const title = keyword || text;
   return (
     <span
       className="relative inline spire-gold font-semibold cursor-help"
@@ -96,7 +120,7 @@ function KeywordSpan({ text, description }: { text: string; description: string 
       {text}
       {hover && description && (
         <span className="absolute top-full left-0 mt-1 w-48 bg-[#0a0a1a] border border-yellow-500/30 rounded px-2.5 py-2 text-left z-[100] pointer-events-none shadow-xl">
-          <span className="font-bold text-yellow-400 text-xs block">{text}</span>
+          <span className="font-bold text-yellow-400 text-xs block">{title}</span>
           <span className="text-[11px] text-gray-300 font-normal leading-relaxed block mt-0.5">{description}</span>
         </span>
       )}

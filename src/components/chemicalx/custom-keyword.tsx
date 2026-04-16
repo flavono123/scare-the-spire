@@ -16,7 +16,10 @@ export const CustomKeyword = Node.create({
   addAttributes() {
     return {
       text: { default: "" },
+      keyword: { default: "" },
       description: { default: "" },
+      entityId: { default: "" },
+      entityType: { default: "" },
     };
   },
 
