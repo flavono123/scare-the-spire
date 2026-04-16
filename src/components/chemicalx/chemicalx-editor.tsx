@@ -14,6 +14,48 @@ import { MentionList, type MentionListRef } from "./mention-list";
 import { EntityMapProvider } from "./entity-context";
 import { buildEntityMap } from "./post-renderer";
 import { tiptapToBlocks, blocksToPlainText, matchEntities } from "@/lib/chemical-utils";
+import type { JSONContent } from "@tiptap/react";
+
+const KEYWORD_RE = /(\S+)\{([^}]+)\}/;
+
+/**
+ * Walk TipTap JSON, find text nodes matching keyword{description},
+ * split them into [before, custom-keyword-node, after].
+ * Mutates the JSON in place. Returns true if any replacement was made.
+ */
+function replaceKeywordsInJSON(doc: JSONContent): boolean {
+  let replaced = false;
+
+  function walk(node: JSONContent) {
+    if (!node.content) return;
+    const newContent: JSONContent[] = [];
+
+    for (const child of node.content) {
+      if (child.type === "text" && child.text) {
+        const m = child.text.match(KEYWORD_RE);
+        if (m && m.index != null) {
+          replaced = true;
+          const before = child.text.slice(0, m.index);
+          const after = child.text.slice(m.index + m[0].length);
+          if (before) newContent.push({ type: "text", text: before });
+          newContent.push({
+            type: "custom-keyword",
+            attrs: { text: m[1], description: m[2] },
+          });
+          if (after) newContent.push({ type: "text", text: after });
+          continue;
+        }
+      }
+      walk(child);
+      newContent.push(child);
+    }
+
+    node.content = newContent;
+  }
+
+  walk(doc);
+  return replaced;
+}
 
 const MAX_CHARS = 30;
 const MIN_CHARS = 2;
@@ -168,25 +210,23 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
       }),
     ],
     onUpdate: ({ editor }) => {
-      // Scan for custom keyword pattern: keyword{description}
-      const KEYWORD_RE = /(\S+)\{([^}]+)\}/;
-      let found = false;
-      editor.state.doc.descendants((node, pos) => {
-        if (found || !node.isText || !node.text) return;
-        const m = node.text.match(KEYWORD_RE);
-        if (!m || m.index == null) return;
-        found = true;
-        const from = pos + m.index;
-        const to = from + m[0].length;
-        const kwNode = editor.state.schema.nodes["custom-keyword"].create({
-          text: m[1],
-          description: m[2],
-        });
-        editor.view.dispatch(editor.state.tr.replaceWith(from, to, kwNode));
-      });
-      if (found) return; // dispatch triggers another onUpdate, handle charCount then
-
+      // Scan for custom keyword pattern in editor JSON: keyword{description}
       const json = editor.getJSON();
+      const replaced = replaceKeywordsInJSON(json);
+
+      if (replaced) {
+        // Re-set content with keywords replaced — triggers another onUpdate
+        const cursorPos = editor.state.selection.from;
+        editor.commands.setContent(json);
+        // Restore cursor near where it was (may shift slightly)
+        try {
+          const maxPos = editor.state.doc.content.size;
+          editor.commands.focus();
+          editor.commands.setTextSelection(Math.min(cursorPos, maxPos));
+        } catch { /* cursor restore is best-effort */ }
+        return;
+      }
+
       const blocks = tiptapToBlocks(json);
       const len = blocksToPlainText(blocks).length;
       setCharCount(len);
