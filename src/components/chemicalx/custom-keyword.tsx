@@ -1,10 +1,16 @@
-import { Node, mergeAttributes, InputRule } from "@tiptap/core";
+import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { KeywordNodeView } from "./keyword-node-view";
+
+const KEYWORD_PATTERN = /(\S+)\{([^}]+)\}$/;
 
 /**
  * Custom keyword node: user types `키워드{설명}` and on closing `}`
  * it converts to a gold inline atom with hover tooltip.
+ *
+ * Uses handleTextInput plugin instead of InputRule to avoid conflicts
+ * with the entity autocomplete suggestion system and Korean IME.
  */
 export const CustomKeyword = Node.create({
   name: "custom-keyword",
@@ -42,15 +48,41 @@ export const CustomKeyword = Node.create({
     return ReactNodeViewRenderer(KeywordNodeView, { as: "span" });
   },
 
-  addInputRules() {
+  addProseMirrorPlugins() {
+    const nodeType = this.type;
+
     return [
-      new InputRule({
-        // Match non-space keyword + {description} at end of input
-        find: /(\S+)\{([^}]+)\}$/,
-        handler: ({ state, range, match }) => {
-          const attrs = { text: match[1], description: match[2] };
-          const node = this.type.create(attrs);
-          state.tr.replaceWith(range.from, range.to, node);
+      new Plugin({
+        key: new PluginKey("custom-keyword-input"),
+        props: {
+          handleTextInput(view, from, to, text) {
+            if (text !== "}") return false;
+
+            const { state } = view;
+            const $pos = state.doc.resolve(from);
+            // Get all text in the current paragraph up to cursor, plus the "}" being typed
+            const textBefore = $pos.parent.textBetween(0, $pos.parentOffset, undefined, "\ufffc") + "}";
+
+            const match = textBefore.match(KEYWORD_PATTERN);
+            if (!match) return false;
+
+            const keyword = match[1];
+            const description = match[2];
+            const fullMatchLen = match[0].length;
+
+            // Calculate document positions
+            const paragraphStart = $pos.start();
+            const matchFrom = paragraphStart + textBefore.length - fullMatchLen;
+            const matchTo = from; // cursor position before "}" is typed
+
+            const tr = state.tr;
+            // Delete the matched text range and the "}" that would be inserted
+            tr.delete(matchFrom, matchTo);
+            // Insert the custom keyword node at the match start
+            tr.insert(matchFrom, nodeType.create({ text: keyword, description }));
+            view.dispatch(tr);
+            return true; // prevent default "}" insertion
+          },
         },
       }),
     ];
