@@ -39,10 +39,10 @@ export const metadata: Metadata = {
     siteName: "슬서운 이야기",
     images: [
       {
-        url: "/images/sts2/cards/tag_team.webp",
+        url: "/images/sts2/cards/coordinate.webp",
         width: 1000,
         height: 760,
-        alt: "슬서운 이야기 — 협력",
+        alt: "슬서운 이야기 — 협력 Coordinate",
       },
     ],
     locale: "ko_KR",
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "슬서운 이야기",
     description: "슬레이 더 스파이어 2 패치노트, 백과사전, 커뮤니티",
-    images: ["/images/sts2/cards/tag_team.webp"],
+    images: ["/images/sts2/cards/coordinate.webp"],
   },
   icons: {
     icon: "/favicon.ico",
