@@ -2,7 +2,6 @@
 
 import {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useState,
 } from "react";
@@ -33,11 +32,17 @@ interface MentionListProps {
 export const MentionList = forwardRef<MentionListRef, MentionListProps>(
   ({ items, command }, ref) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
-
-    useEffect(() => setSelectedIndex(0), [items]);
+    const safeSelectedIndex =
+      items.length === 0
+        ? 0
+        : selectedIndex >= items.length
+          ? 0
+          : selectedIndex;
 
     useImperativeHandle(ref, () => ({
       onKeyDown: ({ event }) => {
+        if (items.length === 0) return false;
+
         if (event.key === "ArrowUp") {
           setSelectedIndex((i) => (i + items.length - 1) % items.length);
           return true;
@@ -48,7 +53,7 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
         }
         if (event.key === "Enter" || event.key === "Tab") {
           event.preventDefault();
-          const item = items[selectedIndex];
+          const item = items[safeSelectedIndex];
           if (item) command(item);
           return true;
         }
@@ -70,7 +75,7 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
               key={`${item.type}:${item.id}`}
               type="button"
               className={`flex items-center gap-2 w-full px-3 py-1.5 text-left text-sm transition-colors ${
-                i === selectedIndex
+                i === safeSelectedIndex
                   ? "bg-yellow-500/20 text-yellow-300"
                   : "text-gray-300 hover:bg-yellow-500/10"
               }`}

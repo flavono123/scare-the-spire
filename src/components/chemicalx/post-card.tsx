@@ -42,6 +42,7 @@ export function PostCard({ post, entityMap, forceShowTooltips, isOwner, onDelete
           </span>
           <Link
             href={`/chemical-x/${post.id}`}
+            prefetch={false}
             className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-yellow-400 transition-all"
             title="공유"
           >

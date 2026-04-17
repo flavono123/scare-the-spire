@@ -46,12 +46,14 @@ function NavIconLink({
   const extraProps = external
     ? { target: "_blank" as const, rel: "noopener noreferrer" }
     : {};
+  const internalProps = external ? {} : { prefetch: false as const };
 
   return (
     <div className="relative group">
       <Tag
         href={href}
         {...extraProps}
+        {...internalProps}
         className="flex items-center p-1.5 transition-colors"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -151,6 +153,7 @@ function GameDropdown({
             <Link
               key={item.href}
               href={item.href}
+              prefetch={false}
               onClick={() => setOpen(false)}
               className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
             >
@@ -180,6 +183,7 @@ export function SiteNavbar() {
         <div className="flex items-center gap-4">
           <Link
             href="/"
+            prefetch={false}
             className="flex items-center gap-1.5 text-base font-bold text-yellow-500 shrink-0"
           >
             슬서운 이야기

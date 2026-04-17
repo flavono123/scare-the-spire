@@ -36,6 +36,7 @@ export default async function PatchesPage() {
             <Link
               key={patch.id}
               href={`/patches/${patch.version}`}
+              prefetch={false}
               className="block rounded-lg border border-border bg-card/50 p-4 hover:border-yellow-500/40 hover:bg-card/80 transition-colors"
             >
               <div className="flex items-center gap-2">

@@ -23,16 +23,13 @@ function getTextClass(len: number): string {
 
 export function ChemicalXPostView({ postId, entities }: PostViewProps) {
   const [post, setPost] = useState<ChemicalPost | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(supabaseEnabled);
   const [copied, setCopied] = useState(false);
   const [showTooltips, setShowTooltips] = useState(true);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
 
   useEffect(() => {
-    if (!supabaseEnabled) {
-      setLoading(false);
-      return;
-    }
+    if (!supabaseEnabled) return;
     supabase
       .from("chemical_posts")
       .select("*")
