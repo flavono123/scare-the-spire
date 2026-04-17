@@ -31,6 +31,14 @@ function sanitizeKeywordPart(text: string): string {
   return text.replace(/\uFFFC/g, "").trim();
 }
 
+function normalizeKeywordKey(text: string): string {
+  return sanitizeKeywordPart(text).replace(/\s+/g, " ");
+}
+
+function compactKeywordKey(text: string): string {
+  return normalizeKeywordKey(text).replace(/\s+/g, "");
+}
+
 interface KeywordResolution {
   keyword: string;
   description: string;
@@ -183,8 +191,13 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
   const keywordEntityMap = useMemo(() => {
     const map = new Map<string, { id: string; type: EntityType }>();
     for (const entity of entities) {
-      if (entity.nameKo) map.set(entity.nameKo, { id: entity.id, type: entity.type });
-      if (entity.nameEn) map.set(entity.nameEn, { id: entity.id, type: entity.type });
+      const candidates = [entity.nameKo, entity.nameEn].filter(Boolean) as string[];
+      for (const name of candidates) {
+        const normalized = normalizeKeywordKey(name);
+        const compact = compactKeywordKey(name);
+        map.set(normalized, { id: entity.id, type: entity.type });
+        map.set(compact, { id: entity.id, type: entity.type });
+      }
     }
     return map;
   }, [entities]);
@@ -192,10 +205,12 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
     const map = new Map<string, string>();
 
     for (const [k, v] of Object.entries(KEYWORD_DESC)) {
-      map.set(k, cleanTooltipText(v));
+      map.set(normalizeKeywordKey(k), cleanTooltipText(v));
+      map.set(compactKeywordKey(k), cleanTooltipText(v));
     }
     for (const [k, v] of Object.entries(GOLD_TERM_DESC)) {
-      map.set(k, cleanTooltipText(v));
+      map.set(normalizeKeywordKey(k), cleanTooltipText(v));
+      map.set(compactKeywordKey(k), cleanTooltipText(v));
     }
 
     for (const entity of entities) {
@@ -207,8 +222,10 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
       if (!description) continue;
       const cleaned = cleanTooltipText(description);
       if (!cleaned) continue;
-      map.set(entity.nameKo, cleaned);
-      map.set(entity.nameEn, cleaned);
+      map.set(normalizeKeywordKey(entity.nameKo), cleaned);
+      map.set(compactKeywordKey(entity.nameKo), cleaned);
+      map.set(normalizeKeywordKey(entity.nameEn), cleaned);
+      map.set(compactKeywordKey(entity.nameEn), cleaned);
     }
 
     return map;
@@ -216,10 +233,16 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
 
   const resolveKeyword = useCallback((keyword: string): KeywordResolution => {
     const cleanKeyword = sanitizeKeywordPart(keyword);
-    const entity = keywordEntityMap.get(cleanKeyword);
+    const normalized = normalizeKeywordKey(cleanKeyword);
+    const compact = compactKeywordKey(cleanKeyword);
+    const entity = keywordEntityMap.get(normalized) ?? keywordEntityMap.get(compact);
+    const description =
+      keywordDescriptionMap.get(normalized)
+      ?? keywordDescriptionMap.get(compact)
+      ?? cleanKeyword;
     return {
       keyword: cleanKeyword,
-      description: keywordDescriptionMap.get(cleanKeyword) ?? cleanKeyword,
+      description,
       entityId: entity?.id,
       entityType: entity?.type,
     };
