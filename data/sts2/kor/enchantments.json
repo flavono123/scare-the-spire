@@ -67,7 +67,7 @@
     "extra_card_text": "[gold]약화[/gold]를 [blue]X[/blue] 부여합니다.",
     "card_type": null,
     "is_stackable": false,
-    "image_url": null
+    "image_url": "/images/sts2/enchantments/inky.webp"
   },
   {
     "id": "INSTINCT",
