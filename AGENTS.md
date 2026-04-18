@@ -6,6 +6,14 @@
 
 All task instructions must be followed by an immediate speculative commit after each modification. Do not batch changes — commit after every meaningful edit.
 
+## Local Claude Skills (Project-Scoped)
+
+This project uses local skills under `.claude/skills` instead of global `~/.codex/skills`.
+
+- For skill-driven tasks, first check `.claude/skills/*/SKILL.md`.
+- Treat `.claude/skills` as the primary skill source for this repository.
+- Do not require or assume global home-directory skill installation for this project.
+
 ## 기술 스택
 
 - **Framework**: Next.js 15 (App Router, TypeScript strict)
