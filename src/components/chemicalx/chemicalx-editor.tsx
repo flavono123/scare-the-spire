@@ -503,25 +503,27 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
           <span className={`text-xs font-mono ${charCountColor}`}>
             {charCount}/{MAX_CHARS}
           </span>
-          <div className="flex min-w-0 items-start gap-1.5 rounded-md border border-yellow-500/15 bg-yellow-500/8 px-2 py-1.5 text-[11px] text-gray-400">
-            <span className="shrink-0 pt-0.5 font-semibold tracking-[0.08em] text-yellow-200/65">
+          <div className="flex min-w-0 items-start gap-1.5 py-0.5 text-[10px] text-gray-500/75">
+            <span className="shrink-0 pt-0.5 font-medium tracking-[0.06em] text-gray-500/75">
               팁
             </span>
             <div className="min-w-0 leading-relaxed">
-              <span className="text-gray-500">예:</span>{" "}
-              <code className="font-mono text-[10px] text-gray-500/90">
+              <span className="text-gray-500/70">예:</span>{" "}
+              <code className="font-mono text-[10px] text-gray-500/80">
                 {CUSTOM_KEYWORD_HINT_RAW}
               </code>
-              <span className="mx-1 text-gray-600">→</span>
-              {customKeywordHintEntity ? (
-                <EntityPreview entity={customKeywordHintEntity}>
-                  {CUSTOM_KEYWORD_HINT.visibleText}
-                </EntityPreview>
-              ) : (
-                <span className="spire-gold font-semibold">
-                  {CUSTOM_KEYWORD_HINT.visibleText}
-                </span>
-              )}
+              <span className="mx-1 text-gray-600/80">→</span>
+              <span className="opacity-60">
+                {customKeywordHintEntity ? (
+                  <EntityPreview entity={customKeywordHintEntity}>
+                    {CUSTOM_KEYWORD_HINT.visibleText}
+                  </EntityPreview>
+                ) : (
+                  <span className="spire-gold font-semibold">
+                    {CUSTOM_KEYWORD_HINT.visibleText}
+                  </span>
+                )}
+              </span>
             </div>
           </div>
         </div>
