@@ -151,7 +151,6 @@ const CUSTOM_KEYWORD_HINT = {
   visibleText: "크크루빙봉",
   keyword: "빙봉",
 };
-const CUSTOM_KEYWORD_HINT_RAW = `${CUSTOM_KEYWORD_HINT.visibleText}{[gold]${CUSTOM_KEYWORD_HINT.keyword}[/gold]}`;
 
 function getSavedNickname(): string {
   if (typeof window === "undefined") return DEFAULT_NICKNAME;
@@ -499,20 +498,29 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
 
       {/* Footer: char count + submit */}
       <div className="flex items-center justify-between px-3 py-2 border-t border-border">
-        <div className="flex min-w-0 flex-wrap items-start gap-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
           <span className={`text-xs font-mono ${charCountColor}`}>
             {charCount}/{MAX_CHARS}
           </span>
-          <div className="flex min-w-0 items-start gap-1.5 py-0.5 text-[10px] text-gray-500/75">
-            <span className="shrink-0 pt-0.5 font-medium tracking-[0.06em] text-gray-500/75">
-              팁
+          <div className="flex min-w-0 flex-wrap items-center gap-x-1 gap-y-0.5 py-0.5 text-[10px] leading-tight text-gray-500/72">
+            <span className="shrink-0 text-gray-500/76">
+              키워드 바꾸는 법:
             </span>
-            <div className="min-w-0 leading-relaxed">
-              <span className="text-gray-500/70">예:</span>{" "}
-              <code className="font-mono text-[10px] text-gray-500/80">
-                {CUSTOM_KEYWORD_HINT_RAW}
-              </code>
-              <span className="mx-1 text-gray-600/80">→</span>
+            <span className="shrink-0 font-mono text-gray-600/80">
+              {CUSTOM_KEYWORD_HINT.visibleText}
+              {"{"}
+            </span>
+            <span className="shrink-0 spire-gold font-semibold opacity-70">
+              {CUSTOM_KEYWORD_HINT.keyword}
+            </span>
+            <span className="shrink-0 font-mono text-gray-600/80">
+              {"}"}
+            </span>
+            <span className="shrink-0 text-gray-500/72">
+              처럼 바꿀 키워드를 노란색으로
+            </span>
+            <span className="shrink-0 text-gray-600/80">→</span>
+            <span className="inline-flex items-center opacity-60">
               <span className="opacity-60">
                 {customKeywordHintEntity ? (
                   <EntityPreview entity={customKeywordHintEntity}>
@@ -524,7 +532,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
                   </span>
                 )}
               </span>
-            </div>
+            </span>
           </div>
         </div>
         <button
