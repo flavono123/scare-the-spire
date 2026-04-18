@@ -348,8 +348,7 @@ function mapEnchantment(kor: RawEnchantment, eng: RawEnchantment): CodexEnchantm
     extraCardText: kor.extra_card_text,
     cardType: (kor.card_type as "Attack" | "Skill" | null),
     isStackable: kor.is_stackable,
-    // JSON has image_url: null but icons exist on disk as {id_lowercase}.webp
-    imageUrl: `/images/sts2/enchantments/${kor.id.toLowerCase()}.webp`,
+    imageUrl: kor.image_url,
   };
 }
 
