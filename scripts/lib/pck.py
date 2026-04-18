@@ -125,15 +125,30 @@ def load_localization(reader: PCKReader, lang: str, table: str) -> dict:
 
 
 def group_loc_by_id(flat: dict[str, str]) -> dict[str, dict]:
-    """Convert `{"FOO.title": "x", "FOO.moves.BAR.title": "y"}` to a nested dict by id."""
+    """Convert `{"FOO.title": "x", "FOO.moves.BAR.title": "y"}` to a nested dict by id.
+
+    STS2 localization occasionally has a scalar and a nested dict at the same
+    path (e.g. `DOORMAKER.moves.DRAMATIC_OPEN` as a string AND
+    `DOORMAKER.moves.DRAMATIC_OPEN.speakLine`). To handle this, scalars are
+    stored under the `_self` key when promotion to a dict is required.
+    """
     result: dict[str, dict] = {}
-    for key, value in flat.items():
+    # Process shortest keys first so scalars are written before deeper dicts overwrite them.
+    for key in sorted(flat.keys(), key=lambda k: (k.count("."), k)):
+        value = flat[key]
         parts = key.split(".")
-        root = parts[0]
-        if root not in result:
-            result[root] = {}
-        node = result[root]
-        for p in parts[1:-1]:
-            node = node.setdefault(p, {})
-        node[parts[-1]] = value
+        node = result
+        for p in parts[:-1]:
+            existing = node.get(p)
+            if isinstance(existing, str):
+                node[p] = {"_self": existing}
+            elif existing is None:
+                node[p] = {}
+            node = node[p]
+        last = parts[-1]
+        existing = node.get(last)
+        if isinstance(existing, dict):
+            existing["_self"] = value
+        else:
+            node[last] = value
     return result

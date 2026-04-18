@@ -41,41 +41,6 @@
     "image_url": "/static/images/monsters/assassin_ruby_raider.png"
   },
   {
-    "id": "AXE_RUBY_RAIDER",
-    "name": "Axe Raider",
-    "type": "Normal",
-    "min_hp": 20,
-    "max_hp": 22,
-    "min_hp_ascension": 21,
-    "max_hp_ascension": 23,
-    "moves": [
-      {
-        "id": "SWING_1",
-        "name": "Swing 1"
-      },
-      {
-        "id": "SWING_2",
-        "name": "Swing 2"
-      },
-      {
-        "id": "BIG_SWING",
-        "name": "Big Swing"
-      }
-    ],
-    "damage_values": {
-      "Swing": {
-        "normal": 5,
-        "ascension": 6
-      },
-      "BigSwing": {
-        "normal": 12,
-        "ascension": 13
-      }
-    },
-    "block_values": null,
-    "image_url": "/static/images/monsters/axe_ruby_raider.png"
-  },
-  {
     "id": "AXEBOT",
     "name": "Axebot",
     "type": "Normal",
@@ -115,6 +80,41 @@
       "bootUp": 10
     },
     "image_url": "/static/images/monsters/axebot.png"
+  },
+  {
+    "id": "AXE_RUBY_RAIDER",
+    "name": "Axe Raider",
+    "type": "Normal",
+    "min_hp": 20,
+    "max_hp": 22,
+    "min_hp_ascension": 21,
+    "max_hp_ascension": 23,
+    "moves": [
+      {
+        "id": "SWING_1",
+        "name": "Swing 1"
+      },
+      {
+        "id": "SWING_2",
+        "name": "Swing 2"
+      },
+      {
+        "id": "BIG_SWING",
+        "name": "Big Swing"
+      }
+    ],
+    "damage_values": {
+      "Swing": {
+        "normal": 5,
+        "ascension": 6
+      },
+      "BigSwing": {
+        "normal": 12,
+        "ascension": 13
+      }
+    },
+    "block_values": null,
+    "image_url": "/static/images/monsters/axe_ruby_raider.png"
   },
   {
     "id": "BATTLE_FRIEND_V1",
@@ -333,8 +333,8 @@
     ],
     "damage_values": {
       "Slash": {
-        "normal": 15,
-        "ascension": 17
+        "normal": 13,
+        "ascension": 15
       }
     },
     "block_values": null,
@@ -364,12 +364,30 @@
         "ascension": 4
       },
       "Swoop": {
-        "normal": 16,
-        "ascension": 18
+        "normal": 17,
+        "ascension": 19
       }
     },
     "block_values": null,
     "image_url": "/static/images/monsters/byrdonis.png"
+  },
+  {
+    "id": "BYRDONIS_NEST",
+    "name": "Nest",
+    "type": "Normal",
+    "min_hp": null,
+    "max_hp": null,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing"
+      }
+    ],
+    "damage_values": null,
+    "block_values": null,
+    "image_url": null
   },
   {
     "id": "BYRDPIP",
@@ -495,6 +513,24 @@
     "image_url": "/static/images/monsters/chomper.png"
   },
   {
+    "id": "COCOON",
+    "name": "Cocoon",
+    "type": "Normal",
+    "min_hp": null,
+    "max_hp": null,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing"
+      }
+    ],
+    "damage_values": null,
+    "block_values": null,
+    "image_url": null
+  },
+  {
     "id": "CORPSE_SLUG",
     "name": "Corpse Slug",
     "type": "Normal",
@@ -517,13 +553,13 @@
       }
     ],
     "damage_values": {
-      "Glomp": {
-        "normal": 8,
-        "ascension": 9
-      },
       "WhipSlap": {
         "normal": 3,
         "ascension": null
+      },
+      "Glomp": {
+        "normal": 8,
+        "ascension": 9
       }
     },
     "block_values": null,
@@ -560,9 +596,9 @@
     "id": "CRUSHER",
     "name": "Crusher",
     "type": "Boss",
-    "min_hp": 199,
+    "min_hp": 209,
     "max_hp": null,
-    "min_hp_ascension": 209,
+    "min_hp_ascension": 219,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -681,10 +717,10 @@
     "id": "DECIMILLIPEDE_SEGMENT",
     "name": "Decimillipede",
     "type": "Normal",
-    "min_hp": 42,
-    "max_hp": 48,
-    "min_hp_ascension": 48,
-    "max_hp_ascension": 56,
+    "min_hp": 40,
+    "max_hp": 46,
+    "min_hp_ascension": 46,
+    "max_hp_ascension": 52,
     "moves": [
       {
         "id": "WRITHE",
@@ -712,13 +748,13 @@
         "normal": 5,
         "ascension": 6
       },
-      "Constrict": {
-        "normal": 8,
-        "ascension": 9
-      },
       "Bulk": {
         "normal": 6,
         "ascension": 7
+      },
+      "Constrict": {
+        "normal": 8,
+        "ascension": 9
       }
     },
     "block_values": null,
@@ -755,9 +791,9 @@
     "id": "DOOR",
     "name": "Door",
     "type": "Boss",
-    "min_hp": 155,
+    "min_hp": null,
     "max_hp": null,
-    "min_hp_ascension": 165,
+    "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -804,26 +840,34 @@
     "max_hp_ascension": null,
     "moves": [
       {
-        "id": "WHAT_IS_IT",
-        "name": "What Is It"
+        "id": "DRAMATIC_OPEN",
+        "name": "Dramatic Open"
       },
       {
-        "id": "BEAM",
-        "name": "Beam"
+        "id": "HUNGER",
+        "name": "Hunger"
       },
       {
-        "id": "GET_BACK_IN",
-        "name": "Get Back In"
+        "id": "SCRUTINY",
+        "name": "Scrutiny"
+      },
+      {
+        "id": "GRASP",
+        "name": "Grasp"
       }
     ],
     "damage_values": {
-      "LaserBeam": {
-        "normal": 31,
-        "ascension": 34
+      "Hunger": {
+        "normal": 30,
+        "ascension": 35
       },
-      "GetBackInMove": {
-        "normal": 40,
-        "ascension": 45
+      "Scrutiny": {
+        "normal": 24,
+        "ascension": 26
+      },
+      "Grasp": {
+        "normal": 10,
+        "ascension": 11
       }
     },
     "block_values": null,
@@ -852,13 +896,13 @@
       }
     ],
     "damage_values": {
-      "SpearMove": {
-        "normal": 18,
-        "ascension": 20
-      },
       "Bees": {
         "normal": 3,
         "ascension": 3
+      },
+      "SpearMove": {
+        "normal": 18,
+        "ascension": 20
       }
     },
     "block_values": null,
@@ -887,13 +931,13 @@
       }
     ],
     "damage_values": {
-      "Mandibles": {
-        "normal": 8,
-        "ascension": 9
-      },
       "Skitter": {
         "normal": 1,
         "ascension": null
+      },
+      "Mandibles": {
+        "normal": 8,
+        "ascension": 9
       }
     },
     "block_values": null,
@@ -951,6 +995,45 @@
     },
     "block_values": null,
     "image_url": "/static/images/monsters/fabricator.png"
+  },
+  {
+    "id": "FAKE_MERCHANT_MONSTER",
+    "name": "The Merchant???",
+    "type": "Normal",
+    "min_hp": 165,
+    "max_hp": 165,
+    "min_hp_ascension": 175,
+    "max_hp_ascension": 175,
+    "moves": [
+      {
+        "id": "SWIPE",
+        "name": "Swipe"
+      },
+      {
+        "id": "SPEW_COINS",
+        "name": "Spew Coins"
+      },
+      {
+        "id": "THROW_RELIC",
+        "name": "Throw Relic"
+      },
+      {
+        "id": "ENRAGE",
+        "name": "Enrage"
+      }
+    ],
+    "damage_values": {
+      "Swipe": {
+        "normal": 13,
+        "ascension": 15
+      },
+      "ThrowRelic": {
+        "normal": 9,
+        "ascension": 10
+      }
+    },
+    "block_values": null,
+    "image_url": null
   },
   {
     "id": "FAT_GREMLIN",
@@ -1032,13 +1115,13 @@
       }
     ],
     "damage_values": {
-      "Smash": {
-        "normal": 11,
-        "ascension": 12
-      },
       "Spore": {
         "normal": 8,
         "ascension": 9
+      },
+      "Smash": {
+        "normal": 11,
+        "ascension": 12
       }
     },
     "block_values": null,
@@ -1200,9 +1283,9 @@
     "id": "GAS_BOMB",
     "name": "Gas Bomb",
     "type": "Normal",
-    "min_hp": 10,
+    "min_hp": 7,
     "max_hp": null,
-    "min_hp_ascension": 12,
+    "min_hp_ascension": 8,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -1218,6 +1301,50 @@
     },
     "block_values": null,
     "image_url": "/static/images/monsters/gas_bomb.png"
+  },
+  {
+    "id": "GAZING_MOTH",
+    "name": "Gazing Moth",
+    "type": "Normal",
+    "min_hp": null,
+    "max_hp": null,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "GLARE",
+        "name": "Glare"
+      },
+      {
+        "id": "POWDER",
+        "name": "Powder"
+      }
+    ],
+    "damage_values": null,
+    "block_values": null,
+    "image_url": null
+  },
+  {
+    "id": "GEM_EATER",
+    "name": "Gem Eater",
+    "type": "Normal",
+    "min_hp": null,
+    "max_hp": null,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "FOCUS_BEAM",
+        "name": "Focus Beam"
+      },
+      {
+        "id": "GEM_LASER",
+        "name": "Gem Laser"
+      }
+    ],
+    "damage_values": null,
+    "block_values": null,
+    "image_url": null
   },
   {
     "id": "GLOBE_HEAD",
@@ -1301,10 +1428,10 @@
     "id": "GUARDBOT",
     "name": "Guardbot",
     "type": "Normal",
-    "min_hp": 21,
-    "max_hp": 25,
-    "min_hp_ascension": 22,
-    "max_hp_ascension": 26,
+    "min_hp": 16,
+    "max_hp": 20,
+    "min_hp_ascension": 17,
+    "max_hp_ascension": 21,
     "moves": [
       {
         "id": "GUARD",
@@ -1314,6 +1441,19 @@
     "damage_values": null,
     "block_values": null,
     "image_url": "/static/images/monsters/guardbot.png"
+  },
+  {
+    "id": "HATCHLING",
+    "name": "Hatchling",
+    "type": "Normal",
+    "min_hp": null,
+    "max_hp": null,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
+    "moves": [],
+    "damage_values": null,
+    "block_values": null,
+    "image_url": null
   },
   {
     "id": "HAUNTED_SHIP",
@@ -1529,11 +1669,11 @@
       },
       {
         "id": "BEAM",
-        "name": "Beam"
+        "name": "Soul Beam"
       },
       {
         "id": "RITUAL",
-        "name": "Ritual"
+        "name": "Dark Ritual"
       }
     ],
     "damage_values": {
@@ -1584,13 +1724,13 @@
         "normal": 17,
         "ascension": 18
       },
-      "Ponder": {
-        "normal": 11,
-        "ascension": 13
-      },
       "KnowledgeOverwhelming": {
         "normal": 8,
         "ascension": 9
+      },
+      "Ponder": {
+        "normal": 11,
+        "ascension": 13
       }
     },
     "block_values": null,
@@ -1755,13 +1895,13 @@
       }
     ],
     "damage_values": {
-      "Smash": {
-        "normal": 16,
-        "ascension": 18
-      },
       "ShieldSlam": {
         "normal": 6,
         "ascension": null
+      },
+      "Smash": {
+        "normal": 16,
+        "ascension": 18
       }
     },
     "block_values": null,
@@ -1837,13 +1977,13 @@
         "normal": 6,
         "ascension": 7
       },
-      "Spear": {
-        "normal": 10,
-        "ascension": 11
-      },
       "Bomb": {
         "normal": 35,
         "ascension": 40
+      },
+      "Spear": {
+        "normal": 10,
+        "ascension": 11
       }
     },
     "block_values": null,
@@ -1926,6 +2066,32 @@
     "image_url": "/static/images/monsters/mecha_knight.png"
   },
   {
+    "id": "MYSTERIOUS_KNIGHT",
+    "name": "Mysterious Knight",
+    "type": "Normal",
+    "min_hp": null,
+    "max_hp": null,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "BREAKER",
+        "name": "Breaker"
+      },
+      {
+        "id": "FLAIL",
+        "name": "Flail"
+      },
+      {
+        "id": "RAM",
+        "name": "Ram"
+      }
+    ],
+    "damage_values": null,
+    "block_values": null,
+    "image_url": null
+  },
+  {
     "id": "MYTE",
     "name": "Myte",
     "type": "Normal",
@@ -1989,7 +2155,7 @@
       },
       "Slice": {
         "normal": 6,
-        "ascension": 6
+        "ascension": 7
       }
     },
     "block_values": null,
@@ -1999,10 +2165,10 @@
     "id": "NOISEBOT",
     "name": "Noisebot",
     "type": "Normal",
-    "min_hp": 23,
-    "max_hp": 28,
-    "min_hp_ascension": 24,
-    "max_hp_ascension": 29,
+    "min_hp": 18,
+    "max_hp": 23,
+    "min_hp_ascension": 19,
+    "max_hp_ascension": 24,
     "moves": [
       {
         "id": "NOISE",
@@ -2097,10 +2263,6 @@
       }
     ],
     "damage_values": {
-      "Verdict": {
-        "normal": 33,
-        "ascension": 36
-      },
       "Scrutiny": {
         "normal": 16,
         "ascension": 17
@@ -2108,6 +2270,10 @@
       "PeckAssault": {
         "normal": 4,
         "ascension": 4
+      },
+      "Verdict": {
+        "normal": 33,
+        "ascension": 36
       }
     },
     "block_values": null,
@@ -2158,10 +2324,10 @@
     "id": "PHANTASMAL_GARDENER",
     "name": "Phantasmal Gardener",
     "type": "Elite",
-    "min_hp": 28,
-    "max_hp": 32,
-    "min_hp_ascension": 29,
-    "max_hp_ascension": 33,
+    "min_hp": 26,
+    "max_hp": 31,
+    "min_hp_ascension": 27,
+    "max_hp_ascension": 32,
     "moves": [
       {
         "id": "BITE",
@@ -2310,9 +2476,9 @@
     "id": "ROCKET",
     "name": "Rocket",
     "type": "Boss",
-    "min_hp": 189,
+    "min_hp": 199,
     "max_hp": null,
-    "min_hp_ascension": 199,
+    "min_hp_ascension": 209,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -2413,7 +2579,7 @@
     "damage_values": {
       "SeaKick": {
         "normal": 11,
-        "ascension": 12
+        "ascension": 13
       },
       "SpinningKick": {
         "normal": 2,
@@ -2495,34 +2661,38 @@
     "max_hp_ascension": null,
     "moves": [
       {
-        "id": "INERTIA",
-        "name": "Inertia"
+        "id": "SMASH",
+        "name": "Smash"
       },
       {
         "id": "ZOOM",
         "name": "Zoom"
       },
       {
-        "id": "SUPER_CRAB",
-        "name": "Super Crab"
+        "id": "INERTIA",
+        "name": "Inertia"
       },
       {
-        "id": "SMASH",
-        "name": "Smash"
+        "id": "PIERCING_STABS",
+        "name": "Piercing Stabs"
       }
     ],
     "damage_values": {
-      "SuperCrab": {
-        "normal": 6,
-        "ascension": 7
+      "Smash": {
+        "normal": 12,
+        "ascension": 13
       },
       "Zoom": {
-        "normal": 16,
-        "ascension": 17
+        "normal": 14,
+        "ascension": 16
       },
-      "Smash": {
+      "Inertia": {
         "normal": 9,
         "ascension": 11
+      },
+      "PiercingStabs": {
+        "normal": 7,
+        "ascension": 8
       }
     },
     "block_values": null,
@@ -2555,13 +2725,13 @@
       }
     ],
     "damage_values": {
-      "Pummeling": {
-        "normal": 4,
-        "ascension": 5
-      },
       "Smother": {
         "normal": 30,
         "ascension": 33
+      },
+      "Pummeling": {
+        "normal": 4,
+        "ascension": 5
       }
     },
     "block_values": null,
@@ -2753,13 +2923,13 @@
         "normal": 16,
         "ascension": 17
       },
-      "Scream": {
-        "normal": 11,
-        "ascension": 12
-      },
       "Gaze": {
         "normal": 7,
         "ascension": 8
+      },
+      "Scream": {
+        "normal": 11,
+        "ascension": 12
       }
     },
     "block_values": null,
@@ -2862,13 +3032,13 @@
       }
     ],
     "damage_values": {
-      "Lash": {
-        "normal": 17,
-        "ascension": 19
-      },
       "Explosion": {
         "normal": 23,
         "ascension": 25
+      },
+      "Lash": {
+        "normal": 17,
+        "ascension": 19
       }
     },
     "block_values": null,
@@ -2878,10 +3048,10 @@
     "id": "STABBOT",
     "name": "Stabbot",
     "type": "Normal",
-    "min_hp": 23,
-    "max_hp": 28,
-    "min_hp_ascension": 24,
-    "max_hp_ascension": 29,
+    "min_hp": 18,
+    "max_hp": 23,
+    "min_hp_ascension": 19,
+    "max_hp_ascension": 24,
     "moves": [
       {
         "id": "STAB",
@@ -2925,8 +3095,8 @@
     ],
     "damage_values": {
       "Crash": {
-        "normal": 17,
-        "ascension": 19
+        "normal": 16,
+        "ascension": 18
       },
       "Thrash": {
         "normal": 3,
@@ -2958,16 +3128,12 @@
         "name": "Skull Bash"
       },
       {
-        "id": "POUNCE",
-        "name": "Pounce"
-      },
-      {
         "id": "MULTI_CLAW",
-        "name": "Multi Claw"
+        "name": "Multi-Claw"
       },
       {
         "id": "PHASE3_LACERATE",
-        "name": "Phase3 Lacerate"
+        "name": "Lacerate"
       },
       {
         "id": "BIG_POUNCE",
@@ -2986,10 +3152,6 @@
       "SkullBash": {
         "normal": 14,
         "ascension": 16
-      },
-      "Pounce": {
-        "normal": 30,
-        "ascension": 32
       },
       "MultiClaw": {
         "normal": 10,
@@ -3123,6 +3285,88 @@
     },
     "block_values": null,
     "image_url": "/static/images/monsters/the_adversary_placeholder.png"
+  },
+  {
+    "id": "THE_ARM",
+    "name": "The Arm",
+    "type": "Normal",
+    "min_hp": null,
+    "max_hp": null,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "GRAB",
+        "name": "Grab"
+      },
+      {
+        "id": "PUNCH",
+        "name": "Punch"
+      },
+      {
+        "id": "WRESTLE",
+        "name": "Wrestle"
+      }
+    ],
+    "damage_values": null,
+    "block_values": null,
+    "image_url": null
+  },
+  {
+    "id": "THE_BELL",
+    "name": "The Bell",
+    "type": "Normal",
+    "min_hp": null,
+    "max_hp": null,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "CACOPHONY",
+        "name": "Cacophony"
+      },
+      {
+        "id": "CLANG",
+        "name": "Clang"
+      },
+      {
+        "id": "RING",
+        "name": "Ring"
+      }
+    ],
+    "damage_values": null,
+    "block_values": null,
+    "image_url": null
+  },
+  {
+    "id": "THE_DREAMER",
+    "name": "The Dreamer",
+    "type": "Normal",
+    "min_hp": null,
+    "max_hp": null,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "DREAM",
+        "name": "Dream"
+      },
+      {
+        "id": "FEND_OFF",
+        "name": "Fend Off"
+      },
+      {
+        "id": "RUMINATE",
+        "name": "Ruminate"
+      },
+      {
+        "id": "SNORE",
+        "name": "Snore"
+      }
+    ],
+    "damage_values": null,
+    "block_values": null,
+    "image_url": null
   },
   {
     "id": "THE_FORGOTTEN",
@@ -3295,13 +3539,13 @@
         "normal": 17,
         "ascension": 19
       },
-      "HatTrick": {
-        "normal": 21,
-        "ascension": 23
-      },
       "Nab": {
         "normal": 14,
         "ascension": 16
+      },
+      "HatTrick": {
+        "normal": 21,
+        "ascension": 23
       }
     },
     "block_values": null,
@@ -3377,13 +3621,13 @@
         "normal": 18,
         "ascension": 19
       },
-      "WeakTackle": {
-        "normal": 14,
-        "ascension": 15
-      },
       "SoulBeam": {
         "normal": 8,
         "ascension": 8
+      },
+      "WeakTackle": {
+        "normal": 14,
+        "ascension": 15
       }
     },
     "block_values": null,
@@ -3688,9 +3932,9 @@
     "id": "WATERFALL_GIANT",
     "name": "Waterfall Giant",
     "type": "Boss",
-    "min_hp": 250,
+    "min_hp": 240,
     "max_hp": null,
-    "min_hp_ascension": 260,
+    "min_hp_ascension": 250,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -3738,10 +3982,6 @@
       "PressureUp": {
         "normal": 13,
         "ascension": 14
-      },
-      "BasePressureGun": {
-        "normal": 20,
-        "ascension": 23
       }
     },
     "block_values": null,
@@ -3782,10 +4022,10 @@
     "id": "ZAPBOT",
     "name": "Zapbot",
     "type": "Normal",
-    "min_hp": 23,
-    "max_hp": 28,
-    "min_hp_ascension": 24,
-    "max_hp_ascension": 29,
+    "min_hp": 18,
+    "max_hp": 23,
+    "min_hp_ascension": 19,
+    "max_hp_ascension": 24,
     "moves": [
       {
         "id": "ZAP",
