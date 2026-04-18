@@ -495,31 +495,16 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
 
       {/* Footer: char count + submit */}
       <div className="flex items-center justify-between px-3 py-2 border-t border-border">
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
           <span className={`text-xs font-mono ${charCountColor}`}>
             {charCount}/{MAX_CHARS}
           </span>
-          <div className="relative group">
-            <button
-              type="button"
-              aria-label="비키워드 문법 팁"
-              className="inline-flex items-center rounded-full border border-yellow-500/15 bg-yellow-500/8 px-2 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-yellow-200/65 transition-colors hover:border-yellow-500/30 hover:text-yellow-200/85 focus-visible:border-yellow-500/30 focus-visible:text-yellow-200/85 focus-visible:outline-none"
-            >
+          <div className="flex min-w-0 items-center gap-1.5 rounded-full border border-yellow-500/15 bg-yellow-500/8 px-2 py-1 text-[11px] leading-none text-gray-400">
+            <span className="shrink-0 font-semibold tracking-[0.08em] text-yellow-200/65">
               팁
-            </button>
-            <div className="pointer-events-none absolute left-full top-1/2 z-20 ml-2 hidden -translate-y-1/2 group-hover:block group-focus-within:block">
-              <div className="w-64 max-w-[calc(100vw-5rem)] rounded-lg border border-yellow-500/20 bg-[#0c0c20]/95 px-3 py-2 shadow-xl backdrop-blur-sm">
-                <p className="text-[11px] leading-relaxed text-gray-300">
-                  비키워드에도 원하는 키워드 설명을 연결할 수 있어요.
-                </p>
-                <div className="mt-2 rounded-md border border-white/8 bg-black/20 px-2 py-1.5 text-xs text-gray-400">
-                  <RichText text={CUSTOM_KEYWORD_HINT_EXAMPLE} className="opacity-70" />
-                </div>
-                <p className="mt-1.5 text-[11px] leading-relaxed text-gray-400">
-                  보이는 글자는 {CUSTOM_KEYWORD_HINT.visibleText}, 툴팁은 {CUSTOM_KEYWORD_HINT.keyword} 기준으로 붙습니다.
-                </p>
-              </div>
-            </div>
+            </span>
+            <span className="shrink-0 text-gray-500">예:</span>
+            <RichText text={CUSTOM_KEYWORD_HINT_EXAMPLE} className="min-w-0 opacity-70" />
           </div>
         </div>
         <button
