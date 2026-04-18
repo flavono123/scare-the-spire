@@ -8,7 +8,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
 import type { SuggestionProps, SuggestionKeyDownProps } from "@tiptap/suggestion";
-import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
+import { EntityPreview, type EntityInfo, type EntityType } from "@/components/patch-note-renderer";
 import { EntityMention, entitySuggestionBase } from "./entity-mention";
 import { CustomKeyword } from "./custom-keyword";
 import { MentionList, type MentionListRef } from "./mention-list";
@@ -16,7 +16,6 @@ import { EntityMapProvider } from "./entity-context";
 import { buildEntityMap } from "./post-renderer";
 import { tiptapToBlocks, blocksToPlainText, matchEntities } from "@/lib/chemical-utils";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
-import { RichText } from "@/components/rich-text";
 
 const KEYWORD_RE_SOURCE = /(\S+)\{([^{}\n]+)\}/.source;
 const KEYWORD_AT_CURSOR_RE = /(\S+)\{([^{}\n]+)\}$/;
@@ -149,10 +148,10 @@ const MIN_CHARS = 2;
 const DEFAULT_NICKNAME = "익명의 투입터리안";
 const NICKNAME_KEY = "sts-chemicalx-nickname";
 const CUSTOM_KEYWORD_HINT = {
-  visibleText: "쉴드",
-  keyword: "방어도",
+  visibleText: "크크루빙봉",
+  keyword: "빙봉",
 };
-const CUSTOM_KEYWORD_HINT_EXAMPLE = `${CUSTOM_KEYWORD_HINT.visibleText}{[gold]${CUSTOM_KEYWORD_HINT.keyword}[/gold]}`;
+const CUSTOM_KEYWORD_HINT_RAW = `${CUSTOM_KEYWORD_HINT.visibleText}{[gold]${CUSTOM_KEYWORD_HINT.keyword}[/gold]}`;
 
 function getSavedNickname(): string {
   if (typeof window === "undefined") return DEFAULT_NICKNAME;
@@ -253,6 +252,11 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
       entityType: entity?.type,
     };
   }, [keywordDescriptionMap, keywordEntityMap]);
+  const customKeywordHintEntity = useMemo(() => {
+    const resolved = resolveKeyword(CUSTOM_KEYWORD_HINT.keyword);
+    if (!resolved.entityId || !resolved.entityType) return null;
+    return entityMap.get(`${resolved.entityType}:${resolved.entityId}`) ?? null;
+  }, [entityMap, resolveKeyword]);
 
   const syncEditorState = useCallback((editor: Editor) => {
     const json = editor.getJSON();
@@ -495,16 +499,30 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
 
       {/* Footer: char count + submit */}
       <div className="flex items-center justify-between px-3 py-2 border-t border-border">
-        <div className="flex min-w-0 flex-wrap items-center gap-2">
+        <div className="flex min-w-0 flex-wrap items-start gap-2">
           <span className={`text-xs font-mono ${charCountColor}`}>
             {charCount}/{MAX_CHARS}
           </span>
-          <div className="flex min-w-0 items-center gap-1.5 rounded-full border border-yellow-500/15 bg-yellow-500/8 px-2 py-1 text-[11px] leading-none text-gray-400">
-            <span className="shrink-0 font-semibold tracking-[0.08em] text-yellow-200/65">
+          <div className="flex min-w-0 items-start gap-1.5 rounded-md border border-yellow-500/15 bg-yellow-500/8 px-2 py-1.5 text-[11px] text-gray-400">
+            <span className="shrink-0 pt-0.5 font-semibold tracking-[0.08em] text-yellow-200/65">
               팁
             </span>
-            <span className="shrink-0 text-gray-500">예:</span>
-            <RichText text={CUSTOM_KEYWORD_HINT_EXAMPLE} className="min-w-0 opacity-70" />
+            <div className="min-w-0 leading-relaxed">
+              <span className="text-gray-500">예:</span>{" "}
+              <code className="font-mono text-[10px] text-gray-500/90">
+                {CUSTOM_KEYWORD_HINT_RAW}
+              </code>
+              <span className="mx-1 text-gray-600">→</span>
+              {customKeywordHintEntity ? (
+                <EntityPreview entity={customKeywordHintEntity}>
+                  {CUSTOM_KEYWORD_HINT.visibleText}
+                </EntityPreview>
+              ) : (
+                <span className="spire-gold font-semibold">
+                  {CUSTOM_KEYWORD_HINT.visibleText}
+                </span>
+              )}
+            </div>
           </div>
         </div>
         <button
