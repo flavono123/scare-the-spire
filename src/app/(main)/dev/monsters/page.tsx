@@ -23,7 +23,7 @@ interface Monster {
   moves: { id: string; name: string }[];
   damage_values: Record<string, { normal: number | null; ascension: number | null }> | null;
   block_values: Record<string, number> | null;
-  image_url: string;
+  image_url: string | null;
 }
 
 interface EncounterMonsterRef {
@@ -85,8 +85,8 @@ function hpLabel(min: number | null, max: number | null): string {
 }
 
 /** Transform STS2 image_url to local path, with boss fallback */
-function resolveImageUrl(monster: Monster, bossImageNames: Set<string>): string {
-  // Base path from image_url: "/static/images/monsters/X.png" -> "X.png"
+function resolveImageUrl(monster: Monster, bossImageNames: Set<string>): string | null {
+  if (!monster.image_url) return null;
   const filename = monster.image_url.split("/").pop() ?? "";
   const baseName = filename.replace(".png", "");
 
@@ -282,23 +282,29 @@ export default async function MonstersDevPage() {
             {typeMonsters.map((m) => {
               const imgSrc = resolveImageUrl(m, bossImageNames);
               // Check if a matching render exists (monster filename without extension, lowercased)
-              const monsterFilename = (m.image_url.split("/").pop() ?? "").toLowerCase();
+              const monsterFilename = (m.image_url?.split("/").pop() ?? "").toLowerCase();
               const monsterBaseName = monsterFilename.replace(".png", "");
-              const hasRender = renderNamesSet.has(monsterFilename);
+              const hasRender = monsterFilename !== "" && renderNamesSet.has(monsterFilename);
               return (
                 <div
                   key={m.id}
                   className="rounded border border-border bg-card/50 p-2 flex flex-col items-center hover:border-yellow-500/40 transition-colors"
                 >
                   <div className="relative w-[120px] h-[120px] mb-2">
-                    <Image
-                      src={imgSrc}
-                      alt={m.name}
-                      fill
-                      unoptimized
-                      className="object-contain"
-                      sizes="120px"
-                    />
+                    {imgSrc ? (
+                      <Image
+                        src={imgSrc}
+                        alt={m.name}
+                        fill
+                        unoptimized
+                        className="object-contain"
+                        sizes="120px"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground border border-dashed border-border rounded">
+                        no image
+                      </div>
+                    )}
                   </div>
                   <div className="text-center w-full">
                     <div className="text-xs font-semibold leading-tight truncate flex items-center justify-center gap-1" title={m.name}>
@@ -340,14 +346,23 @@ export default async function MonstersDevPage() {
             >
               <div className="flex items-start gap-4">
                 <div className="relative w-[80px] h-[80px] shrink-0">
-                  <Image
-                    src={resolveImageUrl(m, bossImageNames)}
-                    alt={m.name}
-                    fill
-                    unoptimized
-                    className="object-contain"
-                    sizes="80px"
-                  />
+                  {(() => {
+                    const detailSrc = resolveImageUrl(m, bossImageNames);
+                    return detailSrc ? (
+                      <Image
+                        src={detailSrc}
+                        alt={m.name}
+                        fill
+                        unoptimized
+                        className="object-contain"
+                        sizes="80px"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground border border-dashed border-border rounded">
+                        no image
+                      </div>
+                    );
+                  })()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
