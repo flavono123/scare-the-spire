@@ -28,19 +28,16 @@ async function fetchSts2CommentEntities(): Promise<EntityInfo[]> {
 }
 
 export function useCommentEntities(initialEntities?: EntityInfo[]) {
-  const [entities, setEntities] = useState<EntityInfo[]>(() => initialEntities ?? cachedEntities ?? []);
-  const [loading, setLoading] = useState(() => !initialEntities && !cachedEntities);
+  const hasInitialEntities = !!initialEntities?.length;
+  const [entities, setEntities] = useState<EntityInfo[]>(() => cachedEntities ?? []);
+  const [loading, setLoading] = useState(() => !hasInitialEntities && !cachedEntities);
 
   useEffect(() => {
-    if (initialEntities?.length) {
-      cachedEntities = initialEntities;
-      setEntities(initialEntities);
-      setLoading(false);
+    if (hasInitialEntities) {
+      cachedEntities = initialEntities ?? cachedEntities;
       return;
     }
     if (cachedEntities) {
-      setEntities(cachedEntities);
-      setLoading(false);
       return;
     }
 
@@ -59,7 +56,10 @@ export function useCommentEntities(initialEntities?: EntityInfo[]) {
     return () => {
       cancelled = true;
     };
-  }, [initialEntities]);
+  }, [hasInitialEntities, initialEntities]);
 
-  return { entities, loading };
+  return {
+    entities: hasInitialEntities ? (initialEntities ?? []) : entities,
+    loading: hasInitialEntities ? false : loading,
+  };
 }
