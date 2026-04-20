@@ -5,6 +5,7 @@ import Image from "next/image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { RichContentEditor } from "@/components/rich-content-editor";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
+import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import type { PostBlock } from "@/lib/chemical-types";
 import { useAuth } from "@/hooks/use-auth";
@@ -28,11 +29,136 @@ function getDraftKey(threadKey: string): string {
   return `sts-comment-draft:${threadKey}`;
 }
 
-function getCommentBlocks(comment: Comment): PostBlock[] {
+interface LegacyInlineCandidate {
+  value: string;
+  lowerValue: string;
+  kind: "entity" | "keyword";
+  entityId?: string;
+  entityType?: EntityInfo["type"];
+  description?: string;
+}
+
+function buildLegacyInlineIndex(entities: EntityInfo[]): Map<string, LegacyInlineCandidate[]> {
+  const index = new Map<string, LegacyInlineCandidate[]>();
+  const seen = new Set<string>();
+
+  const addCandidate = (candidate: LegacyInlineCandidate) => {
+    const normalized = candidate.lowerValue;
+    if (candidate.value.length < 2 || seen.has(`${candidate.kind}:${normalized}`)) return;
+
+    seen.add(`${candidate.kind}:${normalized}`);
+    const firstChar = normalized[0];
+    const bucket = index.get(firstChar) ?? [];
+    bucket.push(candidate);
+    index.set(firstChar, bucket);
+  };
+
+  for (const entity of entities) {
+    for (const value of [entity.nameKo, entity.nameEn]) {
+      const trimmed = value.trim();
+      if (!trimmed) continue;
+      addCandidate({
+        value: trimmed,
+        lowerValue: trimmed.toLowerCase(),
+        kind: "entity",
+        entityId: entity.id,
+        entityType: entity.type,
+      });
+    }
+  }
+
+  for (const [value, description] of Object.entries({ ...KEYWORD_DESC, ...GOLD_TERM_DESC })) {
+    const trimmed = value.trim();
+    if (!trimmed) continue;
+    addCandidate({
+      value: trimmed,
+      lowerValue: trimmed.toLowerCase(),
+      kind: "keyword",
+      description,
+    });
+  }
+
+  for (const bucket of index.values()) {
+    bucket.sort((a, b) => {
+      if (b.value.length !== a.value.length) return b.value.length - a.value.length;
+      if (a.kind !== b.kind) return a.kind === "entity" ? -1 : 1;
+      return a.value.localeCompare(b.value, "ko");
+    });
+  }
+
+  return index;
+}
+
+function hasAsciiWordBoundary(candidate: LegacyInlineCandidate, content: string, start: number): boolean {
+  if (!/[a-z0-9]/i.test(candidate.value)) return true;
+
+  const prev = content[start - 1] ?? "";
+  const next = content[start + candidate.value.length] ?? "";
+  return !/[a-z0-9]/i.test(prev) && !/[a-z0-9]/i.test(next);
+}
+
+function parseLegacyCommentBlocks(content: string, index: Map<string, LegacyInlineCandidate[]>): PostBlock[] {
+  const blocks: PostBlock[] = [];
+  const lowerContent = content.toLowerCase();
+  let cursor = 0;
+  let textStart = 0;
+
+  while (cursor < content.length) {
+    const bucket = index.get(lowerContent[cursor]);
+    let matched: LegacyInlineCandidate | null = null;
+
+    if (bucket) {
+      for (const candidate of bucket) {
+        const slice = lowerContent.slice(cursor, cursor + candidate.value.length);
+        if (slice !== candidate.lowerValue) continue;
+        if (!hasAsciiWordBoundary(candidate, content, cursor)) continue;
+        matched = candidate;
+        break;
+      }
+    }
+
+    if (!matched) {
+      cursor += 1;
+      continue;
+    }
+
+    if (textStart < cursor) {
+      blocks.push({ type: "text", text: content.slice(textStart, cursor) });
+    }
+
+    const matchedText = content.slice(cursor, cursor + matched.value.length);
+    if (matched.kind === "entity" && matched.entityId && matched.entityType) {
+      blocks.push({
+        type: "entity",
+        entityId: matched.entityId,
+        entityType: matched.entityType,
+        displayText: matchedText,
+      });
+    } else if (matched.description) {
+      blocks.push({
+        type: "keyword",
+        text: matchedText,
+        keyword: matchedText,
+        description: matched.description,
+      });
+    }
+
+    cursor += matched.value.length;
+    textStart = cursor;
+  }
+
+  if (textStart < content.length) {
+    blocks.push({ type: "text", text: content.slice(textStart) });
+  }
+
+  return blocks.length > 0 ? blocks : [{ type: "text", text: content }];
+}
+
+function getCommentBlocks(comment: Comment, legacyInlineIndex: Map<string, LegacyInlineCandidate[]>): PostBlock[] {
   if (comment.content_blocks?.length) {
     return comment.content_blocks;
   }
-  return [{ type: "text", text: comment.content }];
+  return parseLegacyCommentBlocks(comment.content, legacyInlineIndex);
 }
 
 export function CommentSection({
@@ -62,6 +188,7 @@ export function CommentSection({
   const commentIds = useMemo(() => comments.map((c) => c.id), [comments]);
   const { counts: likeCounts, liked: likedSet, toggle: toggleLike } = useCommentLikes(commentIds, userId);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
+  const legacyInlineIndex = useMemo(() => buildLegacyInlineIndex(entities), [entities]);
 
   const handleSubmit = async (blocks: PostBlock[]) => {
     const trimmed = blocksToPlainText(blocks).trim();
@@ -116,7 +243,7 @@ export function CommentSection({
                 )}
               </div>
               <div className="mt-1.5 text-muted-foreground leading-relaxed break-words">
-                <PostRenderer blocks={getCommentBlocks(comment)} entityMap={entityMap} />
+                <PostRenderer blocks={getCommentBlocks(comment, legacyInlineIndex)} entityMap={entityMap} />
               </div>
             </li>
           ))}
