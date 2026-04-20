@@ -9,6 +9,8 @@ import {
   PatchNoteRenderer,
   type EntityInfo,
 } from "@/components/patch-note-renderer";
+import { CommentSection } from "@/components/comment-section";
+import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import type { PatchType } from "@/lib/types";
 
 const PATCH_TYPE_STYLES: Record<PatchType, { label: string; className: string }> = {
@@ -152,6 +154,7 @@ export default async function PatchDetailPage({
   ];
 
   const style = PATCH_TYPE_STYLES[patch.type];
+  const commentEntities = entities.filter((entity) => !entity.eventOptionDesc);
 
   // Adjacent patches for navigation
   const sortedPatches = [...patches].sort((a, b) => a.date.localeCompare(b.date));
@@ -201,6 +204,14 @@ export default async function PatchDetailPage({
           패치 노트 원문이 아직 준비되지 않았습니다.
         </div>
       )}
+
+      <section className="mt-8 rounded-lg border border-border bg-card/20 p-4">
+        <h2 className="mb-3 text-sm font-bold text-foreground">댓글</h2>
+        <CommentSection
+          threadKey={buildPatchCommentThreadKey(patch.version)}
+          initialEntities={commentEntities}
+        />
+      </section>
 
       {/* Patch navigation */}
       <div className="mt-8 flex items-center justify-between border-t border-border pt-4">

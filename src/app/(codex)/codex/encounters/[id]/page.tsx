@@ -2,7 +2,9 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { CommentSection } from "@/components/comment-section";
 import { getCodexMonsters, getCodexEncounters } from "@/lib/codex-data";
+import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
 import { DescriptionText } from "@/components/codex/codex-description";
 
@@ -125,6 +127,11 @@ export default async function EncounterDetailPage({
           <div className="text-sm text-gray-400 italic">
             <DescriptionText description={encounter.lossText} />
           </div>
+        </div>
+
+        <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
+          <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+          <CommentSection threadKey={buildCodexCommentThreadKey("encounter", encounter.id)} />
         </div>
       </div>
     </div>

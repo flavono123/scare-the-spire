@@ -4,6 +4,8 @@ import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { CommentSection } from "@/components/comment-section";
+import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { DescriptionText } from "./codex-description";
 import {
   CodexEncounter,
@@ -490,6 +492,11 @@ function EncounterDetail({
         <div className="text-sm text-gray-400 italic">
           <DescriptionText description={encounter.lossText} />
         </div>
+      </div>
+
+      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
+        <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+        <CommentSection threadKey={buildCodexCommentThreadKey("encounter", encounter.id)} />
       </div>
     </div>
   );

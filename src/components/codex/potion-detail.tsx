@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { CommentSection } from "@/components/comment-section";
+import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import {
   CodexPotion,
   POTION_RARITY_CONFIG,
@@ -109,6 +111,11 @@ export function PotionDetail({ potion, onClose }: PotionDetailProps) {
         <div className="text-sm text-gray-200 leading-relaxed">
           <DescriptionText description={potion.description} />
         </div>
+      </div>
+
+      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
+        <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+        <CommentSection threadKey={buildCodexCommentThreadKey("potion", potion.id)} />
       </div>
     </div>
   );

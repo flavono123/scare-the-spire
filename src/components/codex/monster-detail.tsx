@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { CommentSection } from "@/components/comment-section";
+import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import {
   CodexMonster,
   CodexEncounter,
@@ -238,6 +240,11 @@ export function MonsterDetail({ monster, encounters, allMonsters, onClose, onMon
           </div>
         </div>
       )}
+
+      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
+        <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+        <CommentSection threadKey={buildCodexCommentThreadKey("monster", monster.id)} />
+      </div>
     </div>
   );
 }

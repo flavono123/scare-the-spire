@@ -269,7 +269,7 @@ function StoryCard({
               potionMap={potionMap}
               changeMap={changeMap}
             />
-            <CommentSection storyId={story.id} userId={userId} onCountChange={setLiveCommentCount} />
+            <CommentSection threadKey={story.id} onCountChange={setLiveCommentCount} />
           </div>
         )}
       </div>

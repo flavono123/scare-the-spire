@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { CommentSection } from "@/components/comment-section";
+import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { CodexAncient, CodexRelic, AncientDialogueLine } from "@/lib/codex-types";
 import {
   EVENT_ACT_CONFIG,
@@ -240,6 +242,13 @@ export function AncientDetail({ ancient, relics }: AncientDetailProps) {
             <RelicGrid relics={relics} />
           </section>
         )}
+
+        <section>
+          <h2 className="font-[family-name:var(--font-gc-batang)] text-xl text-blue-300 mb-4">댓글</h2>
+          <div className="rounded-xl border border-blue-900/30 bg-[#101018] p-4">
+            <CommentSection threadKey={buildCodexCommentThreadKey("ancient", ancient.id)} />
+          </div>
+        </section>
       </div>
     </div>
   );

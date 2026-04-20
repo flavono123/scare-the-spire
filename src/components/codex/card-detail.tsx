@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { CommentSection } from "@/components/comment-section";
+import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { CodexCard, COLOR_LABELS, CardFilterCategory, CHARACTER_COLORS } from "@/lib/codex-types";
 import { CardTile } from "./card-tile";
 
@@ -136,6 +138,11 @@ export function CardDetail({ card, onClose }: CardDetailProps) {
           )}
         </div>
       )}
+
+      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
+        <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+        <CommentSection threadKey={buildCodexCommentThreadKey("card", card.id)} />
+      </div>
     </div>
   );
 }

@@ -3,6 +3,8 @@
 import { useState, useMemo, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { CommentSection } from "@/components/comment-section";
+import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import {
   CodexEvent,
   EventOption,
@@ -301,6 +303,11 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
 
           {/* Interactive content: description + choices */}
           <EventContentViewer event={event} />
+
+          <div className="mt-5 rounded-lg border border-white/10 bg-white/[0.03] p-4">
+            <h3 className="mb-3 text-sm font-bold text-gray-300">댓글</h3>
+            <CommentSection threadKey={buildCodexCommentThreadKey("event", event.id)} />
+          </div>
         </div>
       </div>
     </div>
