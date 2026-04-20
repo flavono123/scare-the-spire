@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 
+let richCommentColumnSupported: boolean | null = null;
+
 export interface Comment {
   id: string;
   story_id: string;
@@ -43,20 +45,43 @@ export function useComments(storyId: string, userId: string | null): UseComments
   const add = useCallback(
     async (nickname: string, content: string, contentBlocks?: PostBlock[]) => {
       if (!userId || !supabaseEnabled) return;
-      const { data } = await supabase
-        .from("comments")
-        .insert({
-          story_id: storyId,
-          user_id: userId,
-          nickname,
-          content,
-          content_blocks: contentBlocks ?? null,
-          env: supabaseEnv,
-        })
-        .select()
-        .single();
-      if (data) {
-        setComments((prev) => [...prev, data as Comment]);
+
+      const basePayload = {
+        story_id: storyId,
+        user_id: userId,
+        nickname,
+        content,
+        env: supabaseEnv,
+      };
+
+      const tryInsert = async (includeRichBlocks: boolean) => {
+        const payload = includeRichBlocks
+          ? { ...basePayload, content_blocks: contentBlocks ?? null }
+          : basePayload;
+        return supabase.from("comments").insert(payload).select().single();
+      };
+
+      let result = richCommentColumnSupported === false
+        ? await tryInsert(false)
+        : await tryInsert(true);
+
+      const shouldRetryWithoutRichColumn = !!result.error
+        && richCommentColumnSupported !== false
+        && result.error.message.toLowerCase().includes("content_blocks");
+
+      if (shouldRetryWithoutRichColumn) {
+        richCommentColumnSupported = false;
+        result = await tryInsert(false);
+      } else if (!result.error && richCommentColumnSupported === null) {
+        richCommentColumnSupported = true;
+      }
+
+      if (result.data) {
+        const inserted = {
+          ...(result.data as Comment),
+          content_blocks: richCommentColumnSupported === false ? null : (contentBlocks ?? null),
+        } satisfies Comment;
+        setComments((prev) => [...prev, inserted]);
       }
     },
     [storyId, userId],
