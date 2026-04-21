@@ -610,14 +610,16 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
               style={{
                 left: tick.left,
                 top: tick.top,
-                width: 16,
-                height: 16,
+                width: 18,
+                height: 18,
                 transform: `translate(-50%, -50%) rotate(${tick.rotation}rad) scale(${
                   visited ? 1.2 : 1
                 })`,
+                filter: "drop-shadow(0 0 0.8px rgba(0, 0, 0, 0.3))",
                 ...maskStyle(
                   effectSrc("map_dot"),
                   visited ? meta.traveledColor : meta.untraveledColor,
+                  visited ? 1 : 0.96,
                 ),
               }}
             />
