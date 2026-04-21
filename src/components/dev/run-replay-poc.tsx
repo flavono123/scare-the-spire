@@ -201,31 +201,40 @@ const ANCIENT_ASSETS: Record<
   string,
   {
     node: string;
+    outline: string;
   }
 > = {
   neow: {
     node: "/images/sts2/ancient-nodes/ancient_node_neow.webp",
+    outline: "/images/sts2/ancient-nodes/ancient_node_neow_outline.webp",
   },
   orobas: {
     node: "/images/sts2/ancient-nodes/ancient_node_orobas.webp",
+    outline: "/images/sts2/ancient-nodes/ancient_node_orobas_outline.webp",
   },
   nonupeipe: {
     node: "/images/sts2/ancient-nodes/ancient_node_nonupeipe.webp",
+    outline: "/images/sts2/ancient-nodes/ancient_node_nonupeipe_outline.webp",
   },
   darv: {
     node: "/images/sts2/ancient-nodes/ancient_node_darv.webp",
+    outline: "/images/sts2/ancient-nodes/ancient_node_darv_outline.webp",
   },
   pael: {
     node: "/images/sts2/ancient-nodes/ancient_node_pael.webp",
+    outline: "/images/sts2/ancient-nodes/ancient_node_pael_outline.webp",
   },
   tanx: {
     node: "/images/sts2/ancient-nodes/ancient_node_tanx.webp",
+    outline: "/images/sts2/ancient-nodes/ancient_node_tanx_outline.webp",
   },
   tezcatara: {
     node: "/images/sts2/ancient-nodes/ancient_node_tezcatara.webp",
+    outline: "/images/sts2/ancient-nodes/ancient_node_tezcatara_outline.webp",
   },
   vakuu: {
     node: "/images/sts2/ancient-nodes/ancient_node_vakuu.webp",
+    outline: "/images/sts2/ancient-nodes/ancient_node_vakuu_outline.webp",
   },
 };
 
@@ -241,13 +250,20 @@ const BOSS_PLACEHOLDER_KEYS = new Set([
   "vantom_boss",
   "waterfall_giant_boss",
 ]);
-const MAP_PADDING_X = 52;
-const MAP_PADDING_TOP = 54;
-const MAP_PADDING_BOTTOM = 62;
-const MAP_COLUMN_GAP = 76;
-const MAP_ROW_GAP = 58;
-const MAP_CANVAS_WIDTH = MAP_PADDING_X * 2 + MAP_COLUMN_GAP * 6;
-const NORMAL_NODE_PATH_OFFSET = { x: -28, y: -28 };
+const MAP_BOARD_PADDING_X = 52;
+const MAP_BOARD_PADDING_Y = 56;
+const MAP_GAME_SCALE = 0.46;
+const MAP_GAME_COLUMNS = 7;
+const MAP_GAME_DIST_X = 1050 / MAP_GAME_COLUMNS;
+const NORMAL_CONTROL_SIZE = 56;
+const NORMAL_ICON_SIZE = 92;
+const NORMAL_ICON_OVERFLOW = (NORMAL_ICON_SIZE - NORMAL_CONTROL_SIZE) / 2;
+const ANCIENT_CONTROL_SIZE = 208;
+const BOSS_CONTROL_WIDTH = 374;
+const BOSS_CONTROL_HEIGHT = 306;
+const BOSS_PLACEHOLDER_WIDTH = 374;
+const BOSS_PLACEHOLDER_HEIGHT = 350;
+const BOSS_PLACEHOLDER_OFFSET_Y = -22;
 const MAP_BACKDROP_SEGMENTS = [
   { name: "top", top: 0, height: 32 },
   { name: "middle", top: 32, height: 36 },
