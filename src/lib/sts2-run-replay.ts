@@ -643,7 +643,11 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
 
 function collectWarnings(run: ReplayRun): string[] {
   const warnings: string[] = [];
-  const modifierIds = new Set(run.modifiers.map(normalizeIdentifier).filter(Boolean));
+  const modifierIds = new Set(
+    run.modifiers
+      .map((modifier) => normalizeIdentifier(modifier.id ?? modifier.name))
+      .filter(Boolean),
+  );
   const deckIds = new Set(
     run.players.flatMap((player) => player.deck.map((card) => normalizeIdentifier(card.id)).filter(Boolean)),
   );
