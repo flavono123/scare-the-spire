@@ -161,38 +161,38 @@ const ACT_MAP_META: Record<
   string,
   {
     key: "overgrowth" | "underdocks" | "hive" | "glory";
-    color: string;
-    line: string;
-    hotLine: string;
+    bgColor: string;
+    traveledColor: string;
+    untraveledColor: string;
     border: string;
   }
 > = {
   "ACT.OVERGROWTH": {
     key: "overgrowth",
-    color: "#A78A67",
-    line: "rgba(83, 61, 42, 0.58)",
-    hotLine: "rgba(207, 191, 156, 0.92)",
+    bgColor: "#A78A67",
+    traveledColor: "#28231D",
+    untraveledColor: "#877256",
     border: "rgba(167, 138, 103, 0.36)",
   },
   "ACT.UNDERDOCKS": {
     key: "underdocks",
-    color: "#9F95A5",
-    line: "rgba(69, 59, 73, 0.58)",
-    hotLine: "rgba(205, 197, 212, 0.92)",
+    bgColor: "#9F95A5",
+    traveledColor: "#180F24",
+    untraveledColor: "#534A62",
     border: "rgba(159, 149, 165, 0.36)",
   },
   "ACT.HIVE": {
     key: "hive",
-    color: "#9B9562",
-    line: "rgba(81, 74, 39, 0.58)",
-    hotLine: "rgba(205, 196, 135, 0.92)",
+    bgColor: "#9B9562",
+    traveledColor: "#27221C",
+    untraveledColor: "#6E7750",
     border: "rgba(155, 149, 98, 0.36)",
   },
   "ACT.GLORY": {
     key: "glory",
-    color: "#819A97",
-    line: "rgba(52, 66, 64, 0.58)",
-    hotLine: "rgba(188, 214, 209, 0.92)",
+    bgColor: "#819A97",
+    traveledColor: "#1D1E2F",
+    untraveledColor: "#60717C",
     border: "rgba(129, 154, 151, 0.36)",
   },
 };
@@ -230,6 +230,17 @@ const ANCIENT_ASSETS: Record<
 };
 
 const FALLBACK_ACT_MAP_META = ACT_MAP_META["ACT.OVERGROWTH"];
+const BOSS_PLACEHOLDER_KEYS = new Set([
+  "doormaker_boss",
+  "kaiser_crab_boss",
+  "knowledge_demon_boss",
+  "lagavulin_matriarch_boss",
+  "soul_fysh_boss",
+  "test_subject_boss",
+  "the_kin_boss",
+  "vantom_boss",
+  "waterfall_giant_boss",
+]);
 const MAP_PADDING_X = 52;
 const MAP_PADDING_TOP = 54;
 const MAP_PADDING_BOTTOM = 62;
