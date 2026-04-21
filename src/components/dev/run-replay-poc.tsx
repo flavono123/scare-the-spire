@@ -556,7 +556,7 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
 }
 
 function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) {
-  const theme = ACT_THEME[act.actId] ?? FALLBACK_THEME;
+  const meta = actMapMeta(act.actId);
   const nodeMap = new Map(act.nodes.map((node) => [node.id, node]));
   const activeNodes = new Set<string>();
   const currentNodes = new Set(act.candidateNodeIdsByStep[step - 1] ?? []);
@@ -572,96 +572,94 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
   }
 
   const height = mapHeightOf(act.rowCount);
-  const ancientAsset = getAncientAsset(act);
-  const firstBossAsset = bossAssetPath(getBossKeys(act)[0] ?? null);
 
   return (
     <div
-      className={`relative overflow-hidden rounded-[2rem] border ${theme.border} bg-gradient-to-b ${theme.background}`}
-      style={{ height }}
+      className="relative overflow-hidden rounded-[2rem] border bg-[#120e0a]"
+      style={{ height, borderColor: meta.border }}
     >
-      <div
-        className="absolute inset-0 opacity-90"
-        style={{ backgroundImage: theme.mist }}
-      />
-      <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(255,255,255,0.03),transparent_32%),radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_34%)]" />
-      {ancientAsset.background && (
-        <div className="absolute inset-x-0 bottom-0 h-56 opacity-22">
-          <Image
-            src={ancientAsset.background}
-            alt="Ancient backdrop"
-            fill
-            sizes="560px"
-            className="object-contain object-bottom"
-          />
-        </div>
-      )}
-      {!ancientAsset.background && ancientAsset.portrait && (
-        <div className="absolute bottom-0 left-6 h-44 w-44 opacity-18">
-          <Image
-            src={ancientAsset.portrait}
-            alt="Ancient portrait"
-            fill
-            sizes="176px"
-            className="object-contain object-bottom"
-          />
-        </div>
-      )}
-      {firstBossAsset && (
-        <div className="absolute right-4 top-4 h-32 w-32 opacity-22">
-          <AssetThumb
-            src={firstBossAsset}
-            fallbackSrc="/images/sts2/nav/stats_monsters.png"
-            alt="Boss portrait"
-            className="object-contain object-top"
-          />
-        </div>
-      )}
+      <MapBackdrop actId={act.actId} />
+      <div className="absolute inset-0 bg-black/18" />
       <div className="absolute inset-[18px] rounded-[1.55rem] border border-white/6" />
+      <div
+        className="absolute inset-y-0 left-1/2 -translate-x-1/2"
+        style={{ width: MAP_CANVAS_WIDTH }}
+      >
+        {act.edges.map((edge) => {
+          const from = nodeMap.get(edge.from);
+          const to = nodeMap.get(edge.to);
+          if (!from || !to) return null;
+          const hot = activeEdges.has(edge.id);
+          const style = lineStyleForEdge(from, to, act.rowCount);
 
-      {act.edges.map((edge) => {
-        const from = nodeMap.get(edge.from);
-        const to = nodeMap.get(edge.to);
-        if (!from || !to) return null;
-        const hot = activeEdges.has(edge.id);
-        const style = lineStyleForEdge(from, to, act.rowCount);
+          return (
+            <div
+              key={edge.id}
+              className="absolute origin-left rounded-full"
+              style={{
+                ...style,
+                height: hot ? 4 : 2,
+                backgroundColor: hot ? meta.hotLine : meta.line,
+                boxShadow: hot ? `0 0 18px ${meta.hotLine}` : "none",
+                opacity: hot ? 1 : 0.78,
+              }}
+            />
+          );
+        })}
 
-        return (
-          <div
-            key={edge.id}
-            className={`absolute origin-left rounded-full ${
-              hot
-                ? `h-[4px] bg-gradient-to-r ${theme.activeLine} shadow-[0_0_20px_rgba(251,191,36,0.35)]`
-                : `h-[2px] ${theme.inactiveLine}`
-            }`}
-            style={style}
-          />
-        );
-      })}
+        {act.nodes.map((node) => {
+          const active = activeNodes.has(node.id);
+          const current = currentNodes.has(node.id);
+          const position = pointPosition(node.col, node.row, act.rowCount);
+          const state = current ? "current" : active ? "active" : "inactive";
+          const size = mapNodeSize(node.type);
 
-      {act.nodes.map((node) => {
-        const active = activeNodes.has(node.id);
-        const current = currentNodes.has(node.id);
-        const position = pointPosition(node.col, node.row, act.rowCount);
-        const state = current ? "current" : active ? "active" : "inactive";
-        const size = mapNodeSize(node.type);
-
-        return (
-          <div
-            key={node.id}
-            className={`absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-              current ? "scale-110" : active ? "scale-100" : "scale-[0.94]"
-            }`}
-            style={{ left: position.left, top: position.top }}
-          >
-            <MapNodeAsset node={node} act={act} state={state} size={size} />
-          </div>
-        );
-      })}
+          return (
+            <div
+              key={node.id}
+              className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
+              style={{
+                left: position.left,
+                top: position.top,
+                transform: `translate(-50%, -50%) scale(${
+                  current ? 1.08 : active ? 1 : 0.95
+                })`,
+              }}
+            >
+              <MapNodeAsset node={node} act={act} state={state} size={size} />
+            </div>
+          );
+        })}
+      </div>
 
       <div className="absolute bottom-4 left-4 rounded-full border border-white/8 bg-black/25 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-zinc-300">
         아래에서 위로 등반
       </div>
+    </div>
+  );
+}
+
+function MapBackdrop({ actId }: { actId: string }) {
+  const meta = actMapMeta(actId);
+
+  return (
+    <div className="absolute inset-0">
+      {MAP_BACKDROP_SEGMENTS.map((segment) => (
+        <div
+          key={segment.name}
+          className="absolute inset-x-0 overflow-hidden"
+          style={{ top: `${segment.top}%`, height: `${segment.height}%` }}
+        >
+          <Image
+            src={`/images/sts2/map/backgrounds/${meta.key}/${segment.name}.png`}
+            alt=""
+            fill
+            sizes="(max-width: 1280px) 100vw, 720px"
+            className="object-fill"
+            aria-hidden
+          />
+        </div>
+      ))}
     </div>
   );
 }
@@ -707,18 +705,22 @@ function lineStyleForEdge(
 function mapNodeSize(type: ReplayMapPointType) {
   switch (type) {
     case "ancient":
-      return 74;
+      return 82;
     case "boss":
-      return 94;
+      return 96;
     case "shop":
     case "rest_site":
-      return 66;
+      return 72;
     case "treasure":
     case "unknown":
-      return 58;
+      return 66;
     default:
-      return 62;
+      return 70;
   }
+}
+
+function actMapMeta(actId: string) {
+  return ACT_MAP_META[actId] ?? FALLBACK_ACT_MAP_META;
 }
 
 function getAncientAsset(act: ReplayActAnalysis) {
@@ -727,8 +729,7 @@ function getAncientAsset(act: ReplayActAnalysis) {
   return {
     key,
     node: asset?.node ?? "/images/sts2/ancient-nodes/ancient_node_neow.webp",
-    background: asset?.background ?? null,
-    portrait: asset?.portrait ?? "/images/sts2/npcs/neow.webp",
+    fallback: "/images/sts2/npcs/neow.webp",
   };
 }
 
@@ -744,169 +745,138 @@ function normalizeModelKey(value: string | null | undefined) {
   return value.split(".").pop()?.toLowerCase() ?? null;
 }
 
-function characterKey(value: string) {
-  return value.toUpperCase().split(".").pop() ?? "SILENT";
-}
-
 function bossAssetPath(key: string | null) {
   return key ? `/images/sts2/bosses/${key}.webp` : null;
 }
 
-function encounterMonsterAssetPath(modelId: string | null | undefined) {
-  const key = normalizeModelKey(modelId);
-  if (!key) return null;
-
-  const normalized = key
-    .replace(/_event_encounter$/, "")
-    .replace(/_(weak|normal|elite|boss)$/, "");
-
-  return normalized ? `/images/sts2/monsters-render/${normalized}.webp` : null;
+function mapIconNameForType(type: ReplayMapPointType) {
+  switch (type) {
+    case "monster":
+      return "map_monster";
+    case "elite":
+      return "map_elite";
+    case "rest_site":
+      return "map_rest";
+    case "treasure":
+      return "map_chest";
+    case "shop":
+      return "map_shop";
+    case "unknown":
+      return "map_unknown";
+    default:
+      return null;
+  }
 }
 
-function eventAssetPath(modelId: string | null | undefined) {
-  const key = normalizeModelKey(modelId);
-  return key ? `/images/sts2/events/${key}.webp` : null;
+function mapOutlineNameForType(type: ReplayMapPointType) {
+  switch (type) {
+    case "monster":
+      return "map_monster_outline";
+    case "elite":
+      return "map_elite_outline";
+    case "rest_site":
+      return "map_rest_outline";
+    case "treasure":
+      return "map_chest_outline";
+    case "shop":
+      return "map_shop_outline";
+    case "unknown":
+      return "map_unknown_outline";
+    default:
+      return null;
+  }
 }
 
-function restAssetPath(characterId: string) {
-  return (
-    CHARACTER_REST_ASSETS[characterKey(characterId)] ??
-    "/images/sts2/characters/rest_silent.webp"
-  );
+function revealedUnknownIconName(entry: ReplayActAnalysis["history"][number]) {
+  const firstRoomType = entry.rooms[0]?.room_type?.toLowerCase();
+  switch (firstRoomType) {
+    case "monster":
+      return "map_unknown_monster";
+    case "elite":
+      return "map_unknown_elite";
+    case "shop":
+      return "map_unknown_shop";
+    case "treasure":
+      return "map_unknown_chest";
+    default:
+      return "map_unknown";
+  }
 }
 
-function mapNodeVisual(
-  type: ReplayMapPointType,
-  act: ReplayActAnalysis,
-  row: number,
-) {
-  const ancientAsset = getAncientAsset(act);
+function revealedUnknownOutlineName(entry: ReplayActAnalysis["history"][number]) {
+  const firstRoomType = entry.rooms[0]?.room_type?.toLowerCase();
+  switch (firstRoomType) {
+    case "monster":
+      return "map_monster_outline";
+    case "elite":
+      return "map_elite_outline";
+    case "shop":
+      return "map_shop_outline";
+    case "treasure":
+      return "map_chest_outline";
+    default:
+      return "map_unknown_outline";
+  }
+}
+
+function mapIconSrc(actId: string, iconName: string) {
+  const meta = actMapMeta(actId);
+  return `/images/sts2/map/icons-by-act/${meta.key}/${iconName}.png`;
+}
+
+function mapOutlineSrc(outlineName: string) {
+  return `/images/sts2/map/outlines/${outlineName}.png`;
+}
+
+function effectSrc(name: string) {
+  return `/images/sts2/map/effects/${name}.png`;
+}
+
+function maskStyle(src: string, color: string, opacity = 1): CSSProperties {
+  return {
+    backgroundColor: color,
+    opacity,
+    WebkitMaskImage: `url(${src})`,
+    maskImage: `url(${src})`,
+    WebkitMaskPosition: "center",
+    maskPosition: "center",
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskSize: "contain",
+    maskSize: "contain",
+  };
+}
+
+function nodeOpacity(state: "inactive" | "active" | "current") {
+  return state === "inactive" ? 0.52 : 1;
+}
+
+function outlineOpacity(state: "inactive" | "active" | "current") {
+  return state === "inactive" ? 0.72 : 1;
+}
+
+function backgroundOpacity(state: "inactive" | "active" | "current") {
+  return state === "inactive" ? 0.78 : 0.94;
+}
+
+function ringStyle(state: "inactive" | "active" | "current") {
+  if (state === "current") {
+    return maskStyle(effectSrc("map_circle_4"), "rgba(255,255,255,0.92)", 1);
+  }
+  if (state === "active") {
+    return maskStyle(effectSrc("map_circle_2"), "rgba(255,255,255,0.52)", 1);
+  }
+  return null;
+}
+
+function bossAssetForRow(act: ReplayActAnalysis, row: number) {
   const bossKeys = getBossKeys(act);
   const maxBossRow = Math.max(
     ...act.nodes.filter((node) => node.type === "boss").map((node) => node.row),
   );
   const secondBoss = bossKeys.length > 1 && row === maxBossRow;
 
-  switch (type) {
-    case "ancient":
-      return {
-        src: ancientAsset.node,
-        fallbackSrc: ancientAsset.portrait,
-        imageClass: "object-contain scale-[1.04]",
-      };
-    case "boss":
-      return {
-        src: bossAssetPath(secondBoss ? (bossKeys.at(-1) ?? bossKeys[0] ?? null) : (bossKeys[0] ?? null)),
-        fallbackSrc: "/images/sts2/nav/stats_monsters.png",
-        imageClass: "object-contain scale-[1.04]",
-      };
-    case "shop":
-      return {
-        src: "/images/sts2/npcs/merchant.webp",
-        fallbackSrc: "/images/sts2/npcs/fake_merchant.webp",
-        imageClass: "object-contain scale-[1.08]",
-      };
-    case "rest_site":
-      return {
-        src: "/images/sts2/events/unrest_site.webp",
-        fallbackSrc: "/images/sts2/events/unrest_site.webp",
-        imageClass: "object-contain scale-[1.02]",
-      };
-    case "treasure":
-      return {
-        src: "/images/sts2/icons/chest_icon.webp",
-        fallbackSrc: "/images/sts2/icons/chest_icon.webp",
-        imageClass: "object-contain scale-[1.18]",
-      };
-    case "unknown":
-      return {
-        src: "/images/sts2/nav/question_mark.png",
-        fallbackSrc: "/images/sts2/nav/question_mark.png",
-        imageClass: "object-contain scale-[1.08]",
-      };
-    case "elite":
-    case "monster":
-    default:
-      return {
-        src: "/images/sts2/nav/stats_monsters.png",
-        fallbackSrc: "/images/sts2/nav/stats_monsters.png",
-        imageClass: "object-contain scale-[1.06]",
-      };
-  }
-}
-
-function stepVisual(
-  entry: ReplayActAnalysis["history"][number],
-  type: ReplayMapPointType,
-  act: ReplayActAnalysis,
-  characterId: string,
-) {
-  switch (type) {
-    case "ancient": {
-      const ancientAsset = getAncientAsset(act);
-      return {
-        src: ancientAsset.node,
-        fallbackSrc: ancientAsset.portrait,
-        imageClass: "object-contain scale-[1.05]",
-      };
-    }
-    case "boss":
-      return {
-        src: bossAssetPath(normalizeModelKey(entry.rooms[0]?.model_id)),
-        fallbackSrc: "/images/sts2/nav/stats_monsters.png",
-        imageClass: "object-contain scale-[1.04]",
-      };
-    case "shop":
-      return {
-        src: "/images/sts2/npcs/merchant.webp",
-        fallbackSrc: "/images/sts2/npcs/fake_merchant.webp",
-        imageClass: "object-contain scale-[1.08]",
-      };
-    case "rest_site":
-      return {
-        src: restAssetPath(characterId),
-        fallbackSrc: "/images/sts2/events/unrest_site.webp",
-        imageClass: "object-contain scale-[1.08]",
-      };
-    case "treasure":
-      return {
-        src: "/images/sts2/icons/chest_icon.webp",
-        fallbackSrc: "/images/sts2/icons/chest_icon.webp",
-        imageClass: "object-contain scale-[1.18]",
-      };
-    case "unknown":
-      return {
-        src: eventAssetPath(entry.rooms[0]?.model_id),
-        fallbackSrc: "/images/sts2/nav/question_mark.png",
-        imageClass: "object-cover",
-      };
-    case "elite":
-    case "monster":
-    default:
-      return {
-        src: encounterMonsterAssetPath(entry.rooms[0]?.model_id),
-        fallbackSrc: "/images/sts2/nav/stats_monsters.png",
-        imageClass: "object-contain scale-[1.04]",
-      };
-  }
-}
-
-function shellClasses(type: ReplayMapPointType, state: "inactive" | "active" | "current") {
-  const meta = NODE_META[type];
-  return {
-    shell:
-      state === "current"
-        ? meta.currentShell
-        : state === "active"
-          ? meta.activeShell
-          : meta.baseShell,
-    glow:
-      state === "current"
-        ? meta.currentGlow
-        : state === "active"
-          ? meta.activeGlow
-          : meta.baseGlow,
-  };
+  return bossAssetPath(secondBoss ? (bossKeys.at(-1) ?? bossKeys[0] ?? null) : (bossKeys[0] ?? null));
 }
 
 function MapNodeAsset({
@@ -920,23 +890,96 @@ function MapNodeAsset({
   state: "inactive" | "active" | "current";
   size: number;
 }) {
-  const visual = mapNodeVisual(node.type, act, node.row);
-  const palette = shellClasses(node.type, state);
+  if (node.type === "ancient") {
+    const ancientAsset = getAncientAsset(act);
+    return (
+      <SpecialMapAsset
+        actId={act.actId}
+        state={state}
+        size={size}
+        src={ancientAsset.node}
+        fallbackSrc={ancientAsset.fallback}
+        alt={NODE_META[node.type].label}
+        className="object-contain"
+      />
+    );
+  }
+
+  if (node.type === "boss") {
+    return (
+      <SpecialMapAsset
+        actId={act.actId}
+        state={state}
+        size={size}
+        src={bossAssetForRow(act, node.row)}
+        fallbackSrc="/images/sts2/nav/stats_monsters.png"
+        alt={NODE_META[node.type].label}
+        className="object-contain scale-[1.04]"
+        framed
+      />
+    );
+  }
+
+  const iconName = mapIconNameForType(node.type);
+  const outlineName = mapOutlineNameForType(node.type);
+  if (!iconName || !outlineName) {
+    return null;
+  }
 
   return (
-    <div
-      className="relative"
-      style={{ width: size, height: size }}
-    >
-      <div className={`absolute inset-0 rounded-[1.7rem] blur-md ${palette.glow}`} />
-      <div className={`absolute inset-0 rounded-[1.7rem] border backdrop-blur-[2px] ${palette.shell}`} />
-      <div className="absolute inset-[2px] rounded-[1.6rem] bg-zinc-950/78" />
-      <div className="absolute inset-[10%]">
+    <MapRoomAsset
+      actId={act.actId}
+      state={state}
+      size={size}
+      iconName={iconName}
+      outlineName={outlineName}
+      alt={NODE_META[node.type].label}
+    />
+  );
+}
+
+function MapRoomAsset({
+  actId,
+  state,
+  size,
+  iconName,
+  outlineName,
+  alt,
+}: {
+  actId: string;
+  state: "inactive" | "active" | "current";
+  size: number;
+  iconName: string;
+  outlineName: string;
+  alt: string;
+}) {
+  const meta = actMapMeta(actId);
+  const ring = ringStyle(state);
+
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      {ring && <div className="absolute inset-[-18%]" style={ring} />}
+      <div
+        className="absolute inset-[6%]"
+        style={{ opacity: backgroundOpacity(state) }}
+      >
         <AssetThumb
-          src={visual.src}
-          fallbackSrc={visual.fallbackSrc}
-          alt={NODE_META[node.type].label}
-          className={visual.imageClass}
+          src="/images/sts2/map/icons/map_node_background.png"
+          fallbackSrc={null}
+          alt=""
+          className="object-contain"
+        />
+      </div>
+      <div
+        className="absolute inset-[9%]"
+        style={maskStyle(mapOutlineSrc(outlineName), meta.color, outlineOpacity(state))}
+      />
+      <div className="absolute inset-[16%]" style={{ opacity: nodeOpacity(state) }}>
+        <AssetThumb
+          src={mapIconSrc(actId, iconName)}
+          fallbackSrc={`/images/sts2/map/icons/${iconName}.png`}
+          alt={alt}
+          className="object-contain"
         />
       </div>
     </div>
@@ -947,36 +990,105 @@ function StepAsset({
   entry,
   type,
   act,
-  characterId,
   current,
   size,
 }: {
   entry: ReplayActAnalysis["history"][number];
   type: ReplayMapPointType;
   act: ReplayActAnalysis;
-  characterId: string;
   current: boolean;
   size: "list" | "hero";
 }) {
-  const visual = stepVisual(entry, type, act, characterId);
-  const idlePalette = shellClasses(type, current ? "current" : "inactive");
-  const boxSize = size === "hero" ? 76 : 44;
+  const boxSize = size === "hero" ? 76 : 46;
+  const state = current ? "current" : "inactive";
+
+  if (type === "ancient") {
+    const ancientAsset = getAncientAsset(act);
+    return (
+      <SpecialMapAsset
+        actId={act.actId}
+        state={state}
+        size={boxSize}
+        src={ancientAsset.node}
+        fallbackSrc={ancientAsset.fallback}
+        alt={NODE_META[type].label}
+        className="object-contain"
+      />
+    );
+  }
+
+  if (type === "boss") {
+    return (
+      <SpecialMapAsset
+        actId={act.actId}
+        state={state}
+        size={boxSize}
+        src={bossAssetPath(normalizeModelKey(entry.rooms[0]?.model_id))}
+        fallbackSrc="/images/sts2/nav/stats_monsters.png"
+        alt={NODE_META[type].label}
+        className="object-contain scale-[1.04]"
+        framed
+      />
+    );
+  }
+
+  const iconName =
+    type === "unknown" ? revealedUnknownIconName(entry) : mapIconNameForType(type);
+  const outlineName =
+    type === "unknown" ? revealedUnknownOutlineName(entry) : mapOutlineNameForType(type);
+
+  if (!iconName || !outlineName) {
+    return null;
+  }
 
   return (
-    <div
-      className="relative shrink-0"
-      style={{ width: boxSize, height: boxSize }}
-    >
-      <div className={`absolute inset-0 rounded-[1.45rem] blur-md ${idlePalette.glow}`} />
-      <div className={`absolute inset-0 rounded-[1.45rem] border ${idlePalette.shell}`} />
-      <div className="absolute inset-[2px] rounded-[1.35rem] bg-zinc-950/82" />
-      <div className="absolute inset-[12%] overflow-hidden rounded-[1.15rem]">
-        <AssetThumb
-          src={visual.src}
-          fallbackSrc={visual.fallbackSrc}
-          alt={NODE_META[type].label}
-          className={visual.imageClass}
+    <MapRoomAsset
+      actId={act.actId}
+      state={state}
+      size={boxSize}
+      iconName={iconName}
+      outlineName={outlineName}
+      alt={NODE_META[type].label}
+    />
+  );
+}
+
+function SpecialMapAsset({
+  actId,
+  state,
+  size,
+  src,
+  fallbackSrc,
+  alt,
+  className,
+  framed = false,
+}: {
+  actId: string;
+  state: "inactive" | "active" | "current";
+  size: number;
+  src: string | null;
+  fallbackSrc: string | null;
+  alt: string;
+  className: string;
+  framed?: boolean;
+}) {
+  const meta = actMapMeta(actId);
+  const ring = ringStyle(state);
+
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      {ring && <div className="absolute inset-[-18%]" style={ring} />}
+      {framed && (
+        <div
+          className="absolute inset-[8%] rounded-[1.3rem] border bg-black/35"
+          style={{ borderColor: meta.border, opacity: state === "inactive" ? 0.78 : 1 }}
         />
+      )}
+      <div
+        className={framed ? "absolute inset-[16%]" : "absolute inset-[4%]"}
+        style={{ opacity: state === "inactive" ? 0.72 : 1 }}
+      >
+        <AssetThumb src={src} fallbackSrc={fallbackSrc} alt={alt} className={className} />
       </div>
     </div>
   );
@@ -995,6 +1107,10 @@ function AssetThumb({
 }) {
   const [failed, setFailed] = useState(false);
   const resolvedSrc = failed ? fallbackSrc ?? src : src ?? fallbackSrc;
+
+  useEffect(() => {
+    setFailed(false);
+  }, [src, fallbackSrc]);
 
   if (!resolvedSrc) {
     return null;
