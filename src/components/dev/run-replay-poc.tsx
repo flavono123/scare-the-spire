@@ -161,13 +161,13 @@ const NODE_META: Record<
   },
   elite: {
     label: "엘리트",
-    chip: "border-red-400/40 bg-red-500/10 text-red-100",
-    baseShell: "border-red-500/32 bg-red-950/38",
-    activeShell: "border-red-200/60 bg-red-500/14",
-    currentShell: "border-red-50 bg-red-200/22",
-    baseGlow: "bg-red-500/16",
-    activeGlow: "bg-red-300/20",
-    currentGlow: "bg-red-200/30",
+    chip: "border-zinc-700 bg-zinc-900/85 text-red-100",
+    baseShell: "border-zinc-700 bg-zinc-950/76",
+    activeShell: "border-amber-300/45 bg-zinc-900/90",
+    currentShell: "border-amber-100 bg-zinc-800/95",
+    baseGlow: "bg-zinc-600/10",
+    activeGlow: "bg-amber-300/16",
+    currentGlow: "bg-amber-200/22",
   },
   rest_site: {
     label: "휴식",
@@ -201,13 +201,13 @@ const NODE_META: Record<
   },
   boss: {
     label: "보스",
-    chip: "border-rose-400/40 bg-rose-500/10 text-rose-100",
-    baseShell: "border-rose-500/35 bg-rose-950/38",
-    activeShell: "border-rose-200/60 bg-rose-500/14",
-    currentShell: "border-rose-50 bg-rose-200/22",
-    baseGlow: "bg-rose-500/16",
-    activeGlow: "bg-rose-300/22",
-    currentGlow: "bg-rose-200/30",
+    chip: "border-zinc-700 bg-zinc-900/85 text-rose-100",
+    baseShell: "border-zinc-700 bg-zinc-950/78",
+    activeShell: "border-amber-300/45 bg-zinc-900/92",
+    currentShell: "border-amber-100 bg-zinc-800/96",
+    baseGlow: "bg-zinc-600/10",
+    activeGlow: "bg-amber-300/16",
+    currentGlow: "bg-amber-200/24",
   },
 };
 
@@ -1045,7 +1045,7 @@ function StepAsset({
   size: "list" | "hero";
 }) {
   const visual = stepVisual(entry, type, act, characterId);
-  const palette = shellClasses(type, current ? "current" : "active");
+  const idlePalette = shellClasses(type, current ? "current" : "inactive");
   const boxSize = size === "hero" ? 76 : 44;
 
   return (
@@ -1053,8 +1053,8 @@ function StepAsset({
       className="relative shrink-0"
       style={{ width: boxSize, height: boxSize }}
     >
-      <div className={`absolute inset-0 rounded-[1.45rem] blur-md ${palette.glow}`} />
-      <div className={`absolute inset-0 rounded-[1.45rem] border ${palette.shell}`} />
+      <div className={`absolute inset-0 rounded-[1.45rem] blur-md ${idlePalette.glow}`} />
+      <div className={`absolute inset-0 rounded-[1.45rem] border ${idlePalette.shell}`} />
       <div className="absolute inset-[2px] rounded-[1.35rem] bg-zinc-950/82" />
       <div className="absolute inset-[12%] overflow-hidden rounded-[1.15rem]">
         <AssetThumb
