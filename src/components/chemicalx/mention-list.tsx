@@ -5,7 +5,7 @@ import {
   useImperativeHandle,
   useState,
 } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { getCharacterColor } from "@/lib/codex-types";
 

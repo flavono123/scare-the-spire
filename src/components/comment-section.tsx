@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { RichContentEditor } from "@/components/rich-content-editor";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";

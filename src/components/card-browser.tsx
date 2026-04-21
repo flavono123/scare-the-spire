@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import type { Card, CardClass, CardType, Rarity, Change } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { ChangeList } from "@/components/change-list";

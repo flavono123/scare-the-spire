@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import { CodexRelic, characterOutlineFilter, getCharacterColor, POOL_LABELS, type RelicPool, type RelicFilterPool } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 

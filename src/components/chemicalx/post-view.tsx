@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import { ArrowLeft, Link2, Eye, EyeOff } from "lucide-react";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import type { ChemicalPost } from "@/lib/chemical-types";

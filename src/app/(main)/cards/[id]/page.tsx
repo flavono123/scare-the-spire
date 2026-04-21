@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import { existsSync } from "fs";
 import path from "path";
 import { getCards, getChanges } from "@/lib/data";

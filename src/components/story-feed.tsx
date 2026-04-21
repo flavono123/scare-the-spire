@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import type { Story, Card, Change, Relic, Potion, LinkedEntity } from "@/lib/types";
 import { useAuth } from "@/hooks/use-auth";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import type { CodexCard } from "@/lib/codex-types";
 
 // =============================================================================

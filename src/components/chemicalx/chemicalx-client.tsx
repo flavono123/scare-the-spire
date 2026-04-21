@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import { Eye, EyeOff } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";

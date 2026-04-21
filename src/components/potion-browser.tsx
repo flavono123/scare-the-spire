@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import type { Potion, PotionRarity, Change } from "@/lib/types";
 import { ChangeList } from "@/components/change-list";
 import { CharacterBadge, characterRing } from "@/components/character-badge";

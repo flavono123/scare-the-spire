@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useMemo } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
 import type { Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";

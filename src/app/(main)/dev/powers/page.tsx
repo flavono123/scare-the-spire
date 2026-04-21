@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import { RichText } from "@/components/rich-text";
 
 export const metadata = {

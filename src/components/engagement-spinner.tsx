@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 
 export function EngagementSpinner({ size = 16 }: { size?: number }) {
   return (

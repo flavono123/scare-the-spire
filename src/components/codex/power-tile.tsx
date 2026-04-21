@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, memo } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import { CodexPower } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import { getRelics, getChanges } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { ChangeList } from "@/components/change-list";

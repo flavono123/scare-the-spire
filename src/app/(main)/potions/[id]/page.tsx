@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import { getPotions, getChanges } from "@/lib/data";
 import { ChangeList } from "@/components/change-list";
 import { CharacterBadge } from "@/components/character-badge";

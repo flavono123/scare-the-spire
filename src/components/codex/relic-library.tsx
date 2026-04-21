@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import {
   CodexRelic,
   CodexCharacter,

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import { useLikes } from "@/hooks/use-likes";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 

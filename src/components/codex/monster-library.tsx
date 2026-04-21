@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import { MonsterDetail } from "./monster-detail";
 import { getChoseong } from "es-hangul";
 import {

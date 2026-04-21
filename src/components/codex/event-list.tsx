@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
 import type {

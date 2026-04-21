@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useMemo, type ReactNode } from "react";
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import {
   parseBBCode,
