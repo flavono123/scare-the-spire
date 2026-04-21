@@ -16,10 +16,11 @@ This skill should be used when:
 
 Two asset families, each with its own script:
 
-### 1. Images (portraits, nav icons)
+### 1. Images (portraits, nav icons, map UI)
 Extracted from the PCK file as PNG/WebP.
 - `scripts/extract-card-portraits.py` → `public/images/sts2/cards/`, `cards-beta/`
 - `scripts/extract-nav-icons.py` → `public/images/sts2/nav/`
+- `scripts/extract-map-assets.py` → `public/images/sts2/map/`
 
 ### 2. Entity text/structural data (JSON)
 Parsed from PCK localization + decompiled `sts2.dll`:
@@ -50,6 +51,9 @@ ilspycmd -p -o /tmp/sts2-src "$DLL"
 
 # 2. Refresh card art (official + beta)
 python3 scripts/extract-card-portraits.py --force
+
+# 2.5 Refresh map UI assets (node icons, outlines, act backgrounds, markers)
+python3 scripts/extract-map-assets.py --force
 
 # 3. Refresh entity data (names, HP, moves, damage, room types, etc.)
 python3 scripts/parse-enchantments.py
@@ -90,6 +94,7 @@ the diff before committing.
 - **Game version:** `.../Resources/release_info.json` (tracked in `data/sts2/meta.json`)
 - **PCK localization tables:** `localization/{lang}/{table}.json` (e.g. `localization/kor/monsters.json`)
 - **PCK images:** `images/packed/card_portraits/{character}/{name}.png` → `.godot/imported/{name}.png-{hash}.ctex`
+- **Map UI atlases:** `images/atlases/ui_atlas_*.png`, `images/atlases/compressed_0.png`, `images/packed/map/map_bgs/...`
 
 ## Shared library
 
@@ -101,6 +106,13 @@ re-implementing the PCK format.
 
 - The PCK contains ~588 official + ~265 beta card portraits; some use
   Spine-rendered art and are not available as static images.
+- Map node icons are mostly **AtlasTexture** crops from `ui_atlas` and
+  `compressed_0` rather than standalone PNG files. `extract-map-assets.py`
+  resolves the `.tres` atlas regions and decodes GPU-compressed `.ctex`
+  textures through `scripts/lib/ctex.py`.
+- `extract-map-assets.py` requires both **Pillow** and
+  **texture2ddecoder** in the Python environment because STS2 ships the
+  map atlases/backgrounds as BC7/BC3-compressed `.ctex` textures.
 - Enchantment/monster/encounter parsers skip `DEPRECATED_*` and `MOCK_*`
   prefixes (test/legacy entries).
 - Some locale IDs (e.g. `HATCHLING`, `THE_ARM`, `THE_BELL`) exist only in
