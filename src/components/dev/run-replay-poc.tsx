@@ -121,137 +121,79 @@ const NODE_META: Record<
   {
     label: string;
     chip: string;
-    baseShell: string;
-    activeShell: string;
-    currentShell: string;
-    baseGlow: string;
-    activeGlow: string;
-    currentGlow: string;
   }
 > = {
   ancient: {
     label: "고대의 존재",
     chip: "border-sky-400/40 bg-sky-500/10 text-sky-100",
-    baseShell: "border-sky-500/35 bg-sky-950/35",
-    activeShell: "border-sky-200/65 bg-sky-500/14",
-    currentShell: "border-sky-50 bg-sky-300/24",
-    baseGlow: "bg-sky-500/16",
-    activeGlow: "bg-sky-300/24",
-    currentGlow: "bg-sky-200/35",
   },
   monster: {
     label: "일반 전투",
     chip: "border-zinc-700 bg-zinc-900/80 text-zinc-100",
-    baseShell: "border-zinc-700 bg-zinc-950/70",
-    activeShell: "border-amber-300/55 bg-amber-500/10",
-    currentShell: "border-amber-100 bg-amber-200/22",
-    baseGlow: "bg-zinc-500/10",
-    activeGlow: "bg-amber-300/18",
-    currentGlow: "bg-amber-200/30",
   },
   unknown: {
     label: "미지",
     chip: "border-fuchsia-400/40 bg-fuchsia-500/10 text-fuchsia-100",
-    baseShell: "border-fuchsia-500/30 bg-fuchsia-950/35",
-    activeShell: "border-fuchsia-200/55 bg-fuchsia-500/12",
-    currentShell: "border-fuchsia-50 bg-fuchsia-200/20",
-    baseGlow: "bg-fuchsia-500/14",
-    activeGlow: "bg-fuchsia-300/20",
-    currentGlow: "bg-fuchsia-200/28",
   },
   elite: {
     label: "엘리트",
     chip: "border-zinc-700 bg-zinc-900/85 text-red-100",
-    baseShell: "border-zinc-700 bg-zinc-950/76",
-    activeShell: "border-amber-300/45 bg-zinc-900/90",
-    currentShell: "border-amber-100 bg-zinc-800/95",
-    baseGlow: "bg-zinc-600/10",
-    activeGlow: "bg-amber-300/16",
-    currentGlow: "bg-amber-200/22",
   },
   rest_site: {
     label: "휴식",
     chip: "border-emerald-400/40 bg-emerald-500/10 text-emerald-100",
-    baseShell: "border-emerald-500/32 bg-emerald-950/35",
-    activeShell: "border-emerald-200/60 bg-emerald-500/12",
-    currentShell: "border-emerald-50 bg-emerald-200/20",
-    baseGlow: "bg-emerald-500/14",
-    activeGlow: "bg-emerald-300/20",
-    currentGlow: "bg-emerald-200/28",
   },
   treasure: {
     label: "보물",
     chip: "border-amber-400/40 bg-amber-500/10 text-amber-100",
-    baseShell: "border-amber-500/35 bg-amber-950/38",
-    activeShell: "border-amber-200/60 bg-amber-500/14",
-    currentShell: "border-amber-50 bg-amber-200/22",
-    baseGlow: "bg-amber-500/16",
-    activeGlow: "bg-amber-300/22",
-    currentGlow: "bg-amber-200/30",
   },
   shop: {
     label: "상점",
     chip: "border-cyan-400/40 bg-cyan-500/10 text-cyan-100",
-    baseShell: "border-cyan-500/32 bg-cyan-950/36",
-    activeShell: "border-cyan-200/60 bg-cyan-500/12",
-    currentShell: "border-cyan-50 bg-cyan-200/20",
-    baseGlow: "bg-cyan-500/16",
-    activeGlow: "bg-cyan-300/20",
-    currentGlow: "bg-cyan-200/28",
   },
   boss: {
     label: "보스",
     chip: "border-zinc-700 bg-zinc-900/85 text-rose-100",
-    baseShell: "border-zinc-700 bg-zinc-950/78",
-    activeShell: "border-amber-300/45 bg-zinc-900/92",
-    currentShell: "border-amber-100 bg-zinc-800/96",
-    baseGlow: "bg-zinc-600/10",
-    activeGlow: "bg-amber-300/16",
-    currentGlow: "bg-amber-200/24",
   },
 };
 
-const ACT_THEME: Record<
+const ACT_MAP_META: Record<
   string,
   {
+    key: "overgrowth" | "underdocks" | "hive" | "glory";
+    color: string;
+    line: string;
+    hotLine: string;
     border: string;
-    background: string;
-    mist: string;
-    activeLine: string;
-    inactiveLine: string;
   }
 > = {
   "ACT.OVERGROWTH": {
-    border: "border-emerald-400/20",
-    background: "from-[#050d08] via-[#081611] to-[#1a1809]",
-    mist:
-      "radial-gradient(circle at 50% 100%, rgba(132, 204, 22, 0.18), transparent 34%), radial-gradient(circle at 50% 12%, rgba(250, 204, 21, 0.06), transparent 28%)",
-    activeLine: "from-lime-100 via-emerald-300 to-amber-200",
-    inactiveLine: "bg-emerald-950/70",
+    key: "overgrowth",
+    color: "#A78A67",
+    line: "rgba(83, 61, 42, 0.58)",
+    hotLine: "rgba(207, 191, 156, 0.92)",
+    border: "rgba(167, 138, 103, 0.36)",
   },
   "ACT.UNDERDOCKS": {
-    border: "border-sky-400/20",
-    background: "from-[#040c12] via-[#081620] to-[#12181a]",
-    mist:
-      "radial-gradient(circle at 50% 100%, rgba(56, 189, 248, 0.18), transparent 34%), radial-gradient(circle at 50% 14%, rgba(125, 211, 252, 0.06), transparent 30%)",
-    activeLine: "from-sky-100 via-cyan-300 to-blue-200",
-    inactiveLine: "bg-sky-950/70",
+    key: "underdocks",
+    color: "#9F95A5",
+    line: "rgba(69, 59, 73, 0.58)",
+    hotLine: "rgba(205, 197, 212, 0.92)",
+    border: "rgba(159, 149, 165, 0.36)",
   },
   "ACT.HIVE": {
-    border: "border-orange-400/20",
-    background: "from-[#120905] via-[#1a0e08] to-[#17120b]",
-    mist:
-      "radial-gradient(circle at 50% 100%, rgba(251, 146, 60, 0.18), transparent 34%), radial-gradient(circle at 50% 14%, rgba(253, 186, 116, 0.06), transparent 30%)",
-    activeLine: "from-amber-100 via-orange-300 to-yellow-200",
-    inactiveLine: "bg-orange-950/70",
+    key: "hive",
+    color: "#9B9562",
+    line: "rgba(81, 74, 39, 0.58)",
+    hotLine: "rgba(205, 196, 135, 0.92)",
+    border: "rgba(155, 149, 98, 0.36)",
   },
   "ACT.GLORY": {
-    border: "border-fuchsia-400/20",
-    background: "from-[#0c0814] via-[#130f22] to-[#160d1f]",
-    mist:
-      "radial-gradient(circle at 50% 100%, rgba(192, 132, 252, 0.18), transparent 34%), radial-gradient(circle at 50% 12%, rgba(244, 114, 182, 0.07), transparent 28%)",
-    activeLine: "from-fuchsia-100 via-violet-300 to-pink-200",
-    inactiveLine: "bg-violet-950/70",
+    key: "glory",
+    color: "#819A97",
+    line: "rgba(52, 66, 64, 0.58)",
+    hotLine: "rgba(188, 214, 209, 0.92)",
+    border: "rgba(129, 154, 151, 0.36)",
   },
 };
 
@@ -259,60 +201,46 @@ const ANCIENT_ASSETS: Record<
   string,
   {
     node: string;
-    background?: string;
-    portrait?: string;
   }
 > = {
   neow: {
     node: "/images/sts2/ancient-nodes/ancient_node_neow.webp",
-    portrait: "/images/sts2/npcs/neow.webp",
   },
   orobas: {
     node: "/images/sts2/ancient-nodes/ancient_node_orobas.webp",
-    background: "/images/sts2/ancients-bg/orobas_bg.webp",
   },
   nonupeipe: {
     node: "/images/sts2/ancient-nodes/ancient_node_nonupeipe.webp",
-    background: "/images/sts2/ancients-bg/nonupeipe_bg.webp",
   },
   darv: {
     node: "/images/sts2/ancient-nodes/ancient_node_darv.webp",
-    background: "/images/sts2/ancients-bg/darv_bg.webp",
   },
   pael: {
     node: "/images/sts2/ancient-nodes/ancient_node_pael.webp",
-    background: "/images/sts2/ancients-bg/pael_bg.webp",
   },
   tanx: {
     node: "/images/sts2/ancient-nodes/ancient_node_tanx.webp",
-    background: "/images/sts2/ancients-bg/tanx_bg.webp",
   },
   tezcatara: {
     node: "/images/sts2/ancient-nodes/ancient_node_tezcatara.webp",
-    background: "/images/sts2/ancients-bg/tezcatara_bg.webp",
-    portrait: "/images/sts2/npcs/tezcatara.webp",
   },
   vakuu: {
     node: "/images/sts2/ancient-nodes/ancient_node_vakuu.webp",
-    background: "/images/sts2/ancients-bg/vakuu_bg.webp",
   },
 };
 
-const CHARACTER_REST_ASSETS: Record<string, string> = {
-  IRONCLAD: "/images/sts2/characters/rest_ironclad.webp",
-  SILENT: "/images/sts2/characters/rest_silent.webp",
-  DEFECT: "/images/sts2/characters/rest_defect.webp",
-  NECROBINDER: "/images/sts2/characters/rest_necrobinder.webp",
-  REGENT: "/images/sts2/characters/rest_regent.webp",
-  OSTY: "/images/sts2/characters/rest_osty.webp",
-};
-
-const FALLBACK_THEME = ACT_THEME["ACT.OVERGROWTH"];
+const FALLBACK_ACT_MAP_META = ACT_MAP_META["ACT.OVERGROWTH"];
 const MAP_PADDING_X = 52;
 const MAP_PADDING_TOP = 54;
 const MAP_PADDING_BOTTOM = 62;
 const MAP_COLUMN_GAP = 76;
 const MAP_ROW_GAP = 58;
+const MAP_CANVAS_WIDTH = MAP_PADDING_X * 2 + MAP_COLUMN_GAP * 6;
+const MAP_BACKDROP_SEGMENTS = [
+  { name: "top", top: 0, height: 32 },
+  { name: "middle", top: 32, height: 36 },
+  { name: "bottom", top: 68, height: 32 },
+] as const;
 
 export function RunReplayPoc() {
   const [run, setRun] = useState<ReplayRun>(SAMPLE_RUN);
@@ -322,7 +250,6 @@ export function RunReplayPoc() {
   const inputId = useId();
   const analysis = analyzeReplayRun(run);
   const exactActs = analysis.acts.filter((act) => act.exactReplay).length;
-  const characterId = analysis.run.players[0]?.character ?? "CHARACTER.SILENT";
 
   async function handleFileChange(file: File | null) {
     if (!file) return;
@@ -443,11 +370,7 @@ export function RunReplayPoc() {
 
       <div className="mt-8 space-y-8">
         {analysis.acts.map((act) => (
-          <ActReplayCard
-            key={`${sourceLabel}-${act.actId}-${act.actIndex}`}
-            act={act}
-            characterId={characterId}
-          />
+          <ActReplayCard key={`${sourceLabel}-${act.actId}-${act.actIndex}`} act={act} />
         ))}
       </div>
 
@@ -458,13 +381,7 @@ export function RunReplayPoc() {
   );
 }
 
-function ActReplayCard({
-  act,
-  characterId,
-}: {
-  act: ReplayActAnalysis;
-  characterId: string;
-}) {
+function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
   const [step, setStep] = useState(act.history.length);
   const [playing, setPlaying] = useState(false);
   const currentEntry = act.history[Math.max(0, step - 1)] ?? null;
@@ -568,7 +485,6 @@ function ActReplayCard({
                   entry={currentEntry}
                   type={currentType}
                   act={act}
-                  characterId={characterId}
                   current
                   size="hero"
                 />
@@ -607,7 +523,6 @@ function ActReplayCard({
                       entry={entry}
                       type={act.historyTypes[index]}
                       act={act}
-                      characterId={characterId}
                       current={current}
                       size="list"
                     />
