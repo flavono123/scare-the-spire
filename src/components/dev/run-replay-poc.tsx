@@ -247,6 +247,7 @@ const MAP_PADDING_BOTTOM = 62;
 const MAP_COLUMN_GAP = 76;
 const MAP_ROW_GAP = 58;
 const MAP_CANVAS_WIDTH = MAP_PADDING_X * 2 + MAP_COLUMN_GAP * 6;
+const NORMAL_NODE_PATH_OFFSET = { x: -28, y: -28 };
 const MAP_BACKDROP_SEGMENTS = [
   { name: "top", top: 0, height: 32 },
   { name: "middle", top: 32, height: 36 },
@@ -725,6 +726,20 @@ function nodePosition(
   };
 }
 
+function pathEndpointPosition(
+  node: ReplayActAnalysis["nodes"][number],
+  rowCount: number,
+): { left: number; top: number } {
+  const position = nodePosition(node, rowCount);
+  if (node.type === "ancient" || node.type === "boss") {
+    return position;
+  }
+  return {
+    left: position.left + NORMAL_NODE_PATH_OFFSET.x,
+    top: position.top + NORMAL_NODE_PATH_OFFSET.y,
+  };
+}
+
 function mapNodeSize(type: ReplayMapPointType) {
   switch (type) {
     case "ancient":
@@ -748,8 +763,8 @@ function buildPathTicks(
   to: ReplayActAnalysis["nodes"][number],
   rowCount: number,
 ) {
-  const start = nodePosition(from, rowCount);
-  const end = nodePosition(to, rowCount);
+  const start = pathEndpointPosition(from, rowCount);
+  const end = pathEndpointPosition(to, rowCount);
   const dx = end.left - start.left;
   const dy = end.top - start.top;
   const length = Math.sqrt(dx * dx + dy * dy);
