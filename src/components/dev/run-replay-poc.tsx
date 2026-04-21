@@ -315,11 +315,6 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
   const currentEntry = act.history[Math.max(0, step - 1)] ?? null;
 
   useEffect(() => {
-    setStep(act.history.length);
-    setPlaying(false);
-  }, [act.history.length, act.actIndex]);
-
-  useEffect(() => {
     if (!playing) return;
     const timer = window.setInterval(() => {
       setStep((prev) => {

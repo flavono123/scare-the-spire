@@ -122,7 +122,7 @@ class DotNetRandom {
   private inextp = 21;
 
   constructor(seed: number) {
-    let subtraction = seed === INT_MIN ? INT_MAX : Math.abs(seed);
+    const subtraction = seed === INT_MIN ? INT_MAX : Math.abs(seed);
     let mj = DotNetRandom.MSEED - subtraction;
     if (mj < 0) mj += DotNetRandom.MBIG;
     this.seedArray[55] = mj;
@@ -667,7 +667,6 @@ function buildGeneratedMap(
 ): GeneratedActMap {
   const config = ACT_CONFIGS[actId];
   const seed = toUint32(getDeterministicHashCode(run.seed));
-  const isMultiplayer = run.players.length > 1;
   const hasSecondBoss = actIndex === run.acts.length - 1 && run.ascension >= 10;
   const baseRng = new StsRng(seed, `act_${actIndex + 1}_map`);
   const baseCounts = config.getCounts(baseRng, run.ascension);
