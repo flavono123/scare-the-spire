@@ -478,105 +478,50 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
         </div>
       </div>
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
-        <div className="rounded-3xl border border-zinc-800 bg-zinc-950/70 p-4">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-                Seeded Map
-              </p>
-              <p className="text-sm text-zinc-300">
-                step {step}/{act.history.length}
-              </p>
-            </div>
-            <input
-              type="range"
-              min={1}
-              max={act.history.length}
-              value={step}
-              className="w-56 accent-amber-300"
-              onChange={(event) => {
-                setPlaying(false);
-                setStep(Number(event.target.value));
-              }}
-            />
+      <div className="mt-5 rounded-3xl border border-zinc-800 bg-zinc-950/70 p-5">
+        <div className="mb-4 flex flex-wrap items-center gap-4">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+              Seeded Map
+            </p>
+            <p className="mt-1 text-sm text-zinc-300">
+              step {step}/{act.history.length} · {currentEntry ? formatRoomSummary(currentEntry) : "N/A"}
+            </p>
           </div>
-          <SeededMapView act={act} step={step} />
+          <input
+            type="range"
+            min={1}
+            max={act.history.length}
+            value={step}
+            className="w-full max-w-md accent-amber-300"
+            onChange={(event) => {
+              setPlaying(false);
+              setStep(Number(event.target.value));
+            }}
+          />
         </div>
 
-        <div className="space-y-3">
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-950/40 p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Current Step</p>
-            <div className="mt-3 flex items-center gap-4">
-              {currentEntry && (
-                <StepAsset
-                  entry={currentEntry}
-                  type={currentType}
-                  act={act}
-                  current
-                  size="hero"
-                />
-              )}
-              <div className="min-w-0 flex-1">
-                <div className="text-lg font-semibold text-zinc-50">
-                  {currentEntry ? formatRoomSummary(currentEntry) : "N/A"}
-                </div>
-                <p className="mt-2 text-sm text-zinc-400">
-                  {currentEntry ? NODE_META[currentType].label : "미확인"}
-                </p>
-                <p className="mt-1 text-sm text-zinc-500">
-                  후보 노드 {act.candidateNodeIdsByStep[step - 1]?.length ?? 0}개
-                </p>
-              </div>
-            </div>
-          </div>
+        <SeededMapView act={act} step={step} />
 
-          <ol className="max-h-[42rem] space-y-2 overflow-auto pr-1">
-            {act.history.map((entry, index) => {
-              const floor = act.baseFloor + index;
-              const meta = NODE_META[act.historyTypes[index]];
-              const current = index + 1 === step;
-
-              return (
-                <li
-                  key={`${act.actId}-${floor}`}
-                  className={`rounded-2xl border px-4 py-3 transition ${
-                    current
-                      ? "border-amber-300/60 bg-amber-500/10"
-                      : "border-zinc-800 bg-zinc-950/30"
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <StepAsset
-                      entry={entry}
-                      type={act.historyTypes[index]}
-                      act={act}
-                      current={current}
-                      size="list"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
-                          Floor {floor}
-                        </span>
-                        <span
-                          className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${meta.chip}`}
-                        >
-                          {meta.label}
-                        </span>
-                      </div>
-                      <p className="mt-1 truncate text-sm text-zinc-300">
-                        {formatRoomSummary(entry)}
-                      </p>
-                    </div>
-                    <span className="shrink-0 text-xs text-zinc-500">
-                      {act.candidateNodeIdsByStep[index]?.length ?? 0} 후보
-                    </span>
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
+        <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-zinc-800 bg-black/20 px-4 py-3 text-sm text-zinc-300">
+          {currentEntry && (
+            <StepAsset
+              entry={currentEntry}
+              type={currentType}
+              act={act}
+              current
+              size="list"
+            />
+          )}
+          <span className="font-medium text-zinc-100">
+            {currentEntry ? NODE_META[currentType].label : "미확인"}
+          </span>
+          <span className="text-zinc-500">
+            floor {act.baseFloor + step - 1}
+          </span>
+          <span className="text-zinc-500">
+            후보 노드 {act.candidateNodeIdsByStep[step - 1]?.length ?? 0}개
+          </span>
         </div>
       </div>
     </section>
