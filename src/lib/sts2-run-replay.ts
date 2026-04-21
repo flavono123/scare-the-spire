@@ -478,7 +478,7 @@ class GeneratedActMap {
 
 const ACT_CONFIGS: Record<string, ReplayActConfig> = {
   "ACT.OVERGROWTH": {
-    label: "초원지대",
+    label: "과성장",
     numRooms: 15,
     getCounts: (rng, ascension) => ({
       numElites: Math.round(5 * (ascension >= 1 ? 1.6 : 1)),
@@ -489,7 +489,7 @@ const ACT_CONFIGS: Record<string, ReplayActConfig> = {
     }),
   },
   "ACT.UNDERDOCKS": {
-    label: "언더독스",
+    label: "지하 선착장",
     numRooms: 15,
     getCounts: (rng, ascension) => ({
       numElites: Math.round(5 * (ascension >= 1 ? 1.6 : 1)),
@@ -500,7 +500,7 @@ const ACT_CONFIGS: Record<string, ReplayActConfig> = {
     }),
   },
   "ACT.HIVE": {
-    label: "하이브",
+    label: "군락",
     numRooms: 14,
     getCounts: (rng, ascension) => ({
       numElites: Math.round(5 * (ascension >= 1 ? 1.6 : 1)),
@@ -511,7 +511,7 @@ const ACT_CONFIGS: Record<string, ReplayActConfig> = {
     }),
   },
   "ACT.GLORY": {
-    label: "글로리",
+    label: "영광",
     numRooms: 13,
     getCounts: (rng, ascension) => ({
       numElites: Math.round(5 * (ascension >= 1 ? 1.6 : 1)),
