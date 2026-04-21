@@ -1071,10 +1071,6 @@ function outlineOpacity(state: "inactive" | "active" | "current") {
   return state === "inactive" ? 0.72 : 1;
 }
 
-function backgroundOpacity(state: "inactive" | "active" | "current") {
-  return state === "inactive" ? 0.78 : 0.94;
-}
-
 function circleOpacity(state: "inactive" | "active" | "current") {
   if (state === "inactive") return 0;
   return state === "current" ? 1 : 0.92;
