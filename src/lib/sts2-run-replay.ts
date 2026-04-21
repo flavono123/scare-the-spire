@@ -595,7 +595,11 @@ export function parseReplayRun(raw: string): ReplayRun {
 
 export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
   const warnings = collectWarnings(run);
-  const modifierIds = new Set(run.modifiers.map(normalizeIdentifier).filter(Boolean));
+  const modifierIds = new Set(
+    run.modifiers
+      .map((modifier) => normalizeIdentifier(modifier.id ?? modifier.name))
+      .filter(Boolean),
+  );
   const acts: ReplayActAnalysis[] = [];
   let baseFloor = 1;
 
