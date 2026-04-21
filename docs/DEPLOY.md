@@ -39,4 +39,5 @@ Settings > Actions > General:
 ## 이미지
 
 - WebP 340w, 총 28MB — git 직접 커밋 (LFS 불필요)
-- Next.js `<Image>` 컴포넌트가 추가 최적화 (lazy load, srcset)
+- 프로덕션 이미지는 Vercel Image Optimization을 사용하지 않음
+- 이미지 컴포넌트는 `src/components/ui/static-image.tsx`를 기준으로 유지

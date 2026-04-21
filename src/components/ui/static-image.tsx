@@ -42,22 +42,27 @@ function resolveImageDimension(
 const StaticImage = forwardRef<HTMLImageElement, StaticImageProps>(function StaticImage(
   {
     alt,
-    blurDataURL: _blurDataURL,
+    blurDataURL,
     className,
     fill = false,
     height,
     loading,
-    placeholder: _placeholder,
+    placeholder,
     priority = false,
-    quality: _quality,
+    quality,
     src,
     style,
-    unoptimized: _unoptimized,
+    unoptimized,
     width,
     ...props
   },
   ref,
 ) {
+  void blurDataURL;
+  void placeholder;
+  void quality;
+  void unoptimized;
+
   const resolvedWidth = resolveImageDimension(width, src, "width");
   const resolvedHeight = resolveImageDimension(height, src, "height");
   const resolvedSrc = resolveImageSource(src);
@@ -72,6 +77,7 @@ const StaticImage = forwardRef<HTMLImageElement, StaticImageProps>(function Stat
     : style;
 
   return (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       {...props}
       ref={ref}
