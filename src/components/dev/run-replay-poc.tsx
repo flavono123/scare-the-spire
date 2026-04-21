@@ -586,6 +586,7 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
 function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) {
   const meta = actMapMeta(act.actId);
   const nodeMap = new Map(act.nodes.map((node) => [node.id, node]));
+  const layout = buildMapLayout(act);
   const activeNodes = new Set<string>();
   const currentNodes = new Set(act.candidateNodeIdsByStep[step - 1] ?? []);
   const activeEdges = new Set<string>();
@@ -599,19 +600,17 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
     }
   }
 
-  const height = mapHeightOf(act.rowCount);
-
   return (
     <div
       className="relative overflow-hidden rounded-[2rem] border bg-[#120e0a]"
-      style={{ height, borderColor: meta.border }}
+      style={{ height: layout.height, borderColor: meta.border }}
     >
       <MapBackdrop actId={act.actId} />
       <div className="absolute inset-0 bg-black/18" />
       <div className="absolute inset-[18px] rounded-[1.55rem] border border-white/6" />
       <div
         className="absolute inset-y-0 left-1/2 -translate-x-1/2"
-        style={{ width: MAP_CANVAS_WIDTH }}
+        style={{ width: layout.width }}
       >
         {act.edges.flatMap((edge) => {
           const from = nodeMap.get(edge.from);
@@ -619,15 +618,15 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
           if (!from || !to) return [];
           const visited = activeEdges.has(edge.id);
 
-          return buildPathTicks(edge.id, from, to, act.rowCount).map((tick, index) => (
+          return buildPathTicks(edge.id, from, to, act, layout).map((tick, index) => (
             <div
               key={`${edge.id}-${index}`}
               className="absolute"
               style={{
                 left: tick.left,
                 top: tick.top,
-                width: 18,
-                height: 18,
+                width: 16 * MAP_GAME_SCALE,
+                height: 16 * MAP_GAME_SCALE,
                 transform: `translate(-50%, -50%) rotate(${tick.rotation}rad) scale(${
                   visited ? 1.2 : 1
                 })`,
@@ -645,9 +644,10 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
         {act.nodes.map((node) => {
           const active = activeNodes.has(node.id);
           const current = currentNodes.has(node.id);
-          const position = nodePosition(node, act.rowCount);
+          const position = layout.centers.get(node.id);
           const state = current ? "current" : active ? "active" : "inactive";
-          const size = mapNodeSize(node.type);
+          const size = mapNodeSize(node, act);
+          if (!position) return null;
 
           return (
             <div
@@ -705,18 +705,6 @@ function formatRoomSummary(entry: ReplayActAnalysis["history"][number]) {
   return firstRoom.model_id ?? firstRoom.room_type;
 }
 
-function mapHeightOf(rowCount: number) {
-  return Math.max(420, MAP_PADDING_TOP + MAP_PADDING_BOTTOM + rowCount * MAP_ROW_GAP);
-}
-
-function pointPosition(col: number, row: number, rowCount: number) {
-  const height = mapHeightOf(rowCount);
-  return {
-    left: MAP_PADDING_X + col * MAP_COLUMN_GAP,
-    top: height - MAP_PADDING_BOTTOM - row * MAP_ROW_GAP,
-  };
-}
-
 function stableHash(value: string) {
   let hash = 2166136261;
   for (let index = 0; index < value.length; index++) {
@@ -730,61 +718,189 @@ function stableSigned(value: string, magnitude: number) {
   return ((stableHash(value) / 4294967295) * 2 - 1) * magnitude;
 }
 
-function nodePosition(
+type MapBox = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
+
+type MapPoint = {
+  left: number;
+  top: number;
+};
+
+type MapLayout = {
+  width: number;
+  height: number;
+  centers: Map<string, MapPoint>;
+  endpoints: Map<string, MapPoint>;
+};
+
+type RenderSize = {
+  width: number;
+  height: number;
+};
+
+function hasSecondBoss(act: ReplayActAnalysis) {
+  return act.nodes.filter((node) => node.type === "boss").length > 1;
+}
+
+function mapGameRowCount(act: ReplayActAnalysis) {
+  return act.rowCount - (hasSecondBoss(act) ? 2 : 1);
+}
+
+function mapGameRowScale(act: ReplayActAnalysis) {
+  return hasSecondBoss(act) ? 0.9 : 1;
+}
+
+function gameDistY(act: ReplayActAnalysis) {
+  return (2325 / (mapGameRowCount(act) - 1)) * mapGameRowScale(act);
+}
+
+function gameControlBox(
   node: ReplayActAnalysis["nodes"][number],
-  rowCount: number,
-): { left: number; top: number } {
-  const base = pointPosition(node.col, node.row, rowCount);
-  if (node.type === "ancient" || node.type === "boss") {
-    return base;
+  act: ReplayActAnalysis,
+): MapBox {
+  const rowScale = mapGameRowScale(act);
+
+  if (node.type === "boss") {
+    const bossNodes = act.nodes.filter((candidate) => candidate.type === "boss");
+    const maxBossRow = Math.max(...bossNodes.map((candidate) => candidate.row));
+    return {
+      left: -200,
+      top: node.row === maxBossRow && bossNodes.length > 1 ? -2280 * rowScale : -1980 * rowScale,
+      width: BOSS_CONTROL_WIDTH,
+      height: BOSS_CONTROL_HEIGHT,
+    };
   }
+
+  if (node.type === "ancient") {
+    return {
+      left: -80,
+      top: 720,
+      width: ANCIENT_CONTROL_SIZE,
+      height: ANCIENT_CONTROL_SIZE,
+    };
+  }
+
+  if (node.row === 0) {
+    return {
+      left: -80,
+      top: 800,
+      width: NORMAL_CONTROL_SIZE,
+      height: NORMAL_CONTROL_SIZE,
+    };
+  }
+
   return {
-    left: base.left + stableSigned(`${node.id}:x`, 8),
-    top: base.top + stableSigned(`${node.id}:y`, 10),
+    left: -500 + node.col * MAP_GAME_DIST_X + stableSigned(`${node.id}:x`, 21),
+    top: 740 - node.row * gameDistY(act) + stableSigned(`${node.id}:y`, 25),
+    width: NORMAL_CONTROL_SIZE,
+    height: NORMAL_CONTROL_SIZE,
   };
 }
 
-function pathEndpointPosition(
+function gameVisualBox(
   node: ReplayActAnalysis["nodes"][number],
-  rowCount: number,
-): { left: number; top: number } {
-  const position = nodePosition(node, rowCount);
-  if (node.type === "ancient" || node.type === "boss") {
-    return position;
+  act: ReplayActAnalysis,
+): MapBox {
+  const control = gameControlBox(node, act);
+
+  if (node.type === "boss") {
+    return {
+      left: control.left,
+      top: control.top + BOSS_PLACEHOLDER_OFFSET_Y,
+      width: BOSS_PLACEHOLDER_WIDTH,
+      height: BOSS_PLACEHOLDER_HEIGHT,
+    };
   }
+
+  if (node.type === "ancient") {
+    return control;
+  }
+
   return {
-    left: position.left + NORMAL_NODE_PATH_OFFSET.x,
-    top: position.top + NORMAL_NODE_PATH_OFFSET.y,
+    left: control.left - NORMAL_ICON_OVERFLOW,
+    top: control.top - NORMAL_ICON_OVERFLOW,
+    width: NORMAL_ICON_SIZE,
+    height: NORMAL_ICON_SIZE,
   };
 }
 
-function mapNodeSize(type: ReplayMapPointType) {
-  switch (type) {
-    case "ancient":
-      return 82;
-    case "boss":
-      return 96;
-    case "shop":
-    case "rest_site":
-      return 72;
-    case "treasure":
-    case "unknown":
-      return 66;
-    default:
-      return 70;
+function gameNodeCenter(
+  node: ReplayActAnalysis["nodes"][number],
+  act: ReplayActAnalysis,
+): MapPoint {
+  const box = gameVisualBox(node, act);
+  return {
+    left: box.left + box.width / 2,
+    top: box.top + box.height / 2,
+  };
+}
+
+function gamePathEndpoint(
+  node: ReplayActAnalysis["nodes"][number],
+  act: ReplayActAnalysis,
+): MapPoint {
+  const control = gameControlBox(node, act);
+  if (node.type === "boss" || node.type === "ancient") {
+    return {
+      left: control.left + control.width / 2,
+      top: control.top + control.height / 2,
+    };
   }
+  return {
+    left: control.left,
+    top: control.top,
+  };
+}
+
+function buildMapLayout(act: ReplayActAnalysis): MapLayout {
+  const boxes = act.nodes.map((node) => ({
+    node,
+    box: gameVisualBox(node, act),
+  }));
+  const minLeft = Math.min(...boxes.map(({ box }) => box.left));
+  const minTop = Math.min(...boxes.map(({ box }) => box.top));
+  const maxRight = Math.max(...boxes.map(({ box }) => box.left + box.width));
+  const maxBottom = Math.max(...boxes.map(({ box }) => box.top + box.height));
+
+  const toBoardPoint = (point: MapPoint): MapPoint => ({
+    left: MAP_BOARD_PADDING_X + (point.left - minLeft) * MAP_GAME_SCALE,
+    top: MAP_BOARD_PADDING_Y + (point.top - minTop) * MAP_GAME_SCALE,
+  });
+
+  return {
+    width: Math.ceil((maxRight - minLeft) * MAP_GAME_SCALE + MAP_BOARD_PADDING_X * 2),
+    height: Math.ceil((maxBottom - minTop) * MAP_GAME_SCALE + MAP_BOARD_PADDING_Y * 2),
+    centers: new Map(act.nodes.map((node) => [node.id, toBoardPoint(gameNodeCenter(node, act))])),
+    endpoints: new Map(act.nodes.map((node) => [node.id, toBoardPoint(gamePathEndpoint(node, act))])),
+  };
+}
+
+function mapNodeSize(
+  node: ReplayActAnalysis["nodes"][number],
+  act: ReplayActAnalysis,
+): RenderSize {
+  const box = gameVisualBox(node, act);
+  return {
+    width: Math.round(box.width * MAP_GAME_SCALE),
+    height: Math.round(box.height * MAP_GAME_SCALE),
+  };
 }
 
 function buildPathTicks(
   edgeId: string,
   from: ReplayActAnalysis["nodes"][number],
   to: ReplayActAnalysis["nodes"][number],
-  rowCount: number,
+  act: ReplayActAnalysis,
+  layout: MapLayout,
 ) {
-  const start = pathEndpointPosition(from, rowCount);
-  const end = pathEndpointPosition(to, rowCount);
-  const dx = end.left - start.left;
-  const dy = end.top - start.top;
+  const startGame = gamePathEndpoint(from, act);
+  const endGame = gamePathEndpoint(to, act);
+  const dx = endGame.left - startGame.left;
+  const dy = endGame.top - startGame.top;
   const length = Math.sqrt(dx * dx + dy * dy);
   const spacing = 22;
   const count = Math.floor(length / spacing) + 1;
@@ -794,11 +910,18 @@ function buildPathTicks(
 
   return Array.from({ length: Math.max(0, count - 1) }, (_, index) => {
     const step = index + 1;
+    const gamePoint = {
+      left: startGame.left + unitX * spacing * step + stableSigned(`${edgeId}:${step}:x`, 3),
+      top: startGame.top + unitY * spacing * step + stableSigned(`${edgeId}:${step}:y`, 3),
+    };
+
     return {
       left:
-        start.left + unitX * spacing * step + stableSigned(`${edgeId}:${step}:x`, 3),
+        (layout.endpoints.get(from.id)?.left ?? 0) +
+        ((gamePoint.left - startGame.left) * MAP_GAME_SCALE),
       top:
-        start.top + unitY * spacing * step + stableSigned(`${edgeId}:${step}:y`, 3),
+        (layout.endpoints.get(from.id)?.top ?? 0) +
+        ((gamePoint.top - startGame.top) * MAP_GAME_SCALE),
       rotation: baseRotation + stableSigned(`${edgeId}:${step}:r`, 0.1),
     };
   });
@@ -814,7 +937,7 @@ function getAncientAsset(act: ReplayActAnalysis) {
   return {
     key,
     node: asset?.node ?? "/images/sts2/ancient-nodes/ancient_node_neow.webp",
-    fallback: "/images/sts2/npcs/neow.webp",
+    outline: asset?.outline ?? "/images/sts2/ancient-nodes/ancient_node_neow_outline.webp",
   };
 }
 
@@ -976,19 +1099,18 @@ function MapNodeAsset({
   node: ReplayActAnalysis["nodes"][number];
   act: ReplayActAnalysis;
   state: "inactive" | "active" | "current";
-  size: number;
+  size: RenderSize;
 }) {
   if (node.type === "ancient") {
     const ancientAsset = getAncientAsset(act);
     return (
-      <SpecialMapAsset
+      <AncientMapAsset
         actId={act.actId}
         state={state}
         size={size}
         src={ancientAsset.node}
-        fallbackSrc={ancientAsset.fallback}
+        outlineSrc={ancientAsset.outline}
         alt={NODE_META[node.type].label}
-        className="object-contain"
       />
     );
   }
@@ -1049,7 +1171,7 @@ function MapRoomAsset({
 }: {
   actId: string;
   state: "inactive" | "active" | "current";
-  size: number;
+  size: RenderSize;
   iconName: string;
   outlineName: string;
   alt: string;
@@ -1057,7 +1179,7 @@ function MapRoomAsset({
   const meta = actMapMeta(actId);
 
   return (
-    <div className="relative shrink-0" style={{ width: size, height: size }}>
+    <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
       {state !== "inactive" && (
         <div className="absolute inset-[-18%]" style={{ opacity: circleOpacity(state) }}>
           <AssetThumb
@@ -1069,21 +1191,10 @@ function MapRoomAsset({
         </div>
       )}
       <div
-        className="absolute inset-[6%]"
-        style={{ opacity: backgroundOpacity(state) }}
-      >
-        <AssetThumb
-          src="/images/sts2/map/icons/map_node_background.png"
-          fallbackSrc={null}
-          alt=""
-          className="object-contain"
-        />
-      </div>
-      <div
-        className="absolute inset-[9%]"
+        className="absolute inset-0"
         style={maskStyle(mapOutlineSrc(outlineName), meta.bgColor, outlineOpacity(state))}
       />
-      <div className="absolute inset-[16%]" style={{ opacity: nodeOpacity(state) }}>
+      <div className="absolute inset-0" style={{ opacity: nodeOpacity(state) }}>
         <AssetThumb
           src={mapIconSrc(actId, iconName)}
           fallbackSrc={`/images/sts2/map/icons/${iconName}.png`}
@@ -1110,18 +1221,18 @@ function StepAsset({
 }) {
   const boxSize = size === "hero" ? 76 : 46;
   const state = current ? "current" : "inactive";
+  const squareSize = { width: boxSize, height: boxSize };
 
   if (type === "ancient") {
     const ancientAsset = getAncientAsset(act);
     return (
-      <SpecialMapAsset
+      <AncientMapAsset
         actId={act.actId}
         state={state}
-        size={boxSize}
+        size={squareSize}
         src={ancientAsset.node}
-        fallbackSrc={ancientAsset.fallback}
+        outlineSrc={ancientAsset.outline}
         alt={NODE_META[type].label}
-        className="object-contain"
       />
     );
   }
@@ -1133,7 +1244,7 @@ function StepAsset({
         <BossPlaceholderAsset
           actId={act.actId}
           state={state}
-          size={boxSize}
+          size={squareSize}
           bossKey={bossKey}
           alt={NODE_META[type].label}
         />
@@ -1144,7 +1255,7 @@ function StepAsset({
       <SpecialMapAsset
         actId={act.actId}
         state={state}
-        size={boxSize}
+        size={squareSize}
         src={bossAssetPath(bossKey)}
         fallbackSrc="/images/sts2/nav/stats_monsters.png"
         alt={NODE_META[type].label}
@@ -1167,11 +1278,50 @@ function StepAsset({
     <MapRoomAsset
       actId={act.actId}
       state={state}
-      size={boxSize}
+      size={squareSize}
       iconName={iconName}
       outlineName={outlineName}
       alt={NODE_META[type].label}
     />
+  );
+}
+
+function AncientMapAsset({
+  actId,
+  state,
+  size,
+  src,
+  outlineSrc,
+  alt,
+}: {
+  actId: string;
+  state: "inactive" | "active" | "current";
+  size: RenderSize;
+  src: string;
+  outlineSrc: string;
+  alt: string;
+}) {
+  const meta = actMapMeta(actId);
+
+  return (
+    <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
+      {state !== "inactive" && (
+        <div className="absolute inset-[-12%]" style={{ opacity: circleOpacity(state) }}>
+          <AssetThumb
+            src={effectSrc("map_circle_4")}
+            fallbackSrc={null}
+            alt=""
+            className="object-contain"
+          />
+        </div>
+      )}
+      <div className="absolute inset-0" style={maskStyle(outlineSrc, meta.bgColor, 1)}>
+        <span className="sr-only">{alt}</span>
+      </div>
+      <div className="absolute inset-0" style={{ opacity: state === "inactive" ? 0.72 : 1 }}>
+        <AssetThumb src={src} fallbackSrc={null} alt={alt} className="object-contain" />
+      </div>
+    </div>
   );
 }
 
@@ -1184,14 +1334,14 @@ function BossPlaceholderAsset({
 }: {
   actId: string;
   state: "inactive" | "active" | "current";
-  size: number;
+  size: RenderSize;
   bossKey: string;
   alt: string;
 }) {
   const meta = actMapMeta(actId);
 
   return (
-    <div className="relative shrink-0" style={{ width: size, height: size }}>
+    <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
       {state !== "inactive" && (
         <div className="absolute inset-[-18%]" style={{ opacity: circleOpacity(state) }}>
           <AssetThumb
@@ -1231,7 +1381,7 @@ function SpecialMapAsset({
 }: {
   actId: string;
   state: "inactive" | "active" | "current";
-  size: number;
+  size: RenderSize;
   src: string | null;
   fallbackSrc: string | null;
   alt: string;
@@ -1241,7 +1391,7 @@ function SpecialMapAsset({
   const meta = actMapMeta(actId);
 
   return (
-    <div className="relative shrink-0" style={{ width: size, height: size }}>
+    <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
       {state !== "inactive" && (
         <div className="absolute inset-[-18%]" style={{ opacity: circleOpacity(state) }}>
           <AssetThumb
