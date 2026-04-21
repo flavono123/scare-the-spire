@@ -3,6 +3,7 @@
 
 Outputs:
 - public/images/sts2/map/backgrounds/<act>/{top,middle,bottom}.png
+- public/images/sts2/map/bosses/<boss>_{icon,icon_outline}.png
 - public/images/sts2/map/icons/*.png
 - public/images/sts2/map/outlines/*.png
 - public/images/sts2/map/effects/*.png
@@ -71,6 +72,27 @@ DIRECT_MARKER_IMPORTS = {
     "map_marker_defect": "images/packed/map/icons/map_marker_defect.png.import",
     "map_marker_necrobinder": "images/packed/map/icons/map_marker_necrobinder.png.import",
     "map_marker_regent": "images/packed/map/icons/map_marker_regent.png.import",
+}
+
+BOSS_PLACEHOLDER_IMPORTS = {
+    "doormaker_boss_icon": "images/map/placeholder/doormaker_boss_icon.png.import",
+    "doormaker_boss_icon_outline": "images/map/placeholder/doormaker_boss_icon_outline.png.import",
+    "kaiser_crab_boss_icon": "images/map/placeholder/kaiser_crab_boss_icon.png.import",
+    "kaiser_crab_boss_icon_outline": "images/map/placeholder/kaiser_crab_boss_icon_outline.png.import",
+    "knowledge_demon_boss_icon": "images/map/placeholder/knowledge_demon_boss_icon.png.import",
+    "knowledge_demon_boss_icon_outline": "images/map/placeholder/knowledge_demon_boss_icon_outline.png.import",
+    "lagavulin_matriarch_boss_icon": "images/map/placeholder/lagavulin_matriarch_boss_icon.png.import",
+    "lagavulin_matriarch_boss_icon_outline": "images/map/placeholder/lagavulin_matriarch_boss_icon_outline.png.import",
+    "soul_fysh_boss_icon": "images/map/placeholder/soul_fysh_boss_icon.png.import",
+    "soul_fysh_boss_icon_outline": "images/map/placeholder/soul_fysh_boss_icon_outline.png.import",
+    "test_subject_boss_icon": "images/map/placeholder/test_subject_boss_icon.png.import",
+    "test_subject_boss_icon_outline": "images/map/placeholder/test_subject_boss_icon_outline.png.import",
+    "the_kin_boss_icon": "images/map/placeholder/the_kin_boss_icon.png.import",
+    "the_kin_boss_icon_outline": "images/map/placeholder/the_kin_boss_icon_outline.png.import",
+    "vantom_boss_icon": "images/map/placeholder/vantom_boss_icon.png.import",
+    "vantom_boss_icon_outline": "images/map/placeholder/vantom_boss_icon_outline.png.import",
+    "waterfall_giant_boss_icon": "images/map/placeholder/waterfall_giant_boss_icon.png.import",
+    "waterfall_giant_boss_icon_outline": "images/map/placeholder/waterfall_giant_boss_icon_outline.png.import",
 }
 
 ACT_MAP_BG_COLORS = {
@@ -271,6 +293,20 @@ def main() -> None:
 
         for marker_name, import_path in DIRECT_MARKER_IMPORTS.items():
             output_path = output_root / "markers" / f"{marker_name}.png"
+            try:
+                image = open_import_image(reader, import_path)
+            except Exception as exc:
+                print(f"skip {import_path}: {exc}")
+                skipped += 1
+                continue
+
+            if save_image(image, output_path, dry_run=args.dry_run, force=args.force):
+                extracted += 1
+            else:
+                skipped += 1
+
+        for boss_name, import_path in BOSS_PLACEHOLDER_IMPORTS.items():
+            output_path = output_root / "bosses" / f"{boss_name}.png"
             try:
                 image = open_import_image(reader, import_path)
             except Exception as exc:
