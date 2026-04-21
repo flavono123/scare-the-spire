@@ -308,7 +308,6 @@ const CHARACTER_REST_ASSETS: Record<string, string> = {
 };
 
 const FALLBACK_THEME = ACT_THEME["ACT.OVERGROWTH"];
-const MAP_WIDTH = 560;
 const MAP_PADDING_X = 52;
 const MAP_PADDING_TOP = 54;
 const MAP_PADDING_BOTTOM = 62;
