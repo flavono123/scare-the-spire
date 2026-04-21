@@ -596,32 +596,37 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
         className="absolute inset-y-0 left-1/2 -translate-x-1/2"
         style={{ width: MAP_CANVAS_WIDTH }}
       >
-        {act.edges.map((edge) => {
+        {act.edges.flatMap((edge) => {
           const from = nodeMap.get(edge.from);
           const to = nodeMap.get(edge.to);
-          if (!from || !to) return null;
-          const hot = activeEdges.has(edge.id);
-          const style = lineStyleForEdge(from, to, act.rowCount);
+          if (!from || !to) return [];
+          const visited = activeEdges.has(edge.id);
 
-          return (
+          return buildPathTicks(edge.id, from, to, act.rowCount).map((tick, index) => (
             <div
-              key={edge.id}
-              className="absolute origin-left rounded-full"
+              key={`${edge.id}-${index}`}
+              className="absolute"
               style={{
-                ...style,
-                height: hot ? 4 : 2,
-                backgroundColor: hot ? meta.hotLine : meta.line,
-                boxShadow: hot ? `0 0 18px ${meta.hotLine}` : "none",
-                opacity: hot ? 1 : 0.78,
+                left: tick.left,
+                top: tick.top,
+                width: 16,
+                height: 16,
+                transform: `translate(-50%, -50%) rotate(${tick.rotation}rad) scale(${
+                  visited ? 1.2 : 1
+                })`,
+                ...maskStyle(
+                  effectSrc("map_dot"),
+                  visited ? meta.traveledColor : meta.untraveledColor,
+                ),
               }}
             />
-          );
+          ));
         })}
 
         {act.nodes.map((node) => {
           const active = activeNodes.has(node.id);
           const current = currentNodes.has(node.id);
-          const position = pointPosition(node.col, node.row, act.rowCount);
+          const position = nodePosition(node, act.rowCount);
           const state = current ? "current" : active ? "active" : "inactive";
           const size = mapNodeSize(node.type);
 
@@ -693,23 +698,30 @@ function pointPosition(col: number, row: number, rowCount: number) {
   };
 }
 
-function lineStyleForEdge(
-  from: { col: number; row: number },
-  to: { col: number; row: number },
-  rowCount: number,
-): CSSProperties {
-  const start = pointPosition(from.col, from.row, rowCount);
-  const end = pointPosition(to.col, to.row, rowCount);
-  const dx = end.left - start.left;
-  const dy = end.top - start.top;
-  const length = Math.sqrt(dx * dx + dy * dy);
-  const angle = Math.atan2(dy, dx);
+function stableHash(value: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index++) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
 
+function stableSigned(value: string, magnitude: number) {
+  return ((stableHash(value) / 4294967295) * 2 - 1) * magnitude;
+}
+
+function nodePosition(
+  node: ReplayActAnalysis["nodes"][number],
+  rowCount: number,
+): { left: number; top: number } {
+  const base = pointPosition(node.col, node.row, rowCount);
+  if (node.type === "ancient" || node.type === "boss") {
+    return base;
+  }
   return {
-    left: start.left,
-    top: start.top,
-    width: length,
-    transform: `translateY(-50%) rotate(${angle}rad)`,
+    left: base.left + stableSigned(`${node.id}:x`, 8),
+    top: base.top + stableSigned(`${node.id}:y`, 10),
   };
 }
 
@@ -728,6 +740,35 @@ function mapNodeSize(type: ReplayMapPointType) {
     default:
       return 70;
   }
+}
+
+function buildPathTicks(
+  edgeId: string,
+  from: ReplayActAnalysis["nodes"][number],
+  to: ReplayActAnalysis["nodes"][number],
+  rowCount: number,
+) {
+  const start = nodePosition(from, rowCount);
+  const end = nodePosition(to, rowCount);
+  const dx = end.left - start.left;
+  const dy = end.top - start.top;
+  const length = Math.sqrt(dx * dx + dy * dy);
+  const spacing = 22;
+  const count = Math.floor(length / spacing) + 1;
+  const unitX = length === 0 ? 0 : dx / length;
+  const unitY = length === 0 ? 0 : dy / length;
+  const baseRotation = Math.atan2(dy, dx) + Math.PI / 2;
+
+  return Array.from({ length: Math.max(0, count - 1) }, (_, index) => {
+    const step = index + 1;
+    return {
+      left:
+        start.left + unitX * spacing * step + stableSigned(`${edgeId}:${step}:x`, 3),
+      top:
+        start.top + unitY * spacing * step + stableSigned(`${edgeId}:${step}:y`, 3),
+      rotation: baseRotation + stableSigned(`${edgeId}:${step}:r`, 0.1),
+    };
+  });
 }
 
 function actMapMeta(actId: string) {
@@ -758,6 +799,14 @@ function normalizeModelKey(value: string | null | undefined) {
 
 function bossAssetPath(key: string | null) {
   return key ? `/images/sts2/bosses/${key}.webp` : null;
+}
+
+function bossPlaceholderIconSrc(key: string) {
+  return `/images/sts2/map/bosses/${key}_icon.png`;
+}
+
+function bossPlaceholderOutlineSrc(key: string) {
+  return `/images/sts2/map/bosses/${key}_icon_outline.png`;
 }
 
 function mapIconNameForType(type: ReplayMapPointType) {
@@ -870,24 +919,19 @@ function backgroundOpacity(state: "inactive" | "active" | "current") {
   return state === "inactive" ? 0.78 : 0.94;
 }
 
-function ringStyle(state: "inactive" | "active" | "current") {
-  if (state === "current") {
-    return maskStyle(effectSrc("map_circle_4"), "rgba(255,255,255,0.92)", 1);
-  }
-  if (state === "active") {
-    return maskStyle(effectSrc("map_circle_2"), "rgba(255,255,255,0.52)", 1);
-  }
-  return null;
+function circleOpacity(state: "inactive" | "active" | "current") {
+  if (state === "inactive") return 0;
+  return state === "current" ? 1 : 0.92;
 }
 
-function bossAssetForRow(act: ReplayActAnalysis, row: number) {
+function bossKeyForRow(act: ReplayActAnalysis, row: number) {
   const bossKeys = getBossKeys(act);
   const maxBossRow = Math.max(
     ...act.nodes.filter((node) => node.type === "boss").map((node) => node.row),
   );
   const secondBoss = bossKeys.length > 1 && row === maxBossRow;
 
-  return bossAssetPath(secondBoss ? (bossKeys.at(-1) ?? bossKeys[0] ?? null) : (bossKeys[0] ?? null));
+  return secondBoss ? (bossKeys.at(-1) ?? bossKeys[0] ?? null) : (bossKeys[0] ?? null);
 }
 
 function MapNodeAsset({
@@ -917,12 +961,25 @@ function MapNodeAsset({
   }
 
   if (node.type === "boss") {
+    const bossKey = bossKeyForRow(act, node.row);
+    if (bossKey && BOSS_PLACEHOLDER_KEYS.has(bossKey)) {
+      return (
+        <BossPlaceholderAsset
+          actId={act.actId}
+          state={state}
+          size={size}
+          bossKey={bossKey}
+          alt={NODE_META[node.type].label}
+        />
+      );
+    }
+
     return (
       <SpecialMapAsset
         actId={act.actId}
         state={state}
         size={size}
-        src={bossAssetForRow(act, node.row)}
+        src={bossAssetPath(bossKey)}
         fallbackSrc="/images/sts2/nav/stats_monsters.png"
         alt={NODE_META[node.type].label}
         className="object-contain scale-[1.04]"
@@ -965,11 +1022,19 @@ function MapRoomAsset({
   alt: string;
 }) {
   const meta = actMapMeta(actId);
-  const ring = ringStyle(state);
 
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
-      {ring && <div className="absolute inset-[-18%]" style={ring} />}
+      {state !== "inactive" && (
+        <div className="absolute inset-[-18%]" style={{ opacity: circleOpacity(state) }}>
+          <AssetThumb
+            src={effectSrc("map_circle_4")}
+            fallbackSrc={null}
+            alt=""
+            className="object-contain"
+          />
+        </div>
+      )}
       <div
         className="absolute inset-[6%]"
         style={{ opacity: backgroundOpacity(state) }}
@@ -983,7 +1048,7 @@ function MapRoomAsset({
       </div>
       <div
         className="absolute inset-[9%]"
-        style={maskStyle(mapOutlineSrc(outlineName), meta.color, outlineOpacity(state))}
+        style={maskStyle(mapOutlineSrc(outlineName), meta.bgColor, outlineOpacity(state))}
       />
       <div className="absolute inset-[16%]" style={{ opacity: nodeOpacity(state) }}>
         <AssetThumb
@@ -1029,12 +1094,25 @@ function StepAsset({
   }
 
   if (type === "boss") {
+    const bossKey = normalizeModelKey(entry.rooms[0]?.model_id);
+    if (bossKey && BOSS_PLACEHOLDER_KEYS.has(bossKey)) {
+      return (
+        <BossPlaceholderAsset
+          actId={act.actId}
+          state={state}
+          size={boxSize}
+          bossKey={bossKey}
+          alt={NODE_META[type].label}
+        />
+      );
+    }
+
     return (
       <SpecialMapAsset
         actId={act.actId}
         state={state}
         size={boxSize}
-        src={bossAssetPath(normalizeModelKey(entry.rooms[0]?.model_id))}
+        src={bossAssetPath(bossKey)}
         fallbackSrc="/images/sts2/nav/stats_monsters.png"
         alt={NODE_META[type].label}
         className="object-contain scale-[1.04]"
@@ -1064,6 +1142,50 @@ function StepAsset({
   );
 }
 
+function BossPlaceholderAsset({
+  actId,
+  state,
+  size,
+  bossKey,
+  alt,
+}: {
+  actId: string;
+  state: "inactive" | "active" | "current";
+  size: number;
+  bossKey: string;
+  alt: string;
+}) {
+  const meta = actMapMeta(actId);
+
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      {state !== "inactive" && (
+        <div className="absolute inset-[-18%]" style={{ opacity: circleOpacity(state) }}>
+          <AssetThumb
+            src={effectSrc("map_circle_4")}
+            fallbackSrc={null}
+            alt=""
+            className="object-contain"
+          />
+        </div>
+      )}
+      <div
+        className="absolute inset-[8%]"
+        style={maskStyle(bossPlaceholderOutlineSrc(bossKey), meta.bgColor)}
+      />
+      <div
+        className="absolute inset-[16%]"
+        aria-label={alt}
+        style={maskStyle(
+          bossPlaceholderIconSrc(bossKey),
+          state === "inactive" ? meta.untraveledColor : meta.traveledColor,
+          state === "inactive" ? 0.86 : 1,
+        )}
+      />
+    </div>
+  );
+}
+
 function SpecialMapAsset({
   actId,
   state,
@@ -1084,11 +1206,19 @@ function SpecialMapAsset({
   framed?: boolean;
 }) {
   const meta = actMapMeta(actId);
-  const ring = ringStyle(state);
 
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
-      {ring && <div className="absolute inset-[-18%]" style={ring} />}
+      {state !== "inactive" && (
+        <div className="absolute inset-[-18%]" style={{ opacity: circleOpacity(state) }}>
+          <AssetThumb
+            src={effectSrc("map_circle_4")}
+            fallbackSrc={null}
+            alt=""
+            className="object-contain"
+          />
+        </div>
+      )}
       {framed && (
         <div
           className="absolute inset-[8%] rounded-[1.3rem] border bg-black/35"
