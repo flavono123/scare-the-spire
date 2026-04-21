@@ -1105,12 +1105,8 @@ function AssetThumb({
   alt: string;
   className: string;
 }) {
-  const [failed, setFailed] = useState(false);
-  const resolvedSrc = failed ? fallbackSrc ?? src : src ?? fallbackSrc;
-
-  useEffect(() => {
-    setFailed(false);
-  }, [src, fallbackSrc]);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const resolvedSrc = src && failedSrc !== src ? src : fallbackSrc ?? src;
 
   if (!resolvedSrc) {
     return null;
@@ -1124,8 +1120,8 @@ function AssetThumb({
       sizes="(max-width: 1280px) 96px, 128px"
       className={className}
       onError={() => {
-        if (!failed && fallbackSrc && resolvedSrc !== fallbackSrc) {
-          setFailed(true);
+        if (src && fallbackSrc && resolvedSrc === src) {
+          setFailedSrc(src);
         }
       }}
     />
