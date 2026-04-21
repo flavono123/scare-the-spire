@@ -17,6 +17,7 @@ This script handles both:
 from __future__ import annotations
 
 import argparse
+import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -72,6 +73,13 @@ DIRECT_MARKER_IMPORTS = {
     "map_marker_regent": "images/packed/map/icons/map_marker_regent.png.import",
 }
 
+ACT_MAP_BG_COLORS = {
+    "overgrowth": "A78A67",
+    "underdocks": "9F95A5",
+    "hive": "9B9562",
+    "glory": "819A97",
+}
+
 MAP_BG_IMPORTS = {
     "overgrowth": {
         "top": "images/packed/map/map_bgs/overgrowth/map_top_overgrowth.png.import",
@@ -97,6 +105,22 @@ MAP_BG_IMPORTS = {
 
 ATLAS_REGION_RE = re.compile(r"region = Rect2\(([^)]+)\)")
 ATLAS_PATH_RE = re.compile(r'path="res://([^"]+)"')
+INITIAL_ICON_COLOR = (0.705882, 0.615686, 0.537255)
+GRAY_COLOR = (0.5, 0.5, 0.5)
+SHADED_ICON_NAMES = {
+    "map_burly_monster",
+    "map_chest",
+    "map_chest_boss",
+    "map_elite",
+    "map_monster",
+    "map_rest",
+    "map_shop",
+    "map_unknown",
+    "map_unknown_chest",
+    "map_unknown_elite",
+    "map_unknown_monster",
+    "map_unknown_shop",
+}
 
 
 @dataclass(frozen=True)
@@ -174,6 +198,45 @@ def save_image(image: Image.Image, output_path: Path, *, dry_run: bool, force: b
     return True
 
 
+def hex_to_rgb01(value: str) -> tuple[float, float, float]:
+    return tuple(int(value[i : i + 2], 16) / 255 for i in (0, 2, 4))
+
+
+def lerp_color(
+    start: tuple[float, float, float],
+    end: tuple[float, float, float],
+    amount: float,
+) -> tuple[float, float, float]:
+    return tuple(start[i] * (1 - amount) + end[i] * amount for i in range(3))
+
+
+def apply_map_icon_shader(image: Image.Image, act: str) -> Image.Image:
+    target_color = lerp_color(hex_to_rgb01(ACT_MAP_BG_COLORS[act]), GRAY_COLOR, 0.5)
+    recolored = image.convert("RGBA").copy()
+    pixels = recolored.load()
+
+    for y in range(recolored.height):
+        for x in range(recolored.width):
+            r, g, b, a = pixels[x, y]
+            if a == 0:
+                continue
+            rgb = (r / 255, g / 255, b / 255)
+            diff = math.sqrt(
+                (rgb[0] - INITIAL_ICON_COLOR[0]) ** 2
+                + (rgb[1] - INITIAL_ICON_COLOR[1]) ** 2
+                + (rgb[2] - INITIAL_ICON_COLOR[2]) ** 2
+            )
+            if diff < 0.5:
+                pixels[x, y] = (
+                    round(target_color[0] * 255),
+                    round(target_color[1] * 255),
+                    round(target_color[2] * 255),
+                    a,
+                )
+
+    return recolored
+
+
 def main() -> None:
     args = parse_args()
     output_root = Path(args.output)
@@ -194,6 +257,17 @@ def main() -> None:
                 extracted += 1
             else:
                 skipped += 1
+
+            if spec.output_dir == "icons" and spec.name in SHADED_ICON_NAMES:
+                for act in ACT_MAP_BG_COLORS:
+                    shaded_output_path = (
+                        output_root / "icons-by-act" / act / f"{spec.name}.png"
+                    )
+                    shaded = apply_map_icon_shader(image, act)
+                    if save_image(shaded, shaded_output_path, dry_run=args.dry_run, force=args.force):
+                        extracted += 1
+                    else:
+                        skipped += 1
 
         for marker_name, import_path in DIRECT_MARKER_IMPORTS.items():
             output_path = output_root / "markers" / f"{marker_name}.png"
