@@ -1,6 +1,14 @@
 "use client";
 
-import { type ReactNode, useEffect, useId, useState, useTransition } from "react";
+import Image from "next/image";
+import {
+  type CSSProperties,
+  type ReactNode,
+  useEffect,
+  useId,
+  useState,
+  useTransition,
+} from "react";
 import {
   analyzeReplayRun,
   parseReplayRun,
@@ -110,65 +118,202 @@ function room(
 
 const NODE_META: Record<
   ReplayMapPointType,
-  { label: string; glyph: string; base: string; active: string; current: string }
+  {
+    label: string;
+    chip: string;
+    baseShell: string;
+    activeShell: string;
+    currentShell: string;
+    baseGlow: string;
+    activeGlow: string;
+    currentGlow: string;
+  }
 > = {
   ancient: {
     label: "고대의 존재",
-    glyph: "A",
-    base: "fill-blue-500/20 stroke-blue-400/40 text-blue-200",
-    active: "fill-blue-500/45 stroke-blue-300 text-white",
-    current: "fill-blue-300 stroke-white text-zinc-950",
+    chip: "border-sky-400/40 bg-sky-500/10 text-sky-100",
+    baseShell: "border-sky-500/35 bg-sky-950/35",
+    activeShell: "border-sky-200/65 bg-sky-500/14",
+    currentShell: "border-sky-50 bg-sky-300/24",
+    baseGlow: "bg-sky-500/16",
+    activeGlow: "bg-sky-300/24",
+    currentGlow: "bg-sky-200/35",
   },
   monster: {
     label: "일반 전투",
-    glyph: "M",
-    base: "fill-zinc-800 stroke-zinc-600 text-zinc-300",
-    active: "fill-zinc-700 stroke-amber-300 text-amber-50",
-    current: "fill-amber-300 stroke-white text-zinc-950",
+    chip: "border-zinc-700 bg-zinc-900/80 text-zinc-100",
+    baseShell: "border-zinc-700 bg-zinc-950/70",
+    activeShell: "border-amber-300/55 bg-amber-500/10",
+    currentShell: "border-amber-100 bg-amber-200/22",
+    baseGlow: "bg-zinc-500/10",
+    activeGlow: "bg-amber-300/18",
+    currentGlow: "bg-amber-200/30",
   },
   unknown: {
     label: "미지",
-    glyph: "?",
-    base: "fill-violet-900/40 stroke-violet-400/40 text-violet-200",
-    active: "fill-violet-500/45 stroke-violet-200 text-white",
-    current: "fill-violet-200 stroke-white text-zinc-950",
+    chip: "border-fuchsia-400/40 bg-fuchsia-500/10 text-fuchsia-100",
+    baseShell: "border-fuchsia-500/30 bg-fuchsia-950/35",
+    activeShell: "border-fuchsia-200/55 bg-fuchsia-500/12",
+    currentShell: "border-fuchsia-50 bg-fuchsia-200/20",
+    baseGlow: "bg-fuchsia-500/14",
+    activeGlow: "bg-fuchsia-300/20",
+    currentGlow: "bg-fuchsia-200/28",
   },
   elite: {
     label: "엘리트",
-    glyph: "E",
-    base: "fill-red-950/60 stroke-red-500/40 text-red-200",
-    active: "fill-red-500/55 stroke-red-200 text-white",
-    current: "fill-red-200 stroke-white text-zinc-950",
+    chip: "border-red-400/40 bg-red-500/10 text-red-100",
+    baseShell: "border-red-500/32 bg-red-950/38",
+    activeShell: "border-red-200/60 bg-red-500/14",
+    currentShell: "border-red-50 bg-red-200/22",
+    baseGlow: "bg-red-500/16",
+    activeGlow: "bg-red-300/20",
+    currentGlow: "bg-red-200/30",
   },
   rest_site: {
     label: "휴식",
-    glyph: "R",
-    base: "fill-emerald-950/60 stroke-emerald-500/40 text-emerald-200",
-    active: "fill-emerald-500/55 stroke-emerald-200 text-white",
-    current: "fill-emerald-200 stroke-white text-zinc-950",
+    chip: "border-emerald-400/40 bg-emerald-500/10 text-emerald-100",
+    baseShell: "border-emerald-500/32 bg-emerald-950/35",
+    activeShell: "border-emerald-200/60 bg-emerald-500/12",
+    currentShell: "border-emerald-50 bg-emerald-200/20",
+    baseGlow: "bg-emerald-500/14",
+    activeGlow: "bg-emerald-300/20",
+    currentGlow: "bg-emerald-200/28",
   },
   treasure: {
     label: "보물",
-    glyph: "T",
-    base: "fill-amber-950/70 stroke-amber-500/40 text-amber-200",
-    active: "fill-amber-500/55 stroke-amber-100 text-white",
-    current: "fill-amber-100 stroke-white text-zinc-950",
+    chip: "border-amber-400/40 bg-amber-500/10 text-amber-100",
+    baseShell: "border-amber-500/35 bg-amber-950/38",
+    activeShell: "border-amber-200/60 bg-amber-500/14",
+    currentShell: "border-amber-50 bg-amber-200/22",
+    baseGlow: "bg-amber-500/16",
+    activeGlow: "bg-amber-300/22",
+    currentGlow: "bg-amber-200/30",
   },
   shop: {
     label: "상점",
-    glyph: "$",
-    base: "fill-cyan-950/60 stroke-cyan-500/40 text-cyan-200",
-    active: "fill-cyan-500/55 stroke-cyan-100 text-white",
-    current: "fill-cyan-100 stroke-white text-zinc-950",
+    chip: "border-cyan-400/40 bg-cyan-500/10 text-cyan-100",
+    baseShell: "border-cyan-500/32 bg-cyan-950/36",
+    activeShell: "border-cyan-200/60 bg-cyan-500/12",
+    currentShell: "border-cyan-50 bg-cyan-200/20",
+    baseGlow: "bg-cyan-500/16",
+    activeGlow: "bg-cyan-300/20",
+    currentGlow: "bg-cyan-200/28",
   },
   boss: {
     label: "보스",
-    glyph: "B",
-    base: "fill-rose-950/70 stroke-rose-500/40 text-rose-200",
-    active: "fill-rose-500/55 stroke-rose-100 text-white",
-    current: "fill-rose-100 stroke-white text-zinc-950",
+    chip: "border-rose-400/40 bg-rose-500/10 text-rose-100",
+    baseShell: "border-rose-500/35 bg-rose-950/38",
+    activeShell: "border-rose-200/60 bg-rose-500/14",
+    currentShell: "border-rose-50 bg-rose-200/22",
+    baseGlow: "bg-rose-500/16",
+    activeGlow: "bg-rose-300/22",
+    currentGlow: "bg-rose-200/30",
   },
 };
+
+const ACT_THEME: Record<
+  string,
+  {
+    border: string;
+    background: string;
+    mist: string;
+    activeLine: string;
+    inactiveLine: string;
+  }
+> = {
+  "ACT.OVERGROWTH": {
+    border: "border-emerald-400/20",
+    background: "from-[#050d08] via-[#081611] to-[#1a1809]",
+    mist:
+      "radial-gradient(circle at 50% 100%, rgba(132, 204, 22, 0.18), transparent 34%), radial-gradient(circle at 50% 12%, rgba(250, 204, 21, 0.06), transparent 28%)",
+    activeLine: "from-lime-100 via-emerald-300 to-amber-200",
+    inactiveLine: "bg-emerald-950/70",
+  },
+  "ACT.UNDERDOCKS": {
+    border: "border-sky-400/20",
+    background: "from-[#040c12] via-[#081620] to-[#12181a]",
+    mist:
+      "radial-gradient(circle at 50% 100%, rgba(56, 189, 248, 0.18), transparent 34%), radial-gradient(circle at 50% 14%, rgba(125, 211, 252, 0.06), transparent 30%)",
+    activeLine: "from-sky-100 via-cyan-300 to-blue-200",
+    inactiveLine: "bg-sky-950/70",
+  },
+  "ACT.HIVE": {
+    border: "border-orange-400/20",
+    background: "from-[#120905] via-[#1a0e08] to-[#17120b]",
+    mist:
+      "radial-gradient(circle at 50% 100%, rgba(251, 146, 60, 0.18), transparent 34%), radial-gradient(circle at 50% 14%, rgba(253, 186, 116, 0.06), transparent 30%)",
+    activeLine: "from-amber-100 via-orange-300 to-yellow-200",
+    inactiveLine: "bg-orange-950/70",
+  },
+  "ACT.GLORY": {
+    border: "border-fuchsia-400/20",
+    background: "from-[#0c0814] via-[#130f22] to-[#160d1f]",
+    mist:
+      "radial-gradient(circle at 50% 100%, rgba(192, 132, 252, 0.18), transparent 34%), radial-gradient(circle at 50% 12%, rgba(244, 114, 182, 0.07), transparent 28%)",
+    activeLine: "from-fuchsia-100 via-violet-300 to-pink-200",
+    inactiveLine: "bg-violet-950/70",
+  },
+};
+
+const ANCIENT_ASSETS: Record<
+  string,
+  {
+    node: string;
+    background?: string;
+    portrait?: string;
+  }
+> = {
+  neow: {
+    node: "/images/sts2/ancient-nodes/ancient_node_neow.webp",
+    portrait: "/images/sts2/npcs/neow.webp",
+  },
+  orobas: {
+    node: "/images/sts2/ancient-nodes/ancient_node_orobas.webp",
+    background: "/images/sts2/ancients-bg/orobas_bg.webp",
+  },
+  nonupeipe: {
+    node: "/images/sts2/ancient-nodes/ancient_node_nonupeipe.webp",
+    background: "/images/sts2/ancients-bg/nonupeipe_bg.webp",
+  },
+  darv: {
+    node: "/images/sts2/ancient-nodes/ancient_node_darv.webp",
+    background: "/images/sts2/ancients-bg/darv_bg.webp",
+  },
+  pael: {
+    node: "/images/sts2/ancient-nodes/ancient_node_pael.webp",
+    background: "/images/sts2/ancients-bg/pael_bg.webp",
+  },
+  tanx: {
+    node: "/images/sts2/ancient-nodes/ancient_node_tanx.webp",
+    background: "/images/sts2/ancients-bg/tanx_bg.webp",
+  },
+  tezcatara: {
+    node: "/images/sts2/ancient-nodes/ancient_node_tezcatara.webp",
+    background: "/images/sts2/ancients-bg/tezcatara_bg.webp",
+    portrait: "/images/sts2/npcs/tezcatara.webp",
+  },
+  vakuu: {
+    node: "/images/sts2/ancient-nodes/ancient_node_vakuu.webp",
+    background: "/images/sts2/ancients-bg/vakuu_bg.webp",
+  },
+};
+
+const CHARACTER_REST_ASSETS: Record<string, string> = {
+  IRONCLAD: "/images/sts2/characters/rest_ironclad.webp",
+  SILENT: "/images/sts2/characters/rest_silent.webp",
+  DEFECT: "/images/sts2/characters/rest_defect.webp",
+  NECROBINDER: "/images/sts2/characters/rest_necrobinder.webp",
+  REGENT: "/images/sts2/characters/rest_regent.webp",
+  OSTY: "/images/sts2/characters/rest_osty.webp",
+};
+
+const FALLBACK_THEME = ACT_THEME["ACT.OVERGROWTH"];
+const MAP_WIDTH = 560;
+const MAP_PADDING_X = 52;
+const MAP_PADDING_TOP = 54;
+const MAP_PADDING_BOTTOM = 62;
+const MAP_COLUMN_GAP = 76;
+const MAP_ROW_GAP = 58;
 
 export function RunReplayPoc() {
   const [run, setRun] = useState<ReplayRun>(SAMPLE_RUN);
@@ -178,6 +323,7 @@ export function RunReplayPoc() {
   const inputId = useId();
   const analysis = analyzeReplayRun(run);
   const exactActs = analysis.acts.filter((act) => act.exactReplay).length;
+  const characterId = analysis.run.players[0]?.character ?? "CHARACTER.SILENT";
 
   async function handleFileChange(file: File | null) {
     if (!file) return;
@@ -298,7 +444,11 @@ export function RunReplayPoc() {
 
       <div className="mt-8 space-y-8">
         {analysis.acts.map((act) => (
-          <ActReplayCard key={`${sourceLabel}-${act.actId}-${act.actIndex}`} act={act} />
+          <ActReplayCard
+            key={`${sourceLabel}-${act.actId}-${act.actIndex}`}
+            act={act}
+            characterId={characterId}
+          />
         ))}
       </div>
 
@@ -309,10 +459,17 @@ export function RunReplayPoc() {
   );
 }
 
-function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
+function ActReplayCard({
+  act,
+  characterId,
+}: {
+  act: ReplayActAnalysis;
+  characterId: string;
+}) {
   const [step, setStep] = useState(act.history.length);
   const [playing, setPlaying] = useState(false);
   const currentEntry = act.history[Math.max(0, step - 1)] ?? null;
+  const currentType = act.historyTypes[Math.max(0, step - 1)] ?? "monster";
 
   useEffect(() => {
     if (!playing) return;
@@ -406,12 +563,29 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
         <div className="space-y-3">
           <div className="rounded-3xl border border-zinc-800 bg-zinc-950/40 p-4">
             <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Current Step</p>
-            <div className="mt-2 text-lg font-semibold text-zinc-50">
-              {currentEntry ? formatRoomSummary(currentEntry) : "N/A"}
+            <div className="mt-3 flex items-center gap-4">
+              {currentEntry && (
+                <StepAsset
+                  entry={currentEntry}
+                  type={currentType}
+                  act={act}
+                  characterId={characterId}
+                  current
+                  size="hero"
+                />
+              )}
+              <div className="min-w-0 flex-1">
+                <div className="text-lg font-semibold text-zinc-50">
+                  {currentEntry ? formatRoomSummary(currentEntry) : "N/A"}
+                </div>
+                <p className="mt-2 text-sm text-zinc-400">
+                  {currentEntry ? NODE_META[currentType].label : "미확인"}
+                </p>
+                <p className="mt-1 text-sm text-zinc-500">
+                  후보 노드 {act.candidateNodeIdsByStep[step - 1]?.length ?? 0}개
+                </p>
+              </div>
             </div>
-            <p className="mt-2 text-sm text-zinc-400">
-              후보 노드 {act.candidateNodeIdsByStep[step - 1]?.length ?? 0}개
-            </p>
           </div>
 
           <ol className="max-h-[42rem] space-y-2 overflow-auto pr-1">
@@ -430,17 +604,24 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <div
-                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-sm font-bold ${meta.base}`}
-                    >
-                      {meta.glyph}
-                    </div>
+                    <StepAsset
+                      entry={entry}
+                      type={act.historyTypes[index]}
+                      act={act}
+                      characterId={characterId}
+                      current={current}
+                      size="list"
+                    />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
                           Floor {floor}
                         </span>
-                        <span className="text-sm font-medium text-zinc-100">{meta.label}</span>
+                        <span
+                          className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${meta.chip}`}
+                        >
+                          {meta.label}
+                        </span>
                       </div>
                       <p className="mt-1 truncate text-sm text-zinc-300">
                         {formatRoomSummary(entry)}
@@ -461,6 +642,7 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
 }
 
 function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) {
+  const theme = ACT_THEME[act.actId] ?? FALLBACK_THEME;
   const nodeMap = new Map(act.nodes.map((node) => [node.id, node]));
   const activeNodes = new Set<string>();
   const currentNodes = new Set(act.candidateNodeIdsByStep[step - 1] ?? []);
@@ -475,56 +657,98 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
     }
   }
 
-  const width = 560;
-  const height = Math.max(360, act.rowCount * 58 + 20);
+  const height = mapHeightOf(act.rowCount);
+  const ancientAsset = getAncientAsset(act);
+  const firstBossAsset = bossAssetPath(getBossKeys(act)[0] ?? null);
 
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} className="h-auto w-full">
+    <div
+      className={`relative overflow-hidden rounded-[2rem] border ${theme.border} bg-gradient-to-b ${theme.background}`}
+      style={{ height }}
+    >
+      <div
+        className="absolute inset-0 opacity-90"
+        style={{ backgroundImage: theme.mist }}
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(255,255,255,0.03),transparent_32%),radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_34%)]" />
+      {ancientAsset.background && (
+        <div className="absolute inset-x-0 bottom-0 h-56 opacity-22">
+          <Image
+            src={ancientAsset.background}
+            alt="Ancient backdrop"
+            fill
+            sizes="560px"
+            className="object-contain object-bottom"
+          />
+        </div>
+      )}
+      {!ancientAsset.background && ancientAsset.portrait && (
+        <div className="absolute bottom-0 left-6 h-44 w-44 opacity-18">
+          <Image
+            src={ancientAsset.portrait}
+            alt="Ancient portrait"
+            fill
+            sizes="176px"
+            className="object-contain object-bottom"
+          />
+        </div>
+      )}
+      {firstBossAsset && (
+        <div className="absolute right-4 top-4 h-32 w-32 opacity-22">
+          <AssetThumb
+            src={firstBossAsset}
+            fallbackSrc="/images/sts2/nav/stats_monsters.png"
+            alt="Boss portrait"
+            className="object-contain object-top"
+          />
+        </div>
+      )}
+      <div className="absolute inset-[18px] rounded-[1.55rem] border border-white/6" />
+
       {act.edges.map((edge) => {
         const from = nodeMap.get(edge.from);
         const to = nodeMap.get(edge.to);
         if (!from || !to) return null;
         const hot = activeEdges.has(edge.id);
+        const style = lineStyleForEdge(from, to, act.rowCount);
 
         return (
-          <line
+          <div
             key={edge.id}
-            x1={xOf(from.col)}
-            y1={yOf(from.row)}
-            x2={xOf(to.col)}
-            y2={yOf(to.row)}
-            stroke={hot ? "rgba(251, 191, 36, 0.9)" : "rgba(113, 113, 122, 0.55)"}
-            strokeWidth={hot ? 4 : 2}
-            strokeLinecap="round"
+            className={`absolute origin-left rounded-full ${
+              hot
+                ? `h-[4px] bg-gradient-to-r ${theme.activeLine} shadow-[0_0_20px_rgba(251,191,36,0.35)]`
+                : `h-[2px] ${theme.inactiveLine}`
+            }`}
+            style={style}
           />
         );
       })}
 
       {act.nodes.map((node) => {
-        const meta = NODE_META[node.type];
         const active = activeNodes.has(node.id);
         const current = currentNodes.has(node.id);
-        const palette = current ? meta.current : active ? meta.active : meta.base;
-        const classes = palette.split(" ");
+        const position = pointPosition(node.col, node.row, act.rowCount);
+        const state = current ? "current" : active ? "active" : "inactive";
+        const size = mapNodeSize(node.type);
 
         return (
-          <g key={node.id} transform={`translate(${xOf(node.col)}, ${yOf(node.row)})`}>
-            <circle
-              r={current ? 17 : 14}
-              className={`${classes[0]} ${classes[1]}`}
-              strokeWidth={current ? 3 : 2}
-            />
-            <text
-              y={4}
-              textAnchor="middle"
-              className={`select-none text-[11px] font-black ${classes[2]}`}
-            >
-              {meta.glyph}
-            </text>
-          </g>
+          <div
+            key={node.id}
+            className={`absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
+              current ? "scale-110" : active ? "scale-100" : "scale-[0.94]"
+            }`}
+            style={{ left: position.left, top: position.top }}
+          >
+            <MapNodeAsset node={node} act={act} state={state} size={size} />
+          </div>
         );
       })}
-    </svg>
+
+      <div className="absolute bottom-4 left-4 rounded-full border border-white/8 bg-black/25 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-zinc-300">
+        아래에서 위로 등반
+      </div>
+    </div>
   );
 }
 
@@ -534,12 +758,348 @@ function formatRoomSummary(entry: ReplayActAnalysis["history"][number]) {
   return firstRoom.model_id ?? firstRoom.room_type;
 }
 
-function xOf(col: number) {
-  return 52 + col * 76;
+function mapHeightOf(rowCount: number) {
+  return Math.max(420, MAP_PADDING_TOP + MAP_PADDING_BOTTOM + rowCount * MAP_ROW_GAP);
 }
 
-function yOf(row: number) {
-  return 36 + row * 56;
+function pointPosition(col: number, row: number, rowCount: number) {
+  const height = mapHeightOf(rowCount);
+  return {
+    left: MAP_PADDING_X + col * MAP_COLUMN_GAP,
+    top: height - MAP_PADDING_BOTTOM - row * MAP_ROW_GAP,
+  };
+}
+
+function lineStyleForEdge(
+  from: { col: number; row: number },
+  to: { col: number; row: number },
+  rowCount: number,
+): CSSProperties {
+  const start = pointPosition(from.col, from.row, rowCount);
+  const end = pointPosition(to.col, to.row, rowCount);
+  const dx = end.left - start.left;
+  const dy = end.top - start.top;
+  const length = Math.sqrt(dx * dx + dy * dy);
+  const angle = Math.atan2(dy, dx);
+
+  return {
+    left: start.left,
+    top: start.top,
+    width: length,
+    transform: `translateY(-50%) rotate(${angle}rad)`,
+  };
+}
+
+function mapNodeSize(type: ReplayMapPointType) {
+  switch (type) {
+    case "ancient":
+      return 74;
+    case "boss":
+      return 94;
+    case "shop":
+    case "rest_site":
+      return 66;
+    case "treasure":
+    case "unknown":
+      return 58;
+    default:
+      return 62;
+  }
+}
+
+function getAncientAsset(act: ReplayActAnalysis) {
+  const key = normalizeModelKey(act.history[0]?.rooms[0]?.model_id);
+  const asset = key ? ANCIENT_ASSETS[key] : null;
+  return {
+    key,
+    node: asset?.node ?? "/images/sts2/ancient-nodes/ancient_node_neow.webp",
+    background: asset?.background ?? null,
+    portrait: asset?.portrait ?? "/images/sts2/npcs/neow.webp",
+  };
+}
+
+function getBossKeys(act: ReplayActAnalysis) {
+  return act.history
+    .filter((entry) => entry.map_point_type === "boss")
+    .map((entry) => normalizeModelKey(entry.rooms[0]?.model_id))
+    .filter((key): key is string => Boolean(key));
+}
+
+function normalizeModelKey(value: string | null | undefined) {
+  if (!value) return null;
+  return value.split(".").pop()?.toLowerCase() ?? null;
+}
+
+function characterKey(value: string) {
+  return value.toUpperCase().split(".").pop() ?? "SILENT";
+}
+
+function bossAssetPath(key: string | null) {
+  return key ? `/images/sts2/bosses/${key}.webp` : null;
+}
+
+function encounterMonsterAssetPath(modelId: string | null | undefined) {
+  const key = normalizeModelKey(modelId);
+  if (!key) return null;
+
+  const normalized = key
+    .replace(/_event_encounter$/, "")
+    .replace(/_(weak|normal|elite|boss)$/, "");
+
+  return normalized ? `/images/sts2/monsters-render/${normalized}.webp` : null;
+}
+
+function eventAssetPath(modelId: string | null | undefined) {
+  const key = normalizeModelKey(modelId);
+  return key ? `/images/sts2/events/${key}.webp` : null;
+}
+
+function restAssetPath(characterId: string) {
+  return (
+    CHARACTER_REST_ASSETS[characterKey(characterId)] ??
+    "/images/sts2/characters/rest_silent.webp"
+  );
+}
+
+function mapNodeVisual(
+  type: ReplayMapPointType,
+  act: ReplayActAnalysis,
+  row: number,
+) {
+  const ancientAsset = getAncientAsset(act);
+  const bossKeys = getBossKeys(act);
+  const maxBossRow = Math.max(
+    ...act.nodes.filter((node) => node.type === "boss").map((node) => node.row),
+  );
+  const secondBoss = bossKeys.length > 1 && row === maxBossRow;
+
+  switch (type) {
+    case "ancient":
+      return {
+        src: ancientAsset.node,
+        fallbackSrc: ancientAsset.portrait,
+        imageClass: "object-contain scale-[1.04]",
+      };
+    case "boss":
+      return {
+        src: bossAssetPath(secondBoss ? (bossKeys.at(-1) ?? bossKeys[0] ?? null) : (bossKeys[0] ?? null)),
+        fallbackSrc: "/images/sts2/nav/stats_monsters.png",
+        imageClass: "object-contain scale-[1.04]",
+      };
+    case "shop":
+      return {
+        src: "/images/sts2/npcs/merchant.webp",
+        fallbackSrc: "/images/sts2/npcs/fake_merchant.webp",
+        imageClass: "object-contain scale-[1.08]",
+      };
+    case "rest_site":
+      return {
+        src: "/images/sts2/events/unrest_site.webp",
+        fallbackSrc: "/images/sts2/events/unrest_site.webp",
+        imageClass: "object-contain scale-[1.02]",
+      };
+    case "treasure":
+      return {
+        src: "/images/sts2/icons/chest_icon.webp",
+        fallbackSrc: "/images/sts2/icons/chest_icon.webp",
+        imageClass: "object-contain scale-[1.18]",
+      };
+    case "unknown":
+      return {
+        src: "/images/sts2/nav/question_mark.png",
+        fallbackSrc: "/images/sts2/nav/question_mark.png",
+        imageClass: "object-contain scale-[1.08]",
+      };
+    case "elite":
+    case "monster":
+    default:
+      return {
+        src: "/images/sts2/nav/stats_monsters.png",
+        fallbackSrc: "/images/sts2/nav/stats_monsters.png",
+        imageClass: "object-contain scale-[1.06]",
+      };
+  }
+}
+
+function stepVisual(
+  entry: ReplayActAnalysis["history"][number],
+  type: ReplayMapPointType,
+  act: ReplayActAnalysis,
+  characterId: string,
+) {
+  switch (type) {
+    case "ancient": {
+      const ancientAsset = getAncientAsset(act);
+      return {
+        src: ancientAsset.node,
+        fallbackSrc: ancientAsset.portrait,
+        imageClass: "object-contain scale-[1.05]",
+      };
+    }
+    case "boss":
+      return {
+        src: bossAssetPath(normalizeModelKey(entry.rooms[0]?.model_id)),
+        fallbackSrc: "/images/sts2/nav/stats_monsters.png",
+        imageClass: "object-contain scale-[1.04]",
+      };
+    case "shop":
+      return {
+        src: "/images/sts2/npcs/merchant.webp",
+        fallbackSrc: "/images/sts2/npcs/fake_merchant.webp",
+        imageClass: "object-contain scale-[1.08]",
+      };
+    case "rest_site":
+      return {
+        src: restAssetPath(characterId),
+        fallbackSrc: "/images/sts2/events/unrest_site.webp",
+        imageClass: "object-contain scale-[1.08]",
+      };
+    case "treasure":
+      return {
+        src: "/images/sts2/icons/chest_icon.webp",
+        fallbackSrc: "/images/sts2/icons/chest_icon.webp",
+        imageClass: "object-contain scale-[1.18]",
+      };
+    case "unknown":
+      return {
+        src: eventAssetPath(entry.rooms[0]?.model_id),
+        fallbackSrc: "/images/sts2/nav/question_mark.png",
+        imageClass: "object-cover",
+      };
+    case "elite":
+    case "monster":
+    default:
+      return {
+        src: encounterMonsterAssetPath(entry.rooms[0]?.model_id),
+        fallbackSrc: "/images/sts2/nav/stats_monsters.png",
+        imageClass: "object-contain scale-[1.04]",
+      };
+  }
+}
+
+function shellClasses(type: ReplayMapPointType, state: "inactive" | "active" | "current") {
+  const meta = NODE_META[type];
+  return {
+    shell:
+      state === "current"
+        ? meta.currentShell
+        : state === "active"
+          ? meta.activeShell
+          : meta.baseShell,
+    glow:
+      state === "current"
+        ? meta.currentGlow
+        : state === "active"
+          ? meta.activeGlow
+          : meta.baseGlow,
+  };
+}
+
+function MapNodeAsset({
+  node,
+  act,
+  state,
+  size,
+}: {
+  node: ReplayActAnalysis["nodes"][number];
+  act: ReplayActAnalysis;
+  state: "inactive" | "active" | "current";
+  size: number;
+}) {
+  const visual = mapNodeVisual(node.type, act, node.row);
+  const palette = shellClasses(node.type, state);
+
+  return (
+    <div
+      className="relative"
+      style={{ width: size, height: size }}
+    >
+      <div className={`absolute inset-0 rounded-[1.7rem] blur-md ${palette.glow}`} />
+      <div className={`absolute inset-0 rounded-[1.7rem] border backdrop-blur-[2px] ${palette.shell}`} />
+      <div className="absolute inset-[2px] rounded-[1.6rem] bg-zinc-950/78" />
+      <div className="absolute inset-[10%]">
+        <AssetThumb
+          src={visual.src}
+          fallbackSrc={visual.fallbackSrc}
+          alt={NODE_META[node.type].label}
+          className={visual.imageClass}
+        />
+      </div>
+    </div>
+  );
+}
+
+function StepAsset({
+  entry,
+  type,
+  act,
+  characterId,
+  current,
+  size,
+}: {
+  entry: ReplayActAnalysis["history"][number];
+  type: ReplayMapPointType;
+  act: ReplayActAnalysis;
+  characterId: string;
+  current: boolean;
+  size: "list" | "hero";
+}) {
+  const visual = stepVisual(entry, type, act, characterId);
+  const palette = shellClasses(type, current ? "current" : "active");
+  const boxSize = size === "hero" ? 76 : 44;
+
+  return (
+    <div
+      className="relative shrink-0"
+      style={{ width: boxSize, height: boxSize }}
+    >
+      <div className={`absolute inset-0 rounded-[1.45rem] blur-md ${palette.glow}`} />
+      <div className={`absolute inset-0 rounded-[1.45rem] border ${palette.shell}`} />
+      <div className="absolute inset-[2px] rounded-[1.35rem] bg-zinc-950/82" />
+      <div className="absolute inset-[12%] overflow-hidden rounded-[1.15rem]">
+        <AssetThumb
+          src={visual.src}
+          fallbackSrc={visual.fallbackSrc}
+          alt={NODE_META[type].label}
+          className={visual.imageClass}
+        />
+      </div>
+    </div>
+  );
+}
+
+function AssetThumb({
+  src,
+  fallbackSrc,
+  alt,
+  className,
+}: {
+  src: string | null;
+  fallbackSrc: string | null;
+  alt: string;
+  className: string;
+}) {
+  const [failed, setFailed] = useState(false);
+  const resolvedSrc = failed ? fallbackSrc ?? src : src ?? fallbackSrc;
+
+  if (!resolvedSrc) {
+    return null;
+  }
+
+  return (
+    <Image
+      src={resolvedSrc}
+      alt={alt}
+      fill
+      sizes="(max-width: 1280px) 96px, 128px"
+      className={className}
+      onError={() => {
+        if (!failed && fallbackSrc && resolvedSrc !== fallbackSrc) {
+          setFailed(true);
+        }
+      }}
+    />
+  );
 }
 
 function StatCard({
