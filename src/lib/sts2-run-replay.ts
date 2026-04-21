@@ -607,13 +607,16 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
     const actId = normalizeActId(run.acts[actIndex] ?? "");
     const config = ACT_CONFIGS[actId];
     const history = run.map_point_history[actIndex] ?? [];
-    const historyTypes = history.map((entry) => normalizePointType(entry.map_point_type));
+    const normalizedHistoryTypes = history.map((entry) => normalizePointType(entry.map_point_type));
 
-    if (!config || historyTypes.includes(null)) {
+    if (!config || normalizedHistoryTypes.some((type) => type === null)) {
       baseFloor += history.length;
       continue;
     }
 
+    const historyTypes = normalizedHistoryTypes.filter(
+      (type): type is ReplayMapPointType => type !== null,
+    );
     const map = buildGeneratedMap(run, actId, actIndex, modifierIds);
     const match = findMatchingPaths(map, historyTypes);
     acts.push({
@@ -622,7 +625,7 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
       actLabel: config.label,
       baseFloor,
       history,
-      historyTypes: historyTypes.filter((type): type is ReplayMapPointType => type !== null),
+      historyTypes,
       nodes: toReplayNodes(map),
       edges: toReplayEdges(map),
       candidateNodeIdsByStep: match.nodeCandidates,
