@@ -95,6 +95,15 @@ BOSS_PLACEHOLDER_IMPORTS = {
     "waterfall_giant_boss_icon_outline": "images/map/placeholder/waterfall_giant_boss_icon_outline.png.import",
 }
 
+RUN_HISTORY_BOSS_IMPORTS = {
+    "ceremonial_beast_boss": "images/ui/run_history/ceremonial_beast_boss.png.import",
+    "ceremonial_beast_boss_outline": "images/ui/run_history/ceremonial_beast_boss_outline.png.import",
+    "queen_boss": "images/ui/run_history/queen_boss.png.import",
+    "queen_boss_outline": "images/ui/run_history/queen_boss_outline.png.import",
+    "the_insatiable_boss": "images/ui/run_history/the_insatiable_boss.png.import",
+    "the_insatiable_boss_outline": "images/ui/run_history/the_insatiable_boss_outline.png.import",
+}
+
 ACT_MAP_BG_COLORS = {
     "overgrowth": "A78A67",
     "underdocks": "9F95A5",
@@ -307,6 +316,20 @@ def main() -> None:
 
         for boss_name, import_path in BOSS_PLACEHOLDER_IMPORTS.items():
             output_path = output_root / "bosses" / f"{boss_name}.png"
+            try:
+                image = open_import_image(reader, import_path)
+            except Exception as exc:
+                print(f"skip {import_path}: {exc}")
+                skipped += 1
+                continue
+
+            if save_image(image, output_path, dry_run=args.dry_run, force=args.force):
+                extracted += 1
+            else:
+                skipped += 1
+
+        for boss_name, import_path in RUN_HISTORY_BOSS_IMPORTS.items():
+            output_path = output_root / "boss-history" / f"{boss_name}.png"
             try:
                 image = open_import_image(reader, import_path)
             except Exception as exc:
