@@ -6,6 +6,7 @@ import {
   type ReactNode,
   useEffect,
   useId,
+  useRef,
   useState,
   useTransition,
 } from "react";
@@ -252,9 +253,12 @@ const BOSS_PLACEHOLDER_KEYS = new Set([
 ]);
 const MAP_BOARD_PADDING_Y = 56;
 const MAP_GAME_SCALE = 0.46;
-const MAP_GAME_CANVAS_WIDTH = 2035;
+const MAP_SCREEN_WIDTH = 1920;
 const MAP_GAME_COLUMNS = 7;
 const MAP_GAME_DIST_X = 1050 / MAP_GAME_COLUMNS;
+const MAP_BG_TOP = -1620;
+const MAP_BG_BOTTOM = 1620;
+const MAP_BG_SEGMENT_HEIGHT = 1080;
 const NORMAL_CONTROL_SIZE = 56;
 const NORMAL_ICON_SIZE = 92;
 const NORMAL_ICON_OVERFLOW = (NORMAL_ICON_SIZE - NORMAL_CONTROL_SIZE) / 2;
@@ -285,11 +289,7 @@ const MAP_OUTLINE_NATIVE_SIZES: Record<string, { width: number; height: number }
   map_unknown_outline: { width: 80, height: 78 },
   map_chest_boss_outline: { width: 96, height: 83 },
 };
-const MAP_BACKDROP_SEGMENTS = [
-  { name: "top", top: 0, height: 32 },
-  { name: "middle", top: 32, height: 36 },
-  { name: "bottom", top: 68, height: 32 },
-] as const;
+const MAP_BACKDROP_SEGMENTS = ["top", "middle", "bottom"] as const;
 
 export function RunReplayPoc() {
   const [run, setRun] = useState<ReplayRun>(SAMPLE_RUN);
@@ -433,8 +433,6 @@ export function RunReplayPoc() {
 function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
   const [step, setStep] = useState(act.history.length);
   const [playing, setPlaying] = useState(false);
-  const currentEntry = act.history[Math.max(0, step - 1)] ?? null;
-  const currentType = act.historyTypes[Math.max(0, step - 1)] ?? "monster";
 
   useEffect(() => {
     if (!playing) return;
@@ -505,9 +503,7 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
             <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
               Seeded Map
             </p>
-            <p className="mt-1 text-sm text-zinc-300">
-              step {step}/{act.history.length} · {currentEntry ? formatRoomSummary(currentEntry) : "N/A"}
-            </p>
+            <p className="mt-1 text-sm text-zinc-300">step {step}/{act.history.length}</p>
           </div>
           <input
             type="range"
@@ -523,27 +519,6 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
         </div>
 
         <SeededMapView act={act} step={step} />
-
-        <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-zinc-800 bg-black/20 px-4 py-3 text-sm text-zinc-300">
-          {currentEntry && (
-            <StepAsset
-              entry={currentEntry}
-              type={currentType}
-              act={act}
-              current
-              size="list"
-            />
-          )}
-          <span className="font-medium text-zinc-100">
-            {currentEntry ? NODE_META[currentType].label : "미확인"}
-          </span>
-          <span className="text-zinc-500">
-            floor {act.baseFloor + step - 1}
-          </span>
-          <span className="text-zinc-500">
-            후보 노드 {act.candidateNodeIdsByStep[step - 1]?.length ?? 0}개
-          </span>
-        </div>
       </div>
     </section>
   );
@@ -553,6 +528,8 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
   const meta = actMapMeta(act.actId);
   const nodeMap = new Map(act.nodes.map((node) => [node.id, node]));
   const layout = buildMapLayout(act);
+  const frameRef = useRef<HTMLDivElement | null>(null);
+  const [viewScale, setViewScale] = useState(1);
   const activeNodes = new Set<string>();
   const currentNodes = new Set(act.candidateNodeIdsByStep[step - 1] ?? []);
   const activeEdges = new Set<string>();
@@ -566,18 +543,42 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
     }
   }
 
+  useEffect(() => {
+    const element = frameRef.current;
+    if (!element) return;
+
+    const updateScale = () => {
+      const nextScale = element.clientWidth / layout.width;
+      setViewScale(nextScale > 0 ? nextScale : 1);
+    };
+
+    updateScale();
+    const observer = new ResizeObserver(updateScale);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [layout.width]);
+
+  const frameHeight = Math.ceil(layout.height * viewScale);
+
   return (
     <div
+      ref={frameRef}
       className="relative overflow-hidden rounded-[2rem] border bg-[#120e0a]"
-      style={{ height: layout.height, borderColor: meta.border }}
+      style={{ height: frameHeight, borderColor: meta.border }}
     >
-      <MapBackdrop actId={act.actId} />
-      <div className="absolute inset-0 bg-black/18" />
-      <div className="absolute inset-[18px] rounded-[1.55rem] border border-white/6" />
       <div
-        className="absolute inset-y-0 left-1/2 -translate-x-1/2"
-        style={{ width: layout.width }}
+        className="absolute left-1/2 top-0"
+        style={{
+          width: layout.width,
+          height: layout.height,
+          transform: `translateX(-50%) scale(${viewScale})`,
+          transformOrigin: "top center",
+        }}
       >
+        <MapBackdrop actId={act.actId} layout={layout} />
+        <div className="absolute inset-0 bg-black/18" />
+        <div className="absolute inset-[18px] rounded-[1.55rem] border border-white/6" />
+
         {act.edges.flatMap((edge) => {
           const from = nodeMap.get(edge.from);
           const to = nodeMap.get(edge.to);
@@ -640,22 +641,28 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
   );
 }
 
-function MapBackdrop({ actId }: { actId: string }) {
+function MapBackdrop({ actId, layout }: { actId: string; layout: MapLayout }) {
   const meta = actMapMeta(actId);
 
   return (
-    <div className="absolute inset-0">
-      {MAP_BACKDROP_SEGMENTS.map((segment) => (
+    <div
+      className="absolute inset-x-0"
+      style={{ top: layout.backgroundTop, height: layout.backgroundHeight }}
+    >
+      {MAP_BACKDROP_SEGMENTS.map((segmentName, index) => (
         <div
-          key={segment.name}
+          key={segmentName}
           className="absolute inset-x-0 overflow-hidden"
-          style={{ top: `${segment.top}%`, height: `${segment.height}%` }}
+          style={{
+            top: index * MAP_BG_SEGMENT_HEIGHT * MAP_GAME_SCALE,
+            height: MAP_BG_SEGMENT_HEIGHT * MAP_GAME_SCALE,
+          }}
         >
           <Image
-            src={`/images/sts2/map/backgrounds/${meta.key}/${segment.name}.png`}
+            src={`/images/sts2/map/backgrounds/${meta.key}/${segmentName}.png`}
             alt=""
             fill
-            sizes="(max-width: 1280px) 100vw, 720px"
+            sizes={`${layout.width}px`}
             className="object-fill"
             aria-hidden
           />
@@ -663,12 +670,6 @@ function MapBackdrop({ actId }: { actId: string }) {
       ))}
     </div>
   );
-}
-
-function formatRoomSummary(entry: ReplayActAnalysis["history"][number]) {
-  const firstRoom = entry.rooms[0];
-  if (!firstRoom) return entry.map_point_type;
-  return firstRoom.model_id ?? firstRoom.room_type;
 }
 
 function stableHash(value: string) {
@@ -699,6 +700,8 @@ type MapPoint = {
 type MapLayout = {
   width: number;
   height: number;
+  backgroundTop: number;
+  backgroundHeight: number;
   centers: Map<string, MapPoint>;
   endpoints: Map<string, MapPoint>;
 };
@@ -822,9 +825,9 @@ function buildMapLayout(act: ReplayActAnalysis): MapLayout {
     node,
     box: gameVisualBox(node, act),
   }));
-  const minTop = Math.min(...boxes.map(({ box }) => box.top));
-  const maxBottom = Math.max(...boxes.map(({ box }) => box.top + box.height));
-  const width = Math.ceil(MAP_GAME_CANVAS_WIDTH * MAP_GAME_SCALE);
+  const minTop = Math.min(MAP_BG_TOP, ...boxes.map(({ box }) => box.top));
+  const maxBottom = Math.max(MAP_BG_BOTTOM, ...boxes.map(({ box }) => box.top + box.height));
+  const width = Math.ceil(MAP_SCREEN_WIDTH * MAP_GAME_SCALE);
 
   const toBoardPoint = (point: MapPoint): MapPoint => ({
     left: width / 2 + point.left * MAP_GAME_SCALE,
@@ -834,6 +837,8 @@ function buildMapLayout(act: ReplayActAnalysis): MapLayout {
   return {
     width,
     height: Math.ceil((maxBottom - minTop) * MAP_GAME_SCALE + MAP_BOARD_PADDING_Y * 2),
+    backgroundTop: MAP_BOARD_PADDING_Y + (MAP_BG_TOP - minTop) * MAP_GAME_SCALE,
+    backgroundHeight: (MAP_BG_BOTTOM - MAP_BG_TOP) * MAP_GAME_SCALE,
     centers: new Map(act.nodes.map((node) => [node.id, toBoardPoint(gameNodeCenter(node, act))])),
     endpoints: new Map(act.nodes.map((node) => [node.id, toBoardPoint(gamePathEndpoint(node, act))])),
   };
@@ -960,38 +965,6 @@ function mapOutlineNameForType(type: ReplayMapPointType) {
       return "map_unknown_outline";
     default:
       return null;
-  }
-}
-
-function revealedUnknownIconName(entry: ReplayActAnalysis["history"][number]) {
-  const firstRoomType = entry.rooms[0]?.room_type?.toLowerCase();
-  switch (firstRoomType) {
-    case "monster":
-      return "map_unknown_monster";
-    case "elite":
-      return "map_unknown_elite";
-    case "shop":
-      return "map_unknown_shop";
-    case "treasure":
-      return "map_unknown_chest";
-    default:
-      return "map_unknown";
-  }
-}
-
-function revealedUnknownOutlineName(entry: ReplayActAnalysis["history"][number]) {
-  const firstRoomType = entry.rooms[0]?.room_type?.toLowerCase();
-  switch (firstRoomType) {
-    case "monster":
-      return "map_monster_outline";
-    case "elite":
-      return "map_elite_outline";
-    case "shop":
-      return "map_shop_outline";
-    case "treasure":
-      return "map_chest_outline";
-    default:
-      return "map_unknown_outline";
   }
 }
 
@@ -1195,85 +1168,6 @@ function MapRoomAsset({
         />
       </div>
     </div>
-  );
-}
-
-function StepAsset({
-  entry,
-  type,
-  act,
-  current,
-  size,
-}: {
-  entry: ReplayActAnalysis["history"][number];
-  type: ReplayMapPointType;
-  act: ReplayActAnalysis;
-  current: boolean;
-  size: "list" | "hero";
-}) {
-  const boxSize = size === "hero" ? 76 : 46;
-  const state = current ? "current" : "inactive";
-  const squareSize = { width: boxSize, height: boxSize };
-
-  if (type === "ancient") {
-    const ancientAsset = getAncientAsset(act);
-    return (
-      <AncientMapAsset
-        actId={act.actId}
-        state={state}
-        size={squareSize}
-        src={ancientAsset.node}
-        outlineSrc={ancientAsset.outline}
-        alt={NODE_META[type].label}
-      />
-    );
-  }
-
-  if (type === "boss") {
-    const bossKey = normalizeModelKey(entry.rooms[0]?.model_id);
-    if (bossKey && BOSS_PLACEHOLDER_KEYS.has(bossKey)) {
-      return (
-        <BossPlaceholderAsset
-          actId={act.actId}
-          state={state}
-          size={squareSize}
-          bossKey={bossKey}
-          alt={NODE_META[type].label}
-        />
-      );
-    }
-
-    return (
-      <SpecialMapAsset
-        state={state}
-        size={squareSize}
-        src={bossAssetPath(bossKey)}
-        fallbackSrc="/images/sts2/nav/stats_monsters.png"
-        alt={NODE_META[type].label}
-        className="object-contain scale-[1.04]"
-        framed
-      />
-    );
-  }
-
-  const iconName =
-    type === "unknown" ? revealedUnknownIconName(entry) : mapIconNameForType(type);
-  const outlineName =
-    type === "unknown" ? revealedUnknownOutlineName(entry) : mapOutlineNameForType(type);
-
-  if (!iconName || !outlineName) {
-    return null;
-  }
-
-  return (
-    <MapRoomAsset
-      actId={act.actId}
-      state={state}
-      size={squareSize}
-      iconName={iconName}
-      outlineName={outlineName}
-      alt={NODE_META[type].label}
-    />
   );
 }
 
