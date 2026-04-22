@@ -76,22 +76,10 @@ DIRECT_MARKER_IMPORTS = {
 
 # Boss node/outline assets — parallels ANCIENT_ASSETS on the frontend.
 # Keys are the bossKey (suffix `_boss` stripped) as produced by normalizeModelKey().
-# Nine bosses come from the high-res `map/placeholder` icon set. The remaining
-# three (ceremonial_beast, queen, the_insatiable) ship only Spine-animated map
-# nodes; their only available static asset is the 85×85 run_history icon.
+# Only bosses that ship a static placeholder icon set are listed here; the 3
+# Spine-rendered bosses (ceremonial_beast, queen, the_insatiable) fall back to
+# full-portrait rendering on the frontend.
 BOSS_NODE_IMPORTS = {
-    "ceremonial_beast": {
-        "node": "images/ui/run_history/ceremonial_beast_boss.png.import",
-        "outline": "images/ui/run_history/ceremonial_beast_boss_outline.png.import",
-    },
-    "queen": {
-        "node": "images/ui/run_history/queen_boss.png.import",
-        "outline": "images/ui/run_history/queen_boss_outline.png.import",
-    },
-    "the_insatiable": {
-        "node": "images/ui/run_history/the_insatiable_boss.png.import",
-        "outline": "images/ui/run_history/the_insatiable_boss_outline.png.import",
-    },
     "doormaker": {
         "node": "images/map/placeholder/doormaker_boss_icon.png.import",
         "outline": "images/map/placeholder/doormaker_boss_icon_outline.png.import",

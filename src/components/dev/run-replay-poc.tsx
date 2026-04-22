@@ -247,10 +247,6 @@ const BOSS_ASSETS: Record<
     outline: string;
   }
 > = {
-  ceremonial_beast: {
-    node: "/images/sts2/boss-nodes/boss_node_ceremonial_beast.webp",
-    outline: "/images/sts2/boss-nodes/boss_node_ceremonial_beast_outline.webp",
-  },
   doormaker: {
     node: "/images/sts2/boss-nodes/boss_node_doormaker.webp",
     outline: "/images/sts2/boss-nodes/boss_node_doormaker_outline.webp",
@@ -267,10 +263,6 @@ const BOSS_ASSETS: Record<
     node: "/images/sts2/boss-nodes/boss_node_lagavulin_matriarch.webp",
     outline: "/images/sts2/boss-nodes/boss_node_lagavulin_matriarch_outline.webp",
   },
-  queen: {
-    node: "/images/sts2/boss-nodes/boss_node_queen.webp",
-    outline: "/images/sts2/boss-nodes/boss_node_queen_outline.webp",
-  },
   soul_fysh: {
     node: "/images/sts2/boss-nodes/boss_node_soul_fysh.webp",
     outline: "/images/sts2/boss-nodes/boss_node_soul_fysh_outline.webp",
@@ -278,10 +270,6 @@ const BOSS_ASSETS: Record<
   test_subject: {
     node: "/images/sts2/boss-nodes/boss_node_test_subject.webp",
     outline: "/images/sts2/boss-nodes/boss_node_test_subject_outline.webp",
-  },
-  the_insatiable: {
-    node: "/images/sts2/boss-nodes/boss_node_the_insatiable.webp",
-    outline: "/images/sts2/boss-nodes/boss_node_the_insatiable_outline.webp",
   },
   the_kin: {
     node: "/images/sts2/boss-nodes/boss_node_the_kin.webp",
@@ -956,6 +944,10 @@ function normalizeModelKey(value: string | null | undefined) {
   return value.split(".").pop()?.toLowerCase() ?? null;
 }
 
+function bossAssetPath(key: string | null) {
+  return key ? `/images/sts2/bosses/${key}.webp` : null;
+}
+
 function getBossAsset(bossKey: string | null) {
   if (!bossKey) return null;
   const stripped = bossKey.replace(/_boss$/, "");
@@ -1148,15 +1140,28 @@ function MapNodeAsset({
   if (node.type === "boss") {
     const bossKey = bossKeyForRow(act, node.row);
     const bossAsset = getBossAsset(bossKey);
-    if (!bossAsset) return null;
+    if (bossAsset) {
+      return (
+        <BossMapAsset
+          actId={act.actId}
+          state={state}
+          size={size}
+          src={bossAsset.node}
+          outlineSrc={bossAsset.outline}
+          alt={NODE_META[node.type].label}
+        />
+      );
+    }
+
     return (
-      <BossMapAsset
-        actId={act.actId}
+      <SpecialMapAsset
         state={state}
         size={size}
-        src={bossAsset.node}
-        outlineSrc={bossAsset.outline}
+        src={bossAssetPath(bossKey)}
+        fallbackSrc="/images/sts2/nav/stats_monsters.png"
         alt={NODE_META[node.type].label}
+        className="object-contain scale-[1.04]"
+        framed
       />
     );
   }
@@ -1258,15 +1263,28 @@ function StepAsset({
   if (type === "boss") {
     const bossKey = normalizeModelKey(entry.rooms[0]?.model_id);
     const bossAsset = getBossAsset(bossKey);
-    if (!bossAsset) return null;
+    if (bossAsset) {
+      return (
+        <BossMapAsset
+          actId={act.actId}
+          state={state}
+          size={squareSize}
+          src={bossAsset.node}
+          outlineSrc={bossAsset.outline}
+          alt={NODE_META[type].label}
+        />
+      );
+    }
+
     return (
-      <BossMapAsset
-        actId={act.actId}
+      <SpecialMapAsset
         state={state}
         size={squareSize}
-        src={bossAsset.node}
-        outlineSrc={bossAsset.outline}
+        src={bossAssetPath(bossKey)}
+        fallbackSrc="/images/sts2/nav/stats_monsters.png"
         alt={NODE_META[type].label}
+        className="object-contain scale-[1.04]"
+        framed
       />
     );
   }
@@ -1352,6 +1370,33 @@ function BossMapAsset({
         <AssetThumb src={src} fallbackSrc={null} alt={alt} className="object-contain" />
       </div>
       <div className="absolute inset-0" style={maskStyle(src, iconColor, state === "inactive" ? 0.9 : 1)} />
+    </div>
+  );
+}
+
+function SpecialMapAsset({
+  state,
+  size,
+  src,
+  fallbackSrc,
+  alt,
+  className,
+  framed = false,
+}: {
+  state: "inactive" | "active" | "current";
+  size: RenderSize;
+  src: string | null;
+  fallbackSrc: string | null;
+  alt: string;
+  className: string;
+  framed?: boolean;
+}) {
+  return (
+    <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
+      <MapSelectionRing state={state} inset="-18%" />
+      <div className={framed ? "absolute inset-[10%]" : "absolute inset-[4%]"} style={{ opacity: state === "inactive" ? 0.72 : 1 }}>
+        <AssetThumb src={src} fallbackSrc={fallbackSrc} alt={alt} className={className} />
+      </div>
     </div>
   );
 }
