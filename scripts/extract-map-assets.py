@@ -3,7 +3,7 @@
 
 Outputs:
 - public/images/sts2/map/backgrounds/<act>/{top,middle,bottom}.png
-- public/images/sts2/map/bosses/<boss>_{icon,icon_outline}.png
+- public/images/sts2/boss-nodes/boss_node_<boss>{,_outline}.webp
 - public/images/sts2/map/icons/*.png
 - public/images/sts2/map/outlines/*.png
 - public/images/sts2/map/effects/*.png
@@ -74,34 +74,48 @@ DIRECT_MARKER_IMPORTS = {
     "map_marker_regent": "images/packed/map/icons/map_marker_regent.png.import",
 }
 
-BOSS_PLACEHOLDER_IMPORTS = {
-    "doormaker_boss_icon": "images/map/placeholder/doormaker_boss_icon.png.import",
-    "doormaker_boss_icon_outline": "images/map/placeholder/doormaker_boss_icon_outline.png.import",
-    "kaiser_crab_boss_icon": "images/map/placeholder/kaiser_crab_boss_icon.png.import",
-    "kaiser_crab_boss_icon_outline": "images/map/placeholder/kaiser_crab_boss_icon_outline.png.import",
-    "knowledge_demon_boss_icon": "images/map/placeholder/knowledge_demon_boss_icon.png.import",
-    "knowledge_demon_boss_icon_outline": "images/map/placeholder/knowledge_demon_boss_icon_outline.png.import",
-    "lagavulin_matriarch_boss_icon": "images/map/placeholder/lagavulin_matriarch_boss_icon.png.import",
-    "lagavulin_matriarch_boss_icon_outline": "images/map/placeholder/lagavulin_matriarch_boss_icon_outline.png.import",
-    "soul_fysh_boss_icon": "images/map/placeholder/soul_fysh_boss_icon.png.import",
-    "soul_fysh_boss_icon_outline": "images/map/placeholder/soul_fysh_boss_icon_outline.png.import",
-    "test_subject_boss_icon": "images/map/placeholder/test_subject_boss_icon.png.import",
-    "test_subject_boss_icon_outline": "images/map/placeholder/test_subject_boss_icon_outline.png.import",
-    "the_kin_boss_icon": "images/map/placeholder/the_kin_boss_icon.png.import",
-    "the_kin_boss_icon_outline": "images/map/placeholder/the_kin_boss_icon_outline.png.import",
-    "vantom_boss_icon": "images/map/placeholder/vantom_boss_icon.png.import",
-    "vantom_boss_icon_outline": "images/map/placeholder/vantom_boss_icon_outline.png.import",
-    "waterfall_giant_boss_icon": "images/map/placeholder/waterfall_giant_boss_icon.png.import",
-    "waterfall_giant_boss_icon_outline": "images/map/placeholder/waterfall_giant_boss_icon_outline.png.import",
-}
-
-RUN_HISTORY_BOSS_IMPORTS = {
-    "ceremonial_beast_boss": "images/ui/run_history/ceremonial_beast_boss.png.import",
-    "ceremonial_beast_boss_outline": "images/ui/run_history/ceremonial_beast_boss_outline.png.import",
-    "queen_boss": "images/ui/run_history/queen_boss.png.import",
-    "queen_boss_outline": "images/ui/run_history/queen_boss_outline.png.import",
-    "the_insatiable_boss": "images/ui/run_history/the_insatiable_boss.png.import",
-    "the_insatiable_boss_outline": "images/ui/run_history/the_insatiable_boss_outline.png.import",
+# Boss node/outline assets — parallels ANCIENT_ASSETS on the frontend.
+# Keys are the bossKey (suffix `_boss` stripped) as produced by normalizeModelKey().
+# Only bosses that ship a static placeholder icon set are listed here; the 3
+# Spine-rendered bosses (ceremonial_beast, queen, the_insatiable) fall back to
+# full-portrait rendering on the frontend.
+BOSS_NODE_IMPORTS = {
+    "doormaker": {
+        "node": "images/map/placeholder/doormaker_boss_icon.png.import",
+        "outline": "images/map/placeholder/doormaker_boss_icon_outline.png.import",
+    },
+    "kaiser_crab": {
+        "node": "images/map/placeholder/kaiser_crab_boss_icon.png.import",
+        "outline": "images/map/placeholder/kaiser_crab_boss_icon_outline.png.import",
+    },
+    "knowledge_demon": {
+        "node": "images/map/placeholder/knowledge_demon_boss_icon.png.import",
+        "outline": "images/map/placeholder/knowledge_demon_boss_icon_outline.png.import",
+    },
+    "lagavulin_matriarch": {
+        "node": "images/map/placeholder/lagavulin_matriarch_boss_icon.png.import",
+        "outline": "images/map/placeholder/lagavulin_matriarch_boss_icon_outline.png.import",
+    },
+    "soul_fysh": {
+        "node": "images/map/placeholder/soul_fysh_boss_icon.png.import",
+        "outline": "images/map/placeholder/soul_fysh_boss_icon_outline.png.import",
+    },
+    "test_subject": {
+        "node": "images/map/placeholder/test_subject_boss_icon.png.import",
+        "outline": "images/map/placeholder/test_subject_boss_icon_outline.png.import",
+    },
+    "the_kin": {
+        "node": "images/map/placeholder/the_kin_boss_icon.png.import",
+        "outline": "images/map/placeholder/the_kin_boss_icon_outline.png.import",
+    },
+    "vantom": {
+        "node": "images/map/placeholder/vantom_boss_icon.png.import",
+        "outline": "images/map/placeholder/vantom_boss_icon_outline.png.import",
+    },
+    "waterfall_giant": {
+        "node": "images/map/placeholder/waterfall_giant_boss_icon.png.import",
+        "outline": "images/map/placeholder/waterfall_giant_boss_icon_outline.png.import",
+    },
 }
 
 ACT_MAP_BG_COLORS = {
@@ -225,7 +239,10 @@ def save_image(image: Image.Image, output_path: Path, *, dry_run: bool, force: b
         return True
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    image.save(output_path)
+    if output_path.suffix.lower() == ".webp":
+        image.save(output_path, format="WEBP", quality=90, method=6)
+    else:
+        image.save(output_path)
     return True
 
 
@@ -314,33 +331,22 @@ def main() -> None:
             else:
                 skipped += 1
 
-        for boss_name, import_path in BOSS_PLACEHOLDER_IMPORTS.items():
-            output_path = output_root / "bosses" / f"{boss_name}.png"
-            try:
-                image = open_import_image(reader, import_path)
-            except Exception as exc:
-                print(f"skip {import_path}: {exc}")
-                skipped += 1
-                continue
+        boss_nodes_root = output_root.parent / "boss-nodes"
+        for boss_key, imports in BOSS_NODE_IMPORTS.items():
+            for variant, import_path in (("node", imports["node"]), ("outline", imports["outline"])):
+                suffix = "_outline" if variant == "outline" else ""
+                output_path = boss_nodes_root / f"boss_node_{boss_key}{suffix}.webp"
+                try:
+                    image = open_import_image(reader, import_path)
+                except Exception as exc:
+                    print(f"skip {import_path}: {exc}")
+                    skipped += 1
+                    continue
 
-            if save_image(image, output_path, dry_run=args.dry_run, force=args.force):
-                extracted += 1
-            else:
-                skipped += 1
-
-        for boss_name, import_path in RUN_HISTORY_BOSS_IMPORTS.items():
-            output_path = output_root / "boss-history" / f"{boss_name}.png"
-            try:
-                image = open_import_image(reader, import_path)
-            except Exception as exc:
-                print(f"skip {import_path}: {exc}")
-                skipped += 1
-                continue
-
-            if save_image(image, output_path, dry_run=args.dry_run, force=args.force):
-                extracted += 1
-            else:
-                skipped += 1
+                if save_image(image, output_path, dry_run=args.dry_run, force=args.force):
+                    extracted += 1
+                else:
+                    skipped += 1
 
         for act, parts in MAP_BG_IMPORTS.items():
             for part, import_path in parts.items():

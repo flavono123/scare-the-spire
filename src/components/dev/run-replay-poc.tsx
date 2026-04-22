@@ -239,17 +239,51 @@ const ANCIENT_ASSETS: Record<
 };
 
 const FALLBACK_ACT_MAP_META = ACT_MAP_META["ACT.OVERGROWTH"];
-const BOSS_PLACEHOLDER_KEYS = new Set([
-  "doormaker_boss",
-  "kaiser_crab_boss",
-  "knowledge_demon_boss",
-  "lagavulin_matriarch_boss",
-  "soul_fysh_boss",
-  "test_subject_boss",
-  "the_kin_boss",
-  "vantom_boss",
-  "waterfall_giant_boss",
-]);
+
+const BOSS_ASSETS: Record<
+  string,
+  {
+    node: string;
+    outline: string;
+  }
+> = {
+  doormaker: {
+    node: "/images/sts2/boss-nodes/boss_node_doormaker.webp",
+    outline: "/images/sts2/boss-nodes/boss_node_doormaker_outline.webp",
+  },
+  kaiser_crab: {
+    node: "/images/sts2/boss-nodes/boss_node_kaiser_crab.webp",
+    outline: "/images/sts2/boss-nodes/boss_node_kaiser_crab_outline.webp",
+  },
+  knowledge_demon: {
+    node: "/images/sts2/boss-nodes/boss_node_knowledge_demon.webp",
+    outline: "/images/sts2/boss-nodes/boss_node_knowledge_demon_outline.webp",
+  },
+  lagavulin_matriarch: {
+    node: "/images/sts2/boss-nodes/boss_node_lagavulin_matriarch.webp",
+    outline: "/images/sts2/boss-nodes/boss_node_lagavulin_matriarch_outline.webp",
+  },
+  soul_fysh: {
+    node: "/images/sts2/boss-nodes/boss_node_soul_fysh.webp",
+    outline: "/images/sts2/boss-nodes/boss_node_soul_fysh_outline.webp",
+  },
+  test_subject: {
+    node: "/images/sts2/boss-nodes/boss_node_test_subject.webp",
+    outline: "/images/sts2/boss-nodes/boss_node_test_subject_outline.webp",
+  },
+  the_kin: {
+    node: "/images/sts2/boss-nodes/boss_node_the_kin.webp",
+    outline: "/images/sts2/boss-nodes/boss_node_the_kin_outline.webp",
+  },
+  vantom: {
+    node: "/images/sts2/boss-nodes/boss_node_vantom.webp",
+    outline: "/images/sts2/boss-nodes/boss_node_vantom_outline.webp",
+  },
+  waterfall_giant: {
+    node: "/images/sts2/boss-nodes/boss_node_waterfall_giant.webp",
+    outline: "/images/sts2/boss-nodes/boss_node_waterfall_giant_outline.webp",
+  },
+};
 const MAP_BOARD_PADDING_Y = 56;
 const MAP_GAME_SCALE = 0.46;
 const MAP_GAME_CANVAS_WIDTH = 2035;
@@ -261,7 +295,6 @@ const NORMAL_ICON_OVERFLOW = (NORMAL_ICON_SIZE - NORMAL_CONTROL_SIZE) / 2;
 const ANCIENT_CONTROL_SIZE = 208;
 const BOSS_CONTROL_WIDTH = 374;
 const BOSS_CONTROL_HEIGHT = 306;
-const BOSS_PLACEHOLDER_NATIVE_SIZE = { width: 350, height: 299 };
 const MAP_SELECTION_RING_COLOR = "#241F1A";
 const MAP_BOSS_UNTRAVELED_COLOR = "rgba(125, 106, 85, 0.85)";
 const MAP_ICON_NATIVE_SIZES: Record<string, { width: number; height: number }> = {
@@ -593,9 +626,8 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
                 top: tick.top,
                 width: 16 * MAP_GAME_SCALE,
                 height: 16 * MAP_GAME_SCALE,
-                transform: `translate(-50%, -50%) rotate(${tick.rotation}rad) scale(${
-                  visited ? 1.2 : 1
-                })`,
+                transform: `translate(-50%, -50%) rotate(${tick.rotation}rad) scale(${visited ? 1.2 : 1
+                  })`,
                 filter: "drop-shadow(0 0 0.8px rgba(0, 0, 0, 0.3))",
                 ...maskStyle(
                   effectSrc("map_dot"),
@@ -622,9 +654,8 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
               style={{
                 left: position.left,
                 top: position.top,
-                transform: `translate(-50%, -50%) scale(${
-                  current ? 1.08 : active ? 1 : 0.95
-                })`,
+                transform: `translate(-50%, -50%) scale(${current ? 1.08 : active ? 1 : 0.95
+                  })`,
               }}
             >
               <MapNodeAsset node={node} act={act} state={state} size={size} />
@@ -917,12 +948,10 @@ function bossAssetPath(key: string | null) {
   return key ? `/images/sts2/bosses/${key}.webp` : null;
 }
 
-function bossPlaceholderIconSrc(key: string) {
-  return `/images/sts2/map/bosses/${key}_icon.png`;
-}
-
-function bossPlaceholderOutlineSrc(key: string) {
-  return `/images/sts2/map/bosses/${key}_icon_outline.png`;
+function getBossAsset(bossKey: string | null) {
+  if (!bossKey) return null;
+  const stripped = bossKey.replace(/_boss$/, "");
+  return BOSS_ASSETS[stripped] ?? null;
 }
 
 function mapIconNameForType(type: ReplayMapPointType) {
@@ -1110,23 +1139,25 @@ function MapNodeAsset({
 
   if (node.type === "boss") {
     const bossKey = bossKeyForRow(act, node.row);
-    if (bossKey && BOSS_PLACEHOLDER_KEYS.has(bossKey)) {
+    const bossAsset = getBossAsset(bossKey);
+    if (bossAsset) {
       return (
-        <BossPlaceholderAsset
+        <BossMapAsset
           actId={act.actId}
           state={state}
           size={size}
-          bossKey={bossKey}
+          src={bossAsset.node}
+          outlineSrc={bossAsset.outline}
           alt={NODE_META[node.type].label}
         />
       );
     }
 
-      return (
-        <SpecialMapAsset
-          state={state}
-          size={size}
-          src={bossAssetPath(bossKey)}
+    return (
+      <SpecialMapAsset
+        state={state}
+        size={size}
+        src={bossAssetPath(bossKey)}
         fallbackSrc="/images/sts2/nav/stats_monsters.png"
         alt={NODE_META[node.type].label}
         className="object-contain scale-[1.04]"
@@ -1231,13 +1262,15 @@ function StepAsset({
 
   if (type === "boss") {
     const bossKey = normalizeModelKey(entry.rooms[0]?.model_id);
-    if (bossKey && BOSS_PLACEHOLDER_KEYS.has(bossKey)) {
+    const bossAsset = getBossAsset(bossKey);
+    if (bossAsset) {
       return (
-        <BossPlaceholderAsset
+        <BossMapAsset
           actId={act.actId}
           state={state}
           size={squareSize}
-          bossKey={bossKey}
+          src={bossAsset.node}
+          outlineSrc={bossAsset.outline}
           alt={NODE_META[type].label}
         />
       );
@@ -1309,43 +1342,34 @@ function AncientMapAsset({
   );
 }
 
-function BossPlaceholderAsset({
+function BossMapAsset({
   actId,
   state,
   size,
-  bossKey,
+  src,
+  outlineSrc,
   alt,
 }: {
   actId: string;
   state: "inactive" | "active" | "current";
   size: RenderSize;
-  bossKey: string;
+  src: string;
+  outlineSrc: string;
   alt: string;
 }) {
   const meta = actMapMeta(actId);
-  const nativeSize = scaleNativeSize(BOSS_PLACEHOLDER_NATIVE_SIZE);
-  const bossColor = state === "inactive" ? meta.untraveledColor : meta.traveledColor;
+  const iconColor = state === "inactive" ? MAP_BOSS_UNTRAVELED_COLOR : MAP_SELECTION_RING_COLOR;
 
   return (
     <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
-      <MapSelectionRing state={state} inset="-18%" />
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{
-          width: nativeSize.width,
-          height: nativeSize.height,
-          ...maskStyle(bossPlaceholderOutlineSrc(bossKey), meta.bgColor),
-        }}
-      />
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        aria-label={alt}
-        style={{
-          width: nativeSize.width,
-          height: nativeSize.height,
-          ...maskStyle(bossPlaceholderIconSrc(bossKey), bossColor, state === "inactive" ? 0.86 : 1),
-        }}
-      />
+      <MapSelectionRing state={state} inset="-12%" />
+      <div className="absolute inset-0" style={maskStyle(outlineSrc, meta.bgColor, 1)}>
+        <span className="sr-only">{alt}</span>
+      </div>
+      <div className="absolute inset-0" style={{ opacity: 0.18 }}>
+        <AssetThumb src={src} fallbackSrc={null} alt={alt} className="object-contain" />
+      </div>
+      <div className="absolute inset-0" style={maskStyle(src, iconColor, state === "inactive" ? 0.9 : 1)} />
     </div>
   );
 }
