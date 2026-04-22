@@ -251,11 +251,6 @@ const BOSS_PLACEHOLDER_KEYS = new Set([
   "vantom_boss",
   "waterfall_giant_boss",
 ]);
-const BOSS_HISTORY_KEYS = new Set([
-  "ceremonial_beast_boss",
-  "queen_boss",
-  "the_insatiable_boss",
-]);
 const MAP_BOARD_PADDING_Y = 56;
 const MAP_GAME_SCALE = 0.46;
 const MAP_SCREEN_WIDTH = 1920;
@@ -854,10 +849,9 @@ function mapNodeSize(
   act: ReplayActAnalysis,
 ): RenderSize {
   const box = node.type === "boss" ? gameControlBox(node, act) : gameVisualBox(node, act);
-  const bossScale = node.type === "boss" && hasSecondBoss(act) ? 0.75 : 1;
   return {
-    width: Math.round(box.width * MAP_GAME_SCALE * bossScale),
-    height: Math.round(box.height * MAP_GAME_SCALE * bossScale),
+    width: Math.round(box.width * MAP_GAME_SCALE),
+    height: Math.round(box.height * MAP_GAME_SCALE),
   };
 }
 
@@ -934,14 +928,6 @@ function bossPlaceholderIconSrc(key: string) {
 
 function bossPlaceholderOutlineSrc(key: string) {
   return `/images/sts2/map/bosses/${key}_icon_outline.png`;
-}
-
-function bossHistoryIconSrc(key: string) {
-  return `/images/sts2/map/boss-history/${key}.png`;
-}
-
-function bossHistoryOutlineSrc(key: string) {
-  return `/images/sts2/map/boss-history/${key}_outline.png`;
 }
 
 function mapIconNameForType(type: ReplayMapPointType) {
@@ -1109,22 +1095,11 @@ function MapNodeAsset({
       );
     }
 
-    if (bossKey && BOSS_HISTORY_KEYS.has(bossKey)) {
       return (
-        <BossHistoryAsset
+        <SpecialMapAsset
           state={state}
           size={size}
-          bossKey={bossKey}
-          alt={NODE_META[node.type].label}
-        />
-      );
-    }
-
-    return (
-      <SpecialMapAsset
-        state={state}
-        size={size}
-        src={bossAssetPath(bossKey)}
+          src={bossAssetPath(bossKey)}
         fallbackSrc="/images/sts2/nav/stats_monsters.png"
         alt={NODE_META[node.type].label}
         className="object-contain scale-[1.04]"
@@ -1216,6 +1191,7 @@ function AncientMapAsset({
 
   return (
     <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
+      <MapSelectionRing state={state} inset="-12%" />
       <div className="absolute inset-0" style={maskStyle(outlineSrc, meta.bgColor, 1)}>
         <span className="sr-only">{alt}</span>
       </div>
@@ -1246,6 +1222,7 @@ function BossPlaceholderAsset({
 
   return (
     <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
+      <MapSelectionRing state={state} inset="-18%" />
       <div
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         style={{
@@ -1263,53 +1240,6 @@ function BossPlaceholderAsset({
           ...maskStyle(bossPlaceholderIconSrc(bossKey), bossColor, state === "inactive" ? 0.86 : 1),
         }}
       />
-    </div>
-  );
-}
-
-function BossHistoryAsset({
-  state,
-  size,
-  bossKey,
-  alt,
-}: {
-  state: "inactive" | "active" | "current";
-  size: RenderSize;
-  bossKey: string;
-  alt: string;
-}) {
-  const outerSize = Math.round(Math.min(size.width, size.height) * 0.9);
-  const iconSize = Math.round(outerSize * 0.68);
-
-  return (
-    <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{ width: outerSize, height: outerSize, opacity: state === "inactive" ? 0.7 : 1 }}
-      >
-        <AssetThumb
-          src={bossHistoryOutlineSrc(bossKey)}
-          fallbackSrc={null}
-          alt={alt}
-          className="object-contain"
-        />
-      </div>
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{
-          width: iconSize,
-          height: iconSize,
-          opacity: state === "inactive" ? 0.8 : 1,
-          filter: state === "inactive" ? "brightness(0.88) saturate(0.82)" : undefined,
-        }}
-      >
-        <AssetThumb
-          src={bossHistoryIconSrc(bossKey)}
-          fallbackSrc={null}
-          alt={alt}
-          className="object-contain"
-        />
-      </div>
     </div>
   );
 }
@@ -1333,6 +1263,7 @@ function SpecialMapAsset({
 }) {
   return (
     <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
+      <MapSelectionRing state={state} inset="-18%" />
       <div className={framed ? "absolute inset-[10%]" : "absolute inset-[4%]"} style={{ opacity: state === "inactive" ? 0.72 : 1 }}>
         <AssetThumb src={src} fallbackSrc={fallbackSrc} alt={alt} className={className} />
       </div>
