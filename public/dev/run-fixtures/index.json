@@ -1,0 +1,82 @@
+[
+  {
+    "slug": "compass-tezcatara-a7",
+    "label": "황금 나침반 + 테즈카타라 (A7, Win)",
+    "seed": "K0TCXUC88T",
+    "ascension": 7,
+    "build": "v0.99.1",
+    "character": "CHARACTER.SILENT"
+  },
+  {
+    "slug": "furcoat-nonupeipe-a0",
+    "label": "모피 코트 + 노누파이페 (A0)",
+    "seed": "88R4UH71ZN",
+    "ascension": 0,
+    "build": "v0.98.0",
+    "character": "CHARACTER.IRONCLAD"
+  },
+  {
+    "slug": "spoils-map-a10",
+    "label": "보물지도 2막 합류 (A10)",
+    "seed": "VJ7520UZR2",
+    "ascension": 10,
+    "build": "v0.101.0",
+    "character": "CHARACTER.DEFECT"
+  },
+  {
+    "slug": "boss-queen-insatiable-kin-a10",
+    "label": "보스: 여왕/포식자/혈육/테스트 (A10)",
+    "seed": "DVAF9Q8FU1",
+    "ascension": 10,
+    "build": "v0.101.0",
+    "character": "CHARACTER.DEFECT"
+  },
+  {
+    "slug": "boss-ceremonial-doormaker-knowledge",
+    "label": "보스: 예식의짐승/문지기/지식악마 (A0 Win)",
+    "seed": "06_03_2026_1P",
+    "ascension": 0,
+    "build": "v0.98.1",
+    "character": "CHARACTER.IRONCLAD"
+  },
+  {
+    "slug": "boss-kaiser-lagavulin-a0",
+    "label": "보스: 카이저크랩/라가불린 (A0)",
+    "seed": "6TKFEVH15D",
+    "ascension": 0,
+    "build": "v0.98.1",
+    "character": "CHARACTER.NECROBINDER"
+  },
+  {
+    "slug": "boss-waterfall-knowledge-a0",
+    "label": "보스: 폭포거인 + 고대 Tez/Vakuu (A0)",
+    "seed": "NSTRBHCYA9",
+    "ascension": 0,
+    "build": "v0.98.0",
+    "character": "CHARACTER.NECROBINDER"
+  },
+  {
+    "slug": "boss-soul-fysh-a0",
+    "label": "보스: 혼의 피쉬 (A0)",
+    "seed": "LWGJQAXJT5",
+    "ascension": 0,
+    "build": "v0.98.1",
+    "character": "CHARACTER.REGENT"
+  },
+  {
+    "slug": "ancient-orobas-tanx-a0",
+    "label": "고대: 오로바스/탄스 (A0)",
+    "seed": "T5Z0VGZ11V",
+    "ascension": 0,
+    "build": "v0.98.2",
+    "character": "CHARACTER.REGENT"
+  },
+  {
+    "slug": "ancient-darv-a1",
+    "label": "고대: 다르브 (A1)",
+    "seed": "N4UF5YNBNE",
+    "ascension": 1,
+    "build": "v0.98.2",
+    "character": "CHARACTER.DEFECT"
+  }
+]

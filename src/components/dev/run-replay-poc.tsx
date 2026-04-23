@@ -296,8 +296,8 @@ const BOSS_ASSETS: Record<
     outline: "/images/sts2/boss-nodes/boss_node_waterfall_giant_outline.webp",
   },
 };
-const MAP_BOARD_PADDING_Y = 56;
-const MAP_GAME_SCALE = 0.46;
+const MAP_BOARD_PADDING_Y = 120;
+const MAP_GAME_SCALE = 1;
 const MAP_GAME_CANVAS_WIDTH = 2035;
 const MAP_GAME_COLUMNS = 7;
 const MAP_GAME_DIST_X = 1050 / MAP_GAME_COLUMNS;
@@ -340,16 +340,57 @@ type StoredRun = {
   id: string;
   label: string;
   run: ReplayRun;
+  kind: "preset" | "user";
 };
 
 const STORED_RUNS_KEY = "sts2-replay-poc:stored-runs:v1";
 const STORED_ACTIVE_KEY = "sts2-replay-poc:active-run:v1";
+const FIXTURE_INDEX_URL = "/dev/run-fixtures/index.json";
 
 const BUILTIN_RUN: StoredRun = {
   id: "__builtin_sample",
   label: "내장 샘플 (PH19VCZ8LG · A10)",
   run: SAMPLE_RUN,
+  kind: "preset",
 };
+
+type FixtureIndexEntry = {
+  slug: string;
+  label: string;
+  seed: string;
+  ascension: number;
+  build: string;
+  character: string;
+};
+
+async function loadFixturePresets(): Promise<StoredRun[]> {
+  try {
+    const indexRes = await fetch(FIXTURE_INDEX_URL, { cache: "no-cache" });
+    if (!indexRes.ok) return [];
+    const entries = (await indexRes.json()) as FixtureIndexEntry[];
+    const results = await Promise.all(
+      entries.map(async (entry): Promise<StoredRun | null> => {
+        try {
+          const res = await fetch(`/dev/run-fixtures/${entry.slug}.json`, { cache: "no-cache" });
+          if (!res.ok) return null;
+          const text = await res.text();
+          const run = parseReplayRun(text);
+          return {
+            id: `__preset_${entry.slug}`,
+            label: `${entry.label} · ${entry.seed}`,
+            run,
+            kind: "preset",
+          };
+        } catch {
+          return null;
+        }
+      }),
+    );
+    return results.filter((item): item is StoredRun => item !== null);
+  } catch {
+    return [];
+  }
+}
 
 function readStoredRuns(): StoredRun[] {
   if (typeof window === "undefined") return [];
@@ -358,14 +399,21 @@ function readStoredRuns(): StoredRun[] {
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (entry): entry is StoredRun =>
-        entry &&
-        typeof entry.id === "string" &&
-        typeof entry.label === "string" &&
-        entry.run &&
-        typeof entry.run === "object",
-    );
+    return parsed
+      .filter(
+        (entry): entry is Partial<StoredRun> =>
+          entry &&
+          typeof entry.id === "string" &&
+          typeof entry.label === "string" &&
+          entry.run &&
+          typeof entry.run === "object",
+      )
+      .map<StoredRun>((entry) => ({
+        id: entry.id as string,
+        label: entry.label as string,
+        run: entry.run as ReplayRun,
+        kind: entry.kind === "preset" ? "preset" : "user",
+      }));
   } catch {
     return [];
   }
@@ -393,19 +441,25 @@ export function RunReplayPoc() {
   const inputId = useId();
 
   useEffect(() => {
-    const persisted = readStoredRuns();
-    if (persisted.length > 0) {
-      setStoredRuns([BUILTIN_RUN, ...persisted.filter((entry) => entry.id !== BUILTIN_RUN.id)]);
-    }
+    let cancelled = false;
+    const persistedUser = readStoredRuns().filter((entry) => entry.kind === "user");
+    loadFixturePresets().then((presets) => {
+      if (cancelled) return;
+      const presetEntries = presets.length > 0 ? presets : [];
+      setStoredRuns([BUILTIN_RUN, ...presetEntries, ...persistedUser]);
+    });
     const activePersisted = readActiveRunId();
     if (activePersisted) {
       setActiveId(activePersisted);
     }
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const persistable = storedRuns.filter((entry) => entry.id !== BUILTIN_RUN.id);
+    const persistable = storedRuns.filter((entry) => entry.kind === "user");
     try {
       window.localStorage.setItem(STORED_RUNS_KEY, JSON.stringify(persistable));
       window.localStorage.setItem(STORED_ACTIVE_KEY, activeId);
@@ -430,8 +484,8 @@ export function RunReplayPoc() {
         const text = await file.text();
         const next = parseReplayRun(text);
         const baseLabel = file.name.replace(/\.(run|json)$/i, "");
-        const id = `${baseLabel}-${next.seed}-${Math.random().toString(36).slice(2, 8)}`;
-        incoming.push({ id, label: `${baseLabel} · ${describeRun(next)}`, run: next });
+        const id = `user_${baseLabel}-${next.seed}-${Math.random().toString(36).slice(2, 8)}`;
+        incoming.push({ id, label: `${baseLabel} · ${describeRun(next)}`, run: next, kind: "user" });
       } catch (caught) {
         const message = caught instanceof Error ? caught.message : "파싱 실패";
         failures.push(`${file.name}: ${message}`);
@@ -449,7 +503,8 @@ export function RunReplayPoc() {
   }
 
   function handleRemove(id: string) {
-    if (id === BUILTIN_RUN.id) return;
+    const target = storedRuns.find((entry) => entry.id === id);
+    if (!target || target.kind === "preset") return;
     startTransition(() => {
       setStoredRuns((prev) => prev.filter((entry) => entry.id !== id));
       setActiveId((prevId) => (prevId === id ? BUILTIN_RUN.id : prevId));
@@ -660,7 +715,14 @@ function RunLibrary({
                 >
                   라벨
                 </button>
-                {entry.id !== BUILTIN_RUN.id && (
+                <span
+                  className={`text-[10px] font-semibold uppercase tracking-[0.2em] ${
+                    entry.kind === "preset" ? "text-sky-300/80" : "text-emerald-300/80"
+                  }`}
+                >
+                  {entry.kind === "preset" ? "preset" : "upload"}
+                </span>
+                {entry.kind === "user" && (
                   <button
                     type="button"
                     className="text-xs text-red-400/80 transition hover:text-red-300"
@@ -827,17 +889,18 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
   }
 
   return (
-    <div
-      className="relative overflow-hidden rounded-[2rem] border bg-[#120e0a]"
-      style={{ height: layout.height, borderColor: meta.border }}
-    >
-      <MapBackdrop actId={act.actId} />
-      <div className="absolute inset-0 bg-black/18" />
-      <div className="absolute inset-[18px] rounded-[1.55rem] border border-white/6" />
+    <div className="overflow-x-auto overflow-y-visible">
       <div
-        className="absolute inset-y-0 left-1/2 -translate-x-1/2"
-        style={{ width: layout.width }}
+        className="relative rounded-[2rem] border bg-[#120e0a]"
+        style={{ height: layout.height, width: layout.width, borderColor: meta.border }}
       >
+        <MapBackdrop actId={act.actId} />
+        <div className="absolute inset-0 bg-black/18" />
+        <div className="absolute inset-[18px] rounded-[1.55rem] border border-white/6" />
+        <div
+          className="absolute inset-y-0 left-1/2 -translate-x-1/2"
+          style={{ width: layout.width }}
+        >
         {act.edges.flatMap((edge) => {
           const from = nodeMap.get(edge.from);
           const to = nodeMap.get(edge.to);
@@ -892,8 +955,9 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
         })}
       </div>
 
-      <div className="absolute bottom-4 left-4 rounded-full border border-white/8 bg-black/25 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-zinc-300">
-        아래에서 위로 등반
+        <div className="absolute bottom-4 left-4 rounded-full border border-white/8 bg-black/25 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-zinc-300">
+          아래에서 위로 등반
+        </div>
       </div>
     </div>
   );
