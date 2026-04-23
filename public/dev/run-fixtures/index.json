@@ -78,5 +78,13 @@
     "ascension": 1,
     "build": "v0.98.2",
     "character": "CHARACTER.DEFECT"
+  },
+  {
+    "slug": "winged-boots-a10",
+    "label": "날개 부츠(Winged Boots) · Flight (A10, Win)",
+    "seed": "EQNAH97QTR",
+    "ascension": 10,
+    "build": "v0.103.0",
+    "character": "CHARACTER.DEFECT"
   }
 ]

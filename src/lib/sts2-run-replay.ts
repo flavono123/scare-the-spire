@@ -87,6 +87,7 @@ export interface ReplayActAnalysis {
   exactReplay: boolean;
   rowCount: number;
   fallbackUsed: boolean;
+  mapVariant: ActMapVariant;
 }
 
 export interface ReplayAnalysis {
@@ -105,6 +106,8 @@ interface MapCoord {
   col: number;
   row: number;
 }
+
+export type ReplayActMapVariant = ActMapVariant;
 
 interface MapPointTypeCounts {
   numElites: number;
@@ -250,6 +253,8 @@ class MapNode {
   }
 }
 
+type ActMapVariant = "standard" | "golden_path" | "spoils";
+
 class GeneratedActMap {
   readonly grid: Array<Array<MapNode | null>>;
   readonly boss: MapNode;
@@ -260,6 +265,7 @@ class GeneratedActMap {
   readonly pointTypeCounts: MapPointTypeCounts;
   readonly actConfig: ReplayActConfig;
   readonly rng: StsRng;
+  readonly variant: ActMapVariant;
 
   constructor(
     rng: StsRng,
@@ -267,6 +273,7 @@ class GeneratedActMap {
     pointTypeCounts: MapPointTypeCounts,
     shouldReplaceTreasureWithElites: boolean,
     hasSecondBoss: boolean,
+    variant: ActMapVariant = "standard",
   ) {
     const gridHeight = actConfig.numRooms + 1;
     this.grid = Array.from({ length: MAP_COLUMNS }, () => Array<MapNode | null>(gridHeight).fill(null));
@@ -274,16 +281,29 @@ class GeneratedActMap {
     this.actConfig = actConfig;
     this.pointTypeCounts = pointTypeCounts;
     this.shouldReplaceTreasureWithElites = shouldReplaceTreasureWithElites;
+    this.variant = variant;
     this.start = new MapNode(Math.floor(MAP_COLUMNS / 2), 0, "ancient");
     this.boss = new MapNode(Math.floor(MAP_COLUMNS / 2), gridHeight, "boss");
     this.secondBoss = hasSecondBoss ? new MapNode(Math.floor(MAP_COLUMNS / 2), gridHeight + 1, "boss") : null;
 
-    this.generateMap();
-    this.assignPointTypes();
-    pruneAndRepair(this);
-    centerGrid(this.grid);
-    spreadAdjacentMapPoints(this.grid);
-    straightenPaths(this.grid);
+    if (variant === "golden_path") {
+      buildGoldenPathGrid(this);
+    } else if (variant === "spoils") {
+      this.generateMap();
+      this.assignPointTypes();
+      pruneAndRepair(this);
+      centerGrid(this.grid);
+      spreadAdjacentMapPoints(this.grid);
+      straightenPaths(this.grid);
+      convergeAtTreasureRow(this);
+    } else {
+      this.generateMap();
+      this.assignPointTypes();
+      pruneAndRepair(this);
+      centerGrid(this.grid);
+      spreadAdjacentMapPoints(this.grid);
+      straightenPaths(this.grid);
+    }
   }
 
   get rowCount(): number {
@@ -618,7 +638,7 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
     const historyTypes = normalizedHistoryTypes.filter(
       (type): type is ReplayMapPointType => type !== null,
     );
-    const map = buildGeneratedMap(run, actId, actIndex, modifierIds);
+    const map = buildGeneratedMap(run, actId, actIndex, modifierIds, baseFloor);
     const match = findMatchingPaths(map, historyTypes);
     const useFallback = match.pathCount === 0 && historyTypes.length > 0;
     const fallback = useFallback ? buildFallbackPath(map, historyTypes) : null;
@@ -638,6 +658,7 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
       exactReplay: match.pathCount === 1,
       rowCount: map.secondBoss ? map.rowCount + 2 : map.rowCount + 1,
       fallbackUsed: !!fallback,
+      mapVariant: map.variant,
     });
     baseFloor += history.length;
   }
@@ -662,11 +683,14 @@ function collectWarnings(run: ReplayRun): string[] {
   if (modifierIds.has("FLIGHT")) {
     warnings.push("비행 모디파이어는 경로 제약을 바꾸므로 exact replay를 보장할 수 없습니다.");
   }
+  if (relicIds.has("WINGED_BOOTS")) {
+    warnings.push("날개 부츠(Winged Boots)의 Flight 경로 우회 규칙은 아직 반영되지 않았습니다.");
+  }
   if (deckIds.has("SPOILS_MAP")) {
-    warnings.push("Spoils Map 퀘스트 카드는 막 맵 구조를 바꿀 수 있습니다.");
+    warnings.push("보물지도(Spoils Map) 감지 — 해당 카드 획득 이후 막은 Spoils hourglass 맵으로 생성됩니다.");
   }
   if (relicIds.has("GOLDEN_COMPASS")) {
-    warnings.push("Golden Compass 유물은 현재 막의 맵을 다시 생성할 수 있습니다.");
+    warnings.push("황금 나침반(Golden Compass) 감지 — 획득 이후 막은 Golden Path(외길)로 생성됩니다.");
   }
   if (!run.acts.every((act) => ACT_CONFIGS[normalizeActId(act)])) {
     warnings.push("지원하지 않는 막 구성이 포함되어 일부 시드 맵은 재생성하지 못했습니다.");
@@ -679,10 +703,26 @@ function buildGeneratedMap(
   actId: string,
   actIndex: number,
   modifierIds: Set<string>,
+  actStartFloor: number,
 ): GeneratedActMap {
   const config = ACT_CONFIGS[actId];
   const seed = toUint32(getDeterministicHashCode(run.seed));
   const hasSecondBoss = actIndex === run.acts.length - 1 && run.ascension >= 10;
+  const variant = chooseActMapVariant(run, actStartFloor);
+
+  if (variant === "golden_path") {
+    // Golden Path uses no RNG; pass a dummy one. Seed is deterministic regardless.
+    const rng = new StsRng(seed, `act_${actIndex + 1}_golden_path`);
+    const counts = config.getCounts(rng, run.ascension);
+    return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "golden_path");
+  }
+
+  if (variant === "spoils") {
+    const rng = new StsRng(seed, "spoils_map");
+    const counts = config.getCounts(rng, run.ascension);
+    return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "spoils");
+  }
+
   const baseRng = new StsRng(seed, `act_${actIndex + 1}_map`);
   const baseCounts = config.getCounts(baseRng, run.ascension);
   let map = new GeneratedActMap(baseRng, config, baseCounts, false, hasSecondBoss);
@@ -701,6 +741,105 @@ function buildGeneratedMap(
   }
 
   return map;
+}
+
+function chooseActMapVariant(run: ReplayRun, actStartFloor: number): ActMapVariant {
+  const player = run.players[0];
+  if (!player) return "standard";
+  const idOf = (value?: string) => (value ?? "").toUpperCase();
+  // Golden Compass is granted at Tezcatara's ancient; active from that act onward
+  const hasCompass = player.relics.some((relic) => {
+    const id = idOf(relic.id);
+    if (!id.endsWith("GOLDEN_COMPASS")) return false;
+    const added = relic.floor_added_to_deck ?? 0;
+    return added > 0 && added <= actStartFloor;
+  });
+  if (hasCompass) return "golden_path";
+  // Spoils Map card consumed on next-act entry; if present before act start, act is spoils
+  const hasSpoilsMapCard = player.deck.some((card) => {
+    const id = idOf(card.id);
+    if (!id.endsWith("SPOILS_MAP")) return false;
+    const added = card.floor_added_to_deck ?? 0;
+    return added > 0 && added < actStartFloor;
+  });
+  if (hasSpoilsMapCard) return "spoils";
+  return "standard";
+}
+
+function buildGoldenPathGrid(map: GeneratedActMap) {
+  // Per MegaCrit.Sts2.Core.Map.GoldenPathActMap — fixed 16-room straight line at col=3
+  const defaultTypes: ReplayMapPointType[] = [
+    "monster",
+    "unknown",
+    "monster",
+    "rest_site",
+    "monster",
+    "rest_site",
+    "unknown",
+    "treasure",
+    "unknown",
+    "treasure",
+    "unknown",
+    "shop",
+    "elite",
+    "rest_site",
+    "elite",
+    "rest_site",
+  ];
+  const col = Math.floor(MAP_COLUMNS / 2);
+  const totalRows = defaultTypes.length + 2; // +ancient(row 0) + boss(rowCount-1)
+  // Resize grid to exact height
+  for (let c = 0; c < MAP_COLUMNS; c++) {
+    map.grid[c] = Array<MapNode | null>(totalRows).fill(null);
+  }
+  // Boss coord shifts to new last row
+  map.boss.coord = { col, row: totalRows };
+  if (map.secondBoss) {
+    map.secondBoss.coord = { col, row: totalRows + 1 };
+  }
+  let prev: MapNode | null = null;
+  for (let i = 0; i < defaultTypes.length; i++) {
+    const row = i + 1;
+    const node = new MapNode(col, row, defaultTypes[i]);
+    node.canBeModified = false;
+    map.grid[col][row] = node;
+    if (prev) {
+      prev.addChild(node);
+    }
+    prev = node;
+  }
+  map.startMapPoints.add(map.grid[col][1]!);
+  map.start.addChild(map.grid[col][1]!);
+  if (prev) prev.addChild(map.boss);
+  if (map.secondBoss) map.boss.addChild(map.secondBoss);
+}
+
+function convergeAtTreasureRow(map: GeneratedActMap) {
+  // Approximate Spoils hourglass by collapsing treasure row onto col=3 treasure node.
+  const treasureRow = map.rowCount - 7;
+  if (treasureRow <= 0 || treasureRow >= map.rowCount) return;
+  const midCol = Math.floor(MAP_COLUMNS / 2);
+  const rowPoints = map.getPointsInRow(treasureRow);
+  let treasureNode = map.grid[midCol][treasureRow];
+  if (!treasureNode) {
+    treasureNode = new MapNode(midCol, treasureRow, "treasure");
+    map.grid[midCol][treasureRow] = treasureNode;
+  }
+  treasureNode.type = "treasure";
+  treasureNode.canBeModified = false;
+  for (const point of rowPoints) {
+    if (point === treasureNode) continue;
+    // Redirect: its parents -> treasure, its children <- treasure
+    for (const parent of Array.from(point.parents)) {
+      parent.removeChild(point);
+      if (parent !== treasureNode) parent.addChild(treasureNode);
+    }
+    for (const child of Array.from(point.children)) {
+      point.removeChild(child);
+      if (child !== treasureNode) treasureNode.addChild(child);
+    }
+    map.grid[point.coord.col][point.coord.row] = null;
+  }
 }
 
 function buildFallbackPath(map: GeneratedActMap, historyTypes: ReplayMapPointType[]) {

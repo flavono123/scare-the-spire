@@ -296,9 +296,10 @@ const BOSS_ASSETS: Record<
     outline: "/images/sts2/boss-nodes/boss_node_waterfall_giant_outline.webp",
   },
 };
-const MAP_BOARD_PADDING_Y = 120;
-const MAP_GAME_SCALE = 1;
-const MAP_GAME_CANVAS_WIDTH = 2035;
+const MAP_BOARD_PADDING_Y = 220;
+const MAP_BOARD_PADDING_X = 80;
+const MAP_GAME_SCALE = 0.6;
+const MAP_GAME_VIEWPORT_WIDTH = 1920;
 const MAP_GAME_COLUMNS = 7;
 const MAP_GAME_DIST_X = 1050 / MAP_GAME_COLUMNS;
 const NORMAL_CONTROL_SIZE = 56;
@@ -781,6 +782,11 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
                   ? "Exact Replay"
                   : `${act.matchedPathCount}${act.matchedPathCountCapped ? "+" : ""} candidates`}
             </StatusBadge>
+            {act.mapVariant !== "standard" && (
+              <StatusBadge tone="amber">
+                {act.mapVariant === "golden_path" ? "Golden Path" : "Spoils Hourglass"}
+              </StatusBadge>
+            )}
             {act.fallbackUsed && (
               <StatusBadge tone="amber">Fallback path</StatusBadge>
             )}
@@ -1141,13 +1147,14 @@ function buildMapLayout(act: ReplayActAnalysis): MapLayout {
   }));
   const minTop = Math.min(...boxes.map(({ box }) => box.top));
   const maxBottom = Math.max(...boxes.map(({ box }) => box.top + box.height));
-  const minLeft = Math.min(...boxes.map(({ box }) => box.left));
-  const maxRight = Math.max(...boxes.map(({ box }) => box.left + box.width));
-  const contentMidlineX = (minLeft + maxRight) / 2;
-  const width = Math.ceil(MAP_GAME_CANVAS_WIDTH * MAP_GAME_SCALE);
+  const width = Math.ceil(MAP_GAME_VIEWPORT_WIDTH * MAP_GAME_SCALE);
 
+  // Game anchors its map bg horizontally on viewport center (screen x = 960)
+  // with node positions defined in game-origin coords (x=0 == bg center).
+  // So we map game x=0 -> board width/2 without re-centering on content, matching
+  // the game's "grid midline is ~22px left of bg center" layout.
   const toBoardPoint = (point: MapPoint): MapPoint => ({
-    left: width / 2 + (point.left - contentMidlineX) * MAP_GAME_SCALE,
+    left: width / 2 + point.left * MAP_GAME_SCALE,
     top: MAP_BOARD_PADDING_Y + (point.top - minTop) * MAP_GAME_SCALE,
   });
 
