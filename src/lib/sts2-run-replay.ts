@@ -86,6 +86,7 @@ export interface ReplayActAnalysis {
   matchedPathCountCapped: boolean;
   exactReplay: boolean;
   rowCount: number;
+  fallbackUsed: boolean;
 }
 
 export interface ReplayAnalysis {
@@ -619,6 +620,8 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
     );
     const map = buildGeneratedMap(run, actId, actIndex, modifierIds);
     const match = findMatchingPaths(map, historyTypes);
+    const useFallback = match.pathCount === 0 && historyTypes.length > 0;
+    const fallback = useFallback ? buildFallbackPath(map, historyTypes) : null;
     acts.push({
       actIndex,
       actId,
@@ -628,12 +631,13 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
       historyTypes,
       nodes: toReplayNodes(map),
       edges: toReplayEdges(map),
-      candidateNodeIdsByStep: match.nodeCandidates,
-      candidateEdgeIdsByStep: match.edgeCandidates,
+      candidateNodeIdsByStep: fallback ? fallback.nodeCandidates : match.nodeCandidates,
+      candidateEdgeIdsByStep: fallback ? fallback.edgeCandidates : match.edgeCandidates,
       matchedPathCount: match.pathCount,
       matchedPathCountCapped: match.capped,
       exactReplay: match.pathCount === 1,
       rowCount: map.secondBoss ? map.rowCount + 2 : map.rowCount + 1,
+      fallbackUsed: !!fallback,
     });
     baseFloor += history.length;
   }
@@ -697,6 +701,52 @@ function buildGeneratedMap(
   }
 
   return map;
+}
+
+function buildFallbackPath(map: GeneratedActMap, historyTypes: ReplayMapPointType[]) {
+  const nodeCandidates: string[][] = Array.from({ length: historyTypes.length }, () => []);
+  const edgeCandidates: string[][] = Array.from({ length: historyTypes.length }, () => []);
+  const rowByStep = indexHistoryByRow(map, historyTypes);
+  let prev: MapNode | null = null;
+  for (let step = 0; step < historyTypes.length; step++) {
+    const row = rowByStep[step];
+    const rowNodes = collectNodesInRow(map, row);
+    const expected = historyTypes[step];
+    const match =
+      rowNodes.find((node) => node.type === expected) ??
+      rowNodes.find((node) => node.type === "monster") ??
+      rowNodes[Math.floor(rowNodes.length / 2)] ??
+      null;
+    if (!match) continue;
+    nodeCandidates[step].push(match.id);
+    if (prev) {
+      edgeCandidates[step].push(`${prev.id}->${match.id}`);
+    }
+    prev = match;
+  }
+  return { nodeCandidates, edgeCandidates };
+}
+
+function indexHistoryByRow(
+  map: GeneratedActMap,
+  historyTypes: ReplayMapPointType[],
+): number[] {
+  const hasSecondBoss = !!map.secondBoss;
+  const lastIndex = historyTypes.length - 1;
+  const bossIndex = hasSecondBoss ? lastIndex - 1 : lastIndex;
+  return historyTypes.map((type, index) => {
+    if (index === 0 || type === "ancient") return 0;
+    if (hasSecondBoss && index === lastIndex) return map.secondBoss!.coord.row;
+    if (index === bossIndex && type === "boss") return map.boss.coord.row;
+    return Math.min(index, map.rowCount - 1);
+  });
+}
+
+function collectNodesInRow(map: GeneratedActMap, row: number): MapNode[] {
+  if (row === 0) return [map.start];
+  if (row === map.boss.coord.row) return [map.boss];
+  if (map.secondBoss && row === map.secondBoss.coord.row) return [map.secondBoss];
+  return map.getPointsInRow(row);
 }
 
 function findMatchingPaths(map: GeneratedActMap, historyTypes: ReplayMapPointType[]) {

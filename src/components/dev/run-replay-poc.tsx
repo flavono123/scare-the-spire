@@ -171,7 +171,7 @@ const ACT_MAP_META: Record<
     key: "overgrowth",
     bgColor: "#A78A67",
     traveledColor: "#28231D",
-    untraveledColor: "#877256",
+    untraveledColor: "#574738",
     border: "rgba(167, 138, 103, 0.36)",
   },
   "ACT.UNDERDOCKS": {
@@ -336,30 +336,130 @@ const MAP_BACKDROP_SEGMENTS = [
   { name: "bottom", top: 68, height: 32 },
 ] as const;
 
+type StoredRun = {
+  id: string;
+  label: string;
+  run: ReplayRun;
+};
+
+const STORED_RUNS_KEY = "sts2-replay-poc:stored-runs:v1";
+const STORED_ACTIVE_KEY = "sts2-replay-poc:active-run:v1";
+
+const BUILTIN_RUN: StoredRun = {
+  id: "__builtin_sample",
+  label: "내장 샘플 (PH19VCZ8LG · A10)",
+  run: SAMPLE_RUN,
+};
+
+function readStoredRuns(): StoredRun[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(STORED_RUNS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (entry): entry is StoredRun =>
+        entry &&
+        typeof entry.id === "string" &&
+        typeof entry.label === "string" &&
+        entry.run &&
+        typeof entry.run === "object",
+    );
+  } catch {
+    return [];
+  }
+}
+
+function readActiveRunId(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.localStorage.getItem(STORED_ACTIVE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function describeRun(run: ReplayRun): string {
+  const character = run.players[0]?.character?.split(".").pop() ?? "?";
+  return `${run.seed} · A${run.ascension} · ${character}`;
+}
+
 export function RunReplayPoc() {
-  const [run, setRun] = useState<ReplayRun>(SAMPLE_RUN);
-  const [sourceLabel, setSourceLabel] = useState("내장 샘플");
+  const [storedRuns, setStoredRuns] = useState<StoredRun[]>([BUILTIN_RUN]);
+  const [activeId, setActiveId] = useState<string>(BUILTIN_RUN.id);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const inputId = useId();
+
+  useEffect(() => {
+    const persisted = readStoredRuns();
+    if (persisted.length > 0) {
+      setStoredRuns([BUILTIN_RUN, ...persisted.filter((entry) => entry.id !== BUILTIN_RUN.id)]);
+    }
+    const activePersisted = readActiveRunId();
+    if (activePersisted) {
+      setActiveId(activePersisted);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const persistable = storedRuns.filter((entry) => entry.id !== BUILTIN_RUN.id);
+    try {
+      window.localStorage.setItem(STORED_RUNS_KEY, JSON.stringify(persistable));
+      window.localStorage.setItem(STORED_ACTIVE_KEY, activeId);
+    } catch {
+      // ignore quota
+    }
+  }, [storedRuns, activeId]);
+
+  const activeEntry = storedRuns.find((entry) => entry.id === activeId) ?? BUILTIN_RUN;
+  const run = activeEntry.run;
+  const sourceLabel = activeEntry.label;
   const analysis = analyzeReplayRun(run);
   const exactActs = analysis.acts.filter((act) => act.exactReplay).length;
+  const fallbackActs = analysis.acts.filter((act) => act.fallbackUsed).length;
 
-  async function handleFileChange(file: File | null) {
-    if (!file) return;
-
-    try {
-      const text = await file.text();
-      const next = parseReplayRun(text);
-      setError(null);
-      startTransition(() => {
-        setRun(next);
-        setSourceLabel(file.name);
-      });
-    } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "런 파일을 읽지 못했습니다.";
-      setError(message);
+  async function handleFiles(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    const incoming: StoredRun[] = [];
+    const failures: string[] = [];
+    for (const file of Array.from(files)) {
+      try {
+        const text = await file.text();
+        const next = parseReplayRun(text);
+        const baseLabel = file.name.replace(/\.(run|json)$/i, "");
+        const id = `${baseLabel}-${next.seed}-${Math.random().toString(36).slice(2, 8)}`;
+        incoming.push({ id, label: `${baseLabel} · ${describeRun(next)}`, run: next });
+      } catch (caught) {
+        const message = caught instanceof Error ? caught.message : "파싱 실패";
+        failures.push(`${file.name}: ${message}`);
+      }
     }
+    if (incoming.length === 0) {
+      setError(failures.join("\n"));
+      return;
+    }
+    setError(failures.length > 0 ? failures.join("\n") : null);
+    startTransition(() => {
+      setStoredRuns((prev) => [...prev, ...incoming]);
+      setActiveId(incoming[0].id);
+    });
+  }
+
+  function handleRemove(id: string) {
+    if (id === BUILTIN_RUN.id) return;
+    startTransition(() => {
+      setStoredRuns((prev) => prev.filter((entry) => entry.id !== id));
+      setActiveId((prevId) => (prevId === id ? BUILTIN_RUN.id : prevId));
+    });
+  }
+
+  function handleRelabel(id: string, nextLabel: string) {
+    setStoredRuns((prev) =>
+      prev.map((entry) => (entry.id === id ? { ...entry, label: nextLabel } : entry)),
+    );
   }
 
   return (
@@ -367,7 +467,7 @@ export function RunReplayPoc() {
       <div className="mb-6 rounded border border-yellow-500/30 bg-yellow-500/5 px-4 py-2">
         <span className="text-xs font-bold text-yellow-500">DEV ONLY</span>
         <span className="ml-2 text-xs text-muted-foreground">
-          `.run` 업로드 기반 seeded replay PoC
+          `.run` 업로드 기반 seeded replay PoC · 여러 파일을 저장해두고 전환해서 볼 수 있음
         </span>
       </div>
 
@@ -382,7 +482,7 @@ export function RunReplayPoc() {
           <p className="mt-3 max-w-3xl text-sm leading-7 text-zinc-300">
             이 PoC는 `.run`의 <code>seed</code>와 <code>acts</code>로 막 맵을 다시 만들고,
             <code>map_point_history</code>의 타입 시퀀스를 그 위에 맞춰봅니다. 경로 후보가 하나면 exact
-            replay, 여러 개면 ambiguous, 하나도 없으면 현재 포트 기준으로 seed drift가 난 상태입니다.
+            replay, 여러 개면 ambiguous, 하나도 없으면 fallback(단일 경로)로 시연합니다.
           </p>
 
           <div className="mt-5 flex flex-wrap gap-3">
@@ -390,22 +490,25 @@ export function RunReplayPoc() {
               htmlFor={inputId}
               className="inline-flex cursor-pointer items-center rounded-full border border-amber-400/40 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-100 transition hover:border-amber-300 hover:bg-amber-500/20"
             >
-              `.run` 파일 업로드
+              `.run` 파일 추가 (여러 개 선택 가능)
             </label>
             <input
               id={inputId}
               type="file"
               accept=".run,.json"
+              multiple
               className="sr-only"
-              onChange={(event) => handleFileChange(event.target.files?.[0] ?? null)}
+              onChange={(event) => {
+                void handleFiles(event.target.files);
+                event.target.value = "";
+              }}
             />
             <button
               type="button"
               className="rounded-full border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-500 hover:text-white"
               onClick={() => {
                 setError(null);
-                setRun(SAMPLE_RUN);
-                setSourceLabel("내장 샘플");
+                setActiveId(BUILTIN_RUN.id);
               }}
             >
               샘플로 되돌리기
@@ -417,14 +520,26 @@ export function RunReplayPoc() {
             <StatCard label="Seed" value={analysis.run.seed} tone="blue" />
             <StatCard label="승천" value={`A${analysis.run.ascension}`} tone="red" />
             <StatCard
-              label="Exact Replay"
-              value={`${exactActs}/${analysis.acts.length} 막`}
-              tone={exactActs === analysis.acts.length ? "green" : "amber"}
+              label="Replay"
+              value={
+                exactActs === analysis.acts.length
+                  ? `Exact ${exactActs}/${analysis.acts.length}`
+                  : fallbackActs > 0
+                    ? `Fallback ${fallbackActs}막`
+                    : `Exact ${exactActs}/${analysis.acts.length}`
+              }
+              tone={
+                exactActs === analysis.acts.length
+                  ? "green"
+                  : fallbackActs > 0
+                    ? "red"
+                    : "amber"
+              }
             />
           </div>
 
           {error && (
-            <div className="mt-5 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            <div className="mt-5 whitespace-pre-wrap rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
               {error}
             </div>
           )}
@@ -434,16 +549,17 @@ export function RunReplayPoc() {
           <h2 className="text-lg font-bold text-zinc-100">판독 규칙</h2>
           <ul className="mt-4 space-y-3 text-sm leading-6 text-zinc-300">
             <li>
-              <span className="font-semibold text-emerald-300">Exact</span>:
-              시드 맵 위에서 히스토리 타입 시퀀스가 딱 한 경로로 결정됨
+              <span className="font-semibold text-emerald-300">Exact</span>: 시드 맵 위 히스토리
+              타입 시퀀스가 단일 경로로 결정됨.
             </li>
             <li>
-              <span className="font-semibold text-amber-300">Ambiguous</span>:
-              시드 맵은 재생성됐지만 `.run`만으로는 여러 노드 후보가 남음
+              <span className="font-semibold text-amber-300">Ambiguous</span>: 시드 맵은 재생성됐지만
+              `.run`만으로는 여러 후보가 남음.
             </li>
             <li>
-              <span className="font-semibold text-red-300">Zero Match</span>:
-              현재 포트/특수 효과/추가 데이터 부족 때문에 경로를 못 맞춤
+              <span className="font-semibold text-red-300">Zero Match</span>: 시드/밸런스/모디파이어
+              차이로 매칭 실패. MVP에선 가장 그럴듯한 행별 노드로 <strong>fallback 경로</strong>를
+              보여줍니다.
             </li>
           </ul>
 
@@ -462,9 +578,20 @@ export function RunReplayPoc() {
         </section>
       </div>
 
+      <RunLibrary
+        entries={storedRuns}
+        activeId={activeEntry.id}
+        onSelect={(id) => {
+          setError(null);
+          setActiveId(id);
+        }}
+        onRelabel={handleRelabel}
+        onRemove={handleRemove}
+      />
+
       <div className="mt-8 space-y-8">
         {analysis.acts.map((act) => (
-          <ActReplayCard key={`${sourceLabel}-${act.actId}-${act.actIndex}`} act={act} />
+          <ActReplayCard key={`${activeEntry.id}-${act.actId}-${act.actIndex}`} act={act} />
         ))}
       </div>
 
@@ -472,6 +599,86 @@ export function RunReplayPoc() {
         <div className="mt-6 text-sm text-zinc-400">런 파일을 분석 중입니다…</div>
       )}
     </div>
+  );
+}
+
+function RunLibrary({
+  entries,
+  activeId,
+  onSelect,
+  onRelabel,
+  onRemove,
+}: {
+  entries: StoredRun[];
+  activeId: string;
+  onSelect: (id: string) => void;
+  onRelabel: (id: string, label: string) => void;
+  onRemove: (id: string) => void;
+}) {
+  return (
+    <section className="mt-8 rounded-3xl border border-border bg-card/40 p-5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-sm font-bold uppercase tracking-[0.24em] text-zinc-400">
+          Run Library ({entries.length})
+        </h2>
+        <p className="text-xs text-zinc-500">
+          업로드한 런은 브라우저 localStorage에 저장됩니다. 라벨을 클릭해서 메모를 붙여두세요.
+        </p>
+      </div>
+      <ul className="mt-4 grid gap-2 md:grid-cols-2">
+        {entries.map((entry) => {
+          const active = entry.id === activeId;
+          return (
+            <li key={entry.id}>
+              <div
+                className={`flex items-center gap-2 rounded-2xl border px-3 py-2 text-sm transition ${
+                  active
+                    ? "border-amber-400/60 bg-amber-500/10 text-amber-100"
+                    : "border-zinc-800 bg-zinc-950/60 text-zinc-300 hover:border-zinc-600"
+                }`}
+              >
+                <button
+                  type="button"
+                  className="flex-1 truncate text-left"
+                  onClick={() => onSelect(entry.id)}
+                  title={entry.label}
+                >
+                  <span className="block truncate font-medium">{entry.label}</span>
+                  <span className="block truncate text-[11px] text-zinc-500">
+                    {describeRun(entry.run)} · {entry.run.map_point_history.length}막
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  className="text-xs text-zinc-500 transition hover:text-amber-300"
+                  onClick={() => {
+                    const next = window.prompt("라벨 수정", entry.label);
+                    if (next && next.trim() !== "" && next !== entry.label) {
+                      onRelabel(entry.id, next.trim());
+                    }
+                  }}
+                >
+                  라벨
+                </button>
+                {entry.id !== BUILTIN_RUN.id && (
+                  <button
+                    type="button"
+                    className="text-xs text-red-400/80 transition hover:text-red-300"
+                    onClick={() => {
+                      if (window.confirm("이 런을 라이브러리에서 제거할까요?")) {
+                        onRemove(entry.id);
+                      }
+                    }}
+                  >
+                    삭제
+                  </button>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }
 
@@ -503,7 +710,7 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
     <section className="rounded-3xl border border-border bg-card/50 p-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <h2 className="text-2xl font-black text-zinc-50">{act.actLabel}</h2>
             <StatusBadge tone={statusTone}>
               {act.matchedPathCount === 0
@@ -512,9 +719,17 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
                   ? "Exact Replay"
                   : `${act.matchedPathCount}${act.matchedPathCountCapped ? "+" : ""} candidates`}
             </StatusBadge>
+            {act.fallbackUsed && (
+              <StatusBadge tone="amber">Fallback path</StatusBadge>
+            )}
           </div>
           <p className="mt-1 text-sm text-zinc-400">
             {act.actId} · floor {act.baseFloor}-{act.baseFloor + act.history.length - 1}
+            {act.fallbackUsed && (
+              <span className="ml-2 text-xs text-amber-300">
+                · 시드 매칭이 실패해 히스토리 row별 best-guess 노드를 보여주는 중
+              </span>
+            )}
           </p>
         </div>
 
@@ -640,11 +855,12 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
                 height: 16 * MAP_GAME_SCALE,
                 transform: `translate(-50%, -50%) rotate(${tick.rotation}rad) scale(${visited ? 1.2 : 1
                   })`,
-                filter: "drop-shadow(0 0 0.8px rgba(0, 0, 0, 0.3))",
+                filter:
+                  "drop-shadow(0 0 1.4px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 0.6px rgba(0, 0, 0, 0.5))",
                 ...maskStyle(
                   effectSrc("map_dot"),
                   visited ? meta.traveledColor : meta.untraveledColor,
-                  visited ? 1 : 0.96,
+                  visited ? 1 : 1,
                 ),
               }}
             />
@@ -848,15 +1064,9 @@ function gamePathEndpoint(
   act: ReplayActAnalysis,
 ): MapPoint {
   const control = gameControlBox(node, act);
-  if (node.type === "boss" || node.type === "ancient") {
-    return {
-      left: control.left + control.width / 2,
-      top: control.top + control.height / 2,
-    };
-  }
   return {
-    left: control.left,
-    top: control.top,
+    left: control.left + control.width / 2,
+    top: control.top + control.height / 2,
   };
 }
 
@@ -867,10 +1077,13 @@ function buildMapLayout(act: ReplayActAnalysis): MapLayout {
   }));
   const minTop = Math.min(...boxes.map(({ box }) => box.top));
   const maxBottom = Math.max(...boxes.map(({ box }) => box.top + box.height));
+  const minLeft = Math.min(...boxes.map(({ box }) => box.left));
+  const maxRight = Math.max(...boxes.map(({ box }) => box.left + box.width));
+  const contentMidlineX = (minLeft + maxRight) / 2;
   const width = Math.ceil(MAP_GAME_CANVAS_WIDTH * MAP_GAME_SCALE);
 
   const toBoardPoint = (point: MapPoint): MapPoint => ({
-    left: width / 2 + point.left * MAP_GAME_SCALE,
+    left: width / 2 + (point.left - contentMidlineX) * MAP_GAME_SCALE,
     top: MAP_BOARD_PADDING_Y + (point.top - minTop) * MAP_GAME_SCALE,
   });
 
