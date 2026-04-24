@@ -82,10 +82,33 @@ function replaceKeywordAtCursor(
   return true;
 }
 
+function unwrapMalformedKeywords(editor: Editor): boolean {
+  const unwraps: Array<{ from: number; to: number; text: string }> = [];
+  editor.state.doc.descendants((node, pos) => {
+    if (node.type.name !== "custom-keyword") return;
+    const text = (node.attrs.text as string) ?? "";
+    if (!text.includes("{") && !text.includes("}")) return;
+    unwraps.push({ from: pos, to: pos + node.nodeSize, text });
+  });
+  if (!unwraps.length) return false;
+
+  const tr = editor.state.tr;
+  for (let i = unwraps.length - 1; i >= 0; i--) {
+    const { from, to, text } = unwraps[i];
+    tr.replaceWith(from, to, editor.schema.text(text));
+  }
+  editor.view.dispatch(tr);
+  return true;
+}
+
 function replaceKeywordsInEditor(
   editor: Editor,
   resolveKeyword: (keyword: string) => KeywordResolution,
 ): boolean {
+  if (unwrapMalformedKeywords(editor)) {
+    return true;
+  }
+
   if (replaceKeywordAtCursor(editor, resolveKeyword)) {
     return true;
   }
