@@ -11752,7 +11752,7 @@
   {
     "id": "NEOWS_FURY",
     "name": "Neow's Fury",
-    "description": "Deal 10 damage.\nPut 2 random cards from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold].",
+    "description": "Deal 10 damage.\nPut up to 2 cards from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold].",
     "description_raw": "Deal {Damage:diff()} damage.\nPut up to {Cards:diff()} {Cards:plural:card|cards} from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -19795,7 +19795,7 @@
     "upgrade": {
       "heal": "+3"
     },
-    "image_url": "/static/images/cards/beta/not_yet.png",
+    "image_url": "/static/images/cards/not_yet.png",
     "beta_image_url": "/static/images/cards/beta/not_yet.png"
   }
 ]

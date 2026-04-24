@@ -11755,8 +11755,8 @@
   {
     "id": "NEOWS_FURY",
     "name": "니오우의 격분",
-    "description": "피해를 10 줍니다.\n[gold]버린 카드 더미[/gold]에서 무작위 카드를 1장 [gold]손[/gold]으로 가져옵니다.",
-    "description_raw": "피해를 {Damage:diff()} 줍니다.\n[gold]버린 카드 더미[/gold]에서\n무작위 카드를 {Cards:choose(1):1장|{:diff()}장}\n[gold]손[/gold]으로 가져옵니다.",
+    "description": "피해를 10 줍니다.\n[gold]버린 카드 더미[/gold]에서 최대 2장을 [gold]손[/gold]으로 가져옵니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n[gold]버린 카드 더미[/gold]에서 최대 {Cards:diff()}장을 [gold]손[/gold]으로 가져옵니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -19803,7 +19803,7 @@
     "upgrade": {
       "heal": "+3"
     },
-    "image_url": "/static/images/cards/beta/not_yet.png",
+    "image_url": "/static/images/cards/not_yet.png",
     "beta_image_url": "/static/images/cards/beta/not_yet.png"
   }
 ]
