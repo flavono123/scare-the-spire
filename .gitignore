@@ -51,3 +51,4 @@ data/sts2-old/
 
 # slack emoji export
 /slack-emoji/
+.claude/scheduled_tasks.lock
