@@ -6,6 +6,7 @@ import {
   type ReactNode,
   useEffect,
   useId,
+  useRef,
   useState,
   useTransition,
 } from "react";
@@ -748,6 +749,20 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
   const [playing, setPlaying] = useState(false);
   const currentEntry = act.history[Math.max(0, step - 1)] ?? null;
   const currentType = act.historyTypes[Math.max(0, step - 1)] ?? "monster";
+  const mapBoxRef = useRef<HTMLDivElement>(null);
+  const [mapBoxHeight, setMapBoxHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    const node = mapBoxRef.current;
+    if (!node || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setMapBoxHeight(entry.contentRect.height);
+      }
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!playing) return;
@@ -819,8 +834,11 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
 
       <RunTopBar run={run} act={act} step={step} />
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
-        <div className="rounded-3xl border border-zinc-800 bg-zinc-950/70 p-4">
+      <div className="mt-5 grid items-stretch gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+        <div
+          ref={mapBoxRef}
+          className="rounded-3xl border border-zinc-800 bg-zinc-950/70 p-4"
+        >
           <div className="mb-3 flex items-center justify-between gap-3">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
@@ -845,7 +863,10 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
           <SeededMapView act={act} step={step} />
         </div>
 
-        <div className="space-y-3">
+        <div
+          className="flex min-h-0 flex-col gap-3 xl:h-full"
+          style={mapBoxHeight ? { maxHeight: mapBoxHeight } : undefined}
+        >
           <div className="rounded-3xl border border-zinc-800 bg-zinc-950/40 p-4">
             <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Current Step</p>
             <div className="mt-3 flex items-center gap-4">
@@ -870,7 +891,7 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
             </div>
           </div>
 
-          <ol className="max-h-[42rem] space-y-2 overflow-auto pr-1">
+          <ol className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
             {act.history.map((entry, index) => {
               const floor = act.baseFloor + index;
               const stepType = act.historyTypes[index];
@@ -878,15 +899,20 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
               const current = index + 1 === step;
 
               return (
-                <li
-                  key={`${act.actId}-${floor}`}
-                  className={`rounded-2xl border px-3 py-2 transition ${
-                    current
-                      ? "border-amber-300/60 bg-amber-500/10"
-                      : "border-zinc-800 bg-zinc-950/30"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
+                <li key={`${act.actId}-${floor}`}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPlaying(false);
+                      setStep(index + 1);
+                    }}
+                    className={`flex w-full items-center gap-3 rounded-2xl border px-3 py-2 text-left transition ${
+                      current
+                        ? "border-amber-300/60 bg-amber-500/10"
+                        : "border-zinc-800 bg-zinc-950/30 hover:border-zinc-600 hover:bg-zinc-900/50"
+                    }`}
+                    aria-current={current ? "step" : undefined}
+                  >
                     <StepAsset
                       entry={entry}
                       type={stepType}
@@ -906,7 +932,7 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
                         </span>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 </li>
               );
             })}
