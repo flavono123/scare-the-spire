@@ -1495,7 +1495,6 @@ function MapNodeAsset({
     return (
       <AncientMapAsset
         actId={act.actId}
-        state={state}
         size={size}
         src={ancientAsset.node}
         outlineSrc={ancientAsset.outline}
@@ -1511,7 +1510,6 @@ function MapNodeAsset({
     return (
       <BossMapAsset
         actId={act.actId}
-        state={state}
         size={size}
         src={bossAsset.node}
         outlineSrc={bossAsset.outline}
@@ -1605,7 +1603,6 @@ function StepAsset({
     return (
       <AncientMapAsset
         actId={act.actId}
-        state={state}
         size={squareSize}
         src={ancientAsset.node}
         outlineSrc={ancientAsset.outline}
@@ -1621,7 +1618,6 @@ function StepAsset({
     return (
       <BossMapAsset
         actId={act.actId}
-        state={state}
         size={squareSize}
         src={bossAsset.node}
         outlineSrc={bossAsset.outline}
@@ -1653,14 +1649,12 @@ function StepAsset({
 
 function AncientMapAsset({
   actId,
-  state,
   size,
   src,
   outlineSrc,
   alt,
 }: {
   actId: string;
-  state: "inactive" | "active" | "current";
   size: RenderSize;
   src: string;
   outlineSrc: string;
@@ -1670,7 +1664,6 @@ function AncientMapAsset({
 
   return (
     <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
-      <MapSelectionRing state={state} inset="-12%" />
       <div className="absolute inset-0" style={maskStyle(outlineSrc, meta.bgColor, 1)}>
         <span className="sr-only">{alt}</span>
       </div>
@@ -1684,14 +1677,12 @@ function AncientMapAsset({
 
 function BossMapAsset({
   actId,
-  state,
   size,
   src,
   outlineSrc,
   alt,
 }: {
   actId: string;
-  state: "inactive" | "active" | "current";
   size: RenderSize;
   src: string;
   outlineSrc: string;
@@ -1701,7 +1692,6 @@ function BossMapAsset({
 
   return (
     <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
-      <MapSelectionRing state={state} inset="-12%" />
       <div className="absolute inset-0" style={maskStyle(outlineSrc, meta.bgColor, 1)}>
         <span className="sr-only">{alt}</span>
       </div>

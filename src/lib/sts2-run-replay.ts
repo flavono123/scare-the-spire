@@ -503,46 +503,64 @@ const ACT_CONFIGS: Record<string, ReplayActConfig> = {
   "ACT.OVERGROWTH": {
     label: "과성장",
     numRooms: 15,
-    getCounts: (rng, ascension) => ({
-      numElites: Math.round(5 * (ascension >= 1 ? 1.6 : 1)),
-      numShops: 3,
-      numUnknowns: standardRandomUnknownCount(rng),
-      numRests: rng.nextGaussianInt(7, 1, 6, 7),
-      pointTypesThatIgnoreRules: new Set(),
-    }),
+    getCounts: (rng, ascension) => {
+      // Must consume RNG in this exact order to match StandardActMap.cs — rest first,
+      // then unknown (Overgrowth.cs:127-129).
+      const numRests = rng.nextGaussianInt(7, 1, 6, 7);
+      const numUnknowns = standardRandomUnknownCount(rng);
+      return {
+        numElites: Math.round(5 * (ascension >= 1 ? 1.6 : 1)),
+        numShops: 3,
+        numUnknowns,
+        numRests,
+        pointTypesThatIgnoreRules: new Set(),
+      };
+    },
   },
   "ACT.UNDERDOCKS": {
     label: "지하 선착장",
     numRooms: 15,
-    getCounts: (rng, ascension) => ({
-      numElites: Math.round(5 * (ascension >= 1 ? 1.6 : 1)),
-      numShops: 3,
-      numUnknowns: standardRandomUnknownCount(rng),
-      numRests: rng.nextGaussianInt(7, 1, 6, 7),
-      pointTypesThatIgnoreRules: new Set(),
-    }),
+    getCounts: (rng, ascension) => {
+      const numRests = rng.nextGaussianInt(7, 1, 6, 7);
+      const numUnknowns = standardRandomUnknownCount(rng);
+      return {
+        numElites: Math.round(5 * (ascension >= 1 ? 1.6 : 1)),
+        numShops: 3,
+        numUnknowns,
+        numRests,
+        pointTypesThatIgnoreRules: new Set(),
+      };
+    },
   },
   "ACT.HIVE": {
     label: "군락",
     numRooms: 14,
-    getCounts: (rng, ascension) => ({
-      numElites: Math.round(5 * (ascension >= 1 ? 1.6 : 1)),
-      numShops: 3,
-      numUnknowns: standardRandomUnknownCount(rng) - 1,
-      numRests: rng.nextGaussianInt(6, 1, 6, 7),
-      pointTypesThatIgnoreRules: new Set(),
-    }),
+    getCounts: (rng, ascension) => {
+      const numRests = rng.nextGaussianInt(6, 1, 6, 7);
+      const numUnknowns = standardRandomUnknownCount(rng) - 1;
+      return {
+        numElites: Math.round(5 * (ascension >= 1 ? 1.6 : 1)),
+        numShops: 3,
+        numUnknowns,
+        numRests,
+        pointTypesThatIgnoreRules: new Set(),
+      };
+    },
   },
   "ACT.GLORY": {
     label: "영광",
     numRooms: 13,
-    getCounts: (rng, ascension) => ({
-      numElites: Math.round(5 * (ascension >= 1 ? 1.6 : 1)),
-      numShops: 3,
-      numUnknowns: standardRandomUnknownCount(rng) - 1,
-      numRests: rng.nextIntRange(5, 7),
-      pointTypesThatIgnoreRules: new Set(),
-    }),
+    getCounts: (rng, ascension) => {
+      const numRests = rng.nextIntRange(5, 7);
+      const numUnknowns = standardRandomUnknownCount(rng) - 1;
+      return {
+        numElites: Math.round(5 * (ascension >= 1 ? 1.6 : 1)),
+        numShops: 3,
+        numUnknowns,
+        numRests,
+        pointTypesThatIgnoreRules: new Set(),
+      };
+    },
   },
 };
 
@@ -984,12 +1002,14 @@ function pruneAndRepair(map: GeneratedActMap) {
 }
 
 function repairPrunedPointTypes(map: GeneratedActMap): boolean {
-  let changed = false;
-  changed ||= repairPointType(map, "shop", map.pointTypeCounts.numShops);
-  changed ||= repairPointType(map, "elite", map.pointTypeCounts.numElites);
-  changed ||= repairPointType(map, "rest_site", map.pointTypeCounts.numRests);
-  changed ||= repairPointType(map, "unknown", map.pointTypeCounts.numUnknowns);
-  return changed;
+  // Must NOT short-circuit — every type needs its RNG shuffle, even if earlier
+  // ones changed the map. C# uses `|=` (non-short-circuiting) in
+  // MapPathPruning.cs:27-31.
+  const shopChanged = repairPointType(map, "shop", map.pointTypeCounts.numShops);
+  const eliteChanged = repairPointType(map, "elite", map.pointTypeCounts.numElites);
+  const restChanged = repairPointType(map, "rest_site", map.pointTypeCounts.numRests);
+  const unknownChanged = repairPointType(map, "unknown", map.pointTypeCounts.numUnknowns);
+  return shopChanged || eliteChanged || restChanged || unknownChanged;
 }
 
 function repairPointType(map: GeneratedActMap, type: ReplayMapPointType, targetCount: number): boolean {
@@ -1161,8 +1181,11 @@ function pruneSegment(map: GeneratedActMap, segment: MapNode[]): boolean {
       return false;
     }
 
+    // C# MapPathPruning.cs:288 uses segment.Contains(c) — the WHOLE segment,
+    // not just the tail — when filtering children for the "outside single
+    // parent" check.
     const hasOutsideSingleParent = Array.from(point.children)
-      .filter((child) => !remaining.includes(child))
+      .filter((child) => !segment.includes(child))
       .some((child) => child.parents.size === 1);
     if (!hasOutsideSingleParent) {
       removePoint(map, point);
