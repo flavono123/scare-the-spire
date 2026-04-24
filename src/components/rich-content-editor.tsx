@@ -18,8 +18,25 @@ import { tiptapToBlocks, blocksToPlainText, matchEntities } from "@/lib/chemical
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import type { PostBlock } from "@/lib/chemical-types";
 
-const KEYWORD_RE_SOURCE = /(\S+)\{([^{}\n]+)\}/.source;
-const KEYWORD_AT_CURSOR_RE = /(\S+)\{([^{}\n]+)\}$/;
+// Inner body must start AND end with non-whitespace — typing `{ foo }` (with
+// padding spaces) keeps the keyword in a pending, plain-text state so the
+// author can edit/disambiguate. Removing the padding triggers activation.
+const KEYWORD_RE_SOURCE = /(\S+)\{(\S(?:[^{}\n]*\S)?)\}/.source;
+const KEYWORD_AT_CURSOR_RE = /(\S+)\{(\S(?:[^{}\n]*\S)?)\}$/;
+
+// When the same display name collides across entity types (e.g. 전투의 북소리
+// exists as both card and power), append `:<type>` inside the braces to pick
+// one deterministically — e.g. `전북{전투의 북소리:card}`.
+const TYPE_HINT_RE = /^(.+):(card|power|relic|potion|enchantment|affliction|monster|event)$/;
+const TYPE_FALLBACK_PRIORITY = [
+  "card", "relic", "power", "potion", "enchantment", "affliction", "monster", "event",
+] as const;
+
+function parseTypeHint(raw: string): { bare: string; hinted?: EntityType } {
+  const m = raw.match(TYPE_HINT_RE);
+  if (!m) return { bare: raw };
+  return { bare: sanitizeKeywordPart(m[1] ?? ""), hinted: m[2] as EntityType };
+}
 
 function cleanTooltipText(text: string): string {
   return text
@@ -224,14 +241,17 @@ export function RichContentEditor({
   const suggestionOpenRef = useRef(false);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
   const keywordEntityMap = useMemo(() => {
-    const map = new Map<string, { id: string; type: EntityType }>();
+    const map = new Map<string, Array<{ id: string; type: EntityType }>>();
     for (const entity of entities) {
       const candidates = [entity.nameKo, entity.nameEn].filter(Boolean) as string[];
       for (const name of candidates) {
-        const normalized = normalizeKeywordKey(name);
-        const compact = compactKeywordKey(name);
-        map.set(normalized, { id: entity.id, type: entity.type });
-        map.set(compact, { id: entity.id, type: entity.type });
+        for (const key of [normalizeKeywordKey(name), compactKeywordKey(name)]) {
+          const bucket = map.get(key) ?? [];
+          if (!bucket.some((c) => c.id === entity.id && c.type === entity.type)) {
+            bucket.push({ id: entity.id, type: entity.type });
+          }
+          map.set(key, bucket);
+        }
       }
     }
     return map;
@@ -268,15 +288,23 @@ export function RichContentEditor({
 
   const resolveKeyword = useCallback((keyword: string): KeywordResolution => {
     const cleanKeyword = sanitizeKeywordPart(keyword);
-    const normalized = normalizeKeywordKey(cleanKeyword);
-    const compact = compactKeywordKey(cleanKeyword);
-    const entity = keywordEntityMap.get(normalized) ?? keywordEntityMap.get(compact);
+    const { bare, hinted } = parseTypeHint(cleanKeyword);
+    const normalized = normalizeKeywordKey(bare);
+    const compact = compactKeywordKey(bare);
+    const candidates = keywordEntityMap.get(normalized) ?? keywordEntityMap.get(compact) ?? [];
+    const entity = hinted
+      ? candidates.find((c) => c.type === hinted)
+      : [...candidates].sort(
+          (a, b) =>
+            TYPE_FALLBACK_PRIORITY.indexOf(a.type as (typeof TYPE_FALLBACK_PRIORITY)[number])
+            - TYPE_FALLBACK_PRIORITY.indexOf(b.type as (typeof TYPE_FALLBACK_PRIORITY)[number]),
+        )[0];
     const description =
       keywordDescriptionMap.get(normalized)
       ?? keywordDescriptionMap.get(compact)
-      ?? cleanKeyword;
+      ?? bare;
     return {
-      keyword: cleanKeyword,
+      keyword: bare,
       description,
       entityId: entity?.id,
       entityType: entity?.type,
@@ -518,8 +546,8 @@ export function RichContentEditor({
             키워드 만들기 예) 크크루빙봉{"{"}
             <span className="spire-gold">빙봉</span>
             {"}"}
-            {" → "}
-            <span className="spire-gold">크크루빙봉</span>
+            {" · 같은 이름이면 "}
+            <span className="spire-gold">{"{빙봉:card}"}</span>
           </span>
         )}
         <button
