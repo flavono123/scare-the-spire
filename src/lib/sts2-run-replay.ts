@@ -291,13 +291,11 @@ class GeneratedActMap {
     if (variant === "golden_path") {
       buildGoldenPathGrid(this);
     } else if (variant === "spoils") {
-      this.generateMap();
-      this.assignPointTypes();
+      // Spoils ports MegaCrit.Sts2.Core.Map.SpoilsActMap (v0.104). No
+      // centerGrid/spreadAdjacent/straighten — that's Standard-only.
+      buildSpoilsHourglassGrid(this);
+      this.assignSpoilsPointTypes();
       pruneAndRepair(this);
-      centerGrid(this.grid);
-      spreadAdjacentMapPoints(this.grid);
-      straightenPaths(this.grid);
-      convergeAtTreasureRow(this);
     } else {
       this.generateMap();
       this.assignPointTypes();
@@ -496,6 +494,40 @@ class GeneratedActMap {
     for (const point of this.getPointsInRow(row)) {
       callback(point);
     }
+  }
+
+  assignSpoilsPointTypes() {
+    // Mirrors MegaCrit.Sts2.Core.Map.SpoilsActMap.AssignPointTypes.
+    // Treasure row is already placed by buildSpoilsHourglassGrid, so don't
+    // override it. Row 1 here is "Monster if Unassigned" (no canBeModified
+    // flip), unlike Standard which locks row 1 to Monster unconditionally.
+    this.forEachInRow(this.rowCount - 1, (point) => {
+      point.type = "rest_site";
+      point.canBeModified = false;
+    });
+
+    this.forEachInRow(1, (point) => {
+      if (point.type === "unassigned") {
+        point.type = "monster";
+      }
+    });
+
+    const queue: ReplayMapPointType[] = [];
+    for (let i = 0; i < this.pointTypeCounts.numRests; i++) queue.push("rest_site");
+    for (let i = 0; i < this.pointTypeCounts.numShops; i++) queue.push("shop");
+    for (let i = 0; i < this.pointTypeCounts.numElites; i++) queue.push("elite");
+    for (let i = 0; i < this.pointTypeCounts.numUnknowns; i++) queue.push("unknown");
+
+    this.assignRemainingTypes(queue);
+
+    for (const point of this.getAllMapPoints()) {
+      if (point.type === "unassigned") {
+        point.type = "monster";
+      }
+    }
+
+    this.start.type = "ancient";
+    this.boss.type = "boss";
   }
 }
 
@@ -873,32 +905,188 @@ function buildGoldenPathGrid(map: GeneratedActMap) {
   if (map.secondBoss) map.boss.addChild(map.secondBoss);
 }
 
-function convergeAtTreasureRow(map: GeneratedActMap) {
-  // Approximate Spoils hourglass by collapsing treasure row onto col=3 treasure node.
+function buildSpoilsHourglassGrid(map: GeneratedActMap) {
+  // Ports MegaCrit.Sts2.Core.Map.SpoilsActMap.GenerateHourglassMap (v0.104).
+  // Unlike Standard, Spoils uses hourglass-specific GenerateNextCoord that
+  // funnels paths toward the center treasure column as they approach
+  // _treasureRow, then fans back out.
   const treasureRow = map.rowCount - 7;
-  if (treasureRow <= 0 || treasureRow >= map.rowCount) return;
-  const midCol = Math.floor(MAP_COLUMNS / 2);
-  const rowPoints = map.getPointsInRow(treasureRow);
-  let treasureNode = map.grid[midCol][treasureRow];
-  if (!treasureNode) {
-    treasureNode = new MapNode(midCol, treasureRow, "treasure");
-    map.grid[midCol][treasureRow] = treasureNode;
+  if (treasureRow <= 0 || treasureRow >= map.rowCount) {
+    throw new Error("Treasure row is out of bounds for SpoilsActMap");
   }
+  const midCol = Math.floor(MAP_COLUMNS / 2);
+
+  for (let i = 0; i < MAP_COLUMNS; i++) {
+    let startPoint = map.getOrCreatePoint(map.rng.nextIntRange(0, MAP_COLUMNS), 1);
+    if (i === 1) {
+      while (map.startMapPoints.has(startPoint)) {
+        startPoint = map.getOrCreatePoint(map.rng.nextIntRange(0, MAP_COLUMNS), 1);
+      }
+    }
+    map.startMapPoints.add(startPoint);
+    spoilsPathGenerate(map, startPoint, treasureRow);
+  }
+
+  const treasureNode = map.getOrCreatePoint(midCol, treasureRow);
   treasureNode.type = "treasure";
   treasureNode.canBeModified = false;
-  for (const point of rowPoints) {
-    if (point === treasureNode) continue;
-    // Redirect: its parents -> treasure, its children <- treasure
-    for (const parent of Array.from(point.parents)) {
-      parent.removeChild(point);
-      if (parent !== treasureNode) parent.addChild(treasureNode);
+
+  for (const stray of map.getPointsInRow(treasureRow).slice()) {
+    if (stray !== treasureNode) {
+      redirectToTreasure(map, stray, treasureNode);
     }
-    for (const child of Array.from(point.children)) {
-      point.removeChild(child);
-      if (child !== treasureNode) treasureNode.addChild(child);
-    }
-    map.grid[point.coord.col][point.coord.row] = null;
   }
+
+  // ConnectRowToBoss
+  for (let col = 0; col < MAP_COLUMNS; col++) {
+    const point = map.grid[col][map.rowCount - 1];
+    if (point && !point.children.has(map.boss)) {
+      point.addChild(map.boss);
+    }
+  }
+
+  // ConnectRowToStart
+  for (let col = 0; col < MAP_COLUMNS; col++) {
+    const point = map.grid[col][1];
+    if (point && !map.start.children.has(point)) {
+      map.start.addChild(point);
+    }
+  }
+}
+
+function spoilsPathGenerate(map: GeneratedActMap, start: MapNode, treasureRow: number) {
+  let point = start;
+  while (point.coord.row < map.rowCount - 1) {
+    const next = spoilsGenerateNextCoord(map, point, treasureRow);
+    const child = map.getOrCreatePoint(next.col, next.row);
+    point.addChild(child);
+    point = child;
+  }
+}
+
+function spoilsGenerateNextCoord(
+  map: GeneratedActMap,
+  current: MapNode,
+  treasureRow: number,
+): MapCoord {
+  const row = current.coord.row + 1;
+  const { minCol, maxCol } = spoilsAllowedColumnsForRow(map, row, treasureRow);
+  const centerCol = Math.floor(MAP_COLUMNS / 2);
+  const distanceToTreasure = treasureRow - current.coord.row;
+
+  let directions: number[];
+  if (distanceToTreasure > 3) {
+    directions = stableShuffle([-1, 0, 1], compareNumbers, map.rng);
+  } else if (distanceToTreasure > 0) {
+    directions = spoilsBuildCenteredPriorityList(current.coord.col, centerCol);
+  } else {
+    directions = stableShuffle([-1, 0, 1], compareNumbers, map.rng);
+  }
+
+  for (const direction of directions) {
+    const nextColumn = spoilsGetNextColumn(current.coord.col, direction);
+    if (
+      nextColumn < minCol ||
+      nextColumn > maxCol ||
+      spoilsHasInvalidCrossover(map, current, nextColumn)
+    ) {
+      continue;
+    }
+    const point = map.getPoint({ col: nextColumn, row });
+    const pointOk =
+      point === null || point.parents.has(current) || point.parents.size < 3;
+    const currentOk =
+      current === map.start ||
+      current.children.size < 3 ||
+      (point !== null && current.children.has(point));
+    if (pointOk && currentOk) {
+      if (Math.abs(nextColumn - current.coord.col) > 1) {
+        throw new Error(
+          `Invalid step from (${current.coord.col}, ${current.coord.row}) to column ${nextColumn}`,
+        );
+      }
+      return { col: nextColumn, row };
+    }
+  }
+
+  // Fallback — bias toward center within the allowed band, clamped to one step.
+  let fallback = Math.max(minCol, Math.min(maxCol, centerCol));
+  if (Math.abs(fallback - current.coord.col) > 1) {
+    const step = Math.sign(fallback - current.coord.col);
+    fallback = Math.max(minCol, Math.min(maxCol, current.coord.col + step));
+  }
+  if (spoilsHasInvalidCrossover(map, current, fallback)) {
+    fallback = Math.max(minCol, Math.min(maxCol, current.coord.col));
+  }
+  if (Math.abs(fallback - current.coord.col) > 1) {
+    throw new Error(
+      `Fallback step from (${current.coord.col}, ${current.coord.row}) to column ${fallback} exceeds adjacency`,
+    );
+  }
+  return { col: fallback, row };
+}
+
+function spoilsAllowedColumnsForRow(
+  map: GeneratedActMap,
+  row: number,
+  treasureRow: number,
+): { minCol: number; maxCol: number } {
+  const center = Math.floor(MAP_COLUMNS / 2);
+  const distanceToTreasure = Math.abs(row - treasureRow);
+  const distanceToTop = map.rowCount - 1 - row;
+  const topLimit = Math.min(center, Math.max(0, distanceToTop) + 1);
+  const band = Math.min(center, Math.min(distanceToTreasure, topLimit));
+  return {
+    minCol: Math.max(0, center - band),
+    maxCol: Math.min(MAP_COLUMNS - 1, center + band),
+  };
+}
+
+function spoilsBuildCenteredPriorityList(currentCol: number, centerCol: number): number[] {
+  const list: number[] = [];
+  const toward = Math.sign(centerCol - currentCol);
+  if (toward !== 0) list.push(toward);
+  list.push(0);
+  const away = -toward;
+  if (toward !== 0) list.push(away);
+  if (!list.includes(-1)) list.push(-1);
+  if (!list.includes(1)) list.push(1);
+  return list;
+}
+
+function spoilsGetNextColumn(currentCol: number, direction: number): number {
+  if (direction === -1) return Math.max(0, currentCol - 1);
+  if (direction === 1) return Math.min(MAP_COLUMNS - 1, currentCol + 1);
+  return currentCol;
+}
+
+function spoilsHasInvalidCrossover(
+  map: GeneratedActMap,
+  current: MapNode,
+  targetCol: number,
+): boolean {
+  const delta = targetCol - current.coord.col;
+  if (delta === 0) return false;
+  const sibling = map.grid[targetCol][current.coord.row];
+  if (!sibling) return false;
+  for (const child of sibling.children) {
+    if (child.coord.col - sibling.coord.col === -delta) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function redirectToTreasure(map: GeneratedActMap, stray: MapNode, treasure: MapNode) {
+  for (const parent of Array.from(stray.parents)) {
+    parent.removeChild(stray);
+    parent.addChild(treasure);
+  }
+  for (const child of Array.from(stray.children)) {
+    stray.removeChild(child);
+    treasure.addChild(child);
+  }
+  map.grid[stray.coord.col][stray.coord.row] = null;
 }
 
 function findMatchingPaths(map: GeneratedActMap, historyTypes: ReplayMapPointType[]) {
