@@ -308,7 +308,6 @@ const ANCIENT_CONTROL_SIZE = 208;
 const BOSS_CONTROL_WIDTH = 374;
 const BOSS_CONTROL_HEIGHT = 306;
 const MAP_SELECTION_RING_COLOR = "#241F1A";
-const MAP_BOSS_UNTRAVELED_COLOR = "rgba(125, 106, 85, 0.85)";
 const MAP_ICON_NATIVE_SIZES: Record<string, { width: number; height: number }> = {
   map_monster: { width: 66, height: 68 },
   map_elite: { width: 89, height: 70 },
@@ -1642,7 +1641,6 @@ function AncientMapAsset({
   alt: string;
 }) {
   const meta = actMapMeta(actId);
-  const iconColor = state === "inactive" ? MAP_BOSS_UNTRAVELED_COLOR : MAP_SELECTION_RING_COLOR;
 
   return (
     <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
@@ -1653,7 +1651,7 @@ function AncientMapAsset({
       <div className="absolute inset-0" style={{ opacity: 0.18 }}>
         <AssetThumb src={src} fallbackSrc={null} alt={alt} className="object-contain" />
       </div>
-      <div className="absolute inset-0" style={maskStyle(src, iconColor, state === "inactive" ? 0.9 : 1)} />
+      <div className="absolute inset-0" style={maskStyle(src, MAP_SELECTION_RING_COLOR, 1)} />
     </div>
   );
 }
@@ -1674,7 +1672,6 @@ function BossMapAsset({
   alt: string;
 }) {
   const meta = actMapMeta(actId);
-  const iconColor = state === "inactive" ? MAP_BOSS_UNTRAVELED_COLOR : MAP_SELECTION_RING_COLOR;
 
   return (
     <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
@@ -1685,7 +1682,7 @@ function BossMapAsset({
       <div className="absolute inset-0" style={{ opacity: 0.18 }}>
         <AssetThumb src={src} fallbackSrc={null} alt={alt} className="object-contain" />
       </div>
-      <div className="absolute inset-0" style={maskStyle(src, iconColor, state === "inactive" ? 0.9 : 1)} />
+      <div className="absolute inset-0" style={maskStyle(src, MAP_SELECTION_RING_COLOR, 1)} />
     </div>
   );
 }
