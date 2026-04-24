@@ -2240,9 +2240,9 @@
     "id": "OWL_MAGISTRATE",
     "name": "올빼미 판관",
     "type": "Normal",
-    "min_hp": 234,
+    "min_hp": 231,
     "max_hp": null,
-    "min_hp_ascension": 243,
+    "min_hp_ascension": 247,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -2523,9 +2523,9 @@
     "id": "SCROLL_OF_BITING",
     "name": "물어뜯는 두루마리",
     "type": "Normal",
-    "min_hp": 31,
-    "max_hp": 38,
-    "min_hp_ascension": 32,
+    "min_hp": 30,
+    "max_hp": 37,
+    "min_hp_ascension": 33,
     "max_hp_ascension": 39,
     "moves": [
       {
@@ -2702,9 +2702,9 @@
     "id": "SLIMED_BERSERKER",
     "name": "슬라임 광전사",
     "type": "Normal",
-    "min_hp": 266,
+    "min_hp": 261,
     "max_hp": null,
-    "min_hp_ascension": 276,
+    "min_hp_ascension": 281,
     "max_hp_ascension": null,
     "moves": [
       {
