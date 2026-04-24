@@ -202,8 +202,8 @@
   {
     "id": "TEZCATARAS_EMBER",
     "name": "테즈카타라의 잉걸불",
-    "description": "비용이 [blue]0[/blue]이 되고 [gold]영구[/gold]를 얻습니다.",
-    "description_raw": "비용이 [blue]0[/blue]이 되고 [gold]영구[/gold]를 얻습니다.",
+    "description": "비용이 [blue]0[/blue]이 되고, 피해량이 [blue]X[/blue] 증가하고, [gold]영구[/gold]를 얻습니다.",
+    "description_raw": "비용이 [blue]0[/blue]이 되고, 피해량이 [blue]{Damage}[/blue] 증가하고, [gold]영구[/gold]를 얻습니다.",
     "extra_card_text": null,
     "card_type": null,
     "is_stackable": false,

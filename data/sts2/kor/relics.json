@@ -282,7 +282,7 @@
   {
     "id": "BOOMING_CONCH",
     "name": "콰광 소라",
-    "description": "[gold]엘리트[/gold] 전투 시작 시, 카드를 추가로 [blue]{Cards}[/blue]장 뽑습니다.",
+    "description": "[gold]엘리트[/gold] 전투 시작 시, 카드를 추가로 [blue]1[/blue]장 뽑고 [E]를 얻습니다.",
     "description_raw": "[gold]엘리트[/gold] 전투 시작 시, 카드를 추가로 [blue]{Cards}[/blue]장 뽑고 {Energy:energyIcons()}를 얻습니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
@@ -322,7 +322,7 @@
   {
     "id": "BRILLIANT_SCARF",
     "name": "멋진 스카프",
-    "description": "매 턴마다 [blue]다섯 번째[/blue]로 내는 카드를 비용 없이 사용합니다.",
+    "description": "매 턴마다 손에서 [blue]다섯 번째[/blue]로 내는 카드를 비용 없이 사용합니다.",
     "description_raw": "매 턴마다 손에서 [blue]다섯 번째[/blue]로 내는 카드를 비용 없이 사용합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
