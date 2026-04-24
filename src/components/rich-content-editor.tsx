@@ -10,6 +10,7 @@ import CharacterCount from "@tiptap/extension-character-count";
 import type { SuggestionProps, SuggestionKeyDownProps } from "@tiptap/suggestion";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { EntityMention, entitySuggestionBase } from "@/components/chemicalx/entity-mention";
+import { BraceKeywordSuggestion } from "@/components/chemicalx/brace-keyword-suggestion";
 import { CustomKeyword } from "@/components/chemicalx/custom-keyword";
 import { MentionList, type MentionListRef } from "@/components/chemicalx/mention-list";
 import { EntityMapProvider } from "@/components/chemicalx/entity-context";
@@ -20,23 +21,17 @@ import type { PostBlock } from "@/lib/chemical-types";
 
 // Inner body must start AND end with non-whitespace — typing `{ foo }` (with
 // padding spaces) keeps the keyword in a pending, plain-text state so the
-// author can edit/disambiguate. Removing the padding triggers activation.
+// suggestion popup can handle disambiguation. Removing the padding triggers
+// the regex-based activation for unambiguous names.
 const KEYWORD_RE_SOURCE = /(\S+)\{(\S(?:[^{}\n]*\S)?)\}/.source;
 const KEYWORD_AT_CURSOR_RE = /(\S+)\{(\S(?:[^{}\n]*\S)?)\}$/;
 
-// When the same display name collides across entity types (e.g. 전투의 북소리
-// exists as both card and power), append `:<type>` inside the braces to pick
-// one deterministically — e.g. `전북{전투의 북소리:card}`.
-const TYPE_HINT_RE = /^(.+):(card|power|relic|potion|enchantment|affliction|monster|event)$/;
+// When the same display name exists across multiple entity types (e.g.
+// 전투의 북소리 is both a card and a power), the fallback picks by priority.
+// To force a specific choice, use the `{` suggestion popup.
 const TYPE_FALLBACK_PRIORITY = [
   "card", "relic", "power", "potion", "enchantment", "affliction", "monster", "event",
 ] as const;
-
-function parseTypeHint(raw: string): { bare: string; hinted?: EntityType } {
-  const m = raw.match(TYPE_HINT_RE);
-  if (!m) return { bare: raw };
-  return { bare: sanitizeKeywordPart(m[1] ?? ""), hinted: m[2] as EntityType };
-}
 
 function cleanTooltipText(text: string): string {
   return text
@@ -288,23 +283,20 @@ export function RichContentEditor({
 
   const resolveKeyword = useCallback((keyword: string): KeywordResolution => {
     const cleanKeyword = sanitizeKeywordPart(keyword);
-    const { bare, hinted } = parseTypeHint(cleanKeyword);
-    const normalized = normalizeKeywordKey(bare);
-    const compact = compactKeywordKey(bare);
+    const normalized = normalizeKeywordKey(cleanKeyword);
+    const compact = compactKeywordKey(cleanKeyword);
     const candidates = keywordEntityMap.get(normalized) ?? keywordEntityMap.get(compact) ?? [];
-    const entity = hinted
-      ? candidates.find((c) => c.type === hinted)
-      : [...candidates].sort(
-          (a, b) =>
-            TYPE_FALLBACK_PRIORITY.indexOf(a.type as (typeof TYPE_FALLBACK_PRIORITY)[number])
-            - TYPE_FALLBACK_PRIORITY.indexOf(b.type as (typeof TYPE_FALLBACK_PRIORITY)[number]),
-        )[0];
+    const entity = [...candidates].sort(
+      (a, b) =>
+        TYPE_FALLBACK_PRIORITY.indexOf(a.type as (typeof TYPE_FALLBACK_PRIORITY)[number])
+        - TYPE_FALLBACK_PRIORITY.indexOf(b.type as (typeof TYPE_FALLBACK_PRIORITY)[number]),
+    )[0];
     const description =
       keywordDescriptionMap.get(normalized)
       ?? keywordDescriptionMap.get(compact)
-      ?? bare;
+      ?? cleanKeyword;
     return {
-      keyword: bare,
+      keyword: cleanKeyword,
       description,
       entityId: entity?.id,
       entityType: entity?.type,
@@ -442,6 +434,121 @@ export function RichContentEditor({
           },
         },
       }),
+      BraceKeywordSuggestion.configure({
+        suggestion: {
+          char: "\0",
+          allowSpaces: true,
+          items: ({ query }: { query: string }) => matchEntities(query, entities),
+          command: ({ editor: ed, range, props }) => {
+            const keywordNode = ed.schema.nodes["custom-keyword"];
+            if (!keywordNode) return;
+            const item = props as unknown as EntityInfo;
+            const rangeText = ed.state.doc.textBetween(range.from, range.to);
+            const braceIdx = rangeText.indexOf("{");
+            const display = braceIdx > 0 ? rangeText.slice(0, braceIdx) : rangeText;
+            const resolved = resolveKeyword(item.nameKo);
+            ed.chain().focus()
+              .insertContentAt(range, {
+                type: "custom-keyword",
+                attrs: {
+                  text: display,
+                  keyword: item.nameKo,
+                  description: resolved.description,
+                  entityId: item.id,
+                  entityType: item.type,
+                },
+              })
+              .run();
+          },
+          render: () => {
+            let renderer: ReactRenderer<MentionListRef> | null = null;
+            let popup: HTMLDivElement | null = null;
+
+            const buildCommand = (props: SuggestionProps) => (item: EntityInfo) => {
+              props.command({
+                id: item.id,
+                label: item.nameKo,
+                entityType: item.type,
+                type: item.type,
+                nameKo: item.nameKo,
+                nameEn: item.nameEn,
+                color: item.color,
+                imageUrl: item.imageUrl,
+              } as unknown as Record<string, unknown>);
+            };
+
+            return {
+              onStart: (props: SuggestionProps) => {
+                suggestionOpenRef.current = true;
+                renderer = new ReactRenderer(MentionList, {
+                  props: {
+                    items: props.items,
+                    command: buildCommand(props),
+                  },
+                  editor: props.editor,
+                });
+
+                popup = document.createElement("div");
+                popup.style.position = "fixed";
+                popup.style.zIndex = "100";
+                popup.appendChild(renderer.element);
+                document.body.appendChild(popup);
+
+                if (props.clientRect) {
+                  const rect = props.clientRect();
+                  if (rect) {
+                    popup.style.left = `${rect.left}px`;
+                    popup.style.top = `${rect.bottom + 4}px`;
+                  }
+                }
+              },
+
+              onUpdate: (props: SuggestionProps) => {
+                renderer?.updateProps({
+                  items: props.items,
+                  command: buildCommand(props),
+                });
+
+                if (popup && props.clientRect) {
+                  const rect = props.clientRect();
+                  if (rect) {
+                    popup.style.left = `${rect.left}px`;
+                    popup.style.top = `${rect.bottom + 4}px`;
+                  }
+                }
+              },
+
+              onKeyDown: (props: SuggestionKeyDownProps) => {
+                if (props.event.key === "Escape") {
+                  suggestionOpenRef.current = false;
+                  popup?.remove();
+                  renderer?.destroy();
+                  popup = null;
+                  renderer = null;
+                  return true;
+                }
+                // Treat `}` as commit: pick the currently-highlighted item
+                // and prevent the literal `}` from being inserted.
+                if (props.event.key === "}") {
+                  const handled = renderer?.ref?.onKeyDown({
+                    event: new KeyboardEvent("keydown", { key: "Enter" }),
+                  });
+                  return handled ?? false;
+                }
+                return renderer?.ref?.onKeyDown(props) ?? false;
+              },
+
+              onExit: () => {
+                suggestionOpenRef.current = false;
+                popup?.remove();
+                renderer?.destroy();
+                popup = null;
+                renderer = null;
+              },
+            };
+          },
+        },
+      }),
     ],
     onCreate: ({ editor }) => {
       editorRef.current = editor;
@@ -546,8 +653,8 @@ export function RichContentEditor({
             키워드 만들기 예) 크크루빙봉{"{"}
             <span className="spire-gold">빙봉</span>
             {"}"}
-            {" · 같은 이름이면 "}
-            <span className="spire-gold">{"{빙봉:card}"}</span>
+            {" → "}
+            <span className="spire-gold">크크루빙봉</span>
           </span>
         )}
         <button
