@@ -297,7 +297,6 @@ const BOSS_ASSETS: Record<
   },
 };
 const MAP_BOARD_PADDING_Y = 220;
-const MAP_BOARD_PADDING_X = 80;
 const MAP_GAME_SCALE = 0.6;
 const MAP_GAME_VIEWPORT_WIDTH = 1920;
 const MAP_GAME_COLUMNS = 7;
@@ -436,7 +435,9 @@ function describeRun(run: ReplayRun): string {
 
 export function RunReplayPoc() {
   const [storedRuns, setStoredRuns] = useState<StoredRun[]>([BUILTIN_RUN]);
-  const [activeId, setActiveId] = useState<string>(BUILTIN_RUN.id);
+  const [activeId, setActiveId] = useState<string>(
+    () => readActiveRunId() ?? BUILTIN_RUN.id,
+  );
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const inputId = useId();
@@ -449,10 +450,6 @@ export function RunReplayPoc() {
       const presetEntries = presets.length > 0 ? presets : [];
       setStoredRuns([BUILTIN_RUN, ...presetEntries, ...persistedUser]);
     });
-    const activePersisted = readActiveRunId();
-    if (activePersisted) {
-      setActiveId(activePersisted);
-    }
     return () => {
       cancelled = true;
     };

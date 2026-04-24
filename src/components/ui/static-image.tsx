@@ -6,7 +6,7 @@ type StaticImageImport = {
   height?: number;
 };
 
-type StaticImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "alt" | "height" | "loading" | "src" | "width"> & {
+type StaticImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "alt" | "height" | "src" | "width"> & {
   alt: string;
   blurDataURL?: string;
   fill?: boolean;
