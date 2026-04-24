@@ -638,7 +638,20 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
     const historyTypes = normalizedHistoryTypes.filter(
       (type): type is ReplayMapPointType => type !== null,
     );
-    const map = buildGeneratedMap(run, actId, actIndex, modifierIds, baseFloor);
+    const actEndFloor = baseFloor + history.length - 1;
+    const prevActStartFloor =
+      actIndex === 0
+        ? 0
+        : acts[actIndex - 1]?.baseFloor ?? Math.max(1, baseFloor - (run.map_point_history[actIndex - 1]?.length ?? 0));
+    const map = buildGeneratedMap(
+      run,
+      actId,
+      actIndex,
+      modifierIds,
+      baseFloor,
+      actEndFloor,
+      prevActStartFloor,
+    );
     const match = findMatchingPaths(map, historyTypes);
     const useFallback = match.pathCount === 0 && historyTypes.length > 0;
     const fallback = useFallback ? buildFallbackPath(map, historyTypes) : null;
@@ -704,11 +717,13 @@ function buildGeneratedMap(
   actIndex: number,
   modifierIds: Set<string>,
   actStartFloor: number,
+  actEndFloor: number,
+  prevActStartFloor: number,
 ): GeneratedActMap {
   const config = ACT_CONFIGS[actId];
   const seed = toUint32(getDeterministicHashCode(run.seed));
   const hasSecondBoss = actIndex === run.acts.length - 1 && run.ascension >= 10;
-  const variant = chooseActMapVariant(run, actStartFloor);
+  const variant = chooseActMapVariant(run, actStartFloor, actEndFloor, prevActStartFloor);
 
   if (variant === "golden_path") {
     // Golden Path uses no RNG; pass a dummy one. Seed is deterministic regardless.
@@ -743,26 +758,33 @@ function buildGeneratedMap(
   return map;
 }
 
-function chooseActMapVariant(run: ReplayRun, actStartFloor: number): ActMapVariant {
+function chooseActMapVariant(
+  run: ReplayRun,
+  actStartFloor: number,
+  actEndFloor: number,
+  prevActStartFloor: number,
+): ActMapVariant {
   const player = run.players[0];
   if (!player) return "standard";
   const idOf = (value?: string) => (value ?? "").toUpperCase();
-  // Golden Compass is granted at Tezcatara's ancient; active from that act onward
-  const hasCompass = player.relics.some((relic) => {
+  // Golden Compass: granted at Tezcatara's ancient and regenerates ONLY that
+  // act's map to a single column; does not persist into later acts.
+  const compassInThisAct = player.relics.some((relic) => {
     const id = idOf(relic.id);
     if (!id.endsWith("GOLDEN_COMPASS")) return false;
     const added = relic.floor_added_to_deck ?? 0;
-    return added > 0 && added <= actStartFloor;
+    return added >= actStartFloor && added <= actEndFloor;
   });
-  if (hasCompass) return "golden_path";
-  // Spoils Map card consumed on next-act entry; if present before act start, act is spoils
-  const hasSpoilsMapCard = player.deck.some((card) => {
+  if (compassInThisAct) return "golden_path";
+  // Spoils Map card: added to deck in act N, consumed on entry to act N+1,
+  // converting act N+1's map to hourglass.
+  const spoilsFromPrevAct = player.deck.some((card) => {
     const id = idOf(card.id);
     if (!id.endsWith("SPOILS_MAP")) return false;
     const added = card.floor_added_to_deck ?? 0;
-    return added > 0 && added < actStartFloor;
+    return added >= prevActStartFloor && added < actStartFloor;
   });
-  if (hasSpoilsMapCard) return "spoils";
+  if (spoilsFromPrevAct) return "spoils";
   return "standard";
 }
 
@@ -787,15 +809,16 @@ function buildGoldenPathGrid(map: GeneratedActMap) {
     "rest_site",
   ];
   const col = Math.floor(MAP_COLUMNS / 2);
-  const totalRows = defaultTypes.length + 2; // +ancient(row 0) + boss(rowCount-1)
-  // Resize grid to exact height
+  // Grid rows: 0 (ancient) through defaultTypes.length (last normal). Boss sits
+  // at row = gridHeight (just past the grid), matching GeneratedActMap's layout
+  // where boss.coord.row == grid.length (getRowCount).
+  const gridHeight = defaultTypes.length + 1;
   for (let c = 0; c < MAP_COLUMNS; c++) {
-    map.grid[c] = Array<MapNode | null>(totalRows).fill(null);
+    map.grid[c] = Array<MapNode | null>(gridHeight).fill(null);
   }
-  // Boss coord shifts to new last row
-  map.boss.coord = { col, row: totalRows };
+  map.boss.coord = { col, row: gridHeight };
   if (map.secondBoss) {
-    map.secondBoss.coord = { col, row: totalRows + 1 };
+    map.secondBoss.coord = { col, row: gridHeight + 1 };
   }
   let prev: MapNode | null = null;
   for (let i = 0; i < defaultTypes.length; i++) {
@@ -808,8 +831,9 @@ function buildGoldenPathGrid(map: GeneratedActMap) {
     }
     prev = node;
   }
-  map.startMapPoints.add(map.grid[col][1]!);
-  map.start.addChild(map.grid[col][1]!);
+  const firstNormal = map.grid[col][1]!;
+  map.startMapPoints.add(firstNormal);
+  map.start.addChild(firstNormal);
   if (prev) prev.addChild(map.boss);
   if (map.secondBoss) map.boss.addChild(map.secondBoss);
 }
@@ -849,16 +873,22 @@ function buildFallbackPath(map: GeneratedActMap, historyTypes: ReplayMapPointTyp
   let prev: MapNode | null = null;
   for (let step = 0; step < historyTypes.length; step++) {
     const row = rowByStep[step];
-    const rowNodes = collectNodesInRow(map, row);
     const expected = historyTypes[step];
-    const match =
-      rowNodes.find((node) => node.type === expected) ??
-      rowNodes.find((node) => node.type === "monster") ??
-      rowNodes[Math.floor(rowNodes.length / 2)] ??
-      null;
+    // Prefer children of the previous pick so the displayed path stays on
+    // real map edges even when we can't find an exact seed match. Only fall
+    // back to the whole row if prev's children can't satisfy this step.
+    const rowNodes = collectNodesInRow(map, row);
+    const childPool: MapNode[] = prev
+      ? Array.from(prev.children).filter((child) => child.coord.row === row)
+      : rowNodes;
+    const pickFrom = (pool: MapNode[]): MapNode | null =>
+      pool.find((node) => node.type === expected) ??
+      pool.find((node) => node.type === "monster") ??
+      (pool.length > 0 ? pool[Math.floor(pool.length / 2)] : null);
+    const match: MapNode | null = pickFrom(childPool) ?? pickFrom(rowNodes) ?? null;
     if (!match) continue;
     nodeCandidates[step].push(match.id);
-    if (prev) {
+    if (prev && prev.children.has(match)) {
       edgeCandidates[step].push(`${prev.id}->${match.id}`);
     }
     prev = match;
