@@ -22,6 +22,9 @@ export interface ReplayRoom {
 export interface ReplayHistoryEntry {
   map_point_type: string;
   rooms: ReplayRoom[];
+  current_hp?: number;
+  max_hp?: number;
+  current_gold?: number;
 }
 
 export interface ReplayDeckCard {
@@ -598,17 +601,35 @@ export function parseReplayRun(raw: string): ReplayRun {
       : [],
     map_point_history: parsed.map_point_history.map((act) =>
       Array.isArray(act)
-        ? act.map((entry) => ({
-            map_point_type: typeof entry?.map_point_type === "string" ? entry.map_point_type : "unknown",
-            rooms: Array.isArray(entry?.rooms)
-              ? entry.rooms
-                  .map((room) => ({
-                    room_type: typeof room?.room_type === "string" ? room.room_type : "unknown",
-                    model_id: typeof room?.model_id === "string" ? room.model_id : null,
-                    turns_taken: typeof room?.turns_taken === "number" ? room.turns_taken : 0,
-                  }))
-              : [],
-          }))
+        ? act.map((entry) => {
+            const rawEntry = entry as Partial<ReplayHistoryEntry> & {
+              player_stats?: Array<{ current_hp?: number; max_hp?: number; current_gold?: number }>;
+            };
+            const firstStats = Array.isArray(rawEntry.player_stats) ? rawEntry.player_stats[0] : undefined;
+            const pickStat = (
+              flat: number | undefined,
+              nested: number | undefined,
+            ): number | undefined => {
+              if (typeof flat === "number") return flat;
+              if (typeof nested === "number") return nested;
+              return undefined;
+            };
+            return {
+              map_point_type:
+                typeof rawEntry.map_point_type === "string" ? rawEntry.map_point_type : "unknown",
+              rooms: Array.isArray(rawEntry.rooms)
+                ? rawEntry.rooms
+                    .map((room) => ({
+                      room_type: typeof room?.room_type === "string" ? room.room_type : "unknown",
+                      model_id: typeof room?.model_id === "string" ? room.model_id : null,
+                      turns_taken: typeof room?.turns_taken === "number" ? room.turns_taken : 0,
+                    }))
+                : [],
+              current_hp: pickStat(rawEntry.current_hp, firstStats?.current_hp),
+              max_hp: pickStat(rawEntry.max_hp, firstStats?.max_hp),
+              current_gold: pickStat(rawEntry.current_gold, firstStats?.current_gold),
+            };
+          })
         : [],
     ),
   };

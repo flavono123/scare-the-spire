@@ -647,7 +647,11 @@ export function RunReplayPoc() {
 
       <div className="mt-8 space-y-8">
         {analysis.acts.map((act) => (
-          <ActReplayCard key={`${activeEntry.id}-${act.actId}-${act.actIndex}`} act={act} />
+          <ActReplayCard
+            key={`${activeEntry.id}-${act.actId}-${act.actIndex}`}
+            act={act}
+            run={run}
+          />
         ))}
       </div>
 
@@ -745,7 +749,7 @@ function RunLibrary({
   );
 }
 
-function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
+function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun }) {
   const [step, setStep] = useState(act.history.length);
   const [playing, setPlaying] = useState(false);
   const currentEntry = act.history[Math.max(0, step - 1)] ?? null;
@@ -826,6 +830,8 @@ function ActReplayCard({ act }: { act: ReplayActAnalysis }) {
           </button>
         </div>
       </div>
+
+      <RunTopBar run={run} act={act} step={step} />
 
       <div className="mt-5 rounded-3xl border border-zinc-800 bg-zinc-950/70 p-5">
         <div className="mb-4 flex flex-wrap items-center gap-4">
@@ -943,16 +949,19 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
           const state = current ? "current" : active ? "active" : "inactive";
           const size = mapNodeSize(node, act);
           if (!position) return null;
+          const scale = current ? 1.08 : active ? 1 : 0.95;
 
           return (
             <div
               key={node.id}
-              className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
+              className="absolute transition-all duration-300"
               style={{
-                left: position.left,
-                top: position.top,
-                transform: `translate(-50%, -50%) scale(${current ? 1.08 : active ? 1 : 0.95
-                  })`,
+                left: position.left - size.width / 2,
+                top: position.top - size.height / 2,
+                width: size.width,
+                height: size.height,
+                transform: `scale(${scale})`,
+                transformOrigin: "center center",
               }}
             >
               <MapNodeAsset node={node} act={act} state={state} size={size} />

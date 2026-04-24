@@ -142,5 +142,17 @@
     "summary": "All beta changes (v0.100.0-v0.103.1) pushed to main branch. Ascension 6 rework, new Ironclad card Not Yet, card reworks (Blade of Ink, Arsenal, Borrowed Time, etc.), 5 new Neow relics, Badges system, leaderboard revamp, Phobia Mode, Doormaker rework, art updates.",
     "summaryKo": "베타 변경사항 (v0.100.0~v0.103.1) 본섭 반영. 승천 6 리워크, 아이언클래드 신규 카드 불굴, 카드 리워크 (잉크 칼날, 무기고, 연명 등), 니오우 신규 유물 5종, 배지 시스템, 리더보드 개편, 공포증 모드, 문을 만드는 자 리워크, 아트 업데이트.",
     "hasBalanceChanges": true
+  },
+  {
+    "id": "v0.104.0",
+    "version": "0.104.0",
+    "date": "2026-04-24",
+    "title": "Beta Patch Notes - v0.104.0",
+    "titleKo": "베타 패치 노트 - v0.104.0",
+    "type": "beta",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/535507353628312243",
+    "summary": "Ironclad reworks (Conflagration, Drum of Battle), Regent Parry rework tying Block to Sovereign Blade, Axebots single-enemy combat, Untouchable/Neow's Booming Conch/Neow's Fury/Nutritious Soup buffs, lower Ascensions slightly eased (Ruby Raider Assassin, Vantom, Waterfall Giant HP/damage), 3 new Badges, Tag Team multiplayer fix, extensive bug fixes and new card portrait art (Feral, Not Yet, Spite, Hailstorm, Iteration, Synchronize, etc.).",
+    "summaryKo": "아이언클래드 리워크(대화재, 전투의 북소리), 리젠트 쳐내기 리워크(방어도가 군주의 칼날에 직접 표시), 로봇 친구들 단일 적 전투, 범접 불가/니오우의 콰광 소라/니오우의 격분/영양만점 수프 버프, 낮은 승천 소폭 완화(암살 습격자, 밴텀, 폭포 거인 HP/피해), 배지 3종 추가, 태그 팀 멀티플레이어 수정, 다수 버그 수정 및 신규 카드 초상화 아트(야성, 불굴, 악의, 우박 폭풍, 순회, 동기화 등).",
+    "hasBalanceChanges": true
   }
 ]
