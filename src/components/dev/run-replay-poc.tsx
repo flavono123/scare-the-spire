@@ -471,7 +471,7 @@ export function RunReplayPoc() {
   const sourceLabel = activeEntry.label;
   const analysis = analyzeReplayRun(run);
   const exactActs = analysis.acts.filter((act) => act.exactReplay).length;
-  const fallbackActs = analysis.acts.filter((act) => act.fallbackUsed).length;
+  const zeroMatchActs = analysis.acts.filter((act) => act.matchedPathCount === 0).length;
 
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -575,16 +575,14 @@ export function RunReplayPoc() {
             <StatCard
               label="Replay"
               value={
-                exactActs === analysis.acts.length
-                  ? `Exact ${exactActs}/${analysis.acts.length}`
-                  : fallbackActs > 0
-                    ? `Fallback ${fallbackActs}막`
-                    : `Exact ${exactActs}/${analysis.acts.length}`
+                zeroMatchActs > 0
+                  ? `Zero ${zeroMatchActs}막`
+                  : `Exact ${exactActs}/${analysis.acts.length}`
               }
               tone={
                 exactActs === analysis.acts.length
                   ? "green"
-                  : fallbackActs > 0
+                  : zeroMatchActs > 0
                     ? "red"
                     : "amber"
               }
@@ -751,9 +749,6 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
   const [playing, setPlaying] = useState(false);
   const currentEntry = act.history[Math.max(0, step - 1)] ?? null;
   const currentType = act.historyTypes[Math.max(0, step - 1)] ?? "monster";
-  const wingedBootsFloor = run.players[0]?.relics.find((relic) =>
-    (relic.id ?? "").toUpperCase().endsWith("WINGED_BOOTS"),
-  )?.floor_added_to_deck ?? null;
 
   useEffect(() => {
     if (!playing) return;
@@ -791,17 +786,9 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
                 {act.mapVariant === "golden_path" ? "Golden Path" : "Spoils Hourglass"}
               </StatusBadge>
             )}
-            {act.fallbackUsed && (
-              <StatusBadge tone="amber">Fallback path</StatusBadge>
-            )}
           </div>
           <p className="mt-1 text-sm text-zinc-400">
             {act.actId} · floor {act.baseFloor}-{act.baseFloor + act.history.length - 1}
-            {act.fallbackUsed && (
-              <span className="ml-2 text-xs text-amber-300">
-                · 시드 매칭이 실패해 히스토리 row별 best-guess 노드를 보여주는 중
-              </span>
-            )}
           </p>
         </div>
 
@@ -833,50 +820,98 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
 
       <RunTopBar run={run} act={act} step={step} />
 
-      <div className="mt-5 rounded-3xl border border-zinc-800 bg-zinc-950/70 p-5">
-        <div className="mb-4 flex flex-wrap items-center gap-4">
-          <div className="min-w-0 flex-1">
-            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-              Seeded Map
-            </p>
-            <p className="mt-1 text-sm text-zinc-300">
-              step {step}/{act.history.length} · {currentEntry ? formatRoomSummary(currentEntry) : "N/A"}
-            </p>
+      <div className="mt-5 grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-950/70 p-4">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+                Seeded Map
+              </p>
+              <p className="text-sm text-zinc-300">
+                step {step}/{act.history.length}
+              </p>
+            </div>
+            <input
+              type="range"
+              min={1}
+              max={act.history.length}
+              value={step}
+              className="w-56 accent-amber-300"
+              onChange={(event) => {
+                setPlaying(false);
+                setStep(Number(event.target.value));
+              }}
+            />
           </div>
-          <input
-            type="range"
-            min={1}
-            max={act.history.length}
-            value={step}
-            className="w-full max-w-md accent-amber-300"
-            onChange={(event) => {
-              setPlaying(false);
-              setStep(Number(event.target.value));
-            }}
-          />
+          <SeededMapView act={act} step={step} />
         </div>
 
-        <SeededMapView act={act} step={step} flightActive={wingedBootsFloor !== null && wingedBootsFloor <= act.baseFloor + step - 1} />
+        <div className="space-y-3">
+          <div className="rounded-3xl border border-zinc-800 bg-zinc-950/40 p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Current Step</p>
+            <div className="mt-3 flex items-center gap-4">
+              {currentEntry && (
+                <StepAsset
+                  entry={currentEntry}
+                  type={currentType}
+                  act={act}
+                  current
+                  size="hero"
+                />
+              )}
+              <div className="min-w-0 flex-1">
+                <div className="text-lg font-semibold text-zinc-50">
+                  {NODE_META[currentType].label}
+                </div>
+                <p className="mt-1 text-sm text-zinc-400">
+                  floor {act.baseFloor + step - 1} · 후보 노드{" "}
+                  {act.candidateNodeIdsByStep[step - 1]?.length ?? 0}개
+                </p>
+              </div>
+            </div>
+          </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-zinc-800 bg-black/20 px-4 py-3 text-sm text-zinc-300">
-          {currentEntry && (
-            <StepAsset
-              entry={currentEntry}
-              type={currentType}
-              act={act}
-              current
-              size="list"
-            />
-          )}
-          <span className="font-medium text-zinc-100">
-            {currentEntry ? NODE_META[currentType].label : "미확인"}
-          </span>
-          <span className="text-zinc-500">
-            floor {act.baseFloor + step - 1}
-          </span>
-          <span className="text-zinc-500">
-            후보 노드 {act.candidateNodeIdsByStep[step - 1]?.length ?? 0}개
-          </span>
+          <ol className="max-h-[42rem] space-y-2 overflow-auto pr-1">
+            {act.history.map((entry, index) => {
+              const floor = act.baseFloor + index;
+              const stepType = act.historyTypes[index];
+              const meta = NODE_META[stepType];
+              const current = index + 1 === step;
+
+              return (
+                <li
+                  key={`${act.actId}-${floor}`}
+                  className={`rounded-2xl border px-3 py-2 transition ${
+                    current
+                      ? "border-amber-300/60 bg-amber-500/10"
+                      : "border-zinc-800 bg-zinc-950/30"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <StepAsset
+                      entry={entry}
+                      type={stepType}
+                      act={act}
+                      current={current}
+                      size="list"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                          Floor {floor}
+                        </span>
+                        <span
+                          className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${meta.chip}`}
+                        >
+                          {meta.label}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </div>
     </section>
@@ -886,11 +921,9 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
 function SeededMapView({
   act,
   step,
-  flightActive,
 }: {
   act: ReplayActAnalysis;
   step: number;
-  flightActive: boolean;
 }) {
   const meta = actMapMeta(act.actId);
   const nodeMap = new Map(act.nodes.map((node) => [node.id, node]));
@@ -898,24 +931,13 @@ function SeededMapView({
   const activeNodes = new Set<string>();
   const currentNodes = new Set(act.candidateNodeIdsByStep[step - 1] ?? []);
   const activeEdges = new Set<string>();
-  const overrideType = new Map<string, ReplayMapPointType>();
-  const flightNodes = new Set<string>();
 
   for (let index = 0; index < step; index++) {
-    const ids = act.candidateNodeIdsByStep[index] ?? [];
-    const edges = act.candidateEdgeIdsByStep[index] ?? [];
-    const historyType = act.historyTypes[index];
-    for (const nodeId of ids) {
+    for (const nodeId of act.candidateNodeIdsByStep[index] ?? []) {
       activeNodes.add(nodeId);
-      if (historyType && !overrideType.has(nodeId)) {
-        overrideType.set(nodeId, historyType);
-      }
     }
-    for (const edgeId of edges) activeEdges.add(edgeId);
-    // A step is flight-suspect when we visited a node but didn't traverse a
-    // real edge from the previous step. Only mark when Winged Boots is live.
-    if (index > 0 && flightActive && edges.length === 0 && ids.length > 0) {
-      for (const nodeId of ids) flightNodes.add(nodeId);
+    for (const edgeId of act.candidateEdgeIdsByStep[index] ?? []) {
+      activeEdges.add(edgeId);
     }
   }
 
@@ -969,12 +991,6 @@ function SeededMapView({
           const size = mapNodeSize(node, act);
           if (!position) return null;
           const scale = current ? 1.08 : active ? 1 : 0.95;
-          const override = overrideType.get(node.id);
-          const displayType: ReplayMapPointType =
-            override && override !== node.type && node.type !== "boss" && node.type !== "ancient"
-              ? override
-              : node.type;
-          const flight = flightNodes.has(node.id);
 
           return (
             <div
@@ -989,22 +1005,7 @@ function SeededMapView({
                 transformOrigin: "center center",
               }}
             >
-              <MapNodeAsset
-                node={node}
-                act={act}
-                state={state}
-                size={size}
-                displayType={displayType}
-              />
-              {flight && (
-                <span
-                  className="pointer-events-none absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border border-sky-300 bg-sky-500 text-[10px] font-bold text-white shadow-[0_0_6px_rgba(56,189,248,0.6)]"
-                  title="윙부츠 추정 점프"
-                  aria-label="flight"
-                >
-                  ✈
-                </span>
-              )}
+              <MapNodeAsset node={node} act={act} state={state} size={size} />
             </div>
           );
         })}
@@ -1458,13 +1459,11 @@ function MapNodeAsset({
   act,
   state,
   size,
-  displayType,
 }: {
   node: ReplayActAnalysis["nodes"][number];
   act: ReplayActAnalysis;
   state: "inactive" | "active" | "current";
   size: RenderSize;
-  displayType?: ReplayMapPointType;
 }) {
   if (node.type === "ancient") {
     const ancientAsset = getAncientAsset(act);
@@ -1496,9 +1495,8 @@ function MapNodeAsset({
     );
   }
 
-  const renderType = displayType ?? node.type;
-  const iconName = mapIconNameForType(renderType);
-  const outlineName = mapOutlineNameForType(renderType);
+  const iconName = mapIconNameForType(node.type);
+  const outlineName = mapOutlineNameForType(node.type);
   if (!iconName || !outlineName) {
     return null;
   }
@@ -1510,7 +1508,7 @@ function MapNodeAsset({
       size={size}
       iconName={iconName}
       outlineName={outlineName}
-      alt={NODE_META[renderType].label}
+      alt={NODE_META[node.type].label}
     />
   );
 }
