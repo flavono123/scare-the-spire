@@ -751,6 +751,9 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
   const [playing, setPlaying] = useState(false);
   const currentEntry = act.history[Math.max(0, step - 1)] ?? null;
   const currentType = act.historyTypes[Math.max(0, step - 1)] ?? "monster";
+  const wingedBootsFloor = run.players[0]?.relics.find((relic) =>
+    (relic.id ?? "").toUpperCase().endsWith("WINGED_BOOTS"),
+  )?.floor_added_to_deck ?? null;
 
   useEffect(() => {
     if (!playing) return;
@@ -853,7 +856,7 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
           />
         </div>
 
-        <SeededMapView act={act} step={step} />
+        <SeededMapView act={act} step={step} flightActive={wingedBootsFloor !== null && wingedBootsFloor <= act.baseFloor + step - 1} />
 
         <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-zinc-800 bg-black/20 px-4 py-3 text-sm text-zinc-300">
           {currentEntry && (
@@ -880,20 +883,39 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
   );
 }
 
-function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) {
+function SeededMapView({
+  act,
+  step,
+  flightActive,
+}: {
+  act: ReplayActAnalysis;
+  step: number;
+  flightActive: boolean;
+}) {
   const meta = actMapMeta(act.actId);
   const nodeMap = new Map(act.nodes.map((node) => [node.id, node]));
   const layout = buildMapLayout(act);
   const activeNodes = new Set<string>();
   const currentNodes = new Set(act.candidateNodeIdsByStep[step - 1] ?? []);
   const activeEdges = new Set<string>();
+  const overrideType = new Map<string, ReplayMapPointType>();
+  const flightNodes = new Set<string>();
 
   for (let index = 0; index < step; index++) {
-    for (const nodeId of act.candidateNodeIdsByStep[index] ?? []) {
+    const ids = act.candidateNodeIdsByStep[index] ?? [];
+    const edges = act.candidateEdgeIdsByStep[index] ?? [];
+    const historyType = act.historyTypes[index];
+    for (const nodeId of ids) {
       activeNodes.add(nodeId);
+      if (historyType && !overrideType.has(nodeId)) {
+        overrideType.set(nodeId, historyType);
+      }
     }
-    for (const edgeId of act.candidateEdgeIdsByStep[index] ?? []) {
-      activeEdges.add(edgeId);
+    for (const edgeId of edges) activeEdges.add(edgeId);
+    // A step is flight-suspect when we visited a node but didn't traverse a
+    // real edge from the previous step. Only mark when Winged Boots is live.
+    if (index > 0 && flightActive && edges.length === 0 && ids.length > 0) {
+      for (const nodeId of ids) flightNodes.add(nodeId);
     }
   }
 
@@ -947,6 +969,12 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
           const size = mapNodeSize(node, act);
           if (!position) return null;
           const scale = current ? 1.08 : active ? 1 : 0.95;
+          const override = overrideType.get(node.id);
+          const displayType: ReplayMapPointType =
+            override && override !== node.type && node.type !== "boss" && node.type !== "ancient"
+              ? override
+              : node.type;
+          const flight = flightNodes.has(node.id);
 
           return (
             <div
@@ -961,7 +989,22 @@ function SeededMapView({ act, step }: { act: ReplayActAnalysis; step: number }) 
                 transformOrigin: "center center",
               }}
             >
-              <MapNodeAsset node={node} act={act} state={state} size={size} />
+              <MapNodeAsset
+                node={node}
+                act={act}
+                state={state}
+                size={size}
+                displayType={displayType}
+              />
+              {flight && (
+                <span
+                  className="pointer-events-none absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full border border-sky-300 bg-sky-500 text-[10px] font-bold text-white shadow-[0_0_6px_rgba(56,189,248,0.6)]"
+                  title="윙부츠 추정 점프"
+                  aria-label="flight"
+                >
+                  ✈
+                </span>
+              )}
             </div>
           );
         })}
@@ -1415,11 +1458,13 @@ function MapNodeAsset({
   act,
   state,
   size,
+  displayType,
 }: {
   node: ReplayActAnalysis["nodes"][number];
   act: ReplayActAnalysis;
   state: "inactive" | "active" | "current";
   size: RenderSize;
+  displayType?: ReplayMapPointType;
 }) {
   if (node.type === "ancient") {
     const ancientAsset = getAncientAsset(act);
@@ -1451,8 +1496,9 @@ function MapNodeAsset({
     );
   }
 
-  const iconName = mapIconNameForType(node.type);
-  const outlineName = mapOutlineNameForType(node.type);
+  const renderType = displayType ?? node.type;
+  const iconName = mapIconNameForType(renderType);
+  const outlineName = mapOutlineNameForType(renderType);
   if (!iconName || !outlineName) {
     return null;
   }
@@ -1464,7 +1510,7 @@ function MapNodeAsset({
       size={size}
       iconName={iconName}
       outlineName={outlineName}
-      alt={NODE_META[node.type].label}
+      alt={NODE_META[renderType].label}
     />
   );
 }
