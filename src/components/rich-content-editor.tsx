@@ -169,6 +169,7 @@ interface RichContentEditorProps {
   minChars?: number;
   maxChars?: number;
   submitIconSrc?: string;
+  showKeywordTip?: boolean;
 }
 
 export function RichContentEditor({
@@ -180,6 +181,7 @@ export function RichContentEditor({
   minChars = 2,
   maxChars = 30,
   submitIconSrc,
+  showKeywordTip = false,
 }: RichContentEditorProps) {
   const [submitting, setSubmitting] = useState(false);
   const [charCount, setCharCount] = useState(() => {
@@ -481,15 +483,26 @@ export function RichContentEditor({
         </EntityMapProvider>
       </div>
 
-      <div className="flex items-center justify-between px-3 py-2 border-t border-border">
-        <span className={`text-xs font-mono ${charCountColor}`}>
+      <div className="flex items-center gap-3 px-3 py-2 border-t border-border">
+        <span className={`text-xs font-mono shrink-0 ${charCountColor}`}>
           {charCount}/{maxChars}
         </span>
+        {showKeywordTip && (
+          <span className="hidden sm:inline text-[11px] text-gray-500/80 truncate flex-1 min-w-0">
+            키워드 만들기 예){" "}
+            <span className="text-gray-400/90">크크루빙봉</span>
+            {"{"}
+            <span className="text-gray-400/90">빙봉</span>
+            {"}"}
+            {" → "}
+            <span className="text-gray-400/90">크크루빙봉</span>
+          </span>
+        )}
         <button
           type="button"
           onClick={handleSubmit}
           disabled={!isValid || submitting}
-          className="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="ml-auto flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
         >
           {submitting ? "..." : submitLabel}
           {submitIconSrc && (

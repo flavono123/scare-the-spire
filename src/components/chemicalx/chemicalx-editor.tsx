@@ -48,6 +48,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
           draftKey="sts-chemicalx-draft"
           submitLabel="투입"
           submitIconSrc="/images/relics/inserter.webp"
+          showKeywordTip
         />
       </div>
     </div>
