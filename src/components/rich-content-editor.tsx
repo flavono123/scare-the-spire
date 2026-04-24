@@ -275,6 +275,8 @@ export function RichContentEditor({
     }
     syncEditorState(editor);
   }, [resolveKeyword, syncEditorState]);
+  const processEditorUpdateRef = useRef(processEditorUpdate);
+  processEditorUpdateRef.current = processEditorUpdate;
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -392,6 +394,7 @@ export function RichContentEditor({
     ],
     onCreate: ({ editor }) => {
       editorRef.current = editor;
+      processEditorUpdateRef.current(editor);
     },
     onDestroy: () => {
       editorRef.current = null;
