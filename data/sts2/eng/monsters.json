@@ -33,8 +33,8 @@
     ],
     "damage_values": {
       "Killshot": {
-        "normal": 11,
-        "ascension": 12
+        "normal": 10,
+        "ascension": 11
       }
     },
     "block_values": null,
@@ -3882,7 +3882,7 @@
         "ascension": 7
       },
       "Dismember": {
-        "normal": 27,
+        "normal": 26,
         "ascension": 30
       }
     },
