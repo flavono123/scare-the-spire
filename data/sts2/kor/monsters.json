@@ -266,7 +266,7 @@
       },
       {
         "id": "TOXIC_SPIT",
-        "name": "Toxic Spit"
+        "name": "유독성 침"
       }
     ],
     "damage_values": {
@@ -293,7 +293,7 @@
       },
       {
         "id": "ROAR",
-        "name": "Roar"
+        "name": "포효"
       }
     ],
     "damage_values": {
@@ -320,7 +320,7 @@
       },
       {
         "id": "WAKE",
-        "name": "Wake"
+        "name": "깨어남"
       },
       {
         "id": "SLEEP",
@@ -355,7 +355,7 @@
       },
       {
         "id": "SWOOP",
-        "name": "Swoop"
+        "name": "급습"
       }
     ],
     "damage_values": {
@@ -545,11 +545,11 @@
       },
       {
         "id": "GLOMP",
-        "name": "Glomp"
+        "name": "안기기"
       },
       {
         "id": "GOOP",
-        "name": "Goop"
+        "name": "들러붙기"
       }
     ],
     "damage_values": {
@@ -775,7 +775,7 @@
       },
       {
         "id": "SAVAGE",
-        "name": "맹렬한 공격"
+        "name": "흉포한 공격"
       }
     ],
     "damage_values": {
@@ -976,7 +976,7 @@
       },
       {
         "id": "FABRICATING_STRIKE",
-        "name": "Fabricating Strike"
+        "name": "조립 타격"
       },
       {
         "id": "DISINTEGRATE",
@@ -1046,7 +1046,7 @@
     "moves": [
       {
         "id": "SPAWNED",
-        "name": "Spawned"
+        "name": "기상"
       },
       {
         "id": "FLEE",
@@ -1068,7 +1068,7 @@
     "moves": [
       {
         "id": "WAR_CHANT",
-        "name": "War Chant"
+        "name": "전투의 함성"
       },
       {
         "id": "FLAIL",
@@ -1103,7 +1103,7 @@
     "moves": [
       {
         "id": "VULNERABLE_SPORES",
-        "name": "Vulnerable Spores"
+        "name": "취약 포자"
       },
       {
         "id": "FRAIL_SPORES",
@@ -1138,11 +1138,11 @@
     "moves": [
       {
         "id": "ILLUSION",
-        "name": "Illusion"
+        "name": "환각 포자"
       },
       {
         "id": "SWIPE",
-        "name": "Swipe"
+        "name": "찰싹 때리기"
       },
       {
         "id": "SWIPE_RANDOM",
@@ -1267,7 +1267,7 @@
       },
       {
         "id": "INHALE",
-        "name": "Inhale"
+        "name": "빨아들이기"
       }
     ],
     "damage_values": {
@@ -1357,7 +1357,7 @@
     "moves": [
       {
         "id": "THUNDER_STRIKE",
-        "name": "Thunder Strike"
+        "name": "전기 영창"
       },
       {
         "id": "SHOCKING_SLAP",
@@ -1591,7 +1591,7 @@
       },
       {
         "id": "WHIRLWIND",
-        "name": "Whirlwind"
+        "name": "소용돌이"
       },
       {
         "id": "PIERCING_GAZE",
@@ -1626,15 +1626,15 @@
     "moves": [
       {
         "id": "QUICK_SLASH",
-        "name": "빠른 참격"
+        "name": "전광석화"
       },
       {
         "id": "BOOMERANG",
-        "name": "부메랑"
+        "name": "부메랑 투척"
       },
       {
         "id": "POWER_DANCE",
-        "name": "힘의 춤"
+        "name": "강화의 춤"
       }
     ],
     "damage_values": {
@@ -1661,11 +1661,11 @@
     "moves": [
       {
         "id": "ORB_OF_FRAILTY",
-        "name": "Orb Of Frailty"
+        "name": "연약함의 구체"
       },
       {
         "id": "ORB_OF_WEAKNESS",
-        "name": "Orb Of Weakness"
+        "name": "나약함의 구체"
       },
       {
         "id": "BEAM",
@@ -1708,7 +1708,7 @@
       },
       {
         "id": "SLAP",
-        "name": "Slap"
+        "name": "때리기"
       },
       {
         "id": "KNOWLEDGE_OVERWHELMING",
@@ -1848,7 +1848,7 @@
     "moves": [
       {
         "id": "ADVANCED_GAS",
-        "name": "Advanced Gas"
+        "name": "가스 축적"
       },
       {
         "id": "BLOAT",
@@ -1856,7 +1856,7 @@
       },
       {
         "id": "SUPER_GAS_BLAST",
-        "name": "Super Gas Blast"
+        "name": "가스 대폭발"
       }
     ],
     "damage_values": {
@@ -1891,7 +1891,7 @@
       },
       {
         "id": "SMASH",
-        "name": "Smash"
+        "name": "부수기"
       }
     ],
     "damage_values": {
@@ -1922,7 +1922,7 @@
       },
       {
         "id": "POUNCE",
-        "name": "Pounce"
+        "name": "덮치기"
       },
       {
         "id": "CURL_AND_GROW",
@@ -1957,7 +1957,7 @@
       },
       {
         "id": "DAMPEN",
-        "name": "Dampen"
+        "name": "위축"
       },
       {
         "id": "PREP",
@@ -2709,11 +2709,11 @@
     "moves": [
       {
         "id": "VOMIT_ICHOR",
-        "name": "체액 분출"
+        "name": "체액 토하기"
       },
       {
         "id": "LEECHING_HUG",
-        "name": "Leeching Hug"
+        "name": "흡혈 포옹"
       },
       {
         "id": "SMOTHER",
@@ -2721,7 +2721,7 @@
       },
       {
         "id": "FURIOUS_PUMMELING",
-        "name": "분노의 난타"
+        "name": "격렬한 구타"
       }
     ],
     "damage_values": {
@@ -2872,7 +2872,7 @@
     "moves": [
       {
         "id": "SPAWNED",
-        "name": "Spawned"
+        "name": "기상"
       },
       {
         "id": "TACKLE",
@@ -2899,7 +2899,7 @@
     "moves": [
       {
         "id": "BECKON",
-        "name": "Beckon"
+        "name": "유인"
       },
       {
         "id": "DE_GAS",
@@ -2907,11 +2907,11 @@
       },
       {
         "id": "GAZE",
-        "name": "Gaze"
+        "name": "응시"
       },
       {
         "id": "FADE",
-        "name": "Fade"
+        "name": "사라지기"
       },
       {
         "id": "SCREAM",
@@ -3078,7 +3078,7 @@
     "moves": [
       {
         "id": "CRASH",
-        "name": "Crash"
+        "name": "충돌"
       },
       {
         "id": "ThrashMove",
@@ -3090,7 +3090,7 @@
       },
       {
         "id": "TERROR",
-        "name": "Terror"
+        "name": "위협"
       }
     ],
     "damage_values": {
@@ -3125,11 +3125,11 @@
       },
       {
         "id": "SKULL_BASH",
-        "name": "두개골 찍기"
+        "name": "두개골 강타"
       },
       {
         "id": "MULTI_CLAW",
-        "name": "마구 할퀴기"
+        "name": "발톱 연타"
       },
       {
         "id": "PHASE3_LACERATE",
@@ -3137,11 +3137,11 @@
       },
       {
         "id": "BIG_POUNCE",
-        "name": "급습"
+        "name": "거센 덮치기"
       },
       {
         "id": "BURNING_GROWL",
-        "name": "불타는 울부짖음"
+        "name": "타오르는 포효"
       }
     ],
     "damage_values": {
@@ -3484,7 +3484,7 @@
       },
       {
         "id": "SAIL",
-        "name": "Sail"
+        "name": "휘적대기"
       },
       {
         "id": "HARDENING_STRIKE",
@@ -3605,7 +3605,7 @@
       },
       {
         "id": "BEAM",
-        "name": "Beam"
+        "name": "광선"
       },
       {
         "id": "TACKLE_3",
@@ -3745,7 +3745,7 @@
       },
       {
         "id": "RELOAD",
-        "name": "Reload"
+        "name": "재장전"
       }
     ],
     "damage_values": {
@@ -3959,15 +3959,15 @@
       },
       {
         "id": "PRESSURE_UP",
-        "name": "Pressure Up"
+        "name": "압력 상승"
       },
       {
         "id": "ABOUT_TO_BLOW",
-        "name": "About To Blow"
+        "name": "분출 직전"
       },
       {
         "id": "EXPLODE",
-        "name": "Explode"
+        "name": "폭발"
       }
     ],
     "damage_values": {
@@ -3998,15 +3998,15 @@
     "moves": [
       {
         "id": "NASTY_BITE",
-        "name": "Nasty Bite"
+        "name": "불쾌한 물기"
       },
       {
         "id": "WRIGGLE",
-        "name": "Wriggle"
+        "name": "꿈틀거리기"
       },
       {
         "id": "SPAWNED",
-        "name": "Spawned"
+        "name": "소환됨"
       }
     ],
     "damage_values": {

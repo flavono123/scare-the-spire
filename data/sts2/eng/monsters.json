@@ -1046,7 +1046,7 @@
     "moves": [
       {
         "id": "SPAWNED",
-        "name": "Spawned"
+        "name": "Wake Up"
       },
       {
         "id": "FLEE",
@@ -1138,11 +1138,11 @@
     "moves": [
       {
         "id": "ILLUSION",
-        "name": "Illusion"
+        "name": "Illusory Spores"
       },
       {
         "id": "SWIPE",
-        "name": "Swipe"
+        "name": "Thwack"
       },
       {
         "id": "SWIPE_RANDOM",
@@ -1357,7 +1357,7 @@
     "moves": [
       {
         "id": "THUNDER_STRIKE",
-        "name": "Thunder Strike"
+        "name": "Channel Lightning"
       },
       {
         "id": "SHOCKING_SLAP",
@@ -1661,11 +1661,11 @@
     "moves": [
       {
         "id": "ORB_OF_FRAILTY",
-        "name": "Orb Of Frailty"
+        "name": "Orb of Frailty"
       },
       {
         "id": "ORB_OF_WEAKNESS",
-        "name": "Orb Of Weakness"
+        "name": "Orb of Weakness"
       },
       {
         "id": "BEAM",
@@ -2872,7 +2872,7 @@
     "moves": [
       {
         "id": "SPAWNED",
-        "name": "Spawned"
+        "name": "Wake Up"
       },
       {
         "id": "TACKLE",
@@ -3090,7 +3090,7 @@
       },
       {
         "id": "TERROR",
-        "name": "Terror"
+        "name": "Terrorize"
       }
     ],
     "damage_values": {
@@ -3963,7 +3963,7 @@
       },
       {
         "id": "ABOUT_TO_BLOW",
-        "name": "About To Blow"
+        "name": "About to Blow"
       },
       {
         "id": "EXPLODE",
