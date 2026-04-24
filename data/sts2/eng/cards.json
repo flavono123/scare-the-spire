@@ -13991,7 +13991,7 @@
   {
     "id": "REAPER_FORM",
     "name": "Reaper Form",
-    "description": "Whenever Attacks deal damage, they also apply that much [gold]Doom[/gold].",
+    "description": "Whenever Attacks deal damage, apply that much [gold]Doom[/gold].",
     "description_raw": "Whenever Attacks deal damage, apply that much [gold]Doom[/gold].",
     "cost": 3,
     "is_x_cost": null,
