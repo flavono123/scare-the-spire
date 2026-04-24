@@ -3568,7 +3568,7 @@
   {
     "id": "CONFLAGRATION",
     "name": "대화재",
-    "description": "모든 적에게 피해를 10 줍니다.\n이번 턴에 사용한 다른 공격 카드 1장당 피해량이 2 증가합니다.",
+    "description": "모든 적에게 피해를 2만큼 4번 줍니다.",
     "description_raw": "모든 적에게\n피해를 {Damage:diff()}만큼 {Repeat:diff()}번 줍니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -3578,9 +3578,9 @@
     "rarity": "희귀",
     "target": "AllEnemies",
     "color": "ironclad",
-    "damage": null,
+    "damage": 2,
     "block": null,
-    "hit_count": null,
+    "hit_count": 4,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -3589,14 +3589,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CalculationBase": 8,
-      "ExtraDamage": 2,
-      "CalculatedDamage": 10
+      "Damage": 2,
+      "Repeat": 4
     },
     "upgrade": {
-      "damage": "+1",
-      "calculationbase": "+1",
-      "extradamage": "+1"
+      "repeat": "+1"
     },
     "image_url": "/static/images/cards/conflagration.png",
     "beta_image_url": "/static/images/cards/beta/conflagration.png"
@@ -5714,38 +5711,34 @@
   {
     "id": "DRUM_OF_BATTLE",
     "name": "전투의 북소리",
-    "description": "카드를 2장 뽑습니다.\n내 턴 시작 시, [gold]뽑을 카드 더미[/gold] 맨 위의 카드를 [gold]소멸[/gold]시킵니다.",
+    "description": "카드를 2장 뽑습니다.\n이 카드가 [gold]소멸[/gold]될 시, [gold]에너지[/gold] 2를 얻습니다.",
     "description_raw": "카드를 {Cards:diff()}장 뽑습니다.\n이 카드가 [gold]소멸[/gold]될 시,\n{Energy:energyIcons()}를 얻습니다.",
-    "cost": 0,
+    "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
-    "type": "파워",
+    "type": "스킬",
     "rarity": "고급",
     "target": "Self",
     "color": "ironclad",
     "damage": null,
     "block": null,
     "hit_count": null,
-    "powers_applied": [
-      {
-        "power": "전투의 북소리",
-        "amount": 1
-      }
-    ],
+    "powers_applied": null,
     "cards_draw": 2,
-    "energy_gain": null,
+    "energy_gain": 2,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "소멸"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": {
       "Cards": 2,
-      "DrumOfBattlePower": 1,
-      "DrumOfBattle": 1
+      "Energy": 2
     },
     "upgrade": {
-      "cards": "+1"
+      "energy": "+1"
     },
     "image_url": "/static/images/cards/drum_of_battle.png",
     "beta_image_url": "/static/images/cards/beta/drum_of_battle.png"
@@ -12557,7 +12550,7 @@
   {
     "id": "PARRY",
     "name": "쳐내기",
-    "description": "[gold]군주의 칼날[/gold]을 사용할 때마다, [gold]방어도[/gold]를 6 얻습니다.",
+    "description": "[gold]군주의 칼날[/gold]을 사용 시 이제 [gold]방어도[/gold]를 10 얻습니다.",
     "description_raw": "[gold]군주의 칼날[/gold]을 사용 시 이제 [gold]방어도[/gold]를 {ParryPower:diff()} 얻습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -12573,7 +12566,7 @@
     "powers_applied": [
       {
         "power": "쳐내기",
-        "amount": 6
+        "amount": 10
       }
     ],
     "cards_draw": null,
@@ -12589,7 +12582,7 @@
       "Parry": 10
     },
     "upgrade": {
-      "parrypower": "+3"
+      "parrypower": "+4"
     },
     "image_url": "/static/images/cards/parry.png",
     "beta_image_url": "/static/images/cards/beta/parry.png"
@@ -14165,7 +14158,7 @@
   {
     "id": "REFLECT",
     "name": "반사",
-    "description": "[gold]방어도[/gold]를 17 얻습니다.\n이번 턴에 막은 공격 피해는 공격한 적에게 반사됩니다.",
+    "description": "[gold]방어도[/gold]를 16 얻습니다.\n이번 턴에 막은 공격 피해는 공격한 적에게 반사됩니다.",
     "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n이번 턴에 막은 공격 피해는\n공격한 적에게 반사됩니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -14176,7 +14169,7 @@
     "target": "Self",
     "color": "regent",
     "damage": null,
-    "block": 17,
+    "block": 16,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -14186,7 +14179,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 17,
+      "Block": 16,
       "StarCost": 3
     },
     "upgrade": {
@@ -19038,7 +19031,7 @@
       "Block": 6
     },
     "upgrade": {
-      "block": "+2"
+      "block": "+3"
     },
     "image_url": "/static/images/cards/untouchable.png",
     "beta_image_url": null
