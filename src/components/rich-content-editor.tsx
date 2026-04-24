@@ -489,9 +489,7 @@ export function RichContentEditor({
         </span>
         {showKeywordTip && (
           <span className="hidden sm:block text-[11px] text-gray-500 truncate flex-1 min-w-0 opacity-70">
-            키워드 만들기 예){" "}
-            <span className="spire-gold">크크루빙봉</span>
-            {"{"}
+            키워드 만들기 예) 크크루빙봉{"{"}
             <span className="spire-gold">빙봉</span>
             {"}"}
             {" → "}
