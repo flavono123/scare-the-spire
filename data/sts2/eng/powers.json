@@ -174,8 +174,8 @@
   {
     "id": "BLADE_OF_INK",
     "name": "Blade of Ink",
-    "description": "",
-    "description_raw": "",
+    "description": "Whenever you play an Attack this turn, gain [blue]2[/blue] [gold]Strength[/gold] this turn.",
+    "description_raw": "Whenever you play an Attack this turn, gain [blue]{Amount}[/blue] [gold]Strength[/gold] this turn.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -652,8 +652,8 @@
   {
     "id": "DRUM_OF_BATTLE",
     "name": "Drum of Battle",
-    "description": "",
-    "description_raw": "",
+    "description": "At the start of your turn, [gold]Exhaust[/gold] the top card of your [gold]Draw Pile[/gold].",
+    "description_raw": "At the start of your turn, [gold]Exhaust[/gold] the top {Amount:plural:card|[blue]{}[/blue] cards} of your [gold]Draw Pile[/gold].",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -984,8 +984,8 @@
   {
     "id": "GRAPPLE",
     "name": "Grapple",
-    "description": "",
-    "description_raw": "",
+    "description": "Whenever you gain [gold]Block[/gold] this turn, deal [blue]5[/blue] damage to the enemy.",
+    "description_raw": "Whenever you gain [gold]Block[/gold] this turn, deal [blue]{Amount}[/blue] damage to the enemy.",
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,

@@ -174,8 +174,8 @@
   {
     "id": "BLADE_OF_INK",
     "name": "잉크 칼날",
-    "description": "",
-    "description_raw": "",
+    "description": "이번 턴에 공격 카드를 사용할 때마다, 이번 턴 동안 [gold]힘[/gold]을 [blue]2[/blue] 얻습니다.",
+    "description_raw": "이번 턴에 공격 카드를 사용할 때마다, 이번 턴 동안 [gold]힘[/gold]을 [blue]{Amount}[/blue] 얻습니다.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -652,8 +652,8 @@
   {
     "id": "DRUM_OF_BATTLE",
     "name": "전투의 북소리",
-    "description": "",
-    "description_raw": "",
+    "description": "내 턴 시작 시, [gold]뽑을 카드 더미[/gold] 맨 위의 카드를 [gold]소멸[/gold]시킵니다.",
+    "description_raw": "내 턴 시작 시, [gold]뽑을 카드 더미[/gold] 맨 위의 {Amount:choose(1):카드를|카드를 [blue]{}[/blue]장} [gold]소멸[/gold]시킵니다.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -984,8 +984,8 @@
   {
     "id": "GRAPPLE",
     "name": "그래플링",
-    "description": "",
-    "description_raw": "",
+    "description": "이번 턴에 [gold]방어도[/gold]를 얻을 때마다, 대상 적에게 피해를 [blue]5[/blue] 줍니다.",
+    "description_raw": "이번 턴에 [gold]방어도[/gold]를 얻을 때마다, 대상 적에게 피해를 [blue]{Amount}[/blue] 줍니다.",
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
