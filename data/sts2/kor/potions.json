@@ -192,7 +192,7 @@
     "id": "FAIRY_IN_A_BOTTLE",
     "name": "병 속의 요정",
     "description": "사망 시, 그 대신 이 포션이 버려지고 최대 체력의 [blue]30%[/blue]만큼 체력을 회복합니다.",
-    "description_raw": "사망 시, 그 대신 이 포션이 버려지고 최대 체력의 [blue]30%[/blue]만큼 체력을 회복합니다.",
+    "description_raw": "체력이 [blue]0[/blue]이 될 때, 그 대신 이 포션이 버려지고 최대 체력의 [blue]30%[/blue]만큼 체력을 회복합니다.",
     "rarity": "희귀",
     "pool": "shared",
     "image_url": "/static/images/potions/fairy_in_a_bottle.png"
@@ -237,7 +237,7 @@
     "id": "FOUL_POTION",
     "name": "역겨운 포션",
     "description": "누구에게나 피해를 [blue]12[/blue] 줍니다.\n[gold]상인[/gold]에게 던질 수 있으며, 상인에게 던질 시 피해를 주는 대신 [gold]골드[/gold]를 [blue]100[/blue] 얻습니다.",
-    "description_raw": "누구에게나 피해를 [blue]{Damage}[/blue] 줍니다.\n[gold]상인[/gold]에게 던질 수 있으며, 상인에게 던질 시 피해를 주는 대신 [gold]골드[/gold]를 [blue]{Gold}[/blue] 얻습니다.",
+    "description_raw": "모든 플레이어와 적에게 피해를 [blue]{Damage}[/blue] 줍니다.\n[gold]상인[/gold]에게도 던질 수 있으며, 상인에게 던질 시 피해를 주는 대신 [gold]골드[/gold]를 [blue]{Gold}[/blue] 얻습니다.",
     "rarity": "이벤트",
     "pool": "event",
     "image_url": "/static/images/potions/foul_potion.png"
@@ -327,7 +327,7 @@
     "id": "LIQUID_MEMORIES",
     "name": "액상 기억",
     "description": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴에 비용 없이 사용할 수 있습니다.",
-    "description_raw": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴에 비용 없이 사용할 수 있습니다.",
+    "description_raw": "[gold]버린 카드 더미[/gold]에서 카드를 1장 선택해 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드를 비용 없이 사용할 수 있습니다.",
     "rarity": "희귀",
     "pool": "shared",
     "image_url": "/static/images/potions/liquid_memories.png"
@@ -451,7 +451,7 @@
   },
   {
     "id": "SHACKLING_POTION",
-    "name": "속박 포션",
+    "name": "족쇄 포션",
     "description": "이번 턴 동안 모든 적이 [gold]힘[/gold]을 [blue]7[/blue] 잃습니다.",
     "description_raw": "이번 턴 동안 모든 적이 [gold]힘[/gold]을 [blue]{StrengthPower}[/blue] 잃습니다.",
     "rarity": "희귀",

@@ -1725,3 +1725,166 @@ function StatusBadge({
 
   return <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${classes}`}>{children}</span>;
 }
+
+const CHARACTER_PORTRAIT_SRC: Record<string, string> = {
+  "CHARACTER.IRONCLAD": "/images/sts2/characters/char_select_ironclad.webp",
+  "CHARACTER.SILENT": "/images/sts2/characters/char_select_silent.webp",
+  "CHARACTER.DEFECT": "/images/sts2/characters/char_select_defect.webp",
+  "CHARACTER.NECROBINDER": "/images/sts2/characters/char_select_necrobinder.webp",
+  "CHARACTER.REGENT": "/images/sts2/characters/char_select_regent.webp",
+};
+
+const CHARACTER_LABEL: Record<string, string> = {
+  "CHARACTER.IRONCLAD": "아이언클래드",
+  "CHARACTER.SILENT": "사일런트",
+  "CHARACTER.DEFECT": "디펙트",
+  "CHARACTER.NECROBINDER": "네크로바인더",
+  "CHARACTER.REGENT": "리젠트",
+};
+
+function relicIconSrc(relicId: string): string {
+  const slug = relicId.replace(/^RELIC\./, "").toLowerCase();
+  return `/images/sts2/relics/${slug}.webp`;
+}
+
+function relicReadableName(relicId: string): string {
+  return relicId.replace(/^RELIC\./, "").replace(/_/g, " ").toLowerCase();
+}
+
+function RunTopBar({
+  run,
+  act,
+  step,
+}: {
+  run: ReplayRun;
+  act: ReplayActAnalysis;
+  step: number;
+}) {
+  const player = run.players[0];
+  const character = player?.character ?? "CHARACTER.SILENT";
+  const portraitSrc = CHARACTER_PORTRAIT_SRC[character];
+  const characterLabel = CHARACTER_LABEL[character] ?? character.split(".").pop();
+  const currentFloor = act.baseFloor + Math.max(0, step - 1);
+  const currentEntry = act.history[Math.max(0, step - 1)] ?? null;
+
+  // Walk history from floor 1 to currentFloor to backfill the most recent hp/gold
+  // snapshot we have (some entries — boss, rest exits in older builds — can be
+  // missing the stats).
+  let hp: number | undefined;
+  let maxHp: number | undefined;
+  let gold: number | undefined;
+  let floor = 1;
+  for (const pastAct of run.map_point_history) {
+    for (const entry of pastAct) {
+      if (floor > currentFloor) break;
+      if (typeof entry.current_hp === "number") hp = entry.current_hp;
+      if (typeof entry.max_hp === "number") maxHp = entry.max_hp;
+      if (typeof entry.current_gold === "number") gold = entry.current_gold;
+      floor += 1;
+    }
+    if (floor > currentFloor) break;
+  }
+
+  const relicsByFloor = (player?.relics ?? [])
+    .filter((relic) => typeof relic.id === "string")
+    .map((relic) => ({
+      id: relic.id!,
+      floor: relic.floor_added_to_deck ?? 0,
+    }))
+    .filter((relic) => relic.floor > 0 && relic.floor <= currentFloor)
+    .sort((a, b) => a.floor - b.floor);
+
+  const hasWingedBoots = relicsByFloor.some((relic) =>
+    relic.id.toUpperCase().endsWith("WINGED_BOOTS"),
+  );
+  const wingedBootsJustPicked =
+    hasWingedBoots &&
+    currentEntry != null &&
+    relicsByFloor[relicsByFloor.length - 1]?.id.toUpperCase().endsWith("WINGED_BOOTS") &&
+    relicsByFloor[relicsByFloor.length - 1]?.floor === currentFloor;
+
+  return (
+    <div className="mt-5 space-y-3 rounded-3xl border border-zinc-800 bg-gradient-to-b from-zinc-950 to-black/80 p-4">
+      <div className="flex flex-wrap items-center gap-4">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-amber-500/40 bg-black/40">
+          {portraitSrc && (
+            <Image
+              src={portraitSrc}
+              alt={characterLabel ?? character}
+              fill
+              sizes="56px"
+              className="object-cover"
+            />
+          )}
+          {run.ascension > 0 && (
+            <span className="absolute -bottom-1 -right-1 rounded-full border border-red-500/60 bg-black/80 px-1.5 py-0.5 text-[10px] font-black text-red-200">
+              A{run.ascension}
+            </span>
+          )}
+        </div>
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-baseline gap-2 text-sm">
+            <span className="font-bold text-zinc-100">{characterLabel}</span>
+            <span className="text-xs text-zinc-500">{run.seed}</span>
+            <span className="text-xs text-zinc-500">· floor {currentFloor}</span>
+          </div>
+          <div className="mt-1 flex flex-wrap items-center gap-3 text-sm">
+            <span className="inline-flex items-center gap-1.5">
+              <span aria-hidden className="text-red-400">♥</span>
+              <span className="font-semibold text-zinc-100">
+                {hp ?? "—"}
+                <span className="text-zinc-500">/{maxHp ?? "—"}</span>
+              </span>
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span aria-hidden className="text-amber-300">◉</span>
+              <span className="font-semibold text-zinc-100">{gold ?? "—"}</span>
+            </span>
+            {hasWingedBoots && (
+              <span
+                className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${
+                  wingedBootsJustPicked
+                    ? "border-sky-400/60 bg-sky-500/20 text-sky-100"
+                    : "border-sky-400/30 bg-sky-500/5 text-sky-300/80"
+                }`}
+                title="날개 부츠 활성 · 경로 제약 무시 가능"
+              >
+                Flight
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {relicsByFloor.length > 0 ? (
+        <div className="flex flex-wrap gap-1.5">
+          {relicsByFloor.map((relic) => {
+            const acquired = relic.floor === currentFloor;
+            return (
+              <div
+                key={`${relic.id}-${relic.floor}`}
+                className={`relative h-10 w-10 overflow-hidden rounded-lg border transition ${
+                  acquired
+                    ? "border-amber-400/80 bg-amber-500/20 shadow-[0_0_10px_rgba(251,191,36,0.4)]"
+                    : "border-zinc-700 bg-zinc-900/60"
+                }`}
+                title={`${relicReadableName(relic.id)} · floor ${relic.floor}`}
+              >
+                <Image
+                  src={relicIconSrc(relic.id)}
+                  alt={relicReadableName(relic.id)}
+                  fill
+                  sizes="40px"
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="text-xs text-zinc-500">아직 획득한 유물 없음</p>
+      )}
+    </div>
+  );
+}
