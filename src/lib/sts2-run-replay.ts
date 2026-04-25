@@ -25,6 +25,9 @@ export interface ReplayHistoryEntry {
   current_hp?: number;
   max_hp?: number;
   current_gold?: number;
+  cards_gained?: { id?: string }[];
+  cards_lost?: { id?: string }[];
+  cards_removed?: { id?: string }[];
 }
 
 export interface ReplayDeckCard {
@@ -662,7 +665,14 @@ export function parseReplayRun(raw: string): ReplayRun {
       Array.isArray(act)
         ? act.map((entry) => {
             const rawEntry = entry as Partial<ReplayHistoryEntry> & {
-              player_stats?: Array<{ current_hp?: number; max_hp?: number; current_gold?: number }>;
+              player_stats?: Array<{
+                current_hp?: number;
+                max_hp?: number;
+                current_gold?: number;
+                cards_gained?: { id?: string }[];
+                cards_lost?: { id?: string }[];
+                cards_removed?: { id?: string }[];
+              }>;
             };
             const firstStats = Array.isArray(rawEntry.player_stats) ? rawEntry.player_stats[0] : undefined;
             const pickStat = (
@@ -673,6 +683,12 @@ export function parseReplayRun(raw: string): ReplayRun {
               if (typeof nested === "number") return nested;
               return undefined;
             };
+            const pickCards = (list: { id?: string }[] | undefined) =>
+              Array.isArray(list)
+                ? list
+                    .filter((c): c is { id: string } => typeof c?.id === "string")
+                    .map((c) => ({ id: c.id }))
+                : undefined;
             return {
               map_point_type:
                 typeof rawEntry.map_point_type === "string" ? rawEntry.map_point_type : "unknown",
@@ -687,6 +703,9 @@ export function parseReplayRun(raw: string): ReplayRun {
               current_hp: pickStat(rawEntry.current_hp, firstStats?.current_hp),
               max_hp: pickStat(rawEntry.max_hp, firstStats?.max_hp),
               current_gold: pickStat(rawEntry.current_gold, firstStats?.current_gold),
+              cards_gained: pickCards(firstStats?.cards_gained),
+              cards_lost: pickCards(firstStats?.cards_lost),
+              cards_removed: pickCards(firstStats?.cards_removed),
             };
           })
         : [],
@@ -862,13 +881,16 @@ function chooseActMapVariant(
   run: ReplayRun,
   actStartFloor: number,
   actEndFloor: number,
-  prevActStartFloor: number,
+  _prevActStartFloor: number,
 ): ActMapVariant {
   const player = run.players[0];
   if (!player) return "standard";
   const idOf = (value?: string) => (value ?? "").toUpperCase();
-  // Golden Compass: granted at Tezcatara's ancient and regenerates ONLY that
-  // act's map to a single column; does not persist into later acts.
+  // Golden Compass: granted at Tezcatara's ancient option (start of an act).
+  // Game's GoldenCompass.AfterObtained calls RunManager.GenerateMap immediately,
+  // so the act's map is regenerated as Golden Path the moment the relic is
+  // picked. We detect it via the relic's floor_added_to_deck falling inside
+  // this act's floor range.
   const compassInThisAct = player.relics.some((relic) => {
     const id = idOf(relic.id);
     if (!id.endsWith("GOLDEN_COMPASS")) return false;
@@ -876,16 +898,58 @@ function chooseActMapVariant(
     return added >= actStartFloor && added <= actEndFloor;
   });
   if (compassInThisAct) return "golden_path";
-  // Spoils Map card: added to deck in act N, consumed on entry to act N+1,
-  // converting act N+1's map to hourglass.
-  const spoilsFromPrevAct = player.deck.some((card) => {
-    const id = idOf(card.id);
-    if (!id.endsWith("SPOILS_MAP")) return false;
-    const added = card.floor_added_to_deck ?? 0;
-    return added >= prevActStartFloor && added < actStartFloor;
-  });
-  if (spoilsFromPrevAct) return "spoils";
+  // Spoils Map card: SpoilsMap.ModifyGeneratedMap fires when actIndex == 1
+  // AND the card is in the deck pile at map-generation time (= start of act
+  // 2). The card auto-removes on quest completion (mid-act 2), so the FINAL
+  // deck snapshot in `.run` may not contain it. We must reconstruct deck
+  // membership at the start of this act by replaying cards_gained/cards_lost
+  // history.
+  if (cardWasInDeckAtFloor(run, "SPOILS_MAP", actStartFloor)) {
+    return "spoils";
+  }
   return "standard";
+}
+
+function cardWasInDeckAtFloor(
+  run: ReplayRun,
+  cardSuffix: string,
+  targetFloor: number,
+): boolean {
+  // Check player.deck for cards still present at the end of run that were
+  // added before targetFloor — those are definitely in deck at targetFloor.
+  const player = run.players[0];
+  if (!player) return false;
+  const matches = (id: string | undefined) =>
+    typeof id === "string" && id.toUpperCase().endsWith(cardSuffix);
+  for (const card of player.deck) {
+    if (matches(card.id) && (card.floor_added_to_deck ?? 0) < targetFloor) {
+      return true;
+    }
+  }
+  // Also walk history for cards gained then later removed — those won't be
+  // in the final deck snapshot. If gained < targetFloor and removal (if any)
+  // is at floor >= targetFloor, the card was in deck at start of targetFloor.
+  let floor = 1;
+  let lastGainedFloor: number | null = null;
+  let lastRemovedFloor: number | null = null;
+  for (const act of run.map_point_history) {
+    for (const entry of act) {
+      for (const card of entry.cards_gained ?? []) {
+        if (matches(card.id)) lastGainedFloor = floor;
+      }
+      for (const card of entry.cards_lost ?? []) {
+        if (matches(card.id)) lastRemovedFloor = floor;
+      }
+      for (const card of entry.cards_removed ?? []) {
+        if (matches(card.id)) lastRemovedFloor = floor;
+      }
+      floor++;
+    }
+  }
+  if (lastGainedFloor === null) return false;
+  if (lastGainedFloor >= targetFloor) return false;
+  if (lastRemovedFloor !== null && lastRemovedFloor < targetFloor) return false;
+  return true;
 }
 
 function buildGoldenPathGrid(map: GeneratedActMap) {
