@@ -38,6 +38,8 @@ export interface ReplayDeckCard {
 export interface ReplayRelic {
   id: string;
   floor_added_to_deck?: number;
+  intArrays?: Record<string, number[]>;
+  ints?: Record<string, number>;
 }
 
 export interface ReplayPlayer {
@@ -99,6 +101,14 @@ export interface ReplayActAnalysis {
   // Lowest flight budget that produced any matching path. Useful for tracking
   // boots charge consumption across acts.
   flightStepsUsed: number;
+  // Node IDs marked by Fur Coat (Nonupeipe) — game shows a quest marker on
+  // these. Empty unless this act is the act in which Fur Coat was obtained.
+  furCoatMarkerNodeIds: string[];
+  // Node ID marked by Spoils Map quest. Empty for non-spoils acts.
+  spoilsMarkerNodeId: string | null;
+  // Node IDs that the player arrived at via off-edge flight (Winged Boots).
+  // Each of these gets a Winged Boots relic icon overlay in the UI.
+  flightArrivalNodeIds: string[];
 }
 
 export interface ReplayAnalysis {
@@ -639,11 +649,30 @@ export function parseReplayRun(raw: string): ReplayRun {
           relics: Array.isArray(player?.relics)
             ? player.relics
                 .filter((relic): relic is ReplayRelic => typeof relic?.id === "string")
-                .map((relic) => ({
-                  id: relic.id,
-                  floor_added_to_deck:
-                    typeof relic.floor_added_to_deck === "number" ? relic.floor_added_to_deck : undefined,
-                }))
+                .map((relic) => {
+                  const props = (relic as { props?: { ints?: { name?: string; value?: number }[]; int_arrays?: { name?: string; value?: number[] }[] } }).props;
+                  const ints: Record<string, number> = {};
+                  for (const item of props?.ints ?? []) {
+                    if (typeof item?.name === "string" && typeof item.value === "number") {
+                      ints[item.name] = item.value;
+                    }
+                  }
+                  const intArrays: Record<string, number[]> = {};
+                  for (const item of props?.int_arrays ?? []) {
+                    if (typeof item?.name === "string" && Array.isArray(item.value)) {
+                      intArrays[item.name] = item.value.filter(
+                        (v): v is number => typeof v === "number",
+                      );
+                    }
+                  }
+                  return {
+                    id: relic.id,
+                    floor_added_to_deck:
+                      typeof relic.floor_added_to_deck === "number" ? relic.floor_added_to_deck : undefined,
+                    ints: Object.keys(ints).length > 0 ? ints : undefined,
+                    intArrays: Object.keys(intArrays).length > 0 ? intArrays : undefined,
+                  };
+                })
             : [],
         }))
       : [],
@@ -772,6 +801,15 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
     if (!hasFlightModifier && match.pathCount > 0) {
       totalBootsFlightsUsed += match.flightStepsUsed;
     }
+    const furCoatMarkerNodeIds = collectFurCoatMarkerNodeIds(run, actIndex, map);
+    const spoilsMarkerNodeId = collectSpoilsMarkerNodeId(map);
+    const flightArrivalNodeIds: string[] = [];
+    if (match.pathCount === 1) {
+      for (const stepIndex of match.flightStepIndices) {
+        const nodeId = match.nodeCandidates[stepIndex]?.[0];
+        if (nodeId) flightArrivalNodeIds.push(nodeId);
+      }
+    }
     acts.push({
       actIndex,
       actId,
@@ -790,6 +828,9 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
       mapVariant: map.variant,
       flightStepIndices: match.flightStepIndices,
       flightStepsUsed: match.flightStepsUsed,
+      furCoatMarkerNodeIds,
+      spoilsMarkerNodeId,
+      flightArrivalNodeIds,
     });
     baseFloor += history.length;
   }
@@ -908,6 +949,43 @@ function chooseActMapVariant(
     return "spoils";
   }
   return "standard";
+}
+
+function collectFurCoatMarkerNodeIds(
+  run: ReplayRun,
+  actIndex: number,
+  map: GeneratedActMap,
+): string[] {
+  // Game's FurCoat saves marked coordinates in props.int_arrays
+  // (FurCoatCoordCols / FurCoatCoordRows). The relic also stores
+  // FurCoatActIndex — markers only show in the act it was obtained.
+  const player = run.players[0];
+  if (!player) return [];
+  const relic = player.relics.find(
+    (r) => normalizeIdentifier(r.id) === "FUR_COAT",
+  );
+  if (!relic) return [];
+  const furActIndex = relic.ints?.FurCoatActIndex;
+  if (typeof furActIndex !== "number" || furActIndex !== actIndex) return [];
+  const cols = relic.intArrays?.FurCoatCoordCols ?? [];
+  const rows = relic.intArrays?.FurCoatCoordRows ?? [];
+  const result: string[] = [];
+  for (let i = 0; i < Math.min(cols.length, rows.length); i++) {
+    const node = map.getPoint({ col: cols[i], row: rows[i] });
+    if (node) result.push(node.id);
+  }
+  return result;
+}
+
+function collectSpoilsMarkerNodeId(map: GeneratedActMap): string | null {
+  // SpoilsMap.ModifyGeneratedMapLate picks the first treasure node in
+  // GetAllMapPoints iteration order. SpoilsActMap collapses to a single
+  // treasure at (midCol, treasureRow).
+  if (map.variant !== "spoils") return null;
+  for (const point of map.getAllMapPoints()) {
+    if (point.type === "treasure") return point.id;
+  }
+  return null;
 }
 
 function cardWasInDeckAtFloor(

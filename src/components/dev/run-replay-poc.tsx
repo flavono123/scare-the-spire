@@ -18,105 +18,6 @@ import {
   type ReplayRun,
 } from "@/lib/sts2-run-replay";
 
-const SAMPLE_RUN: ReplayRun = {
-  seed: "PH19VCZ8LG",
-  build_id: "v0.103.2",
-  ascension: 10,
-  game_mode: "standard",
-  win: true,
-  acts: ["ACT.OVERGROWTH", "ACT.HIVE", "ACT.GLORY"],
-  players: [
-    {
-      id: 1,
-      character: "CHARACTER.SILENT",
-      deck: [],
-      relics: [],
-    },
-  ],
-  modifiers: [],
-  map_point_history: [
-    [
-      room("ancient", "event", "EVENT.NEOW", 0),
-      room("monster", "monster", "ENCOUNTER.FUZZY_WURM_CRAWLER_WEAK", 6),
-      room("monster", "monster", "ENCOUNTER.SLIMES_WEAK", 5),
-      room("monster", "monster", "ENCOUNTER.NIBBITS_WEAK", 4),
-      {
-        map_point_type: "unknown",
-        rooms: [
-          { room_type: "event", model_id: "EVENT.DENSE_VEGETATION", turns_taken: 0 },
-          { room_type: "monster", model_id: "ENCOUNTER.DENSE_VEGETATION_EVENT_ENCOUNTER", turns_taken: 4 },
-        ],
-      },
-      room("monster", "monster", "ENCOUNTER.SLIMES_NORMAL", 7),
-      room("rest_site", "rest_site", null, 0),
-      room("elite", "elite", "ENCOUNTER.BYRDONIS_ELITE", 5),
-      room("rest_site", "rest_site", null, 0),
-      room("treasure", "treasure", null, 0),
-      room("rest_site", "rest_site", null, 0),
-      room("monster", "monster", "ENCOUNTER.INKLETS_NORMAL", 2),
-      room("rest_site", "rest_site", null, 0),
-      room("elite", "elite", "ENCOUNTER.BYGONE_EFFIGY_ELITE", 3),
-      room("monster", "monster", "ENCOUNTER.CUBEX_CONSTRUCT_NORMAL", 3),
-      room("rest_site", "rest_site", null, 0),
-      room("boss", "boss", "ENCOUNTER.CEREMONIAL_BEAST_BOSS", 7),
-    ],
-    [
-      room("ancient", "event", "EVENT.OROBAS", 0),
-      room("monster", "monster", "ENCOUNTER.THIEVING_HOPPER_WEAK", 2),
-      room("monster", "monster", "ENCOUNTER.BOWLBUGS_WEAK", 3),
-      room("monster", "monster", "ENCOUNTER.THE_OBSCURA_NORMAL", 8),
-      room("shop", "shop", null, 0),
-      room("monster", "monster", "ENCOUNTER.BOWLBUGS_NORMAL", 5),
-      room("unknown", "event", "EVENT.BUGSLAYER", 0),
-      room("unknown", "event", "EVENT.DOLL_ROOM", 0),
-      room("treasure", "treasure", null, 0),
-      room("rest_site", "rest_site", null, 0),
-      room("monster", "monster", "ENCOUNTER.SPINY_TOAD_NORMAL", 4),
-      room("elite", "elite", "ENCOUNTER.ENTOMANCER_ELITE", 7),
-      room("monster", "monster", "ENCOUNTER.HUNTER_KILLER_NORMAL", 6),
-      room("monster", "monster", "ENCOUNTER.OVICOPTER_NORMAL", 3),
-      room("rest_site", "rest_site", null, 0),
-      room("boss", "boss", "ENCOUNTER.KAISER_CRAB_BOSS", 12),
-    ],
-    [
-      room("ancient", "event", "EVENT.NONUPEIPE", 0),
-      room("monster", "monster", "ENCOUNTER.DEVOTED_SCULPTOR_WEAK", 6),
-      room("monster", "monster", "ENCOUNTER.SCROLLS_OF_BITING_WEAK", 3),
-      room("monster", "monster", "ENCOUNTER.FABRICATOR_NORMAL", 6),
-      room("unknown", "monster", "ENCOUNTER.THE_LOST_AND_FORGOTTEN_NORMAL", 8),
-      room("monster", "monster", "ENCOUNTER.OWL_MAGISTRATE_NORMAL", 7),
-      room("rest_site", "rest_site", null, 0),
-      room("treasure", "treasure", null, 0),
-      room("rest_site", "rest_site", null, 0),
-      room("elite", "elite", "ENCOUNTER.SOUL_NEXUS_ELITE", 7),
-      room("rest_site", "rest_site", null, 0),
-      room("monster", "monster", "ENCOUNTER.CONSTRUCT_MENAGERIE_NORMAL", 6),
-      room("unknown", "event", "EVENT.TINKER_TIME", 0),
-      room("rest_site", "rest_site", null, 0),
-      room("boss", "boss", "ENCOUNTER.QUEEN_BOSS", 12),
-      room("boss", "boss", "ENCOUNTER.DOORMAKER_BOSS", 11),
-    ],
-  ],
-};
-
-function room(
-  mapPointType: ReplayMapPointType,
-  roomType: string,
-  modelId: string | null,
-  turnsTaken: number,
-) {
-  return {
-    map_point_type: mapPointType,
-    rooms: [
-      {
-        room_type: roomType,
-        model_id: modelId,
-        turns_taken: turnsTaken,
-      },
-    ],
-  };
-}
-
 const NODE_META: Record<
   ReplayMapPointType,
   {
@@ -347,13 +248,6 @@ const STORED_RUNS_KEY = "sts2-replay-poc:stored-runs:v1";
 const STORED_ACTIVE_KEY = "sts2-replay-poc:active-run:v1";
 const FIXTURE_INDEX_URL = "/dev/run-fixtures/index.json";
 
-const BUILTIN_RUN: StoredRun = {
-  id: "__builtin_sample",
-  label: "내장 샘플 (PH19VCZ8LG · A10)",
-  run: SAMPLE_RUN,
-  kind: "preset",
-};
-
 type FixtureIndexEntry = {
   slug: string;
   label: string;
@@ -434,9 +328,9 @@ function describeRun(run: ReplayRun): string {
 }
 
 export function RunReplayPoc() {
-  const [storedRuns, setStoredRuns] = useState<StoredRun[]>([BUILTIN_RUN]);
-  const [activeId, setActiveId] = useState<string>(
-    () => readActiveRunId() ?? BUILTIN_RUN.id,
+  const [storedRuns, setStoredRuns] = useState<StoredRun[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(
+    () => readActiveRunId(),
   );
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -447,8 +341,12 @@ export function RunReplayPoc() {
     const persistedUser = readStoredRuns().filter((entry) => entry.kind === "user");
     loadFixturePresets().then((presets) => {
       if (cancelled) return;
-      const presetEntries = presets.length > 0 ? presets : [];
-      setStoredRuns([BUILTIN_RUN, ...presetEntries, ...persistedUser]);
+      const next = [...presets, ...persistedUser];
+      setStoredRuns(next);
+      setActiveId((prev) => {
+        if (prev && next.some((entry) => entry.id === prev)) return prev;
+        return next[0]?.id ?? null;
+      });
     });
     return () => {
       cancelled = true;
@@ -460,13 +358,21 @@ export function RunReplayPoc() {
     const persistable = storedRuns.filter((entry) => entry.kind === "user");
     try {
       window.localStorage.setItem(STORED_RUNS_KEY, JSON.stringify(persistable));
-      window.localStorage.setItem(STORED_ACTIVE_KEY, activeId);
+      if (activeId) window.localStorage.setItem(STORED_ACTIVE_KEY, activeId);
     } catch {
       // ignore quota
     }
   }, [storedRuns, activeId]);
 
-  const activeEntry = storedRuns.find((entry) => entry.id === activeId) ?? BUILTIN_RUN;
+  const activeEntry =
+    storedRuns.find((entry) => entry.id === activeId) ?? storedRuns[0] ?? null;
+  if (!activeEntry) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-6 text-sm text-zinc-400">
+        Fixture 로딩 중…
+      </div>
+    );
+  }
   const run = activeEntry.run;
   const sourceLabel = activeEntry.label;
   const analysis = analyzeReplayRun(run);
@@ -504,8 +410,13 @@ export function RunReplayPoc() {
     const target = storedRuns.find((entry) => entry.id === id);
     if (!target || target.kind === "preset") return;
     startTransition(() => {
-      setStoredRuns((prev) => prev.filter((entry) => entry.id !== id));
-      setActiveId((prevId) => (prevId === id ? BUILTIN_RUN.id : prevId));
+      setStoredRuns((prev) => {
+        const next = prev.filter((entry) => entry.id !== id);
+        setActiveId((prevId) =>
+          prevId === id ? next[0]?.id ?? null : prevId,
+        );
+        return next;
+      });
     });
   }
 
@@ -556,16 +467,6 @@ export function RunReplayPoc() {
                 event.target.value = "";
               }}
             />
-            <button
-              type="button"
-              className="rounded-full border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition hover:border-zinc-500 hover:text-white"
-              onClick={() => {
-                setError(null);
-                setActiveId(BUILTIN_RUN.id);
-              }}
-            >
-              샘플로 되돌리기
-            </button>
           </div>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -966,6 +867,12 @@ function SeededMapView({
     }
   }
 
+  const questMarkerNodes = new Set<string>([
+    ...act.furCoatMarkerNodeIds,
+    ...(act.spoilsMarkerNodeId ? [act.spoilsMarkerNodeId] : []),
+  ]);
+  const flightArrivalNodes = new Set(act.flightArrivalNodeIds);
+
   return (
     <div className="overflow-x-auto overflow-y-visible">
       <div
@@ -1017,6 +924,9 @@ function SeededMapView({
           if (!position) return null;
           const scale = current ? 1.08 : active ? 1 : 0.95;
 
+          const showQuestMarker = questMarkerNodes.has(node.id);
+          const showFlightMarker = flightArrivalNodes.has(node.id) && active;
+
           return (
             <div
               key={node.id}
@@ -1031,6 +941,48 @@ function SeededMapView({
               }}
             >
               <MapNodeAsset node={node} act={act} state={state} size={size} />
+              {showQuestMarker && (
+                <Image
+                  src="/images/sts2/map/icons/map_spoils_map_marker.png"
+                  alt="quest marker"
+                  width={36}
+                  height={36}
+                  unoptimized
+                  className="pointer-events-none absolute"
+                  style={{
+                    right: "-22%",
+                    top: "-32%",
+                    width: Math.round(size.width * 0.55),
+                    height: Math.round(size.width * 0.55),
+                    filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.7))",
+                  }}
+                />
+              )}
+              {showFlightMarker && (
+                <div
+                  className="pointer-events-none absolute"
+                  style={{
+                    left: "-26%",
+                    top: "-32%",
+                    width: Math.round(size.width * 0.5),
+                    height: Math.round(size.width * 0.5),
+                  }}
+                  title="윙부츠로 점프"
+                >
+                  <div
+                    className="absolute inset-0 rounded-full border border-sky-300/60 bg-sky-950/80"
+                    style={{ filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.7))" }}
+                  />
+                  <Image
+                    src="/images/sts2/relics/winged_boots.webp"
+                    alt="윙부츠"
+                    fill
+                    sizes="32px"
+                    unoptimized
+                    className="rounded-full p-[10%]"
+                  />
+                </div>
+              )}
             </div>
           );
         })}
