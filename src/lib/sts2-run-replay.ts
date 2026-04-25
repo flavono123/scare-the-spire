@@ -1582,7 +1582,14 @@ function findMatchingSegments(start: MapNode): MapNode[][][] {
     addSegmentsToDictionary(path, segments);
   }
 
-  return Array.from(segments.values()).filter((matches) => matches.length > 1);
+  // C# uses SortedDictionary<string, ...>(StringComparer.Ordinal) so the
+  // duplicates are visited in ordinal-sorted key order. JS Map iterates in
+  // insertion order, which would shuffle a different sequence of segments
+  // (each unstableShuffle consumes RNG) and produce a different pruned map.
+  const orderedKeys = Array.from(segments.keys()).sort();
+  return orderedKeys
+    .map((k) => segments.get(k)!)
+    .filter((matches) => matches.length > 1);
 }
 
 function findAllPaths(current: MapNode): MapNode[][] {
@@ -1590,8 +1597,12 @@ function findAllPaths(current: MapNode): MapNode[][] {
     return [[current]];
   }
 
+  // Match C# MapPathPruning.FindAllPaths which iterates HashSet<MapPoint> in
+  // INSERTION order (children added during pathGenerate). Sorting here would
+  // re-order paths and shift overlap-detection winners in
+  // addSegmentsToDictionary.
   const paths: MapNode[][] = [];
-  for (const child of Array.from(current.children).sort(compareMapNodes)) {
+  for (const child of current.children) {
     for (const childPath of findAllPaths(child)) {
       paths.push([current, ...childPath]);
     }
