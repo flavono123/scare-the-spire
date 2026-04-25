@@ -19,15 +19,31 @@ export interface ReplayRoom {
   turns_taken: number;
 }
 
+export interface ReplayChoice {
+  id: string;
+  picked: boolean;
+}
+
 export interface ReplayHistoryEntry {
   map_point_type: string;
   rooms: ReplayRoom[];
   current_hp?: number;
   max_hp?: number;
   current_gold?: number;
+  damage_taken?: number;
+  hp_healed?: number;
+  max_hp_gained?: number;
+  max_hp_lost?: number;
+  gold_gained?: number;
+  gold_spent?: number;
+  gold_lost?: number;
+  gold_stolen?: number;
   cards_gained?: { id?: string }[];
   cards_lost?: { id?: string }[];
   cards_removed?: { id?: string }[];
+  card_choices?: ReplayChoice[];
+  relic_choices?: ReplayChoice[];
+  potion_choices?: ReplayChoice[];
 }
 
 export interface ReplayDeckCard {
@@ -693,14 +709,27 @@ export function parseReplayRun(raw: string): ReplayRun {
     map_point_history: parsed.map_point_history.map((act) =>
       Array.isArray(act)
         ? act.map((entry) => {
+            type RawCardChoice = { card?: { id?: string }; was_picked?: boolean };
+            type RawSimpleChoice = { choice?: string; was_picked?: boolean };
             const rawEntry = entry as Partial<ReplayHistoryEntry> & {
               player_stats?: Array<{
                 current_hp?: number;
                 max_hp?: number;
                 current_gold?: number;
+                damage_taken?: number;
+                hp_healed?: number;
+                max_hp_gained?: number;
+                max_hp_lost?: number;
+                gold_gained?: number;
+                gold_spent?: number;
+                gold_lost?: number;
+                gold_stolen?: number;
                 cards_gained?: { id?: string }[];
                 cards_lost?: { id?: string }[];
                 cards_removed?: { id?: string }[];
+                card_choices?: RawCardChoice[];
+                relic_choices?: RawSimpleChoice[];
+                potion_choices?: RawSimpleChoice[];
               }>;
             };
             const firstStats = Array.isArray(rawEntry.player_stats) ? rawEntry.player_stats[0] : undefined;
@@ -718,6 +747,22 @@ export function parseReplayRun(raw: string): ReplayRun {
                     .filter((c): c is { id: string } => typeof c?.id === "string")
                     .map((c) => ({ id: c.id }))
                 : undefined;
+            const pickCardChoices = (list: RawCardChoice[] | undefined): ReplayChoice[] | undefined =>
+              Array.isArray(list)
+                ? list
+                    .filter((c): c is { card: { id: string }; was_picked?: boolean } =>
+                      typeof c?.card?.id === "string",
+                    )
+                    .map((c) => ({ id: c.card.id, picked: !!c.was_picked }))
+                : undefined;
+            const pickSimpleChoices = (list: RawSimpleChoice[] | undefined): ReplayChoice[] | undefined =>
+              Array.isArray(list)
+                ? list
+                    .filter((c): c is { choice: string; was_picked?: boolean } =>
+                      typeof c?.choice === "string",
+                    )
+                    .map((c) => ({ id: c.choice, picked: !!c.was_picked }))
+                : undefined;
             return {
               map_point_type:
                 typeof rawEntry.map_point_type === "string" ? rawEntry.map_point_type : "unknown",
@@ -732,9 +777,20 @@ export function parseReplayRun(raw: string): ReplayRun {
               current_hp: pickStat(rawEntry.current_hp, firstStats?.current_hp),
               max_hp: pickStat(rawEntry.max_hp, firstStats?.max_hp),
               current_gold: pickStat(rawEntry.current_gold, firstStats?.current_gold),
+              damage_taken: firstStats?.damage_taken,
+              hp_healed: firstStats?.hp_healed,
+              max_hp_gained: firstStats?.max_hp_gained,
+              max_hp_lost: firstStats?.max_hp_lost,
+              gold_gained: firstStats?.gold_gained,
+              gold_spent: firstStats?.gold_spent,
+              gold_lost: firstStats?.gold_lost,
+              gold_stolen: firstStats?.gold_stolen,
               cards_gained: pickCards(firstStats?.cards_gained),
               cards_lost: pickCards(firstStats?.cards_lost),
               cards_removed: pickCards(firstStats?.cards_removed),
+              card_choices: pickCardChoices(firstStats?.card_choices),
+              relic_choices: pickSimpleChoices(firstStats?.relic_choices),
+              potion_choices: pickSimpleChoices(firstStats?.potion_choices),
             };
           })
         : [],
