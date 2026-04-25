@@ -78,5 +78,13 @@
     "ascension": 10,
     "build": "v0.103.2",
     "character": "CHARACTER.REGENT"
+  },
+  {
+    "slug": "afk-silent-yqcz-a10",
+    "label": "AFK 의심 · Silent (A10 Loss, 9h52m / 활동 26m)",
+    "seed": "YQCZ0WLBWA",
+    "ascension": 10,
+    "build": "v0.103.2",
+    "character": "CHARACTER.SILENT"
   }
 ]
