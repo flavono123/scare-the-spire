@@ -1215,6 +1215,34 @@ function findMatchingPathsWithFlight(
     }
   }
 
+  // Tie-breaker: among paths with the same flight count, prefer ones that
+  // defer flight as late as possible. Players don't fly when a normal edge
+  // would do, so later flights are more plausible than earlier ones.
+  // Compare paths by their flight-depth list sorted descending; the
+  // lexicographically largest list wins (latest flight, then second-latest,
+  // etc.). Tied paths are kept — they're genuinely indistinguishable.
+  if (result.paths.length > 1) {
+    const ranked = result.paths.map((path) => ({
+      path,
+      key: [...path.flightDepths].sort((a, b) => b - a),
+    }));
+    const compareKeys = (a: number[], b: number[]) => {
+      const len = Math.max(a.length, b.length);
+      for (let i = 0; i < len; i++) {
+        const av = a[i] ?? -1;
+        const bv = b[i] ?? -1;
+        if (av !== bv) return bv - av;
+      }
+      return 0;
+    };
+    ranked.sort((a, b) => compareKeys(a.key, b.key));
+    const bestKey = ranked[0].key;
+    const filtered = ranked
+      .filter((entry) => compareKeys(entry.key, bestKey) === 0)
+      .map((entry) => entry.path);
+    result = { paths: filtered, capped: result.capped };
+  }
+
   const nodeCandidates = Array.from({ length: historyTypes.length }, () => new Set<string>());
   const edgeCandidates = Array.from({ length: historyTypes.length }, () => new Set<string>());
   for (const match of result.paths) {
