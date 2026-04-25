@@ -6,6 +6,7 @@ import {
   type ReactNode,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
   useTransition,
@@ -647,13 +648,48 @@ function RunLibrary({
   );
 }
 
+// "Synthetic activity time" weight per step (in seconds). Combat scales with
+// turns_taken; non-combat uses fixed estimates. Doesn't reflect wall-clock —
+// AFK time is naturally absent because we never read run_time per node.
+function stepActivitySeconds(entry: ReplayHistoryEntry): number {
+  const room = entry.rooms[0];
+  const roomType = (room?.room_type ?? "").toLowerCase();
+  const turns = room?.turns_taken ?? 0;
+  const t = entry.map_point_type;
+  if (t === "monster" || roomType === "monster") return Math.max(1, turns) * 8;
+  if (t === "elite" || roomType === "elite") return Math.max(1, turns) * 8;
+  if (t === "boss") return Math.max(1, turns) * 10;
+  if (t === "ancient") return 60;
+  if (t === "shop" || roomType === "shop") return 45;
+  if (t === "treasure" || roomType === "treasure") return 15;
+  if (t === "rest_site" || roomType === "rest_site") return 25;
+  if (roomType === "event") return 60;
+  return 30;
+}
+
+const PLAYBACK_RATES = [1, 2, 4, 8, 16] as const;
+type PlaybackRate = (typeof PLAYBACK_RATES)[number];
+
 function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun }) {
   const [step, setStep] = useState(act.history.length);
   const [playing, setPlaying] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState<PlaybackRate>(2);
   const currentEntry = act.history[Math.max(0, step - 1)] ?? null;
   const currentType = act.historyTypes[Math.max(0, step - 1)] ?? "monster";
   const mapBoxRef = useRef<HTMLDivElement>(null);
   const [mapBoxHeight, setMapBoxHeight] = useState<number | null>(null);
+
+  // Cumulative synthetic seconds at end of each step (1-indexed; index 0 = 0s).
+  const cumulativeActivitySeconds = useMemo(() => {
+    const arr = [0];
+    let sum = 0;
+    for (const entry of act.history) {
+      sum += stepActivitySeconds(entry);
+      arr.push(sum);
+    }
+    return arr;
+  }, [act.history]);
+  const totalActivitySeconds = cumulativeActivitySeconds[cumulativeActivitySeconds.length - 1];
 
   useEffect(() => {
     const node = mapBoxRef.current;
@@ -667,20 +703,32 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
     return () => observer.disconnect();
   }, []);
 
+  // Variable-duration playback: delay between step N → N+1 is proportional
+  // to the activity weight of step N+1 (the one we're advancing to). At
+  // playbackRate × R, every R activity-seconds maps to ~50ms of replay; an
+  // unbroken slow pace would feel "real time" near rate 1 but we keep a hard
+  // floor so combat-heavy floors don't drag forever.
   useEffect(() => {
     if (!playing) return;
-    const timer = window.setInterval(() => {
-      setStep((prev) => {
-        if (prev >= act.history.length) {
-          window.clearInterval(timer);
-          setPlaying(false);
-          return prev;
-        }
-        return prev + 1;
-      });
-    }, 650);
-    return () => window.clearInterval(timer);
-  }, [playing, act.history.length]);
+    const nextEntry = act.history[step];
+    if (!nextEntry) return;
+    const seconds = stepActivitySeconds(nextEntry);
+    // baseline: 1x ≈ ~50ms per activity-second. cap min to keep UI legible.
+    const ms = Math.max(120, Math.round((seconds * 50) / playbackRate));
+    const timer = window.setTimeout(() => {
+      setStep((prev) => Math.min(prev + 1, act.history.length));
+    }, ms);
+    return () => window.clearTimeout(timer);
+  }, [playing, step, playbackRate, act.history]);
+
+  // Auto-stop when we hit the last step. setState in effect is intentional
+  // here — we're synchronizing the playing flag with the derived end state.
+  useEffect(() => {
+    if (playing && step >= act.history.length) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPlaying(false);
+    }
+  }, [playing, step, act.history.length]);
 
   const statusTone =
     act.matchedPathCount === 0 ? "red" : act.exactReplay ? "green" : "amber";
@@ -710,6 +758,23 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <div className="inline-flex overflow-hidden rounded-full border border-zinc-700 bg-zinc-950/60 text-xs">
+            {PLAYBACK_RATES.map((rate) => (
+              <button
+                key={rate}
+                type="button"
+                onClick={() => setPlaybackRate(rate)}
+                className={`px-2.5 py-1 transition ${
+                  playbackRate === rate
+                    ? "bg-amber-500/20 text-amber-100"
+                    : "text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+                }`}
+                aria-pressed={playbackRate === rate}
+              >
+                {rate}×
+              </button>
+            ))}
+          </div>
           <button
             type="button"
             className="rounded-full border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 transition hover:border-zinc-500 hover:text-white"
@@ -735,7 +800,13 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
         </div>
       </div>
 
-      <RunTopBar run={run} act={act} step={step} />
+      <RunTopBar
+        run={run}
+        act={act}
+        step={step}
+        activitySeconds={cumulativeActivitySeconds[step] ?? 0}
+        totalActivitySeconds={totalActivitySeconds}
+      />
 
       <div className="mt-5 grid items-stretch gap-5 xl:grid-cols-[1.15fr_0.85fr]">
         <div
@@ -2010,14 +2081,27 @@ function relicReadableName(relicId: string): string {
   return relicId.replace(/^RELIC\./, "").replace(/_/g, " ").toLowerCase();
 }
 
+function formatHms(seconds: number): string {
+  const total = Math.max(0, Math.round(seconds));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
 function RunTopBar({
   run,
   act,
   step,
+  activitySeconds,
+  totalActivitySeconds,
 }: {
   run: ReplayRun;
   act: ReplayActAnalysis;
   step: number;
+  activitySeconds: number;
+  totalActivitySeconds: number;
 }) {
   const player = run.players[0];
   const character = player?.character ?? "CHARACTER.SILENT";
@@ -2061,6 +2145,13 @@ function RunTopBar({
     currentEntry != null &&
     relicsByFloor[relicsByFloor.length - 1]?.id.toUpperCase().endsWith("WINGED_BOOTS") &&
     relicsByFloor[relicsByFloor.length - 1]?.floor === currentFloor;
+
+  // AFK suspicion: run_time vs synthetic active time. If recorded run is much
+  // longer than the activity-weighted estimate, flag it.
+  const recordedRunTime = run.run_time ?? 0;
+  const afkRatio =
+    totalActivitySeconds > 0 ? recordedRunTime / totalActivitySeconds : 0;
+  const afkSuspect = afkRatio >= 1.8 && recordedRunTime > 0;
 
   return (
     <div className="mt-5 space-y-3 rounded-3xl border border-zinc-800 bg-gradient-to-b from-zinc-950 to-black/80 p-4">
@@ -2112,6 +2203,31 @@ function RunTopBar({
               </span>
             )}
           </div>
+        </div>
+        <div className="ml-auto flex items-center gap-3 text-amber-200">
+          <span
+            className="inline-flex items-center gap-1.5 text-base font-bold tabular-nums"
+            title="활동 시간 추정 (전투 turns × 8s + 비전투 노드별 가중)"
+          >
+            <span aria-hidden>⏱</span>
+            <span>{formatHms(activitySeconds)}</span>
+          </span>
+          {recordedRunTime > 0 && (
+            <span
+              className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide ${
+                afkSuspect
+                  ? "border-rose-400/40 bg-rose-500/10 text-rose-200"
+                  : "border-zinc-700 bg-zinc-900/60 text-zinc-400"
+              }`}
+              title={
+                afkSuspect
+                  ? `기록 ${formatHms(recordedRunTime)} (AFK 의심: 활동 추정 ${formatHms(totalActivitySeconds)} 대비 ${afkRatio.toFixed(1)}배)`
+                  : `기록 ${formatHms(recordedRunTime)}`
+              }
+            >
+              {afkSuspect ? "AFK?" : "기록"} {formatHms(recordedRunTime)}
+            </span>
+          )}
         </div>
       </div>
 

@@ -80,6 +80,8 @@ export interface ReplayRun {
   players: ReplayPlayer[];
   modifiers: ReplayModifier[];
   map_point_history: ReplayHistoryEntry[][];
+  run_time?: number;
+  start_time?: number;
 }
 
 export interface ReplayMapNode {
@@ -648,6 +650,8 @@ export function parseReplayRun(raw: string): ReplayRun {
     ascension: typeof parsed.ascension === "number" ? parsed.ascension : 0,
     game_mode: typeof parsed.game_mode === "string" ? parsed.game_mode : "standard",
     win: !!parsed.win,
+    run_time: typeof parsed.run_time === "number" ? parsed.run_time : undefined,
+    start_time: typeof parsed.start_time === "number" ? parsed.start_time : undefined,
     acts: parsed.acts.filter((act): act is string => typeof act === "string"),
     players: Array.isArray(parsed.players)
       ? parsed.players.map((player) => ({
