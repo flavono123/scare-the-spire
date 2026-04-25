@@ -1,5 +1,7 @@
 # STS2 런 데이터 기부 안내
 
+> 짧게 보고 싶다면 → [CONTRIBUTING.tldr.md](./CONTRIBUTING.tldr.md) · English → [CONTRIBUTING.en.md](./CONTRIBUTING.en.md) / [CONTRIBUTING.en.tldr.md](./CONTRIBUTING.en.tldr.md)
+
 슬서운이야기의 **런 리플레이** 기능은 STS2 `.run` 파일을 시드로 맵을 다시 생성한 뒤 히스토리를 그 위에 얹어 보여줍니다. 다양한 상황의 실제 플레이 데이터가 많을수록 재현 정확도와 시각화 품질이 올라가니, 본인 히스토리에서 아래 조건에 맞는 런이 있다면 보내주시면 큰 도움이 됩니다.
 
 ## 어떤 런이 필요한가요
