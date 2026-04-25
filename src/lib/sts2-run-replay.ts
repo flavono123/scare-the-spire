@@ -261,7 +261,10 @@ class StsRng {
       const d = 1 - this.random.nextDouble();
       const n = 1 - this.random.nextDouble();
       const gaussian = Math.sqrt(-2 * Math.log(d)) * Math.sin(Math.PI * 2 * n);
-      candidate = Math.round(mean + stdDev * gaussian);
+      // C# Math.Round defaults to MidpointRounding.ToEven (banker's). JS
+      // Math.round always rounds half away from zero. For exact-half values
+      // these diverge: 6.5 → C# 6 vs JS 7. Use banker's to match.
+      candidate = roundHalfToEven(mean + stdDev * gaussian);
     } while (candidate < min || candidate > max);
     return candidate;
   }
@@ -1685,8 +1688,13 @@ function pruneSegment(map: GeneratedActMap, segment: MapNode[]): boolean {
       return true;
     }
 
+    // C# MapPathPruning.cs:277 uses !IsRemoved(grid, n) — pure grid presence
+    // check. That excludes start/boss (which sit outside the grid array even
+    // when conceptually "in map"). Our previous use of map.isInMap would
+    // include them and diverge for points whose only parent is the start
+    // ancient with a single child.
     const hasSingleParentParent = Array.from(point.parents).some(
-      (parent) => parent.children.size === 1 && map.isInMap(parent),
+      (parent) => parent.children.size === 1 && pointInGrid(map, parent),
     );
     if (point.children.size > 1 || point.parents.size > 1 || hasSingleParentParent) {
       continue;
@@ -1954,6 +1962,24 @@ function isColumnEmpty(grid: Array<Array<MapNode | null>>, col: number): boolean
 
 function standardRandomUnknownCount(rng: StsRng): number {
   return rng.nextGaussianInt(12, 1, 10, 14);
+}
+
+function pointInGrid(map: GeneratedActMap, node: MapNode): boolean {
+  // Mirrors C# !IsRemoved(grid, n) — purely checks the grid array, ignoring
+  // the ancient/boss specialization that map.isInMap applies.
+  const r = node.coord.row;
+  const c = node.coord.col;
+  if (r < 0 || r >= map.rowCount || c < 0 || c >= MAP_COLUMNS) return false;
+  return map.grid[c][r] !== null;
+}
+
+function roundHalfToEven(value: number): number {
+  const floored = Math.floor(value);
+  const frac = value - floored;
+  if (frac < 0.5) return floored;
+  if (frac > 0.5) return floored + 1;
+  // exactly 0.5 — round to even
+  return floored % 2 === 0 ? floored : floored + 1;
 }
 
 function stableShuffle<T>(items: T[], compare: (a: T, b: T) => number, rng: StsRng): T[] {
