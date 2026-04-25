@@ -1774,7 +1774,12 @@ function MapNodeAsset({
   if (node.type === "boss") {
     const bossKey = bossKeyForRow(act, node.row);
     const bossAsset = getBossAsset(bossKey);
-    if (!bossAsset) return null;
+    if (!bossAsset) {
+      // 보스 미도달 (early death) 인 막에선 history 에 boss 엔트리가 없어 어떤
+      // 보스인지 알 수 없음. 정체불명 보스로 placeholder 렌더 — 노드 자체는
+      // 항상 표시.
+      return <UnknownBossPlaceholder size={size} />;
+    }
     return (
       <BossMapAsset
         actId={act.actId}
@@ -1947,6 +1952,24 @@ function AncientMapAsset({
         <AssetThumb src={src} fallbackSrc={null} alt={alt} className="object-contain" />
       </div>
       <div className="absolute inset-0" style={maskStyle(src, MAP_SELECTION_RING_COLOR, 1)} />
+    </div>
+  );
+}
+
+function UnknownBossPlaceholder({ size }: { size: RenderSize }) {
+  return (
+    <div
+      className="relative shrink-0 overflow-hidden rounded-3xl border border-rose-500/30 bg-rose-950/40 flex items-center justify-center"
+      style={{ width: size.width, height: size.height }}
+      title="보스 미도달 — 데이터에 보스 정보 없음"
+    >
+      <span
+        className="text-rose-200/70 font-black"
+        style={{ fontSize: Math.round(size.height * 0.55) }}
+        aria-hidden
+      >
+        ?
+      </span>
     </div>
   );
 }

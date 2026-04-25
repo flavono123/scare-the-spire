@@ -1425,12 +1425,12 @@ function findMatchingPathsWithFlight(
     }
   }
 
-  // Tie-breaker: among paths with the same flight count, prefer ones that
+  // Tie-breaker 1: among paths with the same flight count, prefer ones that
   // defer flight as late as possible. Players don't fly when a normal edge
   // would do, so later flights are more plausible than earlier ones.
   // Compare paths by their flight-depth list sorted descending; the
   // lexicographically largest list wins (latest flight, then second-latest,
-  // etc.). Tied paths are kept — they're genuinely indistinguishable.
+  // etc.).
   if (result.paths.length > 1) {
     const ranked = result.paths.map((path) => ({
       path,
@@ -1451,6 +1451,18 @@ function findMatchingPathsWithFlight(
       .filter((entry) => compareKeys(entry.key, bestKey) === 0)
       .map((entry) => entry.path);
     result = { paths: filtered, capped: result.capped };
+  }
+
+  // Tie-breaker 2: if the flight tie-breaker still leaves multiple paths
+  // (genuine data ambiguity — e.g. short act-3-die runs where two disjoint
+  // branches share the same type sequence), arbitrarily pick the
+  // lexicographically smallest one by node IDs. Deterministic and stable
+  // across renders; the user explicitly opted into "just pick one".
+  if (result.paths.length > 1) {
+    const sorted = [...result.paths].sort((a, b) =>
+      a.nodeIds.join("|").localeCompare(b.nodeIds.join("|")),
+    );
+    result = { paths: [sorted[0]], capped: result.capped };
   }
 
   const nodeCandidates = Array.from({ length: historyTypes.length }, () => new Set<string>());
