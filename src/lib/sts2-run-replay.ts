@@ -282,8 +282,12 @@ class GeneratedActMap {
     shouldReplaceTreasureWithElites: boolean,
     hasSecondBoss: boolean,
     variant: ActMapVariant = "standard",
+    isMultiplayer = false,
   ) {
-    const gridHeight = actConfig.numRooms + 1;
+    // Game's ActModel.GetNumberOfRooms reduces room count by 1 in multiplayer
+    // mode (ActModel.cs:175-183).
+    const numRooms = actConfig.numRooms - (isMultiplayer ? 1 : 0);
+    const gridHeight = numRooms + 1;
     this.grid = Array.from({ length: MAP_COLUMNS }, () => Array<MapNode | null>(gridHeight).fill(null));
     this.rng = rng;
     this.actConfig = actConfig;
@@ -818,24 +822,25 @@ function buildGeneratedMap(
   const config = ACT_CONFIGS[actId];
   const seed = toUint32(getDeterministicHashCode(run.seed));
   const hasSecondBoss = actIndex === run.acts.length - 1 && run.ascension >= 10;
+  const isMultiplayer = run.players.length > 1;
   const variant = chooseActMapVariant(run, actStartFloor, actEndFloor, prevActStartFloor);
 
   if (variant === "golden_path") {
     // Golden Path uses no RNG; pass a dummy one. Seed is deterministic regardless.
     const rng = new StsRng(seed, `act_${actIndex + 1}_golden_path`);
     const counts = config.getCounts(rng, run.ascension);
-    return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "golden_path");
+    return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "golden_path", isMultiplayer);
   }
 
   if (variant === "spoils") {
     const rng = new StsRng(seed, "spoils_map");
     const counts = config.getCounts(rng, run.ascension);
-    return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "spoils");
+    return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "spoils", isMultiplayer);
   }
 
   const baseRng = new StsRng(seed, `act_${actIndex + 1}_map`);
   const baseCounts = config.getCounts(baseRng, run.ascension);
-  let map = new GeneratedActMap(baseRng, config, baseCounts, false, hasSecondBoss);
+  let map = new GeneratedActMap(baseRng, config, baseCounts, false, hasSecondBoss, "standard", isMultiplayer);
 
   if (modifierIds.has("BIG_GAME_HUNTER")) {
     const eliteCount = map.getAllMapPoints().filter((point) => point.type === "elite").length;
@@ -847,7 +852,7 @@ function buildGeneratedMap(
       numRests: baseCounts.numRests,
       pointTypesThatIgnoreRules: new Set<ReplayMapPointType>(["elite"]),
     };
-    map = new GeneratedActMap(overrideRng, config, overrideCounts, false, hasSecondBoss);
+    map = new GeneratedActMap(overrideRng, config, overrideCounts, false, hasSecondBoss, "standard", isMultiplayer);
   }
 
   return map;
