@@ -90,6 +90,12 @@ export interface ReplayActAnalysis {
   exactReplay: boolean;
   rowCount: number;
   mapVariant: ActMapVariant;
+  // History indices where the matched path arrived via off-edge flight
+  // (Winged Boots / Flight modifier). Only populated when exactReplay is true.
+  flightStepIndices: number[];
+  // Lowest flight budget that produced any matching path. Useful for tracking
+  // boots charge consumption across acts.
+  flightStepsUsed: number;
 }
 
 export interface ReplayAnalysis {
@@ -684,6 +690,8 @@ export function parseReplayRun(raw: string): ReplayRun {
   };
 }
 
+const WINGED_BOOTS_MAX_CHARGES = 3;
+
 export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
   const warnings = collectWarnings(run);
   const modifierIds = new Set(
@@ -693,6 +701,14 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
   );
   const acts: ReplayActAnalysis[] = [];
   let baseFloor = 1;
+
+  const player = run.players[0];
+  const hasFlightModifier = modifierIds.has("FLIGHT");
+  const bootsRelic = player?.relics.find(
+    (relic) => normalizeIdentifier(relic.id) === "WINGED_BOOTS",
+  );
+  const bootsAcquiredFloor = bootsRelic?.floor_added_to_deck ?? Infinity;
+  let totalBootsFlightsUsed = 0;
 
   for (let actIndex = 0; actIndex < run.map_point_history.length; actIndex++) {
     const actId = normalizeActId(run.acts[actIndex] ?? "");
@@ -722,7 +738,17 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
       actEndFloor,
       prevActStartFloor,
     );
-    const match = findMatchingPaths(map, historyTypes);
+    const bootsActiveInAct =
+      bootsAcquiredFloor <= actEndFloor && totalBootsFlightsUsed < WINGED_BOOTS_MAX_CHARGES;
+    const flightBudget = hasFlightModifier
+      ? Number.POSITIVE_INFINITY
+      : bootsActiveInAct
+        ? WINGED_BOOTS_MAX_CHARGES - totalBootsFlightsUsed
+        : 0;
+    const match = findMatchingPathsWithFlight(map, historyTypes, flightBudget);
+    if (!hasFlightModifier && match.pathCount > 0) {
+      totalBootsFlightsUsed += match.flightStepsUsed;
+    }
     acts.push({
       actIndex,
       actId,
@@ -739,6 +765,8 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
       exactReplay: match.pathCount === 1,
       rowCount: map.secondBoss ? map.rowCount + 2 : map.rowCount + 1,
       mapVariant: map.variant,
+      flightStepIndices: match.flightStepIndices,
+      flightStepsUsed: match.flightStepsUsed,
     });
     baseFloor += history.length;
   }
@@ -1089,54 +1117,125 @@ function redirectToTreasure(map: GeneratedActMap, stray: MapNode, treasure: MapN
   map.grid[stray.coord.col][stray.coord.row] = null;
 }
 
-function findMatchingPaths(map: GeneratedActMap, historyTypes: ReplayMapPointType[]) {
-  const paths: string[][] = [];
-  const path: string[] = [];
+interface MatchedPath {
+  nodeIds: string[];
+  flightDepths: number[];
+}
 
-  const walk = (node: MapNode, depth: number) => {
-    if (paths.length >= MATCH_CAP) {
-      return;
-    }
-    if (node.type !== historyTypes[depth]) {
-      return;
-    }
+interface MatchResult {
+  pathCount: number;
+  capped: boolean;
+  nodeCandidates: string[][];
+  edgeCandidates: string[][];
+  flightStepIndices: number[];
+  flightStepsUsed: number;
+}
 
-    path.push(node.id);
+function findMatchingPaths(
+  map: GeneratedActMap,
+  historyTypes: ReplayMapPointType[],
+  flightBudget: number,
+): { paths: MatchedPath[]; capped: boolean } {
+  const paths: MatchedPath[] = [];
+  const nodeIds: string[] = [];
+  const flightDepths: number[] = [];
+
+  const walk = (
+    node: MapNode,
+    depth: number,
+    chargesUsed: number,
+    arrivedByFlight: boolean,
+  ) => {
+    if (paths.length >= MATCH_CAP) return;
+    if (node.type !== historyTypes[depth]) return;
+
+    nodeIds.push(node.id);
+    if (arrivedByFlight) flightDepths.push(depth);
+
     if (depth === historyTypes.length - 1) {
-      paths.push([...path]);
-      path.pop();
-      return;
-    }
+      paths.push({ nodeIds: [...nodeIds], flightDepths: [...flightDepths] });
+    } else {
+      const nextRow = node.coord.row + 1;
+      const childIds = new Set<string>();
+      const children = Array.from(node.children).sort(compareMapNodes);
 
-    const children = Array.from(node.children).sort(compareMapNodes);
-    for (const child of children) {
-      walk(child, depth + 1);
-      if (paths.length >= MATCH_CAP) {
-        break;
+      for (const child of children) {
+        childIds.add(child.id);
+        walk(child, depth + 1, chargesUsed, false);
+        if (paths.length >= MATCH_CAP) break;
+      }
+
+      if (
+        chargesUsed < flightBudget &&
+        nextRow < map.rowCount &&
+        nextRow > 0 &&
+        paths.length < MATCH_CAP
+      ) {
+        const flightCandidates: MapNode[] = [];
+        for (let col = 0; col < MAP_COLUMNS; col++) {
+          const candidate = map.grid[col][nextRow];
+          if (candidate && !childIds.has(candidate.id)) {
+            flightCandidates.push(candidate);
+          }
+        }
+        flightCandidates.sort(compareMapNodes);
+        for (const candidate of flightCandidates) {
+          walk(candidate, depth + 1, chargesUsed + 1, true);
+          if (paths.length >= MATCH_CAP) break;
+        }
       }
     }
-    path.pop();
+
+    nodeIds.pop();
+    if (arrivedByFlight) flightDepths.pop();
   };
 
-  walk(map.start, 0);
+  walk(map.start, 0, 0, false);
+
+  return { paths, capped: paths.length >= MATCH_CAP };
+}
+
+function findMatchingPathsWithFlight(
+  map: GeneratedActMap,
+  historyTypes: ReplayMapPointType[],
+  maxFlightBudget: number,
+): MatchResult {
+  // Try the lowest flight budget that yields any match. This finds the path
+  // with the minimum number of off-edge jumps — closest to what the player
+  // actually did, since extra phantom flights always introduce ambiguity.
+  const ceiling = Number.isFinite(maxFlightBudget) ? maxFlightBudget : 6;
+  let result: { paths: MatchedPath[]; capped: boolean } = { paths: [], capped: false };
+  let usedBudget = 0;
+  for (let budget = 0; budget <= ceiling; budget++) {
+    const attempt = findMatchingPaths(map, historyTypes, budget);
+    if (attempt.paths.length > 0) {
+      result = attempt;
+      usedBudget = budget;
+      break;
+    }
+  }
 
   const nodeCandidates = Array.from({ length: historyTypes.length }, () => new Set<string>());
   const edgeCandidates = Array.from({ length: historyTypes.length }, () => new Set<string>());
-
-  for (const match of paths) {
-    match.forEach((nodeId, index) => {
+  for (const match of result.paths) {
+    match.nodeIds.forEach((nodeId, index) => {
       nodeCandidates[index].add(nodeId);
       if (index > 0) {
-        edgeCandidates[index].add(`${match[index - 1]}->${nodeId}`);
+        edgeCandidates[index].add(`${match.nodeIds[index - 1]}->${nodeId}`);
       }
     });
   }
 
+  const flightStepIndices =
+    result.paths.length === 1 ? [...result.paths[0].flightDepths] : [];
+
   return {
-    pathCount: paths.length,
-    capped: paths.length >= MATCH_CAP,
+    pathCount: result.paths.length,
+    capped: result.capped,
     nodeCandidates: nodeCandidates.map((set) => Array.from(set).sort()),
     edgeCandidates: edgeCandidates.map((set) => Array.from(set).sort()),
+    flightStepIndices,
+    flightStepsUsed: usedBudget,
   };
 }
 
