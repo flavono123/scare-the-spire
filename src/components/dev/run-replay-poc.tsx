@@ -1775,10 +1775,11 @@ function MapNodeAsset({
     const bossKey = bossKeyForRow(act, node.row);
     const bossAsset = getBossAsset(bossKey);
     if (!bossAsset) {
-      // 보스 미도달 (early death) 인 막에선 history 에 boss 엔트리가 없어 어떤
-      // 보스인지 알 수 없음. 정체불명 보스로 placeholder 렌더 — 노드 자체는
-      // 항상 표시.
-      return <UnknownBossPlaceholder size={size} />;
+      // 보스 미도달 (early death) 인 막에선 history 에 boss 엔트리가 없음.
+      // 게임 코드는 RunManager.GenerateRooms 의 UpFront RNG 흐름으로 보스를
+      // 결정론적으로 고르지만 우리가 그 시뮬레이션을 아직 안 함 — placeholder
+      // 에 act 의 가능한 보스 풀을 후보로 노출.
+      return <UnknownBossPlaceholder size={size} pool={act.bossPool} />;
     }
     return (
       <BossMapAsset
@@ -1956,16 +1957,63 @@ function AncientMapAsset({
   );
 }
 
-function UnknownBossPlaceholder({ size }: { size: RenderSize }) {
+function UnknownBossPlaceholder({
+  size,
+  pool,
+}: {
+  size: RenderSize;
+  pool: string[];
+}) {
+  const candidateLabels = pool.map((id) => localize("encounters", id) ?? id);
+  const tooltip =
+    pool.length > 0
+      ? `보스 미도달 — 가능한 후보: ${candidateLabels.join(", ")}`
+      : "보스 미도달";
+  // Show up to 3 candidate icons in a row. We use the existing boss
+  // silhouette assets in dim mode.
+  const iconSize = Math.round(size.height * 0.4);
   return (
     <div
-      className="relative shrink-0 overflow-hidden rounded-3xl border border-rose-500/30 bg-rose-950/40 flex items-center justify-center"
+      className="relative shrink-0 overflow-hidden rounded-3xl border border-rose-500/30 bg-rose-950/40 flex flex-col items-center justify-center gap-1"
       style={{ width: size.width, height: size.height }}
-      title="보스 미도달 — 데이터에 보스 정보 없음"
+      title={tooltip}
     >
+      <div className="flex items-center gap-1">
+        {pool.slice(0, 3).map((bossId) => {
+          const key = normalizeModelKey(bossId)?.replace(/_boss$/, "") ?? "";
+          const asset = BOSS_ASSETS[key];
+          if (!asset) {
+            return (
+              <span
+                key={bossId}
+                className="text-rose-200/40 font-bold"
+                style={{ fontSize: 12 }}
+              >
+                ?
+              </span>
+            );
+          }
+          return (
+            <div
+              key={bossId}
+              className="relative"
+              style={{ width: iconSize, height: iconSize, opacity: 0.5 }}
+            >
+              <Image
+                src={asset.node}
+                alt={candidateLabels[pool.indexOf(bossId)] ?? bossId}
+                fill
+                sizes="40px"
+                unoptimized
+                className="object-contain"
+              />
+            </div>
+          );
+        })}
+      </div>
       <span
         className="text-rose-200/70 font-black"
-        style={{ fontSize: Math.round(size.height * 0.55) }}
+        style={{ fontSize: Math.round(size.height * 0.18) }}
         aria-hidden
       >
         ?

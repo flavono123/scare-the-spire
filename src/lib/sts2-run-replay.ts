@@ -127,6 +127,10 @@ export interface ReplayActAnalysis {
   // Node IDs that the player arrived at via off-edge flight (Winged Boots).
   // Each of these gets a Winged Boots relic icon overlay in the UI.
   flightArrivalNodeIds: string[];
+  // Possible boss IDs for this act (full pool from extracted game data).
+  // Used by UI when the player didn't reach the boss — we can't know which
+  // one was picked without simulating UpFront RNG, so surface candidates.
+  bossPool: string[];
 }
 
 export interface ReplayAnalysis {
@@ -807,6 +811,18 @@ export function parseReplayRun(raw: string): ReplayRun {
 
 const WINGED_BOOTS_MAX_CHARGES = 3;
 
+// Per-act boss pool (extracted from C# Acts/*.cs GenerateAllEncounters).
+// When the player didn't reach an act's boss we can't know which one was
+// picked without simulating UpFront RNG flow (events shuffle, grab bags,
+// etc. — substantial additional work). We surface the candidate list so the
+// UI can hint instead of just showing "?".
+export const ACT_BOSS_POOL: Record<string, string[]> = {
+  "ACT.OVERGROWTH": ["CEREMONIAL_BEAST_BOSS", "THE_KIN_BOSS", "VANTOM_BOSS"],
+  "ACT.UNDERDOCKS": ["LAGAVULIN_MATRIARCH_BOSS", "SOUL_FYSH_BOSS", "WATERFALL_GIANT_BOSS"],
+  "ACT.HIVE": ["KAISER_CRAB_BOSS", "KNOWLEDGE_DEMON_BOSS", "THE_INSATIABLE_BOSS"],
+  "ACT.GLORY": ["DOORMAKER_BOSS", "QUEEN_BOSS", "TEST_SUBJECT_BOSS"],
+};
+
 export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
   const warnings = collectWarnings(run);
   const modifierIds = new Set(
@@ -894,6 +910,7 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
       furCoatMarkerNodeIds,
       spoilsMarkerNodeId,
       flightArrivalNodeIds,
+      bossPool: ACT_BOSS_POOL[actId] ?? [],
     });
     baseFloor += history.length;
   }
