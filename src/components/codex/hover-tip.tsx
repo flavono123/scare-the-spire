@@ -5,6 +5,8 @@ import { ReactNode } from "react";
 // =============================================================================
 // 게임 hover_tip 9-slice (scenes/ui/hover_tip.tscn)
 // 원본: 339×107 / patch margin (l,t,r,b) = (55, 43, 91, 32)
+// 게임 폰트 사이즈: title 22px, description 22px (둘 다 동일)
+// 게임 패딩(TextContainer margin): left=22, top=16, right=45, bottom=28
 // =============================================================================
 
 const SLICE = { top: 43, right: 91, bottom: 32, left: 55 };
@@ -23,7 +25,6 @@ interface HoverTipProps {
   variant?: HoverTipVariant;
   icon?: string | null;
   children?: ReactNode;
-  /** Inline-block when true, absolute-position the parent for tooltip positioning. */
   className?: string;
   style?: React.CSSProperties;
 }
@@ -41,11 +42,14 @@ export function HoverTip({
   const bb = Math.round(SLICE.bottom * SCALE);
   const bl = Math.round(SLICE.left * SCALE);
 
+  // 게임 hover_tip: title 22px, description 22px — 동일 사이즈.
+  // 카드 본문 폰트(380px 카드 × 7cqi = 26.6px)와 비슷한 크기.
+  const fontSize = 16;
+
   return (
     <div
       className={className}
       style={{
-        // 9-slice via CSS border-image
         borderStyle: "solid",
         borderColor: "transparent",
         borderTopWidth: `${bt}px`,
@@ -57,22 +61,32 @@ export function HoverTip({
         borderImageWidth: `${bt}px ${br}px ${bb}px ${bl}px`,
         borderImageRepeat: "stretch",
         boxSizing: "border-box",
-        minWidth: 200,
-        maxWidth: 320,
+        minWidth: 240,
+        maxWidth: 360,
         ...style,
       }}
     >
-      <div style={{ position: "relative", marginTop: -4 }}>
+      <div
+        style={{
+          // 게임 TextContainer margin: left=22, top=16, right=45, bottom=28 (스케일 적용)
+          paddingLeft: Math.round(22 * SCALE),
+          paddingTop: Math.round(16 * SCALE),
+          paddingRight: Math.round(45 * SCALE),
+          paddingBottom: Math.round(28 * SCALE),
+          marginTop: -8,
+          marginBottom: -8,
+        }}
+      >
         <div
-          className="flex items-center justify-center gap-1.5"
+          className="flex items-center gap-2"
           style={{
             fontFamily: "var(--font-kreon), var(--font-gc-batang), serif",
-            fontSize: 14,
+            fontSize,
             fontWeight: 700,
             color: "#EFC851",
-            textShadow: "1.5px 1px 0 rgba(0,0,0,0.55)",
-            textAlign: "center",
-            marginBottom: 4,
+            textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
+            textAlign: "left",
+            marginBottom: 6,
           }}
         >
           <span>{title}</span>
@@ -81,7 +95,7 @@ export function HoverTip({
             <img
               src={icon}
               alt=""
-              style={{ width: 18, height: 18, objectFit: "contain" }}
+              style={{ width: fontSize + 2, height: fontSize + 2, objectFit: "contain" }}
             />
           )}
         </div>
@@ -89,10 +103,11 @@ export function HoverTip({
           <div
             style={{
               fontFamily: "var(--font-kreon), var(--font-gc-batang), serif",
-              fontSize: 12,
-              lineHeight: 1.25,
+              fontSize,
+              lineHeight: 1.4,
               color: "#FFF6E2",
-              textShadow: "1.5px 1px 0 rgba(0,0,0,0.45)",
+              textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
+              textAlign: "left",
             }}
           >
             {children}

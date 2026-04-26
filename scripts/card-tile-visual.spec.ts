@@ -94,19 +94,67 @@ test.describe("Card detail visual", () => {
     });
   });
 
-  test("amount 증가 — Adroit 3", async ({ page }) => {
+  test("Anger + Ember (damage+3 분홍)", async ({ page }) => {
     await page.setViewportSize({ width: 1400, height: 1000 });
-    await page.goto(`${BASE}/codex/cards/abrasive`);
+    await page.goto(`${BASE}/codex/cards/anger`);
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(700);
-    await page.locator('button[aria-pressed][title="숙련"]').click();
-    await page.waitForTimeout(200);
-    const plus = page.getByRole("button", { name: "amount 증가" });
-    await plus.click();
-    await plus.click();
+    const ember = page.locator('button[aria-pressed][title="테즈카타라의 잉걸불"]');
+    if ((await ember.count()) === 0) test.skip();
+    await ember.click();
     await page.waitForTimeout(300);
     await page.screenshot({
-      path: "/tmp/card-detail-abrasive-adroit-3.png",
+      path: "/tmp/card-detail-anger-ember.png",
+      fullPage: false,
+    });
+  });
+
+  test("Sharp preset 2 ↔ 3", async ({ page }) => {
+    await page.setViewportSize({ width: 1400, height: 1000 });
+    await page.goto(`${BASE}/codex/cards/anger`);
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(700);
+    const sharp = page.locator('button[aria-pressed][title="예리"]');
+    if ((await sharp.count()) === 0) test.skip();
+    await sharp.click();
+    await page.waitForTimeout(200);
+    // 프리셋 칩 [2, 3] 중 2 선택
+    await page.getByRole("button", { name: "2", pressed: false }).click();
+    await page.waitForTimeout(300);
+    await page.screenshot({
+      path: "/tmp/card-detail-anger-sharp-2.png",
+      fullPage: false,
+    });
+  });
+
+  test("Sown (에너지 아이콘)", async ({ page }) => {
+    await page.setViewportSize({ width: 1400, height: 1000 });
+    // sown은 일반 카드에 모두 가능
+    await page.goto(`${BASE}/codex/cards/anger`);
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(700);
+    const sown = page.locator('button[aria-pressed][title="발아"]');
+    if ((await sown.count()) === 0) test.skip();
+    await sown.click();
+    await page.waitForTimeout(300);
+    await page.screenshot({
+      path: "/tmp/card-detail-anger-sown.png",
+      fullPage: false,
+    });
+  });
+
+  test("Spiral on basic strike (재사용 1 골드)", async ({ page }) => {
+    await page.setViewportSize({ width: 1400, height: 1000 });
+    // 기본 strike 카드: 사일런트의 strike 같은 거
+    await page.goto(`${BASE}/codex/cards/strike_red`);
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(700);
+    const spiral = page.locator('button[aria-pressed][title="소용돌이"]');
+    if ((await spiral.count()) === 0) test.skip();
+    await spiral.click();
+    await page.waitForTimeout(300);
+    await page.screenshot({
+      path: "/tmp/card-detail-strike-spiral.png",
       fullPage: false,
     });
   });

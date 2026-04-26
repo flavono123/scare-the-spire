@@ -24,6 +24,8 @@ import {
   getEnchantRemovedKeywords,
   getEnchantForcedCost,
   substituteAmount,
+  getEnchantAmountPresets,
+  getEnchantStatModifier,
 } from "@/lib/sts2-enchant-rules";
 
 const ENCHANT_TIP_VARIANT: Record<string, HoverTipVariant> = {
@@ -88,20 +90,34 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
 
   const cardWidth = CARD_WIDTH_PRESET.detail;
 
-  // 활성 인챈트 효과: amount 치환, 추가/제거 키워드, forced cost
+  // 활성 인챈트 효과: amount 치환, 추가/제거 키워드, forced cost, stat modifier
   const activeShowAmount = activeEnchant ? shouldShowAmount(activeEnchant) : false;
+  const activePresets = activeEnchant ? getEnchantAmountPresets(activeEnchant) : [];
+  const isSown = activeEnchant?.id?.toUpperCase() === "SOWN";
   const activeExtraText = activeEnchant
-    ? substituteAmount(activeEnchant.extraCardText, enchantAmount)
+    ? substituteAmount(activeEnchant.extraCardText, enchantAmount, { asEnergyIcon: isSown })
     : null;
-  const activeAddedKeywords = activeEnchant ? getEnchantAddedKeywords(activeEnchant) : [];
+  const activeAddedKeywords = activeEnchant
+    ? getEnchantAddedKeywords(activeEnchant, enchantAmount)
+    : [];
   const activeRemovedKeywords = activeEnchant ? getEnchantRemovedKeywords(activeEnchant) : [];
   const activeForcedCost = activeEnchant ? getEnchantForcedCost(activeEnchant) : null;
+  const activeStatMod = activeEnchant ? getEnchantStatModifier(activeEnchant, enchantAmount) : null;
 
-  // 툴팁 description은 amount 치환 적용
-  const hoveredShowAmount = hoveredEnchant ? shouldShowAmount(hoveredEnchant) : false;
+  // 툴팁 description은 amount 치환 적용 (hovered 카드는 enchant 안 붙어 있어도 미리보기 amount 사용)
   const hoveredDesc = hoveredEnchant
-    ? substituteAmount(hoveredEnchant.description, enchantAmount) ?? hoveredEnchant.description
+    ? substituteAmount(hoveredEnchant.description, enchantAmount, {
+        asEnergyIcon: hoveredEnchant.id?.toUpperCase() === "SOWN",
+      }) ?? hoveredEnchant.description
     : null;
+
+  // 인챈트가 바뀌면 프리셋의 첫 번째 값으로 amount 자동 설정
+  const ensureAmountInPresets = (presets: number[]) => {
+    if (presets.length === 0) return;
+    if (!presets.includes(enchantAmount)) {
+      setEnchantAmount(presets[0]);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-3xl mx-auto">
@@ -147,6 +163,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
           enchantAddedKeywords={activeAddedKeywords}
           enchantRemovedKeywords={activeRemovedKeywords}
           descriptionSuffix={activeExtraText}
+          enchantStatMod={activeStatMod}
         />
         {hoveredEnchant && (
           <div
@@ -253,28 +270,26 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
               가능한 인챈트 ({eligibleEnchantments.length})
             </h2>
             <div className="flex items-center gap-3">
-              {activeShowAmount && (
+              {activeEnchant && activePresets.length > 1 && (
                 <div className="flex items-center gap-1.5 text-xs">
                   <span className="text-gray-500">amount</span>
-                  <button
-                    type="button"
-                    onClick={() => setEnchantAmount((n) => Math.max(1, n - 1))}
-                    className="w-5 h-5 rounded bg-white/5 border border-white/10 hover:border-white/30 text-gray-300"
-                    aria-label="amount 감소"
-                  >
-                    −
-                  </button>
-                  <span className="font-bold text-yellow-400 min-w-[1.5em] text-center">
-                    {enchantAmount}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setEnchantAmount((n) => Math.min(99, n + 1))}
-                    className="w-5 h-5 rounded bg-white/5 border border-white/10 hover:border-white/30 text-gray-300"
-                    aria-label="amount 증가"
-                  >
-                    +
-                  </button>
+                  <div className="flex gap-1">
+                    {activePresets.map((n) => (
+                      <button
+                        key={n}
+                        type="button"
+                        onClick={() => setEnchantAmount(n)}
+                        className={`min-w-[1.75em] px-1.5 py-0.5 rounded border transition-all ${
+                          enchantAmount === n
+                            ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/60"
+                            : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
+                        }`}
+                        aria-pressed={enchantAmount === n}
+                      >
+                        {n}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
               {activeEnchant && (
@@ -293,9 +308,17 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
               return (
                 <button
                   key={e.id}
-                  onClick={() =>
-                    setActiveEnchantId((prev) => (prev === e.id ? null : e.id))
-                  }
+                  onClick={() => {
+                    setActiveEnchantId((prev) => {
+                      if (prev === e.id) return null;
+                      // 새 인챈트 활성 시 프리셋의 첫 번째 값으로 amount 초기화
+                      const presets = getEnchantAmountPresets(e);
+                      if (presets.length > 0 && !presets.includes(enchantAmount)) {
+                        setEnchantAmount(presets[0]);
+                      }
+                      return e.id;
+                    });
+                  }}
                   onMouseEnter={() => setHoveredEnchantId(e.id)}
                   onMouseLeave={() =>
                     setHoveredEnchantId((cur) => (cur === e.id ? null : cur))

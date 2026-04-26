@@ -116,7 +116,7 @@ function normalizeId(id: string): string {
 // 게임 소스: src/Core/Models/Enchantments/<Name>.cs::OnEnchant
 // =============================================================================
 
-/** 인챈트가 카드에 추가하는 키워드 (한국어). */
+/** 인챈트가 카드에 추가하는 키워드 (한국어). amount 의존 키워드는 함수로. */
 const ENCHANT_ADDED_KEYWORDS: Record<string, string[]> = {
   GOOPY: ["소멸"],
   ROYALLY_APPROVED: ["선천성", "보존"],
@@ -124,17 +124,81 @@ const ENCHANT_ADDED_KEYWORDS: Record<string, string[]> = {
   TEZCATARAS_EMBER: ["영구"],
 };
 
+/**
+ * amount(또는 Times)가 함께 표시되는 키워드 인챈트.
+ * Spiral/Glam → "재사용 N"
+ */
+const ENCHANT_ADDED_KEYWORDS_WITH_AMOUNT: Record<string, string> = {
+  SPIRAL: "재사용",
+  GLAM: "재사용",
+};
+
 /** 인챈트가 카드에서 제거하는 키워드. */
 const ENCHANT_REMOVED_KEYWORDS: Record<string, string[]> = {
   SOULS_POWER: ["소멸"],
 };
 
-export function getEnchantAddedKeywords(enchant: CodexEnchantment): string[] {
-  return ENCHANT_ADDED_KEYWORDS[normalizeId(enchant.id)] ?? [];
+export interface EnchantKeywordChunk {
+  text: string;        // "영구" / "재사용 1"
+  fromEnchant: true;
+}
+
+export function getEnchantAddedKeywords(
+  enchant: CodexEnchantment,
+  amount: number,
+): string[] {
+  const id = normalizeId(enchant.id);
+  const keywords = ENCHANT_ADDED_KEYWORDS[id]?.slice() ?? [];
+  const amountKw = ENCHANT_ADDED_KEYWORDS_WITH_AMOUNT[id];
+  if (amountKw) {
+    keywords.push(`${amountKw} ${amount}`);
+  }
+  return keywords;
 }
 
 export function getEnchantRemovedKeywords(enchant: CodexEnchantment): string[] {
   return ENCHANT_REMOVED_KEYWORDS[normalizeId(enchant.id)] ?? [];
+}
+
+// =============================================================================
+// 인챈트가 카드의 damage/block 에 미치는 효과
+// 출처: src/Core/Models/Enchantments/<Name>.cs::EnchantDamageAdditive / EnchantBlockAdditive
+// (IsPoweredAttack/IsPoweredCardOrMonsterMoveBlock 조건은 정상 사용 환경 가정)
+// =============================================================================
+
+export interface EnchantStatModifier {
+  damageAdd?: number;
+  damageMultiplier?: number; // Corrupted: 1.5
+  blockAdd?: number;
+}
+
+export function getEnchantStatModifier(
+  enchant: CodexEnchantment,
+  amount: number,
+): EnchantStatModifier {
+  switch (normalizeId(enchant.id)) {
+    // Damage additive
+    case "INKY":
+      return { damageAdd: 2 };       // CanonicalVars: DamageVar(2m)
+    case "TEZCATARAS_EMBER":
+      return { damageAdd: 3 };       // CanonicalVars: DamageVar(3m)
+    case "SHARP":
+    case "VIGOROUS":
+      return { damageAdd: amount };
+    // Damage multiplicative
+    case "CORRUPTED":
+      return { damageMultiplier: 1.5 }; // "50% 더 많은 피해"
+    // Block additive
+    case "ADROIT":
+    case "NIMBLE":
+      return { blockAdd: amount };
+    case "GOOPY":
+      // Goopy: AfterCardPlayed에서 amount++, EnchantBlockAdditive(amount-1)
+      // 처음 적용 시는 amount=1 → 0 추가. 미리보기에선 0.
+      return { blockAdd: Math.max(0, amount - 1) };
+    default:
+      return {};
+  }
 }
 
 // =============================================================================
@@ -161,14 +225,24 @@ export function getEnchantForcedCost(
 /**
  * "X" 또는 "[blue]X[/blue]" 자리를 amount로 치환.
  * "Apply [blue]X[/blue] [gold]Weak[/gold]." → "Apply [blue]2[/blue] [gold]Weak[/gold]."
+ *
+ * asEnergyIcon=true: X 자리에 [energy:N] (Sown — 에너지 아이콘 N개로 표시).
  */
-export function substituteAmount(text: string | null, amount: number): string | null {
+export function substituteAmount(
+  text: string | null,
+  amount: number,
+  options: { asEnergyIcon?: boolean } = {},
+): string | null {
   if (!text) return text;
-  // [blue]X[/blue] → [blue]N[/blue]
-  let out = text.replace(/\[blue\]X\[\/blue\]/g, `[blue]${amount}[/blue]`);
-  // 단독 X (영문/한글 단어 경계) → N
-  // "Lose 2 HP." 같이 이미 숫자가 있는 경우는 건드리지 않음.
-  out = out.replace(/(^|[^A-Za-z])X([^A-Za-z]|$)/g, `$1${amount}$2`);
+  const replacement = options.asEnergyIcon
+    ? `[energy:${amount}]`
+    : String(amount);
+  // [blue]X[/blue] → replacement
+  let out = text.replace(/\[blue\]X\[\/blue\]/g, replacement);
+  // 단독 X (영문/한글 단어 경계) → replacement
+  out = out.replace(/(^|[^A-Za-z])X([^A-Za-z]|$)/g, `$1${replacement}$2`);
+  // SmartFormat {Amount:energyIcons()} 도 처리 (description_raw 직접 사용 시)
+  out = out.replace(/\{Amount:energyIcons\(\)\}/g, `[energy:${amount}]`);
   return out;
 }
 
@@ -187,9 +261,8 @@ export function canEnchantCard(enchant: CodexEnchantment, card: CodexCard): bool
 }
 
 // =============================================================================
-// 인챈트 amount — 게임 ShowAmount = true 인 인챈트들의 기본 표시값
-// 코덱스 미리보기에서 보여주는 baseline. 실제 게임에선 이벤트/유물로 결정.
-// 게임 default는 EnchantmentModel.Amount = 1, Adroit/Sharp/Vigorous/Nimble/Swift 등 ShowAmount 인 것만 표시.
+// 인챈트 amount — 게임 ShowAmount = true 인 인챈트만 슬롯에 amount 표시.
+// 소스: src/Core/Models/Enchantments/<Name>.cs::ShowAmount
 // =============================================================================
 
 const SHOW_AMOUNT_IDS: ReadonlySet<string> = new Set([
@@ -198,13 +271,44 @@ const SHOW_AMOUNT_IDS: ReadonlySet<string> = new Set([
   "VIGOROUS",
   "NIMBLE",
   "SWIFT",
-  "SOWN",
-  "SPIRAL",
-  "GOOPY",
+  // Sown은 ShowAmount 없음 — extra_card_text의 X 자리를 에너지 아이콘으로 채움
+  // Spiral/Glam은 ShowAmount 없음 — "재사용 N" 키워드만 추가
+  // Goopy는 ShowAmount 없음 — 사용 시 자동 증가
 ]);
 
 export function shouldShowAmount(enchant: CodexEnchantment): boolean {
   return SHOW_AMOUNT_IDS.has(normalizeId(enchant.id));
+}
+
+/**
+ * 게임 유물/이벤트가 부여하는 amount 프리셋.
+ * 출처: src/Core/Models/Relics/*.cs, src/Core/Models/Events/*.cs (CardCmd.Enchant 호출)
+ *
+ * - ADROIT:    Kifuda(목패) = 3
+ * - SHARP:     SelfHelpBook(자기계발서, 책 뒷면) = 2, GnarledHammer(옹이진 망치) = 3
+ * - SWIFT:     WingCharm(날개 부적) = 1, SelfHelpBook(자기계발서) = 2, BeautifulBracelet(아름다운 팔찌) = 3
+ * - NIMBLE:    SelfHelpBook(자기계발서) = 2, FresnelLens(프레넬 렌즈) = 2
+ * - MOMENTUM:  PunchDagger(펀치 단도) = 5
+ * - VIGOROUS:  StoneOfAllTime(영원의 돌) = 8
+ *
+ * 그 외 amount=1 고정인 인챈트는 프리셋 [1].
+ */
+export const ENCHANT_AMOUNT_PRESETS: Record<string, number[]> = {
+  ADROIT: [3],
+  SHARP: [2, 3],
+  SWIFT: [1, 2, 3],
+  NIMBLE: [2],
+  MOMENTUM: [5],
+  VIGOROUS: [8],
+  // 아래는 ShowAmount=false 지만 카드 효과에 amount가 영향을 주는 인챈트 (선택용)
+  GOOPY: [1],
+  SOWN: [1],
+  SPIRAL: [1],
+  GLAM: [1],
+};
+
+export function getEnchantAmountPresets(enchant: CodexEnchantment): number[] {
+  return ENCHANT_AMOUNT_PRESETS[normalizeId(enchant.id)] ?? [1];
 }
 
 /** 게임 EnchantmentModel.Amount 기본값 — 코덱스 프리뷰용 baseline. */

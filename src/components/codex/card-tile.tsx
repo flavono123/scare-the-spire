@@ -6,9 +6,11 @@ import { CodexCard } from "@/lib/codex-types";
 import {
   parseDescription,
   renderUpgradedDescription,
+  renderEnchantedDescription,
   TermTooltip,
   KEYWORD_DESC,
   GOLD_TERM_DESC,
+  type EnchantVarMod,
 } from "./codex-description";
 import {
   TITLE_OUTLINE_COLOR,
@@ -119,6 +121,8 @@ interface CardTileProps {
   enchantRemovedKeywords?: string[];
   /** 카드 본문 끝에 분홍색으로 추가될 인챈트 효과 텍스트. BBCode OK. */
   descriptionSuffix?: string | null;
+  /** 인챈트가 카드 damage/block 에 미치는 효과 — descriptionRaw 재렌더에 사용. */
+  enchantStatMod?: EnchantVarMod | null;
   onClick?: () => void;
 }
 
@@ -135,6 +139,7 @@ export const CardTile = memo(function CardTile({
   enchantAddedKeywords,
   enchantRemovedKeywords,
   descriptionSuffix,
+  enchantStatMod,
   onClick,
 }: CardTileProps) {
   const [imgError, setImgError] = useState(false);
@@ -179,11 +184,20 @@ export const CardTile = memo(function CardTile({
   const starStroke = gameStroke(STAR_OUTLINE_COLOR, cardWidth, 12);
   const enchantAmountStroke = gameStroke(ENCHANT_AMOUNT_OUTLINE, cardWidth, 8);
 
-  const descText = isUpgraded
-    ? renderUpgradedDescription(card)
-    : card.description;
+  // descText 결정 우선순위:
+  //  1) 인챈트 stat modifier 있으면 enchanted 렌더 (damage/block 변경)
+  //  2) 강화면 upgraded 렌더
+  //  3) 그 외엔 원본 description
+  let descText: string;
+  if (enchantStatMod && (enchantStatMod.damageAdd || enchantStatMod.damageMultiplier || enchantStatMod.blockAdd)) {
+    descText = renderEnchantedDescription(card, enchantStatMod);
+  } else if (isUpgraded) {
+    descText = renderUpgradedDescription(card);
+  } else {
+    descText = card.description;
+  }
   const descParts = parseDescription(descText);
-  // 인챈트 추가 텍스트는 분홍/보라 baseline에 inner BBCode 그대로 — 별도 블록.
+  // 인챈트 추가 텍스트 — 분홍 baseline + 안의 모든 색을 분홍 통일.
   const suffixParts = descriptionSuffix
     ? parseDescription(descriptionSuffix)
     : null;
@@ -198,19 +212,31 @@ export const CardTile = memo(function CardTile({
   ];
   const enchantKeywordSet = new Set(enchantAddedKeywords ?? []);
 
-  // ─── 텍스트 파트 렌더 헬퍼 — 일반(cream)/suffix(분홍) 양쪽에서 재사용 ───
-  const renderParts = (parts: ReturnType<typeof parseDescription>, baseInteractiveTermsGold: boolean) =>
-    parts.map((part, i) =>
-      part.type === "gold" ? (
+  // ─── 텍스트 파트 렌더 헬퍼 ───
+  // mode="card": 일반 카드 본문 — 색 BBCode 그대로 (gold→골드 hover, blue→블루)
+  // mode="suffix": 인챈트 추가 본문 — 모든 색을 분홍(#EE82EE)로 통일
+  const renderParts = (parts: ReturnType<typeof parseDescription>, mode: "card" | "suffix") =>
+    parts.map((part, i) => {
+      // suffix 모드에선 모든 색 BBCode를 분홍으로 통일
+      if (mode === "suffix" && (
+        part.type === "gold" || part.type === "blue" ||
+        part.type === "red" || part.type === "purple" ||
+        part.type === "upgrade"
+      )) {
+        return (
+          <span key={i} className="font-bold" style={{ color: "#EE82EE" }}>{part.text}</span>
+        );
+      }
+      return part.type === "gold" ? (
         <span
           key={i}
           className="relative font-bold cursor-help"
           style={{ color: TEXT_GOLD }}
-          onMouseEnter={() => baseInteractiveTermsGold && setHoveredTerm(part.text)}
+          onMouseEnter={() => setHoveredTerm(part.text)}
           onMouseLeave={() => setHoveredTerm(null)}
         >
           {part.text}
-          {baseInteractiveTermsGold && hoveredTerm === part.text && GOLD_TERM_DESC[part.text] && (
+          {hoveredTerm === part.text && GOLD_TERM_DESC[part.text] && (
             <TermTooltip name={part.text} desc={GOLD_TERM_DESC[part.text]} />
           )}
         </span>
@@ -254,8 +280,8 @@ export const CardTile = memo(function CardTile({
         <br key={i} />
       ) : (
         <span key={i}>{part.text}</span>
-      )
-    );
+      );
+    });
 
   const renderDescription = () => (
     <div
@@ -266,30 +292,32 @@ export const CardTile = memo(function CardTile({
         textShadow: `${(2 / 300) * cardWidth}px ${(2 / 300) * cardWidth}px 0 rgba(0,0,0,0.45)`,
       }}
     >
-      {renderParts(descParts, true)}
+      {renderParts(descParts, "card")}
       {suffixParts && (
         <>
           <br />
-          <span style={{ color: "#EE82EE" }}>{renderParts(suffixParts, false)}</span>
+          <span style={{ color: "#EE82EE" }}>{renderParts(suffixParts, "suffix")}</span>
         </>
       )}
       {displayKeywords.length > 0 && (
         <>
           <br />
           {displayKeywords.map((kw, i) => {
-            const fromEnchant = enchantKeywordSet.has(kw);
+            // 인챈트 추가 키워드도 게임에선 일반 키워드와 동일한 골드.
+            // 키워드 hover lookup은 첫 단어만 (예: "재사용 1" → "재사용")
+            const lookupKey = kw.split(/\s/)[0];
             return (
               <span key={`kw-${i}`}>
                 {i > 0 && <span className="text-gray-500"> · </span>}
                 <span
                   className="relative font-bold cursor-help"
-                  style={{ color: fromEnchant ? "#EE82EE" : TEXT_GOLD }}
+                  style={{ color: TEXT_GOLD }}
                   onMouseEnter={() => setHoveredTerm(kw)}
                   onMouseLeave={() => setHoveredTerm(null)}
                 >
                   {kw}
-                  {hoveredTerm === kw && KEYWORD_DESC[kw] && (
-                    <TermTooltip name={kw} desc={KEYWORD_DESC[kw]} />
+                  {hoveredTerm === kw && KEYWORD_DESC[lookupKey] && (
+                    <TermTooltip name={lookupKey} desc={KEYWORD_DESC[lookupKey]} />
                   )}
                 </span>
               </span>

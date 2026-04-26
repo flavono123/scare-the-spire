@@ -69,6 +69,61 @@ export function parseDescription(rawDesc: string): DescPart[] {
 }
 
 // =============================================================================
+// Enchanted description builder
+// 인챈트 효과(damage/block additive/multiplicative)를 카드 vars에 적용해
+// description을 다시 렌더. 변경된 값은 [purple]...[/purple] 로 강조.
+// =============================================================================
+
+export interface EnchantVarMod {
+  damageAdd?: number;
+  damageMultiplier?: number;
+  blockAdd?: number;
+}
+
+export function renderEnchantedDescription(
+  card: CodexCard,
+  mod: EnchantVarMod,
+  upgradedVarsOverride?: Record<string, number>,
+): string {
+  const raw = card.descriptionRaw;
+  if (!raw) return card.description;
+  const baseVars: Record<string, number> = upgradedVarsOverride ?? { ...card.vars };
+  const enchanted: Record<string, number> = { ...baseVars };
+  const changed = new Set<string>();
+
+  for (const k of Object.keys(enchanted)) {
+    const lk = k.toLowerCase();
+    if (lk.startsWith("damage") && (mod.damageAdd || mod.damageMultiplier)) {
+      let v = enchanted[k];
+      if (mod.damageMultiplier) v = Math.floor(v * mod.damageMultiplier);
+      if (mod.damageAdd) v = v + mod.damageAdd;
+      if (v !== enchanted[k]) {
+        enchanted[k] = v;
+        changed.add(lk);
+      }
+    } else if (lk === "block" && mod.blockAdd) {
+      const v = enchanted[k] + mod.blockAdd;
+      if (v !== enchanted[k]) {
+        enchanted[k] = v;
+        changed.add(lk);
+      }
+    }
+  }
+
+  return raw.replace(/\{(\w+)(?::diff\(\))?\}/g, (match, varName: string) => {
+    const key = varName in enchanted
+      ? varName
+      : Object.keys(enchanted).find((k) => k.toLowerCase() === varName.toLowerCase());
+    if (!key) return match;
+    const val = String(enchanted[key]);
+    if (changed.has(key.toLowerCase())) {
+      return `[purple]${val}[/purple]`;
+    }
+    return val;
+  });
+}
+
+// =============================================================================
 // Upgraded description builder
 // =============================================================================
 
