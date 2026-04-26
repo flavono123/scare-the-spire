@@ -335,34 +335,31 @@ function CurrentNodeChip({
   act: ReplayActAnalysis;
 }) {
   const icon = currentNodeIcon(entry, act);
+  if (!icon) return null;
   return (
-    <Chip title={`현재 노드: ${nodeLabel(entry)}`}>
-      <div className="relative h-5 w-5">
-        {icon && (
-          <>
-            <Image
-              src={icon.src}
-              alt=""
-              fill
-              sizes="20px"
-              className="object-contain"
-              unoptimized
-            />
-            {icon.overlay && (
-              <Image
-                src={icon.overlay}
-                alt=""
-                fill
-                sizes="20px"
-                className="animate-pulse object-contain mix-blend-screen opacity-80"
-                unoptimized
-              />
-            )}
-          </>
-        )}
-      </div>
-      <span className="text-zinc-300">{nodeLabel(entry)}</span>
-    </Chip>
+    <div
+      title={`현재 노드: ${nodeLabel(entry)}`}
+      className="relative h-7 w-7"
+    >
+      <Image
+        src={icon.src}
+        alt={nodeLabel(entry)}
+        fill
+        sizes="28px"
+        className="object-contain"
+        unoptimized
+      />
+      {icon.overlay && (
+        <Image
+          src={icon.overlay}
+          alt=""
+          fill
+          sizes="28px"
+          className="animate-pulse object-contain mix-blend-screen opacity-80"
+          unoptimized
+        />
+      )}
+    </div>
   );
 }
 
@@ -373,14 +370,6 @@ function currentNodeIcon(
   if (!entry) return null;
   const type = entry.map_point_type;
   const dir = actDirKey(act.actId);
-
-  if (type === "boss") {
-    const key = modelKey(entry.rooms[0]?.model_id)?.replace(/_boss$/, "");
-    if (key) {
-      return { src: `/images/sts2/boss-nodes/boss_node_${key}.webp` };
-    }
-    return { src: `/images/sts2/map/icons-by-act/${dir}/map_chest_boss.png` };
-  }
 
   if (type === "ancient") {
     const key = modelKey(entry.rooms[0]?.model_id);
@@ -395,6 +384,12 @@ function currentNodeIcon(
       src: `/images/sts2/map/icons-by-act/${dir}/map_rest.png`,
       overlay: "/images/sts2/map/effects/map_circle_2.png",
     };
+  }
+
+  // For boss the right-side BossChip already shows the icon — render the act
+  // boss chest indicator only as a fallback.
+  if (type === "boss") {
+    return { src: `/images/sts2/map/icons-by-act/${dir}/map_chest_boss.png` };
   }
 
   const iconName = NODE_ICON_NAME[type];
