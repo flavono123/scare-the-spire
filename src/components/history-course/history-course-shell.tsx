@@ -31,40 +31,42 @@ function actIntroNumber(index: number) {
   return ["1막", "2막", "3막", "4막"][index] ?? `${index + 1}막`;
 }
 
-// Tunable per-node-type weights (in seconds). Multiplied by rate later.
+// Per-node hold time (seconds at 1×). Tuned shorter — task-3 motion design
+// is still TBD; until proper combat/animation beats land, longer holds just
+// felt like stalls.
 function nodeHoldSeconds(entry: ReplayHistoryEntry): number {
   const turns = (entry.rooms ?? []).reduce(
     (sum, r) => sum + Math.max(0, r.turns_taken ?? 0),
     0,
   );
-  const turnSeconds = turns * 4;
+  const turnSeconds = turns * 2;
   switch (entry.map_point_type) {
     case "monster":
     case "MONSTER":
-      return Math.max(2.4, turnSeconds * 0.6);
+      return Math.max(1.2, turnSeconds * 0.4);
     case "elite":
     case "ELITE":
-      return Math.max(3.2, turnSeconds * 0.7);
+      return Math.max(1.6, turnSeconds * 0.5);
     case "boss":
     case "BOSS":
-      return Math.max(4.0, turnSeconds * 0.8);
+      return Math.max(2.0, turnSeconds * 0.6);
     case "rest_site":
     case "REST_SITE":
-      return 1.4;
+      return 0.7;
     case "treasure":
     case "TREASURE":
-      return 0.8;
+      return 0.5;
     case "shop":
     case "SHOP":
-      return 1.6;
+      return 0.9;
     case "ancient":
     case "ANCIENT":
-      return 1.2;
+      return 0.8;
     case "unknown":
     case "UNKNOWN":
-      return Math.max(2.0, turnSeconds * 0.5);
+      return Math.max(1.0, turnSeconds * 0.35);
     default:
-      return 2.0;
+      return 1.0;
   }
 }
 
