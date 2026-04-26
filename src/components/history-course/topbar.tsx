@@ -115,23 +115,28 @@ export function TopBar({
 
   return (
     <div className="absolute inset-x-0 top-0 z-20 flex flex-col gap-1.5 bg-gradient-to-b from-black/85 via-black/55 to-transparent px-3 pb-3 pt-1.5 text-zinc-100">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[12px] font-semibold">
-        <CharacterChip
-          character={character}
-          ascension={run.ascension}
-        />
-        <HpChip hp={state.hp} maxHp={state.maxHp} />
-        <GoldChip gold={state.gold} />
-        <PotionSlots count={state.potionSlots} />
-        <CurrentNodeChip entry={state.currentEntry} />
-        <FloorChip floor={state.currentFloor} />
-        <BossChip
-          info={state.bossInfo}
-          showSecond={showSecondBoss}
-        />
-        <TimerChip seconds={state.elapsedSeconds} />
-        <DeckChip count={state.deckCount} onOpen={onOpenDeck} />
-        <SettingsChip onOpenStats={onOpenStats} onOpenInfo={onOpenInfo} />
+      <div className="flex items-center gap-x-3 gap-y-1.5 text-[12px] font-semibold">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+          <CharacterChip
+            character={character}
+            ascension={run.ascension}
+          />
+          <HpChip hp={state.hp} maxHp={state.maxHp} />
+          <GoldChip gold={state.gold} />
+          <PotionSlots count={state.potionSlots} />
+          <CurrentNodeChip entry={state.currentEntry} />
+          <FloorChip floor={state.currentFloor} />
+          <BossChip
+            info={state.bossInfo}
+            showSecond={showSecondBoss}
+          />
+        </div>
+        <div className="ml-auto flex items-center gap-1.5">
+          <TimerChip seconds={state.elapsedSeconds} />
+          <DeckChip count={state.deckCount} onOpen={onOpenDeck} />
+          <HistoryButton onClick={onOpenStats} />
+          <SettingsButton onClick={onOpenInfo} />
+        </div>
       </div>
       <RelicRow relics={state.relics} />
     </div>
@@ -355,24 +360,25 @@ function BossChip({
 }) {
   if (!info.firstBoss && !info.secondBoss) return null;
   return (
-    <Chip title={bossTitle(info, showSecond)}>
-      <div className="flex items-center gap-1">
-        {info.firstBoss && (
-          <BossIcon
-            id={info.firstBoss}
-            active={!info.firstBossDefeated}
-            defeated={info.firstBossDefeated && showSecond}
-          />
-        )}
-        {showSecond && info.secondBoss && (
-          <BossIcon
-            id={info.secondBoss}
-            active={info.firstBossDefeated}
-            defeated={false}
-          />
-        )}
-      </div>
-    </Chip>
+    <div
+      title={bossTitle(info, showSecond)}
+      className="flex items-center gap-0"
+    >
+      {info.firstBoss && (
+        <BossIcon
+          id={info.firstBoss}
+          active={!info.firstBossDefeated}
+          defeated={info.firstBossDefeated && showSecond}
+        />
+      )}
+      {showSecond && info.secondBoss && (
+        <BossIcon
+          id={info.secondBoss}
+          active={info.firstBossDefeated}
+          defeated={false}
+        />
+      )}
+    </div>
   );
 }
 
@@ -468,31 +474,19 @@ function DeckChip({
   );
 }
 
-function SettingsChip({
-  onOpenStats,
-  onOpenInfo,
-}: {
-  onOpenStats: () => void;
-  onOpenInfo: () => void;
-}) {
+function HistoryButton({ onClick }: { onClick: () => void }) {
   return (
-    <div className="ml-auto flex items-center gap-1.5">
-      <Chip
-        as="button"
-        onClick={onOpenStats}
-        title="도전 이력"
-      >
-        <span className="text-[11px] tracking-[0.18em]">이력</span>
-      </Chip>
-      <Chip
-        as="button"
-        onClick={onOpenInfo}
-        title="런 정보"
-        className="px-2 py-1"
-      >
-        <GearSvg className="h-4 w-4" />
-      </Chip>
-    </div>
+    <Chip as="button" onClick={onClick} title="도전 이력">
+      <span className="text-[11px] tracking-[0.18em]">이력</span>
+    </Chip>
+  );
+}
+
+function SettingsButton({ onClick }: { onClick: () => void }) {
+  return (
+    <Chip as="button" onClick={onClick} title="런 정보" className="px-2 py-1">
+      <GearSvg className="h-4 w-4" />
+    </Chip>
   );
 }
 
