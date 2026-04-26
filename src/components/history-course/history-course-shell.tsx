@@ -350,7 +350,7 @@ function Stage({
 
   return (
     <div
-      className="relative overflow-hidden rounded-xl ring-1 ring-white/10 shadow-[0_30px_120px_-30px_rgba(0,0,0,0.9)]"
+      className="relative overflow-hidden ring-1 ring-white/10 shadow-[0_30px_120px_-30px_rgba(0,0,0,0.9)]"
       style={{ width: STAGE_WIDTH, aspectRatio: "16 / 9" }}
     >
       <TopBar

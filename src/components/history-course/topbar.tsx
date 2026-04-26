@@ -132,7 +132,7 @@ export function TopBar({
   return (
     <div className="absolute inset-x-0 top-0 z-20 flex flex-col gap-1.5 pb-3 text-zinc-100">
       <div
-        className="flex items-center gap-x-3 gap-y-1.5 px-4 pb-3 pt-2 text-[12px] font-semibold"
+        className="topbar-row flex items-center gap-x-3 gap-y-1.5 px-4 pb-3 pt-2 text-[15px] font-bold"
         style={{
           backgroundImage: "url(/images/sts2/ui/topbar/top_bar.png)",
           backgroundSize: "100% 100%",
@@ -179,8 +179,10 @@ function Chip({
   className?: string;
   as?: "div" | "button";
 }) {
+  // Frameless: chips sit on the stone panel like the relics do, no
+  // background or ring. Buttons get a subtle hover lift only.
   const baseClass = cn(
-    "inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2 py-1 text-zinc-100 ring-1 ring-white/10 backdrop-blur-[2px]",
+    "inline-flex items-center gap-1.5 text-white",
     className,
   );
   if (as === "button") {
@@ -191,7 +193,7 @@ function Chip({
         onClick={onClick}
         className={cn(
           baseClass,
-          "transition hover:bg-black/75 hover:ring-white/30",
+          "transition hover:brightness-125 focus:outline-none focus-visible:brightness-125",
         )}
       >
         {children}
@@ -217,22 +219,25 @@ function CharacterChip({
   return (
     <div
       title={`${label} · 승천 ${ascension}`}
-      className="relative flex items-center gap-1.5"
+      className="relative h-10 w-10"
+      style={{
+        backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
+        backgroundSize: "100% 100%",
+        backgroundRepeat: "no-repeat",
+      }}
     >
-      <div className="relative h-8 w-8 overflow-hidden rounded-full bg-black/40 ring-1 ring-white/15">
-        {iconSrc && (
+      {iconSrc && (
+        <div className="absolute inset-1 overflow-hidden">
           <Image
             src={iconSrc}
             alt={label ?? character}
             fill
-            sizes="32px"
-            className="object-cover"
+            sizes="36px"
+            className="object-contain"
           />
-        )}
-      </div>
-      {ascension > 0 && (
-        <AscensionBadge ascension={ascension} />
+        </div>
       )}
+      {ascension > 0 && <AscensionBadge ascension={ascension} />}
     </div>
   );
 }
@@ -240,18 +245,18 @@ function CharacterChip({
 function AscensionBadge({ ascension }: { ascension: number }) {
   return (
     <span
-      className="absolute -bottom-1 -right-2 flex h-5 w-5 items-end justify-center"
+      className="pointer-events-none absolute -bottom-1.5 -left-1.5 flex h-6 w-6 items-end justify-center"
       aria-label={`승천 ${ascension}`}
     >
       <Image
         src="/images/sts2/ui/topbar/top_bar_ascension.png"
         alt=""
         fill
-        sizes="20px"
+        sizes="24px"
         className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
         unoptimized
       />
-      <span className="relative z-10 mb-0 text-[10px] font-black leading-none text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)]">
+      <span className="topbar-num relative z-10 mb-0 text-[11px] leading-none">
         {ascension}
       </span>
     </span>
@@ -265,25 +270,19 @@ function HpChip({
   hp: number | null;
   maxHp: number | null;
 }) {
-  const ratio =
-    typeof hp === "number" && typeof maxHp === "number" && maxHp > 0
-      ? Math.max(0, Math.min(1, hp / maxHp))
-      : 1;
-  const color =
-    ratio < 0.25 ? "text-rose-300" : ratio < 0.5 ? "text-amber-200" : "text-rose-100";
   return (
     <Chip title={`체력 ${hp ?? "—"} / ${maxHp ?? "—"}`}>
       <Image
         src="/images/sts2/ui/topbar/top_bar_heart.png"
         alt=""
-        width={20}
-        height={18}
-        className="h-[18px] w-5 object-contain"
+        width={26}
+        height={22}
+        className="h-[22px] w-[26px] object-contain"
         unoptimized
       />
-      <span className="tabular-nums">
-        <span className={color}>{hp ?? "—"}</span>
-        <span className="text-zinc-400">/{maxHp ?? "—"}</span>
+      <span className="topbar-num tabular-nums">
+        {hp ?? "—"}
+        <span className="opacity-80">/{maxHp ?? "—"}</span>
       </span>
     </Chip>
   );
@@ -295,12 +294,12 @@ function GoldChip({ gold }: { gold: number | null }) {
       <Image
         src="/images/sts2/ui/topbar/top_bar_gold.png"
         alt=""
-        width={18}
-        height={18}
-        className="h-[18px] w-[18px] object-contain"
+        width={24}
+        height={22}
+        className="h-[22px] w-[24px] object-contain"
         unoptimized
       />
-      <span className="tabular-nums text-amber-200">{gold ?? "—"}</span>
+      <span className="topbar-num tabular-nums">{gold ?? "—"}</span>
     </Chip>
   );
 }
@@ -309,16 +308,21 @@ function PotionSlots({ count }: { count: number }) {
   return (
     <div
       title={`포션 슬롯 ${count}개`}
-      className="inline-flex items-center gap-1 rounded-full bg-black/55 px-2 py-1 ring-1 ring-white/10 backdrop-blur-[2px]"
+      className="relative inline-flex h-10 items-center gap-1.5 px-3"
+      style={{
+        backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
+        backgroundSize: "100% 100%",
+        backgroundRepeat: "no-repeat",
+      }}
     >
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="relative h-5 w-[14px]">
+        <div key={i} className="relative h-7 w-[18px]">
           <Image
             src="/images/sts2/ui/topbar/potion_placeholder.png"
             alt=""
             fill
-            sizes="14px"
-            className="object-contain opacity-80"
+            sizes="18px"
+            className="object-contain opacity-90"
             unoptimized
           />
         </div>
@@ -403,12 +407,12 @@ function FloorChip({ floor }: { floor: number }) {
       <Image
         src="/images/sts2/ui/topbar/top_bar_floor.png"
         alt=""
-        width={18}
-        height={18}
-        className="h-[18px] w-[18px] object-contain"
+        width={24}
+        height={22}
+        className="h-[22px] w-[24px] object-contain"
         unoptimized
       />
-      <span className="tabular-nums">{floor}</span>
+      <span className="topbar-num tabular-nums">{floor}</span>
     </Chip>
   );
 }
@@ -488,12 +492,12 @@ function TimerChip({ seconds }: { seconds: number }) {
       <Image
         src="/images/sts2/ui/topbar/timer_icon.png"
         alt=""
-        width={18}
-        height={18}
-        className="h-[18px] w-[18px] object-contain"
+        width={22}
+        height={22}
+        className="h-[22px] w-[22px] object-contain"
         unoptimized
       />
-      <span className="tabular-nums">{formatHms(seconds)}</span>
+      <span className="topbar-num tabular-nums">{formatHms(seconds)}</span>
     </Chip>
   );
 }
@@ -506,33 +510,29 @@ function DeckChip({
   onOpen: () => void;
 }) {
   return (
-    <Chip
-      as="button"
-      onClick={onOpen}
-      title={`현재 덱 ${count}장 보기`}
-    >
+    <Chip as="button" onClick={onOpen} title={`현재 덱 ${count}장 보기`}>
       <Image
         src="/images/sts2/ui/topbar/top_bar_deck.png"
         alt=""
-        width={20}
-        height={18}
-        className="h-[18px] w-5 object-contain"
+        width={28}
+        height={24}
+        className="h-[24px] w-[28px] object-contain"
         unoptimized
       />
-      <span className="tabular-nums">{count}</span>
+      <span className="topbar-num tabular-nums">{count}</span>
     </Chip>
   );
 }
 
 function HistoryButton({ onClick }: { onClick: () => void }) {
   return (
-    <Chip as="button" onClick={onClick} title="도전 이력" className="px-2 py-1">
+    <Chip as="button" onClick={onClick} title="도전 이력">
       <Image
-        src="/images/sts2/ui/topbar/submenu_history_icon.png"
+        src="/images/sts2/ui/topbar/top_bar_map.png"
         alt="도전 이력"
-        width={26}
-        height={18}
-        className="h-[18px] w-[26px] object-contain"
+        width={28}
+        height={26}
+        className="h-[26px] w-[28px] object-contain"
         unoptimized
       />
     </Chip>
@@ -541,13 +541,13 @@ function HistoryButton({ onClick }: { onClick: () => void }) {
 
 function SettingsButton({ onClick }: { onClick: () => void }) {
   return (
-    <Chip as="button" onClick={onClick} title="런 정보" className="px-2 py-1">
+    <Chip as="button" onClick={onClick} title="런 정보">
       <Image
         src="/images/sts2/ui/topbar/top_bar_settings.png"
         alt="런 정보"
-        width={20}
-        height={20}
-        className="h-5 w-5 object-contain"
+        width={26}
+        height={26}
+        className="h-[26px] w-[26px] object-contain"
         unoptimized
       />
     </Chip>
