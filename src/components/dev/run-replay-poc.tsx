@@ -917,7 +917,7 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
   );
 }
 
-function SeededMapView({
+export function SeededMapView({
   act,
   step,
 }: {
@@ -1104,7 +1104,7 @@ function SeededMapView({
   );
 }
 
-function MapBackdrop({ actId }: { actId: string }) {
+export function MapBackdrop({ actId }: { actId: string }) {
   const meta = actMapMeta(actId);
 
   return (
