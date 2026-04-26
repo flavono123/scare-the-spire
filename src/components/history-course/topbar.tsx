@@ -49,7 +49,9 @@ function relicIconSrc(id: string): string {
 }
 
 function bossIconSrc(id: string): string {
-  return `/images/sts2/bosses/${id.toLowerCase()}.webp`;
+  // Game shows abstract boss-node sprite in the topbar, not the boss portrait.
+  const slug = id.toLowerCase().replace(/_boss$/, "");
+  return `/images/sts2/boss-nodes/boss_node_${slug}.webp`;
 }
 
 function bossLabel(id: string | null): string {
@@ -401,23 +403,20 @@ function BossIcon({
   return (
     <div
       className={cn(
-        "relative h-6 w-6 overflow-hidden rounded-md ring-1",
-        active
-          ? "ring-amber-300/70 shadow-[0_0_6px_rgba(255,200,120,0.4)]"
-          : defeated
-            ? "ring-zinc-700"
-            : "ring-zinc-700",
+        "relative h-7 w-7",
+        active && "drop-shadow-[0_0_6px_rgba(255,200,120,0.55)]",
       )}
     >
       <Image
         src={bossIconSrc(id)}
         alt={bossLabel(id)}
         fill
-        sizes="24px"
+        sizes="28px"
         className={cn(
-          "object-cover",
-          active ? "" : "opacity-40 grayscale",
+          "object-contain",
+          active ? "" : defeated ? "opacity-30 grayscale" : "opacity-55 grayscale",
         )}
+        unoptimized
       />
     </div>
   );
