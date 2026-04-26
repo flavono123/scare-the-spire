@@ -10,6 +10,7 @@ import {
 } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
 import {
+  type AncientInfo,
   type BossInfo,
   type RelicAtFloor,
   type TopbarState,
@@ -32,25 +33,17 @@ const CHARACTER_LABEL: Record<string, string> = {
   "CHARACTER.REGENT": "리젠트",
 };
 
-const ACT_DIR_KEY: Record<string, string> = {
-  "ACT.OVERGROWTH": "overgrowth",
-  "ACT.UNDERDOCKS": "underdocks",
-  "ACT.HIVE": "hive",
-  "ACT.GLORY": "glory",
+// Each node type maps to a run-history sprite name. `unknown` resolves
+// further once the room contents are known so the player sees the
+// revealed-room variant (`unknown_<roomType>`) rather than a generic ?.
+const NODE_SPRITE_NAME: Record<string, string> = {
+  monster: "monster",
+  elite: "elite",
+  rest_site: "rest_site",
+  shop: "shop",
+  treasure: "treasure",
+  unknown: "event",
 };
-
-const NODE_ICON_NAME: Record<string, string> = {
-  monster: "map_monster",
-  elite: "map_elite",
-  rest_site: "map_rest",
-  shop: "map_shop",
-  treasure: "map_chest",
-  unknown: "map_unknown",
-};
-
-function actDirKey(actId: string): string {
-  return ACT_DIR_KEY[actId] ?? "overgrowth";
-}
 
 function modelKey(value: string | null | undefined): string | null {
   if (!value) return null;
@@ -145,8 +138,9 @@ export function TopBar({
           <HpChip hp={state.hp} maxHp={state.maxHp} />
           <GoldChip gold={state.gold} />
           <PotionSlots count={state.potionSlots} />
-          <CurrentNodeChip entry={state.currentEntry} act={act} />
+          <CurrentNodeChip entry={state.currentEntry} />
           <FloorChip floor={state.currentFloor} />
+          <AncientChip info={state.ancientInfo} />
           <BossChip
             info={state.bossInfo}
             showSecond={showSecondBoss}
@@ -331,72 +325,93 @@ function PotionSlots({ count }: { count: number }) {
 
 function CurrentNodeChip({
   entry,
-  act,
 }: {
   entry: ReplayHistoryEntry | null;
-  act: ReplayActAnalysis;
 }) {
-  const icon = currentNodeIcon(entry, act);
-  if (!icon) return null;
+  const sprite = currentNodeSprite(entry);
+  if (!sprite) return null;
+  return (
+    <NodeIcon
+      title={`현재 노드: ${nodeLabel(entry)}`}
+      alt={nodeLabel(entry)}
+      sprite={sprite}
+      size={40}
+    />
+  );
+}
+
+function NodeIcon({
+  title,
+  alt,
+  sprite,
+  size,
+  inactive,
+}: {
+  title?: string;
+  alt: string;
+  sprite: string;
+  size: number;
+  inactive?: boolean;
+}) {
+  const main = `/images/sts2/run-history/${sprite}.png`;
+  const outline = `/images/sts2/run-history/${sprite}_outline.png`;
   return (
     <div
-      title={`현재 노드: ${nodeLabel(entry)}`}
-      className="relative h-10 w-10"
+      title={title}
+      className={cn(
+        "relative",
+        inactive && "opacity-40 grayscale",
+      )}
+      style={{ width: size, height: size }}
     >
+      {/* Outline first (behind), then the colored fill — matches the
+          game's second_boss_icon.tscn layering. */}
       <Image
-        src={icon.src}
-        alt={nodeLabel(entry)}
+        src={outline}
+        alt=""
         fill
-        sizes="40px"
-        className="object-contain"
+        sizes={`${size}px`}
+        className="object-contain opacity-[0.18]"
+        style={{ filter: "brightness(0)" }}
         unoptimized
       />
-      {icon.overlay && (
-        <Image
-          src={icon.overlay}
-          alt=""
-          fill
-          sizes="40px"
-          className="animate-pulse object-contain mix-blend-screen opacity-80"
-          unoptimized
-        />
-      )}
+      <Image
+        src={main}
+        alt={alt}
+        fill
+        sizes={`${size}px`}
+        className="relative object-contain"
+        unoptimized
+      />
     </div>
   );
 }
 
-function currentNodeIcon(
-  entry: ReplayHistoryEntry | null,
-  act: ReplayActAnalysis,
-): { src: string; overlay?: string } | null {
+function currentNodeSprite(entry: ReplayHistoryEntry | null): string | null {
   if (!entry) return null;
   const type = entry.map_point_type;
-  const dir = actDirKey(act.actId);
 
-  if (type === "ancient") {
-    const key = modelKey(entry.rooms[0]?.model_id);
-    if (key) {
-      return { src: `/images/sts2/ancient-nodes/ancient_node_${key}.webp` };
+  // Ancient + boss are tracked by the dedicated chips in the right-side
+  // cluster; the current-node chip just disappears for those steps.
+  if (type === "ancient" || type === "boss") return null;
+
+  if (type === "unknown") {
+    const room = entry.rooms[0]?.room_type?.toLowerCase();
+    switch (room) {
+      case "monster":
+        return "unknown_monster";
+      case "elite":
+        return "unknown_elite";
+      case "shop":
+        return "unknown_shop";
+      case "treasure":
+        return "unknown_treasure";
+      default:
+        return "event";
     }
-    return { src: "/images/sts2/icons/star_icon.webp" };
   }
 
-  if (type === "rest_site") {
-    return {
-      src: `/images/sts2/map/icons-by-act/${dir}/map_rest.png`,
-      overlay: "/images/sts2/map/effects/map_circle_2.png",
-    };
-  }
-
-  // For boss the right-side BossChip already shows the icon — render the act
-  // boss chest indicator only as a fallback.
-  if (type === "boss") {
-    return { src: `/images/sts2/map/icons-by-act/${dir}/map_chest_boss.png` };
-  }
-
-  const iconName = NODE_ICON_NAME[type];
-  if (!iconName) return null;
-  return { src: `/images/sts2/map/icons-by-act/${dir}/${iconName}.png` };
+  return NODE_SPRITE_NAME[type] ?? null;
 }
 
 function FloorChip({ floor }: { floor: number }) {
@@ -412,6 +427,20 @@ function FloorChip({ floor }: { floor: number }) {
       />
       <span className="topbar-num tabular-nums">{floor}</span>
     </Chip>
+  );
+}
+
+function AncientChip({ info }: { info: AncientInfo }) {
+  if (!info.spriteId) return null;
+  const label = localize("ancients", `ANCIENT.${info.spriteId.toUpperCase()}`) ?? info.spriteId;
+  return (
+    <NodeIcon
+      title={`고대의 존재: ${label}`}
+      alt={label}
+      sprite={info.spriteId}
+      size={40}
+      inactive={!info.active}
+    />
   );
 }
 

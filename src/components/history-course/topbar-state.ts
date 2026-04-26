@@ -16,6 +16,16 @@ export interface BossInfo {
   firstBossDefeated: boolean;
 }
 
+export interface AncientInfo {
+  // Run-history sprite name (no extension), e.g. "neow", "darv", "vakuu".
+  // Null when this act has no ancient room.
+  spriteId: string | null;
+  // True while the player is *on* the ancient node (active highlight).
+  active: boolean;
+  // True after the ancient room has been passed.
+  passed: boolean;
+}
+
 export interface TopbarState {
   hp: number | null;
   maxHp: number | null;
@@ -25,6 +35,7 @@ export interface TopbarState {
   relics: RelicAtFloor[];
   potionSlots: number;
   bossInfo: BossInfo;
+  ancientInfo: AncientInfo;
   deck: { id: string; count: number }[];
   deckCount: number;
   elapsedSeconds: number;
@@ -86,6 +97,7 @@ export function buildTopbarState(
       relics: [],
       potionSlots: run.ascension >= 6 ? 2 : 3,
       bossInfo: { firstBoss: null, secondBoss: null, firstBossDefeated: false },
+      ancientInfo: { spriteId: null, active: false, passed: false },
       deck: [],
       deckCount: 0,
       elapsedSeconds: 0,
@@ -140,6 +152,18 @@ export function buildTopbarState(
     firstBossDefeated: bossesEncountered >= 1,
   };
 
+  const ancientStepIndex = act.history.findIndex(
+    (entry) => entry.map_point_type === "ancient",
+  );
+  let ancientInfo: AncientInfo = { spriteId: null, active: false, passed: false };
+  if (ancientStepIndex >= 0) {
+    const ancientEntry = act.history[ancientStepIndex];
+    const spriteId = normalize(ancientEntry?.rooms[0]?.model_id ?? "").toLowerCase() || null;
+    const onIt = safeStep - 1 === ancientStepIndex;
+    const past = safeStep - 1 > ancientStepIndex;
+    ancientInfo = { spriteId, active: onIt, passed: past };
+  }
+
   const deck = buildDeckAtFloor(run, currentFloor);
   const deckCount = deck.reduce((sum, d) => sum + d.count, 0);
 
@@ -152,6 +176,7 @@ export function buildTopbarState(
     relics,
     potionSlots,
     bossInfo,
+    ancientInfo,
     deck,
     deckCount,
     elapsedSeconds: elapsed,
