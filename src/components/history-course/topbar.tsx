@@ -130,8 +130,15 @@ export function TopBar({
     isFinalAct && run.ascension >= 10 && state.bossInfo.secondBoss !== null;
 
   return (
-    <div className="absolute inset-x-0 top-0 z-20 flex flex-col gap-1.5 bg-gradient-to-b from-black/85 via-black/55 to-transparent px-3 pb-3 pt-1.5 text-zinc-100">
-      <div className="flex items-center gap-x-3 gap-y-1.5 text-[12px] font-semibold">
+    <div className="absolute inset-x-0 top-0 z-20 flex flex-col gap-1.5 pb-3 text-zinc-100">
+      <div
+        className="flex items-center gap-x-3 gap-y-1.5 px-4 pb-3 pt-2 text-[12px] font-semibold"
+        style={{
+          backgroundImage: "url(/images/sts2/ui/topbar/top_bar.png)",
+          backgroundSize: "100% 100%",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
           <CharacterChip
             character={character}
