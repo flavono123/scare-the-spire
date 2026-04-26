@@ -233,25 +233,21 @@ function CharacterChip({
 function AscensionBadge({ ascension }: { ascension: number }) {
   return (
     <span
-      className="absolute -bottom-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-black text-white shadow-[0_0_4px_rgba(244,63,94,0.6)]"
+      className="absolute -bottom-1 -right-2 flex h-5 w-5 items-end justify-center"
       aria-label={`승천 ${ascension}`}
     >
-      <FlameSvg className="-mt-0.5 mr-0.5 h-2 w-2" />
-      {ascension}
+      <Image
+        src="/images/sts2/ui/topbar/top_bar_ascension.png"
+        alt=""
+        fill
+        sizes="20px"
+        className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
+        unoptimized
+      />
+      <span className="relative z-10 mb-0 text-[10px] font-black leading-none text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)]">
+        {ascension}
+      </span>
     </span>
-  );
-}
-
-function FlameSvg({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 12 12"
-      fill="currentColor"
-      aria-hidden
-      className={className}
-    >
-      <path d="M6 1c1 2 3 3 3 5.5C9 8.4 7.7 10 6 10s-3-1.6-3-3.5C3 5.2 4 4.7 4.6 3.6c.2.6.6 1.2 1.4 1.6C6 4.4 5.7 2.7 6 1z" />
-    </svg>
   );
 }
 
@@ -270,7 +266,14 @@ function HpChip({
     ratio < 0.25 ? "text-rose-300" : ratio < 0.5 ? "text-amber-200" : "text-rose-100";
   return (
     <Chip title={`체력 ${hp ?? "—"} / ${maxHp ?? "—"}`}>
-      <HeartSvg className={cn("h-4 w-4 drop-shadow", color)} />
+      <Image
+        src="/images/sts2/ui/topbar/top_bar_heart.png"
+        alt=""
+        width={20}
+        height={18}
+        className="h-[18px] w-5 object-contain"
+        unoptimized
+      />
       <span className="tabular-nums">
         <span className={color}>{hp ?? "—"}</span>
         <span className="text-zinc-400">/{maxHp ?? "—"}</span>
@@ -279,28 +282,16 @@ function HpChip({
   );
 }
 
-function HeartSvg({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      fill="currentColor"
-      aria-hidden
-      className={className}
-    >
-      <path d="M8 14s-5-3.2-5-7a3 3 0 0 1 5-2.2A3 3 0 0 1 13 7c0 3.8-5 7-5 7z" />
-    </svg>
-  );
-}
-
 function GoldChip({ gold }: { gold: number | null }) {
   return (
     <Chip title={`골드 ${gold ?? "—"}`}>
       <Image
-        src="/images/sts2/icons/gold_icon.webp"
+        src="/images/sts2/ui/topbar/top_bar_gold.png"
         alt=""
-        width={16}
-        height={16}
-        className="h-4 w-4 object-contain"
+        width={18}
+        height={18}
+        className="h-[18px] w-[18px] object-contain"
+        unoptimized
       />
       <span className="tabular-nums text-amber-200">{gold ?? "—"}</span>
     </Chip>
@@ -314,10 +305,16 @@ function PotionSlots({ count }: { count: number }) {
       className="inline-flex items-center gap-1 rounded-full bg-black/55 px-2 py-1 ring-1 ring-white/10 backdrop-blur-[2px]"
     >
       {Array.from({ length: count }).map((_, i) => (
-        <div
-          key={i}
-          className="h-5 w-5 rounded-full bg-zinc-900/80 ring-1 ring-white/10"
-        />
+        <div key={i} className="relative h-5 w-[14px]">
+          <Image
+            src="/images/sts2/ui/topbar/potion_placeholder.png"
+            alt=""
+            fill
+            sizes="14px"
+            className="object-contain opacity-80"
+            unoptimized
+          />
+        </div>
       ))}
     </div>
   );
@@ -401,22 +398,16 @@ function currentNodeIcon(
 function FloorChip({ floor }: { floor: number }) {
   return (
     <Chip title={`${floor}층`}>
-      <StairsSvg className="h-4 w-4 text-zinc-200" />
+      <Image
+        src="/images/sts2/ui/topbar/top_bar_floor.png"
+        alt=""
+        width={18}
+        height={18}
+        className="h-[18px] w-[18px] object-contain"
+        unoptimized
+      />
       <span className="tabular-nums">{floor}</span>
     </Chip>
-  );
-}
-
-function StairsSvg({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      fill="currentColor"
-      aria-hidden
-      className={className}
-    >
-      <path d="M2 12h4v-2.5h3V7h3V4.5h3V13H2z" />
-    </svg>
   );
 }
 
@@ -492,26 +483,16 @@ function BossIcon({
 function TimerChip({ seconds }: { seconds: number }) {
   return (
     <Chip title={`경과 시간 ${formatHms(seconds)}`}>
-      <ClockSvg className="h-4 w-4 text-zinc-300" />
+      <Image
+        src="/images/sts2/ui/topbar/timer_icon.png"
+        alt=""
+        width={18}
+        height={18}
+        className="h-[18px] w-[18px] object-contain"
+        unoptimized
+      />
       <span className="tabular-nums">{formatHms(seconds)}</span>
     </Chip>
-  );
-}
-
-function ClockSvg({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      aria-hidden
-      className={className}
-    >
-      <circle cx="8" cy="8" r="5.5" />
-      <path d="M8 4.5 V8 L10.5 9.5" />
-    </svg>
   );
 }
 
@@ -529,11 +510,12 @@ function DeckChip({
       title={`현재 덱 ${count}장 보기`}
     >
       <Image
-        src="/images/sts2/icons/card_icon.webp"
+        src="/images/sts2/ui/topbar/top_bar_deck.png"
         alt=""
-        width={16}
-        height={16}
-        className="h-4 w-4 object-contain"
+        width={20}
+        height={18}
+        className="h-[18px] w-5 object-contain"
+        unoptimized
       />
       <span className="tabular-nums">{count}</span>
     </Chip>
@@ -542,8 +524,15 @@ function DeckChip({
 
 function HistoryButton({ onClick }: { onClick: () => void }) {
   return (
-    <Chip as="button" onClick={onClick} title="도전 이력">
-      <span className="text-[11px] tracking-[0.18em]">이력</span>
+    <Chip as="button" onClick={onClick} title="도전 이력" className="px-2 py-1">
+      <Image
+        src="/images/sts2/ui/topbar/submenu_history_icon.png"
+        alt="도전 이력"
+        width={26}
+        height={18}
+        className="h-[18px] w-[26px] object-contain"
+        unoptimized
+      />
     </Chip>
   );
 }
@@ -551,21 +540,15 @@ function HistoryButton({ onClick }: { onClick: () => void }) {
 function SettingsButton({ onClick }: { onClick: () => void }) {
   return (
     <Chip as="button" onClick={onClick} title="런 정보" className="px-2 py-1">
-      <GearSvg className="h-4 w-4" />
+      <Image
+        src="/images/sts2/ui/topbar/top_bar_settings.png"
+        alt="런 정보"
+        width={20}
+        height={20}
+        className="h-5 w-5 object-contain"
+        unoptimized
+      />
     </Chip>
-  );
-}
-
-function GearSvg({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      fill="currentColor"
-      aria-hidden
-      className={className}
-    >
-      <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm5.6 3.4 1.2-1-1.4-2.4-1.5.4a5.6 5.6 0 0 0-1-.6L10.6 4h-2.8l-.3 1.3a5.6 5.6 0 0 0-1 .6l-1.5-.4-1.4 2.4 1.2 1a5.6 5.6 0 0 0 0 1.2l-1.2 1 1.4 2.4 1.5-.4q.45.36 1 .6L7 14.8h2.8l.3-1.3q.55-.24 1-.6l1.5.4 1.4-2.4-1.2-1a5.6 5.6 0 0 0 0-1.2z" />
-    </svg>
   );
 }
 
