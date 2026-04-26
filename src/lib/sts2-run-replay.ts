@@ -255,6 +255,10 @@ class StsRng {
     return this.random.nextRange(minInclusive, maxExclusive);
   }
 
+  nextDouble(): number {
+    return this.random.nextDouble();
+  }
+
   nextBool(): boolean {
     return this.random.nextInt(2) === 0;
   }
