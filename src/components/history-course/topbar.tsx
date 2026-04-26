@@ -32,16 +32,30 @@ const CHARACTER_LABEL: Record<string, string> = {
   "CHARACTER.REGENT": "리젠트",
 };
 
-const NODE_ICON: Record<string, string> = {
-  monster: "/images/sts2/map/icons/map_monster.png",
-  elite: "/images/sts2/map/icons/map_elite.png",
-  boss: "/images/sts2/map/icons/map_chest_boss.png",
-  rest_site: "/images/sts2/map/icons/map_rest.png",
-  shop: "/images/sts2/map/icons/map_shop.png",
-  treasure: "/images/sts2/map/icons/map_chest.png",
-  unknown: "/images/sts2/map/icons/map_unknown.png",
-  ancient: "/images/sts2/icons/star_icon.webp",
+const ACT_DIR_KEY: Record<string, string> = {
+  "ACT.OVERGROWTH": "overgrowth",
+  "ACT.UNDERDOCKS": "underdocks",
+  "ACT.HIVE": "hive",
+  "ACT.GLORY": "glory",
 };
+
+const NODE_ICON_NAME: Record<string, string> = {
+  monster: "map_monster",
+  elite: "map_elite",
+  rest_site: "map_rest",
+  shop: "map_shop",
+  treasure: "map_chest",
+  unknown: "map_unknown",
+};
+
+function actDirKey(actId: string): string {
+  return ACT_DIR_KEY[actId] ?? "overgrowth";
+}
+
+function modelKey(value: string | null | undefined): string | null {
+  if (!value) return null;
+  return value.split(".").pop()?.toLowerCase() ?? null;
+}
 
 function relicIconSrc(id: string): string {
   const slug = id.replace(/^RELIC\./, "").toLowerCase();
@@ -126,7 +140,7 @@ export function TopBar({
           <HpChip hp={state.hp} maxHp={state.maxHp} />
           <GoldChip gold={state.gold} />
           <PotionSlots count={state.potionSlots} />
-          <CurrentNodeChip entry={state.currentEntry} />
+          <CurrentNodeChip entry={state.currentEntry} act={act} />
           <FloorChip floor={state.currentFloor} />
           <BossChip
             info={state.bossInfo}
@@ -309,26 +323,79 @@ function PotionSlots({ count }: { count: number }) {
   );
 }
 
-function CurrentNodeChip({ entry }: { entry: ReplayHistoryEntry | null }) {
-  const type = entry?.map_point_type ?? "unknown";
-  const src = NODE_ICON[type];
+function CurrentNodeChip({
+  entry,
+  act,
+}: {
+  entry: ReplayHistoryEntry | null;
+  act: ReplayActAnalysis;
+}) {
+  const icon = currentNodeIcon(entry, act);
   return (
     <Chip title={`현재 노드: ${nodeLabel(entry)}`}>
       <div className="relative h-5 w-5">
-        {src && (
-          <Image
-            src={src}
-            alt=""
-            fill
-            sizes="20px"
-            className="object-contain"
-            unoptimized
-          />
+        {icon && (
+          <>
+            <Image
+              src={icon.src}
+              alt=""
+              fill
+              sizes="20px"
+              className="object-contain"
+              unoptimized
+            />
+            {icon.overlay && (
+              <Image
+                src={icon.overlay}
+                alt=""
+                fill
+                sizes="20px"
+                className="animate-pulse object-contain mix-blend-screen opacity-80"
+                unoptimized
+              />
+            )}
+          </>
         )}
       </div>
       <span className="text-zinc-300">{nodeLabel(entry)}</span>
     </Chip>
   );
+}
+
+function currentNodeIcon(
+  entry: ReplayHistoryEntry | null,
+  act: ReplayActAnalysis,
+): { src: string; overlay?: string } | null {
+  if (!entry) return null;
+  const type = entry.map_point_type;
+  const dir = actDirKey(act.actId);
+
+  if (type === "boss") {
+    const key = modelKey(entry.rooms[0]?.model_id)?.replace(/_boss$/, "");
+    if (key) {
+      return { src: `/images/sts2/boss-nodes/boss_node_${key}.webp` };
+    }
+    return { src: `/images/sts2/map/icons-by-act/${dir}/map_chest_boss.png` };
+  }
+
+  if (type === "ancient") {
+    const key = modelKey(entry.rooms[0]?.model_id);
+    if (key) {
+      return { src: `/images/sts2/ancient-nodes/ancient_node_${key}.webp` };
+    }
+    return { src: "/images/sts2/icons/star_icon.webp" };
+  }
+
+  if (type === "rest_site") {
+    return {
+      src: `/images/sts2/map/icons-by-act/${dir}/map_rest.png`,
+      overlay: "/images/sts2/map/effects/map_circle_2.png",
+    };
+  }
+
+  const iconName = NODE_ICON_NAME[type];
+  if (!iconName) return null;
+  return { src: `/images/sts2/map/icons-by-act/${dir}/${iconName}.png` };
 }
 
 function FloorChip({ floor }: { floor: number }) {
