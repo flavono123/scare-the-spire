@@ -926,34 +926,43 @@ export function SeededMapView({
 }) {
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const meta = actMapMeta(act.actId);
-  const nodeMap = new Map(act.nodes.map((node) => [node.id, node]));
-  const layout = buildMapLayout(act);
-  const activeNodes = new Set<string>();
-  const currentNodes = new Set(act.candidateNodeIdsByStep[step - 1] ?? []);
-  const activeEdges = new Set<string>();
-
-  for (let index = 0; index < step; index++) {
-    for (const nodeId of act.candidateNodeIdsByStep[index] ?? []) {
-      activeNodes.add(nodeId);
+  const layout = useMemo(() => buildMapLayout(act), [act]);
+  const nodeMap = useMemo(() => new Map(act.nodes.map((node) => [node.id, node])), [act]);
+  const questMarkerNodes = useMemo(
+    () =>
+      new Set<string>([
+        ...act.furCoatMarkerNodeIds,
+        ...(act.spoilsMarkerNodeId ? [act.spoilsMarkerNodeId] : []),
+      ]),
+    [act],
+  );
+  const flightArrivalNodes = useMemo(
+    () => new Set(act.flightArrivalNodeIds),
+    [act],
+  );
+  const nodeStepIndex = useMemo(() => {
+    const map = new Map<string, number>();
+    for (let i = 0; i < act.candidateNodeIdsByStep.length; i++) {
+      for (const nodeId of act.candidateNodeIdsByStep[i] ?? []) {
+        if (!map.has(nodeId)) map.set(nodeId, i);
+      }
     }
-    for (const edgeId of act.candidateEdgeIdsByStep[index] ?? []) {
-      activeEdges.add(edgeId);
-    }
-  }
+    return map;
+  }, [act]);
 
-  const questMarkerNodes = new Set<string>([
-    ...act.furCoatMarkerNodeIds,
-    ...(act.spoilsMarkerNodeId ? [act.spoilsMarkerNodeId] : []),
-  ]);
-  const flightArrivalNodes = new Set(act.flightArrivalNodeIds);
-
-  // Map node ID → its history step index (for visited nodes only).
-  const nodeStepIndex = new Map<string, number>();
-  for (let i = 0; i < act.candidateNodeIdsByStep.length; i++) {
-    for (const nodeId of act.candidateNodeIdsByStep[i] ?? []) {
-      if (!nodeStepIndex.has(nodeId)) nodeStepIndex.set(nodeId, i);
+  const { activeNodes, currentNodes, activeEdges } = useMemo(() => {
+    const active = new Set<string>();
+    const edges = new Set<string>();
+    for (let index = 0; index < step; index++) {
+      for (const nodeId of act.candidateNodeIdsByStep[index] ?? []) active.add(nodeId);
+      for (const edgeId of act.candidateEdgeIdsByStep[index] ?? []) edges.add(edgeId);
     }
-  }
+    return {
+      activeNodes: active,
+      currentNodes: new Set(act.candidateNodeIdsByStep[step - 1] ?? []),
+      activeEdges: edges,
+    };
+  }, [act, step]);
 
   return (
     <div className="overflow-x-auto overflow-y-visible">
