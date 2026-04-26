@@ -5,11 +5,13 @@ import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
 import {
   CodexEnchantment,
+  CodexRelic,
   EnchantmentCardTypeFilter,
   ENCHANTMENT_CARD_TYPE_CONFIG,
   ENCHANTMENT_CARD_TYPE_ALIASES,
 } from "@/lib/codex-types";
 import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import { EnchantmentTile } from "./enchantment-tile";
 import { EnchantmentDetail } from "./enchantment-detail";
@@ -43,9 +45,13 @@ interface EnchantmentLibraryProps {
   currentVersion?: string;
   patches?: STS2Patch[];
   versionDiffs?: EntityVersionDiff[];
+  /** All codex entities — enables rich cross-references in the detail modal. */
+  entities?: EntityInfo[];
+  /** Relics — used to surface ones that grant the selected enchantment. */
+  relics?: CodexRelic[];
 }
 
-export function EnchantmentLibrary({ enchantments, versions, currentVersion, patches, versionDiffs }: EnchantmentLibraryProps) {
+export function EnchantmentLibrary({ enchantments, versions, currentVersion, patches, versionDiffs, entities, relics }: EnchantmentLibraryProps) {
   const searchParams = useSearchParams();
   const [selectedCardTypes, setSelectedCardTypes] = useState<Set<EnchantmentCardTypeFilter>>(new Set());
   const [stackableOnly, setStackableOnly] = useState(false);
@@ -361,7 +367,7 @@ export function EnchantmentLibrary({ enchantments, versions, currentVersion, pat
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <EnchantmentDetail enchantment={selectedEnchantment} onClose={() => setSelectedEnchantment(null)} />
+            <EnchantmentDetail enchantment={selectedEnchantment} onClose={() => setSelectedEnchantment(null)} entities={entities} relics={relics} />
           </div>
         </div>
       )}

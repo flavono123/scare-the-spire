@@ -1,15 +1,20 @@
 "use client";
 
+import { useMemo } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import {
   CodexEnchantment,
+  CodexRelic,
   ENCHANTMENT_CARD_TYPE_CONFIG,
   type EnchantmentCardTypeFilter,
 } from "@/lib/codex-types";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
+import { RichDescription } from "./rich-description";
+import { RelicTile } from "./relic-tile";
 
 function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
@@ -25,11 +30,39 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 interface EnchantmentDetailProps {
   enchantment: CodexEnchantment;
   onClose?: () => void;
+  /** Cross-reference entities — when provided, descriptions become rich. */
+  entities?: EntityInfo[];
+  /** All relics, used to surface ones that grant this enchantment. */
+  relics?: CodexRelic[];
 }
 
-export function EnchantmentDetail({ enchantment, onClose }: EnchantmentDetailProps) {
+/**
+ * Decide whether a relic grants this enchantment by scanning its description
+ * for the enchantment's KO or EN name. SSOT lives in the game's relic effects,
+ * but the description is the closest thing to a public contract for now.
+ */
+function relicMentionsEnchantment(relic: CodexRelic, ench: CodexEnchantment): boolean {
+  const desc = `${relic.description ?? ""} ${relic.descriptionRaw ?? ""}`;
+  if (ench.name && desc.includes(ench.name)) return true;
+  if (ench.nameEn && desc.toLowerCase().includes(ench.nameEn.toLowerCase())) return true;
+  return false;
+}
+
+export function EnchantmentDetail({ enchantment, onClose, entities, relics }: EnchantmentDetailProps) {
   const cardTypeFilter: EnchantmentCardTypeFilter = enchantment.cardType ?? "Any";
   const cardTypeConfig = ENCHANTMENT_CARD_TYPE_CONFIG[cardTypeFilter];
+
+  const grantingRelics = useMemo(() => {
+    if (!relics) return [];
+    return relics
+      .filter((r) => relicMentionsEnchantment(r, enchantment))
+      .sort((a, b) => a.name.localeCompare(b.name, "ko"));
+  }, [relics, enchantment]);
+
+  const excludeSelf = useMemo(
+    () => new Set([enchantment.name, enchantment.nameEn]),
+    [enchantment.name, enchantment.nameEn],
+  );
 
   return (
     <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-lg mx-auto">
@@ -96,7 +129,15 @@ export function EnchantmentDetail({ enchantment, onClose }: EnchantmentDetailPro
       {/* Description */}
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
         <div className="text-sm text-gray-200 leading-relaxed">
-          <DescriptionText description={enchantment.description} />
+          {entities ? (
+            <RichDescription
+              description={enchantment.description}
+              entities={entities}
+              excludeEntityTerms={excludeSelf}
+            />
+          ) : (
+            <DescriptionText description={enchantment.description} />
+          )}
         </div>
       </div>
 
@@ -107,7 +148,41 @@ export function EnchantmentDetail({ enchantment, onClose }: EnchantmentDetailPro
             카드 텍스트
           </span>
           <div className="text-sm text-zinc-300 leading-relaxed">
-            <DescriptionText description={enchantment.extraCardText} />
+            {entities ? (
+              <RichDescription
+                description={enchantment.extraCardText}
+                entities={entities}
+                excludeEntityTerms={excludeSelf}
+              />
+            ) : (
+              <DescriptionText description={enchantment.extraCardText} />
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Granting relics — relics whose effect mentions this enchantment */}
+      {grantingRelics.length > 0 && (
+        <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
+          <h2 className="text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider">
+            이 인챈트를 부여하는 유물
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {grantingRelics.map((r) => (
+              <Link
+                key={r.id}
+                href={`/codex/relics?relic=${r.id.toLowerCase()}`}
+                className="block"
+                onClick={(e) => {
+                  // If we're inside the enchantment detail modal, the parent
+                  // controls navigation — let the link work as a hard nav.
+                  // Otherwise (standalone page) Link handles it.
+                  void e;
+                }}
+              >
+                <RelicTile relic={r} />
+              </Link>
+            ))}
           </div>
         </div>
       )}

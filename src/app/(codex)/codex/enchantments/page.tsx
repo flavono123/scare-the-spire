@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { getCodexEnchantments } from "@/lib/codex-data";
+import { getCodexEnchantments, getCodexRelics } from "@/lib/codex-data";
+import { loadAllEntities } from "@/lib/load-all-entities";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import { EnchantmentLibrary } from "@/components/codex/enchantment-library";
@@ -12,11 +13,13 @@ export const metadata: Metadata = {
 };
 
 export default async function CodexEnchantmentsPage() {
-  const [enchantments, patches, versionDiffs, meta] = await Promise.all([
+  const [enchantments, relics, patches, versionDiffs, meta, entities] = await Promise.all([
     getCodexEnchantments(),
+    getCodexRelics(),
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
+    loadAllEntities(),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -29,6 +32,8 @@ export default async function CodexEnchantmentsPage() {
         currentVersion={meta.version}
         patches={patches}
         versionDiffs={versionDiffs}
+        entities={entities}
+        relics={relics}
       />
     </Suspense>
   );
