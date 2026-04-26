@@ -9,7 +9,7 @@ import type { CodexCard } from "@/lib/codex-types";
 // =============================================================================
 
 export interface DescPart {
-  type: "text" | "gold" | "newline" | "energy" | "upgrade" | "star" | "red" | "blue";
+  type: "text" | "gold" | "newline" | "energy" | "upgrade" | "star" | "red" | "blue" | "purple";
   text: string;
 }
 
@@ -33,7 +33,7 @@ export function cleanDescription(desc: string): string {
 export function parseDescription(rawDesc: string): DescPart[] {
   const desc = cleanDescription(rawDesc);
   const parts: DescPart[] = [];
-  const regex = /\[gold\](.*?)\[\/gold\]|\[green\](.*?)\[\/green\]|\[red\](.*?)\[\/red\]|\[blue\](.*?)\[\/blue\]|\[energy:(\d+)\]|\[star:(\d+)\]|\[\/?\w+(?::?\w*)*\]|\n/g;
+  const regex = /\[gold\](.*?)\[\/gold\]|\[green\](.*?)\[\/green\]|\[red\](.*?)\[\/red\]|\[blue\](.*?)\[\/blue\]|\[purple\](.*?)\[\/purple\]|\[pink\](.*?)\[\/pink\]|\[energy:(\d+)\]|\[star:(\d+)\]|\[\/?\w+(?::?\w*)*\]|\n/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
 
@@ -52,9 +52,13 @@ export function parseDescription(rawDesc: string): DescPart[] {
     } else if (match[4] !== undefined) {
       parts.push({ type: "blue", text: match[4] });
     } else if (match[5] !== undefined) {
-      parts.push({ type: "energy", text: match[5] });
+      parts.push({ type: "purple", text: match[5] });
     } else if (match[6] !== undefined) {
-      parts.push({ type: "star", text: match[6] });
+      parts.push({ type: "purple", text: match[6] }); // pink → purple alias
+    } else if (match[7] !== undefined) {
+      parts.push({ type: "energy", text: match[7] });
+    } else if (match[8] !== undefined) {
+      parts.push({ type: "star", text: match[8] });
     }
     lastIndex = match.index + match[0].length;
   }
@@ -198,6 +202,8 @@ export function DescriptionText({
           <span key={i} className="text-red-400">{part.text}</span>
         ) : part.type === "blue" ? (
           <span key={i} className="text-blue-400 font-bold">{part.text}</span>
+        ) : part.type === "purple" ? (
+          <span key={i} style={{ color: "#EE82EE" }} className="font-bold">{part.text}</span>
         ) : part.type === "energy" ? (
           <span key={i} className="inline-flex items-baseline gap-0">
             {Array.from({ length: parseInt(part.text, 10) || 1 }, (_, j) => (

@@ -39,16 +39,22 @@ export type CardInfo = EntityInfo;
 
 // --- Entity Preview (hover card image) ---
 
+const DEFAULT_ENTITY_LINK_CLASS =
+  "font-semibold spire-gold hover:text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 transition-colors cursor-pointer";
+
 export function EntityPreview({
   entity,
   children,
   forceShow,
   forcePosition,
+  linkClassName,
 }: {
   entity: EntityInfo;
   children: ReactNode;
   forceShow?: boolean;
   forcePosition?: "above" | "below";
+  /** Override the link's CSS classes — used when embedded inside an already-colored span (e.g. [purple]…[/purple] in a description). */
+  linkClassName?: string;
 }) {
   const [show, setShow] = useState(false);
   const visible = show || forceShow;
@@ -92,7 +98,7 @@ export function EntityPreview({
       {!forceShow && (
         <Link
           href={href}
-          className="font-semibold spire-gold hover:text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 transition-colors cursor-pointer"
+          className={linkClassName ?? DEFAULT_ENTITY_LINK_CLASS}
         >
           {children}
         </Link>

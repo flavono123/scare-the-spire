@@ -20,6 +20,10 @@ import {
   canEnchantCard,
   shouldShowAmount,
   DEFAULT_ENCHANT_AMOUNT,
+  getEnchantAddedKeywords,
+  getEnchantRemovedKeywords,
+  getEnchantForcedCost,
+  substituteAmount,
 } from "@/lib/sts2-enchant-rules";
 
 const ENCHANT_TIP_VARIANT: Record<string, HoverTipVariant> = {
@@ -61,6 +65,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
   const [showBeta, setShowBeta] = useState(false);
   const [activeEnchantId, setActiveEnchantId] = useState<string | null>(null);
   const [hoveredEnchantId, setHoveredEnchantId] = useState<string | null>(null);
+  const [enchantAmount, setEnchantAmount] = useState<number>(DEFAULT_ENCHANT_AMOUNT);
 
   const costDisplay = card.isXCost ? "X" : String(card.cost);
   const charColor = CHARACTER_COLORS[card.color];
@@ -82,6 +87,21 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
   );
 
   const cardWidth = CARD_WIDTH_PRESET.detail;
+
+  // 활성 인챈트 효과: amount 치환, 추가/제거 키워드, forced cost
+  const activeShowAmount = activeEnchant ? shouldShowAmount(activeEnchant) : false;
+  const activeExtraText = activeEnchant
+    ? substituteAmount(activeEnchant.extraCardText, enchantAmount)
+    : null;
+  const activeAddedKeywords = activeEnchant ? getEnchantAddedKeywords(activeEnchant) : [];
+  const activeRemovedKeywords = activeEnchant ? getEnchantRemovedKeywords(activeEnchant) : [];
+  const activeForcedCost = activeEnchant ? getEnchantForcedCost(activeEnchant) : null;
+
+  // 툴팁 description은 amount 치환 적용
+  const hoveredShowAmount = hoveredEnchant ? shouldShowAmount(hoveredEnchant) : false;
+  const hoveredDesc = hoveredEnchant
+    ? substituteAmount(hoveredEnchant.description, enchantAmount) ?? hoveredEnchant.description
+    : null;
 
   return (
     <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-3xl mx-auto">
@@ -122,12 +142,11 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
           width={cardWidth}
           enchantmentImageUrl={activeEnchant?.imageUrl ?? null}
           enchantmentLabel={activeEnchant?.name ?? null}
-          enchantmentAmount={
-            activeEnchant && shouldShowAmount(activeEnchant)
-              ? DEFAULT_ENCHANT_AMOUNT
-              : null
-          }
-          descriptionSuffix={activeEnchant?.extraCardText ?? null}
+          enchantmentAmount={activeShowAmount ? enchantAmount : null}
+          forcedCost={activeForcedCost}
+          enchantAddedKeywords={activeAddedKeywords}
+          enchantRemovedKeywords={activeRemovedKeywords}
+          descriptionSuffix={activeExtraText}
         />
         {hoveredEnchant && (
           <div
@@ -147,14 +166,9 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
               variant={getEnchantTipVariant(hoveredEnchant)}
             >
               <DescriptionText
-                description={hoveredEnchant.description}
+                description={hoveredDesc ?? hoveredEnchant.description}
                 className="block text-center"
               />
-              {hoveredEnchant.cardType && (
-                <p className="text-[10px] text-center mt-1 opacity-70">
-                  ({hoveredEnchant.cardType === "Attack" ? "공격" : "스킬"} 카드 전용)
-                </p>
-              )}
             </HoverTip>
           </div>
         )}

@@ -111,6 +111,67 @@ function normalizeId(id: string): string {
   return id.toUpperCase().replace(/[\s-]/g, "_");
 }
 
+// =============================================================================
+// 인챈트가 OnEnchant에서 카드에 추가/제거하는 키워드
+// 게임 소스: src/Core/Models/Enchantments/<Name>.cs::OnEnchant
+// =============================================================================
+
+/** 인챈트가 카드에 추가하는 키워드 (한국어). */
+const ENCHANT_ADDED_KEYWORDS: Record<string, string[]> = {
+  GOOPY: ["소멸"],
+  ROYALLY_APPROVED: ["선천성", "보존"],
+  STEADY: ["보존"],
+  TEZCATARAS_EMBER: ["영구"],
+};
+
+/** 인챈트가 카드에서 제거하는 키워드. */
+const ENCHANT_REMOVED_KEYWORDS: Record<string, string[]> = {
+  SOULS_POWER: ["소멸"],
+};
+
+export function getEnchantAddedKeywords(enchant: CodexEnchantment): string[] {
+  return ENCHANT_ADDED_KEYWORDS[normalizeId(enchant.id)] ?? [];
+}
+
+export function getEnchantRemovedKeywords(enchant: CodexEnchantment): string[] {
+  return ENCHANT_REMOVED_KEYWORDS[normalizeId(enchant.id)] ?? [];
+}
+
+// =============================================================================
+// 인챈트별 카드 코스트 변경 (게임 OnEnchant)
+// TezcatarasEmber: cost 0으로 강제
+// =============================================================================
+
+const ENCHANT_FORCED_COST: Record<string, number> = {
+  TEZCATARAS_EMBER: 0,
+};
+
+export function getEnchantForcedCost(
+  enchant: CodexEnchantment,
+): number | null {
+  const v = ENCHANT_FORCED_COST[normalizeId(enchant.id)];
+  return v ?? null;
+}
+
+// =============================================================================
+// 인챈트 텍스트 amount 치환
+// description/extra_card_text의 [blue]X[/blue] 또는 X를 실제 amount로 교체.
+// =============================================================================
+
+/**
+ * "X" 또는 "[blue]X[/blue]" 자리를 amount로 치환.
+ * "Apply [blue]X[/blue] [gold]Weak[/gold]." → "Apply [blue]2[/blue] [gold]Weak[/gold]."
+ */
+export function substituteAmount(text: string | null, amount: number): string | null {
+  if (!text) return text;
+  // [blue]X[/blue] → [blue]N[/blue]
+  let out = text.replace(/\[blue\]X\[\/blue\]/g, `[blue]${amount}[/blue]`);
+  // 단독 X (영문/한글 단어 경계) → N
+  // "Lose 2 HP." 같이 이미 숫자가 있는 경우는 건드리지 않음.
+  out = out.replace(/(^|[^A-Za-z])X([^A-Za-z]|$)/g, `$1${amount}$2`);
+  return out;
+}
+
 export function canEnchantCard(enchant: CodexEnchantment, card: CodexCard): boolean {
   const rule = ENCHANT_RULES[normalizeId(enchant.id)];
   const cardLike: CardLikeForRule = {

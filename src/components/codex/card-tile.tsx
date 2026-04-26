@@ -111,7 +111,13 @@ interface CardTileProps {
   enchantmentImageUrl?: string | null;
   enchantmentLabel?: string | null;
   enchantmentAmount?: number | null;
-  /** Append after card description (mimics game's enchantment extra_card_text). */
+  /** 인챈트 적용 후 카드 코스트 (TezcatarasEmber 등). null이면 원래 cost. */
+  forcedCost?: number | null;
+  /** 인챈트가 추가하는 키워드(영구/선천성/보존/소멸). */
+  enchantAddedKeywords?: string[];
+  /** 인챈트가 제거하는 키워드(SoulsPower→소멸). */
+  enchantRemovedKeywords?: string[];
+  /** 카드 본문 끝에 분홍색으로 추가될 인챈트 효과 텍스트. BBCode OK. */
   descriptionSuffix?: string | null;
   onClick?: () => void;
 }
@@ -125,6 +131,9 @@ export const CardTile = memo(function CardTile({
   enchantmentImageUrl,
   enchantmentLabel,
   enchantmentAmount,
+  forcedCost,
+  enchantAddedKeywords,
+  enchantRemovedKeywords,
   descriptionSuffix,
   onClick,
 }: CardTileProps) {
@@ -140,7 +149,9 @@ export const CardTile = memo(function CardTile({
   else if (card.betaImageUrl) imageSrc = card.betaImageUrl;
 
   let costDisplay = "";
-  if (card.isXCost) costDisplay = "X";
+  if (forcedCost !== undefined && forcedCost !== null) {
+    costDisplay = String(forcedCost);
+  } else if (card.isXCost) costDisplay = "X";
   else if (card.cost >= 0) {
     costDisplay = showUpgrade && card.upgrade?.cost !== undefined
       ? String(card.upgrade.cost) : String(card.cost);
@@ -171,9 +182,20 @@ export const CardTile = memo(function CardTile({
   const descText = isUpgraded
     ? renderUpgradedDescription(card)
     : card.description;
-  const descParts = parseDescription(
-    descText + (descriptionSuffix ? `\n${descriptionSuffix}` : "")
-  );
+  // 인챈트 텍스트는 분홍/보라색으로 — 게임 인챈트 효과 텍스트와 동일.
+  const descCombined = descText +
+    (descriptionSuffix ? `\n[purple]${descriptionSuffix}[/purple]` : "");
+  const descParts = parseDescription(descCombined);
+
+  // 표시할 키워드: 카드 keywords + 인챈트 추가 - 인챈트 제거
+  const removedSet = new Set(enchantRemovedKeywords ?? []);
+  const displayKeywords = [
+    ...card.keywords.filter((k) => !removedSet.has(k)),
+    ...((enchantAddedKeywords ?? []).filter(
+      (k) => !card.keywords.includes(k)
+    )),
+  ];
+  const enchantKeywordSet = new Set(enchantAddedKeywords ?? []);
 
   // ─── 텍스트 렌더 ───
   const renderDescription = () => (
@@ -235,25 +257,28 @@ export const CardTile = memo(function CardTile({
           <span key={i}>{part.text}</span>
         )
       )}
-      {card.keywords.length > 0 && (
+      {displayKeywords.length > 0 && (
         <>
           <br />
-          {card.keywords.map((kw, i) => (
-            <span key={`kw-${i}`}>
-              {i > 0 && <span className="text-gray-500"> · </span>}
-              <span
-                className="relative font-bold cursor-help"
-                style={{ color: TEXT_GOLD }}
-                onMouseEnter={() => setHoveredTerm(kw)}
-                onMouseLeave={() => setHoveredTerm(null)}
-              >
-                {kw}
-                {hoveredTerm === kw && KEYWORD_DESC[kw] && (
-                  <TermTooltip name={kw} desc={KEYWORD_DESC[kw]} />
-                )}
+          {displayKeywords.map((kw, i) => {
+            const fromEnchant = enchantKeywordSet.has(kw);
+            return (
+              <span key={`kw-${i}`}>
+                {i > 0 && <span className="text-gray-500"> · </span>}
+                <span
+                  className="relative font-bold cursor-help"
+                  style={{ color: fromEnchant ? "#EE82EE" : TEXT_GOLD }}
+                  onMouseEnter={() => setHoveredTerm(kw)}
+                  onMouseLeave={() => setHoveredTerm(null)}
+                >
+                  {kw}
+                  {hoveredTerm === kw && KEYWORD_DESC[kw] && (
+                    <TermTooltip name={kw} desc={KEYWORD_DESC[kw]} />
+                  )}
+                </span>
               </span>
-            </span>
-          ))}
+            );
+          })}
         </>
       )}
     </div>
@@ -317,7 +342,9 @@ export const CardTile = memo(function CardTile({
     </div>
   ) : null;
 
-  // ─── 인챈트 슬롯 (코스트 아래) — card_enchant.png 그대로, 우측에 amount ───
+  // ─── 인챈트 슬롯 (코스트 아래) — game material: hsv.gdshader(h=0.25, s=0.4, v=1.0)
+  // → CSS filter 환산: hue-rotate(-270deg = +90deg) saturate(0.4) brightness(1.0)
+  // 슬롯 텍스처를 검정/회색으로 만드는 게임 셰이더와 동일.
   const renderEnchantSlot = () => enchantmentImageUrl ? (
     <div
       className="absolute z-[6] pointer-events-none"
@@ -329,17 +356,23 @@ export const CardTile = memo(function CardTile({
       }}
       title={enchantmentLabel ?? undefined}
     >
-      {/* Slot base — 절대 색상 변경 없이 원본 그대로 */}
+      {/* Slot base — 게임 ShaderMaterial_ots2x: HSV(0.25, 0.4, 1.0) */}
       <Image
         src="/images/game-assets/card-misc/card_enchant.png"
         alt=""
         fill
         className="object-contain"
+        style={{ filter: "hue-rotate(90deg) saturate(0.4) brightness(1.0)" }}
       />
-      {/* 인챈트 아이콘 — 슬롯 안쪽 좌측 (게임에서는 ICON 노드가 offset(14,9)~(49,44)) */}
+      {/* 인챈트 아이콘 — game Icon offset(14,9)~(49,44) within 72×54 슬롯 */}
       <div
         className="absolute"
-        style={{ left: "20%", top: "16%", width: "48%", aspectRatio: "1" }}
+        style={{
+          left: `${(14 / 72) * 100}%`,
+          top: `${(9 / 54) * 100}%`,
+          width: `${((49 - 14) / 72) * 100}%`,
+          height: `${((44 - 9) / 54) * 100}%`,
+        }}
       >
         <Image
           src={enchantmentImageUrl}
@@ -348,21 +381,30 @@ export const CardTile = memo(function CardTile({
           className="object-contain"
         />
       </div>
-      {/* Amount (게임 Label offset_left=26, top=27, right=66, bottom=53 → 우측 하단) */}
+      {/* Amount: game Label offset_left=26, top=27, right=66, bottom=53 (slot 72×54 내) */}
       {enchantmentAmount !== undefined && enchantmentAmount !== null && (
-        <span
-          className="absolute font-black"
+        <div
+          className="absolute flex items-center justify-center"
           style={{
-            right: "0%",
-            bottom: "-4%",
-            color: TEXT_CREAM,
-            fontSize: `${FONT_CQI.enchantAmount}cqi`,
-            fontFamily: TITLE_FONT,
-            ...(enchantAmountStroke as CSSProperties),
+            left: `${(26 / 72) * 100}%`,
+            top: `${(27 / 54) * 100}%`,
+            width: `${((66 - 26) / 72) * 100}%`,
+            height: `${((53 - 27) / 54) * 100}%`,
           }}
         >
-          {enchantmentAmount}
-        </span>
+          <span
+            className="font-black"
+            style={{
+              color: TEXT_CREAM,
+              fontSize: `${FONT_CQI.enchantAmount}cqi`,
+              fontFamily: TITLE_FONT,
+              lineHeight: 1,
+              ...(enchantAmountStroke as CSSProperties),
+            }}
+          >
+            {enchantmentAmount}
+          </span>
+        </div>
       )}
     </div>
   ) : null;
