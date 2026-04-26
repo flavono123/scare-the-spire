@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexRelics } from "@/lib/codex-data";
+import { loadAllEntities } from "@/lib/load-all-entities";
 import { RelicDetail } from "@/components/codex/relic-detail";
 import { RELIC_RARITY_LABELS } from "@/lib/codex-types";
 
@@ -30,13 +31,16 @@ export default async function RelicDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const relics = await getCodexRelics();
+  const [relics, entities] = await Promise.all([
+    getCodexRelics(),
+    loadAllEntities(),
+  ]);
   const relic = relics.find((r) => r.id.toLowerCase() === id.toLowerCase());
   if (!relic) notFound();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <RelicDetail relic={relic} />
+      <RelicDetail relic={relic} entities={entities} />
     </div>
   );
 }

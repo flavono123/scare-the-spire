@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { getCodexRelics, getCodexCharacters, getCodexAncients } from "@/lib/codex-data";
+import { loadAllEntities } from "@/lib/load-all-entities";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import { RelicLibrary } from "@/components/codex/relic-library";
@@ -11,13 +12,14 @@ export const metadata: Metadata = {
 };
 
 export default async function CodexRelicsPage() {
-  const [relics, characters, ancients, patches, versionDiffs, meta] = await Promise.all([
+  const [relics, characters, ancients, patches, versionDiffs, meta, entities] = await Promise.all([
     getCodexRelics(),
     getCodexCharacters(),
     getCodexAncients(),
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
+    loadAllEntities(),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -32,6 +34,7 @@ export default async function CodexRelicsPage() {
         currentVersion={meta.version}
         patches={patches}
         versionDiffs={versionDiffs}
+        entities={entities}
       />
     </Suspense>
   );

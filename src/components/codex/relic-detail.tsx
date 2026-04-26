@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -16,7 +16,9 @@ import {
   type RelicPool,
   type RelicFilterPool,
 } from "@/lib/codex-types";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
+import { RichDescription } from "./rich-description";
 
 function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
@@ -33,6 +35,8 @@ interface RelicDetailProps {
   relic: CodexRelic;
   initialVariant?: RelicPool;
   onClose?: () => void;
+  /** Cross-reference entities — when provided, descriptions become rich. */
+  entities?: EntityInfo[];
 }
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
@@ -46,7 +50,13 @@ const VARIANT_LABELS: Record<RelicPool, string> = {
   defect: "디펙트",
 };
 
-export function RelicDetail({ relic, initialVariant, onClose }: RelicDetailProps) {
+export function RelicDetail({ relic, initialVariant, onClose, entities }: RelicDetailProps) {
+  // Don't link the relic to itself in its own description
+  const excludeSelf = useMemo(
+    () => new Set([relic.name, relic.nameEn]),
+    [relic.name, relic.nameEn],
+  );
+
   const variantPools = relic.variantImageUrls
     ? VARIANT_ORDER.filter((p) => relic.variantImageUrls![p])
     : [];
@@ -161,14 +171,30 @@ export function RelicDetail({ relic, initialVariant, onClose }: RelicDetailProps
       {/* Description */}
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
         <div className="text-sm text-gray-200 leading-relaxed">
-          <DescriptionText description={relic.description} />
+          {entities ? (
+            <RichDescription
+              description={relic.description}
+              entities={entities}
+              excludeEntityTerms={excludeSelf}
+            />
+          ) : (
+            <DescriptionText description={relic.description} />
+          )}
         </div>
       </div>
 
       {/* Flavor text */}
       {relic.flavor && (
         <p className="text-xs text-gray-500 italic text-center max-w-sm">
-          <DescriptionText description={relic.flavor} />
+          {entities ? (
+            <RichDescription
+              description={relic.flavor}
+              entities={entities}
+              excludeEntityTerms={excludeSelf}
+            />
+          ) : (
+            <DescriptionText description={relic.flavor} />
+          )}
         </p>
       )}
 

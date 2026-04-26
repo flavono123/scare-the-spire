@@ -63,9 +63,7 @@ function relicIconSrc(id: string): string {
 }
 
 function bossIconSrc(id: string): string {
-  // Game shows abstract boss-node sprite in the topbar, not the boss portrait.
-  const slug = id.toLowerCase().replace(/_boss$/, "");
-  return `/images/sts2/boss-nodes/boss_node_${slug}.webp`;
+  return `/images/sts2/bosses/${id.toLowerCase()}.webp`;
 }
 
 function bossLabel(id: string | null): string {
@@ -132,14 +130,14 @@ export function TopBar({
   return (
     <div className="absolute inset-x-0 top-0 z-20 flex flex-col gap-1.5 pb-3 text-zinc-100">
       <div
-        className="topbar-row flex items-center gap-x-3 gap-y-1.5 px-4 pb-3 pt-2 text-[15px] font-bold"
+        className="topbar-row flex items-center gap-x-5 gap-y-1.5 px-5 pb-3 pt-2 text-[20px] font-bold leading-none"
         style={{
           backgroundImage: "url(/images/sts2/ui/topbar/top_bar.png)",
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
           <CharacterChip
             character={character}
             ascension={run.ascension}
@@ -154,7 +152,7 @@ export function TopBar({
             showSecond={showSecondBoss}
           />
         </div>
-        <div className="ml-auto flex items-center gap-1.5">
+        <div className="ml-auto flex items-center gap-3">
           <TimerChip seconds={state.elapsedSeconds} />
           <DeckChip count={state.deckCount} onOpen={onOpenDeck} />
           <HistoryButton onClick={onOpenStats} />
@@ -219,7 +217,7 @@ function CharacterChip({
   return (
     <div
       title={`${label} · 승천 ${ascension}`}
-      className="relative h-10 w-10"
+      className="relative h-12 w-12"
       style={{
         backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
         backgroundSize: "100% 100%",
@@ -232,7 +230,7 @@ function CharacterChip({
             src={iconSrc}
             alt={label ?? character}
             fill
-            sizes="36px"
+            sizes="44px"
             className="object-contain"
           />
         </div>
@@ -245,18 +243,18 @@ function CharacterChip({
 function AscensionBadge({ ascension }: { ascension: number }) {
   return (
     <span
-      className="pointer-events-none absolute -bottom-1.5 -left-1.5 flex h-6 w-6 items-end justify-center"
+      className="pointer-events-none absolute -bottom-0.5 -right-1 flex h-7 w-7 items-end justify-center"
       aria-label={`승천 ${ascension}`}
     >
       <Image
         src="/images/sts2/ui/topbar/top_bar_ascension.png"
         alt=""
         fill
-        sizes="24px"
+        sizes="28px"
         className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
         unoptimized
       />
-      <span className="topbar-num relative z-10 mb-0 text-[11px] leading-none">
+      <span className="topbar-num relative z-10 mb-0.5 text-[13px] leading-none">
         {ascension}
       </span>
     </span>
@@ -275,12 +273,12 @@ function HpChip({
       <Image
         src="/images/sts2/ui/topbar/top_bar_heart.png"
         alt=""
-        width={26}
-        height={22}
-        className="h-[22px] w-[26px] object-contain"
+        width={36}
+        height={30}
+        className="h-[30px] w-9 object-contain"
         unoptimized
       />
-      <span className="topbar-num tabular-nums">
+      <span className="topbar-num topbar-num-red tabular-nums">
         {hp ?? "—"}
         <span className="opacity-80">/{maxHp ?? "—"}</span>
       </span>
@@ -294,12 +292,12 @@ function GoldChip({ gold }: { gold: number | null }) {
       <Image
         src="/images/sts2/ui/topbar/top_bar_gold.png"
         alt=""
-        width={24}
-        height={22}
-        className="h-[22px] w-[24px] object-contain"
+        width={32}
+        height={30}
+        className="h-[30px] w-8 object-contain"
         unoptimized
       />
-      <span className="topbar-num tabular-nums">{gold ?? "—"}</span>
+      <span className="topbar-num topbar-num-gold tabular-nums">{gold ?? "—"}</span>
     </Chip>
   );
 }
@@ -308,7 +306,7 @@ function PotionSlots({ count }: { count: number }) {
   return (
     <div
       title={`포션 슬롯 ${count}개`}
-      className="relative inline-flex h-10 items-center gap-1.5 px-3"
+      className="relative inline-flex h-12 items-center gap-2 px-4"
       style={{
         backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
         backgroundSize: "100% 100%",
@@ -316,12 +314,12 @@ function PotionSlots({ count }: { count: number }) {
       }}
     >
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="relative h-7 w-[18px]">
+        <div key={i} className="relative h-9 w-7">
           <Image
             src="/images/sts2/ui/topbar/potion_placeholder.png"
             alt=""
             fill
-            sizes="18px"
+            sizes="28px"
             className="object-contain opacity-90"
             unoptimized
           />
@@ -343,13 +341,13 @@ function CurrentNodeChip({
   return (
     <div
       title={`현재 노드: ${nodeLabel(entry)}`}
-      className="relative h-7 w-7"
+      className="relative h-10 w-10"
     >
       <Image
         src={icon.src}
         alt={nodeLabel(entry)}
         fill
-        sizes="28px"
+        sizes="40px"
         className="object-contain"
         unoptimized
       />
@@ -358,7 +356,7 @@ function CurrentNodeChip({
           src={icon.overlay}
           alt=""
           fill
-          sizes="28px"
+          sizes="40px"
           className="animate-pulse object-contain mix-blend-screen opacity-80"
           unoptimized
         />
@@ -407,9 +405,9 @@ function FloorChip({ floor }: { floor: number }) {
       <Image
         src="/images/sts2/ui/topbar/top_bar_floor.png"
         alt=""
-        width={24}
-        height={22}
-        className="h-[22px] w-[24px] object-contain"
+        width={32}
+        height={30}
+        className="h-[30px] w-8 object-contain"
         unoptimized
       />
       <span className="topbar-num tabular-nums">{floor}</span>
@@ -467,15 +465,15 @@ function BossIcon({
   return (
     <div
       className={cn(
-        "relative h-7 w-7",
-        active && "drop-shadow-[0_0_6px_rgba(255,200,120,0.55)]",
+        "relative h-10 w-10",
+        active && "drop-shadow-[0_0_8px_rgba(255,200,120,0.6)]",
       )}
     >
       <Image
         src={bossIconSrc(id)}
         alt={bossLabel(id)}
         fill
-        sizes="28px"
+        sizes="40px"
         className={cn(
           "object-contain",
           active ? "" : defeated ? "opacity-30 grayscale" : "opacity-55 grayscale",
@@ -492,12 +490,12 @@ function TimerChip({ seconds }: { seconds: number }) {
       <Image
         src="/images/sts2/ui/topbar/timer_icon.png"
         alt=""
-        width={22}
-        height={22}
-        className="h-[22px] w-[22px] object-contain"
+        width={30}
+        height={30}
+        className="h-[30px] w-[30px] object-contain"
         unoptimized
       />
-      <span className="topbar-num tabular-nums">{formatHms(seconds)}</span>
+      <span className="topbar-num topbar-num-gold tabular-nums">{formatHms(seconds)}</span>
     </Chip>
   );
 }
@@ -514,9 +512,9 @@ function DeckChip({
       <Image
         src="/images/sts2/ui/topbar/top_bar_deck.png"
         alt=""
-        width={28}
-        height={24}
-        className="h-[24px] w-[28px] object-contain"
+        width={38}
+        height={32}
+        className="h-8 w-[38px] object-contain"
         unoptimized
       />
       <span className="topbar-num tabular-nums">{count}</span>
@@ -530,9 +528,9 @@ function HistoryButton({ onClick }: { onClick: () => void }) {
       <Image
         src="/images/sts2/ui/topbar/top_bar_map.png"
         alt="도전 이력"
-        width={28}
-        height={26}
-        className="h-[26px] w-[28px] object-contain"
+        width={38}
+        height={34}
+        className="h-[34px] w-[38px] object-contain"
         unoptimized
       />
     </Chip>
@@ -545,9 +543,9 @@ function SettingsButton({ onClick }: { onClick: () => void }) {
       <Image
         src="/images/sts2/ui/topbar/top_bar_settings.png"
         alt="런 정보"
-        width={26}
-        height={26}
-        className="h-[26px] w-[26px] object-contain"
+        width={34}
+        height={34}
+        className="h-[34px] w-[34px] object-contain"
         unoptimized
       />
     </Chip>

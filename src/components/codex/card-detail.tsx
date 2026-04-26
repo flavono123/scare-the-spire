@@ -252,14 +252,40 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
             <h2 className="text-sm font-bold text-gray-300">
               가능한 인챈트 ({eligibleEnchantments.length})
             </h2>
-            {activeEnchant && (
-              <button
-                onClick={() => setActiveEnchantId(null)}
-                className="text-xs text-gray-500 hover:text-gray-300"
-              >
-                해제
-              </button>
-            )}
+            <div className="flex items-center gap-3">
+              {activeShowAmount && (
+                <div className="flex items-center gap-1.5 text-xs">
+                  <span className="text-gray-500">amount</span>
+                  <button
+                    type="button"
+                    onClick={() => setEnchantAmount((n) => Math.max(1, n - 1))}
+                    className="w-5 h-5 rounded bg-white/5 border border-white/10 hover:border-white/30 text-gray-300"
+                    aria-label="amount 감소"
+                  >
+                    −
+                  </button>
+                  <span className="font-bold text-yellow-400 min-w-[1.5em] text-center">
+                    {enchantAmount}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setEnchantAmount((n) => Math.min(99, n + 1))}
+                    className="w-5 h-5 rounded bg-white/5 border border-white/10 hover:border-white/30 text-gray-300"
+                    aria-label="amount 증가"
+                  >
+                    +
+                  </button>
+                </div>
+              )}
+              {activeEnchant && (
+                <button
+                  onClick={() => setActiveEnchantId(null)}
+                  className="text-xs text-gray-500 hover:text-gray-300"
+                >
+                  해제
+                </button>
+              )}
+            </div>
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
             {eligibleEnchantments.map((e) => {

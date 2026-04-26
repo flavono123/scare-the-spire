@@ -19,6 +19,7 @@ import {
   RARITY_ALIASES,
 } from "@/lib/codex-types";
 import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { reconstructRelicAtVersion } from "@/lib/entity-versioning";
 import { RelicTile } from "./relic-tile";
 import { RelicDetail } from "./relic-detail";
@@ -67,9 +68,11 @@ interface RelicLibraryProps {
   currentVersion?: string;
   patches?: STS2Patch[];
   versionDiffs?: EntityVersionDiff[];
+  /** All codex entities — enables rich cross-references in the detail modal. */
+  entities?: EntityInfo[];
 }
 
-export function RelicLibrary({ relics, characters, ancients, versions, currentVersion, patches, versionDiffs }: RelicLibraryProps) {
+export function RelicLibrary({ relics, characters, ancients, versions, currentVersion, patches, versionDiffs, entities }: RelicLibraryProps) {
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<RelicFilterPool>>(new Set());
   const [selectedRarities, setSelectedRarities] = useState<Set<RelicRarityKo>>(new Set());
@@ -475,7 +478,7 @@ export function RelicLibrary({ relics, characters, ancients, versions, currentVe
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <RelicDetail relic={selectedRelic} initialVariant={selectedVariantPool} onClose={() => setSelectedRelic(null)} />
+            <RelicDetail relic={selectedRelic} initialVariant={selectedVariantPool} onClose={() => setSelectedRelic(null)} entities={entities} />
           </div>
         </div>
       )}

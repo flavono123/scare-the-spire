@@ -182,10 +182,11 @@ export const CardTile = memo(function CardTile({
   const descText = isUpgraded
     ? renderUpgradedDescription(card)
     : card.description;
-  // 인챈트 텍스트는 분홍/보라색으로 — 게임 인챈트 효과 텍스트와 동일.
-  const descCombined = descText +
-    (descriptionSuffix ? `\n[purple]${descriptionSuffix}[/purple]` : "");
-  const descParts = parseDescription(descCombined);
+  const descParts = parseDescription(descText);
+  // 인챈트 추가 텍스트는 분홍/보라 baseline에 inner BBCode 그대로 — 별도 블록.
+  const suffixParts = descriptionSuffix
+    ? parseDescription(descriptionSuffix)
+    : null;
 
   // 표시할 키워드: 카드 keywords + 인챈트 추가 - 인챈트 제거
   const removedSet = new Set(enchantRemovedKeywords ?? []);
@@ -197,7 +198,65 @@ export const CardTile = memo(function CardTile({
   ];
   const enchantKeywordSet = new Set(enchantAddedKeywords ?? []);
 
-  // ─── 텍스트 렌더 ───
+  // ─── 텍스트 파트 렌더 헬퍼 — 일반(cream)/suffix(분홍) 양쪽에서 재사용 ───
+  const renderParts = (parts: ReturnType<typeof parseDescription>, baseInteractiveTermsGold: boolean) =>
+    parts.map((part, i) =>
+      part.type === "gold" ? (
+        <span
+          key={i}
+          className="relative font-bold cursor-help"
+          style={{ color: TEXT_GOLD }}
+          onMouseEnter={() => baseInteractiveTermsGold && setHoveredTerm(part.text)}
+          onMouseLeave={() => setHoveredTerm(null)}
+        >
+          {part.text}
+          {baseInteractiveTermsGold && hoveredTerm === part.text && GOLD_TERM_DESC[part.text] && (
+            <TermTooltip name={part.text} desc={GOLD_TERM_DESC[part.text]} />
+          )}
+        </span>
+      ) : part.type === "upgrade" ? (
+        <span key={i} className="font-bold" style={{ color: TEXT_GREEN }}>{part.text}</span>
+      ) : part.type === "blue" ? (
+        <span key={i} className="font-bold" style={{ color: "#87CEEB" }}>{part.text}</span>
+      ) : part.type === "red" ? (
+        <span key={i} style={{ color: "#FF5555" }}>{part.text}</span>
+      ) : part.type === "purple" ? (
+        <span key={i} className="font-bold" style={{ color: "#EE82EE" }}>{part.text}</span>
+      ) : part.type === "energy" ? (
+        <span key={i} className="inline-flex items-baseline gap-0">
+          {Array.from({ length: parseInt(part.text, 10) || 1 }, (_, j) => (
+            <Image
+              key={j}
+              src={energyIcon}
+              alt="energy"
+              width={14}
+              height={14}
+              className="inline-block align-text-bottom mx-[0.1em]"
+              style={{ width: "1em", height: "1em" }}
+            />
+          ))}
+        </span>
+      ) : part.type === "star" ? (
+        <span key={i} className="inline-flex items-baseline gap-0">
+          {Array.from({ length: parseInt(part.text, 10) || 1 }, (_, j) => (
+            <Image
+              key={j}
+              src="/images/game-assets/card-misc/star_icon.png"
+              alt="star"
+              width={14}
+              height={14}
+              className="inline-block align-text-bottom mx-[0.1em]"
+              style={{ width: "1em", height: "1em" }}
+            />
+          ))}
+        </span>
+      ) : part.type === "newline" ? (
+        <br key={i} />
+      ) : (
+        <span key={i}>{part.text}</span>
+      )
+    );
+
   const renderDescription = () => (
     <div
       className="text-center leading-[1.18]"
@@ -207,55 +266,12 @@ export const CardTile = memo(function CardTile({
         textShadow: `${(2 / 300) * cardWidth}px ${(2 / 300) * cardWidth}px 0 rgba(0,0,0,0.45)`,
       }}
     >
-      {descParts.map((part, i) =>
-        part.type === "gold" ? (
-          <span
-            key={i}
-            className="relative font-bold cursor-help"
-            style={{ color: TEXT_GOLD }}
-            onMouseEnter={() => setHoveredTerm(part.text)}
-            onMouseLeave={() => setHoveredTerm(null)}
-          >
-            {part.text}
-            {hoveredTerm === part.text && GOLD_TERM_DESC[part.text] && (
-              <TermTooltip name={part.text} desc={GOLD_TERM_DESC[part.text]} />
-            )}
-          </span>
-        ) : part.type === "upgrade" ? (
-          <span key={i} className="font-bold" style={{ color: TEXT_GREEN }}>{part.text}</span>
-        ) : part.type === "energy" ? (
-          <span key={i} className="inline-flex items-baseline gap-0">
-            {Array.from({ length: parseInt(part.text, 10) || 1 }, (_, j) => (
-              <Image
-                key={j}
-                src={energyIcon}
-                alt="energy"
-                width={14}
-                height={14}
-                className="inline-block align-text-bottom mx-[0.1em]"
-                style={{ width: "1em", height: "1em" }}
-              />
-            ))}
-          </span>
-        ) : part.type === "star" ? (
-          <span key={i} className="inline-flex items-baseline gap-0">
-            {Array.from({ length: parseInt(part.text, 10) || 1 }, (_, j) => (
-              <Image
-                key={j}
-                src="/images/game-assets/card-misc/star_icon.png"
-                alt="star"
-                width={14}
-                height={14}
-                className="inline-block align-text-bottom mx-[0.1em]"
-                style={{ width: "1em", height: "1em" }}
-              />
-            ))}
-          </span>
-        ) : part.type === "newline" ? (
-          <br key={i} />
-        ) : (
-          <span key={i}>{part.text}</span>
-        )
+      {renderParts(descParts, true)}
+      {suffixParts && (
+        <>
+          <br />
+          <span style={{ color: "#EE82EE" }}>{renderParts(suffixParts, false)}</span>
+        </>
       )}
       {displayKeywords.length > 0 && (
         <>
