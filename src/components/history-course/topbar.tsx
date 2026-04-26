@@ -510,16 +510,16 @@ function GearSvg({ className }: { className?: string }) {
 }
 
 function RelicRow({ relics }: { relics: RelicAtFloor[] }) {
-  if (relics.length === 0) return <div className="h-6" />;
+  if (relics.length === 0) return <div className="h-8" />;
   return (
-    <div className="flex flex-wrap items-center gap-1">
+    <div className="flex flex-wrap items-center gap-1.5 pl-1">
       {relics.map((relic) => (
         <div
           key={`${relic.id}-${relic.floor}`}
           className={cn(
-            "relative h-6 w-6 transition",
+            "relative h-8 w-8 transition",
             relic.justAcquired &&
-              "drop-shadow-[0_0_8px_rgba(255,200,120,0.85)]",
+              "drop-shadow-[0_0_10px_rgba(255,200,120,0.95)]",
           )}
           title={`${localize("relics", relic.id) ?? relic.id} · ${relic.floor}층`}
         >
@@ -527,8 +527,8 @@ function RelicRow({ relics }: { relics: RelicAtFloor[] }) {
             src={relicIconSrc(relic.id)}
             alt={localize("relics", relic.id) ?? relic.id}
             fill
-            sizes="24px"
-            className="object-contain"
+            sizes="32px"
+            className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]"
             unoptimized
           />
         </div>

@@ -364,7 +364,7 @@ function Stage({
 
       <div
         ref={mapBoxRef}
-        className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-[88px]"
+        className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-[96px]"
       >
         <div className="flex min-h-full justify-center">
           <SeededMapView act={act} step={step} />
