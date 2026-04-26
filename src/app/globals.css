@@ -180,6 +180,8 @@
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.85);
   letter-spacing: 0.01em;
 }
+.topbar-num-red { color: #f8b4b4; }   /* HP — light red, stays legible against black stroke */
+.topbar-num-gold { color: #f8d56a; }  /* Gold + timer — warm gold */
 
 /* Spire text colors */
 .spire-gold { color: #d4a843; }
