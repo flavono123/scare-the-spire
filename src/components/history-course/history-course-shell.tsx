@@ -6,6 +6,10 @@ import {
   MapBackdrop,
   SeededMapView,
 } from "@/components/dev/run-replay-poc";
+import { DeckModal } from "@/components/history-course/deck-modal";
+import { TopBar } from "@/components/history-course/topbar";
+import { buildTopbarState } from "@/components/history-course/topbar-state";
+import type { CodexCard } from "@/lib/codex-types";
 import {
   analyzeReplayRun,
   type ReplayHistoryEntry,
@@ -96,7 +100,13 @@ function rewardHoldMs(reward: Reward, rate: Rate) {
   return Math.round((baseSeconds * 1000) / Math.sqrt(rate));
 }
 
-export function HistoryCourseShell({ run }: { run: ReplayRun }) {
+export function HistoryCourseShell({
+  run,
+  cardsById,
+}: {
+  run: ReplayRun;
+  cardsById: Record<string, CodexCard>;
+}) {
   const analysis = useMemo(() => analyzeReplayRun(run), [run]);
   const [actIndex, setActIndex] = useState(0);
   const [step, setStep] = useState(1);
@@ -104,10 +114,15 @@ export function HistoryCourseShell({ run }: { run: ReplayRun }) {
   const [rate, setRate] = useState<Rate>(2);
   const [infoOpen, setInfoOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
+  const [deckOpen, setDeckOpen] = useState(false);
   const [introToken, setIntroToken] = useState(0);
   const [introActive, setIntroActive] = useState(true);
 
   const act = analysis.acts[actIndex] ?? null;
+  const topbarState = useMemo(
+    () => buildTopbarState(analysis, actIndex, step),
+    [analysis, actIndex, step],
+  );
 
   // act swap → reset step + replay intro
   useEffect(() => {
@@ -196,6 +211,7 @@ export function HistoryCourseShell({ run }: { run: ReplayRun }) {
 
       <div className="relative z-10 flex h-[calc(100dvh-49px)] w-full items-center justify-center">
         <Stage
+          run={run}
           act={act}
           actIndex={actIndex}
           step={step}
@@ -204,6 +220,7 @@ export function HistoryCourseShell({ run }: { run: ReplayRun }) {
           playing={playing}
           rate={rate}
           reward={reward}
+          topbarState={topbarState}
           onTogglePlay={() => setPlaying((v) => !v)}
           onRestart={onRestart}
           onChangeRate={setRate}
@@ -212,6 +229,8 @@ export function HistoryCourseShell({ run }: { run: ReplayRun }) {
             setStep(value);
           }}
           onOpenStats={() => setStatsOpen(true)}
+          onOpenDeck={() => setDeckOpen(true)}
+          onOpenInfo={() => setInfoOpen((v) => !v)}
         />
       </div>
 
@@ -230,6 +249,14 @@ export function HistoryCourseShell({ run }: { run: ReplayRun }) {
         onClose={() => setStatsOpen(false)}
         analysis={analysis}
         run={run}
+      />
+
+      <DeckModal
+        open={deckOpen}
+        onClose={() => setDeckOpen(false)}
+        deck={topbarState.deck}
+        cardsById={cardsById}
+        currentFloor={topbarState.currentFloor}
       />
     </div>
   );
@@ -255,6 +282,7 @@ function SceneBackdrop({ actId }: { actId: string }) {
 }
 
 function Stage({
+  run,
   act,
   actIndex,
   step,
@@ -263,12 +291,16 @@ function Stage({
   playing,
   rate,
   reward,
+  topbarState,
   onTogglePlay,
   onRestart,
   onChangeRate,
   onScrub,
   onOpenStats,
+  onOpenDeck,
+  onOpenInfo,
 }: {
+  run: ReplayRun;
   act: Act;
   actIndex: number;
   step: number;
@@ -277,11 +309,14 @@ function Stage({
   playing: boolean;
   rate: Rate;
   reward: Reward | null;
+  topbarState: ReturnType<typeof buildTopbarState>;
   onTogglePlay: () => void;
   onRestart: () => void;
   onChangeRate: (rate: Rate) => void;
   onScrub: (step: number) => void;
   onOpenStats: () => void;
+  onOpenDeck: () => void;
+  onOpenInfo: () => void;
 }) {
   const mapBoxRef = useRef<HTMLDivElement>(null);
   const userScrollGuardRef = useRef<number | null>(null);
@@ -318,11 +353,18 @@ function Stage({
       className="relative overflow-hidden rounded-xl ring-1 ring-white/10 shadow-[0_30px_120px_-30px_rgba(0,0,0,0.9)]"
       style={{ width: STAGE_WIDTH, aspectRatio: "16 / 9" }}
     >
-      <TopBar act={act} onOpenStats={onOpenStats} />
+      <TopBar
+        run={run}
+        act={act}
+        state={topbarState}
+        onOpenStats={onOpenStats}
+        onOpenDeck={onOpenDeck}
+        onOpenInfo={onOpenInfo}
+      />
 
       <div
         ref={mapBoxRef}
-        className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-10"
+        className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-[88px]"
       >
         <div className="flex min-h-full justify-center">
           <SeededMapView act={act} step={step} />
@@ -345,21 +387,6 @@ function Stage({
         onChangeRate={onChangeRate}
         onScrub={onScrub}
       />
-    </div>
-  );
-}
-
-function TopBar({ act, onOpenStats }: { act: Act; onOpenStats: () => void }) {
-  return (
-    <div className="absolute inset-x-0 top-0 z-20 flex h-10 items-center justify-between bg-gradient-to-b from-black/70 to-black/0 px-4 text-sm text-zinc-100">
-      <div className="font-bold tracking-tight">{act.actLabel}</div>
-      <button
-        type="button"
-        onClick={onOpenStats}
-        className="rounded-md border border-white/15 bg-black/30 px-2.5 py-1 text-xs text-zinc-200 transition hover:bg-white/10"
-      >
-        도전 이력
-      </button>
     </div>
   );
 }

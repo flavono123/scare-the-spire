@@ -2,6 +2,9 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { notFound } from "next/navigation";
 import { HistoryCourseShell } from "@/components/history-course/history-course-shell";
+import { collectRelevantCardIds } from "@/components/history-course/topbar-state";
+import { getCodexCards } from "@/lib/codex-data";
+import type { CodexCard } from "@/lib/codex-types";
 import { parseReplayRun } from "@/lib/sts2-run-replay";
 
 type FixtureIndexEntry = {
@@ -42,6 +45,10 @@ export async function generateMetadata({
   };
 }
 
+function stripCardId(id: string): string {
+  return id.includes(".") ? (id.split(".").pop() ?? id) : id;
+}
+
 export default async function HistoryCoursePage({
   params,
 }: {
@@ -56,5 +63,19 @@ export default async function HistoryCoursePage({
   const fixtureRaw = await fs.readFile(fixturePath, "utf8");
   const run = parseReplayRun(fixtureRaw);
 
-  return <HistoryCourseShell run={run} />;
+  const allCards = await getCodexCards({ includeDeprecated: true });
+  const cardByLookupId = new Map<string, CodexCard>();
+  for (const card of allCards) {
+    cardByLookupId.set(card.id, card);
+  }
+  const relevantIds = collectRelevantCardIds(run);
+  const cardsById: Record<string, CodexCard> = {};
+  for (const replayId of relevantIds) {
+    const stripped = stripCardId(replayId);
+    const card =
+      cardByLookupId.get(replayId) ?? cardByLookupId.get(stripped) ?? null;
+    if (card) cardsById[replayId] = card;
+  }
+
+  return <HistoryCourseShell run={run} cardsById={cardsById} />;
 }
