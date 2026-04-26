@@ -815,17 +815,396 @@ export function parseReplayRun(raw: string): ReplayRun {
 
 const WINGED_BOOTS_MAX_CHARGES = 3;
 
-// Per-act boss pool (extracted from C# Acts/*.cs GenerateAllEncounters).
-// When the player didn't reach an act's boss we can't know which one was
-// picked without simulating UpFront RNG flow (events shuffle, grab bags,
-// etc. — substantial additional work). We surface the candidate list so the
-// UI can hint instead of just showing "?".
-export const ACT_BOSS_POOL: Record<string, string[]> = {
-  "ACT.OVERGROWTH": ["CEREMONIAL_BEAST_BOSS", "THE_KIN_BOSS", "VANTOM_BOSS"],
-  "ACT.UNDERDOCKS": ["LAGAVULIN_MATRIARCH_BOSS", "SOUL_FYSH_BOSS", "WATERFALL_GIANT_BOSS"],
-  "ACT.HIVE": ["KAISER_CRAB_BOSS", "KNOWLEDGE_DEMON_BOSS", "THE_INSATIABLE_BOSS"],
-  "ACT.GLORY": ["DOORMAKER_BOSS", "QUEEN_BOSS", "TEST_SUBJECT_BOSS"],
+// Per-act encounter/event/ancient pools — extracted directly from
+// `MegaCrit.Sts2.Core.Models.Acts.{Overgrowth,Hive,Glory,Underdocks}` in
+// declaration order. This is the input to `simulateActsUpFront` which mirrors
+// `RunManager.GenerateRooms` to deterministically pick the boss for each act
+// (so we can render the right boss icon even when the player didn't reach it).
+//
+// Order matters: GrabBag indexing iterates entries in insertion order to
+// resolve the `r * totalWeight` cursor; if we sort or de-duplicate we'd drift
+// off the C# RNG path.
+interface ActEncounterPool {
+  weaks: readonly string[];
+  regulars: readonly string[];
+  elites: readonly string[];
+  bosses: readonly string[];
+  events: readonly string[];
+  ancients: readonly string[];
+  numWeaks: number;
+  numRooms: number;
+}
+
+const ACT_POOLS: Record<string, ActEncounterPool> = {
+  "ACT.OVERGROWTH": {
+    weaks: ["FUZZY_WURM_CRAWLER_WEAK", "NIBBITS_WEAK", "SHRINKER_BEETLE_WEAK", "SLIMES_WEAK"],
+    regulars: [
+      "CUBEX_CONSTRUCT_NORMAL",
+      "FLYCONID_NORMAL",
+      "FOGMOG_NORMAL",
+      "INKLETS_NORMAL",
+      "MAWLER_NORMAL",
+      "NIBBITS_NORMAL",
+      "OVERGROWTH_CRAWLERS",
+      "RUBY_RAIDERS_NORMAL",
+      "SLIMES_NORMAL",
+      "SLITHERING_STRANGLER_NORMAL",
+      "SNAPPING_JAXFRUIT_NORMAL",
+      "VINE_SHAMBLER_NORMAL",
+    ],
+    elites: ["BYGONE_EFFIGY_ELITE", "BYRDONIS_ELITE", "PHROG_PARASITE_ELITE"],
+    bosses: ["CEREMONIAL_BEAST_BOSS", "THE_KIN_BOSS", "VANTOM_BOSS"],
+    events: [
+      "AROMA_OF_CHAOS",
+      "BYRDONIS_NEST",
+      "DENSE_VEGETATION",
+      "JUNGLE_MAZE_ADVENTURE",
+      "LUMINOUS_CHOIR",
+      "MORPHIC_GROVE",
+      "SAPPHIRE_SEED",
+      "SUNKEN_STATUE",
+      "TABLET_OF_TRUTH",
+      "UNREST_SITE",
+      "WELLSPRING",
+      "WHISPERING_HOLLOW",
+      "WOOD_CARVINGS",
+    ],
+    ancients: ["NEOW"],
+    numWeaks: 3,
+    numRooms: 15,
+  },
+  "ACT.UNDERDOCKS": {
+    weaks: ["CORPSE_SLUGS_WEAK", "SEAPUNK_WEAK", "SLUDGE_SPINNER_WEAK", "TOADPOLES_WEAK"],
+    regulars: [
+      "CORPSE_SLUGS_NORMAL",
+      "CULTISTS_NORMAL",
+      "FOSSIL_STALKER_NORMAL",
+      "GREMLIN_MERC_NORMAL",
+      "HAUNTED_SHIP_NORMAL",
+      "LIVING_FOG_NORMAL",
+      "PUNCH_CONSTRUCT_NORMAL",
+      "SEAPUNK_NORMAL",
+      "SEWER_CLAM_NORMAL",
+      "TWO_TAILED_RATS_NORMAL",
+    ],
+    elites: ["PHANTASMAL_GARDENERS_ELITE", "SKULKING_COLONY_ELITE", "TERROR_EEL_ELITE"],
+    bosses: ["LAGAVULIN_MATRIARCH_BOSS", "SOUL_FYSH_BOSS", "WATERFALL_GIANT_BOSS"],
+    events: [
+      "ABYSSAL_BATHS",
+      "DROWNING_BEACON",
+      "ENDLESS_CONVEYOR",
+      "PUNCH_OFF",
+      "SPIRALING_WHIRLPOOL",
+      "SUNKEN_STATUE",
+      "SUNKEN_TREASURY",
+      "DOORS_OF_LIGHT_AND_DARK",
+      "TRASH_HEAP",
+      "WATERLOGGED_SCRIPTORIUM",
+    ],
+    ancients: ["NEOW"],
+    numWeaks: 3,
+    numRooms: 15,
+  },
+  "ACT.HIVE": {
+    weaks: ["BOWLBUGS_WEAK", "EXOSKELETONS_WEAK", "THIEVING_HOPPER_WEAK", "TUNNELER_WEAK"],
+    regulars: [
+      "BOWLBUGS_NORMAL",
+      "CHOMPERS_NORMAL",
+      "EXOSKELETONS_NORMAL",
+      "HUNTER_KILLER_NORMAL",
+      "LOUSE_PROGENITOR_NORMAL",
+      "MYTES_NORMAL",
+      "OVICOPTER_NORMAL",
+      "SLUMBERING_BEETLE_NORMAL",
+      "SPINY_TOAD_NORMAL",
+      "THE_OBSCURA_NORMAL",
+    ],
+    elites: ["DECIMILLIPEDE_ELITE", "ENTOMANCER_ELITE", "INFESTED_PRISMS_ELITE"],
+    bosses: ["KAISER_CRAB_BOSS", "KNOWLEDGE_DEMON_BOSS", "THE_INSATIABLE_BOSS"],
+    events: [
+      "AMALGAMATOR",
+      "BUGSLAYER",
+      "COLORFUL_PHILOSOPHERS",
+      "COLOSSAL_FLOWER",
+      "FIELD_OF_MAN_SIZED_HOLES",
+      "INFESTED_AUTOMATON",
+      "LOST_WISP",
+      "SPIRIT_GRAFTER",
+      "THE_LANTERN_KEY",
+      "ZEN_WEAVER",
+    ],
+    ancients: ["OROBAS", "PAEL", "TEZCATARA"],
+    numWeaks: 2,
+    numRooms: 14,
+  },
+  "ACT.GLORY": {
+    weaks: ["DEVOTED_SCULPTOR_WEAK", "SCROLLS_OF_BITING_WEAK", "TURRET_OPERATOR_WEAK"],
+    regulars: [
+      "AXEBOTS_NORMAL",
+      "CONSTRUCT_MENAGERIE_NORMAL",
+      "FABRICATOR_NORMAL",
+      "FROG_KNIGHT_NORMAL",
+      "GLOBE_HEAD_NORMAL",
+      "OWL_MAGISTRATE_NORMAL",
+      "SCROLLS_OF_BITING_NORMAL",
+      "SLIMED_BERSERKER_NORMAL",
+      "THE_LOST_AND_FORGOTTEN_NORMAL",
+    ],
+    elites: ["KNIGHTS_ELITE", "MECHA_KNIGHT_ELITE", "SOUL_NEXUS_ELITE"],
+    bosses: ["DOORMAKER_BOSS", "QUEEN_BOSS", "TEST_SUBJECT_BOSS"],
+    events: [
+      "BATTLEWORN_DUMMY",
+      "GRAVE_OF_THE_FORGOTTEN",
+      "HUNGRY_FOR_MUSHROOMS",
+      "REFLECTIONS",
+      "ROUND_TEA_PARTY",
+      "TRIAL",
+      "TINKER_TIME",
+    ],
+    ancients: ["NONUPEIPE", "TANX", "VAKUU"],
+    numWeaks: 2,
+    numRooms: 13,
+  },
 };
+
+// 18 shared events from `ModelDb.AllSharedEvents` — only the count matters
+// for RNG advancement (UnstableShuffle on the concatenated events list), the
+// actual contents don't affect boss/ancient picks downstream.
+const SHARED_EVENTS_COUNT = 18;
+
+// `UnlockState.SharedAncients` with DarvEpoch revealed. We assume "all
+// unlocked" — see `replay_next_session.md` for caveat on first-runs.
+const SHARED_ANCIENTS: readonly string[] = ["DARV"];
+
+// Tags drive `AddWithoutRepeatingTags`'s grab-bag predicate. Encounters
+// missing from this map have no tags (default in C#: `Array.Empty`).
+const ENCOUNTER_TAGS: Record<string, readonly string[]> = {
+  BOWLBUGS_NORMAL: ["Workers"],
+  BOWLBUGS_WEAK: ["Workers"],
+  CHOMPERS_NORMAL: ["Chomper"],
+  CORPSE_SLUGS_NORMAL: ["Slugs"],
+  CORPSE_SLUGS_WEAK: ["Slugs"],
+  EXOSKELETONS_NORMAL: ["Exoskeletons"],
+  EXOSKELETONS_WEAK: ["Exoskeletons"],
+  FLYCONID_NORMAL: ["Mushroom", "Slimes"],
+  FUZZY_WURM_CRAWLER_WEAK: ["Crawler"],
+  KNIGHTS_ELITE: ["Knights"],
+  NIBBITS_WEAK: ["Nibbit"],
+  OVERGROWTH_CRAWLERS: ["Shrinker", "Crawler"],
+  SCROLLS_OF_BITING_NORMAL: ["Scrolls"],
+  SCROLLS_OF_BITING_WEAK: ["Scrolls"],
+  SEAPUNK_NORMAL: ["Seapunk"],
+  SEAPUNK_WEAK: ["Seapunk"],
+  SHRINKER_BEETLE_WEAK: ["Shrinker"],
+  SLIMES_NORMAL: ["Slimes"],
+  SLIMES_WEAK: ["Slimes"],
+  SLUMBERING_BEETLE_NORMAL: ["Workers"],
+  SNAPPING_JAXFRUIT_NORMAL: ["Mushroom"],
+  THIEVING_HOPPER_WEAK: ["Thieves"],
+  TUNNELER_WEAK: ["Burrower"],
+};
+
+// Backwards-compat: existing UI consumers still read `bossPool` to render the
+// "?" placeholder when boss couldn't be resolved. Built from ACT_POOLS.
+export const ACT_BOSS_POOL: Record<string, string[]> = Object.fromEntries(
+  Object.entries(ACT_POOLS).map(([id, pool]) => [id, [...pool.bosses]]),
+);
+
+// C# `GrabBag<T>` port — weighted random pop with optional predicate filter.
+// Critical: the iteration order of `entries` is insertion order, since
+// `GrabIndex` walks entries to resolve `r * totalWeight`. Reordering changes
+// which entry maps to which RNG roll and breaks bit-exact reproduction.
+class GrabBag<T> {
+  private readonly entries: { item: T; weight: number }[] = [];
+  private totalWeight = 0;
+
+  add(item: T, weight: number) {
+    this.entries.push({ item, weight });
+    this.totalWeight += weight;
+  }
+
+  any(): boolean {
+    return this.entries.length > 0;
+  }
+
+  grabAndRemove(rng: StsRng, predicate?: (item: T) => boolean): T | null {
+    const idx = this.grabIndex(rng, predicate);
+    if (idx < 0) return null;
+    const { item, weight } = this.entries[idx];
+    this.totalWeight -= weight;
+    this.entries.splice(idx, 1);
+    return item;
+  }
+
+  private grabIndex(rng: StsRng, predicate?: (item: T) => boolean): number {
+    if (predicate && !this.entries.some((e) => predicate(e.item))) {
+      return -1;
+    }
+    let idx: number;
+    do {
+      idx = this.grabIndexNoPredicate(rng);
+    } while (predicate && idx >= 0 && !predicate(this.entries[idx].item));
+    return idx;
+  }
+
+  private grabIndexNoPredicate(rng: StsRng): number {
+    const r = rng.nextDouble() * this.totalWeight;
+    let acc = 0;
+    for (let i = 0; i < this.entries.length; i++) {
+      acc += this.entries[i].weight;
+      if (r < acc) return i;
+    }
+    return -1;
+  }
+}
+
+function sharesTagsWith(a: string, b: string | null): boolean {
+  if (b == null) return false;
+  const ta = ENCOUNTER_TAGS[a];
+  const tb = ENCOUNTER_TAGS[b];
+  if (!ta || !tb) return false;
+  for (const tag of ta) {
+    if (tb.includes(tag)) return true;
+  }
+  return false;
+}
+
+// Mirrors `ActModel.AddWithoutRepeatingTags` — pick with the no-repeat-tags
+// predicate first; fall back to unconstrained pick if the bag has no
+// passing entries.
+function addWithoutRepeatingTags(
+  encounters: string[],
+  bag: GrabBag<string>,
+  rng: StsRng,
+): void {
+  const last = encounters.length > 0 ? encounters[encounters.length - 1] : null;
+  let picked = bag.grabAndRemove(
+    rng,
+    (e) => !sharesTagsWith(e, last) && e !== last,
+  );
+  if (picked == null) {
+    picked = bag.grabAndRemove(rng);
+  }
+  if (picked != null) {
+    encounters.push(picked);
+  }
+}
+
+export interface ActsSimulationResult {
+  // First-boss prediction per act, keyed by `actIndex`. `null` when the act
+  // is unknown (e.g. mod content) so callers can fall back to history.
+  firstBossByAct: (string | null)[];
+  // The DoubleBoss (A10) second boss for the final act. `null` when DoubleBoss
+  // is not active or the final act is unknown.
+  secondBossOfFinalAct: string | null;
+}
+
+// Replays `RunManager.GenerateRooms` UpFront RNG flow exactly — events
+// shuffle, weak/regular/elite grab bags, then `NextItem(AllBossEncounters)`
+// for boss and `NextItem(unlockedAncients ∪ sharedSubset)` for ancient. The
+// per-act `firstBossByAct[i]` is what's returned. Assumes "all unlocked"
+// (epochs revealed) — for fresh accounts, events filtering would skew RNG
+// offsets and yield a wrong prediction.
+export function simulateActsUpFront(
+  seed: string,
+  acts: readonly string[],
+  isMultiplayer: boolean,
+  hasDoubleBoss: boolean,
+): ActsSimulationResult {
+  const numericSeed = toUint32(getDeterministicHashCode(seed));
+  const upFront = new StsRng(numericSeed, "up_front");
+
+  // SharedAncients shuffle, then per-non-first-act subset deal.
+  const sharedDeck = [...SHARED_ANCIENTS];
+  unstableShuffle(sharedDeck, upFront);
+  const sharedSubsets: string[][] = acts.map(() => []);
+  let remainingShared = sharedDeck;
+  for (let i = 1; i < acts.length; i++) {
+    const count = upFront.nextInt(remainingShared.length + 1);
+    const taken = remainingShared.slice(0, count);
+    sharedSubsets[i] = taken;
+    remainingShared = remainingShared.slice(count);
+  }
+
+  const firstBossByAct: (string | null)[] = [];
+  let lastFirstBoss: string | null = null;
+  let lastActPool: ActEncounterPool | null = null;
+
+  for (let i = 0; i < acts.length; i++) {
+    const actId = normalizeActId(acts[i] ?? "");
+    const pool = ACT_POOLS[actId];
+    if (!pool) {
+      firstBossByAct.push(null);
+      lastFirstBoss = null;
+      lastActPool = null;
+      continue;
+    }
+    const numRooms = pool.numRooms - (isMultiplayer ? 1 : 0);
+
+    // 1. Events list shuffle. The contents of the shuffled list do not feed
+    //    boss/ancient picks; only RNG advancement matters. We use a dummy
+    //    array of the right length so the consumed NextInt sequence matches.
+    const events = new Array<number>(pool.events.length + SHARED_EVENTS_COUNT).fill(0);
+    unstableShuffle(events, upFront);
+
+    // 2. Weak grab bag — `NumberOfWeakEncounters` iterations.
+    const normalEncounters: string[] = [];
+    const weakBag = new GrabBag<string>();
+    for (let n = 0; n < pool.numWeaks; n++) {
+      if (!weakBag.any()) {
+        for (const w of pool.weaks) weakBag.add(w, 1);
+      }
+      addWithoutRepeatingTags(normalEncounters, weakBag, upFront);
+    }
+
+    // 3. Regular grab bag — `numRooms - NumberOfWeakEncounters` iterations.
+    const regularBag = new GrabBag<string>();
+    for (let n = pool.numWeaks; n < numRooms; n++) {
+      if (!regularBag.any()) {
+        for (const r of pool.regulars) regularBag.add(r, 1);
+      }
+      addWithoutRepeatingTags(normalEncounters, regularBag, upFront);
+    }
+
+    // 4. Elite grab bag — fixed 15 iterations regardless of map size.
+    const eliteEncounters: string[] = [];
+    const eliteBag = new GrabBag<string>();
+    for (let n = 0; n < 15; n++) {
+      if (!eliteBag.any()) {
+        for (const e of pool.elites) eliteBag.add(e, 1);
+      }
+      addWithoutRepeatingTags(eliteEncounters, eliteBag, upFront);
+    }
+
+    // 5. Boss = NextItem(AllBossEncounters).
+    const bossIdx = upFront.nextIntRange(0, pool.bosses.length);
+    const boss = pool.bosses[bossIdx];
+    firstBossByAct.push(boss);
+
+    // 6. Ancient = NextItem(unlockedAncients ∪ sharedSubset). We don't
+    //    surface the ancient pick yet but must consume the RNG call so the
+    //    next act's offset stays aligned.
+    const ancientPool = [...pool.ancients, ...sharedSubsets[i]];
+    if (ancientPool.length > 0) {
+      upFront.nextIntRange(0, ancientPool.length);
+    }
+
+    lastFirstBoss = boss;
+    lastActPool = pool;
+  }
+
+  // 7. DoubleBoss A10 — secondBoss = NextItem(AllBossEncounters except first).
+  let secondBossOfFinalAct: string | null = null;
+  if (hasDoubleBoss && lastFirstBoss && lastActPool) {
+    const candidates = lastActPool.bosses.filter((b) => b !== lastFirstBoss);
+    if (candidates.length > 0) {
+      const idx = upFront.nextIntRange(0, candidates.length);
+      secondBossOfFinalAct = candidates[idx];
+    }
+  }
+
+  return { firstBossByAct, secondBossOfFinalAct };
+}
 
 export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
   const warnings = collectWarnings(run);
