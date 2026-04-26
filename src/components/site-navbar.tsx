@@ -211,6 +211,13 @@ export function SiteNavbar() {
               iconSize={18}
               iconClassName="group-hover:rotate-[8deg]"
             />
+            <NavIconLink
+              href="/history-course"
+              icon="/images/sts2/relics/history_course.webp"
+              label="역사 강의서"
+              iconSize={20}
+              iconClassName="group-hover:rotate-[8deg]"
+            />
           </nav>
         </div>
 
