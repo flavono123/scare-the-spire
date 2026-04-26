@@ -1525,12 +1525,25 @@ function MapSelectionRing({
 
 function bossKeyForRow(act: ReplayActAnalysis, row: number) {
   const bossKeys = getBossKeys(act);
-  const maxBossRow = Math.max(
-    ...act.nodes.filter((node) => node.type === "boss").map((node) => node.row),
-  );
-  const secondBoss = bossKeys.length > 1 && row === maxBossRow;
+  const bossRows = act.nodes.filter((node) => node.type === "boss").map((node) => node.row);
+  const maxBossRow = Math.max(...bossRows);
+  // The map has two boss tiles only on the A10 final act. When the second
+  // tile is present, its row is `maxBossRow`; for non-A10 acts there is only
+  // one boss tile and its row also equals `maxBossRow`.
+  const hasSecondBossTile = bossRows.length > 1;
+  const isSecondBossRow = hasSecondBossTile && row === maxBossRow;
 
-  return secondBoss ? (bossKeys.at(-1) ?? bossKeys[0] ?? null) : (bossKeys[0] ?? null);
+  if (isSecondBossRow) {
+    // Prefer history; fall back to the UpFront-RNG prediction when the run
+    // ended before the player reached the second boss.
+    return bossKeys[1] ?? normalizePredictedKey(act.predictedSecondBoss);
+  }
+  return bossKeys[0] ?? normalizePredictedKey(act.predictedFirstBoss);
+}
+
+function normalizePredictedKey(value: string | null | undefined) {
+  if (!value) return null;
+  return value.toLowerCase();
 }
 
 function NodeTooltip({

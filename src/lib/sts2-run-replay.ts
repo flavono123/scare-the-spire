@@ -131,6 +131,13 @@ export interface ReplayActAnalysis {
   // Used by UI when the player didn't reach the boss — we can't know which
   // one was picked without simulating UpFront RNG, so surface candidates.
   bossPool: string[];
+  // First boss predicted by `simulateActsUpFront` (mirrors C# RunManager's
+  // UpFront RNG flow). UI prefers this over `bossPool` when rendering an
+  // unreached boss icon, falling back to placeholder only if `null`.
+  predictedFirstBoss: string | null;
+  // DoubleBoss (A10) second boss for the final act, predicted from the same
+  // RNG flow. `null` for non-final acts and non-A10 runs.
+  predictedSecondBoss: string | null;
 }
 
 export interface ReplayAnalysis {
@@ -1010,6 +1017,75 @@ export const ACT_BOSS_POOL: Record<string, string[]> = Object.fromEntries(
   Object.entries(ACT_POOLS).map(([id, pool]) => [id, [...pool.bosses]]),
 );
 
+// Relic rarity sequences for `RunManager.InitializeNewRun` Populate calls.
+// `SharedRelicGrabBag.Populate(sharedRelics, upFront)` runs first, then each
+// player's `PopulateRelicGrabBagIfNecessary` populates a *filtered* pool of
+// shared+character relics. Both partition by rarity (insertion order) and
+// shuffle each bucket — that's the RNG drift we have to mirror before
+// `GenerateRooms` so per-act boss picks line up.
+//
+// Rarities are encoded as the declaration-order list of relic rarities in
+// each pool. The sim only needs the rarity sequence (not relic identity)
+// because GrabBag shuffling consumes RNG proportional to bucket size.
+type RelicRarity = "Common" | "Uncommon" | "Rare" | "Shop" | "Event" | "Ancient" | "Starter";
+
+const SHARED_RELIC_RARITIES: readonly RelicRarity[] = [
+  "Uncommon", "Common", "Common", "Rare", "Common", "Common", "Rare", "Rare",
+  "Shop", "Common", "Common", "Uncommon", "Shop", "Common", "Shop", "Uncommon",
+  "Rare", "Shop", "Common", "Rare", "Shop", "Rare", "Shop", "Shop",
+  "Shop", "Uncommon", "Common", "Event", "Rare", "Rare", "Rare", "Shop",
+  "Rare", "Shop", "Common", "Uncommon", "Common", "Uncommon", "Rare", "Rare",
+  "Uncommon", "Common", "Shop", "Rare", "Uncommon", "Common", "Uncommon", "Shop",
+  "Shop", "Uncommon", "Rare", "Ancient", "Uncommon", "Rare", "Common", "Rare",
+  "Shop", "Uncommon", "Uncommon", "Shop", "Rare", "Rare", "Shop", "Uncommon",
+  "Common", "Rare", "Uncommon", "Uncommon", "Shop", "Uncommon", "Uncommon", "Uncommon",
+  "Uncommon", "Common", "Uncommon", "Uncommon", "Uncommon", "Rare", "Common", "Rare",
+  "Shop", "Rare", "Rare", "Common", "Common", "Uncommon", "Shop", "Uncommon",
+  "Shop", "Shop", "Rare", "Rare", "Shop", "Uncommon", "Rare", "Uncommon",
+  "Common", "Common", "Rare", "Shop", "Rare", "Uncommon", "Shop", "Rare",
+  "Rare", "Uncommon", "Rare", "Rare", "Common", "Uncommon", "Common", "Ancient",
+  "Rare", "Common", "Common", "Rare", "Rare", "Shop",
+];
+
+// Per-character relic pool rarities (8 each). See `*RelicPool.cs`.
+const CHARACTER_POOL_RARITIES: Record<string, readonly RelicRarity[]> = {
+  IRONCLAD: ["Shop", "Starter", "Rare", "Rare", "Uncommon", "Common", "Rare", "Uncommon"],
+  SILENT: ["Rare", "Shop", "Rare", "Starter", "Common", "Uncommon", "Rare", "Uncommon"],
+  DEFECT: ["Starter", "Common", "Rare", "Uncommon", "Rare", "Rare", "Shop", "Uncommon"],
+  NECROBINDER: ["Rare", "Common", "Uncommon", "Rare", "Starter", "Uncommon", "Rare", "Shop"],
+  REGENT: ["Starter", "Common", "Uncommon", "Rare", "Rare", "Rare", "Uncommon", "Shop"],
+};
+
+// `RelicGrabBag._rarities` — filter for player.PopulateRelicGrabBag.
+const PLAYER_GRAB_BAG_RARITIES = new Set<RelicRarity>(["Common", "Uncommon", "Rare", "Shop"]);
+
+// Mirror `RelicGrabBag.Populate(IEnumerable<RelicModel>, Rng)`:
+//   1. Bucket relics by rarity (`Dictionary<Rarity, List<Model>>`,
+//      insertion-ordered).
+//   2. Iterate `_deques.Values` and `UnstableShuffle` each list.
+// We don't care about relic identity — only the rarity sequence drives
+// bucket size and rarity insertion order, which fully determines RNG
+// consumption.
+function consumePopulate(
+  rarities: readonly RelicRarity[],
+  rng: StsRng,
+  filter?: ReadonlySet<RelicRarity>,
+): void {
+  const buckets = new Map<RelicRarity, number>();
+  for (const r of rarities) {
+    if (filter && !filter.has(r)) continue;
+    buckets.set(r, (buckets.get(r) ?? 0) + 1);
+  }
+  for (const count of buckets.values()) {
+    const dummy = new Array<number>(count).fill(0);
+    unstableShuffle(dummy, rng);
+  }
+}
+
+function characterIdFromKey(key: string): string {
+  return (key.split(".").pop() ?? key).toUpperCase();
+}
+
 // C# `GrabBag<T>` port — weighted random pop with optional predicate filter.
 // Critical: the iteration order of `entries` is insertion order, since
 // `GrabIndex` walks entries to resolve `r * totalWeight`. Reordering changes
@@ -1099,21 +1175,39 @@ export interface ActsSimulationResult {
   secondBossOfFinalAct: string | null;
 }
 
-// Replays `RunManager.GenerateRooms` UpFront RNG flow exactly — events
-// shuffle, weak/regular/elite grab bags, then `NextItem(AllBossEncounters)`
-// for boss and `NextItem(unlockedAncients ∪ sharedSubset)` for ancient. The
-// per-act `firstBossByAct[i]` is what's returned. Assumes "all unlocked"
-// (epochs revealed) — for fresh accounts, events filtering would skew RNG
-// offsets and yield a wrong prediction.
+// Replays `RunManager.{InitializeNewRun,GenerateRooms}` UpFront RNG flow
+// exactly — relic-pool populates (one shared, one per player), shared-ancient
+// shuffle/deal, then per-act events shuffle + weak/regular/elite grab bags
+// + `NextItem(AllBossEncounters)` for boss and `NextItem(ancientPool)` for
+// ancient. Returns the predicted first/second boss per act.
+//
+// Assumes "all unlocked" (epochs revealed) — for fresh accounts, the relic
+// pool filtering and events filtering would change list sizes and skew RNG
+// offsets, yielding wrong predictions.
 export function simulateActsUpFront(
   seed: string,
   acts: readonly string[],
   isMultiplayer: boolean,
   hasDoubleBoss: boolean,
+  characterIds: readonly string[],
 ): ActsSimulationResult {
   const numericSeed = toUint32(getDeterministicHashCode(seed));
   const upFront = new StsRng(numericSeed, "up_front");
 
+  // === RunManager.InitializeNewRun ===
+  // 1. SharedRelicGrabBag.Populate(unlocked shared relics, upFront)
+  consumePopulate(SHARED_RELIC_RARITIES, upFront);
+  // 2. Each player.PopulateRelicGrabBagIfNecessary(upFront) — filtered to
+  //    Common/Uncommon/Rare/Shop on the shared+character pool.
+  for (const charKey of characterIds) {
+    const charId = characterIdFromKey(charKey);
+    const charRarities = CHARACTER_POOL_RARITIES[charId];
+    if (!charRarities) continue;
+    const combined = [...SHARED_RELIC_RARITIES, ...charRarities];
+    consumePopulate(combined, upFront, PLAYER_GRAB_BAG_RARITIES);
+  }
+
+  // === RunManager.GenerateRooms ===
   // SharedAncients shuffle, then per-non-first-act subset deal.
   const sharedDeck = [...SHARED_ANCIENTS];
   unstableShuffle(sharedDeck, upFront);
@@ -1224,6 +1318,18 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
   const bootsAcquiredFloor = bootsRelic?.floor_added_to_deck ?? Infinity;
   let totalBootsFlightsUsed = 0;
 
+  const isMultiplayer = run.players.length > 1;
+  const hasDoubleBoss = run.ascension >= 10;
+  const characterIds = run.players.map((p) => p.character);
+  const simulation = simulateActsUpFront(
+    run.seed,
+    run.acts,
+    isMultiplayer,
+    hasDoubleBoss,
+    characterIds,
+  );
+  const finalActIndex = run.acts.length - 1;
+
   for (let actIndex = 0; actIndex < run.map_point_history.length; actIndex++) {
     const actId = normalizeActId(run.acts[actIndex] ?? "");
     const config = ACT_CONFIGS[actId];
@@ -1294,6 +1400,9 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
       spoilsMarkerNodeId,
       flightArrivalNodeIds,
       bossPool: ACT_BOSS_POOL[actId] ?? [],
+      predictedFirstBoss: simulation.firstBossByAct[actIndex] ?? null,
+      predictedSecondBoss:
+        actIndex === finalActIndex ? simulation.secondBossOfFinalAct : null,
     });
     baseFloor += history.length;
   }
