@@ -165,6 +165,12 @@
   animation: rich-jitter 0.15s ease-in-out infinite;
 }
 
+/* History course — pulse flash on step advance */
+@keyframes hc-node-pulse {
+  0% { opacity: 0; }
+  20% { opacity: 0.65; }
+  100% { opacity: 0; }
+}
 
 /* Spire text colors */
 .spire-gold { color: #d4a843; }

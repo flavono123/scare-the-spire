@@ -1,11 +1,17 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   MapBackdrop,
   SeededMapView,
 } from "@/components/dev/run-replay-poc";
-import { analyzeReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
+import {
+  analyzeReplayRun,
+  type ReplayHistoryEntry,
+  type ReplayRun,
+} from "@/lib/sts2-run-replay";
+import { localize } from "@/lib/sts2-i18n";
 import { cn } from "@/lib/utils";
 
 type Analysis = ReturnType<typeof analyzeReplayRun>;
@@ -19,16 +25,73 @@ type Rate = (typeof PLAYBACK_RATES)[number];
 const ACT_INTRO_FADE_IN_MS = 600;
 const ACT_INTRO_HOLD_MS = 1500;
 const ACT_INTRO_FADE_OUT_MS = 500;
+const ACT_INTRO_TOTAL_MS = ACT_INTRO_FADE_IN_MS + ACT_INTRO_HOLD_MS + ACT_INTRO_FADE_OUT_MS;
 
 function actIntroNumber(index: number) {
   return ["1막", "2막", "3막", "4막"][index] ?? `${index + 1}막`;
 }
 
-function stepActivitySeconds(entry: Act["history"][number]): number {
-  const rooms = entry.rooms ?? [];
-  let total = 0;
-  for (const room of rooms) total += Math.max(0, room.turns_taken ?? 0) * 6;
-  return Math.max(8, total);
+// Tunable per-node-type weights (in seconds). Multiplied by rate later.
+function nodeHoldSeconds(entry: ReplayHistoryEntry): number {
+  const turns = (entry.rooms ?? []).reduce(
+    (sum, r) => sum + Math.max(0, r.turns_taken ?? 0),
+    0,
+  );
+  const turnSeconds = turns * 4;
+  switch (entry.map_point_type) {
+    case "monster":
+    case "MONSTER":
+      return Math.max(2.4, turnSeconds * 0.6);
+    case "elite":
+    case "ELITE":
+      return Math.max(3.2, turnSeconds * 0.7);
+    case "boss":
+    case "BOSS":
+      return Math.max(4.0, turnSeconds * 0.8);
+    case "rest_site":
+    case "REST_SITE":
+      return 1.4;
+    case "treasure":
+    case "TREASURE":
+      return 0.8;
+    case "shop":
+    case "SHOP":
+      return 1.6;
+    case "ancient":
+    case "ANCIENT":
+      return 1.2;
+    case "unknown":
+    case "UNKNOWN":
+      return Math.max(2.0, turnSeconds * 0.5);
+    default:
+      return 2.0;
+  }
+}
+
+type Reward =
+  | { kind: "cards"; ids: string[]; floor: number; step: number }
+  | { kind: "relic"; ids: string[]; floor: number; step: number };
+
+function detectReward(entry: ReplayHistoryEntry, floor: number, step: number): Reward | null {
+  const relics = (entry.relic_choices ?? [])
+    .filter((c) => c.picked && c.id)
+    .map((c) => c.id);
+  if (relics.length > 0) return { kind: "relic", ids: relics, floor, step };
+  const cards = (entry.cards_gained ?? [])
+    .map((c) => c.id)
+    .filter((id): id is string => Boolean(id));
+  if (cards.length > 0) return { kind: "cards", ids: cards, floor, step };
+  return null;
+}
+
+function slugFromId(id: string): string {
+  const parts = id.split(".");
+  return (parts[parts.length - 1] ?? id).toLowerCase();
+}
+
+function rewardHoldMs(reward: Reward, rate: Rate) {
+  const baseSeconds = reward.kind === "relic" ? 2.4 : 1.8;
+  return Math.round((baseSeconds * 1000) / Math.sqrt(rate));
 }
 
 export function HistoryCourseShell({ run }: { run: ReplayRun }) {
@@ -40,33 +103,46 @@ export function HistoryCourseShell({ run }: { run: ReplayRun }) {
   const [infoOpen, setInfoOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
   const [introToken, setIntroToken] = useState(0);
+  const [introActive, setIntroActive] = useState(true);
 
   const act = analysis.acts[actIndex] ?? null;
-  const stepCount = act ? act.history.length : 0;
 
+  // act swap → reset step + replay intro
   useEffect(() => {
-    setIntroToken((t) => t + 1);
     setStep(1);
+    setIntroToken((t) => t + 1);
+    setIntroActive(true);
+    const t = window.setTimeout(() => setIntroActive(false), ACT_INTRO_TOTAL_MS);
+    return () => window.clearTimeout(t);
   }, [actIndex]);
 
+  const reward = useMemo<Reward | null>(() => {
+    if (!act || introActive) return null;
+    const entry = act.history[step - 1];
+    if (!entry) return null;
+    return detectReward(entry, act.baseFloor + step - 1, step);
+  }, [act, step, introActive]);
+
+  // playback driver: hold each step by node weight, plus extra for rewards
   useEffect(() => {
-    if (!playing || !act) return;
+    if (!playing || !act || introActive) return;
+    const entry = act.history[step - 1];
+    if (!entry) return;
     const next = act.history[step];
     if (!next) {
-      const hasNextAct = actIndex + 1 < analysis.acts.length;
-      if (hasNextAct) {
-        const t = window.setTimeout(() => setActIndex((i) => i + 1), 800);
+      if (actIndex + 1 < analysis.acts.length) {
+        const t = window.setTimeout(() => setActIndex((i) => i + 1), 700);
         return () => window.clearTimeout(t);
       }
       return;
     }
-    const seconds = stepActivitySeconds(next);
-    const ms = Math.max(180, Math.round((seconds * 60) / rate));
+    let holdMs = Math.max(220, Math.round((nodeHoldSeconds(entry) * 1000) / rate));
+    if (reward) holdMs = Math.max(holdMs, rewardHoldMs(reward, rate));
     const timer = window.setTimeout(() => {
-      setStep((prev) => Math.min(prev + 1, act.history.length));
-    }, ms);
+      setStep((s) => Math.min(s + 1, act.history.length));
+    }, holdMs);
     return () => window.clearTimeout(timer);
-  }, [playing, step, rate, act, actIndex, analysis.acts.length]);
+  }, [playing, step, rate, act, actIndex, analysis.acts.length, introActive, reward]);
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
@@ -99,7 +175,9 @@ export function HistoryCourseShell({ run }: { run: ReplayRun }) {
   const onRestart = useCallback(() => {
     setStep(1);
     setIntroToken((t) => t + 1);
+    setIntroActive(true);
     setPlaying(true);
+    window.setTimeout(() => setIntroActive(false), ACT_INTRO_TOTAL_MS);
   }, []);
 
   if (!act) {
@@ -123,6 +201,7 @@ export function HistoryCourseShell({ run }: { run: ReplayRun }) {
           introToken={introToken}
           playing={playing}
           rate={rate}
+          reward={reward}
           onTogglePlay={() => setPlaying((v) => !v)}
           onRestart={onRestart}
           onChangeRate={setRate}
@@ -181,6 +260,7 @@ function Stage({
   introToken,
   playing,
   rate,
+  reward,
   onTogglePlay,
   onRestart,
   onChangeRate,
@@ -194,6 +274,7 @@ function Stage({
   introToken: number;
   playing: boolean;
   rate: Rate;
+  reward: Reward | null;
   onTogglePlay: () => void;
   onRestart: () => void;
   onChangeRate: (rate: Rate) => void;
@@ -201,8 +282,10 @@ function Stage({
   onOpenStats: () => void;
 }) {
   const mapBoxRef = useRef<HTMLDivElement>(null);
+  const userScrollGuardRef = useRef<number | null>(null);
+  const lastStepRef = useRef(step);
 
-  useEffect(() => {
+  const scrollToStep = useCallback(() => {
     const node = mapBoxRef.current;
     if (!node) return;
     const inner = node.firstElementChild as HTMLElement | null;
@@ -215,7 +298,18 @@ function Stage({
     const progress = act.history.length > 1 ? (step - 1) / (act.history.length - 1) : 1;
     const target = Math.round((1 - progress) * total);
     node.scrollTo({ top: target, behavior: "smooth" });
-  }, [step, act]);
+  }, [act, step]);
+
+  useEffect(() => {
+    if (lastStepRef.current === step) return;
+    lastStepRef.current = step;
+    // mark this as a programmatic scroll so the user-scroll guard ignores it
+    if (userScrollGuardRef.current) window.clearTimeout(userScrollGuardRef.current);
+    userScrollGuardRef.current = window.setTimeout(() => {
+      userScrollGuardRef.current = null;
+    }, 700);
+    scrollToStep();
+  }, [step, scrollToStep]);
 
   return (
     <div
@@ -224,13 +318,20 @@ function Stage({
     >
       <TopBar act={act} onOpenStats={onOpenStats} />
 
-      <div ref={mapBoxRef} className="absolute inset-0 overflow-hidden pt-10">
+      <div
+        ref={mapBoxRef}
+        className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-10"
+      >
         <div className="flex min-h-full justify-center">
           <SeededMapView act={act} step={step} />
         </div>
       </div>
 
+      <NodePulse step={step} />
+
       <ActIntro key={introToken} actIndex={actIndex} act={act} totalActs={totalActs} />
+
+      <RewardOverlay reward={reward} rate={rate} />
 
       <PlaybackBar
         step={step}
@@ -261,6 +362,22 @@ function TopBar({ act, onOpenStats }: { act: Act; onOpenStats: () => void }) {
   );
 }
 
+function NodePulse({ step }: { step: number }) {
+  // brief glow flash whenever step changes — gives the discrete jump some life
+  return (
+    <div
+      key={step}
+      aria-hidden
+      className="pointer-events-none absolute inset-0 z-10"
+      style={{
+        background:
+          "radial-gradient(ellipse at center 75%, rgba(255,200,120,0.22) 0%, transparent 55%)",
+        animation: "hc-node-pulse 700ms ease-out",
+      }}
+    />
+  );
+}
+
 function ActIntro({
   actIndex,
   act,
@@ -281,7 +398,7 @@ function ActIntro({
     );
     const t3 = window.setTimeout(
       () => setPhase("done"),
-      ACT_INTRO_FADE_IN_MS + ACT_INTRO_HOLD_MS + ACT_INTRO_FADE_OUT_MS,
+      ACT_INTRO_TOTAL_MS,
     );
     return () => {
       window.clearTimeout(t1);
@@ -292,8 +409,9 @@ function ActIntro({
 
   if (phase === "done") return null;
 
-  const opacity = phase === "in" ? 0.05 : phase === "hold" ? 1 : 0;
-  const transition =
+  const textOpacity = phase === "in" ? 0 : phase === "hold" ? 1 : 0;
+  const overlayOpacity = phase === "out" ? 0 : 1;
+  const textTransition =
     phase === "in"
       ? `opacity ${ACT_INTRO_FADE_IN_MS}ms ease-out`
       : phase === "out"
@@ -302,19 +420,132 @@ function ActIntro({
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60"
-      style={{ opacity: phase === "in" ? 1 : phase === "out" ? 0 : 1, transition: `background-color ${ACT_INTRO_FADE_OUT_MS}ms ease-in` }}
+      className="pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center bg-black"
+      style={{
+        opacity: overlayOpacity,
+        transition: `opacity ${ACT_INTRO_FADE_OUT_MS}ms ease-in`,
+      }}
     >
-      <div
-        className="text-center text-white"
-        style={{ opacity, transition }}
-      >
+      <div className="text-center text-white" style={{ opacity: textOpacity, transition: textTransition }}>
         <div className="text-xs uppercase tracking-[0.4em] text-zinc-300">
           {actIntroNumber(actIndex)} / {totalActs}막
         </div>
         <div className="mt-3 text-5xl font-black tracking-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
           {act.actLabel}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function RewardOverlay({ reward, rate }: { reward: Reward | null; rate: Rate }) {
+  const [visible, setVisible] = useState<Reward | null>(null);
+  const [closing, setClosing] = useState(false);
+  const lastTokenRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (reward) {
+      const token = `${reward.kind}-${reward.floor}-${reward.step}`;
+      if (token !== lastTokenRef.current) {
+        lastTokenRef.current = token;
+        setVisible(reward);
+        setClosing(false);
+        const dur = rewardHoldMs(reward, rate);
+        const t1 = window.setTimeout(() => setClosing(true), Math.max(800, dur - 350));
+        const t2 = window.setTimeout(() => {
+          setVisible(null);
+          setClosing(false);
+        }, dur);
+        return () => {
+          window.clearTimeout(t1);
+          window.clearTimeout(t2);
+        };
+      }
+    } else {
+      lastTokenRef.current = null;
+      setVisible(null);
+      setClosing(false);
+    }
+  }, [reward, rate]);
+
+  if (!visible) return null;
+
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center"
+      style={{
+        opacity: closing ? 0 : 1,
+        transform: closing ? "translateY(-40px) scale(0.7)" : "translateY(0) scale(1)",
+        transition: "opacity 350ms ease-in, transform 350ms ease-in",
+      }}
+    >
+      <div className="absolute inset-0 bg-black/55" />
+      {visible.kind === "relic" ? (
+        <RelicReward ids={visible.ids} />
+      ) : (
+        <CardReward ids={visible.ids} />
+      )}
+    </div>
+  );
+}
+
+function RelicReward({ ids }: { ids: string[] }) {
+  return (
+    <div className="relative flex flex-col items-center gap-5">
+      <p className="text-base font-bold uppercase tracking-[0.4em] text-amber-200 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+        유물 획득
+      </p>
+      <div className="flex items-end gap-8">
+        {ids.map((id) => (
+          <div
+            key={id}
+            className="flex flex-col items-center gap-3 rounded-3xl border border-amber-200/40 bg-black/65 px-10 py-8 shadow-[0_40px_100px_-20px_rgba(255,200,120,0.6)]"
+          >
+            <div className="relative h-40 w-40">
+              <Image
+                src={`/images/sts2/relics/${slugFromId(id)}.webp`}
+                alt=""
+                fill
+                sizes="160px"
+                className="object-contain drop-shadow-[0_0_24px_rgba(255,200,120,0.7)]"
+              />
+            </div>
+            <p className="text-xl font-black text-amber-100 drop-shadow">
+              {localize("relics", id) ?? id.split(".").pop()}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CardReward({ ids }: { ids: string[] }) {
+  return (
+    <div className="relative flex flex-col items-center gap-5">
+      <p className="text-base font-bold uppercase tracking-[0.4em] text-zinc-100 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+        카드 획득
+      </p>
+      <div className="flex items-end gap-5">
+        {ids.map((id, i) => (
+          <div
+            key={`${id}-${i}`}
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="relative h-72 w-52 overflow-hidden rounded-lg border-2 border-amber-200/50 bg-zinc-900 shadow-[0_40px_100px_-20px_rgba(255,255,255,0.5)]">
+              <Image
+                src={`/images/sts2/cards/${slugFromId(id)}.webp`}
+                alt=""
+                fill
+                sizes="208px"
+                className="object-cover"
+              />
+            </div>
+            <p className="text-sm font-bold text-zinc-100 drop-shadow">
+              {localize("cards", id) ?? id.split(".").pop()}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -354,7 +585,7 @@ function PlaybackBar({
           <button
             type="button"
             onClick={onTogglePlay}
-            className="flex h-7 w-12 items-center justify-center rounded-md border border-white/20 bg-black/40 hover:bg-white/10"
+            className="flex h-7 w-12 items-center justify-center rounded-md border border-white/20 bg-black/40 transition hover:bg-white/10"
             aria-label={playing ? "일시정지" : "재생"}
           >
             {playing ? <PauseIcon /> : <PlayIcon />}
@@ -362,7 +593,7 @@ function PlaybackBar({
           <button
             type="button"
             onClick={onRestart}
-            className="rounded-md border border-white/15 bg-black/30 px-2 py-1 text-xs hover:bg-white/10"
+            className="rounded-md border border-white/15 bg-black/30 px-2 py-1 text-xs transition hover:bg-white/10"
           >
             처음부터
           </button>
