@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, memo } from "react";
+import { useState, memo, CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
 import { CodexCard } from "@/lib/codex-types";
 import {
@@ -14,14 +14,19 @@ import {
   TITLE_OUTLINE_COLOR,
   ENERGY_OUTLINE_COLOR,
   STAR_OUTLINE_COLOR,
+  ENCHANT_AMOUNT_OUTLINE,
   TITLE_UPGRADED_OUTLINE,
   TEXT_CREAM,
   TEXT_GREEN,
+  TEXT_GOLD,
   CHAR_FRAME_HSV,
   RARITY_BANNER_HSV,
   ANCIENT_BANNER_HSV,
   hsvToFilter,
-  gameTextShadow,
+  gameStroke,
+  CARD_ASPECT,
+  CARD_WIDTH_PRESET,
+  FONT_CQI,
 } from "@/lib/sts2-card-style";
 
 // =============================================================================
@@ -37,7 +42,6 @@ const FRAME_ASSETS: Record<string, string> = {
   퀘스트: "/images/game-assets/card-frames/card_frame_quest.png",
 };
 
-// Ancient card text background — type-specific top cutout shape
 const ANCIENT_TEXT_BG: Record<string, string> = {
   공격: "/images/game-assets/card-misc/ancient_card_text_bg_attack.png",
   스킬: "/images/game-assets/card-misc/ancient_card_text_bg_skill.png",
@@ -75,51 +79,38 @@ const CARD_FONT = "var(--font-gc-batang), var(--font-kreon), serif";
 const TITLE_FONT = "var(--font-spectral), var(--font-gc-batang), serif";
 
 // =============================================================================
-// Layout config (% of 598x844 card frame)
-// banner: 653x145 → w=109%, h=17.2%
-// portrait border: 551x420
-// plaque: 123x75
-// energy orb: ~74x74
-//
-// Font sizes are emitted as `cqi` (container query inline) so all glyphs scale
-// uniformly with the card width. Game baseline: 598px wide.
-//   TitleLabel  26px → 4.35cqi
-//   Description 21px → 3.51cqi
-//   EnergyLabel 32px → 5.35cqi
-//   TypeLabel   16px → 2.68cqi
-//   StarLabel   22px → 3.68cqi
+// Layout config (% of 300×422 holder coords)
+// banner: card.tscn NameBanner offset(-160 ~ 160, -250 ~ -180) → w=320(=107%), h=70/422=16.6%
+// energy orb: 64×64 / holder ~21%
 // =============================================================================
 
 const L = {
-  art: { top: 10, left: 5, right: 5, bottom: 56 },
-  portraitBorder: { width: 92, height: 50, top: 10 },
-  banner: { top: 4, height: 17, overhangX: 9 },
+  art: { top: 9, left: 6, right: 6, bottom: 56 },
+  portraitBorder: { width: 92, height: 50, top: 9 },
+  banner: { top: 3, height: 17, overhangX: 9 },
   plaque: { width: 22, top: 55 },
-  desc: { top: 64, bottom: 95, paddingX: 12 },
-  cost: { top: -3, left: -3, size: 16 },
-  starCost: { top: 12, left: 0, size: 11 },
-  enchant: { top: 13, left: -1, size: 14 },
-};
-
-const FONT_CQI = {
-  title: 4.35,
-  description: 3.51,
-  cost: 5.35,
-  type: 2.68,
-  star: 3.68,
-  enchant: 3.0,
+  desc: { top: 64, bottom: 95, paddingX: 9 },
+  cost: { top: -3, left: -3, size: 17 },
+  starCost: { top: 13, left: 0, size: 12 },
+  enchant: { top: 16, left: -3, width: 22, height: 14 },
 };
 
 // =============================================================================
 // Component
 // =============================================================================
 
+export type CardTileSize = keyof typeof CARD_WIDTH_PRESET;
+
 interface CardTileProps {
   card: CodexCard;
   showUpgrade: boolean;
   showBeta: boolean;
+  /** 고정 픽셀 폭. 게임처럼 반응형 X. 미지정 시 size="grid" 기본. */
+  width?: number;
+  size?: CardTileSize;
   enchantmentImageUrl?: string | null;
   enchantmentLabel?: string | null;
+  enchantmentAmount?: number | null;
   /** Append after card description (mimics game's enchantment extra_card_text). */
   descriptionSuffix?: string | null;
   onClick?: () => void;
@@ -129,13 +120,18 @@ export const CardTile = memo(function CardTile({
   card,
   showUpgrade,
   showBeta,
+  width,
+  size = "grid",
   enchantmentImageUrl,
   enchantmentLabel,
+  enchantmentAmount,
   descriptionSuffix,
   onClick,
 }: CardTileProps) {
   const [imgError, setImgError] = useState(false);
   const [hoveredTerm, setHoveredTerm] = useState<string | null>(null);
+
+  const cardWidth = width ?? CARD_WIDTH_PRESET[size];
 
   // === Derived values ===
   let imageSrc: string | null = null;
@@ -166,7 +162,12 @@ export const CardTile = memo(function CardTile({
   const energyIcon = ENERGY_ICONS[card.color] ?? ENERGY_ICONS.colorless;
   const isAncientCard = card.rarity === "고대의 존재";
 
-  // Build description
+  // 게임 outline_size: title=12, cost=16, type=0, enchant amount=8 (card.tscn)
+  const titleStroke = gameStroke(titleOutline, cardWidth, 12);
+  const costStroke = gameStroke(costOutline, cardWidth, 16);
+  const starStroke = gameStroke(STAR_OUTLINE_COLOR, cardWidth, 12);
+  const enchantAmountStroke = gameStroke(ENCHANT_AMOUNT_OUTLINE, cardWidth, 8);
+
   const descText = isUpgraded
     ? renderUpgradedDescription(card)
     : card.description;
@@ -174,15 +175,14 @@ export const CardTile = memo(function CardTile({
     descText + (descriptionSuffix ? `\n${descriptionSuffix}` : "")
   );
 
-
-  // ─── Shared description renderer ───
+  // ─── 텍스트 렌더 ───
   const renderDescription = () => (
     <div
-      className="text-center leading-[1.15]"
+      className="text-center leading-[1.18]"
       style={{
         color: TEXT_CREAM,
         fontSize: `${FONT_CQI.description}cqi`,
-        textShadow: `0.4cqi 0.4cqi 0 rgba(0,0,0,0.55)`,
+        textShadow: `${(2 / 300) * cardWidth}px ${(2 / 300) * cardWidth}px 0 rgba(0,0,0,0.45)`,
       }}
     >
       {descParts.map((part, i) =>
@@ -190,7 +190,7 @@ export const CardTile = memo(function CardTile({
           <span
             key={i}
             className="relative font-bold cursor-help"
-            style={{ color: "#EFC851" }}
+            style={{ color: TEXT_GOLD }}
             onMouseEnter={() => setHoveredTerm(part.text)}
             onMouseLeave={() => setHoveredTerm(null)}
           >
@@ -210,7 +210,7 @@ export const CardTile = memo(function CardTile({
                 alt="energy"
                 width={14}
                 height={14}
-                className="inline-block align-text-bottom mx-0.5"
+                className="inline-block align-text-bottom mx-[0.1em]"
                 style={{ width: "1em", height: "1em" }}
               />
             ))}
@@ -224,7 +224,7 @@ export const CardTile = memo(function CardTile({
                 alt="star"
                 width={14}
                 height={14}
-                className="inline-block align-text-bottom mx-0.5"
+                className="inline-block align-text-bottom mx-[0.1em]"
                 style={{ width: "1em", height: "1em" }}
               />
             ))}
@@ -243,7 +243,7 @@ export const CardTile = memo(function CardTile({
               {i > 0 && <span className="text-gray-500"> · </span>}
               <span
                 className="relative font-bold cursor-help"
-                style={{ color: "#EFC851" }}
+                style={{ color: TEXT_GOLD }}
                 onMouseEnter={() => setHoveredTerm(kw)}
                 onMouseLeave={() => setHoveredTerm(null)}
               >
@@ -270,15 +270,15 @@ export const CardTile = memo(function CardTile({
         aspectRatio: "1",
       }}
     >
-      <Image src={energyIcon} alt="cost" fill className="object-contain drop-shadow-lg" />
+      <Image src={energyIcon} alt="cost" fill className="object-contain" />
       <span
         className="absolute inset-0 flex items-center justify-center font-black"
         style={{
           color: TEXT_CREAM,
           fontSize: `${FONT_CQI.cost}cqi`,
           fontFamily: TITLE_FONT,
-          textShadow: gameTextShadow(costOutline, 1.6),
-          letterSpacing: "-0.03em",
+          letterSpacing: "-0.02em",
+          ...(costStroke as CSSProperties),
         }}
       >
         {costDisplay}
@@ -301,7 +301,7 @@ export const CardTile = memo(function CardTile({
         src="/images/game-assets/card-misc/energy_star.png"
         alt="star cost"
         fill
-        className="object-contain drop-shadow-md"
+        className="object-contain"
       />
       <span
         className="absolute inset-0 flex items-center justify-center font-black"
@@ -309,7 +309,7 @@ export const CardTile = memo(function CardTile({
           color: TEXT_CREAM,
           fontSize: `${FONT_CQI.star}cqi`,
           fontFamily: TITLE_FONT,
-          textShadow: gameTextShadow(STAR_OUTLINE_COLOR, 1.2),
+          ...(starStroke as CSSProperties),
         }}
       >
         {card.starCost}
@@ -317,39 +317,65 @@ export const CardTile = memo(function CardTile({
     </div>
   ) : null;
 
-  // ─── Enchantment slot (under cost orb) ───
+  // ─── 인챈트 슬롯 (코스트 아래) — card_enchant.png 그대로, 우측에 amount ───
   const renderEnchantSlot = () => enchantmentImageUrl ? (
     <div
       className="absolute z-[6] pointer-events-none"
       style={{
         top: `${L.enchant.top}%`,
         left: `${L.enchant.left}%`,
-        width: `${L.enchant.size}%`,
+        width: `${L.enchant.width}%`,
         aspectRatio: "72/54",
       }}
       title={enchantmentLabel ?? undefined}
     >
+      {/* Slot base — 절대 색상 변경 없이 원본 그대로 */}
       <Image
         src="/images/game-assets/card-misc/card_enchant.png"
         alt=""
         fill
-        className="object-contain drop-shadow-md"
+        className="object-contain"
       />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="relative" style={{ width: "55%", aspectRatio: "1" }}>
-          <Image
-            src={enchantmentImageUrl}
-            alt={enchantmentLabel ?? "enchantment"}
-            fill
-            className="object-contain"
-          />
-        </div>
+      {/* 인챈트 아이콘 — 슬롯 안쪽 좌측 (게임에서는 ICON 노드가 offset(14,9)~(49,44)) */}
+      <div
+        className="absolute"
+        style={{ left: "20%", top: "16%", width: "48%", aspectRatio: "1" }}
+      >
+        <Image
+          src={enchantmentImageUrl}
+          alt={enchantmentLabel ?? "enchantment"}
+          fill
+          className="object-contain"
+        />
       </div>
+      {/* Amount (게임 Label offset_left=26, top=27, right=66, bottom=53 → 우측 하단) */}
+      {enchantmentAmount !== undefined && enchantmentAmount !== null && (
+        <span
+          className="absolute font-black"
+          style={{
+            right: "0%",
+            bottom: "-4%",
+            color: TEXT_CREAM,
+            fontSize: `${FONT_CQI.enchantAmount}cqi`,
+            fontFamily: TITLE_FONT,
+            ...(enchantAmountStroke as CSSProperties),
+          }}
+        >
+          {enchantmentAmount}
+        </span>
+      )}
     </div>
   ) : null;
 
+  // 카드 컨테이너 인라인 스타일: 고정 픽셀 + cqi 베이스
+  const cardContainerStyle: CSSProperties = {
+    width: cardWidth,
+    aspectRatio: CARD_ASPECT,
+    containerType: "inline-size",
+  };
+
   // =====================================================================
-  // ANCIENT CARD — full-art with game-extracted frame assets
+  // ANCIENT CARD
   // =====================================================================
   if (isAncientCard) {
     const ancientTextBg = ANCIENT_TEXT_BG[card.type] ?? ANCIENT_TEXT_BG["스킬"];
@@ -357,13 +383,11 @@ export const CardTile = memo(function CardTile({
 
     return (
       <div
-        className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none"
-        style={{ containerType: "inline-size" }}
+        className="group relative cursor-pointer select-none transition-transform hover:scale-[1.03] hover:z-10"
+        style={cardContainerStyle}
         onClick={onClick}
       >
-        <div className="relative" style={{ aspectRatio: "598/844" }}>
-
-          {/* Layer 0: Full-bleed portrait art */}
+        <div className="relative w-full h-full">
           <div className="absolute inset-0 overflow-hidden rounded-[3%]">
             {imageSrc && !imgError ? (
               <Image
@@ -371,7 +395,7 @@ export const CardTile = memo(function CardTile({
                 alt={card.name}
                 fill
                 className="object-cover object-center"
-                sizes="(max-width: 640px) 40vw, (max-width: 1024px) 20vw, 12vw"
+                sizes={`${cardWidth}px`}
                 onError={() => setImgError(true)}
               />
             ) : (
@@ -381,17 +405,15 @@ export const CardTile = memo(function CardTile({
             )}
           </div>
 
-          {/* Layer 1: Ancient card frame (HSV-tinted by character) */}
           <Image
             src="/images/game-assets/card-frames/card_frame_ancient.png"
             alt=""
             fill
             className="object-contain pointer-events-none z-[1]"
             style={{ filter: frameFilter }}
-            sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 14vw"
+            sizes={`${cardWidth}px`}
           />
 
-          {/* Layer 2: Type-specific text background */}
           <div
             className="absolute z-[2] pointer-events-none"
             style={{ left: "5%", right: "5%", bottom: "1%", height: "45%" }}
@@ -405,7 +427,6 @@ export const CardTile = memo(function CardTile({
             />
           </div>
 
-          {/* Layer 3: Ancient banner */}
           <div
             className="absolute z-[3] flex items-center justify-center"
             style={{
@@ -430,14 +451,13 @@ export const CardTile = memo(function CardTile({
                 fontSize: `${FONT_CQI.title}cqi`,
                 fontWeight: 800,
                 color: titleColor,
-                textShadow: gameTextShadow(titleOutline, 1.2),
+                ...(titleStroke as CSSProperties),
               }}
             >
               {card.name}{isUpgraded && "+"}
             </span>
           </div>
 
-          {/* Layer 4: Type plaque */}
           <div
             className="absolute left-1/2 -translate-x-1/2 z-[4]"
             style={{ top: `${L.plaque.top}%`, width: `${L.plaque.width}%` }}
@@ -464,7 +484,6 @@ export const CardTile = memo(function CardTile({
             </div>
           </div>
 
-          {/* Layer 5: Description text */}
           <div
             className="absolute z-[5] overflow-hidden flex flex-col items-center justify-center"
             style={{
@@ -478,7 +497,6 @@ export const CardTile = memo(function CardTile({
             {renderDescription()}
           </div>
 
-          {/* Layer 6: Energy cost orb */}
           {renderCostOrb()}
           {renderStarCost()}
           {renderEnchantSlot()}
@@ -492,13 +510,11 @@ export const CardTile = memo(function CardTile({
   // =====================================================================
   return (
     <div
-      className="group relative transition-transform hover:scale-[1.03] hover:z-10 cursor-pointer select-none"
-      style={{ containerType: "inline-size" }}
+      className="group relative cursor-pointer select-none transition-transform hover:scale-[1.03] hover:z-10"
+      style={cardContainerStyle}
       onClick={onClick}
     >
-      <div className="relative" style={{ aspectRatio: "598/844" }}>
-
-        {/* Layer 0: Card portrait */}
+      <div className="relative w-full h-full">
         <div
           className="absolute overflow-hidden"
           style={{
@@ -514,7 +530,7 @@ export const CardTile = memo(function CardTile({
               alt={card.name}
               fill
               className="object-contain object-center"
-              sizes="(max-width: 640px) 40vw, (max-width: 1024px) 20vw, 12vw"
+              sizes={`${cardWidth}px`}
               onError={() => setImgError(true)}
             />
           ) : (
@@ -524,18 +540,16 @@ export const CardTile = memo(function CardTile({
           )}
         </div>
 
-        {/* Layer 1: Card frame (HSV-tinted) */}
         <Image
           src={frameAsset}
           alt=""
           fill
           className="object-contain pointer-events-none z-[1]"
           style={{ filter: frameFilter }}
-          sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 14vw"
+          sizes={`${cardWidth}px`}
           priority={false}
         />
 
-        {/* Layer 2: Portrait border */}
         <div
           className="absolute z-[2] pointer-events-none left-1/2 -translate-x-1/2"
           style={{
@@ -553,7 +567,6 @@ export const CardTile = memo(function CardTile({
           />
         </div>
 
-        {/* Layer 3: Name banner */}
         <div
           className="absolute z-[3] flex items-center justify-center"
           style={{
@@ -578,14 +591,13 @@ export const CardTile = memo(function CardTile({
               fontSize: `${FONT_CQI.title}cqi`,
               fontWeight: 800,
               color: titleColor,
-              textShadow: gameTextShadow(titleOutline, 1.2),
+              ...(titleStroke as CSSProperties),
             }}
           >
             {card.name}{isUpgraded && "+"}
           </span>
         </div>
 
-        {/* Layer 4: Type plaque */}
         <div
           className="absolute left-1/2 -translate-x-1/2 z-[4]"
           style={{ top: `${L.plaque.top}%`, width: `${L.plaque.width}%` }}
@@ -612,7 +624,6 @@ export const CardTile = memo(function CardTile({
           </div>
         </div>
 
-        {/* Layer 5: Description text */}
         <div
           className="absolute z-[5] overflow-hidden flex flex-col items-center justify-center"
           style={{
@@ -626,13 +637,8 @@ export const CardTile = memo(function CardTile({
           {renderDescription()}
         </div>
 
-        {/* Layer 6: Energy cost orb */}
         {renderCostOrb()}
-
-        {/* Layer 7: Star cost (Regent) */}
         {renderStarCost()}
-
-        {/* Layer 8: Enchantment slot (under cost orb) */}
         {renderEnchantSlot()}
       </div>
     </div>

@@ -15,18 +15,13 @@ import {
 import { CardTile } from "./card-tile";
 import { DescriptionText } from "./codex-description";
 import { HoverTip, HoverTipVariant } from "./hover-tip";
+import { CARD_WIDTH_PRESET } from "@/lib/sts2-card-style";
+import {
+  canEnchantCard,
+  shouldShowAmount,
+  DEFAULT_ENCHANT_AMOUNT,
+} from "@/lib/sts2-enchant-rules";
 
-// 카드 타입(KO) → 인챈트 cardType(EN) 매핑
-const CARD_TYPE_KO_TO_EN: Record<string, "Attack" | "Skill" | null> = {
-  공격: "Attack",
-  스킬: "Skill",
-  파워: null,
-  저주: null,
-  상태이상: null,
-  퀘스트: null,
-};
-
-// 인챈트별 호버 툴팁 분류 — 디버프/공격 계열은 적색, 그 외는 기본
 const ENCHANT_TIP_VARIANT: Record<string, HoverTipVariant> = {
   CORRUPTED: "debuff",
   GOOPY: "debuff",
@@ -34,7 +29,6 @@ const ENCHANT_TIP_VARIANT: Record<string, HoverTipVariant> = {
 
 function getEnchantTipVariant(enchant: CodexEnchantment): HoverTipVariant {
   if (ENCHANT_TIP_VARIANT[enchant.id]) return ENCHANT_TIP_VARIANT[enchant.id];
-  // Attack 계열은 buff(공격 강화 류) 톤
   if (enchant.cardType === "Attack") return "buff";
   return "default";
 }
@@ -45,7 +39,6 @@ function getColorLabel(card: CodexCard): string {
   return COLOR_LABELS[cat] ?? card.color;
 }
 
-// Stat badge component
 function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
     <div className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
@@ -72,11 +65,11 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
   const costDisplay = card.isXCost ? "X" : String(card.cost);
   const charColor = CHARACTER_COLORS[card.color];
 
-  // 카드에 부착 가능한 인챈트만 필터링 (cardType이 null이거나 카드 타입과 일치)
-  const eligibleEnchantments = useMemo(() => {
-    const cardTypeEn = CARD_TYPE_KO_TO_EN[card.type];
-    return enchantments.filter((e) => e.cardType === null || e.cardType === cardTypeEn);
-  }, [enchantments, card.type]);
+  // 게임 CanEnchant 룰 그대로 적용 (카드별 가능 인챈트만 표시)
+  const eligibleEnchantments = useMemo(
+    () => enchantments.filter((e) => canEnchantCard(e, card)),
+    [enchantments, card]
+  );
 
   const activeEnchant = useMemo(
     () => eligibleEnchantments.find((e) => e.id === activeEnchantId) ?? null,
@@ -87,6 +80,8 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
     () => eligibleEnchantments.find((e) => e.id === hoveredEnchantId) ?? null,
     [eligibleEnchantments, hoveredEnchantId]
   );
+
+  const cardWidth = CARD_WIDTH_PRESET.detail;
 
   return (
     <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-3xl mx-auto">
@@ -115,21 +110,37 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
         )}
       </div>
 
-      {/* Card + 우측 hover_tip 영역 */}
-      <div className="flex flex-row items-start justify-center gap-6 w-full flex-wrap">
-        <div className="w-72 sm:w-80 md:w-[22rem] flex-shrink-0">
-          <CardTile
-            card={card}
-            showUpgrade={showUpgrade}
-            showBeta={showBeta}
-            enchantmentImageUrl={activeEnchant?.imageUrl ?? null}
-            enchantmentLabel={activeEnchant?.name ?? null}
-            descriptionSuffix={activeEnchant?.extraCardText ?? null}
-          />
-        </div>
-
+      {/* Card는 고정 위치 + 팝오버는 absolute로 카드 우측에 떠 카드 위치를 흔들지 않음 */}
+      <div
+        className="relative"
+        style={{ width: cardWidth }}
+      >
+        <CardTile
+          card={card}
+          showUpgrade={showUpgrade}
+          showBeta={showBeta}
+          width={cardWidth}
+          enchantmentImageUrl={activeEnchant?.imageUrl ?? null}
+          enchantmentLabel={activeEnchant?.name ?? null}
+          enchantmentAmount={
+            activeEnchant && shouldShowAmount(activeEnchant)
+              ? DEFAULT_ENCHANT_AMOUNT
+              : null
+          }
+          descriptionSuffix={activeEnchant?.extraCardText ?? null}
+        />
         {hoveredEnchant && (
-          <div className="w-72 mt-2">
+          <div
+            className="hidden md:block"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "calc(100% + 16px)",
+              width: 280,
+              pointerEvents: "none",
+              zIndex: 50,
+            }}
+          >
             <HoverTip
               title={hoveredEnchant.name}
               icon={hoveredEnchant.imageUrl ?? undefined}
@@ -220,12 +231,12 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
         </div>
       )}
 
-      {/* 인챈트 토글 */}
+      {/* 인챈트 토글 — 게임 CanEnchant 룰로 필터된 것만 */}
       {eligibleEnchantments.length > 0 && (
         <div className="w-full">
           <div className="flex items-center justify-between mb-2 px-1">
             <h2 className="text-sm font-bold text-gray-300">
-              인챈트 ({eligibleEnchantments.length})
+              가능한 인챈트 ({eligibleEnchantments.length})
             </h2>
             {activeEnchant && (
               <button

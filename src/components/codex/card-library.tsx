@@ -709,7 +709,10 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
 
         {/* Card Grid */}
         <div className="flex-1 overflow-y-auto p-3">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2 sm:gap-3">
+          <div
+            className="grid gap-2 sm:gap-3 justify-center"
+            style={{ gridTemplateColumns: "repeat(auto-fill, 200px)" }}
+          >
             {visibleCards.map((card, i) => (
               <div
                 key={card.id}
@@ -720,6 +723,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
                   card={card}
                   showUpgrade={showUpgrades}
                   showBeta={showBeta}
+                  size="grid"
                   onClick={() => setSelectedCard(card)}
                 />
               </div>
