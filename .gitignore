@@ -45,6 +45,8 @@ next-env.d.ts
 .dev-screenshots/
 .playwright-mcp/
 docs/CARD_UI_REVIEW.md
+test-results/
+playwright-report/
 
 # codex version update backup
 data/sts2-old/
