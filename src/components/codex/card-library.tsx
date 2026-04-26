@@ -6,6 +6,7 @@ import { getChoseong } from "es-hangul";
 import {
   CodexCard,
   CodexCharacter,
+  CodexEnchantment,
   CardFilterCategory,
   CardTypeKo,
   COLOR_LABELS,
@@ -105,9 +106,10 @@ interface CardLibraryProps {
   currentVersion: string;
   patches: STS2Patch[];
   versionDiffs: EntityVersionDiff[];
+  enchantments: CodexEnchantment[];
 }
 
-export function CardLibrary({ cards, characters, versions, currentVersion, patches, versionDiffs }: CardLibraryProps) {
+export function CardLibrary({ cards, characters, versions, currentVersion, patches, versionDiffs, enchantments }: CardLibraryProps) {
   const searchParams = useSearchParams();
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
   const [selectedColors, setSelectedColors] = useState<Set<CardFilterCategory>>(
@@ -744,7 +746,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
           }}
         >
           <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#1a1a2e] border border-white/10 rounded-2xl shadow-2xl">
-            <CardDetail card={selectedCard} onClose={() => setSelectedCard(null)} />
+            <CardDetail card={selectedCard} enchantments={enchantments} onClose={() => setSelectedCard(null)} />
           </div>
         </div>
       )}

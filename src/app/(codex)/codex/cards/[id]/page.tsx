@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexCards } from "@/lib/codex-data";
+import { getCodexCards, getCodexEnchantments } from "@/lib/codex-data";
 import { CardDetail } from "@/components/codex/card-detail";
 
 export async function generateStaticParams() {
@@ -29,13 +29,16 @@ export default async function CardDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const cards = await getCodexCards();
+  const [cards, enchantments] = await Promise.all([
+    getCodexCards(),
+    getCodexEnchantments(),
+  ]);
   const card = cards.find((c) => c.id.toLowerCase() === id.toLowerCase());
   if (!card) notFound();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <CardDetail card={card} />
+      <CardDetail card={card} enchantments={enchantments} />
     </div>
   );
 }

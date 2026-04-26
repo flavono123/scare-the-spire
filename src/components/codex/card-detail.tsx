@@ -1,13 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
+import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
-import { CodexCard, COLOR_LABELS, CardFilterCategory, CHARACTER_COLORS } from "@/lib/codex-types";
+import {
+  CodexCard,
+  CodexEnchantment,
+  COLOR_LABELS,
+  CardFilterCategory,
+  CHARACTER_COLORS,
+} from "@/lib/codex-types";
 import { CardTile } from "./card-tile";
+import { DescriptionText } from "./codex-description";
+import { HoverTip, HoverTipVariant } from "./hover-tip";
 
-// Card color to Korean label for display
+// 카드 타입(KO) → 인챈트 cardType(EN) 매핑
+const CARD_TYPE_KO_TO_EN: Record<string, "Attack" | "Skill" | null> = {
+  공격: "Attack",
+  스킬: "Skill",
+  파워: null,
+  저주: null,
+  상태이상: null,
+  퀘스트: null,
+};
+
+// 인챈트별 호버 툴팁 분류 — 디버프/공격 계열은 적색, 그 외는 기본
+const ENCHANT_TIP_VARIANT: Record<string, HoverTipVariant> = {
+  CORRUPTED: "debuff",
+  GOOPY: "debuff",
+};
+
+function getEnchantTipVariant(enchant: CodexEnchantment): HoverTipVariant {
+  if (ENCHANT_TIP_VARIANT[enchant.id]) return ENCHANT_TIP_VARIANT[enchant.id];
+  // Attack 계열은 buff(공격 강화 류) 톤
+  if (enchant.cardType === "Attack") return "buff";
+  return "default";
+}
+
 function getColorLabel(card: CodexCard): string {
   if (card.rarity === "고대의 존재") return "고대의 존재";
   const cat = (card.color === "event" ? "event" : card.color) as CardFilterCategory;
@@ -28,18 +59,37 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 
 interface CardDetailProps {
   card: CodexCard;
+  enchantments: CodexEnchantment[];
   onClose?: () => void;
 }
 
-export function CardDetail({ card, onClose }: CardDetailProps) {
+export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
+  const [activeEnchantId, setActiveEnchantId] = useState<string | null>(null);
+  const [hoveredEnchantId, setHoveredEnchantId] = useState<string | null>(null);
 
   const costDisplay = card.isXCost ? "X" : String(card.cost);
   const charColor = CHARACTER_COLORS[card.color];
 
+  // 카드에 부착 가능한 인챈트만 필터링 (cardType이 null이거나 카드 타입과 일치)
+  const eligibleEnchantments = useMemo(() => {
+    const cardTypeEn = CARD_TYPE_KO_TO_EN[card.type];
+    return enchantments.filter((e) => e.cardType === null || e.cardType === cardTypeEn);
+  }, [enchantments, card.type]);
+
+  const activeEnchant = useMemo(
+    () => eligibleEnchantments.find((e) => e.id === activeEnchantId) ?? null,
+    [eligibleEnchantments, activeEnchantId]
+  );
+
+  const hoveredEnchant = useMemo(
+    () => eligibleEnchantments.find((e) => e.id === hoveredEnchantId) ?? null,
+    [eligibleEnchantments, hoveredEnchantId]
+  );
+
   return (
-    <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-lg mx-auto">
+    <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-3xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
@@ -65,9 +115,38 @@ export function CardDetail({ card, onClose }: CardDetailProps) {
         )}
       </div>
 
-      {/* Large Card Render */}
-      <div className="w-64 sm:w-72">
-        <CardTile card={card} showUpgrade={showUpgrade} showBeta={showBeta} />
+      {/* Card + 우측 hover_tip 영역 */}
+      <div className="flex flex-row items-start justify-center gap-6 w-full flex-wrap">
+        <div className="w-72 sm:w-80 md:w-[22rem] flex-shrink-0">
+          <CardTile
+            card={card}
+            showUpgrade={showUpgrade}
+            showBeta={showBeta}
+            enchantmentImageUrl={activeEnchant?.imageUrl ?? null}
+            enchantmentLabel={activeEnchant?.name ?? null}
+            descriptionSuffix={activeEnchant?.extraCardText ?? null}
+          />
+        </div>
+
+        {hoveredEnchant && (
+          <div className="w-72 mt-2">
+            <HoverTip
+              title={hoveredEnchant.name}
+              icon={hoveredEnchant.imageUrl ?? undefined}
+              variant={getEnchantTipVariant(hoveredEnchant)}
+            >
+              <DescriptionText
+                description={hoveredEnchant.description}
+                className="block text-center"
+              />
+              {hoveredEnchant.cardType && (
+                <p className="text-[10px] text-center mt-1 opacity-70">
+                  ({hoveredEnchant.cardType === "Attack" ? "공격" : "스킬"} 카드 전용)
+                </p>
+              )}
+            </HoverTip>
+          </div>
+        )}
       </div>
 
       {/* Card Name */}
@@ -112,18 +191,20 @@ export function CardDetail({ card, onClose }: CardDetailProps) {
       )}
 
       {/* Toggles */}
-      {card.upgrade && (
+      {(card.upgrade || card.betaImageUrl) && (
         <div className="flex gap-3">
-          <button
-            onClick={() => setShowUpgrade((v) => !v)}
-            className={`px-3 py-1 text-xs rounded-lg border transition-all ${
-              showUpgrade
-                ? "bg-green-500/20 text-green-400 border-green-500/50"
-                : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
-            }`}
-          >
-            강화 보기
-          </button>
+          {card.upgrade && (
+            <button
+              onClick={() => setShowUpgrade((v) => !v)}
+              className={`px-3 py-1 text-xs rounded-lg border transition-all ${
+                showUpgrade
+                  ? "bg-green-500/20 text-green-400 border-green-500/50"
+                  : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
+              }`}
+            >
+              강화 보기
+            </button>
+          )}
           {card.betaImageUrl && (
             <button
               onClick={() => setShowBeta((v) => !v)}
@@ -136,6 +217,69 @@ export function CardDetail({ card, onClose }: CardDetailProps) {
               베타 아트
             </button>
           )}
+        </div>
+      )}
+
+      {/* 인챈트 토글 */}
+      {eligibleEnchantments.length > 0 && (
+        <div className="w-full">
+          <div className="flex items-center justify-between mb-2 px-1">
+            <h2 className="text-sm font-bold text-gray-300">
+              인챈트 ({eligibleEnchantments.length})
+            </h2>
+            {activeEnchant && (
+              <button
+                onClick={() => setActiveEnchantId(null)}
+                className="text-xs text-gray-500 hover:text-gray-300"
+              >
+                해제
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+            {eligibleEnchantments.map((e) => {
+              const active = activeEnchantId === e.id;
+              return (
+                <button
+                  key={e.id}
+                  onClick={() =>
+                    setActiveEnchantId((prev) => (prev === e.id ? null : e.id))
+                  }
+                  onMouseEnter={() => setHoveredEnchantId(e.id)}
+                  onMouseLeave={() =>
+                    setHoveredEnchantId((cur) => (cur === e.id ? null : cur))
+                  }
+                  onFocus={() => setHoveredEnchantId(e.id)}
+                  onBlur={() =>
+                    setHoveredEnchantId((cur) => (cur === e.id ? null : cur))
+                  }
+                  className={`group flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
+                    active
+                      ? "bg-yellow-500/15 border-yellow-500/60 ring-1 ring-yellow-500/30"
+                      : "bg-white/5 border-white/10 hover:border-white/30"
+                  }`}
+                  aria-pressed={active}
+                  title={e.name}
+                >
+                  {e.imageUrl ? (
+                    <div className="relative w-10 h-10">
+                      <Image
+                        src={e.imageUrl}
+                        alt={e.name}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-10 h-10 rounded bg-white/5" />
+                  )}
+                  <span className="text-[10px] text-gray-200 text-center leading-tight">
+                    {e.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
 
