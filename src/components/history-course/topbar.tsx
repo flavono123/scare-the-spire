@@ -123,7 +123,7 @@ export function TopBar({
   return (
     <div className="absolute inset-x-0 top-0 z-20 flex flex-col gap-1.5 pb-3 text-zinc-100">
       <div
-        className="topbar-row flex items-center gap-x-5 gap-y-1.5 px-5 pb-3 pt-2 text-[20px] font-bold leading-none"
+        className="topbar-row flex items-center gap-x-5 gap-y-1.5 px-5 pb-5 pt-1 text-[20px] font-bold leading-none"
         style={{
           backgroundImage: "url(/images/sts2/ui/topbar/top_bar.png)",
           backgroundSize: "100% 100%",
@@ -306,24 +306,24 @@ function PotionSlots({ count }: { count: number }) {
   return (
     <div
       title={`포션 슬롯 ${count}개`}
-      className="relative inline-flex items-center gap-2 px-3 py-1.5"
+      className="relative inline-flex items-center gap-1 px-1"
       style={{
-        // nine-slice the char_backdrop sprite so the chamfer corners stay
-        // their original 14px instead of stretching with the box width.
+        // nine-slice keeps the chamfer corners at 8px so the slot bay matches
+        // the height of HP/gold/floor chips instead of doubling them.
         borderImage:
-          "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png) 24 fill / 12px / 0 stretch",
+          "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png) 28 fill / 8px / 0 stretch",
         borderStyle: "solid",
-        borderWidth: "12px",
-        transform: "translateY(-3px)",
+        borderWidth: "8px",
+        transform: "translateY(-4px)",
       }}
     >
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="relative h-9 w-7">
+        <div key={i} className="relative h-6 w-5">
           <Image
             src="/images/sts2/ui/topbar/potion_placeholder.png"
             alt=""
             fill
-            sizes="28px"
+            sizes="20px"
             className="object-contain opacity-90"
             unoptimized
           />
@@ -521,18 +521,23 @@ function BossChip({
       className="relative flex items-center"
       style={{ transform: "translateY(-3px)" }}
     >
+      {renderFirst && info.firstBoss && (
+        <BossIcon
+          id={info.firstBoss}
+          // First boss is the active token from the very start of the act —
+          // it only stops being "the active right-side boss" when the player
+          // actually steps on it, at which point this chip stops rendering it.
+          active
+          className="relative z-10"
+        />
+      )}
       {renderSecond && info.secondBoss && (
         <BossIcon
           id={info.secondBoss}
           active={info.firstBossPassed}
-          className={cn(renderFirst && "absolute left-3 -z-0 opacity-90")}
-        />
-      )}
-      {renderFirst && info.firstBoss && (
-        <BossIcon
-          id={info.firstBoss}
-          active={false}
-          className="relative z-10"
+          // Sit 1px behind the first boss so the first one occludes a sliver
+          // of the second instead of leaving them flush.
+          className={cn("relative z-0", renderFirst && "-ml-px")}
         />
       )}
     </div>
@@ -562,10 +567,9 @@ function BossIcon({
         alt={bossLabel(id)}
         fill
         sizes="40px"
-        className={cn(
-          "object-contain",
-          active ? "" : "opacity-55 grayscale",
-        )}
+        // Inactive boss tokens stay fully opaque (so the first one cleanly
+        // occludes the second behind it) — only the color drains.
+        className={cn("object-contain", !active && "grayscale")}
         unoptimized
       />
     </div>
