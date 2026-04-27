@@ -124,11 +124,12 @@ function RelicFlyer({
   const scale = phase === "appear" ? 0.4 : flying ? 0.45 : 1;
   const opacity = phase === "appear" ? 0 : flying ? 0.85 : 1;
   const factor = 1 / Math.sqrt(Math.max(1, rate));
-  const transitionMs = phase === "appear"
-    ? Math.round(APPEAR_MS * factor)
-    : flying
-      ? Math.round(FLY_MS * factor)
-      : 0;
+  // Transition duration applies to the *upcoming* state change. During
+  // appear/hold we want the opacity/scale fade-in to last APPEAR_MS; during
+  // fly we want the position+scale movement to last FLY_MS.
+  const transitionMs = flying
+    ? Math.round(FLY_MS * factor)
+    : Math.round(APPEAR_MS * factor);
   const transitionEase = flying ? "cubic-bezier(0.55, 0.05, 0.6, 1)" : "ease-out";
 
   const label = localize("relics", token.id) ?? token.id.split(".").pop();
@@ -136,6 +137,8 @@ function RelicFlyer({
   return (
     <div
       aria-hidden
+      data-testid="relic-fly"
+      data-phase={phase}
       className="pointer-events-none absolute z-30"
       style={{
         left: center.x,

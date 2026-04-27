@@ -137,19 +137,23 @@ function CardActionFlyer({
   const isUpgradedIcon = token.kind === "upgraded";
 
   const factor = 1 / Math.sqrt(Math.max(1, rate));
-  const transitionMs = phase === "appear"
-    ? Math.round(APPEAR_MS * factor)
-    : phase === "transform"
-      ? Math.round(TRANSFORM_MS * factor)
-      : phase === "fade"
-        ? Math.round(FADE_MS * factor)
-        : 0;
+  // Apply the duration of the *transition into* the current phase so the
+  // browser actually animates between renders. During hold the previous
+  // change was the appear (scale/opacity) — keep that duration.
+  const transitionMs = phase === "transform"
+    ? Math.round(TRANSFORM_MS * factor)
+    : phase === "fade"
+      ? Math.round(FADE_MS * factor)
+      : Math.round(APPEAR_MS * factor);
 
   const label = localize("cards", token.cardId) ?? token.cardId.split(".").pop();
 
   return (
     <div
       aria-hidden
+      data-testid="card-action"
+      data-kind={token.kind}
+      data-phase={phase}
       className="pointer-events-none absolute z-30"
       style={{
         left: origin.x,

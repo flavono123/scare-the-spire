@@ -7,6 +7,7 @@ export default defineConfig({
     "potion-tooltip-position.spec.ts",
     "monster-qa.spec.ts",
     "history-course-shell.spec.ts",
+    "history-course-rewards.spec.ts",
     "card-tile-visual.spec.ts",
   ],
   timeout: 30_000,

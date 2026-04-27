@@ -809,21 +809,16 @@ export function parseReplayRun(raw: string): ReplayRun {
                 | undefined,
             ): ReplayEnchantment[] | undefined =>
               Array.isArray(list)
-                ? list
-                    .map((e) => {
-                      const cardId = e?.card?.id;
-                      const enchantmentId = e?.card?.enchantment?.id ?? e?.enchantment;
-                      if (typeof cardId !== "string" || typeof enchantmentId !== "string") return null;
-                      return {
-                        cardId,
-                        enchantmentId,
-                        amount:
-                          typeof e?.card?.enchantment?.amount === "number"
-                            ? e.card.enchantment.amount
-                            : undefined,
-                      } satisfies ReplayEnchantment;
-                    })
-                    .filter((e): e is ReplayEnchantment => e !== null)
+                ? list.flatMap((e): ReplayEnchantment[] => {
+                    const cardId = e?.card?.id;
+                    const enchantmentId = e?.card?.enchantment?.id ?? e?.enchantment;
+                    if (typeof cardId !== "string" || typeof enchantmentId !== "string") return [];
+                    const entry: ReplayEnchantment = { cardId, enchantmentId };
+                    if (typeof e?.card?.enchantment?.amount === "number") {
+                      entry.amount = e.card.enchantment.amount;
+                    }
+                    return [entry];
+                  })
                 : undefined;
             return {
               map_point_type:

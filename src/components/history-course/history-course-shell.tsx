@@ -1,12 +1,19 @@
 "use client";
 
-import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   MapBackdrop,
   SeededMapView,
 } from "@/components/dev/run-replay-poc";
+import {
+  CardActionOverlay,
+  type CardActionToken,
+} from "@/components/history-course/card-action-overlay";
 import { DeckModal } from "@/components/history-course/deck-modal";
+import {
+  RelicFlyOverlay,
+  type RelicFlyToken,
+} from "@/components/history-course/relic-fly-overlay";
 import { TopBar } from "@/components/history-course/topbar";
 import { buildTopbarState } from "@/components/history-course/topbar-state";
 import type { CodexCard } from "@/lib/codex-types";
@@ -15,7 +22,6 @@ import {
   type ReplayHistoryEntry,
   type ReplayRun,
 } from "@/lib/sts2-run-replay";
-import { localize } from "@/lib/sts2-i18n";
 import { cn } from "@/lib/utils";
 
 type Analysis = ReturnType<typeof analyzeReplayRun>;
@@ -74,29 +80,48 @@ function nodeHoldSeconds(entry: ReplayHistoryEntry): number {
   }
 }
 
-type Reward =
-  | { kind: "cards"; ids: string[]; floor: number; step: number }
-  | { kind: "relic"; ids: string[]; floor: number; step: number };
-
-function detectReward(entry: ReplayHistoryEntry, floor: number, step: number): Reward | null {
-  const relics = (entry.relic_choices ?? [])
+function detectStepRewards(
+  entry: ReplayHistoryEntry,
+  floor: number,
+  step: number,
+): { relicTokens: RelicFlyToken[]; cardTokens: CardActionToken[] } {
+  const relicIds = (entry.relic_choices ?? [])
     .filter((c) => c.picked && c.id)
     .map((c) => c.id);
-  if (relics.length > 0) return { kind: "relic", ids: relics, floor, step };
-  const cards = (entry.cards_gained ?? [])
-    .map((c) => c.id)
-    .filter((id): id is string => Boolean(id));
-  if (cards.length > 0) return { kind: "cards", ids: cards, floor, step };
-  return null;
+  const relicTokens: RelicFlyToken[] = relicIds.map((id) => ({ id, floor, step }));
+
+  const cardTokens: CardActionToken[] = [];
+  let index = 0;
+  for (const c of entry.cards_gained ?? []) {
+    if (c.id) {
+      cardTokens.push({ kind: "gained", cardId: c.id, floor, step, index: index++ });
+    }
+  }
+  for (const cardId of entry.upgraded_cards ?? []) {
+    cardTokens.push({ kind: "upgraded", cardId, floor, step, index: index++ });
+  }
+  for (const e of entry.cards_enchanted ?? []) {
+    cardTokens.push({
+      kind: "enchanted",
+      cardId: e.cardId,
+      enchantmentId: e.enchantmentId,
+      floor,
+      step,
+      index: index++,
+    });
+  }
+  return { relicTokens, cardTokens };
 }
 
-function slugFromId(id: string): string {
-  const parts = id.split(".");
-  return (parts[parts.length - 1] ?? id).toLowerCase();
-}
-
-function rewardHoldMs(reward: Reward, rate: Rate) {
-  const baseSeconds = reward.kind === "relic" ? 2.4 : 1.8;
+// Stretch the per-step hold so the overlays have time to play out before the
+// next node steals focus. Relic fly = appear+hold+fly ≈ 1340ms at 1×.
+function rewardHoldMs(
+  hasRelic: boolean,
+  hasCard: boolean,
+  rate: Rate,
+): number {
+  if (!hasRelic && !hasCard) return 0;
+  const baseSeconds = hasRelic ? 1.5 : 1.4;
   return Math.round((baseSeconds * 1000) / Math.sqrt(rate));
 }
 
@@ -142,12 +167,57 @@ export function HistoryCourseShell({
     return () => window.clearTimeout(t);
   }, [introActive, introToken]);
 
-  const reward = useMemo<Reward | null>(() => {
-    if (!act || introActive) return null;
+  const stepRewards = useMemo(() => {
+    if (!act || introActive) return { relicTokens: [], cardTokens: [] };
     const entry = act.history[step - 1];
-    if (!entry) return null;
-    return detectReward(entry, act.baseFloor + step - 1, step);
+    if (!entry) return { relicTokens: [], cardTokens: [] };
+    return detectStepRewards(entry, act.baseFloor + step - 1, step);
   }, [act, step, introActive]);
+
+  // Tokens latch through fly-out completion so the overlay survives the brief
+  // window between "next step picked" and "fly animation finished". onDone
+  // pops them.
+  const [activeRelicTokens, setActiveRelicTokens] = useState<RelicFlyToken[]>([]);
+  const [activeCardTokens, setActiveCardTokens] = useState<CardActionToken[]>([]);
+
+  // Append new tokens whenever the step changes — derive at render time so
+  // the synchronous setState chain stays out of effect bodies.
+  const lastRewardStepRef = useRef<{ act: number; step: number }>({ act: -1, step: -1 });
+  if (
+    !introActive &&
+    (lastRewardStepRef.current.act !== actIndex ||
+      lastRewardStepRef.current.step !== step)
+  ) {
+    lastRewardStepRef.current = { act: actIndex, step };
+    if (stepRewards.relicTokens.length > 0) {
+      setActiveRelicTokens((prev) => [...prev, ...stepRewards.relicTokens]);
+    }
+    if (stepRewards.cardTokens.length > 0) {
+      setActiveCardTokens((prev) => [...prev, ...stepRewards.cardTokens]);
+    }
+  }
+
+  const dropRelicToken = useCallback((token: RelicFlyToken) => {
+    setActiveRelicTokens((prev) =>
+      prev.filter(
+        (t) => !(t.id === token.id && t.floor === token.floor && t.step === token.step),
+      ),
+    );
+  }, []);
+  const dropCardToken = useCallback((token: CardActionToken) => {
+    setActiveCardTokens((prev) =>
+      prev.filter(
+        (t) =>
+          !(
+            t.kind === token.kind &&
+            t.cardId === token.cardId &&
+            t.floor === token.floor &&
+            t.step === token.step &&
+            t.index === token.index
+          ),
+      ),
+    );
+  }, []);
 
   // playback driver: hold each step by node weight, plus extra for rewards
   useEffect(() => {
@@ -163,12 +233,17 @@ export function HistoryCourseShell({
       return;
     }
     let holdMs = Math.max(220, Math.round((nodeHoldSeconds(entry) * 1000) / rate));
-    if (reward) holdMs = Math.max(holdMs, rewardHoldMs(reward, rate));
+    const extra = rewardHoldMs(
+      stepRewards.relicTokens.length > 0,
+      stepRewards.cardTokens.length > 0,
+      rate,
+    );
+    if (extra > 0) holdMs = Math.max(holdMs, extra);
     const timer = window.setTimeout(() => {
       setStep((s) => Math.min(s + 1, act.history.length));
     }, holdMs);
     return () => window.clearTimeout(timer);
-  }, [playing, step, rate, act, actIndex, analysis.acts.length, introActive, reward]);
+  }, [playing, step, rate, act, actIndex, analysis.acts.length, introActive, stepRewards]);
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
@@ -228,7 +303,11 @@ export function HistoryCourseShell({
           introToken={introToken}
           playing={playing}
           rate={rate}
-          reward={reward}
+          relicTokens={activeRelicTokens}
+          cardTokens={activeCardTokens}
+          cardsById={cardsById}
+          onRelicDone={dropRelicToken}
+          onCardDone={dropCardToken}
           topbarState={topbarState}
           onTogglePlay={() => setPlaying((v) => !v)}
           onRestart={onRestart}
@@ -299,7 +378,11 @@ function Stage({
   introToken,
   playing,
   rate,
-  reward,
+  relicTokens,
+  cardTokens,
+  cardsById,
+  onRelicDone,
+  onCardDone,
   topbarState,
   onTogglePlay,
   onRestart,
@@ -317,7 +400,11 @@ function Stage({
   introToken: number;
   playing: boolean;
   rate: Rate;
-  reward: Reward | null;
+  relicTokens: RelicFlyToken[];
+  cardTokens: CardActionToken[];
+  cardsById: Record<string, CodexCard>;
+  onRelicDone: (token: RelicFlyToken) => void;
+  onCardDone: (token: CardActionToken) => void;
   topbarState: ReturnType<typeof buildTopbarState>;
   onTogglePlay: () => void;
   onRestart: () => void;
@@ -327,9 +414,13 @@ function Stage({
   onOpenDeck: () => void;
   onOpenInfo: () => void;
 }) {
+  const stageRef = useRef<HTMLDivElement>(null);
   const mapBoxRef = useRef<HTMLDivElement>(null);
   const userScrollGuardRef = useRef<number | null>(null);
-  const lastStepRef = useRef(step);
+  // Sentinel — first effect run scrolls to current step (otherwise the
+  // initial step=1 view leaves the map at scrollTop=0, hiding the ancient
+  // node behind subsequent rows).
+  const lastStepRef = useRef<number | null>(null);
 
   const scrollToStep = useCallback(() => {
     const node = mapBoxRef.current;
@@ -359,6 +450,7 @@ function Stage({
 
   return (
     <div
+      ref={stageRef}
       className="relative overflow-hidden ring-1 ring-white/10 shadow-[0_30px_120px_-30px_rgba(0,0,0,0.9)]"
       style={{ width: STAGE_WIDTH, aspectRatio: "16 / 9" }}
     >
@@ -384,7 +476,19 @@ function Stage({
 
       <ActIntro key={introToken} actIndex={actIndex} act={act} totalActs={totalActs} />
 
-      <RewardOverlay reward={reward} rate={rate} />
+      <RelicFlyOverlay
+        stageRef={stageRef}
+        tokens={relicTokens}
+        rate={rate}
+        onDone={onRelicDone}
+      />
+      <CardActionOverlay
+        stageRef={stageRef}
+        tokens={cardTokens}
+        cardsById={cardsById}
+        rate={rate}
+        onDone={onCardDone}
+      />
 
       <PlaybackBar
         step={step}
@@ -472,124 +576,6 @@ function ActIntro({
         <div className="mt-3 text-5xl font-black tracking-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
           {act.actLabel}
         </div>
-      </div>
-    </div>
-  );
-}
-
-function RewardOverlay({ reward, rate }: { reward: Reward | null; rate: Rate }) {
-  const currentToken = reward
-    ? `${reward.kind}-${reward.floor}-${reward.step}`
-    : null;
-  const [visible, setVisible] = useState<Reward | null>(null);
-  const [closing, setClosing] = useState(false);
-  const [trackedToken, setTrackedToken] = useState<string | null>(null);
-
-  // Derive overlay visibility from the incoming reward token at render time
-  // — keeps the synchronous setState chain out of useEffect bodies.
-  if (currentToken !== trackedToken) {
-    setTrackedToken(currentToken);
-    if (reward) {
-      setVisible(reward);
-      setClosing(false);
-    } else {
-      setVisible(null);
-      setClosing(false);
-    }
-  }
-
-  useEffect(() => {
-    if (!visible || closing) return;
-    const dur = rewardHoldMs(visible, rate);
-    const t1 = window.setTimeout(() => setClosing(true), Math.max(800, dur - 350));
-    const t2 = window.setTimeout(() => {
-      setVisible(null);
-      setClosing(false);
-    }, dur);
-    return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-    };
-  }, [visible, closing, rate]);
-
-  if (!visible) return null;
-
-  return (
-    <div
-      className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center"
-      style={{
-        opacity: closing ? 0 : 1,
-        transform: closing ? "translateY(-40px) scale(0.7)" : "translateY(0) scale(1)",
-        transition: "opacity 350ms ease-in, transform 350ms ease-in",
-      }}
-    >
-      <div className="absolute inset-0 bg-black/55" />
-      {visible.kind === "relic" ? (
-        <RelicReward ids={visible.ids} />
-      ) : (
-        <CardReward ids={visible.ids} />
-      )}
-    </div>
-  );
-}
-
-function RelicReward({ ids }: { ids: string[] }) {
-  return (
-    <div className="relative flex flex-col items-center gap-5">
-      <p className="text-base font-bold uppercase tracking-[0.4em] text-amber-200 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-        유물 획득
-      </p>
-      <div className="flex items-end gap-8">
-        {ids.map((id) => (
-          <div
-            key={id}
-            className="flex flex-col items-center gap-3 rounded-3xl border border-amber-200/40 bg-black/65 px-10 py-8 shadow-[0_40px_100px_-20px_rgba(255,200,120,0.6)]"
-          >
-            <div className="relative h-40 w-40">
-              <Image
-                src={`/images/sts2/relics/${slugFromId(id)}.webp`}
-                alt=""
-                fill
-                sizes="160px"
-                className="object-contain drop-shadow-[0_0_24px_rgba(255,200,120,0.7)]"
-              />
-            </div>
-            <p className="text-xl font-black text-amber-100 drop-shadow">
-              {localize("relics", id) ?? id.split(".").pop()}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function CardReward({ ids }: { ids: string[] }) {
-  return (
-    <div className="relative flex flex-col items-center gap-5">
-      <p className="text-base font-bold uppercase tracking-[0.4em] text-zinc-100 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-        카드 획득
-      </p>
-      <div className="flex items-end gap-5">
-        {ids.map((id, i) => (
-          <div
-            key={`${id}-${i}`}
-            className="flex flex-col items-center gap-2"
-          >
-            <div className="relative h-72 w-52 overflow-hidden rounded-lg border-2 border-amber-200/50 bg-zinc-900 shadow-[0_40px_100px_-20px_rgba(255,255,255,0.5)]">
-              <Image
-                src={`/images/sts2/cards/${slugFromId(id)}.webp`}
-                alt=""
-                fill
-                sizes="208px"
-                className="object-cover"
-              />
-            </div>
-            <p className="text-sm font-bold text-zinc-100 drop-shadow">
-              {localize("cards", id) ?? id.split(".").pop()}
-            </p>
-          </div>
-        ))}
       </div>
     </div>
   );
