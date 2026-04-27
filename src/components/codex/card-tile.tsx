@@ -210,8 +210,6 @@ export const CardTile = memo(function CardTile({
       (k) => !card.keywords.includes(k)
     )),
   ];
-  const enchantKeywordSet = new Set(enchantAddedKeywords ?? []);
-
   // ─── 텍스트 파트 렌더 헬퍼 ───
   // mode="card": 일반 카드 본문 — 색 BBCode 그대로 (gold→골드 hover, blue→블루)
   // mode="suffix": 인챈트 추가 본문 — 모든 색을 분홍(#EE82EE)로 통일

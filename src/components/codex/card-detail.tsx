@@ -111,14 +111,6 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
       }) ?? hoveredEnchant.description
     : null;
 
-  // 인챈트가 바뀌면 프리셋의 첫 번째 값으로 amount 자동 설정
-  const ensureAmountInPresets = (presets: number[]) => {
-    if (presets.length === 0) return;
-    if (!presets.includes(enchantAmount)) {
-      setEnchantAmount(presets[0]);
-    }
-  };
-
   return (
     <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-3xl mx-auto">
       {/* Header */}

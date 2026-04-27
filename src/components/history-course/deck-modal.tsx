@@ -42,9 +42,14 @@ export function DeckModal({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  useEffect(() => {
+  // Reset the filter the moment `open` flips from false → true. React 19's
+  // set-state-in-effect rule pushes us toward this conditional-render pattern
+  // instead of a useEffect.
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
     if (open) setFilter("all");
-  }, [open]);
+  }
 
   const expanded = useMemo(() => {
     const items: { card: CodexCard | null; id: string; key: string }[] = [];

@@ -117,6 +117,7 @@ export function HistoryCourseShell({
   const [deckOpen, setDeckOpen] = useState(false);
   const [introToken, setIntroToken] = useState(0);
   const [introActive, setIntroActive] = useState(true);
+  const [prevActIndex, setPrevActIndex] = useState(actIndex);
 
   const act = analysis.acts[actIndex] ?? null;
   const topbarState = useMemo(
@@ -124,14 +125,22 @@ export function HistoryCourseShell({
     [analysis, actIndex, step],
   );
 
-  // act swap → reset step + replay intro
-  useEffect(() => {
+  // act swap → reset step + replay intro. Done as a render-time prop diff
+  // so the synchronous setState chain stays out of an effect body.
+  if (actIndex !== prevActIndex) {
+    setPrevActIndex(actIndex);
     setStep(1);
     setIntroToken((t) => t + 1);
     setIntroActive(true);
+  }
+
+  // The intro auto-finishes after the total fade window. Effect just owns
+  // the timer; the trigger lives in the conditional setState above.
+  useEffect(() => {
+    if (!introActive) return;
     const t = window.setTimeout(() => setIntroActive(false), ACT_INTRO_TOTAL_MS);
     return () => window.clearTimeout(t);
-  }, [actIndex]);
+  }, [introActive, introToken]);
 
   const reward = useMemo<Reward | null>(() => {
     if (!act || introActive) return null;
@@ -416,10 +425,11 @@ function ActIntro({
   act: Act;
   totalActs: number;
 }) {
+  // Phase starts at "in" via the initial state, so the effect only owns
+  // the timer cascade — no synchronous setState in the effect body.
   const [phase, setPhase] = useState<"in" | "hold" | "out" | "done">("in");
 
   useEffect(() => {
-    setPhase("in");
     const t1 = window.setTimeout(() => setPhase("hold"), ACT_INTRO_FADE_IN_MS);
     const t2 = window.setTimeout(
       () => setPhase("out"),
@@ -468,34 +478,39 @@ function ActIntro({
 }
 
 function RewardOverlay({ reward, rate }: { reward: Reward | null; rate: Rate }) {
+  const currentToken = reward
+    ? `${reward.kind}-${reward.floor}-${reward.step}`
+    : null;
   const [visible, setVisible] = useState<Reward | null>(null);
   const [closing, setClosing] = useState(false);
-  const lastTokenRef = useRef<string | null>(null);
+  const [trackedToken, setTrackedToken] = useState<string | null>(null);
 
-  useEffect(() => {
+  // Derive overlay visibility from the incoming reward token at render time
+  // — keeps the synchronous setState chain out of useEffect bodies.
+  if (currentToken !== trackedToken) {
+    setTrackedToken(currentToken);
     if (reward) {
-      const token = `${reward.kind}-${reward.floor}-${reward.step}`;
-      if (token !== lastTokenRef.current) {
-        lastTokenRef.current = token;
-        setVisible(reward);
-        setClosing(false);
-        const dur = rewardHoldMs(reward, rate);
-        const t1 = window.setTimeout(() => setClosing(true), Math.max(800, dur - 350));
-        const t2 = window.setTimeout(() => {
-          setVisible(null);
-          setClosing(false);
-        }, dur);
-        return () => {
-          window.clearTimeout(t1);
-          window.clearTimeout(t2);
-        };
-      }
+      setVisible(reward);
+      setClosing(false);
     } else {
-      lastTokenRef.current = null;
       setVisible(null);
       setClosing(false);
     }
-  }, [reward, rate]);
+  }
+
+  useEffect(() => {
+    if (!visible || closing) return;
+    const dur = rewardHoldMs(visible, rate);
+    const t1 = window.setTimeout(() => setClosing(true), Math.max(800, dur - 350));
+    const t2 = window.setTimeout(() => {
+      setVisible(null);
+      setClosing(false);
+    }, dur);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [visible, closing, rate]);
 
   if (!visible) return null;
 

@@ -36,11 +36,20 @@ type Row = {
 
 const rows: Row[] = [];
 
+type RunJson = Record<string, unknown> & {
+  build_id?: string;
+  seed?: string;
+  ascension?: number;
+  win?: boolean;
+  players?: Array<Record<string, unknown>>;
+  modifiers?: Array<unknown>;
+};
+
 for (const fn of readdirSync(RUN_DIR)) {
   if (!fn.endsWith(".run")) continue;
-  let d: any;
+  let d: RunJson;
   try {
-    d = JSON.parse(readFileSync(join(RUN_DIR, fn), "utf8"));
+    d = JSON.parse(readFileSync(join(RUN_DIR, fn), "utf8")) as RunJson;
   } catch {
     continue;
   }
@@ -49,14 +58,15 @@ for (const fn of readdirSync(RUN_DIR)) {
   try {
     const run = parseReplayRun(JSON.stringify(d));
     analysis = analyzeReplayRun(run);
-  } catch (e) {
+  } catch {
+    const p0err = d.players?.[0] as { character?: string } | undefined;
     rows.push({
       fn,
-      build: d.build_id,
-      seed: d.seed,
-      asc: d.ascension,
+      build: d.build_id ?? "",
+      seed: d.seed ?? "",
+      asc: d.ascension ?? 0,
       win: !!d.win,
-      char: (d.players?.[0]?.character ?? "").split(".").pop() ?? "?",
+      char: (p0err?.character ?? "").split(".").pop() ?? "?",
       multi: (d.players ?? []).length > 1,
       acts: [{ id: "ERR", status: "PARSE_ERR", matched: 0, variant: "-" }],
       spoilsCard: false,
@@ -68,24 +78,32 @@ for (const fn of readdirSync(RUN_DIR)) {
     continue;
   }
 
-  const p0 = d.players?.[0];
+  const p0 = d.players?.[0] as
+    | {
+        character?: string;
+        relics?: Array<{ id?: string }>;
+        deck?: Array<{ id?: string }>;
+      }
+    | undefined;
   const relicIds = new Set<string>(
-    (p0?.relics ?? []).map((r: any) => String(r.id ?? "").toUpperCase()),
+    (p0?.relics ?? []).map((r) => String(r?.id ?? "").toUpperCase()),
   );
   const deckIds = new Set<string>(
-    (p0?.deck ?? []).map((c: any) => String(c.id ?? "").toUpperCase()),
+    (p0?.deck ?? []).map((c) => String(c?.id ?? "").toUpperCase()),
   );
   const modIds = new Set<string>(
-    (d.modifiers ?? []).map((m: any) =>
-      String(typeof m === "string" ? m : m?.id ?? m?.name ?? "").toUpperCase(),
-    ),
+    (d.modifiers ?? []).map((m) => {
+      if (typeof m === "string") return m.toUpperCase();
+      const obj = m as { id?: string; name?: string } | null;
+      return String(obj?.id ?? obj?.name ?? "").toUpperCase();
+    }),
   );
 
   rows.push({
     fn,
-    build: d.build_id,
-    seed: d.seed,
-    asc: d.ascension,
+    build: d.build_id ?? "",
+    seed: d.seed ?? "",
+    asc: d.ascension ?? 0,
     win: !!d.win,
     char: (p0?.character ?? "").split(".").pop() ?? "?",
     multi: (d.players ?? []).length > 1,

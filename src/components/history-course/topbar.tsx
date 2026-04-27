@@ -45,11 +45,6 @@ const NODE_SPRITE_NAME: Record<string, string> = {
   unknown: "event",
 };
 
-function modelKey(value: string | null | undefined): string | null {
-  if (!value) return null;
-  return value.split(".").pop()?.toLowerCase() ?? null;
-}
-
 function relicIconSrc(id: string): string {
   const slug = id.replace(/^RELIC\./, "").toLowerCase();
   return `/images/sts2/relics/${slug}.webp`;

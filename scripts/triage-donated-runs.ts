@@ -369,9 +369,7 @@ function printTable(entries: TriageEntry[], opts: CliOptions): void {
     `${pad("rk", 3)} ${pad("score", 6)} ${pad("seed", 12)} ${pad("A", 3)} ${pad("build", 10)} ${pad("char", 12)} ${pad("acts", 6)} ${pad("hits", 24)} file`,
   );
   console.log("-".repeat(110));
-  let rank = 0;
   for (const entry of limited) {
-    rank++;
     const tier = rankTier(entry.score);
     const buildMark = entry.buildSupported ? "" : "*";
     console.log(

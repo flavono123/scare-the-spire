@@ -1345,10 +1345,6 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
       (type): type is ReplayMapPointType => type !== null,
     );
     const actEndFloor = baseFloor + history.length - 1;
-    const prevActStartFloor =
-      actIndex === 0
-        ? 0
-        : acts[actIndex - 1]?.baseFloor ?? Math.max(1, baseFloor - (run.map_point_history[actIndex - 1]?.length ?? 0));
     const map = buildGeneratedMap(
       run,
       actId,
@@ -1356,7 +1352,6 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
       modifierIds,
       baseFloor,
       actEndFloor,
-      prevActStartFloor,
     );
     const bootsActiveInAct =
       bootsAcquiredFloor <= actEndFloor && totalBootsFlightsUsed < WINGED_BOOTS_MAX_CHARGES;
@@ -1449,13 +1444,12 @@ function buildGeneratedMap(
   modifierIds: Set<string>,
   actStartFloor: number,
   actEndFloor: number,
-  prevActStartFloor: number,
 ): GeneratedActMap {
   const config = ACT_CONFIGS[actId];
   const seed = toUint32(getDeterministicHashCode(run.seed));
   const hasSecondBoss = actIndex === run.acts.length - 1 && run.ascension >= 10;
   const isMultiplayer = run.players.length > 1;
-  const variant = chooseActMapVariant(run, actStartFloor, actEndFloor, prevActStartFloor);
+  const variant = chooseActMapVariant(run, actStartFloor, actEndFloor);
 
   if (variant === "golden_path") {
     // Golden Path uses no RNG; pass a dummy one. Seed is deterministic regardless.
@@ -1494,7 +1488,6 @@ function chooseActMapVariant(
   run: ReplayRun,
   actStartFloor: number,
   actEndFloor: number,
-  _prevActStartFloor: number,
 ): ActMapVariant {
   const player = run.players[0];
   if (!player) return "standard";
