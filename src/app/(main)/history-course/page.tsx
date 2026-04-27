@@ -2,6 +2,8 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { HISTORY_COURSE_ENABLED } from "@/lib/feature-flags";
 import { parseReplayRun } from "@/lib/sts2-run-replay";
 
 type FixtureIndexEntry = {
@@ -77,6 +79,7 @@ export const metadata = {
 };
 
 export default async function HistoryCourseIndexPage() {
+  if (!HISTORY_COURSE_ENABLED) notFound();
   const entries = await readAll();
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">

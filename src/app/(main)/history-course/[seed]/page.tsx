@@ -5,6 +5,7 @@ import { HistoryCourseShell } from "@/components/history-course/history-course-s
 import { collectRelevantCardIds } from "@/components/history-course/topbar-state";
 import { getCodexCards } from "@/lib/codex-data";
 import type { CodexCard } from "@/lib/codex-types";
+import { HISTORY_COURSE_ENABLED } from "@/lib/feature-flags";
 import { parseReplayRun } from "@/lib/sts2-run-replay";
 
 type FixtureIndexEntry = {
@@ -24,6 +25,7 @@ async function readFixtureIndex(): Promise<FixtureIndexEntry[]> {
 }
 
 export async function generateStaticParams() {
+  if (!HISTORY_COURSE_ENABLED) return [];
   const entries = await readFixtureIndex();
   return entries.map((entry) => ({ seed: entry.seed }));
 }
@@ -54,6 +56,7 @@ export default async function HistoryCoursePage({
 }: {
   params: Promise<{ seed: string }>;
 }) {
+  if (!HISTORY_COURSE_ENABLED) notFound();
   const { seed } = await params;
   const entries = await readFixtureIndex();
   const entry = entries.find((e) => e.seed === seed);
