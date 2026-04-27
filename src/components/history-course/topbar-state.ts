@@ -13,7 +13,11 @@ export interface RelicAtFloor {
 export interface BossInfo {
   firstBoss: string | null;
   secondBoss: string | null;
-  firstBossDefeated: boolean;
+  // Step lifecycle: where is the player relative to each boss step.
+  firstBossActive: boolean;   // current step IS the first boss room
+  firstBossPassed: boolean;   // we already moved past the first boss room
+  secondBossActive: boolean;  // current step IS the second boss room (A10 act3)
+  secondBossPassed: boolean;
 }
 
 export interface AncientInfo {
@@ -96,7 +100,14 @@ export function buildTopbarState(
       currentFloor: 1,
       relics: [],
       potionSlots: run.ascension >= 6 ? 2 : 3,
-      bossInfo: { firstBoss: null, secondBoss: null, firstBossDefeated: false },
+      bossInfo: {
+        firstBoss: null,
+        secondBoss: null,
+        firstBossActive: false,
+        firstBossPassed: false,
+        secondBossActive: false,
+        secondBossPassed: false,
+      },
       ancientInfo: { spriteId: null, active: false, passed: false },
       deck: [],
       deckCount: 0,
@@ -143,13 +154,19 @@ export function buildTopbarState(
     if (bonus) potionSlots += bonus;
   }
 
-  const bossesEncountered = act.history
-    .slice(0, safeStep)
-    .filter((entry) => entry.map_point_type === "boss").length;
+  const bossStepIndices = act.history
+    .map((entry, i) => (entry.map_point_type === "boss" ? i : -1))
+    .filter((i) => i >= 0);
+  const firstBossStep = bossStepIndices[0] ?? -1;
+  const secondBossStep = bossStepIndices[1] ?? -1;
+  const stepIdx = safeStep - 1;
   const bossInfo: BossInfo = {
     firstBoss: act.predictedFirstBoss,
     secondBoss: act.predictedSecondBoss,
-    firstBossDefeated: bossesEncountered >= 1,
+    firstBossActive: firstBossStep >= 0 && stepIdx === firstBossStep,
+    firstBossPassed: firstBossStep >= 0 && stepIdx > firstBossStep,
+    secondBossActive: secondBossStep >= 0 && stepIdx === secondBossStep,
+    secondBossPassed: secondBossStep >= 0 && stepIdx > secondBossStep,
   };
 
   const ancientStepIndex = act.history.findIndex(

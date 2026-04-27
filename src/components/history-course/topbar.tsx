@@ -138,9 +138,13 @@ export function TopBar({
           <HpChip hp={state.hp} maxHp={state.maxHp} />
           <GoldChip gold={state.gold} />
           <PotionSlots count={state.potionSlots} />
-          <CurrentNodeChip entry={state.currentEntry} />
+          <CurrentNodeChip
+            entry={state.currentEntry}
+            ancientInfo={state.ancientInfo}
+            bossInfo={state.bossInfo}
+            showSecondBoss={showSecondBoss}
+          />
           <FloorChip floor={state.currentFloor} />
-          <AncientChip info={state.ancientInfo} />
           <BossChip
             info={state.bossInfo}
             showSecond={showSecondBoss}
@@ -172,9 +176,11 @@ function Chip({
   as?: "div" | "button";
 }) {
   // Frameless: chips sit on the stone panel like the relics do, no
-  // background or ring. Buttons get a subtle hover lift only.
+  // background or ring. Buttons get a subtle hover lift only. The
+  // -translate-y-px nudges every chip 1px above row center so glyphs
+  // sit on the stone band instead of the bottom shadow.
   const baseClass = cn(
-    "inline-flex items-center gap-1.5 text-white",
+    "inline-flex items-center gap-1.5 text-white -translate-y-px",
     className,
   );
   if (as === "button") {
@@ -211,7 +217,7 @@ function CharacterChip({
   return (
     <div
       title={`${label} · 승천 ${ascension}`}
-      className="relative h-12 w-12"
+      className="relative h-12 w-12 -translate-y-px"
       style={{
         backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
         backgroundSize: "100% 100%",
@@ -300,11 +306,15 @@ function PotionSlots({ count }: { count: number }) {
   return (
     <div
       title={`포션 슬롯 ${count}개`}
-      className="relative inline-flex h-12 items-center gap-2 px-4"
+      className="relative inline-flex items-center gap-2 px-3 py-1.5"
       style={{
-        backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
-        backgroundSize: "100% 100%",
-        backgroundRepeat: "no-repeat",
+        // nine-slice the char_backdrop sprite so the chamfer corners stay
+        // their original 14px instead of stretching with the box width.
+        borderImage:
+          "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png) 24 fill / 12px / 0 stretch",
+        borderStyle: "solid",
+        borderWidth: "12px",
+        transform: "translateY(-3px)",
       }}
     >
       {Array.from({ length: count }).map((_, i) => (
@@ -325,9 +335,42 @@ function PotionSlots({ count }: { count: number }) {
 
 function CurrentNodeChip({
   entry,
+  ancientInfo,
+  bossInfo,
+  showSecondBoss,
 }: {
   entry: ReplayHistoryEntry | null;
+  ancientInfo: AncientInfo;
+  bossInfo: BossInfo;
+  showSecondBoss: boolean;
 }) {
+  if (!entry) return null;
+  const type = entry.map_point_type;
+
+  // Boss step — show the active boss portrait (which boss depends on which
+  // boss step we're on). Second-boss only when this run is A10 act3.
+  if (type === "boss") {
+    if (showSecondBoss && bossInfo.secondBossActive && bossInfo.secondBoss) {
+      return <BossPortrait id={bossInfo.secondBoss} active />;
+    }
+    if (bossInfo.firstBossActive && bossInfo.firstBoss) {
+      return <BossPortrait id={bossInfo.firstBoss} active />;
+    }
+  }
+
+  // Ancient = the act-opening Neow-style room. Show the ancient sprite at the
+  // current-node position so it acts as the start-of-act token.
+  if (type === "ancient" && ancientInfo.spriteId) {
+    return (
+      <NodeIcon
+        title={`현재 노드: ${nodeLabel(entry)}`}
+        alt={nodeLabel(entry)}
+        sprite={ancientInfo.spriteId}
+        size={40}
+      />
+    );
+  }
+
   const sprite = currentNodeSprite(entry);
   if (!sprite) return null;
   return (
@@ -337,6 +380,27 @@ function CurrentNodeChip({
       sprite={sprite}
       size={40}
     />
+  );
+}
+
+function BossPortrait({ id, active }: { id: string; active: boolean }) {
+  return (
+    <div
+      className="relative h-10 w-10"
+      style={{ transform: "translateY(-3px)" }}
+    >
+      <Image
+        src={bossIconSrc(id)}
+        alt={bossLabel(id)}
+        fill
+        sizes="40px"
+        className={cn(
+          "object-contain",
+          active ? "" : "opacity-55 grayscale",
+        )}
+        unoptimized
+      />
+    </div>
   );
 }
 
@@ -362,7 +426,7 @@ function NodeIcon({
         "relative",
         inactive && "opacity-40 grayscale",
       )}
-      style={{ width: size, height: size }}
+      style={{ width: size, height: size, transform: "translateY(-3px)" }}
     >
       {/* Outline first (behind), then the colored fill — matches the
           game's second_boss_icon.tscn layering. */}
@@ -430,20 +494,6 @@ function FloorChip({ floor }: { floor: number }) {
   );
 }
 
-function AncientChip({ info }: { info: AncientInfo }) {
-  if (!info.spriteId) return null;
-  const label = localize("ancients", `ANCIENT.${info.spriteId.toUpperCase()}`) ?? info.spriteId;
-  return (
-    <NodeIcon
-      title={`고대의 존재: ${label}`}
-      alt={label}
-      sprite={info.spriteId}
-      size={40}
-      inactive={!info.active}
-    />
-  );
-}
-
 function BossChip({
   info,
   showSecond,
@@ -451,24 +501,38 @@ function BossChip({
   info: BossInfo;
   showSecond: boolean;
 }) {
-  if (!info.firstBoss && !info.secondBoss) return null;
+  // First boss sits in the right cluster only while we haven't reached it
+  // yet. Once it's the current node (or we're past it) the portrait moves
+  // to the current-node chip.
+  const renderFirst =
+    Boolean(info.firstBoss) && !info.firstBossActive && !info.firstBossPassed;
+  // Second boss is A10 act3-only. It hides while we're standing on it; if
+  // we already passed it (the run is over) keep it hidden too.
+  const renderSecond =
+    showSecond &&
+    Boolean(info.secondBoss) &&
+    !info.secondBossActive &&
+    !info.secondBossPassed;
+
+  if (!renderFirst && !renderSecond) return null;
   return (
     <div
       title={bossTitle(info, showSecond)}
-      className="flex items-center gap-0"
+      className="relative flex items-center"
+      style={{ transform: "translateY(-3px)" }}
     >
-      {info.firstBoss && (
-        <BossIcon
-          id={info.firstBoss}
-          active={!info.firstBossDefeated}
-          defeated={info.firstBossDefeated && showSecond}
-        />
-      )}
-      {showSecond && info.secondBoss && (
+      {renderSecond && info.secondBoss && (
         <BossIcon
           id={info.secondBoss}
-          active={info.firstBossDefeated}
-          defeated={false}
+          active={info.firstBossPassed}
+          className={cn(renderFirst && "absolute left-3 -z-0 opacity-90")}
+        />
+      )}
+      {renderFirst && info.firstBoss && (
+        <BossIcon
+          id={info.firstBoss}
+          active={false}
+          className="relative z-10"
         />
       )}
     </div>
@@ -485,19 +549,14 @@ function bossTitle(info: BossInfo, showSecond: boolean): string {
 function BossIcon({
   id,
   active,
-  defeated,
+  className,
 }: {
   id: string;
   active: boolean;
-  defeated: boolean;
+  className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "relative h-10 w-10",
-        active && "drop-shadow-[0_0_8px_rgba(255,200,120,0.6)]",
-      )}
-    >
+    <div className={cn("relative h-10 w-10", className)}>
       <Image
         src={bossIconSrc(id)}
         alt={bossLabel(id)}
@@ -505,7 +564,7 @@ function BossIcon({
         sizes="40px"
         className={cn(
           "object-contain",
-          active ? "" : defeated ? "opacity-30 grayscale" : "opacity-55 grayscale",
+          active ? "" : "opacity-55 grayscale",
         )}
         unoptimized
       />
