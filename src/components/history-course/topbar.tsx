@@ -640,12 +640,13 @@ function SettingsButton({ onClick }: { onClick: () => void }) {
 }
 
 function RelicRow({ relics }: { relics: RelicAtFloor[] }) {
-  if (relics.length === 0) return <div className="h-8" />;
+  if (relics.length === 0) return <div className="h-8" data-relic-row />;
   return (
-    <div className="flex flex-wrap items-center gap-1.5 pl-1">
+    <div className="flex flex-wrap items-center gap-1.5 pl-1" data-relic-row>
       {relics.map((relic) => (
         <div
           key={`${relic.id}-${relic.floor}`}
+          data-relic-target={relic.id}
           className={cn(
             "relative h-8 w-8 transition",
             relic.justAcquired &&

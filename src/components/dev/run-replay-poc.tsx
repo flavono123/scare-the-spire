@@ -1026,6 +1026,8 @@ export function SeededMapView({
             <div
               key={node.id}
               className="absolute"
+              data-node-id={node.id}
+              data-node-current={current ? "true" : undefined}
               style={{
                 left: position.left - size.width / 2,
                 top: position.top - size.height / 2,
