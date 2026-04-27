@@ -41,9 +41,17 @@ export interface ReplayHistoryEntry {
   cards_gained?: { id?: string }[];
   cards_lost?: { id?: string }[];
   cards_removed?: { id?: string }[];
+  upgraded_cards?: string[];
+  cards_enchanted?: ReplayEnchantment[];
   card_choices?: ReplayChoice[];
   relic_choices?: ReplayChoice[];
   potion_choices?: ReplayChoice[];
+}
+
+export interface ReplayEnchantment {
+  cardId: string;
+  enchantmentId: string;
+  amount?: number;
 }
 
 export interface ReplayDeckCard {
@@ -749,6 +757,11 @@ export function parseReplayRun(raw: string): ReplayRun {
                 cards_gained?: { id?: string }[];
                 cards_lost?: { id?: string }[];
                 cards_removed?: { id?: string }[];
+                upgraded_cards?: string[];
+                cards_enchanted?: Array<{
+                  card?: { id?: string; enchantment?: { id?: string; amount?: number } };
+                  enchantment?: string;
+                }>;
                 card_choices?: RawCardChoice[];
                 relic_choices?: RawSimpleChoice[];
                 potion_choices?: RawSimpleChoice[];
@@ -785,6 +798,33 @@ export function parseReplayRun(raw: string): ReplayRun {
                     )
                     .map((c) => ({ id: c.choice, picked: !!c.was_picked }))
                 : undefined;
+            const pickUpgradedCards = (list: string[] | undefined): string[] | undefined =>
+              Array.isArray(list) ? list.filter((id): id is string => typeof id === "string") : undefined;
+            const pickEnchantments = (
+              list:
+                | Array<{
+                    card?: { id?: string; enchantment?: { id?: string; amount?: number } };
+                    enchantment?: string;
+                  }>
+                | undefined,
+            ): ReplayEnchantment[] | undefined =>
+              Array.isArray(list)
+                ? list
+                    .map((e) => {
+                      const cardId = e?.card?.id;
+                      const enchantmentId = e?.card?.enchantment?.id ?? e?.enchantment;
+                      if (typeof cardId !== "string" || typeof enchantmentId !== "string") return null;
+                      return {
+                        cardId,
+                        enchantmentId,
+                        amount:
+                          typeof e?.card?.enchantment?.amount === "number"
+                            ? e.card.enchantment.amount
+                            : undefined,
+                      } satisfies ReplayEnchantment;
+                    })
+                    .filter((e): e is ReplayEnchantment => e !== null)
+                : undefined;
             return {
               map_point_type:
                 typeof rawEntry.map_point_type === "string" ? rawEntry.map_point_type : "unknown",
@@ -810,6 +850,8 @@ export function parseReplayRun(raw: string): ReplayRun {
               cards_gained: pickCards(firstStats?.cards_gained),
               cards_lost: pickCards(firstStats?.cards_lost),
               cards_removed: pickCards(firstStats?.cards_removed),
+              upgraded_cards: pickUpgradedCards(firstStats?.upgraded_cards),
+              cards_enchanted: pickEnchantments(firstStats?.cards_enchanted),
               card_choices: pickCardChoices(firstStats?.card_choices),
               relic_choices: pickSimpleChoices(firstStats?.relic_choices),
               potion_choices: pickSimpleChoices(firstStats?.potion_choices),
