@@ -1,6 +1,6 @@
 import koData from "./sts2-i18n-ko.json";
 
-type I18nTable = "encounters" | "events" | "ancients" | "relics" | "cards" | "potions" | "acts";
+type I18nTable = "encounters" | "events" | "ancients" | "relics" | "cards" | "potions" | "acts" | "enchantments";
 
 const tables: Record<I18nTable, Record<string, string>> = koData as Record<
   I18nTable,

@@ -601,15 +601,17 @@ function DeckChip({
 }) {
   return (
     <Chip as="button" onClick={onOpen} title={`현재 덱 ${count}장 보기`}>
-      <Image
-        src="/images/sts2/ui/topbar/top_bar_deck.png"
-        alt=""
-        width={38}
-        height={32}
-        className="h-8 w-[38px] object-contain"
-        unoptimized
-      />
-      <span className="topbar-num tabular-nums">{count}</span>
+      <span data-deck-target className="relative inline-flex items-center gap-1.5">
+        <Image
+          src="/images/sts2/ui/topbar/top_bar_deck.png"
+          alt=""
+          width={38}
+          height={32}
+          className="h-8 w-[38px] object-contain"
+          unoptimized
+        />
+        <span className="topbar-num tabular-nums">{count}</span>
+      </span>
     </Chip>
   );
 }

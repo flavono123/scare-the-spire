@@ -92,8 +92,10 @@ function detectStepRewards(
 
   const cardTokens: CardActionToken[] = [];
   let index = 0;
+  const gainedIds = new Set<string>();
   for (const c of entry.cards_gained ?? []) {
     if (c.id) {
+      gainedIds.add(c.id);
       cardTokens.push({ kind: "gained", cardId: c.id, floor, step, index: index++ });
     }
   }
@@ -109,6 +111,23 @@ function detectStepRewards(
       step,
       index: index++,
     });
+  }
+  // Skip detection — card_choices were offered but the player picked none
+  // (no choice has picked === true) and no card was added via cards_gained
+  // for that choice set. These show as "넘기기" so the replay communicates
+  // the deliberate pass.
+  const choices = entry.card_choices ?? [];
+  if (choices.length > 0) {
+    const anyPicked = choices.some((c) => c.picked);
+    if (!anyPicked && gainedIds.size === 0) {
+      cardTokens.push({
+        kind: "skipped",
+        cardId: null,
+        floor,
+        step,
+        index: index++,
+      });
+    }
   }
   return { relicTokens, cardTokens };
 }
