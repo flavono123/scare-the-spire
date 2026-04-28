@@ -749,7 +749,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
             if (e.target === e.currentTarget) setSelectedCard(null);
           }}
         >
-          <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#1a1a2e] border border-white/10 rounded-2xl shadow-2xl">
+          <div className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto bg-[#1a1a2e] border border-white/10 rounded-2xl shadow-2xl">
             <CardDetail card={selectedCard} enchantments={enchantments} onClose={() => setSelectedCard(null)} />
           </div>
         </div>

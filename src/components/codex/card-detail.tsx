@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
@@ -68,6 +68,16 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
   const [activeEnchantId, setActiveEnchantId] = useState<string | null>(null);
   const [hoveredEnchantId, setHoveredEnchantId] = useState<string | null>(null);
   const [enchantAmount, setEnchantAmount] = useState<number>(DEFAULT_ENCHANT_AMOUNT);
+  // 모바일은 카드를 더 작게 띄워 sticky 시 화면을 덜 가린다.
+  // SSR 첫 페인트는 모바일 기준이라 hydration 안전.
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   const costDisplay = card.isXCost ? "X" : String(card.cost);
   const charColor = CHARACTER_COLORS[card.color];
@@ -88,7 +98,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
     [eligibleEnchantments, hoveredEnchantId]
   );
 
-  const cardWidth = CARD_WIDTH_PRESET.detail;
+  const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
 
   // 활성 인챈트 효과: amount 치환, 추가/제거 키워드, forced cost, stat modifier
   const activeShowAmount = activeEnchant ? shouldShowAmount(activeEnchant) : false;
@@ -111,38 +121,11 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
       }) ?? hoveredEnchant.description
     : null;
 
-  return (
-    <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-3xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between w-full">
-        <Link
-          href="/codex/cards"
-          className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-          onClick={(e) => {
-            if (onClose) {
-              e.preventDefault();
-              onClose();
-            }
-          }}
-        >
-          ← 카드 도서관
-        </Link>
-        {onClose && (
-          <button
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400"
-            aria-label="닫기"
-          >
-            ✕
-          </button>
-        )}
-      </div>
-
+  // 카드 + 메타 정보 (좌측 컬럼 / 모바일 sticky top)
+  const cardPanel = (
+    <div className="flex flex-col items-center gap-3">
       {/* Card는 고정 위치 + 팝오버는 absolute로 카드 우측에 떠 카드 위치를 흔들지 않음 */}
-      <div
-        className="relative"
-        style={{ width: cardWidth }}
-      >
+      <div className="relative" style={{ width: cardWidth }}>
         <CardTile
           card={card}
           showUpgrade={showUpgrade}
@@ -185,20 +168,16 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
 
       {/* Card Name */}
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-100">{card.name}</h1>
-        <p className="text-sm text-gray-500">{card.nameEn}</p>
+        <h1 className="text-xl md:text-2xl font-bold text-gray-100">{card.name}</h1>
+        <p className="text-xs md:text-sm text-gray-500">{card.nameEn}</p>
       </div>
 
       {/* Stats Row */}
-      <div className="flex flex-wrap justify-center gap-2">
+      <div className="flex flex-wrap justify-center gap-1.5">
         <StatBadge label="유형" value={card.type} />
         <StatBadge label="희귀도" value={card.rarity} />
         <StatBadge label="비용" value={costDisplay} />
-        <StatBadge
-          label="캐릭터"
-          value={getColorLabel(card)}
-          color={charColor}
-        />
+        <StatBadge label="캐릭터" value={getColorLabel(card)} color={charColor} />
         {card.damage !== null && (
           <StatBadge label="피해" value={String(card.damage)} color="#ef5350" />
         )}
@@ -226,7 +205,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
 
       {/* Toggles */}
       {(card.upgrade || card.betaImageUrl) && (
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           {card.upgrade && (
             <button
               onClick={() => setShowUpgrade((v) => !v)}
@@ -253,101 +232,145 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
           )}
         </div>
       )}
+    </div>
+  );
 
-      {/* 인챈트 토글 — 게임 CanEnchant 룰로 필터된 것만 */}
-      {eligibleEnchantments.length > 0 && (
-        <div className="w-full">
-          <div className="flex items-center justify-between mb-2 px-1">
-            <h2 className="text-sm font-bold text-gray-300">
-              가능한 인챈트 ({eligibleEnchantments.length})
-            </h2>
-            <div className="flex items-center gap-3">
-              {activeEnchant && activePresets.length > 1 && (
-                <div className="flex items-center gap-1.5 text-xs">
-                  <span className="text-gray-500">amount</span>
-                  <div className="flex gap-1">
-                    {activePresets.map((n) => (
-                      <button
-                        key={n}
-                        type="button"
-                        onClick={() => setEnchantAmount(n)}
-                        className={`min-w-[1.75em] px-1.5 py-0.5 rounded border transition-all ${
-                          enchantAmount === n
-                            ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/60"
-                            : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
-                        }`}
-                        aria-pressed={enchantAmount === n}
-                      >
-                        {n}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {activeEnchant && (
-                <button
-                  onClick={() => setActiveEnchantId(null)}
-                  className="text-xs text-gray-500 hover:text-gray-300"
-                >
-                  해제
-                </button>
-              )}
+  // 인챈트 패널 (우측 컬럼 / 모바일 카드 아래)
+  const enchantPanel = eligibleEnchantments.length > 0 ? (
+    <div className="flex flex-col gap-2 w-full min-w-0">
+      <div className="flex items-center justify-between px-1">
+        <h2 className="text-sm font-bold text-gray-300">
+          가능한 인챈트 ({eligibleEnchantments.length})
+        </h2>
+        <div className="flex items-center gap-3">
+          {activeEnchant && activePresets.length > 1 && (
+            <div className="flex items-center gap-1.5 text-xs">
+              <span className="text-gray-500">amount</span>
+              <div className="flex gap-1">
+                {activePresets.map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => setEnchantAmount(n)}
+                    className={`min-w-[1.75em] px-1.5 py-0.5 rounded border transition-all ${
+                      enchantAmount === n
+                        ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/60"
+                        : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
+                    }`}
+                    aria-pressed={enchantAmount === n}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-            {eligibleEnchantments.map((e) => {
-              const active = activeEnchantId === e.id;
-              return (
-                <button
-                  key={e.id}
-                  onClick={() => {
-                    setActiveEnchantId((prev) => {
-                      if (prev === e.id) return null;
-                      // 새 인챈트 활성 시 프리셋의 첫 번째 값으로 amount 초기화
-                      const presets = getEnchantAmountPresets(e);
-                      if (presets.length > 0 && !presets.includes(enchantAmount)) {
-                        setEnchantAmount(presets[0]);
-                      }
-                      return e.id;
-                    });
-                  }}
-                  onMouseEnter={() => setHoveredEnchantId(e.id)}
-                  onMouseLeave={() =>
-                    setHoveredEnchantId((cur) => (cur === e.id ? null : cur))
-                  }
-                  onFocus={() => setHoveredEnchantId(e.id)}
-                  onBlur={() =>
-                    setHoveredEnchantId((cur) => (cur === e.id ? null : cur))
-                  }
-                  className={`group flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
-                    active
-                      ? "bg-yellow-500/15 border-yellow-500/60 ring-1 ring-yellow-500/30"
-                      : "bg-white/5 border-white/10 hover:border-white/30"
-                  }`}
-                  aria-pressed={active}
-                  title={e.name}
-                >
-                  {e.imageUrl ? (
-                    <div className="relative w-10 h-10">
-                      <Image
-                        src={e.imageUrl}
-                        alt={e.name}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-10 h-10 rounded bg-white/5" />
-                  )}
-                  <span className="text-[10px] text-gray-200 text-center leading-tight">
-                    {e.name}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          )}
+          {activeEnchant && (
+            <button
+              onClick={() => setActiveEnchantId(null)}
+              className="text-xs text-gray-500 hover:text-gray-300"
+            >
+              해제
+            </button>
+          )}
         </div>
-      )}
+      </div>
+      <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-3 lg:grid-cols-4 gap-2">
+        {eligibleEnchantments.map((e) => {
+          const active = activeEnchantId === e.id;
+          return (
+            <button
+              key={e.id}
+              onClick={() => {
+                setActiveEnchantId((prev) => {
+                  if (prev === e.id) return null;
+                  const presets = getEnchantAmountPresets(e);
+                  if (presets.length > 0 && !presets.includes(enchantAmount)) {
+                    setEnchantAmount(presets[0]);
+                  }
+                  return e.id;
+                });
+              }}
+              onMouseEnter={() => setHoveredEnchantId(e.id)}
+              onMouseLeave={() =>
+                setHoveredEnchantId((cur) => (cur === e.id ? null : cur))
+              }
+              onFocus={() => setHoveredEnchantId(e.id)}
+              onBlur={() =>
+                setHoveredEnchantId((cur) => (cur === e.id ? null : cur))
+              }
+              className={`group flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
+                active
+                  ? "bg-yellow-500/15 border-yellow-500/60 ring-1 ring-yellow-500/30"
+                  : "bg-white/5 border-white/10 hover:border-white/30"
+              }`}
+              aria-pressed={active}
+              title={e.name}
+            >
+              {e.imageUrl ? (
+                <div className="relative w-10 h-10">
+                  <Image
+                    src={e.imageUrl}
+                    alt={e.name}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              ) : (
+                <div className="w-10 h-10 rounded bg-white/5" />
+              )}
+              <span className="text-[10px] text-gray-200 text-center leading-tight">
+                {e.name}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  ) : null;
+
+  return (
+    <div className="flex flex-col gap-4 p-4 sm:p-6 max-w-5xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between w-full">
+        <Link
+          href="/codex/cards"
+          className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+          onClick={(e) => {
+            if (onClose) {
+              e.preventDefault();
+              onClose();
+            }
+          }}
+        >
+          ← 카드 도서관
+        </Link>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400"
+            aria-label="닫기"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+      {/* 데스크탑(md+): 좌 카드(sticky) + 우 인챈트 grid.
+          모바일: 카드 sticky top + 그 아래 인챈트 grid 스크롤.
+          → 인챈트 토글 시 카드가 항상 보여 결과 확인 즉시 가능. */}
+      <div className="grid gap-4 md:grid-cols-[auto_minmax(0,1fr)] md:gap-8 md:items-start">
+        <div
+          className={
+            // 양 모드 모두 sticky 적용. 모바일은 좁은 카드(280) + 작은 메타,
+            // 데스크탑은 좌측 컬럼 sticky.
+            "sticky top-0 z-20 bg-[#1a1a2e]/95 backdrop-blur-sm py-2 -mx-4 px-4 sm:-mx-6 sm:px-6 md:bg-transparent md:backdrop-blur-none md:top-4 md:py-0 md:mx-0 md:px-0 md:self-start"
+          }
+        >
+          {cardPanel}
+        </div>
+        {enchantPanel}
+      </div>
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
         <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
