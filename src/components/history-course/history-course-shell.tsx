@@ -85,22 +85,33 @@ function detectStepRewards(
   floor: number,
   step: number,
 ): { relicTokens: RelicFlyToken[]; cardTokens: CardActionToken[] } {
-  const relicIds = (entry.relic_choices ?? [])
-    .filter((c) => c.picked && c.id)
-    .map((c) => c.id);
-  const relicTokens: RelicFlyToken[] = relicIds.map((id) => ({ id, floor, step }));
+  // Shared stack — cards on top, relics below. stackIndex grows
+  // monotonically across both lists so they line up in a single column
+  // next to the current node.
+  let stackIndex = 0;
 
   const cardTokens: CardActionToken[] = [];
-  let index = 0;
   const gainedIds = new Set<string>();
   for (const c of entry.cards_gained ?? []) {
     if (c.id) {
       gainedIds.add(c.id);
-      cardTokens.push({ kind: "gained", cardId: c.id, floor, step, index: index++ });
+      cardTokens.push({
+        kind: "gained",
+        cardId: c.id,
+        floor,
+        step,
+        index: stackIndex++,
+      });
     }
   }
   for (const cardId of entry.upgraded_cards ?? []) {
-    cardTokens.push({ kind: "upgraded", cardId, floor, step, index: index++ });
+    cardTokens.push({
+      kind: "upgraded",
+      cardId,
+      floor,
+      step,
+      index: stackIndex++,
+    });
   }
   for (const e of entry.cards_enchanted ?? []) {
     cardTokens.push({
@@ -109,13 +120,9 @@ function detectStepRewards(
       enchantmentId: e.enchantmentId,
       floor,
       step,
-      index: index++,
+      index: stackIndex++,
     });
   }
-  // Skip detection — card_choices were offered but the player picked none
-  // (no choice has picked === true) and no card was added via cards_gained
-  // for that choice set. These show as "넘기기" so the replay communicates
-  // the deliberate pass.
   const choices = entry.card_choices ?? [];
   if (choices.length > 0) {
     const anyPicked = choices.some((c) => c.picked);
@@ -125,10 +132,22 @@ function detectStepRewards(
         cardId: null,
         floor,
         step,
-        index: index++,
+        index: stackIndex++,
       });
     }
   }
+
+  // Relics line up below all card actions in the same column.
+  const relicIds = (entry.relic_choices ?? [])
+    .filter((c) => c.picked && c.id)
+    .map((c) => c.id);
+  const relicTokens: RelicFlyToken[] = relicIds.map((id) => ({
+    id,
+    floor,
+    step,
+    stackIndex: stackIndex++,
+  }));
+
   return { relicTokens, cardTokens };
 }
 

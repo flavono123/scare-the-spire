@@ -24,6 +24,9 @@ export interface RelicFlyToken {
   id: string;
   floor: number;
   step: number;
+  /** Position in the shared per-node action stack (cards above, relic
+   * below them). Drives the vertical offset of the appear/hold pose. */
+  stackIndex: number;
 }
 
 export function RelicFlyOverlay({
@@ -70,9 +73,10 @@ function RelicFlyer({
   onDoneRef.current = onDone;
 
   // Read source/destination rects relative to the stage container right
-  // after mount. The relic slot is hidden (opacity 0) while we're flying
-  // but the element still exists in the DOM, so the queryselector finds
-  // its destination geometry.
+  // after mount. Origin uses the same anchor as the card-action overlay
+  // (right side of the current node, vertically offset by stackIndex) so
+  // cards and relics share a single visual stack with relics rendered
+  // *below* the cards.
   useLayoutEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
@@ -84,8 +88,8 @@ function RelicFlyer({
     if (node) {
       const r = node.getBoundingClientRect();
       setOrigin({
-        x: r.left - stageRect.left + r.width / 2,
-        y: r.top - stageRect.top + r.height / 2,
+        x: r.left - stageRect.left + r.width + 14,
+        y: r.top - stageRect.top + r.height / 2 - 30,
       });
     }
     if (slot) {
@@ -120,15 +124,15 @@ function RelicFlyer({
 
   if (phase === "done" || !origin) return null;
 
-  // Single fixed position (origin) — translate-based animation handles
-  // both the appear scale-in *and* the fly-out by composing a translate
-  // and scale on the same node. Letting `left`/`top` animate would force
-  // a layout pass per frame; transform stays on the compositor.
+  // Same horizontal stack offset the card-action overlay uses, so cards
+  // and relics share a single column (cards on top by stackIndex 0..N,
+  // relics below at stackIndex N+).
+  const offsetY = token.stackIndex * 38;
   const factor = 1 / Math.sqrt(Math.max(1, rate));
   const flying = phase === "fly" && target !== null;
   const dx = flying ? target.x - origin.x : 0;
   const dy = flying ? target.y - origin.y : 0;
-  const scale = phase === "appear" ? 0.3 : flying ? 0.45 : 1;
+  const scale = phase === "appear" ? 0.55 : flying ? 0.45 : 1;
   const opacity = phase === "appear" ? 0 : 1;
 
   const transitionMs = flying
@@ -146,29 +150,37 @@ function RelicFlyer({
       className="pointer-events-none absolute z-30"
       style={{
         left: origin.x,
-        top: origin.y,
-        // Compose: translate to fly destination, then scale + center the icon.
-        transform: `translate3d(calc(-50% + ${dx}px), calc(-50% + ${dy}px), 0) scale(${scale})`,
-        transformOrigin: "center center",
+        top: origin.y + offsetY,
+        // Anchor at left edge / vertical center; translate3d carries both
+        // the per-frame appear scale *and* the fly-out displacement.
+        transform: `translate3d(${dx}px, calc(-50% + ${dy}px), 0) scale(${scale})`,
+        transformOrigin: "left center",
         opacity,
         transition: `transform ${transitionMs}ms ${ease}, opacity ${transitionMs}ms ${ease}`,
         willChange: "transform, opacity",
       }}
     >
-      <div className="flex flex-col items-center gap-1">
-        <div className="relative h-16 w-16">
+      <div className="flex items-center gap-2">
+        <div className="relative h-8 w-8 shrink-0">
           <Image
             src={relicIconSrc(token.id)}
             alt=""
             fill
-            sizes="64px"
-            className="object-contain drop-shadow-[0_0_18px_rgba(255,200,120,0.85)]"
+            sizes="32px"
+            className="object-contain drop-shadow-[0_0_8px_rgba(255,200,120,0.85)]"
             unoptimized
           />
         </div>
         {!flying && (
-          <p className="rounded-full bg-black/65 px-2 py-0.5 text-[11px] font-bold text-amber-100 shadow">
+          <p
+            className="text-[13px] font-bold leading-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)]"
+            style={{
+              color: "#fef3c7",
+              WebkitTextStroke: "0.5px rgba(0,0,0,0.85)",
+            }}
+          >
             {label}
+            <span className="ml-1 text-xs text-zinc-300">획득</span>
           </p>
         )}
       </div>
