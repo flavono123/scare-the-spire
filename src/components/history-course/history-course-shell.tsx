@@ -509,6 +509,12 @@ function Stage({
       <div
         ref={mapBoxRef}
         className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-[96px]"
+        style={{
+          // Promote the scrollable map area to its own compositor layer so
+          // hundreds of masked path-tick divs don't repaint on every frame.
+          willChange: "scroll-position",
+          contain: "paint",
+        }}
       >
         <div className="flex min-h-full justify-center">
           <SeededMapView act={act} step={step} onSeekToStep={onScrub} />

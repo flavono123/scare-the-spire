@@ -998,10 +998,12 @@ export function SeededMapView({
                 top: tick.top,
                 width: 16 * MAP_GAME_SCALE,
                 height: 16 * MAP_GAME_SCALE,
+                // Translate-only, no layout-affecting offsets. Avoid filter
+                // chains here — path ticks are tiny and there are
+                // hundreds of them, so a stacked drop-shadow per tick
+                // dominates paint/composite cost during scroll.
                 transform: `translate(-50%, -50%) rotate(${tick.rotation}rad) scale(${visited ? 1.2 : 1
                   })`,
-                filter:
-                  "drop-shadow(0 0 1.4px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 0.6px rgba(0, 0, 0, 0.5))",
                 ...maskStyle(
                   effectSrc("map_dot"),
                   visited ? meta.traveledColor : meta.untraveledColor,
