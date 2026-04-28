@@ -97,6 +97,10 @@ interface TopBarProps {
   run: ReplayRun;
   act: ReplayActAnalysis;
   state: TopbarState;
+  /** Relic IDs that are mid-flight from a node — hide their slot so the
+   * fly-out lands into an empty spot instead of stacking on top of an
+   * already-rendered icon. */
+  hidingRelicIds?: ReadonlySet<string>;
   onOpenStats: () => void;
   onOpenDeck: () => void;
   onOpenInfo: () => void;
@@ -106,6 +110,7 @@ export function TopBar({
   run,
   act,
   state,
+  hidingRelicIds,
   onOpenStats,
   onOpenDeck,
   onOpenInfo,
@@ -152,7 +157,7 @@ export function TopBar({
           <SettingsButton onClick={onOpenInfo} />
         </div>
       </div>
-      <RelicRow relics={state.relics} />
+      <RelicRow relics={state.relics} hidingRelicIds={hidingRelicIds} />
     </div>
   );
 }
@@ -639,31 +644,42 @@ function SettingsButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-function RelicRow({ relics }: { relics: RelicAtFloor[] }) {
+function RelicRow({
+  relics,
+  hidingRelicIds,
+}: {
+  relics: RelicAtFloor[];
+  hidingRelicIds?: ReadonlySet<string>;
+}) {
   if (relics.length === 0) return <div className="h-8" data-relic-row />;
   return (
     <div className="flex flex-wrap items-center gap-1.5 pl-1" data-relic-row>
-      {relics.map((relic) => (
-        <div
-          key={`${relic.id}-${relic.floor}`}
-          data-relic-target={relic.id}
-          className={cn(
-            "relative h-8 w-8 transition",
-            relic.justAcquired &&
-              "drop-shadow-[0_0_10px_rgba(255,200,120,0.95)]",
-          )}
-          title={`${localize("relics", relic.id) ?? relic.id} · ${relic.floor}층`}
-        >
-          <Image
-            src={relicIconSrc(relic.id)}
-            alt={localize("relics", relic.id) ?? relic.id}
-            fill
-            sizes="32px"
-            className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]"
-            unoptimized
-          />
-        </div>
-      ))}
+      {relics.map((relic) => {
+        const hidden = hidingRelicIds?.has(relic.id) ?? false;
+        return (
+          <div
+            key={`${relic.id}-${relic.floor}`}
+            data-relic-target={relic.id}
+            className={cn(
+              "relative h-8 w-8 transition-opacity duration-200",
+              relic.justAcquired &&
+                !hidden &&
+                "drop-shadow-[0_0_10px_rgba(255,200,120,0.95)]",
+            )}
+            style={{ opacity: hidden ? 0 : 1 }}
+            title={`${localize("relics", relic.id) ?? relic.id} · ${relic.floor}층`}
+          >
+            <Image
+              src={relicIconSrc(relic.id)}
+              alt={localize("relics", relic.id) ?? relic.id}
+              fill
+              sizes="32px"
+              className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]"
+              unoptimized
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }

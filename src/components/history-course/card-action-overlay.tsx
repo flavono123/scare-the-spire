@@ -134,7 +134,6 @@ function CardActionFlyer({
   const transformedColor = token.kind === "upgraded" ? "#86efac" : "#d8b4fe";
   const transformed = phase === "transform" || phase === "fade";
   const showPlus = token.kind === "upgraded" && transformed;
-  const isUpgradedIcon = token.kind === "upgraded";
 
   const factor = 1 / Math.sqrt(Math.max(1, rate));
   // Apply the duration of the *transition into* the current phase so the
@@ -165,9 +164,9 @@ function CardActionFlyer({
       }}
     >
       <div className="flex items-center gap-2 rounded-md bg-black/65 px-2 py-1 shadow-lg">
-        <CardActionIcon card={card} width={36} showUpgrade={isUpgradedIcon} />
+        <CardActionIcon card={card} width={32} />
         <p
-          className="text-[12px] font-bold leading-none drop-shadow"
+          className="text-[13px] font-bold leading-none drop-shadow"
           style={{
             color: transformed ? transformedColor : "#fafafa",
             transition: `color ${Math.round(TRANSFORM_MS * factor)}ms ease-out`,

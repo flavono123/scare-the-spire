@@ -5,8 +5,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { localize } from "@/lib/sts2-i18n";
 
 const APPEAR_MS = 220;
-const HOLD_MS = 540;
-const FLY_MS = 580;
+const HOLD_MS = 480;
+const FLY_MS = 620;
 
 function relicIconSrc(id: string): string {
   const slug = id.replace(/^RELIC\./, "").toLowerCase();
@@ -70,8 +70,9 @@ function RelicFlyer({
   onDoneRef.current = onDone;
 
   // Read source/destination rects relative to the stage container right
-  // after mount. The relic slot exists by this point because topbarState is
-  // recomputed synchronously on step change.
+  // after mount. The relic slot is hidden (opacity 0) while we're flying
+  // but the element still exists in the DOM, so the queryselector finds
+  // its destination geometry.
   useLayoutEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
@@ -119,18 +120,21 @@ function RelicFlyer({
 
   if (phase === "done" || !origin) return null;
 
-  const flying = phase === "fly" && target;
-  const center = flying ? target : origin;
-  const scale = phase === "appear" ? 0.4 : flying ? 0.45 : 1;
-  const opacity = phase === "appear" ? 0 : flying ? 0.85 : 1;
+  // Single fixed position (origin) — translate-based animation handles
+  // both the appear scale-in *and* the fly-out by composing a translate
+  // and scale on the same node. Letting `left`/`top` animate would force
+  // a layout pass per frame; transform stays on the compositor.
   const factor = 1 / Math.sqrt(Math.max(1, rate));
-  // Transition duration applies to the *upcoming* state change. During
-  // appear/hold we want the opacity/scale fade-in to last APPEAR_MS; during
-  // fly we want the position+scale movement to last FLY_MS.
+  const flying = phase === "fly" && target !== null;
+  const dx = flying ? target.x - origin.x : 0;
+  const dy = flying ? target.y - origin.y : 0;
+  const scale = phase === "appear" ? 0.3 : flying ? 0.45 : 1;
+  const opacity = phase === "appear" ? 0 : 1;
+
   const transitionMs = flying
     ? Math.round(FLY_MS * factor)
     : Math.round(APPEAR_MS * factor);
-  const transitionEase = flying ? "cubic-bezier(0.55, 0.05, 0.6, 1)" : "ease-out";
+  const ease = flying ? "cubic-bezier(0.45, 0.05, 0.6, 1)" : "ease-out";
 
   const label = localize("relics", token.id) ?? token.id.split(".").pop();
 
@@ -141,12 +145,14 @@ function RelicFlyer({
       data-phase={phase}
       className="pointer-events-none absolute z-30"
       style={{
-        left: center.x,
-        top: center.y,
-        transform: `translate(-50%, -50%) scale(${scale})`,
+        left: origin.x,
+        top: origin.y,
+        // Compose: translate to fly destination, then scale + center the icon.
+        transform: `translate3d(calc(-50% + ${dx}px), calc(-50% + ${dy}px), 0) scale(${scale})`,
         transformOrigin: "center center",
         opacity,
-        transition: `left ${transitionMs}ms ${transitionEase}, top ${transitionMs}ms ${transitionEase}, transform ${transitionMs}ms ${transitionEase}, opacity ${transitionMs}ms ${transitionEase}`,
+        transition: `transform ${transitionMs}ms ${ease}, opacity ${transitionMs}ms ${ease}`,
+        willChange: "transform, opacity",
       }}
     >
       <div className="flex flex-col items-center gap-1">

@@ -220,6 +220,14 @@ export function HistoryCourseShell({
       ),
     );
   }, []);
+
+  // Any in-flight relic should be hidden in the topbar slot until the
+  // fly-out actually lands — otherwise the icon shows up in the slot the
+  // moment the step changes, before the animation arrives.
+  const hidingRelicIds = useMemo<ReadonlySet<string>>(
+    () => new Set(activeRelicTokens.map((t) => t.id)),
+    [activeRelicTokens],
+  );
   const dropCardToken = useCallback((token: CardActionToken) => {
     setActiveCardTokens((prev) =>
       prev.filter(
@@ -323,6 +331,7 @@ export function HistoryCourseShell({
           relicTokens={activeRelicTokens}
           cardTokens={activeCardTokens}
           cardsById={cardsById}
+          hidingRelicIds={hidingRelicIds}
           onRelicDone={dropRelicToken}
           onCardDone={dropCardToken}
           topbarState={topbarState}
@@ -399,6 +408,7 @@ function Stage({
   relicTokens,
   cardTokens,
   cardsById,
+  hidingRelicIds,
   onRelicDone,
   onCardDone,
   topbarState,
@@ -422,6 +432,7 @@ function Stage({
   relicTokens: RelicFlyToken[];
   cardTokens: CardActionToken[];
   cardsById: Record<string, CodexCard>;
+  hidingRelicIds: ReadonlySet<string>;
   onRelicDone: (token: RelicFlyToken) => void;
   onCardDone: (token: CardActionToken) => void;
   topbarState: ReturnType<typeof buildTopbarState>;
@@ -489,6 +500,7 @@ function Stage({
         run={run}
         act={act}
         state={topbarState}
+        hidingRelicIds={hidingRelicIds}
         onOpenStats={onOpenStats}
         onOpenDeck={onOpenDeck}
         onOpenInfo={onOpenInfo}

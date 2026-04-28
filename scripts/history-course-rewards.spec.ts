@@ -62,21 +62,53 @@ test("relic fly-out + card action overlay (boots run)", async ({ page }) => {
     fullPage: false,
   });
 
-  // Once the relic finishes, advance forward to find a card-gain step.
+  // Once the relic finishes, advance forward to a step that gains a card.
+  // Pause first; scrub one step at a time and wait for hold.
   await relicOverlay.first().waitFor({ state: "detached", timeout: 4000 });
-  // Pause and scrub forward.
   await page.keyboard.press("Space").catch(() => {});
-  for (let i = 0; i < 5; i++) {
+  await page.waitForTimeout(120);
+
+  let captured = false;
+  for (let i = 0; i < 8 && !captured; i++) {
     await page.keyboard.press("ArrowRight");
-    await page.waitForTimeout(120);
+    // Wait for either hold-phase card or no token (skip step if neither).
+    try {
+      await page.waitForFunction(
+        () =>
+          Array.from(document.querySelectorAll('[data-testid="card-action"]'))
+            .some((el) => el.getAttribute("data-phase") === "hold"),
+        null,
+        { timeout: 600 },
+      );
+      captured = true;
+    } catch {
+      // step had no card — try the next one.
+    }
   }
-  // Some monster steps gain a card; wait briefly for one to appear.
-  const cardOverlay = page.locator('[data-testid="card-action"]');
-  await cardOverlay.first().waitFor({ state: "attached", timeout: 8000 });
+  expect(captured).toBe(true);
+  await page.waitForTimeout(180);
   await page.screenshot({
     path: path.join(OUT_DIR, "10-card-gained.png"),
     fullPage: false,
   });
+  const rect = await page.evaluate(() => {
+    const el = Array.from(
+      document.querySelectorAll('[data-testid="card-action"]'),
+    ).find((e) => e.getAttribute("data-phase") === "hold");
+    const r = el?.getBoundingClientRect();
+    return r ? { x: r.x, y: r.y, w: r.width, h: r.height } : null;
+  });
+  if (rect) {
+    await page.screenshot({
+      path: path.join(OUT_DIR, "10b-card-gained-crop.png"),
+      clip: {
+        x: Math.max(0, rect.x - 16),
+        y: Math.max(0, rect.y - 16),
+        width: Math.min(360, rect.w + 32),
+        height: Math.min(120, rect.h + 32),
+      },
+    });
+  }
 
   // The legacy full-screen modal had a black/55 backdrop covering the stage
   // — confirm nothing of that shape is rendering now.
