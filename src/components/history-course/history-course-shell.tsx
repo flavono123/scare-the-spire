@@ -1,22 +1,21 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   MapBackdrop,
   SeededMapView,
 } from "@/components/dev/run-replay-poc";
-import {
-  CardActionOverlay,
-  type CardActionToken,
-} from "@/components/history-course/card-action-overlay";
+import { CardActionIcon } from "@/components/history-course/card-action-icon";
 import { DeckModal } from "@/components/history-course/deck-modal";
 import {
-  RelicFlyOverlay,
-  type RelicFlyToken,
-} from "@/components/history-course/relic-fly-overlay";
+  NodeActionStack,
+  type NodeStackItem,
+} from "@/components/history-course/node-action-stack";
 import { TopBar } from "@/components/history-course/topbar";
 import { buildTopbarState } from "@/components/history-course/topbar-state";
 import type { CodexCard } from "@/lib/codex-types";
+import { localize } from "@/lib/sts2-i18n";
 import {
   analyzeReplayRun,
   type ReplayHistoryEntry,
@@ -80,87 +79,157 @@ function nodeHoldSeconds(entry: ReplayHistoryEntry): number {
   }
 }
 
-function detectStepRewards(
-  entry: ReplayHistoryEntry,
-  floor: number,
-  step: number,
-): { relicTokens: RelicFlyToken[]; cardTokens: CardActionToken[] } {
-  // Shared stack — cards on top, relics below. stackIndex grows
-  // monotonically across both lists so they line up in a single column
-  // next to the current node.
-  let stackIndex = 0;
+function relicIconSrc(id: string): string {
+  const slug = id.replace(/^RELIC\./, "").toLowerCase();
+  return `/images/sts2/relics/${slug}.webp`;
+}
 
-  const cardTokens: CardActionToken[] = [];
+function cssEscapeAttr(value: string): string {
+  if (typeof CSS !== "undefined" && typeof CSS.escape === "function") {
+    return CSS.escape(value);
+  }
+  return value.replace(/(["\\\]\[])/g, "\\$1");
+}
+
+const VERB_BY_KIND: Record<string, string> = {
+  "card-gained": "선택",
+  "card-upgraded": "강화",
+  "card-enchanted": "인챈트",
+  "card-skipped": "넘기기",
+  "relic-gained": "획득",
+};
+
+const TEXT_BY_KIND: Record<string, string | undefined> = {
+  "card-gained": undefined,
+  "card-upgraded": "#86efac",
+  "card-enchanted": "#d8b4fe",
+  "card-skipped": "#a1a1aa",
+  "relic-gained": "#fef3c7",
+};
+
+function buildStackItems(
+  entry: ReplayHistoryEntry,
+  step: number,
+  cardsById: Record<string, CodexCard>,
+  onRelicLanded: (id: string) => void,
+): NodeStackItem[] {
+  const items: NodeStackItem[] = [];
   const gainedIds = new Set<string>();
+
+  const cardLabel = (id: string) =>
+    localize("cards", id) ?? id.split(".").pop() ?? "?";
+
+  const placeholderIcon = (
+    <span aria-hidden className="inline-block h-8 w-8 shrink-0" />
+  );
+  const cardIcon = (id: string) => {
+    const card = cardsById[id];
+    return card ? <CardActionIcon card={card} width={32} /> : placeholderIcon;
+  };
+
   for (const c of entry.cards_gained ?? []) {
-    if (c.id) {
-      gainedIds.add(c.id);
-      cardTokens.push({
-        kind: "gained",
-        cardId: c.id,
-        floor,
-        step,
-        index: stackIndex++,
-      });
-    }
+    if (!c.id) continue;
+    gainedIds.add(c.id);
+    items.push({
+      key: `s${step}-cg-${items.length}-${c.id}`,
+      kind: "card-gained",
+      icon: cardIcon(c.id),
+      label: cardLabel(c.id),
+      verb: VERB_BY_KIND["card-gained"],
+      textColor: TEXT_BY_KIND["card-gained"],
+      postEffect: { kind: "fly", targetSelector: "[data-deck-target]" },
+    });
   }
+
   for (const cardId of entry.upgraded_cards ?? []) {
-    cardTokens.push({
-      kind: "upgraded",
-      cardId,
-      floor,
-      step,
-      index: stackIndex++,
+    items.push({
+      key: `s${step}-cu-${items.length}-${cardId}`,
+      kind: "card-upgraded",
+      icon: cardIcon(cardId),
+      label: cardLabel(cardId) + "+",
+      verb: VERB_BY_KIND["card-upgraded"],
+      textColor: TEXT_BY_KIND["card-upgraded"],
+      postEffect: { kind: "fade" },
     });
   }
+
   for (const e of entry.cards_enchanted ?? []) {
-    cardTokens.push({
-      kind: "enchanted",
-      cardId: e.cardId,
-      enchantmentId: e.enchantmentId,
-      floor,
-      step,
-      index: stackIndex++,
+    const enchantName = localize("enchantments", e.enchantmentId) ?? e.enchantmentId;
+    items.push({
+      key: `s${step}-ce-${items.length}-${e.cardId}-${e.enchantmentId}`,
+      kind: "card-enchanted",
+      icon: cardIcon(e.cardId),
+      label: `${cardLabel(e.cardId)} ${enchantName}`,
+      verb: VERB_BY_KIND["card-enchanted"],
+      textColor: TEXT_BY_KIND["card-enchanted"],
+      postEffect: { kind: "fade" },
     });
   }
+
   const choices = entry.card_choices ?? [];
   if (choices.length > 0) {
     const anyPicked = choices.some((c) => c.picked);
     if (!anyPicked && gainedIds.size === 0) {
-      cardTokens.push({
-        kind: "skipped",
-        cardId: null,
-        floor,
-        step,
-        index: stackIndex++,
+      items.push({
+        key: `s${step}-skip-${items.length}`,
+        kind: "card-skipped",
+        icon: placeholderIcon,
+        label: "",
+        verb: VERB_BY_KIND["card-skipped"],
+        textColor: TEXT_BY_KIND["card-skipped"],
+        postEffect: { kind: "fade" },
       });
     }
   }
 
-  // Relics line up below all card actions in the same column.
-  const relicIds = (entry.relic_choices ?? [])
-    .filter((c) => c.picked && c.id)
-    .map((c) => c.id);
-  const relicTokens: RelicFlyToken[] = relicIds.map((id) => ({
-    id,
-    floor,
-    step,
-    stackIndex: stackIndex++,
-  }));
+  for (const c of entry.relic_choices ?? []) {
+    if (!c.picked || !c.id) continue;
+    const id = c.id;
+    items.push({
+      key: `s${step}-rg-${items.length}-${id}`,
+      kind: "relic-gained",
+      icon: (
+        <div className="relative h-8 w-8 shrink-0">
+          <Image
+            src={relicIconSrc(id)}
+            alt=""
+            fill
+            sizes="32px"
+            className="object-contain drop-shadow-[0_0_8px_rgba(255,200,120,0.85)]"
+            unoptimized
+          />
+        </div>
+      ),
+      label: localize("relics", id) ?? id.split(".").pop() ?? "?",
+      verb: VERB_BY_KIND["relic-gained"],
+      textColor: TEXT_BY_KIND["relic-gained"],
+      postEffect: {
+        kind: "fly",
+        targetSelector: `[data-relic-target="${cssEscapeAttr(id)}"]`,
+      },
+      onComplete: () => onRelicLanded(id),
+    });
+  }
 
-  return { relicTokens, cardTokens };
+  return items;
 }
 
-// Stretch the per-step hold so the overlays have time to play out before the
-// next node steals focus. Relic fly = appear+hold+fly ≈ 1340ms at 1×.
-function rewardHoldMs(
-  hasRelic: boolean,
-  hasCard: boolean,
-  rate: Rate,
-): number {
-  if (!hasRelic && !hasCard) return 0;
-  const baseSeconds = hasRelic ? 1.5 : 1.4;
-  return Math.round((baseSeconds * 1000) / Math.sqrt(rate));
+// Total run time the stack needs to play. Used by the playback driver to
+// stretch a step's hold so a node never advances before its stack finishes.
+function stackPlayMs(items: NodeStackItem[], rate: Rate): number {
+  if (items.length === 0) return 0;
+  const factor = 1 / Math.sqrt(rate);
+  // Per-item budget — must stay loosely synced with NodeActionStack's
+  // internal phase clock (appear+hold+textFade+gap+post).
+  const flyMs = (280 + 1700 + 280 + 100 + 640) * factor;
+  const fadeMs = (280 + 1700 + 280 + 100 + 380) * factor;
+  let total = 0;
+  for (const it of items) {
+    total += it.postEffect.kind === "fly" ? flyMs : fadeMs;
+  }
+  // Slack so the next node doesn't steal focus the very tick the last
+  // post-effect lands.
+  return Math.round(total + 220);
 }
 
 export function HistoryCourseShell({
@@ -221,65 +290,45 @@ export function HistoryCourseShell({
     return () => window.clearTimeout(t);
   }, [introActive, replayReady]);
 
-  const stepRewards = useMemo(() => {
-    if (!act || !replayReady) return { relicTokens: [], cardTokens: [] };
-    const entry = act.history[step - 1];
-    if (!entry) return { relicTokens: [], cardTokens: [] };
-    return detectStepRewards(entry, act.baseFloor + step - 1, step);
-  }, [act, step, replayReady]);
-
-  // Tokens latch through fly-out completion so the overlay survives the brief
-  // window between "next step picked" and "fly animation finished". onDone
-  // pops them.
-  const [activeRelicTokens, setActiveRelicTokens] = useState<RelicFlyToken[]>([]);
-  const [activeCardTokens, setActiveCardTokens] = useState<CardActionToken[]>([]);
-
-  // Append new tokens whenever the step changes — derive at render time so
-  // the synchronous setState chain stays out of effect bodies.
-  const lastRewardStepRef = useRef<{ act: number; step: number }>({ act: -1, step: -1 });
-  if (
-    replayReady &&
-    (lastRewardStepRef.current.act !== actIndex ||
-      lastRewardStepRef.current.step !== step)
-  ) {
-    lastRewardStepRef.current = { act: actIndex, step };
-    if (stepRewards.relicTokens.length > 0) {
-      setActiveRelicTokens((prev) => [...prev, ...stepRewards.relicTokens]);
-    }
-    if (stepRewards.cardTokens.length > 0) {
-      setActiveCardTokens((prev) => [...prev, ...stepRewards.cardTokens]);
-    }
-  }
-
-  const dropRelicToken = useCallback((token: RelicFlyToken) => {
-    setActiveRelicTokens((prev) =>
-      prev.filter(
-        (t) => !(t.id === token.id && t.floor === token.floor && t.step === token.step),
-      ),
-    );
-  }, []);
-
-  // Any in-flight relic should be hidden in the topbar slot until the
-  // fly-out actually lands — otherwise the icon shows up in the slot the
-  // moment the step changes, before the animation arrives.
-  const hidingRelicIds = useMemo<ReadonlySet<string>>(
-    () => new Set(activeRelicTokens.map((t) => t.id)),
-    [activeRelicTokens],
+  // Relics that have been emitted by the current step's stack but haven't
+  // yet completed their fly to the topbar slot. We keep this *outside* the
+  // memoized item list so the per-item onComplete callback can mutate it
+  // without invalidating the items reference (which would reset the slot
+  // machine to index 0).
+  const [pendingRelicIds, setPendingRelicIds] = useState<ReadonlySet<string>>(
+    () => new Set(),
   );
-  const dropCardToken = useCallback((token: CardActionToken) => {
-    setActiveCardTokens((prev) =>
-      prev.filter(
-        (t) =>
-          !(
-            t.kind === token.kind &&
-            t.cardId === token.cardId &&
-            t.floor === token.floor &&
-            t.step === token.step &&
-            t.index === token.index
-          ),
-      ),
-    );
+  const releaseRelicId = useCallback((id: string) => {
+    setPendingRelicIds((prev) => {
+      if (!prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
   }, []);
+
+  const stepStackItems = useMemo<NodeStackItem[]>(() => {
+    if (!act || !replayReady) return [];
+    const entry = act.history[step - 1];
+    if (!entry) return [];
+    return buildStackItems(entry, step, cardsById, releaseRelicId);
+  }, [act, step, replayReady, cardsById, releaseRelicId]);
+
+  // Pre-load pendingRelicIds whenever the step's stack changes — every relic
+  // in the new batch starts pending, gets released by its own onComplete.
+  const stackKeyRef = useRef<string>("");
+  const stackKey = `${actIndex}-${step}`;
+  if (stackKeyRef.current !== stackKey) {
+    stackKeyRef.current = stackKey;
+    const ids = new Set<string>();
+    for (const item of stepStackItems) {
+      if (item.kind === "relic-gained") {
+        const idMatch = item.key.match(/-rg-\d+-(.+)$/);
+        if (idMatch) ids.add(idMatch[1]);
+      }
+    }
+    setPendingRelicIds(ids);
+  }
 
   // playback driver: hold each step by node weight, plus extra for rewards
   useEffect(() => {
@@ -295,17 +344,13 @@ export function HistoryCourseShell({
       return;
     }
     let holdMs = Math.max(220, Math.round((nodeHoldSeconds(entry) * 1000) / rate));
-    const extra = rewardHoldMs(
-      stepRewards.relicTokens.length > 0,
-      stepRewards.cardTokens.length > 0,
-      rate,
-    );
+    const extra = stackPlayMs(stepStackItems, rate);
     if (extra > 0) holdMs = Math.max(holdMs, extra);
     const timer = window.setTimeout(() => {
       setStep((s) => Math.min(s + 1, act.history.length));
     }, holdMs);
     return () => window.clearTimeout(timer);
-  }, [playing, step, rate, act, actIndex, analysis.acts.length, replayReady, stepRewards]);
+  }, [playing, step, rate, act, actIndex, analysis.acts.length, replayReady, stepStackItems]);
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
@@ -366,12 +411,8 @@ export function HistoryCourseShell({
           introActive={introActive}
           playing={playing}
           rate={rate}
-          relicTokens={activeRelicTokens}
-          cardTokens={activeCardTokens}
-          cardsById={cardsById}
-          hidingRelicIds={hidingRelicIds}
-          onRelicDone={dropRelicToken}
-          onCardDone={dropCardToken}
+          stackItems={stepStackItems}
+          hidingRelicIds={pendingRelicIds}
           topbarState={topbarState}
           onTogglePlay={() => setPlaying((v) => !v)}
           onRestart={onRestart}
@@ -443,12 +484,8 @@ function Stage({
   introActive,
   playing,
   rate,
-  relicTokens,
-  cardTokens,
-  cardsById,
+  stackItems,
   hidingRelicIds,
-  onRelicDone,
-  onCardDone,
   topbarState,
   onTogglePlay,
   onRestart,
@@ -467,12 +504,8 @@ function Stage({
   introActive: boolean;
   playing: boolean;
   rate: Rate;
-  relicTokens: RelicFlyToken[];
-  cardTokens: CardActionToken[];
-  cardsById: Record<string, CodexCard>;
+  stackItems: NodeStackItem[];
   hidingRelicIds: ReadonlySet<string>;
-  onRelicDone: (token: RelicFlyToken) => void;
-  onCardDone: (token: CardActionToken) => void;
   topbarState: ReturnType<typeof buildTopbarState>;
   onTogglePlay: () => void;
   onRestart: () => void;
@@ -548,10 +581,16 @@ function Stage({
         ref={mapBoxRef}
         className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-[96px]"
         style={{
-          // Promote the scrollable map area to its own compositor layer so
-          // hundreds of masked path-tick divs don't repaint on every frame.
           willChange: "scroll-position",
           contain: "paint",
+          // While a node action stack is playing, dim + soft-blur the map so
+          // the stack reads as the focus. Container has no visible boundary
+          // (each item carries its own radial halo).
+          filter:
+            stackItems.length > 0
+              ? "blur(2.5px) brightness(0.62) saturate(0.85)"
+              : undefined,
+          transition: "filter 280ms ease-out",
         }}
       >
         <div className="flex min-h-full justify-center">
@@ -563,18 +602,10 @@ function Stage({
 
       <ActIntro key={introToken} actIndex={actIndex} act={act} totalActs={totalActs} />
 
-      <RelicFlyOverlay
+      <NodeActionStack
         stageRef={stageRef}
-        tokens={relicTokens}
+        items={stackItems}
         rate={rate}
-        onDone={onRelicDone}
-      />
-      <CardActionOverlay
-        stageRef={stageRef}
-        tokens={cardTokens}
-        cardsById={cardsById}
-        rate={rate}
-        onDone={onCardDone}
       />
 
       <PlaybackBar
