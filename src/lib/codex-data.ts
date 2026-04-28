@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import { bakeDescription } from "./codex-bake";
 import {
   CodexCard,
   CodexCharacter,
@@ -132,6 +133,7 @@ interface RawRelic {
   name: string;
   description: string;
   description_raw: string;
+  vars?: Record<string, number> | null;
   flavor: string;
   rarity: string;
   pool: string;
@@ -154,12 +156,15 @@ function mapRelic(
   variantMap: Partial<Record<RelicPool, string>> | null,
 ): CodexRelic {
   const baseUrl = spireCodexImageToLocal(kor.image_url);
+  const vars = kor.vars ?? {};
+  const raw = kor.description_raw ?? kor.description;
   return {
     id: kor.id,
     name: kor.name,
     nameEn: eng.name,
-    description: kor.description,
-    descriptionRaw: kor.description_raw,
+    description: bakeDescription(raw, vars),
+    descriptionRaw: raw,
+    vars,
     flavor: kor.flavor,
     rarity: kor.rarity as RelicRarityKo,
     pool: kor.pool as RelicPool,
@@ -229,18 +234,22 @@ interface RawPotion {
   name: string;
   description: string;
   description_raw: string;
+  vars?: Record<string, number> | null;
   rarity: string;
   pool: string;
   image_url: string;
 }
 
 function mapPotion(kor: RawPotion, eng: RawPotion): CodexPotion {
+  const vars = kor.vars ?? {};
+  const raw = kor.description_raw ?? kor.description;
   return {
     id: kor.id,
     name: kor.name,
     nameEn: eng.name,
-    description: kor.description,
-    descriptionRaw: kor.description_raw,
+    description: bakeDescription(raw, vars),
+    descriptionRaw: raw,
+    vars,
     rarity: kor.rarity as PotionRarityKo,
     pool: kor.pool as PotionPool,
     imageUrl: spireCodexImageToLocal(kor.image_url) ?? "",
@@ -290,6 +299,7 @@ interface RawPower {
   name: string;
   description: string;
   description_raw: string | null;
+  vars?: Record<string, number> | null;
   type: string;
   stack_type: string | null;
   allow_negative: boolean | null;
@@ -297,12 +307,15 @@ interface RawPower {
 }
 
 function mapPower(kor: RawPower, eng: RawPower): CodexPower {
+  const vars = kor.vars ?? {};
+  const raw = kor.description_raw ?? kor.description;
   return {
     id: kor.id,
     name: kor.name,
     nameEn: eng.name,
-    description: kor.description,
-    descriptionRaw: kor.description_raw,
+    description: bakeDescription(raw ?? "", vars),
+    descriptionRaw: raw,
+    vars,
     type: kor.type as PowerType,
     stackType: (kor.stack_type ?? "None") as PowerStackType,
     allowNegative: kor.allow_negative ?? false,
