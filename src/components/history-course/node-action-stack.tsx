@@ -324,7 +324,7 @@ function StackItemView({
           <p
             className="font-bold leading-none"
             style={{
-              fontSize: "24px",
+              fontSize: "22px",
               color: labelColor,
               opacity: labelHidden ? 0 : 1,
               transition: `opacity ${Math.round(TEXT_FADE_MS * factor)}ms ease-out, color ${Math.round(APPEAR_MS * factor)}ms ease-out`,
@@ -335,8 +335,8 @@ function StackItemView({
             <span>{item.label}</span>
             {item.verb && (
               <span
-                className="ml-1.5 font-semibold"
-                style={{ color: verbColor, fontSize: "20px" }}
+                className="ml-1.5 font-bold"
+                style={{ color: verbColor, fontSize: "18px" }}
               >
                 {item.verb}
               </span>
