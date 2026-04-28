@@ -177,7 +177,9 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
               position: "absolute",
               top: 0,
               left: "calc(100% + 16px)",
-              width: 280,
+              // 콘텐츠 자연 폭(가장 긴 줄) 에 맞춰 호버팁이 줄어들도록 max-content + maxWidth.
+              width: "max-content",
+              maxWidth: 280,
               pointerEvents: "none",
               zIndex: 50,
             }}
@@ -189,7 +191,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
             >
               <DescriptionText
                 description={hoveredDesc ?? hoveredEnchant.description}
-                className="block text-center"
+                className="block text-left"
               />
             </HoverTip>
           </div>
@@ -267,8 +269,8 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
             </div>
           </div>
 
+          {/* 화살표는 캐러셀 바깥(좌우 32px 마진 영역)에 배치. 캐러셀 자체는 mx-10. */}
           <div className="relative">
-            {/* 좌측 화살표: 좌측으로 스크롤 가능할 때만 노출 */}
             {canScrollLeft && (
               <button
                 type="button"
@@ -285,7 +287,6 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
                 />
               </button>
             )}
-            {/* 우측 화살표: 우측으로 스크롤 가능할 때만 노출 */}
             {canScrollRight && (
               <button
                 type="button"
@@ -306,7 +307,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
             <div
               ref={scrollerRef}
               data-testid="enchant-carousel"
-              className="flex gap-2 overflow-x-auto scroll-smooth py-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="mx-10 flex gap-2 overflow-x-auto scroll-smooth py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {eligibleEnchantments.map((e) => {
                 const active = activeEnchantId === e.id;

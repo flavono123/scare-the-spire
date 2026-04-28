@@ -47,6 +47,25 @@ test("DEFEND+ + Adroit(3) = 11 block", async ({ page }) => {
   expect(await cardText(page)).toContain("방어도를 11");
 });
 
+test("BASH + Instinct = 16 damage (×2 multiplier)", async ({ page }) => {
+  await page.goto(`${BASE}/codex/cards/bash`);
+  await page.waitForLoadState("networkidle");
+  await page.locator('button[title="본능"]').click();
+  await page.waitForTimeout(150);
+  // base damage 8 → ×2 = 16
+  expect(await cardText(page)).toContain("피해를 16");
+});
+
+test("BASH+ + Instinct = 20 damage (upgrade then ×2)", async ({ page }) => {
+  await page.goto(`${BASE}/codex/cards/bash`);
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "강화 보기" }).click();
+  await page.locator('button[title="본능"]').click();
+  await page.waitForTimeout(150);
+  // base 8 → upgrade +2 = 10 → ×2 = 20
+  expect(await cardText(page)).toContain("피해를 20");
+});
+
 test("hover preview uses hovered enchant's own preset, not active one (Corrupted → Adroit)", async ({ page }) => {
   await page.goto(`${BASE}/codex/cards/bash`);
   await page.waitForLoadState("networkidle");

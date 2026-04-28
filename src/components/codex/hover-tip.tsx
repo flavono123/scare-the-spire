@@ -61,22 +61,12 @@ export function HoverTip({
         borderImageWidth: `${bt}px ${br}px ${bb}px ${bl}px`,
         borderImageRepeat: "stretch",
         boxSizing: "border-box",
-        minWidth: 240,
-        maxWidth: 360,
+        // 패딩 0: 글자가 9-slice 가장자리(border)에서 바로 시작.
+        // 호버팁 폭은 inner content 의 자연 wrap 폭에 맞춰 결정.
         ...style,
       }}
     >
-      <div
-        style={{
-          // 게임 TextContainer margin: left=22, top=16, right=45, bottom=28 (스케일 적용)
-          paddingLeft: Math.round(22 * SCALE),
-          paddingTop: Math.round(16 * SCALE),
-          paddingRight: Math.round(45 * SCALE),
-          paddingBottom: Math.round(28 * SCALE),
-          marginTop: -8,
-          marginBottom: -8,
-        }}
-      >
+      <div>
         <div
           className="flex items-center gap-2"
           style={{
@@ -86,7 +76,7 @@ export function HoverTip({
             color: "#EFC851",
             textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
             textAlign: "left",
-            marginBottom: 6,
+            marginBottom: 4,
           }}
         >
           <span>{title}</span>
@@ -108,6 +98,7 @@ export function HoverTip({
               color: "#FFF6E2",
               textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
               textAlign: "left",
+              textIndent: 0,
             }}
           >
             {children}

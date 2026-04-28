@@ -188,6 +188,8 @@ export function getEnchantStatModifier(
     // Damage multiplicative
     case "CORRUPTED":
       return { damageMultiplier: 1.5 }; // "50% 더 많은 피해"
+    case "INSTINCT":
+      return { damageMultiplier: 2 };   // "공격 피해량이 2배"
     // Block additive
     case "ADROIT":
     case "NIMBLE":
