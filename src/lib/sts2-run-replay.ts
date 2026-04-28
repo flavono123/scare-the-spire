@@ -57,6 +57,7 @@ export interface ReplayEnchantment {
 export interface ReplayDeckCard {
   id: string;
   floor_added_to_deck?: number;
+  current_upgrade_level?: number;
 }
 
 export interface ReplayRelic {
@@ -690,6 +691,8 @@ export function parseReplayRun(raw: string): ReplayRun {
                   id: card.id,
                   floor_added_to_deck:
                     typeof card.floor_added_to_deck === "number" ? card.floor_added_to_deck : undefined,
+                  current_upgrade_level:
+                    typeof card.current_upgrade_level === "number" ? card.current_upgrade_level : undefined,
                 }))
             : [],
           relics: Array.isArray(player?.relics)

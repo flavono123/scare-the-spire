@@ -40,7 +40,7 @@ export interface TopbarState {
   potionSlots: number;
   bossInfo: BossInfo;
   ancientInfo: AncientInfo;
-  deck: { id: string; count: number }[];
+  deck: { id: string; count: number; upgradeCount: number }[];
   deckCount: number;
   elapsedSeconds: number;
 }
@@ -203,7 +203,7 @@ export function buildTopbarState(
 function buildDeckAtFloor(
   run: ReplayRun,
   currentFloor: number,
-): { id: string; count: number }[] {
+): { id: string; count: number; upgradeCount: number }[] {
   const player = run.players[0];
   if (!player) return [];
 
@@ -245,6 +245,13 @@ function buildDeckAtFloor(
 
   for (const [id, count] of starter) counts.set(id, count);
 
+  // Upgrade tracking: walk `upgraded_cards` events. The events don't say
+  // *which copy* got upgraded, so we just track total upgraded copies per
+  // ID and clamp to count. Removals can't tell us if an upgraded copy
+  // was the one removed — assume non-upgraded got removed first so the
+  // upgrade tracking favors keeping upgraded copies visible.
+  const upgrades = new Map<string, number>();
+
   // History walk #2: apply gains/losses up to currentFloor.
   let floor = 1;
   outer: for (const act of run.map_point_history) {
@@ -266,13 +273,20 @@ function buildDeckAtFloor(
         if (cur > 1) counts.set(c.id, cur - 1);
         else counts.delete(c.id);
       }
+      for (const id of entry.upgraded_cards ?? []) {
+        upgrades.set(id, (upgrades.get(id) ?? 0) + 1);
+      }
       floor += 1;
     }
   }
 
-  return Array.from(counts, ([id, count]) => ({ id, count })).sort((a, b) =>
-    a.id.localeCompare(b.id),
-  );
+  return Array.from(counts, ([id, count]) => ({
+    id,
+    count,
+    // Clamp upgradeCount to count — removals after upgrade may have
+    // pulled the upgraded copy.
+    upgradeCount: Math.min(count, upgrades.get(id) ?? 0),
+  })).sort((a, b) => a.id.localeCompare(b.id));
 }
 
 export function collectRelevantCardIds(run: ReplayRun): string[] {

@@ -19,7 +19,7 @@ type TypeFilter = (typeof TYPE_FILTERS)[number]["key"];
 interface DeckModalProps {
   open: boolean;
   onClose: () => void;
-  deck: { id: string; count: number }[];
+  deck: { id: string; count: number; upgradeCount: number }[];
   cardsById: Record<string, CodexCard>;
   currentFloor: number;
 }
@@ -52,17 +52,32 @@ export function DeckModal({
   }
 
   const expanded = useMemo(() => {
-    const items: { card: CodexCard | null; id: string; key: string }[] = [];
+    const items: {
+      card: CodexCard | null;
+      id: string;
+      key: string;
+      upgraded: boolean;
+    }[] = [];
     for (const entry of deck) {
       const card = cardsById[entry.id] ?? null;
+      // Upgraded copies render first inside this id group so the deck looks
+      // organized when sort order keeps them adjacent.
       for (let i = 0; i < entry.count; i++) {
-        items.push({ card, id: entry.id, key: `${entry.id}-${i}` });
+        items.push({
+          card,
+          id: entry.id,
+          key: `${entry.id}-${i}`,
+          upgraded: i < entry.upgradeCount,
+        });
       }
     }
     return items.sort((a, b) => {
       const an = a.card?.name ?? a.id;
       const bn = b.card?.name ?? b.id;
-      return an.localeCompare(bn, "ko");
+      const cmp = an.localeCompare(bn, "ko");
+      if (cmp !== 0) return cmp;
+      // Within same name, upgraded first so `+` stands out in the grid.
+      return Number(b.upgraded) - Number(a.upgraded);
     });
   }, [deck, cardsById]);
 
@@ -86,7 +101,7 @@ export function DeckModal({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-base font-bold tracking-tight text-zinc-50">
-              현재 덱 풀
+              현재 덱
             </h2>
             <p className="mt-0.5 text-xs text-zinc-400">
               {currentFloor}층 기준 · {totalCount}장
@@ -129,7 +144,7 @@ export function DeckModal({
                 <CardTile
                   key={item.key}
                   card={item.card}
-                  showUpgrade={false}
+                  showUpgrade={item.upgraded}
                   showBeta={false}
                 />
               ) : (
