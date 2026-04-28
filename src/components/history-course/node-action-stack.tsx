@@ -211,13 +211,16 @@ function StackItemView({
   // ── Visual pose ──
   // While appearing, render the item AS IF it's still at pose +1 (below
   // slot, dim+blur), then phase=hold pulls it to pose=0 styling. This avoids
-  // an opacity flash at the slot boundary.
+  // an opacity flash at the slot boundary. Items in "queued" phase (not yet
+  // their turn) still need to render at pose +1/-1 so the slot machine
+  // shows the upcoming item as a preview — only the post-effect-completion
+  // states permanently hide.
   const isFlyDone =
     item.postEffect.kind === "fly" && (phase === "post" || phase === "done");
   const isFadeDone = item.postEffect.kind === "fade" && phase === "done";
   const visualPose = isCurrent && phase === "appear" ? 1 : pose;
   const fullyHidden =
-    Math.abs(visualPose) >= 2 || isFlyDone || isFadeDone || phase === "queued";
+    Math.abs(visualPose) >= 2 || isFlyDone || isFadeDone;
 
   let slotScale = 1;
   let slotBlur = 0;
@@ -284,6 +287,18 @@ function StackItemView({
   const verbColor = "rgba(228, 228, 231, 0.85)";
   const labelColor = item.textColor ?? "#fafafa";
 
+  // Soft bloom — drop-shadow chain follows the actual icon+text alpha, so
+  // there's no visible container boundary. Only the current item gets the
+  // big bloom (others rely on slot dim). Stacks of drop-shadows compose
+  // into a smooth glow that widens with distance.
+  const currentBloom =
+    isCurrent && phase !== "appear" && !labelHidden
+      ? "drop-shadow(0 0 4px rgba(0,0,0,0.85)) drop-shadow(0 0 10px rgba(0,0,0,0.7)) drop-shadow(0 0 22px rgba(0,0,0,0.45)) drop-shadow(0 0 36px rgba(0,0,0,0.25))"
+      : "";
+  const slotFilter = finalBlur > 0 ? `blur(${finalBlur}px)` : "";
+  const composedFilter =
+    [slotFilter, currentBloom].filter(Boolean).join(" ") || undefined;
+
   return (
     <div
       aria-hidden
@@ -298,37 +313,16 @@ function StackItemView({
         transform: `translate3d(${finalDx}px, calc(-50% + ${finalDy}px), 0) scale(${finalScale})`,
         transformOrigin: "left center",
         opacity: itemOpacity,
-        filter: finalBlur > 0 ? `blur(${finalBlur}px)` : undefined,
+        filter: composedFilter,
         transition: `transform ${transitionDur}ms ${transitionEase}, opacity ${transitionDur}ms ${transitionEase}, filter ${transitionDur}ms ${transitionEase}`,
         willChange: "transform, opacity, filter",
       }}
     >
-      {/* Per-item radial halo — only on the current item. Soft black glow
-          fading to transparent so the label reads against the map without
-          a visible container boundary. */}
-      {isCurrent && phase !== "appear" && (
-        <div
-          aria-hidden
-          className="pointer-events-none absolute"
-          style={{
-            left: -44,
-            top: -32,
-            width: "calc(100% + 96px)",
-            height: "calc(100% + 64px)",
-            background:
-              "radial-gradient(ellipse at left center, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.55) 30%, rgba(0,0,0,0.18) 65%, rgba(0,0,0,0) 100%)",
-            zIndex: -1,
-            opacity: labelHidden ? 0 : 1,
-            transition: `opacity ${Math.round(TEXT_FADE_MS * factor)}ms ease-out`,
-          }}
-        />
-      )}
-
       <div className="flex items-center gap-2">
         {item.icon}
         {item.label && (
           <p
-            className="text-[13px] font-bold leading-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)]"
+            className="text-[13px] font-bold leading-none"
             style={{
               color: labelColor,
               opacity: labelHidden ? 0 : 1,

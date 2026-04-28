@@ -66,6 +66,52 @@ test("node action stack — boots run", async ({ page }) => {
   expect(errors, errors.join("\n")).toEqual([]);
 });
 
+test("slot machine — next item visible at pose +1", async ({ page }) => {
+  // Necrobinder APDC seed: Neow node (step 1) has 3 cards + 5 relics = 8
+  // stack items, ideal for verifying the slot machine preroll.
+  test.setTimeout(60000);
+  await page.setViewportSize({ width: 1600, height: 900 });
+  const res = await page.goto(`${BASE}/history-course/APDCAB0SMN`);
+  expect(res?.status()).toBeLessThan(400);
+  await page.waitForLoadState("networkidle");
+
+  await page.locator('[data-testid="node-stack-item"]').first().waitFor({
+    state: "attached",
+    timeout: 8000,
+  });
+  await waitForPhase(page, "hold");
+  await page.waitForTimeout(300);
+  await page.screenshot({
+    path: path.join(OUT_DIR, "11-slot-multi-hold.png"),
+    fullPage: false,
+  });
+  const cropRect = await page.evaluate(() => {
+    const el = document.querySelector('[data-testid="node-stack-item"][data-pose="0"]');
+    const r = el?.getBoundingClientRect();
+    return r ? { x: r.x, y: r.y, w: r.width, h: r.height } : null;
+  });
+  if (cropRect) {
+    await page.screenshot({
+      path: path.join(OUT_DIR, "11b-slot-multi-crop.png"),
+      clip: {
+        x: Math.max(0, cropRect.x - 80),
+        y: Math.max(0, cropRect.y - 80),
+        width: 540,
+        height: 280,
+      },
+    });
+  }
+
+  // Verify pose=1 (next-up) element is rendered visible — this was the
+  // queued-phase visibility bug fix.
+  const poseOne = page.locator('[data-testid="node-stack-item"][data-pose="1"]').first();
+  await expect(poseOne).toBeVisible({ timeout: 1500 });
+  const poseOneOpacity = await poseOne.evaluate(
+    (el) => parseFloat(window.getComputedStyle(el).opacity || "0"),
+  );
+  expect(poseOneOpacity).toBeGreaterThan(0.2);
+});
+
 test("deck modal — sticky backdrop + 획득순", async ({ page }) => {
   test.setTimeout(60000);
   await page.setViewportSize({ width: 1600, height: 900 });

@@ -384,6 +384,10 @@ export function HistoryCourseShell({
     setStep(1);
     setIntroToken((t) => t + 1);
     setIntroActive(true);
+    // Without resetting replayReady, the stack starts the moment intro
+    // fades — same time as the smooth scroll — and the slot machine never
+    // gets its preroll. The act-swap path resets this for the same reason.
+    setReplayReady(false);
     setPlaying(true);
     window.setTimeout(() => setIntroActive(false), ACT_INTRO_TOTAL_MS);
   }, []);
@@ -583,14 +587,6 @@ function Stage({
         style={{
           willChange: "scroll-position",
           contain: "paint",
-          // While a node action stack is playing, dim + soft-blur the map so
-          // the stack reads as the focus. Container has no visible boundary
-          // (each item carries its own radial halo).
-          filter:
-            stackItems.length > 0
-              ? "blur(2.5px) brightness(0.62) saturate(0.85)"
-              : undefined,
-          transition: "filter 280ms ease-out",
         }}
       >
         <div className="flex min-h-full justify-center">
