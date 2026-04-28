@@ -511,7 +511,7 @@ function Stage({
         className="absolute inset-0 overflow-y-auto overflow-x-hidden pt-[96px]"
       >
         <div className="flex min-h-full justify-center">
-          <SeededMapView act={act} step={step} />
+          <SeededMapView act={act} step={step} onSeekToStep={onScrub} />
         </div>
       </div>
 

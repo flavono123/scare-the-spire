@@ -20,6 +20,7 @@ import {
   type ReplayRun,
 } from "@/lib/sts2-run-replay";
 import { localize, localizeAny } from "@/lib/sts2-i18n";
+import { cn } from "@/lib/utils";
 
 const NODE_META: Record<
   ReplayMapPointType,
@@ -920,9 +921,14 @@ function ActReplayCard({ act, run }: { act: ReplayActAnalysis; run: ReplayRun })
 export function SeededMapView({
   act,
   step,
+  onSeekToStep,
 }: {
   act: ReplayActAnalysis;
   step: number;
+  /** When provided, visited (past) nodes become clickable and call this with
+   * the step number to rewind playback to. Future nodes stay non-interactive
+   * because the player can't anticipate the path. */
+  onSeekToStep?: (step: number) => void;
 }) {
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const meta = actMapMeta(act.actId);
@@ -1022,12 +1028,23 @@ export function SeededMapView({
           const revealEntry = visited ? act.history[stepIndex] : null;
           const isHovered = hoveredNodeId === node.id;
 
+          const seekable = onSeekToStep != null && visited;
           return (
             <div
               key={node.id}
-              className="absolute"
+              className={cn(
+                "absolute",
+                seekable && "cursor-pointer",
+              )}
               data-node-id={node.id}
               data-node-current={current ? "true" : undefined}
+              role={seekable ? "button" : undefined}
+              tabIndex={seekable ? 0 : undefined}
+              aria-label={
+                seekable && stepIndex != null
+                  ? `${stepIndex + 1}층으로 되감기`
+                  : undefined
+              }
               style={{
                 left: position.left - size.width / 2,
                 top: position.top - size.height / 2,
@@ -1037,6 +1054,21 @@ export function SeededMapView({
               }}
               onMouseEnter={() => visited && setHoveredNodeId(node.id)}
               onMouseLeave={() => setHoveredNodeId((prev) => (prev === node.id ? null : prev))}
+              onClick={
+                seekable && stepIndex != null
+                  ? () => onSeekToStep!(stepIndex + 1)
+                  : undefined
+              }
+              onKeyDown={
+                seekable && stepIndex != null
+                  ? (event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        onSeekToStep!(stepIndex + 1);
+                      }
+                    }
+                  : undefined
+              }
             >
               <div
                 className="absolute inset-0 transition-transform duration-300"
