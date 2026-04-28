@@ -106,6 +106,39 @@ test("hover preview keeps own preset when active enchant has different amount (V
   expect(text).not.toContain("카드를 8장 뽑습니다");
 });
 
+test("hovering the card itself shows active enchant's tooltip", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(`${BASE}/codex/cards/bash`);
+  await page.waitForLoadState("networkidle");
+
+  // 본능 적용 후 카드 hover → 본능 description 이 떠야 함
+  await page.locator('button[title="본능"]').click();
+  await page.waitForTimeout(100);
+  // 캐러셀에서 마우스를 카드 영역으로 옮김
+  await page.mouse.move(640, 400);
+  await page.waitForTimeout(150);
+
+  const text = await cardText(page);
+  expect(text).toContain("이 카드의 공격 피해량이 2배가 됩니다");
+});
+
+test("clicking the in-card enchant slot removes the enchant", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(`${BASE}/codex/cards/bash`);
+  await page.waitForLoadState("networkidle");
+
+  // 본능 적용 → 피해 16
+  await page.locator('button[title="본능"]').click();
+  await page.waitForTimeout(150);
+  expect(await cardText(page)).toContain("피해를 16");
+
+  // 카드 슬롯(role=button, label에 "본능 해제") 클릭 → 해제
+  await page.getByRole("button", { name: /본능 해제/ }).click();
+  await page.waitForTimeout(150);
+  expect(await cardText(page)).toContain("피해를 8");
+  expect(await cardText(page)).not.toContain("피해를 16");
+});
+
 test("hover preview keeps own amount when hovering active enchant", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(`${BASE}/codex/cards/bash`);

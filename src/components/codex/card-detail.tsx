@@ -154,8 +154,19 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
         )}
       </div>
 
-      {/* 카드 + hover popover (popover는 카드 우측, 캐러셀은 카드 아래라 안 겹침) */}
-      <div className="relative" style={{ width: cardWidth }}>
+      {/* 카드 + hover popover (popover는 카드 우측, 캐러셀은 카드 아래라 안 겹침).
+          활성 인챈트가 있으면 카드 hover 시에도 그 인챈트의 툴팁이 뜨고,
+          카드 슬롯 클릭으로 해제 가능. */}
+      <div
+        className="relative"
+        style={{ width: cardWidth }}
+        onMouseEnter={() => {
+          if (activeEnchantId) setHoveredEnchantId(activeEnchantId);
+        }}
+        onMouseLeave={() => {
+          setHoveredEnchantId((cur) => (cur === activeEnchantId ? null : cur));
+        }}
+      >
         <CardTile
           card={card}
           showUpgrade={showUpgrade}
@@ -169,6 +180,11 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
           enchantRemovedKeywords={activeRemovedKeywords}
           descriptionSuffix={activeExtraText}
           enchantStatMod={activeStatMod}
+          onEnchantSlotClick={() => {
+            setActiveEnchantId(null);
+            setEnchantAmount(DEFAULT_ENCHANT_AMOUNT);
+            setHoveredEnchantId(null);
+          }}
         />
         {hoveredEnchant && (
           <div

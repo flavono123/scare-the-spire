@@ -122,6 +122,8 @@ interface CardTileProps {
   descriptionSuffix?: string | null;
   /** 인챈트가 카드 damage/block 에 미치는 효과 — descriptionRaw 재렌더에 사용. */
   enchantStatMod?: EnchantVarMod | null;
+  /** 카드에 박힌 인챈트 슬롯을 클릭했을 때 (해제 등). */
+  onEnchantSlotClick?: () => void;
   onClick?: () => void;
 }
 
@@ -139,6 +141,7 @@ export const CardTile = memo(function CardTile({
   enchantRemovedKeywords,
   descriptionSuffix,
   enchantStatMod,
+  onEnchantSlotClick,
   onClick,
 }: CardTileProps) {
   const [imgError, setImgError] = useState(false);
@@ -386,16 +389,35 @@ export const CardTile = memo(function CardTile({
   // ─── 인챈트 슬롯 (코스트 아래) — game material: hsv.gdshader(h=0.25, s=0.4, v=1.0)
   // → CSS filter 환산: hue-rotate(-270deg = +90deg) saturate(0.4) brightness(1.0)
   // 슬롯 텍스처를 검정/회색으로 만드는 게임 셰이더와 동일.
+  const slotInteractive = Boolean(onEnchantSlotClick);
   const renderEnchantSlot = () => enchantmentImageUrl ? (
     <div
-      className="absolute z-[6] pointer-events-none"
+      role={slotInteractive ? "button" : undefined}
+      aria-label={slotInteractive ? `${enchantmentLabel ?? "인챈트"} 해제` : undefined}
+      tabIndex={slotInteractive ? 0 : undefined}
+      onClick={slotInteractive
+        ? (e) => {
+            e.stopPropagation();
+            onEnchantSlotClick?.();
+          }
+        : undefined}
+      onKeyDown={slotInteractive
+        ? (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              e.stopPropagation();
+              onEnchantSlotClick?.();
+            }
+          }
+        : undefined}
+      className={`absolute z-[6] ${slotInteractive ? "cursor-pointer hover:scale-110 transition-transform" : "pointer-events-none"}`}
       style={{
         top: `${L.enchant.top}%`,
         left: `${L.enchant.left}%`,
         width: `${L.enchant.width}%`,
         aspectRatio: "72/54",
       }}
-      title={enchantmentLabel ?? undefined}
+      title={slotInteractive ? `${enchantmentLabel ?? ""} (클릭으로 해제)` : enchantmentLabel ?? undefined}
     >
       {/* Slot base — 게임 ShaderMaterial_ots2x: HSV(0.25, 0.4, 1.0) */}
       <Image
