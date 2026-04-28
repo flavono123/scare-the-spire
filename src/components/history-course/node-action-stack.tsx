@@ -318,24 +318,25 @@ function StackItemView({
         willChange: "transform, opacity, filter",
       }}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5">
         {item.icon}
         {item.label && (
           <p
-            className="text-[13px] font-bold leading-none"
+            className="font-bold leading-none"
             style={{
+              fontSize: "24px",
               color: labelColor,
               opacity: labelHidden ? 0 : 1,
               transition: `opacity ${Math.round(TEXT_FADE_MS * factor)}ms ease-out, color ${Math.round(APPEAR_MS * factor)}ms ease-out`,
-              WebkitTextStroke: "0.5px rgba(0,0,0,0.85)",
+              WebkitTextStroke: "0.6px rgba(0,0,0,0.85)",
               whiteSpace: "nowrap",
             }}
           >
             <span>{item.label}</span>
             {item.verb && (
               <span
-                className="ml-1 text-xs font-semibold"
-                style={{ color: verbColor }}
+                className="ml-1.5 font-semibold"
+                style={{ color: verbColor, fontSize: "20px" }}
               >
                 {item.verb}
               </span>
