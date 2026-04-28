@@ -108,14 +108,16 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
   if (fnMatch) {
     const [, name, fn] = fnMatch;
     const v = looksLike(name, vars);
-    if (v === undefined) return `{${body}}`;
+    // No data-side base value → assume the var is a runtime stack/counter
+    // (e.g. PowerVar.Amount). Show the conventional `X` placeholder.
+    if (v === undefined) return "X";
     switch (fn) {
       case "energyIcons":
-        return typeof v === "number" ? `[energy:${v}]` : `{${body}}`;
+        return typeof v === "number" ? `[energy:${v}]` : "X";
       case "starIcons":
-        return typeof v === "number" ? `[star:${v}]` : `{${body}}`;
+        return typeof v === "number" ? `[star:${v}]` : "X";
       case "percentMore":
-        return typeof v === "number" ? `${v}%` : `{${body}}`;
+        return typeof v === "number" ? `${v}%` : "X";
       case "diff":
         return String(v);
       default:
@@ -128,7 +130,8 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
     const v = looksLike(body, vars);
     if (v !== undefined) return String(v);
     if (body in REFERENCE_PLACEHOLDERS) return REFERENCE_PLACEHOLDERS[body];
-    return `{${body}}`;
+    // Unmatched bare var = runtime stack/counter (e.g. {Amount}). Render as X.
+    return "X";
   }
 
   // Unknown shape — leave intact.
