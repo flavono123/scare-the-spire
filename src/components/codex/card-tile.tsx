@@ -5,8 +5,7 @@ import Image from "@/components/ui/static-image";
 import { CodexCard } from "@/lib/codex-types";
 import {
   parseDescription,
-  renderUpgradedDescription,
-  renderEnchantedDescription,
+  renderCardDescription,
   TermTooltip,
   KEYWORD_DESC,
   GOLD_TERM_DESC,
@@ -184,18 +183,18 @@ export const CardTile = memo(function CardTile({
   const starStroke = gameStroke(STAR_OUTLINE_COLOR, cardWidth, 12);
   const enchantAmountStroke = gameStroke(ENCHANT_AMOUNT_OUTLINE, cardWidth, 8);
 
-  // descText 결정 우선순위:
-  //  1) 인챈트 stat modifier 있으면 enchanted 렌더 (damage/block 변경)
-  //  2) 강화면 upgraded 렌더
-  //  3) 그 외엔 원본 description
-  let descText: string;
-  if (enchantStatMod && (enchantStatMod.damageAdd || enchantStatMod.damageMultiplier || enchantStatMod.blockAdd)) {
-    descText = renderEnchantedDescription(card, enchantStatMod);
-  } else if (isUpgraded) {
-    descText = renderUpgradedDescription(card);
-  } else {
-    descText = card.description;
-  }
+  // 강화 + 인챈트 모두 누적 적용 (게임 순서: base → upgrade → enchant).
+  // descriptionRaw 가 없으면 통합 함수가 card.description 으로 폴백.
+  const hasEnchantStat = Boolean(
+    enchantStatMod &&
+      (enchantStatMod.damageAdd || enchantStatMod.damageMultiplier || enchantStatMod.blockAdd)
+  );
+  const descText = isUpgraded || hasEnchantStat
+    ? renderCardDescription(card, {
+        upgrade: isUpgraded,
+        enchantMod: hasEnchantStat ? enchantStatMod : null,
+      })
+    : card.description;
   const descParts = parseDescription(descText);
   // 인챈트 추가 텍스트 — 분홍 baseline + 안의 모든 색을 분홍 통일.
   const suffixParts = descriptionSuffix

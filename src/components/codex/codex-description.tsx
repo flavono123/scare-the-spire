@@ -69,9 +69,16 @@ export function parseDescription(rawDesc: string): DescPart[] {
 }
 
 // =============================================================================
-// Enchanted description builder
-// 인챈트 효과(damage/block additive/multiplicative)를 카드 vars에 적용해
-// description을 다시 렌더. 변경된 값은 [purple]...[/purple] 로 강조.
+// Card description renderer
+//
+// 게임 적용 순서: base → upgrade → enchant.
+// 즉 강화는 base vars 위에 += diff 로 누적되고, 인챈트(damage/block)는
+// 강화된 값 위에 추가로 적용된다 (Slay the Spire 2 EnchantmentModel: GetDamage()는
+// base = upgrade-applied damage 에 EnchantDamageMultiplicative * EnchantDamageAdditive 적용).
+//
+// 변경 색상:
+//  - 인챈트로 바뀐 값 → [purple]
+//  - 강화로만 바뀐 값 (인챈트는 그 값을 안 건드림) → [green]
 // =============================================================================
 
 export interface EnchantVarMod {
@@ -80,89 +87,67 @@ export interface EnchantVarMod {
   blockAdd?: number;
 }
 
-export function renderEnchantedDescription(
+interface RenderCardOptions {
+  upgrade?: boolean;
+  enchantMod?: EnchantVarMod | null;
+}
+
+export function renderCardDescription(
   card: CodexCard,
-  mod: EnchantVarMod,
-  upgradedVarsOverride?: Record<string, number>,
+  options: RenderCardOptions = {},
 ): string {
   const raw = card.descriptionRaw;
   if (!raw) return card.description;
-  const baseVars: Record<string, number> = upgradedVarsOverride ?? { ...card.vars };
-  const enchanted: Record<string, number> = { ...baseVars };
-  const changed = new Set<string>();
 
-  for (const k of Object.keys(enchanted)) {
-    const lk = k.toLowerCase();
-    if (lk.startsWith("damage") && (mod.damageAdd || mod.damageMultiplier)) {
-      let v = enchanted[k];
-      if (mod.damageMultiplier) v = Math.floor(v * mod.damageMultiplier);
-      if (mod.damageAdd) v = v + mod.damageAdd;
-      if (v !== enchanted[k]) {
-        enchanted[k] = v;
-        changed.add(lk);
+  const finalVars: Record<string, number> = { ...card.vars };
+  const upgradeChanged = new Set<string>();
+  const enchantChanged = new Set<string>();
+
+  if (options.upgrade && card.upgrade) {
+    for (const [key, diff] of Object.entries(card.upgrade)) {
+      if (typeof diff === "string" && /^[+-]\d+/.test(diff)) {
+        const delta = parseInt(diff, 10);
+        const varKey = Object.keys(finalVars).find(
+          (k) => k.toLowerCase() === key.toLowerCase()
+        );
+        if (varKey && delta !== 0) {
+          finalVars[varKey] = (finalVars[varKey] ?? 0) + delta;
+          upgradeChanged.add(varKey.toLowerCase());
+        }
       }
-    } else if (lk === "block" && mod.blockAdd) {
-      const v = enchanted[k] + mod.blockAdd;
-      if (v !== enchanted[k]) {
-        enchanted[k] = v;
-        changed.add(lk);
+    }
+  }
+
+  const mod = options.enchantMod;
+  if (mod) {
+    for (const k of Object.keys(finalVars)) {
+      const lk = k.toLowerCase();
+      const before = finalVars[k];
+      let after = before;
+      if (lk.startsWith("damage")) {
+        if (mod.damageMultiplier) after = Math.floor(after * mod.damageMultiplier);
+        if (mod.damageAdd) after = after + mod.damageAdd;
+      } else if (lk === "block" && mod.blockAdd) {
+        after = after + mod.blockAdd;
+      }
+      if (after !== before) {
+        finalVars[k] = after;
+        enchantChanged.add(lk);
       }
     }
   }
 
   return raw.replace(/\{(\w+)(?::diff\(\))?\}/g, (match, varName: string) => {
-    const key = varName in enchanted
+    const key = varName in finalVars
       ? varName
-      : Object.keys(enchanted).find((k) => k.toLowerCase() === varName.toLowerCase());
+      : Object.keys(finalVars).find((k) => k.toLowerCase() === varName.toLowerCase());
     if (!key) return match;
-    const val = String(enchanted[key]);
-    if (changed.has(key.toLowerCase())) {
-      return `[purple]${val}[/purple]`;
-    }
+    const val = String(finalVars[key]);
+    const lk = key.toLowerCase();
+    if (enchantChanged.has(lk)) return `[purple]${val}[/purple]`;
+    if (upgradeChanged.has(lk)) return `[green]${val}[/green]`;
     return val;
   });
-}
-
-// =============================================================================
-// Upgraded description builder
-// =============================================================================
-
-// Substitute {Var:diff()} templates with upgraded values.
-// Changed values are wrapped in [green]...[/green] for highlight rendering.
-export function renderUpgradedDescription(card: CodexCard): string {
-  if (!card.upgrade || !card.descriptionRaw) return card.description;
-
-  const changedKeys = new Set<string>();
-  const upgradedVars: Record<string, number> = { ...card.vars };
-
-  for (const [key, diff] of Object.entries(card.upgrade)) {
-    if (typeof diff === "string" && diff.match(/^[+-]\d+/)) {
-      const delta = parseInt(diff, 10);
-      const varKey = Object.keys(upgradedVars).find(
-        (k) => k.toLowerCase() === key.toLowerCase()
-      );
-      if (varKey && delta !== 0) {
-        upgradedVars[varKey] = (upgradedVars[varKey] ?? 0) + delta;
-        changedKeys.add(varKey.toLowerCase());
-      }
-    }
-  }
-
-  return card.descriptionRaw.replace(
-    /\{(\w+)(?::diff\(\))?\}/g,
-    (match, varName: string) => {
-      const exactVal = varName in upgradedVars ? upgradedVars[varName] : undefined;
-      const key = exactVal !== undefined
-        ? varName
-        : Object.keys(upgradedVars).find((k) => k.toLowerCase() === varName.toLowerCase());
-      if (!key) return match;
-      const val = String(upgradedVars[key]);
-      if (changedKeys.has(key.toLowerCase())) {
-        return `[green]${val}[/green]`;
-      }
-      return val;
-    }
-  );
 }
 
 // =============================================================================

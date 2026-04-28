@@ -10,6 +10,7 @@ export default defineConfig({
     "history-course-rewards.spec.ts",
     "perf-probe.spec.ts",
     "card-tile-visual.spec.ts",
+    "enchantment-stat-combinations.spec.ts",
   ],
   timeout: 30_000,
   use: {
