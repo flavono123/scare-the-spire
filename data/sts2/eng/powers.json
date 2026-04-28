@@ -7,7 +7,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/accelerant_power.png"
+    "image_url": "/static/images/powers/accelerant_power.png",
+    "vars": {}
   },
   {
     "id": "ACCURACY",
@@ -17,7 +18,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/accuracy_power.png"
+    "image_url": "/static/images/powers/accuracy_power.png",
+    "vars": {}
   },
   {
     "id": "ADAPTABLE",
@@ -27,7 +29,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/adaptable_power.png"
+    "image_url": "/static/images/powers/adaptable_power.png",
+    "vars": {}
   },
   {
     "id": "AFTERIMAGE",
@@ -37,7 +40,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/afterimage_power.png"
+    "image_url": "/static/images/powers/afterimage_power.png",
+    "vars": {}
   },
   {
     "id": "AGGRESSION",
@@ -47,7 +51,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/aggression_power.png"
+    "image_url": "/static/images/powers/aggression_power.png",
+    "vars": {}
   },
   {
     "id": "ANTICIPATE",
@@ -59,7 +64,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/anticipate_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "ARSENAL",
@@ -69,7 +75,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/arsenal_power.png"
+    "image_url": "/static/images/powers/arsenal_power.png",
+    "vars": {}
   },
   {
     "id": "ARTIFACT",
@@ -79,7 +86,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/artifact_power.png"
+    "image_url": "/static/images/powers/artifact_power.png",
+    "vars": {}
   },
   {
     "id": "ASLEEP",
@@ -89,7 +97,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/asleep_power.png"
+    "image_url": "/static/images/powers/asleep_power.png",
+    "vars": {}
   },
   {
     "id": "AUTOMATION",
@@ -99,7 +108,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/automation_power.png"
+    "image_url": "/static/images/powers/automation_power.png",
+    "vars": {
+      "BaseCards": 10
+    }
   },
   {
     "id": "BACK_ATTACK_LEFT",
@@ -109,7 +121,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/back_attack_left_power.png"
+    "image_url": "/static/images/powers/back_attack_left_power.png",
+    "vars": {}
   },
   {
     "id": "BACK_ATTACK_RIGHT",
@@ -119,7 +132,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/back_attack_right_power.png"
+    "image_url": "/static/images/powers/back_attack_right_power.png",
+    "vars": {}
   },
   {
     "id": "BARRICADE",
@@ -129,7 +143,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/barricade_power.png"
+    "image_url": "/static/images/powers/barricade_power.png",
+    "vars": {}
   },
   {
     "id": "BATTLEWORN_DUMMY_TIME_LIMIT",
@@ -139,7 +154,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/battleworn_dummy_time_limit_power.png"
+    "image_url": "/static/images/powers/battleworn_dummy_time_limit_power.png",
+    "vars": {}
   },
   {
     "id": "BEACON_OF_HOPE",
@@ -149,7 +165,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/beacon_of_hope_power.png"
+    "image_url": "/static/images/powers/beacon_of_hope_power.png",
+    "vars": {}
   },
   {
     "id": "BIASED_COGNITION",
@@ -159,7 +176,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/biased_cognition_power.png"
+    "image_url": "/static/images/powers/biased_cognition_power.png",
+    "vars": {}
   },
   {
     "id": "BLACK_HOLE",
@@ -169,7 +187,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/black_hole_power.png"
+    "image_url": "/static/images/powers/black_hole_power.png",
+    "vars": {}
   },
   {
     "id": "BLADE_OF_INK",
@@ -191,7 +210,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/block_next_turn_power.png"
+    "image_url": "/static/images/powers/block_next_turn_power.png",
+    "vars": {}
   },
   {
     "id": "BLUR",
@@ -201,7 +221,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/blur_power.png"
+    "image_url": "/static/images/powers/blur_power.png",
+    "vars": {}
   },
   {
     "id": "BUFFER",
@@ -211,7 +232,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/buffer_power.png"
+    "image_url": "/static/images/powers/buffer_power.png",
+    "vars": {}
   },
   {
     "id": "BURROWED",
@@ -221,7 +243,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/burrowed_power.png"
+    "image_url": "/static/images/powers/burrowed_power.png",
+    "vars": {}
   },
   {
     "id": "BURST",
@@ -231,7 +254,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/burst_power.png"
+    "image_url": "/static/images/powers/burst_power.png",
+    "vars": {}
   },
   {
     "id": "CALAMITY",
@@ -241,7 +265,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/calamity_power.png"
+    "image_url": "/static/images/powers/calamity_power.png",
+    "vars": {}
   },
   {
     "id": "CALCIFY",
@@ -251,7 +276,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/calcify_power.png"
+    "image_url": "/static/images/powers/calcify_power.png",
+    "vars": {}
   },
   {
     "id": "CALL_OF_THE_VOID",
@@ -261,7 +287,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/call_of_the_void_power.png"
+    "image_url": "/static/images/powers/call_of_the_void_power.png",
+    "vars": {}
   },
   {
     "id": "CHAINS_OF_BINDING",
@@ -271,7 +298,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/chains_of_binding_power.png"
+    "image_url": "/static/images/powers/chains_of_binding_power.png",
+    "vars": {}
   },
   {
     "id": "CHILD_OF_THE_STARS",
@@ -281,7 +309,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/child_of_the_stars_power.png"
+    "image_url": "/static/images/powers/child_of_the_stars_power.png",
+    "vars": {}
   },
   {
     "id": "CLARITY",
@@ -291,7 +320,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/clarity_power.png"
+    "image_url": "/static/images/powers/clarity_power.png",
+    "vars": {}
   },
   {
     "id": "COLOSSUS",
@@ -301,7 +331,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/colossus_power.png"
+    "image_url": "/static/images/powers/colossus_power.png",
+    "vars": {
+      "DamageDecrease": 0.5
+    }
   },
   {
     "id": "CONFUSED",
@@ -311,7 +344,8 @@
     "type": "Debuff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/confused_power.png"
+    "image_url": "/static/images/powers/confused_power.png",
+    "vars": {}
   },
   {
     "id": "CONQUEROR",
@@ -321,7 +355,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/conqueror_power.png"
+    "image_url": "/static/images/powers/conqueror_power.png",
+    "vars": {}
   },
   {
     "id": "CONSTRICT",
@@ -331,7 +366,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/constrict_power.png"
+    "image_url": "/static/images/powers/constrict_power.png",
+    "vars": {}
   },
   {
     "id": "CONSUMING_SHADOW",
@@ -341,7 +377,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/consuming_shadow_power.png"
+    "image_url": "/static/images/powers/consuming_shadow_power.png",
+    "vars": {}
   },
   {
     "id": "COOLANT",
@@ -351,7 +388,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/coolant_power.png"
+    "image_url": "/static/images/powers/coolant_power.png",
+    "vars": {}
   },
   {
     "id": "COORDINATE",
@@ -363,7 +401,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/coordinate_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "CORROSIVE_WAVE",
@@ -373,7 +412,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/corrosive_wave_power.png"
+    "image_url": "/static/images/powers/corrosive_wave_power.png",
+    "vars": {}
   },
   {
     "id": "CORRUPTION",
@@ -383,7 +423,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/corruption_power.png"
+    "image_url": "/static/images/powers/corruption_power.png",
+    "vars": {}
   },
   {
     "id": "COUNTDOWN",
@@ -393,7 +434,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/countdown_power.png"
+    "image_url": "/static/images/powers/countdown_power.png",
+    "vars": {}
   },
   {
     "id": "COVERED",
@@ -403,7 +445,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/covered_power.png"
+    "image_url": "/static/images/powers/covered_power.png",
+    "vars": {}
   },
   {
     "id": "CRAB_RAGE",
@@ -413,7 +456,11 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/crab_rage_power.png"
+    "image_url": "/static/images/powers/crab_rage_power.png",
+    "vars": {
+      "StrengthPower": 6,
+      "Block": 99
+    }
   },
   {
     "id": "CREATIVE_AI",
@@ -423,7 +470,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/creative_ai_power.png"
+    "image_url": "/static/images/powers/creative_ai_power.png",
+    "vars": {}
   },
   {
     "id": "CRIMSON_MANTLE",
@@ -433,7 +481,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/crimson_mantle_power.png"
+    "image_url": "/static/images/powers/crimson_mantle_power.png",
+    "vars": {
+      "SelfDamage": 0
+    }
   },
   {
     "id": "CRUELTY",
@@ -443,7 +494,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/cruelty_power.png"
+    "image_url": "/static/images/powers/cruelty_power.png",
+    "vars": {}
   },
   {
     "id": "CRUSH_UNDER",
@@ -455,7 +507,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/crush_under_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "CURIOUS",
@@ -465,7 +518,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/curious_power.png"
+    "image_url": "/static/images/powers/curious_power.png",
+    "vars": {}
   },
   {
     "id": "CURL_UP",
@@ -475,7 +529,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/curl_up_power.png"
+    "image_url": "/static/images/powers/curl_up_power.png",
+    "vars": {}
   },
   {
     "id": "DAMPEN",
@@ -485,7 +540,8 @@
     "type": "Debuff",
     "stack_type": "None",
     "allow_negative": null,
-    "image_url": "/static/images/powers/dampen_power.png"
+    "image_url": "/static/images/powers/dampen_power.png",
+    "vars": {}
   },
   {
     "id": "DANSE_MACABRE",
@@ -495,7 +551,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/danse_macabre_power.png"
+    "image_url": "/static/images/powers/danse_macabre_power.png",
+    "vars": {
+      "Energy": 2
+    }
   },
   {
     "id": "DARK_EMBRACE",
@@ -505,7 +564,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/dark_embrace_power.png"
+    "image_url": "/static/images/powers/dark_embrace_power.png",
+    "vars": {}
   },
   {
     "id": "DARK_SHACKLES",
@@ -517,7 +577,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/dark_shackles_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "DEBILITATE",
@@ -527,7 +588,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/debilitate_power.png"
+    "image_url": "/static/images/powers/debilitate_power.png",
+    "vars": {}
   },
   {
     "id": "DEMESNE",
@@ -537,7 +599,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/demesne_power.png"
+    "image_url": "/static/images/powers/demesne_power.png",
+    "vars": {}
   },
   {
     "id": "DEMISE",
@@ -547,7 +610,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/demise_power.png"
+    "image_url": "/static/images/powers/demise_power.png",
+    "vars": {}
   },
   {
     "id": "DEMON_FORM",
@@ -557,7 +621,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/demon_form_power.png"
+    "image_url": "/static/images/powers/demon_form_power.png",
+    "vars": {}
   },
   {
     "id": "DEVOUR_LIFE",
@@ -567,7 +632,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/devour_life_power.png"
+    "image_url": "/static/images/powers/devour_life_power.png",
+    "vars": {}
   },
   {
     "id": "DEXTERITY",
@@ -577,7 +643,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": true,
-    "image_url": "/static/images/powers/dexterity_power.png"
+    "image_url": "/static/images/powers/dexterity_power.png",
+    "vars": {}
   },
   {
     "id": "DIAMOND_DIADEM",
@@ -587,7 +654,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/diamond_diadem_power.png"
+    "image_url": "/static/images/powers/diamond_diadem_power.png",
+    "vars": {}
   },
   {
     "id": "DIE_FOR_YOU",
@@ -597,7 +665,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/die_for_you_power.png"
+    "image_url": "/static/images/powers/die_for_you_power.png",
+    "vars": {}
   },
   {
     "id": "DISINTEGRATION",
@@ -607,7 +676,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/disintegration_power.png"
+    "image_url": "/static/images/powers/disintegration_power.png",
+    "vars": {}
   },
   {
     "id": "DOOM",
@@ -617,7 +687,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/doom_power.png"
+    "image_url": "/static/images/powers/doom_power.png",
+    "vars": {}
   },
   {
     "id": "DOOR_REVIVAL",
@@ -637,7 +708,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/double_damage_power.png"
+    "image_url": "/static/images/powers/double_damage_power.png",
+    "vars": {}
   },
   {
     "id": "DRAW_CARDS_NEXT_TURN",
@@ -647,7 +719,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/draw_cards_next_turn_power.png"
+    "image_url": "/static/images/powers/draw_cards_next_turn_power.png",
+    "vars": {}
   },
   {
     "id": "DRUM_OF_BATTLE",
@@ -669,7 +742,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/duplication_power.png"
+    "image_url": "/static/images/powers/duplication_power.png",
+    "vars": {}
   },
   {
     "id": "DYING_STAR",
@@ -681,7 +755,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/dying_star_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "ECHO_FORM",
@@ -691,7 +766,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/echo_form_power.png"
+    "image_url": "/static/images/powers/echo_form_power.png",
+    "vars": {}
   },
   {
     "id": "ENERGY_NEXT_TURN",
@@ -701,7 +777,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/energy_next_turn_power.png"
+    "image_url": "/static/images/powers/energy_next_turn_power.png",
+    "vars": {}
   },
   {
     "id": "ENFEEBLING_TOUCH",
@@ -713,7 +790,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/enfeebling_touch_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "ENRAGE",
@@ -723,7 +801,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/enrage_power.png"
+    "image_url": "/static/images/powers/enrage_power.png",
+    "vars": {}
   },
   {
     "id": "ENTROPY",
@@ -733,7 +812,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/entropy_power.png"
+    "image_url": "/static/images/powers/entropy_power.png",
+    "vars": {}
   },
   {
     "id": "ENVENOM",
@@ -743,7 +823,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/envenom_power.png"
+    "image_url": "/static/images/powers/envenom_power.png",
+    "vars": {}
   },
   {
     "id": "ESCAPE_ARTIST",
@@ -753,7 +834,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/escape_artist_power.png"
+    "image_url": "/static/images/powers/escape_artist_power.png",
+    "vars": {}
   },
   {
     "id": "FAN_OF_KNIVES",
@@ -763,7 +845,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/fan_of_knives_power.png"
+    "image_url": "/static/images/powers/fan_of_knives_power.png",
+    "vars": {}
   },
   {
     "id": "FASTEN",
@@ -773,7 +856,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/fasten_power.png"
+    "image_url": "/static/images/powers/fasten_power.png",
+    "vars": {}
   },
   {
     "id": "FEEDING_FRENZY",
@@ -785,7 +869,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/feeding_frenzy_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "FEEL_NO_PAIN",
@@ -795,7 +880,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/feel_no_pain_power.png"
+    "image_url": "/static/images/powers/feel_no_pain_power.png",
+    "vars": {}
   },
   {
     "id": "FERAL",
@@ -805,7 +891,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/feral_power.png"
+    "image_url": "/static/images/powers/feral_power.png",
+    "vars": {}
   },
   {
     "id": "FLAME_BARRIER",
@@ -815,7 +902,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/flame_barrier_power.png"
+    "image_url": "/static/images/powers/flame_barrier_power.png",
+    "vars": {}
   },
   {
     "id": "FLANKING",
@@ -825,7 +913,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/flanking_power.png"
+    "image_url": "/static/images/powers/flanking_power.png",
+    "vars": {}
   },
   {
     "id": "FLEX_POTION",
@@ -837,7 +926,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/flex_potion_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "FLUTTER",
@@ -847,7 +937,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/flutter_power.png"
+    "image_url": "/static/images/powers/flutter_power.png",
+    "vars": {
+      "DamageDecrease": 50
+    }
   },
   {
     "id": "FOCUS",
@@ -857,7 +950,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": true,
-    "image_url": "/static/images/powers/focus_power.png"
+    "image_url": "/static/images/powers/focus_power.png",
+    "vars": {}
   },
   {
     "id": "FOCUSED_STRIKE",
@@ -869,7 +963,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/focused_strike_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "FORBIDDEN_GRIMOIRE",
@@ -879,7 +974,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/forbidden_grimoire_power.png"
+    "image_url": "/static/images/powers/forbidden_grimoire_power.png",
+    "vars": {}
   },
   {
     "id": "FOREGONE_CONCLUSION",
@@ -889,7 +985,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/foregone_conclusion_power.png"
+    "image_url": "/static/images/powers/foregone_conclusion_power.png",
+    "vars": {}
   },
   {
     "id": "FRAIL",
@@ -899,7 +996,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/frail_power.png"
+    "image_url": "/static/images/powers/frail_power.png",
+    "vars": {}
   },
   {
     "id": "FREE_ATTACK",
@@ -909,7 +1007,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/free_attack_power.png"
+    "image_url": "/static/images/powers/free_attack_power.png",
+    "vars": {}
   },
   {
     "id": "FREE_POWER",
@@ -919,7 +1018,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/free_power_power.png"
+    "image_url": "/static/images/powers/free_power_power.png",
+    "vars": {}
   },
   {
     "id": "FREE_SKILL",
@@ -929,7 +1029,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/free_skill_power.png"
+    "image_url": "/static/images/powers/free_skill_power.png",
+    "vars": {}
   },
   {
     "id": "FRIENDSHIP",
@@ -939,7 +1040,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/friendship_power.png"
+    "image_url": "/static/images/powers/friendship_power.png",
+    "vars": {}
   },
   {
     "id": "FURNACE",
@@ -949,7 +1051,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/furnace_power.png"
+    "image_url": "/static/images/powers/furnace_power.png",
+    "vars": {}
   },
   {
     "id": "GALVANIC",
@@ -959,7 +1062,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/galvanic_power.png"
+    "image_url": "/static/images/powers/galvanic_power.png",
+    "vars": {}
   },
   {
     "id": "GENESIS",
@@ -969,7 +1073,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/genesis_power.png"
+    "image_url": "/static/images/powers/genesis_power.png",
+    "vars": {}
   },
   {
     "id": "GIGANTIFICATION",
@@ -979,7 +1084,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/gigantification_power.png"
+    "image_url": "/static/images/powers/gigantification_power.png",
+    "vars": {}
   },
   {
     "id": "GRAPPLE",
@@ -1001,7 +1107,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/gravity_power.png"
+    "image_url": "/static/images/powers/gravity_power.png",
+    "vars": {}
   },
   {
     "id": "GUARDED",
@@ -1011,7 +1118,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/guarded_power.png"
+    "image_url": "/static/images/powers/guarded_power.png",
+    "vars": {}
   },
   {
     "id": "HAILSTORM",
@@ -1021,7 +1129,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/hailstorm_power.png"
+    "image_url": "/static/images/powers/hailstorm_power.png",
+    "vars": {
+      "FrostOrbs": 1
+    }
   },
   {
     "id": "HAMMER_TIME",
@@ -1031,7 +1142,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/hammer_time_power.png"
+    "image_url": "/static/images/powers/hammer_time_power.png",
+    "vars": {}
   },
   {
     "id": "HANG",
@@ -1041,7 +1153,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/hang_power.png"
+    "image_url": "/static/images/powers/hang_power.png",
+    "vars": {}
   },
   {
     "id": "HARD_TO_KILL",
@@ -1051,7 +1164,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/hard_to_kill_power.png"
+    "image_url": "/static/images/powers/hard_to_kill_power.png",
+    "vars": {}
   },
   {
     "id": "HARDENED_SHELL",
@@ -1061,7 +1175,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/hardened_shell_power.png"
+    "image_url": "/static/images/powers/hardened_shell_power.png",
+    "vars": {}
   },
   {
     "id": "HATCH",
@@ -1071,7 +1186,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/hatch_power.png"
+    "image_url": "/static/images/powers/hatch_power.png",
+    "vars": {}
   },
   {
     "id": "HAUNT",
@@ -1081,7 +1197,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/haunt_power.png"
+    "image_url": "/static/images/powers/haunt_power.png",
+    "vars": {}
   },
   {
     "id": "HEIST",
@@ -1091,7 +1208,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/heist_power.png"
+    "image_url": "/static/images/powers/heist_power.png",
+    "vars": {}
   },
   {
     "id": "HELICAL_DART",
@@ -1103,7 +1221,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/helical_dart_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "HELLO_WORLD",
@@ -1113,7 +1232,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/hello_world_power.png"
+    "image_url": "/static/images/powers/hello_world_power.png",
+    "vars": {}
   },
   {
     "id": "HELLRAISER",
@@ -1123,7 +1243,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/hellraiser_power.png"
+    "image_url": "/static/images/powers/hellraiser_power.png",
+    "vars": {}
   },
   {
     "id": "HEX",
@@ -1133,7 +1254,8 @@
     "type": "Debuff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/hex_power.png"
+    "image_url": "/static/images/powers/hex_power.png",
+    "vars": {}
   },
   {
     "id": "HIGH_VOLTAGE",
@@ -1143,7 +1265,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/high_voltage_power.png"
+    "image_url": "/static/images/powers/high_voltage_power.png",
+    "vars": {}
   },
   {
     "id": "HOTFIX",
@@ -1155,7 +1278,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/hotfix_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "ILLUSION",
@@ -1165,7 +1289,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/illusion_power.png"
+    "image_url": "/static/images/powers/illusion_power.png",
+    "vars": {}
   },
   {
     "id": "IMBALANCED",
@@ -1175,7 +1300,8 @@
     "type": "Debuff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/imbalanced_power.png"
+    "image_url": "/static/images/powers/imbalanced_power.png",
+    "vars": {}
   },
   {
     "id": "IMPROVEMENT",
@@ -1185,7 +1311,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/improvement_power.png"
+    "image_url": "/static/images/powers/improvement_power.png",
+    "vars": {}
   },
   {
     "id": "INFERNO",
@@ -1195,7 +1322,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/inferno_power.png"
+    "image_url": "/static/images/powers/inferno_power.png",
+    "vars": {
+      "SelfDamage": 0
+    }
   },
   {
     "id": "INFESTED",
@@ -1205,7 +1335,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/infested_power.png"
+    "image_url": "/static/images/powers/infested_power.png",
+    "vars": {}
   },
   {
     "id": "INFINITE_BLADES",
@@ -1215,7 +1346,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/infinite_blades_power.png"
+    "image_url": "/static/images/powers/infinite_blades_power.png",
+    "vars": {}
   },
   {
     "id": "INTANGIBLE",
@@ -1225,7 +1357,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/intangible_power.png"
+    "image_url": "/static/images/powers/intangible_power.png",
+    "vars": {}
   },
   {
     "id": "INTERCEPT",
@@ -1235,7 +1368,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/intercept_power.png"
+    "image_url": "/static/images/powers/intercept_power.png",
+    "vars": {}
   },
   {
     "id": "ITERATION",
@@ -1245,7 +1379,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/iteration_power.png"
+    "image_url": "/static/images/powers/iteration_power.png",
+    "vars": {}
   },
   {
     "id": "JUGGERNAUT",
@@ -1255,7 +1390,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/juggernaut_power.png"
+    "image_url": "/static/images/powers/juggernaut_power.png",
+    "vars": {}
   },
   {
     "id": "JUGGLING",
@@ -1265,7 +1401,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/juggling_power.png"
+    "image_url": "/static/images/powers/juggling_power.png",
+    "vars": {}
   },
   {
     "id": "KNOCKDOWN",
@@ -1275,7 +1412,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/knockdown_power.png"
+    "image_url": "/static/images/powers/knockdown_power.png",
+    "vars": {}
   },
   {
     "id": "LEADERSHIP",
@@ -1285,7 +1423,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/leadership_power.png"
+    "image_url": "/static/images/powers/leadership_power.png",
+    "vars": {}
   },
   {
     "id": "LETHALITY",
@@ -1295,7 +1434,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/lethality_power.png"
+    "image_url": "/static/images/powers/lethality_power.png",
+    "vars": {}
   },
   {
     "id": "LIGHTNING_ROD",
@@ -1305,7 +1445,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/lightning_rod_power.png"
+    "image_url": "/static/images/powers/lightning_rod_power.png",
+    "vars": {}
   },
   {
     "id": "LOOP",
@@ -1315,7 +1456,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/loop_power.png"
+    "image_url": "/static/images/powers/loop_power.png",
+    "vars": {}
   },
   {
     "id": "MACHINE_LEARNING",
@@ -1325,7 +1467,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/machine_learning_power.png"
+    "image_url": "/static/images/powers/machine_learning_power.png",
+    "vars": {}
   },
   {
     "id": "MAGIC_BOMB",
@@ -1335,7 +1478,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/magic_bomb_power.png"
+    "image_url": "/static/images/powers/magic_bomb_power.png",
+    "vars": {}
   },
   {
     "id": "MANGLE",
@@ -1347,7 +1491,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/mangle_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "MASTER_PLANNER",
@@ -1357,7 +1502,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/master_planner_power.png"
+    "image_url": "/static/images/powers/master_planner_power.png",
+    "vars": {}
   },
   {
     "id": "MAYHEM",
@@ -1367,7 +1513,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/mayhem_power.png"
+    "image_url": "/static/images/powers/mayhem_power.png",
+    "vars": {}
   },
   {
     "id": "MIND_ROT",
@@ -1377,7 +1524,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/mind_rot_power.png"
+    "image_url": "/static/images/powers/mind_rot_power.png",
+    "vars": {}
   },
   {
     "id": "MINION",
@@ -1387,7 +1535,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/minion_power.png"
+    "image_url": "/static/images/powers/minion_power.png",
+    "vars": {}
   },
   {
     "id": "MONARCHS_GAZE",
@@ -1397,7 +1546,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/monarchs_gaze_power.png"
+    "image_url": "/static/images/powers/monarchs_gaze_power.png",
+    "vars": {}
   },
   {
     "id": "MONARCHS_GAZE_STRENGTH_DOWN",
@@ -1409,7 +1559,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/monarchs_gaze_strength_down_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "MONOLOGUE",
@@ -1419,7 +1570,11 @@
     "type": "Buff",
     "stack_type": "None",
     "allow_negative": null,
-    "image_url": "/static/images/powers/monologue_power.png"
+    "image_url": "/static/images/powers/monologue_power.png",
+    "vars": {
+      "StrengthPower": 1,
+      "StrengthApplied": 0
+    }
   },
   {
     "id": "NECRO_MASTERY",
@@ -1429,7 +1584,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/necro_mastery_power.png"
+    "image_url": "/static/images/powers/necro_mastery_power.png",
+    "vars": {}
   },
   {
     "id": "NEMESIS",
@@ -1439,7 +1595,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/nemesis_power.png"
+    "image_url": "/static/images/powers/nemesis_power.png",
+    "vars": {}
   },
   {
     "id": "NEUROSURGE",
@@ -1449,7 +1606,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/neurosurge_power.png"
+    "image_url": "/static/images/powers/neurosurge_power.png",
+    "vars": {}
   },
   {
     "id": "NIGHTMARE",
@@ -1459,7 +1617,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/nightmare_power.png"
+    "image_url": "/static/images/powers/nightmare_power.png",
+    "vars": {}
   },
   {
     "id": "NO_BLOCK",
@@ -1469,7 +1628,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/no_block_power.png"
+    "image_url": "/static/images/powers/no_block_power.png",
+    "vars": {}
   },
   {
     "id": "NO_DRAW",
@@ -1479,7 +1639,8 @@
     "type": "Debuff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/no_draw_power.png"
+    "image_url": "/static/images/powers/no_draw_power.png",
+    "vars": {}
   },
   {
     "id": "NOSTALGIA",
@@ -1489,7 +1650,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/nostalgia_power.png"
+    "image_url": "/static/images/powers/nostalgia_power.png",
+    "vars": {}
   },
   {
     "id": "NOXIOUS_FUMES",
@@ -1499,7 +1661,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/noxious_fumes_power.png"
+    "image_url": "/static/images/powers/noxious_fumes_power.png",
+    "vars": {}
   },
   {
     "id": "OBLIVION",
@@ -1509,7 +1672,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/oblivion_power.png"
+    "image_url": "/static/images/powers/oblivion_power.png",
+    "vars": {}
   },
   {
     "id": "ONE_TWO_PUNCH",
@@ -1519,7 +1683,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/one_two_punch_power.png"
+    "image_url": "/static/images/powers/one_two_punch_power.png",
+    "vars": {}
   },
   {
     "id": "ORBIT",
@@ -1529,7 +1694,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/orbit_power.png"
+    "image_url": "/static/images/powers/orbit_power.png",
+    "vars": {
+      "Energy": 4
+    }
   },
   {
     "id": "OUTBREAK",
@@ -1539,7 +1707,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/outbreak_power.png"
+    "image_url": "/static/images/powers/outbreak_power.png",
+    "vars": {
+      "Repeat": 3
+    }
   },
   {
     "id": "PAGESTORM",
@@ -1549,7 +1720,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/pagestorm_power.png"
+    "image_url": "/static/images/powers/pagestorm_power.png",
+    "vars": {}
   },
   {
     "id": "PAINFUL_STABS",
@@ -1559,7 +1731,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/painful_stabs_power.png"
+    "image_url": "/static/images/powers/painful_stabs_power.png",
+    "vars": {}
   },
   {
     "id": "PALE_BLUE_DOT",
@@ -1569,7 +1742,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/pale_blue_dot_power.png"
+    "image_url": "/static/images/powers/pale_blue_dot_power.png",
+    "vars": {
+      "CardPlay": 5
+    }
   },
   {
     "id": "PANACHE",
@@ -1579,7 +1755,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/panache_power.png"
+    "image_url": "/static/images/powers/panache_power.png",
+    "vars": {
+      "CardsLeft": 5
+    }
   },
   {
     "id": "PAPER_CUTS",
@@ -1589,7 +1768,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/paper_cuts_power.png"
+    "image_url": "/static/images/powers/paper_cuts_power.png",
+    "vars": {}
   },
   {
     "id": "PARRY",
@@ -1599,7 +1779,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/parry_power.png"
+    "image_url": "/static/images/powers/parry_power.png",
+    "vars": {}
   },
   {
     "id": "PERSONAL_HIVE",
@@ -1609,7 +1790,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/personal_hive_power.png"
+    "image_url": "/static/images/powers/personal_hive_power.png",
+    "vars": {}
   },
   {
     "id": "PHANTOM_BLADES",
@@ -1619,7 +1801,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/phantom_blades_power.png"
+    "image_url": "/static/images/powers/phantom_blades_power.png",
+    "vars": {}
   },
   {
     "id": "PIERCING_WAIL",
@@ -1631,7 +1814,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/piercing_wail_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "PILLAR_OF_CREATION",
@@ -1641,7 +1825,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/pillar_of_creation_power.png"
+    "image_url": "/static/images/powers/pillar_of_creation_power.png",
+    "vars": {}
   },
   {
     "id": "PLATING",
@@ -1651,7 +1836,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/plating_power.png"
+    "image_url": "/static/images/powers/plating_power.png",
+    "vars": {
+      "Decrement": 1
+    }
   },
   {
     "id": "PLOW",
@@ -1661,7 +1849,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/plow_power.png"
+    "image_url": "/static/images/powers/plow_power.png",
+    "vars": {}
   },
   {
     "id": "POISON",
@@ -1671,7 +1860,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/poison_power.png"
+    "image_url": "/static/images/powers/poison_power.png",
+    "vars": {}
   },
   {
     "id": "POSSESS_SPEED",
@@ -1681,7 +1871,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/possess_speed_power.png"
+    "image_url": "/static/images/powers/possess_speed_power.png",
+    "vars": {}
   },
   {
     "id": "POSSESS_STRENGTH",
@@ -1691,7 +1882,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/possess_strength_power.png"
+    "image_url": "/static/images/powers/possess_strength_power.png",
+    "vars": {}
   },
   {
     "id": "PREP_TIME",
@@ -1701,7 +1893,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/prep_time_power.png"
+    "image_url": "/static/images/powers/prep_time_power.png",
+    "vars": {}
   },
   {
     "id": "PYRE",
@@ -1711,7 +1904,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/pyre_power.png"
+    "image_url": "/static/images/powers/pyre_power.png",
+    "vars": {}
   },
   {
     "id": "RADIANCE",
@@ -1721,7 +1915,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/radiance_power.png"
+    "image_url": "/static/images/powers/radiance_power.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "RAGE",
@@ -1731,7 +1928,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/rage_power.png"
+    "image_url": "/static/images/powers/rage_power.png",
+    "vars": {}
   },
   {
     "id": "RAMPART",
@@ -1741,7 +1939,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/rampart_power.png"
+    "image_url": "/static/images/powers/rampart_power.png",
+    "vars": {}
   },
   {
     "id": "RAVENOUS",
@@ -1751,7 +1950,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/ravenous_power.png"
+    "image_url": "/static/images/powers/ravenous_power.png",
+    "vars": {}
   },
   {
     "id": "REAPER_FORM",
@@ -1761,7 +1961,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/reaper_form_power.png"
+    "image_url": "/static/images/powers/reaper_form_power.png",
+    "vars": {}
   },
   {
     "id": "REATTACH",
@@ -1771,7 +1972,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/reattach_power.png"
+    "image_url": "/static/images/powers/reattach_power.png",
+    "vars": {}
   },
   {
     "id": "REBOUND",
@@ -1781,7 +1983,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/rebound_power.png"
+    "image_url": "/static/images/powers/rebound_power.png",
+    "vars": {}
   },
   {
     "id": "REFLECT",
@@ -1791,7 +1994,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/reflect_power.png"
+    "image_url": "/static/images/powers/reflect_power.png",
+    "vars": {}
   },
   {
     "id": "REGEN",
@@ -1801,7 +2005,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/regen_power.png"
+    "image_url": "/static/images/powers/regen_power.png",
+    "vars": {}
   },
   {
     "id": "REPTILE_TRINKET",
@@ -1813,7 +2018,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/reptile_trinket_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "RETAIN_HAND",
@@ -1823,7 +2029,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/retain_hand_power.png"
+    "image_url": "/static/images/powers/retain_hand_power.png",
+    "vars": {}
   },
   {
     "id": "RINGING",
@@ -1833,7 +2040,8 @@
     "type": "Debuff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/ringing_power.png"
+    "image_url": "/static/images/powers/ringing_power.png",
+    "vars": {}
   },
   {
     "id": "RITUAL",
@@ -1843,7 +2051,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/ritual_power.png"
+    "image_url": "/static/images/powers/ritual_power.png",
+    "vars": {}
   },
   {
     "id": "ROLLING_BOULDER",
@@ -1853,7 +2062,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/rolling_boulder_power.png"
+    "image_url": "/static/images/powers/rolling_boulder_power.png",
+    "vars": {
+      "Damage": 5
+    }
   },
   {
     "id": "ROYALTIES",
@@ -1863,7 +2075,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/royalties_power.png"
+    "image_url": "/static/images/powers/royalties_power.png",
+    "vars": {}
   },
   {
     "id": "RUPTURE",
@@ -1873,7 +2086,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/rupture_power.png"
+    "image_url": "/static/images/powers/rupture_power.png",
+    "vars": {}
   },
   {
     "id": "SANDPIT",
@@ -1883,7 +2097,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/sandpit_power.png"
+    "image_url": "/static/images/powers/sandpit_power.png",
+    "vars": {}
   },
   {
     "id": "SEEKING_EDGE",
@@ -1893,7 +2108,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/seeking_edge_power.png"
+    "image_url": "/static/images/powers/seeking_edge_power.png",
+    "vars": {}
   },
   {
     "id": "SELF_FORMING_CLAY",
@@ -1903,7 +2119,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/self_forming_clay_power.png"
+    "image_url": "/static/images/powers/self_forming_clay_power.png",
+    "vars": {}
   },
   {
     "id": "SENTRY_MODE",
@@ -1913,7 +2130,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/sentry_mode_power.png"
+    "image_url": "/static/images/powers/sentry_mode_power.png",
+    "vars": {}
   },
   {
     "id": "SERPENT_FORM",
@@ -1923,7 +2141,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/serpent_form_power.png"
+    "image_url": "/static/images/powers/serpent_form_power.png",
+    "vars": {}
   },
   {
     "id": "SETUP_STRIKE",
@@ -1935,7 +2154,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/setup_strike_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "SHACKLING_POTION",
@@ -1947,7 +2167,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/shackling_potion_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "SHADOW_STEP",
@@ -1957,7 +2178,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/shadow_step_power.png"
+    "image_url": "/static/images/powers/shadow_step_power.png",
+    "vars": {}
   },
   {
     "id": "SHADOWMELD",
@@ -1967,7 +2189,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/shadowmeld_power.png"
+    "image_url": "/static/images/powers/shadowmeld_power.png",
+    "vars": {}
   },
   {
     "id": "SHRIEK",
@@ -1977,7 +2200,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": true,
-    "image_url": "/static/images/powers/shriek_power.png"
+    "image_url": "/static/images/powers/shriek_power.png",
+    "vars": {}
   },
   {
     "id": "SHRINK",
@@ -1987,7 +2211,10 @@
     "type": "Debuff",
     "stack_type": "None",
     "allow_negative": true,
-    "image_url": "/static/images/powers/shrink_power.png"
+    "image_url": "/static/images/powers/shrink_power.png",
+    "vars": {
+      "DamageDecrease": 30
+    }
   },
   {
     "id": "SHROUD",
@@ -1997,7 +2224,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/shroud_power.png"
+    "image_url": "/static/images/powers/shroud_power.png",
+    "vars": {}
   },
   {
     "id": "SIC_EM",
@@ -2007,7 +2235,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/sic_em_power.png"
+    "image_url": "/static/images/powers/sic_em_power.png",
+    "vars": {}
   },
   {
     "id": "SIGNAL_BOOST",
@@ -2017,7 +2246,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/signal_boost_power.png"
+    "image_url": "/static/images/powers/signal_boost_power.png",
+    "vars": {}
   },
   {
     "id": "SKITTISH",
@@ -2027,7 +2257,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/skittish_power.png"
+    "image_url": "/static/images/powers/skittish_power.png",
+    "vars": {}
   },
   {
     "id": "SLEIGHT_OF_FLESH",
@@ -2037,7 +2268,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/sleight_of_flesh_power.png"
+    "image_url": "/static/images/powers/sleight_of_flesh_power.png",
+    "vars": {}
   },
   {
     "id": "SLIPPERY",
@@ -2047,7 +2279,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/slippery_power.png"
+    "image_url": "/static/images/powers/slippery_power.png",
+    "vars": {}
   },
   {
     "id": "SLOTH",
@@ -2057,7 +2290,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/sloth_power.png"
+    "image_url": "/static/images/powers/sloth_power.png",
+    "vars": {}
   },
   {
     "id": "SLOW",
@@ -2067,7 +2301,10 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/slow_power.png"
+    "image_url": "/static/images/powers/slow_power.png",
+    "vars": {
+      "SlowAmount": 0
+    }
   },
   {
     "id": "SLUMBER",
@@ -2077,7 +2314,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/slumber_power.png"
+    "image_url": "/static/images/powers/slumber_power.png",
+    "vars": {}
   },
   {
     "id": "SMOGGY",
@@ -2087,7 +2325,8 @@
     "type": "Debuff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/smoggy_power.png"
+    "image_url": "/static/images/powers/smoggy_power.png",
+    "vars": {}
   },
   {
     "id": "SMOKESTACK",
@@ -2097,7 +2336,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/smokestack_power.png"
+    "image_url": "/static/images/powers/smokestack_power.png",
+    "vars": {}
   },
   {
     "id": "SNEAKY",
@@ -2107,7 +2347,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/sneaky_power.png"
+    "image_url": "/static/images/powers/sneaky_power.png",
+    "vars": {}
   },
   {
     "id": "SOAR",
@@ -2117,7 +2358,10 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/soar_power.png"
+    "image_url": "/static/images/powers/soar_power.png",
+    "vars": {
+      "DamageDecrease": 50
+    }
   },
   {
     "id": "SPECTRUM_SHIFT",
@@ -2127,7 +2371,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/spectrum_shift_power.png"
+    "image_url": "/static/images/powers/spectrum_shift_power.png",
+    "vars": {}
   },
   {
     "id": "SPEED_POTION",
@@ -2139,7 +2384,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/speed_potion_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "SPEEDSTER",
@@ -2149,7 +2395,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/speedster_power.png"
+    "image_url": "/static/images/powers/speedster_power.png",
+    "vars": {}
   },
   {
     "id": "SPINNER",
@@ -2159,7 +2406,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/spinner_power.png"
+    "image_url": "/static/images/powers/spinner_power.png",
+    "vars": {}
   },
   {
     "id": "SPIRIT_OF_ASH",
@@ -2169,7 +2417,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/spirit_of_ash_power.png"
+    "image_url": "/static/images/powers/spirit_of_ash_power.png",
+    "vars": {}
   },
   {
     "id": "STAMPEDE",
@@ -2179,7 +2428,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/stampede_power.png"
+    "image_url": "/static/images/powers/stampede_power.png",
+    "vars": {}
   },
   {
     "id": "STAR_NEXT_TURN",
@@ -2189,7 +2439,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/star_next_turn_power.png"
+    "image_url": "/static/images/powers/star_next_turn_power.png",
+    "vars": {}
   },
   {
     "id": "STEAM_ERUPTION",
@@ -2199,7 +2450,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/steam_eruption_power.png"
+    "image_url": "/static/images/powers/steam_eruption_power.png",
+    "vars": {}
   },
   {
     "id": "STOCK",
@@ -2209,7 +2461,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/stock_power.png"
+    "image_url": "/static/images/powers/stock_power.png",
+    "vars": {}
   },
   {
     "id": "STORM",
@@ -2219,7 +2472,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/storm_power.png"
+    "image_url": "/static/images/powers/storm_power.png",
+    "vars": {}
   },
   {
     "id": "STRANGLE",
@@ -2229,7 +2483,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/strangle_power.png"
+    "image_url": "/static/images/powers/strangle_power.png",
+    "vars": {}
   },
   {
     "id": "STRATAGEM",
@@ -2239,7 +2494,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/stratagem_power.png"
+    "image_url": "/static/images/powers/stratagem_power.png",
+    "vars": {}
   },
   {
     "id": "STRENGTH",
@@ -2249,7 +2505,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": true,
-    "image_url": "/static/images/powers/strength_power.png"
+    "image_url": "/static/images/powers/strength_power.png",
+    "vars": {}
   },
   {
     "id": "SUBROUTINE",
@@ -2259,7 +2516,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/subroutine_power.png"
+    "image_url": "/static/images/powers/subroutine_power.png",
+    "vars": {}
   },
   {
     "id": "SUCK",
@@ -2269,7 +2527,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/suck_power.png"
+    "image_url": "/static/images/powers/suck_power.png",
+    "vars": {}
   },
   {
     "id": "SUMMON_NEXT_TURN",
@@ -2279,7 +2538,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/summon_next_turn_power.png"
+    "image_url": "/static/images/powers/summon_next_turn_power.png",
+    "vars": {}
   },
   {
     "id": "SURPRISE",
@@ -2289,7 +2549,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/surprise_power.png"
+    "image_url": "/static/images/powers/surprise_power.png",
+    "vars": {}
   },
   {
     "id": "SURROUNDED",
@@ -2299,7 +2560,8 @@
     "type": "Debuff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/surrounded_power.png"
+    "image_url": "/static/images/powers/surrounded_power.png",
+    "vars": {}
   },
   {
     "id": "SWIPE",
@@ -2309,7 +2571,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/swipe_power.png"
+    "image_url": "/static/images/powers/swipe_power.png",
+    "vars": {}
   },
   {
     "id": "SWORD_SAGE",
@@ -2319,7 +2582,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/sword_sage_power.png"
+    "image_url": "/static/images/powers/sword_sage_power.png",
+    "vars": {}
   },
   {
     "id": "SYNCHRONIZE",
@@ -2331,7 +2595,8 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/synchronize_power.png",
     "deprecated": true,
-    "deprecatedInPatch": "v0.104.0"
+    "deprecatedInPatch": "v0.104.0",
+    "vars": {}
   },
   {
     "id": "TAG_TEAM",
@@ -2341,7 +2606,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/tag_team_power.png"
+    "image_url": "/static/images/powers/tag_team_power.png",
+    "vars": {}
   },
   {
     "id": "TANGLED",
@@ -2351,7 +2617,10 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/tangled_power.png"
+    "image_url": "/static/images/powers/tangled_power.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "TANK",
@@ -2361,7 +2630,8 @@
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/tank_power.png"
+    "image_url": "/static/images/powers/tank_power.png",
+    "vars": {}
   },
   {
     "id": "TEMPORARY_DEXTERITY",
@@ -2371,7 +2641,8 @@
     "type": "None",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/dexterity_down_power.png"
+    "image_url": "/static/images/powers/dexterity_down_power.png",
+    "vars": {}
   },
   {
     "id": "TEMPORARY_FOCUS",
@@ -2381,7 +2652,8 @@
     "type": "None",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": null
+    "image_url": null,
+    "vars": {}
   },
   {
     "id": "TEMPORARY_STRENGTH",
@@ -2391,7 +2663,8 @@
     "type": "None",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": null
+    "image_url": null,
+    "vars": {}
   },
   {
     "id": "TENDER",
@@ -2401,7 +2674,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/tender_power.png"
+    "image_url": "/static/images/powers/tender_power.png",
+    "vars": {}
   },
   {
     "id": "TERRITORIAL",
@@ -2411,7 +2685,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/territorial_power.png"
+    "image_url": "/static/images/powers/territorial_power.png",
+    "vars": {}
   },
   {
     "id": "THE_BOMB",
@@ -2421,7 +2696,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/the_bomb_power.png"
+    "image_url": "/static/images/powers/the_bomb_power.png",
+    "vars": {
+      "Damage": 40
+    }
   },
   {
     "id": "THE_GAMBIT",
@@ -2431,7 +2709,8 @@
     "type": "Debuff",
     "stack_type": "Single",
     "allow_negative": null,
-    "image_url": "/static/images/powers/the_gambit_power.png"
+    "image_url": "/static/images/powers/the_gambit_power.png",
+    "vars": {}
   },
   {
     "id": "THE_HUNT",
@@ -2441,7 +2720,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/the_hunt_power.png"
+    "image_url": "/static/images/powers/the_hunt_power.png",
+    "vars": {}
   },
   {
     "id": "THE_SEALED_THRONE",
@@ -2451,7 +2731,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/the_sealed_throne_power.png"
+    "image_url": "/static/images/powers/the_sealed_throne_power.png",
+    "vars": {}
   },
   {
     "id": "THIEVERY",
@@ -2461,7 +2742,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/thievery_power.png"
+    "image_url": "/static/images/powers/thievery_power.png",
+    "vars": {
+      "Gold": 0
+    }
   },
   {
     "id": "THORNS",
@@ -2471,7 +2755,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/thorns_power.png"
+    "image_url": "/static/images/powers/thorns_power.png",
+    "vars": {}
   },
   {
     "id": "THUNDER",
@@ -2481,7 +2766,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/thunder_power.png"
+    "image_url": "/static/images/powers/thunder_power.png",
+    "vars": {}
   },
   {
     "id": "TOOLS_OF_THE_TRADE",
@@ -2491,7 +2777,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/tools_of_the_trade_power.png"
+    "image_url": "/static/images/powers/tools_of_the_trade_power.png",
+    "vars": {}
   },
   {
     "id": "TORIC_TOUGHNESS",
@@ -2501,7 +2788,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/toric_toughness_power.png"
+    "image_url": "/static/images/powers/toric_toughness_power.png",
+    "vars": {
+      "Block": 0
+    }
   },
   {
     "id": "TRACKING",
@@ -2511,7 +2801,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/tracking_power.png"
+    "image_url": "/static/images/powers/tracking_power.png",
+    "vars": {}
   },
   {
     "id": "TRASH_TO_TREASURE",
@@ -2521,7 +2812,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/trash_to_treasure_power.png"
+    "image_url": "/static/images/powers/trash_to_treasure_power.png",
+    "vars": {}
   },
   {
     "id": "TYRANNY",
@@ -2531,7 +2823,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/tyranny_power.png"
+    "image_url": "/static/images/powers/tyranny_power.png",
+    "vars": {}
   },
   {
     "id": "UNMOVABLE",
@@ -2541,7 +2834,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/unmovable_power.png"
+    "image_url": "/static/images/powers/unmovable_power.png",
+    "vars": {}
   },
   {
     "id": "VEILPIERCER",
@@ -2551,7 +2845,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/veilpiercer_power.png"
+    "image_url": "/static/images/powers/veilpiercer_power.png",
+    "vars": {}
   },
   {
     "id": "VICIOUS",
@@ -2561,7 +2856,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/vicious_power.png"
+    "image_url": "/static/images/powers/vicious_power.png",
+    "vars": {}
   },
   {
     "id": "VIGOR",
@@ -2571,7 +2867,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/vigor_power.png"
+    "image_url": "/static/images/powers/vigor_power.png",
+    "vars": {}
   },
   {
     "id": "VITAL_SPARK",
@@ -2581,7 +2878,10 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/vital_spark_power.png"
+    "image_url": "/static/images/powers/vital_spark_power.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "VOID_FORM",
@@ -2591,7 +2891,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/void_form_power.png"
+    "image_url": "/static/images/powers/void_form_power.png",
+    "vars": {}
   },
   {
     "id": "VULNERABLE",
@@ -2601,7 +2902,10 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/vulnerable_power.png"
+    "image_url": "/static/images/powers/vulnerable_power.png",
+    "vars": {
+      "DamageIncrease": 1.5
+    }
   },
   {
     "id": "WASTE_AWAY",
@@ -2611,7 +2915,8 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/waste_away_power.png"
+    "image_url": "/static/images/powers/waste_away_power.png",
+    "vars": {}
   },
   {
     "id": "WEAK",
@@ -2621,7 +2926,10 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/weak_power.png"
+    "image_url": "/static/images/powers/weak_power.png",
+    "vars": {
+      "DamageDecrease": 0.75
+    }
   },
   {
     "id": "WELL_LAID_PLANS",
@@ -2631,7 +2939,8 @@
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/well_laid_plans_power.png"
+    "image_url": "/static/images/powers/well_laid_plans_power.png",
+    "vars": {}
   },
   {
     "id": "WRAITH_FORM",
@@ -2641,6 +2950,7 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/wraith_form_power.png"
+    "image_url": "/static/images/powers/wraith_form_power.png",
+    "vars": {}
   }
 ]

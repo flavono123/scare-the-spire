@@ -7,7 +7,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/akabeko.png"
+    "image_url": "/static/images/relics/akabeko.png",
+    "vars": {
+      "VigorPower": 8
+    }
   },
   {
     "id": "ALCHEMICAL_COFFER",
@@ -17,7 +20,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/alchemical_coffer.png"
+    "image_url": "/static/images/relics/alchemical_coffer.png",
+    "vars": {
+      "PotionSlots": 4
+    }
   },
   {
     "id": "AMETHYST_AUBERGINE",
@@ -27,7 +33,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/amethyst_aubergine.png"
+    "image_url": "/static/images/relics/amethyst_aubergine.png",
+    "vars": {
+      "Gold": 15
+    }
   },
   {
     "id": "ANCHOR",
@@ -37,7 +46,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/anchor.png"
+    "image_url": "/static/images/relics/anchor.png",
+    "vars": {
+      "Block": 10
+    }
   },
   {
     "id": "ARCANE_SCROLL",
@@ -47,7 +59,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/arcane_scroll.png"
+    "image_url": "/static/images/relics/arcane_scroll.png",
+    "vars": {
+      "Cards": 1
+    }
   },
   {
     "id": "ARCHAIC_TOOTH",
@@ -57,7 +72,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/archaic_tooth.png"
+    "image_url": "/static/images/relics/archaic_tooth.png",
+    "vars": {}
   },
   {
     "id": "ART_OF_WAR",
@@ -67,7 +83,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/art_of_war.png"
+    "image_url": "/static/images/relics/art_of_war.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "ASTROLABE",
@@ -77,7 +96,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/astrolabe.png"
+    "image_url": "/static/images/relics/astrolabe.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "BAG_OF_MARBLES",
@@ -87,7 +109,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/bag_of_marbles.png"
+    "image_url": "/static/images/relics/bag_of_marbles.png",
+    "vars": {
+      "VulnerablePower": 1
+    }
   },
   {
     "id": "BAG_OF_PREPARATION",
@@ -97,7 +122,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/bag_of_preparation.png"
+    "image_url": "/static/images/relics/bag_of_preparation.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "BEATING_REMNANT",
@@ -107,7 +135,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/beating_remnant.png"
+    "image_url": "/static/images/relics/beating_remnant.png",
+    "vars": {
+      "MaxHpLoss": 20
+    }
   },
   {
     "id": "BEAUTIFUL_BRACELET",
@@ -117,7 +148,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/beautiful_bracelet.png"
+    "image_url": "/static/images/relics/beautiful_bracelet.png",
+    "vars": {
+      "Cards": 3,
+      "Swift": 3
+    }
   },
   {
     "id": "BELLOWS",
@@ -127,7 +162,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/bellows.png"
+    "image_url": "/static/images/relics/bellows.png",
+    "vars": {}
   },
   {
     "id": "BELT_BUCKLE",
@@ -137,7 +173,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/belt_buckle.png"
+    "image_url": "/static/images/relics/belt_buckle.png",
+    "vars": {
+      "DexterityPower": 2
+    }
   },
   {
     "id": "BIG_HAT",
@@ -147,7 +186,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "necrobinder",
-    "image_url": "/static/images/relics/big_hat.png"
+    "image_url": "/static/images/relics/big_hat.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "BIG_MUSHROOM",
@@ -157,7 +199,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/big_mushroom.png"
+    "image_url": "/static/images/relics/big_mushroom.png",
+    "vars": {
+      "MaxHp": 20,
+      "Cards": 2
+    }
   },
   {
     "id": "BIIIG_HUG",
@@ -167,7 +213,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/biiig_hug.png"
+    "image_url": "/static/images/relics/biiig_hug.png",
+    "vars": {
+      "Cards": 4
+    }
   },
   {
     "id": "BING_BONG",
@@ -177,7 +226,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/bing_bong.png"
+    "image_url": "/static/images/relics/bing_bong.png",
+    "vars": {}
   },
   {
     "id": "BLACK_BLOOD",
@@ -187,7 +237,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "시작 유물",
     "pool": "ironclad",
-    "image_url": "/static/images/relics/black_blood.png"
+    "image_url": "/static/images/relics/black_blood.png",
+    "vars": {
+      "Heal": 12
+    }
   },
   {
     "id": "BLACK_STAR",
@@ -197,7 +250,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/black_star.png"
+    "image_url": "/static/images/relics/black_star.png",
+    "vars": {}
   },
   {
     "id": "BLESSED_ANTLER",
@@ -207,7 +261,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/blessed_antler.png"
+    "image_url": "/static/images/relics/blessed_antler.png",
+    "vars": {
+      "Energy": 1,
+      "Cards": 3
+    }
   },
   {
     "id": "BLOOD_SOAKED_ROSE",
@@ -217,7 +275,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/blood_soaked_rose.png"
+    "image_url": "/static/images/relics/blood_soaked_rose.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "BLOOD_VIAL",
@@ -227,7 +288,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/blood_vial.png"
+    "image_url": "/static/images/relics/blood_vial.png",
+    "vars": {
+      "Heal": 2
+    }
   },
   {
     "id": "BONE_FLUTE",
@@ -237,7 +301,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "necrobinder",
-    "image_url": "/static/images/relics/bone_flute.png"
+    "image_url": "/static/images/relics/bone_flute.png",
+    "vars": {
+      "Block": 2
+    }
   },
   {
     "id": "BONE_TEA",
@@ -247,7 +314,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/bone_tea.png"
+    "image_url": "/static/images/relics/bone_tea.png",
+    "vars": {}
   },
   {
     "id": "BOOK_OF_FIVE_RINGS",
@@ -257,7 +325,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/book_of_five_rings.png"
+    "image_url": "/static/images/relics/book_of_five_rings.png",
+    "vars": {
+      "Cards": 5,
+      "Heal": 20
+    }
   },
   {
     "id": "BOOK_REPAIR_KNIFE",
@@ -267,7 +339,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "necrobinder",
-    "image_url": "/static/images/relics/book_repair_knife.png"
+    "image_url": "/static/images/relics/book_repair_knife.png",
+    "vars": {
+      "Heal": 3
+    }
   },
   {
     "id": "BOOKMARK",
@@ -277,7 +352,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "necrobinder",
-    "image_url": "/static/images/relics/bookmark.png"
+    "image_url": "/static/images/relics/bookmark.png",
+    "vars": {}
   },
   {
     "id": "BOOMING_CONCH",
@@ -287,7 +363,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/booming_conch.png"
+    "image_url": "/static/images/relics/booming_conch.png",
+    "vars": {
+      "Cards": 2,
+      "Energy": 1
+    }
   },
   {
     "id": "BOUND_PHYLACTERY",
@@ -297,7 +377,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "시작 유물",
     "pool": "necrobinder",
-    "image_url": "/static/images/relics/bound_phylactery.png"
+    "image_url": "/static/images/relics/bound_phylactery.png",
+    "vars": {
+      "Summon": 1
+    }
   },
   {
     "id": "BOWLER_HAT",
@@ -307,7 +390,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/bowler_hat.png"
+    "image_url": "/static/images/relics/bowler_hat.png",
+    "vars": {
+      "GoldIncrease": 1.25
+    }
   },
   {
     "id": "BREAD",
@@ -317,7 +403,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/bread.png"
+    "image_url": "/static/images/relics/bread.png",
+    "vars": {
+      "GainEnergy": 1,
+      "LoseEnergy": 2
+    }
   },
   {
     "id": "BRILLIANT_SCARF",
@@ -327,7 +417,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/brilliant_scarf.png"
+    "image_url": "/static/images/relics/brilliant_scarf.png",
+    "vars": {
+      "Cards": 5
+    }
   },
   {
     "id": "BRIMSTONE",
@@ -337,7 +430,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "ironclad",
-    "image_url": "/static/images/relics/brimstone.png"
+    "image_url": "/static/images/relics/brimstone.png",
+    "vars": {
+      "SelfStrength": 2,
+      "EnemyStrength": 1
+    }
   },
   {
     "id": "BRONZE_SCALES",
@@ -347,7 +444,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/bronze_scales.png"
+    "image_url": "/static/images/relics/bronze_scales.png",
+    "vars": {
+      "ThornsPower": 3
+    }
   },
   {
     "id": "BURNING_BLOOD",
@@ -357,7 +457,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "시작 유물",
     "pool": "ironclad",
-    "image_url": "/static/images/relics/burning_blood.png"
+    "image_url": "/static/images/relics/burning_blood.png",
+    "vars": {
+      "Heal": 6
+    }
   },
   {
     "id": "BURNING_STICKS",
@@ -367,7 +470,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/burning_sticks.png"
+    "image_url": "/static/images/relics/burning_sticks.png",
+    "vars": {}
   },
   {
     "id": "BYRDPIP",
@@ -377,7 +481,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/byrdpip.png"
+    "image_url": "/static/images/relics/byrdpip.png",
+    "vars": {}
   },
   {
     "id": "CALLING_BELL",
@@ -387,7 +492,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/calling_bell.png"
+    "image_url": "/static/images/relics/calling_bell.png",
+    "vars": {
+      "Relics": 3
+    }
   },
   {
     "id": "CANDELABRA",
@@ -397,7 +505,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/candelabra.png"
+    "image_url": "/static/images/relics/candelabra.png",
+    "vars": {
+      "Energy": 2
+    }
   },
   {
     "id": "CAPTAINS_WHEEL",
@@ -407,7 +518,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/captains_wheel.png"
+    "image_url": "/static/images/relics/captains_wheel.png",
+    "vars": {
+      "Block": 18
+    }
   },
   {
     "id": "CAULDRON",
@@ -417,7 +531,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/cauldron.png"
+    "image_url": "/static/images/relics/cauldron.png",
+    "vars": {
+      "Potions": 5
+    }
   },
   {
     "id": "CENTENNIAL_PUZZLE",
@@ -427,7 +544,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/centennial_puzzle.png"
+    "image_url": "/static/images/relics/centennial_puzzle.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "CHANDELIER",
@@ -437,7 +557,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/chandelier.png"
+    "image_url": "/static/images/relics/chandelier.png",
+    "vars": {
+      "Energy": 3
+    }
   },
   {
     "id": "CHARONS_ASHES",
@@ -447,7 +570,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "ironclad",
-    "image_url": "/static/images/relics/charons_ashes.png"
+    "image_url": "/static/images/relics/charons_ashes.png",
+    "vars": {
+      "Damage": 3
+    }
   },
   {
     "id": "CHEMICAL_X",
@@ -457,7 +583,10 @@
     "flavor": "주의: 설탕, 향신료, 예쁘고 깜찍한 것과 절대로 섞지 마세요.",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/chemical_x.png"
+    "image_url": "/static/images/relics/chemical_x.png",
+    "vars": {
+      "Increase": 2
+    }
   },
   {
     "id": "CHOICES_PARADOX",
@@ -467,7 +596,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/choices_paradox.png"
+    "image_url": "/static/images/relics/choices_paradox.png",
+    "vars": {
+      "Cards": 5
+    }
   },
   {
     "id": "CHOSEN_CHEESE",
@@ -477,7 +609,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/chosen_cheese.png"
+    "image_url": "/static/images/relics/chosen_cheese.png",
+    "vars": {
+      "MaxHp": 1
+    }
   },
   {
     "id": "CIRCLET",
@@ -487,7 +622,8 @@
     "flavor": "[gold]첨탑[/gold]에 뭔가 문제가 있거나, 발견할 유물이 더 이상 남아있지 않을 때 모습을 드러내는 기이한 유물입니다.",
     "rarity": "None",
     "pool": "shared",
-    "image_url": "/static/images/relics/circlet.png"
+    "image_url": "/static/images/relics/circlet.png",
+    "vars": {}
   },
   {
     "id": "CLAWS",
@@ -497,7 +633,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/claws.png"
+    "image_url": "/static/images/relics/claws.png",
+    "vars": {
+      "Cards": 6
+    }
   },
   {
     "id": "CLOAK_CLASP",
@@ -507,7 +646,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/cloak_clasp.png"
+    "image_url": "/static/images/relics/cloak_clasp.png",
+    "vars": {
+      "Block": 1
+    }
   },
   {
     "id": "CRACKED_CORE",
@@ -517,7 +659,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "시작 유물",
     "pool": "defect",
-    "image_url": "/static/images/relics/cracked_core.png"
+    "image_url": "/static/images/relics/cracked_core.png",
+    "vars": {
+      "Lightning": 1
+    }
   },
   {
     "id": "CROSSBOW",
@@ -527,7 +672,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/crossbow.png"
+    "image_url": "/static/images/relics/crossbow.png",
+    "vars": {}
   },
   {
     "id": "CURSED_PEARL",
@@ -537,7 +683,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/cursed_pearl.png"
+    "image_url": "/static/images/relics/cursed_pearl.png",
+    "vars": {
+      "Gold": 333
+    }
   },
   {
     "id": "DARKSTONE_PERIAPT",
@@ -547,7 +696,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/darkstone_periapt.png"
+    "image_url": "/static/images/relics/darkstone_periapt.png",
+    "vars": {
+      "MaxHp": 6
+    }
   },
   {
     "id": "DATA_DISK",
@@ -557,7 +709,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "defect",
-    "image_url": "/static/images/relics/data_disk.png"
+    "image_url": "/static/images/relics/data_disk.png",
+    "vars": {
+      "FocusPower": 1
+    }
   },
   {
     "id": "DAUGHTER_OF_THE_WIND",
@@ -567,7 +722,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/daughter_of_the_wind.png"
+    "image_url": "/static/images/relics/daughter_of_the_wind.png",
+    "vars": {
+      "Block": 1
+    }
   },
   {
     "id": "DELICATE_FROND",
@@ -577,7 +735,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/delicate_frond.png"
+    "image_url": "/static/images/relics/delicate_frond.png",
+    "vars": {}
   },
   {
     "id": "DEMON_TONGUE",
@@ -587,7 +746,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "ironclad",
-    "image_url": "/static/images/relics/demon_tongue.png"
+    "image_url": "/static/images/relics/demon_tongue.png",
+    "vars": {}
   },
   {
     "id": "DIAMOND_DIADEM",
@@ -597,7 +757,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/diamond_diadem.png"
+    "image_url": "/static/images/relics/diamond_diadem.png",
+    "vars": {
+      "CardThreshold": 2
+    }
   },
   {
     "id": "DINGY_RUG",
@@ -607,7 +770,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/dingy_rug.png"
+    "image_url": "/static/images/relics/dingy_rug.png",
+    "vars": {}
   },
   {
     "id": "DISTINGUISHED_CAPE",
@@ -617,7 +781,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/distinguished_cape.png"
+    "image_url": "/static/images/relics/distinguished_cape.png",
+    "vars": {
+      "HpLoss": 9,
+      "Cards": 3
+    }
   },
   {
     "id": "DIVINE_DESTINY",
@@ -627,7 +795,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "시작 유물",
     "pool": "regent",
-    "image_url": "/static/images/relics/divine_destiny.png"
+    "image_url": "/static/images/relics/divine_destiny.png",
+    "vars": {
+      "Stars": 6
+    }
   },
   {
     "id": "DIVINE_RIGHT",
@@ -637,7 +808,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "시작 유물",
     "pool": "regent",
-    "image_url": "/static/images/relics/divine_right.png"
+    "image_url": "/static/images/relics/divine_right.png",
+    "vars": {
+      "Stars": 3
+    }
   },
   {
     "id": "DOLLYS_MIRROR",
@@ -647,7 +821,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/dollys_mirror.png"
+    "image_url": "/static/images/relics/dollys_mirror.png",
+    "vars": {}
   },
   {
     "id": "DRAGON_FRUIT",
@@ -657,7 +832,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/dragon_fruit.png"
+    "image_url": "/static/images/relics/dragon_fruit.png",
+    "vars": {
+      "MaxHp": 1
+    }
   },
   {
     "id": "DREAM_CATCHER",
@@ -667,7 +845,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/dream_catcher.png"
+    "image_url": "/static/images/relics/dream_catcher.png",
+    "vars": {}
   },
   {
     "id": "DRIFTWOOD",
@@ -677,7 +856,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/driftwood.png"
+    "image_url": "/static/images/relics/driftwood.png",
+    "vars": {}
   },
   {
     "id": "DUSTY_TOME",
@@ -687,7 +867,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/dusty_tome.png"
+    "image_url": "/static/images/relics/dusty_tome.png",
+    "vars": {}
   },
   {
     "id": "ECTOPLASM",
@@ -697,7 +878,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/ectoplasm.png"
+    "image_url": "/static/images/relics/ectoplasm.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "ELECTRIC_SHRYMP",
@@ -707,7 +891,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/electric_shrymp.png"
+    "image_url": "/static/images/relics/electric_shrymp.png",
+    "vars": {}
   },
   {
     "id": "EMBER_TEA",
@@ -717,7 +902,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/ember_tea.png"
+    "image_url": "/static/images/relics/ember_tea.png",
+    "vars": {
+      "StrengthPower": 2
+    }
   },
   {
     "id": "EMOTION_CHIP",
@@ -727,7 +915,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "defect",
-    "image_url": "/static/images/relics/emotion_chip.png"
+    "image_url": "/static/images/relics/emotion_chip.png",
+    "vars": {}
   },
   {
     "id": "EMPTY_CAGE",
@@ -737,7 +926,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/empty_cage.png"
+    "image_url": "/static/images/relics/empty_cage.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "ETERNAL_FEATHER",
@@ -747,7 +939,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/eternal_feather.png"
+    "image_url": "/static/images/relics/eternal_feather.png",
+    "vars": {
+      "Cards": 5,
+      "Heal": 3
+    }
   },
   {
     "id": "FAKE_ANCHOR",
@@ -757,7 +953,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fake_anchor.png"
+    "image_url": "/static/images/relics/fake_anchor.png",
+    "vars": {
+      "Block": 4
+    }
   },
   {
     "id": "FAKE_BLOOD_VIAL",
@@ -767,7 +966,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fake_blood_vial.png"
+    "image_url": "/static/images/relics/fake_blood_vial.png",
+    "vars": {
+      "Heal": 1
+    }
   },
   {
     "id": "FAKE_HAPPY_FLOWER",
@@ -777,7 +979,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fake_happy_flower.png"
+    "image_url": "/static/images/relics/fake_happy_flower.png",
+    "vars": {
+      "Energy": 1,
+      "Turns": 5
+    }
   },
   {
     "id": "FAKE_LEES_WAFFLE",
@@ -787,7 +993,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fake_lees_waffle.png"
+    "image_url": "/static/images/relics/fake_lees_waffle.png",
+    "vars": {
+      "Heal": 10
+    }
   },
   {
     "id": "FAKE_MANGO",
@@ -797,7 +1006,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fake_mango.png"
+    "image_url": "/static/images/relics/fake_mango.png",
+    "vars": {
+      "MaxHp": 3
+    }
   },
   {
     "id": "FAKE_MERCHANTS_RUG",
@@ -807,7 +1019,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fake_merchants_rug.png"
+    "image_url": "/static/images/relics/fake_merchants_rug.png",
+    "vars": {}
   },
   {
     "id": "FAKE_ORICHALCUM",
@@ -817,7 +1030,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fake_orichalcum.png"
+    "image_url": "/static/images/relics/fake_orichalcum.png",
+    "vars": {
+      "Block": 3
+    }
   },
   {
     "id": "FAKE_SNECKO_EYE",
@@ -827,7 +1043,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fake_snecko_eye.png"
+    "image_url": "/static/images/relics/fake_snecko_eye.png",
+    "vars": {}
   },
   {
     "id": "FAKE_STRIKE_DUMMY",
@@ -837,7 +1054,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fake_strike_dummy.png"
+    "image_url": "/static/images/relics/fake_strike_dummy.png",
+    "vars": {
+      "ExtraDamage": 1
+    }
   },
   {
     "id": "FAKE_VENERABLE_TEA_SET",
@@ -847,7 +1067,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fake_venerable_tea_set.png"
+    "image_url": "/static/images/relics/fake_venerable_tea_set.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "FENCING_MANUAL",
@@ -857,7 +1080,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "regent",
-    "image_url": "/static/images/relics/fencing_manual.png"
+    "image_url": "/static/images/relics/fencing_manual.png",
+    "vars": {
+      "Forge": 10
+    }
   },
   {
     "id": "FESTIVE_POPPER",
@@ -867,7 +1093,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/festive_popper.png"
+    "image_url": "/static/images/relics/festive_popper.png",
+    "vars": {
+      "Damage": 9
+    }
   },
   {
     "id": "FIDDLE",
@@ -877,7 +1106,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fiddle.png"
+    "image_url": "/static/images/relics/fiddle.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "FORGOTTEN_SOUL",
@@ -887,7 +1119,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/forgotten_soul.png"
+    "image_url": "/static/images/relics/forgotten_soul.png",
+    "vars": {
+      "Damage": 1
+    }
   },
   {
     "id": "FRAGRANT_MUSHROOM",
@@ -897,7 +1132,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fragrant_mushroom.png"
+    "image_url": "/static/images/relics/fragrant_mushroom.png",
+    "vars": {
+      "HpLoss": 15,
+      "Cards": 2
+    }
   },
   {
     "id": "FRESNEL_LENS",
@@ -907,7 +1146,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fresnel_lens.png"
+    "image_url": "/static/images/relics/fresnel_lens.png",
+    "vars": {
+      "NimbleAmount": 2
+    }
   },
   {
     "id": "FROZEN_EGG",
@@ -917,7 +1159,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/frozen_egg.png"
+    "image_url": "/static/images/relics/frozen_egg.png",
+    "vars": {}
   },
   {
     "id": "FUNERARY_MASK",
@@ -927,7 +1170,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "necrobinder",
-    "image_url": "/static/images/relics/funerary_mask.png"
+    "image_url": "/static/images/relics/funerary_mask.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "FUR_COAT",
@@ -937,7 +1183,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/fur_coat.png"
+    "image_url": "/static/images/relics/fur_coat.png",
+    "vars": {
+      "Combats": 7
+    }
   },
   {
     "id": "GALACTIC_DUST",
@@ -947,7 +1196,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "regent",
-    "image_url": "/static/images/relics/galactic_dust.png"
+    "image_url": "/static/images/relics/galactic_dust.png",
+    "vars": {
+      "Stars": 10,
+      "Block": 10
+    }
   },
   {
     "id": "GAMBLING_CHIP",
@@ -957,7 +1210,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/gambling_chip.png"
+    "image_url": "/static/images/relics/gambling_chip.png",
+    "vars": {}
   },
   {
     "id": "GAME_PIECE",
@@ -967,7 +1221,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/game_piece.png"
+    "image_url": "/static/images/relics/game_piece.png",
+    "vars": {
+      "Cards": 1
+    }
   },
   {
     "id": "GHOST_SEED",
@@ -977,7 +1234,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/ghost_seed.png"
+    "image_url": "/static/images/relics/ghost_seed.png",
+    "vars": {}
   },
   {
     "id": "GIRYA",
@@ -987,7 +1245,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/girya.png"
+    "image_url": "/static/images/relics/girya.png",
+    "vars": {}
   },
   {
     "id": "GLASS_EYE",
@@ -997,7 +1256,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/glass_eye.png"
+    "image_url": "/static/images/relics/glass_eye.png",
+    "vars": {}
   },
   {
     "id": "GLITTER",
@@ -1007,7 +1267,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/glitter.png"
+    "image_url": "/static/images/relics/glitter.png",
+    "vars": {}
   },
   {
     "id": "GNARLED_HAMMER",
@@ -1017,7 +1278,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/gnarled_hammer.png"
+    "image_url": "/static/images/relics/gnarled_hammer.png",
+    "vars": {
+      "Cards": 3,
+      "SharpAmount": 3
+    }
   },
   {
     "id": "GOLD_PLATED_CABLES",
@@ -1027,7 +1292,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "defect",
-    "image_url": "/static/images/relics/gold_plated_cables.png"
+    "image_url": "/static/images/relics/gold_plated_cables.png",
+    "vars": {}
   },
   {
     "id": "GOLDEN_COMPASS",
@@ -1037,7 +1303,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/golden_compass.png"
+    "image_url": "/static/images/relics/golden_compass.png",
+    "vars": {}
   },
   {
     "id": "GOLDEN_PEARL",
@@ -1047,7 +1314,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/golden_pearl.png"
+    "image_url": "/static/images/relics/golden_pearl.png",
+    "vars": {
+      "Gold": 150
+    }
   },
   {
     "id": "GORGET",
@@ -1057,7 +1327,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/gorget.png"
+    "image_url": "/static/images/relics/gorget.png",
+    "vars": {
+      "PlatingPower": 4
+    }
   },
   {
     "id": "GREMLIN_HORN",
@@ -1067,7 +1340,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/gremlin_horn.png"
+    "image_url": "/static/images/relics/gremlin_horn.png",
+    "vars": {
+      "Energy": 1,
+      "Cards": 1
+    }
   },
   {
     "id": "HAND_DRILL",
@@ -1077,7 +1354,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/hand_drill.png"
+    "image_url": "/static/images/relics/hand_drill.png",
+    "vars": {
+      "VulnerablePower": 2
+    }
   },
   {
     "id": "HAPPY_FLOWER",
@@ -1087,7 +1367,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/happy_flower.png"
+    "image_url": "/static/images/relics/happy_flower.png",
+    "vars": {
+      "Energy": 1,
+      "Turns": 3
+    }
   },
   {
     "id": "HELICAL_DART",
@@ -1097,7 +1381,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "silent",
-    "image_url": "/static/images/relics/helical_dart.png"
+    "image_url": "/static/images/relics/helical_dart.png",
+    "vars": {
+      "DexterityPower": 1
+    }
   },
   {
     "id": "HISTORY_COURSE",
@@ -1107,7 +1394,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/history_course.png"
+    "image_url": "/static/images/relics/history_course.png",
+    "vars": {}
   },
   {
     "id": "HORN_CLEAT",
@@ -1117,7 +1405,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/horn_cleat.png"
+    "image_url": "/static/images/relics/horn_cleat.png",
+    "vars": {
+      "Block": 14
+    }
   },
   {
     "id": "ICE_CREAM",
@@ -1127,7 +1418,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/ice_cream.png"
+    "image_url": "/static/images/relics/ice_cream.png",
+    "vars": {}
   },
   {
     "id": "INFUSED_CORE",
@@ -1137,7 +1429,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "시작 유물",
     "pool": "defect",
-    "image_url": "/static/images/relics/infused_core.png"
+    "image_url": "/static/images/relics/infused_core.png",
+    "vars": {
+      "Lightning": 3
+    }
   },
   {
     "id": "INTIMIDATING_HELMET",
@@ -1147,7 +1442,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/intimidating_helmet.png"
+    "image_url": "/static/images/relics/intimidating_helmet.png",
+    "vars": {
+      "Block": 4,
+      "Energy": 2
+    }
   },
   {
     "id": "IRON_CLUB",
@@ -1157,7 +1456,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/iron_club.png"
+    "image_url": "/static/images/relics/iron_club.png",
+    "vars": {
+      "Cards": 4
+    }
   },
   {
     "id": "IVORY_TILE",
@@ -1167,7 +1469,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "necrobinder",
-    "image_url": "/static/images/relics/ivory_tile.png"
+    "image_url": "/static/images/relics/ivory_tile.png",
+    "vars": {
+      "Energy": 1,
+      "EnergyThreshold": 3
+    }
   },
   {
     "id": "JEWELED_MASK",
@@ -1177,7 +1483,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/jeweled_mask.png"
+    "image_url": "/static/images/relics/jeweled_mask.png",
+    "vars": {}
   },
   {
     "id": "JEWELRY_BOX",
@@ -1187,7 +1494,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/jewelry_box.png"
+    "image_url": "/static/images/relics/jewelry_box.png",
+    "vars": {}
   },
   {
     "id": "JOSS_PAPER",
@@ -1197,7 +1505,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/joss_paper.png"
+    "image_url": "/static/images/relics/joss_paper.png",
+    "vars": {
+      "ExhaustAmount": 5,
+      "Cards": 1
+    }
   },
   {
     "id": "JUZU_BRACELET",
@@ -1207,7 +1519,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/juzu_bracelet.png"
+    "image_url": "/static/images/relics/juzu_bracelet.png",
+    "vars": {}
   },
   {
     "id": "KIFUDA",
@@ -1217,7 +1530,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/kifuda.png"
+    "image_url": "/static/images/relics/kifuda.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "KUNAI",
@@ -1227,7 +1543,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/kunai.png"
+    "image_url": "/static/images/relics/kunai.png",
+    "vars": {
+      "Cards": 3,
+      "DexterityPower": 1
+    }
   },
   {
     "id": "KUSARIGAMA",
@@ -1237,7 +1557,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/kusarigama.png"
+    "image_url": "/static/images/relics/kusarigama.png",
+    "vars": {
+      "Cards": 3,
+      "Damage": 6
+    }
   },
   {
     "id": "LANTERN",
@@ -1247,7 +1571,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/lantern.png"
+    "image_url": "/static/images/relics/lantern.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "LARGE_CAPSULE",
@@ -1257,7 +1584,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/large_capsule.png"
+    "image_url": "/static/images/relics/large_capsule.png",
+    "vars": {
+      "Relics": 2
+    }
   },
   {
     "id": "LASTING_CANDY",
@@ -1267,7 +1597,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/lasting_candy.png"
+    "image_url": "/static/images/relics/lasting_candy.png",
+    "vars": {}
   },
   {
     "id": "LAVA_LAMP",
@@ -1277,7 +1608,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/lava_lamp.png"
+    "image_url": "/static/images/relics/lava_lamp.png",
+    "vars": {}
   },
   {
     "id": "LAVA_ROCK",
@@ -1287,7 +1619,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/lava_rock.png"
+    "image_url": "/static/images/relics/lava_rock.png",
+    "vars": {
+      "Relics": 2
+    }
   },
   {
     "id": "LEAD_PAPERWEIGHT",
@@ -1297,7 +1632,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/lead_paperweight.png"
+    "image_url": "/static/images/relics/lead_paperweight.png",
+    "vars": {}
   },
   {
     "id": "LEAFY_POULTICE",
@@ -1307,7 +1643,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/leafy_poultice.png"
+    "image_url": "/static/images/relics/leafy_poultice.png",
+    "vars": {
+      "MaxHp": 12
+    }
   },
   {
     "id": "LEES_WAFFLE",
@@ -1317,7 +1656,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/lees_waffle.png"
+    "image_url": "/static/images/relics/lees_waffle.png",
+    "vars": {
+      "MaxHp": 7
+    }
   },
   {
     "id": "LETTER_OPENER",
@@ -1327,7 +1669,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/letter_opener.png"
+    "image_url": "/static/images/relics/letter_opener.png",
+    "vars": {
+      "Cards": 3,
+      "Damage": 5
+    }
   },
   {
     "id": "LIZARD_TAIL",
@@ -1337,7 +1683,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/lizard_tail.png"
+    "image_url": "/static/images/relics/lizard_tail.png",
+    "vars": {
+      "Heal": 50
+    }
   },
   {
     "id": "LOOMING_FRUIT",
@@ -1347,7 +1696,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/looming_fruit.png"
+    "image_url": "/static/images/relics/looming_fruit.png",
+    "vars": {
+      "MaxHp": 31
+    }
   },
   {
     "id": "LORDS_PARASOL",
@@ -1357,7 +1709,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/lords_parasol.png"
+    "image_url": "/static/images/relics/lords_parasol.png",
+    "vars": {}
   },
   {
     "id": "LOST_COFFER",
@@ -1367,7 +1720,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/lost_coffer.png"
+    "image_url": "/static/images/relics/lost_coffer.png",
+    "vars": {}
   },
   {
     "id": "LOST_WISP",
@@ -1377,7 +1731,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/lost_wisp.png"
+    "image_url": "/static/images/relics/lost_wisp.png",
+    "vars": {
+      "Damage": 8
+    }
   },
   {
     "id": "LUCKY_FYSH",
@@ -1387,7 +1744,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/lucky_fysh.png"
+    "image_url": "/static/images/relics/lucky_fysh.png",
+    "vars": {
+      "Gold": 15
+    }
   },
   {
     "id": "LUNAR_PASTRY",
@@ -1397,7 +1757,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "regent",
-    "image_url": "/static/images/relics/lunar_pastry.png"
+    "image_url": "/static/images/relics/lunar_pastry.png",
+    "vars": {
+      "Stars": 1
+    }
   },
   {
     "id": "MANGO",
@@ -1407,7 +1770,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/mango.png"
+    "image_url": "/static/images/relics/mango.png",
+    "vars": {
+      "MaxHp": 14
+    }
   },
   {
     "id": "MASSIVE_SCROLL",
@@ -1417,7 +1783,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/massive_scroll.png"
+    "image_url": "/static/images/relics/massive_scroll.png",
+    "vars": {}
   },
   {
     "id": "MAW_BANK",
@@ -1427,7 +1794,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/maw_bank.png"
+    "image_url": "/static/images/relics/maw_bank.png",
+    "vars": {
+      "Gold": 12
+    }
   },
   {
     "id": "MEAL_TICKET",
@@ -1437,7 +1807,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/meal_ticket.png"
+    "image_url": "/static/images/relics/meal_ticket.png",
+    "vars": {
+      "Heal": 15
+    }
   },
   {
     "id": "MEAT_CLEAVER",
@@ -1447,7 +1820,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/meat_cleaver.png"
+    "image_url": "/static/images/relics/meat_cleaver.png",
+    "vars": {}
   },
   {
     "id": "MEAT_ON_THE_BONE",
@@ -1457,7 +1831,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/meat_on_the_bone.png"
+    "image_url": "/static/images/relics/meat_on_the_bone.png",
+    "vars": {
+      "HpThreshold": 50,
+      "Heal": 12
+    }
   },
   {
     "id": "MEMBERSHIP_CARD",
@@ -1467,7 +1845,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/membership_card.png"
+    "image_url": "/static/images/relics/membership_card.png",
+    "vars": {
+      "Discount": 50
+    }
   },
   {
     "id": "MERCURY_HOURGLASS",
@@ -1477,7 +1858,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/mercury_hourglass.png"
+    "image_url": "/static/images/relics/mercury_hourglass.png",
+    "vars": {
+      "Damage": 3
+    }
   },
   {
     "id": "METRONOME",
@@ -1487,7 +1871,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "defect",
-    "image_url": "/static/images/relics/metronome.png"
+    "image_url": "/static/images/relics/metronome.png",
+    "vars": {
+      "Damage": 30,
+      "OrbCount": 7
+    }
   },
   {
     "id": "MINI_REGENT",
@@ -1497,7 +1885,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "regent",
-    "image_url": "/static/images/relics/mini_regent.png"
+    "image_url": "/static/images/relics/mini_regent.png",
+    "vars": {
+      "StrengthPower": 1
+    }
   },
   {
     "id": "MINIATURE_CANNON",
@@ -1507,7 +1898,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/miniature_cannon.png"
+    "image_url": "/static/images/relics/miniature_cannon.png",
+    "vars": {
+      "ExtraDamage": 3
+    }
   },
   {
     "id": "MINIATURE_TENT",
@@ -1517,7 +1911,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/miniature_tent.png"
+    "image_url": "/static/images/relics/miniature_tent.png",
+    "vars": {}
   },
   {
     "id": "MOLTEN_EGG",
@@ -1527,7 +1922,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/molten_egg.png"
+    "image_url": "/static/images/relics/molten_egg.png",
+    "vars": {}
   },
   {
     "id": "MR_STRUGGLES",
@@ -1537,7 +1933,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/mr_struggles.png"
+    "image_url": "/static/images/relics/mr_struggles.png",
+    "vars": {}
   },
   {
     "id": "MUMMIFIED_HAND",
@@ -1547,7 +1944,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/mummified_hand.png"
+    "image_url": "/static/images/relics/mummified_hand.png",
+    "vars": {}
   },
   {
     "id": "MUSIC_BOX",
@@ -1557,7 +1955,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/music_box.png"
+    "image_url": "/static/images/relics/music_box.png",
+    "vars": {}
   },
   {
     "id": "MYSTIC_LIGHTER",
@@ -1567,7 +1966,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/mystic_lighter.png"
+    "image_url": "/static/images/relics/mystic_lighter.png",
+    "vars": {
+      "Damage": 9
+    }
   },
   {
     "id": "NEOWS_TORMENT",
@@ -1577,7 +1979,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/neows_torment.png"
+    "image_url": "/static/images/relics/neows_torment.png",
+    "vars": {}
   },
   {
     "id": "NEW_LEAF",
@@ -1587,7 +1990,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/new_leaf.png"
+    "image_url": "/static/images/relics/new_leaf.png",
+    "vars": {
+      "Cards": 1
+    }
   },
   {
     "id": "NINJA_SCROLL",
@@ -1597,7 +2003,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "silent",
-    "image_url": "/static/images/relics/ninja_scroll.png"
+    "image_url": "/static/images/relics/ninja_scroll.png",
+    "vars": {
+      "Shivs": 3
+    }
   },
   {
     "id": "NUNCHAKU",
@@ -1607,7 +2016,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/nunchaku.png"
+    "image_url": "/static/images/relics/nunchaku.png",
+    "vars": {
+      "Cards": 10,
+      "Energy": 1
+    }
   },
   {
     "id": "NUTRITIOUS_OYSTER",
@@ -1617,7 +2030,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/nutritious_oyster.png"
+    "image_url": "/static/images/relics/nutritious_oyster.png",
+    "vars": {
+      "MaxHp": 11
+    }
   },
   {
     "id": "NUTRITIOUS_SOUP",
@@ -1627,7 +2043,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/nutritious_soup.png"
+    "image_url": "/static/images/relics/nutritious_soup.png",
+    "vars": {}
   },
   {
     "id": "ODDLY_SMOOTH_STONE",
@@ -1637,7 +2054,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/oddly_smooth_stone.png"
+    "image_url": "/static/images/relics/oddly_smooth_stone.png",
+    "vars": {
+      "DexterityPower": 1
+    }
   },
   {
     "id": "OLD_COIN",
@@ -1647,7 +2067,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/old_coin.png"
+    "image_url": "/static/images/relics/old_coin.png",
+    "vars": {
+      "Gold": 300
+    }
   },
   {
     "id": "ORANGE_DOUGH",
@@ -1657,7 +2080,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "regent",
-    "image_url": "/static/images/relics/orange_dough.png"
+    "image_url": "/static/images/relics/orange_dough.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "ORICHALCUM",
@@ -1667,7 +2093,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/orichalcum.png"
+    "image_url": "/static/images/relics/orichalcum.png",
+    "vars": {
+      "Block": 6
+    }
   },
   {
     "id": "ORNAMENTAL_FAN",
@@ -1677,7 +2106,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/ornamental_fan.png"
+    "image_url": "/static/images/relics/ornamental_fan.png",
+    "vars": {
+      "Cards": 3,
+      "Block": 4
+    }
   },
   {
     "id": "ORRERY",
@@ -1687,7 +2120,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/orrery.png"
+    "image_url": "/static/images/relics/orrery.png",
+    "vars": {
+      "Cards": 5
+    }
   },
   {
     "id": "PAELS_BLOOD",
@@ -1697,7 +2133,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/paels_blood.png"
+    "image_url": "/static/images/relics/paels_blood.png",
+    "vars": {
+      "Cards": 1
+    }
   },
   {
     "id": "PAELS_CLAW",
@@ -1707,7 +2146,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/paels_claw.png"
+    "image_url": "/static/images/relics/paels_claw.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "PAELS_EYE",
@@ -1717,7 +2159,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/paels_eye.png"
+    "image_url": "/static/images/relics/paels_eye.png",
+    "vars": {}
   },
   {
     "id": "PAELS_FLESH",
@@ -1727,7 +2170,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/paels_flesh.png"
+    "image_url": "/static/images/relics/paels_flesh.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "PAELS_GROWTH",
@@ -1737,7 +2183,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/paels_growth.png"
+    "image_url": "/static/images/relics/paels_growth.png",
+    "vars": {}
   },
   {
     "id": "PAELS_HORN",
@@ -1747,7 +2194,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/paels_horn.png"
+    "image_url": "/static/images/relics/paels_horn.png",
+    "vars": {}
   },
   {
     "id": "PAELS_LEGION",
@@ -1757,7 +2205,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/paels_legion.png"
+    "image_url": "/static/images/relics/paels_legion.png",
+    "vars": {
+      "Turns": 2
+    }
   },
   {
     "id": "PAELS_TEARS",
@@ -1767,7 +2218,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/paels_tears.png"
+    "image_url": "/static/images/relics/paels_tears.png",
+    "vars": {
+      "Energy": 2
+    }
   },
   {
     "id": "PAELS_TOOTH",
@@ -1777,7 +2231,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/paels_tooth.png"
+    "image_url": "/static/images/relics/paels_tooth.png",
+    "vars": {
+      "Cards": 5
+    }
   },
   {
     "id": "PAELS_WING",
@@ -1787,7 +2244,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/paels_wing.png"
+    "image_url": "/static/images/relics/paels_wing.png",
+    "vars": {
+      "Sacrifices": 2
+    }
   },
   {
     "id": "PANDORAS_BOX",
@@ -1797,7 +2257,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/pandoras_box.png"
+    "image_url": "/static/images/relics/pandoras_box.png",
+    "vars": {}
   },
   {
     "id": "PANTOGRAPH",
@@ -1807,7 +2268,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/pantograph.png"
+    "image_url": "/static/images/relics/pantograph.png",
+    "vars": {
+      "Heal": 25
+    }
   },
   {
     "id": "PAPER_KRANE",
@@ -1817,7 +2281,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "silent",
-    "image_url": "/static/images/relics/paper_krane.png"
+    "image_url": "/static/images/relics/paper_krane.png",
+    "vars": {}
   },
   {
     "id": "PAPER_PHROG",
@@ -1827,7 +2292,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "ironclad",
-    "image_url": "/static/images/relics/paper_phrog.png"
+    "image_url": "/static/images/relics/paper_phrog.png",
+    "vars": {}
   },
   {
     "id": "PARRYING_SHIELD",
@@ -1837,7 +2303,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/parrying_shield.png"
+    "image_url": "/static/images/relics/parrying_shield.png",
+    "vars": {
+      "Block": 10,
+      "Damage": 6
+    }
   },
   {
     "id": "PEAR",
@@ -1847,7 +2317,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/pear.png"
+    "image_url": "/static/images/relics/pear.png",
+    "vars": {
+      "MaxHp": 10
+    }
   },
   {
     "id": "PEN_NIB",
@@ -1857,7 +2330,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/pen_nib.png"
+    "image_url": "/static/images/relics/pen_nib.png",
+    "vars": {}
   },
   {
     "id": "PENDULUM",
@@ -1867,7 +2341,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/pendulum.png"
+    "image_url": "/static/images/relics/pendulum.png",
+    "vars": {
+      "Cards": 1,
+      "Turns": 3
+    }
   },
   {
     "id": "PERMAFROST",
@@ -1877,7 +2355,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/permafrost.png"
+    "image_url": "/static/images/relics/permafrost.png",
+    "vars": {
+      "Block": 7
+    }
   },
   {
     "id": "PETRIFIED_TOAD",
@@ -1887,7 +2368,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/petrified_toad.png"
+    "image_url": "/static/images/relics/petrified_toad.png",
+    "vars": {}
   },
   {
     "id": "PHILOSOPHERS_STONE",
@@ -1897,7 +2379,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/philosophers_stone.png"
+    "image_url": "/static/images/relics/philosophers_stone.png",
+    "vars": {
+      "StrengthPower": 1,
+      "Energy": 1
+    }
   },
   {
     "id": "PHYLACTERY_UNBOUND",
@@ -1907,7 +2393,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "시작 유물",
     "pool": "necrobinder",
-    "image_url": "/static/images/relics/phylactery_unbound.png"
+    "image_url": "/static/images/relics/phylactery_unbound.png",
+    "vars": {
+      "StartOfCombat": 5,
+      "StartOfTurn": 2
+    }
   },
   {
     "id": "PLANISPHERE",
@@ -1917,7 +2407,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/planisphere.png"
+    "image_url": "/static/images/relics/planisphere.png",
+    "vars": {
+      "Heal": 5
+    }
   },
   {
     "id": "POCKETWATCH",
@@ -1927,7 +2420,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/pocketwatch.png"
+    "image_url": "/static/images/relics/pocketwatch.png",
+    "vars": {
+      "CardThreshold": 3,
+      "Cards": 3
+    }
   },
   {
     "id": "POLLINOUS_CORE",
@@ -1937,7 +2434,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/pollinous_core.png"
+    "image_url": "/static/images/relics/pollinous_core.png",
+    "vars": {
+      "Cards": 2,
+      "Turns": 4
+    }
   },
   {
     "id": "POMANDER",
@@ -1947,7 +2448,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/pomander.png"
+    "image_url": "/static/images/relics/pomander.png",
+    "vars": {
+      "Cards": 1
+    }
   },
   {
     "id": "POTION_BELT",
@@ -1957,7 +2461,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/potion_belt.png"
+    "image_url": "/static/images/relics/potion_belt.png",
+    "vars": {
+      "PotionSlots": 2
+    }
   },
   {
     "id": "POWER_CELL",
@@ -1967,7 +2474,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "defect",
-    "image_url": "/static/images/relics/power_cell.png"
+    "image_url": "/static/images/relics/power_cell.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "PRAYER_WHEEL",
@@ -1977,7 +2487,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/prayer_wheel.png"
+    "image_url": "/static/images/relics/prayer_wheel.png",
+    "vars": {}
   },
   {
     "id": "PRECARIOUS_SHEARS",
@@ -1987,7 +2498,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/precarious_shears.png"
+    "image_url": "/static/images/relics/precarious_shears.png",
+    "vars": {
+      "Cards": 2,
+      "Damage": 16
+    }
   },
   {
     "id": "PRECISE_SCISSORS",
@@ -1997,7 +2512,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/precise_scissors.png"
+    "image_url": "/static/images/relics/precise_scissors.png",
+    "vars": {
+      "Cards": 1
+    }
   },
   {
     "id": "PRESERVED_FOG",
@@ -2007,7 +2525,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/preserved_fog.png"
+    "image_url": "/static/images/relics/preserved_fog.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "PRISMATIC_GEM",
@@ -2017,7 +2538,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/prismatic_gem.png"
+    "image_url": "/static/images/relics/prismatic_gem.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "PUMPKIN_CANDLE",
@@ -2027,7 +2551,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/pumpkin_candle.png"
+    "image_url": "/static/images/relics/pumpkin_candle.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "PUNCH_DAGGER",
@@ -2037,7 +2564,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/punch_dagger.png"
+    "image_url": "/static/images/relics/punch_dagger.png",
+    "vars": {
+      "Momentum": 5
+    }
   },
   {
     "id": "RADIANT_PEARL",
@@ -2047,7 +2577,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/radiant_pearl.png"
+    "image_url": "/static/images/relics/radiant_pearl.png",
+    "vars": {
+      "Cards": 1
+    }
   },
   {
     "id": "RAINBOW_RING",
@@ -2057,7 +2590,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/rainbow_ring.png"
+    "image_url": "/static/images/relics/rainbow_ring.png",
+    "vars": {
+      "StrengthPower": 1,
+      "DexterityPower": 1
+    }
   },
   {
     "id": "RAZOR_TOOTH",
@@ -2067,7 +2604,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/razor_tooth.png"
+    "image_url": "/static/images/relics/razor_tooth.png",
+    "vars": {}
   },
   {
     "id": "RED_MASK",
@@ -2077,7 +2615,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/red_mask.png"
+    "image_url": "/static/images/relics/red_mask.png",
+    "vars": {
+      "WeakPower": 1
+    }
   },
   {
     "id": "RED_SKULL",
@@ -2087,7 +2628,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "ironclad",
-    "image_url": "/static/images/relics/red_skull.png"
+    "image_url": "/static/images/relics/red_skull.png",
+    "vars": {
+      "HpThreshold": 50,
+      "StrengthPower": 3
+    }
   },
   {
     "id": "REGAL_PILLOW",
@@ -2097,7 +2642,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/regal_pillow.png"
+    "image_url": "/static/images/relics/regal_pillow.png",
+    "vars": {
+      "Heal": 15
+    }
   },
   {
     "id": "REGALITE",
@@ -2107,7 +2655,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "regent",
-    "image_url": "/static/images/relics/regalite.png"
+    "image_url": "/static/images/relics/regalite.png",
+    "vars": {
+      "Block": 2
+    }
   },
   {
     "id": "REPTILE_TRINKET",
@@ -2117,7 +2668,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/reptile_trinket.png"
+    "image_url": "/static/images/relics/reptile_trinket.png",
+    "vars": {
+      "StrengthPower": 3
+    }
   },
   {
     "id": "RING_OF_THE_DRAKE",
@@ -2127,7 +2681,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "시작 유물",
     "pool": "silent",
-    "image_url": "/static/images/relics/ring_of_the_drake.png"
+    "image_url": "/static/images/relics/ring_of_the_drake.png",
+    "vars": {
+      "Cards": 2,
+      "Turns": 3
+    }
   },
   {
     "id": "RING_OF_THE_SNAKE",
@@ -2137,7 +2695,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "시작 유물",
     "pool": "silent",
-    "image_url": "/static/images/relics/ring_of_the_snake.png"
+    "image_url": "/static/images/relics/ring_of_the_snake.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "RINGING_TRIANGLE",
@@ -2147,7 +2708,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/ringing_triangle.png"
+    "image_url": "/static/images/relics/ringing_triangle.png",
+    "vars": {}
   },
   {
     "id": "RIPPLE_BASIN",
@@ -2157,7 +2719,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/ripple_basin.png"
+    "image_url": "/static/images/relics/ripple_basin.png",
+    "vars": {
+      "Block": 4
+    }
   },
   {
     "id": "ROYAL_POISON",
@@ -2167,7 +2732,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/royal_poison.png"
+    "image_url": "/static/images/relics/royal_poison.png",
+    "vars": {
+      "Damage": 4
+    }
   },
   {
     "id": "ROYAL_STAMP",
@@ -2177,7 +2745,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/royal_stamp.png"
+    "image_url": "/static/images/relics/royal_stamp.png",
+    "vars": {
+      "Cards": 1
+    }
   },
   {
     "id": "RUINED_HELMET",
@@ -2187,7 +2758,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "ironclad",
-    "image_url": "/static/images/relics/ruined_helmet.png"
+    "image_url": "/static/images/relics/ruined_helmet.png",
+    "vars": {}
   },
   {
     "id": "RUNIC_CAPACITOR",
@@ -2197,7 +2769,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "defect",
-    "image_url": "/static/images/relics/runic_capacitor.png"
+    "image_url": "/static/images/relics/runic_capacitor.png",
+    "vars": {
+      "Repeat": 3
+    }
   },
   {
     "id": "RUNIC_PYRAMID",
@@ -2207,7 +2782,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/runic_pyramid.png"
+    "image_url": "/static/images/relics/runic_pyramid.png",
+    "vars": {}
   },
   {
     "id": "SAI",
@@ -2217,7 +2793,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/sai.png"
+    "image_url": "/static/images/relics/sai.png",
+    "vars": {
+      "Block": 7
+    }
   },
   {
     "id": "SAND_CASTLE",
@@ -2227,7 +2806,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/sand_castle.png"
+    "image_url": "/static/images/relics/sand_castle.png",
+    "vars": {
+      "Cards": 6
+    }
   },
   {
     "id": "SCREAMING_FLAGON",
@@ -2237,7 +2819,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/screaming_flagon.png"
+    "image_url": "/static/images/relics/screaming_flagon.png",
+    "vars": {
+      "Damage": 20
+    }
   },
   {
     "id": "SCROLL_BOXES",
@@ -2247,7 +2832,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/scroll_boxes.png"
+    "image_url": "/static/images/relics/scroll_boxes.png",
+    "vars": {}
   },
   {
     "id": "SEA_GLASS",
@@ -2257,7 +2843,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/sea_glass.png"
+    "image_url": "/static/images/relics/sea_glass.png",
+    "vars": {
+      "Cards": 15
+    }
   },
   {
     "id": "SEAL_OF_GOLD",
@@ -2267,7 +2856,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/seal_of_gold.png"
+    "image_url": "/static/images/relics/seal_of_gold.png",
+    "vars": {
+      "Energy": 1,
+      "Gold": 5
+    }
   },
   {
     "id": "SELF_FORMING_CLAY",
@@ -2277,7 +2870,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "ironclad",
-    "image_url": "/static/images/relics/self_forming_clay.png"
+    "image_url": "/static/images/relics/self_forming_clay.png",
+    "vars": {
+      "BlockNextTurn": 3
+    }
   },
   {
     "id": "SERE_TALON",
@@ -2287,7 +2883,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/sere_talon.png"
+    "image_url": "/static/images/relics/sere_talon.png",
+    "vars": {
+      "Curses": 2,
+      "Wishes": 3
+    }
   },
   {
     "id": "SHOVEL",
@@ -2297,7 +2897,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/shovel.png"
+    "image_url": "/static/images/relics/shovel.png",
+    "vars": {}
   },
   {
     "id": "SHURIKEN",
@@ -2307,7 +2908,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/shuriken.png"
+    "image_url": "/static/images/relics/shuriken.png",
+    "vars": {
+      "Cards": 3,
+      "StrengthPower": 1
+    }
   },
   {
     "id": "SIGNET_RING",
@@ -2317,7 +2922,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/signet_ring.png"
+    "image_url": "/static/images/relics/signet_ring.png",
+    "vars": {
+      "Gold": 999
+    }
   },
   {
     "id": "SILVER_CRUCIBLE",
@@ -2327,7 +2935,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/silver_crucible.png"
+    "image_url": "/static/images/relics/silver_crucible.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "SLING_OF_COURAGE",
@@ -2337,7 +2948,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/sling_of_courage.png"
+    "image_url": "/static/images/relics/sling_of_courage.png",
+    "vars": {
+      "StrengthPower": 2
+    }
   },
   {
     "id": "SMALL_CAPSULE",
@@ -2347,7 +2961,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/small_capsule.png"
+    "image_url": "/static/images/relics/small_capsule.png",
+    "vars": {}
   },
   {
     "id": "SNECKO_EYE",
@@ -2357,7 +2972,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/snecko_eye.png"
+    "image_url": "/static/images/relics/snecko_eye.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "SNECKO_SKULL",
@@ -2367,7 +2985,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "silent",
-    "image_url": "/static/images/relics/snecko_skull.png"
+    "image_url": "/static/images/relics/snecko_skull.png",
+    "vars": {
+      "PoisonPower": 1
+    }
   },
   {
     "id": "SOZU",
@@ -2377,7 +2998,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/sozu.png"
+    "image_url": "/static/images/relics/sozu.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "SPARKLING_ROUGE",
@@ -2387,7 +3011,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/sparkling_rouge.png"
+    "image_url": "/static/images/relics/sparkling_rouge.png",
+    "vars": {
+      "StrengthPower": 1,
+      "DexterityPower": 1
+    }
   },
   {
     "id": "SPIKED_GAUNTLETS",
@@ -2397,7 +3025,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/spiked_gauntlets.png"
+    "image_url": "/static/images/relics/spiked_gauntlets.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "STONE_CALENDAR",
@@ -2407,7 +3038,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/stone_calendar.png"
+    "image_url": "/static/images/relics/stone_calendar.png",
+    "vars": {
+      "Damage": 52,
+      "DamageTurn": 7
+    }
   },
   {
     "id": "STONE_CRACKER",
@@ -2417,7 +3052,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/stone_cracker.png"
+    "image_url": "/static/images/relics/stone_cracker.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "STONE_HUMIDIFIER",
@@ -2427,7 +3065,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/stone_humidifier.png"
+    "image_url": "/static/images/relics/stone_humidifier.png",
+    "vars": {
+      "MaxHp": 5
+    }
   },
   {
     "id": "STORYBOOK",
@@ -2437,7 +3078,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/storybook.png"
+    "image_url": "/static/images/relics/storybook.png",
+    "vars": {}
   },
   {
     "id": "STRAWBERRY",
@@ -2447,7 +3089,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/strawberry.png"
+    "image_url": "/static/images/relics/strawberry.png",
+    "vars": {
+      "MaxHp": 7
+    }
   },
   {
     "id": "STRIKE_DUMMY",
@@ -2457,7 +3102,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/strike_dummy.png"
+    "image_url": "/static/images/relics/strike_dummy.png",
+    "vars": {
+      "ExtraDamage": 3
+    }
   },
   {
     "id": "STURDY_CLAMP",
@@ -2467,7 +3115,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/sturdy_clamp.png"
+    "image_url": "/static/images/relics/sturdy_clamp.png",
+    "vars": {
+      "Block": 10
+    }
   },
   {
     "id": "SWORD_OF_JADE",
@@ -2477,7 +3128,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/sword_of_jade.png"
+    "image_url": "/static/images/relics/sword_of_jade.png",
+    "vars": {
+      "StrengthPower": 3
+    }
   },
   {
     "id": "SWORD_OF_STONE",
@@ -2487,7 +3141,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/sword_of_stone.png"
+    "image_url": "/static/images/relics/sword_of_stone.png",
+    "vars": {
+      "Elites": 5
+    }
   },
   {
     "id": "SYMBIOTIC_VIRUS",
@@ -2497,7 +3154,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "defect",
-    "image_url": "/static/images/relics/symbiotic_virus.png"
+    "image_url": "/static/images/relics/symbiotic_virus.png",
+    "vars": {
+      "Dark": 1
+    }
   },
   {
     "id": "TANXS_WHISTLE",
@@ -2507,7 +3167,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/tanxs_whistle.png"
+    "image_url": "/static/images/relics/tanxs_whistle.png",
+    "vars": {}
   },
   {
     "id": "TEA_OF_DISCOURTESY",
@@ -2517,7 +3178,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/tea_of_discourtesy.png"
+    "image_url": "/static/images/relics/tea_of_discourtesy.png",
+    "vars": {
+      "Heal": 1,
+      "DazedCount": 2
+    }
   },
   {
     "id": "THE_ABACUS",
@@ -2527,7 +3192,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/the_abacus.png"
+    "image_url": "/static/images/relics/the_abacus.png",
+    "vars": {
+      "Block": 6
+    }
   },
   {
     "id": "THE_BOOT",
@@ -2537,7 +3205,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/the_boot.png"
+    "image_url": "/static/images/relics/the_boot.png",
+    "vars": {
+      "DamageMinimum": 5,
+      "DamageThreshold": 4
+    }
   },
   {
     "id": "THE_COURIER",
@@ -2547,7 +3219,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/the_courier.png"
+    "image_url": "/static/images/relics/the_courier.png",
+    "vars": {
+      "Discount": 20
+    }
   },
   {
     "id": "THROWING_AXE",
@@ -2557,7 +3232,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/throwing_axe.png"
+    "image_url": "/static/images/relics/throwing_axe.png",
+    "vars": {}
   },
   {
     "id": "TINGSHA",
@@ -2567,7 +3243,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "silent",
-    "image_url": "/static/images/relics/tingsha.png"
+    "image_url": "/static/images/relics/tingsha.png",
+    "vars": {
+      "Damage": 3
+    }
   },
   {
     "id": "TINY_MAILBOX",
@@ -2577,7 +3256,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/tiny_mailbox.png"
+    "image_url": "/static/images/relics/tiny_mailbox.png",
+    "vars": {}
   },
   {
     "id": "TOASTY_MITTENS",
@@ -2587,7 +3267,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/toasty_mittens.png"
+    "image_url": "/static/images/relics/toasty_mittens.png",
+    "vars": {
+      "StrengthPower": 1
+    }
   },
   {
     "id": "TOOLBOX",
@@ -2597,7 +3280,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/toolbox.png"
+    "image_url": "/static/images/relics/toolbox.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "TOUCH_OF_OROBAS",
@@ -2607,7 +3293,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/touch_of_orobas.png"
+    "image_url": "/static/images/relics/touch_of_orobas.png",
+    "vars": {}
   },
   {
     "id": "TOUGH_BANDAGES",
@@ -2617,7 +3304,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "silent",
-    "image_url": "/static/images/relics/tough_bandages.png"
+    "image_url": "/static/images/relics/tough_bandages.png",
+    "vars": {
+      "Block": 3
+    }
   },
   {
     "id": "TOXIC_EGG",
@@ -2627,7 +3317,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/toxic_egg.png"
+    "image_url": "/static/images/relics/toxic_egg.png",
+    "vars": {}
   },
   {
     "id": "TOY_BOX",
@@ -2637,7 +3328,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/toy_box.png"
+    "image_url": "/static/images/relics/toy_box.png",
+    "vars": {
+      "Relics": 4,
+      "Combats": 3
+    }
   },
   {
     "id": "TRI_BOOMERANG",
@@ -2647,7 +3342,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/tri_boomerang.png"
+    "image_url": "/static/images/relics/tri_boomerang.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "TUNGSTEN_ROD",
@@ -2657,7 +3355,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/tungsten_rod.png"
+    "image_url": "/static/images/relics/tungsten_rod.png",
+    "vars": {
+      "HpLossReduction": 1
+    }
   },
   {
     "id": "TUNING_FORK",
@@ -2667,7 +3368,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/tuning_fork.png"
+    "image_url": "/static/images/relics/tuning_fork.png",
+    "vars": {
+      "Cards": 10,
+      "Block": 7
+    }
   },
   {
     "id": "TWISTED_FUNNEL",
@@ -2677,7 +3382,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "silent",
-    "image_url": "/static/images/relics/twisted_funnel.png"
+    "image_url": "/static/images/relics/twisted_funnel.png",
+    "vars": {
+      "PoisonPower": 4
+    }
   },
   {
     "id": "UNCEASING_TOP",
@@ -2687,7 +3395,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/unceasing_top.png"
+    "image_url": "/static/images/relics/unceasing_top.png",
+    "vars": {}
   },
   {
     "id": "UNDYING_SIGIL",
@@ -2697,7 +3406,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "necrobinder",
-    "image_url": "/static/images/relics/undying_sigil.png"
+    "image_url": "/static/images/relics/undying_sigil.png",
+    "vars": {
+      "DamageDecrease": 0.5
+    }
   },
   {
     "id": "UNSETTLING_LAMP",
@@ -2707,7 +3419,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/unsettling_lamp.png"
+    "image_url": "/static/images/relics/unsettling_lamp.png",
+    "vars": {}
   },
   {
     "id": "VAJRA",
@@ -2717,7 +3430,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/vajra.png"
+    "image_url": "/static/images/relics/vajra.png",
+    "vars": {
+      "StrengthPower": 1
+    }
   },
   {
     "id": "VAMBRACE",
@@ -2727,7 +3443,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고급 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/vambrace.png"
+    "image_url": "/static/images/relics/vambrace.png",
+    "vars": {}
   },
   {
     "id": "VELVET_CHOKER",
@@ -2737,7 +3454,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/velvet_choker.png"
+    "image_url": "/static/images/relics/velvet_choker.png",
+    "vars": {
+      "Cards": 6,
+      "Energy": 1
+    }
   },
   {
     "id": "VENERABLE_TEA_SET",
@@ -2747,7 +3468,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/venerable_tea_set.png"
+    "image_url": "/static/images/relics/venerable_tea_set.png",
+    "vars": {
+      "Energy": 2
+    }
   },
   {
     "id": "VERY_HOT_COCOA",
@@ -2757,7 +3481,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/very_hot_cocoa.png"
+    "image_url": "/static/images/relics/very_hot_cocoa.png",
+    "vars": {
+      "Energy": 4
+    }
   },
   {
     "id": "VEXING_PUZZLEBOX",
@@ -2767,7 +3494,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/vexing_puzzlebox.png"
+    "image_url": "/static/images/relics/vexing_puzzlebox.png",
+    "vars": {}
   },
   {
     "id": "VITRUVIAN_MINION",
@@ -2777,7 +3505,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "regent",
-    "image_url": "/static/images/relics/vitruvian_minion.png"
+    "image_url": "/static/images/relics/vitruvian_minion.png",
+    "vars": {}
   },
   {
     "id": "WAR_HAMMER",
@@ -2787,7 +3516,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/war_hammer.png"
+    "image_url": "/static/images/relics/war_hammer.png",
+    "vars": {
+      "Cards": 4
+    }
   },
   {
     "id": "WAR_PAINT",
@@ -2797,7 +3529,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/war_paint.png"
+    "image_url": "/static/images/relics/war_paint.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "WHETSTONE",
@@ -2807,7 +3542,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "일반 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/whetstone.png"
+    "image_url": "/static/images/relics/whetstone.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "WHISPERING_EARRING",
@@ -2817,7 +3555,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/whispering_earring.png"
+    "image_url": "/static/images/relics/whispering_earring.png",
+    "vars": {
+      "Energy": 1
+    }
   },
   {
     "id": "WHITE_BEAST_STATUE",
@@ -2827,7 +3568,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/white_beast_statue.png"
+    "image_url": "/static/images/relics/white_beast_statue.png",
+    "vars": {}
   },
   {
     "id": "WHITE_STAR",
@@ -2837,7 +3579,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "희귀 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/white_star.png"
+    "image_url": "/static/images/relics/white_star.png",
+    "vars": {}
   },
   {
     "id": "WING_CHARM",
@@ -2847,7 +3590,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "상점 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/wing_charm.png"
+    "image_url": "/static/images/relics/wing_charm.png",
+    "vars": {
+      "SwiftAmount": 1
+    }
   },
   {
     "id": "WONGO_CUSTOMER_APPRECIATION_BADGE",
@@ -2857,7 +3603,8 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/wongo_customer_appreciation_badge.png"
+    "image_url": "/static/images/relics/wongo_customer_appreciation_badge.png",
+    "vars": {}
   },
   {
     "id": "WONGOS_MYSTERY_TICKET",
@@ -2867,7 +3614,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "이벤트 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/wongos_mystery_ticket.png"
+    "image_url": "/static/images/relics/wongos_mystery_ticket.png",
+    "vars": {
+      "Repeat": 3,
+      "RemainingCombats": 5
+    }
   },
   {
     "id": "YUMMY_COOKIE",
@@ -2877,7 +3628,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/yummy_cookie.png"
+    "image_url": "/static/images/relics/yummy_cookie.png",
+    "vars": {
+      "Cards": 4
+    }
   },
   {
     "id": "NEOWS_BONES",
@@ -2887,7 +3641,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/neows_bones.png"
+    "image_url": "/static/images/relics/neows_bones.png",
+    "vars": {
+      "Relics": 2,
+      "Curses": 1
+    }
   },
   {
     "id": "PHIAL_HOLSTER",
@@ -2897,7 +3655,11 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/phial_holster.png"
+    "image_url": "/static/images/relics/phial_holster.png",
+    "vars": {
+      "PotionSlots": 1,
+      "Potions": 2
+    }
   },
   {
     "id": "WINGED_BOOTS",
@@ -2907,7 +3669,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/winged_boots.png"
+    "image_url": "/static/images/relics/winged_boots.png",
+    "vars": {
+      "Rooms": 3
+    }
   },
   {
     "id": "HEFTY_TABLET",
@@ -2917,7 +3682,10 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/hefty_tablet.png"
+    "image_url": "/static/images/relics/hefty_tablet.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "NEOWS_TALISMAN",
@@ -2927,6 +3695,7 @@
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
-    "image_url": "/static/images/relics/neows_talisman.png"
+    "image_url": "/static/images/relics/neows_talisman.png",
+    "vars": {}
   }
 ]

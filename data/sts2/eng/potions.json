@@ -6,7 +6,8 @@
     "description_raw": "[gold]Exhaust[/gold] any number of cards in your [gold]Hand[/gold].",
     "rarity": "Uncommon",
     "pool": "ironclad",
-    "image_url": "/static/images/potions/ashwater.png"
+    "image_url": "/static/images/potions/ashwater.png",
+    "vars": {}
   },
   {
     "id": "ATTACK_POTION",
@@ -15,7 +16,8 @@
     "description_raw": "Choose [blue]1[/blue] of [blue]3[/blue] random Attack cards to add into your [gold]Hand[/gold]. It's free to play this turn.",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/attack_potion.png"
+    "image_url": "/static/images/potions/attack_potion.png",
+    "vars": {}
   },
   {
     "id": "BEETLE_JUICE",
@@ -24,7 +26,11 @@
     "description_raw": "Enemy's attacks deal [blue]{DamageDecrease}%[/blue] less damage {Repeat:plural:next turn|for the next [blue]{}[/blue] turns}.",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/beetle_juice.png"
+    "image_url": "/static/images/potions/beetle_juice.png",
+    "vars": {
+      "DamageDecrease": 30,
+      "Repeat": 4
+    }
   },
   {
     "id": "BLESSING_OF_THE_FORGE",
@@ -33,7 +39,8 @@
     "description_raw": "[gold]Upgrade[/gold] all cards in your [gold]Hand[/gold] for the rest of combat.",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/blessing_of_the_forge.png"
+    "image_url": "/static/images/potions/blessing_of_the_forge.png",
+    "vars": {}
   },
   {
     "id": "BLOCK_POTION",
@@ -42,7 +49,10 @@
     "description_raw": "Gain [blue]{Block}[/blue] [gold]Block[/gold].",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/block_potion.png"
+    "image_url": "/static/images/potions/block_potion.png",
+    "vars": {
+      "Block": 12
+    }
   },
   {
     "id": "BLOOD_POTION",
@@ -51,7 +61,10 @@
     "description_raw": "Heal for [green]{HealPercent}%[/green] of your Max HP.",
     "rarity": "Common",
     "pool": "ironclad",
-    "image_url": "/static/images/potions/blood_potion.png"
+    "image_url": "/static/images/potions/blood_potion.png",
+    "vars": {
+      "HealPercent": 20
+    }
   },
   {
     "id": "BONE_BREW",
@@ -60,7 +73,10 @@
     "description_raw": "[gold]Summon[/gold] [blue]{Summon}[/blue].",
     "rarity": "Uncommon",
     "pool": "necrobinder",
-    "image_url": "/static/images/potions/bone_brew.png"
+    "image_url": "/static/images/potions/bone_brew.png",
+    "vars": {
+      "Summon": 15
+    }
   },
   {
     "id": "BOTTLED_POTENTIAL",
@@ -69,7 +85,10 @@
     "description_raw": "Shuffle ALL your cards into your [gold]Draw Pile[/gold]. Draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/bottled_potential.png"
+    "image_url": "/static/images/potions/bottled_potential.png",
+    "vars": {
+      "Cards": 5
+    }
   },
   {
     "id": "CLARITY",
@@ -78,7 +97,11 @@
     "description_raw": "Draw [blue]{Cards}[/blue] {Cards:plural:card|cards}. At the start of your next {ClarityPower:plural:turn|[blue]{}[/blue] turns}, draw [blue]1[/blue] additional card.",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/clarity.png"
+    "image_url": "/static/images/potions/clarity.png",
+    "vars": {
+      "ClarityPower": 3,
+      "Cards": 1
+    }
   },
   {
     "id": "COLORLESS_POTION",
@@ -87,7 +110,8 @@
     "description_raw": "Choose [blue]1[/blue] of [blue]3[/blue] random Colorless cards to add into your [gold]Hand[/gold]. It's free to play this turn.",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/colorless_potion.png"
+    "image_url": "/static/images/potions/colorless_potion.png",
+    "vars": {}
   },
   {
     "id": "COSMIC_CONCOCTION",
@@ -96,7 +120,10 @@
     "description_raw": "Add [blue]{Cards}[/blue] [gold]Upgraded[/gold] Colorless {Cards:plural:card|cards} into your [gold]Hand[/gold].",
     "rarity": "Rare",
     "pool": "regent",
-    "image_url": "/static/images/potions/cosmic_concoction.png"
+    "image_url": "/static/images/potions/cosmic_concoction.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "CUNNING_POTION",
@@ -105,7 +132,10 @@
     "description_raw": "Add [blue]{Cards}[/blue] [gold]Upgraded {Cards:plural:Shiv|Shivs}[/gold] into your [gold]Hand[/gold].",
     "rarity": "Uncommon",
     "pool": "silent",
-    "image_url": "/static/images/potions/cunning_potion.png"
+    "image_url": "/static/images/potions/cunning_potion.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "CURE_ALL",
@@ -114,7 +144,11 @@
     "description_raw": "Gain {Energy:energyIcons()}. Draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/cure_all.png"
+    "image_url": "/static/images/potions/cure_all.png",
+    "vars": {
+      "Energy": 1,
+      "Cards": 2
+    }
   },
   {
     "id": "DEXTERITY_POTION",
@@ -123,7 +157,10 @@
     "description_raw": "Gain [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold].",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/dexterity_potion.png"
+    "image_url": "/static/images/potions/dexterity_potion.png",
+    "vars": {
+      "DexterityPower": 2
+    }
   },
   {
     "id": "DISTILLED_CHAOS",
@@ -132,7 +169,10 @@
     "description_raw": "Play the top [blue]{Repeat}[/blue] cards of your [gold]Draw Pile[/gold].",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/distilled_chaos.png"
+    "image_url": "/static/images/potions/distilled_chaos.png",
+    "vars": {
+      "Repeat": 3
+    }
   },
   {
     "id": "DROPLET_OF_PRECOGNITION",
@@ -141,7 +181,8 @@
     "description_raw": "Choose a card in your [gold]Draw Pile[/gold] and add it into your [gold]Hand[/gold].",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/droplet_of_precognition.png"
+    "image_url": "/static/images/potions/droplet_of_precognition.png",
+    "vars": {}
   },
   {
     "id": "DUPLICATOR",
@@ -150,7 +191,8 @@
     "description_raw": "This turn, your next card is played an extra time.",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/duplicator.png"
+    "image_url": "/static/images/potions/duplicator.png",
+    "vars": {}
   },
   {
     "id": "ENERGY_POTION",
@@ -159,7 +201,10 @@
     "description_raw": "Gain {Energy:energyIcons()}.",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/energy_potion.png"
+    "image_url": "/static/images/potions/energy_potion.png",
+    "vars": {
+      "Energy": 2
+    }
   },
   {
     "id": "ENTROPIC_BREW",
@@ -168,7 +213,8 @@
     "description_raw": "Fill all your empty potion slots with random potions.",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/entropic_brew.png"
+    "image_url": "/static/images/potions/entropic_brew.png",
+    "vars": {}
   },
   {
     "id": "ESSENCE_OF_DARKNESS",
@@ -177,7 +223,8 @@
     "description_raw": "[gold]Channel[/gold] a [gold]Dark[/gold] for each of your [gold]Orb Slots[/gold].",
     "rarity": "Rare",
     "pool": "defect",
-    "image_url": "/static/images/potions/essence_of_darkness.png"
+    "image_url": "/static/images/potions/essence_of_darkness.png",
+    "vars": {}
   },
   {
     "id": "EXPLOSIVE_AMPOULE",
@@ -186,7 +233,10 @@
     "description_raw": "Deal [blue]{Damage}[/blue] damage to ALL enemies.",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/explosive_ampoule.png"
+    "image_url": "/static/images/potions/explosive_ampoule.png",
+    "vars": {
+      "Damage": 10
+    }
   },
   {
     "id": "FAIRY_IN_A_BOTTLE",
@@ -195,7 +245,8 @@
     "description_raw": "When your HP would be reduced to [blue]0[/blue], instead this potion is discarded and you heal to [blue]30%[/blue] of your Max HP.",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/fairy_in_a_bottle.png"
+    "image_url": "/static/images/potions/fairy_in_a_bottle.png",
+    "vars": {}
   },
   {
     "id": "FIRE_POTION",
@@ -204,7 +255,10 @@
     "description_raw": "Deal [blue]{Damage}[/blue] damage.",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/fire_potion.png"
+    "image_url": "/static/images/potions/fire_potion.png",
+    "vars": {
+      "Damage": 20
+    }
   },
   {
     "id": "FLEX_POTION",
@@ -213,7 +267,10 @@
     "description_raw": "Gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold]. At the end of your turn, lose [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/flex_potion.png"
+    "image_url": "/static/images/potions/flex_potion.png",
+    "vars": {
+      "StrengthPower": 5
+    }
   },
   {
     "id": "FOCUS_POTION",
@@ -222,7 +279,10 @@
     "description_raw": "Gain [blue]{FocusPower}[/blue] [gold]Focus[/gold].",
     "rarity": "Common",
     "pool": "defect",
-    "image_url": "/static/images/potions/focus_potion.png"
+    "image_url": "/static/images/potions/focus_potion.png",
+    "vars": {
+      "FocusPower": 2
+    }
   },
   {
     "id": "FORTIFIER",
@@ -231,7 +291,8 @@
     "description_raw": "Triple your [gold]Block[/gold].",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/fortifier.png"
+    "image_url": "/static/images/potions/fortifier.png",
+    "vars": {}
   },
   {
     "id": "FOUL_POTION",
@@ -240,7 +301,11 @@
     "description_raw": "Deal [blue]{Damage}[/blue] damage to ALL players and enemies.\nCan be thrown at the [gold]Merchant[/gold] for [blue]{Gold}[/blue] [gold]Gold[/gold] instead.",
     "rarity": "Event",
     "pool": "event",
-    "image_url": "/static/images/potions/foul_potion.png"
+    "image_url": "/static/images/potions/foul_potion.png",
+    "vars": {
+      "Damage": 12,
+      "Gold": 100
+    }
   },
   {
     "id": "FRUIT_JUICE",
@@ -249,7 +314,10 @@
     "description_raw": "Gain [blue]{MaxHp}[/blue] Max HP.",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/fruit_juice.png"
+    "image_url": "/static/images/potions/fruit_juice.png",
+    "vars": {
+      "MaxHp": 5
+    }
   },
   {
     "id": "FYSH_OIL",
@@ -258,7 +326,11 @@
     "description_raw": "Gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold] and [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold].",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/fysh_oil.png"
+    "image_url": "/static/images/potions/fysh_oil.png",
+    "vars": {
+      "StrengthPower": 1,
+      "DexterityPower": 1
+    }
   },
   {
     "id": "GAMBLERS_BREW",
@@ -267,7 +339,8 @@
     "description_raw": "Discard any number of cards, then draw that many.",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/gamblers_brew.png"
+    "image_url": "/static/images/potions/gamblers_brew.png",
+    "vars": {}
   },
   {
     "id": "GHOST_IN_A_JAR",
@@ -276,7 +349,10 @@
     "description_raw": "Gain [blue]1[/blue] [gold]Intangible[/gold].",
     "rarity": "Rare",
     "pool": "silent",
-    "image_url": "/static/images/potions/ghost_in_a_jar.png"
+    "image_url": "/static/images/potions/ghost_in_a_jar.png",
+    "vars": {
+      "IntangiblePower": 1
+    }
   },
   {
     "id": "GIGANTIFICATION_POTION",
@@ -285,7 +361,10 @@
     "description_raw": "The next Attack you play deals triple damage.",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/gigantification_potion.png"
+    "image_url": "/static/images/potions/gigantification_potion.png",
+    "vars": {
+      "GigantificationPower": 1
+    }
   },
   {
     "id": "GLOWWATER_POTION",
@@ -294,7 +373,10 @@
     "description_raw": "[gold]Exhaust[/gold] your [gold]Hand[/gold]. Draw [blue]{Cards}[/blue] cards.",
     "rarity": "Event",
     "pool": "event",
-    "image_url": "/static/images/potions/glowwater_potion.png"
+    "image_url": "/static/images/potions/glowwater_potion.png",
+    "vars": {
+      "Cards": 10
+    }
   },
   {
     "id": "HEART_OF_IRON",
@@ -303,7 +385,10 @@
     "description_raw": "Gain [blue]{PlatingPower}[/blue] [gold]Plating[/gold].",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/heart_of_iron.png"
+    "image_url": "/static/images/potions/heart_of_iron.png",
+    "vars": {
+      "PlatingPower": 7
+    }
   },
   {
     "id": "KINGS_COURAGE",
@@ -312,7 +397,10 @@
     "description_raw": "[gold]Forge[/gold] [blue]{Forge}[/blue].",
     "rarity": "Uncommon",
     "pool": "regent",
-    "image_url": "/static/images/potions/kings_courage.png"
+    "image_url": "/static/images/potions/kings_courage.png",
+    "vars": {
+      "Forge": 15
+    }
   },
   {
     "id": "LIQUID_BRONZE",
@@ -321,7 +409,10 @@
     "description_raw": "Gain [blue]{ThornsPower}[/blue] [gold]Thorns[/gold].",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/liquid_bronze.png"
+    "image_url": "/static/images/potions/liquid_bronze.png",
+    "vars": {
+      "ThornsPower": 3
+    }
   },
   {
     "id": "LIQUID_MEMORIES",
@@ -330,7 +421,8 @@
     "description_raw": "Put a card from your [gold]Discard Pile[/gold] into your [gold]Hand[/gold]. It's free to play this turn.",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/liquid_memories.png"
+    "image_url": "/static/images/potions/liquid_memories.png",
+    "vars": {}
   },
   {
     "id": "LUCKY_TONIC",
@@ -339,7 +431,10 @@
     "description_raw": "Gain [blue]{BufferPower}[/blue] [gold]Buffer[/gold].",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/lucky_tonic.png"
+    "image_url": "/static/images/potions/lucky_tonic.png",
+    "vars": {
+      "BufferPower": 1
+    }
   },
   {
     "id": "MAZALETHS_GIFT",
@@ -348,7 +443,10 @@
     "description_raw": "Gain [blue]{RitualPower}[/blue] [gold]Ritual[/gold].",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/mazaleths_gift.png"
+    "image_url": "/static/images/potions/mazaleths_gift.png",
+    "vars": {
+      "RitualPower": 1
+    }
   },
   {
     "id": "OROBIC_ACID",
@@ -357,7 +455,8 @@
     "description_raw": "Add a random Attack, Skill, and Power into your [gold]Hand[/gold]. They're free to play this turn.",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/orobic_acid.png"
+    "image_url": "/static/images/potions/orobic_acid.png",
+    "vars": {}
   },
   {
     "id": "POISON_POTION",
@@ -366,7 +465,10 @@
     "description_raw": "Apply [blue]{PoisonPower}[/blue] [gold]Poison[/gold].",
     "rarity": "Common",
     "pool": "silent",
-    "image_url": "/static/images/potions/poison_potion.png"
+    "image_url": "/static/images/potions/poison_potion.png",
+    "vars": {
+      "PoisonPower": 6
+    }
   },
   {
     "id": "POT_OF_GHOULS",
@@ -375,7 +477,10 @@
     "description_raw": "Add [blue]{Cards}[/blue] [gold]{Cards:plural:Soul|Souls}[/gold] into your [gold]Hand[/gold].",
     "rarity": "Rare",
     "pool": "necrobinder",
-    "image_url": "/static/images/potions/pot_of_ghouls.png"
+    "image_url": "/static/images/potions/pot_of_ghouls.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "POTION_OF_BINDING",
@@ -384,7 +489,11 @@
     "description_raw": "Apply [blue]{WeakPower:diff()}[/blue] [gold]Weak[/gold] and [blue]{VulnerablePower:diff()}[/blue] [gold]Vulnerable[/gold] to ALL enemies.",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/potion_of_binding.png"
+    "image_url": "/static/images/potions/potion_of_binding.png",
+    "vars": {
+      "VulnerablePower": 1,
+      "WeakPower": 1
+    }
   },
   {
     "id": "POTION_OF_CAPACITY",
@@ -393,7 +502,10 @@
     "description_raw": "Gain [blue]{Repeat}[/blue] [gold]Orb {Repeat:plural:Slot|Slots}[/gold].",
     "rarity": "Uncommon",
     "pool": "defect",
-    "image_url": "/static/images/potions/potion_of_capacity.png"
+    "image_url": "/static/images/potions/potion_of_capacity.png",
+    "vars": {
+      "Repeat": 2
+    }
   },
   {
     "id": "POTION_OF_DOOM",
@@ -402,7 +514,10 @@
     "description_raw": "Apply [blue]{DoomPower}[/blue] [gold]Doom[/gold].",
     "rarity": "Common",
     "pool": "necrobinder",
-    "image_url": "/static/images/potions/potion_of_doom.png"
+    "image_url": "/static/images/potions/potion_of_doom.png",
+    "vars": {
+      "DoomPower": 33
+    }
   },
   {
     "id": "POTION_SHAPED_ROCK",
@@ -411,7 +526,10 @@
     "description_raw": "Deal [blue]{Damage}[/blue] damage.",
     "rarity": "Token",
     "pool": "shared",
-    "image_url": "/static/images/potions/potion_shaped_rock.png"
+    "image_url": "/static/images/potions/potion_shaped_rock.png",
+    "vars": {
+      "Damage": 15
+    }
   },
   {
     "id": "POWDERED_DEMISE",
@@ -420,7 +538,10 @@
     "description_raw": "Enemy loses [blue]{Demise}[/blue] HP at the end of each of its turns.",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/powdered_demise.png"
+    "image_url": "/static/images/potions/powdered_demise.png",
+    "vars": {
+      "Demise": 9
+    }
   },
   {
     "id": "POWER_POTION",
@@ -429,7 +550,8 @@
     "description_raw": "Choose [blue]1[/blue] of [blue]3[/blue] random Power cards to add into your [gold]Hand[/gold]. It's free to play this turn.",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/power_potion.png"
+    "image_url": "/static/images/potions/power_potion.png",
+    "vars": {}
   },
   {
     "id": "RADIANT_TINCTURE",
@@ -438,7 +560,11 @@
     "description_raw": "Gain {Energy:energyIcons()}. Gain an additional {energyPrefix:energyIcons(1)} at the start of your next [blue]{RadiancePower}[/blue] {RadiancePower:plural:turn|turns}.",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/radiant_tincture.png"
+    "image_url": "/static/images/potions/radiant_tincture.png",
+    "vars": {
+      "Energy": 1,
+      "RadiancePower": 3
+    }
   },
   {
     "id": "REGEN_POTION",
@@ -447,7 +573,10 @@
     "description_raw": "Gain [green]{RegenPower}[/green] [gold]Regen[/gold].",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/regen_potion.png"
+    "image_url": "/static/images/potions/regen_potion.png",
+    "vars": {
+      "RegenPower": 5
+    }
   },
   {
     "id": "SHACKLING_POTION",
@@ -456,7 +585,10 @@
     "description_raw": "ALL enemies lose [blue]{StrengthPower}[/blue] [gold]Strength[/gold] this turn.",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/shackling_potion.png"
+    "image_url": "/static/images/potions/shackling_potion.png",
+    "vars": {
+      "StrengthPower": 7
+    }
   },
   {
     "id": "SHIP_IN_A_BOTTLE",
@@ -465,7 +597,10 @@
     "description_raw": "Gain [blue]{Block:diff()}[/blue] [gold]Block[/gold]. Next turn, gain [blue]{Block:diff()}[/blue] [gold]Block[/gold].",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/ship_in_a_bottle.png"
+    "image_url": "/static/images/potions/ship_in_a_bottle.png",
+    "vars": {
+      "Block": 10
+    }
   },
   {
     "id": "SKILL_POTION",
@@ -474,7 +609,8 @@
     "description_raw": "Choose [blue]1[/blue] of [blue]3[/blue] random Skill cards to add into your [gold]Hand[/gold]. It's free to play this turn.",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/skill_potion.png"
+    "image_url": "/static/images/potions/skill_potion.png",
+    "vars": {}
   },
   {
     "id": "SNECKO_OIL",
@@ -483,7 +619,10 @@
     "description_raw": "Draw [blue]{Cards}[/blue] cards. Randomize the cost of cards in your [gold]Hand[/gold] this turn.",
     "rarity": "Rare",
     "pool": "shared",
-    "image_url": "/static/images/potions/snecko_oil.png"
+    "image_url": "/static/images/potions/snecko_oil.png",
+    "vars": {
+      "Cards": 7
+    }
   },
   {
     "id": "SOLDIERS_STEW",
@@ -492,7 +631,8 @@
     "description_raw": "All cards containing [gold]Strike[/gold] gain [blue]1[/blue] [gold]Replay[/gold] this combat.",
     "rarity": "Rare",
     "pool": "ironclad",
-    "image_url": "/static/images/potions/soldiers_stew.png"
+    "image_url": "/static/images/potions/soldiers_stew.png",
+    "vars": {}
   },
   {
     "id": "SPEED_POTION",
@@ -501,7 +641,10 @@
     "description_raw": "Gain [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold]. At the end of your turn, lose [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold].",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/speed_potion.png"
+    "image_url": "/static/images/potions/speed_potion.png",
+    "vars": {
+      "DexterityPower": 5
+    }
   },
   {
     "id": "STABLE_SERUM",
@@ -510,7 +653,10 @@
     "description_raw": "[gold]Retain[/gold] your [gold]Hand[/gold] for [blue]{Repeat}[/blue] {Repeat:plural:turn|turns}.",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/stable_serum.png"
+    "image_url": "/static/images/potions/stable_serum.png",
+    "vars": {
+      "Repeat": 2
+    }
   },
   {
     "id": "STAR_POTION",
@@ -519,7 +665,10 @@
     "description_raw": "Gain {Stars:starIcons()}.",
     "rarity": "Common",
     "pool": "regent",
-    "image_url": "/static/images/potions/star_potion.png"
+    "image_url": "/static/images/potions/star_potion.png",
+    "vars": {
+      "Stars": 3
+    }
   },
   {
     "id": "STRENGTH_POTION",
@@ -528,7 +677,10 @@
     "description_raw": "Gain [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/strength_potion.png"
+    "image_url": "/static/images/potions/strength_potion.png",
+    "vars": {
+      "StrengthPower": 2
+    }
   },
   {
     "id": "SWIFT_POTION",
@@ -537,7 +689,10 @@
     "description_raw": "Draw [blue]{Cards}[/blue] {Cards:plural:card|cards}.",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/swift_potion.png"
+    "image_url": "/static/images/potions/swift_potion.png",
+    "vars": {
+      "Cards": 3
+    }
   },
   {
     "id": "TOUCH_OF_INSANITY",
@@ -546,7 +701,8 @@
     "description_raw": "Choose a card in your [gold]Hand[/gold]. It is free to play this combat.",
     "rarity": "Uncommon",
     "pool": "shared",
-    "image_url": "/static/images/potions/touch_of_insanity.png"
+    "image_url": "/static/images/potions/touch_of_insanity.png",
+    "vars": {}
   },
   {
     "id": "VULNERABLE_POTION",
@@ -555,7 +711,10 @@
     "description_raw": "Apply [blue]{VulnerablePower}[/blue] [gold]Vulnerable[/gold].",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/vulnerable_potion.png"
+    "image_url": "/static/images/potions/vulnerable_potion.png",
+    "vars": {
+      "VulnerablePower": 3
+    }
   },
   {
     "id": "WEAK_POTION",
@@ -564,6 +723,9 @@
     "description_raw": "Apply [blue]{WeakPower}[/blue] [gold]Weak[/gold].",
     "rarity": "Common",
     "pool": "shared",
-    "image_url": "/static/images/potions/weak_potion.png"
+    "image_url": "/static/images/potions/weak_potion.png",
+    "vars": {
+      "WeakPower": 3
+    }
   }
 ]
