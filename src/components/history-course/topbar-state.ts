@@ -42,7 +42,6 @@ export interface TopbarState {
   ancientInfo: AncientInfo;
   deck: { id: string; count: number; upgradeCount: number; firstFloor: number }[];
   deckCount: number;
-  elapsedSeconds: number;
 }
 
 const POTION_SLOT_RELIC_BONUS: Record<string, number> = {
@@ -53,34 +52,6 @@ const POTION_SLOT_RELIC_BONUS: Record<string, number> = {
 
 function normalize(id: string): string {
   return id.toUpperCase().split(".").pop() ?? id.toUpperCase();
-}
-
-function nodeWeightSeconds(entry: ReplayHistoryEntry): number {
-  const turns = (entry.rooms ?? []).reduce(
-    (sum, r) => sum + Math.max(0, r.turns_taken ?? 0),
-    0,
-  );
-  const turnSeconds = turns * 8;
-  switch (entry.map_point_type) {
-    case "monster":
-      return Math.max(8, turnSeconds);
-    case "elite":
-      return Math.max(15, turnSeconds);
-    case "boss":
-      return Math.max(25, turnSeconds);
-    case "rest_site":
-      return 8;
-    case "treasure":
-      return 6;
-    case "shop":
-      return 20;
-    case "ancient":
-      return 12;
-    case "unknown":
-      return Math.max(10, turnSeconds);
-    default:
-      return 10;
-  }
 }
 
 export function buildTopbarState(
@@ -111,7 +82,6 @@ export function buildTopbarState(
       ancientInfo: { spriteId: null, active: false, passed: false },
       deck: [],
       deckCount: 0,
-      elapsedSeconds: 0,
     };
   }
 
@@ -122,7 +92,6 @@ export function buildTopbarState(
   let hp: number | null = null;
   let maxHp: number | null = null;
   let gold: number | null = null;
-  let elapsed = 0;
   let floor = 1;
   outer: for (const pastAct of run.map_point_history) {
     for (const entry of pastAct) {
@@ -130,7 +99,6 @@ export function buildTopbarState(
       if (typeof entry.current_hp === "number") hp = entry.current_hp;
       if (typeof entry.max_hp === "number") maxHp = entry.max_hp;
       if (typeof entry.current_gold === "number") gold = entry.current_gold;
-      elapsed += nodeWeightSeconds(entry);
       floor += 1;
     }
   }
@@ -196,7 +164,6 @@ export function buildTopbarState(
     ancientInfo,
     deck,
     deckCount,
-    elapsedSeconds: elapsed,
   };
 }
 

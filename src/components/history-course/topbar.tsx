@@ -97,6 +97,11 @@ interface TopBarProps {
   run: ReplayRun;
   act: ReplayActAnalysis;
   state: TopbarState;
+  /** Cumulative replay elapsed across all acts. Drives the clock chip. */
+  cumulativeElapsedMs: number;
+  /** Total replay length across all acts (used to scale the fake clock to
+   *  the real run_time as a tooltip-only baseline). */
+  totalRunMs: number;
   /** Relic IDs that are mid-flight from a node — hide their slot so the
    * fly-out lands into an empty spot instead of stacking on top of an
    * already-rendered icon. */
@@ -110,6 +115,8 @@ export function TopBar({
   run,
   act,
   state,
+  cumulativeElapsedMs,
+  totalRunMs,
   hidingRelicIds,
   onOpenStats,
   onOpenDeck,
@@ -151,7 +158,11 @@ export function TopBar({
           />
         </div>
         <div className="ml-auto flex items-center gap-3">
-          <TimerChip seconds={state.elapsedSeconds} />
+          <TimerChip
+            elapsedMs={cumulativeElapsedMs}
+            totalRunMs={totalRunMs}
+            realRunSeconds={run.run_time ?? null}
+          />
           <DeckChip count={state.deckCount} onOpen={onOpenDeck} />
           <HistoryButton onClick={onOpenStats} />
           <SettingsButton onClick={onOpenInfo} />
@@ -576,9 +587,31 @@ function BossIcon({
   );
 }
 
-function TimerChip({ seconds }: { seconds: number }) {
+function TimerChip({
+  elapsedMs,
+  totalRunMs,
+  realRunSeconds,
+}: {
+  elapsedMs: number;
+  totalRunMs: number;
+  realRunSeconds: number | null;
+}) {
+  // The visible clock is a *fake* second counter — it walks the real
+  // run_time proportionally to where we are in the replay so 1× still
+  // feels close to the run's actual length, but the visible value lives
+  // on the replay timeline (every node, even paused, scrubbed, sped up
+  // 16×). Tooltip carries the real run_time so users know what the chip
+  // is and isn't.
+  const fakeSeconds =
+    realRunSeconds && totalRunMs > 0
+      ? Math.floor((elapsedMs / totalRunMs) * realRunSeconds)
+      : Math.floor(elapsedMs / 1000);
+  const tooltip =
+    realRunSeconds != null
+      ? `재생 시각 ${formatHms(fakeSeconds)} — 실제 플레이 시간 ${formatHms(realRunSeconds)}`
+      : `재생 시각 ${formatHms(fakeSeconds)}`;
   return (
-    <Chip title={`경과 시간 ${formatHms(seconds)}`}>
+    <Chip title={tooltip}>
       <Image
         src="/images/sts2/ui/topbar/timer_icon.png"
         alt=""
@@ -587,7 +620,7 @@ function TimerChip({ seconds }: { seconds: number }) {
         className="h-[30px] w-[30px] object-contain"
         unoptimized
       />
-      <span className="topbar-num topbar-num-gold tabular-nums">{formatHms(seconds)}</span>
+      <span className="topbar-num topbar-num-gold tabular-nums">{formatHms(fakeSeconds)}</span>
     </Chip>
   );
 }

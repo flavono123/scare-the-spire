@@ -21,6 +21,12 @@ import {
   type ReplayHistoryEntry,
   type ReplayRun,
 } from "@/lib/sts2-run-replay";
+import {
+  buildRunTimeline,
+  stackBudgetMs,
+  stepFromElapsed,
+  type ActTimeline,
+} from "@/lib/sts2-run-timeline";
 import { cn } from "@/lib/utils";
 
 type Analysis = ReturnType<typeof analyzeReplayRun>;
@@ -38,45 +44,6 @@ const ACT_INTRO_TOTAL_MS = ACT_INTRO_FADE_IN_MS + ACT_INTRO_HOLD_MS + ACT_INTRO_
 
 function actIntroNumber(index: number) {
   return ["1막", "2막", "3막", "4막"][index] ?? `${index + 1}막`;
-}
-
-// Per-node hold time (seconds at 1×). Tuned shorter — task-3 motion design
-// is still TBD; until proper combat/animation beats land, longer holds just
-// felt like stalls.
-function nodeHoldSeconds(entry: ReplayHistoryEntry): number {
-  const turns = (entry.rooms ?? []).reduce(
-    (sum, r) => sum + Math.max(0, r.turns_taken ?? 0),
-    0,
-  );
-  const turnSeconds = turns * 2;
-  switch (entry.map_point_type) {
-    case "monster":
-    case "MONSTER":
-      return Math.max(1.2, turnSeconds * 0.4);
-    case "elite":
-    case "ELITE":
-      return Math.max(1.6, turnSeconds * 0.5);
-    case "boss":
-    case "BOSS":
-      return Math.max(2.0, turnSeconds * 0.6);
-    case "rest_site":
-    case "REST_SITE":
-      return 0.7;
-    case "treasure":
-    case "TREASURE":
-      return 0.5;
-    case "shop":
-    case "SHOP":
-      return 0.9;
-    case "ancient":
-    case "ANCIENT":
-      return 0.8;
-    case "unknown":
-    case "UNKNOWN":
-      return Math.max(1.0, turnSeconds * 0.35);
-    default:
-      return 1.0;
-  }
 }
 
 function relicIconSrc(id: string): string {
@@ -214,24 +181,6 @@ function buildStackItems(
   return items;
 }
 
-// Total run time the stack needs to play. Used by the playback driver to
-// stretch a step's hold so a node never advances before its stack finishes.
-function stackPlayMs(items: NodeStackItem[], rate: Rate): number {
-  if (items.length === 0) return 0;
-  const factor = 1 / Math.sqrt(rate);
-  // Per-item budget — must stay loosely synced with NodeActionStack's
-  // internal phase clock (appear+hold+textFade+gap+post).
-  const flyMs = (280 + 1700 + 280 + 100 + 640) * factor;
-  const fadeMs = (280 + 1700 + 280 + 100 + 380) * factor;
-  let total = 0;
-  for (const it of items) {
-    total += it.postEffect.kind === "fly" ? flyMs : fadeMs;
-  }
-  // Slack so the next node doesn't steal focus the very tick the last
-  // post-effect lands.
-  return Math.round(total + 220);
-}
-
 export function HistoryCourseShell({
   run,
   cardsById,
@@ -240,8 +189,16 @@ export function HistoryCourseShell({
   cardsById: Record<string, CodexCard>;
 }) {
   const analysis = useMemo(() => analyzeReplayRun(run), [run]);
+  const runTimeline = useMemo(
+    () => buildRunTimeline(analysis.acts),
+    [analysis.acts],
+  );
   const [actIndex, setActIndex] = useState(0);
-  const [step, setStep] = useState(1);
+  // Continuous time model: ms elapsed within the current act. Step is
+  // derived from this so the progress bar / clock keep moving even
+  // mid-node. Phase 2 will lift the global axis up (acts -> single
+  // timeline). For now, ticker resets at act boundaries.
+  const [elapsedMs, setElapsedMs] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [rate, setRate] = useState<Rate>(2);
   const [infoOpen, setInfoOpen] = useState(false);
@@ -249,24 +206,25 @@ export function HistoryCourseShell({
   const [deckOpen, setDeckOpen] = useState(false);
   const [introToken, setIntroToken] = useState(0);
   const [introActive, setIntroActive] = useState(true);
-  // After the act intro fades, the map runs a one-time smooth scroll to the
-  // current step; replay only begins (rewards + auto-advance) once that
-  // scroll has settled. Otherwise the first relic measures off-screen
-  // coordinates and the user sees a jumpy fly-out.
   const [replayReady, setReplayReady] = useState(false);
   const [prevActIndex, setPrevActIndex] = useState(actIndex);
 
   const act = analysis.acts[actIndex] ?? null;
+  const actTimeline: ActTimeline | null =
+    runTimeline.acts[actIndex] ?? null;
+  const step = useMemo(
+    () => (actTimeline ? stepFromElapsed(actTimeline, elapsedMs) : 1),
+    [actTimeline, elapsedMs],
+  );
   const topbarState = useMemo(
     () => buildTopbarState(analysis, actIndex, step),
     [analysis, actIndex, step],
   );
 
-  // act swap → reset step + replay intro. Done as a render-time prop diff
-  // so the synchronous setState chain stays out of an effect body.
+  // act swap → reset to start-of-act + replay intro.
   if (actIndex !== prevActIndex) {
     setPrevActIndex(actIndex);
-    setStep(1);
+    setElapsedMs(0);
     setIntroToken((t) => t + 1);
     setIntroActive(true);
     setReplayReady(false);
@@ -330,29 +288,37 @@ export function HistoryCourseShell({
     setPendingRelicIds(ids);
   }
 
-  // playback driver: hold each step by node weight, plus extra for rewards
+  // rAF ticker. Every animation frame nudges elapsedMs by `dt × rate` while
+  // playing. Step + stack + topbar all derive from elapsedMs, so a paused
+  // tick simply stops the time axis — no more setTimeout-per-node dance.
   useEffect(() => {
-    if (!playing || !act || !replayReady) return;
-    const entry = act.history[step - 1];
-    if (!entry) return;
-    const next = act.history[step];
-    if (!next) {
-      if (actIndex + 1 < analysis.acts.length) {
-        const t = window.setTimeout(() => setActIndex((i) => i + 1), 700);
-        return () => window.clearTimeout(t);
-      }
-      return;
-    }
-    let holdMs = Math.max(220, Math.round((nodeHoldSeconds(entry) * 1000) / rate));
-    const extra = stackPlayMs(stepStackItems, rate);
-    if (extra > 0) holdMs = Math.max(holdMs, extra);
-    const timer = window.setTimeout(() => {
-      setStep((s) => Math.min(s + 1, act.history.length));
-    }, holdMs);
-    return () => window.clearTimeout(timer);
-  }, [playing, step, rate, act, actIndex, analysis.acts.length, replayReady, stepStackItems]);
+    if (!playing || !replayReady || !actTimeline) return;
+    let last = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const dt = (now - last) * rate;
+      last = now;
+      setElapsedMs((prev) => Math.min(prev + dt, actTimeline.totalMs));
+      raf = window.requestAnimationFrame(tick);
+    };
+    raf = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(raf);
+  }, [playing, rate, replayReady, actTimeline]);
 
+  // Auto-advance to the next act when this one runs out (and we're idle at
+  // the tail). Brief buffer so the last node's stack has time to fade.
   useEffect(() => {
+    if (!actTimeline) return;
+    if (elapsedMs < actTimeline.totalMs) return;
+    if (actIndex + 1 >= analysis.acts.length) return;
+    const t = window.setTimeout(() => setActIndex((i) => i + 1), 700);
+    return () => window.clearTimeout(t);
+  }, [elapsedMs, actTimeline, actIndex, analysis.acts.length]);
+
+  // Keyboard scrub — ms-anchored: ArrowRight jumps to next entry's startMs,
+  // ArrowLeft to the previous entry's startMs.
+  useEffect(() => {
+    if (!actTimeline) return;
     function onKey(event: KeyboardEvent) {
       if (event.target instanceof HTMLElement) {
         const tag = event.target.tagName;
@@ -364,16 +330,21 @@ export function HistoryCourseShell({
       } else if (event.key === "ArrowRight") {
         event.preventDefault();
         setPlaying(false);
-        setStep((s) => (act ? Math.min(s + 1, act.history.length) : s));
+        const cur = stepFromElapsed(actTimeline!, elapsedMs);
+        const nextEntry = actTimeline!.entries[cur]; // 0-based: entries[cur] is the *next* step
+        if (nextEntry) setElapsedMs(nextEntry.startMs);
       } else if (event.key === "ArrowLeft") {
         event.preventDefault();
         setPlaying(false);
-        setStep((s) => Math.max(1, s - 1));
+        const cur = stepFromElapsed(actTimeline!, elapsedMs);
+        const prev = actTimeline!.entries[Math.max(0, cur - 2)];
+        if (prev) setElapsedMs(prev.startMs);
+        else setElapsedMs(0);
       }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [act]);
+  }, [actTimeline, elapsedMs]);
 
   const onSelectAct = useCallback((idx: number) => {
     setActIndex(idx);
@@ -381,12 +352,9 @@ export function HistoryCourseShell({
   }, []);
 
   const onRestart = useCallback(() => {
-    setStep(1);
+    setElapsedMs(0);
     setIntroToken((t) => t + 1);
     setIntroActive(true);
-    // Without resetting replayReady, the stack starts the moment intro
-    // fades — same time as the smooth scroll — and the slot machine never
-    // gets its preroll. The act-swap path resets this for the same reason.
     setReplayReady(false);
     setPlaying(true);
     window.setTimeout(() => setIntroActive(false), ACT_INTRO_TOTAL_MS);
@@ -410,6 +378,10 @@ export function HistoryCourseShell({
           act={act}
           actIndex={actIndex}
           step={step}
+          elapsedMs={elapsedMs}
+          actTimeline={actTimeline}
+          cumulativeElapsedMs={(runTimeline.actOffsets[actIndex] ?? 0) + elapsedMs}
+          totalRunMs={runTimeline.totalMs}
           totalActs={analysis.acts.length}
           introToken={introToken}
           introActive={introActive}
@@ -421,9 +393,9 @@ export function HistoryCourseShell({
           onTogglePlay={() => setPlaying((v) => !v)}
           onRestart={onRestart}
           onChangeRate={setRate}
-          onScrub={(value) => {
+          onScrubMs={(value) => {
             setPlaying(false);
-            setStep(value);
+            setElapsedMs(Math.max(0, Math.min(value, actTimeline?.totalMs ?? 0)));
           }}
           onOpenStats={() => setStatsOpen(true)}
           onOpenDeck={() => setDeckOpen(true)}
@@ -483,6 +455,10 @@ function Stage({
   act,
   actIndex,
   step,
+  elapsedMs,
+  actTimeline,
+  cumulativeElapsedMs,
+  totalRunMs,
   totalActs,
   introToken,
   introActive,
@@ -494,7 +470,7 @@ function Stage({
   onTogglePlay,
   onRestart,
   onChangeRate,
-  onScrub,
+  onScrubMs,
   onOpenStats,
   onOpenDeck,
   onOpenInfo,
@@ -503,6 +479,10 @@ function Stage({
   act: Act;
   actIndex: number;
   step: number;
+  elapsedMs: number;
+  actTimeline: ActTimeline | null;
+  cumulativeElapsedMs: number;
+  totalRunMs: number;
   totalActs: number;
   introToken: number;
   introActive: boolean;
@@ -514,7 +494,7 @@ function Stage({
   onTogglePlay: () => void;
   onRestart: () => void;
   onChangeRate: (rate: Rate) => void;
-  onScrub: (step: number) => void;
+  onScrubMs: (ms: number) => void;
   onOpenStats: () => void;
   onOpenDeck: () => void;
   onOpenInfo: () => void;
@@ -575,6 +555,8 @@ function Stage({
         run={run}
         act={act}
         state={topbarState}
+        cumulativeElapsedMs={cumulativeElapsedMs}
+        totalRunMs={totalRunMs}
         hidingRelicIds={hidingRelicIds}
         onOpenStats={onOpenStats}
         onOpenDeck={onOpenDeck}
@@ -590,7 +572,14 @@ function Stage({
         }}
       >
         <div className="flex min-h-full justify-center">
-          <SeededMapView act={act} step={step} onSeekToStep={onScrub} />
+          <SeededMapView
+            act={act}
+            step={step}
+            onSeekToStep={(s) => {
+              const e = actTimeline?.entries[s - 1];
+              if (e) onScrubMs(e.startMs);
+            }}
+          />
         </div>
       </div>
 
@@ -602,17 +591,24 @@ function Stage({
         stageRef={stageRef}
         items={stackItems}
         rate={rate}
+        nodeBudgetMs={
+          actTimeline?.entries[step - 1]
+            ? stackBudgetMs(actTimeline.entries[step - 1].stackCount)
+            : undefined
+        }
       />
 
       <PlaybackBar
         step={step}
         stepCount={act.history.length}
+        elapsedMs={elapsedMs}
+        actTotalMs={actTimeline?.totalMs ?? 0}
         playing={playing}
         rate={rate}
         onTogglePlay={onTogglePlay}
         onRestart={onRestart}
         onChangeRate={onChangeRate}
-        onScrub={onScrub}
+        onScrubMs={onScrubMs}
       />
     </div>
   );
@@ -698,30 +694,36 @@ function ActIntro({
 function PlaybackBar({
   step,
   stepCount,
+  elapsedMs,
+  actTotalMs,
   playing,
   rate,
   onTogglePlay,
   onRestart,
   onChangeRate,
-  onScrub,
+  onScrubMs,
 }: {
   step: number;
   stepCount: number;
+  elapsedMs: number;
+  actTotalMs: number;
   playing: boolean;
   rate: Rate;
   onTogglePlay: () => void;
   onRestart: () => void;
   onChangeRate: (rate: Rate) => void;
-  onScrub: (step: number) => void;
+  onScrubMs: (ms: number) => void;
 }) {
+  const safeMax = Math.max(1, actTotalMs);
   return (
     <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col gap-2 bg-gradient-to-t from-black/85 to-black/0 px-4 pb-3 pt-8 text-zinc-100">
       <input
         type="range"
-        min={1}
-        max={stepCount}
-        value={step}
-        onChange={(event) => onScrub(Number(event.target.value))}
+        min={0}
+        max={safeMax}
+        step={50}
+        value={Math.min(elapsedMs, safeMax)}
+        onChange={(event) => onScrubMs(Number(event.target.value))}
         className="w-full accent-amber-300"
       />
       <div className="flex items-center justify-between text-xs">

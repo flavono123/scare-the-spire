@@ -13,6 +13,10 @@ import type { ReactNode } from "react";
 // DOM as their pose changes.
 
 const ROW_OFFSET = 40;
+// Reference per-item budget at 1× with no time pressure. Real budget comes
+// in via the `nodeDurationMs` prop and we scale every phase by
+// (perItemBudget / REFERENCE_BUDGET) so the whole stack fits inside the
+// node's allotted time.
 const APPEAR_MS = 280;
 const HOLD_MS = 1700;
 const TEXT_FADE_MS = 280;
@@ -20,6 +24,9 @@ const POST_GAP_MS = 100;
 const ICON_FLY_MS = 640;
 const ICON_FADE_MS = 380;
 const SLOT_SHIFT_MS = 360;
+const REFERENCE_PER_ITEM_MS = APPEAR_MS + HOLD_MS + TEXT_FADE_MS + POST_GAP_MS + ICON_FLY_MS;
+// Hard floor — below this and the appear/hold blur into a single flash.
+const MIN_PER_ITEM_MS = 700;
 
 export type NodeStackItemKind =
   | "card-gained"
@@ -60,10 +67,21 @@ interface Props {
   stageRef: React.RefObject<HTMLDivElement | null>;
   items: NodeStackItem[];
   rate: number;
+  /** Total ms allocated to *this node's* stack at 1×. The shell computes
+   *  it as `nodeDurationMs(stackCount)`. We split it evenly per item and
+   *  scale every phase to fit. Falls back to the unconstrained reference
+   *  budget when omitted. */
+  nodeBudgetMs?: number;
   onAllDone?: () => void;
 }
 
-export function NodeActionStack({ stageRef, items, rate, onAllDone }: Props) {
+export function NodeActionStack({
+  stageRef,
+  items,
+  rate,
+  nodeBudgetMs,
+  onAllDone,
+}: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsRef = useRef(items);
   if (itemsRef.current !== items) {
@@ -105,6 +123,11 @@ export function NodeActionStack({ stageRef, items, rate, onAllDone }: Props) {
 
   if (!origin || items.length === 0) return null;
 
+  const perItemBudgetMs = (() => {
+    if (!nodeBudgetMs || items.length === 0) return REFERENCE_PER_ITEM_MS;
+    return Math.max(MIN_PER_ITEM_MS, Math.round(nodeBudgetMs / items.length));
+  })();
+
   return (
     <>
       {items.map((item, index) => (
@@ -116,6 +139,7 @@ export function NodeActionStack({ stageRef, items, rate, onAllDone }: Props) {
           index={index}
           currentIndex={currentIndex}
           rate={rate}
+          perItemBudgetMs={perItemBudgetMs}
           onAdvance={() => {
             setCurrentIndex((i) => Math.max(i, index + 1));
             item.onComplete?.();
@@ -133,6 +157,7 @@ interface StackItemViewProps {
   index: number;
   currentIndex: number;
   rate: number;
+  perItemBudgetMs: number;
   onAdvance: () => void;
 }
 
@@ -143,6 +168,7 @@ function StackItemView({
   index,
   currentIndex,
   rate,
+  perItemBudgetMs,
   onAdvance,
 }: StackItemViewProps) {
   const isCurrent = index === currentIndex;
@@ -159,7 +185,11 @@ function StackItemView({
   useEffect(() => {
     if (!isCurrent) return;
     setPhase("appear");
-    const factor = 1 / Math.sqrt(Math.max(1, rate));
+    // Two-axis scaling: budgetScale fits the stack into the node's allotted
+    // time, rate factor compresses for fast-forward. Each phase keeps its
+    // share of the reference budget.
+    const budgetScale = perItemBudgetMs / REFERENCE_PER_ITEM_MS;
+    const factor = budgetScale / Math.sqrt(Math.max(1, rate));
     const appear = Math.round(APPEAR_MS * factor);
     const hold = Math.round(HOLD_MS * factor);
     const textFade = Math.round(TEXT_FADE_MS * factor);
@@ -257,8 +287,9 @@ function StackItemView({
   else if (item.postEffect.kind === "fade" && isCurrent && phase === "post")
     itemOpacity = 0;
 
-  // Transition selection
-  const factor = 1 / Math.sqrt(Math.max(1, rate));
+  // Transition selection — same two-axis scaling as the phase clock above.
+  const budgetScale = perItemBudgetMs / REFERENCE_PER_ITEM_MS;
+  const factor = budgetScale / Math.sqrt(Math.max(1, rate));
   const transitionDur = (() => {
     if (flying) return Math.round(ICON_FLY_MS * factor);
     if (item.postEffect.kind === "fade" && isCurrent && phase === "post")

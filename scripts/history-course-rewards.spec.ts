@@ -79,8 +79,13 @@ test("slot machine — next item visible at pose +1", async ({ page }) => {
     state: "attached",
     timeout: 8000,
   });
+  // Pause so the per-item phase clock keeps the current item at "hold"
+  // instead of racing through it (the rAF ticker would otherwise flip
+  // currentIndex before we screenshot).
+  await page.keyboard.press("Space").catch(() => {});
+  await page.waitForTimeout(120);
   await waitForPhase(page, "hold");
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(120);
   await page.screenshot({
     path: path.join(OUT_DIR, "11-slot-multi-hold.png"),
     fullPage: false,
