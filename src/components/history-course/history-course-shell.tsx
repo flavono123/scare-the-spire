@@ -142,6 +142,11 @@ export function HistoryCourseShell({
   const [deckOpen, setDeckOpen] = useState(false);
   const [introToken, setIntroToken] = useState(0);
   const [introActive, setIntroActive] = useState(true);
+  // After the act intro fades, the map runs a one-time smooth scroll to the
+  // current step; replay only begins (rewards + auto-advance) once that
+  // scroll has settled. Otherwise the first relic measures off-screen
+  // coordinates and the user sees a jumpy fly-out.
+  const [replayReady, setReplayReady] = useState(false);
   const [prevActIndex, setPrevActIndex] = useState(actIndex);
 
   const act = analysis.acts[actIndex] ?? null;
@@ -157,6 +162,7 @@ export function HistoryCourseShell({
     setStep(1);
     setIntroToken((t) => t + 1);
     setIntroActive(true);
+    setReplayReady(false);
   }
 
   // The intro auto-finishes after the total fade window. Effect just owns
@@ -167,12 +173,22 @@ export function HistoryCourseShell({
     return () => window.clearTimeout(t);
   }, [introActive, introToken]);
 
+  // Once the intro is gone, allow ~850ms for the map to smooth-scroll into
+  // place before replay (rewards + auto-advance) actually starts. The Stage
+  // gates its scrollToStep on `replayPhase` so the user *sees* the scroll
+  // happen here instead of behind the intro.
+  useEffect(() => {
+    if (introActive || replayReady) return;
+    const t = window.setTimeout(() => setReplayReady(true), 850);
+    return () => window.clearTimeout(t);
+  }, [introActive, replayReady]);
+
   const stepRewards = useMemo(() => {
-    if (!act || introActive) return { relicTokens: [], cardTokens: [] };
+    if (!act || !replayReady) return { relicTokens: [], cardTokens: [] };
     const entry = act.history[step - 1];
     if (!entry) return { relicTokens: [], cardTokens: [] };
     return detectStepRewards(entry, act.baseFloor + step - 1, step);
-  }, [act, step, introActive]);
+  }, [act, step, replayReady]);
 
   // Tokens latch through fly-out completion so the overlay survives the brief
   // window between "next step picked" and "fly animation finished". onDone
@@ -184,7 +200,7 @@ export function HistoryCourseShell({
   // the synchronous setState chain stays out of effect bodies.
   const lastRewardStepRef = useRef<{ act: number; step: number }>({ act: -1, step: -1 });
   if (
-    !introActive &&
+    replayReady &&
     (lastRewardStepRef.current.act !== actIndex ||
       lastRewardStepRef.current.step !== step)
   ) {
@@ -221,7 +237,7 @@ export function HistoryCourseShell({
 
   // playback driver: hold each step by node weight, plus extra for rewards
   useEffect(() => {
-    if (!playing || !act || introActive) return;
+    if (!playing || !act || !replayReady) return;
     const entry = act.history[step - 1];
     if (!entry) return;
     const next = act.history[step];
@@ -243,7 +259,7 @@ export function HistoryCourseShell({
       setStep((s) => Math.min(s + 1, act.history.length));
     }, holdMs);
     return () => window.clearTimeout(timer);
-  }, [playing, step, rate, act, actIndex, analysis.acts.length, introActive, stepRewards]);
+  }, [playing, step, rate, act, actIndex, analysis.acts.length, replayReady, stepRewards]);
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
@@ -301,6 +317,7 @@ export function HistoryCourseShell({
           step={step}
           totalActs={analysis.acts.length}
           introToken={introToken}
+          introActive={introActive}
           playing={playing}
           rate={rate}
           relicTokens={activeRelicTokens}
@@ -376,6 +393,7 @@ function Stage({
   step,
   totalActs,
   introToken,
+  introActive,
   playing,
   rate,
   relicTokens,
@@ -398,6 +416,7 @@ function Stage({
   step: number;
   totalActs: number;
   introToken: number;
+  introActive: boolean;
   playing: boolean;
   rate: Rate;
   relicTokens: RelicFlyToken[];
@@ -438,6 +457,11 @@ function Stage({
   }, [act, step]);
 
   useEffect(() => {
+    // Hold the scroll until the act intro fades — we want the user to *see*
+    // the map slide into the first node, not for it to happen behind the
+    // black overlay. Once intro is done, this fires (lastStepRef==null on
+    // first pass guarantees the scroll happens at least once per act).
+    if (introActive) return;
     if (lastStepRef.current === step) return;
     lastStepRef.current = step;
     // mark this as a programmatic scroll so the user-scroll guard ignores it
@@ -446,7 +470,14 @@ function Stage({
       userScrollGuardRef.current = null;
     }, 700);
     scrollToStep();
-  }, [step, scrollToStep]);
+  }, [step, scrollToStep, introActive]);
+
+  // act change → reset the scroll-tracking sentinel so the next intro/scroll
+  // cycle treats the new act fresh (otherwise the same step number across
+  // acts would skip the scroll).
+  useEffect(() => {
+    lastStepRef.current = null;
+  }, [actIndex]);
 
   return (
     <div
