@@ -40,7 +40,7 @@ export interface TopbarState {
   potionSlots: number;
   bossInfo: BossInfo;
   ancientInfo: AncientInfo;
-  deck: { id: string; count: number; upgradeCount: number }[];
+  deck: { id: string; count: number; upgradeCount: number; firstFloor: number }[];
   deckCount: number;
   elapsedSeconds: number;
 }
@@ -203,17 +203,21 @@ export function buildTopbarState(
 function buildDeckAtFloor(
   run: ReplayRun,
   currentFloor: number,
-): { id: string; count: number; upgradeCount: number }[] {
+): { id: string; count: number; upgradeCount: number; firstFloor: number }[] {
   const player = run.players[0];
   if (!player) return [];
 
   // Starter deck: every card in the final deck added at floor <= 1.
   const counts = new Map<string, number>();
   const starter = new Map<string, number>();
+  // First floor at which each id was seen — drives "획득순" sort in the
+  // deck modal. Starter cards get firstFloor=0 (sentinel below current).
+  const firstFloor = new Map<string, number>();
   for (const card of player.deck) {
     const f = card.floor_added_to_deck ?? 1;
     if (f <= 1) {
       starter.set(card.id, (starter.get(card.id) ?? 0) + 1);
+      if (!firstFloor.has(card.id)) firstFloor.set(card.id, 0);
     }
   }
 
@@ -260,6 +264,7 @@ function buildDeckAtFloor(
       for (const c of entry.cards_gained ?? []) {
         if (!c.id) continue;
         counts.set(c.id, (counts.get(c.id) ?? 0) + 1);
+        if (!firstFloor.has(c.id)) firstFloor.set(c.id, floor);
       }
       for (const c of entry.cards_lost ?? []) {
         if (!c.id) continue;
@@ -286,6 +291,7 @@ function buildDeckAtFloor(
     // Clamp upgradeCount to count — removals after upgrade may have
     // pulled the upgraded copy.
     upgradeCount: Math.min(count, upgrades.get(id) ?? 0),
+    firstFloor: firstFloor.get(id) ?? 0,
   })).sort((a, b) => a.id.localeCompare(b.id));
 }
 
