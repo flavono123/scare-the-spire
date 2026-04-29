@@ -228,7 +228,12 @@ const VERB_BY_KIND: Record<string, string> = {
   "card-upgraded": "강화",
   "card-enchanted": "인챈트",
   "card-skipped": "넘기기",
+  "card-removed": "제거",
   "relic-gained": "획득",
+  "hp-loss": "피해",
+  "hp-heal": "회복",
+  "max-hp-up": "최대 HP",
+  "max-hp-down": "최대 HP 손실",
 };
 
 const TEXT_BY_KIND: Record<string, string | undefined> = {
@@ -236,7 +241,12 @@ const TEXT_BY_KIND: Record<string, string | undefined> = {
   "card-upgraded": "#86efac",
   "card-enchanted": "#d8b4fe",
   "card-skipped": "#a1a1aa",
+  "card-removed": "#fca5a5",
   "relic-gained": "#fef3c7",
+  "hp-loss": "#fca5a5",
+  "hp-heal": "#86efac",
+  "max-hp-up": "#fcd34d",
+  "max-hp-down": "#fca5a5",
 };
 
 function buildStackItems(
@@ -258,6 +268,64 @@ function buildStackItems(
     const card = cardsById[id];
     return card ? <CardActionIcon card={card} width={32} /> : placeholderIcon;
   };
+  const heartIcon = (
+    <Image
+      src="/images/sts2/ui/topbar/top_bar_heart.png"
+      alt=""
+      width={32}
+      height={32}
+      className="h-8 w-8 shrink-0 object-contain"
+      unoptimized
+    />
+  );
+
+  // HP / max-HP changes always lead the stack — they're the immediate
+  // outcome of the room (combat damage, rest heal, event swing) before
+  // any reward carousel.
+  if ((entry.damage_taken ?? 0) > 0) {
+    items.push({
+      key: `s${step}-hp-loss-${entry.damage_taken}`,
+      kind: "hp-loss",
+      icon: heartIcon,
+      label: `-${entry.damage_taken}`,
+      verb: VERB_BY_KIND["hp-loss"],
+      textColor: TEXT_BY_KIND["hp-loss"],
+      postEffect: { kind: "fade" },
+    });
+  }
+  if ((entry.hp_healed ?? 0) > 0) {
+    items.push({
+      key: `s${step}-hp-heal-${entry.hp_healed}`,
+      kind: "hp-heal",
+      icon: heartIcon,
+      label: `+${entry.hp_healed}`,
+      verb: VERB_BY_KIND["hp-heal"],
+      textColor: TEXT_BY_KIND["hp-heal"],
+      postEffect: { kind: "fade" },
+    });
+  }
+  if ((entry.max_hp_gained ?? 0) > 0) {
+    items.push({
+      key: `s${step}-max-up-${entry.max_hp_gained}`,
+      kind: "max-hp-up",
+      icon: heartIcon,
+      label: `+${entry.max_hp_gained}`,
+      verb: VERB_BY_KIND["max-hp-up"],
+      textColor: TEXT_BY_KIND["max-hp-up"],
+      postEffect: { kind: "fade" },
+    });
+  }
+  if ((entry.max_hp_lost ?? 0) > 0) {
+    items.push({
+      key: `s${step}-max-down-${entry.max_hp_lost}`,
+      kind: "max-hp-down",
+      icon: heartIcon,
+      label: `-${entry.max_hp_lost}`,
+      verb: VERB_BY_KIND["max-hp-down"],
+      textColor: TEXT_BY_KIND["max-hp-down"],
+      postEffect: { kind: "fade" },
+    });
+  }
 
   for (const c of entry.cards_gained ?? []) {
     if (!c.id) continue;
@@ -294,6 +362,21 @@ function buildStackItems(
       label: `${cardLabel(e.cardId)} ${enchantName}`,
       verb: VERB_BY_KIND["card-enchanted"],
       textColor: TEXT_BY_KIND["card-enchanted"],
+      postEffect: { kind: "fade" },
+    });
+  }
+
+  // Shop / curse-cleansing — cards_removed flows through the same fade
+  // post-effect (no fly target — the deck is losing this slot).
+  for (const c of entry.cards_removed ?? []) {
+    if (!c.id) continue;
+    items.push({
+      key: `s${step}-cr-${items.length}-${c.id}`,
+      kind: "card-removed",
+      icon: cardIcon(c.id),
+      label: cardLabel(c.id),
+      verb: VERB_BY_KIND["card-removed"],
+      textColor: TEXT_BY_KIND["card-removed"],
       postEffect: { kind: "fade" },
     });
   }

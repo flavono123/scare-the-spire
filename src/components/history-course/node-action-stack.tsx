@@ -29,7 +29,12 @@ export type NodeStackItemKind =
   | "card-upgraded"
   | "card-enchanted"
   | "card-skipped"
-  | "relic-gained";
+  | "card-removed"
+  | "relic-gained"
+  | "hp-loss"
+  | "hp-heal"
+  | "max-hp-up"
+  | "max-hp-down";
 
 export type NodeStackPostEffect =
   | { kind: "fly"; targetSelector: string }

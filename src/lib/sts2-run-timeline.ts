@@ -48,9 +48,14 @@ export interface RunTimeline {
  *  sync. Pulled out as a pure function so the timeline build doesn't need
  *  the React-side icon factories. */
 export function countStackItems(entry: ReplayHistoryEntry): number {
+  const damage = (entry.damage_taken ?? 0) > 0 ? 1 : 0;
+  const heal = (entry.hp_healed ?? 0) > 0 ? 1 : 0;
+  const maxUp = (entry.max_hp_gained ?? 0) > 0 ? 1 : 0;
+  const maxDown = (entry.max_hp_lost ?? 0) > 0 ? 1 : 0;
   const gained = (entry.cards_gained ?? []).filter((c) => c.id).length;
   const upgraded = (entry.upgraded_cards ?? []).length;
   const enchanted = (entry.cards_enchanted ?? []).length;
+  const removed = (entry.cards_removed ?? []).filter((c) => c.id).length;
   const choices = entry.card_choices ?? [];
   const skipped =
     choices.length > 0 && !choices.some((c) => c.picked) && gained === 0
@@ -59,7 +64,10 @@ export function countStackItems(entry: ReplayHistoryEntry): number {
   const relics = (entry.relic_choices ?? []).filter(
     (c) => c.picked && c.id,
   ).length;
-  return gained + upgraded + enchanted + skipped + relics;
+  return (
+    damage + heal + maxUp + maxDown +
+    gained + upgraded + enchanted + removed + skipped + relics
+  );
 }
 
 export function nodeDurationMs(stackCount: number): number {
