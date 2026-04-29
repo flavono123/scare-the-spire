@@ -70,8 +70,34 @@ function bossKeyFromEntry(entry: ReplayHistoryEntry): string | null {
   return match ? match[1] : null;
 }
 
+// Ancients ship as character-specific run-history sprites
+// (neow / tezcatara / vakuu / orobas / pael / darv / nonupeipe / tanx).
+// Every act's first node is an ancient encounter — without per-character
+// resolution they all collapse onto the generic yellow "?" tile.
+const ANCIENT_KEYS = new Set([
+  "NEOW",
+  "TEZCATARA",
+  "VAKUU",
+  "OROBAS",
+  "PAEL",
+  "DARV",
+  "NONUPEIPE",
+  "TANX",
+]);
+
+function ancientSpriteSrc(modelId: string | null): string | null {
+  if (!modelId) return null;
+  const m = modelId.match(/^EVENT\.(.+)$/);
+  if (!m) return null;
+  if (!ANCIENT_KEYS.has(m[1])) return null;
+  return `/images/sts2/run-history/${m[1].toLowerCase()}.png`;
+}
+
 function nodeSpriteSrc(entry: ReplayHistoryEntry): string {
   const modelId = entry.rooms?.[0]?.model_id ?? null;
+  if (entry.map_point_type === "ancient") {
+    return ancientSpriteSrc(modelId) ?? "/images/sts2/run-history/ancient.png";
+  }
   if (modelId === "EVENT.NEOW") return "/images/sts2/run-history/neow.png";
   if (modelId === "ROOM.ANCIENT") return "/images/sts2/run-history/ancient.png";
   if (entry.map_point_type === "boss") {
@@ -80,8 +106,6 @@ function nodeSpriteSrc(entry: ReplayHistoryEntry): string {
     return "/images/sts2/run-history/monster.png";
   }
   switch (entry.map_point_type) {
-    case "ancient":
-      return "/images/sts2/run-history/ancient.png";
     case "monster":
       return "/images/sts2/run-history/monster.png";
     case "elite":
@@ -348,14 +372,18 @@ export function HistoryCourseShell({
   const [statsOpen, setStatsOpen] = useState(false);
   const [deckOpen, setDeckOpen] = useState(false);
   const [introToken, setIntroToken] = useState(0);
-  const [introActive, setIntroActive] = useState(true);
+  const [introActive, setIntroActive] = useState(false);
   const [replayReady, setReplayReady] = useState(false);
+  // Per-act intro is a one-shot announcement that lives at a single
+  // moment on the timeline (just before that act's ancient). Once an
+  // act has played its intro this session, jumping back into it must
+  // NOT replay it. Restart wipes the set so the user sees them again.
+  const introPlayedRef = useRef<Set<number>>(new Set());
 
   const { actIndex, actLocalMs } = useMemo(
     () => actPositionFromGlobalMs(runTimeline, globalMs),
     [runTimeline, globalMs],
   );
-  const [prevActIndex, setPrevActIndex] = useState(actIndex);
 
   const act = sanitizedActs[actIndex] ?? null;
   const actTimeline: ActTimeline | null =
@@ -369,17 +397,26 @@ export function HistoryCourseShell({
     [analysis, actIndex, step],
   );
 
-  // act swap → replay intro. globalMs already carries the new offset, so
-  // no time reset here — only the intro overlay + map-scroll gate.
-  if (actIndex !== prevActIndex) {
-    setPrevActIndex(actIndex);
+  // Fire each act's intro at most once. Mounting (actIndex=0) and
+  // crossing into a new act both flow through this effect; a Set in a
+  // ref blocks repeats across both natural progression and seek-jumps.
+  useEffect(() => {
+    if (introPlayedRef.current.has(actIndex)) {
+      // Already shown for this act — make sure replay is unblocked.
+      if (introActive) setIntroActive(false);
+      if (!replayReady) setReplayReady(true);
+      return;
+    }
+    introPlayedRef.current.add(actIndex);
     setIntroToken((t) => t + 1);
     setIntroActive(true);
     setReplayReady(false);
-  }
+    // We intentionally read introActive/replayReady inside the body but
+    // depend only on actIndex so this effect runs once per act change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actIndex]);
 
-  // The intro auto-finishes after the total fade window. Effect just owns
-  // the timer; the trigger lives in the conditional setState above.
+  // Auto-close the intro after its fade cycle.
   useEffect(() => {
     if (!introActive) return;
     const t = window.setTimeout(() => setIntroActive(false), ACT_INTRO_TOTAL_MS);
@@ -504,12 +541,17 @@ export function HistoryCourseShell({
   );
 
   const onRestart = useCallback(() => {
+    introPlayedRef.current = new Set();
     setGlobalMs(0);
+    setPlaying(true);
+    // The actIndex effect above will (re)fire and own intro state from
+    // here — no need to setIntroActive/Token directly. globalMs=0 keeps
+    // actIndex at 0; if it was already 0, mounting-style replay is fine
+    // because the Set is empty.
     setIntroToken((t) => t + 1);
     setIntroActive(true);
     setReplayReady(false);
-    setPlaying(true);
-    window.setTimeout(() => setIntroActive(false), ACT_INTRO_TOTAL_MS);
+    introPlayedRef.current.add(0);
   }, []);
 
   if (!act) {
@@ -740,7 +782,9 @@ function Stage({
 
       <NodePulse step={step} />
 
-      <ActIntro key={introToken} actIndex={actIndex} act={act} totalActs={totalActs} />
+      {introActive && (
+        <ActIntro key={introToken} actIndex={actIndex} act={act} totalActs={totalActs} />
+      )}
 
       <NodeActionStack
         stageRef={stageRef}
@@ -945,6 +989,14 @@ function PlaybackBar({
   );
 }
 
+// Track baseline sits this far above the container's bottom — leaves
+// room below for node sprite tails and visual breathing room.
+const TRACK_BASELINE_PX = 16;
+const NODE_SPRITE_PX = 24;
+// Min gap between node centers before we start sparsifying through the
+// modular stride (every Nth node + always-shown landmarks).
+const NODE_DENSITY_PX = 22;
+
 /** Time-mapped track. Each node is positioned at `entry.startMs / totalMs`
  *  so the character marker (acting as the slider thumb) lines up with the
  *  current node's stack-start. Drag scrubbing and keyboard nav still flow
@@ -971,15 +1023,52 @@ function Track({
   onJumpToStep: (actIndex: number, step: number) => void;
 }) {
   const safeMax = Math.max(1, runTimeline.totalMs);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [trackWidth, setTrackWidth] = useState(0);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    setTrackWidth(el.clientWidth);
+    const ro = new ResizeObserver(([entry]) => {
+      setTrackWidth(entry.contentRect.width);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const totalNodes = sanitizedActs.reduce(
+    (acc, a) => acc + a.history.length,
+    0,
+  );
+  // Modular stride for sparse rendering. When the track is wide enough
+  // every node fits at NODE_DENSITY_PX spacing → stride 1 (show all).
+  // Otherwise stride = ceil(needed / available); landmarks (act first /
+  // last, ancients, bosses, the active node) ignore the stride.
+  const stride = Math.max(
+    1,
+    trackWidth > 0
+      ? Math.ceil((totalNodes * NODE_DENSITY_PX) / trackWidth)
+      : 1,
+  );
 
   return (
-    <div className="relative h-10 select-none">
+    <div
+      ref={containerRef}
+      className="relative h-14 select-none"
+    >
       {/* Track baseline */}
-      <div className="pointer-events-none absolute inset-x-0 top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-white/15" />
+      <div
+        className="pointer-events-none absolute inset-x-0 h-[2px] rounded-full bg-white/15"
+        style={{ bottom: `${TRACK_BASELINE_PX}px` }}
+      />
       {/* Progress fill up to the character */}
       <div
-        className="pointer-events-none absolute left-0 top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-amber-300/70"
-        style={{ width: `${progressPct}%` }}
+        className="pointer-events-none absolute left-0 h-[2px] rounded-full bg-amber-300/70"
+        style={{
+          bottom: `${TRACK_BASELINE_PX}px`,
+          width: `${progressPct}%`,
+        }}
       />
 
       {/* Hidden range input — handles drag scrub + keyboard. Sits below
@@ -996,11 +1085,13 @@ function Track({
         className="absolute inset-0 z-0 h-full w-full cursor-pointer opacity-0"
       />
 
-      {/* Nodes — absolute-positioned at startMs%. Node visual start (left
-       *  edge) lines up with the global ms axis. */}
+      {/* Nodes — absolute-positioned at startMs%. Node visual centre lines
+       *  up with the global ms axis. Sparse mode hides intermediate
+       *  monster/event nodes via stride; landmarks always render. */}
       {sanitizedActs.map((rowAct, rowIdx) => {
         const offset = runTimeline.actOffsets[rowIdx] ?? 0;
         const actEntries = runTimeline.acts[rowIdx]?.entries ?? [];
+        const lastIdx = rowAct.history.length - 1;
         return rowAct.history.map((entry, idx) => {
           const stepNum = idx + 1;
           const startMs = offset + (actEntries[idx]?.startMs ?? 0);
@@ -1010,20 +1101,34 @@ function Track({
           const isPast =
             rowIdx < currentActIndex ||
             (rowIdx === currentActIndex && stepNum < currentStep);
+          const isLandmark =
+            isCurrent ||
+            idx === 0 ||
+            idx === lastIdx ||
+            entry.map_point_type === "ancient" ||
+            entry.map_point_type === "boss";
+          if (!isLandmark && stride > 1 && idx % stride !== 0) {
+            return null;
+          }
           return (
             <button
               key={`${rowIdx}-${stepNum}`}
               type="button"
               onClick={() => onJumpToStep(rowIdx, stepNum)}
               className={cn(
-                "group absolute top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center transition",
+                "group absolute z-10 flex -translate-x-1/2 items-center justify-center transition",
                 isPast
                   ? "opacity-95"
                   : isCurrent
                     ? "opacity-100"
                     : "opacity-70 hover:opacity-100",
               )}
-              style={{ left: `${leftPct}%` }}
+              style={{
+                left: `${leftPct}%`,
+                bottom: `${TRACK_BASELINE_PX - NODE_SPRITE_PX / 2}px`,
+                width: `${NODE_SPRITE_PX}px`,
+                height: `${NODE_SPRITE_PX}px`,
+              }}
               aria-label={`${rowIdx + 1}막 ${stepNum}층`}
               aria-current={isCurrent ? "true" : undefined}
             >
@@ -1032,27 +1137,30 @@ function Track({
                 src={nodeSpriteSrc(entry)}
                 alt=""
                 draggable={false}
-                className="h-6 w-6 select-none object-contain transition-transform duration-150 group-hover:scale-150"
+                className="h-full w-full select-none object-contain transition-transform duration-150 group-hover:scale-[1.6]"
               />
             </button>
           );
         });
       })}
 
-      {/* Character marker — replaces the slider thumb. Positioned exactly
-       *  at globalMs / totalMs so the visual progress and the current
-       *  node's stack-start align vertically. */}
+      {/* Character marker = slider thumb. Bottom tip pinned to the track
+       *  baseline so the marker stands on the line; clicks still pass
+       *  through to the input range underneath via pointer-events-none. */}
       <span
         aria-hidden
-        className="pointer-events-none absolute top-1/2 z-20 -translate-x-1/2 -translate-y-1/2"
-        style={{ left: `${progressPct}%` }}
+        className="pointer-events-none absolute z-20 -translate-x-1/2"
+        style={{
+          left: `${progressPct}%`,
+          bottom: `${TRACK_BASELINE_PX}px`,
+        }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={markerSrc}
           alt=""
           draggable={false}
-          className="h-9 w-9 select-none object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]"
+          className="h-10 w-10 select-none object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
         />
       </span>
     </div>
