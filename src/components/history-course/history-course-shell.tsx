@@ -23,7 +23,7 @@ import {
 } from "@/lib/sts2-run-replay";
 import {
   buildRunTimeline,
-  stackBudgetMs,
+  stackStartOffsetMs,
   stepFromElapsed,
   type ActTimeline,
 } from "@/lib/sts2-run-timeline";
@@ -590,12 +590,10 @@ function Stage({
       <NodeActionStack
         stageRef={stageRef}
         items={stackItems}
-        rate={rate}
-        nodeBudgetMs={
-          actTimeline?.entries[step - 1]
-            ? stackBudgetMs(actTimeline.entries[step - 1].stackCount)
-            : undefined
-        }
+        nodeLocalMs={Math.max(
+          0,
+          elapsedMs - (actTimeline?.entries[step - 1]?.startMs ?? 0) - stackStartOffsetMs(),
+        )}
       />
 
       <PlaybackBar

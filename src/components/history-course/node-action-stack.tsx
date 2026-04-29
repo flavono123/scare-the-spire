@@ -3,30 +3,26 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
-// Sequential per-node action queue. All card actions + relics for the current
-// node feed in as one StackItem[] and play in order: appear → hold →
-// text fade → post-effect (icon fly OR full fade) → next item slides up.
+// Sequential per-node action queue. Stateless — every visual derives from
+// `nodeLocalMs` (the elapsed time within the current node, fed by the
+// shell's rAF ticker). Pausing the ticker freezes nodeLocalMs and the
+// stack stops dead, mid-fly or mid-hold. No setTimeout, no CSS transition
+// for the live progress bar — just per-frame transform interpolation.
 //
-// 3-window slot-machine layout: pose 0 = current (center, full scale),
-// pose -1 = just played (above, dim/blur), pose +1 = next (below, dim/blur).
-// Items beyond ±1 are kept mounted at opacity 0 so React can reuse the same
-// DOM as their pose changes.
+// Per-item budget is fixed at 1× regardless of how many items the node
+// has; node duration scales with item count instead. Slot machine layout:
+// pose 0 = active (center), pose -1 = just played (above, dim), pose +1 =
+// next (below, dim).
 
-const ROW_OFFSET = 40;
-// Reference per-item budget at 1× with no time pressure. Real budget comes
-// in via the `nodeDurationMs` prop and we scale every phase by
-// (perItemBudget / REFERENCE_BUDGET) so the whole stack fits inside the
-// node's allotted time.
+export const PER_ITEM_MS = 2500;
 const APPEAR_MS = 280;
 const HOLD_MS = 1700;
-const TEXT_FADE_MS = 280;
-const POST_GAP_MS = 100;
-const ICON_FLY_MS = 640;
-const ICON_FADE_MS = 380;
-const SLOT_SHIFT_MS = 360;
-const REFERENCE_PER_ITEM_MS = APPEAR_MS + HOLD_MS + TEXT_FADE_MS + POST_GAP_MS + ICON_FLY_MS;
-// Hard floor — below this and the appear/hold blur into a single flash.
-const MIN_PER_ITEM_MS = 700;
+const TEXT_FADE_MS = 240;
+const POST_GAP_MS = 80;
+const POST_MS = 200;
+// 280 + 1700 + 240 + 80 + 200 = 2500 = PER_ITEM_MS
+
+const ROW_OFFSET = 40;
 
 export type NodeStackItemKind =
   | "card-gained"
@@ -40,19 +36,13 @@ export type NodeStackPostEffect =
   | { kind: "fade" };
 
 export interface NodeStackItem {
-  /** Stable React key — must change between distinct items in a step. */
   key: string;
   kind: NodeStackItemKind;
-  /** Pre-rendered token (32×32 expected). */
   icon: ReactNode;
-  /** Plain label (entity name). Empty string allowed for icon-less items. */
   label: string;
-  /** Muted verb tag rendered after the label. */
   verb: string;
-  /** Post-fade label color. Defaults to cream. */
   textColor?: string;
   postEffect: NodeStackPostEffect;
-  /** Fires once this item's lifecycle finishes (after fly/fade lands). */
   onComplete?: () => void;
 }
 
@@ -61,37 +51,44 @@ interface Point {
   y: number;
 }
 
-type Phase = "queued" | "appear" | "hold" | "textFade" | "postGap" | "post" | "done";
+type Phase = "appear" | "hold" | "textFade" | "postGap" | "post" | "done";
+
+function phaseAt(localT: number): { phase: Phase; phaseProgress: number } {
+  if (localT <= 0) return { phase: "appear", phaseProgress: 0 };
+  let t = localT;
+  if (t < APPEAR_MS) return { phase: "appear", phaseProgress: t / APPEAR_MS };
+  t -= APPEAR_MS;
+  if (t < HOLD_MS) return { phase: "hold", phaseProgress: t / HOLD_MS };
+  t -= HOLD_MS;
+  if (t < TEXT_FADE_MS) return { phase: "textFade", phaseProgress: t / TEXT_FADE_MS };
+  t -= TEXT_FADE_MS;
+  if (t < POST_GAP_MS) return { phase: "postGap", phaseProgress: t / POST_GAP_MS };
+  t -= POST_GAP_MS;
+  if (t < POST_MS) return { phase: "post", phaseProgress: t / POST_MS };
+  return { phase: "done", phaseProgress: 1 };
+}
+
+function easeOutCubic(t: number): number {
+  const x = Math.max(0, Math.min(1, t));
+  return 1 - Math.pow(1 - x, 3);
+}
+
+function easeInOutCubic(t: number): number {
+  const x = Math.max(0, Math.min(1, t));
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+}
 
 interface Props {
   stageRef: React.RefObject<HTMLDivElement | null>;
   items: NodeStackItem[];
-  rate: number;
-  /** Total ms allocated to *this node's* stack at 1×. The shell computes
-   *  it as `nodeDurationMs(stackCount)`. We split it evenly per item and
-   *  scale every phase to fit. Falls back to the unconstrained reference
-   *  budget when omitted. */
-  nodeBudgetMs?: number;
-  onAllDone?: () => void;
+  /** Elapsed ms within the current node (0 .. items.length × PER_ITEM_MS).
+   *  Driven by the shell's rAF ticker. When the shell pauses, this stops
+   *  changing and every visual freezes in place. */
+  nodeLocalMs: number;
 }
 
-export function NodeActionStack({
-  stageRef,
-  items,
-  rate,
-  nodeBudgetMs,
-  onAllDone,
-}: Props) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const itemsRef = useRef(items);
-  if (itemsRef.current !== items) {
-    itemsRef.current = items;
-    if (currentIndex !== 0) setCurrentIndex(0);
-  }
-
-  // Anchor at the right side of the current node. Re-measured whenever the
-  // items batch changes (new step) and once on next frame (map scroll might
-  // still be settling at mount time).
+export function NodeActionStack({ stageRef, items, nodeLocalMs }: Props) {
+  // Anchor — right side of the current map node.
   const [origin, setOrigin] = useState<Point | null>(null);
   useLayoutEffect(() => {
     const stage = stageRef.current;
@@ -114,221 +111,172 @@ export function NodeActionStack({
     return () => window.cancelAnimationFrame(raf);
   }, [stageRef, items]);
 
-  const allDoneRef = useRef(onAllDone);
-  allDoneRef.current = onAllDone;
+  // Pre-measure fly destinations whenever the items batch changes.
+  const [targets, setTargets] = useState<Map<string, Point>>(new Map());
+  useLayoutEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const stageRect = stage.getBoundingClientRect();
+    const m = new Map<string, Point>();
+    for (const item of items) {
+      if (item.postEffect.kind !== "fly") continue;
+      const slot = stage.querySelector<HTMLElement>(item.postEffect.targetSelector);
+      if (!slot) continue;
+      const r = slot.getBoundingClientRect();
+      m.set(item.key, {
+        x: r.left - stageRect.left + r.width / 2,
+        y: r.top - stageRect.top + r.height / 2,
+      });
+    }
+    setTargets(m);
+  }, [stageRef, items]);
+
+  // Fire onComplete exactly once per item, when nodeLocalMs crosses its
+  // end boundary. Resets when the items batch changes (new step).
+  const completedRef = useRef<Set<string>>(new Set());
+  const itemsKeyRef = useRef<NodeStackItem[]>(items);
+  if (itemsKeyRef.current !== items) {
+    itemsKeyRef.current = items;
+    completedRef.current = new Set();
+  }
   useEffect(() => {
-    if (items.length === 0) return;
-    if (currentIndex >= items.length) allDoneRef.current?.();
-  }, [currentIndex, items]);
+    for (let i = 0; i < items.length; i++) {
+      const itemEnd = (i + 1) * PER_ITEM_MS;
+      const item = items[i];
+      if (nodeLocalMs >= itemEnd && !completedRef.current.has(item.key)) {
+        completedRef.current.add(item.key);
+        item.onComplete?.();
+      }
+    }
+  }, [items, nodeLocalMs]);
 
   if (!origin || items.length === 0) return null;
 
-  const perItemBudgetMs = (() => {
-    if (!nodeBudgetMs || items.length === 0) return REFERENCE_PER_ITEM_MS;
-    return Math.max(MIN_PER_ITEM_MS, Math.round(nodeBudgetMs / items.length));
-  })();
+  const currentIndex = Math.min(
+    items.length - 1,
+    Math.max(0, Math.floor(nodeLocalMs / PER_ITEM_MS)),
+  );
 
   return (
     <>
       {items.map((item, index) => (
         <StackItemView
           key={item.key}
-          stageRef={stageRef}
-          origin={origin}
           item={item}
           index={index}
           currentIndex={currentIndex}
-          rate={rate}
-          perItemBudgetMs={perItemBudgetMs}
-          onAdvance={() => {
-            setCurrentIndex((i) => Math.max(i, index + 1));
-            item.onComplete?.();
-          }}
+          nodeLocalMs={nodeLocalMs}
+          origin={origin}
+          target={targets.get(item.key) ?? null}
         />
       ))}
     </>
   );
 }
 
-interface StackItemViewProps {
-  stageRef: React.RefObject<HTMLDivElement | null>;
-  origin: Point;
-  item: NodeStackItem;
-  index: number;
-  currentIndex: number;
-  rate: number;
-  perItemBudgetMs: number;
-  onAdvance: () => void;
-}
-
 function StackItemView({
-  stageRef,
-  origin,
   item,
   index,
   currentIndex,
-  rate,
-  perItemBudgetMs,
-  onAdvance,
-}: StackItemViewProps) {
-  const isCurrent = index === currentIndex;
+  nodeLocalMs,
+  origin,
+  target,
+}: {
+  item: NodeStackItem;
+  index: number;
+  currentIndex: number;
+  nodeLocalMs: number;
+  origin: Point;
+  target: Point | null;
+}) {
+  const itemStartMs = index * PER_ITEM_MS;
+  const localT = Math.max(0, nodeLocalMs - itemStartMs);
   const pose = index - currentIndex;
+  const isActive = pose === 0 && nodeLocalMs >= itemStartMs;
 
-  const [phase, setPhase] = useState<Phase>(index === 0 ? "appear" : "queued");
-  const [target, setTarget] = useState<Point | null>(null);
-  const onAdvanceRef = useRef(onAdvance);
-  onAdvanceRef.current = onAdvance;
+  const { phase, phaseProgress } = isActive
+    ? phaseAt(localT)
+    : pose < 0
+      ? { phase: "done" as Phase, phaseProgress: 1 }
+      : { phase: "appear" as Phase, phaseProgress: 0 };
 
-  // When this item *becomes* current, kick off its phase clock. Cleanup
-  // cancels timers if the item is somehow displaced (shouldn't happen
-  // mid-queue, but defensive).
-  useEffect(() => {
-    if (!isCurrent) return;
-    setPhase("appear");
-    // Two-axis scaling: budgetScale fits the stack into the node's allotted
-    // time, rate factor compresses for fast-forward. Each phase keeps its
-    // share of the reference budget.
-    const budgetScale = perItemBudgetMs / REFERENCE_PER_ITEM_MS;
-    const factor = budgetScale / Math.sqrt(Math.max(1, rate));
-    const appear = Math.round(APPEAR_MS * factor);
-    const hold = Math.round(HOLD_MS * factor);
-    const textFade = Math.round(TEXT_FADE_MS * factor);
-    const postGap = Math.round(POST_GAP_MS * factor);
-    const postDur = Math.round(
-      (item.postEffect.kind === "fly" ? ICON_FLY_MS : ICON_FADE_MS) * factor,
-    );
-
-    let t = 0;
-    const tHold = (t += appear);
-    const tTextFade = (t += hold);
-    const tPostGap = (t += textFade);
-    const tPost = (t += postGap);
-    const tDone = (t += postDur);
-
-    const ids: number[] = [];
-    ids.push(window.setTimeout(() => setPhase("hold"), tHold));
-    ids.push(window.setTimeout(() => setPhase("textFade"), tTextFade));
-    ids.push(window.setTimeout(() => setPhase("postGap"), tPostGap));
-    ids.push(window.setTimeout(() => setPhase("post"), tPost));
-    ids.push(
-      window.setTimeout(() => {
-        setPhase("done");
-        onAdvanceRef.current();
-      }, tDone),
-    );
-    return () => {
-      for (const id of ids) window.clearTimeout(id);
-    };
-  }, [isCurrent, rate, item.postEffect.kind]);
-
-  // Resolve fly target the moment we enter the post phase; reading the rect
-  // earlier risks measuring layout that's still settling.
-  useLayoutEffect(() => {
-    if (phase !== "post") return;
-    if (item.postEffect.kind !== "fly") return;
-    const stage = stageRef.current;
-    if (!stage) return;
-    const slot = stage.querySelector<HTMLElement>(item.postEffect.targetSelector);
-    if (!slot) return;
-    const stageRect = stage.getBoundingClientRect();
-    const r = slot.getBoundingClientRect();
-    setTarget({
-      x: r.left - stageRect.left + r.width / 2,
-      y: r.top - stageRect.top + r.height / 2,
-    });
-  }, [phase, stageRef, item.postEffect]);
-
-  // ── Visual pose ──
-  // While appearing, render the item AS IF it's still at pose +1 (below
-  // slot, dim+blur), then phase=hold pulls it to pose=0 styling. This avoids
-  // an opacity flash at the slot boundary. Items in "queued" phase (not yet
-  // their turn) still need to render at pose +1/-1 so the slot machine
-  // shows the upcoming item as a preview — only the post-effect-completion
-  // states permanently hide.
-  const isFlyDone =
-    item.postEffect.kind === "fly" && (phase === "post" || phase === "done");
-  const isFadeDone = item.postEffect.kind === "fade" && phase === "done";
-  const visualPose = isCurrent && phase === "appear" ? 1 : pose;
-  const fullyHidden =
-    Math.abs(visualPose) >= 2 || isFlyDone || isFadeDone;
-
-  let slotScale = 1;
-  let slotBlur = 0;
-  let slotOpacity = 1;
-  if (visualPose !== 0) {
-    slotScale = 0.78;
-    slotBlur = 2;
-    slotOpacity = 0.5;
+  // visualPose — for the appear phase of the active item, interpolate from
+  // +1 (below slot) to 0 (center) so it slides up like a slot reel landing.
+  let visualPose: number = pose;
+  if (isActive && phase === "appear") {
+    visualPose = 1 - easeOutCubic(phaseProgress);
   }
 
-  // Fly post-effect: take over transform / scale to send the icon to its
-  // target. Run from current pose=0 anchor → target rect.
-  const flying = isCurrent && phase === "post" && item.postEffect.kind === "fly";
-  const flyDx = flying && target ? target.x - origin.x : 0;
-  const flyDy = flying && target ? target.y - origin.y : 0;
-  const flyScale = flying ? 0.18 : 1;
+  // Slot styling — lerp by |visualPose| in [0, 1]; |visualPose| ≥ 2 hides.
+  const absPose = Math.abs(visualPose);
+  const slotT = Math.min(1, absPose);
+  const slotScale = 1 - slotT * (1 - 0.78);
+  const slotBlur = slotT * 2;
+  let slotOpacity = 1 - slotT * (1 - 0.5);
+  if (absPose >= 2) slotOpacity = 0;
 
-  const finalDx = flying ? flyDx : 0;
-  const finalDy = flying ? flyDy : visualPose * ROW_OFFSET;
-  const finalScale = flying ? flyScale : slotScale;
-  const finalBlur = flying ? 0 : slotBlur;
-
-  // Label fade: independent of icon fade. Triggered as soon as the post
-  // phase starts approaching.
-  const labelHidden =
-    isCurrent &&
-    (phase === "textFade" || phase === "postGap" || phase === "post");
-
-  // Item opacity: fade post-effect fully fades the icon during "post"; fly
-  // post-effect leaves icon at full opacity until it lands (fly target is
-  // off-stage from the user's perspective).
+  // Fly post-effect computation
+  const flying = isActive && phase === "post" && item.postEffect.kind === "fly" && target != null;
+  let finalDx = 0;
+  let finalDy = visualPose * ROW_OFFSET;
+  let finalScale = slotScale;
+  let finalBlur = slotBlur;
   let itemOpacity = slotOpacity;
-  if (fullyHidden) itemOpacity = 0;
-  else if (item.postEffect.kind === "fade" && isCurrent && phase === "post")
-    itemOpacity = 0;
 
-  // Transition selection — same two-axis scaling as the phase clock above.
-  const budgetScale = perItemBudgetMs / REFERENCE_PER_ITEM_MS;
-  const factor = budgetScale / Math.sqrt(Math.max(1, rate));
-  const transitionDur = (() => {
-    if (flying) return Math.round(ICON_FLY_MS * factor);
-    if (item.postEffect.kind === "fade" && isCurrent && phase === "post")
-      return Math.round(ICON_FADE_MS * factor);
-    if (isCurrent && phase === "appear")
-      return Math.round(APPEAR_MS * factor);
-    return Math.round(SLOT_SHIFT_MS * factor);
-  })();
-  const transitionEase = flying
-    ? "cubic-bezier(0.45, 0.05, 0.6, 1)"
-    : "cubic-bezier(0.22, 1, 0.36, 1)";
-
-  if (fullyHidden && !flying) {
-    // keep the DOM around so React can reuse the node when pose shifts
-    return (
-      <div
-        aria-hidden
-        data-pose={pose}
-        data-phase={phase}
-        className="pointer-events-none absolute opacity-0"
-        style={{ left: origin.x, top: origin.y }}
-      />
-    );
+  if (flying && target) {
+    const ease = easeInOutCubic(phaseProgress);
+    finalDx = (target.x - origin.x) * ease;
+    finalDy = (target.y - origin.y) * ease;
+    finalScale = 1 + (0.18 - 1) * ease;
+    finalBlur = 0;
+    itemOpacity = 1;
   }
+
+  // Fade post-effect: icon fades out during the post phase.
+  if (
+    isActive &&
+    item.postEffect.kind === "fade" &&
+    (phase === "post" || phase === "done")
+  ) {
+    if (phase === "post") {
+      itemOpacity = (1 - phaseProgress) * slotOpacity;
+    } else {
+      itemOpacity = 0;
+    }
+  }
+
+  // Once fly post phase ends, the item is "gone" — hide.
+  if (isActive && item.postEffect.kind === "fly" && phase === "done") {
+    itemOpacity = 0;
+  }
+
+  // Past items (pose < 0): only fade-effect items linger as ghosts at pose
+  // -1; fly items have flown off and shouldn't render at all.
+  if (pose < 0) {
+    if (item.postEffect.kind === "fly") return null;
+    // fade ghost — use slot styling at pose, dimmer
+    itemOpacity = slotOpacity * 0.6;
+  }
+
+  if (itemOpacity <= 0.005 && !flying) return null;
+
+  // Label fade — synchronized with phase.
+  let labelOpacity = 1;
+  if (phase === "appear") labelOpacity = easeOutCubic(phaseProgress);
+  else if (phase === "hold") labelOpacity = 1;
+  else if (phase === "textFade") labelOpacity = 1 - phaseProgress;
+  else labelOpacity = 0;
 
   const verbColor = "rgba(228, 228, 231, 0.85)";
   const labelColor = item.textColor ?? "#fafafa";
 
-  // Soft bloom — drop-shadow chain follows the actual icon+text alpha, so
-  // there's no visible container boundary. Only the current item gets the
-  // big bloom (others rely on slot dim). Stacks of drop-shadows compose
-  // into a smooth glow that widens with distance.
-  const currentBloom =
-    isCurrent && phase !== "appear" && !labelHidden
-      ? "drop-shadow(0 0 4px rgba(0,0,0,0.85)) drop-shadow(0 0 10px rgba(0,0,0,0.7)) drop-shadow(0 0 22px rgba(0,0,0,0.45)) drop-shadow(0 0 36px rgba(0,0,0,0.25))"
-      : "";
-  const slotFilter = finalBlur > 0 ? `blur(${finalBlur}px)` : "";
-  const composedFilter =
-    [slotFilter, currentBloom].filter(Boolean).join(" ") || undefined;
+  // Soft bloom — only on the active item with the label still up.
+  const showBloom = isActive && labelOpacity > 0.4;
+  const slotFilter = finalBlur > 0 ? `blur(${finalBlur.toFixed(2)}px)` : "";
+  const bloomFilter = showBloom
+    ? "drop-shadow(0 0 4px rgba(0,0,0,0.85)) drop-shadow(0 0 10px rgba(0,0,0,0.7)) drop-shadow(0 0 22px rgba(0,0,0,0.45)) drop-shadow(0 0 36px rgba(0,0,0,0.25))"
+    : "";
+  const composedFilter = [slotFilter, bloomFilter].filter(Boolean).join(" ") || undefined;
 
   return (
     <div
@@ -341,11 +289,10 @@ function StackItemView({
       style={{
         left: origin.x,
         top: origin.y,
-        transform: `translate3d(${finalDx}px, calc(-50% + ${finalDy}px), 0) scale(${finalScale})`,
+        transform: `translate3d(${finalDx.toFixed(2)}px, calc(-50% + ${finalDy.toFixed(2)}px), 0) scale(${finalScale.toFixed(3)})`,
         transformOrigin: "left center",
         opacity: itemOpacity,
         filter: composedFilter,
-        transition: `transform ${transitionDur}ms ${transitionEase}, opacity ${transitionDur}ms ${transitionEase}, filter ${transitionDur}ms ${transitionEase}`,
         willChange: "transform, opacity, filter",
       }}
     >
@@ -357,8 +304,7 @@ function StackItemView({
             style={{
               fontSize: "22px",
               color: labelColor,
-              opacity: labelHidden ? 0 : 1,
-              transition: `opacity ${Math.round(TEXT_FADE_MS * factor)}ms ease-out, color ${Math.round(APPEAR_MS * factor)}ms ease-out`,
+              opacity: labelOpacity,
               WebkitTextStroke: "0.6px rgba(0,0,0,0.85)",
               whiteSpace: "nowrap",
             }}

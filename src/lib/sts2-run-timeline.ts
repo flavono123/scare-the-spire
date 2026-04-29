@@ -14,12 +14,10 @@ import {
 //  50 floors w/ avg 1.5 stack items     ≈  2 minutes
 // ============================================================================
 
+// Per-item time is fixed in NodeActionStack (PER_ITEM_MS = 2500). The node
+// duration is therefore base transit + items × PER_ITEM_MS.
 export const NODE_BASE_MS = 2500;
-export const NODE_PER_STACK_MS = 800;
-
-/** Stack should finish a hair before the node ends so the next step's
- *  intro doesn't overlap mid-fade with the previous stack's tail. */
-export const STACK_BUDGET_FRACTION = 0.85;
+export const NODE_PER_STACK_MS = 2500;
 
 /** Inter-act buffer so the next intro doesn't jump-cut on top of the last
  *  step's stack. */
@@ -65,14 +63,18 @@ export function countStackItems(entry: ReplayHistoryEntry): number {
 }
 
 export function nodeDurationMs(stackCount: number): number {
+  // Stack consumes (stackCount × PER_ITEM_MS) of the node's time. We add a
+  // base on top — even empty-stack nodes hold for the base so the player
+  // sees the map advance for a beat. (Phase 4 transit/arrival animations
+  // will use this base window.)
   return NODE_BASE_MS + Math.max(0, stackCount) * NODE_PER_STACK_MS;
 }
 
-/** Budget the NodeActionStack should use for the whole stack. Slightly
- *  smaller than nodeDurationMs so the post-effect of the last item lands
- *  before the node ticks over. */
-export function stackBudgetMs(stackCount: number): number {
-  return Math.round(nodeDurationMs(stackCount) * STACK_BUDGET_FRACTION);
+/** Offset within the node where the stack starts playing. Currently 0 —
+ *  the stack uses the whole node window. Phase 4 will introduce a transit
+ *  phase that pushes this back. */
+export function stackStartOffsetMs(): number {
+  return 0;
 }
 
 export function buildActTimeline(act: ReplayActAnalysis): ActTimeline {

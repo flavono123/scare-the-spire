@@ -117,6 +117,60 @@ test("slot machine — next item visible at pose +1", async ({ page }) => {
   expect(poseOneOpacity).toBeGreaterThan(0.2);
 });
 
+test("pause freezes the stack mid-phase", async ({ page }) => {
+  // With the new elapsedMs-derived stack, pausing the playback ticker
+  // should also freeze every stack visual. Check that the active item's
+  // transform/phase doesn't drift while paused.
+  test.setTimeout(60000);
+  await page.setViewportSize({ width: 1600, height: 900 });
+  const res = await page.goto(`${BASE}/history-course/APDCAB0SMN`);
+  expect(res?.status()).toBeLessThan(400);
+  await page.waitForLoadState("networkidle");
+
+  await page
+    .locator('[data-testid="node-stack-item"]')
+    .first()
+    .waitFor({ state: "attached", timeout: 8000 });
+  await waitForPhase(page, "hold");
+  await page.waitForTimeout(120);
+
+  // Pause
+  await page.keyboard.press("Space").catch(() => {});
+  await page.waitForTimeout(80);
+
+  const before = await page.evaluate(() => {
+    const el = document.querySelector(
+      '[data-testid="node-stack-item"][data-pose="0"]',
+    );
+    return el
+      ? {
+          phase: el.getAttribute("data-phase"),
+          transform: (el as HTMLElement).style.transform,
+        }
+      : null;
+  });
+
+  // Wait — while paused, the stack should NOT advance.
+  await page.waitForTimeout(800);
+
+  const after = await page.evaluate(() => {
+    const el = document.querySelector(
+      '[data-testid="node-stack-item"][data-pose="0"]',
+    );
+    return el
+      ? {
+          phase: el.getAttribute("data-phase"),
+          transform: (el as HTMLElement).style.transform,
+        }
+      : null;
+  });
+
+  expect(before).not.toBeNull();
+  expect(after).not.toBeNull();
+  expect(after!.phase).toBe(before!.phase);
+  expect(after!.transform).toBe(before!.transform);
+});
+
 test("deck modal — sticky backdrop + 획득순", async ({ page }) => {
   test.setTimeout(60000);
   await page.setViewportSize({ width: 1600, height: 900 });
