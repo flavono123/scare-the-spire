@@ -131,3 +131,46 @@ export function stepFromElapsed(
   }
   return ans;
 }
+
+export interface ActPosition {
+  actIndex: number;
+  actLocalMs: number;
+}
+
+/** Map a run-global ms onto (actIndex, actLocalMs).
+ *
+ *  The trailing ACT_TAIL_BUFFER_MS still belongs to the *previous* act —
+ *  the stack is gone but the map should hold on the last step until the
+ *  next intro fires. Past the last act's tail, the position pins to the
+ *  last act's totalMs. */
+export function actPositionFromGlobalMs(
+  timeline: RunTimeline,
+  globalMs: number,
+): ActPosition {
+  if (timeline.acts.length === 0) {
+    return { actIndex: 0, actLocalMs: 0 };
+  }
+  const clamped = Math.max(0, Math.min(globalMs, timeline.totalMs));
+  for (let i = timeline.acts.length - 1; i >= 0; i--) {
+    if (clamped >= timeline.actOffsets[i]) {
+      const local = clamped - timeline.actOffsets[i];
+      const actTotal = timeline.acts[i].totalMs;
+      return { actIndex: i, actLocalMs: Math.min(local, actTotal) };
+    }
+  }
+  return { actIndex: 0, actLocalMs: 0 };
+}
+
+/** Run-global startMs for the (actIndex, step) pair — used by node-marker
+ *  click jumps and the InfoDrawer "select act" entry point. */
+export function globalMsForStep(
+  timeline: RunTimeline,
+  actIndex: number,
+  step: number,
+): number {
+  const act = timeline.acts[actIndex];
+  if (!act) return 0;
+  const entry = act.entries[step - 1];
+  if (!entry) return timeline.actOffsets[actIndex] ?? 0;
+  return (timeline.actOffsets[actIndex] ?? 0) + entry.startMs;
+}

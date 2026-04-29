@@ -22,10 +22,13 @@ import {
   type ReplayRun,
 } from "@/lib/sts2-run-replay";
 import {
+  actPositionFromGlobalMs,
   buildRunTimeline,
+  globalMsForStep,
   stackStartOffsetMs,
   stepFromElapsed,
   type ActTimeline,
+  type RunTimeline,
 } from "@/lib/sts2-run-timeline";
 import { cn } from "@/lib/utils";
 
@@ -44,6 +47,77 @@ const ACT_INTRO_TOTAL_MS = ACT_INTRO_FADE_IN_MS + ACT_INTRO_HOLD_MS + ACT_INTRO_
 
 function actIntroNumber(index: number) {
   return ["1막", "2막", "3막", "4막"][index] ?? `${index + 1}막`;
+}
+
+const KNOWN_CHARACTER_MARKERS = new Set([
+  "ironclad",
+  "silent",
+  "defect",
+  "necrobinder",
+  "regent",
+]);
+
+function characterMarkerSrc(character: string): string {
+  const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
+  const safe = KNOWN_CHARACTER_MARKERS.has(slug) ? slug : "ironclad";
+  return `/images/sts2/map/markers/map_marker_${safe}.png`;
+}
+
+function nodeSpriteSrc(entry: ReplayHistoryEntry): string {
+  const modelId = entry.rooms?.[0]?.model_id ?? null;
+  if (modelId === "EVENT.NEOW") return "/images/sts2/run-history/neow.png";
+  if (modelId === "ROOM.ANCIENT") return "/images/sts2/run-history/ancient.png";
+  switch (entry.map_point_type) {
+    case "ancient":
+      return "/images/sts2/run-history/ancient.png";
+    case "monster":
+      return "/images/sts2/run-history/monster.png";
+    case "elite":
+      return "/images/sts2/run-history/elite.png";
+    case "rest_site":
+      return "/images/sts2/run-history/rest_site.png";
+    case "treasure":
+      return "/images/sts2/run-history/treasure.png";
+    case "shop":
+      return "/images/sts2/run-history/shop.png";
+    case "boss":
+      return "/images/sts2/run-history/monster.png";
+    case "unknown":
+      return "/images/sts2/run-history/event.png";
+    default:
+      return "/images/sts2/run-history/monster.png";
+  }
+}
+
+function nextStepGlobalMs(timeline: RunTimeline, cur: number): number {
+  // Walk every entry across acts and pick the first whose global startMs
+  // exceeds cur — that's the next "node start" jump target.
+  for (let i = 0; i < timeline.acts.length; i++) {
+    const act = timeline.acts[i];
+    const offset = timeline.actOffsets[i] ?? 0;
+    for (const entry of act.entries) {
+      const g = offset + entry.startMs;
+      if (g > cur + 1) return Math.min(g, timeline.totalMs);
+    }
+  }
+  return Math.min(cur, timeline.totalMs);
+}
+
+function prevStepGlobalMs(timeline: RunTimeline, cur: number): number {
+  let best = 0;
+  for (let i = 0; i < timeline.acts.length; i++) {
+    const act = timeline.acts[i];
+    const offset = timeline.actOffsets[i] ?? 0;
+    for (const entry of act.entries) {
+      const g = offset + entry.startMs;
+      if (g < cur - 1) {
+        best = g;
+      } else {
+        return best;
+      }
+    }
+  }
+  return best;
 }
 
 function relicIconSrc(id: string): string {
@@ -255,12 +329,9 @@ export function HistoryCourseShell({
     () => buildRunTimeline(sanitizedActs),
     [sanitizedActs],
   );
-  const [actIndex, setActIndex] = useState(0);
-  // Continuous time model: ms elapsed within the current act. Step is
-  // derived from this so the progress bar / clock keep moving even
-  // mid-node. Phase 2 will lift the global axis up (acts -> single
-  // timeline). For now, ticker resets at act boundaries.
-  const [elapsedMs, setElapsedMs] = useState(0);
+  // Continuous time model — Phase 2: single run-global axis. actIndex /
+  // actLocalMs / step are derived from globalMs.
+  const [globalMs, setGlobalMs] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [rate, setRate] = useState<Rate>(2);
   const [infoOpen, setInfoOpen] = useState(false);
@@ -269,24 +340,29 @@ export function HistoryCourseShell({
   const [introToken, setIntroToken] = useState(0);
   const [introActive, setIntroActive] = useState(true);
   const [replayReady, setReplayReady] = useState(false);
+
+  const { actIndex, actLocalMs } = useMemo(
+    () => actPositionFromGlobalMs(runTimeline, globalMs),
+    [runTimeline, globalMs],
+  );
   const [prevActIndex, setPrevActIndex] = useState(actIndex);
 
   const act = sanitizedActs[actIndex] ?? null;
   const actTimeline: ActTimeline | null =
     runTimeline.acts[actIndex] ?? null;
   const step = useMemo(
-    () => (actTimeline ? stepFromElapsed(actTimeline, elapsedMs) : 1),
-    [actTimeline, elapsedMs],
+    () => (actTimeline ? stepFromElapsed(actTimeline, actLocalMs) : 1),
+    [actTimeline, actLocalMs],
   );
   const topbarState = useMemo(
     () => buildTopbarState(analysis, actIndex, step),
     [analysis, actIndex, step],
   );
 
-  // act swap → reset to start-of-act + replay intro.
+  // act swap → replay intro. globalMs already carries the new offset, so
+  // no time reset here — only the intro overlay + map-scroll gate.
   if (actIndex !== prevActIndex) {
     setPrevActIndex(actIndex);
-    setElapsedMs(0);
     setIntroToken((t) => t + 1);
     setIntroActive(true);
     setReplayReady(false);
@@ -355,37 +431,30 @@ export function HistoryCourseShell({
     );
   }, [stepRelicIdsKey]);
 
-  // rAF ticker. Every animation frame nudges elapsedMs by `dt × rate` while
-  // playing. Step + stack + topbar all derive from elapsedMs, so a paused
+  // rAF ticker. Every animation frame nudges globalMs by `dt × rate` while
+  // playing. Step + stack + topbar all derive from globalMs, so a paused
   // tick simply stops the time axis — no more setTimeout-per-node dance.
+  // Auto-advance across acts is implicit: globalMs crossing into the next
+  // actOffset flips actIndex via the derive in the render body.
   useEffect(() => {
-    if (!playing || !replayReady || !actTimeline) return;
+    if (!playing || !replayReady) return;
+    if (runTimeline.totalMs <= 0) return;
     let last = performance.now();
     let raf = 0;
     const tick = (now: number) => {
       const dt = (now - last) * rate;
       last = now;
-      setElapsedMs((prev) => Math.min(prev + dt, actTimeline.totalMs));
+      setGlobalMs((prev) => Math.min(prev + dt, runTimeline.totalMs));
       raf = window.requestAnimationFrame(tick);
     };
     raf = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(raf);
-  }, [playing, rate, replayReady, actTimeline]);
+  }, [playing, rate, replayReady, runTimeline.totalMs]);
 
-  // Auto-advance to the next act when this one runs out (and we're idle at
-  // the tail). Brief buffer so the last node's stack has time to fade.
+  // Keyboard scrub — global-ms anchored: ArrowRight jumps to next entry's
+  // startMs (across acts at the seam), ArrowLeft to the previous entry.
   useEffect(() => {
-    if (!actTimeline) return;
-    if (elapsedMs < actTimeline.totalMs) return;
-    if (actIndex + 1 >= analysis.acts.length) return;
-    const t = window.setTimeout(() => setActIndex((i) => i + 1), 700);
-    return () => window.clearTimeout(t);
-  }, [elapsedMs, actTimeline, actIndex, analysis.acts.length]);
-
-  // Keyboard scrub — ms-anchored: ArrowRight jumps to next entry's startMs,
-  // ArrowLeft to the previous entry's startMs.
-  useEffect(() => {
-    if (!actTimeline) return;
+    if (runTimeline.totalMs <= 0) return;
     function onKey(event: KeyboardEvent) {
       if (event.target instanceof HTMLElement) {
         const tag = event.target.tagName;
@@ -397,29 +466,35 @@ export function HistoryCourseShell({
       } else if (event.key === "ArrowRight") {
         event.preventDefault();
         setPlaying(false);
-        const cur = stepFromElapsed(actTimeline!, elapsedMs);
-        const nextEntry = actTimeline!.entries[cur]; // 0-based: entries[cur] is the *next* step
-        if (nextEntry) setElapsedMs(nextEntry.startMs);
+        setGlobalMs((cur) => nextStepGlobalMs(runTimeline, cur));
       } else if (event.key === "ArrowLeft") {
         event.preventDefault();
         setPlaying(false);
-        const cur = stepFromElapsed(actTimeline!, elapsedMs);
-        const prev = actTimeline!.entries[Math.max(0, cur - 2)];
-        if (prev) setElapsedMs(prev.startMs);
-        else setElapsedMs(0);
+        setGlobalMs((cur) => prevStepGlobalMs(runTimeline, cur));
       }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [actTimeline, elapsedMs]);
+  }, [runTimeline]);
 
-  const onSelectAct = useCallback((idx: number) => {
-    setActIndex(idx);
-    setPlaying(true);
-  }, []);
+  const onSelectAct = useCallback(
+    (idx: number) => {
+      setGlobalMs(globalMsForStep(runTimeline, idx, 1));
+      setPlaying(true);
+    },
+    [runTimeline],
+  );
+
+  const onJumpToStep = useCallback(
+    (targetActIndex: number, targetStep: number) => {
+      setGlobalMs(globalMsForStep(runTimeline, targetActIndex, targetStep));
+      setPlaying(true);
+    },
+    [runTimeline],
+  );
 
   const onRestart = useCallback(() => {
-    setElapsedMs(0);
+    setGlobalMs(0);
     setIntroToken((t) => t + 1);
     setIntroActive(true);
     setReplayReady(false);
@@ -445,10 +520,11 @@ export function HistoryCourseShell({
           act={act}
           actIndex={actIndex}
           step={step}
-          elapsedMs={elapsedMs}
+          actLocalMs={actLocalMs}
           actTimeline={actTimeline}
-          cumulativeElapsedMs={(runTimeline.actOffsets[actIndex] ?? 0) + elapsedMs}
-          totalRunMs={runTimeline.totalMs}
+          runTimeline={runTimeline}
+          sanitizedActs={sanitizedActs}
+          globalMs={globalMs}
           totalActs={analysis.acts.length}
           introToken={introToken}
           introActive={introActive}
@@ -460,10 +536,11 @@ export function HistoryCourseShell({
           onTogglePlay={() => setPlaying((v) => !v)}
           onRestart={onRestart}
           onChangeRate={setRate}
-          onScrubMs={(value) => {
+          onScrubGlobalMs={(value) => {
             setPlaying(false);
-            setElapsedMs(Math.max(0, Math.min(value, actTimeline?.totalMs ?? 0)));
+            setGlobalMs(Math.max(0, Math.min(value, runTimeline.totalMs)));
           }}
+          onJumpToStep={onJumpToStep}
           onOpenStats={() => setStatsOpen(true)}
           onOpenDeck={() => setDeckOpen(true)}
           onOpenInfo={() => setInfoOpen((v) => !v)}
@@ -522,10 +599,11 @@ function Stage({
   act,
   actIndex,
   step,
-  elapsedMs,
+  actLocalMs,
   actTimeline,
-  cumulativeElapsedMs,
-  totalRunMs,
+  runTimeline,
+  sanitizedActs,
+  globalMs,
   totalActs,
   introToken,
   introActive,
@@ -537,7 +615,8 @@ function Stage({
   onTogglePlay,
   onRestart,
   onChangeRate,
-  onScrubMs,
+  onScrubGlobalMs,
+  onJumpToStep,
   onOpenStats,
   onOpenDeck,
   onOpenInfo,
@@ -546,10 +625,11 @@ function Stage({
   act: Act;
   actIndex: number;
   step: number;
-  elapsedMs: number;
+  actLocalMs: number;
   actTimeline: ActTimeline | null;
-  cumulativeElapsedMs: number;
-  totalRunMs: number;
+  runTimeline: RunTimeline;
+  sanitizedActs: Act[];
+  globalMs: number;
   totalActs: number;
   introToken: number;
   introActive: boolean;
@@ -561,7 +641,8 @@ function Stage({
   onTogglePlay: () => void;
   onRestart: () => void;
   onChangeRate: (rate: Rate) => void;
-  onScrubMs: (ms: number) => void;
+  onScrubGlobalMs: (ms: number) => void;
+  onJumpToStep: (actIndex: number, step: number) => void;
   onOpenStats: () => void;
   onOpenDeck: () => void;
   onOpenInfo: () => void;
@@ -622,8 +703,8 @@ function Stage({
         run={run}
         act={act}
         state={topbarState}
-        cumulativeElapsedMs={cumulativeElapsedMs}
-        totalRunMs={totalRunMs}
+        cumulativeElapsedMs={globalMs}
+        totalRunMs={runTimeline.totalMs}
         hidingRelicIds={hidingRelicIds}
         onOpenStats={onOpenStats}
         onOpenDeck={onOpenDeck}
@@ -642,10 +723,7 @@ function Stage({
           <SeededMapView
             act={act}
             step={step}
-            onSeekToStep={(s) => {
-              const e = actTimeline?.entries[s - 1];
-              if (e) onScrubMs(e.startMs);
-            }}
+            onSeekToStep={(s) => onJumpToStep(actIndex, s)}
           />
         </div>
       </div>
@@ -659,21 +737,24 @@ function Stage({
         items={stackItems}
         nodeLocalMs={Math.max(
           0,
-          elapsedMs - (actTimeline?.entries[step - 1]?.startMs ?? 0) - stackStartOffsetMs(),
+          actLocalMs - (actTimeline?.entries[step - 1]?.startMs ?? 0) - stackStartOffsetMs(),
         )}
       />
 
       <PlaybackBar
+        run={run}
+        runTimeline={runTimeline}
+        sanitizedActs={sanitizedActs}
+        actIndex={actIndex}
         step={step}
-        stepCount={act.history.length}
-        elapsedMs={elapsedMs}
-        actTotalMs={actTimeline?.totalMs ?? 0}
+        globalMs={globalMs}
         playing={playing}
         rate={rate}
         onTogglePlay={onTogglePlay}
         onRestart={onRestart}
         onChangeRate={onChangeRate}
-        onScrubMs={onScrubMs}
+        onScrubGlobalMs={onScrubGlobalMs}
+        onJumpToStep={onJumpToStep}
       />
     </div>
   );
@@ -757,39 +838,69 @@ function ActIntro({
 }
 
 function PlaybackBar({
+  run,
+  runTimeline,
+  sanitizedActs,
+  actIndex,
   step,
-  stepCount,
-  elapsedMs,
-  actTotalMs,
+  globalMs,
   playing,
   rate,
   onTogglePlay,
   onRestart,
   onChangeRate,
-  onScrubMs,
+  onScrubGlobalMs,
+  onJumpToStep,
 }: {
+  run: ReplayRun;
+  runTimeline: RunTimeline;
+  sanitizedActs: Act[];
+  actIndex: number;
   step: number;
-  stepCount: number;
-  elapsedMs: number;
-  actTotalMs: number;
+  globalMs: number;
   playing: boolean;
   rate: Rate;
   onTogglePlay: () => void;
   onRestart: () => void;
   onChangeRate: (rate: Rate) => void;
-  onScrubMs: (ms: number) => void;
+  onScrubGlobalMs: (ms: number) => void;
+  onJumpToStep: (actIndex: number, step: number) => void;
 }) {
-  const safeMax = Math.max(1, actTotalMs);
+  const safeMax = Math.max(1, runTimeline.totalMs);
+  const character = run.players[0]?.character ?? "CHARACTER.IRONCLAD";
+  const markerSrc = characterMarkerSrc(character);
+  const totalStepCount = sanitizedActs.reduce(
+    (acc, a) => acc + a.history.length,
+    0,
+  );
+  const completedStepCount = sanitizedActs
+    .slice(0, actIndex)
+    .reduce((acc, a) => acc + a.history.length, 0) + step;
+
   return (
-    <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col gap-2 bg-gradient-to-t from-black/85 to-black/0 px-4 pb-3 pt-8 text-zinc-100">
+    <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col gap-1.5 bg-gradient-to-t from-black/85 to-black/0 px-4 pb-3 pt-3 text-zinc-100">
+      <div className="flex flex-col gap-1.5">
+        {sanitizedActs.map((rowAct, rowIdx) => (
+          <NodeRow
+            key={`${rowAct.actId}-${rowAct.actIndex}`}
+            act={rowAct}
+            rowIndex={rowIdx}
+            currentActIndex={actIndex}
+            currentStep={step}
+            markerSrc={markerSrc}
+            onClickNode={onJumpToStep}
+          />
+        ))}
+      </div>
       <input
         type="range"
         min={0}
         max={safeMax}
         step={50}
-        value={Math.min(elapsedMs, safeMax)}
-        onChange={(event) => onScrubMs(Number(event.target.value))}
+        value={Math.min(globalMs, safeMax)}
+        onChange={(event) => onScrubGlobalMs(Number(event.target.value))}
         className="w-full accent-amber-300"
+        aria-label="재생 위치"
       />
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-2">
@@ -810,7 +921,7 @@ function PlaybackBar({
           </button>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="text-zinc-400">{step}/{stepCount}</span>
+          <span className="text-zinc-400">{completedStepCount}/{totalStepCount}</span>
           <div className="ml-2 inline-flex overflow-hidden rounded-md border border-white/15 bg-black/30">
             {PLAYBACK_RATES.map((r) => (
               <button
@@ -830,6 +941,75 @@ function PlaybackBar({
             ))}
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function NodeRow({
+  act,
+  rowIndex,
+  currentActIndex,
+  currentStep,
+  markerSrc,
+  onClickNode,
+}: {
+  act: Act;
+  rowIndex: number;
+  currentActIndex: number;
+  currentStep: number;
+  markerSrc: string;
+  onClickNode: (actIndex: number, step: number) => void;
+}) {
+  const isCurrentAct = rowIndex === currentActIndex;
+  return (
+    <div className="flex items-center gap-1.5 text-[10px] text-zinc-500">
+      <span className="w-7 shrink-0 text-right tabular-nums">
+        {rowIndex + 1}막
+      </span>
+      <div className="relative flex flex-1 items-center gap-[2px] rounded bg-black/30 px-1 py-0.5 ring-1 ring-white/5">
+        {act.history.map((entry, idx) => {
+          const stepNum = idx + 1;
+          const isCurrent = isCurrentAct && stepNum === currentStep;
+          const isPast = isCurrentAct
+            ? stepNum < currentStep
+            : rowIndex < currentActIndex;
+          return (
+            <button
+              key={`${rowIndex}-${stepNum}`}
+              type="button"
+              onClick={() => onClickNode(rowIndex, stepNum)}
+              className={cn(
+                "group relative flex h-5 min-w-0 flex-1 items-center justify-center transition",
+                isPast ? "opacity-100" : isCurrent ? "opacity-100" : "opacity-55 hover:opacity-100",
+              )}
+              aria-label={`${rowIndex + 1}막 ${stepNum}층`}
+              aria-current={isCurrent ? "true" : undefined}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={nodeSpriteSrc(entry)}
+                alt=""
+                draggable={false}
+                className="h-4 w-4 select-none object-contain transition group-hover:scale-110"
+              />
+              {isCurrent && (
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -top-3 left-1/2 z-10 -translate-x-1/2"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={markerSrc}
+                    alt=""
+                    draggable={false}
+                    className="h-5 w-5 select-none object-contain drop-shadow-[0_0_4px_rgba(0,0,0,0.7)]"
+                  />
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
