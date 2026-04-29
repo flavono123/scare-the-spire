@@ -45,6 +45,15 @@ const ACT_INTRO_HOLD_MS = 1500;
 const ACT_INTRO_FADE_OUT_MS = 500;
 const ACT_INTRO_TOTAL_MS = ACT_INTRO_FADE_IN_MS + ACT_INTRO_HOLD_MS + ACT_INTRO_FADE_OUT_MS;
 
+// Each act's intro is a moment on the run timeline, just before the
+// ancient (the act's first node). Natural progression sweeps through
+// the buffer between acts and lands inside this window; jumping into
+// an arbitrary mid-act position lands outside it. The "1회만" feel
+// drops out automatically — the window only re-fires when globalMs
+// leaves and re-enters.
+const INTRO_WINDOW_OFFSET_MS = 200; // before actOffset
+const INTRO_WINDOW_RADIUS_MS = 250;
+
 function actIntroNumber(index: number) {
   return ["1막", "2막", "3막", "4막"][index] ?? `${index + 1}막`;
 }
@@ -374,16 +383,28 @@ export function HistoryCourseShell({
   const [introToken, setIntroToken] = useState(0);
   const [introActive, setIntroActive] = useState(false);
   const [replayReady, setReplayReady] = useState(false);
-  // Per-act intro is a one-shot announcement that lives at a single
-  // moment on the timeline (just before that act's ancient). Once an
-  // act has played its intro this session, jumping back into it must
-  // NOT replay it. Restart wipes the set so the user sees them again.
-  const introPlayedRef = useRef<Set<number>>(new Set());
+  // Per-act window-entry tracker. wasInIntroWindowRef[i] = true while
+  // globalMs is inside act i's intro window; we only fire on the
+  // false→true edge. Jumping inside the window fires; jumping outside
+  // it (forward or backward) does not.
+  const wasInIntroWindowRef = useRef<boolean[]>([]);
 
   const { actIndex, actLocalMs } = useMemo(
     () => actPositionFromGlobalMs(runTimeline, globalMs),
     [runTimeline, globalMs],
   );
+  const introActIndex = useMemo(() => {
+    for (let i = 0; i < runTimeline.acts.length; i++) {
+      const center =
+        (runTimeline.actOffsets[i] ?? 0) - INTRO_WINDOW_OFFSET_MS;
+      if (Math.abs(globalMs - center) < INTRO_WINDOW_RADIUS_MS) return i;
+    }
+    return null;
+  }, [globalMs, runTimeline]);
+  const introAct =
+    introActIndex !== null
+      ? sanitizedActs[introActIndex] ?? null
+      : null;
 
   const act = sanitizedActs[actIndex] ?? null;
   const actTimeline: ActTimeline | null =
@@ -397,24 +418,29 @@ export function HistoryCourseShell({
     [analysis, actIndex, step],
   );
 
-  // Fire each act's intro at most once. Mounting (actIndex=0) and
-  // crossing into a new act both flow through this effect; a Set in a
-  // ref blocks repeats across both natural progression and seek-jumps.
+  // Fire intros on window entry (false→true edge per act). Natural
+  // progression sweeps through; large jumps land inside or outside the
+  // window with the same rule. No per-session de-dup — leaving and
+  // re-entering refires.
   useEffect(() => {
-    if (introPlayedRef.current.has(actIndex)) {
-      // Already shown for this act — make sure replay is unblocked.
-      if (introActive) setIntroActive(false);
-      if (!replayReady) setReplayReady(true);
-      return;
+    const acts = runTimeline.acts;
+    if (wasInIntroWindowRef.current.length !== acts.length) {
+      wasInIntroWindowRef.current = acts.map(() => false);
     }
-    introPlayedRef.current.add(actIndex);
-    setIntroToken((t) => t + 1);
-    setIntroActive(true);
-    setReplayReady(false);
-    // We intentionally read introActive/replayReady inside the body but
-    // depend only on actIndex so this effect runs once per act change.
+    for (let i = 0; i < acts.length; i++) {
+      const center =
+        (runTimeline.actOffsets[i] ?? 0) - INTRO_WINDOW_OFFSET_MS;
+      const isIn = Math.abs(globalMs - center) < INTRO_WINDOW_RADIUS_MS;
+      const wasIn = wasInIntroWindowRef.current[i] ?? false;
+      if (isIn && !wasIn) {
+        setIntroToken((t) => t + 1);
+        setIntroActive(true);
+        setReplayReady(false);
+      }
+      wasInIntroWindowRef.current[i] = isIn;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actIndex]);
+  }, [globalMs, runTimeline]);
 
   // Auto-close the intro after its fade cycle.
   useEffect(() => {
@@ -541,18 +567,22 @@ export function HistoryCourseShell({
   );
 
   const onRestart = useCallback(() => {
-    introPlayedRef.current = new Set();
+    // Wipe window flags so re-entering act 0's window from "already
+    // there" still fires (setGlobalMs(0)→0 is a no-op for state, so we
+    // also set the intro state explicitly here).
+    wasInIntroWindowRef.current = runTimeline.acts.map(() => false);
     setGlobalMs(0);
     setPlaying(true);
-    // The actIndex effect above will (re)fire and own intro state from
-    // here — no need to setIntroActive/Token directly. globalMs=0 keeps
-    // actIndex at 0; if it was already 0, mounting-style replay is fine
-    // because the Set is empty.
     setIntroToken((t) => t + 1);
     setIntroActive(true);
     setReplayReady(false);
-    introPlayedRef.current.add(0);
-  }, []);
+    // Mark act 0 as 'in window' so the auto-effect below doesn't double
+    // fire on the next render (when it sees globalMs=0 inside act 0's
+    // window with wasIn still false).
+    if (wasInIntroWindowRef.current.length > 0) {
+      wasInIntroWindowRef.current[0] = true;
+    }
+  }, [runTimeline]);
 
   if (!act) {
     return (
@@ -580,6 +610,8 @@ export function HistoryCourseShell({
           totalActs={analysis.acts.length}
           introToken={introToken}
           introActive={introActive}
+          introActIndex={introActIndex}
+          introAct={introAct}
           playing={playing}
           rate={rate}
           stackItems={stepStackItems}
@@ -659,6 +691,8 @@ function Stage({
   totalActs,
   introToken,
   introActive,
+  introActIndex,
+  introAct,
   playing,
   rate,
   stackItems,
@@ -685,6 +719,8 @@ function Stage({
   totalActs: number;
   introToken: number;
   introActive: boolean;
+  introActIndex: number | null;
+  introAct: Act | null;
   playing: boolean;
   rate: Rate;
   stackItems: NodeStackItem[];
@@ -782,8 +818,13 @@ function Stage({
 
       <NodePulse step={step} />
 
-      {introActive && (
-        <ActIntro key={introToken} actIndex={actIndex} act={act} totalActs={totalActs} />
+      {introActive && introActIndex !== null && introAct && (
+        <ActIntro
+          key={introToken}
+          actIndex={introActIndex}
+          act={introAct}
+          totalActs={totalActs}
+        />
       )}
 
       <NodeActionStack

@@ -142,12 +142,17 @@ test("Neow drops class starters but keeps everything else", async ({ page }) => 
 
   const slider = page.locator('input[type="range"]').first();
   const max = await slider.evaluate((el: HTMLInputElement) => Number(el.max));
-  // Step 1's stack lives at the start of act 0; slider value 0 .. ~6×2500ms.
+  // Step 1's stack lives at the start of act 0. We sweep ahead of the act
+  // intro window (globalMs ≥ 500ms) so seeking back to the ancient
+  // doesn't retrigger the act-1 announcement and gate the stack out.
+  // Values must align with the slider's step=50.
+  const SWEEP_START_MS = 500;
   const nodeWindowMs = 6 * 2500;
   const samples = 30;
   const seen = new Set<string>();
   for (let i = 0; i < samples; i++) {
-    const ms = Math.min(max, Math.round((i * nodeWindowMs) / samples));
+    const raw = SWEEP_START_MS + Math.round((i * (nodeWindowMs - SWEEP_START_MS)) / samples);
+    const ms = Math.min(max, Math.round(raw / 50) * 50);
     await slider.fill(String(ms));
     await page.waitForTimeout(40);
     const labels = await page
