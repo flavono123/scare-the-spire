@@ -72,46 +72,25 @@ function sanitizeNeowEntry(
   if (!isNeow) return entry;
 
   const player = run.players[0];
-  const starterCounts = new Map<string, number>();
-  for (const c of player?.deck ?? []) {
-    if ((c.floor_added_to_deck ?? 1) <= 1) {
-      starterCounts.set(c.id, (starterCounts.get(c.id) ?? 0) + 1);
-    }
-  }
-  const gainedCounts = new Map<string, number>();
-  for (const c of entry.cards_gained ?? []) {
-    if (c.id) gainedCounts.set(c.id, (gainedCounts.get(c.id) ?? 0) + 1);
-  }
 
-  // Detect pollution: any card whose gained count is *less than* its
-  // starter count is a clear signal that the export dumped class
-  // starters into cards_gained. When that's the case, treat the entire
-  // Neow cards_gained list as polluted and drop everything (including
-  // unique starters like DECAY/REGRET that have equal gained=starter
-  // counts and would otherwise pass).
-  const hasPollution = (entry.cards_gained ?? []).some((c) => {
+  // Drop class starter cards (rarity="기본" — STRIKE_X / DEFEND_X). Every
+  // other card stays — Curse (DECAY/REGRET as Neow's Bones penalty),
+  // Common (multi-card Neow options), Uncommon (Neow's "rare card"
+  // option), etc. all read as legitimate stack items.
+  const filteredCardsGained = (entry.cards_gained ?? []).filter((c) => {
     if (!c.id) return false;
-    const gained = gainedCounts.get(c.id) ?? 0;
-    const starter = starterCounts.get(c.id) ?? 0;
-    return gained < starter;
+    const card = cardsById[c.id];
+    return card?.rarity !== "기본";
   });
 
-  const filteredCardsGained = hasPollution
-    ? []
-    : (entry.cards_gained ?? []).filter((c) => {
-        if (!c.id) return false;
-        const card = cardsById[c.id];
-        if (card?.rarity === "기본") return false;
-        return true;
-      });
-
+  // Drop the character's starter relic (always player.relics[0]). Every
+  // other picked relic stays — Neow's Bones, ascension bonus relics, and
+  // the actual Neow gift all render as stack items in order.
   const charStarterRelicId = player?.relics[0]?.id;
-  const pickedRelics = (entry.relic_choices ?? []).filter((c) => c.picked && c.id);
-  const cappedRelics = pickedRelics
-    .filter((c) => c.id !== charStarterRelicId)
-    .slice(0, 1);
-  const unpickedRelics = (entry.relic_choices ?? []).filter((c) => !c.picked);
-  const filteredRelicChoices = [...cappedRelics, ...unpickedRelics];
+  const filteredRelicChoices = (entry.relic_choices ?? []).filter((c) => {
+    if (!c.picked) return true; // unpicked passes through (display ignores)
+    return c.id !== charStarterRelicId;
+  });
 
   return {
     ...entry,

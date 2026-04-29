@@ -118,10 +118,14 @@ test("slot machine — next item visible at pose +1", async ({ page }) => {
   expect(poseOneOpacity).toBeGreaterThan(0.2);
 });
 
-test("Neow strips starter pollution to ≤1 card + ≤1 relic", async ({ page }) => {
-  // APDC export dump bleeds class starters into Neow's cards_gained /
-  // relic_choices. The shell sanitizes the entry before feeding both the
-  // stack and the timeline so the user sees a sensible Neow node.
+test("Neow drops class starters but keeps everything else", async ({ page }) => {
+  // APDC's Neow has STRIKE_NECRO/DEFEND_NECRO wrongly in cards_gained
+  // and BOUND_PHYLACTERY (char starter relic) wrongly in relic_choices.
+  // Sanitization keeps everything else: DECAY (curse picked up as Neow's
+  // Bones penalty) + 5 picked relics (Bones, Capsule, Coin, Dummy,
+  // Humidifier) = 6 stack items in order. NodeActionStack unmounts items
+  // outside pose ±1 so we observe by scrubbing the playback bar across
+  // the node's full window and collecting each unique item label.
   test.setTimeout(60000);
   await page.setViewportSize({ width: 1600, height: 900 });
   const res = await page.goto(`${BASE}/history-course/APDCAB0SMN`);
@@ -132,14 +136,36 @@ test("Neow strips starter pollution to ≤1 card + ≤1 relic", async ({ page })
     .locator('[data-testid="node-stack-item"]')
     .first()
     .waitFor({ state: "attached", timeout: 8000 });
+  // Pause then sweep the slider to walk every item into pose=0.
   await page.keyboard.press("Space").catch(() => {});
   await page.waitForTimeout(120);
 
-  const count = await page.locator('[data-testid="node-stack-item"]').count();
-  // After sanitization: 0 cards (pollution detected) + 1 relic = 1 item.
-  // Allow up to 2 in case the heuristic ever loosens for valid Neow gains.
-  expect(count).toBeLessThanOrEqual(2);
-  expect(count).toBeGreaterThanOrEqual(1);
+  const slider = page.locator('input[type="range"]').first();
+  const max = await slider.evaluate((el: HTMLInputElement) => Number(el.max));
+  // Step 1's stack lives at the start of act 0; slider value 0 .. ~6×2500ms.
+  const nodeWindowMs = 6 * 2500;
+  const samples = 30;
+  const seen = new Set<string>();
+  for (let i = 0; i < samples; i++) {
+    const ms = Math.min(max, Math.round((i * nodeWindowMs) / samples));
+    await slider.fill(String(ms));
+    await page.waitForTimeout(40);
+    const labels = await page
+      .locator('[data-testid="node-stack-item"][data-pose="0"]')
+      .evaluateAll((els) =>
+        els
+          .map((el) => el.querySelector("p")?.textContent?.trim() ?? "")
+          .filter(Boolean),
+      );
+    for (const l of labels) seen.add(l);
+  }
+  await page.screenshot({
+    path: path.join(OUT_DIR, "12-apdc-neow-final.png"),
+    fullPage: false,
+  });
+  // 6 unique labels expected: 1 card (DECAY) + 5 relics. Allow ≥4 in case
+  // the slider snaps coarsely on a slow CI.
+  expect(seen.size).toBeGreaterThanOrEqual(4);
 });
 
 test("pause freezes the stack mid-phase", async ({ page }) => {
