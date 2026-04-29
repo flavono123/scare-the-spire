@@ -63,10 +63,22 @@ function characterMarkerSrc(character: string): string {
   return `/images/sts2/map/markers/map_marker_${safe}.png`;
 }
 
+function bossKeyFromEntry(entry: ReplayHistoryEntry): string | null {
+  const id = entry.rooms?.[0]?.model_id;
+  if (!id) return null;
+  const match = id.match(/^ENCOUNTER\.(.+_BOSS)$/);
+  return match ? match[1] : null;
+}
+
 function nodeSpriteSrc(entry: ReplayHistoryEntry): string {
   const modelId = entry.rooms?.[0]?.model_id ?? null;
   if (modelId === "EVENT.NEOW") return "/images/sts2/run-history/neow.png";
   if (modelId === "ROOM.ANCIENT") return "/images/sts2/run-history/ancient.png";
+  if (entry.map_point_type === "boss") {
+    const bossKey = bossKeyFromEntry(entry);
+    if (bossKey) return `/images/sts2/bosses/${bossKey.toLowerCase()}.webp`;
+    return "/images/sts2/run-history/monster.png";
+  }
   switch (entry.map_point_type) {
     case "ancient":
       return "/images/sts2/run-history/ancient.png";
@@ -80,8 +92,6 @@ function nodeSpriteSrc(entry: ReplayHistoryEntry): string {
       return "/images/sts2/run-history/treasure.png";
     case "shop":
       return "/images/sts2/run-history/shop.png";
-    case "boss":
-      return "/images/sts2/run-history/monster.png";
     case "unknown":
       return "/images/sts2/run-history/event.png";
     default:
@@ -488,7 +498,7 @@ export function HistoryCourseShell({
   const onJumpToStep = useCallback(
     (targetActIndex: number, targetStep: number) => {
       setGlobalMs(globalMsForStep(runTimeline, targetActIndex, targetStep));
-      setPlaying(true);
+      setPlaying(false);
     },
     [runTimeline],
   );
@@ -869,6 +879,7 @@ function PlaybackBar({
   const safeMax = Math.max(1, runTimeline.totalMs);
   const character = run.players[0]?.character ?? "CHARACTER.IRONCLAD";
   const markerSrc = characterMarkerSrc(character);
+  const progressPct = (Math.min(globalMs, safeMax) / safeMax) * 100;
   const totalStepCount = sanitizedActs.reduce(
     (acc, a) => acc + a.history.length,
     0,
@@ -878,23 +889,17 @@ function PlaybackBar({
     .reduce((acc, a) => acc + a.history.length, 0) + step;
 
   return (
-    <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col gap-1.5 bg-gradient-to-t from-black/85 to-black/0 px-4 pb-3 pt-8 text-zinc-100">
-      <NodeRow
+    <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col gap-2 bg-gradient-to-t from-black/85 to-black/0 px-4 pb-3 pt-10 text-zinc-100">
+      <Track
+        runTimeline={runTimeline}
         sanitizedActs={sanitizedActs}
         currentActIndex={actIndex}
         currentStep={step}
+        globalMs={globalMs}
+        progressPct={progressPct}
         markerSrc={markerSrc}
-        onClickNode={onJumpToStep}
-      />
-      <input
-        type="range"
-        min={0}
-        max={safeMax}
-        step={50}
-        value={Math.min(globalMs, safeMax)}
-        onChange={(event) => onScrubGlobalMs(Number(event.target.value))}
-        className="w-full accent-amber-300"
-        aria-label="재생 위치"
+        onScrubGlobalMs={onScrubGlobalMs}
+        onJumpToStep={onJumpToStep}
       />
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-2">
@@ -940,80 +945,116 @@ function PlaybackBar({
   );
 }
 
-function NodeRow({
+/** Time-mapped track. Each node is positioned at `entry.startMs / totalMs`
+ *  so the character marker (acting as the slider thumb) lines up with the
+ *  current node's stack-start. Drag scrubbing and keyboard nav still flow
+ *  through a transparent `<input type="range">` underneath. */
+function Track({
+  runTimeline,
   sanitizedActs,
   currentActIndex,
   currentStep,
+  globalMs,
+  progressPct,
   markerSrc,
-  onClickNode,
+  onScrubGlobalMs,
+  onJumpToStep,
 }: {
+  runTimeline: RunTimeline;
   sanitizedActs: Act[];
   currentActIndex: number;
   currentStep: number;
+  globalMs: number;
+  progressPct: number;
   markerSrc: string;
-  onClickNode: (actIndex: number, step: number) => void;
+  onScrubGlobalMs: (ms: number) => void;
+  onJumpToStep: (actIndex: number, step: number) => void;
 }) {
-  // Flatten every act's history into a single horizontal row. Act
-  // boundaries are visible as a small gap. Sized so a 50-node clear fits
-  // ≈1600px stage at h-8 sprites; below that the row will need modular
-  // compaction (planned: show every Nth label only).
+  const safeMax = Math.max(1, runTimeline.totalMs);
+
   return (
-    <div className="relative flex items-stretch gap-2 px-1">
-      {sanitizedActs.map((rowAct, rowIdx) => (
-        <div
-          key={`${rowAct.actId}-${rowAct.actIndex}`}
-          className="relative flex min-w-0 flex-1 items-center gap-[2px] rounded bg-black/35 px-1 py-1 ring-1 ring-white/5"
-          aria-label={`${rowIdx + 1}막`}
-        >
-          {rowAct.history.map((entry, idx) => {
-            const stepNum = idx + 1;
-            const isCurrent =
-              rowIdx === currentActIndex && stepNum === currentStep;
-            const isPast =
-              rowIdx < currentActIndex ||
-              (rowIdx === currentActIndex && stepNum < currentStep);
-            return (
-              <button
-                key={`${rowIdx}-${stepNum}`}
-                type="button"
-                onClick={() => onClickNode(rowIdx, stepNum)}
-                className={cn(
-                  "group relative flex h-8 min-w-0 flex-1 items-center justify-center transition",
-                  isCurrent
+    <div className="relative h-10 select-none">
+      {/* Track baseline */}
+      <div className="pointer-events-none absolute inset-x-0 top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-white/15" />
+      {/* Progress fill up to the character */}
+      <div
+        className="pointer-events-none absolute left-0 top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-amber-300/70"
+        style={{ width: `${progressPct}%` }}
+      />
+
+      {/* Hidden range input — handles drag scrub + keyboard. Sits below
+       *  the node buttons so node clicks still win, but covers the empty
+       *  track gaps for seek-by-drag. */}
+      <input
+        type="range"
+        min={0}
+        max={safeMax}
+        step={50}
+        value={Math.min(globalMs, safeMax)}
+        onChange={(event) => onScrubGlobalMs(Number(event.target.value))}
+        aria-label="재생 위치"
+        className="absolute inset-0 z-0 h-full w-full cursor-pointer opacity-0"
+      />
+
+      {/* Nodes — absolute-positioned at startMs%. Node visual start (left
+       *  edge) lines up with the global ms axis. */}
+      {sanitizedActs.map((rowAct, rowIdx) => {
+        const offset = runTimeline.actOffsets[rowIdx] ?? 0;
+        const actEntries = runTimeline.acts[rowIdx]?.entries ?? [];
+        return rowAct.history.map((entry, idx) => {
+          const stepNum = idx + 1;
+          const startMs = offset + (actEntries[idx]?.startMs ?? 0);
+          const leftPct = (startMs / safeMax) * 100;
+          const isCurrent =
+            rowIdx === currentActIndex && stepNum === currentStep;
+          const isPast =
+            rowIdx < currentActIndex ||
+            (rowIdx === currentActIndex && stepNum < currentStep);
+          return (
+            <button
+              key={`${rowIdx}-${stepNum}`}
+              type="button"
+              onClick={() => onJumpToStep(rowIdx, stepNum)}
+              className={cn(
+                "group absolute top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center transition",
+                isPast
+                  ? "opacity-95"
+                  : isCurrent
                     ? "opacity-100"
-                    : isPast
-                      ? "opacity-90"
-                      : "opacity-55 hover:opacity-100",
-                )}
-                aria-label={`${rowIdx + 1}막 ${stepNum}층`}
-                aria-current={isCurrent ? "true" : undefined}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={nodeSpriteSrc(entry)}
-                  alt=""
-                  draggable={false}
-                  className="h-7 w-7 select-none object-contain transition group-hover:scale-110"
-                />
-                {isCurrent && (
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute -top-7 left-1/2 z-10 -translate-x-1/2"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={markerSrc}
-                      alt=""
-                      draggable={false}
-                      className="h-8 w-8 select-none object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]"
-                    />
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      ))}
+                    : "opacity-70 hover:opacity-100",
+              )}
+              style={{ left: `${leftPct}%` }}
+              aria-label={`${rowIdx + 1}막 ${stepNum}층`}
+              aria-current={isCurrent ? "true" : undefined}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={nodeSpriteSrc(entry)}
+                alt=""
+                draggable={false}
+                className="h-6 w-6 select-none object-contain transition-transform duration-150 group-hover:scale-150"
+              />
+            </button>
+          );
+        });
+      })}
+
+      {/* Character marker — replaces the slider thumb. Positioned exactly
+       *  at globalMs / totalMs so the visual progress and the current
+       *  node's stack-start align vertically. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute top-1/2 z-20 -translate-x-1/2 -translate-y-1/2"
+        style={{ left: `${progressPct}%` }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={markerSrc}
+          alt=""
+          draggable={false}
+          className="h-9 w-9 select-none object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]"
+        />
+      </span>
     </div>
   );
 }
