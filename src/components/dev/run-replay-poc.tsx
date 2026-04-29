@@ -922,6 +922,8 @@ export function SeededMapView({
   act,
   step,
   onSeekToStep,
+  transitProgress,
+  transitEdgeIds,
 }: {
   act: ReplayActAnalysis;
   step: number;
@@ -929,6 +931,12 @@ export function SeededMapView({
    * the step number to rewind playback to. Future nodes stay non-interactive
    * because the player can't anticipate the path. */
   onSeekToStep?: (step: number) => void;
+  /** Phase 4 — fraction of the current node's transit window that has elapsed
+   *  (0..1). Path ticks for `transitEdgeIds` paint in progressively as this
+   *  rises; reaches 1 just before the stack starts. Omitting both falls back
+   *  to instant-fill behaviour (PoC). */
+  transitProgress?: number;
+  transitEdgeIds?: ReadonlySet<string>;
 }) {
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const meta = actMapMeta(act.actId);
@@ -988,30 +996,45 @@ export function SeededMapView({
           const to = nodeMap.get(edge.to);
           if (!from || !to) return [];
           const visited = activeEdges.has(edge.id);
+          const isTransit = transitEdgeIds?.has(edge.id) ?? false;
+          const ticks = buildPathTicks(edge.id, from, to, act, layout);
+          const tickCount = Math.max(1, ticks.length);
+          const partialPaint =
+            isTransit &&
+            typeof transitProgress === "number" &&
+            transitProgress < 1;
 
-          return buildPathTicks(edge.id, from, to, act, layout).map((tick, index) => (
-            <div
-              key={`${edge.id}-${index}`}
-              className="absolute"
-              style={{
-                left: tick.left,
-                top: tick.top,
-                width: 16 * MAP_GAME_SCALE,
-                height: 16 * MAP_GAME_SCALE,
-                // Translate-only, no layout-affecting offsets. Avoid filter
-                // chains here — path ticks are tiny and there are
-                // hundreds of them, so a stacked drop-shadow per tick
-                // dominates paint/composite cost during scroll.
-                transform: `translate(-50%, -50%) rotate(${tick.rotation}rad) scale(${visited ? 1.2 : 1
-                  })`,
-                ...maskStyle(
-                  effectSrc("map_dot"),
-                  visited ? meta.traveledColor : meta.untraveledColor,
-                  visited ? 1 : 1,
-                ),
-              }}
-            />
-          ));
+          return ticks.map((tick, index) => {
+            // Trail painting — tick i (1..N) reveals when i/N <= progress.
+            // The +1 ensures the first tick lights up immediately as
+            // progress leaves 0, instead of waiting until 1/N elapsed.
+            const tickRevealed = partialPaint
+              ? (index + 1) / tickCount <= (transitProgress ?? 1)
+              : visited;
+            return (
+              <div
+                key={`${edge.id}-${index}`}
+                className="absolute"
+                style={{
+                  left: tick.left,
+                  top: tick.top,
+                  width: 16 * MAP_GAME_SCALE,
+                  height: 16 * MAP_GAME_SCALE,
+                  // Translate-only, no layout-affecting offsets. Avoid
+                  // filter chains here — path ticks are tiny and there
+                  // are hundreds of them, so a stacked drop-shadow per
+                  // tick dominates paint/composite cost during scroll.
+                  transform: `translate(-50%, -50%) rotate(${tick.rotation}rad) scale(${tickRevealed ? 1.2 : 1
+                    })`,
+                  ...maskStyle(
+                    effectSrc("map_dot"),
+                    tickRevealed ? meta.traveledColor : meta.untraveledColor,
+                    1,
+                  ),
+                }}
+              />
+            );
+          });
         })}
 
         {act.nodes.map((node) => {

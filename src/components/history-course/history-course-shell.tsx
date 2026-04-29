@@ -26,6 +26,7 @@ import {
   actPositionFromGlobalMs,
   buildRunTimeline,
   globalMsForStep,
+  NODE_BASE_MS,
   stackStartOffsetMs,
   stepFromElapsed,
   type ActTimeline,
@@ -820,6 +821,23 @@ function Stage({
   // node behind subsequent rows).
   const lastStepRef = useRef<number | null>(null);
 
+  // Phase 4 transit — leading NODE_BASE_MS of every node is the path-trail
+  // paint window. The shell snaps globalMs to actOffset on intro fire, so
+  // step 1 also sees a fresh transit (Neow drops in via row-0 → ancient
+  // edges).
+  const nodeLocalMsRaw = Math.max(
+    0,
+    actLocalMs - (actTimeline?.entries[step - 1]?.startMs ?? 0),
+  );
+  const transitProgress = Math.max(
+    0,
+    Math.min(1, nodeLocalMsRaw / NODE_BASE_MS),
+  );
+  const transitEdgeIds = useMemo(
+    () => new Set(act.candidateEdgeIdsByStep[step - 1] ?? []),
+    [act, step],
+  );
+
   const scrollToStep = useCallback(() => {
     const node = mapBoxRef.current;
     if (!node) return;
@@ -888,6 +906,8 @@ function Stage({
             act={act}
             step={step}
             onSeekToStep={(s) => onJumpToStep(actIndex, s)}
+            transitProgress={transitProgress}
+            transitEdgeIds={transitEdgeIds}
           />
         </div>
       </div>
