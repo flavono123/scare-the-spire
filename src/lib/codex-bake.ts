@@ -64,42 +64,50 @@ function splitBranches(s: string): string[] {
 // Render a template body — i.e. the text between { and }.
 // `body` is e.g. `Cards`, `Cards:diff()`, `Cards:choose(1):a|b`, or `` (self-ref `{}`).
 function renderBody(body: string, vars: Vars, selfName: string | null): string {
-  // Self-ref: `{}` resolves to the enclosing variable's value.
+  // Self-ref: `{}` resolves to the enclosing variable's value, or `X`
+  // when the runtime stack count isn't known at the data layer.
   if (body === "" && selfName) {
     const v = looksLike(selfName, vars);
-    return v !== undefined ? String(v) : `{${selfName}}`;
+    return v !== undefined ? String(v) : "X";
   }
 
-  // {Var.StringValue:cond:a|b}
+  // {Var.StringValue:cond:a|b} — `a` when Var is present and truthy. Without
+  // a value, prefer the false branch — that's the generic phrasing the
+  // game falls back to (e.g. "시작 카드를 고대의 형태로").
   const condMatch = body.match(/^(\w+)\.StringValue:cond:([\s\S]*)$/);
   if (condMatch) {
     const [, name, rest] = condMatch;
     const branches = splitBranches(rest);
     if (branches.length < 2) return `{${body}}`;
     const v = looksLike(name, vars);
-    if (v === undefined) return `{${body}}`;
+    if (v === undefined) return renderTemplate(branches[1] ?? "", vars, name);
     return renderTemplate(v ? branches[0] : branches[1], vars, name);
   }
 
-  // {Var:choose(N):a|b|...}
+  // {Var:choose(N):a|b|...} — v==1 picks the first branch, else the last.
+  // No value → first (singular) branch, mirroring the data-layer default
+  // of "one stack" on PowerVar/CardsVar.
   const chooseMatch = body.match(/^(\w+):choose\(([^)]+)\):([\s\S]*)$/);
   if (chooseMatch) {
     const [, name, , rest] = chooseMatch;
     const opts = splitBranches(rest);
     const v = looksLike(name, vars);
-    if (typeof v !== "number") return `{${body}}`;
+    if (typeof v !== "number") {
+      return renderTemplate(opts[0] ?? "", vars, name);
+    }
     const idx = v === 1 ? 0 : opts.length - 1;
     return renderTemplate(opts[idx] ?? opts[0] ?? "", vars, name);
   }
 
-  // {Var:plural:a|b}
+  // {Var:plural:a|b} — singular for v==1, plural otherwise. No value →
+  // singular.
   const pluralMatch = body.match(/^(\w+):plural:([\s\S]*)$/);
   if (pluralMatch) {
     const [, name, rest] = pluralMatch;
     const opts = splitBranches(rest);
     if (opts.length < 2) return `{${body}}`;
     const v = looksLike(name, vars);
-    if (typeof v !== "number") return `{${body}}`;
+    if (typeof v !== "number") return renderTemplate(opts[0], vars, name);
     return renderTemplate(v === 1 ? opts[0] : opts[1], vars, name);
   }
 
@@ -122,6 +130,29 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
         return String(v);
       default:
         return String(v);
+    }
+  }
+
+  // {Var.StringValue} — bare reference to a StringVar (no :cond:).
+  // Use the Korean placeholder if we have one; otherwise fall through to X.
+  const stringValueMatch = body.match(/^(\w+)\.StringValue$/);
+  if (stringValueMatch) {
+    const [, name] = stringValueMatch;
+    if (name in REFERENCE_PLACEHOLDERS) return REFERENCE_PLACEHOLDERS[name];
+    return "X";
+  }
+
+  // {Var:a|b|...} — generic two-branch fallback for BoolVar / IntVar
+  // shorthand (e.g. {OnPlayer:내 턴|대상의 턴}). Picks branch 0 when the
+  // value is truthy or absent, branch 1 when falsy.
+  const branchMatch = body.match(/^(\w+):([\s\S]*\|[\s\S]*)$/);
+  if (branchMatch) {
+    const [, name, rest] = branchMatch;
+    const opts = splitBranches(rest);
+    if (opts.length >= 2) {
+      const v = looksLike(name, vars);
+      if (v === undefined || v) return renderTemplate(opts[0], vars, name);
+      return renderTemplate(opts[1], vars, name);
     }
   }
 
