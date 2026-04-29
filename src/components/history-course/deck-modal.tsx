@@ -16,6 +16,36 @@ const TYPE_FILTERS = [
 ] as const;
 type TypeFilter = (typeof TYPE_FILTERS)[number]["key"];
 
+const RARITY_ORDER: Record<string, number> = {
+  기본: 0,
+  일반: 1,
+  고급: 2,
+  희귀: 3,
+  저주: 4,
+  상태이상: 5,
+  이벤트: 6,
+  퀘스트: 7,
+  "고대의 존재": 8,
+  토큰: 9,
+};
+
+const TYPE_ORDER: Record<string, number> = {
+  공격: 0,
+  스킬: 1,
+  파워: 2,
+  저주: 3,
+  상태이상: 4,
+  퀘스트: 5,
+};
+
+function sortKey(card: { rarity?: string; type?: string; name?: string } | null, id: string) {
+  return {
+    rarity: RARITY_ORDER[card?.rarity ?? ""] ?? 99,
+    type: TYPE_ORDER[card?.type ?? ""] ?? 99,
+    name: card?.name ?? id,
+  };
+}
+
 interface DeckModalProps {
   open: boolean;
   onClose: () => void;
@@ -73,14 +103,20 @@ export function DeckModal({
         });
       }
     }
-    // 획득순 (floor asc) — starter deck (floor 0) first, then by acquisition
-    // floor. Within the same floor: upgraded copies first, then 가나다.
+    // Sort priority:
+    //  1) firstFloor 오름차순 (획득순 — starter cards firstFloor=0)
+    //  2) rarity (기본 → 일반 → 고급 → 희귀 → 저주 → 상태이상 → 이벤트 → ...)
+    //  3) type (공격 → 스킬 → 파워 → 저주 → 상태이상 → 퀘스트)
+    //  4) upgraded copies first within an id group
+    //  5) 가나다
     return items.sort((a, b) => {
       if (a.firstFloor !== b.firstFloor) return a.firstFloor - b.firstFloor;
+      const ka = sortKey(a.card, a.id);
+      const kb = sortKey(b.card, b.id);
+      if (ka.rarity !== kb.rarity) return ka.rarity - kb.rarity;
+      if (ka.type !== kb.type) return ka.type - kb.type;
       if (a.upgraded !== b.upgraded) return Number(b.upgraded) - Number(a.upgraded);
-      const an = a.card?.name ?? a.id;
-      const bn = b.card?.name ?? b.id;
-      return an.localeCompare(bn, "ko");
+      return ka.name.localeCompare(kb.name, "ko");
     });
   }, [deck, cardsById]);
 

@@ -1140,10 +1140,6 @@ export function SeededMapView({
           );
         })}
       </div>
-
-        <div className="absolute bottom-4 left-4 rounded-full border border-white/8 bg-black/25 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-zinc-300">
-          아래에서 위로 등반
-        </div>
       </div>
     </div>
   );

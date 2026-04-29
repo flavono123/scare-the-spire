@@ -174,18 +174,38 @@ function buildDeckAtFloor(
   const player = run.players[0];
   if (!player) return [];
 
-  // Starter deck: every card in the final deck added at floor <= 1.
+  // Starter deck: cards present in the final deck at floor<=1, MINUS those
+  // whose floor=1 actually came from a Neow gain. Both starter cards and
+  // Neow-gained cards report floor_added_to_deck=1, so the only way to
+  // distinguish is to subtract gains globally and let the rest be starters.
   const counts = new Map<string, number>();
   const starter = new Map<string, number>();
-  // First floor at which each id was seen — drives "획득순" sort in the
-  // deck modal. Starter cards get firstFloor=0 (sentinel below current).
   const firstFloor = new Map<string, number>();
+
+  // Pre-walk: total gain count per id across the entire run.
+  const gainedRemaining = new Map<string, number>();
+  for (const act of run.map_point_history) {
+    for (const entry of act) {
+      for (const c of entry.cards_gained ?? []) {
+        if (!c.id) continue;
+        gainedRemaining.set(c.id, (gainedRemaining.get(c.id) ?? 0) + 1);
+      }
+    }
+  }
+
+  // Each player.deck instance with floor<=1 either belongs to the starter
+  // pool or to a Neow gain. We allocate to gains first (popping from the
+  // remaining count); whatever's left is a true starter.
   for (const card of player.deck) {
     const f = card.floor_added_to_deck ?? 1;
-    if (f <= 1) {
-      starter.set(card.id, (starter.get(card.id) ?? 0) + 1);
-      if (!firstFloor.has(card.id)) firstFloor.set(card.id, 0);
+    if (f > 1) continue;
+    const remaining = gainedRemaining.get(card.id) ?? 0;
+    if (remaining > 0) {
+      gainedRemaining.set(card.id, remaining - 1);
+      continue;
     }
+    starter.set(card.id, (starter.get(card.id) ?? 0) + 1);
+    if (!firstFloor.has(card.id)) firstFloor.set(card.id, 0);
   }
 
   // History walk #1: detect starter cards that were later removed (so they
@@ -209,6 +229,7 @@ function buildDeckAtFloor(
           seenGains.set(c.id, gained - 1);
         } else {
           starter.set(c.id, (starter.get(c.id) ?? 0) + 1);
+          if (!firstFloor.has(c.id)) firstFloor.set(c.id, 0);
         }
       }
     }
