@@ -168,6 +168,43 @@ test("Neow drops class starters but keeps everything else", async ({ page }) => 
   expect(seen.size).toBeGreaterThanOrEqual(4);
 });
 
+test("topbar relic row hidden until stack lands them", async ({ page }) => {
+  // Regression: page load / restart used to leave pendingRelicIds empty
+  // until the user clicked back to step 1, so the topbar showed every
+  // floor-1 relic stacked together while the stack flew the same icons
+  // into already-occupied slots. After the fix, stepRelicIdsKey derives
+  // from the sanitized entry directly so all paths (load, restart, click)
+  // hit the same code.
+  test.setTimeout(60000);
+  await page.setViewportSize({ width: 1600, height: 900 });
+  const res = await page.goto(`${BASE}/history-course/APDCAB0SMN`);
+  expect(res?.status()).toBeLessThan(400);
+  await page.waitForLoadState("networkidle");
+
+  // Wait until the act intro has faded enough for the topbar to be
+  // visible — but BEFORE the first relic finishes flying.
+  await page
+    .locator('[data-testid="node-stack-item"]')
+    .first()
+    .waitFor({ state: "attached", timeout: 8000 });
+  await page.waitForTimeout(200);
+
+  // Pause so the rAF ticker doesn't fly any relics in mid-assertion.
+  await page.keyboard.press("Space").catch(() => {});
+  await page.waitForTimeout(100);
+
+  // 5 picked relics from APDC's Neow should be hidden (opacity 0). The
+  // character starter (BOUND_PHYLACTERY) was sanitized out — it stays
+  // visible at opacity 1.
+  const opacities = await page
+    .locator("[data-relic-target]")
+    .evaluateAll((els) =>
+      els.map((el) => Number((el as HTMLElement).style.opacity || "1")),
+    );
+  const hiddenCount = opacities.filter((o) => o < 0.5).length;
+  expect(hiddenCount).toBeGreaterThanOrEqual(4);
+});
+
 test("pause freezes the stack mid-phase", async ({ page }) => {
   // With the new elapsedMs-derived stack, pausing the playback ticker
   // should also freeze every stack visual. Check that the active item's

@@ -334,21 +334,26 @@ export function HistoryCourseShell({
     return buildStackItems(entry, step, cardsById, releaseRelicId);
   }, [act, step, replayReady, cardsById, releaseRelicId]);
 
-  // Pre-load pendingRelicIds whenever the step's stack changes — every relic
-  // in the new batch starts pending, gets released by its own onComplete.
-  const stackKeyRef = useRef<string>("");
-  const stackKey = `${actIndex}-${step}`;
-  if (stackKeyRef.current !== stackKey) {
-    stackKeyRef.current = stackKey;
-    const ids = new Set<string>();
-    for (const item of stepStackItems) {
-      if (item.kind === "relic-gained") {
-        const idMatch = item.key.match(/-rg-\d+-(.+)$/);
-        if (idMatch) ids.add(idMatch[1]);
-      }
-    }
-    setPendingRelicIds(ids);
-  }
+  // The relic ids that the *current step's* stack will fly into the topbar.
+  // Derived from the sanitized history entry directly (NOT stepStackItems,
+  // which is gated on replayReady and reads as empty during the act-intro
+  // fade-out → scroll → ready window — that gap is the bug where the
+  // topbar briefly shows every floor-1 relic stacked together). Page load
+  // / restart / map-node-click all hit the same code path now.
+  const stepRelicIdsKey = useMemo(() => {
+    if (!act) return "";
+    const entry = act.history[step - 1];
+    if (!entry) return "";
+    return (entry.relic_choices ?? [])
+      .filter((c) => c.picked && c.id)
+      .map((c) => c.id)
+      .join("|");
+  }, [act, step]);
+  useEffect(() => {
+    setPendingRelicIds(
+      stepRelicIdsKey ? new Set(stepRelicIdsKey.split("|")) : new Set(),
+    );
+  }, [stepRelicIdsKey]);
 
   // rAF ticker. Every animation frame nudges elapsedMs by `dt × rate` while
   // playing. Step + stack + topbar all derive from elapsedMs, so a paused
