@@ -11,6 +11,7 @@ import { DeckModal } from "@/components/history-course/deck-modal";
 import {
   NodeActionStack,
   type NodeStackItem,
+  type NodeStackItemKind,
 } from "@/components/history-course/node-action-stack";
 import { TopBar } from "@/components/history-course/topbar";
 import { buildTopbarState } from "@/components/history-course/topbar-state";
@@ -225,6 +226,7 @@ function cssEscapeAttr(value: string): string {
 
 const VERB_BY_KIND: Record<string, string> = {
   "card-gained": "선택",
+  "card-bought": "구매",
   "card-upgraded": "강화",
   "card-enchanted": "인챈트",
   "card-skipped": "넘기기",
@@ -238,6 +240,7 @@ const VERB_BY_KIND: Record<string, string> = {
 
 const TEXT_BY_KIND: Record<string, string | undefined> = {
   "card-gained": undefined,
+  "card-bought": "#fbbf24",
   "card-upgraded": "#86efac",
   "card-enchanted": "#d8b4fe",
   "card-skipped": "#a1a1aa",
@@ -327,16 +330,20 @@ function buildStackItems(
     });
   }
 
+  // Same input list either way; only the verb / colour change between
+  // a battle reward and a shop purchase. Both still fly into the deck.
+  const isShop = entry.map_point_type === "shop";
+  const cardKind: NodeStackItemKind = isShop ? "card-bought" : "card-gained";
   for (const c of entry.cards_gained ?? []) {
     if (!c.id) continue;
     gainedIds.add(c.id);
     items.push({
       key: `s${step}-cg-${items.length}-${c.id}`,
-      kind: "card-gained",
+      kind: cardKind,
       icon: cardIcon(c.id),
       label: cardLabel(c.id),
-      verb: VERB_BY_KIND["card-gained"],
-      textColor: TEXT_BY_KIND["card-gained"],
+      verb: VERB_BY_KIND[cardKind],
+      textColor: TEXT_BY_KIND[cardKind],
       postEffect: { kind: "fly", targetSelector: "[data-deck-target]" },
     });
   }

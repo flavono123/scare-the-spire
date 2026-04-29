@@ -26,6 +26,7 @@ const ROW_OFFSET = 40;
 
 export type NodeStackItemKind =
   | "card-gained"
+  | "card-bought"
   | "card-upgraded"
   | "card-enchanted"
   | "card-skipped"
