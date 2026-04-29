@@ -924,6 +924,7 @@ export function SeededMapView({
   onSeekToStep,
   transitProgress,
   transitEdgeIds,
+  characterMarkerSrc,
 }: {
   act: ReplayActAnalysis;
   step: number;
@@ -937,6 +938,10 @@ export function SeededMapView({
    *  to instant-fill behaviour (PoC). */
   transitProgress?: number;
   transitEdgeIds?: ReadonlySet<string>;
+  /** Phase 4 — when set with `transitProgress`, a small character marker
+   *  pops in to the left of the current node once transit is essentially
+   *  complete (>= 0.92). PoC omits the prop and gets no marker. */
+  characterMarkerSrc?: string;
 }) {
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const meta = actMapMeta(act.actId);
@@ -977,6 +982,24 @@ export function SeededMapView({
       activeEdges: edges,
     };
   }, [act, step]);
+
+  // Phase 4 — anchor for the character "pop" marker. Pick the leftmost
+  // current candidate node so the sprite consistently lands on the same
+  // side the user expects (and so multi-candidate fixtures don't flicker
+  // between two anchors).
+  const characterAnchor = useMemo(() => {
+    let best: {
+      node: ReplayActAnalysis["nodes"][number];
+      pos: MapPoint;
+    } | null = null;
+    for (const node of act.nodes) {
+      if (!currentNodes.has(node.id)) continue;
+      const pos = layout.centers.get(node.id);
+      if (!pos) continue;
+      if (!best || pos.left < best.pos.left) best = { node, pos };
+    }
+    return best;
+  }, [act, currentNodes, layout]);
 
   return (
     <div className="overflow-x-auto overflow-y-visible">
@@ -1162,6 +1185,50 @@ export function SeededMapView({
             </div>
           );
         })}
+
+        {characterMarkerSrc &&
+          characterAnchor &&
+          typeof transitProgress === "number" &&
+          (() => {
+            // Pop window — last 30% of the transit. Linear ramp to a 1.15
+            // overshoot at popT 0.7, then ease back to 1.0 — reads as a
+            // small spring landing.
+            const popT = Math.max(
+              0,
+              Math.min(1, (transitProgress - 0.7) / 0.3),
+            );
+            if (popT <= 0) return null;
+            const scale =
+              popT < 0.7
+                ? (popT / 0.7) * 1.15
+                : 1.15 - ((popT - 0.7) / 0.3) * 0.15;
+            const size = mapNodeSize(characterAnchor.node, act);
+            const markerSize = Math.max(36, Math.round(size.width * 0.6));
+            return (
+              <div
+                aria-hidden
+                data-testid="character-pop-marker"
+                className="pointer-events-none absolute z-20"
+                style={{
+                  left: characterAnchor.pos.left - size.width * 0.55,
+                  top: characterAnchor.pos.top,
+                  width: markerSize,
+                  height: markerSize,
+                  transform: `translate(-50%, -50%) scale(${scale.toFixed(3)})`,
+                  opacity: popT,
+                }}
+              >
+                <Image
+                  src={characterMarkerSrc}
+                  alt=""
+                  fill
+                  sizes="48px"
+                  className="object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]"
+                  unoptimized
+                />
+              </div>
+            );
+          })()}
       </div>
       </div>
     </div>

@@ -837,6 +837,9 @@ function Stage({
     () => new Set(act.candidateEdgeIdsByStep[step - 1] ?? []),
     [act, step],
   );
+  const mapCharacterMarkerSrc = characterMarkerSrc(
+    run.players[0]?.character ?? "CHARACTER.IRONCLAD",
+  );
 
   const scrollToStep = useCallback(() => {
     const node = mapBoxRef.current;
@@ -908,6 +911,7 @@ function Stage({
             onSeekToStep={(s) => onJumpToStep(actIndex, s)}
             transitProgress={transitProgress}
             transitEdgeIds={transitEdgeIds}
+            characterMarkerSrc={mapCharacterMarkerSrc}
           />
         </div>
       </div>
