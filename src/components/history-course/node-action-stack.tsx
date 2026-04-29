@@ -255,13 +255,11 @@ function StackItemView({
     itemOpacity = 0;
   }
 
-  // Past items (pose < 0): only fade-effect items linger as ghosts at pose
-  // -1; fly items have flown off and shouldn't render at all.
-  if (pose < 0) {
-    if (item.postEffect.kind === "fly") return null;
-    // fade ghost — use slot styling at pose, dimmer
-    itemOpacity = slotOpacity * 0.6;
-  }
+  // Two-window slot machine: only the active item (pose 0) and the
+  // upcoming item (pose 1) render. Past items disappear cleanly via
+  // their post-effect (fly out / fade out) and never linger above as
+  // a blurred ghost.
+  if (pose < 0) return null;
 
   if (itemOpacity <= 0.005 && !flying) return null;
 

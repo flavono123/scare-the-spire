@@ -519,6 +519,13 @@ export function HistoryCourseShell({
         setIntroToken((t) => t + 1);
         setIntroActive(true);
         setReplayReady(false);
+        // Snap to the act's offset so:
+        //   1. the ancient stack starts at nodeLocalMs=0 once intro
+        //      ends (no wasted buffer-bleed time), and
+        //   2. actIndex flips to the new act *now*, letting the map
+        //      view swap + scroll behind the fade-in instead of
+        //      jumping after fade-out.
+        setGlobalMs(runTimeline.actOffsets[i] ?? 0);
       }
       wasInIntroWindowRef.current[i] = isIn;
     }
@@ -842,11 +849,10 @@ function Stage({
   }, [act, step]);
 
   useEffect(() => {
-    // Hold the scroll until the act intro fades — we want the user to *see*
-    // the map slide into the first node, not for it to happen behind the
-    // black overlay. Once intro is done, this fires (lastStepRef==null on
-    // first pass guarantees the scroll happens at least once per act).
-    if (introActive) return;
+    // Scroll runs even while the intro overlay is visible — the new
+    // act's map is already mounted (we snapped globalMs to actOffset
+    // when the window fired), and the user should *see* it scrolling
+    // through the fade-in/hold instead of jumping after fade-out.
     if (lastStepRef.current === step) return;
     lastStepRef.current = step;
     // mark this as a programmatic scroll so the user-scroll guard ignores it
