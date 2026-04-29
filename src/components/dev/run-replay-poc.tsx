@@ -969,7 +969,7 @@ export function SeededMapView({
     return map;
   }, [act]);
 
-  const { activeNodes, currentNodes, activeEdges } = useMemo(() => {
+  const { activeNodes, currentNodes, previousNodes, activeEdges } = useMemo(() => {
     const active = new Set<string>();
     const edges = new Set<string>();
     for (let index = 0; index < step; index++) {
@@ -979,27 +979,60 @@ export function SeededMapView({
     return {
       activeNodes: active,
       currentNodes: new Set(act.candidateNodeIdsByStep[step - 1] ?? []),
+      // step ≥ 2 → the prior step's candidates host the character during
+      // the transit. Step 1 has none, so the marker is hidden until pop.
+      previousNodes:
+        step >= 2 ? new Set(act.candidateNodeIdsByStep[step - 2] ?? []) : new Set<string>(),
       activeEdges: edges,
     };
   }, [act, step]);
 
-  // Phase 4 — anchor for the character "pop" marker. Pick the leftmost
-  // current candidate node so the sprite consistently lands on the same
-  // side the user expects (and so multi-candidate fixtures don't flicker
-  // between two anchors).
-  const characterAnchor = useMemo(() => {
+  // Anchors — pick the leftmost candidate so multi-candidate fixtures don't
+  // flicker, and so the sprite lands consistently on the same side.
+  const pickLeftmostAnchor = (
+    ids: ReadonlySet<string>,
+  ): { node: ReplayActAnalysis["nodes"][number]; pos: MapPoint } | null => {
     let best: {
       node: ReplayActAnalysis["nodes"][number];
       pos: MapPoint;
     } | null = null;
     for (const node of act.nodes) {
-      if (!currentNodes.has(node.id)) continue;
+      if (!ids.has(node.id)) continue;
       const pos = layout.centers.get(node.id);
       if (!pos) continue;
       if (!best || pos.left < best.pos.left) best = { node, pos };
     }
     return best;
-  }, [act, currentNodes, layout]);
+  };
+  const characterAnchor = useMemo(
+    () => pickLeftmostAnchor(currentNodes),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [act, currentNodes, layout],
+  );
+  const previousAnchor = useMemo(
+    () => pickLeftmostAnchor(previousNodes),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [act, previousNodes, layout],
+  );
+
+  // Phase 4 sub-windows over the raw transitProgress (0..1). The user
+  // asked for the cadence: trail painting first, then the destination
+  // ring sweeps clockwise, finally the character pops on the new node.
+  // 0..0.70  →  trail (path tick fill).
+  // 0.70..0.92 → ring sweep on destination node.
+  // 0.92..1.00 → character "pop" at destination.
+  const tp = typeof transitProgress === "number" ? transitProgress : 1;
+  const TRAIL_END = 0.7;
+  const RING_END = 0.92;
+  const trailFrac = Math.max(0, Math.min(1, tp / TRAIL_END));
+  const ringFrac = Math.max(
+    0,
+    Math.min(1, (tp - TRAIL_END) / (RING_END - TRAIL_END)),
+  );
+  const charFrac = Math.max(
+    0,
+    Math.min(1, (tp - RING_END) / (1 - RING_END)),
+  );
 
   return (
     <div className="overflow-x-auto overflow-y-visible">
@@ -1028,11 +1061,13 @@ export function SeededMapView({
             transitProgress < 1;
 
           return ticks.map((tick, index) => {
-            // Trail painting — tick i (1..N) reveals when i/N <= progress.
+            // Trail painting — tick i (1..N) reveals when i/N <= trailFrac.
             // The +1 ensures the first tick lights up immediately as
             // progress leaves 0, instead of waiting until 1/N elapsed.
+            // We use trailFrac (sub-window 0..0.7 of raw transit) so the
+            // trail completes BEFORE the ring sweep / character pop.
             const tickRevealed = partialPaint
-              ? (index + 1) / tickCount <= (transitProgress ?? 1)
+              ? (index + 1) / tickCount <= trailFrac
               : visited;
             return (
               <div
@@ -1064,10 +1099,29 @@ export function SeededMapView({
           const active = activeNodes.has(node.id);
           const current = currentNodes.has(node.id);
           const position = layout.centers.get(node.id);
-          const state = current ? "current" : active ? "active" : "inactive";
           const size = mapNodeSize(node, act);
           if (!position) return null;
-          const scale = current ? 1.08 : active ? 1 : 0.95;
+          // While the destination's ring is still sweeping in (ringFrac < 1)
+          // we render it as `active` so the player doesn't see the full
+          // current emphasis (scale-up + ring) before the trail's done.
+          const sweepActive = current && ringFrac < 1;
+          const state = sweepActive
+            ? "active"
+            : current
+              ? "current"
+              : active
+                ? "active"
+                : "inactive";
+          const scale = sweepActive
+            ? 1
+            : current
+              ? 1.08
+              : active
+                ? 1
+                : 0.95;
+          // 0..1 reveal for the destination ring's clockwise sweep —
+          // forwarded into MapSelectionRing as a conic-gradient mask.
+          const ringRevealPct = current ? ringFrac * 100 : 100;
 
           const showQuestMarker = questMarkerNodes.has(node.id);
           const showFlightMarker = flightArrivalNodes.has(node.id) && active;
@@ -1131,8 +1185,12 @@ export function SeededMapView({
                   state={state}
                   size={size}
                   revealEntry={revealEntry}
+                  suppressRing={sweepActive}
                 />
               </div>
+              {sweepActive && ringRevealPct > 0 && (
+                <SweepRing pct={ringRevealPct / 100} />
+              )}
               {visited && revealEntry && isHovered && (
                 <NodeTooltip
                   act={act}
@@ -1187,45 +1245,58 @@ export function SeededMapView({
         })}
 
         {characterMarkerSrc &&
-          characterAnchor &&
           typeof transitProgress === "number" &&
           (() => {
-            // Pop window — last 30% of the transit. Linear ramp to a 1.15
-            // overshoot at popT 0.7, then ease back to 1.0 — reads as a
-            // small spring landing.
-            const popT = Math.max(
-              0,
-              Math.min(1, (transitProgress - 0.7) / 0.3),
-            );
-            if (popT <= 0) return null;
-            const scale =
-              popT < 0.7
-                ? (popT / 0.7) * 1.15
-                : 1.15 - ((popT - 0.7) / 0.3) * 0.15;
-            const size = mapNodeSize(characterAnchor.node, act);
-            const markerSize = Math.max(36, Math.round(size.width * 0.6));
+            // Pick the anchor for this frame:
+            //   * charFrac > 0  → character has popped on the destination
+            //                     node (sweep done, sprite springs in).
+            //   * charFrac == 0 → still at the previous node (or hidden
+            //                     entirely if step 1 has no previous).
+            const onDestination = charFrac > 0;
+            const anchor = onDestination ? characterAnchor : previousAnchor;
+            if (!anchor) return null;
+
+            const scale = onDestination
+              ? charFrac < 0.7
+                ? (charFrac / 0.7) * 1.15
+                : 1.15 - ((charFrac - 0.7) / 0.3) * 0.15
+              : 1;
+            const opacity = onDestination ? charFrac : 1;
+            const size = mapNodeSize(anchor.node, act);
+            const markerSize = Math.max(40, Math.round(size.width * 0.7));
             return (
               <div
                 aria-hidden
                 data-testid="character-pop-marker"
+                data-on-destination={onDestination ? "true" : "false"}
                 className="pointer-events-none absolute z-20"
                 style={{
-                  left: characterAnchor.pos.left - size.width * 0.55,
-                  top: characterAnchor.pos.top,
+                  left: anchor.pos.left - size.width * 0.55,
+                  top: anchor.pos.top,
                   width: markerSize,
                   height: markerSize,
                   transform: `translate(-50%, -50%) scale(${scale.toFixed(3)})`,
-                  opacity: popT,
+                  opacity,
                 }}
               >
-                <Image
-                  src={characterMarkerSrc}
-                  alt=""
-                  fill
-                  sizes="48px"
-                  className="object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]"
-                  unoptimized
-                />
+                <div
+                  className="absolute inset-0 overflow-hidden rounded-full ring-1 ring-black/40"
+                  style={{
+                    backgroundImage:
+                      "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
+                    backgroundSize: "100% 100%",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                >
+                  <Image
+                    src={characterMarkerSrc}
+                    alt=""
+                    fill
+                    sizes="48px"
+                    className="object-contain"
+                    unoptimized
+                  />
+                </div>
               </div>
             );
           })()}
@@ -1635,11 +1706,19 @@ function mapOutlineRenderSize(outlineName: string): RenderSize {
 function MapSelectionRing({
   state,
   inset,
+  suppress,
 }: {
   state: "inactive" | "active" | "current";
   inset: string;
+  /** Phase 4 — when true, the steady ring is hidden so the SweepRing
+   *  overlay can own the destination's selection visual during the
+   *  clockwise sweep window. */
+  suppress?: boolean;
 }) {
   if (state === "inactive") {
+    return null;
+  }
+  if (suppress) {
     return null;
   }
 
@@ -1651,6 +1730,36 @@ function MapSelectionRing({
         ...maskStyle(effectSrc("map_circle_4"), MAP_SELECTION_RING_COLOR, circleOpacity(state)),
       }}
     />
+  );
+}
+
+/** Phase 4 — clockwise sweep ring layered on the destination node while
+ *  `pct` ramps 0→1. Two stacked masks: the outer wrapper clips by a
+ *  conic-gradient wedge anchored at 12 o'clock (`from -90deg`) so the
+ *  reveal sweeps clockwise, and the inner div carries the standard
+ *  `map_circle_4` ring shape. The result is the same selection ring as
+ *  the steady "current" state, but progressively painted in.
+ */
+function SweepRing({ pct }: { pct: number }) {
+  const angleDeg = Math.max(0, Math.min(1, pct)) * 360;
+  const wedge = `conic-gradient(from -90deg, white 0deg, white ${angleDeg.toFixed(2)}deg, transparent ${angleDeg.toFixed(2)}deg, transparent 360deg)`;
+  return (
+    <div
+      data-testid="ring-sweep"
+      className="pointer-events-none absolute"
+      style={{
+        inset: "-18%",
+        WebkitMaskImage: wedge,
+        maskImage: wedge,
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+      }}
+    >
+      <div
+        className="absolute inset-0"
+        style={maskStyle(effectSrc("map_circle_4"), MAP_SELECTION_RING_COLOR, 1)}
+      />
+    </div>
   );
 }
 
@@ -1895,12 +2004,16 @@ function MapNodeAsset({
   state,
   size,
   revealEntry,
+  suppressRing,
 }: {
   node: ReplayActAnalysis["nodes"][number];
   act: ReplayActAnalysis;
   state: "inactive" | "active" | "current";
   size: RenderSize;
   revealEntry?: ReplayHistoryEntry | null;
+  /** Phase 4 — hide the steady selection ring so the SweepRing overlay
+   *  can paint it in clockwise during transit's last 30%. */
+  suppressRing?: boolean;
 }) {
   if (node.type === "ancient") {
     const ancientAsset = getAncientAsset(act);
@@ -1958,6 +2071,7 @@ function MapNodeAsset({
       iconName={iconName}
       outlineName={outlineName}
       alt={NODE_META[node.type].label}
+      suppressRing={suppressRing}
     />
   );
 }
@@ -1969,6 +2083,7 @@ function MapRoomAsset({
   iconName,
   outlineName,
   alt,
+  suppressRing,
 }: {
   actId: string;
   state: "inactive" | "active" | "current";
@@ -1976,6 +2091,7 @@ function MapRoomAsset({
   iconName: string;
   outlineName: string;
   alt: string;
+  suppressRing?: boolean;
 }) {
   const meta = actMapMeta(actId);
   const iconSize = mapIconRenderSize(iconName);
@@ -1983,7 +2099,7 @@ function MapRoomAsset({
 
   return (
     <div className="relative shrink-0" style={{ width: size.width, height: size.height }}>
-      <MapSelectionRing state={state} inset="-18%" />
+      <MapSelectionRing state={state} inset="-18%" suppress={suppressRing} />
       <div
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
         style={{

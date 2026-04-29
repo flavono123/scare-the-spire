@@ -69,9 +69,20 @@ const KNOWN_CHARACTER_MARKERS = new Set([
 ]);
 
 function characterMarkerSrc(character: string): string {
+  // Playback bar slider thumb — game's map_marker_<character>.png sprite,
+  // a stylised footstep icon designed to sit on a path.
   const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
   const safe = KNOWN_CHARACTER_MARKERS.has(slug) ? slug : "ironclad";
   return `/images/sts2/map/markers/map_marker_${safe}.png`;
+}
+
+function characterIconSrc(character: string): string {
+  // On-map character sprite at the current node — matches the topbar's
+  // character chip (`character_icon_<x>.webp`) so the player sees the
+  // same portrait in two places.
+  const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
+  const safe = KNOWN_CHARACTER_MARKERS.has(slug) ? slug : "ironclad";
+  return `/images/sts2/characters/character_icon_${safe}.webp`;
 }
 
 function bossKeyFromEntry(entry: ReplayHistoryEntry): string | null {
@@ -837,7 +848,7 @@ function Stage({
     () => new Set(act.candidateEdgeIdsByStep[step - 1] ?? []),
     [act, step],
   );
-  const mapCharacterMarkerSrc = characterMarkerSrc(
+  const mapCharacterMarkerSrc = characterIconSrc(
     run.players[0]?.character ?? "CHARACTER.IRONCLAD",
   );
 
