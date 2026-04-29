@@ -15,12 +15,14 @@ import type { ReactNode } from "react";
 // next (below, dim).
 
 export const PER_ITEM_MS = 2500;
-const APPEAR_MS = 280;
-const HOLD_MS = 1700;
-const TEXT_FADE_MS = 240;
-const POST_GAP_MS = 80;
-const POST_MS = 200;
-// 280 + 1700 + 240 + 80 + 200 = 2500 = PER_ITEM_MS
+const APPEAR_MS = 240;
+const HOLD_MS = 1500;
+const TEXT_FADE_MS = 200;
+const POST_GAP_MS = 60;
+const POST_MS = 500;
+// 240 + 1500 + 200 + 60 + 500 = 2500 = PER_ITEM_MS
+// Post phase widened from 200→500ms so the Bezier arc has room to read
+// (game NCardFlyVfx pacing — apex 100-400, scale 1→0.1, mid-arc rotation).
 
 const ROW_OFFSET = 40;
 
@@ -229,13 +231,34 @@ function StackItemView({
   let finalBlur = slotBlur;
   let itemOpacity = slotOpacity;
 
+  let flyRotationDeg = 0;
   if (flying && target) {
-    const ease = easeInOutCubic(phaseProgress);
-    finalDx = (target.x - origin.x) * ease;
-    finalDy = (target.y - origin.y) * ease;
-    finalScale = 1 + (0.18 - 1) * ease;
+    const t = easeInOutCubic(phaseProgress);
+    // Quadratic Bezier — apex pulled upward (negative screen-y) so the
+    // icon arcs over the deck/relic slot. Apex magnitude scales with
+    // travel distance, clamped to a readable range. Mirrors the game's
+    // NCardFlyVfx feel without that source on hand to byte-match.
+    const dx = target.x - origin.x;
+    const dy = target.y - origin.y;
+    const dist = Math.hypot(dx, dy);
+    const apex = Math.max(80, Math.min(220, dist * 0.35));
+    const midX = (origin.x + target.x) / 2;
+    const midY = (origin.y + target.y) / 2;
+    const controlX = midX;
+    const controlY = midY - apex;
+    const u = 1 - t;
+    const px = u * u * origin.x + 2 * u * t * controlX + t * t * target.x;
+    const py = u * u * origin.y + 2 * u * t * controlY + t * t * target.y;
+    finalDx = px - origin.x;
+    finalDy = py - origin.y;
+    // 1 → 0.1 — game ratio. The icon arrives near the slot's hit-area size.
+    finalScale = 1 + (0.1 - 1) * t;
     finalBlur = 0;
     itemOpacity = 1;
+    // One full revolution along the arc — gives a tumbling beat without
+    // landing upside-down. Direction flipped for left-going flies so the
+    // rotation visually leads the travel.
+    flyRotationDeg = (dx >= 0 ? 1 : -1) * t * 360;
   }
 
   // Fade post-effect: icon fades out during the post phase.
@@ -293,8 +316,15 @@ function StackItemView({
       style={{
         left: origin.x,
         top: origin.y,
-        transform: `translate3d(${finalDx.toFixed(2)}px, calc(-50% + ${finalDy.toFixed(2)}px), 0) scale(${finalScale.toFixed(3)})`,
-        transformOrigin: "left center",
+        // During fly we pivot around the icon's centre (16px = half the
+        // 32px icon column) so the rotation tumbles in place along the
+        // arc instead of swinging around the icon's left edge. Slot
+        // mode keeps the existing left-anchored origin so the label
+        // tail aligns predictably with the row.
+        transform: flying
+          ? `translate3d(${finalDx.toFixed(2)}px, calc(-50% + ${finalDy.toFixed(2)}px), 0) rotate(${flyRotationDeg.toFixed(1)}deg) scale(${finalScale.toFixed(3)})`
+          : `translate3d(${finalDx.toFixed(2)}px, calc(-50% + ${finalDy.toFixed(2)}px), 0) scale(${finalScale.toFixed(3)})`,
+        transformOrigin: flying ? "16px center" : "left center",
         opacity: itemOpacity,
         filter: composedFilter,
         willChange: "transform, opacity, filter",
