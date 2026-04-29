@@ -78,11 +78,12 @@ export function nodeDurationMs(stackCount: number): number {
   return NODE_BASE_MS + Math.max(0, stackCount) * NODE_PER_STACK_MS;
 }
 
-/** Offset within the node where the stack starts playing. Currently 0 —
- *  the stack uses the whole node window. Phase 4 will introduce a transit
- *  phase that pushes this back. */
+/** Offset within the node where the stack starts playing. The leading
+ *  NODE_BASE_MS is the transit phase (path tick trail painting + character
+ *  arrival) — stack rewards only kick in after the character "lands" on
+ *  the node. */
 export function stackStartOffsetMs(): number {
-  return 0;
+  return NODE_BASE_MS;
 }
 
 export function buildActTimeline(act: ReplayActAnalysis): ActTimeline {
