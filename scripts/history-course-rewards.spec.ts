@@ -80,10 +80,11 @@ test("slot machine — next item visible at pose +1", async ({ page }) => {
     state: "attached",
     timeout: 8000,
   });
-  // Pause so the per-item phase clock keeps the current item at "hold"
-  // instead of racing through it (the rAF ticker would otherwise flip
-  // currentIndex before we screenshot).
-  await page.keyboard.press("Space").catch(() => {});
+  // Scrub directly to the middle of item 0's hold phase (localT 1200ms,
+  // inside the 600..2100 hold window). onScrubGlobalMs implicitly pauses
+  // playback so the phase doesn't race forward before we screenshot.
+  const slider = page.locator('input[type="range"]').first();
+  await slider.fill("1200");
   await page.waitForTimeout(120);
   await waitForPhase(page, "hold");
   await page.waitForTimeout(120);

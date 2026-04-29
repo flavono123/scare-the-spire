@@ -663,23 +663,6 @@ export function HistoryCourseShell({
     [runTimeline],
   );
 
-  const onRestart = useCallback(() => {
-    // Wipe window flags so re-entering act 0's window from "already
-    // there" still fires (setGlobalMs(0)→0 is a no-op for state, so we
-    // also set the intro state explicitly here).
-    wasInIntroWindowRef.current = runTimeline.acts.map(() => false);
-    setGlobalMs(0);
-    setPlaying(true);
-    setIntroToken((t) => t + 1);
-    setIntroActive(true);
-    setReplayReady(false);
-    // Mark act 0 as 'in window' so the auto-effect below doesn't double
-    // fire on the next render (when it sees globalMs=0 inside act 0's
-    // window with wasIn still false).
-    if (wasInIntroWindowRef.current.length > 0) {
-      wasInIntroWindowRef.current[0] = true;
-    }
-  }, [runTimeline]);
 
   if (!act) {
     return (
@@ -715,7 +698,6 @@ export function HistoryCourseShell({
           hidingRelicIds={pendingRelicIds}
           topbarState={topbarState}
           onTogglePlay={() => setPlaying((v) => !v)}
-          onRestart={onRestart}
           onChangeRate={setRate}
           onScrubGlobalMs={(value) => {
             setPlaying(false);
@@ -796,7 +778,6 @@ function Stage({
   hidingRelicIds,
   topbarState,
   onTogglePlay,
-  onRestart,
   onChangeRate,
   onScrubGlobalMs,
   onJumpToStep,
@@ -824,7 +805,6 @@ function Stage({
   hidingRelicIds: ReadonlySet<string>;
   topbarState: ReturnType<typeof buildTopbarState>;
   onTogglePlay: () => void;
-  onRestart: () => void;
   onChangeRate: (rate: Rate) => void;
   onScrubGlobalMs: (ms: number) => void;
   onJumpToStep: (actIndex: number, step: number) => void;
@@ -942,7 +922,6 @@ function Stage({
         playing={playing}
         rate={rate}
         onTogglePlay={onTogglePlay}
-        onRestart={onRestart}
         onChangeRate={onChangeRate}
         onScrubGlobalMs={onScrubGlobalMs}
         onJumpToStep={onJumpToStep}
@@ -1038,7 +1017,6 @@ function PlaybackBar({
   playing,
   rate,
   onTogglePlay,
-  onRestart,
   onChangeRate,
   onScrubGlobalMs,
   onJumpToStep,
@@ -1052,7 +1030,6 @@ function PlaybackBar({
   playing: boolean;
   rate: Rate;
   onTogglePlay: () => void;
-  onRestart: () => void;
   onChangeRate: (rate: Rate) => void;
   onScrubGlobalMs: (ms: number) => void;
   onJumpToStep: (actIndex: number, step: number) => void;
@@ -1091,13 +1068,6 @@ function PlaybackBar({
             aria-label={playing ? "일시정지" : "재생"}
           >
             {playing ? <PauseIcon /> : <PlayIcon />}
-          </button>
-          <button
-            type="button"
-            onClick={onRestart}
-            className="rounded-md border border-white/15 bg-black/30 px-2 py-1 text-xs transition hover:bg-white/10"
-          >
-            처음부터
           </button>
         </div>
         <div className="flex items-center gap-1.5">
