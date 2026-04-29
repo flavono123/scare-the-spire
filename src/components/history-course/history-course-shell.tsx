@@ -878,20 +878,14 @@ function PlaybackBar({
     .reduce((acc, a) => acc + a.history.length, 0) + step;
 
   return (
-    <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col gap-1.5 bg-gradient-to-t from-black/85 to-black/0 px-4 pb-3 pt-3 text-zinc-100">
-      <div className="flex flex-col gap-1.5">
-        {sanitizedActs.map((rowAct, rowIdx) => (
-          <NodeRow
-            key={`${rowAct.actId}-${rowAct.actIndex}`}
-            act={rowAct}
-            rowIndex={rowIdx}
-            currentActIndex={actIndex}
-            currentStep={step}
-            markerSrc={markerSrc}
-            onClickNode={onJumpToStep}
-          />
-        ))}
-      </div>
+    <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col gap-1.5 bg-gradient-to-t from-black/85 to-black/0 px-4 pb-3 pt-8 text-zinc-100">
+      <NodeRow
+        sanitizedActs={sanitizedActs}
+        currentActIndex={actIndex}
+        currentStep={step}
+        markerSrc={markerSrc}
+        onClickNode={onJumpToStep}
+      />
       <input
         type="range"
         min={0}
@@ -947,70 +941,79 @@ function PlaybackBar({
 }
 
 function NodeRow({
-  act,
-  rowIndex,
+  sanitizedActs,
   currentActIndex,
   currentStep,
   markerSrc,
   onClickNode,
 }: {
-  act: Act;
-  rowIndex: number;
+  sanitizedActs: Act[];
   currentActIndex: number;
   currentStep: number;
   markerSrc: string;
   onClickNode: (actIndex: number, step: number) => void;
 }) {
-  const isCurrentAct = rowIndex === currentActIndex;
+  // Flatten every act's history into a single horizontal row. Act
+  // boundaries are visible as a small gap. Sized so a 50-node clear fits
+  // ≈1600px stage at h-8 sprites; below that the row will need modular
+  // compaction (planned: show every Nth label only).
   return (
-    <div className="flex items-center gap-1.5 text-[10px] text-zinc-500">
-      <span className="w-7 shrink-0 text-right tabular-nums">
-        {rowIndex + 1}막
-      </span>
-      <div className="relative flex flex-1 items-center gap-[2px] rounded bg-black/30 px-1 py-0.5 ring-1 ring-white/5">
-        {act.history.map((entry, idx) => {
-          const stepNum = idx + 1;
-          const isCurrent = isCurrentAct && stepNum === currentStep;
-          const isPast = isCurrentAct
-            ? stepNum < currentStep
-            : rowIndex < currentActIndex;
-          return (
-            <button
-              key={`${rowIndex}-${stepNum}`}
-              type="button"
-              onClick={() => onClickNode(rowIndex, stepNum)}
-              className={cn(
-                "group relative flex h-5 min-w-0 flex-1 items-center justify-center transition",
-                isPast ? "opacity-100" : isCurrent ? "opacity-100" : "opacity-55 hover:opacity-100",
-              )}
-              aria-label={`${rowIndex + 1}막 ${stepNum}층`}
-              aria-current={isCurrent ? "true" : undefined}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={nodeSpriteSrc(entry)}
-                alt=""
-                draggable={false}
-                className="h-4 w-4 select-none object-contain transition group-hover:scale-110"
-              />
-              {isCurrent && (
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute -top-3 left-1/2 z-10 -translate-x-1/2"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={markerSrc}
-                    alt=""
-                    draggable={false}
-                    className="h-5 w-5 select-none object-contain drop-shadow-[0_0_4px_rgba(0,0,0,0.7)]"
-                  />
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
+    <div className="relative flex items-stretch gap-2 px-1">
+      {sanitizedActs.map((rowAct, rowIdx) => (
+        <div
+          key={`${rowAct.actId}-${rowAct.actIndex}`}
+          className="relative flex min-w-0 flex-1 items-center gap-[2px] rounded bg-black/35 px-1 py-1 ring-1 ring-white/5"
+          aria-label={`${rowIdx + 1}막`}
+        >
+          {rowAct.history.map((entry, idx) => {
+            const stepNum = idx + 1;
+            const isCurrent =
+              rowIdx === currentActIndex && stepNum === currentStep;
+            const isPast =
+              rowIdx < currentActIndex ||
+              (rowIdx === currentActIndex && stepNum < currentStep);
+            return (
+              <button
+                key={`${rowIdx}-${stepNum}`}
+                type="button"
+                onClick={() => onClickNode(rowIdx, stepNum)}
+                className={cn(
+                  "group relative flex h-8 min-w-0 flex-1 items-center justify-center transition",
+                  isCurrent
+                    ? "opacity-100"
+                    : isPast
+                      ? "opacity-90"
+                      : "opacity-55 hover:opacity-100",
+                )}
+                aria-label={`${rowIdx + 1}막 ${stepNum}층`}
+                aria-current={isCurrent ? "true" : undefined}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={nodeSpriteSrc(entry)}
+                  alt=""
+                  draggable={false}
+                  className="h-7 w-7 select-none object-contain transition group-hover:scale-110"
+                />
+                {isCurrent && (
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -top-7 left-1/2 z-10 -translate-x-1/2"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={markerSrc}
+                      alt=""
+                      draggable={false}
+                      className="h-8 w-8 select-none object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]"
+                    />
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      ))}
     </div>
   );
 }
