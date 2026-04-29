@@ -51,6 +51,75 @@ function relicIconSrc(id: string): string {
   return `/images/sts2/relics/${slug}.webp`;
 }
 
+// Some run exports list class starter cards/relics inside the Neow node's
+// cards_gained / relic_choices. Strip that pollution so the Neow stack
+// reads as 1 card + 1 relic at most. Filter heuristic:
+//
+//  Cards: drop rarity="기본" (Basic STRIKE_*/DEFEND_*) and drop ids whose
+//  occurrence count in cards_gained is *less than* their count in
+//  player.deck at floor<=1 (i.e. data lists 1 of a card the player has 5
+//  starter copies of — unmistakable starter).
+//
+//  Relics: drop the player's first-relic id (always the character starter)
+//  and cap picked count at 1. The user accepts ambiguity in the data —
+//  Neow grants 1 relic by design.
+function sanitizeNeowEntry(
+  entry: ReplayHistoryEntry,
+  run: ReplayRun,
+  cardsById: Record<string, CodexCard>,
+): ReplayHistoryEntry {
+  const isNeow = (entry.rooms ?? []).some((r) => r.model_id === "EVENT.NEOW");
+  if (!isNeow) return entry;
+
+  const player = run.players[0];
+  const starterCounts = new Map<string, number>();
+  for (const c of player?.deck ?? []) {
+    if ((c.floor_added_to_deck ?? 1) <= 1) {
+      starterCounts.set(c.id, (starterCounts.get(c.id) ?? 0) + 1);
+    }
+  }
+  const gainedCounts = new Map<string, number>();
+  for (const c of entry.cards_gained ?? []) {
+    if (c.id) gainedCounts.set(c.id, (gainedCounts.get(c.id) ?? 0) + 1);
+  }
+
+  // Detect pollution: any card whose gained count is *less than* its
+  // starter count is a clear signal that the export dumped class
+  // starters into cards_gained. When that's the case, treat the entire
+  // Neow cards_gained list as polluted and drop everything (including
+  // unique starters like DECAY/REGRET that have equal gained=starter
+  // counts and would otherwise pass).
+  const hasPollution = (entry.cards_gained ?? []).some((c) => {
+    if (!c.id) return false;
+    const gained = gainedCounts.get(c.id) ?? 0;
+    const starter = starterCounts.get(c.id) ?? 0;
+    return gained < starter;
+  });
+
+  const filteredCardsGained = hasPollution
+    ? []
+    : (entry.cards_gained ?? []).filter((c) => {
+        if (!c.id) return false;
+        const card = cardsById[c.id];
+        if (card?.rarity === "기본") return false;
+        return true;
+      });
+
+  const charStarterRelicId = player?.relics[0]?.id;
+  const pickedRelics = (entry.relic_choices ?? []).filter((c) => c.picked && c.id);
+  const cappedRelics = pickedRelics
+    .filter((c) => c.id !== charStarterRelicId)
+    .slice(0, 1);
+  const unpickedRelics = (entry.relic_choices ?? []).filter((c) => !c.picked);
+  const filteredRelicChoices = [...cappedRelics, ...unpickedRelics];
+
+  return {
+    ...entry,
+    cards_gained: filteredCardsGained,
+    relic_choices: filteredRelicChoices,
+  };
+}
+
 function cssEscapeAttr(value: string): string {
   if (typeof CSS !== "undefined" && typeof CSS.escape === "function") {
     return CSS.escape(value);
@@ -189,9 +258,23 @@ export function HistoryCourseShell({
   cardsById: Record<string, CodexCard>;
 }) {
   const analysis = useMemo(() => analyzeReplayRun(run), [run]);
+  // Strip Neow starter pollution from each act's history so both the stack
+  // and the timeline see the same trimmed entry. Other UI (deck modal,
+  // topbar) keeps using raw data — that path already handles starter
+  // attribution via gainedRemaining.
+  const sanitizedActs = useMemo(
+    () =>
+      analysis.acts.map((act) => ({
+        ...act,
+        history: act.history.map((entry) =>
+          sanitizeNeowEntry(entry, run, cardsById),
+        ),
+      })),
+    [analysis.acts, run, cardsById],
+  );
   const runTimeline = useMemo(
-    () => buildRunTimeline(analysis.acts),
-    [analysis.acts],
+    () => buildRunTimeline(sanitizedActs),
+    [sanitizedActs],
   );
   const [actIndex, setActIndex] = useState(0);
   // Continuous time model: ms elapsed within the current act. Step is
@@ -209,7 +292,7 @@ export function HistoryCourseShell({
   const [replayReady, setReplayReady] = useState(false);
   const [prevActIndex, setPrevActIndex] = useState(actIndex);
 
-  const act = analysis.acts[actIndex] ?? null;
+  const act = sanitizedActs[actIndex] ?? null;
   const actTimeline: ActTimeline | null =
     runTimeline.acts[actIndex] ?? null;
   const step = useMemo(

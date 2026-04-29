@@ -67,11 +67,12 @@ test("node action stack — boots run", async ({ page }) => {
 });
 
 test("slot machine — next item visible at pose +1", async ({ page }) => {
-  // Necrobinder APDC seed: Neow node (step 1) has 3 cards + 5 relics = 8
-  // stack items, ideal for verifying the slot machine preroll.
+  // Defect M598 seed: Neow grants 3 random cards + 1 relic = 4 stack
+  // items (a real STS Neow option, not export pollution), perfect for
+  // verifying the slot machine preroll.
   test.setTimeout(60000);
   await page.setViewportSize({ width: 1600, height: 900 });
-  const res = await page.goto(`${BASE}/history-course/APDCAB0SMN`);
+  const res = await page.goto(`${BASE}/history-course/M598491DD0`);
   expect(res?.status()).toBeLessThan(400);
   await page.waitForLoadState("networkidle");
 
@@ -115,6 +116,30 @@ test("slot machine — next item visible at pose +1", async ({ page }) => {
     (el) => parseFloat(window.getComputedStyle(el).opacity || "0"),
   );
   expect(poseOneOpacity).toBeGreaterThan(0.2);
+});
+
+test("Neow strips starter pollution to ≤1 card + ≤1 relic", async ({ page }) => {
+  // APDC export dump bleeds class starters into Neow's cards_gained /
+  // relic_choices. The shell sanitizes the entry before feeding both the
+  // stack and the timeline so the user sees a sensible Neow node.
+  test.setTimeout(60000);
+  await page.setViewportSize({ width: 1600, height: 900 });
+  const res = await page.goto(`${BASE}/history-course/APDCAB0SMN`);
+  expect(res?.status()).toBeLessThan(400);
+  await page.waitForLoadState("networkidle");
+
+  await page
+    .locator('[data-testid="node-stack-item"]')
+    .first()
+    .waitFor({ state: "attached", timeout: 8000 });
+  await page.keyboard.press("Space").catch(() => {});
+  await page.waitForTimeout(120);
+
+  const count = await page.locator('[data-testid="node-stack-item"]').count();
+  // After sanitization: 0 cards (pollution detected) + 1 relic = 1 item.
+  // Allow up to 2 in case the heuristic ever loosens for valid Neow gains.
+  expect(count).toBeLessThanOrEqual(2);
+  expect(count).toBeGreaterThanOrEqual(1);
 });
 
 test("pause freezes the stack mid-phase", async ({ page }) => {
