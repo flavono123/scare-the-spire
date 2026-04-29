@@ -80,11 +80,14 @@ test("slot machine — next item visible at pose +1", async ({ page }) => {
     state: "attached",
     timeout: 8000,
   });
-  // Scrub directly to the middle of item 0's hold phase (localT 1200ms,
-  // inside the 600..2100 hold window). onScrubGlobalMs implicitly pauses
-  // playback so the phase doesn't race forward before we screenshot.
+  // Scrub directly to the middle of item 0's hold phase. Phase 4 added a
+  // 2500ms transit window before the stack starts; new phase budget puts
+  // hold at offset 240..1740 within stack-local time, so scrub to
+  // 2500 (transit) + 900 (mid-hold) = 3400ms global. onScrubGlobalMs
+  // implicitly pauses playback so the phase doesn't race forward before
+  // we screenshot.
   const slider = page.locator('input[type="range"]').first();
-  await slider.fill("1200");
+  await slider.fill("3400");
   await page.waitForTimeout(120);
   await waitForPhase(page, "hold");
   await page.waitForTimeout(120);

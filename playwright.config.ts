@@ -8,6 +8,7 @@ export default defineConfig({
     "monster-qa.spec.ts",
     "history-course-shell.spec.ts",
     "history-course-rewards.spec.ts",
+    "phase4-visual.spec.ts",
     "perf-probe.spec.ts",
     "card-tile-visual.spec.ts",
     "enchantment-stat-combinations.spec.ts",
