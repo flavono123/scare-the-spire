@@ -27,13 +27,15 @@ Parsed from PCK localization + decompiled `sts2.dll`:
 - `scripts/parse-enchantments.py` → `data/sts2/{eng,kor}/enchantments.json`
 - `scripts/parse-monsters.py`    → `data/sts2/{eng,kor}/monsters.json`
 - `scripts/parse-encounters.py`  → `data/sts2/{eng,kor}/encounters.json`
-- `scripts/parse-entity-vars.py` → injects `vars` (default DynamicVar
-  values) into `data/sts2/{eng,kor}/{relics,potions,powers}.json`
 
 Each parser uses DLL C# as source of truth for gameplay numbers
-(HP, damage, room type, monster composition, default `{Var}` template
-values) and the PCK localization tables for Korean/English display
-strings.
+(HP, damage, room type, monster composition) and the PCK localization
+tables for Korean/English display strings.
+
+### 3. Default `{Var}` values for relic/potion/power (delegated)
+Handled by the **`/baking` skill** — pulls each entity's `CanonicalVars`
+defaults out of the same DLL decompile and injects them into
+`data/sts2/{eng,kor}/{relics,potions,powers}.json`. Run after step 2.
 
 ## Prerequisites
 
@@ -63,12 +65,11 @@ python3 scripts/parse-enchantments.py
 python3 scripts/parse-monsters.py
 python3 scripts/parse-encounters.py
 
-# 3.5 Refresh default {Var} values for relics/potions/powers
-python3 scripts/parse-entity-vars.py
-
 # 4. Dry-run first if you want to review the diff:
 python3 scripts/parse-monsters.py --dry-run
-python3 scripts/parse-entity-vars.py --dry-run
+
+# 5. Bake default {Var} values into relic/potion/power data — see /baking
+python3 scripts/parse-entity-vars.py
 ```
 
 Each parser prints added/removed IDs vs the current repo data; review
@@ -129,37 +130,6 @@ re-implementing the PCK format.
   (`PECK_MOVE`); parsers strip it for the canonical `moves[].id`.
 - Damage/block property names in the DLL are like `FooDamage` /
   `FooBlock`; parsers strip the suffix so the JSON key is just `Foo`.
-- `parse-entity-vars.py` walks each entity's `CanonicalVars` override and
-  understands the `XxxVar` shorthand surface in
-  `MegaCrit.Sts2.Core.Localization.DynamicVars/`. The known shorthands are
-  hardcoded in `DEFAULT_NAMES` at the top of the script.
-
-## Self-update rule (read every patch)
-
-The decompiled C# surface drifts patch-to-patch. Before declaring an
-extraction "done", verify the parsers still cover what the new build adds
-and **update this skill + scripts in the same commit** when they don't:
-
-1. After running parsers, scan the dry-run output for unexpected dips in
-   coverage (e.g. relics matched suddenly drops below the JSON ID count).
-2. List new `XxxVar` shorthands MegaCrit may have added:
-   ```bash
-   /bin/ls /tmp/sts2-src/MegaCrit.Sts2.Core.Localization.DynamicVars
-   ```
-   Cross-check against `DEFAULT_NAMES` in `scripts/parse-entity-vars.py`
-   and add any missing ones (read the new class to confirm its
-   `defaultName` constant).
-3. List new entity model directories:
-   ```bash
-   /bin/ls /tmp/sts2-src | grep "MegaCrit.Sts2.Core.Models\."
-   ```
-   If a kind we don't yet parse appears (e.g. `Models.Encounters` did),
-   either extend `parse-entity-vars.py` or add a sibling parser, then
-   document it in the bullet list above.
-4. If the `CanonicalVars` syntax changes (e.g. a new collection helper
-   replaces `_003C_003Ez__ReadOnlySingleElementList`), `find_var_calls`
-   still works (it scans for `new XxxVar(...)`), but verify with a
-   spot-check on a known relic like `DataDisk` (`{FocusPower: 1}`).
-5. Rev `data/sts2/meta.json` to the new game version and commit
-   parser changes + data refresh together so the diff reads as one
-   patch rollup.
+- The `vars` column on relic/potion/power JSON is owned by the
+  **`/baking` skill**, which has its own self-update rule for the
+  `XxxVar` shorthand surface and entity model directories.
