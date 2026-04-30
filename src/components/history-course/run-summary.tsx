@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { CardActionIcon } from "@/components/history-course/card-action-icon";
 import { localize } from "@/lib/sts2-i18n";
+import gameOverQuotes from "@/lib/sts2-game-over-quotes-ko.json";
 import type { CodexCard } from "@/lib/codex-types";
 import type {
   ReplayActAnalysis,
@@ -165,46 +166,187 @@ export function RunSummary({
   );
 }
 
-/** Death backstop — two crimson layers close in vertically, then crossfade
- *  to a near-black panel backdrop. Approximates the game's shader threshold
- *  tween (0→1 InOutSine, 1.5s). */
+/** Death backstop — two crimson layers close in vertically with hand-built
+ *  drip silhouettes along the seam. CSS keyframes drive the slide-in once
+ *  on mount so we don't have to fight React's "transitions only fire on
+ *  prop change" behaviour. Mirrors the visual feel of the game's shader
+ *  threshold tween (0→1 InOutSine, 1.5s). */
 function DeathBackstop({ phase }: { phase: "enter" | "shown" }) {
-  const inEnter = phase === "enter";
   return (
     <>
-      {/* Top crimson half — slides down from -100% to 0. */}
+      <style>{`
+        @keyframes hc-blood-slide-down {
+          from { transform: translateY(-100%); }
+          to   { transform: translateY(0); }
+        }
+        @keyframes hc-blood-slide-up {
+          from { transform: translateY(100%); }
+          to   { transform: translateY(0); }
+        }
+      `}</style>
       <div
         aria-hidden
-        className="absolute left-0 right-0 top-0 h-1/2"
+        data-testid="hc-blood-top"
+        className="pointer-events-none absolute inset-x-0 top-0"
         style={{
-          background:
-            "linear-gradient(to bottom, rgba(40,5,8,0.96) 0%, rgba(120,10,18,0.92) 75%, rgba(160,18,26,0.85) 100%)",
-          transform: inEnter ? "translateY(-100%)" : "translateY(0)",
-          transition: "transform 900ms cubic-bezier(0.6, 0, 0.4, 1)",
+          height: "60%",
+          animation:
+            "hc-blood-slide-down 1100ms cubic-bezier(0.6, 0, 0.4, 1) both",
         }}
-      />
-      {/* Bottom crimson half — slides up from 100% to 0. */}
+      >
+        <BloodHalfSvg variant="top" />
+      </div>
       <div
         aria-hidden
-        className="absolute left-0 right-0 bottom-0 h-1/2"
+        data-testid="hc-blood-bottom"
+        className="pointer-events-none absolute inset-x-0 bottom-0"
         style={{
-          background:
-            "linear-gradient(to top, rgba(40,5,8,0.96) 0%, rgba(120,10,18,0.92) 75%, rgba(160,18,26,0.85) 100%)",
-          transform: inEnter ? "translateY(100%)" : "translateY(0)",
-          transition: "transform 900ms cubic-bezier(0.6, 0, 0.4, 1)",
+          height: "60%",
+          animation:
+            "hc-blood-slide-up 1100ms cubic-bezier(0.6, 0, 0.4, 1) both",
         }}
-      />
-      {/* Once the bands meet, fade to the panel backdrop. */}
+      >
+        <BloodHalfSvg variant="bottom" />
+      </div>
+      {/* Once the bands have closed in, fade to the panel backdrop. */}
       <div
         aria-hidden
         className="absolute inset-0 bg-zinc-950"
         style={{
-          opacity: inEnter ? 0 : 0.92,
+          opacity: phase === "shown" ? 0.92 : 0,
           transition: `opacity ${FADE_TO_PANEL_MS}ms ease-out`,
         }}
       />
     </>
   );
+}
+
+/** SVG silhouette for one crimson half — a deterministic procedural drip
+ *  edge along the inside seam. Two stable seeds differentiate top vs.
+ *  bottom so the seam reads as two interleaving streams rather than one
+ *  mirrored line. preserveAspectRatio=none lets the path stretch to fill
+ *  the wrapping div across any container width. */
+function BloodHalfSvg({ variant }: { variant: "top" | "bottom" }) {
+  const w = 1000;
+  const h = 600;
+  // Solid crimson body height (everything above this is filled), drip
+  // tendrils dangle down past it on the seam. For "top" the drips hang
+  // down; for "bottom" they hang up.
+  const baseY = 460;
+  const drips = buildDripPath(variant, w, h, baseY);
+  const gradId = variant === "top" ? "hc-blood-grad-top" : "hc-blood-grad-bot";
+  return (
+    <svg
+      className="absolute inset-0 h-full w-full"
+      viewBox={`0 0 ${w} ${h}`}
+      preserveAspectRatio="none"
+      aria-hidden
+    >
+      <defs>
+        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+          {variant === "top" ? (
+            <>
+              <stop offset="0%" stopColor="rgba(38,3,6,0.98)" />
+              <stop offset="55%" stopColor="rgba(150,10,18,1)" />
+              <stop offset="100%" stopColor="rgba(210,28,36,1)" />
+            </>
+          ) : (
+            <>
+              <stop offset="0%" stopColor="rgba(210,28,36,1)" />
+              <stop offset="45%" stopColor="rgba(150,10,18,1)" />
+              <stop offset="100%" stopColor="rgba(38,3,6,0.98)" />
+            </>
+          )}
+        </linearGradient>
+      </defs>
+      <path d={drips} fill={`url(#${gradId})`} />
+    </svg>
+  );
+}
+
+/** Build a closed crimson silhouette path with drip tendrils on the seam
+ *  edge. `variant=top` builds a region that fills 0..baseY across the
+ *  whole width and dangles drips downward to baseY+depth; `variant=bottom`
+ *  is the vertical mirror so its drips dangle upward into the seam. */
+function buildDripPath(
+  variant: "top" | "bottom",
+  w: number,
+  h: number,
+  baseY: number,
+): string {
+  // Deterministic per-variant drip seeds. Different counts/widths give
+  // an asymmetric seam.
+  const drips =
+    variant === "top"
+      ? [
+          { x: 60, depth: 92, width: 38 },
+          { x: 145, depth: 48, width: 28 },
+          { x: 215, depth: 132, width: 44 },
+          { x: 305, depth: 70, width: 30 },
+          { x: 385, depth: 110, width: 36 },
+          { x: 470, depth: 56, width: 26 },
+          { x: 545, depth: 100, width: 42 },
+          { x: 625, depth: 78, width: 32 },
+          { x: 705, depth: 124, width: 40 },
+          { x: 790, depth: 60, width: 28 },
+          { x: 860, depth: 96, width: 34 },
+          { x: 935, depth: 70, width: 30 },
+        ]
+      : [
+          { x: 30, depth: 76, width: 30 },
+          { x: 110, depth: 118, width: 42 },
+          { x: 180, depth: 60, width: 28 },
+          { x: 260, depth: 102, width: 38 },
+          { x: 350, depth: 66, width: 30 },
+          { x: 425, depth: 130, width: 44 },
+          { x: 510, depth: 80, width: 32 },
+          { x: 600, depth: 110, width: 40 },
+          { x: 680, depth: 54, width: 26 },
+          { x: 770, depth: 92, width: 36 },
+          { x: 855, depth: 120, width: 42 },
+          { x: 940, depth: 64, width: 28 },
+        ];
+
+  // Mirror Y for the bottom variant — so its body fills h..(h-baseY) and
+  // drips reach up into the seam.
+  const flip = (y: number) => (variant === "top" ? y : h - y);
+
+  // Start at top-left of the body, sweep along the body's seam edge while
+  // dropping smooth teardrop tendrils, then close back along the outer
+  // top.
+  const parts: string[] = [];
+  parts.push(`M 0 ${flip(0)}`);
+  parts.push(`L ${w} ${flip(0)}`);
+  parts.push(`L ${w} ${flip(baseY)}`);
+  // Sort right to left so we walk the seam in one direction.
+  const sorted = [...drips].sort((a, b) => b.x - a.x);
+  for (const d of sorted) {
+    const left = d.x - d.width / 2;
+    const right = d.x + d.width / 2;
+    parts.push(`L ${right} ${flip(baseY)}`);
+    // Smooth teardrop — wide shoulders that swell slightly past the
+    // base, narrowing to a rounded tip. Two cubic Beziers, one per side.
+    //   right shoulder → tip:
+    //     C right(swell)              right(belly)         tip
+    //   tip → left shoulder:
+    //     C left(belly)               left(swell)          left
+    const tipX = d.x;
+    const tipY = flip(baseY + d.depth);
+    const swellOut = d.width * 0.42; // bulge outward at the shoulders
+    const shoulderSwell = baseY + d.depth * 0.18;
+    const bellyY = baseY + d.depth * 0.62;
+    parts.push(
+      `C ${right + swellOut} ${flip(shoulderSwell)} ${tipX + d.width * 0.18} ${flip(bellyY)} ${tipX} ${tipY}`,
+    );
+    parts.push(
+      `C ${tipX - d.width * 0.18} ${flip(bellyY)} ${left - swellOut} ${flip(shoulderSwell)} ${left} ${flip(baseY)}`,
+    );
+  }
+  // Close back to the left edge along the seam, then up along the outer
+  // edge to the start.
+  parts.push(`L 0 ${flip(baseY)}`);
+  parts.push("Z");
+  return parts.join(" ");
 }
 
 /** Panel content — mirrors NRunHistory's body. */
@@ -264,10 +406,31 @@ function SummaryPanel({
           </div>
         </header>
 
-        {/* ----- Quote (mood line) ----- */}
-        <p className="mt-4 text-center text-sm italic text-zinc-400">
-          「{deathQuoteFor(character, run.win)}」
-        </p>
+        {/* ----- Banner (BANNER.lose* / BANNER.trueWin) + mood quote
+                (QUOTES.* / MAP_POINT_HISTORY.falseVictory.*) — both
+                deterministic per seed. ----- */}
+        <div className="mt-4 text-center">
+          <h2
+            className="text-3xl font-black tracking-tight"
+            style={{
+              color: run.win ? "#fbbf24" : "#fca5a5",
+              textShadow: "0 2px 12px rgba(0,0,0,0.85)",
+            }}
+          >
+            {bannerFor(run.seed, run.win)}
+          </h2>
+          {(() => {
+            const q = quoteFor(run.seed, character, run.win);
+            if (!q) return null;
+            return (
+              <p className="mt-2 text-sm italic text-zinc-300">
+                {QUOTES_TABLE["ENCOUNTER_QUOTE_LEFT"] ?? "「"}
+                {q}
+                {QUOTES_TABLE["ENCOUNTER_QUOTE_RIGHT"] ?? "」"}
+              </p>
+            );
+          })()}
+        </div>
 
         {/* ----- Three act rows ----- */}
         <section className="mt-5 space-y-2">
@@ -638,18 +801,79 @@ function formatRunDate(startTime: number | string | null | undefined): string {
   return `${y}년 ${m}월 ${d}일 ${hh}:${mm}`;
 }
 
-function deathQuoteFor(character: string, win: boolean): string {
-  if (win) return "정상에 오른 자, 자유로워지는가.";
+// ---- Banner + quote pickers, mirroring NGameOverScreen + NRunHistory ------
+//
+// NGameOverScreen.InitializeBannerAndQuote:
+//   if win  → BANNER.trueWin + (banner falseWin used inside game for false-win)
+//   if lose → random pick from BANNER.lose0..7 + random pick from QUOTES.0..16
+//
+// NRunHistory.LoadDeathQuote (the historical-view quote, also the encounter
+// quote shown after the user clicks Continue):
+//   win     → random pick from MAP_POINT_HISTORY.falseVictory.0..1
+//   abandon → random pick from MAP_POINT_HISTORY.abandon.0..2
+//   loss    → encounter-specific (skipped — we don't carry encounter death
+//             metadata for replay fixtures yet)
+//
+// Both pickers use Rng(StringHelper.GetDeterministicHashCode(history.Seed)).
+// We reproduce the determinism with a simple stable hash on the seed.
+
+const QUOTES_TABLE = gameOverQuotes as Record<string, string>;
+
+function stableHashFromSeed(seed: string): number {
+  let hash = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    hash ^= seed.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function pickByPrefix(prefix: string, seed: string): string | null {
+  const keys = Object.keys(QUOTES_TABLE)
+    .filter((k) => k.startsWith(prefix))
+    .sort();
+  if (keys.length === 0) return null;
+  const idx = stableHashFromSeed(prefix + ":" + seed) % keys.length;
+  return QUOTES_TABLE[keys[idx]] ?? null;
+}
+
+function bannerFor(seed: string, win: boolean): string {
+  if (win) return QUOTES_TABLE["BANNER.trueWin"] ?? "승리";
+  return pickByPrefix("BANNER.lose", seed) ?? "패배";
+}
+
+function quoteFor(
+  seed: string,
+  character: string,
+  win: boolean,
+): string {
+  // Win: "false victory" line interpolated with character title.
+  if (win) {
+    const tmpl = pickByPrefix("MAP_POINT_HISTORY.falseVictory.", seed);
+    if (tmpl) return interpolateCharacter(tmpl, character);
+    return "";
+  }
+  // Loss: opening mood quote (QUOTES.*). Encounter-specific death lines
+  // require encounter metadata we don't carry, so we surface the same
+  // generic mood quote NGameOverScreen shows on the death entry tween.
+  return pickByPrefix("QUOTES.", seed) ?? "";
+}
+
+function interpolateCharacter(template: string, character: string): string {
+  // The game uses {character} / {possessiveAdjective} inside the false-
+  // victory templates. We only replace {character} (subject form) — the
+  // possessive in our localised set always reads correctly without a
+  // gendered adjective in Korean.
   const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
-  // Mood lines per character — short approximations of the game's
-  // QUOTES.* loc strings. Stable rather than random for now.
-  return (
+  const label =
     {
-      ironclad: "분노만으로는 충분치 않았다.",
-      silent: "그림자조차 그를 가릴 수 없었다.",
-      defect: "디펙트는 정상에 오른 것일까요?",
-      necrobinder: "결속은 끊어지고, 영혼은 흩어진다.",
-      regent: "왕좌는 비어 있다. 또다시.",
-    }[slug] ?? "여정은 여기서 끝난다."
-  );
+      ironclad: "아이언클래드",
+      silent: "사일런트",
+      defect: "디펙트",
+      necrobinder: "네크로바인더",
+      regent: "리젠트",
+    }[slug] ?? slug;
+  return template
+    .replace(/\{character\}/g, label)
+    .replace(/\{possessiveAdjective\}/g, "그의");
 }

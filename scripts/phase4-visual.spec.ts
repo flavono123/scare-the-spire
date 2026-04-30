@@ -136,10 +136,19 @@ test("run summary — death backstop + panel", async ({ page }) => {
   expect(totalMs).toBeGreaterThan(0);
   await scrubGlobal(page, totalMs);
 
-  // Mid death backstop (bands closing in).
-  await page.waitForTimeout(450);
+  // Three frames across the 900ms band slide so the displacement pattern
+  // is visible at different stages of the close-in.
+  await page.waitForTimeout(220);
   await page.screenshot({
-    path: path.join(OUT_DIR, "10-summary-backstop-mid.png"),
+    path: path.join(OUT_DIR, "10-backstop-early.png"),
+  });
+  await page.waitForTimeout(280);
+  await page.screenshot({
+    path: path.join(OUT_DIR, "10-backstop-mid.png"),
+  });
+  await page.waitForTimeout(280);
+  await page.screenshot({
+    path: path.join(OUT_DIR, "10-backstop-late.png"),
   });
 
   // Wait for panel to appear (1500ms enter + 600ms fade-in).
