@@ -114,6 +114,45 @@ test("phase 4 — trail / sweep / pop / card-fly mirror", async ({ page }) => {
   expect(errors, errors.join("\n")).toHaveLength(0);
 });
 
+test("run summary — death backstop + panel", async ({ page }) => {
+  test.setTimeout(45_000);
+  await page.setViewportSize({ width: 1600, height: 900 });
+  const res = await page.goto(`${BASE}/history-course/${SEED}`);
+  expect(res?.status()).toBe(200);
+  await page.waitForSelector('[data-testid="node-stack-item"], .ring-1', {
+    timeout: 8_000,
+  });
+  await page.waitForTimeout(3_500);
+  await page.keyboard.press("Space"); // pause
+
+  // Jump to globalMs = totalMs (run end). Read totalMs off the slider's
+  // max attribute, then scrub there.
+  const totalMs = await page.evaluate(() => {
+    const input = document.querySelector(
+      'input[type="range"]',
+    ) as HTMLInputElement | null;
+    return input ? Number(input.max) : 0;
+  });
+  expect(totalMs).toBeGreaterThan(0);
+  await scrubGlobal(page, totalMs);
+
+  // Mid death backstop (bands closing in).
+  await page.waitForTimeout(450);
+  await page.screenshot({
+    path: path.join(OUT_DIR, "10-summary-backstop-mid.png"),
+  });
+
+  // Wait for panel to appear (1500ms enter + 600ms fade-in).
+  await page.waitForSelector('[data-testid="summary-panel"]', {
+    timeout: 4_000,
+  });
+  await page.waitForTimeout(800);
+  await page.screenshot({
+    path: path.join(OUT_DIR, "11-summary-panel.png"),
+    fullPage: false,
+  });
+});
+
 test("relic fly stays linear (no Bezier)", async ({ page }) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 1600, height: 900 });

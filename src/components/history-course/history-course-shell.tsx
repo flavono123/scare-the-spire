@@ -13,6 +13,7 @@ import {
   type NodeStackItem,
   type NodeStackItemKind,
 } from "@/components/history-course/node-action-stack";
+import { RunSummary } from "@/components/history-course/run-summary";
 import { TopBar } from "@/components/history-course/topbar";
 import { buildTopbarState } from "@/components/history-course/topbar-state";
 import type { CodexCard } from "@/lib/codex-types";
@@ -718,6 +719,10 @@ export function HistoryCourseShell({
           stackItems={stepStackItems}
           hidingRelicIds={pendingRelicIds}
           topbarState={topbarState}
+          cardsById={cardsById}
+          runEnded={
+            runTimeline.totalMs > 0 && globalMs >= runTimeline.totalMs - 1
+          }
           onTogglePlay={() => setPlaying((v) => !v)}
           onChangeRate={setRate}
           onScrubGlobalMs={(value) => {
@@ -798,6 +803,8 @@ function Stage({
   stackItems,
   hidingRelicIds,
   topbarState,
+  cardsById,
+  runEnded,
   onTogglePlay,
   onChangeRate,
   onScrubGlobalMs,
@@ -825,6 +832,8 @@ function Stage({
   stackItems: NodeStackItem[];
   hidingRelicIds: ReadonlySet<string>;
   topbarState: ReturnType<typeof buildTopbarState>;
+  cardsById: Record<string, CodexCard>;
+  runEnded: boolean;
   onTogglePlay: () => void;
   onChangeRate: (rate: Rate) => void;
   onScrubGlobalMs: (ms: number) => void;
@@ -973,6 +982,14 @@ function Stage({
         onChangeRate={onChangeRate}
         onScrubGlobalMs={onScrubGlobalMs}
         onJumpToStep={onJumpToStep}
+      />
+
+      <RunSummary
+        run={run}
+        acts={sanitizedActs}
+        topbarState={topbarState}
+        cardsById={cardsById}
+        visible={runEnded}
       />
     </div>
   );
