@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { DonationPanel } from "@/components/history-course/donation-panel";
 import { HistoryCourseShell } from "@/components/history-course/history-course-shell";
 import { collectRelevantCardIds } from "@/components/history-course/topbar-state";
-import { loadRun } from "@/lib/run-store";
 import type { CodexCard } from "@/lib/codex-types";
+import { getDonatedRun } from "@/lib/run-donation";
+import { loadRun, saveRun } from "@/lib/run-store";
 import { parseRunRouteSlug } from "@/lib/sts2-run-hash";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
 
@@ -14,6 +16,7 @@ interface Props {
   allCards: CodexCard[];
 }
 
+type Source = "local" | "donated";
 type Status = "loading" | "ok" | "missing" | "invalid";
 
 function stripCardId(id: string): string {
@@ -22,6 +25,8 @@ function stripCardId(id: string): string {
 
 export function RunDetailLoader({ runId, allCards }: Props) {
   const [run, setRun] = useState<ReplayRun | null>(null);
+  const [raw, setRaw] = useState<string | null>(null);
+  const [source, setSource] = useState<Source | null>(null);
   const [status, setStatus] = useState<Status>("loading");
 
   useEffect(() => {
@@ -32,16 +37,34 @@ export function RunDetailLoader({ runId, allCards }: Props) {
     let cancelled = false;
     (async () => {
       try {
+        // 1) Local stash first — fast, offline-capable, primary path.
         const stored = await loadRun(runId);
         if (cancelled) return;
-        if (!stored) {
-          setStatus("missing");
+        if (stored) {
+          const parsed = parseReplayRun(stored.raw);
+          if (cancelled) return;
+          setRun(parsed);
+          setRaw(stored.raw);
+          setSource("local");
+          setStatus("ok");
           return;
         }
-        const parsed = parseReplayRun(stored.raw);
+        // 2) Public donation as a fallback so shared URLs work
+        // across browsers/devices.
+        const donated = await getDonatedRun(runId);
         if (cancelled) return;
-        setRun(parsed);
-        setStatus("ok");
+        if (donated) {
+          const parsed = parseReplayRun(donated.raw);
+          if (cancelled) return;
+          // Cache to local IDB so subsequent visits are offline.
+          void saveRun({ runId, raw: donated.raw }).catch(() => {});
+          setRun(parsed);
+          setRaw(donated.raw);
+          setSource("donated");
+          setStatus("ok");
+          return;
+        }
+        setStatus("missing");
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error("[history-course] load failed", err);
@@ -92,7 +115,14 @@ export function RunDetailLoader({ runId, allCards }: Props) {
     if (card) cardsById[replayId] = card;
   }
 
-  return <HistoryCourseShell run={run} cardsById={cardsById} />;
+  return (
+    <>
+      {source && raw && (
+        <DonationPanel runId={runId} run={run} raw={raw} source={source} />
+      )}
+      <HistoryCourseShell run={run} cardsById={cardsById} />
+    </>
+  );
 }
 
 function EmptyState({ title, message }: { title: string; message: string }) {
