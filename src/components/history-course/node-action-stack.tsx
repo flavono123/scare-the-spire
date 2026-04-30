@@ -102,28 +102,44 @@ interface Props {
 }
 
 export function NodeActionStack({ stageRef, items, nodeLocalMs, hidden }: Props) {
-  // Anchor — right side of the current map node.
+  // Anchor — right side of the current map node. The map auto-scrolls
+  // smoothly when step changes (~700ms tween), so a one-shot measure at
+  // step transition would freeze origin at the pre-scroll position and
+  // the stack would drift relative to the node throughout the scroll.
+  // We poll on rAF while mounted; the tolerance filter keeps quiescent
+  // frames from re-rendering. Cost is ~one bounding-rect read per frame.
   const [origin, setOrigin] = useState<Point | null>(null);
-  useLayoutEffect(() => {
+  useEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
-    const compute = () => {
-      const stageRect = stage.getBoundingClientRect();
-      const node = stage.querySelector<HTMLElement>('[data-node-current="true"]');
+    let raf = 0;
+    const tick = () => {
+      const node = stage.querySelector<HTMLElement>(
+        '[data-node-current="true"]',
+      );
       if (!node) {
-        setOrigin(null);
-        return;
+        setOrigin((prev) => (prev === null ? prev : null));
+      } else {
+        const stageRect = stage.getBoundingClientRect();
+        const r = node.getBoundingClientRect();
+        const x = r.left - stageRect.left + r.width + 14;
+        const y = r.top - stageRect.top + r.height / 2 - 30;
+        setOrigin((prev) => {
+          if (
+            prev &&
+            Math.abs(prev.x - x) < 0.5 &&
+            Math.abs(prev.y - y) < 0.5
+          ) {
+            return prev;
+          }
+          return { x, y };
+        });
       }
-      const r = node.getBoundingClientRect();
-      setOrigin({
-        x: r.left - stageRect.left + r.width + 14,
-        y: r.top - stageRect.top + r.height / 2 - 30,
-      });
+      raf = window.requestAnimationFrame(tick);
     };
-    compute();
-    const raf = window.requestAnimationFrame(compute);
+    raf = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(raf);
-  }, [stageRef, items]);
+  }, [stageRef]);
 
   // Pre-measure fly destinations whenever the items batch changes.
   const [targets, setTargets] = useState<Map<string, Point>>(new Map());
