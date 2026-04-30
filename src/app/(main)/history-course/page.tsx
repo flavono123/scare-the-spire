@@ -3,6 +3,8 @@ import path from "node:path";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { RunUploadZone } from "@/components/history-course/run-upload-zone";
+import { UploadTutorial } from "@/components/history-course/upload-tutorial";
 import { HISTORY_COURSE_ENABLED } from "@/lib/feature-flags";
 import { parseReplayRun } from "@/lib/sts2-run-replay";
 
@@ -97,12 +99,24 @@ export default async function HistoryCourseIndexPage() {
           </h1>
           <p className="mt-1 max-w-2xl text-sm leading-6 text-zinc-400">
             한 판의 시드와 진행 기록만으로 막 맵을 다시 그려 처음부터 끝까지 따라갑니다.
-            아래에서 한 판을 골라보세요.
+            내 런 폴더를 올리거나 아래 예시 런 중 하나를 골라보세요.
           </p>
         </div>
       </header>
 
-      <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 space-y-4">
+        <RunUploadZone />
+        <UploadTutorial />
+      </div>
+
+      <header className="mt-12 mb-3">
+        <h2 className="text-lg font-bold text-zinc-100">예시 런</h2>
+        <p className="text-xs text-zinc-500">
+          업로드 전에 시연을 원하신다면 아래에서 골라보세요.
+        </p>
+      </header>
+
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {entries.map((entry) => {
           const meta = CHARACTER_META[entry.character] ?? {
             ko: entry.character,
