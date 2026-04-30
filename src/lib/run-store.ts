@@ -9,10 +9,20 @@ const DB_NAME = "scare-the-spire";
 const DB_VERSION = 1;
 const STORE_RUNS = "runs";
 
+// "upload" — uploaded by the visitor in this browser. Owned by them.
+// "donation-cache" — pulled from Supabase when visiting a shared URL,
+// cached locally only for fast revisit. NOT owned by the visitor and
+// must not appear in "내 런" (otherwise viewing someone else's shared
+// run would silently adopt it as theirs).
+export type StoredRunOrigin = "upload" | "donation-cache";
+
 export interface StoredRun {
   runId: string;
   raw: string;
   savedAt: number;
+  // Optional for backward compat with entries written before the
+  // origin field existed. Treat absent origin as "upload".
+  origin?: StoredRunOrigin;
 }
 
 function openDb(): Promise<IDBDatabase> {
@@ -37,8 +47,14 @@ function openDb(): Promise<IDBDatabase> {
 export async function saveRun(input: {
   runId: string;
   raw: string;
+  origin?: StoredRunOrigin;
 }): Promise<StoredRun> {
-  const record: StoredRun = { ...input, savedAt: Date.now() };
+  const record: StoredRun = {
+    runId: input.runId,
+    raw: input.raw,
+    origin: input.origin ?? "upload",
+    savedAt: Date.now(),
+  };
   const db = await openDb();
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_RUNS, "readwrite");
@@ -86,6 +102,13 @@ export async function listRuns(): Promise<StoredRun[]> {
       reject(req.error);
     };
   });
+}
+
+// Visitor's own uploads only — excludes runs cached from visiting a
+// shared donation URL. Use this for "내 런" surfaces.
+export async function listOwnRuns(): Promise<StoredRun[]> {
+  const all = await listRuns();
+  return all.filter((r) => (r.origin ?? "upload") !== "donation-cache");
 }
 
 export async function deleteRun(runId: string): Promise<void> {

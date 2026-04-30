@@ -57,7 +57,13 @@ export function RunDetailLoader({ runId, allCards }: Props) {
           const parsed = parseReplayRun(donated.raw);
           if (cancelled) return;
           // Cache to local IDB so subsequent visits are offline.
-          void saveRun({ runId, raw: donated.raw }).catch(() => {});
+          // Tag as donation-cache so the landing's "내 런" list does
+          // NOT pick this up — it isn't the visitor's run.
+          void saveRun({
+            runId,
+            raw: donated.raw,
+            origin: "donation-cache",
+          }).catch(() => {});
           setRun(parsed);
           setRaw(donated.raw);
           setSource("donated");

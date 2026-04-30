@@ -4,7 +4,7 @@ import Image from "next/image";
 import { AlertCircle, FolderUp, RefreshCw, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { deleteRun, listRuns, saveRun } from "@/lib/run-store";
+import { deleteRun, listOwnRuns, saveRun } from "@/lib/run-store";
 import {
   isBuildSupported,
   MIN_SUPPORTED_BUILD,
@@ -183,10 +183,12 @@ export function RunUploadZone({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Hydrate the preview list from the IDB stash on mount so that
-  // navigating away and back doesn't lose what was uploaded.
+  // navigating away and back doesn't lose what was uploaded. We use
+  // listOwnRuns so donation-cache entries (runs the visitor merely
+  // viewed via a shared URL) don't masquerade as the visitor's own.
   useEffect(() => {
     let cancelled = false;
-    listRuns().then((records) => {
+    listOwnRuns().then((records) => {
       if (cancelled) return;
       const out: ParsedRun[] = [];
       for (const rec of records) {
