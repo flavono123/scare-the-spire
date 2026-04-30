@@ -11,6 +11,8 @@ import {
   useState,
   useTransition,
 } from "react";
+import { listRuns, saveRun } from "@/lib/run-store";
+import { computeRunHash, runRouteSlug } from "@/lib/sts2-run-hash";
 import {
   analyzeReplayRun,
   parseReplayRun,
@@ -242,80 +244,12 @@ const MAP_BACKDROP_SEGMENTS = [
 ] as const;
 
 type StoredRun = {
-  id: string;
+  id: string; // = runId (content-addressable slug)
   label: string;
   run: ReplayRun;
-  kind: "preset" | "user";
 };
 
-const STORED_RUNS_KEY = "sts2-replay-poc:stored-runs:v1";
-const STORED_ACTIVE_KEY = "sts2-replay-poc:active-run:v1";
-const FIXTURE_INDEX_URL = "/dev/run-fixtures/index.json";
-
-type FixtureIndexEntry = {
-  slug: string;
-  label: string;
-  seed: string;
-  ascension: number;
-  build: string;
-  character: string;
-};
-
-async function loadFixturePresets(): Promise<StoredRun[]> {
-  try {
-    const indexRes = await fetch(FIXTURE_INDEX_URL, { cache: "no-cache" });
-    if (!indexRes.ok) return [];
-    const entries = (await indexRes.json()) as FixtureIndexEntry[];
-    const results = await Promise.all(
-      entries.map(async (entry): Promise<StoredRun | null> => {
-        try {
-          const res = await fetch(`/dev/run-fixtures/${entry.slug}.json`, { cache: "no-cache" });
-          if (!res.ok) return null;
-          const text = await res.text();
-          const run = parseReplayRun(text);
-          return {
-            id: `__preset_${entry.slug}`,
-            label: `${entry.label} · ${entry.seed}`,
-            run,
-            kind: "preset",
-          };
-        } catch {
-          return null;
-        }
-      }),
-    );
-    return results.filter((item): item is StoredRun => item !== null);
-  } catch {
-    return [];
-  }
-}
-
-function readStoredRuns(): StoredRun[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(STORED_RUNS_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed
-      .filter(
-        (entry): entry is Partial<StoredRun> =>
-          entry &&
-          typeof entry.id === "string" &&
-          typeof entry.label === "string" &&
-          entry.run &&
-          typeof entry.run === "object",
-      )
-      .map<StoredRun>((entry) => ({
-        id: entry.id as string,
-        label: entry.label as string,
-        run: entry.run as ReplayRun,
-        kind: entry.kind === "preset" ? "preset" : "user",
-      }));
-  } catch {
-    return [];
-  }
-}
+const STORED_ACTIVE_KEY = "sts2-replay-poc:active-run:v2";
 
 function readActiveRunId(): string | null {
   if (typeof window === "undefined") return null;
@@ -331,6 +265,20 @@ function describeRun(run: ReplayRun): string {
   return `${run.seed} · A${run.ascension} · ${character}`;
 }
 
+async function hydrateStoredRuns(): Promise<StoredRun[]> {
+  const records = await listRuns();
+  const out: StoredRun[] = [];
+  for (const rec of records) {
+    try {
+      const run = parseReplayRun(rec.raw);
+      out.push({ id: rec.runId, label: describeRun(run), run });
+    } catch {
+      // skip malformed entries — should be rare since we parsed before saving
+    }
+  }
+  return out;
+}
+
 export function RunReplayPoc() {
   const [storedRuns, setStoredRuns] = useState<StoredRun[]>([]);
   const [activeId, setActiveId] = useState<string | null>(
@@ -342,10 +290,8 @@ export function RunReplayPoc() {
 
   useEffect(() => {
     let cancelled = false;
-    const persistedUser = readStoredRuns().filter((entry) => entry.kind === "user");
-    loadFixturePresets().then((presets) => {
+    hydrateStoredRuns().then((next) => {
       if (cancelled) return;
-      const next = [...presets, ...persistedUser];
       setStoredRuns(next);
       setActiveId((prev) => {
         if (prev && next.some((entry) => entry.id === prev)) return prev;
@@ -358,15 +304,13 @@ export function RunReplayPoc() {
   }, []);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const persistable = storedRuns.filter((entry) => entry.kind === "user");
+    if (typeof window === "undefined" || !activeId) return;
     try {
-      window.localStorage.setItem(STORED_RUNS_KEY, JSON.stringify(persistable));
-      if (activeId) window.localStorage.setItem(STORED_ACTIVE_KEY, activeId);
+      window.localStorage.setItem(STORED_ACTIVE_KEY, activeId);
     } catch {
       // ignore quota
     }
-  }, [storedRuns, activeId]);
+  }, [activeId]);
 
   const activeEntry =
     storedRuns.find((entry) => entry.id === activeId) ?? storedRuns[0] ?? null;
@@ -391,9 +335,10 @@ export function RunReplayPoc() {
       try {
         const text = await file.text();
         const next = parseReplayRun(text);
-        const baseLabel = file.name.replace(/\.(run|json)$/i, "");
-        const id = `user_${baseLabel}-${next.seed}-${Math.random().toString(36).slice(2, 8)}`;
-        incoming.push({ id, label: `${baseLabel} · ${describeRun(next)}`, run: next, kind: "user" });
+        const hash = await computeRunHash(next);
+        const id = runRouteSlug(hash);
+        await saveRun({ runId: id, raw: text });
+        incoming.push({ id, label: describeRun(next), run: next });
       } catch (caught) {
         const message = caught instanceof Error ? caught.message : "파싱 실패";
         failures.push(`${file.name}: ${message}`);
@@ -405,14 +350,21 @@ export function RunReplayPoc() {
     }
     setError(failures.length > 0 ? failures.join("\n") : null);
     startTransition(() => {
-      setStoredRuns((prev) => [...prev, ...incoming]);
+      setStoredRuns((prev) => {
+        const known = new Set(prev.map((entry) => entry.id));
+        const merged = [...prev];
+        for (const entry of incoming) {
+          if (!known.has(entry.id)) merged.push(entry);
+        }
+        return merged;
+      });
       setActiveId(incoming[0].id);
     });
   }
 
   function handleRemove(id: string) {
     const target = storedRuns.find((entry) => entry.id === id);
-    if (!target || target.kind === "preset") return;
+    if (!target) return;
     startTransition(() => {
       setStoredRuns((prev) => {
         const next = prev.filter((entry) => entry.id !== id);
@@ -422,6 +374,8 @@ export function RunReplayPoc() {
         return next;
       });
     });
+    // Best-effort delete from IDB; don't await — UI already advanced.
+    void import("@/lib/run-store").then(({ deleteRun }) => deleteRun(id));
   }
 
   function handleRelabel(id: string, nextLabel: string) {
@@ -620,26 +574,17 @@ function RunLibrary({
                 >
                   라벨
                 </button>
-                <span
-                  className={`text-[10px] font-semibold uppercase tracking-[0.2em] ${
-                    entry.kind === "preset" ? "text-sky-300/80" : "text-emerald-300/80"
-                  }`}
+                <button
+                  type="button"
+                  className="text-xs text-red-400/80 transition hover:text-red-300"
+                  onClick={() => {
+                    if (window.confirm("이 런을 라이브러리에서 제거할까요?")) {
+                      onRemove(entry.id);
+                    }
+                  }}
                 >
-                  {entry.kind === "preset" ? "preset" : "upload"}
-                </span>
-                {entry.kind === "user" && (
-                  <button
-                    type="button"
-                    className="text-xs text-red-400/80 transition hover:text-red-300"
-                    onClick={() => {
-                      if (window.confirm("이 런을 라이브러리에서 제거할까요?")) {
-                        onRemove(entry.id);
-                      }
-                    }}
-                  >
-                    삭제
-                  </button>
-                )}
+                  삭제
+                </button>
               </div>
             </li>
           );
