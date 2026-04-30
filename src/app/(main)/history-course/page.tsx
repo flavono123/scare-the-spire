@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { DonatedRunsSection } from "@/components/history-course/donated-runs-section";
 import { RunUploadZone } from "@/components/history-course/run-upload-zone";
 import { UploadTutorial } from "@/components/history-course/upload-tutorial";
 import { HISTORY_COURSE_ENABLED } from "@/lib/feature-flags";
@@ -37,6 +38,8 @@ export default function HistoryCourseIndexPage() {
         <RunUploadZone />
         <UploadTutorial />
       </div>
+
+      <DonatedRunsSection />
     </div>
   );
 }
