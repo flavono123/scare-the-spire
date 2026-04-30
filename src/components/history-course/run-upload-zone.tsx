@@ -256,13 +256,14 @@ export function RunUploadZone() {
             </p>
             <p className="mt-1 text-xs text-zinc-400">
               <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-zinc-300">
-                history
+                SlayTheSpire2/steam
               </code>{" "}
               폴더 통째로 드래그하거나 개별{" "}
               <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-zinc-300">
                 .run
               </code>{" "}
-              파일을 드롭하세요. 업로드 없이 브라우저에서만 처리됩니다.
+              파일을 드롭하세요. 하위 폴더는 자동으로 뒤집니다. 본인 브라우저에서만
+              처리됩니다.
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 pt-1">

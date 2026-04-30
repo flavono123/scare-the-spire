@@ -13,21 +13,18 @@ const OS_LABEL: Record<OS, string> = {
 };
 
 const OS_PATH: Record<OS, string> = {
-  macos:
-    "~/Library/Application Support/SlayTheSpire2/steam/<steam-id>/profile1/saves/history",
-  windows:
-    "%APPDATA%\\SlayTheSpire2\\steam\\<steam-id>\\profile1\\saves\\history",
-  linux:
-    "~/.local/share/SlayTheSpire2/steam/<steam-id>/profile1/saves/history",
+  macos: "~/Library/Application Support/SlayTheSpire2/steam",
+  windows: "%APPDATA%\\SlayTheSpire2\\steam",
+  linux: "~/.local/share/SlayTheSpire2/steam",
 };
 
 const OS_HINT: Record<OS, string> = {
   macos:
-    "Finder에서 Cmd+Shift+G 누르고 위 경로 붙여넣기. Library 폴더는 기본 숨김이라 직접 들어가긴 어렵습니다.",
+    "Finder에서 Cmd+Shift+G 누르고 위 경로를 붙여넣은 뒤, 열린 steam 폴더 자체를 드롭존에 드래그하세요. Library 폴더가 기본 숨김이라 손으로 들어가긴 어렵습니다.",
   windows:
-    "탐색기 주소창에 위 경로를 그대로 붙여넣으세요. %APPDATA% 가 자동으로 풀립니다.",
+    "탐색기 주소창에 위 경로를 그대로 붙여넣고, 열린 steam 폴더 자체를 드롭존에 드래그하세요. %APPDATA% 가 자동으로 풀립니다.",
   linux:
-    "Steam Proton 환경이라면 ~/.steam/steam/steamapps/compatdata/<app-id>/pfx/drive_c/users/steamuser/AppData/Roaming/SlayTheSpire2/... 아래에 있을 수 있습니다.",
+    "위 경로의 steam 폴더를 통째로 드래그하세요. Steam Proton 환경이면 ~/.steam/steam/steamapps/compatdata/<app-id>/pfx/drive_c/users/steamuser/AppData/Roaming/SlayTheSpire2/ 아래에 있을 수 있습니다.",
 };
 
 function detectOS(): OS {
@@ -126,16 +123,11 @@ export function UploadTutorial() {
 
         <ul className="space-y-1.5 text-xs leading-5 text-zinc-400">
           <li>
-            <span className="text-zinc-500">·</span>{" "}
-            <code className="font-mono text-zinc-300">&lt;steam-id&gt;</code>{" "}
-            는 17자리 숫자 폴더입니다. 보통 하나만 있습니다.
-          </li>
-          <li>
-            <span className="text-zinc-500">·</span> 한 번 한 적이 있으면{" "}
-            <code className="font-mono text-zinc-300">profile1</code>,
-            여럿이면{" "}
-            <code className="font-mono text-zinc-300">profile2</code>{" "}
-            등으로 나옵니다.
+            <span className="text-zinc-500">·</span> 폴더 안의 하위 구조
+            (steam-id / profile1 / saves / history) 는 신경쓰지 않아도 됩니다.{" "}
+            <span className="text-zinc-300">
+              .run 파일을 자동으로 모두 찾습니다.
+            </span>
           </li>
           <li>
             <span className="text-zinc-500">·</span> 폴더 안의{" "}
@@ -152,6 +144,11 @@ export function UploadTutorial() {
               계정·이메일·실명 같은 개인정보는 없습니다
             </span>
             .
+          </li>
+          <li>
+            <span className="text-zinc-500">·</span> 업로드되는 곳은 본인
+            브라우저뿐입니다. 익명으로 공유하려면 런 선택 후 별도 버튼이
+            제공됩니다.
           </li>
         </ul>
       </div>
