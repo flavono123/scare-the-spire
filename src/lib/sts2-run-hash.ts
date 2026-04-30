@@ -4,9 +4,13 @@ const CROCKFORD = "0123456789abcdefghjkmnpqrstvwxyz";
 
 // Bump when the identity key shape (which fields, what order, what
 // separator) changes. Old slugs keep working because we dispatch to
-// the matching key builder by version. Embedding the version in the
-// URL is part of the public contract — never reuse a digit.
+// the matching key builder by version. The version digit is the first
+// character of every slug — never reuse a digit.
 export const HASH_VERSION = 1;
+
+// Body length after the 1-char version prefix. 15 base32 chars ≈
+// 75 bits of entropy — ample for content-addressable identity.
+const HASH_BODY_LENGTH = 15;
 
 function bytesToBase32(bytes: Uint8Array): string {
   let bits = 0;
@@ -45,43 +49,27 @@ async function sha256Base32(input: string, length: number): Promise<string> {
   return bytesToBase32(new Uint8Array(digest)).slice(0, length);
 }
 
-export async function computeRunHash(
-  run: ReplayRun,
-  length = 10,
-): Promise<string> {
-  return sha256Base32(runIdentityKeyV1(run), length);
+export async function computeRunHash(run: ReplayRun): Promise<string> {
+  return sha256Base32(runIdentityKeyV1(run), HASH_BODY_LENGTH);
 }
 
-// Build segment is normalised to alphanumeric + dot only. Game writes
-// "v0.103.0", "v0.103.2", etc.; defensively strip anything else so a
-// future "-rc1" suffix can't break the dash split.
-function buildSegment(build: string): string {
-  const safe = (build || "unknown").replace(/[^a-zA-Z0-9.]/g, "_");
-  return safe || "unknown";
+// Slug shape: <hashVer><hash> — single opaque content-addressable id.
+// Example: "1a3f9c1d2k5n7m4q" (16 chars). Seed/build are recoverable
+// from the run record stored under this id, not from the URL itself.
+export function runRouteSlug(hash: string): string {
+  return `${HASH_VERSION}${hash}`;
 }
 
 export interface ParsedRunSlug {
-  seed: string;
-  build: string;
   hashVersion: number;
   hash: string;
 }
 
-// Slug shape: <seed>-<build>-<hashVer>-<hash>
-//   PE82XCX32D-v0.103.0-1-a3f9c1d2k
-// seeds are uppercase alphanumeric (no dashes), build segment is
-// alphanumeric+dots after sanitisation, hashVer is a digit, hash is
-// base32 alphanumeric — so split('-') always yields 4 parts.
-export function runRouteSlug(run: ReplayRun, hash: string): string {
-  return `${run.seed}-${buildSegment(run.build_id)}-${HASH_VERSION}-${hash}`;
-}
-
 export function parseRunRouteSlug(slug: string): ParsedRunSlug | null {
-  const parts = slug.split("-");
-  if (parts.length !== 4) return null;
-  const [seed, build, ver, hash] = parts;
-  if (!seed || !build || !ver || !hash) return null;
-  const hashVersion = Number.parseInt(ver, 10);
+  if (!slug || slug.length < 2) return null;
+  const hashVersion = Number.parseInt(slug[0], 10);
   if (!Number.isFinite(hashVersion) || hashVersion < 1) return null;
-  return { seed, build, hashVersion, hash };
+  const hash = slug.slice(1);
+  if (!/^[0-9a-z]+$/.test(hash)) return null;
+  return { hashVersion, hash };
 }

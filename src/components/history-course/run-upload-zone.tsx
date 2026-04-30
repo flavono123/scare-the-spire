@@ -118,7 +118,7 @@ async function parseFiles(
         fileName: file.name,
         run,
         hash,
-        slug: runRouteSlug(run, hash),
+        slug: runRouteSlug(hash),
       });
     } catch (err) {
       errors.push({
