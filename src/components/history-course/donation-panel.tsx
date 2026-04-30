@@ -1,9 +1,14 @@
 "use client";
 
-import { Check, Copy, Share2 } from "lucide-react";
+import { Check, Copy, Share2, Undo2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { donateRun, isRunDonated } from "@/lib/run-donation";
+import {
+  deleteDonatedRun,
+  donateRun,
+  isOwnDonation,
+  isRunDonated,
+} from "@/lib/run-donation";
 import { supabaseEnabled } from "@/lib/supabase";
 import type { ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
@@ -22,6 +27,10 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
   const [donated, setDonated] = useState<boolean | null>(
     source === "donated" ? true : null,
   );
+  // Whether the visitor is the donor on record. RLS enforces server-
+  // side, but we hide the undo button for non-donors so they aren't
+  // tempted to click it.
+  const [isOwn, setIsOwn] = useState<boolean>(false);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +45,22 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
       cancelled = true;
     };
   }, [runId, donated]);
+
+  // Refresh ownership flag whenever the donated state or user id
+  // changes (sign-in is async).
+  useEffect(() => {
+    if (!donated || !userId) {
+      setIsOwn(false);
+      return;
+    }
+    let cancelled = false;
+    isOwnDonation(runId, userId).then((result) => {
+      if (!cancelled) setIsOwn(result);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [donated, runId, userId]);
 
   if (!supabaseEnabled || donated === null) return null;
 
@@ -69,6 +94,27 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
       setTimeout(() => setCopied(false), 1500);
     } catch {
       // ignore — older browsers
+    }
+  };
+
+  const onUndo = async () => {
+    if (!isOwn) return;
+    if (
+      !window.confirm(
+        "이 런의 익명 공유를 취소합니다. URL은 더 이상 다른 기기에서 열리지 않습니다.",
+      )
+    ) {
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    const ok = await deleteDonatedRun(runId);
+    setBusy(false);
+    if (ok) {
+      setDonated(false);
+      setIsOwn(false);
+    } else {
+      setError("공유 취소에 실패했습니다.");
     }
   };
 
@@ -110,6 +156,21 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
                 </>
               )}
             </button>
+            {isOwn && (
+              <button
+                type="button"
+                onClick={onUndo}
+                disabled={busy}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-semibold transition",
+                  "bg-zinc-900 text-zinc-400 ring-1 ring-zinc-800 hover:bg-red-500/10 hover:text-red-200 hover:ring-red-400/30",
+                  "disabled:cursor-not-allowed disabled:opacity-50",
+                )}
+              >
+                <Undo2 className="h-3 w-3" aria-hidden />
+                {busy ? "취소 중…" : "공유 취소"}
+              </button>
+            )}
           </>
         ) : (
           <>

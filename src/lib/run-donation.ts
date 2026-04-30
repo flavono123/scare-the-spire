@@ -91,6 +91,23 @@ export async function isRunDonated(runId: string): Promise<boolean> {
   return !error && !!data;
 }
 
+// True only if the visitor (userId) is the donor on record. Used to
+// gate the "공유 취소" button — RLS already enforces donor-only delete
+// server-side, so this is purely UI affordance.
+export async function isOwnDonation(
+  runId: string,
+  userId: string,
+): Promise<boolean> {
+  if (!supabaseEnabled || !userId) return false;
+  const { data, error } = await supabase
+    .from("runs")
+    .select("id")
+    .eq("id", runId)
+    .eq("donor_user_id", userId)
+    .maybeSingle();
+  return !error && !!data;
+}
+
 export async function listRecentDonatedRuns(limit = 12): Promise<DonatedRunSummary[]> {
   if (!supabaseEnabled) return [];
   const { data, error } = await supabase
