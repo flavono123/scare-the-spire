@@ -41,6 +41,21 @@ async function scrubGlobal(page: any, ms: number) {
   await page.waitForTimeout(180);
 }
 
+test("act intro — game-style band + cyan tag + gold title", async ({ page }) => {
+  test.setTimeout(45_000);
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.goto(`${BASE}/history-course/${SEED}`);
+
+  // Wait until ActIntro mounts (fade-in 600ms + hold 1500ms ≈ 2.0s window).
+  await page.waitForSelector('[data-testid="act-intro"]', { timeout: 8_000 });
+  // Mid-hold of the intro — band fully opaque, map should still show
+  // through above and below the band.
+  await page.waitForTimeout(1_300);
+  await page.screenshot({
+    path: path.join(OUT_DIR, "00-act-intro-hold.png"),
+  });
+});
+
 test("phase 4 — trail / sweep / pop / card-fly mirror", async ({ page }) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 1600, height: 900 });

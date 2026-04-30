@@ -947,7 +947,6 @@ function Stage({
           key={introToken}
           actIndex={introActIndex}
           act={introAct}
-          totalActs={totalActs}
         />
       )}
 
@@ -998,11 +997,9 @@ function NodePulse({ step }: { step: number }) {
 function ActIntro({
   actIndex,
   act,
-  totalActs,
 }: {
   actIndex: number;
   act: Act;
-  totalActs: number;
 }) {
   // Phase starts at "in" via the initial state, so the effect only owns
   // the timer cascade — no synchronous setState in the effect body.
@@ -1027,28 +1024,48 @@ function ActIntro({
 
   if (phase === "done") return null;
 
-  const textOpacity = phase === "in" ? 0 : phase === "hold" ? 1 : 0;
-  const overlayOpacity = phase === "out" ? 0 : 1;
-  const textTransition =
-    phase === "in"
-      ? `opacity ${ACT_INTRO_FADE_IN_MS}ms ease-out`
-      : phase === "out"
-        ? `opacity ${ACT_INTRO_FADE_OUT_MS}ms ease-in`
-        : "opacity 0ms";
+  const overlayOpacity = phase === "in" ? 1 : phase === "hold" ? 1 : 0;
+  const transitionMs =
+    phase === "in" ? ACT_INTRO_FADE_IN_MS : ACT_INTRO_FADE_OUT_MS;
+  const transition = `opacity ${transitionMs}ms ${phase === "in" ? "ease-out" : "ease-in"}`;
 
+  // Game-style intro: a thin translucent grey band hugging the title's
+  // vertical extent, leaving the map visible above and below. Top line
+  // is the small cyan act number ("1막"), bottom line is the larger
+  // gold act label. The whole band fades in/out in unison.
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center bg-black"
-      style={{
-        opacity: overlayOpacity,
-        transition: `opacity ${ACT_INTRO_FADE_OUT_MS}ms ease-in`,
-      }}
+      aria-hidden
+      data-testid="act-intro"
+      className="pointer-events-none absolute inset-x-0 top-1/2 z-30 -translate-y-1/2"
+      style={{ opacity: overlayOpacity, transition }}
     >
-      <div className="text-center text-white" style={{ opacity: textOpacity, transition: textTransition }}>
-        <div className="text-xs uppercase tracking-[0.4em] text-zinc-300">
-          {actIntroNumber(actIndex)} / {totalActs}막
+      <div className="flex flex-col items-center justify-center bg-zinc-200/15 py-5 backdrop-blur-[1px]">
+        <div
+          className="text-center"
+          style={{
+            color: "#22d3ee",
+            fontSize: "1.05rem",
+            fontWeight: 600,
+            letterSpacing: "0.06em",
+            textShadow: "0 1px 6px rgba(0,0,0,0.85)",
+          }}
+        >
+          {actIntroNumber(actIndex)}
         </div>
-        <div className="mt-3 text-5xl font-black tracking-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
+        <div
+          className="text-center"
+          style={{
+            color: "#fbbf24",
+            fontSize: "3.6rem",
+            fontWeight: 900,
+            letterSpacing: "-0.01em",
+            lineHeight: 1.05,
+            marginTop: "0.45rem",
+            textShadow:
+              "0 2px 4px rgba(0,0,0,0.85), 0 4px 18px rgba(0,0,0,0.7)",
+          }}
+        >
           {act.actLabel}
         </div>
       </div>
