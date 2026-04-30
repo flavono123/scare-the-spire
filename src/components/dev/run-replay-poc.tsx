@@ -1104,7 +1104,12 @@ export function SeededMapView({
           // While the destination's ring is still sweeping in (ringFrac < 1)
           // we render it as `active` so the player doesn't see the full
           // current emphasis (scale-up + ring) before the trail's done.
-          const sweepActive = current && ringFrac < 1;
+          // Ancient and boss tiles already own their own selection visual
+          // (custom AncientMapAsset / BossMapAsset compositions) — skip
+          // the sweep there per user note.
+          const sweepEligible =
+            node.type !== "ancient" && node.type !== "boss";
+          const sweepActive = current && ringFrac < 1 && sweepEligible;
           const state = sweepActive
             ? "active"
             : current
@@ -1262,8 +1267,13 @@ export function SeededMapView({
                 : 1.15 - ((charFrac - 0.7) / 0.3) * 0.15
               : 1;
             const opacity = onDestination ? charFrac : 1;
+            // Constant size — does NOT scale with the anchor node. Ancient
+            // and boss nodes are larger than monsters, but the player's
+            // token reads the same size everywhere (per user note).
+            const MARKER_SIZE = 44;
+            // Anchor offset uses node size so the marker sits just outside
+            // the node's left edge, regardless of node sprite footprint.
             const size = mapNodeSize(anchor.node, act);
-            const markerSize = Math.max(40, Math.round(size.width * 0.7));
             return (
               <div
                 aria-hidden
@@ -1273,30 +1283,25 @@ export function SeededMapView({
                 style={{
                   left: anchor.pos.left - size.width * 0.55,
                   top: anchor.pos.top,
-                  width: markerSize,
-                  height: markerSize,
+                  width: MARKER_SIZE,
+                  height: MARKER_SIZE,
                   transform: `translate(-50%, -50%) scale(${scale.toFixed(3)})`,
                   opacity,
                 }}
               >
-                <div
-                  className="absolute inset-0 overflow-hidden rounded-full ring-1 ring-black/40"
-                  style={{
-                    backgroundImage:
-                      "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
-                    backgroundSize: "100% 100%",
-                    backgroundRepeat: "no-repeat",
-                  }}
-                >
-                  <Image
-                    src={characterMarkerSrc}
-                    alt=""
-                    fill
-                    sizes="48px"
-                    className="object-contain"
-                    unoptimized
-                  />
-                </div>
+                {/* Dark disc + amber outline — no topbar backdrop. The
+                 *  portrait sits inside this circular frame so the
+                 *  character reads against any map background. */}
+                <div className="absolute inset-0 rounded-full bg-zinc-950/85 ring-2 ring-amber-300/80 shadow-[0_2px_6px_rgba(0,0,0,0.85)]" />
+                <Image
+                  src={characterMarkerSrc}
+                  alt=""
+                  fill
+                  sizes="48px"
+                  className="absolute inset-[3px] object-contain"
+                  style={{ borderRadius: "9999px" }}
+                  unoptimized
+                />
               </div>
             );
           })()}

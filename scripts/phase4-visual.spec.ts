@@ -1,7 +1,7 @@
 /**
  * Phase 4 visual smoke — captures the path-trail painting, the clockwise
- * ring sweep on the destination node, the character "pop" landing on the
- * new node, and the new Bezier card-fly arc on the boots fixture.
+ * ring sweep on the destination node, the character "pop" landing, and
+ * the NCardFlyVfx-mirror card-fly arc on the boots fixture.
  *
  *   pnpm exec playwright test scripts/phase4-visual.spec.ts \
  *     --reporter=list
@@ -14,21 +14,17 @@ const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 const OUT_DIR = path.join("/tmp", "history-course-shots", "phase4");
 const SEED = "EQNAH97QTR"; // winged-boots run
 
-const FLY_SELECTOR =
+const FLY_SELECTOR_CARD =
   '[data-testid="node-stack-item"][data-phase="post"][data-kind="card-gained"], ' +
-  '[data-testid="node-stack-item"][data-phase="post"][data-kind="card-bought"], ' +
+  '[data-testid="node-stack-item"][data-phase="post"][data-kind="card-bought"]';
+const FLY_SELECTOR_RELIC =
   '[data-testid="node-stack-item"][data-phase="post"][data-kind="relic-gained"]';
 
-// Sub-window thresholds in `node-action-stack` / `SeededMapView` —
-// keep in sync with TRAIL_END / RING_END there.
 const NODE_BASE_MS = 2500;
-const TRAIL_END_MS = NODE_BASE_MS * 0.7; // 1750
-const RING_END_MS = NODE_BASE_MS * 0.92; // 2300
+const TRAIL_END_MS = NODE_BASE_MS * 0.7;
+const RING_END_MS = NODE_BASE_MS * 0.92;
 
 async function scrubGlobal(page: any, ms: number) {
-  // The slider is rendered with opacity 0 (visual cue is the marker
-  // floating above), so locator.fill won't accept it. Drive the value
-  // and React's onChange handler directly via the input's native setter.
   await page.evaluate((value: number) => {
     const input = document.querySelector(
       'input[type="range"]',
@@ -45,7 +41,7 @@ async function scrubGlobal(page: any, ms: number) {
   await page.waitForTimeout(180);
 }
 
-test("phase 4 — trail / sweep / character pop / bezier fly", async ({ page }) => {
+test("phase 4 — trail / sweep / pop / card-fly mirror", async ({ page }) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 1600, height: 900 });
 
@@ -59,44 +55,65 @@ test("phase 4 — trail / sweep / character pop / bezier fly", async ({ page }) 
     '[data-testid="node-stack-item"], .ring-1',
     { timeout: 8_000 },
   );
-  // Let the act-intro clear (fade-in 600 + hold 1500 + fade-out 500 +
-  // 850ms map-scroll buffer ≈ 3.5s).
   await page.waitForTimeout(3_500);
-  await page.keyboard.press("Space"); // pause
+  await page.keyboard.press("Space");
 
-  // Step 2 starts at globalMs ≈ duration of step 1. We don't know its
-  // exact length, so jump the slider to a safe range past Neow's stack
-  // (~14s on the boots fixture has 1 card + 1 relic = 2 stack items =
-  // 2500 transit + 2 × 2500 stack = 7500ms total). Step 2 globalMs
-  // start = 7500.
+  // Step 2 starts after Neow's stack: 1 relic + 1 card on this fixture
+  // = 2500 transit + 2 × 2500 stack = 7500ms.
   const step2StartMs = 7500;
 
-  // ---- 01: mid-trail (trail painting only) ----
   await scrubGlobal(page, step2StartMs + Math.round(TRAIL_END_MS / 2));
   await page.screenshot({ path: path.join(OUT_DIR, "01-trail-mid.png") });
 
-  // ---- 02: ring sweep mid (trail done, sweep painting) ----
   await scrubGlobal(
     page,
     step2StartMs + Math.round((TRAIL_END_MS + RING_END_MS) / 2),
   );
   await page.screenshot({ path: path.join(OUT_DIR, "02-ring-sweep.png") });
 
-  // ---- 03: just before character pop (sweep done) ----
   await scrubGlobal(page, step2StartMs + Math.round(RING_END_MS) - 30);
   await page.screenshot({ path: path.join(OUT_DIR, "03-pre-pop.png") });
 
-  // ---- 04: character popped (post-RING_END) ----
   await scrubGlobal(page, step2StartMs + NODE_BASE_MS - 30);
   await page.screenshot({ path: path.join(OUT_DIR, "04-pop.png") });
 
-  // ---- 05: bezier card-fly during stack ----
-  // Resume so the stack runs forward into a fly post phase, then pause
-  // to capture mid-arc.
+  // ---- Card fly mirror — capture three points in the post (Bezier) phase ----
+  // Resume to land on a card item's post phase, then pause and step
+  // small windows. Card-fly post phase is 700ms total now (Phase 1 ~545ms
+  // accelerating Bezier + Phase 2 ~155ms collapse).
   await page.keyboard.press("Space");
-  await page.waitForSelector(FLY_SELECTOR, { timeout: 25_000 });
+  await page.waitForSelector(FLY_SELECTOR_CARD, { timeout: 25_000 });
   await page.keyboard.press("Space");
-  await page.screenshot({ path: path.join(OUT_DIR, "05-fly.png") });
+  await page.screenshot({ path: path.join(OUT_DIR, "05-card-fly-1.png") });
+
+  await page.keyboard.press("Space");
+  await page.waitForTimeout(140);
+  await page.keyboard.press("Space");
+  await page.screenshot({ path: path.join(OUT_DIR, "06-card-fly-2.png") });
+
+  await page.keyboard.press("Space");
+  await page.waitForTimeout(140);
+  await page.keyboard.press("Space");
+  await page.screenshot({ path: path.join(OUT_DIR, "07-card-fly-3.png") });
 
   expect(errors, errors.join("\n")).toHaveLength(0);
+});
+
+test("relic fly stays linear (no Bezier)", async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.goto(`${BASE}/history-course/${SEED}`);
+  await page.waitForSelector('[data-testid="node-stack-item"], .ring-1', {
+    timeout: 8_000,
+  });
+  await page.waitForTimeout(3_500);
+  // Neow's relic is the first relic-gained item — pause and capture the
+  // mid-fly frame. With Bezier removed it should travel a straight line.
+  await page.keyboard.press("Space");
+  // Ancient transit takes 2500ms; relic stack item starts at 2500..5000ms,
+  // post phase last 700ms of that. Aim mid-post.
+  await scrubGlobal(page, 2500 + 1300 + 200 + 60 + 350); // post mid
+  await page.screenshot({
+    path: path.join(OUT_DIR, "08-relic-fly-linear.png"),
+  });
 });
