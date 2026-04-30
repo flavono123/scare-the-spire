@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import { AlertCircle, FolderUp, RefreshCw, Upload } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
+import { saveRun } from "@/lib/run-store";
 import {
   isBuildSupported,
   MIN_SUPPORTED_BUILD,
@@ -11,8 +13,9 @@ import { computeRunHash, runRouteSlug } from "@/lib/sts2-run-hash";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
 
-type ParsedRun = {
+export type ParsedRun = {
   fileName: string;
+  raw: string;
   run: ReplayRun;
   hash: string;
   slug: string;
@@ -116,6 +119,7 @@ async function parseFiles(
       const hash = await computeRunHash(run);
       runs.push({
         fileName: file.name,
+        raw: text,
         run,
         hash,
         slug: runRouteSlug(hash),
@@ -156,11 +160,25 @@ function characterShortKo(character?: string): string {
   return CHARACTER_META[character]?.ko ?? "?";
 }
 
-export function RunUploadZone() {
+export interface RunUploadZoneProps {
+  // When set, overrides the default action (save to IDB + navigate to
+  // /history-course/<slug>). Used by the dev replay PoC, which keeps
+  // its own in-component state instead of routing.
+  onPickRun?: (parsed: ParsedRun) => void | Promise<void>;
+  // Override copy on the drop zone — defaults are tuned for landing.
+  primaryLabel?: string;
+}
+
+export function RunUploadZone({
+  onPickRun,
+  primaryLabel,
+}: RunUploadZoneProps = {}) {
+  const router = useRouter();
   const [runs, setRuns] = useState<ParsedRun[]>([]);
   const [errors, setErrors] = useState<ParseError[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isParsing, setIsParsing] = useState(false);
+  const [isPicking, setIsPicking] = useState<string | null>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -214,14 +232,27 @@ export function RunUploadZone() {
     [handleFiles],
   );
 
-  // Stub — real routing/persistence lands in next iteration.
-  const onPickRun = (run: ParsedRun) => {
-    // eslint-disable-next-line no-console
-    console.log("[history-course] selected", run.slug, run.run);
-    window.alert(
-      `다음 단계: /history-course/${run.slug} 라우트 + 영속화 (별도 커밋 예정)`,
-    );
-  };
+  const handlePick = useCallback(
+    async (parsed: ParsedRun) => {
+      setIsPicking(parsed.slug);
+      try {
+        if (onPickRun) {
+          await onPickRun(parsed);
+          return;
+        }
+        await saveRun({ runId: parsed.slug, raw: parsed.raw });
+        router.push(`/history-course/${parsed.slug}`);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error("[history-course] pick failed", err);
+        window.alert(
+          `런을 저장하지 못했습니다: ${err instanceof Error ? err.message : String(err)}`,
+        );
+        setIsPicking(null);
+      }
+    },
+    [onPickRun, router],
+  );
 
   const hasResults = runs.length > 0 || errors.length > 0;
 
@@ -252,7 +283,9 @@ export function RunUploadZone() {
           />
           <div>
             <p className="text-base font-semibold text-zinc-100">
-              {hasResults ? "다른 폴더 또는 파일 올리기" : "내 런을 보려면 파일을 여기에"}
+              {hasResults
+                ? "다른 폴더 또는 파일 올리기"
+                : (primaryLabel ?? "내 런을 보려면 파일을 여기에")}
             </p>
             <p className="mt-1 text-xs text-zinc-400">
               <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-zinc-300">
@@ -359,16 +392,17 @@ export function RunUploadZone() {
                 CHARACTER_META[p.run.players[0]?.character ?? ""] ??
                 UNKNOWN_META;
               const supported = isBuildSupported(p.run.build_id);
+              const busy = isPicking === p.slug;
               return (
                 <li key={`${p.run.seed}-${p.hash}`}>
                   <button
                     type="button"
-                    onClick={() => onPickRun(p)}
-                    disabled={!supported}
+                    onClick={() => handlePick(p)}
+                    disabled={!supported || busy}
                     className={cn(
                       "group block w-full rounded-xl bg-zinc-900/60 p-3 text-left ring-1 ring-inset transition",
                       meta.ring,
-                      supported
+                      supported && !busy
                         ? "hover:-translate-y-0.5 hover:ring-amber-300/40"
                         : "cursor-not-allowed opacity-50",
                     )}
