@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { AlertCircle, FolderUp, RefreshCw, Upload } from "lucide-react";
+import { AlertCircle, FolderUp, RefreshCw, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useRef, useState } from "react";
-import { saveRun } from "@/lib/run-store";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { deleteRun, listRuns, saveRun } from "@/lib/run-store";
 import {
   isBuildSupported,
   MIN_SUPPORTED_BUILD,
@@ -182,12 +182,63 @@ export function RunUploadZone({
   const folderInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Hydrate the preview list from the IDB stash on mount so that
+  // navigating away and back doesn't lose what was uploaded.
+  useEffect(() => {
+    let cancelled = false;
+    listRuns().then((records) => {
+      if (cancelled) return;
+      const out: ParsedRun[] = [];
+      for (const rec of records) {
+        try {
+          const run = parseReplayRun(rec.raw);
+          out.push({
+            fileName: "(저장됨)",
+            raw: rec.raw,
+            run,
+            hash: rec.runId.slice(1),
+            slug: rec.runId,
+          });
+        } catch {
+          // skip malformed; should be rare since we parsed before saving
+        }
+      }
+      out.sort((a, b) => (b.run.start_time ?? 0) - (a.run.start_time ?? 0));
+      if (!cancelled) setRuns(out);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const handleFiles = useCallback(async (files: File[]) => {
     if (files.length === 0) return;
     setIsParsing(true);
     try {
       const result = await parseFiles(files);
-      setRuns(result.runs);
+      // Persist supported runs to IDB immediately so they survive nav.
+      // Unsupported ones display once with reason and never touch IDB —
+      // clicking them just dismisses from the list.
+      for (const parsed of result.runs) {
+        if (isBuildSupported(parsed.run.build_id)) {
+          try {
+            await saveRun({ runId: parsed.slug, raw: parsed.raw });
+          } catch {
+            // ignore — UX continues, user can retry
+          }
+        }
+      }
+      setRuns((prev) => {
+        const known = new Set(prev.map((p) => p.slug));
+        const merged = [...prev];
+        for (const incoming of result.runs) {
+          if (!known.has(incoming.slug)) merged.push(incoming);
+        }
+        merged.sort(
+          (a, b) => (b.run.start_time ?? 0) - (a.run.start_time ?? 0),
+        );
+        return merged;
+      });
       setErrors(result.errors);
     } finally {
       setIsParsing(false);
@@ -234,6 +285,17 @@ export function RunUploadZone({
 
   const handlePick = useCallback(
     async (parsed: ParsedRun) => {
+      // Unsupported builds aren't navigable — clicking the card just
+      // removes it from the list (and IDB, if it ever ended up there).
+      if (!isBuildSupported(parsed.run.build_id)) {
+        setRuns((prev) => prev.filter((p) => p.slug !== parsed.slug));
+        try {
+          await deleteRun(parsed.slug);
+        } catch {
+          // ignore — entry may not be in IDB
+        }
+        return;
+      }
       setIsPicking(parsed.slug);
       try {
         if (onPickRun) {
@@ -253,6 +315,15 @@ export function RunUploadZone({
     },
     [onPickRun, router],
   );
+
+  const handleRemove = useCallback(async (parsed: ParsedRun) => {
+    setRuns((prev) => prev.filter((p) => p.slug !== parsed.slug));
+    try {
+      await deleteRun(parsed.slug);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const hasResults = runs.length > 0 || errors.length > 0;
 
@@ -394,17 +465,28 @@ export function RunUploadZone({
               const supported = isBuildSupported(p.run.build_id);
               const busy = isPicking === p.slug;
               return (
-                <li key={`${p.run.seed}-${p.hash}`}>
+                <li
+                  key={`${p.run.seed}-${p.hash}`}
+                  className="group relative"
+                >
                   <button
                     type="button"
                     onClick={() => handlePick(p)}
-                    disabled={!supported || busy}
+                    disabled={busy}
+                    title={
+                      supported
+                        ? undefined
+                        : "재현 미지원 빌드 — 클릭하면 목록에서 제거"
+                    }
                     className={cn(
-                      "group block w-full rounded-xl bg-zinc-900/60 p-3 text-left ring-1 ring-inset transition",
+                      "block w-full rounded-xl bg-zinc-900/60 p-3 text-left ring-1 ring-inset transition",
                       meta.ring,
-                      supported && !busy
-                        ? "hover:-translate-y-0.5 hover:ring-amber-300/40"
-                        : "cursor-not-allowed opacity-50",
+                      busy && "cursor-wait opacity-60",
+                      !busy && supported &&
+                        "hover:-translate-y-0.5 hover:ring-amber-300/40",
+                      !busy &&
+                        !supported &&
+                        "opacity-60 hover:opacity-100 hover:ring-red-300/40",
                     )}
                   >
                     <div className="flex items-start gap-3">
@@ -456,12 +538,26 @@ export function RunUploadZone({
                         </div>
                         {!supported && (
                           <p className="mt-1.5 text-[10px] text-red-300/80">
-                            {MIN_SUPPORTED_BUILD} 미만 — 재현 미지원
+                            {MIN_SUPPORTED_BUILD} 미만 — 재현 미지원 · 클릭하여
+                            목록에서 제거
                           </p>
                         )}
                       </div>
                     </div>
                   </button>
+                  {supported && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemove(p);
+                      }}
+                      title="저장 목록에서 제거"
+                      className="absolute right-1.5 top-1.5 rounded-md p-1 text-zinc-500 opacity-0 transition hover:bg-zinc-800 hover:text-zinc-200 group-hover:opacity-100 focus:opacity-100"
+                    >
+                      <X className="h-3.5 w-3.5" aria-hidden />
+                    </button>
+                  )}
                 </li>
               );
             })}
