@@ -492,6 +492,14 @@ export function HistoryCourseShell({
   const [infoOpen, setInfoOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
   const [deckOpen, setDeckOpen] = useState(false);
+  // Run-summary panel — opens via the topbar cog (mid-run partial view)
+  // and auto-opens at end-of-run. Both paths can be dismissed by the
+  // codex-style back button so the user can keep scrubbing.
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  // Edge-trigger so we only auto-open the panel once when globalMs first
+  // crosses totalMs; if the user dismisses the panel the auto-open
+  // shouldn't keep firing on every render.
+  const wasEndedRef = useRef(false);
   const [introToken, setIntroToken] = useState(0);
   const [introActive, setIntroActive] = useState(false);
   const [replayReady, setReplayReady] = useState(false);
@@ -623,6 +631,35 @@ export function HistoryCourseShell({
     );
   }, [stepRelicIdsKey]);
 
+  // Auto-open the summary panel exactly once when the run reaches its
+  // last node. Dismissing the panel sets wasEndedRef back to false only
+  // if the user scrubs back behind totalMs — at which point a future
+  // re-end will auto-open again. (Closing while still at totalMs leaves
+  // wasEndedRef=true so it doesn't pop right back open.)
+  const runEnded =
+    runTimeline.totalMs > 0 && globalMs >= runTimeline.totalMs - 1;
+  useEffect(() => {
+    if (runEnded && !wasEndedRef.current) {
+      wasEndedRef.current = true;
+      setSummaryOpen(true);
+      setPlaying(false);
+    } else if (!runEnded && wasEndedRef.current) {
+      wasEndedRef.current = false;
+    }
+  }, [runEnded]);
+
+  const onToggleSummary = useCallback(() => {
+    setSummaryOpen((open) => {
+      const next = !open;
+      if (next) setPlaying(false);
+      return next;
+    });
+  }, []);
+
+  const onCloseSummary = useCallback(() => {
+    setSummaryOpen(false);
+  }, []);
+
   // rAF ticker. Every animation frame nudges globalMs by `dt × rate` while
   // playing. Step + stack + topbar all derive from globalMs, so a paused
   // tick simply stops the time axis — no more setTimeout-per-node dance.
@@ -720,9 +757,12 @@ export function HistoryCourseShell({
           hidingRelicIds={pendingRelicIds}
           topbarState={topbarState}
           cardsById={cardsById}
-          runEnded={
-            runTimeline.totalMs > 0 && globalMs >= runTimeline.totalMs - 1
-          }
+          summaryOpen={summaryOpen}
+          summaryEnded={runEnded}
+          currentActIndex={actIndex}
+          currentStep={step}
+          onToggleSummary={onToggleSummary}
+          onCloseSummary={onCloseSummary}
           onTogglePlay={() => setPlaying((v) => !v)}
           onChangeRate={setRate}
           onScrubGlobalMs={(value) => {
@@ -804,7 +844,12 @@ function Stage({
   hidingRelicIds,
   topbarState,
   cardsById,
-  runEnded,
+  summaryOpen,
+  summaryEnded,
+  currentActIndex,
+  currentStep,
+  onToggleSummary,
+  onCloseSummary,
   onTogglePlay,
   onChangeRate,
   onScrubGlobalMs,
@@ -833,7 +878,12 @@ function Stage({
   hidingRelicIds: ReadonlySet<string>;
   topbarState: ReturnType<typeof buildTopbarState>;
   cardsById: Record<string, CodexCard>;
-  runEnded: boolean;
+  summaryOpen: boolean;
+  summaryEnded: boolean;
+  currentActIndex: number;
+  currentStep: number;
+  onToggleSummary: () => void;
+  onCloseSummary: () => void;
   onTogglePlay: () => void;
   onChangeRate: (rate: Rate) => void;
   onScrubGlobalMs: (ms: number) => void;
@@ -925,7 +975,11 @@ function Stage({
         hidingRelicIds={hidingRelicIds}
         onOpenStats={onOpenStats}
         onOpenDeck={onOpenDeck}
-        onOpenInfo={onOpenInfo}
+        // The cog now toggles the run-summary panel + auto-pauses
+        // playback. The legacy InfoDrawer onOpenInfo callback still
+        // exists below in the parent shell but isn't wired to the
+        // topbar anymore.
+        onOpenInfo={onToggleSummary}
       />
 
       <div
@@ -989,7 +1043,11 @@ function Stage({
         acts={sanitizedActs}
         topbarState={topbarState}
         cardsById={cardsById}
-        visible={runEnded}
+        open={summaryOpen}
+        ended={summaryEnded}
+        currentActIndex={currentActIndex}
+        currentStep={currentStep}
+        onClose={onCloseSummary}
       />
     </div>
   );

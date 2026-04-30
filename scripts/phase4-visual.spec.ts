@@ -114,8 +114,8 @@ test("phase 4 — trail / sweep / pop / card-fly mirror", async ({ page }) => {
   expect(errors, errors.join("\n")).toHaveLength(0);
 });
 
-test("run summary — death backstop + panel", async ({ page }) => {
-  test.setTimeout(45_000);
+test("run summary — partial mid-run + auto-open at end + back button", async ({ page }) => {
+  test.setTimeout(60_000);
   await page.setViewportSize({ width: 1600, height: 900 });
   const res = await page.goto(`${BASE}/history-course/${SEED}`);
   expect(res?.status()).toBe(200);
@@ -125,8 +125,29 @@ test("run summary — death backstop + panel", async ({ page }) => {
   await page.waitForTimeout(3_500);
   await page.keyboard.press("Space"); // pause
 
-  // Jump to globalMs = totalMs (run end). Read totalMs off the slider's
-  // max attribute, then scrub there.
+  // ---- mid-run partial panel via topbar cog ----
+  // Scrub a few step's worth into the run, then click the cog. Panel
+  // should open with only act 1's traversed nodes — no future acts.
+  await scrubGlobal(page, 8_000);
+  // Cog button — has title "런 정보" and the settings png alt.
+  await page.locator('button[title="런 정보"]').click();
+  await page.waitForSelector('[data-testid="summary-panel"]', {
+    timeout: 2_000,
+  });
+  await page.waitForTimeout(400);
+  await page.screenshot({
+    path: path.join(OUT_DIR, "10-summary-mid-run.png"),
+  });
+
+  // Back button dismisses; cog can re-open.
+  await page.locator('button[aria-label="리플레이로 돌아가기"]').click();
+  await page.waitForTimeout(200);
+  const stillOpen = await page
+    .locator('[data-testid="summary-panel"]')
+    .count();
+  expect(stillOpen).toBe(0);
+
+  // ---- end-of-run auto-open ----
   const totalMs = await page.evaluate(() => {
     const input = document.querySelector(
       'input[type="range"]',
@@ -135,31 +156,21 @@ test("run summary — death backstop + panel", async ({ page }) => {
   });
   expect(totalMs).toBeGreaterThan(0);
   await scrubGlobal(page, totalMs);
-
-  // Three frames across the 900ms band slide so the displacement pattern
-  // is visible at different stages of the close-in.
-  await page.waitForTimeout(220);
-  await page.screenshot({
-    path: path.join(OUT_DIR, "10-backstop-early.png"),
-  });
-  await page.waitForTimeout(280);
-  await page.screenshot({
-    path: path.join(OUT_DIR, "10-backstop-mid.png"),
-  });
-  await page.waitForTimeout(280);
-  await page.screenshot({
-    path: path.join(OUT_DIR, "10-backstop-late.png"),
-  });
-
-  // Wait for panel to appear (1500ms enter + 600ms fade-in).
   await page.waitForSelector('[data-testid="summary-panel"]', {
-    timeout: 4_000,
+    timeout: 3_000,
   });
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(400);
   await page.screenshot({
-    path: path.join(OUT_DIR, "11-summary-panel.png"),
-    fullPage: false,
+    path: path.join(OUT_DIR, "11-summary-end.png"),
   });
+
+  // Back button dismisses end-of-run panel too — user lands back on
+  // playback at the final node.
+  await page.locator('button[aria-label="리플레이로 돌아가기"]').click();
+  await page.waitForTimeout(200);
+  expect(
+    await page.locator('[data-testid="summary-panel"]').count(),
+  ).toBe(0);
 });
 
 test("relic fly stays linear (no Bezier)", async ({ page }) => {

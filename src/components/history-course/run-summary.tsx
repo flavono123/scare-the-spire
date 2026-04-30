@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { CardActionIcon } from "@/components/history-course/card-action-icon";
 import { localize } from "@/lib/sts2-i18n";
 import gameOverQuotes from "@/lib/sts2-game-over-quotes-ko.json";
@@ -15,22 +14,18 @@ import type { TopbarState } from "@/components/history-course/topbar-state";
 import { cn } from "@/lib/utils";
 
 // ============================================================================
-// End-of-run summary, mirroring `MegaCrit.Sts2.Core.Nodes.Screens.RunHistoryScreen.NRunHistory`.
-// Two phases:
-//   1. enter (1500ms) — death backstop: two crimson half-screen layers
-//      slide in from top/bottom, then crossfade to the panel backdrop.
-//      Approximation of the game's shader threshold tween (0→1 InOutSine,
-//      1.5s) — without the shader source on hand, two stacked layers do
-//      the same job to the eye.
-//   2. shown — full panel: top-bar mirror, quote, per-act node icon row,
-//      relic strip, deck card grid.
+// Run summary panel — port of
+// `MegaCrit.Sts2.Core.Nodes.Screens.RunHistoryScreen.NRunHistory`.
+//
+// Two ways to open:
+//   * Mid-run, user clicks the topbar cog → panel opens with everything
+//     traversed so far (partial). Future acts and yet-to-visit nodes
+//     within the current act are hidden.
+//   * Run ends (globalMs reaches totalMs) → panel auto-opens, no death
+//     animation in front. The user can dismiss the panel via the back
+//     button and keep scrubbing the playback at the final node.
 // ============================================================================
 
-const ENTER_MS = 1500;
-const FADE_TO_PANEL_MS = 500;
-
-// Same character helpers used by the on-map marker — duplicated so this
-// component stays self-contained.
 const KNOWN_CHARACTERS = new Set([
   "ironclad",
   "silent",
@@ -124,7 +119,22 @@ interface Props {
   acts: ReplayActAnalysis[];
   topbarState: TopbarState;
   cardsById: Record<string, CodexCard>;
-  visible: boolean;
+  /** Whether the panel is mounted/visible. */
+  open: boolean;
+  /** True when the run has reached its final node (globalMs ≥ totalMs).
+   *  When the panel is opened mid-run this is false; the banner / quote
+   *  hold off until the run actually finishes. */
+  ended: boolean;
+  /** Index of the currently-rendered act (0-based). The panel truncates
+   *  the act-row sequences accordingly: past acts render fully, the
+   *  current act renders only up to `currentStep`, future acts are
+   *  hidden entirely. */
+  currentActIndex: number;
+  currentStep: number;
+  /** Back button — when present a codex-style return chip is rendered
+   *  in the bottom-left and `onClose` fires on click / Escape. The
+   *  topbar cog also drives this same close path. */
+  onClose: () => void;
 }
 
 export function RunSummary({
@@ -132,283 +142,167 @@ export function RunSummary({
   acts,
   topbarState,
   cardsById,
-  visible,
+  open,
+  ended,
+  currentActIndex,
+  currentStep,
+  onClose,
 }: Props) {
-  const [phase, setPhase] = useState<"hidden" | "enter" | "shown">("hidden");
-
-  useEffect(() => {
-    if (!visible) {
-      setPhase("hidden");
-      return;
-    }
-    setPhase("enter");
-    const t = window.setTimeout(() => setPhase("shown"), ENTER_MS);
-    return () => window.clearTimeout(t);
-  }, [visible]);
-
-  if (phase === "hidden") return null;
-
+  if (!open) return null;
   return (
     <div
       data-testid="run-summary-overlay"
-      className="pointer-events-auto absolute inset-0 z-50 overflow-hidden"
+      className="pointer-events-auto absolute inset-0 z-50 overflow-y-auto bg-zinc-950/96"
+      role="dialog"
+      aria-modal="true"
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onClose();
+      }}
     >
-      <DeathBackstop phase={phase} />
-      {phase === "shown" && (
-        <SummaryPanel
-          run={run}
-          acts={acts}
-          topbarState={topbarState}
-          cardsById={cardsById}
-        />
-      )}
+      <SummaryPanel
+        run={run}
+        acts={acts}
+        topbarState={topbarState}
+        cardsById={cardsById}
+        ended={ended}
+        currentActIndex={currentActIndex}
+        currentStep={currentStep}
+      />
+      <BackButton onClose={onClose} />
     </div>
   );
 }
 
-/** Death backstop — two crimson layers close in vertically with hand-built
- *  drip silhouettes along the seam. CSS keyframes drive the slide-in once
- *  on mount so we don't have to fight React's "transitions only fire on
- *  prop change" behaviour. Mirrors the visual feel of the game's shader
- *  threshold tween (0→1 InOutSine, 1.5s). */
-function DeathBackstop({ phase }: { phase: "enter" | "shown" }) {
-  return (
-    <>
-      <style>{`
-        @keyframes hc-blood-slide-down {
-          from { transform: translateY(-100%); }
-          to   { transform: translateY(0); }
-        }
-        @keyframes hc-blood-slide-up {
-          from { transform: translateY(100%); }
-          to   { transform: translateY(0); }
-        }
-      `}</style>
-      <div
-        aria-hidden
-        data-testid="hc-blood-top"
-        className="pointer-events-none absolute inset-x-0 top-0"
-        style={{
-          height: "60%",
-          animation:
-            "hc-blood-slide-down 1100ms cubic-bezier(0.6, 0, 0.4, 1) both",
-        }}
-      >
-        <BloodHalfSvg variant="top" />
-      </div>
-      <div
-        aria-hidden
-        data-testid="hc-blood-bottom"
-        className="pointer-events-none absolute inset-x-0 bottom-0"
-        style={{
-          height: "60%",
-          animation:
-            "hc-blood-slide-up 1100ms cubic-bezier(0.6, 0, 0.4, 1) both",
-        }}
-      >
-        <BloodHalfSvg variant="bottom" />
-      </div>
-      {/* Once the bands have closed in, fade to the panel backdrop. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-zinc-950"
-        style={{
-          opacity: phase === "shown" ? 0.92 : 0,
-          transition: `opacity ${FADE_TO_PANEL_MS}ms ease-out`,
-        }}
-      />
-    </>
-  );
-}
+// ----- Banner + quote pickers (see `data/sts2/kor/game_over_screen.json`) ---
+//
+// NGameOverScreen.InitializeBannerAndQuote + NRunHistory.LoadDeathQuote.
+// Win  → BANNER.trueWin + MAP_POINT_HISTORY.falseVictory.* (with character
+//        substituted in).
+// Loss → random BANNER.lose0..7 + random QUOTES.00..16. Deterministic on
+//        the run seed.
 
-/** SVG silhouette for one crimson half — a deterministic procedural drip
- *  edge along the inside seam. Two stable seeds differentiate top vs.
- *  bottom so the seam reads as two interleaving streams rather than one
- *  mirrored line. preserveAspectRatio=none lets the path stretch to fill
- *  the wrapping div across any container width. */
-function BloodHalfSvg({ variant }: { variant: "top" | "bottom" }) {
-  const w = 1000;
-  const h = 600;
-  // Solid crimson body height (everything above this is filled), drip
-  // tendrils dangle down past it on the seam. For "top" the drips hang
-  // down; for "bottom" they hang up.
-  const baseY = 460;
-  const drips = buildDripPath(variant, w, h, baseY);
-  const gradId = variant === "top" ? "hc-blood-grad-top" : "hc-blood-grad-bot";
-  return (
-    <svg
-      className="absolute inset-0 h-full w-full"
-      viewBox={`0 0 ${w} ${h}`}
-      preserveAspectRatio="none"
-      aria-hidden
-    >
-      <defs>
-        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-          {variant === "top" ? (
-            <>
-              <stop offset="0%" stopColor="rgba(38,3,6,0.98)" />
-              <stop offset="55%" stopColor="rgba(150,10,18,1)" />
-              <stop offset="100%" stopColor="rgba(210,28,36,1)" />
-            </>
-          ) : (
-            <>
-              <stop offset="0%" stopColor="rgba(210,28,36,1)" />
-              <stop offset="45%" stopColor="rgba(150,10,18,1)" />
-              <stop offset="100%" stopColor="rgba(38,3,6,0.98)" />
-            </>
-          )}
-        </linearGradient>
-      </defs>
-      <path d={drips} fill={`url(#${gradId})`} />
-    </svg>
-  );
-}
+const QUOTES_TABLE = gameOverQuotes as Record<string, string>;
 
-/** Build a closed crimson silhouette path with drip tendrils on the seam
- *  edge. `variant=top` builds a region that fills 0..baseY across the
- *  whole width and dangles drips downward to baseY+depth; `variant=bottom`
- *  is the vertical mirror so its drips dangle upward into the seam. */
-function buildDripPath(
-  variant: "top" | "bottom",
-  w: number,
-  h: number,
-  baseY: number,
-): string {
-  // Deterministic per-variant drip seeds. Different counts/widths give
-  // an asymmetric seam.
-  const drips =
-    variant === "top"
-      ? [
-          { x: 60, depth: 92, width: 38 },
-          { x: 145, depth: 48, width: 28 },
-          { x: 215, depth: 132, width: 44 },
-          { x: 305, depth: 70, width: 30 },
-          { x: 385, depth: 110, width: 36 },
-          { x: 470, depth: 56, width: 26 },
-          { x: 545, depth: 100, width: 42 },
-          { x: 625, depth: 78, width: 32 },
-          { x: 705, depth: 124, width: 40 },
-          { x: 790, depth: 60, width: 28 },
-          { x: 860, depth: 96, width: 34 },
-          { x: 935, depth: 70, width: 30 },
-        ]
-      : [
-          { x: 30, depth: 76, width: 30 },
-          { x: 110, depth: 118, width: 42 },
-          { x: 180, depth: 60, width: 28 },
-          { x: 260, depth: 102, width: 38 },
-          { x: 350, depth: 66, width: 30 },
-          { x: 425, depth: 130, width: 44 },
-          { x: 510, depth: 80, width: 32 },
-          { x: 600, depth: 110, width: 40 },
-          { x: 680, depth: 54, width: 26 },
-          { x: 770, depth: 92, width: 36 },
-          { x: 855, depth: 120, width: 42 },
-          { x: 940, depth: 64, width: 28 },
-        ];
-
-  // Mirror Y for the bottom variant — so its body fills h..(h-baseY) and
-  // drips reach up into the seam.
-  const flip = (y: number) => (variant === "top" ? y : h - y);
-
-  // Start at top-left of the body, sweep along the body's seam edge while
-  // dropping smooth teardrop tendrils, then close back along the outer
-  // top.
-  const parts: string[] = [];
-  parts.push(`M 0 ${flip(0)}`);
-  parts.push(`L ${w} ${flip(0)}`);
-  parts.push(`L ${w} ${flip(baseY)}`);
-  // Sort right to left so we walk the seam in one direction.
-  const sorted = [...drips].sort((a, b) => b.x - a.x);
-  for (const d of sorted) {
-    const left = d.x - d.width / 2;
-    const right = d.x + d.width / 2;
-    parts.push(`L ${right} ${flip(baseY)}`);
-    // Smooth teardrop — wide shoulders that swell slightly past the
-    // base, narrowing to a rounded tip. Two cubic Beziers, one per side.
-    //   right shoulder → tip:
-    //     C right(swell)              right(belly)         tip
-    //   tip → left shoulder:
-    //     C left(belly)               left(swell)          left
-    const tipX = d.x;
-    const tipY = flip(baseY + d.depth);
-    const swellOut = d.width * 0.42; // bulge outward at the shoulders
-    const shoulderSwell = baseY + d.depth * 0.18;
-    const bellyY = baseY + d.depth * 0.62;
-    parts.push(
-      `C ${right + swellOut} ${flip(shoulderSwell)} ${tipX + d.width * 0.18} ${flip(bellyY)} ${tipX} ${tipY}`,
-    );
-    parts.push(
-      `C ${tipX - d.width * 0.18} ${flip(bellyY)} ${left - swellOut} ${flip(shoulderSwell)} ${left} ${flip(baseY)}`,
-    );
+function stableHashFromSeed(seed: string): number {
+  let hash = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    hash ^= seed.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
   }
-  // Close back to the left edge along the seam, then up along the outer
-  // edge to the start.
-  parts.push(`L 0 ${flip(baseY)}`);
-  parts.push("Z");
-  return parts.join(" ");
+  return hash >>> 0;
 }
 
-/** Panel content — mirrors NRunHistory's body. */
+function pickByPrefix(prefix: string, seed: string): string | null {
+  const keys = Object.keys(QUOTES_TABLE)
+    .filter((k) => k.startsWith(prefix))
+    .sort();
+  if (keys.length === 0) return null;
+  const idx = stableHashFromSeed(prefix + ":" + seed) % keys.length;
+  return QUOTES_TABLE[keys[idx]] ?? null;
+}
+
+function bannerFor(seed: string, win: boolean): string {
+  if (win) return QUOTES_TABLE["BANNER.trueWin"] ?? "승리";
+  return pickByPrefix("BANNER.lose", seed) ?? "패배";
+}
+
+function quoteFor(seed: string, character: string, win: boolean): string {
+  if (win) {
+    const tmpl = pickByPrefix("MAP_POINT_HISTORY.falseVictory.", seed);
+    if (tmpl) return interpolateCharacter(tmpl, character);
+    return "";
+  }
+  return pickByPrefix("QUOTES.", seed) ?? "";
+}
+
+function interpolateCharacter(template: string, character: string): string {
+  const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
+  const label =
+    {
+      ironclad: "아이언클래드",
+      silent: "사일런트",
+      defect: "디펙트",
+      necrobinder: "네크로바인더",
+      regent: "리젠트",
+    }[slug] ?? slug;
+  return template
+    .replace(/\{character\}/g, label)
+    .replace(/\{possessiveAdjective\}/g, "그의");
+}
+
+// ----- Panel body -----------------------------------------------------------
+
 function SummaryPanel({
   run,
   acts,
   topbarState,
   cardsById,
+  ended,
+  currentActIndex,
+  currentStep,
 }: {
   run: ReplayRun;
   acts: ReplayActAnalysis[];
   topbarState: TopbarState;
   cardsById: Record<string, CodexCard>;
+  ended: boolean;
+  currentActIndex: number;
+  currentStep: number;
 }) {
   const character = run.players[0]?.character ?? "CHARACTER.IRONCLAD";
   const charLabel = characterLabel(character);
   const charIcon = characterIconSrc(character);
   const finalFloor = topbarState.currentFloor;
-
-  // Run time — total seconds from run.run_time.
   const runTimeStr = formatRunTime(run.run_time ?? 0);
-
-  // Date — fall back to current date if not present.
   const dateStr = formatRunDate(run.start_time);
+
+  // Truncate per current playback position. Past acts render fully; the
+  // current act stops at `currentStep`; future acts disappear.
+  const visibleActs = acts
+    .map((act, idx) => {
+      if (idx < currentActIndex) return { act, history: act.history };
+      if (idx === currentActIndex) {
+        return { act, history: act.history.slice(0, Math.max(0, currentStep)) };
+      }
+      return null;
+    })
+    .filter((x): x is { act: ReplayActAnalysis; history: ReplayHistoryEntry[] } => x !== null);
 
   return (
     <div
       data-testid="summary-panel"
-      className="absolute inset-0 flex items-start justify-center overflow-y-auto px-6 py-8"
-      style={{ animation: "summary-fade-in 600ms ease-out both" }}
+      className="mx-auto w-full max-w-[1100px] px-6 py-8 text-zinc-100"
+      style={{ animation: "summary-fade-in 280ms ease-out both" }}
     >
       <style>{`
         @keyframes summary-fade-in {
-          from { opacity: 0; transform: translateY(12px); }
+          from { opacity: 0; transform: translateY(8px); }
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
 
-      <div className="w-full max-w-[1100px] text-zinc-100">
-        {/* ----- Top mirror row — character / hp / gold / ascension /
-                potion slots / time / date / seed / build ----- */}
-        <header className="flex flex-wrap items-center gap-3 border-b border-amber-500/20 pb-3">
-          <CharacterChip iconSrc={charIcon} label={charLabel} />
-          <HpChip hp={topbarState.hp} maxHp={topbarState.maxHp} />
-          <GoldChip gold={topbarState.gold} />
-          <PotionStrip slots={topbarState.potionSlots} />
-          <AscensionChip ascension={run.ascension} />
-          <ScoreChip win={run.win} floor={finalFloor} />
-          <TimeChip runTime={runTimeStr} />
-          <div className="ml-auto text-right text-[11px] leading-snug text-zinc-400">
-            <div>{dateStr}</div>
-            <div>시드: {run.seed}</div>
-            <div className="text-amber-200/80">
-              {run.win ? "승리" : "패배"} · {finalFloor}층
-            </div>
-            <div className="text-zinc-500">v{run.build_id}</div>
+      <header className="flex flex-wrap items-center gap-3 border-b border-amber-500/20 pb-3">
+        <CharacterChip iconSrc={charIcon} label={charLabel} />
+        <HpChip hp={topbarState.hp} maxHp={topbarState.maxHp} />
+        <GoldChip gold={topbarState.gold} />
+        <PotionStrip slots={topbarState.potionSlots} />
+        <AscensionChip ascension={run.ascension} />
+        <ScoreChip win={run.win && ended} floor={finalFloor} />
+        <TimeChip runTime={runTimeStr} />
+        <div className="ml-auto text-right text-[11px] leading-snug text-zinc-400">
+          {dateStr && <div>{dateStr}</div>}
+          <div>시드: {run.seed}</div>
+          <div className="text-amber-200/80">
+            {ended ? (run.win ? "승리" : "패배") : "진행 중"} · {finalFloor}층
           </div>
-        </header>
+          <div className="text-zinc-500">v{run.build_id}</div>
+        </div>
+      </header>
 
-        {/* ----- Banner (BANNER.lose* / BANNER.trueWin) + mood quote
-                (QUOTES.* / MAP_POINT_HISTORY.falseVictory.*) — both
-                deterministic per seed. ----- */}
+      {/* Banner / quote — only after the run actually ends. Mid-run the
+       *  panel reads as a "current state" view, so emotional copy is
+       *  inappropriate. */}
+      {ended && (
         <div className="mt-4 text-center">
           <h2
             className="text-3xl font-black tracking-tight"
@@ -431,28 +325,21 @@ function SummaryPanel({
             );
           })()}
         </div>
+      )}
 
-        {/* ----- Three act rows ----- */}
-        <section className="mt-5 space-y-2">
-          {acts.map((act) => (
-            <ActRow key={`${act.actId}-${act.actIndex}`} act={act} />
-          ))}
-        </section>
+      <section className="mt-5 space-y-2">
+        {visibleActs.map(({ act, history }) => (
+          <ActRow key={`${act.actId}-${act.actIndex}`} act={act} history={history} />
+        ))}
+      </section>
 
-        {/* ----- Relics ----- */}
-        <section className="mt-6">
-          <RelicSection relics={topbarState.relics} run={run} />
-        </section>
+      <section className="mt-6">
+        <RelicSection relics={topbarState.relics} run={run} />
+      </section>
 
-        {/* ----- Deck cards ----- */}
-        <section className="mt-6 mb-8">
-          <DeckSection
-            deck={topbarState.deck}
-            cardsById={cardsById}
-            run={run}
-          />
-        </section>
-      </div>
+      <section className="mt-6 mb-24">
+        <DeckSection deck={topbarState.deck} cardsById={cardsById} run={run} />
+      </section>
     </div>
   );
 }
@@ -561,9 +448,6 @@ function AscensionChip({ ascension }: { ascension: number }) {
 }
 
 function ScoreChip({ win, floor }: { win: boolean; floor: number }) {
-  // The game shows a numeric "score" — without the score formula on hand
-  // we settle for a `f${floor}` indicator that reads like the topbar
-  // floor count. Keep it minimal so the space stays tight.
   return (
     <div className="flex items-center gap-1 text-zinc-300">
       <Image
@@ -598,26 +482,29 @@ function TimeChip({ runTime }: { runTime: string }) {
 
 // ----- Act row ---------------------------------------------------------------
 
-function ActRow({ act }: { act: ReplayActAnalysis }) {
+function ActRow({
+  act,
+  history,
+}: {
+  act: ReplayActAnalysis;
+  history: ReplayHistoryEntry[];
+}) {
   return (
     <div className="flex items-center gap-3 rounded-md bg-zinc-900/40 px-3 py-2">
       <span className="w-20 shrink-0 text-sm font-bold text-amber-100">
         {act.actLabel}
       </span>
       <div className="flex flex-wrap items-center gap-1">
-        {act.history.map((entry, i) => {
-          /* eslint-disable @next/next/no-img-element */
-          return (
-            <img
-              key={i}
-              src={nodeSpriteSrc(entry)}
-              alt=""
-              className="h-6 w-6 select-none object-contain"
-              draggable={false}
-            />
-          );
-          /* eslint-enable @next/next/no-img-element */
-        })}
+        {history.map((entry, i) => (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            key={i}
+            src={nodeSpriteSrc(entry)}
+            alt=""
+            className="h-6 w-6 select-none object-contain"
+            draggable={false}
+          />
+        ))}
       </div>
     </div>
   );
@@ -632,9 +519,6 @@ function RelicSection({
   relics: TopbarState["relics"];
   run: ReplayRun;
 }) {
-  // Bucket by source (rough rarity grouping the game uses on the panel).
-  // We don't ship per-relic rarity metadata, so this is a lightweight
-  // approximation derived from floor of acquisition.
   const total = relics.length;
   const counts = countRelicsByFloor(relics);
   void run;
@@ -642,7 +526,7 @@ function RelicSection({
     <div>
       <p className="text-xs font-bold text-amber-200">
         유물 ({total}):{" "}
-        <span className="text-zinc-300 font-normal">
+        <span className="font-normal text-zinc-300">
           {counts.starter}개 시작 · {counts.gained}개 획득
         </span>
       </p>
@@ -696,7 +580,7 @@ function DeckSection({
     <div>
       <p className="text-xs font-bold text-amber-200">
         카드 ({total}):{" "}
-        <span className="text-zinc-300 font-normal">
+        <span className="font-normal text-zinc-300">
           {counts.rare}개 희귀 · {counts.uncommon}개 고급 · {counts.common}개
           일반 · {counts.curse}개 저주 · {counts.starter}개 시작
         </span>
@@ -726,7 +610,6 @@ function DeckEntry({
     ? localize("cards", entry.id) ?? card.name
     : entry.id.split(".").pop() ?? "?";
   const upgraded = entry.upgradeCount > 0;
-  const enchanted = false; // No per-card enchantment tracking on hand.
   return (
     <div className="flex items-center gap-1.5">
       {card ? (
@@ -737,11 +620,7 @@ function DeckEntry({
       <span
         className={cn(
           "truncate text-xs",
-          upgraded
-            ? "text-emerald-300"
-            : enchanted
-              ? "text-violet-300"
-              : "text-zinc-200",
+          upgraded ? "text-emerald-300" : "text-zinc-200",
         )}
       >
         {entry.count > 1 && (
@@ -801,79 +680,61 @@ function formatRunDate(startTime: number | string | null | undefined): string {
   return `${y}년 ${m}월 ${d}일 ${hh}:${mm}`;
 }
 
-// ---- Banner + quote pickers, mirroring NGameOverScreen + NRunHistory ------
-//
-// NGameOverScreen.InitializeBannerAndQuote:
-//   if win  → BANNER.trueWin + (banner falseWin used inside game for false-win)
-//   if lose → random pick from BANNER.lose0..7 + random pick from QUOTES.0..16
-//
-// NRunHistory.LoadDeathQuote (the historical-view quote, also the encounter
-// quote shown after the user clicks Continue):
-//   win     → random pick from MAP_POINT_HISTORY.falseVictory.0..1
-//   abandon → random pick from MAP_POINT_HISTORY.abandon.0..2
-//   loss    → encounter-specific (skipped — we don't carry encounter death
-//             metadata for replay fixtures yet)
-//
-// Both pickers use Rng(StringHelper.GetDeterministicHashCode(history.Seed)).
-// We reproduce the determinism with a simple stable hash on the seed.
+// ----- Back button -----------------------------------------------------------
 
-const QUOTES_TABLE = gameOverQuotes as Record<string, string>;
-
-function stableHashFromSeed(seed: string): number {
-  let hash = 2166136261;
-  for (let i = 0; i < seed.length; i++) {
-    hash ^= seed.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function pickByPrefix(prefix: string, seed: string): string | null {
-  const keys = Object.keys(QUOTES_TABLE)
-    .filter((k) => k.startsWith(prefix))
-    .sort();
-  if (keys.length === 0) return null;
-  const idx = stableHashFromSeed(prefix + ":" + seed) % keys.length;
-  return QUOTES_TABLE[keys[idx]] ?? null;
-}
-
-function bannerFor(seed: string, win: boolean): string {
-  if (win) return QUOTES_TABLE["BANNER.trueWin"] ?? "승리";
-  return pickByPrefix("BANNER.lose", seed) ?? "패배";
-}
-
-function quoteFor(
-  seed: string,
-  character: string,
-  win: boolean,
-): string {
-  // Win: "false victory" line interpolated with character title.
-  if (win) {
-    const tmpl = pickByPrefix("MAP_POINT_HISTORY.falseVictory.", seed);
-    if (tmpl) return interpolateCharacter(tmpl, character);
-    return "";
-  }
-  // Loss: opening mood quote (QUOTES.*). Encounter-specific death lines
-  // require encounter metadata we don't carry, so we surface the same
-  // generic mood quote NGameOverScreen shows on the death entry tween.
-  return pickByPrefix("QUOTES.", seed) ?? "";
-}
-
-function interpolateCharacter(template: string, character: string): string {
-  // The game uses {character} / {possessiveAdjective} inside the false-
-  // victory templates. We only replace {character} (subject form) — the
-  // possessive in our localised set always reads correctly without a
-  // gendered adjective in Korean.
-  const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
-  const label =
-    {
-      ironclad: "아이언클래드",
-      silent: "사일런트",
-      defect: "디펙트",
-      necrobinder: "네크로바인더",
-      regent: "리젠트",
-    }[slug] ?? slug;
-  return template
-    .replace(/\{character\}/g, label)
-    .replace(/\{possessiveAdjective\}/g, "그의");
+/** Mirrors the codex back button so the replay panel feels like a fellow
+ *  destination on the site, not a modal. Stays pinned to the bottom-left
+ *  even as the panel scrolls. */
+function BackButton({ onClose }: { onClose: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClose}
+      className="group fixed bottom-8 left-0 z-[60]"
+      aria-label="리플레이로 돌아가기"
+    >
+      <div className="relative h-[80px] w-[160px]">
+        {/* Shadow layer */}
+        <Image
+          src="/images/sts2/ui/back_button.png"
+          alt=""
+          fill
+          sizes="160px"
+          className="translate-x-[-2px] translate-y-[2px] object-contain opacity-25 blur-[1px]"
+          aria-hidden
+          unoptimized
+        />
+        {/* Outline (visible on hover) */}
+        <Image
+          src="/images/sts2/ui/back_button_outline.png"
+          alt=""
+          fill
+          sizes="160px"
+          className="object-contain opacity-0 mix-blend-screen transition-opacity duration-200 group-hover:opacity-80"
+          aria-hidden
+          unoptimized
+        />
+        {/* Main button body */}
+        <Image
+          src="/images/sts2/ui/back_button.png"
+          alt=""
+          fill
+          sizes="160px"
+          className="object-contain transition-all duration-200 group-hover:brightness-125"
+          aria-hidden
+          unoptimized
+        />
+        <div className="absolute inset-0 flex items-center justify-center pl-4">
+          <Image
+            src="/images/sts2/ui/back_button_arrow.png"
+            alt="뒤로가기"
+            width={48}
+            height={40}
+            className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] transition-transform duration-200 group-hover:scale-110"
+            unoptimized
+          />
+        </div>
+      </div>
+    </button>
+  );
 }
