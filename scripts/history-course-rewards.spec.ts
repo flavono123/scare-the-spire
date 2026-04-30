@@ -81,13 +81,24 @@ test("slot machine — next item visible at pose +1", async ({ page }) => {
     timeout: 8000,
   });
   // Scrub directly to the middle of item 0's hold phase. Phase 4 added a
-  // 2500ms transit window before the stack starts; new phase budget puts
-  // hold at offset 240..1740 within stack-local time, so scrub to
-  // 2500 (transit) + 900 (mid-hold) = 3400ms global. onScrubGlobalMs
-  // implicitly pauses playback so the phase doesn't race forward before
-  // we screenshot.
-  const slider = page.locator('input[type="range"]').first();
-  await slider.fill("3400");
+  // 2500ms transit window before the stack starts; phase budget puts
+  // hold at offset 280..1980 within stack-local time, so scrub to
+  // 2500 (transit) + 1130 (mid-hold) = 3630ms global. The slider is
+  // opacity-0 so locator.fill rejects it — drive the value via the
+  // input's native setter + change event.
+  await page.evaluate((value: number) => {
+    const input = document.querySelector(
+      'input[type="range"]',
+    ) as HTMLInputElement | null;
+    if (!input) throw new Error("range input not found");
+    const setter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )?.set;
+    setter?.call(input, String(value));
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }, 3630);
   await page.waitForTimeout(120);
   await waitForPhase(page, "hold");
   await page.waitForTimeout(120);

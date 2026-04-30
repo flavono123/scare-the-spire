@@ -15,45 +15,14 @@ import type { ReactNode } from "react";
 // next (below, dim).
 
 export const PER_ITEM_MS = 2500;
-const APPEAR_MS = 240;
-const HOLD_MS = 1300;
-const TEXT_FADE_MS = 200;
-const POST_GAP_MS = 60;
-const POST_MS = 700;
-// 240 + 1300 + 200 + 60 + 700 = 2500 = PER_ITEM_MS
-// Card fly post phase needs room for the full NCardFlyVfx mirror —
-// accelerating Bezier (~480ms) + endpoint shrink (~220ms). Hold trims
-// to 1300ms to make room.
-
-// NCardFlyVfx parameters (decompiled from sts2.dll v0.103):
-//   _controlPointOffset = Rng.NextFloat(100, 400)
-//   _speed              = Rng.NextFloat(1.1, 1.25)  // initial
-//   _accel              = Rng.NextFloat(2, 2.5)
-//   _duration           = Rng.NextFloat(1, 1.75)    // seconds
-// Frame loop: time += speed × dt; speed += accel × dt; t = time/duration.
-// Control point: midpoint(P0, P2) with c.y -= arcDir, where
-//   arcDir = (target.y < viewport.y/2) ? -500 : (500 + controlPointOffset)
-// — i.e. the arc bows AWAY from the target's vertical half (sling motion).
-// Visible card rotates to follow tangent (angle + π/2, lerp 12 smoothing).
-// Body fade: white→black + scale 1→0.1 over (time × 3 / duration) clamp[0,1].
-// Phase 2: after Phase 1 ends, scale 0.1→0 over a second `duration` cycle.
-const CARD_FLY_INITIAL_SPEED = 1.175; // mid of 1.1..1.25
-const CARD_FLY_ACCEL = 2.25; // mid of 2..2.5
-const CARD_FLY_DURATION_S = 1.375; // mid of 1..1.75 (game seconds)
-// Real-time τ such that ∫₀^τ (T0 + ACC·s) ds = DURATION_S, i.e. when
-// the Bezier t hits 1 in the game's accelerating clock.
-const CARD_FLY_TAU_MAX =
-  (-CARD_FLY_INITIAL_SPEED +
-    Math.sqrt(
-      CARD_FLY_INITIAL_SPEED * CARD_FLY_INITIAL_SPEED +
-        2 * CARD_FLY_ACCEL * CARD_FLY_DURATION_S,
-    )) /
-  CARD_FLY_ACCEL;
-// Of the POST_MS window, how much is Phase 1 (Bezier travel) vs Phase 2
-// (endpoint shrink). The game runs them back to back at the same
-// duration; we squeeze Phase 2 into a smaller tail since by then the
-// card is at the slot and basically invisible.
-const CARD_FLY_PHASE1_FRAC = 0.78;
+const APPEAR_MS = 280;
+const HOLD_MS = 1700;
+const TEXT_FADE_MS = 240;
+const POST_GAP_MS = 80;
+const POST_MS = 200;
+// 280 + 1700 + 240 + 80 + 200 = 2500 = PER_ITEM_MS
+// Cards and relics both fly along a straight line with cubic ease — the
+// arc/Bezier experiment is rolled back per user feedback.
 
 const ROW_OFFSET = 40;
 
@@ -117,17 +86,6 @@ function easeInOutCubic(t: number): number {
   return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 }
 
-/** Deterministic 0..1 from a string key — used to vary the card-fly
- *  control-point offset per item without committing to a real RNG. */
-function stableHash01(value: string): number {
-  let hash = 2166136261;
-  for (let index = 0; index < value.length; index++) {
-    hash ^= value.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return ((hash >>> 0) % 1000) / 1000;
-}
-
 interface Props {
   stageRef: React.RefObject<HTMLDivElement | null>;
   items: NodeStackItem[];
@@ -135,9 +93,15 @@ interface Props {
    *  Driven by the shell's rAF ticker. When the shell pauses, this stops
    *  changing and every visual freezes in place. */
   nodeLocalMs: number;
+  /** Phase 4 — set true while the destination's transit (path trail +
+   *  ring sweep + character pop) is still playing. The whole stack is
+   *  withheld so no faint slot-1 ghost reads on top of the map during
+   *  the cadence; the first item's appear phase only starts once the
+   *  shell un-hides us. */
+  hidden?: boolean;
 }
 
-export function NodeActionStack({ stageRef, items, nodeLocalMs }: Props) {
+export function NodeActionStack({ stageRef, items, nodeLocalMs, hidden }: Props) {
   // Anchor — right side of the current map node.
   const [origin, setOrigin] = useState<Point | null>(null);
   useLayoutEffect(() => {
@@ -200,6 +164,7 @@ export function NodeActionStack({ stageRef, items, nodeLocalMs }: Props) {
     }
   }, [items, nodeLocalMs]);
 
+  if (hidden) return null;
   if (!origin || items.length === 0) return null;
 
   const currentIndex = Math.min(
@@ -286,89 +251,17 @@ function StackItemView({
   let finalBlur = slotBlur;
   let itemOpacity = slotOpacity;
 
-  let flyRotationDeg = 0;
-  let flyBrightness = 1;
-  // Cards mirror the decompiled NCardFlyVfx; relics/everything else fly
-  // along the original linear Bezier-less trajectory (per user note —
-  // straight feels right for relics, the arc reads as overdone).
-  const isCardFly =
-    flying &&
-    (item.kind === "card-gained" ||
-      item.kind === "card-bought" ||
-      item.kind === "card-upgraded" ||
-      item.kind === "card-enchanted");
-
-  if (flying && target && !isCardFly) {
-    // Linear (relic) — straight line with cubic ease, scale 1 → 0.18.
+  if (flying && target) {
+    // Straight-line fly — same shape for cards and relics. Linear cubic
+    // ease across the post phase, with a 1 → 0.18 scale taper so the
+    // icon reads as docking into the slot. (No Bezier arc / rotation /
+    // brightness — those experiments rolled back.)
     const ease = easeInOutCubic(phaseProgress);
     finalDx = (target.x - origin.x) * ease;
     finalDy = (target.y - origin.y) * ease;
     finalScale = 1 + (0.18 - 1) * ease;
     finalBlur = 0;
     itemOpacity = 1;
-  } else if (flying && target && isCardFly) {
-    // ----- NCardFlyVfx mirror -----
-    // Phase 1 (0..PHASE1_FRAC of POST_MS): Bezier arc with accelerating
-    // game clock + tangent rotation + scale 1→0.1.
-    // Phase 2 (PHASE1_FRAC..1): card stays at endpoint, scale 0.1→0.
-    if (phaseProgress < CARD_FLY_PHASE1_FRAC) {
-      const phase1Local = phaseProgress / CARD_FLY_PHASE1_FRAC; // 0..1
-      const tau = phase1Local * CARD_FLY_TAU_MAX;
-      const elapsed =
-        CARD_FLY_INITIAL_SPEED * tau + 0.5 * CARD_FLY_ACCEL * tau * tau;
-      const tBezier = Math.min(1, elapsed / CARD_FLY_DURATION_S);
-
-      // Sling control point: midpoint pulled AWAY from target's
-      // vertical half. We approximate the game's viewport-half decision
-      // using origin Y as a stand-in for "play area" — the deck slot
-      // sits in the topbar (small Y), so the arc bows downward.
-      // controlPointOffset is randomized in-game (100..400); use a
-      // stable per-item value so each fly looks unique without shifting
-      // each frame.
-      const ctlOffset = 100 + (stableHash01(item.key) * 300); // 100..400
-      const targetInUpperHalf = target.y < origin.y;
-      const arcDir = targetInUpperHalf ? -500 : 500 + ctlOffset;
-      const midX = (origin.x + target.x) * 0.5;
-      const midY = (origin.y + target.y) * 0.5;
-      const cX = midX;
-      const cY = midY - arcDir;
-      const u = 1 - tBezier;
-      const px = u * u * origin.x + 2 * u * tBezier * cX + tBezier * tBezier * target.x;
-      const py = u * u * origin.y + 2 * u * tBezier * cY + tBezier * tBezier * target.y;
-      // Tangent for rotation — derivative of B(t) is 2(1-t)(C-P0) +
-      // 2t(P2-C). Use it directly so we don't need a forward sample.
-      const dxT = 2 * (1 - tBezier) * (cX - origin.x) + 2 * tBezier * (target.x - cX);
-      const dyT = 2 * (1 - tBezier) * (cY - origin.y) + 2 * tBezier * (target.y - cY);
-      const angleRad = Math.atan2(dyT, dxT) + Math.PI / 2;
-      finalDx = px - origin.x;
-      finalDy = py - origin.y;
-      flyRotationDeg = (angleRad * 180) / Math.PI;
-
-      // Scale 1 → 0.1 + brightness modulate over (time × 3 / duration).
-      const colorT = Math.max(
-        0,
-        Math.min(1, (elapsed * 3) / CARD_FLY_DURATION_S),
-      );
-      finalScale = 1 + (0.1 - 1) * colorT;
-      // Game uses Modulate white → black (silhouette). Approximate via
-      // CSS brightness — drops to 0.25 at full colorT (dark but not
-      // pure-black, since our icons have outlines that read better not
-      // crushed). itemOpacity stays at 1.
-      flyBrightness = 1 - 0.75 * colorT;
-      finalBlur = 0;
-      itemOpacity = 1;
-    } else {
-      // Phase 2 — pinned at endpoint, scale collapses.
-      const phase2Local =
-        (phaseProgress - CARD_FLY_PHASE1_FRAC) / (1 - CARD_FLY_PHASE1_FRAC);
-      finalDx = target.x - origin.x;
-      finalDy = target.y - origin.y;
-      finalScale = Math.max(0, 0.1 + (-0.05 - 0.1) * phase2Local);
-      flyRotationDeg = 0;
-      flyBrightness = 0.25;
-      finalBlur = 0;
-      itemOpacity = finalScale > 0 ? 1 : 0;
-    }
   }
 
   // Fade post-effect: icon fades out during the post phase.
@@ -413,12 +306,7 @@ function StackItemView({
   const bloomFilter = showBloom
     ? "drop-shadow(0 0 4px rgba(0,0,0,0.85)) drop-shadow(0 0 10px rgba(0,0,0,0.7)) drop-shadow(0 0 22px rgba(0,0,0,0.45)) drop-shadow(0 0 36px rgba(0,0,0,0.25))"
     : "";
-  const brightnessFilter = flyBrightness < 1
-    ? `brightness(${flyBrightness.toFixed(3)})`
-    : "";
-  const composedFilter =
-    [slotFilter, brightnessFilter, bloomFilter].filter(Boolean).join(" ") ||
-    undefined;
+  const composedFilter = [slotFilter, bloomFilter].filter(Boolean).join(" ") || undefined;
 
   return (
     <div
@@ -431,15 +319,8 @@ function StackItemView({
       style={{
         left: origin.x,
         top: origin.y,
-        // For card flies we pivot around the icon's centre (16px = half
-        // the 32px icon column) so the rotation tumbles in place along
-        // the Bezier arc instead of swinging around the icon's left
-        // edge. Relic fly + slot mode keep the original left-anchored
-        // pivot so the label tail aligns predictably.
-        transform: isCardFly
-          ? `translate3d(${finalDx.toFixed(2)}px, calc(-50% + ${finalDy.toFixed(2)}px), 0) rotate(${flyRotationDeg.toFixed(1)}deg) scale(${finalScale.toFixed(3)})`
-          : `translate3d(${finalDx.toFixed(2)}px, calc(-50% + ${finalDy.toFixed(2)}px), 0) scale(${finalScale.toFixed(3)})`,
-        transformOrigin: isCardFly ? "16px center" : "left center",
+        transform: `translate3d(${finalDx.toFixed(2)}px, calc(-50% + ${finalDy.toFixed(2)}px), 0) scale(${finalScale.toFixed(3)})`,
+        transformOrigin: "left center",
         opacity: itemOpacity,
         filter: composedFilter,
         willChange: "transform, opacity, filter",

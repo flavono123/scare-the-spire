@@ -85,6 +85,15 @@ function characterIconSrc(character: string): string {
   return `/images/sts2/characters/character_icon_${safe}.webp`;
 }
 
+function characterIconOutlineSrc(character: string): string {
+  // Outline silhouette companion to character_icon_<x>.webp. Layered
+  // beneath the portrait on the map so the marker reads against busy
+  // backgrounds without needing a separate disc/ring frame.
+  const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
+  const safe = KNOWN_CHARACTER_MARKERS.has(slug) ? slug : "ironclad";
+  return `/images/sts2/characters/character_icon_${safe}_outline.webp`;
+}
+
 function bossKeyFromEntry(entry: ReplayHistoryEntry): string | null {
   const id = entry.rooms?.[0]?.model_id;
   if (!id) return null;
@@ -851,6 +860,9 @@ function Stage({
   const mapCharacterMarkerSrc = characterIconSrc(
     run.players[0]?.character ?? "CHARACTER.IRONCLAD",
   );
+  const mapCharacterMarkerOutlineSrc = characterIconOutlineSrc(
+    run.players[0]?.character ?? "CHARACTER.IRONCLAD",
+  );
 
   const scrollToStep = useCallback(() => {
     const node = mapBoxRef.current;
@@ -923,6 +935,7 @@ function Stage({
             transitProgress={transitProgress}
             transitEdgeIds={transitEdgeIds}
             characterMarkerSrc={mapCharacterMarkerSrc}
+            characterMarkerOutlineSrc={mapCharacterMarkerOutlineSrc}
           />
         </div>
       </div>
@@ -945,6 +958,7 @@ function Stage({
           0,
           actLocalMs - (actTimeline?.entries[step - 1]?.startMs ?? 0) - stackStartOffsetMs(),
         )}
+        hidden={transitProgress < 1}
       />
 
       <PlaybackBar

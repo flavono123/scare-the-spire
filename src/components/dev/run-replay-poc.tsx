@@ -925,6 +925,7 @@ export function SeededMapView({
   transitProgress,
   transitEdgeIds,
   characterMarkerSrc,
+  characterMarkerOutlineSrc,
 }: {
   act: ReplayActAnalysis;
   step: number;
@@ -942,6 +943,10 @@ export function SeededMapView({
    *  pops in to the left of the current node once transit is essentially
    *  complete (>= 0.92). PoC omits the prop and gets no marker. */
   characterMarkerSrc?: string;
+  /** Outline silhouette layered beneath `characterMarkerSrc` so the
+   *  portrait reads against any map backdrop without needing a manual
+   *  disc/ring frame. */
+  characterMarkerOutlineSrc?: string;
 }) {
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const meta = actMapMeta(act.actId);
@@ -1289,17 +1294,25 @@ export function SeededMapView({
                   opacity,
                 }}
               >
-                {/* Dark disc + amber outline — no topbar backdrop. The
-                 *  portrait sits inside this circular frame so the
-                 *  character reads against any map background. */}
-                <div className="absolute inset-0 rounded-full bg-zinc-950/85 ring-2 ring-amber-300/80 shadow-[0_2px_6px_rgba(0,0,0,0.85)]" />
+                {/* Layer the game's own outline silhouette beneath the
+                 *  portrait. No extra disc / ring frame — both webps
+                 *  carry their own visual treatment. */}
+                {characterMarkerOutlineSrc && (
+                  <Image
+                    src={characterMarkerOutlineSrc}
+                    alt=""
+                    fill
+                    sizes="48px"
+                    className="absolute inset-0 object-contain"
+                    unoptimized
+                  />
+                )}
                 <Image
                   src={characterMarkerSrc}
                   alt=""
                   fill
                   sizes="48px"
-                  className="absolute inset-[3px] object-contain"
-                  style={{ borderRadius: "9999px" }}
+                  className="absolute inset-0 object-contain"
                   unoptimized
                 />
               </div>
