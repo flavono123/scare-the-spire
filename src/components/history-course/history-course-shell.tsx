@@ -923,20 +923,48 @@ function Stage({
     run.players[0]?.character ?? "CHARACTER.IRONCLAD",
   );
 
+  // Position the current node at ~60% from the top of the viewport
+  // (i.e. between the half and lower-third lines) so the player sees
+  // some context above and the path-trail below isn't cropped by the
+  // playback bar. Falls back to a simple linear scrub only when the
+  // current-node DOM element isn't queryable yet.
+  const CURRENT_NODE_VIEWPORT_RATIO = 0.6;
   const scrollToStep = useCallback(() => {
-    const node = mapBoxRef.current;
-    if (!node) return;
-    const inner = node.firstElementChild as HTMLElement | null;
+    const box = mapBoxRef.current;
+    if (!box) return;
+    const inner = box.firstElementChild as HTMLElement | null;
     if (!inner) return;
-    const total = inner.scrollHeight - node.clientHeight;
-    if (total <= 0) {
-      node.scrollTo({ top: 0, behavior: "smooth" });
+    const maxScroll = Math.max(0, inner.scrollHeight - box.clientHeight);
+    if (maxScroll === 0) {
+      box.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    const progress = act.history.length > 1 ? (step - 1) / (act.history.length - 1) : 1;
-    const target = Math.round((1 - progress) * total);
-    node.scrollTo({ top: target, behavior: "smooth" });
-  }, [act, step]);
+    const currentNode = box.querySelector<HTMLElement>(
+      '[data-node-current="true"]',
+    );
+    let target: number;
+    if (currentNode) {
+      const innerRect = inner.getBoundingClientRect();
+      const nodeRect = currentNode.getBoundingClientRect();
+      // Static offset of the node's centre within inner content,
+      // independent of current scrollTop.
+      const nodeCenterInInner =
+        nodeRect.top - innerRect.top + nodeRect.height / 2;
+      const desiredViewportY =
+        box.clientHeight * CURRENT_NODE_VIEWPORT_RATIO;
+      target = nodeCenterInInner - desiredViewportY;
+    } else {
+      // First step on initial mount: data-node-current may not yet
+      // be in the DOM. Fall back to bottom-of-content (step 1 = first
+      // floor = bottom of inner) so the row below the ancient is in
+      // view rather than the unrelated top-of-inner region.
+      target = maxScroll;
+    }
+    box.scrollTo({
+      top: Math.max(0, Math.min(maxScroll, Math.round(target))),
+      behavior: "smooth",
+    });
+  }, []);
 
   useEffect(() => {
     // Scroll runs even while the intro overlay is visible — the new
