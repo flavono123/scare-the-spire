@@ -5,6 +5,7 @@ export const serviceMessages = {
     brand: "슬서운 이야기",
     serviceLocaleName: "한국어",
     serviceLocaleSwitch: "English",
+    gameLocaleSelect: "게임 문구 언어",
     nav: {
       patches: "패치노트",
       chemicalX: "케미컬X",
@@ -31,6 +32,7 @@ export const serviceMessages = {
     brand: "Scare the Spire",
     serviceLocaleName: "English",
     serviceLocaleSwitch: "한국어",
+    gameLocaleSelect: "Game Text Language",
     nav: {
       patches: "Patch Notes",
       chemicalX: "Chemical X",

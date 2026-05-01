@@ -2,12 +2,17 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import {
+  GAME_LOCALE_LABELS,
+  GAME_LOCALES,
+  getGameLocaleFromSearch,
   getServiceLocaleFromPath,
   localizeHref,
   switchServiceLocaleHref,
+  withGameLocaleSearch,
+  type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
@@ -195,18 +200,64 @@ function GameDropdown({
   );
 }
 
+function GameLocaleSelect({
+  value,
+  serviceLocale,
+  label,
+}: {
+  value: GameLocale;
+  serviceLocale: ServiceLocale;
+  label: string;
+}) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  return (
+    <select
+      aria-label={label}
+      value={value}
+      onChange={(event) => {
+        const nextLocale = event.target.value as GameLocale;
+        const search = withGameLocaleSearch(
+          new URLSearchParams(searchParams.toString()),
+          nextLocale,
+          serviceLocale,
+        );
+        router.push(`${pathname}${search}`);
+      }}
+      className="h-7 max-w-[9rem] rounded border border-border bg-background px-2 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-white/5 hover:text-foreground focus:text-foreground"
+    >
+      {GAME_LOCALES.map((locale) => (
+        <option key={locale} value={locale}>
+          {GAME_LOCALE_LABELS[locale][serviceLocale]}
+        </option>
+      ))}
+    </select>
+  );
+}
+
 // --- Main navbar ---
 
 export function SiteNavbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const serviceLocale = getServiceLocaleFromPath(pathname);
+  const gameLocale = getGameLocaleFromSearch(
+    new URLSearchParams(searchParams.toString()),
+    serviceLocale,
+  );
   const messages = serviceMessages[serviceLocale];
   const nextLocale: ServiceLocale = serviceLocale === "ko" ? "en" : "ko";
+  const localeSwitchSearch = withGameLocaleSearch(
+    new URLSearchParams(searchParams.toString()),
+    gameLocale,
+    nextLocale,
+  );
   const localeSwitchHref = switchServiceLocaleHref(
     pathname,
     nextLocale,
-    searchParams.toString(),
+    localeSwitchSearch,
   );
 
   return (
@@ -256,6 +307,11 @@ export function SiteNavbar() {
 
         {/* Right: game dropdowns */}
         <div className="flex items-center gap-1">
+          <GameLocaleSelect
+            value={gameLocale}
+            serviceLocale={serviceLocale}
+            label={messages.gameLocaleSelect}
+          />
           <GameDropdown
             icon="/images/sts2/icons/app_icon.png"
             alt={messages.games.sts2Codex}
