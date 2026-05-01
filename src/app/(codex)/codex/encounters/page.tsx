@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { getCodexMonsters, getCodexEncounters } from "@/lib/codex-data";
+import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
 import { EncounterLibrary } from "@/components/codex/encounter-library";
 
 export const metadata = {
@@ -7,10 +8,15 @@ export const metadata = {
   description: "슬레이 더 스파이어 2의 전투(encounter) 목록. 막별/유형별 전투 구성과 몬스터 조합을 확인하세요.",
 };
 
-export default async function CodexEncountersPage() {
+export default async function CodexEncountersPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const [encounters, monsters] = await Promise.all([
-    getCodexEncounters(),
-    getCodexMonsters(),
+    getCodexEncounters({ gameLocale }),
+    getCodexMonsters({ gameLocale }),
   ]);
 
   return (

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexEvents } from "@/lib/codex-data";
+import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
 import { EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
 import { EventDetail } from "@/components/codex/event-detail";
 
@@ -29,11 +30,14 @@ export async function generateMetadata({
 
 export default async function EventDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
-  const events = await getCodexEvents();
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const events = await getCodexEvents({ gameLocale });
   const event = events.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!event) notFound();
 

@@ -485,44 +485,75 @@ interface RawEvent {
   relics: string[] | null;
 }
 
-function mapEventOptions(opts: RawEventOption[] | null): EventOption[] | null {
+function mapEventOptions(
+  eventId: string,
+  pageId: string,
+  opts: RawEventOption[] | null,
+  gameEvents: GameLocalizationTable,
+): EventOption[] | null {
   if (!opts || opts.length === 0) return null;
-  return opts.map((o) => ({ id: o.id, title: o.title, description: o.description }));
+  return opts.map((o) => {
+    const baseKey = `${eventId}.pages.${pageId}.options.${o.id}`;
+    return {
+      id: o.id,
+      title: gameText(gameEvents, `${baseKey}.title`, o.title),
+      description: gameText(gameEvents, `${baseKey}.description`, o.description),
+    };
+  });
 }
 
-function mapEventPages(pages: RawEventPage[] | null): EventPage[] | null {
+function mapEventPages(
+  eventId: string,
+  pages: RawEventPage[] | null,
+  gameEvents: GameLocalizationTable,
+): EventPage[] | null {
   if (!pages || pages.length === 0) return null;
   return pages.map((p) => ({
     id: p.id,
-    description: p.description,
-    options: mapEventOptions(p.options),
+    description: gameNullableText(
+      gameEvents,
+      `${eventId}.pages.${p.id}.description`,
+      p.description,
+    ),
+    options: mapEventOptions(eventId, p.id, p.options, gameEvents),
   }));
 }
 
-function mapEvent(kor: RawEvent, eng: RawEvent, imageFiles: Set<string>): CodexEvent {
+function mapEvent(
+  kor: RawEvent,
+  eng: RawEvent,
+  imageFiles: Set<string>,
+  gameEvents: GameLocalizationTable,
+): CodexEvent {
   const key = kor.id.toLowerCase();
   const imageUrl = imageFiles.has(key) ? `/images/sts2/events/${key}.webp` : null;
   return {
     id: kor.id,
-    name: kor.name,
+    name: gameText(gameEvents, `${kor.id}.title`, kor.name),
     nameEn: eng.name,
-    description: kor.description,
+    description: gameText(
+      gameEvents,
+      `${kor.id}.pages.INITIAL.description`,
+      gameText(gameEvents, `${kor.id}.description`, kor.description),
+    ),
     act: (kor.act as EventAct | null),
-    options: mapEventOptions(kor.options),
-    pages: mapEventPages(kor.pages),
+    options: mapEventOptions(kor.id, "INITIAL", kor.options, gameEvents),
+    pages: mapEventPages(kor.id, kor.pages, gameEvents),
     imageUrl,
   };
 }
 
-export async function getCodexEvents(): Promise<CodexEvent[]> {
+export async function getCodexEvents(opts?: { gameLocale?: GameLocale }): Promise<CodexEvent[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
   const EVENTS_IMG_DIR = path.join(process.cwd(), "public/images/sts2/events");
-  const [korEvents, engEvents, imgFiles] = await Promise.all([
+  const [korEvents, engEvents, imgFiles, gameEvents] = await Promise.all([
     readJson<RawEvent[]>("kor/events.json"),
     readJson<RawEvent[]>("eng/events.json"),
     fs.readdir(EVENTS_IMG_DIR).then(
       (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
       () => new Set<string>(), // fallback if dir doesn't exist
     ),
+    readGameLocalizationTable(gameLocale, "events"),
   ]);
 
   const engById = new Map(engEvents.map((e) => [e.id, e]));
@@ -537,11 +568,21 @@ export async function getCodexEvents(): Promise<CodexEvent[]> {
     })
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapEvent(kor, eng, imgFiles);
+      return mapEvent(kor, eng, imgFiles, gameEvents);
     });
 }
 
-function mapAncient(kor: RawEvent, eng: RawEvent): CodexAncient {
+function ancientTalkGroup(group: string): string {
+  if (group === "Returning") return "ANY";
+  if (group === "First Visit") return "firstVisitEver";
+  return group.toUpperCase();
+}
+
+function ancientTalkSpeaker(speaker: "ancient" | "character"): string {
+  return speaker === "character" ? "char" : "ancient";
+}
+
+function mapAncient(kor: RawEvent, eng: RawEvent, gameAncients: GameLocalizationTable): CodexAncient {
   const key = kor.id.toLowerCase();
   const imageUrl = `/images/sts2/ancients/${key}.webp`;
 
@@ -549,21 +590,30 @@ function mapAncient(kor: RawEvent, eng: RawEvent): CodexAncient {
   const dialogue: Record<string, AncientDialogueLine[]> = {};
   if (kor.dialogue) {
     for (const [charKey, lines] of Object.entries(kor.dialogue)) {
+      const group = ancientTalkGroup(charKey);
       dialogue[charKey] = (lines as RawDialogueLine[]).map((l) => ({
         order: l.order,
         speaker: l.speaker as "ancient" | "character",
-        text: l.text,
+        text: gameText(
+          gameAncients,
+          `${kor.id}.talk.${group}.${l.order}.${ancientTalkSpeaker(l.speaker as "ancient" | "character")}`,
+          l.text,
+        ),
       }));
     }
   }
 
   return {
     id: kor.id,
-    name: kor.name,
+    name: gameText(gameAncients, `${kor.id}.title`, kor.name),
     nameEn: eng.name,
-    epithet: kor.epithet ?? "",
+    epithet: gameText(gameAncients, `${kor.id}.epithet`, kor.epithet ?? ""),
     epithetEn: eng.epithet ?? "",
-    description: kor.description,
+    description: gameText(
+      gameAncients,
+      `${kor.id}.talk.firstVisitEver.0-0.ancient`,
+      kor.description,
+    ),
     act: (kor.act as EventAct) ?? null,
     relicIds: kor.relics ?? [],
     dialogue,
@@ -571,10 +621,12 @@ function mapAncient(kor: RawEvent, eng: RawEvent): CodexAncient {
   };
 }
 
-export async function getCodexAncients(): Promise<CodexAncient[]> {
-  const [korEvents, engEvents] = await Promise.all([
+export async function getCodexAncients(opts?: { gameLocale?: GameLocale }): Promise<CodexAncient[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [korEvents, engEvents, gameAncients] = await Promise.all([
     readJson<RawEvent[]>("kor/events.json"),
     readJson<RawEvent[]>("eng/events.json"),
+    readGameLocalizationTable(gameLocale, "ancients"),
   ]);
 
   const engById = new Map(engEvents.map((e) => [e.id, e]));
@@ -583,7 +635,7 @@ export async function getCodexAncients(): Promise<CodexAncient[]> {
     .filter((e) => e.type === "Ancient")
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapAncient(kor, eng);
+      return mapAncient(kor, eng, gameAncients);
     });
 }
 
@@ -612,11 +664,17 @@ interface RawMonster {
   image_url: string | null;
 }
 
-function mapMonster(kor: RawMonster, eng: RawMonster, monsterImages: Set<string>, bossImages: Set<string>): CodexMonster {
+function mapMonster(
+  kor: RawMonster,
+  eng: RawMonster,
+  monsterImages: Set<string>,
+  bossImages: Set<string>,
+  gameMonsters: GameLocalizationTable,
+): CodexMonster {
   // Map moves with both languages
   const moves: MonsterMove[] = kor.moves.map((km, i) => ({
     id: km.id,
-    name: km.name,
+    name: gameText(gameMonsters, `${kor.id}.moves.${km.id}.title`, km.name),
     nameEn: eng.moves[i]?.name ?? km.name,
   }));
 
@@ -643,7 +701,7 @@ function mapMonster(kor: RawMonster, eng: RawMonster, monsterImages: Set<string>
 
   return {
     id: kor.id,
-    name: kor.name,
+    name: gameText(gameMonsters, `${kor.id}.name`, kor.name),
     nameEn: eng.name,
     type: kor.type as MonsterType,
     minHp: kor.min_hp,
@@ -658,10 +716,11 @@ function mapMonster(kor: RawMonster, eng: RawMonster, monsterImages: Set<string>
   };
 }
 
-export async function getCodexMonsters(): Promise<CodexMonster[]> {
+export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Promise<CodexMonster[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
   const MONSTERS_IMG_DIR = path.join(process.cwd(), "public/images/sts2/monsters-render");
   const BOSSES_IMG_DIR = path.join(process.cwd(), "public/images/sts2/bosses");
-  const [korMonsters, engMonsters, monsterFiles, bossFiles] = await Promise.all([
+  const [korMonsters, engMonsters, monsterFiles, bossFiles, gameMonsters] = await Promise.all([
     readJson<RawMonster[]>("kor/monsters.json"),
     readJson<RawMonster[]>("eng/monsters.json"),
     fs.readdir(MONSTERS_IMG_DIR).then(
@@ -672,13 +731,14 @@ export async function getCodexMonsters(): Promise<CodexMonster[]> {
       (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
       () => new Set<string>(),
     ),
+    readGameLocalizationTable(gameLocale, "monsters"),
   ]);
 
   const engById = new Map(engMonsters.map((m) => [m.id, m]));
 
   return korMonsters.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapMonster(kor, eng, monsterFiles, bossFiles);
+    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters);
   });
 }
 
@@ -699,10 +759,16 @@ interface RawEncounter {
   loss_text: string;
 }
 
-function mapEncounter(kor: RawEncounter, eng: RawEncounter, bossImages: Set<string>): CodexEncounter {
+function mapEncounter(
+  kor: RawEncounter,
+  eng: RawEncounter,
+  bossImages: Set<string>,
+  gameEncounters: GameLocalizationTable,
+  gameMonsters: GameLocalizationTable,
+): CodexEncounter {
   const monsters: EncounterMonsterRef[] = kor.monsters.map((km, i) => ({
     id: km.id,
-    name: km.name,
+    name: gameText(gameMonsters, `${km.id}.name`, km.name),
     nameEn: eng.monsters[i]?.name ?? km.name,
   }));
 
@@ -715,33 +781,36 @@ function mapEncounter(kor: RawEncounter, eng: RawEncounter, bossImages: Set<stri
 
   return {
     id: kor.id,
-    name: kor.name,
+    name: gameText(gameEncounters, `${kor.id}.title`, kor.name),
     nameEn: eng.name,
     roomType: kor.room_type as EncounterRoomType,
     isWeak: kor.is_weak,
     act: (kor.act as EventAct | null),
     tags: kor.tags,
     monsters,
-    lossText: kor.loss_text,
+    lossText: gameText(gameEncounters, `${kor.id}.loss`, kor.loss_text),
     imageUrl,
   };
 }
 
-export async function getCodexEncounters(): Promise<CodexEncounter[]> {
+export async function getCodexEncounters(opts?: { gameLocale?: GameLocale }): Promise<CodexEncounter[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
   const BOSSES_IMG_DIR = path.join(process.cwd(), "public/images/sts2/bosses");
-  const [korEncounters, engEncounters, bossFiles] = await Promise.all([
+  const [korEncounters, engEncounters, bossFiles, gameEncounters, gameMonsters] = await Promise.all([
     readJson<RawEncounter[]>("kor/encounters.json"),
     readJson<RawEncounter[]>("eng/encounters.json"),
     fs.readdir(BOSSES_IMG_DIR).then(
       (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
       () => new Set<string>(),
     ),
+    readGameLocalizationTable(gameLocale, "encounters"),
+    readGameLocalizationTable(gameLocale, "monsters"),
   ]);
 
   const engById = new Map(engEncounters.map((e) => [e.id, e]));
 
   return korEncounters.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapEncounter(kor, eng, bossFiles);
+    return mapEncounter(kor, eng, bossFiles, gameEncounters, gameMonsters);
   });
 }

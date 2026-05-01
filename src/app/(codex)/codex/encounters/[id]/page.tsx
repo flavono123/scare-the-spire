@@ -5,6 +5,7 @@ import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { getCodexMonsters, getCodexEncounters } from "@/lib/codex-data";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
 import { ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
 import { DescriptionText } from "@/components/codex/codex-description";
 
@@ -31,13 +32,16 @@ export async function generateMetadata({
 
 export default async function EncounterDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const [encounters, monsters] = await Promise.all([
-    getCodexEncounters(),
-    getCodexMonsters(),
+    getCodexEncounters({ gameLocale }),
+    getCodexMonsters({ gameLocale }),
   ]);
   const encounter = encounters.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!encounter) notFound();

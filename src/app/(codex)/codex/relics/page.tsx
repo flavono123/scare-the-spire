@@ -21,7 +21,7 @@ export default async function CodexRelicsPage({
   const [relics, characters, ancients, patches, versionDiffs, meta, entities] = await Promise.all([
     getCodexRelics({ gameLocale }),
     getCodexCharacters({ gameLocale }),
-    getCodexAncients(),
+    getCodexAncients({ gameLocale }),
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),

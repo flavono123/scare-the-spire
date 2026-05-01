@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
 import { getCodexAncients, getCodexRelics } from "@/lib/codex-data";
+import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
 import { AncientDetail } from "@/components/codex/ancient-detail";
 import type { CodexRelic } from "@/lib/codex-types";
 
 interface Props {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export async function generateStaticParams() {
@@ -23,11 +25,12 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default async function AncientDetailPage({ params }: Props) {
+export default async function AncientDetailPage({ params, searchParams }: Props) {
   const { id } = await params;
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const [ancients, relics] = await Promise.all([
-    getCodexAncients(),
-    getCodexRelics(),
+    getCodexAncients({ gameLocale }),
+    getCodexRelics({ gameLocale }),
   ]);
 
   const ancient = ancients.find((a) => a.id.toLowerCase() === id.toLowerCase());

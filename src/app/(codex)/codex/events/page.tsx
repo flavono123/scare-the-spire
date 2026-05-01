@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { getCodexEvents } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
 import { EventList } from "@/components/codex/event-list";
 
 export const metadata = {
@@ -9,9 +10,14 @@ export const metadata = {
   description: "슬레이 더 스파이어 2 이벤트",
 };
 
-export default async function CodexEventsPage() {
+export default async function CodexEventsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const [events, patches, versionDiffs, meta] = await Promise.all([
-    getCodexEvents(),
+    getCodexEvents({ gameLocale }),
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
