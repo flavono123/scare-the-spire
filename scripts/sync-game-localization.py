@@ -13,7 +13,6 @@ import argparse
 import hashlib
 import json
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -124,7 +123,7 @@ def main() -> int:
                 write_json(out_dir / lang / f"{table}.json", reader.read_json(pck_entry))
 
         manifest = {
-            "generatedAt": datetime.now(timezone.utc).isoformat(),
+            "schemaVersion": 1,
             "pck": pck_fingerprint(pck_path),
             "languages": langs,
             "tables": tables,
