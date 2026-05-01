@@ -293,29 +293,28 @@ function CharacterChip({
   const iconSrc = CHARACTER_ICON[character];
   const label = CHARACTER_LABEL[character] ?? character.split(".").pop();
   return (
-    <HoverTipWrap tip={{ title: `${label} · 승천 ${ascension}` }}>
-      <span
-        className="relative inline-block h-12 w-12 -translate-y-px"
-        style={{
-          backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
-          backgroundSize: "100% 100%",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        {iconSrc && (
-          <span className="absolute inset-1 overflow-hidden">
-            <Image
-              src={iconSrc}
-              alt={label ?? character}
-              fill
-              sizes="44px"
-              className="object-contain"
-            />
-          </span>
-        )}
-        {ascension > 0 && <AscensionBadge ascension={ascension} />}
-      </span>
-    </HoverTipWrap>
+    <span
+      className="relative inline-block h-12 w-12 -translate-y-px"
+      style={{
+        backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
+        backgroundSize: "100% 100%",
+        backgroundRepeat: "no-repeat",
+      }}
+      aria-label={`${label} · 승천 ${ascension}`}
+    >
+      {iconSrc && (
+        <span className="absolute inset-1 overflow-hidden">
+          <Image
+            src={iconSrc}
+            alt={label ?? character}
+            fill
+            sizes="44px"
+            className="object-contain"
+          />
+        </span>
+      )}
+      {ascension > 0 && <AscensionBadge ascension={ascension} />}
+    </span>
   );
 }
 
@@ -348,7 +347,7 @@ function HpChip({
   maxHp: number | null;
 }) {
   return (
-    <Chip tip={{ title: `체력 ${hp ?? "—"} / ${maxHp ?? "—"}` }}>
+    <Chip>
       <Image
         src="/images/sts2/ui/topbar/top_bar_heart.png"
         alt=""
@@ -367,7 +366,7 @@ function HpChip({
 
 function GoldChip({ gold }: { gold: number | null }) {
   return (
-    <Chip tip={{ title: `골드 ${gold ?? "—"}` }}>
+    <Chip>
       <Image
         src="/images/sts2/ui/topbar/top_bar_gold.png"
         alt=""
@@ -383,33 +382,32 @@ function GoldChip({ gold }: { gold: number | null }) {
 
 function PotionSlots({ count }: { count: number }) {
   return (
-    <HoverTipWrap tip={{ title: `포션 슬롯 ${count}개` }}>
-      <span
-        className="relative inline-flex items-center gap-1 px-1"
-        style={{
-          // nine-slice keeps the chamfer corners at 8px so the slot bay matches
-          // the height of HP/gold/floor chips instead of doubling them.
-          borderImage:
-            "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png) 28 fill / 8px / 0 stretch",
-          borderStyle: "solid",
-          borderWidth: "8px",
-          transform: "translateY(-4px)",
-        }}
-      >
-        {Array.from({ length: count }).map((_, i) => (
-          <span key={i} className="relative inline-block h-6 w-5">
-            <Image
-              src="/images/sts2/ui/topbar/potion_placeholder.png"
-              alt=""
-              fill
-              sizes="20px"
-              className="object-contain opacity-90"
-              unoptimized
-            />
-          </span>
-        ))}
-      </span>
-    </HoverTipWrap>
+    <span
+      className="relative inline-flex items-center gap-1 px-1"
+      style={{
+        // nine-slice keeps the chamfer corners at 8px so the slot bay matches
+        // the height of HP/gold/floor chips instead of doubling them.
+        borderImage:
+          "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png) 28 fill / 8px / 0 stretch",
+        borderStyle: "solid",
+        borderWidth: "8px",
+        transform: "translateY(-4px)",
+      }}
+      aria-label={`포션 슬롯 ${count}개`}
+    >
+      {Array.from({ length: count }).map((_, i) => (
+        <span key={i} className="relative inline-block h-6 w-5">
+          <Image
+            src="/images/sts2/ui/topbar/potion_placeholder.png"
+            alt=""
+            fill
+            sizes="20px"
+            className="object-contain opacity-90"
+            unoptimized
+          />
+        </span>
+      ))}
+    </span>
   );
 }
 
@@ -443,7 +441,6 @@ function CurrentNodeChip({
   if (type === "ancient" && ancientInfo.spriteId) {
     return (
       <NodeIcon
-        tipTitle={`현재 노드: ${nodeLabel(entry)}`}
         alt={nodeLabel(entry)}
         sprite={ancientInfo.spriteId}
         size={40}
@@ -455,7 +452,6 @@ function CurrentNodeChip({
   if (!sprite) return null;
   return (
     <NodeIcon
-      tipTitle={`현재 노드: ${nodeLabel(entry)}`}
       alt={nodeLabel(entry)}
       sprite={sprite}
       size={40}
@@ -485,13 +481,11 @@ function BossPortrait({ id, active }: { id: string; active: boolean }) {
 }
 
 function NodeIcon({
-  tipTitle,
   alt,
   sprite,
   size,
   inactive,
 }: {
-  tipTitle?: string;
   alt: string;
   sprite: string;
   size: number;
@@ -499,7 +493,7 @@ function NodeIcon({
 }) {
   const main = `/images/sts2/run-history/${sprite}.png`;
   const outline = `/images/sts2/run-history/${sprite}_outline.png`;
-  const icon = (
+  return (
     <span
       className={cn(
         "relative inline-block",
@@ -528,8 +522,6 @@ function NodeIcon({
       />
     </span>
   );
-  if (!tipTitle) return icon;
-  return <HoverTipWrap tip={{ title: tipTitle }}>{icon}</HoverTipWrap>;
 }
 
 function currentNodeSprite(entry: ReplayHistoryEntry | null): string | null {
@@ -561,7 +553,7 @@ function currentNodeSprite(entry: ReplayHistoryEntry | null): string | null {
 
 function FloorChip({ floor }: { floor: number }) {
   return (
-    <Chip tip={{ title: `${floor}층` }}>
+    <Chip>
       <Image
         src="/images/sts2/ui/topbar/top_bar_floor.png"
         alt=""
@@ -597,32 +589,31 @@ function BossChip({
 
   if (!renderFirst && !renderSecond) return null;
   return (
-    <HoverTipWrap tip={{ title: bossTitle(info, showSecond) }}>
-      <span
-        className="relative flex items-center"
-        style={{ transform: "translateY(-3px)" }}
-      >
-        {renderFirst && info.firstBoss && (
-          <BossIcon
-            id={info.firstBoss}
-            // First boss is the active token from the very start of the act —
-            // it only stops being "the active right-side boss" when the player
-            // actually steps on it, at which point this chip stops rendering it.
-            active
-            className="relative z-10"
-          />
-        )}
-        {renderSecond && info.secondBoss && (
-          <BossIcon
-            id={info.secondBoss}
-            active={info.firstBossPassed}
-            // Sit 1px behind the first boss so the first one occludes a sliver
-            // of the second instead of leaving them flush.
-            className={cn("relative z-0", renderFirst && "-ml-px")}
-          />
-        )}
-      </span>
-    </HoverTipWrap>
+    <span
+      className="relative flex items-center"
+      style={{ transform: "translateY(-3px)" }}
+      aria-label={bossTitle(info, showSecond)}
+    >
+      {renderFirst && info.firstBoss && (
+        <BossIcon
+          id={info.firstBoss}
+          // First boss is the active token from the very start of the act —
+          // it only stops being "the active right-side boss" when the player
+          // actually steps on it, at which point this chip stops rendering it.
+          active
+          className="relative z-10"
+        />
+      )}
+      {renderSecond && info.secondBoss && (
+        <BossIcon
+          id={info.secondBoss}
+          active={info.firstBossPassed}
+          // Sit 1px behind the first boss so the first one occludes a sliver
+          // of the second instead of leaving them flush.
+          className={cn("relative z-0", renderFirst && "-ml-px")}
+        />
+      )}
+    </span>
   );
 }
 
