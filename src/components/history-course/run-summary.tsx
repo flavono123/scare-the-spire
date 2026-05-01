@@ -10,7 +10,6 @@ import {
   type EntityInfo,
 } from "@/components/patch-note-renderer";
 import { localize } from "@/lib/sts2-i18n";
-import gameOverQuotes from "@/lib/sts2-game-over-quotes-ko.json";
 import type { CodexCard, CodexRelic } from "@/lib/codex-types";
 import type {
   ReplayActAnalysis,
@@ -214,63 +213,6 @@ export function RunSummary({
   );
 }
 
-// ----- Banner + quote pickers (see `data/sts2/kor/game_over_screen.json`) ---
-//
-// NGameOverScreen.InitializeBannerAndQuote + NRunHistory.LoadDeathQuote.
-// Win  → BANNER.trueWin + MAP_POINT_HISTORY.falseVictory.* (with character
-//        substituted in).
-// Loss → random BANNER.lose0..7 + random QUOTES.00..16. Deterministic on
-//        the run seed.
-
-const QUOTES_TABLE = gameOverQuotes as Record<string, string>;
-
-function stableHashFromSeed(seed: string): number {
-  let hash = 2166136261;
-  for (let i = 0; i < seed.length; i++) {
-    hash ^= seed.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function pickByPrefix(prefix: string, seed: string): string | null {
-  const keys = Object.keys(QUOTES_TABLE)
-    .filter((k) => k.startsWith(prefix))
-    .sort();
-  if (keys.length === 0) return null;
-  const idx = stableHashFromSeed(prefix + ":" + seed) % keys.length;
-  return QUOTES_TABLE[keys[idx]] ?? null;
-}
-
-function bannerFor(seed: string, win: boolean): string {
-  if (win) return QUOTES_TABLE["BANNER.trueWin"] ?? "승리";
-  return pickByPrefix("BANNER.lose", seed) ?? "패배";
-}
-
-function quoteFor(seed: string, character: string, win: boolean): string {
-  if (win) {
-    const tmpl = pickByPrefix("MAP_POINT_HISTORY.falseVictory.", seed);
-    if (tmpl) return interpolateCharacter(tmpl, character);
-    return "";
-  }
-  return pickByPrefix("QUOTES.", seed) ?? "";
-}
-
-function interpolateCharacter(template: string, character: string): string {
-  const slug = character.replace(/^CHARACTER\./, "").toLowerCase();
-  const label =
-    {
-      ironclad: "아이언클래드",
-      silent: "사일런트",
-      defect: "디펙트",
-      necrobinder: "네크로바인더",
-      regent: "리젠트",
-    }[slug] ?? slug;
-  return template
-    .replace(/\{character\}/g, label)
-    .replace(/\{possessiveAdjective\}/g, "그의");
-}
-
 // ----- Panel body -----------------------------------------------------------
 
 function SummaryPanel({
@@ -349,34 +291,6 @@ function SummaryPanel({
           <div className="text-zinc-500">v{run.build_id}</div>
         </div>
       </header>
-
-      {/* Banner / quote — only after the run actually ends. Mid-run the
-       *  panel reads as a "current state" view, so emotional copy is
-       *  inappropriate. */}
-      {ended && (
-        <div className="mt-4 text-center">
-          <h2
-            className="text-3xl font-black tracking-tight"
-            style={{
-              color: run.win ? "#fbbf24" : "#fca5a5",
-              textShadow: "0 2px 12px rgba(0,0,0,0.85)",
-            }}
-          >
-            {bannerFor(run.seed, run.win)}
-          </h2>
-          {(() => {
-            const q = quoteFor(run.seed, character, run.win);
-            if (!q) return null;
-            return (
-              <p className="mt-2 text-sm italic text-zinc-300">
-                {QUOTES_TABLE["ENCOUNTER_QUOTE_LEFT"] ?? "「"}
-                {q}
-                {QUOTES_TABLE["ENCOUNTER_QUOTE_RIGHT"] ?? "」"}
-              </p>
-            );
-          })()}
-        </div>
-      )}
 
       <section className="mt-5 space-y-2">
         {visibleActs.map(({ act, history }) => (
