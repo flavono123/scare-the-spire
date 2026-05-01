@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SiteNavbar } from "@/components/site-navbar";
@@ -73,7 +74,9 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} font-sans antialiased bg-background text-foreground`}
       >
-        <SiteNavbar />
+        <Suspense>
+          <SiteNavbar />
+        </Suspense>
         {children}
         <Analytics />
         <SpeedInsights />
