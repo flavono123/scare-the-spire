@@ -7,8 +7,8 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return [
-      { source: "/en", destination: "/" },
-      { source: "/en/:path*", destination: "/:path*" },
+      { source: "/en", destination: "/?_sl=en" },
+      { source: "/en/:path*", destination: "/:path*?_sl=en" },
     ];
   },
 };
