@@ -491,7 +491,6 @@ export function HistoryCourseShell({
   const [globalMs, setGlobalMs] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [rate, setRate] = useState<Rate>(2);
-  const [infoOpen, setInfoOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
   const [deckOpen, setDeckOpen] = useState(false);
   // Run-summary panel — opens via the topbar cog (mid-run partial view)
@@ -708,14 +707,6 @@ export function HistoryCourseShell({
     return () => window.removeEventListener("keydown", onKey);
   }, [runTimeline]);
 
-  const onSelectAct = useCallback(
-    (idx: number) => {
-      setGlobalMs(globalMsForStep(runTimeline, idx, 1));
-      setPlaying(true);
-    },
-    [runTimeline],
-  );
-
   const onJumpToStep = useCallback(
     (targetActIndex: number, targetStep: number) => {
       setGlobalMs(globalMsForStep(runTimeline, targetActIndex, targetStep));
@@ -775,19 +766,9 @@ export function HistoryCourseShell({
           onJumpToStep={onJumpToStep}
           onOpenStats={() => setStatsOpen(true)}
           onOpenDeck={() => setDeckOpen(true)}
-          onOpenInfo={() => setInfoOpen((v) => !v)}
+          onOpenInfo={onToggleSummary}
         />
       </div>
-
-      <SideToggle open={infoOpen} onToggle={() => setInfoOpen((v) => !v)} />
-      <InfoDrawer
-        open={infoOpen}
-        onClose={() => setInfoOpen(false)}
-        analysis={analysis}
-        actIndex={actIndex}
-        onSelectAct={onSelectAct}
-        run={run}
-      />
 
       <StatsModal
         open={statsOpen}
@@ -1008,10 +989,7 @@ function Stage({
         hidingRelicIds={hidingRelicIds}
         onOpenStats={onOpenStats}
         onOpenDeck={onOpenDeck}
-        // The cog now toggles the run-summary panel + auto-pauses
-        // playback. The legacy InfoDrawer onOpenInfo callback still
-        // exists below in the parent shell but isn't wired to the
-        // topbar anymore.
+        // Cog toggles the run-summary panel and auto-pauses playback.
         onOpenInfo={onToggleSummary}
       />
 
@@ -1463,112 +1441,6 @@ function PauseIcon() {
       <rect x="2.5" y="1.5" width="3.2" height="11" />
       <rect x="8.3" y="1.5" width="3.2" height="11" />
     </svg>
-  );
-}
-
-function SideToggle({
-  open,
-  onToggle,
-}: {
-  open: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label="런 정보 패널"
-      aria-expanded={open}
-      onClick={onToggle}
-      className={cn(
-        "fixed right-0 top-1/2 z-30 -translate-y-1/2 rounded-l-md border border-r-0 border-white/15 bg-zinc-950/85 px-2 py-3 text-zinc-300 backdrop-blur-sm transition hover:bg-zinc-900",
-        open && "translate-x-[-340px] bg-zinc-900",
-      )}
-    >
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4">
-        <path d="M3 3.5 H13 M3 8 H13 M3 12.5 H10" strokeLinecap="round" />
-      </svg>
-    </button>
-  );
-}
-
-function InfoDrawer({
-  open,
-  onClose,
-  analysis,
-  actIndex,
-  onSelectAct,
-  run,
-}: {
-  open: boolean;
-  onClose: () => void;
-  analysis: Analysis;
-  actIndex: number;
-  onSelectAct: (idx: number) => void;
-  run: ReplayRun;
-}) {
-  const character = run.players[0]?.character?.split(".").pop() ?? "?";
-  return (
-    <aside
-      aria-hidden={!open}
-      className={cn(
-        "fixed right-0 top-[49px] z-30 h-[calc(100dvh-49px)] w-[340px] overflow-y-auto border-l border-white/10 bg-zinc-950/95 p-4 backdrop-blur-md transition-transform duration-200",
-        open ? "translate-x-0" : "translate-x-full",
-      )}
-    >
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-bold text-zinc-100">런 정보</p>
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-md border border-white/10 px-2 py-0.5 text-xs text-zinc-300 hover:bg-white/10"
-        >
-          닫기
-        </button>
-      </div>
-
-      <dl className="mt-4 space-y-2 text-xs text-zinc-300">
-        <Row label="시드" value={run.seed} />
-        <Row label="승천" value={`A${run.ascension}`} />
-        <Row label="빌드" value={run.build_id} />
-        <Row label="캐릭터" value={character} />
-        <Row label="결과" value={run.win ? "승리" : "패배"} />
-      </dl>
-
-      <div className="mt-5">
-        <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">막</p>
-        <ul className="mt-2 space-y-1.5">
-          {analysis.acts.map((act, idx) => (
-            <li key={`${act.actId}-${act.actIndex}`}>
-              <button
-                type="button"
-                onClick={() => onSelectAct(idx)}
-                className={cn(
-                  "flex w-full items-center justify-between gap-2 rounded-md border px-2.5 py-1.5 text-left text-xs transition",
-                  idx === actIndex
-                    ? "border-amber-300/60 bg-amber-500/10 text-amber-100"
-                    : "border-zinc-800 bg-zinc-950/40 text-zinc-300 hover:border-zinc-600",
-                )}
-                aria-current={idx === actIndex ? "true" : undefined}
-              >
-                <span className="truncate">{act.actLabel}</span>
-                <span className="text-zinc-500">{act.history.length}층</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </aside>
-  );
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <dt className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">
-        {label}
-      </dt>
-      <dd className="truncate text-zinc-200">{value}</dd>
-    </div>
   );
 }
 
