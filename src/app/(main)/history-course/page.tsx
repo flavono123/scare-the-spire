@@ -1,7 +1,5 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
 import { HistoryCourseLanding } from "@/components/history-course/history-course-landing";
-import { HISTORY_COURSE_ENABLED } from "@/lib/feature-flags";
 
 export const metadata = {
   title: "역사 강의서",
@@ -10,7 +8,6 @@ export const metadata = {
 };
 
 export default function HistoryCourseIndexPage() {
-  if (!HISTORY_COURSE_ENABLED) notFound();
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <header className="flex items-center gap-4">

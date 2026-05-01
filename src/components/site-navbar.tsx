@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
-import { HISTORY_COURSE_ENABLED } from "@/lib/feature-flags";
 
 // --- Dropdown data ---
 
@@ -212,15 +211,13 @@ export function SiteNavbar() {
               iconSize={18}
               iconClassName="group-hover:rotate-[8deg]"
             />
-            {HISTORY_COURSE_ENABLED && (
-              <NavIconLink
-                href="/history-course"
-                icon="/images/sts2/relics/history_course.webp"
-                label="역사 강의서"
-                iconSize={20}
-                iconClassName="group-hover:rotate-[8deg]"
-              />
-            )}
+            <NavIconLink
+              href="/history-course"
+              icon="/images/sts2/relics/history_course.webp"
+              label="역사 강의서"
+              iconSize={20}
+              iconClassName="group-hover:rotate-[8deg]"
+            />
           </nav>
         </div>
 

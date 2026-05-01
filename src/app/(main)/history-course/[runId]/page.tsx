@@ -1,7 +1,5 @@
-import { notFound } from "next/navigation";
 import { RunDetailLoader } from "@/components/history-course/run-detail-loader";
 import { getCodexCards, getCodexRelics } from "@/lib/codex-data";
-import { HISTORY_COURSE_ENABLED } from "@/lib/feature-flags";
 
 export const metadata = {
   title: "역사 강의서 — 런",
@@ -17,7 +15,6 @@ export default async function HistoryCourseRunPage({
 }: {
   params: Promise<{ runId: string }>;
 }) {
-  if (!HISTORY_COURSE_ENABLED) notFound();
   const { runId } = await params;
   const [allCards, allRelics] = await Promise.all([
     getCodexCards({ includeDeprecated: true }),
