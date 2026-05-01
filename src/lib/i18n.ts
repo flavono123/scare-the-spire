@@ -2,14 +2,57 @@ export const SERVICE_LOCALES = ["ko", "en"] as const;
 
 export type ServiceLocale = (typeof SERVICE_LOCALES)[number];
 
+export const GAME_LOCALES = [
+  "kor",
+  "eng",
+  "zhs",
+  "jpn",
+  "deu",
+  "fra",
+  "ita",
+  "spa",
+  "esp",
+  "ptb",
+  "rus",
+  "pol",
+  "tha",
+  "tur",
+] as const;
+
+export type GameLocale = (typeof GAME_LOCALES)[number];
+
 export const DEFAULT_SERVICE_LOCALE: ServiceLocale = "ko";
-export const DEFAULT_GAME_LOCALE_BY_SERVICE: Record<ServiceLocale, string> = {
+export const DEFAULT_GAME_LOCALE_BY_SERVICE: Record<ServiceLocale, GameLocale> = {
   ko: "kor",
   en: "eng",
 };
 
+export const GAME_LOCALE_LABELS: Record<
+  GameLocale,
+  Record<ServiceLocale, string>
+> = {
+  kor: { ko: "한국어", en: "Korean" },
+  eng: { ko: "영어", en: "English" },
+  zhs: { ko: "중국어 간체", en: "Chinese (Simplified)" },
+  jpn: { ko: "일본어", en: "Japanese" },
+  deu: { ko: "독일어", en: "German" },
+  fra: { ko: "프랑스어", en: "French" },
+  ita: { ko: "이탈리아어", en: "Italian" },
+  spa: { ko: "스페인어", en: "Spanish" },
+  esp: { ko: "스페인어 (중남미)", en: "Spanish (Latin America)" },
+  ptb: { ko: "포르투갈어 (브라질)", en: "Portuguese (Brazil)" },
+  rus: { ko: "러시아어", en: "Russian" },
+  pol: { ko: "폴란드어", en: "Polish" },
+  tha: { ko: "태국어", en: "Thai" },
+  tur: { ko: "튀르키예어", en: "Turkish" },
+};
+
 export function isServiceLocale(value: string): value is ServiceLocale {
   return (SERVICE_LOCALES as readonly string[]).includes(value);
+}
+
+export function isGameLocale(value: string): value is GameLocale {
+  return (GAME_LOCALES as readonly string[]).includes(value);
 }
 
 export function getServiceLocaleFromPath(pathname: string): ServiceLocale {
@@ -45,4 +88,29 @@ export function switchServiceLocaleHref(
   const localizedPath = localizeHref(stripServiceLocaleFromPath(pathname), locale);
   const normalizedSearch = search.replace(/^\?/, "");
   return normalizedSearch ? `${localizedPath}?${normalizedSearch}` : localizedPath;
+}
+
+export function getGameLocaleFromSearch(
+  searchParams: URLSearchParams,
+  serviceLocale: ServiceLocale,
+): GameLocale {
+  const requested = searchParams.get("gl");
+  if (requested && isGameLocale(requested)) return requested;
+  return DEFAULT_GAME_LOCALE_BY_SERVICE[serviceLocale];
+}
+
+export function withGameLocaleSearch(
+  searchParams: URLSearchParams,
+  gameLocale: GameLocale,
+  serviceLocale: ServiceLocale,
+): string {
+  const next = new URLSearchParams(searchParams);
+  if (gameLocale === DEFAULT_GAME_LOCALE_BY_SERVICE[serviceLocale]) {
+    next.delete("gl");
+  } else {
+    next.set("gl", gameLocale);
+  }
+
+  const query = next.toString();
+  return query ? `?${query}` : "";
 }
