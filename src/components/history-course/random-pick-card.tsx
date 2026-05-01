@@ -44,46 +44,36 @@ export function RandomPickCard({ runs, userId }: Props) {
           : "공유된 런 중에서 무작위로 한 판"
       }
       className={cn(
-        "group relative block w-full overflow-hidden rounded-xl bg-zinc-950/40 text-left ring-1 ring-zinc-800 transition",
+        "group block w-full rounded-xl bg-zinc-900/60 p-3 text-left ring-1 ring-zinc-800 transition",
         disabled
           ? "cursor-not-allowed opacity-50"
           : "hover:-translate-y-0.5 hover:ring-amber-300/40",
       )}
     >
-      <div className="flex items-center justify-between px-3 pt-3">
-        <span className="inline-flex items-center rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] font-bold text-zinc-500 ring-1 ring-inset ring-zinc-700">
-          ?
-        </span>
-        <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-200 ring-1 ring-inset ring-amber-400/30">
-          <Shuffle className="h-3 w-3" aria-hidden />
-          무작위
-        </span>
-      </div>
-
-      <div className="relative mx-auto mt-2 aspect-[3/4] w-full max-w-[200px]">
-        <Image
-          src="/images/sts2/characters/char_select_random.webp"
-          alt=""
-          fill
-          sizes="200px"
-          className="object-contain"
-        />
-        <Image
-          src="/images/sts2/characters/char_select_outline.webp"
-          alt=""
-          fill
-          sizes="200px"
-          className="pointer-events-none object-contain"
-        />
-      </div>
-
-      <div className="space-y-1 px-3 pb-3 pt-3">
-        <code className="block truncate rounded bg-black/30 px-1.5 py-0.5 text-center font-mono text-[11px] text-zinc-500">
-          ?
-        </code>
-        <div className="flex items-center justify-between gap-2 text-[10px] text-zinc-600">
-          <span>?</span>
-          <span>?</span>
+      <div className="flex items-start gap-3">
+        <div className="relative h-14 w-14 shrink-0">
+          <Image
+            src="/images/sts2/characters/char_select_random.webp"
+            alt=""
+            fill
+            sizes="56px"
+            className="object-contain"
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <span className="inline-flex items-center rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] font-bold text-zinc-500 ring-1 ring-inset ring-zinc-700">
+              ?
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-200 ring-1 ring-inset ring-amber-400/30">
+              <Shuffle className="h-3 w-3" aria-hidden />
+              무작위
+            </span>
+          </div>
+          <code className="mt-1.5 block truncate rounded bg-black/30 px-1.5 py-0.5 font-mono text-[11px] text-zinc-500">
+            ?
+          </code>
+          <div className="mt-1 text-[10px] text-zinc-600">?</div>
         </div>
       </div>
     </button>

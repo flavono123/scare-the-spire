@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { RunDetailLoader } from "@/components/history-course/run-detail-loader";
-import { getCodexCards } from "@/lib/codex-data";
+import { getCodexCards, getCodexRelics } from "@/lib/codex-data";
 import { HISTORY_COURSE_ENABLED } from "@/lib/feature-flags";
 
 export const metadata = {
@@ -19,6 +19,11 @@ export default async function HistoryCourseRunPage({
 }) {
   if (!HISTORY_COURSE_ENABLED) notFound();
   const { runId } = await params;
-  const allCards = await getCodexCards({ includeDeprecated: true });
-  return <RunDetailLoader runId={runId} allCards={allCards} />;
+  const [allCards, allRelics] = await Promise.all([
+    getCodexCards({ includeDeprecated: true }),
+    getCodexRelics(),
+  ]);
+  return (
+    <RunDetailLoader runId={runId} allCards={allCards} allRelics={allRelics} />
+  );
 }
