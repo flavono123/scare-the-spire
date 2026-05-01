@@ -9,7 +9,7 @@ import {
   GAME_LOCALES,
   getGameLocaleFromSearch,
   getServiceLocaleFromPath,
-  localizeHref,
+  localizeHrefWithGameLocale,
   switchServiceLocaleHref,
   withGameLocaleSearch,
   type GameLocale,
@@ -41,11 +41,12 @@ type CodexLabelKey = keyof typeof serviceMessages.ko.codex;
 
 function localizeNavItems<T extends { href: string; labelKey: CodexLabelKey; icon: string }>(
   items: readonly T[],
-  locale: ServiceLocale,
+  serviceLocale: ServiceLocale,
+  gameLocale: GameLocale,
 ) {
-  const messages = serviceMessages[locale];
+  const messages = serviceMessages[serviceLocale];
   return items.map((item) => ({
-    href: localizeHref(item.href, locale),
+    href: localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale),
     label: messages.codex[item.labelKey],
     icon: item.icon,
   }));
@@ -266,7 +267,7 @@ export function SiteNavbar() {
         {/* Left: brand + services */}
         <div className="flex items-center gap-4">
           <Link
-            href={localizeHref("/", serviceLocale)}
+            href={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
             prefetch={false}
             className="flex items-center gap-1.5 text-base font-bold text-yellow-500 shrink-0"
           >
@@ -282,21 +283,21 @@ export function SiteNavbar() {
 
           <nav className="flex items-center gap-2 text-sm">
             <NavIconLink
-              href={localizeHref("/patches", serviceLocale)}
+              href={localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale)}
               icon="/images/sts2/nav/patch_notes_icon.png"
               label={messages.nav.patches}
               iconSize={22}
               iconClassName="group-hover:rotate-[8deg]"
             />
             <NavIconLink
-              href={localizeHref("/chemical-x", serviceLocale)}
+              href={localizeHrefWithGameLocale("/chemical-x", serviceLocale, gameLocale)}
               icon="/images/sts2/relics/chemical_x.webp"
               label={messages.nav.chemicalX}
               iconSize={18}
               iconClassName="group-hover:rotate-[8deg]"
             />
             <NavIconLink
-              href={localizeHref("/history-course", serviceLocale)}
+              href={localizeHrefWithGameLocale("/history-course", serviceLocale, gameLocale)}
               icon="/images/sts2/relics/history_course.webp"
               label={messages.nav.historyCourse}
               iconSize={20}
@@ -315,13 +316,13 @@ export function SiteNavbar() {
           <GameDropdown
             icon="/images/sts2/icons/app_icon.png"
             alt={messages.games.sts2Codex}
-            items={localizeNavItems(sts2Items, serviceLocale)}
+            items={localizeNavItems(sts2Items, serviceLocale, gameLocale)}
             align="right"
           />
           <GameDropdown
             icon="/images/sts1_app_icon.png"
             alt={messages.games.sts1}
-            items={localizeNavItems(sts1Items, serviceLocale)}
+            items={localizeNavItems(sts1Items, serviceLocale, gameLocale)}
             align="right"
           />
           <Link

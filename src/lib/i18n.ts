@@ -88,6 +88,23 @@ export function localizeHref(href: string, locale: ServiceLocale): string {
   return `${localizedPath}${suffix}`;
 }
 
+export function localizeHrefWithGameLocale(
+  href: string,
+  serviceLocale: ServiceLocale,
+  gameLocale: GameLocale,
+): string {
+  const localizedHref = localizeHref(href, serviceLocale);
+  if (!localizedHref.startsWith("/") || localizedHref.startsWith("//")) {
+    return localizedHref;
+  }
+
+  const [pathAndSearch, hash = ""] = localizedHref.split("#", 2);
+  const [path, search = ""] = pathAndSearch.split("?", 2);
+  const searchParams = new URLSearchParams(search);
+  const gameSearch = withGameLocaleSearch(searchParams, gameLocale, serviceLocale);
+  return `${path}${gameSearch}${hash ? `#${hash}` : ""}`;
+}
+
 export function switchServiceLocaleHref(
   pathname: string,
   locale: ServiceLocale,
