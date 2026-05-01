@@ -139,7 +139,9 @@ export function MyRunsList({ refreshKey = 0 }: Props) {
       <header className="mb-3 flex items-baseline justify-between">
         <h2 className="text-sm font-bold text-zinc-200">
           내 런{" "}
-          <span className="font-medium text-zinc-500">({entries.length})</span>
+          <span className="font-medium text-zinc-500">
+            ({entries.length > 99 ? "99+" : entries.length})
+          </span>
         </h2>
         <p className="text-[11px] text-zinc-500">
           v{MIN_SUPPORTED_BUILD.replace(/^v/, "")} 미만은 비활성화됩니다.

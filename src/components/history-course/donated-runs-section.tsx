@@ -28,7 +28,7 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
       return;
     }
     let cancelled = false;
-    listRecentDonatedRuns(100).then((result) => {
+    listRecentDonatedRuns().then((result) => {
       if (!cancelled) setRuns(result);
     });
     return () => {
@@ -59,7 +59,9 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
       <header className="mb-3">
         <h2 className="text-sm font-bold text-zinc-200">
           공유된 런{" "}
-          <span className="font-medium text-zinc-500">({runs.length})</span>
+          <span className="font-medium text-zinc-500">
+            ({runs.length > 99 ? "99+" : runs.length})
+          </span>
         </h2>
       </header>
       <ul className="grid gap-3 sm:grid-cols-2">

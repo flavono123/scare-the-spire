@@ -198,7 +198,10 @@ export async function listMyDonatedRunIds(
   return ids;
 }
 
-export async function listRecentDonatedRuns(limit = 100): Promise<DonatedRunSummary[]> {
+// No explicit limit — Supabase caps single SELECTs at 1000 rows, which
+// is plenty for the launch window. Pagination/virtualisation can land
+// later if the pool grows past that.
+export async function listRecentDonatedRuns(): Promise<DonatedRunSummary[]> {
   if (!supabaseEnabled) return [];
   const { data, error } = await supabase
     .from("runs")
@@ -206,8 +209,7 @@ export async function listRecentDonatedRuns(limit = 100): Promise<DonatedRunSumm
       "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at",
     )
     .eq("env", supabaseEnv)
-    .order("created_at", { ascending: false })
-    .limit(limit);
+    .order("created_at", { ascending: false });
   if (error || !data) return [];
   return data as DonatedRunSummary[];
 }
