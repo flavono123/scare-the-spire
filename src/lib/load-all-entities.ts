@@ -8,9 +8,11 @@ import {
   getCodexMonsters,
   getCodexEncounters,
 } from "@/lib/codex-data";
+import type { GameLocale } from "@/lib/i18n";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 
-export async function loadAllEntities(): Promise<EntityInfo[]> {
+export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promise<EntityInfo[]> {
+  const gameLocale = opts?.gameLocale;
   const [
     codexCards,
     codexRelics,
@@ -21,14 +23,14 @@ export async function loadAllEntities(): Promise<EntityInfo[]> {
     codexMonsters,
     codexEncounters,
   ] = await Promise.all([
-    getCodexCards(),
-    getCodexRelics(),
-    getCodexPotions(),
-    getCodexPowers(),
-    getCodexEnchantments(),
-    getCodexEvents(),
-    getCodexMonsters(),
-    getCodexEncounters(),
+    getCodexCards({ gameLocale }),
+    getCodexRelics({ gameLocale }),
+    getCodexPotions({ gameLocale }),
+    getCodexPowers({ gameLocale }),
+    getCodexEnchantments({ gameLocale }),
+    getCodexEvents({ gameLocale }),
+    getCodexMonsters({ gameLocale }),
+    getCodexEncounters({ gameLocale }),
   ]);
 
   return [

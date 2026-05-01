@@ -37,7 +37,7 @@ export default async function RelicDetailPage({
   const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const [relics, entities] = await Promise.all([
     getCodexRelics({ gameLocale }),
-    loadAllEntities(),
+    loadAllEntities({ gameLocale }),
   ]);
   const relic = relics.find((r) => r.id.toLowerCase() === id.toLowerCase());
   if (!relic) notFound();

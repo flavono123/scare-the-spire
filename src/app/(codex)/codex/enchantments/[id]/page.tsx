@@ -39,7 +39,7 @@ export default async function EnchantmentDetailPage({
   const [enchantments, relics, entities] = await Promise.all([
     getCodexEnchantments({ gameLocale }),
     getCodexRelics({ gameLocale }),
-    loadAllEntities(),
+    loadAllEntities({ gameLocale }),
   ]);
   const ench = enchantments.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!ench) notFound();

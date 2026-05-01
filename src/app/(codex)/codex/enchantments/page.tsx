@@ -25,7 +25,7 @@ export default async function CodexEnchantmentsPage({
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
-    loadAllEntities(),
+    loadAllEntities({ gameLocale }),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
