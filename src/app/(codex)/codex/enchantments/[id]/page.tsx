@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexEnchantments, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
+import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
 import { EnchantmentDetail } from "@/components/codex/enchantment-detail";
 import { ENCHANTMENT_CARD_TYPE_CONFIG, type EnchantmentCardTypeFilter } from "@/lib/codex-types";
 
@@ -28,13 +29,16 @@ export async function generateMetadata({
 
 export default async function EnchantmentDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const [enchantments, relics, entities] = await Promise.all([
-    getCodexEnchantments(),
-    getCodexRelics(),
+    getCodexEnchantments({ gameLocale }),
+    getCodexRelics({ gameLocale }),
     loadAllEntities(),
   ]);
   const ench = enchantments.find((e) => e.id.toLowerCase() === id.toLowerCase());

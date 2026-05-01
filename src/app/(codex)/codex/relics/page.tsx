@@ -4,6 +4,7 @@ import { getCodexRelics, getCodexCharacters, getCodexAncients } from "@/lib/code
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
 import { RelicLibrary } from "@/components/codex/relic-library";
 
 export const metadata: Metadata = {
@@ -11,10 +12,15 @@ export const metadata: Metadata = {
   description: "슬레이 더 스파이어 2 유물 도감. 314개 유물의 효과와 정보를 확인하세요.",
 };
 
-export default async function CodexRelicsPage() {
+export default async function CodexRelicsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const [relics, characters, ancients, patches, versionDiffs, meta, entities] = await Promise.all([
-    getCodexRelics(),
-    getCodexCharacters(),
+    getCodexRelics({ gameLocale }),
+    getCodexCharacters({ gameLocale }),
     getCodexAncients(),
     getSTS2Patches(),
     getEntityVersionDiffs(),

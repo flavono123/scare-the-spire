@@ -18,11 +18,11 @@ export default async function CodexCardsPage({
   const [cards, characters, patches, versionDiffs, meta, enchantments] =
     await Promise.all([
       getCodexCards({ gameLocale }),
-      getCodexCharacters(),
+      getCodexCharacters({ gameLocale }),
       getSTS2Patches(),
       getEntityVersionDiffs(),
       getCodexMeta(),
-      getCodexEnchantments(),
+      getCodexEnchantments({ gameLocale }),
     ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);

@@ -4,6 +4,7 @@ import { getCodexEnchantments, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
 import { EnchantmentLibrary } from "@/components/codex/enchantment-library";
 
 export const metadata: Metadata = {
@@ -12,10 +13,15 @@ export const metadata: Metadata = {
     "슬레이 더 스파이어 2 인챈트 도감. 카드에 부여되는 특수 강화 효과를 확인하세요.",
 };
 
-export default async function CodexEnchantmentsPage() {
+export default async function CodexEnchantmentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const [enchantments, relics, patches, versionDiffs, meta, entities] = await Promise.all([
-    getCodexEnchantments(),
-    getCodexRelics(),
+    getCodexEnchantments({ gameLocale }),
+    getCodexRelics({ gameLocale }),
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),

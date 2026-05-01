@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import { bakeDescription } from "./codex-bake";
 import {
+  gameNullableText,
   gameText,
   readGameLocalizationTable,
   type GameLocalizationTable,
@@ -189,18 +190,23 @@ function mapRelic(
   kor: RawRelic,
   eng: RawRelic,
   variantMap: Partial<Record<RelicPool, string>> | null,
+  gameRelics: GameLocalizationTable,
 ): CodexRelic {
   const baseUrl = spireCodexImageToLocal(kor.image_url);
   const vars = kor.vars ?? {};
-  const raw = kor.description_raw ?? kor.description;
+  const raw = gameText(
+    gameRelics,
+    `${kor.id}.description`,
+    kor.description_raw ?? kor.description,
+  );
   return {
     id: kor.id,
-    name: kor.name,
+    name: gameText(gameRelics, `${kor.id}.title`, kor.name),
     nameEn: eng.name,
     description: bakeDescription(raw, vars),
     descriptionRaw: raw,
     vars,
-    flavor: kor.flavor,
+    flavor: gameText(gameRelics, `${kor.id}.flavor`, kor.flavor),
     rarity: kor.rarity as RelicRarityKo,
     pool: kor.pool as RelicPool,
     imageUrl: variantMap ? null : baseUrl,
@@ -244,11 +250,13 @@ async function scanRelicVariants(): Promise<Map<string, Partial<Record<RelicPool
   return variants;
 }
 
-export async function getCodexRelics(): Promise<CodexRelic[]> {
-  const [korRelics, engRelics, variantsByBase] = await Promise.all([
+export async function getCodexRelics(opts?: { gameLocale?: GameLocale }): Promise<CodexRelic[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [korRelics, engRelics, variantsByBase, gameRelics] = await Promise.all([
     readJson<RawRelic[]>("kor/relics.json"),
     readJson<RawRelic[]>("eng/relics.json"),
     scanRelicVariants(),
+    readGameLocalizationTable(gameLocale, "relics"),
   ]);
 
   const engById = new Map(engRelics.map((r) => [r.id, r]));
@@ -259,7 +267,7 @@ export async function getCodexRelics(): Promise<CodexRelic[]> {
     const baseMatch = kor.image_url?.match(/\/([^/]+)\.png$/);
     const baseName = baseMatch?.[1] ?? null;
     const variantMap = baseName ? variantsByBase.get(baseName) ?? null : null;
-    return mapRelic(kor, eng, variantMap);
+    return mapRelic(kor, eng, variantMap, gameRelics);
   });
 }
 
@@ -275,12 +283,16 @@ interface RawPotion {
   image_url: string;
 }
 
-function mapPotion(kor: RawPotion, eng: RawPotion): CodexPotion {
+function mapPotion(kor: RawPotion, eng: RawPotion, gamePotions: GameLocalizationTable): CodexPotion {
   const vars = kor.vars ?? {};
-  const raw = kor.description_raw ?? kor.description;
+  const raw = gameText(
+    gamePotions,
+    `${kor.id}.description`,
+    kor.description_raw ?? kor.description,
+  );
   return {
     id: kor.id,
-    name: kor.name,
+    name: gameText(gamePotions, `${kor.id}.title`, kor.name),
     nameEn: eng.name,
     description: bakeDescription(raw, vars),
     descriptionRaw: raw,
@@ -291,29 +303,35 @@ function mapPotion(kor: RawPotion, eng: RawPotion): CodexPotion {
   };
 }
 
-export async function getCodexPotions(): Promise<CodexPotion[]> {
-  const [korPotions, engPotions] = await Promise.all([
+export async function getCodexPotions(opts?: { gameLocale?: GameLocale }): Promise<CodexPotion[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [korPotions, engPotions, gamePotions] = await Promise.all([
     readJson<RawPotion[]>("kor/potions.json"),
     readJson<RawPotion[]>("eng/potions.json"),
+    readGameLocalizationTable(gameLocale, "potions"),
   ]);
 
   const engById = new Map(engPotions.map((p) => [p.id, p]));
 
   return korPotions.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapPotion(kor, eng);
+    return mapPotion(kor, eng, gamePotions);
   });
 }
 
 // Game order for characters
 const CHARACTER_ORDER = ["IRONCLAD", "SILENT", "DEFECT", "NECROBINDER", "REGENT"];
 
-export async function getCodexCharacters(): Promise<CodexCharacter[]> {
-  const raw = await readJson<RawCharacter[]>("kor/characters.json");
+export async function getCodexCharacters(opts?: { gameLocale?: GameLocale }): Promise<CodexCharacter[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [raw, gameCharacters] = await Promise.all([
+    readJson<RawCharacter[]>("kor/characters.json"),
+    readGameLocalizationTable(gameLocale, "characters"),
+  ]);
 
   const mapped = raw.map((c) => ({
     id: c.id,
-    name: c.name,
+    name: gameText(gameCharacters, `${c.id}.title`, c.name),
     color: c.color as CodexCharacter["color"],
     imageUrl: spireCodexImageToLocal(c.image_url) ?? "",
   }));
@@ -341,12 +359,24 @@ interface RawPower {
   image_url: string | null;
 }
 
-function mapPower(kor: RawPower, eng: RawPower): CodexPower {
+function powerLocalizationBase(gamePowers: GameLocalizationTable, id: string): string {
+  const powerKey = `${id}_POWER`;
+  return `${powerKey}.title` in gamePowers || `${powerKey}.smartDescription` in gamePowers
+    ? powerKey
+    : id;
+}
+
+function mapPower(kor: RawPower, eng: RawPower, gamePowers: GameLocalizationTable): CodexPower {
   const vars = kor.vars ?? {};
-  const raw = kor.description_raw ?? kor.description;
+  const l10nBase = powerLocalizationBase(gamePowers, kor.id);
+  const raw = gameText(
+    gamePowers,
+    `${l10nBase}.smartDescription`,
+    gameText(gamePowers, `${l10nBase}.description`, kor.description_raw ?? kor.description),
+  );
   return {
     id: kor.id,
-    name: kor.name,
+    name: gameText(gamePowers, `${l10nBase}.title`, kor.name),
     nameEn: eng.name,
     description: bakeDescription(raw ?? "", vars),
     descriptionRaw: raw,
@@ -358,10 +388,12 @@ function mapPower(kor: RawPower, eng: RawPower): CodexPower {
   };
 }
 
-export async function getCodexPowers(): Promise<CodexPower[]> {
-  const [korPowers, engPowers] = await Promise.all([
+export async function getCodexPowers(opts?: { gameLocale?: GameLocale }): Promise<CodexPower[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [korPowers, engPowers, gamePowers] = await Promise.all([
     readJson<RawPower[]>("kor/powers.json"),
     readJson<RawPower[]>("eng/powers.json"),
+    readGameLocalizationTable(gameLocale, "powers"),
   ]);
 
   const engById = new Map(engPowers.map((p) => [p.id, p]));
@@ -370,7 +402,7 @@ export async function getCodexPowers(): Promise<CodexPower[]> {
     .filter((p) => !(p.type === "None" && !p.description))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapPower(kor, eng);
+      return mapPower(kor, eng, gamePowers);
     });
 }
 
@@ -386,31 +418,37 @@ interface RawEnchantment {
   image_url: string | null;
 }
 
-function mapEnchantment(kor: RawEnchantment, eng: RawEnchantment): CodexEnchantment {
+function mapEnchantment(
+  kor: RawEnchantment,
+  eng: RawEnchantment,
+  gameEnchantments: GameLocalizationTable,
+): CodexEnchantment {
   return {
     id: kor.id,
-    name: kor.name,
+    name: gameText(gameEnchantments, `${kor.id}.title`, kor.name),
     nameEn: eng.name,
-    description: kor.description,
-    descriptionRaw: kor.description_raw,
-    extraCardText: kor.extra_card_text,
+    description: gameText(gameEnchantments, `${kor.id}.description`, kor.description),
+    descriptionRaw: gameNullableText(gameEnchantments, `${kor.id}.description`, kor.description_raw),
+    extraCardText: gameNullableText(gameEnchantments, `${kor.id}.extraCardText`, kor.extra_card_text),
     cardType: (kor.card_type as "Attack" | "Skill" | null),
     isStackable: kor.is_stackable,
     imageUrl: kor.image_url,
   };
 }
 
-export async function getCodexEnchantments(): Promise<CodexEnchantment[]> {
-  const [korEnchantments, engEnchantments] = await Promise.all([
+export async function getCodexEnchantments(opts?: { gameLocale?: GameLocale }): Promise<CodexEnchantment[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [korEnchantments, engEnchantments, gameEnchantments] = await Promise.all([
     readJson<RawEnchantment[]>("kor/enchantments.json"),
     readJson<RawEnchantment[]>("eng/enchantments.json"),
+    readGameLocalizationTable(gameLocale, "enchantments"),
   ]);
 
   const engById = new Map(engEnchantments.map((e) => [e.id, e]));
 
   return korEnchantments.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapEnchantment(kor, eng);
+    return mapEnchantment(kor, eng, gameEnchantments);
   });
 }
 

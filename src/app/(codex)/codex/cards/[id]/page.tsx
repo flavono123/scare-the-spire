@@ -35,7 +35,7 @@ export default async function CardDetailPage({
   const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const [cards, enchantments] = await Promise.all([
     getCodexCards({ gameLocale }),
-    getCodexEnchantments(),
+    getCodexEnchantments({ gameLocale }),
   ]);
   const card = cards.find((c) => c.id.toLowerCase() === id.toLowerCase());
   if (!card) notFound();

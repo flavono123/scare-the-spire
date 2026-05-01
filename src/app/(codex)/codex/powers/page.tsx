@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { getCodexPowers } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
 import { PowerLibrary } from "@/components/codex/power-library";
 
 export const metadata: Metadata = {
@@ -11,9 +12,14 @@ export const metadata: Metadata = {
     "슬레이 더 스파이어 2 파워(버프/디버프) 도감. 전투 중 캐릭터와 몬스터에 적용되는 모든 효과를 확인하세요.",
 };
 
-export default async function CodexPowersPage() {
+export default async function CodexPowersPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const [powers, patches, versionDiffs, meta] = await Promise.all([
-    getCodexPowers(),
+    getCodexPowers({ gameLocale }),
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
