@@ -28,7 +28,7 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
       return;
     }
     let cancelled = false;
-    listRecentDonatedRuns(12).then((result) => {
+    listRecentDonatedRuns(100).then((result) => {
       if (!cancelled) setRuns(result);
     });
     return () => {

@@ -198,7 +198,7 @@ export async function listMyDonatedRunIds(
   return ids;
 }
 
-export async function listRecentDonatedRuns(limit = 12): Promise<DonatedRunSummary[]> {
+export async function listRecentDonatedRuns(limit = 100): Promise<DonatedRunSummary[]> {
   if (!supabaseEnabled) return [];
   const { data, error } = await supabase
     .from("runs")
