@@ -114,9 +114,12 @@ export async function donateRunsBatch(input: {
     env: supabaseEnv,
     ...parsedMetaFromRun(r.run),
   }));
+  // onConflict spans (id, env) — the composite PK after migration-009.
+  // Same content-addressable runId in a different env is a fresh row;
+  // only same id + same env is treated as a duplicate.
   const { data, error } = await supabase
     .from("runs")
-    .upsert(rows, { onConflict: "id", ignoreDuplicates: true })
+    .upsert(rows, { onConflict: "id,env", ignoreDuplicates: true })
     .select("id");
   if (error) {
     return {
