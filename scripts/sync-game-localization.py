@@ -58,7 +58,7 @@ def pck_fingerprint(pck_path: Path) -> dict[str, object]:
         for chunk in iter(lambda: f.read(1024 * 1024), b""):
             h.update(chunk)
     return {
-        "path": str(pck_path),
+        "fileName": pck_path.name,
         "size": stat.st_size,
         "sha256": h.hexdigest(),
     }
