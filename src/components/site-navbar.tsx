@@ -2,27 +2,49 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
+import {
+  getServiceLocaleFromPath,
+  localizeHref,
+  switchServiceLocaleHref,
+  type ServiceLocale,
+} from "@/lib/i18n";
+import { serviceMessages } from "@/messages/service";
 
 // --- Dropdown data ---
 
 const sts2Items = [
-  { href: "/codex/cards", label: "카드", icon: "/images/sts2/nav/stats_cards.png" },
-  { href: "/codex/relics", label: "유물", icon: "/images/sts2/relics/bing_bong.webp" },
-  { href: "/codex/potions", label: "포션", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
-  { href: "/codex/powers", label: "파워", icon: "/images/sts2/powers/unmovable_power.webp" },
-  { href: "/codex/enchantments", label: "인챈트", icon: "/images/sts2/enchantments/souls_power.webp" },
-  { href: "/codex/monsters", label: "몬스터", icon: "/images/sts2/nav/happy_cultist.png" },
-  { href: "/codex/events", label: "이벤트", icon: "/images/sts2/nav/question_mark.png" },
-  { href: "/codex/encounters", label: "인카운터", icon: "/images/sts2/nav/stats_monsters.png" },
-  { href: "/codex/ancients", label: "고대의 존재", icon: "/images/sts2/nav/stats_ancients.png" },
-];
+  { href: "/codex/cards", labelKey: "cards", icon: "/images/sts2/nav/stats_cards.png" },
+  { href: "/codex/relics", labelKey: "relics", icon: "/images/sts2/relics/bing_bong.webp" },
+  { href: "/codex/potions", labelKey: "potions", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
+  { href: "/codex/powers", labelKey: "powers", icon: "/images/sts2/powers/unmovable_power.webp" },
+  { href: "/codex/enchantments", labelKey: "enchantments", icon: "/images/sts2/enchantments/souls_power.webp" },
+  { href: "/codex/monsters", labelKey: "monsters", icon: "/images/sts2/nav/happy_cultist.png" },
+  { href: "/codex/events", labelKey: "events", icon: "/images/sts2/nav/question_mark.png" },
+  { href: "/codex/encounters", labelKey: "encounters", icon: "/images/sts2/nav/stats_monsters.png" },
+  { href: "/codex/ancients", labelKey: "ancients", icon: "/images/sts2/nav/stats_ancients.png" },
+] as const;
 
 const sts1Items = [
-  { href: "/cards", label: "카드", icon: "/images/sts2/nav/stats_cards.png" },
-  { href: "/relics", label: "유물", icon: "/images/sts2/relics/snecko_eye.webp" },
-  { href: "/potions", label: "포션", icon: "/images/sts2/nav/stats_potions.png" },
-];
+  { href: "/cards", labelKey: "cards", icon: "/images/sts2/nav/stats_cards.png" },
+  { href: "/relics", labelKey: "relics", icon: "/images/sts2/relics/snecko_eye.webp" },
+  { href: "/potions", labelKey: "potions", icon: "/images/sts2/nav/stats_potions.png" },
+] as const;
+
+type CodexLabelKey = keyof typeof serviceMessages.ko.codex;
+
+function localizeNavItems<T extends { href: string; labelKey: CodexLabelKey; icon: string }>(
+  items: readonly T[],
+  locale: ServiceLocale,
+) {
+  const messages = serviceMessages[locale];
+  return items.map((item) => ({
+    href: localizeHref(item.href, locale),
+    label: messages.codex[item.labelKey],
+    icon: item.icon,
+  }));
+}
 
 // --- Nav icon with game-style tooltip ---
 
@@ -176,17 +198,28 @@ function GameDropdown({
 // --- Main navbar ---
 
 export function SiteNavbar() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const serviceLocale = getServiceLocaleFromPath(pathname);
+  const messages = serviceMessages[serviceLocale];
+  const nextLocale: ServiceLocale = serviceLocale === "ko" ? "en" : "ko";
+  const localeSwitchHref = switchServiceLocaleHref(
+    pathname,
+    nextLocale,
+    searchParams.toString(),
+  );
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
       <div className="mx-auto flex items-center justify-between px-4 h-12">
         {/* Left: brand + services */}
         <div className="flex items-center gap-4">
           <Link
-            href="/"
+            href={localizeHref("/", serviceLocale)}
             prefetch={false}
             className="flex items-center gap-1.5 text-base font-bold text-yellow-500 shrink-0"
           >
-            슬서운 이야기
+            {messages.brand}
             <Image
               src="/images/bone_tea.png"
               alt=""
@@ -198,23 +231,23 @@ export function SiteNavbar() {
 
           <nav className="flex items-center gap-2 text-sm">
             <NavIconLink
-              href="/patches"
+              href={localizeHref("/patches", serviceLocale)}
               icon="/images/sts2/nav/patch_notes_icon.png"
-              label="패치노트"
+              label={messages.nav.patches}
               iconSize={22}
               iconClassName="group-hover:rotate-[8deg]"
             />
             <NavIconLink
-              href="/chemical-x"
+              href={localizeHref("/chemical-x", serviceLocale)}
               icon="/images/sts2/relics/chemical_x.webp"
-              label="케미컬X"
+              label={messages.nav.chemicalX}
               iconSize={18}
               iconClassName="group-hover:rotate-[8deg]"
             />
             <NavIconLink
-              href="/history-course"
+              href={localizeHref("/history-course", serviceLocale)}
               icon="/images/sts2/relics/history_course.webp"
-              label="역사 강의서"
+              label={messages.nav.historyCourse}
               iconSize={20}
               iconClassName="group-hover:rotate-[8deg]"
             />
@@ -225,16 +258,24 @@ export function SiteNavbar() {
         <div className="flex items-center gap-1">
           <GameDropdown
             icon="/images/sts2/icons/app_icon.png"
-            alt="STS2 백과사전"
-            items={sts2Items}
+            alt={messages.games.sts2Codex}
+            items={localizeNavItems(sts2Items, serviceLocale)}
             align="right"
           />
           <GameDropdown
             icon="/images/sts1_app_icon.png"
-            alt="STS1"
-            items={sts1Items}
+            alt={messages.games.sts1}
+            items={localizeNavItems(sts1Items, serviceLocale)}
             align="right"
           />
+          <Link
+            href={localeSwitchHref}
+            prefetch={false}
+            className="ml-1 rounded px-2 py-1 text-xs font-semibold text-muted-foreground hover:bg-white/5 hover:text-foreground transition-colors"
+            title={messages.serviceLocaleSwitch}
+          >
+            {nextLocale.toUpperCase()}
+          </Link>
         </div>
       </div>
     </header>
