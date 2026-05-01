@@ -24,6 +24,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - run: pnpm i18n:validate
+
       - run: pnpm lint
 
       - run: pnpm build
