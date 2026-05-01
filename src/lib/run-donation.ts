@@ -1,4 +1,4 @@
-import { supabase, supabaseEnabled } from "./supabase";
+import { supabase, supabaseEnabled, supabaseEnv } from "./supabase";
 import type { ReplayRun } from "./sts2-run-replay";
 
 export interface DonatedRun {
@@ -66,6 +66,7 @@ export async function donateRun(input: {
     id: input.runId,
     raw: input.raw,
     donor_user_id: input.donorUserId,
+    env: supabaseEnv,
     ...meta,
   });
   if (!error) return { ok: true };
@@ -87,6 +88,7 @@ export async function getDonatedRun(runId: string): Promise<DonatedRun | null> {
       "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, created_at",
     )
     .eq("id", runId)
+    .eq("env", supabaseEnv)
     .maybeSingle();
   if (error || !data) return null;
   return data as DonatedRun;
@@ -98,6 +100,7 @@ export async function isRunDonated(runId: string): Promise<boolean> {
     .from("runs")
     .select("id")
     .eq("id", runId)
+    .eq("env", supabaseEnv)
     .maybeSingle();
   return !error && !!data;
 }
@@ -114,6 +117,7 @@ export async function isOwnDonation(
     .from("runs")
     .select("id")
     .eq("id", runId)
+    .eq("env", supabaseEnv)
     .eq("donor_user_id", userId)
     .maybeSingle();
   return !error && !!data;
@@ -130,6 +134,7 @@ export async function listMyDonatedRunIds(
   const { data, error } = await supabase
     .from("runs")
     .select("id")
+    .eq("env", supabaseEnv)
     .eq("donor_user_id", userId);
   if (error || !data) return ids;
   for (const row of data) ids.add(row.id as string);
@@ -143,6 +148,7 @@ export async function listRecentDonatedRuns(limit = 12): Promise<DonatedRunSumma
     .select(
       "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at",
     )
+    .eq("env", supabaseEnv)
     .order("created_at", { ascending: false })
     .limit(limit);
   if (error || !data) return [];
@@ -151,6 +157,10 @@ export async function listRecentDonatedRuns(limit = 12): Promise<DonatedRunSumma
 
 export async function deleteDonatedRun(runId: string): Promise<boolean> {
   if (!supabaseEnabled) return false;
-  const { error } = await supabase.from("runs").delete().eq("id", runId);
+  const { error } = await supabase
+    .from("runs")
+    .delete()
+    .eq("id", runId)
+    .eq("env", supabaseEnv);
   return !error;
 }
