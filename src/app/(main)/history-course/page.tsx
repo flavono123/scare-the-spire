@@ -28,8 +28,7 @@ export default function HistoryCourseIndexPage() {
             역사 강의서
           </h1>
           <p className="mt-1 max-w-2xl text-sm leading-6 text-zinc-400">
-            한 판의 시드와 진행 기록만으로 막 맵을 다시 그려 처음부터 끝까지
-            따라갑니다. STS2 폴더를 올려 본인의 런을 찾아보세요.
+            “그 도전 이력을 찾으러 사방팔방 뒤지고 있었다네! 혹시 실례가 아니라면…”
           </p>
         </div>
       </header>
