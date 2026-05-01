@@ -553,6 +553,7 @@ export function HistoryCourseShell({
       const isIn = Math.abs(globalMs - center) < INTRO_WINDOW_RADIUS_MS;
       const wasIn = wasInIntroWindowRef.current[i] ?? false;
       if (isIn && !wasIn) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIntroToken((t) => t + 1);
         setIntroActive(true);
         setReplayReady(false);
@@ -566,7 +567,6 @@ export function HistoryCourseShell({
       }
       wasInIntroWindowRef.current[i] = isIn;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [globalMs, runTimeline]);
 
   // Auto-close the intro after its fade cycle.
@@ -626,6 +626,7 @@ export function HistoryCourseShell({
       .join("|");
   }, [act, step]);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPendingRelicIds(
       stepRelicIdsKey ? new Set(stepRelicIdsKey.split("|")) : new Set(),
     );
@@ -641,6 +642,7 @@ export function HistoryCourseShell({
   useEffect(() => {
     if (runEnded && !wasEndedRef.current) {
       wasEndedRef.current = true;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSummaryOpen(true);
       setPlaying(false);
     } else if (!runEnded && wasEndedRef.current) {
@@ -738,7 +740,6 @@ export function HistoryCourseShell({
           runTimeline={runTimeline}
           sanitizedActs={sanitizedActs}
           globalMs={globalMs}
-          totalActs={analysis.acts.length}
           introToken={introToken}
           introActive={introActive}
           introActIndex={introActIndex}
@@ -807,7 +808,6 @@ function Stage({
   runTimeline,
   sanitizedActs,
   globalMs,
-  totalActs,
   introToken,
   introActive,
   introActIndex,
@@ -840,7 +840,6 @@ function Stage({
   runTimeline: RunTimeline;
   sanitizedActs: Act[];
   globalMs: number;
-  totalActs: number;
   introToken: number;
   introActive: boolean;
   introActIndex: number | null;
