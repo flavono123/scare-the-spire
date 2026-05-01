@@ -1,4 +1,5 @@
 export const SERVICE_LOCALES = ["ko", "en"] as const;
+export const INTERNAL_SERVICE_LOCALE_QUERY = "_sl";
 
 export type ServiceLocale = (typeof SERVICE_LOCALES)[number];
 
@@ -60,6 +61,13 @@ export function getServiceLocaleFromPath(pathname: string): ServiceLocale {
   return firstSegment === "en" ? "en" : DEFAULT_SERVICE_LOCALE;
 }
 
+export function getServiceLocaleFromInternalParam(
+  value: string | string[] | undefined,
+): ServiceLocale {
+  const locale = Array.isArray(value) ? value[0] : value;
+  return locale && isServiceLocale(locale) ? locale : DEFAULT_SERVICE_LOCALE;
+}
+
 export function stripServiceLocaleFromPath(pathname: string): string {
   if (pathname === "/en") return "/";
   if (pathname.startsWith("/en/")) return pathname.slice(3) || "/";
@@ -105,6 +113,7 @@ export function withGameLocaleSearch(
   serviceLocale: ServiceLocale,
 ): string {
   const next = new URLSearchParams(searchParams);
+  next.delete(INTERNAL_SERVICE_LOCALE_QUERY);
   if (gameLocale === DEFAULT_GAME_LOCALE_BY_SERVICE[serviceLocale]) {
     next.delete("gl");
   } else {
@@ -113,4 +122,16 @@ export function withGameLocaleSearch(
 
   const query = next.toString();
   return query ? `?${query}` : "";
+}
+
+export function getGameLocaleFromSearchRecord(
+  searchParams: Record<string, string | string[] | undefined>,
+): GameLocale {
+  const serviceLocale = getServiceLocaleFromInternalParam(
+    searchParams[INTERNAL_SERVICE_LOCALE_QUERY],
+  );
+  const requested = searchParams.gl;
+  const value = Array.isArray(requested) ? requested[0] : requested;
+  if (value && isGameLocale(value)) return value;
+  return DEFAULT_GAME_LOCALE_BY_SERVICE[serviceLocale];
 }
