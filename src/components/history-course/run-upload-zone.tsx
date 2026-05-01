@@ -1,7 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import { AlertCircle, FolderUp, RefreshCw, Upload, X } from "lucide-react";
+import { AlertCircle, FolderUp, RefreshCw, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { deleteRun, listOwnRuns, saveRun } from "@/lib/run-store";
@@ -12,6 +11,7 @@ import {
 import { computeRunHash, runRouteSlug } from "@/lib/sts2-run-hash";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
+import { RunCard, runCardPropsFromReplay } from "./run-card";
 
 export type ParsedRun = {
   fileName: string;
@@ -24,49 +24,6 @@ export type ParsedRun = {
 type ParseError = {
   fileName: string;
   message: string;
-};
-
-const CHARACTER_META: Record<
-  string,
-  { ko: string; ring: string; text: string; icon: string }
-> = {
-  "CHARACTER.IRONCLAD": {
-    ko: "아이언클래드",
-    ring: "ring-red-400/30",
-    text: "text-red-300",
-    icon: "/images/sts2/icons/ironclad_energy_icon.webp",
-  },
-  "CHARACTER.SILENT": {
-    ko: "사일런트",
-    ring: "ring-emerald-400/30",
-    text: "text-emerald-300",
-    icon: "/images/sts2/icons/silent_energy_icon.webp",
-  },
-  "CHARACTER.DEFECT": {
-    ko: "디펙트",
-    ring: "ring-cyan-400/30",
-    text: "text-cyan-300",
-    icon: "/images/sts2/icons/defect_energy_icon.webp",
-  },
-  "CHARACTER.NECROBINDER": {
-    ko: "네크로바인더",
-    ring: "ring-pink-400/30",
-    text: "text-pink-300",
-    icon: "/images/sts2/icons/necrobinder_energy_icon.webp",
-  },
-  "CHARACTER.REGENT": {
-    ko: "리젠트",
-    ring: "ring-orange-400/30",
-    text: "text-orange-300",
-    icon: "/images/sts2/icons/regent_energy_icon.webp",
-  },
-};
-
-const UNKNOWN_META = {
-  ko: "?",
-  ring: "ring-zinc-700",
-  text: "text-zinc-300",
-  icon: "/images/sts2/icons/star_icon.webp",
 };
 
 function isRunFile(file: File): boolean {
@@ -133,31 +90,6 @@ async function parseFiles(
   }
   runs.sort((a, b) => (b.run.start_time ?? 0) - (a.run.start_time ?? 0));
   return { runs, errors };
-}
-
-function formatDate(unix?: number): string {
-  if (!unix) return "—";
-  const d = new Date(unix * 1000);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-    d.getDate(),
-  ).padStart(2, "0")} ${String(d.getHours()).padStart(2, "0")}:${String(
-    d.getMinutes(),
-  ).padStart(2, "0")}`;
-}
-
-function formatRunTime(seconds?: number): string {
-  if (!seconds) return "—";
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = Math.floor(seconds % 60);
-  if (h > 0)
-    return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-  return `${m}:${String(s).padStart(2, "0")}`;
-}
-
-function characterShortKo(character?: string): string {
-  if (!character) return "?";
-  return CHARACTER_META[character]?.ko ?? "?";
 }
 
 export interface RunUploadZoneProps {
@@ -450,116 +382,26 @@ export function RunUploadZone({
           <header className="mb-3 flex items-baseline justify-between">
             <h2 className="text-sm font-bold text-zinc-200">
               내 런{" "}
-              <span className="text-zinc-500 font-medium">
-                {runs.length}개 발견
-              </span>
+              <span className="text-zinc-500 font-medium">({runs.length})</span>
             </h2>
             <p className="text-[11px] text-zinc-500">
               v{MIN_SUPPORTED_BUILD.replace(/^v/, "")} 미만 빌드는 재현 정확도가
               낮아 비활성화됩니다.
             </p>
           </header>
-          <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {runs.map((p) => {
-              const meta =
-                CHARACTER_META[p.run.players[0]?.character ?? ""] ??
-                UNKNOWN_META;
               const supported = isBuildSupported(p.run.build_id);
               const busy = isPicking === p.slug;
               return (
-                <li
-                  key={`${p.run.seed}-${p.hash}`}
-                  className="group relative"
-                >
-                  <button
-                    type="button"
-                    onClick={() => handlePick(p)}
-                    disabled={busy}
-                    title={
-                      supported
-                        ? undefined
-                        : "재현 미지원 빌드 — 클릭하면 목록에서 제거"
-                    }
-                    className={cn(
-                      "block w-full rounded-xl bg-zinc-900/60 p-3 text-left ring-1 ring-inset transition",
-                      meta.ring,
-                      busy && "cursor-wait opacity-60",
-                      !busy && supported &&
-                        "hover:-translate-y-0.5 hover:ring-amber-300/40",
-                      !busy &&
-                        !supported &&
-                        "opacity-60 hover:opacity-100 hover:ring-red-300/40",
-                    )}
-                  >
-                    <div className="flex items-start gap-3">
-                      <Image
-                        src={meta.icon}
-                        alt=""
-                        width={32}
-                        height={32}
-                        className="h-8 w-8 shrink-0 object-contain"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <span
-                            className={cn("text-xs font-bold", meta.text)}
-                          >
-                            {characterShortKo(p.run.players[0]?.character)}
-                          </span>
-                          <span
-                            className={cn(
-                              "rounded-full px-1.5 py-0.5 text-[10px] font-bold",
-                              p.run.win
-                                ? "bg-amber-500/15 text-amber-200"
-                                : "bg-zinc-800 text-zinc-400",
-                            )}
-                          >
-                            {p.run.win ? "정상" : "도중 사망"}
-                          </span>
-                        </div>
-                        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-zinc-400">
-                          <code className="rounded bg-black/30 px-1.5 py-0.5 font-mono text-zinc-300">
-                            {p.run.seed}
-                          </code>
-                          <span>승천 {p.run.ascension}</span>
-                          <span className="text-zinc-600">·</span>
-                          <span
-                            className={
-                              supported ? "text-zinc-400" : "text-red-300"
-                            }
-                          >
-                            {p.run.build_id}
-                          </span>
-                        </div>
-                        <div className="mt-1 flex flex-wrap items-center gap-x-2 text-[10px] text-zinc-500">
-                          <span>{formatDate(p.run.start_time)}</span>
-                          <span className="text-zinc-700">·</span>
-                          <span>{formatRunTime(p.run.run_time)}</span>
-                          <span className="text-zinc-700">·</span>
-                          <span>{p.run.acts.length}막</span>
-                        </div>
-                        {!supported && (
-                          <p className="mt-1.5 text-[10px] text-red-300/80">
-                            {MIN_SUPPORTED_BUILD} 미만 — 재현 미지원 · 클릭하여
-                            목록에서 제거
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                  {supported && (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRemove(p);
-                      }}
-                      title="저장 목록에서 제거"
-                      className="absolute right-1.5 top-1.5 rounded-md p-1 text-zinc-500 opacity-0 transition hover:bg-zinc-800 hover:text-zinc-200 group-hover:opacity-100 focus:opacity-100"
-                    >
-                      <X className="h-3.5 w-3.5" aria-hidden />
-                    </button>
-                  )}
+                <li key={`${p.run.seed}-${p.hash}`}>
+                  <RunCard
+                    {...runCardPropsFromReplay(p.run, p.slug)}
+                    variant="mine"
+                    pending={busy}
+                    onPick={() => handlePick(p)}
+                    onDelete={supported ? () => handleRemove(p) : undefined}
+                  />
                 </li>
               );
             })}

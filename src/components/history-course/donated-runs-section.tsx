@@ -1,65 +1,20 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
 import {
   type DonatedRunSummary,
+  deleteDonatedRun,
   listRecentDonatedRuns,
 } from "@/lib/run-donation";
-import { isBuildSupported } from "@/lib/sts2-build-version";
 import { supabaseEnabled } from "@/lib/supabase";
-import { cn } from "@/lib/utils";
-
-const CHARACTER_META: Record<
-  string,
-  { ko: string; ring: string; text: string; icon: string }
-> = {
-  "CHARACTER.IRONCLAD": {
-    ko: "아이언클래드",
-    ring: "ring-red-400/30",
-    text: "text-red-300",
-    icon: "/images/sts2/icons/ironclad_energy_icon.webp",
-  },
-  "CHARACTER.SILENT": {
-    ko: "사일런트",
-    ring: "ring-emerald-400/30",
-    text: "text-emerald-300",
-    icon: "/images/sts2/icons/silent_energy_icon.webp",
-  },
-  "CHARACTER.DEFECT": {
-    ko: "디펙트",
-    ring: "ring-cyan-400/30",
-    text: "text-cyan-300",
-    icon: "/images/sts2/icons/defect_energy_icon.webp",
-  },
-  "CHARACTER.NECROBINDER": {
-    ko: "네크로바인더",
-    ring: "ring-pink-400/30",
-    text: "text-pink-300",
-    icon: "/images/sts2/icons/necrobinder_energy_icon.webp",
-  },
-  "CHARACTER.REGENT": {
-    ko: "리젠트",
-    ring: "ring-orange-400/30",
-    text: "text-orange-300",
-    icon: "/images/sts2/icons/regent_energy_icon.webp",
-  },
-};
-
-const UNKNOWN_META = {
-  ko: "?",
-  ring: "ring-zinc-700",
-  text: "text-zinc-300",
-  icon: "/images/sts2/icons/star_icon.webp",
-};
-
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
+import { RandomPickCard } from "./random-pick-card";
+import { RunCard } from "./run-card";
 
 export function DonatedRunsSection() {
+  const router = useRouter();
+  const { userId } = useAuth();
   const [runs, setRuns] = useState<DonatedRunSummary[] | null>(null);
 
   useEffect(() => {
@@ -76,6 +31,20 @@ export function DonatedRunsSection() {
     };
   }, []);
 
+  const onUndo = async (runId: string) => {
+    if (
+      !window.confirm(
+        "이 런의 익명 공유를 취소합니다. URL은 더 이상 다른 기기에서 열리지 않습니다.",
+      )
+    ) {
+      return;
+    }
+    const ok = await deleteDonatedRun(runId);
+    if (ok) {
+      setRuns((prev) => prev?.filter((r) => r.id !== runId) ?? null);
+    }
+  };
+
   if (!supabaseEnabled || runs === null || runs.length === 0) {
     return null;
   }
@@ -83,70 +52,33 @@ export function DonatedRunsSection() {
   return (
     <section className="mt-12">
       <header className="mb-3">
-        <h2 className="text-lg font-bold text-zinc-100">공유된 런</h2>
-        <p className="text-xs text-zinc-500">
-          다른 사람이 익명으로 공유한 최근 런입니다. 클릭해서 그대로 다시
-          따라가볼 수 있어요.
-        </p>
+        <h2 className="text-sm font-bold text-zinc-200">
+          공유된 런{" "}
+          <span className="font-medium text-zinc-500">({runs.length})</span>
+        </h2>
       </header>
-      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <li>
+          <RandomPickCard runs={runs} userId={userId} />
+        </li>
         {runs.map((entry) => {
-          const meta = CHARACTER_META[entry.character] ?? UNKNOWN_META;
-          const supported = isBuildSupported(entry.build);
+          const isOwn = !!userId && entry.donor_user_id === userId;
           return (
             <li key={entry.id}>
-              <Link
-                href={`/history-course/${entry.id}`}
-                prefetch={false}
-                className={cn(
-                  "group block rounded-xl bg-zinc-900/60 p-3 ring-1 ring-inset transition hover:-translate-y-0.5 hover:ring-amber-300/40",
-                  meta.ring,
-                )}
-              >
-                <div className="flex items-start gap-3">
-                  <Image
-                    src={meta.icon}
-                    alt=""
-                    width={32}
-                    height={32}
-                    className="h-8 w-8 shrink-0 object-contain"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className={cn("text-xs font-bold", meta.text)}>
-                        {meta.ko}
-                      </span>
-                      <span
-                        className={cn(
-                          "rounded-full px-1.5 py-0.5 text-[10px] font-bold",
-                          entry.win
-                            ? "bg-amber-500/15 text-amber-200"
-                            : "bg-zinc-800 text-zinc-400",
-                        )}
-                      >
-                        {entry.win ? "정상" : "도중 사망"}
-                      </span>
-                    </div>
-                    <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-zinc-400">
-                      <code className="rounded bg-black/30 px-1.5 py-0.5 font-mono text-zinc-300">
-                        {entry.seed}
-                      </code>
-                      <span>승천 {entry.ascension}</span>
-                      <span className="text-zinc-600">·</span>
-                      <span
-                        className={
-                          supported ? "text-zinc-400" : "text-red-300"
-                        }
-                      >
-                        {entry.build}
-                      </span>
-                    </div>
-                    <div className="mt-1 text-[10px] text-zinc-500">
-                      {formatDate(entry.created_at)} · {entry.acts_count}막
-                    </div>
-                  </div>
-                </div>
-              </Link>
+              <RunCard
+                runId={entry.id}
+                character={entry.character}
+                ascension={entry.ascension}
+                build={entry.build}
+                seed={entry.seed}
+                win={entry.win}
+                totalFloors={entry.total_floors}
+                runTimeSeconds={entry.run_time}
+                startTimeUnix={null}
+                variant="shared"
+                onPick={() => router.push(`/history-course/${entry.id}`)}
+                onDelete={isOwn ? () => onUndo(entry.id) : undefined}
+              />
             </li>
           );
         })}

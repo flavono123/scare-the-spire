@@ -25,7 +25,17 @@ export interface DonatedRunSummary {
   start_time: number | null;
   run_time: number | null;
   acts_count: number;
+  // Total floors visited across all acts. Pre-extracted at insert
+  // time so the listing query doesn't have to parse the raw JSON.
+  total_floors: number;
+  donor_user_id: string | null;
   created_at: string;
+}
+
+function totalFloorsFromRun(run: ReplayRun): number {
+  let total = 0;
+  for (const act of run.map_point_history) total += act.length;
+  return total;
 }
 
 function parsedMetaFromRun(run: ReplayRun) {
@@ -38,6 +48,7 @@ function parsedMetaFromRun(run: ReplayRun) {
     start_time: run.start_time ?? null,
     run_time: run.run_time ?? null,
     acts_count: run.acts.length,
+    total_floors: totalFloorsFromRun(run),
   };
 }
 
@@ -113,7 +124,7 @@ export async function listRecentDonatedRuns(limit = 12): Promise<DonatedRunSumma
   const { data, error } = await supabase
     .from("runs")
     .select(
-      "id, seed, build, character, ascension, win, start_time, run_time, acts_count, created_at",
+      "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at",
     )
     .order("created_at", { ascending: false })
     .limit(limit);
