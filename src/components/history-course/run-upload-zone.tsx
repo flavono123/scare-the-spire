@@ -1,17 +1,16 @@
 "use client";
 
 import { AlertCircle, FolderUp, RefreshCw, Upload } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { deleteRun, listOwnRuns, saveRun } from "@/lib/run-store";
-import {
-  isBuildSupported,
-  MIN_SUPPORTED_BUILD,
-} from "@/lib/sts2-build-version";
+import Image from "next/image";
+import { useCallback, useRef, useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import { donateRun } from "@/lib/run-donation";
+import { saveRun } from "@/lib/run-store";
+import { isBuildSupported } from "@/lib/sts2-build-version";
 import { computeRunHash, runRouteSlug } from "@/lib/sts2-run-hash";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
+import { supabaseEnabled } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
-import { RunCard, runCardPropsFromReplay } from "./run-card";
 
 export type ParsedRun = {
   fileName: string;
@@ -31,8 +30,6 @@ function isRunFile(file: File): boolean {
 }
 
 // Recursively flatten a dropped directory entry into a flat file list.
-// Drop event gives us FileSystemEntry; folder traversal is the legacy
-// webkit API (still the only thing supported in Safari/Firefox for drops).
 async function readEntryFiles(entry: FileSystemEntry): Promise<File[]> {
   if (entry.isFile) {
     return new Promise<File[]>((resolve, reject) => {
@@ -88,96 +85,61 @@ async function parseFiles(
       });
     }
   }
-  runs.sort((a, b) => (b.run.start_time ?? 0) - (a.run.start_time ?? 0));
   return { runs, errors };
 }
 
 export interface RunUploadZoneProps {
-  // When set, overrides the default action (save to IDB + navigate to
-  // /history-course/<slug>). Used by the dev replay PoC, which keeps
-  // its own in-component state instead of routing.
-  onPickRun?: (parsed: ParsedRun) => void | Promise<void>;
-  // Override copy on the drop zone — defaults are tuned for landing.
-  primaryLabel?: string;
+  // Fired after a batch of files has been parsed and stashed. The
+  // parent uses this to bump a refreshKey for MyRunsList so the
+  // newly-saved runs surface in the cards grid.
+  onUploadComplete?: (count: number) => void;
 }
 
-export function RunUploadZone({
-  onPickRun,
-  primaryLabel,
-}: RunUploadZoneProps = {}) {
-  const router = useRouter();
-  const [runs, setRuns] = useState<ParsedRun[]>([]);
+export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
+  const { userId } = useAuth();
   const [errors, setErrors] = useState<ParseError[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isParsing, setIsParsing] = useState(false);
-  const [isPicking, setIsPicking] = useState<string | null>(null);
+  const [shareOnUpload, setShareOnUpload] = useState(false);
   const folderInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Hydrate the preview list from the IDB stash on mount so that
-  // navigating away and back doesn't lose what was uploaded. We use
-  // listOwnRuns so donation-cache entries (runs the visitor merely
-  // viewed via a shared URL) don't masquerade as the visitor's own.
-  useEffect(() => {
-    let cancelled = false;
-    listOwnRuns().then((records) => {
-      if (cancelled) return;
-      const out: ParsedRun[] = [];
-      for (const rec of records) {
-        try {
-          const run = parseReplayRun(rec.raw);
-          out.push({
-            fileName: "(저장됨)",
-            raw: rec.raw,
-            run,
-            hash: rec.runId.slice(1),
-            slug: rec.runId,
-          });
-        } catch {
-          // skip malformed; should be rare since we parsed before saving
-        }
-      }
-      out.sort((a, b) => (b.run.start_time ?? 0) - (a.run.start_time ?? 0));
-      if (!cancelled) setRuns(out);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const handleFiles = useCallback(async (files: File[]) => {
-    if (files.length === 0) return;
-    setIsParsing(true);
-    try {
-      const result = await parseFiles(files);
-      // Persist supported runs to IDB immediately so they survive nav.
-      // Unsupported ones display once with reason and never touch IDB —
-      // clicking them just dismisses from the list.
-      for (const parsed of result.runs) {
-        if (isBuildSupported(parsed.run.build_id)) {
+  const handleFiles = useCallback(
+    async (files: File[]) => {
+      if (files.length === 0) return;
+      setIsParsing(true);
+      try {
+        const result = await parseFiles(files);
+        let saved = 0;
+        for (const parsed of result.runs) {
+          if (!isBuildSupported(parsed.run.build_id)) continue;
           try {
             await saveRun({ runId: parsed.slug, raw: parsed.raw });
+            saved += 1;
+            if (shareOnUpload && supabaseEnabled && userId) {
+              try {
+                await donateRun({
+                  runId: parsed.slug,
+                  raw: parsed.raw,
+                  run: parsed.run,
+                  donorUserId: userId,
+                });
+              } catch {
+                // donation failure shouldn't block the IDB save
+              }
+            }
           } catch {
-            // ignore — UX continues, user can retry
+            // ignore individual save failure
           }
         }
+        setErrors(result.errors);
+        if (saved > 0) onUploadComplete?.(saved);
+      } finally {
+        setIsParsing(false);
       }
-      setRuns((prev) => {
-        const known = new Set(prev.map((p) => p.slug));
-        const merged = [...prev];
-        for (const incoming of result.runs) {
-          if (!known.has(incoming.slug)) merged.push(incoming);
-        }
-        merged.sort(
-          (a, b) => (b.run.start_time ?? 0) - (a.run.start_time ?? 0),
-        );
-        return merged;
-      });
-      setErrors(result.errors);
-    } finally {
-      setIsParsing(false);
-    }
-  }, []);
+    },
+    [onUploadComplete, shareOnUpload, userId],
+  );
 
   const onDrop = useCallback(
     async (event: React.DragEvent<HTMLDivElement>) => {
@@ -194,7 +156,7 @@ export function RunUploadZone({
             const inner = await readEntryFiles(entry);
             collected.push(...inner);
           } catch {
-            // ignore unreadable entries; user-visible errors come from parse step
+            // ignore unreadable entries
           }
         }
       } else {
@@ -211,58 +173,13 @@ export function RunUploadZone({
         ? Array.from(event.target.files)
         : [];
       await handleFiles(files);
-      // Reset so picking the same path twice fires change again.
       event.target.value = "";
     },
     [handleFiles],
   );
 
-  const handlePick = useCallback(
-    async (parsed: ParsedRun) => {
-      // Unsupported builds aren't navigable — clicking the card just
-      // removes it from the list (and IDB, if it ever ended up there).
-      if (!isBuildSupported(parsed.run.build_id)) {
-        setRuns((prev) => prev.filter((p) => p.slug !== parsed.slug));
-        try {
-          await deleteRun(parsed.slug);
-        } catch {
-          // ignore — entry may not be in IDB
-        }
-        return;
-      }
-      setIsPicking(parsed.slug);
-      try {
-        if (onPickRun) {
-          await onPickRun(parsed);
-          return;
-        }
-        await saveRun({ runId: parsed.slug, raw: parsed.raw });
-        router.push(`/history-course/${parsed.slug}`);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error("[history-course] pick failed", err);
-        window.alert(
-          `런을 저장하지 못했습니다: ${err instanceof Error ? err.message : String(err)}`,
-        );
-        setIsPicking(null);
-      }
-    },
-    [onPickRun, router],
-  );
-
-  const handleRemove = useCallback(async (parsed: ParsedRun) => {
-    setRuns((prev) => prev.filter((p) => p.slug !== parsed.slug));
-    try {
-      await deleteRun(parsed.slug);
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  const hasResults = runs.length > 0 || errors.length > 0;
-
   return (
-    <section className="space-y-6">
+    <section className="space-y-4">
       <div
         onDragOver={(e) => {
           e.preventDefault();
@@ -271,14 +188,24 @@ export function RunUploadZone({
         onDragLeave={() => setIsDragging(false)}
         onDrop={onDrop}
         className={cn(
-          "relative rounded-2xl border-2 border-dashed px-6 py-10 text-center transition",
+          "relative overflow-hidden rounded-2xl border-2 border-dashed px-6 py-10 transition",
           isDragging
             ? "border-amber-300/70 bg-amber-300/5"
             : "border-zinc-700 bg-zinc-900/40 hover:border-zinc-600",
-          hasResults && "py-6",
         )}
       >
-        <div className="flex flex-col items-center gap-3">
+        {/* Background flair — flail knight peeking from the right edge,
+            blurred and dimmed to read as background art rather than UI. */}
+        <Image
+          src="/images/sts2/monsters-render/flail_knight.webp"
+          alt=""
+          width={520}
+          height={520}
+          aria-hidden
+          className="pointer-events-none absolute right-0 top-1/2 z-0 h-[180%] w-auto -translate-y-1/2 translate-x-[18%] opacity-25 blur-[2px]"
+        />
+
+        <div className="relative z-10 flex flex-col items-center gap-3 text-center">
           <Upload
             className={cn(
               "h-8 w-8",
@@ -288,9 +215,7 @@ export function RunUploadZone({
           />
           <div>
             <p className="text-base font-semibold text-zinc-100">
-              {hasResults
-                ? "다른 폴더 또는 파일 올리기"
-                : (primaryLabel ?? "내 런을 보려면 파일을 여기에")}
+              내 런을 보려면 파일을 여기에
             </p>
             <p className="mt-1 text-xs text-zinc-400">
               <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-zinc-300">
@@ -322,6 +247,17 @@ export function RunUploadZone({
               파일 선택
             </button>
           </div>
+          {supabaseEnabled && (
+            <label className="inline-flex cursor-pointer items-center gap-2 text-[11px] text-zinc-400 hover:text-zinc-200">
+              <input
+                type="checkbox"
+                checked={shareOnUpload}
+                onChange={(e) => setShareOnUpload(e.target.checked)}
+                className="h-3.5 w-3.5 rounded border-zinc-600 bg-zinc-900 text-amber-500 focus:ring-amber-500"
+              />
+              올린 런 즉시 익명 공유
+            </label>
+          )}
           {isParsing && (
             <p className="flex items-center gap-1.5 text-xs text-zinc-400">
               <RefreshCw className="h-3 w-3 animate-spin" aria-hidden />
@@ -374,38 +310,6 @@ export function RunUploadZone({
               </ul>
             </div>
           </div>
-        </div>
-      )}
-
-      {runs.length > 0 && (
-        <div>
-          <header className="mb-3 flex items-baseline justify-between">
-            <h2 className="text-sm font-bold text-zinc-200">
-              내 런{" "}
-              <span className="text-zinc-500 font-medium">({runs.length})</span>
-            </h2>
-            <p className="text-[11px] text-zinc-500">
-              v{MIN_SUPPORTED_BUILD.replace(/^v/, "")} 미만 빌드는 재현 정확도가
-              낮아 비활성화됩니다.
-            </p>
-          </header>
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {runs.map((p) => {
-              const supported = isBuildSupported(p.run.build_id);
-              const busy = isPicking === p.slug;
-              return (
-                <li key={`${p.run.seed}-${p.hash}`}>
-                  <RunCard
-                    {...runCardPropsFromReplay(p.run, p.slug)}
-                    variant="mine"
-                    pending={busy}
-                    onPick={() => handlePick(p)}
-                    onDelete={supported ? () => handleRemove(p) : undefined}
-                  />
-                </li>
-              );
-            })}
-          </ul>
         </div>
       )}
     </section>

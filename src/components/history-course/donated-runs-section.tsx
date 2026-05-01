@@ -12,7 +12,11 @@ import { supabaseEnabled } from "@/lib/supabase";
 import { RandomPickCard } from "./random-pick-card";
 import { RunCard } from "./run-card";
 
-export function DonatedRunsSection() {
+interface Props {
+  refreshKey?: number;
+}
+
+export function DonatedRunsSection({ refreshKey = 0 }: Props) {
   const router = useRouter();
   const { userId } = useAuth();
   const [runs, setRuns] = useState<DonatedRunSummary[] | null>(null);
@@ -29,7 +33,7 @@ export function DonatedRunsSection() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [refreshKey]);
 
   const onUndo = async (runId: string) => {
     if (
@@ -45,19 +49,19 @@ export function DonatedRunsSection() {
     }
   };
 
-  if (!supabaseEnabled || runs === null || runs.length === 0) {
+  if (!supabaseEnabled || runs === null) {
     return null;
   }
 
   return (
-    <section className="mt-12">
+    <section>
       <header className="mb-3">
         <h2 className="text-sm font-bold text-zinc-200">
           공유된 런{" "}
           <span className="font-medium text-zinc-500">({runs.length})</span>
         </h2>
       </header>
-      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <ul className="grid gap-3 sm:grid-cols-2">
         <li>
           <RandomPickCard runs={runs} userId={userId} />
         </li>

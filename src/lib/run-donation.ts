@@ -119,6 +119,23 @@ export async function isOwnDonation(
   return !error && !!data;
 }
 
+// All runIds that the visitor has donated. One query, used to mark
+// 내 런 cards as already-shared so we can render '공유 취소' instead
+// of '공유'.
+export async function listMyDonatedRunIds(
+  userId: string,
+): Promise<Set<string>> {
+  const ids = new Set<string>();
+  if (!supabaseEnabled || !userId) return ids;
+  const { data, error } = await supabase
+    .from("runs")
+    .select("id")
+    .eq("donor_user_id", userId);
+  if (error || !data) return ids;
+  for (const row of data) ids.add(row.id as string);
+  return ids;
+}
+
 export async function listRecentDonatedRuns(limit = 12): Promise<DonatedRunSummary[]> {
   if (!supabaseEnabled) return [];
   const { data, error } = await supabase

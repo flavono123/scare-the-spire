@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { Share2, Trash2, Undo2 } from "lucide-react";
 import Image from "next/image";
 import { useCallback } from "react";
 import { isBuildSupported } from "@/lib/sts2-build-version";
@@ -56,6 +56,11 @@ export interface RunCardProps {
   startTimeUnix?: number | null;
   onPick: () => void;
   onDelete?: () => void;
+  // Share toggle. When provided, renders a button next to the trash:
+  //   shareState='none'    → '공유'  (donate)
+  //   shareState='shared'  → '공유 취소' (undo donation)
+  onShare?: () => void;
+  shareState?: "none" | "shared";
   variant: "mine" | "shared";
   pending?: boolean;
 }
@@ -82,11 +87,12 @@ export function RunCard({
   ascension,
   build,
   seed,
-  totalFloors,
   runTimeSeconds,
   startTimeUnix,
   onPick,
   onDelete,
+  onShare,
+  shareState = "none",
   variant,
   pending,
 }: RunCardProps) {
@@ -102,6 +108,14 @@ export function RunCard({
       onDelete?.();
     },
     [onDelete],
+  );
+
+  const onShareClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onShare?.();
+    },
+    [onShare],
   );
 
   return (
@@ -132,7 +146,6 @@ export function RunCard({
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
               <BuildChip build={build} supported={supported} />
-              <FloorChip floors={totalFloors} />
             </div>
             <code className="mt-1.5 block truncate rounded bg-black/30 px-1.5 py-0.5 font-mono text-[11px] text-zinc-200">
               {seed}
@@ -151,25 +164,58 @@ export function RunCard({
         </div>
       </button>
 
-      {onDelete && (
-        <button
-          type="button"
-          onClick={onTrashClick}
-          title={
-            variant === "shared"
-              ? "이 런의 익명 공유 취소"
-              : "내 라이브러리에서 제거"
-          }
-          className={cn(
-            "absolute right-2 top-2 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold transition",
-            "text-red-400/35 ring-1 ring-red-400/0",
-            "hover:bg-red-500/15 hover:text-red-200 hover:ring-red-400/30",
-            "focus:bg-red-500/15 focus:text-red-200 focus:ring-red-400/30 focus:outline-none",
+      {(onDelete || onShare) && (
+        <div className="absolute right-2 top-2 flex items-center gap-1">
+          {onShare && (
+            <button
+              type="button"
+              onClick={onShareClick}
+              title={
+                shareState === "shared"
+                  ? "이 런의 익명 공유 취소"
+                  : "이 런 익명으로 공유"
+              }
+              className={cn(
+                "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold transition ring-1 ring-inset",
+                shareState === "shared"
+                  ? "text-emerald-400/40 ring-emerald-400/0 hover:bg-emerald-500/15 hover:text-emerald-200 hover:ring-emerald-400/30 focus:bg-emerald-500/15 focus:text-emerald-200 focus:ring-emerald-400/30 focus:outline-none"
+                  : "text-amber-400/40 ring-amber-400/0 hover:bg-amber-500/15 hover:text-amber-200 hover:ring-amber-400/30 focus:bg-amber-500/15 focus:text-amber-200 focus:ring-amber-400/30 focus:outline-none",
+              )}
+            >
+              {shareState === "shared" ? (
+                <>
+                  <Undo2 className="h-3 w-3" aria-hidden />
+                  공유 취소
+                </>
+              ) : (
+                <>
+                  <Share2 className="h-3 w-3" aria-hidden />
+                  공유
+                </>
+              )}
+            </button>
           )}
-        >
-          <Trash2 className="h-3 w-3" aria-hidden />
-          삭제
-        </button>
+          {onDelete && (
+            <button
+              type="button"
+              onClick={onTrashClick}
+              title={
+                variant === "shared"
+                  ? "이 런의 익명 공유 취소"
+                  : "내 라이브러리에서 제거"
+              }
+              className={cn(
+                "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold transition ring-1 ring-inset",
+                "text-red-400/35 ring-red-400/0",
+                "hover:bg-red-500/15 hover:text-red-200 hover:ring-red-400/30",
+                "focus:bg-red-500/15 focus:text-red-200 focus:ring-red-400/30 focus:outline-none",
+              )}
+            >
+              <Trash2 className="h-3 w-3" aria-hidden />
+              삭제
+            </button>
+          )}
+        </div>
       )}
     </div>
   );
@@ -228,10 +274,3 @@ function BuildChip({ build, supported }: { build: string; supported: boolean }) 
   );
 }
 
-function FloorChip({ floors }: { floors: number }) {
-  return (
-    <span className="inline-flex items-center rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] font-bold text-zinc-300 ring-1 ring-inset ring-zinc-700">
-      F{floors}
-    </span>
-  );
-}

@@ -1,10 +1,17 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 import { CardActionIcon } from "@/components/history-course/card-action-icon";
+import { NodeTooltip } from "@/components/history-course/node-tooltip";
+import {
+  EntityPreview,
+  type EntityInfo,
+} from "@/components/patch-note-renderer";
 import { localize } from "@/lib/sts2-i18n";
 import gameOverQuotes from "@/lib/sts2-game-over-quotes-ko.json";
-import type { CodexCard } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic } from "@/lib/codex-types";
 import type {
   ReplayActAnalysis,
   ReplayHistoryEntry,
@@ -109,9 +116,79 @@ function nodeSpriteSrc(entry: ReplayHistoryEntry): string {
   }
 }
 
+// Outline asset alongside each node sprite — see `public/images/sts2/run-history/*_outline.png`.
+// Returns the outline path matching the node's primary sprite. Boss nodes use
+// boss portraits (no matching outline), so we fall back to the generic monster
+// outline for those. Returns null when the entry has no outline at all.
+function nodeOutlineSrc(entry: ReplayHistoryEntry): string | null {
+  const modelId = entry.rooms?.[0]?.model_id ?? null;
+  if (entry.map_point_type === "ancient") {
+    if (modelId) {
+      const m = modelId.match(/^EVENT\.(.+)$/);
+      if (m && ANCIENT_KEYS.has(m[1])) {
+        return `/images/sts2/run-history/${m[1].toLowerCase()}_outline.png`;
+      }
+    }
+    return "/images/sts2/run-history/ancient.png";
+  }
+  if (modelId === "EVENT.NEOW") return "/images/sts2/run-history/neow_outline.png";
+  if (entry.map_point_type === "boss") {
+    const bossKey = bossKeyFromEntry(entry);
+    if (bossKey) return `/images/sts2/run-history/${bossKey.toLowerCase()}_outline.png`;
+    return null;
+  }
+  switch (entry.map_point_type) {
+    case "monster":
+      return "/images/sts2/run-history/monster_outline.png";
+    case "elite":
+      return "/images/sts2/run-history/elite_outline.png";
+    case "rest_site":
+      return "/images/sts2/run-history/rest_site_outline.png";
+    case "treasure":
+      return "/images/sts2/run-history/treasure_outline.png";
+    case "shop":
+      return "/images/sts2/run-history/shop_outline.png";
+    case "unknown":
+      return "/images/sts2/run-history/event_outline.png";
+    default:
+      return null;
+  }
+}
+
 function relicIconSrc(id: string): string {
   const slug = id.replace(/^RELIC\./, "").toLowerCase();
   return `/images/sts2/relics/${slug}.webp`;
+}
+
+// Build the minimal EntityInfo a relic icon needs to drive an EntityPreview
+// (rich tooltip + click-through to the codex relic page).
+function buildRelicEntityInfo(
+  replayId: string,
+  relic: CodexRelic | undefined,
+): EntityInfo | null {
+  if (!relic) return null;
+  return {
+    id: relic.id,
+    nameEn: relic.nameEn,
+    nameKo: relic.name,
+    imageUrl: relic.imageUrl,
+    color: relic.pool,
+    type: "relic",
+    relicData: relic,
+  };
+}
+
+function buildCardEntityInfo(card: CodexCard | undefined): EntityInfo | null {
+  if (!card) return null;
+  return {
+    id: card.id,
+    nameEn: card.nameEn,
+    nameKo: card.name,
+    imageUrl: card.imageUrl,
+    color: card.color,
+    type: "card",
+    cardData: card,
+  };
 }
 
 interface Props {
@@ -119,6 +196,7 @@ interface Props {
   acts: ReplayActAnalysis[];
   topbarState: TopbarState;
   cardsById: Record<string, CodexCard>;
+  relicsById: Record<string, CodexRelic>;
   /** Whether the panel is mounted/visible. */
   open: boolean;
   /** True when the run has reached its final node (globalMs ≥ totalMs).
@@ -142,6 +220,7 @@ export function RunSummary({
   acts,
   topbarState,
   cardsById,
+  relicsById,
   open,
   ended,
   currentActIndex,
@@ -164,6 +243,7 @@ export function RunSummary({
         acts={acts}
         topbarState={topbarState}
         cardsById={cardsById}
+        relicsById={relicsById}
         ended={ended}
         currentActIndex={currentActIndex}
         currentStep={currentStep}
@@ -237,6 +317,7 @@ function SummaryPanel({
   acts,
   topbarState,
   cardsById,
+  relicsById,
   ended,
   currentActIndex,
   currentStep,
@@ -245,6 +326,7 @@ function SummaryPanel({
   acts: ReplayActAnalysis[];
   topbarState: TopbarState;
   cardsById: Record<string, CodexCard>;
+  relicsById: Record<string, CodexRelic>;
   ended: boolean;
   currentActIndex: number;
   currentStep: number;
@@ -255,6 +337,11 @@ function SummaryPanel({
   const finalFloor = topbarState.currentFloor;
   const runTimeStr = formatRunTime(run.run_time ?? 0);
   const dateStr = formatRunDate(run.start_time);
+
+  // Cross-section hover state. Hovering a relic / deck card sets the
+  // floor at which it was acquired; the act rows then highlight that
+  // floor's node. Null means nothing is being hovered.
+  const [highlightedFloor, setHighlightedFloor] = useState<number | null>(null);
 
   // Truncate per current playback position. Past acts render fully; the
   // current act stops at `currentStep`; future acts disappear.
@@ -282,11 +369,14 @@ function SummaryPanel({
       `}</style>
 
       <header className="flex flex-wrap items-center gap-3 border-b border-amber-500/20 pb-3">
-        <CharacterChip iconSrc={charIcon} label={charLabel} />
+        <CharacterChip
+          iconSrc={charIcon}
+          label={charLabel}
+          ascension={run.ascension}
+        />
         <HpChip hp={topbarState.hp} maxHp={topbarState.maxHp} />
         <GoldChip gold={topbarState.gold} />
         <PotionStrip slots={topbarState.potionSlots} />
-        <AscensionChip ascension={run.ascension} />
         <ScoreChip win={run.win && ended} floor={finalFloor} />
         <TimeChip runTime={runTimeStr} />
         <div className="ml-auto text-right text-[11px] leading-snug text-zinc-400">
@@ -329,16 +419,29 @@ function SummaryPanel({
 
       <section className="mt-5 space-y-2">
         {visibleActs.map(({ act, history }) => (
-          <ActRow key={`${act.actId}-${act.actIndex}`} act={act} history={history} />
+          <ActRow
+            key={`${act.actId}-${act.actIndex}`}
+            act={act}
+            history={history}
+            highlightedFloor={highlightedFloor}
+          />
         ))}
       </section>
 
       <section className="mt-6">
-        <RelicSection relics={topbarState.relics} run={run} />
+        <RelicSection
+          relics={topbarState.relics}
+          relicsById={relicsById}
+          onHoverFloor={setHighlightedFloor}
+        />
       </section>
 
       <section className="mt-6 mb-24">
-        <DeckSection deck={topbarState.deck} cardsById={cardsById} run={run} />
+        <DeckSection
+          deck={topbarState.deck}
+          cardsById={cardsById}
+          onHoverFloor={setHighlightedFloor}
+        />
       </section>
     </div>
   );
@@ -349,14 +452,16 @@ function SummaryPanel({
 function CharacterChip({
   iconSrc,
   label,
+  ascension,
 }: {
   iconSrc: string;
   label: string;
+  ascension: number;
 }) {
   return (
     <div
       className="relative h-12 w-12 shrink-0"
-      title={label}
+      title={ascension > 0 ? `${label} · 승천 ${ascension}` : label}
       style={{
         backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
         backgroundSize: "100% 100%",
@@ -373,7 +478,29 @@ function CharacterChip({
           unoptimized
         />
       </div>
+      {ascension > 0 && <AscensionBadge ascension={ascension} />}
     </div>
+  );
+}
+
+function AscensionBadge({ ascension }: { ascension: number }) {
+  return (
+    <span
+      className="pointer-events-none absolute -bottom-0.5 -right-1 flex h-7 w-7 items-end justify-center"
+      aria-label={`승천 ${ascension}`}
+    >
+      <Image
+        src="/images/sts2/ui/topbar/top_bar_ascension.png"
+        alt=""
+        fill
+        sizes="28px"
+        className="object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
+        unoptimized
+      />
+      <span className="relative z-10 mb-0.5 text-[13px] font-bold leading-none text-white">
+        {ascension}
+      </span>
+    </span>
   );
 }
 
@@ -417,32 +544,32 @@ function GoldChip({ gold }: { gold: number | null }) {
   );
 }
 
+// Mirrors the topbar's PotionSlots — same nine-slice frame and placeholder
+// sprite so the summary header reads as the same widget the player saw mid-run.
 function PotionStrip({ slots }: { slots: number }) {
   return (
-    <div className="flex items-center gap-1">
+    <div
+      title={`포션 슬롯 ${slots}개`}
+      className="relative inline-flex items-center gap-1 px-1"
+      style={{
+        borderImage:
+          "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png) 28 fill / 8px / 0 stretch",
+        borderStyle: "solid",
+        borderWidth: "8px",
+      }}
+    >
       {Array.from({ length: slots }).map((_, i) => (
-        <div
-          key={i}
-          className="h-6 w-4 rounded-full border border-zinc-600 bg-zinc-900/60"
-          aria-hidden
-        />
+        <div key={i} className="relative h-6 w-5">
+          <Image
+            src="/images/sts2/ui/topbar/potion_placeholder.png"
+            alt=""
+            fill
+            sizes="20px"
+            className="object-contain opacity-90"
+            unoptimized
+          />
+        </div>
       ))}
-    </div>
-  );
-}
-
-function AscensionChip({ ascension }: { ascension: number }) {
-  return (
-    <div className="flex items-center gap-1 text-amber-300">
-      <Image
-        src="/images/sts2/ui/topbar/top_bar_ascension.png"
-        alt=""
-        width={22}
-        height={22}
-        className="h-5 w-5 object-contain"
-        unoptimized
-      />
-      <span className="font-bold tabular-nums">A{ascension}</span>
     </div>
   );
 }
@@ -466,7 +593,7 @@ function ScoreChip({ win, floor }: { win: boolean; floor: number }) {
 
 function TimeChip({ runTime }: { runTime: string }) {
   return (
-    <div className="flex items-center gap-1 text-zinc-300">
+    <div className="flex items-center gap-1 text-amber-200">
       <Image
         src="/images/sts2/ui/topbar/timer_icon.png"
         alt=""
@@ -485,9 +612,11 @@ function TimeChip({ runTime }: { runTime: string }) {
 function ActRow({
   act,
   history,
+  highlightedFloor,
 }: {
   act: ReplayActAnalysis;
   history: ReplayHistoryEntry[];
+  highlightedFloor: number | null;
 }) {
   return (
     <div className="flex items-center gap-3 rounded-md bg-zinc-900/40 px-3 py-2">
@@ -495,18 +624,79 @@ function ActRow({
         {act.actLabel}
       </span>
       <div className="flex flex-wrap items-center gap-1">
-        {history.map((entry, i) => (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            key={i}
-            src={nodeSpriteSrc(entry)}
-            alt=""
-            className="h-6 w-6 select-none object-contain"
-            draggable={false}
-          />
-        ))}
+        {history.map((entry, i) => {
+          const floor = act.baseFloor + i;
+          const isHighlighted = highlightedFloor === floor;
+          return (
+            <ActNode
+              key={i}
+              act={act}
+              entry={entry}
+              stepIndex={i}
+              isHighlighted={isHighlighted}
+            />
+          );
+        })}
       </div>
     </div>
+  );
+}
+
+function ActNode({
+  act,
+  entry,
+  stepIndex,
+  isHighlighted,
+}: {
+  act: ReplayActAnalysis;
+  entry: ReplayHistoryEntry;
+  stepIndex: number;
+  isHighlighted: boolean;
+}) {
+  const [hover, setHover] = useState(false);
+  const outline = nodeOutlineSrc(entry);
+
+  return (
+    <span
+      className="relative inline-flex h-6 w-6 items-center justify-center"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {/* Outline + scale pop on hover. The outline asset is the matching
+       *  *_outline.png shipped alongside each node sprite — desaturated to
+       *  read as a neutral grey ring instead of competing with the colored
+       *  fill. */}
+      <span
+        className={cn(
+          "absolute inset-0 transition-transform duration-150",
+          (hover || isHighlighted) && "scale-[1.6]",
+        )}
+      >
+        {outline && (hover || isHighlighted) && (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={outline}
+            alt=""
+            draggable={false}
+            className="absolute inset-0 h-full w-full object-contain opacity-90"
+            style={{
+              filter:
+                "brightness(0) invert(0.85) drop-shadow(0 0 2px rgba(255,255,255,0.45))",
+            }}
+          />
+        )}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={nodeSpriteSrc(entry)}
+          alt=""
+          className="relative h-full w-full select-none object-contain"
+          draggable={false}
+        />
+      </span>
+      {hover && (
+        <NodeTooltip act={act} stepIndex={stepIndex} entry={entry} />
+      )}
+    </span>
   );
 }
 
@@ -514,14 +704,15 @@ function ActRow({
 
 function RelicSection({
   relics,
-  run,
+  relicsById,
+  onHoverFloor,
 }: {
   relics: TopbarState["relics"];
-  run: ReplayRun;
+  relicsById: Record<string, CodexRelic>;
+  onHoverFloor: (floor: number | null) => void;
 }) {
   const total = relics.length;
   const counts = countRelicsByFloor(relics);
-  void run;
   return (
     <div>
       <p className="text-xs font-bold text-amber-200">
@@ -532,23 +723,81 @@ function RelicSection({
       </p>
       <div className="mt-2 flex flex-wrap items-center gap-1.5">
         {relics.map((r) => (
-          <div
+          <RelicIcon
             key={r.id}
-            title={localize("relics", r.id) ?? r.id}
-            className="relative h-10 w-10 shrink-0"
-          >
-            <Image
-              src={relicIconSrc(r.id)}
-              alt=""
-              fill
-              sizes="40px"
-              className="object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.85)]"
-              unoptimized
-            />
-          </div>
+            replayId={r.id}
+            floor={r.floor}
+            relic={relicsById[r.id]}
+            onHoverFloor={onHoverFloor}
+          />
         ))}
       </div>
     </div>
+  );
+}
+
+function RelicIcon({
+  replayId,
+  floor,
+  relic,
+  onHoverFloor,
+}: {
+  replayId: string;
+  floor: number;
+  relic: CodexRelic | undefined;
+  onHoverFloor: (floor: number | null) => void;
+}) {
+  const entity = buildRelicEntityInfo(replayId, relic);
+  const label = relic?.name ?? localize("relics", replayId) ?? replayId;
+
+  // Hover binds two effects:
+  //   1) entity preview tooltip (handled inside EntityPreview)
+  //   2) the floor highlight upstream so the act-row lights the
+  //      acquisition node
+  const hoverHandlers = {
+    onMouseEnter: () => onHoverFloor(floor),
+    onMouseLeave: () => onHoverFloor(null),
+  };
+
+  // Starter relics (floor <= 0) carry no acquisition node, so we render a
+  // bare icon without the floor-highlight binding.
+  const tracksFloor = floor > 0;
+
+  const iconNode = (
+    <span className="relative block h-10 w-10 shrink-0">
+      <Image
+        src={relicIconSrc(replayId)}
+        alt={label}
+        fill
+        sizes="40px"
+        className="object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.85)]"
+        unoptimized
+      />
+    </span>
+  );
+
+  if (entity) {
+    return (
+      <span
+        className="inline-block"
+        title={`${label} · ${floor > 0 ? `${floor}층 획득` : "시작 유물"}`}
+        {...(tracksFloor ? hoverHandlers : {})}
+      >
+        <EntityPreview entity={entity} linkClassName="block">
+          {iconNode}
+        </EntityPreview>
+      </span>
+    );
+  }
+
+  // No codex match — fall back to an inert icon.
+  return (
+    <span
+      title={`${label} · ${floor > 0 ? `${floor}층 획득` : "시작 유물"}`}
+      {...(tracksFloor ? hoverHandlers : {})}
+    >
+      {iconNode}
+    </span>
   );
 }
 
@@ -567,15 +816,14 @@ function countRelicsByFloor(relics: TopbarState["relics"]) {
 function DeckSection({
   deck,
   cardsById,
-  run,
+  onHoverFloor,
 }: {
   deck: TopbarState["deck"];
   cardsById: Record<string, CodexCard>;
-  run: ReplayRun;
+  onHoverFloor: (floor: number | null) => void;
 }) {
   const total = deck.reduce((acc, e) => acc + e.count, 0);
   const counts = countDeckByRarity(deck, cardsById);
-  void run;
   return (
     <div>
       <p className="text-xs font-bold text-amber-200">
@@ -591,6 +839,7 @@ function DeckSection({
             key={`${entry.id}-${entry.firstFloor}`}
             entry={entry}
             cardsById={cardsById}
+            onHoverFloor={onHoverFloor}
           />
         ))}
       </div>
@@ -601,34 +850,71 @@ function DeckSection({
 function DeckEntry({
   entry,
   cardsById,
+  onHoverFloor,
 }: {
   entry: TopbarState["deck"][number];
   cardsById: Record<string, CodexCard>;
+  onHoverFloor: (floor: number | null) => void;
 }) {
   const card = cardsById[entry.id];
   const label = card
     ? localize("cards", entry.id) ?? card.name
     : entry.id.split(".").pop() ?? "?";
   const upgraded = entry.upgradeCount > 0;
-  return (
-    <div className="flex items-center gap-1.5">
-      {card ? (
-        <CardActionIcon card={card} width={22} />
-      ) : (
-        <div aria-hidden className="h-[22px] w-[22px] shrink-0" />
+  const entity = buildCardEntityInfo(card);
+  const tracksFloor = entry.firstFloor > 0;
+
+  const hoverHandlers = {
+    onMouseEnter: () => onHoverFloor(entry.firstFloor),
+    onMouseLeave: () => onHoverFloor(null),
+  };
+
+  // Card name + icon both lead to the codex card page. The icon renders the
+  // CardActionIcon (action-typed glyph) so the row stays scannable; the name
+  // is the textual link with the rarity color.
+  const labelNode = (
+    <span className={cn("truncate", upgraded ? "text-emerald-300" : "text-zinc-200")}>
+      {entry.count > 1 && (
+        <span className="text-zinc-400">{entry.count}× </span>
       )}
-      <span
-        className={cn(
-          "truncate text-xs",
-          upgraded ? "text-emerald-300" : "text-zinc-200",
-        )}
+      {label}
+      {upgraded && <span className="text-emerald-300">+</span>}
+    </span>
+  );
+
+  const iconNode = card ? (
+    <CardActionIcon card={card} width={22} />
+  ) : (
+    <div aria-hidden className="h-[22px] w-[22px] shrink-0" />
+  );
+
+  if (!entity) {
+    return (
+      <div
+        className="flex items-center gap-1.5 text-xs"
+        {...(tracksFloor ? hoverHandlers : {})}
       >
-        {entry.count > 1 && (
-          <span className="text-zinc-400">{entry.count}× </span>
-        )}
-        {label}
-        {upgraded && <span className="text-emerald-300">+</span>}
-      </span>
+        {iconNode}
+        {labelNode}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="flex items-center gap-1.5 text-xs"
+      {...(tracksFloor ? hoverHandlers : {})}
+    >
+      <Link
+        href={`/codex/cards?card=${entity.id.toLowerCase()}`}
+        className="shrink-0"
+        aria-label={`${entity.nameKo} 카드 페이지`}
+      >
+        {iconNode}
+      </Link>
+      <EntityPreview entity={entity} linkClassName="cursor-pointer hover:text-amber-200 transition-colors">
+        {labelNode}
+      </EntityPreview>
     </div>
   );
 }

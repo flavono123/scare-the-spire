@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { DonatedRunsSection } from "@/components/history-course/donated-runs-section";
-import { RunUploadZone } from "@/components/history-course/run-upload-zone";
-import { UploadTutorial } from "@/components/history-course/upload-tutorial";
+import { HistoryCourseLanding } from "@/components/history-course/history-course-landing";
 import { HISTORY_COURSE_ENABLED } from "@/lib/feature-flags";
 
 export const metadata = {
@@ -33,12 +31,9 @@ export default function HistoryCourseIndexPage() {
         </div>
       </header>
 
-      <div className="mt-8 space-y-4">
-        <RunUploadZone />
-        <UploadTutorial />
+      <div className="mt-8">
+        <HistoryCourseLanding />
       </div>
-
-      <DonatedRunsSection />
     </div>
   );
 }

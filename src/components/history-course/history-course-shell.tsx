@@ -16,7 +16,7 @@ import {
 import { RunSummary } from "@/components/history-course/run-summary";
 import { TopBar } from "@/components/history-course/topbar";
 import { buildTopbarState } from "@/components/history-course/topbar-state";
-import type { CodexCard } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic } from "@/lib/codex-types";
 import { localize } from "@/lib/sts2-i18n";
 import {
   analyzeReplayRun,
@@ -461,9 +461,11 @@ function buildStackItems(
 export function HistoryCourseShell({
   run,
   cardsById,
+  relicsById,
 }: {
   run: ReplayRun;
   cardsById: Record<string, CodexCard>;
+  relicsById: Record<string, CodexRelic>;
 }) {
   const analysis = useMemo(() => analyzeReplayRun(run), [run]);
   // Strip Neow starter pollution from each act's history so both the stack
@@ -757,6 +759,7 @@ export function HistoryCourseShell({
           hidingRelicIds={pendingRelicIds}
           topbarState={topbarState}
           cardsById={cardsById}
+          relicsById={relicsById}
           summaryOpen={summaryOpen}
           summaryEnded={runEnded}
           currentActIndex={actIndex}
@@ -844,6 +847,7 @@ function Stage({
   hidingRelicIds,
   topbarState,
   cardsById,
+  relicsById,
   summaryOpen,
   summaryEnded,
   currentActIndex,
@@ -878,6 +882,7 @@ function Stage({
   hidingRelicIds: ReadonlySet<string>;
   topbarState: ReturnType<typeof buildTopbarState>;
   cardsById: Record<string, CodexCard>;
+  relicsById: Record<string, CodexRelic>;
   summaryOpen: boolean;
   summaryEnded: boolean;
   currentActIndex: number;
@@ -1071,6 +1076,7 @@ function Stage({
         acts={sanitizedActs}
         topbarState={topbarState}
         cardsById={cardsById}
+        relicsById={relicsById}
         open={summaryOpen}
         ended={summaryEnded}
         currentActIndex={currentActIndex}

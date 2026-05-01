@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { DonationPanel } from "@/components/history-course/donation-panel";
 import { HistoryCourseShell } from "@/components/history-course/history-course-shell";
 import { collectRelevantCardIds } from "@/components/history-course/topbar-state";
-import type { CodexCard } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic } from "@/lib/codex-types";
 import { getDonatedRun } from "@/lib/run-donation";
 import { loadRun, saveRun } from "@/lib/run-store";
 import { parseRunRouteSlug } from "@/lib/sts2-run-hash";
@@ -14,6 +14,7 @@ import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
 interface Props {
   runId: string;
   allCards: CodexCard[];
+  allRelics: CodexRelic[];
 }
 
 type Source = "local" | "donated";
@@ -23,7 +24,7 @@ function stripCardId(id: string): string {
   return id.includes(".") ? (id.split(".").pop() ?? id) : id;
 }
 
-export function RunDetailLoader({ runId, allCards }: Props) {
+export function RunDetailLoader({ runId, allCards, allRelics }: Props) {
   const [run, setRun] = useState<ReplayRun | null>(null);
   const [raw, setRaw] = useState<string | null>(null);
   const [source, setSource] = useState<Source | null>(null);
@@ -121,12 +122,24 @@ export function RunDetailLoader({ runId, allCards }: Props) {
     if (card) cardsById[replayId] = card;
   }
 
+  // Replay ids carry the `RELIC.` prefix, but codex relic ids don't.
+  // Index both shapes so lookups by either form succeed.
+  const relicsById: Record<string, CodexRelic> = {};
+  for (const relic of allRelics) {
+    relicsById[relic.id] = relic;
+    relicsById[`RELIC.${relic.id}`] = relic;
+  }
+
   return (
     <>
       {source && raw && (
         <DonationPanel runId={runId} run={run} raw={raw} source={source} />
       )}
-      <HistoryCourseShell run={run} cardsById={cardsById} />
+      <HistoryCourseShell
+        run={run}
+        cardsById={cardsById}
+        relicsById={relicsById}
+      />
     </>
   );
 }
