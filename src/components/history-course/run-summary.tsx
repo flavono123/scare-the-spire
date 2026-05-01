@@ -116,45 +116,6 @@ function nodeSpriteSrc(entry: ReplayHistoryEntry): string {
   }
 }
 
-// Outline asset alongside each node sprite — see `public/images/sts2/run-history/*_outline.png`.
-// Returns the outline path matching the node's primary sprite. Boss nodes use
-// boss portraits (no matching outline), so we fall back to the generic monster
-// outline for those. Returns null when the entry has no outline at all.
-function nodeOutlineSrc(entry: ReplayHistoryEntry): string | null {
-  const modelId = entry.rooms?.[0]?.model_id ?? null;
-  if (entry.map_point_type === "ancient") {
-    if (modelId) {
-      const m = modelId.match(/^EVENT\.(.+)$/);
-      if (m && ANCIENT_KEYS.has(m[1])) {
-        return `/images/sts2/run-history/${m[1].toLowerCase()}_outline.png`;
-      }
-    }
-    return "/images/sts2/run-history/ancient.png";
-  }
-  if (modelId === "EVENT.NEOW") return "/images/sts2/run-history/neow_outline.png";
-  if (entry.map_point_type === "boss") {
-    const bossKey = bossKeyFromEntry(entry);
-    if (bossKey) return `/images/sts2/run-history/${bossKey.toLowerCase()}_outline.png`;
-    return null;
-  }
-  switch (entry.map_point_type) {
-    case "monster":
-      return "/images/sts2/run-history/monster_outline.png";
-    case "elite":
-      return "/images/sts2/run-history/elite_outline.png";
-    case "rest_site":
-      return "/images/sts2/run-history/rest_site_outline.png";
-    case "treasure":
-      return "/images/sts2/run-history/treasure_outline.png";
-    case "shop":
-      return "/images/sts2/run-history/shop_outline.png";
-    case "unknown":
-      return "/images/sts2/run-history/event_outline.png";
-    default:
-      return null;
-  }
-}
-
 function relicIconSrc(id: string): string {
   const slug = id.replace(/^RELIC\./, "").toLowerCase();
   return `/images/sts2/relics/${slug}.webp`;
@@ -654,42 +615,35 @@ function ActNode({
   isHighlighted: boolean;
 }) {
   const [hover, setHover] = useState(false);
-  const outline = nodeOutlineSrc(entry);
+  const lit = hover || isHighlighted;
 
   return (
     <span
       className="relative inline-flex h-6 w-6 items-center justify-center"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      style={{ zIndex: lit ? 20 : undefined }}
     >
-      {/* Outline + scale pop on hover. The outline asset is the matching
-       *  *_outline.png shipped alongside each node sprite — desaturated to
-       *  read as a neutral grey ring instead of competing with the colored
-       *  fill. */}
       <span
         className={cn(
-          "absolute inset-0 transition-transform duration-150",
-          (hover || isHighlighted) && "scale-[1.6]",
+          "block h-full w-full transition-transform duration-150",
+          lit && "scale-[1.6]",
         )}
+        style={{
+          // Cheap halo via stacked drop-shadows. The map's outline assets are
+          // dark silhouette shadows (designed for the game's shaded layering),
+          // not edge rings — using them as a "grey outline" looks wrong. CSS
+          // drop-shadow gives a real edge ring around any sprite shape.
+          filter: lit
+            ? "drop-shadow(0 0 1px rgba(220,220,220,0.95)) drop-shadow(0 0 2px rgba(220,220,220,0.85)) drop-shadow(0 0 4px rgba(180,180,180,0.7))"
+            : undefined,
+        }}
       >
-        {outline && (hover || isHighlighted) && (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={outline}
-            alt=""
-            draggable={false}
-            className="absolute inset-0 h-full w-full object-contain opacity-90"
-            style={{
-              filter:
-                "brightness(0) invert(0.85) drop-shadow(0 0 2px rgba(255,255,255,0.45))",
-            }}
-          />
-        )}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={nodeSpriteSrc(entry)}
           alt=""
-          className="relative h-full w-full select-none object-contain"
+          className="h-full w-full select-none object-contain"
           draggable={false}
         />
       </span>
@@ -763,8 +717,11 @@ function RelicIcon({
   // bare icon without the floor-highlight binding.
   const tracksFloor = floor > 0;
 
+  // The icon scales up on hover so the user sees the token grow even before
+  // chasing the act-row highlight. Origin is the icon's own center so it
+  // pops in place rather than displacing siblings.
   const iconNode = (
-    <span className="relative block h-10 w-10 shrink-0">
+    <span className="relative block h-10 w-10 shrink-0 transition-transform duration-150 hover:z-20 hover:scale-[1.4]">
       <Image
         src={relicIconSrc(replayId)}
         alt={label}
@@ -779,7 +736,7 @@ function RelicIcon({
   if (entity) {
     return (
       <span
-        className="inline-block"
+        className="relative inline-block"
         title={`${label} · ${floor > 0 ? `${floor}층 획득` : "시작 유물"}`}
         {...(tracksFloor ? hoverHandlers : {})}
       >
@@ -793,6 +750,7 @@ function RelicIcon({
   // No codex match — fall back to an inert icon.
   return (
     <span
+      className="relative inline-block"
       title={`${label} · ${floor > 0 ? `${floor}층 획득` : "시작 유물"}`}
       {...(tracksFloor ? hoverHandlers : {})}
     >
@@ -888,12 +846,17 @@ function DeckEntry({
     <div aria-hidden className="h-[22px] w-[22px] shrink-0" />
   );
 
+  // The whole row scales up so both the action glyph and the card name pop
+  // together — origin pinned left so the name doesn't slide into the next
+  // grid column.
+  const rowClass = cn(
+    "flex items-center gap-1.5 text-xs origin-left transition-transform duration-150",
+    "hover:z-20 hover:scale-110",
+  );
+
   if (!entity) {
     return (
-      <div
-        className="flex items-center gap-1.5 text-xs"
-        {...(tracksFloor ? hoverHandlers : {})}
-      >
+      <div className={rowClass} {...(tracksFloor ? hoverHandlers : {})}>
         {iconNode}
         {labelNode}
       </div>
@@ -902,7 +865,7 @@ function DeckEntry({
 
   return (
     <div
-      className="flex items-center gap-1.5 text-xs"
+      className={cn("relative", rowClass)}
       {...(tracksFloor ? hoverHandlers : {})}
     >
       <Link

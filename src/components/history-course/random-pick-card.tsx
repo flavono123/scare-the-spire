@@ -70,10 +70,12 @@ export function RandomPickCard({ runs, userId }: Props) {
               무작위
             </span>
           </div>
+          {/* Placeholders shaped like the real card: STS2 seeds are 10
+              alphanumeric chars, run_time renders as h:mm:ss in RunCard. */}
           <code className="mt-1.5 block truncate rounded bg-black/30 px-1.5 py-0.5 font-mono text-[11px] text-zinc-500">
-            ?
+            ??????????
           </code>
-          <div className="mt-1 text-[10px] text-zinc-600">?</div>
+          <div className="mt-1 text-[10px] text-zinc-600">?:??:??</div>
         </div>
       </div>
     </button>

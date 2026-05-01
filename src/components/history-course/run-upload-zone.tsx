@@ -195,14 +195,16 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
         )}
       >
         {/* Background flair — flail knight peeking from the right edge,
-            blurred and dimmed to read as background art rather than UI. */}
+            blurred and dimmed to read as background art rather than UI.
+            top-[75%] shifts the figure downward so the face clears
+            the top crop instead of just torso showing. */}
         <Image
           src="/images/sts2/monsters-render/flail_knight.webp"
           alt=""
           width={520}
           height={520}
           aria-hidden
-          className="pointer-events-none absolute right-0 top-1/2 z-0 h-[180%] w-auto -translate-y-1/2 translate-x-[18%] opacity-25 blur-[2px]"
+          className="pointer-events-none absolute right-0 top-[75%] z-0 h-[180%] w-auto -translate-y-1/2 translate-x-[18%] opacity-25 blur-[2px]"
         />
 
         <div className="relative z-10 flex flex-col items-center gap-3 text-center">
