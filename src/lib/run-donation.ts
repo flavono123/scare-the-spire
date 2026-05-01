@@ -80,6 +80,63 @@ export async function donateRun(input: {
   };
 }
 
+export interface DonateBatchResult {
+  inserted: number;
+  alreadyDonated: number;
+  failed: number;
+  errorMessage?: string;
+}
+
+// One round-trip donation for a batch of runs. The 'upload + tick
+// share' path used to fire 42 sequential inserts and lost ~30 to
+// auth race + rate limiting; this collapses the whole batch into a
+// single upsert. ignoreDuplicates lets already-donated rows pass
+// through without aborting siblings.
+export async function donateRunsBatch(input: {
+  runs: Array<{ runId: string; raw: string; run: ReplayRun }>;
+  donorUserId: string;
+}): Promise<DonateBatchResult> {
+  if (!supabaseEnabled) {
+    return {
+      inserted: 0,
+      alreadyDonated: 0,
+      failed: input.runs.length,
+      errorMessage: "Supabase 연결이 설정되지 않았습니다.",
+    };
+  }
+  if (input.runs.length === 0) {
+    return { inserted: 0, alreadyDonated: 0, failed: 0 };
+  }
+  const rows = input.runs.map((r) => ({
+    id: r.runId,
+    raw: r.raw,
+    donor_user_id: input.donorUserId,
+    env: supabaseEnv,
+    ...parsedMetaFromRun(r.run),
+  }));
+  const { data, error } = await supabase
+    .from("runs")
+    .upsert(rows, { onConflict: "id", ignoreDuplicates: true })
+    .select("id");
+  if (error) {
+    return {
+      inserted: 0,
+      alreadyDonated: 0,
+      failed: input.runs.length,
+      errorMessage: error.message,
+    };
+  }
+  // upsert with ignoreDuplicates returns ONLY the newly-inserted rows
+  // — anything that conflicted on `id` is silently skipped. We treat
+  // those as 'already donated' (by this user or anyone).
+  const inserted = data?.length ?? 0;
+  return {
+    inserted,
+    alreadyDonated: input.runs.length - inserted,
+    failed: 0,
+  };
+}
+
 export async function getDonatedRun(runId: string): Promise<DonatedRun | null> {
   if (!supabaseEnabled) return null;
   const { data, error } = await supabase

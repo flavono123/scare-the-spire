@@ -4,7 +4,7 @@ import { AlertCircle, FolderUp, RefreshCw, Upload } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { donateRun } from "@/lib/run-donation";
+import { donateRunsBatch } from "@/lib/run-donation";
 import { saveRun } from "@/lib/run-store";
 import { isBuildSupported } from "@/lib/sts2-build-version";
 import { computeRunHash, runRouteSlug } from "@/lib/sts2-run-hash";
@@ -96,11 +96,12 @@ export interface RunUploadZoneProps {
 }
 
 export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
-  const { userId } = useAuth();
+  const { userId, ready: authReady } = useAuth();
   const [errors, setErrors] = useState<ParseError[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isParsing, setIsParsing] = useState(false);
   const [shareOnUpload, setShareOnUpload] = useState(false);
+  const [donationToast, setDonationToast] = useState<string | null>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -108,37 +109,60 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
     async (files: File[]) => {
       if (files.length === 0) return;
       setIsParsing(true);
+      setDonationToast(null);
       try {
         const result = await parseFiles(files);
+        // Phase 1 — IDB saves. Sequential is fine; IDB is local and
+        // never rate-limits.
+        const toShare: typeof result.runs = [];
         let saved = 0;
         for (const parsed of result.runs) {
           if (!isBuildSupported(parsed.run.build_id)) continue;
           try {
             await saveRun({ runId: parsed.slug, raw: parsed.raw });
             saved += 1;
-            if (shareOnUpload && supabaseEnabled && userId) {
-              try {
-                await donateRun({
-                  runId: parsed.slug,
-                  raw: parsed.raw,
-                  run: parsed.run,
-                  donorUserId: userId,
-                });
-              } catch {
-                // donation failure shouldn't block the IDB save
-              }
-            }
+            if (shareOnUpload && supabaseEnabled) toShare.push(parsed);
           } catch {
             // ignore individual save failure
           }
         }
         setErrors(result.errors);
         if (saved > 0) onUploadComplete?.(saved);
+
+        // Phase 2 — single batched donation. The previous per-run
+        // sequential donateRun lost ~70% of a 42-run batch to auth
+        // race + rate limiting; one upsert with ignoreDuplicates is
+        // both faster and more durable.
+        if (toShare.length > 0) {
+          if (!authReady || !userId) {
+            setDonationToast(
+              "공유 인증이 아직 준비되지 않았습니다. 카드별 공유 버튼으로 다시 시도해주세요.",
+            );
+          } else {
+            const result = await donateRunsBatch({
+              runs: toShare.map((p) => ({
+                runId: p.slug,
+                raw: p.raw,
+                run: p.run,
+              })),
+              donorUserId: userId,
+            });
+            if (result.errorMessage) {
+              setDonationToast(`공유 실패: ${result.errorMessage}`);
+            } else {
+              const parts: string[] = [];
+              if (result.inserted > 0) parts.push(`${result.inserted}개 공유`);
+              if (result.alreadyDonated > 0)
+                parts.push(`${result.alreadyDonated}개 이미 공유됨`);
+              setDonationToast(parts.join(" · ") || null);
+            }
+          }
+        }
       } finally {
         setIsParsing(false);
       }
     },
-    [onUploadComplete, shareOnUpload, userId],
+    [authReady, onUploadComplete, shareOnUpload, userId],
   );
 
   const onDrop = useCallback(
@@ -265,6 +289,9 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
               <RefreshCw className="h-3 w-3 animate-spin" aria-hidden />
               읽는 중…
             </p>
+          )}
+          {donationToast && !isParsing && (
+            <p className="text-xs text-emerald-300">{donationToast}</p>
           )}
         </div>
         <input
