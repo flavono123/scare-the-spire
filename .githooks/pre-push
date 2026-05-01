@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Mirror what CI runs (pnpm lint, pnpm build) on every push so we catch
+# the same failures locally instead of finding out from a red GHA badge.
+# Set SKIP_PREPUSH=1 to bypass in an emergency.
+set -e
+
+if [ "${SKIP_PREPUSH:-}" = "1" ]; then
+  echo "[pre-push] SKIP_PREPUSH=1 — skipping local lint/typecheck."
+  exit 0
+fi
+
+echo "[pre-push] pnpm lint"
+pnpm lint
+
+echo "[pre-push] pnpm tsc --noEmit"
+pnpm tsc --noEmit
+
+echo "[pre-push] ok"

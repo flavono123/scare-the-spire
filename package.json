@@ -10,7 +10,8 @@
     "lint": "eslint",
     "test:visual": "playwright test scripts/visual-check.spec.ts",
     "codex:diff": "npx tsx scripts/generate-entity-diffs.ts",
-    "codex:validate": "npx tsx scripts/validate-entity-versions.ts"
+    "codex:validate": "npx tsx scripts/validate-entity-versions.ts",
+    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",
