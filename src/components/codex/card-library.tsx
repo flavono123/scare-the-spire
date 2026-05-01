@@ -300,7 +300,8 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
           fuzzyMatch(c.name, parsedSearch.text) ||
           fuzzyMatch(c.nameEn, parsedSearch.text) ||
           c.description.replace(/\[\/?\w+(?::?\w*)*\]/g, "").toLowerCase().includes(parsedSearch.text) ||
-          c.keywords.some((kw) => kw.toLowerCase().includes(parsedSearch.text))
+          c.keywords.some((kw) => kw.toLowerCase().includes(parsedSearch.text)) ||
+          Object.values(c.keywordLabels).some((kw) => kw.toLowerCase().includes(parsedSearch.text))
       );
     }
 
@@ -765,4 +766,3 @@ const TYPE_SORT_ICONS: Record<string, string> = {
   "스킬": "/images/game-assets/card-library/type_sort_skill.webp",
   "파워": "/images/game-assets/card-library/type_sort_power.webp",
 };
-

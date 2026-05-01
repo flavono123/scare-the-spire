@@ -212,6 +212,11 @@ export const CardTile = memo(function CardTile({
       (k) => !card.keywords.includes(k)
     )),
   ];
+  const keywordDisplayText = (keyword: string): string => {
+    const [lookupKey] = keyword.split(/\s/);
+    const label = card.keywordLabels[lookupKey] ?? lookupKey;
+    return keyword.replace(lookupKey, label);
+  };
   // ─── 텍스트 파트 렌더 헬퍼 ───
   // mode="card": 일반 카드 본문 — 색 BBCode 그대로 (gold→골드 hover, blue→블루)
   // mode="suffix": 인챈트 추가 본문 — 모든 색을 분홍(#EE82EE)로 통일
@@ -306,6 +311,7 @@ export const CardTile = memo(function CardTile({
             // 인챈트 추가 키워드도 게임에선 일반 키워드와 동일한 골드.
             // 키워드 hover lookup은 첫 단어만 (예: "재사용 1" → "재사용")
             const lookupKey = kw.split(/\s/)[0];
+            const displayText = keywordDisplayText(kw);
             return (
               <span key={`kw-${i}`}>
                 {i > 0 && <span className="text-gray-500"> · </span>}
@@ -315,9 +321,9 @@ export const CardTile = memo(function CardTile({
                   onMouseEnter={() => setHoveredTerm(kw)}
                   onMouseLeave={() => setHoveredTerm(null)}
                 >
-                  {kw}
+                  {displayText}
                   {hoveredTerm === kw && KEYWORD_DESC[lookupKey] && (
-                    <TermTooltip name={lookupKey} desc={KEYWORD_DESC[lookupKey]} />
+                    <TermTooltip name={displayText} desc={KEYWORD_DESC[lookupKey]} />
                   )}
                 </span>
               </span>

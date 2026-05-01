@@ -46,6 +46,7 @@ export interface CodexCard {
   block: number | null;
   hitCount: number | null;
   keywords: string[];
+  keywordLabels: Record<string, string>; // Korean keyword -> selected game locale label
   tags: string[];
   upgrade: Record<string, string | number> | null;
   imageUrl: string | null; // local path

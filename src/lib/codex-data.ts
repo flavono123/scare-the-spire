@@ -2,6 +2,12 @@ import fs from "fs/promises";
 import path from "path";
 import { bakeDescription } from "./codex-bake";
 import {
+  gameText,
+  readGameLocalizationTable,
+  type GameLocalizationTable,
+} from "./game-localization";
+import { DEFAULT_GAME_LOCALE_BY_SERVICE, type GameLocale } from "./i18n";
+import {
   CodexCard,
   CodexCharacter,
   CodexRelic,
@@ -32,6 +38,7 @@ import {
 // Version reconstruction functions are in entity-versioning.ts (client-safe, no fs)
 
 const DATA_DIR = path.join(process.cwd(), "data/sts2");
+const DEFAULT_CODEX_GAME_LOCALE = DEFAULT_GAME_LOCALE_BY_SERVICE.ko;
 
 // Raw STS2 JSON card shape (snake_case from API)
 interface RawCard {
@@ -78,14 +85,33 @@ function spireCodexImageToLocal(url: string | null): string | null {
   return `/images/sts2/${mapped.replace(/\.png$/, ".webp")}`;
 }
 
-function mapCard(kor: RawCard, eng: RawCard): CodexCard {
+function buildKeywordLabels(
+  korKeywords: GameLocalizationTable,
+  gameKeywords: GameLocalizationTable,
+): Record<string, string> {
+  const labels: Record<string, string> = {};
+  for (const [key, koLabel] of Object.entries(korKeywords)) {
+    if (!key.endsWith(".title")) continue;
+    labels[koLabel] = gameKeywords[key] ?? koLabel;
+  }
+  return labels;
+}
+
+function mapCard(
+  kor: RawCard,
+  eng: RawCard,
+  gameCards: GameLocalizationTable,
+  keywordLabels: Record<string, string>,
+): CodexCard {
+  const vars = kor.vars ?? {};
+  const raw = gameText(gameCards, `${kor.id}.description`, kor.description_raw);
   return {
     id: kor.id,
-    name: kor.name,
+    name: gameText(gameCards, `${kor.id}.title`, kor.name),
     nameEn: eng.name,
-    description: kor.description,
-    descriptionRaw: kor.description_raw,
-    vars: kor.vars ?? {},
+    description: bakeDescription(raw, vars),
+    descriptionRaw: raw,
+    vars,
     cost: kor.cost,
     isXCost: kor.is_x_cost ?? false,
     isXStarCost: kor.is_x_star_cost ?? false,
@@ -97,6 +123,7 @@ function mapCard(kor: RawCard, eng: RawCard): CodexCard {
     block: kor.block,
     hitCount: kor.hit_count,
     keywords: kor.keywords ?? [],
+    keywordLabels,
     tags: kor.tags ?? [],
     upgrade: kor.upgrade,
     imageUrl: spireCodexImageToLocal(kor.image_url),
@@ -110,20 +137,28 @@ async function readJson<T>(relativePath: string): Promise<T> {
   return JSON.parse(raw);
 }
 
-export async function getCodexCards(opts?: { includeDeprecated?: boolean }): Promise<CodexCard[]> {
-  const [korCards, engCards] = await Promise.all([
+export async function getCodexCards(opts?: {
+  includeDeprecated?: boolean;
+  gameLocale?: GameLocale;
+}): Promise<CodexCard[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [korCards, engCards, gameCards, korKeywords, gameKeywords] = await Promise.all([
     readJson<RawCard[]>("kor/cards.json"),
     readJson<RawCard[]>("eng/cards.json"),
+    readGameLocalizationTable(gameLocale, "cards"),
+    readGameLocalizationTable("kor", "card_keywords"),
+    readGameLocalizationTable(gameLocale, "card_keywords"),
   ]);
 
   const engById = new Map(engCards.map((c) => [c.id, c]));
+  const keywordLabels = buildKeywordLabels(korKeywords, gameKeywords);
   const includeDeprecated = opts?.includeDeprecated ?? false;
 
   return korCards
     .filter((c) => (c.image_url || c.beta_image_url) && (includeDeprecated || !c.deprecated))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapCard(kor, eng);
+      return mapCard(kor, eng, gameCards, keywordLabels);
     });
 }
 
@@ -672,4 +707,3 @@ export async function getCodexEncounters(): Promise<CodexEncounter[]> {
     return mapEncounter(kor, eng, bossFiles);
   });
 }
-
