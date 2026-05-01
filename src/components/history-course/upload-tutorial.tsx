@@ -101,6 +101,7 @@ export function UploadTutorial() {
   const [active, setActive] = useState<OS>("windows");
   // Default tab follows the visitor's OS once we hit the client.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setActive(detectOS());
   }, []);
 

@@ -32,6 +32,7 @@ export function RunDetailLoader({ runId, allCards, allRelics }: Props) {
 
   useEffect(() => {
     if (!parseRunRouteSlug(runId)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStatus("invalid");
       return;
     }
@@ -73,7 +74,6 @@ export function RunDetailLoader({ runId, allCards, allRelics }: Props) {
         }
         setStatus("missing");
       } catch (err) {
-        // eslint-disable-next-line no-console
         console.error("[history-course] load failed", err);
         if (!cancelled) setStatus("missing");
       }

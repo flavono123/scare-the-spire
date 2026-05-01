@@ -7,7 +7,7 @@
  *     --reporter=list
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import path from "node:path";
 
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
@@ -17,14 +17,12 @@ const SEED = "EQNAH97QTR"; // winged-boots run
 const FLY_SELECTOR_CARD =
   '[data-testid="node-stack-item"][data-phase="post"][data-kind="card-gained"], ' +
   '[data-testid="node-stack-item"][data-phase="post"][data-kind="card-bought"]';
-const FLY_SELECTOR_RELIC =
-  '[data-testid="node-stack-item"][data-phase="post"][data-kind="relic-gained"]';
 
 const NODE_BASE_MS = 2500;
 const TRAIL_END_MS = NODE_BASE_MS * 0.7;
 const RING_END_MS = NODE_BASE_MS * 0.92;
 
-async function scrubGlobal(page: any, ms: number) {
+async function scrubGlobal(page: Page, ms: number) {
   await page.evaluate((value: number) => {
     const input = document.querySelector(
       'input[type="range"]',

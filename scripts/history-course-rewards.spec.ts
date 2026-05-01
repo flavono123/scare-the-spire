@@ -6,14 +6,14 @@
  *     --reporter=list
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import path from "node:path";
 
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 const OUT_DIR = path.join("/tmp", "history-course-shots");
 const BOOTS_SEED = "EQNAH97QTR"; // winged-boots-eqnah-a10 — relic at step 1
 
-async function waitForPhase(page: any, phase: string, timeout = 4000) {
+async function waitForPhase(page: Page, phase: string, timeout = 4000) {
   await page.waitForFunction(
     (p: string) =>
       Array.from(document.querySelectorAll('[data-testid="node-stack-item"]'))

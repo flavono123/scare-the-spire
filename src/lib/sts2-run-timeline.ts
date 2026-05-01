@@ -1,7 +1,6 @@
 import {
   type ReplayActAnalysis,
   type ReplayHistoryEntry,
-  type ReplayRun,
 } from "@/lib/sts2-run-replay";
 
 // ============================================================================

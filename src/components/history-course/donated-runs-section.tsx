@@ -23,6 +23,7 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
 
   useEffect(() => {
     if (!supabaseEnabled) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRuns([]);
       return;
     }

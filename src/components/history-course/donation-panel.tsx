@@ -50,6 +50,7 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
   // changes (sign-in is async).
   useEffect(() => {
     if (!donated || !userId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsOwn(false);
       return;
     }

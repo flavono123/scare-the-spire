@@ -21,7 +21,7 @@ import {
   type ReplayMapPointType,
   type ReplayRun,
 } from "@/lib/sts2-run-replay";
-import { localize, localizeAny } from "@/lib/sts2-i18n";
+import { localize } from "@/lib/sts2-i18n";
 import { NodeTooltip } from "@/components/history-course/node-tooltip";
 import { cn } from "@/lib/utils";
 

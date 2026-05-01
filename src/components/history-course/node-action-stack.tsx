@@ -158,18 +158,20 @@ export function NodeActionStack({ stageRef, items, nodeLocalMs, hidden }: Props)
         y: r.top - stageRect.top + r.height / 2,
       });
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTargets(m);
   }, [stageRef, items]);
 
   // Fire onComplete exactly once per item, when nodeLocalMs crosses its
-  // end boundary. Resets when the items batch changes (new step).
+  // end boundary. The items-batch change (new step) resets the tracker
+  // inside the effect itself so refs are never touched during render.
   const completedRef = useRef<Set<string>>(new Set());
   const itemsKeyRef = useRef<NodeStackItem[]>(items);
-  if (itemsKeyRef.current !== items) {
-    itemsKeyRef.current = items;
-    completedRef.current = new Set();
-  }
   useEffect(() => {
+    if (itemsKeyRef.current !== items) {
+      itemsKeyRef.current = items;
+      completedRef.current = new Set();
+    }
     for (let i = 0; i < items.length; i++) {
       const itemEnd = (i + 1) * PER_ITEM_MS;
       const item = items[i];
