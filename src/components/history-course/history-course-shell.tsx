@@ -491,7 +491,6 @@ export function HistoryCourseShell({
   const [globalMs, setGlobalMs] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [rate, setRate] = useState<Rate>(2);
-  const [statsOpen, setStatsOpen] = useState(false);
   const [deckOpen, setDeckOpen] = useState(false);
   // Run-summary panel — opens via the topbar cog (mid-run partial view)
   // and auto-opens at end-of-run. Both paths can be dismissed by the
@@ -755,7 +754,6 @@ export function HistoryCourseShell({
           summaryEnded={runEnded}
           currentActIndex={actIndex}
           currentStep={step}
-          onToggleSummary={onToggleSummary}
           onCloseSummary={onCloseSummary}
           onTogglePlay={() => setPlaying((v) => !v)}
           onChangeRate={setRate}
@@ -764,18 +762,10 @@ export function HistoryCourseShell({
             setGlobalMs(Math.max(0, Math.min(value, runTimeline.totalMs)));
           }}
           onJumpToStep={onJumpToStep}
-          onOpenStats={() => setStatsOpen(true)}
           onOpenDeck={() => setDeckOpen(true)}
           onOpenInfo={onToggleSummary}
         />
       </div>
-
-      <StatsModal
-        open={statsOpen}
-        onClose={() => setStatsOpen(false)}
-        analysis={analysis}
-        run={run}
-      />
 
       <DeckModal
         open={deckOpen}
@@ -833,13 +823,11 @@ function Stage({
   summaryEnded,
   currentActIndex,
   currentStep,
-  onToggleSummary,
   onCloseSummary,
   onTogglePlay,
   onChangeRate,
   onScrubGlobalMs,
   onJumpToStep,
-  onOpenStats,
   onOpenDeck,
   onOpenInfo,
 }: {
@@ -868,13 +856,11 @@ function Stage({
   summaryEnded: boolean;
   currentActIndex: number;
   currentStep: number;
-  onToggleSummary: () => void;
   onCloseSummary: () => void;
   onTogglePlay: () => void;
   onChangeRate: (rate: Rate) => void;
   onScrubGlobalMs: (ms: number) => void;
   onJumpToStep: (actIndex: number, step: number) => void;
-  onOpenStats: () => void;
   onOpenDeck: () => void;
   onOpenInfo: () => void;
 }) {
@@ -987,10 +973,9 @@ function Stage({
         cumulativeElapsedMs={globalMs}
         totalRunMs={runTimeline.totalMs}
         hidingRelicIds={hidingRelicIds}
-        onOpenStats={onOpenStats}
         onOpenDeck={onOpenDeck}
         // Cog toggles the run-summary panel and auto-pauses playback.
-        onOpenInfo={onToggleSummary}
+        onOpenInfo={onOpenInfo}
       />
 
       <div
@@ -1444,65 +1429,3 @@ function PauseIcon() {
   );
 }
 
-function StatsModal({
-  open,
-  onClose,
-  analysis,
-  run,
-}: {
-  open: boolean;
-  onClose: () => void;
-  analysis: Analysis;
-  run: ReplayRun;
-}) {
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
-
-  if (!open) return null;
-
-  const character = run.players[0]?.character?.split(".").pop() ?? "?";
-  return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center p-6">
-      <button
-        type="button"
-        aria-label="닫기"
-        onClick={onClose}
-        className="absolute inset-0 cursor-default bg-black/65 backdrop-blur-[2px]"
-      />
-      <div className="relative z-10 w-full max-w-3xl rounded-xl border border-white/15 bg-zinc-950/95 p-6 shadow-2xl">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold tracking-tight text-zinc-50">
-            도전 이력
-          </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-md border border-white/10 px-2 py-0.5 text-xs text-zinc-300 hover:bg-white/10"
-          >
-            닫기
-          </button>
-        </div>
-        <p className="mt-2 text-sm text-zinc-400">
-          시드 {run.seed} · A{run.ascension} · {character} · {run.win ? "승리" : "패배"}
-        </p>
-        <ul className="mt-5 grid gap-1.5 text-xs">
-          {analysis.acts.map((act) => (
-            <li
-              key={`${act.actId}-${act.actIndex}`}
-              className="flex justify-between border-b border-white/5 pb-1.5 text-zinc-300"
-            >
-              <span>{act.actLabel}</span>
-              <span className="text-zinc-500">{act.history.length}층</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-}

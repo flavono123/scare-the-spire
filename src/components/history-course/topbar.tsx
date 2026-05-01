@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { type ReactNode } from "react";
+import Link from "next/link";
+import { useState, type ReactNode } from "react";
+import { HoverTip } from "@/components/codex/hover-tip";
 import { localize } from "@/lib/sts2-i18n";
 import {
   type ReplayActAnalysis,
@@ -106,7 +108,6 @@ interface TopBarProps {
    * fly-out lands into an empty spot instead of stacking on top of an
    * already-rendered icon. */
   hidingRelicIds?: ReadonlySet<string>;
-  onOpenStats: () => void;
   onOpenDeck: () => void;
   onOpenInfo: () => void;
 }
@@ -118,7 +119,6 @@ export function TopBar({
   cumulativeElapsedMs,
   totalRunMs,
   hidingRelicIds,
-  onOpenStats,
   onOpenDeck,
   onOpenInfo,
 }: TopBarProps) {
@@ -164,7 +164,7 @@ export function TopBar({
             realRunSeconds={run.run_time ?? null}
           />
           <DeckChip count={state.deckCount} onOpen={onOpenDeck} />
-          <HistoryButton onClick={onOpenStats} />
+          <HistoryListButton />
           <SettingsButton onClick={onOpenInfo} />
         </div>
       </div>
@@ -173,15 +173,81 @@ export function TopBar({
   );
 }
 
+interface TipContent {
+  title: string;
+  body?: ReactNode;
+}
+
+type TipPlacement = "below" | "below-right" | "below-left";
+
+// Wraps a topbar element with the same hover tip that node tooltips use.
+// React's onMouseEnter/Leave fire instantly — much faster than the browser
+// title-attribute delay — so chips reveal their info on first hover.
+function HoverTipWrap({
+  tip,
+  children,
+  className,
+  width = 240,
+  placement = "below",
+}: {
+  tip: TipContent;
+  children: ReactNode;
+  className?: string;
+  width?: number;
+  placement?: TipPlacement;
+}) {
+  const [hovered, setHovered] = useState(false);
+  // The stage clips overflow, so chips near the right edge anchor their
+  // popover to the right-edge of the trigger instead of centering it.
+  const anchorStyle: React.CSSProperties = (() => {
+    switch (placement) {
+      case "below-right":
+        return { right: 0, top: "100%", transform: "translateY(8px)" };
+      case "below-left":
+        return { left: 0, top: "100%", transform: "translateY(8px)" };
+      case "below":
+      default:
+        return { left: "50%", top: "100%", transform: "translate(-50%, 8px)" };
+    }
+  })();
+  return (
+    <span
+      className={cn("relative inline-flex", className)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+    >
+      {children}
+      {hovered && (
+        <span
+          className="pointer-events-none absolute z-50"
+          style={{
+            ...anchorStyle,
+            width: "max-content",
+            maxWidth: width,
+          }}
+        >
+          <HoverTip title={tip.title}>{tip.body}</HoverTip>
+        </span>
+      )}
+    </span>
+  );
+}
+
 function Chip({
   children,
-  title,
+  tip,
+  tipWidth,
+  tipPlacement,
   onClick,
   className,
   as = "div",
 }: {
   children: ReactNode;
-  title?: string;
+  tip?: TipContent;
+  tipWidth?: number;
+  tipPlacement?: TipPlacement;
   onClick?: () => void;
   className?: string;
   as?: "div" | "button";
@@ -194,11 +260,10 @@ function Chip({
     "inline-flex items-center gap-1.5 text-white -translate-y-px",
     className,
   );
-  if (as === "button") {
-    return (
+  const inner =
+    as === "button" ? (
       <button
         type="button"
-        title={title}
         onClick={onClick}
         className={cn(
           baseClass,
@@ -207,12 +272,14 @@ function Chip({
       >
         {children}
       </button>
+    ) : (
+      <div className={baseClass}>{children}</div>
     );
-  }
+  if (!tip) return inner;
   return (
-    <div title={title} className={baseClass}>
-      {children}
-    </div>
+    <HoverTipWrap tip={tip} width={tipWidth} placement={tipPlacement}>
+      {inner}
+    </HoverTipWrap>
   );
 }
 
@@ -226,28 +293,29 @@ function CharacterChip({
   const iconSrc = CHARACTER_ICON[character];
   const label = CHARACTER_LABEL[character] ?? character.split(".").pop();
   return (
-    <div
-      title={`${label} · 승천 ${ascension}`}
-      className="relative h-12 w-12 -translate-y-px"
-      style={{
-        backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
-        backgroundSize: "100% 100%",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      {iconSrc && (
-        <div className="absolute inset-1 overflow-hidden">
-          <Image
-            src={iconSrc}
-            alt={label ?? character}
-            fill
-            sizes="44px"
-            className="object-contain"
-          />
-        </div>
-      )}
-      {ascension > 0 && <AscensionBadge ascension={ascension} />}
-    </div>
+    <HoverTipWrap tip={{ title: `${label} · 승천 ${ascension}` }}>
+      <span
+        className="relative inline-block h-12 w-12 -translate-y-px"
+        style={{
+          backgroundImage: "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png)",
+          backgroundSize: "100% 100%",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        {iconSrc && (
+          <span className="absolute inset-1 overflow-hidden">
+            <Image
+              src={iconSrc}
+              alt={label ?? character}
+              fill
+              sizes="44px"
+              className="object-contain"
+            />
+          </span>
+        )}
+        {ascension > 0 && <AscensionBadge ascension={ascension} />}
+      </span>
+    </HoverTipWrap>
   );
 }
 
@@ -280,7 +348,7 @@ function HpChip({
   maxHp: number | null;
 }) {
   return (
-    <Chip title={`체력 ${hp ?? "—"} / ${maxHp ?? "—"}`}>
+    <Chip tip={{ title: `체력 ${hp ?? "—"} / ${maxHp ?? "—"}` }}>
       <Image
         src="/images/sts2/ui/topbar/top_bar_heart.png"
         alt=""
@@ -299,7 +367,7 @@ function HpChip({
 
 function GoldChip({ gold }: { gold: number | null }) {
   return (
-    <Chip title={`골드 ${gold ?? "—"}`}>
+    <Chip tip={{ title: `골드 ${gold ?? "—"}` }}>
       <Image
         src="/images/sts2/ui/topbar/top_bar_gold.png"
         alt=""
@@ -315,32 +383,33 @@ function GoldChip({ gold }: { gold: number | null }) {
 
 function PotionSlots({ count }: { count: number }) {
   return (
-    <div
-      title={`포션 슬롯 ${count}개`}
-      className="relative inline-flex items-center gap-1 px-1"
-      style={{
-        // nine-slice keeps the chamfer corners at 8px so the slot bay matches
-        // the height of HP/gold/floor chips instead of doubling them.
-        borderImage:
-          "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png) 28 fill / 8px / 0 stretch",
-        borderStyle: "solid",
-        borderWidth: "8px",
-        transform: "translateY(-4px)",
-      }}
-    >
-      {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="relative h-6 w-5">
-          <Image
-            src="/images/sts2/ui/topbar/potion_placeholder.png"
-            alt=""
-            fill
-            sizes="20px"
-            className="object-contain opacity-90"
-            unoptimized
-          />
-        </div>
-      ))}
-    </div>
+    <HoverTipWrap tip={{ title: `포션 슬롯 ${count}개` }}>
+      <span
+        className="relative inline-flex items-center gap-1 px-1"
+        style={{
+          // nine-slice keeps the chamfer corners at 8px so the slot bay matches
+          // the height of HP/gold/floor chips instead of doubling them.
+          borderImage:
+            "url(/images/sts2/ui/topbar/top_bar_char_backdrop.png) 28 fill / 8px / 0 stretch",
+          borderStyle: "solid",
+          borderWidth: "8px",
+          transform: "translateY(-4px)",
+        }}
+      >
+        {Array.from({ length: count }).map((_, i) => (
+          <span key={i} className="relative inline-block h-6 w-5">
+            <Image
+              src="/images/sts2/ui/topbar/potion_placeholder.png"
+              alt=""
+              fill
+              sizes="20px"
+              className="object-contain opacity-90"
+              unoptimized
+            />
+          </span>
+        ))}
+      </span>
+    </HoverTipWrap>
   );
 }
 
@@ -374,7 +443,7 @@ function CurrentNodeChip({
   if (type === "ancient" && ancientInfo.spriteId) {
     return (
       <NodeIcon
-        title={`현재 노드: ${nodeLabel(entry)}`}
+        tipTitle={`현재 노드: ${nodeLabel(entry)}`}
         alt={nodeLabel(entry)}
         sprite={ancientInfo.spriteId}
         size={40}
@@ -386,7 +455,7 @@ function CurrentNodeChip({
   if (!sprite) return null;
   return (
     <NodeIcon
-      title={`현재 노드: ${nodeLabel(entry)}`}
+      tipTitle={`현재 노드: ${nodeLabel(entry)}`}
       alt={nodeLabel(entry)}
       sprite={sprite}
       size={40}
@@ -416,13 +485,13 @@ function BossPortrait({ id, active }: { id: string; active: boolean }) {
 }
 
 function NodeIcon({
-  title,
+  tipTitle,
   alt,
   sprite,
   size,
   inactive,
 }: {
-  title?: string;
+  tipTitle?: string;
   alt: string;
   sprite: string;
   size: number;
@@ -430,11 +499,10 @@ function NodeIcon({
 }) {
   const main = `/images/sts2/run-history/${sprite}.png`;
   const outline = `/images/sts2/run-history/${sprite}_outline.png`;
-  return (
-    <div
-      title={title}
+  const icon = (
+    <span
       className={cn(
-        "relative",
+        "relative inline-block",
         inactive && "opacity-40 grayscale",
       )}
       style={{ width: size, height: size, transform: "translateY(-3px)" }}
@@ -458,8 +526,10 @@ function NodeIcon({
         className="relative object-contain"
         unoptimized
       />
-    </div>
+    </span>
   );
+  if (!tipTitle) return icon;
+  return <HoverTipWrap tip={{ title: tipTitle }}>{icon}</HoverTipWrap>;
 }
 
 function currentNodeSprite(entry: ReplayHistoryEntry | null): string | null {
@@ -491,7 +561,7 @@ function currentNodeSprite(entry: ReplayHistoryEntry | null): string | null {
 
 function FloorChip({ floor }: { floor: number }) {
   return (
-    <Chip title={`${floor}층`}>
+    <Chip tip={{ title: `${floor}층` }}>
       <Image
         src="/images/sts2/ui/topbar/top_bar_floor.png"
         alt=""
@@ -527,31 +597,32 @@ function BossChip({
 
   if (!renderFirst && !renderSecond) return null;
   return (
-    <div
-      title={bossTitle(info, showSecond)}
-      className="relative flex items-center"
-      style={{ transform: "translateY(-3px)" }}
-    >
-      {renderFirst && info.firstBoss && (
-        <BossIcon
-          id={info.firstBoss}
-          // First boss is the active token from the very start of the act —
-          // it only stops being "the active right-side boss" when the player
-          // actually steps on it, at which point this chip stops rendering it.
-          active
-          className="relative z-10"
-        />
-      )}
-      {renderSecond && info.secondBoss && (
-        <BossIcon
-          id={info.secondBoss}
-          active={info.firstBossPassed}
-          // Sit 1px behind the first boss so the first one occludes a sliver
-          // of the second instead of leaving them flush.
-          className={cn("relative z-0", renderFirst && "-ml-px")}
-        />
-      )}
-    </div>
+    <HoverTipWrap tip={{ title: bossTitle(info, showSecond) }}>
+      <span
+        className="relative flex items-center"
+        style={{ transform: "translateY(-3px)" }}
+      >
+        {renderFirst && info.firstBoss && (
+          <BossIcon
+            id={info.firstBoss}
+            // First boss is the active token from the very start of the act —
+            // it only stops being "the active right-side boss" when the player
+            // actually steps on it, at which point this chip stops rendering it.
+            active
+            className="relative z-10"
+          />
+        )}
+        {renderSecond && info.secondBoss && (
+          <BossIcon
+            id={info.secondBoss}
+            active={info.firstBossPassed}
+            // Sit 1px behind the first boss so the first one occludes a sliver
+            // of the second instead of leaving them flush.
+            className={cn("relative z-0", renderFirst && "-ml-px")}
+          />
+        )}
+      </span>
+    </HoverTipWrap>
   );
 }
 
@@ -600,18 +671,34 @@ function TimerChip({
   // run_time proportionally to where we are in the replay so 1× still
   // feels close to the run's actual length, but the visible value lives
   // on the replay timeline (every node, even paused, scrubbed, sped up
-  // 16×). Tooltip carries the real run_time so users know what the chip
-  // is and isn't.
+  // 16×). Tooltip explains this proportional remap so users know what
+  // the chip is and isn't.
   const fakeSeconds =
     realRunSeconds && totalRunMs > 0
       ? Math.floor((elapsedMs / totalRunMs) * realRunSeconds)
       : Math.floor(elapsedMs / 1000);
-  const tooltip =
-    realRunSeconds != null
-      ? `재생 시각 ${formatHms(fakeSeconds)} — 실제 플레이 시간 ${formatHms(realRunSeconds)}`
-      : `재생 시각 ${formatHms(fakeSeconds)}`;
+  const tipBody = (
+    <>
+      <div>
+        플레이 당시 실제 타임라인을 반영하지 않습니다. 리플레이 애니메이션에
+        맞춰 비례하여 재생됩니다.
+      </div>
+      {realRunSeconds != null && (
+        <div style={{ marginTop: 4, opacity: 0.8 }}>
+          실제 플레이 시간 {formatHms(realRunSeconds)}
+        </div>
+      )}
+    </>
+  );
   return (
-    <Chip title={tooltip}>
+    <Chip
+      tip={{
+        title: `재생 시각 ${formatHms(fakeSeconds)}`,
+        body: tipBody,
+      }}
+      tipWidth={300}
+      tipPlacement="below-right"
+    >
       <Image
         src="/images/sts2/ui/topbar/timer_icon.png"
         alt=""
@@ -633,7 +720,12 @@ function DeckChip({
   onOpen: () => void;
 }) {
   return (
-    <Chip as="button" onClick={onOpen} title={`현재 덱 ${count}장 보기`}>
+    <Chip
+      as="button"
+      onClick={onOpen}
+      tip={{ title: `현재 덱 ${count}장 보기` }}
+      tipPlacement="below-right"
+    >
       <span data-deck-target className="relative inline-flex items-center gap-1.5">
         <Image
           src="/images/sts2/ui/topbar/top_bar_deck.png"
@@ -649,24 +741,41 @@ function DeckChip({
   );
 }
 
-function HistoryButton({ onClick }: { onClick: () => void }) {
+// Sends the user back to the history-course landing — replaces the old map
+// button. Uses the history_course relic icon so it visually echoes the
+// landing page header.
+function HistoryListButton() {
   return (
-    <Chip as="button" onClick={onClick} title="도전 이력">
-      <Image
-        src="/images/sts2/ui/topbar/top_bar_map.png"
-        alt="도전 이력"
-        width={38}
-        height={34}
-        className="h-[34px] w-[38px] object-contain"
-        unoptimized
-      />
-    </Chip>
+    <HoverTipWrap
+      tip={{ title: "역사 강의서 — 전체 목록" }}
+      placement="below-right"
+    >
+      <Link
+        href="/history-course"
+        aria-label="역사 강의서 목록으로 돌아가기"
+        className="inline-flex -translate-y-px items-center gap-1.5 text-white transition hover:brightness-125 focus:outline-none focus-visible:brightness-125"
+      >
+        <Image
+          src="/images/sts2/relics/history_course.webp"
+          alt="역사 강의서"
+          width={34}
+          height={34}
+          className="h-[34px] w-[34px] object-contain drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]"
+          unoptimized
+        />
+      </Link>
+    </HoverTipWrap>
   );
 }
 
 function SettingsButton({ onClick }: { onClick: () => void }) {
   return (
-    <Chip as="button" onClick={onClick} title="런 정보">
+    <Chip
+      as="button"
+      onClick={onClick}
+      tip={{ title: "런 정보" }}
+      tipPlacement="below-right"
+    >
       <Image
         src="/images/sts2/ui/topbar/top_bar_settings.png"
         alt="런 정보"
