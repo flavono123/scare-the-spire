@@ -1,0 +1,26 @@
+[
+  {
+    "id": "historyCourse.hero.lanternKeyParody",
+    "serviceLocale": "ko",
+    "sourceLang": "kor",
+    "sourceTable": "events",
+    "sourceKey": "THE_LANTERN_KEY.pages.INITIAL.description",
+    "sourceText": "“그 열쇠를 찾으러 사방팔방 뒤지고 있었다네! 혹시 실례가 아니라면...”",
+    "serviceText": "“그 도전 이력을 찾으러 사방팔방 뒤지고 있었다네! 혹시 실례가 아니라면…”",
+    "serviceFiles": [
+      "src/app/(main)/history-course/page.tsx"
+    ],
+    "replacements": [
+      {
+        "from": "열쇠",
+        "to": "도전 이력",
+        "reason": "History Course service copy borrows The Lantern Key event wording."
+      },
+      {
+        "from": "...",
+        "to": "…",
+        "reason": "Service copy uses Korean editorial punctuation."
+      }
+    ]
+  }
+]
