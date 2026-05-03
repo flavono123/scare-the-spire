@@ -215,26 +215,60 @@ function GameLocaleSelect({
   const searchParams = useSearchParams();
 
   return (
-    <select
-      aria-label={label}
-      value={value}
-      onChange={(event) => {
-        const nextLocale = event.target.value as GameLocale;
-        const search = withGameLocaleSearch(
-          new URLSearchParams(searchParams.toString()),
-          nextLocale,
-          serviceLocale,
-        );
-        router.push(`${pathname}${search}`);
-      }}
-      className="h-7 max-w-[9rem] rounded border border-border bg-background px-2 text-xs font-medium text-muted-foreground outline-none transition-colors hover:bg-white/5 hover:text-foreground focus:text-foreground"
+    <label
+      className="flex h-8 items-center gap-1.5 rounded-md border border-border bg-background/70 px-2 transition-colors hover:bg-white/5 focus-within:border-yellow-500/70"
+      title={`${label}: ${GAME_LOCALE_LABELS[value][serviceLocale]}`}
     >
-      {GAME_LOCALES.map((locale) => (
-        <option key={locale} value={locale}>
-          {GAME_LOCALE_LABELS[locale][serviceLocale]}
-        </option>
-      ))}
-    </select>
+      <span className="hidden whitespace-nowrap text-[10px] font-medium text-muted-foreground sm:inline">
+        {label}
+      </span>
+      <select
+        aria-label={label}
+        value={value}
+        onChange={(event) => {
+          const nextLocale = event.target.value as GameLocale;
+          const search = withGameLocaleSearch(
+            new URLSearchParams(searchParams.toString()),
+            nextLocale,
+            serviceLocale,
+          );
+          router.push(`${pathname}${search}`);
+        }}
+        className="h-6 max-w-[8.5rem] bg-transparent text-xs font-semibold text-foreground outline-none"
+      >
+        {GAME_LOCALES.map((locale) => (
+          <option key={locale} value={locale}>
+            {GAME_LOCALE_LABELS[locale][serviceLocale]}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function ServiceLocaleLink({
+  href,
+  label,
+  value,
+  switchLabel,
+}: {
+  href: string;
+  label: string;
+  value: string;
+  switchLabel: string;
+}) {
+  return (
+    <Link
+      href={href}
+      prefetch={false}
+      className="flex h-8 items-center gap-1.5 rounded-md border border-border bg-background/70 px-2 text-xs transition-colors hover:bg-white/5 hover:text-foreground"
+      title={switchLabel}
+    >
+      <span className="hidden whitespace-nowrap text-[10px] font-medium text-muted-foreground sm:inline">
+        {label}
+      </span>
+      <span className="font-semibold text-foreground">{value}</span>
+    </Link>
   );
 }
 
@@ -306,13 +340,21 @@ export function SiteNavbar() {
           </nav>
         </div>
 
-        {/* Right: game dropdowns */}
+        {/* Right: locale controls + game dropdowns */}
         <div className="flex items-center gap-1">
-          <GameLocaleSelect
-            value={gameLocale}
-            serviceLocale={serviceLocale}
-            label={messages.gameLocaleSelect}
-          />
+          <div className="flex items-center gap-1 rounded-lg border border-border bg-white/[0.03] p-1">
+            <ServiceLocaleLink
+              href={localeSwitchHref}
+              label={messages.serviceLocaleSelect}
+              value={messages.serviceLocaleName}
+              switchLabel={messages.serviceLocaleSwitch}
+            />
+            <GameLocaleSelect
+              value={gameLocale}
+              serviceLocale={serviceLocale}
+              label={messages.gameLocaleSelect}
+            />
+          </div>
           <GameDropdown
             icon="/images/sts2/icons/app_icon.png"
             alt={messages.games.sts2Codex}
@@ -325,14 +367,6 @@ export function SiteNavbar() {
             items={localizeNavItems(sts1Items, serviceLocale, gameLocale)}
             align="right"
           />
-          <Link
-            href={localeSwitchHref}
-            prefetch={false}
-            className="ml-1 rounded px-2 py-1 text-xs font-semibold text-muted-foreground hover:bg-white/5 hover:text-foreground transition-colors"
-            title={messages.serviceLocaleSwitch}
-          >
-            {nextLocale.toUpperCase()}
-          </Link>
         </div>
       </div>
     </header>
