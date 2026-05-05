@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import type { Story, Card, Change, Relic, Potion, LinkedEntity } from "@/lib/types";
@@ -9,6 +9,22 @@ import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { LikeButton } from "@/components/like-button";
 import { CommentSection } from "@/components/comment-section";
 import { EngagementSpinner } from "@/components/engagement-spinner";
+
+function stableHash(value: string) {
+  let hash = 0;
+  for (let i = 0; i < value.length; i++) {
+    hash = (hash * 31 + value.charCodeAt(i)) | 0;
+  }
+  return hash >>> 0;
+}
+
+function stableStoryOrder(stories: Story[]) {
+  return [...stories].sort((a, b) => {
+    const rankA = stableHash(a.id);
+    const rankB = stableHash(b.id);
+    return rankA - rankB || a.id.localeCompare(b.id);
+  });
+}
 
 function DiffLine({ diff }: { diff: Change["diffs"][0] }) {
   return (
@@ -292,11 +308,8 @@ export function StoryFeed({
 }) {
   const { userId } = useAuth();
   const counts = useEngagementCounts();
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(() => {
-    if (typeof window === "undefined") return new Set();
-    const hash = window.location.hash.slice(1);
-    return hash ? new Set(hash.split(",")) : new Set();
-  });
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set());
+  const didMountRef = useRef(false);
 
   const toggle = useCallback((storyId: string) => {
     setExpandedIds((prev) => {
@@ -308,18 +321,26 @@ export function StoryFeed({
   }, []);
 
   useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      queueMicrotask(() => setExpandedIds(new Set(hash.split(","))));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+
     const hash = [...expandedIds].join(",");
-    window.history.replaceState(null, "", hash ? `#${hash}` : " ");
+    const nextUrl = hash
+      ? `#${hash}`
+      : `${window.location.pathname}${window.location.search}`;
+    window.history.replaceState(null, "", nextUrl);
   }, [expandedIds]);
 
-  const [shuffled] = useState(() => {
-    const arr = [...stories];
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  });
+  const orderedStories = useMemo(() => stableStoryOrder(stories), [stories]);
 
   const cardMap = useMemo(() => new Map(cards.map((c) => [c.id, c])), [cards]);
   const relicMap = useMemo(() => new Map(relics.map((r) => [r.id, r])), [relics]);
@@ -339,7 +360,7 @@ export function StoryFeed({
 
   return (
     <div className="divide-y divide-border/50">
-      {shuffled.map((story) => {
+      {orderedStories.map((story) => {
         const key = story.entityType && story.entityId ? `${story.entityType}:${story.entityId}` : "";
         return (
           <StoryCard
