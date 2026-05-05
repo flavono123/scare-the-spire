@@ -5,8 +5,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { PotionDetail } from "@/components/codex/potion-detail";
-import { POTION_RARITY_CONFIG } from "@/lib/codex-types";
 
 export async function generateStaticParams() {
   const potions = await getCodexPotions();
@@ -15,17 +15,20 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const potions = await getCodexPotions();
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  const potions = await getCodexPotions({ gameLocale });
   const potion = potions.find((p) => p.id.toLowerCase() === id.toLowerCase());
   if (!potion) return {};
-  return {
-    title: `${potion.name} — 슬서운 포션 도감`,
-    description: `${potion.name} (${potion.nameEn}) — ${POTION_RARITY_CONFIG[potion.rarity].label}`,
-  };
+  return getCodexMetadata(serviceLocale, `${potion.name} — ${serviceText.potionsView.title}`);
 }
 
 export default async function PotionDetailPage({

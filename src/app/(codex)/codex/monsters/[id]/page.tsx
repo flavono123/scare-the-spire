@@ -5,8 +5,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { MonsterDetail } from "@/components/codex/monster-detail";
-import { MONSTER_TYPE_CONFIG } from "@/lib/codex-types";
 
 export async function generateStaticParams() {
   const monsters = await getCodexMonsters();
@@ -15,17 +15,20 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const monsters = await getCodexMonsters();
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  const monsters = await getCodexMonsters({ gameLocale });
   const monster = monsters.find((m) => m.id.toLowerCase() === id.toLowerCase());
   if (!monster) return {};
-  return {
-    title: `${monster.name} — 슬서운 몬스터 도감`,
-    description: `${monster.name} (${monster.nameEn}) — ${MONSTER_TYPE_CONFIG[monster.type].label}`,
-  };
+  return getCodexMetadata(serviceLocale, `${monster.name} — ${serviceText.monstersView.title}`);
 }
 
 export default async function MonsterDetailPage({

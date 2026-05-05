@@ -6,8 +6,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { EnchantmentDetail } from "@/components/codex/enchantment-detail";
-import { ENCHANTMENT_CARD_TYPE_CONFIG, type EnchantmentCardTypeFilter } from "@/lib/codex-types";
 
 export async function generateStaticParams() {
   const enchantments = await getCodexEnchantments();
@@ -16,18 +16,20 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const enchantments = await getCodexEnchantments();
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  const enchantments = await getCodexEnchantments({ gameLocale });
   const ench = enchantments.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!ench) return {};
-  const cardTypeFilter: EnchantmentCardTypeFilter = ench.cardType ?? "Any";
-  return {
-    title: `${ench.name} — 슬서운 인챈트 도감`,
-    description: `${ench.name} (${ench.nameEn}) — ${ENCHANTMENT_CARD_TYPE_CONFIG[cardTypeFilter].label}`,
-  };
+  return getCodexMetadata(serviceLocale, `${ench.name} — ${serviceText.enchantmentsView.title}`);
 }
 
 export default async function EnchantmentDetailPage({

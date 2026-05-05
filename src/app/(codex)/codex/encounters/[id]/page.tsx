@@ -10,7 +10,7 @@ import {
   getServiceLocaleFromSearchRecord,
   localizeHrefWithGameLocale,
 } from "@/lib/i18n";
-import { getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
 import { DescriptionText } from "@/components/codex/codex-description";
 
@@ -21,18 +21,20 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const encounters = await getCodexEncounters();
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  const encounters = await getCodexEncounters({ gameLocale });
   const encounter = encounters.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!encounter) return {};
-  const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[encounter.roomType];
-  return {
-    title: `${encounter.name} — 슬서운 전투 도감`,
-    description: `${encounter.name} (${encounter.nameEn}) — ${roomConfig.label}`,
-  };
+  return getCodexMetadata(serviceLocale, `${encounter.name} — ${serviceText.encountersView.title}`);
 }
 
 export default async function EncounterDetailPage({

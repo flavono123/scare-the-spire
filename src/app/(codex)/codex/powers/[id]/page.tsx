@@ -5,8 +5,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { PowerDetail } from "@/components/codex/power-detail";
-import { POWER_TYPE_CONFIG } from "@/lib/codex-types";
 
 export async function generateStaticParams() {
   const powers = await getCodexPowers();
@@ -15,17 +15,20 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const powers = await getCodexPowers();
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  const powers = await getCodexPowers({ gameLocale });
   const power = powers.find((p) => p.id.toLowerCase() === id.toLowerCase());
   if (!power) return {};
-  return {
-    title: `${power.name} — 슬서운 파워 도감`,
-    description: `${power.name} (${power.nameEn}) — ${POWER_TYPE_CONFIG[power.type].label}`,
-  };
+  return getCodexMetadata(serviceLocale, `${power.name} — ${serviceText.powersView.title}`);
 }
 
 export default async function PowerDetailPage({

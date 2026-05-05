@@ -5,7 +5,7 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { EventDetail } from "@/components/codex/event-detail";
 
 export async function generateStaticParams() {
@@ -15,20 +15,20 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const events = await getCodexEvents();
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  const events = await getCodexEvents({ gameLocale });
   const event = events.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!event) return {};
-  const actConfig = event.act
-    ? (EVENT_ACT_CONFIG[event.act] ?? EVENT_ACT_UNKNOWN)
-    : EVENT_ACT_UNKNOWN;
-  return {
-    title: `${event.name} — 슬서운 이벤트`,
-    description: `${event.name} (${event.nameEn}) — ${actConfig.labelKo}`,
-  };
+  return getCodexMetadata(serviceLocale, `${event.name} — ${serviceText.eventsView.title}`);
 }
 
 export default async function EventDetailPage({

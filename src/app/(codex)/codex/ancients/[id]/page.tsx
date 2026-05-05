@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getCodexAncients, getCodexRelics } from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { AncientDetail } from "@/components/codex/ancient-detail";
 import type { CodexRelic } from "@/lib/codex-types";
 
@@ -17,15 +19,16 @@ export async function generateStaticParams() {
   return ancients.map((a) => ({ id: a.id.toLowerCase() }));
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { id } = await params;
-  const ancients = await getCodexAncients();
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  const ancients = await getCodexAncients({ gameLocale });
   const ancient = ancients.find((a) => a.id.toLowerCase() === id.toLowerCase());
-  if (!ancient) return { title: "Not Found" };
-  return {
-    title: `${ancient.name} — 슬서운 이야기`,
-    description: `슬레이 더 스파이어 2 에인션트: ${ancient.name} (${ancient.epithet})`,
-  };
+  if (!ancient) return {};
+  return getCodexMetadata(serviceLocale, `${ancient.name} — ${serviceText.ancientsView.title}`);
 }
 
 export default async function AncientDetailPage({ params, searchParams }: Props) {

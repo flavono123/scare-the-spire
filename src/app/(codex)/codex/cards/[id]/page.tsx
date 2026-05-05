@@ -5,6 +5,7 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { CardDetail } from "@/components/codex/card-detail";
 
 export async function generateStaticParams() {
@@ -14,17 +15,20 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const cards = await getCodexCards();
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  const cards = await getCodexCards({ gameLocale });
   const card = cards.find((c) => c.id.toLowerCase() === id.toLowerCase());
   if (!card) return {};
-  return {
-    title: `${card.name} — 슬서운 카드 도서관`,
-    description: `${card.name} (${card.nameEn}) — ${card.type} · ${card.rarity}`,
-  };
+  return getCodexMetadata(serviceLocale, `${card.name} — ${serviceText.cardsView.title}`);
 }
 
 export default async function CardDetailPage({

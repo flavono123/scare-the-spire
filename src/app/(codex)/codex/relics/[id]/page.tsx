@@ -6,8 +6,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { RelicDetail } from "@/components/codex/relic-detail";
-import { RELIC_RARITY_LABELS } from "@/lib/codex-types";
 
 export async function generateStaticParams() {
   const relics = await getCodexRelics();
@@ -16,17 +16,20 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const relics = await getCodexRelics();
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  const relics = await getCodexRelics({ gameLocale });
   const relic = relics.find((r) => r.id.toLowerCase() === id.toLowerCase());
   if (!relic) return {};
-  return {
-    title: `${relic.name} — 슬서운 유물 도감`,
-    description: `${relic.name} (${relic.nameEn}) — ${RELIC_RARITY_LABELS[relic.rarity]}`,
-  };
+  return getCodexMetadata(serviceLocale, `${relic.name} — ${serviceText.relicsView.title}`);
 }
 
 export default async function RelicDetailPage({
