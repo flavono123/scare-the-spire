@@ -4,24 +4,16 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref } from "@/lib/i18n";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
   CodexPotion,
   POTION_RARITY_CONFIG,
   characterOutlineFilter,
   getCharacterColor,
-  type PotionPool,
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
-
-const POTION_POOL_LABELS: Record<PotionPool, string> = {
-  shared: "공용",
-  ironclad: "아이언클래드",
-  silent: "사일런트",
-  defect: "디펙트",
-  necrobinder: "네크로바인더",
-  regent: "리젠트",
-  event: "이벤트",
-};
 
 function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
@@ -35,11 +27,13 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 }
 
 interface PotionDetailProps {
+  serviceLocale: ServiceLocale;
   potion: CodexPotion;
   onClose?: () => void;
 }
 
-export function PotionDetail({ potion, onClose }: PotionDetailProps) {
+export function PotionDetail({ serviceLocale, potion, onClose }: PotionDetailProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
   const poolColor = potion.pool !== "shared" && potion.pool !== "event"
     ? getCharacterColor(potion.pool)
@@ -50,7 +44,7 @@ export function PotionDetail({ potion, onClose }: PotionDetailProps) {
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href="/codex/potions"
+          href={localizeHref("/codex/potions", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {
             if (onClose) {
@@ -59,13 +53,13 @@ export function PotionDetail({ potion, onClose }: PotionDetailProps) {
             }
           }}
         >
-          ← 포션 도감
+          ← {serviceText.potionsView.backToList}
         </Link>
         {onClose && (
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400"
-            aria-label="닫기"
+            aria-label={serviceText.common.close}
           >
             ✕
           </button>
@@ -95,13 +89,13 @@ export function PotionDetail({ potion, onClose }: PotionDetailProps) {
       {/* Stats Row */}
       <div className="flex flex-wrap justify-center gap-2">
         <StatBadge
-          label="희귀도"
-          value={rarityConfig.label}
+          label={serviceText.potionsView.stats.rarity}
+          value={serviceText.labels.potionRarities[potion.rarity]}
           color={rarityConfig.color}
         />
         <StatBadge
-          label="출처"
-          value={POTION_POOL_LABELS[potion.pool]}
+          label={serviceText.potionsView.stats.source}
+          value={serviceText.labels.pools[potion.pool]}
           color={poolColor}
         />
       </div>
@@ -114,7 +108,7 @@ export function PotionDetail({ potion, onClose }: PotionDetailProps) {
       </div>
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+        <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>
         <CommentSection threadKey={buildCodexCommentThreadKey("potion", potion.id)} />
       </div>
     </div>
