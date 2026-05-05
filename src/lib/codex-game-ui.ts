@@ -82,10 +82,10 @@ export async function getCodexGameUiLabels(
   ) as Record<CardTypeKo, string>;
 
   const rarities = Object.fromEntries(
-    Object.entries(CARD_RARITY_LIBRARY_KEYS).map(([rarity, key]) => [
-      rarity,
-      gameText(cardLibrary, key, gameText(gameplay, key, rarity)),
-    ]),
+    Object.entries(CARD_RARITY_LIBRARY_KEYS).map(([rarity, key]) => {
+      const source = key.startsWith("CARD_LIBRARY_") ? mainMenu : gameplay;
+      return [rarity, gameText(source, key, gameText(gameplay, key, rarity))];
+    }),
   ) as Record<CardLibraryRarityKey, string>;
 
   return {
