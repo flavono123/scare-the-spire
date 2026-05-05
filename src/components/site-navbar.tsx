@@ -36,7 +36,10 @@ const sts1Items = [
   { href: "/potions", labelKey: "potions", icon: "/images/sts2/nav/stats_potions.png" },
 ] as const;
 
-type CodexLabelKey = keyof typeof serviceMessages.ko.codex;
+type CodexLabelKey = {
+  [Key in keyof typeof serviceMessages.ko.codex]:
+    (typeof serviceMessages.ko.codex)[Key] extends string ? Key : never;
+}[keyof typeof serviceMessages.ko.codex];
 
 const serviceLanguageLocales = ["kor", "eng"] as const satisfies readonly GameLocale[];
 
