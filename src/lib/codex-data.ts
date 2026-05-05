@@ -28,6 +28,7 @@ import {
   EventPage,
   EventAct,
   CardColor,
+  CardTypeKo,
   RelicRarityKo,
   RelicPool,
   PotionRarityKo,
