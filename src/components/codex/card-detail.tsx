@@ -5,6 +5,9 @@ import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref } from "@/lib/i18n";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import { CodexCard, CodexEnchantment } from "@/lib/codex-types";
 import { CardTile } from "./card-tile";
 import { DescriptionText } from "./codex-description";
@@ -34,12 +37,14 @@ function getEnchantTipVariant(enchant: CodexEnchantment): HoverTipVariant {
 }
 
 interface CardDetailProps {
+  serviceLocale: ServiceLocale;
   card: CodexCard;
   enchantments: CodexEnchantment[];
   onClose?: () => void;
 }
 
-export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
+export function CardDetail({ serviceLocale, card, enchantments, onClose }: CardDetailProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
   const [activeEnchantId, setActiveEnchantId] = useState<string | null>(null);
@@ -132,7 +137,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href="/codex/cards"
+          href={localizeHref("/codex/cards", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {
             if (onClose) {
@@ -141,13 +146,13 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
             }
           }}
         >
-          ← 카드 도서관
+          ← {serviceText.cardsView.backToList}
         </Link>
         {onClose && (
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400"
-            aria-label="닫기"
+            aria-label={serviceText.common.close}
           >
             ✕
           </button>
@@ -226,7 +231,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
                   : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
               }`}
             >
-              강화 보기
+              {serviceText.cardsView.toggles.upgrade}
             </button>
           )}
           {card.betaImageUrl && (
@@ -238,7 +243,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
                   : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
               }`}
             >
-              베타 아트
+              {serviceText.cardsView.toggles.betaArt}
             </button>
           )}
         </div>
@@ -249,7 +254,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
         <div className="w-full flex flex-col gap-2">
           <div className="flex items-center justify-between px-1">
             <h2 className="text-sm font-bold text-gray-300">
-              가능한 인챈트 ({eligibleEnchantments.length})
+              {serviceText.cardsView.enchantments.possible} ({eligibleEnchantments.length})
             </h2>
             <div className="flex items-center gap-3">
               {activeEnchant && activePresets.length > 1 && (
@@ -279,7 +284,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
                   onClick={() => setActiveEnchantId(null)}
                   className="text-xs text-gray-500 hover:text-gray-300"
                 >
-                  해제
+                  {serviceText.cardsView.enchantments.remove}
                 </button>
               )}
             </div>
@@ -290,7 +295,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
             {canScrollLeft && (
               <button
                 type="button"
-                aria-label="이전 인챈트"
+                aria-label={serviceText.cardsView.enchantments.previous}
                 onClick={() => scrollBy(-1)}
                 className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center hover:scale-110 transition-transform drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
               >
@@ -306,7 +311,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
             {canScrollRight && (
               <button
                 type="button"
-                aria-label="다음 인챈트"
+                aria-label={serviceText.cardsView.enchantments.next}
                 onClick={() => scrollBy(1)}
                 className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center hover:scale-110 transition-transform drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
               >
@@ -380,7 +385,7 @@ export function CardDetail({ card, enchantments, onClose }: CardDetailProps) {
       )}
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+        <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>
         <CommentSection threadKey={buildCodexCommentThreadKey("card", card.id)} />
       </div>
     </div>

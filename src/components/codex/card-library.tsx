@@ -3,6 +3,11 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
+import type { ServiceLocale } from "@/lib/i18n";
+import {
+  formatCodexCount,
+  getCodexServiceMessages,
+} from "@/lib/codex-service";
 import {
   CodexCard,
   CodexCharacter,
@@ -19,7 +24,6 @@ import {
   annotateCard,
   isEtcRarity,
   RarityDetail,
-  RARITY_DETAIL_LABELS,
   RARITY_DETAIL_ORDER,
   RARITY_DETAIL_COLORS,
 } from "@/lib/card-annotations";
@@ -100,6 +104,7 @@ const RARITY_COLORS: Record<string, string> = {
 const COST_OPTIONS = [0, 1, 2, 3, "3+", "X"] as const;
 
 interface CardLibraryProps {
+  serviceLocale: ServiceLocale;
   cards: CodexCard[];
   characters: CodexCharacter[];
   versions: string[];
@@ -109,7 +114,8 @@ interface CardLibraryProps {
   enchantments: CodexEnchantment[];
 }
 
-export function CardLibrary({ cards, characters, versions, currentVersion, patches, versionDiffs, enchantments }: CardLibraryProps) {
+export function CardLibrary({ serviceLocale, cards, characters, versions, currentVersion, patches, versionDiffs, enchantments }: CardLibraryProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
   const [selectedColors, setSelectedColors] = useState<Set<CardFilterCategory>>(
@@ -436,26 +442,75 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
   // Character filters
   const characterFilters = characters.map((c) => ({
     key: c.id.toLowerCase() as CardFilterCategory,
-    label: c.name,
+    label: serviceText.labels.pools[c.id.toLowerCase() as keyof typeof serviceText.labels.pools] ?? c.name,
     icon: CHARACTER_TOKEN_ICONS[c.id.toLowerCase()] ?? c.imageUrl,
   }));
 
   const extraFilters = [
-    { key: "colorless" as const, label: COLOR_LABELS.colorless, icon: CATEGORY_ICONS.colorless },
-    { key: "event" as const, label: COLOR_LABELS.event, icon: CATEGORY_ICONS.event },
-    { key: "curse" as const, label: COLOR_LABELS.curse, icon: CATEGORY_ICONS.curse },
-    { key: "status" as const, label: COLOR_LABELS.status, icon: CATEGORY_ICONS.status },
-    { key: "ancient" as const, label: COLOR_LABELS.ancient, icon: CATEGORY_ICONS.ancient },
+    { key: "colorless" as const, label: serviceText.labels.pools.colorless, icon: CATEGORY_ICONS.colorless },
+    { key: "event" as const, label: serviceText.labels.pools.event, icon: CATEGORY_ICONS.event },
+    { key: "curse" as const, label: serviceText.labels.pools.curse, icon: CATEGORY_ICONS.curse },
+    { key: "status" as const, label: serviceText.labels.pools.status, icon: CATEGORY_ICONS.status },
+    { key: "ancient" as const, label: serviceText.labels.pools.ancient, icon: CATEGORY_ICONS.ancient },
   ];
 
   const availableTypes: CardTypeKo[] = ["공격", "스킬", "파워"];
 
   const rarityFilters = [
-    { key: "일반", label: "일반", color: RARITY_COLORS["일반"] },
-    { key: "고급", label: "고급", color: RARITY_COLORS["고급"] },
-    { key: "희귀", label: "희귀", color: RARITY_COLORS["희귀"] },
-    { key: "기타", label: "기타", color: RARITY_COLORS["기타"] },
+    { key: "일반", label: serviceText.labels.cardRarities.일반, color: RARITY_COLORS["일반"] },
+    { key: "고급", label: serviceText.labels.cardRarities.고급, color: RARITY_COLORS["고급"] },
+    { key: "희귀", label: serviceText.labels.cardRarities.희귀, color: RARITY_COLORS["희귀"] },
+    { key: "기타", label: serviceText.labels.cardRarities.기타, color: RARITY_COLORS["기타"] },
   ];
+
+  const searchTriggers = useMemo(
+    () => [
+      {
+        trigger: "@",
+        label: serviceText.cardsView.filters.character,
+        items: [
+          { value: "ironclad", label: serviceText.labels.pools.ironclad, desc: "Ironclad" },
+          { value: "silent", label: serviceText.labels.pools.silent, desc: "Silent" },
+          { value: "defect", label: serviceText.labels.pools.defect, desc: "Defect" },
+          { value: "necrobinder", label: serviceText.labels.pools.necrobinder, desc: "Necrobinder" },
+          { value: "regent", label: serviceText.labels.pools.regent, desc: "Regent" },
+          { value: "colorless", label: serviceText.labels.pools.colorless, desc: "Colorless" },
+          { value: "event", label: serviceText.labels.pools.event, desc: "Event" },
+          { value: "curse", label: serviceText.labels.pools.curse, desc: "Curse" },
+          { value: "status", label: serviceText.labels.pools.status, desc: "Status" },
+          { value: "ancient", label: serviceText.labels.pools.ancient, desc: "Ancient" },
+        ],
+        validate: (val: string) => COLOR_ALIASES[val] ?? null,
+        chipColor: "bg-blue-500/20 text-blue-400",
+      },
+      {
+        trigger: "#",
+        label: serviceText.cardsView.filters.cardType,
+        items: [
+          { value: "attack", label: serviceText.labels.cardTypes.공격, desc: "Attack" },
+          { value: "skill", label: serviceText.labels.cardTypes.스킬, desc: "Skill" },
+          { value: "power", label: serviceText.labels.cardTypes.파워, desc: "Power" },
+        ],
+        validate: (val: string) => TYPE_ALIASES[val] ?? null,
+        chipColor: "bg-green-500/20 text-green-400",
+      },
+      {
+        trigger: "!",
+        label: serviceText.cardsView.filters.cost,
+        items: [
+          { value: "0", label: "0", desc: "Cost 0" },
+          { value: "1", label: "1", desc: "Cost 1" },
+          { value: "2", label: "2", desc: "Cost 2" },
+          { value: "3", label: "3", desc: "Cost 3" },
+          { value: "3+", label: "3+", desc: "Cost 3+" },
+          { value: "2-", label: "2-", desc: "Cost 2-" },
+          { value: "X", label: "X", desc: "X Cost" },
+        ],
+        chipColor: "bg-amber-500/20 text-amber-400",
+      },
+    ],
+    [serviceText],
+  );
 
   // Card detail modal — initialize from ?card= query param
   const initialCardId = searchParams.get("card");
@@ -537,7 +592,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
         }
       `}>
         {/* Character + Extra Filters (5 per row, 2 rows) */}
-        <FilterSection trigger="@" label="캐릭터" sortDir={sortDirs.color} onSortToggle={() => toggleSort("color")}>
+        <FilterSection trigger="@" label={serviceText.cardsView.filters.character} sortDir={sortDirs.color} onSortToggle={() => toggleSort("color")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="grid grid-cols-5 gap-1.5">
             {characterFilters.map((cf) => (
               <IconFilterButton
@@ -563,13 +618,13 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
         <div className="border-t border-white/10" />
 
         {/* Card Type (icon buttons) */}
-        <FilterSection trigger="#" label="카드 유형" sortDir={sortDirs.type} onSortToggle={() => toggleSort("type")}>
+        <FilterSection trigger="#" label={serviceText.cardsView.filters.cardType} sortDir={sortDirs.type} onSortToggle={() => toggleSort("type")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex gap-1.5">
             {availableTypes.map((type) => (
               <IconFilterButton
                 key={type}
                 icon={TYPE_SORT_ICONS[type] ?? TYPE_SORT_ICONS["공격"]}
-                label={type}
+                label={serviceText.labels.cardTypes[type]}
                 active={selectedTypes.has(type)}
                 onClick={() => toggleType(type)}
               />
@@ -578,7 +633,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
         </FilterSection>
 
         {/* Rarity */}
-        <FilterSection label="희귀도" sortDir={sortDirs.rarity} onSortToggle={() => toggleSort("rarity")}>
+        <FilterSection label={serviceText.cardsView.filters.rarity} sortDir={sortDirs.rarity} onSortToggle={() => toggleSort("rarity")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-col gap-0.5">
             {rarityFilters.map((r) => (
               <button
@@ -614,7 +669,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
                       className="w-1.5 h-1.5 rounded-full shrink-0"
                       style={{ backgroundColor: RARITY_DETAIL_COLORS[detail] }}
                     />
-                    {RARITY_DETAIL_LABELS[detail]}
+                    {serviceText.labels.rarityDetails[detail]}
                   </button>
                 ))}
               </div>
@@ -623,7 +678,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
         </FilterSection>
 
         {/* Cost */}
-        <FilterSection trigger="!" label="비용" sortDir={sortDirs.cost} onSortToggle={() => toggleSort("cost")}>
+        <FilterSection trigger="!" label={serviceText.cardsView.filters.cost} sortDir={sortDirs.cost} onSortToggle={() => toggleSort("cost")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-wrap gap-1">
             {COST_OPTIONS.map((cost) => {
               const key = String(cost);
@@ -645,7 +700,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
         </FilterSection>
 
         {/* Name sort (no filter, just sort toggle) */}
-        <FilterSection label="이름순" sortDir={sortDirs.name} onSortToggle={() => toggleSort("name")}>
+        <FilterSection label={serviceText.cardsView.filters.nameSort} sortDir={sortDirs.name} onSortToggle={() => toggleSort("name")} sortTitle={serviceText.common.sortButtonTitle}>
           <span />
         </FilterSection>
 
@@ -654,17 +709,17 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
         {/* Toggles */}
         <div className="flex flex-col gap-1">
           <ToggleButton
-            label="멀티플레이 카드"
+            label={serviceText.cardsView.toggles.multiplayer}
             active={showMultiplayer}
             onClick={() => setShowMultiplayer((v) => !v)}
           />
           <ToggleButton
-            label="강화 보기"
+            label={serviceText.cardsView.toggles.upgrade}
             active={showUpgrades}
             onClick={() => setShowUpgrades((v) => !v)}
           />
           <ToggleButton
-            label="베타 아트"
+            label={serviceText.cardsView.toggles.betaArt}
             active={showBeta}
             onClick={() => setShowBeta((v) => !v)}
           />
@@ -678,7 +733,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
           <button
             onClick={() => setSidebarOpen((v) => !v)}
             className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/10 text-gray-400"
-            aria-label={sidebarOpen ? "필터 닫기" : "필터 열기"}
+            aria-label={sidebarOpen ? serviceText.common.closeFilters : serviceText.common.openFilters}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {sidebarOpen ? (
@@ -688,16 +743,18 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
               )}
             </svg>
           </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">카드 도서관</h1>
+          <h1 className="text-base font-bold text-yellow-500 shrink-0">{serviceText.cardsView.title}</h1>
           <div className="flex-1 max-w-xl mx-auto">
             <SearchBar
               value={searchQuery}
               onChange={setSearchQuery}
               inputId="codex-search"
+              triggerGroups={searchTriggers}
+              placeholder={serviceText.cardsView.searchPlaceholder}
             />
           </div>
           <span className="text-sm text-gray-500 shrink-0 tabular-nums">
-            {filteredCards.length}장
+            {formatCodexCount(filteredCards.length, serviceText.labels.cards, serviceLocale)}
           </span>
           {/* Version selector */}
           <VersionSelector
@@ -736,7 +793,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
           )}
           {filteredCards.length === 0 && (
             <div className="flex items-center justify-center h-64 text-gray-500">
-              검색 결과가 없습니다
+              {serviceText.common.noResults}
             </div>
           )}
         </div>
@@ -751,7 +808,7 @@ export function CardLibrary({ cards, characters, versions, currentVersion, patch
           }}
         >
           <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-[#1a1a2e] border border-white/10 rounded-2xl shadow-2xl">
-            <CardDetail card={selectedCard} enchantments={enchantments} onClose={() => setSelectedCard(null)} />
+            <CardDetail serviceLocale={serviceLocale} card={selectedCard} enchantments={enchantments} onClose={() => setSelectedCard(null)} />
           </div>
         </div>
       )}

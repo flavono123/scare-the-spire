@@ -8,12 +8,14 @@ export function FilterSection({
   children,
   sortDir,
   onSortToggle,
+  sortTitle = "정렬 기준 변경",
 }: {
   trigger?: string;
   label: string;
   children: React.ReactNode;
   sortDir?: "asc" | "desc";
   onSortToggle?: () => void;
+  sortTitle?: string;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -30,7 +32,7 @@ export function FilterSection({
           <button
             onClick={onSortToggle}
             className="ml-auto flex items-center px-1 py-0.5 rounded hover:bg-white/10 transition-colors"
-            title="정렬 기준 변경"
+            title={sortTitle}
           >
             {/* Game-style sort icon: stacked bars + arrow */}
             <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none">
