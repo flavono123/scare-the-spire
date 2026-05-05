@@ -175,8 +175,8 @@ export const serviceMessages = {
         subtitle: "슬레이 더 스파이어 2",
       },
       cardsView: {
-        title: "카드 도서관",
-        backToList: "카드 도서관",
+        title: "카드 목록",
+        backToList: "카드 목록",
         searchPlaceholder: "검색...",
         filters: {
           character: "캐릭터",
@@ -198,8 +198,8 @@ export const serviceMessages = {
         },
       },
       relicsView: {
-        title: "유물 도감",
-        backToList: "유물 도감",
+        title: "유물 모음집",
+        backToList: "유물 모음집",
         searchPlaceholder: "유물 검색...",
         sourceFilter: "출처",
         rarityFilter: "희귀도",
@@ -209,8 +209,8 @@ export const serviceMessages = {
         },
       },
       potionsView: {
-        title: "포션 도감",
-        backToList: "포션 도감",
+        title: "포션 연구실",
+        backToList: "포션 연구실",
         searchPlaceholder: "포션 검색...",
         characterFilter: "캐릭터",
         otherFilter: "기타",
@@ -531,8 +531,8 @@ export const serviceMessages = {
         },
       },
       relicsView: {
-        title: "Relic Codex",
-        backToList: "Relic Codex",
+        title: "Relic Collection",
+        backToList: "Relic Collection",
         searchPlaceholder: "Search relics...",
         sourceFilter: "Source",
         rarityFilter: "Rarity",
@@ -542,8 +542,8 @@ export const serviceMessages = {
         },
       },
       potionsView: {
-        title: "Potion Codex",
-        backToList: "Potion Codex",
+        title: "Potion Lab",
+        backToList: "Potion Lab",
         searchPlaceholder: "Search potions...",
         characterFilter: "Character",
         otherFilter: "Other",
@@ -608,8 +608,8 @@ export const serviceMessages = {
         returning: "Returning",
       },
       monstersView: {
-        title: "Monster Codex",
-        backToList: "Monster Codex",
+        title: "Bestiary",
+        backToList: "Bestiary",
         searchPlaceholder: "Search monsters...",
         resultUnit: "monsters",
         typeFilter: "Type",
