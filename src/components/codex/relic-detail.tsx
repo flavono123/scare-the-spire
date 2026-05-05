@@ -5,11 +5,12 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref } from "@/lib/i18n";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
   CodexRelic,
-  RELIC_RARITY_LABELS,
   RELIC_RARITY_COLORS,
-  POOL_LABELS,
   characterOutlineFilter,
   getCharacterColor,
   CHARACTER_COLORS,
@@ -32,6 +33,7 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 }
 
 interface RelicDetailProps {
+  serviceLocale: ServiceLocale;
   relic: CodexRelic;
   initialVariant?: RelicPool;
   onClose?: () => void;
@@ -41,16 +43,8 @@ interface RelicDetailProps {
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
-const VARIANT_LABELS: Record<RelicPool, string> = {
-  shared: "공용",
-  ironclad: "아이언클래드",
-  silent: "사일런트",
-  regent: "리젠트",
-  necrobinder: "네크로바인더",
-  defect: "디펙트",
-};
-
-export function RelicDetail({ relic, initialVariant, onClose, entities }: RelicDetailProps) {
+export function RelicDetail({ serviceLocale, relic, initialVariant, onClose, entities }: RelicDetailProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   // Don't link the relic to itself in its own description
   const excludeSelf = useMemo(
     () => new Set([relic.name, relic.nameEn]),
@@ -77,7 +71,7 @@ export function RelicDetail({ relic, initialVariant, onClose, entities }: RelicD
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href="/codex/relics"
+          href={localizeHref("/codex/relics", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {
             if (onClose) {
@@ -86,13 +80,13 @@ export function RelicDetail({ relic, initialVariant, onClose, entities }: RelicD
             }
           }}
         >
-          ← 유물 도감
+          ← {serviceText.relicsView.backToList}
         </Link>
         {onClose && (
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400"
-            aria-label="닫기"
+            aria-label={serviceText.common.close}
           >
             ✕
           </button>
@@ -136,7 +130,7 @@ export function RelicDetail({ relic, initialVariant, onClose, entities }: RelicD
                 }`}
                 style={{ color }}
               >
-                {VARIANT_LABELS[pool]}
+                {serviceText.labels.pools[pool]}
               </button>
             );
           })}
@@ -152,19 +146,19 @@ export function RelicDetail({ relic, initialVariant, onClose, entities }: RelicD
       {/* Stats Row */}
       <div className="flex flex-wrap justify-center gap-2">
         <StatBadge
-          label="희귀도"
-          value={RELIC_RARITY_LABELS[relic.rarity]}
+          label={serviceText.relicsView.stats.rarity}
+          value={serviceText.labels.relicRarities[relic.rarity]}
           color={rarityColor}
         />
         {relic.pool !== "shared" && (
           <StatBadge
-            label="출처"
-            value={POOL_LABELS[relic.pool as RelicFilterPool] ?? relic.pool}
+            label={serviceText.relicsView.stats.source}
+            value={serviceText.labels.pools[relic.pool as RelicFilterPool] ?? relic.pool}
             color={poolColor}
           />
         )}
         {relic.pool === "shared" && (
-          <StatBadge label="출처" value="공용" />
+          <StatBadge label={serviceText.relicsView.stats.source} value={serviceText.labels.pools.shared} />
         )}
       </div>
 
@@ -199,7 +193,7 @@ export function RelicDetail({ relic, initialVariant, onClose, entities }: RelicD
       )}
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+        <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>
         <CommentSection threadKey={buildCodexCommentThreadKey("relic", relic.id)} />
       </div>
     </div>

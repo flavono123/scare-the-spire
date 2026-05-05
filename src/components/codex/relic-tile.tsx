@@ -2,18 +2,22 @@
 
 import { useState, useRef, useCallback } from "react";
 import Image from "@/components/ui/static-image";
-import { CodexRelic, characterOutlineFilter, getCharacterColor, POOL_LABELS, type RelicPool, type RelicFilterPool } from "@/lib/codex-types";
+import type { ServiceLocale } from "@/lib/i18n";
+import { getCodexServiceMessages } from "@/lib/codex-service";
+import { CodexRelic, characterOutlineFilter, getCharacterColor, type RelicPool, type RelicFilterPool } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_POOLS: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
 
 interface RelicTileProps {
+  serviceLocale?: ServiceLocale;
   relic: CodexRelic;
   onClick?: (variantPool?: RelicPool) => void;
 }
 
-export function RelicTile({ relic, onClick }: RelicTileProps) {
+export function RelicTile({ serviceLocale = "ko", relic, onClick }: RelicTileProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   // For variant relics, pick a random character per mount
   const [tileVariant] = useState<RelicPool | null>(() => {
     if (!relic.variantImageUrls) return null;
@@ -90,7 +94,7 @@ export function RelicTile({ relic, onClick }: RelicTileProps) {
               className="text-[10px] font-medium mb-1.5"
               style={{ color: getCharacterColor(relic.pool) }}
             >
-              {POOL_LABELS[relic.pool as RelicFilterPool]}
+              {serviceText.labels.pools[relic.pool as RelicFilterPool]}
             </div>
           )}
           <div className="text-xs text-gray-200 leading-relaxed">
