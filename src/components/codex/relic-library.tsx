@@ -63,7 +63,7 @@ export function RelicLibrary({ serviceLocale, relics, characters, ancients, vers
   const selectRelic = useCallback((relic: CodexRelic, variantPool?: RelicPool) => {
     setSelectedRelic(relic);
     setSelectedVariantPool(variantPool);
-  }, []);
+  }, [setSelectedRelic, setSelectedVariantPool]);
 
   // Update URL query param when modal opens/closes
   useEffect(() => {
@@ -266,10 +266,7 @@ export function RelicLibrary({ serviceLocale, relics, characters, ancients, vers
     color: RELIC_RARITY_COLORS[r],
   }));
 
-  const relicTriggers = useMemo(
-    () => getRelicTriggers(serviceText),
-    [serviceText],
-  );
+  const relicTriggers = getRelicTriggers(serviceText);
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);

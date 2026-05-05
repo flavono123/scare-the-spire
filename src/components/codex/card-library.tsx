@@ -14,7 +14,6 @@ import {
   CodexEnchantment,
   CardFilterCategory,
   CardTypeKo,
-  COLOR_LABELS,
   COLOR_ALIASES,
   TYPE_ALIASES,
 } from "@/lib/codex-types";
@@ -463,8 +462,7 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
     { key: "기타", label: serviceText.labels.cardRarities.기타, color: RARITY_COLORS["기타"] },
   ];
 
-  const searchTriggers = useMemo(
-    () => [
+  const searchTriggers = [
       {
         trigger: "@",
         label: serviceText.cardsView.filters.character,
@@ -508,9 +506,7 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
         ],
         chipColor: "bg-amber-500/20 text-amber-400",
       },
-    ],
-    [serviceText],
-  );
+    ];
 
   // Card detail modal — initialize from ?card= query param
   const initialCardId = searchParams.get("card");

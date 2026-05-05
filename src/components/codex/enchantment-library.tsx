@@ -221,10 +221,7 @@ export function EnchantmentLibrary({ serviceLocale, enchantments, versions, curr
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const enchantmentTriggers = useMemo(
-    () => getEnchantmentTriggers(serviceText),
-    [serviceText],
-  );
+  const enchantmentTriggers = getEnchantmentTriggers(serviceText);
 
   return (
     <div className="flex h-[calc(100dvh-3rem)] bg-background text-foreground overflow-hidden">

@@ -196,10 +196,7 @@ export function PowerLibrary({ serviceLocale, powers, versions, currentVersion, 
     color: POWER_TYPE_CONFIG[t].color,
   }));
 
-  const powerTriggers = useMemo(
-    () => getPowerTriggers(serviceText),
-    [serviceText],
-  );
+  const powerTriggers = getPowerTriggers(serviceText);
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);

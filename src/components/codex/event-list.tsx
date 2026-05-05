@@ -273,10 +273,7 @@ export function EventList({ serviceLocale, events, versions, currentVersion, pat
     return counts;
   }, [events]);
 
-  const eventTriggers = useMemo(
-    () => getEventTriggers(serviceText),
-    [serviceText],
-  );
+  const eventTriggers = getEventTriggers(serviceText);
 
   return (
     <div className="min-h-screen bg-background">
@@ -297,9 +294,6 @@ export function EventList({ serviceLocale, events, versions, currentVersion, pat
               <div className="space-y-0.5">
                 {EVENT_ACT_ORDER.map((act) => {
                   const key = act ?? "none";
-                  const config = act
-                    ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
-                    : EVENT_ACT_UNKNOWN;
                   const count = actCounts.get(key) ?? 0;
                   return (
                     <ToggleButton
