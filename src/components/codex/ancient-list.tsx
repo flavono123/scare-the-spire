@@ -2,6 +2,13 @@
 
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
+import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref } from "@/lib/i18n";
+import {
+  formatTemplateCount,
+  getCodexServiceMessages,
+  type CodexServiceMessages,
+} from "@/lib/codex-service";
 import type { CodexAncient } from "@/lib/codex-types";
 import {
   EVENT_ACT_CONFIG,
@@ -9,34 +16,43 @@ import {
   EventAct,
 } from "@/lib/codex-types";
 
-function ActBadge({ act }: { act: EventAct | null }) {
+function ActBadge({
+  act,
+  messages,
+}: {
+  act: EventAct | null;
+  messages: CodexServiceMessages;
+}) {
   const config = act
     ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
     : EVENT_ACT_UNKNOWN;
+  const label = act ? messages.labels.acts[act] : messages.labels.acts.none;
   return (
     <span
       className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${config.color} ${config.border} ${config.bg}`}
     >
-      {config.labelKo}
+      {label}
     </span>
   );
 }
 
 interface AncientListProps {
+  serviceLocale: ServiceLocale;
   ancients: CodexAncient[];
 }
 
-export function AncientList({ ancients }: AncientListProps) {
+export function AncientList({ serviceLocale, ancients }: AncientListProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
         <div className="mx-auto max-w-5xl px-6 py-8 text-center">
           <h1 className="font-[family-name:var(--font-gc-batang)] text-3xl md:text-4xl text-yellow-500 mb-2">
-            에인션트
+            {serviceText.ancientsView.title}
           </h1>
           <p className="text-sm text-yellow-200/40">
-            첨탑에 깃든 고대의 존재들 — {ancients.length}
+            {serviceText.ancientsView.subtitle} - {ancients.length}
           </p>
         </div>
       </div>
@@ -49,6 +65,8 @@ export function AncientList({ ancients }: AncientListProps) {
               key={ancient.id}
               ancient={ancient}
               relicCount={ancient.relicIds.length}
+              serviceLocale={serviceLocale}
+              messages={serviceText}
             />
           ))}
         </div>
@@ -60,13 +78,17 @@ export function AncientList({ ancients }: AncientListProps) {
 function AncientCard({
   ancient,
   relicCount,
+  serviceLocale,
+  messages,
 }: {
   ancient: CodexAncient;
   relicCount: number;
+  serviceLocale: ServiceLocale;
+  messages: CodexServiceMessages;
 }) {
   return (
     <Link
-      href={`/codex/ancients/${ancient.id.toLowerCase()}`}
+      href={localizeHref(`/codex/ancients/${ancient.id.toLowerCase()}`, serviceLocale)}
       className="group relative overflow-hidden rounded-xl border border-blue-900/30 bg-[#12121a] hover:border-blue-600/50 transition-all duration-200"
     >
       {/* Image */}
@@ -91,9 +113,9 @@ function AncientCard({
         <p className="text-[11px] text-blue-400/50 mt-0.5">{ancient.nameEn}</p>
         <p className="text-xs text-zinc-400 mt-1 italic">{ancient.epithet}</p>
         <div className="flex items-center gap-2 mt-2">
-          <ActBadge act={ancient.act} />
+          <ActBadge act={ancient.act} messages={messages} />
           <span className="text-[10px] text-zinc-500">
-            유물 {relicCount}개
+            {formatTemplateCount(messages.ancientsView.relicCount, relicCount)}
           </span>
         </div>
       </div>
