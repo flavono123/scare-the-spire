@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexMonsters, getCodexEncounters } from "@/lib/codex-data";
-import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+} from "@/lib/i18n";
 import { MonsterDetail } from "@/components/codex/monster-detail";
 import { MONSTER_TYPE_CONFIG } from "@/lib/codex-types";
 
@@ -33,7 +36,9 @@ export default async function MonsterDetailPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [monsters, encounters] = await Promise.all([
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
@@ -48,6 +53,7 @@ export default async function MonsterDetailPage({
   return (
     <div className="min-h-screen bg-background text-foreground">
       <MonsterDetail
+        serviceLocale={serviceLocale}
         monster={monster}
         encounters={monsterEncounters}
         allMonsters={monsters}
