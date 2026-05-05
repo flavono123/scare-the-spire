@@ -599,7 +599,7 @@ export const CardTile = memo(function CardTile({
                   color: "rgba(0,0,0,0.75)",
                 }}
               >
-                {card.type}
+                {card.typeLabel}
               </span>
             </div>
           </div>
@@ -739,7 +739,7 @@ export const CardTile = memo(function CardTile({
                 color: "rgba(0,0,0,0.75)",
               }}
             >
-              {card.type}
+              {card.typeLabel}
             </span>
           </div>
         </div>
