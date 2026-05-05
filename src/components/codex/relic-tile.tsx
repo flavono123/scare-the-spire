@@ -10,6 +10,21 @@ import { DescriptionText } from "./codex-description";
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_POOLS: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
 
+function stableHash(value: string): number {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
+function pickStableVariant(relic: CodexRelic): RelicPool | null {
+  if (!relic.variantImageUrls) return null;
+  const pools = VARIANT_POOLS.filter((pool) => relic.variantImageUrls?.[pool]);
+  if (pools.length === 0) return null;
+  return pools[stableHash(relic.id) % pools.length] ?? null;
+}
+
 interface RelicTileProps {
   serviceLocale?: ServiceLocale;
   relic: CodexRelic;
@@ -18,12 +33,7 @@ interface RelicTileProps {
 
 export function RelicTile({ serviceLocale = "ko", relic, onClick }: RelicTileProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  // For variant relics, pick a random character per mount
-  const [tileVariant] = useState<RelicPool | null>(() => {
-    if (!relic.variantImageUrls) return null;
-    const pools = VARIANT_POOLS.filter((p) => relic.variantImageUrls![p]);
-    return pools[Math.floor(Math.random() * pools.length)] ?? null;
-  });
+  const tileVariant = pickStableVariant(relic);
   const tileImageUrl = relic.imageUrl ?? (tileVariant ? relic.variantImageUrls?.[tileVariant] ?? null : null);
 
   const [hovered, setHovered] = useState(false);
