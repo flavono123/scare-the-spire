@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { getCodexPowers } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
@@ -7,13 +7,18 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { PowerLibrary } from "@/components/codex/power-library";
 
-export const metadata: Metadata = {
-  title: "파워 도감 - 슬서운 이야기",
-  description:
-    "슬레이 더 스파이어 2 파워(버프/디버프) 도감. 전투 중 캐릭터와 몬스터에 적용되는 모든 효과를 확인하세요.",
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  return getCodexMetadata(serviceLocale, serviceText.powersView.title);
+}
 
 export default async function CodexPowersPage({
   searchParams,

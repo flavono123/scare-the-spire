@@ -1,15 +1,22 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { getCodexMonsters, getCodexEncounters } from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { EncounterLibrary } from "@/components/codex/encounter-library";
 
-export const metadata = {
-  title: "전투 도감 — 슬서운이야기",
-  description: "슬레이 더 스파이어 2의 전투(encounter) 목록. 막별/유형별 전투 구성과 몬스터 조합을 확인하세요.",
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  return getCodexMetadata(serviceLocale, serviceText.encountersView.title);
+}
 
 export default async function CodexEncountersPage({
   searchParams,

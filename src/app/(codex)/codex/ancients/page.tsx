@@ -1,14 +1,21 @@
+import type { Metadata } from "next";
 import { getCodexAncients } from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { AncientList } from "@/components/codex/ancient-list";
 
-export const metadata = {
-  title: "에인션트 — 슬서운 이야기",
-  description: "슬레이 더 스파이어 2 고대의 존재",
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  return getCodexMetadata(serviceLocale, serviceText.ancientsView.title);
+}
 
 export default async function CodexAncientsPage({
   searchParams,
