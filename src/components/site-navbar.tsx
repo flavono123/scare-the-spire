@@ -7,6 +7,7 @@ import Image from "@/components/ui/static-image";
 import {
   GAME_LOCALE_LABELS,
   GAME_LOCALES,
+  SERVICE_LOCALES,
   getGameLocaleFromSearch,
   getServiceLocaleFromPath,
   localizeHrefWithGameLocale,
@@ -216,10 +217,10 @@ function GameLocaleSelect({
 
   return (
     <label
-      className="flex h-8 items-center gap-1.5 rounded-md border border-border bg-background/70 px-2 transition-colors hover:bg-white/5 focus-within:border-yellow-500/70"
+      className="flex h-8 items-center gap-1.5 rounded-md bg-background/70 px-2 transition-colors hover:bg-white/5 focus-within:bg-white/5"
       title={`${label}: ${GAME_LOCALE_LABELS[value][serviceLocale]}`}
     >
-      <span className="hidden whitespace-nowrap text-[10px] font-medium text-muted-foreground sm:inline">
+      <span className="whitespace-nowrap text-[10px] font-semibold text-muted-foreground">
         {label}
       </span>
       <select
@@ -246,29 +247,52 @@ function GameLocaleSelect({
   );
 }
 
-function ServiceLocaleLink({
-  href,
+function ServiceLocaleSwitch({
+  currentLocale,
+  hrefs,
   label,
-  value,
-  switchLabel,
 }: {
-  href: string;
+  currentLocale: ServiceLocale;
+  hrefs: Record<ServiceLocale, string>;
   label: string;
-  value: string;
-  switchLabel: string;
 }) {
   return (
-    <Link
-      href={href}
-      prefetch={false}
-      className="flex h-8 items-center gap-1.5 rounded-md border border-border bg-background/70 px-2 text-xs transition-colors hover:bg-white/5 hover:text-foreground"
-      title={switchLabel}
+    <div
+      className="flex h-8 items-center gap-1 rounded-md bg-background/70 px-2"
+      aria-label={label}
     >
-      <span className="hidden whitespace-nowrap text-[10px] font-medium text-muted-foreground sm:inline">
+      <span className="whitespace-nowrap text-[10px] font-semibold text-muted-foreground">
         {label}
       </span>
-      <span className="font-semibold text-foreground">{value}</span>
-    </Link>
+      <div className="flex items-center rounded border border-border bg-black/15 p-0.5">
+        {SERVICE_LOCALES.map((locale) => {
+          const content = (
+            <span className="px-1.5 py-0.5 text-[11px] font-semibold">
+              {serviceMessages[locale].serviceLocaleName}
+            </span>
+          );
+
+          return locale === currentLocale ? (
+            <span
+              key={locale}
+              aria-current="true"
+              className="rounded-sm bg-yellow-500/15 text-yellow-300"
+            >
+              {content}
+            </span>
+          ) : (
+            <Link
+              key={locale}
+              href={hrefs[locale]}
+              prefetch={false}
+              className="rounded-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+            >
+              {content}
+            </Link>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -283,17 +307,16 @@ export function SiteNavbar() {
     serviceLocale,
   );
   const messages = serviceMessages[serviceLocale];
-  const nextLocale: ServiceLocale = serviceLocale === "ko" ? "en" : "ko";
-  const localeSwitchSearch = withGameLocaleSearch(
-    new URLSearchParams(searchParams.toString()),
-    gameLocale,
-    nextLocale,
-  );
-  const localeSwitchHref = switchServiceLocaleHref(
-    pathname,
-    nextLocale,
-    localeSwitchSearch,
-  );
+  const serviceLocaleHrefs = Object.fromEntries(
+    SERVICE_LOCALES.map((locale) => {
+      const search = withGameLocaleSearch(
+        new URLSearchParams(searchParams.toString()),
+        gameLocale,
+        locale,
+      );
+      return [locale, switchServiceLocaleHref(pathname, locale, search)];
+    }),
+  ) as Record<ServiceLocale, string>;
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
@@ -343,12 +366,12 @@ export function SiteNavbar() {
         {/* Right: locale controls + game dropdowns */}
         <div className="flex items-center gap-1">
           <div className="flex items-center gap-1 rounded-lg border border-border bg-white/[0.03] p-1">
-            <ServiceLocaleLink
-              href={localeSwitchHref}
+            <ServiceLocaleSwitch
+              currentLocale={serviceLocale}
+              hrefs={serviceLocaleHrefs}
               label={messages.serviceLocaleSelect}
-              value={messages.serviceLocaleName}
-              switchLabel={messages.serviceLocaleSwitch}
             />
+            <div className="h-5 w-px bg-border" aria-hidden="true" />
             <GameLocaleSelect
               value={gameLocale}
               serviceLocale={serviceLocale}
