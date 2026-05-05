@@ -4,6 +4,11 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import Image from "@/components/ui/static-image";
 import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
+import type { ServiceLocale } from "@/lib/i18n";
+import {
+  getCodexServiceMessages,
+  type CodexServiceMessages,
+} from "@/lib/codex-service";
 import type {
   CodexEvent,
   EventAct,
@@ -21,33 +26,23 @@ import { VersionSelector } from "./version-selector";
 import { FilterSection, ToggleButton } from "./codex-filters";
 import { EventDetail } from "./event-detail";
 
-// --- Search triggers ---
-const EVENT_TRIGGERS: TriggerGroup[] = [
-  {
-    trigger: "@",
-    label: "막",
-    items: [
-      { value: "1막", label: "1막 — 과성장", desc: "Act 1 Overgrowth" },
-      { value: "지하 선착장", label: "1막 — 지하 선착장", desc: "Underdocks" },
-      { value: "2막", label: "2막 — 군락", desc: "Act 2 Hive" },
-      { value: "3막", label: "3막 — 영광", desc: "Act 3 Glory" },
-      { value: "막 무관", label: "막 무관", desc: "Any act" },
-    ],
-    validate: (val) => EVENT_ACT_ALIASES[val] ?? null,
-    chipColor: "bg-blue-500/20 text-blue-400",
-  },
-];
-
 // --- Act badge ---
-function ActBadge({ act }: { act: EventAct | null }) {
+function ActBadge({
+  act,
+  messages,
+}: {
+  act: EventAct | null;
+  messages: CodexServiceMessages;
+}) {
   const config = act
     ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
     : EVENT_ACT_UNKNOWN;
+  const label = act ? messages.labels.acts[act] : messages.labels.acts.none;
   return (
     <span
       className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${config.color} ${config.border} ${config.bg}`}
     >
-      {config.labelKo}
+      {label}
     </span>
   );
 }
@@ -56,9 +51,11 @@ function ActBadge({ act }: { act: EventAct | null }) {
 function EventThumbnail({
   event,
   onClick,
+  messages,
 }: {
   event: CodexEvent;
   onClick: () => void;
+  messages: CodexServiceMessages;
 }) {
   return (
     <button
@@ -88,7 +85,7 @@ function EventThumbnail({
             {event.nameEn}
           </span>
         </div>
-        <ActBadge act={event.act} />
+        <ActBadge act={event.act} messages={messages} />
         <svg
           className="w-4 h-4 text-zinc-600 group-hover:text-yellow-500 transition-colors flex-shrink-0"
           viewBox="0 0 16 16"
@@ -103,6 +100,7 @@ function EventThumbnail({
 
 // --- Main EventList component ---
 interface EventListProps {
+  serviceLocale: ServiceLocale;
   events: CodexEvent[];
   versions: string[];
   currentVersion: string;
@@ -110,7 +108,8 @@ interface EventListProps {
   versionDiffs: EntityVersionDiff[];
 }
 
-export function EventList({ events, versions, currentVersion, patches, versionDiffs }: EventListProps) {
+export function EventList({ serviceLocale, events, versions, currentVersion, patches, versionDiffs }: EventListProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
@@ -248,13 +247,13 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
       const config = act ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN) : EVENT_ACT_UNKNOWN;
       ordered.push({
         act,
-        label: config.labelKo,
+        label: act ? serviceText.labels.acts[act] : serviceText.labels.acts.none,
         color: config.color,
         events: items.sort((a, b) => a.name.localeCompare(b.name, "ko")),
       });
     }
     return ordered;
-  }, [filtered]);
+  }, [filtered, serviceText]);
 
   const toggleAct = useCallback((act: string) => {
     setSelectedActs((prev) => {
@@ -274,13 +273,18 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
     return counts;
   }, [events]);
 
+  const eventTriggers = useMemo(
+    () => getEventTriggers(serviceText),
+    [serviceText],
+  );
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
         <div className="mx-auto max-w-5xl px-6 py-8 text-center">
           <h1 className="font-[family-name:var(--font-gc-batang)] text-3xl md:text-4xl text-yellow-500 mb-2">
-            이벤트
+            {serviceText.eventsView.title}
           </h1>
         </div>
       </div>
@@ -289,7 +293,7 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
         <div className="flex gap-6">
           {/* Sidebar filters */}
           <aside className="hidden md:block w-48 flex-shrink-0 space-y-5">
-            <FilterSection trigger="@" label="막">
+            <FilterSection trigger="@" label={serviceText.eventsView.actFilter}>
               <div className="space-y-0.5">
                 {EVENT_ACT_ORDER.map((act) => {
                   const key = act ?? "none";
@@ -300,7 +304,7 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
                   return (
                     <ToggleButton
                       key={key}
-                      label={`${config.labelKo} (${count})`}
+                      label={`${act ? serviceText.labels.acts[act] : serviceText.labels.acts.none} (${count})`}
                       active={selectedActs.has(key)}
                       onClick={() => toggleAct(key)}
                     />
@@ -319,8 +323,8 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
                   value={searchQuery}
                   onChange={setSearchQuery}
                   inputId="codex-search"
-                  triggerGroups={EVENT_TRIGGERS}
-                  placeholder="이벤트 검색... (⌘K)"
+                  triggerGroups={eventTriggers}
+                  placeholder={serviceText.eventsView.searchPlaceholder}
                 />
               </div>
               <VersionSelector
@@ -348,7 +352,7 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
                         : "border-zinc-700/40 text-zinc-500 hover:text-zinc-300"
                     }`}
                   >
-                    {config.labelKo}
+                    {act ? serviceText.labels.acts[act] : serviceText.labels.acts.none}
                   </button>
                 );
               })}
@@ -357,7 +361,7 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
             {/* Event list grouped by act */}
             {groups.length === 0 ? (
               <div className="text-center py-16 text-zinc-600">
-                <p className="text-lg">검색 결과가 없습니다</p>
+                <p className="text-lg">{serviceText.common.noResults}</p>
               </div>
             ) : (
               <div className="space-y-8">
@@ -376,6 +380,7 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
                         <EventThumbnail
                           key={event.id}
                           event={event}
+                          messages={serviceText}
                           onClick={() => setSelectedEvent(event)}
                         />
                       ))}
@@ -397,10 +402,28 @@ export function EventList({ events, versions, currentVersion, patches, versionDi
           onClick={(e) => { if (e.target === e.currentTarget) setSelectedEvent(null); }}
         >
           <div className="w-full max-w-3xl my-8 mx-4 bg-[#12121a] rounded-xl border border-yellow-900/30 shadow-2xl">
-            <EventDetail event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+            <EventDetail serviceLocale={serviceLocale} event={selectedEvent} onClose={() => setSelectedEvent(null)} />
           </div>
         </div>
       )}
     </div>
   );
+}
+
+function getEventTriggers(serviceText: CodexServiceMessages): TriggerGroup[] {
+  return [
+    {
+      trigger: "@",
+      label: serviceText.eventsView.actFilter,
+      items: [
+        { value: "act1", label: serviceText.labels.acts["Act 1 - Overgrowth"], desc: "Act 1 Overgrowth" },
+        { value: "underdocks", label: serviceText.labels.acts.Underdocks, desc: "Underdocks" },
+        { value: "act2", label: serviceText.labels.acts["Act 2 - Hive"], desc: "Act 2 Hive" },
+        { value: "act3", label: serviceText.labels.acts["Act 3 - Glory"], desc: "Act 3 Glory" },
+        { value: "none", label: serviceText.labels.acts.none, desc: "Any act" },
+      ],
+      validate: (val) => EVENT_ACT_ALIASES[val] ?? null,
+      chipColor: "bg-blue-500/20 text-blue-400",
+    },
+  ];
 }

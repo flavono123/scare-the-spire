@@ -5,6 +5,12 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref } from "@/lib/i18n";
+import {
+  getCodexServiceMessages,
+  type CodexServiceMessages,
+} from "@/lib/codex-service";
 import {
   CodexEvent,
   EventOption,
@@ -68,7 +74,13 @@ function resolveSequencePage(
 }
 
 // --- Interactive event content viewer (game-like flow) ---
-export function EventContentViewer({ event }: { event: CodexEvent }) {
+export function EventContentViewer({
+  event,
+  messages,
+}: {
+  event: CodexEvent;
+  messages: CodexServiceMessages;
+}) {
   const [history, setHistory] = useState<NavEntry[]>([]);
   const pages = useMemo(() => event.pages ?? [], [event.pages]);
   const pageMap = useMemo(
@@ -160,7 +172,7 @@ export function EventContentViewer({ event }: { event: CodexEvent }) {
             onClick={reset}
             className="text-zinc-500 hover:text-yellow-400 transition-colors"
           >
-            처음
+            {messages.eventsView.first}
           </button>
           {history.map((entry, i) => (
             <span key={i} className="flex items-center gap-1.5">
@@ -222,7 +234,7 @@ export function EventContentViewer({ event }: { event: CodexEvent }) {
           <svg className="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
             <path d="M9.78 12.78a.75.75 0 01-1.06 0L4.47 8.53a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L6.06 8l3.72 3.72a.75.75 0 010 1.06z" />
           </svg>
-          이전
+          {messages.eventsView.previous}
         </button>
       )}
     </>
@@ -230,26 +242,35 @@ export function EventContentViewer({ event }: { event: CodexEvent }) {
 }
 
 // --- Act badge ---
-function ActBadge({ act }: { act: CodexEvent["act"] }) {
+function ActBadge({
+  act,
+  messages,
+}: {
+  act: CodexEvent["act"];
+  messages: CodexServiceMessages;
+}) {
   const config = act
     ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
     : EVENT_ACT_UNKNOWN;
+  const label = act ? messages.labels.acts[act] : messages.labels.acts.none;
   return (
     <span
       className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${config.color} ${config.border} ${config.bg}`}
     >
-      {config.labelKo}
+      {label}
     </span>
   );
 }
 
 // --- Event detail page (game-like: image left, content right) ---
 interface EventDetailProps {
+  serviceLocale: ServiceLocale;
   event: CodexEvent;
   onClose?: () => void;
 }
 
-export function EventDetail({ event, onClose }: EventDetailProps) {
+export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   return (
     <div className="rounded-xl bg-[#12121a] overflow-hidden">
       <div className="flex flex-col md:flex-row">
@@ -273,20 +294,20 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
           <div className="flex items-start justify-between gap-3 mb-4">
             <div>
               <Link
-                href="/codex/events"
+                href={localizeHref("/codex/events", serviceLocale)}
                 className="text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors"
                 onClick={(e) => {
                   if (onClose) { e.preventDefault(); onClose(); }
                 }}
               >
-                ← 이벤트
+                ← {serviceText.eventsView.backToList}
               </Link>
               <h2 className="font-[family-name:var(--font-gc-batang)] text-xl text-yellow-400 mt-1">
                 {event.name}
               </h2>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-xs text-zinc-500">{event.nameEn}</span>
-                <ActBadge act={event.act} />
+                <ActBadge act={event.act} messages={serviceText} />
               </div>
             </div>
             {onClose && (
@@ -302,10 +323,10 @@ export function EventDetail({ event, onClose }: EventDetailProps) {
           </div>
 
           {/* Interactive content: description + choices */}
-          <EventContentViewer event={event} />
+          <EventContentViewer event={event} messages={serviceText} />
 
           <div className="mt-5 rounded-lg border border-white/10 bg-white/[0.03] p-4">
-            <h3 className="mb-3 text-sm font-bold text-gray-300">댓글</h3>
+            <h3 className="mb-3 text-sm font-bold text-gray-300">{serviceText.common.comments}</h3>
             <CommentSection threadKey={buildCodexCommentThreadKey("event", event.id)} />
           </div>
         </div>
