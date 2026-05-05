@@ -1,11 +1,19 @@
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+  localizeHrefWithGameLocale,
+} from "@/lib/i18n";
+import {
+  formatCodexCount,
+  getCodexServiceMessages,
+} from "@/lib/codex-service";
 
 const categories = [
   {
     href: "/codex/cards",
-    label: "카드",
-    labelEn: "Cards",
+    labelKey: "cards",
     count: 612,
     description: null,
     images: [
@@ -17,8 +25,7 @@ const categories = [
   },
   {
     href: "/codex/relics",
-    label: "유물",
-    labelEn: "Relics",
+    labelKey: "relics",
     count: 314,
     description: null,
     images: [
@@ -30,8 +37,7 @@ const categories = [
   },
   {
     href: "/codex/potions",
-    label: "포션",
-    labelEn: "Potions",
+    labelKey: "potions",
     count: 63,
     description: null,
     images: [
@@ -43,8 +49,7 @@ const categories = [
   },
   {
     href: "/codex/powers",
-    label: "파워",
-    labelEn: "Powers",
+    labelKey: "powers",
     count: 238,
     description: null,
     images: [
@@ -56,8 +61,7 @@ const categories = [
   },
   {
     href: "/codex/enchantments",
-    label: "인챈트",
-    labelEn: "Enchantments",
+    labelKey: "enchantments",
     count: 22,
     description: null,
     images: [
@@ -69,8 +73,7 @@ const categories = [
   },
   {
     href: "/codex/monsters",
-    label: "몬스터",
-    labelEn: "Monsters",
+    labelKey: "monsters",
     count: 111,
     description: null,
     images: [
@@ -82,8 +85,7 @@ const categories = [
   },
   {
     href: "/codex/events",
-    label: "이벤트",
-    labelEn: "Events",
+    labelKey: "events",
     count: 57,
     description: null,
     images: [
@@ -94,9 +96,20 @@ const categories = [
     ],
   },
   {
+    href: "/codex/encounters",
+    labelKey: "encounters",
+    count: 89,
+    description: null,
+    images: [
+      "/images/sts2/nav/stats_monsters.png",
+      "/images/sts2/nav/happy_cultist.png",
+      "/images/sts2/bosses/queen_boss.webp",
+      "/images/sts2/bosses/vantom_boss.webp",
+    ],
+  },
+  {
     href: "/codex/ancients",
-    label: "에인션트",
-    labelEn: "Ancients",
+    labelKey: "ancients",
     count: 8,
     description: null,
     images: [
@@ -106,19 +119,28 @@ const categories = [
       "/images/sts2/ancients/darv.webp",
     ],
   },
-];
+] as const;
 
-export default function CodexIndexPage() {
+export default async function CodexIndexPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const messages = getCodexServiceMessages(serviceLocale);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
         <div className="mx-auto max-w-5xl px-6 py-12 text-center">
           <h1 className="font-[family-name:var(--font-gc-batang)] text-4xl md:text-5xl text-yellow-500 mb-3">
-            백과사전
+            {messages.indexView.title}
           </h1>
           <p className="font-[family-name:var(--font-gc-batang)] text-lg text-yellow-200/60">
-            슬레이 더 스파이어 2
+            {messages.indexView.subtitle}
           </p>
         </div>
       </div>
@@ -129,7 +151,7 @@ export default function CodexIndexPage() {
           {categories.map((cat) => (
             <Link
               key={cat.href}
-              href={cat.href}
+              href={localizeHrefWithGameLocale(cat.href, serviceLocale, gameLocale)}
               className="group relative overflow-hidden rounded-xl border border-yellow-900/20 bg-[#12121a] hover:border-yellow-700/40 hover:bg-[#16161f] transition-all duration-200"
             >
               {/* Thumbnail row */}
@@ -153,10 +175,12 @@ export default function CodexIndexPage() {
               {/* Text */}
               <div className="px-6 pb-6 text-center">
                 <h2 className="font-[family-name:var(--font-gc-batang)] text-2xl text-yellow-400 group-hover:text-yellow-300 transition-colors">
-                  {cat.label}
-                  <span className="ml-2 text-base text-yellow-200/30 font-[family-name:var(--font-kreon)]">
-                    {cat.labelEn}
-                  </span>
+                  {messages[cat.labelKey]}
+                  {serviceLocale === "ko" && (
+                    <span className="ml-2 text-base text-yellow-200/30 font-[family-name:var(--font-kreon)]">
+                      {ENGLISH_LABELS[cat.labelKey]}
+                    </span>
+                  )}
                 </h2>
                 {cat.description && (
                   <p className="mt-1 text-sm text-yellow-200/40 font-[family-name:var(--font-gc-batang)]">
@@ -164,7 +188,7 @@ export default function CodexIndexPage() {
                   </p>
                 )}
                 <span className="mt-2 inline-block text-xs text-yellow-600/60 font-[family-name:var(--font-kreon)]">
-                  {cat.count} entries
+                  {formatCodexCount(cat.count, messages.labels.entries, serviceLocale)}
                 </span>
               </div>
             </Link>
@@ -174,3 +198,15 @@ export default function CodexIndexPage() {
     </div>
   );
 }
+
+const ENGLISH_LABELS: Record<(typeof categories)[number]["labelKey"], string> = {
+  cards: "Cards",
+  relics: "Relics",
+  potions: "Potions",
+  powers: "Powers",
+  enchantments: "Enchantments",
+  monsters: "Monsters",
+  events: "Events",
+  encounters: "Encounters",
+  ancients: "Ancients",
+};
