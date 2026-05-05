@@ -3,6 +3,12 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
+import type { ServiceLocale } from "@/lib/i18n";
+import {
+  formatCodexCount,
+  getCodexServiceMessages,
+  type CodexServiceMessages,
+} from "@/lib/codex-service";
 import {
   CodexEnchantment,
   CodexRelic,
@@ -19,20 +25,6 @@ import { SearchBar, TriggerGroup } from "./search-bar";
 import { FilterSection, ToggleButton } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
 
-const ENCHANTMENT_TRIGGERS: TriggerGroup[] = [
-  {
-    trigger: "#",
-    label: "카드 유형",
-    items: [
-      { value: "공격", label: "공격", desc: "Attack" },
-      { value: "스킬", label: "스킬", desc: "Skill" },
-      { value: "전체", label: "전체", desc: "Any card type" },
-    ],
-    validate: (val) => ENCHANTMENT_CARD_TYPE_ALIASES[val] ?? null,
-    chipColor: "bg-purple-500/20 text-purple-400",
-  },
-];
-
 const CARD_TYPE_ORDER: EnchantmentCardTypeFilter[] = ["Any", "Attack", "Skill"];
 
 function getCardTypeFilter(cardType: "Attack" | "Skill" | null): EnchantmentCardTypeFilter {
@@ -40,6 +32,7 @@ function getCardTypeFilter(cardType: "Attack" | "Skill" | null): EnchantmentCard
 }
 
 interface EnchantmentLibraryProps {
+  serviceLocale: ServiceLocale;
   enchantments: CodexEnchantment[];
   versions?: string[];
   currentVersion?: string;
@@ -51,7 +44,8 @@ interface EnchantmentLibraryProps {
   relics?: CodexRelic[];
 }
 
-export function EnchantmentLibrary({ enchantments, versions, currentVersion, patches, versionDiffs, entities, relics }: EnchantmentLibraryProps) {
+export function EnchantmentLibrary({ serviceLocale, enchantments, versions, currentVersion, patches, versionDiffs, entities, relics }: EnchantmentLibraryProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedCardTypes, setSelectedCardTypes] = useState<Set<EnchantmentCardTypeFilter>>(new Set());
   const [stackableOnly, setStackableOnly] = useState(false);
@@ -227,11 +221,10 @@ export function EnchantmentLibrary({ enchantments, versions, currentVersion, pat
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const GROUP_DESCRIPTIONS: Record<EnchantmentCardTypeFilter, string> = {
-    Any: "모든 카드에 적용 가능한 인챈트입니다.",
-    Attack: "공격 카드에만 적용 가능한 인챈트입니다.",
-    Skill: "스킬 카드에만 적용 가능한 인챈트입니다.",
-  };
+  const enchantmentTriggers = useMemo(
+    () => getEnchantmentTriggers(serviceText),
+    [serviceText],
+  );
 
   return (
     <div className="flex h-[calc(100dvh-3rem)] bg-background text-foreground overflow-hidden">
@@ -252,7 +245,7 @@ export function EnchantmentLibrary({ enchantments, versions, currentVersion, pat
         }
       `}>
         {/* Card type filter */}
-        <FilterSection trigger="#" label="카드 유형">
+        <FilterSection trigger="#" label={serviceText.enchantmentsView.cardTypeFilter}>
           <div className="flex flex-col gap-0.5">
             {CARD_TYPE_ORDER.map((ct) => (
               <button
@@ -268,7 +261,7 @@ export function EnchantmentLibrary({ enchantments, versions, currentVersion, pat
                   className="w-2 h-2 rounded-full shrink-0"
                   style={{ backgroundColor: ENCHANTMENT_CARD_TYPE_CONFIG[ct].color }}
                 />
-                {ENCHANTMENT_CARD_TYPE_CONFIG[ct].label}
+                {serviceText.labels.enchantmentCardTypes[ct].label}
               </button>
             ))}
           </div>
@@ -277,9 +270,9 @@ export function EnchantmentLibrary({ enchantments, versions, currentVersion, pat
         <div className="border-t border-white/10" />
 
         {/* Stackable filter */}
-        <FilterSection label="속성">
+        <FilterSection label={serviceText.enchantmentsView.attributeFilter}>
           <ToggleButton
-            label="중첩 가능만"
+            label={serviceText.enchantmentsView.stackableOnly}
             active={stackableOnly}
             onClick={() => setStackableOnly((v) => !v)}
           />
@@ -293,7 +286,7 @@ export function EnchantmentLibrary({ enchantments, versions, currentVersion, pat
           <button
             onClick={() => setSidebarOpen((v) => !v)}
             className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/10 text-gray-400"
-            aria-label={sidebarOpen ? "필터 닫기" : "필터 열기"}
+            aria-label={sidebarOpen ? serviceText.common.closeFilters : serviceText.common.openFilters}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {sidebarOpen ? (
@@ -303,18 +296,18 @@ export function EnchantmentLibrary({ enchantments, versions, currentVersion, pat
               )}
             </svg>
           </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">인챈트 도감</h1>
+          <h1 className="text-base font-bold text-yellow-500 shrink-0">{serviceText.enchantmentsView.title}</h1>
           <div className="flex-1 max-w-xl mx-auto">
             <SearchBar
               value={searchQuery}
               onChange={setSearchQuery}
               inputId="codex-search"
-              triggerGroups={ENCHANTMENT_TRIGGERS}
-              placeholder="인챈트 검색..."
+              triggerGroups={enchantmentTriggers}
+              placeholder={serviceText.enchantmentsView.searchPlaceholder}
             />
           </div>
           <span className="text-sm text-gray-500 shrink-0 tabular-nums">
-            {filteredEnchantments.length}개
+            {formatCodexCount(filteredEnchantments.length, serviceText.labels.enchantments, serviceLocale)}
           </span>
           {versions && versions.length > 0 && currentVersion && (
             <VersionSelector
@@ -335,16 +328,16 @@ export function EnchantmentLibrary({ enchantments, versions, currentVersion, pat
                   className="text-lg font-bold mb-0.5"
                   style={{ color: ENCHANTMENT_CARD_TYPE_CONFIG[cardType].color }}
                 >
-                  {ENCHANTMENT_CARD_TYPE_CONFIG[cardType].label}
+                  {serviceText.labels.enchantmentCardTypes[cardType].label}
                   <span className="text-sm font-normal text-gray-400 ml-2">
-                    {GROUP_DESCRIPTIONS[cardType]}
+                    {serviceText.labels.enchantmentCardTypes[cardType].description}
                   </span>
                 </h2>
               </div>
 
               <div className="flex flex-wrap gap-2">
                 {groupEnchantments.map((ench) => (
-                  <EnchantmentTile key={ench.id} enchantment={ench} onClick={() => setSelectedEnchantment(ench)} />
+                  <EnchantmentTile key={ench.id} serviceLocale={serviceLocale} enchantment={ench} onClick={() => setSelectedEnchantment(ench)} />
                 ))}
               </div>
             </section>
@@ -352,7 +345,7 @@ export function EnchantmentLibrary({ enchantments, versions, currentVersion, pat
 
           {filteredEnchantments.length === 0 && (
             <div className="flex items-center justify-center h-64 text-gray-500">
-              검색 결과가 없습니다
+              {serviceText.common.noResults}
             </div>
           )}
         </div>
@@ -367,10 +360,26 @@ export function EnchantmentLibrary({ enchantments, versions, currentVersion, pat
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <EnchantmentDetail enchantment={selectedEnchantment} onClose={() => setSelectedEnchantment(null)} entities={entities} relics={relics} />
+            <EnchantmentDetail serviceLocale={serviceLocale} enchantment={selectedEnchantment} onClose={() => setSelectedEnchantment(null)} entities={entities} relics={relics} />
           </div>
         </div>
       )}
     </div>
   );
+}
+
+function getEnchantmentTriggers(serviceText: CodexServiceMessages): TriggerGroup[] {
+  return [
+    {
+      trigger: "#",
+      label: serviceText.enchantmentsView.cardTypeFilter,
+      items: [
+        { value: "attack", label: serviceText.labels.enchantmentCardTypes.Attack.label, desc: "Attack" },
+        { value: "skill", label: serviceText.labels.enchantmentCardTypes.Skill.label, desc: "Skill" },
+        { value: "any", label: serviceText.labels.enchantmentCardTypes.Any.label, desc: "Any card type" },
+      ],
+      validate: (val) => ENCHANTMENT_CARD_TYPE_ALIASES[val] ?? null,
+      chipColor: "bg-purple-500/20 text-purple-400",
+    },
+  ];
 }

@@ -5,6 +5,9 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref } from "@/lib/i18n";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
   CodexEnchantment,
   CodexRelic,
@@ -28,6 +31,7 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 }
 
 interface EnchantmentDetailProps {
+  serviceLocale: ServiceLocale;
   enchantment: CodexEnchantment;
   onClose?: () => void;
   /** Cross-reference entities — when provided, descriptions become rich. */
@@ -48,7 +52,8 @@ function relicMentionsEnchantment(relic: CodexRelic, ench: CodexEnchantment): bo
   return false;
 }
 
-export function EnchantmentDetail({ enchantment, onClose, entities, relics }: EnchantmentDetailProps) {
+export function EnchantmentDetail({ serviceLocale, enchantment, onClose, entities, relics }: EnchantmentDetailProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const cardTypeFilter: EnchantmentCardTypeFilter = enchantment.cardType ?? "Any";
   const cardTypeConfig = ENCHANTMENT_CARD_TYPE_CONFIG[cardTypeFilter];
 
@@ -69,7 +74,7 @@ export function EnchantmentDetail({ enchantment, onClose, entities, relics }: En
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href="/codex/enchantments"
+          href={localizeHref("/codex/enchantments", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {
             if (onClose) {
@@ -78,13 +83,13 @@ export function EnchantmentDetail({ enchantment, onClose, entities, relics }: En
             }
           }}
         >
-          ← 인챈트 도감
+          ← {serviceText.enchantmentsView.backToList}
         </Link>
         {onClose && (
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400"
-            aria-label="닫기"
+            aria-label={serviceText.common.close}
           >
             ✕
           </button>
@@ -117,12 +122,12 @@ export function EnchantmentDetail({ enchantment, onClose, entities, relics }: En
       {/* Stats Row */}
       <div className="flex flex-wrap justify-center gap-2">
         <StatBadge
-          label="카드 유형"
-          value={cardTypeConfig.label}
+          label={serviceText.enchantmentsView.cardTypeFilter}
+          value={serviceText.labels.enchantmentCardTypes[cardTypeFilter].label}
           color={cardTypeConfig.color}
         />
         {enchantment.isStackable && (
-          <StatBadge label="중첩" value="가능" color="#f59e0b" />
+          <StatBadge label={serviceText.enchantmentsView.stackable} value={serviceText.enchantmentsView.possible} color="#f59e0b" />
         )}
       </div>
 
@@ -145,7 +150,7 @@ export function EnchantmentDetail({ enchantment, onClose, entities, relics }: En
       {enchantment.extraCardText && (
         <div className="w-full rounded-lg border border-zinc-700/50 bg-zinc-800/50 px-4 py-3">
           <span className="block text-xs font-medium text-gray-500 mb-1">
-            카드 텍스트
+            {serviceText.enchantmentsView.cardText}
           </span>
           <div className="text-sm text-zinc-300 leading-relaxed">
             {entities ? (
@@ -165,7 +170,7 @@ export function EnchantmentDetail({ enchantment, onClose, entities, relics }: En
       {grantingRelics.length > 0 && (
         <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
           <h2 className="text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider">
-            이 인챈트를 부여하는 유물
+            {serviceText.enchantmentsView.grantingRelics}
           </h2>
           <div className="flex flex-wrap gap-2">
             {grantingRelics.map((r) => (
@@ -180,7 +185,7 @@ export function EnchantmentDetail({ enchantment, onClose, entities, relics }: En
                   void e;
                 }}
               >
-                <RelicTile relic={r} />
+                <RelicTile serviceLocale={serviceLocale} relic={r} />
               </Link>
             ))}
           </div>
@@ -188,7 +193,7 @@ export function EnchantmentDetail({ enchantment, onClose, entities, relics }: En
       )}
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+        <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>
         <CommentSection threadKey={buildCodexCommentThreadKey("enchantment", enchantment.id)} />
       </div>
     </div>

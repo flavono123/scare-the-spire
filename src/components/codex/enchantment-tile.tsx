@@ -2,15 +2,19 @@
 
 import { useState, useRef, useCallback, memo } from "react";
 import Image from "@/components/ui/static-image";
+import type { ServiceLocale } from "@/lib/i18n";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import { CodexEnchantment } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 
 interface EnchantmentTileProps {
+  serviceLocale?: ServiceLocale;
   enchantment: CodexEnchantment;
   onClick?: () => void;
 }
 
-export const EnchantmentTile = memo(function EnchantmentTile({ enchantment, onClick }: EnchantmentTileProps) {
+export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "ko", enchantment, onClick }: EnchantmentTileProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
   const [tooltipSide, setTooltipSide] = useState<"right" | "left">("right");
@@ -72,12 +76,12 @@ export const EnchantmentTile = memo(function EnchantmentTile({ enchantment, onCl
                   ? "bg-red-500/15 text-red-400 border-red-500/30"
                   : "bg-blue-500/15 text-blue-400 border-blue-500/30"
               }`}>
-                {enchantment.cardType === "Attack" ? "공격" : "스킬"} 전용
+                {serviceText.labels.enchantmentCardTypes[enchantment.cardType].exclusive}
               </span>
             )}
             {enchantment.isStackable && (
               <span className="inline-flex items-center rounded-full border border-amber-500/30 bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-medium text-amber-400">
-                중첩
+                {serviceText.enchantmentsView.stackable}
               </span>
             )}
           </div>
@@ -97,7 +101,7 @@ export const EnchantmentTile = memo(function EnchantmentTile({ enchantment, onCl
           {enchantment.extraCardText && (
             <div className="mt-2 rounded border border-zinc-700/50 bg-zinc-800/50 px-2 py-1.5">
               <span className="block text-[9px] font-medium text-gray-500 mb-0.5">
-                카드 텍스트
+                {serviceText.enchantmentsView.cardText}
               </span>
               <div className="text-[11px] text-zinc-300 leading-relaxed">
                 <DescriptionText description={enchantment.extraCardText} />
