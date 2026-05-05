@@ -6,6 +6,7 @@ import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import { CodexCard, CodexEnchantment } from "@/lib/codex-types";
@@ -38,12 +39,13 @@ function getEnchantTipVariant(enchant: CodexEnchantment): HoverTipVariant {
 
 interface CardDetailProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   card: CodexCard;
   enchantments: CodexEnchantment[];
   onClose?: () => void;
 }
 
-export function CardDetail({ serviceLocale, card, enchantments, onClose }: CardDetailProps) {
+export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
@@ -146,7 +148,7 @@ export function CardDetail({ serviceLocale, card, enchantments, onClose }: CardD
             }
           }}
         >
-          ← {serviceText.cardsView.backToList}
+          ← {gameUi.cardLibraryTitle}
         </Link>
         {onClose && (
           <button
@@ -232,7 +234,7 @@ export function CardDetail({ serviceLocale, card, enchantments, onClose }: CardD
                   : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
               }`}
             >
-              {serviceText.cardsView.toggles.upgrade}
+              {gameUi.cardLibrary.viewUpgrades}
             </button>
           )}
           {card.betaImageUrl && (

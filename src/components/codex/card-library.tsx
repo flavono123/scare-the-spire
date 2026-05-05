@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
 import type { ServiceLocale } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
   getCodexServiceMessages,
@@ -104,6 +105,7 @@ const COST_OPTIONS = [0, 1, 2, 3, "3+", "X"] as const;
 
 interface CardLibraryProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   cards: CodexCard[];
   characters: CodexCharacter[];
   versions: string[];
@@ -113,7 +115,7 @@ interface CardLibraryProps {
   enchantments: CodexEnchantment[];
 }
 
-export function CardLibrary({ serviceLocale, cards, characters, versions, currentVersion, patches, versionDiffs, enchantments }: CardLibraryProps) {
+export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, versionDiffs, enchantments }: CardLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
@@ -441,26 +443,37 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
   // Character filters
   const characterFilters = characters.map((c) => ({
     key: c.id.toLowerCase() as CardFilterCategory,
-    label: serviceText.labels.pools[c.id.toLowerCase() as keyof typeof serviceText.labels.pools] ?? c.name,
+    label: c.name,
     icon: CHARACTER_TOKEN_ICONS[c.id.toLowerCase()] ?? c.imageUrl,
   }));
 
   const extraFilters = [
     { key: "colorless" as const, label: serviceText.labels.pools.colorless, icon: CATEGORY_ICONS.colorless },
-    { key: "event" as const, label: serviceText.labels.pools.event, icon: CATEGORY_ICONS.event },
-    { key: "curse" as const, label: serviceText.labels.pools.curse, icon: CATEGORY_ICONS.curse },
-    { key: "status" as const, label: serviceText.labels.pools.status, icon: CATEGORY_ICONS.status },
-    { key: "ancient" as const, label: serviceText.labels.pools.ancient, icon: CATEGORY_ICONS.ancient },
+    { key: "event" as const, label: gameUi.cardLibrary.rarities.이벤트, icon: CATEGORY_ICONS.event },
+    { key: "curse" as const, label: gameUi.cardLibrary.rarities.저주, icon: CATEGORY_ICONS.curse },
+    { key: "status" as const, label: gameUi.cardLibrary.rarities.상태이상, icon: CATEGORY_ICONS.status },
+    { key: "ancient" as const, label: gameUi.cardLibrary.rarities["고대의 존재"], icon: CATEGORY_ICONS.ancient },
   ];
 
   const availableTypes: CardTypeKo[] = ["공격", "스킬", "파워"];
 
   const rarityFilters = [
-    { key: "일반", label: serviceText.labels.cardRarities.일반, color: RARITY_COLORS["일반"] },
-    { key: "고급", label: serviceText.labels.cardRarities.고급, color: RARITY_COLORS["고급"] },
-    { key: "희귀", label: serviceText.labels.cardRarities.희귀, color: RARITY_COLORS["희귀"] },
-    { key: "기타", label: serviceText.labels.cardRarities.기타, color: RARITY_COLORS["기타"] },
+    { key: "일반", label: gameUi.cardLibrary.rarities.일반, color: RARITY_COLORS["일반"] },
+    { key: "고급", label: gameUi.cardLibrary.rarities.고급, color: RARITY_COLORS["고급"] },
+    { key: "희귀", label: gameUi.cardLibrary.rarities.희귀, color: RARITY_COLORS["희귀"] },
+    { key: "기타", label: gameUi.cardLibrary.rarities.기타, color: RARITY_COLORS["기타"] },
   ];
+
+  const rarityDetailLabels: Record<RarityDetail, string> = {
+    unique: serviceText.labels.rarityDetails.unique,
+    starter: gameUi.cardLibrary.rarities.기본,
+    ancient: gameUi.cardLibrary.rarities["고대의 존재"],
+    event: gameUi.cardLibrary.rarities.이벤트,
+    token: gameUi.cardLibrary.rarities.토큰,
+    curse: gameUi.cardLibrary.rarities.저주,
+    status: gameUi.cardLibrary.rarities.상태이상,
+    quest: gameUi.cardLibrary.rarities.퀘스트,
+  };
 
   const searchTriggers = [
       {
@@ -483,26 +496,26 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
       },
       {
         trigger: "#",
-        label: serviceText.cardsView.filters.cardType,
+        label: gameUi.cardLibrary.sort.type,
         items: [
-          { value: "attack", label: serviceText.labels.cardTypes.공격, desc: "Attack" },
-          { value: "skill", label: serviceText.labels.cardTypes.스킬, desc: "Skill" },
-          { value: "power", label: serviceText.labels.cardTypes.파워, desc: "Power" },
+          { value: "attack", label: gameUi.cardLibrary.types.공격, desc: "Attack" },
+          { value: "skill", label: gameUi.cardLibrary.types.스킬, desc: "Skill" },
+          { value: "power", label: gameUi.cardLibrary.types.파워, desc: "Power" },
         ],
         validate: (val: string) => TYPE_ALIASES[val] ?? null,
         chipColor: "bg-green-500/20 text-green-400",
       },
       {
         trigger: "!",
-        label: serviceText.cardsView.filters.cost,
+        label: gameUi.cardLibrary.sort.cost,
         items: [
-          { value: "0", label: "0", desc: "Cost 0" },
-          { value: "1", label: "1", desc: "Cost 1" },
-          { value: "2", label: "2", desc: "Cost 2" },
-          { value: "3", label: "3", desc: "Cost 3" },
-          { value: "3+", label: "3+", desc: "Cost 3+" },
-          { value: "2-", label: "2-", desc: "Cost 2-" },
-          { value: "X", label: "X", desc: "X Cost" },
+          { value: "0", label: "0", desc: `${gameUi.cardLibrary.sort.cost} 0` },
+          { value: "1", label: "1", desc: `${gameUi.cardLibrary.sort.cost} 1` },
+          { value: "2", label: "2", desc: `${gameUi.cardLibrary.sort.cost} 2` },
+          { value: "3", label: "3", desc: `${gameUi.cardLibrary.sort.cost} 3` },
+          { value: "3+", label: "3+", desc: `${gameUi.cardLibrary.sort.cost} 3+` },
+          { value: "2-", label: "2-", desc: `${gameUi.cardLibrary.sort.cost} 2-` },
+          { value: "X", label: "X", desc: `${gameUi.cardLibrary.sort.cost} X` },
         ],
         chipColor: "bg-amber-500/20 text-amber-400",
       },
@@ -614,13 +627,13 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
         <div className="border-t border-white/10" />
 
         {/* Card Type (icon buttons) */}
-        <FilterSection trigger="#" label={serviceText.cardsView.filters.cardType} sortDir={sortDirs.type} onSortToggle={() => toggleSort("type")} sortTitle={serviceText.common.sortButtonTitle}>
+        <FilterSection trigger="#" label={gameUi.cardLibrary.sort.type} sortDir={sortDirs.type} onSortToggle={() => toggleSort("type")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex gap-1.5">
             {availableTypes.map((type) => (
               <IconFilterButton
                 key={type}
                 icon={TYPE_SORT_ICONS[type] ?? TYPE_SORT_ICONS["공격"]}
-                label={serviceText.labels.cardTypes[type]}
+                label={gameUi.cardLibrary.types[type]}
                 active={selectedTypes.has(type)}
                 onClick={() => toggleType(type)}
               />
@@ -629,7 +642,7 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
         </FilterSection>
 
         {/* Rarity */}
-        <FilterSection label={serviceText.cardsView.filters.rarity} sortDir={sortDirs.rarity} onSortToggle={() => toggleSort("rarity")} sortTitle={serviceText.common.sortButtonTitle}>
+        <FilterSection label={gameUi.cardLibrary.sort.rarity} sortDir={sortDirs.rarity} onSortToggle={() => toggleSort("rarity")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-col gap-0.5">
             {rarityFilters.map((r) => (
               <button
@@ -665,7 +678,7 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
                       className="w-1.5 h-1.5 rounded-full shrink-0"
                       style={{ backgroundColor: RARITY_DETAIL_COLORS[detail] }}
                     />
-                    {serviceText.labels.rarityDetails[detail]}
+                    {rarityDetailLabels[detail]}
                   </button>
                 ))}
               </div>
@@ -674,7 +687,7 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
         </FilterSection>
 
         {/* Cost */}
-        <FilterSection trigger="!" label={serviceText.cardsView.filters.cost} sortDir={sortDirs.cost} onSortToggle={() => toggleSort("cost")} sortTitle={serviceText.common.sortButtonTitle}>
+        <FilterSection trigger="!" label={gameUi.cardLibrary.sort.cost} sortDir={sortDirs.cost} onSortToggle={() => toggleSort("cost")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-wrap gap-1">
             {COST_OPTIONS.map((cost) => {
               const key = String(cost);
@@ -696,7 +709,7 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
         </FilterSection>
 
         {/* Name sort (no filter, just sort toggle) */}
-        <FilterSection label={serviceText.cardsView.filters.nameSort} sortDir={sortDirs.name} onSortToggle={() => toggleSort("name")} sortTitle={serviceText.common.sortButtonTitle}>
+        <FilterSection label={gameUi.cardLibrary.sort.name} sortDir={sortDirs.name} onSortToggle={() => toggleSort("name")} sortTitle={serviceText.common.sortButtonTitle}>
           <span />
         </FilterSection>
 
@@ -705,12 +718,12 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
         {/* Toggles */}
         <div className="flex flex-col gap-1">
           <ToggleButton
-            label={serviceText.cardsView.toggles.multiplayer}
+            label={gameUi.cardLibrary.viewMultiplayerCards}
             active={showMultiplayer}
             onClick={() => setShowMultiplayer((v) => !v)}
           />
           <ToggleButton
-            label={serviceText.cardsView.toggles.upgrade}
+            label={gameUi.cardLibrary.viewUpgrades}
             active={showUpgrades}
             onClick={() => setShowUpgrades((v) => !v)}
           />
@@ -739,14 +752,14 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
               )}
             </svg>
           </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">{serviceText.cardsView.title}</h1>
+          <h1 className="text-base font-bold text-yellow-500 shrink-0">{gameUi.cardLibraryTitle}</h1>
           <div className="flex-1 max-w-xl mx-auto">
             <SearchBar
               value={searchQuery}
               onChange={setSearchQuery}
               inputId="codex-search"
               triggerGroups={searchTriggers}
-              placeholder={serviceText.cardsView.searchPlaceholder}
+              placeholder={gameUi.cardLibrary.searchPlaceholder}
             />
           </div>
           <span className="text-sm text-gray-500 shrink-0 tabular-nums">
@@ -790,7 +803,7 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
           )}
           {filteredCards.length === 0 && (
             <div className="flex items-center justify-center h-64 text-gray-500">
-              {serviceText.common.noResults}
+              {gameUi.cardLibrary.noResults}
             </div>
           )}
         </div>
@@ -805,7 +818,7 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
           }}
         >
           <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-[#1a1a2e] border border-white/10 rounded-2xl shadow-2xl">
-            <CardDetail serviceLocale={serviceLocale} card={selectedCard} enchantments={enchantments} onClose={() => setSelectedCard(null)} />
+            <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} onClose={() => setSelectedCard(null)} />
           </div>
         </div>
       )}

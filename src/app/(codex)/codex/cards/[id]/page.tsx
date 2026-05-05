@@ -5,7 +5,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { CardDetail } from "@/components/codex/card-detail";
 
 export async function generateStaticParams() {
@@ -24,11 +25,13 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  const cards = await getCodexCards({ gameLocale });
+  const [cards, gameUi] = await Promise.all([
+    getCodexCards({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
+  ]);
   const card = cards.find((c) => c.id.toLowerCase() === id.toLowerCase());
   if (!card) return {};
-  return getCodexMetadata(serviceLocale, `${card.name} — ${serviceText.cardsView.title}`);
+  return getCodexMetadata(serviceLocale, `${card.name} — ${gameUi.cardLibraryTitle}`);
 }
 
 export default async function CardDetailPage({
@@ -42,16 +45,17 @@ export default async function CardDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [cards, enchantments] = await Promise.all([
+  const [cards, enchantments, gameUi] = await Promise.all([
     getCodexCards({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
   ]);
   const card = cards.find((c) => c.id.toLowerCase() === id.toLowerCase());
   if (!card) notFound();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <CardDetail serviceLocale={serviceLocale} card={card} enchantments={enchantments} />
+      <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={card} enchantments={enchantments} />
     </div>
   );
 }

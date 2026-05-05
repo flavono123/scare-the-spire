@@ -11,7 +11,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { CardLibrary } from "@/components/codex/card-library";
 
 export async function generateMetadata({
@@ -19,9 +20,11 @@ export async function generateMetadata({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  return getCodexMetadata(serviceLocale, serviceText.cardsView.title);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const gameUi = await getCodexGameUiLabels(gameLocale);
+  return getCodexMetadata(serviceLocale, gameUi.cardLibraryTitle);
 }
 
 export default async function CodexCardsPage({
@@ -32,7 +35,7 @@ export default async function CodexCardsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [cards, characters, patches, versionDiffs, meta, enchantments] =
+  const [cards, characters, patches, versionDiffs, meta, enchantments, gameUi] =
     await Promise.all([
       getCodexCards({ gameLocale }),
       getCodexCharacters({ gameLocale }),
@@ -40,6 +43,7 @@ export default async function CodexCardsPage({
       getEntityVersionDiffs(),
       getCodexMeta(),
       getCodexEnchantments({ gameLocale }),
+      getCodexGameUiLabels(gameLocale),
     ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -48,6 +52,7 @@ export default async function CodexCardsPage({
     <Suspense>
       <CardLibrary
         serviceLocale={serviceLocale}
+        gameUi={gameUi}
         cards={cards}
         characters={characters}
         versions={versions}
