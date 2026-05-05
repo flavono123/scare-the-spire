@@ -3,10 +3,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 export const serviceMessages = {
   ko: {
     brand: "슬서운 이야기",
-    serviceLocaleName: "한국어",
-    serviceLocaleSwitch: "English",
-    serviceLocaleSelect: "서비스",
-    gameLocaleSelect: "게임 문구",
+    languageSelect: "언어",
     nav: {
       patches: "패치노트",
       chemicalX: "케미컬X",
@@ -31,10 +28,7 @@ export const serviceMessages = {
   },
   en: {
     brand: "Scare the Spire",
-    serviceLocaleName: "English",
-    serviceLocaleSwitch: "한국어",
-    serviceLocaleSelect: "Service",
-    gameLocaleSelect: "Game Text",
+    languageSelect: "Language",
     nav: {
       patches: "Patch Notes",
       chemicalX: "Chemical X",

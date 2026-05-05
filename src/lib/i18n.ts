@@ -48,6 +48,23 @@ export const GAME_LOCALE_LABELS: Record<
   tur: { ko: "튀르키예어", en: "Turkish" },
 };
 
+export const GAME_LOCALE_NATIVE_LABELS: Record<GameLocale, string> = {
+  kor: "한국어",
+  eng: "English",
+  zhs: "中文",
+  jpn: "日本語",
+  deu: "Deutsch",
+  fra: "Français",
+  ita: "Italiano",
+  spa: "Español (Castellano)",
+  esp: "Español (Latinoamérica)",
+  ptb: "Português Brasileiro",
+  rus: "Русский",
+  pol: "Polski",
+  tha: "ไทย",
+  tur: "Türkçe",
+};
+
 export function isServiceLocale(value: string): value is ServiceLocale {
   return (SERVICE_LOCALES as readonly string[]).includes(value);
 }

@@ -5,9 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import {
-  GAME_LOCALE_LABELS,
-  GAME_LOCALES,
-  SERVICE_LOCALES,
+  GAME_LOCALE_NATIVE_LABELS,
   getGameLocaleFromSearch,
   getServiceLocaleFromPath,
   localizeHrefWithGameLocale,
@@ -39,6 +37,39 @@ const sts1Items = [
 ] as const;
 
 type CodexLabelKey = keyof typeof serviceMessages.ko.codex;
+
+const serviceLocalizedGameLocales = new Set<GameLocale>(["kor", "eng"]);
+
+const languageMenuLocales = [
+  "kor",
+  "eng",
+  "zhs",
+  "deu",
+  "esp",
+  "fra",
+  "ita",
+  "jpn",
+  "pol",
+  "ptb",
+  "rus",
+  "spa",
+  "tha",
+  "tur",
+] as const satisfies readonly GameLocale[];
+
+function serviceLocaleForLanguage(gameLocale: GameLocale): ServiceLocale {
+  return gameLocale === "kor" ? "ko" : "en";
+}
+
+function languageHref(
+  pathname: string,
+  searchParams: URLSearchParams,
+  gameLocale: GameLocale,
+) {
+  const serviceLocale = serviceLocaleForLanguage(gameLocale);
+  const search = withGameLocaleSearch(searchParams, gameLocale, serviceLocale);
+  return switchServiceLocaleHref(pathname, serviceLocale, search);
+}
 
 function localizeNavItems<T extends { href: string; labelKey: CodexLabelKey; icon: string }>(
   items: readonly T[],
@@ -202,98 +233,118 @@ function GameDropdown({
   );
 }
 
-function GameLocaleSelect({
+function LanguageDropdown({
   value,
-  serviceLocale,
   label,
 }: {
   value: GameLocale;
-  serviceLocale: ServiceLocale;
   label: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-label={label}
+        onClick={() => setOpen((v) => !v)}
+        className="flex h-9 min-w-[8.75rem] items-center justify-between gap-3 rounded-md border border-border bg-background/80 px-3 text-left text-sm font-semibold text-foreground shadow-sm transition-colors hover:bg-white/5"
+      >
+        <span>{GAME_LOCALE_NATIVE_LABELS[value]}</span>
+        <svg
+          className={`h-4 w-4 text-yellow-400 transition-transform ${open ? "rotate-180" : ""}`}
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <path d="M10 14.5 3.5 5.5h13L10 14.5Z" />
+        </svg>
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 top-full z-50 mt-1 max-h-[min(34rem,calc(100vh-4rem))] w-[19rem] overflow-y-auto rounded-md border border-border bg-background/95 py-1 shadow-xl"
+        >
+          {languageMenuLocales.map((locale) => {
+            const serviceOnly = serviceLocalizedGameLocales.has(locale);
+            const active = locale === value;
+            const href = languageHref(
+              pathname,
+              new URLSearchParams(searchParams.toString()),
+              locale,
+            );
+
+            return (
+              <Link
+                key={locale}
+                href={href}
+                prefetch={false}
+                role="menuitem"
+                aria-current={active ? "true" : undefined}
+                onClick={() => setOpen(false)}
+                className={`flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors ${
+                  active
+                    ? "bg-yellow-500/10 text-yellow-300"
+                    : "text-foreground hover:bg-white/5"
+                }`}
+              >
+                <span className="text-base font-semibold">
+                  {GAME_LOCALE_NATIVE_LABELS[locale]}
+                </span>
+                {!serviceOnly && (
+                  <span className="shrink-0 rounded border border-amber-400/35 bg-amber-400/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200">
+                    only game local
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LocaleCanonicalizer({
+  serviceLocale,
+  gameLocale,
+}: {
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
 }) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  return (
-    <label
-      className="flex h-8 items-center gap-1.5 rounded-md bg-background/70 px-2 transition-colors hover:bg-white/5 focus-within:bg-white/5"
-      title={`${label}: ${GAME_LOCALE_LABELS[value][serviceLocale]}`}
-    >
-      <span className="whitespace-nowrap text-[10px] font-semibold text-muted-foreground">
-        {label}
-      </span>
-      <select
-        aria-label={label}
-        value={value}
-        onChange={(event) => {
-          const nextLocale = event.target.value as GameLocale;
-          const search = withGameLocaleSearch(
-            new URLSearchParams(searchParams.toString()),
-            nextLocale,
-            serviceLocale,
-          );
-          router.push(`${pathname}${search}`);
-        }}
-        className="h-6 max-w-[8.5rem] bg-transparent text-xs font-semibold text-foreground outline-none"
-      >
-        {GAME_LOCALES.map((locale) => (
-          <option key={locale} value={locale}>
-            {GAME_LOCALE_LABELS[locale][serviceLocale]}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
+  useEffect(() => {
+    const expectedServiceLocale = serviceLocaleForLanguage(gameLocale);
+    if (serviceLocale === expectedServiceLocale) return;
 
-function ServiceLocaleSwitch({
-  currentLocale,
-  hrefs,
-  label,
-}: {
-  currentLocale: ServiceLocale;
-  hrefs: Record<ServiceLocale, string>;
-  label: string;
-}) {
-  return (
-    <div
-      className="flex h-8 items-center gap-1 rounded-md bg-background/70 px-2"
-      aria-label={label}
-    >
-      <span className="whitespace-nowrap text-[10px] font-semibold text-muted-foreground">
-        {label}
-      </span>
-      <div className="flex items-center rounded border border-border bg-black/15 p-0.5">
-        {SERVICE_LOCALES.map((locale) => {
-          const content = (
-            <span className="px-1.5 py-0.5 text-[11px] font-semibold">
-              {serviceMessages[locale].serviceLocaleName}
-            </span>
-          );
+    router.replace(
+      languageHref(
+        pathname,
+        new URLSearchParams(searchParams.toString()),
+        gameLocale,
+      ),
+    );
+  }, [gameLocale, pathname, router, searchParams, serviceLocale]);
 
-          return locale === currentLocale ? (
-            <span
-              key={locale}
-              aria-current="true"
-              className="rounded-sm bg-yellow-500/15 text-yellow-300"
-            >
-              {content}
-            </span>
-          ) : (
-            <Link
-              key={locale}
-              href={hrefs[locale]}
-              prefetch={false}
-              className="rounded-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
-            >
-              {content}
-            </Link>
-          );
-        })}
-      </div>
-    </div>
-  );
+  return null;
 }
 
 // --- Main navbar ---
@@ -307,19 +358,10 @@ export function SiteNavbar() {
     serviceLocale,
   );
   const messages = serviceMessages[serviceLocale];
-  const serviceLocaleHrefs = Object.fromEntries(
-    SERVICE_LOCALES.map((locale) => {
-      const search = withGameLocaleSearch(
-        new URLSearchParams(searchParams.toString()),
-        gameLocale,
-        locale,
-      );
-      return [locale, switchServiceLocaleHref(pathname, locale, search)];
-    }),
-  ) as Record<ServiceLocale, string>;
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
+      <LocaleCanonicalizer serviceLocale={serviceLocale} gameLocale={gameLocale} />
       <div className="mx-auto flex items-center justify-between px-4 h-12">
         {/* Left: brand + services */}
         <div className="flex items-center gap-4">
@@ -363,21 +405,9 @@ export function SiteNavbar() {
           </nav>
         </div>
 
-        {/* Right: locale controls + game dropdowns */}
+        {/* Right: language + game dropdowns */}
         <div className="flex items-center gap-1">
-          <div className="flex items-center gap-1 rounded-lg border border-border bg-white/[0.03] p-1">
-            <ServiceLocaleSwitch
-              currentLocale={serviceLocale}
-              hrefs={serviceLocaleHrefs}
-              label={messages.serviceLocaleSelect}
-            />
-            <div className="h-5 w-px bg-border" aria-hidden="true" />
-            <GameLocaleSelect
-              value={gameLocale}
-              serviceLocale={serviceLocale}
-              label={messages.gameLocaleSelect}
-            />
-          </div>
+          <LanguageDropdown value={gameLocale} label={messages.languageSelect} />
           <GameDropdown
             icon="/images/sts2/icons/app_icon.png"
             alt={messages.games.sts2Codex}
