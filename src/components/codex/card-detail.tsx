@@ -174,6 +174,7 @@ export function CardDetail({ serviceLocale, card, enchantments, onClose }: CardD
       >
         <CardTile
           card={card}
+          serviceLocale={serviceLocale}
           showUpgrade={showUpgrade}
           showBeta={showBeta}
           width={cardWidth}

@@ -2,6 +2,8 @@
 
 import { useState, memo, CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
+import type { ServiceLocale } from "@/lib/i18n";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import { CodexCard } from "@/lib/codex-types";
 import {
   parseDescription,
@@ -104,6 +106,7 @@ export type CardTileSize = keyof typeof CARD_WIDTH_PRESET;
 
 interface CardTileProps {
   card: CodexCard;
+  serviceLocale?: ServiceLocale;
   showUpgrade: boolean;
   showBeta: boolean;
   /** 고정 픽셀 폭. 게임처럼 반응형 X. 미지정 시 size="grid" 기본. */
@@ -129,6 +132,7 @@ interface CardTileProps {
 
 export const CardTile = memo(function CardTile({
   card,
+  serviceLocale = "ko",
   showUpgrade,
   showBeta,
   width,
@@ -144,6 +148,7 @@ export const CardTile = memo(function CardTile({
   onEnchantSlotClick,
   onClick,
 }: CardTileProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const [imgError, setImgError] = useState(false);
   const [hoveredTerm, setHoveredTerm] = useState<string | null>(null);
 
@@ -396,10 +401,14 @@ export const CardTile = memo(function CardTile({
   // → CSS filter 환산: hue-rotate(-270deg = +90deg) saturate(0.4) brightness(1.0)
   // 슬롯 텍스처를 검정/회색으로 만드는 게임 셰이더와 동일.
   const slotInteractive = Boolean(onEnchantSlotClick);
+  const enchantmentSlotLabel = enchantmentLabel ?? serviceText.enchantments;
+  const removeEnchantActionLabel = serviceLocale === "ko"
+    ? `${enchantmentSlotLabel} ${serviceText.cardsView.enchantments.remove}`
+    : `${serviceText.cardsView.enchantments.remove} ${enchantmentSlotLabel}`;
   const renderEnchantSlot = () => enchantmentImageUrl ? (
     <div
       role={slotInteractive ? "button" : undefined}
-      aria-label={slotInteractive ? `${enchantmentLabel ?? "인챈트"} 해제` : undefined}
+      aria-label={slotInteractive ? removeEnchantActionLabel : undefined}
       tabIndex={slotInteractive ? 0 : undefined}
       onClick={slotInteractive
         ? (e) => {
@@ -423,7 +432,7 @@ export const CardTile = memo(function CardTile({
         width: `${L.enchant.width}%`,
         aspectRatio: "72/54",
       }}
-      title={slotInteractive ? `${enchantmentLabel ?? ""} (클릭으로 해제)` : enchantmentLabel ?? undefined}
+      title={slotInteractive ? removeEnchantActionLabel : enchantmentLabel ?? undefined}
     >
       {/* Slot base — 게임 ShaderMaterial_ots2x: HSV(0.25, 0.4, 1.0) */}
       <Image

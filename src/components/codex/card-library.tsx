@@ -775,6 +775,7 @@ export function CardLibrary({ serviceLocale, cards, characters, versions, curren
               >
                 <CardTile
                   card={card}
+                  serviceLocale={serviceLocale}
                   showUpgrade={showUpgrades}
                   showBeta={showBeta}
                   size="grid"
