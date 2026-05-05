@@ -29,6 +29,7 @@ import {
   EventAct,
   CardColor,
   CardTypeKo,
+  CardRarityKo,
   RelicRarityKo,
   RelicPool,
   PotionRarityKo,
