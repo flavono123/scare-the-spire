@@ -2,7 +2,10 @@ import { Suspense } from "react";
 import { getCodexPotions, getCodexCharacters } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
-import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+} from "@/lib/i18n";
 import { PotionLibrary } from "@/components/codex/potion-library";
 
 export default async function CodexPotionsPage({
@@ -10,7 +13,9 @@ export default async function CodexPotionsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [potions, characters, patches, versionDiffs, meta] = await Promise.all([
     getCodexPotions({ gameLocale }),
     getCodexCharacters({ gameLocale }),
@@ -24,6 +29,7 @@ export default async function CodexPotionsPage({
   return (
     <Suspense>
       <PotionLibrary
+        serviceLocale={serviceLocale}
         potions={potions}
         characters={characters}
         versions={versions}

@@ -3,7 +3,10 @@ import { Metadata } from "next";
 import { getCodexPowers } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
-import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+} from "@/lib/i18n";
 import { PowerLibrary } from "@/components/codex/power-library";
 
 export const metadata: Metadata = {
@@ -17,7 +20,9 @@ export default async function CodexPowersPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [powers, patches, versionDiffs, meta] = await Promise.all([
     getCodexPowers({ gameLocale }),
     getSTS2Patches(),
@@ -30,6 +35,7 @@ export default async function CodexPowersPage({
   return (
     <Suspense>
       <PowerLibrary
+        serviceLocale={serviceLocale}
         powers={powers}
         versions={versions}
         currentVersion={meta.version}

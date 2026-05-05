@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexPotions } from "@/lib/codex-data";
-import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+} from "@/lib/i18n";
 import { PotionDetail } from "@/components/codex/potion-detail";
 import { POTION_RARITY_CONFIG } from "@/lib/codex-types";
 
@@ -33,14 +36,16 @@ export default async function PotionDetailPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const potions = await getCodexPotions({ gameLocale });
   const potion = potions.find((p) => p.id.toLowerCase() === id.toLowerCase());
   if (!potion) notFound();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PotionDetail potion={potion} />
+      <PotionDetail serviceLocale={serviceLocale} potion={potion} />
     </div>
   );
 }

@@ -2,7 +2,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexEnchantments, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
-import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+} from "@/lib/i18n";
 import { EnchantmentDetail } from "@/components/codex/enchantment-detail";
 import { ENCHANTMENT_CARD_TYPE_CONFIG, type EnchantmentCardTypeFilter } from "@/lib/codex-types";
 
@@ -35,7 +38,9 @@ export default async function EnchantmentDetailPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [enchantments, relics, entities] = await Promise.all([
     getCodexEnchantments({ gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -46,7 +51,7 @@ export default async function EnchantmentDetailPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <EnchantmentDetail enchantment={ench} entities={entities} relics={relics} />
+      <EnchantmentDetail serviceLocale={serviceLocale} enchantment={ench} entities={entities} relics={relics} />
     </div>
   );
 }

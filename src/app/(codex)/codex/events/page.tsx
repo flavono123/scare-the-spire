@@ -2,7 +2,10 @@ import { Suspense } from "react";
 import { getCodexEvents } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
-import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+} from "@/lib/i18n";
 import { EventList } from "@/components/codex/event-list";
 
 export const metadata = {
@@ -15,7 +18,9 @@ export default async function CodexEventsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [events, patches, versionDiffs, meta] = await Promise.all([
     getCodexEvents({ gameLocale }),
     getSTS2Patches(),
@@ -28,6 +33,7 @@ export default async function CodexEventsPage({
   return (
     <Suspense>
       <EventList
+        serviceLocale={serviceLocale}
         events={events}
         versions={versions}
         currentVersion={meta.version}

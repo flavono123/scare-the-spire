@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 import { getCodexAncients, getCodexRelics } from "@/lib/codex-data";
-import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+} from "@/lib/i18n";
 import { AncientDetail } from "@/components/codex/ancient-detail";
 import type { CodexRelic } from "@/lib/codex-types";
 
@@ -27,7 +30,9 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function AncientDetailPage({ params, searchParams }: Props) {
   const { id } = await params;
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [ancients, relics] = await Promise.all([
     getCodexAncients({ gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -40,5 +45,5 @@ export default async function AncientDetailPage({ params, searchParams }: Props)
     .map((rid) => relics.find((r) => r.id === rid))
     .filter((r): r is CodexRelic => r !== undefined);
 
-  return <AncientDetail ancient={ancient} relics={ancientRelics} />;
+  return <AncientDetail serviceLocale={serviceLocale} ancient={ancient} relics={ancientRelics} />;
 }

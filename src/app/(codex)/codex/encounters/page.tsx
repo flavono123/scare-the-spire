@@ -1,6 +1,9 @@
 import { Suspense } from "react";
 import { getCodexMonsters, getCodexEncounters } from "@/lib/codex-data";
-import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+} from "@/lib/i18n";
 import { EncounterLibrary } from "@/components/codex/encounter-library";
 
 export const metadata = {
@@ -13,7 +16,9 @@ export default async function CodexEncountersPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [encounters, monsters] = await Promise.all([
     getCodexEncounters({ gameLocale }),
     getCodexMonsters({ gameLocale }),
@@ -21,7 +26,7 @@ export default async function CodexEncountersPage({
 
   return (
     <Suspense>
-      <EncounterLibrary encounters={encounters} monsters={monsters} />
+      <EncounterLibrary serviceLocale={serviceLocale} encounters={encounters} monsters={monsters} />
     </Suspense>
   );
 }

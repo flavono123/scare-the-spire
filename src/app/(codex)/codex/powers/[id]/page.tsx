@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexPowers } from "@/lib/codex-data";
-import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+} from "@/lib/i18n";
 import { PowerDetail } from "@/components/codex/power-detail";
 import { POWER_TYPE_CONFIG } from "@/lib/codex-types";
 
@@ -33,14 +36,16 @@ export default async function PowerDetailPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const powers = await getCodexPowers({ gameLocale });
   const power = powers.find((p) => p.id.toLowerCase() === id.toLowerCase());
   if (!power) notFound();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PowerDetail power={power} />
+      <PowerDetail serviceLocale={serviceLocale} power={power} />
     </div>
   );
 }

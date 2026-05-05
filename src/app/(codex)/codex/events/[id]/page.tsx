@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexEvents } from "@/lib/codex-data";
-import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+} from "@/lib/i18n";
 import { EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
 import { EventDetail } from "@/components/codex/event-detail";
 
@@ -36,7 +39,9 @@ export default async function EventDetailPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const events = await getCodexEvents({ gameLocale });
   const event = events.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!event) notFound();
@@ -44,7 +49,7 @@ export default async function EventDetailPage({
   return (
     <div className="min-h-screen bg-background flex items-start justify-center py-8 px-4">
       <div className="w-full max-w-3xl rounded-xl border border-yellow-900/30 shadow-2xl overflow-hidden">
-        <EventDetail event={event} />
+        <EventDetail serviceLocale={serviceLocale} event={event} />
       </div>
     </div>
   );

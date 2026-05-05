@@ -1,5 +1,8 @@
 import { getCodexAncients } from "@/lib/codex-data";
-import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+} from "@/lib/i18n";
 import { AncientList } from "@/components/codex/ancient-list";
 
 export const metadata = {
@@ -12,8 +15,10 @@ export default async function CodexAncientsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const ancients = await getCodexAncients({ gameLocale });
 
-  return <AncientList ancients={ancients} />;
+  return <AncientList serviceLocale={serviceLocale} ancients={ancients} />;
 }
