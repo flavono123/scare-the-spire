@@ -11,6 +11,7 @@ import {
   getCodexMetadata,
   getCodexServiceMessages,
 } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 
 const categories = [
   {
@@ -128,9 +129,11 @@ export async function generateMetadata({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  return getCodexMetadata(serviceLocale, serviceText.indexView.title);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const gameUi = await getCodexGameUiLabels(gameLocale);
+  return getCodexMetadata(serviceLocale, gameUi.compendiumTitle);
 }
 
 export default async function CodexIndexPage({
@@ -142,6 +145,13 @@ export default async function CodexIndexPage({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const messages = getCodexServiceMessages(serviceLocale);
+  const gameUi = await getCodexGameUiLabels(gameLocale);
+  const gameCategoryLabels: Partial<Record<(typeof categories)[number]["labelKey"], string>> = {
+    cards: gameUi.cardLibraryTitle,
+    relics: gameUi.relicCollectionTitle,
+    potions: gameUi.potionLabTitle,
+    monsters: gameUi.bestiaryTitle,
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -149,7 +159,7 @@ export default async function CodexIndexPage({
       <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
         <div className="mx-auto max-w-5xl px-6 py-12 text-center">
           <h1 className="font-[family-name:var(--font-gc-batang)] text-4xl md:text-5xl text-yellow-500 mb-3">
-            {messages.indexView.title}
+            {gameUi.compendiumTitle}
           </h1>
           <p className="font-[family-name:var(--font-gc-batang)] text-lg text-yellow-200/60">
             {messages.indexView.subtitle}
@@ -187,7 +197,7 @@ export default async function CodexIndexPage({
               {/* Text */}
               <div className="px-6 pb-6 text-center">
                 <h2 className="font-[family-name:var(--font-gc-batang)] text-2xl text-yellow-400 group-hover:text-yellow-300 transition-colors">
-                  {messages[cat.labelKey]}
+                  {gameCategoryLabels[cat.labelKey] ?? messages[cat.labelKey]}
                   {serviceLocale === "ko" && (
                     <span className="ml-2 text-base text-yellow-200/30 font-[family-name:var(--font-kreon)]">
                       {ENGLISH_LABELS[cat.labelKey]}
