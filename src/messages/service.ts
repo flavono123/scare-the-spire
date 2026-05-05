@@ -33,7 +33,7 @@ export const serviceMessages = {
         sortButtonTitle: "정렬 기준 변경",
       },
       labels: {
-        entries: "entries",
+        entries: "개 항목",
         items: "개",
         cards: "장",
         relics: "개",

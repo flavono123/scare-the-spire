@@ -17,7 +17,12 @@ export function formatCodexCount(
 ): string {
   if (serviceLocale === "ko") return `${count}${unit}`;
 
-  const displayUnit = count === 1 ? unit.replace(/s$/, "") : unit;
+  const singularOverrides: Record<string, string> = {
+    entries: "entry",
+  };
+  const displayUnit = count === 1
+    ? singularOverrides[unit] ?? unit.replace(/s$/, "")
+    : unit;
   return `${count} ${displayUnit}`;
 }
 
