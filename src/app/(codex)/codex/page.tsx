@@ -1,5 +1,6 @@
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -7,6 +8,7 @@ import {
 } from "@/lib/i18n";
 import {
   formatCodexCount,
+  getCodexMetadata,
   getCodexServiceMessages,
 } from "@/lib/codex-service";
 
@@ -120,6 +122,16 @@ const categories = [
     ],
   },
 ] as const;
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  return getCodexMetadata(serviceLocale, serviceText.indexView.title);
+}
 
 export default async function CodexIndexPage({
   searchParams,
