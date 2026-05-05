@@ -30,17 +30,19 @@ export type CharacterColor = "red" | "green" | "blue" | "purple" | "orange";
 
 export interface CodexCard {
   id: string;
-  name: string; // Korean
+  name: string; // selected game locale
   nameEn: string; // English
-  description: string; // Korean, with BBCode markup
-  descriptionRaw: string; // Korean, with {Var:diff()} templates
+  description: string; // selected game locale, with BBCode markup
+  descriptionRaw: string; // selected game locale, with {Var:diff()} templates
   vars: Record<string, number>; // Base variable values for description template
   cost: number;
   isXCost: boolean;
   isXStarCost: boolean;
   starCost: number | null;
-  type: CardTypeKo;
-  rarity: CardRarityKo;
+  type: CardTypeKo; // Korean canonical key
+  typeLabel: string; // selected game locale
+  rarity: CardRarityKo; // Korean canonical key
+  rarityLabel: string; // selected game locale
   color: CardColor;
   damage: number | null;
   block: number | null;

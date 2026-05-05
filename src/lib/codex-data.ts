@@ -7,6 +7,10 @@ import {
   readGameLocalizationTable,
   type GameLocalizationTable,
 } from "./game-localization";
+import {
+  getGameplayCardRarityLabels,
+  getGameplayCardTypeLabels,
+} from "./codex-game-ui";
 import { DEFAULT_GAME_LOCALE_BY_SERVICE, type GameLocale } from "./i18n";
 import {
   CodexCard,
@@ -102,6 +106,8 @@ function mapCard(
   kor: RawCard,
   eng: RawCard,
   gameCards: GameLocalizationTable,
+  typeLabels: Record<CardTypeKo, string>,
+  rarityLabels: Record<CardRarityKo, string>,
   keywordLabels: Record<string, string>,
 ): CodexCard {
   const vars = kor.vars ?? {};
@@ -118,7 +124,9 @@ function mapCard(
     isXStarCost: kor.is_x_star_cost ?? false,
     starCost: kor.star_cost,
     type: kor.type as CodexCard["type"],
+    typeLabel: typeLabels[kor.type as CardTypeKo] ?? kor.type,
     rarity: kor.rarity as CodexCard["rarity"],
+    rarityLabel: rarityLabels[kor.rarity as CardRarityKo] ?? kor.rarity,
     color: kor.color as CardColor,
     damage: kor.damage,
     block: kor.block,
@@ -143,23 +151,26 @@ export async function getCodexCards(opts?: {
   gameLocale?: GameLocale;
 }): Promise<CodexCard[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korCards, engCards, gameCards, korKeywords, gameKeywords] = await Promise.all([
+  const [korCards, engCards, gameCards, korKeywords, gameKeywords, gameplay] = await Promise.all([
     readJson<RawCard[]>("kor/cards.json"),
     readJson<RawCard[]>("eng/cards.json"),
     readGameLocalizationTable(gameLocale, "cards"),
     readGameLocalizationTable("kor", "card_keywords"),
     readGameLocalizationTable(gameLocale, "card_keywords"),
+    readGameLocalizationTable(gameLocale, "gameplay_ui"),
   ]);
 
   const engById = new Map(engCards.map((c) => [c.id, c]));
   const keywordLabels = buildKeywordLabels(korKeywords, gameKeywords);
+  const typeLabels = getGameplayCardTypeLabels(gameplay);
+  const rarityLabels = getGameplayCardRarityLabels(gameplay);
   const includeDeprecated = opts?.includeDeprecated ?? false;
 
   return korCards
     .filter((c) => (c.image_url || c.beta_image_url) && (includeDeprecated || !c.deprecated))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapCard(kor, eng, gameCards, keywordLabels);
+      return mapCard(kor, eng, gameCards, typeLabels, rarityLabels, keywordLabels);
     });
 }
 
