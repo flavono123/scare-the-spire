@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import { MonsterDetail } from "./monster-detail";
 import { getChoseong } from "es-hangul";
+import type { ServiceLocale } from "@/lib/i18n";
+import { serviceMessages } from "@/messages/service";
 import {
   CodexMonster,
   CodexEncounter,
@@ -18,6 +20,9 @@ import {
   EventAct,
 } from "@/lib/codex-types";
 
+type MonsterViewMessages =
+  (typeof serviceMessages)[ServiceLocale]["codex"]["monstersView"];
+
 // Act display order
 const ACT_ORDER: (EventAct | null)[] = [
   "Act 1 - Overgrowth",
@@ -28,11 +33,19 @@ const ACT_ORDER: (EventAct | null)[] = [
 ];
 
 interface MonsterLibraryProps {
+  serviceLocale: ServiceLocale;
   monsters: CodexMonster[];
   encounters: CodexEncounter[];
 }
 
-export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
+export function MonsterLibrary({
+  serviceLocale,
+  monsters,
+  encounters,
+}: MonsterLibraryProps) {
+  const serviceText = serviceMessages[serviceLocale];
+  const commonText = serviceText.codex.common;
+  const monsterText = serviceText.codex.monstersView;
   const searchParams = useSearchParams();
   const [selectedTypes, setSelectedTypes] = useState<Set<MonsterType>>(new Set());
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
@@ -229,7 +242,9 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
   const sections = useMemo(() => {
     return MONSTER_TYPE_ORDER.map((type) => ({
       type,
-      ...MONSTER_TYPE_CONFIG[type],
+      color: MONSTER_TYPE_CONFIG[type].color,
+      label: monsterText.monsterTypes[type].label,
+      description: monsterText.monsterTypes[type].description,
       monsters: filteredMonsters
         .filter((m) => m.type === type)
         .sort((a, b) => {
@@ -239,7 +254,7 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
           return a.name.localeCompare(b.name, "ko");
         }),
     })).filter((s) => s.monsters.length > 0);
-  }, [filteredMonsters, getMonsterActOrder]);
+  }, [filteredMonsters, getMonsterActOrder, monsterText]);
 
   const toggleType = useCallback((type: MonsterType) => {
     setSelectedTypes((prev) => {
@@ -304,10 +319,11 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
         `}
       >
         {/* Type Filters */}
-        <FilterSection trigger="#" label="유형">
+        <FilterSection trigger="#" label={monsterText.typeFilter}>
           <div className="flex flex-col gap-0.5">
             {MONSTER_TYPE_ORDER.map((type) => {
               const config = MONSTER_TYPE_CONFIG[type];
+              const typeText = monsterText.monsterTypes[type];
               return (
                 <button
                   key={type}
@@ -319,7 +335,7 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
                   }`}
                 >
                   <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: config.color }} />
-                  {config.label}
+                  {typeText.label}
                 </button>
               );
             })}
@@ -329,11 +345,12 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
         <div className="border-t border-white/10" />
 
         {/* Act Filters */}
-        <FilterSection trigger="#" label="등장 막">
+        <FilterSection trigger="#" label={monsterText.actFilter}>
           <div className="flex flex-col gap-0.5">
             {ACT_ORDER.map((act) => {
               const config = act ? EVENT_ACT_CONFIG[act] : EVENT_ACT_UNKNOWN;
               const key = act ?? "none";
+              const label = act ? monsterText.acts[act] : monsterText.acts.none;
               return (
                 <button
                   key={key}
@@ -345,7 +362,7 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
                   }`}
                 >
                   <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: act ? undefined : "#666" }} />
-                  <span className={act ? config.color : "text-zinc-400"}>{config.labelKo}</span>
+                  <span className={act ? config.color : "text-zinc-400"}>{label}</span>
                 </button>
               );
             })}
@@ -360,7 +377,7 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
           <button
             onClick={() => setSidebarOpen((v) => !v)}
             className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/10 text-gray-400"
-            aria-label={sidebarOpen ? "필터 닫기" : "필터 열기"}
+            aria-label={sidebarOpen ? commonText.closeFilters : commonText.openFilters}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {sidebarOpen ? (
@@ -370,11 +387,18 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
               )}
             </svg>
           </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">몬스터 도감</h1>
+          <h1 className="text-base font-bold text-yellow-500 shrink-0">{monsterText.title}</h1>
           <div className="flex-1 max-w-xl mx-auto">
-            <MonsterSearchBar value={searchQuery} onChange={setSearchQuery} inputId="monster-search" />
+            <MonsterSearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              inputId="monster-search"
+              messages={monsterText}
+            />
           </div>
-          <span className="text-sm text-gray-500 shrink-0 tabular-nums">{filteredMonsters.length}마리</span>
+          <span className="text-sm text-gray-500 shrink-0 tabular-nums">
+            {formatCount(filteredMonsters.length, monsterText.resultUnit, serviceLocale)}
+          </span>
         </div>
 
         {/* Monster Grid */}
@@ -395,6 +419,8 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
                     key={monster.id}
                     monster={monster}
                     encounters={getMonsterEncounters(monster.id)}
+                    serviceLocale={serviceLocale}
+                    messages={monsterText}
                     onHover={handleMonsterHover}
                     onClick={() => setSelectedMonster(monster)}
                   />
@@ -404,14 +430,20 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
           ))}
 
           {sections.length === 0 && (
-            <div className="flex items-center justify-center h-64 text-gray-500">검색 결과가 없습니다</div>
+            <div className="flex items-center justify-center h-64 text-gray-500">{commonText.noResults}</div>
           )}
         </div>
       </main>
 
       {/* Hover Tooltip */}
       {hoveredMonster && tooltipPos && (
-        <MonsterTooltip monster={hoveredMonster} encounters={getMonsterEncounters(hoveredMonster.id)} x={tooltipPos.x} y={tooltipPos.y} />
+        <MonsterTooltip
+          monster={hoveredMonster}
+          encounters={getMonsterEncounters(hoveredMonster.id)}
+          x={tooltipPos.x}
+          y={tooltipPos.y}
+          messages={monsterText}
+        />
       )}
 
       {/* Detail Modal */}
@@ -424,6 +456,7 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
         >
           <div className="w-full max-w-2xl my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
             <MonsterDetail
+              serviceLocale={serviceLocale}
               monster={selectedMonster}
               encounters={getMonsterEncounters(selectedMonster.id)}
               allMonsters={monsters}
@@ -441,11 +474,15 @@ export function MonsterLibrary({ monsters, encounters }: MonsterLibraryProps) {
 function MonsterTile({
   monster,
   encounters,
+  serviceLocale,
+  messages,
   onHover,
   onClick,
 }: {
   monster: CodexMonster;
   encounters: CodexEncounter[];
+  serviceLocale: ServiceLocale;
+  messages: MonsterViewMessages;
   onHover: (m: CodexMonster | null, e?: React.MouseEvent) => void;
   onClick?: () => void;
 }) {
@@ -485,7 +522,7 @@ function MonsterTile({
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ backgroundColor: `${typeConfig.color}20`, color: typeConfig.color }}>
-            {typeConfig.label}
+            {messages.monsterTypes[monster.type].label}
           </span>
           {hpText && <span className="text-[10px] text-gray-500">HP {hpText}</span>}
           {acts.length > 0 && (
@@ -505,7 +542,11 @@ function MonsterTile({
 
       {/* Move count */}
       <span className="text-[10px] text-gray-600 shrink-0">
-        {monster.moves.filter((m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD").length} 행동
+        {formatCount(
+          monster.moves.filter((m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD").length,
+          messages.moveCount,
+          serviceLocale,
+        )}
       </span>
     </button>
   );
@@ -517,11 +558,13 @@ function MonsterTooltip({
   encounters,
   x,
   y,
+  messages,
 }: {
   monster: CodexMonster;
   encounters: CodexEncounter[];
   x: number;
   y: number;
+  messages: MonsterViewMessages;
 }) {
   const typeConfig = MONSTER_TYPE_CONFIG[monster.type];
   const style: React.CSSProperties = {
@@ -555,7 +598,7 @@ function MonsterTooltip({
         {/* Type + HP */}
         <div className="flex items-center gap-1.5 mb-2">
           <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ backgroundColor: `${typeConfig.color}20`, color: typeConfig.color }}>
-            {typeConfig.label}
+            {messages.monsterTypes[monster.type].label}
           </span>
           {formatHp(monster) && <span className="text-[10px] text-gray-400">HP {formatHp(monster)}</span>}
         </div>
@@ -563,7 +606,7 @@ function MonsterTooltip({
         {/* Moves */}
         {meaningfulMoves.length > 0 && (
           <div className="mb-2">
-            <div className="text-[10px] text-gray-500 mb-1">행동 패턴</div>
+            <div className="text-[10px] text-gray-500 mb-1">{messages.movePatterns}</div>
             <div className="flex flex-wrap gap-1">
               {meaningfulMoves.map((move) => (
                 <span key={move.id} className="text-[10px] bg-white/5 border border-white/10 rounded px-1.5 py-0.5 text-gray-300">
@@ -577,7 +620,7 @@ function MonsterTooltip({
         {/* Damage preview */}
         {monster.damageValues && Object.keys(monster.damageValues).length > 0 && (
           <div className="mb-2">
-            <div className="text-[10px] text-gray-500 mb-1">피해량</div>
+            <div className="text-[10px] text-gray-500 mb-1">{messages.damagePreview}</div>
             <div className="flex flex-wrap gap-1">
               {Object.entries(monster.damageValues).slice(0, 4).map(([key, val]) => (
                 <span key={key} className="text-[10px] text-red-400/80">
@@ -592,7 +635,7 @@ function MonsterTooltip({
         {/* Encounters */}
         {encounters.length > 0 && (
           <div>
-            <div className="text-[10px] text-gray-500 mb-1">등장 전투</div>
+            <div className="text-[10px] text-gray-500 mb-1">{messages.encounters}</div>
             <div className="flex flex-wrap gap-1">
               {encounters.slice(0, 3).map((enc) => (
                 <span key={enc.id} className="text-[10px] text-yellow-400/70">{enc.name}</span>
@@ -607,13 +650,31 @@ function MonsterTooltip({
 }
 
 // Search bar
-function MonsterSearchBar({ value, onChange, inputId }: { value: string; onChange: (v: string) => void; inputId?: string }) {
+function MonsterSearchBar({
+  value,
+  onChange,
+  inputId,
+  messages,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  inputId?: string;
+  messages: MonsterViewMessages;
+}) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
 
   const HINTS = [
-    { trigger: "#", label: "유형", examples: ["일반", "엘리트", "보스"] },
-    { trigger: "#", label: "막", examples: ["1막", "2막", "3막", "지하선착장"] },
+    {
+      trigger: "#",
+      label: messages.filters.typeHints.label,
+      examples: messages.filters.typeHints.examples,
+    },
+    {
+      trigger: "#",
+      label: messages.filters.actHints.label,
+      examples: messages.filters.actHints.examples,
+    },
   ];
 
   return (
@@ -634,7 +695,7 @@ function MonsterSearchBar({ value, onChange, inputId }: { value: string; onChang
           onKeyDown={(e) => {
             if (e.key === "Escape") { onChange(""); inputRef.current?.blur(); }
           }}
-          placeholder="몬스터 검색..."
+          placeholder={messages.searchPlaceholder}
           className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-16 py-1.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-all"
         />
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -699,4 +760,11 @@ function formatHp(monster: CodexMonster): string | null {
     return `${monster.minHp}-${monster.maxHp}`;
   }
   return `${monster.minHp}`;
+}
+
+function formatCount(count: number, unit: string, serviceLocale: ServiceLocale): string {
+  if (serviceLocale === "ko") return `${count}${unit}`;
+
+  const displayUnit = count === 1 ? unit.replace(/s$/, "") : unit;
+  return `${count} ${displayUnit}`;
 }

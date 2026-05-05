@@ -4,12 +4,14 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref } from "@/lib/i18n";
+import { serviceMessages } from "@/messages/service";
 import {
   CodexMonster,
   CodexEncounter,
   MONSTER_TYPE_CONFIG,
   EVENT_ACT_CONFIG,
-  EVENT_ACT_UNKNOWN,
   ENCOUNTER_ROOM_TYPE_CONFIG,
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
@@ -24,6 +26,7 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 }
 
 interface MonsterDetailProps {
+  serviceLocale: ServiceLocale;
   monster: CodexMonster;
   encounters: CodexEncounter[];
   allMonsters?: CodexMonster[];
@@ -31,7 +34,17 @@ interface MonsterDetailProps {
   onMonsterClick?: (m: CodexMonster) => void;
 }
 
-export function MonsterDetail({ monster, encounters, allMonsters, onClose, onMonsterClick }: MonsterDetailProps) {
+export function MonsterDetail({
+  serviceLocale,
+  monster,
+  encounters,
+  allMonsters,
+  onClose,
+  onMonsterClick,
+}: MonsterDetailProps) {
+  const serviceText = serviceMessages[serviceLocale];
+  const commonText = serviceText.codex.common;
+  const monsterText = serviceText.codex.monstersView;
   const typeConfig = MONSTER_TYPE_CONFIG[monster.type];
   const meaningfulMoves = monster.moves.filter(
     (m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD",
@@ -42,16 +55,16 @@ export function MonsterDetail({ monster, encounters, allMonsters, onClose, onMon
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href="/codex/monsters"
+          href={localizeHref("/codex/monsters", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {
             if (onClose) { e.preventDefault(); onClose(); }
           }}
         >
-          ← 몬스터 도감
+          ← {monsterText.backToList}
         </Link>
         {onClose && (
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400" aria-label="닫기">
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400" aria-label={commonText.close}>
             ✕
           </button>
         )}
@@ -83,22 +96,22 @@ export function MonsterDetail({ monster, encounters, allMonsters, onClose, onMon
 
       {/* Stats Row */}
       <div className="flex flex-wrap justify-center gap-2">
-        <StatBadge label="유형" value={typeConfig.label} color={typeConfig.color} />
+        <StatBadge label={monsterText.stats.type} value={monsterText.monsterTypes[monster.type].label} color={typeConfig.color} />
         {formatHp(monster) && (
-          <StatBadge label="체력" value={formatHp(monster)!} />
+          <StatBadge label={monsterText.stats.hp} value={formatHp(monster)!} />
         )}
         {formatHpAscension(monster) && (
-          <StatBadge label="체력 (승천)" value={formatHpAscension(monster)!} color="#ff8a65" />
+          <StatBadge label={monsterText.stats.hpAscension} value={formatHpAscension(monster)!} color="#ff8a65" />
         )}
         {meaningfulMoves.length > 0 && (
-          <StatBadge label="행동" value={`${meaningfulMoves.length}`} />
+          <StatBadge label={monsterText.stats.moves} value={`${meaningfulMoves.length}`} />
         )}
       </div>
 
       {/* Moves Section */}
       {meaningfulMoves.length > 0 && (
         <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-          <h2 className="text-sm font-bold text-gray-300 mb-3">행동 패턴</h2>
+          <h2 className="text-sm font-bold text-gray-300 mb-3">{monsterText.movePatterns}</h2>
           <div className="flex flex-col gap-2">
             {meaningfulMoves.map((move) => {
               // Find damage for this move
@@ -144,7 +157,7 @@ export function MonsterDetail({ monster, encounters, allMonsters, onClose, onMon
       {/* Damage Summary */}
       {monster.damageValues && Object.keys(monster.damageValues).length > 0 && (
         <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-          <h2 className="text-sm font-bold text-gray-300 mb-3">피해량 상세</h2>
+          <h2 className="text-sm font-bold text-gray-300 mb-3">{monsterText.damageDetails}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {Object.entries(monster.damageValues).map(([key, val]) => (
               <div key={key} className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded bg-white/[0.03] border border-white/5">
@@ -164,7 +177,7 @@ export function MonsterDetail({ monster, encounters, allMonsters, onClose, onMon
       {/* Block Values */}
       {monster.blockValues && Object.keys(monster.blockValues).length > 0 && (
         <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-          <h2 className="text-sm font-bold text-gray-300 mb-3">방어력</h2>
+          <h2 className="text-sm font-bold text-gray-300 mb-3">{monsterText.block}</h2>
           <div className="flex flex-wrap gap-2">
             {Object.entries(monster.blockValues).map(([key, val]) => (
               <div key={key} className="flex items-center gap-2 px-3 py-1.5 rounded bg-blue-500/10 border border-blue-500/20">
@@ -179,11 +192,11 @@ export function MonsterDetail({ monster, encounters, allMonsters, onClose, onMon
       {/* Encounters */}
       {encounters.length > 0 && (
         <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-          <h2 className="text-sm font-bold text-gray-300 mb-3">등장 전투</h2>
+          <h2 className="text-sm font-bold text-gray-300 mb-3">{monsterText.encounters}</h2>
           <div className="flex flex-col gap-2">
             {encounters.map((enc) => {
               const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[enc.roomType];
-              const actConfig = enc.act ? EVENT_ACT_CONFIG[enc.act] : EVENT_ACT_UNKNOWN;
+              const actConfig = enc.act ? EVENT_ACT_CONFIG[enc.act] : null;
 
               return (
                 <div key={enc.id} className="flex flex-col gap-1.5 px-3 py-2.5 rounded-lg bg-white/[0.03] border border-white/5">
@@ -193,13 +206,13 @@ export function MonsterDetail({ monster, encounters, allMonsters, onClose, onMon
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}>
-                      {roomConfig.label}
+                      {monsterText.roomTypes[enc.roomType]}
                     </span>
-                    {enc.act && (
-                      <span className={`text-[10px] ${actConfig.color}`}>{actConfig.labelKo}</span>
+                    {enc.act && actConfig && (
+                      <span className={`text-[10px] ${actConfig.color}`}>{monsterText.acts[enc.act]}</span>
                     )}
                     {enc.isWeak && (
-                      <span className="text-[10px] text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded">약한 전투</span>
+                      <span className="text-[10px] text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded">{monsterText.weakEncounter}</span>
                     )}
                     {enc.tags && enc.tags.map((tag) => (
                       <span key={tag} className="text-[10px] text-gray-500 bg-white/5 px-1.5 py-0.5 rounded">{tag}</span>
@@ -209,7 +222,7 @@ export function MonsterDetail({ monster, encounters, allMonsters, onClose, onMon
                   {/* Other monsters in this encounter */}
                   {enc.monsters.length > 1 && (
                     <div className="flex items-center gap-1 mt-0.5">
-                      <span className="text-[10px] text-gray-500">함께 등장:</span>
+                      <span className="text-[10px] text-gray-500">{monsterText.appearsWith}</span>
                       {enc.monsters
                         .filter((m) => m.id !== monster.id)
                         .map((m) => {
@@ -242,7 +255,7 @@ export function MonsterDetail({ monster, encounters, allMonsters, onClose, onMon
       )}
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+        <h2 className="text-sm font-bold text-gray-300 mb-3">{commonText.comments}</h2>
         <CommentSection threadKey={buildCodexCommentThreadKey("monster", monster.id)} />
       </div>
     </div>
