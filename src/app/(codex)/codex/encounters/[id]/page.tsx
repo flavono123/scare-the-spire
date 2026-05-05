@@ -5,7 +5,12 @@ import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { getCodexMonsters, getCodexEncounters } from "@/lib/codex-data";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
-import { getGameLocaleFromSearchRecord } from "@/lib/i18n";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+  localizeHrefWithGameLocale,
+} from "@/lib/i18n";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import { ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
 import { DescriptionText } from "@/components/codex/codex-description";
 
@@ -38,7 +43,10 @@ export default async function EncounterDetailPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const [encounters, monsters] = await Promise.all([
     getCodexEncounters({ gameLocale }),
     getCodexMonsters({ gameLocale }),
@@ -58,8 +66,11 @@ export default async function EncounterDetailPage({
     <div className="min-h-screen bg-background text-foreground">
       <div className="flex flex-col gap-6 p-4 sm:p-6 max-w-2xl mx-auto">
         {/* Header */}
-        <Link href="/codex/encounters" className="text-sm text-gray-400 hover:text-gray-200 transition-colors">
-          ← 전투 도감
+        <Link
+          href={localizeHrefWithGameLocale("/codex/encounters", serviceLocale, gameLocale)}
+          className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+        >
+          ← {serviceText.encountersView.backToList}
         </Link>
 
         {/* Title */}
@@ -71,13 +82,13 @@ export default async function EncounterDetailPage({
         {/* Badges */}
         <div className="flex flex-wrap justify-center gap-2">
           <span className="text-xs font-medium px-2.5 py-1 rounded-lg" style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}>
-            {roomConfig.label}
+            {serviceText.labels.encounterRoomTypes[encounter.roomType]}
           </span>
           <span className={`text-xs px-2.5 py-1 rounded-lg ${actConfig.bg} ${actConfig.color}`}>
-            {actConfig.labelKo}
+            {encounter.act ? serviceText.labels.acts[encounter.act] : serviceText.labels.acts.none}
           </span>
           {encounter.isWeak && (
-            <span className="text-xs text-green-400 bg-green-500/10 px-2.5 py-1 rounded-lg">쉬운 전투</span>
+            <span className="text-xs text-green-400 bg-green-500/10 px-2.5 py-1 rounded-lg">{serviceText.encountersView.weakEncounter}</span>
           )}
           {encounter.tags?.map((tag) => (
             <span key={tag} className="text-xs text-gray-400 bg-white/5 px-2.5 py-1 rounded-lg">{tag}</span>
@@ -86,7 +97,7 @@ export default async function EncounterDetailPage({
 
         {/* Monster Composition */}
         <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-          <h2 className="text-sm font-bold text-gray-300 mb-3">몬스터 구성</h2>
+          <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.encountersView.monsterComposition}</h2>
           <div className="flex flex-col gap-2">
             {uniqueMonsters.map((mRef) => {
               const monster = monsterById.get(mRef.id);
@@ -95,7 +106,7 @@ export default async function EncounterDetailPage({
               return (
                 <Link
                   key={mRef.id}
-                  href={`/codex/monsters/${mRef.id.toLowerCase()}`}
+                  href={localizeHrefWithGameLocale(`/codex/monsters/${mRef.id.toLowerCase()}`, serviceLocale, gameLocale)}
                   className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5 hover:bg-white/10 hover:border-yellow-500/30 transition-all"
                 >
                   {imgUrl ? (
@@ -127,14 +138,14 @@ export default async function EncounterDetailPage({
 
         {/* Loss Text */}
         <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-          <h2 className="text-sm font-bold text-gray-300 mb-2">패배 시</h2>
+          <h2 className="text-sm font-bold text-gray-300 mb-2">{serviceText.encountersView.lossText}</h2>
           <div className="text-sm text-gray-400 italic">
             <DescriptionText description={encounter.lossText} />
           </div>
         </div>
 
         <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-          <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+          <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>
           <CommentSection threadKey={buildCodexCommentThreadKey("encounter", encounter.id)} />
         </div>
       </div>
