@@ -2,6 +2,8 @@
 
 import { useState, useRef, useCallback, memo } from "react";
 import Image from "@/components/ui/static-image";
+import type { ServiceLocale } from "@/lib/i18n";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import { CodexPower } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 
@@ -24,11 +26,13 @@ const TYPE_STYLES: Record<string, { border: string; text: string; badge: string 
 };
 
 interface PowerTileProps {
+  serviceLocale?: ServiceLocale;
   power: CodexPower;
   onClick?: () => void;
 }
 
-export const PowerTile = memo(function PowerTile({ power, onClick }: PowerTileProps) {
+export const PowerTile = memo(function PowerTile({ serviceLocale = "ko", power, onClick }: PowerTileProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
   const [tooltipSide, setTooltipSide] = useState<"right" | "left">("right");
@@ -86,7 +90,7 @@ export const PowerTile = memo(function PowerTile({ power, onClick }: PowerTilePr
               {power.name}
             </span>
             <span className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[9px] font-medium ${style.badge}`}>
-              {power.type === "Buff" ? "버프" : power.type === "Debuff" ? "디버프" : "기타"}
+              {serviceText.labels.powerTypes[power.type].label}
             </span>
           </div>
           {power.nameEn !== power.name && (

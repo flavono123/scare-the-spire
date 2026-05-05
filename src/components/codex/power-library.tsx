@@ -3,6 +3,12 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
+import type { ServiceLocale } from "@/lib/i18n";
+import {
+  formatCodexCount,
+  getCodexServiceMessages,
+  type CodexServiceMessages,
+} from "@/lib/codex-service";
 import {
   CodexPower,
   PowerType,
@@ -18,21 +24,8 @@ import { SearchBar, TriggerGroup } from "./search-bar";
 import { FilterSection } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
 
-const POWER_TRIGGERS: TriggerGroup[] = [
-  {
-    trigger: "#",
-    label: "유형",
-    items: [
-      { value: "버프", label: "버프", desc: "Buff" },
-      { value: "디버프", label: "디버프", desc: "Debuff" },
-      { value: "기타", label: "기타", desc: "Other" },
-    ],
-    validate: (val) => POWER_TYPE_ALIASES[val] ?? null,
-    chipColor: "bg-green-500/20 text-green-400",
-  },
-];
-
 interface PowerLibraryProps {
+  serviceLocale: ServiceLocale;
   powers: CodexPower[];
   versions?: string[];
   currentVersion?: string;
@@ -40,7 +33,8 @@ interface PowerLibraryProps {
   versionDiffs?: EntityVersionDiff[];
 }
 
-export function PowerLibrary({ powers, versions, currentVersion, patches, versionDiffs }: PowerLibraryProps) {
+export function PowerLibrary({ serviceLocale, powers, versions, currentVersion, patches, versionDiffs }: PowerLibraryProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedTypes, setSelectedTypes] = useState<Set<PowerType>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
@@ -198,9 +192,14 @@ export function PowerLibrary({ powers, versions, currentVersion, patches, versio
 
   const typeFilters = POWER_TYPE_ORDER.filter((t) => t !== "None").map((t) => ({
     key: t,
-    label: POWER_TYPE_CONFIG[t].label,
+    label: serviceText.labels.powerTypes[t].label,
     color: POWER_TYPE_CONFIG[t].color,
   }));
+
+  const powerTriggers = useMemo(
+    () => getPowerTriggers(serviceText),
+    [serviceText],
+  );
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -235,7 +234,7 @@ export function PowerLibrary({ powers, versions, currentVersion, patches, versio
         }
       `}>
         {/* Type filter */}
-        <FilterSection trigger="#" label="유형">
+        <FilterSection trigger="#" label={serviceText.powersView.typeFilter}>
           <div className="flex flex-col gap-0.5">
             {typeFilters.map((t) => (
               <button
@@ -265,7 +264,7 @@ export function PowerLibrary({ powers, versions, currentVersion, patches, versio
           <button
             onClick={() => setSidebarOpen((v) => !v)}
             className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/10 text-gray-400"
-            aria-label={sidebarOpen ? "필터 닫기" : "필터 열기"}
+            aria-label={sidebarOpen ? serviceText.common.closeFilters : serviceText.common.openFilters}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {sidebarOpen ? (
@@ -275,18 +274,18 @@ export function PowerLibrary({ powers, versions, currentVersion, patches, versio
               )}
             </svg>
           </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">파워 도감</h1>
+          <h1 className="text-base font-bold text-yellow-500 shrink-0">{serviceText.powersView.title}</h1>
           <div className="flex-1 max-w-xl mx-auto">
             <SearchBar
               value={searchQuery}
               onChange={setSearchQuery}
               inputId="codex-search"
-              triggerGroups={POWER_TRIGGERS}
-              placeholder="파워 검색..."
+              triggerGroups={powerTriggers}
+              placeholder={serviceText.powersView.searchPlaceholder}
             />
           </div>
           <span className="text-sm text-gray-500 shrink-0 tabular-nums">
-            {filteredPowers.length}개
+            {formatCodexCount(filteredPowers.length, serviceText.labels.powers, serviceLocale)}
           </span>
           {versions && versions.length > 0 && currentVersion && (
             <VersionSelector
@@ -307,16 +306,16 @@ export function PowerLibrary({ powers, versions, currentVersion, patches, versio
                   className="text-lg font-bold mb-0.5"
                   style={{ color: POWER_TYPE_CONFIG[type].color }}
                 >
-                  {POWER_TYPE_CONFIG[type].label}
+                  {serviceText.labels.powerTypes[type].label}
                   <span className="text-sm font-normal text-gray-400 ml-2">
-                    {POWER_TYPE_CONFIG[type].description}
+                    {serviceText.labels.powerTypes[type].description}
                   </span>
                 </h2>
               </div>
 
               <div className="flex flex-wrap gap-2">
                 {groupPowers.map((power) => (
-                  <PowerTile key={power.id} power={power} onClick={() => setSelectedPower(power)} />
+                  <PowerTile key={power.id} serviceLocale={serviceLocale} power={power} onClick={() => setSelectedPower(power)} />
                 ))}
               </div>
             </section>
@@ -324,7 +323,7 @@ export function PowerLibrary({ powers, versions, currentVersion, patches, versio
 
           {filteredPowers.length === 0 && (
             <div className="flex items-center justify-center h-64 text-gray-500">
-              검색 결과가 없습니다
+              {serviceText.common.noResults}
             </div>
           )}
         </div>
@@ -339,10 +338,26 @@ export function PowerLibrary({ powers, versions, currentVersion, patches, versio
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <PowerDetail power={selectedPower} onClose={() => setSelectedPower(null)} />
+            <PowerDetail serviceLocale={serviceLocale} power={selectedPower} onClose={() => setSelectedPower(null)} />
           </div>
         </div>
       )}
     </div>
   );
+}
+
+function getPowerTriggers(serviceText: CodexServiceMessages): TriggerGroup[] {
+  return [
+    {
+      trigger: "#",
+      label: serviceText.powersView.typeFilter,
+      items: [
+        { value: "buff", label: serviceText.labels.powerTypes.Buff.label, desc: "Buff" },
+        { value: "debuff", label: serviceText.labels.powerTypes.Debuff.label, desc: "Debuff" },
+        { value: "other", label: serviceText.labels.powerTypes.None.label, desc: "Other" },
+      ],
+      validate: (val) => POWER_TYPE_ALIASES[val] ?? null,
+      chipColor: "bg-green-500/20 text-green-400",
+    },
+  ];
 }

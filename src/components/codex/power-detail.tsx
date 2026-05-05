@@ -4,6 +4,9 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref } from "@/lib/i18n";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
   CodexPower,
   POWER_TYPE_CONFIG,
@@ -21,20 +24,14 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
   );
 }
 
-const STACK_TYPE_LABELS: Record<string, string> = {
-  Counter: "카운터",
-  Single: "단일",
-  Duration: "지속",
-  Intensity: "강도",
-  None: "없음",
-};
-
 interface PowerDetailProps {
+  serviceLocale: ServiceLocale;
   power: CodexPower;
   onClose?: () => void;
 }
 
-export function PowerDetail({ power, onClose }: PowerDetailProps) {
+export function PowerDetail({ serviceLocale, power, onClose }: PowerDetailProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const typeConfig = POWER_TYPE_CONFIG[power.type];
 
   return (
@@ -42,7 +39,7 @@ export function PowerDetail({ power, onClose }: PowerDetailProps) {
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href="/codex/powers"
+          href={localizeHref("/codex/powers", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {
             if (onClose) {
@@ -51,13 +48,13 @@ export function PowerDetail({ power, onClose }: PowerDetailProps) {
             }
           }}
         >
-          ← 파워 도감
+          ← {serviceText.powersView.backToList}
         </Link>
         {onClose && (
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400"
-            aria-label="닫기"
+            aria-label={serviceText.common.close}
           >
             ✕
           </button>
@@ -90,16 +87,16 @@ export function PowerDetail({ power, onClose }: PowerDetailProps) {
       {/* Stats Row */}
       <div className="flex flex-wrap justify-center gap-2">
         <StatBadge
-          label="유형"
-          value={typeConfig.label}
+          label={serviceText.powersView.stats.type}
+          value={serviceText.labels.powerTypes[power.type].label}
           color={typeConfig.color}
         />
         <StatBadge
-          label="중첩"
-          value={STACK_TYPE_LABELS[power.stackType] ?? power.stackType}
+          label={serviceText.powersView.stats.stack}
+          value={serviceText.labels.powerStackTypes[power.stackType] ?? power.stackType}
         />
         {power.allowNegative && (
-          <StatBadge label="음수" value="허용" color="#ef5350" />
+          <StatBadge label={serviceText.powersView.stats.negative} value={serviceText.powersView.stats.allowed} color="#ef5350" />
         )}
       </div>
 
@@ -111,7 +108,7 @@ export function PowerDetail({ power, onClose }: PowerDetailProps) {
       </div>
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+        <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>
         <CommentSection threadKey={buildCodexCommentThreadKey("power", power.id)} />
       </div>
     </div>
