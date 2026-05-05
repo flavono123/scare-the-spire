@@ -38,11 +38,9 @@ const sts1Items = [
 
 type CodexLabelKey = keyof typeof serviceMessages.ko.codex;
 
-const serviceLocalizedGameLocales = new Set<GameLocale>(["kor", "eng"]);
+const serviceLanguageLocales = ["kor", "eng"] as const satisfies readonly GameLocale[];
 
-const languageMenuLocales = [
-  "kor",
-  "eng",
+const gameOnlyLanguageLocales = [
   "zhs",
   "deu",
   "esp",
@@ -263,11 +261,11 @@ function LanguageDropdown({
         aria-haspopup="menu"
         aria-label={label}
         onClick={() => setOpen((v) => !v)}
-        className="flex h-9 min-w-[8.75rem] items-center justify-between gap-3 rounded-md border border-border bg-background/80 px-3 text-left text-sm font-semibold text-foreground shadow-sm transition-colors hover:bg-white/5"
+        className="flex h-8 min-w-[5.75rem] max-w-[8.25rem] items-center justify-between gap-2 rounded-md border border-border bg-background/80 px-2.5 text-left text-sm font-semibold text-foreground shadow-sm transition-colors hover:bg-white/5"
       >
-        <span>{GAME_LOCALE_NATIVE_LABELS[value]}</span>
+        <span className="truncate">{GAME_LOCALE_NATIVE_LABELS[value]}</span>
         <svg
-          className={`h-4 w-4 text-yellow-400 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-4 w-4 shrink-0 text-yellow-400 transition-transform ${open ? "rotate-180" : ""}`}
           fill="currentColor"
           viewBox="0 0 20 20"
           aria-hidden="true"
@@ -278,10 +276,9 @@ function LanguageDropdown({
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-1 max-h-[min(34rem,calc(100vh-4rem))] w-[19rem] overflow-y-auto rounded-md border border-border bg-background/95 py-1 shadow-xl"
+          className="absolute right-0 top-full z-50 mt-1 max-h-[min(32rem,calc(100vh-4rem))] w-[14.5rem] overflow-y-auto rounded-md border border-border bg-background/95 py-1 shadow-xl"
         >
-          {languageMenuLocales.map((locale) => {
-            const serviceOnly = serviceLocalizedGameLocales.has(locale);
+          {serviceLanguageLocales.map((locale) => {
             const active = locale === value;
             const href = languageHref(
               pathname,
@@ -303,14 +300,42 @@ function LanguageDropdown({
                     : "text-foreground hover:bg-white/5"
                 }`}
               >
-                <span className="text-base font-semibold">
+                <span className="truncate text-base font-semibold" title={GAME_LOCALE_NATIVE_LABELS[locale]}>
                   {GAME_LOCALE_NATIVE_LABELS[locale]}
                 </span>
-                {!serviceOnly && (
-                  <span className="shrink-0 rounded border border-amber-400/35 bg-amber-400/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200">
-                    only game locale
-                  </span>
-                )}
+              </Link>
+            );
+          })}
+          <div className="my-1 border-t border-border/70 px-3 pt-2 pb-1">
+            <span className="text-[9px] font-semibold uppercase tracking-wide text-amber-200/70">
+              only game locale
+            </span>
+          </div>
+          {gameOnlyLanguageLocales.map((locale) => {
+            const active = locale === value;
+            const href = languageHref(
+              pathname,
+              new URLSearchParams(searchParams.toString()),
+              locale,
+            );
+
+            return (
+              <Link
+                key={locale}
+                href={href}
+                prefetch={false}
+                role="menuitem"
+                aria-current={active ? "true" : undefined}
+                onClick={() => setOpen(false)}
+                className={`block px-3 py-2 text-sm transition-colors ${
+                  active
+                    ? "bg-yellow-500/10 text-yellow-300"
+                    : "text-foreground hover:bg-white/5"
+                }`}
+              >
+                <span className="block truncate text-base font-semibold" title={GAME_LOCALE_NATIVE_LABELS[locale]}>
+                  {GAME_LOCALE_NATIVE_LABELS[locale]}
+                </span>
               </Link>
             );
           })}
