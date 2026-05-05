@@ -6,6 +6,13 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref } from "@/lib/i18n";
+import {
+  formatCodexCount,
+  getCodexServiceMessages,
+  type CodexServiceMessages,
+} from "@/lib/codex-service";
 import { DescriptionText } from "./codex-description";
 import {
   CodexEncounter,
@@ -21,11 +28,13 @@ import {
 const ROOM_TYPE_ORDER: EncounterRoomType[] = ["Monster", "Elite", "Boss"];
 
 interface EncounterLibraryProps {
+  serviceLocale: ServiceLocale;
   encounters: CodexEncounter[];
   monsters: CodexMonster[];
 }
 
-export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps) {
+export function EncounterLibrary({ serviceLocale, encounters, monsters }: EncounterLibraryProps) {
+  const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedRoomTypes, setSelectedRoomTypes] = useState<Set<EncounterRoomType>>(new Set());
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
@@ -124,9 +133,15 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
           if (a.isWeak !== b.isWeak) return a.isWeak ? 1 : -1;
           return a.name.localeCompare(b.name, "ko");
         });
-      return { act, actKey, config, encounters: actEncounters };
+      return {
+        act,
+        actKey,
+        config,
+        label: act ? serviceText.labels.acts[act] : serviceText.labels.acts.none,
+        encounters: actEncounters,
+      };
     }).filter((s) => s.encounters.length > 0);
-  }, [filtered]);
+  }, [filtered, serviceText]);
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -160,7 +175,7 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
         `}
       >
         {/* Room Type Filters */}
-        <FilterSection label="전투 유형">
+        <FilterSection label={serviceText.encountersView.roomTypeFilter}>
           <div className="flex flex-col gap-0.5">
             {ROOM_TYPE_ORDER.map((type) => {
               const config = ENCOUNTER_ROOM_TYPE_CONFIG[type];
@@ -179,7 +194,7 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
                   }`}
                 >
                   <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: config.color }} />
-                  {config.label}
+                  {serviceText.labels.encounterRoomTypes[type]}
                 </button>
               );
             })}
@@ -189,7 +204,7 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
         <div className="border-t border-white/10" />
 
         {/* Act Filters */}
-        <FilterSection label="등장 막">
+        <FilterSection label={serviceText.encountersView.actFilter}>
           <div className="flex flex-col gap-0.5">
             {EVENT_ACT_ORDER.map((act) => {
               const config = act ? EVENT_ACT_CONFIG[act] : EVENT_ACT_UNKNOWN;
@@ -208,7 +223,9 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
                       : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
                   }`}
                 >
-                  <span className={act ? config.color : "text-zinc-400"}>{config.labelKo}</span>
+                  <span className={act ? config.color : "text-zinc-400"}>
+                    {act ? serviceText.labels.acts[act] : serviceText.labels.acts.none}
+                  </span>
                 </button>
               );
             })}
@@ -227,7 +244,7 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
           }`}
         >
           <span className="w-2 h-2 rounded-full shrink-0 bg-green-500" />
-          쉬운 전투만
+          {serviceText.encountersView.weakOnly}
         </button>
       </aside>
 
@@ -238,7 +255,7 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
           <button
             onClick={() => setSidebarOpen((v) => !v)}
             className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/10 text-gray-400"
-            aria-label={sidebarOpen ? "필터 닫기" : "필터 열기"}
+            aria-label={sidebarOpen ? serviceText.common.closeFilters : serviceText.common.openFilters}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {sidebarOpen ? (
@@ -248,17 +265,17 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
               )}
             </svg>
           </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">전투 도감</h1>
+          <h1 className="text-base font-bold text-yellow-500 shrink-0">{serviceText.encountersView.title}</h1>
           <div className="flex-1 max-w-xl mx-auto">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="전투 또는 몬스터 검색..."
+              placeholder={serviceText.encountersView.searchPlaceholder}
               className="w-full bg-white/5 border border-white/10 rounded-lg pl-3 pr-3 py-1.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-all"
             />
           </div>
-          <span className="text-sm text-gray-500 shrink-0 tabular-nums">{filtered.length}건</span>
+          <span className="text-sm text-gray-500 shrink-0 tabular-nums">{formatCodexCount(filtered.length, serviceText.labels.encounters, serviceLocale)}</span>
         </div>
 
         {/* Encounter List */}
@@ -267,7 +284,7 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
             <div key={section.actKey} className="mb-8 last:mb-0">
               <div className="mb-3">
                 <span className={`text-lg font-bold font-[family-name:var(--font-spectral)] ${section.config.color}`}>
-                  {section.config.labelKo}
+                  {section.label}
                 </span>
                 <span className="ml-2 text-xs text-gray-600">({section.encounters.length})</span>
               </div>
@@ -278,6 +295,7 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
                     key={enc.id}
                     encounter={enc}
                     monsterById={monsterById}
+                    messages={serviceText}
                     onClick={() => setSelectedEncounter(enc)}
                   />
                 ))}
@@ -286,7 +304,7 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
           ))}
 
           {sections.length === 0 && (
-            <div className="flex items-center justify-center h-64 text-gray-500">검색 결과가 없습니다</div>
+            <div className="flex items-center justify-center h-64 text-gray-500">{serviceText.common.noResults}</div>
           )}
         </div>
       </main>
@@ -303,6 +321,8 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
             <EncounterDetail
               encounter={selectedEncounter}
               monsterById={monsterById}
+              serviceLocale={serviceLocale}
+              messages={serviceText}
               onClose={() => setSelectedEncounter(null)}
             />
           </div>
@@ -316,10 +336,12 @@ export function EncounterLibrary({ encounters, monsters }: EncounterLibraryProps
 function EncounterTile({
   encounter,
   monsterById,
+  messages,
   onClick,
 }: {
   encounter: CodexEncounter;
   monsterById: Map<string, CodexMonster>;
+  messages: CodexServiceMessages;
   onClick: () => void;
 }) {
   const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[encounter.roomType];
@@ -367,10 +389,10 @@ function EncounterTile({
             className="text-[10px] font-medium px-1.5 py-0.5 rounded"
             style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}
           >
-            {roomConfig.label}
+            {messages.labels.encounterRoomTypes[encounter.roomType]}
           </span>
           {encounter.isWeak && (
-            <span className="text-[10px] text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded">쉬운 전투</span>
+            <span className="text-[10px] text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded">{messages.encountersView.weakEncounter}</span>
           )}
           {encounter.tags?.map((tag) => (
             <span key={tag} className="text-[10px] text-gray-500 bg-white/5 px-1.5 py-0.5 rounded">{tag}</span>
@@ -392,10 +414,14 @@ function EncounterTile({
 function EncounterDetail({
   encounter,
   monsterById,
+  serviceLocale,
+  messages,
   onClose,
 }: {
   encounter: CodexEncounter;
   monsterById: Map<string, CodexMonster>;
+  serviceLocale: ServiceLocale;
+  messages: CodexServiceMessages;
   onClose: () => void;
 }) {
   const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[encounter.roomType];
@@ -410,13 +436,13 @@ function EncounterDetail({
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href="/codex/encounters"
+          href={localizeHref("/codex/encounters", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => { e.preventDefault(); onClose(); }}
         >
-          ← 전투 도감
+          ← {messages.encountersView.backToList}
         </Link>
-        <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400" aria-label="닫기">
+        <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400" aria-label={messages.common.close}>
           ✕
         </button>
       </div>
@@ -430,13 +456,13 @@ function EncounterDetail({
       {/* Badges */}
       <div className="flex flex-wrap justify-center gap-2">
         <span className="text-xs font-medium px-2.5 py-1 rounded-lg" style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}>
-          {roomConfig.label}
+          {messages.labels.encounterRoomTypes[encounter.roomType]}
         </span>
         <span className={`text-xs px-2.5 py-1 rounded-lg ${actConfig.bg} ${actConfig.color}`}>
-          {actConfig.labelKo}
+          {encounter.act ? messages.labels.acts[encounter.act] : messages.labels.acts.none}
         </span>
         {encounter.isWeak && (
-          <span className="text-xs text-green-400 bg-green-500/10 px-2.5 py-1 rounded-lg">쉬운 전투</span>
+          <span className="text-xs text-green-400 bg-green-500/10 px-2.5 py-1 rounded-lg">{messages.encountersView.weakEncounter}</span>
         )}
         {encounter.tags?.map((tag) => (
           <span key={tag} className="text-xs text-gray-400 bg-white/5 px-2.5 py-1 rounded-lg">{tag}</span>
@@ -445,7 +471,7 @@ function EncounterDetail({
 
       {/* Monster Composition */}
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">몬스터 구성</h2>
+        <h2 className="text-sm font-bold text-gray-300 mb-3">{messages.encountersView.monsterComposition}</h2>
         <div className="flex flex-col gap-2">
           {uniqueMonsters.map((mRef) => {
             const monster = monsterById.get(mRef.id);
@@ -454,7 +480,7 @@ function EncounterDetail({
             return (
               <Link
                 key={mRef.id}
-                href={`/codex/monsters/${mRef.id.toLowerCase()}`}
+                href={localizeHref(`/codex/monsters/${mRef.id.toLowerCase()}`, serviceLocale)}
                 className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5 hover:bg-white/10 hover:border-yellow-500/30 transition-all"
               >
                 {imgUrl ? (
@@ -488,14 +514,14 @@ function EncounterDetail({
 
       {/* Loss Text */}
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-2">패배 시</h2>
+        <h2 className="text-sm font-bold text-gray-300 mb-2">{messages.encountersView.lossText}</h2>
         <div className="text-sm text-gray-400 italic">
           <DescriptionText description={encounter.lossText} />
         </div>
       </div>
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">댓글</h2>
+        <h2 className="text-sm font-bold text-gray-300 mb-3">{messages.common.comments}</h2>
         <CommentSection threadKey={buildCodexCommentThreadKey("encounter", encounter.id)} />
       </div>
     </div>
