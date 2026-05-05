@@ -308,7 +308,7 @@ function LanguageDropdown({
                 </span>
                 {!serviceOnly && (
                   <span className="shrink-0 rounded border border-amber-400/35 bg-amber-400/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200">
-                    only game local
+                    only game locale
                   </span>
                 )}
               </Link>
