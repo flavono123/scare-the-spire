@@ -169,3 +169,11 @@ export function getGameLocaleFromSearchRecord(
   if (value && isGameLocale(value)) return value;
   return DEFAULT_GAME_LOCALE_BY_SERVICE[serviceLocale];
 }
+
+export function getServiceLocaleFromSearchRecord(
+  searchParams: Record<string, string | string[] | undefined>,
+): ServiceLocale {
+  return getServiceLocaleFromInternalParam(
+    searchParams[INTERNAL_SERVICE_LOCALE_QUERY],
+  );
+}
