@@ -33,6 +33,7 @@ import { VersionSelector } from "./version-selector";
 
 interface RelicLibraryProps {
   serviceLocale: ServiceLocale;
+  title: string;
   relics: CodexRelic[];
   characters: CodexCharacter[];
   ancients?: CodexAncient[];
@@ -44,7 +45,7 @@ interface RelicLibraryProps {
   entities?: EntityInfo[];
 }
 
-export function RelicLibrary({ serviceLocale, relics, characters, ancients, versions, currentVersion, patches, versionDiffs, entities }: RelicLibraryProps) {
+export function RelicLibrary({ serviceLocale, title, relics, characters, ancients, versions, currentVersion, patches, versionDiffs, entities }: RelicLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<RelicFilterPool>>(new Set());
@@ -358,7 +359,7 @@ export function RelicLibrary({ serviceLocale, relics, characters, ancients, vers
               )}
             </svg>
           </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">{serviceText.relicsView.title}</h1>
+          <h1 className="text-base font-bold text-yellow-500 shrink-0">{title}</h1>
           <div className="flex-1 max-w-xl mx-auto">
             <SearchBar
               value={searchQuery}
@@ -453,7 +454,7 @@ export function RelicLibrary({ serviceLocale, relics, characters, ancients, vers
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <RelicDetail serviceLocale={serviceLocale} relic={selectedRelic} initialVariant={selectedVariantPool} onClose={() => setSelectedRelic(null)} entities={entities} />
+            <RelicDetail serviceLocale={serviceLocale} backToListTitle={title} relic={selectedRelic} initialVariant={selectedVariantPool} onClose={() => setSelectedRelic(null)} entities={entities} />
           </div>
         </div>
       )}

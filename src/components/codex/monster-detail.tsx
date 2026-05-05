@@ -27,6 +27,7 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 
 interface MonsterDetailProps {
   serviceLocale: ServiceLocale;
+  backToListTitle: string;
   monster: CodexMonster;
   encounters: CodexEncounter[];
   allMonsters?: CodexMonster[];
@@ -36,6 +37,7 @@ interface MonsterDetailProps {
 
 export function MonsterDetail({
   serviceLocale,
+  backToListTitle,
   monster,
   encounters,
   allMonsters,
@@ -61,7 +63,7 @@ export function MonsterDetail({
             if (onClose) { e.preventDefault(); onClose(); }
           }}
         >
-          ← {monsterText.backToList}
+          ← {backToListTitle}
         </Link>
         {onClose && (
           <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400" aria-label={commonText.close}>

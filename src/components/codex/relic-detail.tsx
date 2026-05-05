@@ -34,6 +34,7 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 
 interface RelicDetailProps {
   serviceLocale: ServiceLocale;
+  backToListTitle: string;
   relic: CodexRelic;
   initialVariant?: RelicPool;
   onClose?: () => void;
@@ -43,7 +44,7 @@ interface RelicDetailProps {
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
-export function RelicDetail({ serviceLocale, relic, initialVariant, onClose, entities }: RelicDetailProps) {
+export function RelicDetail({ serviceLocale, backToListTitle, relic, initialVariant, onClose, entities }: RelicDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   // Don't link the relic to itself in its own description
   const excludeSelf = useMemo(
@@ -80,7 +81,7 @@ export function RelicDetail({ serviceLocale, relic, initialVariant, onClose, ent
             }
           }}
         >
-          ← {serviceText.relicsView.backToList}
+          ← {backToListTitle}
         </Link>
         {onClose && (
           <button

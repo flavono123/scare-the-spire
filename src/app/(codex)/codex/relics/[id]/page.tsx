@@ -6,7 +6,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { RelicDetail } from "@/components/codex/relic-detail";
 
 export async function generateStaticParams() {
@@ -25,11 +26,13 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  const relics = await getCodexRelics({ gameLocale });
+  const [relics, gameUi] = await Promise.all([
+    getCodexRelics({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
+  ]);
   const relic = relics.find((r) => r.id.toLowerCase() === id.toLowerCase());
   if (!relic) return {};
-  return getCodexMetadata(serviceLocale, `${relic.name} — ${serviceText.relicsView.title}`);
+  return getCodexMetadata(serviceLocale, `${relic.name} — ${gameUi.relicCollectionTitle}`);
 }
 
 export default async function RelicDetailPage({
@@ -43,16 +46,17 @@ export default async function RelicDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [relics, entities] = await Promise.all([
+  const [relics, entities, gameUi] = await Promise.all([
     getCodexRelics({ gameLocale }),
     loadAllEntities({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
   ]);
   const relic = relics.find((r) => r.id.toLowerCase() === id.toLowerCase());
   if (!relic) notFound();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <RelicDetail serviceLocale={serviceLocale} relic={relic} entities={entities} />
+      <RelicDetail serviceLocale={serviceLocale} backToListTitle={gameUi.relicCollectionTitle} relic={relic} entities={entities} />
     </div>
   );
 }

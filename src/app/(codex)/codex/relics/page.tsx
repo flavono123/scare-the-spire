@@ -8,7 +8,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { RelicLibrary } from "@/components/codex/relic-library";
 
 export async function generateMetadata({
@@ -16,9 +17,11 @@ export async function generateMetadata({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  return getCodexMetadata(serviceLocale, serviceText.relicsView.title);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const gameUi = await getCodexGameUiLabels(gameLocale);
+  return getCodexMetadata(serviceLocale, gameUi.relicCollectionTitle);
 }
 
 export default async function CodexRelicsPage({
@@ -29,7 +32,7 @@ export default async function CodexRelicsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [relics, characters, ancients, patches, versionDiffs, meta, entities] = await Promise.all([
+  const [relics, characters, ancients, patches, versionDiffs, meta, entities, gameUi] = await Promise.all([
     getCodexRelics({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getCodexAncients({ gameLocale }),
@@ -37,6 +40,7 @@ export default async function CodexRelicsPage({
     getEntityVersionDiffs(),
     getCodexMeta(),
     loadAllEntities({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -45,6 +49,7 @@ export default async function CodexRelicsPage({
     <Suspense>
       <RelicLibrary
         serviceLocale={serviceLocale}
+        title={gameUi.relicCollectionTitle}
         relics={relics}
         characters={characters}
         ancients={ancients}

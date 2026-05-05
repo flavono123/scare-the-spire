@@ -5,7 +5,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { MonsterLibrary } from "@/components/codex/monster-library";
 
 export async function generateMetadata({
@@ -13,9 +14,11 @@ export async function generateMetadata({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  return getCodexMetadata(serviceLocale, serviceText.monstersView.title);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const gameUi = await getCodexGameUiLabels(gameLocale);
+  return getCodexMetadata(serviceLocale, gameUi.bestiaryTitle);
 }
 
 export default async function CodexMonstersPage({
@@ -26,15 +29,17 @@ export default async function CodexMonstersPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [monsters, encounters] = await Promise.all([
+  const [monsters, encounters, gameUi] = await Promise.all([
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
   ]);
 
   return (
     <Suspense>
       <MonsterLibrary
         serviceLocale={serviceLocale}
+        title={gameUi.bestiaryTitle}
         monsters={monsters}
         encounters={encounters}
       />

@@ -5,7 +5,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { PotionDetail } from "@/components/codex/potion-detail";
 
 export async function generateStaticParams() {
@@ -24,11 +25,13 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  const potions = await getCodexPotions({ gameLocale });
+  const [potions, gameUi] = await Promise.all([
+    getCodexPotions({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
+  ]);
   const potion = potions.find((p) => p.id.toLowerCase() === id.toLowerCase());
   if (!potion) return {};
-  return getCodexMetadata(serviceLocale, `${potion.name} — ${serviceText.potionsView.title}`);
+  return getCodexMetadata(serviceLocale, `${potion.name} — ${gameUi.potionLabTitle}`);
 }
 
 export default async function PotionDetailPage({
@@ -42,13 +45,16 @@ export default async function PotionDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const potions = await getCodexPotions({ gameLocale });
+  const [potions, gameUi] = await Promise.all([
+    getCodexPotions({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
+  ]);
   const potion = potions.find((p) => p.id.toLowerCase() === id.toLowerCase());
   if (!potion) notFound();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PotionDetail serviceLocale={serviceLocale} potion={potion} />
+      <PotionDetail serviceLocale={serviceLocale} backToListTitle={gameUi.potionLabTitle} potion={potion} />
     </div>
   );
 }

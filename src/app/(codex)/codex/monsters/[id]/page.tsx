@@ -5,7 +5,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { MonsterDetail } from "@/components/codex/monster-detail";
 
 export async function generateStaticParams() {
@@ -24,11 +25,13 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  const monsters = await getCodexMonsters({ gameLocale });
+  const [monsters, gameUi] = await Promise.all([
+    getCodexMonsters({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
+  ]);
   const monster = monsters.find((m) => m.id.toLowerCase() === id.toLowerCase());
   if (!monster) return {};
-  return getCodexMetadata(serviceLocale, `${monster.name} — ${serviceText.monstersView.title}`);
+  return getCodexMetadata(serviceLocale, `${monster.name} — ${gameUi.bestiaryTitle}`);
 }
 
 export default async function MonsterDetailPage({
@@ -42,9 +45,10 @@ export default async function MonsterDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [monsters, encounters] = await Promise.all([
+  const [monsters, encounters, gameUi] = await Promise.all([
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
   ]);
   const monster = monsters.find((m) => m.id.toLowerCase() === id.toLowerCase());
   if (!monster) notFound();
@@ -57,6 +61,7 @@ export default async function MonsterDetailPage({
     <div className="min-h-screen bg-background text-foreground">
       <MonsterDetail
         serviceLocale={serviceLocale}
+        backToListTitle={gameUi.bestiaryTitle}
         monster={monster}
         encounters={monsterEncounters}
         allMonsters={monsters}

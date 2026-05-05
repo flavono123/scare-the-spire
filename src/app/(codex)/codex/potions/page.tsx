@@ -7,7 +7,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { PotionLibrary } from "@/components/codex/potion-library";
 
 export async function generateMetadata({
@@ -15,9 +16,11 @@ export async function generateMetadata({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  return getCodexMetadata(serviceLocale, serviceText.potionsView.title);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const gameUi = await getCodexGameUiLabels(gameLocale);
+  return getCodexMetadata(serviceLocale, gameUi.potionLabTitle);
 }
 
 export default async function CodexPotionsPage({
@@ -28,12 +31,13 @@ export default async function CodexPotionsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [potions, characters, patches, versionDiffs, meta] = await Promise.all([
+  const [potions, characters, patches, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexPotions({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
+    getCodexGameUiLabels(gameLocale),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -42,6 +46,7 @@ export default async function CodexPotionsPage({
     <Suspense>
       <PotionLibrary
         serviceLocale={serviceLocale}
+        title={gameUi.potionLabTitle}
         potions={potions}
         characters={characters}
         versions={versions}

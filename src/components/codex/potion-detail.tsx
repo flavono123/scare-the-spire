@@ -28,11 +28,12 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 
 interface PotionDetailProps {
   serviceLocale: ServiceLocale;
+  backToListTitle: string;
   potion: CodexPotion;
   onClose?: () => void;
 }
 
-export function PotionDetail({ serviceLocale, potion, onClose }: PotionDetailProps) {
+export function PotionDetail({ serviceLocale, backToListTitle, potion, onClose }: PotionDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
   const poolColor = potion.pool !== "shared" && potion.pool !== "event"
@@ -53,7 +54,7 @@ export function PotionDetail({ serviceLocale, potion, onClose }: PotionDetailPro
             }
           }}
         >
-          ← {serviceText.potionsView.backToList}
+          ← {backToListTitle}
         </Link>
         {onClose && (
           <button

@@ -34,12 +34,14 @@ const ACT_ORDER: (EventAct | null)[] = [
 
 interface MonsterLibraryProps {
   serviceLocale: ServiceLocale;
+  title: string;
   monsters: CodexMonster[];
   encounters: CodexEncounter[];
 }
 
 export function MonsterLibrary({
   serviceLocale,
+  title,
   monsters,
   encounters,
 }: MonsterLibraryProps) {
@@ -387,7 +389,7 @@ export function MonsterLibrary({
               )}
             </svg>
           </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">{monsterText.title}</h1>
+          <h1 className="text-base font-bold text-yellow-500 shrink-0">{title}</h1>
           <div className="flex-1 max-w-xl mx-auto">
             <MonsterSearchBar
               value={searchQuery}
@@ -457,6 +459,7 @@ export function MonsterLibrary({
           <div className="w-full max-w-2xl my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
             <MonsterDetail
               serviceLocale={serviceLocale}
+              backToListTitle={title}
               monster={selectedMonster}
               encounters={getMonsterEncounters(selectedMonster.id)}
               allMonsters={monsters}

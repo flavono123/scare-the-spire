@@ -66,6 +66,7 @@ const CHARACTER_POOLS: PotionPool[] = [
 
 interface PotionLibraryProps {
   serviceLocale: ServiceLocale;
+  title: string;
   potions: CodexPotion[];
   characters: CodexCharacter[];
   versions?: string[];
@@ -74,7 +75,7 @@ interface PotionLibraryProps {
   versionDiffs?: EntityVersionDiff[];
 }
 
-export function PotionLibrary({ serviceLocale, potions, characters, versions, currentVersion, patches, versionDiffs }: PotionLibraryProps) {
+export function PotionLibrary({ serviceLocale, title, potions, characters, versions, currentVersion, patches, versionDiffs }: PotionLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<PotionPool>>(
@@ -444,7 +445,7 @@ export function PotionLibrary({ serviceLocale, potions, characters, versions, cu
             </svg>
           </button>
           <h1 className="text-base font-bold text-yellow-500 shrink-0">
-            {serviceText.potionsView.title}
+            {title}
           </h1>
           <div className="flex-1 max-w-xl mx-auto">
             <PotionSearchBar
@@ -526,7 +527,7 @@ export function PotionLibrary({ serviceLocale, potions, characters, versions, cu
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <PotionDetail serviceLocale={serviceLocale} potion={selectedPotion} onClose={() => setSelectedPotion(null)} />
+            <PotionDetail serviceLocale={serviceLocale} backToListTitle={title} potion={selectedPotion} onClose={() => setSelectedPotion(null)} />
           </div>
         </div>
       )}
