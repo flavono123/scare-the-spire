@@ -4,6 +4,13 @@ import fs from "fs/promises";
 import path from "path";
 import { getSTS2Patches } from "@/lib/data";
 import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters } from "@/lib/codex-data";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleFromSearchRecord,
+  localizeHrefWithGameLocale,
+  type ServiceLocale,
+} from "@/lib/i18n";
 import { Badge } from "@/components/ui/badge";
 import {
   PatchNoteRenderer,
@@ -13,11 +20,44 @@ import { CommentSection } from "@/components/comment-section";
 import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import type { PatchType } from "@/lib/types";
 
-const PATCH_TYPE_STYLES: Record<PatchType, { label: string; className: string }> = {
-  release: { label: "출시", className: "bg-green-500/15 text-green-400 border-green-500/30" },
-  beta: { label: "베타", className: "bg-blue-500/15 text-blue-400 border-blue-500/30" },
-  stable: { label: "안정", className: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
-  hotfix: { label: "핫픽스", className: "bg-orange-500/15 text-orange-400 border-orange-500/30" },
+const PATCH_COPY: Record<ServiceLocale, {
+  backToList: string;
+  steamOriginal: string;
+  missing: string;
+  comments: string;
+  types: Record<PatchType, string>;
+}> = {
+  ko: {
+    backToList: "패치 목록",
+    steamOriginal: "Steam 원문",
+    missing: "패치 노트 원문이 아직 준비되지 않았습니다.",
+    comments: "댓글",
+    types: {
+      release: "출시",
+      beta: "베타",
+      stable: "안정",
+      hotfix: "핫픽스",
+    },
+  },
+  en: {
+    backToList: "Patch list",
+    steamOriginal: "Steam original",
+    missing: "Patch notes are not ready yet.",
+    comments: "Comments",
+    types: {
+      release: "Release",
+      beta: "Beta",
+      stable: "Stable",
+      hotfix: "Hotfix",
+    },
+  },
+};
+
+const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
+  release: "bg-green-500/15 text-green-400 border-green-500/30",
+  beta: "bg-blue-500/15 text-blue-400 border-blue-500/30",
+  stable: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+  hotfix: "bg-orange-500/15 text-orange-400 border-orange-500/30",
 };
 
 const NOTES_DIR = path.join(process.cwd(), "data/sts2-patch-notes");
@@ -29,34 +69,42 @@ export async function generateStaticParams() {
 
 export default async function PatchDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ version: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { version } = await params;
-  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters] = await Promise.all([
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const copy = PATCH_COPY[serviceLocale];
+  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, gameUi] = await Promise.all([
     getSTS2Patches(),
-    getCodexCards({ includeDeprecated: true }),
-    getCodexRelics(),
-    getCodexPotions(),
-    getCodexPowers(),
-    getCodexEnchantments(),
-    getCodexEvents(),
-    getCodexMonsters(),
-    getCodexEncounters(),
+    getCodexCards({ includeDeprecated: true, gameLocale }),
+    getCodexRelics({ gameLocale }),
+    getCodexPotions({ gameLocale }),
+    getCodexPowers({ gameLocale }),
+    getCodexEnchantments({ gameLocale }),
+    getCodexEvents({ gameLocale }),
+    getCodexMonsters({ gameLocale }),
+    getCodexEncounters({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
   ]);
 
   const patch = patches.find((p) => p.version === version);
   if (!patch) notFound();
 
-  // Read Korean patch notes first, fallback to English
   let markdown = "";
   const koPath = path.join(NOTES_DIR, `v${patch.version}.ko.md`);
   const enPath = path.join(NOTES_DIR, `v${patch.version}.md`);
+  const preferredPath = serviceLocale === "ko" ? koPath : enPath;
+  const fallbackPath = serviceLocale === "ko" ? enPath : koPath;
   try {
-    markdown = await fs.readFile(koPath, "utf-8");
+    markdown = await fs.readFile(preferredPath, "utf-8");
   } catch {
     try {
-      markdown = await fs.readFile(enPath, "utf-8");
+      markdown = await fs.readFile(fallbackPath, "utf-8");
     } catch {
       // No patch notes file yet
     }
@@ -153,7 +201,7 @@ export default async function PatchDetailPage({
     })),
   ];
 
-  const style = PATCH_TYPE_STYLES[patch.type];
+  const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
   const commentEntities = entities.filter((entity) => !entity.eventOptionDesc);
 
   // Adjacent patches for navigation
@@ -165,20 +213,20 @@ export default async function PatchDetailPage({
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
       <Link
-        href="/patches"
+        href={localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale)}
         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        &larr; 패치 목록
+        &larr; {copy.backToList}
       </Link>
 
       <div className="mt-4">
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold">v{patch.version}</h1>
-          <Badge variant="outline" className={style.className}>
-            {style.label}
+          <Badge variant="outline" className={PATCH_TYPE_CLASSES[patch.type]}>
+            {copy.types[patch.type]}
           </Badge>
         </div>
-        <p className="mt-1 text-lg font-medium">{patch.titleKo}</p>
+        <p className="mt-1 text-lg font-medium">{title}</p>
         <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">
           <span>{patch.date}</span>
           {patch.steamUrl && (
@@ -188,7 +236,7 @@ export default async function PatchDetailPage({
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-300 transition-colors"
             >
-              Steam 원문 &rarr;
+              {copy.steamOriginal} &rarr;
             </a>
           )}
         </div>
@@ -197,16 +245,23 @@ export default async function PatchDetailPage({
       {/* Patch notes body */}
       {markdown ? (
         <section className="mt-6">
-          <PatchNoteRenderer markdown={markdown} entities={entities} />
+          <PatchNoteRenderer
+            markdown={markdown}
+            entities={entities}
+            gameUi={gameUi}
+            serviceLocale={serviceLocale}
+            gameLocale={gameLocale}
+            preferEntityLocaleLabel={serviceLocale !== "ko" || gameLocale !== "kor"}
+          />
         </section>
       ) : (
         <div className="mt-8 rounded-lg border border-border bg-card/30 p-6 text-center text-sm text-muted-foreground">
-          패치 노트 원문이 아직 준비되지 않았습니다.
+          {copy.missing}
         </div>
       )}
 
       <section className="mt-8 rounded-lg border border-border bg-card/20 p-4">
-        <h2 className="mb-3 text-sm font-bold text-foreground">댓글</h2>
+        <h2 className="mb-3 text-sm font-bold text-foreground">{copy.comments}</h2>
         <CommentSection
           threadKey={buildPatchCommentThreadKey(patch.version)}
           initialEntities={commentEntities}
@@ -217,7 +272,7 @@ export default async function PatchDetailPage({
       <div className="mt-8 flex items-center justify-between border-t border-border pt-4">
         {prevPatch ? (
           <Link
-            href={`/patches/${prevPatch.version}`}
+            href={localizeHrefWithGameLocale(`/patches/${prevPatch.version}`, serviceLocale, gameLocale)}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             &larr; v{prevPatch.version}
@@ -227,7 +282,7 @@ export default async function PatchDetailPage({
         )}
         {nextPatch ? (
           <Link
-            href={`/patches/${nextPatch.version}`}
+            href={localizeHrefWithGameLocale(`/patches/${nextPatch.version}`, serviceLocale, gameLocale)}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             v{nextPatch.version} &rarr;
