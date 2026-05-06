@@ -370,6 +370,8 @@ interface RawPower {
   stack_type: string | null;
   allow_negative: boolean | null;
   image_url: string | null;
+  deprecated?: boolean;
+  deprecatedInPatch?: string;
 }
 
 function powerLocalizationBase(gamePowers: GameLocalizationTable, id: string): string {
@@ -412,7 +414,7 @@ export async function getCodexPowers(opts?: { gameLocale?: GameLocale }): Promis
   const engById = new Map(engPowers.map((p) => [p.id, p]));
 
   return korPowers
-    .filter((p) => !(p.type === "None" && !p.description))
+    .filter((p) => !p.deprecated && !(p.type === "None" && !p.description))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
       return mapPower(kor, eng, gamePowers);
