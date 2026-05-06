@@ -39,6 +39,7 @@ export default async function CodexMonstersPage({
     <Suspense>
       <MonsterLibrary
         serviceLocale={serviceLocale}
+        gameUi={gameUi}
         title={gameUi.bestiaryTitle}
         monsters={monsters}
         encounters={encounters}

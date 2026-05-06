@@ -61,6 +61,7 @@ export default async function MonsterDetailPage({
     <div className="min-h-screen bg-background text-foreground">
       <MonsterDetail
         serviceLocale={serviceLocale}
+        gameUi={gameUi}
         backToListTitle={gameUi.bestiaryTitle}
         monster={monster}
         encounters={monsterEncounters}

@@ -6,6 +6,7 @@ import Image from "@/components/ui/static-image";
 import { MonsterDetail } from "./monster-detail";
 import { getChoseong } from "es-hangul";
 import type { ServiceLocale } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { serviceMessages } from "@/messages/service";
 import {
   CodexMonster,
@@ -34,6 +35,7 @@ const ACT_ORDER: (EventAct | null)[] = [
 
 interface MonsterLibraryProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   title: string;
   monsters: CodexMonster[];
   encounters: CodexEncounter[];
@@ -41,6 +43,7 @@ interface MonsterLibraryProps {
 
 export function MonsterLibrary({
   serviceLocale,
+  gameUi,
   title,
   monsters,
   encounters,
@@ -245,8 +248,8 @@ export function MonsterLibrary({
     return MONSTER_TYPE_ORDER.map((type) => ({
       type,
       color: MONSTER_TYPE_CONFIG[type].color,
-      label: monsterText.monsterTypes[type].label,
-      description: monsterText.monsterTypes[type].description,
+      label: gameUi.monsterTypes[type].label,
+      description: gameUi.monsterTypes[type].description,
       monsters: filteredMonsters
         .filter((m) => m.type === type)
         .sort((a, b) => {
@@ -256,7 +259,7 @@ export function MonsterLibrary({
           return a.name.localeCompare(b.name, "ko");
         }),
     })).filter((s) => s.monsters.length > 0);
-  }, [filteredMonsters, getMonsterActOrder, monsterText]);
+  }, [filteredMonsters, gameUi, getMonsterActOrder]);
 
   const toggleType = useCallback((type: MonsterType) => {
     setSelectedTypes((prev) => {
@@ -325,7 +328,7 @@ export function MonsterLibrary({
           <div className="flex flex-col gap-0.5">
             {MONSTER_TYPE_ORDER.map((type) => {
               const config = MONSTER_TYPE_CONFIG[type];
-              const typeText = monsterText.monsterTypes[type];
+              const typeText = gameUi.monsterTypes[type];
               return (
                 <button
                   key={type}
@@ -352,7 +355,7 @@ export function MonsterLibrary({
             {ACT_ORDER.map((act) => {
               const config = act ? EVENT_ACT_CONFIG[act] : EVENT_ACT_UNKNOWN;
               const key = act ?? "none";
-              const label = act ? monsterText.acts[act] : monsterText.acts.none;
+              const label = getActLabel(act, monsterText, gameUi);
               return (
                 <button
                   key={key}
@@ -422,6 +425,7 @@ export function MonsterLibrary({
                     monster={monster}
                     encounters={getMonsterEncounters(monster.id)}
                     serviceLocale={serviceLocale}
+                    gameUi={gameUi}
                     messages={monsterText}
                     onHover={handleMonsterHover}
                     onClick={() => setSelectedMonster(monster)}
@@ -445,6 +449,7 @@ export function MonsterLibrary({
           x={tooltipPos.x}
           y={tooltipPos.y}
           messages={monsterText}
+          gameUi={gameUi}
         />
       )}
 
@@ -459,6 +464,7 @@ export function MonsterLibrary({
           <div className="w-full max-w-2xl my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
             <MonsterDetail
               serviceLocale={serviceLocale}
+              gameUi={gameUi}
               backToListTitle={title}
               monster={selectedMonster}
               encounters={getMonsterEncounters(selectedMonster.id)}
@@ -478,6 +484,7 @@ function MonsterTile({
   monster,
   encounters,
   serviceLocale,
+  gameUi,
   messages,
   onHover,
   onClick,
@@ -485,6 +492,7 @@ function MonsterTile({
   monster: CodexMonster;
   encounters: CodexEncounter[];
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   messages: MonsterViewMessages;
   onHover: (m: CodexMonster | null, e?: React.MouseEvent) => void;
   onClick?: () => void;
@@ -525,7 +533,7 @@ function MonsterTile({
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ backgroundColor: `${typeConfig.color}20`, color: typeConfig.color }}>
-            {messages.monsterTypes[monster.type].label}
+            {gameUi.monsterTypes[monster.type].label}
           </span>
           {hpText && <span className="text-[10px] text-gray-500">HP {hpText}</span>}
           {acts.length > 0 && (
@@ -534,7 +542,7 @@ function MonsterTile({
                 const config = EVENT_ACT_CONFIG[act];
                 return (
                   <span key={act} className={`text-[9px] ${config?.color ?? "text-zinc-400"}`}>
-                    {config?.label ?? "?"}
+                    {gameUi.acts[act]}
                   </span>
                 );
               })}
@@ -562,12 +570,14 @@ function MonsterTooltip({
   x,
   y,
   messages,
+  gameUi,
 }: {
   monster: CodexMonster;
   encounters: CodexEncounter[];
   x: number;
   y: number;
   messages: MonsterViewMessages;
+  gameUi: CodexGameUiLabels;
 }) {
   const typeConfig = MONSTER_TYPE_CONFIG[monster.type];
   const style: React.CSSProperties = {
@@ -601,7 +611,7 @@ function MonsterTooltip({
         {/* Type + HP */}
         <div className="flex items-center gap-1.5 mb-2">
           <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ backgroundColor: `${typeConfig.color}20`, color: typeConfig.color }}>
-            {messages.monsterTypes[monster.type].label}
+            {gameUi.monsterTypes[monster.type].label}
           </span>
           {formatHp(monster) && <span className="text-[10px] text-gray-400">HP {formatHp(monster)}</span>}
         </div>
@@ -770,4 +780,12 @@ function formatCount(count: number, unit: string, serviceLocale: ServiceLocale):
 
   const displayUnit = count === 1 ? unit.replace(/s$/, "") : unit;
   return `${count} ${displayUnit}`;
+}
+
+function getActLabel(
+  act: EventAct | null,
+  messages: MonsterViewMessages,
+  gameUi: CodexGameUiLabels,
+): string {
+  return act ? gameUi.acts[act] : messages.acts.none;
 }

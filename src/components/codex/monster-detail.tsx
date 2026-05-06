@@ -6,6 +6,7 @@ import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { serviceMessages } from "@/messages/service";
 import {
   CodexMonster,
@@ -27,6 +28,7 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 
 interface MonsterDetailProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   backToListTitle: string;
   monster: CodexMonster;
   encounters: CodexEncounter[];
@@ -37,6 +39,7 @@ interface MonsterDetailProps {
 
 export function MonsterDetail({
   serviceLocale,
+  gameUi,
   backToListTitle,
   monster,
   encounters,
@@ -98,7 +101,7 @@ export function MonsterDetail({
 
       {/* Stats Row */}
       <div className="flex flex-wrap justify-center gap-2">
-        <StatBadge label={monsterText.stats.type} value={monsterText.monsterTypes[monster.type].label} color={typeConfig.color} />
+        <StatBadge label={monsterText.stats.type} value={gameUi.monsterTypes[monster.type].label} color={typeConfig.color} />
         {formatHp(monster) && (
           <StatBadge label={monsterText.stats.hp} value={formatHp(monster)!} />
         )}
@@ -208,10 +211,10 @@ export function MonsterDetail({
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}>
-                      {monsterText.roomTypes[enc.roomType]}
+                      {gameUi.encounterRoomTypes[enc.roomType]}
                     </span>
                     {enc.act && actConfig && (
-                      <span className={`text-[10px] ${actConfig.color}`}>{monsterText.acts[enc.act]}</span>
+                      <span className={`text-[10px] ${actConfig.color}`}>{gameUi.acts[enc.act]}</span>
                     )}
                     {enc.isWeak && (
                       <span className="text-[10px] text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded">{monsterText.weakEncounter}</span>
