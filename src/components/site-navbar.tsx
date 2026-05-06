@@ -14,6 +14,7 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import { serviceMessages } from "@/messages/service";
 
 // --- Dropdown data ---
@@ -76,11 +77,14 @@ function localizeNavItems<T extends { href: string; labelKey: CodexLabelKey; ico
   items: readonly T[],
   serviceLocale: ServiceLocale,
   gameLocale: GameLocale,
+  options?: { useGameLabels?: boolean },
 ) {
   const messages = serviceMessages[serviceLocale];
   return items.map((item) => ({
     href: localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale),
-    label: messages.codex[item.labelKey],
+    label: options?.useGameLabels
+      ? getCodexNavGameLabel(gameLocale, item.labelKey) ?? messages.codex[item.labelKey]
+      : messages.codex[item.labelKey],
     icon: item.icon,
   }));
 }
@@ -439,7 +443,7 @@ export function SiteNavbar() {
           <GameDropdown
             icon="/images/sts2/icons/app_icon.png"
             alt={messages.games.sts2Codex}
-            items={localizeNavItems(sts2Items, serviceLocale, gameLocale)}
+            items={localizeNavItems(sts2Items, serviceLocale, gameLocale, { useGameLabels: true })}
             align="right"
           />
           <GameDropdown
