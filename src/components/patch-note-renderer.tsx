@@ -8,7 +8,7 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent, CodexMonster, CodexEncounter } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent, CodexMonster, CodexEncounter, CodexAncient } from "@/lib/codex-types";
 import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, POWER_TYPE_CONFIG, ENCHANTMENT_CARD_TYPE_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool, type EnchantmentCardTypeFilter } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -20,12 +20,14 @@ import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
 
 // Entity types that can appear in patch notes
-export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "event" | "monster" | "encounter";
+export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "event" | "monster" | "encounter" | "ancient";
 
 export interface EntityInfo {
   id: string;
   nameEn: string;
   nameKo: string;
+  aliasesEn?: string[];
+  aliasesKo?: string[];
   imageUrl: string | null;
   color: string; // card color or pool
   type: EntityType;
@@ -38,6 +40,7 @@ export interface EntityInfo {
   eventOptionDesc?: string; // BBCode description for event option tooltips
   monsterData?: CodexMonster; // Full monster data for rich preview
   encounterData?: CodexEncounter; // Full encounter data for rich preview
+  ancientData?: CodexAncient; // Full ancient data for rich preview
 }
 
 // Keep backward compat alias
@@ -86,7 +89,7 @@ export function EntityPreview({
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
       // Card tile preview is taller (~340px), other rich tooltips ~200px
-      const hasRichData = entity.relicData || entity.potionData || entity.powerData || entity.enchantmentData;
+      const hasRichData = entity.relicData || entity.potionData || entity.powerData || entity.enchantmentData || entity.ancientData;
       const threshold = entity.cardData ? 380 : entity.eventOptionDesc ? 120 : entity.eventData ? 160 : entity.encounterData ? 260 : hasRichData ? 260 : 260;
       setPosition(rect.top < threshold ? "below" : "above");
     }
@@ -102,6 +105,7 @@ export function EntityPreview({
     event: `/codex/events/${entity.id.toLowerCase()}`,
     monster: `/codex/monsters?monster=${entity.id.toLowerCase()}`,
     encounter: `/codex/encounters?encounter=${entity.id.toLowerCase()}`,
+    ancient: `/codex/ancients/${entity.id.toLowerCase()}`,
   };
   const href = serviceLocale && gameLocale
     ? localizeHrefWithGameLocale(hrefMap[entity.type], serviceLocale, gameLocale)
@@ -432,7 +436,39 @@ export function EntityPreview({
           </span>
         </span>
       )}
-      {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && entity.imageUrl && (
+      {visible && entity.type === "ancient" && entity.ancientData && (
+        <span
+          className={tooltipPos}
+        >
+          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-blue-500/20 bg-[#0c0c20]/95">
+            {entity.ancientData.imageUrl && (
+              <span className="block relative w-full h-28">
+                <Image
+                  src={entity.ancientData.imageUrl}
+                  alt={entity.nameKo}
+                  fill
+                  sizes="256px"
+                  className="object-cover"
+                />
+                <span className="absolute inset-0 bg-gradient-to-t from-[#0c0c20] to-transparent" />
+              </span>
+            )}
+            <span className="block p-3">
+              <span className="block font-bold text-sm text-blue-400">{entity.nameKo}</span>
+              <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+              {entity.ancientData.epithet && (
+                <span className="block text-[10px] text-gray-400 mt-0.5">{entity.ancientData.epithet}</span>
+              )}
+              {entity.ancientData.act && (
+                <span className={`inline-block mt-2 text-[10px] ${(EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).color}`}>
+                  {gameUi?.acts[entity.ancientData.act] ?? (EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
+                </span>
+              )}
+            </span>
+          </span>
+        </span>
+      )}
+      {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && !entity.ancientData && entity.imageUrl && (
         <span
           className={tooltipPos}
         >
@@ -469,20 +505,31 @@ export interface EntityLookup {
   allByEn?: Map<string, EntityInfo[]>;
 }
 
+function addLookupEntry(
+  primary: Map<string, EntityInfo>,
+  all: Map<string, EntityInfo[]>,
+  value: string,
+  entity: EntityInfo,
+) {
+  const key = value.trim().toLowerCase();
+  if (!key) return;
+
+  primary.set(key, entity);
+  const matches = all.get(key);
+  if (matches) matches.push(entity);
+  else all.set(key, [entity]);
+}
+
 export function buildEntityLookup(entities: EntityInfo[]): EntityLookup {
   const byKo = new Map<string, EntityInfo>();
   const byEn = new Map<string, EntityInfo>();
   const allByKo = new Map<string, EntityInfo[]>();
   const allByEn = new Map<string, EntityInfo[]>();
   for (const e of entities) {
-    byKo.set(e.nameKo.toLowerCase(), e);
-    byEn.set(e.nameEn.toLowerCase(), e);
-    const koKey = e.nameKo.toLowerCase();
-    const enKey = e.nameEn.toLowerCase();
-    if (!allByKo.has(koKey)) allByKo.set(koKey, []);
-    allByKo.get(koKey)!.push(e);
-    if (!allByEn.has(enKey)) allByEn.set(enKey, []);
-    allByEn.get(enKey)!.push(e);
+    addLookupEntry(byKo, allByKo, e.nameKo, e);
+    addLookupEntry(byEn, allByEn, e.nameEn, e);
+    for (const alias of e.aliasesKo ?? []) addLookupEntry(byKo, allByKo, alias, e);
+    for (const alias of e.aliasesEn ?? []) addLookupEntry(byEn, allByEn, alias, e);
   }
   return { byKo, byEn, allByKo, allByEn };
 }

@@ -18,6 +18,7 @@ const ENTITY_TYPE_LABELS: Record<EntityType, string> = {
   event: "이벤트",
   monster: "몬스터",
   encounter: "인카운터",
+  ancient: "고대의 존재",
 };
 
 export interface MentionListRef {
