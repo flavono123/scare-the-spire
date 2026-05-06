@@ -51,6 +51,7 @@ type RenderContext = {
   serviceLocale?: ServiceLocale;
   gameLocale?: GameLocale;
   preferEntityLocaleLabel?: boolean;
+  gameKeywordLabels?: Record<string, string>;
 };
 
 // --- Entity Preview (hover card image) ---
@@ -496,6 +497,10 @@ export function EntityPreview({
   );
 }
 
+function gameKeywordLabel(text: string, context: RenderContext): string | null {
+  return context.gameKeywordLabels?.[text.trim().toLowerCase()] ?? null;
+}
+
 // --- Entity Lookup ---
 
 export interface EntityLookup {
@@ -612,9 +617,10 @@ function renderBBNodes(
         }
 
         // Not an entity, just gold styling
+        const label = gameKeywordLabel(plainText, context);
         return (
           <span key={key} className="spire-gold font-semibold">
-            {renderBBNodes(node.children, lookup, key, context)}
+            {label ?? renderBBNodes(node.children, lookup, key, context)}
           </span>
         );
       }
@@ -674,12 +680,13 @@ function renderMarkdownBold(
           </EntityPreview>,
         );
       } else {
+        const label = gameKeywordLabel(name, context) ?? name;
         enriched.push(
           <strong
             key={`${keyPrefix}-b${idx}-${j}`}
             className="font-semibold spire-gold"
           >
-            {name}
+            {label}
           </strong>,
         );
       }
@@ -828,6 +835,7 @@ export function PatchNoteRenderer({
   serviceLocale,
   gameLocale,
   preferEntityLocaleLabel,
+  gameKeywordLabels,
 }: {
   markdown: string;
   entities?: EntityInfo[];
@@ -836,12 +844,13 @@ export function PatchNoteRenderer({
   serviceLocale?: ServiceLocale;
   gameLocale?: GameLocale;
   preferEntityLocaleLabel?: boolean;
+  gameKeywordLabels?: Record<string, string>;
 }) {
   const allEntities = useMemo(() => entities ?? cards ?? [], [entities, cards]);
   const lookup = useMemo(() => buildEntityLookup(allEntities), [allEntities]);
   const context = useMemo<RenderContext>(
-    () => ({ gameUi, serviceLocale, gameLocale, preferEntityLocaleLabel }),
-    [gameLocale, gameUi, preferEntityLocaleLabel, serviceLocale],
+    () => ({ gameUi, serviceLocale, gameLocale, preferEntityLocaleLabel, gameKeywordLabels }),
+    [gameKeywordLabels, gameLocale, gameUi, preferEntityLocaleLabel, serviceLocale],
   );
   const lines = markdown.split("\n");
 
