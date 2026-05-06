@@ -13,6 +13,26 @@ DATA_DIR = ROOT / "data/sts2"
 LOCALIZATION_DIR = DATA_DIR / "localization"
 LANGUAGES_PATH = DATA_DIR / "languages.json"
 BORROWED_PHRASES_PATH = ROOT / "data/i18n/borrowed-game-phrases.json"
+CODEX_RAW_DIR = DATA_DIR / "kor"
+
+# Thai STS2 localization currently ships with a partial gameplay table set.
+# Validate exact targeted regressions there, but do not fail full codex coverage
+# until the upstream source has complete entity title coverage.
+PARTIAL_CODEX_TITLE_LOCALES = {"tha"}
+CODEX_TITLE_TABLES = [
+    "cards",
+    "relics",
+    "potions",
+    "powers",
+    "enchantments",
+    "events",
+    "ancients",
+    "monsters",
+    "encounters",
+]
+REGRESSION_TITLE_KEYS = {
+    "cards": ["BLADE_OF_INK.title"],
+}
 
 
 def read_json(path: Path) -> Any:
@@ -146,10 +166,102 @@ def validate_borrowed_phrases(errors: list[str]) -> None:
                 errors.append(f"{rp}: to text {to_text!r} is not present in serviceText.")
 
 
+def power_localization_base(power_table: dict[str, str], power_id: str) -> str:
+    power_key = f"{power_id}_POWER"
+    if f"{power_key}.title" in power_table or f"{power_key}.smartDescription" in power_table:
+        return power_key
+    return power_id
+
+
+def validate_codex_entity_titles(errors: list[str]) -> None:
+    language_codes = [entry["code"] for entry in read_json(LANGUAGES_PATH)]
+
+    for lang in language_codes:
+        for table, keys in REGRESSION_TITLE_KEYS.items():
+            source = read_json(LOCALIZATION_DIR / lang / f"{table}.json")
+            for key in keys:
+                if not isinstance(source.get(key), str) or not source[key]:
+                    errors.append(f"{lang}/{table}.json is missing regression key {key!r}.")
+
+    complete_languages = [lang for lang in language_codes if lang not in PARTIAL_CODEX_TITLE_LOCALES]
+    raw = {
+        table: read_json(CODEX_RAW_DIR / f"{table}.json")
+        for table in ["cards", "relics", "potions", "powers", "enchantments", "events", "monsters", "encounters"]
+    }
+
+    for lang in complete_languages:
+        tables = {
+            table: read_json(LOCALIZATION_DIR / lang / f"{table}.json")
+            for table in CODEX_TITLE_TABLES
+        }
+        missing: list[str] = []
+
+        for item in raw["cards"]:
+            if item.get("deprecated") or not (item.get("image_url") or item.get("beta_image_url")):
+                continue
+            key = f"{item['id']}.title"
+            if key not in tables["cards"]:
+                missing.append(f"cards:{key}")
+
+        for item in raw["relics"]:
+            key = f"{item['id']}.title"
+            if key not in tables["relics"]:
+                missing.append(f"relics:{key}")
+
+        for item in raw["potions"]:
+            key = f"{item['id']}.title"
+            if key not in tables["potions"]:
+                missing.append(f"potions:{key}")
+
+        for item in raw["powers"]:
+            if item.get("deprecated") or (item.get("type") == "None" and not item.get("description")):
+                continue
+            base = power_localization_base(tables["powers"], item["id"])
+            key = f"{base}.title"
+            if key not in tables["powers"]:
+                # The codex loader hides powers that have no game title source.
+                continue
+
+        for item in raw["enchantments"]:
+            key = f"{item['id']}.title"
+            if key not in tables["enchantments"]:
+                missing.append(f"enchantments:{key}")
+
+        for item in raw["events"]:
+            if item.get("type") == "Ancient":
+                key = f"{item['id']}.title"
+                if key not in tables["ancients"]:
+                    missing.append(f"ancients:{key}")
+                continue
+            if item.get("image_url") and "/ancients/" in item["image_url"]:
+                continue
+            if not item.get("description"):
+                continue
+            key = f"{item['id']}.title"
+            if key not in tables["events"]:
+                missing.append(f"events:{key}")
+
+        for item in raw["monsters"]:
+            key = f"{item['id']}.name"
+            if key not in tables["monsters"]:
+                missing.append(f"monsters:{key}")
+
+        for item in raw["encounters"]:
+            key = f"{item['id']}.title"
+            if key not in tables["encounters"]:
+                missing.append(f"encounters:{key}")
+
+        if missing:
+            sample = ", ".join(missing[:20])
+            suffix = f" and {len(missing) - 20} more" if len(missing) > 20 else ""
+            errors.append(f"{lang}: missing codex entity localization keys: {sample}{suffix}.")
+
+
 def main() -> int:
     errors: list[str] = []
     validate_localization(errors)
     validate_borrowed_phrases(errors)
+    validate_codex_entity_titles(errors)
 
     if errors:
         print("i18n validation failed:")
