@@ -381,6 +381,10 @@ function powerLocalizationBase(gamePowers: GameLocalizationTable, id: string): s
     : id;
 }
 
+function hasPowerLocalizationTitle(gamePowers: GameLocalizationTable, id: string): boolean {
+  return `${powerLocalizationBase(gamePowers, id)}.title` in gamePowers;
+}
+
 function mapPower(kor: RawPower, eng: RawPower, gamePowers: GameLocalizationTable): CodexPower {
   const vars = kor.vars ?? {};
   const l10nBase = powerLocalizationBase(gamePowers, kor.id);
@@ -414,7 +418,7 @@ export async function getCodexPowers(opts?: { gameLocale?: GameLocale }): Promis
   const engById = new Map(engPowers.map((p) => [p.id, p]));
 
   return korPowers
-    .filter((p) => !p.deprecated && !(p.type === "None" && !p.description))
+    .filter((p) => !p.deprecated && hasPowerLocalizationTitle(gamePowers, p.id) && !(p.type === "None" && !p.description))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
       return mapPower(kor, eng, gamePowers);
