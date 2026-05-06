@@ -7,6 +7,7 @@ import { DescriptionText } from "./codex-description";
 import { PotionDetail } from "./potion-detail";
 import { getChoseong } from "es-hangul";
 import type { ServiceLocale } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
   getCodexServiceMessages,
@@ -27,9 +28,11 @@ import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
 import { reconstructPotionAtVersion } from "@/lib/entity-versioning";
 import { VersionSelector } from "./version-selector";
 
+type PotionSectionKey = keyof CodexGameUiLabels["potionLab"]["sections"];
+
 // Rarity sections to display (merge 이벤트 + 토큰 into 특별)
 const DISPLAY_SECTIONS: {
-  key: string;
+  key: PotionSectionKey;
   color: string;
   rarities: PotionRarityKo[];
 }[] = [
@@ -66,6 +69,7 @@ const CHARACTER_POOLS: PotionPool[] = [
 
 interface PotionLibraryProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   title: string;
   potions: CodexPotion[];
   characters: CodexCharacter[];
@@ -75,7 +79,7 @@ interface PotionLibraryProps {
   versionDiffs?: EntityVersionDiff[];
 }
 
-export function PotionLibrary({ serviceLocale, title, potions, characters, versions, currentVersion, patches, versionDiffs }: PotionLibraryProps) {
+export function PotionLibrary({ serviceLocale, gameUi, title, potions, characters, versions, currentVersion, patches, versionDiffs }: PotionLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<PotionPool>>(
@@ -261,13 +265,13 @@ export function PotionLibrary({ serviceLocale, title, potions, characters, versi
   const sections = useMemo(() => {
     return DISPLAY_SECTIONS.map((section) => ({
       ...section,
-      label: getPotionSectionLabel(section.key, serviceText),
-      description: getPotionSectionDescription(section.key, serviceText),
+      label: gameUi.potionLab.sections[section.key].label,
+      description: gameUi.potionLab.sections[section.key].description,
       potions: filteredPotions
         .filter((p) => section.rarities.includes(p.rarity))
         .sort((a, b) => a.name.localeCompare(b.name, "ko")),
     })).filter((s) => s.potions.length > 0);
-  }, [filteredPotions, serviceText]);
+  }, [filteredPotions, gameUi]);
 
   // Toggle helpers
   const togglePool = useCallback((pool: PotionPool) => {
@@ -309,19 +313,35 @@ export function PotionLibrary({ serviceLocale, title, potions, characters, versi
   );
 
   // Character filters from props
+  const poolLabels = useMemo(() => {
+    const labels: Record<PotionPool, string> = {
+      shared: serviceText.labels.pools.shared,
+      event: gameUi.eventsTitle,
+      ironclad: serviceText.labels.pools.ironclad,
+      silent: serviceText.labels.pools.silent,
+      defect: serviceText.labels.pools.defect,
+      necrobinder: serviceText.labels.pools.necrobinder,
+      regent: serviceText.labels.pools.regent,
+    };
+    for (const character of characters) {
+      labels[character.id.toLowerCase() as PotionPool] = character.name;
+    }
+    return labels;
+  }, [characters, gameUi.eventsTitle, serviceText]);
+
   const characterFilters = characters
     .filter((c) =>
       CHARACTER_POOLS.includes(c.id.toLowerCase() as PotionPool)
     )
     .map((c) => ({
       key: c.id.toLowerCase() as PotionPool,
-      label: serviceText.labels.pools[c.id.toLowerCase() as keyof typeof serviceText.labels.pools] ?? c.name,
+      label: c.name,
       icon: c.imageUrl,
     }));
 
   const rarityFilters = DISPLAY_SECTIONS.map((s) => ({
     key: s.key,
-    label: getPotionSectionLabel(s.key, serviceText),
+    label: gameUi.potionLab.sections[s.key].label,
     color: s.color,
   }));
 
@@ -371,7 +391,7 @@ export function PotionLibrary({ serviceLocale, title, potions, characters, versi
                   : "border-white/10 hover:border-white/30 bg-white/5 text-gray-400"
               }`}
             >
-              {serviceText.labels.pools.shared}
+              {poolLabels.shared}
             </button>
             <button
               onClick={() => togglePool("event")}
@@ -381,7 +401,7 @@ export function PotionLibrary({ serviceLocale, title, potions, characters, versi
                   : "border-white/10 hover:border-white/30 bg-white/5 text-gray-400"
               }`}
             >
-              {serviceText.labels.pools.event}
+              {poolLabels.event}
             </button>
           </div>
         </FilterSection>
@@ -389,7 +409,7 @@ export function PotionLibrary({ serviceLocale, title, potions, characters, versi
         <div className="border-t border-white/10" />
 
         {/* Rarity */}
-        <FilterSection trigger="#" label={serviceText.potionsView.rarityFilter}>
+        <FilterSection trigger="#" label={gameUi.common.rarity}>
           <div className="flex flex-col gap-0.5">
             {rarityFilters.map((r) => (
               <button
@@ -449,11 +469,12 @@ export function PotionLibrary({ serviceLocale, title, potions, characters, versi
           </h1>
           <div className="flex-1 max-w-xl mx-auto">
             <PotionSearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              inputId="potion-search"
-              messages={serviceText}
-            />
+                value={searchQuery}
+                onChange={setSearchQuery}
+                inputId="potion-search"
+                messages={serviceText}
+                rarityLabel={gameUi.common.rarity}
+              />
           </div>
           <span className="text-sm text-gray-500 shrink-0 tabular-nums">
             {formatCodexCount(filteredPotions.length, serviceText.labels.potions, serviceLocale)}
@@ -514,7 +535,8 @@ export function PotionLibrary({ serviceLocale, title, potions, characters, versi
           potion={hoveredPotion}
           x={tooltipPos.x}
           y={tooltipPos.y}
-          serviceLocale={serviceLocale}
+          gameUi={gameUi}
+          poolLabels={poolLabels}
         />
       )}
 
@@ -527,7 +549,7 @@ export function PotionLibrary({ serviceLocale, title, potions, characters, versi
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <PotionDetail serviceLocale={serviceLocale} backToListTitle={title} potion={selectedPotion} onClose={() => setSelectedPotion(null)} />
+            <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} potion={selectedPotion} poolLabels={poolLabels} onClose={() => setSelectedPotion(null)} />
           </div>
         </div>
       )}
@@ -572,9 +594,14 @@ import { forwardRef } from "react";
 
 const PotionTooltip = forwardRef<
   HTMLDivElement,
-  { potion: CodexPotion; x: number; y: number; serviceLocale: ServiceLocale }
->(function PotionTooltip({ potion, x, y, serviceLocale }, ref) {
-  const serviceText = getCodexServiceMessages(serviceLocale);
+  {
+    potion: CodexPotion;
+    x: number;
+    y: number;
+    gameUi: CodexGameUiLabels;
+    poolLabels: Record<PotionPool, string>;
+  }
+>(function PotionTooltip({ potion, x, y, gameUi, poolLabels }, ref) {
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
 
   // Clamp to viewport bounds (position already computed by handler)
@@ -617,7 +644,7 @@ const PotionTooltip = forwardRef<
               color: rarityConfig.color,
             }}
           >
-            {serviceText.labels.potionRarities[potion.rarity]}
+            {gameUi.potionLab.rarities[potion.rarity].label}
           </span>
           {potion.pool !== "shared" && (
             <span
@@ -629,7 +656,7 @@ const PotionTooltip = forwardRef<
                     : undefined,
               }}
             >
-              {serviceText.labels.pools[potion.pool]}
+              {poolLabels[potion.pool]}
             </span>
           )}
         </div>
@@ -654,18 +681,20 @@ function PotionSearchBar({
   onChange,
   inputId,
   messages,
+  rarityLabel,
 }: {
   value: string;
   onChange: (value: string) => void;
   inputId?: string;
   messages: CodexServiceMessages;
+  rarityLabel: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
 
   const HINTS = [
     { trigger: "@", label: messages.potionsView.characterFilter, examples: ["ironclad", "defect", "shared"] },
-    { trigger: "#", label: messages.potionsView.rarityFilter, examples: ["common", "uncommon", "rare", "event"] },
+    { trigger: "#", label: rarityLabel, examples: ["common", "uncommon", "rare", "event"] },
   ];
 
   return (
@@ -808,26 +837,6 @@ function getPotionSectionKey(rarity: PotionRarityKo): string {
   if (rarity === "고급") return "uncommon";
   if (rarity === "희귀") return "rare";
   return "special";
-}
-
-function getPotionSectionLabel(
-  key: string,
-  serviceText: CodexServiceMessages,
-): string {
-  if (key === "common") return serviceText.labels.potionRarities.일반;
-  if (key === "uncommon") return serviceText.labels.potionRarities.고급;
-  if (key === "rare") return serviceText.labels.potionRarities.희귀;
-  return serviceText.labels.potionRarities.특별;
-}
-
-function getPotionSectionDescription(
-  key: string,
-  serviceText: CodexServiceMessages,
-): string {
-  if (key === "common") return serviceText.labels.potionRarityDescriptions.일반;
-  if (key === "uncommon") return serviceText.labels.potionRarityDescriptions.고급;
-  if (key === "rare") return serviceText.labels.potionRarityDescriptions.희귀;
-  return serviceText.labels.potionRarityDescriptions.특별;
 }
 
 // Shared sub-components

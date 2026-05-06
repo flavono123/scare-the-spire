@@ -46,6 +46,7 @@ export default async function CodexPotionsPage({
     <Suspense>
       <PotionLibrary
         serviceLocale={serviceLocale}
+        gameUi={gameUi}
         title={gameUi.potionLabTitle}
         potions={potions}
         characters={characters}

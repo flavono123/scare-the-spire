@@ -7,8 +7,10 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   CodexPotion,
+  PotionPool,
   POTION_RARITY_CONFIG,
   characterOutlineFilter,
   getCharacterColor,
@@ -28,12 +30,14 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 
 interface PotionDetailProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   backToListTitle: string;
   potion: CodexPotion;
+  poolLabels: Record<PotionPool, string>;
   onClose?: () => void;
 }
 
-export function PotionDetail({ serviceLocale, backToListTitle, potion, onClose }: PotionDetailProps) {
+export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, onClose }: PotionDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
   const poolColor = potion.pool !== "shared" && potion.pool !== "event"
@@ -90,13 +94,13 @@ export function PotionDetail({ serviceLocale, backToListTitle, potion, onClose }
       {/* Stats Row */}
       <div className="flex flex-wrap justify-center gap-2">
         <StatBadge
-          label={serviceText.potionsView.stats.rarity}
-          value={serviceText.labels.potionRarities[potion.rarity]}
+          label={gameUi.common.rarity}
+          value={gameUi.potionLab.rarities[potion.rarity].label}
           color={rarityConfig.color}
         />
         <StatBadge
           label={serviceText.potionsView.stats.source}
-          value={serviceText.labels.pools[potion.pool]}
+          value={poolLabels[potion.pool]}
           color={poolColor}
         />
       </div>

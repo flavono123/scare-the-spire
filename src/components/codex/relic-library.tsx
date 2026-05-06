@@ -336,7 +336,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
         <div className="border-t border-white/10" />
 
         {/* Rarity filter */}
-        <FilterSection trigger="#" label={serviceText.relicsView.rarityFilter}>
+        <FilterSection trigger="#" label={gameUi.common.rarity}>
           <div className="flex flex-col gap-0.5">
             {rarityFilters.map((r) => (
               <button
@@ -501,7 +501,7 @@ function getRelicTriggers(
     },
     {
       trigger: "#",
-      label: serviceText.relicsView.rarityFilter,
+      label: gameUi.common.rarity,
       items: [
         { value: "starter", label: gameUi.relicCollection.rarities["시작 유물"].label, desc: "Starter" },
         { value: "common", label: gameUi.relicCollection.rarities["일반 유물"].label, desc: "Common" },
