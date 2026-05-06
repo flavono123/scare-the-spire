@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexPotions } from "@/lib/codex-data";
+import { getCodexCharacters, getCodexPotions } from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import type { PotionPool } from "@/lib/codex-types";
 import { PotionDetail } from "@/components/codex/potion-detail";
 
 export async function generateStaticParams() {
@@ -45,16 +46,30 @@ export default async function PotionDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [potions, gameUi] = await Promise.all([
+  const [potions, characters, gameUi] = await Promise.all([
     getCodexPotions({ gameLocale }),
+    getCodexCharacters({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
   const potion = potions.find((p) => p.id.toLowerCase() === id.toLowerCase());
   if (!potion) notFound();
+  const serviceText = getCodexServiceMessages(serviceLocale);
+  const poolLabels: Record<PotionPool, string> = {
+    shared: serviceText.labels.pools.shared,
+    event: gameUi.eventsTitle,
+    ironclad: serviceText.labels.pools.ironclad,
+    silent: serviceText.labels.pools.silent,
+    defect: serviceText.labels.pools.defect,
+    necrobinder: serviceText.labels.pools.necrobinder,
+    regent: serviceText.labels.pools.regent,
+  };
+  for (const character of characters) {
+    poolLabels[character.id.toLowerCase() as PotionPool] = character.name;
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PotionDetail serviceLocale={serviceLocale} backToListTitle={gameUi.potionLabTitle} potion={potion} />
+      <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.potionLabTitle} potion={potion} poolLabels={poolLabels} />
     </div>
   );
 }
