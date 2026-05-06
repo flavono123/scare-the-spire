@@ -166,7 +166,7 @@ function stripGameMarkup(text: string): string {
 function parseCollectionEntry(source: string, fallbackLabel: string): LabelDescription {
   const labelMatch = source.match(/\[b\]([^:：\]]+)[：:]?\[\/b\]/);
   const label = labelMatch?.[1]?.trim() || fallbackLabel;
-  const descriptionSource = source.replace(/^.*?\[\/gold\]\s*/s, "");
+  const descriptionSource = source.replace(/^[\s\S]*?\[\/gold\]\s*/, "");
   const description = stripGameMarkup(descriptionSource || source);
   return { label, description };
 }
