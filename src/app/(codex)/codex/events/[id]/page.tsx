@@ -5,7 +5,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { EventDetail } from "@/components/codex/event-detail";
 
 export async function generateStaticParams() {
@@ -24,11 +25,13 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  const events = await getCodexEvents({ gameLocale });
+  const [events, gameUi] = await Promise.all([
+    getCodexEvents({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
+  ]);
   const event = events.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!event) return {};
-  return getCodexMetadata(serviceLocale, `${event.name} — ${serviceText.eventsView.title}`);
+  return getCodexMetadata(serviceLocale, `${event.name} — ${gameUi.eventsTitle}`);
 }
 
 export default async function EventDetailPage({
@@ -42,14 +45,17 @@ export default async function EventDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const events = await getCodexEvents({ gameLocale });
+  const [events, gameUi] = await Promise.all([
+    getCodexEvents({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
+  ]);
   const event = events.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!event) notFound();
 
   return (
     <div className="min-h-screen bg-background flex items-start justify-center py-8 px-4">
       <div className="w-full max-w-3xl rounded-xl border border-yellow-900/30 shadow-2xl overflow-hidden">
-        <EventDetail serviceLocale={serviceLocale} event={event} />
+        <EventDetail serviceLocale={serviceLocale} gameUi={gameUi} event={event} />
       </div>
     </div>
   );
