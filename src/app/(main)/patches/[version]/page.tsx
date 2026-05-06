@@ -5,10 +5,12 @@ import path from "path";
 import { getSTS2Patches } from "@/lib/data";
 import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients } from "@/lib/codex-data";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import { readGameLocalizationTable, type GameLocalizationTable } from "@/lib/game-localization";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
   localizeHrefWithGameLocale,
+  type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
 import { Badge } from "@/components/ui/badge";
@@ -75,6 +77,48 @@ function ancientRelicAliases(ownerName: string, relicName: string): string[] {
   return [`${ownerName}'s ${relicName}`];
 }
 
+function isTitleLocalizationKey(key: string): boolean {
+  return key.endsWith(".title") || key.endsWith("Title");
+}
+
+function addPatchKeywordLabels(
+  labels: Record<string, string>,
+  source: GameLocalizationTable,
+  target: GameLocalizationTable,
+) {
+  for (const [key, sourceLabel] of Object.entries(source)) {
+    if (!isTitleLocalizationKey(key)) continue;
+    const targetLabel = target[key];
+    if (!targetLabel) continue;
+    labels[sourceLabel.trim().toLowerCase()] = targetLabel;
+  }
+}
+
+async function getPatchGameKeywordLabels(gameLocale: GameLocale): Promise<Record<string, string>> {
+  const [
+    engBadges,
+    korBadges,
+    gameBadges,
+    engModifiers,
+    korModifiers,
+    gameModifiers,
+  ] = await Promise.all([
+    readGameLocalizationTable("eng", "badges"),
+    readGameLocalizationTable("kor", "badges"),
+    readGameLocalizationTable(gameLocale, "badges"),
+    readGameLocalizationTable("eng", "modifiers"),
+    readGameLocalizationTable("kor", "modifiers"),
+    readGameLocalizationTable(gameLocale, "modifiers"),
+  ]);
+
+  const labels: Record<string, string> = {};
+  addPatchKeywordLabels(labels, engBadges, gameBadges);
+  addPatchKeywordLabels(labels, korBadges, gameBadges);
+  addPatchKeywordLabels(labels, engModifiers, gameModifiers);
+  addPatchKeywordLabels(labels, korModifiers, gameModifiers);
+  return labels;
+}
+
 export async function generateStaticParams() {
   const patches = await getSTS2Patches();
   return patches.map((p) => ({ version: p.version }));
@@ -92,7 +136,7 @@ export default async function PatchDetailPage({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, gameUi] = await Promise.all([
+  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, gameUi, gameKeywordLabels] = await Promise.all([
     getSTS2Patches(),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -104,6 +148,7 @@ export default async function PatchDetailPage({
     getCodexEncounters({ gameLocale }),
     getCodexAncients({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
+    getPatchGameKeywordLabels(gameLocale),
   ]);
 
   const patch = patches.find((p) => p.version === version);
@@ -289,6 +334,7 @@ export default async function PatchDetailPage({
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
             preferEntityLocaleLabel={serviceLocale !== "ko" || gameLocale !== "kor"}
+            gameKeywordLabels={gameKeywordLabels}
           />
         </section>
       ) : (
