@@ -10,6 +10,12 @@ import {
 } from "@/components/rich-text";
 import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent, CodexMonster, CodexEncounter } from "@/lib/codex-types";
 import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, POWER_TYPE_CONFIG, ENCHANTMENT_CARD_TYPE_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool, type EnchantmentCardTypeFilter } from "@/lib/codex-types";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  localizeHrefWithGameLocale,
+  type GameLocale,
+  type ServiceLocale,
+} from "@/lib/i18n";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
 
@@ -37,6 +43,13 @@ export interface EntityInfo {
 // Keep backward compat alias
 export type CardInfo = EntityInfo;
 
+type RenderContext = {
+  gameUi?: CodexGameUiLabels;
+  serviceLocale?: ServiceLocale;
+  gameLocale?: GameLocale;
+  preferEntityLocaleLabel?: boolean;
+};
+
 // --- Entity Preview (hover card image) ---
 
 const DEFAULT_ENTITY_LINK_CLASS =
@@ -48,6 +61,10 @@ export function EntityPreview({
   forceShow,
   forcePosition,
   linkClassName,
+  gameUi,
+  serviceLocale,
+  gameLocale,
+  preferEntityLocaleLabel = false,
 }: {
   entity: EntityInfo;
   children: ReactNode;
@@ -55,6 +72,10 @@ export function EntityPreview({
   forcePosition?: "above" | "below";
   /** Override the link's CSS classes — used when embedded inside an already-colored span (e.g. [purple]…[/purple] in a description). */
   linkClassName?: string;
+  gameUi?: CodexGameUiLabels;
+  serviceLocale?: ServiceLocale;
+  gameLocale?: GameLocale;
+  preferEntityLocaleLabel?: boolean;
 }) {
   const [show, setShow] = useState(false);
   const visible = show || forceShow;
@@ -82,7 +103,10 @@ export function EntityPreview({
     monster: `/codex/monsters?monster=${entity.id.toLowerCase()}`,
     encounter: `/codex/encounters?encounter=${entity.id.toLowerCase()}`,
   };
-  const href = hrefMap[entity.type];
+  const href = serviceLocale && gameLocale
+    ? localizeHrefWithGameLocale(hrefMap[entity.type], serviceLocale, gameLocale)
+    : hrefMap[entity.type];
+  const linkText = preferEntityLocaleLabel ? entity.nameKo : children;
 
   const tooltipPos = forceShow
     ? "relative z-50 mt-1"
@@ -100,7 +124,7 @@ export function EntityPreview({
           href={href}
           className={linkClassName ?? DEFAULT_ENTITY_LINK_CLASS}
         >
-          {children}
+          {linkText}
         </Link>
       )}
       {visible && entity.type === "card" && entity.cardData && (
@@ -143,7 +167,7 @@ export function EntityPreview({
                   color: RELIC_RARITY_COLORS[entity.relicData.rarity],
                 }}
               >
-                {RELIC_RARITY_LABELS[entity.relicData.rarity]}
+                {gameUi?.relicCollection.rarities[entity.relicData.rarity].label ?? RELIC_RARITY_LABELS[entity.relicData.rarity]}
               </span>
               {entity.relicData.pool !== "shared" && (
                 <span
@@ -189,14 +213,14 @@ export function EntityPreview({
                   color: POTION_RARITY_CONFIG[entity.potionData.rarity].color,
                 }}
               >
-                {POTION_RARITY_CONFIG[entity.potionData.rarity].label}
+                {gameUi?.potionLab.rarities[entity.potionData.rarity].label ?? POTION_RARITY_CONFIG[entity.potionData.rarity].label}
               </span>
               {entity.potionData.pool !== "shared" && (
                 <span
                   className="text-[10px] font-medium"
                   style={{ color: getCharacterColor(entity.potionData.pool) }}
                 >
-                  {entity.potionData.pool === "event" ? "이벤트" : POOL_LABELS[entity.potionData.pool as RelicFilterPool]}
+                  {entity.potionData.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[entity.potionData.pool as RelicFilterPool]}
                 </span>
               )}
             </span>
@@ -236,7 +260,7 @@ export function EntityPreview({
                   color: POWER_TYPE_CONFIG[entity.powerData.type].color,
                 }}
               >
-                {POWER_TYPE_CONFIG[entity.powerData.type].label}
+                {gameUi?.powers.types[entity.powerData.type].label || POWER_TYPE_CONFIG[entity.powerData.type].label}
               </span>
             </span>
             <span className="block text-xs text-gray-200 leading-relaxed">
@@ -356,7 +380,7 @@ export function EntityPreview({
                   color: MONSTER_TYPE_CONFIG[entity.monsterData.type].color,
                 }}
               >
-                {MONSTER_TYPE_CONFIG[entity.monsterData.type].label}
+                {gameUi?.monsterTypes[entity.monsterData.type].label ?? MONSTER_TYPE_CONFIG[entity.monsterData.type].label}
               </span>
               {entity.monsterData.minHp != null && entity.monsterData.minHp !== 9999 && (
                 <span className="text-[10px] text-gray-400">
@@ -391,11 +415,11 @@ export function EntityPreview({
                   color: ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].color,
                 }}
               >
-                {ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].label}
+                {gameUi?.encounterRoomTypes[entity.encounterData.roomType] ?? ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].label}
               </span>
               {entity.encounterData.act && (
                 <span className={`text-[10px] ${(EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).color}`}>
-                  {(EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
+                  {gameUi?.acts[entity.encounterData.act] ?? (EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
                 </span>
               )}
               {entity.encounterData.isWeak && (
@@ -514,6 +538,7 @@ function renderBBNodes(
   nodes: TextNode[],
   lookup: EntityLookup,
   prefix: string,
+  context: RenderContext,
 ): ReactNode[] {
   return nodes.map((node, i) => {
     const key = `${prefix}-${i}`;
@@ -522,7 +547,7 @@ function renderBBNodes(
 
     if (node.type === "text" && node.text) {
       // Within plain text, handle **bold** markdown patterns
-      return renderMarkdownBold(node.text, lookup, key);
+      return renderMarkdownBold(node.text, lookup, key, context);
     }
 
     if (node.type === "tag" && node.tag && node.children) {
@@ -533,7 +558,7 @@ function renderBBNodes(
 
         if (entity) {
           return (
-            <EntityPreview key={key} entity={entity}>
+            <EntityPreview key={key} entity={entity} {...context}>
               {plainText}
             </EntityPreview>
           );
@@ -542,7 +567,7 @@ function renderBBNodes(
         // Not an entity, just gold styling
         return (
           <span key={key} className="spire-gold font-semibold">
-            {renderBBNodes(node.children, lookup, key)}
+            {renderBBNodes(node.children, lookup, key, context)}
           </span>
         );
       }
@@ -554,7 +579,7 @@ function renderBBNodes(
 
       return (
         <span key={key} className={className || undefined}>
-          {renderBBNodes(node.children, lookup, key)}
+          {renderBBNodes(node.children, lookup, key, context)}
         </span>
       );
     }
@@ -568,6 +593,7 @@ function renderMarkdownBold(
   text: string,
   lookup: EntityLookup,
   keyPrefix: string,
+  context: RenderContext,
 ): ReactNode {
   const regex = /\*\*([^*]+)\*\*/g;
   let lastIndex = 0;
@@ -596,7 +622,7 @@ function renderMarkdownBold(
       const entity = findEntity(name, lookup);
       if (entity) {
         enriched.push(
-          <EntityPreview key={`${keyPrefix}-b${idx}-${j}`} entity={entity}>
+          <EntityPreview key={`${keyPrefix}-b${idx}-${j}`} entity={entity} {...context}>
             {name}
           </EntityPreview>,
         );
@@ -630,9 +656,10 @@ function enrichLine(
   text: string,
   lookup: EntityLookup,
   key: string,
+  context: RenderContext,
 ): ReactNode[] {
   const nodes = parseBBCode(text);
-  return renderBBNodes(nodes, lookup, key);
+  return renderBBNodes(nodes, lookup, key, context);
 }
 
 // --- Markdown line rendering ---
@@ -641,6 +668,7 @@ function renderLine(
   line: string,
   lookup: EntityLookup,
   key: string,
+  context: RenderContext,
 ): ReactNode {
   const trimmed = line.trimStart();
 
@@ -651,14 +679,14 @@ function renderLine(
   if (trimmed.startsWith("#### ")) {
     return (
       <h4 key={key} className="text-sm font-semibold mt-4 mb-1 text-yellow-600">
-        {enrichLine(trimmed.slice(5), lookup, key)}
+        {enrichLine(trimmed.slice(5), lookup, key, context)}
       </h4>
     );
   }
   if (trimmed.startsWith("### ")) {
     return (
       <h3 key={key} className="text-base font-semibold mt-6 mb-2 text-yellow-500">
-        {enrichLine(trimmed.slice(4), lookup, key)}
+        {enrichLine(trimmed.slice(4), lookup, key, context)}
       </h3>
     );
   }
@@ -668,7 +696,7 @@ function renderLine(
         key={key}
         className="text-lg font-bold mt-8 mb-3 text-yellow-400 border-b border-border pb-1"
       >
-        {enrichLine(trimmed.slice(3), lookup, key)}
+        {enrichLine(trimmed.slice(3), lookup, key, context)}
       </h2>
     );
   }
@@ -684,7 +712,7 @@ function renderLine(
         key={key}
         className="text-sm text-muted-foreground ml-4 mb-1 list-disc list-outside"
       >
-        {enrichLine(trimmed.slice(2), lookup, key)}
+        {enrichLine(trimmed.slice(2), lookup, key, context)}
       </li>
     );
   }
@@ -697,7 +725,7 @@ function renderLine(
   // Regular paragraph
   return (
     <p key={key} className="text-sm text-muted-foreground mb-1">
-      {enrichLine(trimmed, lookup, key)}
+      {enrichLine(trimmed, lookup, key, context)}
     </p>
   );
 }
@@ -713,18 +741,20 @@ function DevnoteBlock({
   lookup,
   isItemLevel,
   keyPrefix,
+  context,
 }: {
   koContent: string;
   enContent: string | null;
   lookup: EntityLookup;
   isItemLevel: boolean;
   keyPrefix: string;
+  context: RenderContext;
 }) {
   return (
     <div key={keyPrefix} className={isItemLevel ? "ml-6 mt-1 mb-2" : "mt-1 mb-3"}>
       <div className="pl-3 border-l-2 border-zinc-600 text-xs text-zinc-400 leading-relaxed">
         <span className="text-zinc-500 font-medium mr-1.5">Dev</span>
-        {enrichLine(koContent, lookup, `${keyPrefix}-ko`)}
+        {enrichLine(koContent, lookup, `${keyPrefix}-ko`, context)}
       </div>
       {enContent && (
         <details className="mt-1">
@@ -747,13 +777,25 @@ export function PatchNoteRenderer({
   entities,
   // Backward compat: accept cards prop
   cards,
+  gameUi,
+  serviceLocale,
+  gameLocale,
+  preferEntityLocaleLabel,
 }: {
   markdown: string;
   entities?: EntityInfo[];
   cards?: EntityInfo[];
+  gameUi?: CodexGameUiLabels;
+  serviceLocale?: ServiceLocale;
+  gameLocale?: GameLocale;
+  preferEntityLocaleLabel?: boolean;
 }) {
   const allEntities = useMemo(() => entities ?? cards ?? [], [entities, cards]);
   const lookup = useMemo(() => buildEntityLookup(allEntities), [allEntities]);
+  const context = useMemo<RenderContext>(
+    () => ({ gameUi, serviceLocale, gameLocale, preferEntityLocaleLabel }),
+    [gameLocale, gameUi, preferEntityLocaleLabel, serviceLocale],
+  );
   const lines = markdown.split("\n");
 
   // Group consecutive list items into <ul> containers
@@ -799,6 +841,7 @@ export function PatchNoteRenderer({
           lookup={lookup}
           isItemLevel={hadList || wasInList}
           keyPrefix={`devnote-${i}`}
+          context={context}
         />,
       );
       wasInList = false;
@@ -809,12 +852,12 @@ export function PatchNoteRenderer({
     if (DEVNOTE_EN_RE.test(trimmed)) continue;
 
     if (trimmed.startsWith("- ")) {
-      listBuffer.push(renderLine(lines[i], lookup, `line-${i}`));
+      listBuffer.push(renderLine(lines[i], lookup, `line-${i}`, context));
       wasInList = true;
     } else {
       flushList();
       wasInList = false;
-      const el = renderLine(lines[i], lookup, `line-${i}`);
+      const el = renderLine(lines[i], lookup, `line-${i}`, context);
       if (el) elements.push(el);
     }
   }
