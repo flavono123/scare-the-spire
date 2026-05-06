@@ -7,7 +7,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { EventList } from "@/components/codex/event-list";
 
 export async function generateMetadata({
@@ -15,9 +16,11 @@ export async function generateMetadata({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  return getCodexMetadata(serviceLocale, serviceText.eventsView.title);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const gameUi = await getCodexGameUiLabels(gameLocale);
+  return getCodexMetadata(serviceLocale, gameUi.eventsTitle);
 }
 
 export default async function CodexEventsPage({
@@ -28,11 +31,12 @@ export default async function CodexEventsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [events, patches, versionDiffs, meta] = await Promise.all([
+  const [events, patches, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexEvents({ gameLocale }),
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
+    getCodexGameUiLabels(gameLocale),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -41,6 +45,8 @@ export default async function CodexEventsPage({
     <Suspense>
       <EventList
         serviceLocale={serviceLocale}
+        gameUi={gameUi}
+        title={gameUi.eventsTitle}
         events={events}
         versions={versions}
         currentVersion={meta.version}

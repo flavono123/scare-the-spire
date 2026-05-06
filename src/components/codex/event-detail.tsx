@@ -7,6 +7,7 @@ import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   getCodexServiceMessages,
   type CodexServiceMessages,
@@ -245,14 +246,16 @@ export function EventContentViewer({
 function ActBadge({
   act,
   messages,
+  gameUi,
 }: {
   act: CodexEvent["act"];
   messages: CodexServiceMessages;
+  gameUi: CodexGameUiLabels;
 }) {
   const config = act
     ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
     : EVENT_ACT_UNKNOWN;
-  const label = act ? messages.labels.acts[act] : messages.labels.acts.none;
+  const label = act ? gameUi.acts[act] : messages.labels.acts.none;
   return (
     <span
       className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${config.color} ${config.border} ${config.bg}`}
@@ -265,11 +268,12 @@ function ActBadge({
 // --- Event detail page (game-like: image left, content right) ---
 interface EventDetailProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   event: CodexEvent;
   onClose?: () => void;
 }
 
-export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps) {
+export function EventDetail({ serviceLocale, gameUi, event, onClose }: EventDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   return (
     <div className="rounded-xl bg-[#12121a] overflow-hidden">
@@ -307,7 +311,7 @@ export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps)
               </h2>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-xs text-zinc-500">{event.nameEn}</span>
-                <ActBadge act={event.act} messages={serviceText} />
+                <ActBadge act={event.act} messages={serviceText} gameUi={gameUi} />
               </div>
             </div>
             {onClose && (

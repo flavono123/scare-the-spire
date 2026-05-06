@@ -5,6 +5,7 @@ import Image from "@/components/ui/static-image";
 import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
 import type { ServiceLocale } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   getCodexServiceMessages,
   type CodexServiceMessages,
@@ -30,14 +31,16 @@ import { EventDetail } from "./event-detail";
 function ActBadge({
   act,
   messages,
+  gameUi,
 }: {
   act: EventAct | null;
   messages: CodexServiceMessages;
+  gameUi: CodexGameUiLabels;
 }) {
   const config = act
     ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
     : EVENT_ACT_UNKNOWN;
-  const label = act ? messages.labels.acts[act] : messages.labels.acts.none;
+  const label = getActLabel(act, messages, gameUi);
   return (
     <span
       className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${config.color} ${config.border} ${config.bg}`}
@@ -52,10 +55,12 @@ function EventThumbnail({
   event,
   onClick,
   messages,
+  gameUi,
 }: {
   event: CodexEvent;
   onClick: () => void;
   messages: CodexServiceMessages;
+  gameUi: CodexGameUiLabels;
 }) {
   return (
     <button
@@ -85,7 +90,7 @@ function EventThumbnail({
             {event.nameEn}
           </span>
         </div>
-        <ActBadge act={event.act} messages={messages} />
+        <ActBadge act={event.act} messages={messages} gameUi={gameUi} />
         <svg
           className="w-4 h-4 text-zinc-600 group-hover:text-yellow-500 transition-colors flex-shrink-0"
           viewBox="0 0 16 16"
@@ -101,6 +106,8 @@ function EventThumbnail({
 // --- Main EventList component ---
 interface EventListProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
+  title: string;
   events: CodexEvent[];
   versions: string[];
   currentVersion: string;
@@ -108,7 +115,7 @@ interface EventListProps {
   versionDiffs: EntityVersionDiff[];
 }
 
-export function EventList({ serviceLocale, events, versions, currentVersion, patches, versionDiffs }: EventListProps) {
+export function EventList({ serviceLocale, gameUi, title, events, versions, currentVersion, patches, versionDiffs }: EventListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
@@ -247,13 +254,13 @@ export function EventList({ serviceLocale, events, versions, currentVersion, pat
       const config = act ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN) : EVENT_ACT_UNKNOWN;
       ordered.push({
         act,
-        label: act ? serviceText.labels.acts[act] : serviceText.labels.acts.none,
+        label: getActLabel(act, serviceText, gameUi),
         color: config.color,
         events: items.sort((a, b) => a.name.localeCompare(b.name, "ko")),
       });
     }
     return ordered;
-  }, [filtered, serviceText]);
+  }, [filtered, gameUi, serviceText]);
 
   const toggleAct = useCallback((act: string) => {
     setSelectedActs((prev) => {
@@ -273,7 +280,7 @@ export function EventList({ serviceLocale, events, versions, currentVersion, pat
     return counts;
   }, [events]);
 
-  const eventTriggers = getEventTriggers(serviceText);
+  const eventTriggers = getEventTriggers(serviceText, gameUi);
 
   return (
     <div className="min-h-screen bg-background">
@@ -281,7 +288,7 @@ export function EventList({ serviceLocale, events, versions, currentVersion, pat
       <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
         <div className="mx-auto max-w-5xl px-6 py-8 text-center">
           <h1 className="font-[family-name:var(--font-gc-batang)] text-3xl md:text-4xl text-yellow-500 mb-2">
-            {serviceText.eventsView.title}
+            {title}
           </h1>
         </div>
       </div>
@@ -298,7 +305,7 @@ export function EventList({ serviceLocale, events, versions, currentVersion, pat
                   return (
                     <ToggleButton
                       key={key}
-                      label={`${act ? serviceText.labels.acts[act] : serviceText.labels.acts.none} (${count})`}
+                      label={`${getActLabel(act, serviceText, gameUi)} (${count})`}
                       active={selectedActs.has(key)}
                       onClick={() => toggleAct(key)}
                     />
@@ -346,7 +353,7 @@ export function EventList({ serviceLocale, events, versions, currentVersion, pat
                         : "border-zinc-700/40 text-zinc-500 hover:text-zinc-300"
                     }`}
                   >
-                    {act ? serviceText.labels.acts[act] : serviceText.labels.acts.none}
+                    {getActLabel(act, serviceText, gameUi)}
                   </button>
                 );
               })}
@@ -375,6 +382,7 @@ export function EventList({ serviceLocale, events, versions, currentVersion, pat
                           key={event.id}
                           event={event}
                           messages={serviceText}
+                          gameUi={gameUi}
                           onClick={() => setSelectedEvent(event)}
                         />
                       ))}
@@ -396,7 +404,7 @@ export function EventList({ serviceLocale, events, versions, currentVersion, pat
           onClick={(e) => { if (e.target === e.currentTarget) setSelectedEvent(null); }}
         >
           <div className="w-full max-w-3xl my-8 mx-4 bg-[#12121a] rounded-xl border border-yellow-900/30 shadow-2xl">
-            <EventDetail serviceLocale={serviceLocale} event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+            <EventDetail serviceLocale={serviceLocale} gameUi={gameUi} event={selectedEvent} onClose={() => setSelectedEvent(null)} />
           </div>
         </div>
       )}
@@ -404,16 +412,24 @@ export function EventList({ serviceLocale, events, versions, currentVersion, pat
   );
 }
 
-function getEventTriggers(serviceText: CodexServiceMessages): TriggerGroup[] {
+function getActLabel(
+  act: EventAct | null,
+  serviceText: CodexServiceMessages,
+  gameUi: CodexGameUiLabels,
+): string {
+  return act ? gameUi.acts[act] : serviceText.labels.acts.none;
+}
+
+function getEventTriggers(serviceText: CodexServiceMessages, gameUi: CodexGameUiLabels): TriggerGroup[] {
   return [
     {
       trigger: "@",
       label: serviceText.eventsView.actFilter,
       items: [
-        { value: "act1", label: serviceText.labels.acts["Act 1 - Overgrowth"], desc: "Act 1 Overgrowth" },
-        { value: "underdocks", label: serviceText.labels.acts.Underdocks, desc: "Underdocks" },
-        { value: "act2", label: serviceText.labels.acts["Act 2 - Hive"], desc: "Act 2 Hive" },
-        { value: "act3", label: serviceText.labels.acts["Act 3 - Glory"], desc: "Act 3 Glory" },
+        { value: "act1", label: gameUi.acts["Act 1 - Overgrowth"], desc: "Act 1 Overgrowth" },
+        { value: "underdocks", label: gameUi.acts.Underdocks, desc: "Underdocks" },
+        { value: "act2", label: gameUi.acts["Act 2 - Hive"], desc: "Act 2 Hive" },
+        { value: "act3", label: gameUi.acts["Act 3 - Glory"], desc: "Act 3 Glory" },
         { value: "none", label: serviceText.labels.acts.none, desc: "Any act" },
       ],
       validate: (val) => EVENT_ACT_ALIASES[val] ?? null,
