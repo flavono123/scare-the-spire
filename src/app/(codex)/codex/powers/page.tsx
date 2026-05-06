@@ -7,7 +7,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { PowerLibrary } from "@/components/codex/power-library";
 
 export async function generateMetadata({
@@ -15,9 +16,11 @@ export async function generateMetadata({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  return getCodexMetadata(serviceLocale, serviceText.powersView.title);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const gameUi = await getCodexGameUiLabels(gameLocale);
+  return getCodexMetadata(serviceLocale, gameUi.nav.powers);
 }
 
 export default async function CodexPowersPage({
@@ -28,11 +31,12 @@ export default async function CodexPowersPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [powers, patches, versionDiffs, meta] = await Promise.all([
+  const [powers, patches, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexPowers({ gameLocale }),
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
+    getCodexGameUiLabels(gameLocale),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -41,6 +45,8 @@ export default async function CodexPowersPage({
     <Suspense>
       <PowerLibrary
         serviceLocale={serviceLocale}
+        gameUi={gameUi}
+        title={gameUi.nav.powers}
         powers={powers}
         versions={versions}
         currentVersion={meta.version}

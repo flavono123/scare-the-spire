@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, memo } from "react";
 import Image from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { CodexPower } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 
@@ -27,11 +28,12 @@ const TYPE_STYLES: Record<string, { border: string; text: string; badge: string 
 
 interface PowerTileProps {
   serviceLocale?: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   power: CodexPower;
   onClick?: () => void;
 }
 
-export const PowerTile = memo(function PowerTile({ serviceLocale = "ko", power, onClick }: PowerTileProps) {
+export const PowerTile = memo(function PowerTile({ serviceLocale = "ko", gameUi, power, onClick }: PowerTileProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
@@ -90,7 +92,7 @@ export const PowerTile = memo(function PowerTile({ serviceLocale = "ko", power, 
               {power.name}
             </span>
             <span className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[9px] font-medium ${style.badge}`}>
-              {serviceText.labels.powerTypes[power.type].label}
+              {gameUi.powers.types[power.type].label || serviceText.labels.powerTypes[power.type].label}
             </span>
           </div>
           {power.nameEn !== power.name && (

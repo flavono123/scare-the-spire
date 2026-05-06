@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
 import type { ServiceLocale } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
   getCodexServiceMessages,
@@ -26,6 +27,8 @@ import { VersionSelector } from "./version-selector";
 
 interface PowerLibraryProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
+  title: string;
   powers: CodexPower[];
   versions?: string[];
   currentVersion?: string;
@@ -33,7 +36,7 @@ interface PowerLibraryProps {
   versionDiffs?: EntityVersionDiff[];
 }
 
-export function PowerLibrary({ serviceLocale, powers, versions, currentVersion, patches, versionDiffs }: PowerLibraryProps) {
+export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, currentVersion, patches, versionDiffs }: PowerLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedTypes, setSelectedTypes] = useState<Set<PowerType>>(new Set());
@@ -192,11 +195,11 @@ export function PowerLibrary({ serviceLocale, powers, versions, currentVersion, 
 
   const typeFilters = POWER_TYPE_ORDER.filter((t) => t !== "None").map((t) => ({
     key: t,
-    label: serviceText.labels.powerTypes[t].label,
+    label: getPowerTypeLabel(t, serviceText, gameUi),
     color: POWER_TYPE_CONFIG[t].color,
   }));
 
-  const powerTriggers = getPowerTriggers(serviceText);
+  const powerTriggers = getPowerTriggers(serviceText, gameUi);
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -271,7 +274,7 @@ export function PowerLibrary({ serviceLocale, powers, versions, currentVersion, 
               )}
             </svg>
           </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">{serviceText.powersView.title}</h1>
+          <h1 className="text-base font-bold text-yellow-500 shrink-0">{title}</h1>
           <div className="flex-1 max-w-xl mx-auto">
             <SearchBar
               value={searchQuery}
@@ -303,16 +306,18 @@ export function PowerLibrary({ serviceLocale, powers, versions, currentVersion, 
                   className="text-lg font-bold mb-0.5"
                   style={{ color: POWER_TYPE_CONFIG[type].color }}
                 >
-                  {serviceText.labels.powerTypes[type].label}
-                  <span className="text-sm font-normal text-gray-400 ml-2">
-                    {serviceText.labels.powerTypes[type].description}
-                  </span>
+                  {getPowerTypeLabel(type, serviceText, gameUi)}
+                  {getPowerTypeDescription(type, serviceText, gameUi) && (
+                    <span className="text-sm font-normal text-gray-400 ml-2">
+                      {getPowerTypeDescription(type, serviceText, gameUi)}
+                    </span>
+                  )}
                 </h2>
               </div>
 
               <div className="flex flex-wrap gap-2">
                 {groupPowers.map((power) => (
-                  <PowerTile key={power.id} serviceLocale={serviceLocale} power={power} onClick={() => setSelectedPower(power)} />
+                  <PowerTile key={power.id} serviceLocale={serviceLocale} gameUi={gameUi} power={power} onClick={() => setSelectedPower(power)} />
                 ))}
               </div>
             </section>
@@ -335,7 +340,7 @@ export function PowerLibrary({ serviceLocale, powers, versions, currentVersion, 
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <PowerDetail serviceLocale={serviceLocale} power={selectedPower} onClose={() => setSelectedPower(null)} />
+            <PowerDetail serviceLocale={serviceLocale} gameUi={gameUi} power={selectedPower} onClose={() => setSelectedPower(null)} />
           </div>
         </div>
       )}
@@ -343,15 +348,31 @@ export function PowerLibrary({ serviceLocale, powers, versions, currentVersion, 
   );
 }
 
-function getPowerTriggers(serviceText: CodexServiceMessages): TriggerGroup[] {
+function getPowerTypeLabel(
+  type: PowerType,
+  serviceText: CodexServiceMessages,
+  gameUi: CodexGameUiLabels,
+): string {
+  return gameUi.powers.types[type].label || serviceText.labels.powerTypes[type].label;
+}
+
+function getPowerTypeDescription(
+  type: PowerType,
+  serviceText: CodexServiceMessages,
+  gameUi: CodexGameUiLabels,
+): string {
+  return gameUi.powers.types[type].description || (type === "None" ? serviceText.labels.powerTypes[type].description : "");
+}
+
+function getPowerTriggers(serviceText: CodexServiceMessages, gameUi: CodexGameUiLabels): TriggerGroup[] {
   return [
     {
       trigger: "#",
       label: serviceText.powersView.typeFilter,
       items: [
-        { value: "buff", label: serviceText.labels.powerTypes.Buff.label, desc: "Buff" },
-        { value: "debuff", label: serviceText.labels.powerTypes.Debuff.label, desc: "Debuff" },
-        { value: "other", label: serviceText.labels.powerTypes.None.label, desc: "Other" },
+        { value: "buff", label: getPowerTypeLabel("Buff", serviceText, gameUi), desc: "Buff" },
+        { value: "debuff", label: getPowerTypeLabel("Debuff", serviceText, gameUi), desc: "Debuff" },
+        { value: "other", label: getPowerTypeLabel("None", serviceText, gameUi), desc: "Other" },
       ],
       validate: (val) => POWER_TYPE_ALIASES[val] ?? null,
       chipColor: "bg-green-500/20 text-green-400",

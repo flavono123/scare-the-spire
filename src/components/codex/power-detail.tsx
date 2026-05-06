@@ -7,6 +7,7 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   CodexPower,
   POWER_TYPE_CONFIG,
@@ -26,11 +27,12 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 
 interface PowerDetailProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   power: CodexPower;
   onClose?: () => void;
 }
 
-export function PowerDetail({ serviceLocale, power, onClose }: PowerDetailProps) {
+export function PowerDetail({ serviceLocale, gameUi, power, onClose }: PowerDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const typeConfig = POWER_TYPE_CONFIG[power.type];
 
@@ -88,7 +90,7 @@ export function PowerDetail({ serviceLocale, power, onClose }: PowerDetailProps)
       <div className="flex flex-wrap justify-center gap-2">
         <StatBadge
           label={serviceText.powersView.stats.type}
-          value={serviceText.labels.powerTypes[power.type].label}
+          value={gameUi.powers.types[power.type].label || serviceText.labels.powerTypes[power.type].label}
           color={typeConfig.color}
         />
         <StatBadge
