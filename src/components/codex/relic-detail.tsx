@@ -8,6 +8,7 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   CodexRelic,
   RELIC_RARITY_COLORS,
@@ -34,8 +35,10 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
 
 interface RelicDetailProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   backToListTitle: string;
   relic: CodexRelic;
+  poolLabels: Record<RelicPool, string>;
   initialVariant?: RelicPool;
   onClose?: () => void;
   /** Cross-reference entities — when provided, descriptions become rich. */
@@ -44,7 +47,7 @@ interface RelicDetailProps {
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
-export function RelicDetail({ serviceLocale, backToListTitle, relic, initialVariant, onClose, entities }: RelicDetailProps) {
+export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, onClose, entities }: RelicDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   // Don't link the relic to itself in its own description
   const excludeSelf = useMemo(
@@ -131,7 +134,7 @@ export function RelicDetail({ serviceLocale, backToListTitle, relic, initialVari
                 }`}
                 style={{ color }}
               >
-                {serviceText.labels.pools[pool]}
+                {poolLabels[pool]}
               </button>
             );
           })}
@@ -147,19 +150,19 @@ export function RelicDetail({ serviceLocale, backToListTitle, relic, initialVari
       {/* Stats Row */}
       <div className="flex flex-wrap justify-center gap-2">
         <StatBadge
-          label={serviceText.relicsView.stats.rarity}
-          value={serviceText.labels.relicRarities[relic.rarity]}
+          label={gameUi.common.rarity}
+          value={gameUi.relicCollection.rarities[relic.rarity].label}
           color={rarityColor}
         />
         {relic.pool !== "shared" && (
           <StatBadge
             label={serviceText.relicsView.stats.source}
-            value={serviceText.labels.pools[relic.pool as RelicFilterPool] ?? relic.pool}
+            value={poolLabels[relic.pool as RelicFilterPool] ?? relic.pool}
             color={poolColor}
           />
         )}
         {relic.pool === "shared" && (
-          <StatBadge label={serviceText.relicsView.stats.source} value={serviceText.labels.pools.shared} />
+          <StatBadge label={serviceText.relicsView.stats.source} value={poolLabels.shared} />
         )}
       </div>
 

@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { getChoseong } from "es-hangul";
 import Image from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
   getCodexServiceMessages,
@@ -33,6 +34,7 @@ import { VersionSelector } from "./version-selector";
 
 interface RelicLibraryProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   title: string;
   relics: CodexRelic[];
   characters: CodexCharacter[];
@@ -45,7 +47,7 @@ interface RelicLibraryProps {
   entities?: EntityInfo[];
 }
 
-export function RelicLibrary({ serviceLocale, title, relics, characters, ancients, versions, currentVersion, patches, versionDiffs, entities }: RelicLibraryProps) {
+export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters, ancients, versions, currentVersion, patches, versionDiffs, entities }: RelicLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<RelicFilterPool>>(new Set());
@@ -255,19 +257,34 @@ export function RelicLibrary({ serviceLocale, title, relics, characters, ancient
   }, []);
 
   // Character filters for pool
+  const poolLabels = useMemo(() => {
+    const labels: Record<RelicPool, string> = {
+      shared: serviceText.labels.pools.shared,
+      ironclad: serviceText.labels.pools.ironclad,
+      silent: serviceText.labels.pools.silent,
+      defect: serviceText.labels.pools.defect,
+      necrobinder: serviceText.labels.pools.necrobinder,
+      regent: serviceText.labels.pools.regent,
+    };
+    for (const character of characters) {
+      labels[character.id.toLowerCase() as RelicPool] = character.name;
+    }
+    return labels;
+  }, [characters, serviceText]);
+
   const characterFilters = characters.map((c) => ({
     key: c.id.toLowerCase() as RelicFilterPool,
-    label: serviceText.labels.pools[c.id.toLowerCase() as keyof typeof serviceText.labels.pools] ?? c.name,
+    label: c.name,
     icon: c.imageUrl,
   }));
 
   const rarityFilters = RELIC_RARITY_ORDER.filter((r) => r !== "None").map((r) => ({
     key: r,
-    label: serviceText.labels.relicRarities[r],
+    label: gameUi.relicCollection.rarities[r].label,
     color: RELIC_RARITY_COLORS[r],
   }));
 
-  const relicTriggers = getRelicTriggers(serviceText);
+  const relicTriggers = getRelicTriggers(serviceText, gameUi, poolLabels);
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -392,9 +409,9 @@ export function RelicLibrary({ serviceLocale, title, relics, characters, ancient
                   className="text-lg font-bold mb-0.5"
                   style={{ color: RELIC_RARITY_COLORS[rarity] }}
                 >
-                  {serviceText.labels.relicRarities[rarity]}:
+                  {gameUi.relicCollection.rarities[rarity].label}:
                   <span className="text-sm font-normal text-gray-400 ml-2">
-                    {serviceText.labels.relicRarityDescriptions[rarity]}
+                    {gameUi.relicCollection.rarities[rarity].description}
                   </span>
                 </h2>
               </div>
@@ -454,7 +471,7 @@ export function RelicLibrary({ serviceLocale, title, relics, characters, ancient
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <RelicDetail serviceLocale={serviceLocale} backToListTitle={title} relic={selectedRelic} initialVariant={selectedVariantPool} onClose={() => setSelectedRelic(null)} entities={entities} />
+            <RelicDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} relic={selectedRelic} poolLabels={poolLabels} initialVariant={selectedVariantPool} onClose={() => setSelectedRelic(null)} entities={entities} />
           </div>
         </div>
       )}
@@ -462,18 +479,22 @@ export function RelicLibrary({ serviceLocale, title, relics, characters, ancient
   );
 }
 
-function getRelicTriggers(serviceText: CodexServiceMessages): TriggerGroup[] {
+function getRelicTriggers(
+  serviceText: CodexServiceMessages,
+  gameUi: CodexGameUiLabels,
+  poolLabels: Record<RelicPool, string>,
+): TriggerGroup[] {
   return [
     {
       trigger: "@",
       label: serviceText.relicsView.sourceFilter,
       items: [
-        { value: "shared", label: serviceText.labels.pools.shared, desc: "Shared" },
-        { value: "ironclad", label: serviceText.labels.pools.ironclad, desc: "Ironclad" },
-        { value: "silent", label: serviceText.labels.pools.silent, desc: "Silent" },
-        { value: "defect", label: serviceText.labels.pools.defect, desc: "Defect" },
-        { value: "necrobinder", label: serviceText.labels.pools.necrobinder, desc: "Necrobinder" },
-        { value: "regent", label: serviceText.labels.pools.regent, desc: "Regent" },
+        { value: "shared", label: poolLabels.shared, desc: "Shared" },
+        { value: "ironclad", label: poolLabels.ironclad, desc: "Ironclad" },
+        { value: "silent", label: poolLabels.silent, desc: "Silent" },
+        { value: "defect", label: poolLabels.defect, desc: "Defect" },
+        { value: "necrobinder", label: poolLabels.necrobinder, desc: "Necrobinder" },
+        { value: "regent", label: poolLabels.regent, desc: "Regent" },
       ],
       validate: (val) => POOL_ALIASES[val] ?? null,
       chipColor: "bg-blue-500/20 text-blue-400",
@@ -482,13 +503,13 @@ function getRelicTriggers(serviceText: CodexServiceMessages): TriggerGroup[] {
       trigger: "#",
       label: serviceText.relicsView.rarityFilter,
       items: [
-        { value: "starter", label: serviceText.labels.relicRarities["시작 유물"], desc: "Starter" },
-        { value: "common", label: serviceText.labels.relicRarities["일반 유물"], desc: "Common" },
-        { value: "uncommon", label: serviceText.labels.relicRarities["고급 유물"], desc: "Uncommon" },
-        { value: "rare", label: serviceText.labels.relicRarities["희귀 유물"], desc: "Rare" },
-        { value: "shop", label: serviceText.labels.relicRarities["상점 유물"], desc: "Shop" },
-        { value: "event", label: serviceText.labels.relicRarities["이벤트 유물"], desc: "Event" },
-        { value: "ancient", label: serviceText.labels.relicRarities["고대 유물"], desc: "Ancient/Boss" },
+        { value: "starter", label: gameUi.relicCollection.rarities["시작 유물"].label, desc: "Starter" },
+        { value: "common", label: gameUi.relicCollection.rarities["일반 유물"].label, desc: "Common" },
+        { value: "uncommon", label: gameUi.relicCollection.rarities["고급 유물"].label, desc: "Uncommon" },
+        { value: "rare", label: gameUi.relicCollection.rarities["희귀 유물"].label, desc: "Rare" },
+        { value: "shop", label: gameUi.relicCollection.rarities["상점 유물"].label, desc: "Shop" },
+        { value: "event", label: gameUi.relicCollection.rarities["이벤트 유물"].label, desc: "Event" },
+        { value: "ancient", label: gameUi.relicCollection.rarities["고대 유물"].label, desc: "Ancient/Boss" },
       ],
       validate: (val) => RARITY_ALIASES[val] ?? null,
       chipColor: "bg-green-500/20 text-green-400",

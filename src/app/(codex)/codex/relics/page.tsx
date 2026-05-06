@@ -49,6 +49,7 @@ export default async function CodexRelicsPage({
     <Suspense>
       <RelicLibrary
         serviceLocale={serviceLocale}
+        gameUi={gameUi}
         title={gameUi.relicCollectionTitle}
         relics={relics}
         characters={characters}
