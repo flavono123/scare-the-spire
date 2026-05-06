@@ -3,7 +3,7 @@ import Link from "next/link";
 import fs from "fs/promises";
 import path from "path";
 import { getSTS2Patches } from "@/lib/data";
-import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters } from "@/lib/codex-data";
+import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients } from "@/lib/codex-data";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   getGameLocaleFromSearchRecord,
@@ -62,6 +62,19 @@ const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
 
 const NOTES_DIR = path.join(process.cwd(), "data/sts2-patch-notes");
 
+const PATCH_ENTITY_ALIASES_EN: Record<string, string[]> = {
+  AXEBOTS_NORMAL: ["Axebots"],
+  ASSASSIN_RUBY_RAIDER: ["Ruby Raider Assassin"],
+};
+
+function ancientRelicAliases(ownerName: string, relicName: string): string[] {
+  if (!ownerName || !relicName) return [];
+  if (relicName.toLowerCase().startsWith(`${ownerName.toLowerCase()}'s `)) {
+    return [];
+  }
+  return [`${ownerName}'s ${relicName}`];
+}
+
 export async function generateStaticParams() {
   const patches = await getSTS2Patches();
   return patches.map((p) => ({ version: p.version }));
@@ -79,7 +92,7 @@ export default async function PatchDetailPage({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, gameUi] = await Promise.all([
+  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, gameUi] = await Promise.all([
     getSTS2Patches(),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -89,6 +102,7 @@ export default async function PatchDetailPage({
     getCodexEvents({ gameLocale }),
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
+    getCodexAncients({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
 
@@ -110,6 +124,15 @@ export default async function PatchDetailPage({
     }
   }
 
+  const ancientOwnersByRelicId = new Map<string, typeof codexAncients>();
+  for (const ancient of codexAncients) {
+    for (const relicId of ancient.relicIds) {
+      const owners = ancientOwnersByRelicId.get(relicId);
+      if (owners) owners.push(ancient);
+      else ancientOwnersByRelicId.set(relicId, [ancient]);
+    }
+  }
+
   // Build entity info for the renderer (cards + relics + potions)
   const entities: EntityInfo[] = [
     ...codexCards.map((c) => ({
@@ -125,6 +148,9 @@ export default async function PatchDetailPage({
       id: r.id,
       nameEn: r.nameEn,
       nameKo: r.name,
+      aliasesEn: (ancientOwnersByRelicId.get(r.id) ?? []).flatMap((ancient) =>
+        ancientRelicAliases(ancient.nameEn, r.nameEn),
+      ),
       imageUrl: r.imageUrl,
       color: r.pool,
       type: "relic" as const,
@@ -185,6 +211,7 @@ export default async function PatchDetailPage({
       id: m.id,
       nameEn: m.nameEn,
       nameKo: m.name,
+      aliasesEn: PATCH_ENTITY_ALIASES_EN[m.id],
       imageUrl: m.bossImageUrl ?? m.imageUrl,
       color: m.type,
       type: "monster" as const,
@@ -194,10 +221,20 @@ export default async function PatchDetailPage({
       id: e.id,
       nameEn: e.nameEn,
       nameKo: e.name,
+      aliasesEn: PATCH_ENTITY_ALIASES_EN[e.id],
       imageUrl: e.imageUrl,
       color: e.roomType,
       type: "encounter" as const,
       encounterData: e,
+    })),
+    ...codexAncients.map((a) => ({
+      id: a.id,
+      nameEn: a.nameEn,
+      nameKo: a.name,
+      imageUrl: a.imageUrl,
+      color: a.act ?? "none",
+      type: "ancient" as const,
+      ancientData: a,
     })),
   ];
 
