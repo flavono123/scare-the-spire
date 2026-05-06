@@ -6,6 +6,7 @@ import {
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
 import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { EncounterLibrary } from "@/components/codex/encounter-library";
 
 export async function generateMetadata({
@@ -26,14 +27,15 @@ export default async function CodexEncountersPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [encounters, monsters] = await Promise.all([
+  const [encounters, monsters, gameUi] = await Promise.all([
     getCodexEncounters({ gameLocale }),
     getCodexMonsters({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
   ]);
 
   return (
     <Suspense>
-      <EncounterLibrary serviceLocale={serviceLocale} encounters={encounters} monsters={monsters} />
+      <EncounterLibrary serviceLocale={serviceLocale} gameUi={gameUi} encounters={encounters} monsters={monsters} />
     </Suspense>
   );
 }

@@ -11,6 +11,7 @@ import {
   localizeHrefWithGameLocale,
 } from "@/lib/i18n";
 import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN } from "@/lib/codex-types";
 import { DescriptionText } from "@/components/codex/codex-description";
 
@@ -49,9 +50,10 @@ export default async function EncounterDetailPage({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const [encounters, monsters] = await Promise.all([
+  const [encounters, monsters, gameUi] = await Promise.all([
     getCodexEncounters({ gameLocale }),
     getCodexMonsters({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
   ]);
   const encounter = encounters.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!encounter) notFound();
@@ -84,10 +86,10 @@ export default async function EncounterDetailPage({
         {/* Badges */}
         <div className="flex flex-wrap justify-center gap-2">
           <span className="text-xs font-medium px-2.5 py-1 rounded-lg" style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}>
-            {serviceText.labels.encounterRoomTypes[encounter.roomType]}
+            {gameUi.encounterRoomTypes[encounter.roomType]}
           </span>
           <span className={`text-xs px-2.5 py-1 rounded-lg ${actConfig.bg} ${actConfig.color}`}>
-            {encounter.act ? serviceText.labels.acts[encounter.act] : serviceText.labels.acts.none}
+            {encounter.act ? gameUi.acts[encounter.act] : serviceText.labels.acts.none}
           </span>
           {encounter.isWeak && (
             <span className="text-xs text-green-400 bg-green-500/10 px-2.5 py-1 rounded-lg">{serviceText.encountersView.weakEncounter}</span>

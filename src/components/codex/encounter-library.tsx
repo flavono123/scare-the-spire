@@ -8,6 +8,7 @@ import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
   getCodexServiceMessages,
@@ -29,11 +30,12 @@ const ROOM_TYPE_ORDER: EncounterRoomType[] = ["Monster", "Elite", "Boss"];
 
 interface EncounterLibraryProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   encounters: CodexEncounter[];
   monsters: CodexMonster[];
 }
 
-export function EncounterLibrary({ serviceLocale, encounters, monsters }: EncounterLibraryProps) {
+export function EncounterLibrary({ serviceLocale, gameUi, encounters, monsters }: EncounterLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedRoomTypes, setSelectedRoomTypes] = useState<Set<EncounterRoomType>>(new Set());
@@ -137,11 +139,11 @@ export function EncounterLibrary({ serviceLocale, encounters, monsters }: Encoun
         act,
         actKey,
         config,
-        label: act ? serviceText.labels.acts[act] : serviceText.labels.acts.none,
+        label: getActLabel(act, serviceText, gameUi),
         encounters: actEncounters,
       };
     }).filter((s) => s.encounters.length > 0);
-  }, [filtered, serviceText]);
+  }, [filtered, gameUi, serviceText]);
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -194,7 +196,7 @@ export function EncounterLibrary({ serviceLocale, encounters, monsters }: Encoun
                   }`}
                 >
                   <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: config.color }} />
-                  {serviceText.labels.encounterRoomTypes[type]}
+                  {gameUi.encounterRoomTypes[type]}
                 </button>
               );
             })}
@@ -224,7 +226,7 @@ export function EncounterLibrary({ serviceLocale, encounters, monsters }: Encoun
                   }`}
                 >
                   <span className={act ? config.color : "text-zinc-400"}>
-                    {act ? serviceText.labels.acts[act] : serviceText.labels.acts.none}
+                    {getActLabel(act, serviceText, gameUi)}
                   </span>
                 </button>
               );
@@ -296,6 +298,7 @@ export function EncounterLibrary({ serviceLocale, encounters, monsters }: Encoun
                     encounter={enc}
                     monsterById={monsterById}
                     messages={serviceText}
+                    gameUi={gameUi}
                     onClick={() => setSelectedEncounter(enc)}
                   />
                 ))}
@@ -323,6 +326,7 @@ export function EncounterLibrary({ serviceLocale, encounters, monsters }: Encoun
               monsterById={monsterById}
               serviceLocale={serviceLocale}
               messages={serviceText}
+              gameUi={gameUi}
               onClose={() => setSelectedEncounter(null)}
             />
           </div>
@@ -337,11 +341,13 @@ function EncounterTile({
   encounter,
   monsterById,
   messages,
+  gameUi,
   onClick,
 }: {
   encounter: CodexEncounter;
   monsterById: Map<string, CodexMonster>;
   messages: CodexServiceMessages;
+  gameUi: CodexGameUiLabels;
   onClick: () => void;
 }) {
   const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[encounter.roomType];
@@ -389,7 +395,7 @@ function EncounterTile({
             className="text-[10px] font-medium px-1.5 py-0.5 rounded"
             style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}
           >
-            {messages.labels.encounterRoomTypes[encounter.roomType]}
+            {gameUi.encounterRoomTypes[encounter.roomType]}
           </span>
           {encounter.isWeak && (
             <span className="text-[10px] text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded">{messages.encountersView.weakEncounter}</span>
@@ -416,12 +422,14 @@ function EncounterDetail({
   monsterById,
   serviceLocale,
   messages,
+  gameUi,
   onClose,
 }: {
   encounter: CodexEncounter;
   monsterById: Map<string, CodexMonster>;
   serviceLocale: ServiceLocale;
   messages: CodexServiceMessages;
+  gameUi: CodexGameUiLabels;
   onClose: () => void;
 }) {
   const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[encounter.roomType];
@@ -456,10 +464,10 @@ function EncounterDetail({
       {/* Badges */}
       <div className="flex flex-wrap justify-center gap-2">
         <span className="text-xs font-medium px-2.5 py-1 rounded-lg" style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}>
-          {messages.labels.encounterRoomTypes[encounter.roomType]}
+          {gameUi.encounterRoomTypes[encounter.roomType]}
         </span>
         <span className={`text-xs px-2.5 py-1 rounded-lg ${actConfig.bg} ${actConfig.color}`}>
-          {encounter.act ? messages.labels.acts[encounter.act] : messages.labels.acts.none}
+          {getActLabel(encounter.act, messages, gameUi)}
         </span>
         {encounter.isWeak && (
           <span className="text-xs text-green-400 bg-green-500/10 px-2.5 py-1 rounded-lg">{messages.encountersView.weakEncounter}</span>
@@ -535,4 +543,12 @@ function FilterSection({ label, children }: { label: string; children: React.Rea
       {children}
     </div>
   );
+}
+
+function getActLabel(
+  act: CodexEncounter["act"],
+  messages: CodexServiceMessages,
+  gameUi: CodexGameUiLabels,
+): string {
+  return act ? gameUi.acts[act] : messages.labels.acts.none;
 }
