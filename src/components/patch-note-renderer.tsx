@@ -630,7 +630,7 @@ function renderMarkdownBold(
         enriched.push(
           <strong
             key={`${keyPrefix}-b${idx}-${j}`}
-            className="font-semibold text-foreground"
+            className="font-semibold spire-gold"
           >
             {name}
           </strong>,
