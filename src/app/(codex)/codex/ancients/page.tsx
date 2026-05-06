@@ -4,7 +4,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { AncientList } from "@/components/codex/ancient-list";
 
 export async function generateMetadata({
@@ -12,9 +13,11 @@ export async function generateMetadata({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  return getCodexMetadata(serviceLocale, serviceText.ancientsView.title);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const gameUi = await getCodexGameUiLabels(gameLocale);
+  return getCodexMetadata(serviceLocale, gameUi.ancientsTitle);
 }
 
 export default async function CodexAncientsPage({
@@ -25,7 +28,10 @@ export default async function CodexAncientsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const ancients = await getCodexAncients({ gameLocale });
+  const [ancients, gameUi] = await Promise.all([
+    getCodexAncients({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
+  ]);
 
-  return <AncientList serviceLocale={serviceLocale} ancients={ancients} />;
+  return <AncientList serviceLocale={serviceLocale} gameUi={gameUi} ancients={ancients} />;
 }

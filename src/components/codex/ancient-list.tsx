@@ -4,6 +4,7 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatTemplateCount,
   getCodexServiceMessages,
@@ -19,14 +20,16 @@ import {
 function ActBadge({
   act,
   messages,
+  gameUi,
 }: {
   act: EventAct | null;
   messages: CodexServiceMessages;
+  gameUi: CodexGameUiLabels;
 }) {
   const config = act
     ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
     : EVENT_ACT_UNKNOWN;
-  const label = act ? messages.labels.acts[act] : messages.labels.acts.none;
+  const label = act ? gameUi.acts[act] : messages.labels.acts.none;
   return (
     <span
       className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${config.color} ${config.border} ${config.bg}`}
@@ -38,10 +41,11 @@ function ActBadge({
 
 interface AncientListProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   ancients: CodexAncient[];
 }
 
-export function AncientList({ serviceLocale, ancients }: AncientListProps) {
+export function AncientList({ serviceLocale, gameUi, ancients }: AncientListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   return (
     <div className="min-h-screen bg-background">
@@ -49,7 +53,7 @@ export function AncientList({ serviceLocale, ancients }: AncientListProps) {
       <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
         <div className="mx-auto max-w-5xl px-6 py-8 text-center">
           <h1 className="font-[family-name:var(--font-gc-batang)] text-3xl md:text-4xl text-yellow-500 mb-2">
-            {serviceText.ancientsView.title}
+            {gameUi.ancientsTitle}
           </h1>
           <p className="text-sm text-yellow-200/40">
             {serviceText.ancientsView.subtitle} - {ancients.length}
@@ -67,6 +71,7 @@ export function AncientList({ serviceLocale, ancients }: AncientListProps) {
               relicCount={ancient.relicIds.length}
               serviceLocale={serviceLocale}
               messages={serviceText}
+              gameUi={gameUi}
             />
           ))}
         </div>
@@ -80,11 +85,13 @@ function AncientCard({
   relicCount,
   serviceLocale,
   messages,
+  gameUi,
 }: {
   ancient: CodexAncient;
   relicCount: number;
   serviceLocale: ServiceLocale;
   messages: CodexServiceMessages;
+  gameUi: CodexGameUiLabels;
 }) {
   return (
     <Link
@@ -113,7 +120,7 @@ function AncientCard({
         <p className="text-[11px] text-blue-400/50 mt-0.5">{ancient.nameEn}</p>
         <p className="text-xs text-zinc-400 mt-1 italic">{ancient.epithet}</p>
         <div className="flex items-center gap-2 mt-2">
-          <ActBadge act={ancient.act} messages={messages} />
+          <ActBadge act={ancient.act} messages={messages} gameUi={gameUi} />
           <span className="text-[10px] text-zinc-500">
             {formatTemplateCount(messages.ancientsView.relicCount, relicCount)}
           </span>

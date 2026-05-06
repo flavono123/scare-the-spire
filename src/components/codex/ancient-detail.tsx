@@ -7,6 +7,7 @@ import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatTemplateCount,
   getCodexServiceMessages,
@@ -126,11 +127,11 @@ function DialogueViewer({
 function RelicGrid({
   relics,
   serviceLocale,
-  messages,
+  gameUi,
 }: {
   relics: CodexRelic[];
   serviceLocale: ServiceLocale;
-  messages: CodexServiceMessages;
+  gameUi: CodexGameUiLabels;
 }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
@@ -154,7 +155,7 @@ function RelicGrid({
           <span className="text-xs text-center text-zinc-300 group-hover:text-yellow-300 transition-colors leading-tight">
             {relic.name}
           </span>
-          <span className="text-[10px] text-zinc-600">{messages.labels.relicRarities[relic.rarity]}</span>
+          <span className="text-[10px] text-zinc-600">{gameUi.relicCollection.rarities[relic.rarity].label}</span>
         </Link>
       ))}
     </div>
@@ -164,11 +165,12 @@ function RelicGrid({
 // --- Main component ---
 interface AncientDetailProps {
   serviceLocale: ServiceLocale;
+  gameUi: CodexGameUiLabels;
   ancient: CodexAncient;
   relics: CodexRelic[];
 }
 
-export function AncientDetail({ serviceLocale, ancient, relics }: AncientDetailProps) {
+export function AncientDetail({ serviceLocale, gameUi, ancient, relics }: AncientDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const actConfig = ancient.act
     ? (EVENT_ACT_CONFIG[ancient.act] ?? EVENT_ACT_UNKNOWN)
@@ -225,7 +227,7 @@ export function AncientDetail({ serviceLocale, ancient, relics }: AncientDetailP
                 <span
                   className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${actConfig.color} ${actConfig.border} ${actConfig.bg}`}
                 >
-                  {ancient.act ? serviceText.labels.acts[ancient.act] : serviceText.labels.acts.none}
+                  {ancient.act ? gameUi.acts[ancient.act] : serviceText.labels.acts.none}
                 </span>
                 <span className="text-[10px] text-zinc-500">
                   {formatTemplateCount(serviceText.ancientsView.relicCount, ancient.relicIds.length)}
@@ -263,7 +265,7 @@ export function AncientDetail({ serviceLocale, ancient, relics }: AncientDetailP
               </svg>
               {serviceText.ancientsView.rewardRelics}
             </h2>
-            <RelicGrid relics={relics} serviceLocale={serviceLocale} messages={serviceText} />
+            <RelicGrid relics={relics} serviceLocale={serviceLocale} gameUi={gameUi} />
           </section>
         )}
 

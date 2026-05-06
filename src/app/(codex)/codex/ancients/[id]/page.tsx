@@ -5,7 +5,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { AncientDetail } from "@/components/codex/ancient-detail";
 import type { CodexRelic } from "@/lib/codex-types";
 
@@ -24,11 +25,13 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  const ancients = await getCodexAncients({ gameLocale });
+  const [ancients, gameUi] = await Promise.all([
+    getCodexAncients({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
+  ]);
   const ancient = ancients.find((a) => a.id.toLowerCase() === id.toLowerCase());
   if (!ancient) return {};
-  return getCodexMetadata(serviceLocale, `${ancient.name} — ${serviceText.ancientsView.title}`);
+  return getCodexMetadata(serviceLocale, `${ancient.name} — ${gameUi.ancientsTitle}`);
 }
 
 export default async function AncientDetailPage({ params, searchParams }: Props) {
@@ -36,9 +39,10 @@ export default async function AncientDetailPage({ params, searchParams }: Props)
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [ancients, relics] = await Promise.all([
+  const [ancients, relics, gameUi] = await Promise.all([
     getCodexAncients({ gameLocale }),
     getCodexRelics({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
   ]);
 
   const ancient = ancients.find((a) => a.id.toLowerCase() === id.toLowerCase());
@@ -48,5 +52,5 @@ export default async function AncientDetailPage({ params, searchParams }: Props)
     .map((rid) => relics.find((r) => r.id === rid))
     .filter((r): r is CodexRelic => r !== undefined);
 
-  return <AncientDetail serviceLocale={serviceLocale} ancient={ancient} relics={ancientRelics} />;
+  return <AncientDetail serviceLocale={serviceLocale} gameUi={gameUi} ancient={ancient} relics={ancientRelics} />;
 }
