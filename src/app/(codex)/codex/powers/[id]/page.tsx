@@ -5,7 +5,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexMetadata } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { PowerDetail } from "@/components/codex/power-detail";
 
 export async function generateStaticParams() {
@@ -24,11 +25,13 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const serviceText = getCodexServiceMessages(serviceLocale);
-  const powers = await getCodexPowers({ gameLocale });
+  const [powers, gameUi] = await Promise.all([
+    getCodexPowers({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
+  ]);
   const power = powers.find((p) => p.id.toLowerCase() === id.toLowerCase());
   if (!power) return {};
-  return getCodexMetadata(serviceLocale, `${power.name} — ${serviceText.powersView.title}`);
+  return getCodexMetadata(serviceLocale, `${power.name} — ${gameUi.nav.powers}`);
 }
 
 export default async function PowerDetailPage({
@@ -42,13 +45,16 @@ export default async function PowerDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const powers = await getCodexPowers({ gameLocale });
+  const [powers, gameUi] = await Promise.all([
+    getCodexPowers({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
+  ]);
   const power = powers.find((p) => p.id.toLowerCase() === id.toLowerCase());
   if (!power) notFound();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PowerDetail serviceLocale={serviceLocale} power={power} />
+      <PowerDetail serviceLocale={serviceLocale} gameUi={gameUi} power={power} />
     </div>
   );
 }
