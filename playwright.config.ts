@@ -12,6 +12,7 @@ export default defineConfig({
     "perf-probe.spec.ts",
     "card-tile-visual.spec.ts",
     "enchantment-stat-combinations.spec.ts",
+    "codex-filter-search.spec.ts",
   ],
   timeout: 30_000,
   use: {
