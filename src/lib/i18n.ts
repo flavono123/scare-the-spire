@@ -1,5 +1,8 @@
 export const SERVICE_LOCALES = ["ko", "en"] as const;
 export const INTERNAL_SERVICE_LOCALE_QUERY = "_sl";
+export const SERVICE_LOCALE_COOKIE = "sts-service-locale";
+export const GAME_LOCALE_COOKIE = "sts-game-locale";
+export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 export type ServiceLocale = (typeof SERVICE_LOCALES)[number];
 
