@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 import { RichContentEditor } from "@/components/rich-content-editor";
@@ -8,10 +8,17 @@ import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 
 const NICKNAME_KEY = "sts-chemicalx-nickname";
+const DEFAULT_NICKNAME_FIXTURES = new Set([
+  serviceMessages.ko.chemicalX.defaultNickname,
+  serviceMessages.en.chemicalX.defaultNickname,
+  "Anonymous Inserterian",
+]);
 
 function getSavedNickname(defaultNickname: string): string {
   if (typeof window === "undefined") return defaultNickname;
-  return localStorage.getItem(NICKNAME_KEY) || defaultNickname;
+  const saved = localStorage.getItem(NICKNAME_KEY);
+  if (!saved || DEFAULT_NICKNAME_FIXTURES.has(saved)) return defaultNickname;
+  return saved;
 }
 
 interface ChemicalXEditorProps {
@@ -23,6 +30,12 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const [nickname, setNickname] = useState(() => getSavedNickname(copy.defaultNickname));
+
+  useEffect(() => {
+    setNickname((current) => (
+      DEFAULT_NICKNAME_FIXTURES.has(current) ? copy.defaultNickname : current
+    ));
+  }, [copy.defaultNickname]);
 
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
     const nick = nickname.trim() || copy.defaultNickname;
