@@ -105,6 +105,13 @@ function colorTag(color: string, label: string): string {
   return `[${color}]${label}[/${color}]`;
 }
 
+function stripPlaceholderLabel(source: string | undefined, placeholder: string): string {
+  return stripGameMarkup(source)
+    .replace(placeholder, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function addPatchHeadingLabel(
   labels: Record<string, string>,
   source: string | undefined,
@@ -179,6 +186,9 @@ async function getPatchGameHeadingLabels(gameLocale: GameLocale): Promise<Record
     engEpochs,
     korEpochs,
     gameEpochs,
+    engAncients,
+    korAncients,
+    gameAncients,
     engGameplay,
     korGameplay,
     gameGameplay,
@@ -198,6 +208,9 @@ async function getPatchGameHeadingLabels(gameLocale: GameLocale): Promise<Record
     readGameLocalizationTable("eng", "epochs"),
     readGameLocalizationTable("kor", "epochs"),
     readGameLocalizationTable(gameLocale, "epochs"),
+    readGameLocalizationTable("eng", "ancients"),
+    readGameLocalizationTable("kor", "ancients"),
+    readGameLocalizationTable(gameLocale, "ancients"),
     readGameLocalizationTable("eng", "gameplay_ui"),
     readGameLocalizationTable("kor", "gameplay_ui"),
     readGameLocalizationTable(gameLocale, "gameplay_ui"),
@@ -225,12 +238,15 @@ async function getPatchGameHeadingLabels(gameLocale: GameLocale): Promise<Record
 
   const enemyPluralTarget = gameMap["LEGEND_ENEMY.hoverTip.title"];
   const enemySingularTarget = gameMap["LEGEND_ENEMY.title"];
+  const ascensionTarget = stripPlaceholderLabel(gameGameplay["ASCENSION_LEVEL"], "{ascension}");
+  const enemyAscensionTargetEn = [enemySingularTarget, ascensionTarget].filter(Boolean).join(" / ");
+  const enemyAscensionTargetKo = enemyAscensionTargetEn;
   for (const source of [
     engMap["LEGEND_ENEMY.title"],
     "Enemy",
   ]) {
-    addPatchHeadingLabel(labels, `Enemy / Ascension Changes`, `${enemySingularTarget} / Ascension Changes`);
-    addPatchHeadingLabel(labels, `적 / 승천 변경`, `${enemySingularTarget} / 승천 변경`);
+    addPatchHeadingLabel(labels, `Enemy / Ascension Changes`, `${enemyAscensionTargetEn} Changes`);
+    addPatchHeadingLabel(labels, `적 / 승천 변경`, `${enemyAscensionTargetKo} 변경`);
     addPatchHeadingLabel(labels, source, enemySingularTarget);
   }
   for (const source of [
@@ -275,11 +291,24 @@ async function getPatchGameHeadingLabels(gameLocale: GameLocale): Promise<Record
     addPatchHeadingLabel(labels, source, coloredAncientTarget);
   }
 
-  const neowTarget = gameEpochs["NEOW_EPOCH.title"];
+  const neowTarget = gameEpochs["NEOW_EPOCH.title"] ?? gameAncients["NEOW.title"];
   if (coloredAncientTarget && neowTarget) {
     const coloredNeowTarget = colorTag("gold:ancient", neowTarget);
     addPatchHeadingLabel(labels, "Ancients & Neow", `${coloredAncientTarget} & ${coloredNeowTarget}`);
     addPatchHeadingLabel(labels, "고대의 존재 & 니오우", `${coloredAncientTarget} & ${coloredNeowTarget}`);
+    for (const source of [
+      `${engEpochs["NEOW_EPOCH.title"] ?? engAncients["NEOW.title"]} Blessings`,
+      "Neow Blessings",
+    ]) {
+      addPatchHeadingLabel(labels, source, `${coloredNeowTarget} Blessings`);
+    }
+    for (const source of [
+      `${korEpochs["NEOW_EPOCH.title"] ?? korAncients["NEOW.title"]}의 축복`,
+      "네오의 축복",
+      "니오우의 축복",
+    ]) {
+      addPatchHeadingLabel(labels, source, `${coloredNeowTarget}의 축복`);
+    }
   }
 
   const potionTarget = stripGameMarkup(gameGameplay["MULTIPLAYER_EXPANDED_STATE.potionHeader"]);
@@ -294,6 +323,12 @@ async function getPatchGameHeadingLabels(gameLocale: GameLocale): Promise<Record
     ]) {
       addPatchHeadingLabel(labels, source, potionsAndRelicsTarget);
     }
+  }
+
+  const relicHeadingTarget = stripGameMarkup(gameGameplay["RELIC_RARITY.NONE"]);
+  if (relicHeadingTarget) {
+    addPatchHeadingLabel(labels, "Relic Changes", `${relicHeadingTarget} Changes`);
+    addPatchHeadingLabel(labels, "유물 변경", `${relicHeadingTarget} 변경`);
   }
 
   const multiplayerTarget = gameMainMenu["MULTIPLAYER"];
