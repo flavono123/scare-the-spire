@@ -1,0 +1,47 @@
+import { expect, test } from "@playwright/test";
+
+const BASE = process.env.BASE_URL ?? "http://localhost:3000";
+
+test.describe("mobile codex drawer", () => {
+  test("locks background scroll while filters are open", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(`${BASE}/codex/cards`, { waitUntil: "networkidle" });
+
+    const openFilters = page.getByRole("button", { name: "필터 열기" });
+    await expect(openFilters).toBeVisible();
+    await openFilters.click();
+
+    await expect(page.getByRole("button", { name: "필터 닫기" })).toBeVisible();
+    await expect(page.getByText("소속").first()).toBeVisible();
+    await expect.poll(() => page.evaluate(() => document.body.style.position)).toBe("fixed");
+    await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe("hidden");
+
+    await page.mouse.click(330, 120);
+
+    await expect(page.getByRole("button", { name: "필터 열기" })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => document.body.style.position)).toBe("");
+    await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe("");
+  });
+});
+
+test.describe("mobile patch note entity preview", () => {
+  test.use({
+    hasTouch: true,
+    isMobile: true,
+    viewport: { width: 390, height: 844 },
+  });
+
+  test("opens preview before navigating to entity detail", async ({ page }) => {
+    await page.goto(`${BASE}/patches/0.103.0`, { waitUntil: "networkidle" });
+    const startUrl = page.url();
+
+    await page.getByRole("link", { name: "불굴" }).first().click();
+
+    await expect(page).toHaveURL(startUrl);
+    await expect(page.getByRole("button", { name: "닫기" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "상세 보기" })).toBeVisible();
+
+    await page.getByRole("button", { name: "닫기" }).click();
+    await expect(page.getByRole("button", { name: "닫기" })).toHaveCount(0);
+  });
+});

@@ -13,6 +13,7 @@ export default defineConfig({
     "card-tile-visual.spec.ts",
     "enchantment-stat-combinations.spec.ts",
     "codex-filter-search.spec.ts",
+    "mobile-ux.spec.ts",
   ],
   timeout: 30_000,
   use: {
