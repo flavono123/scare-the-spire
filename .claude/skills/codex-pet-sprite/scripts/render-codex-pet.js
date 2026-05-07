@@ -82,6 +82,7 @@ Options:
   --no-default-hide            Do not hide the built-in known effect slot regexes
   --aux-loop NAME              Extra auxiliary loop animation. Repeatable
   --no-default-aux             Do not apply default _ignore cloth/glow auxiliary loops
+  --fit-mode MODE              strict or height. Default: strict
 `);
 }
 
@@ -338,12 +339,16 @@ async function main() {
   const description = args.description || "STS2 Spine animation frames rendered as a Codex custom pet.";
   const buildRoot = path.resolve(expandHome(args["build-root"] || "~/.codex/pet-builds"));
   const petsRoot = path.resolve(expandHome(args["pets-root"] || "~/.codex/pets"));
-  const buildDir = path.join(buildRoot, petId);
-  const petDir = path.join(petsRoot, petId);
   const profilePath = args.profile ? path.resolve(expandHome(args.profile)) : null;
-
   let profile = {};
   if (profilePath) profile = JSON.parse(fs.readFileSync(profilePath, "utf8"));
+
+  const fitMode = args["fit-mode"] || profile.fitMode || "strict";
+  if (!["strict", "height"].includes(fitMode)) {
+    throw new Error("--fit-mode must be strict or height");
+  }
+  const buildDir = path.join(buildRoot, petId);
+  const petDir = path.join(petsRoot, petId);
 
   const hidePatterns = [
     ...(args["no-default-hide"] ? [] : DEFAULT_HIDE_SLOT_PATTERNS),
@@ -370,7 +375,9 @@ async function main() {
   const { global, byRow } = boundsFor(skeletonData, rows, auxLoops, hidePatterns);
   const maxWidth = global.maxX - global.minX;
   const maxHeight = global.maxY - global.minY;
-  const scale = Math.min((CELL_W - 14) / maxWidth, (CELL_H - 14) / maxHeight);
+  const scale = fitMode === "height"
+    ? (CELL_H - 14) / maxHeight
+    : Math.min((CELL_W - 14) / maxWidth, (CELL_H - 14) / maxHeight);
 
   const sheet = createCanvas(SHEET_W, SHEET_H);
   const ctx = sheet.getContext("2d");
@@ -419,6 +426,7 @@ async function main() {
     skeletonVersion: skeletonData.version,
     skeletonAnimations: skeletonData.animations.map((animation) => ({ name: animation.name, duration: animation.duration })),
     scale,
+    fitMode,
     globalBounds: global,
     hiddenSlotPatterns: hidePatterns.map((pattern) => pattern.source),
     auxLoops,
