@@ -3,7 +3,6 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Image from "@/components/ui/static-image";
 import { useSearchParams } from "next/navigation";
-import { getChoseong } from "es-hangul";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -22,10 +21,17 @@ import {
 } from "@/lib/codex-types";
 import type { EntityVersionDiff, STS2Patch } from "@/lib/types";
 import { reconstructEventAtVersion } from "@/lib/entity-versioning";
-import { SearchBar, TriggerGroup } from "./search-bar";
+import {
+  fuzzyMatchCodexText,
+  parseCodexSearch,
+  type CodexSearchTriggerGroup,
+} from "@/lib/codex-search";
+import { SearchBar } from "./search-bar";
 import { VersionSelector } from "./version-selector";
 import { FilterSection, ToggleButton } from "./codex-filters";
 import { EventDetail } from "./event-detail";
+
+type EventSearchTokenType = "act";
 
 // --- Act badge ---
 function ActBadge({
@@ -179,40 +185,16 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  // Parse search query
-  const parsedSearch = useMemo(() => {
-    const actTokens: string[] = [];
-    const textParts: string[] = [];
-    const parts = searchQuery.split(/\s+/).filter(Boolean);
-    for (const part of parts) {
-      if (part.startsWith("@")) {
-        const val = part.slice(1).toLowerCase();
-        const match = EVENT_ACT_ALIASES[val];
-        if (match) actTokens.push(match);
-        else textParts.push(part);
-      } else {
-        textParts.push(part);
-      }
-    }
-    return { text: textParts.join(" ").toLowerCase(), actTokens };
-  }, [searchQuery]);
+  const eventTriggers = useMemo(
+    () => getEventTriggers(serviceText, gameUi),
+    [serviceText, gameUi],
+  );
 
-  const fuzzyMatch = useCallback((text: string, query: string): boolean => {
-    if (!query) return true;
-    const lt = text.toLowerCase();
-    const lq = query.toLowerCase();
-    if (lt.includes(lq)) return true;
-    const isAllJamo = /^[ㄱ-ㅎ]+$/.test(query);
-    if (isAllJamo) {
-      const choseong = getChoseong(text);
-      if (choseong.includes(query)) return true;
-    }
-    let qi = 0;
-    for (let ti = 0; ti < lt.length && qi < lq.length; ti++) {
-      if (lt[ti] === lq[qi]) qi++;
-    }
-    return qi === lq.length;
-  }, []);
+  // Parse search query
+  const parsedSearch = useMemo(
+    () => parseCodexSearch(searchQuery, eventTriggers),
+    [searchQuery, eventTriggers],
+  );
 
   // Filter events — 막 무관 events pass through any act filter
   const filtered = useMemo(() => {
@@ -225,18 +207,19 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
         const hasSpecificAct = [...selectedActs].some((a) => a !== "none");
         if (!hasSpecificAct) return false;
       }
-      if (parsedSearch.actTokens.length > 0 && e.act !== null) {
+      const actTokens = parsedSearch.tokens.filter((token) => token.type === "act");
+      if (actTokens.length > 0 && e.act !== null) {
         const actKey = e.act ?? "none";
-        if (!parsedSearch.actTokens.includes(actKey)) return false;
+        if (!actTokens.some((token) => token.value === actKey)) return false;
       }
       if (parsedSearch.text) {
-        const nameMatch = fuzzyMatch(e.name, parsedSearch.text);
-        const nameEnMatch = fuzzyMatch(e.nameEn, parsedSearch.text);
+        const nameMatch = fuzzyMatchCodexText(e.name, parsedSearch.text);
+        const nameEnMatch = fuzzyMatchCodexText(e.nameEn, parsedSearch.text);
         if (!nameMatch && !nameEnMatch) return false;
       }
       return true;
     });
-  }, [versionedEvents, selectedActs, parsedSearch, fuzzyMatch]);
+  }, [versionedEvents, selectedActs, parsedSearch]);
 
   // Group by act
   const groups = useMemo(() => {
@@ -280,8 +263,6 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
     return counts;
   }, [events]);
 
-  const eventTriggers = getEventTriggers(serviceText, gameUi);
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -297,7 +278,7 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
         <div className="flex gap-6">
           {/* Sidebar filters */}
           <aside className="hidden md:block w-48 flex-shrink-0 space-y-5">
-            <FilterSection trigger="@" label={serviceText.eventsView.actFilter}>
+            <FilterSection trigger="%" label={serviceText.eventsView.actFilter}>
               <div className="space-y-0.5">
                 {EVENT_ACT_ORDER.map((act) => {
                   const key = act ?? "none";
@@ -420,10 +401,14 @@ function getActLabel(
   return act ? gameUi.acts[act] : serviceText.labels.acts.none;
 }
 
-function getEventTriggers(serviceText: CodexServiceMessages, gameUi: CodexGameUiLabels): TriggerGroup[] {
+function getEventTriggers(
+  serviceText: CodexServiceMessages,
+  gameUi: CodexGameUiLabels,
+): CodexSearchTriggerGroup<EventSearchTokenType>[] {
   return [
     {
-      trigger: "@",
+      trigger: "%",
+      type: "act",
       label: serviceText.eventsView.actFilter,
       items: [
         { value: "act1", label: gameUi.acts["Act 1 - Overgrowth"], desc: "Act 1 Overgrowth" },
