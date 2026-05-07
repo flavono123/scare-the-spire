@@ -31,11 +31,12 @@ Use this when Steam has published the patch but rich notes are not ready yet.
 
 1. Add or update the `data/sts2-patches.json` entry with the real version/date/title/type/Steam URL.
 2. Keep `steamUrl` live.
-3. Mark the summary as work-in-progress in Korean and English instead of pretending the rich notes are done.
-4. Do not add placeholder rich note markdown unless there is real content.
-5. Commit this shell separately before asset extraction or translation work.
+3. Set `status` to `"building"` so the index/detail UI labels the patch as being prepared.
+4. Mark the summary as work-in-progress in Korean and English instead of pretending the rich notes are done.
+5. Do not add placeholder rich note markdown unless there is real content.
+6. Commit this shell separately before asset extraction or translation work.
 
-The detail page already renders a missing-note state when markdown files are absent. If product copy needs stronger wording, update the page copy separately and commit it before adding the shell patch entry.
+The detail page renders a stronger building state when `status: "building"` and markdown files are absent. Remove the field or set `status` to `"ready"` when the enriched notes are published.
 
 ## Full Rich Patch Workflow
 
