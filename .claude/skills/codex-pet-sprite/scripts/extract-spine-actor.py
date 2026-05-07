@@ -7,6 +7,7 @@ writes `<name>.atlas`, `<name>.skel`, and `<name>.png` to the output folder.
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
@@ -35,8 +36,16 @@ def extract_binary_import(reader: PCKReader, import_path: str, out_path: Path) -
     target = import_target(raw_import)
     if not target or target not in reader.entries:
         raise FileNotFoundError(f"{import_path}: imported target not found: {target}")
+    payload = reader.read_file(target)
+    if out_path.suffix == ".atlas":
+        try:
+            wrapped = json.loads(payload.decode("utf-8"))
+            if isinstance(wrapped, dict) and isinstance(wrapped.get("atlas_data"), str):
+                payload = wrapped["atlas_data"].encode("utf-8")
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            pass
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_bytes(reader.read_file(target))
+    out_path.write_bytes(payload)
     return target
 
 
