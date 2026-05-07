@@ -12,6 +12,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { useComments, type Comment } from "@/hooks/use-comments";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useCommentLikes } from "@/hooks/use-comment-likes";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 
 const NICKNAME_KEY = "sts-nickname";
@@ -170,6 +172,9 @@ export function CommentSection({
   initialEntities?: EntityInfo[];
   onCountChange?: (count: number) => void;
 }) {
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].comments;
+  const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const { userId, ready } = useAuth();
   const { entities, loading: entitiesLoading } = useCommentEntities(initialEntities);
   const { comments, loading, add, remove } = useComments(threadKey, userId);
@@ -206,10 +211,10 @@ export function CommentSection({
       {loading ? (
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <EngagementSpinner size={14} />
-          <span>불러오는 중...</span>
+          <span>{copy.loading}</span>
         </div>
       ) : comments.length === 0 ? (
-        <p className="text-xs text-muted-foreground">아직 댓글이 없습니다</p>
+        <p className="text-xs text-muted-foreground">{copy.empty}</p>
       ) : (
         <ul className="space-y-3">
           {comments.map((comment) => (
@@ -217,7 +222,7 @@ export function CommentSection({
               <div className="flex items-center gap-2">
                 <span className="font-medium text-yellow-500">{comment.nickname}</span>
                 <span className="text-[10px] text-muted-foreground">
-                  {new Date(comment.created_at).toLocaleDateString("ko-KR")}
+                  {new Date(comment.created_at).toLocaleDateString(dateLocale)}
                 </span>
                 <button
                   onClick={() => toggleLike(comment.id)}
@@ -226,7 +231,7 @@ export function CommentSection({
                 >
                   <Image
                     src="/images/relics/runic-dodecahedron.webp"
-                    alt="like"
+                    alt={copy.likeAlt}
                     width={14}
                     height={14}
                     className={`transition-all ${likedSet.has(comment.id) ? "" : "opacity-40 grayscale"}`}
@@ -238,7 +243,7 @@ export function CommentSection({
                     onClick={() => remove(comment.id)}
                     className="text-[10px] text-muted-foreground hover:text-red-400"
                   >
-                    삭제
+                    {copy.delete}
                   </button>
                 )}
               </div>
@@ -254,7 +259,7 @@ export function CommentSection({
         <div className="space-y-2">
           <input
             type="text"
-            placeholder="닉네임"
+            placeholder={copy.nicknamePlaceholder}
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             maxLength={20}
@@ -263,15 +268,15 @@ export function CommentSection({
           {entitiesLoading ? (
             <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card/30 px-3 py-2 text-xs text-muted-foreground">
               <EngagementSpinner size={14} />
-              <span>댓글 입력기를 준비하는 중...</span>
+              <span>{copy.editorLoading}</span>
             </div>
           ) : (
             <RichContentEditor
               entities={entities}
               onSubmit={handleSubmit}
-              placeholder="댓글을 입력하세요"
+              placeholder={copy.placeholder}
               draftKey={getDraftKey(threadKey)}
-              submitLabel={submitting ? "..." : "작성"}
+              submitLabel={submitting ? "..." : copy.submit}
             />
           )}
         </div>
