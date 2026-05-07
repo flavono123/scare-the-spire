@@ -78,6 +78,7 @@ export interface STS2Patch {
   title: string;
   titleKo: string;
   type: PatchType;
+  status?: "ready" | "building";
   steamUrl: string | null;
   summary: string;
   summaryKo: string;

@@ -15,12 +15,14 @@ const PATCH_COPY: Record<ServiceLocale, {
   title: string;
   description: string;
   balance: string;
+  building: string;
   types: Record<PatchType, string>;
 }> = {
   ko: {
     title: "패치 노트",
     description: "슬레이 더 스파이어 2 전체 패치 히스토리와 밸런스 변경 이력",
     balance: "밸런스",
+    building: "작성 중",
     types: {
       release: "출시",
       beta: "베타",
@@ -32,6 +34,7 @@ const PATCH_COPY: Record<ServiceLocale, {
     title: "Patch Notes",
     description: "Full Slay the Spire 2 patch history and balance changes.",
     balance: "Balance",
+    building: "Building",
     types: {
       release: "Release",
       beta: "Beta",
@@ -99,6 +102,11 @@ export default async function PatchesPage({
                 {patch.hasBalanceChanges && (
                   <Badge variant="outline" className="bg-yellow-500/15 text-yellow-400 border-yellow-500/30">
                     {copy.balance}
+                  </Badge>
+                )}
+                {patch.status === "building" && (
+                  <Badge variant="outline" className="bg-amber-500/15 text-amber-300 border-amber-500/30">
+                    {copy.building}
                   </Badge>
                 )}
               </div>
