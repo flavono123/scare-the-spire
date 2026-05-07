@@ -7,18 +7,18 @@ test.describe("mobile codex drawer", () => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto(`${BASE}/codex/cards`, { waitUntil: "networkidle" });
 
-    const openFilters = page.getByRole("button", { name: "필터 열기" });
+    const openFilters = page.getByRole("button", { name: /필터 열기|Open filters/ });
     await expect(openFilters).toBeVisible();
     await openFilters.click();
 
-    await expect(page.getByRole("button", { name: "필터 닫기" })).toBeVisible();
+    await expect(page.getByRole("button", { name: /필터 닫기|Close filters/ })).toBeVisible();
     await expect(page.getByText("소속").first()).toBeVisible();
     await expect.poll(() => page.evaluate(() => document.body.style.position)).toBe("fixed");
     await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe("hidden");
 
     await page.mouse.click(330, 120);
 
-    await expect(page.getByRole("button", { name: "필터 열기" })).toBeVisible();
+    await expect(page.getByRole("button", { name: /필터 열기|Open filters/ })).toBeVisible();
     await expect.poll(() => page.evaluate(() => document.body.style.position)).toBe("");
     await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe("");
   });
@@ -35,7 +35,7 @@ test.describe("mobile patch note entity preview", () => {
     await page.goto(`${BASE}/patches/0.103.0`, { waitUntil: "networkidle" });
     const startUrl = page.url();
 
-    await page.getByRole("link", { name: "불굴" }).first().click();
+    await page.getByRole("link", { name: /불굴|Not Yet/ }).first().click();
 
     await expect(page).toHaveURL(startUrl);
     await expect(page.getByRole("button", { name: "닫기" })).toBeVisible();
