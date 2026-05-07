@@ -1,76 +1,97 @@
-# Codex Filter and Search Refactor
+# 코덱스 필터/검색 리팩터링
 
-Date: 2026-05-07
+작성일: 2026-05-07
 
-## Goal
+## 목표
 
-Unify Codex library filtering and search primitives before mobile optimization work.
-This is a refactor-first task: drawer scroll locking, touch target tuning, and broader
-mobile layout changes stay separate unless a shared primitive needs a safe default.
+모바일 최적화에 들어가기 전에 코덱스 목록 화면의 필터 패널, 검색창,
+검색 토큰 파싱, 검색 매칭 규칙을 공통 기반으로 정리한다.
 
-## Scope
+이 작업은 모바일 최적화 자체가 아니라 선행 리팩터링이다. drawer 스크롤 잠금,
+터치 타깃 조정, 모바일 레이아웃 재설계는 별도 작업으로 분리한다.
 
-- Pull the repeated left filter panel structure into a shared Codex drawer/shell.
-- Pull search token definitions, parsing, chip validation, and fuzzy text matching into shared code.
-- Keep per-library filtering rules data-driven, because cards, relics, potions, powers,
-  enchantments, monsters, encounters, and events do not expose identical filter domains.
-- Use the card library as the reference implementation because it already has the richest
-  filter/sort/search behavior.
-- Replace page-local search bars in potions, monsters, and encounters with the shared search UI.
-- Preserve Korean-first UI copy and game-localized names.
+## 범위
 
-## Token Semantics
+- 반복되는 좌측 필터 패널 구조를 공통 shell/drawer로 끌어올린다.
+- 검색 토큰 정의, 파싱, 칩 검증, 초성/부분/서브시퀀스 검색을 공통화한다.
+- 카드, 유물, 포션, 파워, 인챈트, 몬스터, 인카운터, 이벤트가 서로 다른 필터
+  영역을 가질 수 있으므로 각 목록의 필터 규칙은 데이터 기반으로 주입한다.
+- 카드 라이브러리를 기준 구현으로 삼는다.
+- 포션, 몬스터, 인카운터에 남아 있던 자체 검색창 구현을 공통 검색창으로 대체한다.
+- UI 문구는 한국어 우선, 게임 요소 이름은 게임 공식 번역을 우선한다.
 
-The trigger character describes a conceptual filter area. A library may omit a trigger when
-the concept does not exist.
+## 검색 토큰 규칙
 
-- `@`: character-like ownership/category only.
-  - Cards: characters plus colorless/event/curse/status/ancient buckets.
-  - Potions: characters plus shared/event buckets.
-  - Relics: current source/pool usage should be reconsidered; if kept, use the same card-library
-    character token assets, not character select portraits.
-  - Events: must not use `@` for act filters.
-- `#`: card/combat type.
-  - Cards, enchantments, powers, monsters, and encounters use this for type-like filters.
-- `!`: rarity by default.
-  - Relics and potions should move rarity here so `#` remains type-like across the Codex.
-- `$` or `%`: reserved for extra low-frequency filters.
-  - Cards may keep cost here if rarity moves to `!`, or keep cost on `!` if rarity is not exposed
-    in search for that library.
-  - Events should use a reserved non-`@` trigger for acts if act token search remains useful.
+리딩 특수문자는 필터 영역의 개념을 나타낸다. 특정 목록에 해당 개념이 없으면
+그 토큰을 노출하지 않는다.
 
-Open choice after the first migration: whether card cost remains `!` and rarity stays sidebar-only,
-or rarity becomes `!` everywhere and card cost moves to `$`.
+- `@`: 캐릭터 또는 캐릭터에 준하는 묶음.
+  - 카드: 캐릭터 + 무색/이벤트/저주/상태이상/고대의 존재 묶음.
+  - 유물: 캐릭터 + 공용/이벤트 묶음.
+  - 포션: 캐릭터 + 공용/이벤트 묶음.
+  - 이벤트의 막 필터에는 절대 사용하지 않는다.
+- `#`: 카드/전투의 유형.
+  - 카드, 인챈트, 파워, 몬스터, 인카운터에서 유형 계열 필터에 사용한다.
+- `!`: 희귀도.
+  - 카드, 유물, 포션에서 희귀도 계열 필터에 사용한다.
+- `$`: 비용.
+  - 카드 비용 필터에 사용한다.
+- `%`: 막.
+  - 이벤트, 몬스터, 인카운터의 막 필터에 사용한다.
 
-## Mobile Search Considerations
+## `open choice` 설명
 
-- Token hint buttons must be tappable, because mobile symbol keyboard switching makes raw
-  `@#!$%` entry slow.
-- The shared search bar should keep `inputMode="search"`, disable autocapitalize/autocorrect,
-  and show token chips so accidental invalid tokens are visible.
-- Search dropdowns and hint panels must not be hover-only.
+`open choice`는 구현 전에 아직 확정하지 않은 설계 갈림길이라는 뜻으로 썼다.
+이 문서의 이전 버전에서는 `!`를 카드 비용에 유지할지, 희귀도로 통일하고 비용을
+다른 문자로 옮길지 확정하지 않았다.
 
-## Patch Note Tooltip Follow-Up
+현재 결정은 다음과 같다.
 
-Rich patch notes currently expose entity previews through hover and link navigation through click.
-On mobile, hover does not translate cleanly to touch, so tapping an entity tends to navigate
-without first revealing the preview. Treat this as a separate mobile UX task after the filter/search
-refactor.
+- 희귀도는 `!`로 통일한다.
+- 카드 비용은 `$`로 분리한다.
+- 막은 `%`로 통일한다.
 
-Planned direction:
+## `@` 영역 제목 정책
 
-- Detect coarse pointers and remove hover-only assumptions for rich patch entities.
-- Use first tap to open a compact preview/action popover, with an explicit link action inside it.
-- Keep desktop hover behavior unchanged.
-- Add Playwright mobile tests for rich patch notes that verify a tap does not accidentally navigate
-  when the preview affordance should be shown first.
+`@`는 엄밀히 말하면 항상 "캐릭터"만 뜻하지 않는다. 하지만 카드/유물/포션에서
+한 화면 안에 흩어진 출처/캐릭터/기타 문구를 유지하면 같은 토큰 영역이 다르게
+읽힌다.
 
-## Refactor Order
+따라서 필터 패널의 `@` 영역 제목은 목록별 세부 명칭 대신 `@` 토큰 자체가
+드러나는 형태로 통일한다. 항목의 실제 의미는 아이콘, 칩, 툴팁 라벨로 전달한다.
 
-1. Add shared drawer/search primitives without migrating behavior.
-2. Migrate cards as the reference implementation.
-3. Migrate relics and potions, including shared card-library character token assets.
-4. Migrate powers and enchantments.
-5. Migrate monsters and encounters.
-6. Update events so act filters no longer use `@`.
-7. Add focused tests for drawer behavior and token parsing.
+## 모바일 검색 고려사항
+
+- 모바일에서는 `@#!$%` 입력을 위해 기호 키보드로 전환해야 하므로, 토큰 힌트
+  버튼을 누르면 해당 토큰을 입력할 수 있어야 한다.
+- 공통 검색창은 `inputMode="search"`, `autoCapitalize="none"`,
+  `autoCorrect="off"`를 사용한다.
+- 잘못 입력한 토큰을 바로 알아볼 수 있도록 토큰 칩 검증을 유지한다.
+- 검색 힌트와 자동완성은 hover 전용이 아니어야 한다.
+
+## 패치노트 툴팁 후속 작업
+
+Rich 패치노트는 현재 hover로 엔티티 미리보기를 보여주고 click으로 상세 페이지로
+이동한다. 모바일에서는 hover가 터치로 자연스럽게 대체되지 않아서, 탭이 미리보기
+없이 바로 이동하는 오동작에 가깝다.
+
+이 문제는 필터/검색 리팩터링 이후 별도의 모바일 UX 작업으로 다룬다.
+
+계획 방향:
+
+- coarse pointer 환경을 감지해 hover 전용 가정을 제거한다.
+- 모바일에서는 첫 탭으로 compact preview/action popover를 열고, popover 내부에서
+  명시적으로 이동 액션을 제공한다.
+- 데스크톱 hover 동작은 유지한다.
+- 모바일 Playwright 테스트로 패치노트 엔티티 탭이 의도치 않게 바로 이동하지
+  않는지 검증한다.
+
+## 진행 순서
+
+1. 공통 drawer/search primitive를 추가한다.
+2. 카드 라이브러리를 기준 구현으로 이관한다.
+3. 유물/포션을 이관하고 캐릭터 토큰 애셋을 카드 모음집 기준으로 통일한다.
+4. 파워/인챈트를 이관한다.
+5. 몬스터/인카운터를 이관한다.
+6. 이벤트의 막 필터를 `%` 토큰으로 정리한다.
+7. drawer 동작과 토큰 파싱 회귀 테스트를 추가한다.
