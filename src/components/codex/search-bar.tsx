@@ -2,15 +2,16 @@
 
 import { useRef, useState, useCallback, useMemo } from "react";
 import { COLOR_ALIASES, TYPE_ALIASES } from "@/lib/codex-types";
+import {
+  getCurrentCodexSearchTrigger,
+  getFilteredCodexSearchItems,
+  isKnownCodexSearchToken,
+  isValidCodexSearchToken,
+  type CodexSearchOption,
+  type CodexSearchTriggerGroup,
+} from "@/lib/codex-search";
 
-export interface TriggerGroup {
-  trigger: string;
-  label: string; // display label for hint row
-  items: { value: string; label: string; desc: string }[];
-  // validator: given a raw token value, return the resolved value or null
-  validate?: (val: string) => string | null;
-  chipColor?: string; // tailwind bg/text classes for token chip
-}
+export type TriggerGroup = CodexSearchTriggerGroup;
 
 interface SearchBarProps {
   value: string;
@@ -24,6 +25,7 @@ interface SearchBarProps {
 const CARD_AUTOCOMPLETE: TriggerGroup[] = [
   {
     trigger: "@",
+    type: "color",
     label: "캐릭터",
     items: [
       { value: "아이언클래드", label: "아이언클래드", desc: "Ironclad" },
@@ -42,6 +44,7 @@ const CARD_AUTOCOMPLETE: TriggerGroup[] = [
   },
   {
     trigger: "#",
+    type: "type",
     label: "유형",
     items: [
       { value: "공격", label: "공격", desc: "Attack" },
@@ -53,6 +56,7 @@ const CARD_AUTOCOMPLETE: TriggerGroup[] = [
   },
   {
     trigger: "!",
+    type: "cost",
     label: "비용",
     items: [
       { value: "0", label: "0", desc: "비용 0" },
@@ -75,11 +79,11 @@ export function SearchBar({ value, onChange, inputId, triggerGroups, placeholder
   const [isFocused, setIsFocused] = useState(false);
 
   // Detect current trigger being typed (derived, no effect needed)
-  const currentTrigger = getCurrentTrigger(value, AUTOCOMPLETE_ITEMS);
+  const currentTrigger = getCurrentCodexSearchTrigger(value, AUTOCOMPLETE_ITEMS);
   const autocompleteItems = useMemo(
     () =>
       currentTrigger
-        ? getFilteredItems(currentTrigger.trigger, currentTrigger.query, AUTOCOMPLETE_ITEMS)
+        ? getFilteredCodexSearchItems(currentTrigger.trigger, currentTrigger.query, AUTOCOMPLETE_ITEMS)
         : [],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentTrigger?.trigger, currentTrigger?.query]
@@ -89,9 +93,9 @@ export function SearchBar({ value, onChange, inputId, triggerGroups, placeholder
   const handleInputChange = useCallback(
     (newValue: string) => {
       onChange(newValue);
-      const trigger = getCurrentTrigger(newValue, AUTOCOMPLETE_ITEMS);
+      const trigger = getCurrentCodexSearchTrigger(newValue, AUTOCOMPLETE_ITEMS);
       const items = trigger
-        ? getFilteredItems(trigger.trigger, trigger.query, AUTOCOMPLETE_ITEMS)
+        ? getFilteredCodexSearchItems(trigger.trigger, trigger.query, AUTOCOMPLETE_ITEMS)
         : [];
       setSelectedIndex(0);
       setShowAutocomplete(items.length > 0);
@@ -100,7 +104,7 @@ export function SearchBar({ value, onChange, inputId, triggerGroups, placeholder
   );
 
   const completeItem = useCallback(
-    (item: { value: string }) => {
+    (item: CodexSearchOption) => {
       if (!currentTrigger) return;
       const before = value.slice(0, currentTrigger.startIndex);
       const completed = `${currentTrigger.trigger}${item.value} `;
@@ -161,6 +165,10 @@ export function SearchBar({ value, onChange, inputId, triggerGroups, placeholder
           ref={inputRef}
           id={inputId}
           type="text"
+          inputMode="search"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
           value={value}
           onChange={(e) => handleInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -193,13 +201,12 @@ export function SearchBar({ value, onChange, inputId, triggerGroups, placeholder
       </div>
 
       {/* Token chips */}
-      {tokens.some((t) => AUTOCOMPLETE_ITEMS.some((g) => t.startsWith(g.trigger))) && (
+      {tokens.some((t) => isKnownCodexSearchToken(t, AUTOCOMPLETE_ITEMS)) && (
         <div className="flex flex-wrap gap-1 mt-1">
           {tokens.map((token, i) => {
             const group = AUTOCOMPLETE_ITEMS.find((g) => token.startsWith(g.trigger));
             if (!group) return null;
-            const val = token.slice(group.trigger.length).toLowerCase();
-            const isValid = group.validate ? group.validate(val) !== null : true;
+            const isValid = isValidCodexSearchToken(token, AUTOCOMPLETE_ITEMS);
             return (
               <span
                 key={i}
@@ -221,10 +228,10 @@ export function SearchBar({ value, onChange, inputId, triggerGroups, placeholder
         <div className="absolute top-full left-0 right-0 mt-1 bg-[#1e1e3a] border border-white/10 rounded-lg shadow-xl z-50 overflow-hidden p-2.5 flex flex-col gap-2">
           {AUTOCOMPLETE_ITEMS.map((group) => {
             const { trigger, items } = group;
-            const preview = items.slice(0, trigger === "@" ? 4 : items.length);
+            const preview = items.slice(0, group.maxPreviewItems ?? (trigger === "@" ? 4 : items.length));
             const remaining = items.length - preview.length;
             return (
-              <div key={trigger} className="flex items-center gap-2 flex-wrap">
+              <div key={`${trigger}-${group.label}`} className="flex items-center gap-2 flex-wrap">
                 <button
                   onMouseDown={() => {
                     handleInputChange(trigger);
@@ -239,7 +246,7 @@ export function SearchBar({ value, onChange, inputId, triggerGroups, placeholder
                 </span>
                 {preview.map((item) => (
                   <button
-                    key={item.value}
+                    key={`${item.value}-${item.desc}`}
                     onMouseDown={() => {
                       onChange(`${trigger}${item.value} `);
                       inputRef.current?.focus();
@@ -286,46 +293,5 @@ export function SearchBar({ value, onChange, inputId, triggerGroups, placeholder
         </div>
       )}
     </div>
-  );
-}
-
-function getCurrentTrigger(
-  value: string,
-  groups: TriggerGroup[]
-): { trigger: string; query: string; startIndex: number } | null {
-  // Find the last word being typed
-  const lastSpaceIndex = value.lastIndexOf(" ");
-  const currentWord = value.slice(lastSpaceIndex + 1);
-  const startIndex = lastSpaceIndex + 1;
-
-  for (const { trigger } of groups) {
-    if (currentWord.startsWith(trigger) && currentWord.length > trigger.length) {
-      return {
-        trigger,
-        query: currentWord.slice(trigger.length).toLowerCase(),
-        startIndex,
-      };
-    }
-    // Just typed the trigger character
-    if (currentWord === trigger) {
-      return { trigger, query: "", startIndex };
-    }
-  }
-  return null;
-}
-
-function getFilteredItems(
-  trigger: string,
-  query: string,
-  groups: TriggerGroup[]
-): { value: string; label: string; desc: string }[] {
-  const group = groups.find((g) => g.trigger === trigger);
-  if (!group) return [];
-  if (!query) return group.items;
-  return group.items.filter(
-    (item) =>
-      item.value.toLowerCase().includes(query) ||
-      item.label.toLowerCase().includes(query) ||
-      item.desc.toLowerCase().includes(query)
   );
 }
