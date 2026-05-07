@@ -7,6 +7,8 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 import { useAuth } from "@/hooks/use-auth";
 import { useChemicalPosts } from "@/hooks/use-chemical-posts";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 import { ChemicalXEditor } from "./chemicalx-editor";
 import { PostCard } from "./post-card";
 import { buildEntityMap } from "./post-renderer";
@@ -16,6 +18,8 @@ interface ChemicalXClientProps {
 }
 
 export function ChemicalXClient({ entities }: ChemicalXClientProps) {
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].chemicalX;
   const { userId, ready } = useAuth();
   const { posts, loading, add, remove } = useChemicalPosts(userId);
   const [showAllTooltips, setShowAllTooltips] = useState(false);
@@ -42,14 +46,14 @@ export function ChemicalXClient({ entities }: ChemicalXClientProps) {
       <div className="flex items-center gap-3">
         <Image
           src="/images/sts2/relics/chemical_x.webp"
-          alt="케미컬엑스"
+          alt={copy.title}
           width={32}
           height={32}
           className="object-contain"
         />
         <div>
-          <h1 className="text-xl font-bold text-yellow-400 font-spectral">케미컬X</h1>
-          <span className="text-xs text-gray-500">(구 투입터)</span>
+          <h1 className="text-xl font-bold text-yellow-400 font-spectral">{copy.title}</h1>
+          <span className="text-xs text-gray-500">{copy.legacyName}</span>
         </div>
       </div>
 
@@ -62,16 +66,16 @@ export function ChemicalXClient({ entities }: ChemicalXClientProps) {
       {!loading && (
         <div className="flex items-center justify-between">
           <span className="text-xs text-gray-500">
-            {posts.length}개의 투입
+            {copy.count.replace("{count}", String(posts.length))}
           </span>
           <button
             type="button"
             onClick={() => setShowAllTooltips((v) => !v)}
             className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-yellow-400 transition-colors"
-            title={showAllTooltips ? "툴팁 숨기기" : "전체 툴팁 표시"}
+            title={showAllTooltips ? copy.hideTooltips : copy.showAllTooltipsTitle}
           >
             {showAllTooltips ? <EyeOff size={14} /> : <Eye size={14} />}
-            {showAllTooltips ? "툴팁 숨기기" : "전체 툴팁"}
+            {showAllTooltips ? copy.hideTooltips : copy.showAllTooltips}
           </button>
         </div>
       )}
@@ -81,12 +85,12 @@ export function ChemicalXClient({ entities }: ChemicalXClientProps) {
         <div className="flex flex-col items-center justify-center py-12 gap-3">
           <Image
             src="/images/sts2/powers/knockdown_power.webp"
-            alt="때려눕히기"
+            alt={copy.loading}
             width={48}
             height={48}
             className="object-contain animate-pulse"
           />
-          <span className="text-sm text-gray-500">투입을 불러오는 중...</span>
+          <span className="text-sm text-gray-500">{copy.loading}</span>
         </div>
       ) : (
         <div className="space-y-3">
