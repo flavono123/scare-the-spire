@@ -1,85 +1,147 @@
 ---
 name: codex-pet-sprite
-description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+description: Extract Slay the Spire 2 Spine actors from the local Godot PCK and render them as Codex custom pet spritesheets. Use when Codex needs to make or update a custom pet from STS2 characters, monsters, summons, objects, or other Spine-based game actors; map body animations to Codex pet states; debug pet spritesheet size, frame grid, preview, idle, hover, running, waiting, failed, or review behavior.
 ---
 
 # Codex Pet Sprite
 
-## Overview
+Create Codex custom pets from STS2 Spine assets. Prefer body-only animation first; add VFX only after the body sheet works.
 
-[TODO: 1-2 sentences explaining what this skill enables]
+## Output Contract
 
-## Structuring This Skill
+Codex custom pets live at `${CODEX_HOME:-$HOME/.codex}/pets/<pet-id>/`:
 
-[TODO: Choose the structure that best fits this skill's purpose. Common patterns:
+```json
+{
+  "id": "<pet-id>",
+  "displayName": "<Display Name>",
+  "description": "...",
+  "spritesheetPath": "spritesheet.webp"
+}
+```
 
-**1. Workflow-Based** (best for sequential processes)
-- Works well when there are clear step-by-step procedures
-- Example: DOCX skill with "Workflow Decision Tree" -> "Reading" -> "Creating" -> "Editing"
-- Structure: ## Overview -> ## Workflow Decision Tree -> ## Step 1 -> ## Step 2...
+The spritesheet must be `1536x1872`, WebP or PNG, transparent, arranged as an `8x9` grid of `192x208` cells:
 
-**2. Task-Based** (best for tool collections)
-- Works well when the skill offers different operations/capabilities
-- Example: PDF skill with "Quick Start" -> "Merge PDFs" -> "Split PDFs" -> "Extract Text"
-- Structure: ## Overview -> ## Quick Start -> ## Task Category 1 -> ## Task Category 2...
+| Row | Codex state | Frames | Typical STS2 mapping |
+|---:|---|---:|---|
+| 0 | `idle` | 6 | `idle_loop`, `idle`, `relaxed_loop` |
+| 1 | `running-right` | 8 | `run`, `walk`, `relaxed_loop` |
+| 2 | `running-left` | 8 | same as row 1, mirrored |
+| 3 | `waving` | 4 | `cast`, skill/power animation |
+| 4 | `jumping` | 5 | `attack` hover animation |
+| 5 | `failed` | 8 | `hurt`, `die` fallback |
+| 6 | `waiting` | 6 | `relaxed_loop`, idle fallback |
+| 7 | `running` | 6 | active-work animation, often `cast` |
+| 8 | `review` | 6 | idle or celebratory animation |
 
-**3. Reference/Guidelines** (best for standards or specifications)
-- Works well for brand guidelines, coding standards, or requirements
-- Example: Brand styling with "Brand Guidelines" -> "Colors" -> "Typography" -> "Features"
-- Structure: ## Overview -> ## Guidelines -> ## Specifications -> ## Usage...
+Keep scale constant across all rows to avoid hover/action states shrinking.
 
-**4. Capabilities-Based** (best for integrated systems)
-- Works well when the skill provides multiple interrelated features
-- Example: Product Management with "Core Capabilities" -> numbered capability list
-- Structure: ## Overview -> ## Core Capabilities -> ### 1. Feature -> ### 2. Feature...
+## Workflow
 
-Patterns can be mixed and matched as needed. Most skills combine patterns (e.g., start with task-based, add workflow for complex operations).
+1. Find a Spine actor prefix in the PCK. The prefix has sibling imports:
+   `<prefix>.atlas.import`, `<prefix>.skel.import`, `<prefix>.png.import`.
 
-Delete this entire "Structuring This Skill" section when done - it's just guidance.]
+2. Extract the actor:
 
-## [TODO: Replace with the first main section based on chosen structure]
+```bash
+PYTHONPATH=/tmp/pillow-py:/tmp/texture2ddecoder-py PYTHONDONTWRITEBYTECODE=1 \
+python3 .claude/skills/codex-pet-sprite/scripts/extract-spine-actor.py \
+  --asset animations/characters/defect/defect \
+  --out /tmp/sts2-pets/defect \
+  --name defect
+```
 
-[TODO: Add content here. See examples in existing skills:
-- Code samples for technical skills
-- Decision trees for complex workflows
-- Concrete examples with realistic user requests
-- References to scripts/templates/references as needed]
+Install Python dependencies in a temp path if missing:
 
-## Resources (optional)
+```bash
+python3 -m pip install --target /tmp/pillow-py Pillow
+python3 -m pip install --target /tmp/texture2ddecoder-py texture2ddecoder
+```
 
-Create only the resource directories this skill actually needs. Delete this section if no resources are required.
+3. Prepare Node render dependencies in a temp project, never in the repo unless explicitly asked:
 
-### scripts/
-Executable code (Python/Bash/etc.) that can be run directly to perform specific operations.
+```bash
+mkdir -p /tmp/codex-pet-node
+cd /tmp/codex-pet-node
+npm init -y
+npm install @esotericsoftware/spine-canvas @napi-rs/canvas
+```
 
-**Examples from other skills:**
-- PDF skill: `fill_fillable_fields.py`, `extract_form_field_info.py` - utilities for PDF manipulation
-- DOCX skill: `document.py`, `utilities.py` - Python modules for document processing
+4. Render and install the pet:
 
-**Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
+```bash
+cd /tmp/codex-pet-node
+node /Users/hansuk.hong/P/scare-the-spire/.claude/skills/codex-pet-sprite/scripts/render-codex-pet.js \
+  --input /tmp/sts2-pets/defect \
+  --pet-id defect-demo \
+  --display-name "Defect Demo" \
+  --description "STS2 Defect body-only Spine animation frames mapped to Codex pet states."
+```
 
-**Note:** Scripts may be executed without loading into context, but can still be read by Codex for patching or environment adjustments.
+5. Inspect:
 
-### references/
-Documentation and reference material intended to be loaded into context to inform Codex's process and thinking.
+- `${CODEX_HOME:-$HOME/.codex}/pet-builds/<pet-id>/state-rows-preview.png`
+- `${CODEX_HOME:-$HOME/.codex}/pet-builds/<pet-id>/idle-row-preview.png`
+- `${CODEX_HOME:-$HOME/.codex}/pet-builds/<pet-id>/build-info.json`
+- `${CODEX_HOME:-$HOME/.codex}/pets/<pet-id>/spritesheet.webp`
 
-**Examples from other skills:**
-- Product management: `communication.md`, `context_building.md` - detailed workflow guides
-- BigQuery: API reference documentation and query examples
-- Finance: Schema documentation, company policies
+6. Validate:
 
-**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that Codex should reference while working.
+```bash
+magick identify "${CODEX_HOME:-$HOME/.codex}/pets/<pet-id>/spritesheet.webp"
+```
 
-### assets/
-Files not intended to be loaded into context, but rather used within the output Codex produces.
+Expect `WEBP 1536x1872` with alpha.
 
-**Examples from other skills:**
-- Brand styling: PowerPoint template files (.pptx), logo files
-- Frontend builder: HTML/React boilerplate project directories
-- Typography: Font files (.ttf, .woff2)
+## Actor Discovery
 
-**Appropriate for:** Templates, boilerplate code, document templates, images, icons, fonts, or any files meant to be copied or used in the final output.
+Use the repo PCK helper to list candidate actor prefixes:
 
----
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 - <<'PY'
+import sys
+sys.path.insert(0, "scripts")
+from lib.pck import PCKReader, default_pck_path
+with PCKReader(default_pck_path()) as r:
+    prefixes = sorted(
+        p[:-len(".skel.import")]
+        for p in r.entries
+        if p.endswith(".skel.import")
+        and (
+            p.startswith("animations/characters/")
+            or p.startswith("animations/monsters/")
+            or p.startswith("animations/vfx/")
+            or p.startswith("animations/objects/")
+        )
+    )
+    for prefix in prefixes:
+        if f"{prefix}.atlas.import" in r.entries and f"{prefix}.png.import" in r.entries:
+            print(prefix)
+PY
+```
 
-**Not every skill requires all three types of resources.**
+If the prefix only has `.skel.import` but no matching `.atlas.import` or `.png.import`, it is not directly renderable with the bundled helper.
+
+## Profiles
+
+Use a JSON profile when the automatic animation mapping is poor:
+
+```json
+{
+  "hiddenSlotPatterns": ["^binder_", "^blender-"],
+  "auxLoops": ["_ignore/cloth_loop", "_ignore/glow_loop"],
+  "rows": [
+    { "state": "idle", "animation": "idle_loop", "loop": true, "times": [1.0, 1.1, 1.2, 1.3, 1.4, 1.5] },
+    { "state": "jumping", "animation": "attack", "loop": false }
+  ]
+}
+```
+
+Render with `--profile /path/to/profile.json`.
+
+## Notes
+
+- Body-only is the default approach. VFX scenes (`scenes/vfx/...`) are separate Godot compositions and should be treated as a later compositing task.
+- Some Spine exports include effect slots inside the skeleton. Hide those with `--hide-slot-regex` or `hiddenSlotPatterns`.
+- Built-in Codex pet animation is driven by sprite-grid row/column CSS, not animated WebP frames.
+- Hover triggers Codex `jumping`; active work triggers `running`; waiting states trigger `waiting`; errors trigger `failed`; review/success states trigger `review`.
