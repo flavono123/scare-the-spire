@@ -187,7 +187,7 @@ function timesFor(animation, frames, loop, state) {
 function buildDefaultRows(skeletonData) {
   const pick = (patterns) => findAnimation(skeletonData, patterns);
   const idle = pick(["^idle_loop$", "^idle$", "idle", "^relaxed_loop$", "loop"]);
-  const relaxed = pick(["^relaxed_loop$", "relaxed", "idle", "loop"]) || idle;
+  const relaxed = pick(["^relaxed_loop$", "relaxed", "^idle_loop$", "^idle$", "idle", "loop"]) || idle;
   const cast = pick(["^cast$", "cast", "skill", "power", "spell"]) || idle;
   const attack = pick(["^attack$", "attack", "strike", "hit"]) || cast || idle;
   const hurt = pick(["^hurt$", "hurt", "hit", "damage", "^die$"]) || idle;
