@@ -6,6 +6,9 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import {
   GAME_LOCALE_NATIVE_LABELS,
+  GAME_LOCALE_COOKIE,
+  LOCALE_COOKIE_MAX_AGE,
+  SERVICE_LOCALE_COOKIE,
   getGameLocaleFromSearch,
   getServiceLocaleForGameLocale,
   getServiceLocaleFromPath,
@@ -376,6 +379,17 @@ function LocaleCanonicalizer({
   return null;
 }
 
+function LocaleCookieSync({ gameLocale }: { gameLocale: GameLocale }) {
+  useEffect(() => {
+    const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
+    const cookieSuffix = `Max-Age=${LOCALE_COOKIE_MAX_AGE}; Path=/; SameSite=Lax`;
+    document.cookie = `${SERVICE_LOCALE_COOKIE}=${serviceLocale}; ${cookieSuffix}`;
+    document.cookie = `${GAME_LOCALE_COOKIE}=${gameLocale}; ${cookieSuffix}`;
+  }, [gameLocale]);
+
+  return null;
+}
+
 // --- Main navbar ---
 
 export function SiteNavbar() {
@@ -391,6 +405,7 @@ export function SiteNavbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
       <LocaleCanonicalizer serviceLocale={serviceLocale} gameLocale={gameLocale} />
+      <LocaleCookieSync gameLocale={gameLocale} />
       <div className="mx-auto flex items-center justify-between px-4 h-12">
         {/* Left: brand + services */}
         <div className="flex items-center gap-4">
