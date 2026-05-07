@@ -5,6 +5,7 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleForGameLocale,
 } from "@/lib/i18n";
+import { getChemicalXPlaceholder } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 
 export async function generateMetadata({
@@ -25,11 +26,14 @@ export default async function ChemicalXPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
-  const entities = await loadAllEntities({ gameLocale });
+  const [entities, placeholder] = await Promise.all([
+    loadAllEntities({ gameLocale }),
+    getChemicalXPlaceholder(gameLocale),
+  ]);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <ChemicalXClient entities={entities} />
+      <ChemicalXClient entities={entities} placeholder={placeholder} />
     </div>
   );
 }

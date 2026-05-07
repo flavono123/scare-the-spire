@@ -15,9 +15,10 @@ import { buildEntityMap } from "./post-renderer";
 
 interface ChemicalXClientProps {
   entities: EntityInfo[];
+  placeholder: string;
 }
 
-export function ChemicalXClient({ entities }: ChemicalXClientProps) {
+export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const { userId, ready } = useAuth();
@@ -59,7 +60,7 @@ export function ChemicalXClient({ entities }: ChemicalXClientProps) {
 
       {/* Editor */}
       {ready && (
-        <ChemicalXEditor entities={entities} onSubmit={handleSubmit} />
+        <ChemicalXEditor entities={entities} placeholder={placeholder} onSubmit={handleSubmit} />
       )}
 
       {/* Toolbar */}

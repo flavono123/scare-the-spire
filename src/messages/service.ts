@@ -28,7 +28,6 @@ export const serviceMessages = {
       title: "케미컬X",
       legacyName: "(구 투입터)",
       defaultNickname: "익명의 투입터리안",
-      placeholder: "오, 이 차는 무례한 사람들에게 내어지는 차입니다...",
       submit: "투입",
       keywordTip: {
         label: "키워드 만들기 예)",
@@ -402,7 +401,6 @@ export const serviceMessages = {
       title: "Chemical X",
       legacyName: "(formerly Tuipter)",
       defaultNickname: "Anonymous Insertweetian",
-      placeholder: "Oh, this tea is for rude people...",
       submit: "Insertweet",
       keywordTip: {
         label: "Keyword example:",

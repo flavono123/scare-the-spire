@@ -23,10 +23,11 @@ function getSavedNickname(defaultNickname: string): string {
 
 interface ChemicalXEditorProps {
   entities: EntityInfo[];
+  placeholder: string;
   onSubmit: (blocks: PostBlock[], nickname: string) => Promise<void>;
 }
 
-export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
+export function ChemicalXEditor({ entities, placeholder, onSubmit }: ChemicalXEditorProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const [nickname, setNickname] = useState(() => getSavedNickname(copy.defaultNickname));
@@ -57,7 +58,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
         <RichContentEditor
           entities={entities}
           onSubmit={handleSubmit}
-          placeholder={copy.placeholder}
+          placeholder={placeholder}
           draftKey="sts-chemicalx-draft"
           submitLabel={copy.submit}
           submitIconSrc="/images/relics/inserter.webp"
