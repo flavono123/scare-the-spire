@@ -52,6 +52,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
           submitLabel={copy.submit}
           submitIconSrc="/images/relics/inserter.webp"
           showKeywordTip
+          keywordTip={copy.keywordTip}
         />
       </div>
     </div>
