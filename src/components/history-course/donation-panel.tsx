@@ -12,6 +12,8 @@ import {
 import { supabaseEnabled } from "@/lib/supabase";
 import type { ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 
 interface Props {
   runId: string;
@@ -21,6 +23,7 @@ interface Props {
 }
 
 export function DonationPanel({ runId, run, raw, source }: Props) {
+  const copy = serviceMessages[useServiceLocale()].historyCourse.donation;
   const { userId, ready } = useAuth();
   // We know it's donated if we loaded it from Supabase. Otherwise we
   // don't know yet — null means "checking", false/true after lookup.
@@ -101,9 +104,7 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
   const onUndo = async () => {
     if (!isOwn) return;
     if (
-      !window.confirm(
-        "이 런의 익명 공유를 취소합니다. URL은 더 이상 다른 기기에서 열리지 않습니다.",
-      )
+      !window.confirm(copy.undoConfirm)
     ) {
       return;
     }
@@ -115,7 +116,7 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
       setDonated(false);
       setIsOwn(false);
     } else {
-      setError("공유 취소에 실패했습니다.");
+      setError(copy.undoFailed);
     }
   };
 
@@ -134,8 +135,8 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
             <Check className="h-4 w-4 shrink-0 text-emerald-300" aria-hidden />
             <p className="flex-1 text-xs leading-5 text-zinc-300">
               {source === "donated"
-                ? "공유 중인 런 — 이 URL로 누구나 접근할 수 있습니다."
-                : "이미 익명으로 공유된 런입니다. 다른 기기에서도 같은 URL로 열립니다."}
+                ? copy.publicOwn
+                : copy.publicOther}
             </p>
             <button
               type="button"
@@ -149,11 +150,11 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
             >
               {copied ? (
                 <>
-                  <Check className="h-3 w-3" aria-hidden /> 복사됨
+                  <Check className="h-3 w-3" aria-hidden /> {copy.copied}
                 </>
               ) : (
                 <>
-                  <Copy className="h-3 w-3" aria-hidden /> URL 복사
+                  <Copy className="h-3 w-3" aria-hidden /> {copy.copyUrl}
                 </>
               )}
             </button>
@@ -169,7 +170,7 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
                 )}
               >
                 <Undo2 className="h-3 w-3" aria-hidden />
-                {busy ? "취소 중…" : "공유 취소"}
+                {busy ? copy.undoing : copy.unshare}
               </button>
             )}
           </>
@@ -177,8 +178,7 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
           <>
             <Share2 className="h-4 w-4 shrink-0 text-zinc-400" aria-hidden />
             <p className="flex-1 text-xs leading-5 text-zinc-300">
-              본인 브라우저에만 저장된 런입니다. 익명으로 공유하면 누구나 이 URL로
-              열 수 있어요. 시드/카드/맵만 들어있고 개인정보는 포함되지 않습니다.
+              {copy.localInfo}
             </p>
             <button
               type="button"
@@ -191,7 +191,7 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
               )}
             >
               <Share2 className="h-3 w-3" aria-hidden />
-              {busy ? "공유 중…" : "익명으로 공유"}
+              {busy ? copy.sharing : copy.share}
             </button>
           </>
         )}

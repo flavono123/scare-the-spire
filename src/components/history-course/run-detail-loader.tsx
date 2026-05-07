@@ -10,6 +10,8 @@ import { getDonatedRun } from "@/lib/run-donation";
 import { loadRun, saveRun } from "@/lib/run-store";
 import { parseRunRouteSlug } from "@/lib/sts2-run-hash";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 
 interface Props {
   runId: string;
@@ -25,6 +27,7 @@ function stripCardId(id: string): string {
 }
 
 export function RunDetailLoader({ runId, allCards, allRelics }: Props) {
+  const copy = serviceMessages[useServiceLocale()].historyCourse.detail;
   const [run, setRun] = useState<ReplayRun | null>(null);
   const [raw, setRaw] = useState<string | null>(null);
   const [source, setSource] = useState<Source | null>(null);
@@ -86,8 +89,9 @@ export function RunDetailLoader({ runId, allCards, allRelics }: Props) {
   if (status === "invalid") {
     return (
       <EmptyState
-        title="올바르지 않은 주소"
-        message="이 URL은 저장된 런 형식이 아닙니다."
+        title={copy.invalidTitle}
+        message={copy.invalidMessage}
+        backLabel={copy.backToIndex}
       />
     );
   }
@@ -95,7 +99,7 @@ export function RunDetailLoader({ runId, allCards, allRelics }: Props) {
   if (status === "loading") {
     return (
       <div className="mx-auto max-w-md px-4 py-20 text-center text-sm text-zinc-500">
-        런을 불러오는 중…
+        {copy.loading}
       </div>
     );
   }
@@ -103,8 +107,9 @@ export function RunDetailLoader({ runId, allCards, allRelics }: Props) {
   if (status === "missing" || !run) {
     return (
       <EmptyState
-        title="런을 찾을 수 없습니다"
-        message="이 브라우저에 저장된 런 중에 일치하는 것이 없습니다. 처음 올린 브라우저에서만 접근 가능하며, 공유 기능은 곧 추가됩니다."
+        title={copy.missingTitle}
+        message={copy.missingMessage}
+        backLabel={copy.backToIndex}
       />
     );
   }
@@ -144,7 +149,15 @@ export function RunDetailLoader({ runId, allCards, allRelics }: Props) {
   );
 }
 
-function EmptyState({ title, message }: { title: string; message: string }) {
+function EmptyState({
+  title,
+  message,
+  backLabel,
+}: {
+  title: string;
+  message: string;
+  backLabel: string;
+}) {
   return (
     <div className="mx-auto max-w-md px-4 py-20 text-center">
       <h1 className="text-xl font-bold text-zinc-200">{title}</h1>
@@ -153,7 +166,7 @@ function EmptyState({ title, message }: { title: string; message: string }) {
         href="/history-course"
         className="mt-6 inline-block rounded-md bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-100 ring-1 ring-zinc-700 hover:bg-zinc-700"
       >
-        역사 강의서 처음으로
+        {backLabel}
       </Link>
     </div>
   );
