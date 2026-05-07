@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Pet Sprite"
+  short_description: "Extract STS2 Spine actors and render Codex pet spritesheets."
+  default_prompt: "Create a Codex custom pet spritesheet from a Slay the Spire 2 character, monster, or object Spine asset."
