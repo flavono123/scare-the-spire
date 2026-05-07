@@ -14,14 +14,12 @@ import type { PatchType } from "@/lib/types";
 const PATCH_COPY: Record<ServiceLocale, {
   title: string;
   description: string;
-  subtitle: string;
   balance: string;
   types: Record<PatchType, string>;
 }> = {
   ko: {
     title: "패치 노트",
     description: "슬레이 더 스파이어 2 전체 패치 히스토리와 밸런스 변경 이력",
-    subtitle: "슬레이 더 스파이어 2 — 전체 패치 히스토리",
     balance: "밸런스",
     types: {
       release: "출시",
@@ -33,7 +31,6 @@ const PATCH_COPY: Record<ServiceLocale, {
   en: {
     title: "Patch Notes",
     description: "Full Slay the Spire 2 patch history and balance changes.",
-    subtitle: "Slay the Spire 2 — full patch history",
     balance: "Balance",
     types: {
       release: "Release",
@@ -81,9 +78,6 @@ export default async function PatchesPage({
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
       <h1 className="text-2xl font-bold">{copy.title}</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {copy.subtitle}
-      </p>
 
       <div className="mt-6 space-y-3">
         {sorted.map((patch) => {
