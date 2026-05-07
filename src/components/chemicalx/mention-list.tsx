@@ -8,18 +8,23 @@ import {
 import Image from "@/components/ui/static-image";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { getCharacterColor } from "@/lib/codex-types";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 
-const ENTITY_TYPE_LABELS: Record<EntityType, string> = {
-  card: "카드",
-  relic: "유물",
-  potion: "포션",
-  power: "파워",
-  enchantment: "인챈트",
-  event: "이벤트",
-  monster: "몬스터",
-  encounter: "인카운터",
-  ancient: "고대의 존재",
-};
+function getEntityTypeLabels(serviceLocale: ReturnType<typeof useServiceLocale>): Record<EntityType, string> {
+  const codex = serviceMessages[serviceLocale].codex;
+  return {
+    card: codex.cards,
+    relic: codex.relics,
+    potion: codex.potions,
+    power: codex.powers,
+    enchantment: codex.enchantments,
+    event: codex.events,
+    monster: codex.monsters,
+    encounter: codex.encounters,
+    ancient: codex.ancients,
+  };
+}
 
 export interface MentionListRef {
   onKeyDown: (props: { event: KeyboardEvent }) => boolean;
@@ -32,6 +37,8 @@ interface MentionListProps {
 
 export const MentionList = forwardRef<MentionListRef, MentionListProps>(
   ({ items, command }, ref) => {
+    const serviceLocale = useServiceLocale();
+    const entityTypeLabels = getEntityTypeLabels(serviceLocale);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const safeSelectedIndex =
       items.length === 0
@@ -105,7 +112,7 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
                 </span>
               )}
               <span className="ml-auto text-[10px] text-gray-500 shrink-0">
-                {ENTITY_TYPE_LABELS[item.type]}
+                {entityTypeLabels[item.type]}
               </span>
             </button>
           );
