@@ -144,7 +144,11 @@ export function RunCard({
               bakes the flame frame; no outline overlay. Ascension flame
               badge sits at the bottom-right of the portrait, matching
               the in-game topbar's CharacterChip. */}
-          <CharacterIcon src={portraitSrc} ascension={ascension} />
+          <CharacterIcon
+            src={portraitSrc}
+            ascension={ascension}
+            ascensionLabel={copy.ascension.replace("{count}", String(ascension))}
+          />
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
@@ -227,9 +231,11 @@ export function RunCard({
 function CharacterIcon({
   src,
   ascension,
+  ascensionLabel,
 }: {
   src: string;
   ascension: number;
+  ascensionLabel: string;
 }) {
   return (
     <div className="relative h-14 w-14 shrink-0">
@@ -243,7 +249,7 @@ function CharacterIcon({
       {ascension > 0 && (
         <span
           className="pointer-events-none absolute -bottom-1 -right-1 flex h-6 w-6 items-end justify-center"
-          aria-label={copy.ascension.replace("{count}", String(ascension))}
+          aria-label={ascensionLabel}
         >
           <Image
             src="/images/sts2/ui/topbar/top_bar_ascension.png"
