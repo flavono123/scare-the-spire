@@ -78,6 +78,8 @@ node /Users/hansuk.hong/P/scare-the-spire/.claude/skills/codex-pet-sprite/script
   --description "STS2 Defect body-only Spine animation frames mapped to Codex pet states."
 ```
 
+Use `--fit-mode height` for humanoids whose attack or weapon frames make the strict full-bounds fit too small. This keeps all rows at one scale but allows extreme weapon arcs to clip instead of shrinking the whole pet.
+
 5. Inspect:
 
 - `${CODEX_HOME:-$HOME/.codex}/pet-builds/<pet-id>/state-rows-preview.png`
@@ -128,6 +130,7 @@ Use a JSON profile when the automatic animation mapping is poor:
 
 ```json
 {
+  "fitMode": "height",
   "hiddenSlotPatterns": ["^binder_", "^blender-"],
   "auxLoops": ["_ignore/cloth_loop", "_ignore/glow_loop"],
   "rows": [
