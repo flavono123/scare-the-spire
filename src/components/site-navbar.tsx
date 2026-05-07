@@ -130,7 +130,8 @@ function NavIconLink({
           alt={label}
           width={iconSize}
           height={iconSize}
-          className={`h-[18px] w-[18px] object-contain brightness-90 hover:brightness-110 transition-all sm:h-auto sm:w-auto ${iconClassName ?? ""}`}
+          className={`h-[18px] w-[18px] object-contain brightness-90 hover:brightness-110 transition-all sm:h-[var(--nav-icon-size)] sm:w-[var(--nav-icon-size)] ${iconClassName ?? ""}`}
+          style={{ "--nav-icon-size": `${iconSize}px` } as React.CSSProperties}
         />
       </Tag>
       {hovered && (
