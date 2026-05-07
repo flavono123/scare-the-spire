@@ -4,10 +4,10 @@
  * Run from a temp Node project that has:
  *   npm install @esotericsoftware/spine-canvas @napi-rs/canvas
  */
-const fs = require("fs");
-const path = require("path");
-const { createRequire } = require("module");
-const { spawnSync } = require("child_process");
+import fs from "node:fs";
+import path from "node:path";
+import { spawnSync } from "node:child_process";
+import { createRequire } from "node:module";
 
 const runtimeRequire = createRequire(path.join(process.cwd(), "package.json"));
 
@@ -68,7 +68,7 @@ const DEFAULT_AUX_LOOPS = ["_ignore/cloth_loop", "_ignore/glow_loop"];
 
 function usage() {
   console.log(`Usage:
-  render-codex-pet.js --input DIR --pet-id ID --display-name NAME [options]
+  render-codex-pet.mjs --input DIR --pet-id ID --display-name NAME [options]
 
 Options:
   --input DIR                  Directory containing one .atlas, .skel, and .png
@@ -335,7 +335,6 @@ function drawPose(
   row,
 ) {
   const skeleton = makePose(skeletonData, spec, time, auxLoops, hideSlotPatterns, skinName);
-  const width = rowBounds.maxX - rowBounds.minX;
   const height = rowBounds.maxY - rowBounds.minY;
   const centerX = (rowBounds.minX + rowBounds.maxX) / 2;
   const top = (CELL_H - height * scale) / 2;

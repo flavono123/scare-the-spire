@@ -71,7 +71,7 @@ npm install @esotericsoftware/spine-canvas @napi-rs/canvas
 
 ```bash
 cd /tmp/codex-pet-node
-node /Users/hansuk.hong/P/scare-the-spire/.claude/skills/codex-pet-sprite/scripts/render-codex-pet.js \
+node /Users/hansuk.hong/P/scare-the-spire/.claude/skills/codex-pet-sprite/scripts/render-codex-pet.mjs \
   --input /tmp/sts2-pets/defect \
   --pet-id defect-demo \
   --display-name "Defect Demo" \
