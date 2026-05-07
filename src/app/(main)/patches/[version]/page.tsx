@@ -245,14 +245,19 @@ async function getPatchGameHeadingLabels(gameLocale: GameLocale): Promise<Record
   }
 
   const eventTarget = gameHoverTips["ROOM_EVENT.title"] ?? gameMap["LEGEND_EVENT.hoverTip.title"];
+  const eventsHeadingTarget = gameLocale === "eng" ? "Events" : eventTarget;
+  for (const source of [
+    "Events",
+    "이벤트",
+  ]) {
+    addPatchHeadingLabel(labels, source, eventsHeadingTarget);
+  }
   for (const source of [
     engHoverTips["ROOM_EVENT.title"],
     korHoverTips["ROOM_EVENT.title"],
     engMap["LEGEND_EVENT.hoverTip.title"],
     korMap["LEGEND_EVENT.hoverTip.title"],
     "Event",
-    "Events",
-    "이벤트",
   ]) {
     addPatchHeadingLabel(labels, source, eventTarget);
   }
