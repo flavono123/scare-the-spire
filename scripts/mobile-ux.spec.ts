@@ -12,7 +12,7 @@ test.describe("mobile codex drawer", () => {
     await openFilters.click();
 
     await expect(page.getByRole("button", { name: /필터 닫기|Close filters/ })).toBeVisible();
-    await expect(page.getByText(/소속|Affiliation/).first()).toBeVisible();
+    await expect(page.getByText(/캐릭터|Character/).first()).toBeVisible();
     await expect.poll(() => page.evaluate(() => document.body.style.position)).toBe("fixed");
     await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe("hidden");
 

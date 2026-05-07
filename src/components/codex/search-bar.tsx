@@ -26,7 +26,7 @@ const CARD_AUTOCOMPLETE: TriggerGroup[] = [
   {
     trigger: "@",
     type: "color",
-    label: "소속",
+    label: "캐릭터",
     items: [
       { value: "아이언클래드", label: "아이언클래드", desc: "Ironclad" },
       { value: "사일런트", label: "사일런트", desc: "Silent" },
