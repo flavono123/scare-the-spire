@@ -85,6 +85,8 @@ Options:
   --skin NAME                  Spine skin to combine with the default skin
   --fit-mode MODE              strict or height. Default: strict
   --scale-multiplier NUMBER    Multiply final render scale. Default: 1
+  --offset-x PX                Shift rendered frames horizontally in sheet pixels
+  --offset-y PX                Shift rendered frames vertically in sheet pixels
 `);
 }
 
@@ -127,6 +129,16 @@ function expandHome(value) {
 function requireArg(args, key) {
   if (!args[key]) throw new Error(`--${key} is required`);
   return args[key];
+}
+
+function numberOption(args, profile, argKey, profileKey, fallback, options = {}) {
+  const rawValue = args[argKey] ?? profile[profileKey] ?? fallback;
+  const value = Number(rawValue);
+  if (!Number.isFinite(value) || (options.positive && value <= 0)) {
+    const constraint = options.positive ? "a positive number" : "a finite number";
+    throw new Error(`--${argKey} must be ${constraint}`);
+  }
+  return value;
 }
 
 function findOne(inputDir, ext) {
@@ -307,14 +319,28 @@ function boundsFor(skeletonData, specs, auxLoops, hideSlotPatterns, skinName) {
   return { global, byRow };
 }
 
-function drawPose(ctx, renderer, skeletonData, spec, time, scale, rowBounds, auxLoops, hideSlotPatterns, skinName, col, row) {
+function drawPose(
+  ctx,
+  renderer,
+  skeletonData,
+  spec,
+  time,
+  scale,
+  rowBounds,
+  auxLoops,
+  hideSlotPatterns,
+  skinName,
+  renderOffset,
+  col,
+  row,
+) {
   const skeleton = makePose(skeletonData, spec, time, auxLoops, hideSlotPatterns, skinName);
   const width = rowBounds.maxX - rowBounds.minX;
   const height = rowBounds.maxY - rowBounds.minY;
   const centerX = (rowBounds.minX + rowBounds.maxX) / 2;
   const top = (CELL_H - height * scale) / 2;
-  const tx = col * CELL_W + CELL_W / 2;
-  const ty = row * CELL_H + top + rowBounds.maxY * scale;
+  const tx = col * CELL_W + CELL_W / 2 + renderOffset.x;
+  const ty = row * CELL_H + top + rowBounds.maxY * scale + renderOffset.y;
 
   ctx.save();
   ctx.translate(tx, ty);
@@ -368,10 +394,11 @@ async function main() {
   if (!["strict", "height"].includes(fitMode)) {
     throw new Error("--fit-mode must be strict or height");
   }
-  const scaleMultiplier = Number(args["scale-multiplier"] || profile.scaleMultiplier || 1);
-  if (!Number.isFinite(scaleMultiplier) || scaleMultiplier <= 0) {
-    throw new Error("--scale-multiplier must be a positive number");
-  }
+  const scaleMultiplier = numberOption(args, profile, "scale-multiplier", "scaleMultiplier", 1, { positive: true });
+  const renderOffset = {
+    x: numberOption(args, profile, "offset-x", "offsetX", 0),
+    y: numberOption(args, profile, "offset-y", "offsetY", 0),
+  };
   const skinName = args.skin || profile.skin || null;
   const buildDir = path.join(buildRoot, petId);
   const petDir = path.join(petsRoot, petId);
@@ -422,7 +449,7 @@ async function main() {
   for (const spec of rows) {
     const rowBounds = byRow.get(spec.row);
     for (let col = 0; col < spec.frames; col += 1) {
-      drawPose(ctx, renderer, skeletonData, spec, spec.times[col], scale, rowBounds, auxLoops, hidePatterns, skinName, col, spec.row);
+      drawPose(ctx, renderer, skeletonData, spec, spec.times[col], scale, rowBounds, auxLoops, hidePatterns, skinName, renderOffset, col, spec.row);
     }
   }
 
@@ -461,6 +488,7 @@ async function main() {
     baseScale,
     scale,
     scaleMultiplier,
+    renderOffset,
     fitMode,
     globalBounds: global,
     hiddenSlotPatterns: hidePatterns.map((pattern) => pattern.source),
