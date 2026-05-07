@@ -331,7 +331,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
       sidebar={(
         <>
         {/* Character/Pool Filters */}
-        <FilterSection trigger="@" label="소속">
+        <FilterSection trigger="@" label={serviceText.labels.affiliation}>
           <div className="grid grid-cols-5 gap-1.5">
             {characterFilters.map((cf) => (
               <IconFilterButton
@@ -604,7 +604,7 @@ function getPotionTriggers(
     {
       trigger: "@",
       type: "pool",
-      label: "소속",
+      label: serviceText.labels.affiliation,
       items: [
         { value: "ironclad", label: serviceText.labels.pools.ironclad, desc: "Ironclad" },
         { value: "silent", label: serviceText.labels.pools.silent, desc: "Silent" },

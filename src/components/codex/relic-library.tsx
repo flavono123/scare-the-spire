@@ -292,7 +292,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
       isMobile={isMobile}
       sidebar={(
         <>
-        <FilterSection trigger="@" label="소속">
+        <FilterSection trigger="@" label={serviceText.labels.affiliation}>
           <div className="grid grid-cols-5 gap-1.5">
             {characterFilters.map((cf) => (
               <IconFilterButton
@@ -460,7 +460,7 @@ function getRelicTriggers(
     {
       trigger: "@",
       type: "pool",
-      label: "소속",
+      label: serviceText.labels.affiliation,
       maxPreviewItems: 4,
       items: [
         { value: "shared", label: poolLabels.shared, desc: "Shared" },

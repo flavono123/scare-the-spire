@@ -204,7 +204,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       {
         trigger: "@",
         type: "color",
-        label: "소속",
+        label: serviceText.labels.affiliation,
         maxPreviewItems: 4,
         items: [
           { value: "ironclad", label: serviceText.labels.pools.ironclad, desc: "Ironclad" },
@@ -613,7 +613,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       sidebar={(
         <>
         {/* Character + Extra Filters (5 per row, 2 rows) */}
-        <FilterSection trigger="@" label="소속" sortDir={sortDirs.color} onSortToggle={() => toggleSort("color")} sortTitle={serviceText.common.sortButtonTitle}>
+        <FilterSection trigger="@" label={serviceText.labels.affiliation} sortDir={sortDirs.color} onSortToggle={() => toggleSort("color")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="grid grid-cols-5 gap-1.5">
             {characterFilters.map((cf) => (
               <IconFilterButton

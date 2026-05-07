@@ -159,6 +159,7 @@ export const serviceMessages = {
         powers: "개",
         enchantments: "개",
         encounters: "건",
+        affiliation: "소속",
         cardTypes: {
           공격: "공격",
           스킬: "스킬",
@@ -610,6 +611,7 @@ export const serviceMessages = {
         powers: "powers",
         enchantments: "enchantments",
         encounters: "encounters",
+        affiliation: "Affiliation",
         cardTypes: {
           공격: "Attack",
           스킬: "Skill",
