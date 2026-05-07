@@ -6,7 +6,7 @@ const LANTERN_KEY_DIRECT_TERM_BY_LOCALE: Partial<Record<GameLocale, string>> = {
   deu: "Schlüssel",
   eng: "key",
   jpn: "鍵",
-  kor: "열쇠를",
+  kor: "열쇠",
   pol: "klucza",
   ptb: "chave",
   spa: "llave",
@@ -63,6 +63,10 @@ function replaceLanternKeyTerm(
   gameLocale: GameLocale,
   runHistoryLabel: string,
 ): string {
+  if (gameLocale === "kor" && quote.includes("열쇠를")) {
+    return quote.replace("열쇠를", `${runHistoryLabel}을`);
+  }
+
   const keyTerm = LANTERN_KEY_DIRECT_TERM_BY_LOCALE[gameLocale];
   if (keyTerm && quote.includes(keyTerm)) {
     return quote.replace(keyTerm, runHistoryLabel);
