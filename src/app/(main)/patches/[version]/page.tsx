@@ -69,12 +69,58 @@ const PATCH_ENTITY_ALIASES_EN: Record<string, string[]> = {
   ASSASSIN_RUBY_RAIDER: ["Ruby Raider Assassin"],
 };
 
+const CHARACTER_HEADING_COLORS = {
+  IRONCLAD: "red",
+  SILENT: "green",
+  REGENT: "orange",
+  NECROBINDER: "pink",
+  DEFECT: "aqua",
+} as const;
+
 function ancientRelicAliases(ownerName: string, relicName: string): string[] {
   if (!ownerName || !relicName) return [];
   if (relicName.toLowerCase().startsWith(`${ownerName.toLowerCase()}'s `)) {
     return [];
   }
   return [`${ownerName}'s ${relicName}`];
+}
+
+function patchLabelKey(text: string): string {
+  return text
+    .replace(/\[\/?[a-z_]+(?:=[^\]]+)?(?::[^\]]+)?\]/gi, "")
+    .replace(/\*\*/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function stripGameMarkup(text: string | undefined): string {
+  return (text ?? "")
+    .replace(/\[\/?[a-z_]+(?:=[^\]]+)?(?::[^\]]+)?\]/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function colorTag(color: string, label: string): string {
+  return `[${color}]${label}[/${color}]`;
+}
+
+function addPatchHeadingLabel(
+  labels: Record<string, string>,
+  source: string | undefined,
+  target: string | undefined,
+) {
+  if (!source || !target) return;
+  const key = patchLabelKey(source);
+  if (!key) return;
+  labels[key] = target;
+}
+
+function englishTitleAliases(source: string | undefined): string[] {
+  if (!source) return [];
+  const trimmed = source.trim();
+  const withoutArticle = trimmed.replace(/^the\s+/i, "").trim();
+  return withoutArticle && withoutArticle !== trimmed ? [trimmed, withoutArticle] : [trimmed];
 }
 
 function isTitleLocalizationKey(key: string): boolean {
@@ -119,6 +165,149 @@ async function getPatchGameKeywordLabels(gameLocale: GameLocale): Promise<Record
   return labels;
 }
 
+async function getPatchGameHeadingLabels(gameLocale: GameLocale): Promise<Record<string, string>> {
+  const [
+    engCharacters,
+    korCharacters,
+    gameCharacters,
+    engMap,
+    korMap,
+    gameMap,
+    engHoverTips,
+    korHoverTips,
+    gameHoverTips,
+    engEpochs,
+    korEpochs,
+    gameEpochs,
+    engGameplay,
+    korGameplay,
+    gameGameplay,
+    engMainMenu,
+    korMainMenu,
+    gameMainMenu,
+  ] = await Promise.all([
+    readGameLocalizationTable("eng", "characters"),
+    readGameLocalizationTable("kor", "characters"),
+    readGameLocalizationTable(gameLocale, "characters"),
+    readGameLocalizationTable("eng", "map"),
+    readGameLocalizationTable("kor", "map"),
+    readGameLocalizationTable(gameLocale, "map"),
+    readGameLocalizationTable("eng", "static_hover_tips"),
+    readGameLocalizationTable("kor", "static_hover_tips"),
+    readGameLocalizationTable(gameLocale, "static_hover_tips"),
+    readGameLocalizationTable("eng", "epochs"),
+    readGameLocalizationTable("kor", "epochs"),
+    readGameLocalizationTable(gameLocale, "epochs"),
+    readGameLocalizationTable("eng", "gameplay_ui"),
+    readGameLocalizationTable("kor", "gameplay_ui"),
+    readGameLocalizationTable(gameLocale, "gameplay_ui"),
+    readGameLocalizationTable("eng", "main_menu_ui"),
+    readGameLocalizationTable("kor", "main_menu_ui"),
+    readGameLocalizationTable(gameLocale, "main_menu_ui"),
+  ]);
+
+  const labels: Record<string, string> = {};
+
+  for (const [characterId, color] of Object.entries(CHARACTER_HEADING_COLORS)) {
+    const target = gameCharacters[`${characterId}.title`];
+    if (!target) continue;
+
+    const coloredTarget = colorTag(color, target);
+    for (const source of [
+      ...englishTitleAliases(engCharacters[`${characterId}.title`]),
+      korCharacters[`${characterId}.title`],
+    ]) {
+      addPatchHeadingLabel(labels, source, coloredTarget);
+      addPatchHeadingLabel(labels, `Card Changes - ${source}`, `Card Changes - ${coloredTarget}`);
+      addPatchHeadingLabel(labels, `카드 변경 - ${source}`, `카드 변경 - ${coloredTarget}`);
+    }
+  }
+
+  const enemyPluralTarget = gameMap["LEGEND_ENEMY.hoverTip.title"];
+  const enemySingularTarget = gameMap["LEGEND_ENEMY.title"];
+  for (const source of [
+    engMap["LEGEND_ENEMY.hoverTip.title"],
+    korMap["LEGEND_ENEMY.hoverTip.title"],
+    "Enemies",
+    "적",
+  ]) {
+    addPatchHeadingLabel(labels, source, enemyPluralTarget);
+  }
+  for (const source of [
+    engMap["LEGEND_ENEMY.title"],
+    korMap["LEGEND_ENEMY.title"],
+    "Enemy",
+    "적",
+  ]) {
+    addPatchHeadingLabel(labels, `Enemy / Ascension Changes`, `${enemySingularTarget} / Ascension Changes`);
+    addPatchHeadingLabel(labels, `적 / 승천 변경`, `${enemySingularTarget} / 승천 변경`);
+    addPatchHeadingLabel(labels, source, enemySingularTarget);
+  }
+
+  const eventTarget = gameHoverTips["ROOM_EVENT.title"] ?? gameMap["LEGEND_EVENT.hoverTip.title"];
+  for (const source of [
+    engHoverTips["ROOM_EVENT.title"],
+    korHoverTips["ROOM_EVENT.title"],
+    engMap["LEGEND_EVENT.hoverTip.title"],
+    korMap["LEGEND_EVENT.hoverTip.title"],
+    "Event",
+    "Events",
+    "이벤트",
+  ]) {
+    addPatchHeadingLabel(labels, source, eventTarget);
+  }
+
+  const ancientTarget = gameEpochs["RELIC2_EPOCH.title"] ?? gameHoverTips["ROOM_ANCIENT.title"];
+  const coloredAncientTarget = ancientTarget ? colorTag("blue", ancientTarget) : undefined;
+  for (const source of [
+    engEpochs["RELIC2_EPOCH.title"],
+    korEpochs["RELIC2_EPOCH.title"],
+    engHoverTips["ROOM_ANCIENT.title"],
+    korHoverTips["ROOM_ANCIENT.title"],
+    "Ancient",
+    "Ancients",
+    "고대의 존재",
+  ]) {
+    addPatchHeadingLabel(labels, source, coloredAncientTarget);
+  }
+
+  const neowTarget = gameEpochs["NEOW_EPOCH.title"];
+  if (coloredAncientTarget && neowTarget) {
+    const coloredNeowTarget = colorTag("gold:ancient", neowTarget);
+    addPatchHeadingLabel(labels, "Ancients & Neow", `${coloredAncientTarget} & ${coloredNeowTarget}`);
+    addPatchHeadingLabel(labels, "고대의 존재 & 니오우", `${coloredAncientTarget} & ${coloredNeowTarget}`);
+  }
+
+  const potionTarget = stripGameMarkup(gameGameplay["MULTIPLAYER_EXPANDED_STATE.potionHeader"]);
+  const relicTarget = stripGameMarkup(gameGameplay["MULTIPLAYER_EXPANDED_STATE.relicHeader"]);
+  if (potionTarget && relicTarget) {
+    const potionsAndRelicsTarget = `${potionTarget} & ${relicTarget}`;
+    for (const source of [
+      `${stripGameMarkup(engGameplay["MULTIPLAYER_EXPANDED_STATE.potionHeader"])} & ${stripGameMarkup(engGameplay["MULTIPLAYER_EXPANDED_STATE.relicHeader"])}`,
+      `${stripGameMarkup(korGameplay["MULTIPLAYER_EXPANDED_STATE.potionHeader"])} & ${stripGameMarkup(korGameplay["MULTIPLAYER_EXPANDED_STATE.relicHeader"])}`,
+      "Potions & Relics",
+      "포션 & 유물",
+    ]) {
+      addPatchHeadingLabel(labels, source, potionsAndRelicsTarget);
+    }
+  }
+
+  const multiplayerTarget = gameMainMenu["MULTIPLAYER"];
+  for (const source of [
+    engMainMenu["MULTIPLAYER"],
+    korMainMenu["MULTIPLAYER"],
+    "Multiplayer",
+    "멀티플레이",
+    "멀티플레이어",
+  ]) {
+    addPatchHeadingLabel(labels, source, multiplayerTarget);
+    addPatchHeadingLabel(labels, `Card Changes - ${source}`, `Card Changes - ${multiplayerTarget}`);
+    addPatchHeadingLabel(labels, `카드 변경 - ${source}`, `카드 변경 - ${multiplayerTarget}`);
+  }
+
+  return labels;
+}
+
 export async function generateStaticParams() {
   const patches = await getSTS2Patches();
   return patches.map((p) => ({ version: p.version }));
@@ -136,7 +325,7 @@ export default async function PatchDetailPage({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, gameUi, gameKeywordLabels] = await Promise.all([
+  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, gameUi, gameKeywordLabels, gameHeadingLabels] = await Promise.all([
     getSTS2Patches(),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -149,6 +338,7 @@ export default async function PatchDetailPage({
     getCodexAncients({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
     getPatchGameKeywordLabels(gameLocale),
+    getPatchGameHeadingLabels(gameLocale),
   ]);
 
   const patch = patches.find((p) => p.version === version);
@@ -335,6 +525,7 @@ export default async function PatchDetailPage({
             gameLocale={gameLocale}
             preferEntityLocaleLabel={serviceLocale !== "ko" || gameLocale !== "kor"}
             gameKeywordLabels={gameKeywordLabels}
+            gameHeadingLabels={gameHeadingLabels}
           />
         </section>
       ) : (
