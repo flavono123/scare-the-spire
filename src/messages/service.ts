@@ -53,6 +53,12 @@ export const serviceMessages = {
       collapse: "접기",
       expand: "펼치기",
     },
+    historyCourse: {
+      description:
+        "슬레이 더 스파이어 2의 시드 기반 {runHistory}. 막 맵 위에 진행 노드를 다시 그려 한 판을 처음부터 끝까지 따라갑니다.",
+      runTitleSuffix: "런",
+      runDescription: "내 슬레이 더 스파이어 2 런을 막 맵 위에 그대로 다시 그려봅니다.",
+    },
     codex: {
       cards: "카드",
       relics: "유물",
@@ -425,6 +431,12 @@ export const serviceMessages = {
       copied: "Copied!",
       collapse: "Collapse",
       expand: "Expand",
+    },
+    historyCourse: {
+      description:
+        "Seed-based Slay the Spire 2 {runHistory}. Replays a run from start to finish on the act map.",
+      runTitleSuffix: "Run",
+      runDescription: "Replay a Slay the Spire 2 run exactly as it happened on the act map.",
     },
     codex: {
       cards: "Cards",

@@ -1,29 +1,54 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { HistoryCourseLanding } from "@/components/history-course/history-course-landing";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleForGameLocale,
+} from "@/lib/i18n";
+import { getHistoryCourseLandingGameCopy } from "@/lib/borrowed-game-copy";
+import { serviceMessages } from "@/messages/service";
 
-export const metadata = {
-  title: "역사 강의서",
-  description:
-    "슬레이 더 스파이어 2 의 시드 기반 도전 이력. 막 맵 위에 진행 노드를 다시 그려 한 판을 처음부터 끝까지 따라갑니다.",
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
+  const copy = await getHistoryCourseLandingGameCopy(gameLocale);
+  return {
+    title: copy.title,
+    description: serviceMessages[serviceLocale].historyCourse.description.replace(
+      "{runHistory}",
+      copy.runHistoryLabel,
+    ),
+  };
+}
 
-export default function HistoryCourseIndexPage() {
+export default async function HistoryCourseIndexPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const copy = await getHistoryCourseLandingGameCopy(gameLocale);
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <header className="flex items-center gap-4">
         <Image
           src="/images/sts2/relics/history_course.webp"
-          alt=""
+          alt={copy.title}
           width={56}
           height={56}
           className="h-14 w-14 object-contain drop-shadow"
         />
         <div>
           <h1 className="text-3xl font-black tracking-tight text-zinc-50">
-            역사 강의서
+            {copy.title}
           </h1>
           <p className="mt-1 max-w-2xl text-sm leading-6 text-zinc-400">
-            “그 도전 이력을 찾으러 사방팔방 뒤지고 있었다네! 혹시 실례가 아니라면…”
+            {copy.heroQuote}
           </p>
         </div>
       </header>
