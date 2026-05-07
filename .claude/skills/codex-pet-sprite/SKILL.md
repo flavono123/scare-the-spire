@@ -97,29 +97,11 @@ Expect `WEBP 1536x1872` with alpha.
 
 ## Actor Discovery
 
-Use the repo PCK helper to list candidate actor prefixes:
+Use the bundled helper to list candidate actor prefixes:
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 python3 - <<'PY'
-import sys
-sys.path.insert(0, "scripts")
-from lib.pck import PCKReader, default_pck_path
-with PCKReader(default_pck_path()) as r:
-    prefixes = sorted(
-        p[:-len(".skel.import")]
-        for p in r.entries
-        if p.endswith(".skel.import")
-        and (
-            p.startswith("animations/characters/")
-            or p.startswith("animations/monsters/")
-            or p.startswith("animations/vfx/")
-            or p.startswith("animations/objects/")
-        )
-    )
-    for prefix in prefixes:
-        if f"{prefix}.atlas.import" in r.entries and f"{prefix}.png.import" in r.entries:
-            print(prefix)
-PY
+PYTHONDONTWRITEBYTECODE=1 \
+python3 .claude/skills/codex-pet-sprite/scripts/list-spine-actors.py --prefix animations/characters/
 ```
 
 If the prefix only has `.skel.import` but no matching `.atlas.import` or `.png.import`, it is not directly renderable with the bundled helper.
