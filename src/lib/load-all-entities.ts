@@ -7,6 +7,7 @@ import {
   getCodexEvents,
   getCodexMonsters,
   getCodexEncounters,
+  getCodexAncients,
 } from "@/lib/codex-data";
 import type { GameLocale } from "@/lib/i18n";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -22,6 +23,7 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
     codexEvents,
     codexMonsters,
     codexEncounters,
+    codexAncients,
   ] = await Promise.all([
     getCodexCards({ gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -31,6 +33,7 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
     getCodexEvents({ gameLocale }),
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
+    getCodexAncients({ gameLocale }),
   ]);
 
   return [
@@ -105,6 +108,15 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
       color: e.roomType,
       type: "encounter" as const,
       encounterData: e,
+    })),
+    ...codexAncients.map((a) => ({
+      id: a.id,
+      nameEn: a.nameEn,
+      nameKo: a.name,
+      imageUrl: a.imageUrl,
+      color: a.act ?? "none",
+      type: "ancient" as const,
+      ancientData: a,
     })),
   ];
 }

@@ -70,6 +70,21 @@ export interface LinkedEntity {
 // STS2 patch types
 export type PatchType = "release" | "hotfix" | "beta" | "stable";
 export type STS2EntityType = "card" | "relic" | "potion" | "enemy" | "blessing";
+export type STS2PatchFeaturedEntityType =
+  | "card"
+  | "relic"
+  | "potion"
+  | "power"
+  | "enchantment"
+  | "event"
+  | "monster"
+  | "encounter"
+  | "ancient";
+
+export interface STS2PatchFeaturedEntity {
+  type: STS2PatchFeaturedEntityType;
+  id: string;
+}
 
 export interface STS2Patch {
   id: string;
@@ -83,6 +98,7 @@ export interface STS2Patch {
   summary: string;
   summaryKo: string;
   hasBalanceChanges: boolean;
+  featuredEntities?: STS2PatchFeaturedEntity[];
 }
 
 export interface STS2AttributeDiff {

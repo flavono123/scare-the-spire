@@ -1,6 +1,8 @@
 import Link from "next/link";
+import Image from "@/components/ui/static-image";
 import type { Metadata } from "next";
 import { getSTS2Patches } from "@/lib/data";
+import { loadAllEntities } from "@/lib/load-all-entities";
 import { Badge } from "@/components/ui/badge";
 import {
   getGameLocaleFromSearchRecord,
@@ -9,7 +11,8 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
-import type { PatchType } from "@/lib/types";
+import type { PatchType, STS2Patch } from "@/lib/types";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 
 const PATCH_COPY: Record<ServiceLocale, {
   title: string;
@@ -51,6 +54,59 @@ const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
   hotfix: "bg-orange-500/15 text-orange-400 border-orange-500/30",
 };
 
+function entityAssetUrl(entity: EntityInfo): string | null {
+  return entity.cardData?.imageUrl ?? entity.cardData?.betaImageUrl ?? entity.imageUrl;
+}
+
+function PatchFeaturedAssets({ entities }: { entities: EntityInfo[] }) {
+  if (entities.length === 0) return null;
+
+  return (
+    <div className="mt-3 grid grid-cols-5 gap-2" aria-label="패치 주요 변경 대상">
+      {entities.slice(0, 5).map((entity) => {
+        const imageUrl = entityAssetUrl(entity);
+        const isCard = entity.type === "card";
+        const isMonster = entity.type === "monster";
+
+        return (
+          <span
+            key={`${entity.type}:${entity.id}`}
+            className="min-w-0 rounded-md border border-white/10 bg-black/20 px-1.5 py-1.5"
+          >
+            <span className="flex h-12 items-center justify-center">
+              {imageUrl ? (
+                <Image
+                  src={imageUrl}
+                  alt={entity.nameKo}
+                  width={isCard ? 36 : 46}
+                  height={isCard ? 52 : 46}
+                  className={isCard ? "h-12 w-auto object-contain" : isMonster ? "h-12 w-12 object-contain" : "h-10 w-10 object-contain"}
+                />
+              ) : (
+                <span className="flex h-10 w-10 items-center justify-center rounded bg-muted/30 text-[10px] font-semibold text-muted-foreground">
+                  {entity.nameKo.slice(0, 2)}
+                </span>
+              )}
+            </span>
+            <span className="mt-1 block truncate text-center text-[10px] font-medium text-muted-foreground">
+              {entity.nameKo}
+            </span>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+function getFeaturedEntities(
+  patch: STS2Patch,
+  entitiesByKey: Map<string, EntityInfo>,
+): EntityInfo[] {
+  return (patch.featuredEntities ?? [])
+    .map((entity) => entitiesByKey.get(`${entity.type}:${entity.id}`))
+    .filter((entity): entity is EntityInfo => Boolean(entity));
+}
+
 export async function generateMetadata({
   searchParams,
 }: {
@@ -73,7 +129,11 @@ export default async function PatchesPage({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const copy = PATCH_COPY[serviceLocale];
-  const patches = await getSTS2Patches();
+  const [patches, entities] = await Promise.all([
+    getSTS2Patches(),
+    loadAllEntities({ gameLocale }),
+  ]);
+  const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
 
   // Sort patches by date descending (newest first)
   const sorted = [...patches].sort((a, b) => b.date.localeCompare(a.date));
@@ -86,6 +146,7 @@ export default async function PatchesPage({
         {sorted.map((patch) => {
           const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
           const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
+          const featuredEntities = patch.status === "building" ? [] : getFeaturedEntities(patch, entitiesByKey);
 
           return (
             <Link
@@ -111,9 +172,16 @@ export default async function PatchesPage({
                 )}
               </div>
               <p className="mt-1 text-sm font-medium">{title}</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {patch.date} — {summary}
-              </p>
+              {featuredEntities.length > 0 ? (
+                <>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{patch.date}</p>
+                  <PatchFeaturedAssets entities={featuredEntities} />
+                </>
+              ) : (
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  {patch.date} — {summary}
+                </p>
+              )}
             </Link>
           );
         })}

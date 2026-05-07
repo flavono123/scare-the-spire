@@ -153,7 +153,14 @@
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/535507353628312243",
     "summary": "Ironclad reworks (Conflagration, Drum of Battle), Regent Parry rework tying Block to Sovereign Blade, Axebots single-enemy combat, Untouchable/Neow's Booming Conch/Neow's Fury/Nutritious Soup buffs, lower Ascensions slightly eased (Ruby Raider Assassin, Vantom, Waterfall Giant HP/damage), 3 new Badges, Tag Team multiplayer fix, extensive bug fixes and new card portrait art (Feral, Not Yet, Spite, Hailstorm, Iteration, Synchronize, etc.).",
     "summaryKo": "아이언클래드 리워크(대화재, 전투의 북소리), 리젠트 쳐내기 리워크(방어도가 군주의 칼날에 직접 표시), 로봇 친구들 단일 적 전투, 범접 불가/니오우의 콰광 소라/니오우의 격분/영양만점 수프 버프, 낮은 승천 소폭 완화(암살 습격자, 밴텀, 폭포 거인 HP/피해), 배지 3종 추가, 태그 팀 멀티플레이어 수정, 다수 버그 수정 및 신규 카드 초상화 아트(야성, 불굴, 악의, 우박 폭풍, 순회, 동기화 등).",
-    "hasBalanceChanges": true
+    "hasBalanceChanges": true,
+    "featuredEntities": [
+      { "type": "card", "id": "DRUM_OF_BATTLE" },
+      { "type": "card", "id": "CONFLAGRATION" },
+      { "type": "card", "id": "PARRY" },
+      { "type": "monster", "id": "AXEBOT" },
+      { "type": "relic", "id": "BOOMING_CONCH" }
+    ]
   },
   {
     "id": "v0.105.0",
