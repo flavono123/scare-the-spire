@@ -15,6 +15,8 @@ const PRESETS = [
   { name: "iPhone Plus / Pro Max", width: 430, height: 932, dpr: 3, userAgent: IOS_UA },
   { name: "Android compact", width: 360, height: 800, dpr: 3, userAgent: ANDROID_UA },
   { name: "Pixel mainstream", width: 412, height: 915, dpr: 2.625, userAgent: ANDROID_UA },
+  { name: "Android large", width: 432, height: 960, dpr: 3, userAgent: ANDROID_UA },
+  { name: "Android XL", width: 480, height: 1040, dpr: 2.75, userAgent: ANDROID_UA },
 ];
 
 function parseArgs(argv) {
@@ -96,6 +98,30 @@ function printPresets() {
   }
 }
 
+async function labelTab(page, preset) {
+  await page.addInitScript(({ name }) => {
+    const prefix = `[${name}] `;
+    const stripPresetPrefix = (title) => title.replace(/^\[[^\]]+\]\s*/, "");
+    const applyTitle = () => {
+      if (!document.title.startsWith(prefix)) {
+        document.title = `${prefix}${stripPresetPrefix(document.title)}`;
+      }
+    };
+
+    window.addEventListener("DOMContentLoaded", () => {
+      applyTitle();
+      const title = document.querySelector("title");
+      if (title) {
+        new MutationObserver(applyTitle).observe(title, {
+          childList: true,
+          characterData: true,
+          subtree: true,
+        });
+      }
+    });
+  }, { name: preset.name });
+}
+
 async function main() {
   const options = parseArgs(process.argv.slice(2));
   if (options.list) {
@@ -119,10 +145,16 @@ async function main() {
   }
 
   const browser = await chromium.launch({ headless: false });
-  const contexts = [];
+  const context = await browser.newContext({
+    viewport: { width: PRESETS[0].width, height: PRESETS[0].height },
+    deviceScaleFactor: PRESETS[0].dpr,
+    hasTouch: true,
+    isMobile: true,
+    userAgent: IOS_UA,
+  });
 
   async function shutdown() {
-    await Promise.allSettled(contexts.map((context) => context.close()));
+    await context.close().catch(() => {});
     await browser.close().catch(() => {});
     if (devServer) devServer.kill("SIGTERM");
     process.exit(0);
@@ -132,20 +164,16 @@ async function main() {
   process.once("SIGTERM", shutdown);
 
   for (const preset of PRESETS) {
-    const context = await browser.newContext({
-      viewport: { width: preset.width, height: preset.height },
-      deviceScaleFactor: preset.dpr,
-      hasTouch: true,
-      isMobile: true,
-      userAgent: preset.userAgent,
-    });
-    contexts.push(context);
     const page = await context.newPage();
+    await labelTab(page, preset);
+    await page.setViewportSize({ width: preset.width, height: preset.height });
     await page.goto(targetUrl, { waitUntil: "domcontentloaded" });
     console.log(`[mobile-qa] opened ${preset.name} (${preset.width}x${preset.height}) -> ${targetUrl}`);
   }
 
-  console.log("[mobile-qa] press Ctrl+C to close browsers and dev server.");
+  console.log("[mobile-qa] opened one browser window with one tab per preset.");
+  console.log("[mobile-qa] tab titles are prefixed with preset names.");
+  console.log("[mobile-qa] press Ctrl+C to close the browser and dev server.");
   await new Promise(() => {});
 }
 
