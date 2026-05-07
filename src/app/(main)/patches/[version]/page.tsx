@@ -226,40 +226,39 @@ async function getPatchGameHeadingLabels(gameLocale: GameLocale): Promise<Record
   const enemyPluralTarget = gameMap["LEGEND_ENEMY.hoverTip.title"];
   const enemySingularTarget = gameMap["LEGEND_ENEMY.title"];
   for (const source of [
-    engMap["LEGEND_ENEMY.hoverTip.title"],
-    korMap["LEGEND_ENEMY.hoverTip.title"],
-    "Enemies",
-    "적",
-  ]) {
-    addPatchHeadingLabel(labels, source, enemyPluralTarget);
-  }
-  for (const source of [
     engMap["LEGEND_ENEMY.title"],
-    korMap["LEGEND_ENEMY.title"],
     "Enemy",
-    "적",
   ]) {
     addPatchHeadingLabel(labels, `Enemy / Ascension Changes`, `${enemySingularTarget} / Ascension Changes`);
     addPatchHeadingLabel(labels, `적 / 승천 변경`, `${enemySingularTarget} / 승천 변경`);
     addPatchHeadingLabel(labels, source, enemySingularTarget);
   }
+  for (const source of [
+    engMap["LEGEND_ENEMY.hoverTip.title"],
+    korMap["LEGEND_ENEMY.hoverTip.title"],
+    korMap["LEGEND_ENEMY.title"],
+    "Enemies",
+    "적",
+  ]) {
+    addPatchHeadingLabel(labels, source, enemyPluralTarget);
+  }
 
   const eventTarget = gameHoverTips["ROOM_EVENT.title"] ?? gameMap["LEGEND_EVENT.hoverTip.title"];
+  for (const source of [
+    engHoverTips["ROOM_EVENT.title"],
+    engMap["LEGEND_EVENT.hoverTip.title"],
+    "Event",
+  ]) {
+    addPatchHeadingLabel(labels, source, eventTarget);
+  }
   const eventsHeadingTarget = gameLocale === "eng" ? "Events" : eventTarget;
   for (const source of [
+    korHoverTips["ROOM_EVENT.title"],
+    korMap["LEGEND_EVENT.hoverTip.title"],
     "Events",
     "이벤트",
   ]) {
     addPatchHeadingLabel(labels, source, eventsHeadingTarget);
-  }
-  for (const source of [
-    engHoverTips["ROOM_EVENT.title"],
-    korHoverTips["ROOM_EVENT.title"],
-    engMap["LEGEND_EVENT.hoverTip.title"],
-    korMap["LEGEND_EVENT.hoverTip.title"],
-    "Event",
-  ]) {
-    addPatchHeadingLabel(labels, source, eventTarget);
   }
 
   const ancientTarget = gameEpochs["RELIC2_EPOCH.title"] ?? gameHoverTips["ROOM_ANCIENT.title"];
