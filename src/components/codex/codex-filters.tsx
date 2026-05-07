@@ -11,7 +11,7 @@ export function FilterSection({
   sortTitle = "정렬 기준 변경",
 }: {
   trigger?: string;
-  label: string;
+  label?: string;
   children: React.ReactNode;
   sortDir?: "asc" | "desc";
   onSortToggle?: () => void;
@@ -25,9 +25,11 @@ export function FilterSection({
             {trigger}
           </span>
         )}
-        <span className="text-sm text-gray-200 font-bold tracking-wide">
-          {label}
-        </span>
+        {label && (
+          <span className="text-sm text-gray-200 font-bold tracking-wide">
+            {label}
+          </span>
+        )}
         {onSortToggle && (
           <button
             onClick={onSortToggle}
