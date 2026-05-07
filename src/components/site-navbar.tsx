@@ -97,6 +97,7 @@ function NavIconLink({
   label,
   iconSize = 20,
   iconClassName,
+  className,
   external,
 }: {
   href: string;
@@ -104,6 +105,7 @@ function NavIconLink({
   label: string;
   iconSize?: number;
   iconClassName?: string;
+  className?: string;
   external?: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
@@ -114,12 +116,12 @@ function NavIconLink({
   const internalProps = external ? {} : { prefetch: false as const };
 
   return (
-    <div className="relative group">
+    <div className={`relative group ${className ?? ""}`}>
       <Tag
         href={href}
         {...extraProps}
         {...internalProps}
-        className="flex items-center p-1.5 transition-colors"
+        className="flex items-center p-1 transition-colors sm:p-1.5"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
@@ -128,7 +130,7 @@ function NavIconLink({
           alt={label}
           width={iconSize}
           height={iconSize}
-          className={`object-contain brightness-90 hover:brightness-110 transition-all ${iconClassName ?? ""}`}
+          className={`h-[18px] w-[18px] object-contain brightness-90 hover:brightness-110 transition-all sm:h-auto sm:w-auto ${iconClassName ?? ""}`}
         />
       </Tag>
       {hovered && (
@@ -188,7 +190,7 @@ function GameDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1 rounded-md px-1.5 py-1 hover:bg-white/5 transition-colors"
+        className="flex items-center gap-0.5 rounded-md px-1 py-1 hover:bg-white/5 transition-colors sm:gap-1 sm:px-1.5"
         title={alt}
       >
         <Image
@@ -196,10 +198,10 @@ function GameDropdown({
           alt={alt}
           width={28}
           height={28}
-          className={`rounded-sm transition-all ${open ? "brightness-125" : "brightness-90 hover:brightness-110"}`}
+          className={`h-6 w-6 rounded-sm transition-all sm:h-7 sm:w-7 ${open ? "brightness-125" : "brightness-90 hover:brightness-110"}`}
         />
         <svg
-          className={`w-3 h-3 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
+          className={`hidden h-3 w-3 text-muted-foreground transition-transform sm:block ${open ? "rotate-180" : ""}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -268,11 +270,11 @@ function LanguageDropdown({
         aria-haspopup="menu"
         aria-label={label}
         onClick={() => setOpen((v) => !v)}
-        className="flex h-8 min-w-[5.75rem] max-w-[8.25rem] items-center justify-between gap-2 rounded-md border border-border bg-background/80 px-2.5 text-left text-sm font-semibold text-foreground shadow-sm transition-colors hover:bg-white/5"
+        className="flex h-8 min-w-[4.5rem] max-w-[5.5rem] items-center justify-between gap-1 rounded-md border border-border bg-background/80 px-2 text-left text-xs font-semibold text-foreground shadow-sm transition-colors hover:bg-white/5 sm:min-w-[5.75rem] sm:max-w-[8.25rem] sm:gap-2 sm:px-2.5 sm:text-sm"
       >
         <span className="truncate">{GAME_LOCALE_NATIVE_LABELS[value]}</span>
         <svg
-          className={`h-4 w-4 shrink-0 text-yellow-400 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-3.5 w-3.5 shrink-0 text-yellow-400 transition-transform sm:h-4 sm:w-4 ${open ? "rotate-180" : ""}`}
           fill="currentColor"
           viewBox="0 0 20 20"
           aria-hidden="true"
@@ -406,13 +408,13 @@ export function SiteNavbar() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
       <LocaleCanonicalizer serviceLocale={serviceLocale} gameLocale={gameLocale} />
       <LocaleCookieSync gameLocale={gameLocale} />
-      <div className="mx-auto flex items-center justify-between px-4 h-12">
+      <div className="mx-auto flex h-12 items-center justify-between gap-2 px-2 sm:px-4">
         {/* Left: brand + services */}
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
           <Link
             href={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
             prefetch={false}
-            className="flex items-center gap-1.5 text-base font-bold text-yellow-500 shrink-0"
+            className="flex shrink-0 items-center gap-1 text-sm font-bold text-yellow-500 sm:gap-1.5 sm:text-base"
           >
             {messages.brand}
             <Image
@@ -420,11 +422,11 @@ export function SiteNavbar() {
               alt=""
               width={22}
               height={22}
-              className="object-contain"
+              className="h-[18px] w-[18px] object-contain sm:h-[22px] sm:w-[22px]"
             />
           </Link>
 
-          <nav className="flex items-center gap-2 text-sm">
+          <nav className="flex shrink-0 items-center gap-0.5 text-sm sm:gap-2">
             <NavIconLink
               href={localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale)}
               icon="/images/sts2/nav/patch_notes_icon.png"
@@ -445,12 +447,13 @@ export function SiteNavbar() {
               label={getCodexNavGameLabel(gameLocale, "historyCourse") ?? messages.nav.historyCourse}
               iconSize={20}
               iconClassName="group-hover:rotate-[8deg]"
+              className="hidden sm:block"
             />
           </nav>
         </div>
 
         {/* Right: language + game dropdowns */}
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
           <LanguageDropdown value={gameLocale} label={messages.languageSelect} />
           <GameDropdown
             icon="/images/sts2/icons/app_icon.png"
