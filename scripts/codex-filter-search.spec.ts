@@ -14,28 +14,28 @@ test.describe("Codex filter search token hints", () => {
   test("event act search uses percent token, not at token", async ({ page }) => {
     await focusSearch(page, "/codex/events");
 
-    await expect(page.getByRole("button", { name: "%" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "@" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "%", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "@", exact: true })).toHaveCount(0);
   });
 
   test("relic rarity search uses bang token", async ({ page }) => {
     await focusSearch(page, "/codex/relics");
 
-    await expect(page.getByRole("button", { name: "@" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "!" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "@", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "!", exact: true })).toBeVisible();
   });
 
   test("potion rarity search uses bang token", async ({ page }) => {
     await focusSearch(page, "/codex/potions");
 
-    await expect(page.getByRole("button", { name: "@" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "!" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "@", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "!", exact: true })).toBeVisible();
   });
 
   test("monster search separates type and act tokens", async ({ page }) => {
     await focusSearch(page, "/codex/monsters");
 
-    await expect(page.getByRole("button", { name: "#" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "%" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "#", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "%", exact: true })).toBeVisible();
   });
 });
