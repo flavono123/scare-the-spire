@@ -143,7 +143,7 @@ export function EntityPreview({
     : useTapPreview
       ? "fixed left-3 right-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-[120] pointer-events-auto flex justify-center"
     : `absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${position === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
-  const renderTooltip = (content: ReactNode) => (
+  const renderTooltip = (content: ReactNode, variant: "card" | "box" = "box") => (
     <span className={tooltipPos}>
       {useTapPreview ? (
         <Link
@@ -154,7 +154,11 @@ export function EntityPreview({
           onPointerLeave={() => setPreviewPressed(false)}
           onPointerCancel={() => setPreviewPressed(false)}
           onPointerUp={() => setPreviewPressed(false)}
-          className="block cursor-pointer rounded-lg outline-none ring-1 ring-yellow-400/20 shadow-[0_0_0_1px_rgba(250,204,21,0.14)] transition-[transform,filter,box-shadow] duration-100 focus-visible:ring-2 focus-visible:ring-yellow-400/70 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125 data-[pressed=true]:ring-yellow-300/70 data-[pressed=true]:shadow-[0_0_0_2px_rgba(250,204,21,0.55),0_18px_45px_rgba(0,0,0,0.45)]"
+          className={
+            variant === "card"
+              ? "block cursor-pointer outline-none transition-[transform,filter] duration-100 focus-visible:brightness-125 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125"
+              : "block cursor-pointer rounded-lg outline-none ring-1 ring-yellow-400/20 shadow-[0_0_0_1px_rgba(250,204,21,0.14)] transition-[transform,filter,box-shadow] duration-100 focus-visible:ring-2 focus-visible:ring-yellow-400/70 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125 data-[pressed=true]:ring-yellow-300/70 data-[pressed=true]:shadow-[0_0_0_2px_rgba(250,204,21,0.55),0_18px_45px_rgba(0,0,0,0.45)]"
+          }
         >
           {content}
         </Link>
@@ -196,6 +200,7 @@ export function EntityPreview({
           <span className="block w-36 drop-shadow-2xl">
             <CardTile card={entity.cardData} showUpgrade={false} showBeta={false} />
           </span>,
+          "card",
         )
       )}
       {visible && entity.type === "relic" && entity.relicData && (
