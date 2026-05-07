@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { getSTS2Patches } from "@/lib/data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +20,8 @@ const PATCH_COPY: Record<ServiceLocale, {
   description: string;
   balance: string;
   building: string;
+  buildingBody: string;
+  steamOriginal: string;
   types: Record<PatchType, string>;
 }> = {
   ko: {
@@ -26,6 +29,8 @@ const PATCH_COPY: Record<ServiceLocale, {
     description: "슬레이 더 스파이어 2 전체 패치 히스토리와 밸런스 변경 이력",
     balance: "밸런스",
     building: "작성 중",
+    buildingBody: "슬서운변경을 만들고 있습니다.",
+    steamOriginal: "Steam 원문",
     types: {
       release: "출시",
       beta: "베타",
@@ -38,6 +43,8 @@ const PATCH_COPY: Record<ServiceLocale, {
     description: "Full Slay the Spire 2 patch history and balance changes.",
     balance: "Balance",
     building: "Building",
+    buildingBody: "Rich patch notes are being prepared.",
+    steamOriginal: "Steam original",
     types: {
       release: "Release",
       beta: "Beta",
@@ -46,6 +53,22 @@ const PATCH_COPY: Record<ServiceLocale, {
     },
   },
 };
+
+function SineText({ text }: { text: string }) {
+  return (
+    <span className="rich-sine">
+      {Array.from(text).map((char, i) => (
+        <span
+          key={`${char}-${i}`}
+          className="rich-sine-letter"
+          style={{ "--rich-sine-index": i } as CSSProperties}
+        >
+          {char}
+        </span>
+      ))}
+    </span>
+  );
+}
 
 const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
   release: "bg-green-500/15 text-green-400 border-green-500/30",
@@ -146,7 +169,42 @@ export default async function PatchesPage({
         {sorted.map((patch) => {
           const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
           const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
-          const featuredEntities = patch.status === "building" ? [] : getFeaturedEntities(patch, entitiesByKey);
+          const isBuilding = patch.status === "building";
+          const featuredEntities = isBuilding ? [] : getFeaturedEntities(patch, entitiesByKey);
+
+          if (isBuilding) {
+            return (
+              <article
+                key={patch.id}
+                className="block rounded-lg border border-zinc-800 bg-zinc-950/35 p-4 shadow-inner"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-lg font-semibold text-zinc-500">v{patch.version}</span>
+                  <Badge variant="outline" className="border-zinc-700 bg-zinc-900/50 text-zinc-500">
+                    {copy.types[patch.type]}
+                  </Badge>
+                  <Badge variant="outline" className="border-fuchsia-400/40 bg-fuchsia-500/10 text-fuchsia-300">
+                    <SineText text={copy.building} />
+                  </Badge>
+                  {patch.steamUrl && (
+                    <a
+                      href={patch.steamUrl}
+                      className="ml-auto inline-flex items-center rounded-full border border-blue-400/30 bg-blue-500/10 px-2.5 py-0.5 text-xs font-medium text-blue-400 transition-colors hover:border-blue-300/50 hover:text-blue-300"
+                    >
+                      {copy.steamOriginal} &rarr;
+                    </a>
+                  )}
+                </div>
+                <p className="mt-1 text-sm font-medium text-zinc-500">{title}</p>
+                <div className="mt-3 rounded-md border border-dashed border-zinc-700/80 bg-black/15 px-3 py-2 text-sm font-semibold text-fuchsia-300">
+                  <SineText text={copy.buildingBody} />
+                </div>
+                <p className="mt-2 text-xs text-zinc-600">
+                  {patch.date} — {summary}
+                </p>
+              </article>
+            );
+          }
 
           return (
             <Link
@@ -163,11 +221,6 @@ export default async function PatchesPage({
                 {patch.hasBalanceChanges && (
                   <Badge variant="outline" className="bg-yellow-500/15 text-yellow-400 border-yellow-500/30">
                     {copy.balance}
-                  </Badge>
-                )}
-                {patch.status === "building" && (
-                  <Badge variant="outline" className="bg-amber-500/15 text-amber-300 border-amber-500/30">
-                    {copy.building}
                   </Badge>
                 )}
               </div>

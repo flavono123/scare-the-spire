@@ -547,7 +547,7 @@ export default async function PatchDetailPage({
             {copy.types[patch.type]}
           </Badge>
           {isBuilding && (
-            <Badge variant="outline" className="bg-amber-500/15 text-amber-300 border-amber-500/30">
+            <Badge variant="outline" className="bg-fuchsia-500/10 text-fuchsia-300 border-fuchsia-400/40">
               {copy.buildingBadge}
             </Badge>
           )}
