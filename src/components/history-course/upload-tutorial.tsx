@@ -4,6 +4,8 @@ import { Apple, Check, Copy, Terminal } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 
 type OS = "macos" | "windows" | "linux";
 
@@ -40,15 +42,6 @@ const OS_PATH: Record<OS, string> = {
   linux: "~/.local/share/SlayTheSpire2/steam",
 };
 
-const OS_HINT: Record<OS, string> = {
-  macos:
-    "Finder에서 Cmd+Shift+G 누르고 위 경로를 붙여넣은 뒤, 열린 steam 폴더 자체를 드롭존에 드래그하세요. Library 폴더가 기본 숨김이라 손으로 들어가긴 어렵습니다.",
-  windows:
-    "탐색기 주소창에 위 경로를 그대로 붙여넣고, 열린 steam 폴더 자체를 드롭존에 드래그하세요. %APPDATA% 가 자동으로 풀립니다.",
-  linux:
-    "위 경로의 steam 폴더를 통째로 드래그하세요. Steam Proton 환경이면 ~/.steam/steam/steamapps/compatdata/<app-id>/pfx/drive_c/users/steamuser/AppData/Roaming/SlayTheSpire2/ 아래에 있을 수 있습니다.",
-};
-
 function detectOS(): OS {
   if (typeof navigator === "undefined") return "windows";
   const ua = navigator.userAgent.toLowerCase();
@@ -57,7 +50,7 @@ function detectOS(): OS {
   return "windows";
 }
 
-function PathBox({ path }: { path: string }) {
+function PathBox({ path, copyLabel, copiedLabel }: { path: string; copyLabel: string; copiedLabel: string }) {
   const [copied, setCopied] = useState(false);
   const onCopy = async () => {
     try {
@@ -85,11 +78,11 @@ function PathBox({ path }: { path: string }) {
       >
         {copied ? (
           <>
-            <Check className="h-3 w-3" aria-hidden /> 복사됨
+            <Check className="h-3 w-3" aria-hidden /> {copiedLabel}
           </>
         ) : (
           <>
-            <Copy className="h-3 w-3" aria-hidden /> 복사
+            <Copy className="h-3 w-3" aria-hidden /> {copyLabel}
           </>
         )}
       </button>
@@ -98,6 +91,7 @@ function PathBox({ path }: { path: string }) {
 }
 
 export function UploadTutorial() {
+  const copy = serviceMessages[useServiceLocale()].historyCourse.tutorial;
   const [active, setActive] = useState<OS>("windows");
   // Default tab follows the visitor's OS once we hit the client.
   useEffect(() => {
@@ -109,11 +103,11 @@ export function UploadTutorial() {
     <details className="group rounded-xl bg-zinc-900/40 ring-1 ring-zinc-800/80 open:ring-zinc-700">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-zinc-200">
         <span>
-          내{" "}
+          {copy.summary.split("{runFile}")[0]}
           <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-xs text-zinc-300">
             .run
-          </code>{" "}
-          파일은 어디에 있나요?
+          </code>
+          {copy.summary.split("{runFile}")[1]}
         </span>
         <span className="text-xs font-normal text-zinc-500 group-open:rotate-180 transition">
           ▾
@@ -142,41 +136,18 @@ export function UploadTutorial() {
           })}
         </div>
 
-        <PathBox path={OS_PATH[active]} />
+        <PathBox path={OS_PATH[active]} copyLabel={copy.copy} copiedLabel={copy.copied} />
 
         <p className="text-xs leading-5 text-zinc-400">
-          {OS_HINT[active]}
+          {copy.hints[active]}
         </p>
 
         <ul className="space-y-1.5 text-xs leading-5 text-zinc-400">
-          <li>
-            <span className="text-zinc-500">·</span> 폴더 안의 하위 구조
-            (steam-id / profile1 / saves / history) 는 신경쓰지 않아도 됩니다.{" "}
-            <span className="text-zinc-300">
-              .run 파일을 자동으로 모두 찾습니다.
-            </span>
-          </li>
-          <li>
-            <span className="text-zinc-500">·</span> 폴더 안의{" "}
-            <code className="font-mono text-zinc-300">
-              &lt;timestamp&gt;.run
-            </code>{" "}
-            파일들이 한 판씩의 기록입니다. 어떤 게 어떤 런인지는 올린 뒤
-            골라주세요.
-          </li>
-          <li>
-            <span className="text-zinc-500">·</span> 파일에는 시드/카드/맵만
-            들어있고{" "}
-            <span className="font-semibold text-zinc-300">
-              계정·이메일·실명 같은 개인정보는 없습니다
-            </span>
-            .
-          </li>
-          <li>
-            <span className="text-zinc-500">·</span> 업로드되는 곳은 본인
-            브라우저뿐입니다. 익명으로 공유하려면 런 선택 후 별도 버튼이
-            제공됩니다.
-          </li>
+          {copy.bullets.map((text) => (
+            <li key={text}>
+              <span className="text-zinc-500">·</span> {text}
+            </li>
+          ))}
         </ul>
       </div>
     </details>

@@ -11,6 +11,8 @@ import { computeRunHash, runRouteSlug } from "@/lib/sts2-run-hash";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
 import { supabaseEnabled } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 
 export type ParsedRun = {
   fileName: string;
@@ -96,6 +98,7 @@ export interface RunUploadZoneProps {
 }
 
 export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
+  const copy = serviceMessages[useServiceLocale()].historyCourse.upload;
   const { userId, ready: authReady } = useAuth();
   const [errors, setErrors] = useState<ParseError[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -135,9 +138,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
         // both faster and more durable.
         if (toShare.length > 0) {
           if (!authReady || !userId) {
-            setDonationToast(
-              "공유 인증이 아직 준비되지 않았습니다. 카드별 공유 버튼으로 다시 시도해주세요.",
-            );
+            setDonationToast(copy.authNotReady);
           } else {
             const result = await donateRunsBatch({
               runs: toShare.map((p) => ({
@@ -148,12 +149,14 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
               donorUserId: userId,
             });
             if (result.errorMessage) {
-              setDonationToast(`공유 실패: ${result.errorMessage}`);
+              setDonationToast(copy.shareFailed.replace("{message}", result.errorMessage));
             } else {
               const parts: string[] = [];
-              if (result.inserted > 0) parts.push(`${result.inserted}개 공유`);
+              if (result.inserted > 0) {
+                parts.push(copy.sharedCount.replace("{count}", String(result.inserted)));
+              }
               if (result.alreadyDonated > 0)
-                parts.push(`${result.alreadyDonated}개 이미 공유됨`);
+                parts.push(copy.alreadySharedCount.replace("{count}", String(result.alreadyDonated)));
               setDonationToast(parts.join(" · ") || null);
             }
           }
@@ -162,7 +165,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
         setIsParsing(false);
       }
     },
-    [authReady, onUploadComplete, shareOnUpload, userId],
+    [authReady, copy, onUploadComplete, shareOnUpload, userId],
   );
 
   const onDrop = useCallback(
@@ -241,18 +244,17 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
           />
           <div>
             <p className="text-base font-semibold text-zinc-100">
-              내 런을 보려면 파일을 여기에
+              {copy.dropTitle}
             </p>
             <p className="mt-1 text-xs text-zinc-400">
               <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-zinc-300">
                 SlayTheSpire2/steam
               </code>{" "}
-              폴더 통째로 드래그하거나 개별{" "}
+              {copy.dropDescription.split("{runFile}")[0]}
               <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-zinc-300">
                 .run
-              </code>{" "}
-              파일을 드롭하세요. 하위 폴더는 자동으로 뒤집니다. 본인 브라우저에서만
-              처리됩니다.
+              </code>
+              {copy.dropDescription.split("{runFile}")[1]}
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
@@ -262,7 +264,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
               className="inline-flex items-center gap-1.5 rounded-md bg-zinc-800 px-3 py-1.5 text-xs font-semibold text-zinc-100 ring-1 ring-zinc-700 hover:bg-zinc-700"
             >
               <FolderUp className="h-3.5 w-3.5" aria-hidden />
-              폴더 선택
+              {copy.selectFolder}
             </button>
             <button
               type="button"
@@ -270,7 +272,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
               className="inline-flex items-center gap-1.5 rounded-md bg-zinc-800 px-3 py-1.5 text-xs font-semibold text-zinc-100 ring-1 ring-zinc-700 hover:bg-zinc-700"
             >
               <Upload className="h-3.5 w-3.5" aria-hidden />
-              파일 선택
+              {copy.selectFile}
             </button>
           </div>
           {supabaseEnabled && (
@@ -281,13 +283,13 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
                 onChange={(e) => setShareOnUpload(e.target.checked)}
                 className="h-3.5 w-3.5 rounded border-zinc-600 bg-zinc-900 text-amber-500 focus:ring-amber-500"
               />
-              올린 런 즉시 익명 공유
+              {copy.shareOnUpload}
             </label>
           )}
           {isParsing && (
             <p className="flex items-center gap-1.5 text-xs text-zinc-400">
               <RefreshCw className="h-3 w-3 animate-spin" aria-hidden />
-              읽는 중…
+              {copy.parsing}
             </p>
           )}
           {donationToast && !isParsing && (
@@ -323,7 +325,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
             />
             <div className="text-xs text-red-200">
               <p className="font-semibold">
-                읽지 못한 파일 {errors.length}개
+                {copy.unreadableCount.replace("{count}", String(errors.length))}
               </p>
               <ul className="mt-1 space-y-0.5 text-red-300/80">
                 {errors.slice(0, 5).map((err) => (
@@ -334,7 +336,9 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
                   </li>
                 ))}
                 {errors.length > 5 && (
-                  <li className="text-red-400/60">… 외 {errors.length - 5}개</li>
+                  <li className="text-red-400/60">
+                    {copy.moreErrors.replace("{count}", String(errors.length - 5))}
+                  </li>
                 )}
               </ul>
             </div>
