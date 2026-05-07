@@ -18,18 +18,27 @@ test.describe("Codex filter search token hints", () => {
     await expect(page.getByRole("button", { name: "@", exact: true })).toHaveCount(0);
   });
 
-  test("relic rarity search uses bang token", async ({ page }) => {
+  test("card search keeps bang for cost and dollar for rarity", async ({ page }) => {
+    await focusSearch(page, "/codex/cards");
+
+    await expect(page.getByRole("button", { name: "!", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "$", exact: true })).toBeVisible();
+  });
+
+  test("relic rarity search uses dollar token", async ({ page }) => {
     await focusSearch(page, "/codex/relics");
 
     await expect(page.getByRole("button", { name: "@", exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "!", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "$", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "!", exact: true })).toHaveCount(0);
   });
 
-  test("potion rarity search uses bang token", async ({ page }) => {
+  test("potion rarity search uses dollar token", async ({ page }) => {
     await focusSearch(page, "/codex/potions");
 
     await expect(page.getByRole("button", { name: "@", exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "!", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "$", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "!", exact: true })).toHaveCount(0);
   });
 
   test("monster search separates type and act tokens", async ({ page }) => {

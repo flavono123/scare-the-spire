@@ -56,18 +56,6 @@ const CARD_AUTOCOMPLETE: TriggerGroup[] = [
   },
   {
     trigger: "!",
-    type: "rarity",
-    label: "희귀도",
-    items: [
-      { value: "common", label: "일반", desc: "Common" },
-      { value: "uncommon", label: "고급", desc: "Uncommon" },
-      { value: "rare", label: "희귀", desc: "Rare" },
-      { value: "other", label: "기타", desc: "Other" },
-    ],
-    chipColor: "bg-purple-500/20 text-purple-400",
-  },
-  {
-    trigger: "$",
     type: "cost",
     label: "비용",
     items: [
@@ -80,6 +68,18 @@ const CARD_AUTOCOMPLETE: TriggerGroup[] = [
       { value: "X", label: "X", desc: "X 비용" },
     ],
     chipColor: "bg-amber-500/20 text-amber-400",
+  },
+  {
+    trigger: "$",
+    type: "rarity",
+    label: "희귀도",
+    items: [
+      { value: "common", label: "일반", desc: "Common" },
+      { value: "uncommon", label: "고급", desc: "Uncommon" },
+      { value: "rare", label: "희귀", desc: "Rare" },
+      { value: "other", label: "기타", desc: "Other" },
+    ],
+    chipColor: "bg-purple-500/20 text-purple-400",
   },
 ];
 

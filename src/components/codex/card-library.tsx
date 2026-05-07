@@ -235,6 +235,25 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       },
       {
         trigger: "!",
+        type: "cost",
+        label: gameUi.cardLibrary.sort.cost,
+        items: [
+          { value: "0", label: "0", desc: `${gameUi.cardLibrary.sort.cost} 0` },
+          { value: "1", label: "1", desc: `${gameUi.cardLibrary.sort.cost} 1` },
+          { value: "2", label: "2", desc: `${gameUi.cardLibrary.sort.cost} 2` },
+          { value: "3", label: "3", desc: `${gameUi.cardLibrary.sort.cost} 3` },
+          { value: "3+", label: "3+", desc: `${gameUi.cardLibrary.sort.cost} 3+` },
+          { value: "2-", label: "2-", desc: `${gameUi.cardLibrary.sort.cost} 2-` },
+          { value: "X", label: "X", desc: `${gameUi.cardLibrary.sort.cost} X` },
+        ],
+        validate: (val: string) => {
+          if (val === "x") return "X";
+          return COST_OPTIONS.map(String).includes(val) || val === "2-" ? val : null;
+        },
+        chipColor: "bg-amber-500/20 text-amber-400",
+      },
+      {
+        trigger: "$",
         type: "rarity",
         label: gameUi.cardLibrary.sort.rarity,
         items: [
@@ -252,25 +271,6 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
         ],
         validate: (val: string) => CARD_RARITY_ALIASES[val] ?? null,
         chipColor: "bg-purple-500/20 text-purple-400",
-      },
-      {
-        trigger: "$",
-        type: "cost",
-        label: gameUi.cardLibrary.sort.cost,
-        items: [
-          { value: "0", label: "0", desc: `${gameUi.cardLibrary.sort.cost} 0` },
-          { value: "1", label: "1", desc: `${gameUi.cardLibrary.sort.cost} 1` },
-          { value: "2", label: "2", desc: `${gameUi.cardLibrary.sort.cost} 2` },
-          { value: "3", label: "3", desc: `${gameUi.cardLibrary.sort.cost} 3` },
-          { value: "3+", label: "3+", desc: `${gameUi.cardLibrary.sort.cost} 3+` },
-          { value: "2-", label: "2-", desc: `${gameUi.cardLibrary.sort.cost} 2-` },
-          { value: "X", label: "X", desc: `${gameUi.cardLibrary.sort.cost} X` },
-        ],
-        validate: (val: string) => {
-          if (val === "x") return "X";
-          return COST_OPTIONS.map(String).includes(val) || val === "2-" ? val : null;
-        },
-        chipColor: "bg-amber-500/20 text-amber-400",
       },
     ],
     [gameUi, serviceText],
@@ -654,7 +654,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
         </FilterSection>
 
         {/* Rarity */}
-        <FilterSection trigger="!" label={gameUi.cardLibrary.sort.rarity} sortDir={sortDirs.rarity} onSortToggle={() => toggleSort("rarity")} sortTitle={serviceText.common.sortButtonTitle}>
+        <FilterSection trigger="$" label={gameUi.cardLibrary.sort.rarity} sortDir={sortDirs.rarity} onSortToggle={() => toggleSort("rarity")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-col gap-0.5">
             {rarityFilters.map((r) => (
               <button
@@ -699,7 +699,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
         </FilterSection>
 
         {/* Cost */}
-        <FilterSection trigger="$" label={gameUi.cardLibrary.sort.cost} sortDir={sortDirs.cost} onSortToggle={() => toggleSort("cost")} sortTitle={serviceText.common.sortButtonTitle}>
+        <FilterSection trigger="!" label={gameUi.cardLibrary.sort.cost} sortDir={sortDirs.cost} onSortToggle={() => toggleSort("cost")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-wrap gap-1">
             {COST_OPTIONS.map((cost) => {
               const key = String(cost);

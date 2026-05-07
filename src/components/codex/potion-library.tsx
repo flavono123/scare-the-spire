@@ -39,7 +39,11 @@ import {
   CodexLibraryTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
-import { getCharacterTokenIcon } from "./codex-filter-assets";
+import {
+  COLORLESS_FILTER_ICON,
+  EVENT_FILTER_ICON,
+  getCharacterTokenIcon,
+} from "./codex-filter-assets";
 
 type PotionSectionKey = keyof CodexGameUiLabels["potionLab"]["sections"];
 
@@ -184,7 +188,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
     [serviceText, gameUi],
   );
 
-  // Parse search query for @ (pool) and ! (rarity) tokens
+  // Parse search query for @ (pool) and $ (rarity) tokens
   const parsedSearch = useMemo(
     () => parseCodexSearch(searchQuery, potionTriggers),
     [searchQuery, potionTriggers],
@@ -308,6 +312,11 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
       icon: getCharacterTokenIcon(c.id, c.imageUrl),
     }));
 
+  const extraPoolFilters = [
+    { key: "shared" as const, label: poolLabels.shared, icon: COLORLESS_FILTER_ICON },
+    { key: "event" as const, label: poolLabels.event, icon: EVENT_FILTER_ICON },
+  ];
+
   const rarityFilters = DISPLAY_SECTIONS.map((s) => ({
     key: s.key,
     label: gameUi.potionLab.sections[s.key].label,
@@ -322,8 +331,8 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
       sidebar={(
         <>
         {/* Character/Pool Filters */}
-        <FilterSection trigger="@" label={serviceText.potionsView.characterFilter}>
-          <div className="flex flex-wrap gap-1.5">
+        <FilterSection trigger="@">
+          <div className="grid grid-cols-5 gap-1.5">
             {characterFilters.map((cf) => (
               <IconFilterButton
                 key={cf.key}
@@ -333,38 +342,22 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
                 onClick={() => togglePool(cf.key)}
               />
             ))}
-          </div>
-        </FilterSection>
-
-        <FilterSection trigger="@" label={serviceText.potionsView.otherFilter}>
-          <div className="flex flex-wrap gap-1.5">
-            <button
-              onClick={() => togglePool("shared")}
-              className={`group relative px-2.5 py-1 rounded-lg border-2 text-xs font-medium transition-all ${
-                selectedPools.has("shared")
-                  ? "border-yellow-500 bg-yellow-500/20 text-yellow-400"
-                  : "border-white/10 hover:border-white/30 bg-white/5 text-gray-400"
-              }`}
-            >
-              {poolLabels.shared}
-            </button>
-            <button
-              onClick={() => togglePool("event")}
-              className={`group relative px-2.5 py-1 rounded-lg border-2 text-xs font-medium transition-all ${
-                selectedPools.has("event")
-                  ? "border-yellow-500 bg-yellow-500/20 text-yellow-400"
-                  : "border-white/10 hover:border-white/30 bg-white/5 text-gray-400"
-              }`}
-            >
-              {poolLabels.event}
-            </button>
+            {extraPoolFilters.map((filter) => (
+              <IconFilterButton
+                key={filter.key}
+                icon={filter.icon}
+                label={filter.label}
+                active={selectedPools.has(filter.key)}
+                onClick={() => togglePool(filter.key)}
+              />
+            ))}
           </div>
         </FilterSection>
 
         <div className="border-t border-white/10" />
 
         {/* Rarity */}
-        <FilterSection trigger="!" label={gameUi.common.rarity}>
+        <FilterSection trigger="$" label={gameUi.common.rarity}>
           <div className="flex flex-col gap-0.5">
             {rarityFilters.map((r) => (
               <button
@@ -611,7 +604,7 @@ function getPotionTriggers(
     {
       trigger: "@",
       type: "pool",
-      label: serviceText.potionsView.characterFilter,
+      label: "",
       items: [
         { value: "ironclad", label: serviceText.labels.pools.ironclad, desc: "Ironclad" },
         { value: "silent", label: serviceText.labels.pools.silent, desc: "Silent" },
@@ -626,7 +619,7 @@ function getPotionTriggers(
       maxPreviewItems: 4,
     },
     {
-      trigger: "!",
+      trigger: "$",
       type: "rarity",
       label: gameUi.common.rarity,
       items: [

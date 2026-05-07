@@ -41,9 +41,19 @@ import {
   CodexLibraryTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
-import { getCharacterTokenIcon } from "./codex-filter-assets";
+import {
+  COLORLESS_FILTER_ICON,
+  EVENT_FILTER_ICON,
+  getCharacterTokenIcon,
+} from "./codex-filter-assets";
 
 type RelicSearchTokenType = "pool" | "rarity";
+type RelicPoolFilter = RelicFilterPool | "event";
+const RELIC_POOL_FILTER_ALIASES: Record<string, RelicPoolFilter> = {
+  ...POOL_ALIASES,
+  이벤트: "event",
+  event: "event",
+};
 
 interface RelicLibraryProps {
   serviceLocale: ServiceLocale;
@@ -63,7 +73,7 @@ interface RelicLibraryProps {
 export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters, ancients, versions, currentVersion, patches, versionDiffs, entities }: RelicLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
-  const [selectedPools, setSelectedPools] = useState<Set<RelicFilterPool>>(new Set());
+  const [selectedPools, setSelectedPools] = useState<Set<RelicPoolFilter>>(new Set());
   const [selectedRarities, setSelectedRarities] = useState<Set<RelicRarityKo>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
@@ -172,7 +182,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
 
     // Pool filter (sidebar)
     if (selectedPools.size > 0) {
-      result = result.filter((r) => selectedPools.has(r.pool));
+      result = result.filter((r) => selectedPools.has(r.pool) || (selectedPools.has("event") && r.rarity === "이벤트 유물"));
     }
 
     // Rarity filter (sidebar)
@@ -183,7 +193,9 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
     // Search token filters
     for (const token of parsedSearch.tokens) {
       if (token.type === "pool") {
-        result = result.filter((r) => r.pool === token.value);
+        result = result.filter((r) =>
+          token.value === "event" ? r.rarity === "이벤트 유물" : r.pool === token.value
+        );
       } else if (token.type === "rarity") {
         result = result.filter((r) => r.rarity === token.value);
       }
@@ -236,7 +248,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
   }, [filteredRelics, ancients]);
 
   // Toggle helpers
-  const togglePool = useCallback((pool: RelicFilterPool) => {
+  const togglePool = useCallback((pool: RelicPoolFilter) => {
     setSelectedPools((prev) => {
       const next = new Set(prev);
       if (next.has(pool)) next.delete(pool);
@@ -255,10 +267,15 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
   }, []);
 
   const characterFilters = characters.map((c) => ({
-    key: c.id.toLowerCase() as RelicFilterPool,
+    key: c.id.toLowerCase() as RelicPoolFilter,
     label: c.name,
     icon: getCharacterTokenIcon(c.id, c.imageUrl),
   }));
+
+  const extraPoolFilters = [
+    { key: "shared" as const, label: poolLabels.shared, icon: COLORLESS_FILTER_ICON },
+    { key: "event" as const, label: gameUi.relicCollection.rarities["이벤트 유물"].label, icon: EVENT_FILTER_ICON },
+  ];
 
   const rarityFilters = RELIC_RARITY_ORDER.filter((r) => r !== "None").map((r) => ({
     key: r,
@@ -275,9 +292,8 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
       isMobile={isMobile}
       sidebar={(
         <>
-        {/* Pool (character) filters */}
-        <FilterSection trigger="@" label={serviceText.relicsView.sourceFilter}>
-          <div className="flex flex-wrap gap-1.5">
+        <FilterSection trigger="@">
+          <div className="grid grid-cols-5 gap-1.5">
             {characterFilters.map((cf) => (
               <IconFilterButton
                 key={cf.key}
@@ -287,13 +303,22 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
                 onClick={() => togglePool(cf.key)}
               />
             ))}
+            {extraPoolFilters.map((filter) => (
+              <IconFilterButton
+                key={filter.key}
+                icon={filter.icon}
+                label={filter.label}
+                active={selectedPools.has(filter.key)}
+                onClick={() => togglePool(filter.key)}
+              />
+            ))}
           </div>
         </FilterSection>
 
         <div className="border-t border-white/10" />
 
         {/* Rarity filter */}
-        <FilterSection trigger="!" label={gameUi.common.rarity}>
+        <FilterSection trigger="$" label={gameUi.common.rarity}>
           <div className="flex flex-col gap-0.5">
             {rarityFilters.map((r) => (
               <button
@@ -435,7 +460,8 @@ function getRelicTriggers(
     {
       trigger: "@",
       type: "pool",
-      label: serviceText.relicsView.sourceFilter,
+      label: "",
+      maxPreviewItems: 4,
       items: [
         { value: "shared", label: poolLabels.shared, desc: "Shared" },
         { value: "ironclad", label: poolLabels.ironclad, desc: "Ironclad" },
@@ -443,12 +469,13 @@ function getRelicTriggers(
         { value: "defect", label: poolLabels.defect, desc: "Defect" },
         { value: "necrobinder", label: poolLabels.necrobinder, desc: "Necrobinder" },
         { value: "regent", label: poolLabels.regent, desc: "Regent" },
+        { value: "event", label: gameUi.relicCollection.rarities["이벤트 유물"].label, desc: "Event" },
       ],
-      validate: (val) => POOL_ALIASES[val] ?? null,
+      validate: (val) => RELIC_POOL_FILTER_ALIASES[val] ?? null,
       chipColor: "bg-blue-500/20 text-blue-400",
     },
     {
-      trigger: "!",
+      trigger: "$",
       type: "rarity",
       label: gameUi.common.rarity,
       items: [
