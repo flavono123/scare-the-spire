@@ -139,8 +139,24 @@ export function EntityPreview({
   const tooltipPos = forceShow
     ? "relative z-50 mt-1"
     : useTapPreview
-      ? "fixed left-3 right-3 bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-[120] pointer-events-auto flex justify-center"
+      ? "fixed left-3 right-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-[120] pointer-events-auto flex justify-center"
     : `absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${position === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
+  const renderTooltip = (content: ReactNode) => (
+    <span className={tooltipPos}>
+      {useTapPreview ? (
+        <Link
+          href={href}
+          aria-label={`${entity.nameKo} 상세 보기`}
+          className="group relative block cursor-pointer rounded-lg outline-none transition-transform duration-150 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-yellow-400/70"
+        >
+          {content}
+          <span className="pointer-events-none absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full border border-yellow-400/40 bg-black/55 text-base font-bold leading-none text-yellow-300 opacity-90 shadow-lg transition-colors group-active:border-yellow-300 group-active:bg-yellow-500/20">
+            ›
+          </span>
+        </Link>
+      ) : content}
+    </span>
+  );
 
   return (
     <span
@@ -172,18 +188,14 @@ export function EntityPreview({
         />
       )}
       {visible && entity.type === "card" && entity.cardData && (
-        <span
-          className={tooltipPos}
-        >
+        renderTooltip(
           <span className="block w-36 drop-shadow-2xl">
             <CardTile card={entity.cardData} showUpgrade={false} showBeta={false} />
-          </span>
-        </span>
+          </span>,
+        )
       )}
       {visible && entity.type === "relic" && entity.relicData && (
-        <span
-          className={tooltipPos}
-        >
+        renderTooltip(
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="flex items-center gap-2 mb-1">
               {entity.relicData.imageUrl && (
@@ -225,13 +237,11 @@ export function EntityPreview({
             <span className="block text-xs text-gray-200 leading-relaxed">
               <DescriptionText description={entity.relicData.description} />
             </span>
-          </span>
-        </span>
+          </span>,
+        )
       )}
       {visible && entity.type === "potion" && entity.potionData && (
-        <span
-          className={tooltipPos}
-        >
+        renderTooltip(
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="flex items-center gap-2 mb-1">
               <Image
@@ -271,13 +281,11 @@ export function EntityPreview({
             <span className="block text-xs text-gray-200 leading-relaxed">
               <DescriptionText description={entity.potionData.description} />
             </span>
-          </span>
-        </span>
+          </span>,
+        )
       )}
       {visible && entity.type === "power" && entity.powerData && (
-        <span
-          className={tooltipPos}
-        >
+        renderTooltip(
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="flex items-center gap-2 mb-1">
               {entity.powerData.imageUrl && (
@@ -310,13 +318,11 @@ export function EntityPreview({
             <span className="block text-xs text-gray-200 leading-relaxed">
               <DescriptionText description={entity.powerData.description} />
             </span>
-          </span>
-        </span>
+          </span>,
+        )
       )}
       {visible && entity.type === "enchantment" && entity.enchantmentData && (
-        <span
-          className={tooltipPos}
-        >
+        renderTooltip(
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="flex items-center gap-2 mb-1">
               {entity.enchantmentData.imageUrl && (
@@ -352,13 +358,11 @@ export function EntityPreview({
             <span className="block text-xs text-gray-200 leading-relaxed">
               <DescriptionText description={entity.enchantmentData.description} />
             </span>
-          </span>
-        </span>
+          </span>,
+        )
       )}
       {visible && entity.type === "event" && entity.eventData && !entity.eventOptionDesc && (
-        <span
-          className={tooltipPos}
-        >
+        renderTooltip(
           <span className="block w-56 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95">
             {entity.eventData.imageUrl && (
               <span className="block relative w-full h-28">
@@ -381,25 +385,21 @@ export function EntityPreview({
                 <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
               </span>
             )}
-          </span>
-        </span>
+          </span>,
+        )
       )}
       {visible && entity.eventOptionDesc && (
-        <span
-          className={tooltipPos}
-        >
+        renderTooltip(
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-amber-500/20 bg-[#0c0c20]/95 p-3">
             <span className="block font-bold text-sm text-amber-400 mb-1">{entity.nameKo}</span>
             <span className="block text-xs text-gray-200 leading-relaxed">
               <DescriptionText description={entity.eventOptionDesc} />
             </span>
-          </span>
-        </span>
+          </span>,
+        )
       )}
       {visible && entity.type === "monster" && entity.monsterData && (
-        <span
-          className={tooltipPos}
-        >
+        renderTooltip(
           <span className={`block ${forceShow ? "w-fit" : "w-64"} rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3`}>
             <span className="flex items-center gap-2 mb-1">
               {(entity.monsterData.bossImageUrl || entity.monsterData.imageUrl) && (
@@ -439,13 +439,11 @@ export function EntityPreview({
                 {entity.monsterData.moves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).slice(0, 4).map((m) => m.name).join(", ")}
               </span>
             )}
-          </span>
-        </span>
+          </span>,
+        )
       )}
       {visible && entity.type === "encounter" && entity.encounterData && (
-        <span
-          className={tooltipPos}
-        >
+        renderTooltip(
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="block">
               <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
@@ -473,13 +471,11 @@ export function EntityPreview({
             <span className="block text-xs text-gray-300 leading-relaxed">
               {Array.from(new Map(entity.encounterData.monsters.map((m) => [m.id, m])).values()).map((m) => m.name).join(", ")}
             </span>
-          </span>
-        </span>
+          </span>,
+        )
       )}
       {visible && entity.type === "ancient" && entity.ancientData && (
-        <span
-          className={tooltipPos}
-        >
+        renderTooltip(
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-blue-500/20 bg-[#0c0c20]/95">
             {entity.ancientData.imageUrl && (
               <span className="block relative w-full h-28">
@@ -505,13 +501,11 @@ export function EntityPreview({
                 </span>
               )}
             </span>
-          </span>
-        </span>
+          </span>,
+        )
       )}
       {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && !entity.ancientData && entity.imageUrl && (
-        <span
-          className={tooltipPos}
-        >
+        renderTooltip(
           <span className="block rounded-lg overflow-hidden shadow-2xl border border-yellow-500/20 bg-[#0a0a1a]">
             <Image
               src={entity.imageUrl}
@@ -529,27 +523,8 @@ export function EntityPreview({
                 {entity.nameEn}
               </span>
             </span>
-          </span>
-        </span>
-      )}
-      {visible && useTapPreview && (
-        <span className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-[130] flex justify-center pointer-events-none">
-          <span className="flex w-full max-w-64 gap-2 rounded-lg border border-white/15 bg-[#0c0c20]/95 p-2 shadow-2xl pointer-events-auto">
-            <button
-              type="button"
-              className="h-9 flex-1 rounded border border-white/10 text-sm font-semibold text-gray-300"
-              onClick={() => setShow(false)}
-            >
-              닫기
-            </button>
-            <Link
-              href={href}
-              className="h-9 flex-1 rounded bg-yellow-500/20 px-3 text-center text-sm font-semibold leading-9 text-yellow-300"
-            >
-              상세 보기
-            </Link>
-          </span>
-        </span>
+          </span>,
+        )
       )}
     </span>
   );
