@@ -6,7 +6,7 @@ const LANTERN_KEY_DIRECT_TERM_BY_LOCALE: Partial<Record<GameLocale, string>> = {
   deu: "Schlüssel",
   eng: "key",
   jpn: "鍵",
-  kor: "열쇠",
+  kor: "열쇠를",
   pol: "klucza",
   ptb: "chave",
   spa: "llave",
