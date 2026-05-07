@@ -5,8 +5,11 @@ import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { ArrowLeft, Link2, Eye, EyeOff } from "lucide-react";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { localizeHref } from "@/lib/i18n";
 import type { ChemicalPost } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 import { PostRenderer, buildEntityMap } from "./post-renderer";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 
@@ -22,6 +25,9 @@ function getTextClass(len: number): string {
 }
 
 export function ChemicalXPostView({ postId, entities }: PostViewProps) {
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].chemicalX;
+  const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const [post, setPost] = useState<ChemicalPost | null>(null);
   const [loading, setLoading] = useState(supabaseEnabled);
   const [copied, setCopied] = useState(false);
@@ -54,12 +60,12 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
       <div className="flex flex-col items-center justify-center py-12 gap-3">
         <Image
           src="/images/sts2/powers/asleep_power.webp"
-          alt="수면"
+          alt={copy.loading}
           width={48}
           height={48}
           className="object-contain animate-pulse"
         />
-        <span className="text-sm text-gray-500">투입을 불러오는 중...</span>
+        <span className="text-sm text-gray-500">{copy.loading}</span>
       </div>
     );
   }
@@ -67,9 +73,9 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
   if (!post) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500 text-sm mb-4">글을 찾을 수 없습니다</p>
-        <Link href="/chemical-x" className="text-yellow-400 text-sm hover:underline">
-          케미컬X로 돌아가기
+        <p className="text-gray-500 text-sm mb-4">{copy.notFound}</p>
+        <Link href={localizeHref("/chemical-x", serviceLocale)} className="text-yellow-400 text-sm hover:underline">
+          {copy.backToChemicalX}
         </Link>
       </div>
     );
@@ -82,11 +88,11 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
       {/* Back + actions — outside the card (not in screenshot) */}
       <div className="flex items-center justify-between">
         <Link
-          href="/chemical-x"
+          href={localizeHref("/chemical-x", serviceLocale)}
           className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-yellow-400 transition-colors"
         >
           <ArrowLeft size={16} />
-          케미컬X
+          {copy.title}
         </Link>
         <div className="flex items-center gap-2">
           <button
@@ -95,7 +101,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
           >
             <Link2 size={14} />
-            {copied ? "복사됨!" : "링크 복사"}
+            {copied ? copy.copied : copy.copyLink}
           </button>
           <button
             type="button"
@@ -103,7 +109,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded border border-border text-gray-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-colors"
           >
             {showTooltips ? <EyeOff size={14} /> : <Eye size={14} />}
-            {showTooltips ? "접기" : "펼치기"}
+            {showTooltips ? copy.collapse : copy.expand}
           </button>
         </div>
       </div>
@@ -120,7 +126,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
         <div className="relative flex items-center justify-between mb-4">
           <span className="text-sm font-semibold text-gray-300">{post.nickname}</span>
           <span className="text-xs text-gray-500">
-            {new Date(post.created_at).toLocaleDateString("ko-KR")}
+            {new Date(post.created_at).toLocaleDateString(dateLocale)}
           </span>
         </div>
 
@@ -139,7 +145,9 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
               height={14}
               className="object-contain opacity-50"
             />
-            <span className="text-[11px] text-yellow-500/40 font-semibold tracking-wide">슬서운 이야기</span>
+            <span className="text-[11px] text-yellow-500/40 font-semibold tracking-wide">
+              {serviceMessages[serviceLocale].brand}
+            </span>
           </div>
           <span className="text-[11px] text-gray-600/60 tracking-wide">
             scare-the-spire.vercel.app/chemical-x/{postId.slice(0, 8)}
