@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useMemo, type ReactNode } from "react";
+import { useState, useRef, useCallback, useMemo, useEffect, type ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import {
@@ -60,6 +60,20 @@ type RenderContext = {
 const DEFAULT_ENTITY_LINK_CLASS =
   "font-semibold spire-gold hover:text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 transition-colors cursor-pointer";
 
+function useCoarsePointer(): boolean {
+  const [isCoarsePointer, setIsCoarsePointer] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: none), (pointer: coarse)");
+    const update = () => setIsCoarsePointer(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  return isCoarsePointer;
+}
+
 export function EntityPreview({
   entity,
   children,
@@ -83,9 +97,11 @@ export function EntityPreview({
   preferEntityLocaleLabel?: boolean;
 }) {
   const [show, setShow] = useState(false);
-  const visible = show || forceShow;
   const [position, setPosition] = useState<"above" | "below">(forcePosition ?? "above");
   const ref = useRef<HTMLSpanElement>(null);
+  const isCoarsePointer = useCoarsePointer();
+  const useTapPreview = isCoarsePointer && !forceShow;
+  const visible = show || forceShow;
 
   const handleMouseEnter = useCallback(() => {
     if (ref.current) {
@@ -114,24 +130,46 @@ export function EntityPreview({
     : hrefMap[entity.type];
   const linkText = preferEntityLocaleLabel ? entity.nameKo : children;
 
+  const openTapPreview = useCallback((event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!useTapPreview) return;
+    event.preventDefault();
+    setShow(true);
+  }, [useTapPreview]);
+
   const tooltipPos = forceShow
     ? "relative z-50 mt-1"
+    : useTapPreview
+      ? "fixed left-3 right-3 bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-[120] pointer-events-auto flex justify-center"
     : `absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${position === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
 
   return (
     <span
       ref={ref}
       className={forceShow ? "inline-block" : "relative inline"}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={() => setShow(false)}
+      onMouseEnter={() => {
+        if (!useTapPreview) handleMouseEnter();
+      }}
+      onMouseLeave={() => {
+        if (!useTapPreview) setShow(false);
+      }}
     >
       {!forceShow && (
         <Link
           href={href}
           className={linkClassName ?? DEFAULT_ENTITY_LINK_CLASS}
+          onClick={openTapPreview}
+          aria-expanded={useTapPreview ? show : undefined}
         >
           {linkText}
         </Link>
+      )}
+      {visible && useTapPreview && (
+        <button
+          type="button"
+          aria-label="미리보기 닫기"
+          className="fixed inset-0 z-[110] cursor-default bg-black/35"
+          onClick={() => setShow(false)}
+        />
       )}
       {visible && entity.type === "card" && entity.cardData && (
         <span
@@ -491,6 +529,25 @@ export function EntityPreview({
                 {entity.nameEn}
               </span>
             </span>
+          </span>
+        </span>
+      )}
+      {visible && useTapPreview && (
+        <span className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-[130] flex justify-center pointer-events-none">
+          <span className="flex w-full max-w-64 gap-2 rounded-lg border border-white/15 bg-[#0c0c20]/95 p-2 shadow-2xl pointer-events-auto">
+            <button
+              type="button"
+              className="h-9 flex-1 rounded border border-white/10 text-sm font-semibold text-gray-300"
+              onClick={() => setShow(false)}
+            >
+              닫기
+            </button>
+            <Link
+              href={href}
+              className="h-9 flex-1 rounded bg-yellow-500/20 px-3 text-center text-sm font-semibold leading-9 text-yellow-300"
+            >
+              상세 보기
+            </Link>
           </span>
         </span>
       )}
