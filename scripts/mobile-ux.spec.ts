@@ -38,10 +38,11 @@ test.describe("mobile patch note entity preview", () => {
     await page.getByRole("link", { name: /불굴|Not Yet/ }).first().click();
 
     await expect(page).toHaveURL(startUrl);
-    await expect(page.getByRole("button", { name: "닫기" })).toBeVisible();
+    const closePreview = page.getByRole("button", { name: "닫기", exact: true });
+    await expect(closePreview).toBeVisible();
     await expect(page.getByRole("link", { name: "상세 보기" })).toBeVisible();
 
-    await page.getByRole("button", { name: "닫기" }).click();
-    await expect(page.getByRole("button", { name: "닫기" })).toHaveCount(0);
+    await closePreview.click();
+    await expect(page.getByRole("button", { name: "닫기", exact: true })).toHaveCount(0);
   });
 });
