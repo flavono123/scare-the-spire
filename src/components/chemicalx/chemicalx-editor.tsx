@@ -4,13 +4,14 @@ import { useState, useCallback } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 import { RichContentEditor } from "@/components/rich-content-editor";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 
-const DEFAULT_NICKNAME = "익명의 투입터리안";
 const NICKNAME_KEY = "sts-chemicalx-nickname";
 
-function getSavedNickname(): string {
-  if (typeof window === "undefined") return DEFAULT_NICKNAME;
-  return localStorage.getItem(NICKNAME_KEY) || DEFAULT_NICKNAME;
+function getSavedNickname(defaultNickname: string): string {
+  if (typeof window === "undefined") return defaultNickname;
+  return localStorage.getItem(NICKNAME_KEY) || defaultNickname;
 }
 
 interface ChemicalXEditorProps {
@@ -19,13 +20,15 @@ interface ChemicalXEditorProps {
 }
 
 export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
-  const [nickname, setNickname] = useState(getSavedNickname);
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].chemicalX;
+  const [nickname, setNickname] = useState(() => getSavedNickname(copy.defaultNickname));
 
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
-    const nick = nickname.trim() || DEFAULT_NICKNAME;
+    const nick = nickname.trim() || copy.defaultNickname;
     localStorage.setItem(NICKNAME_KEY, nick);
     await onSubmit(blocks, nick);
-  }, [nickname, onSubmit]);
+  }, [copy.defaultNickname, nickname, onSubmit]);
 
   return (
     <div className="space-y-3">
@@ -35,7 +38,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            placeholder={DEFAULT_NICKNAME}
+            placeholder={copy.defaultNickname}
             maxLength={20}
             className="bg-transparent text-sm text-gray-300 placeholder:text-gray-600 outline-none w-full"
           />
@@ -44,9 +47,9 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
         <RichContentEditor
           entities={entities}
           onSubmit={handleSubmit}
-          placeholder="오, 이 차는 무례한 사람들에게 내어지는 차입니다..."
+          placeholder={copy.placeholder}
           draftKey="sts-chemicalx-draft"
-          submitLabel="투입"
+          submitLabel={copy.submit}
           submitIconSrc="/images/relics/inserter.webp"
           showKeywordTip
         />
