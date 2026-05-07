@@ -98,6 +98,7 @@ export function EntityPreview({
 }) {
   const [show, setShow] = useState(false);
   const [previewPressed, setPreviewPressed] = useState(false);
+  const [tapPreviewStyle, setTapPreviewStyle] = useState<React.CSSProperties | undefined>();
   const [position, setPosition] = useState<"above" | "below">(forcePosition ?? "above");
   const ref = useRef<HTMLSpanElement>(null);
   const isCoarsePointer = useCoarsePointer();
@@ -134,17 +135,37 @@ export function EntityPreview({
   const openTapPreview = useCallback((event: React.MouseEvent<HTMLAnchorElement>) => {
     if (!useTapPreview) return;
     event.preventDefault();
+    const rect = event.currentTarget.getBoundingClientRect();
+    const isCardPreview = entity.type === "card" && Boolean(entity.cardData);
+    const estimatedWidth = isCardPreview ? 156 : entity.eventData && !entity.eventOptionDesc ? 224 : 256;
+    const estimatedHeight = isCardPreview ? 230 : entity.eventData && !entity.eventOptionDesc ? 160 : 220;
+    const margin = 12;
+    const topSafeArea = 56;
+    const x = Math.min(
+      Math.max(rect.left + rect.width / 2 - estimatedWidth / 2, margin),
+      Math.max(margin, window.innerWidth - estimatedWidth - margin),
+    );
+    const hasRoomBelow = rect.bottom + margin + estimatedHeight < window.innerHeight;
+    const preferredY = hasRoomBelow
+      ? rect.bottom + 8
+      : rect.top - estimatedHeight - 8;
+    const y = Math.min(
+      Math.max(preferredY, topSafeArea),
+      Math.max(topSafeArea, window.innerHeight - estimatedHeight - margin),
+    );
+
     setPreviewPressed(false);
+    setTapPreviewStyle({ left: x, top: y });
     setShow(true);
-  }, [useTapPreview]);
+  }, [entity.cardData, entity.eventData, entity.eventOptionDesc, entity.type, useTapPreview]);
 
   const tooltipPos = forceShow
     ? "relative z-50 mt-1"
     : useTapPreview
-      ? "fixed left-3 right-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-[120] pointer-events-auto flex justify-center"
+      ? "fixed z-[120] pointer-events-auto"
     : `absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${position === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
   const renderTooltip = (content: ReactNode, variant: "card" | "box" = "box") => (
-    <span className={tooltipPos}>
+    <span className={tooltipPos} style={useTapPreview ? tapPreviewStyle : undefined}>
       {useTapPreview ? (
         <Link
           href={href}
