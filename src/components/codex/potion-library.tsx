@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import { DescriptionText } from "./codex-description";
 import { PotionDetail } from "./potion-detail";
-import { getChoseong } from "es-hangul";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -26,7 +25,21 @@ import {
 } from "@/lib/codex-types";
 import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
 import { reconstructPotionAtVersion } from "@/lib/entity-versioning";
+import {
+  fuzzyMatchCodexText,
+  parseCodexSearch,
+  stripCodexMarkup,
+  type CodexSearchTriggerGroup,
+} from "@/lib/codex-search";
 import { VersionSelector } from "./version-selector";
+import { SearchBar } from "./search-bar";
+import { FilterSection, IconFilterButton } from "./codex-filters";
+import {
+  CodexLibraryShell,
+  CodexLibraryTopBar,
+  useCodexFilterDrawer,
+} from "./codex-filter-drawer";
+import { getCharacterTokenIcon } from "./codex-filter-assets";
 
 type PotionSectionKey = keyof CodexGameUiLabels["potionLab"]["sections"];
 
@@ -66,6 +79,8 @@ const CHARACTER_POOLS: PotionPool[] = [
   "necrobinder",
   "regent",
 ];
+
+type PotionSearchTokenType = "pool" | "rarity";
 
 interface PotionLibraryProps {
   serviceLocale: ServiceLocale;
@@ -143,8 +158,6 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
       reconstructPotionAtVersion(potion, selectedVersion, currentVersion, versionDiffs, patches),
     );
   }, [potions, selectedVersion, currentVersion, versionDiffs, patches]);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
   const [hoveredPotion, setHoveredPotion] = useState<CodexPotion | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{
     x: number;
@@ -164,59 +177,18 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  // Auto-collapse on mobile
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = (e: { matches: boolean }) => {
-      setIsMobile(e.matches);
-      setSidebarOpen(!e.matches);
-    };
-    update(mq);
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
+  const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
-  // Parse search query for @ (pool) and # (rarity) tokens
-  const parsedSearch = useMemo(() => {
-    const tokens: { type: "pool" | "rarity"; value: string }[] = [];
-    const textParts: string[] = [];
+  const potionTriggers = useMemo(
+    () => getPotionTriggers(serviceText, gameUi),
+    [serviceText, gameUi],
+  );
 
-    const parts = searchQuery.split(/\s+/).filter(Boolean);
-    for (const part of parts) {
-      if (part.startsWith("@")) {
-        const val = part.slice(1).toLowerCase();
-        const match = POOL_ALIASES[val];
-        if (match) tokens.push({ type: "pool", value: match });
-        else textParts.push(part);
-      } else if (part.startsWith("#")) {
-        const val = part.slice(1).toLowerCase();
-        const match = POTION_RARITY_ALIASES[val];
-        if (match) tokens.push({ type: "rarity", value: match });
-        else textParts.push(part);
-      } else {
-        textParts.push(part);
-      }
-    }
-
-    return { text: textParts.join(" ").toLowerCase(), tokens };
-  }, [searchQuery]);
-
-  const fuzzyMatch = useCallback((text: string, query: string): boolean => {
-    if (!query) return true;
-    const lt = text.toLowerCase();
-    const lq = query.toLowerCase();
-    if (lt.includes(lq)) return true;
-    const isAllJamo = /^[ㄱ-ㅎ]+$/.test(query);
-    if (isAllJamo) {
-      const choseong = getChoseong(text);
-      if (choseong.includes(query)) return true;
-    }
-    let qi = 0;
-    for (let i = 0; i < lt.length && qi < lq.length; i++) {
-      if (lt[i] === lq[qi]) qi++;
-    }
-    return qi === lq.length;
-  }, []);
+  // Parse search query for @ (pool) and ! (rarity) tokens
+  const parsedSearch = useMemo(
+    () => parseCodexSearch(searchQuery, potionTriggers),
+    [searchQuery, potionTriggers],
+  );
 
   // Filter potions
   const filteredPotions = useMemo(() => {
@@ -249,17 +221,14 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
     if (parsedSearch.text) {
       result = result.filter(
         (p) =>
-          fuzzyMatch(p.name, parsedSearch.text) ||
-          fuzzyMatch(p.nameEn, parsedSearch.text) ||
-          p.description
-            .replace(/\[\/?\w+(?::?\w*)*\]/g, "")
-            .toLowerCase()
-            .includes(parsedSearch.text)
+          fuzzyMatchCodexText(p.name, parsedSearch.text) ||
+          fuzzyMatchCodexText(p.nameEn, parsedSearch.text) ||
+          stripCodexMarkup(p.description).toLowerCase().includes(parsedSearch.text)
       );
     }
 
     return result;
-  }, [versionedPotions, selectedPools, selectedRarities, parsedSearch, fuzzyMatch]);
+  }, [versionedPotions, selectedPools, selectedRarities, parsedSearch]);
 
   // Group by rarity sections
   const sections = useMemo(() => {
@@ -336,7 +305,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
     .map((c) => ({
       key: c.id.toLowerCase() as PotionPool,
       label: c.name,
-      icon: c.imageUrl,
+      icon: getCharacterTokenIcon(c.id, c.imageUrl),
     }));
 
   const rarityFilters = DISPLAY_SECTIONS.map((s) => ({
@@ -346,26 +315,12 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
   }));
 
   return (
-    <div className="flex h-[calc(100dvh-3rem)] bg-background text-foreground overflow-hidden">
-      {/* Mobile overlay */}
-      {sidebarOpen && isMobile && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Left Sidebar */}
-      <aside
-        className={`
-        border-r border-white/10 bg-[#16162a] flex flex-col gap-2 overflow-y-auto transition-all duration-200 shrink-0
-        ${
-          isMobile
-            ? `fixed z-50 inset-y-0 left-0 w-52 ${sidebarOpen ? "translate-x-0 p-3" : "-translate-x-full p-3"}`
-            : `relative ${sidebarOpen ? "w-52 p-3" : "w-0 p-0 overflow-hidden border-r-0"}`
-        }
-      `}
-      >
+    <CodexLibraryShell
+      sidebarOpen={sidebarOpen}
+      setSidebarOpen={setSidebarOpen}
+      isMobile={isMobile}
+      sidebar={(
+        <>
         {/* Character/Pool Filters */}
         <FilterSection trigger="@" label={serviceText.potionsView.characterFilter}>
           <div className="flex flex-wrap gap-1.5">
@@ -409,7 +364,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
         <div className="border-t border-white/10" />
 
         {/* Rarity */}
-        <FilterSection trigger="#" label={gameUi.common.rarity}>
+        <FilterSection trigger="!" label={gameUi.common.rarity}>
           <div className="flex flex-col gap-0.5">
             {rarityFilters.map((r) => (
               <button
@@ -430,64 +385,37 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
             ))}
           </div>
         </FilterSection>
-      </aside>
+        </>
+      )}
+    >
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
-        <div className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2 border-b border-white/10 bg-[#16162a]/80">
-          <button
-            onClick={() => setSidebarOpen((v) => !v)}
-            className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/10 text-gray-400"
-            aria-label={sidebarOpen ? serviceText.common.closeFilters : serviceText.common.openFilters}
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              {sidebarOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-                />
-              )}
-            </svg>
-          </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">
-            {title}
-          </h1>
-          <div className="flex-1 max-w-xl mx-auto">
-            <PotionSearchBar
-                value={searchQuery}
-                onChange={setSearchQuery}
-                inputId="potion-search"
-                messages={serviceText}
-                rarityLabel={gameUi.common.rarity}
-              />
-          </div>
-          <span className="text-sm text-gray-500 shrink-0 tabular-nums">
-            {formatCodexCount(filteredPotions.length, serviceText.labels.potions, serviceLocale)}
-          </span>
-          {versions && versions.length > 0 && currentVersion && (
+        <CodexLibraryTopBar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          closeFiltersLabel={serviceText.common.closeFilters}
+          openFiltersLabel={serviceText.common.openFilters}
+          title={title}
+          search={(
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              inputId="potion-search"
+              triggerGroups={potionTriggers}
+              placeholder={serviceText.potionsView.searchPlaceholder}
+            />
+          )}
+          count={formatCodexCount(filteredPotions.length, serviceText.labels.potions, serviceLocale)}
+          trailing={versions && versions.length > 0 && currentVersion ? (
             <VersionSelector
               versions={versions}
               currentVersion={currentVersion}
               selectedVersion={selectedVersion}
               onChange={setSelectedVersion}
             />
-          )}
-        </div>
+          ) : undefined}
+        />
 
         {/* Potion Grid by Rarity */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
@@ -553,7 +481,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
           </div>
         </div>
       )}
-    </div>
+    </CodexLibraryShell>
   );
 }
 
@@ -675,161 +603,43 @@ function getPoolColor(pool: PotionPool): string {
   return getCharacterColor(pool) ?? "#888";
 }
 
-// Potion-specific search bar (simpler than card search)
-function PotionSearchBar({
-  value,
-  onChange,
-  inputId,
-  messages,
-  rarityLabel,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-  inputId?: string;
-  messages: CodexServiceMessages;
-  rarityLabel: string;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [isFocused, setIsFocused] = useState(false);
-
-  const HINTS = [
-    { trigger: "@", label: messages.potionsView.characterFilter, examples: ["ironclad", "defect", "shared"] },
-    { trigger: "#", label: rarityLabel, examples: ["common", "uncommon", "rare", "event"] },
+function getPotionTriggers(
+  serviceText: CodexServiceMessages,
+  gameUi: CodexGameUiLabels,
+): CodexSearchTriggerGroup<PotionSearchTokenType>[] {
+  return [
+    {
+      trigger: "@",
+      type: "pool",
+      label: serviceText.potionsView.characterFilter,
+      items: [
+        { value: "ironclad", label: serviceText.labels.pools.ironclad, desc: "Ironclad" },
+        { value: "silent", label: serviceText.labels.pools.silent, desc: "Silent" },
+        { value: "defect", label: serviceText.labels.pools.defect, desc: "Defect" },
+        { value: "necrobinder", label: serviceText.labels.pools.necrobinder, desc: "Necrobinder" },
+        { value: "regent", label: serviceText.labels.pools.regent, desc: "Regent" },
+        { value: "shared", label: serviceText.labels.pools.shared, desc: "Shared" },
+        { value: "event", label: gameUi.eventsTitle, desc: "Event" },
+      ],
+      validate: (val) => POOL_ALIASES[val] ?? null,
+      chipColor: "bg-blue-500/20 text-blue-400",
+      maxPreviewItems: 4,
+    },
+    {
+      trigger: "!",
+      type: "rarity",
+      label: gameUi.common.rarity,
+      items: [
+        { value: "common", label: gameUi.potionLab.rarities.일반.label, desc: "Common" },
+        { value: "uncommon", label: gameUi.potionLab.rarities.고급.label, desc: "Uncommon" },
+        { value: "rare", label: gameUi.potionLab.rarities.희귀.label, desc: "Rare" },
+        { value: "event", label: gameUi.potionLab.rarities.이벤트.label, desc: "Event" },
+        { value: "token", label: gameUi.potionLab.rarities.토큰.label, desc: "Token" },
+      ],
+      validate: (val) => POTION_RARITY_ALIASES[val] ?? null,
+      chipColor: "bg-green-500/20 text-green-400",
+    },
   ];
-
-  return (
-    <div className="relative">
-      <div className="relative">
-        <svg
-          className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.3-4.3" />
-        </svg>
-        <input
-          ref={inputRef}
-          id={inputId}
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setTimeout(() => setIsFocused(false), 150)}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              onChange("");
-              inputRef.current?.blur();
-            }
-          }}
-          placeholder={messages.potionsView.searchPlaceholder}
-          className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-16 py-1.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-all"
-        />
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-          {value && (
-            <button
-              onClick={() => onChange("")}
-              className="text-gray-500 hover:text-gray-300 transition-colors p-0.5"
-            >
-              <svg
-                className="w-3.5 h-3.5"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M18.3 5.71a1 1 0 00-1.42 0L12 10.59 7.12 5.7A1 1 0 005.7 7.12L10.59 12 5.7 16.88a1 1 0 101.42 1.42L12 13.41l4.88 4.89a1 1 0 001.42-1.42L13.41 12l4.89-4.88a1 1 0 000-1.41z" />
-              </svg>
-            </button>
-          )}
-          <kbd className="hidden sm:inline text-[9px] text-gray-600 bg-white/5 border border-white/10 rounded px-1 py-0.5 font-mono">
-            ⌘K
-          </kbd>
-        </div>
-      </div>
-
-      {/* Trigger hints on focus */}
-      {isFocused && !value && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-[#1e1e3a] border border-white/10 rounded-lg shadow-xl z-50 overflow-hidden p-2.5 flex flex-col gap-2">
-          {HINTS.map(({ trigger, label, examples }) => (
-            <div key={trigger} className="flex items-center gap-2 flex-wrap">
-              <button
-                onMouseDown={() => {
-                  onChange(trigger);
-                  inputRef.current?.focus();
-                }}
-                className="shrink-0 text-[11px] font-mono font-bold text-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/20 rounded px-1.5 py-0.5 transition-colors"
-              >
-                {trigger}
-              </button>
-              <span className="shrink-0 text-[11px] text-gray-500 w-10">
-                {label}
-              </span>
-              {examples.map((ex) => (
-                <button
-                  key={ex}
-                  onMouseDown={() => {
-                    onChange(`${trigger}${ex} `);
-                    inputRef.current?.focus();
-                  }}
-                  className="text-[11px] text-gray-400 hover:text-gray-200 bg-white/5 hover:bg-white/10 rounded px-1.5 py-0.5 transition-colors"
-                >
-                  {ex}
-                </button>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Token chips */}
-      {value &&
-        value
-          .split(/\s+/)
-          .some((t) => t.startsWith("@") || t.startsWith("#")) && (
-          <div className="flex flex-wrap gap-1 mt-1">
-            {value
-              .split(/\s+/)
-              .filter(Boolean)
-              .map((token, i) => {
-                if (token.startsWith("@")) {
-                  const val = token.slice(1).toLowerCase();
-                  const match = POOL_ALIASES[val];
-                  return (
-                    <span
-                      key={i}
-                      className={`inline-flex items-center text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
-                        match
-                          ? "bg-blue-500/20 text-blue-400"
-                          : "bg-red-500/15 text-red-400/70"
-                      }`}
-                    >
-                      @{token.slice(1)}
-                    </span>
-                  );
-                }
-                if (token.startsWith("#")) {
-                  const val = token.slice(1).toLowerCase();
-                  const match = POTION_RARITY_ALIASES[val];
-                  return (
-                    <span
-                      key={i}
-                      className={`inline-flex items-center text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
-                        match
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-red-500/15 text-red-400/70"
-                      }`}
-                    >
-                      #{token.slice(1)}
-                    </span>
-                  );
-                }
-                return null;
-              })}
-          </div>
-        )}
-    </div>
-  );
 }
 
 function getPotionSectionKey(rarity: PotionRarityKo): string {
@@ -837,68 +647,4 @@ function getPotionSectionKey(rarity: PotionRarityKo): string {
   if (rarity === "고급") return "uncommon";
   if (rarity === "희귀") return "rare";
   return "special";
-}
-
-// Shared sub-components
-function FilterSection({
-  trigger,
-  label,
-  children,
-}: {
-  trigger?: string;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex items-center gap-1.5">
-        {trigger && (
-          <span className="text-[10px] font-mono font-bold text-yellow-500/70 bg-yellow-500/10 rounded px-1 py-0.5 leading-none">
-            {trigger}
-          </span>
-        )}
-        <span className="text-[11px] text-gray-500 font-medium uppercase tracking-wider">
-          {label}
-        </span>
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function IconFilterButton({
-  icon,
-  label,
-  active,
-  onClick,
-}: {
-  icon: string;
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`group relative w-9 h-9 rounded-lg border-2 transition-all ${
-        active
-          ? "border-yellow-500 bg-yellow-500/20"
-          : "border-white/10 hover:border-white/30 bg-white/5"
-      }`}
-      title={label}
-    >
-      <Image
-        src={icon}
-        alt={label}
-        width={28}
-        height={28}
-        className={`w-full h-full object-contain p-0.5 ${
-          active ? "" : "opacity-50 group-hover:opacity-100"
-        }`}
-      />
-      <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-black/90 px-2 py-0.5 text-[10px] text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-50">
-        {label}
-      </span>
-    </button>
-  );
 }
