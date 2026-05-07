@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { getChoseong } from "es-hangul";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -27,6 +26,12 @@ import {
   RARITY_DETAIL_ORDER,
   RARITY_DETAIL_COLORS,
 } from "@/lib/card-annotations";
+import {
+  fuzzyMatchCodexText,
+  parseCodexSearch,
+  stripCodexMarkup,
+  type CodexSearchTriggerGroup,
+} from "@/lib/codex-search";
 
 // Sort key definitions
 export type SortKey = "color" | "type" | "rarity" | "cost" | "name";
@@ -74,6 +79,11 @@ import { CardDetail } from "./card-detail";
 import { SearchBar } from "./search-bar";
 import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
+import {
+  CodexLibraryShell,
+  CodexLibraryTopBar,
+  useCodexFilterDrawer,
+} from "./codex-filter-drawer";
 
 // Character token icons (game-extracted)
 const CHARACTER_TOKEN_ICONS: Record<string, string> = {
@@ -102,6 +112,7 @@ const RARITY_COLORS: Record<string, string> = {
 };
 
 const COST_OPTIONS = [0, 1, 2, 3, "3+", "X"] as const;
+type CardSearchTokenType = "color" | "type" | "cost";
 
 interface CardLibraryProps {
   serviceLocale: ServiceLocale;
@@ -163,52 +174,68 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
+  const searchTriggers = useMemo<CodexSearchTriggerGroup<CardSearchTokenType>[]>(
+    () => [
+      {
+        trigger: "@",
+        type: "color",
+        label: serviceText.cardsView.filters.character,
+        maxPreviewItems: 4,
+        items: [
+          { value: "ironclad", label: serviceText.labels.pools.ironclad, desc: "Ironclad" },
+          { value: "silent", label: serviceText.labels.pools.silent, desc: "Silent" },
+          { value: "defect", label: serviceText.labels.pools.defect, desc: "Defect" },
+          { value: "necrobinder", label: serviceText.labels.pools.necrobinder, desc: "Necrobinder" },
+          { value: "regent", label: serviceText.labels.pools.regent, desc: "Regent" },
+          { value: "colorless", label: serviceText.labels.pools.colorless, desc: "Colorless" },
+          { value: "event", label: serviceText.labels.pools.event, desc: "Event" },
+          { value: "curse", label: serviceText.labels.pools.curse, desc: "Curse" },
+          { value: "status", label: serviceText.labels.pools.status, desc: "Status" },
+          { value: "ancient", label: serviceText.labels.pools.ancient, desc: "Ancient" },
+        ],
+        validate: (val: string) => COLOR_ALIASES[val] ?? null,
+        chipColor: "bg-blue-500/20 text-blue-400",
+      },
+      {
+        trigger: "#",
+        type: "type",
+        label: gameUi.cardLibrary.sort.type,
+        items: [
+          { value: "attack", label: gameUi.cardLibrary.types.공격, desc: "Attack" },
+          { value: "skill", label: gameUi.cardLibrary.types.스킬, desc: "Skill" },
+          { value: "power", label: gameUi.cardLibrary.types.파워, desc: "Power" },
+        ],
+        validate: (val: string) => TYPE_ALIASES[val] ?? null,
+        chipColor: "bg-green-500/20 text-green-400",
+      },
+      {
+        trigger: "!",
+        type: "cost",
+        label: gameUi.cardLibrary.sort.cost,
+        items: [
+          { value: "0", label: "0", desc: `${gameUi.cardLibrary.sort.cost} 0` },
+          { value: "1", label: "1", desc: `${gameUi.cardLibrary.sort.cost} 1` },
+          { value: "2", label: "2", desc: `${gameUi.cardLibrary.sort.cost} 2` },
+          { value: "3", label: "3", desc: `${gameUi.cardLibrary.sort.cost} 3` },
+          { value: "3+", label: "3+", desc: `${gameUi.cardLibrary.sort.cost} 3+` },
+          { value: "2-", label: "2-", desc: `${gameUi.cardLibrary.sort.cost} 2-` },
+          { value: "X", label: "X", desc: `${gameUi.cardLibrary.sort.cost} X` },
+        ],
+        validate: (val: string) => {
+          if (val === "x") return "X";
+          return COST_OPTIONS.map(String).includes(val) || val === "2-" ? val : null;
+        },
+        chipColor: "bg-amber-500/20 text-amber-400",
+      },
+    ],
+    [gameUi, serviceText],
+  );
+
   // Parse search query (uses debounced value)
-  const parsedSearch = useMemo(() => {
-    const tokens: { type: "color" | "type" | "cost"; value: string }[] = [];
-    const textParts: string[] = [];
-
-    const parts = debouncedQuery.split(/\s+/).filter(Boolean);
-    for (const part of parts) {
-      if (part.startsWith("@")) {
-        const val = part.slice(1).toLowerCase();
-        const match = COLOR_ALIASES[val];
-        if (match) tokens.push({ type: "color", value: match });
-        else textParts.push(part);
-      } else if (part.startsWith("#")) {
-        const val = part.slice(1).toLowerCase();
-        const match = TYPE_ALIASES[val];
-        if (match) tokens.push({ type: "type", value: match });
-        else textParts.push(part);
-      } else if (part.startsWith("!")) {
-        tokens.push({ type: "cost", value: part.slice(1) });
-      } else {
-        textParts.push(part);
-      }
-    }
-
-    return { text: textParts.join(" ").toLowerCase(), tokens };
-  }, [debouncedQuery]);
-
-  const fuzzyMatch = useCallback((text: string, query: string): boolean => {
-    if (!query) return true;
-    const lt = text.toLowerCase();
-    const lq = query.toLowerCase();
-    // Exact substring
-    if (lt.includes(lq)) return true;
-    // Korean choseong (jamo) match: ㅇㅋ matches 아이언클래드
-    const isAllJamo = /^[ㄱ-ㅎ]+$/.test(query);
-    if (isAllJamo) {
-      const choseong = getChoseong(text);
-      if (choseong.includes(query)) return true;
-    }
-    // Subsequence match
-    let qi = 0;
-    for (let i = 0; i < lt.length && qi < lq.length; i++) {
-      if (lt[i] === lq[qi]) qi++;
-    }
-    return qi === lq.length;
-  }, []);
+  const parsedSearch = useMemo(
+    () => parseCodexSearch(debouncedQuery, searchTriggers),
+    [debouncedQuery, searchTriggers],
+  );
 
   const matchCost = useCallback(
     (card: CodexCard, costFilter: string): boolean => {
@@ -304,9 +331,9 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     if (parsedSearch.text) {
       result = result.filter(
         (c) =>
-          fuzzyMatch(c.name, parsedSearch.text) ||
-          fuzzyMatch(c.nameEn, parsedSearch.text) ||
-          c.description.replace(/\[\/?\w+(?::?\w*)*\]/g, "").toLowerCase().includes(parsedSearch.text) ||
+          fuzzyMatchCodexText(c.name, parsedSearch.text) ||
+          fuzzyMatchCodexText(c.nameEn, parsedSearch.text) ||
+          stripCodexMarkup(c.description).toLowerCase().includes(parsedSearch.text) ||
           c.keywords.some((kw) => kw.toLowerCase().includes(parsedSearch.text)) ||
           Object.values(c.keywordLabels).some((kw) => kw.toLowerCase().includes(parsedSearch.text))
       );
@@ -328,7 +355,6 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     selectedRarityDetails,
     selectedCosts,
     parsedSearch,
-    fuzzyMatch,
     matchCost,
     getCardCategory,
     sortKeys,
@@ -475,52 +501,6 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     quest: gameUi.cardLibrary.rarities.퀘스트,
   };
 
-  const searchTriggers = [
-      {
-        trigger: "@",
-        label: serviceText.cardsView.filters.character,
-        items: [
-          { value: "ironclad", label: serviceText.labels.pools.ironclad, desc: "Ironclad" },
-          { value: "silent", label: serviceText.labels.pools.silent, desc: "Silent" },
-          { value: "defect", label: serviceText.labels.pools.defect, desc: "Defect" },
-          { value: "necrobinder", label: serviceText.labels.pools.necrobinder, desc: "Necrobinder" },
-          { value: "regent", label: serviceText.labels.pools.regent, desc: "Regent" },
-          { value: "colorless", label: serviceText.labels.pools.colorless, desc: "Colorless" },
-          { value: "event", label: serviceText.labels.pools.event, desc: "Event" },
-          { value: "curse", label: serviceText.labels.pools.curse, desc: "Curse" },
-          { value: "status", label: serviceText.labels.pools.status, desc: "Status" },
-          { value: "ancient", label: serviceText.labels.pools.ancient, desc: "Ancient" },
-        ],
-        validate: (val: string) => COLOR_ALIASES[val] ?? null,
-        chipColor: "bg-blue-500/20 text-blue-400",
-      },
-      {
-        trigger: "#",
-        label: gameUi.cardLibrary.sort.type,
-        items: [
-          { value: "attack", label: gameUi.cardLibrary.types.공격, desc: "Attack" },
-          { value: "skill", label: gameUi.cardLibrary.types.스킬, desc: "Skill" },
-          { value: "power", label: gameUi.cardLibrary.types.파워, desc: "Power" },
-        ],
-        validate: (val: string) => TYPE_ALIASES[val] ?? null,
-        chipColor: "bg-green-500/20 text-green-400",
-      },
-      {
-        trigger: "!",
-        label: gameUi.cardLibrary.sort.cost,
-        items: [
-          { value: "0", label: "0", desc: `${gameUi.cardLibrary.sort.cost} 0` },
-          { value: "1", label: "1", desc: `${gameUi.cardLibrary.sort.cost} 1` },
-          { value: "2", label: "2", desc: `${gameUi.cardLibrary.sort.cost} 2` },
-          { value: "3", label: "3", desc: `${gameUi.cardLibrary.sort.cost} 3` },
-          { value: "3+", label: "3+", desc: `${gameUi.cardLibrary.sort.cost} 3+` },
-          { value: "2-", label: "2-", desc: `${gameUi.cardLibrary.sort.cost} 2-` },
-          { value: "X", label: "X", desc: `${gameUi.cardLibrary.sort.cost} X` },
-        ],
-        chipColor: "bg-amber-500/20 text-amber-400",
-      },
-    ];
-
   // Card detail modal — initialize from ?card= query param
   const initialCardId = searchParams.get("card");
   const [selectedCard, setSelectedCard] = useState<CodexCard | null>(() => {
@@ -567,39 +547,15 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     return () => window.removeEventListener("keydown", handler);
   }, [selectedCard]);
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Auto-collapse on mobile, expand on desktop
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = (e: { matches: boolean }) => {
-      setIsMobile(e.matches);
-      setSidebarOpen(!e.matches);
-    };
-    update(mq);
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
+  const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
   return (
-    <div className="flex h-[calc(100dvh-3rem)] bg-background text-foreground overflow-hidden">
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && isMobile && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Left Sidebar */}
-      <aside className={`
-        border-r border-white/10 bg-[#16162a] flex flex-col gap-2 overflow-y-auto transition-all duration-200 shrink-0
-        ${isMobile
-          ? `fixed z-50 inset-y-0 left-0 w-52 ${sidebarOpen ? "translate-x-0 p-3" : "-translate-x-full p-3"}`
-          : `relative ${sidebarOpen ? "w-52 p-3" : "w-0 p-0 overflow-hidden border-r-0"}`
-        }
-      `}>
+    <CodexLibraryShell
+      sidebarOpen={sidebarOpen}
+      setSidebarOpen={setSidebarOpen}
+      isMobile={isMobile}
+      sidebar={(
+        <>
         {/* Character + Extra Filters (5 per row, 2 rows) */}
         <FilterSection trigger="@" label={serviceText.cardsView.filters.character} sortDir={sortDirs.color} onSortToggle={() => toggleSort("color")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="grid grid-cols-5 gap-1.5">
@@ -733,27 +689,19 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
             onClick={() => setShowBeta((v) => !v)}
           />
         </div>
-      </aside>
+        </>
+      )}
+    >
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar with Search */}
-        <div className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2 border-b border-white/10 bg-[#16162a]/80">
-          <button
-            onClick={() => setSidebarOpen((v) => !v)}
-            className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/10 text-gray-400"
-            aria-label={sidebarOpen ? serviceText.common.closeFilters : serviceText.common.openFilters}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {sidebarOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-              )}
-            </svg>
-          </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">{gameUi.cardLibraryTitle}</h1>
-          <div className="flex-1 max-w-xl mx-auto">
+        <CodexLibraryTopBar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          closeFiltersLabel={serviceText.common.closeFilters}
+          openFiltersLabel={serviceText.common.openFilters}
+          title={gameUi.cardLibraryTitle}
+          search={(
             <SearchBar
               value={searchQuery}
               onChange={setSearchQuery}
@@ -761,18 +709,17 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
               triggerGroups={searchTriggers}
               placeholder={gameUi.cardLibrary.searchPlaceholder}
             />
-          </div>
-          <span className="text-sm text-gray-500 shrink-0 tabular-nums">
-            {formatCodexCount(filteredCards.length, serviceText.labels.cards, serviceLocale)}
-          </span>
-          {/* Version selector */}
-          <VersionSelector
-            versions={versions}
-            currentVersion={currentVersion}
-            selectedVersion={selectedVersion}
-            onChange={setSelectedVersion}
-          />
-        </div>
+          )}
+          count={formatCodexCount(filteredCards.length, serviceText.labels.cards, serviceLocale)}
+          trailing={(
+            <VersionSelector
+              versions={versions}
+              currentVersion={currentVersion}
+              selectedVersion={selectedVersion}
+              onChange={setSelectedVersion}
+            />
+          )}
+        />
 
         {/* Card Grid */}
         <div className="flex-1 overflow-y-auto p-3">
@@ -822,7 +769,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           </div>
         </div>
       )}
-    </div>
+    </CodexLibraryShell>
   );
 }
 
