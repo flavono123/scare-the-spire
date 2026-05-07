@@ -14,13 +14,13 @@ import {
 import { getCodexMetadata } from "@/lib/codex-service";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { CardTile } from "@/components/codex/card-tile";
 
 const PATCH_COPY: Record<ServiceLocale, {
   title: string;
   description: string;
   balance: string;
   building: string;
-  buildingBody: string;
   steamOriginal: string;
   types: Record<PatchType, string>;
 }> = {
@@ -29,7 +29,6 @@ const PATCH_COPY: Record<ServiceLocale, {
     description: "슬레이 더 스파이어 2 전체 패치 히스토리와 밸런스 변경 이력",
     balance: "밸런스",
     building: "작성 중",
-    buildingBody: "슬서운변경을 만들고 있습니다.",
     steamOriginal: "Steam 원문",
     types: {
       release: "출시",
@@ -43,7 +42,6 @@ const PATCH_COPY: Record<ServiceLocale, {
     description: "Full Slay the Spire 2 patch history and balance changes.",
     balance: "Balance",
     building: "Building",
-    buildingBody: "Rich patch notes are being prepared.",
     steamOriginal: "Steam original",
     types: {
       release: "Release",
@@ -85,35 +83,31 @@ function PatchFeaturedAssets({ entities }: { entities: EntityInfo[] }) {
   if (entities.length === 0) return null;
 
   return (
-    <div className="mt-3 grid grid-cols-5 gap-2" aria-label="패치 주요 변경 대상">
+    <div className="mt-3 flex items-end gap-2 overflow-hidden" aria-label="패치 주요 변경 대상">
       {entities.slice(0, 5).map((entity) => {
         const imageUrl = entityAssetUrl(entity);
-        const isCard = entity.type === "card";
         const isMonster = entity.type === "monster";
 
         return (
           <span
             key={`${entity.type}:${entity.id}`}
-            className="min-w-0 rounded-md border border-white/10 bg-black/20 px-1.5 py-1.5"
+            className="flex min-w-0 flex-1 items-end justify-center"
           >
-            <span className="flex h-12 items-center justify-center">
-              {imageUrl ? (
-                <Image
-                  src={imageUrl}
-                  alt={entity.nameKo}
-                  width={isCard ? 36 : 46}
-                  height={isCard ? 52 : 46}
-                  className={isCard ? "h-12 w-auto object-contain" : isMonster ? "h-12 w-12 object-contain" : "h-10 w-10 object-contain"}
-                />
-              ) : (
-                <span className="flex h-10 w-10 items-center justify-center rounded bg-muted/30 text-[10px] font-semibold text-muted-foreground">
-                  {entity.nameKo.slice(0, 2)}
-                </span>
-              )}
-            </span>
-            <span className="mt-1 block truncate text-center text-[10px] font-medium text-muted-foreground">
-              {entity.nameKo}
-            </span>
+            {entity.cardData ? (
+              <span className="block w-[70px] shrink-0">
+                <CardTile card={entity.cardData} showUpgrade={false} showBeta={false} width={70} />
+              </span>
+            ) : imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={entity.nameKo}
+                width={isMonster ? 78 : 52}
+                height={isMonster ? 78 : 52}
+                className={isMonster ? "h-20 w-20 object-contain" : "h-12 w-12 object-contain"}
+              />
+            ) : (
+              <span className="text-xs font-semibold text-muted-foreground">{entity.nameKo.slice(0, 2)}</span>
+            )}
           </span>
         );
       })}
@@ -183,9 +177,11 @@ export default async function PatchesPage({
                   <Badge variant="outline" className="border-zinc-700 bg-zinc-900/50 text-zinc-500">
                     {copy.types[patch.type]}
                   </Badge>
-                  <Badge variant="outline" className="border-fuchsia-400/40 bg-fuchsia-500/10 text-fuchsia-300">
-                    <SineText text={copy.building} />
-                  </Badge>
+                  {patch.hasBalanceChanges && (
+                    <Badge variant="outline" className="border-zinc-700 bg-zinc-900/50 text-zinc-500">
+                      {copy.balance}
+                    </Badge>
+                  )}
                   {patch.steamUrl && (
                     <a
                       href={patch.steamUrl}
@@ -196,12 +192,10 @@ export default async function PatchesPage({
                   )}
                 </div>
                 <p className="mt-1 text-sm font-medium text-zinc-500">{title}</p>
-                <div className="mt-3 rounded-md border border-dashed border-zinc-700/80 bg-black/15 px-3 py-2 text-sm font-semibold text-fuchsia-300">
-                  <SineText text={copy.buildingBody} />
+                <div className="mt-3 text-sm font-semibold text-zinc-500">
+                  <SineText text={copy.building} />
                 </div>
-                <p className="mt-2 text-xs text-zinc-600">
-                  {patch.date} — {summary}
-                </p>
+                <p className="mt-2 text-xs text-zinc-600">{patch.date}</p>
               </article>
             );
           }
