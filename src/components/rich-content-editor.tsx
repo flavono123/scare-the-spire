@@ -612,7 +612,7 @@ export function RichContentEditor({
         return false;
       },
     },
-  });
+  }, [draftKey, entities, maxChars, placeholder]);
 
   const handleSubmit = useCallback(async () => {
     if (!editor || submitting) return;
