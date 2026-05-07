@@ -146,7 +146,7 @@ export function EntityPreview({
       {useTapPreview ? (
         <Link
           href={href}
-          aria-label={`${entity.nameKo} 상세 보기`}
+          aria-label={`${entity.nameKo} 페이지로 이동`}
           className="group relative block cursor-pointer rounded-lg outline-none transition-transform duration-150 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-yellow-400/70"
         >
           {content}
