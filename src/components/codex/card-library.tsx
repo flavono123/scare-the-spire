@@ -84,15 +84,7 @@ import {
   CodexLibraryTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
-
-// Character token icons (game-extracted)
-const CHARACTER_TOKEN_ICONS: Record<string, string> = {
-  ironclad: "/images/sts2/characters/character_icon_ironclad.webp",
-  silent: "/images/sts2/characters/character_icon_silent.webp",
-  defect: "/images/sts2/characters/character_icon_defect.webp",
-  necrobinder: "/images/sts2/characters/character_icon_necrobinder.webp",
-  regent: "/images/sts2/characters/character_icon_regent.webp",
-};
+import { getCharacterTokenIcon } from "./codex-filter-assets";
 
 // Filter icon paths for non-character categories
 const CATEGORY_ICONS: Record<string, string> = {
@@ -470,7 +462,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   const characterFilters = characters.map((c) => ({
     key: c.id.toLowerCase() as CardFilterCategory,
     label: c.name,
-    icon: CHARACTER_TOKEN_ICONS[c.id.toLowerCase()] ?? c.imageUrl,
+    icon: getCharacterTokenIcon(c.id, c.imageUrl),
   }));
 
   const extraFilters = [
