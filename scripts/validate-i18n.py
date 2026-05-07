@@ -115,10 +115,11 @@ def validate_borrowed_phrases(errors: list[str]) -> None:
         source_table = fixture.get("sourceTable")
         source_key = fixture.get("sourceKey")
         source_text = fixture.get("sourceText")
+        mode = fixture.get("mode", "serviceText")
         service_text = fixture.get("serviceText")
 
-        if not all(isinstance(v, str) and v for v in [source_lang, source_table, source_key, source_text, service_text]):
-            errors.append(f"{prefix}: sourceLang/sourceTable/sourceKey/sourceText/serviceText are required.")
+        if not all(isinstance(v, str) and v for v in [source_lang, source_table, source_key, source_text]):
+            errors.append(f"{prefix}: sourceLang/sourceTable/sourceKey/sourceText are required.")
             continue
 
         source_path = LOCALIZATION_DIR / source_lang / f"{source_table}.json"
@@ -136,18 +137,56 @@ def validate_borrowed_phrases(errors: list[str]) -> None:
                 f"{source_path.relative_to(ROOT)}:{source_key}."
             )
 
-        service_files = fixture.get("serviceFiles")
-        if not isinstance(service_files, list) or not service_files:
-            errors.append(f"{prefix}: serviceFiles must be a non-empty list.")
+        if mode == "serviceText":
+            if not isinstance(service_text, str) or not service_text:
+                errors.append(f"{prefix}: serviceText is required for serviceText mode.")
+                continue
+
+            service_files = fixture.get("serviceFiles")
+            if not isinstance(service_files, list) or not service_files:
+                errors.append(f"{prefix}: serviceFiles must be a non-empty list.")
+            else:
+                for raw_path in service_files:
+                    service_path = ROOT / raw_path
+                    if not service_path.exists():
+                        errors.append(f"{prefix}: service file does not exist: {raw_path}")
+                        continue
+                    body = service_path.read_text(encoding="utf-8")
+                    if service_text not in body:
+                        errors.append(f"{prefix}: serviceText not found in {raw_path}.")
+        elif mode == "gameLocaleRuntime":
+            replacement_table = fixture.get("replacementTable")
+            replacement_key = fixture.get("replacementKey")
+            replacement_text = fixture.get("replacementText")
+            if not all(isinstance(v, str) and v for v in [replacement_table, replacement_key, replacement_text]):
+                errors.append(
+                    f"{prefix}: replacementTable/replacementKey/replacementText are required "
+                    "for gameLocaleRuntime mode."
+                )
+            else:
+                replacement_path = LOCALIZATION_DIR / source_lang / f"{replacement_table}.json"
+                if not replacement_path.exists():
+                    errors.append(f"{prefix}: missing replacement table {replacement_path.relative_to(ROOT)}.")
+                else:
+                    replacement_data = read_json(replacement_path)
+                    actual_replacement = replacement_data.get(replacement_key)
+                    if actual_replacement != replacement_text:
+                        errors.append(
+                            f"{prefix}: replacementText does not match "
+                            f"{replacement_path.relative_to(ROOT)}:{replacement_key}."
+                        )
+
+            runtime_files = fixture.get("runtimeFiles")
+            if not isinstance(runtime_files, list) or not runtime_files:
+                errors.append(f"{prefix}: runtimeFiles must be a non-empty list.")
+            else:
+                for raw_path in runtime_files:
+                    runtime_path = ROOT / raw_path
+                    if not runtime_path.exists():
+                        errors.append(f"{prefix}: runtime file does not exist: {raw_path}")
         else:
-            for raw_path in service_files:
-                service_path = ROOT / raw_path
-                if not service_path.exists():
-                    errors.append(f"{prefix}: service file does not exist: {raw_path}")
-                    continue
-                body = service_path.read_text(encoding="utf-8")
-                if service_text not in body:
-                    errors.append(f"{prefix}: serviceText not found in {raw_path}.")
+            errors.append(f"{prefix}: unknown mode {mode!r}.")
+            continue
 
         replacements = fixture.get("replacements", [])
         if not isinstance(replacements, list):
@@ -162,8 +201,9 @@ def validate_borrowed_phrases(errors: list[str]) -> None:
                 continue
             if from_text and from_text not in source_text:
                 errors.append(f"{rp}: from text {from_text!r} is not present in sourceText.")
-            if to_text and to_text not in service_text:
-                errors.append(f"{rp}: to text {to_text!r} is not present in serviceText.")
+            target_text = service_text if mode == "serviceText" else fixture.get("replacementText", "")
+            if to_text and to_text not in target_text:
+                errors.append(f"{rp}: to text {to_text!r} is not present in target text.")
 
 
 def power_localization_base(power_table: dict[str, str], power_id: str) -> str:
