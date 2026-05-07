@@ -17,7 +17,7 @@ import { serviceMessages } from "@/messages/service";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 
 const NICKNAME_KEY = "sts-nickname";
-const DEFAULT_COMMENT_NICKNAME_FIXTURES = new Set([
+const DEFAULT_COMMENT_NICKNAME_FIXTURES = new Set<string>([
   serviceMessages.ko.comments.defaultNickname,
   serviceMessages.en.comments.defaultNickname,
 ]);
