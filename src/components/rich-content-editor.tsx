@@ -205,6 +205,12 @@ interface RichContentEditorProps {
   maxChars?: number;
   submitIconSrc?: string;
   showKeywordTip?: boolean;
+  keywordTip?: {
+    label: string;
+    text: string;
+    keyword: string;
+    result: string;
+  };
 }
 
 export function RichContentEditor({
@@ -217,6 +223,7 @@ export function RichContentEditor({
   maxChars = 30,
   submitIconSrc,
   showKeywordTip = false,
+  keywordTip,
 }: RichContentEditorProps) {
   const [submitting, setSubmitting] = useState(false);
   const [charCount, setCharCount] = useState(() => {
@@ -648,13 +655,14 @@ export function RichContentEditor({
         <span className={`text-xs font-mono shrink-0 ${charCountColor}`}>
           {charCount}/{maxChars}
         </span>
-        {showKeywordTip && (
+        {showKeywordTip && keywordTip && (
           <span className="hidden sm:block text-[11px] text-gray-500 truncate flex-1 min-w-0 opacity-70">
-            키워드 만들기 예) 크크루빙봉{"{"}
-            <span className="spire-gold">빙봉</span>
+            {keywordTip.label} {keywordTip.text}
+            {"{"}
+            <span className="spire-gold">{keywordTip.keyword}</span>
             {"}"}
             {" → "}
-            <span className="spire-gold">크크루빙봉</span>
+            <span className="spire-gold">{keywordTip.result}</span>
           </span>
         )}
         <button
