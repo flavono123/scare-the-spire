@@ -79,6 +79,7 @@ node /Users/hansuk.hong/P/scare-the-spire/.claude/skills/codex-pet-sprite/script
 ```
 
 Use `--fit-mode height` for humanoids whose attack or weapon frames make the strict full-bounds fit too small. This keeps all rows at one scale but allows extreme weapon arcs to clip instead of shrinking the whole pet.
+Use `--scale-multiplier 1.1` or similar when a specific actor still reads too small after fit selection. This preserves the Codex sheet format but may clip wide weapons or effects.
 
 5. Inspect:
 
@@ -113,6 +114,7 @@ Use a JSON profile when the automatic animation mapping is poor:
 ```json
 {
   "fitMode": "height",
+  "scaleMultiplier": 1.1,
   "hiddenSlotPatterns": ["^binder_", "^blender-"],
   "auxLoops": ["_ignore/cloth_loop", "_ignore/glow_loop"],
   "rows": [

@@ -83,6 +83,7 @@ Options:
   --aux-loop NAME              Extra auxiliary loop animation. Repeatable
   --no-default-aux             Do not apply default _ignore cloth/glow auxiliary loops
   --fit-mode MODE              strict or height. Default: strict
+  --scale-multiplier NUMBER    Multiply final render scale. Default: 1
 `);
 }
 
@@ -347,6 +348,10 @@ async function main() {
   if (!["strict", "height"].includes(fitMode)) {
     throw new Error("--fit-mode must be strict or height");
   }
+  const scaleMultiplier = Number(args["scale-multiplier"] || profile.scaleMultiplier || 1);
+  if (!Number.isFinite(scaleMultiplier) || scaleMultiplier <= 0) {
+    throw new Error("--scale-multiplier must be a positive number");
+  }
   const buildDir = path.join(buildRoot, petId);
   const petDir = path.join(petsRoot, petId);
 
@@ -375,9 +380,10 @@ async function main() {
   const { global, byRow } = boundsFor(skeletonData, rows, auxLoops, hidePatterns);
   const maxWidth = global.maxX - global.minX;
   const maxHeight = global.maxY - global.minY;
-  const scale = fitMode === "height"
+  const baseScale = fitMode === "height"
     ? (CELL_H - 14) / maxHeight
     : Math.min((CELL_W - 14) / maxWidth, (CELL_H - 14) / maxHeight);
+  const scale = baseScale * scaleMultiplier;
 
   const sheet = createCanvas(SHEET_W, SHEET_H);
   const ctx = sheet.getContext("2d");
@@ -425,7 +431,9 @@ async function main() {
     renderer: "@esotericsoftware/spine-canvas + @napi-rs/canvas",
     skeletonVersion: skeletonData.version,
     skeletonAnimations: skeletonData.animations.map((animation) => ({ name: animation.name, duration: animation.duration })),
+    baseScale,
     scale,
+    scaleMultiplier,
     fitMode,
     globalBounds: global,
     hiddenSlotPatterns: hidePatterns.map((pattern) => pattern.source),
