@@ -34,15 +34,21 @@ test.describe("mobile patch note entity preview", () => {
   test("opens preview before navigating to entity detail", async ({ page }) => {
     await page.goto(`${BASE}/patches/0.103.0`, { waitUntil: "networkidle" });
     const startUrl = page.url();
+    const entityLinks = page.locator('a[href*="not_yet"]');
 
-    await page.getByRole("link", { name: /불굴|Not Yet/ }).first().click();
+    await entityLinks.first().click();
 
     await expect(page).toHaveURL(startUrl);
-    const closePreview = page.getByRole("button", { name: "닫기", exact: true });
-    await expect(closePreview).toBeVisible();
-    await expect(page.getByRole("link", { name: "상세 보기" })).toBeVisible();
-
-    await closePreview.click();
     await expect(page.getByRole("button", { name: "닫기", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "상세 보기" })).toHaveCount(0);
+    await expect(entityLinks).toHaveCount(2);
+
+    await page.mouse.click(16, 120);
+    await expect(entityLinks).toHaveCount(1);
+
+    await entityLinks.first().click();
+    await expect(entityLinks).toHaveCount(2);
+    await entityLinks.last().click();
+    await expect(page).toHaveURL(/\/codex\/cards\?card=not_yet/);
   });
 });
