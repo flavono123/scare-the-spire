@@ -23,10 +23,35 @@ import {
   EVENT_ACT_CONFIG,
   EVENT_ACT_UNKNOWN,
   EVENT_ACT_ORDER,
+  EVENT_ACT_ALIASES,
 } from "@/lib/codex-types";
+import {
+  fuzzyMatchCodexText,
+  parseCodexSearch,
+  type CodexSearchTriggerGroup,
+} from "@/lib/codex-search";
+import { SearchBar } from "./search-bar";
+import { FilterSection } from "./codex-filters";
+import {
+  CodexLibraryShell,
+  CodexLibraryTopBar,
+  useCodexFilterDrawer,
+} from "./codex-filter-drawer";
 
 // Room type display order and styling
 const ROOM_TYPE_ORDER: EncounterRoomType[] = ["Monster", "Elite", "Boss"];
+type EncounterSearchTokenType = "roomType" | "act";
+
+const ENCOUNTER_ROOM_TYPE_ALIASES: Record<string, EncounterRoomType> = {
+  일반: "Monster",
+  monster: "Monster",
+  normal: "Monster",
+  몬스터: "Monster",
+  엘리트: "Elite",
+  elite: "Elite",
+  보스: "Boss",
+  boss: "Boss",
+};
 
 interface EncounterLibraryProps {
   serviceLocale: ServiceLocale;
@@ -47,6 +72,14 @@ export function EncounterLibrary({ serviceLocale, gameUi, encounters, monsters }
   const monsterById = useMemo(
     () => new Map(monsters.map((m) => [m.id, m])),
     [monsters],
+  );
+  const encounterTriggers = useMemo(
+    () => getEncounterTriggers(serviceText, gameUi),
+    [serviceText, gameUi],
+  );
+  const parsedSearch = useMemo(
+    () => parseCodexSearch(searchQuery, encounterTriggers),
+    [searchQuery, encounterTriggers],
   );
 
   // Detail modal
@@ -107,18 +140,30 @@ export function EncounterLibrary({ serviceLocale, gameUi, encounters, monsters }
     if (showWeakOnly) {
       result = result.filter((e) => e.isWeak);
     }
-    if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
+
+    for (const token of parsedSearch.tokens) {
+      if (token.type === "roomType") {
+        result = result.filter((e) => e.roomType === token.value);
+      } else if (token.type === "act") {
+        result = result.filter((e) => (e.act ?? "none") === token.value);
+      }
+    }
+
+    if (parsedSearch.text) {
       result = result.filter(
         (e) =>
-          e.name.toLowerCase().includes(q) ||
-          e.nameEn.toLowerCase().includes(q) ||
-          e.monsters.some((m) => m.name.toLowerCase().includes(q) || m.nameEn.toLowerCase().includes(q)),
+          fuzzyMatchCodexText(e.name, parsedSearch.text) ||
+          fuzzyMatchCodexText(e.nameEn, parsedSearch.text) ||
+          e.monsters.some(
+            (m) =>
+              fuzzyMatchCodexText(m.name, parsedSearch.text) ||
+              fuzzyMatchCodexText(m.nameEn, parsedSearch.text),
+          ),
       );
     }
 
     return result;
-  }, [encounters, selectedRoomTypes, selectedActs, showWeakOnly, searchQuery]);
+  }, [encounters, selectedRoomTypes, selectedActs, showWeakOnly, parsedSearch]);
 
   // Group by act
   const sections = useMemo(() => {
@@ -145,39 +190,17 @@ export function EncounterLibrary({ serviceLocale, gameUi, encounters, monsters }
     }).filter((s) => s.encounters.length > 0);
   }, [filtered, gameUi, serviceText]);
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = (e: { matches: boolean }) => {
-      setIsMobile(e.matches);
-      setSidebarOpen(!e.matches);
-    };
-    update(mq);
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
+  const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
   return (
-    <div className="flex h-[calc(100dvh-3rem)] bg-background text-foreground overflow-hidden">
-      {/* Mobile overlay */}
-      {sidebarOpen && isMobile && (
-        <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setSidebarOpen(false)} />
-      )}
-
-      {/* Sidebar */}
-      <aside
-        className={`
-          border-r border-white/10 bg-[#16162a] flex flex-col gap-2 overflow-y-auto transition-all duration-200 shrink-0
-          ${isMobile
-            ? `fixed z-50 inset-y-0 left-0 w-52 ${sidebarOpen ? "translate-x-0 p-3" : "-translate-x-full p-3"}`
-            : `relative ${sidebarOpen ? "w-52 p-3" : "w-0 p-0 overflow-hidden border-r-0"}`
-          }
-        `}
-      >
+    <CodexLibraryShell
+      sidebarOpen={sidebarOpen}
+      setSidebarOpen={setSidebarOpen}
+      isMobile={isMobile}
+      sidebar={(
+        <>
         {/* Room Type Filters */}
-        <FilterSection label={serviceText.encountersView.roomTypeFilter}>
+        <FilterSection trigger="#" label={serviceText.encountersView.roomTypeFilter}>
           <div className="flex flex-col gap-0.5">
             {ROOM_TYPE_ORDER.map((type) => {
               const config = ENCOUNTER_ROOM_TYPE_CONFIG[type];
@@ -206,7 +229,7 @@ export function EncounterLibrary({ serviceLocale, gameUi, encounters, monsters }
         <div className="border-t border-white/10" />
 
         {/* Act Filters */}
-        <FilterSection label={serviceText.encountersView.actFilter}>
+        <FilterSection trigger="%" label={serviceText.encountersView.actFilter}>
           <div className="flex flex-col gap-0.5">
             {EVENT_ACT_ORDER.map((act) => {
               const config = act ? EVENT_ACT_CONFIG[act] : EVENT_ACT_UNKNOWN;
@@ -248,37 +271,29 @@ export function EncounterLibrary({ serviceLocale, gameUi, encounters, monsters }
           <span className="w-2 h-2 rounded-full shrink-0 bg-green-500" />
           {serviceText.encountersView.weakOnly}
         </button>
-      </aside>
+        </>
+      )}
+    >
 
       {/* Main */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
-        <div className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2 border-b border-white/10 bg-[#16162a]/80">
-          <button
-            onClick={() => setSidebarOpen((v) => !v)}
-            className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/10 text-gray-400"
-            aria-label={sidebarOpen ? serviceText.common.closeFilters : serviceText.common.openFilters}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {sidebarOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-              )}
-            </svg>
-          </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">{serviceText.encountersView.title}</h1>
-          <div className="flex-1 max-w-xl mx-auto">
-            <input
-              type="text"
+        <CodexLibraryTopBar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          closeFiltersLabel={serviceText.common.closeFilters}
+          openFiltersLabel={serviceText.common.openFilters}
+          title={serviceText.encountersView.title}
+          search={(
+            <SearchBar
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={setSearchQuery}
+              inputId="encounter-search"
+              triggerGroups={encounterTriggers}
               placeholder={serviceText.encountersView.searchPlaceholder}
-              className="w-full bg-white/5 border border-white/10 rounded-lg pl-3 pr-3 py-1.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-all"
             />
-          </div>
-          <span className="text-sm text-gray-500 shrink-0 tabular-nums">{formatCodexCount(filtered.length, serviceText.labels.encounters, serviceLocale)}</span>
-        </div>
+          )}
+          count={formatCodexCount(filtered.length, serviceText.labels.encounters, serviceLocale)}
+        />
 
         {/* Encounter List */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
@@ -332,7 +347,7 @@ export function EncounterLibrary({ serviceLocale, gameUi, encounters, monsters }
           </div>
         </div>
       )}
-    </div>
+    </CodexLibraryShell>
   );
 }
 
@@ -536,13 +551,38 @@ function EncounterDetail({
   );
 }
 
-function FilterSection({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <span className="text-[11px] text-gray-500 font-medium uppercase tracking-wider">{label}</span>
-      {children}
-    </div>
-  );
+function getEncounterTriggers(
+  messages: CodexServiceMessages,
+  gameUi: CodexGameUiLabels,
+): CodexSearchTriggerGroup<EncounterSearchTokenType>[] {
+  return [
+    {
+      trigger: "#",
+      type: "roomType",
+      label: messages.encountersView.roomTypeFilter,
+      items: ROOM_TYPE_ORDER.map((roomType) => ({
+        value: roomType.toLowerCase(),
+        label: gameUi.encounterRoomTypes[roomType],
+        desc: roomType,
+      })),
+      validate: (val) => ENCOUNTER_ROOM_TYPE_ALIASES[val] ?? null,
+      chipColor: "bg-green-500/20 text-green-400",
+    },
+    {
+      trigger: "%",
+      type: "act",
+      label: messages.encountersView.actFilter,
+      items: [
+        { value: "act1", label: gameUi.acts["Act 1 - Overgrowth"], desc: "Act 1 Overgrowth" },
+        { value: "underdocks", label: gameUi.acts.Underdocks, desc: "Underdocks" },
+        { value: "act2", label: gameUi.acts["Act 2 - Hive"], desc: "Act 2 Hive" },
+        { value: "act3", label: gameUi.acts["Act 3 - Glory"], desc: "Act 3 Glory" },
+        { value: "none", label: messages.labels.acts.none, desc: "Any act" },
+      ],
+      validate: (val) => EVENT_ACT_ALIASES[val] ?? null,
+      chipColor: "bg-blue-500/20 text-blue-400",
+    },
+  ];
 }
 
 function getActLabel(

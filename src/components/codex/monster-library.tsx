@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import { MonsterDetail } from "./monster-detail";
-import { getChoseong } from "es-hangul";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { serviceMessages } from "@/messages/service";
@@ -20,9 +19,22 @@ import {
   EVENT_ACT_ALIASES,
   EventAct,
 } from "@/lib/codex-types";
+import {
+  fuzzyMatchCodexText,
+  parseCodexSearch,
+  type CodexSearchTriggerGroup,
+} from "@/lib/codex-search";
+import { SearchBar } from "./search-bar";
+import { FilterSection } from "./codex-filters";
+import {
+  CodexLibraryShell,
+  CodexLibraryTopBar,
+  useCodexFilterDrawer,
+} from "./codex-filter-drawer";
 
 type MonsterViewMessages =
   (typeof serviceMessages)[ServiceLocale]["codex"]["monstersView"];
+type MonsterSearchTokenType = "monsterType" | "act";
 
 // Act display order
 const ACT_ORDER: (EventAct | null)[] = [
@@ -113,19 +125,7 @@ export function MonsterLibrary({
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = (e: { matches: boolean }) => {
-      setIsMobile(e.matches);
-      setSidebarOpen(!e.matches);
-    };
-    update(mq);
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
+  const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
   // Build monster -> acts mapping from encounters
   const monsterActs = useMemo(() => {
@@ -139,46 +139,16 @@ export function MonsterLibrary({
     return map;
   }, [encounters]);
 
-  // Parse search
-  const parsedSearch = useMemo(() => {
-    const tokens: { type: "monsterType" | "act"; value: string }[] = [];
-    const textParts: string[] = [];
-    const parts = searchQuery.split(/\s+/).filter(Boolean);
-    for (const part of parts) {
-      if (part.startsWith("#")) {
-        const val = part.slice(1).toLowerCase();
-        const typeMatch = MONSTER_TYPE_ALIASES[val];
-        if (typeMatch) {
-          tokens.push({ type: "monsterType", value: typeMatch });
-          continue;
-        }
-        const actMatch = EVENT_ACT_ALIASES[val];
-        if (actMatch) {
-          tokens.push({ type: "act", value: actMatch });
-          continue;
-        }
-        textParts.push(part);
-      } else {
-        textParts.push(part);
-      }
-    }
-    return { text: textParts.join(" ").toLowerCase(), tokens };
-  }, [searchQuery]);
+  const monsterTriggers = useMemo(
+    () => getMonsterTriggers(monsterText, gameUi),
+    [monsterText, gameUi],
+  );
 
-  const fuzzyMatch = useCallback((text: string, query: string): boolean => {
-    if (!query) return true;
-    const lt = text.toLowerCase();
-    const lq = query.toLowerCase();
-    if (lt.includes(lq)) return true;
-    if (/^[ㄱ-ㅎ]+$/.test(query)) {
-      if (getChoseong(text).includes(query)) return true;
-    }
-    let qi = 0;
-    for (let i = 0; i < lt.length && qi < lq.length; i++) {
-      if (lt[i] === lq[qi]) qi++;
-    }
-    return qi === lq.length;
-  }, []);
+  // Parse search
+  const parsedSearch = useMemo(
+    () => parseCodexSearch(searchQuery, monsterTriggers),
+    [searchQuery, monsterTriggers],
+  );
 
   // Filter monsters
   const filteredMonsters = useMemo(() => {
@@ -214,13 +184,13 @@ export function MonsterLibrary({
     if (parsedSearch.text) {
       result = result.filter(
         (m) =>
-          fuzzyMatch(m.name, parsedSearch.text) ||
-          fuzzyMatch(m.nameEn, parsedSearch.text),
+          fuzzyMatchCodexText(m.name, parsedSearch.text) ||
+          fuzzyMatchCodexText(m.nameEn, parsedSearch.text),
       );
     }
 
     return result;
-  }, [monsters, selectedTypes, selectedActs, parsedSearch, fuzzyMatch, monsterActs]);
+  }, [monsters, selectedTypes, selectedActs, parsedSearch, monsterActs]);
 
   // Sort by type > act > name
   const getMonsterActOrder = useCallback(
@@ -307,22 +277,12 @@ export function MonsterLibrary({
   );
 
   return (
-    <div className="flex h-[calc(100dvh-3rem)] bg-background text-foreground overflow-hidden">
-      {/* Mobile overlay */}
-      {sidebarOpen && isMobile && (
-        <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setSidebarOpen(false)} />
-      )}
-
-      {/* Left Sidebar */}
-      <aside
-        className={`
-          border-r border-white/10 bg-[#16162a] flex flex-col gap-2 overflow-y-auto transition-all duration-200 shrink-0
-          ${isMobile
-            ? `fixed z-50 inset-y-0 left-0 w-52 ${sidebarOpen ? "translate-x-0 p-3" : "-translate-x-full p-3"}`
-            : `relative ${sidebarOpen ? "w-52 p-3" : "w-0 p-0 overflow-hidden border-r-0"}`
-          }
-        `}
-      >
+    <CodexLibraryShell
+      sidebarOpen={sidebarOpen}
+      setSidebarOpen={setSidebarOpen}
+      isMobile={isMobile}
+      sidebar={(
+        <>
         {/* Type Filters */}
         <FilterSection trigger="#" label={monsterText.typeFilter}>
           <div className="flex flex-col gap-0.5">
@@ -350,7 +310,7 @@ export function MonsterLibrary({
         <div className="border-t border-white/10" />
 
         {/* Act Filters */}
-        <FilterSection trigger="#" label={monsterText.actFilter}>
+        <FilterSection trigger="%" label={monsterText.actFilter}>
           <div className="flex flex-col gap-0.5">
             {ACT_ORDER.map((act) => {
               const config = act ? EVENT_ACT_CONFIG[act] : EVENT_ACT_UNKNOWN;
@@ -373,38 +333,29 @@ export function MonsterLibrary({
             })}
           </div>
         </FilterSection>
-      </aside>
+        </>
+      )}
+    >
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
-        <div className="flex items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2 border-b border-white/10 bg-[#16162a]/80">
-          <button
-            onClick={() => setSidebarOpen((v) => !v)}
-            className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/10 text-gray-400"
-            aria-label={sidebarOpen ? commonText.closeFilters : commonText.openFilters}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {sidebarOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-              )}
-            </svg>
-          </button>
-          <h1 className="text-base font-bold text-yellow-500 shrink-0">{title}</h1>
-          <div className="flex-1 max-w-xl mx-auto">
-            <MonsterSearchBar
+        <CodexLibraryTopBar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          closeFiltersLabel={commonText.closeFilters}
+          openFiltersLabel={commonText.openFilters}
+          title={title}
+          search={(
+            <SearchBar
               value={searchQuery}
               onChange={setSearchQuery}
               inputId="monster-search"
-              messages={monsterText}
+              triggerGroups={monsterTriggers}
+              placeholder={monsterText.searchPlaceholder}
             />
-          </div>
-          <span className="text-sm text-gray-500 shrink-0 tabular-nums">
-            {formatCount(filteredMonsters.length, monsterText.resultUnit, serviceLocale)}
-          </span>
-        </div>
+          )}
+          count={formatCount(filteredMonsters.length, monsterText.resultUnit, serviceLocale)}
+        />
 
         {/* Monster Grid */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
@@ -475,7 +426,7 @@ export function MonsterLibrary({
           </div>
         </div>
       )}
-    </div>
+    </CodexLibraryShell>
   );
 }
 
@@ -662,108 +613,38 @@ function MonsterTooltip({
   );
 }
 
-// Search bar
-function MonsterSearchBar({
-  value,
-  onChange,
-  inputId,
-  messages,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  inputId?: string;
-  messages: MonsterViewMessages;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [isFocused, setIsFocused] = useState(false);
-
-  const HINTS = [
+function getMonsterTriggers(
+  messages: MonsterViewMessages,
+  gameUi: CodexGameUiLabels,
+): CodexSearchTriggerGroup<MonsterSearchTokenType>[] {
+  return [
     {
       trigger: "#",
+      type: "monsterType",
       label: messages.filters.typeHints.label,
-      examples: messages.filters.typeHints.examples,
+      items: MONSTER_TYPE_ORDER.map((type) => ({
+        value: type.toLowerCase(),
+        label: gameUi.monsterTypes[type].label,
+        desc: type,
+      })),
+      validate: (val) => MONSTER_TYPE_ALIASES[val] ?? null,
+      chipColor: "bg-green-500/20 text-green-400",
     },
     {
-      trigger: "#",
+      trigger: "%",
+      type: "act",
       label: messages.filters.actHints.label,
-      examples: messages.filters.actHints.examples,
+      items: [
+        { value: "act1", label: gameUi.acts["Act 1 - Overgrowth"], desc: "Act 1 Overgrowth" },
+        { value: "underdocks", label: gameUi.acts.Underdocks, desc: "Underdocks" },
+        { value: "act2", label: gameUi.acts["Act 2 - Hive"], desc: "Act 2 Hive" },
+        { value: "act3", label: gameUi.acts["Act 3 - Glory"], desc: "Act 3 Glory" },
+        { value: "none", label: messages.acts.none, desc: "Any act" },
+      ],
+      validate: (val) => EVENT_ACT_ALIASES[val] ?? null,
+      chipColor: "bg-blue-500/20 text-blue-400",
     },
   ];
-
-  return (
-    <div className="relative">
-      <div className="relative">
-        <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.3-4.3" />
-        </svg>
-        <input
-          ref={inputRef}
-          id={inputId}
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setTimeout(() => setIsFocused(false), 150)}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") { onChange(""); inputRef.current?.blur(); }
-          }}
-          placeholder={messages.searchPlaceholder}
-          className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-16 py-1.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-all"
-        />
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-          {value && (
-            <button onClick={() => onChange("")} className="text-gray-500 hover:text-gray-300 transition-colors p-0.5">
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.3 5.71a1 1 0 00-1.42 0L12 10.59 7.12 5.7A1 1 0 005.7 7.12L10.59 12 5.7 16.88a1 1 0 101.42 1.42L12 13.41l4.88 4.89a1 1 0 001.42-1.42L13.41 12l4.89-4.88a1 1 0 000-1.41z" />
-              </svg>
-            </button>
-          )}
-          <kbd className="hidden sm:inline text-[9px] text-gray-600 bg-white/5 border border-white/10 rounded px-1 py-0.5 font-mono">⌘K</kbd>
-        </div>
-      </div>
-
-      {isFocused && !value && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-[#1e1e3a] border border-white/10 rounded-lg shadow-xl z-50 overflow-hidden p-2.5 flex flex-col gap-2">
-          {HINTS.map(({ trigger, label, examples }, hi) => (
-            <div key={hi} className="flex items-center gap-2 flex-wrap">
-              <button
-                onMouseDown={() => { onChange(trigger); inputRef.current?.focus(); }}
-                className="shrink-0 text-[11px] font-mono font-bold text-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/20 rounded px-1.5 py-0.5 transition-colors"
-              >
-                {trigger}
-              </button>
-              <span className="shrink-0 text-[11px] text-gray-500 w-10">{label}</span>
-              {examples.map((ex) => (
-                <button
-                  key={ex}
-                  onMouseDown={() => { onChange(`${trigger}${ex} `); inputRef.current?.focus(); }}
-                  className="text-[11px] text-gray-400 hover:text-gray-200 bg-white/5 hover:bg-white/10 rounded px-1.5 py-0.5 transition-colors"
-                >
-                  {ex}
-                </button>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// Shared
-function FilterSection({ trigger, label, children }: { trigger?: string; label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex items-center gap-1.5">
-        {trigger && (
-          <span className="text-[10px] font-mono font-bold text-yellow-500/70 bg-yellow-500/10 rounded px-1 py-0.5 leading-none">{trigger}</span>
-        )}
-        <span className="text-[11px] text-gray-500 font-medium uppercase tracking-wider">{label}</span>
-      </div>
-      {children}
-    </div>
-  );
 }
 
 function formatHp(monster: CodexMonster): string | null {
