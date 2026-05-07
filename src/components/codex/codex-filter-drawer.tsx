@@ -39,21 +39,50 @@ export function CodexLibraryShell({
   sidebar: React.ReactNode;
   children: React.ReactNode;
 }) {
+  useEffect(() => {
+    if (!isMobile || !sidebarOpen) return;
+
+    const body = document.body;
+    const scrollY = window.scrollY;
+    const previous = {
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+      overflow: body.style.overflow,
+      overscrollBehavior: body.style.overscrollBehavior,
+    };
+
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+    body.style.overscrollBehavior = "none";
+
+    return () => {
+      body.style.position = previous.position;
+      body.style.top = previous.top;
+      body.style.width = previous.width;
+      body.style.overflow = previous.overflow;
+      body.style.overscrollBehavior = previous.overscrollBehavior;
+      window.scrollTo(0, scrollY);
+    };
+  }, [isMobile, sidebarOpen]);
+
   return (
     <div className="flex h-[calc(100dvh-3rem)] bg-background text-foreground overflow-hidden">
       {sidebarOpen && isMobile && (
         <div
-          className="fixed inset-0 z-40 bg-black/50"
+          className="fixed inset-x-0 bottom-0 top-12 z-40 bg-black/50"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       <aside
         className={`
-          border-r border-white/10 bg-[#16162a] flex flex-col gap-2 overflow-y-auto transition-all duration-200 shrink-0
+          border-r border-white/10 bg-[#16162a] flex flex-col gap-2 overflow-y-auto overscroll-contain transition-all duration-200 shrink-0
           ${
             isMobile
-              ? `fixed z-50 inset-y-0 left-0 w-52 ${sidebarOpen ? "translate-x-0 p-3" : "-translate-x-full p-3"}`
+              ? `fixed z-50 bottom-0 top-12 left-0 w-52 touch-pan-y ${sidebarOpen ? "translate-x-0 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]" : "-translate-x-full p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]"}`
               : `relative ${sidebarOpen ? "w-52 p-3" : "w-0 p-0 overflow-hidden border-r-0"}`
           }
         `}
