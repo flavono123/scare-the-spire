@@ -427,7 +427,7 @@ export function SiteNavbar() {
             <NavIconLink
               href={localizeHrefWithGameLocale("/history-course", serviceLocale, gameLocale)}
               icon="/images/sts2/relics/history_course.webp"
-              label={messages.nav.historyCourse}
+              label={getCodexNavGameLabel(gameLocale, "historyCourse") ?? messages.nav.historyCourse}
               iconSize={20}
               iconClassName="group-hover:rotate-[8deg]"
             />

@@ -7,7 +7,8 @@ type CodexNavGameLabelKey =
   | "powers"
   | "monsters"
   | "events"
-  | "ancients";
+  | "ancients"
+  | "historyCourse";
 
 // Exact client-safe labels from STS2 localization tables:
 // main_menu_ui, gameplay_ui, static_hover_tips, epochs.
@@ -20,6 +21,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiarium",
     events: "Ereignis",
     ancients: "Ahnen",
+    historyCourse: "Geschichtskurs",
   },
   eng: {
     cards: "Card Library",
@@ -29,6 +31,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiary",
     events: "Event",
     ancients: "Ancients",
+    historyCourse: "History Course",
   },
   esp: {
     cards: "Colección de cartas",
@@ -38,6 +41,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiario",
     events: "Evento",
     ancients: "Ancestrales",
+    historyCourse: "Clase de historia",
   },
   fra: {
     cards: "Bibliothèque",
@@ -47,6 +51,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiaire",
     events: "Événement",
     ancients: "Les Anciens",
+    historyCourse: "Manuel d'Histoire",
   },
   ita: {
     cards: "Collezione delle carte",
@@ -56,6 +61,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiario",
     events: "Evento",
     ancients: "Gli Antichi",
+    historyCourse: "Corso di Storia",
   },
   jpn: {
     cards: "カードライブラリ",
@@ -65,6 +71,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "モンスター図鑑",
     events: "イベント",
     ancients: "エンシェント",
+    historyCourse: "歴史学教程",
   },
   kor: {
     cards: "카드 목록",
@@ -74,6 +81,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "몬스터 도감",
     events: "이벤트",
     ancients: "고대의 존재",
+    historyCourse: "역사 강의서",
   },
   pol: {
     cards: "Kolekcja kart",
@@ -83,6 +91,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiariusz",
     events: "Wydarzenie",
     ancients: "Starożytni",
+    historyCourse: "Podręcznik do historii",
   },
   ptb: {
     cards: "Biblioteca de Cartas",
@@ -92,6 +101,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiário",
     events: "Evento",
     ancients: "Ancestrais",
+    historyCourse: "Estudos de História",
   },
   rus: {
     cards: "Библиотека карт",
@@ -101,6 +111,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Бестиарий",
     events: "Событие",
     ancients: "Древние",
+    historyCourse: "Лекция по истории",
   },
   spa: {
     cards: "Biblioteca de cartas",
@@ -110,6 +121,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiario",
     events: "Evento",
     ancients: "Los Antiguos",
+    historyCourse: "Libro de historia",
   },
   tha: {
     cards: "คลังการ์ด",
@@ -119,6 +131,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "คลังอสูร",
     events: "เหตุการณ์",
     ancients: "เทพโบราณ",
+    historyCourse: "หลักสูตรประวัติศาสตร์",
   },
   tur: {
     cards: "Kart Kütüphanesi",
@@ -128,6 +141,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Yaratık Ansiklopedisi",
     events: "Etkinlik",
     ancients: "Kadimler",
+    historyCourse: "Tarih Dersi",
   },
   zhs: {
     cards: "卡牌总览",
@@ -137,6 +151,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "怪物图鉴",
     events: "事件",
     ancients: "先古之民",
+    historyCourse: "历史课",
   },
 };
 
