@@ -52,6 +52,7 @@ type RenderContext = {
   gameLocale?: GameLocale;
   preferEntityLocaleLabel?: boolean;
   gameKeywordLabels?: Record<string, string>;
+  gameHeadingLabels?: Record<string, string>;
 };
 
 // --- Entity Preview (hover card image) ---
@@ -501,6 +502,19 @@ function gameKeywordLabel(text: string, context: RenderContext): string | null {
   return context.gameKeywordLabels?.[text.trim().toLowerCase()] ?? null;
 }
 
+function labelKey(text: string): string {
+  return text
+    .replace(/\[\/?[a-z_]+(?:=[^\]]+)?(?::[^\]]+)?\]/gi, "")
+    .replace(/\*\*/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function gameHeadingLabel(text: string, context: RenderContext): string {
+  return context.gameHeadingLabels?.[labelKey(text)] ?? text;
+}
+
 // --- Entity Lookup ---
 
 export interface EntityLookup {
@@ -731,26 +745,29 @@ function renderLine(
 
   // Heading levels (check longer prefixes first)
   if (trimmed.startsWith("#### ")) {
+    const heading = gameHeadingLabel(trimmed.slice(5), context);
     return (
       <h4 key={key} className="text-sm font-semibold mt-4 mb-1 text-yellow-600">
-        {enrichLine(trimmed.slice(5), lookup, key, context)}
+        {enrichLine(heading, lookup, key, context)}
       </h4>
     );
   }
   if (trimmed.startsWith("### ")) {
+    const heading = gameHeadingLabel(trimmed.slice(4), context);
     return (
       <h3 key={key} className="text-base font-semibold mt-6 mb-2 text-yellow-500">
-        {enrichLine(trimmed.slice(4), lookup, key, context)}
+        {enrichLine(heading, lookup, key, context)}
       </h3>
     );
   }
   if (trimmed.startsWith("## ")) {
+    const heading = gameHeadingLabel(trimmed.slice(3), context);
     return (
       <h2
         key={key}
         className="text-lg font-bold mt-8 mb-3 text-yellow-400 border-b border-border pb-1"
       >
-        {enrichLine(trimmed.slice(3), lookup, key, context)}
+        {enrichLine(heading, lookup, key, context)}
       </h2>
     );
   }
@@ -836,6 +853,7 @@ export function PatchNoteRenderer({
   gameLocale,
   preferEntityLocaleLabel,
   gameKeywordLabels,
+  gameHeadingLabels,
 }: {
   markdown: string;
   entities?: EntityInfo[];
@@ -845,12 +863,13 @@ export function PatchNoteRenderer({
   gameLocale?: GameLocale;
   preferEntityLocaleLabel?: boolean;
   gameKeywordLabels?: Record<string, string>;
+  gameHeadingLabels?: Record<string, string>;
 }) {
   const allEntities = useMemo(() => entities ?? cards ?? [], [entities, cards]);
   const lookup = useMemo(() => buildEntityLookup(allEntities), [allEntities]);
   const context = useMemo<RenderContext>(
-    () => ({ gameUi, serviceLocale, gameLocale, preferEntityLocaleLabel, gameKeywordLabels }),
-    [gameKeywordLabels, gameLocale, gameUi, preferEntityLocaleLabel, serviceLocale],
+    () => ({ gameUi, serviceLocale, gameLocale, preferEntityLocaleLabel, gameKeywordLabels, gameHeadingLabels }),
+    [gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, preferEntityLocaleLabel, serviceLocale],
   );
   const lines = markdown.split("\n");
 
