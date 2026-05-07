@@ -5,6 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:mobile": "node scripts/mobile-qa.mjs",
+    "qa:mobile": "node scripts/mobile-qa.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
