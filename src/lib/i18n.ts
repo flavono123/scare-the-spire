@@ -28,6 +28,12 @@ export const DEFAULT_GAME_LOCALE_BY_SERVICE: Record<ServiceLocale, GameLocale> =
   en: "eng",
 };
 
+export function getServiceLocaleForGameLocale(
+  gameLocale: GameLocale,
+): ServiceLocale {
+  return gameLocale === "kor" ? "ko" : "en";
+}
+
 export const GAME_LOCALE_LABELS: Record<
   GameLocale,
   Record<ServiceLocale, string>

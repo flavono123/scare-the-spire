@@ -7,6 +7,7 @@ import Image from "@/components/ui/static-image";
 import {
   GAME_LOCALE_NATIVE_LABELS,
   getGameLocaleFromSearch,
+  getServiceLocaleForGameLocale,
   getServiceLocaleFromPath,
   localizeHrefWithGameLocale,
   switchServiceLocaleHref,
@@ -59,16 +60,12 @@ const gameOnlyLanguageLocales = [
   "tur",
 ] as const satisfies readonly GameLocale[];
 
-function serviceLocaleForLanguage(gameLocale: GameLocale): ServiceLocale {
-  return gameLocale === "kor" ? "ko" : "en";
-}
-
 function languageHref(
   pathname: string,
   searchParams: URLSearchParams,
   gameLocale: GameLocale,
 ) {
-  const serviceLocale = serviceLocaleForLanguage(gameLocale);
+  const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const search = withGameLocaleSearch(searchParams, gameLocale, serviceLocale);
   return switchServiceLocaleHref(pathname, serviceLocale, search);
 }
@@ -364,7 +361,7 @@ function LocaleCanonicalizer({
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const expectedServiceLocale = serviceLocaleForLanguage(gameLocale);
+    const expectedServiceLocale = getServiceLocaleForGameLocale(gameLocale);
     if (serviceLocale === expectedServiceLocale) return;
 
     router.replace(
