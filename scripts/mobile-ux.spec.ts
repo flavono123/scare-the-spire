@@ -3,6 +3,15 @@ import { expect, test } from "@playwright/test";
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 
 test.describe("mobile codex drawer", () => {
+  test("keeps primary service icons visible in the top nav", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(`${BASE}/patches`, { waitUntil: "networkidle" });
+
+    await expect(page.locator('header nav a[href$="/patches"]')).toBeVisible();
+    await expect(page.locator('header nav a[href$="/chemical-x"]')).toBeVisible();
+    await expect(page.locator('header nav a[href$="/history-course"]')).toBeHidden();
+  });
+
   test("locks background scroll while filters are open", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto(`${BASE}/codex/cards`, { waitUntil: "networkidle" });
