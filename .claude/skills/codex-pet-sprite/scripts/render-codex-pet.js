@@ -82,6 +82,7 @@ Options:
   --no-default-hide            Do not hide the built-in known effect slot regexes
   --aux-loop NAME              Extra auxiliary loop animation. Repeatable
   --no-default-aux             Do not apply default _ignore cloth/glow auxiliary loops
+  --skin NAME                  Spine skin to combine with the default skin
   --fit-mode MODE              strict or height. Default: strict
   --scale-multiplier NUMBER    Multiply final render scale. Default: 1
 `);
@@ -235,8 +236,27 @@ function applyProfile(baseRows, skeletonData, profilePath) {
   return STATE_ROWS.map((state, row) => ({ ...byState.get(state), row }));
 }
 
-function makePose(skeletonData, spec, time, auxLoops, hideSlotPatterns) {
+function applySkin(skeletonData, skeleton, skinName) {
+  if (!skinName) return;
+  const selectedSkin = skeletonData.findSkin(skinName);
+  if (!selectedSkin) {
+    throw new Error(`skin not found: ${skinName}`);
+  }
+
+  const defaultSkin = skeletonData.defaultSkin || skeletonData.findSkin("default");
+  if (defaultSkin && defaultSkin !== selectedSkin) {
+    const combinedSkin = new spine.Skin(`default+${skinName}`);
+    combinedSkin.addSkin(defaultSkin);
+    combinedSkin.addSkin(selectedSkin);
+    skeleton.setSkin(combinedSkin);
+    return;
+  }
+  skeleton.setSkin(selectedSkin);
+}
+
+function makePose(skeletonData, spec, time, auxLoops, hideSlotPatterns, skinName) {
   const skeleton = new spine.Skeleton(skeletonData);
+  applySkin(skeletonData, skeleton, skinName);
   skeleton.setToSetupPose();
 
   const stateData = new spine.AnimationStateData(skeletonData);
@@ -260,7 +280,7 @@ function makePose(skeletonData, spec, time, auxLoops, hideSlotPatterns) {
   return skeleton;
 }
 
-function boundsFor(skeletonData, specs, auxLoops, hideSlotPatterns) {
+function boundsFor(skeletonData, specs, auxLoops, hideSlotPatterns, skinName) {
   const offset = new spine.Vector2();
   const size = new spine.Vector2();
   const byRow = new Map();
@@ -269,7 +289,7 @@ function boundsFor(skeletonData, specs, auxLoops, hideSlotPatterns) {
   for (const spec of specs) {
     const rowBounds = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
     for (const time of spec.times) {
-      const skeleton = makePose(skeletonData, spec, time, auxLoops, hideSlotPatterns);
+      const skeleton = makePose(skeletonData, spec, time, auxLoops, hideSlotPatterns, skinName);
       skeleton.getBounds(offset, size);
       const maxX = offset.x + size.x;
       const maxY = offset.y + size.y;
@@ -287,8 +307,8 @@ function boundsFor(skeletonData, specs, auxLoops, hideSlotPatterns) {
   return { global, byRow };
 }
 
-function drawPose(ctx, renderer, skeletonData, spec, time, scale, rowBounds, auxLoops, hideSlotPatterns, col, row) {
-  const skeleton = makePose(skeletonData, spec, time, auxLoops, hideSlotPatterns);
+function drawPose(ctx, renderer, skeletonData, spec, time, scale, rowBounds, auxLoops, hideSlotPatterns, skinName, col, row) {
+  const skeleton = makePose(skeletonData, spec, time, auxLoops, hideSlotPatterns, skinName);
   const width = rowBounds.maxX - rowBounds.minX;
   const height = rowBounds.maxY - rowBounds.minY;
   const centerX = (rowBounds.minX + rowBounds.maxX) / 2;
@@ -352,6 +372,7 @@ async function main() {
   if (!Number.isFinite(scaleMultiplier) || scaleMultiplier <= 0) {
     throw new Error("--scale-multiplier must be a positive number");
   }
+  const skinName = args.skin || profile.skin || null;
   const buildDir = path.join(buildRoot, petId);
   const petDir = path.join(petsRoot, petId);
 
@@ -370,6 +391,10 @@ async function main() {
   fs.mkdirSync(petDir, { recursive: true });
 
   const skeletonData = await loadSkeletonData(inputDir);
+  if (skinName && !skeletonData.findSkin(skinName)) {
+    const skins = skeletonData.skins.map((skin) => skin.name).join(", ");
+    throw new Error(`skin not found: ${skinName}. Available skins: ${skins}`);
+  }
   const rows = applyProfile(buildDefaultRows(skeletonData), skeletonData, profilePath);
   for (const row of rows) {
     if (!row.animation || !skeletonData.findAnimation(row.animation)) {
@@ -377,7 +402,7 @@ async function main() {
     }
   }
 
-  const { global, byRow } = boundsFor(skeletonData, rows, auxLoops, hidePatterns);
+  const { global, byRow } = boundsFor(skeletonData, rows, auxLoops, hidePatterns, skinName);
   const maxWidth = global.maxX - global.minX;
   const maxHeight = global.maxY - global.minY;
   const baseScale = fitMode === "height"
@@ -397,7 +422,7 @@ async function main() {
   for (const spec of rows) {
     const rowBounds = byRow.get(spec.row);
     for (let col = 0; col < spec.frames; col += 1) {
-      drawPose(ctx, renderer, skeletonData, spec, spec.times[col], scale, rowBounds, auxLoops, hidePatterns, col, spec.row);
+      drawPose(ctx, renderer, skeletonData, spec, spec.times[col], scale, rowBounds, auxLoops, hidePatterns, skinName, col, spec.row);
     }
   }
 
@@ -431,6 +456,8 @@ async function main() {
     renderer: "@esotericsoftware/spine-canvas + @napi-rs/canvas",
     skeletonVersion: skeletonData.version,
     skeletonAnimations: skeletonData.animations.map((animation) => ({ name: animation.name, duration: animation.duration })),
+    skeletonSkins: skeletonData.skins.map((skin) => skin.name),
+    skin: skinName,
     baseScale,
     scale,
     scaleMultiplier,
