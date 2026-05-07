@@ -17,10 +17,18 @@ import { serviceMessages } from "@/messages/service";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 
 const NICKNAME_KEY = "sts-nickname";
+const DEFAULT_COMMENT_NICKNAME_FIXTURES = new Set([
+  serviceMessages.ko.comments.defaultNickname,
+  serviceMessages.en.comments.defaultNickname,
+]);
 
-function getNickname(): string {
-  if (typeof window === "undefined") return "";
-  return localStorage.getItem(NICKNAME_KEY) ?? "";
+function getNickname(defaultNickname: string): string {
+  if (typeof window === "undefined") return defaultNickname;
+  const saved = localStorage.getItem(NICKNAME_KEY);
+  if (!saved || DEFAULT_COMMENT_NICKNAME_FIXTURES.has(saved)) {
+    return defaultNickname;
+  }
+  return saved;
 }
 
 function setNicknameStorage(name: string) {
@@ -187,7 +195,10 @@ export function CommentSection({
     }
   }, [comments.length, onCountChange]);
 
-  const [nickname, setNickname] = useState(getNickname);
+  const [nickname, setNickname] = useState(() => getNickname(copy.defaultNickname));
+  const nicknameValue = DEFAULT_COMMENT_NICKNAME_FIXTURES.has(nickname)
+    ? copy.defaultNickname
+    : nickname;
   const [submitting, setSubmitting] = useState(false);
 
   const commentIds = useMemo(() => comments.map((c) => c.id), [comments]);
@@ -197,7 +208,7 @@ export function CommentSection({
 
   const handleSubmit = async (blocks: PostBlock[]) => {
     const trimmed = blocksToPlainText(blocks).trim();
-    const nick = nickname.trim();
+    const nick = nicknameValue.trim();
     if (!trimmed || !nick || !userId) return;
 
     setSubmitting(true);
@@ -260,7 +271,7 @@ export function CommentSection({
           <input
             type="text"
             placeholder={copy.nicknamePlaceholder}
-            value={nickname}
+            value={nicknameValue}
             onChange={(e) => setNickname(e.target.value)}
             maxLength={20}
             className="w-full rounded bg-zinc-800 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-yellow-500/50"
