@@ -142,9 +142,10 @@
 }
 
 /* Spire text effects — matches in-game BBCode rendering */
-@keyframes rich-sine {
+@keyframes rich-sine-letter {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
+  25% { transform: translateY(-0.14em); }
+  75% { transform: translateY(0.14em); }
 }
 
 @keyframes rich-jitter {
@@ -157,12 +158,26 @@
 
 .rich-sine {
   display: inline-block;
-  animation: rich-sine 2s ease-in-out infinite;
+  white-space: pre;
+}
+
+.rich-sine-letter {
+  display: inline-block;
+  animation: rich-sine-letter 1.4s ease-in-out infinite;
+  animation-delay: calc(var(--rich-sine-index, 0) * -80ms);
+  will-change: transform;
 }
 
 .rich-jitter {
   display: inline-block;
   animation: rich-jitter 0.15s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rich-sine-letter,
+  .rich-jitter {
+    animation: none;
+  }
 }
 
 /* History course — pulse flash on step advance */

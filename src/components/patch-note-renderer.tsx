@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useMemo, useEffect, type ReactNode } from "react";
+import { useState, useRef, useCallback, useMemo, useEffect, type CSSProperties, type ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import {
@@ -649,6 +649,23 @@ interface TextNode {
   children?: TextNode[];
 }
 
+type SineOffset = { current: number };
+
+function renderSineText(text: string, keyPrefix: string, offset: SineOffset): ReactNode[] {
+  return Array.from(text).map((char, i) => {
+    const index = offset.current++;
+    return (
+      <span
+        key={`${keyPrefix}-sine-${i}`}
+        className="rich-sine-letter"
+        style={{ "--rich-sine-index": index } as CSSProperties}
+      >
+        {char}
+      </span>
+    );
+  });
+}
+
 // Extract plain text from BBCode node tree
 function extractPlainText(nodes: TextNode[]): string {
   let result = "";
@@ -679,6 +696,14 @@ function renderBBNodes(
     }
 
     if (node.type === "tag" && node.tag && node.children) {
+      if (node.tag === "sine") {
+        return (
+          <span key={key} className="rich-sine">
+            {renderSineBBNodes(node.children, lookup, key, context)}
+          </span>
+        );
+      }
+
       // [gold] tag: check if content matches an entity
       if (node.tag === "gold") {
         const plainText = extractPlainText(node.children);
@@ -709,6 +734,59 @@ function renderBBNodes(
       return (
         <span key={key} className={className || undefined}>
           {renderBBNodes(node.children, lookup, key, context)}
+        </span>
+      );
+    }
+
+    return null;
+  });
+}
+
+function renderSineBBNodes(
+  nodes: TextNode[],
+  lookup: EntityLookup,
+  prefix: string,
+  context: RenderContext,
+  offset: SineOffset = { current: 0 },
+): ReactNode[] {
+  return nodes.map((node, i) => {
+    const key = `${prefix}-${i}`;
+
+    if (node.type === "newline") return <br key={key} />;
+    if (node.type === "text" && node.text) return renderSineText(node.text, key, offset);
+
+    if (node.type === "tag" && node.tag && node.children) {
+      if (node.tag === "sine") {
+        return renderSineBBNodes(node.children, lookup, key, context, offset);
+      }
+
+      if (node.tag === "gold") {
+        const plainText = extractPlainText(node.children);
+        const entity = findEntity(plainText, lookup, node.param);
+
+        if (entity) {
+          return (
+            <EntityPreview key={key} entity={entity} {...context}>
+              {renderSineText(plainText, key, offset)}
+            </EntityPreview>
+          );
+        }
+
+        const label = gameKeywordLabel(plainText, context);
+        return (
+          <span key={key} className="spire-gold font-semibold">
+            {label ? renderSineText(label, key, offset) : renderSineBBNodes(node.children, lookup, key, context, offset)}
+          </span>
+        );
+      }
+
+      const colorClass = COLOR_CLASSES[node.tag] ?? "";
+      const effectClass = EFFECT_CLASSES[node.tag] ?? "";
+      const className = [colorClass, effectClass].filter(Boolean).join(" ");
+
+      return (
+        <span key={key} className={className || undefined}>
+          {renderSineBBNodes(node.children, lookup, key, context, offset)}
         </span>
       );
     }

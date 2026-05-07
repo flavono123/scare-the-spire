@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode } from "react";
+import { type CSSProperties, type ReactNode } from "react";
 
 // BBCode tag -> CSS class mapping
 const COLOR_CLASSES: Record<string, string> = {
@@ -33,6 +33,43 @@ interface TextNode {
   tag?: string;
   param?: string;
   children?: TextNode[];
+}
+
+type SineOffset = { current: number };
+
+function renderSineText(text: string, keyPrefix: string, offset: SineOffset): ReactNode[] {
+  return Array.from(text).map((char, i) => {
+    const index = offset.current++;
+    return (
+      <span
+        key={`${keyPrefix}-sine-${i}`}
+        className="rich-sine-letter"
+        style={{ "--rich-sine-index": index } as CSSProperties}
+      >
+        {char}
+      </span>
+    );
+  });
+}
+
+function renderSineNodes(nodes: TextNode[], key = "", offset: SineOffset = { current: 0 }): ReactNode[] {
+  return nodes.map((node, i) => {
+    const k = `${key}-${i}`;
+    if (node.type === "newline") return <br key={k} />;
+    if (node.type === "text") return renderSineText(node.text ?? "", k, offset);
+    if (node.type === "tag" && node.tag && node.children) {
+      if (node.tag === "sine") return renderSineNodes(node.children, k, offset);
+      const colorClass = COLOR_CLASSES[node.tag] ?? "";
+      const effectClass = EFFECT_CLASSES[node.tag] ?? "";
+      const className = [colorClass, effectClass].filter(Boolean).join(" ");
+      return (
+        <span key={k} className={className || undefined}>
+          {renderSineNodes(node.children, k, offset)}
+        </span>
+      );
+    }
+    return null;
+  });
 }
 
 // Parse BBCode string into a tree of nodes
@@ -138,6 +175,13 @@ function renderNodes(nodes: TextNode[], key = ""): ReactNode[] {
     if (node.type === "newline") return <br key={k} />;
     if (node.type === "text") return <span key={k}>{node.text}</span>;
     if (node.type === "tag" && node.tag && node.children) {
+      if (node.tag === "sine") {
+        return (
+          <span key={k} className="rich-sine">
+            {renderSineNodes(node.children, k)}
+          </span>
+        );
+      }
       const colorClass = COLOR_CLASSES[node.tag] ?? "";
       const effectClass = EFFECT_CLASSES[node.tag] ?? "";
       const className = [colorClass, effectClass].filter(Boolean).join(" ");
