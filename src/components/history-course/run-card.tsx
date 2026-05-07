@@ -6,6 +6,8 @@ import { useCallback } from "react";
 import { isBuildSupported } from "@/lib/sts2-build-version";
 import type { ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 
 const CHAR_PORTRAIT: Record<string, string> = {
   "CHARACTER.IRONCLAD": "/images/sts2/characters/char_select_ironclad.webp",
@@ -96,6 +98,7 @@ export function RunCard({
   variant,
   pending,
 }: RunCardProps) {
+  const copy = serviceMessages[useServiceLocale()].historyCourse.runCard;
   const supported = isBuildSupported(build);
   const portraitSrc = characterPortraitSrc(character);
   const showDate = variant === "mine" && startTimeUnix != null;
@@ -127,7 +130,7 @@ export function RunCard({
         title={
           supported
             ? undefined
-            : "재현 미지원 빌드 — 클릭하면 목록에서 제거"
+            : copy.unsupportedTitle
         }
         className={cn(
           "block w-full rounded-xl bg-zinc-900/60 p-3 text-left ring-1 ring-zinc-800 transition",
@@ -157,7 +160,7 @@ export function RunCard({
             </div>
             {!supported && (
               <p className="mt-1 text-[10px] text-red-300/80">
-                재현 미지원 · 클릭하여 제거
+                {copy.unsupportedRemove}
               </p>
             )}
           </div>
@@ -172,8 +175,8 @@ export function RunCard({
               onClick={onShareClick}
               title={
                 shareState === "shared"
-                  ? "이 런의 익명 공유 취소"
-                  : "이 런 익명으로 공유"
+                  ? copy.unshareTitle
+                  : copy.shareTitle
               }
               className={cn(
                 "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold transition ring-1 ring-inset",
@@ -185,12 +188,12 @@ export function RunCard({
               {shareState === "shared" ? (
                 <>
                   <Undo2 className="h-3 w-3" aria-hidden />
-                  공유 취소
+                  {copy.unshare}
                 </>
               ) : (
                 <>
                   <Share2 className="h-3 w-3" aria-hidden />
-                  공유
+                  {copy.share}
                 </>
               )}
             </button>
@@ -201,8 +204,8 @@ export function RunCard({
               onClick={onTrashClick}
               title={
                 variant === "shared"
-                  ? "이 런의 익명 공유 취소"
-                  : "내 라이브러리에서 제거"
+                  ? copy.unshareTitle
+                  : copy.deleteLocalTitle
               }
               className={cn(
                 "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold transition ring-1 ring-inset",
@@ -212,7 +215,7 @@ export function RunCard({
               )}
             >
               <Trash2 className="h-3 w-3" aria-hidden />
-              삭제
+              {copy.delete}
             </button>
           )}
         </div>
@@ -240,7 +243,7 @@ function CharacterIcon({
       {ascension > 0 && (
         <span
           className="pointer-events-none absolute -bottom-1 -right-1 flex h-6 w-6 items-end justify-center"
-          aria-label={`승천 ${ascension}`}
+          aria-label={copy.ascension.replace("{count}", String(ascension))}
         >
           <Image
             src="/images/sts2/ui/topbar/top_bar_ascension.png"
@@ -273,4 +276,3 @@ function BuildChip({ build, supported }: { build: string; supported: boolean }) 
     </span>
   );
 }
-

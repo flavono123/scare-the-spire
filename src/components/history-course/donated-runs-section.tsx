@@ -11,12 +11,15 @@ import {
 import { supabaseEnabled } from "@/lib/supabase";
 import { RandomPickCard } from "./random-pick-card";
 import { RunCard } from "./run-card";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 
 interface Props {
   refreshKey?: number;
 }
 
 export function DonatedRunsSection({ refreshKey = 0 }: Props) {
+  const copy = serviceMessages[useServiceLocale()].historyCourse.lists;
   const router = useRouter();
   const { userId } = useAuth();
   const [runs, setRuns] = useState<DonatedRunSummary[] | null>(null);
@@ -38,9 +41,7 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
 
   const onUndo = async (runId: string) => {
     if (
-      !window.confirm(
-        "이 런의 익명 공유를 취소합니다. URL은 더 이상 다른 기기에서 열리지 않습니다.",
-      )
+      !window.confirm(copy.undoConfirm)
     ) {
       return;
     }
@@ -58,7 +59,7 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
     <section>
       <header className="mb-3">
         <h2 className="text-sm font-bold text-zinc-200">
-          공유된 런{" "}
+          {copy.sharedRuns}{" "}
           <span className="font-medium text-zinc-500">
             ({runs.length > 99 ? "99+" : runs.length})
           </span>

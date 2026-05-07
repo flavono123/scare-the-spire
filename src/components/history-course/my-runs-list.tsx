@@ -13,6 +13,8 @@ import { isBuildSupported, MIN_SUPPORTED_BUILD } from "@/lib/sts2-build-version"
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
 import { supabaseEnabled } from "@/lib/supabase";
 import { RunCard, runCardPropsFromReplay } from "./run-card";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 
 interface Props {
   // Bump from the parent whenever a fresh upload lands so this list
@@ -28,6 +30,7 @@ interface Entry {
 }
 
 export function MyRunsList({ refreshKey = 0 }: Props) {
+  const copy = serviceMessages[useServiceLocale()].historyCourse.lists;
   const router = useRouter();
   const { userId } = useAuth();
   const [entries, setEntries] = useState<Entry[] | null>(null);
@@ -138,18 +141,18 @@ export function MyRunsList({ refreshKey = 0 }: Props) {
     <section>
       <header className="mb-3 flex items-baseline justify-between">
         <h2 className="text-sm font-bold text-zinc-200">
-          내 런{" "}
+          {copy.myRuns}{" "}
           <span className="font-medium text-zinc-500">
             ({entries.length > 99 ? "99+" : entries.length})
           </span>
         </h2>
         <p className="text-[11px] text-zinc-500">
-          v{MIN_SUPPORTED_BUILD.replace(/^v/, "")} 미만은 비활성화됩니다.
+          {copy.minBuild.replace("{version}", MIN_SUPPORTED_BUILD.replace(/^v/, ""))}
         </p>
       </header>
       {entries.length === 0 ? (
         <p className="rounded-xl bg-zinc-900/40 px-4 py-6 text-center text-xs text-zinc-500 ring-1 ring-zinc-800">
-          올린 런이 아직 없습니다. 위에서 폴더 또는 .run 파일을 드래그하세요.
+          {copy.emptyMine}
         </p>
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">

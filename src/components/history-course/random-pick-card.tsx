@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { DonatedRunSummary } from "@/lib/run-donation";
 import { cn } from "@/lib/utils";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 
 interface Props {
   runs: DonatedRunSummary[];
@@ -17,6 +19,7 @@ interface Props {
 // to discover others' runs; only fall back to their own when the
 // pool is exclusively self-donated.
 export function RandomPickCard({ runs, userId }: Props) {
+  const copy = serviceMessages[useServiceLocale()].historyCourse.runCard;
   const router = useRouter();
   const [pending, setPending] = useState(false);
 
@@ -40,8 +43,8 @@ export function RandomPickCard({ runs, userId }: Props) {
       disabled={disabled}
       title={
         runs.length === 0
-          ? "공유된 런이 아직 없습니다"
-          : "공유된 런 중에서 무작위로 한 판"
+          ? copy.randomEmptyTitle
+          : copy.randomPickTitle
       }
       className={cn(
         "group block w-full rounded-xl bg-zinc-900/60 p-3 text-left ring-1 ring-zinc-800 transition",
@@ -67,7 +70,7 @@ export function RandomPickCard({ runs, userId }: Props) {
             </span>
             <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-200 ring-1 ring-inset ring-amber-400/30">
               <Shuffle className="h-3 w-3" aria-hidden />
-              무작위
+              {copy.random}
             </span>
           </div>
           {/* Placeholders shaped like the real card: STS2 seeds are 10
