@@ -6,12 +6,14 @@
 
 All task instructions must be followed by an immediate speculative commit after each modification. Do not batch changes — commit after every meaningful edit.
 
-## Local Claude Skills (Project-Scoped)
+## Local Skills (Project-Scoped)
 
-This project uses local skills under `.claude/skills` instead of global `~/.codex/skills`.
+This project uses local project skills instead of global home-directory skill installation.
 
-- For skill-driven tasks, first check `.claude/skills/*/SKILL.md`.
-- Treat `.claude/skills` as the primary skill source for this repository.
+- For Codex skill-driven tasks, first check `.codex/skills/*/SKILL.md`.
+- If a Codex skill has not been ported yet, check `.claude/skills/*/SKILL.md`.
+- Treat `.codex/skills` as the primary Codex skill source for this repository.
+- Treat `.claude/skills` as the legacy/local Claude skill source and fallback reference.
 - Do not require or assume global home-directory skill installation for this project.
 
 ## 기술 스택
