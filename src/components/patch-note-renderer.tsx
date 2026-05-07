@@ -97,6 +97,7 @@ export function EntityPreview({
   preferEntityLocaleLabel?: boolean;
 }) {
   const [show, setShow] = useState(false);
+  const [previewPressed, setPreviewPressed] = useState(false);
   const [position, setPosition] = useState<"above" | "below">(forcePosition ?? "above");
   const ref = useRef<HTMLSpanElement>(null);
   const isCoarsePointer = useCoarsePointer();
@@ -133,6 +134,7 @@ export function EntityPreview({
   const openTapPreview = useCallback((event: React.MouseEvent<HTMLAnchorElement>) => {
     if (!useTapPreview) return;
     event.preventDefault();
+    setPreviewPressed(false);
     setShow(true);
   }, [useTapPreview]);
 
@@ -147,12 +149,14 @@ export function EntityPreview({
         <Link
           href={href}
           aria-label={`${entity.nameKo} 페이지로 이동`}
-          className="group relative block cursor-pointer rounded-lg outline-none transition-transform duration-150 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-yellow-400/70"
+          data-pressed={previewPressed}
+          onPointerDown={() => setPreviewPressed(true)}
+          onPointerLeave={() => setPreviewPressed(false)}
+          onPointerCancel={() => setPreviewPressed(false)}
+          onPointerUp={() => setPreviewPressed(false)}
+          className="block cursor-pointer rounded-lg outline-none ring-1 ring-yellow-400/20 shadow-[0_0_0_1px_rgba(250,204,21,0.14)] transition-[transform,filter,box-shadow] duration-100 focus-visible:ring-2 focus-visible:ring-yellow-400/70 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125 data-[pressed=true]:ring-yellow-300/70 data-[pressed=true]:shadow-[0_0_0_2px_rgba(250,204,21,0.55),0_18px_45px_rgba(0,0,0,0.45)]"
         >
           {content}
-          <span className="pointer-events-none absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full border border-yellow-400/40 bg-black/55 text-base font-bold leading-none text-yellow-300 opacity-90 shadow-lg transition-colors group-active:border-yellow-300 group-active:bg-yellow-500/20">
-            ›
-          </span>
         </Link>
       ) : content}
     </span>
