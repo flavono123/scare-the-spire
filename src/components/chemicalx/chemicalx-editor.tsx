@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 import { RichContentEditor } from "@/components/rich-content-editor";
@@ -30,18 +30,15 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const [nickname, setNickname] = useState(() => getSavedNickname(copy.defaultNickname));
-
-  useEffect(() => {
-    setNickname((current) => (
-      DEFAULT_NICKNAME_FIXTURES.has(current) ? copy.defaultNickname : current
-    ));
-  }, [copy.defaultNickname]);
+  const nicknameValue = DEFAULT_NICKNAME_FIXTURES.has(nickname)
+    ? copy.defaultNickname
+    : nickname;
 
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
-    const nick = nickname.trim() || copy.defaultNickname;
+    const nick = nicknameValue.trim() || copy.defaultNickname;
     localStorage.setItem(NICKNAME_KEY, nick);
     await onSubmit(blocks, nick);
-  }, [copy.defaultNickname, nickname, onSubmit]);
+  }, [copy.defaultNickname, nicknameValue, onSubmit]);
 
   return (
     <div className="space-y-3">
@@ -49,7 +46,7 @@ export function ChemicalXEditor({ entities, onSubmit }: ChemicalXEditorProps) {
         <div className="flex items-center gap-2 px-3 py-2 border-b border-border">
           <input
             type="text"
-            value={nickname}
+            value={nicknameValue}
             onChange={(e) => setNickname(e.target.value)}
             placeholder={copy.defaultNickname}
             maxLength={20}
