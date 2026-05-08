@@ -262,10 +262,19 @@
     "title": "Beta Patch Notes - v0.105.0",
     "titleKo": "베타 패치 노트 - v0.105.0",
     "type": "beta",
-    "status": "building",
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/664987110632063988",
-    "summary": "Rich patch notes are being prepared. Steam source is linked while translation, Codex data sync, and tooltip review are in progress.",
-    "summaryKo": "슬서운변경 작성 중. Steam 원문 링크를 먼저 열어두고 번역, 백과사전 데이터 동기화, 툴팁 검수를 진행하고 있습니다.",
-    "hasBalanceChanges": true
+    "summary": "Bestiary in Compendium, Doormaker replaced by Aeonglass, Inky/Sword Sage/Defect balance changes, Pumpkin Candle rework, new Neow relics, and extensive fixes.",
+    "summaryKo": "백과사전 도감 추가, 문을 만드는 자가 영겁의 모래시계로 교체, 잉크투성이/검성/디펙트 밸런스 변경, 호박 양초 리워크, 신규 니오우 유물 및 다수 수정.",
+    "hasBalanceChanges": true,
+    "featuredEntities": [
+      { "type": "monster", "id": "AEONGLASS" },
+      { "type": "card", "id": "BLADE_OF_INK" },
+      { "type": "card", "id": "SWORD_SAGE" },
+      { "type": "card", "id": "HYPERBEAM" },
+      { "type": "relic", "id": "PUMPKIN_CANDLE" },
+      { "type": "relic", "id": "KALEIDOSCOPE" },
+      { "type": "relic", "id": "FISHING_ROD" },
+      { "type": "relic", "id": "SILKEN_TRESS" }
+    ]
   }
 ]
