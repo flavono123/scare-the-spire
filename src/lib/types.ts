@@ -119,6 +119,8 @@ export interface STS2AttributeDiff {
   displayNameKo: string;
   before: string | number | boolean;
   after: string | number | boolean;
+  beforeKo?: string | number | boolean;
+  afterKo?: string | number | boolean;
   diffType: DiffType;
   upgraded?: boolean;
 }

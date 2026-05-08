@@ -46,15 +46,18 @@ function DiffLine({ diff }: { diff: Change["diffs"][0] }) {
 }
 
 function STS2DiffLine({ diff }: { diff: STS2Change["diffs"][0] }) {
+  const before = diff.beforeKo ?? diff.before;
+  const after = diff.afterKo ?? diff.after;
+
   return (
     <div className="flex items-center gap-1.5 text-sm">
       {diff.upgraded && (
         <span className="rounded bg-green-500/10 px-1 text-[10px] font-medium text-green-400">+</span>
       )}
       <span className="text-muted-foreground">{diff.displayNameKo || diff.displayName}</span>
-      <span className="font-medium text-red-400">{String(diff.before)}</span>
+      <span className="font-medium text-red-400">{String(before)}</span>
       <span className="text-muted-foreground">→</span>
-      <span className="font-medium text-green-400">{String(diff.after)}</span>
+      <span className="font-medium text-green-400">{String(after)}</span>
     </div>
   );
 }

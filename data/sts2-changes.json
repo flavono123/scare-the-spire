@@ -977,6 +977,8 @@
         "displayNameKo": "보스",
         "before": "Doormaker",
         "after": "Aeonglass",
+        "beforeKo": "문을 만드는 자",
+        "afterKo": "영겁의 모래시계",
         "diffType": "rework"
       }
     ]
