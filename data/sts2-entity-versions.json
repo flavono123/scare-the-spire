@@ -1158,5 +1158,247 @@
         "after": "피해를 9 줍니다.\n이번 턴에 버린 카드 1장당 피해량이 4 증가합니다."
       }
     ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "BLADE_OF_INK",
+    "patch": "v0.105.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "[gold]잉크 단도[/gold]를 2장 [gold]손[/gold]으로 가져옵니다.",
+        "after": "[purple]잉크투성이[/purple] [gold]단도[/gold]를 2장\n[gold]손[/gold]으로 가져옵니다."
+      },
+      {
+        "field": "vars.InkyShivs",
+        "before": 2
+      },
+      {
+        "field": "vars.Cards",
+        "after": 2
+      },
+      {
+        "field": "upgrade.inkyshivs",
+        "before": "+1"
+      },
+      {
+        "field": "upgrade.cards",
+        "after": "+1"
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "BULWARK",
+    "patch": "v0.105.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 13 얻습니다.\n[gold]단조[/gold] 10.",
+        "after": "[gold]방어도[/gold]를 12 얻습니다.\n[gold]단조[/gold] 10."
+      },
+      {
+        "field": "block",
+        "before": 13,
+        "after": 12
+      },
+      {
+        "field": "vars.Block",
+        "before": 13,
+        "after": 12
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "CRESCENT_SPEAR",
+    "patch": "v0.105.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "피해를 8 줍니다.\n보유한 카드 중 [star:1] 비용을 지닌 카드 1장당 피해량이 2 증가합니다.",
+        "after": "피해를 8 줍니다.\n보유한 카드 중 [star:1] 비용을\n지닌 카드 1장당\n피해량이 2 증가합니다."
+      },
+      {
+        "field": "vars.CalculationBase",
+        "before": 6,
+        "after": 8
+      },
+      {
+        "field": "vars.StarCost",
+        "before": 1
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+1"
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "HYPERBEAM",
+    "patch": "v0.105.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "모든 적에게 피해를 26 줍니다.\n[gold]밀집[/gold]을 3 잃습니다.",
+        "after": "모든 적에게\n피해를 28 줍니다.\n[gold]밀집[/gold]을 3 잃습니다."
+      },
+      {
+        "field": "damage",
+        "before": 26,
+        "after": 28
+      },
+      {
+        "field": "vars.Damage",
+        "before": 26,
+        "after": 28
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "PATTER",
+    "patch": "v0.105.0",
+    "diffs": [
+      {
+        "field": "vars.Block",
+        "before": 9,
+        "after": 8
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "ROYALTIES",
+    "patch": "v0.105.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "전투 종료 시, [gold]골드[/gold]를 30 얻습니다.",
+        "after": "전투 종료 시,\n[gold]골드[/gold]를 30 얻습니다."
+      },
+      {
+        "field": "upgrade.gold",
+        "before": "+5",
+        "after": "+10"
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "SHATTER",
+    "patch": "v0.105.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "모든 적에게 피해를 11 줍니다.\n모든 구체를 [gold]발현[/gold]합니다.",
+        "after": "모든 적에게\n피해를 11 줍니다.\n모든 구체를 2번\n[gold]발현[/gold]합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n모든 구체를 [gold]발현[/gold]합니다.",
+        "after": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n모든 구체를 2번\n[gold]발현[/gold]합니다."
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "SWORD_SAGE",
+    "patch": "v0.105.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "[gold]군주의 칼날[/gold]이 이제 1번 추가로 적중합니다.",
+        "after": "[gold]군주의 칼날[/gold]이\n[gold]재사용[/gold]을 1 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]군주의 칼날[/gold]이 이제\n1번 추가로 적중합니다.",
+        "after": "[gold]군주의 칼날[/gold]이\n[gold]재사용[/gold]을 {SwordSagePower:diff()} 얻습니다."
+      },
+      {
+        "field": "vars.SwordSage",
+        "before": 1
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "TESLA_COIL",
+    "patch": "v0.105.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "피해를 3 줍니다.\n대상 적을 상대로 모든 [gold]전기[/gold]를 발동시킵니다.",
+        "after": "피해를 3 줍니다.\n대상 적을 상대로 모든\n[gold]전기[/gold]를 발동시킵니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "피해를 {Damage:diff()} 줍니다.\n대상 적을 상대로\n모든 [gold]전기[/gold]를 발동시킵니다.",
+        "after": "피해를 {Damage:diff()} 줍니다.\n대상 적을 상대로 모든\n[gold]전기[/gold]를 {IfUpgraded:show:2번 |}발동시킵니다."
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+3",
+        "after": "+1"
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "UPROAR",
+    "patch": "v0.105.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "피해를 5만큼 2번 줍니다.\n[gold]뽑을 카드 더미[/gold]에서 무작위 공격 카드를 1장 사용합니다.",
+        "after": "피해를 6만큼 2번 줍니다.\n[gold]뽑을 카드 더미[/gold]에서\n무작위 공격 카드를\n1장 사용합니다."
+      },
+      {
+        "field": "damage",
+        "before": 5,
+        "after": 6
+      },
+      {
+        "field": "vars.Damage",
+        "before": 5,
+        "after": 6
+      }
+    ]
+  },
+  {
+    "entityType": "relic",
+    "entityId": "INFUSED_CORE",
+    "patch": "v0.105.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "매 전투 시작 시, [gold]전기[/gold]를 [blue]{Lightning}[/blue]번 [gold]영창[/gold]합니다.",
+        "after": "매 전투 시작 시, [gold]전기[/gold]를 [blue]{Lightning}[/blue]번 [gold]영창[/gold]합니다. [gold]전기[/gold]의 피해량이 [blue]{ExtraDamage}[/blue] 증가합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "매 전투 시작 시, [gold]전기[/gold]를 [blue]{Lightning}[/blue]번 [gold]영창[/gold]합니다.",
+        "after": "매 전투 시작 시, [gold]전기[/gold]를 [blue]{Lightning}[/blue]번 [gold]영창[/gold]합니다. [gold]전기[/gold]의 피해량이 [blue]{ExtraDamage}[/blue] 증가합니다."
+      }
+    ]
+  },
+  {
+    "entityType": "relic",
+    "entityId": "PUMPKIN_CANDLE",
+    "patch": "v0.105.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]3[/blue][gold]막[/gold] 시작 시 소멸합니다.",
+        "after": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]{CombatCount}[/blue]번의 전투 후에 불이 꺼집니다. [gold]휴식 장소[/gold]에서 다시 [gold]불을 붙일[/gold] 수 있습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]3[/blue][gold]막[/gold] 시작 시 소멸합니다.",
+        "after": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]{CombatCount}[/blue]번의 전투 후에 불이 꺼집니다. [gold]휴식 장소[/gold]에서 다시 [gold]불을 붙일[/gold] 수 있습니다."
+      }
+    ]
   }
 ]
