@@ -14,6 +14,7 @@ const REFERENCE_PLACEHOLDERS: Record<string, string> = {
   UpgradedRelic: "강화된 유물",
   Enchantment: "인챈트",
   EnchantmentName: "인챈트",
+  singleStarIcon: "[star:1]",
 };
 
 type VarValue = number | string;
