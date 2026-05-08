@@ -33,8 +33,6 @@ export function useComments(storyId: string, userId: string | null): UseComments
   useEffect(() => {
     if (!supabaseEnabled) return;
     let cancelled = false;
-    setLoading(true);
-    setUnavailable(false);
 
     withSupabaseTimeout(
       "comments.select",
@@ -49,6 +47,7 @@ export function useComments(storyId: string, userId: string | null): UseComments
         if (error) throw error;
         if (cancelled) return;
         setComments(data ?? []);
+        setUnavailable(false);
         setLoading(false);
       })
       .catch(() => {

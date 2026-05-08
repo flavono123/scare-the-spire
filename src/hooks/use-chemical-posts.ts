@@ -22,8 +22,6 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
   useEffect(() => {
     if (!supabaseEnabled) return;
     let cancelled = false;
-    setLoading(true);
-    setUnavailable(false);
 
     withSupabaseTimeout(
       "chemical_posts.select",
@@ -38,6 +36,7 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
         if (error) throw error;
         if (cancelled) return;
         setPosts(data ?? []);
+        setUnavailable(false);
         setLoading(false);
       })
       .catch(() => {
