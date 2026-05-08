@@ -2,18 +2,20 @@
 
 import Image from "@/components/ui/static-image";
 import { useLikes } from "@/hooks/use-likes";
-import { EngagementSpinner } from "@/components/engagement-spinner";
+import { EngagementSpinner, EngagementUnavailableIcon } from "@/components/engagement-spinner";
 
 export function LikeButton({ storyId, userId }: { storyId: string; userId: string | null }) {
-  const { count, liked, loading, toggle } = useLikes(storyId, userId);
+  const { count, liked, loading, unavailable, toggle } = useLikes(storyId, userId);
 
   return (
     <button
       onClick={toggle}
-      disabled={!userId || loading}
+      disabled={!userId || loading || unavailable}
       className="flex items-center gap-1 text-xs text-muted-foreground transition-all"
     >
-      {loading ? (
+      {unavailable ? (
+        <EngagementUnavailableIcon size={20} />
+      ) : loading ? (
         <EngagementSpinner size={20} />
       ) : (
         <>

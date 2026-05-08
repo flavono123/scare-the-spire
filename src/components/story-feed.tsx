@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { LikeButton } from "@/components/like-button";
 import { CommentSection } from "@/components/comment-section";
-import { EngagementSpinner } from "@/components/engagement-spinner";
+import { EngagementSpinner, EngagementUnavailableIcon } from "@/components/engagement-spinner";
 
 function stableHash(value: string) {
   let hash = 0;
@@ -234,6 +234,7 @@ function StoryCard({
   onToggle,
   commentCount,
   engagementLoading,
+  engagementUnavailable,
 }: {
   story: Story;
   entityChanges: Change[];
@@ -247,6 +248,7 @@ function StoryCard({
   likeCount: number;
   commentCount: number;
   engagementLoading: boolean;
+  engagementUnavailable: boolean;
 }) {
   const [liveCommentCount, setLiveCommentCount] = useState<number | null>(null);
   const displayCommentCount = liveCommentCount ?? commentCount;
@@ -262,7 +264,9 @@ function StoryCard({
           >
             <p className="text-lg sm:text-xl font-medium leading-snug text-center">
               &ldquo;{story.sentence}&rdquo;
-              {engagementLoading ? (
+              {engagementUnavailable ? (
+                <span className="ml-2 inline-flex align-middle"><EngagementUnavailableIcon size={12} /></span>
+              ) : engagementLoading ? (
                 <span className="ml-2 inline-flex align-middle"><EngagementSpinner size={12} /></span>
               ) : displayCommentCount > 0 ? (
                 <span className="ml-2 text-xs font-normal text-muted-foreground/50">[{displayCommentCount}]</span>
@@ -377,6 +381,7 @@ export function StoryFeed({
             likeCount={counts.likes[story.id] ?? 0}
             commentCount={counts.comments[story.id] ?? 0}
             engagementLoading={counts.loading}
+            engagementUnavailable={counts.unavailable}
           />
         );
       })}
