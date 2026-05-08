@@ -11,8 +11,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:visual": "playwright test scripts/visual-check.spec.ts",
-    "codex:diff": "npx tsx scripts/generate-entity-diffs.ts",
-    "codex:validate": "npx tsx scripts/validate-entity-versions.ts",
+    "codex:diff": "tsx scripts/generate-entity-diffs.ts",
+    "codex:validate": "tsx scripts/validate-entity-versions.ts",
     "i18n:sync": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/sync-game-localization.py",
     "i18n:validate": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate-i18n.py",
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
@@ -49,6 +49,7 @@
     "eslint-config-next": "16.1.6",
     "shadcn": "^3.8.5",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "tw-animate-css": "^1.4.0",
     "typescript": "^5"
   }
