@@ -2,8 +2,6 @@
   "BOUND.description": "Solo puedes jugar [blue]1[/blue] carta [gold]Ligada[/gold] por turno. Las cartas dejan de estar [gold]Ligadas[/gold] al final del turno.",
   "BOUND.extraCardText": "Ligada",
   "BOUND.title": "Ligada",
-  "DEVOURED.description": "Añade [gold]Agotamiento[/gold] a esta carta.",
-  "DEVOURED.title": "Devoración",
   "ENTANGLED.description": "Cuesta 1 {Amount:energyIcons()} más.",
   "ENTANGLED.extraCardText": "Enredada",
   "ENTANGLED.title": "Enredada",
@@ -19,8 +17,5 @@
   "RINGING.extraCardText": "Tañido",
   "RINGING.title": "Tañido",
   "SMOG.description": "No puedes jugar más [gold]Habilidades[/gold] este turno. Desaparece al final del turno.",
-  "SMOG.title": "Polución",
-  "WEIGHTED.description": "Cuando esta carta se juegue, pierde {Amount:energyIcons()}.",
-  "WEIGHTED.extraCardText": "Pierde {Amount:energyIcons()}.",
-  "WEIGHTED.title": "Pesadez"
+  "SMOG.title": "Polución"
 }

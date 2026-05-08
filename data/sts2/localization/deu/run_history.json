@@ -49,6 +49,6 @@
   "PLAYER_COUNT.singleplayer": "Einzelspieler",
   "PLAYER_HOVER": "[blue]{PlayerName}[/blue]\n[gold]{CharacterName}[/gold]",
   "PLAYER_NAME": "[blue]{PlayerName}[/blue]",
-  "RELIC_HISTORY.categories": "{ShopRelics:cond:>0? {} Laden, |} {AncientRelics:cond:>0? {} Ahne, |}{EventRelics:cond:>0? {} Ereignis, |}{RareRelics:cond:>0? {} Selten, |}{UncommonRelics:cond:>0? {} Ungewöhnlich, |}{CommonRelics:cond:>0? {} Gewöhnlich, |}{StarterRelics:cond:>0? {} Start|}",
+  "RELIC_HISTORY.categories": "{ShopRelics:cond:>0? {} Laden, |}{AncientRelics:cond:>0? {} Ahne, |}{EventRelics:cond:>0? {} Ereignis, |}{RareRelics:cond:>0? {} Selten, |}{UncommonRelics:cond:>0? {} Ungewöhnlich, |}{CommonRelics:cond:>0? {} Gewöhnlich, |}{StarterRelics:cond:>0? {} Start|}",
   "RELIC_HISTORY.header": "Relikte ({totalRelics}):"
 }

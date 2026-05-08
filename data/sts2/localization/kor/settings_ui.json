@@ -34,6 +34,7 @@
   "FEEDBACK_CATEGORY.balance": "밸런스",
   "FEEDBACK_CATEGORY.bug": "버그",
   "FEEDBACK_CATEGORY.feedback": "피드백",
+  "FEEDBACK_CATEGORY.translation": "번역 이슈",
   "FEEDBACK_CATEGORY_LABEL": "카테고리",
   "FEEDBACK_DESCRIPTION_PLACEHOLDER": "최대 8000자의 눈부신 피드백을 여기에 입력해주세요",
   "FEEDBACK_EMOJI_LABEL": "이모티콘 추가",

@@ -2,8 +2,6 @@
   "BOUND.description": "Apenas [blue]1[/blue] carta com [gold]Restrição[/gold] pode ser jogada por turno. Cartas perdem [gold]Restrição[/gold] no final do turno.",
   "BOUND.extraCardText": "Restrição",
   "BOUND.title": "Restrição",
-  "DEVOURED.description": "Adiciona [gold]Exaurir[/gold] a esta carta.",
-  "DEVOURED.title": "Devorada",
   "ENTANGLED.description": "Custa {Amount:energyIcons()} adicional.",
   "ENTANGLED.extraCardText": "Emaranhada",
   "ENTANGLED.title": "Emaranhada",
@@ -19,8 +17,5 @@
   "RINGING.extraCardText": "Ressonante.",
   "RINGING.title": "Ressonante",
   "SMOG.description": "Você não pode jogar [gold]Técnicas[/gold] adicionais neste turno. É removida no final do turno.",
-  "SMOG.title": "Poluição",
-  "WEIGHTED.description": "Perca {Amount:energyIcons()} quando esta carta é jogada.",
-  "WEIGHTED.extraCardText": "Perca {Amount:energyIcons()}.",
-  "WEIGHTED.title": "Lastreada"
+  "SMOG.title": "Poluição"
 }

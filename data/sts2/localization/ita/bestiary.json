@@ -7,6 +7,8 @@
   "ACTION_NAME.revive": "Rinascita",
   "ACTION_NAME.stun": "Stordimento",
   "DESCRIPTION.placeholder": "Le informazioni su questo mostro devono essere ancora svelate...",
-  "LOCKED.monsterName": "Da sbloccare",
-  "LOCKED.monsterTitle": "Da sbloccare"
+  "LOCKED.monsterName": "[lb]Locked[rb]",
+  "LOCKED.monsterTitle": "Da sbloccare",
+  "UNDER_CONSTRUCTION": "In lavorazione",
+  "UNSEEN.monsterName": "[lb]Unknown[rb]"
 }

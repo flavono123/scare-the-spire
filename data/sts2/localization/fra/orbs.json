@@ -13,7 +13,7 @@
   "LIGHTNING_ORB.description": "Orbe : Inflige des dégâts à un ennemi aléatoire.",
   "LIGHTNING_ORB.smartDescription": "[gold]Passif :[/gold] À la fin du tour, infligez [blue]{Passive}[/blue] dégâts à un ennemi aléatoire.\n[gold]Activation :[/gold] Infligez [blue]{Evoke}[/blue] dégâts à un ennemi aléatoire.",
   "LIGHTNING_ORB.title": "Orbe kéraunique",
-  "MOCK_COMBAT_CLEANUP_ORB.title": "Mock Combat Cleanup",
+  "MOCK_COMBAT_CLEANUP_ORB.title": "Fin du combat (simulé)",
   "PLASMA_ORB.description": "Orbe : Génère de l'Énergie.",
   "PLASMA_ORB.smartDescription": "[gold]Passif :[/gold] Au début de votre tour,\ngagnez {energyPrefix:energyIcons(1)}.\n[gold]Activation :[/gold] Gagnez {energyPrefix:energyIcons(2)}.\nN'est pas affecté par la [gold]Focalisation[/gold].",
   "PLASMA_ORB.title": "Orbe Plasmique"

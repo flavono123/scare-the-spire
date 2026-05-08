@@ -1,5 +1,5 @@
 {
-  "BLOCK.description": "Pochłania otrzymywane obrażenia.",
+  "BLOCK.description": "Pochłania otrzymywane obrażenia do następnej tury.",
   "BLOCK.title": "Blok",
   "BOSS.description": "Pod koniec aktu zmierzysz się z [gold]{BossName:choose(Leśny Stróż|Tytan Pustki|Krab Cesarski|Demon Wiedzy|Matka Lagavulinów|Królowa|Dusza Rypki|Eksperyment|Nienasycony|Kapłan|Fantom|Kaskadowy Olbrzym):Leśnym Stróżem|Tytanem Pustki|Krabem Cesarskim|Demonem Wiedzy|Matką Lagavulinów|Królową|Duszą Rypki|Eksperymentem|Nienasyconym|Kapłanem|Fantomem|Kaskadowym Olbrzymem}[/gold].",
   "BOSS.title": "{BossName}",

@@ -7,6 +7,7 @@
   "EXHAUST.title": "廃棄",
   "INNATE.description": "このカードが[gold]手札[/gold]にある状態で戦闘を開始する。",
   "INNATE.title": "天賦",
+  "PERIOD": "。",
   "RETAIN.description": "保留されたカードは、ターン終了時に捨て札にならない。",
   "RETAIN.title": "保留",
   "SLY.description": "自分のターン終了前にこのカードが[gold]手札[/gold]から捨てられた場合、コストを支払わずにプレイする。",

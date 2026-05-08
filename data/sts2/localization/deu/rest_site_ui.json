@@ -10,6 +10,8 @@
   "OPTION_HATCH.name": "Ausbrüten",
   "OPTION_HEAL.description": "Heile für 30% deiner Max TP ({Heal}).{ExtraText}",
   "OPTION_HEAL.name": "Ausruhen",
+  "OPTION_KINDLE.description": "Gib der [gold]{RelicName}[/gold] {RekindleAmount} Ladungen.",
+  "OPTION_KINDLE.name": "Entfachen",
   "OPTION_LIFT.description": "Beginne Kämpfe mit +1 Stärke. ({LiftsLeft} übrig)",
   "OPTION_LIFT.name": "Trainieren",
   "OPTION_MEND.description": "Heile {HasTarget:{Name}|jemand anders} für 30% der Max TP{HasTarget: ({Heal})|}.",

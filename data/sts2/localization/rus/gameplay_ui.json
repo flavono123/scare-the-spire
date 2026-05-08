@@ -15,6 +15,7 @@
   "CARD_RARITY.UNCOMMON": "Необычная",
   "CARD_TYPE.ATTACK": "Атака",
   "CARD_TYPE.CURSE": "Проклятие",
+  "CARD_TYPE.NONE": "Карта без типа",
   "CARD_TYPE.POWER": "Талант",
   "CARD_TYPE.QUEST": "Задание",
   "CARD_TYPE.SKILL": "Навык",

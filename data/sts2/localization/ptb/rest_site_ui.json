@@ -10,6 +10,8 @@
   "OPTION_HATCH.name": "Chocar",
   "OPTION_HEAL.description": "Cure 30% dos seus PV Máximos ({Heal}).{ExtraText}",
   "OPTION_HEAL.name": "Descansar",
+  "OPTION_KINDLE.description": "Adicione {RekindleAmount} cargas à [gold]{RelicName}[/gold].",
+  "OPTION_KINDLE.name": "Acender",
   "OPTION_LIFT.description": "Inicie combates com +1 de Força. (Usos restantes:{LiftsLeft})",
   "OPTION_LIFT.name": "Treinar",
   "OPTION_MEND.description": "Cure {HasTarget:{Name}|outro jogador} em 30% de seus PV Máximos{HasTarget: ({Heal})|}.",

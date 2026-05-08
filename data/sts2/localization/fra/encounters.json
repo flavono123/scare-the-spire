@@ -1,6 +1,6 @@
 {
-  "AXEBOTS_NORMAL.loss": "{character} a été démembré{characterGender:choose(feminine):e|} par des [gold]Hachebots[/gold].",
-  "AXEBOTS_NORMAL.title": "Hachebots",
+  "AXEBOTS_NORMAL.loss": "{character} a été démembré{characterGender:choose(feminine):e|} par un [gold]Hachebot[/gold].",
+  "AXEBOTS_NORMAL.title": "Hachebot",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.loss": "Un [gold]Mannequin de combat usé[/gold] serait venu à bout de {character} ???",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.title": "Mannequin de combat usé",
   "BOWLBUGS_NORMAL.loss": "{character} s'est mis{characterGender:choose(feminine):e|} en travers du chemin d'un [gold]Essaim de sphéropodes[/gold].",
@@ -33,8 +33,6 @@
   "DEPRECATED_ENCOUNTER.title": "Combat obsolète",
   "DEVOTED_SCULPTOR_WEAK.loss": "{character} a été fracassé{characterGender:choose(feminine):e|} en mille morceaux par un [gold]{encounter}[/gold].",
   "DEVOTED_SCULPTOR_WEAK.title": "Sculpteur dévoué",
-  "DOORMAKER_BOSS.loss": "[gold]{encounter}[/gold] n'a pas apprécié être dérangé par {character}.",
-  "DOORMAKER_BOSS.title": "L'Huissier",
   "ENTOMANCER_ELITE.loss": "{character} a été dardé{characterGender:choose(feminine):e|} à mort par un [gold]{encounter}[/gold].",
   "ENTOMANCER_ELITE.title": "Apicultueur",
   "EXOSKELETONS_NORMAL.loss": "{character} s'est fait éviscérer par des [gold]{encounter}[/gold].",

@@ -21,7 +21,7 @@
   "HISTORY_ENTRY.transformed": "{Icon}Карта «{Title1}» преобразована в карту «{Title2}».",
   "HISTORY_ENTRY.upgraded": "Вы улучшили карту {Icon}«{Title}».",
   "HISTORY_ENTRY.used": "Карта {Icon}«{Title}» была использована.",
-  "INFO.DATE_FORMAT": "dd.mm.yyyy",
+  "INFO.DATE_FORMAT": "dd.MM.yyyy",
   "INFO.DATE_TIME": "[gold]{Date}[/gold], [blue]{Time}[/blue]",
   "INFO.SEED": "[gold]Сид[/gold]: {Seed}",
   "INFO.TIME_FORMAT": "HH:mm",

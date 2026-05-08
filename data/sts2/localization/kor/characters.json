@@ -31,7 +31,7 @@
   "IRONCLAD.banter.dead.endTurnPing": "...",
   "IRONCLAD.cardsModifierDescription": "이제 아이언클래드 카드가 보상과 상점에 등장합니다.",
   "IRONCLAD.cardsModifierTitle": "아이언클래드 카드",
-  "IRONCLAD.description": "아이언클래드의 마지막 병사입니다.\n자신의 의지와는 관계없이 검과 불꽃으로 적들을 짓밟습니다.",
+  "IRONCLAD.description": "아이언클래드의 마지막 병사입니다.\n자신의 의지와는 관계없이 검과 불꽃으로 적들을\n짓밟습니다.",
   "IRONCLAD.eventDeathPrevention": "동료들이 아직 나를 필요로 하고 있어.",
   "IRONCLAD.goldMonologue": "[sine]이 재물이라면 우리 부족의 무기고를 더 채울 수 있겠어...[/sine]",
   "IRONCLAD.possessiveAdjective": "그의",

@@ -28,7 +28,7 @@
   "RATIO_FORMAT": "{Numerator}/{Denominator}",
   "TAB_ACHIEVEMENT.header": "รางวัลความสำเร็จ",
   "TAB_STATS.header": "สถิติ",
-  "TIP_PLAYTIME.description": "ระยะเวลาที่เล่น และการชนะติดต่อกันมากที่สุด",
+  "TIP_PLAYTIME.description": "ระยะเวลาที่เล่น และการชนะที่เร็วที่สุด",
   "TIP_PLAYTIME.header": "ระยะเวลาการเล่น",
   "TIP_WIN_LOSS.description": "จำนวนการสำเร็จผู้บรรลุรวมทุกตัวละคร",
   "TIP_WIN_LOSS.header": "ผู้บรรลุ"

@@ -2,8 +2,6 @@
   "BOUND.description": "Solo puedes jugar [blue]1[/blue] carta con [gold]Vínculo[/gold] en cada turno. [gold]Vínculo[/gold] desaparece de las cartas al final del turno.",
   "BOUND.extraCardText": "Vínculo",
   "BOUND.title": "Vínculo",
-  "DEVOURED.description": "Agrega [gold]agotamiento[/gold] a esta carta.",
-  "DEVOURED.title": "Devoración",
   "ENTANGLED.description": "Cuesta un punto adicional de {Amount:energyIcons()}.",
   "ENTANGLED.extraCardText": "Enredo",
   "ENTANGLED.title": "Enredo",
@@ -19,8 +17,5 @@
   "RINGING.extraCardText": "Vibración",
   "RINGING.title": "Vibración",
   "SMOG.description": "No puedes jugar [gold]habilidades[/gold] extra en este turno. El efecto desaparece al final del turno.",
-  "SMOG.title": "Contaminación",
-  "WEIGHTED.description": "Cuando se juega esta carta, quita {Amount:energyIcons()}.",
-  "WEIGHTED.extraCardText": "Quita {Amount:energyIcons()}.",
-  "WEIGHTED.title": "Pesadez"
+  "SMOG.title": "Contaminación"
 }

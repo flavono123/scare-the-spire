@@ -52,6 +52,7 @@
   "SWIFT.description": "La primera vez que juegues esta carta, robas [blue]{Amount}[/blue] {Amount:plural:carta|cartas}.",
   "SWIFT.extraCardText": "Robas {Amount} {Amount:plural:carta|cartas} la primera vez que juegas esta carta.",
   "SWIFT.title": "Velocidad",
+  "TEZCATARAS_EMBER.description": "Cuesta [blue]0[/blue], inflige [blue]{Damage}[/blue] de daño adicional y brinda [gold]inmutabilidad[/gold].",
   "TEZCATARAS_EMBER.title": "Ascua de Tezcatara",
   "VIGOROUS.description": "La primera vez que juegas esta carta, inflige [blue]{Amount}[/blue] de daño adicional.",
   "VIGOROUS.title": "Vigorosidad"

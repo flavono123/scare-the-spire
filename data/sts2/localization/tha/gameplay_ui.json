@@ -15,6 +15,7 @@
   "CARD_RARITY.UNCOMMON": "ไม่ธรรมดา",
   "CARD_TYPE.ATTACK": "โจมตี",
   "CARD_TYPE.CURSE": "คำสาป",
+  "CARD_TYPE.NONE": "ไม่มี",
   "CARD_TYPE.POWER": "พลัง",
   "CARD_TYPE.QUEST": "ภารกิจ",
   "CARD_TYPE.SKILL": "ทักษะ",

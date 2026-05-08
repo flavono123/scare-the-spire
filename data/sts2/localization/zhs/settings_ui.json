@@ -34,6 +34,7 @@
   "FEEDBACK_CATEGORY.balance": "平衡相关",
   "FEEDBACK_CATEGORY.bug": "Bug",
   "FEEDBACK_CATEGORY.feedback": "反馈",
+  "FEEDBACK_CATEGORY.translation": "翻译问题",
   "FEEDBACK_CATEGORY_LABEL": "反馈类型",
   "FEEDBACK_DESCRIPTION_PLACEHOLDER": "请在此输入您的精彩反馈（最多8000个字符）",
   "FEEDBACK_EMOJI_LABEL": "添加表情",

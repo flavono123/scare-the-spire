@@ -1,7 +1,7 @@
 {
   "BLOCK.description": "Fino al prossimo turno, ti impedisce di subire danno.",
   "BLOCK.title": "Blocco",
-  "BOSS.description": "Alla fine dell'Atto, affronterai [gold]{BossName}[/gold].",
+  "BOSS.description": "Al termine dell'Atto, affronterai [gold]{BossName}[/gold].",
   "BOSS.title": "{BossName}",
   "CARD_REWARD.description": "Un pacchetto di [blue]3[/blue] carte casuali. Puoi sceglierne [blue]1[/blue] da aggiungere al tuo [gold]mazzo[/gold].",
   "CARD_REWARD.title": "Ricompensa di carte",

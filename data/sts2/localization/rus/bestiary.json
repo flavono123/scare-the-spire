@@ -7,6 +7,8 @@
   "ACTION_NAME.revive": "Воскрешение",
   "ACTION_NAME.stun": "Оглушение",
   "DESCRIPTION.placeholder": "Подробности об этом существе еще предстоит раскрыть…",
-  "LOCKED.monsterName": "Закрыто",
-  "LOCKED.monsterTitle": "Закрыто"
+  "LOCKED.monsterName": "[lb]Недоступен[rb]",
+  "LOCKED.monsterTitle": "Закрыто",
+  "UNDER_CONSTRUCTION": "В разработке",
+  "UNSEEN.monsterName": "[lb]Неизвестен[rb]"
 }

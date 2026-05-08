@@ -7,6 +7,8 @@
   "ACTION_NAME.revive": "부활",
   "ACTION_NAME.stun": "기절",
   "DESCRIPTION.placeholder": "이 몬스터에 관한 정보는 아직 드러나지 않았습니다...",
-  "LOCKED.monsterName": "잠김",
-  "LOCKED.monsterTitle": "잠김"
+  "LOCKED.monsterName": "[lb][잠김][rb]",
+  "LOCKED.monsterTitle": "잠김",
+  "UNDER_CONSTRUCTION": "공사 중",
+  "UNSEEN.monsterName": "[lb][미지][rb]"
 }

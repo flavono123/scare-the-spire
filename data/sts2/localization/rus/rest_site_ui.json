@@ -10,6 +10,8 @@
   "OPTION_HATCH.name": "Высидеть",
   "OPTION_HEAL.description": "Восполнить 30% макс. ОЗ ({Heal}).{ExtraText}",
   "OPTION_HEAL.name": "Отдохнуть",
+  "OPTION_KINDLE.description": "Продлить эффект реликвии [gold]{RelicName}[/gold] на {RekindleAmount} {RekindleAmount:plural(ru):бой|боя|боев}.",
+  "OPTION_KINDLE.name": "Раздуть пламя",
   "OPTION_LIFT.description": "Получить +1 силы в начале следующего сражения. (У вас в запасе {LiftsLeft} {LiftsLeft:plural(ru):тренировка|тренировки|тренировок})",
   "OPTION_LIFT.name": "Тренироваться",
   "OPTION_MEND.description": "{HasTarget:{Name}|Другой игрок} получит 30% макс. ОЗ{HasTarget: ({Heal})|}.",

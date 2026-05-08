@@ -15,6 +15,7 @@
   "CARD_RARITY.UNCOMMON": "Incomum",
   "CARD_TYPE.ATTACK": "Ataque",
   "CARD_TYPE.CURSE": "Maldição",
+  "CARD_TYPE.NONE": "Nenhum",
   "CARD_TYPE.POWER": "Poder",
   "CARD_TYPE.QUEST": "Missão",
   "CARD_TYPE.SKILL": "Técnica",

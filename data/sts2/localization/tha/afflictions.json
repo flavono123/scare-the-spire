@@ -2,8 +2,6 @@
   "BOUND.description": "สามารถเล่นการ์ด[gold]พันธะ[/gold]ได้เพียง [blue]1[/blue] การ์ดต่อเทิร์นเท่านั้น การ์ดทั้งหมดจะถูกปลด[gold]พันธะ[/gold]ตอนจบเทิร์น",
   "BOUND.extraCardText": "พันธะ",
   "BOUND.title": "พันธะ",
-  "DEVOURED.description": "เพิ่ม[gold]สลาย[/gold]ใส่การ์ดนี้",
-  "DEVOURED.title": "ถูกกลืนกิน",
   "ENTANGLED.description": "ค่าร่ายเพิ่มอีก 1 {Amount:energyIcons()}",
   "ENTANGLED.extraCardText": "พัวพัน",
   "ENTANGLED.title": "พัวพัน",
@@ -19,8 +17,5 @@
   "RINGING.extraCardText": "หูดับ",
   "RINGING.title": "หูดับ",
   "SMOG.description": "ไม่สามารถเล่น[gold]ทักษะ[/gold]เพิ่มได้ในเทิร์นนี้ ผลสิ้นสุดเมื่อจบเทิร์น",
-  "SMOG.title": "ควัน",
-  "WEIGHTED.description": "เสีย {Amount:energyIcons()} เมื่อเล่นการ์ดนี้",
-  "WEIGHTED.extraCardText": "เสีย {Amount:energyIcons()}",
-  "WEIGHTED.title": "ถ่วงน้ำหนัก"
+  "SMOG.title": "ควัน"
 }

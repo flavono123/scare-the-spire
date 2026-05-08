@@ -15,6 +15,7 @@
   "CARD_RARITY.UNCOMMON": "Uncommon",
   "CARD_TYPE.ATTACK": "Attack",
   "CARD_TYPE.CURSE": "Curse",
+  "CARD_TYPE.NONE": "None",
   "CARD_TYPE.POWER": "Power",
   "CARD_TYPE.QUEST": "Quest",
   "CARD_TYPE.SKILL": "Skill",

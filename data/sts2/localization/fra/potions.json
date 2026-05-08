@@ -55,7 +55,7 @@
   "FOCUS_POTION.title": "Potion de focalisation",
   "FORTIFIER.description": "Triplez votre [gold]Armure[/gold].",
   "FORTIFIER.title": "Fortifiant",
-  "FOUL_POTION.description": "Infligez [blue]{Damage}[/blue] {Damage:plural:dégât|dégâts} à TOUS les joueurs et ennemis.\nPeut être jetée sur le [gold]Marchand[/gold] pour [blue]{Gold}[/blue] [gold]Pièces d'or[/gold].",
+  "FOUL_POTION.description": "Infligez [blue]{Damage}[/blue] {Damage:plural:dégât|dégâts} à TOUS les joueurs et les ennemis.\nPeut être jetée sur le [gold]Marchand[/gold] pour [blue]{Gold}[/blue] [gold]Pièces d'or[/gold].",
   "FOUL_POTION.title": "Potion infecte",
   "FRUIT_JUICE.description": "Gagnez [blue]{MaxHp}[/blue] PV Max.",
   "FRUIT_JUICE.title": "Jus de fruits",

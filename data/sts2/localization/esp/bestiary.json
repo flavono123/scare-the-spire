@@ -7,6 +7,8 @@
   "ACTION_NAME.revive": "Reanimación",
   "ACTION_NAME.stun": "Aturdimiento",
   "DESCRIPTION.placeholder": "Aún falta revelar la información de este monstruo…",
-  "LOCKED.monsterName": "Sin desbloquear",
-  "LOCKED.monsterTitle": "Sin desbloquear"
+  "LOCKED.monsterName": "[lb]Sin desbloquear[rb]",
+  "LOCKED.monsterTitle": "Sin desbloquear",
+  "UNDER_CONSTRUCTION": "En construcción",
+  "UNSEEN.monsterName": "[lb]Sin datos[rb]"
 }

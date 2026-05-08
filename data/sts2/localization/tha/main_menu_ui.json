@@ -188,6 +188,8 @@
   "STATISTICS.title": "สถิติตัวละคร",
   "STEAM_INIT_ERROR.description": "Steam ล้มเหลวในการเข้าเกม โปรดตรวจสอบให้แน่ใจว่าคุณเข้าเกมจาก Steam\n\nรายละเอียด: {details}",
   "STEAM_INIT_ERROR.title": "ข้อผิดพลาดของ Steam!",
+  "STEAM_STOPPED_ERROR.description": "แอปพลิเคชัน Steam ล่ม ทำให้เกม Slay the Spire 2 อาจทำงานผิดปกติ\n\nโปรดเข้าเกมผ่าน Steam อีกครั้งโดยเร็วที่สุด",
+  "STEAM_STOPPED_ERROR.title": "พบข้อผิดพลาดของ Steam!",
   "TIMELINE": "เส้นเวลา",
   "TIMEOUT_OVERLAY.description": "[thinky_dots]กำลังรอเจ้าของห้องตอบสนอง...[/thinky_dots]",
   "TIMEOUT_OVERLAY.title": "การเชื่อมต่อถูกขัดจังหวะ"

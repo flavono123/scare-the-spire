@@ -15,6 +15,7 @@
   "CARD_RARITY.UNCOMMON": "고급",
   "CARD_TYPE.ATTACK": "공격",
   "CARD_TYPE.CURSE": "저주",
+  "CARD_TYPE.NONE": "없음",
   "CARD_TYPE.POWER": "파워",
   "CARD_TYPE.QUEST": "퀘스트",
   "CARD_TYPE.SKILL": "스킬",

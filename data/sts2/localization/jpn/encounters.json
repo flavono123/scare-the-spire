@@ -1,6 +1,8 @@
 {
+  "AEONGLASS_BOSS.loss": "{character}の無礼な振る舞いは、[gold]{encounter}[/gold]を怒らせた。",
+  "AEONGLASS_BOSS.title": "永劫の砂時計",
   "AXEBOTS_NORMAL.loss": "{character}は[gold]{encounter}[/gold]によってバラバラに解体された。",
-  "AXEBOTS_NORMAL.title": "マシンの仲間たち",
+  "AXEBOTS_NORMAL.title": "アックスマシン",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.loss": "{character}は[gold]{encounter}[/gold]によって殺された。……なんで？",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.title": "歴戦のダミー",
   "BOWLBUGS_NORMAL.loss": "{character}は忙しい[gold]{encounter}[/gold]の邪魔をした。",
@@ -33,8 +35,6 @@
   "DEPRECATED_ENCOUNTER.title": "※削除されたエンカウンター※",
   "DEVOTED_SCULPTOR_WEAK.loss": "{character}は[gold]{encounter}[/gold]によって粉々に粉砕された。",
   "DEVOTED_SCULPTOR_WEAK.title": "狂信の彫刻家",
-  "DOORMAKER_BOSS.loss": "[gold]{encounter}[/gold]は{character}の妨害に手荒い対応をした。",
-  "DOORMAKER_BOSS.title": "ドアメーカー",
   "ENTOMANCER_ELITE.loss": "{character}は[gold]{encounter}[/gold]によって刺し殺された。",
   "ENTOMANCER_ELITE.title": "エントマンサー",
   "EXOSKELETONS_NORMAL.loss": "{character}は[gold]{encounter}[/gold]に内臓をえぐり出された。",

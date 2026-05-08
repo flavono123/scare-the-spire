@@ -10,6 +10,8 @@
   "OPTION_HATCH.name": "Éclosion",
   "OPTION_HEAL.description": "Récupère 30% de vos PV Max ({Heal}).{ExtraText}",
   "OPTION_HEAL.name": "Repos",
+  "OPTION_KINDLE.description": "Ajoutez {RekindleAmount} charges à la [gold]{RelicName}[/gold].",
+  "OPTION_KINDLE.name": "Raviver",
   "OPTION_LIFT.description": "Vous donne +1 Force au début de chaque combat. ({LiftsLeft} Restants)",
   "OPTION_LIFT.name": "Entraînement",
   "OPTION_MEND.description": "Soigne {HasTarget:{Name}|un autre joueur} de 30% de leurs PV Max {HasTarget: ({Heal})|}.",

@@ -19,7 +19,7 @@
   "INSANITY.title": "วิกลจริต",
   "MIDAS.description": "ศัตรูดรอปทองมากขึ้น [blue]200%[/blue] แต่คุณไม่สามารถตีบวกที่[gold]จุดพัก[/gold]ได้อีกต่อไป",
   "MIDAS.title": "ไมดาส",
-  "MURDEROUS.description": "ทั้งคุณและศัตรูทั้งหมด เริ่มแต่ละการต่อสู้ด้วย [blue]3[/blue] [gold]ความแข็งแรง[/gold]",
+  "MURDEROUS.description": "คุณเริ่มการต่อสู้ด้วย [blue]3[/blue] [gold]ความแข็งแรง[/gold] ศัตรูทั้งหมดเริ่มการต่อสู้ด้วย [blue]3[/blue] [gold]ความแข็งแรง[/gold]",
   "MURDEROUS.title": "เจตนาฆ่า",
   "NIGHT_TERRORS.additionalRestSiteHealText": "+{Heal} HP จาก Night Terrors\nเสีย [red]5[/red] HP สูงสุด",
   "NIGHT_TERRORS.description": "การพักผ่อนที่[gold]จุดพัก[/gold]จะฟื้นฟู HP ทั้งหมด แต่ต้องจ่ายด้วย [red]5[/red] HP สูงสุด",

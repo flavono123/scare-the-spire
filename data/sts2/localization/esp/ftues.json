@@ -1,6 +1,12 @@
 {
   "AFFLICTION_FTUE_DESCRIPTION": "Los enemigos pueden alterar tus cartas mediante aflicciones.\nUna carta solo puede tener una aflicción a la vez, la cual desaparece al terminar el combate.",
   "AFFLICTION_FTUE_TITLE": "¿Qué son las aflicciones?",
+  "ASCENSION_MULTIPLAYER_FTUE_DESCRIPTION": "¡Felicitaciones! Al encontrarte con el [red]Artífice[/red], desbloqueaste las ascensiones cooperativas.\n\nEstas ascensiones te permiten poner a prueba tus habilidades y demostrar tu dominio del modo cooperativo.\n\nAl completar el [gold]acto[/gold] [blue]3[/blue], desbloquearás retos cada vez más difíciles.",
+  "ASCENSION_MULTIPLAYER_FTUE_DISCLAIMER": "Nota: En el modo cooperativo, las ascensiones se registran de forma independiente al modo solitario y se comparten entre todos los personajes.",
+  "ASCENSION_MULTIPLAYER_FTUE_TITLE": "¡Ascensiones cooperativas!",
+  "ASCENSION_SINGLEPLAYER_FTUE_DESCRIPTION": "¡Felicitaciones! Al encontrarte con el [red]Artífice[/red], desbloqueaste las ascensiones.\n\nEstas te permiten poner a prueba tus habilidades y demostrar tu dominio de cada personaje.\n\nAl completar el [gold]acto[/gold] [blue]3[/blue] con ascensiones, desbloquearás retos cada vez más difíciles.",
+  "ASCENSION_SINGLEPLAYER_FTUE_DISCLAIMER": "Nota: Completar la ascensión 1 desbloquea una era, pero las ascensiones superiores son opcionales.",
+  "ASCENSION_SINGLEPLAYER_FTUE_TITLE": "¡Ascensiones desbloqueadas!",
   "CANNOT_PLAY_CARD_FTUE_DESCRIPTION": "No puedes jugar cartas si no tienes suficiente energía.\n\nTermina tu turno para recuperar energía y poder robar cartas nuevas.",
   "CANNOT_PLAY_CARD_FTUE_TITLE": "Dato: ¡no puedes jugar esta carta!",
   "CAN_PLAY_CARDS_FTUE_DESCRIPTION": "Este es el [gold]indicador de energía[/gold].\n\nEjemplo: [blue]2/3[/blue] significa que te quedan [blue]2[/blue] puntos de energía en este turno y que volverá a [blue]3[/blue] al comienzo del siguiente turno.",

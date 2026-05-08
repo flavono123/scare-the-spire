@@ -15,6 +15,7 @@
   "CARD_RARITY.UNCOMMON": "アンコモン",
   "CARD_TYPE.ATTACK": "アタック",
   "CARD_TYPE.CURSE": "呪い",
+  "CARD_TYPE.NONE": "なし",
   "CARD_TYPE.POWER": "パワー",
   "CARD_TYPE.QUEST": "クエスト",
   "CARD_TYPE.SKILL": "スキル",

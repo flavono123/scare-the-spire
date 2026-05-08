@@ -2,8 +2,6 @@
   "BOUND.description": "Only [blue]1[/blue] [gold]Bound[/gold] card can be played each turn. Cards are un-[gold]Bound[/gold] at end of turn.",
   "BOUND.extraCardText": "Bound",
   "BOUND.title": "Bound",
-  "DEVOURED.description": "Add [gold]Exhaust[/gold] to this card.",
-  "DEVOURED.title": "Devoured",
   "ENTANGLED.description": "Costs an additional {Amount:energyIcons()}.",
   "ENTANGLED.extraCardText": "Entangled",
   "ENTANGLED.title": "Entangled",
@@ -22,8 +20,5 @@
   "RINGING.extraCardText": "Ringing.",
   "RINGING.title": "Ringing",
   "SMOG.description": "You cannot play additional [gold]Skills[/gold] this turn. Clears at the end of the turn.",
-  "SMOG.title": "Smog",
-  "WEIGHTED.description": "Lose {Amount:energyIcons()} when this card is played.",
-  "WEIGHTED.extraCardText": "Lose {Amount:energyIcons()}.",
-  "WEIGHTED.title": "Weighted"
+  "SMOG.title": "Smog"
 }

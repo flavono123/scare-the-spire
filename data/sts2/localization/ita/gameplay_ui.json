@@ -15,6 +15,7 @@
   "CARD_RARITY.UNCOMMON": "Non comune",
   "CARD_TYPE.ATTACK": "Attacco",
   "CARD_TYPE.CURSE": "Maledizione",
+  "CARD_TYPE.NONE": "Nessuno",
   "CARD_TYPE.POWER": "Potere",
   "CARD_TYPE.QUEST": "Missione",
   "CARD_TYPE.SKILL": "Abilità",

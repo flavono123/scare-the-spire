@@ -10,6 +10,8 @@
   "OPTION_HATCH.name": "부화",
   "OPTION_HEAL.description": "최대 체력의 30%만큼 체력을 회복합니다 ({Heal}).{ExtraText}",
   "OPTION_HEAL.name": "휴식",
+  "OPTION_KINDLE.description": "[gold]{RelicName}[/gold]를 {RekindleAmount}만큼 충전합니다.",
+  "OPTION_KINDLE.name": "불붙이기",
   "OPTION_LIFT.description": "힘 +1 인 상태로 전투를 시작합니다. ({LiftsLeft}번 남음)",
   "OPTION_LIFT.name": "단련",
   "OPTION_MEND.description": "{HasTarget:{Name}의|다른 사람의} 체력을 최대 체력의 30%만큼 회복시킵니다{HasTarget: ({Heal})|}.",

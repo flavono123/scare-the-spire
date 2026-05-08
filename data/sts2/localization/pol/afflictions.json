@@ -2,8 +2,6 @@
   "BOUND.description": "W każdej turze można zagrać tylko [blue]1[/blue] [gold]Uwięzioną[/gold] kartę. Karty zostają [gold]Uwolnione[/gold] pod koniec tury.",
   "BOUND.extraCardText": "Uwięzienie",
   "BOUND.title": "Uwięzienie",
-  "DEVOURED.description": "Dodaj [gold]Wyczerpanie[/gold] do tej karty.",
-  "DEVOURED.title": "Pożarcie",
   "ENTANGLED.description": "Karta kosztuje dodatkowy {Amount:energyIcons()}.",
   "ENTANGLED.extraCardText": "Zaplątanie",
   "ENTANGLED.title": "Zaplątanie",
@@ -19,8 +17,5 @@
   "RINGING.extraCardText": "Dzwonienie.",
   "RINGING.title": "Dzwonienie",
   "SMOG.description": "W tej turze nie możesz już zagrać [gold]Umiejętności[/gold]. Znika pod koniec tury.",
-  "SMOG.title": "Smog",
-  "WEIGHTED.description": "Utrać {Amount:energyIcons()} po zagraniu tej karty.",
-  "WEIGHTED.extraCardText": "Utrać {Amount:energyIcons()}.",
-  "WEIGHTED.title": "Obciążenie"
+  "SMOG.title": "Smog"
 }

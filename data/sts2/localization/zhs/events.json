@@ -681,6 +681,8 @@
   "UNREST_SITE.pages.KILL.description": "这些树木[purple]显然有恶意[/purple]所以你决定把它们解决掉。\n几天之后，你浑身满是[red]灰烬[/red]和[purple]油脂黏液[/purple]。\n\n被杀死的树木中飞出了一大群小小的异鸟灵魂，它们将一个[gold]小盒子[/gold]扔到了你的脚边。\n[green]“感谢你将我们从那些树木体内解放出来……[sine]叽叽叽[/sine]！”[/green]\n\n你真的该多睡一会儿。",
   "UNREST_SITE.pages.REST.description": "繁忙的冒险让你精疲力尽，所以尽管异象丛生，你还是决定倒头就睡。\n\n[orange]火焰[/orange]整晚呼啸作响，让你辗转反侧。那些[purple]恶心树木[/purple]的漆黑黏液散发出了一股恶臭的味道。\n\n你醒了，虽然恢复了体力，精神却没有变好。",
   "UNREST_SITE.title": "无休之处",
+  "WAR_HISTORIAN_REPY.pages.EXTRA_UNLOCK_CAGE.description": "当你从口袋中拿出备用钥匙时，你听见[green]付袭[/green]如释重负地叹了一口气。\n\n“你可真是吓坏我了。”",
+  "WAR_HISTORIAN_REPY.pages.EXTRA_UNLOCK_CHEST.description": "[green]付袭[/green]离开时，你用备用钥匙打开了宝箱。",
   "WAR_HISTORIAN_REPY.pages.INITIAL.description": "你看到一个学者被关在一个[purple]吊在空中的笼子[/purple]里，而旁边有一个[gold]大宝箱[/gold]。\n\n那个学者一边咕哝着什么[sine][orange]“一次性的钥匙”[/orange][/sine]，一边拼命地在写着些什么。\n\n看起来你可以二选一，要么打开[purple]笼子[/purple]，要么打开[gold]宝箱[/gold]。",
   "WAR_HISTORIAN_REPY.pages.INITIAL.options.UNLOCK_CAGE.description": "失去[gold]灯火钥匙[/gold]。获得[gold]历史课[/gold]。",
   "WAR_HISTORIAN_REPY.pages.INITIAL.options.UNLOCK_CAGE.title": "打开笼子",

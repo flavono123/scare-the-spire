@@ -52,6 +52,7 @@
   "SWIFT.description": "Gdy zagrasz tę kartę po raz pierwszy, dobierz {Amount:plural:[blue]{Amount}[/blue] kartę|[blue]{Amount}[/blue] karty|[blue]{Amount}[/blue] kart}.",
   "SWIFT.extraCardText": "Dobierz {Amount} {Amount:plural:kartę|karty|kart}, gdy zagrasz tę kartę po raz pierwszy.",
   "SWIFT.title": "Sprint",
+  "TEZCATARAS_EMBER.description": "Karta kosztuje [blue]0[/blue], zadaje dodatkowo [blue]{Damage}[/blue] pkt. obrażeń i otrzymuje [gold]Wieczna[/gold].",
   "TEZCATARAS_EMBER.title": "Żar Tezcatary",
   "VIGOROUS.description": "Gdy zagrasz tę kartę po raz pierwszy w walce, zadaje dodatkowo [blue]{Amount}[/blue] pkt. obrażeń.",
   "VIGOROUS.title": "Werwa"

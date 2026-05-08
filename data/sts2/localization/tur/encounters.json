@@ -1,6 +1,6 @@
 {
-  "AXEBOTS_NORMAL.loss": "{character}, [gold]{encounter}[/gold] tarafından parçalara ayrıldı.",
-  "AXEBOTS_NORMAL.title": "Bot Ahbaplar",
+  "AXEBOTS_NORMAL.loss": "{character}, bir [gold]{encounter}[/gold] tarafından parçalara ayrıldı.",
+  "AXEBOTS_NORMAL.title": "Baltabot",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.loss": "{character}, nasıl olduysa [gold]{encounter}[/gold] tarafından mı öldürüldü???",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.title": "Savaşta Yıpranmış Manken",
   "BOWLBUGS_NORMAL.loss": "{character}, kalabalık bir [gold]{encounter}[/gold]'nün yoluna çıktı.",
@@ -33,8 +33,6 @@
   "DEPRECATED_ENCOUNTER.title": "Oyundan Kaldırılmış Karşılaşma",
   "DEVOTED_SCULPTOR_WEAK.loss": "{character}, [gold]{encounter}[/gold] tarafından küçük parçalara ayrıldı.",
   "DEVOTED_SCULPTOR_WEAK.title": "Kendini Adamış Heykeltıraş",
-  "DOORMAKER_BOSS.loss": "[gold]{encounter}[/gold], {character} tarafından verilen rahatsızlığı hoş karşılamadı.",
-  "DOORMAKER_BOSS.title": "Kapı Ustası",
   "ENTOMANCER_ELITE.loss": "{character}, [gold]{encounter}[/gold] tarafından sokularak öldürüldü.",
   "ENTOMANCER_ELITE.title": "Böcek Büyücüsü",
   "EXOSKELETONS_NORMAL.loss": "{character}, [gold]{encounter}[/gold] tarafından iç organları sökülerek öldürüldü.",

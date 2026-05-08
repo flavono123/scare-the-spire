@@ -52,6 +52,7 @@
   "SWIFT.description": "Bu kartı her ilk oynayışında [blue]{Amount}[/blue] {Amount:plural:kart|kart} çek.",
   "SWIFT.extraCardText": "Bu kart ilk oynandığında {Amount} {Amount:plural:kart|kart} çek.",
   "SWIFT.title": "Hızlı",
+  "TEZCATARAS_EMBER.description": "Maliyeti [blue]0[/blue] olur, fazladan [blue]{Damage}[/blue] hasar verir ve [gold]Sonsuz[/gold] elde eder.",
   "TEZCATARAS_EMBER.title": "Tezcatara'nın Koru",
   "VIGOROUS.description": "Bu kart ilk oynanışında fazladan [blue]{Amount}[/blue] hasar verir.",
   "VIGOROUS.title": "Güçlü"

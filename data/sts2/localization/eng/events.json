@@ -688,6 +688,8 @@
   "UNREST_SITE.pages.KILL.description": "These trees are [purple]clearly malicious[/purple] so you decide to get rid of them.\nDays later, you're covered in [red]ash[/red] and [purple]oily goop[/purple].\n\nA massive flock of little byrd spirits rise from the slain trees and drop a [gold]small box[/gold] at your feet.\n[green]“Thank you for freeing us from those trees... [sine]cheep cheep[/sine]!”[/green]\n\nYou should really sleep more.",
   "UNREST_SITE.pages.REST.description": "All this adventuring has left you exhausted, and despite the oddities, you decide to sleep.\n\nYou toss and turn as the [orange]fire[/orange] roars and crackles through the night. The [purple]disgusting trees[/purple] give off a wretched scent from their pitch-black sap.\n\nYou wake up, recovered, but not replenished.",
   "UNREST_SITE.title": "Unrest Site",
+  "WAR_HISTORIAN_REPY.pages.EXTRA_UNLOCK_CAGE.description": "You hear [green]Repy[/green] let out a sigh of relief as you pull out the spare key from your pocket.\n\n“You really had me going there”.",
+  "WAR_HISTORIAN_REPY.pages.EXTRA_UNLOCK_CHEST.description": "As [green]Repy[/green] walks away, you use your spare key to open the chest.",
   "WAR_HISTORIAN_REPY.pages.INITIAL.description": "An academic is trapped in a [purple]hanging cage[/purple] next to a [gold]treasure chest[/gold].\n\nThe academic is muttering about [sine][orange]“One-Time-Use Keys”[/orange][/sine] while furiously writing something.\n\nLooks like you can unlock the [purple]cage[/purple] or the [gold]chest[/gold].",
   "WAR_HISTORIAN_REPY.pages.INITIAL.options.UNLOCK_CAGE.description": "Lose [gold]Lantern Key[/gold]. Obtain [gold]History Course[/gold].",
   "WAR_HISTORIAN_REPY.pages.INITIAL.options.UNLOCK_CAGE.title": "Unlock the Cage",

@@ -45,7 +45,7 @@
   "QUOTES.16": "Twoja świadomość zanika...",
   "SCORE.unlockedAllMessage": "Odblokowano wszystkie Epoki!",
   "SCORE.unlockedEpochMessage": "Odblokowano Epokę!",
-  "SCORE.unlocksRemaining": "Do odblokowania: {UnlockCount}",
+  "SCORE.unlocksRemaining": "Epoki do odblokowania: {UnlockCount}",
   "SCORE_LINE.ascension": "Poziom Wyniesienia: {AscensionLevel}",
   "SCORE_LINE.bossesSlain": "Pokonani Bossowie: {BossCount}",
   "SCORE_LINE.elitesKilled": "Pokonani Elitarni: {EliteCount}",

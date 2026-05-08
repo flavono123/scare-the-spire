@@ -7,6 +7,8 @@
   "ACTION_NAME.revive": "Wiederbeleben",
   "ACTION_NAME.stun": "Betäubt",
   "DESCRIPTION.placeholder": "Informationen zu diesem Monster müssen noch aufgedeckt werden...",
-  "LOCKED.monsterName": "Gesperrt",
-  "LOCKED.monsterTitle": "Gesperrt"
+  "LOCKED.monsterName": "[lb]Gesperrt[rb]",
+  "LOCKED.monsterTitle": "Gesperrt",
+  "UNDER_CONSTRUCTION": "In Entwicklung",
+  "UNSEEN.monsterName": "[lb]Unbekannt[rb]"
 }

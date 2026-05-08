@@ -34,6 +34,7 @@
   "FEEDBACK_CATEGORY.balance": "Balance",
   "FEEDBACK_CATEGORY.bug": "Bug",
   "FEEDBACK_CATEGORY.feedback": "Feedback",
+  "FEEDBACK_CATEGORY.translation": "Translation Issue",
   "FEEDBACK_CATEGORY_LABEL": "Category",
   "FEEDBACK_DESCRIPTION_PLACEHOLDER": "Enter up to 8000 characters of wonderful feedback here",
   "FEEDBACK_EMOJI_LABEL": "Add an Emoji",

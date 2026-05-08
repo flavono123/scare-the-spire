@@ -15,6 +15,7 @@
   "CARD_RARITY.UNCOMMON": "罕见",
   "CARD_TYPE.ATTACK": "攻击",
   "CARD_TYPE.CURSE": "诅咒",
+  "CARD_TYPE.NONE": "无",
   "CARD_TYPE.POWER": "能力",
   "CARD_TYPE.QUEST": "任务",
   "CARD_TYPE.SKILL": "技能",

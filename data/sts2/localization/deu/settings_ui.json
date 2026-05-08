@@ -34,6 +34,7 @@
   "FEEDBACK_CATEGORY.balance": "Spielbalance",
   "FEEDBACK_CATEGORY.bug": "Fehler",
   "FEEDBACK_CATEGORY.feedback": "Feedback",
+  "FEEDBACK_CATEGORY.translation": "Übersetzungsproblem",
   "FEEDBACK_CATEGORY_LABEL": "Kategorie",
   "FEEDBACK_DESCRIPTION_PLACEHOLDER": "Gib hier bis zu 8000 Zeichen wunderbaren Feedbacks ein",
   "FEEDBACK_EMOJI_LABEL": "Nutze ein Emoji",

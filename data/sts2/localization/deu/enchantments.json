@@ -52,7 +52,7 @@
   "SWIFT.description": "Wenn du diese Karte zum ersten Mal in einem Kampf spielst, ziehe [blue]{Amount}[/blue] {Amount:plural:Karte|Karten}.",
   "SWIFT.extraCardText": "Ziehe {Amount} {Amount:plural:Karte|Karten}, wenn du diese Karte zum ersten Mal spielst.",
   "SWIFT.title": "Flott",
-  "TEZCATARAS_EMBER.description": "Kostet [blue]0[/blue], fügt [blue]{Damage}[/blue] Schaden mehr zu und erhält [gold]Ewig[/gold].",
+  "TEZCATARAS_EMBER.description": "Kostet [blue]0[/blue], fügt [blue]{Damage}[/blue] Schaden mehr zu und bekommt [gold]Ewig[/gold].",
   "TEZCATARAS_EMBER.title": "Tezcataras Glut",
   "VIGOROUS.description": "Wenn du diese Karte zum ersten Mal in einem Kampf spielst, fügt sie [blue]{Amount}[/blue] Schaden mehr zu.",
   "VIGOROUS.title": "Kräftig"

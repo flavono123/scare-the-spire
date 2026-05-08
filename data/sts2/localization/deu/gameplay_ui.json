@@ -15,6 +15,7 @@
   "CARD_RARITY.UNCOMMON": "Ungewöhnlich",
   "CARD_TYPE.ATTACK": "Angriff",
   "CARD_TYPE.CURSE": "Fluch",
+  "CARD_TYPE.NONE": "Nichts",
   "CARD_TYPE.POWER": "Macht",
   "CARD_TYPE.QUEST": "Auftrag",
   "CARD_TYPE.SKILL": "Fertigkeit",

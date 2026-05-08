@@ -15,6 +15,7 @@
   "CARD_RARITY.UNCOMMON": "Niepospolita",
   "CARD_TYPE.ATTACK": "Atak",
   "CARD_TYPE.CURSE": "Klątwa",
+  "CARD_TYPE.NONE": "Wyłącz",
   "CARD_TYPE.POWER": "Moc",
   "CARD_TYPE.QUEST": "Misja",
   "CARD_TYPE.SKILL": "Umiej.",
@@ -40,12 +41,12 @@
   "CONFIRM_LOAD_SAVE.header": "Przed wyruszeniem w drogę należy zebrać drużynę.",
   "DECK_PILE_INFO": "Zaczynasz każdą walkę z tymi kartami.",
   "DISCARD_PILE": "Stos kart odrzuconych.",
-  "DISCARD_PILE_INFO": "Karty są wtasowane stąd do stosu rozgrywającego, gdy skończą się w nim karty.",
+  "DISCARD_PILE_INFO": "Stąd wtasujesz karty do stosu rozgrywającego, gdy skończą się w nim karty.",
   "DRAW_PILE": "Stos rozgrywający",
-  "DRAW_PILE_INFO": "Karty stąd są dobierane na początku każdej tury.\n[gold](Karty są sortowane według rzadkości)[/gold]",
+  "DRAW_PILE_INFO": "Stąd dobierasz karty na początku każdej tury.\n[gold](Pokazane karty są posortowane według rzadkości)[/gold]",
   "END_TURN_BUTTON": "Zakończ {turnNumber}. turę",
   "ENEMY_TURN": "Tura przeciwnika",
-  "EXHAUST_PILE_INFO": "Te karty zostały wyczerpane podczas walki.",
+  "EXHAUST_PILE_INFO": "Te karty zostały wyczerpane w tej walce.",
   "FORMAT_CARD_MOD_TITLE": "{modTitle}{displayCount:cond: {modAmount}|}",
   "GAME_SAVED": "[sine]Zapisano grę[/sine]",
   "HEALTH_BAR.DEAD": "Nie żyje",
@@ -101,5 +102,5 @@
   "TREASURE_FIGHT_TEXT": "Walczcie!!!",
   "TURN_COUNT": "{turnNumber}. tura",
   "UNDO_END_TURN_BUTTON": "Anuluj",
-  "VIEW_UPGRADES": "Wyświetl Ulepszenie"
+  "VIEW_UPGRADES": "Ulepszenia"
 }

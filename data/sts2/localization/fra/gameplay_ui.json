@@ -15,6 +15,7 @@
   "CARD_RARITY.UNCOMMON": "Inhabituel",
   "CARD_TYPE.ATTACK": "Attaque",
   "CARD_TYPE.CURSE": "Malédiction",
+  "CARD_TYPE.NONE": "Aucun",
   "CARD_TYPE.POWER": "Pouvoir",
   "CARD_TYPE.QUEST": "Quête",
   "CARD_TYPE.SKILL": "Compétence",

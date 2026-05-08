@@ -7,6 +7,8 @@
   "ACTION_NAME.revive": "Yeniden Doğma",
   "ACTION_NAME.stun": "Sersemleme",
   "DESCRIPTION.placeholder": "Bu canavar hakkındaki bilgiler henüz açığa çıkmadı...",
-  "LOCKED.monsterName": "Kilitli",
-  "LOCKED.monsterTitle": "Kilitli"
+  "LOCKED.monsterName": "[lb]Locked[rb]",
+  "LOCKED.monsterTitle": "Kilitli",
+  "UNDER_CONSTRUCTION": "Yapım Aşamasında",
+  "UNSEEN.monsterName": "[lb]Unknown[rb]"
 }

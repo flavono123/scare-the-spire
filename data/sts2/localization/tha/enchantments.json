@@ -52,6 +52,7 @@
   "SWIFT.description": "ครั้งแรกที่คุณเล่นการ์ดนี้ จั่วการ์ด [blue]{Amount}[/blue] ใบ",
   "SWIFT.extraCardText": "ครั้งแรกที่คุณเล่นการ์ดนี้ จั่วการ์ด {Amount} ใบ",
   "SWIFT.title": "มนตร์ฉับพลัน",
+  "TEZCATARAS_EMBER.description": "ค่าร่าย [blue]0[/blue] สร้างความเสียหายเพิ่ม [blue]{Damage}[/blue] และได้รับ[gold]นิรันดร์[/gold]",
   "TEZCATARAS_EMBER.title": "เพลิงของเทซคาทารา",
   "VIGOROUS.description": "ครั้งแรกที่เล่นการ์ดนี้ สร้างความเสียหายเพิ่ม [blue]{Amount}[/blue]",
   "VIGOROUS.title": "มนตร์ชีวิตชีวา"

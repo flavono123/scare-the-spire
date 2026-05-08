@@ -2,9 +2,7 @@
   "BOUND.description": "Nur [blue]1[/blue] [gold]Gebundene[/gold] Karte kann pro Zug gespielt werden. Am Ende des Zuges verlieren Karten [gold]Gebunden[/gold].",
   "BOUND.extraCardText": "Gebunden",
   "BOUND.title": "Gebunden",
-  "DEVOURED.description": "Gib dieser Karte [gold]Erschöpft[/gold].",
-  "DEVOURED.title": "Verschlungen",
-  "ENTANGLED.description": "Kostet eine zusätzliche {Amount:energyIcons()}.",
+  "ENTANGLED.description": "Kostet {Amount:energyIcons()} mehr.",
   "ENTANGLED.extraCardText": "Verfangen",
   "ENTANGLED.title": "Verfangen",
   "GALVANIZED.description": "Nimm [blue]{Amount}[/blue] Schaden, wenn diese Karte ausgespielt wird.",
@@ -19,8 +17,5 @@
   "RINGING.extraCardText": "Klingeln.",
   "RINGING.title": "Klingeln",
   "SMOG.description": "Du kannst in diesem Zug keine [gold]Fertigkeiten[/gold] mehr spielen. Löst sich am Ende des Zuges auf.",
-  "SMOG.title": "Vernebelt",
-  "WEIGHTED.description": "Verliere {Amount:energyIcons()}, wenn diese Karte gespielt wird.",
-  "WEIGHTED.extraCardText": "Verliere {Amount:energyIcons()}.",
-  "WEIGHTED.title": "Belastet"
+  "SMOG.title": "Vernebelt"
 }

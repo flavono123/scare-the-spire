@@ -7,6 +7,8 @@
   "ACTION_NAME.revive": "Ressuscité",
   "ACTION_NAME.stun": "Étourdi",
   "DESCRIPTION.placeholder": "Les informations concernant ce monstre restent à découvrir...",
-  "LOCKED.monsterName": "Verrouillé",
-  "LOCKED.monsterTitle": "Verrouillé"
+  "LOCKED.monsterName": "[lb]Verrouillé[rb]",
+  "LOCKED.monsterTitle": "Verrouillé",
+  "UNDER_CONSTRUCTION": "En construction",
+  "UNSEEN.monsterName": "[lb]Inconnu[rb]"
 }

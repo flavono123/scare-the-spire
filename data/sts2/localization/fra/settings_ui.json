@@ -34,6 +34,7 @@
   "FEEDBACK_CATEGORY.balance": "Équilibrage",
   "FEEDBACK_CATEGORY.bug": "Bug",
   "FEEDBACK_CATEGORY.feedback": "Commentaires",
+  "FEEDBACK_CATEGORY.translation": "Problème de traduction",
   "FEEDBACK_CATEGORY_LABEL": "Catégorie",
   "FEEDBACK_DESCRIPTION_PLACEHOLDER": "Entrez jusqu'à 8000 caractères ici.",
   "FEEDBACK_EMOJI_LABEL": "Émojis",

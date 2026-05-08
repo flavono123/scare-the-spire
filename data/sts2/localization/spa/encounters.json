@@ -1,6 +1,6 @@
 {
-  "AXEBOTS_NORMAL.loss": "Una [gold]{encounter}[/gold] ha desmembrado a {character}.",
-  "AXEBOTS_NORMAL.title": "Pandilla de robots",
+  "AXEBOTS_NORMAL.loss": "Un [gold]{encounter}[/gold] ha desmembrado a {character}.",
+  "AXEBOTS_NORMAL.title": "Hachatrón",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.loss": "De alguna manera, un [gold]{encounter}[/gold] se ha cargado a {character}.",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.title": "Muñeco de entrenamiento maltrecho",
   "BOWLBUGS_NORMAL.loss": "{character} se interpuso en el camino de un [gold]{encounter}[/gold].",
@@ -33,8 +33,6 @@
   "DEPRECATED_ENCOUNTER.title": "Encuentro obsoleto",
   "DEVOTED_SCULPTOR_WEAK.loss": "Un [gold]{encounter}[/gold] le cinceló la cara a {character}.",
   "DEVOTED_SCULPTOR_WEAK.title": "Escultor devoto",
-  "DOORMAKER_BOSS.loss": "Al [gold]{encounter}[/gold] no le hizo gracia que {character} le molestara.",
-  "DOORMAKER_BOSS.title": "Titán interdimensional",
   "ENTOMANCER_ELITE.loss": "{character} recibió un picotazo letal de un [gold]{encounter}[/gold].",
   "ENTOMANCER_ELITE.title": "Entomomante",
   "EXOSKELETONS_NORMAL.loss": "[gold]{encounter}[/gold] destriparon a {character}.",
