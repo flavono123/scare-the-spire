@@ -137,6 +137,12 @@ function stripSentencePunctuation(text: string | undefined): string {
   return stripGameMarkup(text).replace(/[.。]+$/g, "").trim();
 }
 
+function punctuationRelaxedAliases(text: string | undefined): string[] {
+  const stripped = stripGameMarkup(text);
+  const noComma = stripped.replace(/\s*,\s*/g, " ").replace(/\s+/g, " ").trim();
+  return noComma && noComma !== stripped ? [noComma] : [];
+}
+
 function patchDisplayName(
   selectedName: string,
   englishName: string,
@@ -185,7 +191,10 @@ function addPatchKeywordLabel(
   targetLabel: string | undefined,
 ) {
   if (!sourceLabel || !targetLabel) return;
-  labels[sourceLabel.trim().toLowerCase()] = targetLabel;
+  labels[patchLabelKey(sourceLabel)] = targetLabel;
+  for (const alias of punctuationRelaxedAliases(sourceLabel)) {
+    labels[patchLabelKey(alias)] = targetLabel;
+  }
 }
 
 function addPatchKeywordLabels(
@@ -577,6 +586,11 @@ export default async function PatchDetailPage({
       id: e.id,
       nameEn: e.nameEn,
       nameKo: patchDisplayName(e.name, e.nameEn, gameLocale),
+      aliasesEn: [
+        ...(PATCH_ENTITY_ALIASES_EN[e.id] ?? []),
+        ...punctuationRelaxedAliases(e.nameEn),
+      ],
+      aliasesKo: punctuationRelaxedAliases(e.name),
       imageUrl: e.imageUrl,
       color: e.act ?? "none",
       type: "event" as const,
