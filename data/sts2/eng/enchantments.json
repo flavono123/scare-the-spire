@@ -62,12 +62,16 @@
   {
     "id": "INKY",
     "name": "Inky",
-    "description": "This card deals [blue]X[/blue] additional damage and applies [blue]X[/blue] [gold]Weak[/gold].",
+    "description": "This card deals [blue]1[/blue] additional damage and applies [blue]1[/blue] [gold]Weak[/gold].",
     "description_raw": "This card deals [blue]{Damage}[/blue] additional damage and applies [blue]{WeakPower}[/blue] [gold]Weak[/gold].",
-    "extra_card_text": "Apply [blue]X[/blue] [gold]Weak[/gold].",
+    "extra_card_text": "Apply [blue]1[/blue] [gold]Weak[/gold] to ALL enemies.",
     "card_type": null,
     "is_stackable": false,
-    "image_url": "/images/sts2/enchantments/inky.webp"
+    "image_url": "/images/sts2/enchantments/inky.webp",
+    "vars": {
+      "Damage": 1,
+      "WeakPower": 1
+    }
   },
   {
     "id": "INSTINCT",
@@ -207,7 +211,10 @@
     "extra_card_text": null,
     "card_type": null,
     "is_stackable": false,
-    "image_url": "/images/sts2/enchantments/tezcataras_ember.webp"
+    "image_url": "/images/sts2/enchantments/tezcataras_ember.webp",
+    "vars": {
+      "Damage": 3
+    }
   },
   {
     "id": "VIGOROUS",

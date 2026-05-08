@@ -1112,6 +1112,19 @@
     }
   },
   {
+    "id": "FISHING_ROD",
+    "name": "낚싯대",
+    "description": "{Combats:choose(1):매 일반 전투마다|일반 전투 [blue]{}[/blue]번 마다}, [gold]덱[/gold]의 무작위 카드를 1장 [gold]강화[/gold]합니다.",
+    "description_raw": "{Combats:choose(1):매 일반 전투마다|일반 전투 [blue]{}[/blue]번 마다}, [gold]덱[/gold]의 무작위 카드를 1장 [gold]강화[/gold]합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/fishing_rod.png",
+    "vars": {
+      "Combats": 3
+    }
+  },
+  {
     "id": "FORGOTTEN_SOUL",
     "name": "잊힌 영혼",
     "description": "카드를 [gold]소멸[/gold]시킬 때마다, 무작위 적에게 피해를 [blue]{Damage}[/blue] 줍니다.",
@@ -1374,6 +1387,19 @@
     }
   },
   {
+    "id": "HEFTY_TABLET",
+    "name": "묵직한 석판",
+    "description": "획득 시, [gold]덱[/gold]에 무작위 희귀 카드 [blue]{Cards}[/blue]장 중 [blue]1[/blue]장을 선택해 추가하고, [red]상처[/red]를 [blue]1[/blue]장 추가합니다.",
+    "description_raw": "획득 시, [gold]덱[/gold]에 무작위 희귀 카드 [blue]{Cards}[/blue]장 중 [blue]1[/blue]장을 선택해 추가하고, [red]상처[/red]를 [blue]1[/blue]장 추가합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/hefty_tablet.png",
+    "vars": {
+      "Cards": 3
+    }
+  },
+  {
     "id": "HELICAL_DART",
     "name": "나선형 다트",
     "description": "[gold]단도[/gold]를 사용할 때마다, 이번 턴 동안 [gold]민첩[/gold]을 [blue]{DexterityPower}[/blue] 얻습니다.",
@@ -1424,14 +1450,15 @@
   {
     "id": "INFUSED_CORE",
     "name": "주입된 핵",
-    "description": "매 전투 시작 시, [gold]전기[/gold]를 [blue]{Lightning}[/blue]번 [gold]영창[/gold]합니다.",
-    "description_raw": "매 전투 시작 시, [gold]전기[/gold]를 [blue]{Lightning}[/blue]번 [gold]영창[/gold]합니다.",
+    "description": "매 전투 시작 시, [gold]전기[/gold]를 [blue]{Lightning}[/blue]번 [gold]영창[/gold]합니다. [gold]전기[/gold]의 피해량이 [blue]{ExtraDamage}[/blue] 증가합니다.",
+    "description_raw": "매 전투 시작 시, [gold]전기[/gold]를 [blue]{Lightning}[/blue]번 [gold]영창[/gold]합니다. [gold]전기[/gold]의 피해량이 [blue]{ExtraDamage}[/blue] 증가합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "시작 유물",
     "pool": "defect",
     "image_url": "/static/images/relics/infused_core.png",
     "vars": {
-      "Lightning": 3
+      "Lightning": 3,
+      "ExtraDamage": 1
     }
   },
   {
@@ -1521,6 +1548,19 @@
     "pool": "shared",
     "image_url": "/static/images/relics/juzu_bracelet.png",
     "vars": {}
+  },
+  {
+    "id": "KALEIDOSCOPE",
+    "name": "만화경",
+    "description": "획득 시, 다른 캐릭터의 카드 보상을 [blue]{Cards}[/blue]번 얻습니다.",
+    "description_raw": "획득 시, 다른 캐릭터의 카드 보상을 [blue]{Cards}[/blue]번 얻습니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/kaleidoscope.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "KIFUDA",
@@ -1972,6 +2012,31 @@
     }
   },
   {
+    "id": "NEOWS_BONES",
+    "name": "니오우의 뼈 주사위",
+    "description": "획득 시, 무작위 [gold]니오우 유물[/gold]을 [blue]{Relics}[/blue]개 획득합니다. [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장 추가합니다.",
+    "description_raw": "획득 시, 무작위 [gold]니오우 유물[/gold]을 [blue]{Relics}[/blue]개 획득합니다. [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장 추가합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/neows_bones.png",
+    "vars": {
+      "Relics": 2,
+      "Curses": 1
+    }
+  },
+  {
+    "id": "NEOWS_TALISMAN",
+    "name": "니오우의 호부",
+    "description": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]강화[/gold]합니다.",
+    "description_raw": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]강화[/gold]합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/neows_talisman.png",
+    "vars": {}
+  },
+  {
     "id": "NEOWS_TORMENT",
     "name": "니오우의 비탄",
     "description": "획득 시, [gold]덱[/gold]에 [gold]니오우의 격분[/gold]을 [blue]1[/blue]장 추가합니다.",
@@ -2372,6 +2437,20 @@
     "vars": {}
   },
   {
+    "id": "PHIAL_HOLSTER",
+    "name": "약병 홀스터",
+    "description": "획득 시, 포션 슬롯을 [blue]{PotionSlots}[/blue]개 얻고, 무작위 포션을 [blue]{Potions}[/blue]개 생성합니다.",
+    "description_raw": "획득 시, 포션 슬롯을 [blue]{PotionSlots}[/blue]개 얻고, 무작위 포션을 [blue]{Potions}[/blue]개 생성합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/phial_holster.png",
+    "vars": {
+      "PotionSlots": 1,
+      "Potions": 2
+    }
+  },
+  {
     "id": "PHILOSOPHERS_STONE",
     "name": "현자의 돌",
     "description": "매 턴 시작 시 {Energy:energyIcons()}를 얻습니다. 전투 시작 시 모든 적이 [gold]힘[/gold]을 [blue]{StrengthPower}[/blue] 얻습니다.",
@@ -2546,13 +2625,14 @@
   {
     "id": "PUMPKIN_CANDLE",
     "name": "호박 양초",
-    "description": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]3[/blue][gold]막[/gold] 시작 시 소멸합니다.",
-    "description_raw": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]3[/blue][gold]막[/gold] 시작 시 소멸합니다.",
+    "description": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]{CombatCount}[/blue]번의 전투 후에 불이 꺼집니다. [gold]휴식 장소[/gold]에서 다시 [gold]불을 붙일[/gold] 수 있습니다.",
+    "description_raw": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]{CombatCount}[/blue]번의 전투 후에 불이 꺼집니다. [gold]휴식 장소[/gold]에서 다시 [gold]불을 붙일[/gold] 수 있습니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
     "image_url": "/static/images/relics/pumpkin_candle.png",
     "vars": {
+      "CombatCount": 5,
       "Energy": 1
     }
   },
@@ -2926,6 +3006,17 @@
     "vars": {
       "Gold": 999
     }
+  },
+  {
+    "id": "SILKEN_TRESS",
+    "name": "부드러운 머리칼",
+    "description": "처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다.",
+    "description_raw": "처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/silken_tress.png",
+    "vars": {}
   },
   {
     "id": "SILVER_CRUCIBLE",
@@ -3596,6 +3687,19 @@
     }
   },
   {
+    "id": "WINGED_BOOTS",
+    "name": "날개 달린 부츠",
+    "description": "다음 방을 선택할 때, 경로를 [blue]{Rooms}[/blue]번까지 무시할 수 있습니다.",
+    "description_raw": "다음 방을 선택할 때, 경로를 [blue]{Rooms}[/blue]번까지 무시할 수 있습니다.",
+    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
+    "rarity": "고대 유물",
+    "pool": "shared",
+    "image_url": "/static/images/relics/winged_boots.png",
+    "vars": {
+      "Rooms": 3
+    }
+  },
+  {
     "id": "WONGO_CUSTOMER_APPRECIATION_BADGE",
     "name": "웡고스 고객 감사 배지",
     "description": "아무 효과도 없습니다.",
@@ -3632,70 +3736,5 @@
     "vars": {
       "Cards": 4
     }
-  },
-  {
-    "id": "NEOWS_BONES",
-    "name": "니오우의 뼈 주사위",
-    "description": "획득 시, 무작위 [gold]니오우 유물[/gold]을 [blue]{Relics}[/blue]개 획득합니다. [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장 추가합니다.",
-    "description_raw": "획득 시, 무작위 [gold]니오우 유물[/gold]을 [blue]{Relics}[/blue]개 획득합니다. [gold]덱[/gold]에 무작위 [red]저주[/red]를 [blue]{Curses}[/blue]장 추가합니다.",
-    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
-    "rarity": "고대 유물",
-    "pool": "shared",
-    "image_url": "/static/images/relics/neows_bones.png",
-    "vars": {
-      "Relics": 2,
-      "Curses": 1
-    }
-  },
-  {
-    "id": "PHIAL_HOLSTER",
-    "name": "약병 홀스터",
-    "description": "획득 시, 포션 슬롯을 [blue]{PotionSlots}[/blue]개 얻고, 무작위 포션을 [blue]{Potions}[/blue]개 생성합니다.",
-    "description_raw": "획득 시, 포션 슬롯을 [blue]{PotionSlots}[/blue]개 얻고, 무작위 포션을 [blue]{Potions}[/blue]개 생성합니다.",
-    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
-    "rarity": "고대 유물",
-    "pool": "shared",
-    "image_url": "/static/images/relics/phial_holster.png",
-    "vars": {
-      "PotionSlots": 1,
-      "Potions": 2
-    }
-  },
-  {
-    "id": "WINGED_BOOTS",
-    "name": "날개 달린 부츠",
-    "description": "다음 방을 선택할 때, 경로를 [blue]{Rooms}[/blue]번까지 무시할 수 있습니다.",
-    "description_raw": "다음 방을 선택할 때, 경로를 [blue]{Rooms}[/blue]번까지 무시할 수 있습니다.",
-    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
-    "rarity": "고대 유물",
-    "pool": "shared",
-    "image_url": "/static/images/relics/winged_boots.png",
-    "vars": {
-      "Rooms": 3
-    }
-  },
-  {
-    "id": "HEFTY_TABLET",
-    "name": "묵직한 석판",
-    "description": "획득 시, [gold]덱[/gold]에 무작위 희귀 카드 [blue]{Cards}[/blue]장 중 [blue]1[/blue]장을 선택해 추가하고, [red]상처[/red]를 [blue]1[/blue]장 추가합니다.",
-    "description_raw": "획득 시, [gold]덱[/gold]에 무작위 희귀 카드 [blue]{Cards}[/blue]장 중 [blue]1[/blue]장을 선택해 추가하고, [red]상처[/red]를 [blue]1[/blue]장 추가합니다.",
-    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
-    "rarity": "고대 유물",
-    "pool": "shared",
-    "image_url": "/static/images/relics/hefty_tablet.png",
-    "vars": {
-      "Cards": 3
-    }
-  },
-  {
-    "id": "NEOWS_TALISMAN",
-    "name": "니오우의 호부",
-    "description": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]강화[/gold]합니다.",
-    "description_raw": "획득 시, [gold]타격[/gold] [blue]1[/blue]장과 [gold]수비[/gold] [blue]1[/blue]장을 [gold]강화[/gold]합니다.",
-    "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
-    "rarity": "고대 유물",
-    "pool": "shared",
-    "image_url": "/static/images/relics/neows_talisman.png",
-    "vars": {}
   }
 ]

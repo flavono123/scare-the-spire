@@ -1532,7 +1532,7 @@
   {
     "id": "BLADE_OF_INK",
     "name": "잉크 칼날",
-    "description": "[gold]잉크 단도[/gold]를 2장 [gold]손[/gold]으로 가져옵니다.",
+    "description": "[purple]잉크투성이[/purple] [gold]단도[/gold]를 2장\n[gold]손[/gold]으로 가져옵니다.",
     "description_raw": "[purple]잉크투성이[/purple] [gold]단도[/gold]를 {Cards:diff()}장\n[gold]손[/gold]으로 가져옵니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -1555,10 +1555,10 @@
       "INKY_SHIV"
     ],
     "vars": {
-      "InkyShivs": 2
+      "Cards": 2
     },
     "upgrade": {
-      "inkyshivs": "+1"
+      "cards": "+1"
     },
     "image_url": "/static/images/cards/blade_of_ink.png",
     "beta_image_url": "/static/images/cards/beta/blade_of_ink.png"
@@ -2375,7 +2375,7 @@
   {
     "id": "BULWARK",
     "name": "보루",
-    "description": "[gold]방어도[/gold]를 13 얻습니다.\n[gold]단조[/gold] 10.",
+    "description": "[gold]방어도[/gold]를 12 얻습니다.\n[gold]단조[/gold] 10.",
     "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n[gold]단조[/gold] {Forge:diff()}.",
     "cost": 2,
     "is_x_cost": null,
@@ -2386,7 +2386,7 @@
     "target": "Self",
     "color": "regent",
     "damage": null,
-    "block": 13,
+    "block": 12,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -2396,7 +2396,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 13,
+      "Block": 12,
       "Forge": 10
     },
     "upgrade": {
@@ -4013,7 +4013,7 @@
   {
     "id": "CRESCENT_SPEAR",
     "name": "초승달 창",
-    "description": "피해를 8 줍니다.\n보유한 카드 중 [star:1] 비용을 지닌 카드 1장당 피해량이 2 증가합니다.",
+    "description": "피해를 8 줍니다.\n보유한 카드 중 [star:1] 비용을\n지닌 카드 1장당\n피해량이 2 증가합니다.",
     "description_raw": "피해를 {CalculatedDamage:diff()} 줍니다.\n보유한 카드 중 {singleStarIcon} 비용을\n지닌 카드 1장당\n피해량이 {ExtraDamage:diff()} 증가합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -4034,13 +4034,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CalculationBase": 6,
+      "CalculationBase": 8,
       "ExtraDamage": 2,
-      "CalculatedDamage": 8,
-      "StarCost": 1
+      "CalculatedDamage": 8
     },
     "upgrade": {
-      "damage": "+1",
       "extradamage": "+1"
     },
     "image_url": "/static/images/cards/crescent_spear.png",
@@ -9351,7 +9349,7 @@
   {
     "id": "HYPERBEAM",
     "name": "파괴광선",
-    "description": "모든 적에게 피해를 26 줍니다.\n[gold]밀집[/gold]을 3 잃습니다.",
+    "description": "모든 적에게\n피해를 28 줍니다.\n[gold]밀집[/gold]을 3 잃습니다.",
     "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n[gold]밀집[/gold]을 {FocusPower:diff()} 잃습니다.",
     "cost": 2,
     "is_x_cost": null,
@@ -9361,7 +9359,7 @@
     "rarity": "희귀",
     "target": "AllEnemies",
     "color": "defect",
-    "damage": 26,
+    "damage": 28,
     "block": null,
     "hit_count": null,
     "powers_applied": [
@@ -9377,7 +9375,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 26,
+      "Damage": 28,
       "FocusPower": 3,
       "Focus": 3
     },
@@ -12683,7 +12681,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 9,
+      "Block": 8,
       "VigorPower": 2,
       "Vigor": 2
     },
@@ -14649,7 +14647,7 @@
   {
     "id": "ROYALTIES",
     "name": "로열티",
-    "description": "전투 종료 시, [gold]골드[/gold]를 30 얻습니다.",
+    "description": "전투 종료 시,\n[gold]골드[/gold]를 30 얻습니다.",
     "description_raw": "전투 종료 시,\n[gold]골드[/gold]를 {Gold:diff()} 얻습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -14673,7 +14671,7 @@
       "Gold": 30
     },
     "upgrade": {
-      "gold": "+5"
+      "gold": "+10"
     },
     "image_url": "/static/images/cards/royalties.png",
     "beta_image_url": "/static/images/cards/beta/royalties.png"
@@ -15505,8 +15503,8 @@
   {
     "id": "SHATTER",
     "name": "산산조각",
-    "description": "모든 적에게 피해를 11 줍니다.\n모든 구체를 [gold]발현[/gold]합니다.",
-    "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n모든 구체를 [gold]발현[/gold]합니다.",
+    "description": "모든 적에게\n피해를 11 줍니다.\n모든 구체를 2번\n[gold]발현[/gold]합니다.",
+    "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n모든 구체를 2번\n[gold]발현[/gold]합니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -17659,8 +17657,8 @@
   {
     "id": "SWORD_SAGE",
     "name": "검성",
-    "description": "[gold]군주의 칼날[/gold]이 이제 1번 추가로 적중합니다.",
-    "description_raw": "[gold]군주의 칼날[/gold]이 이제\n1번 추가로 적중합니다.",
+    "description": "[gold]군주의 칼날[/gold]이\n[gold]재사용[/gold]을 1 얻습니다.",
+    "description_raw": "[gold]군주의 칼날[/gold]이\n[gold]재사용[/gold]을 {SwordSagePower:diff()} 얻습니다.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -17687,8 +17685,7 @@
       "SOVEREIGN_BLADE"
     ],
     "vars": {
-      "SwordSagePower": 1,
-      "SwordSage": 1
+      "SwordSagePower": 1
     },
     "upgrade": {
       "cost": 1
@@ -18003,8 +18000,8 @@
   {
     "id": "TESLA_COIL",
     "name": "테슬라 코일",
-    "description": "피해를 3 줍니다.\n대상 적을 상대로 모든 [gold]전기[/gold]를 발동시킵니다.",
-    "description_raw": "피해를 {Damage:diff()} 줍니다.\n대상 적을 상대로\n모든 [gold]전기[/gold]를 발동시킵니다.",
+    "description": "피해를 3 줍니다.\n대상 적을 상대로 모든\n[gold]전기[/gold]를 발동시킵니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n대상 적을 상대로 모든\n[gold]전기[/gold]를 {IfUpgraded:show:2번 |}발동시킵니다.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -18027,7 +18024,7 @@
       "Damage": 3
     },
     "upgrade": {
-      "damage": "+3"
+      "damage": "+1"
     },
     "image_url": "/static/images/cards/tesla_coil.png",
     "beta_image_url": "/static/images/cards/beta/tesla_coil.png"
@@ -19106,7 +19103,7 @@
   {
     "id": "UPROAR",
     "name": "난동",
-    "description": "피해를 5만큼 2번 줍니다.\n[gold]뽑을 카드 더미[/gold]에서 무작위 공격 카드를 1장 사용합니다.",
+    "description": "피해를 6만큼 2번 줍니다.\n[gold]뽑을 카드 더미[/gold]에서\n무작위 공격 카드를\n1장 사용합니다.",
     "description_raw": "피해를 {Damage:diff()}만큼 2번 줍니다.\n[gold]뽑을 카드 더미[/gold]에서\n무작위 공격 카드를\n1장 사용합니다.",
     "cost": 2,
     "is_x_cost": null,
@@ -19116,7 +19113,7 @@
     "rarity": "일반",
     "target": "AnyEnemy",
     "color": "defect",
-    "damage": 5,
+    "damage": 6,
     "block": null,
     "hit_count": 2,
     "powers_applied": null,
@@ -19127,7 +19124,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 5
+      "Damage": 6
     },
     "upgrade": {
       "damage": "+2"

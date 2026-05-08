@@ -1112,6 +1112,19 @@
     }
   },
   {
+    "id": "FISHING_ROD",
+    "name": "Fishing Rod",
+    "description": "Every {Combats:plural:normal combat|[blue]{}[/blue] normal combats}, [gold]Upgrade[/gold] a random card in your [gold]Deck[/gold].",
+    "description_raw": "Every {Combats:plural:normal combat|[blue]{}[/blue] normal combats}, [gold]Upgrade[/gold] a random card in your [gold]Deck[/gold].",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/fishing_rod.png",
+    "vars": {
+      "Combats": 3
+    }
+  },
+  {
     "id": "FORGOTTEN_SOUL",
     "name": "Forgotten Soul",
     "description": "Whenever you [gold]Exhaust[/gold] a card, deal [blue]{Damage}[/blue] damage to a random enemy.",
@@ -1374,6 +1387,19 @@
     }
   },
   {
+    "id": "HEFTY_TABLET",
+    "name": "Hefty Tablet",
+    "description": "Upon pickup, choose [blue]1[/blue] of [blue]{Cards}[/blue] Rare cards to add to your [gold]Deck[/gold], and add [blue]1[/blue] [red]Injury[/red] to your [gold]Deck[/gold].",
+    "description_raw": "Upon pickup, choose [blue]1[/blue] of [blue]{Cards}[/blue] Rare cards to add to your [gold]Deck[/gold], and add [blue]1[/blue] [red]Injury[/red] to your [gold]Deck[/gold].",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/hefty_tablet.png",
+    "vars": {
+      "Cards": 3
+    }
+  },
+  {
     "id": "HELICAL_DART",
     "name": "Helical Dart",
     "description": "Whenever you play a [gold]Shiv[/gold], gain [blue]{DexterityPower}[/blue] [gold]Dexterity[/gold] this turn.",
@@ -1424,14 +1450,15 @@
   {
     "id": "INFUSED_CORE",
     "name": "Infused Core",
-    "description": "At the start of each combat, [gold]Channel[/gold] [blue]{Lightning}[/blue] [gold]Lightning[/gold].",
-    "description_raw": "At the start of each combat, [gold]Channel[/gold] [blue]{Lightning}[/blue] [gold]Lightning[/gold].",
+    "description": "At the start of each combat, [gold]Channel[/gold] [blue]{Lightning}[/blue] [gold]Lightning[/gold]. [gold]Lightning[/gold] deals [blue]{ExtraDamage}[/blue] additional damage.",
+    "description_raw": "At the start of each combat, [gold]Channel[/gold] [blue]{Lightning}[/blue] [gold]Lightning[/gold]. [gold]Lightning[/gold] deals [blue]{ExtraDamage}[/blue] additional damage.",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Starter Relic",
-    "pool": "shared",
+    "pool": "defect",
     "image_url": "/static/images/relics/infused_core.png",
     "vars": {
-      "Lightning": 3
+      "Lightning": 3,
+      "ExtraDamage": 1
     }
   },
   {
@@ -1521,6 +1548,19 @@
     "pool": "shared",
     "image_url": "/static/images/relics/juzu_bracelet.png",
     "vars": {}
+  },
+  {
+    "id": "KALEIDOSCOPE",
+    "name": "Kaleidoscope",
+    "description": "Upon pickup, obtain [blue]{Cards}[/blue] {Cards:plural:card reward|card rewards} from other characters.",
+    "description_raw": "Upon pickup, obtain [blue]{Cards}[/blue] {Cards:plural:card reward|card rewards} from other characters.",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/kaleidoscope.png",
+    "vars": {
+      "Cards": 2
+    }
   },
   {
     "id": "KIFUDA",
@@ -1972,6 +2012,31 @@
     }
   },
   {
+    "id": "NEOWS_BONES",
+    "name": "Neow's Bones",
+    "description": "Upon pickup, gain [blue]{Relics}[/blue] random [gold]Neow {Relics:plural:Relic|Relics}[/gold]. Add [blue]{Curses}[/blue] random [red]{Curses:plural:Curse|Curses}[/red] to your [gold]Deck[/gold].",
+    "description_raw": "Upon pickup, gain [blue]{Relics}[/blue] random [gold]Neow {Relics:plural:Relic|Relics}[/gold]. Add [blue]{Curses}[/blue] random [red]{Curses:plural:Curse|Curses}[/red] to your [gold]Deck[/gold].",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/neows_bones.png",
+    "vars": {
+      "Relics": 2,
+      "Curses": 1
+    }
+  },
+  {
+    "id": "NEOWS_TALISMAN",
+    "name": "Neow's Talisman",
+    "description": "Upon pickup, [gold]Upgrade[/gold] [blue]1[/blue] of your [gold]Strikes[/gold] and [blue]1[/blue] of your [gold]Defends[/gold].",
+    "description_raw": "Upon pickup, [gold]Upgrade[/gold] [blue]1[/blue] of your [gold]Strikes[/gold] and [blue]1[/blue] of your [gold]Defends[/gold].",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/neows_talisman.png",
+    "vars": {}
+  },
+  {
     "id": "NEOWS_TORMENT",
     "name": "Neow's Torment",
     "description": "Upon pickup, add [blue]1[/blue] [gold]Neow's Fury[/gold] to your [gold]Deck[/gold].",
@@ -2372,6 +2437,20 @@
     "vars": {}
   },
   {
+    "id": "PHIAL_HOLSTER",
+    "name": "Phial Holster",
+    "description": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion {PotionSlots:plural:slot|slots} and procure [blue]{Potions}[/blue] random {Potions:plural:potion|potions}.",
+    "description_raw": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion {PotionSlots:plural:slot|slots} and procure [blue]{Potions}[/blue] random {Potions:plural:potion|potions}.",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/phial_holster.png",
+    "vars": {
+      "PotionSlots": 1,
+      "Potions": 2
+    }
+  },
+  {
     "id": "PHILOSOPHERS_STONE",
     "name": "Philosopher's Stone",
     "description": "Gain {Energy:energyIcons()} at the start of each turn. ALL enemies start combat with [blue]{StrengthPower}[/blue] [gold]Strength[/gold].",
@@ -2546,13 +2625,14 @@
   {
     "id": "PUMPKIN_CANDLE",
     "name": "Pumpkin Candle",
-    "description": "Gain {Energy:energyIcons()} at the start of each turn. Extinguishes at the start of [gold]Act[/gold] [blue]3[/blue].",
-    "description_raw": "Gain {Energy:energyIcons()} at the start of each turn. Extinguishes at the start of [gold]Act[/gold] [blue]3[/blue].",
+    "description": "Gain {Energy:energyIcons()} at the start of each turn. Extinguishes after [blue]{CombatCount}[/blue] combats. Can be [gold]Kindled[/gold] at [gold]Rest Sites[/gold].",
+    "description_raw": "Gain {Energy:energyIcons()} at the start of each turn. Extinguishes after [blue]{CombatCount}[/blue] combats. Can be [gold]Kindled[/gold] at [gold]Rest Sites[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
     "image_url": "/static/images/relics/pumpkin_candle.png",
     "vars": {
+      "CombatCount": 5,
       "Energy": 1
     }
   },
@@ -2926,6 +3006,17 @@
     "vars": {
       "Gold": 999
     }
+  },
+  {
+    "id": "SILKEN_TRESS",
+    "name": "Silken Tress",
+    "description": "[gold]Enchant[/gold] all cards in the first card reward with [purple]Glam[/purple].",
+    "description_raw": "[gold]Enchant[/gold] all cards in the first card reward with [purple]Glam[/purple].",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/silken_tress.png",
+    "vars": {}
   },
   {
     "id": "SILVER_CRUCIBLE",
@@ -3596,6 +3687,19 @@
     }
   },
   {
+    "id": "WINGED_BOOTS",
+    "name": "Winged Boots",
+    "description": "You may ignore paths when choosing the next rooms to travel to [blue]{Rooms}[/blue] times.",
+    "description_raw": "You may ignore paths when choosing the next rooms to travel to [blue]{Rooms}[/blue] times.",
+    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
+    "rarity": "Ancient Relic",
+    "pool": "shared",
+    "image_url": "/static/images/relics/winged_boots.png",
+    "vars": {
+      "Rooms": 3
+    }
+  },
+  {
     "id": "WONGO_CUSTOMER_APPRECIATION_BADGE",
     "name": "Wongo Customer Appreciation Badge",
     "description": "Does nothing.",
@@ -3632,70 +3736,5 @@
     "vars": {
       "Cards": 4
     }
-  },
-  {
-    "id": "NEOWS_BONES",
-    "name": "Neow's Bones",
-    "description": "Upon pickup, gain [blue]{Relics}[/blue] random [gold]Neow {Relics:plural:Relic|Relics}[/gold]. Add [blue]{Curses}[/blue] random [red]{Curses:plural:Curse|Curses}[/red] to your [gold]Deck[/gold].",
-    "description_raw": "Upon pickup, gain [blue]{Relics}[/blue] random [gold]Neow {Relics:plural:Relic|Relics}[/gold]. Add [blue]{Curses}[/blue] random [red]{Curses:plural:Curse|Curses}[/red] to your [gold]Deck[/gold].",
-    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
-    "rarity": "Ancient Relic",
-    "pool": "shared",
-    "image_url": "/static/images/relics/neows_bones.png",
-    "vars": {
-      "Relics": 2,
-      "Curses": 1
-    }
-  },
-  {
-    "id": "PHIAL_HOLSTER",
-    "name": "Phial Holster",
-    "description": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion {PotionSlots:plural:slot|slots} and procure [blue]{Potions}[/blue] random {Potions:plural:potion|potions}.",
-    "description_raw": "Upon pickup, gain [blue]{PotionSlots}[/blue] potion {PotionSlots:plural:slot|slots} and procure [blue]{Potions}[/blue] random {Potions:plural:potion|potions}.",
-    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
-    "rarity": "Ancient Relic",
-    "pool": "shared",
-    "image_url": "/static/images/relics/phial_holster.png",
-    "vars": {
-      "PotionSlots": 1,
-      "Potions": 2
-    }
-  },
-  {
-    "id": "WINGED_BOOTS",
-    "name": "Winged Boots",
-    "description": "You may ignore paths when choosing the next rooms to travel to [blue]{Rooms}[/blue] times.",
-    "description_raw": "You may ignore paths when choosing the next rooms to travel to [blue]{Rooms}[/blue] times.",
-    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
-    "rarity": "Ancient Relic",
-    "pool": "shared",
-    "image_url": "/static/images/relics/winged_boots.png",
-    "vars": {
-      "Rooms": 3
-    }
-  },
-  {
-    "id": "HEFTY_TABLET",
-    "name": "Hefty Tablet",
-    "description": "Upon pickup, choose [blue]1[/blue] of [blue]{Cards}[/blue] Rare cards to add to your [gold]Deck[/gold], and add [blue]1[/blue] [red]Injury[/red] to your [gold]Deck[/gold].",
-    "description_raw": "Upon pickup, choose [blue]1[/blue] of [blue]{Cards}[/blue] Rare cards to add to your [gold]Deck[/gold], and add [blue]1[/blue] [red]Injury[/red] to your [gold]Deck[/gold].",
-    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
-    "rarity": "Ancient Relic",
-    "pool": "shared",
-    "image_url": "/static/images/relics/hefty_tablet.png",
-    "vars": {
-      "Cards": 3
-    }
-  },
-  {
-    "id": "NEOWS_TALISMAN",
-    "name": "Neow's Talisman",
-    "description": "Upon pickup, [gold]Upgrade[/gold] [blue]1[/blue] of your [gold]Strikes[/gold] and [blue]1[/blue] of your [gold]Defends[/gold].",
-    "description_raw": "Upon pickup, [gold]Upgrade[/gold] [blue]1[/blue] of your [gold]Strikes[/gold] and [blue]1[/blue] of your [gold]Defends[/gold].",
-    "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
-    "rarity": "Ancient Relic",
-    "pool": "shared",
-    "image_url": "/static/images/relics/neows_talisman.png",
-    "vars": {}
   }
 ]

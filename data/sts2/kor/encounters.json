@@ -1,7 +1,22 @@
 [
   {
+    "id": "AEONGLASS_BOSS",
+    "name": "영겁의 모래시계",
+    "room_type": "Boss",
+    "is_weak": false,
+    "act": "Act 3 - Glory",
+    "tags": null,
+    "monsters": [
+      {
+        "id": "AEONGLASS",
+        "name": "영겁의 모래시계"
+      }
+    ],
+    "loss_text": "[gold]{encounter}[/gold]는 {character}의 방해를 친절하게 받아들이지 않았습니다."
+  },
+  {
     "id": "AXEBOTS_NORMAL",
-    "name": "로봇 친구들",
+    "name": "잘라봇",
     "room_type": "Monster",
     "is_weak": false,
     "act": "Act 3 - Glory",
@@ -292,21 +307,6 @@
       }
     ],
     "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 산산조각이 났습니다."
-  },
-  {
-    "id": "DOORMAKER_BOSS",
-    "name": "문을 만드는 자",
-    "room_type": "Boss",
-    "is_weak": false,
-    "act": "Act 3 - Glory",
-    "tags": null,
-    "monsters": [
-      {
-        "id": "DOORMAKER",
-        "name": "문을 만드는 자"
-      }
-    ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}의 방해를 받아들이지 않았습니다."
   },
   {
     "id": "ENTOMANCER_ELITE",

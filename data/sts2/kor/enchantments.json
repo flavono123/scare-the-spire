@@ -62,12 +62,16 @@
   {
     "id": "INKY",
     "name": "잉크투성이",
-    "description": "이 카드의 피해량이 [blue]X[/blue] 증가하고, [gold]약화[/gold] 를 [blue]X[/blue] 부여합니다.",
+    "description": "이 카드의 피해량이 [blue]1[/blue] 증가하고, [gold]약화[/gold] 를 [blue]1[/blue] 부여합니다.",
     "description_raw": "이 카드의 피해량이 [blue]{Damage}[/blue] 증가하고, [gold]약화[/gold] 를 [blue]{WeakPower}[/blue] 부여합니다.",
-    "extra_card_text": "[gold]약화[/gold]를 [blue]X[/blue] 부여합니다.",
+    "extra_card_text": "모든 적에게 [gold]약화[/gold]를 [blue]1[/blue] 부여합니다.",
     "card_type": null,
     "is_stackable": false,
-    "image_url": "/images/sts2/enchantments/inky.webp"
+    "image_url": "/images/sts2/enchantments/inky.webp",
+    "vars": {
+      "Damage": 1,
+      "WeakPower": 1
+    }
   },
   {
     "id": "INSTINCT",
@@ -207,7 +211,10 @@
     "extra_card_text": null,
     "card_type": null,
     "is_stackable": false,
-    "image_url": "/images/sts2/enchantments/tezcataras_ember.webp"
+    "image_url": "/images/sts2/enchantments/tezcataras_ember.webp",
+    "vars": {
+      "Damage": 3
+    }
   },
   {
     "id": "VIGOROUS",

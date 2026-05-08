@@ -1532,7 +1532,7 @@
   {
     "id": "BLADE_OF_INK",
     "name": "Blade of Ink",
-    "description": "Add 2 Inky Shivs into your Hand.",
+    "description": "Add 2 [purple]Inky[/purple] [gold]Shivs[/gold] into your [gold]Hand[/gold].",
     "description_raw": "Add {Cards:diff()} [purple]Inky[/purple] [gold]{Cards:plural:Shiv|Shivs}[/gold] into your [gold]Hand[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -1555,10 +1555,10 @@
       "INKY_SHIV"
     ],
     "vars": {
-      "InkyShivs": 2
+      "Cards": 2
     },
     "upgrade": {
-      "inkyshivs": "+1"
+      "cards": "+1"
     },
     "image_url": "/static/images/cards/blade_of_ink.png",
     "beta_image_url": "/static/images/cards/beta/blade_of_ink.png"
@@ -2375,7 +2375,7 @@
   {
     "id": "BULWARK",
     "name": "Bulwark",
-    "description": "Gain 13 [gold]Block[/gold].\n[gold]Forge[/gold] 10.",
+    "description": "Gain 12 [gold]Block[/gold].\n[gold]Forge[/gold] 10.",
     "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\n[gold]Forge[/gold] {Forge:diff()}.",
     "cost": 2,
     "is_x_cost": null,
@@ -2386,7 +2386,7 @@
     "target": "Self",
     "color": "regent",
     "damage": null,
-    "block": 13,
+    "block": 12,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -2396,7 +2396,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 13,
+      "Block": 12,
       "Forge": 10
     },
     "upgrade": {
@@ -4034,13 +4034,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CalculationBase": 6,
+      "CalculationBase": 8,
       "ExtraDamage": 2,
-      "CalculatedDamage": 8,
-      "StarCost": 1
+      "CalculatedDamage": 8
     },
     "upgrade": {
-      "damage": "+1",
       "extradamage": "+1"
     },
     "image_url": "/static/images/cards/crescent_spear.png",
@@ -9348,7 +9346,7 @@
   {
     "id": "HYPERBEAM",
     "name": "Hyperbeam",
-    "description": "Deal 26 damage to ALL enemies.\nLose 3 [gold]Focus[/gold].",
+    "description": "Deal 28 damage to ALL enemies.\nLose 3 [gold]Focus[/gold].",
     "description_raw": "Deal {Damage:diff()} damage to ALL enemies.\nLose {FocusPower:diff()} [gold]Focus[/gold].",
     "cost": 2,
     "is_x_cost": null,
@@ -9358,7 +9356,7 @@
     "rarity": "Rare",
     "target": "AllEnemies",
     "color": "defect",
-    "damage": 26,
+    "damage": 28,
     "block": null,
     "hit_count": null,
     "powers_applied": [
@@ -9374,7 +9372,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 26,
+      "Damage": 28,
       "FocusPower": 3,
       "Focus": 3
     },
@@ -14670,7 +14668,7 @@
       "Gold": 30
     },
     "upgrade": {
-      "gold": "+5"
+      "gold": "+10"
     },
     "image_url": "/static/images/cards/royalties.png",
     "beta_image_url": "/static/images/cards/beta/royalties.png"
@@ -15500,8 +15498,8 @@
   {
     "id": "SHATTER",
     "name": "Shatter",
-    "description": "Deal 11 damage to ALL enemies.\n[gold]Evoke[/gold] all of your Orbs.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies.\n[gold]Evoke[/gold] all of your Orbs.",
+    "description": "Deal 11 damage to ALL enemies.\n[gold]Evoke[/gold] all of your Orbs twice.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies.\n[gold]Evoke[/gold] all of your Orbs twice.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -17653,8 +17651,8 @@
   {
     "id": "SWORD_SAGE",
     "name": "Sword Sage",
-    "description": "Increase the cost of [gold]Sovereign Blade[/gold] by 1. [gold]Sovereign Blade[/gold] now hits an additional time.",
-    "description_raw": "[gold]Sovereign Blade[/gold] now hits an additional time.",
+    "description": "[gold]Sovereign Blade[/gold] gains [gold]Replay[/gold] 1.",
+    "description_raw": "[gold]Sovereign Blade[/gold] gains [gold]Replay[/gold] {SwordSagePower:diff()}.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -17681,8 +17679,7 @@
       "SOVEREIGN_BLADE"
     ],
     "vars": {
-      "SwordSagePower": 1,
-      "SwordSage": 1
+      "SwordSagePower": 1
     },
     "upgrade": {
       "cost": 1
@@ -17998,7 +17995,7 @@
     "id": "TESLA_COIL",
     "name": "Tesla Coil",
     "description": "Deal 3 damage.\nTrigger all [gold]Lightning[/gold] against the enemy.",
-    "description_raw": "Deal {Damage:diff()} damage.\nTrigger all [gold]Lightning[/gold] against the enemy.",
+    "description_raw": "Deal {Damage:diff()} damage.\nTrigger all [gold]Lightning[/gold] against the enemy{IfUpgraded:show: twice|}.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -18021,7 +18018,7 @@
       "Damage": 3
     },
     "upgrade": {
-      "damage": "+3"
+      "damage": "+1"
     },
     "image_url": "/static/images/cards/tesla_coil.png",
     "beta_image_url": "/static/images/cards/beta/tesla_coil.png"
@@ -19098,7 +19095,7 @@
   {
     "id": "UPROAR",
     "name": "Uproar",
-    "description": "Deal 5 damage twice.\nPlay a random Attack from your [gold]Draw Pile[/gold].",
+    "description": "Deal 6 damage twice.\nPlay a random Attack from your [gold]Draw Pile[/gold].",
     "description_raw": "Deal {Damage:diff()} damage twice.\nPlay a random Attack from your [gold]Draw Pile[/gold].",
     "cost": 2,
     "is_x_cost": null,
@@ -19108,7 +19105,7 @@
     "rarity": "Common",
     "target": "AnyEnemy",
     "color": "defect",
-    "damage": 5,
+    "damage": 6,
     "block": null,
     "hit_count": 2,
     "powers_applied": null,
@@ -19119,7 +19116,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 5
+      "Damage": 6
     },
     "upgrade": {
       "damage": "+2"

@@ -1,5 +1,40 @@
 [
   {
+    "id": "AEONGLASS",
+    "name": "Aeonglass",
+    "type": "Normal",
+    "min_hp": 512,
+    "max_hp": null,
+    "min_hp_ascension": 535,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "EBB",
+        "name": "Ebb"
+      },
+      {
+        "id": "EYE_LASERS",
+        "name": "Eye Lasers"
+      },
+      {
+        "id": "INCREASING_INTENSITY",
+        "name": "Increasing Intensity"
+      }
+    ],
+    "damage_values": {
+      "Ebb": {
+        "normal": 26,
+        "ascension": 32
+      },
+      "EyeLasers": {
+        "normal": 11,
+        "ascension": 12
+      }
+    },
+    "block_values": null,
+    "image_url": null
+  },
+  {
     "id": "ARCHITECT",
     "name": "The Architect",
     "type": "Normal",
@@ -44,10 +79,10 @@
     "id": "AXEBOT",
     "name": "Axebot",
     "type": "Normal",
-    "min_hp": 40,
-    "max_hp": 44,
-    "min_hp_ascension": 42,
-    "max_hp_ascension": 46,
+    "min_hp": 70,
+    "max_hp": 78,
+    "min_hp_ascension": 76,
+    "max_hp_ascension": 86,
     "moves": [
       {
         "id": "BOOT_UP",
@@ -58,22 +93,18 @@
         "name": "The One-Two"
       },
       {
-        "id": "SHARPEN",
-        "name": "Sharpen"
-      },
-      {
         "id": "HAMMER_UPPERCUT",
         "name": "Hammer Uppercut"
       }
     ],
     "damage_values": {
       "OneTwo": {
-        "normal": 5,
-        "ascension": 6
+        "normal": 9,
+        "ascension": 10
       },
       "HammerUppercut": {
-        "normal": 8,
-        "ascension": 10
+        "normal": 12,
+        "ascension": 14
       }
     },
     "block_values": {
@@ -212,7 +243,7 @@
       },
       {
         "id": "THRASH2",
-        "name": "Thrash"
+        "name": "Thrash2"
       }
     ],
     "damage_values": {
@@ -261,8 +292,8 @@
     "max_hp_ascension": 44,
     "moves": [
       {
-        "id": "TRASH",
-        "name": "Trash"
+        "id": "THRASH",
+        "name": "Thrash"
       },
       {
         "id": "TOXIC_SPIT",
@@ -315,16 +346,16 @@
     "max_hp_ascension": null,
     "moves": [
       {
-        "id": "INITIAL_SLEEP",
-        "name": "Initial Sleep"
+        "id": "SLEEP",
+        "name": "Sleep"
       },
       {
         "id": "WAKE",
         "name": "Wake"
       },
       {
-        "id": "SLEEP",
-        "name": "Sleep"
+        "id": "SLEEP_MOVE_2",
+        "name": "Sleep Move 2"
       },
       {
         "id": "SLASHES",
@@ -657,20 +688,16 @@
         "name": "Charge Up"
       },
       {
-        "id": "REPEATER",
-        "name": "Repeater"
+        "id": "REPEATER_BLAST",
+        "name": "Repeater Blast"
       },
       {
-        "id": "REPEATER_MOVE_2",
-        "name": "Repeater Move 2"
+        "id": "REPEATER_BLAST_MOVE_2",
+        "name": "Repeater Blast Move 2"
       },
       {
-        "id": "EXPEL_BLAST",
-        "name": "Expel Blast"
-      },
-      {
-        "id": "SUBMERGE",
-        "name": "Submerge"
+        "id": "EXPEL",
+        "name": "Expel"
       }
     ],
     "damage_values": {
@@ -788,92 +815,6 @@
     "image_url": "/static/images/monsters/devoted_sculptor.png"
   },
   {
-    "id": "DOOR",
-    "name": "Door",
-    "type": "Boss",
-    "min_hp": null,
-    "max_hp": null,
-    "min_hp_ascension": null,
-    "max_hp_ascension": null,
-    "moves": [
-      {
-        "id": "DRAMATIC_OPEN",
-        "name": "Dramatic Open"
-      },
-      {
-        "id": "ENFORCE",
-        "name": "Enforce"
-      },
-      {
-        "id": "DOOR_SLAM",
-        "name": "Door Slam"
-      },
-      {
-        "id": "DEAD",
-        "name": "Dead"
-      }
-    ],
-    "damage_values": {
-      "DramaticOpen": {
-        "normal": 25,
-        "ascension": 28
-      },
-      "DoorSlam": {
-        "normal": 15,
-        "ascension": 15
-      },
-      "Enforce": {
-        "normal": 20,
-        "ascension": null
-      }
-    },
-    "block_values": null,
-    "image_url": "/static/images/monsters/door.png"
-  },
-  {
-    "id": "DOORMAKER",
-    "name": "Doormaker",
-    "type": "Boss",
-    "min_hp": 489,
-    "max_hp": null,
-    "min_hp_ascension": 512,
-    "max_hp_ascension": null,
-    "moves": [
-      {
-        "id": "DRAMATIC_OPEN",
-        "name": "Dramatic Open"
-      },
-      {
-        "id": "HUNGER",
-        "name": "Hunger"
-      },
-      {
-        "id": "SCRUTINY",
-        "name": "Scrutiny"
-      },
-      {
-        "id": "GRASP",
-        "name": "Grasp"
-      }
-    ],
-    "damage_values": {
-      "Hunger": {
-        "normal": 30,
-        "ascension": 35
-      },
-      "Scrutiny": {
-        "normal": 24,
-        "ascension": 26
-      },
-      "Grasp": {
-        "normal": 10,
-        "ascension": 11
-      }
-    },
-    "block_values": null,
-    "image_url": "/static/images/monsters/doormaker.png"
-  },
-  {
     "id": "ENTOMANCER",
     "name": "Entomancer",
     "type": "Elite",
@@ -922,8 +863,8 @@
         "name": "Skitter"
       },
       {
-        "id": "MANDIBLE",
-        "name": "Mandible"
+        "id": "MANDIBLES",
+        "name": "Mandibles"
       },
       {
         "id": "ENRAGE",
@@ -945,7 +886,7 @@
   },
   {
     "id": "EYE_WITH_TEETH",
-    "name": "Eye With Teeth",
+    "name": "Eye with Teeth",
     "type": "Normal",
     "min_hp": 6,
     "max_hp": null,
@@ -1820,8 +1761,8 @@
     "max_hp_ascension": 16,
     "moves": [
       {
-        "id": "BUTT",
-        "name": "Butt"
+        "id": "TACKLE",
+        "name": "Tackle"
       },
       {
         "id": "GOOP",
@@ -1952,8 +1893,8 @@
     "max_hp_ascension": null,
     "moves": [
       {
-        "id": "FIRST_POWER_SHIELD",
-        "name": "First Power Shield"
+        "id": "POWER_SHIELD",
+        "name": "Power Shield"
       },
       {
         "id": "DAMPEN",
@@ -2439,8 +2380,8 @@
         "name": "Puppet Strings"
       },
       {
-        "id": "YOUR_MINE",
-        "name": "Your Mine"
+        "id": "YOU_ARE_MINE",
+        "name": "You Are Mine"
       },
       {
         "id": "BURN_BRIGHT_FOR_ME",
@@ -2751,8 +2692,8 @@
         "name": "Constrict"
       },
       {
-        "id": "TWACK",
-        "name": "Twack"
+        "id": "THWACK",
+        "name": "Thwack"
       },
       {
         "id": "LASH",
@@ -2928,8 +2869,8 @@
         "ascension": 8
       },
       "Scream": {
-        "normal": 11,
-        "ascension": 12
+        "normal": 13,
+        "ascension": 15
       }
     },
     "block_values": null,
@@ -3081,8 +3022,8 @@
         "name": "Crash"
       },
       {
-        "id": "ThrashMove",
-        "name": "Thrashmove"
+        "id": "THRASH",
+        "name": "Thrash"
       },
       {
         "id": "STUN",
@@ -3409,8 +3350,8 @@
         "name": "Liquify Ground"
       },
       {
-        "id": "THRASH_MOVE_1",
-        "name": "Thrash Move 1"
+        "id": "THRASH",
+        "name": "Thrash"
       },
       {
         "id": "THRASH_MOVE_2",
@@ -3596,8 +3537,8 @@
     "max_hp_ascension": null,
     "moves": [
       {
-        "id": "TACKLE_1",
-        "name": "Tackle 1"
+        "id": "TACKLE",
+        "name": "Tackle"
       },
       {
         "id": "TACKLE_2",
@@ -3705,8 +3646,8 @@
         "name": "Burrow"
       },
       {
-        "id": "BELOW_MOVE_1",
-        "name": "Below Move 1"
+        "id": "BELOW",
+        "name": "Attack from Below"
       },
       {
         "id": "DIZZY",
@@ -3736,8 +3677,8 @@
     "max_hp_ascension": null,
     "moves": [
       {
-        "id": "UNLOAD_MOVE_1",
-        "name": "Unload Move 1"
+        "id": "UNLOAD",
+        "name": "Unload!"
       },
       {
         "id": "UNLOAD_MOVE_2",
@@ -3767,8 +3708,8 @@
     "max_hp_ascension": 29,
     "moves": [
       {
-        "id": "CLUMP_SHOT",
-        "name": "Clump Shot"
+        "id": "POKEY_POUNCE",
+        "name": "Pokey Pounce"
       },
       {
         "id": "STICKY_SHOT",
@@ -3794,8 +3735,8 @@
     "max_hp_ascension": 12,
     "moves": [
       {
-        "id": "BUTT",
-        "name": "Butt"
+        "id": "TACKLE",
+        "name": "Tackle"
       }
     ],
     "damage_values": {
