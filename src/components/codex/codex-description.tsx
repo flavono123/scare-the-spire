@@ -99,6 +99,89 @@ function findVarKey(vars: Record<string, number>, name: string): string | undefi
     : Object.keys(vars).find((k) => k.toLowerCase() === name.toLowerCase());
 }
 
+function findMatchingBrace(input: string, start: number): number {
+  let depth = 0;
+  for (let i = start; i < input.length; i++) {
+    const c = input[i];
+    if (c === "{") depth++;
+    else if (c === "}") {
+      depth--;
+      if (depth === 0) return i;
+    }
+  }
+  return -1;
+}
+
+function splitTopLevelBranches(input: string): string[] {
+  const branches: string[] = [];
+  let depth = 0;
+  let last = 0;
+  for (let i = 0; i < input.length; i++) {
+    const c = input[i];
+    if (c === "{") depth++;
+    else if (c === "}") depth--;
+    else if (c === "|" && depth === 0) {
+      branches.push(input.slice(last, i));
+      last = i + 1;
+    }
+  }
+  branches.push(input.slice(last));
+  return branches;
+}
+
+function isInsideBbTag(input: string, index: number): boolean {
+  const tagRe = /\[\/?(gold|green|red|blue|purple|pink)(?::[^\]]*)?\]/g;
+  const stack: string[] = [];
+  let match: RegExpExecArray | null;
+  while ((match = tagRe.exec(input)) && match.index < index) {
+    const tag = match[1];
+    if (match[0].startsWith("[/")) {
+      const openIndex = stack.lastIndexOf(tag);
+      if (openIndex >= 0) stack.splice(openIndex, 1);
+    } else {
+      stack.push(tag);
+    }
+  }
+  return stack.length > 0;
+}
+
+function wrapPlainUpgradeBranch(branch: string): string {
+  if (!branch.trim() || /\[[^\]]+\]/.test(branch)) return branch;
+  const match = branch.match(/^(\s*)([\s\S]*?)(\s*)$/);
+  if (!match) return branch;
+  const [, leading, body, trailing] = match;
+  if (!body) return branch;
+  return `${leading}[green]${body}[/green]${trailing}`;
+}
+
+function colorUpgradeOnlyBranches(input: string): string {
+  const prefix = "IfUpgraded:show:";
+  let out = "";
+  let i = 0;
+
+  while (i < input.length) {
+    if (input[i] === "{" && input.startsWith(`{${prefix}`, i)) {
+      const end = findMatchingBrace(input, i);
+      if (end === -1) {
+        out += input.slice(i);
+        break;
+      }
+      const rest = input.slice(i + 1 + prefix.length, end);
+      const branches = splitTopLevelBranches(rest);
+      if (!isInsideBbTag(input, i)) {
+        branches[0] = wrapPlainUpgradeBranch(branches[0] ?? "");
+      }
+      out += `{${prefix}${branches.join("|")}}`;
+      i = end + 1;
+      continue;
+    }
+    out += input[i];
+    i++;
+  }
+
+  return out;
+}
+
 export function hasCardUpgrade(
   card: Pick<CodexCard, "upgrade" | "descriptionRaw">,
 ): boolean {
@@ -162,7 +245,10 @@ export function renderCardDescription(
     return match;
   });
 
-  return bakeDescription(coloredRaw, varsForTemplate);
+  return bakeDescription(
+    options.upgrade ? colorUpgradeOnlyBranches(coloredRaw) : coloredRaw,
+    varsForTemplate,
+  );
 }
 
 // =============================================================================
