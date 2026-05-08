@@ -98,13 +98,17 @@ export interface RunUploadZoneProps {
 }
 
 export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
-  const copy = serviceMessages[useServiceLocale()].historyCourse.upload;
-  const { userId, ready: authReady } = useAuth();
+  const historyCopy = serviceMessages[useServiceLocale()].historyCourse;
+  const copy = historyCopy.upload;
+  const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
   const [errors, setErrors] = useState<ParseError[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isParsing, setIsParsing] = useState(false);
   const [shareOnUpload, setShareOnUpload] = useState(false);
-  const [donationToast, setDonationToast] = useState<string | null>(null);
+  const [donationToast, setDonationToast] = useState<{
+    message: string;
+    tone: "success" | "error";
+  } | null>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -137,8 +141,13 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
         // race + rate limiting; one upsert with ignoreDuplicates is
         // both faster and more durable.
         if (toShare.length > 0) {
-          if (!authReady || !userId) {
-            setDonationToast(copy.authNotReady);
+          if (authUnavailable) {
+            setDonationToast({
+              message: copy.shareFailed.replace("{message}", historyCopy.lists.unavailableTitle),
+              tone: "error",
+            });
+          } else if (!authReady || !userId) {
+            setDonationToast({ message: copy.authNotReady, tone: "error" });
           } else {
             const result = await donateRunsBatch({
               runs: toShare.map((p) => ({
@@ -149,7 +158,10 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
               donorUserId: userId,
             });
             if (result.errorMessage) {
-              setDonationToast(copy.shareFailed.replace("{message}", result.errorMessage));
+              setDonationToast({
+                message: copy.shareFailed.replace("{message}", historyCopy.lists.unavailableTitle),
+                tone: "error",
+              });
             } else {
               const parts: string[] = [];
               if (result.inserted > 0) {
@@ -157,7 +169,8 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
               }
               if (result.alreadyDonated > 0)
                 parts.push(copy.alreadySharedCount.replace("{count}", String(result.alreadyDonated)));
-              setDonationToast(parts.join(" · ") || null);
+              const message = parts.join(" · ");
+              setDonationToast(message ? { message, tone: "success" } : null);
             }
           }
         }
@@ -165,7 +178,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
         setIsParsing(false);
       }
     },
-    [authReady, copy, onUploadComplete, shareOnUpload, userId],
+    [authReady, authUnavailable, copy, historyCopy.lists.unavailableTitle, onUploadComplete, shareOnUpload, userId],
   );
 
   const onDrop = useCallback(
@@ -293,7 +306,14 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
             </p>
           )}
           {donationToast && !isParsing && (
-            <p className="text-xs text-emerald-300">{donationToast}</p>
+            <p
+              className={cn(
+                "text-xs",
+                donationToast.tone === "success" ? "text-emerald-300" : "text-red-300",
+              )}
+            >
+              {donationToast.message}
+            </p>
           )}
         </div>
         <input
