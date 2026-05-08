@@ -3,6 +3,9 @@
 # the same failures locally instead of finding out from a red GHA badge.
 set -e
 
+echo "[pre-push] pnpm i18n:validate"
+pnpm i18n:validate
+
 echo "[pre-push] pnpm lint"
 pnpm lint
 

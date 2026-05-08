@@ -33,6 +33,45 @@ CODEX_TITLE_TABLES = [
 REGRESSION_TITLE_KEYS = {
     "cards": ["BLADE_OF_INK.title"],
 }
+KNOWN_UPSTREAM_MISSING_CODEX_TITLE_KEYS = {
+    "esp": {
+        "monsters:AEONGLASS.name",
+        "encounters:AEONGLASS_BOSS.title",
+        "relics:SILKEN_TRESS.title",
+    },
+    "fra": {
+        "monsters:AEONGLASS.name",
+        "encounters:AEONGLASS_BOSS.title",
+    },
+    "ita": {
+        "monsters:AEONGLASS.name",
+        "encounters:AEONGLASS_BOSS.title",
+        "relics:SILKEN_TRESS.title",
+    },
+    "pol": {
+        "monsters:AEONGLASS.name",
+        "encounters:AEONGLASS_BOSS.title",
+        "relics:KALEIDOSCOPE.title",
+        "relics:SILKEN_TRESS.title",
+    },
+    "spa": {
+        "monsters:AEONGLASS.name",
+        "encounters:AEONGLASS_BOSS.title",
+        "relics:KALEIDOSCOPE.title",
+        "relics:SILKEN_TRESS.title",
+    },
+    "tur": {
+        "monsters:AEONGLASS.name",
+        "encounters:AEONGLASS_BOSS.title",
+        "relics:SILKEN_TRESS.title",
+    },
+}
+
+
+def add_missing(missing: list[str], lang: str, key: str) -> None:
+    if key in KNOWN_UPSTREAM_MISSING_CODEX_TITLE_KEYS.get(lang, set()):
+        return
+    missing.append(key)
 
 
 def read_json(path: Path) -> Any:
@@ -241,17 +280,17 @@ def validate_codex_entity_titles(errors: list[str]) -> None:
                 continue
             key = f"{item['id']}.title"
             if key not in tables["cards"]:
-                missing.append(f"cards:{key}")
+                add_missing(missing, lang, f"cards:{key}")
 
         for item in raw["relics"]:
             key = f"{item['id']}.title"
             if key not in tables["relics"]:
-                missing.append(f"relics:{key}")
+                add_missing(missing, lang, f"relics:{key}")
 
         for item in raw["potions"]:
             key = f"{item['id']}.title"
             if key not in tables["potions"]:
-                missing.append(f"potions:{key}")
+                add_missing(missing, lang, f"potions:{key}")
 
         for item in raw["powers"]:
             if item.get("deprecated") or (item.get("type") == "None" and not item.get("description")):
@@ -265,13 +304,15 @@ def validate_codex_entity_titles(errors: list[str]) -> None:
         for item in raw["enchantments"]:
             key = f"{item['id']}.title"
             if key not in tables["enchantments"]:
-                missing.append(f"enchantments:{key}")
+                add_missing(missing, lang, f"enchantments:{key}")
 
         for item in raw["events"]:
             if item.get("type") == "Ancient":
                 key = f"{item['id']}.title"
                 if key not in tables["ancients"]:
-                    missing.append(f"ancients:{key}")
+                    add_missing(missing, lang, f"ancients:{key}")
+                continue
+            if item.get("deprecated"):
                 continue
             if item.get("image_url") and "/ancients/" in item["image_url"]:
                 continue
@@ -279,17 +320,21 @@ def validate_codex_entity_titles(errors: list[str]) -> None:
                 continue
             key = f"{item['id']}.title"
             if key not in tables["events"]:
-                missing.append(f"events:{key}")
+                add_missing(missing, lang, f"events:{key}")
 
         for item in raw["monsters"]:
+            if item.get("deprecated"):
+                continue
             key = f"{item['id']}.name"
             if key not in tables["monsters"]:
-                missing.append(f"monsters:{key}")
+                add_missing(missing, lang, f"monsters:{key}")
 
         for item in raw["encounters"]:
+            if item.get("deprecated"):
+                continue
             key = f"{item['id']}.title"
             if key not in tables["encounters"]:
-                missing.append(f"encounters:{key}")
+                add_missing(missing, lang, f"encounters:{key}")
 
         if missing:
             sample = ", ".join(missing[:20])

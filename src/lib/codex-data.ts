@@ -104,6 +104,20 @@ function buildKeywordLabels(
   return labels;
 }
 
+function gameTitleFallback(korFallback: string, engFallback: string, gameLocale: GameLocale): string {
+  return gameLocale === "kor" ? korFallback : engFallback;
+}
+
+function gameTitleText(
+  table: GameLocalizationTable,
+  key: string,
+  korFallback: string,
+  engFallback: string,
+  gameLocale: GameLocale,
+): string {
+  return gameText(table, key, gameTitleFallback(korFallback, engFallback, gameLocale));
+}
+
 function mapCard(
   kor: RawCard,
   eng: RawCard,
@@ -111,12 +125,13 @@ function mapCard(
   typeLabels: Record<CardTypeKo, string>,
   rarityLabels: Record<CardRarityKo, string>,
   keywordLabels: Record<string, string>,
+  gameLocale: GameLocale,
 ): CodexCard {
   const vars = kor.vars ?? {};
   const raw = gameText(gameCards, `${kor.id}.description`, kor.description_raw);
   return {
     id: kor.id,
-    name: gameText(gameCards, `${kor.id}.title`, kor.name),
+    name: gameTitleText(gameCards, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: bakeDescription(raw, vars),
     descriptionRaw: raw,
@@ -172,7 +187,7 @@ export async function getCodexCards(opts?: {
     .filter((c) => (c.image_url || c.beta_image_url) && (includeDeprecated || !c.deprecated))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapCard(kor, eng, gameCards, typeLabels, rarityLabels, keywordLabels);
+      return mapCard(kor, eng, gameCards, typeLabels, rarityLabels, keywordLabels, gameLocale);
     });
 }
 
@@ -204,6 +219,7 @@ function mapRelic(
   eng: RawRelic,
   variantMap: Partial<Record<RelicPool, string>> | null,
   gameRelics: GameLocalizationTable,
+  gameLocale: GameLocale,
 ): CodexRelic {
   const baseUrl = spireCodexImageToLocal(kor.image_url);
   const vars = kor.vars ?? {};
@@ -214,7 +230,7 @@ function mapRelic(
   );
   return {
     id: kor.id,
-    name: gameText(gameRelics, `${kor.id}.title`, kor.name),
+    name: gameTitleText(gameRelics, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: bakeDescription(raw, vars),
     descriptionRaw: raw,
@@ -280,7 +296,7 @@ export async function getCodexRelics(opts?: { gameLocale?: GameLocale }): Promis
     const baseMatch = kor.image_url?.match(/\/([^/]+)\.png$/);
     const baseName = baseMatch?.[1] ?? null;
     const variantMap = baseName ? variantsByBase.get(baseName) ?? null : null;
-    return mapRelic(kor, eng, variantMap, gameRelics);
+    return mapRelic(kor, eng, variantMap, gameRelics, gameLocale);
   });
 }
 
@@ -296,7 +312,12 @@ interface RawPotion {
   image_url: string;
 }
 
-function mapPotion(kor: RawPotion, eng: RawPotion, gamePotions: GameLocalizationTable): CodexPotion {
+function mapPotion(
+  kor: RawPotion,
+  eng: RawPotion,
+  gamePotions: GameLocalizationTable,
+  gameLocale: GameLocale,
+): CodexPotion {
   const vars = kor.vars ?? {};
   const raw = gameText(
     gamePotions,
@@ -305,7 +326,7 @@ function mapPotion(kor: RawPotion, eng: RawPotion, gamePotions: GameLocalization
   );
   return {
     id: kor.id,
-    name: gameText(gamePotions, `${kor.id}.title`, kor.name),
+    name: gameTitleText(gamePotions, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: bakeDescription(raw, vars),
     descriptionRaw: raw,
@@ -328,7 +349,7 @@ export async function getCodexPotions(opts?: { gameLocale?: GameLocale }): Promi
 
   return korPotions.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapPotion(kor, eng, gamePotions);
+    return mapPotion(kor, eng, gamePotions, gameLocale);
   });
 }
 
@@ -385,7 +406,12 @@ function hasPowerLocalizationTitle(gamePowers: GameLocalizationTable, id: string
   return `${powerLocalizationBase(gamePowers, id)}.title` in gamePowers;
 }
 
-function mapPower(kor: RawPower, eng: RawPower, gamePowers: GameLocalizationTable): CodexPower {
+function mapPower(
+  kor: RawPower,
+  eng: RawPower,
+  gamePowers: GameLocalizationTable,
+  gameLocale: GameLocale,
+): CodexPower {
   const vars = kor.vars ?? {};
   const l10nBase = powerLocalizationBase(gamePowers, kor.id);
   const raw = gameText(
@@ -395,7 +421,7 @@ function mapPower(kor: RawPower, eng: RawPower, gamePowers: GameLocalizationTabl
   );
   return {
     id: kor.id,
-    name: gameText(gamePowers, `${l10nBase}.title`, kor.name),
+    name: gameTitleText(gamePowers, `${l10nBase}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: bakeDescription(raw ?? "", vars),
     descriptionRaw: raw,
@@ -421,7 +447,7 @@ export async function getCodexPowers(opts?: { gameLocale?: GameLocale }): Promis
     .filter((p) => !p.deprecated && hasPowerLocalizationTitle(gamePowers, p.id) && !(p.type === "None" && !p.description))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapPower(kor, eng, gamePowers);
+      return mapPower(kor, eng, gamePowers, gameLocale);
     });
 }
 
@@ -442,13 +468,14 @@ function mapEnchantment(
   kor: RawEnchantment,
   eng: RawEnchantment,
   gameEnchantments: GameLocalizationTable,
+  gameLocale: GameLocale,
 ): CodexEnchantment {
   const vars = kor.vars ?? {};
   const raw = gameNullableText(gameEnchantments, `${kor.id}.description`, kor.description_raw);
   const extraRaw = gameNullableText(gameEnchantments, `${kor.id}.extraCardText`, kor.extra_card_text);
   return {
     id: kor.id,
-    name: gameText(gameEnchantments, `${kor.id}.title`, kor.name),
+    name: gameTitleText(gameEnchantments, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: bakeDescription(raw ?? kor.description, vars),
     descriptionRaw: raw,
@@ -471,7 +498,7 @@ export async function getCodexEnchantments(opts?: { gameLocale?: GameLocale }): 
 
   return korEnchantments.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapEnchantment(kor, eng, gameEnchantments);
+    return mapEnchantment(kor, eng, gameEnchantments, gameLocale);
   });
 }
 
@@ -547,12 +574,13 @@ function mapEvent(
   eng: RawEvent,
   imageFiles: Set<string>,
   gameEvents: GameLocalizationTable,
+  gameLocale: GameLocale,
 ): CodexEvent {
   const key = kor.id.toLowerCase();
   const imageUrl = imageFiles.has(key) ? `/images/sts2/events/${key}.webp` : null;
   return {
     id: kor.id,
-    name: gameText(gameEvents, `${kor.id}.title`, kor.name),
+    name: gameTitleText(gameEvents, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: gameText(
       gameEvents,
@@ -591,7 +619,7 @@ export async function getCodexEvents(opts?: { gameLocale?: GameLocale }): Promis
     })
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapEvent(kor, eng, imgFiles, gameEvents);
+      return mapEvent(kor, eng, imgFiles, gameEvents, gameLocale);
     });
 }
 
@@ -605,7 +633,12 @@ function ancientTalkSpeaker(speaker: "ancient" | "character"): string {
   return speaker === "character" ? "char" : "ancient";
 }
 
-function mapAncient(kor: RawEvent, eng: RawEvent, gameAncients: GameLocalizationTable): CodexAncient {
+function mapAncient(
+  kor: RawEvent,
+  eng: RawEvent,
+  gameAncients: GameLocalizationTable,
+  gameLocale: GameLocale,
+): CodexAncient {
   const key = kor.id.toLowerCase();
   const imageUrl = `/images/sts2/ancients/${key}.webp`;
 
@@ -628,7 +661,7 @@ function mapAncient(kor: RawEvent, eng: RawEvent, gameAncients: GameLocalization
 
   return {
     id: kor.id,
-    name: gameText(gameAncients, `${kor.id}.title`, kor.name),
+    name: gameTitleText(gameAncients, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     epithet: gameText(gameAncients, `${kor.id}.epithet`, kor.epithet ?? ""),
     epithetEn: eng.epithet ?? "",
@@ -658,7 +691,7 @@ export async function getCodexAncients(opts?: { gameLocale?: GameLocale }): Prom
     .filter((e) => e.type === "Ancient")
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapAncient(kor, eng, gameAncients);
+      return mapAncient(kor, eng, gameAncients, gameLocale);
     });
 }
 
@@ -685,6 +718,8 @@ interface RawMonster {
   damage_values: Record<string, RawDamageValue> | null;
   block_values: Record<string, number> | null;
   image_url: string | null;
+  deprecated?: boolean;
+  deprecatedInPatch?: string;
 }
 
 function mapMonster(
@@ -693,11 +728,16 @@ function mapMonster(
   monsterImages: Set<string>,
   bossImages: Set<string>,
   gameMonsters: GameLocalizationTable,
+  gameLocale: GameLocale,
 ): CodexMonster {
   // Map moves with both languages
   const moves: MonsterMove[] = kor.moves.map((km, i) => ({
     id: km.id,
-    name: gameText(gameMonsters, `${kor.id}.moves.${km.id}.title`, km.name),
+    name: gameText(
+      gameMonsters,
+      `${kor.id}.moves.${km.id}.title`,
+      gameTitleFallback(km.name, eng.moves[i]?.name ?? km.name, gameLocale),
+    ),
     nameEn: eng.moves[i]?.name ?? km.name,
   }));
 
@@ -724,7 +764,7 @@ function mapMonster(
 
   return {
     id: kor.id,
-    name: gameText(gameMonsters, `${kor.id}.name`, kor.name),
+    name: gameTitleText(gameMonsters, `${kor.id}.name`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     type: kor.type as MonsterType,
     minHp: kor.min_hp,
@@ -761,7 +801,7 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
 
   return korMonsters.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters);
+    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters, gameLocale);
   });
 }
 
@@ -780,6 +820,8 @@ interface RawEncounter {
   tags: string[] | null;
   monsters: RawEncounterMonster[];
   loss_text: string;
+  deprecated?: boolean;
+  deprecatedInPatch?: string;
 }
 
 function mapEncounter(
@@ -788,10 +830,15 @@ function mapEncounter(
   bossImages: Set<string>,
   gameEncounters: GameLocalizationTable,
   gameMonsters: GameLocalizationTable,
+  gameLocale: GameLocale,
 ): CodexEncounter {
   const monsters: EncounterMonsterRef[] = kor.monsters.map((km, i) => ({
     id: km.id,
-    name: gameText(gameMonsters, `${km.id}.name`, km.name),
+    name: gameText(
+      gameMonsters,
+      `${km.id}.name`,
+      gameTitleFallback(km.name, eng.monsters[i]?.name ?? km.name, gameLocale),
+    ),
     nameEn: eng.monsters[i]?.name ?? km.name,
   }));
 
@@ -804,7 +851,7 @@ function mapEncounter(
 
   return {
     id: kor.id,
-    name: gameText(gameEncounters, `${kor.id}.title`, kor.name),
+    name: gameTitleText(gameEncounters, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     roomType: kor.room_type as EncounterRoomType,
     isWeak: kor.is_weak,
@@ -834,6 +881,6 @@ export async function getCodexEncounters(opts?: { gameLocale?: GameLocale }): Pr
 
   return korEncounters.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapEncounter(kor, eng, bossFiles, gameEncounters, gameMonsters);
+    return mapEncounter(kor, eng, bossFiles, gameEncounters, gameMonsters, gameLocale);
   });
 }
