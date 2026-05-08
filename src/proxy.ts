@@ -25,6 +25,13 @@ function shouldHandleRequest(request: NextRequest): boolean {
   return accept.includes("text/html");
 }
 
+function isProductionBlockedDevRoute(pathname: string): boolean {
+  if (process.env.NODE_ENV !== "production") return false;
+
+  const unprefixedPath = stripServiceLocaleFromPath(pathname);
+  return unprefixedPath === "/dev/og-images" || unprefixedPath.startsWith("/dev/og-images/");
+}
+
 function localeUrl(
   request: NextRequest,
   serviceLocale: ServiceLocale,
@@ -84,6 +91,10 @@ function cookieServiceLocale(request: NextRequest): ServiceLocale | null {
 
 export function proxy(request: NextRequest) {
   if (!shouldHandleRequest(request)) return NextResponse.next();
+
+  if (isProductionBlockedDevRoute(request.nextUrl.pathname)) {
+    return new NextResponse(null, { status: 404 });
+  }
 
   const requestedGameLocale = request.nextUrl.searchParams.get("gl");
   if (requestedGameLocale && isGameLocale(requestedGameLocale)) {
