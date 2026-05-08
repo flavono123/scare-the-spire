@@ -1,0 +1,23 @@
+[
+  {
+    "id": "sts2-doormaker-removed",
+    "game": "sts2",
+    "sentence": "문을 만드는 자가 있었다",
+    "entityType": "monster",
+    "entityId": "DOORMAKER",
+    "changeId": "doormaker-v105-replaced",
+    "linkedEntities": [
+      {
+        "entityType": "monster",
+        "entityId": "AEONGLASS",
+        "label": "대체"
+      }
+    ],
+    "source": "v0.105.0",
+    "tags": [
+      "삭제",
+      "보스",
+      "3막"
+    ]
+  }
+]

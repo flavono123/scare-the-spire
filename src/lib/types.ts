@@ -60,8 +60,20 @@ export interface Change {
   diffs: AttributeDiff[];
 }
 
+export type StoryGame = "sts1" | "sts2";
+export type StoryEntityType =
+  | "card"
+  | "relic"
+  | "potion"
+  | "power"
+  | "enchantment"
+  | "event"
+  | "monster"
+  | "encounter"
+  | "ancient";
+
 export interface LinkedEntity {
-  entityType: "card" | "relic" | "potion";
+  entityType: StoryEntityType;
   entityId: string;
   changeId?: string;
   label?: string;  // e.g. "삭제", "대체"
@@ -69,7 +81,7 @@ export interface LinkedEntity {
 
 // STS2 patch types
 export type PatchType = "release" | "hotfix" | "beta" | "stable";
-export type STS2EntityType = "card" | "relic" | "potion" | "enemy" | "blessing";
+export type STS2EntityType = StoryEntityType | "enemy" | "blessing";
 export type STS2PatchFeaturedEntityType =
   | "card"
   | "relic"
@@ -153,8 +165,9 @@ export interface CodexMeta {
 
 export interface Story {
   id: string;
+  game?: StoryGame;
   sentence: string;
-  entityType?: "card" | "relic" | "potion";
+  entityType?: StoryEntityType;
   entityId?: string;
   changeId?: string;
   linkedEntities?: LinkedEntity[];

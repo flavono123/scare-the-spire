@@ -962,6 +962,26 @@
     ]
   },
   {
+    "id": "doormaker-v105-replaced",
+    "entityType": "monster",
+    "entityId": "DOORMAKER",
+    "patch": "v0.105.0",
+    "date": "2026-05-08",
+    "character": null,
+    "summary": "Doormaker was replaced with Aeonglass as the Act 3 boss.",
+    "summaryKo": "문을 만드는 자가 3막 보스 자리에서 영겁의 모래시계로 교체되었습니다.",
+    "diffs": [
+      {
+        "attribute": "boss",
+        "displayName": "Boss",
+        "displayNameKo": "보스",
+        "before": "Doormaker",
+        "after": "Aeonglass",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
     "id": "conflagration-v104-rework",
     "entityType": "card",
     "entityId": "CONFLAGRATION",
