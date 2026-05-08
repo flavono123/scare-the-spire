@@ -133,6 +133,16 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
     }
   }
 
+  // {Var:show:a|b} — show the first branch when Var is truthy, otherwise
+  // the second/empty branch. Upgrade-only text uses this in card templates.
+  const showMatch = body.match(/^(\w+):show:([\s\S]*)$/);
+  if (showMatch) {
+    const [, name, rest] = showMatch;
+    const opts = splitBranches(rest);
+    const v = looksLike(name, vars);
+    return renderTemplate(v ? (opts[0] ?? "") : (opts[1] ?? ""), vars, name);
+  }
+
   // {Var.StringValue} — bare reference to a StringVar (no :cond:).
   // Use the Korean placeholder if we have one; otherwise fall through to X.
   const stringValueMatch = body.match(/^(\w+)\.StringValue$/);
