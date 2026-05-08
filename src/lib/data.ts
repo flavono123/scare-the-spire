@@ -109,6 +109,12 @@ export async function getStories(): Promise<Story[]> {
   );
 }
 
+export async function getSTS2Stories(): Promise<Story[]> {
+  return JSON.parse(
+    await fs.readFile(path.join(DATA_DIR, "sts2-stories.json"), "utf-8"),
+  );
+}
+
 export async function getSTS2Patches(): Promise<STS2Patch[]> {
   return JSON.parse(
     await fs.readFile(path.join(DATA_DIR, "sts2-patches.json"), "utf-8"),

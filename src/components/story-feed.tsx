@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
-import type { Story, Card, Change, Relic, Potion, LinkedEntity } from "@/lib/types";
+import type { Story, Card, Change, Relic, Potion, LinkedEntity, STS2Change, STS2Patch, StoryEntityType } from "@/lib/types";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useAuth } from "@/hooks/use-auth";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { LikeButton } from "@/components/like-button";
@@ -26,6 +27,10 @@ function stableStoryOrder(stories: Story[]) {
   });
 }
 
+function isSTS1EntityType(entityType: StoryEntityType | undefined): entityType is "card" | "relic" | "potion" {
+  return entityType === "card" || entityType === "relic" || entityType === "potion";
+}
+
 function DiffLine({ diff }: { diff: Change["diffs"][0] }) {
   return (
     <div className="flex items-center gap-1.5 text-sm">
@@ -36,6 +41,20 @@ function DiffLine({ diff }: { diff: Change["diffs"][0] }) {
       <span className="text-red-400 font-medium">{String(diff.before)}</span>
       <span className="text-muted-foreground">→</span>
       <span className="text-green-400 font-medium">{String(diff.after)}</span>
+    </div>
+  );
+}
+
+function STS2DiffLine({ diff }: { diff: STS2Change["diffs"][0] }) {
+  return (
+    <div className="flex items-center gap-1.5 text-sm">
+      {diff.upgraded && (
+        <span className="rounded bg-green-500/10 px-1 text-[10px] font-medium text-green-400">+</span>
+      )}
+      <span className="text-muted-foreground">{diff.displayNameKo || diff.displayName}</span>
+      <span className="font-medium text-red-400">{String(diff.before)}</span>
+      <span className="text-muted-foreground">→</span>
+      <span className="font-medium text-green-400">{String(diff.after)}</span>
     </div>
   );
 }
@@ -88,6 +107,70 @@ function EntityImage({ entityType, entityId, name, deprecated }: {
   );
 }
 
+function sts2EntityHref(entity: EntityInfo): string | null {
+  switch (entity.type) {
+    case "card":
+      return `/codex/cards?card=${entity.id.toLowerCase()}`;
+    case "relic":
+      return `/codex/relics?relic=${entity.id.toLowerCase()}`;
+    case "potion":
+      return `/codex/potions?potion=${entity.id.toLowerCase()}`;
+    case "power":
+      return `/codex/powers?power=${entity.id.toLowerCase()}`;
+    case "enchantment":
+      return `/codex/enchantments?enchantment=${entity.id.toLowerCase()}`;
+    case "event":
+      return `/codex/events/${entity.id.toLowerCase()}`;
+    case "monster":
+      return `/codex/monsters?monster=${entity.id.toLowerCase()}`;
+    case "encounter":
+      return `/codex/encounters?encounter=${entity.id.toLowerCase()}`;
+    case "ancient":
+      return `/codex/ancients/${entity.id.toLowerCase()}`;
+    default:
+      return null;
+  }
+}
+
+function STS2EntityInfoBlock({ entity, label }: { entity?: EntityInfo; label?: string }) {
+  if (!entity) return null;
+
+  const href = sts2EntityHref(entity);
+  const image = entity.imageUrl;
+  const body = (
+    <div className="flex gap-3 items-start group">
+      {image ? (
+        <Image
+          src={image}
+          alt={entity.nameKo}
+          width={64}
+          height={64}
+          className="h-16 w-16 shrink-0 object-contain transition-transform group-hover:scale-105"
+        />
+      ) : (
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded border border-border bg-zinc-900">
+          <span className="px-1 text-center text-[9px] text-muted-foreground">{entity.nameKo}</span>
+        </div>
+      )}
+      <div>
+        <p className="font-medium transition-colors group-hover:text-yellow-500">
+          {entity.nameKo}
+          {label && (
+            <span className="ml-1.5 rounded bg-red-500/10 px-1 py-0.5 text-[10px] font-medium text-red-400">
+              {label}
+            </span>
+          )}
+        </p>
+        <p className="text-xs text-muted-foreground">{entity.nameEn}</p>
+      </div>
+    </div>
+  );
+
+  return href ? (
+    <Link href={href}>{body}</Link>
+  ) : body;
+}
+
 function EntityInfoBlock({ entityType, entityId, card, relic, potion, label }: {
   entityType: string;
   entityId: string;
@@ -120,6 +203,45 @@ function EntityInfoBlock({ entityType, entityId, card, relic, potion, label }: {
         <p className="text-xs text-muted-foreground">{name}</p>
       </div>
     </Link>
+  );
+}
+
+function patchHref(change: STS2Change | undefined, story: Story): string | null {
+  const patch = change?.patch ?? story.source;
+  if (!patch) return null;
+  return `/patches/${patch.replace(/^v/, "")}`;
+}
+
+function STS2ChangeBlock({ change, story, patch }: { change?: STS2Change; story: Story; patch?: STS2Patch }) {
+  const href = patchHref(change, story);
+  const patchLabel = change?.patch ?? story.source;
+  const summary = change?.summaryKo ?? change?.summary;
+
+  return (
+    <div className="rounded-lg border border-border bg-card/30 p-4">
+      <div className="mb-2 flex items-center gap-2">
+        {href && patchLabel ? (
+          <Link href={href} className="text-sm font-medium text-yellow-500 hover:text-yellow-400">
+            {patchLabel}
+          </Link>
+        ) : patchLabel ? (
+          <span className="text-sm font-medium text-yellow-500">{patchLabel}</span>
+        ) : null}
+        {(change?.date ?? patch?.date) && (
+          <span className="text-xs text-muted-foreground">{change?.date ?? patch?.date}</span>
+        )}
+      </div>
+      {summary && (
+        <p className="mb-2 text-xs text-muted-foreground">{summary}</p>
+      )}
+      {change && (
+        <div className="space-y-1">
+          {change.diffs.map((d, i) => (
+            <STS2DiffLine key={i} diff={d} />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -161,6 +283,9 @@ function StoryExpanded({
   relicMap,
   potionMap,
   changeMap,
+  sts2EntityMap,
+  sts2ChangeMap,
+  sts2PatchMap,
 }: {
   story: Story;
   entityChanges: Change[];
@@ -168,8 +293,39 @@ function StoryExpanded({
   relicMap: Map<string, Relic>;
   potionMap: Map<string, Potion>;
   changeMap: Map<string, Change>;
+  sts2EntityMap: Map<string, EntityInfo>;
+  sts2ChangeMap: Map<string, STS2Change>;
+  sts2PatchMap: Map<string, STS2Patch>;
 }) {
   const hasEntity = story.entityType && story.entityId;
+  const isSTS2 = story.game === "sts2";
+
+  if (isSTS2) {
+    const entity = hasEntity ? sts2EntityMap.get(`${story.entityType}:${story.entityId}`) : undefined;
+    const change = story.changeId ? sts2ChangeMap.get(story.changeId) : undefined;
+    const patch = change?.patch ? sts2PatchMap.get(change.patch) : story.source ? sts2PatchMap.get(story.source) : undefined;
+    const primaryLabel = story.tags?.includes("삭제") ? "삭제됨" : undefined;
+
+    return (
+      <div className="space-y-3">
+        <STS2EntityInfoBlock entity={entity} label={primaryLabel} />
+        <STS2ChangeBlock change={change} story={story} patch={patch} />
+
+        {story.linkedEntities?.map((linked) => (
+          <div key={`${linked.entityType}-${linked.entityId}`} className="space-y-3 border-t border-border/30 pt-3">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <span>↳</span>
+              <span>관련 항목</span>
+            </div>
+            <STS2EntityInfoBlock
+              entity={sts2EntityMap.get(`${linked.entityType}:${linked.entityId}`)}
+              label={linked.label}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
@@ -197,6 +353,7 @@ function StoryExpanded({
 
       {/* Linked entities */}
       {story.linkedEntities?.map((linked: LinkedEntity) => {
+        if (!isSTS1EntityType(linked.entityType)) return null;
         const linkedChanges = linked.changeId ? [changeMap.get(linked.changeId)].filter(Boolean) as Change[] : [];
         return (
           <div key={`${linked.entityType}-${linked.entityId}`} className="border-t border-border/30 pt-3 space-y-3">
@@ -229,6 +386,9 @@ function StoryCard({
   relicMap,
   potionMap,
   changeMap,
+  sts2EntityMap,
+  sts2ChangeMap,
+  sts2PatchMap,
   userId,
   expanded,
   onToggle,
@@ -242,6 +402,9 @@ function StoryCard({
   relicMap: Map<string, Relic>;
   potionMap: Map<string, Potion>;
   changeMap: Map<string, Change>;
+  sts2EntityMap: Map<string, EntityInfo>;
+  sts2ChangeMap: Map<string, STS2Change>;
+  sts2PatchMap: Map<string, STS2Patch>;
   userId: string | null;
   expanded: boolean;
   onToggle: (storyId: string) => void;
@@ -288,6 +451,9 @@ function StoryCard({
               relicMap={relicMap}
               potionMap={potionMap}
               changeMap={changeMap}
+              sts2EntityMap={sts2EntityMap}
+              sts2ChangeMap={sts2ChangeMap}
+              sts2PatchMap={sts2PatchMap}
             />
             <CommentSection threadKey={story.id} onCountChange={setLiveCommentCount} />
           </div>
@@ -303,12 +469,18 @@ export function StoryFeed({
   relics,
   potions,
   changes,
+  sts2Changes = [],
+  sts2Patches = [],
+  sts2Entities = [],
 }: {
   stories: Story[];
   cards: Card[];
   relics: Relic[];
   potions: Potion[];
   changes: Change[];
+  sts2Changes?: STS2Change[];
+  sts2Patches?: STS2Patch[];
+  sts2Entities?: EntityInfo[];
 }) {
   const { userId } = useAuth();
   const counts = useEngagementCounts();
@@ -350,6 +522,12 @@ export function StoryFeed({
   const relicMap = useMemo(() => new Map(relics.map((r) => [r.id, r])), [relics]);
   const potionMap = useMemo(() => new Map(potions.map((p) => [p.id, p])), [potions]);
   const changeMap = useMemo(() => new Map(changes.map((c) => [c.id, c])), [changes]);
+  const sts2EntityMap = useMemo(
+    () => new Map(sts2Entities.map((entity) => [`${entity.type}:${entity.id}`, entity])),
+    [sts2Entities],
+  );
+  const sts2ChangeMap = useMemo(() => new Map(sts2Changes.map((c) => [c.id, c])), [sts2Changes]);
+  const sts2PatchMap = useMemo(() => new Map(sts2Patches.map((p) => [p.id, p])), [sts2Patches]);
 
   // Index: entityId -> all changes for that entity
   const entityChangeIndex = useMemo(() => {
@@ -365,7 +543,7 @@ export function StoryFeed({
   return (
     <div className="divide-y divide-border/50">
       {orderedStories.map((story) => {
-        const key = story.entityType && story.entityId ? `${story.entityType}:${story.entityId}` : "";
+        const key = isSTS1EntityType(story.entityType) && story.entityId ? `${story.entityType}:${story.entityId}` : "";
         return (
           <StoryCard
             key={story.id}
@@ -375,6 +553,9 @@ export function StoryFeed({
             relicMap={relicMap}
             potionMap={potionMap}
             changeMap={changeMap}
+            sts2EntityMap={sts2EntityMap}
+            sts2ChangeMap={sts2ChangeMap}
+            sts2PatchMap={sts2PatchMap}
             userId={userId}
             expanded={expandedIds.has(story.id)}
             onToggle={toggle}
