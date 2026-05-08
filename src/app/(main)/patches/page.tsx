@@ -12,6 +12,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
+import { withPageOgImage } from "@/lib/page-og-images";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { CardTile } from "@/components/codex/card-tile";
@@ -145,10 +146,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
   const copy = PATCH_COPY[serviceLocale];
-  return {
+  return withPageOgImage({
     ...getCodexMetadata(serviceLocale, copy.title),
     description: copy.description,
-  };
+  }, "/patches");
 }
 
 export default async function PatchesPage({

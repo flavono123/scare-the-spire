@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
 import fs from "fs/promises";
 import path from "path";
 import { getSTS2Patches } from "@/lib/data";
 import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients } from "@/lib/codex-data";
+import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { readGameLocalizationTable, type GameLocalizationTable } from "@/lib/game-localization";
 import {
@@ -20,6 +22,7 @@ import {
 } from "@/components/patch-note-renderer";
 import { CommentSection } from "@/components/comment-section";
 import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
+import { withPageOgImage } from "@/lib/page-og-images";
 import type { PatchType } from "@/lib/types";
 
 const PATCH_COPY: Record<ServiceLocale, {
@@ -359,6 +362,28 @@ async function getPatchGameHeadingLabels(gameLocale: GameLocale): Promise<Record
 export async function generateStaticParams() {
   const patches = await getSTS2Patches();
   return patches.map((p) => ({ version: p.version }));
+}
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ version: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+  const [{ version }, resolvedSearchParams] = await Promise.all([params, searchParams]);
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const patches = await getSTS2Patches();
+  const patch = patches.find((p) => p.version === version);
+  if (!patch) return {};
+
+  const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
+  const description = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
+
+  return withPageOgImage({
+    ...getCodexMetadata(serviceLocale, `v${patch.version} ${title}`),
+    description,
+  }, `/patches/${patch.version}`);
 }
 
 export default async function PatchDetailPage({

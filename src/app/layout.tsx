@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SiteNavbar } from "@/components/site-navbar";
+import { DEFAULT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import "./globals.css";
 
 // STS2 game fonts extracted from PCK
@@ -38,14 +39,7 @@ export const metadata: Metadata = {
     title: "슬서운 이야기",
     description: "슬레이 더 스파이어 2 패치노트, 백과사전, 커뮤니티",
     siteName: "슬서운 이야기",
-    images: [
-      {
-        url: "/images/sts2/cards/coordinate.webp",
-        width: 1000,
-        height: 760,
-        alt: "슬서운 이야기 — 협력 Coordinate",
-      },
-    ],
+    images: [DEFAULT_PAGE_OG_IMAGE],
     locale: "ko_KR",
     type: "website",
   },
@@ -53,7 +47,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "슬서운 이야기",
     description: "슬레이 더 스파이어 2 패치노트, 백과사전, 커뮤니티",
-    images: ["/images/sts2/cards/coordinate.webp"],
+    images: [DEFAULT_PAGE_OG_IMAGE.url],
   },
   icons: {
     icon: "/favicon.ico",
