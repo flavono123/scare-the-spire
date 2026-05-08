@@ -555,7 +555,7 @@ export default async function PatchDetailPage({
         <p className="mt-1 text-lg font-medium">{title}</p>
         <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">
           <span>{patch.date}</span>
-          {patch.steamUrl && (
+          {patch.steamUrl && !isBuilding && (
             <a
               href={patch.steamUrl}
               target="_blank"
