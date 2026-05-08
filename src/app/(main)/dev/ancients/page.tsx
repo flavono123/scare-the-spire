@@ -5,7 +5,7 @@ import { RichText } from "@/components/rich-text";
 
 export const metadata = {
   title: "고대신 — DEV",
-  description: "DEV — 에포크 타임라인, 고대 존재/보스/NPC/렌더 에셋 미리보기",
+  description: "DEV — 역사 타임라인, 고대 존재/보스/NPC/렌더 에셋 미리보기",
 };
 
 interface Epoch {
@@ -122,7 +122,7 @@ export default async function AncientsDevPage() {
       <header className="mb-12 text-center">
         <h1 className="mb-2 text-4xl font-bold text-amber-400">고대신</h1>
         <p className="text-lg text-zinc-400">
-          DEV — 에포크 타임라인, 고대 존재/보스/NPC/렌더 에셋 미리보기
+          DEV — 역사 타임라인, 고대 존재/보스/NPC/렌더 에셋 미리보기
         </p>
       </header>
 
@@ -321,11 +321,11 @@ export default async function AncientsDevPage() {
       {/* Epoch Portrait Gallery */}
       <section className="mb-16">
         <div className="mb-6 flex items-baseline gap-3">
-          <h2 className="text-2xl font-bold text-violet-400">에포크 초상화 갤러리</h2>
+          <h2 className="text-2xl font-bold text-violet-400">역사 초상화 갤러리</h2>
           <span className="text-sm text-zinc-500">{allEpochFiles.length}장</span>
         </div>
         <p className="mb-6 text-sm text-zinc-500">
-          타임라인에 등장하는 에포크별 초상화 일러스트
+          타임라인에 등장하는 역사별 초상화 일러스트
         </p>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {allEpochFiles.map((file) => (
@@ -356,9 +356,9 @@ export default async function AncientsDevPage() {
 
       {/* Epoch Timeline */}
       <section>
-        <h2 className="mb-8 text-2xl font-bold text-amber-400">에포크 타임라인</h2>
+        <h2 className="mb-8 text-2xl font-bold text-amber-400">역사 타임라인</h2>
         <p className="mb-8 text-zinc-400">
-          총 {epochs.length}개 에포크 — sort_order 순서로 표시
+          총 {epochs.length}개 역사 — sort_order 순서로 표시
         </p>
 
         <div className="relative border-l-2 border-amber-800/50 pl-8">
