@@ -128,6 +128,8 @@ interface CardTileProps {
   /** 카드에 박힌 인챈트 슬롯을 클릭했을 때 (해제 등). */
   onEnchantSlotClick?: () => void;
   onClick?: () => void;
+  /** Static preview mode: disables pointer cursor and hover scale. */
+  interactive?: boolean;
 }
 
 export const CardTile = memo(function CardTile({
@@ -147,6 +149,7 @@ export const CardTile = memo(function CardTile({
   enchantStatMod,
   onEnchantSlotClick,
   onClick,
+  interactive = true,
 }: CardTileProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [imgError, setImgError] = useState(false);
@@ -493,6 +496,9 @@ export const CardTile = memo(function CardTile({
     aspectRatio: CARD_ASPECT,
     containerType: "inline-size",
   };
+  const cardRootClassName = interactive
+    ? "group relative cursor-pointer select-none transition-transform hover:scale-[1.03] hover:z-10"
+    : "group relative select-none";
 
   // =====================================================================
   // ANCIENT CARD
@@ -503,7 +509,7 @@ export const CardTile = memo(function CardTile({
 
     return (
       <div
-        className="group relative cursor-pointer select-none transition-transform hover:scale-[1.03] hover:z-10"
+        className={cardRootClassName}
         style={cardContainerStyle}
         onClick={onClick}
       >
@@ -630,7 +636,7 @@ export const CardTile = memo(function CardTile({
   // =====================================================================
   return (
     <div
-      className="group relative cursor-pointer select-none transition-transform hover:scale-[1.03] hover:z-10"
+      className={cardRootClassName}
       style={cardContainerStyle}
       onClick={onClick}
     >

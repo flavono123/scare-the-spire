@@ -90,7 +90,7 @@ function PatchFeaturedAssets({ entities }: { entities: EntityInfo[] }) {
 
   return (
     <div
-      className="mt-3 flex flex-wrap items-end gap-2 overflow-hidden"
+      className="mt-3 grid grid-cols-4 gap-x-2 gap-y-2 sm:grid-cols-8"
       aria-label="패치 주요 변경 대상"
     >
       {visibleEntities.map((entity) => {
@@ -100,13 +100,20 @@ function PatchFeaturedAssets({ entities }: { entities: EntityInfo[] }) {
         return (
           <span
             key={`${entity.type}:${entity.id}`}
-            className="flex h-[84px] w-[60px] shrink-0 items-end justify-center"
+            className="flex min-h-[92px] items-end justify-center overflow-visible"
           >
             {entity.cardData ? (
-              <span className="block w-[60px] shrink-0">
-                <CardTile card={entity.cardData} showUpgrade={false} showBeta={false} width={60} />
+              <span className="block w-[60px] shrink-0 overflow-visible">
+                <CardTile
+                  card={entity.cardData}
+                  showUpgrade={false}
+                  showBeta={false}
+                  width={60}
+                  interactive={false}
+                />
               </span>
             ) : (
+              // TODO: Revisit non-card preview scaling/alignment; the card-sized slot is intentional for now.
               <Image
                 src={imageUrl!}
                 alt={entity.nameKo}
