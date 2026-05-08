@@ -8,6 +8,7 @@ import {
   deleteDonatedRun,
   listRecentDonatedRuns,
 } from "@/lib/run-donation";
+import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { supabaseEnabled } from "@/lib/supabase";
 import { RandomPickCard } from "./random-pick-card";
 import { RunCard } from "./run-card";
@@ -60,31 +61,39 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
     }
   };
 
-  if (!supabaseEnabled || runs === null) {
+  if (!supabaseEnabled) {
     return null;
   }
   const storageUnavailable = authUnavailable || unavailable;
+  const loading = runs === null && !storageUnavailable;
 
   return (
     <section>
       <header className="mb-3">
         <h2 className="text-sm font-bold text-zinc-200">
-          {copy.sharedRuns}{" "}
-          <span className="font-medium text-zinc-500">
-            ({runs.length > 99 ? "99+" : runs.length})
-          </span>
+          {copy.sharedRuns}
+          {runs !== null && !storageUnavailable && (
+            <>
+              {" "}
+              <span className="font-medium text-zinc-500">
+                ({runs.length > 99 ? "99+" : runs.length})
+              </span>
+            </>
+          )}
         </h2>
       </header>
       {storageUnavailable ? (
         <StorageUnavailableNotice
           title={copy.unavailableTitle}
         />
+      ) : loading ? (
+        <ContentLoadingNotice label={copy.loadingSharedRuns} />
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">
           <li>
-            <RandomPickCard runs={runs} userId={userId} />
+            <RandomPickCard runs={runs ?? []} userId={userId} />
           </li>
-          {runs.map((entry) => {
+          {(runs ?? []).map((entry) => {
             const isOwn = !!userId && entry.donor_user_id === userId;
             return (
               <li key={entry.id}>

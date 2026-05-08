@@ -5,6 +5,7 @@ import Image from "@/components/ui/static-image";
 import { Eye, EyeOff } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
+import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useChemicalPosts } from "@/hooks/use-chemical-posts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
@@ -89,16 +90,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
           title={copy.unavailableTitle}
         />
       ) : loading ? (
-        <div className="flex flex-col items-center justify-center py-12 gap-3">
-          <Image
-            src="/images/sts2/powers/knockdown_power.webp"
-            alt={copy.loading}
-            width={48}
-            height={48}
-            className="object-contain animate-pulse"
-          />
-          <span className="text-sm text-gray-500">{copy.loading}</span>
-        </div>
+        <ContentLoadingNotice label={copy.loading} />
       ) : (
         <div className="space-y-3">
           {posts.map((post) => (
