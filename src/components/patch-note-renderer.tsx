@@ -656,7 +656,19 @@ export function findEntity(text: string, lookup: EntityLookup, typeHint?: string
     }
     return null;
   }
-  return lookup.byKo.get(lower) ?? lookup.byEn.get(lower) ?? null;
+
+  const preferDirectEntity = (matches: EntityInfo[] | undefined): EntityInfo | null => {
+    if (!matches?.length) return null;
+    return matches.find((entity) => entity.type !== "epoch") ?? matches[0];
+  };
+
+  return (
+    preferDirectEntity(lookup.allByKo?.get(lower)) ??
+    preferDirectEntity(lookup.allByEn?.get(lower)) ??
+    lookup.byKo.get(lower) ??
+    lookup.byEn.get(lower) ??
+    null
+  );
 }
 
 // --- BBCode node types from rich-text.tsx ---

@@ -79,6 +79,7 @@ const NOTES_DIR = path.join(process.cwd(), "data/sts2-patch-notes");
 const PATCH_ENTITY_ALIASES_EN: Record<string, string[]> = {
   AXEBOTS_NORMAL: ["Axebots"],
   ASSASSIN_RUBY_RAIDER: ["Ruby Raider Assassin"],
+  GREMLIN_MERC: ["Gremlin Mercenary"],
 };
 
 interface PatchEpoch {
@@ -132,6 +133,19 @@ function stripGameMarkup(text: string | undefined): string {
     .trim();
 }
 
+function stripSentencePunctuation(text: string | undefined): string {
+  return stripGameMarkup(text).replace(/[.。]+$/g, "").trim();
+}
+
+function patchDisplayName(
+  selectedName: string,
+  englishName: string,
+  gameLocale: GameLocale,
+): string {
+  if (gameLocale !== "kor" && /[가-힣]/.test(selectedName)) return englishName;
+  return selectedName;
+}
+
 function colorTag(color: string, label: string): string {
   return `[${color}]${label}[/${color}]`;
 }
@@ -162,7 +176,16 @@ function englishTitleAliases(source: string | undefined): string[] {
 }
 
 function isTitleLocalizationKey(key: string): boolean {
-  return key.endsWith(".title") || key.endsWith("Title");
+  return key.endsWith(".title") || key.endsWith(".name") || key.endsWith("Title");
+}
+
+function addPatchKeywordLabel(
+  labels: Record<string, string>,
+  sourceLabel: string | undefined,
+  targetLabel: string | undefined,
+) {
+  if (!sourceLabel || !targetLabel) return;
+  labels[sourceLabel.trim().toLowerCase()] = targetLabel;
 }
 
 function addPatchKeywordLabels(
@@ -174,32 +197,42 @@ function addPatchKeywordLabels(
     if (!isTitleLocalizationKey(key)) continue;
     const targetLabel = target[key];
     if (!targetLabel) continue;
-    labels[sourceLabel.trim().toLowerCase()] = targetLabel;
+    addPatchKeywordLabel(labels, sourceLabel, targetLabel);
   }
 }
 
 async function getPatchGameKeywordLabels(gameLocale: GameLocale): Promise<Record<string, string>> {
-  const [
-    engBadges,
-    korBadges,
-    gameBadges,
-    engModifiers,
-    korModifiers,
-    gameModifiers,
-  ] = await Promise.all([
-    readGameLocalizationTable("eng", "badges"),
-    readGameLocalizationTable("kor", "badges"),
-    readGameLocalizationTable(gameLocale, "badges"),
-    readGameLocalizationTable("eng", "modifiers"),
-    readGameLocalizationTable("kor", "modifiers"),
-    readGameLocalizationTable(gameLocale, "modifiers"),
+  const tableNames = [
+    "badges",
+    "modifiers",
+    "cards",
+    "relics",
+    "potions",
+    "powers",
+    "enchantments",
+    "events",
+    "monsters",
+    "encounters",
+    "ancients",
+    "epochs",
+  ];
+  const [engTables, korTables, gameTables] = await Promise.all([
+    Promise.all(tableNames.map((tableName) => readGameLocalizationTable("eng", tableName))),
+    Promise.all(tableNames.map((tableName) => readGameLocalizationTable("kor", tableName))),
+    Promise.all(tableNames.map((tableName) => readGameLocalizationTable(gameLocale, tableName))),
   ]);
-
   const labels: Record<string, string> = {};
-  addPatchKeywordLabels(labels, engBadges, gameBadges);
-  addPatchKeywordLabels(labels, korBadges, gameBadges);
-  addPatchKeywordLabels(labels, engModifiers, gameModifiers);
-  addPatchKeywordLabels(labels, korModifiers, gameModifiers);
+  for (let i = 0; i < tableNames.length; i++) {
+    addPatchKeywordLabels(labels, engTables[i], gameTables[i]);
+    addPatchKeywordLabels(labels, korTables[i], gameTables[i]);
+  }
+
+  const badgeIndex = tableNames.indexOf("badges");
+  addPatchKeywordLabel(
+    labels,
+    `The ${engTables[badgeIndex]["PERFECT.goldTitle"]}`,
+    gameTables[badgeIndex]["PERFECT.goldTitle"],
+  );
   return labels;
 }
 
@@ -226,6 +259,9 @@ async function getPatchGameHeadingLabels(gameLocale: GameLocale): Promise<Record
     engMainMenu,
     korMainMenu,
     gameMainMenu,
+    engCardLibrary,
+    korCardLibrary,
+    gameCardLibrary,
   ] = await Promise.all([
     readGameLocalizationTable("eng", "characters"),
     readGameLocalizationTable("kor", "characters"),
@@ -248,6 +284,9 @@ async function getPatchGameHeadingLabels(gameLocale: GameLocale): Promise<Record
     readGameLocalizationTable("eng", "main_menu_ui"),
     readGameLocalizationTable("kor", "main_menu_ui"),
     readGameLocalizationTable(gameLocale, "main_menu_ui"),
+    readGameLocalizationTable("eng", "card_library"),
+    readGameLocalizationTable("kor", "card_library"),
+    readGameLocalizationTable(gameLocale, "card_library"),
   ]);
 
   const labels: Record<string, string> = {};
@@ -362,6 +401,20 @@ async function getPatchGameHeadingLabels(gameLocale: GameLocale): Promise<Record
     addPatchHeadingLabel(labels, "유물 변경", `${relicHeadingTarget} 변경`);
   }
 
+  const colorlessCardsTarget = gameLocale === "eng"
+    ? "Colorless Cards"
+    : stripSentencePunctuation(gameCardLibrary["POOL_COLORLESS_TIP"]);
+  if (colorlessCardsTarget) {
+    for (const source of [
+      "Colorless Cards",
+      stripSentencePunctuation(engCardLibrary["POOL_COLORLESS_TIP"]),
+      stripSentencePunctuation(korCardLibrary["POOL_COLORLESS_TIP"]),
+      "무색 카드",
+    ]) {
+      addPatchHeadingLabel(labels, source, colorlessCardsTarget);
+    }
+  }
+
   const multiplayerTarget = gameMainMenu["MULTIPLAYER"];
   for (const source of [
     engMainMenu["MULTIPLAYER"],
@@ -418,7 +471,7 @@ export default async function PatchDetailPage({
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const copy = PATCH_COPY[serviceLocale];
   const epochsDir = path.join(process.cwd(), "public/images/sts2/epochs");
-  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, korEpochData, engEpochData, epochImageFiles, gameUi, gameKeywordLabels, gameHeadingLabels] = await Promise.all([
+  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, korEpochData, engEpochData, gameEpochs, epochImageFiles, gameUi, gameKeywordLabels, gameHeadingLabels] = await Promise.all([
     getSTS2Patches(),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -431,6 +484,7 @@ export default async function PatchDetailPage({
     getCodexAncients({ gameLocale }),
     fs.readFile(path.join(process.cwd(), "data/sts2/kor/epochs.json"), "utf-8").then((raw) => JSON.parse(raw) as PatchEpoch[]),
     fs.readFile(path.join(process.cwd(), "data/sts2/eng/epochs.json"), "utf-8").then((raw) => JSON.parse(raw) as PatchEpoch[]),
+    readGameLocalizationTable(gameLocale, "epochs"),
     fs.readdir(epochsDir).then(
       (files) => new Set(files.filter((file) => file.endsWith(".webp")).map((file) => file.replace(".webp", ""))),
       () => new Set<string>(),
@@ -467,13 +521,14 @@ export default async function PatchDetailPage({
     }
   }
   const engEpochById = new Map(engEpochData.map((epoch) => [epoch.id, epoch]));
+  const friendshipLabel = codexCards.find((card) => card.id === "FRIENDSHIP")?.name;
 
   // Build entity info for the renderer (cards + relics + potions)
   const entities: EntityInfo[] = [
     ...codexCards.map((c) => ({
       id: c.id,
       nameEn: c.nameEn,
-      nameKo: c.name,
+      nameKo: patchDisplayName(c.name, c.nameEn, gameLocale),
       imageUrl: c.imageUrl,
       color: c.color,
       type: "card" as const,
@@ -482,7 +537,7 @@ export default async function PatchDetailPage({
     ...codexRelics.map((r) => ({
       id: r.id,
       nameEn: r.nameEn,
-      nameKo: r.name,
+      nameKo: patchDisplayName(r.name, r.nameEn, gameLocale),
       aliasesEn: (ancientOwnersByRelicId.get(r.id) ?? []).flatMap((ancient) =>
         ancientRelicAliases(ancient.nameEn, r.nameEn),
       ),
@@ -494,7 +549,7 @@ export default async function PatchDetailPage({
     ...codexPotions.map((p) => ({
       id: p.id,
       nameEn: p.nameEn,
-      nameKo: p.name,
+      nameKo: patchDisplayName(p.name, p.nameEn, gameLocale),
       imageUrl: p.imageUrl,
       color: p.pool,
       type: "potion" as const,
@@ -503,7 +558,7 @@ export default async function PatchDetailPage({
     ...codexPowers.map((p) => ({
       id: p.id,
       nameEn: p.nameEn,
-      nameKo: p.name,
+      nameKo: patchDisplayName(p.name, p.nameEn, gameLocale),
       imageUrl: p.imageUrl,
       color: p.type,
       type: "power" as const,
@@ -512,7 +567,7 @@ export default async function PatchDetailPage({
     ...codexEnchantments.map((e) => ({
       id: e.id,
       nameEn: e.nameEn,
-      nameKo: e.name,
+      nameKo: patchDisplayName(e.name, e.nameEn, gameLocale),
       imageUrl: e.imageUrl,
       color: e.cardType ?? "Any",
       type: "enchantment" as const,
@@ -521,7 +576,7 @@ export default async function PatchDetailPage({
     ...codexEvents.map((e) => ({
       id: e.id,
       nameEn: e.nameEn,
-      nameKo: e.name,
+      nameKo: patchDisplayName(e.name, e.nameEn, gameLocale),
       imageUrl: e.imageUrl,
       color: e.act ?? "none",
       type: "event" as const,
@@ -545,7 +600,7 @@ export default async function PatchDetailPage({
     ...codexMonsters.map((m) => ({
       id: m.id,
       nameEn: m.nameEn,
-      nameKo: m.name,
+      nameKo: patchDisplayName(m.name, m.nameEn, gameLocale),
       aliasesEn: PATCH_ENTITY_ALIASES_EN[m.id],
       imageUrl: m.bossImageUrl ?? m.imageUrl,
       color: m.type,
@@ -555,7 +610,7 @@ export default async function PatchDetailPage({
     ...codexEncounters.map((e) => ({
       id: e.id,
       nameEn: e.nameEn,
-      nameKo: e.name,
+      nameKo: patchDisplayName(e.name, e.nameEn, gameLocale),
       aliasesEn: PATCH_ENTITY_ALIASES_EN[e.id],
       imageUrl: e.imageUrl,
       color: e.roomType,
@@ -565,7 +620,7 @@ export default async function PatchDetailPage({
     ...codexAncients.map((a) => ({
       id: a.id,
       nameEn: a.nameEn,
-      nameKo: a.name,
+      nameKo: patchDisplayName(a.name, a.nameEn, gameLocale),
       imageUrl: a.imageUrl,
       color: a.act ?? "none",
       type: "ancient" as const,
@@ -574,12 +629,20 @@ export default async function PatchDetailPage({
     ...korEpochData.map((e) => {
       const idLower = e.id.toLowerCase();
       const override = PATCH_EPOCH_LABEL_OVERRIDES[e.id];
+      const selectedEpochName = gameEpochs[`${e.id}.title`]
+        ?? (gameLocale === "kor" ? e.title : engEpochById.get(e.id)?.title ?? e.title);
+      const selectedName = override ? friendshipLabel ?? selectedEpochName : selectedEpochName;
       return {
         id: e.id,
         nameEn: override?.nameEn ?? engEpochById.get(e.id)?.title ?? e.title,
-        nameKo: override?.nameKo ?? e.title,
+        nameKo: patchDisplayName(selectedName, override?.nameEn ?? engEpochById.get(e.id)?.title ?? e.title, gameLocale),
         aliasesEn: override?.aliasesEn,
-        aliasesKo: override?.aliasesKo,
+        aliasesKo: [
+          override?.nameKo,
+          e.title,
+          selectedEpochName,
+          ...(override?.aliasesKo ?? []),
+        ].filter((alias): alias is string => Boolean(alias)),
         imageUrl: epochImageFiles.has(idLower) ? `/images/sts2/epochs/${idLower}.webp` : null,
         href: null,
         color: "epoch",
