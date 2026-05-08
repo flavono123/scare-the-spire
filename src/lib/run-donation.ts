@@ -76,7 +76,7 @@ export async function donateRun(input: {
   if (!error) return { ok: true };
   // 23505 = unique_violation. The row may have been donated already
   // (by anyone). Treat as "already shared" rather than an error.
-  const alreadyDonated = error.code === "23505";
+  const alreadyDonated = "code" in error && error.code === "23505";
   return {
     ok: false,
     alreadyDonated,
