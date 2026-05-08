@@ -309,6 +309,23 @@
     "loss_text": "{character} was smashed to pieces by [gold]{encounter}[/gold]."
   },
   {
+    "id": "DOORMAKER_BOSS",
+    "name": "The Doormaker",
+    "room_type": "Boss",
+    "is_weak": false,
+    "act": "Act 3 - Glory",
+    "tags": null,
+    "monsters": [
+      {
+        "id": "DOORMAKER",
+        "name": "Doormaker"
+      }
+    ],
+    "loss_text": "[gold]{encounter}[/gold] didn't take kindly to {character}'s disturbance.",
+    "deprecated": true,
+    "deprecatedInPatch": "v0.105.0"
+  },
+  {
     "id": "ENTOMANCER_ELITE",
     "name": "Entomancer",
     "room_type": "Elite",
