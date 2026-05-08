@@ -80,33 +80,36 @@ function entityAssetUrl(entity: EntityInfo): string | null {
 }
 
 function PatchFeaturedAssets({ entities }: { entities: EntityInfo[] }) {
-  if (entities.length === 0) return null;
+  const visibleEntities = entities.filter((entity) => Boolean(entity.cardData || entityAssetUrl(entity)));
+
+  if (visibleEntities.length === 0) return null;
 
   return (
-    <div className="mt-3 flex items-end gap-2 overflow-hidden" aria-label="패치 주요 변경 대상">
-      {entities.slice(0, 5).map((entity) => {
+    <div
+      className="mt-3 flex max-h-[188px] flex-wrap items-end gap-2 overflow-hidden"
+      aria-label="패치 주요 변경 대상"
+    >
+      {visibleEntities.map((entity) => {
         const imageUrl = entityAssetUrl(entity);
         const isMonster = entity.type === "monster";
 
         return (
           <span
             key={`${entity.type}:${entity.id}`}
-            className="flex min-w-0 flex-1 items-end justify-center"
+            className="flex h-[90px] w-16 shrink-0 items-end justify-center"
           >
             {entity.cardData ? (
-              <span className="block w-[70px] shrink-0">
-                <CardTile card={entity.cardData} showUpgrade={false} showBeta={false} width={70} />
+              <span className="block w-16 shrink-0">
+                <CardTile card={entity.cardData} showUpgrade={false} showBeta={false} width={64} />
               </span>
-            ) : imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt={entity.nameKo}
-                width={isMonster ? 78 : 52}
-                height={isMonster ? 78 : 52}
-                className={isMonster ? "h-20 w-20 object-contain" : "h-12 w-12 object-contain"}
-              />
             ) : (
-              <span className="text-xs font-semibold text-muted-foreground">{entity.nameKo.slice(0, 2)}</span>
+              <Image
+                src={imageUrl!}
+                alt={entity.nameKo}
+                width={isMonster ? 64 : 52}
+                height={isMonster ? 64 : 52}
+                className={isMonster ? "h-16 w-16 object-contain" : "h-12 w-12 object-contain"}
+              />
             )}
           </span>
         );
