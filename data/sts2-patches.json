@@ -9,7 +9,14 @@
     "steamUrl": null,
     "summary": "STS2 Early Access launch with 5 playable characters: Ironclad, Silent, Defect, Necrobinder, and Regent.",
     "summaryKo": "아이언클래드, 사일런트, 디펙트, 네크로바인더, 리젠트 5캐릭터로 얼리 액세스 출시.",
-    "hasBalanceChanges": false
+    "hasBalanceChanges": false,
+    "featuredEntities": [
+      { "type": "card", "id": "BASH" },
+      { "type": "card", "id": "NEUTRALIZE" },
+      { "type": "card", "id": "ZAP" },
+      { "type": "card", "id": "LEGION_OF_BONE" },
+      { "type": "card", "id": "SOVEREIGN_BLADE" }
+    ]
   },
   {
     "id": "v0.98.1",
@@ -21,7 +28,11 @@
     "steamUrl": null,
     "summary": "Day-1 fixes: MP disconnect softlock, card play crash, i18n crashes.",
     "summaryKo": "출시 첫날 수정: 멀티플레이 연결 끊김, 카드 플레이 크래시, 다국어 크래시.",
-    "hasBalanceChanges": false
+    "hasBalanceChanges": false,
+    "featuredEntities": [
+      { "type": "card", "id": "KNIFE_TRAP" },
+      { "type": "card", "id": "BEACON_OF_HOPE" }
+    ]
   },
   {
     "id": "v0.98.2",
@@ -33,7 +44,13 @@
     "steamUrl": null,
     "summary": "Whispering Earring softlock, Doormaker music, Beacon of Hope infinite proc, i18n fixes.",
     "summaryKo": "속삭이는 귀걸이 소프트락, 도어메이커 음악, 희망의 등대 무한 발동, 번역 수정.",
-    "hasBalanceChanges": false
+    "hasBalanceChanges": false,
+    "featuredEntities": [
+      { "type": "relic", "id": "WHISPERING_EARRING" },
+      { "type": "monster", "id": "DOORMAKER" },
+      { "type": "card", "id": "BEACON_OF_HOPE" },
+      { "type": "relic", "id": "PAELS_WING" }
+    ]
   },
   {
     "id": "v0.98.3",
@@ -45,7 +62,10 @@
     "steamUrl": null,
     "summary": "Timeline softlock fixes.",
     "summaryKo": "타임라인 소프트락 수정.",
-    "hasBalanceChanges": false
+    "hasBalanceChanges": false,
+    "featuredEntities": [
+      { "type": "event", "id": "STONE_OF_ALL_TIME" }
+    ]
   },
   {
     "id": "v0.99",
@@ -57,7 +77,17 @@
     "steamUrl": null,
     "summary": "HP cap (999,999,999), new card art, extensive bug fixes, modding overhaul.",
     "summaryKo": "HP 상한 (999,999,999), 새 카드 일러스트, 다수 버그 수정, 모딩 시스템 개편.",
-    "hasBalanceChanges": false
+    "hasBalanceChanges": false,
+    "featuredEntities": [
+      { "type": "card", "id": "FEEDING_FRENZY" },
+      { "type": "card", "id": "SLOTH" },
+      { "type": "card", "id": "DECAY" },
+      { "type": "potion", "id": "FAIRY_IN_A_BOTTLE" },
+      { "type": "relic", "id": "LIZARD_TAIL" },
+      { "type": "relic", "id": "LASTING_CANDY" },
+      { "type": "event", "id": "ROOM_FULL_OF_CHEESE" },
+      { "type": "event", "id": "JUNGLE_MAZE_ADVENTURE" }
+    ]
   },
   {
     "id": "v0.99.1",
@@ -69,7 +99,11 @@
     "steamUrl": null,
     "summary": "Architect event MP softlock, Breakthrough self-HP-loss MP fix. Pushed to stable on 2026-03-17.",
     "summaryKo": "건축가 이벤트 멀티 소프트락, 돌파 자가 HP 손실 멀티 수정. 2026-03-17 안정 브랜치 반영.",
-    "hasBalanceChanges": false
+    "hasBalanceChanges": false,
+    "featuredEntities": [
+      { "type": "monster", "id": "ARCHITECT" },
+      { "type": "card", "id": "BREAKTHROUGH" }
+    ]
   },
   {
     "id": "v0.100.0",
@@ -81,7 +115,17 @@
     "steamUrl": null,
     "summary": "Anti-infinite pass, Phobia Mode, card reworks, relic shop price cuts, Neow blessings.",
     "summaryKo": "무한 콤보 견제, 공포증 모드, 카드 리워크, 유물 상점 가격 인하, 네오의 축복 추가.",
-    "hasBalanceChanges": true
+    "hasBalanceChanges": true,
+    "featuredEntities": [
+      { "type": "card", "id": "PREPARED" },
+      { "type": "card", "id": "SUPPRESS" },
+      { "type": "card", "id": "SPITE" },
+      { "type": "card", "id": "STOKE" },
+      { "type": "card", "id": "BORROWED_TIME" },
+      { "type": "card", "id": "HIDDEN_GEM" },
+      { "type": "relic", "id": "HEFTY_TABLET" },
+      { "type": "monster", "id": "DOORMAKER" }
+    ]
   },
   {
     "id": "v0.101.0",
@@ -93,7 +137,17 @@
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/507357499795439629",
     "summary": "Regent card buffs (7 cards), Prepared revert, relic rarity shuffle, Skulking Colony nerf, Doormaker rework, Voltaic nerf.",
     "summaryKo": "리젠트 카드 버프 (7장), 예비 되돌림, 유물 희귀도 재조정, 잠행 군체 너프, 문을 만드는 자 리워크, 동전기 너프.",
-    "hasBalanceChanges": true
+    "hasBalanceChanges": true,
+    "featuredEntities": [
+      { "type": "card", "id": "PREPARED" },
+      { "type": "card", "id": "CAPTURE_SPIRIT" },
+      { "type": "card", "id": "BORROWED_TIME" },
+      { "type": "card", "id": "ARSENAL" },
+      { "type": "relic", "id": "PENDULUM" },
+      { "type": "monster", "id": "DOORMAKER" },
+      { "type": "card", "id": "PARRY" },
+      { "type": "card", "id": "VOLTAIC" }
+    ]
   },
   {
     "id": "v0.102.0",
@@ -105,7 +159,17 @@
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/507357952986842134",
     "summary": "Badges system, Blade of Ink rework, Borrowed Time rework, Ascension 6 rework, Leading Strike buff, Speedster/Untouchable nerfs, Doormaker Grasp rework.",
     "summaryKo": "배지 시스템, 잉크 칼날 리워크, 연명 리워크, 승천 6 리워크, 선제 타격 버프, 스피드스터/범접 불가 너프, 문을 만드는 자 움켜잡기 리워크.",
-    "hasBalanceChanges": true
+    "hasBalanceChanges": true,
+    "featuredEntities": [
+      { "type": "card", "id": "BLADE_OF_INK" },
+      { "type": "enchantment", "id": "INKY" },
+      { "type": "card", "id": "BORROWED_TIME" },
+      { "type": "monster", "id": "DOORMAKER" },
+      { "type": "card", "id": "LEADING_STRIKE" },
+      { "type": "card", "id": "SPEEDSTER" },
+      { "type": "card", "id": "UNTOUCHABLE" },
+      { "type": "relic", "id": "HISTORY_COURSE" }
+    ]
   },
   {
     "id": "v0.103.0",
@@ -117,7 +181,17 @@
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/511862186617866918",
     "summary": "Friends-only leaderboards, new Neow relics (Neow's Bones, Phial Holster, Winged Boots), new Ironclad card Not Yet, Grapple deprecated, Colossus to Uncommon, Acrobatics to Uncommon, Follow Through rework, Speedster buff, Act 1 enemy nerfs (Doormaker, Byrdonis, Skulking Colony, Living Fog).",
     "summaryKo": "친구 전용 리더보드, 새 니오우 유물 3종, 아이언클래드 신규 카드 Not Yet, 그래플링 삭제, 거상 언커먼 하락, 곡예 언커먼 상승, 완수 리워크, 스피드스터 버프, 1막 적 너프 (문을 만드는 자, 섀도니스, 잠행 군체, 살아있는 안개).",
-    "hasBalanceChanges": true
+    "hasBalanceChanges": true,
+    "featuredEntities": [
+      { "type": "relic", "id": "NEOWS_BONES" },
+      { "type": "relic", "id": "PHIAL_HOLSTER" },
+      { "type": "relic", "id": "WINGED_BOOTS" },
+      { "type": "card", "id": "NOT_YET" },
+      { "type": "card", "id": "COLOSSUS" },
+      { "type": "card", "id": "ACROBATICS" },
+      { "type": "card", "id": "FOLLOW_THROUGH" },
+      { "type": "monster", "id": "DOORMAKER" }
+    ]
   },
   {
     "id": "v0.103.1",
@@ -129,7 +203,13 @@
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/526499614836129817",
     "summary": "Crash fixes (rest site upgrade, room transitions), Not Yet no longer generated by Skill Potion, Ascension 10 score fix, multiplayer fixes (Colorful Philosophers, Neow's Bones, Daily runs).",
     "summaryKo": "크래시 수정 (휴식 장소 강화, 방 전환), 불굴 카드 스킬 포션 생성 차단, 승천 10 점수 수정, 멀티플레이어 수정 (다채로운 철학자들, 니오우의 뼈, 일일 런).",
-    "hasBalanceChanges": false
+    "hasBalanceChanges": false,
+    "featuredEntities": [
+      { "type": "card", "id": "NOT_YET" },
+      { "type": "potion", "id": "SKILL_POTION" },
+      { "type": "event", "id": "COLORFUL_PHILOSOPHERS" },
+      { "type": "relic", "id": "NEOWS_BONES" }
+    ]
   },
   {
     "id": "v0.103.2",
@@ -141,7 +221,17 @@
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/526499614836130064",
     "summary": "All beta changes (v0.100.0-v0.103.1) pushed to main branch. Ascension 6 rework, new Ironclad card Not Yet, card reworks (Blade of Ink, Arsenal, Borrowed Time, etc.), 5 new Neow relics, Badges system, leaderboard revamp, Phobia Mode, Doormaker rework, art updates.",
     "summaryKo": "베타 변경사항 (v0.100.0~v0.103.1) 본섭 반영. 승천 6 리워크, 아이언클래드 신규 카드 불굴, 카드 리워크 (잉크 칼날, 무기고, 연명 등), 니오우 신규 유물 5종, 배지 시스템, 리더보드 개편, 공포증 모드, 문을 만드는 자 리워크, 아트 업데이트.",
-    "hasBalanceChanges": true
+    "hasBalanceChanges": true,
+    "featuredEntities": [
+      { "type": "card", "id": "NOT_YET" },
+      { "type": "card", "id": "BLADE_OF_INK" },
+      { "type": "card", "id": "ARSENAL" },
+      { "type": "card", "id": "BORROWED_TIME" },
+      { "type": "card", "id": "HIDDEN_GEM" },
+      { "type": "relic", "id": "HEFTY_TABLET" },
+      { "type": "relic", "id": "NEOWS_BONES" },
+      { "type": "monster", "id": "DOORMAKER" }
+    ]
   },
   {
     "id": "v0.104.0",
@@ -159,7 +249,10 @@
       { "type": "card", "id": "CONFLAGRATION" },
       { "type": "card", "id": "PARRY" },
       { "type": "monster", "id": "AXEBOT" },
-      { "type": "relic", "id": "BOOMING_CONCH" }
+      { "type": "card", "id": "UNTOUCHABLE" },
+      { "type": "relic", "id": "BOOMING_CONCH" },
+      { "type": "card", "id": "NEOWS_FURY" },
+      { "type": "relic", "id": "NUTRITIOUS_SOUP" }
     ]
   },
   {

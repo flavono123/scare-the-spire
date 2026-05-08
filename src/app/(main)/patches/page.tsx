@@ -75,18 +75,22 @@ const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
   hotfix: "bg-orange-500/15 text-orange-400 border-orange-500/30",
 };
 
+const PATCH_FEATURED_ASSET_LIMIT = 8;
+
 function entityAssetUrl(entity: EntityInfo): string | null {
   return entity.cardData?.imageUrl ?? entity.cardData?.betaImageUrl ?? entity.imageUrl;
 }
 
 function PatchFeaturedAssets({ entities }: { entities: EntityInfo[] }) {
-  const visibleEntities = entities.filter((entity) => Boolean(entity.cardData || entityAssetUrl(entity)));
+  const visibleEntities = entities
+    .filter((entity) => Boolean(entity.cardData || entityAssetUrl(entity)))
+    .slice(0, PATCH_FEATURED_ASSET_LIMIT);
 
   if (visibleEntities.length === 0) return null;
 
   return (
     <div
-      className="mt-3 flex max-h-[188px] flex-wrap items-end gap-2 overflow-hidden"
+      className="mt-3 flex flex-wrap items-end gap-2 overflow-hidden"
       aria-label="패치 주요 변경 대상"
     >
       {visibleEntities.map((entity) => {
@@ -96,19 +100,19 @@ function PatchFeaturedAssets({ entities }: { entities: EntityInfo[] }) {
         return (
           <span
             key={`${entity.type}:${entity.id}`}
-            className="flex h-[90px] w-16 shrink-0 items-end justify-center"
+            className="flex h-[84px] w-[60px] shrink-0 items-end justify-center"
           >
             {entity.cardData ? (
-              <span className="block w-16 shrink-0">
-                <CardTile card={entity.cardData} showUpgrade={false} showBeta={false} width={64} />
+              <span className="block w-[60px] shrink-0">
+                <CardTile card={entity.cardData} showUpgrade={false} showBeta={false} width={60} />
               </span>
             ) : (
               <Image
                 src={imageUrl!}
                 alt={entity.nameKo}
-                width={isMonster ? 64 : 52}
-                height={isMonster ? 64 : 52}
-                className={isMonster ? "h-16 w-16 object-contain" : "h-12 w-12 object-contain"}
+                width={isMonster ? 60 : 48}
+                height={isMonster ? 60 : 48}
+                className={isMonster ? "h-[60px] w-[60px] object-contain" : "h-12 w-12 object-contain"}
               />
             )}
           </span>
