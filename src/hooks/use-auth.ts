@@ -2,34 +2,64 @@
 
 import { useEffect, useState } from "react";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
+import { SUPABASE_AUTH_TIMEOUT_MS, withSupabaseTimeout } from "@/lib/supabase-timeout";
 
 export function useAuth() {
   const [userId, setUserId] = useState<string | null>(null);
   const [ready, setReady] = useState(!supabaseEnabled);
+  const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
     if (!supabaseEnabled) return;
+    let cancelled = false;
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUserId(session.user.id);
-        setReady(true);
-      } else {
-        supabase.auth.signInAnonymously().then(({ data }) => {
+    (async () => {
+      try {
+        const { data: { session }, error } = await withSupabaseTimeout(
+          "auth.getSession",
+          supabase.auth.getSession(),
+          SUPABASE_AUTH_TIMEOUT_MS,
+        );
+        if (error) throw error;
+        if (cancelled) return;
+        if (session?.user) {
+          setUserId(session.user.id);
+          setUnavailable(false);
+          return;
+        }
+
+        const { data, error: signInError } = await withSupabaseTimeout(
+          "auth.signInAnonymously",
+          supabase.auth.signInAnonymously(),
+          SUPABASE_AUTH_TIMEOUT_MS,
+        );
+        if (signInError) throw signInError;
+        if (!cancelled) {
           setUserId(data.session?.user.id ?? null);
-          setReady(true);
-        });
+          setUnavailable(!data.session?.user);
+        }
+      } catch {
+        if (!cancelled) {
+          setUserId(null);
+          setUnavailable(true);
+        }
+      } finally {
+        if (!cancelled) setReady(true);
       }
-    });
+    })();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUserId(session?.user.id ?? null);
+        if (session?.user) setUnavailable(false);
       },
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  return { userId, ready };
+  return { userId, ready, unavailable };
 }

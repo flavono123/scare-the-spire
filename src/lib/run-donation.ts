@@ -1,4 +1,5 @@
 import { supabase, supabaseEnabled, supabaseEnv } from "./supabase";
+import { withSupabaseTimeout } from "./supabase-timeout";
 import type { ReplayRun } from "./sts2-run-replay";
 
 export interface DonatedRun {
@@ -62,13 +63,16 @@ export async function donateRun(input: {
     return { ok: false, alreadyDonated: false, message: "Supabase 연결이 설정되지 않았습니다." };
   }
   const meta = parsedMetaFromRun(input.run);
-  const { error } = await supabase.from("runs").insert({
-    id: input.runId,
-    raw: input.raw,
-    donor_user_id: input.donorUserId,
-    env: supabaseEnv,
-    ...meta,
-  });
+  const { error } = await withSupabaseTimeout(
+    "runs.insert",
+    supabase.from("runs").insert({
+      id: input.runId,
+      raw: input.raw,
+      donor_user_id: input.donorUserId,
+      env: supabaseEnv,
+      ...meta,
+    }),
+  ).catch(() => ({ error: new Error("timeout") }));
   if (!error) return { ok: true };
   // 23505 = unique_violation. The row may have been donated already
   // (by anyone). Treat as "already shared" rather than an error.
@@ -117,10 +121,13 @@ export async function donateRunsBatch(input: {
   // onConflict spans (id, env) — the composite PK after migration-009.
   // Same content-addressable runId in a different env is a fresh row;
   // only same id + same env is treated as a duplicate.
-  const { data, error } = await supabase
-    .from("runs")
-    .upsert(rows, { onConflict: "id,env", ignoreDuplicates: true })
-    .select("id");
+  const { data, error } = await withSupabaseTimeout(
+    "runs.upsert",
+    supabase
+      .from("runs")
+      .upsert(rows, { onConflict: "id,env", ignoreDuplicates: true })
+      .select("id"),
+  ).catch(() => ({ data: null, error: new Error("timeout") }));
   if (error) {
     return {
       inserted: 0,
@@ -142,26 +149,32 @@ export async function donateRunsBatch(input: {
 
 export async function getDonatedRun(runId: string): Promise<DonatedRun | null> {
   if (!supabaseEnabled) return null;
-  const { data, error } = await supabase
-    .from("runs")
-    .select(
-      "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, created_at",
-    )
-    .eq("id", runId)
-    .eq("env", supabaseEnv)
-    .maybeSingle();
+  const { data, error } = await withSupabaseTimeout(
+    "runs.select.detail",
+    supabase
+      .from("runs")
+      .select(
+        "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, created_at",
+      )
+      .eq("id", runId)
+      .eq("env", supabaseEnv)
+      .maybeSingle(),
+  ).catch(() => ({ data: null, error: new Error("timeout") }));
   if (error || !data) return null;
   return data as DonatedRun;
 }
 
 export async function isRunDonated(runId: string): Promise<boolean> {
   if (!supabaseEnabled) return false;
-  const { data, error } = await supabase
-    .from("runs")
-    .select("id")
-    .eq("id", runId)
-    .eq("env", supabaseEnv)
-    .maybeSingle();
+  const { data, error } = await withSupabaseTimeout(
+    "runs.select.exists",
+    supabase
+      .from("runs")
+      .select("id")
+      .eq("id", runId)
+      .eq("env", supabaseEnv)
+      .maybeSingle(),
+  ).catch(() => ({ data: null, error: new Error("timeout") }));
   return !error && !!data;
 }
 
@@ -173,13 +186,16 @@ export async function isOwnDonation(
   userId: string,
 ): Promise<boolean> {
   if (!supabaseEnabled || !userId) return false;
-  const { data, error } = await supabase
-    .from("runs")
-    .select("id")
-    .eq("id", runId)
-    .eq("env", supabaseEnv)
-    .eq("donor_user_id", userId)
-    .maybeSingle();
+  const { data, error } = await withSupabaseTimeout(
+    "runs.select.owner",
+    supabase
+      .from("runs")
+      .select("id")
+      .eq("id", runId)
+      .eq("env", supabaseEnv)
+      .eq("donor_user_id", userId)
+      .maybeSingle(),
+  ).catch(() => ({ data: null, error: new Error("timeout") }));
   return !error && !!data;
 }
 
@@ -191,11 +207,14 @@ export async function listMyDonatedRunIds(
 ): Promise<Set<string>> {
   const ids = new Set<string>();
   if (!supabaseEnabled || !userId) return ids;
-  const { data, error } = await supabase
-    .from("runs")
-    .select("id")
-    .eq("env", supabaseEnv)
-    .eq("donor_user_id", userId);
+  const { data, error } = await withSupabaseTimeout(
+    "runs.select.mine",
+    supabase
+      .from("runs")
+      .select("id")
+      .eq("env", supabaseEnv)
+      .eq("donor_user_id", userId),
+  ).catch(() => ({ data: null, error: new Error("timeout") }));
   if (error || !data) return ids;
   for (const row of data) ids.add(row.id as string);
   return ids;
@@ -206,23 +225,29 @@ export async function listMyDonatedRunIds(
 // later if the pool grows past that.
 export async function listRecentDonatedRuns(): Promise<DonatedRunSummary[]> {
   if (!supabaseEnabled) return [];
-  const { data, error } = await supabase
-    .from("runs")
-    .select(
-      "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at",
-    )
-    .eq("env", supabaseEnv)
-    .order("created_at", { ascending: false });
-  if (error || !data) return [];
+  const { data, error } = await withSupabaseTimeout(
+    "runs.select.recent",
+    supabase
+      .from("runs")
+      .select(
+        "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at",
+      )
+      .eq("env", supabaseEnv)
+      .order("created_at", { ascending: false }),
+  );
+  if (error || !data) throw error ?? new Error("공유된 런을 불러오지 못했습니다.");
   return data as DonatedRunSummary[];
 }
 
 export async function deleteDonatedRun(runId: string): Promise<boolean> {
   if (!supabaseEnabled) return false;
-  const { error } = await supabase
-    .from("runs")
-    .delete()
-    .eq("id", runId)
-    .eq("env", supabaseEnv);
+  const { error } = await withSupabaseTimeout(
+    "runs.delete",
+    supabase
+      .from("runs")
+      .delete()
+      .eq("id", runId)
+      .eq("env", supabaseEnv),
+  ).catch(() => ({ error: new Error("timeout") }));
   return !error;
 }

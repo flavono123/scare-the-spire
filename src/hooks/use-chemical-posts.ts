@@ -4,10 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import type { ChemicalPost, PostBlock } from "@/lib/chemical-types";
 import { blocksToPlainText } from "@/lib/chemical-utils";
+import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
 interface UseChemicalPostsReturn {
   posts: ChemicalPost[];
   loading: boolean;
+  unavailable: boolean;
   add: (blocks: PostBlock[], nickname: string) => Promise<void>;
   remove: (postId: string) => Promise<void>;
 }
@@ -15,18 +17,32 @@ interface UseChemicalPostsReturn {
 export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn {
   const [posts, setPosts] = useState<ChemicalPost[]>([]);
   const [loading, setLoading] = useState(supabaseEnabled);
+  const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
     if (!supabaseEnabled) return;
+    let cancelled = false;
+    setLoading(true);
+    setUnavailable(false);
 
-    supabase
-      .from("chemical_posts")
-      .select("*")
-      .eq("env", supabaseEnv)
-      .order("created_at", { ascending: false })
-      .limit(50)
-      .then(({ data }) => {
+    withSupabaseTimeout(
+      "chemical_posts.select",
+      supabase
+        .from("chemical_posts")
+        .select("*")
+        .eq("env", supabaseEnv)
+        .order("created_at", { ascending: false })
+        .limit(50),
+    )
+      .then(({ data, error }) => {
+        if (error) throw error;
+        if (cancelled) return;
         setPosts(data ?? []);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setUnavailable(true);
         setLoading(false);
       });
 
@@ -60,9 +76,14 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
           setPosts((prev) => prev.filter((p) => p.id !== payload.old.id));
         },
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+          setUnavailable(true);
+        }
+      });
 
     return () => {
+      cancelled = true;
       supabase.removeChannel(channel);
     };
   }, []);
@@ -72,17 +93,25 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
       if (!userId || !supabaseEnabled) return;
       const contentText = blocksToPlainText(blocks);
 
-      const { data } = await supabase
-        .from("chemical_posts")
-        .insert({
-          user_id: userId,
-          nickname,
-          content: blocks,
-          content_text: contentText,
-          env: supabaseEnv,
-        })
-        .select()
-        .single();
+      const { data, error } = await withSupabaseTimeout(
+        "chemical_posts.insert",
+        supabase
+          .from("chemical_posts")
+          .insert({
+            user_id: userId,
+            nickname,
+            content: blocks,
+            content_text: contentText,
+            env: supabaseEnv,
+          })
+          .select()
+          .single(),
+      ).catch(() => ({ data: null, error: new Error("timeout") }));
+
+      if (error) {
+        setUnavailable(true);
+        return;
+      }
 
       if (data) {
         setPosts((prev) => [data as ChemicalPost, ...prev]);
@@ -94,11 +123,18 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
   const remove = useCallback(
     async (postId: string) => {
       if (!userId || !supabaseEnabled) return;
-      await supabase.from("chemical_posts").delete().eq("id", postId);
+      const { error } = await withSupabaseTimeout(
+        "chemical_posts.delete",
+        supabase.from("chemical_posts").delete().eq("id", postId),
+      ).catch(() => ({ error: new Error("timeout") }));
+      if (error) {
+        setUnavailable(true);
+        return;
+      }
       setPosts((prev) => prev.filter((p) => p.id !== postId));
     },
     [userId],
   );
 
-  return { posts, loading, add, remove };
+  return { posts, loading, unavailable, add, remove };
 }

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
 let richCommentColumnSupported: boolean | null = null;
 
@@ -19,6 +20,7 @@ export interface Comment {
 interface UseCommentsReturn {
   comments: Comment[];
   loading: boolean;
+  unavailable: boolean;
   add: (nickname: string, content: string, contentBlocks?: PostBlock[]) => Promise<void>;
   remove: (commentId: string) => Promise<void>;
 }
@@ -26,20 +28,37 @@ interface UseCommentsReturn {
 export function useComments(storyId: string, userId: string | null): UseCommentsReturn {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(supabaseEnabled);
+  const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
     if (!supabaseEnabled) return;
+    let cancelled = false;
+    setLoading(true);
+    setUnavailable(false);
 
-    supabase
-      .from("comments")
-      .select("*")
-      .eq("story_id", storyId)
-      .eq("env", supabaseEnv)
-      .order("created_at", { ascending: true })
-      .then(({ data }) => {
+    withSupabaseTimeout(
+      "comments.select",
+      supabase
+        .from("comments")
+        .select("*")
+        .eq("story_id", storyId)
+        .eq("env", supabaseEnv)
+        .order("created_at", { ascending: true }),
+    )
+      .then(({ data, error }) => {
+        if (error) throw error;
+        if (cancelled) return;
         setComments(data ?? []);
         setLoading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setUnavailable(true);
+        setLoading(false);
       });
+    return () => {
+      cancelled = true;
+    };
   }, [storyId]);
 
   const add = useCallback(
@@ -58,12 +77,21 @@ export function useComments(storyId: string, userId: string | null): UseComments
         const payload = includeRichBlocks
           ? { ...basePayload, content_blocks: contentBlocks ?? null }
           : basePayload;
-        return supabase.from("comments").insert(payload).select().single();
+        return withSupabaseTimeout(
+          "comments.insert",
+          supabase.from("comments").insert(payload).select().single(),
+        );
       };
 
-      let result = richCommentColumnSupported === false
-        ? await tryInsert(false)
-        : await tryInsert(true);
+      let result;
+      try {
+        result = richCommentColumnSupported === false
+          ? await tryInsert(false)
+          : await tryInsert(true);
+      } catch {
+        setUnavailable(true);
+        return;
+      }
 
       const shouldRetryWithoutRichColumn = !!result.error
         && richCommentColumnSupported !== false
@@ -71,9 +99,19 @@ export function useComments(storyId: string, userId: string | null): UseComments
 
       if (shouldRetryWithoutRichColumn) {
         richCommentColumnSupported = false;
-        result = await tryInsert(false);
+        try {
+          result = await tryInsert(false);
+        } catch {
+          setUnavailable(true);
+          return;
+        }
       } else if (!result.error && richCommentColumnSupported === null) {
         richCommentColumnSupported = true;
+      }
+
+      if (result.error) {
+        setUnavailable(true);
+        return;
       }
 
       if (result.data) {
@@ -90,11 +128,18 @@ export function useComments(storyId: string, userId: string | null): UseComments
   const remove = useCallback(
     async (commentId: string) => {
       if (!userId || !supabaseEnabled) return;
-      await supabase.from("comments").delete().eq("id", commentId);
+      const { error } = await withSupabaseTimeout(
+        "comments.delete",
+        supabase.from("comments").delete().eq("id", commentId),
+      ).catch(() => ({ error: new Error("timeout") }));
+      if (error) {
+        setUnavailable(true);
+        return;
+      }
       setComments((prev) => prev.filter((c) => c.id !== commentId));
     },
     [userId],
   );
 
-  return { comments, loading, add, remove };
+  return { comments, loading, unavailable, add, remove };
 }
