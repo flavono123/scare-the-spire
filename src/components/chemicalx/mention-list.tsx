@@ -11,7 +11,7 @@ import { getCharacterColor } from "@/lib/codex-types";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 
-function getEntityTypeLabels(serviceLocale: ReturnType<typeof useServiceLocale>): Record<EntityType, string> {
+function getEntityTypeLabels(serviceLocale: ReturnType<typeof useServiceLocale>): Partial<Record<EntityType, string>> {
   const codex = serviceMessages[serviceLocale].codex;
   return {
     card: codex.cards,
@@ -112,7 +112,7 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
                 </span>
               )}
               <span className="ml-auto text-[10px] text-gray-500 shrink-0">
-                {entityTypeLabels[item.type]}
+                {entityTypeLabels[item.type] ?? item.type}
               </span>
             </button>
           );
