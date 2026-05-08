@@ -23,8 +23,7 @@ export const serviceMessages = {
       editorLoading: "댓글 입력기를 준비하는 중...",
       placeholder: "댓글을 입력하세요",
       submit: "작성",
-      unavailableTitle: "댓글 저장소가 시간 제한에 걸렸습니다",
-      unavailableMessage: "댓글을 불러오거나 저장할 수 없습니다. 잠시 후 다시 시도해주세요.",
+      unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
     chemicalX: {
       title: "케미컬X",
@@ -54,8 +53,7 @@ export const serviceMessages = {
       copied: "복사됨!",
       collapse: "접기",
       expand: "펼치기",
-      unavailableTitle: "투입 저장소가 시간 제한에 걸렸습니다",
-      unavailableMessage: "투입을 불러오거나 저장할 수 없습니다. 잠시 후 다시 시도해주세요.",
+      unavailableTitle: "데이터베이스가 응답하지 않습니다",
     },
     historyCourse: {
       description:
@@ -98,8 +96,7 @@ export const serviceMessages = {
         minBuild: "v{version} 미만은 비활성화됩니다.",
         emptyMine: "올린 런이 아직 없습니다. 위에서 폴더 또는 .run 파일을 드래그하세요.",
         undoConfirm: "이 런의 익명 공유를 취소합니다. URL은 더 이상 다른 기기에서 열리지 않습니다.",
-        unavailableTitle: "공유 보관소가 시간 제한에 걸렸습니다",
-        unavailableMessage: "공유된 런 목록을 불러올 수 없습니다. 내 브라우저에 저장된 런은 계속 볼 수 있습니다.",
+        unavailableTitle: "데이터베이스가 응답하지 않습니다",
       },
       runCard: {
         unsupportedTitle: "재현 미지원 빌드 — 클릭하면 목록에서 제거",
@@ -481,8 +478,7 @@ export const serviceMessages = {
       editorLoading: "Preparing comment editor...",
       placeholder: "Write a comment",
       submit: "Post",
-      unavailableTitle: "Comment storage hit the time limit",
-      unavailableMessage: "Comments cannot be loaded or saved right now. Try again shortly.",
+      unavailableTitle: "Database is not responding",
     },
     chemicalX: {
       title: "Chemical X",
@@ -512,8 +508,7 @@ export const serviceMessages = {
       copied: "Copied!",
       collapse: "Collapse",
       expand: "Expand",
-      unavailableTitle: "Post storage hit the time limit",
-      unavailableMessage: "Posts cannot be loaded or saved right now. Try again shortly.",
+      unavailableTitle: "Database is not responding",
     },
     historyCourse: {
       description:
@@ -556,8 +551,7 @@ export const serviceMessages = {
         minBuild: "Builds below v{version} are disabled.",
         emptyMine: "No uploaded runs yet. Drag a folder or .run files above.",
         undoConfirm: "This will unshare the run. The URL will no longer open on other devices.",
-        unavailableTitle: "Shared run storage hit the time limit",
-        unavailableMessage: "Shared runs cannot be loaded right now. Runs saved in this browser still work.",
+        unavailableTitle: "Database is not responding",
       },
       runCard: {
         unsupportedTitle: "Unsupported build — click to remove it from the list",

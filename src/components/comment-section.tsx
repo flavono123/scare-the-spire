@@ -228,7 +228,6 @@ export function CommentSection({
         <StorageUnavailableNotice
           compact
           title={copy.unavailableTitle}
-          message={copy.unavailableMessage}
         />
       ) : loading ? (
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">

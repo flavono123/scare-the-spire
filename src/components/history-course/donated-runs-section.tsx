@@ -78,7 +78,6 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
       {storageUnavailable ? (
         <StorageUnavailableNotice
           title={copy.unavailableTitle}
-          message={copy.unavailableMessage}
         />
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">
