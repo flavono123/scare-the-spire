@@ -64,6 +64,12 @@ To fetch a specific version's content, filter by title containing the version st
 From the raw plain text:
 1. **Keep**: Bullet-point items, card/relic/enemy change descriptions, balance numbers
 2. **Skip**: Greeting paragraphs ("Hey everyone..."), community messages, image references (`{STEAM_CLAN_IMAGE}`)
+   - Before skipping intro/non-bullet paragraphs, scan them for devnote-worthy
+     content. Release cadence changes, beta-branch guidance, feature intent,
+     replacement rationale, design goals, and known implementation status are
+     developer comments, not fluff. Preserve those in the Korean file as
+     `[devnote]` / `[devnote:en]` even when they appear before the structured
+     patch list.
 3. **Title**: Use the Steam API `title` field exactly as-is (e.g. `# Beta Patch Notes - v0.101.0`). Do NOT add subtitles, summaries, or annotations below the title.
 4. **No annotations**: Do NOT add descriptive lines between the title and the first section (e.g. "This patch is live on the Beta Branch", "Design commentary from Anthony included"). Go straight from `# Title` to `## First Section`.
 5. **Structure** as markdown with sections:
