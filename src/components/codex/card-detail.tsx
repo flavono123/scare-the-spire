@@ -11,7 +11,7 @@ import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import { CodexCard, CodexEnchantment } from "@/lib/codex-types";
 import { CardTile } from "./card-tile";
-import { DescriptionText } from "./codex-description";
+import { DescriptionText, hasCardUpgrade } from "./codex-description";
 import { HoverTip, HoverTipVariant } from "./hover-tip";
 import { CARD_WIDTH_PRESET } from "@/lib/sts2-card-style";
 import {
@@ -78,6 +78,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
   );
 
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
+  const canShowUpgrade = hasCardUpgrade(card);
 
   // 활성 인챈트 효과: amount 치환, 추가/제거 키워드, forced cost, stat modifier
   const activeShowAmount = activeEnchant ? shouldShowAmount(activeEnchant) : false;
@@ -223,9 +224,9 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
       </div>
 
       {/* 강화 / 베타 토글 — 카드 바로 아래 */}
-      {(card.upgrade || card.betaImageUrl) && (
+      {(canShowUpgrade || card.betaImageUrl) && (
         <div className="flex gap-2">
-          {card.upgrade && (
+          {canShowUpgrade && (
             <button
               onClick={() => setShowUpgrade((v) => !v)}
               className={`px-3 py-1 text-xs rounded-lg border transition-all ${

@@ -6,6 +6,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import { CodexCard } from "@/lib/codex-types";
 import {
+  hasCardUpgrade,
   parseDescription,
   renderCardDescription,
   TermTooltip,
@@ -168,7 +169,7 @@ export const CardTile = memo(function CardTile({
     costDisplay = String(forcedCost);
   } else if (card.isXCost) costDisplay = "X";
   else if (card.cost >= 0) {
-    costDisplay = showUpgrade && card.upgrade?.cost !== undefined
+    costDisplay = showUpgrade && hasCardUpgrade(card) && card.upgrade?.cost !== undefined
       ? String(card.upgrade.cost) : String(card.cost);
   }
 
@@ -179,7 +180,7 @@ export const CardTile = memo(function CardTile({
   const bannerHsv = RARITY_BANNER_HSV[card.rarity] ?? RARITY_BANNER_HSV["일반"];
   const bannerFilter = hsvToFilter(bannerHsv);
 
-  const isUpgraded = showUpgrade && card.upgrade != null;
+  const isUpgraded = showUpgrade && hasCardUpgrade(card);
   const titleOutline = isUpgraded
     ? TITLE_UPGRADED_OUTLINE
     : (TITLE_OUTLINE_COLOR[card.rarity] ?? TITLE_OUTLINE_COLOR["일반"]);

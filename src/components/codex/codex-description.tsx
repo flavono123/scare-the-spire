@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "@/components/ui/static-image";
+import { bakeDescription } from "@/lib/codex-bake";
 import type { CodexCard } from "@/lib/codex-types";
 
 // =============================================================================
@@ -92,6 +93,18 @@ interface RenderCardOptions {
   enchantMod?: EnchantVarMod | null;
 }
 
+function findVarKey(vars: Record<string, number>, name: string): string | undefined {
+  return name in vars
+    ? name
+    : Object.keys(vars).find((k) => k.toLowerCase() === name.toLowerCase());
+}
+
+export function hasCardUpgrade(
+  card: Pick<CodexCard, "upgrade" | "descriptionRaw">,
+): boolean {
+  return card.upgrade != null || /\{IfUpgraded:show:/.test(card.descriptionRaw ?? "");
+}
+
 export function renderCardDescription(
   card: CodexCard,
   options: RenderCardOptions = {},
@@ -107,9 +120,7 @@ export function renderCardDescription(
     for (const [key, diff] of Object.entries(card.upgrade)) {
       if (typeof diff === "string" && /^[+-]\d+/.test(diff)) {
         const delta = parseInt(diff, 10);
-        const varKey = Object.keys(finalVars).find(
-          (k) => k.toLowerCase() === key.toLowerCase()
-        );
+        const varKey = findVarKey(finalVars, key);
         if (varKey && delta !== 0) {
           finalVars[varKey] = (finalVars[varKey] ?? 0) + delta;
           upgradeChanged.add(varKey.toLowerCase());
@@ -137,17 +148,21 @@ export function renderCardDescription(
     }
   }
 
-  return raw.replace(/\{(\w+)(?::diff\(\))?\}/g, (match, varName: string) => {
-    const key = varName in finalVars
-      ? varName
-      : Object.keys(finalVars).find((k) => k.toLowerCase() === varName.toLowerCase());
+  const varsForTemplate: Record<string, number | string> = {
+    ...finalVars,
+    IfUpgraded: options.upgrade ? 1 : 0,
+  };
+  const coloredRaw = raw.replace(/\{(\w+)(?::diff\(\))?\}/g, (match, varName: string) => {
+    const key = findVarKey(finalVars, varName);
     if (!key) return match;
     const val = String(finalVars[key]);
     const lk = key.toLowerCase();
     if (enchantChanged.has(lk)) return `[purple]${val}[/purple]`;
     if (upgradeChanged.has(lk)) return `[green]${val}[/green]`;
-    return val;
+    return match;
   });
+
+  return bakeDescription(coloredRaw, varsForTemplate);
 }
 
 // =============================================================================
