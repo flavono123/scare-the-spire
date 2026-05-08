@@ -432,6 +432,7 @@ interface RawEnchantment {
   description: string;
   description_raw: string | null;
   extra_card_text: string | null;
+  vars?: Record<string, number> | null;
   card_type: string | null;
   is_stackable: boolean;
   image_url: string | null;
@@ -442,13 +443,16 @@ function mapEnchantment(
   eng: RawEnchantment,
   gameEnchantments: GameLocalizationTable,
 ): CodexEnchantment {
+  const vars = kor.vars ?? {};
+  const raw = gameNullableText(gameEnchantments, `${kor.id}.description`, kor.description_raw);
+  const extraRaw = gameNullableText(gameEnchantments, `${kor.id}.extraCardText`, kor.extra_card_text);
   return {
     id: kor.id,
     name: gameText(gameEnchantments, `${kor.id}.title`, kor.name),
     nameEn: eng.name,
-    description: gameText(gameEnchantments, `${kor.id}.description`, kor.description),
-    descriptionRaw: gameNullableText(gameEnchantments, `${kor.id}.description`, kor.description_raw),
-    extraCardText: gameNullableText(gameEnchantments, `${kor.id}.extraCardText`, kor.extra_card_text),
+    description: bakeDescription(raw ?? kor.description, vars),
+    descriptionRaw: raw,
+    extraCardText: extraRaw ? bakeDescription(extraRaw, vars) : extraRaw,
     cardType: (kor.card_type as "Attack" | "Skill" | null),
     isStackable: kor.is_stackable,
     imageUrl: kor.image_url,

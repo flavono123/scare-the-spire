@@ -179,7 +179,7 @@ export function getEnchantStatModifier(
   switch (normalizeId(enchant.id)) {
     // Damage additive
     case "INKY":
-      return { damageAdd: 2 };       // CanonicalVars: DamageVar(2m)
+      return { damageAdd: 1 };       // CanonicalVars: DamageVar(1m)
     case "TEZCATARAS_EMBER":
       return { damageAdd: 3 };       // CanonicalVars: DamageVar(3m)
     case "SHARP":
