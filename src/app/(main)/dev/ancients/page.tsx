@@ -68,6 +68,7 @@ export default async function AncientsDevPage() {
   const bossesDir = path.join(process.cwd(), "public/images/sts2/bosses");
   const npcsDir = path.join(process.cwd(), "public/images/sts2/npcs");
   const ancientNodesDir = path.join(process.cwd(), "public/images/sts2/ancient-nodes");
+  const epochsDir = path.join(process.cwd(), "public/images/sts2/epochs");
 
   const ancientsBgDir = path.join(process.cwd(), "public/images/sts2/ancients-bg");
 
@@ -82,9 +83,11 @@ export default async function AncientsDevPage() {
   const bossFiles = (await safeReaddir(bossesDir)).filter((f) => imgExt.test(f)).sort();
   const npcFiles = (await safeReaddir(npcsDir)).filter((f) => imgExt.test(f)).sort();
   const renderFiles: string[] = []; // renders directory removed
-  const epochImageFiles = new Set<string>(); // epochs directory removed
   const ancientNodeFiles = (await safeReaddir(ancientNodesDir)).filter((f) => imgExt.test(f)).sort();
-  const allEpochFiles: string[] = []; // epochs directory removed
+  const allEpochFiles = (await safeReaddir(epochsDir)).filter((f) => imgExt.test(f)).sort();
+  const epochImageByKey = new Map(
+    allEpochFiles.map((file) => [file.replace(imgExt, ""), file]),
+  );
 
   // Group epochs by era_name (use era as fallback key)
   const eraGroups: { name: string | null; year: string | null; epochs: Epoch[] }[] = [];
@@ -392,7 +395,8 @@ export default async function AncientsDevPage() {
                   epoch.unlocks_potions.length > 0;
 
                 const epochImgKey = epoch.id.toLowerCase();
-                const hasEpochImage = epochImageFiles.has(epochImgKey);
+                const epochImageFile = epochImageByKey.get(epochImgKey);
+                const hasEpochImage = Boolean(epochImageFile);
 
                 return (
                   <div key={epoch.id} className="relative mb-8">
@@ -407,7 +411,7 @@ export default async function AncientsDevPage() {
                           <div className="flex-shrink-0">
                             <div className="relative h-[200px] w-[200px] overflow-hidden rounded-lg border border-zinc-700/50">
                               <Image
-                                src={`/images/sts2/epochs/${epochImgKey}.png`}
+                                src={`/images/sts2/epochs/${epochImageFile}`}
                                 alt={epoch.title}
                                 fill
                                 unoptimized

@@ -81,6 +81,25 @@ const PATCH_ENTITY_ALIASES_EN: Record<string, string[]> = {
   ASSASSIN_RUBY_RAIDER: ["Ruby Raider Assassin"],
 };
 
+interface PatchEpoch {
+  id: string;
+  title: string;
+}
+
+const PATCH_EPOCH_LABEL_OVERRIDES: Record<string, {
+  nameKo: string;
+  nameEn: string;
+  aliasesKo?: string[];
+  aliasesEn?: string[];
+}> = {
+  REGENT5_EPOCH: {
+    nameKo: "우정",
+    nameEn: "Friendship",
+    aliasesKo: ["친구"],
+    aliasesEn: ["Friends"],
+  },
+};
+
 const CHARACTER_HEADING_COLORS = {
   IRONCLAD: "red",
   SILENT: "green",
@@ -398,7 +417,8 @@ export default async function PatchDetailPage({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, gameUi, gameKeywordLabels, gameHeadingLabels] = await Promise.all([
+  const epochsDir = path.join(process.cwd(), "public/images/sts2/epochs");
+  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, korEpochData, engEpochData, epochImageFiles, gameUi, gameKeywordLabels, gameHeadingLabels] = await Promise.all([
     getSTS2Patches(),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -409,6 +429,12 @@ export default async function PatchDetailPage({
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
     getCodexAncients({ gameLocale }),
+    fs.readFile(path.join(process.cwd(), "data/sts2/kor/epochs.json"), "utf-8").then((raw) => JSON.parse(raw) as PatchEpoch[]),
+    fs.readFile(path.join(process.cwd(), "data/sts2/eng/epochs.json"), "utf-8").then((raw) => JSON.parse(raw) as PatchEpoch[]),
+    fs.readdir(epochsDir).then(
+      (files) => new Set(files.filter((file) => file.endsWith(".webp")).map((file) => file.replace(".webp", ""))),
+      () => new Set<string>(),
+    ),
     getCodexGameUiLabels(gameLocale),
     getPatchGameKeywordLabels(gameLocale),
     getPatchGameHeadingLabels(gameLocale),
@@ -440,6 +466,7 @@ export default async function PatchDetailPage({
       else ancientOwnersByRelicId.set(relicId, [ancient]);
     }
   }
+  const engEpochById = new Map(engEpochData.map((epoch) => [epoch.id, epoch]));
 
   // Build entity info for the renderer (cards + relics + potions)
   const entities: EntityInfo[] = [
@@ -544,6 +571,21 @@ export default async function PatchDetailPage({
       type: "ancient" as const,
       ancientData: a,
     })),
+    ...korEpochData.map((e) => {
+      const idLower = e.id.toLowerCase();
+      const override = PATCH_EPOCH_LABEL_OVERRIDES[e.id];
+      return {
+        id: e.id,
+        nameEn: override?.nameEn ?? engEpochById.get(e.id)?.title ?? e.title,
+        nameKo: override?.nameKo ?? e.title,
+        aliasesEn: override?.aliasesEn,
+        aliasesKo: override?.aliasesKo,
+        imageUrl: epochImageFiles.has(idLower) ? `/images/sts2/epochs/${idLower}.webp` : null,
+        href: null,
+        color: "epoch",
+        type: "epoch" as const,
+      };
+    }),
   ];
 
   const title = serviceLocale === "ko" ? patch.titleKo : patch.title;

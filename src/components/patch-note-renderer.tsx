@@ -20,7 +20,7 @@ import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
 
 // Entity types that can appear in patch notes
-export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "event" | "monster" | "encounter" | "ancient";
+export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "event" | "monster" | "encounter" | "ancient" | "epoch";
 
 export interface EntityInfo {
   id: string;
@@ -29,6 +29,7 @@ export interface EntityInfo {
   aliasesEn?: string[];
   aliasesKo?: string[];
   imageUrl: string | null;
+  href?: string | null;
   color: string; // card color or pool
   type: EntityType;
   cardData?: CodexCard; // Full card data for rich preview
@@ -116,7 +117,7 @@ export function EntityPreview({
     setShow(true);
   }, [entity.cardData, entity.relicData, entity.potionData, entity.powerData, entity.enchantmentData, entity.eventData, entity.eventOptionDesc, entity.encounterData, entity.ancientData]);
 
-  const hrefMap: Record<EntityType, string> = {
+  const hrefMap: Partial<Record<EntityType, string>> = {
     card: `/codex/cards?card=${entity.id.toLowerCase()}`,
     relic: `/codex/relics?relic=${entity.id.toLowerCase()}`,
     potion: `/codex/potions?potion=${entity.id.toLowerCase()}`,
@@ -127,12 +128,13 @@ export function EntityPreview({
     encounter: `/codex/encounters?encounter=${entity.id.toLowerCase()}`,
     ancient: `/codex/ancients/${entity.id.toLowerCase()}`,
   };
-  const href = serviceLocale && gameLocale
-    ? localizeHrefWithGameLocale(hrefMap[entity.type], serviceLocale, gameLocale)
-    : hrefMap[entity.type];
+  const hrefBase = entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
+  const href = hrefBase && serviceLocale && gameLocale
+    ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
+    : hrefBase;
   const linkText = preferEntityLocaleLabel ? entity.nameKo : children;
 
-  const openTapPreview = useCallback((event: React.MouseEvent<HTMLAnchorElement>) => {
+  const openTapPreview = useCallback((event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
     if (!useTapPreview) return;
     event.preventDefault();
     const rect = event.currentTarget.getBoundingClientRect();
@@ -167,22 +169,24 @@ export function EntityPreview({
   const renderTooltip = (content: ReactNode, variant: "card" | "box" = "box") => (
     <span className={tooltipPos} style={useTapPreview ? tapPreviewStyle : undefined}>
       {useTapPreview ? (
-        <Link
-          href={href}
-          aria-label={`${entity.nameKo} 페이지로 이동`}
-          data-pressed={previewPressed}
-          onPointerDown={() => setPreviewPressed(true)}
-          onPointerLeave={() => setPreviewPressed(false)}
-          onPointerCancel={() => setPreviewPressed(false)}
-          onPointerUp={() => setPreviewPressed(false)}
-          className={
-            variant === "card"
-              ? "block cursor-pointer outline-none transition-[transform,filter] duration-100 focus-visible:brightness-125 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125"
-              : "block cursor-pointer rounded-lg outline-none ring-1 ring-yellow-400/20 shadow-[0_0_0_1px_rgba(250,204,21,0.14)] transition-[transform,filter,box-shadow] duration-100 focus-visible:ring-2 focus-visible:ring-yellow-400/70 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125 data-[pressed=true]:ring-yellow-300/70 data-[pressed=true]:shadow-[0_0_0_2px_rgba(250,204,21,0.55),0_18px_45px_rgba(0,0,0,0.45)]"
-          }
-        >
-          {content}
-        </Link>
+        href ? (
+          <Link
+            href={href}
+            aria-label={`${entity.nameKo} 페이지로 이동`}
+            data-pressed={previewPressed}
+            onPointerDown={() => setPreviewPressed(true)}
+            onPointerLeave={() => setPreviewPressed(false)}
+            onPointerCancel={() => setPreviewPressed(false)}
+            onPointerUp={() => setPreviewPressed(false)}
+            className={
+              variant === "card"
+                ? "block cursor-pointer outline-none transition-[transform,filter] duration-100 focus-visible:brightness-125 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125"
+                : "block cursor-pointer rounded-lg outline-none ring-1 ring-yellow-400/20 shadow-[0_0_0_1px_rgba(250,204,21,0.14)] transition-[transform,filter,box-shadow] duration-100 focus-visible:ring-2 focus-visible:ring-yellow-400/70 data-[pressed=true]:scale-[0.97] data-[pressed=true]:brightness-125 data-[pressed=true]:ring-yellow-300/70 data-[pressed=true]:shadow-[0_0_0_2px_rgba(250,204,21,0.55),0_18px_45px_rgba(0,0,0,0.45)]"
+            }
+          >
+            {content}
+          </Link>
+        ) : content
       ) : content}
     </span>
   );
@@ -198,7 +202,7 @@ export function EntityPreview({
         if (!useTapPreview) setShow(false);
       }}
     >
-      {!forceShow && (
+      {!forceShow && href && (
         <Link
           href={href}
           className={linkClassName ?? DEFAULT_ENTITY_LINK_CLASS}
@@ -207,6 +211,22 @@ export function EntityPreview({
         >
           {linkText}
         </Link>
+      )}
+      {!forceShow && !href && (
+        <span
+          role="button"
+          tabIndex={0}
+          className={linkClassName ?? DEFAULT_ENTITY_LINK_CLASS}
+          onClick={openTapPreview}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              openTapPreview(event);
+            }
+          }}
+          aria-expanded={useTapPreview ? show : undefined}
+        >
+          {linkText}
+        </span>
       )}
       {visible && useTapPreview && (
         <button
@@ -540,9 +560,9 @@ export function EntityPreview({
             <Image
               src={entity.imageUrl}
               alt={entity.nameKo}
-              width={200}
-              height={200}
-              className="block"
+              width={280}
+              height={173}
+              className="block h-auto max-w-[280px]"
               unoptimized
             />
             <span className="block px-2 py-1 text-center">
