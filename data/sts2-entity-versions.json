@@ -1314,7 +1314,7 @@
       },
       {
         "field": "descriptionRaw",
-        "before": "[gold]군주의 칼날[/gold]이 이제\n1번 추가로 적중합니다.",
+        "before": "[gold]군주의 칼날[/gold]이 이제 {SwordSagePower:diff()}번 추가로 적중합니다.",
         "after": "[gold]군주의 칼날[/gold]이\n[gold]재사용[/gold]을 {SwordSagePower:diff()} 얻습니다."
       },
       {
