@@ -90,7 +90,7 @@ export function useComments(storyId: string, userId: string | null): UseComments
           : await tryInsert(true);
       } catch {
         setUnavailable(true);
-        return;
+        throw new Error("Comment storage unavailable");
       }
 
       const shouldRetryWithoutRichColumn = !!result.error
@@ -103,7 +103,7 @@ export function useComments(storyId: string, userId: string | null): UseComments
           result = await tryInsert(false);
         } catch {
           setUnavailable(true);
-          return;
+          throw new Error("Comment storage unavailable");
         }
       } else if (!result.error && richCommentColumnSupported === null) {
         richCommentColumnSupported = true;
@@ -111,7 +111,7 @@ export function useComments(storyId: string, userId: string | null): UseComments
 
       if (result.error) {
         setUnavailable(true);
-        return;
+        throw new Error(result.error.message);
       }
 
       if (result.data) {

@@ -628,6 +628,8 @@ export function RichContentEditor({
       editor.commands.clearContent();
       setCharCount(0);
       clearDraft(draftKey);
+    } catch {
+      // Keep the draft intact when the backing store is unavailable.
     } finally {
       setSubmitting(false);
     }

@@ -215,8 +215,11 @@ export function CommentSection({
 
     setSubmitting(true);
     setNicknameStorage(nick);
-    await add(nick, trimmed, blocks);
-    setSubmitting(false);
+    try {
+      await add(nick, trimmed, blocks);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

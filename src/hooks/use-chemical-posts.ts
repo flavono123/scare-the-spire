@@ -110,7 +110,7 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
 
       if (error) {
         setUnavailable(true);
-        return;
+        throw new Error(error.message);
       }
 
       if (data) {
