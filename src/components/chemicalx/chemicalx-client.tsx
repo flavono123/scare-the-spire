@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useChemicalPosts } from "@/hooks/use-chemical-posts";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
+import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { ChemicalXEditor } from "./chemicalx-editor";
 import { PostCard } from "./post-card";
 import { buildEntityMap } from "./post-renderer";
@@ -21,9 +22,10 @@ interface ChemicalXClientProps {
 export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
-  const { userId, ready } = useAuth();
-  const { posts, loading, add, remove } = useChemicalPosts(userId);
+  const { userId, ready, unavailable: authUnavailable } = useAuth();
+  const { posts, loading, unavailable, add, remove } = useChemicalPosts(userId);
   const [showAllTooltips, setShowAllTooltips] = useState(false);
+  const storageUnavailable = authUnavailable || unavailable;
 
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
 
@@ -59,12 +61,12 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
       </div>
 
       {/* Editor */}
-      {ready && (
+      {ready && userId && !storageUnavailable && (
         <ChemicalXEditor entities={entities} placeholder={placeholder} onSubmit={handleSubmit} />
       )}
 
       {/* Toolbar */}
-      {!loading && (
+      {!loading && !storageUnavailable && (
         <div className="flex items-center justify-between">
           <span className="text-xs text-gray-500">
             {copy.count.replace("{count}", String(posts.length))}
@@ -82,7 +84,12 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
       )}
 
       {/* Feed */}
-      {loading ? (
+      {storageUnavailable ? (
+        <StorageUnavailableNotice
+          title={copy.unavailableTitle}
+          message={copy.unavailableMessage}
+        />
+      ) : loading ? (
         <div className="flex flex-col items-center justify-center py-12 gap-3">
           <Image
             src="/images/sts2/powers/knockdown_power.webp"

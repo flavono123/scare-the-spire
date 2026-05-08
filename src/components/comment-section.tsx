@@ -15,6 +15,7 @@ import { useCommentLikes } from "@/hooks/use-comment-likes";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 import { EngagementSpinner } from "@/components/engagement-spinner";
+import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 
 const NICKNAME_KEY = "sts-nickname";
 const DEFAULT_COMMENT_NICKNAME_FIXTURES = new Set<string>([
@@ -183,9 +184,10 @@ export function CommentSection({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].comments;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
-  const { userId, ready } = useAuth();
+  const { userId, ready, unavailable: authUnavailable } = useAuth();
   const { entities, loading: entitiesLoading } = useCommentEntities(initialEntities);
-  const { comments, loading, add, remove } = useComments(threadKey, userId);
+  const { comments, loading, unavailable, add, remove } = useComments(threadKey, userId);
+  const storageUnavailable = authUnavailable || unavailable;
 
   const prevCount = useRef(0);
   useEffect(() => {
@@ -219,7 +221,13 @@ export function CommentSection({
 
   return (
     <div className="space-y-3">
-      {loading ? (
+      {storageUnavailable ? (
+        <StorageUnavailableNotice
+          compact
+          title={copy.unavailableTitle}
+          message={copy.unavailableMessage}
+        />
+      ) : loading ? (
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <EngagementSpinner size={14} />
           <span>{copy.loading}</span>
@@ -266,7 +274,7 @@ export function CommentSection({
         </ul>
       )}
 
-      {ready && userId && (
+      {ready && userId && !storageUnavailable && (
         <div className="space-y-2">
           <input
             type="text"
