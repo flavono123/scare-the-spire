@@ -80,6 +80,10 @@ DIRECT_MARKER_IMPORTS = {
 # Spine-rendered bosses (ceremonial_beast, queen, the_insatiable) fall back to
 # full-portrait rendering on the frontend.
 BOSS_NODE_IMPORTS = {
+    "aeonglass": {
+        "node": "images/map/placeholder/aeonglass_boss_icon.png.import",
+        "outline": "images/map/placeholder/aeonglass_boss_icon_outline.png.import",
+    },
     "doormaker": {
         "node": "images/map/placeholder/doormaker_boss_icon.png.import",
         "outline": "images/map/placeholder/doormaker_boss_icon_outline.png.import",
