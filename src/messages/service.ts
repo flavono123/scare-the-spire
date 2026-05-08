@@ -96,6 +96,7 @@ export const serviceMessages = {
         minBuild: "v{version} 미만은 비활성화됩니다.",
         emptyMine: "올린 런이 아직 없습니다. 위에서 폴더 또는 .run 파일을 드래그하세요.",
         undoConfirm: "이 런의 익명 공유를 취소합니다. URL은 더 이상 다른 기기에서 열리지 않습니다.",
+        loadingSharedRuns: "공유 런을 불러오는 중...",
         unavailableTitle: "데이터베이스가 응답하지 않습니다",
       },
       runCard: {
@@ -551,6 +552,7 @@ export const serviceMessages = {
         minBuild: "Builds below v{version} are disabled.",
         emptyMine: "No uploaded runs yet. Drag a folder or .run files above.",
         undoConfirm: "This will unshare the run. The URL will no longer open on other devices.",
+        loadingSharedRuns: "Loading shared runs...",
         unavailableTitle: "Database is not responding",
       },
       runCard: {
