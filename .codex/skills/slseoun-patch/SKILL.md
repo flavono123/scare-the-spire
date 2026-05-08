@@ -36,7 +36,30 @@ Use this when Steam has published the patch but rich notes are not ready yet.
 5. Do not add placeholder rich note markdown unless there is real content.
 6. Commit this shell separately before asset extraction or translation work.
 
-The detail page renders a stronger building state when `status: "building"` and markdown files are absent. Remove the field or set `status` to `"ready"` when the enriched notes are published.
+Index/detail behavior while `status: "building"`:
+
+- The index card is not a link to the local detail page.
+- Keep the normal type/balance chips, but render them in disabled gray.
+- The only colored action is the Steam original chip; it links to `steamUrl` and opens the real Steam source.
+- The body shows gray per-letter sine text for "작성 중" / "Building"; do not add a separate "작성 중" chip.
+- The card footer shows the date only.
+- The detail page renders a stronger building state when markdown files are absent, but should not add another Steam link while building.
+
+Remove `status` or set it to `"ready"` when the enriched notes are published.
+
+## Patch Index Preview Assets
+
+Use `featuredEntities` in `data/sts2-patches.json` to replace the gray summary body on ready patch cards with related game assets.
+
+Rules:
+
+- Treat `featuredEntities` as a priority-ordered shortlist, not an exhaustive list.
+- Keep at most 8 entries per patch; the index also caps rendering at 8.
+- Choose the most important patch subjects first: new cards/relics/potions, major reworks, balance headline items, then important monsters/events.
+- Use exact current Codex entity IDs and types. Valid types are `card`, `relic`, `potion`, `power`, `enchantment`, `event`, `monster`, `encounter`, and `ancient`.
+- Only include entities that resolve to an image in the current Codex data. If a patch keyword has no current Codex image, keep it in the rich note text but do not add it to `featuredEntities`.
+- Cards render as full card tiles; other entities render as image-only assets. Do not show labels, tooltips, links, borders, or hover scale in the index preview.
+- The current layout is a card-sized responsive slot: 4 columns on mobile, 8 on wider screens. Non-card assets can look vertically sparse or small in that slot, especially events; leave that as a UI TODO unless the task is specifically to redesign preview sizing.
 
 ## Full Rich Patch Workflow
 
