@@ -3,6 +3,20 @@ import { getChoseong } from "es-hangul";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 
+function uniqueStrings(values: Array<string | undefined>): string[] {
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const value of values) {
+    const trimmed = value?.trim();
+    if (!trimmed) continue;
+    const key = trimmed.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push(trimmed);
+  }
+  return result;
+}
+
 /**
  * Convert TipTap editor JSON to PostBlock array for storage.
  */
@@ -52,6 +66,15 @@ export function blocksToPlainText(blocks: PostBlock[]): string {
     .join("");
 }
 
+export function entityDisplayNames(entity: EntityInfo): string[] {
+  return uniqueStrings([
+    entity.nameKo,
+    entity.nameEn,
+    ...(entity.aliasesKo ?? []),
+    ...(entity.aliasesEn ?? []),
+  ]);
+}
+
 /**
  * Search entities by query string.
  * Supports: Korean name, English name, and Korean choseong (jamo) matching.
@@ -71,14 +94,14 @@ export function matchEntities(
   const includesMatches: EntityInfo[] = [];
 
   for (const e of entities) {
-    const ko = e.nameKo.toLowerCase();
-    const en = e.nameEn.toLowerCase();
+    const names = entityDisplayNames(e);
+    const lowerNames = names.map((name) => name.toLowerCase());
 
-    if (ko.startsWith(lower) || en.startsWith(lower)) {
+    if (lowerNames.some((name) => name.startsWith(lower))) {
       prefixMatches.push(e);
-    } else if (isAllJamo && getChoseong(e.nameKo).includes(query)) {
+    } else if (isAllJamo && names.some((name) => /[가-힣]/.test(name) && getChoseong(name).includes(query))) {
       choseongMatches.push(e);
-    } else if (ko.includes(lower) || en.includes(lower)) {
+    } else if (lowerNames.some((name) => name.includes(lower))) {
       includesMatches.push(e);
     }
 

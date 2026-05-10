@@ -597,6 +597,17 @@ function gameHeadingLabel(text: string, context: RenderContext): string {
   return context.gameHeadingLabels?.[labelKey(text)] ?? text;
 }
 
+const PATCH_CHANGE_TAG_RE = /\(([^)\n]*(?:\bbuff\b|\bnerf\b)[^)\n]*)\)(?=:)/gi;
+
+function withPatchChangeEffects(markdown: string): string {
+  return markdown.replace(PATCH_CHANGE_TAG_RE, (_match, inner: string) => {
+    const tagged = inner
+      .replace(/\bbuff\b/gi, (value) => `[green][sine]${value}[/sine][/green]`)
+      .replace(/\bnerf\b/gi, (value) => `[red][jitter]${value}[/jitter][/red]`);
+    return `(${tagged})`;
+  });
+}
+
 // --- Entity Lookup ---
 
 export interface EntityLookup {
@@ -1043,7 +1054,7 @@ export function PatchNoteRenderer({
     () => ({ gameUi, serviceLocale, gameLocale, preferEntityLocaleLabel, gameKeywordLabels, gameHeadingLabels }),
     [gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, preferEntityLocaleLabel, serviceLocale],
   );
-  const lines = markdown.split("\n");
+  const lines = withPatchChangeEffects(markdown).split("\n");
 
   // Group consecutive list items into <ul> containers
   const elements: ReactNode[] = [];

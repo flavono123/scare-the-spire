@@ -6,7 +6,7 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { RichContentEditor } from "@/components/rich-content-editor";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
-import { blocksToPlainText } from "@/lib/chemical-utils";
+import { blocksToPlainText, entityDisplayNames } from "@/lib/chemical-utils";
 import type { PostBlock } from "@/lib/chemical-types";
 import { useAuth } from "@/hooks/use-auth";
 import { useComments, type Comment } from "@/hooks/use-comments";
@@ -65,7 +65,7 @@ function buildLegacyInlineIndex(entities: EntityInfo[]): Map<string, LegacyInlin
   };
 
   for (const entity of entities) {
-    for (const value of [entity.nameKo, entity.nameEn]) {
+    for (const value of entityDisplayNames(entity)) {
       const trimmed = value.trim();
       if (!trimmed) continue;
       addCandidate({

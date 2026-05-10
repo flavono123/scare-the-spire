@@ -15,7 +15,7 @@ import { CustomKeyword } from "@/components/chemicalx/custom-keyword";
 import { MentionList, type MentionListRef } from "@/components/chemicalx/mention-list";
 import { EntityMapProvider } from "@/components/chemicalx/entity-context";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
-import { tiptapToBlocks, blocksToPlainText, matchEntities } from "@/lib/chemical-utils";
+import { tiptapToBlocks, blocksToPlainText, entityDisplayNames, matchEntities } from "@/lib/chemical-utils";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import type { PostBlock } from "@/lib/chemical-types";
 
@@ -245,8 +245,7 @@ export function RichContentEditor({
   const keywordEntityMap = useMemo(() => {
     const map = new Map<string, Array<{ id: string; type: EntityType }>>();
     for (const entity of entities) {
-      const candidates = [entity.nameKo, entity.nameEn].filter(Boolean) as string[];
-      for (const name of candidates) {
+      for (const name of entityDisplayNames(entity)) {
         for (const key of [normalizeKeywordKey(name), compactKeywordKey(name)]) {
           const bucket = map.get(key) ?? [];
           if (!bucket.some((c) => c.id === entity.id && c.type === entity.type)) {
@@ -279,10 +278,10 @@ export function RichContentEditor({
       if (!description) continue;
       const cleaned = cleanTooltipText(description);
       if (!cleaned) continue;
-      map.set(normalizeKeywordKey(entity.nameKo), cleaned);
-      map.set(compactKeywordKey(entity.nameKo), cleaned);
-      map.set(normalizeKeywordKey(entity.nameEn), cleaned);
-      map.set(compactKeywordKey(entity.nameEn), cleaned);
+      for (const name of entityDisplayNames(entity)) {
+        map.set(normalizeKeywordKey(name), cleaned);
+        map.set(compactKeywordKey(name), cleaned);
+      }
     }
 
     return map;
