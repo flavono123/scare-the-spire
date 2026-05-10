@@ -815,6 +815,96 @@
     "image_url": "/static/images/monsters/devoted_sculptor.png"
   },
   {
+    "id": "DOOR",
+    "name": "Door",
+    "type": "Boss",
+    "min_hp": null,
+    "max_hp": null,
+    "min_hp_ascension": null,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "DRAMATIC_OPEN",
+        "name": "Dramatic Open"
+      },
+      {
+        "id": "ENFORCE",
+        "name": "Enforce"
+      },
+      {
+        "id": "DOOR_SLAM",
+        "name": "Door Slam"
+      },
+      {
+        "id": "DEAD",
+        "name": "Dead"
+      }
+    ],
+    "damage_values": {
+      "DramaticOpen": {
+        "normal": 25,
+        "ascension": 28
+      },
+      "DoorSlam": {
+        "normal": 15,
+        "ascension": 15
+      },
+      "Enforce": {
+        "normal": 20,
+        "ascension": null
+      }
+    },
+    "block_values": null,
+    "image_url": "/static/images/monsters/door.png",
+    "deprecated": true,
+    "deprecatedInPatch": "v0.105.0"
+  },
+  {
+    "id": "DOORMAKER",
+    "name": "Doormaker",
+    "type": "Boss",
+    "min_hp": 489,
+    "max_hp": null,
+    "min_hp_ascension": 512,
+    "max_hp_ascension": null,
+    "moves": [
+      {
+        "id": "DRAMATIC_OPEN",
+        "name": "Dramatic Open"
+      },
+      {
+        "id": "HUNGER",
+        "name": "Hunger"
+      },
+      {
+        "id": "SCRUTINY",
+        "name": "Scrutiny"
+      },
+      {
+        "id": "GRASP",
+        "name": "Grasp"
+      }
+    ],
+    "damage_values": {
+      "Hunger": {
+        "normal": 30,
+        "ascension": 35
+      },
+      "Scrutiny": {
+        "normal": 24,
+        "ascension": 26
+      },
+      "Grasp": {
+        "normal": 10,
+        "ascension": 11
+      }
+    },
+    "block_values": null,
+    "image_url": "/static/images/monsters/doormaker.png",
+    "deprecated": true,
+    "deprecatedInPatch": "v0.105.0"
+  },
+  {
     "id": "ENTOMANCER",
     "name": "Entomancer",
     "type": "Elite",
