@@ -9,9 +9,7 @@ export const revalidate = 0;
 
 const ROW_LIMIT = 50;
 const STATS_SAMPLE_LIMIT = 1000;
-const ADMIN_DATA_ENVS = ["all", "production", "development"] as const;
-
-type AdminDataEnv = (typeof ADMIN_DATA_ENVS)[number];
+const ADMIN_DATA_ENV = "production";
 
 interface CommentRow {
   id: string;
@@ -129,37 +127,15 @@ function isMissingSchemaItem(error: string | undefined, name: string): boolean {
   return !!error && error.toLowerCase().includes(name.toLowerCase());
 }
 
-function adminDataEnvFromSearchParams(
-  searchParams: Record<string, string | string[] | undefined>,
-): AdminDataEnv {
-  const raw = searchParams.dataEnv ?? searchParams.env;
-  const value = Array.isArray(raw) ? raw[0] : raw;
-  return ADMIN_DATA_ENVS.includes(value as AdminDataEnv) ? value as AdminDataEnv : "all";
-}
-
-function dataEnvHref(dataEnv: AdminDataEnv): string {
-  return dataEnv === "all" ? "/dev/admin" : `/dev/admin?dataEnv=${dataEnv}`;
-}
-
-function dataEnvLabel(dataEnv: AdminDataEnv): string {
-  if (dataEnv === "all") return "all env";
-  return dataEnv;
-}
-
-async function readComments(dataEnv: AdminDataEnv): Promise<QueryState<CommentRow[]>> {
-  let richQuery = supabase
-    .from("comments")
-    .select("id, story_id, user_id, nickname, content, content_blocks, env, created_at", { count: "exact" })
-    .order("created_at", { ascending: false })
-    .limit(ROW_LIMIT);
-
-  if (dataEnv !== "all") {
-    richQuery = richQuery.eq("env", dataEnv);
-  }
-
+async function readComments(): Promise<QueryState<CommentRow[]>> {
   const richResult = await readSupabase<CommentRow[]>(
     "admin.comments",
-    richQuery,
+    supabase
+      .from("comments")
+      .select("id, story_id, user_id, nickname, content, content_blocks, env, created_at", { count: "exact" })
+      .eq("env", ADMIN_DATA_ENV)
+      .order("created_at", { ascending: false })
+      .limit(ROW_LIMIT),
     [],
   );
 
@@ -167,19 +143,14 @@ async function readComments(dataEnv: AdminDataEnv): Promise<QueryState<CommentRo
     return richResult;
   }
 
-  let legacyQuery = supabase
-    .from("comments")
-    .select("id, story_id, user_id, nickname, content, env, created_at", { count: "exact" })
-    .order("created_at", { ascending: false })
-    .limit(ROW_LIMIT);
-
-  if (dataEnv !== "all") {
-    legacyQuery = legacyQuery.eq("env", dataEnv);
-  }
-
   const legacyResult = await readSupabase<Omit<CommentRow, "content_blocks">[]>(
     "admin.comments.legacy",
-    legacyQuery,
+    supabase
+      .from("comments")
+      .select("id, story_id, user_id, nickname, content, env, created_at", { count: "exact" })
+      .eq("env", ADMIN_DATA_ENV)
+      .order("created_at", { ascending: false })
+      .limit(ROW_LIMIT),
     [],
   );
 
@@ -212,70 +183,8 @@ async function readCommentLikes(): Promise<QueryState<CommentLikeRow[]>> {
   };
 }
 
-async function readEngagementCounts(
-  dataEnv: AdminDataEnv,
-  likes: QueryState<LikeRow[]>,
-): Promise<QueryState<EngagementCountRow[]>> {
-  if (dataEnv !== "all") {
-    return readSupabase<EngagementCountRow[]>(
-      "admin.engagement_counts",
-      supabase.rpc("get_engagement_counts", { p_env: dataEnv }),
-      [],
-    );
-  }
-
-  const commentStories = await readSupabase<{ story_id: string }[]>(
-    "admin.comments.counts",
-    supabase.from("comments").select("story_id").limit(STATS_SAMPLE_LIMIT),
-    [],
-  );
-  const counts = new Map<string, { like_count: number; comment_count: number }>();
-
-  for (const row of likes.data) {
-    const current = counts.get(row.story_id) ?? { like_count: 0, comment_count: 0 };
-    current.like_count += 1;
-    counts.set(row.story_id, current);
-  }
-
-  for (const row of commentStories.data) {
-    const current = counts.get(row.story_id) ?? { like_count: 0, comment_count: 0 };
-    current.comment_count += 1;
-    counts.set(row.story_id, current);
-  }
-
-  return {
-    data: Array.from(counts, ([story_id, count]) => ({ story_id, ...count })),
-    error: commentStories.error,
-    note: commentStories.error ? undefined : `all env는 최근 ${STATS_SAMPLE_LIMIT.toLocaleString("ko-KR")}개 샘플 집계입니다.`,
-  };
-}
-
-async function loadAdminSnapshot(dataEnv: AdminDataEnv): Promise<AdminSnapshot | null> {
+async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
   if (!supabaseEnabled) return null;
-
-  let chemicalPostsQuery = supabase
-    .from("chemical_posts")
-    .select("id, user_id, nickname, content, content_text, env, created_at", { count: "exact" })
-    .order("created_at", { ascending: false })
-    .limit(ROW_LIMIT);
-
-  let runsQuery = supabase
-    .from("runs")
-    .select("id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, env, created_at", { count: "exact" })
-    .order("created_at", { ascending: false })
-    .limit(ROW_LIMIT);
-
-  let likesQuery = supabase
-    .from("likes")
-    .select("story_id, user_id, env, created_at", { count: "exact" })
-    .order("created_at", { ascending: false })
-    .limit(STATS_SAMPLE_LIMIT);
-
-  if (dataEnv !== "all") {
-    chemicalPostsQuery = chemicalPostsQuery.eq("env", dataEnv);
-    runsQuery = runsQuery.eq("env", dataEnv);
-    likesQuery = likesQuery.eq("env", dataEnv);
-  }
 
   const [
     comments,
@@ -283,26 +192,46 @@ async function loadAdminSnapshot(dataEnv: AdminDataEnv): Promise<AdminSnapshot |
     runs,
     likes,
     commentLikes,
+    engagementCounts,
   ] = await Promise.all([
-    readComments(dataEnv),
+    readComments(),
     readSupabase<ChemicalPostRow[]>(
       "admin.chemical_posts",
-      chemicalPostsQuery,
+      supabase
+        .from("chemical_posts")
+        .select("id, user_id, nickname, content, content_text, env, created_at", { count: "exact" })
+        .eq("env", ADMIN_DATA_ENV)
+        .order("created_at", { ascending: false })
+        .limit(ROW_LIMIT),
       [],
     ),
     readSupabase<RunRow[]>(
       "admin.runs",
-      runsQuery,
+      supabase
+        .from("runs")
+        .select("id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, env, created_at", { count: "exact" })
+        .eq("env", ADMIN_DATA_ENV)
+        .order("created_at", { ascending: false })
+        .limit(ROW_LIMIT),
       [],
     ),
     readSupabase<LikeRow[]>(
       "admin.likes",
-      likesQuery,
+      supabase
+        .from("likes")
+        .select("story_id, user_id, env, created_at", { count: "exact" })
+        .eq("env", ADMIN_DATA_ENV)
+        .order("created_at", { ascending: false })
+        .limit(STATS_SAMPLE_LIMIT),
       [],
     ),
     readCommentLikes(),
+    readSupabase<EngagementCountRow[]>(
+      "admin.engagement_counts",
+      supabase.rpc("get_engagement_counts", { p_env: ADMIN_DATA_ENV }),
+      [],
+    ),
   ]);
-  const engagementCounts = await readEngagementCounts(dataEnv, likes);
 
   return {
     comments,
@@ -445,17 +374,12 @@ export const metadata = {
   description: "개발 전용 Supabase 컨텐츠 확인 페이지",
 };
 
-export default async function SupabaseAdminPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
+export default async function SupabaseAdminPage() {
   if (process.env.NODE_ENV === "production") {
     notFound();
   }
 
-  const dataEnv = adminDataEnvFromSearchParams(await searchParams);
-  const snapshot = await loadAdminSnapshot(dataEnv);
+  const snapshot = await loadAdminSnapshot();
   const topStories = topLikedStories(snapshot?.engagementCounts.data ?? []);
   const uniqueLikeUsers = new Set(snapshot?.likes.data.map((row) => row.user_id) ?? []).size;
   const uniqueCommentLikeUsers = new Set(snapshot?.commentLikes.data.map((row) => row.user_id) ?? []).size;
@@ -470,26 +394,10 @@ export default async function SupabaseAdminPage({
           </div>
           <div className="text-right text-xs text-muted-foreground">
             <div>configured env: <code className="text-yellow-300">{supabaseEnv}</code></div>
-            <div>data: <code className="text-yellow-300">{dataEnvLabel(dataEnv)}</code></div>
+            <div>data: <code className="text-yellow-300">{ADMIN_DATA_ENV}</code></div>
             <div>limit: latest {ROW_LIMIT}</div>
           </div>
         </div>
-        <nav className="mt-3 flex flex-wrap gap-2 text-xs">
-          {ADMIN_DATA_ENVS.map((env) => (
-            <Link
-              key={env}
-              href={dataEnvHref(env)}
-              prefetch={false}
-              className={`rounded-md border px-2.5 py-1 transition-colors ${
-                dataEnv === env
-                  ? "border-yellow-400/60 bg-yellow-400/15 text-yellow-200"
-                  : "border-border bg-background/50 text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {dataEnvLabel(env)}
-            </Link>
-          ))}
-        </nav>
       </div>
 
       {!snapshot ? (
