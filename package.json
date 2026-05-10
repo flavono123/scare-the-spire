@@ -7,7 +7,7 @@
     "dev": "next dev",
     "dev:mobile": "node scripts/mobile-qa.mjs",
     "qa:mobile": "node scripts/mobile-qa.mjs",
-    "build": "next build",
+    "build": "next build && tsx scripts/prune-dev-route-traces.ts",
     "start": "next start",
     "lint": "eslint",
     "test:visual": "playwright test scripts/visual-check.spec.ts",
