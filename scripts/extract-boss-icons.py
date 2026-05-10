@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """Extract boss map-token icons from the local STS2 PCK.
 
-Source: `images/ui/run_history/{slug}_boss.png` (BC7/BPTC-compressed),
-with explicit map-placeholder overrides for bosses whose run-history icon is
-not the codex-facing token.
+Source: `images/ui/run_history/{slug}_boss.png` (BC7/BPTC-compressed).
 Output: `public/images/sts2/bosses/{slug}_boss.webp` (what the codex
 encounters page loads).
 
@@ -24,11 +22,6 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "public/images/sts2/bosses"
 SRC_PREFIX = "images/ui/run_history/"
 SRC_SUFFIX = "_boss.png.import"
-
-SOURCE_OVERRIDES = {
-    "aeonglass_boss": "images/map/placeholder/aeonglass_boss_icon.png.import",
-}
-
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Extract boss icons from STS2 PCK.")
@@ -62,8 +55,7 @@ def main() -> int:
         if out_path.exists() and not args.force:
             skipped += 1
             continue
-        source_path = SOURCE_OVERRIDES.get(slug, import_path)
-        raw_import = reader.read_file(source_path)
+        raw_import = reader.read_file(import_path)
         ctex_path = parse_import_file(raw_import)
         if not ctex_path or ctex_path not in reader.entries:
             print(f"  ! {slug}: missing .ctex path")
