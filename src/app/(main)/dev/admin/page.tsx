@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { PostBlock } from "@/lib/chemical-types";
-import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
+import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
 export const dynamic = "force-dynamic";
@@ -393,7 +393,6 @@ export default async function SupabaseAdminPage() {
             <h1 className="mt-1 text-2xl font-bold">Supabase Admin</h1>
           </div>
           <div className="text-right text-xs text-muted-foreground">
-            <div>configured env: <code className="text-yellow-300">{supabaseEnv}</code></div>
             <div>data: <code className="text-yellow-300">{ADMIN_DATA_ENV}</code></div>
             <div>limit: latest {ROW_LIMIT}</div>
           </div>
