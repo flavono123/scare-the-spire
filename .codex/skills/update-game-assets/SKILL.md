@@ -27,7 +27,8 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
 3. Refresh extracted assets and parsed structural data:
    ```bash
    python3 scripts/extract-card-portraits.py --force
-   python3 scripts/extract-map-assets.py --force
+   env PYTHONPATH=. python3.12 scripts/extract-map-assets.py --force
+   env PYTHONPATH=. python3.12 scripts/extract-boss-icons.py --force
    python3 scripts/parse-enchantments.py
    python3 scripts/parse-monsters.py
    python3 scripts/parse-encounters.py
