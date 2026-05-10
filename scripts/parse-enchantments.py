@@ -53,6 +53,7 @@ def parse_flags(cs_path: Path) -> dict:
         "has_extra_card_text": bool(re.search(r"HasExtraCardText\s*=>\s*true", text)),
         "is_stackable": bool(re.search(r"IsStackable\s*=>\s*true", text)),
         "card_type": None,
+        "vars": parse_vars(text),
     }
     m = re.search(
         r"CanEnchantCardType\([^)]*\)\s*\{\s*return\s*cardType\s*==\s*CardType\.(\w+)\s*;",
@@ -61,6 +62,37 @@ def parse_flags(cs_path: Path) -> dict:
     )
     if m:
         out["card_type"] = m.group(1)
+    return out
+
+
+def _parse_decimal(raw: str) -> int | float:
+    value = float(raw.rstrip("mM"))
+    if value.is_integer():
+        return int(value)
+    return value
+
+
+def parse_vars(text: str) -> dict[str, int | float]:
+    if "base.Amount" in text:
+        return {}
+
+    out: dict[str, int | float] = {}
+    for m in re.finditer(
+        r"new\s+(DamageVar|BlockVar|IntVar|DynamicVar)\((?:\"([A-Za-z0-9_]+)\",\s*)?(-?\d+(?:\.\d+)?m?)",
+        text,
+    ):
+        ctor, explicit_name, raw_value = m.groups()
+        name = explicit_name or ctor.removesuffix("Var")
+        value = _parse_decimal(raw_value)
+        if value != 0:
+            out[name] = value
+
+    for m in re.finditer(r"new\s+PowerVar<([A-Za-z0-9_]+)>\((-?\d+(?:\.\d+)?m?)", text):
+        name, raw_value = m.groups()
+        value = _parse_decimal(raw_value)
+        if value != 0:
+            out[name] = value
+
     return out
 
 
@@ -75,8 +107,16 @@ def image_url_for(ent_id: str) -> str | None:
 _CHOOSE_RE = re.compile(r"^\w+:choose\([^)]*\):(.*)$")
 
 
-def _repl_placeholder(m: re.Match) -> str:
+def _format_var(value: int | float) -> str:
+    return str(value)
+
+
+def _repl_placeholder(m: re.Match, vars: dict[str, int | float] | None = None) -> str:
     body = m.group(0)[1:-1]
+    key = body.split(":", 1)[0]
+    if vars and key in vars:
+        return _format_var(vars[key])
+
     cm = _CHOOSE_RE.match(body)
     if cm:
         branches = cm.group(1).split("|")
@@ -84,11 +124,11 @@ def _repl_placeholder(m: re.Match) -> str:
     return "X"
 
 
-def strip_dynamic_vars(text: str | None) -> str | None:
+def strip_dynamic_vars(text: str | None, vars: dict[str, int | float] | None = None) -> str | None:
     """Collapse SmartFormat placeholders: {var}/{var:fmt()} → X, {var:choose():a|b} → default branch."""
     if text is None:
         return None
-    return re.sub(r"\{[^{}]+\}", _repl_placeholder, text)
+    return re.sub(r"\{[^{}]+\}", lambda m: _repl_placeholder(m, vars), text)
 
 
 def build_entries(
@@ -109,6 +149,7 @@ def build_entries(
             "has_extra_card_text": False,
             "is_stackable": False,
             "card_type": None,
+            "vars": {},
         }
 
         for lang, loc, old_by_id, out in (
@@ -121,16 +162,19 @@ def build_entries(
             extra_raw = lnode.get("extraCardText") if flags["has_extra_card_text"] else None
 
             old = old_by_id.get(ent_id, {})
-            out.append({
+            entry = {
                 "id": ent_id,
                 "name": title or old.get("name"),
-                "description": strip_dynamic_vars(desc_raw),
+                "description": strip_dynamic_vars(desc_raw, flags["vars"]),
                 "description_raw": desc_raw,
-                "extra_card_text": strip_dynamic_vars(extra_raw),
+                "extra_card_text": strip_dynamic_vars(extra_raw, flags["vars"]),
                 "card_type": flags["card_type"],
                 "is_stackable": flags["is_stackable"],
                 "image_url": image_url_for(ent_id) or old.get("image_url"),
-            })
+            }
+            if flags["vars"]:
+                entry["vars"] = flags["vars"]
+            out.append(entry)
 
         if ent_id not in old_kor_by_id:
             added.append(ent_id)
