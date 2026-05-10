@@ -29,12 +29,7 @@ function isProductionBlockedDevRoute(pathname: string): boolean {
   if (process.env.NODE_ENV !== "production") return false;
 
   const unprefixedPath = stripServiceLocaleFromPath(pathname);
-  return (
-    unprefixedPath === "/dev/admin"
-    || unprefixedPath.startsWith("/dev/admin/")
-    || unprefixedPath === "/dev/og-images"
-    || unprefixedPath.startsWith("/dev/og-images/")
-  );
+  return unprefixedPath === "/dev" || unprefixedPath.startsWith("/dev/");
 }
 
 function localeUrl(
