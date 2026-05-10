@@ -37,7 +37,10 @@
     "extra_card_text": null,
     "card_type": null,
     "is_stackable": false,
-    "image_url": "/images/sts2/enchantments/glam.webp"
+    "image_url": "/images/sts2/enchantments/glam.webp",
+    "vars": {
+      "Times": 1
+    }
   },
   {
     "id": "GOOPY",
@@ -62,12 +65,16 @@
   {
     "id": "INKY",
     "name": "잉크투성이",
-    "description": "이 카드의 피해량이 [blue]X[/blue] 증가하고, [gold]약화[/gold] 를 [blue]X[/blue] 부여합니다.",
+    "description": "이 카드의 피해량이 [blue]1[/blue] 증가하고, [gold]약화[/gold] 를 [blue]1[/blue] 부여합니다.",
     "description_raw": "이 카드의 피해량이 [blue]{Damage}[/blue] 증가하고, [gold]약화[/gold] 를 [blue]{WeakPower}[/blue] 부여합니다.",
-    "extra_card_text": "[gold]약화[/gold]를 [blue]X[/blue] 부여합니다.",
+    "extra_card_text": "[gold]약화[/gold]를 [blue]1[/blue] 부여합니다.",
     "card_type": null,
     "is_stackable": false,
-    "image_url": "/images/sts2/enchantments/inky.webp"
+    "image_url": "/images/sts2/enchantments/inky.webp",
+    "vars": {
+      "Damage": 1,
+      "WeakPower": 1
+    }
   },
   {
     "id": "INSTINCT",
@@ -177,7 +184,10 @@
     "extra_card_text": null,
     "card_type": null,
     "is_stackable": false,
-    "image_url": "/images/sts2/enchantments/spiral.webp"
+    "image_url": "/images/sts2/enchantments/spiral.webp",
+    "vars": {
+      "Times": 1
+    }
   },
   {
     "id": "STEADY",
@@ -202,12 +212,15 @@
   {
     "id": "TEZCATARAS_EMBER",
     "name": "테즈카타라의 잉걸불",
-    "description": "비용이 [blue]0[/blue]이 되고, 피해량이 [blue]X[/blue] 증가하고, [gold]영구[/gold]를 얻습니다.",
+    "description": "비용이 [blue]0[/blue]이 되고, 피해량이 [blue]3[/blue] 증가하고, [gold]영구[/gold]를 얻습니다.",
     "description_raw": "비용이 [blue]0[/blue]이 되고, 피해량이 [blue]{Damage}[/blue] 증가하고, [gold]영구[/gold]를 얻습니다.",
     "extra_card_text": null,
     "card_type": null,
     "is_stackable": false,
-    "image_url": "/images/sts2/enchantments/tezcataras_ember.webp"
+    "image_url": "/images/sts2/enchantments/tezcataras_ember.webp",
+    "vars": {
+      "Damage": 3
+    }
   },
   {
     "id": "VIGOROUS",
