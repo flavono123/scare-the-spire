@@ -479,7 +479,7 @@ export const serviceMessages = {
       editorLoading: "Preparing comment editor...",
       placeholder: "Write a comment",
       submit: "Post",
-      unavailableTitle: "Database is not responding",
+      unavailableTitle: "No responses from database",
     },
     chemicalX: {
       title: "Chemical X",
@@ -509,7 +509,7 @@ export const serviceMessages = {
       copied: "Copied!",
       collapse: "Collapse",
       expand: "Expand",
-      unavailableTitle: "Database is not responding",
+      unavailableTitle: "No responses from database",
     },
     historyCourse: {
       description:
@@ -553,7 +553,7 @@ export const serviceMessages = {
         emptyMine: "No uploaded runs yet. Drag a folder or .run files above.",
         undoConfirm: "This will unshare the run. The URL will no longer open on other devices.",
         loadingSharedRuns: "Loading shared runs...",
-        unavailableTitle: "Database is not responding",
+        unavailableTitle: "No responses from database",
       },
       runCard: {
         unsupportedTitle: "Unsupported build — click to remove it from the list",
