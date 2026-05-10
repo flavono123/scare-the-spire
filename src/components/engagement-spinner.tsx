@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "@/components/ui/static-image";
+import { useServiceLocale } from "@/hooks/use-service-locale";
+import { serviceMessages } from "@/messages/service";
 
 export function EngagementSpinner({ size = 16 }: { size?: number }) {
   return (
@@ -13,11 +17,14 @@ export function EngagementSpinner({ size = 16 }: { size?: number }) {
 }
 
 export function EngagementUnavailableIcon({ size = 16 }: { size?: number }) {
+  const serviceLocale = useServiceLocale();
+  const label = serviceMessages[serviceLocale].comments.unavailableTitle;
+
   return (
     <span
       className="engagement-unavailable-icon"
       tabIndex={0}
-      aria-label="데이터베이스가 응답하지 않습니다"
+      aria-label={label}
     >
       <Image
         src="/images/sts2/powers/battleworn_dummy_time_limit_power.webp"
@@ -28,7 +35,7 @@ export function EngagementUnavailableIcon({ size = 16 }: { size?: number }) {
         className="engagement-unavailable-icon__image object-contain"
       />
       <span className="engagement-unavailable-icon__tooltip">
-        데이터베이스가 응답하지 않습니다
+        {label}
       </span>
     </span>
   );
