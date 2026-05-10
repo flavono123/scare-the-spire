@@ -309,23 +309,6 @@
     "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 산산조각이 났습니다."
   },
   {
-    "id": "DOORMAKER_BOSS",
-    "name": "문을 만드는 자",
-    "room_type": "Boss",
-    "is_weak": false,
-    "act": "Act 3 - Glory",
-    "tags": null,
-    "monsters": [
-      {
-        "id": "DOORMAKER",
-        "name": "문을 만드는 자"
-      }
-    ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}의 방해를 받아들이지 않았습니다.",
-    "deprecated": true,
-    "deprecatedInPatch": "v0.105.0"
-  },
-  {
     "id": "ENTOMANCER_ELITE",
     "name": "곤충술사",
     "room_type": "Elite",
