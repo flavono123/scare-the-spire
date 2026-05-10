@@ -28,7 +28,7 @@ from lib.pck import PCKReader, default_pck_path, group_loc_by_id  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data/sts2"
 DEFAULT_SOURCE = Path("/tmp/sts2-src")
-SKIP_PREFIXES = ("DEPRECATED_", "MOCK_", "ATTACK_MOVE_MONSTER", "BIG_DUMMY")
+SKIP_PREFIXES = ("DEPRECATED_", "MOCK_", "ATTACK_MOVE_MONSTER", "BIG_DUMMY", "GENERIC")
 
 MONSTER_NAMESPACES = [
     "MegaCrit.Sts2.Core.Models.Monsters",
