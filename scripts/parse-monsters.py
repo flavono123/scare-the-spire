@@ -185,11 +185,18 @@ def build_entries(
 
     old_kor_by_id = {e["id"]: e for e in existing_kor}
     old_eng_by_id = {e["id"]: e for e in existing_eng}
+    deprecated_ids = {
+        e["id"]
+        for e in existing_kor
+        if e.get("deprecated") and not e["id"].startswith(SKIP_PREFIXES)
+    }
+    ids = sorted(set(ids) | deprecated_ids)
 
     kor_out, eng_out = [], []
     added, removed = [], []
 
     for ent_id in ids:
+        deprecated_only = ent_id not in loc_kor_by_id and ent_id not in loc_eng_by_id
         cs = find_monster_class(source_root, ent_id)
         if cs is not None:
             text = cs.read_text()
@@ -210,6 +217,10 @@ def build_entries(
         ):
             lnode = loc_by_id.get(ent_id, {})
             old = old_by_id.get(ent_id, {})
+
+            if deprecated_only and old.get("deprecated"):
+                out.append(old)
+                continue
 
             if move_ids:
                 moves = []
