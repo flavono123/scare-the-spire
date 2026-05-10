@@ -276,5 +276,22 @@
       { "type": "relic", "id": "FISHING_ROD" },
       { "type": "relic", "id": "SILKEN_TRESS" }
     ]
+  },
+  {
+    "id": "v0.105.1",
+    "version": "0.105.1",
+    "date": "2026-05-09",
+    "title": "Beta Hotfix Notes - v0.105.1",
+    "titleKo": "베타 핫픽스 노트 - v0.105.1",
+    "type": "hotfix",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/664987110632064377",
+    "summary": "Hotfix for Aeonglass boss icon/music/intent, Ceremonial Beast music timing, Silken Tress multiplayer reward scope, and reward/event state divergences.",
+    "summaryKo": "영겁의 모래시계 보스 아이콘/음악/의도 표시, 의식의 신수 음악 전환, 부드러운 머리칼 멀티 보상 적용, 보상/수정구 상태 불일치 수정.",
+    "hasBalanceChanges": false,
+    "featuredEntities": [
+      { "type": "monster", "id": "AEONGLASS" },
+      { "type": "relic", "id": "SILKEN_TRESS" },
+      { "type": "monster", "id": "CEREMONIAL_BEAST" }
+    ]
   }
 ]
