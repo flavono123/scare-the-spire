@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 
 let cachedEntities: EntityInfo[] | null = null;
@@ -74,25 +74,23 @@ async function fetchSts2CommentEntities(): Promise<EntityInfo[]> {
 
 export function useCommentEntities(initialEntities?: EntityInfo[]) {
   const hasInitialEntities = !!initialEntities?.length;
-  const [entities, setEntities] = useState<EntityInfo[]>(() =>
-    mergeCommentEntities(initialEntities ?? [], cachedEntities ?? []),
-  );
+  const [fallbackEntities, setFallbackEntities] = useState<EntityInfo[] | null>(() => cachedEntities);
   const [loading, setLoading] = useState(() => !hasInitialEntities && !cachedEntities);
+  const entities = useMemo(
+    () => mergeCommentEntities(initialEntities ?? [], fallbackEntities ?? []),
+    [fallbackEntities, initialEntities],
+  );
 
   useEffect(() => {
-    const primaryEntities = initialEntities ?? [];
     if (cachedEntities) {
-      setEntities(mergeCommentEntities(primaryEntities, cachedEntities));
-      setLoading(false);
       return;
     }
-    setEntities(primaryEntities);
 
     let cancelled = false;
     fetchSts2CommentEntities()
       .then((data) => {
         if (cancelled) return;
-        setEntities(mergeCommentEntities(primaryEntities, data));
+        setFallbackEntities(data);
         setLoading(false);
       })
       .catch(() => {
@@ -103,10 +101,10 @@ export function useCommentEntities(initialEntities?: EntityInfo[]) {
     return () => {
       cancelled = true;
     };
-  }, [hasInitialEntities, initialEntities]);
+  }, []);
 
   return {
-    entities: hasInitialEntities ? (initialEntities ?? []) : entities,
+    entities,
     loading: hasInitialEntities ? false : loading,
   };
 }
