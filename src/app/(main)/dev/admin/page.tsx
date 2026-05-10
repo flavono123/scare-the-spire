@@ -9,6 +9,9 @@ export const revalidate = 0;
 
 const ROW_LIMIT = 50;
 const STATS_SAMPLE_LIMIT = 1000;
+const ADMIN_DATA_ENVS = ["all", "production", "development"] as const;
+
+type AdminDataEnv = (typeof ADMIN_DATA_ENVS)[number];
 
 interface CommentRow {
   id: string;
@@ -50,6 +53,7 @@ interface RunRow {
 interface LikeRow {
   story_id: string;
   user_id: string;
+  env: string;
   created_at: string;
 }
 
@@ -125,15 +129,37 @@ function isMissingSchemaItem(error: string | undefined, name: string): boolean {
   return !!error && error.toLowerCase().includes(name.toLowerCase());
 }
 
-async function readComments(): Promise<QueryState<CommentRow[]>> {
+function adminDataEnvFromSearchParams(
+  searchParams: Record<string, string | string[] | undefined>,
+): AdminDataEnv {
+  const raw = searchParams.dataEnv ?? searchParams.env;
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return ADMIN_DATA_ENVS.includes(value as AdminDataEnv) ? value as AdminDataEnv : "all";
+}
+
+function dataEnvHref(dataEnv: AdminDataEnv): string {
+  return dataEnv === "all" ? "/dev/admin" : `/dev/admin?dataEnv=${dataEnv}`;
+}
+
+function dataEnvLabel(dataEnv: AdminDataEnv): string {
+  if (dataEnv === "all") return "all env";
+  return dataEnv;
+}
+
+async function readComments(dataEnv: AdminDataEnv): Promise<QueryState<CommentRow[]>> {
+  let richQuery = supabase
+    .from("comments")
+    .select("id, story_id, user_id, nickname, content, content_blocks, env, created_at", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .limit(ROW_LIMIT);
+
+  if (dataEnv !== "all") {
+    richQuery = richQuery.eq("env", dataEnv);
+  }
+
   const richResult = await readSupabase<CommentRow[]>(
     "admin.comments",
-    supabase
-      .from("comments")
-      .select("id, story_id, user_id, nickname, content, content_blocks, env, created_at", { count: "exact" })
-      .eq("env", supabaseEnv)
-      .order("created_at", { ascending: false })
-      .limit(ROW_LIMIT),
+    richQuery,
     [],
   );
 
@@ -141,14 +167,19 @@ async function readComments(): Promise<QueryState<CommentRow[]>> {
     return richResult;
   }
 
+  let legacyQuery = supabase
+    .from("comments")
+    .select("id, story_id, user_id, nickname, content, env, created_at", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .limit(ROW_LIMIT);
+
+  if (dataEnv !== "all") {
+    legacyQuery = legacyQuery.eq("env", dataEnv);
+  }
+
   const legacyResult = await readSupabase<Omit<CommentRow, "content_blocks">[]>(
     "admin.comments.legacy",
-    supabase
-      .from("comments")
-      .select("id, story_id, user_id, nickname, content, env, created_at", { count: "exact" })
-      .eq("env", supabaseEnv)
-      .order("created_at", { ascending: false })
-      .limit(ROW_LIMIT),
+    legacyQuery,
     [],
   );
 
@@ -181,8 +212,70 @@ async function readCommentLikes(): Promise<QueryState<CommentLikeRow[]>> {
   };
 }
 
-async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
+async function readEngagementCounts(
+  dataEnv: AdminDataEnv,
+  likes: QueryState<LikeRow[]>,
+): Promise<QueryState<EngagementCountRow[]>> {
+  if (dataEnv !== "all") {
+    return readSupabase<EngagementCountRow[]>(
+      "admin.engagement_counts",
+      supabase.rpc("get_engagement_counts", { p_env: dataEnv }),
+      [],
+    );
+  }
+
+  const commentStories = await readSupabase<{ story_id: string }[]>(
+    "admin.comments.counts",
+    supabase.from("comments").select("story_id").limit(STATS_SAMPLE_LIMIT),
+    [],
+  );
+  const counts = new Map<string, { like_count: number; comment_count: number }>();
+
+  for (const row of likes.data) {
+    const current = counts.get(row.story_id) ?? { like_count: 0, comment_count: 0 };
+    current.like_count += 1;
+    counts.set(row.story_id, current);
+  }
+
+  for (const row of commentStories.data) {
+    const current = counts.get(row.story_id) ?? { like_count: 0, comment_count: 0 };
+    current.comment_count += 1;
+    counts.set(row.story_id, current);
+  }
+
+  return {
+    data: Array.from(counts, ([story_id, count]) => ({ story_id, ...count })),
+    error: commentStories.error,
+    note: commentStories.error ? undefined : `all env는 최근 ${STATS_SAMPLE_LIMIT.toLocaleString("ko-KR")}개 샘플 집계입니다.`,
+  };
+}
+
+async function loadAdminSnapshot(dataEnv: AdminDataEnv): Promise<AdminSnapshot | null> {
   if (!supabaseEnabled) return null;
+
+  let chemicalPostsQuery = supabase
+    .from("chemical_posts")
+    .select("id, user_id, nickname, content, content_text, env, created_at", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .limit(ROW_LIMIT);
+
+  let runsQuery = supabase
+    .from("runs")
+    .select("id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, env, created_at", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .limit(ROW_LIMIT);
+
+  let likesQuery = supabase
+    .from("likes")
+    .select("story_id, user_id, env, created_at", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .limit(STATS_SAMPLE_LIMIT);
+
+  if (dataEnv !== "all") {
+    chemicalPostsQuery = chemicalPostsQuery.eq("env", dataEnv);
+    runsQuery = runsQuery.eq("env", dataEnv);
+    likesQuery = likesQuery.eq("env", dataEnv);
+  }
 
   const [
     comments,
@@ -190,46 +283,26 @@ async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {
     runs,
     likes,
     commentLikes,
-    engagementCounts,
   ] = await Promise.all([
-    readComments(),
+    readComments(dataEnv),
     readSupabase<ChemicalPostRow[]>(
       "admin.chemical_posts",
-      supabase
-        .from("chemical_posts")
-        .select("id, user_id, nickname, content, content_text, env, created_at", { count: "exact" })
-        .eq("env", supabaseEnv)
-        .order("created_at", { ascending: false })
-        .limit(ROW_LIMIT),
+      chemicalPostsQuery,
       [],
     ),
     readSupabase<RunRow[]>(
       "admin.runs",
-      supabase
-        .from("runs")
-        .select("id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, env, created_at", { count: "exact" })
-        .eq("env", supabaseEnv)
-        .order("created_at", { ascending: false })
-        .limit(ROW_LIMIT),
+      runsQuery,
       [],
     ),
     readSupabase<LikeRow[]>(
       "admin.likes",
-      supabase
-        .from("likes")
-        .select("story_id, user_id, created_at", { count: "exact" })
-        .eq("env", supabaseEnv)
-        .order("created_at", { ascending: false })
-        .limit(STATS_SAMPLE_LIMIT),
+      likesQuery,
       [],
     ),
     readCommentLikes(),
-    readSupabase<EngagementCountRow[]>(
-      "admin.engagement_counts",
-      supabase.rpc("get_engagement_counts", { p_env: supabaseEnv }),
-      [],
-    ),
   ]);
+  const engagementCounts = await readEngagementCounts(dataEnv, likes);
 
   return {
     comments,
@@ -372,12 +445,17 @@ export const metadata = {
   description: "개발 전용 Supabase 컨텐츠 확인 페이지",
 };
 
-export default async function SupabaseAdminPage() {
+export default async function SupabaseAdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   if (process.env.NODE_ENV === "production") {
     notFound();
   }
 
-  const snapshot = await loadAdminSnapshot();
+  const dataEnv = adminDataEnvFromSearchParams(await searchParams);
+  const snapshot = await loadAdminSnapshot(dataEnv);
   const topStories = topLikedStories(snapshot?.engagementCounts.data ?? []);
   const uniqueLikeUsers = new Set(snapshot?.likes.data.map((row) => row.user_id) ?? []).size;
   const uniqueCommentLikeUsers = new Set(snapshot?.commentLikes.data.map((row) => row.user_id) ?? []).size;
@@ -391,10 +469,27 @@ export default async function SupabaseAdminPage() {
             <h1 className="mt-1 text-2xl font-bold">Supabase Admin</h1>
           </div>
           <div className="text-right text-xs text-muted-foreground">
-            <div>env: <code className="text-yellow-300">{supabaseEnv}</code></div>
+            <div>configured env: <code className="text-yellow-300">{supabaseEnv}</code></div>
+            <div>data: <code className="text-yellow-300">{dataEnvLabel(dataEnv)}</code></div>
             <div>limit: latest {ROW_LIMIT}</div>
           </div>
         </div>
+        <nav className="mt-3 flex flex-wrap gap-2 text-xs">
+          {ADMIN_DATA_ENVS.map((env) => (
+            <Link
+              key={env}
+              href={dataEnvHref(env)}
+              prefetch={false}
+              className={`rounded-md border px-2.5 py-1 transition-colors ${
+                dataEnv === env
+                  ? "border-yellow-400/60 bg-yellow-400/15 text-yellow-200"
+                  : "border-border bg-background/50 text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {dataEnvLabel(env)}
+            </Link>
+          ))}
+        </nav>
       </div>
 
       {!snapshot ? (
@@ -417,7 +512,7 @@ export default async function SupabaseAdminPage() {
               <StatTile
                 label="좋아요가 있는 글"
                 value={topStories.length.toLocaleString("ko-KR")}
-                detail="get_engagement_counts RPC 기준"
+                detail={snapshot.engagementCounts.note ?? "get_engagement_counts RPC 기준"}
               />
               <StatTile
                 label="댓글 좋아요"
@@ -460,6 +555,7 @@ export default async function SupabaseAdminPage() {
                 <thead className="bg-muted/40 text-xs text-muted-foreground">
                   <tr>
                     <th className="px-3 py-2">작성일</th>
+                    <th className="px-3 py-2">env</th>
                     <th className="px-3 py-2">닉네임</th>
                     <th className="px-3 py-2">위치</th>
                     <th className="px-3 py-2">내용</th>
@@ -470,6 +566,7 @@ export default async function SupabaseAdminPage() {
                   {snapshot.comments.data.map((comment) => (
                     <tr key={comment.id} className="border-t border-border/70 align-top">
                       <td className="whitespace-nowrap px-3 py-2 text-xs text-muted-foreground">{formatDate(comment.created_at)}</td>
+                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{comment.env}</code></td>
                       <td className="px-3 py-2 text-yellow-200">{comment.nickname}</td>
                       <td className="px-3 py-2"><StoryLink storyId={comment.story_id} /></td>
                       <td className="px-3 py-2">{truncate(blockText(comment.content_blocks) || comment.content)}</td>
@@ -478,7 +575,7 @@ export default async function SupabaseAdminPage() {
                   ))}
                   {snapshot.comments.data.length === 0 && (
                     <tr>
-                      <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={5}>댓글 없음</td>
+                      <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={6}>댓글 없음</td>
                     </tr>
                   )}
                 </tbody>
@@ -492,6 +589,7 @@ export default async function SupabaseAdminPage() {
                 <thead className="bg-muted/40 text-xs text-muted-foreground">
                   <tr>
                     <th className="px-3 py-2">작성일</th>
+                    <th className="px-3 py-2">env</th>
                     <th className="px-3 py-2">닉네임</th>
                     <th className="px-3 py-2">내용</th>
                     <th className="px-3 py-2">post</th>
@@ -502,6 +600,7 @@ export default async function SupabaseAdminPage() {
                   {snapshot.chemicalPosts.data.map((post) => (
                     <tr key={post.id} className="border-t border-border/70 align-top">
                       <td className="whitespace-nowrap px-3 py-2 text-xs text-muted-foreground">{formatDate(post.created_at)}</td>
+                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{post.env}</code></td>
                       <td className="px-3 py-2 text-lime-200">{post.nickname}</td>
                       <td className="px-3 py-2">{truncate(blockText(post.content) || post.content_text, 80)}</td>
                       <td className="px-3 py-2">
@@ -514,7 +613,7 @@ export default async function SupabaseAdminPage() {
                   ))}
                   {snapshot.chemicalPosts.data.length === 0 && (
                     <tr>
-                      <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={5}>케미컬 X 없음</td>
+                      <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={6}>케미컬 X 없음</td>
                     </tr>
                   )}
                 </tbody>
@@ -528,6 +627,7 @@ export default async function SupabaseAdminPage() {
                 <thead className="bg-muted/40 text-xs text-muted-foreground">
                   <tr>
                     <th className="px-3 py-2">공유일</th>
+                    <th className="px-3 py-2">env</th>
                     <th className="px-3 py-2">결과</th>
                     <th className="px-3 py-2">캐릭터</th>
                     <th className="px-3 py-2">승천</th>
@@ -542,6 +642,7 @@ export default async function SupabaseAdminPage() {
                   {snapshot.runs.data.map((run) => (
                     <tr key={run.id} className="border-t border-border/70">
                       <td className="whitespace-nowrap px-3 py-2 text-xs text-muted-foreground">{formatDate(run.created_at)}</td>
+                      <td className="px-3 py-2"><code className="text-[10px] text-muted-foreground">{run.env}</code></td>
                       <td className={run.win ? "px-3 py-2 text-emerald-300" : "px-3 py-2 text-red-300"}>{run.win ? "승리" : "패배"}</td>
                       <td className="px-3 py-2">{run.character}</td>
                       <td className="px-3 py-2">A{run.ascension}</td>
@@ -558,7 +659,7 @@ export default async function SupabaseAdminPage() {
                   ))}
                   {snapshot.runs.data.length === 0 && (
                     <tr>
-                      <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={9}>공유 런 없음</td>
+                      <td className="px-3 py-6 text-center text-sm text-muted-foreground" colSpan={10}>공유 런 없음</td>
                     </tr>
                   )}
                 </tbody>
