@@ -1378,24 +1378,6 @@
     "image_url": null
   },
   {
-    "id": "GENERIC",
-    "name": null,
-    "type": "Normal",
-    "min_hp": null,
-    "max_hp": null,
-    "min_hp_ascension": null,
-    "max_hp_ascension": null,
-    "moves": [
-      {
-        "id": "STUNNED",
-        "name": "기절함"
-      }
-    ],
-    "damage_values": null,
-    "block_values": null,
-    "image_url": null
-  },
-  {
     "id": "GLOBE_HEAD",
     "name": "구체 머리",
     "type": "Normal",
