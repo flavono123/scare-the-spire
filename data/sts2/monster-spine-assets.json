@@ -1373,7 +1373,8 @@
     "atlasUrl": "/spine/sts2/monsters/gas_bomb/gas_bomb.atlas",
     "binaryUrl": "/spine/sts2/monsters/gas_bomb/gas_bomb.skel",
     "textureUrls": [
-      "/spine/sts2/monsters/gas_bomb/gas_bomb.png"
+      "/spine/sts2/monsters/gas_bomb/gas_bomb.png",
+      "/spine/sts2/monsters/gas_bomb/gas_bomb_2.png"
     ],
     "skin": null,
     "skins": [
@@ -2154,7 +2155,8 @@
     "atlasUrl": "/spine/sts2/monsters/living_smog/living_smog.atlas",
     "binaryUrl": "/spine/sts2/monsters/living_smog/living_smog.skel",
     "textureUrls": [
-      "/spine/sts2/monsters/living_smog/living_smog.png"
+      "/spine/sts2/monsters/living_smog/living_smog.png",
+      "/spine/sts2/monsters/living_smog/living_smog_2.png"
     ],
     "skin": null,
     "skins": [
@@ -3477,7 +3479,8 @@
     "atlasUrl": "/spine/sts2/monsters/soul_fysh/soul_fysh.atlas",
     "binaryUrl": "/spine/sts2/monsters/soul_fysh/soul_fysh.skel",
     "textureUrls": [
-      "/spine/sts2/monsters/soul_fysh/soul_fysh.png"
+      "/spine/sts2/monsters/soul_fysh/soul_fysh.png",
+      "/spine/sts2/monsters/soul_fysh/soul_fysh_2.png"
     ],
     "skin": null,
     "skins": [
@@ -3926,7 +3929,8 @@
     "atlasUrl": "/spine/sts2/monsters/the_forgotten/the_forgotten.atlas",
     "binaryUrl": "/spine/sts2/monsters/the_forgotten/the_forgotten.skel",
     "textureUrls": [
-      "/spine/sts2/monsters/the_forgotten/the_forgotten.png"
+      "/spine/sts2/monsters/the_forgotten/the_forgotten.png",
+      "/spine/sts2/monsters/the_forgotten/the_forgotten_2.png"
     ],
     "skin": null,
     "skins": [
@@ -4026,7 +4030,8 @@
     "atlasUrl": "/spine/sts2/monsters/the_lost/the_lost.atlas",
     "binaryUrl": "/spine/sts2/monsters/the_lost/the_lost.skel",
     "textureUrls": [
-      "/spine/sts2/monsters/the_lost/the_lost.png"
+      "/spine/sts2/monsters/the_lost/the_lost.png",
+      "/spine/sts2/monsters/the_lost/the_lost_2.png"
     ],
     "skin": null,
     "skins": [
@@ -4754,7 +4759,9 @@
     "atlasUrl": "/spine/sts2/monsters/waterfall_giant/waterfall_giant.atlas",
     "binaryUrl": "/spine/sts2/monsters/waterfall_giant/waterfall_giant.skel",
     "textureUrls": [
-      "/spine/sts2/monsters/waterfall_giant/waterfall_giant.png"
+      "/spine/sts2/monsters/waterfall_giant/waterfall_giant.png",
+      "/spine/sts2/monsters/waterfall_giant/waterfall_giant_2.png",
+      "/spine/sts2/monsters/waterfall_giant/waterfall_giant_3.png"
     ],
     "skin": null,
     "skins": [

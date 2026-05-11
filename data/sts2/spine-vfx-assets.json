@@ -6,7 +6,8 @@
     "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
     "binaryUrl": "/spine/sts2/vfx/vfx_adrenaline/adrenaline.skel",
     "textureUrls": [
-      "/spine/sts2/vfx/adrenaline.png"
+      "/spine/sts2/vfx/adrenaline.png",
+      "/spine/sts2/vfx/adrenaline_2.png"
     ],
     "animations": [],
     "idleAnimation": "adrenaline",
