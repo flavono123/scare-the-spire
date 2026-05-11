@@ -146,6 +146,7 @@ export function MonsterDetail({
             />
             {imageSrc ? (
               <MonsterSpineStage
+                key={monster.id}
                 asset={monster.spineAsset}
                 fallbackImageUrl={imageSrc}
                 monsterName={monster.name}
