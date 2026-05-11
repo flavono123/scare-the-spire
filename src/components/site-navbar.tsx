@@ -244,11 +244,9 @@ function GameDropdown({
 function LanguageDropdown({
   value,
   label,
-  gameOnlyGroupLabel,
 }: {
   value: GameLocale;
   label: string;
-  gameOnlyGroupLabel: string;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -320,7 +318,7 @@ function LanguageDropdown({
           })}
           <div className="my-1 border-t border-border/70 px-3 pt-2 pb-1">
             <span className="text-[9px] font-semibold uppercase tracking-wide text-amber-200/70">
-              {gameOnlyGroupLabel}
+              only game locale
             </span>
           </div>
           {gameOnlyLanguageLocales.map((locale) => {
@@ -457,11 +455,7 @@ export function SiteNavbar() {
 
         {/* Right: language + game dropdowns */}
         <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
-          <LanguageDropdown
-            value={gameLocale}
-            label={messages.languageSelect}
-            gameOnlyGroupLabel={messages.gameTextOnlyLanguageGroup}
-          />
+          <LanguageDropdown value={gameLocale} label={messages.languageSelect} />
           <GameDropdown
             icon="/images/sts2/icons/app_icon.png"
             alt={messages.games.sts2Codex}
