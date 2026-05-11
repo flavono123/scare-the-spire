@@ -415,7 +415,7 @@ export function MonsterLibrary({
             if (e.target === e.currentTarget) setSelectedMonster(null);
           }}
         >
-          <div className="w-full max-w-2xl my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
+          <div className="w-full max-w-6xl my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
             <MonsterDetail
               serviceLocale={serviceLocale}
               gameUi={gameUi}
