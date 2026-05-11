@@ -1,0 +1,148 @@
+[
+  {
+    "id": "VFX_ADRENALINE",
+    "folder": "vfx_adrenaline",
+    "source": "animations/vfx/vfx_adrenaline/adrenaline",
+    "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+    "binaryUrl": "/spine/sts2/vfx/vfx_adrenaline/adrenaline.skel",
+    "textureUrls": [
+      "/spine/sts2/vfx/adrenaline.png"
+    ],
+    "animations": [],
+    "idleAnimation": "adrenaline",
+    "durationSeconds": 0.75,
+    "usable": false,
+    "parseError": "String in string table must not be null."
+  },
+  {
+    "id": "VFX_BITE",
+    "folder": "vfx_bite",
+    "source": "animations/vfx/vfx_bite/attackbite",
+    "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+    "binaryUrl": "/spine/sts2/vfx/vfx_bite/attackbite.skel",
+    "textureUrls": [
+      "/spine/sts2/vfx/attackbite.png"
+    ],
+    "animations": [],
+    "idleAnimation": "attackbite",
+    "durationSeconds": 0.75,
+    "usable": false,
+    "parseError": "String in string table must not be null."
+  },
+  {
+    "id": "VFX_CHAIN",
+    "folder": "vfx_chain",
+    "source": "animations/vfx/vfx_chain/chain",
+    "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+    "binaryUrl": "/spine/sts2/vfx/vfx_chain/chain.skel",
+    "textureUrls": [
+      "/spine/sts2/vfx/chain.png"
+    ],
+    "animations": [
+      "chain"
+    ],
+    "idleAnimation": "chain",
+    "durationSeconds": 0.5,
+    "usable": true
+  },
+  {
+    "id": "VFX_FLYING_SLASH",
+    "folder": "vfx_flying_slash",
+    "source": "animations/vfx/vfx_flying_slash/flying_slash",
+    "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+    "binaryUrl": "/spine/sts2/vfx/vfx_flying_slash/flying_slash.skel",
+    "textureUrls": [
+      "/spine/sts2/vfx/flying_slash.png"
+    ],
+    "animations": [
+      "chain"
+    ],
+    "idleAnimation": "chain",
+    "durationSeconds": 0.5,
+    "usable": true
+  },
+  {
+    "id": "VFX_GAZE",
+    "folder": "vfx_gaze",
+    "source": "animations/vfx/vfx_gaze/gaze",
+    "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+    "binaryUrl": "/spine/sts2/vfx/vfx_gaze/gaze.skel",
+    "textureUrls": [
+      "/spine/sts2/vfx/gaze.png"
+    ],
+    "animations": [
+      "chain"
+    ],
+    "idleAnimation": "chain",
+    "durationSeconds": 0.5,
+    "usable": true
+  },
+  {
+    "id": "VFX_KAISER_CRAB_BOSS_EXPLOSION",
+    "folder": "vfx_kaiser_crab_boss_explosion",
+    "source": "animations/vfx/vfx_kaiser_crab_boss_explosion/infested_boss_explosion",
+    "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+    "binaryUrl": "/spine/sts2/vfx/vfx_kaiser_crab_boss_explosion/infested_boss_explosion.skel",
+    "textureUrls": [
+      "/spine/sts2/vfx/infested_boss_explosion.png"
+    ],
+    "animations": [
+      "chain"
+    ],
+    "idleAnimation": "chain",
+    "durationSeconds": 0.5,
+    "usable": true
+  },
+  {
+    "id": "VFX_LASER",
+    "folder": "vfx_laser",
+    "source": "animations/vfx/vfx_laser/laser",
+    "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+    "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel",
+    "textureUrls": [
+      "/spine/sts2/vfx/laser.png"
+    ],
+    "animations": [
+      "animation"
+    ],
+    "idleAnimation": "animation",
+    "durationSeconds": 0.347,
+    "usable": true
+  },
+  {
+    "id": "VFX_MECHA_KNIGHT_SHIELD",
+    "folder": "vfx_mecha_knight_shield",
+    "source": "animations/vfx/vfx_mecha_knight_shield/mecha_knight_shield",
+    "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+    "binaryUrl": "/spine/sts2/vfx/vfx_mecha_knight_shield/mecha_knight_shield.skel",
+    "textureUrls": [
+      "/spine/sts2/vfx/mecha_knight_shield.png"
+    ],
+    "animations": [
+      "activate",
+      "deactivate",
+      "idle_loop",
+      "off",
+      "_layers/spin"
+    ],
+    "idleAnimation": "idle_loop",
+    "durationSeconds": 0.938,
+    "usable": true
+  },
+  {
+    "id": "VFX_SCRATCH",
+    "folder": "vfx_scratch",
+    "source": "animations/vfx/vfx_scratch/scratch",
+    "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+    "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+    "textureUrls": [
+      "/spine/sts2/vfx/scratch.png"
+    ],
+    "animations": [
+      "animation"
+    ],
+    "idleAnimation": "animation",
+    "durationSeconds": 0.347,
+    "usable": true
+  }
+]

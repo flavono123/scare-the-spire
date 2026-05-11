@@ -1,0 +1,4708 @@
+[
+  {
+    "id": "ARCHITECT",
+    "source": "animations/monsters/architect/architect",
+    "atlasUrl": "/spine/sts2/monsters/architect/architect.atlas",
+    "binaryUrl": "/spine/sts2/monsters/architect/architect.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/architect/architect.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "hurt",
+      "idle_loop",
+      "_tracks/head_normal",
+      "_tracks/head_reading",
+      "_tracks/head_reading2",
+      "_tracks/head_stop_reading",
+      "_tracks/head_stop_reading2"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "NOTHING": [
+        "nothing",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "ASSASSIN_RUBY_RAIDER",
+    "source": "animations/monsters/assassin_ruby_raider/assassin_ruby_raider",
+    "atlasUrl": "/spine/sts2/monsters/assassin_ruby_raider/assassin_ruby_raider.atlas",
+    "binaryUrl": "/spine/sts2/monsters/assassin_ruby_raider/assassin_ruby_raider.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/assassin_ruby_raider/assassin_ruby_raider.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "KILLSHOT": [
+        "killshot",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "AXEBOT",
+    "source": "animations/monsters/axebot/axe_bot",
+    "atlasUrl": "/spine/sts2/monsters/axebot/axe_bot.atlas",
+    "binaryUrl": "/spine/sts2/monsters/axebot/axe_bot.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/axebot/axe_bot.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "hurt",
+      "idle_loop",
+      "respawn",
+      "sharpen",
+      "special"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "BOOT_UP": [
+        "boot_up",
+        "bootup",
+        "boot-up",
+        "respawn",
+        "idle_loop",
+        "attack"
+      ],
+      "ONE_TWO": [
+        "one_two",
+        "onetwo",
+        "one-two",
+        "idle_loop",
+        "attack"
+      ],
+      "HAMMER_UPPERCUT": [
+        "hammer_uppercut",
+        "hammeruppercut",
+        "hammer-uppercut",
+        "attack",
+        "special",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "AXE_RUBY_RAIDER",
+    "source": "animations/monsters/axe_ruby_raider/axe_ruby_raider",
+    "atlasUrl": "/spine/sts2/monsters/axe_ruby_raider/axe_ruby_raider.atlas",
+    "binaryUrl": "/spine/sts2/monsters/axe_ruby_raider/axe_ruby_raider.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/axe_ruby_raider/axe_ruby_raider.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack2",
+      "attack3",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "BIG_SWING": [
+        "big_swing",
+        "bigswing",
+        "big-swing",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "BOWLBUG_EGG",
+    "source": "animations/monsters/bowlbug/bowlbug",
+    "atlasUrl": "/spine/sts2/monsters/bowlbug/bowlbug.atlas",
+    "binaryUrl": "/spine/sts2/monsters/bowlbug/bowlbug.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/bowlbug/bowlbug.png"
+    ],
+    "skin": "cocoon",
+    "skins": [
+      "default",
+      "cocoon",
+      "goop",
+      "rock",
+      "web"
+    ],
+    "animations": [
+      "attack",
+      "buff",
+      "die",
+      "headbutt",
+      "headbutt_stunned",
+      "hurt",
+      "hurt_stunned",
+      "idle_loop",
+      "spit",
+      "stun",
+      "stunned_loop",
+      "wake_up"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "BITE": [
+        "bite",
+        "attack",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "BOWLBUG_NECTAR",
+    "source": "animations/monsters/bowlbug/bowlbug",
+    "atlasUrl": "/spine/sts2/monsters/bowlbug/bowlbug.atlas",
+    "binaryUrl": "/spine/sts2/monsters/bowlbug/bowlbug.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/bowlbug/bowlbug.png"
+    ],
+    "skin": "goop",
+    "skins": [
+      "default",
+      "cocoon",
+      "goop",
+      "rock",
+      "web"
+    ],
+    "animations": [
+      "attack",
+      "buff",
+      "die",
+      "headbutt",
+      "headbutt_stunned",
+      "hurt",
+      "hurt_stunned",
+      "idle_loop",
+      "spit",
+      "stun",
+      "stunned_loop",
+      "wake_up"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "THRASH": [
+        "thrash",
+        "idle_loop",
+        "attack"
+      ],
+      "BUFF": [
+        "buff",
+        "idle_loop",
+        "attack"
+      ],
+      "THRASH2": [
+        "thrash2",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "BOWLBUG_ROCK",
+    "source": "animations/monsters/bowlbug/bowlbug",
+    "atlasUrl": "/spine/sts2/monsters/bowlbug/bowlbug.atlas",
+    "binaryUrl": "/spine/sts2/monsters/bowlbug/bowlbug.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/bowlbug/bowlbug.png"
+    ],
+    "skin": "rock",
+    "skins": [
+      "default",
+      "cocoon",
+      "goop",
+      "rock",
+      "web"
+    ],
+    "animations": [
+      "attack",
+      "buff",
+      "die",
+      "headbutt",
+      "headbutt_stunned",
+      "hurt",
+      "hurt_stunned",
+      "idle_loop",
+      "spit",
+      "stun",
+      "stunned_loop",
+      "wake_up"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "HEADBUTT": [
+        "headbutt",
+        "headbutt_stunned",
+        "idle_loop",
+        "attack"
+      ],
+      "STUNNED": [
+        "stunned",
+        "headbutt_stunned",
+        "hurt_stunned",
+        "stunned_loop",
+        "spit",
+        "stun",
+        "idle_loop",
+        "attack"
+      ],
+      "DIZZY": [
+        "dizzy",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "BOWLBUG_SILK",
+    "source": "animations/monsters/bowlbug/bowlbug",
+    "atlasUrl": "/spine/sts2/monsters/bowlbug/bowlbug.atlas",
+    "binaryUrl": "/spine/sts2/monsters/bowlbug/bowlbug.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/bowlbug/bowlbug.png"
+    ],
+    "skin": "web",
+    "skins": [
+      "default",
+      "cocoon",
+      "goop",
+      "rock",
+      "web"
+    ],
+    "animations": [
+      "attack",
+      "buff",
+      "die",
+      "headbutt",
+      "headbutt_stunned",
+      "hurt",
+      "hurt_stunned",
+      "idle_loop",
+      "spit",
+      "stun",
+      "stunned_loop",
+      "wake_up"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "THRASH": [
+        "thrash",
+        "idle_loop",
+        "attack"
+      ],
+      "TOXIC_SPIT": [
+        "toxic_spit",
+        "toxicspit",
+        "toxic-spit",
+        "headbutt_stunned",
+        "hurt_stunned",
+        "spit",
+        "stun",
+        "stunned_loop",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "BRUTE_RUBY_RAIDER",
+    "source": "animations/monsters/brute_ruby_raider/brute_ruby_raider",
+    "atlasUrl": "/spine/sts2/monsters/brute_ruby_raider/brute_ruby_raider.atlas",
+    "binaryUrl": "/spine/sts2/monsters/brute_ruby_raider/brute_ruby_raider.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/brute_ruby_raider/brute_ruby_raider.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "BEAT": [
+        "beat",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "BYGONE_EFFIGY",
+    "source": "animations/monsters/bygone_effigy/bygone_effigy",
+    "atlasUrl": "/spine/sts2/monsters/bygone_effigy/bygone_effigy.atlas",
+    "binaryUrl": "/spine/sts2/monsters/bygone_effigy/bygone_effigy.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/bygone_effigy/bygone_effigy.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SLEEP": [
+        "sleep",
+        "idle_loop",
+        "attack"
+      ],
+      "WAKE": [
+        "wake",
+        "idle_loop",
+        "attack"
+      ],
+      "SLEEP_MOVE_2": [
+        "sleep_move_2",
+        "sleepmove2",
+        "sleep-move-2",
+        "idle_loop",
+        "attack"
+      ],
+      "SLASHES": [
+        "slashes",
+        "attack",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {
+      "SLASHES": [
+        {
+          "id": "VFX_FLYING_SLASH",
+          "folder": "vfx_flying_slash",
+          "source": "animations/vfx/vfx_flying_slash/flying_slash",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_flying_slash/flying_slash.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/flying_slash.png"
+          ],
+          "animations": [
+            "chain"
+          ],
+          "idleAnimation": "chain",
+          "durationSeconds": 0.5,
+          "usable": true
+        },
+        {
+          "id": "VFX_SCRATCH",
+          "folder": "vfx_scratch",
+          "source": "animations/vfx/vfx_scratch/scratch",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/scratch.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "BYRDONIS",
+    "source": "animations/monsters/byrdonis/byrdonis",
+    "atlasUrl": "/spine/sts2/monsters/byrdonis/byrdonis.atlas",
+    "binaryUrl": "/spine/sts2/monsters/byrdonis/byrdonis.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/byrdonis/byrdonis.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "angry_loop",
+      "attack",
+      "attack_angry",
+      "die",
+      "get_angry",
+      "get_angry_permanently",
+      "get_not_angry",
+      "hurt",
+      "hurt_angry",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "PECK": [
+        "peck",
+        "attack",
+        "attack_angry",
+        "idle_loop",
+        "angry_loop"
+      ],
+      "SWOOP": [
+        "swoop",
+        "idle_loop",
+        "angry_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "BYRDPIP",
+    "source": "animations/monsters/byrdpip/byrdpip",
+    "atlasUrl": "/spine/sts2/monsters/byrdpip/byrdpip.atlas",
+    "binaryUrl": "/spine/sts2/monsters/byrdpip/byrdpip.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/byrdpip/byrdpip.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default",
+      "version1",
+      "version2",
+      "version3",
+      "version4"
+    ],
+    "animations": [
+      "attack",
+      "idle_egg_loop",
+      "idle_loop",
+      "_ignore/attack_rough",
+      "_ignore/attack_silly"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "NOTHING": [
+        "nothing",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "CALCIFIED_CULTIST",
+    "source": "animations/monsters/cultists/cultists",
+    "atlasUrl": "/spine/sts2/monsters/cultists/cultists.atlas",
+    "binaryUrl": "/spine/sts2/monsters/cultists/cultists.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/cultists/cultists.png"
+    ],
+    "skin": "coral",
+    "skins": [
+      "default",
+      "coral",
+      "slug"
+    ],
+    "animations": [
+      "attack",
+      "buff",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "INCANTATION": [
+        "incantation",
+        "idle_loop",
+        "attack"
+      ],
+      "DARK_STRIKE": [
+        "dark_strike",
+        "darkstrike",
+        "dark-strike",
+        "attack",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "CEREMONIAL_BEAST",
+    "source": "animations/monsters/ceremonial_beast/ceremonial_beast",
+    "atlasUrl": "/spine/sts2/monsters/ceremonial_beast/ceremonial_beast.atlas",
+    "binaryUrl": "/spine/sts2/monsters/ceremonial_beast/ceremonial_beast.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/ceremonial_beast/ceremonial_beast.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "hurt",
+      "idle_loop",
+      "plow",
+      "plow_end",
+      "plow_end_die",
+      "shrill",
+      "stun",
+      "stun_loop",
+      "wake_up",
+      "_ignore/die_deluxe"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "STAMP": [
+        "stamp",
+        "idle_loop",
+        "attack"
+      ],
+      "PLOW": [
+        "plow",
+        "plow_end",
+        "plow_end_die",
+        "idle_loop",
+        "attack"
+      ],
+      "STUNNED": [
+        "stunned",
+        "stun",
+        "stun_loop",
+        "idle_loop",
+        "attack"
+      ],
+      "BEAST_CRY": [
+        "beast_cry",
+        "beastcry",
+        "beast-cry",
+        "idle_loop",
+        "attack"
+      ],
+      "STOMP": [
+        "stomp",
+        "idle_loop",
+        "attack"
+      ],
+      "CRUSH": [
+        "crush",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "CHOMPER",
+    "source": "animations/monsters/chomper/chomper",
+    "atlasUrl": "/spine/sts2/monsters/chomper/chomper.atlas",
+    "binaryUrl": "/spine/sts2/monsters/chomper/chomper.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/chomper/chomper.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "CLAMP": [
+        "clamp",
+        "idle_loop",
+        "attack"
+      ],
+      "SCREECH": [
+        "screech",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "CORPSE_SLUG",
+    "source": "animations/monsters/corpse_slug/corpse_slug",
+    "atlasUrl": "/spine/sts2/monsters/corpse_slug/corpse_slug.atlas",
+    "binaryUrl": "/spine/sts2/monsters/corpse_slug/corpse_slug.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/corpse_slug/corpse_slug.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_double",
+      "attack_heavy",
+      "devour_end",
+      "devour_loop",
+      "devour_start",
+      "die",
+      "die_devouring",
+      "hurt",
+      "hurt_devouring",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "WHIP_SLAP": [
+        "whip_slap",
+        "whipslap",
+        "whip-slap",
+        "idle_loop",
+        "attack"
+      ],
+      "GLOMP": [
+        "glomp",
+        "idle_loop",
+        "attack"
+      ],
+      "GOOP": [
+        "goop",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "CROSSBOW_RUBY_RAIDER",
+    "source": "animations/monsters/crossbow_ruby_raider/crossbow_ruby_raider",
+    "atlasUrl": "/spine/sts2/monsters/crossbow_ruby_raider/crossbow_ruby_raider.atlas",
+    "binaryUrl": "/spine/sts2/monsters/crossbow_ruby_raider/crossbow_ruby_raider.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/crossbow_ruby_raider/crossbow_ruby_raider.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "die_empty",
+      "hurt",
+      "hurt1",
+      "hurt_empty",
+      "idle_loop",
+      "idle_loop_empty",
+      "reload"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "FIRE": [
+        "fire",
+        "idle_loop",
+        "attack"
+      ],
+      "RELOAD": [
+        "reload",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "CUBEX_CONSTRUCT",
+    "source": "animations/monsters/cubex_construct/cubex_construct",
+    "atlasUrl": "/spine/sts2/monsters/cubex_construct/cubex_construct.atlas",
+    "binaryUrl": "/spine/sts2/monsters/cubex_construct/cubex_construct.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/cubex_construct/cubex_construct.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default",
+      "circleeye",
+      "diamondeye",
+      "moss1",
+      "moss2",
+      "moss3",
+      "squareeye"
+    ],
+    "animations": [
+      "attack_finish",
+      "attack_loop",
+      "burrow",
+      "burrowed_loop",
+      "charge_loop",
+      "charge_start",
+      "die",
+      "hurt",
+      "hurt_idling",
+      "idle_loop",
+      "unburrow"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "CHARGE_UP": [
+        "charge_up",
+        "chargeup",
+        "charge-up",
+        "charge_start",
+        "idle_loop",
+        "attack_finish"
+      ],
+      "REPEATER_BLAST": [
+        "repeater_blast",
+        "repeaterblast",
+        "repeater-blast",
+        "idle_loop",
+        "attack_finish"
+      ],
+      "REPEATER_BLAST_MOVE_2": [
+        "repeater_blast_move_2",
+        "repeaterblastmove2",
+        "repeater-blast-move-2",
+        "idle_loop",
+        "attack_finish"
+      ],
+      "EXPEL": [
+        "expel",
+        "idle_loop",
+        "attack_finish"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "DAMP_CULTIST",
+    "source": "animations/monsters/cultists/cultists",
+    "atlasUrl": "/spine/sts2/monsters/cultists/cultists.atlas",
+    "binaryUrl": "/spine/sts2/monsters/cultists/cultists.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/cultists/cultists.png"
+    ],
+    "skin": "slug",
+    "skins": [
+      "default",
+      "coral",
+      "slug"
+    ],
+    "animations": [
+      "attack",
+      "buff",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "INCANTATION": [
+        "incantation",
+        "idle_loop",
+        "attack"
+      ],
+      "DARK_STRIKE": [
+        "dark_strike",
+        "darkstrike",
+        "dark-strike",
+        "attack",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "ENTOMANCER",
+    "source": "animations/monsters/entomancer/entomancer",
+    "atlasUrl": "/spine/sts2/monsters/entomancer/entomancer.atlas",
+    "binaryUrl": "/spine/sts2/monsters/entomancer/entomancer.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/entomancer/entomancer.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_ranged",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "PHEROMONE_SPIT": [
+        "pheromone_spit",
+        "pheromonespit",
+        "pheromone-spit",
+        "idle_loop",
+        "attack"
+      ],
+      "BEES": [
+        "bees",
+        "idle_loop",
+        "attack"
+      ],
+      "SPEAR": [
+        "spear",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "EXOSKELETON",
+    "source": "animations/monsters/exoskeleton/exoskeleton",
+    "atlasUrl": "/spine/sts2/monsters/exoskeleton/exoskeleton.atlas",
+    "binaryUrl": "/spine/sts2/monsters/exoskeleton/exoskeleton.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/exoskeleton/exoskeleton.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_heavy",
+      "buff",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SKITTER": [
+        "skitter",
+        "idle_loop",
+        "attack"
+      ],
+      "MANDIBLES": [
+        "mandibles",
+        "idle_loop",
+        "attack"
+      ],
+      "ENRAGE": [
+        "enrage",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "EYE_WITH_TEETH",
+    "source": "animations/monsters/eye_with_teeth/eye_with_teeth",
+    "atlasUrl": "/spine/sts2/monsters/eye_with_teeth/eye_with_teeth.atlas",
+    "binaryUrl": "/spine/sts2/monsters/eye_with_teeth/eye_with_teeth.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/eye_with_teeth/eye_with_teeth.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "DISTRACT": [
+        "distract",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "FABRICATOR",
+    "source": "animations/monsters/fabricator/fabricator",
+    "atlasUrl": "/spine/sts2/monsters/fabricator/fabricator.atlas",
+    "binaryUrl": "/spine/sts2/monsters/fabricator/fabricator.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/fabricator/fabricator.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "fabricate",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "FABRICATE": [
+        "fabricate",
+        "idle_loop",
+        "attack"
+      ],
+      "DISINTEGRATE": [
+        "disintegrate",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "FAT_GREMLIN",
+    "source": "animations/monsters/fat_gremlin/fat_gremlin",
+    "atlasUrl": "/spine/sts2/monsters/fat_gremlin/fat_gremlin.atlas",
+    "binaryUrl": "/spine/sts2/monsters/fat_gremlin/fat_gremlin.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/fat_gremlin/fat_gremlin.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "awake_loop",
+      "die",
+      "flee",
+      "hurt_awake",
+      "hurt_stunned",
+      "spawn",
+      "stunned_loop",
+      "wake_up"
+    ],
+    "idleAnimation": "awake_loop",
+    "moveAnimations": {
+      "SPAWNED": [
+        "spawned",
+        "spawn",
+        "wake_up",
+        "awake_loop"
+      ],
+      "FLEE": [
+        "flee",
+        "awake_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "FLAIL_KNIGHT",
+    "source": "animations/monsters/flail_knight/flailknight",
+    "atlasUrl": "/spine/sts2/monsters/flail_knight/flailknight.atlas",
+    "binaryUrl": "/spine/sts2/monsters/flail_knight/flailknight.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/flail_knight/flailknight.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_breaker",
+      "attack_flail",
+      "attack_ram",
+      "buff",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "WAR_CHANT": [
+        "war_chant",
+        "warchant",
+        "war-chant",
+        "idle_loop",
+        "attack_breaker"
+      ],
+      "FLAIL": [
+        "flail",
+        "attack_flail",
+        "idle_loop",
+        "attack_breaker"
+      ],
+      "RAM": [
+        "ram",
+        "attack_ram",
+        "idle_loop",
+        "attack_breaker"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "FLYCONID",
+    "source": "animations/monsters/flying_mushrooms/flying_mushrooms",
+    "atlasUrl": "/spine/sts2/monsters/flying_mushrooms/flying_mushrooms.atlas",
+    "binaryUrl": "/spine/sts2/monsters/flying_mushrooms/flying_mushrooms.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/flying_mushrooms/flying_mushrooms.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "VULNERABLE_SPORES": [
+        "vulnerable_spores",
+        "vulnerablespores",
+        "vulnerable-spores",
+        "idle_loop",
+        "attack"
+      ],
+      "FRAIL_SPORES": [
+        "frail_spores",
+        "frailspores",
+        "frail-spores",
+        "idle_loop",
+        "attack"
+      ],
+      "SMASH": [
+        "smash",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "FOGMOG",
+    "source": "animations/monsters/fogmog/fogmog",
+    "atlasUrl": "/spine/sts2/monsters/fogmog/fogmog.atlas",
+    "binaryUrl": "/spine/sts2/monsters/fogmog/fogmog.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/fogmog/fogmog.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "hurt",
+      "idle_loop",
+      "summon"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "ILLUSION": [
+        "illusion",
+        "idle_loop",
+        "attack"
+      ],
+      "SWIPE": [
+        "swipe",
+        "attack",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "FOSSIL_STALKER",
+    "source": "animations/monsters/fossil_stalker/fossil_stalker",
+    "atlasUrl": "/spine/sts2/monsters/fossil_stalker/fossil_stalker.atlas",
+    "binaryUrl": "/spine/sts2/monsters/fossil_stalker/fossil_stalker.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/fossil_stalker/fossil_stalker.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_double",
+      "debuff",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "TACKLE": [
+        "tackle",
+        "idle_loop",
+        "attack"
+      ],
+      "LATCH": [
+        "latch",
+        "idle_loop",
+        "attack"
+      ],
+      "LASH": [
+        "lash",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "FROG_KNIGHT",
+    "source": "animations/monsters/frog_knight/frog_knight",
+    "atlasUrl": "/spine/sts2/monsters/frog_knight/frog_knight.atlas",
+    "binaryUrl": "/spine/sts2/monsters/frog_knight/frog_knight.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/frog_knight/frog_knight.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_tongue",
+      "buff",
+      "charge",
+      "charge_end",
+      "charge_stat",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "FOR_THE_QUEEN": [
+        "for_the_queen",
+        "forthequeen",
+        "for-the-queen",
+        "idle_loop",
+        "attack"
+      ],
+      "STRIKE_DOWN_EVIL": [
+        "strike_down_evil",
+        "strikedownevil",
+        "strike-down-evil",
+        "attack",
+        "attack_tongue",
+        "idle_loop"
+      ],
+      "TONGUE_LASH": [
+        "tongue_lash",
+        "tonguelash",
+        "tongue-lash",
+        "idle_loop",
+        "attack"
+      ],
+      "BEETLE_CHARGE": [
+        "beetle_charge",
+        "beetlecharge",
+        "beetle-charge",
+        "buff",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "FUZZY_WURM_CRAWLER",
+    "source": "animations/monsters/fuzzy_wurm_crawler/fuzzy_wurm_crawler",
+    "atlasUrl": "/spine/sts2/monsters/fuzzy_wurm_crawler/fuzzy_wurm_crawler.atlas",
+    "binaryUrl": "/spine/sts2/monsters/fuzzy_wurm_crawler/fuzzy_wurm_crawler.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/fuzzy_wurm_crawler/fuzzy_wurm_crawler.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "die_puffed",
+      "hurt",
+      "hurt_puffed",
+      "idle_loop",
+      "idle_loop_puffed",
+      "inhale"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "ACID_GOOP": [
+        "acid_goop",
+        "acidgoop",
+        "acid-goop",
+        "idle_loop",
+        "attack"
+      ],
+      "INHALE": [
+        "inhale",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "GAS_BOMB",
+    "source": "animations/monsters/gas_bomb/gas_bomb",
+    "atlasUrl": "/spine/sts2/monsters/gas_bomb/gas_bomb.atlas",
+    "binaryUrl": "/spine/sts2/monsters/gas_bomb/gas_bomb.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/gas_bomb/gas_bomb.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "die",
+      "explode",
+      "hurt",
+      "idle_loop",
+      "spawn"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "EXPLODE": [
+        "explode",
+        "idle_loop",
+        "die"
+      ]
+    },
+    "moveEffects": {
+      "EXPLODE": [
+        {
+          "id": "VFX_KAISER_CRAB_BOSS_EXPLOSION",
+          "folder": "vfx_kaiser_crab_boss_explosion",
+          "source": "animations/vfx/vfx_kaiser_crab_boss_explosion/infested_boss_explosion",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_kaiser_crab_boss_explosion/infested_boss_explosion.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/infested_boss_explosion.png"
+          ],
+          "animations": [
+            "chain"
+          ],
+          "idleAnimation": "chain",
+          "durationSeconds": 0.5,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "GLOBE_HEAD",
+    "source": "animations/monsters/globe_head/globe_head",
+    "atlasUrl": "/spine/sts2/monsters/globe_head/globe_head.atlas",
+    "binaryUrl": "/spine/sts2/monsters/globe_head/globe_head.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/globe_head/globe_head.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "THUNDER_STRIKE": [
+        "thunder_strike",
+        "thunderstrike",
+        "thunder-strike",
+        "attack",
+        "idle_loop"
+      ],
+      "SHOCKING_SLAP": [
+        "shocking_slap",
+        "shockingslap",
+        "shocking-slap",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "GREMLIN_MERC",
+    "source": "animations/monsters/gremlin_merc/gremlin_merc",
+    "atlasUrl": "/spine/sts2/monsters/gremlin_merc/gremlin_merc.atlas",
+    "binaryUrl": "/spine/sts2/monsters/gremlin_merc/gremlin_merc.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/gremlin_merc/gremlin_merc.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_double",
+      "attack_single",
+      "die",
+      "hurt",
+      "idle_loop",
+      "Attack single has extra blending frames/blank"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "GIMME": [
+        "gimme",
+        "idle_loop",
+        "attack_double"
+      ],
+      "DOUBLE_SMASH": [
+        "double_smash",
+        "doublesmash",
+        "double-smash",
+        "idle_loop",
+        "attack_double"
+      ],
+      "HEHE": [
+        "hehe",
+        "idle_loop",
+        "attack_double"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "GUARDBOT",
+    "source": "animations/monsters/guardbot/guardbot",
+    "atlasUrl": "/spine/sts2/monsters/guardbot/guardbot.atlas",
+    "binaryUrl": "/spine/sts2/monsters/guardbot/guardbot.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/guardbot/guardbot.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "appear",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "GUARD": [
+        "guard",
+        "idle_loop",
+        "appear"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "HAUNTED_SHIP",
+    "source": "animations/monsters/haunted_ship/haunted_ship",
+    "atlasUrl": "/spine/sts2/monsters/haunted_ship/haunted_ship.atlas",
+    "binaryUrl": "/spine/sts2/monsters/haunted_ship/haunted_ship.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/haunted_ship/haunted_ship.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_triple",
+      "debuff",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SWIPE": [
+        "swipe",
+        "attack",
+        "attack_triple",
+        "idle_loop"
+      ],
+      "STOMP": [
+        "stomp",
+        "idle_loop",
+        "attack"
+      ],
+      "HAUNT": [
+        "haunt",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "HUNTER_KILLER",
+    "source": "animations/monsters/hunter_killer/hunterkiller",
+    "atlasUrl": "/spine/sts2/monsters/hunter_killer/hunterkiller.atlas",
+    "binaryUrl": "/spine/sts2/monsters/hunter_killer/hunterkiller.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/hunter_killer/hunterkiller.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_triple",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "TENDERIZING_GOOP": [
+        "tenderizing_goop",
+        "tenderizinggoop",
+        "tenderizing-goop",
+        "idle_loop",
+        "attack"
+      ],
+      "BITE": [
+        "bite",
+        "attack",
+        "attack_triple",
+        "idle_loop"
+      ],
+      "PUNCTURE": [
+        "puncture",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "INFESTED_PRISM",
+    "source": "animations/monsters/infested_prism/infested_prism",
+    "atlasUrl": "/spine/sts2/monsters/infested_prism/infested_prism.atlas",
+    "binaryUrl": "/spine/sts2/monsters/infested_prism/infested_prism.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/infested_prism/infested_prism.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_block",
+      "attack_double",
+      "buff",
+      "die",
+      "hurt",
+      "idle_loop",
+      "_ignore/attack_double_alt",
+      "_ignore/die_volatile"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "JAB": [
+        "jab",
+        "idle_loop",
+        "attack"
+      ],
+      "RADIATE": [
+        "radiate",
+        "idle_loop",
+        "attack"
+      ],
+      "WHIRLWIND": [
+        "whirlwind",
+        "idle_loop",
+        "attack"
+      ],
+      "PULSATE": [
+        "pulsate",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "INKLET",
+    "source": "animations/monsters/inklet/inklet",
+    "atlasUrl": "/spine/sts2/monsters/inklet/inklet.atlas",
+    "binaryUrl": "/spine/sts2/monsters/inklet/inklet.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/inklet/inklet.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_fast",
+      "attack_triple",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "JAB": [
+        "jab",
+        "idle_loop",
+        "attack"
+      ],
+      "WHIRLWIND": [
+        "whirlwind",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "KIN_FOLLOWER",
+    "source": "animations/monsters/kin_follower/kin_follower",
+    "atlasUrl": "/spine/sts2/monsters/kin_follower/kin_follower.atlas",
+    "binaryUrl": "/spine/sts2/monsters/kin_follower/kin_follower.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/kin_follower/kin_follower.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default",
+      "hair_1",
+      "hair_2",
+      "hair_3"
+    ],
+    "animations": [
+      "attack_boomerang",
+      "attack_slash",
+      "buff",
+      "die",
+      "hurt",
+      "idle_loop",
+      "_ignore/buff1"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "QUICK_SLASH": [
+        "quick_slash",
+        "quickslash",
+        "quick-slash",
+        "attack_boomerang",
+        "attack_slash",
+        "idle_loop"
+      ],
+      "BOOMERANG": [
+        "boomerang",
+        "attack_boomerang",
+        "idle_loop"
+      ],
+      "POWER_DANCE": [
+        "power_dance",
+        "powerdance",
+        "power-dance",
+        "buff",
+        "_ignore/buff1",
+        "idle_loop",
+        "attack_boomerang"
+      ]
+    },
+    "moveEffects": {
+      "QUICK_SLASH": [
+        {
+          "id": "VFX_FLYING_SLASH",
+          "folder": "vfx_flying_slash",
+          "source": "animations/vfx/vfx_flying_slash/flying_slash",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_flying_slash/flying_slash.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/flying_slash.png"
+          ],
+          "animations": [
+            "chain"
+          ],
+          "idleAnimation": "chain",
+          "durationSeconds": 0.5,
+          "usable": true
+        },
+        {
+          "id": "VFX_SCRATCH",
+          "folder": "vfx_scratch",
+          "source": "animations/vfx/vfx_scratch/scratch",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/scratch.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "KIN_PRIEST",
+    "source": "animations/monsters/kin_priest/kin_priest",
+    "atlasUrl": "/spine/sts2/monsters/kin_priest/kin_priest.atlas",
+    "binaryUrl": "/spine/sts2/monsters/kin_priest/kin_priest.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/kin_priest/kin_priest.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_grenade",
+      "attack_laser",
+      "die",
+      "hurt",
+      "idle_loop",
+      "rally",
+      "_ignore/die_old",
+      "_ignore/face_twist",
+      "_ignore/hurt_old",
+      "_ignore/rally_old"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "ORB_OF_FRAILTY": [
+        "orb_of_frailty",
+        "orboffrailty",
+        "orb-of-frailty",
+        "idle_loop",
+        "attack_grenade"
+      ],
+      "ORB_OF_WEAKNESS": [
+        "orb_of_weakness",
+        "orbofweakness",
+        "orb-of-weakness",
+        "idle_loop",
+        "attack_grenade"
+      ],
+      "BEAM": [
+        "beam",
+        "attack_grenade",
+        "attack_laser",
+        "idle_loop"
+      ],
+      "RITUAL": [
+        "ritual",
+        "idle_loop",
+        "attack_grenade"
+      ]
+    },
+    "moveEffects": {
+      "BEAM": [
+        {
+          "id": "VFX_LASER",
+          "folder": "vfx_laser",
+          "source": "animations/vfx/vfx_laser/laser",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/laser.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "KNOWLEDGE_DEMON",
+    "source": "animations/monsters/knowledge_demon/knowledge_demon",
+    "atlasUrl": "/spine/sts2/monsters/knowledge_demon/knowledge_demon.atlas",
+    "binaryUrl": "/spine/sts2/monsters/knowledge_demon/knowledge_demon.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/knowledge_demon/knowledge_demon.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_heavy",
+      "attack_light",
+      "attack_medium",
+      "brain_rot",
+      "burnt_loop",
+      "die",
+      "die_burnt",
+      "heal",
+      "hurt",
+      "hurt_burnt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "CURSE_OF_KNOWLEDGE": [
+        "curse_of_knowledge",
+        "curseofknowledge",
+        "curse-of-knowledge",
+        "idle_loop",
+        "attack_heavy"
+      ],
+      "SLAP": [
+        "slap",
+        "idle_loop",
+        "attack_heavy"
+      ],
+      "KNOWLEDGE_OVERWHELMING": [
+        "knowledge_overwhelming",
+        "knowledgeoverwhelming",
+        "knowledge-overwhelming",
+        "idle_loop",
+        "attack_heavy"
+      ],
+      "PONDER": [
+        "ponder",
+        "idle_loop",
+        "attack_heavy"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "LAGAVULIN_MATRIARCH",
+    "source": "animations/monsters/lagavulin_matriarch/lagavulin_matriarch",
+    "atlasUrl": "/spine/sts2/monsters/lagavulin_matriarch/lagavulin_matriarch.atlas",
+    "binaryUrl": "/spine/sts2/monsters/lagavulin_matriarch/lagavulin_matriarch.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/lagavulin_matriarch/lagavulin_matriarch.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "animation",
+      "attack_double",
+      "attack_heavy",
+      "cast",
+      "die",
+      "hurt",
+      "hurt_sleeping",
+      "idle_loop",
+      "sleep_loop",
+      "wake_up",
+      "_tracks/eyes_closed_loop",
+      "_tracks/eyes_dead",
+      "_tracks/eyes_open",
+      "_tracks/eyes_open_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SLEEP": [
+        "sleep",
+        "hurt_sleeping",
+        "sleep_loop",
+        "idle_loop",
+        "animation"
+      ],
+      "WAKE_UP": [
+        "wake_up",
+        "wakeup",
+        "wake-up",
+        "idle_loop",
+        "animation"
+      ],
+      "SLASH": [
+        "slash",
+        "attack_double",
+        "attack_heavy",
+        "idle_loop",
+        "animation"
+      ],
+      "SLASH2": [
+        "slash2",
+        "attack_double",
+        "attack_heavy",
+        "idle_loop",
+        "animation"
+      ],
+      "DISEMBOWEL": [
+        "disembowel",
+        "idle_loop",
+        "animation"
+      ],
+      "SOUL_SIPHON": [
+        "soul_siphon",
+        "soulsiphon",
+        "soul-siphon",
+        "idle_loop",
+        "animation"
+      ]
+    },
+    "moveEffects": {
+      "SLASH": [
+        {
+          "id": "VFX_FLYING_SLASH",
+          "folder": "vfx_flying_slash",
+          "source": "animations/vfx/vfx_flying_slash/flying_slash",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_flying_slash/flying_slash.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/flying_slash.png"
+          ],
+          "animations": [
+            "chain"
+          ],
+          "idleAnimation": "chain",
+          "durationSeconds": 0.5,
+          "usable": true
+        },
+        {
+          "id": "VFX_SCRATCH",
+          "folder": "vfx_scratch",
+          "source": "animations/vfx/vfx_scratch/scratch",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/scratch.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ],
+      "SLASH2": [
+        {
+          "id": "VFX_FLYING_SLASH",
+          "folder": "vfx_flying_slash",
+          "source": "animations/vfx/vfx_flying_slash/flying_slash",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_flying_slash/flying_slash.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/flying_slash.png"
+          ],
+          "animations": [
+            "chain"
+          ],
+          "idleAnimation": "chain",
+          "durationSeconds": 0.5,
+          "usable": true
+        },
+        {
+          "id": "VFX_SCRATCH",
+          "folder": "vfx_scratch",
+          "source": "animations/vfx/vfx_scratch/scratch",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/scratch.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "LEAF_SLIME_M",
+    "source": "animations/monsters/leaf_slime_m/leaf_slime_m",
+    "atlasUrl": "/spine/sts2/monsters/leaf_slime_m/leaf_slime_m.atlas",
+    "binaryUrl": "/spine/sts2/monsters/leaf_slime_m/leaf_slime_m.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/leaf_slime_m/leaf_slime_m.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "CLUMP_SHOT": [
+        "clump_shot",
+        "clumpshot",
+        "clump-shot",
+        "idle_loop",
+        "attack"
+      ],
+      "STICKY_SHOT": [
+        "sticky_shot",
+        "stickyshot",
+        "sticky-shot",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "LEAF_SLIME_S",
+    "source": "animations/monsters/leaf_slime_s/leaf_slime_s",
+    "atlasUrl": "/spine/sts2/monsters/leaf_slime_s/leaf_slime_s.atlas",
+    "binaryUrl": "/spine/sts2/monsters/leaf_slime_s/leaf_slime_s.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/leaf_slime_s/leaf_slime_s.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "TACKLE": [
+        "tackle",
+        "idle_loop",
+        "attack"
+      ],
+      "GOOP": [
+        "goop",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "LIVING_FOG",
+    "source": "animations/monsters/living_smog/living_smog",
+    "atlasUrl": "/spine/sts2/monsters/living_smog/living_smog.atlas",
+    "binaryUrl": "/spine/sts2/monsters/living_smog/living_smog.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/living_smog/living_smog.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "debuff",
+      "die",
+      "hurt",
+      "idle_loop",
+      "spawn_bomb"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "ADVANCED_GAS": [
+        "advanced_gas",
+        "advancedgas",
+        "advanced-gas",
+        "idle_loop",
+        "attack"
+      ],
+      "BLOAT": [
+        "bloat",
+        "idle_loop",
+        "attack"
+      ],
+      "SUPER_GAS_BLAST": [
+        "super_gas_blast",
+        "supergasblast",
+        "super-gas-blast",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "LIVING_SHIELD",
+    "source": "animations/monsters/living_shield/living_shield",
+    "atlasUrl": "/spine/sts2/monsters/living_shield/living_shield.atlas",
+    "binaryUrl": "/spine/sts2/monsters/living_shield/living_shield.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/living_shield/living_shield.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "barricade_hurt",
+      "barricade_loop",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SHIELD_SLAM": [
+        "shield_slam",
+        "shieldslam",
+        "shield-slam",
+        "attack",
+        "idle_loop"
+      ],
+      "SMASH": [
+        "smash",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {
+      "SHIELD_SLAM": [
+        {
+          "id": "VFX_MECHA_KNIGHT_SHIELD",
+          "folder": "vfx_mecha_knight_shield",
+          "source": "animations/vfx/vfx_mecha_knight_shield/mecha_knight_shield",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_mecha_knight_shield/mecha_knight_shield.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/mecha_knight_shield.png"
+          ],
+          "animations": [
+            "activate",
+            "deactivate",
+            "idle_loop",
+            "off",
+            "_layers/spin"
+          ],
+          "idleAnimation": "idle_loop",
+          "durationSeconds": 0.938,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "LOUSE_PROGENITOR",
+    "source": "animations/monsters/louse_progenitor/louse_progenitor",
+    "atlasUrl": "/spine/sts2/monsters/louse_progenitor/louse_progenitor.atlas",
+    "binaryUrl": "/spine/sts2/monsters/louse_progenitor/louse_progenitor.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/louse_progenitor/louse_progenitor.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_web",
+      "curl",
+      "curled_loop",
+      "die",
+      "die_curled",
+      "hurt",
+      "idle_loop",
+      "uncurl"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "WEB_CANNON": [
+        "web_cannon",
+        "webcannon",
+        "web-cannon",
+        "idle_loop",
+        "attack"
+      ],
+      "POUNCE": [
+        "pounce",
+        "idle_loop",
+        "attack"
+      ],
+      "CURL_AND_GROW": [
+        "curl_and_grow",
+        "curlandgrow",
+        "curl-and-grow",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "MAGI_KNIGHT",
+    "source": "animations/monsters/magi_knight/magi_knight",
+    "atlasUrl": "/spine/sts2/monsters/magi_knight/magi_knight.atlas",
+    "binaryUrl": "/spine/sts2/monsters/magi_knight/magi_knight.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/magi_knight/magi_knight.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_bomb",
+      "attack_ram",
+      "cast_shield",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "POWER_SHIELD": [
+        "power_shield",
+        "powershield",
+        "power-shield",
+        "cast_shield",
+        "idle_loop",
+        "attack_bomb"
+      ],
+      "DAMPEN": [
+        "dampen",
+        "idle_loop",
+        "attack_bomb"
+      ],
+      "MAGIC_BOMB": [
+        "magic_bomb",
+        "magicbomb",
+        "magic-bomb",
+        "idle_loop",
+        "attack_bomb"
+      ],
+      "RAM": [
+        "ram",
+        "attack_ram",
+        "idle_loop",
+        "attack_bomb"
+      ]
+    },
+    "moveEffects": {
+      "POWER_SHIELD": [
+        {
+          "id": "VFX_MECHA_KNIGHT_SHIELD",
+          "folder": "vfx_mecha_knight_shield",
+          "source": "animations/vfx/vfx_mecha_knight_shield/mecha_knight_shield",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_mecha_knight_shield/mecha_knight_shield.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/mecha_knight_shield.png"
+          ],
+          "animations": [
+            "activate",
+            "deactivate",
+            "idle_loop",
+            "off",
+            "_layers/spin"
+          ],
+          "idleAnimation": "idle_loop",
+          "durationSeconds": 0.938,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "MAWLER",
+    "source": "animations/monsters/mawler/mawler",
+    "atlasUrl": "/spine/sts2/monsters/mawler/mawler.atlas",
+    "binaryUrl": "/spine/sts2/monsters/mawler/mawler.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/mawler/mawler.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "hurt",
+      "idle_loop",
+      "roar"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "RIP_AND_TEAR": [
+        "rip_and_tear",
+        "ripandtear",
+        "rip-and-tear",
+        "idle_loop",
+        "attack"
+      ],
+      "ROAR": [
+        "roar",
+        "idle_loop",
+        "attack"
+      ],
+      "CLAW": [
+        "claw",
+        "attack",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {
+      "CLAW": [
+        {
+          "id": "VFX_SCRATCH",
+          "folder": "vfx_scratch",
+          "source": "animations/vfx/vfx_scratch/scratch",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/scratch.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "MECHA_KNIGHT",
+    "source": "animations/monsters/mecha_knight/mecha_knight",
+    "atlasUrl": "/spine/sts2/monsters/mecha_knight/mecha_knight.atlas",
+    "binaryUrl": "/spine/sts2/monsters/mecha_knight/mecha_knight.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/mecha_knight/mecha_knight.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_cleave",
+      "attack_flame",
+      "charge",
+      "die",
+      "hurt",
+      "hurt_wound",
+      "idle_loop",
+      "idle_loop_wound",
+      "wind_up"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "CHARGE": [
+        "charge",
+        "idle_loop",
+        "attack_cleave"
+      ],
+      "FLAMETHROWER": [
+        "flamethrower",
+        "attack_cleave",
+        "attack_flame",
+        "idle_loop"
+      ],
+      "WINDUP": [
+        "windup",
+        "idle_loop",
+        "attack_cleave"
+      ],
+      "HEAVY_CLEAVE": [
+        "heavy_cleave",
+        "heavycleave",
+        "heavy-cleave",
+        "idle_loop",
+        "attack_cleave"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "MYTE",
+    "source": "animations/monsters/myte/myte",
+    "atlasUrl": "/spine/sts2/monsters/myte/myte.atlas",
+    "binaryUrl": "/spine/sts2/monsters/myte/myte.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/myte/myte.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop",
+      "suck"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "TOXIC": [
+        "toxic",
+        "idle_loop",
+        "attack"
+      ],
+      "BITE": [
+        "bite",
+        "attack",
+        "idle_loop"
+      ],
+      "SUCK": [
+        "suck",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "NIBBIT",
+    "source": "animations/monsters/nibbit/nibbit",
+    "atlasUrl": "/spine/sts2/monsters/nibbit/nibbit.atlas",
+    "binaryUrl": "/spine/sts2/monsters/nibbit/nibbit.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/nibbit/nibbit.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "hiss",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "BUTT": [
+        "butt",
+        "idle_loop",
+        "attack"
+      ],
+      "HISS": [
+        "hiss",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "NOISEBOT",
+    "source": "animations/monsters/noisebot/noisebot",
+    "atlasUrl": "/spine/sts2/monsters/noisebot/noisebot.atlas",
+    "binaryUrl": "/spine/sts2/monsters/noisebot/noisebot.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/noisebot/noisebot.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "appear",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "NOISE": [
+        "noise",
+        "idle_loop",
+        "appear"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "OSTY",
+    "source": "animations/monsters/osty/osty",
+    "atlasUrl": "/spine/sts2/monsters/osty/osty.atlas",
+    "binaryUrl": "/spine/sts2/monsters/osty/osty.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/osty/osty.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_poke",
+      "dead_loop",
+      "die",
+      "hurt",
+      "idle_loop",
+      "revive",
+      "_ignore/attack_poke_med_speed",
+      "_ignore/attack_wrestling",
+      "_ignore/idle_loop_natural",
+      "_ignore/wave_gravy"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "NOTHING": [
+        "nothing",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "OVICOPTER",
+    "source": "animations/monsters/ovicopter/ovicopter",
+    "atlasUrl": "/spine/sts2/monsters/ovicopter/ovicopter.atlas",
+    "binaryUrl": "/spine/sts2/monsters/ovicopter/ovicopter.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/ovicopter/ovicopter.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "buff",
+      "die",
+      "hurt",
+      "idle_loop",
+      "lay"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "LAY_EGGS": [
+        "lay_eggs",
+        "layeggs",
+        "lay-eggs",
+        "idle_loop",
+        "attack"
+      ],
+      "SMASH": [
+        "smash",
+        "idle_loop",
+        "attack"
+      ],
+      "NUTRITIONAL_PASTE": [
+        "nutritional_paste",
+        "nutritionalpaste",
+        "nutritional-paste",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "OWL_MAGISTRATE",
+    "source": "animations/monsters/owl_magistrate/owl_magistrate",
+    "atlasUrl": "/spine/sts2/monsters/owl_magistrate/owl_magistrate.atlas",
+    "binaryUrl": "/spine/sts2/monsters/owl_magistrate/owl_magistrate.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/owl_magistrate/owl_magistrate.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_dive",
+      "attack_peck",
+      "die",
+      "die_flying",
+      "fly_loop",
+      "hurt",
+      "hurt_flying",
+      "idle_loop",
+      "take_off"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "MAGISTRATE_SCRUTINY": [
+        "magistrate_scrutiny",
+        "magistratescrutiny",
+        "magistrate-scrutiny",
+        "idle_loop",
+        "attack_dive"
+      ],
+      "PECK_ASSAULT": [
+        "peck_assault",
+        "peckassault",
+        "peck-assault",
+        "attack_dive",
+        "attack_peck",
+        "idle_loop"
+      ],
+      "JUDICIAL_FLIGHT": [
+        "judicial_flight",
+        "judicialflight",
+        "judicial-flight",
+        "idle_loop",
+        "attack_dive"
+      ],
+      "VERDICT": [
+        "verdict",
+        "idle_loop",
+        "attack_dive"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "PAELS_LEGION",
+    "source": "animations/monsters/paels_legion/paels_legion",
+    "atlasUrl": "/spine/sts2/monsters/paels_legion/paels_legion.atlas",
+    "binaryUrl": "/spine/sts2/monsters/paels_legion/paels_legion.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/paels_legion/paels_legion.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default",
+      "eyes",
+      "horns",
+      "spikes",
+      "wing"
+    ],
+    "animations": [
+      "block",
+      "block_dive",
+      "block_loop",
+      "idle_loop",
+      "sleep",
+      "sleep_loop",
+      "wake_up",
+      "_ignore/pile_rigging"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "NOTHING": [
+        "nothing",
+        "idle_loop",
+        "block"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "PARAFRIGHT",
+    "source": "animations/monsters/parafright/parafright",
+    "atlasUrl": "/spine/sts2/monsters/parafright/parafright.atlas",
+    "binaryUrl": "/spine/sts2/monsters/parafright/parafright.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/parafright/parafright.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "hurt",
+      "hurt_stunned",
+      "idle_loop",
+      "spawn",
+      "stun",
+      "stunned_loop",
+      "wake_up"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SLAM": [
+        "slam",
+        "attack",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "PHANTASMAL_GARDENER",
+    "source": "animations/monsters/phantasmal_gardener/phantasmal_gardener",
+    "atlasUrl": "/spine/sts2/monsters/phantasmal_gardener/phantasmal_gardener.atlas",
+    "binaryUrl": "/spine/sts2/monsters/phantasmal_gardener/phantasmal_gardener.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/phantasmal_gardener/phantasmal_gardener.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default",
+      "short",
+      "tall"
+    ],
+    "animations": [
+      "attack",
+      "attack_multi",
+      "block_end",
+      "block_loop",
+      "block_start",
+      "buff",
+      "die",
+      "hurt",
+      "hurt_extended",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "BITE": [
+        "bite",
+        "attack",
+        "attack_multi",
+        "idle_loop"
+      ],
+      "LASH": [
+        "lash",
+        "idle_loop",
+        "attack"
+      ],
+      "FLAIL": [
+        "flail",
+        "idle_loop",
+        "attack"
+      ],
+      "ENLARGE": [
+        "enlarge",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "PHROG_PARASITE",
+    "source": "animations/monsters/phrog_parasite/phrog_parasite",
+    "atlasUrl": "/spine/sts2/monsters/phrog_parasite/phrog_parasite.atlas",
+    "binaryUrl": "/spine/sts2/monsters/phrog_parasite/phrog_parasite.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/phrog_parasite/phrog_parasite.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "INFECT": [
+        "infect",
+        "idle_loop",
+        "attack"
+      ],
+      "LASH": [
+        "lash",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "PUNCH_CONSTRUCT",
+    "source": "animations/monsters/punch_construct/punch_construct",
+    "atlasUrl": "/spine/sts2/monsters/punch_construct/punch_construct.atlas",
+    "binaryUrl": "/spine/sts2/monsters/punch_construct/punch_construct.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/punch_construct/punch_construct.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_double",
+      "block",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "READY": [
+        "ready",
+        "idle_loop",
+        "attack"
+      ],
+      "STRONG_PUNCH": [
+        "strong_punch",
+        "strongpunch",
+        "strong-punch",
+        "attack",
+        "attack_double",
+        "idle_loop"
+      ],
+      "FAST_PUNCH": [
+        "fast_punch",
+        "fastpunch",
+        "fast-punch",
+        "attack",
+        "attack_double",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "QUEEN",
+    "source": "animations/monsters/queen/queen",
+    "atlasUrl": "/spine/sts2/monsters/queen/queen.atlas",
+    "binaryUrl": "/spine/sts2/monsters/queen/queen.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/queen/queen.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop",
+      "tracks/empty",
+      "tracks/writhe"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "YOU_ARE_MINE": [
+        "you_are_mine",
+        "youaremine",
+        "you-are-mine",
+        "idle_loop",
+        "attack"
+      ],
+      "OFF_WITH_YOUR_HEAD": [
+        "off_with_your_head",
+        "offwithyourhead",
+        "off-with-your-head",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SCROLL_OF_BITING",
+    "source": "animations/monsters/scroll_of_biting/scroll_of_biting",
+    "atlasUrl": "/spine/sts2/monsters/scroll_of_biting/scroll_of_biting.atlas",
+    "binaryUrl": "/spine/sts2/monsters/scroll_of_biting/scroll_of_biting.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/scroll_of_biting/scroll_of_biting.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default",
+      "skin1",
+      "skin2"
+    ],
+    "animations": [
+      "attack",
+      "attack_double",
+      "buff",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "CHOMP": [
+        "chomp",
+        "idle_loop",
+        "attack"
+      ],
+      "CHEW": [
+        "chew",
+        "idle_loop",
+        "attack"
+      ],
+      "MORE_TEETH": [
+        "more_teeth",
+        "moreteeth",
+        "more-teeth",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SEAPUNK",
+    "source": "animations/monsters/seapunk/seapunk",
+    "atlasUrl": "/spine/sts2/monsters/seapunk/seapunk.atlas",
+    "binaryUrl": "/spine/sts2/monsters/seapunk/seapunk.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/seapunk/seapunk.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_multi",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SEA_KICK": [
+        "sea_kick",
+        "seakick",
+        "sea-kick",
+        "idle_loop",
+        "attack"
+      ],
+      "SPINNING_KICK": [
+        "spinning_kick",
+        "spinningkick",
+        "spinning-kick",
+        "idle_loop",
+        "attack"
+      ],
+      "BUBBLE_BURP": [
+        "bubble_burp",
+        "bubbleburp",
+        "bubble-burp",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SEWER_CLAM",
+    "source": "animations/monsters/sewer_clam/sewer_clam",
+    "atlasUrl": "/spine/sts2/monsters/sewer_clam/sewer_clam.atlas",
+    "binaryUrl": "/spine/sts2/monsters/sewer_clam/sewer_clam.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/sewer_clam/sewer_clam.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "buff",
+      "die",
+      "hurt",
+      "idle_loop",
+      "_ignore/attack_straight",
+      "_ignore/die_slower",
+      "_ignore/mouth_back_riggin"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "PRESSURIZE": [
+        "pressurize",
+        "idle_loop",
+        "attack"
+      ],
+      "JET": [
+        "jet",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SHRINKER_BEETLE",
+    "source": "animations/monsters/shrinker_beetle/shrinker_beetle",
+    "atlasUrl": "/spine/sts2/monsters/shrinker_beetle/shrinker_beetle.atlas",
+    "binaryUrl": "/spine/sts2/monsters/shrinker_beetle/shrinker_beetle.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/shrinker_beetle/shrinker_beetle.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SHRINKER": [
+        "shrinker",
+        "idle_loop",
+        "attack"
+      ],
+      "CHOMP": [
+        "chomp",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SKULKING_COLONY",
+    "source": "animations/monsters/skulking_colony/skulking_colony",
+    "atlasUrl": "/spine/sts2/monsters/skulking_colony/skulking_colony.atlas",
+    "binaryUrl": "/spine/sts2/monsters/skulking_colony/skulking_colony.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/skulking_colony/skulking_colony.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_buff",
+      "attack_double",
+      "attack_heavy",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SMASH": [
+        "smash",
+        "idle_loop",
+        "attack"
+      ],
+      "ZOOM": [
+        "zoom",
+        "idle_loop",
+        "attack"
+      ],
+      "INERTIA": [
+        "inertia",
+        "idle_loop",
+        "attack"
+      ],
+      "PIERCING_STABS": [
+        "piercing_stabs",
+        "piercingstabs",
+        "piercing-stabs",
+        "attack",
+        "attack_buff",
+        "attack_double",
+        "attack_heavy",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SLIMED_BERSERKER",
+    "source": "animations/monsters/slimed_berserker/slimed_berserker",
+    "atlasUrl": "/spine/sts2/monsters/slimed_berserker/slimed_berserker.atlas",
+    "binaryUrl": "/spine/sts2/monsters/slimed_berserker/slimed_berserker.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/slimed_berserker/slimed_berserker.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "hug",
+      "hurt",
+      "idle_loop",
+      "vomit"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "VOMIT_ICHOR": [
+        "vomit_ichor",
+        "vomitichor",
+        "vomit-ichor",
+        "idle_loop",
+        "attack"
+      ],
+      "LEECHING_HUG": [
+        "leeching_hug",
+        "leechinghug",
+        "leeching-hug",
+        "idle_loop",
+        "attack"
+      ],
+      "FURIOUS_PUMMELING": [
+        "furious_pummeling",
+        "furiouspummeling",
+        "furious-pummeling",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SLITHERING_STRANGLER",
+    "source": "animations/monsters/slithering_strangler/slithering_strangler",
+    "atlasUrl": "/spine/sts2/monsters/slithering_strangler/slithering_strangler.atlas",
+    "binaryUrl": "/spine/sts2/monsters/slithering_strangler/slithering_strangler.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/slithering_strangler/slithering_strangler.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_defend",
+      "constrict",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "CONSTRICT": [
+        "constrict",
+        "idle_loop",
+        "attack"
+      ],
+      "THWACK": [
+        "thwack",
+        "idle_loop",
+        "attack"
+      ],
+      "LASH": [
+        "lash",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SLUDGE_SPINNER",
+    "source": "animations/monsters/sludge_spinner/sludge_spinner",
+    "atlasUrl": "/spine/sts2/monsters/sludge_spinner/sludge_spinner.atlas",
+    "binaryUrl": "/spine/sts2/monsters/sludge_spinner/sludge_spinner.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/sludge_spinner/sludge_spinner.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "die",
+      "hurt",
+      "idle_loop",
+      "skittish_loop",
+      "slam",
+      "spray",
+      "_tracks/ooze"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "OIL_SPRAY": [
+        "oil_spray",
+        "oilspray",
+        "oil-spray",
+        "idle_loop",
+        "die"
+      ],
+      "SLAM": [
+        "slam",
+        "idle_loop",
+        "die"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SLUMBERING_BEETLE",
+    "source": "animations/monsters/slumbering_beetle/slumberingbeetle",
+    "atlasUrl": "/spine/sts2/monsters/slumbering_beetle/slumberingbeetle.atlas",
+    "binaryUrl": "/spine/sts2/monsters/slumbering_beetle/slumberingbeetle.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/slumbering_beetle/slumberingbeetle.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop",
+      "roll",
+      "sleep_die",
+      "sleep_loop",
+      "wake_up"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SNORE": [
+        "snore",
+        "idle_loop",
+        "attack"
+      ],
+      "ROLL_OUT": [
+        "roll_out",
+        "rollout",
+        "roll-out",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SNAPPING_JAXFRUIT",
+    "source": "animations/monsters/snapping_jaxfruit/snapping_jaxfruit",
+    "atlasUrl": "/spine/sts2/monsters/snapping_jaxfruit/snapping_jaxfruit.atlas",
+    "binaryUrl": "/spine/sts2/monsters/snapping_jaxfruit/snapping_jaxfruit.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/snapping_jaxfruit/snapping_jaxfruit.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "cast",
+      "charged_loop",
+      "charge_up",
+      "die",
+      "hurt",
+      "hurt_empty",
+      "idle_loop",
+      "idle_loop_empty"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "ENERGY_ORB": [
+        "energy_orb",
+        "energyorb",
+        "energy-orb",
+        "idle_loop",
+        "cast"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SNEAKY_GREMLIN",
+    "source": "animations/monsters/sneaky_gremlin/sneaky_gremlin",
+    "atlasUrl": "/spine/sts2/monsters/sneaky_gremlin/sneaky_gremlin.atlas",
+    "binaryUrl": "/spine/sts2/monsters/sneaky_gremlin/sneaky_gremlin.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/sneaky_gremlin/sneaky_gremlin.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "awake_loop",
+      "die",
+      "hurt_awake",
+      "hurt_stunned",
+      "spawn",
+      "stunned_loop",
+      "wake_up"
+    ],
+    "idleAnimation": "awake_loop",
+    "moveAnimations": {
+      "SPAWNED": [
+        "spawned",
+        "spawn",
+        "wake_up",
+        "awake_loop",
+        "attack"
+      ],
+      "TACKLE": [
+        "tackle",
+        "awake_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SOUL_FYSH",
+    "source": "animations/monsters/soul_fysh/soul_fysh",
+    "atlasUrl": "/spine/sts2/monsters/soul_fysh/soul_fysh.atlas",
+    "binaryUrl": "/spine/sts2/monsters/soul_fysh/soul_fysh.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/soul_fysh/soul_fysh.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_beckon",
+      "attack_debuff",
+      "attack_heavy",
+      "beckon",
+      "die",
+      "die_intangible",
+      "hurt",
+      "hurt_intangible",
+      "idle_loop",
+      "intangible_end",
+      "intangible_loop",
+      "intangible_start"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "BECKON": [
+        "beckon",
+        "attack_beckon",
+        "idle_loop"
+      ],
+      "DE_GAS": [
+        "de_gas",
+        "degas",
+        "de-gas",
+        "idle_loop",
+        "attack_beckon"
+      ],
+      "GAZE": [
+        "gaze",
+        "attack_debuff",
+        "idle_loop",
+        "attack_beckon"
+      ],
+      "FADE": [
+        "fade",
+        "idle_loop",
+        "attack_beckon"
+      ],
+      "SCREAM": [
+        "scream",
+        "idle_loop",
+        "attack_beckon"
+      ]
+    },
+    "moveEffects": {
+      "GAZE": [
+        {
+          "id": "VFX_GAZE",
+          "folder": "vfx_gaze",
+          "source": "animations/vfx/vfx_gaze/gaze",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_gaze/gaze.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/gaze.png"
+          ],
+          "animations": [
+            "chain"
+          ],
+          "idleAnimation": "chain",
+          "durationSeconds": 0.5,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "SOUL_NEXUS",
+    "source": "animations/monsters/soul_nexus/soulnexus",
+    "atlasUrl": "/spine/sts2/monsters/soul_nexus/soulnexus.atlas",
+    "binaryUrl": "/spine/sts2/monsters/soul_nexus/soulnexus.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/soul_nexus/soulnexus.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop",
+      "tracks/empty",
+      "tracks/writhe"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SOUL_BURN": [
+        "soul_burn",
+        "soulburn",
+        "soul-burn",
+        "idle_loop",
+        "attack"
+      ],
+      "DRAIN_LIFE": [
+        "drain_life",
+        "drainlife",
+        "drain-life",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SPECTRAL_KNIGHT",
+    "source": "animations/monsters/spectral_knight/spectral_knight",
+    "atlasUrl": "/spine/sts2/monsters/spectral_knight/spectral_knight.atlas",
+    "binaryUrl": "/spine/sts2/monsters/spectral_knight/spectral_knight.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/spectral_knight/spectral_knight.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_flame",
+      "attack_sword",
+      "debuff",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "HEX": [
+        "hex",
+        "idle_loop",
+        "attack_flame"
+      ],
+      "SOUL_SLASH": [
+        "soul_slash",
+        "soulslash",
+        "soul-slash",
+        "attack_flame",
+        "attack_sword",
+        "idle_loop"
+      ],
+      "SOUL_FLAME": [
+        "soul_flame",
+        "soulflame",
+        "soul-flame",
+        "idle_loop",
+        "attack_flame"
+      ]
+    },
+    "moveEffects": {
+      "SOUL_SLASH": [
+        {
+          "id": "VFX_FLYING_SLASH",
+          "folder": "vfx_flying_slash",
+          "source": "animations/vfx/vfx_flying_slash/flying_slash",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_flying_slash/flying_slash.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/flying_slash.png"
+          ],
+          "animations": [
+            "chain"
+          ],
+          "idleAnimation": "chain",
+          "durationSeconds": 0.5,
+          "usable": true
+        },
+        {
+          "id": "VFX_SCRATCH",
+          "folder": "vfx_scratch",
+          "source": "animations/vfx/vfx_scratch/scratch",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/scratch.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "SPINY_TOAD",
+    "source": "animations/monsters/spiny_toad/spinytoad",
+    "atlasUrl": "/spine/sts2/monsters/spiny_toad/spinytoad.atlas",
+    "binaryUrl": "/spine/sts2/monsters/spiny_toad/spinytoad.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/spiny_toad/spinytoad.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "die",
+      "die_naked",
+      "explode",
+      "hurt",
+      "hurt_naked",
+      "idle_loop",
+      "idle_naked_loop",
+      "lick",
+      "protrude"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "PROTRUDING_SPIKES": [
+        "protruding_spikes",
+        "protrudingspikes",
+        "protruding-spikes",
+        "idle_loop",
+        "die"
+      ],
+      "SPIKE_EXPLOSION": [
+        "spike_explosion",
+        "spikeexplosion",
+        "spike-explosion",
+        "idle_loop",
+        "die"
+      ],
+      "TONGUE_LASH": [
+        "tongue_lash",
+        "tonguelash",
+        "tongue-lash",
+        "idle_loop",
+        "die"
+      ]
+    },
+    "moveEffects": {
+      "SPIKE_EXPLOSION": [
+        {
+          "id": "VFX_KAISER_CRAB_BOSS_EXPLOSION",
+          "folder": "vfx_kaiser_crab_boss_explosion",
+          "source": "animations/vfx/vfx_kaiser_crab_boss_explosion/infested_boss_explosion",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_kaiser_crab_boss_explosion/infested_boss_explosion.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/infested_boss_explosion.png"
+          ],
+          "animations": [
+            "chain"
+          ],
+          "idleAnimation": "chain",
+          "durationSeconds": 0.5,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "STABBOT",
+    "source": "animations/monsters/stabbot/stabbot",
+    "atlasUrl": "/spine/sts2/monsters/stabbot/stabbot.atlas",
+    "binaryUrl": "/spine/sts2/monsters/stabbot/stabbot.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/stabbot/stabbot.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "appear",
+      "attack",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "STAB": [
+        "stab",
+        "attack",
+        "idle_loop",
+        "appear"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "TERROR_EEL",
+    "source": "animations/monsters/terror_eel/terror_eel",
+    "atlasUrl": "/spine/sts2/monsters/terror_eel/terror_eel.atlas",
+    "binaryUrl": "/spine/sts2/monsters/terror_eel/terror_eel.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/terror_eel/terror_eel.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_triple",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "CRASH": [
+        "crash",
+        "idle_loop",
+        "attack"
+      ],
+      "THRASH": [
+        "thrash",
+        "idle_loop",
+        "attack"
+      ],
+      "TERROR": [
+        "terror",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "TEST_SUBJECT",
+    "source": "animations/monsters/test_subject/test_subject",
+    "atlasUrl": "/spine/sts2/monsters/test_subject/test_subject.atlas",
+    "binaryUrl": "/spine/sts2/monsters/test_subject/test_subject.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/test_subject/test_subject.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "--knockout3",
+      "attack_big1",
+      "attack_big2",
+      "attack_big3",
+      "attack_double1",
+      "attack_double2",
+      "attack_double3",
+      "burn",
+      "die",
+      "heal1",
+      "heal2",
+      "heal3",
+      "hurt1",
+      "hurt2",
+      "hurt3",
+      "idle_loop1",
+      "idle_loop2",
+      "idle_loop3",
+      "knocked_out_loop1",
+      "knocked_out_loop2",
+      "knockout1",
+      "knockout2",
+      "regenerate1",
+      "regenerate2"
+    ],
+    "idleAnimation": "idle_loop1",
+    "moveAnimations": {
+      "RESPAWN": [
+        "respawn",
+        "idle_loop1",
+        "--knockout3"
+      ],
+      "MULTI_CLAW": [
+        "multi_claw",
+        "multiclaw",
+        "multi-claw",
+        "attack_big1",
+        "attack_big2",
+        "attack_big3",
+        "attack_double1",
+        "attack_double2",
+        "attack_double3",
+        "idle_loop1",
+        "--knockout3"
+      ],
+      "BIG_POUNCE": [
+        "big_pounce",
+        "bigpounce",
+        "big-pounce",
+        "idle_loop1",
+        "--knockout3"
+      ],
+      "BURNING_GROWL": [
+        "burning_growl",
+        "burninggrowl",
+        "burning-growl",
+        "heal1",
+        "heal2",
+        "heal3",
+        "regenerate1",
+        "regenerate2",
+        "idle_loop1",
+        "--knockout3"
+      ]
+    },
+    "moveEffects": {
+      "MULTI_CLAW": [
+        {
+          "id": "VFX_SCRATCH",
+          "folder": "vfx_scratch",
+          "source": "animations/vfx/vfx_scratch/scratch",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/scratch.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "THE_FORGOTTEN",
+    "source": "animations/monsters/the_forgotten/the_forgotten",
+    "atlasUrl": "/spine/sts2/monsters/the_forgotten/the_forgotten.atlas",
+    "binaryUrl": "/spine/sts2/monsters/the_forgotten/the_forgotten.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/the_forgotten/the_forgotten.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "debuff",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "MIASMA": [
+        "miasma",
+        "idle_loop",
+        "attack"
+      ],
+      "DREAD": [
+        "dread",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "THE_INSATIABLE",
+    "source": "animations/monsters/the_insatiable/the_insatiable",
+    "atlasUrl": "/spine/sts2/monsters/the_insatiable/the_insatiable.atlas",
+    "binaryUrl": "/spine/sts2/monsters/the_insatiable/the_insatiable.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/the_insatiable/the_insatiable.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_bite",
+      "attack_thrash",
+      "die",
+      "eat_player",
+      "hurt",
+      "idle_loop",
+      "intro_hurt",
+      "intro_loop",
+      "liquify_sand",
+      "salivate"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "LIQUIFY_GROUND": [
+        "liquify_ground",
+        "liquifyground",
+        "liquify-ground",
+        "idle_loop",
+        "attack_bite"
+      ],
+      "THRASH": [
+        "thrash",
+        "attack_thrash",
+        "idle_loop",
+        "attack_bite"
+      ],
+      "THRASH_MOVE_2": [
+        "thrash_move_2",
+        "thrashmove2",
+        "thrash-move-2",
+        "idle_loop",
+        "attack_bite"
+      ],
+      "LUNGING_BITE": [
+        "lunging_bite",
+        "lungingbite",
+        "lunging-bite",
+        "attack_bite",
+        "attack_thrash",
+        "idle_loop"
+      ],
+      "SALIVATE": [
+        "salivate",
+        "idle_loop",
+        "attack_bite"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "THE_LOST",
+    "source": "animations/monsters/the_lost/the_lost",
+    "atlasUrl": "/spine/sts2/monsters/the_lost/the_lost.atlas",
+    "binaryUrl": "/spine/sts2/monsters/the_lost/the_lost.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/the_lost/the_lost.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "debuff",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "DEBILITATING_SMOG": [
+        "debilitating_smog",
+        "debilitatingsmog",
+        "debilitating-smog",
+        "idle_loop",
+        "attack"
+      ],
+      "EYE_LASERS": [
+        "eye_lasers",
+        "eyelasers",
+        "eye-lasers",
+        "attack",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {
+      "EYE_LASERS": [
+        {
+          "id": "VFX_LASER",
+          "folder": "vfx_laser",
+          "source": "animations/vfx/vfx_laser/laser",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/laser.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "THE_OBSCURA",
+    "source": "animations/monsters/the_obscura/the_obscura",
+    "atlasUrl": "/spine/sts2/monsters/the_obscura/the_obscura.atlas",
+    "binaryUrl": "/spine/sts2/monsters/the_obscura/the_obscura.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/the_obscura/the_obscura.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "cast_intro",
+      "die",
+      "die_intro",
+      "hurt",
+      "hurt_intro",
+      "idle_loop",
+      "intro_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "ILLUSION": [
+        "illusion",
+        "idle_loop",
+        "attack"
+      ],
+      "SAIL": [
+        "sail",
+        "idle_loop",
+        "attack"
+      ],
+      "HARDENING_STRIKE": [
+        "hardening_strike",
+        "hardeningstrike",
+        "hardening-strike",
+        "attack",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "THIEVING_HOPPER",
+    "source": "animations/monsters/thieving_hopper/thievinghopper",
+    "atlasUrl": "/spine/sts2/monsters/thieving_hopper/thievinghopper.atlas",
+    "binaryUrl": "/spine/sts2/monsters/thieving_hopper/thievinghopper.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/thieving_hopper/thievinghopper.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_hover",
+      "die",
+      "flee",
+      "flee_hover",
+      "hover_loop",
+      "hurt",
+      "hurt_hover",
+      "idle_loop",
+      "land",
+      "steal",
+      "take_off",
+      "_ignore/attack_hover_classic"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "THIEVERY": [
+        "thievery",
+        "idle_loop",
+        "attack"
+      ],
+      "NAB": [
+        "nab",
+        "idle_loop",
+        "attack"
+      ],
+      "HAT_TRICK": [
+        "hat_trick",
+        "hattrick",
+        "hat-trick",
+        "idle_loop",
+        "attack"
+      ],
+      "FLUTTER": [
+        "flutter",
+        "idle_loop",
+        "attack"
+      ],
+      "ESCAPE": [
+        "escape",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "TOADPOLE",
+    "source": "animations/monsters/toadpole/toadpole",
+    "atlasUrl": "/spine/sts2/monsters/toadpole/toadpole.atlas",
+    "binaryUrl": "/spine/sts2/monsters/toadpole/toadpole.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/toadpole/toadpole.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default",
+      "eye1",
+      "eye2",
+      "pattern1",
+      "pattern2"
+    ],
+    "animations": [
+      "attack_single",
+      "attack_single_buffed",
+      "attack_triple",
+      "attack_triple_buffed",
+      "buff",
+      "die",
+      "die_buffed",
+      "hurt",
+      "hurt_buffed",
+      "idle_loop",
+      "idle_loop_buffed"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SPIKE_SPIT": [
+        "spike_spit",
+        "spikespit",
+        "spike-spit",
+        "idle_loop",
+        "attack_single"
+      ],
+      "WHIRL": [
+        "whirl",
+        "idle_loop",
+        "attack_single"
+      ],
+      "SPIKEN": [
+        "spiken",
+        "idle_loop",
+        "attack_single"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "TORCH_HEAD_AMALGAM",
+    "source": "animations/monsters/torch_head_amalgam/torch_head_amalgam",
+    "atlasUrl": "/spine/sts2/monsters/torch_head_amalgam/torch_head_amalgam.atlas",
+    "binaryUrl": "/spine/sts2/monsters/torch_head_amalgam/torch_head_amalgam.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/torch_head_amalgam/torch_head_amalgam.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "buff",
+      "debuff",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "TACKLE": [
+        "tackle",
+        "idle_loop",
+        "attack"
+      ],
+      "TACKLE_2": [
+        "tackle_2",
+        "tackle2",
+        "tackle-2",
+        "idle_loop",
+        "attack"
+      ],
+      "BEAM": [
+        "beam",
+        "attack",
+        "idle_loop"
+      ],
+      "TACKLE_3": [
+        "tackle_3",
+        "tackle3",
+        "tackle-3",
+        "idle_loop",
+        "attack"
+      ],
+      "TACKLE_4": [
+        "tackle_4",
+        "tackle4",
+        "tackle-4",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {
+      "BEAM": [
+        {
+          "id": "VFX_LASER",
+          "folder": "vfx_laser",
+          "source": "animations/vfx/vfx_laser/laser",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/laser.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "TOUGH_EGG",
+    "source": "animations/monsters/tough_egg/tough_egg",
+    "atlasUrl": "/spine/sts2/monsters/tough_egg/tough_egg.atlas",
+    "binaryUrl": "/spine/sts2/monsters/tough_egg/tough_egg.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/tough_egg/tough_egg.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default",
+      "egg1",
+      "egg2"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "egg_die",
+      "egg_hatch",
+      "egg_hurt",
+      "egg_idle_loop",
+      "egg_spawn",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "HATCH": [
+        "hatch",
+        "egg_hatch",
+        "egg_spawn",
+        "idle_loop",
+        "attack"
+      ],
+      "NIBBLE": [
+        "nibble",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "TRACKER_RUBY_RAIDER",
+    "source": "animations/monsters/tracker_ruby_raider/ruby_raider_tracker",
+    "atlasUrl": "/spine/sts2/monsters/tracker_ruby_raider/ruby_raider_tracker.atlas",
+    "binaryUrl": "/spine/sts2/monsters/tracker_ruby_raider/ruby_raider_tracker.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/tracker_ruby_raider/ruby_raider_tracker.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "HOUNDS": [
+        "hounds",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "TUNNELER",
+    "source": "animations/monsters/tunneler/tunneler",
+    "atlasUrl": "/spine/sts2/monsters/tunneler/tunneler.atlas",
+    "binaryUrl": "/spine/sts2/monsters/tunneler/tunneler.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/tunneler/tunneler.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "burrow",
+      "die",
+      "hidden_attack",
+      "hidden_die",
+      "hidden_loop",
+      "hurt",
+      "idle_loop",
+      "stun",
+      "stunned_hurt",
+      "stunned_loop",
+      "unburrow_attack",
+      "wake_up"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "BITE": [
+        "bite",
+        "attack",
+        "hidden_attack",
+        "unburrow_attack",
+        "idle_loop"
+      ],
+      "BURROW": [
+        "burrow",
+        "unburrow_attack",
+        "idle_loop",
+        "attack"
+      ],
+      "BELOW": [
+        "below",
+        "attack",
+        "hidden_attack",
+        "unburrow_attack",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "TURRET_OPERATOR",
+    "source": "animations/monsters/turret_operator/turret_operator",
+    "atlasUrl": "/spine/sts2/monsters/turret_operator/turret_operator.atlas",
+    "binaryUrl": "/spine/sts2/monsters/turret_operator/turret_operator.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/turret_operator/turret_operator.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "crank",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "UNLOAD": [
+        "unload",
+        "idle_loop",
+        "attack"
+      ],
+      "UNLOAD_MOVE_2": [
+        "unload_move_2",
+        "unloadmove2",
+        "unload-move-2",
+        "idle_loop",
+        "attack"
+      ],
+      "RELOAD": [
+        "reload",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "TWIG_SLIME_M",
+    "source": "animations/monsters/twig_slime_m/twig_slime_m",
+    "atlasUrl": "/spine/sts2/monsters/twig_slime_m/twig_slime_m.atlas",
+    "binaryUrl": "/spine/sts2/monsters/twig_slime_m/twig_slime_m.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/twig_slime_m/twig_slime_m.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "POKEY_POUNCE": [
+        "pokey_pounce",
+        "pokeypounce",
+        "pokey-pounce",
+        "idle_loop",
+        "attack"
+      ],
+      "STICKY_SHOT": [
+        "sticky_shot",
+        "stickyshot",
+        "sticky-shot",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "TWIG_SLIME_S",
+    "source": "animations/monsters/twig_slime_s/twig_slime_s",
+    "atlasUrl": "/spine/sts2/monsters/twig_slime_s/twig_slime_s.atlas",
+    "binaryUrl": "/spine/sts2/monsters/twig_slime_s/twig_slime_s.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/twig_slime_s/twig_slime_s.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "TACKLE": [
+        "tackle",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "TWO_TAILED_RAT",
+    "source": "animations/monsters/two_tailed_rat/two_tailed_rat",
+    "atlasUrl": "/spine/sts2/monsters/two_tailed_rat/two_tailed_rat.atlas",
+    "binaryUrl": "/spine/sts2/monsters/two_tailed_rat/two_tailed_rat.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/two_tailed_rat/two_tailed_rat.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default",
+      "barnacles1",
+      "barnacles2",
+      "barnacles3",
+      "head1",
+      "head2",
+      "head3"
+    ],
+    "animations": [
+      "attack",
+      "debuff",
+      "die",
+      "hurt",
+      "idle_loop",
+      "summon"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "SCRATCH": [
+        "scratch",
+        "idle_loop",
+        "attack"
+      ],
+      "DISEASE_BITE": [
+        "disease_bite",
+        "diseasebite",
+        "disease-bite",
+        "attack",
+        "idle_loop"
+      ],
+      "SCREECH": [
+        "screech",
+        "idle_loop",
+        "attack"
+      ],
+      "CALL_FOR_BACKUP": [
+        "call_for_backup",
+        "callforbackup",
+        "call-for-backup",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {
+      "SCRATCH": [
+        {
+          "id": "VFX_SCRATCH",
+          "folder": "vfx_scratch",
+          "source": "animations/vfx/vfx_scratch/scratch",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/scratch.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "VANTOM",
+    "source": "animations/monsters/vantom/vantom",
+    "atlasUrl": "/spine/sts2/monsters/vantom/vantom.atlas",
+    "binaryUrl": "/spine/sts2/monsters/vantom/vantom.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/vantom/vantom.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_double",
+      "attack_heavy",
+      "buff",
+      "charge_up",
+      "debuff",
+      "die",
+      "hurt",
+      "idle_loop",
+      "_tracks/attack_heavy",
+      "_tracks/charged_0",
+      "_tracks/charged_1",
+      "_tracks/charged_2",
+      "_tracks/charged_3",
+      "_tracks/charge_up_1",
+      "_tracks/charge_up_2",
+      "_tracks/charge_up_3",
+      "_tracks/shrunken",
+      "_tracks/___"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "INK_BLOT": [
+        "ink_blot",
+        "inkblot",
+        "ink-blot",
+        "idle_loop",
+        "attack"
+      ],
+      "INKY_LANCE": [
+        "inky_lance",
+        "inkylance",
+        "inky-lance",
+        "idle_loop",
+        "attack"
+      ],
+      "DISMEMBER": [
+        "dismember",
+        "idle_loop",
+        "attack"
+      ],
+      "PREPARE": [
+        "prepare",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "VINE_SHAMBLER",
+    "source": "animations/monsters/vine_shambler/vine_shambler",
+    "atlasUrl": "/spine/sts2/monsters/vine_shambler/vine_shambler.atlas",
+    "binaryUrl": "/spine/sts2/monsters/vine_shambler/vine_shambler.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/vine_shambler/vine_shambler.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_chomp",
+      "attack_swipe",
+      "attack_vines",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "GRASPING_VINES": [
+        "grasping_vines",
+        "graspingvines",
+        "grasping-vines",
+        "idle_loop",
+        "attack_chomp"
+      ],
+      "SWIPE": [
+        "swipe",
+        "attack_swipe",
+        "attack_chomp",
+        "attack_vines",
+        "idle_loop"
+      ],
+      "CHOMP": [
+        "chomp",
+        "attack_chomp",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "WATERFALL_GIANT",
+    "source": "animations/monsters/waterfall_giant/waterfall_giant",
+    "atlasUrl": "/spine/sts2/monsters/waterfall_giant/waterfall_giant.atlas",
+    "binaryUrl": "/spine/sts2/monsters/waterfall_giant/waterfall_giant.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/waterfall_giant/waterfall_giant.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "attack_buff",
+      "attack_debuff",
+      "die",
+      "die_loop",
+      "erupt",
+      "heal",
+      "hurt",
+      "idle_loop",
+      "_ignore/die3",
+      "_tracks/buildup1",
+      "_tracks/buildup2",
+      "_tracks/buildup3"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "PRESSURIZE": [
+        "pressurize",
+        "idle_loop",
+        "attack"
+      ],
+      "STOMP": [
+        "stomp",
+        "idle_loop",
+        "attack"
+      ],
+      "RAM": [
+        "ram",
+        "idle_loop",
+        "attack"
+      ],
+      "PRESSURE_GUN": [
+        "pressure_gun",
+        "pressuregun",
+        "pressure-gun",
+        "idle_loop",
+        "attack"
+      ],
+      "PRESSURE_UP": [
+        "pressure_up",
+        "pressureup",
+        "pressure-up",
+        "idle_loop",
+        "attack"
+      ],
+      "ABOUT_TO_BLOW": [
+        "about_to_blow",
+        "abouttoblow",
+        "about-to-blow",
+        "idle_loop",
+        "attack"
+      ],
+      "EXPLODE": [
+        "explode",
+        "attack",
+        "attack_buff",
+        "attack_debuff",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {
+      "EXPLODE": [
+        {
+          "id": "VFX_KAISER_CRAB_BOSS_EXPLOSION",
+          "folder": "vfx_kaiser_crab_boss_explosion",
+          "source": "animations/vfx/vfx_kaiser_crab_boss_explosion/infested_boss_explosion",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_kaiser_crab_boss_explosion/infested_boss_explosion.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/infested_boss_explosion.png"
+          ],
+          "animations": [
+            "chain"
+          ],
+          "idleAnimation": "chain",
+          "durationSeconds": 0.5,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "WRIGGLER",
+    "source": "animations/monsters/wriggler/wriggler",
+    "atlasUrl": "/spine/sts2/monsters/wriggler/wriggler.atlas",
+    "binaryUrl": "/spine/sts2/monsters/wriggler/wriggler.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/wriggler/wriggler.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "die",
+      "hurt",
+      "idle_loop",
+      "_ignore/wig_c",
+      "_ignore/wig_l",
+      "_ignore/wig_r"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "WRIGGLE": [
+        "wriggle",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "ZAPBOT",
+    "source": "animations/monsters/zapbot/zapbot",
+    "atlasUrl": "/spine/sts2/monsters/zapbot/zapbot.atlas",
+    "binaryUrl": "/spine/sts2/monsters/zapbot/zapbot.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/zapbot/zapbot.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "appear",
+      "attack",
+      "die",
+      "hurt",
+      "idle_loop",
+      "_ignore/hurt_old",
+      "_ignore/idle_loop_og",
+      "_ignore/twist"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "ZAP": [
+        "zap",
+        "attack",
+        "idle_loop",
+        "appear"
+      ]
+    },
+    "moveEffects": {
+      "ZAP": [
+        {
+          "id": "VFX_LASER",
+          "folder": "vfx_laser",
+          "source": "animations/vfx/vfx_laser/laser",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/laser.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  }
+]
