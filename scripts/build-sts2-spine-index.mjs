@@ -1,0 +1,293 @@
+#!/usr/bin/env node
+import { TextureAtlas, AtlasAttachmentLoader, SkeletonBinary } from "@esotericsoftware/spine-player";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(__dirname, "..");
+const monsterRoot = path.join(repoRoot, "public/spine/sts2/monsters");
+const vfxRoot = path.join(repoRoot, "public/spine/sts2/vfx");
+const monstersPath = path.join(repoRoot, "data/sts2/eng/monsters.json");
+const outMonsterPath = path.join(repoRoot, "data/sts2/monster-spine-assets.json");
+const outVfxPath = path.join(repoRoot, "data/sts2/spine-vfx-assets.json");
+
+const MONSTER_ALIASES = {
+  BOWLBUG_EGG: { folder: "bowlbug", skin: "cocoon" },
+  BOWLBUG_NECTAR: { folder: "bowlbug", skin: "goop" },
+  BOWLBUG_ROCK: { folder: "bowlbug", skin: "rock" },
+  BOWLBUG_SILK: { folder: "bowlbug", skin: "web" },
+  CALCIFIED_CULTIST: { folder: "cultists", skin: "coral" },
+  DAMP_CULTIST: { folder: "cultists", skin: "slug" },
+  FLYCONID: { folder: "flying_mushrooms" },
+  GLOBE_HEAD: { folder: "globe_head" },
+  SKULKING_COLONY: { folder: "skulking_colony" },
+  TORCH_HEAD_AMALGAM: { folder: "torch_head_amalgam" },
+};
+
+const VFX_ALIASES = {
+  VFX_CHAIN: "vfx_chain",
+  VFX_FLYING_SLASH: "vfx_flying_slash",
+  VFX_GAZE: "vfx_gaze",
+  VFX_KAISER_CRAB_BOSS_EXPLOSION: "vfx_kaiser_crab_boss_explosion",
+  VFX_LASER: "vfx_laser",
+  VFX_MECHA_KNIGHT_SHIELD: "vfx_mecha_knight_shield",
+  VFX_SCRATCH: "vfx_scratch",
+};
+
+function readJson(filePath) {
+  return JSON.parse(fs.readFileSync(filePath, "utf8"));
+}
+
+function writeJson(filePath, data) {
+  fs.writeFileSync(filePath, `${JSON.stringify(data, null, 2)}\n`);
+}
+
+function walkActorFolders(root) {
+  if (!fs.existsSync(root)) return [];
+  return fs
+    .readdirSync(root, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+}
+
+function parseSkeleton({ folder, root, sharedAtlasFile = null }) {
+  const dir = path.join(root, folder);
+  const files = fs.readdirSync(dir);
+  const atlasFile = files.find((file) => file.endsWith(".atlas"));
+  const skelFile = files.find((file) => file.endsWith(".skel"));
+  const pngFiles = files.filter((file) => file.endsWith(".png")).sort();
+  if (!atlasFile || !skelFile) return null;
+
+  const atlasPath = sharedAtlasFile ?? path.join(dir, atlasFile);
+  const atlas = new TextureAtlas(fs.readFileSync(atlasPath, "utf8"));
+  const loader = new AtlasAttachmentLoader(atlas);
+  const binary = new SkeletonBinary(loader);
+  const skeleton = binary.readSkeletonData(fs.readFileSync(path.join(dir, skelFile)));
+
+  return {
+    folder,
+    base: skelFile.replace(/\.skel$/, ""),
+    atlasFile,
+    skelFile,
+    pngFiles,
+    version: skeleton.version,
+    skins: skeleton.skins.map((skin) => skin.name),
+    animations: skeleton.animations.map((animation) => ({
+      name: animation.name,
+      duration: Number(animation.duration.toFixed(3)),
+    })),
+  };
+}
+
+function buildActorMap(root) {
+  const actors = new Map();
+  for (const folder of walkActorFolders(root)) {
+    try {
+      const actor = parseSkeleton({ folder, root });
+      if (actor) actors.set(folder, actor);
+    } catch (error) {
+      console.warn(`Skipping ${folder}: ${error.message}`);
+    }
+  }
+  return actors;
+}
+
+function buildSharedVfxAtlas(root) {
+  const folders = walkActorFolders(root);
+  const atlasText = folders
+    .map((folder) => {
+      const dir = path.join(root, folder);
+      const atlasFile = fs.readdirSync(dir).find((file) => file.endsWith(".atlas"));
+      return atlasFile ? fs.readFileSync(path.join(dir, atlasFile), "utf8").trim() : "";
+    })
+    .filter(Boolean)
+    .join("\n\n");
+  if (!atlasText) return null;
+
+  const sharedAtlasPath = path.join(root, "spine-vfx.atlas");
+  fs.writeFileSync(sharedAtlasPath, `${atlasText}\n`);
+
+  for (const folder of folders) {
+    const dir = path.join(root, folder);
+    for (const pngFile of fs.readdirSync(dir).filter((file) => file.endsWith(".png"))) {
+      fs.copyFileSync(path.join(dir, pngFile), path.join(root, pngFile));
+    }
+  }
+  return sharedAtlasPath;
+}
+
+function buildVfxAssets() {
+  const sharedAtlasPath = buildSharedVfxAtlas(vfxRoot);
+  if (!sharedAtlasPath) return [];
+
+  const entries = [];
+  for (const folder of walkActorFolders(vfxRoot)) {
+    const dir = path.join(vfxRoot, folder);
+    const files = fs.readdirSync(dir);
+    const skelFile = files.find((file) => file.endsWith(".skel"));
+    const atlasFile = files.find((file) => file.endsWith(".atlas"));
+    const pngFiles = files.filter((file) => file.endsWith(".png")).sort();
+    if (!skelFile || !atlasFile) continue;
+
+    const id = Object.entries(VFX_ALIASES).find(([, aliasFolder]) => aliasFolder === folder)?.[0] ?? folder.toUpperCase();
+    const base = skelFile.replace(/\.skel$/, "");
+    const entry = {
+      id,
+      folder,
+      source: `animations/vfx/${folder}/${base}`,
+      atlasUrl: "/spine/sts2/vfx/spine-vfx.atlas",
+      binaryUrl: `/spine/sts2/vfx/${folder}/${skelFile}`,
+      textureUrls: pngFiles.map((file) => `/spine/sts2/vfx/${file}`),
+      animations: [],
+      idleAnimation: "",
+      durationSeconds: 0.75,
+      usable: true,
+    };
+
+    try {
+      const parsed = parseSkeleton({ folder, root: vfxRoot, sharedAtlasFile: sharedAtlasPath });
+      entry.animations = parsed.animations.map((animation) => animation.name);
+      entry.idleAnimation = chooseIdleAnimation(entry.animations);
+      entry.durationSeconds = parsed.animations[0]?.duration ?? entry.durationSeconds;
+    } catch (error) {
+      entry.usable = false;
+      entry.parseError = error.message;
+      entry.idleAnimation = base;
+    }
+    entries.push(entry);
+  }
+  return entries.sort((a, b) => a.id.localeCompare(b.id));
+}
+
+function slugFromImageUrl(imageUrl) {
+  if (!imageUrl) return null;
+  const basename = path.basename(imageUrl);
+  return basename.replace(/\.(png|webp)$/i, "");
+}
+
+function chooseIdleAnimation(animations) {
+  return (
+    animations.find((name) => name === "idle_loop") ??
+    animations.find((name) => name === "body/idle_loop") ??
+    animations.find((name) => name.endsWith("/idle_loop")) ??
+    animations.find((name) => name.startsWith("idle_loop")) ??
+    animations.find((name) => name.endsWith("_loop")) ??
+    animations[0] ??
+    ""
+  );
+}
+
+function unique(values) {
+  return [...new Set(values.filter(Boolean))];
+}
+
+function matchingAnimations(animations, needles) {
+  const loweredNeedles = needles.map((needle) => needle.toLowerCase());
+  return animations.filter((animation) => {
+    const normalized = animation.toLowerCase();
+    return loweredNeedles.some((needle) => normalized === needle || normalized.includes(needle));
+  });
+}
+
+function moveAnimationCandidates(move, animationNames, idleAnimation) {
+  const moveText = `${move.id} ${move.name}`.toLowerCase();
+  const direct = move.id.toLowerCase();
+  const normalized = direct.replaceAll("_", "-");
+  const candidates = [
+    direct,
+    direct.replaceAll("_", ""),
+    normalized,
+    ...matchingAnimations(animationNames, [direct, normalized]),
+  ];
+
+  if (/boot|wake|spawn|hatch|unburrow|rise/.test(moveText)) {
+    candidates.push(...matchingAnimations(animationNames, ["respawn", "wake_up", "spawn", "egg_hatch", "unburrow"]));
+  }
+  if (/block|shield|defend|protect/.test(moveText)) {
+    candidates.push(...matchingAnimations(animationNames, ["block_start", "block", "shield", "left/block"]));
+  }
+  if (/buff|sharpen|charge|power|grow|regenerate|heal|summon/.test(moveText)) {
+    candidates.push(...matchingAnimations(animationNames, ["sharpen", "buff", "charge_up", "charge_start", "regenerate", "heal", "summon"]));
+  }
+  if (/spit|web|goop|debuff|stun|poison|gaze/.test(moveText)) {
+    candidates.push(...matchingAnimations(animationNames, ["spit", "debuff", "stun", "gaze", "special"]));
+  }
+  if (/slam|bite|slash|claw|strike|attack|uppercut|swipe|laser|beam|zap|explode|stab|shoot|peck|throw|punch/.test(moveText)) {
+    candidates.push(...matchingAnimations(animationNames, ["attack", "slash", "claw", "bite", "laser", "beam", "explode", "stab", "punch", "special"]));
+  }
+
+  candidates.push(idleAnimation, animationNames[0]);
+  return unique(candidates);
+}
+
+function moveVfxCandidates(move, usableVfxIds) {
+  const text = `${move.id} ${move.name}`.toUpperCase();
+  const candidates = [];
+  if (/LASER|BEAM|ZAP/.test(text)) candidates.push("VFX_LASER");
+  if (/SLASH/.test(text)) candidates.push("VFX_FLYING_SLASH", "VFX_SCRATCH");
+  if (/SCRATCH|CLAW/.test(text)) candidates.push("VFX_SCRATCH");
+  if (/CHAIN|BIND/.test(text)) candidates.push("VFX_CHAIN");
+  if (/GAZE/.test(text)) candidates.push("VFX_GAZE");
+  if (/SHIELD|BLOCK/.test(text)) candidates.push("VFX_MECHA_KNIGHT_SHIELD");
+  if (/EXPLODE|EXPLOSION/.test(text)) candidates.push("VFX_KAISER_CRAB_BOSS_EXPLOSION");
+  return unique(candidates).filter((id) => usableVfxIds.has(id));
+}
+
+function buildMonsterAsset(monster, actor, skin, vfxById) {
+  const animationNames = actor.animations.map((animation) => animation.name);
+  const idleAnimation = chooseIdleAnimation(animationNames);
+  const moves = monster.bestiary_moves ?? monster.moves ?? [];
+  const usableVfxIds = new Set([...vfxById.keys()]);
+  const moveAnimations = Object.fromEntries(
+    moves.map((move) => [move.id, moveAnimationCandidates(move, animationNames, idleAnimation)]),
+  );
+  const moveEffects = Object.fromEntries(
+    moves
+      .map((move) => [move.id, moveVfxCandidates(move, usableVfxIds).map((id) => vfxById.get(id))])
+      .filter(([, effects]) => effects.length > 0),
+  );
+
+  return {
+    id: monster.id,
+    source: `animations/monsters/${actor.folder}/${actor.base}`,
+    atlasUrl: `/spine/sts2/monsters/${actor.folder}/${actor.atlasFile}`,
+    binaryUrl: `/spine/sts2/monsters/${actor.folder}/${actor.skelFile}`,
+    textureUrls: actor.pngFiles.map((file) => `/spine/sts2/monsters/${actor.folder}/${file}`),
+    skin: skin ?? null,
+    skins: actor.skins,
+    animations: animationNames,
+    idleAnimation,
+    moveAnimations,
+    moveEffects,
+  };
+}
+
+function main() {
+  const actors = buildActorMap(monsterRoot);
+  const vfxAssets = buildVfxAssets();
+  const vfxById = new Map(vfxAssets.filter((asset) => asset.usable).map((asset) => [asset.id, asset]));
+  const monsters = readJson(monstersPath).filter((monster) => monster.show_in_compendium !== false);
+  const assets = [];
+  const missing = [];
+
+  for (const monster of monsters) {
+    const alias = MONSTER_ALIASES[monster.id];
+    const folder = alias?.folder ?? slugFromImageUrl(monster.image_url);
+    const actor = folder ? actors.get(folder) : null;
+    if (!actor) {
+      missing.push(monster.id);
+      continue;
+    }
+    assets.push(buildMonsterAsset(monster, actor, alias?.skin, vfxById));
+  }
+
+  writeJson(outVfxPath, vfxAssets);
+  writeJson(outMonsterPath, assets);
+  console.log(`indexed ${assets.length} monster Spine assets (${missing.length} static fallbacks)`);
+  console.log(`indexed ${vfxAssets.length} Spine VFX assets (${vfxAssets.filter((asset) => asset.usable).length} usable)`);
+  if (missing.length > 0) console.log(`static fallback monsters: ${missing.join(", ")}`);
+}
+
+main();
