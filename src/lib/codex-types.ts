@@ -549,12 +549,31 @@ export interface MonsterMoveGraph {
   transitions: MonsterMoveTransition[];
 }
 
-export interface MonsterSpineAsset {
+export interface MonsterSpineEffectAsset {
+  id: string;
+  source: string;
   atlasUrl: string;
   binaryUrl: string;
+  textureUrls: string[];
+  animations: string[];
+  idleAnimation: string;
+  durationSeconds: number;
+  usable?: boolean;
+  parseError?: string;
+}
+
+export interface MonsterSpineAsset {
+  id: string;
+  source: string;
+  atlasUrl: string;
+  binaryUrl: string;
+  textureUrls: string[];
+  skin: string | null;
+  skins: string[];
   animations: string[];
   idleAnimation: string;
   moveAnimations: Record<string, string[]>;
+  moveEffects: Record<string, MonsterSpineEffectAsset[]>;
 }
 
 export interface CodexMonster {

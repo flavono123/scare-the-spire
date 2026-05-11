@@ -727,21 +727,6 @@ interface RawMonster {
   deprecatedInPatch?: string;
 }
 
-const MONSTER_SPINE_ASSETS: Record<string, MonsterSpineAsset> = {
-  AXEBOT: {
-    atlasUrl: "/spine/sts2/monsters/axebot/axebot.atlas",
-    binaryUrl: "/spine/sts2/monsters/axebot/axebot.skel",
-    animations: ["attack", "die", "hurt", "idle_loop", "respawn", "sharpen", "special"],
-    idleAnimation: "idle_loop",
-    moveAnimations: {
-      BOOT_UP: ["respawn", "special", "idle_loop"],
-      HAMMER_UPPERCUT: ["attack"],
-      ONE_TWO: ["attack"],
-      SHARPEN: ["sharpen"],
-    },
-  },
-};
-
 function mapMonster(
   kor: RawMonster,
   eng: RawMonster,
@@ -749,6 +734,7 @@ function mapMonster(
   bossImages: Set<string>,
   gameMonsters: GameLocalizationTable,
   gameLocale: GameLocale,
+  spineAssets: Map<string, MonsterSpineAsset>,
 ): CodexMonster {
   const engMovesById = new Map(eng.moves.map((move) => [move.id, move]));
   const mapMoves = (rawMoves: RawMonsterMove[]): MonsterMove[] => rawMoves.map((km) => {
@@ -805,7 +791,7 @@ function mapMonster(
     blockValues: kor.block_values,
     imageUrl,
     bossImageUrl,
-    spineAsset: MONSTER_SPINE_ASSETS[kor.id] ?? null,
+    spineAsset: spineAssets.get(kor.id) ?? null,
   };
 }
 
@@ -813,9 +799,10 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
   const MONSTERS_IMG_DIR = path.join(process.cwd(), "public/images/sts2/monsters-render");
   const BOSSES_IMG_DIR = path.join(process.cwd(), "public/images/sts2/bosses");
-  const [korMonsters, engMonsters, monsterFiles, bossFiles, gameMonsters] = await Promise.all([
+  const [korMonsters, engMonsters, spineAssetList, monsterFiles, bossFiles, gameMonsters] = await Promise.all([
     readJson<RawMonster[]>("kor/monsters.json"),
     readJson<RawMonster[]>("eng/monsters.json"),
+    readJson<MonsterSpineAsset[]>("monster-spine-assets.json").catch(() => []),
     fs.readdir(MONSTERS_IMG_DIR).then(
       (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
       () => new Set<string>(),
@@ -828,10 +815,11 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
   ]);
 
   const engById = new Map(engMonsters.map((m) => [m.id, m]));
+  const spineAssets = new Map(spineAssetList.map((asset) => [asset.id, asset]));
 
   return korMonsters.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters, gameLocale);
+    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters, gameLocale, spineAssets);
   });
 }
 
