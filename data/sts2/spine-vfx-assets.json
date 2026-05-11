@@ -145,5 +145,28 @@
     "idleAnimation": "animation",
     "durationSeconds": 0.347,
     "usable": true
+  },
+  {
+    "id": "VFX_SOVEREIGN_BLADE",
+    "folder": "vfx_sovereign_blade",
+    "source": "animations/vfx/vfx_sovereign_blade/soveriegn_blade",
+    "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+    "binaryUrl": "/spine/sts2/vfx/vfx_sovereign_blade/soveriegn_blade.skel",
+    "textureUrls": [
+      "/spine/sts2/vfx/sovereign_blade.png"
+    ],
+    "animations": [
+      "appear",
+      "attack",
+      "attack2",
+      "idle_demo1",
+      "idle_demo2",
+      "idle_demo3",
+      "idle_loop",
+      "idle_loop2"
+    ],
+    "idleAnimation": "idle_loop",
+    "durationSeconds": 0.9,
+    "usable": true
   }
 ]

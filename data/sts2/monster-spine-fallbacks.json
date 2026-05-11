@@ -60,16 +60,6 @@
     "reason": "No renderable animations/monsters Spine actor was found in the PCK."
   },
   {
-    "id": "DEVOTED_SCULPTOR",
-    "imageSlug": "devoted_sculptor",
-    "renderStatus": "static-only",
-    "renderTags": [
-      "no-renderable-spine-actor"
-    ],
-    "fallbackImageUrl": "/static/images/monsters/devoted_sculptor.png",
-    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
-  },
-  {
     "id": "DOOR",
     "imageSlug": "door",
     "renderStatus": "static-only",

@@ -930,6 +930,46 @@
     "moveEffects": {}
   },
   {
+    "id": "DEVOTED_SCULPTOR",
+    "source": "animations/monsters/devoted_sculptor/devoted_scultpor",
+    "renderStatus": "spine",
+    "renderTags": [],
+    "atlasUrl": "/spine/sts2/monsters/devoted_sculptor/devoted_sculptor.atlas",
+    "binaryUrl": "/spine/sts2/monsters/devoted_sculptor/devoted_scultpor.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/devoted_sculptor/devoted_sculptor.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "FORBIDDEN_INCANTATION": [
+        "forbidden_incantation",
+        "forbiddenincantation",
+        "forbidden-incantation",
+        "cast",
+        "attack",
+        "idle_loop"
+      ],
+      "SAVAGE": [
+        "savage",
+        "attack",
+        "cast",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
     "id": "ENTOMANCER",
     "source": "animations/monsters/entomancer/entomancer",
     "renderStatus": "spine",
