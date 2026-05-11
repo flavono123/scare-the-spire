@@ -50,7 +50,7 @@ export function BestiaryLibrary({
       <button
         type="button"
         onClick={() => setView("monsters")}
-        className={`px-2.5 py-1 text-xs font-medium transition-colors ${
+        className={`px-2 py-1 text-[11px] font-medium transition-colors sm:px-2.5 sm:text-xs ${
           activeView === "monsters"
             ? "rounded bg-yellow-500/20 text-yellow-300"
             : "text-gray-400 hover:text-gray-200"
@@ -61,7 +61,7 @@ export function BestiaryLibrary({
       <button
         type="button"
         onClick={() => setView("encounters")}
-        className={`px-2.5 py-1 text-xs font-medium transition-colors ${
+        className={`px-2 py-1 text-[11px] font-medium transition-colors sm:px-2.5 sm:text-xs ${
           activeView === "encounters"
             ? "rounded bg-yellow-500/20 text-yellow-300"
             : "text-gray-400 hover:text-gray-200"

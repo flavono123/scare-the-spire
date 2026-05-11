@@ -130,8 +130,8 @@ export function CodexLibraryTopBar({
         </svg>
       </button>
       <h1 className="text-base font-bold text-yellow-500 shrink-0">{title}</h1>
-      <div className="flex-1 max-w-xl mx-auto">{search}</div>
-      <span className="text-sm text-gray-500 shrink-0 tabular-nums">{count}</span>
+      <div className="min-w-0 flex-1 max-w-xl mx-auto">{search}</div>
+      <span className={`${trailing ? "hidden sm:inline" : "inline"} text-sm text-gray-500 shrink-0 tabular-nums`}>{count}</span>
       {trailing}
     </div>
   );
