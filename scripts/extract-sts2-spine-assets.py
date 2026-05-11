@@ -13,6 +13,7 @@ import json
 import re
 import shutil
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 
@@ -30,6 +31,12 @@ PCK_PREFIX_BY_KIND = {
     "monsters": "animations/monsters/",
     "vfx": "animations/vfx/",
 }
+
+
+@dataclass(frozen=True)
+class SpineActorImport:
+    skel_prefix: str
+    atlas_prefix: str
 
 
 def import_target(raw: bytes) -> str | None:
@@ -91,18 +98,47 @@ def atlas_page_names(atlas_path: Path) -> list[str]:
     return pages
 
 
-def discover_actor_prefixes(reader: PCKReader, kind: str) -> list[str]:
+def discover_actor_imports(reader: PCKReader, kind: str) -> list[SpineActorImport]:
     pck_prefix = PCK_PREFIX_BY_KIND[kind]
     prefixes = sorted(
         path[: -len(".skel.import")]
         for path in reader.entries
         if path.endswith(".skel.import") and path.startswith(pck_prefix)
     )
-    return [
-        prefix
+    exact_renderable_dirs = {
+        Path(prefix).parent.as_posix()
         for prefix in prefixes
         if f"{prefix}.atlas.import" in reader.entries and f"{prefix}.png.import" in reader.entries
-    ]
+    }
+    actors: list[SpineActorImport] = []
+    for skel_prefix in prefixes:
+        if f"{skel_prefix}.atlas.import" in reader.entries and f"{skel_prefix}.png.import" in reader.entries:
+            actors.append(SpineActorImport(skel_prefix=skel_prefix, atlas_prefix=skel_prefix))
+            continue
+
+        actor_dir = Path(skel_prefix).parent.as_posix()
+        if actor_dir in exact_renderable_dirs:
+            continue
+
+        folder_name = Path(actor_dir).name
+        preferred_prefix = f"{actor_dir}/{folder_name}"
+        if f"{preferred_prefix}.atlas.import" in reader.entries and f"{preferred_prefix}.png.import" in reader.entries:
+            actors.append(SpineActorImport(skel_prefix=skel_prefix, atlas_prefix=preferred_prefix))
+            continue
+
+        sibling_atlas_prefixes = sorted(
+            path[: -len(".atlas.import")]
+            for path in reader.entries
+            if path.endswith(".atlas.import") and Path(path).parent.as_posix() == actor_dir
+        )
+        renderable_atlas_prefixes = [
+            atlas_prefix
+            for atlas_prefix in sibling_atlas_prefixes
+            if f"{atlas_prefix}.png.import" in reader.entries
+        ]
+        if len(renderable_atlas_prefixes) == 1:
+            actors.append(SpineActorImport(skel_prefix=skel_prefix, atlas_prefix=renderable_atlas_prefixes[0]))
+    return actors
 
 
 def output_folder_for(prefix: str, kind: str, out_root: Path) -> Path:
@@ -114,18 +150,19 @@ def output_folder_for(prefix: str, kind: str, out_root: Path) -> Path:
     return out_root / kind / folder
 
 
-def extract_actor(reader: PCKReader, prefix: str, kind: str, out_root: Path) -> None:
-    base_name = Path(prefix).name
-    actor_dir = Path(prefix).parent.as_posix()
-    out_dir = output_folder_for(prefix, kind, out_root)
-    atlas_path = out_dir / f"{base_name}.atlas"
-    extract_binary_import(reader, f"{prefix}.atlas.import", atlas_path)
-    extract_binary_import(reader, f"{prefix}.skel.import", out_dir / f"{base_name}.skel")
-    page_names = atlas_page_names(atlas_path) or [f"{base_name}.png"]
+def extract_actor(reader: PCKReader, actor: SpineActorImport, kind: str, out_root: Path) -> None:
+    skel_base_name = Path(actor.skel_prefix).name
+    atlas_base_name = Path(actor.atlas_prefix).name
+    actor_dir = Path(actor.atlas_prefix).parent.as_posix()
+    out_dir = output_folder_for(actor.skel_prefix, kind, out_root)
+    atlas_path = out_dir / f"{atlas_base_name}.atlas"
+    extract_binary_import(reader, f"{actor.atlas_prefix}.atlas.import", atlas_path)
+    extract_binary_import(reader, f"{actor.skel_prefix}.skel.import", out_dir / f"{skel_base_name}.skel")
+    page_names = atlas_page_names(atlas_path) or [f"{atlas_base_name}.png"]
     for page_name in page_names:
         page_import = f"{actor_dir}/{page_name}.import"
-        if page_import not in reader.entries and page_name == f"{base_name}.png":
-            page_import = f"{prefix}.png.import"
+        if page_import not in reader.entries and page_name == f"{atlas_base_name}.png":
+            page_import = f"{actor.atlas_prefix}.png.import"
         extract_png_import(reader, page_import, out_dir / page_name)
 
 
@@ -154,10 +191,10 @@ def main() -> int:
 
     with PCKReader(args.pck) as reader:
         for kind in kinds:
-            prefixes = discover_actor_prefixes(reader, kind)
-            for prefix in prefixes:
-                extract_actor(reader, prefix, kind, out_root)
-            print(f"extracted {len(prefixes)} {kind} Spine actors to {out_root / kind}")
+            actors = discover_actor_imports(reader, kind)
+            for actor in actors:
+                extract_actor(reader, actor, kind, out_root)
+            print(f"extracted {len(actors)} {kind} Spine actors to {out_root / kind}")
 
     return 0
 
