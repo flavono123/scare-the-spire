@@ -116,7 +116,7 @@ export function useComments(storyId: string, userId: string | null): UseComments
       if (result.data) {
         const inserted = {
           ...(result.data as Comment),
-          content_blocks: richCommentColumnSupported === false ? null : (contentBlocks ?? null),
+          content_blocks: contentBlocks ?? null,
         } satisfies Comment;
         setComments((prev) => [...prev, inserted]);
       }

@@ -19,6 +19,7 @@ create table comments (
   user_id uuid not null references auth.users(id) on delete cascade,
   nickname text not null check (char_length(nickname) between 1 and 20),
   content text not null check (char_length(content) between 1 and 500),
+  content_blocks jsonb,
   created_at timestamptz default now()
 );
 

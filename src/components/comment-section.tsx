@@ -55,7 +55,8 @@ function buildLegacyInlineIndex(entities: EntityInfo[]): Map<string, LegacyInlin
 
   const addCandidate = (candidate: LegacyInlineCandidate) => {
     const normalized = candidate.lowerValue;
-    if (candidate.value.length < 2 || seen.has(`${candidate.kind}:${normalized}`)) return;
+    const minLength = candidate.kind === "entity" ? 1 : 2;
+    if (Array.from(candidate.value).length < minLength || seen.has(`${candidate.kind}:${normalized}`)) return;
 
     seen.add(`${candidate.kind}:${normalized}`);
     const firstChar = normalized[0];
