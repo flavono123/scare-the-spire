@@ -74,6 +74,23 @@ def extract_png_import(reader: PCKReader, import_path: str, out_path: Path) -> s
     return target
 
 
+def atlas_page_names(atlas_path: Path) -> list[str]:
+    lines = atlas_path.read_text("utf-8").splitlines()
+    pages: list[str] = []
+    for index, line in enumerate(lines[:-1]):
+        stripped = line.strip()
+        next_line = lines[index + 1].strip()
+        if (
+            stripped
+            and not line.startswith((" ", "\t"))
+            and ":" not in stripped
+            and stripped.lower().endswith((".png", ".webp", ".jpg", ".jpeg"))
+            and next_line.startswith("size:")
+        ):
+            pages.append(stripped)
+    return pages
+
+
 def discover_actor_prefixes(reader: PCKReader, kind: str) -> list[str]:
     pck_prefix = PCK_PREFIX_BY_KIND[kind]
     prefixes = sorted(
@@ -99,10 +116,17 @@ def output_folder_for(prefix: str, kind: str, out_root: Path) -> Path:
 
 def extract_actor(reader: PCKReader, prefix: str, kind: str, out_root: Path) -> None:
     base_name = Path(prefix).name
+    actor_dir = Path(prefix).parent.as_posix()
     out_dir = output_folder_for(prefix, kind, out_root)
-    extract_binary_import(reader, f"{prefix}.atlas.import", out_dir / f"{base_name}.atlas")
+    atlas_path = out_dir / f"{base_name}.atlas"
+    extract_binary_import(reader, f"{prefix}.atlas.import", atlas_path)
     extract_binary_import(reader, f"{prefix}.skel.import", out_dir / f"{base_name}.skel")
-    extract_png_import(reader, f"{prefix}.png.import", out_dir / f"{base_name}.png")
+    page_names = atlas_page_names(atlas_path) or [f"{base_name}.png"]
+    for page_name in page_names:
+        page_import = f"{actor_dir}/{page_name}.import"
+        if page_import not in reader.entries and page_name == f"{base_name}.png":
+            page_import = f"{prefix}.png.import"
+        extract_png_import(reader, page_import, out_dir / page_name)
 
 
 def main() -> int:
