@@ -12,7 +12,7 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
 - PCK: `~/Library/Application Support/Steam/steamapps/common/Slay the Spire 2/SlayTheSpire2.app/Contents/Resources/Slay the Spire 2.pck`
 - DLL: `~/Library/Application Support/Steam/steamapps/common/Slay the Spire 2/SlayTheSpire2.app/Contents/Resources/data_sts2_macos_arm64/sts2.dll`
 - Version: `.../Resources/release_info.json`
-- Repo output: `data/sts2/**`, `public/images/sts2/**`, `data/sts2/meta.json`
+- Repo output: `data/sts2/**`, `public/images/sts2/**`, `public/spine/sts2/**`, `data/sts2/meta.json`
 - Legacy source skill: `.claude/skills/update-game-assets/SKILL.md` if deeper parser notes are needed.
 
 ## Required Workflow
@@ -33,7 +33,10 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
    python3 scripts/parse-monsters.py
    python3 scripts/parse-encounters.py
    python3 scripts/parse-entity-vars.py
+   PYTHONPATH=/tmp/sts2-spine-deps PYTHONDONTWRITEBYTECODE=1 python3 scripts/extract-sts2-spine-assets.py --force
+   node scripts/build-sts2-spine-index.mjs
    ```
+   Use the `sts2-spine-assets` skill for dependency setup, coverage review, fallback policy, and VFX-specific notes.
 4. Apply incremental Codex entity diffs for patch-note changes that scripts cannot infer:
    - Cards: `data/sts2/{eng,kor}/cards.json`
    - Relics: `data/sts2/{eng,kor}/relics.json`
