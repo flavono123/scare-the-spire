@@ -75,9 +75,9 @@ const categories = [
     ],
   },
   {
-    href: "/compendium/monsters",
+    href: "/compendium/bestiary",
     labelKey: "monsters",
-    count: 111,
+    count: 200,
     description: null,
     images: [
       "/images/sts2/bosses/ceremonial_beast_boss.webp",
@@ -96,18 +96,6 @@ const categories = [
       "/images/sts2/events/doll_room.webp",
       "/images/sts2/events/crystal_sphere.webp",
       "/images/sts2/events/trial.webp",
-    ],
-  },
-  {
-    href: "/compendium/encounters",
-    labelKey: "encounters",
-    count: 89,
-    description: null,
-    images: [
-      "/images/sts2/nav/stats_monsters.png",
-      "/images/sts2/nav/happy_cultist.png",
-      "/images/sts2/bosses/queen_boss.webp",
-      "/images/sts2/bosses/vantom_boss.webp",
     ],
   },
   {
@@ -227,8 +215,7 @@ const ENGLISH_LABELS: Record<(typeof categories)[number]["labelKey"], string> = 
   potions: "Potions",
   powers: "Powers",
   enchantments: "Enchantments",
-  monsters: "Monsters",
+  monsters: "Bestiary",
   events: "Events",
-  encounters: "Encounters",
   ancients: "Ancients",
 };

@@ -51,6 +51,7 @@ interface MonsterLibraryProps {
   title: string;
   monsters: CodexMonster[];
   encounters: CodexEncounter[];
+  trailing?: React.ReactNode;
 }
 
 export function MonsterLibrary({
@@ -59,6 +60,7 @@ export function MonsterLibrary({
   title,
   monsters,
   encounters,
+  trailing,
 }: MonsterLibraryProps) {
   const serviceText = serviceMessages[serviceLocale];
   const commonText = serviceText.codex.common;
@@ -355,6 +357,7 @@ export function MonsterLibrary({
             />
           )}
           count={formatCount(filteredMonsters.length, monsterText.resultUnit, serviceLocale)}
+          trailing={trailing}
         />
 
         {/* Monster Grid */}

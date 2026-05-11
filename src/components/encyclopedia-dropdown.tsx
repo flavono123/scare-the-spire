@@ -10,6 +10,7 @@ const items = [
   { href: "/compendium/potions", label: "포션" },
   { href: "/compendium/powers", label: "파워" },
   { href: "/compendium/enchantments", label: "인챈트" },
+  { href: "/compendium/bestiary", label: "몬스터 도감" },
   { href: "/compendium/ancients", label: "에인션트" },
 ];
 

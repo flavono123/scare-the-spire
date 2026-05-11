@@ -124,8 +124,8 @@ export function EntityPreview({
     power: `/compendium/powers?power=${entity.id.toLowerCase()}`,
     enchantment: `/compendium/enchantments?enchantment=${entity.id.toLowerCase()}`,
     event: `/compendium/events/${entity.id.toLowerCase()}`,
-    monster: `/compendium/monsters?monster=${entity.id.toLowerCase()}`,
-    encounter: `/compendium/encounters?encounter=${entity.id.toLowerCase()}`,
+    monster: `/compendium/bestiary?monster=${entity.id.toLowerCase()}`,
+    encounter: `/compendium/bestiary?view=encounters&encounter=${entity.id.toLowerCase()}`,
     ancient: `/compendium/ancients/${entity.id.toLowerCase()}`,
   };
   const hrefBase = entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;

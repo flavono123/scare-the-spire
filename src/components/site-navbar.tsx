@@ -29,9 +29,8 @@ const sts2Items = [
   { href: "/compendium/potions", labelKey: "potions", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
   { href: "/compendium/powers", labelKey: "powers", icon: "/images/sts2/powers/unmovable_power.webp" },
   { href: "/compendium/enchantments", labelKey: "enchantments", icon: "/images/sts2/enchantments/souls_power.webp" },
-  { href: "/compendium/monsters", labelKey: "monsters", icon: "/images/sts2/nav/happy_cultist.png" },
+  { href: "/compendium/bestiary", labelKey: "monsters", icon: "/images/sts2/nav/happy_cultist.png" },
   { href: "/compendium/events", labelKey: "events", icon: "/images/sts2/nav/question_mark.png" },
-  { href: "/compendium/encounters", labelKey: "encounters", icon: "/images/sts2/nav/stats_monsters.png" },
   { href: "/compendium/ancients", labelKey: "ancients", icon: "/images/sts2/nav/stats_ancients.png" },
 ] as const;
 

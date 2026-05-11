@@ -125,9 +125,9 @@ function sts2EntityHref(entity: EntityInfo): string | null {
     case "event":
       return `/compendium/events/${entity.id.toLowerCase()}`;
     case "monster":
-      return `/compendium/monsters?monster=${entity.id.toLowerCase()}`;
+      return `/compendium/bestiary?monster=${entity.id.toLowerCase()}`;
     case "encounter":
-      return `/compendium/encounters?encounter=${entity.id.toLowerCase()}`;
+      return `/compendium/bestiary?view=encounters&encounter=${entity.id.toLowerCase()}`;
     case "ancient":
       return `/compendium/ancients/${entity.id.toLowerCase()}`;
     default:
