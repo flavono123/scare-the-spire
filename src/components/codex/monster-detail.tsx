@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -8,14 +9,29 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { serviceMessages } from "@/messages/service";
-import {
+import type {
   CodexMonster,
   CodexEncounter,
+  DamageValue,
+  MonsterMove,
+  MonsterMoveTransition,
+} from "@/lib/codex-types";
+import {
   MONSTER_TYPE_CONFIG,
   EVENT_ACT_CONFIG,
   ENCOUNTER_ROOM_TYPE_CONFIG,
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
+
+type MoveTone = "attack" | "defense" | "mixed" | "setup";
+
+interface MoveSummary {
+  move: MonsterMove;
+  damageEntry: DamageValue | null;
+  blockEntry: number | null;
+  outgoing: MonsterMoveTransition[];
+  tone: MoveTone;
+}
 
 function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
@@ -23,6 +39,33 @@ function StatBadge({ label, value, color }: { label: string; value: string; colo
       <span className="text-[10px] text-gray-500 uppercase tracking-wider">{label}</span>
       <span className="text-sm font-bold" style={color ? { color } : undefined}>{value}</span>
     </div>
+  );
+}
+
+function MoveMetricChips({
+  summary,
+  damageLabel,
+  blockLabel,
+}: {
+  summary: MoveSummary;
+  damageLabel: string;
+  blockLabel: string;
+}) {
+  return (
+    <span className="flex shrink-0 flex-wrap justify-end gap-1.5">
+      {summary.damageEntry && (
+        <span className="rounded bg-red-500/10 px-1.5 py-0.5 text-xs font-semibold text-red-400">
+          {formatDamageValue(summary.damageEntry)}
+          <span className="ml-1 text-[10px] font-normal text-red-400/50">{damageLabel}</span>
+        </span>
+      )}
+      {summary.blockEntry != null && (
+        <span className="rounded bg-blue-500/10 px-1.5 py-0.5 text-xs font-semibold text-blue-400">
+          {summary.blockEntry}
+          <span className="ml-1 text-[10px] font-normal text-blue-400/50">{blockLabel}</span>
+        </span>
+      )}
+    </span>
   );
 }
 
@@ -51,12 +94,24 @@ export function MonsterDetail({
   const commonText = serviceText.codex.common;
   const monsterText = serviceText.codex.monstersView;
   const typeConfig = MONSTER_TYPE_CONFIG[monster.type];
-  const meaningfulMoves = monster.bestiaryMoves.filter(
-    (m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD",
+  const meaningfulMoves = useMemo(
+    () => monster.bestiaryMoves.filter(
+      (m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD",
+    ),
+    [monster],
   );
+  const moveSummaries = useMemo(() => buildMoveSummaries(monster, meaningfulMoves), [monster, meaningfulMoves]);
+  const [selectedMoveId, setSelectedMoveId] = useState<string | null>(null);
+  const selectedMove = moveSummaries.find((summary) => summary.move.id === selectedMoveId) ?? moveSummaries[0] ?? null;
+  const selectedAccent = selectedMove ? getMoveToneColor(selectedMove.tone, typeConfig.color) : typeConfig.color;
+  const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
+
+  useEffect(() => {
+    setSelectedMoveId(moveSummaries[0]?.move.id ?? null);
+  }, [monster.id, moveSummaries]);
 
   return (
-    <div className="flex flex-col gap-6 p-4 sm:p-6 max-w-2xl mx-auto">
+    <div className="flex flex-col gap-6 p-4 sm:p-6 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
@@ -75,89 +130,184 @@ export function MonsterDetail({
         )}
       </div>
 
-      {/* Monster portrait (Spine render or boss token) */}
-      {(monster.imageUrl || monster.bossImageUrl) && (
-        <div className="w-full max-w-xs mx-auto flex items-center justify-center p-4 rounded-lg border border-white/10 bg-white/[0.02]">
-          <Image
-            src={monster.imageUrl ?? monster.bossImageUrl!}
-            alt={monster.name}
-            width={256}
-            height={256}
-            className="max-w-full max-h-64 object-contain"
-          />
-        </div>
-      )}
-
-      {/* Name */}
-      <div className="text-center">
-        <div className="flex items-center justify-center gap-3">
-          <div className="w-1.5 h-8 rounded-full" style={{ backgroundColor: typeConfig.color }} />
-          <div>
-            <h1 className="text-2xl font-bold text-gray-100">{monster.name}</h1>
-            <p className="text-sm text-gray-500">{monster.nameEn}</p>
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)]">
+        <section
+          className="overflow-hidden rounded-xl border bg-[#18182b] shadow-2xl"
+          style={{
+            borderColor: `${selectedAccent}66`,
+            boxShadow: `inset 0 0 90px ${hexToRgba(selectedAccent, 0.12)}, 0 24px 80px rgba(0, 0, 0, 0.35)`,
+          }}
+        >
+          <div
+            className="relative flex min-h-[26rem] items-center justify-center overflow-hidden border-b border-white/10 px-4 py-6 sm:min-h-[34rem] sm:px-8"
+            style={{
+              background: `linear-gradient(180deg, ${hexToRgba(selectedAccent, 0.16)} 0%, rgba(24, 24, 43, 0.96) 48%, rgba(9, 9, 14, 0.98) 100%)`,
+            }}
+          >
+            <div
+              className="absolute bottom-10 left-[18%] right-[18%] h-8 rounded-[50%] blur-md"
+              style={{ backgroundColor: hexToRgba(selectedAccent, 0.18) }}
+            />
+            {imageSrc ? (
+              <Image
+                src={imageSrc}
+                alt={monster.name}
+                width={640}
+                height={640}
+                className="relative z-10 h-[22rem] w-full object-contain drop-shadow-2xl sm:h-[30rem] lg:h-[34rem]"
+                priority
+              />
+            ) : (
+              <div
+                className="relative z-10 flex h-52 w-52 items-center justify-center rounded-full border text-5xl font-bold"
+                style={{ borderColor: `${typeConfig.color}66`, color: typeConfig.color }}
+              >
+                {monster.name.slice(0, 1)}
+              </div>
+            )}
           </div>
-        </div>
-      </div>
 
-      {/* Stats Row */}
-      <div className="flex flex-wrap justify-center gap-2">
-        <StatBadge label={monsterText.stats.type} value={gameUi.monsterTypes[monster.type].label} color={typeConfig.color} />
-        {formatHp(monster) && (
-          <StatBadge label={monsterText.stats.hp} value={formatHp(monster)!} />
-        )}
-        {formatHpAscension(monster) && (
-          <StatBadge label={monsterText.stats.hpAscension} value={formatHpAscension(monster)!} color="#ff8a65" />
-        )}
-        {meaningfulMoves.length > 0 && (
-          <StatBadge label={monsterText.stats.moves} value={`${meaningfulMoves.length}`} />
-        )}
-      </div>
+          <div className="p-4 sm:p-5">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-11 w-1.5 rounded-full" style={{ backgroundColor: typeConfig.color }} />
+                <div>
+                  <h1 className="text-3xl font-bold leading-tight text-gray-100 sm:text-4xl">{monster.name}</h1>
+                  <p className="text-sm text-gray-500">{monster.nameEn}</p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <StatBadge label={monsterText.stats.type} value={gameUi.monsterTypes[monster.type].label} color={typeConfig.color} />
+                {formatHp(monster) && (
+                  <StatBadge label={monsterText.stats.hp} value={formatHp(monster)!} />
+                )}
+                {formatHpAscension(monster) && (
+                  <StatBadge label={monsterText.stats.hpAscension} value={formatHpAscension(monster)!} color="#ff8a65" />
+                )}
+                {meaningfulMoves.length > 0 && (
+                  <StatBadge label={monsterText.stats.moves} value={`${meaningfulMoves.length}`} />
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
 
-      {/* Moves Section */}
-      {meaningfulMoves.length > 0 && (
-        <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-          <h2 className="text-sm font-bold text-gray-300 mb-3">{monsterText.movePatterns}</h2>
-          <div className="flex flex-col gap-2">
-            {meaningfulMoves.map((move) => {
-              // Find damage for this move
-              const damageEntry = monster.damageValues
-                ? findDamageForMove(move.id, monster.damageValues)
-                : null;
-              const blockEntry = monster.blockValues
-                ? findBlockForMove(move.id, monster.blockValues)
-                : null;
+        <section className="flex flex-col gap-4">
+          <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h2 className="text-sm font-bold text-gray-300">{monsterText.actionPreview}</h2>
+              {selectedMove && (
+                <span
+                  className="rounded px-2 py-1 text-[10px] font-semibold uppercase tracking-wide"
+                  style={{
+                    backgroundColor: hexToRgba(selectedAccent, 0.16),
+                    color: selectedAccent,
+                  }}
+                >
+                  {selectedMove.move.name}
+                </span>
+              )}
+            </div>
 
-              return (
-                <div key={move.id} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5">
-                  <div className="flex-1 min-w-0">
-                    <span className="text-sm text-gray-200">{move.name}</span>
-                    {move.nameEn !== move.name && (
-                      <span className="ml-1.5 text-[10px] text-gray-500">{move.nameEn}</span>
-                    )}
+            {moveSummaries.length > 0 ? (
+              <div className="max-h-[22rem] space-y-2 overflow-y-auto pr-1 sm:max-h-[28rem]">
+                {moveSummaries.map((summary, index) => {
+                  const isSelected = selectedMove?.move.id === summary.move.id;
+                  const toneColor = getMoveToneColor(summary.tone, typeConfig.color);
+
+                  return (
+                    <button
+                      key={summary.move.id}
+                      type="button"
+                      onClick={() => setSelectedMoveId(summary.move.id)}
+                      className="w-full rounded-lg border px-3 py-3 text-left transition-colors hover:bg-white/10"
+                      style={{
+                        backgroundColor: isSelected ? hexToRgba(toneColor, 0.14) : "rgba(255, 255, 255, 0.03)",
+                        borderColor: isSelected ? `${toneColor}88` : "rgba(255, 255, 255, 0.08)",
+                      }}
+                    >
+                      <div className="flex items-start gap-3">
+                        <span
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-xs font-bold tabular-nums"
+                          style={{
+                            backgroundColor: hexToRgba(toneColor, 0.18),
+                            color: toneColor,
+                          }}
+                        >
+                          {index + 1}
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-sm font-semibold text-gray-100">{summary.move.name}</span>
+                          {summary.move.nameEn !== summary.move.name && (
+                            <span className="block truncate text-[11px] text-gray-500">{summary.move.nameEn}</span>
+                          )}
+                        </span>
+                        <MoveMetricChips
+                          summary={summary}
+                          damageLabel={monsterText.damagePreview}
+                          blockLabel={monsterText.block}
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">{commonText.noResults}</p>
+            )}
+          </div>
+
+          {selectedMove && (
+            <div
+              className="rounded-xl border bg-white/[0.04] p-4"
+              style={{ borderColor: `${selectedAccent}55` }}
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <div className="text-lg font-bold text-gray-100">{selectedMove.move.name}</div>
+                  {selectedMove.move.nameEn !== selectedMove.move.name && (
+                    <div className="text-xs text-gray-500">{selectedMove.move.nameEn}</div>
+                  )}
+                </div>
+                <MoveMetricChips
+                  summary={selectedMove}
+                  damageLabel={monsterText.damagePreview}
+                  blockLabel={monsterText.block}
+                />
+              </div>
+
+              {selectedMove.outgoing.length > 0 && (
+                <div className="mt-4">
+                  <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                    {monsterText.nextActions}
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    {damageEntry && (
-                      <span className="text-xs text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded">
-                        {damageEntry.normal != null ? damageEntry.normal : "?"}
-                        {damageEntry.ascension != null && damageEntry.ascension !== damageEntry.normal && (
-                          <span className="text-red-400/60 ml-0.5">({damageEntry.ascension})</span>
-                        )}
-                        <span className="text-red-400/50 ml-0.5 text-[10px]">DMG</span>
-                      </span>
-                    )}
-                    {blockEntry != null && (
-                      <span className="text-xs text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded">
-                        {blockEntry}
-                        <span className="text-blue-400/50 ml-0.5 text-[10px]">BLK</span>
-                      </span>
-                    )}
+                  <div className="space-y-2">
+                    {selectedMove.outgoing.map((transition) => (
+                      <div key={`${transition.from}-${transition.to}-${transition.chance ?? "unknown"}`} className="grid grid-cols-[minmax(6rem,1fr)_minmax(5rem,9rem)] items-center gap-3">
+                        <span className="truncate text-xs text-gray-300">{getMoveName(monster, transition.to)}</span>
+                        <span className="flex items-center gap-2">
+                          <span className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
+                            <span
+                              className="block h-full rounded-full"
+                              style={{
+                                width: `${transition.chance ?? 100}%`,
+                                backgroundColor: selectedAccent,
+                              }}
+                            />
+                          </span>
+                          <span className="w-9 text-right text-[10px] tabular-nums text-gray-500">
+                            {transition.chance == null ? "?" : `${transition.chance}%`}
+                          </span>
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+              )}
+            </div>
+          )}
+        </section>
+      </div>
 
       {monster.moveGraph && monster.moveGraph.transitions.length > 0 && (
         <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
@@ -324,6 +474,67 @@ function formatHpAscension(monster: CodexMonster): string | null {
     return `${monster.minHpAscension}-${monster.maxHpAscension}`;
   }
   return `${monster.minHpAscension}`;
+}
+
+function buildMoveSummaries(monster: CodexMonster, moves: MonsterMove[]): MoveSummary[] {
+  return moves.map((move) => {
+    const damageEntry = monster.damageValues
+      ? findDamageForMove(move.id, monster.damageValues)
+      : null;
+    const blockEntry = monster.blockValues
+      ? findBlockForMove(move.id, monster.blockValues)
+      : null;
+    const outgoing = monster.moveGraph?.transitions.filter((transition) => transition.from === move.id) ?? [];
+
+    return {
+      move,
+      damageEntry,
+      blockEntry,
+      outgoing,
+      tone: getMoveTone(move, damageEntry, blockEntry),
+    };
+  });
+}
+
+function getMoveTone(move: MonsterMove, damageEntry: DamageValue | null, blockEntry: number | null): MoveTone {
+  if (damageEntry && blockEntry != null) return "mixed";
+  if (damageEntry) return "attack";
+  if (blockEntry != null) return "defense";
+
+  const id = move.id.toLowerCase();
+  if (id.includes("block") || id.includes("shield") || id.includes("defend")) return "defense";
+  if (id.includes("attack") || id.includes("strike") || id.includes("bite") || id.includes("slash")) return "attack";
+  return "setup";
+}
+
+function getMoveToneColor(tone: MoveTone, fallback: string): string {
+  switch (tone) {
+    case "attack":
+      return "#f87171";
+    case "defense":
+      return "#60a5fa";
+    case "mixed":
+      return "#f59e0b";
+    case "setup":
+      return fallback;
+  }
+}
+
+function formatDamageValue(value: DamageValue): string {
+  const normal = value.normal ?? "?";
+  if (value.ascension != null && value.ascension !== value.normal) {
+    return `${normal} (${value.ascension})`;
+  }
+  return `${normal}`;
+}
+
+function hexToRgba(hex: string, alpha: number): string {
+  const normalized = hex.replace("#", "");
+  if (normalized.length !== 6) return `rgba(255, 255, 255, ${alpha})`;
+  const r = Number.parseInt(normalized.slice(0, 2), 16);
+  const g = Number.parseInt(normalized.slice(2, 4), 16);
+  const b = Number.parseInt(normalized.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 function groupMoveTransitions(monster: CodexMonster) {
