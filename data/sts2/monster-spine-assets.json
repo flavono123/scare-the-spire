@@ -57,8 +57,8 @@
     "moveAnimations": {
       "KILLSHOT": [
         "killshot",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -93,15 +93,17 @@
         "bootup",
         "boot-up",
         "respawn",
-        "idle_loop",
-        "attack"
+        "special",
+        "attack",
+        "idle_loop"
       ],
       "ONE_TWO": [
         "one_two",
         "onetwo",
         "one-two",
-        "idle_loop",
-        "attack"
+        "attack",
+        "special",
+        "idle_loop"
       ],
       "HAMMER_UPPERCUT": [
         "hammer_uppercut",
@@ -142,8 +144,10 @@
         "big_swing",
         "bigswing",
         "big-swing",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack2",
+        "attack3",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -188,6 +192,7 @@
       "BITE": [
         "bite",
         "attack",
+        "buff",
         "idle_loop"
       ]
     },
@@ -232,18 +237,20 @@
     "moveAnimations": {
       "THRASH": [
         "thrash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "buff",
+        "idle_loop"
       ],
       "BUFF": [
         "buff",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "THRASH2": [
         "thrash2",
-        "idle_loop",
-        "attack"
+        "attack",
+        "buff",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -288,8 +295,9 @@
       "HEADBUTT": [
         "headbutt",
         "headbutt_stunned",
-        "idle_loop",
-        "attack"
+        "attack",
+        "buff",
+        "idle_loop"
       ],
       "STUNNED": [
         "stunned",
@@ -348,8 +356,9 @@
     "moveAnimations": {
       "THRASH": [
         "thrash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "buff",
+        "idle_loop"
       ],
       "TOXIC_SPIT": [
         "toxic_spit",
@@ -360,8 +369,9 @@
         "spit",
         "stun",
         "stunned_loop",
-        "idle_loop",
-        "attack"
+        "attack",
+        "buff",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -390,8 +400,8 @@
     "moveAnimations": {
       "BEAT": [
         "beat",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -420,20 +430,20 @@
     "moveAnimations": {
       "SLEEP": [
         "sleep",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "WAKE": [
         "wake",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "SLEEP_MOVE_2": [
         "sleep_move_2",
         "sleepmove2",
         "sleep-move-2",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "SLASHES": [
         "slashes",
@@ -515,6 +525,8 @@
       ],
       "SWOOP": [
         "swoop",
+        "attack",
+        "attack_angry",
         "idle_loop",
         "angry_loop"
       ]
@@ -586,14 +598,16 @@
     "moveAnimations": {
       "INCANTATION": [
         "incantation",
-        "idle_loop",
-        "attack"
+        "buff",
+        "attack",
+        "idle_loop"
       ],
       "DARK_STRIKE": [
         "dark_strike",
         "darkstrike",
         "dark-strike",
         "attack",
+        "buff",
         "idle_loop"
       ]
     },
@@ -631,15 +645,15 @@
     "moveAnimations": {
       "STAMP": [
         "stamp",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "PLOW": [
         "plow",
         "plow_end",
         "plow_end_die",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "STUNNED": [
         "stunned",
@@ -652,18 +666,18 @@
         "beast_cry",
         "beastcry",
         "beast-cry",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "STOMP": [
         "stomp",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "CRUSH": [
         "crush",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -693,13 +707,15 @@
     "moveAnimations": {
       "CLAMP": [
         "clamp",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ],
       "SCREECH": [
         "screech",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -737,18 +753,24 @@
         "whip_slap",
         "whipslap",
         "whip-slap",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_double",
+        "attack_heavy",
+        "idle_loop"
       ],
       "GLOMP": [
         "glomp",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_double",
+        "attack_heavy",
+        "idle_loop"
       ],
       "GOOP": [
         "goop",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_double",
+        "attack_heavy",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -782,13 +804,13 @@
     "moveAnimations": {
       "FIRE": [
         "fire",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "RELOAD": [
         "reload",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -833,27 +855,31 @@
         "chargeup",
         "charge-up",
         "charge_start",
-        "idle_loop",
-        "attack_finish"
+        "attack_finish",
+        "attack_loop",
+        "idle_loop"
       ],
       "REPEATER_BLAST": [
         "repeater_blast",
         "repeaterblast",
         "repeater-blast",
-        "idle_loop",
-        "attack_finish"
+        "attack_finish",
+        "attack_loop",
+        "idle_loop"
       ],
       "REPEATER_BLAST_MOVE_2": [
         "repeater_blast_move_2",
         "repeaterblastmove2",
         "repeater-blast-move-2",
-        "idle_loop",
-        "attack_finish"
+        "attack_finish",
+        "attack_loop",
+        "idle_loop"
       ],
       "EXPEL": [
         "expel",
-        "idle_loop",
-        "attack_finish"
+        "attack_finish",
+        "attack_loop",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -888,14 +914,16 @@
     "moveAnimations": {
       "INCANTATION": [
         "incantation",
-        "idle_loop",
-        "attack"
+        "buff",
+        "attack",
+        "idle_loop"
       ],
       "DARK_STRIKE": [
         "dark_strike",
         "darkstrike",
         "dark-strike",
         "attack",
+        "buff",
         "idle_loop"
       ]
     },
@@ -929,18 +957,24 @@
         "pheromone_spit",
         "pheromonespit",
         "pheromone-spit",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_ranged",
+        "cast",
+        "idle_loop"
       ],
       "BEES": [
         "bees",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_ranged",
+        "cast",
+        "idle_loop"
       ],
       "SPEAR": [
         "spear",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "attack_ranged",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -972,18 +1006,27 @@
     "moveAnimations": {
       "SKITTER": [
         "skitter",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_heavy",
+        "buff",
+        "cast",
+        "idle_loop"
       ],
       "MANDIBLES": [
         "mandibles",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_heavy",
+        "buff",
+        "cast",
+        "idle_loop"
       ],
       "ENRAGE": [
         "enrage",
-        "idle_loop",
-        "attack"
+        "buff",
+        "cast",
+        "attack",
+        "attack_heavy",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1011,8 +1054,8 @@
     "moveAnimations": {
       "DISTRACT": [
         "distract",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1042,13 +1085,13 @@
     "moveAnimations": {
       "FABRICATE": [
         "fabricate",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "DISINTEGRATE": [
         "disintegrate",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1121,20 +1164,27 @@
         "war_chant",
         "warchant",
         "war-chant",
-        "idle_loop",
-        "attack_breaker"
+        "buff",
+        "attack_breaker",
+        "attack_flail",
+        "attack_ram",
+        "idle_loop"
       ],
       "FLAIL": [
         "flail",
         "attack_flail",
-        "idle_loop",
-        "attack_breaker"
+        "attack_breaker",
+        "attack_ram",
+        "buff",
+        "idle_loop"
       ],
       "RAM": [
         "ram",
         "attack_ram",
-        "idle_loop",
-        "attack_breaker"
+        "attack_breaker",
+        "attack_flail",
+        "buff",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1168,20 +1218,23 @@
         "vulnerable_spores",
         "vulnerablespores",
         "vulnerable-spores",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "idle_loop"
       ],
       "FRAIL_SPORES": [
         "frail_spores",
         "frailspores",
         "frail-spores",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "idle_loop"
       ],
       "SMASH": [
         "smash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1211,8 +1264,8 @@
     "moveAnimations": {
       "ILLUSION": [
         "illusion",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "SWIPE": [
         "swipe",
@@ -1248,18 +1301,24 @@
     "moveAnimations": {
       "TACKLE": [
         "tackle",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_double",
+        "debuff",
+        "idle_loop"
       ],
       "LATCH": [
         "latch",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_double",
+        "debuff",
+        "idle_loop"
       ],
       "LASH": [
         "lash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_double",
+        "debuff",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1295,8 +1354,10 @@
         "for_the_queen",
         "forthequeen",
         "for-the-queen",
-        "idle_loop",
-        "attack"
+        "buff",
+        "attack",
+        "attack_tongue",
+        "idle_loop"
       ],
       "STRIKE_DOWN_EVIL": [
         "strike_down_evil",
@@ -1304,22 +1365,26 @@
         "strike-down-evil",
         "attack",
         "attack_tongue",
+        "buff",
         "idle_loop"
       ],
       "TONGUE_LASH": [
         "tongue_lash",
         "tonguelash",
         "tongue-lash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_tongue",
+        "buff",
+        "idle_loop"
       ],
       "BEETLE_CHARGE": [
         "beetle_charge",
         "beetlecharge",
         "beetle-charge",
         "buff",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_tongue",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1354,13 +1419,13 @@
         "acid_goop",
         "acidgoop",
         "acid-goop",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "INHALE": [
         "inhale",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1446,14 +1511,16 @@
         "thunderstrike",
         "thunder-strike",
         "attack",
+        "cast",
         "idle_loop"
       ],
       "SHOCKING_SLAP": [
         "shocking_slap",
         "shockingslap",
         "shocking-slap",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1484,20 +1551,26 @@
     "moveAnimations": {
       "GIMME": [
         "gimme",
-        "idle_loop",
-        "attack_double"
+        "attack_double",
+        "attack_single",
+        "Attack single has extra blending frames/blank",
+        "idle_loop"
       ],
       "DOUBLE_SMASH": [
         "double_smash",
         "doublesmash",
         "double-smash",
-        "idle_loop",
-        "attack_double"
+        "attack_double",
+        "attack_single",
+        "Attack single has extra blending frames/blank",
+        "idle_loop"
       ],
       "HEHE": [
         "hehe",
-        "idle_loop",
-        "attack_double"
+        "attack_double",
+        "attack_single",
+        "Attack single has extra blending frames/blank",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1527,6 +1600,7 @@
     "moveAnimations": {
       "GUARD": [
         "guard",
+        "cast",
         "idle_loop",
         "appear"
       ]
@@ -1561,17 +1635,22 @@
         "swipe",
         "attack",
         "attack_triple",
+        "debuff",
         "idle_loop"
       ],
       "STOMP": [
         "stomp",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_triple",
+        "debuff",
+        "idle_loop"
       ],
       "HAUNT": [
         "haunt",
-        "idle_loop",
-        "attack"
+        "debuff",
+        "attack",
+        "attack_triple",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1604,19 +1683,24 @@
         "tenderizing_goop",
         "tenderizinggoop",
         "tenderizing-goop",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "attack_triple",
+        "idle_loop"
       ],
       "BITE": [
         "bite",
         "attack",
         "attack_triple",
+        "cast",
         "idle_loop"
       ],
       "PUNCTURE": [
         "puncture",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_triple",
+        "cast",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1650,23 +1734,39 @@
     "moveAnimations": {
       "JAB": [
         "jab",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_block",
+        "attack_double",
+        "_ignore/attack_double_alt",
+        "buff",
+        "idle_loop"
       ],
       "RADIATE": [
         "radiate",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_block",
+        "attack_double",
+        "_ignore/attack_double_alt",
+        "buff",
+        "idle_loop"
       ],
       "WHIRLWIND": [
         "whirlwind",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_block",
+        "attack_double",
+        "_ignore/attack_double_alt",
+        "buff",
+        "idle_loop"
       ],
       "PULSATE": [
         "pulsate",
-        "idle_loop",
-        "attack"
+        "buff",
+        "attack",
+        "attack_block",
+        "attack_double",
+        "_ignore/attack_double_alt",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1697,13 +1797,17 @@
     "moveAnimations": {
       "JAB": [
         "jab",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_fast",
+        "attack_triple",
+        "idle_loop"
       ],
       "WHIRLWIND": [
         "whirlwind",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_fast",
+        "attack_triple",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1742,11 +1846,16 @@
         "quick-slash",
         "attack_boomerang",
         "attack_slash",
+        "buff",
+        "_ignore/buff1",
         "idle_loop"
       ],
       "BOOMERANG": [
         "boomerang",
         "attack_boomerang",
+        "attack_slash",
+        "buff",
+        "_ignore/buff1",
         "idle_loop"
       ],
       "POWER_DANCE": [
@@ -1755,8 +1864,9 @@
         "power-dance",
         "buff",
         "_ignore/buff1",
-        "idle_loop",
-        "attack_boomerang"
+        "attack_boomerang",
+        "attack_slash",
+        "idle_loop"
       ]
     },
     "moveEffects": {
@@ -1828,15 +1938,17 @@
         "orb_of_frailty",
         "orboffrailty",
         "orb-of-frailty",
-        "idle_loop",
-        "attack_grenade"
+        "attack_grenade",
+        "attack_laser",
+        "idle_loop"
       ],
       "ORB_OF_WEAKNESS": [
         "orb_of_weakness",
         "orbofweakness",
         "orb-of-weakness",
-        "idle_loop",
-        "attack_grenade"
+        "attack_grenade",
+        "attack_laser",
+        "idle_loop"
       ],
       "BEAM": [
         "beam",
@@ -1846,8 +1958,9 @@
       ],
       "RITUAL": [
         "ritual",
-        "idle_loop",
-        "attack_grenade"
+        "attack_grenade",
+        "attack_laser",
+        "idle_loop"
       ]
     },
     "moveEffects": {
@@ -1904,25 +2017,33 @@
         "curse_of_knowledge",
         "curseofknowledge",
         "curse-of-knowledge",
-        "idle_loop",
-        "attack_heavy"
+        "attack_heavy",
+        "attack_light",
+        "attack_medium",
+        "idle_loop"
       ],
       "SLAP": [
         "slap",
-        "idle_loop",
-        "attack_heavy"
+        "attack_heavy",
+        "attack_light",
+        "attack_medium",
+        "idle_loop"
       ],
       "KNOWLEDGE_OVERWHELMING": [
         "knowledge_overwhelming",
         "knowledgeoverwhelming",
         "knowledge-overwhelming",
-        "idle_loop",
-        "attack_heavy"
+        "attack_heavy",
+        "attack_light",
+        "attack_medium",
+        "idle_loop"
       ],
       "PONDER": [
         "ponder",
-        "idle_loop",
-        "attack_heavy"
+        "attack_heavy",
+        "attack_light",
+        "attack_medium",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1963,6 +2084,9 @@
         "sleep",
         "hurt_sleeping",
         "sleep_loop",
+        "cast",
+        "attack_double",
+        "attack_heavy",
         "idle_loop",
         "animation"
       ],
@@ -1970,6 +2094,9 @@
         "wake_up",
         "wakeup",
         "wake-up",
+        "cast",
+        "attack_double",
+        "attack_heavy",
         "idle_loop",
         "animation"
       ],
@@ -1977,6 +2104,7 @@
         "slash",
         "attack_double",
         "attack_heavy",
+        "cast",
         "idle_loop",
         "animation"
       ],
@@ -1984,11 +2112,15 @@
         "slash2",
         "attack_double",
         "attack_heavy",
+        "cast",
         "idle_loop",
         "animation"
       ],
       "DISEMBOWEL": [
         "disembowel",
+        "attack_double",
+        "attack_heavy",
+        "cast",
         "idle_loop",
         "animation"
       ],
@@ -1996,6 +2128,9 @@
         "soul_siphon",
         "soulsiphon",
         "soul-siphon",
+        "cast",
+        "attack_double",
+        "attack_heavy",
         "idle_loop",
         "animation"
       ]
@@ -2098,15 +2233,17 @@
         "clump_shot",
         "clumpshot",
         "clump-shot",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "idle_loop"
       ],
       "STICKY_SHOT": [
         "sticky_shot",
         "stickyshot",
         "sticky-shot",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2136,13 +2273,15 @@
     "moveAnimations": {
       "TACKLE": [
         "tackle",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ],
       "GOOP": [
         "goop",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2176,20 +2315,23 @@
         "advanced_gas",
         "advancedgas",
         "advanced-gas",
-        "idle_loop",
-        "attack"
+        "attack",
+        "debuff",
+        "idle_loop"
       ],
       "BLOAT": [
         "bloat",
-        "idle_loop",
-        "attack"
+        "attack",
+        "debuff",
+        "idle_loop"
       ],
       "SUPER_GAS_BLAST": [
         "super_gas_blast",
         "supergasblast",
         "super-gas-blast",
-        "idle_loop",
-        "attack"
+        "attack",
+        "debuff",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2227,8 +2369,8 @@
       ],
       "SMASH": [
         "smash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {
@@ -2287,20 +2429,23 @@
         "web_cannon",
         "webcannon",
         "web-cannon",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_web",
+        "idle_loop"
       ],
       "POUNCE": [
         "pounce",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_web",
+        "idle_loop"
       ],
       "CURL_AND_GROW": [
         "curl_and_grow",
         "curlandgrow",
         "curl-and-grow",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_web",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2334,26 +2479,32 @@
         "powershield",
         "power-shield",
         "cast_shield",
-        "idle_loop",
-        "attack_bomb"
+        "attack_bomb",
+        "attack_ram",
+        "idle_loop"
       ],
       "DAMPEN": [
         "dampen",
-        "idle_loop",
-        "attack_bomb"
+        "cast_shield",
+        "attack_bomb",
+        "attack_ram",
+        "idle_loop"
       ],
       "MAGIC_BOMB": [
         "magic_bomb",
         "magicbomb",
         "magic-bomb",
-        "idle_loop",
-        "attack_bomb"
+        "attack_bomb",
+        "attack_ram",
+        "cast_shield",
+        "idle_loop"
       ],
       "RAM": [
         "ram",
         "attack_ram",
-        "idle_loop",
-        "attack_bomb"
+        "attack_bomb",
+        "cast_shield",
+        "idle_loop"
       ]
     },
     "moveEffects": {
@@ -2408,13 +2559,13 @@
         "rip_and_tear",
         "ripandtear",
         "rip-and-tear",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "ROAR": [
         "roar",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "CLAW": [
         "claw",
@@ -2472,8 +2623,9 @@
     "moveAnimations": {
       "CHARGE": [
         "charge",
-        "idle_loop",
-        "attack_cleave"
+        "attack_cleave",
+        "attack_flame",
+        "idle_loop"
       ],
       "FLAMETHROWER": [
         "flamethrower",
@@ -2483,15 +2635,17 @@
       ],
       "WINDUP": [
         "windup",
-        "idle_loop",
-        "attack_cleave"
+        "attack_cleave",
+        "attack_flame",
+        "idle_loop"
       ],
       "HEAVY_CLEAVE": [
         "heavy_cleave",
         "heavycleave",
         "heavy-cleave",
-        "idle_loop",
-        "attack_cleave"
+        "attack_cleave",
+        "attack_flame",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2522,18 +2676,21 @@
     "moveAnimations": {
       "TOXIC": [
         "toxic",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "idle_loop"
       ],
       "BITE": [
         "bite",
         "attack",
+        "cast",
         "idle_loop"
       ],
       "SUCK": [
         "suck",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2563,13 +2720,13 @@
     "moveAnimations": {
       "BUTT": [
         "butt",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "HISS": [
         "hiss",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2599,6 +2756,7 @@
     "moveAnimations": {
       "NOISE": [
         "noise",
+        "cast",
         "idle_loop",
         "appear"
       ]
@@ -2670,20 +2828,23 @@
         "lay_eggs",
         "layeggs",
         "lay-eggs",
-        "idle_loop",
-        "attack"
+        "buff",
+        "attack",
+        "idle_loop"
       ],
       "SMASH": [
         "smash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "buff",
+        "idle_loop"
       ],
       "NUTRITIONAL_PASTE": [
         "nutritional_paste",
         "nutritionalpaste",
         "nutritional-paste",
-        "idle_loop",
-        "attack"
+        "buff",
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2719,8 +2880,9 @@
         "magistrate_scrutiny",
         "magistratescrutiny",
         "magistrate-scrutiny",
-        "idle_loop",
-        "attack_dive"
+        "attack_dive",
+        "attack_peck",
+        "idle_loop"
       ],
       "PECK_ASSAULT": [
         "peck_assault",
@@ -2734,13 +2896,15 @@
         "judicial_flight",
         "judicialflight",
         "judicial-flight",
-        "idle_loop",
-        "attack_dive"
+        "attack_dive",
+        "attack_peck",
+        "idle_loop"
       ],
       "VERDICT": [
         "verdict",
-        "idle_loop",
-        "attack_dive"
+        "attack_dive",
+        "attack_peck",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2852,22 +3016,29 @@
         "bite",
         "attack",
         "attack_multi",
+        "buff",
         "idle_loop"
       ],
       "LASH": [
         "lash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_multi",
+        "buff",
+        "idle_loop"
       ],
       "FLAIL": [
         "flail",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_multi",
+        "buff",
+        "idle_loop"
       ],
       "ENLARGE": [
         "enlarge",
-        "idle_loop",
-        "attack"
+        "buff",
+        "attack",
+        "attack_multi",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2897,13 +3068,15 @@
     "moveAnimations": {
       "INFECT": [
         "infect",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "idle_loop"
       ],
       "LASH": [
         "lash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2934,8 +3107,9 @@
     "moveAnimations": {
       "READY": [
         "ready",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_double",
+        "idle_loop"
       ],
       "STRONG_PUNCH": [
         "strong_punch",
@@ -2985,15 +3159,17 @@
         "you_are_mine",
         "youaremine",
         "you-are-mine",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "idle_loop"
       ],
       "OFF_WITH_YOUR_HEAD": [
         "off_with_your_head",
         "offwithyourhead",
         "off-with-your-head",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3026,20 +3202,26 @@
     "moveAnimations": {
       "CHOMP": [
         "chomp",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_double",
+        "buff",
+        "idle_loop"
       ],
       "CHEW": [
         "chew",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_double",
+        "buff",
+        "idle_loop"
       ],
       "MORE_TEETH": [
         "more_teeth",
         "moreteeth",
         "more-teeth",
-        "idle_loop",
-        "attack"
+        "buff",
+        "attack",
+        "attack_double",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3072,22 +3254,28 @@
         "sea_kick",
         "seakick",
         "sea-kick",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_multi",
+        "cast",
+        "idle_loop"
       ],
       "SPINNING_KICK": [
         "spinning_kick",
         "spinningkick",
         "spinning-kick",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_multi",
+        "cast",
+        "idle_loop"
       ],
       "BUBBLE_BURP": [
         "bubble_burp",
         "bubbleburp",
         "bubble-burp",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "attack_multi",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3120,13 +3308,17 @@
     "moveAnimations": {
       "PRESSURIZE": [
         "pressurize",
-        "idle_loop",
-        "attack"
+        "buff",
+        "attack",
+        "_ignore/attack_straight",
+        "idle_loop"
       ],
       "JET": [
         "jet",
-        "idle_loop",
-        "attack"
+        "attack",
+        "_ignore/attack_straight",
+        "buff",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3156,13 +3348,15 @@
     "moveAnimations": {
       "SHRINKER": [
         "shrinker",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "idle_loop"
       ],
       "CHOMP": [
         "chomp",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3196,18 +3390,27 @@
     "moveAnimations": {
       "SMASH": [
         "smash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_buff",
+        "attack_double",
+        "attack_heavy",
+        "idle_loop"
       ],
       "ZOOM": [
         "zoom",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_buff",
+        "attack_double",
+        "attack_heavy",
+        "idle_loop"
       ],
       "INERTIA": [
         "inertia",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_buff",
+        "attack_double",
+        "attack_heavy",
+        "idle_loop"
       ],
       "PIERCING_STABS": [
         "piercing_stabs",
@@ -3250,22 +3453,22 @@
         "vomit_ichor",
         "vomitichor",
         "vomit-ichor",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "LEECHING_HUG": [
         "leeching_hug",
         "leechinghug",
         "leeching-hug",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "FURIOUS_PUMMELING": [
         "furious_pummeling",
         "furiouspummeling",
         "furious-pummeling",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3296,18 +3499,21 @@
     "moveAnimations": {
       "CONSTRICT": [
         "constrict",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_defend",
+        "idle_loop"
       ],
       "THWACK": [
         "thwack",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_defend",
+        "idle_loop"
       ],
       "LASH": [
         "lash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_defend",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3381,15 +3587,17 @@
     "moveAnimations": {
       "SNORE": [
         "snore",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "idle_loop"
       ],
       "ROLL_OUT": [
         "roll_out",
         "rollout",
         "roll-out",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3424,8 +3632,8 @@
         "energy_orb",
         "energyorb",
         "energy-orb",
-        "idle_loop",
-        "cast"
+        "cast",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3460,13 +3668,13 @@
         "spawned",
         "spawn",
         "wake_up",
-        "awake_loop",
-        "attack"
+        "attack",
+        "awake_loop"
       ],
       "TACKLE": [
         "tackle",
-        "awake_loop",
-        "attack"
+        "attack",
+        "awake_loop"
       ]
     },
     "moveEffects": {}
@@ -3505,20 +3713,25 @@
       "BECKON": [
         "beckon",
         "attack_beckon",
+        "attack_debuff",
+        "attack_heavy",
         "idle_loop"
       ],
       "DE_GAS": [
         "de_gas",
         "degas",
         "de-gas",
-        "idle_loop",
-        "attack_beckon"
+        "attack_beckon",
+        "attack_debuff",
+        "attack_heavy",
+        "idle_loop"
       ],
       "GAZE": [
         "gaze",
         "attack_debuff",
-        "idle_loop",
-        "attack_beckon"
+        "attack_beckon",
+        "attack_heavy",
+        "idle_loop"
       ],
       "FADE": [
         "fade",
@@ -3527,8 +3740,10 @@
       ],
       "SCREAM": [
         "scream",
-        "idle_loop",
-        "attack_beckon"
+        "attack_beckon",
+        "attack_debuff",
+        "attack_heavy",
+        "idle_loop"
       ]
     },
     "moveEffects": {
@@ -3581,15 +3796,17 @@
         "soul_burn",
         "soulburn",
         "soul-burn",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ],
       "DRAIN_LIFE": [
         "drain_life",
         "drainlife",
         "drain-life",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3620,8 +3837,10 @@
     "moveAnimations": {
       "HEX": [
         "hex",
-        "idle_loop",
-        "attack_flame"
+        "debuff",
+        "attack_flame",
+        "attack_sword",
+        "idle_loop"
       ],
       "SOUL_SLASH": [
         "soul_slash",
@@ -3629,14 +3848,17 @@
         "soul-slash",
         "attack_flame",
         "attack_sword",
+        "debuff",
         "idle_loop"
       ],
       "SOUL_FLAME": [
         "soul_flame",
         "soulflame",
         "soul-flame",
-        "idle_loop",
-        "attack_flame"
+        "attack_flame",
+        "attack_sword",
+        "debuff",
+        "idle_loop"
       ]
     },
     "moveEffects": {
@@ -3804,18 +4026,24 @@
     "moveAnimations": {
       "CRASH": [
         "crash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_triple",
+        "cast",
+        "idle_loop"
       ],
       "THRASH": [
         "thrash",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_triple",
+        "cast",
+        "idle_loop"
       ],
       "TERROR": [
         "terror",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "attack_triple",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3864,6 +4092,12 @@
     "moveAnimations": {
       "RESPAWN": [
         "respawn",
+        "attack_big1",
+        "attack_big2",
+        "attack_big3",
+        "attack_double1",
+        "attack_double2",
+        "attack_double3",
         "idle_loop1",
         "--knockout3"
       ],
@@ -3884,6 +4118,12 @@
         "big_pounce",
         "bigpounce",
         "big-pounce",
+        "attack_big1",
+        "attack_big2",
+        "attack_big3",
+        "attack_double1",
+        "attack_double2",
+        "attack_double3",
         "idle_loop1",
         "--knockout3"
       ],
@@ -3896,6 +4136,12 @@
         "heal3",
         "regenerate1",
         "regenerate2",
+        "attack_big1",
+        "attack_big2",
+        "attack_big3",
+        "attack_double1",
+        "attack_double2",
+        "attack_double3",
         "idle_loop1",
         "--knockout3"
       ]
@@ -3947,13 +4193,15 @@
     "moveAnimations": {
       "MIASMA": [
         "miasma",
-        "idle_loop",
-        "attack"
+        "debuff",
+        "attack",
+        "idle_loop"
       ],
       "DREAD": [
         "dread",
-        "idle_loop",
-        "attack"
+        "attack",
+        "debuff",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3990,21 +4238,23 @@
         "liquify_ground",
         "liquifyground",
         "liquify-ground",
-        "idle_loop",
-        "attack_bite"
+        "attack_bite",
+        "attack_thrash",
+        "idle_loop"
       ],
       "THRASH": [
         "thrash",
         "attack_thrash",
-        "idle_loop",
-        "attack_bite"
+        "attack_bite",
+        "idle_loop"
       ],
       "THRASH_MOVE_2": [
         "thrash_move_2",
         "thrashmove2",
         "thrash-move-2",
-        "idle_loop",
-        "attack_bite"
+        "attack_bite",
+        "attack_thrash",
+        "idle_loop"
       ],
       "LUNGING_BITE": [
         "lunging_bite",
@@ -4016,8 +4266,9 @@
       ],
       "SALIVATE": [
         "salivate",
-        "idle_loop",
-        "attack_bite"
+        "attack_bite",
+        "attack_thrash",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4050,14 +4301,16 @@
         "debilitating_smog",
         "debilitatingsmog",
         "debilitating-smog",
-        "idle_loop",
-        "attack"
+        "debuff",
+        "attack",
+        "idle_loop"
       ],
       "EYE_LASERS": [
         "eye_lasers",
         "eyelasers",
         "eye-lasers",
         "attack",
+        "debuff",
         "idle_loop"
       ]
     },
@@ -4111,19 +4364,25 @@
     "moveAnimations": {
       "ILLUSION": [
         "illusion",
-        "idle_loop",
-        "attack"
+        "cast",
+        "cast_intro",
+        "attack",
+        "idle_loop"
       ],
       "SAIL": [
         "sail",
-        "idle_loop",
-        "attack"
+        "cast",
+        "cast_intro",
+        "attack",
+        "idle_loop"
       ],
       "HARDENING_STRIKE": [
         "hardening_strike",
         "hardeningstrike",
         "hardening-strike",
         "attack",
+        "cast",
+        "cast_intro",
         "idle_loop"
       ]
     },
@@ -4162,30 +4421,40 @@
     "moveAnimations": {
       "THIEVERY": [
         "thievery",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_hover",
+        "_ignore/attack_hover_classic",
+        "idle_loop"
       ],
       "NAB": [
         "nab",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_hover",
+        "_ignore/attack_hover_classic",
+        "idle_loop"
       ],
       "HAT_TRICK": [
         "hat_trick",
         "hattrick",
         "hat-trick",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_hover",
+        "_ignore/attack_hover_classic",
+        "idle_loop"
       ],
       "FLUTTER": [
         "flutter",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_hover",
+        "_ignore/attack_hover_classic",
+        "idle_loop"
       ],
       "ESCAPE": [
         "escape",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_hover",
+        "_ignore/attack_hover_classic",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4227,18 +4496,39 @@
         "spike_spit",
         "spikespit",
         "spike-spit",
-        "idle_loop",
-        "attack_single"
+        "attack_single",
+        "attack_single_buffed",
+        "attack_triple",
+        "attack_triple_buffed",
+        "buff",
+        "die_buffed",
+        "hurt_buffed",
+        "idle_loop_buffed",
+        "idle_loop"
       ],
       "WHIRL": [
         "whirl",
-        "idle_loop",
-        "attack_single"
+        "attack_single",
+        "attack_single_buffed",
+        "attack_triple",
+        "attack_triple_buffed",
+        "buff",
+        "die_buffed",
+        "hurt_buffed",
+        "idle_loop_buffed",
+        "idle_loop"
       ],
       "SPIKEN": [
         "spiken",
-        "idle_loop",
-        "attack_single"
+        "attack_single_buffed",
+        "attack_triple_buffed",
+        "buff",
+        "die_buffed",
+        "hurt_buffed",
+        "idle_loop_buffed",
+        "attack_single",
+        "attack_triple",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4271,34 +4561,44 @@
     "moveAnimations": {
       "TACKLE": [
         "tackle",
-        "idle_loop",
-        "attack"
+        "attack",
+        "buff",
+        "debuff",
+        "idle_loop"
       ],
       "TACKLE_2": [
         "tackle_2",
         "tackle2",
         "tackle-2",
-        "idle_loop",
-        "attack"
+        "buff",
+        "debuff",
+        "attack",
+        "idle_loop"
       ],
       "BEAM": [
         "beam",
         "attack",
+        "buff",
+        "debuff",
         "idle_loop"
       ],
       "TACKLE_3": [
         "tackle_3",
         "tackle3",
         "tackle-3",
-        "idle_loop",
-        "attack"
+        "buff",
+        "debuff",
+        "attack",
+        "idle_loop"
       ],
       "TACKLE_4": [
         "tackle_4",
         "tackle4",
         "tackle-4",
-        "idle_loop",
-        "attack"
+        "buff",
+        "debuff",
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {
@@ -4355,13 +4655,13 @@
         "hatch",
         "egg_hatch",
         "egg_spawn",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "NIBBLE": [
         "nibble",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4391,8 +4691,9 @@
     "moveAnimations": {
       "HOUNDS": [
         "hounds",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4438,8 +4739,9 @@
       "BURROW": [
         "burrow",
         "unburrow_attack",
-        "idle_loop",
-        "attack"
+        "attack",
+        "hidden_attack",
+        "idle_loop"
       ],
       "BELOW": [
         "below",
@@ -4476,20 +4778,20 @@
     "moveAnimations": {
       "UNLOAD": [
         "unload",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "UNLOAD_MOVE_2": [
         "unload_move_2",
         "unloadmove2",
         "unload-move-2",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ],
       "RELOAD": [
         "reload",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4521,15 +4823,17 @@
         "pokey_pounce",
         "pokeypounce",
         "pokey-pounce",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ],
       "STICKY_SHOT": [
         "sticky_shot",
         "stickyshot",
         "sticky-shot",
-        "idle_loop",
-        "attack"
+        "cast",
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4559,8 +4863,9 @@
     "moveAnimations": {
       "TACKLE": [
         "tackle",
-        "idle_loop",
-        "attack"
+        "attack",
+        "cast",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4597,27 +4902,31 @@
     "moveAnimations": {
       "SCRATCH": [
         "scratch",
-        "idle_loop",
-        "attack"
+        "attack",
+        "debuff",
+        "idle_loop"
       ],
       "DISEASE_BITE": [
         "disease_bite",
         "diseasebite",
         "disease-bite",
         "attack",
+        "debuff",
         "idle_loop"
       ],
       "SCREECH": [
         "screech",
-        "idle_loop",
-        "attack"
+        "debuff",
+        "attack",
+        "idle_loop"
       ],
       "CALL_FOR_BACKUP": [
         "call_for_backup",
         "callforbackup",
         "call-for-backup",
-        "idle_loop",
-        "attack"
+        "debuff",
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {
@@ -4682,25 +4991,45 @@
         "ink_blot",
         "inkblot",
         "ink-blot",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_double",
+        "attack_heavy",
+        "_tracks/attack_heavy",
+        "buff",
+        "debuff",
+        "idle_loop"
       ],
       "INKY_LANCE": [
         "inky_lance",
         "inkylance",
         "inky-lance",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_double",
+        "attack_heavy",
+        "_tracks/attack_heavy",
+        "buff",
+        "debuff",
+        "idle_loop"
       ],
       "DISMEMBER": [
         "dismember",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_double",
+        "attack_heavy",
+        "_tracks/attack_heavy",
+        "buff",
+        "debuff",
+        "idle_loop"
       ],
       "PREPARE": [
         "prepare",
-        "idle_loop",
-        "attack"
+        "buff",
+        "debuff",
+        "attack",
+        "attack_double",
+        "attack_heavy",
+        "_tracks/attack_heavy",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4733,8 +5062,10 @@
         "grasping_vines",
         "graspingvines",
         "grasping-vines",
-        "idle_loop",
-        "attack_chomp"
+        "attack_chomp",
+        "attack_swipe",
+        "attack_vines",
+        "idle_loop"
       ],
       "SWIPE": [
         "swipe",
@@ -4746,6 +5077,8 @@
       "CHOMP": [
         "chomp",
         "attack_chomp",
+        "attack_swipe",
+        "attack_vines",
         "idle_loop"
       ]
     },
@@ -4786,39 +5119,51 @@
     "moveAnimations": {
       "PRESSURIZE": [
         "pressurize",
-        "idle_loop",
-        "attack"
+        "attack_buff",
+        "attack_debuff",
+        "attack",
+        "idle_loop"
       ],
       "STOMP": [
         "stomp",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_buff",
+        "attack_debuff",
+        "idle_loop"
       ],
       "RAM": [
         "ram",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_buff",
+        "attack_debuff",
+        "idle_loop"
       ],
       "PRESSURE_GUN": [
         "pressure_gun",
         "pressuregun",
         "pressure-gun",
-        "idle_loop",
-        "attack"
+        "attack_buff",
+        "attack_debuff",
+        "attack",
+        "idle_loop"
       ],
       "PRESSURE_UP": [
         "pressure_up",
         "pressureup",
         "pressure-up",
-        "idle_loop",
-        "attack"
+        "attack",
+        "attack_buff",
+        "attack_debuff",
+        "idle_loop"
       ],
       "ABOUT_TO_BLOW": [
         "about_to_blow",
         "abouttoblow",
         "about-to-blow",
-        "idle_loop",
-        "attack"
+        "attack_buff",
+        "attack_debuff",
+        "attack",
+        "idle_loop"
       ],
       "EXPLODE": [
         "explode",
@@ -4876,8 +5221,8 @@
     "moveAnimations": {
       "WRIGGLE": [
         "wriggle",
-        "idle_loop",
-        "attack"
+        "attack",
+        "idle_loop"
       ]
     },
     "moveEffects": {}

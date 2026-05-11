@@ -192,33 +192,55 @@ function matchingAnimations(animations, needles) {
   });
 }
 
-function moveAnimationCandidates(move, animationNames, idleAnimation) {
+function matchingAnimationsByNeedlePriority(animations, needles) {
+  return unique(needles.flatMap((needle) => matchingAnimations(animations, [needle])));
+}
+
+function hasValueForMove(values, moveId) {
+  if (!values) return false;
+  const compact = moveId.toLowerCase().replaceAll("_", "");
+  return Object.keys(values).some((key) => key.toLowerCase().replaceAll("_", "") === compact);
+}
+
+function preferNonIdle(animations) {
+  return animations.filter((animation) => !animation.toLowerCase().includes("idle"));
+}
+
+function moveAnimationCandidates(monster, move, animationNames, idleAnimation) {
   const moveText = `${move.id} ${move.name}`.toLowerCase();
   const direct = move.id.toLowerCase();
   const normalized = direct.replaceAll("_", "-");
+  const hasDamageValue = hasValueForMove(monster.damage_values, move.id);
+  const hasBlockValue = hasValueForMove(monster.block_values, move.id);
   const candidates = [
     direct,
     direct.replaceAll("_", ""),
     normalized,
-    ...matchingAnimations(animationNames, [direct, normalized]),
+    ...preferNonIdle(matchingAnimations(animationNames, [direct, normalized])),
   ];
 
-  if (/boot|wake|spawn|hatch|unburrow|rise/.test(moveText)) {
+  if (/boot|wake|spawn|hatch|unburrow|rise|respawn/.test(moveText)) {
     candidates.push(...matchingAnimations(animationNames, ["respawn", "wake_up", "spawn", "egg_hatch", "unburrow"]));
   }
-  if (/block|shield|defend|protect/.test(moveText)) {
-    candidates.push(...matchingAnimations(animationNames, ["block_start", "block", "shield", "left/block"]));
+  if (hasBlockValue || /block|shield|defend|protect|armor/.test(moveText)) {
+    candidates.push(...matchingAnimations(animationNames, ["block_start", "block", "shield", "cast_shield", "left/block"]));
   }
-  if (/buff|sharpen|charge|power|grow|regenerate|heal|summon/.test(moveText)) {
+  if (/buff|sharpen|charge|power|grow|regenerate|heal|summon|dance/.test(moveText)) {
     candidates.push(...matchingAnimations(animationNames, ["sharpen", "buff", "charge_up", "charge_start", "regenerate", "heal", "summon"]));
   }
-  if (/spit|web|goop|debuff|stun|poison|gaze/.test(moveText)) {
-    candidates.push(...matchingAnimations(animationNames, ["spit", "debuff", "stun", "gaze", "special"]));
+  if (/spit|web|goop|debuff|dampen|weak|vulnerable|stun|poison|gaze|hex|curse|spores/.test(moveText)) {
+    candidates.push(...matchingAnimations(animationNames, ["spit", "debuff", "stun", "gaze", "hex", "curse", "special"]));
   }
-  if (/slam|bite|slash|claw|strike|attack|uppercut|swipe|laser|beam|zap|explode|stab|shoot|peck|throw|punch/.test(moveText)) {
-    candidates.push(...matchingAnimations(animationNames, ["attack", "slash", "claw", "bite", "laser", "beam", "explode", "stab", "punch", "special"]));
+  if (hasDamageValue || /slam|bite|slash|claw|strike|attack|uppercut|swipe|laser|beam|zap|explode|stab|shoot|peck|throw|punch|thrash|beat|blast|bomb|ram|pounce|spit|cannon|scream/.test(moveText)) {
+    candidates.push(...matchingAnimationsByNeedlePriority(animationNames, ["attack", "slash", "claw", "bite", "laser", "beam", "explode", "stab", "punch", "ram", "special"]));
   }
 
+  if (!/nothing|dead|idle|stunned|dizzy|fade|flee/.test(moveText)) {
+    const genericOrder = hasDamageValue
+      ? ["attack", "special", "buff", "cast"]
+      : ["buff", "cast", "special", "attack"];
+    candidates.push(...matchingAnimationsByNeedlePriority(animationNames, genericOrder));
+  }
   candidates.push(idleAnimation, animationNames[0]);
   return unique(candidates);
 }
@@ -242,7 +264,7 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
   const moves = monster.bestiary_moves ?? monster.moves ?? [];
   const usableVfxIds = new Set([...vfxById.keys()]);
   const moveAnimations = Object.fromEntries(
-    moves.map((move) => [move.id, moveAnimationCandidates(move, animationNames, idleAnimation)]),
+    moves.map((move) => [move.id, moveAnimationCandidates(monster, move, animationNames, idleAnimation)]),
   );
   const moveEffects = Object.fromEntries(
     moves
