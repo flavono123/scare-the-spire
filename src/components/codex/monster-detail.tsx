@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -105,10 +105,6 @@ export function MonsterDetail({
   const selectedMove = moveSummaries.find((summary) => summary.move.id === selectedMoveId) ?? moveSummaries[0] ?? null;
   const selectedAccent = selectedMove ? getMoveToneColor(selectedMove.tone, typeConfig.color) : typeConfig.color;
   const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
-
-  useEffect(() => {
-    setSelectedMoveId(moveSummaries[0]?.move.id ?? null);
-  }, [monster.id, moveSummaries]);
 
   return (
     <div className="flex flex-col gap-6 p-4 sm:p-6 max-w-6xl mx-auto">
