@@ -459,7 +459,7 @@ function EncounterDetail({
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href={localizeHref("/codex/encounters", serviceLocale)}
+          href={localizeHref("/compendium/encounters", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => { e.preventDefault(); onClose(); }}
         >
@@ -503,7 +503,7 @@ function EncounterDetail({
             return (
               <Link
                 key={mRef.id}
-                href={localizeHref(`/codex/monsters/${mRef.id.toLowerCase()}`, serviceLocale)}
+                href={localizeHref(`/compendium/monsters/${mRef.id.toLowerCase()}`, serviceLocale)}
                 className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5 hover:bg-white/10 hover:border-yellow-500/30 transition-all"
               >
                 {imgUrl ? (

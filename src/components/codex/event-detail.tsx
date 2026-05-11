@@ -298,7 +298,7 @@ export function EventDetail({ serviceLocale, gameUi, event, onClose }: EventDeta
           <div className="flex items-start justify-between gap-3 mb-4">
             <div>
               <Link
-                href={localizeHref("/codex/events", serviceLocale)}
+                href={localizeHref("/compendium/events", serviceLocale)}
                 className="text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors"
                 onClick={(e) => {
                   if (onClose) { e.preventDefault(); onClose(); }

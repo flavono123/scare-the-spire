@@ -285,7 +285,7 @@ function hrefForStoryId(storyId: string): string | null {
 
   const [, type, id] = match;
   const path = CODEX_PATHS[type];
-  return path ? `/codex/${path}/${id}` : null;
+  return path ? `/compendium/${path}/${id}` : null;
 }
 
 function countLabel(state: QueryState<unknown[]>): string {

@@ -75,7 +75,7 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href={localizeHref("/codex/relics", serviceLocale)}
+          href={localizeHref("/compendium/relics", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {
             if (onClose) {

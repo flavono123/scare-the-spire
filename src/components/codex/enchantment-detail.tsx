@@ -74,7 +74,7 @@ export function EnchantmentDetail({ serviceLocale, enchantment, onClose, entitie
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href={localizeHref("/codex/enchantments", serviceLocale)}
+          href={localizeHref("/compendium/enchantments", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {
             if (onClose) {
@@ -176,7 +176,7 @@ export function EnchantmentDetail({ serviceLocale, enchantment, onClose, entitie
             {grantingRelics.map((r) => (
               <Link
                 key={r.id}
-                href={`/codex/relics?relic=${r.id.toLowerCase()}`}
+                href={`/compendium/relics?relic=${r.id.toLowerCase()}`}
                 className="block"
                 onClick={(e) => {
                   // If we're inside the enchantment detail modal, the parent

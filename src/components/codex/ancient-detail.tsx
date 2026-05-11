@@ -138,7 +138,7 @@ function RelicGrid({
       {relics.map((relic) => (
         <Link
           key={relic.id}
-          href={localizeHref(`/codex/relics?relic=${relic.id}`, serviceLocale)}
+          href={localizeHref(`/compendium/relics?relic=${relic.id}`, serviceLocale)}
           className="group flex flex-col items-center gap-2 rounded-lg border border-zinc-700/30 bg-zinc-900/50 p-3 hover:border-yellow-700/40 hover:bg-zinc-800/50 transition-all"
         >
           {relic.imageUrl && (
@@ -211,7 +211,7 @@ export function AncientDetail({ serviceLocale, gameUi, ancient, relics }: Ancien
             {/* Info */}
             <div className="flex-1">
               <Link
-                href={localizeHref("/codex/ancients", serviceLocale)}
+                href={localizeHref("/compendium/ancients", serviceLocale)}
                 className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors mb-2 inline-block"
               >
                 ← {serviceText.ancientsView.backToList}

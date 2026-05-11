@@ -95,7 +95,7 @@ function AncientCard({
 }) {
   return (
     <Link
-      href={localizeHref(`/codex/ancients/${ancient.id.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(`/compendium/ancients/${ancient.id.toLowerCase()}`, serviceLocale)}
       className="group relative overflow-hidden rounded-xl border border-blue-900/30 bg-[#12121a] hover:border-blue-600/50 transition-all duration-200"
     >
       {/* Image */}

@@ -7,14 +7,14 @@ import { usePathname } from "next/navigation";
 export function CodexBackButton() {
   const pathname = usePathname();
 
-  // Hide on codex index page
-  if (pathname === "/codex") {
+  // Hide on compendium index pages.
+  if (pathname === "/compendium" || pathname === "/codex") {
     return null;
   }
 
   return (
     <Link
-      href="/codex"
+      href="/compendium"
       className="fixed left-0 bottom-8 z-50 group"
       aria-label="백과사전으로 돌아가기"
     >

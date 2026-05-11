@@ -118,15 +118,15 @@ export function EntityPreview({
   }, [entity.cardData, entity.relicData, entity.potionData, entity.powerData, entity.enchantmentData, entity.eventData, entity.eventOptionDesc, entity.encounterData, entity.ancientData]);
 
   const hrefMap: Partial<Record<EntityType, string>> = {
-    card: `/codex/cards?card=${entity.id.toLowerCase()}`,
-    relic: `/codex/relics?relic=${entity.id.toLowerCase()}`,
-    potion: `/codex/potions?potion=${entity.id.toLowerCase()}`,
-    power: `/codex/powers?power=${entity.id.toLowerCase()}`,
-    enchantment: `/codex/enchantments?enchantment=${entity.id.toLowerCase()}`,
-    event: `/codex/events/${entity.id.toLowerCase()}`,
-    monster: `/codex/monsters?monster=${entity.id.toLowerCase()}`,
-    encounter: `/codex/encounters?encounter=${entity.id.toLowerCase()}`,
-    ancient: `/codex/ancients/${entity.id.toLowerCase()}`,
+    card: `/compendium/cards?card=${entity.id.toLowerCase()}`,
+    relic: `/compendium/relics?relic=${entity.id.toLowerCase()}`,
+    potion: `/compendium/potions?potion=${entity.id.toLowerCase()}`,
+    power: `/compendium/powers?power=${entity.id.toLowerCase()}`,
+    enchantment: `/compendium/enchantments?enchantment=${entity.id.toLowerCase()}`,
+    event: `/compendium/events/${entity.id.toLowerCase()}`,
+    monster: `/compendium/monsters?monster=${entity.id.toLowerCase()}`,
+    encounter: `/compendium/encounters?encounter=${entity.id.toLowerCase()}`,
+    ancient: `/compendium/ancients/${entity.id.toLowerCase()}`,
   };
   const hrefBase = entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
   const href = hrefBase && serviceLocale && gameLocale

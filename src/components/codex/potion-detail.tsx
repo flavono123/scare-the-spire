@@ -49,7 +49,7 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href={localizeHref("/codex/potions", serviceLocale)}
+          href={localizeHref("/compendium/potions", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {
             if (onClose) {

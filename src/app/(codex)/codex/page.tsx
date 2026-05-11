@@ -15,7 +15,7 @@ import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 
 const categories = [
   {
-    href: "/codex/cards",
+    href: "/compendium/cards",
     labelKey: "cards",
     count: 612,
     description: null,
@@ -27,7 +27,7 @@ const categories = [
     ],
   },
   {
-    href: "/codex/relics",
+    href: "/compendium/relics",
     labelKey: "relics",
     count: 314,
     description: null,
@@ -39,7 +39,7 @@ const categories = [
     ],
   },
   {
-    href: "/codex/potions",
+    href: "/compendium/potions",
     labelKey: "potions",
     count: 63,
     description: null,
@@ -51,7 +51,7 @@ const categories = [
     ],
   },
   {
-    href: "/codex/powers",
+    href: "/compendium/powers",
     labelKey: "powers",
     count: 238,
     description: null,
@@ -63,7 +63,7 @@ const categories = [
     ],
   },
   {
-    href: "/codex/enchantments",
+    href: "/compendium/enchantments",
     labelKey: "enchantments",
     count: 22,
     description: null,
@@ -75,7 +75,7 @@ const categories = [
     ],
   },
   {
-    href: "/codex/monsters",
+    href: "/compendium/monsters",
     labelKey: "monsters",
     count: 111,
     description: null,
@@ -87,7 +87,7 @@ const categories = [
     ],
   },
   {
-    href: "/codex/events",
+    href: "/compendium/events",
     labelKey: "events",
     count: 57,
     description: null,
@@ -99,7 +99,7 @@ const categories = [
     ],
   },
   {
-    href: "/codex/encounters",
+    href: "/compendium/encounters",
     labelKey: "encounters",
     count: 89,
     description: null,
@@ -111,7 +111,7 @@ const categories = [
     ],
   },
   {
-    href: "/codex/ancients",
+    href: "/compendium/ancients",
     labelKey: "ancients",
     count: 8,
     description: null,

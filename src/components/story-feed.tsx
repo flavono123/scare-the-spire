@@ -113,23 +113,23 @@ function EntityImage({ entityType, entityId, name, deprecated }: {
 function sts2EntityHref(entity: EntityInfo): string | null {
   switch (entity.type) {
     case "card":
-      return `/codex/cards?card=${entity.id.toLowerCase()}`;
+      return `/compendium/cards?card=${entity.id.toLowerCase()}`;
     case "relic":
-      return `/codex/relics?relic=${entity.id.toLowerCase()}`;
+      return `/compendium/relics?relic=${entity.id.toLowerCase()}`;
     case "potion":
-      return `/codex/potions?potion=${entity.id.toLowerCase()}`;
+      return `/compendium/potions?potion=${entity.id.toLowerCase()}`;
     case "power":
-      return `/codex/powers?power=${entity.id.toLowerCase()}`;
+      return `/compendium/powers?power=${entity.id.toLowerCase()}`;
     case "enchantment":
-      return `/codex/enchantments?enchantment=${entity.id.toLowerCase()}`;
+      return `/compendium/enchantments?enchantment=${entity.id.toLowerCase()}`;
     case "event":
-      return `/codex/events/${entity.id.toLowerCase()}`;
+      return `/compendium/events/${entity.id.toLowerCase()}`;
     case "monster":
-      return `/codex/monsters?monster=${entity.id.toLowerCase()}`;
+      return `/compendium/monsters?monster=${entity.id.toLowerCase()}`;
     case "encounter":
-      return `/codex/encounters?encounter=${entity.id.toLowerCase()}`;
+      return `/compendium/encounters?encounter=${entity.id.toLowerCase()}`;
     case "ancient":
-      return `/codex/ancients/${entity.id.toLowerCase()}`;
+      return `/compendium/ancients/${entity.id.toLowerCase()}`;
     default:
       return null;
   }

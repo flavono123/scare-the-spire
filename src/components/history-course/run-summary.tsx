@@ -783,7 +783,7 @@ function DeckEntry({
       {...(tracksFloor ? hoverHandlers : {})}
     >
       <Link
-        href={`/codex/cards?card=${entity.id.toLowerCase()}`}
+        href={`/compendium/cards?card=${entity.id.toLowerCase()}`}
         className="shrink-0"
         aria-label={`${entity.nameKo} 카드 페이지`}
       >

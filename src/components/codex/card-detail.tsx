@@ -140,7 +140,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href={localizeHref("/codex/cards", serviceLocale)}
+          href={localizeHref("/compendium/cards", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {
             if (onClose) {

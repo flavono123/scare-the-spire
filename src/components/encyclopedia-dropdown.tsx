@@ -4,13 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 const items = [
-  { href: "/codex", label: "전체 보기" },
-  { href: "/codex/cards", label: "카드" },
-  { href: "/codex/relics", label: "유물" },
-  { href: "/codex/potions", label: "포션" },
-  { href: "/codex/powers", label: "파워" },
-  { href: "/codex/enchantments", label: "인챈트" },
-  { href: "/codex/ancients", label: "에인션트" },
+  { href: "/compendium", label: "전체 보기" },
+  { href: "/compendium/cards", label: "카드" },
+  { href: "/compendium/relics", label: "유물" },
+  { href: "/compendium/potions", label: "포션" },
+  { href: "/compendium/powers", label: "파워" },
+  { href: "/compendium/enchantments", label: "인챈트" },
+  { href: "/compendium/ancients", label: "에인션트" },
 ];
 
 export function EncyclopediaDropdown() {

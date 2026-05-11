@@ -24,15 +24,15 @@ import { serviceMessages } from "@/messages/service";
 // --- Dropdown data ---
 
 const sts2Items = [
-  { href: "/codex/cards", labelKey: "cards", icon: "/images/sts2/nav/stats_cards.png" },
-  { href: "/codex/relics", labelKey: "relics", icon: "/images/sts2/relics/bing_bong.webp" },
-  { href: "/codex/potions", labelKey: "potions", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
-  { href: "/codex/powers", labelKey: "powers", icon: "/images/sts2/powers/unmovable_power.webp" },
-  { href: "/codex/enchantments", labelKey: "enchantments", icon: "/images/sts2/enchantments/souls_power.webp" },
-  { href: "/codex/monsters", labelKey: "monsters", icon: "/images/sts2/nav/happy_cultist.png" },
-  { href: "/codex/events", labelKey: "events", icon: "/images/sts2/nav/question_mark.png" },
-  { href: "/codex/encounters", labelKey: "encounters", icon: "/images/sts2/nav/stats_monsters.png" },
-  { href: "/codex/ancients", labelKey: "ancients", icon: "/images/sts2/nav/stats_ancients.png" },
+  { href: "/compendium/cards", labelKey: "cards", icon: "/images/sts2/nav/stats_cards.png" },
+  { href: "/compendium/relics", labelKey: "relics", icon: "/images/sts2/relics/bing_bong.webp" },
+  { href: "/compendium/potions", labelKey: "potions", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
+  { href: "/compendium/powers", labelKey: "powers", icon: "/images/sts2/powers/unmovable_power.webp" },
+  { href: "/compendium/enchantments", labelKey: "enchantments", icon: "/images/sts2/enchantments/souls_power.webp" },
+  { href: "/compendium/monsters", labelKey: "monsters", icon: "/images/sts2/nav/happy_cultist.png" },
+  { href: "/compendium/events", labelKey: "events", icon: "/images/sts2/nav/question_mark.png" },
+  { href: "/compendium/encounters", labelKey: "encounters", icon: "/images/sts2/nav/stats_monsters.png" },
+  { href: "/compendium/ancients", labelKey: "ancients", icon: "/images/sts2/nav/stats_ancients.png" },
 ] as const;
 
 const sts1Items = [

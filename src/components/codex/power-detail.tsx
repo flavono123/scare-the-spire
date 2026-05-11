@@ -41,7 +41,7 @@ export function PowerDetail({ serviceLocale, gameUi, power, onClose }: PowerDeta
       {/* Header */}
       <div className="flex items-center justify-between w-full">
         <Link
-          href={localizeHref("/codex/powers", serviceLocale)}
+          href={localizeHref("/compendium/powers", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
           onClick={(e) => {
             if (onClose) {

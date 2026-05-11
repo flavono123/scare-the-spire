@@ -71,7 +71,7 @@ export default async function EncounterDetailPage({
       <div className="flex flex-col gap-6 p-4 sm:p-6 max-w-2xl mx-auto">
         {/* Header */}
         <Link
-          href={localizeHrefWithGameLocale("/codex/encounters", serviceLocale, gameLocale)}
+          href={localizeHrefWithGameLocale("/compendium/encounters", serviceLocale, gameLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
         >
           ← {serviceText.encountersView.backToList}
@@ -110,7 +110,7 @@ export default async function EncounterDetailPage({
               return (
                 <Link
                   key={mRef.id}
-                  href={localizeHrefWithGameLocale(`/codex/monsters/${mRef.id.toLowerCase()}`, serviceLocale, gameLocale)}
+                  href={localizeHrefWithGameLocale(`/compendium/monsters/${mRef.id.toLowerCase()}`, serviceLocale, gameLocale)}
                   className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5 hover:bg-white/10 hover:border-yellow-500/30 transition-all"
                 >
                   {imgUrl ? (
