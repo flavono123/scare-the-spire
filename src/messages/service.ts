@@ -4,6 +4,7 @@ export const serviceMessages = {
   ko: {
     brand: "슬서운 이야기",
     languageSelect: "언어",
+    gameTextOnlyLanguageGroup: "게임 텍스트만",
     nav: {
       patches: "패치노트",
       chemicalX: "케미컬X",
@@ -460,6 +461,7 @@ export const serviceMessages = {
   en: {
     brand: "Scare the Spire",
     languageSelect: "Language",
+    gameTextOnlyLanguageGroup: "Game Text Only",
     nav: {
       patches: "Patch Notes",
       chemicalX: "Chemical X",
