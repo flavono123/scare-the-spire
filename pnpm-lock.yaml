@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@esotericsoftware/spine-player':
+        specifier: 4.2.115
+        version: 4.2.115
       '@supabase/supabase-js':
         specifier: ^2.98.0
         version: 2.98.0
@@ -457,6 +460,15 @@ packages:
   '@eslint/plugin-kit@0.4.1':
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@esotericsoftware/spine-core@4.2.115':
+    resolution: {integrity: sha512-S+igqQzqePUr021fis/BwM19SNOdBlBl5mT5InP4/M0emT4LeFMhqC3I0GGD4ljFzIsgsxO+vgabzvQRwA6Sug==}
+
+  '@esotericsoftware/spine-player@4.2.115':
+    resolution: {integrity: sha512-LLvKCWy/rHe4VtLYYGZt68gxvqyyBGeDx1zK2OfC8+91pHxyL+6tEW4NKLbN03ctEhKFC8URlErjZit1gKVyZg==}
+
+  '@esotericsoftware/spine-webgl@4.2.115':
+    resolution: {integrity: sha512-E8T013Fmm0o80CmXqUEbY3h1syJAgsRrMfHcI2Vda+s7JmYsr3mFD0leYje5U+TCuh9gkSoQ8saLqhytztaZ2g==}
 
   '@floating-ui/core@1.7.4':
     resolution: {integrity: sha512-C3HlIdsBxszvm5McXlB8PeOEWfBhcGBTZGkGlWc2U0KFY5IwG5OQEuQ8rq52DZmcHDlPLd+YFBK+cZcytwIFWg==}
@@ -4675,6 +4687,16 @@ snapshots:
     dependencies:
       '@eslint/core': 0.17.0
       levn: 0.4.1
+
+  '@esotericsoftware/spine-core@4.2.115': {}
+
+  '@esotericsoftware/spine-player@4.2.115':
+    dependencies:
+      '@esotericsoftware/spine-webgl': 4.2.115
+
+  '@esotericsoftware/spine-webgl@4.2.115':
+    dependencies:
+      '@esotericsoftware/spine-core': 4.2.115
 
   '@floating-ui/core@1.7.4':
     dependencies:

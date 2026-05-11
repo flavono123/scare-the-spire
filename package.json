@@ -19,6 +19,7 @@
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "dependencies": {
+    "@esotericsoftware/spine-player": "4.2.115",
     "@supabase/supabase-js": "^2.98.0",
     "@tiptap/core": "^3.22.3",
     "@tiptap/extension-character-count": "^3.22.3",
