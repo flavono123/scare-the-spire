@@ -537,6 +537,18 @@ export interface DamageValue {
   ascension: number | null;
 }
 
+export interface MonsterMoveTransition {
+  from: string;
+  to: string;
+  chance: number | null;
+}
+
+export interface MonsterMoveGraph {
+  initial: string | null;
+  confidence: "static" | "partial";
+  transitions: MonsterMoveTransition[];
+}
+
 export interface CodexMonster {
   id: string;
   name: string;        // Korean
@@ -549,6 +561,7 @@ export interface CodexMonster {
   maxHpAscension: number | null;
   moves: MonsterMove[];
   bestiaryMoves: MonsterMove[];
+  moveGraph: MonsterMoveGraph | null;
   damageValues: Record<string, DamageValue> | null;
   blockValues: Record<string, number> | null;
   imageUrl: string | null;       // Spine render portrait (512x512)

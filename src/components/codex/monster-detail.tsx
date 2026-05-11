@@ -159,6 +159,49 @@ export function MonsterDetail({
         </div>
       )}
 
+      {monster.moveGraph && monster.moveGraph.transitions.length > 0 && (
+        <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h2 className="text-sm font-bold text-gray-300">{monsterText.actionGraph}</h2>
+            {monster.moveGraph.initial && (
+              <span className="text-[10px] text-gray-500">
+                {monsterText.firstAction}: {getMoveName(monster, monster.moveGraph.initial)}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col gap-2">
+            {groupMoveTransitions(monster).map((group) => (
+              <div key={group.from} className="rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2">
+                <div className="mb-2 text-xs font-medium text-gray-300">
+                  {group.from === "__START__" ? monsterText.firstAction : getMoveName(monster, group.from)}
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  {group.transitions.map((transition) => (
+                    <div key={`${transition.from}-${transition.to}-${transition.chance ?? "unknown"}`} className="grid grid-cols-[minmax(6rem,1fr)_minmax(5rem,8rem)] items-center gap-3">
+                      <span className="truncate text-xs text-gray-400">{getMoveName(monster, transition.to)}</span>
+                      <span className="flex items-center gap-2">
+                        <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
+                          <span
+                            className="block h-full rounded-full bg-yellow-400/70"
+                            style={{ width: `${transition.chance ?? 100}%` }}
+                          />
+                        </span>
+                        <span className="w-9 text-right text-[10px] tabular-nums text-gray-500">
+                          {transition.chance == null ? "?" : `${transition.chance}%`}
+                        </span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          {monster.moveGraph.confidence === "partial" && (
+            <p className="mt-3 text-[11px] leading-relaxed text-gray-500">{monsterText.graphPartial}</p>
+          )}
+        </div>
+      )}
+
       {/* Damage Summary */}
       {monster.damageValues && Object.keys(monster.damageValues).length > 0 && (
         <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
@@ -281,6 +324,22 @@ function formatHpAscension(monster: CodexMonster): string | null {
     return `${monster.minHpAscension}-${monster.maxHpAscension}`;
   }
   return `${monster.minHpAscension}`;
+}
+
+function groupMoveTransitions(monster: CodexMonster) {
+  const byFrom = new Map<string, NonNullable<CodexMonster["moveGraph"]>["transitions"]>();
+  for (const transition of monster.moveGraph?.transitions ?? []) {
+    const bucket = byFrom.get(transition.from) ?? [];
+    bucket.push(transition);
+    byFrom.set(transition.from, bucket);
+  }
+  return Array.from(byFrom.entries()).map(([from, transitions]) => ({ from, transitions }));
+}
+
+function getMoveName(monster: CodexMonster, moveId: string): string {
+  if (moveId === "__START__") return "Start";
+  const move = [...monster.bestiaryMoves, ...monster.moves].find((m) => m.id === moveId);
+  return move?.name ?? moveId.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 // Fuzzy match move ID to damage key

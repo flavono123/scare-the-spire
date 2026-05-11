@@ -51,6 +51,14 @@ _INT_PROP_PLAIN_RE = re.compile(
 )
 _MOVESTATE_START_RE = re.compile(r'new\s+MoveState\(\s*"(?P<id>\w+)"')
 _INTENT_RE = re.compile(r"new\s+(?P<kind>\w+Intent)\s*\((?P<args>[^)]*)\)")
+_MOVE_VAR_RE = re.compile(r"MoveState\s+(?P<var>\w+)\s*=.*?new\s+MoveState\(\s*\"(?P<id>\w+)\"", re.DOTALL)
+_RANDOM_BRANCH_VAR_RE = re.compile(r"RandomBranchState\s+(?P<var>\w+)\s*=.*?new\s+RandomBranchState\(\s*\"(?P<id>\w+)\"", re.DOTALL)
+_CONDITIONAL_BRANCH_VAR_RE = re.compile(r"ConditionalBranchState\s+(?P<var>\w+)\s*=.*?new\s+ConditionalBranchState\(\s*\"(?P<id>\w+)\"", re.DOTALL)
+_INITIAL_STATE_RE = re.compile(r"return\s+new\s+MonsterMoveStateMachine\(\s*list\s*,\s*(?P<var>\w+)\s*\)")
+_FOLLOWUP_RE = re.compile(r"(?P<from>\w+)\.FollowUpState\s*=\s*(?P<target>\w+)")
+_INLINE_MOVE_FOLLOWUP_RE = re.compile(r"MoveState\s+(?P<target>\w+)\s*=[^;\n]*\((?P<from>\w+)\.FollowUpState\s*=\s*new\s+MoveState")
+_ADD_BRANCH_RE = re.compile(r"(?P<branch>\w+)\.AddBranch\((?P<args>[^;]+)\);")
+_ADD_CONDITIONAL_STATE_RE = re.compile(r"(?P<branch>\w+)\.AddState\((?P<target>\w+),")
 
 
 def _balanced_span(text: str, start: int) -> int:
@@ -196,6 +204,149 @@ def build_bestiary_move_ids(move_ids: list[str], text: str) -> list[str]:
     return visible
 
 
+def split_args(args: str) -> list[str]:
+    return [arg.strip() for arg in args.split(",") if arg.strip()]
+
+
+def parse_weight(args: list[str]) -> float | None:
+    if len(args) < 2:
+        return 1.0
+    candidate = args[-1]
+    m = re.fullmatch(r"(?P<num>\d+(?:\.\d+)?)f?", candidate)
+    if m:
+        return float(m.group("num"))
+    m = re.fullmatch(r"\(\)\s*=>\s*(?P<num>\d+(?:\.\d+)?)f?", candidate)
+    if m:
+        return float(m.group("num"))
+    if "=>" in candidate:
+        return None
+    return 1.0
+
+
+def parse_move_graph(text: str) -> dict | None:
+    move_vars = {
+        m.group("var"): strip_move_suffix(m.group("id"))
+        for m in _MOVE_VAR_RE.finditer(text)
+    }
+    if not move_vars:
+        return None
+
+    branch_vars = {
+        m.group("var"): m.group("id")
+        for m in _RANDOM_BRANCH_VAR_RE.finditer(text)
+    }
+    conditional_branch_vars = {
+        m.group("var"): m.group("id")
+        for m in _CONDITIONAL_BRANCH_VAR_RE.finditer(text)
+    }
+    initial_matches = list(_INITIAL_STATE_RE.finditer(text))
+    initial_var = initial_matches[-1].group("var") if initial_matches else None
+    initial = move_vars.get(initial_var) if initial_var else None
+
+    followups: dict[str, str] = {}
+    for m in _FOLLOWUP_RE.finditer(text):
+        followups[m.group("from")] = m.group("target")
+    for m in _INLINE_MOVE_FOLLOWUP_RE.finditer(text):
+        followups[m.group("from")] = m.group("target")
+    for line in text.splitlines():
+        for branch_var in branch_vars:
+            if f"RandomBranchState {branch_var}" in line and "new RandomBranchState" in line:
+                for from_var in re.findall(r"(\w+)\.FollowUpState", line):
+                    followups[from_var] = branch_var
+        for branch_var in conditional_branch_vars:
+            if f"ConditionalBranchState {branch_var}" in line and "new ConditionalBranchState" in line:
+                for from_var in re.findall(r"(\w+)\.FollowUpState", line):
+                    followups[from_var] = branch_var
+
+    random_branches: dict[str, list[dict]] = {}
+    for m in _ADD_BRANCH_RE.finditer(text):
+        branch_var = m.group("branch")
+        args = split_args(m.group("args"))
+        if not args or branch_var not in branch_vars:
+            continue
+        target_var = args[0]
+        if target_var not in move_vars:
+            continue
+        repeat_text = " ".join(args[1:])
+        random_branches.setdefault(branch_var, []).append({
+            "target_var": target_var,
+            "weight": parse_weight(args),
+            "cannot_repeat": "CannotRepeat" in repeat_text,
+            "use_only_once": "UseOnlyOnce" in repeat_text,
+            "cooldown": len(args) > 2 and args[1].isdigit() and int(args[1]) > 0,
+        })
+
+    conditional_branches: dict[str, list[str]] = {}
+    for m in _ADD_CONDITIONAL_STATE_RE.finditer(text):
+        branch_var = m.group("branch")
+        target_var = m.group("target")
+        if branch_var in conditional_branch_vars and target_var in move_vars:
+            conditional_branches.setdefault(branch_var, []).append(target_var)
+
+    transitions: list[dict] = []
+    confidence = "static"
+
+    def add_random_transitions(from_var: str, branch_var: str) -> None:
+        nonlocal confidence
+        entries = random_branches.get(branch_var, [])
+        weighted = []
+        for entry in entries:
+            weight = entry["weight"]
+            if entry["target_var"] == from_var and (entry["cannot_repeat"] or entry["cooldown"]):
+                weight = 0.0
+            if entry["use_only_once"] or weight is None:
+                confidence = "partial"
+            weighted.append((entry, weight))
+
+        known_weights = [weight for _, weight in weighted if weight is not None]
+        total = sum(known_weights)
+        for entry, weight in weighted:
+            if weight == 0:
+                continue
+            chance = round((weight / total) * 100, 1) if weight is not None and total > 0 else None
+            transitions.append({
+                "from": move_vars[from_var],
+                "to": move_vars[entry["target_var"]],
+                "chance": chance,
+            })
+
+    for from_var, from_id in move_vars.items():
+        target_var = followups.get(from_var)
+        if target_var in move_vars:
+            transitions.append({"from": from_id, "to": move_vars[target_var], "chance": 100.0})
+        elif target_var in random_branches:
+            add_random_transitions(from_var, target_var)
+        elif target_var in conditional_branches:
+            confidence = "partial"
+            for target in conditional_branches[target_var]:
+                transitions.append({"from": from_id, "to": move_vars[target], "chance": None})
+
+    if initial_var in random_branches:
+        entries = random_branches[initial_var]
+        total = sum(entry["weight"] for entry in entries if entry["weight"] is not None)
+        if any(entry["weight"] is None for entry in entries):
+            confidence = "partial"
+        for entry in entries:
+            weight = entry["weight"]
+            transitions.append({
+                "from": "__START__",
+                "to": move_vars[entry["target_var"]],
+                "chance": round((weight / total) * 100, 1) if weight is not None and total > 0 else None,
+            })
+    elif initial_var in conditional_branches:
+        confidence = "partial"
+        for target in conditional_branches[initial_var]:
+            transitions.append({"from": "__START__", "to": move_vars[target], "chance": None})
+
+    if not transitions:
+        return None
+    return {
+        "initial": initial,
+        "confidence": confidence,
+        "transitions": transitions,
+    }
+
+
 def parse_moves_and_damage(text: str) -> tuple[list[str], dict, dict]:
     """Return (ordered move ids, damage_values map, block_values map)."""
     int_props = parse_int_props(text)
@@ -268,11 +419,13 @@ def build_entries(
             move_ids, damage_values, block_values = parse_moves_and_damage(text)
             show_in_compendium = parse_show_in_compendium(text)
             bestiary_move_ids = build_bestiary_move_ids(move_ids, text)
+            move_graph = parse_move_graph(text)
         else:
             hp = {"min_hp": None, "max_hp": None, "min_hp_ascension": None, "max_hp_ascension": None}
             move_ids, damage_values, block_values = [], {}, {}
             show_in_compendium = old_kor_by_id.get(ent_id, {}).get("show_in_compendium", True)
             bestiary_move_ids = []
+            move_graph = old_kor_by_id.get(ent_id, {}).get("move_graph")
 
         # If no class-derived moves, fall back to whatever the locale lists.
         locale_fallback_moves = None
@@ -331,6 +484,7 @@ def build_entries(
                 **hp,
                 "moves": moves,
                 "bestiary_moves": bestiary_moves,
+                "move_graph": move_graph,
                 "damage_values": damage_values or old.get("damage_values"),
                 "block_values": block_values or old.get("block_values"),
                 "image_url": old.get("image_url"),

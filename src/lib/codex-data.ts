@@ -38,6 +38,7 @@ import {
   PowerStackType,
   MonsterType,
   MonsterMove,
+  MonsterMoveGraph,
   DamageValue,
   EncounterRoomType,
   EncounterMonsterRef,
@@ -717,6 +718,7 @@ interface RawMonster {
   show_in_compendium?: boolean;
   moves: RawMonsterMove[];
   bestiary_moves?: RawMonsterMove[];
+  move_graph?: MonsterMoveGraph | null;
   damage_values: Record<string, RawDamageValue> | null;
   block_values: Record<string, number> | null;
   image_url: string | null;
@@ -782,6 +784,7 @@ function mapMonster(
     maxHpAscension: kor.max_hp_ascension,
     moves,
     bestiaryMoves,
+    moveGraph: kor.move_graph ?? null,
     damageValues: damageValues,
     blockValues: kor.block_values,
     imageUrl,

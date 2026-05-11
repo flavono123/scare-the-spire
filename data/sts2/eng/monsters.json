@@ -36,6 +36,27 @@
         "name": "Increasing Intensity"
       }
     ],
+    "move_graph": {
+      "initial": "EBB",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "EBB",
+          "to": "EYE_LASERS",
+          "chance": 100.0
+        },
+        {
+          "from": "EYE_LASERS",
+          "to": "INCREASING_INTENSITY",
+          "chance": 100.0
+        },
+        {
+          "from": "INCREASING_INTENSITY",
+          "to": "EBB",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Ebb": {
         "normal": 26,
@@ -70,6 +91,17 @@
         "name": "Nothing"
       }
     ],
+    "move_graph": {
+      "initial": "NOTHING",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "NOTHING",
+          "to": "NOTHING",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": null,
     "block_values": null,
     "image_url": "/static/images/monsters/architect.png"
@@ -95,6 +127,17 @@
         "name": "Killshot"
       }
     ],
+    "move_graph": {
+      "initial": "KILLSHOT",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "KILLSHOT",
+          "to": "KILLSHOT",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Killshot": {
         "normal": 10,
@@ -141,6 +184,27 @@
         "name": "Hammer Uppercut"
       }
     ],
+    "move_graph": {
+      "initial": "HAMMER_UPPERCUT",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "BOOT_UP",
+          "to": "HAMMER_UPPERCUT",
+          "chance": 100.0
+        },
+        {
+          "from": "ONE_TWO",
+          "to": "HAMMER_UPPERCUT",
+          "chance": 100.0
+        },
+        {
+          "from": "HAMMER_UPPERCUT",
+          "to": "ONE_TWO",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "OneTwo": {
         "normal": 9,
@@ -185,6 +249,27 @@
         "name": "Big Swing"
       }
     ],
+    "move_graph": {
+      "initial": "SWING_1",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "SWING_1",
+          "to": "SWING_2",
+          "chance": 100.0
+        },
+        {
+          "from": "SWING_2",
+          "to": "BIG_SWING",
+          "chance": 100.0
+        },
+        {
+          "from": "BIG_SWING",
+          "to": "SWING_1",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Swing": {
         "normal": 5,
@@ -219,6 +304,17 @@
         "name": "Nothing"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "NOTHING",
+          "to": "NOTHING",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": null,
     "block_values": null,
     "image_url": "/static/images/monsters/battle_friend_v1.png"
@@ -244,6 +340,17 @@
         "name": "Nothing"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "NOTHING",
+          "to": "NOTHING",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": null,
     "block_values": null,
     "image_url": "/static/images/monsters/battle_friend_v2.png"
@@ -269,6 +376,17 @@
         "name": "Nothing"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "NOTHING",
+          "to": "NOTHING",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": null,
     "block_values": null,
     "image_url": "/static/images/monsters/battle_friend_v3.png"
@@ -294,6 +412,17 @@
         "name": "Bite"
       }
     ],
+    "move_graph": {
+      "initial": "BITE",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "BITE",
+          "to": "BITE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Bite": {
         "normal": 7,
@@ -340,6 +469,27 @@
         "name": "Thrash2"
       }
     ],
+    "move_graph": {
+      "initial": "THRASH",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "THRASH",
+          "to": "BUFF",
+          "chance": 100.0
+        },
+        {
+          "from": "BUFF",
+          "to": "THRASH2",
+          "chance": 100.0
+        },
+        {
+          "from": "THRASH2",
+          "to": "THRASH2",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Thrash": {
         "normal": 3,
@@ -382,6 +532,27 @@
         "name": "Dizzy"
       }
     ],
+    "move_graph": {
+      "initial": "HEADBUTT",
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "HEADBUTT",
+          "to": "DIZZY",
+          "chance": null
+        },
+        {
+          "from": "HEADBUTT",
+          "to": "HEADBUTT",
+          "chance": null
+        },
+        {
+          "from": "DIZZY",
+          "to": "HEADBUTT",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Headbutt": {
         "normal": 15,
@@ -420,6 +591,22 @@
         "name": "Toxic Spit"
       }
     ],
+    "move_graph": {
+      "initial": "TOXIC_SPIT",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "THRASH",
+          "to": "TOXIC_SPIT",
+          "chance": 100.0
+        },
+        {
+          "from": "TOXIC_SPIT",
+          "to": "THRASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Thrash": {
         "normal": 4,
@@ -454,6 +641,22 @@
         "name": "Beat"
       }
     ],
+    "move_graph": {
+      "initial": "BEAT",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "BEAT",
+          "to": "ROAR",
+          "chance": 100.0
+        },
+        {
+          "from": "ROAR",
+          "to": "BEAT",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Beat": {
         "normal": 7,
@@ -508,6 +711,32 @@
         "name": "Slashes"
       }
     ],
+    "move_graph": {
+      "initial": "SLEEP",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "SLEEP",
+          "to": "WAKE",
+          "chance": 100.0
+        },
+        {
+          "from": "WAKE",
+          "to": "SLASHES",
+          "chance": 100.0
+        },
+        {
+          "from": "SLEEP_MOVE_2",
+          "to": "SLASHES",
+          "chance": 100.0
+        },
+        {
+          "from": "SLASHES",
+          "to": "SLASHES",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Slash": {
         "normal": 13,
@@ -546,6 +775,22 @@
         "name": "Swoop"
       }
     ],
+    "move_graph": {
+      "initial": "SWOOP",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "PECK",
+          "to": "SWOOP",
+          "chance": 100.0
+        },
+        {
+          "from": "SWOOP",
+          "to": "PECK",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Peck": {
         "normal": 3,
@@ -580,6 +825,7 @@
         "name": "Nothing"
       }
     ],
+    "move_graph": null,
     "damage_values": null,
     "block_values": null,
     "image_url": null
@@ -605,6 +851,17 @@
         "name": "Nothing"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "NOTHING",
+          "to": "NOTHING",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": null,
     "block_values": null,
     "image_url": "/static/images/monsters/byrdpip.png"
@@ -638,6 +895,22 @@
         "name": "Dark Strike"
       }
     ],
+    "move_graph": {
+      "initial": "INCANTATION",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "INCANTATION",
+          "to": "DARK_STRIKE",
+          "chance": 100.0
+        },
+        {
+          "from": "DARK_STRIKE",
+          "to": "DARK_STRIKE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "DarkStrike": {
         "normal": 9,
@@ -708,6 +981,27 @@
         "name": "Crush"
       }
     ],
+    "move_graph": {
+      "initial": "STAMP",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "STAMP",
+          "to": "PLOW",
+          "chance": 100.0
+        },
+        {
+          "from": "PLOW",
+          "to": "PLOW",
+          "chance": 100.0
+        },
+        {
+          "from": "STOMP",
+          "to": "CRUSH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Plow": {
         "normal": 18,
@@ -754,6 +1048,22 @@
         "name": "Screech"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "CLAMP",
+          "to": "SCREECH",
+          "chance": 100.0
+        },
+        {
+          "from": "SCREECH",
+          "to": "CLAMP",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Clamp": {
         "normal": 8,
@@ -784,6 +1094,7 @@
         "name": "Nothing"
       }
     ],
+    "move_graph": null,
     "damage_values": null,
     "block_values": null,
     "image_url": null
@@ -825,6 +1136,27 @@
         "name": "Goop"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "WHIP_SLAP",
+          "to": "GLOMP",
+          "chance": 100.0
+        },
+        {
+          "from": "GLOMP",
+          "to": "GOOP",
+          "chance": 100.0
+        },
+        {
+          "from": "GOOP",
+          "to": "WHIP_SLAP",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "WhipSlap": {
         "normal": 3,
@@ -867,6 +1199,22 @@
         "name": "Reload"
       }
     ],
+    "move_graph": {
+      "initial": "RELOAD",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "FIRE",
+          "to": "RELOAD",
+          "chance": 100.0
+        },
+        {
+          "from": "RELOAD",
+          "to": "FIRE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Fire": {
         "normal": 14,
@@ -929,6 +1277,37 @@
         "name": "Guarded Strike"
       }
     ],
+    "move_graph": {
+      "initial": "THRASH",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "THRASH",
+          "to": "ENLARGING_STRIKE",
+          "chance": 100.0
+        },
+        {
+          "from": "ENLARGING_STRIKE",
+          "to": "BUG_STING",
+          "chance": 100.0
+        },
+        {
+          "from": "BUG_STING",
+          "to": "ADAPT",
+          "chance": 100.0
+        },
+        {
+          "from": "ADAPT",
+          "to": "GUARDED_STRIKE",
+          "chance": 100.0
+        },
+        {
+          "from": "GUARDED_STRIKE",
+          "to": "THRASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Thrash": {
         "normal": 12,
@@ -995,6 +1374,32 @@
         "name": "Expel"
       }
     ],
+    "move_graph": {
+      "initial": "CHARGE_UP",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "CHARGE_UP",
+          "to": "REPEATER_BLAST",
+          "chance": 100.0
+        },
+        {
+          "from": "REPEATER_BLAST",
+          "to": "REPEATER_BLAST_MOVE_2",
+          "chance": 100.0
+        },
+        {
+          "from": "REPEATER_BLAST_MOVE_2",
+          "to": "EXPEL",
+          "chance": 100.0
+        },
+        {
+          "from": "EXPEL",
+          "to": "REPEATER_BLAST",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Blast": {
         "normal": 7,
@@ -1037,6 +1442,22 @@
         "name": "Dark Strike"
       }
     ],
+    "move_graph": {
+      "initial": "INCANTATION",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "INCANTATION",
+          "to": "DARK_STRIKE",
+          "chance": 100.0
+        },
+        {
+          "from": "DARK_STRIKE",
+          "to": "DARK_STRIKE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "DarkStrike": {
         "normal": 1,
@@ -1099,6 +1520,42 @@
         "name": "Reattach"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "WRITHE",
+          "to": "CONSTRICT",
+          "chance": 100.0
+        },
+        {
+          "from": "BULK",
+          "to": "WRITHE",
+          "chance": 100.0
+        },
+        {
+          "from": "CONSTRICT",
+          "to": "BULK",
+          "chance": 100.0
+        },
+        {
+          "from": "REATTACH",
+          "to": "WRITHE",
+          "chance": 33.3
+        },
+        {
+          "from": "REATTACH",
+          "to": "BULK",
+          "chance": 33.3
+        },
+        {
+          "from": "REATTACH",
+          "to": "CONSTRICT",
+          "chance": 33.3
+        }
+      ]
+    },
     "damage_values": {
       "Writhe": {
         "normal": 5,
@@ -1145,6 +1602,22 @@
         "name": "Savage"
       }
     ],
+    "move_graph": {
+      "initial": "FORBIDDEN_INCANTATION",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "FORBIDDEN_INCANTATION",
+          "to": "SAVAGE",
+          "chance": 100.0
+        },
+        {
+          "from": "SAVAGE",
+          "to": "SAVAGE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Savage": {
         "normal": 12,
@@ -1281,6 +1754,27 @@
         "name": "Spear!"
       }
     ],
+    "move_graph": {
+      "initial": "BEES",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "PHEROMONE_SPIT",
+          "to": "BEES",
+          "chance": 100.0
+        },
+        {
+          "from": "BEES",
+          "to": "SPEAR",
+          "chance": 100.0
+        },
+        {
+          "from": "SPEAR",
+          "to": "PHEROMONE_SPIT",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Bees": {
         "normal": 3,
@@ -1331,6 +1825,47 @@
         "name": "Enrage"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "SKITTER",
+          "to": "MANDIBLES",
+          "chance": 100.0
+        },
+        {
+          "from": "MANDIBLES",
+          "to": "ENRAGE",
+          "chance": 100.0
+        },
+        {
+          "from": "ENRAGE",
+          "to": "SKITTER",
+          "chance": 50.0
+        },
+        {
+          "from": "ENRAGE",
+          "to": "MANDIBLES",
+          "chance": 50.0
+        },
+        {
+          "from": "__START__",
+          "to": "SKITTER",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "MANDIBLES",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "ENRAGE",
+          "chance": null
+        }
+      ]
+    },
     "damage_values": {
       "Skitter": {
         "normal": 1,
@@ -1365,6 +1900,17 @@
         "name": "Distract"
       }
     ],
+    "move_graph": {
+      "initial": "DISTRACT",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "DISTRACT",
+          "to": "DISTRACT",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": null,
     "block_values": null,
     "image_url": "/static/images/monsters/eye_with_teeth.png"
@@ -1402,6 +1948,32 @@
         "name": "Disintegrate"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "FABRICATE",
+          "to": "DISINTEGRATE",
+          "chance": null
+        },
+        {
+          "from": "FABRICATING_STRIKE",
+          "to": "DISINTEGRATE",
+          "chance": null
+        },
+        {
+          "from": "DISINTEGRATE",
+          "to": "DISINTEGRATE",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "DISINTEGRATE",
+          "chance": null
+        }
+      ]
+    },
     "damage_values": {
       "FabricatingStrike": {
         "normal": 18,
@@ -1460,6 +2032,67 @@
         "name": "Enrage"
       }
     ],
+    "move_graph": {
+      "initial": "SWIPE",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "SWIPE",
+          "to": "SPEW_COINS",
+          "chance": 33.3
+        },
+        {
+          "from": "SWIPE",
+          "to": "THROW_RELIC",
+          "chance": 33.3
+        },
+        {
+          "from": "SWIPE",
+          "to": "ENRAGE",
+          "chance": 33.3
+        },
+        {
+          "from": "SPEW_COINS",
+          "to": "SWIPE",
+          "chance": 33.3
+        },
+        {
+          "from": "SPEW_COINS",
+          "to": "THROW_RELIC",
+          "chance": 33.3
+        },
+        {
+          "from": "SPEW_COINS",
+          "to": "ENRAGE",
+          "chance": 33.3
+        },
+        {
+          "from": "THROW_RELIC",
+          "to": "SWIPE",
+          "chance": 50.0
+        },
+        {
+          "from": "THROW_RELIC",
+          "to": "SPEW_COINS",
+          "chance": 50.0
+        },
+        {
+          "from": "ENRAGE",
+          "to": "SWIPE",
+          "chance": 33.3
+        },
+        {
+          "from": "ENRAGE",
+          "to": "SPEW_COINS",
+          "chance": 33.3
+        },
+        {
+          "from": "ENRAGE",
+          "to": "THROW_RELIC",
+          "chance": 33.3
+        }
+      ]
+    },
     "damage_values": {
       "Swipe": {
         "normal": 13,
@@ -1502,6 +2135,22 @@
         "name": "Flee"
       }
     ],
+    "move_graph": {
+      "initial": "SPAWNED",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "SPAWNED",
+          "to": "FLEE",
+          "chance": 100.0
+        },
+        {
+          "from": "FLEE",
+          "to": "FLEE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": null,
     "block_values": null,
     "image_url": "/static/images/monsters/fat_gremlin.png"
@@ -1543,6 +2192,52 @@
         "name": "Ram"
       }
     ],
+    "move_graph": {
+      "initial": "RAM",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "WAR_CHANT",
+          "to": "FLAIL",
+          "chance": 50.0
+        },
+        {
+          "from": "WAR_CHANT",
+          "to": "RAM",
+          "chance": 50.0
+        },
+        {
+          "from": "FLAIL",
+          "to": "WAR_CHANT",
+          "chance": 20.0
+        },
+        {
+          "from": "FLAIL",
+          "to": "FLAIL",
+          "chance": 40.0
+        },
+        {
+          "from": "FLAIL",
+          "to": "RAM",
+          "chance": 40.0
+        },
+        {
+          "from": "RAM",
+          "to": "WAR_CHANT",
+          "chance": 20.0
+        },
+        {
+          "from": "RAM",
+          "to": "FLAIL",
+          "chance": 40.0
+        },
+        {
+          "from": "RAM",
+          "to": "RAM",
+          "chance": 40.0
+        }
+      ]
+    },
     "damage_values": {
       "Flail": {
         "normal": 9,
@@ -1593,6 +2288,52 @@
         "name": "Smash"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "VULNERABLE_SPORES",
+          "to": "FRAIL_SPORES",
+          "chance": 50.0
+        },
+        {
+          "from": "VULNERABLE_SPORES",
+          "to": "SMASH",
+          "chance": 50.0
+        },
+        {
+          "from": "FRAIL_SPORES",
+          "to": "VULNERABLE_SPORES",
+          "chance": 50.0
+        },
+        {
+          "from": "FRAIL_SPORES",
+          "to": "SMASH",
+          "chance": 50.0
+        },
+        {
+          "from": "SMASH",
+          "to": "VULNERABLE_SPORES",
+          "chance": 50.0
+        },
+        {
+          "from": "SMASH",
+          "to": "FRAIL_SPORES",
+          "chance": 50.0
+        },
+        {
+          "from": "__START__",
+          "to": "FRAIL_SPORES",
+          "chance": 50.0
+        },
+        {
+          "from": "__START__",
+          "to": "SMASH",
+          "chance": 50.0
+        }
+      ]
+    },
     "damage_values": {
       "Spore": {
         "normal": 8,
@@ -1643,6 +2384,37 @@
         "name": "Thwack"
       }
     ],
+    "move_graph": {
+      "initial": "ILLUSION",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "ILLUSION",
+          "to": "SWIPE",
+          "chance": 100.0
+        },
+        {
+          "from": "SWIPE",
+          "to": "SWIPE_RANDOM",
+          "chance": 40.0
+        },
+        {
+          "from": "SWIPE",
+          "to": "HEADBUTT",
+          "chance": 60.0
+        },
+        {
+          "from": "SWIPE_RANDOM",
+          "to": "HEADBUTT",
+          "chance": 100.0
+        },
+        {
+          "from": "HEADBUTT",
+          "to": "SWIPE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Swipe": {
         "normal": 8,
@@ -1693,6 +2465,57 @@
         "name": "Lash"
       }
     ],
+    "move_graph": {
+      "initial": "LATCH",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "TACKLE",
+          "to": "LATCH",
+          "chance": 33.3
+        },
+        {
+          "from": "TACKLE",
+          "to": "TACKLE",
+          "chance": 33.3
+        },
+        {
+          "from": "TACKLE",
+          "to": "LASH",
+          "chance": 33.3
+        },
+        {
+          "from": "LATCH",
+          "to": "LATCH",
+          "chance": 33.3
+        },
+        {
+          "from": "LATCH",
+          "to": "TACKLE",
+          "chance": 33.3
+        },
+        {
+          "from": "LATCH",
+          "to": "LASH",
+          "chance": 33.3
+        },
+        {
+          "from": "LASH",
+          "to": "LATCH",
+          "chance": 33.3
+        },
+        {
+          "from": "LASH",
+          "to": "TACKLE",
+          "chance": 33.3
+        },
+        {
+          "from": "LASH",
+          "to": "LASH",
+          "chance": 33.3
+        }
+      ]
+    },
     "damage_values": {
       "Tackle": {
         "normal": 9,
@@ -1755,6 +2578,37 @@
         "name": "Beetle Charge"
       }
     ],
+    "move_graph": {
+      "initial": "TONGUE_LASH",
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "FOR_THE_QUEEN",
+          "to": "TONGUE_LASH",
+          "chance": null
+        },
+        {
+          "from": "FOR_THE_QUEEN",
+          "to": "BEETLE_CHARGE",
+          "chance": null
+        },
+        {
+          "from": "STRIKE_DOWN_EVIL",
+          "to": "FOR_THE_QUEEN",
+          "chance": 100.0
+        },
+        {
+          "from": "TONGUE_LASH",
+          "to": "STRIKE_DOWN_EVIL",
+          "chance": 100.0
+        },
+        {
+          "from": "BEETLE_CHARGE",
+          "to": "TONGUE_LASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "StrikeDownEvil": {
         "normal": 21,
@@ -1805,6 +2659,27 @@
         "name": "Inhale"
       }
     ],
+    "move_graph": {
+      "initial": "FIRST_ACID_GOOP",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "FIRST_ACID_GOOP",
+          "to": "INHALE",
+          "chance": 100.0
+        },
+        {
+          "from": "ACID_GOOP",
+          "to": "FIRST_ACID_GOOP",
+          "chance": 100.0
+        },
+        {
+          "from": "INHALE",
+          "to": "ACID_GOOP",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "AcidGoop": {
         "normal": 4,
@@ -1835,6 +2710,7 @@
         "name": "Explode"
       }
     ],
+    "move_graph": null,
     "damage_values": {
       "Explode": {
         "normal": 8,
@@ -1873,6 +2749,7 @@
         "name": "Powder"
       }
     ],
+    "move_graph": null,
     "damage_values": null,
     "block_values": null,
     "image_url": null
@@ -1906,6 +2783,7 @@
         "name": "Gem Laser"
       }
     ],
+    "move_graph": null,
     "damage_values": null,
     "block_values": null,
     "image_url": null
@@ -1943,6 +2821,27 @@
         "name": "Shocking Slap"
       }
     ],
+    "move_graph": {
+      "initial": "SHOCKING_SLAP",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "THUNDER_STRIKE",
+          "to": "GALVANIC_BURST",
+          "chance": 100.0
+        },
+        {
+          "from": "SHOCKING_SLAP",
+          "to": "THUNDER_STRIKE",
+          "chance": 100.0
+        },
+        {
+          "from": "GALVANIC_BURST",
+          "to": "SHOCKING_SLAP",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "ThunderStrike": {
         "normal": 6,
@@ -1997,6 +2896,27 @@
         "name": "Hehe"
       }
     ],
+    "move_graph": {
+      "initial": "GIMME",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "GIMME",
+          "to": "DOUBLE_SMASH",
+          "chance": 100.0
+        },
+        {
+          "from": "DOUBLE_SMASH",
+          "to": "HEHE",
+          "chance": 100.0
+        },
+        {
+          "from": "HEHE",
+          "to": "GIMME",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Gimme": {
         "normal": 7,
@@ -2035,6 +2955,17 @@
         "name": "Guard"
       }
     ],
+    "move_graph": {
+      "initial": "GUARD",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "GUARD",
+          "to": "GUARD",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": null,
     "block_values": null,
     "image_url": "/static/images/monsters/guardbot.png"
@@ -2050,6 +2981,7 @@
     "max_hp_ascension": null,
     "moves": [],
     "bestiary_moves": [],
+    "move_graph": null,
     "damage_values": null,
     "block_values": null,
     "image_url": null
@@ -2095,6 +3027,57 @@
         "name": "Haunt"
       }
     ],
+    "move_graph": {
+      "initial": "HAUNT",
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "RAMMING_SPEED",
+          "to": "SWIPE",
+          "chance": null
+        },
+        {
+          "from": "RAMMING_SPEED",
+          "to": "STOMP",
+          "chance": null
+        },
+        {
+          "from": "SWIPE",
+          "to": "RAMMING_SPEED",
+          "chance": null
+        },
+        {
+          "from": "SWIPE",
+          "to": "STOMP",
+          "chance": null
+        },
+        {
+          "from": "STOMP",
+          "to": "RAMMING_SPEED",
+          "chance": null
+        },
+        {
+          "from": "STOMP",
+          "to": "SWIPE",
+          "chance": null
+        },
+        {
+          "from": "HAUNT",
+          "to": "RAMMING_SPEED",
+          "chance": null
+        },
+        {
+          "from": "HAUNT",
+          "to": "SWIPE",
+          "chance": null
+        },
+        {
+          "from": "HAUNT",
+          "to": "STOMP",
+          "chance": null
+        }
+      ]
+    },
     "damage_values": {
       "RammingSpeed": {
         "normal": 10,
@@ -2149,6 +3132,37 @@
         "name": "Puncture"
       }
     ],
+    "move_graph": {
+      "initial": "TENDERIZING_GOOP",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "TENDERIZING_GOOP",
+          "to": "BITE",
+          "chance": 33.3
+        },
+        {
+          "from": "TENDERIZING_GOOP",
+          "to": "PUNCTURE",
+          "chance": 66.7
+        },
+        {
+          "from": "BITE",
+          "to": "PUNCTURE",
+          "chance": 100.0
+        },
+        {
+          "from": "PUNCTURE",
+          "to": "BITE",
+          "chance": 33.3
+        },
+        {
+          "from": "PUNCTURE",
+          "to": "PUNCTURE",
+          "chance": 66.7
+        }
+      ]
+    },
     "damage_values": {
       "Bite": {
         "normal": 17,
@@ -2207,6 +3221,32 @@
         "name": "Pulsate"
       }
     ],
+    "move_graph": {
+      "initial": "JAB",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "JAB",
+          "to": "RADIATE",
+          "chance": 100.0
+        },
+        {
+          "from": "RADIATE",
+          "to": "WHIRLWIND",
+          "chance": 100.0
+        },
+        {
+          "from": "WHIRLWIND",
+          "to": "PULSATE",
+          "chance": 100.0
+        },
+        {
+          "from": "PULSATE",
+          "to": "JAB",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Jab": {
         "normal": 22,
@@ -2257,6 +3297,32 @@
         "name": "Whirlwind"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "JAB",
+          "to": "PIERCING_GAZE",
+          "chance": 50.0
+        },
+        {
+          "from": "JAB",
+          "to": "WHIRLWIND",
+          "chance": 50.0
+        },
+        {
+          "from": "WHIRLWIND",
+          "to": "PIERCING_GAZE",
+          "chance": 100.0
+        },
+        {
+          "from": "PIERCING_GAZE",
+          "to": "WHIRLWIND",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Jab": {
         "normal": 3,
@@ -2311,6 +3377,27 @@
         "name": "Power Dance"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "QUICK_SLASH",
+          "to": "BOOMERANG",
+          "chance": 100.0
+        },
+        {
+          "from": "BOOMERANG",
+          "to": "POWER_DANCE",
+          "chance": 100.0
+        },
+        {
+          "from": "POWER_DANCE",
+          "to": "QUICK_SLASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "QuickSlash": {
         "normal": 5,
@@ -2369,6 +3456,32 @@
         "name": "Dark Ritual"
       }
     ],
+    "move_graph": {
+      "initial": "ORB_OF_FRAILTY",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "ORB_OF_FRAILTY",
+          "to": "ORB_OF_WEAKNESS",
+          "chance": 100.0
+        },
+        {
+          "from": "ORB_OF_WEAKNESS",
+          "to": "BEAM",
+          "chance": 100.0
+        },
+        {
+          "from": "BEAM",
+          "to": "RITUAL",
+          "chance": 100.0
+        },
+        {
+          "from": "RITUAL",
+          "to": "ORB_OF_FRAILTY",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "OrbOfFrailty": {
         "normal": 8,
@@ -2431,6 +3544,37 @@
         "name": "Ponder"
       }
     ],
+    "move_graph": {
+      "initial": "CURSE_OF_KNOWLEDGE",
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "CURSE_OF_KNOWLEDGE",
+          "to": "SLAP",
+          "chance": 100.0
+        },
+        {
+          "from": "SLAP",
+          "to": "KNOWLEDGE_OVERWHELMING",
+          "chance": 100.0
+        },
+        {
+          "from": "KNOWLEDGE_OVERWHELMING",
+          "to": "PONDER",
+          "chance": 100.0
+        },
+        {
+          "from": "PONDER",
+          "to": "CURSE_OF_KNOWLEDGE",
+          "chance": null
+        },
+        {
+          "from": "PONDER",
+          "to": "SLAP",
+          "chance": null
+        }
+      ]
+    },
     "damage_values": {
       "Slap": {
         "normal": 17,
@@ -2505,6 +3649,42 @@
         "name": "Soul Siphon"
       }
     ],
+    "move_graph": {
+      "initial": "SLEEP",
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "SLEEP",
+          "to": "SLEEP",
+          "chance": null
+        },
+        {
+          "from": "SLEEP",
+          "to": "SLASH",
+          "chance": null
+        },
+        {
+          "from": "SLASH",
+          "to": "DISEMBOWEL",
+          "chance": 100.0
+        },
+        {
+          "from": "SLASH2",
+          "to": "SOUL_SIPHON",
+          "chance": 100.0
+        },
+        {
+          "from": "DISEMBOWEL",
+          "to": "SLASH2",
+          "chance": 100.0
+        },
+        {
+          "from": "SOUL_SIPHON",
+          "to": "SLASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Slash": {
         "normal": 19,
@@ -2551,6 +3731,22 @@
         "name": "Sticky Shot"
       }
     ],
+    "move_graph": {
+      "initial": "STICKY_SHOT",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "CLUMP_SHOT",
+          "to": "STICKY_SHOT",
+          "chance": 100.0
+        },
+        {
+          "from": "STICKY_SHOT",
+          "to": "CLUMP_SHOT",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Clump": {
         "normal": 8,
@@ -2589,6 +3785,32 @@
         "name": "Goop"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "TACKLE",
+          "to": "GOOP",
+          "chance": 100.0
+        },
+        {
+          "from": "GOOP",
+          "to": "TACKLE",
+          "chance": 100.0
+        },
+        {
+          "from": "__START__",
+          "to": "TACKLE",
+          "chance": 50.0
+        },
+        {
+          "from": "__START__",
+          "to": "GOOP",
+          "chance": 50.0
+        }
+      ]
+    },
     "damage_values": {
       "Tackle": {
         "normal": 3,
@@ -2635,6 +3857,27 @@
         "name": "Super Gas Blast"
       }
     ],
+    "move_graph": {
+      "initial": "ADVANCED_GAS",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "ADVANCED_GAS",
+          "to": "BLOAT",
+          "chance": 100.0
+        },
+        {
+          "from": "BLOAT",
+          "to": "SUPER_GAS_BLAST",
+          "chance": 100.0
+        },
+        {
+          "from": "SUPER_GAS_BLAST",
+          "to": "BLOAT",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "AdvancedGas": {
         "normal": 8,
@@ -2681,6 +3924,27 @@
         "name": "Smash"
       }
     ],
+    "move_graph": {
+      "initial": "SHIELD_SLAM",
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "SHIELD_SLAM",
+          "to": "SHIELD_SLAM",
+          "chance": null
+        },
+        {
+          "from": "SHIELD_SLAM",
+          "to": "SMASH",
+          "chance": null
+        },
+        {
+          "from": "SMASH",
+          "to": "SMASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "ShieldSlam": {
         "normal": 6,
@@ -2731,6 +3995,27 @@
         "name": "Curl and Grow"
       }
     ],
+    "move_graph": {
+      "initial": "WEB_CANNON",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "WEB_CANNON",
+          "to": "CURL_AND_GROW",
+          "chance": 100.0
+        },
+        {
+          "from": "POUNCE",
+          "to": "WEB_CANNON",
+          "chance": 100.0
+        },
+        {
+          "from": "CURL_AND_GROW",
+          "to": "POUNCE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Web": {
         "normal": 9,
@@ -2793,6 +4078,37 @@
         "name": "Ram"
       }
     ],
+    "move_graph": {
+      "initial": "POWER_SHIELD",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "POWER_SHIELD",
+          "to": "DAMPEN",
+          "chance": 100.0
+        },
+        {
+          "from": "DAMPEN",
+          "to": "RAM",
+          "chance": 100.0
+        },
+        {
+          "from": "PREP",
+          "to": "MAGIC_BOMB",
+          "chance": 100.0
+        },
+        {
+          "from": "MAGIC_BOMB",
+          "to": "RAM",
+          "chance": 100.0
+        },
+        {
+          "from": "RAM",
+          "to": "PREP",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "PowerShield": {
         "normal": 6,
@@ -2847,6 +4163,47 @@
         "name": "Claw"
       }
     ],
+    "move_graph": {
+      "initial": "CLAW",
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "RIP_AND_TEAR",
+          "to": "ROAR",
+          "chance": 50.0
+        },
+        {
+          "from": "RIP_AND_TEAR",
+          "to": "CLAW",
+          "chance": 50.0
+        },
+        {
+          "from": "ROAR",
+          "to": "RIP_AND_TEAR",
+          "chance": 33.3
+        },
+        {
+          "from": "ROAR",
+          "to": "ROAR",
+          "chance": 33.3
+        },
+        {
+          "from": "ROAR",
+          "to": "CLAW",
+          "chance": 33.3
+        },
+        {
+          "from": "CLAW",
+          "to": "RIP_AND_TEAR",
+          "chance": 50.0
+        },
+        {
+          "from": "CLAW",
+          "to": "ROAR",
+          "chance": 50.0
+        }
+      ]
+    },
     "damage_values": {
       "RipAndTear": {
         "normal": 14,
@@ -2905,6 +4262,32 @@
         "name": "Heavy Cleave"
       }
     ],
+    "move_graph": {
+      "initial": "CHARGE",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "CHARGE",
+          "to": "FLAMETHROWER",
+          "chance": 100.0
+        },
+        {
+          "from": "FLAMETHROWER",
+          "to": "WINDUP",
+          "chance": 100.0
+        },
+        {
+          "from": "WINDUP",
+          "to": "HEAVY_CLEAVE",
+          "chance": 100.0
+        },
+        {
+          "from": "HEAVY_CLEAVE",
+          "to": "FLAMETHROWER",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Charge": {
         "normal": 25,
@@ -2957,6 +4340,7 @@
         "name": "Ram"
       }
     ],
+    "move_graph": null,
     "damage_values": null,
     "block_values": null,
     "image_url": null
@@ -2998,6 +4382,37 @@
         "name": "Suck"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "TOXIC",
+          "to": "BITE",
+          "chance": 100.0
+        },
+        {
+          "from": "BITE",
+          "to": "SUCK",
+          "chance": 100.0
+        },
+        {
+          "from": "SUCK",
+          "to": "TOXIC",
+          "chance": 100.0
+        },
+        {
+          "from": "__START__",
+          "to": "TOXIC",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "SUCK",
+          "chance": null
+        }
+      ]
+    },
     "damage_values": {
       "Bite": {
         "normal": 13,
@@ -3044,6 +4459,42 @@
         "name": "Hiss"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "BUTT",
+          "to": "SLICE",
+          "chance": 100.0
+        },
+        {
+          "from": "SLICE",
+          "to": "HISS",
+          "chance": 100.0
+        },
+        {
+          "from": "HISS",
+          "to": "BUTT",
+          "chance": 100.0
+        },
+        {
+          "from": "__START__",
+          "to": "BUTT",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "HISS",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "SLICE",
+          "chance": null
+        }
+      ]
+    },
     "damage_values": {
       "Butt": {
         "normal": 12,
@@ -3078,6 +4529,17 @@
         "name": "Noise"
       }
     ],
+    "move_graph": {
+      "initial": "NOISE",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "NOISE",
+          "to": "NOISE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": null,
     "block_values": null,
     "image_url": "/static/images/monsters/noisebot.png"
@@ -3103,6 +4565,17 @@
         "name": "Nothing"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "NOTHING",
+          "to": "NOTHING",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": null,
     "block_values": null,
     "image_url": "/static/images/monsters/osty.png"
@@ -3148,6 +4621,37 @@
         "name": "Nutritional Paste"
       }
     ],
+    "move_graph": {
+      "initial": "LAY_EGGS",
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "LAY_EGGS",
+          "to": "SMASH",
+          "chance": 100.0
+        },
+        {
+          "from": "SMASH",
+          "to": "TENDERIZER",
+          "chance": 100.0
+        },
+        {
+          "from": "TENDERIZER",
+          "to": "LAY_EGGS",
+          "chance": null
+        },
+        {
+          "from": "TENDERIZER",
+          "to": "NUTRITIONAL_PASTE",
+          "chance": null
+        },
+        {
+          "from": "NUTRITIONAL_PASTE",
+          "to": "SMASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Smash": {
         "normal": 16,
@@ -3206,6 +4710,32 @@
         "name": "Verdict"
       }
     ],
+    "move_graph": {
+      "initial": "MAGISTRATE_SCRUTINY",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "MAGISTRATE_SCRUTINY",
+          "to": "PECK_ASSAULT",
+          "chance": 100.0
+        },
+        {
+          "from": "PECK_ASSAULT",
+          "to": "JUDICIAL_FLIGHT",
+          "chance": 100.0
+        },
+        {
+          "from": "JUDICIAL_FLIGHT",
+          "to": "VERDICT",
+          "chance": 100.0
+        },
+        {
+          "from": "VERDICT",
+          "to": "MAGISTRATE_SCRUTINY",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Scrutiny": {
         "normal": 16,
@@ -3244,6 +4774,17 @@
         "name": "Nothing"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "NOTHING",
+          "to": "NOTHING",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": null,
     "block_values": null,
     "image_url": "/static/images/monsters/paels_legion.png"
@@ -3269,6 +4810,17 @@
         "name": "Slam"
       }
     ],
+    "move_graph": {
+      "initial": "SLAM",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "SLAM",
+          "to": "SLAM",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Slam": {
         "normal": 16,
@@ -3323,6 +4875,52 @@
         "name": "Enlarge"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "BITE",
+          "to": "LASH",
+          "chance": 100.0
+        },
+        {
+          "from": "LASH",
+          "to": "FLAIL",
+          "chance": 100.0
+        },
+        {
+          "from": "FLAIL",
+          "to": "ENLARGE",
+          "chance": 100.0
+        },
+        {
+          "from": "ENLARGE",
+          "to": "BITE",
+          "chance": 100.0
+        },
+        {
+          "from": "__START__",
+          "to": "FLAIL",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "BITE",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "LASH",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "ENLARGE",
+          "chance": null
+        }
+      ]
+    },
     "damage_values": {
       "Bite": {
         "normal": 5,
@@ -3369,6 +4967,22 @@
         "name": "Lash"
       }
     ],
+    "move_graph": {
+      "initial": "INFECT",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "INFECT",
+          "to": "LASH",
+          "chance": 100.0
+        },
+        {
+          "from": "LASH",
+          "to": "INFECT",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Lash": {
         "normal": 4,
@@ -3415,6 +5029,27 @@
         "name": "Fast Punch"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "READY",
+          "to": "STRONG_PUNCH",
+          "chance": 100.0
+        },
+        {
+          "from": "STRONG_PUNCH",
+          "to": "FAST_PUNCH",
+          "chance": 100.0
+        },
+        {
+          "from": "FAST_PUNCH",
+          "to": "READY",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "StrongPunch": {
         "normal": 14,
@@ -3473,6 +5108,27 @@
         "name": "Off with Your Head"
       }
     ],
+    "move_graph": {
+      "initial": "PUPPET_STRINGS",
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "PUPPET_STRINGS",
+          "to": "YOU_ARE_MINE",
+          "chance": 100.0
+        },
+        {
+          "from": "YOU_ARE_MINE",
+          "to": "OFF_WITH_YOUR_HEAD",
+          "chance": null
+        },
+        {
+          "from": "OFF_WITH_YOUR_HEAD",
+          "to": "EXECUTION",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "OffWithYourHead": {
         "normal": 3,
@@ -3539,6 +5195,37 @@
         "name": "Recharge"
       }
     ],
+    "move_graph": {
+      "initial": "TARGETING_RETICLE",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "TARGETING_RETICLE",
+          "to": "PRECISION_BEAM",
+          "chance": 100.0
+        },
+        {
+          "from": "PRECISION_BEAM",
+          "to": "CHARGE_UP",
+          "chance": 100.0
+        },
+        {
+          "from": "CHARGE_UP",
+          "to": "LASER",
+          "chance": 100.0
+        },
+        {
+          "from": "LASER",
+          "to": "RECHARGE",
+          "chance": 100.0
+        },
+        {
+          "from": "RECHARGE",
+          "to": "TARGETING_RETICLE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "TargetingReticle": {
         "normal": 3,
@@ -3593,6 +5280,32 @@
         "name": "More Teeth"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "CHOMP",
+          "to": "MORE_TEETH",
+          "chance": 100.0
+        },
+        {
+          "from": "CHEW",
+          "to": "CHOMP",
+          "chance": 33.3
+        },
+        {
+          "from": "CHEW",
+          "to": "CHEW",
+          "chance": 66.7
+        },
+        {
+          "from": "MORE_TEETH",
+          "to": "CHEW",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Chomp": {
         "normal": 14,
@@ -3643,6 +5356,27 @@
         "name": "Bubble Burp"
       }
     ],
+    "move_graph": {
+      "initial": "SEA_KICK",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "SEA_KICK",
+          "to": "SPINNING_KICK",
+          "chance": 100.0
+        },
+        {
+          "from": "SPINNING_KICK",
+          "to": "BUBBLE_BURP",
+          "chance": 100.0
+        },
+        {
+          "from": "BUBBLE_BURP",
+          "to": "SEA_KICK",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "SeaKick": {
         "normal": 11,
@@ -3685,6 +5419,22 @@
         "name": "Jet"
       }
     ],
+    "move_graph": {
+      "initial": "JET",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "PRESSURIZE",
+          "to": "JET",
+          "chance": 100.0
+        },
+        {
+          "from": "JET",
+          "to": "PRESSURIZE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Jet": {
         "normal": 10,
@@ -3727,6 +5477,27 @@
         "name": "Chomp"
       }
     ],
+    "move_graph": {
+      "initial": "SHRINKER",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "SHRINKER",
+          "to": "CHOMP",
+          "chance": 100.0
+        },
+        {
+          "from": "CHOMP",
+          "to": "STOMP",
+          "chance": 100.0
+        },
+        {
+          "from": "STOMP",
+          "to": "CHOMP",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Chomp": {
         "normal": 7,
@@ -3785,6 +5556,32 @@
         "name": "Piercing Stabs"
       }
     ],
+    "move_graph": {
+      "initial": "SMASH",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "SMASH",
+          "to": "ZOOM",
+          "chance": 100.0
+        },
+        {
+          "from": "ZOOM",
+          "to": "INERTIA",
+          "chance": 100.0
+        },
+        {
+          "from": "INERTIA",
+          "to": "PIERCING_STABS",
+          "chance": 100.0
+        },
+        {
+          "from": "PIERCING_STABS",
+          "to": "SMASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Smash": {
         "normal": 12,
@@ -3847,6 +5644,32 @@
         "name": "Furious Pummeling"
       }
     ],
+    "move_graph": {
+      "initial": "VOMIT_ICHOR",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "VOMIT_ICHOR",
+          "to": "FURIOUS_PUMMELING",
+          "chance": 100.0
+        },
+        {
+          "from": "LEECHING_HUG",
+          "to": "SMOTHER",
+          "chance": 100.0
+        },
+        {
+          "from": "SMOTHER",
+          "to": "VOMIT_ICHOR",
+          "chance": 100.0
+        },
+        {
+          "from": "FURIOUS_PUMMELING",
+          "to": "LEECHING_HUG",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Smother": {
         "normal": 30,
@@ -3897,6 +5720,32 @@
         "name": "Lash"
       }
     ],
+    "move_graph": {
+      "initial": "CONSTRICT",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "CONSTRICT",
+          "to": "THWACK",
+          "chance": 50.0
+        },
+        {
+          "from": "CONSTRICT",
+          "to": "LASH",
+          "chance": 50.0
+        },
+        {
+          "from": "THWACK",
+          "to": "CONSTRICT",
+          "chance": 100.0
+        },
+        {
+          "from": "LASH",
+          "to": "CONSTRICT",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Thwack": {
         "normal": 7,
@@ -3943,6 +5792,42 @@
         "name": "Slam"
       }
     ],
+    "move_graph": {
+      "initial": "OIL_SPRAY",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "OIL_SPRAY",
+          "to": "SLAM",
+          "chance": 50.0
+        },
+        {
+          "from": "OIL_SPRAY",
+          "to": "RAGE",
+          "chance": 50.0
+        },
+        {
+          "from": "SLAM",
+          "to": "OIL_SPRAY",
+          "chance": 50.0
+        },
+        {
+          "from": "SLAM",
+          "to": "RAGE",
+          "chance": 50.0
+        },
+        {
+          "from": "RAGE",
+          "to": "OIL_SPRAY",
+          "chance": 50.0
+        },
+        {
+          "from": "RAGE",
+          "to": "SLAM",
+          "chance": 50.0
+        }
+      ]
+    },
     "damage_values": {
       "OilSpray": {
         "normal": 8,
@@ -3989,6 +5874,27 @@
         "name": "Roll Out"
       }
     ],
+    "move_graph": {
+      "initial": "SNORE",
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "SNORE",
+          "to": "SNORE",
+          "chance": null
+        },
+        {
+          "from": "SNORE",
+          "to": "ROLL_OUT",
+          "chance": null
+        },
+        {
+          "from": "ROLL_OUT",
+          "to": "ROLL_OUT",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Rollout": {
         "normal": 16,
@@ -4019,6 +5925,17 @@
         "name": "Energy Orb"
       }
     ],
+    "move_graph": {
+      "initial": "ENERGY_ORB",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "ENERGY_ORB",
+          "to": "ENERGY_ORB",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Energy": {
         "normal": 3,
@@ -4057,6 +5974,22 @@
         "name": "Tackle"
       }
     ],
+    "move_graph": {
+      "initial": "SPAWNED",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "SPAWNED",
+          "to": "TACKLE",
+          "chance": 100.0
+        },
+        {
+          "from": "TACKLE",
+          "to": "TACKLE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Tackle": {
         "normal": 9,
@@ -4119,6 +6052,37 @@
         "name": "Scream"
       }
     ],
+    "move_graph": {
+      "initial": "BECKON",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "BECKON",
+          "to": "DE_GAS",
+          "chance": 100.0
+        },
+        {
+          "from": "DE_GAS",
+          "to": "GAZE",
+          "chance": 100.0
+        },
+        {
+          "from": "GAZE",
+          "to": "FADE",
+          "chance": 100.0
+        },
+        {
+          "from": "FADE",
+          "to": "SCREAM",
+          "chance": 100.0
+        },
+        {
+          "from": "SCREAM",
+          "to": "BECKON",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "DeGas": {
         "normal": 16,
@@ -4169,6 +6133,42 @@
         "name": "Drain Life"
       }
     ],
+    "move_graph": {
+      "initial": "SOUL_BURN",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "SOUL_BURN",
+          "to": "MAELSTROM",
+          "chance": 50.0
+        },
+        {
+          "from": "SOUL_BURN",
+          "to": "DRAIN_LIFE",
+          "chance": 50.0
+        },
+        {
+          "from": "MAELSTROM",
+          "to": "SOUL_BURN",
+          "chance": 50.0
+        },
+        {
+          "from": "MAELSTROM",
+          "to": "DRAIN_LIFE",
+          "chance": 50.0
+        },
+        {
+          "from": "DRAIN_LIFE",
+          "to": "SOUL_BURN",
+          "chance": 50.0
+        },
+        {
+          "from": "DRAIN_LIFE",
+          "to": "MAELSTROM",
+          "chance": 50.0
+        }
+      ]
+    },
     "damage_values": {
       "SoulBurn": {
         "normal": 29,
@@ -4223,6 +6223,32 @@
         "name": "Soul Flame"
       }
     ],
+    "move_graph": {
+      "initial": "HEX",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "HEX",
+          "to": "SOUL_SLASH",
+          "chance": 100.0
+        },
+        {
+          "from": "SOUL_SLASH",
+          "to": "SOUL_SLASH",
+          "chance": 66.7
+        },
+        {
+          "from": "SOUL_SLASH",
+          "to": "SOUL_FLAME",
+          "chance": 33.3
+        },
+        {
+          "from": "SOUL_FLAME",
+          "to": "SOUL_SLASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "SoulSlash": {
         "normal": 15,
@@ -4273,6 +6299,27 @@
         "name": "Tongue Lash"
       }
     ],
+    "move_graph": {
+      "initial": "PROTRUDING_SPIKES",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "PROTRUDING_SPIKES",
+          "to": "SPIKE_EXPLOSION",
+          "chance": 100.0
+        },
+        {
+          "from": "SPIKE_EXPLOSION",
+          "to": "TONGUE_LASH",
+          "chance": 100.0
+        },
+        {
+          "from": "TONGUE_LASH",
+          "to": "PROTRUDING_SPIKES",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Explosion": {
         "normal": 23,
@@ -4307,6 +6354,17 @@
         "name": "Stab"
       }
     ],
+    "move_graph": {
+      "initial": "STAB",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "STAB",
+          "to": "STAB",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Stab": {
         "normal": 11,
@@ -4357,6 +6415,22 @@
         "name": "Terrorize"
       }
     ],
+    "move_graph": {
+      "initial": "CRASH",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "CRASH",
+          "to": "THRASH",
+          "chance": 100.0
+        },
+        {
+          "from": "THRASH",
+          "to": "CRASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Crash": {
         "normal": 16,
@@ -4427,6 +6501,42 @@
         "name": "Burning Growl"
       }
     ],
+    "move_graph": {
+      "initial": "BITE",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "BITE",
+          "to": "SKULL_BASH",
+          "chance": 100.0
+        },
+        {
+          "from": "SKULL_BASH",
+          "to": "BITE",
+          "chance": 100.0
+        },
+        {
+          "from": "MULTI_CLAW",
+          "to": "MULTI_CLAW",
+          "chance": 100.0
+        },
+        {
+          "from": "PHASE3_LACERATE",
+          "to": "BIG_POUNCE",
+          "chance": 100.0
+        },
+        {
+          "from": "BIG_POUNCE",
+          "to": "BURNING_GROWL",
+          "chance": 100.0
+        },
+        {
+          "from": "BURNING_GROWL",
+          "to": "PHASE3_LACERATE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Bite": {
         "normal": 20,
@@ -4489,6 +6599,27 @@
         "name": "Barrage"
       }
     ],
+    "move_graph": {
+      "initial": "SMASH",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "SMASH",
+          "to": "BEAM",
+          "chance": 100.0
+        },
+        {
+          "from": "BEAM",
+          "to": "BARRAGE",
+          "chance": 100.0
+        },
+        {
+          "from": "BARRAGE",
+          "to": "SMASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Smash": {
         "normal": 12,
@@ -4543,6 +6674,27 @@
         "name": "Barrage"
       }
     ],
+    "move_graph": {
+      "initial": "CRASH",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "CRASH",
+          "to": "FLAME_BEAM",
+          "chance": 100.0
+        },
+        {
+          "from": "FLAME_BEAM",
+          "to": "BARRAGE",
+          "chance": 100.0
+        },
+        {
+          "from": "BARRAGE",
+          "to": "CRASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Crash": {
         "normal": 15,
@@ -4597,6 +6749,27 @@
         "name": "Barrage"
       }
     ],
+    "move_graph": {
+      "initial": "BASH",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "BASH",
+          "to": "FLAME_BEAM",
+          "chance": 100.0
+        },
+        {
+          "from": "FLAME_BEAM",
+          "to": "BARRAGE",
+          "chance": 100.0
+        },
+        {
+          "from": "BARRAGE",
+          "to": "BASH",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Bash": {
         "normal": 13,
@@ -4651,6 +6824,7 @@
         "name": "Wrestle"
       }
     ],
+    "move_graph": null,
     "damage_values": null,
     "block_values": null,
     "image_url": null
@@ -4692,6 +6866,7 @@
         "name": "Ring"
       }
     ],
+    "move_graph": null,
     "damage_values": null,
     "block_values": null,
     "image_url": null
@@ -4741,6 +6916,7 @@
         "name": "Snore"
       }
     ],
+    "move_graph": null,
     "damage_values": null,
     "block_values": null,
     "image_url": null
@@ -4774,6 +6950,22 @@
         "name": "Dread"
       }
     ],
+    "move_graph": {
+      "initial": "MIASMA",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "MIASMA",
+          "to": "DREAD",
+          "chance": 100.0
+        },
+        {
+          "from": "DREAD",
+          "to": "MIASMA",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Dread": {
         "normal": 15,
@@ -4836,6 +7028,37 @@
         "name": "Salivate"
       }
     ],
+    "move_graph": {
+      "initial": "LIQUIFY_GROUND",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "LIQUIFY_GROUND",
+          "to": "THRASH",
+          "chance": 100.0
+        },
+        {
+          "from": "THRASH",
+          "to": "LUNGING_BITE",
+          "chance": 100.0
+        },
+        {
+          "from": "THRASH_MOVE_2",
+          "to": "THRASH",
+          "chance": 100.0
+        },
+        {
+          "from": "LUNGING_BITE",
+          "to": "SALIVATE",
+          "chance": 100.0
+        },
+        {
+          "from": "SALIVATE",
+          "to": "THRASH_MOVE_2",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Thrash": {
         "normal": 8,
@@ -4878,6 +7101,22 @@
         "name": "Eye Lasers"
       }
     ],
+    "move_graph": {
+      "initial": "DEBILITATING_SMOG",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "DEBILITATING_SMOG",
+          "to": "EYE_LASERS",
+          "chance": 100.0
+        },
+        {
+          "from": "EYE_LASERS",
+          "to": "DEBILITATING_SMOG",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "EyeLasers": {
         "normal": 4,
@@ -4928,6 +7167,57 @@
         "name": "Hardening Strike"
       }
     ],
+    "move_graph": {
+      "initial": "ILLUSION",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "ILLUSION",
+          "to": "PIERCING_GAZE",
+          "chance": 33.3
+        },
+        {
+          "from": "ILLUSION",
+          "to": "SAIL",
+          "chance": 33.3
+        },
+        {
+          "from": "ILLUSION",
+          "to": "HARDENING_STRIKE",
+          "chance": 33.3
+        },
+        {
+          "from": "PIERCING_GAZE",
+          "to": "SAIL",
+          "chance": 50.0
+        },
+        {
+          "from": "PIERCING_GAZE",
+          "to": "HARDENING_STRIKE",
+          "chance": 50.0
+        },
+        {
+          "from": "SAIL",
+          "to": "PIERCING_GAZE",
+          "chance": 50.0
+        },
+        {
+          "from": "SAIL",
+          "to": "HARDENING_STRIKE",
+          "chance": 50.0
+        },
+        {
+          "from": "HARDENING_STRIKE",
+          "to": "PIERCING_GAZE",
+          "chance": 50.0
+        },
+        {
+          "from": "HARDENING_STRIKE",
+          "to": "SAIL",
+          "chance": 50.0
+        }
+      ]
+    },
     "damage_values": {
       "PiercingGaze": {
         "normal": 10,
@@ -4994,6 +7284,37 @@
         "name": "Escape"
       }
     ],
+    "move_graph": {
+      "initial": "THIEVERY",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "THIEVERY",
+          "to": "FLUTTER",
+          "chance": 100.0
+        },
+        {
+          "from": "NAB",
+          "to": "ESCAPE",
+          "chance": 100.0
+        },
+        {
+          "from": "HAT_TRICK",
+          "to": "NAB",
+          "chance": 100.0
+        },
+        {
+          "from": "FLUTTER",
+          "to": "HAT_TRICK",
+          "chance": 100.0
+        },
+        {
+          "from": "ESCAPE",
+          "to": "ESCAPE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Theft": {
         "normal": 17,
@@ -5048,6 +7369,37 @@
         "name": "Spiken"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "SPIKE_SPIT",
+          "to": "WHIRL",
+          "chance": 100.0
+        },
+        {
+          "from": "WHIRL",
+          "to": "SPIKEN",
+          "chance": 100.0
+        },
+        {
+          "from": "SPIKEN",
+          "to": "SPIKE_SPIT",
+          "chance": 100.0
+        },
+        {
+          "from": "__START__",
+          "to": "WHIRL",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "SPIKEN",
+          "chance": null
+        }
+      ]
+    },
     "damage_values": {
       "SpikeSpit": {
         "normal": 3,
@@ -5114,6 +7466,37 @@
         "name": "Tackle 4"
       }
     ],
+    "move_graph": {
+      "initial": "TACKLE",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "TACKLE",
+          "to": "TACKLE_2",
+          "chance": 100.0
+        },
+        {
+          "from": "TACKLE_2",
+          "to": "BEAM",
+          "chance": 100.0
+        },
+        {
+          "from": "BEAM",
+          "to": "TACKLE_3",
+          "chance": 100.0
+        },
+        {
+          "from": "TACKLE_3",
+          "to": "TACKLE_4",
+          "chance": 100.0
+        },
+        {
+          "from": "TACKLE_4",
+          "to": "BEAM",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Tackle": {
         "normal": 18,
@@ -5160,6 +7543,22 @@
         "name": "Nibble"
       }
     ],
+    "move_graph": {
+      "initial": "HATCH",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "HATCH",
+          "to": "NIBBLE",
+          "chance": 100.0
+        },
+        {
+          "from": "NIBBLE",
+          "to": "NIBBLE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Nibble": {
         "normal": 4,
@@ -5194,6 +7593,22 @@
         "name": "Unleash the Hounds"
       }
     ],
+    "move_graph": {
+      "initial": "TRACK",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "TRACK",
+          "to": "HOUNDS",
+          "chance": 100.0
+        },
+        {
+          "from": "HOUNDS",
+          "to": "HOUNDS",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Hounds": {
         "normal": 1,
@@ -5244,6 +7659,32 @@
         "name": "Attack from Below"
       }
     ],
+    "move_graph": {
+      "initial": "BITE",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "BITE",
+          "to": "BURROW",
+          "chance": 100.0
+        },
+        {
+          "from": "BURROW",
+          "to": "BELOW",
+          "chance": 100.0
+        },
+        {
+          "from": "BELOW",
+          "to": "BELOW",
+          "chance": 100.0
+        },
+        {
+          "from": "DIZZY",
+          "to": "BITE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Bite": {
         "normal": 13,
@@ -5294,6 +7735,27 @@
         "name": "Reload"
       }
     ],
+    "move_graph": {
+      "initial": "UNLOAD",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "UNLOAD",
+          "to": "UNLOAD_MOVE_2",
+          "chance": 100.0
+        },
+        {
+          "from": "UNLOAD_MOVE_2",
+          "to": "RELOAD",
+          "chance": 100.0
+        },
+        {
+          "from": "RELOAD",
+          "to": "UNLOAD",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Fire": {
         "normal": 3,
@@ -5332,6 +7794,27 @@
         "name": "Sticky Shot"
       }
     ],
+    "move_graph": {
+      "initial": "STICKY_SHOT",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "POKEY_POUNCE",
+          "to": "POKEY_POUNCE",
+          "chance": 66.7
+        },
+        {
+          "from": "POKEY_POUNCE",
+          "to": "STICKY_SHOT",
+          "chance": 33.3
+        },
+        {
+          "from": "STICKY_SHOT",
+          "to": "POKEY_POUNCE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Clump": {
         "normal": 11,
@@ -5362,6 +7845,17 @@
         "name": "Tackle"
       }
     ],
+    "move_graph": {
+      "initial": "TACKLE",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "TACKLE",
+          "to": "TACKLE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Tackle": {
         "normal": 4,
@@ -5416,6 +7910,97 @@
         "name": "Call for Backup"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "SCRATCH",
+          "to": "DISEASE_BITE",
+          "chance": null
+        },
+        {
+          "from": "SCRATCH",
+          "to": "SCREECH",
+          "chance": null
+        },
+        {
+          "from": "SCRATCH",
+          "to": "CALL_FOR_BACKUP",
+          "chance": null
+        },
+        {
+          "from": "DISEASE_BITE",
+          "to": "SCRATCH",
+          "chance": null
+        },
+        {
+          "from": "DISEASE_BITE",
+          "to": "SCREECH",
+          "chance": null
+        },
+        {
+          "from": "DISEASE_BITE",
+          "to": "CALL_FOR_BACKUP",
+          "chance": null
+        },
+        {
+          "from": "SCREECH",
+          "to": "SCRATCH",
+          "chance": null
+        },
+        {
+          "from": "SCREECH",
+          "to": "DISEASE_BITE",
+          "chance": null
+        },
+        {
+          "from": "SCREECH",
+          "to": "CALL_FOR_BACKUP",
+          "chance": null
+        },
+        {
+          "from": "CALL_FOR_BACKUP",
+          "to": "SCRATCH",
+          "chance": null
+        },
+        {
+          "from": "CALL_FOR_BACKUP",
+          "to": "DISEASE_BITE",
+          "chance": null
+        },
+        {
+          "from": "CALL_FOR_BACKUP",
+          "to": "SCREECH",
+          "chance": null
+        },
+        {
+          "from": "CALL_FOR_BACKUP",
+          "to": "CALL_FOR_BACKUP",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "SCRATCH",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "DISEASE_BITE",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "SCREECH",
+          "chance": null
+        },
+        {
+          "from": "__START__",
+          "to": "CALL_FOR_BACKUP",
+          "chance": null
+        }
+      ]
+    },
     "damage_values": {
       "Scratch": {
         "normal": 8,
@@ -5474,6 +8059,32 @@
         "name": "Prepare"
       }
     ],
+    "move_graph": {
+      "initial": "INK_BLOT",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "INK_BLOT",
+          "to": "INKY_LANCE",
+          "chance": 100.0
+        },
+        {
+          "from": "INKY_LANCE",
+          "to": "DISMEMBER",
+          "chance": 100.0
+        },
+        {
+          "from": "DISMEMBER",
+          "to": "PREPARE",
+          "chance": 100.0
+        },
+        {
+          "from": "PREPARE",
+          "to": "INK_BLOT",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "InkBlot": {
         "normal": 7,
@@ -5528,6 +8139,27 @@
         "name": "Chomp"
       }
     ],
+    "move_graph": {
+      "initial": "SWIPE",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "GRASPING_VINES",
+          "to": "CHOMP",
+          "chance": 100.0
+        },
+        {
+          "from": "SWIPE",
+          "to": "GRASPING_VINES",
+          "chance": 100.0
+        },
+        {
+          "from": "CHOMP",
+          "to": "SWIPE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "GraspingVines": {
         "normal": 8,
@@ -5618,6 +8250,47 @@
         "name": "Explode"
       }
     ],
+    "move_graph": {
+      "initial": "PRESSURIZE",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "PRESSURIZE",
+          "to": "STOMP",
+          "chance": 100.0
+        },
+        {
+          "from": "STOMP",
+          "to": "RAM",
+          "chance": 100.0
+        },
+        {
+          "from": "RAM",
+          "to": "SIPHON",
+          "chance": 100.0
+        },
+        {
+          "from": "SIPHON",
+          "to": "PRESSURE_GUN",
+          "chance": 100.0
+        },
+        {
+          "from": "PRESSURE_GUN",
+          "to": "PRESSURE_UP",
+          "chance": 100.0
+        },
+        {
+          "from": "PRESSURE_UP",
+          "to": "STOMP",
+          "chance": 100.0
+        },
+        {
+          "from": "EXPLODE",
+          "to": "EXPLODE",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Stomp": {
         "normal": 15,
@@ -5664,6 +8337,42 @@
         "name": "Wriggle"
       }
     ],
+    "move_graph": {
+      "initial": null,
+      "confidence": "partial",
+      "transitions": [
+        {
+          "from": "NASTY_BITE",
+          "to": "WRIGGLE",
+          "chance": 100.0
+        },
+        {
+          "from": "WRIGGLE",
+          "to": "NASTY_BITE",
+          "chance": 100.0
+        },
+        {
+          "from": "SPAWNED",
+          "to": "NASTY_BITE",
+          "chance": null
+        },
+        {
+          "from": "SPAWNED",
+          "to": "WRIGGLE",
+          "chance": null
+        },
+        {
+          "from": "SPAWNED",
+          "to": "NASTY_BITE",
+          "chance": null
+        },
+        {
+          "from": "SPAWNED",
+          "to": "WRIGGLE",
+          "chance": null
+        }
+      ]
+    },
     "damage_values": {
       "Bite": {
         "normal": 6,
@@ -5694,6 +8403,17 @@
         "name": "Zap"
       }
     ],
+    "move_graph": {
+      "initial": "ZAP",
+      "confidence": "static",
+      "transitions": [
+        {
+          "from": "ZAP",
+          "to": "ZAP",
+          "chance": 100.0
+        }
+      ]
+    },
     "damage_values": {
       "Zap": {
         "normal": 14,
