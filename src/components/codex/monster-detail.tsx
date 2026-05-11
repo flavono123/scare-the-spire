@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
@@ -22,6 +21,7 @@ import {
   ENCOUNTER_ROOM_TYPE_CONFIG,
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
+import { MonsterSpineStage } from "./monster-spine-stage";
 
 type MoveTone = "attack" | "defense" | "mixed" | "setup";
 
@@ -145,13 +145,12 @@ export function MonsterDetail({
               style={{ backgroundColor: hexToRgba(selectedAccent, 0.18) }}
             />
             {imageSrc ? (
-              <Image
-                src={imageSrc}
-                alt={monster.name}
-                width={640}
-                height={640}
-                className="relative z-10 h-[22rem] w-full object-contain drop-shadow-2xl sm:h-[30rem] lg:h-[34rem]"
-                priority
+              <MonsterSpineStage
+                asset={monster.spineAsset}
+                fallbackImageUrl={imageSrc}
+                monsterName={monster.name}
+                selectedMoveId={selectedMove?.move.id ?? null}
+                className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
               />
             ) : (
               <div

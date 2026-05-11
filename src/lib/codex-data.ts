@@ -39,6 +39,7 @@ import {
   MonsterType,
   MonsterMove,
   MonsterMoveGraph,
+  MonsterSpineAsset,
   DamageValue,
   EncounterRoomType,
   EncounterMonsterRef,
@@ -726,6 +727,21 @@ interface RawMonster {
   deprecatedInPatch?: string;
 }
 
+const MONSTER_SPINE_ASSETS: Record<string, MonsterSpineAsset> = {
+  AXEBOT: {
+    atlasUrl: "/spine/sts2/monsters/axebot/axebot.atlas",
+    binaryUrl: "/spine/sts2/monsters/axebot/axebot.skel",
+    animations: ["attack", "die", "hurt", "idle_loop", "respawn", "sharpen", "special"],
+    idleAnimation: "idle_loop",
+    moveAnimations: {
+      BOOT_UP: ["respawn", "special", "idle_loop"],
+      HAMMER_UPPERCUT: ["attack"],
+      ONE_TWO: ["attack"],
+      SHARPEN: ["sharpen"],
+    },
+  },
+};
+
 function mapMonster(
   kor: RawMonster,
   eng: RawMonster,
@@ -789,6 +805,7 @@ function mapMonster(
     blockValues: kor.block_values,
     imageUrl,
     bossImageUrl,
+    spineAsset: MONSTER_SPINE_ASSETS[kor.id] ?? null,
   };
 }
 

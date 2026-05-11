@@ -549,6 +549,14 @@ export interface MonsterMoveGraph {
   transitions: MonsterMoveTransition[];
 }
 
+export interface MonsterSpineAsset {
+  atlasUrl: string;
+  binaryUrl: string;
+  animations: string[];
+  idleAnimation: string;
+  moveAnimations: Record<string, string[]>;
+}
+
 export interface CodexMonster {
   id: string;
   name: string;        // Korean
@@ -566,6 +574,7 @@ export interface CodexMonster {
   blockValues: Record<string, number> | null;
   imageUrl: string | null;       // Spine render portrait (512x512)
   bossImageUrl: string | null;   // boss encounter token icon (bosses/ dir)
+  spineAsset: MonsterSpineAsset | null;
 }
 
 export type EncounterRoomType = "Monster" | "Elite" | "Boss";
