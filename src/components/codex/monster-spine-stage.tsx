@@ -58,7 +58,7 @@ export function MonsterSpineStage({
           alpha: true,
           backgroundColor: "00000000",
           preserveDrawingBuffer: false,
-          premultipliedAlpha: true,
+          premultipliedAlpha: false,
           showControls: false,
           showLoading: false,
           viewport: {
@@ -139,7 +139,7 @@ export function MonsterSpineStage({
           alpha: true,
           backgroundColor: "00000000",
           preserveDrawingBuffer: false,
-          premultipliedAlpha: true,
+          premultipliedAlpha: false,
           showControls: false,
           showLoading: false,
           viewport: {
