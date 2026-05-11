@@ -1,0 +1,192 @@
+[
+  {
+    "id": "AEONGLASS",
+    "imageSlug": null,
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": null,
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "BATTLE_FRIEND_V1",
+    "imageSlug": "battle_friend_v1",
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": "/static/images/monsters/battle_friend_v1.png",
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "BATTLE_FRIEND_V2",
+    "imageSlug": "battle_friend_v2",
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": "/static/images/monsters/battle_friend_v2.png",
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "BATTLE_FRIEND_V3",
+    "imageSlug": "battle_friend_v3",
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": "/static/images/monsters/battle_friend_v3.png",
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "BYRDONIS_NEST",
+    "imageSlug": null,
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": null,
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "COCOON",
+    "imageSlug": null,
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": null,
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "DEVOTED_SCULPTOR",
+    "imageSlug": "devoted_sculptor",
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": "/static/images/monsters/devoted_sculptor.png",
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "DOOR",
+    "imageSlug": "door",
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": "/static/images/monsters/door.png",
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "DOORMAKER",
+    "imageSlug": "doormaker",
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": "/static/images/monsters/doormaker.png",
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "FAKE_MERCHANT_MONSTER",
+    "imageSlug": null,
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": null,
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "GAZING_MOTH",
+    "imageSlug": null,
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": null,
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "GEM_EATER",
+    "imageSlug": null,
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": null,
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "MYSTERIOUS_KNIGHT",
+    "imageSlug": null,
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": null,
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "THE_ADVERSARY_MK_ONE",
+    "imageSlug": "the_adversary_placeholder",
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": "/static/images/monsters/the_adversary_placeholder.png",
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "THE_ADVERSARY_MK_THREE",
+    "imageSlug": "the_adversary_placeholder",
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": "/static/images/monsters/the_adversary_placeholder.png",
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "THE_ADVERSARY_MK_TWO",
+    "imageSlug": "the_adversary_placeholder",
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": "/static/images/monsters/the_adversary_placeholder.png",
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "THE_ARM",
+    "imageSlug": null,
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": null,
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "THE_BELL",
+    "imageSlug": null,
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": null,
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  },
+  {
+    "id": "THE_DREAMER",
+    "imageSlug": null,
+    "renderStatus": "static-only",
+    "renderTags": [
+      "no-renderable-spine-actor"
+    ],
+    "fallbackImageUrl": null,
+    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
+  }
+]

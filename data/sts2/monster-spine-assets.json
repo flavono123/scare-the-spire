@@ -2,6 +2,8 @@
   {
     "id": "ARCHITECT",
     "source": "animations/monsters/architect/architect",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/architect/architect.atlas",
     "binaryUrl": "/spine/sts2/monsters/architect/architect.skel",
     "textureUrls": [
@@ -34,6 +36,8 @@
   {
     "id": "ASSASSIN_RUBY_RAIDER",
     "source": "animations/monsters/assassin_ruby_raider/assassin_ruby_raider",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/assassin_ruby_raider/assassin_ruby_raider.atlas",
     "binaryUrl": "/spine/sts2/monsters/assassin_ruby_raider/assassin_ruby_raider.skel",
     "textureUrls": [
@@ -62,6 +66,8 @@
   {
     "id": "AXEBOT",
     "source": "animations/monsters/axebot/axe_bot",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/axebot/axe_bot.atlas",
     "binaryUrl": "/spine/sts2/monsters/axebot/axe_bot.skel",
     "textureUrls": [
@@ -111,6 +117,8 @@
   {
     "id": "AXE_RUBY_RAIDER",
     "source": "animations/monsters/axe_ruby_raider/axe_ruby_raider",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/axe_ruby_raider/axe_ruby_raider.atlas",
     "binaryUrl": "/spine/sts2/monsters/axe_ruby_raider/axe_ruby_raider.skel",
     "textureUrls": [
@@ -143,6 +151,11 @@
   {
     "id": "BOWLBUG_EGG",
     "source": "animations/monsters/bowlbug/bowlbug",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "variant-skin"
+    ],
     "atlasUrl": "/spine/sts2/monsters/bowlbug/bowlbug.atlas",
     "binaryUrl": "/spine/sts2/monsters/bowlbug/bowlbug.skel",
     "textureUrls": [
@@ -183,6 +196,11 @@
   {
     "id": "BOWLBUG_NECTAR",
     "source": "animations/monsters/bowlbug/bowlbug",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "variant-skin"
+    ],
     "atlasUrl": "/spine/sts2/monsters/bowlbug/bowlbug.atlas",
     "binaryUrl": "/spine/sts2/monsters/bowlbug/bowlbug.skel",
     "textureUrls": [
@@ -233,6 +251,11 @@
   {
     "id": "BOWLBUG_ROCK",
     "source": "animations/monsters/bowlbug/bowlbug",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "variant-skin"
+    ],
     "atlasUrl": "/spine/sts2/monsters/bowlbug/bowlbug.atlas",
     "binaryUrl": "/spine/sts2/monsters/bowlbug/bowlbug.skel",
     "textureUrls": [
@@ -289,6 +312,11 @@
   {
     "id": "BOWLBUG_SILK",
     "source": "animations/monsters/bowlbug/bowlbug",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "variant-skin"
+    ],
     "atlasUrl": "/spine/sts2/monsters/bowlbug/bowlbug.atlas",
     "binaryUrl": "/spine/sts2/monsters/bowlbug/bowlbug.skel",
     "textureUrls": [
@@ -341,6 +369,8 @@
   {
     "id": "BRUTE_RUBY_RAIDER",
     "source": "animations/monsters/brute_ruby_raider/brute_ruby_raider",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/brute_ruby_raider/brute_ruby_raider.atlas",
     "binaryUrl": "/spine/sts2/monsters/brute_ruby_raider/brute_ruby_raider.skel",
     "textureUrls": [
@@ -369,6 +399,8 @@
   {
     "id": "BYGONE_EFFIGY",
     "source": "animations/monsters/bygone_effigy/bygone_effigy",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/bygone_effigy/bygone_effigy.atlas",
     "binaryUrl": "/spine/sts2/monsters/bygone_effigy/bygone_effigy.skel",
     "textureUrls": [
@@ -449,6 +481,8 @@
   {
     "id": "BYRDONIS",
     "source": "animations/monsters/byrdonis/byrdonis",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/byrdonis/byrdonis.atlas",
     "binaryUrl": "/spine/sts2/monsters/byrdonis/byrdonis.skel",
     "textureUrls": [
@@ -490,6 +524,8 @@
   {
     "id": "BYRDPIP",
     "source": "animations/monsters/byrdpip/byrdpip",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/byrdpip/byrdpip.atlas",
     "binaryUrl": "/spine/sts2/monsters/byrdpip/byrdpip.skel",
     "textureUrls": [
@@ -523,6 +559,11 @@
   {
     "id": "CALCIFIED_CULTIST",
     "source": "animations/monsters/cultists/cultists",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "variant-skin"
+    ],
     "atlasUrl": "/spine/sts2/monsters/cultists/cultists.atlas",
     "binaryUrl": "/spine/sts2/monsters/cultists/cultists.skel",
     "textureUrls": [
@@ -561,6 +602,8 @@
   {
     "id": "CEREMONIAL_BEAST",
     "source": "animations/monsters/ceremonial_beast/ceremonial_beast",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/ceremonial_beast/ceremonial_beast.atlas",
     "binaryUrl": "/spine/sts2/monsters/ceremonial_beast/ceremonial_beast.skel",
     "textureUrls": [
@@ -628,6 +671,8 @@
   {
     "id": "CHOMPER",
     "source": "animations/monsters/chomper/chomper",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/chomper/chomper.atlas",
     "binaryUrl": "/spine/sts2/monsters/chomper/chomper.skel",
     "textureUrls": [
@@ -662,6 +707,8 @@
   {
     "id": "CORPSE_SLUG",
     "source": "animations/monsters/corpse_slug/corpse_slug",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/corpse_slug/corpse_slug.atlas",
     "binaryUrl": "/spine/sts2/monsters/corpse_slug/corpse_slug.skel",
     "textureUrls": [
@@ -709,6 +756,8 @@
   {
     "id": "CROSSBOW_RUBY_RAIDER",
     "source": "animations/monsters/crossbow_ruby_raider/crossbow_ruby_raider",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/crossbow_ruby_raider/crossbow_ruby_raider.atlas",
     "binaryUrl": "/spine/sts2/monsters/crossbow_ruby_raider/crossbow_ruby_raider.skel",
     "textureUrls": [
@@ -747,6 +796,8 @@
   {
     "id": "CUBEX_CONSTRUCT",
     "source": "animations/monsters/cubex_construct/cubex_construct",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/cubex_construct/cubex_construct.atlas",
     "binaryUrl": "/spine/sts2/monsters/cubex_construct/cubex_construct.skel",
     "textureUrls": [
@@ -810,6 +861,11 @@
   {
     "id": "DAMP_CULTIST",
     "source": "animations/monsters/cultists/cultists",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "variant-skin"
+    ],
     "atlasUrl": "/spine/sts2/monsters/cultists/cultists.atlas",
     "binaryUrl": "/spine/sts2/monsters/cultists/cultists.skel",
     "textureUrls": [
@@ -848,6 +904,8 @@
   {
     "id": "ENTOMANCER",
     "source": "animations/monsters/entomancer/entomancer",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/entomancer/entomancer.atlas",
     "binaryUrl": "/spine/sts2/monsters/entomancer/entomancer.skel",
     "textureUrls": [
@@ -890,6 +948,8 @@
   {
     "id": "EXOSKELETON",
     "source": "animations/monsters/exoskeleton/exoskeleton",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/exoskeleton/exoskeleton.atlas",
     "binaryUrl": "/spine/sts2/monsters/exoskeleton/exoskeleton.skel",
     "textureUrls": [
@@ -931,6 +991,8 @@
   {
     "id": "EYE_WITH_TEETH",
     "source": "animations/monsters/eye_with_teeth/eye_with_teeth",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/eye_with_teeth/eye_with_teeth.atlas",
     "binaryUrl": "/spine/sts2/monsters/eye_with_teeth/eye_with_teeth.skel",
     "textureUrls": [
@@ -958,6 +1020,8 @@
   {
     "id": "FABRICATOR",
     "source": "animations/monsters/fabricator/fabricator",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/fabricator/fabricator.atlas",
     "binaryUrl": "/spine/sts2/monsters/fabricator/fabricator.skel",
     "textureUrls": [
@@ -992,6 +1056,8 @@
   {
     "id": "FAT_GREMLIN",
     "source": "animations/monsters/fat_gremlin/fat_gremlin",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/fat_gremlin/fat_gremlin.atlas",
     "binaryUrl": "/spine/sts2/monsters/fat_gremlin/fat_gremlin.skel",
     "textureUrls": [
@@ -1029,6 +1095,8 @@
   {
     "id": "FLAIL_KNIGHT",
     "source": "animations/monsters/flail_knight/flailknight",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/flail_knight/flailknight.atlas",
     "binaryUrl": "/spine/sts2/monsters/flail_knight/flailknight.skel",
     "textureUrls": [
@@ -1074,6 +1142,10 @@
   {
     "id": "FLYCONID",
     "source": "animations/monsters/flying_mushrooms/flying_mushrooms",
+    "renderStatus": "spine",
+    "renderTags": [
+      "image-slug-alias"
+    ],
     "atlasUrl": "/spine/sts2/monsters/flying_mushrooms/flying_mushrooms.atlas",
     "binaryUrl": "/spine/sts2/monsters/flying_mushrooms/flying_mushrooms.skel",
     "textureUrls": [
@@ -1117,6 +1189,8 @@
   {
     "id": "FOGMOG",
     "source": "animations/monsters/fogmog/fogmog",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/fogmog/fogmog.atlas",
     "binaryUrl": "/spine/sts2/monsters/fogmog/fogmog.skel",
     "textureUrls": [
@@ -1151,6 +1225,8 @@
   {
     "id": "FOSSIL_STALKER",
     "source": "animations/monsters/fossil_stalker/fossil_stalker",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/fossil_stalker/fossil_stalker.atlas",
     "binaryUrl": "/spine/sts2/monsters/fossil_stalker/fossil_stalker.skel",
     "textureUrls": [
@@ -1191,6 +1267,8 @@
   {
     "id": "FROG_KNIGHT",
     "source": "animations/monsters/frog_knight/frog_knight",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/frog_knight/frog_knight.atlas",
     "binaryUrl": "/spine/sts2/monsters/frog_knight/frog_knight.skel",
     "textureUrls": [
@@ -1249,6 +1327,8 @@
   {
     "id": "FUZZY_WURM_CRAWLER",
     "source": "animations/monsters/fuzzy_wurm_crawler/fuzzy_wurm_crawler",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/fuzzy_wurm_crawler/fuzzy_wurm_crawler.atlas",
     "binaryUrl": "/spine/sts2/monsters/fuzzy_wurm_crawler/fuzzy_wurm_crawler.skel",
     "textureUrls": [
@@ -1288,6 +1368,8 @@
   {
     "id": "GAS_BOMB",
     "source": "animations/monsters/gas_bomb/gas_bomb",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/gas_bomb/gas_bomb.atlas",
     "binaryUrl": "/spine/sts2/monsters/gas_bomb/gas_bomb.skel",
     "textureUrls": [
@@ -1336,6 +1418,10 @@
   {
     "id": "GLOBE_HEAD",
     "source": "animations/monsters/globe_head/globe_head",
+    "renderStatus": "spine",
+    "renderTags": [
+      "image-slug-alias"
+    ],
     "atlasUrl": "/spine/sts2/monsters/globe_head/globe_head.atlas",
     "binaryUrl": "/spine/sts2/monsters/globe_head/globe_head.skel",
     "textureUrls": [
@@ -1374,6 +1460,8 @@
   {
     "id": "GREMLIN_MERC",
     "source": "animations/monsters/gremlin_merc/gremlin_merc",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/gremlin_merc/gremlin_merc.atlas",
     "binaryUrl": "/spine/sts2/monsters/gremlin_merc/gremlin_merc.skel",
     "textureUrls": [
@@ -1416,6 +1504,8 @@
   {
     "id": "GUARDBOT",
     "source": "animations/monsters/guardbot/guardbot",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/guardbot/guardbot.atlas",
     "binaryUrl": "/spine/sts2/monsters/guardbot/guardbot.skel",
     "textureUrls": [
@@ -1445,6 +1535,8 @@
   {
     "id": "HAUNTED_SHIP",
     "source": "animations/monsters/haunted_ship/haunted_ship",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/haunted_ship/haunted_ship.atlas",
     "binaryUrl": "/spine/sts2/monsters/haunted_ship/haunted_ship.skel",
     "textureUrls": [
@@ -1486,6 +1578,8 @@
   {
     "id": "HUNTER_KILLER",
     "source": "animations/monsters/hunter_killer/hunterkiller",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/hunter_killer/hunterkiller.atlas",
     "binaryUrl": "/spine/sts2/monsters/hunter_killer/hunterkiller.skel",
     "textureUrls": [
@@ -1529,6 +1623,8 @@
   {
     "id": "INFESTED_PRISM",
     "source": "animations/monsters/infested_prism/infested_prism",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/infested_prism/infested_prism.atlas",
     "binaryUrl": "/spine/sts2/monsters/infested_prism/infested_prism.skel",
     "textureUrls": [
@@ -1577,6 +1673,8 @@
   {
     "id": "INKLET",
     "source": "animations/monsters/inklet/inklet",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/inklet/inklet.atlas",
     "binaryUrl": "/spine/sts2/monsters/inklet/inklet.skel",
     "textureUrls": [
@@ -1612,6 +1710,8 @@
   {
     "id": "KIN_FOLLOWER",
     "source": "animations/monsters/kin_follower/kin_follower",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/kin_follower/kin_follower.atlas",
     "binaryUrl": "/spine/sts2/monsters/kin_follower/kin_follower.skel",
     "textureUrls": [
@@ -1698,6 +1798,8 @@
   {
     "id": "KIN_PRIEST",
     "source": "animations/monsters/kin_priest/kin_priest",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/kin_priest/kin_priest.atlas",
     "binaryUrl": "/spine/sts2/monsters/kin_priest/kin_priest.skel",
     "textureUrls": [
@@ -1771,6 +1873,8 @@
   {
     "id": "KNOWLEDGE_DEMON",
     "source": "animations/monsters/knowledge_demon/knowledge_demon",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/knowledge_demon/knowledge_demon.atlas",
     "binaryUrl": "/spine/sts2/monsters/knowledge_demon/knowledge_demon.skel",
     "textureUrls": [
@@ -1825,6 +1929,8 @@
   {
     "id": "LAGAVULIN_MATRIARCH",
     "source": "animations/monsters/lagavulin_matriarch/lagavulin_matriarch",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/lagavulin_matriarch/lagavulin_matriarch.atlas",
     "binaryUrl": "/spine/sts2/monsters/lagavulin_matriarch/lagavulin_matriarch.skel",
     "textureUrls": [
@@ -1967,6 +2073,8 @@
   {
     "id": "LEAF_SLIME_M",
     "source": "animations/monsters/leaf_slime_m/leaf_slime_m",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/leaf_slime_m/leaf_slime_m.atlas",
     "binaryUrl": "/spine/sts2/monsters/leaf_slime_m/leaf_slime_m.skel",
     "textureUrls": [
@@ -2005,6 +2113,8 @@
   {
     "id": "LEAF_SLIME_S",
     "source": "animations/monsters/leaf_slime_s/leaf_slime_s",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/leaf_slime_s/leaf_slime_s.atlas",
     "binaryUrl": "/spine/sts2/monsters/leaf_slime_s/leaf_slime_s.skel",
     "textureUrls": [
@@ -2039,6 +2149,8 @@
   {
     "id": "LIVING_FOG",
     "source": "animations/monsters/living_smog/living_smog",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/living_smog/living_smog.atlas",
     "binaryUrl": "/spine/sts2/monsters/living_smog/living_smog.skel",
     "textureUrls": [
@@ -2083,6 +2195,8 @@
   {
     "id": "LIVING_SHIELD",
     "source": "animations/monsters/living_shield/living_shield",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/living_shield/living_shield.atlas",
     "binaryUrl": "/spine/sts2/monsters/living_shield/living_shield.skel",
     "textureUrls": [
@@ -2143,6 +2257,8 @@
   {
     "id": "LOUSE_PROGENITOR",
     "source": "animations/monsters/louse_progenitor/louse_progenitor",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/louse_progenitor/louse_progenitor.atlas",
     "binaryUrl": "/spine/sts2/monsters/louse_progenitor/louse_progenitor.skel",
     "textureUrls": [
@@ -2190,6 +2306,8 @@
   {
     "id": "MAGI_KNIGHT",
     "source": "animations/monsters/magi_knight/magi_knight",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/magi_knight/magi_knight.atlas",
     "binaryUrl": "/spine/sts2/monsters/magi_knight/magi_knight.skel",
     "textureUrls": [
@@ -2264,6 +2382,8 @@
   {
     "id": "MAWLER",
     "source": "animations/monsters/mawler/mawler",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/mawler/mawler.atlas",
     "binaryUrl": "/spine/sts2/monsters/mawler/mawler.skel",
     "textureUrls": [
@@ -2324,6 +2444,8 @@
   {
     "id": "MECHA_KNIGHT",
     "source": "animations/monsters/mecha_knight/mecha_knight",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/mecha_knight/mecha_knight.atlas",
     "binaryUrl": "/spine/sts2/monsters/mecha_knight/mecha_knight.skel",
     "textureUrls": [
@@ -2375,6 +2497,8 @@
   {
     "id": "MYTE",
     "source": "animations/monsters/myte/myte",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/myte/myte.atlas",
     "binaryUrl": "/spine/sts2/monsters/myte/myte.skel",
     "textureUrls": [
@@ -2415,6 +2539,8 @@
   {
     "id": "NIBBIT",
     "source": "animations/monsters/nibbit/nibbit",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/nibbit/nibbit.atlas",
     "binaryUrl": "/spine/sts2/monsters/nibbit/nibbit.skel",
     "textureUrls": [
@@ -2449,6 +2575,8 @@
   {
     "id": "NOISEBOT",
     "source": "animations/monsters/noisebot/noisebot",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/noisebot/noisebot.atlas",
     "binaryUrl": "/spine/sts2/monsters/noisebot/noisebot.skel",
     "textureUrls": [
@@ -2478,6 +2606,8 @@
   {
     "id": "OSTY",
     "source": "animations/monsters/osty/osty",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/osty/osty.atlas",
     "binaryUrl": "/spine/sts2/monsters/osty/osty.skel",
     "textureUrls": [
@@ -2513,6 +2643,8 @@
   {
     "id": "OVICOPTER",
     "source": "animations/monsters/ovicopter/ovicopter",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/ovicopter/ovicopter.atlas",
     "binaryUrl": "/spine/sts2/monsters/ovicopter/ovicopter.skel",
     "textureUrls": [
@@ -2557,6 +2689,8 @@
   {
     "id": "OWL_MAGISTRATE",
     "source": "animations/monsters/owl_magistrate/owl_magistrate",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/owl_magistrate/owl_magistrate.atlas",
     "binaryUrl": "/spine/sts2/monsters/owl_magistrate/owl_magistrate.skel",
     "textureUrls": [
@@ -2612,6 +2746,8 @@
   {
     "id": "PAELS_LEGION",
     "source": "animations/monsters/paels_legion/paels_legion",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/paels_legion/paels_legion.atlas",
     "binaryUrl": "/spine/sts2/monsters/paels_legion/paels_legion.skel",
     "textureUrls": [
@@ -2648,6 +2784,8 @@
   {
     "id": "PARAFRIGHT",
     "source": "animations/monsters/parafright/parafright",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/parafright/parafright.atlas",
     "binaryUrl": "/spine/sts2/monsters/parafright/parafright.skel",
     "textureUrls": [
@@ -2681,6 +2819,8 @@
   {
     "id": "PHANTASMAL_GARDENER",
     "source": "animations/monsters/phantasmal_gardener/phantasmal_gardener",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/phantasmal_gardener/phantasmal_gardener.atlas",
     "binaryUrl": "/spine/sts2/monsters/phantasmal_gardener/phantasmal_gardener.skel",
     "textureUrls": [
@@ -2733,6 +2873,8 @@
   {
     "id": "PHROG_PARASITE",
     "source": "animations/monsters/phrog_parasite/phrog_parasite",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/phrog_parasite/phrog_parasite.atlas",
     "binaryUrl": "/spine/sts2/monsters/phrog_parasite/phrog_parasite.skel",
     "textureUrls": [
@@ -2767,6 +2909,8 @@
   {
     "id": "PUNCH_CONSTRUCT",
     "source": "animations/monsters/punch_construct/punch_construct",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/punch_construct/punch_construct.atlas",
     "binaryUrl": "/spine/sts2/monsters/punch_construct/punch_construct.skel",
     "textureUrls": [
@@ -2813,6 +2957,8 @@
   {
     "id": "QUEEN",
     "source": "animations/monsters/queen/queen",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/queen/queen.atlas",
     "binaryUrl": "/spine/sts2/monsters/queen/queen.skel",
     "textureUrls": [
@@ -2853,6 +2999,8 @@
   {
     "id": "SCROLL_OF_BITING",
     "source": "animations/monsters/scroll_of_biting/scroll_of_biting",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/scroll_of_biting/scroll_of_biting.atlas",
     "binaryUrl": "/spine/sts2/monsters/scroll_of_biting/scroll_of_biting.skel",
     "textureUrls": [
@@ -2897,6 +3045,8 @@
   {
     "id": "SEAPUNK",
     "source": "animations/monsters/seapunk/seapunk",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/seapunk/seapunk.atlas",
     "binaryUrl": "/spine/sts2/monsters/seapunk/seapunk.skel",
     "textureUrls": [
@@ -2943,6 +3093,8 @@
   {
     "id": "SEWER_CLAM",
     "source": "animations/monsters/sewer_clam/sewer_clam",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/sewer_clam/sewer_clam.atlas",
     "binaryUrl": "/spine/sts2/monsters/sewer_clam/sewer_clam.skel",
     "textureUrls": [
@@ -2980,6 +3132,8 @@
   {
     "id": "SHRINKER_BEETLE",
     "source": "animations/monsters/shrinker_beetle/shrinker_beetle",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/shrinker_beetle/shrinker_beetle.atlas",
     "binaryUrl": "/spine/sts2/monsters/shrinker_beetle/shrinker_beetle.skel",
     "textureUrls": [
@@ -3014,6 +3168,10 @@
   {
     "id": "SKULKING_COLONY",
     "source": "animations/monsters/skulking_colony/skulking_colony",
+    "renderStatus": "spine",
+    "renderTags": [
+      "image-slug-alias"
+    ],
     "atlasUrl": "/spine/sts2/monsters/skulking_colony/skulking_colony.atlas",
     "binaryUrl": "/spine/sts2/monsters/skulking_colony/skulking_colony.skel",
     "textureUrls": [
@@ -3065,6 +3223,8 @@
   {
     "id": "SLIMED_BERSERKER",
     "source": "animations/monsters/slimed_berserker/slimed_berserker",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/slimed_berserker/slimed_berserker.atlas",
     "binaryUrl": "/spine/sts2/monsters/slimed_berserker/slimed_berserker.skel",
     "textureUrls": [
@@ -3111,6 +3271,8 @@
   {
     "id": "SLITHERING_STRANGLER",
     "source": "animations/monsters/slithering_strangler/slithering_strangler",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/slithering_strangler/slithering_strangler.atlas",
     "binaryUrl": "/spine/sts2/monsters/slithering_strangler/slithering_strangler.skel",
     "textureUrls": [
@@ -3151,6 +3313,8 @@
   {
     "id": "SLUDGE_SPINNER",
     "source": "animations/monsters/sludge_spinner/sludge_spinner",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/sludge_spinner/sludge_spinner.atlas",
     "binaryUrl": "/spine/sts2/monsters/sludge_spinner/sludge_spinner.skel",
     "textureUrls": [
@@ -3189,6 +3353,8 @@
   {
     "id": "SLUMBERING_BEETLE",
     "source": "animations/monsters/slumbering_beetle/slumberingbeetle",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/slumbering_beetle/slumberingbeetle.atlas",
     "binaryUrl": "/spine/sts2/monsters/slumbering_beetle/slumberingbeetle.skel",
     "textureUrls": [
@@ -3229,6 +3395,8 @@
   {
     "id": "SNAPPING_JAXFRUIT",
     "source": "animations/monsters/snapping_jaxfruit/snapping_jaxfruit",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/snapping_jaxfruit/snapping_jaxfruit.atlas",
     "binaryUrl": "/spine/sts2/monsters/snapping_jaxfruit/snapping_jaxfruit.skel",
     "textureUrls": [
@@ -3263,6 +3431,8 @@
   {
     "id": "SNEAKY_GREMLIN",
     "source": "animations/monsters/sneaky_gremlin/sneaky_gremlin",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/sneaky_gremlin/sneaky_gremlin.atlas",
     "binaryUrl": "/spine/sts2/monsters/sneaky_gremlin/sneaky_gremlin.skel",
     "textureUrls": [
@@ -3302,6 +3472,8 @@
   {
     "id": "SOUL_FYSH",
     "source": "animations/monsters/soul_fysh/soul_fysh",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/soul_fysh/soul_fysh.atlas",
     "binaryUrl": "/spine/sts2/monsters/soul_fysh/soul_fysh.skel",
     "textureUrls": [
@@ -3380,6 +3552,8 @@
   {
     "id": "SOUL_NEXUS",
     "source": "animations/monsters/soul_nexus/soulnexus",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/soul_nexus/soulnexus.atlas",
     "binaryUrl": "/spine/sts2/monsters/soul_nexus/soulnexus.skel",
     "textureUrls": [
@@ -3420,6 +3594,8 @@
   {
     "id": "SPECTRAL_KNIGHT",
     "source": "animations/monsters/spectral_knight/spectral_knight",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/spectral_knight/spectral_knight.atlas",
     "binaryUrl": "/spine/sts2/monsters/spectral_knight/spectral_knight.skel",
     "textureUrls": [
@@ -3500,6 +3676,8 @@
   {
     "id": "SPINY_TOAD",
     "source": "animations/monsters/spiny_toad/spinytoad",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/spiny_toad/spinytoad.atlas",
     "binaryUrl": "/spine/sts2/monsters/spiny_toad/spinytoad.skel",
     "textureUrls": [
@@ -3568,6 +3746,8 @@
   {
     "id": "STABBOT",
     "source": "animations/monsters/stabbot/stabbot",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/stabbot/stabbot.atlas",
     "binaryUrl": "/spine/sts2/monsters/stabbot/stabbot.skel",
     "textureUrls": [
@@ -3598,6 +3778,8 @@
   {
     "id": "TERROR_EEL",
     "source": "animations/monsters/terror_eel/terror_eel",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/terror_eel/terror_eel.atlas",
     "binaryUrl": "/spine/sts2/monsters/terror_eel/terror_eel.skel",
     "textureUrls": [
@@ -3638,6 +3820,8 @@
   {
     "id": "TEST_SUBJECT",
     "source": "animations/monsters/test_subject/test_subject",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/test_subject/test_subject.atlas",
     "binaryUrl": "/spine/sts2/monsters/test_subject/test_subject.skel",
     "textureUrls": [
@@ -3737,6 +3921,8 @@
   {
     "id": "THE_FORGOTTEN",
     "source": "animations/monsters/the_forgotten/the_forgotten",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/the_forgotten/the_forgotten.atlas",
     "binaryUrl": "/spine/sts2/monsters/the_forgotten/the_forgotten.skel",
     "textureUrls": [
@@ -3771,6 +3957,8 @@
   {
     "id": "THE_INSATIABLE",
     "source": "animations/monsters/the_insatiable/the_insatiable",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/the_insatiable/the_insatiable.atlas",
     "binaryUrl": "/spine/sts2/monsters/the_insatiable/the_insatiable.skel",
     "textureUrls": [
@@ -3833,6 +4021,8 @@
   {
     "id": "THE_LOST",
     "source": "animations/monsters/the_lost/the_lost",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/the_lost/the_lost.atlas",
     "binaryUrl": "/spine/sts2/monsters/the_lost/the_lost.skel",
     "textureUrls": [
@@ -3890,6 +4080,8 @@
   {
     "id": "THE_OBSCURA",
     "source": "animations/monsters/the_obscura/the_obscura",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/the_obscura/the_obscura.atlas",
     "binaryUrl": "/spine/sts2/monsters/the_obscura/the_obscura.skel",
     "textureUrls": [
@@ -3935,6 +4127,8 @@
   {
     "id": "THIEVING_HOPPER",
     "source": "animations/monsters/thieving_hopper/thievinghopper",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/thieving_hopper/thievinghopper.atlas",
     "binaryUrl": "/spine/sts2/monsters/thieving_hopper/thievinghopper.skel",
     "textureUrls": [
@@ -3994,6 +4188,8 @@
   {
     "id": "TOADPOLE",
     "source": "animations/monsters/toadpole/toadpole",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/toadpole/toadpole.atlas",
     "binaryUrl": "/spine/sts2/monsters/toadpole/toadpole.skel",
     "textureUrls": [
@@ -4045,6 +4241,10 @@
   {
     "id": "TORCH_HEAD_AMALGAM",
     "source": "animations/monsters/torch_head_amalgam/torch_head_amalgam",
+    "renderStatus": "spine",
+    "renderTags": [
+      "image-slug-alias"
+    ],
     "atlasUrl": "/spine/sts2/monsters/torch_head_amalgam/torch_head_amalgam.atlas",
     "binaryUrl": "/spine/sts2/monsters/torch_head_amalgam/torch_head_amalgam.skel",
     "textureUrls": [
@@ -4120,6 +4320,8 @@
   {
     "id": "TOUGH_EGG",
     "source": "animations/monsters/tough_egg/tough_egg",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/tough_egg/tough_egg.atlas",
     "binaryUrl": "/spine/sts2/monsters/tough_egg/tough_egg.skel",
     "textureUrls": [
@@ -4162,6 +4364,8 @@
   {
     "id": "TRACKER_RUBY_RAIDER",
     "source": "animations/monsters/tracker_ruby_raider/ruby_raider_tracker",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/tracker_ruby_raider/ruby_raider_tracker.atlas",
     "binaryUrl": "/spine/sts2/monsters/tracker_ruby_raider/ruby_raider_tracker.skel",
     "textureUrls": [
@@ -4191,6 +4395,8 @@
   {
     "id": "TUNNELER",
     "source": "animations/monsters/tunneler/tunneler",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/tunneler/tunneler.atlas",
     "binaryUrl": "/spine/sts2/monsters/tunneler/tunneler.skel",
     "textureUrls": [
@@ -4243,6 +4449,8 @@
   {
     "id": "TURRET_OPERATOR",
     "source": "animations/monsters/turret_operator/turret_operator",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/turret_operator/turret_operator.atlas",
     "binaryUrl": "/spine/sts2/monsters/turret_operator/turret_operator.skel",
     "textureUrls": [
@@ -4284,6 +4492,8 @@
   {
     "id": "TWIG_SLIME_M",
     "source": "animations/monsters/twig_slime_m/twig_slime_m",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/twig_slime_m/twig_slime_m.atlas",
     "binaryUrl": "/spine/sts2/monsters/twig_slime_m/twig_slime_m.skel",
     "textureUrls": [
@@ -4322,6 +4532,8 @@
   {
     "id": "TWIG_SLIME_S",
     "source": "animations/monsters/twig_slime_s/twig_slime_s",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/twig_slime_s/twig_slime_s.atlas",
     "binaryUrl": "/spine/sts2/monsters/twig_slime_s/twig_slime_s.skel",
     "textureUrls": [
@@ -4351,6 +4563,8 @@
   {
     "id": "TWO_TAILED_RAT",
     "source": "animations/monsters/two_tailed_rat/two_tailed_rat",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/two_tailed_rat/two_tailed_rat.atlas",
     "binaryUrl": "/spine/sts2/monsters/two_tailed_rat/two_tailed_rat.skel",
     "textureUrls": [
@@ -4425,6 +4639,8 @@
   {
     "id": "VANTOM",
     "source": "animations/monsters/vantom/vantom",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/vantom/vantom.atlas",
     "binaryUrl": "/spine/sts2/monsters/vantom/vantom.skel",
     "textureUrls": [
@@ -4487,6 +4703,8 @@
   {
     "id": "VINE_SHAMBLER",
     "source": "animations/monsters/vine_shambler/vine_shambler",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/vine_shambler/vine_shambler.atlas",
     "binaryUrl": "/spine/sts2/monsters/vine_shambler/vine_shambler.skel",
     "textureUrls": [
@@ -4531,6 +4749,8 @@
   {
     "id": "WATERFALL_GIANT",
     "source": "animations/monsters/waterfall_giant/waterfall_giant",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/waterfall_giant/waterfall_giant.atlas",
     "binaryUrl": "/spine/sts2/monsters/waterfall_giant/waterfall_giant.skel",
     "textureUrls": [
@@ -4625,6 +4845,8 @@
   {
     "id": "WRIGGLER",
     "source": "animations/monsters/wriggler/wriggler",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/wriggler/wriggler.atlas",
     "binaryUrl": "/spine/sts2/monsters/wriggler/wriggler.skel",
     "textureUrls": [
@@ -4656,6 +4878,8 @@
   {
     "id": "ZAPBOT",
     "source": "animations/monsters/zapbot/zapbot",
+    "renderStatus": "spine",
+    "renderTags": [],
     "atlasUrl": "/spine/sts2/monsters/zapbot/zapbot.atlas",
     "binaryUrl": "/spine/sts2/monsters/zapbot/zapbot.skel",
     "textureUrls": [

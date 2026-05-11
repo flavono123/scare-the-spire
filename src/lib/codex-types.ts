@@ -565,6 +565,8 @@ export interface MonsterSpineEffectAsset {
 export interface MonsterSpineAsset {
   id: string;
   source: string;
+  renderStatus: string;
+  renderTags: string[];
   atlasUrl: string;
   binaryUrl: string;
   textureUrls: string[];

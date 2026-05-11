@@ -10,19 +10,20 @@ const monsterRoot = path.join(repoRoot, "public/spine/sts2/monsters");
 const vfxRoot = path.join(repoRoot, "public/spine/sts2/vfx");
 const monstersPath = path.join(repoRoot, "data/sts2/eng/monsters.json");
 const outMonsterPath = path.join(repoRoot, "data/sts2/monster-spine-assets.json");
+const outMonsterFallbackPath = path.join(repoRoot, "data/sts2/monster-spine-fallbacks.json");
 const outVfxPath = path.join(repoRoot, "data/sts2/spine-vfx-assets.json");
 
 const MONSTER_ALIASES = {
-  BOWLBUG_EGG: { folder: "bowlbug", skin: "cocoon" },
-  BOWLBUG_NECTAR: { folder: "bowlbug", skin: "goop" },
-  BOWLBUG_ROCK: { folder: "bowlbug", skin: "rock" },
-  BOWLBUG_SILK: { folder: "bowlbug", skin: "web" },
-  CALCIFIED_CULTIST: { folder: "cultists", skin: "coral" },
-  DAMP_CULTIST: { folder: "cultists", skin: "slug" },
-  FLYCONID: { folder: "flying_mushrooms" },
-  GLOBE_HEAD: { folder: "globe_head" },
-  SKULKING_COLONY: { folder: "skulking_colony" },
-  TORCH_HEAD_AMALGAM: { folder: "torch_head_amalgam" },
+  BOWLBUG_EGG: { folder: "bowlbug", skin: "cocoon", tags: ["shared-actor", "variant-skin"] },
+  BOWLBUG_NECTAR: { folder: "bowlbug", skin: "goop", tags: ["shared-actor", "variant-skin"] },
+  BOWLBUG_ROCK: { folder: "bowlbug", skin: "rock", tags: ["shared-actor", "variant-skin"] },
+  BOWLBUG_SILK: { folder: "bowlbug", skin: "web", tags: ["shared-actor", "variant-skin"] },
+  CALCIFIED_CULTIST: { folder: "cultists", skin: "coral", tags: ["shared-actor", "variant-skin"] },
+  DAMP_CULTIST: { folder: "cultists", skin: "slug", tags: ["shared-actor", "variant-skin"] },
+  FLYCONID: { folder: "flying_mushrooms", tags: ["image-slug-alias"] },
+  GLOBE_HEAD: { folder: "globe_head", tags: ["image-slug-alias"] },
+  SKULKING_COLONY: { folder: "skulking_colony", tags: ["image-slug-alias"] },
+  TORCH_HEAD_AMALGAM: { folder: "torch_head_amalgam", tags: ["image-slug-alias"] },
 };
 
 const VFX_ALIASES = {
@@ -235,7 +236,7 @@ function moveVfxCandidates(move, usableVfxIds) {
   return unique(candidates).filter((id) => usableVfxIds.has(id));
 }
 
-function buildMonsterAsset(monster, actor, skin, vfxById) {
+function buildMonsterAsset(monster, actor, alias, vfxById) {
   const animationNames = actor.animations.map((animation) => animation.name);
   const idleAnimation = chooseIdleAnimation(animationNames);
   const moves = monster.bestiary_moves ?? monster.moves ?? [];
@@ -252,10 +253,12 @@ function buildMonsterAsset(monster, actor, skin, vfxById) {
   return {
     id: monster.id,
     source: `animations/monsters/${actor.folder}/${actor.base}`,
+    renderStatus: alias?.renderStatus ?? "spine",
+    renderTags: alias?.tags ?? [],
     atlasUrl: `/spine/sts2/monsters/${actor.folder}/${actor.atlasFile}`,
     binaryUrl: `/spine/sts2/monsters/${actor.folder}/${actor.skelFile}`,
     textureUrls: actor.pngFiles.map((file) => `/spine/sts2/monsters/${actor.folder}/${file}`),
-    skin: skin ?? null,
+    skin: alias?.skin ?? null,
     skins: actor.skins,
     animations: animationNames,
     idleAnimation,
@@ -277,17 +280,25 @@ function main() {
     const folder = alias?.folder ?? slugFromImageUrl(monster.image_url);
     const actor = folder ? actors.get(folder) : null;
     if (!actor) {
-      missing.push(monster.id);
+      missing.push({
+        id: monster.id,
+        imageSlug: slugFromImageUrl(monster.image_url),
+        renderStatus: "static-only",
+        renderTags: ["no-renderable-spine-actor"],
+        fallbackImageUrl: monster.image_url,
+        reason: "No renderable animations/monsters Spine actor was found in the PCK.",
+      });
       continue;
     }
-    assets.push(buildMonsterAsset(monster, actor, alias?.skin, vfxById));
+    assets.push(buildMonsterAsset(monster, actor, alias, vfxById));
   }
 
   writeJson(outVfxPath, vfxAssets);
   writeJson(outMonsterPath, assets);
+  writeJson(outMonsterFallbackPath, missing);
   console.log(`indexed ${assets.length} monster Spine assets (${missing.length} static fallbacks)`);
   console.log(`indexed ${vfxAssets.length} Spine VFX assets (${vfxAssets.filter((asset) => asset.usable).length} usable)`);
-  if (missing.length > 0) console.log(`static fallback monsters: ${missing.join(", ")}`);
+  if (missing.length > 0) console.log(`static fallback monsters: ${missing.map((entry) => entry.id).join(", ")}`);
 }
 
 main();
