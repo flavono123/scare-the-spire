@@ -714,7 +714,9 @@ interface RawMonster {
   max_hp: number | null;
   min_hp_ascension: number | null;
   max_hp_ascension: number | null;
+  show_in_compendium?: boolean;
   moves: RawMonsterMove[];
+  bestiary_moves?: RawMonsterMove[];
   damage_values: Record<string, RawDamageValue> | null;
   block_values: Record<string, number> | null;
   image_url: string | null;
@@ -730,16 +732,22 @@ function mapMonster(
   gameMonsters: GameLocalizationTable,
   gameLocale: GameLocale,
 ): CodexMonster {
-  // Map moves with both languages
-  const moves: MonsterMove[] = kor.moves.map((km, i) => ({
-    id: km.id,
-    name: gameText(
-      gameMonsters,
-      `${kor.id}.moves.${km.id}.title`,
-      gameTitleFallback(km.name, eng.moves[i]?.name ?? km.name, gameLocale),
-    ),
-    nameEn: eng.moves[i]?.name ?? km.name,
-  }));
+  const engMovesById = new Map(eng.moves.map((move) => [move.id, move]));
+  const mapMoves = (rawMoves: RawMonsterMove[]): MonsterMove[] => rawMoves.map((km) => {
+    const em = engMovesById.get(km.id);
+    return {
+      id: km.id,
+      name: gameText(
+        gameMonsters,
+        `${kor.id}.moves.${km.id}.title`,
+        gameTitleFallback(km.name, em?.name ?? km.name, gameLocale),
+      ),
+      nameEn: em?.name ?? km.name,
+    };
+  });
+
+  const moves = mapMoves(kor.moves);
+  const bestiaryMoves = mapMoves(kor.bestiary_moves ?? kor.moves);
 
   // Map damage values
   const damageValues: Record<string, DamageValue> | null = kor.damage_values
@@ -767,11 +775,13 @@ function mapMonster(
     name: gameTitleText(gameMonsters, `${kor.id}.name`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     type: kor.type as MonsterType,
+    showInCompendium: kor.show_in_compendium ?? true,
     minHp: kor.min_hp,
     maxHp: kor.max_hp,
     minHpAscension: kor.min_hp_ascension,
     maxHpAscension: kor.max_hp_ascension,
     moves,
+    bestiaryMoves,
     damageValues: damageValues,
     blockValues: kor.block_values,
     imageUrl,

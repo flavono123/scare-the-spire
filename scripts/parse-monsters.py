@@ -132,6 +132,70 @@ def resolve_move_title(loc_entry: dict, move_id: str) -> str | None:
     return None
 
 
+def method_body(text: str, method_name: str) -> str | None:
+    idx = text.find(method_name)
+    if idx < 0:
+        return None
+    open_brace = text.find("{", idx)
+    if open_brace < 0:
+        return None
+    depth = 0
+    for i in range(open_brace, len(text)):
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                return text[open_brace + 1 : i]
+    return None
+
+
+def parse_show_in_compendium(text: str) -> bool:
+    return not re.search(r"ShouldShowInCompendium\s*=>\s*false\s*;", text)
+
+
+def parse_hidden_bestiary_moves(text: str) -> set[str]:
+    body = method_body(text, "ShouldShowMoveInBestiary")
+    if not body:
+        return set()
+    # Current overrides are hide-lists expressed as `moveStateId != "X"` plus
+    # `return false` fallbacks. Every literal in the override is hidden.
+    return {strip_move_suffix(m) for m in re.findall(r'"([A-Z0-9_]+)"', body)}
+
+
+def parse_inserted_bestiary_moves(text: str) -> list[tuple[int, str]]:
+    body = method_body(text, "GenerateBestiaryMoveList")
+    if not body:
+        return []
+
+    inserted: list[tuple[int, str]] = []
+    for m in re.finditer(
+        r"list\.Insert\(\s*(?P<idx>\d+)\s*,\s*BestiaryMonsterMove\."
+        r"From(?:Action|NonStateMove)\(\s*GetBestiaryMoveName\(\"(?P<id>[A-Z0-9_]+)\"\)",
+        body,
+    ):
+        inserted.append((int(m.group("idx")), m.group("id")))
+
+    for m in re.finditer(r"list\.Insert\(\s*(?P<idx>\d+)\s*,\s*BestiaryMonsterMove\.FromStun\(", body):
+        inserted.append((int(m.group("idx")), "STUNNED"))
+
+    return inserted
+
+
+def build_bestiary_move_ids(move_ids: list[str], text: str) -> list[str]:
+    hidden = parse_hidden_bestiary_moves(text)
+    visible = [
+        strip_move_suffix(move_id)
+        for move_id in move_ids
+        if strip_move_suffix(move_id) not in hidden
+    ]
+    for index, move_id in sorted(parse_inserted_bestiary_moves(text), key=lambda item: item[0]):
+        if move_id in visible:
+            continue
+        visible.insert(min(index, len(visible)), move_id)
+    return visible
+
+
 def parse_moves_and_damage(text: str) -> tuple[list[str], dict, dict]:
     """Return (ordered move ids, damage_values map, block_values map)."""
     int_props = parse_int_props(text)
@@ -202,9 +266,13 @@ def build_entries(
             text = cs.read_text()
             hp = parse_hp(text)
             move_ids, damage_values, block_values = parse_moves_and_damage(text)
+            show_in_compendium = parse_show_in_compendium(text)
+            bestiary_move_ids = build_bestiary_move_ids(move_ids, text)
         else:
             hp = {"min_hp": None, "max_hp": None, "min_hp_ascension": None, "max_hp_ascension": None}
             move_ids, damage_values, block_values = [], {}, {}
+            show_in_compendium = old_kor_by_id.get(ent_id, {}).get("show_in_compendium", True)
+            bestiary_move_ids = []
 
         # If no class-derived moves, fall back to whatever the locale lists.
         locale_fallback_moves = None
@@ -230,6 +298,17 @@ def build_entries(
                         "id": stripped,
                         "name": resolve_move_title(lnode, mid) or stripped.replace("_", " ").title(),
                     })
+                bestiary_moves = []
+                generic_lnode = loc_by_id.get("GENERIC", {})
+                for mid in bestiary_move_ids:
+                    bestiary_moves.append({
+                        "id": mid,
+                        "name": (
+                            resolve_move_title(lnode, mid)
+                            or resolve_move_title(generic_lnode, mid)
+                            or mid.replace("_", " ").title()
+                        ),
+                    })
             elif locale_fallback_moves:
                 moves = []
                 for mid in locale_fallback_moves:
@@ -237,15 +316,21 @@ def build_entries(
                         "id": mid,
                         "name": resolve_move_title(lnode, mid) or mid.replace("_", " ").title(),
                     })
+                bestiary_moves = moves
             else:
                 moves = old.get("moves") or []
+                bestiary_moves = old.get("bestiary_moves") or moves
+                if cs is None and not moves:
+                    show_in_compendium = False
 
             out.append({
                 "id": ent_id,
                 "name": lnode.get("name") or old.get("name"),
                 "type": old.get("type") or "Normal",
+                "show_in_compendium": show_in_compendium,
                 **hp,
                 "moves": moves,
+                "bestiary_moves": bestiary_moves,
                 "damage_values": damage_values or old.get("damage_values"),
                 "block_values": block_values or old.get("block_values"),
                 "image_url": old.get("image_url"),

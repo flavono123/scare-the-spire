@@ -484,9 +484,9 @@ export function EntityPreview({
                 </span>
               )}
             </span>
-            {entity.monsterData.moves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).length > 0 && (
+            {entity.monsterData.bestiaryMoves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).length > 0 && (
               <span className="block text-xs text-gray-300 leading-relaxed">
-                {entity.monsterData.moves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).slice(0, 4).map((m) => m.name).join(", ")}
+                {entity.monsterData.bestiaryMoves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).slice(0, 4).map((m) => m.name).join(", ")}
               </span>
             )}
           </span>,

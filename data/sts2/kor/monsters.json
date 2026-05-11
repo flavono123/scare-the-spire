@@ -3,11 +3,26 @@
     "id": "AEONGLASS",
     "name": "영겁의 모래시계",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 512,
     "max_hp": null,
     "min_hp_ascension": 535,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "EBB",
+        "name": "감쇠"
+      },
+      {
+        "id": "EYE_LASERS",
+        "name": "눈 레이저"
+      },
+      {
+        "id": "INCREASING_INTENSITY",
+        "name": "강도 증가"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "EBB",
         "name": "감쇠"
@@ -38,11 +53,18 @@
     "id": "ARCHITECT",
     "name": "아키텍트",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 9999,
     "max_hp": 9999,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "가만히 있기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "가만히 있기"
@@ -56,11 +78,18 @@
     "id": "ASSASSIN_RUBY_RAIDER",
     "name": "암살 습격자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 18,
     "max_hp": 23,
     "min_hp_ascension": 19,
     "max_hp_ascension": 24,
     "moves": [
+      {
+        "id": "KILLSHOT",
+        "name": "결정타"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "KILLSHOT",
         "name": "결정타"
@@ -79,11 +108,26 @@
     "id": "AXEBOT",
     "name": "잘라봇",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 70,
     "max_hp": 78,
     "min_hp_ascension": 76,
     "max_hp_ascension": 86,
     "moves": [
+      {
+        "id": "BOOT_UP",
+        "name": "시동"
+      },
+      {
+        "id": "ONE_TWO",
+        "name": "좌우 연타"
+      },
+      {
+        "id": "HAMMER_UPPERCUT",
+        "name": "망치 올려치기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BOOT_UP",
         "name": "시동"
@@ -116,6 +160,7 @@
     "id": "AXE_RUBY_RAIDER",
     "name": "도끼 습격자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 20,
     "max_hp": 22,
     "min_hp_ascension": 21,
@@ -129,6 +174,12 @@
         "id": "SWING_2",
         "name": "Swing 2"
       },
+      {
+        "id": "BIG_SWING",
+        "name": "크게 휘두르기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BIG_SWING",
         "name": "크게 휘두르기"
@@ -151,11 +202,18 @@
     "id": "BATTLE_FRIEND_V1",
     "name": "전투 친구 V1.0",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 75,
     "max_hp": 75,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "가만히 있기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "가만히 있기"
@@ -169,11 +227,18 @@
     "id": "BATTLE_FRIEND_V2",
     "name": "전투 친구 V2.0",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 150,
     "max_hp": 150,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "가만히 있기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "가만히 있기"
@@ -187,11 +252,18 @@
     "id": "BATTLE_FRIEND_V3",
     "name": "전투 친구 V3.0",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 300,
     "max_hp": 300,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "가만히 있기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "가만히 있기"
@@ -205,11 +277,18 @@
     "id": "BOWLBUG_EGG",
     "name": "그릇벌레 (알)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 21,
     "max_hp": 22,
     "min_hp_ascension": 23,
     "max_hp_ascension": 24,
     "moves": [
+      {
+        "id": "BITE",
+        "name": "물기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BITE",
         "name": "물기"
@@ -228,11 +307,26 @@
     "id": "BOWLBUG_NECTAR",
     "name": "그릇벌레 (꿀)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 35,
     "max_hp": 38,
     "min_hp_ascension": 36,
     "max_hp_ascension": 39,
     "moves": [
+      {
+        "id": "THRASH",
+        "name": "난동부리기"
+      },
+      {
+        "id": "BUFF",
+        "name": "이로운 효과"
+      },
+      {
+        "id": "THRASH2",
+        "name": "Thrash2"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "THRASH",
         "name": "난동부리기"
@@ -259,6 +353,7 @@
     "id": "BOWLBUG_ROCK",
     "name": "그릇벌레 (바위)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 45,
     "max_hp": 48,
     "min_hp_ascension": 46,
@@ -267,6 +362,20 @@
       {
         "id": "HEADBUTT",
         "name": "박치기"
+      },
+      {
+        "id": "DIZZY",
+        "name": "어지러움"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "HEADBUTT",
+        "name": "박치기"
+      },
+      {
+        "id": "STUNNED",
+        "name": "기절함"
       },
       {
         "id": "DIZZY",
@@ -286,11 +395,22 @@
     "id": "BOWLBUG_SILK",
     "name": "그릇벌레 (실크)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 40,
     "max_hp": 43,
     "min_hp_ascension": 41,
     "max_hp_ascension": 44,
     "moves": [
+      {
+        "id": "THRASH",
+        "name": "난동부리기"
+      },
+      {
+        "id": "TOXIC_SPIT",
+        "name": "유독성 침"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "THRASH",
         "name": "난동부리기"
@@ -313,6 +433,7 @@
     "id": "BRUTE_RUBY_RAIDER",
     "name": "난폭한 습격자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 30,
     "max_hp": 33,
     "min_hp_ascension": 31,
@@ -325,6 +446,12 @@
       {
         "id": "ROAR",
         "name": "포효"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "BEAT",
+        "name": "때리기"
       }
     ],
     "damage_values": {
@@ -340,11 +467,30 @@
     "id": "BYGONE_EFFIGY",
     "name": "옛 시대의 우상",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 127,
     "max_hp": null,
     "min_hp_ascension": 132,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "SLEEP",
+        "name": "수면"
+      },
+      {
+        "id": "WAKE",
+        "name": "깨어남"
+      },
+      {
+        "id": "SLEEP_MOVE_2",
+        "name": "Sleep Move 2"
+      },
+      {
+        "id": "SLASHES",
+        "name": "참격"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SLEEP",
         "name": "수면"
@@ -375,11 +521,22 @@
     "id": "BYRDONIS",
     "name": "섀도니스",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 81,
     "max_hp": 84,
     "min_hp_ascension": 90,
     "max_hp_ascension": 90,
     "moves": [
+      {
+        "id": "PECK",
+        "name": "쪼기"
+      },
+      {
+        "id": "SWOOP",
+        "name": "급습"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "PECK",
         "name": "쪼기"
@@ -406,11 +563,18 @@
     "id": "BYRDONIS_NEST",
     "name": "둥지",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "가만히 있기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "가만히 있기"
@@ -424,11 +588,18 @@
     "id": "BYRDPIP",
     "name": "짹짹이",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 9999,
     "max_hp": 9999,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "가만히 있기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "가만히 있기"
@@ -442,11 +613,22 @@
     "id": "CALCIFIED_CULTIST",
     "name": "석회화된 광신자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 38,
     "max_hp": 41,
     "min_hp_ascension": 39,
     "max_hp_ascension": 42,
     "moves": [
+      {
+        "id": "INCANTATION",
+        "name": "주문"
+      },
+      {
+        "id": "DARK_STRIKE",
+        "name": "어둠의 타격"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "INCANTATION",
         "name": "주문"
@@ -469,6 +651,7 @@
     "id": "CEREMONIAL_BEAST",
     "name": "의식의 신수",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 252,
     "max_hp": null,
     "min_hp_ascension": 262,
@@ -485,6 +668,32 @@
       {
         "id": "STUN",
         "name": "Stun"
+      },
+      {
+        "id": "BEAST_CRY",
+        "name": "야수의 외침"
+      },
+      {
+        "id": "STOMP",
+        "name": "발구르기"
+      },
+      {
+        "id": "CRUSH",
+        "name": "짓뭉개기"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "STAMP",
+        "name": "발구르기"
+      },
+      {
+        "id": "PLOW",
+        "name": "파헤치기"
+      },
+      {
+        "id": "STUNNED",
+        "name": "기절함"
       },
       {
         "id": "BEAST_CRY",
@@ -520,11 +729,22 @@
     "id": "CHOMPER",
     "name": "먹깨비",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 60,
     "max_hp": 64,
     "min_hp_ascension": 63,
     "max_hp_ascension": 67,
     "moves": [
+      {
+        "id": "CLAMP",
+        "name": "꽉 물기"
+      },
+      {
+        "id": "SCREECH",
+        "name": "끼에엑"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CLAMP",
         "name": "꽉 물기"
@@ -547,11 +767,18 @@
     "id": "COCOON",
     "name": "고치",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "가만히 있기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "가만히 있기"
@@ -565,11 +792,26 @@
     "id": "CORPSE_SLUG",
     "name": "시체 민달팽이",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 25,
     "max_hp": 27,
     "min_hp_ascension": 27,
     "max_hp_ascension": 29,
     "moves": [
+      {
+        "id": "WHIP_SLAP",
+        "name": "휘둘러 치기"
+      },
+      {
+        "id": "GLOMP",
+        "name": "안기기"
+      },
+      {
+        "id": "GOOP",
+        "name": "들러붙기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "WHIP_SLAP",
         "name": "휘둘러 치기"
@@ -600,11 +842,22 @@
     "id": "CROSSBOW_RUBY_RAIDER",
     "name": "크로스보우 습격자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 18,
     "max_hp": 21,
     "min_hp_ascension": 19,
     "max_hp_ascension": 22,
     "moves": [
+      {
+        "id": "FIRE",
+        "name": "발사!"
+      },
+      {
+        "id": "RELOAD",
+        "name": "재장전"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "FIRE",
         "name": "발사!"
@@ -627,11 +880,34 @@
     "id": "CRUSHER",
     "name": "분쇄자",
     "type": "Boss",
+    "show_in_compendium": false,
     "min_hp": 209,
     "max_hp": null,
     "min_hp_ascension": 219,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "THRASH",
+        "name": "난동부리기"
+      },
+      {
+        "id": "ENLARGING_STRIKE",
+        "name": "확대 타격"
+      },
+      {
+        "id": "BUG_STING",
+        "name": "벌레 쏘기"
+      },
+      {
+        "id": "ADAPT",
+        "name": "적응"
+      },
+      {
+        "id": "GUARDED_STRIKE",
+        "name": "수호의 타격"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "THRASH",
         "name": "난동부리기"
@@ -678,11 +954,30 @@
     "id": "CUBEX_CONSTRUCT",
     "name": "큐브형 구조체",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 65,
     "max_hp": null,
     "min_hp_ascension": 70,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "CHARGE_UP",
+        "name": "충전"
+      },
+      {
+        "id": "REPEATER_BLAST",
+        "name": "연발 사격"
+      },
+      {
+        "id": "REPEATER_BLAST_MOVE_2",
+        "name": "Repeater Blast Move 2"
+      },
+      {
+        "id": "EXPEL",
+        "name": "방출"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CHARGE_UP",
         "name": "충전"
@@ -717,11 +1012,22 @@
     "id": "DAMP_CULTIST",
     "name": "흠뻑 젖은 광신자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 51,
     "max_hp": 53,
     "min_hp_ascension": 52,
     "max_hp_ascension": 54,
     "moves": [
+      {
+        "id": "INCANTATION",
+        "name": "주문"
+      },
+      {
+        "id": "DARK_STRIKE",
+        "name": "어둠의 타격"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "INCANTATION",
         "name": "주문"
@@ -744,11 +1050,34 @@
     "id": "DECIMILLIPEDE_SEGMENT",
     "name": "만각지네",
     "type": "Normal",
+    "show_in_compendium": false,
     "min_hp": 40,
     "max_hp": 46,
     "min_hp_ascension": 46,
     "max_hp_ascension": 52,
     "moves": [
+      {
+        "id": "WRITHE",
+        "name": "몸부림"
+      },
+      {
+        "id": "BULK",
+        "name": "커지기"
+      },
+      {
+        "id": "CONSTRICT",
+        "name": "Constrict"
+      },
+      {
+        "id": "DEAD",
+        "name": "죽음"
+      },
+      {
+        "id": "REATTACH",
+        "name": "재연결"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "WRITHE",
         "name": "몸부림"
@@ -791,11 +1120,22 @@
     "id": "DEVOTED_SCULPTOR",
     "name": "열정적인 조각가",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 162,
     "max_hp": null,
     "min_hp_ascension": 172,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "FORBIDDEN_INCANTATION",
+        "name": "금지된 주문"
+      },
+      {
+        "id": "SAVAGE",
+        "name": "흉포한 공격"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "FORBIDDEN_INCANTATION",
         "name": "금지된 주문"
@@ -908,11 +1248,26 @@
     "id": "ENTOMANCER",
     "name": "곤충술사",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 145,
     "max_hp": null,
     "min_hp_ascension": 155,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "PHEROMONE_SPIT",
+        "name": "페로몬 뱉기"
+      },
+      {
+        "id": "BEES",
+        "name": "버어어얼이다!"
+      },
+      {
+        "id": "SPEAR",
+        "name": "찌르기!"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "PHEROMONE_SPIT",
         "name": "페로몬 뱉기"
@@ -943,11 +1298,26 @@
     "id": "EXOSKELETON",
     "name": "갑각충",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 24,
     "max_hp": 28,
     "min_hp_ascension": 25,
     "max_hp_ascension": 29,
     "moves": [
+      {
+        "id": "SKITTER",
+        "name": "뛰어다니기"
+      },
+      {
+        "id": "MANDIBLES",
+        "name": "턱 깨물기"
+      },
+      {
+        "id": "ENRAGE",
+        "name": "격분"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SKITTER",
         "name": "뛰어다니기"
@@ -978,11 +1348,18 @@
     "id": "EYE_WITH_TEETH",
     "name": "톱니눈",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 6,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "DISTRACT",
+        "name": "혼란시키기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "DISTRACT",
         "name": "혼란시키기"
@@ -996,6 +1373,7 @@
     "id": "FABRICATOR",
     "name": "조립 전문가",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 150,
     "max_hp": null,
     "min_hp_ascension": 155,
@@ -1008,6 +1386,16 @@
       {
         "id": "FABRICATING_STRIKE",
         "name": "조립 타격"
+      },
+      {
+        "id": "DISINTEGRATE",
+        "name": "해체"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "FABRICATE",
+        "name": "조립"
       },
       {
         "id": "DISINTEGRATE",
@@ -1031,11 +1419,30 @@
     "id": "FAKE_MERCHANT_MONSTER",
     "name": "상?인",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 165,
     "max_hp": 165,
     "min_hp_ascension": 175,
     "max_hp_ascension": 175,
     "moves": [
+      {
+        "id": "SWIPE",
+        "name": "밀쳐내기"
+      },
+      {
+        "id": "SPEW_COINS",
+        "name": "동전 분출"
+      },
+      {
+        "id": "THROW_RELIC",
+        "name": "유물 던지기"
+      },
+      {
+        "id": "ENRAGE",
+        "name": "격분"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SWIPE",
         "name": "밀쳐내기"
@@ -1070,11 +1477,22 @@
     "id": "FAT_GREMLIN",
     "name": "뚱뚱한 그렘린",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 13,
     "max_hp": 17,
     "min_hp_ascension": 14,
     "max_hp_ascension": 18,
     "moves": [
+      {
+        "id": "SPAWNED",
+        "name": "기상"
+      },
+      {
+        "id": "FLEE",
+        "name": "도주"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SPAWNED",
         "name": "기상"
@@ -1092,11 +1510,26 @@
     "id": "FLAIL_KNIGHT",
     "name": "철퇴 기사",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 101,
     "max_hp": null,
     "min_hp_ascension": 108,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "WAR_CHANT",
+        "name": "전투의 함성"
+      },
+      {
+        "id": "FLAIL",
+        "name": "마구 휘두르기"
+      },
+      {
+        "id": "RAM",
+        "name": "들이받기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "WAR_CHANT",
         "name": "전투의 함성"
@@ -1127,11 +1560,26 @@
     "id": "FLYCONID",
     "name": "날개버섯",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 47,
     "max_hp": 49,
     "min_hp_ascension": 51,
     "max_hp_ascension": 53,
     "moves": [
+      {
+        "id": "VULNERABLE_SPORES",
+        "name": "취약 포자"
+      },
+      {
+        "id": "FRAIL_SPORES",
+        "name": "쇠약 포자"
+      },
+      {
+        "id": "SMASH",
+        "name": "부수기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "VULNERABLE_SPORES",
         "name": "취약 포자"
@@ -1162,6 +1610,7 @@
     "id": "FOGMOG",
     "name": "현혹버섯",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 74,
     "max_hp": null,
     "min_hp_ascension": 78,
@@ -1184,6 +1633,16 @@
         "name": "Headbutt"
       }
     ],
+    "bestiary_moves": [
+      {
+        "id": "ILLUSION",
+        "name": "환각 포자"
+      },
+      {
+        "id": "SWIPE",
+        "name": "찰싹 때리기"
+      }
+    ],
     "damage_values": {
       "Swipe": {
         "normal": 8,
@@ -1201,11 +1660,26 @@
     "id": "FOSSIL_STALKER",
     "name": "화석 매복자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 51,
     "max_hp": 53,
     "min_hp_ascension": 54,
     "max_hp_ascension": 56,
     "moves": [
+      {
+        "id": "TACKLE",
+        "name": "태클"
+      },
+      {
+        "id": "LATCH",
+        "name": "들러붙기"
+      },
+      {
+        "id": "LASH",
+        "name": "후려치기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TACKLE",
         "name": "태클"
@@ -1240,11 +1714,30 @@
     "id": "FROG_KNIGHT",
     "name": "개구리 기사",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 191,
     "max_hp": null,
     "min_hp_ascension": 199,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "FOR_THE_QUEEN",
+        "name": "여왕님을 위해"
+      },
+      {
+        "id": "STRIKE_DOWN_EVIL",
+        "name": "악을 처단한다"
+      },
+      {
+        "id": "TONGUE_LASH",
+        "name": "혓바닥 채찍"
+      },
+      {
+        "id": "BEETLE_CHARGE",
+        "name": "딱정벌레 돌진"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "FOR_THE_QUEEN",
         "name": "여왕님을 위해"
@@ -1283,6 +1776,7 @@
     "id": "FUZZY_WURM_CRAWLER",
     "name": "복슬지렁이",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 55,
     "max_hp": 57,
     "min_hp_ascension": 58,
@@ -1292,6 +1786,16 @@
         "id": "FIRST_ACID_GOOP",
         "name": "First Acid Goop"
       },
+      {
+        "id": "ACID_GOOP",
+        "name": "산성 끈적이"
+      },
+      {
+        "id": "INHALE",
+        "name": "빨아들이기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "ACID_GOOP",
         "name": "산성 끈적이"
@@ -1314,11 +1818,18 @@
     "id": "GAS_BOMB",
     "name": "가스 폭탄",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 7,
     "max_hp": null,
     "min_hp_ascension": 8,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "EXPLODE",
+        "name": "폭발"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "EXPLODE",
         "name": "폭발"
@@ -1337,11 +1848,22 @@
     "id": "GAZING_MOTH",
     "name": "응시하는 나방",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "GLARE",
+        "name": "노려보기"
+      },
+      {
+        "id": "POWDER",
+        "name": "분말"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "GLARE",
         "name": "노려보기"
@@ -1359,11 +1881,22 @@
     "id": "GEM_EATER",
     "name": "보석먹이",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "FOCUS_BEAM",
+        "name": "집중 광선"
+      },
+      {
+        "id": "GEM_LASER",
+        "name": "보석 레이저"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "FOCUS_BEAM",
         "name": "집중 광선"
@@ -1381,6 +1914,7 @@
     "id": "GLOBE_HEAD",
     "name": "구체 머리",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 148,
     "max_hp": null,
     "min_hp_ascension": 158,
@@ -1397,6 +1931,16 @@
       {
         "id": "GALVANIC_BURST",
         "name": "Galvanic Burst"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "THUNDER_STRIKE",
+        "name": "전기 영창"
+      },
+      {
+        "id": "SHOCKING_SLAP",
+        "name": "깜짝 따귀"
       }
     ],
     "damage_values": {
@@ -1420,11 +1964,26 @@
     "id": "GREMLIN_MERC",
     "name": "그렘린 용병",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 47,
     "max_hp": 49,
     "min_hp_ascension": 51,
     "max_hp_ascension": 53,
     "moves": [
+      {
+        "id": "GIMME",
+        "name": "내놔"
+      },
+      {
+        "id": "DOUBLE_SMASH",
+        "name": "이연타"
+      },
+      {
+        "id": "HEHE",
+        "name": "헤헤"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "GIMME",
         "name": "내놔"
@@ -1459,11 +2018,18 @@
     "id": "GUARDBOT",
     "name": "막아봇",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 16,
     "max_hp": 20,
     "min_hp_ascension": 17,
     "max_hp_ascension": 21,
     "moves": [
+      {
+        "id": "GUARD",
+        "name": "보호"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "GUARD",
         "name": "보호"
@@ -1477,11 +2043,13 @@
     "id": "HATCHLING",
     "name": "해츨링",
     "type": "Normal",
+    "show_in_compendium": false,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [],
+    "bestiary_moves": [],
     "damage_values": null,
     "block_values": null,
     "image_url": null
@@ -1490,6 +2058,7 @@
     "id": "HAUNTED_SHIP",
     "name": "유령선",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 63,
     "max_hp": null,
     "min_hp_ascension": 67,
@@ -1499,6 +2068,20 @@
         "id": "RAMMING_SPEED",
         "name": "전속력"
       },
+      {
+        "id": "SWIPE",
+        "name": "밀쳐내기"
+      },
+      {
+        "id": "STOMP",
+        "name": "발구르기"
+      },
+      {
+        "id": "HAUNT",
+        "name": "출몰"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SWIPE",
         "name": "밀쳐내기"
@@ -1533,11 +2116,26 @@
     "id": "HUNTER_KILLER",
     "name": "사냥꾼 살해자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 121,
     "max_hp": null,
     "min_hp_ascension": 126,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "TENDERIZING_GOOP",
+        "name": "연약화 끈적이"
+      },
+      {
+        "id": "BITE",
+        "name": "물기"
+      },
+      {
+        "id": "PUNCTURE",
+        "name": "구멍 뚫기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TENDERIZING_GOOP",
         "name": "연약화 끈적이"
@@ -1568,11 +2166,30 @@
     "id": "INFESTED_PRISM",
     "name": "감염된 프리즘",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 200,
     "max_hp": null,
     "min_hp_ascension": 215,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "JAB",
+        "name": "찌르기"
+      },
+      {
+        "id": "RADIATE",
+        "name": "방출"
+      },
+      {
+        "id": "WHIRLWIND",
+        "name": "소용돌이"
+      },
+      {
+        "id": "PULSATE",
+        "name": "맥박"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "JAB",
         "name": "찌르기"
@@ -1611,6 +2228,7 @@
     "id": "INKLET",
     "name": "잉클릿",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 11,
     "max_hp": 17,
     "min_hp_ascension": 12,
@@ -1627,6 +2245,16 @@
       {
         "id": "PIERCING_GAZE",
         "name": "날카로운 시선"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "JAB",
+        "name": "잽"
+      },
+      {
+        "id": "WHIRLWIND",
+        "name": "소용돌이"
       }
     ],
     "damage_values": {
@@ -1650,11 +2278,26 @@
     "id": "KIN_FOLLOWER",
     "name": "혈족 추종자",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 58,
     "max_hp": 59,
     "min_hp_ascension": 62,
     "max_hp_ascension": 63,
     "moves": [
+      {
+        "id": "QUICK_SLASH",
+        "name": "전광석화"
+      },
+      {
+        "id": "BOOMERANG",
+        "name": "부메랑 투척"
+      },
+      {
+        "id": "POWER_DANCE",
+        "name": "강화의 춤"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "QUICK_SLASH",
         "name": "전광석화"
@@ -1685,11 +2328,30 @@
     "id": "KIN_PRIEST",
     "name": "혈족 사제",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 190,
     "max_hp": null,
     "min_hp_ascension": 199,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "ORB_OF_FRAILTY",
+        "name": "연약함의 구체"
+      },
+      {
+        "id": "ORB_OF_WEAKNESS",
+        "name": "나약함의 구체"
+      },
+      {
+        "id": "BEAM",
+        "name": "영혼 광선"
+      },
+      {
+        "id": "RITUAL",
+        "name": "어둠의 의식"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "ORB_OF_FRAILTY",
         "name": "연약함의 구체"
@@ -1728,11 +2390,30 @@
     "id": "KNOWLEDGE_DEMON",
     "name": "지식의 악마",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 379,
     "max_hp": null,
     "min_hp_ascension": 399,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "CURSE_OF_KNOWLEDGE",
+        "name": "지식의 저주"
+      },
+      {
+        "id": "SLAP",
+        "name": "때리기"
+      },
+      {
+        "id": "KNOWLEDGE_OVERWHELMING",
+        "name": "압도적인 지식"
+      },
+      {
+        "id": "PONDER",
+        "name": "숙고"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CURSE_OF_KNOWLEDGE",
         "name": "지식의 저주"
@@ -1771,6 +2452,7 @@
     "id": "LAGAVULIN_MATRIARCH",
     "name": "라가불린 대모",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 222,
     "max_hp": null,
     "min_hp_ascension": 233,
@@ -1779,6 +2461,32 @@
       {
         "id": "SLEEP",
         "name": "수면"
+      },
+      {
+        "id": "SLASH",
+        "name": "참격"
+      },
+      {
+        "id": "SLASH2",
+        "name": "Slash2"
+      },
+      {
+        "id": "DISEMBOWEL",
+        "name": "창자 가르기"
+      },
+      {
+        "id": "SOUL_SIPHON",
+        "name": "영혼 흡수"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "SLEEP",
+        "name": "수면"
+      },
+      {
+        "id": "WAKE_UP",
+        "name": "기상"
       },
       {
         "id": "SLASH",
@@ -1818,11 +2526,22 @@
     "id": "LEAF_SLIME_M",
     "name": "나뭇잎 슬라임 (중)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 32,
     "max_hp": 35,
     "min_hp_ascension": 33,
     "max_hp_ascension": 36,
     "moves": [
+      {
+        "id": "CLUMP_SHOT",
+        "name": "덤불 발사"
+      },
+      {
+        "id": "STICKY_SHOT",
+        "name": "끈적 발사"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CLUMP_SHOT",
         "name": "덤불 발사"
@@ -1845,11 +2564,22 @@
     "id": "LEAF_SLIME_S",
     "name": "나뭇잎 슬라임 (소)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 11,
     "max_hp": 15,
     "min_hp_ascension": 12,
     "max_hp_ascension": 16,
     "moves": [
+      {
+        "id": "TACKLE",
+        "name": "태클"
+      },
+      {
+        "id": "GOOP",
+        "name": "끈적이"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TACKLE",
         "name": "태클"
@@ -1872,11 +2602,26 @@
     "id": "LIVING_FOG",
     "name": "살아있는 안개",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 80,
     "max_hp": null,
     "min_hp_ascension": 82,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "ADVANCED_GAS",
+        "name": "가스 축적"
+      },
+      {
+        "id": "BLOAT",
+        "name": "부풀기"
+      },
+      {
+        "id": "SUPER_GAS_BLAST",
+        "name": "가스 대폭발"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "ADVANCED_GAS",
         "name": "가스 축적"
@@ -1911,11 +2656,22 @@
     "id": "LIVING_SHIELD",
     "name": "살아있는 방패",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 55,
     "max_hp": null,
     "min_hp_ascension": 65,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "SHIELD_SLAM",
+        "name": "방패 찍기"
+      },
+      {
+        "id": "SMASH",
+        "name": "부수기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SHIELD_SLAM",
         "name": "방패 찍기"
@@ -1942,11 +2698,26 @@
     "id": "LOUSE_PROGENITOR",
     "name": "태초의 공벌레",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 134,
     "max_hp": 136,
     "min_hp_ascension": 138,
     "max_hp_ascension": 141,
     "moves": [
+      {
+        "id": "WEB_CANNON",
+        "name": "거미줄 분사"
+      },
+      {
+        "id": "POUNCE",
+        "name": "덮치기"
+      },
+      {
+        "id": "CURL_AND_GROW",
+        "name": "웅크린 성장"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "WEB_CANNON",
         "name": "거미줄 분사"
@@ -1977,6 +2748,7 @@
     "id": "MAGI_KNIGHT",
     "name": "마법 기사",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 82,
     "max_hp": null,
     "min_hp_ascension": 89,
@@ -1993,6 +2765,24 @@
       {
         "id": "PREP",
         "name": "Prep"
+      },
+      {
+        "id": "MAGIC_BOMB",
+        "name": "마법 폭탄"
+      },
+      {
+        "id": "RAM",
+        "name": "들이받기"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "POWER_SHIELD",
+        "name": "파워 실드"
+      },
+      {
+        "id": "DAMPEN",
+        "name": "위축"
       },
       {
         "id": "MAGIC_BOMB",
@@ -2024,11 +2814,26 @@
     "id": "MAWLER",
     "name": "장수아귀",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 72,
     "max_hp": null,
     "min_hp_ascension": 76,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "RIP_AND_TEAR",
+        "name": "날뛰기"
+      },
+      {
+        "id": "ROAR",
+        "name": "포효"
+      },
+      {
+        "id": "CLAW",
+        "name": "잡아찢기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "RIP_AND_TEAR",
         "name": "날뛰기"
@@ -2059,11 +2864,30 @@
     "id": "MECHA_KNIGHT",
     "name": "기계 기사",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 300,
     "max_hp": null,
     "min_hp_ascension": 320,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "CHARGE",
+        "name": "돌진"
+      },
+      {
+        "id": "FLAMETHROWER",
+        "name": "화염 방사"
+      },
+      {
+        "id": "WINDUP",
+        "name": "태엽 감기"
+      },
+      {
+        "id": "HEAVY_CLEAVE",
+        "name": "묵직한 절단"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CHARGE",
         "name": "돌진"
@@ -2100,11 +2924,26 @@
     "id": "MYSTERIOUS_KNIGHT",
     "name": "수수께끼의 기사",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "BREAKER",
+        "name": "깨부수기"
+      },
+      {
+        "id": "FLAIL",
+        "name": "마구 휘두르기"
+      },
+      {
+        "id": "RAM",
+        "name": "들이받기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BREAKER",
         "name": "깨부수기"
@@ -2126,11 +2965,26 @@
     "id": "MYTE",
     "name": "진듸기",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 61,
     "max_hp": 67,
     "min_hp_ascension": 64,
     "max_hp_ascension": 69,
     "moves": [
+      {
+        "id": "TOXIC",
+        "name": "유독성 풍요"
+      },
+      {
+        "id": "BITE",
+        "name": "물기"
+      },
+      {
+        "id": "SUCK",
+        "name": "빨아 먹기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TOXIC",
         "name": "유독성 풍요"
@@ -2161,6 +3015,7 @@
     "id": "NIBBIT",
     "name": "깨작이",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 42,
     "max_hp": 46,
     "min_hp_ascension": 44,
@@ -2173,6 +3028,16 @@
       {
         "id": "SLICE",
         "name": "Slice"
+      },
+      {
+        "id": "HISS",
+        "name": "쉭쉭대기"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "BUTT",
+        "name": "박치기"
       },
       {
         "id": "HISS",
@@ -2196,11 +3061,18 @@
     "id": "NOISEBOT",
     "name": "소음봇",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 18,
     "max_hp": 23,
     "min_hp_ascension": 19,
     "max_hp_ascension": 24,
     "moves": [
+      {
+        "id": "NOISE",
+        "name": "소음"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOISE",
         "name": "소음"
@@ -2214,11 +3086,18 @@
     "id": "OSTY",
     "name": "골골이",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 1,
     "max_hp": 1,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "Nothing"
@@ -2232,6 +3111,7 @@
     "id": "OVICOPTER",
     "name": "산란비충",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 124,
     "max_hp": 130,
     "min_hp_ascension": 126,
@@ -2248,6 +3128,20 @@
       {
         "id": "TENDERIZER",
         "name": "연약화"
+      },
+      {
+        "id": "NUTRITIONAL_PASTE",
+        "name": "영양 보충"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "LAY_EGGS",
+        "name": "알 낳기"
+      },
+      {
+        "id": "SMASH",
+        "name": "부수기"
       },
       {
         "id": "NUTRITIONAL_PASTE",
@@ -2271,11 +3165,30 @@
     "id": "OWL_MAGISTRATE",
     "name": "올빼미 판관",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 231,
     "max_hp": null,
     "min_hp_ascension": 247,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "MAGISTRATE_SCRUTINY",
+        "name": "판관의 조사"
+      },
+      {
+        "id": "PECK_ASSAULT",
+        "name": "기습 쪼기"
+      },
+      {
+        "id": "JUDICIAL_FLIGHT",
+        "name": "공정한 비행"
+      },
+      {
+        "id": "VERDICT",
+        "name": "판결"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "MAGISTRATE_SCRUTINY",
         "name": "판관의 조사"
@@ -2314,11 +3227,18 @@
     "id": "PAELS_LEGION",
     "name": "파엘의 군체",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 9999,
     "max_hp": 9999,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "가만히 있기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "가만히 있기"
@@ -2332,11 +3252,18 @@
     "id": "PARAFRIGHT",
     "name": "투사된 공포",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 21,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "SLAM",
+        "name": "내려찍기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SLAM",
         "name": "내려찍기"
@@ -2355,11 +3282,30 @@
     "id": "PHANTASMAL_GARDENER",
     "name": "허깨비 정원사",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 26,
     "max_hp": 31,
     "min_hp_ascension": 27,
     "max_hp_ascension": 32,
     "moves": [
+      {
+        "id": "BITE",
+        "name": "물기"
+      },
+      {
+        "id": "LASH",
+        "name": "후려치기"
+      },
+      {
+        "id": "FLAIL",
+        "name": "마구 휘두르기"
+      },
+      {
+        "id": "ENLARGE",
+        "name": "늘리기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BITE",
         "name": "물기"
@@ -2398,11 +3344,22 @@
     "id": "PHROG_PARASITE",
     "name": "게구리 기생체",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 61,
     "max_hp": 64,
     "min_hp_ascension": 66,
     "max_hp_ascension": 68,
     "moves": [
+      {
+        "id": "INFECT",
+        "name": "감염시키기"
+      },
+      {
+        "id": "LASH",
+        "name": "후려치기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "INFECT",
         "name": "감염시키기"
@@ -2425,11 +3382,26 @@
     "id": "PUNCH_CONSTRUCT",
     "name": "권투형 구조체",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 55,
     "max_hp": null,
     "min_hp_ascension": 60,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "READY",
+        "name": "준비"
+      },
+      {
+        "id": "STRONG_PUNCH",
+        "name": "강한 펀치"
+      },
+      {
+        "id": "FAST_PUNCH",
+        "name": "빠른 펀치"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "READY",
         "name": "준비"
@@ -2460,6 +3432,7 @@
     "id": "QUEEN",
     "name": "여왕",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 400,
     "max_hp": null,
     "min_hp_ascension": 419,
@@ -2490,6 +3463,16 @@
         "name": "Enrage"
       }
     ],
+    "bestiary_moves": [
+      {
+        "id": "YOU_ARE_MINE",
+        "name": "너는 내 것이다"
+      },
+      {
+        "id": "OFF_WITH_YOUR_HEAD",
+        "name": "목을 베어라"
+      }
+    ],
     "damage_values": {
       "OffWithYourHead": {
         "normal": 3,
@@ -2507,11 +3490,34 @@
     "id": "ROCKET",
     "name": "로켓",
     "type": "Boss",
+    "show_in_compendium": false,
     "min_hp": 199,
     "max_hp": null,
     "min_hp_ascension": 209,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "TARGETING_RETICLE",
+        "name": "십자선 조준"
+      },
+      {
+        "id": "PRECISION_BEAM",
+        "name": "정밀 광선"
+      },
+      {
+        "id": "CHARGE_UP",
+        "name": "충전"
+      },
+      {
+        "id": "LASER",
+        "name": "레이저"
+      },
+      {
+        "id": "RECHARGE",
+        "name": "재충전"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TARGETING_RETICLE",
         "name": "십자선 조준"
@@ -2554,11 +3560,26 @@
     "id": "SCROLL_OF_BITING",
     "name": "물어뜯는 두루마리",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 30,
     "max_hp": 37,
     "min_hp_ascension": 33,
     "max_hp_ascension": 39,
     "moves": [
+      {
+        "id": "CHOMP",
+        "name": "물어뜯기"
+      },
+      {
+        "id": "CHEW",
+        "name": "씹기"
+      },
+      {
+        "id": "MORE_TEETH",
+        "name": "이빨 강화"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CHOMP",
         "name": "물어뜯기"
@@ -2589,11 +3610,26 @@
     "id": "SEAPUNK",
     "name": "불량 해초",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 44,
     "max_hp": 46,
     "min_hp_ascension": 47,
     "max_hp_ascension": 49,
     "moves": [
+      {
+        "id": "SEA_KICK",
+        "name": "바다 차기"
+      },
+      {
+        "id": "SPINNING_KICK",
+        "name": "돌려차기"
+      },
+      {
+        "id": "BUBBLE_BURP",
+        "name": "거품 뿜기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SEA_KICK",
         "name": "바다 차기"
@@ -2624,11 +3660,22 @@
     "id": "SEWER_CLAM",
     "name": "시궁창 조개",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 56,
     "max_hp": null,
     "min_hp_ascension": 58,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "PRESSURIZE",
+        "name": "가압"
+      },
+      {
+        "id": "JET",
+        "name": "분출"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "PRESSURIZE",
         "name": "가압"
@@ -2651,6 +3698,7 @@
     "id": "SHRINKER_BEETLE",
     "name": "압축벌레",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 38,
     "max_hp": 40,
     "min_hp_ascension": 40,
@@ -2667,6 +3715,16 @@
       {
         "id": "STOMP",
         "name": "발구르기"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "SHRINKER",
+        "name": "압축"
+      },
+      {
+        "id": "CHOMP",
+        "name": "물어뜯기"
       }
     ],
     "damage_values": {
@@ -2686,11 +3744,30 @@
     "id": "SKULKING_COLONY",
     "name": "잠행 군체",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 70,
     "max_hp": null,
     "min_hp_ascension": 75,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "SMASH",
+        "name": "Smash"
+      },
+      {
+        "id": "ZOOM",
+        "name": "급가속"
+      },
+      {
+        "id": "INERTIA",
+        "name": "관성"
+      },
+      {
+        "id": "PIERCING_STABS",
+        "name": "꿰뚫는 찌르기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SMASH",
         "name": "Smash"
@@ -2733,6 +3810,7 @@
     "id": "SLIMED_BERSERKER",
     "name": "슬라임 광전사",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 261,
     "max_hp": null,
     "min_hp_ascension": 281,
@@ -2749,6 +3827,20 @@
       {
         "id": "SMOTHER",
         "name": "Smother"
+      },
+      {
+        "id": "FURIOUS_PUMMELING",
+        "name": "격렬한 구타"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "VOMIT_ICHOR",
+        "name": "체액 토하기"
+      },
+      {
+        "id": "LEECHING_HUG",
+        "name": "흡혈 포옹"
       },
       {
         "id": "FURIOUS_PUMMELING",
@@ -2772,11 +3864,26 @@
     "id": "SLITHERING_STRANGLER",
     "name": "미끈거리는 교살마",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 53,
     "max_hp": 55,
     "min_hp_ascension": 54,
     "max_hp_ascension": 56,
     "moves": [
+      {
+        "id": "CONSTRICT",
+        "name": "조이기"
+      },
+      {
+        "id": "THWACK",
+        "name": "찰싹 때리기"
+      },
+      {
+        "id": "LASH",
+        "name": "후려치기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CONSTRICT",
         "name": "조이기"
@@ -2807,6 +3914,7 @@
     "id": "SLUDGE_SPINNER",
     "name": "오물팽이",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 37,
     "max_hp": 39,
     "min_hp_ascension": 41,
@@ -2823,6 +3931,16 @@
       {
         "id": "RAGE",
         "name": "격노"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "OIL_SPRAY",
+        "name": "기름 분사"
+      },
+      {
+        "id": "SLAM",
+        "name": "내려찍기"
       }
     ],
     "damage_values": {
@@ -2846,11 +3964,22 @@
     "id": "SLUMBERING_BEETLE",
     "name": "잠자는 딱정벌레",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 86,
     "max_hp": null,
     "min_hp_ascension": 89,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "SNORE",
+        "name": "코 골기"
+      },
+      {
+        "id": "ROLL_OUT",
+        "name": "펼치기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SNORE",
         "name": "코 골기"
@@ -2873,11 +4002,18 @@
     "id": "SNAPPING_JAXFRUIT",
     "name": "포식성 잭스프루트",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 31,
     "max_hp": 33,
     "min_hp_ascension": 34,
     "max_hp_ascension": 36,
     "moves": [
+      {
+        "id": "ENERGY_ORB",
+        "name": "에너지 구체"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "ENERGY_ORB",
         "name": "에너지 구체"
@@ -2896,11 +4032,22 @@
     "id": "SNEAKY_GREMLIN",
     "name": "교활한 그렘린",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 10,
     "max_hp": 14,
     "min_hp_ascension": 11,
     "max_hp_ascension": 15,
     "moves": [
+      {
+        "id": "SPAWNED",
+        "name": "기상"
+      },
+      {
+        "id": "TACKLE",
+        "name": "태클"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SPAWNED",
         "name": "기상"
@@ -2923,11 +4070,34 @@
     "id": "SOUL_FYSH",
     "name": "영혼 물교기",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 211,
     "max_hp": null,
     "min_hp_ascension": 221,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "BECKON",
+        "name": "유인"
+      },
+      {
+        "id": "DE_GAS",
+        "name": "가스 방출"
+      },
+      {
+        "id": "GAZE",
+        "name": "응시"
+      },
+      {
+        "id": "FADE",
+        "name": "사라지기"
+      },
+      {
+        "id": "SCREAM",
+        "name": "절규"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BECKON",
         "name": "유인"
@@ -2970,6 +4140,7 @@
     "id": "SOUL_NEXUS",
     "name": "영혼 결합체",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 234,
     "max_hp": null,
     "min_hp_ascension": 254,
@@ -2982,6 +4153,16 @@
       {
         "id": "MAELSTROM",
         "name": "대재앙"
+      },
+      {
+        "id": "DRAIN_LIFE",
+        "name": "생명 흡수"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "SOUL_BURN",
+        "name": "영혼 연소"
       },
       {
         "id": "DRAIN_LIFE",
@@ -3009,11 +4190,26 @@
     "id": "SPECTRAL_KNIGHT",
     "name": "유령 기사",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 93,
     "max_hp": null,
     "min_hp_ascension": 97,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "HEX",
+        "name": "주술"
+      },
+      {
+        "id": "SOUL_SLASH",
+        "name": "영혼 참격"
+      },
+      {
+        "id": "SOUL_FLAME",
+        "name": "영혼 화염"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "HEX",
         "name": "주술"
@@ -3044,11 +4240,26 @@
     "id": "SPINY_TOAD",
     "name": "가시두꺼비",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 116,
     "max_hp": 119,
     "min_hp_ascension": 121,
     "max_hp_ascension": 124,
     "moves": [
+      {
+        "id": "PROTRUDING_SPIKES",
+        "name": "튀어나오는 가시"
+      },
+      {
+        "id": "SPIKE_EXPLOSION",
+        "name": "가시 폭발"
+      },
+      {
+        "id": "TONGUE_LASH",
+        "name": "혓바닥 채찍"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "PROTRUDING_SPIKES",
         "name": "튀어나오는 가시"
@@ -3079,11 +4290,18 @@
     "id": "STABBOT",
     "name": "찔러봇",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 18,
     "max_hp": 23,
     "min_hp_ascension": 19,
     "max_hp_ascension": 24,
     "moves": [
+      {
+        "id": "STAB",
+        "name": "찌르기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "STAB",
         "name": "찌르기"
@@ -3102,6 +4320,7 @@
     "id": "TERROR_EEL",
     "name": "공포 장어",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 140,
     "max_hp": null,
     "min_hp_ascension": 150,
@@ -3118,6 +4337,20 @@
       {
         "id": "STUN",
         "name": "Stun"
+      },
+      {
+        "id": "TERROR",
+        "name": "위협"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "CRASH",
+        "name": "충돌"
+      },
+      {
+        "id": "THRASH",
+        "name": "난동부리기"
       },
       {
         "id": "TERROR",
@@ -3141,6 +4374,7 @@
     "id": "TEST_SUBJECT",
     "name": "실험체 #C{Count}",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
@@ -3165,6 +4399,24 @@
       {
         "id": "PHASE3_LACERATE",
         "name": "찢어발기기"
+      },
+      {
+        "id": "BIG_POUNCE",
+        "name": "거센 덮치기"
+      },
+      {
+        "id": "BURNING_GROWL",
+        "name": "타오르는 포효"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "RESPAWN",
+        "name": "부활"
+      },
+      {
+        "id": "MULTI_CLAW",
+        "name": "발톱 연타"
       },
       {
         "id": "BIG_POUNCE",
@@ -3204,11 +4456,26 @@
     "id": "THE_ADVERSARY_MK_ONE",
     "name": "적대자 Mk 1",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 100,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "SMASH",
+        "name": "부수기"
+      },
+      {
+        "id": "BEAM",
+        "name": "광선"
+      },
+      {
+        "id": "BARRAGE",
+        "name": "집중포화"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SMASH",
         "name": "부수기"
@@ -3243,11 +4510,26 @@
     "id": "THE_ADVERSARY_MK_THREE",
     "name": "적대자 Mk 3",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 300,
     "max_hp": null,
     "min_hp_ascension": 300,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "CRASH",
+        "name": "충돌"
+      },
+      {
+        "id": "FLAME_BEAM",
+        "name": "화염 광선"
+      },
+      {
+        "id": "BARRAGE",
+        "name": "집중포화"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CRASH",
         "name": "충돌"
@@ -3282,11 +4564,26 @@
     "id": "THE_ADVERSARY_MK_TWO",
     "name": "적대자 Mk 2",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 200,
     "max_hp": null,
     "min_hp_ascension": 200,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "BASH",
+        "name": "강타"
+      },
+      {
+        "id": "FLAME_BEAM",
+        "name": "화염 광선"
+      },
+      {
+        "id": "BARRAGE",
+        "name": "집중포화"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BASH",
         "name": "강타"
@@ -3321,11 +4618,26 @@
     "id": "THE_ARM",
     "name": "팔",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "GRAB",
+        "name": "붙잡기"
+      },
+      {
+        "id": "PUNCH",
+        "name": "펀치"
+      },
+      {
+        "id": "WRESTLE",
+        "name": "손씨름"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "GRAB",
         "name": "붙잡기"
@@ -3347,11 +4659,26 @@
     "id": "THE_BELL",
     "name": "방울",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "CACOPHONY",
+        "name": "불협화음"
+      },
+      {
+        "id": "CLANG",
+        "name": "땡그랑"
+      },
+      {
+        "id": "RING",
+        "name": "딸랑"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CACOPHONY",
         "name": "불협화음"
@@ -3373,11 +4700,30 @@
     "id": "THE_DREAMER",
     "name": "꿈꾸는 자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "DREAM",
+        "name": "꿈꾸기"
+      },
+      {
+        "id": "FEND_OFF",
+        "name": "받아넘기기"
+      },
+      {
+        "id": "RUMINATE",
+        "name": "되새김"
+      },
+      {
+        "id": "SNORE",
+        "name": "코 골기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "DREAM",
         "name": "꿈꾸기"
@@ -3403,11 +4749,22 @@
     "id": "THE_FORGOTTEN",
     "name": "잊힌 자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 106,
     "max_hp": null,
     "min_hp_ascension": 111,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "MIASMA",
+        "name": "불쾌한 기운"
+      },
+      {
+        "id": "DREAD",
+        "name": "공포"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "MIASMA",
         "name": "불쾌한 기운"
@@ -3430,11 +4787,34 @@
     "id": "THE_INSATIABLE",
     "name": "탐",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 321,
     "max_hp": null,
     "min_hp_ascension": 341,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "LIQUIFY_GROUND",
+        "name": "대지 뒤틀기"
+      },
+      {
+        "id": "THRASH",
+        "name": "난동부리기"
+      },
+      {
+        "id": "THRASH_MOVE_2",
+        "name": "Thrash Move 2"
+      },
+      {
+        "id": "LUNGING_BITE",
+        "name": "덮쳐 물기"
+      },
+      {
+        "id": "SALIVATE",
+        "name": "군침 흘리기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "LIQUIFY_GROUND",
         "name": "대지 뒤틀기"
@@ -3473,11 +4853,22 @@
     "id": "THE_LOST",
     "name": "사라진 자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 93,
     "max_hp": null,
     "min_hp_ascension": 99,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "DEBILITATING_SMOG",
+        "name": "쇠약의 안개"
+      },
+      {
+        "id": "EYE_LASERS",
+        "name": "눈 레이저"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "DEBILITATING_SMOG",
         "name": "쇠약의 안개"
@@ -3500,6 +4891,7 @@
     "id": "THE_OBSCURA",
     "name": "영사자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 123,
     "max_hp": null,
     "min_hp_ascension": 129,
@@ -3512,6 +4904,20 @@
       {
         "id": "PIERCING_GAZE",
         "name": "날카로운 시선"
+      },
+      {
+        "id": "SAIL",
+        "name": "휘적대기"
+      },
+      {
+        "id": "HARDENING_STRIKE",
+        "name": "경화 타격"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "ILLUSION",
+        "name": "환상"
       },
       {
         "id": "SAIL",
@@ -3539,11 +4945,34 @@
     "id": "THIEVING_HOPPER",
     "name": "폴짝이 도적",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 79,
     "max_hp": null,
     "min_hp_ascension": 84,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "THIEVERY",
+        "name": "절도"
+      },
+      {
+        "id": "NAB",
+        "name": "낚아채기"
+      },
+      {
+        "id": "HAT_TRICK",
+        "name": "해트트릭"
+      },
+      {
+        "id": "FLUTTER",
+        "name": "파닥거리기"
+      },
+      {
+        "id": "ESCAPE",
+        "name": "도망"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "THIEVERY",
         "name": "절도"
@@ -3586,11 +5015,26 @@
     "id": "TOADPOLE",
     "name": "올챙이",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 21,
     "max_hp": 25,
     "min_hp_ascension": 22,
     "max_hp_ascension": 26,
     "moves": [
+      {
+        "id": "SPIKE_SPIT",
+        "name": "가시 뱉기"
+      },
+      {
+        "id": "WHIRL",
+        "name": "선회"
+      },
+      {
+        "id": "SPIKEN",
+        "name": "가시 세우기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SPIKE_SPIT",
         "name": "가시 뱉기"
@@ -3621,11 +5065,34 @@
     "id": "TORCH_HEAD_AMALGAM",
     "name": "횃불머리 융합체",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 199,
     "max_hp": null,
     "min_hp_ascension": 211,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "TACKLE",
+        "name": "태클"
+      },
+      {
+        "id": "TACKLE_2",
+        "name": "Tackle 2"
+      },
+      {
+        "id": "BEAM",
+        "name": "광선"
+      },
+      {
+        "id": "TACKLE_3",
+        "name": "Tackle 3"
+      },
+      {
+        "id": "TACKLE_4",
+        "name": "Tackle 4"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TACKLE",
         "name": "태클"
@@ -3668,11 +5135,22 @@
     "id": "TOUGH_EGG",
     "name": "튼튼한 알",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 14,
     "max_hp": 18,
     "min_hp_ascension": 15,
     "max_hp_ascension": 19,
     "moves": [
+      {
+        "id": "HATCH",
+        "name": "부화"
+      },
+      {
+        "id": "NIBBLE",
+        "name": "Nibble"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "HATCH",
         "name": "부화"
@@ -3695,6 +5173,7 @@
     "id": "TRACKER_RUBY_RAIDER",
     "name": "추적 습격자",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 21,
     "max_hp": 25,
     "min_hp_ascension": 22,
@@ -3704,6 +5183,12 @@
         "id": "TRACK",
         "name": "추적하기"
       },
+      {
+        "id": "HOUNDS",
+        "name": "사냥개 풀기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "HOUNDS",
         "name": "사냥개 풀기"
@@ -3722,6 +5207,7 @@
     "id": "TUNNELER",
     "name": "땅굴충",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 87,
     "max_hp": null,
     "min_hp_ascension": 92,
@@ -3744,6 +5230,20 @@
         "name": "Dizzy"
       }
     ],
+    "bestiary_moves": [
+      {
+        "id": "BITE",
+        "name": "물기"
+      },
+      {
+        "id": "BURROW",
+        "name": "땅굴 파기"
+      },
+      {
+        "id": "BELOW",
+        "name": "하단 공격"
+      }
+    ],
     "damage_values": {
       "Bite": {
         "normal": 13,
@@ -3761,11 +5261,26 @@
     "id": "TURRET_OPERATOR",
     "name": "포탑 사수",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 41,
     "max_hp": null,
     "min_hp_ascension": 51,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "UNLOAD",
+        "name": "탄약 제거!"
+      },
+      {
+        "id": "UNLOAD_MOVE_2",
+        "name": "Unload Move 2"
+      },
+      {
+        "id": "RELOAD",
+        "name": "재장전"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "UNLOAD",
         "name": "탄약 제거!"
@@ -3792,11 +5307,22 @@
     "id": "TWIG_SLIME_M",
     "name": "가지 슬라임 (중)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 26,
     "max_hp": 28,
     "min_hp_ascension": 27,
     "max_hp_ascension": 29,
     "moves": [
+      {
+        "id": "POKEY_POUNCE",
+        "name": "덮쳐 찌르기"
+      },
+      {
+        "id": "STICKY_SHOT",
+        "name": "끈적 발사"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "POKEY_POUNCE",
         "name": "덮쳐 찌르기"
@@ -3819,11 +5345,18 @@
     "id": "TWIG_SLIME_S",
     "name": "가지 슬라임 (소)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 7,
     "max_hp": 11,
     "min_hp_ascension": 8,
     "max_hp_ascension": 12,
     "moves": [
+      {
+        "id": "TACKLE",
+        "name": "태클"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TACKLE",
         "name": "태클"
@@ -3842,11 +5375,30 @@
     "id": "TWO_TAILED_RAT",
     "name": "두꼬리쥐",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 17,
     "max_hp": 21,
     "min_hp_ascension": 18,
     "max_hp_ascension": 22,
     "moves": [
+      {
+        "id": "SCRATCH",
+        "name": "할퀴기"
+      },
+      {
+        "id": "DISEASE_BITE",
+        "name": "역병 물기"
+      },
+      {
+        "id": "SCREECH",
+        "name": "끼에엑"
+      },
+      {
+        "id": "CALL_FOR_BACKUP",
+        "name": "지원 요청"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SCRATCH",
         "name": "할퀴기"
@@ -3881,11 +5433,30 @@
     "id": "VANTOM",
     "name": "밴텀",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 173,
     "max_hp": null,
     "min_hp_ascension": 183,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "INK_BLOT",
+        "name": "잉크 투척"
+      },
+      {
+        "id": "INKY_LANCE",
+        "name": "잉크 창"
+      },
+      {
+        "id": "DISMEMBER",
+        "name": "토막내기"
+      },
+      {
+        "id": "PREPARE",
+        "name": "준비"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "INK_BLOT",
         "name": "잉크 투척"
@@ -3924,11 +5495,26 @@
     "id": "VINE_SHAMBLER",
     "name": "휘청거리는 덩굴",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 61,
     "max_hp": null,
     "min_hp_ascension": 64,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "GRASPING_VINES",
+        "name": "덩굴 휘감기"
+      },
+      {
+        "id": "SWIPE",
+        "name": "밀쳐내기"
+      },
+      {
+        "id": "CHOMP",
+        "name": "물어뜯기"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "GRASPING_VINES",
         "name": "덩굴 휘감기"
@@ -3963,6 +5549,7 @@
     "id": "WATERFALL_GIANT",
     "name": "폭포 거인",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 240,
     "max_hp": null,
     "min_hp_ascension": 250,
@@ -3983,6 +5570,36 @@
       {
         "id": "SIPHON",
         "name": "흡수"
+      },
+      {
+        "id": "PRESSURE_GUN",
+        "name": "압축포"
+      },
+      {
+        "id": "PRESSURE_UP",
+        "name": "압력 상승"
+      },
+      {
+        "id": "ABOUT_TO_BLOW",
+        "name": "분출 직전"
+      },
+      {
+        "id": "EXPLODE",
+        "name": "폭발"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "PRESSURIZE",
+        "name": "가압"
+      },
+      {
+        "id": "STOMP",
+        "name": "발구르기"
+      },
+      {
+        "id": "RAM",
+        "name": "들이받기"
       },
       {
         "id": "PRESSURE_GUN",
@@ -4022,6 +5639,7 @@
     "id": "WRIGGLER",
     "name": "꿈틀벌레",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 17,
     "max_hp": 21,
     "min_hp_ascension": 18,
@@ -4040,6 +5658,12 @@
         "name": "소환됨"
       }
     ],
+    "bestiary_moves": [
+      {
+        "id": "WRIGGLE",
+        "name": "꿈틀거리기"
+      }
+    ],
     "damage_values": {
       "Bite": {
         "normal": 6,
@@ -4053,11 +5677,18 @@
     "id": "ZAPBOT",
     "name": "파지직봇",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 18,
     "max_hp": 23,
     "min_hp_ascension": 19,
     "max_hp_ascension": 24,
     "moves": [
+      {
+        "id": "ZAP",
+        "name": "파지직"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "ZAP",
         "name": "파지직"

@@ -542,11 +542,13 @@ export interface CodexMonster {
   name: string;        // Korean
   nameEn: string;      // English
   type: MonsterType;
+  showInCompendium: boolean;
   minHp: number | null;
   maxHp: number | null;
   minHpAscension: number | null;
   maxHpAscension: number | null;
   moves: MonsterMove[];
+  bestiaryMoves: MonsterMove[];
   damageValues: Record<string, DamageValue> | null;
   blockValues: Record<string, number> | null;
   imageUrl: string | null;       // Spine render portrait (512x512)

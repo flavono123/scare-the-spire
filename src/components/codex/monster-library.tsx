@@ -154,7 +154,7 @@ export function MonsterLibrary({
 
   // Filter monsters
   const filteredMonsters = useMemo(() => {
-    let result = monsters;
+    let result = monsters.filter((m) => m.showInCompendium);
 
     // Type filter
     if (selectedTypes.size > 0) {
@@ -507,11 +507,7 @@ function MonsterTile({
 
       {/* Move count */}
       <span className="text-[10px] text-gray-600 shrink-0">
-        {formatCount(
-          monster.moves.filter((m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD").length,
-          messages.moveCount,
-          serviceLocale,
-        )}
+        {formatCount(getMeaningfulMoves(monster).length, messages.moveCount, serviceLocale)}
       </span>
     </button>
   );
@@ -542,9 +538,7 @@ function MonsterTooltip({
     pointerEvents: "none",
   };
 
-  const meaningfulMoves = monster.moves.filter(
-    (m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD",
-  );
+  const meaningfulMoves = getMeaningfulMoves(monster);
 
   return (
     <div className="w-80 bg-[#1a1a3a] border border-white/20 rounded-lg shadow-2xl overflow-hidden" style={style}>
@@ -672,4 +666,10 @@ function getActLabel(
   gameUi: CodexGameUiLabels,
 ): string {
   return act ? gameUi.acts[act] : messages.acts.none;
+}
+
+function getMeaningfulMoves(monster: CodexMonster) {
+  return monster.bestiaryMoves.filter(
+    (m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD",
+  );
 }

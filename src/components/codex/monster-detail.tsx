@@ -51,7 +51,7 @@ export function MonsterDetail({
   const commonText = serviceText.codex.common;
   const monsterText = serviceText.codex.monstersView;
   const typeConfig = MONSTER_TYPE_CONFIG[monster.type];
-  const meaningfulMoves = monster.moves.filter(
+  const meaningfulMoves = monster.bestiaryMoves.filter(
     (m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD",
   );
 

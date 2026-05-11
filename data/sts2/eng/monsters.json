@@ -3,11 +3,26 @@
     "id": "AEONGLASS",
     "name": "Aeonglass",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 512,
     "max_hp": null,
     "min_hp_ascension": 535,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "EBB",
+        "name": "Ebb"
+      },
+      {
+        "id": "EYE_LASERS",
+        "name": "Eye Lasers"
+      },
+      {
+        "id": "INCREASING_INTENSITY",
+        "name": "Increasing Intensity"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "EBB",
         "name": "Ebb"
@@ -38,11 +53,18 @@
     "id": "ARCHITECT",
     "name": "The Architect",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 9999,
     "max_hp": 9999,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "Nothing"
@@ -56,11 +78,18 @@
     "id": "ASSASSIN_RUBY_RAIDER",
     "name": "Assassin Raider",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 18,
     "max_hp": 23,
     "min_hp_ascension": 19,
     "max_hp_ascension": 24,
     "moves": [
+      {
+        "id": "KILLSHOT",
+        "name": "Killshot"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "KILLSHOT",
         "name": "Killshot"
@@ -79,11 +108,26 @@
     "id": "AXEBOT",
     "name": "Axebot",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 70,
     "max_hp": 78,
     "min_hp_ascension": 76,
     "max_hp_ascension": 86,
     "moves": [
+      {
+        "id": "BOOT_UP",
+        "name": "Boot Up"
+      },
+      {
+        "id": "ONE_TWO",
+        "name": "The One-Two"
+      },
+      {
+        "id": "HAMMER_UPPERCUT",
+        "name": "Hammer Uppercut"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BOOT_UP",
         "name": "Boot Up"
@@ -116,6 +160,7 @@
     "id": "AXE_RUBY_RAIDER",
     "name": "Axe Raider",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 20,
     "max_hp": 22,
     "min_hp_ascension": 21,
@@ -129,6 +174,12 @@
         "id": "SWING_2",
         "name": "Swing 2"
       },
+      {
+        "id": "BIG_SWING",
+        "name": "Big Swing"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BIG_SWING",
         "name": "Big Swing"
@@ -151,11 +202,18 @@
     "id": "BATTLE_FRIEND_V1",
     "name": "Battle Friend V1.0",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 75,
     "max_hp": 75,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "Nothing"
@@ -169,11 +227,18 @@
     "id": "BATTLE_FRIEND_V2",
     "name": "Battle Friend V2.0",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 150,
     "max_hp": 150,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "Nothing"
@@ -187,11 +252,18 @@
     "id": "BATTLE_FRIEND_V3",
     "name": "Battle Friend V3.0",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 300,
     "max_hp": 300,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "Nothing"
@@ -205,11 +277,18 @@
     "id": "BOWLBUG_EGG",
     "name": "Bowlbug (Egg)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 21,
     "max_hp": 22,
     "min_hp_ascension": 23,
     "max_hp_ascension": 24,
     "moves": [
+      {
+        "id": "BITE",
+        "name": "Bite"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BITE",
         "name": "Bite"
@@ -228,11 +307,26 @@
     "id": "BOWLBUG_NECTAR",
     "name": "Bowlbug (Nectar)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 35,
     "max_hp": 38,
     "min_hp_ascension": 36,
     "max_hp_ascension": 39,
     "moves": [
+      {
+        "id": "THRASH",
+        "name": "Thrash"
+      },
+      {
+        "id": "BUFF",
+        "name": "Buff"
+      },
+      {
+        "id": "THRASH2",
+        "name": "Thrash2"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "THRASH",
         "name": "Thrash"
@@ -259,6 +353,7 @@
     "id": "BOWLBUG_ROCK",
     "name": "Bowlbug (Rock)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 45,
     "max_hp": 48,
     "min_hp_ascension": 46,
@@ -267,6 +362,20 @@
       {
         "id": "HEADBUTT",
         "name": "Headbutt"
+      },
+      {
+        "id": "DIZZY",
+        "name": "Dizzy"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "HEADBUTT",
+        "name": "Headbutt"
+      },
+      {
+        "id": "STUNNED",
+        "name": "Stunned"
       },
       {
         "id": "DIZZY",
@@ -286,11 +395,22 @@
     "id": "BOWLBUG_SILK",
     "name": "Bowlbug (Silk)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 40,
     "max_hp": 43,
     "min_hp_ascension": 41,
     "max_hp_ascension": 44,
     "moves": [
+      {
+        "id": "THRASH",
+        "name": "Thrash"
+      },
+      {
+        "id": "TOXIC_SPIT",
+        "name": "Toxic Spit"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "THRASH",
         "name": "Thrash"
@@ -313,6 +433,7 @@
     "id": "BRUTE_RUBY_RAIDER",
     "name": "Brute Raider",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 30,
     "max_hp": 33,
     "min_hp_ascension": 31,
@@ -325,6 +446,12 @@
       {
         "id": "ROAR",
         "name": "Roar"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "BEAT",
+        "name": "Beat"
       }
     ],
     "damage_values": {
@@ -340,11 +467,30 @@
     "id": "BYGONE_EFFIGY",
     "name": "Bygone Effigy",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 127,
     "max_hp": null,
     "min_hp_ascension": 132,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "SLEEP",
+        "name": "Sleep"
+      },
+      {
+        "id": "WAKE",
+        "name": "Wake"
+      },
+      {
+        "id": "SLEEP_MOVE_2",
+        "name": "Sleep Move 2"
+      },
+      {
+        "id": "SLASHES",
+        "name": "Slashes"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SLEEP",
         "name": "Sleep"
@@ -375,11 +521,22 @@
     "id": "BYRDONIS",
     "name": "Byrdonis",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 81,
     "max_hp": 84,
     "min_hp_ascension": 90,
     "max_hp_ascension": 90,
     "moves": [
+      {
+        "id": "PECK",
+        "name": "Peck"
+      },
+      {
+        "id": "SWOOP",
+        "name": "Swoop"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "PECK",
         "name": "Peck"
@@ -406,11 +563,18 @@
     "id": "BYRDONIS_NEST",
     "name": "Nest",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "Nothing"
@@ -424,11 +588,18 @@
     "id": "BYRDPIP",
     "name": "Byrdpip",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 9999,
     "max_hp": 9999,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "Nothing"
@@ -442,11 +613,22 @@
     "id": "CALCIFIED_CULTIST",
     "name": "Calcified Cultist",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 38,
     "max_hp": 41,
     "min_hp_ascension": 39,
     "max_hp_ascension": 42,
     "moves": [
+      {
+        "id": "INCANTATION",
+        "name": "Incantation"
+      },
+      {
+        "id": "DARK_STRIKE",
+        "name": "Dark Strike"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "INCANTATION",
         "name": "Incantation"
@@ -469,6 +651,7 @@
     "id": "CEREMONIAL_BEAST",
     "name": "Ceremonial Beast",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 252,
     "max_hp": null,
     "min_hp_ascension": 262,
@@ -485,6 +668,32 @@
       {
         "id": "STUN",
         "name": "Stun"
+      },
+      {
+        "id": "BEAST_CRY",
+        "name": "Beast Cry"
+      },
+      {
+        "id": "STOMP",
+        "name": "Stomp"
+      },
+      {
+        "id": "CRUSH",
+        "name": "Crush"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "STAMP",
+        "name": "Stamp"
+      },
+      {
+        "id": "PLOW",
+        "name": "Plow"
+      },
+      {
+        "id": "STUNNED",
+        "name": "Stunned"
       },
       {
         "id": "BEAST_CRY",
@@ -520,11 +729,22 @@
     "id": "CHOMPER",
     "name": "Chomper",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 60,
     "max_hp": 64,
     "min_hp_ascension": 63,
     "max_hp_ascension": 67,
     "moves": [
+      {
+        "id": "CLAMP",
+        "name": "Clamp"
+      },
+      {
+        "id": "SCREECH",
+        "name": "Screech"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CLAMP",
         "name": "Clamp"
@@ -547,11 +767,18 @@
     "id": "COCOON",
     "name": "Cocoon",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "Nothing"
@@ -565,11 +792,26 @@
     "id": "CORPSE_SLUG",
     "name": "Corpse Slug",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 25,
     "max_hp": 27,
     "min_hp_ascension": 27,
     "max_hp_ascension": 29,
     "moves": [
+      {
+        "id": "WHIP_SLAP",
+        "name": "Whip Slap"
+      },
+      {
+        "id": "GLOMP",
+        "name": "Glomp"
+      },
+      {
+        "id": "GOOP",
+        "name": "Goop"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "WHIP_SLAP",
         "name": "Whip Slap"
@@ -600,11 +842,22 @@
     "id": "CROSSBOW_RUBY_RAIDER",
     "name": "Crossbow Raider",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 18,
     "max_hp": 21,
     "min_hp_ascension": 19,
     "max_hp_ascension": 22,
     "moves": [
+      {
+        "id": "FIRE",
+        "name": "Fire!"
+      },
+      {
+        "id": "RELOAD",
+        "name": "Reload"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "FIRE",
         "name": "Fire!"
@@ -627,11 +880,34 @@
     "id": "CRUSHER",
     "name": "Crusher",
     "type": "Boss",
+    "show_in_compendium": false,
     "min_hp": 209,
     "max_hp": null,
     "min_hp_ascension": 219,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "THRASH",
+        "name": "Thrash"
+      },
+      {
+        "id": "ENLARGING_STRIKE",
+        "name": "Enlarging Strike"
+      },
+      {
+        "id": "BUG_STING",
+        "name": "Bug Sting"
+      },
+      {
+        "id": "ADAPT",
+        "name": "Adapt"
+      },
+      {
+        "id": "GUARDED_STRIKE",
+        "name": "Guarded Strike"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "THRASH",
         "name": "Thrash"
@@ -678,11 +954,30 @@
     "id": "CUBEX_CONSTRUCT",
     "name": "Cubex Construct",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 65,
     "max_hp": null,
     "min_hp_ascension": 70,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "CHARGE_UP",
+        "name": "Charge Up"
+      },
+      {
+        "id": "REPEATER_BLAST",
+        "name": "Repeater Blast"
+      },
+      {
+        "id": "REPEATER_BLAST_MOVE_2",
+        "name": "Repeater Blast Move 2"
+      },
+      {
+        "id": "EXPEL",
+        "name": "Expel"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CHARGE_UP",
         "name": "Charge Up"
@@ -717,11 +1012,22 @@
     "id": "DAMP_CULTIST",
     "name": "Damp Cultist",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 51,
     "max_hp": 53,
     "min_hp_ascension": 52,
     "max_hp_ascension": 54,
     "moves": [
+      {
+        "id": "INCANTATION",
+        "name": "Incantation"
+      },
+      {
+        "id": "DARK_STRIKE",
+        "name": "Dark Strike"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "INCANTATION",
         "name": "Incantation"
@@ -744,11 +1050,34 @@
     "id": "DECIMILLIPEDE_SEGMENT",
     "name": "Decimillipede",
     "type": "Normal",
+    "show_in_compendium": false,
     "min_hp": 40,
     "max_hp": 46,
     "min_hp_ascension": 46,
     "max_hp_ascension": 52,
     "moves": [
+      {
+        "id": "WRITHE",
+        "name": "Writhe"
+      },
+      {
+        "id": "BULK",
+        "name": "Bulk"
+      },
+      {
+        "id": "CONSTRICT",
+        "name": "Constrict"
+      },
+      {
+        "id": "DEAD",
+        "name": "Dead"
+      },
+      {
+        "id": "REATTACH",
+        "name": "Reattach"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "WRITHE",
         "name": "Writhe"
@@ -791,11 +1120,22 @@
     "id": "DEVOTED_SCULPTOR",
     "name": "Devoted Sculptor",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 162,
     "max_hp": null,
     "min_hp_ascension": 172,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "FORBIDDEN_INCANTATION",
+        "name": "Forbidden Incantation"
+      },
+      {
+        "id": "SAVAGE",
+        "name": "Savage"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "FORBIDDEN_INCANTATION",
         "name": "Forbidden Incantation"
@@ -908,11 +1248,26 @@
     "id": "ENTOMANCER",
     "name": "Entomancer",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 145,
     "max_hp": null,
     "min_hp_ascension": 155,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "PHEROMONE_SPIT",
+        "name": "Pheromone Spit"
+      },
+      {
+        "id": "BEES",
+        "name": "Beeeees!"
+      },
+      {
+        "id": "SPEAR",
+        "name": "Spear!"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "PHEROMONE_SPIT",
         "name": "Pheromone Spit"
@@ -943,11 +1298,26 @@
     "id": "EXOSKELETON",
     "name": "Exoskeleton",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 24,
     "max_hp": 28,
     "min_hp_ascension": 25,
     "max_hp_ascension": 29,
     "moves": [
+      {
+        "id": "SKITTER",
+        "name": "Skitter"
+      },
+      {
+        "id": "MANDIBLES",
+        "name": "Mandibles"
+      },
+      {
+        "id": "ENRAGE",
+        "name": "Enrage"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SKITTER",
         "name": "Skitter"
@@ -978,11 +1348,18 @@
     "id": "EYE_WITH_TEETH",
     "name": "Eye with Teeth",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 6,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "DISTRACT",
+        "name": "Distract"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "DISTRACT",
         "name": "Distract"
@@ -996,6 +1373,7 @@
     "id": "FABRICATOR",
     "name": "Fabricator",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 150,
     "max_hp": null,
     "min_hp_ascension": 155,
@@ -1008,6 +1386,16 @@
       {
         "id": "FABRICATING_STRIKE",
         "name": "Fabricating Strike"
+      },
+      {
+        "id": "DISINTEGRATE",
+        "name": "Disintegrate"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "FABRICATE",
+        "name": "Fabricate"
       },
       {
         "id": "DISINTEGRATE",
@@ -1031,11 +1419,30 @@
     "id": "FAKE_MERCHANT_MONSTER",
     "name": "The Merchant???",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 165,
     "max_hp": 165,
     "min_hp_ascension": 175,
     "max_hp_ascension": 175,
     "moves": [
+      {
+        "id": "SWIPE",
+        "name": "Swipe"
+      },
+      {
+        "id": "SPEW_COINS",
+        "name": "Spew Coins"
+      },
+      {
+        "id": "THROW_RELIC",
+        "name": "Throw Relic"
+      },
+      {
+        "id": "ENRAGE",
+        "name": "Enrage"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SWIPE",
         "name": "Swipe"
@@ -1070,11 +1477,22 @@
     "id": "FAT_GREMLIN",
     "name": "Fat Gremlin",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 13,
     "max_hp": 17,
     "min_hp_ascension": 14,
     "max_hp_ascension": 18,
     "moves": [
+      {
+        "id": "SPAWNED",
+        "name": "Wake Up"
+      },
+      {
+        "id": "FLEE",
+        "name": "Flee"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SPAWNED",
         "name": "Wake Up"
@@ -1092,11 +1510,26 @@
     "id": "FLAIL_KNIGHT",
     "name": "Flail Knight",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 101,
     "max_hp": null,
     "min_hp_ascension": 108,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "WAR_CHANT",
+        "name": "War Chant"
+      },
+      {
+        "id": "FLAIL",
+        "name": "Flail"
+      },
+      {
+        "id": "RAM",
+        "name": "Ram"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "WAR_CHANT",
         "name": "War Chant"
@@ -1127,11 +1560,26 @@
     "id": "FLYCONID",
     "name": "Flyconid",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 47,
     "max_hp": 49,
     "min_hp_ascension": 51,
     "max_hp_ascension": 53,
     "moves": [
+      {
+        "id": "VULNERABLE_SPORES",
+        "name": "Vulnerable Spores"
+      },
+      {
+        "id": "FRAIL_SPORES",
+        "name": "Frail Spores"
+      },
+      {
+        "id": "SMASH",
+        "name": "Smash"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "VULNERABLE_SPORES",
         "name": "Vulnerable Spores"
@@ -1162,6 +1610,7 @@
     "id": "FOGMOG",
     "name": "Fogmog",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 74,
     "max_hp": null,
     "min_hp_ascension": 78,
@@ -1184,6 +1633,16 @@
         "name": "Headbutt"
       }
     ],
+    "bestiary_moves": [
+      {
+        "id": "ILLUSION",
+        "name": "Illusory Spores"
+      },
+      {
+        "id": "SWIPE",
+        "name": "Thwack"
+      }
+    ],
     "damage_values": {
       "Swipe": {
         "normal": 8,
@@ -1201,11 +1660,26 @@
     "id": "FOSSIL_STALKER",
     "name": "Fossil Stalker",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 51,
     "max_hp": 53,
     "min_hp_ascension": 54,
     "max_hp_ascension": 56,
     "moves": [
+      {
+        "id": "TACKLE",
+        "name": "Tackle"
+      },
+      {
+        "id": "LATCH",
+        "name": "Latch"
+      },
+      {
+        "id": "LASH",
+        "name": "Lash"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TACKLE",
         "name": "Tackle"
@@ -1240,11 +1714,30 @@
     "id": "FROG_KNIGHT",
     "name": "Frog Knight",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 191,
     "max_hp": null,
     "min_hp_ascension": 199,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "FOR_THE_QUEEN",
+        "name": "For the Queen"
+      },
+      {
+        "id": "STRIKE_DOWN_EVIL",
+        "name": "Strike Down Evil"
+      },
+      {
+        "id": "TONGUE_LASH",
+        "name": "Tongue Lash"
+      },
+      {
+        "id": "BEETLE_CHARGE",
+        "name": "Beetle Charge"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "FOR_THE_QUEEN",
         "name": "For the Queen"
@@ -1283,6 +1776,7 @@
     "id": "FUZZY_WURM_CRAWLER",
     "name": "Fuzzy Wurm Crawler",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 55,
     "max_hp": 57,
     "min_hp_ascension": 58,
@@ -1292,6 +1786,16 @@
         "id": "FIRST_ACID_GOOP",
         "name": "First Acid Goop"
       },
+      {
+        "id": "ACID_GOOP",
+        "name": "Acid Goop"
+      },
+      {
+        "id": "INHALE",
+        "name": "Inhale"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "ACID_GOOP",
         "name": "Acid Goop"
@@ -1314,11 +1818,18 @@
     "id": "GAS_BOMB",
     "name": "Gas Bomb",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 7,
     "max_hp": null,
     "min_hp_ascension": 8,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "EXPLODE",
+        "name": "Explode"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "EXPLODE",
         "name": "Explode"
@@ -1337,11 +1848,22 @@
     "id": "GAZING_MOTH",
     "name": "Gazing Moth",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "GLARE",
+        "name": "Glare"
+      },
+      {
+        "id": "POWDER",
+        "name": "Powder"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "GLARE",
         "name": "Glare"
@@ -1359,11 +1881,22 @@
     "id": "GEM_EATER",
     "name": "Gem Eater",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "FOCUS_BEAM",
+        "name": "Focus Beam"
+      },
+      {
+        "id": "GEM_LASER",
+        "name": "Gem Laser"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "FOCUS_BEAM",
         "name": "Focus Beam"
@@ -1381,6 +1914,7 @@
     "id": "GLOBE_HEAD",
     "name": "Globe Head",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 148,
     "max_hp": null,
     "min_hp_ascension": 158,
@@ -1397,6 +1931,16 @@
       {
         "id": "GALVANIC_BURST",
         "name": "Galvanic Burst"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "THUNDER_STRIKE",
+        "name": "Channel Lightning"
+      },
+      {
+        "id": "SHOCKING_SLAP",
+        "name": "Shocking Slap"
       }
     ],
     "damage_values": {
@@ -1420,11 +1964,26 @@
     "id": "GREMLIN_MERC",
     "name": "Gremlin Merc",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 47,
     "max_hp": 49,
     "min_hp_ascension": 51,
     "max_hp_ascension": 53,
     "moves": [
+      {
+        "id": "GIMME",
+        "name": "Gimme"
+      },
+      {
+        "id": "DOUBLE_SMASH",
+        "name": "Double Smash"
+      },
+      {
+        "id": "HEHE",
+        "name": "Hehe"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "GIMME",
         "name": "Gimme"
@@ -1459,11 +2018,18 @@
     "id": "GUARDBOT",
     "name": "Guardbot",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 16,
     "max_hp": 20,
     "min_hp_ascension": 17,
     "max_hp_ascension": 21,
     "moves": [
+      {
+        "id": "GUARD",
+        "name": "Guard"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "GUARD",
         "name": "Guard"
@@ -1477,11 +2043,13 @@
     "id": "HATCHLING",
     "name": "Hatchling",
     "type": "Normal",
+    "show_in_compendium": false,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [],
+    "bestiary_moves": [],
     "damage_values": null,
     "block_values": null,
     "image_url": null
@@ -1490,6 +2058,7 @@
     "id": "HAUNTED_SHIP",
     "name": "Haunted Ship",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 63,
     "max_hp": null,
     "min_hp_ascension": 67,
@@ -1499,6 +2068,20 @@
         "id": "RAMMING_SPEED",
         "name": "Ramming Speed"
       },
+      {
+        "id": "SWIPE",
+        "name": "Swipe"
+      },
+      {
+        "id": "STOMP",
+        "name": "Stomp"
+      },
+      {
+        "id": "HAUNT",
+        "name": "Haunt"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SWIPE",
         "name": "Swipe"
@@ -1533,11 +2116,26 @@
     "id": "HUNTER_KILLER",
     "name": "Hunter Killer",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 121,
     "max_hp": null,
     "min_hp_ascension": 126,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "TENDERIZING_GOOP",
+        "name": "Tenderizing Goop"
+      },
+      {
+        "id": "BITE",
+        "name": "Bite"
+      },
+      {
+        "id": "PUNCTURE",
+        "name": "Puncture"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TENDERIZING_GOOP",
         "name": "Tenderizing Goop"
@@ -1568,11 +2166,30 @@
     "id": "INFESTED_PRISM",
     "name": "Infested Prism",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 200,
     "max_hp": null,
     "min_hp_ascension": 215,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "JAB",
+        "name": "Jab"
+      },
+      {
+        "id": "RADIATE",
+        "name": "Radiate"
+      },
+      {
+        "id": "WHIRLWIND",
+        "name": "Whirlwind"
+      },
+      {
+        "id": "PULSATE",
+        "name": "Pulsate"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "JAB",
         "name": "Jab"
@@ -1611,6 +2228,7 @@
     "id": "INKLET",
     "name": "Inklet",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 11,
     "max_hp": 17,
     "min_hp_ascension": 12,
@@ -1627,6 +2245,16 @@
       {
         "id": "PIERCING_GAZE",
         "name": "Piercing Gaze"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "JAB",
+        "name": "Jab"
+      },
+      {
+        "id": "WHIRLWIND",
+        "name": "Whirlwind"
       }
     ],
     "damage_values": {
@@ -1650,11 +2278,26 @@
     "id": "KIN_FOLLOWER",
     "name": "Kin Follower",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 58,
     "max_hp": 59,
     "min_hp_ascension": 62,
     "max_hp_ascension": 63,
     "moves": [
+      {
+        "id": "QUICK_SLASH",
+        "name": "Quick Slash"
+      },
+      {
+        "id": "BOOMERANG",
+        "name": "Boomerang"
+      },
+      {
+        "id": "POWER_DANCE",
+        "name": "Power Dance"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "QUICK_SLASH",
         "name": "Quick Slash"
@@ -1685,11 +2328,30 @@
     "id": "KIN_PRIEST",
     "name": "Kin Priest",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 190,
     "max_hp": null,
     "min_hp_ascension": 199,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "ORB_OF_FRAILTY",
+        "name": "Orb of Frailty"
+      },
+      {
+        "id": "ORB_OF_WEAKNESS",
+        "name": "Orb of Weakness"
+      },
+      {
+        "id": "BEAM",
+        "name": "Soul Beam"
+      },
+      {
+        "id": "RITUAL",
+        "name": "Dark Ritual"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "ORB_OF_FRAILTY",
         "name": "Orb of Frailty"
@@ -1728,11 +2390,30 @@
     "id": "KNOWLEDGE_DEMON",
     "name": "Knowledge Demon",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 379,
     "max_hp": null,
     "min_hp_ascension": 399,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "CURSE_OF_KNOWLEDGE",
+        "name": "Curse of Knowledge"
+      },
+      {
+        "id": "SLAP",
+        "name": "Slap"
+      },
+      {
+        "id": "KNOWLEDGE_OVERWHELMING",
+        "name": "Knowledge Overwhelming"
+      },
+      {
+        "id": "PONDER",
+        "name": "Ponder"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CURSE_OF_KNOWLEDGE",
         "name": "Curse of Knowledge"
@@ -1771,6 +2452,7 @@
     "id": "LAGAVULIN_MATRIARCH",
     "name": "Lagavulin Matriarch",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 222,
     "max_hp": null,
     "min_hp_ascension": 233,
@@ -1779,6 +2461,32 @@
       {
         "id": "SLEEP",
         "name": "Sleep"
+      },
+      {
+        "id": "SLASH",
+        "name": "Slash"
+      },
+      {
+        "id": "SLASH2",
+        "name": "Slash2"
+      },
+      {
+        "id": "DISEMBOWEL",
+        "name": "Disembowel"
+      },
+      {
+        "id": "SOUL_SIPHON",
+        "name": "Soul Siphon"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "SLEEP",
+        "name": "Sleep"
+      },
+      {
+        "id": "WAKE_UP",
+        "name": "Wake Up"
       },
       {
         "id": "SLASH",
@@ -1818,11 +2526,22 @@
     "id": "LEAF_SLIME_M",
     "name": "Leaf Slime (M)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 32,
     "max_hp": 35,
     "min_hp_ascension": 33,
     "max_hp_ascension": 36,
     "moves": [
+      {
+        "id": "CLUMP_SHOT",
+        "name": "Clump Shot"
+      },
+      {
+        "id": "STICKY_SHOT",
+        "name": "Sticky Shot"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CLUMP_SHOT",
         "name": "Clump Shot"
@@ -1845,11 +2564,22 @@
     "id": "LEAF_SLIME_S",
     "name": "Leaf Slime (S)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 11,
     "max_hp": 15,
     "min_hp_ascension": 12,
     "max_hp_ascension": 16,
     "moves": [
+      {
+        "id": "TACKLE",
+        "name": "Tackle"
+      },
+      {
+        "id": "GOOP",
+        "name": "Goop"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TACKLE",
         "name": "Tackle"
@@ -1872,11 +2602,26 @@
     "id": "LIVING_FOG",
     "name": "Living Fog",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 80,
     "max_hp": null,
     "min_hp_ascension": 82,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "ADVANCED_GAS",
+        "name": "Advanced Gas"
+      },
+      {
+        "id": "BLOAT",
+        "name": "Bloat"
+      },
+      {
+        "id": "SUPER_GAS_BLAST",
+        "name": "Super Gas Blast"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "ADVANCED_GAS",
         "name": "Advanced Gas"
@@ -1911,11 +2656,22 @@
     "id": "LIVING_SHIELD",
     "name": "Living Shield",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 55,
     "max_hp": null,
     "min_hp_ascension": 65,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "SHIELD_SLAM",
+        "name": "Shield Slam"
+      },
+      {
+        "id": "SMASH",
+        "name": "Smash"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SHIELD_SLAM",
         "name": "Shield Slam"
@@ -1942,11 +2698,26 @@
     "id": "LOUSE_PROGENITOR",
     "name": "Louse Progenitor",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 134,
     "max_hp": 136,
     "min_hp_ascension": 138,
     "max_hp_ascension": 141,
     "moves": [
+      {
+        "id": "WEB_CANNON",
+        "name": "Web Cannon"
+      },
+      {
+        "id": "POUNCE",
+        "name": "Pounce"
+      },
+      {
+        "id": "CURL_AND_GROW",
+        "name": "Curl and Grow"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "WEB_CANNON",
         "name": "Web Cannon"
@@ -1977,6 +2748,7 @@
     "id": "MAGI_KNIGHT",
     "name": "Magi Knight",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 82,
     "max_hp": null,
     "min_hp_ascension": 89,
@@ -1993,6 +2765,24 @@
       {
         "id": "PREP",
         "name": "Prep"
+      },
+      {
+        "id": "MAGIC_BOMB",
+        "name": "Magic Bomb"
+      },
+      {
+        "id": "RAM",
+        "name": "Ram"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "POWER_SHIELD",
+        "name": "Power Shield"
+      },
+      {
+        "id": "DAMPEN",
+        "name": "Dampen"
       },
       {
         "id": "MAGIC_BOMB",
@@ -2024,11 +2814,26 @@
     "id": "MAWLER",
     "name": "Mawler",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 72,
     "max_hp": null,
     "min_hp_ascension": 76,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "RIP_AND_TEAR",
+        "name": "Rip and Tear"
+      },
+      {
+        "id": "ROAR",
+        "name": "Roar"
+      },
+      {
+        "id": "CLAW",
+        "name": "Claw"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "RIP_AND_TEAR",
         "name": "Rip and Tear"
@@ -2059,11 +2864,30 @@
     "id": "MECHA_KNIGHT",
     "name": "Mecha Knight",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 300,
     "max_hp": null,
     "min_hp_ascension": 320,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "CHARGE",
+        "name": "Charge"
+      },
+      {
+        "id": "FLAMETHROWER",
+        "name": "Flamethrower"
+      },
+      {
+        "id": "WINDUP",
+        "name": "Windup"
+      },
+      {
+        "id": "HEAVY_CLEAVE",
+        "name": "Heavy Cleave"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CHARGE",
         "name": "Charge"
@@ -2100,11 +2924,26 @@
     "id": "MYSTERIOUS_KNIGHT",
     "name": "Mysterious Knight",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "BREAKER",
+        "name": "Breaker"
+      },
+      {
+        "id": "FLAIL",
+        "name": "Flail"
+      },
+      {
+        "id": "RAM",
+        "name": "Ram"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BREAKER",
         "name": "Breaker"
@@ -2126,11 +2965,26 @@
     "id": "MYTE",
     "name": "Myte",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 61,
     "max_hp": 67,
     "min_hp_ascension": 64,
     "max_hp_ascension": 69,
     "moves": [
+      {
+        "id": "TOXIC",
+        "name": "Toxic Cornucopia"
+      },
+      {
+        "id": "BITE",
+        "name": "Bite"
+      },
+      {
+        "id": "SUCK",
+        "name": "Suck"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TOXIC",
         "name": "Toxic Cornucopia"
@@ -2161,6 +3015,7 @@
     "id": "NIBBIT",
     "name": "Nibbit",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 42,
     "max_hp": 46,
     "min_hp_ascension": 44,
@@ -2173,6 +3028,16 @@
       {
         "id": "SLICE",
         "name": "Slice"
+      },
+      {
+        "id": "HISS",
+        "name": "Hiss"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "BUTT",
+        "name": "Butt"
       },
       {
         "id": "HISS",
@@ -2196,11 +3061,18 @@
     "id": "NOISEBOT",
     "name": "Noisebot",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 18,
     "max_hp": 23,
     "min_hp_ascension": 19,
     "max_hp_ascension": 24,
     "moves": [
+      {
+        "id": "NOISE",
+        "name": "Noise"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOISE",
         "name": "Noise"
@@ -2214,11 +3086,18 @@
     "id": "OSTY",
     "name": "Osty",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 1,
     "max_hp": 1,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "Nothing"
@@ -2232,6 +3111,7 @@
     "id": "OVICOPTER",
     "name": "Ovicopter",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 124,
     "max_hp": 130,
     "min_hp_ascension": 126,
@@ -2248,6 +3128,20 @@
       {
         "id": "TENDERIZER",
         "name": "Tenderizer"
+      },
+      {
+        "id": "NUTRITIONAL_PASTE",
+        "name": "Nutritional Paste"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "LAY_EGGS",
+        "name": "Lay Eggs"
+      },
+      {
+        "id": "SMASH",
+        "name": "Smash"
       },
       {
         "id": "NUTRITIONAL_PASTE",
@@ -2271,11 +3165,30 @@
     "id": "OWL_MAGISTRATE",
     "name": "Owl Magistrate",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 231,
     "max_hp": null,
     "min_hp_ascension": 247,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "MAGISTRATE_SCRUTINY",
+        "name": "Magistrate Scrutiny"
+      },
+      {
+        "id": "PECK_ASSAULT",
+        "name": "Peck Assault"
+      },
+      {
+        "id": "JUDICIAL_FLIGHT",
+        "name": "Judicial Flight"
+      },
+      {
+        "id": "VERDICT",
+        "name": "Verdict"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "MAGISTRATE_SCRUTINY",
         "name": "Magistrate Scrutiny"
@@ -2314,11 +3227,18 @@
     "id": "PAELS_LEGION",
     "name": "Pael's Legion",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 9999,
     "max_hp": 9999,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "NOTHING",
+        "name": "Nothing"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "NOTHING",
         "name": "Nothing"
@@ -2332,11 +3252,18 @@
     "id": "PARAFRIGHT",
     "name": "Parafright",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 21,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "SLAM",
+        "name": "Slam"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SLAM",
         "name": "Slam"
@@ -2355,11 +3282,30 @@
     "id": "PHANTASMAL_GARDENER",
     "name": "Phantasmal Gardener",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 26,
     "max_hp": 31,
     "min_hp_ascension": 27,
     "max_hp_ascension": 32,
     "moves": [
+      {
+        "id": "BITE",
+        "name": "Bite"
+      },
+      {
+        "id": "LASH",
+        "name": "Lash"
+      },
+      {
+        "id": "FLAIL",
+        "name": "Flail"
+      },
+      {
+        "id": "ENLARGE",
+        "name": "Enlarge"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BITE",
         "name": "Bite"
@@ -2398,11 +3344,22 @@
     "id": "PHROG_PARASITE",
     "name": "Phrog Parasite",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 61,
     "max_hp": 64,
     "min_hp_ascension": 66,
     "max_hp_ascension": 68,
     "moves": [
+      {
+        "id": "INFECT",
+        "name": "Infect"
+      },
+      {
+        "id": "LASH",
+        "name": "Lash"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "INFECT",
         "name": "Infect"
@@ -2425,11 +3382,26 @@
     "id": "PUNCH_CONSTRUCT",
     "name": "Punch Construct",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 55,
     "max_hp": null,
     "min_hp_ascension": 60,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "READY",
+        "name": "READY"
+      },
+      {
+        "id": "STRONG_PUNCH",
+        "name": "Strong Punch"
+      },
+      {
+        "id": "FAST_PUNCH",
+        "name": "Fast Punch"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "READY",
         "name": "READY"
@@ -2460,6 +3432,7 @@
     "id": "QUEEN",
     "name": "Queen",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 400,
     "max_hp": null,
     "min_hp_ascension": 419,
@@ -2490,6 +3463,16 @@
         "name": "Enrage"
       }
     ],
+    "bestiary_moves": [
+      {
+        "id": "YOU_ARE_MINE",
+        "name": "You Are Mine"
+      },
+      {
+        "id": "OFF_WITH_YOUR_HEAD",
+        "name": "Off with Your Head"
+      }
+    ],
     "damage_values": {
       "OffWithYourHead": {
         "normal": 3,
@@ -2507,11 +3490,34 @@
     "id": "ROCKET",
     "name": "Rocket",
     "type": "Boss",
+    "show_in_compendium": false,
     "min_hp": 199,
     "max_hp": null,
     "min_hp_ascension": 209,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "TARGETING_RETICLE",
+        "name": "Targeting Reticle"
+      },
+      {
+        "id": "PRECISION_BEAM",
+        "name": "Precision Beam"
+      },
+      {
+        "id": "CHARGE_UP",
+        "name": "Charge Up"
+      },
+      {
+        "id": "LASER",
+        "name": "Laser"
+      },
+      {
+        "id": "RECHARGE",
+        "name": "Recharge"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TARGETING_RETICLE",
         "name": "Targeting Reticle"
@@ -2554,11 +3560,26 @@
     "id": "SCROLL_OF_BITING",
     "name": "Scroll of Biting",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 30,
     "max_hp": 37,
     "min_hp_ascension": 33,
     "max_hp_ascension": 39,
     "moves": [
+      {
+        "id": "CHOMP",
+        "name": "Chomp"
+      },
+      {
+        "id": "CHEW",
+        "name": "Chew"
+      },
+      {
+        "id": "MORE_TEETH",
+        "name": "More Teeth"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CHOMP",
         "name": "Chomp"
@@ -2589,11 +3610,26 @@
     "id": "SEAPUNK",
     "name": "Seapunk",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 44,
     "max_hp": 46,
     "min_hp_ascension": 47,
     "max_hp_ascension": 49,
     "moves": [
+      {
+        "id": "SEA_KICK",
+        "name": "Sea Kick"
+      },
+      {
+        "id": "SPINNING_KICK",
+        "name": "Spinning Kick"
+      },
+      {
+        "id": "BUBBLE_BURP",
+        "name": "Bubble Burp"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SEA_KICK",
         "name": "Sea Kick"
@@ -2624,11 +3660,22 @@
     "id": "SEWER_CLAM",
     "name": "Sewer Clam",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 56,
     "max_hp": null,
     "min_hp_ascension": 58,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "PRESSURIZE",
+        "name": "Pressurize"
+      },
+      {
+        "id": "JET",
+        "name": "Jet"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "PRESSURIZE",
         "name": "Pressurize"
@@ -2651,6 +3698,7 @@
     "id": "SHRINKER_BEETLE",
     "name": "Shrinker Beetle",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 38,
     "max_hp": 40,
     "min_hp_ascension": 40,
@@ -2667,6 +3715,16 @@
       {
         "id": "STOMP",
         "name": "Stomp"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "SHRINKER",
+        "name": "Shrinker"
+      },
+      {
+        "id": "CHOMP",
+        "name": "Chomp"
       }
     ],
     "damage_values": {
@@ -2686,11 +3744,30 @@
     "id": "SKULKING_COLONY",
     "name": "Skulking Colony",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 70,
     "max_hp": null,
     "min_hp_ascension": 75,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "SMASH",
+        "name": "Smash"
+      },
+      {
+        "id": "ZOOM",
+        "name": "Zoom"
+      },
+      {
+        "id": "INERTIA",
+        "name": "Inertia"
+      },
+      {
+        "id": "PIERCING_STABS",
+        "name": "Piercing Stabs"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SMASH",
         "name": "Smash"
@@ -2733,6 +3810,7 @@
     "id": "SLIMED_BERSERKER",
     "name": "Slimed Berserker",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 261,
     "max_hp": null,
     "min_hp_ascension": 281,
@@ -2749,6 +3827,20 @@
       {
         "id": "SMOTHER",
         "name": "Smother"
+      },
+      {
+        "id": "FURIOUS_PUMMELING",
+        "name": "Furious Pummeling"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "VOMIT_ICHOR",
+        "name": "Vomit Ichor"
+      },
+      {
+        "id": "LEECHING_HUG",
+        "name": "Leeching Hug"
       },
       {
         "id": "FURIOUS_PUMMELING",
@@ -2772,11 +3864,26 @@
     "id": "SLITHERING_STRANGLER",
     "name": "Slithering Strangler",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 53,
     "max_hp": 55,
     "min_hp_ascension": 54,
     "max_hp_ascension": 56,
     "moves": [
+      {
+        "id": "CONSTRICT",
+        "name": "Constrict"
+      },
+      {
+        "id": "THWACK",
+        "name": "Thwack"
+      },
+      {
+        "id": "LASH",
+        "name": "Lash"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CONSTRICT",
         "name": "Constrict"
@@ -2807,6 +3914,7 @@
     "id": "SLUDGE_SPINNER",
     "name": "Sludge Spinner",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 37,
     "max_hp": 39,
     "min_hp_ascension": 41,
@@ -2823,6 +3931,16 @@
       {
         "id": "RAGE",
         "name": "Rage"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "OIL_SPRAY",
+        "name": "Oil Spray"
+      },
+      {
+        "id": "SLAM",
+        "name": "Slam"
       }
     ],
     "damage_values": {
@@ -2846,11 +3964,22 @@
     "id": "SLUMBERING_BEETLE",
     "name": "Slumbering Beetle",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 86,
     "max_hp": null,
     "min_hp_ascension": 89,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "SNORE",
+        "name": "Snore"
+      },
+      {
+        "id": "ROLL_OUT",
+        "name": "Roll Out"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SNORE",
         "name": "Snore"
@@ -2873,11 +4002,18 @@
     "id": "SNAPPING_JAXFRUIT",
     "name": "Snapping Jaxfruit",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 31,
     "max_hp": 33,
     "min_hp_ascension": 34,
     "max_hp_ascension": 36,
     "moves": [
+      {
+        "id": "ENERGY_ORB",
+        "name": "Energy Orb"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "ENERGY_ORB",
         "name": "Energy Orb"
@@ -2896,11 +4032,22 @@
     "id": "SNEAKY_GREMLIN",
     "name": "Sneaky Gremlin",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 10,
     "max_hp": 14,
     "min_hp_ascension": 11,
     "max_hp_ascension": 15,
     "moves": [
+      {
+        "id": "SPAWNED",
+        "name": "Wake Up"
+      },
+      {
+        "id": "TACKLE",
+        "name": "Tackle"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SPAWNED",
         "name": "Wake Up"
@@ -2923,11 +4070,34 @@
     "id": "SOUL_FYSH",
     "name": "Soul Fysh",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 211,
     "max_hp": null,
     "min_hp_ascension": 221,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "BECKON",
+        "name": "Beckon"
+      },
+      {
+        "id": "DE_GAS",
+        "name": "De-Gas"
+      },
+      {
+        "id": "GAZE",
+        "name": "Gaze"
+      },
+      {
+        "id": "FADE",
+        "name": "Fade"
+      },
+      {
+        "id": "SCREAM",
+        "name": "Scream"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BECKON",
         "name": "Beckon"
@@ -2970,6 +4140,7 @@
     "id": "SOUL_NEXUS",
     "name": "Soul Nexus",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 234,
     "max_hp": null,
     "min_hp_ascension": 254,
@@ -2982,6 +4153,16 @@
       {
         "id": "MAELSTROM",
         "name": "Maelstrom"
+      },
+      {
+        "id": "DRAIN_LIFE",
+        "name": "Drain Life"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "SOUL_BURN",
+        "name": "Soul Burn"
       },
       {
         "id": "DRAIN_LIFE",
@@ -3009,11 +4190,26 @@
     "id": "SPECTRAL_KNIGHT",
     "name": "Spectral Knight",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 93,
     "max_hp": null,
     "min_hp_ascension": 97,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "HEX",
+        "name": "Hex"
+      },
+      {
+        "id": "SOUL_SLASH",
+        "name": "Soul Slash"
+      },
+      {
+        "id": "SOUL_FLAME",
+        "name": "Soul Flame"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "HEX",
         "name": "Hex"
@@ -3044,11 +4240,26 @@
     "id": "SPINY_TOAD",
     "name": "Spiny Toad",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 116,
     "max_hp": 119,
     "min_hp_ascension": 121,
     "max_hp_ascension": 124,
     "moves": [
+      {
+        "id": "PROTRUDING_SPIKES",
+        "name": "Protruding Spikes"
+      },
+      {
+        "id": "SPIKE_EXPLOSION",
+        "name": "Spike Explosion"
+      },
+      {
+        "id": "TONGUE_LASH",
+        "name": "Tongue Lash"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "PROTRUDING_SPIKES",
         "name": "Protruding Spikes"
@@ -3079,11 +4290,18 @@
     "id": "STABBOT",
     "name": "Stabbot",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 18,
     "max_hp": 23,
     "min_hp_ascension": 19,
     "max_hp_ascension": 24,
     "moves": [
+      {
+        "id": "STAB",
+        "name": "Stab"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "STAB",
         "name": "Stab"
@@ -3102,6 +4320,7 @@
     "id": "TERROR_EEL",
     "name": "Terror Eel",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 140,
     "max_hp": null,
     "min_hp_ascension": 150,
@@ -3118,6 +4337,20 @@
       {
         "id": "STUN",
         "name": "Stun"
+      },
+      {
+        "id": "TERROR",
+        "name": "Terrorize"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "CRASH",
+        "name": "Crash"
+      },
+      {
+        "id": "THRASH",
+        "name": "Thrash"
       },
       {
         "id": "TERROR",
@@ -3141,6 +4374,7 @@
     "id": "TEST_SUBJECT",
     "name": "Test Subject #C{Count}",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
@@ -3165,6 +4399,24 @@
       {
         "id": "PHASE3_LACERATE",
         "name": "Lacerate"
+      },
+      {
+        "id": "BIG_POUNCE",
+        "name": "Big Pounce"
+      },
+      {
+        "id": "BURNING_GROWL",
+        "name": "Burning Growl"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "RESPAWN",
+        "name": "Respawn"
+      },
+      {
+        "id": "MULTI_CLAW",
+        "name": "Multi-Claw"
       },
       {
         "id": "BIG_POUNCE",
@@ -3204,11 +4456,26 @@
     "id": "THE_ADVERSARY_MK_ONE",
     "name": "The Adversary Mk 1",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 100,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "SMASH",
+        "name": "Smash"
+      },
+      {
+        "id": "BEAM",
+        "name": "Beam"
+      },
+      {
+        "id": "BARRAGE",
+        "name": "Barrage"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SMASH",
         "name": "Smash"
@@ -3243,11 +4510,26 @@
     "id": "THE_ADVERSARY_MK_THREE",
     "name": "The Adversary Mk 3",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 300,
     "max_hp": null,
     "min_hp_ascension": 300,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "CRASH",
+        "name": "Crash"
+      },
+      {
+        "id": "FLAME_BEAM",
+        "name": "Flame Beam"
+      },
+      {
+        "id": "BARRAGE",
+        "name": "Barrage"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CRASH",
         "name": "Crash"
@@ -3282,11 +4564,26 @@
     "id": "THE_ADVERSARY_MK_TWO",
     "name": "The Adversary Mk 2",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 200,
     "max_hp": null,
     "min_hp_ascension": 200,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "BASH",
+        "name": "Bash"
+      },
+      {
+        "id": "FLAME_BEAM",
+        "name": "Flame Beam"
+      },
+      {
+        "id": "BARRAGE",
+        "name": "Barrage"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "BASH",
         "name": "Bash"
@@ -3321,11 +4618,26 @@
     "id": "THE_ARM",
     "name": "The Arm",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "GRAB",
+        "name": "Grab"
+      },
+      {
+        "id": "PUNCH",
+        "name": "Punch"
+      },
+      {
+        "id": "WRESTLE",
+        "name": "Wrestle"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "GRAB",
         "name": "Grab"
@@ -3347,11 +4659,26 @@
     "id": "THE_BELL",
     "name": "The Bell",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "CACOPHONY",
+        "name": "Cacophony"
+      },
+      {
+        "id": "CLANG",
+        "name": "Clang"
+      },
+      {
+        "id": "RING",
+        "name": "Ring"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "CACOPHONY",
         "name": "Cacophony"
@@ -3373,11 +4700,30 @@
     "id": "THE_DREAMER",
     "name": "The Dreamer",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": null,
     "max_hp": null,
     "min_hp_ascension": null,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "DREAM",
+        "name": "Dream"
+      },
+      {
+        "id": "FEND_OFF",
+        "name": "Fend Off"
+      },
+      {
+        "id": "RUMINATE",
+        "name": "Ruminate"
+      },
+      {
+        "id": "SNORE",
+        "name": "Snore"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "DREAM",
         "name": "Dream"
@@ -3403,11 +4749,22 @@
     "id": "THE_FORGOTTEN",
     "name": "The Forgotten",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 106,
     "max_hp": null,
     "min_hp_ascension": 111,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "MIASMA",
+        "name": "Miasma"
+      },
+      {
+        "id": "DREAD",
+        "name": "Dread"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "MIASMA",
         "name": "Miasma"
@@ -3430,11 +4787,34 @@
     "id": "THE_INSATIABLE",
     "name": "The Insatiable",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 321,
     "max_hp": null,
     "min_hp_ascension": 341,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "LIQUIFY_GROUND",
+        "name": "Liquify Ground"
+      },
+      {
+        "id": "THRASH",
+        "name": "Thrash"
+      },
+      {
+        "id": "THRASH_MOVE_2",
+        "name": "Thrash Move 2"
+      },
+      {
+        "id": "LUNGING_BITE",
+        "name": "Lunging Bite"
+      },
+      {
+        "id": "SALIVATE",
+        "name": "Salivate"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "LIQUIFY_GROUND",
         "name": "Liquify Ground"
@@ -3473,11 +4853,22 @@
     "id": "THE_LOST",
     "name": "The Lost",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 93,
     "max_hp": null,
     "min_hp_ascension": 99,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "DEBILITATING_SMOG",
+        "name": "Debilitating Smog"
+      },
+      {
+        "id": "EYE_LASERS",
+        "name": "Eye Lasers"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "DEBILITATING_SMOG",
         "name": "Debilitating Smog"
@@ -3500,6 +4891,7 @@
     "id": "THE_OBSCURA",
     "name": "The Obscura",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 123,
     "max_hp": null,
     "min_hp_ascension": 129,
@@ -3512,6 +4904,20 @@
       {
         "id": "PIERCING_GAZE",
         "name": "Piercing Gaze"
+      },
+      {
+        "id": "SAIL",
+        "name": "Sail"
+      },
+      {
+        "id": "HARDENING_STRIKE",
+        "name": "Hardening Strike"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "ILLUSION",
+        "name": "Illusion"
       },
       {
         "id": "SAIL",
@@ -3539,11 +4945,34 @@
     "id": "THIEVING_HOPPER",
     "name": "Thieving Hopper",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 79,
     "max_hp": null,
     "min_hp_ascension": 84,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "THIEVERY",
+        "name": "Thievery"
+      },
+      {
+        "id": "NAB",
+        "name": "Nab"
+      },
+      {
+        "id": "HAT_TRICK",
+        "name": "Hat Trick"
+      },
+      {
+        "id": "FLUTTER",
+        "name": "Flutter"
+      },
+      {
+        "id": "ESCAPE",
+        "name": "Escape"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "THIEVERY",
         "name": "Thievery"
@@ -3586,11 +5015,26 @@
     "id": "TOADPOLE",
     "name": "Toadpole",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 21,
     "max_hp": 25,
     "min_hp_ascension": 22,
     "max_hp_ascension": 26,
     "moves": [
+      {
+        "id": "SPIKE_SPIT",
+        "name": "Spike Spit"
+      },
+      {
+        "id": "WHIRL",
+        "name": "Whirl"
+      },
+      {
+        "id": "SPIKEN",
+        "name": "Spiken"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SPIKE_SPIT",
         "name": "Spike Spit"
@@ -3621,11 +5065,34 @@
     "id": "TORCH_HEAD_AMALGAM",
     "name": "Torch Head Amalgam",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 199,
     "max_hp": null,
     "min_hp_ascension": 211,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "TACKLE",
+        "name": "Tackle"
+      },
+      {
+        "id": "TACKLE_2",
+        "name": "Tackle 2"
+      },
+      {
+        "id": "BEAM",
+        "name": "Beam"
+      },
+      {
+        "id": "TACKLE_3",
+        "name": "Tackle 3"
+      },
+      {
+        "id": "TACKLE_4",
+        "name": "Tackle 4"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TACKLE",
         "name": "Tackle"
@@ -3668,11 +5135,22 @@
     "id": "TOUGH_EGG",
     "name": "Tough Egg",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 14,
     "max_hp": 18,
     "min_hp_ascension": 15,
     "max_hp_ascension": 19,
     "moves": [
+      {
+        "id": "HATCH",
+        "name": "HATCH"
+      },
+      {
+        "id": "NIBBLE",
+        "name": "Nibble"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "HATCH",
         "name": "HATCH"
@@ -3695,6 +5173,7 @@
     "id": "TRACKER_RUBY_RAIDER",
     "name": "Tracker Raider",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 21,
     "max_hp": 25,
     "min_hp_ascension": 22,
@@ -3704,6 +5183,12 @@
         "id": "TRACK",
         "name": "Track"
       },
+      {
+        "id": "HOUNDS",
+        "name": "Unleash the Hounds"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "HOUNDS",
         "name": "Unleash the Hounds"
@@ -3722,6 +5207,7 @@
     "id": "TUNNELER",
     "name": "Tunneler",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 87,
     "max_hp": null,
     "min_hp_ascension": 92,
@@ -3744,6 +5230,20 @@
         "name": "Dizzy"
       }
     ],
+    "bestiary_moves": [
+      {
+        "id": "BITE",
+        "name": "Bite"
+      },
+      {
+        "id": "BURROW",
+        "name": "Burrow"
+      },
+      {
+        "id": "BELOW",
+        "name": "Attack from Below"
+      }
+    ],
     "damage_values": {
       "Bite": {
         "normal": 13,
@@ -3761,11 +5261,26 @@
     "id": "TURRET_OPERATOR",
     "name": "Turret Operator",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 41,
     "max_hp": null,
     "min_hp_ascension": 51,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "UNLOAD",
+        "name": "Unload!"
+      },
+      {
+        "id": "UNLOAD_MOVE_2",
+        "name": "Unload Move 2"
+      },
+      {
+        "id": "RELOAD",
+        "name": "Reload"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "UNLOAD",
         "name": "Unload!"
@@ -3792,11 +5307,22 @@
     "id": "TWIG_SLIME_M",
     "name": "Twig Slime (M)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 26,
     "max_hp": 28,
     "min_hp_ascension": 27,
     "max_hp_ascension": 29,
     "moves": [
+      {
+        "id": "POKEY_POUNCE",
+        "name": "Pokey Pounce"
+      },
+      {
+        "id": "STICKY_SHOT",
+        "name": "Sticky Shot"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "POKEY_POUNCE",
         "name": "Pokey Pounce"
@@ -3819,11 +5345,18 @@
     "id": "TWIG_SLIME_S",
     "name": "Twig Slime (S)",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 7,
     "max_hp": 11,
     "min_hp_ascension": 8,
     "max_hp_ascension": 12,
     "moves": [
+      {
+        "id": "TACKLE",
+        "name": "Tackle"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "TACKLE",
         "name": "Tackle"
@@ -3842,11 +5375,30 @@
     "id": "TWO_TAILED_RAT",
     "name": "Two-Tailed Rat",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 17,
     "max_hp": 21,
     "min_hp_ascension": 18,
     "max_hp_ascension": 22,
     "moves": [
+      {
+        "id": "SCRATCH",
+        "name": "Scratch"
+      },
+      {
+        "id": "DISEASE_BITE",
+        "name": "Disease Bite"
+      },
+      {
+        "id": "SCREECH",
+        "name": "Screech"
+      },
+      {
+        "id": "CALL_FOR_BACKUP",
+        "name": "Call for Backup"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "SCRATCH",
         "name": "Scratch"
@@ -3881,11 +5433,30 @@
     "id": "VANTOM",
     "name": "Vantom",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 173,
     "max_hp": null,
     "min_hp_ascension": 183,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "INK_BLOT",
+        "name": "Ink Blot"
+      },
+      {
+        "id": "INKY_LANCE",
+        "name": "Inky Lance"
+      },
+      {
+        "id": "DISMEMBER",
+        "name": "Dismember"
+      },
+      {
+        "id": "PREPARE",
+        "name": "Prepare"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "INK_BLOT",
         "name": "Ink Blot"
@@ -3924,11 +5495,26 @@
     "id": "VINE_SHAMBLER",
     "name": "Vine Shambler",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 61,
     "max_hp": null,
     "min_hp_ascension": 64,
     "max_hp_ascension": null,
     "moves": [
+      {
+        "id": "GRASPING_VINES",
+        "name": "Grasping Vines"
+      },
+      {
+        "id": "SWIPE",
+        "name": "Swipe"
+      },
+      {
+        "id": "CHOMP",
+        "name": "Chomp"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "GRASPING_VINES",
         "name": "Grasping Vines"
@@ -3963,6 +5549,7 @@
     "id": "WATERFALL_GIANT",
     "name": "Waterfall Giant",
     "type": "Boss",
+    "show_in_compendium": true,
     "min_hp": 240,
     "max_hp": null,
     "min_hp_ascension": 250,
@@ -3983,6 +5570,36 @@
       {
         "id": "SIPHON",
         "name": "Siphon"
+      },
+      {
+        "id": "PRESSURE_GUN",
+        "name": "Pressure Gun"
+      },
+      {
+        "id": "PRESSURE_UP",
+        "name": "Pressure Up"
+      },
+      {
+        "id": "ABOUT_TO_BLOW",
+        "name": "About to Blow"
+      },
+      {
+        "id": "EXPLODE",
+        "name": "Explode"
+      }
+    ],
+    "bestiary_moves": [
+      {
+        "id": "PRESSURIZE",
+        "name": "Pressurize"
+      },
+      {
+        "id": "STOMP",
+        "name": "Stomp"
+      },
+      {
+        "id": "RAM",
+        "name": "Ram"
       },
       {
         "id": "PRESSURE_GUN",
@@ -4022,6 +5639,7 @@
     "id": "WRIGGLER",
     "name": "Wriggler",
     "type": "Elite",
+    "show_in_compendium": true,
     "min_hp": 17,
     "max_hp": 21,
     "min_hp_ascension": 18,
@@ -4040,6 +5658,12 @@
         "name": "Spawned"
       }
     ],
+    "bestiary_moves": [
+      {
+        "id": "WRIGGLE",
+        "name": "Wriggle"
+      }
+    ],
     "damage_values": {
       "Bite": {
         "normal": 6,
@@ -4053,11 +5677,18 @@
     "id": "ZAPBOT",
     "name": "Zapbot",
     "type": "Normal",
+    "show_in_compendium": true,
     "min_hp": 18,
     "max_hp": 23,
     "min_hp_ascension": 19,
     "max_hp_ascension": 24,
     "moves": [
+      {
+        "id": "ZAP",
+        "name": "Zap"
+      }
+    ],
+    "bestiary_moves": [
       {
         "id": "ZAP",
         "name": "Zap"
