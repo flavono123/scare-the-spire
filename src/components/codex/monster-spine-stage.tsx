@@ -11,6 +11,8 @@ interface MonsterSpineStageProps {
   monsterName: string;
   selectedMoveId: string | null;
   className?: string;
+  imagePriority?: boolean;
+  showLoadingLabel?: boolean;
 }
 
 type LoadState = "loading" | "ready" | "error";
@@ -22,6 +24,8 @@ export function MonsterSpineStage({
   monsterName,
   selectedMoveId,
   className,
+  imagePriority = true,
+  showLoadingLabel = true,
 }: MonsterSpineStageProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const vfxContainerRef = useRef<HTMLDivElement | null>(null);
@@ -191,7 +195,7 @@ export function MonsterSpineStage({
           width={640}
           height={640}
           className="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-2xl"
-          priority
+          priority={imagePriority}
         />
       )}
       <div
@@ -204,7 +208,7 @@ export function MonsterSpineStage({
         className="sts2-spine-stage pointer-events-none absolute inset-0 z-30"
         aria-hidden
       />
-      {asset && loadState === "loading" && (
+      {showLoadingLabel && asset && loadState === "loading" && (
         <div className="absolute bottom-4 right-4 z-40 rounded bg-black/30 px-2 py-1 text-[10px] text-gray-400">
           Spine loading
         </div>

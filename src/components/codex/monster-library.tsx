@@ -24,6 +24,7 @@ import {
 } from "@/lib/codex-search";
 import { SearchBar } from "./search-bar";
 import { FilterSection } from "./codex-filters";
+import { MonsterSpineStage } from "./monster-spine-stage";
 import {
   CodexLibraryShell,
   CodexLibraryTopBar,
@@ -248,27 +249,6 @@ export function MonsterLibrary({
     });
   }, []);
 
-  // Tooltip state
-  const [hoveredMonster, setHoveredMonster] = useState<CodexMonster | null>(null);
-  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
-
-  const handleMonsterHover = useCallback(
-    (monster: CodexMonster | null, e?: React.MouseEvent) => {
-      setHoveredMonster(monster);
-      if (monster && e) {
-        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-        const tooltipW = 320;
-        const tileCenterX = rect.left + rect.width / 2;
-        const isRightHalf = tileCenterX > window.innerWidth / 2;
-        const x = isRightHalf ? rect.left - tooltipW - 12 : rect.right + 12;
-        setTooltipPos({ x, y: rect.top });
-      } else {
-        setTooltipPos(null);
-      }
-    },
-    [],
-  );
-
   // Find encounters for a monster
   const getMonsterEncounters = useCallback(
     (monsterId: string) => encounters.filter((e) => e.monsters.some((m) => m.id === monsterId)),
@@ -372,8 +352,6 @@ export function MonsterLibrary({
                   <MonsterTile
                     key={monster.id}
                     monster={monster}
-                    gameUi={gameUi}
-                    onHover={handleMonsterHover}
                     onClick={() => setSelectedMonster(monster)}
                   />
                 ))}
@@ -386,18 +364,6 @@ export function MonsterLibrary({
           )}
         </div>
       </main>
-
-      {/* Hover Tooltip */}
-      {hoveredMonster && tooltipPos && (
-        <MonsterTooltip
-          monster={hoveredMonster}
-          encounters={getMonsterEncounters(hoveredMonster.id)}
-          x={tooltipPos.x}
-          y={tooltipPos.y}
-          messages={monsterText}
-          gameUi={gameUi}
-        />
-      )}
 
       {/* Detail Modal */}
       {selectedMonster && (
@@ -428,34 +394,54 @@ export function MonsterLibrary({
 // Monster tile - text-based since most monsters lack images
 function MonsterTile({
   monster,
-  gameUi,
-  onHover,
   onClick,
 }: {
   monster: CodexMonster;
-  gameUi: CodexGameUiLabels;
-  onHover: (m: CodexMonster | null, e?: React.MouseEvent) => void;
   onClick?: () => void;
 }) {
   const typeConfig = MONSTER_TYPE_CONFIG[monster.type];
+  const [hoverMoveId, setHoverMoveId] = useState<string | null | undefined>(undefined);
+  const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
+  const hovering = hoverMoveId !== undefined;
 
   return (
     <button
       className="group relative flex items-center gap-3 rounded-md px-2.5 py-2 text-left transition-colors hover:bg-white/[0.06]"
-      onMouseEnter={(e) => onHover(monster, e)}
-      onMouseLeave={() => onHover(null)}
+      onMouseEnter={() => setHoverMoveId(pickHoverMoveId(monster))}
+      onMouseLeave={() => setHoverMoveId(undefined)}
       onClick={onClick}
     >
       {/* Thumbnail: Spine render or boss token */}
-      {(monster.imageUrl || monster.bossImageUrl) ? (
-        <div className="flex h-12 w-14 shrink-0 items-center justify-center overflow-hidden">
-          <Image
-            src={monster.imageUrl ?? monster.bossImageUrl!}
-            alt={monster.name}
-            width={56}
-            height={48}
-            className="max-h-12 max-w-14 object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)]"
-          />
+      {(imageSrc || monster.spineAsset) ? (
+        <div className="relative flex h-12 w-14 shrink-0 items-center justify-center overflow-hidden">
+          {imageSrc && (
+            <Image
+              src={imageSrc}
+              alt={monster.name}
+              width={56}
+              height={48}
+              className={`max-h-12 max-w-14 object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)] transition-opacity ${
+                hovering && monster.spineAsset ? "opacity-0" : "opacity-100"
+              }`}
+            />
+          )}
+          {hovering && monster.spineAsset && (
+            <MonsterSpineStage
+              asset={monster.spineAsset}
+              fallbackImageUrl={imageSrc}
+              monsterName={monster.name}
+              selectedMoveId={hoverMoveId}
+              imagePriority={false}
+              showLoadingLabel={false}
+              className="absolute inset-0"
+            />
+          )}
+          {!imageSrc && !hovering && (
+            <div
+              className="h-8 w-1 rounded-full"
+              style={{ backgroundColor: typeConfig.color }}
+            />
+          )}
         </div>
       ) : (
         <div
@@ -466,113 +452,11 @@ function MonsterTile({
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <span className="text-sm font-medium text-gray-100 truncate">{monster.name}</span>
+          <span className="truncate text-sm font-medium" style={{ color: typeConfig.color }}>{monster.name}</span>
           <span className="text-[10px] text-gray-500 truncate">{monster.nameEn}</span>
-        </div>
-        <div className="mt-0.5 flex items-center gap-2">
-          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ backgroundColor: `${typeConfig.color}20`, color: typeConfig.color }}>
-            {gameUi.monsterTypes[monster.type].label}
-          </span>
         </div>
       </div>
     </button>
-  );
-}
-
-// Tooltip
-function MonsterTooltip({
-  monster,
-  encounters,
-  x,
-  y,
-  messages,
-  gameUi,
-}: {
-  monster: CodexMonster;
-  encounters: CodexEncounter[];
-  x: number;
-  y: number;
-  messages: MonsterViewMessages;
-  gameUi: CodexGameUiLabels;
-}) {
-  const typeConfig = MONSTER_TYPE_CONFIG[monster.type];
-  const style: React.CSSProperties = {
-    position: "fixed",
-    left: Math.max(0, Math.min(x, window.innerWidth - 320)),
-    top: Math.min(y, window.innerHeight - 300),
-    zIndex: 100,
-    pointerEvents: "none",
-  };
-
-  const meaningfulMoves = getMeaningfulMoves(monster);
-
-  return (
-    <div className="w-80 bg-[#1a1a3a] border border-white/20 rounded-lg shadow-2xl overflow-hidden" style={style}>
-      <div className="p-3">
-        {/* Header */}
-        <div className="flex items-center gap-2 mb-1">
-          {(monster.imageUrl || monster.bossImageUrl) ? (
-            <Image src={monster.imageUrl ?? monster.bossImageUrl!} alt={monster.name} width={32} height={32} className="w-8 h-8 object-contain rounded" />
-          ) : (
-            <div className="w-1.5 h-6 rounded-full" style={{ backgroundColor: typeConfig.color }} />
-          )}
-          <div>
-            <div className="font-bold text-sm text-gray-100">{monster.name}</div>
-            <div className="text-[10px] text-gray-500">{monster.nameEn}</div>
-          </div>
-        </div>
-
-        {/* Type + HP */}
-        <div className="flex items-center gap-1.5 mb-2">
-          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ backgroundColor: `${typeConfig.color}20`, color: typeConfig.color }}>
-            {gameUi.monsterTypes[monster.type].label}
-          </span>
-          {formatHp(monster) && <span className="text-[10px] text-gray-400">HP {formatHp(monster)}</span>}
-        </div>
-
-        {/* Moves */}
-        {meaningfulMoves.length > 0 && (
-          <div className="mb-2">
-            <div className="text-[10px] text-gray-500 mb-1">{messages.movePatterns}</div>
-            <div className="flex flex-wrap gap-1">
-              {meaningfulMoves.map((move) => (
-                <span key={move.id} className="text-[10px] bg-white/5 border border-white/10 rounded px-1.5 py-0.5 text-gray-300">
-                  {move.name}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Damage preview */}
-        {monster.damageValues && Object.keys(monster.damageValues).length > 0 && (
-          <div className="mb-2">
-            <div className="text-[10px] text-gray-500 mb-1">{messages.damagePreview}</div>
-            <div className="flex flex-wrap gap-1">
-              {Object.entries(monster.damageValues).slice(0, 4).map(([key, val]) => (
-                <span key={key} className="text-[10px] text-red-400/80">
-                  {key}: {val.normal ?? "?"}
-                  {val.ascension != null && val.ascension !== val.normal ? ` (${val.ascension})` : ""}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Encounters */}
-        {encounters.length > 0 && (
-          <div>
-            <div className="text-[10px] text-gray-500 mb-1">{messages.encounters}</div>
-            <div className="flex flex-wrap gap-1">
-              {encounters.slice(0, 3).map((enc) => (
-                <span key={enc.id} className="text-[10px] text-yellow-400/70">{enc.name}</span>
-              ))}
-              {encounters.length > 3 && <span className="text-[10px] text-gray-600">+{encounters.length - 3}</span>}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
   );
 }
 
@@ -610,15 +494,6 @@ function getMonsterTriggers(
   ];
 }
 
-function formatHp(monster: CodexMonster): string | null {
-  if (monster.minHp == null) return null;
-  if (monster.minHp === 9999) return null;
-  if (monster.maxHp != null && monster.maxHp !== monster.minHp) {
-    return `${monster.minHp}-${monster.maxHp}`;
-  }
-  return `${monster.minHp}`;
-}
-
 function formatCount(count: number, unit: string, serviceLocale: ServiceLocale): string {
   if (serviceLocale === "ko") return `${count}${unit}`;
 
@@ -648,4 +523,14 @@ function getMeaningfulMoves(monster: CodexMonster) {
   return monster.bestiaryMoves.filter(
     (m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD",
   );
+}
+
+function pickHoverMoveId(monster: CodexMonster): string | null {
+  const playableMoves = getMeaningfulMoves(monster).filter((move) => {
+    const moveAnimations = monster.spineAsset?.moveAnimations[move.id] ?? [];
+    const moveEffects = monster.spineAsset?.moveEffects[move.id] ?? [];
+    return moveAnimations.length > 0 || moveEffects.some((effect) => effect.usable !== false);
+  });
+  const candidates: (string | null)[] = [null, ...playableMoves.map((move) => move.id)];
+  return candidates[Math.floor(Math.random() * candidates.length)] ?? null;
 }
