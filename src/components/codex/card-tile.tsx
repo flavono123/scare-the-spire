@@ -75,6 +75,27 @@ const ENERGY_ICONS: Record<string, string> = {
   quest: "/images/game-assets/card-misc/energy_quest.png",
 };
 
+const UPGRADE_ADDED_KEYWORDS: Record<string, string> = {
+  add_innate: "선천성",
+  innate: "선천성",
+  add_retain: "보존",
+};
+
+const UPGRADE_REMOVED_KEYWORDS: Record<string, string> = {
+  remove_exhaust: "소멸",
+  remove_ethereal: "휘발성",
+};
+
+function getUpgradeKeywords(
+  upgrade: CodexCard["upgrade"],
+  mapping: Record<string, string>,
+): string[] {
+  if (!upgrade) return [];
+  return Object.entries(mapping).flatMap(([key, keyword]) => (
+    upgrade[key] ? [keyword] : []
+  ));
+}
+
 // =============================================================================
 // Fonts
 // =============================================================================
@@ -213,13 +234,23 @@ export const CardTile = memo(function CardTile({
     ? parseDescription(descriptionSuffix)
     : null;
 
-  // 표시할 키워드: 카드 keywords + 인챈트 추가 - 인챈트 제거
-  const removedSet = new Set(enchantRemovedKeywords ?? []);
+  // 표시할 키워드: 카드 keywords + 강화/인챈트 추가 - 강화/인챈트 제거
+  const upgradeAddedKeywords = isUpgraded
+    ? getUpgradeKeywords(card.upgrade, UPGRADE_ADDED_KEYWORDS)
+    : [];
+  const upgradeRemovedKeywords = isUpgraded
+    ? getUpgradeKeywords(card.upgrade, UPGRADE_REMOVED_KEYWORDS)
+    : [];
+  const removedSet = new Set([
+    ...upgradeRemovedKeywords,
+    ...(enchantRemovedKeywords ?? []),
+  ]);
+  const baseKeywords = card.keywords.filter((k) => !removedSet.has(k));
   const displayKeywords = [
-    ...card.keywords.filter((k) => !removedSet.has(k)),
-    ...((enchantAddedKeywords ?? []).filter(
-      (k) => !card.keywords.includes(k)
-    )),
+    ...baseKeywords,
+    ...[...upgradeAddedKeywords, ...(enchantAddedKeywords ?? [])].filter(
+      (k) => !removedSet.has(k) && !baseKeywords.includes(k)
+    ),
   ];
   const keywordDisplayText = (keyword: string): string => {
     const [lookupKey] = keyword.split(/\s/);
