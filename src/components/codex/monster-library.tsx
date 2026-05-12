@@ -14,8 +14,6 @@ import {
   MONSTER_TYPE_CONFIG,
   MONSTER_TYPE_ORDER,
   MONSTER_TYPE_ALIASES,
-  EVENT_ACT_CONFIG,
-  EVENT_ACT_UNKNOWN,
   EVENT_ACT_ALIASES,
   EventAct,
 } from "@/lib/codex-types";
@@ -44,6 +42,7 @@ const ACT_ORDER: (EventAct | null)[] = [
   "Act 3 - Glory",
   null,
 ];
+const BESTIARY_ACT_COLOR = "#60a5fa";
 
 interface MonsterLibraryProps {
   serviceLocale: ServiceLocale;
@@ -194,44 +193,42 @@ export function MonsterLibrary({
     return result;
   }, [monsters, selectedTypes, selectedActs, parsedSearch, monsterActs]);
 
-  // Sort by type > act > name
-  const getMonsterActOrder = useCallback(
-    (monsterId: string): number => {
-      const ACT_SORT_ORDER: Record<string, number> = {
-        "Act 1 - Overgrowth": 0,
-        Underdocks: 1,
-        "Act 2 - Hive": 2,
-        "Act 3 - Glory": 3,
-      };
+  const getPrimaryMonsterAct = useCallback(
+    (monsterId: string): EventAct | null => {
       const acts = monsterActs.get(monsterId);
-      if (!acts) return 99;
-      let minOrder = 99;
-      for (const act of acts) {
-        const order = ACT_SORT_ORDER[act] ?? 98;
-        if (order < minOrder) minOrder = order;
+      if (!acts || acts.size === 0) return null;
+
+      let primaryAct: EventAct | null = null;
+      let primaryOrder = Number.POSITIVE_INFINITY;
+      for (const candidate of acts) {
+        const act = candidate === "none" ? null : (candidate as EventAct);
+        const order = getActSortOrder(act);
+        if (order < primaryOrder) {
+          primaryAct = act;
+          primaryOrder = order;
+        }
       }
-      return minOrder;
+      return primaryAct;
     },
     [monsterActs],
   );
 
-  // Group by type
+  // Group by act, then sort like the in-game Bestiary list: monster room, elite, boss, name.
   const sections = useMemo(() => {
-    return MONSTER_TYPE_ORDER.map((type) => ({
-      type,
-      color: MONSTER_TYPE_CONFIG[type].color,
-      label: gameUi.monsterTypes[type].label,
-      description: gameUi.monsterTypes[type].description,
+    return ACT_ORDER.map((act) => ({
+      act,
+      key: act ?? "none",
+      color: act ? BESTIARY_ACT_COLOR : "#a1a1aa",
+      label: getActLabel(act, monsterText, gameUi),
       monsters: filteredMonsters
-        .filter((m) => m.type === type)
+        .filter((monster) => getPrimaryMonsterAct(monster.id) === act)
         .sort((a, b) => {
-          // Sort by act first, then name
-          const actDiff = getMonsterActOrder(a.id) - getMonsterActOrder(b.id);
-          if (actDiff !== 0) return actDiff;
+          const typeDiff = getMonsterTypeSortOrder(a.type) - getMonsterTypeSortOrder(b.type);
+          if (typeDiff !== 0) return typeDiff;
           return a.name.localeCompare(b.name, "ko");
         }),
     })).filter((s) => s.monsters.length > 0);
-  }, [filteredMonsters, gameUi, getMonsterActOrder]);
+  }, [filteredMonsters, gameUi, getPrimaryMonsterAct, monsterText]);
 
   const toggleType = useCallback((type: MonsterType) => {
     setSelectedTypes((prev) => {
@@ -315,7 +312,6 @@ export function MonsterLibrary({
         <FilterSection trigger="%" label={monsterText.actFilter}>
           <div className="flex flex-col gap-0.5">
             {ACT_ORDER.map((act) => {
-              const config = act ? EVENT_ACT_CONFIG[act] : EVENT_ACT_UNKNOWN;
               const key = act ?? "none";
               const label = getActLabel(act, monsterText, gameUi);
               return (
@@ -328,8 +324,8 @@ export function MonsterLibrary({
                       : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
                   }`}
                 >
-                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: act ? undefined : "#666" }} />
-                  <span className={act ? config.color : "text-zinc-400"}>{label}</span>
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: act ? BESTIARY_ACT_COLOR : "#666" }} />
+                  <span className={act ? "text-blue-300" : "text-zinc-400"}>{label}</span>
                 </button>
               );
             })}
@@ -363,13 +359,12 @@ export function MonsterLibrary({
         {/* Monster Grid */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {sections.map((section) => (
-            <div key={section.type} className="mb-8 last:mb-0">
-              <div className="mb-3">
+            <div key={section.key} className="mb-8 last:mb-0">
+              <div className="mb-3 flex items-baseline gap-2">
                 <span className="text-lg font-bold font-[family-name:var(--font-spectral)]" style={{ color: section.color }}>
                   {section.label}:
                 </span>
-                <span className="ml-2 text-sm text-gray-400">{section.description}</span>
-                <span className="ml-2 text-xs text-gray-600">({section.monsters.length})</span>
+                <span className="text-xs text-gray-600">({section.monsters.length})</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -377,10 +372,7 @@ export function MonsterLibrary({
                   <MonsterTile
                     key={monster.id}
                     monster={monster}
-                    encounters={getMonsterEncounters(monster.id)}
-                    serviceLocale={serviceLocale}
                     gameUi={gameUi}
-                    messages={monsterText}
                     onHover={handleMonsterHover}
                     onClick={() => setSelectedMonster(monster)}
                   />
@@ -436,41 +428,33 @@ export function MonsterLibrary({
 // Monster tile - text-based since most monsters lack images
 function MonsterTile({
   monster,
-  encounters,
-  serviceLocale,
   gameUi,
-  messages,
   onHover,
   onClick,
 }: {
   monster: CodexMonster;
-  encounters: CodexEncounter[];
-  serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
-  messages: MonsterViewMessages;
   onHover: (m: CodexMonster | null, e?: React.MouseEvent) => void;
   onClick?: () => void;
 }) {
   const typeConfig = MONSTER_TYPE_CONFIG[monster.type];
-  const hpText = formatHp(monster);
-  const acts = [...new Set(encounters.map((e) => e.act).filter(Boolean))] as EventAct[];
 
   return (
     <button
-      className="group relative flex items-center gap-3 px-3 py-2.5 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/10 hover:border-yellow-500/40 transition-all text-left"
+      className="group relative flex items-center gap-3 rounded-md px-2.5 py-2 text-left transition-colors hover:bg-white/[0.06]"
       onMouseEnter={(e) => onHover(monster, e)}
       onMouseLeave={() => onHover(null)}
       onClick={onClick}
     >
       {/* Thumbnail: Spine render or boss token */}
       {(monster.imageUrl || monster.bossImageUrl) ? (
-        <div className="w-10 h-10 shrink-0 rounded overflow-hidden bg-white/5 flex items-center justify-center">
+        <div className="flex h-12 w-14 shrink-0 items-center justify-center overflow-hidden">
           <Image
             src={monster.imageUrl ?? monster.bossImageUrl!}
             alt={monster.name}
-            width={40}
-            height={40}
-            className="w-10 h-10 object-contain"
+            width={56}
+            height={48}
+            className="max-h-12 max-w-14 object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)]"
           />
         </div>
       ) : (
@@ -485,30 +469,12 @@ function MonsterTile({
           <span className="text-sm font-medium text-gray-100 truncate">{monster.name}</span>
           <span className="text-[10px] text-gray-500 truncate">{monster.nameEn}</span>
         </div>
-        <div className="flex items-center gap-2 mt-0.5">
+        <div className="mt-0.5 flex items-center gap-2">
           <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ backgroundColor: `${typeConfig.color}20`, color: typeConfig.color }}>
             {gameUi.monsterTypes[monster.type].label}
           </span>
-          {hpText && <span className="text-[10px] text-gray-500">HP {hpText}</span>}
-          {acts.length > 0 && (
-            <div className="flex gap-1">
-              {acts.slice(0, 2).map((act) => {
-                const config = EVENT_ACT_CONFIG[act];
-                return (
-                  <span key={act} className={`text-[9px] ${config?.color ?? "text-zinc-400"}`}>
-                    {gameUi.acts[act]}
-                  </span>
-                );
-              })}
-            </div>
-          )}
         </div>
       </div>
-
-      {/* Move count */}
-      <span className="text-[10px] text-gray-600 shrink-0">
-        {formatCount(getMeaningfulMoves(monster).length, messages.moveCount, serviceLocale)}
-      </span>
     </button>
   );
 }
@@ -666,6 +632,16 @@ function getActLabel(
   gameUi: CodexGameUiLabels,
 ): string {
   return act ? gameUi.acts[act] : messages.acts.none;
+}
+
+function getActSortOrder(act: EventAct | null): number {
+  const index = ACT_ORDER.findIndex((candidate) => candidate === act);
+  return index === -1 ? 99 : index;
+}
+
+function getMonsterTypeSortOrder(type: MonsterType): number {
+  const index = MONSTER_TYPE_ORDER.indexOf(type);
+  return index === -1 ? 99 : index;
 }
 
 function getMeaningfulMoves(monster: CodexMonster) {
