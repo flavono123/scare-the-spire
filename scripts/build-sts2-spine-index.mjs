@@ -261,11 +261,15 @@ function moveVfxCandidates(move, usableVfxIds) {
 function buildMonsterAsset(monster, actor, alias, vfxById) {
   const animationNames = actor.animations.map((animation) => animation.name);
   const idleAnimation = chooseIdleAnimation(animationNames);
+  const bestiaryAnimations = ["revive", "hurt", "die"].filter((animation) => animationNames.includes(animation));
   const moves = monster.bestiary_moves ?? monster.moves ?? [];
   const usableVfxIds = new Set([...vfxById.keys()]);
   const moveAnimations = Object.fromEntries(
     moves.map((move) => [move.id, moveAnimationCandidates(monster, move, animationNames, idleAnimation)]),
   );
+  for (const animationId of bestiaryAnimations) {
+    moveAnimations[animationId] = [animationId, idleAnimation];
+  }
   const moveEffects = Object.fromEntries(
     moves
       .map((move) => [move.id, moveVfxCandidates(move, usableVfxIds).map((id) => vfxById.get(id))])
@@ -283,6 +287,7 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
     skin: alias?.skin ?? null,
     skins: actor.skins,
     animations: animationNames,
+    bestiaryAnimations,
     idleAnimation,
     moveAnimations,
     moveEffects,

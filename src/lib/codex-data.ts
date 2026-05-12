@@ -733,9 +733,12 @@ function mapMonster(
   monsterImages: Set<string>,
   bossImages: Set<string>,
   gameMonsters: GameLocalizationTable,
+  gameBestiary: GameLocalizationTable,
+  engBestiary: GameLocalizationTable,
   gameLocale: GameLocale,
   spineAssets: Map<string, MonsterSpineAsset>,
 ): CodexMonster {
+  const spineAsset = spineAssets.get(kor.id) ?? null;
   const engMovesById = new Map(eng.moves.map((move) => [move.id, move]));
   const mapMoves = (rawMoves: RawMonsterMove[]): MonsterMove[] => rawMoves.map((km) => {
     const em = engMovesById.get(km.id);
@@ -747,11 +750,15 @@ function mapMonster(
         gameTitleFallback(km.name, em?.name ?? km.name, gameLocale),
       ),
       nameEn: em?.name ?? km.name,
+      kind: "move",
     };
   });
 
   const moves = mapMoves(kor.moves);
-  const bestiaryMoves = mapMoves(kor.bestiary_moves ?? kor.moves);
+  const bestiaryMoves = [
+    ...mapMoves(kor.bestiary_moves ?? kor.moves),
+    ...buildBestiaryAnimationMoves(spineAsset, gameBestiary, engBestiary),
+  ];
 
   // Map damage values
   const damageValues: Record<string, DamageValue> | null = kor.damage_values
@@ -791,15 +798,31 @@ function mapMonster(
     blockValues: kor.block_values,
     imageUrl,
     bossImageUrl,
-    spineAsset: spineAssets.get(kor.id) ?? null,
+    spineAsset,
   };
+}
+
+function buildBestiaryAnimationMoves(
+  spineAsset: MonsterSpineAsset | null,
+  gameBestiary: GameLocalizationTable,
+  engBestiary: GameLocalizationTable,
+): MonsterMove[] {
+  if (!spineAsset) return [];
+
+  return spineAsset.bestiaryAnimations.map((animationId) => ({
+    id: animationId,
+    name: gameText(gameBestiary, `ACTION_NAME.${animationId}`, animationId),
+    nameEn: gameText(engBestiary, `ACTION_NAME.${animationId}`, animationId),
+    kind: "animation",
+    animationId,
+  }));
 }
 
 export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Promise<CodexMonster[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
   const MONSTERS_IMG_DIR = path.join(process.cwd(), "public/images/sts2/monsters-render");
   const BOSSES_IMG_DIR = path.join(process.cwd(), "public/images/sts2/bosses");
-  const [korMonsters, engMonsters, spineAssetList, monsterFiles, bossFiles, gameMonsters] = await Promise.all([
+  const [korMonsters, engMonsters, spineAssetList, monsterFiles, bossFiles, gameMonsters, gameBestiary, engBestiary] = await Promise.all([
     readJson<RawMonster[]>("kor/monsters.json"),
     readJson<RawMonster[]>("eng/monsters.json"),
     readJson<MonsterSpineAsset[]>("monster-spine-assets.json").catch(() => []),
@@ -812,6 +835,8 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
       () => new Set<string>(),
     ),
     readGameLocalizationTable(gameLocale, "monsters"),
+    readGameLocalizationTable(gameLocale, "bestiary"),
+    readGameLocalizationTable("eng", "bestiary"),
   ]);
 
   const engById = new Map(engMonsters.map((m) => [m.id, m]));
@@ -819,7 +844,7 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
 
   return korMonsters.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters, gameLocale, spineAssets);
+    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters, gameBestiary, engBestiary, gameLocale, spineAssets);
   });
 }
 

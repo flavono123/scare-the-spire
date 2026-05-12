@@ -530,6 +530,8 @@ export interface MonsterMove {
   id: string;
   name: string; // Korean
   nameEn: string; // English
+  kind?: "move" | "animation";
+  animationId?: string;
 }
 
 export interface DamageValue {
@@ -573,6 +575,7 @@ export interface MonsterSpineAsset {
   skin: string | null;
   skins: string[];
   animations: string[];
+  bestiaryAnimations: string[];
   idleAnimation: string;
   moveAnimations: Record<string, string[]>;
   moveEffects: Record<string, MonsterSpineEffectAsset[]>;

@@ -23,12 +23,19 @@
       "_tracks/head_stop_reading",
       "_tracks/head_stop_reading2"
     ],
+    "bestiaryAnimations": [
+      "hurt"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "NOTHING": [
         "nothing",
         "idle_loop",
         "attack"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -53,11 +60,23 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "KILLSHOT": [
         "killshot",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -86,6 +105,10 @@
       "sharpen",
       "special"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "BOOT_UP": [
@@ -111,6 +134,14 @@
         "hammer-uppercut",
         "attack",
         "special",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -138,6 +169,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "BIG_SWING": [
@@ -147,6 +182,14 @@
         "attack",
         "attack2",
         "attack3",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -187,12 +230,24 @@
       "stunned_loop",
       "wake_up"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "BITE": [
         "bite",
         "attack",
         "buff",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -233,6 +288,10 @@
       "stunned_loop",
       "wake_up"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "THRASH": [
@@ -250,6 +309,14 @@
         "thrash2",
         "attack",
         "buff",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -290,6 +357,10 @@
       "stunned_loop",
       "wake_up"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "HEADBUTT": [
@@ -313,6 +384,14 @@
         "dizzy",
         "idle_loop",
         "attack"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -352,6 +431,10 @@
       "stunned_loop",
       "wake_up"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "THRASH": [
@@ -371,6 +454,14 @@
         "stunned_loop",
         "attack",
         "buff",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -396,11 +487,23 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "BEAT": [
         "beat",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -426,6 +529,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "SLEEP": [
@@ -448,6 +555,14 @@
       "SLASHES": [
         "slashes",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -514,6 +629,10 @@
       "hurt_angry",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "PECK": [
@@ -529,6 +648,14 @@
         "attack_angry",
         "idle_loop",
         "angry_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -558,6 +685,7 @@
       "_ignore/attack_rough",
       "_ignore/attack_silly"
     ],
+    "bestiaryAnimations": [],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "NOTHING": [
@@ -594,6 +722,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "INCANTATION": [
@@ -608,6 +740,14 @@
         "dark-strike",
         "attack",
         "buff",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -640,6 +780,10 @@
       "stun_loop",
       "wake_up",
       "_ignore/die_deluxe"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -678,6 +822,14 @@
         "crush",
         "attack",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -703,6 +855,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "CLAMP": [
@@ -715,6 +871,14 @@
         "screech",
         "cast",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -747,6 +911,10 @@
       "hurt_devouring",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "WHIP_SLAP": [
@@ -770,6 +938,14 @@
         "attack",
         "attack_double",
         "attack_heavy",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -800,6 +976,10 @@
       "idle_loop_empty",
       "reload"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "FIRE": [
@@ -810,6 +990,14 @@
       "RELOAD": [
         "reload",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -848,6 +1036,10 @@
       "idle_loop",
       "unburrow"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "CHARGE_UP": [
@@ -880,6 +1072,14 @@
         "attack_finish",
         "attack_loop",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -910,6 +1110,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "INCANTATION": [
@@ -924,6 +1128,14 @@
         "dark-strike",
         "attack",
         "buff",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -950,6 +1162,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "FORBIDDEN_INCANTATION": [
@@ -964,6 +1180,14 @@
         "savage",
         "attack",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -991,6 +1215,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "PHEROMONE_SPIT": [
@@ -1014,6 +1242,14 @@
         "cast",
         "attack",
         "attack_ranged",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1042,6 +1278,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "SKITTER": [
@@ -1067,6 +1307,14 @@
         "attack",
         "attack_heavy",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1090,11 +1338,18 @@
       "die",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "DISTRACT": [
         "distract",
         "attack",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1121,6 +1376,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "FABRICATE": [
@@ -1131,6 +1390,14 @@
       "DISINTEGRATE": [
         "disintegrate",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1160,6 +1427,9 @@
       "stunned_loop",
       "wake_up"
     ],
+    "bestiaryAnimations": [
+      "die"
+    ],
     "idleAnimation": "awake_loop",
     "moveAnimations": {
       "SPAWNED": [
@@ -1170,6 +1440,10 @@
       ],
       "FLEE": [
         "flee",
+        "awake_loop"
+      ],
+      "die": [
+        "die",
         "awake_loop"
       ]
     },
@@ -1198,6 +1472,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "WAR_CHANT": [
@@ -1224,6 +1502,14 @@
         "attack_breaker",
         "attack_flail",
         "buff",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1252,6 +1538,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "VULNERABLE_SPORES": [
@@ -1274,6 +1564,14 @@
         "smash",
         "attack",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1300,6 +1598,10 @@
       "idle_loop",
       "summon"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "ILLUSION": [
@@ -1310,6 +1612,14 @@
       "SWIPE": [
         "swipe",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1337,6 +1647,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "TACKLE": [
@@ -1358,6 +1672,14 @@
         "attack",
         "attack_double",
         "debuff",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1387,6 +1709,10 @@
       "die",
       "hurt",
       "idle_loop"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -1425,6 +1751,14 @@
         "attack",
         "attack_tongue",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1453,6 +1787,10 @@
       "idle_loop_puffed",
       "inhale"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "ACID_GOOP": [
@@ -1465,6 +1803,14 @@
       "INHALE": [
         "inhale",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1492,12 +1838,24 @@
       "idle_loop",
       "spawn"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "EXPLODE": [
         "explode",
         "idle_loop",
         "die"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {
@@ -1544,6 +1902,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "THUNDER_STRIKE": [
@@ -1560,6 +1922,14 @@
         "shocking-slap",
         "attack",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1587,6 +1957,10 @@
       "idle_loop",
       "Attack single has extra blending frames/blank"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "GIMME": [
@@ -1610,6 +1984,14 @@
         "attack_double",
         "attack_single",
         "Attack single has extra blending frames/blank",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1636,6 +2018,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "GUARD": [
@@ -1643,6 +2029,14 @@
         "cast",
         "idle_loop",
         "appear"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1669,6 +2063,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "SWIPE": [
@@ -1690,6 +2088,14 @@
         "debuff",
         "attack",
         "attack_triple",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1717,6 +2123,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "TENDERIZING_GOOP": [
@@ -1740,6 +2150,14 @@
         "attack",
         "attack_triple",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1769,6 +2187,10 @@
       "idle_loop",
       "_ignore/attack_double_alt",
       "_ignore/die_volatile"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -1807,6 +2229,14 @@
         "attack_double",
         "_ignore/attack_double_alt",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -1833,6 +2263,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "JAB": [
@@ -1847,6 +2281,14 @@
         "attack",
         "attack_fast",
         "attack_triple",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1878,6 +2320,10 @@
       "idle_loop",
       "_ignore/buff1"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "QUICK_SLASH": [
@@ -1906,6 +2352,14 @@
         "_ignore/buff1",
         "attack_boomerang",
         "attack_slash",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -1972,6 +2426,10 @@
       "_ignore/hurt_old",
       "_ignore/rally_old"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "ORB_OF_FRAILTY": [
@@ -2000,6 +2458,14 @@
         "ritual",
         "attack_grenade",
         "attack_laser",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2051,6 +2517,10 @@
       "hurt_burnt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "CURSE_OF_KNOWLEDGE": [
@@ -2083,6 +2553,14 @@
         "attack_heavy",
         "attack_light",
         "attack_medium",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2117,6 +2595,10 @@
       "_tracks/eyes_dead",
       "_tracks/eyes_open",
       "_tracks/eyes_open_loop"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -2173,6 +2655,14 @@
         "attack_heavy",
         "idle_loop",
         "animation"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {
@@ -2267,6 +2757,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "CLUMP_SHOT": [
@@ -2283,6 +2777,14 @@
         "sticky-shot",
         "cast",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2309,6 +2811,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "TACKLE": [
@@ -2321,6 +2827,14 @@
         "goop",
         "cast",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2349,6 +2863,10 @@
       "idle_loop",
       "spawn_bomb"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "ADVANCED_GAS": [
@@ -2371,6 +2889,14 @@
         "super-gas-blast",
         "attack",
         "debuff",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2398,6 +2924,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "SHIELD_SLAM": [
@@ -2410,6 +2940,14 @@
       "SMASH": [
         "smash",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2463,6 +3001,10 @@
       "idle_loop",
       "uncurl"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "WEB_CANNON": [
@@ -2485,6 +3027,14 @@
         "curl-and-grow",
         "attack",
         "attack_web",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2511,6 +3061,10 @@
       "die",
       "hurt",
       "idle_loop"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -2544,6 +3098,14 @@
         "attack_ram",
         "attack_bomb",
         "cast_shield",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2593,6 +3155,10 @@
       "idle_loop",
       "roar"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "RIP_AND_TEAR": [
@@ -2610,6 +3176,14 @@
       "CLAW": [
         "claw",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2659,6 +3233,10 @@
       "idle_loop_wound",
       "wind_up"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "CHARGE": [
@@ -2686,6 +3264,14 @@
         "attack_cleave",
         "attack_flame",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2712,6 +3298,10 @@
       "idle_loop",
       "suck"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "TOXIC": [
@@ -2730,6 +3320,14 @@
         "suck",
         "attack",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2756,6 +3354,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "BUTT": [
@@ -2766,6 +3368,14 @@
       "HISS": [
         "hiss",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2792,6 +3402,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "NOISE": [
@@ -2799,6 +3413,14 @@
         "cast",
         "idle_loop",
         "appear"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2830,12 +3452,29 @@
       "_ignore/idle_loop_natural",
       "_ignore/wave_gravy"
     ],
+    "bestiaryAnimations": [
+      "revive",
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "NOTHING": [
         "nothing",
         "idle_loop",
         "attack"
+      ],
+      "revive": [
+        "revive",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -2862,6 +3501,10 @@
       "idle_loop",
       "lay"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "LAY_EGGS": [
@@ -2884,6 +3527,14 @@
         "nutritional-paste",
         "buff",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2913,6 +3564,10 @@
       "hurt_flying",
       "idle_loop",
       "take_off"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -2944,6 +3599,14 @@
         "verdict",
         "attack_dive",
         "attack_peck",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -2977,6 +3640,7 @@
       "wake_up",
       "_ignore/pile_rigging"
     ],
+    "bestiaryAnimations": [],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "NOTHING": [
@@ -3012,11 +3676,23 @@
       "stunned_loop",
       "wake_up"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "SLAM": [
         "slam",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3050,6 +3726,10 @@
       "hurt_extended",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "BITE": [
@@ -3079,6 +3759,14 @@
         "attack",
         "attack_multi",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3104,6 +3792,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "INFECT": [
@@ -3116,6 +3808,14 @@
         "lash",
         "attack",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3143,6 +3843,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "READY": [
@@ -3165,6 +3869,14 @@
         "fast-punch",
         "attack",
         "attack_double",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3193,6 +3905,10 @@
       "tracks/empty",
       "tracks/writhe"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "YOU_ARE_MINE": [
@@ -3209,6 +3925,14 @@
         "off-with-your-head",
         "attack",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3238,6 +3962,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "CHOMP": [
@@ -3261,6 +3989,14 @@
         "buff",
         "attack",
         "attack_double",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3287,6 +4023,10 @@
       "die",
       "hurt",
       "idle_loop"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -3316,6 +4056,14 @@
         "attack",
         "attack_multi",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3344,6 +4092,10 @@
       "_ignore/die_slower",
       "_ignore/mouth_back_riggin"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "PRESSURIZE": [
@@ -3358,6 +4110,14 @@
         "attack",
         "_ignore/attack_straight",
         "buff",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3384,6 +4144,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "SHRINKER": [
@@ -3396,6 +4160,14 @@
         "chomp",
         "attack",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3425,6 +4197,10 @@
       "die",
       "hurt",
       "idle_loop"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -3461,6 +4237,14 @@
         "attack_double",
         "attack_heavy",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3487,6 +4271,10 @@
       "idle_loop",
       "vomit"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "VOMIT_ICHOR": [
@@ -3508,6 +4296,14 @@
         "furiouspummeling",
         "furious-pummeling",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3535,6 +4331,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "CONSTRICT": [
@@ -3553,6 +4353,14 @@
         "lash",
         "attack",
         "attack_defend",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3581,6 +4389,10 @@
       "spray",
       "_tracks/ooze"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "OIL_SPRAY": [
@@ -3594,6 +4406,14 @@
         "slam",
         "idle_loop",
         "die"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -3623,6 +4443,10 @@
       "sleep_loop",
       "wake_up"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "SNORE": [
@@ -3637,6 +4461,14 @@
         "roll-out",
         "attack",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3666,6 +4498,10 @@
       "idle_loop",
       "idle_loop_empty"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "ENERGY_ORB": [
@@ -3673,6 +4509,14 @@
         "energyorb",
         "energy-orb",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3702,6 +4546,9 @@
       "stunned_loop",
       "wake_up"
     ],
+    "bestiaryAnimations": [
+      "die"
+    ],
     "idleAnimation": "awake_loop",
     "moveAnimations": {
       "SPAWNED": [
@@ -3714,6 +4561,10 @@
       "TACKLE": [
         "tackle",
         "attack",
+        "awake_loop"
+      ],
+      "die": [
+        "die",
         "awake_loop"
       ]
     },
@@ -3747,6 +4598,10 @@
       "intangible_end",
       "intangible_loop",
       "intangible_start"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -3783,6 +4638,14 @@
         "attack_beckon",
         "attack_debuff",
         "attack_heavy",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3830,6 +4693,10 @@
       "tracks/empty",
       "tracks/writhe"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "SOUL_BURN": [
@@ -3846,6 +4713,14 @@
         "drain-life",
         "attack",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3873,6 +4748,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "HEX": [
@@ -3898,6 +4777,14 @@
         "attack_flame",
         "attack_sword",
         "debuff",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -3963,6 +4850,10 @@
       "lick",
       "protrude"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "PROTRUDING_SPIKES": [
@@ -3985,6 +4876,14 @@
         "tongue-lash",
         "idle_loop",
         "die"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {
@@ -4029,6 +4928,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "STAB": [
@@ -4036,6 +4939,14 @@
         "attack",
         "idle_loop",
         "appear"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4062,6 +4973,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "CRASH": [
@@ -4083,6 +4998,14 @@
         "cast",
         "attack",
         "attack_triple",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -4127,6 +5050,9 @@
       "knockout2",
       "regenerate1",
       "regenerate2"
+    ],
+    "bestiaryAnimations": [
+      "die"
     ],
     "idleAnimation": "idle_loop1",
     "moveAnimations": {
@@ -4184,6 +5110,10 @@
         "attack_double3",
         "idle_loop1",
         "--knockout3"
+      ],
+      "die": [
+        "die",
+        "idle_loop1"
       ]
     },
     "moveEffects": {
@@ -4229,6 +5159,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "MIASMA": [
@@ -4241,6 +5175,14 @@
         "dread",
         "attack",
         "debuff",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -4271,6 +5213,10 @@
       "intro_loop",
       "liquify_sand",
       "salivate"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -4309,6 +5255,14 @@
         "attack_bite",
         "attack_thrash",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4335,6 +5289,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "DEBILITATING_SMOG": [
@@ -4351,6 +5309,14 @@
         "eye-lasers",
         "attack",
         "debuff",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -4400,6 +5366,10 @@
       "idle_loop",
       "intro_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "ILLUSION": [
@@ -4423,6 +5393,14 @@
         "attack",
         "cast",
         "cast_intro",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -4456,6 +5434,10 @@
       "steal",
       "take_off",
       "_ignore/attack_hover_classic"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -4495,6 +5477,14 @@
         "attack_hover",
         "_ignore/attack_hover_classic",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4529,6 +5519,10 @@
       "hurt_buffed",
       "idle_loop",
       "idle_loop_buffed"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -4569,6 +5563,14 @@
         "attack_single",
         "attack_triple",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -4596,6 +5598,10 @@
       "die",
       "hurt",
       "idle_loop"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -4638,6 +5644,14 @@
         "buff",
         "debuff",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -4689,6 +5703,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "HATCH": [
@@ -4701,6 +5719,14 @@
       "NIBBLE": [
         "nibble",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -4727,12 +5753,24 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "HOUNDS": [
         "hounds",
         "attack",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -4767,6 +5805,10 @@
       "unburrow_attack",
       "wake_up"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "BITE": [
@@ -4788,6 +5830,14 @@
         "attack",
         "hidden_attack",
         "unburrow_attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -4814,6 +5864,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "UNLOAD": [
@@ -4831,6 +5885,14 @@
       "RELOAD": [
         "reload",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -4857,6 +5919,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "POKEY_POUNCE": [
@@ -4873,6 +5939,14 @@
         "sticky-shot",
         "cast",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -4899,12 +5973,24 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "TACKLE": [
         "tackle",
         "attack",
         "cast",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -4938,6 +6024,10 @@
       "idle_loop",
       "summon"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "SCRATCH": [
@@ -4966,6 +6056,14 @@
         "call-for-backup",
         "debuff",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -5025,6 +6123,10 @@
       "_tracks/shrunken",
       "_tracks/___"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "INK_BLOT": [
@@ -5070,6 +6172,14 @@
         "attack_heavy",
         "_tracks/attack_heavy",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {}
@@ -5096,6 +6206,10 @@
       "hurt",
       "idle_loop"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "GRASPING_VINES": [
@@ -5119,6 +6233,14 @@
         "attack_chomp",
         "attack_swipe",
         "attack_vines",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -5154,6 +6276,10 @@
       "_tracks/buildup1",
       "_tracks/buildup2",
       "_tracks/buildup3"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
@@ -5211,6 +6337,14 @@
         "attack_buff",
         "attack_debuff",
         "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {
@@ -5257,11 +6391,23 @@
       "_ignore/wig_l",
       "_ignore/wig_r"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "WRIGGLE": [
         "wriggle",
         "attack",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
         "idle_loop"
       ]
     },
@@ -5291,6 +6437,10 @@
       "_ignore/idle_loop_og",
       "_ignore/twist"
     ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
       "ZAP": [
@@ -5298,6 +6448,14 @@
         "attack",
         "idle_loop",
         "appear"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
       ]
     },
     "moveEffects": {
