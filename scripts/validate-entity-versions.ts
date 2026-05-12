@@ -40,6 +40,12 @@ interface CodexMeta {
   version: string;
 }
 
+interface CodexEvent {
+  id?: unknown;
+  type?: unknown;
+  relics?: unknown;
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -121,6 +127,62 @@ function getField(entity: Record<string, unknown>, camelField: string): unknown 
   return undefined;
 }
 
+function validateAncientRelicCoverage(
+  relics: Record<string, unknown>[],
+  events: CodexEvent[],
+  relPath: string,
+): number {
+  let errors = 0;
+  const ancientRelicIds = new Set(
+    relics
+      .filter((relic) => relic.rarity === "고대 유물")
+      .map((relic) => relic.id)
+      .filter((id): id is string => typeof id === "string"),
+  );
+  const ownerByRelicId = new Map<string, string>();
+
+  for (const event of events) {
+    if (event.type !== "Ancient") continue;
+    const ancientId = typeof event.id === "string" ? event.id : "(unknown)";
+    const eventRelics = event.relics;
+    if (!Array.isArray(eventRelics)) {
+      console.error(`  [ERROR] ${relPath}:${ancientId} has no relics array.`);
+      errors++;
+      continue;
+    }
+
+    for (const relicId of eventRelics) {
+      if (typeof relicId !== "string") {
+        console.error(`  [ERROR] ${relPath}:${ancientId} has non-string relic id ${JSON.stringify(relicId)}.`);
+        errors++;
+        continue;
+      }
+      const previousOwner = ownerByRelicId.get(relicId);
+      if (previousOwner) {
+        console.error(`  [ERROR] ${relPath}:${relicId} is assigned to both ${previousOwner} and ${ancientId}.`);
+        errors++;
+      }
+      ownerByRelicId.set(relicId, ancientId);
+    }
+  }
+
+  for (const relicId of ancientRelicIds) {
+    if (!ownerByRelicId.has(relicId)) {
+      console.error(`  [ERROR] ${relPath}:${relicId} is an ancient relic without an Ancient owner.`);
+      errors++;
+    }
+  }
+
+  for (const relicId of ownerByRelicId.keys()) {
+    if (!ancientRelicIds.has(relicId)) {
+      console.error(`  [ERROR] ${relPath}:${relicId} is assigned to an Ancient but is not an ancient relic.`);
+      errors++;
+    }
+  }
+
+  return errors;
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -133,6 +195,8 @@ function main() {
   const cards = readJson<Record<string, unknown>[]>("data/sts2/kor/cards.json");
   const relics = readJson<Record<string, unknown>[]>("data/sts2/kor/relics.json");
   const potions = readJson<Record<string, unknown>[]>("data/sts2/kor/potions.json");
+  const korEvents = readJson<CodexEvent[]>("data/sts2/kor/events.json");
+  const engEvents = readJson<CodexEvent[]>("data/sts2/eng/events.json");
 
   const baselineMap: Record<string, Map<string, Record<string, unknown>>> = {
     card: new Map(cards.map((c) => [c.id as string, c])),
@@ -263,6 +327,20 @@ function main() {
 
   if (errors === 0) console.log("  All field paths valid.\n");
   else console.log();
+
+  // ── Check 5: Ancient relic owner coverage ──
+  console.log("=== Check 5: Ancient relic owner coverage ===");
+
+  const ancientCoverageErrors =
+    validateAncientRelicCoverage(relics, korEvents, "data/sts2/kor/events.json") +
+    validateAncientRelicCoverage(relics, engEvents, "data/sts2/eng/events.json");
+  errors += ancientCoverageErrors;
+
+  if (ancientCoverageErrors === 0) {
+    console.log("  All ancient relics are assigned to exactly one Ancient.\n");
+  } else {
+    console.log();
+  }
 
   // ── Summary ──
   console.log("=== Summary ===");
