@@ -37,6 +37,11 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
    node scripts/build-sts2-spine-index.mjs
    ```
    Use the `sts2-spine-assets` skill for dependency setup, coverage review, fallback policy, and VFX-specific notes.
+   After event data changes, compare each `AncientEventModel.AllPossibleOptions`
+   in `/tmp/sts2-src/MegaCrit.Sts2.Core.Models.Events/*.cs` against the
+   corresponding `data/sts2/{eng,kor}/events.json` `relics` array. Ancient
+   relics not listed there will disappear from the relic index's Ancient
+   subgroups.
 4. Apply incremental Codex entity diffs for patch-note changes that scripts cannot infer:
    - Cards: `data/sts2/{eng,kor}/cards.json`
    - Relics: `data/sts2/{eng,kor}/relics.json`
@@ -52,6 +57,9 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
 - Always run `python3 scripts/parse-entity-vars.py` after DLL decompile. Literal `{Var}` leaks in relic/potion/power descriptions mean the patch is not ready.
 - If parser coverage drops sharply, inspect new `MegaCrit.Sts2.Core.Localization.DynamicVars` or `MegaCrit.Sts2.Core.Models.*` directories in `/tmp/sts2-src` and update scripts plus this skill in the same commit.
 - Newly added cards/relics/potions must have both English and Korean names from PCK localization before patch-note entity linking is considered valid.
+- `pnpm codex:validate` must report zero Ancient relic owner coverage errors.
+  This guards the relic index against new Ancient/Neow relics that exist in
+  `relics.json` but are absent from `events.json` Ancient `relics` mappings.
 - For patch-note-only balance changes, record machine-applicable diffs in `data/sts2-entity-versions.json` or `data/sts2-changes.json` following the existing schema.
 
 ## Verification
