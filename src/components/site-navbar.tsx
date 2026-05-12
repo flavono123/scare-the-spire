@@ -40,6 +40,16 @@ const sts1Items = [
   { href: "/potions", labelKey: "potions", icon: "/images/sts2/nav/stats_potions.png" },
 ] as const;
 
+const devItems = [
+  { href: "/dev/monsters", label: "몬스터 정리", icon: "/images/sts2/nav/happy_cultist.png" },
+  { href: "/dev/events", label: "이벤트", icon: "/images/sts2/nav/question_mark.png" },
+  { href: "/dev/ancients", label: "고대의 존재", icon: "/images/sts2/nav/stats_ancients.png" },
+  { href: "/dev/enchantments", label: "강화", icon: "/images/sts2/enchantments/souls_power.webp" },
+  { href: "/dev/powers", label: "파워", icon: "/images/sts2/powers/unmovable_power.webp" },
+  { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },
+  { href: "/dev/reference", label: "레퍼런스", icon: "/images/sts2/nav/stats_cards.png" },
+] as const;
+
 type CodexLabelKey = {
   [Key in keyof typeof serviceMessages.ko.codex]:
     (typeof serviceMessages.ko.codex)[Key] extends string ? Key : never;
@@ -84,6 +94,18 @@ function localizeNavItems<T extends { href: string; labelKey: CodexLabelKey; ico
     label: options?.useGameLabels
       ? getCodexNavGameLabel(gameLocale, item.labelKey) ?? messages.codex[item.labelKey]
       : messages.codex[item.labelKey],
+    icon: item.icon,
+  }));
+}
+
+function localizePlainNavItems<T extends { href: string; label: string; icon: string }>(
+  items: readonly T[],
+  serviceLocale: ServiceLocale,
+  gameLocale: GameLocale,
+) {
+  return items.map((item) => ({
+    href: localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale),
+    label: item.label,
     icon: item.icon,
   }));
 }
@@ -403,6 +425,7 @@ export function SiteNavbar() {
     serviceLocale,
   );
   const messages = serviceMessages[serviceLocale];
+  const showDevMenu = process.env.NODE_ENV === "development";
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
@@ -467,6 +490,14 @@ export function SiteNavbar() {
             items={localizeNavItems(sts1Items, serviceLocale, gameLocale)}
             align="right"
           />
+          {showDevMenu && (
+            <GameDropdown
+              icon="/images/sts2/nav/question_mark.png"
+              alt="DEV"
+              items={localizePlainNavItems(devItems, serviceLocale, gameLocale)}
+              align="right"
+            />
+          )}
         </div>
       </div>
     </header>
