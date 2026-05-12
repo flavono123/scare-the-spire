@@ -7,6 +7,7 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
+import { getBestiaryDisplayMonsterType } from "@/lib/bestiary-monster-policy";
 import { serviceMessages } from "@/messages/service";
 import type {
   CodexMonster,
@@ -101,7 +102,8 @@ export function MonsterDetail({
   const serviceText = serviceMessages[serviceLocale];
   const commonText = serviceText.codex.common;
   const monsterText = serviceText.codex.monstersView;
-  const typeConfig = MONSTER_TYPE_CONFIG[monster.type];
+  const displayType = getBestiaryDisplayMonsterType(monster.id, monster.type);
+  const typeConfig = MONSTER_TYPE_CONFIG[displayType];
   const meaningfulMoves = useMemo(
     () => monster.bestiaryMoves.filter(
       (m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD",
@@ -183,7 +185,7 @@ export function MonsterDetail({
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <StatBadge label={monsterText.stats.type} value={gameUi.monsterTypes[monster.type].label} color={typeConfig.color} />
+                <StatBadge label={monsterText.stats.type} value={gameUi.monsterTypes[displayType].label} color={typeConfig.color} />
                 {formatHp(monster) && (
                   <StatBadge label={monsterText.stats.hp} value={formatHp(monster)!} />
                 )}

@@ -774,9 +774,8 @@ function mapMonster(
   // imageUrl = Spine render (512x512 portrait) from monsters-render/ dir
   // bossImageUrl = boss encounter token icon from bosses/ dir
   const idLower = kor.id.toLowerCase();
-  const imageUrl = monsterImages.has(idLower)
-    ? `/images/sts2/monsters-render/${idLower}.webp`
-    : null;
+  const imageSlug = resolveMonsterRenderSlug(idLower, kor.image_url, monsterImages);
+  const imageUrl = imageSlug ? `/images/sts2/monsters-render/${imageSlug}.webp` : null;
   const bossImageUrl = bossImages.has(`${idLower}_boss`)
     ? `/images/sts2/bosses/${idLower}_boss.webp`
     : null;
@@ -800,6 +799,19 @@ function mapMonster(
     bossImageUrl,
     spineAsset,
   };
+}
+
+function resolveMonsterRenderSlug(
+  idLower: string,
+  rawImageUrl: string | null,
+  monsterImages: Set<string>,
+): string | null {
+  if (monsterImages.has(idLower)) return idLower;
+
+  const rawSlug = rawImageUrl?.split("/").pop()?.replace(/\.png$/, "") ?? null;
+  if (rawSlug && monsterImages.has(rawSlug)) return rawSlug;
+
+  return null;
 }
 
 function buildBestiaryAnimationMoves(
