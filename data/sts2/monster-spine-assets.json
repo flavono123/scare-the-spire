@@ -1007,13 +1007,15 @@
     "id": "CUBEX_CONSTRUCT",
     "source": "animations/monsters/cubex_construct/cubex_construct",
     "renderStatus": "spine",
-    "renderTags": [],
+    "renderTags": [
+      "variant-skin"
+    ],
     "atlasUrl": "/spine/sts2/monsters/cubex_construct/cubex_construct.atlas",
     "binaryUrl": "/spine/sts2/monsters/cubex_construct/cubex_construct.skel",
     "textureUrls": [
       "/spine/sts2/monsters/cubex_construct/cubex_construct.png"
     ],
-    "skin": null,
+    "skin": "moss1",
     "skins": [
       "default",
       "circleeye",

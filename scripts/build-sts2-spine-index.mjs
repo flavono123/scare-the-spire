@@ -19,6 +19,7 @@ const MONSTER_ALIASES = {
   BOWLBUG_ROCK: { folder: "bowlbug", skin: "rock", tags: ["shared-actor", "variant-skin"] },
   BOWLBUG_SILK: { folder: "bowlbug", skin: "web", tags: ["shared-actor", "variant-skin"] },
   CALCIFIED_CULTIST: { folder: "cultists", skin: "coral", tags: ["shared-actor", "variant-skin"] },
+  CUBEX_CONSTRUCT: { folder: "cubex_construct", skin: "moss1", tags: ["variant-skin"] },
   DAMP_CULTIST: { folder: "cultists", skin: "slug", tags: ["shared-actor", "variant-skin"] },
   FLYCONID: { folder: "flying_mushrooms", tags: ["image-slug-alias"] },
   GLOBE_HEAD: { folder: "globe_head", tags: ["image-slug-alias"] },
