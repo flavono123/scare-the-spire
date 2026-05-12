@@ -11,6 +11,7 @@ import {
   getGameplayCardRarityLabels,
   getGameplayCardTypeLabels,
 } from "./codex-game-ui";
+import { hasPlaceholderBestiaryArt } from "./bestiary-monster-policy";
 import { DEFAULT_GAME_LOCALE_BY_SERVICE, type GameLocale } from "./i18n";
 import {
   CodexCard,
@@ -738,7 +739,8 @@ function mapMonster(
   gameLocale: GameLocale,
   spineAssets: Map<string, MonsterSpineAsset>,
 ): CodexMonster {
-  const spineAsset = spineAssets.get(kor.id) ?? null;
+  const placeholderArt = hasPlaceholderBestiaryArt(kor.id);
+  const spineAsset = placeholderArt ? null : (spineAssets.get(kor.id) ?? null);
   const engMovesById = new Map(eng.moves.map((move) => [move.id, move]));
   const mapMoves = (rawMoves: RawMonsterMove[]): MonsterMove[] => rawMoves.map((km) => {
     const em = engMovesById.get(km.id);
@@ -775,7 +777,7 @@ function mapMonster(
   // bossImageUrl = boss encounter token icon from bosses/ dir
   const idLower = kor.id.toLowerCase();
   const imageSlug = resolveMonsterRenderSlug(idLower, kor.image_url, monsterImages);
-  const imageUrl = imageSlug ? `/images/sts2/monsters-render/${imageSlug}.webp` : null;
+  const imageUrl = !placeholderArt && imageSlug ? `/images/sts2/monsters-render/${imageSlug}.webp` : null;
   const bossImageUrl = bossImages.has(`${idLower}_boss`)
     ? `/images/sts2/bosses/${idLower}_boss.webp`
     : null;

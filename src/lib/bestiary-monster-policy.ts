@@ -27,6 +27,12 @@ export const BESTIARY_TYPE_OVERRIDES: Record<string, MonsterType> = {
   AEONGLASS: "Boss",
 };
 
+export const BESTIARY_PLACEHOLDER_ART_MONSTER_IDS = new Set([
+  "GAS_BOMB",
+  "LIVING_FOG",
+  "THE_FORGOTTEN",
+]);
+
 export const BESTIARY_DEV_MONSTER_GROUPS: BestiaryDevMonsterGroup[] = [
   {
     id: "pet",
@@ -96,6 +102,10 @@ export function getForcedBestiaryAct(monsterId: string): EventAct | null {
 
 export function getBestiaryDisplayMonsterType(monsterId: string, fallback: MonsterType): MonsterType {
   return BESTIARY_TYPE_OVERRIDES[monsterId] ?? fallback;
+}
+
+export function hasPlaceholderBestiaryArt(monsterId: string): boolean {
+  return BESTIARY_PLACEHOLDER_ART_MONSTER_IDS.has(monsterId);
 }
 
 export function getBestiaryDevMonsterGroup(monsterId: string): BestiaryDevMonsterGroup | null {
