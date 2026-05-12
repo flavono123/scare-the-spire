@@ -44,7 +44,6 @@ const devItems = [
   { href: "/dev/admin", label: "어드민", icon: "/images/sts2/nav/question_mark.png" },
   { href: "/dev/monsters", label: "몬스터 정리", icon: "/images/sts2/nav/happy_cultist.png" },
   { href: "/dev/og-images", label: "OG 이미지 프리뷰", icon: "/images/sts2/nav/patch_notes_icon.png" },
-  { href: "/dev/run-replay", label: "런 리플레이", icon: "/images/sts2/nav/submenu_compendium.png" },
   { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },
   { href: "/dev/reference", label: "레퍼런스", icon: "/images/sts2/nav/stats_cards.png" },
 ] as const;
