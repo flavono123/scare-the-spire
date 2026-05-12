@@ -147,7 +147,9 @@ function resolveRequestedIds(parsed) {
 
 async function renderMonsterPortrait({ id, outputPath, baseUrl, browser }) {
   const stageSize = args.stageSize;
-  const tmpPng = path.join(os.tmpdir(), `sts2-monster-render-${id.toLowerCase()}-${Date.now()}.png`);
+  const tmpBase = path.join(os.tmpdir(), `sts2-monster-render-${id.toLowerCase()}-${Date.now()}`);
+  const tmpBlackPng = `${tmpBase}-black.png`;
+  const tmpWhitePng = `${tmpBase}-white.png`;
   const page = await browser.newPage({
     viewport: { width: stageSize, height: stageSize },
     deviceScaleFactor: 1,
@@ -159,14 +161,20 @@ async function renderMonsterPortrait({ id, outputPath, baseUrl, browser }) {
         console.warn(`${id} browser error: ${message.text()}`);
       }
     });
-    await page.goto(`${baseUrl}/render/${id}`);
-    await page.evaluate(() => window.renderDone);
-    await page.screenshot({ path: tmpPng, omitBackground: true });
-    cropAndWriteWebp(tmpPng, outputPath, args.padding);
+    await captureMatte(page, `${baseUrl}/render/${id}?bg=000000`, tmpBlackPng);
+    await captureMatte(page, `${baseUrl}/render/${id}?bg=ffffff`, tmpWhitePng);
+    writeWebpFromMattes(tmpBlackPng, tmpWhitePng, outputPath, args.padding);
   } finally {
     await page.close();
-    fs.rmSync(tmpPng, { force: true });
+    fs.rmSync(tmpBlackPng, { force: true });
+    fs.rmSync(tmpWhitePng, { force: true });
   }
+}
+
+async function captureMatte(page, url, outputPath) {
+  await page.goto(url);
+  await page.evaluate(() => window.renderDone);
+  await page.screenshot({ path: outputPath, omitBackground: false });
 }
 
 function createStaticServer() {
@@ -187,6 +195,7 @@ function createStaticServer() {
     const renderMatch = requestUrl.pathname.match(/^\/render\/([^/]+)$/);
     if (renderMatch) {
       const id = decodeURIComponent(renderMatch[1]).toUpperCase();
+      const background = normalizeBackground(requestUrl.searchParams.get("bg"));
       const asset = spineAssetsById.get(id);
       const monster = monstersById.get(id);
       if (!asset || !monster) {
@@ -195,7 +204,7 @@ function createStaticServer() {
         return;
       }
       response.setHeader("content-type", "text/html; charset=utf-8");
-      response.end(renderHtml(monster, asset));
+      response.end(renderHtml(monster, asset, background));
       return;
     }
 
@@ -208,7 +217,7 @@ function createStaticServer() {
   });
 }
 
-function renderHtml(monster, asset) {
+function renderHtml(monster, asset, background) {
   const animation = asset.idleAnimation || asset.animations[0];
   return `<!doctype html>
 <html>
@@ -220,7 +229,7 @@ function renderHtml(monster, asset) {
       width: ${args.stageSize}px;
       height: ${args.stageSize}px;
       overflow: hidden;
-      background: transparent;
+      background: #${background};
     }
     #stage {
       position: absolute;
@@ -248,7 +257,7 @@ function renderHtml(monster, asset) {
           skins: ${JSON.stringify(asset.skins)},
           alpha: true,
           backgroundColor: "00000000",
-          preserveDrawingBuffer: true,
+          preserveDrawingBuffer: false,
           premultipliedAlpha: false,
           showControls: false,
           showLoading: false,
@@ -279,7 +288,7 @@ function renderHtml(monster, asset) {
 </html>`;
 }
 
-function cropAndWriteWebp(inputPng, outputPath, padding) {
+function writeWebpFromMattes(blackPng, whitePng, outputPath, padding) {
   const result = spawnSync(
     "python3",
     [
@@ -288,11 +297,25 @@ function cropAndWriteWebp(inputPng, outputPath, padding) {
 from PIL import Image
 import sys
 
-src, dst, raw_padding = sys.argv[1], sys.argv[2], sys.argv[3]
+black_src, white_src, dst, raw_padding = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 padding = int(raw_padding)
-image = Image.open(src).convert("RGBA")
-alpha = image.getchannel("A")
-bbox = alpha.getbbox()
+black = Image.open(black_src).convert("RGB")
+white = Image.open(white_src).convert("RGB")
+if black.size != white.size:
+    raise SystemExit("matte screenshots have different sizes")
+
+pixels = []
+for black_pixel, white_pixel in zip(black.getdata(), white.getdata()):
+    diff = max(max(0, white_pixel[channel] - black_pixel[channel]) for channel in range(3))
+    alpha = max(0, min(255, 255 - diff))
+    if alpha == 0:
+        pixels.append((0, 0, 0, 0))
+    else:
+        pixels.append(tuple(max(0, min(255, round(black_pixel[channel] * 255 / alpha))) for channel in range(3)) + (alpha,))
+
+image = Image.new("RGBA", black.size)
+image.putdata(pixels)
+bbox = image.getchannel("A").getbbox()
 if bbox is None:
     raise SystemExit("rendered image is fully transparent")
 left, top, right, bottom = bbox
@@ -301,9 +324,10 @@ top = max(0, top - padding)
 right = min(image.width, right + padding)
 bottom = min(image.height, bottom + padding)
 cropped = image.crop((left, top, right, bottom))
-cropped.save(dst, "WEBP", lossless=True, quality=95, method=6)
+cropped.save(dst, "WEBP", lossless=True, quality=95, method=6, exact=True)
 `,
-      inputPng,
+      blackPng,
+      whitePng,
       outputPath,
       String(padding),
     ],
@@ -320,6 +344,11 @@ cropped.save(dst, "WEBP", lossless=True, quality=95, method=6)
   if (result.status !== 0) {
     throw new Error(result.stderr || result.stdout || "failed to crop rendered portrait");
   }
+}
+
+function normalizeBackground(raw) {
+  if (raw && /^[0-9a-fA-F]{6}$/.test(raw)) return raw.toLowerCase();
+  return "000000";
 }
 
 function ensurePillowAvailable() {
