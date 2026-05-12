@@ -156,7 +156,7 @@ export function MonsterDetail({
               className="absolute bottom-10 left-[18%] right-[18%] h-8 rounded-[50%] blur-md"
               style={{ backgroundColor: hexToRgba(selectedAccent, 0.18) }}
             />
-            {imageSrc || monster.spineAsset ? (
+            {imageSrc ? (
               <MonsterSpineStage
                 key={monster.id}
                 asset={monster.spineAsset}
