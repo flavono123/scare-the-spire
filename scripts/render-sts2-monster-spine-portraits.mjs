@@ -20,11 +20,7 @@ const spinePlayerPath = path.join(
 const DEFAULT_STAGE_SIZE = 512;
 const DEFAULT_PADDING = 20;
 const DEFAULT_SETTLE_MS = 800;
-const PLACEHOLDER_ART_MONSTER_IDS = new Set([
-  "GAS_BOMB",
-  "LIVING_FOG",
-  "THE_FORGOTTEN",
-]);
+const PLACEHOLDER_ART_MONSTER_IDS = new Set();
 
 const args = parseArgs(process.argv.slice(2));
 const monsters = readJson(monstersPath);

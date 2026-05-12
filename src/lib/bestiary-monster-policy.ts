@@ -27,11 +27,7 @@ export const BESTIARY_TYPE_OVERRIDES: Record<string, MonsterType> = {
   AEONGLASS: "Boss",
 };
 
-export const BESTIARY_PLACEHOLDER_ART_MONSTER_IDS = new Set([
-  "GAS_BOMB",
-  "LIVING_FOG",
-  "THE_FORGOTTEN",
-]);
+export const BESTIARY_PLACEHOLDER_ART_MONSTER_IDS = new Set<string>();
 
 export const BESTIARY_DEV_MONSTER_GROUPS: BestiaryDevMonsterGroup[] = [
   {
