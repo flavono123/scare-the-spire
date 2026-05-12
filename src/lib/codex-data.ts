@@ -740,7 +740,7 @@ function mapMonster(
   spineAssets: Map<string, MonsterSpineAsset>,
 ): CodexMonster {
   const placeholderArt = hasPlaceholderBestiaryArt(kor.id);
-  const spineAsset = placeholderArt ? null : (spineAssets.get(kor.id) ?? null);
+  const spineAsset = spineAssets.get(kor.id) ?? null;
   const engMovesById = new Map(eng.moves.map((move) => [move.id, move]));
   const mapMoves = (rawMoves: RawMonsterMove[]): MonsterMove[] => rawMoves.map((km) => {
     const em = engMovesById.get(km.id);
