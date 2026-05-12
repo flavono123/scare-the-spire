@@ -625,8 +625,8 @@ export interface CodexEncounter {
 export const MONSTER_TYPE_ORDER: MonsterType[] = ["Normal", "Elite", "Boss"];
 
 export const MONSTER_TYPE_CONFIG: Record<MonsterType, { label: string; color: string; description: string }> = {
-  Normal: { label: "일반", color: "#b0b0b0", description: "첨탑에서 가장 자주 만나게 되는 몬스터들입니다." },
-  Elite: { label: "엘리트", color: "#ffd740", description: "강력한 능력을 가진 상위 몬스터들입니다." },
+  Normal: { label: "일반", color: "#f5f0df", description: "첨탑에서 가장 자주 만나게 되는 몬스터들입니다." },
+  Elite: { label: "엘리트", color: "#a855f7", description: "강력한 능력을 가진 상위 몬스터들입니다." },
   Boss: { label: "보스", color: "#ef5350", description: "각 막의 끝에서 기다리는 강대한 적들입니다." },
 };
 
@@ -637,7 +637,7 @@ export const MONSTER_TYPE_ALIASES: Record<string, MonsterType> = {
 };
 
 export const ENCOUNTER_ROOM_TYPE_CONFIG: Record<EncounterRoomType, { label: string; color: string }> = {
-  Monster: { label: "일반 전투", color: "#b0b0b0" },
-  Elite: { label: "엘리트 전투", color: "#ffd740" },
+  Monster: { label: "일반 전투", color: "#f5f0df" },
+  Elite: { label: "엘리트 전투", color: "#a855f7" },
   Boss: { label: "보스 전투", color: "#ef5350" },
 };
