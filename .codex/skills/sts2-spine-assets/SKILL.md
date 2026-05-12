@@ -51,6 +51,7 @@ Do not create patch-versioned Spine folders by default. These files represent th
 - Godot-extracted PNGs are rendered as straight alpha in the web player. Do not switch `premultipliedAlpha` back on unless the source extraction starts producing premultiplied textures.
 - If WebGL, the Spine runtime, an atlas, a skeleton, a skin, or a selected animation fails, keep the existing static `monsters-render` image visible.
 - `moveAnimations` are candidates from skeleton animation names, bestiary move ids, damage/block vars, and semantic move words such as buff, shield, goop, gaze, and charge. They are not a full recreation of the Godot combat scripting layer.
+- The generated index mirrors the game's base bestiary rule: when a monster skeleton has exact `revive`, `hurt`, or `die` animations, expose them as non-turn preview actions after the monster's turn moves.
 - `moveEffects` may play extracted Spine VFX when a move name clearly matches a lightweight VFX asset. Treat this as a best-effort visual overlay, not exact in-game timing, positioning, particles, shaders, or hit logic.
 - `spine-vfx-assets.json` keeps unsupported VFX with `usable: false` and `parseError`; do not map those to moves until the web runtime can render them correctly.
 
