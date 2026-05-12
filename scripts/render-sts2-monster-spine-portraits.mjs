@@ -82,7 +82,7 @@ try {
       continue;
     }
 
-    await renderMonsterPortrait({ id, monster, asset, outputPath, baseUrl, browser });
+    await renderMonsterPortrait({ id, outputPath, baseUrl, browser });
     rendered += 1;
     console.log(`rendered ${id} -> ${path.relative(repoRoot, outputPath)}`);
   }
@@ -145,7 +145,7 @@ function resolveRequestedIds(parsed) {
   return [...new Set(parsed.ids)];
 }
 
-async function renderMonsterPortrait({ id, monster, asset, outputPath, baseUrl, browser }) {
+async function renderMonsterPortrait({ id, outputPath, baseUrl, browser }) {
   const stageSize = args.stageSize;
   const tmpPng = path.join(os.tmpdir(), `sts2-monster-render-${id.toLowerCase()}-${Date.now()}.png`);
   const page = await browser.newPage({
