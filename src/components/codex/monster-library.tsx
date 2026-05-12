@@ -144,8 +144,7 @@ export function MonsterLibrary({
       }
     }
     for (const [monsterId, act] of Object.entries(BESTIARY_FORCED_ACTS)) {
-      if (!map.has(monsterId)) map.set(monsterId, new Set());
-      map.get(monsterId)!.add(act);
+      map.set(monsterId, new Set([act]));
     }
     return map;
   }, [encounters]);

@@ -20,6 +20,7 @@ export const BESTIARY_FORCED_ACTS: Record<string, EventAct> = {
   GUARDBOT: "Act 3 - Glory",
   NOISEBOT: "Act 3 - Glory",
   STABBOT: "Act 3 - Glory",
+  WRIGGLER: "Act 1 - Overgrowth",
   ZAPBOT: "Act 3 - Glory",
 };
 
