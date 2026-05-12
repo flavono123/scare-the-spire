@@ -20,6 +20,11 @@ const spinePlayerPath = path.join(
 const DEFAULT_STAGE_SIZE = 512;
 const DEFAULT_PADDING = 20;
 const DEFAULT_SETTLE_MS = 800;
+const PLACEHOLDER_ART_MONSTER_IDS = new Set([
+  "GAS_BOMB",
+  "LIVING_FOG",
+  "THE_FORGOTTEN",
+]);
 
 const args = parseArgs(process.argv.slice(2));
 const monsters = readJson(monstersPath);
@@ -64,6 +69,11 @@ try {
       skipped += 1;
       continue;
     }
+    if (PLACEHOLDER_ART_MONSTER_IDS.has(id) && !args.includePlaceholderArt) {
+      console.warn(`skip ${id}: Spine texture is marked as placeholder art`);
+      skipped += 1;
+      continue;
+    }
 
     const outputSlug = monsterRenderSlug(monster);
     const outputPath = path.join(outDir, `${outputSlug}.webp`);
@@ -87,6 +97,7 @@ function parseArgs(argv) {
   const parsed = {
     all: false,
     force: false,
+    includePlaceholderArt: false,
     ids: [],
     padding: DEFAULT_PADDING,
     settleMs: DEFAULT_SETTLE_MS,
@@ -97,6 +108,7 @@ function parseArgs(argv) {
     const arg = argv[i];
     if (arg === "--all") parsed.all = true;
     else if (arg === "--force") parsed.force = true;
+    else if (arg === "--include-placeholder-art") parsed.includePlaceholderArt = true;
     else if (arg === "--id") parsed.ids.push(argv[++i]);
     else if (arg.startsWith("--id=")) parsed.ids.push(arg.slice("--id=".length));
     else if (arg === "--ids") parsed.ids.push(...argv[++i].split(","));
