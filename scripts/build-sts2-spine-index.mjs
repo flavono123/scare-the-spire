@@ -22,6 +22,7 @@ const MONSTER_ALIASES = {
   DAMP_CULTIST: { folder: "cultists", skin: "slug", tags: ["shared-actor", "variant-skin"] },
   FLYCONID: { folder: "flying_mushrooms", tags: ["image-slug-alias"] },
   GLOBE_HEAD: { folder: "globe_head", tags: ["image-slug-alias"] },
+  SCROLL_OF_BITING: { folder: "scroll_of_biting", skin: "skin1", tags: ["variant-skin"] },
   SKULKING_COLONY: { folder: "skulking_colony", tags: ["image-slug-alias"] },
   TORCH_HEAD_AMALGAM: { folder: "torch_head_amalgam", tags: ["image-slug-alias"] },
 };

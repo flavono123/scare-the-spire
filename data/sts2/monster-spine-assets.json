@@ -3942,13 +3942,15 @@
     "id": "SCROLL_OF_BITING",
     "source": "animations/monsters/scroll_of_biting/scroll_of_biting",
     "renderStatus": "spine",
-    "renderTags": [],
+    "renderTags": [
+      "variant-skin"
+    ],
     "atlasUrl": "/spine/sts2/monsters/scroll_of_biting/scroll_of_biting.atlas",
     "binaryUrl": "/spine/sts2/monsters/scroll_of_biting/scroll_of_biting.skel",
     "textureUrls": [
       "/spine/sts2/monsters/scroll_of_biting/scroll_of_biting.png"
     ],
-    "skin": null,
+    "skin": "skin1",
     "skins": [
       "default",
       "skin1",
