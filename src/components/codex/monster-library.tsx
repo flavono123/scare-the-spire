@@ -349,7 +349,7 @@ export function MonsterLibrary({
           {sections.map((section) => (
             <div key={section.key} className="mb-8 last:mb-0">
               <div className="mb-3 flex items-baseline gap-2">
-                <span className="text-lg font-bold font-[family-name:var(--font-spectral)]" style={{ color: section.color }}>
+                <span className="font-[family-name:var(--font-gc-batang)] text-lg font-bold" style={{ color: section.color }}>
                   {section.label}:
                 </span>
                 <span className="text-xs text-gray-600">({section.monsters.length})</span>
