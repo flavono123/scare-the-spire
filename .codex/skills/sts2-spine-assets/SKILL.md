@@ -37,7 +37,12 @@ Do not create patch-versioned Spine folders by default. These files represent th
    ```bash
    node scripts/build-sts2-spine-index.mjs
    ```
-5. Review generated coverage before committing:
+5. Refresh static monster portraits for any Spine actors whose `monsters-render` image is stale or missing:
+   ```bash
+   pnpm sts2:render-monsters -- --ids BRUTE_RUBY_RAIDER,SKULKING_COLONY
+   ```
+   Use `--all --force` only for deliberate broad refreshes. The renderer uses a black/white matte pass to avoid transparent WebGL readback artifacts. It skips known placeholder-art actors unless `--include-placeholder-art` is passed for investigation.
+6. Review generated coverage before committing:
    ```bash
    find public/spine/sts2/monsters -mindepth 1 -maxdepth 1 -type d | wc -l
    find public/spine/sts2/vfx -mindepth 1 -maxdepth 1 -type d | wc -l
