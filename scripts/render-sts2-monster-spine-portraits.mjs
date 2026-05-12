@@ -23,7 +23,6 @@ const DEFAULT_SETTLE_MS = 800;
 const PLACEHOLDER_ART_MONSTER_IDS = new Set([
   "GAS_BOMB",
   "LIVING_FOG",
-  "THE_LOST",
   "THE_FORGOTTEN",
 ]);
 

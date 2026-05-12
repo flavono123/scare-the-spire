@@ -30,7 +30,6 @@ export const BESTIARY_TYPE_OVERRIDES: Record<string, MonsterType> = {
 export const BESTIARY_PLACEHOLDER_ART_MONSTER_IDS = new Set([
   "GAS_BOMB",
   "LIVING_FOG",
-  "THE_LOST",
   "THE_FORGOTTEN",
 ]);
 
