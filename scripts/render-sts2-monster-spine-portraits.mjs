@@ -106,6 +106,7 @@ function parseArgs(argv) {
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
+    if (arg === "--") continue;
     if (arg === "--all") parsed.all = true;
     else if (arg === "--force") parsed.force = true;
     else if (arg === "--include-placeholder-art") parsed.includePlaceholderArt = true;
