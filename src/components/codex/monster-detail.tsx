@@ -33,6 +33,14 @@ interface MoveSummary {
   tone: MoveTone;
 }
 
+interface TransitionTableRow {
+  key: string;
+  from: string;
+  to: string;
+  chance: number | null;
+  isStart: boolean;
+}
+
 function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
     <div className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
@@ -101,6 +109,8 @@ export function MonsterDetail({
     [monster],
   );
   const moveSummaries = useMemo(() => buildMoveSummaries(monster, meaningfulMoves), [monster, meaningfulMoves]);
+  const transitionRows = useMemo(() => buildTransitionTableRows(monster), [monster]);
+  const firstMoveId = monster.moveGraph?.initial ?? null;
   const [selectedMoveId, setSelectedMoveId] = useState<string | null>(null);
   const selectedMove = moveSummaries.find((summary) => summary.move.id === selectedMoveId) ?? moveSummaries[0] ?? null;
   const selectedAccent = selectedMove ? getMoveToneColor(selectedMove.tone, typeConfig.color) : typeConfig.color;
@@ -305,44 +315,62 @@ export function MonsterDetail({
         </section>
       </div>
 
-      {monster.moveGraph && monster.moveGraph.transitions.length > 0 && (
+      {transitionRows.length > 0 && (
         <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
           <div className="mb-3 flex items-center justify-between gap-3">
             <h2 className="text-sm font-bold text-gray-300">{monsterText.actionGraph}</h2>
-            {monster.moveGraph.initial && (
+            {firstMoveId && (
               <span className="text-[10px] text-gray-500">
-                {monsterText.firstAction}: {getMoveName(monster, monster.moveGraph.initial)}
+                {monsterText.firstAction}: {getMoveName(monster, firstMoveId)}
               </span>
             )}
           </div>
-          <div className="flex flex-col gap-2">
-            {groupMoveTransitions(monster).map((group) => (
-              <div key={group.from} className="rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2">
-                <div className="mb-2 text-xs font-medium text-gray-300">
-                  {group.from === "__START__" ? monsterText.firstAction : getMoveName(monster, group.from)}
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  {group.transitions.map((transition) => (
-                    <div key={`${transition.from}-${transition.to}-${transition.chance ?? "unknown"}`} className="grid grid-cols-[minmax(6rem,1fr)_minmax(5rem,8rem)] items-center gap-3">
-                      <span className="truncate text-xs text-gray-400">{getMoveName(monster, transition.to)}</span>
-                      <span className="flex items-center gap-2">
-                        <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
-                          <span
-                            className="block h-full rounded-full bg-yellow-400/70"
-                            style={{ width: `${transition.chance ?? 100}%` }}
-                          />
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[34rem] border-separate border-spacing-y-1 text-left">
+              <thead>
+                <tr className="text-[10px] uppercase tracking-wide text-gray-500">
+                  <th className="px-3 py-1 font-medium">{monsterText.currentAction}</th>
+                  <th className="px-3 py-1 font-medium">{monsterText.nextActions}</th>
+                  <th className="w-40 px-3 py-1 font-medium">{monsterText.chance}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transitionRows.map((row) => {
+                  const chance = row.chance ?? 100;
+
+                  return (
+                    <tr key={row.key} className="text-xs">
+                      <td className="rounded-l-md bg-white/[0.03] px-3 py-2">
+                        <span className={row.isStart ? "font-semibold text-blue-300" : "text-gray-300"}>
+                          {row.isStart ? monsterText.startPoint : getMoveName(monster, row.from)}
                         </span>
-                        <span className="w-9 text-right text-[10px] tabular-nums text-gray-500">
-                          {transition.chance == null ? "?" : `${transition.chance}%`}
+                      </td>
+                      <td className="bg-white/[0.03] px-3 py-2 text-gray-200">
+                        {getMoveName(monster, row.to)}
+                      </td>
+                      <td className="rounded-r-md bg-white/[0.03] px-3 py-2">
+                        <span className="flex items-center gap-2">
+                          <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
+                            <span
+                              className="block h-full rounded-full"
+                              style={{
+                                width: `${chance}%`,
+                                backgroundColor: row.isStart ? BESTIARY_START_COLOR : selectedAccent,
+                              }}
+                            />
+                          </span>
+                          <span className="w-9 text-right text-[10px] tabular-nums text-gray-500">
+                            {row.chance == null ? "?" : `${row.chance}%`}
+                          </span>
                         </span>
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-          {monster.moveGraph.confidence === "partial" && (
+          {monster.moveGraph?.confidence === "partial" && (
             <p className="mt-3 text-[11px] leading-relaxed text-gray-500">{monsterText.graphPartial}</p>
           )}
         </div>
@@ -456,6 +484,8 @@ export function MonsterDetail({
   );
 }
 
+const BESTIARY_START_COLOR = "#60a5fa";
+
 function formatHp(monster: CodexMonster): string | null {
   if (monster.minHp == null || monster.minHp === 9999) return null;
   if (monster.maxHp != null && monster.maxHp !== monster.minHp) {
@@ -533,14 +563,32 @@ function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-function groupMoveTransitions(monster: CodexMonster) {
-  const byFrom = new Map<string, NonNullable<CodexMonster["moveGraph"]>["transitions"]>();
-  for (const transition of monster.moveGraph?.transitions ?? []) {
-    const bucket = byFrom.get(transition.from) ?? [];
-    bucket.push(transition);
-    byFrom.set(transition.from, bucket);
+function buildTransitionTableRows(monster: CodexMonster): TransitionTableRow[] {
+  const transitions = monster.moveGraph?.transitions ?? [];
+  const hasExplicitStart = transitions.some((transition) => transition.from === "__START__");
+  const rows: TransitionTableRow[] = [];
+
+  if (!hasExplicitStart && monster.moveGraph?.initial) {
+    rows.push({
+      key: `__START__-${monster.moveGraph.initial}`,
+      from: "__START__",
+      to: monster.moveGraph.initial,
+      chance: 100,
+      isStart: true,
+    });
   }
-  return Array.from(byFrom.entries()).map(([from, transitions]) => ({ from, transitions }));
+
+  transitions.forEach((transition, index) => {
+    rows.push({
+      key: `${transition.from}-${transition.to}-${transition.chance ?? "unknown"}-${index}`,
+      from: transition.from,
+      to: transition.to,
+      chance: transition.chance,
+      isStart: transition.from === "__START__",
+    });
+  });
+
+  return rows;
 }
 
 function getMoveName(monster: CodexMonster, moveId: string): string {
