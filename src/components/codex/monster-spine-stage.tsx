@@ -51,6 +51,7 @@ export function MonsterSpineStage({
       .then(({ SpinePlayer: SpinePlayerCtor }) => {
         if (disposed || !containerRef.current) return;
         playerCtorRef.current = SpinePlayerCtor;
+        const viewport = getMonsterViewport(asset.id);
 
         player = new SpinePlayerCtor(parent, {
           binaryUrl: asset.binaryUrl,
@@ -65,13 +66,7 @@ export function MonsterSpineStage({
           premultipliedAlpha: false,
           showControls: false,
           showLoading: false,
-          viewport: {
-            padLeft: "4%",
-            padRight: "4%",
-            padTop: "4%",
-            padBottom: "4%",
-            transitionTime: 0.12,
-          },
+          viewport,
           success: (loadedPlayer) => {
             if (disposed) return;
             playerRef.current = loadedPlayer;
@@ -238,6 +233,26 @@ function resolveSpineEffect(
   moveId: string,
 ): MonsterSpineEffectAsset | null {
   return asset.moveEffects[moveId]?.find((effect) => effect.usable !== false) ?? null;
+}
+
+function getMonsterViewport(monsterId: string): SpinePlayerConfig["viewport"] {
+  if (monsterId === "CUBEX_CONSTRUCT") {
+    return {
+      padLeft: "18%",
+      padRight: "18%",
+      padTop: "22%",
+      padBottom: "18%",
+      transitionTime: 0.12,
+    };
+  }
+
+  return {
+    padLeft: "4%",
+    padRight: "4%",
+    padTop: "4%",
+    padBottom: "4%",
+    transitionTime: 0.12,
+  };
 }
 
 function clearVfx(
