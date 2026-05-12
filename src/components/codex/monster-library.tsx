@@ -22,6 +22,11 @@ import {
   parseCodexSearch,
   type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
+import {
+  BESTIARY_FORCED_ACTS,
+  getBestiaryDisplayMonsterType,
+  isPublicBestiaryMonster,
+} from "@/lib/bestiary-monster-policy";
 import { SearchBar } from "./search-bar";
 import { FilterSection } from "./codex-filters";
 import { MonsterSpineStage } from "./monster-spine-stage";
@@ -138,6 +143,10 @@ export function MonsterLibrary({
         map.get(m.id)!.add(enc.act ?? "none");
       }
     }
+    for (const [monsterId, act] of Object.entries(BESTIARY_FORCED_ACTS)) {
+      if (!map.has(monsterId)) map.set(monsterId, new Set());
+      map.get(monsterId)!.add(act);
+    }
     return map;
   }, [encounters]);
 
@@ -154,11 +163,11 @@ export function MonsterLibrary({
 
   // Filter monsters
   const filteredMonsters = useMemo(() => {
-    let result = monsters.filter((m) => m.showInCompendium);
+    let result = monsters.filter((m) => m.showInCompendium && isPublicBestiaryMonster(m.id));
 
     // Type filter
     if (selectedTypes.size > 0) {
-      result = result.filter((m) => selectedTypes.has(m.type));
+      result = result.filter((m) => selectedTypes.has(getDisplayMonsterType(m)));
     }
 
     // Act filter
@@ -173,7 +182,7 @@ export function MonsterLibrary({
     // Search tokens
     for (const token of parsedSearch.tokens) {
       if (token.type === "monsterType") {
-        result = result.filter((m) => m.type === token.value);
+        result = result.filter((m) => getDisplayMonsterType(m) === token.value);
       } else if (token.type === "act") {
         result = result.filter((m) => {
           const acts = monsterActs.get(m.id);
@@ -224,7 +233,7 @@ export function MonsterLibrary({
       monsters: filteredMonsters
         .filter((monster) => getPrimaryMonsterAct(monster.id) === act)
         .sort((a, b) => {
-          const typeDiff = getMonsterTypeSortOrder(a.type) - getMonsterTypeSortOrder(b.type);
+          const typeDiff = getMonsterTypeSortOrder(getDisplayMonsterType(a)) - getMonsterTypeSortOrder(getDisplayMonsterType(b));
           if (typeDiff !== 0) return typeDiff;
           return a.name.localeCompare(b.name, "ko");
         }),
@@ -352,6 +361,7 @@ export function MonsterLibrary({
                   <MonsterTile
                     key={monster.id}
                     monster={monster}
+                    displayType={getDisplayMonsterType(monster)}
                     onClick={() => setSelectedMonster(monster)}
                   />
                 ))}
@@ -394,12 +404,14 @@ export function MonsterLibrary({
 // Monster tile - text-based since most monsters lack images
 function MonsterTile({
   monster,
+  displayType,
   onClick,
 }: {
   monster: CodexMonster;
+  displayType: MonsterType;
   onClick?: () => void;
 }) {
-  const typeConfig = MONSTER_TYPE_CONFIG[monster.type];
+  const typeConfig = MONSTER_TYPE_CONFIG[displayType];
   const [hoverMoveId, setHoverMoveId] = useState<string | null | undefined>(undefined);
   const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
   const hovering = hoverMoveId !== undefined;
@@ -517,6 +529,10 @@ function getActSortOrder(act: EventAct | null): number {
 function getMonsterTypeSortOrder(type: MonsterType): number {
   const index = MONSTER_TYPE_ORDER.indexOf(type);
   return index === -1 ? 99 : index;
+}
+
+function getDisplayMonsterType(monster: CodexMonster): MonsterType {
+  return getBestiaryDisplayMonsterType(monster.id, monster.type);
 }
 
 function getMeaningfulMoves(monster: CodexMonster) {
