@@ -174,11 +174,11 @@ export function MonsterDetail({
           </div>
 
           <div className="p-4 sm:p-5">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-col gap-4">
+              <div className="flex min-w-0 items-center gap-3">
                 <div className="h-11 w-1.5 rounded-full" style={{ backgroundColor: typeConfig.color }} />
-                <div>
-                  <h1 className="text-3xl font-bold leading-tight text-gray-100 sm:text-4xl">{monster.name}</h1>
+                <div className="min-w-0">
+                  <h1 className="break-keep text-3xl font-bold leading-tight text-gray-100 sm:text-4xl">{monster.name}</h1>
                   <p className="text-sm text-gray-500">{monster.nameEn}</p>
                 </div>
               </div>
