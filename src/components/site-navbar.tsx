@@ -41,11 +41,10 @@ const sts1Items = [
 ] as const;
 
 const devItems = [
+  { href: "/dev/admin", label: "어드민", icon: "/images/sts2/nav/question_mark.png" },
   { href: "/dev/monsters", label: "몬스터 정리", icon: "/images/sts2/nav/happy_cultist.png" },
-  { href: "/dev/events", label: "이벤트", icon: "/images/sts2/nav/question_mark.png" },
-  { href: "/dev/ancients", label: "고대의 존재", icon: "/images/sts2/nav/stats_ancients.png" },
-  { href: "/dev/enchantments", label: "강화", icon: "/images/sts2/enchantments/souls_power.webp" },
-  { href: "/dev/powers", label: "파워", icon: "/images/sts2/powers/unmovable_power.webp" },
+  { href: "/dev/og-images", label: "OG 이미지 프리뷰", icon: "/images/sts2/nav/patch_notes_icon.png" },
+  { href: "/dev/run-replay", label: "런 리플레이", icon: "/images/sts2/nav/submenu_compendium.png" },
   { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },
   { href: "/dev/reference", label: "레퍼런스", icon: "/images/sts2/nav/stats_cards.png" },
 ] as const;
