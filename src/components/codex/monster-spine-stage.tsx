@@ -17,6 +17,14 @@ interface MonsterSpineStageProps {
 
 type LoadState = "loading" | "ready" | "error";
 type SpinePlayerCtor = new (element: HTMLElement, config: SpinePlayerConfig) => SpinePlayer;
+type SmokeOverlayVariant = "purple-fog" | "gas-bomb" | "lost-fog";
+
+const SMOKE_OVERLAY_BY_MONSTER_ID: Record<string, SmokeOverlayVariant> = {
+  GAS_BOMB: "gas-bomb",
+  LIVING_FOG: "purple-fog",
+  THE_FORGOTTEN: "lost-fog",
+  THE_LOST: "lost-fog",
+};
 
 export function MonsterSpineStage({
   asset,
@@ -35,6 +43,7 @@ export function MonsterSpineStage({
   const playerCtorRef = useRef<SpinePlayerCtor | null>(null);
   const [loadState, setLoadState] = useState<LoadState>(asset ? "loading" : "error");
   const [availableAnimations, setAvailableAnimations] = useState<string[]>(asset?.animations ?? []);
+  const smokeOverlay = asset ? SMOKE_OVERLAY_BY_MONSTER_ID[asset.id] : null;
   const selectedAnimation = useMemo(
     () => asset ? resolveSpineAnimation(asset, selectedMoveId, availableAnimations) : null,
     [asset, availableAnimations, selectedMoveId],
@@ -65,6 +74,9 @@ export function MonsterSpineStage({
           premultipliedAlpha: false,
           showControls: false,
           showLoading: false,
+          updateWorldTransform: (activePlayer) => {
+            suppressPlaceholderSmokeSlots(activePlayer, asset.id);
+          },
           viewport: {
             padLeft: "4%",
             padRight: "4%",
@@ -75,6 +87,7 @@ export function MonsterSpineStage({
           success: (loadedPlayer) => {
             if (disposed) return;
             playerRef.current = loadedPlayer;
+            suppressPlaceholderSmokeSlots(loadedPlayer, asset.id);
             setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? asset.animations);
             setLoadState("ready");
           },
@@ -208,6 +221,15 @@ export function MonsterSpineStage({
         className="sts2-spine-stage pointer-events-none absolute inset-0 z-30"
         aria-hidden
       />
+      {smokeOverlay && loadState === "ready" && (
+        <div className={`sts2-monster-smoke sts2-monster-smoke--${smokeOverlay} pointer-events-none absolute inset-0 z-[25]`} aria-hidden>
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+      )}
       {showLoadingLabel && asset && loadState === "loading" && (
         <div className="absolute bottom-4 right-4 z-40 rounded bg-black/30 px-2 py-1 text-[10px] text-gray-400">
           Spine loading
@@ -239,6 +261,33 @@ function resolveSpineEffect(
 ): MonsterSpineEffectAsset | null {
   return asset.moveEffects[moveId]?.find((effect) => effect.usable !== false) ?? null;
 }
+
+function suppressPlaceholderSmokeSlots(player: SpinePlayer, monsterId: string) {
+  if (!SMOKE_OVERLAY_BY_MONSTER_ID[monsterId]) return;
+
+  const slots = player.skeleton?.slots as SpineSlotLike[] | undefined;
+  if (!slots) return;
+
+  for (const slot of slots) {
+    const slotName = slot.data?.name ?? "";
+    const attachmentName = slot.attachment?.name ?? "";
+    if (!/smoke/i.test(`${slotName} ${attachmentName}`)) continue;
+
+    try {
+      slot.setAttachment?.(null);
+    } catch {
+      // Spine can reject null attachments on some generated runtimes; alpha hiding still works.
+    }
+    if (slot.color) slot.color.a = 0;
+  }
+}
+
+type SpineSlotLike = {
+  data?: { name?: string };
+  attachment?: { name?: string };
+  color?: { a: number };
+  setAttachment?: (attachment: null) => void;
+};
 
 function clearVfx(
   playerRef: MutableRefObject<SpinePlayer | null>,

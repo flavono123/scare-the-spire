@@ -290,6 +290,119 @@
   border-radius: 0.5rem;
 }
 
+.sts2-monster-smoke {
+  --smoke-core: rgba(126, 92, 126, 0.34);
+  --smoke-mid: rgba(86, 61, 86, 0.22);
+  --smoke-glow: rgba(226, 103, 232, 0.2);
+  overflow: hidden;
+  mix-blend-mode: screen;
+  filter: blur(0.5px) saturate(1.08);
+}
+
+.sts2-monster-smoke span {
+  position: absolute;
+  display: block;
+  border-radius: 9999px;
+  opacity: 0.5;
+  background:
+    radial-gradient(circle at 42% 38%, var(--smoke-core) 0 16%, var(--smoke-mid) 42%, transparent 72%),
+    radial-gradient(circle at 65% 58%, var(--smoke-glow) 0 0.45rem, transparent 1.8rem);
+  transform-origin: center;
+  animation: sts2-monster-smoke-drift 6.6s ease-in-out infinite alternate;
+}
+
+.sts2-monster-smoke span:nth-child(1) {
+  left: 30%;
+  top: 33%;
+  width: 32%;
+  height: 28%;
+  animation-duration: 7.4s;
+}
+
+.sts2-monster-smoke span:nth-child(2) {
+  left: 42%;
+  top: 31%;
+  width: 30%;
+  height: 31%;
+  animation-delay: -1.8s;
+  animation-duration: 6.2s;
+}
+
+.sts2-monster-smoke span:nth-child(3) {
+  left: 35%;
+  top: 45%;
+  width: 34%;
+  height: 26%;
+  animation-delay: -3.2s;
+  animation-duration: 7s;
+}
+
+.sts2-monster-smoke span:nth-child(4) {
+  left: 27%;
+  top: 42%;
+  width: 24%;
+  height: 22%;
+  animation-delay: -4.6s;
+  animation-duration: 5.8s;
+}
+
+.sts2-monster-smoke span:nth-child(5) {
+  left: 55%;
+  top: 45%;
+  width: 24%;
+  height: 22%;
+  animation-delay: -2.6s;
+  animation-duration: 6.8s;
+}
+
+.sts2-monster-smoke--gas-bomb {
+  --smoke-core: rgba(142, 192, 126, 0.28);
+  --smoke-mid: rgba(83, 112, 76, 0.18);
+  --smoke-glow: rgba(214, 235, 116, 0.16);
+}
+
+.sts2-monster-smoke--gas-bomb span:nth-child(1) {
+  left: 33%;
+  top: 37%;
+  width: 25%;
+  height: 22%;
+}
+
+.sts2-monster-smoke--gas-bomb span:nth-child(2) {
+  left: 43%;
+  top: 33%;
+  width: 22%;
+  height: 20%;
+}
+
+.sts2-monster-smoke--gas-bomb span:nth-child(3) {
+  left: 41%;
+  top: 48%;
+  width: 24%;
+  height: 18%;
+}
+
+.sts2-monster-smoke--lost-fog {
+  --smoke-core: rgba(28, 37, 32, 0.56);
+  --smoke-mid: rgba(15, 19, 17, 0.36);
+  --smoke-glow: rgba(102, 255, 152, 0.16);
+  mix-blend-mode: normal;
+}
+
+@keyframes sts2-monster-smoke-drift {
+  0% {
+    transform: translate3d(-4%, 3%, 0) scale(0.92) rotate(-4deg);
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.58;
+  }
+  100% {
+    transform: translate3d(5%, -5%, 0) scale(1.12) rotate(5deg);
+    opacity: 0.46;
+  }
+}
+
 /* TipTap editor */
 .tiptap p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
