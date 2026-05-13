@@ -489,7 +489,6 @@ function MonsterTile({
             likeCount={likeCount}
             loading={engagementLoading}
             unavailable={engagementUnavailable}
-            showZeroComments
             showLikes
             className="ml-auto shrink-0"
           />
