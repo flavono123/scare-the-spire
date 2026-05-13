@@ -179,6 +179,20 @@
   --font-game-text-family: var(--font-service-ui), serif;
 }
 
+@layer utilities {
+  .font-service {
+    font-family: var(--font-service-ui), serif;
+  }
+
+  .font-game-title {
+    font-family: var(--font-game-title-family), var(--font-service-ui), serif;
+  }
+
+  .font-game-text {
+    font-family: var(--font-game-text-family), var(--font-service-ui), serif;
+  }
+}
+
 .dark {
   --background: oklch(0.141 0.005 285.823);
   --foreground: oklch(0.985 0 0);
