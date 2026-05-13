@@ -27,8 +27,10 @@ import {
   getBestiaryDisplayMonsterType,
   isPublicBestiaryMonster,
 } from "@/lib/bestiary-monster-policy";
+import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { SearchBar } from "./search-bar";
-import { FilterSection } from "./codex-filters";
+import { FilterSection, ToggleButton } from "./codex-filters";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import {
   CodexLibraryShell,
@@ -74,6 +76,8 @@ export function MonsterLibrary({
   const [selectedTypes, setSelectedTypes] = useState<Set<MonsterType>>(new Set());
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [showEngagementOverlay, setShowEngagementOverlay] = useState(false);
+  const engagementCounts = useEngagementCounts({ enabled: showEngagementOverlay });
 
   // Monster detail modal
   const initialMonsterId = searchParams.get("monster");
@@ -319,6 +323,16 @@ export function MonsterLibrary({
             })}
           </div>
         </FilterSection>
+
+        <div className="border-t border-white/10" />
+
+        <FilterSection label={serviceLocale === "ko" ? "보기" : "View"}>
+          <ToggleButton
+            label={serviceLocale === "ko" ? "댓글/좋아요" : "Comments/Likes"}
+            active={showEngagementOverlay}
+            onClick={() => setShowEngagementOverlay((v) => !v)}
+          />
+        </FilterSection>
         </>
       )}
     >
@@ -356,14 +370,22 @@ export function MonsterLibrary({
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                {section.monsters.map((monster) => (
-                  <MonsterTile
-                    key={monster.id}
-                    monster={monster}
-                    displayType={getDisplayMonsterType(monster)}
-                    onClick={() => setSelectedMonster(monster)}
-                  />
-                ))}
+                {section.monsters.map((monster) => {
+                  const threadKey = buildCodexCommentThreadKey("monster", monster.id);
+                  return (
+                    <MonsterTile
+                      key={monster.id}
+                      monster={monster}
+                      displayType={getDisplayMonsterType(monster)}
+                      showEngagementOverlay={showEngagementOverlay}
+                      commentCount={engagementCounts.comments[threadKey] ?? 0}
+                      likeCount={engagementCounts.likes[threadKey] ?? 0}
+                      engagementUnavailable={engagementCounts.unavailable}
+                      serviceLocale={serviceLocale}
+                      onClick={() => setSelectedMonster(monster)}
+                    />
+                  );
+                })}
               </div>
             </div>
           ))}
@@ -404,10 +426,20 @@ export function MonsterLibrary({
 function MonsterTile({
   monster,
   displayType,
+  showEngagementOverlay,
+  commentCount,
+  likeCount,
+  engagementUnavailable,
+  serviceLocale,
   onClick,
 }: {
   monster: CodexMonster;
   displayType: MonsterType;
+  showEngagementOverlay: boolean;
+  commentCount: number;
+  likeCount: number;
+  engagementUnavailable: boolean;
+  serviceLocale: ServiceLocale;
   onClick?: () => void;
 }) {
   const typeConfig = MONSTER_TYPE_CONFIG[displayType];
@@ -462,12 +494,48 @@ function MonsterTile({
       )}
 
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5">
-          <span className="truncate text-sm font-medium" style={{ color: typeConfig.color }}>{monster.name}</span>
-          <span className="text-[10px] text-gray-500 truncate">{monster.nameEn}</span>
+        <div className="flex min-w-0 items-center gap-1.5">
+          <span className="min-w-0 truncate text-sm font-medium" style={{ color: typeConfig.color }}>{monster.name}</span>
+          <span className="min-w-0 truncate text-[10px] text-gray-500">{monster.nameEn}</span>
+          {showEngagementOverlay && (
+            <MonsterEngagementOverlay
+              commentCount={commentCount}
+              likeCount={likeCount}
+              unavailable={engagementUnavailable}
+              serviceLocale={serviceLocale}
+            />
+          )}
         </div>
       </div>
     </button>
+  );
+}
+
+function MonsterEngagementOverlay({
+  commentCount,
+  likeCount,
+  unavailable,
+  serviceLocale,
+}: {
+  commentCount: number;
+  likeCount: number;
+  unavailable: boolean;
+  serviceLocale: ServiceLocale;
+}) {
+  const commentsLabel = serviceLocale === "ko" ? "댓글" : "comments";
+  const likesLabel = serviceLocale === "ko" ? "좋아요" : "likes";
+  const emptyValue = unavailable ? "-" : "0";
+
+  return (
+    <span className="ml-auto flex shrink-0 items-center gap-1 rounded bg-black/35 px-1.5 py-0.5 text-[10px] leading-none text-yellow-200/90 ring-1 ring-yellow-500/20">
+      <span className="tabular-nums">
+        {commentsLabel} {unavailable ? emptyValue : commentCount}
+      </span>
+      <span className="text-gray-600">/</span>
+      <span className="tabular-nums text-gray-400">
+        {likesLabel} {unavailable ? emptyValue : likeCount}
+      </span>
+    </span>
   );
 }
 
