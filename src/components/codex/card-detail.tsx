@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
+import { LikeButton } from "@/components/like-button";
+import { useAuth } from "@/hooks/use-auth";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -47,6 +49,8 @@ interface CardDetailProps {
 
 export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const { userId } = useAuth();
+  const threadKey = buildCodexCommentThreadKey("card", card.id);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
   const [activeEnchantId, setActiveEnchantId] = useState<string | null>(null);
@@ -389,8 +393,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
       )}
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>
-        <CommentSection threadKey={buildCodexCommentThreadKey("card", card.id)} />
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <h2 className="text-sm font-bold text-gray-300">{serviceText.common.comments}</h2>
+          <LikeButton storyId={threadKey} userId={userId} />
+        </div>
+        <CommentSection threadKey={threadKey} />
       </div>
     </div>
   );
