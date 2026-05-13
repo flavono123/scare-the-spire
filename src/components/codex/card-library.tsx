@@ -812,13 +812,13 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           <span />
         </FilterSection>
 
-        <FilterSection label={serviceLocale === "ko" ? "댓글/좋아요" : "Comments/Likes"}>
+        <div className="flex flex-col gap-1">
           <ToggleButton
             label={serviceLocale === "ko" ? "댓글/좋아요 보기" : "Show Comments/Likes"}
             active={showEngagementStats}
             onClick={() => setShowEngagementStats((v) => !v)}
           />
-        </FilterSection>
+        </div>
         </>
       )}
     >
