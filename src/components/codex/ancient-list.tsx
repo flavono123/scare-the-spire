@@ -52,7 +52,7 @@ export function AncientList({ serviceLocale, gameUi, ancients }: AncientListProp
       {/* Header */}
       <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
         <div className="mx-auto max-w-5xl px-6 py-8 text-center">
-          <h1 className="font-[family-name:var(--font-gc-batang)] text-3xl md:text-4xl text-yellow-500 mb-2">
+          <h1 className="font-game-title text-3xl md:text-4xl text-yellow-500 mb-2">
             {gameUi.ancientsTitle}
           </h1>
           <p className="text-sm text-yellow-200/40">
@@ -114,7 +114,7 @@ function AncientCard({
 
       {/* Text */}
       <div className="relative px-4 pb-4 -mt-8">
-        <h2 className="font-[family-name:var(--font-gc-batang)] text-lg text-blue-300 group-hover:text-blue-200 transition-colors">
+        <h2 className="font-game-title text-lg text-blue-300 group-hover:text-blue-200 transition-colors">
           {ancient.name}
         </h2>
         <p className="text-[11px] text-blue-400/50 mt-0.5">{ancient.nameEn}</p>

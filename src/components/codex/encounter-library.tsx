@@ -310,7 +310,7 @@ export function EncounterLibrary({
           {sections.map((section) => (
             <div key={section.actKey} className="mb-8 last:mb-0">
               <div className="mb-3">
-                <span className={`font-service text-lg font-bold ${section.config.color}`}>
+                <span className={`font-game-title text-lg font-bold ${section.config.color}`}>
                   {section.label}
                 </span>
                 <span className="ml-2 text-xs text-gray-600">({section.encounters.length})</span>

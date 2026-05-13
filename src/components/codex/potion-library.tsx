@@ -417,7 +417,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
               {/* Section header */}
               <div className="mb-3">
                 <span
-                  className="text-lg font-bold font-[family-name:var(--font-spectral)]"
+                  className="font-game-title text-lg font-bold"
                   style={{ color: section.color }}
                 >
                   {section.label}:

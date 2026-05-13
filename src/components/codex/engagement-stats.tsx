@@ -39,7 +39,7 @@ export function EngagementStatsText({
 
   return (
     <span
-      className={`whitespace-nowrap font-[family-name:var(--font-gc-batang)] font-bold leading-none ${className}`}
+      className={`font-service whitespace-nowrap font-bold leading-none ${className}`}
       style={{ textShadow: SHADOW }}
     >
       <span style={{ color: GOLD }}>{commentsLabel}</span>{" "}

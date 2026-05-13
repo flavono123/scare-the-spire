@@ -306,7 +306,7 @@ export function EventDetail({ serviceLocale, gameUi, event, onClose }: EventDeta
               >
                 ← {serviceText.eventsView.backToList}
               </Link>
-              <h2 className="font-[family-name:var(--font-gc-batang)] text-xl text-yellow-400 mt-1">
+              <h2 className="font-game-title text-xl text-yellow-400 mt-1">
                 {event.name}
               </h2>
               <div className="flex items-center gap-2 mt-1">

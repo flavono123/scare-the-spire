@@ -70,7 +70,7 @@ export function HoverTip({
         <div
           className="flex items-center gap-2"
           style={{
-            fontFamily: "var(--font-kreon), var(--font-gc-batang), serif",
+            fontFamily: "var(--font-game-text)",
             fontSize,
             fontWeight: 700,
             color: "#EFC851",
@@ -92,7 +92,7 @@ export function HoverTip({
         {children && (
           <div
             style={{
-              fontFamily: "var(--font-kreon), var(--font-gc-batang), serif",
+              fontFamily: "var(--font-game-text)",
               fontSize,
               lineHeight: 1.4,
               color: "#FFF6E2",

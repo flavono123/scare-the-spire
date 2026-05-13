@@ -268,7 +268,7 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
       {/* Header */}
       <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
         <div className="mx-auto max-w-5xl px-6 py-8 text-center">
-          <h1 className="font-[family-name:var(--font-gc-batang)] text-3xl md:text-4xl text-yellow-500 mb-2">
+          <h1 className="font-game-title text-3xl md:text-4xl text-yellow-500 mb-2">
             {title}
           </h1>
         </div>

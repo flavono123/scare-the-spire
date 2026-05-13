@@ -146,10 +146,10 @@ export default async function CodexIndexPage({
       {/* Header */}
       <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
         <div className="mx-auto max-w-5xl px-6 py-12 text-center">
-          <h1 className="font-[family-name:var(--font-gc-batang)] text-4xl md:text-5xl text-yellow-500 mb-3">
+          <h1 className="font-game-title text-4xl md:text-5xl text-yellow-500 mb-3">
             {gameUi.compendiumTitle}
           </h1>
-          <p className="font-[family-name:var(--font-gc-batang)] text-lg text-yellow-200/60">
+          <p className="font-service text-lg text-yellow-200/60">
             {messages.indexView.subtitle}
           </p>
         </div>
@@ -184,20 +184,20 @@ export default async function CodexIndexPage({
 
               {/* Text */}
               <div className="px-6 pb-6 text-center">
-                <h2 className="font-[family-name:var(--font-gc-batang)] text-2xl text-yellow-400 group-hover:text-yellow-300 transition-colors">
+                <h2 className="font-game-title text-2xl text-yellow-400 group-hover:text-yellow-300 transition-colors">
                   {gameCategoryLabels[cat.labelKey] ?? messages[cat.labelKey]}
                   {serviceLocale === "ko" && (
-                    <span className="ml-2 text-base text-yellow-200/30 font-[family-name:var(--font-kreon)]">
+                    <span className="font-game-text ml-2 text-base text-yellow-200/30">
                       {ENGLISH_LABELS[cat.labelKey]}
                     </span>
                   )}
                 </h2>
                 {cat.description && (
-                  <p className="mt-1 text-sm text-yellow-200/40 font-[family-name:var(--font-gc-batang)]">
+                  <p className="font-service mt-1 text-sm text-yellow-200/40">
                     {cat.description}
                   </p>
                 )}
-                <span className="mt-2 inline-block text-xs text-yellow-600/60 font-[family-name:var(--font-kreon)]">
+                <span className="font-game-text mt-2 inline-block text-xs text-yellow-600/60">
                   {formatCodexCount(cat.count, messages.labels.entries, serviceLocale)}
                 </span>
               </div>

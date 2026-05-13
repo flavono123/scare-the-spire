@@ -66,7 +66,7 @@ export default function RootLayout({
     <html lang="ko" className="dark" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} font-service antialiased bg-background text-foreground`}
       >
         <Suspense>
           <SiteNavbar />

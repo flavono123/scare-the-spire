@@ -101,8 +101,8 @@ function getUpgradeKeywords(
 // Fonts
 // =============================================================================
 
-const CARD_FONT = "var(--font-gc-batang), var(--font-kreon), serif";
-const TITLE_FONT = "var(--font-spectral), var(--font-gc-batang), serif";
+const CARD_FONT = "var(--font-game-text)";
+const TITLE_FONT = "var(--font-game-title)";
 
 // =============================================================================
 // Layout config (% of 300×422 holder coords)
