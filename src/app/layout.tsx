@@ -68,12 +68,12 @@ export default function RootLayout({
       lang="ko"
       data-service-locale="ko"
       data-game-locale="kor"
-      className="dark"
+      className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} dark`}
       suppressHydrationWarning
     >
       <body
         suppressHydrationWarning
-        className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} font-service antialiased bg-background text-foreground`}
+        className="font-service antialiased bg-background text-foreground"
       >
         <Suspense>
           <LocaleDocumentAttributes />

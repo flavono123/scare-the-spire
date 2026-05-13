@@ -117,9 +117,9 @@
 
 :root {
   --radius: 0.625rem;
-  --font-service-ui: var(--font-gc-batang), serif;
-  --font-game-title-family: var(--font-spectral), var(--font-service-ui);
-  --font-game-text-family: var(--font-kreon), var(--font-service-ui);
+  --font-service-ui: var(--font-gc-batang, serif);
+  --font-game-title-family: var(--font-spectral, var(--font-service-ui));
+  --font-game-text-family: var(--font-kreon, var(--font-service-ui));
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
@@ -154,8 +154,8 @@
 }
 
 [data-game-locale="kor"] {
-  --font-game-title-family: var(--font-gc-batang), serif;
-  --font-game-text-family: var(--font-gc-batang), serif;
+  --font-game-title-family: var(--font-gc-batang, serif);
+  --font-game-text-family: var(--font-gc-batang, serif);
 }
 
 [data-game-locale="eng"],
@@ -167,29 +167,29 @@
 [data-game-locale="ptb"],
 [data-game-locale="pol"],
 [data-game-locale="tur"] {
-  --font-game-title-family: var(--font-spectral), serif;
-  --font-game-text-family: var(--font-kreon), serif;
+  --font-game-title-family: var(--font-spectral, serif);
+  --font-game-text-family: var(--font-kreon, serif);
 }
 
 [data-game-locale="zhs"],
 [data-game-locale="jpn"],
 [data-game-locale="rus"],
 [data-game-locale="tha"] {
-  --font-game-title-family: var(--font-service-ui), serif;
-  --font-game-text-family: var(--font-service-ui), serif;
+  --font-game-title-family: var(--font-service-ui, serif);
+  --font-game-text-family: var(--font-service-ui, serif);
 }
 
 @layer utilities {
   .font-service {
-    font-family: var(--font-service-ui), serif;
+    font-family: var(--font-service-ui, serif);
   }
 
   .font-game-title {
-    font-family: var(--font-game-title-family), var(--font-service-ui), serif;
+    font-family: var(--font-game-title-family, var(--font-service-ui, serif));
   }
 
   .font-game-text {
-    font-family: var(--font-game-text-family), var(--font-service-ui), serif;
+    font-family: var(--font-game-text-family, var(--font-service-ui, serif));
   }
 }
 
