@@ -72,6 +72,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --font-service: var(--font-gc-batang), serif;
   --font-sans: var(--font-gc-batang), var(--font-kreon), serif;
   --font-mono: var(--font-kreon), monospace;
   --color-sidebar-ring: var(--sidebar-ring);
