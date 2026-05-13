@@ -551,8 +551,8 @@ const PotionTooltip = forwardRef<
             className="w-8 h-8 object-contain"
           />
           <div>
-            <div className="font-bold text-sm text-gray-100">{potion.name}</div>
-            <div className="text-[10px] text-gray-500">{potion.nameEn}</div>
+            <div className="font-game-title font-bold text-sm text-gray-100">{potion.name}</div>
+            <div className="font-game-text text-[10px] text-gray-500">{potion.nameEn}</div>
           </div>
         </div>
 

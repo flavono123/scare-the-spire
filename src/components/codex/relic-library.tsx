@@ -378,11 +378,11 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
               {/* Rarity section header */}
               <div className="mb-3">
                 <h2
-                  className="text-lg font-bold mb-0.5"
+                  className="font-game-title text-lg font-bold mb-0.5"
                   style={{ color: RELIC_RARITY_COLORS[rarity] }}
                 >
                   {gameUi.relicCollection.rarities[rarity].label}:
-                  <span className="text-sm font-normal text-gray-400 ml-2">
+                  <span className="font-game-text text-sm font-normal text-gray-400 ml-2">
                     {gameUi.relicCollection.rarities[rarity].description}
                   </span>
                 </h2>
@@ -403,7 +403,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
                             className="w-6 h-6 object-contain rounded-full"
                           />
                         )}
-                        <h3 className="text-sm font-bold text-blue-400">
+                        <h3 className="font-game-title text-sm font-bold text-blue-400">
                           {ancient.name}:
                         </h3>
                       </div>

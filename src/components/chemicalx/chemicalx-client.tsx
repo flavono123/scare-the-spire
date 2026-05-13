@@ -56,7 +56,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
           className="object-contain"
         />
         <div>
-          <h1 className="text-xl font-bold text-yellow-400 font-spectral">{copy.title}</h1>
+          <h1 className="font-service text-xl font-bold text-yellow-400">{copy.title}</h1>
           <span className="text-xs text-gray-500">{copy.legacyName}</span>
         </div>
       </div>

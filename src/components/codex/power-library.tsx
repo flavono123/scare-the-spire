@@ -254,12 +254,12 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
             <section key={type} className="mb-8 last:mb-0">
               <div className="mb-3">
                 <h2
-                  className="text-lg font-bold mb-0.5"
+                  className="font-game-title text-lg font-bold mb-0.5"
                   style={{ color: POWER_TYPE_CONFIG[type].color }}
                 >
                   {getPowerTypeLabel(type, serviceText, gameUi)}
                   {getPowerTypeDescription(type, serviceText, gameUi) && (
-                    <span className="text-sm font-normal text-gray-400 ml-2">
+                    <span className="font-game-text text-sm font-normal text-gray-400 ml-2">
                       {getPowerTypeDescription(type, serviceText, gameUi)}
                     </span>
                   )}

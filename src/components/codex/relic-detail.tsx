@@ -143,8 +143,8 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
 
       {/* Relic Name */}
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-100">{relic.name}</h1>
-        <p className="text-sm text-gray-500">{relic.nameEn}</p>
+        <h1 className="font-game-title text-2xl font-bold text-gray-100">{relic.name}</h1>
+        <p className="font-game-text text-sm text-gray-500">{relic.nameEn}</p>
       </div>
 
       {/* Stats Row */}

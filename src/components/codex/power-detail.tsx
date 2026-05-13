@@ -82,8 +82,8 @@ export function PowerDetail({ serviceLocale, gameUi, power, onClose }: PowerDeta
 
       {/* Power Name */}
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-100">{power.name}</h1>
-        <p className="text-sm text-gray-500">{power.nameEn}</p>
+        <h1 className="font-game-title text-2xl font-bold text-gray-100">{power.name}</h1>
+        <p className="font-game-text text-sm text-gray-500">{power.nameEn}</p>
       </div>
 
       {/* Stats Row */}

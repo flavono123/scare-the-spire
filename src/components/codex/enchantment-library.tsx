@@ -272,11 +272,11 @@ export function EnchantmentLibrary({ serviceLocale, enchantments, versions, curr
             <section key={cardType} className="mb-8 last:mb-0">
               <div className="mb-3">
                 <h2
-                  className="text-lg font-bold mb-0.5"
+                  className="font-game-title text-lg font-bold mb-0.5"
                   style={{ color: ENCHANTMENT_CARD_TYPE_CONFIG[cardType].color }}
                 >
                   {serviceText.labels.enchantmentCardTypes[cardType].label}
-                  <span className="text-sm font-normal text-gray-400 ml-2">
+                  <span className="font-game-text text-sm font-normal text-gray-400 ml-2">
                     {serviceText.labels.enchantmentCardTypes[cardType].description}
                   </span>
                 </h2>

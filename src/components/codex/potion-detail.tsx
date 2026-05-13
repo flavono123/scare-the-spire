@@ -87,8 +87,8 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
 
       {/* Potion Name */}
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-100">{potion.name}</h1>
-        <p className="text-sm text-gray-500">{potion.nameEn}</p>
+        <h1 className="font-game-title text-2xl font-bold text-gray-100">{potion.name}</h1>
+        <p className="font-game-text text-sm text-gray-500">{potion.nameEn}</p>
       </div>
 
       {/* Stats Row */}
@@ -107,7 +107,7 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
 
       {/* Description */}
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <div className="text-sm text-gray-200 leading-relaxed">
+        <div className="font-game-text text-sm text-gray-200 leading-relaxed">
           <DescriptionText description={potion.description} />
         </div>
       </div>
