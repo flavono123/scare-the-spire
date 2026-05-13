@@ -88,19 +88,19 @@ export const PowerTile = memo(function PowerTile({ serviceLocale = "ko", gameUi,
           }`}
         >
           <div className="flex items-center gap-2 mb-1">
-            <span className={`font-bold text-sm ${style.text}`}>
+            <span className={`font-game-title font-bold text-sm ${style.text}`}>
               {power.name}
             </span>
-            <span className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[9px] font-medium ${style.badge}`}>
+            <span className={`font-game-text inline-flex items-center rounded-full border px-1.5 py-0.5 text-[9px] font-medium ${style.badge}`}>
               {gameUi.powers.types[power.type].label || serviceText.labels.powerTypes[power.type].label}
             </span>
           </div>
           {power.nameEn !== power.name && (
-            <div className="text-[10px] text-gray-500 mb-1.5">
+            <div className="font-game-text text-[10px] text-gray-500 mb-1.5">
               {power.nameEn}
             </div>
           )}
-          <div className="text-xs text-gray-200 leading-relaxed">
+          <div className="font-game-text text-xs text-gray-200 leading-relaxed">
             <DescriptionText description={power.description} />
           </div>
         </div>

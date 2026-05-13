@@ -219,7 +219,7 @@ export function AncientDetail({ serviceLocale, gameUi, ancient, relics }: Ancien
               <h1 className="font-game-title text-3xl text-blue-300 mb-1">
                 {ancient.name}
               </h1>
-              <p className="text-sm text-blue-400/50 mb-2">{ancient.nameEn}</p>
+              <p className="font-game-text text-sm text-blue-400/50 mb-2">{ancient.nameEn}</p>
               <p className="text-sm text-zinc-400 italic mb-3">&ldquo;{ancient.epithet}&rdquo;</p>
 
               {/* Badges */}

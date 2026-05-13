@@ -89,10 +89,10 @@ function EventThumbnail({
       )}
       <div className="relative flex h-full items-center px-4 gap-3">
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-semibold text-zinc-100 truncate group-hover:text-yellow-200 transition-colors">
+          <h3 className="font-game-title text-sm font-semibold text-zinc-100 truncate group-hover:text-yellow-200 transition-colors">
             {event.name}
           </h3>
-          <span className="text-[10px] text-zinc-500 group-hover:text-zinc-400">
+          <span className="font-game-text text-[10px] text-zinc-500 group-hover:text-zinc-400">
             {event.nameEn}
           </span>
         </div>

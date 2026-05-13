@@ -310,7 +310,7 @@ export function EventDetail({ serviceLocale, gameUi, event, onClose }: EventDeta
                 {event.name}
               </h2>
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-xs text-zinc-500">{event.nameEn}</span>
+                <span className="font-game-text text-xs text-zinc-500">{event.nameEn}</span>
                 <ActBadge act={event.act} messages={serviceText} gameUi={gameUi} />
               </div>
             </div>

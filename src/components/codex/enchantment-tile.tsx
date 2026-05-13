@@ -67,7 +67,7 @@ export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "
         >
           {/* Name + badges */}
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="font-bold text-sm text-purple-400">
+            <span className="font-game-title font-bold text-sm text-purple-400">
               {enchantment.name}
             </span>
             {enchantment.cardType && (
@@ -87,13 +87,13 @@ export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "
           </div>
 
           {enchantment.nameEn !== enchantment.name && (
-            <div className="text-[10px] text-gray-500 mb-1.5">
+            <div className="font-game-text text-[10px] text-gray-500 mb-1.5">
               {enchantment.nameEn}
             </div>
           )}
 
           {/* Description */}
-          <div className="text-xs text-gray-200 leading-relaxed">
+          <div className="font-game-text text-xs text-gray-200 leading-relaxed">
             <DescriptionText description={enchantment.description} />
           </div>
 
@@ -103,7 +103,7 @@ export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "
               <span className="block text-[9px] font-medium text-gray-500 mb-0.5">
                 {serviceText.enchantmentsView.cardText}
               </span>
-              <div className="text-[11px] text-zinc-300 leading-relaxed">
+              <div className="font-game-text text-[11px] text-zinc-300 leading-relaxed">
                 <DescriptionText description={enchantment.extraCardText} />
               </div>
             </div>

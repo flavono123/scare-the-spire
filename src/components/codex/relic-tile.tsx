@@ -91,11 +91,11 @@ export function RelicTile({ serviceLocale = "ko", relic, onClick }: RelicTilePro
               : "right-full mr-2 top-0"
           }`}
         >
-          <div className="font-bold text-yellow-400 text-sm mb-1">
+          <div className="font-game-title font-bold text-yellow-400 text-sm mb-1">
             {relic.name}
           </div>
           {relic.nameEn !== relic.name && (
-            <div className="text-[10px] text-gray-500 mb-1.5">
+            <div className="font-game-text text-[10px] text-gray-500 mb-1.5">
               {relic.nameEn}
             </div>
           )}
@@ -107,7 +107,7 @@ export function RelicTile({ serviceLocale = "ko", relic, onClick }: RelicTilePro
               {serviceText.labels.pools[relic.pool as RelicFilterPool]}
             </div>
           )}
-          <div className="text-xs text-gray-200 leading-relaxed">
+          <div className="font-game-text text-xs text-gray-200 leading-relaxed">
             <DescriptionText description={relic.description} />
           </div>
         </div>

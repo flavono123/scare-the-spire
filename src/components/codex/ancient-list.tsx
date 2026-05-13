@@ -117,7 +117,7 @@ function AncientCard({
         <h2 className="font-game-title text-lg text-blue-300 group-hover:text-blue-200 transition-colors">
           {ancient.name}
         </h2>
-        <p className="text-[11px] text-blue-400/50 mt-0.5">{ancient.nameEn}</p>
+        <p className="font-game-text text-[11px] text-blue-400/50 mt-0.5">{ancient.nameEn}</p>
         <p className="text-xs text-zinc-400 mt-1 italic">{ancient.epithet}</p>
         <div className="flex items-center gap-2 mt-2">
           <ActBadge act={ancient.act} messages={messages} gameUi={gameUi} />
