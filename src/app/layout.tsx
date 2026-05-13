@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { LocaleDocumentAttributes } from "@/components/locale-document-attributes";
 import { SiteNavbar } from "@/components/site-navbar";
 import { DEFAULT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import "./globals.css";
@@ -63,12 +64,19 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ko" className="dark" suppressHydrationWarning>
+    <html
+      lang="ko"
+      data-service-locale="ko"
+      data-game-locale="kor"
+      className="dark"
+      suppressHydrationWarning
+    >
       <body
         suppressHydrationWarning
         className={`${spectral.variable} ${kreon.variable} ${gcBatang.variable} font-service antialiased bg-background text-foreground`}
       >
         <Suspense>
+          <LocaleDocumentAttributes />
           <SiteNavbar />
         </Suspense>
         {children}
