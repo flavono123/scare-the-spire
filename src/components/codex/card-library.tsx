@@ -40,6 +40,10 @@ import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 export type SortKey = "color" | "type" | "rarity" | "cost" | "name";
 export type SortDir = "asc" | "desc";
 type EngagementSortKey = "comments" | "likes";
+interface EngagementSortState {
+  key: EngagementSortKey;
+  dir: SortDir;
+}
 
 const COLOR_SORT_ORDER: Record<string, number> = {
   ironclad: 0, silent: 1, defect: 2, necrobinder: 3, regent: 4,
@@ -184,7 +188,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   const [showEngagementStats, setShowEngagementStats] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
   const [showMultiplayer, setShowMultiplayer] = useState(true);
-  const [engagementSort, setEngagementSort] = useState<EngagementSortKey | null>(null);
+  const [engagementSort, setEngagementSort] = useState<EngagementSortState | null>(null);
   const engagementCounts = useEngagementCounts({
     enabled: showEngagementStats || engagementSort !== null,
   });
@@ -413,7 +417,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
 
     if (!engagementSort) return sorted;
 
-    const counts = engagementSort === "comments"
+    const counts = engagementSort.key === "comments"
       ? engagementCounts.comments
       : engagementCounts.likes;
     return sorted
@@ -421,7 +425,10 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       .sort((a, b) => {
         const aCount = counts[buildCodexCommentThreadKey("card", a.card.id)] ?? 0;
         const bCount = counts[buildCodexCommentThreadKey("card", b.card.id)] ?? 0;
-        return bCount - aCount || a.index - b.index;
+        const countDiff = engagementSort.dir === "desc"
+          ? bCount - aCount
+          : aCount - bCount;
+        return countDiff || a.index - b.index;
       })
       .map(({ card }) => card);
   }, [
@@ -548,8 +555,18 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   }, []);
 
   const toggleEngagementSort = useCallback((key: EngagementSortKey) => {
-    setEngagementSort((prev) => (prev === key ? null : key));
+    setEngagementSort((prev) => {
+      if (prev?.key !== key) return { key, dir: "desc" };
+      return { key, dir: prev.dir === "desc" ? "asc" : "desc" };
+    });
   }, []);
+
+  const getEngagementSortDir = useCallback(
+    (key: EngagementSortKey): SortDir => (
+      engagementSort?.key === key ? engagementSort.dir : "desc"
+    ),
+    [engagementSort],
+  );
 
   // Character filters
   const characterFilters = characters.map((c) => ({
@@ -777,26 +794,30 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
 
         <div className="border-t border-white/10" />
 
+        <FilterSection
+          label={serviceLocale === "ko" ? "댓글 순" : "Comments"}
+          sortDir={getEngagementSortDir("comments")}
+          onSortToggle={() => toggleEngagementSort("comments")}
+          sortTitle={serviceLocale === "ko" ? "댓글 순 정렬" : "Sort by comments"}
+        >
+          <span />
+        </FilterSection>
+
+        <FilterSection
+          label={serviceLocale === "ko" ? "좋아요 순" : "Likes"}
+          sortDir={getEngagementSortDir("likes")}
+          onSortToggle={() => toggleEngagementSort("likes")}
+          sortTitle={serviceLocale === "ko" ? "좋아요 순 정렬" : "Sort by likes"}
+        >
+          <span />
+        </FilterSection>
+
         <FilterSection label={serviceLocale === "ko" ? "댓글/좋아요" : "Comments/Likes"}>
-          <div className="flex flex-col gap-1">
-            <ToggleButton
-              label={serviceLocale === "ko" ? "댓글 순" : "Sort by comments"}
-              active={engagementSort === "comments"}
-              onClick={() => toggleEngagementSort("comments")}
-            />
-            <ToggleButton
-              label={serviceLocale === "ko" ? "좋아요 순" : "Sort by likes"}
-              active={engagementSort === "likes"}
-              onClick={() => toggleEngagementSort("likes")}
-            />
-            <div className="mt-1 border-t border-white/10 pt-1">
-              <ToggleButton
-                label={serviceLocale === "ko" ? "댓글/좋아요 보기" : "Show Comments/Likes"}
-                active={showEngagementStats}
-                onClick={() => setShowEngagementStats((v) => !v)}
-              />
-            </div>
-          </div>
+          <ToggleButton
+            label={serviceLocale === "ko" ? "댓글/좋아요 보기" : "Show Comments/Likes"}
+            active={showEngagementStats}
+            onClick={() => setShowEngagementStats((v) => !v)}
+          />
         </FilterSection>
         </>
       )}
