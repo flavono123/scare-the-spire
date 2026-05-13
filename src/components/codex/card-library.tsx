@@ -555,6 +555,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   }, []);
 
   const toggleEngagementSort = useCallback((key: EngagementSortKey) => {
+    setShowEngagementStats(true);
     setEngagementSort((prev) => {
       if (prev?.key !== key) return { key, dir: "desc" };
       return { key, dir: prev.dir === "desc" ? "asc" : "desc" };
