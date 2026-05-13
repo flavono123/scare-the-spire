@@ -118,8 +118,8 @@
 :root {
   --radius: 0.625rem;
   --font-service-ui: var(--font-gc-batang, serif);
-  --font-game-title-family: var(--font-spectral, var(--font-service-ui));
-  --font-game-text-family: var(--font-kreon, var(--font-service-ui));
+  --font-game-title-family: var(--font-spectral, serif), var(--font-service-ui);
+  --font-game-text-family: var(--font-kreon, serif), var(--font-service-ui);
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
@@ -167,8 +167,8 @@
 [data-game-locale="ptb"],
 [data-game-locale="pol"],
 [data-game-locale="tur"] {
-  --font-game-title-family: var(--font-spectral, serif);
-  --font-game-text-family: var(--font-kreon, serif);
+  --font-game-title-family: var(--font-spectral, serif), var(--font-service-ui);
+  --font-game-text-family: var(--font-kreon, serif), var(--font-service-ui);
 }
 
 [data-game-locale="zhs"],
