@@ -45,6 +45,7 @@ export type CodexGameUiLabels = {
     searchPlaceholder: string;
     noResults: string;
     viewMultiplayerCards: string;
+    viewStats: string;
     viewUpgrades: string;
     sort: {
       type: string;
@@ -344,6 +345,7 @@ export async function getCodexGameUiLabels(
         "VIEW_MULTIPLAYER_CARDS",
         "멀티플레이 카드",
       ),
+      viewStats: gameText(cardLibrary, "VIEW_STATS", "통계 보기"),
       viewUpgrades: gameText(cardLibrary, "VIEW_UPGRADES", "강화 상태 보기"),
       sort: {
         type: gameText(gameplay, "SORT_TYPE", "카드 유형"),

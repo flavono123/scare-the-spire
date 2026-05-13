@@ -32,6 +32,7 @@ import {
   CARD_WIDTH_PRESET,
   FONT_CQI,
 } from "@/lib/sts2-card-style";
+import { CardEngagementStatsOverlay } from "./engagement-stats";
 
 // =============================================================================
 // Game-extracted asset paths
@@ -152,6 +153,11 @@ interface CardTileProps {
   onClick?: () => void;
   /** Static preview mode: disables pointer cursor and hover scale. */
   interactive?: boolean;
+  engagementStats?: {
+    commentCount: number;
+    likeCount: number;
+    unavailable: boolean;
+  } | null;
 }
 
 export const CardTile = memo(function CardTile({
@@ -172,6 +178,7 @@ export const CardTile = memo(function CardTile({
   onEnchantSlotClick,
   onClick,
   interactive = true,
+  engagementStats,
 }: CardTileProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [imgError, setImgError] = useState(false);
@@ -658,6 +665,14 @@ export const CardTile = memo(function CardTile({
           {renderCostOrb()}
           {renderStarCost()}
           {renderEnchantSlot()}
+          {engagementStats && (
+            <CardEngagementStatsOverlay
+              commentCount={engagementStats.commentCount}
+              likeCount={engagementStats.likeCount}
+              unavailable={engagementStats.unavailable}
+              serviceLocale={serviceLocale}
+            />
+          )}
         </div>
       </div>
     );
@@ -798,6 +813,14 @@ export const CardTile = memo(function CardTile({
         {renderCostOrb()}
         {renderStarCost()}
         {renderEnchantSlot()}
+        {engagementStats && (
+          <CardEngagementStatsOverlay
+            commentCount={engagementStats.commentCount}
+            likeCount={engagementStats.likeCount}
+            unavailable={engagementStats.unavailable}
+            serviceLocale={serviceLocale}
+          />
+        )}
       </div>
     </div>
   );

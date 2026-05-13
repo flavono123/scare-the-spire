@@ -33,6 +33,8 @@ import {
   stripCodexMarkup,
   type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
+import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 
 // Sort key definitions
 export type SortKey = "color" | "type" | "rarity" | "cost" | "name";
@@ -178,8 +180,10 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     return () => clearTimeout(debounceRef.current);
   }, [searchQuery]);
   const [showUpgrades, setShowUpgrades] = useState(false);
+  const [showEngagementStats, setShowEngagementStats] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
   const [showMultiplayer, setShowMultiplayer] = useState(true);
+  const engagementCounts = useEngagementCounts({ enabled: showEngagementStats });
 
   // Sort state: ordered priority list of sort keys with directions
   const [sortKeys, setSortKeys] = useState<SortKey[]>(DEFAULT_SORT_KEYS);
@@ -735,6 +739,11 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
             onClick={() => setShowMultiplayer((v) => !v)}
           />
           <ToggleButton
+            label={gameUi.cardLibrary.viewStats}
+            active={showEngagementStats}
+            onClick={() => setShowEngagementStats((v) => !v)}
+          />
+          <ToggleButton
             label={gameUi.cardLibrary.viewUpgrades}
             active={showUpgrades}
             onClick={() => setShowUpgrades((v) => !v)}
@@ -783,22 +792,32 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
             className="grid gap-2 sm:gap-3 justify-center"
             style={{ gridTemplateColumns: "repeat(auto-fill, 200px)" }}
           >
-            {visibleCards.map((card, i) => (
-              <div
-                key={card.id}
-                className="animate-card-enter"
-                style={{ animationDelay: `${Math.min(i * 12, 250)}ms` }}
-              >
-                <CardTile
-                  card={card}
-                  serviceLocale={serviceLocale}
-                  showUpgrade={showUpgrades}
-                  showBeta={showBeta}
-                  size="grid"
-                  onClick={() => setSelectedCard(card)}
-                />
-              </div>
-            ))}
+            {visibleCards.map((card, i) => {
+              const threadKey = buildCodexCommentThreadKey("card", card.id);
+              return (
+                <div
+                  key={card.id}
+                  className="animate-card-enter"
+                  style={{ animationDelay: `${Math.min(i * 12, 250)}ms` }}
+                >
+                  <CardTile
+                    card={card}
+                    serviceLocale={serviceLocale}
+                    showUpgrade={showUpgrades}
+                    showBeta={showBeta}
+                    size="grid"
+                    engagementStats={showEngagementStats
+                      ? {
+                          commentCount: engagementCounts.comments[threadKey] ?? 0,
+                          likeCount: engagementCounts.likes[threadKey] ?? 0,
+                          unavailable: engagementCounts.unavailable,
+                        }
+                      : null}
+                    onClick={() => setSelectedCard(card)}
+                  />
+                </div>
+              );
+            })}
           </div>
           {/* Sentinel for infinite scroll */}
           {visibleCount < filteredCards.length && (
