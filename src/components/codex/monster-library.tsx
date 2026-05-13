@@ -29,7 +29,9 @@ import {
 } from "@/lib/bestiary-monster-policy";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
+import { useAuth } from "@/hooks/use-auth";
 import { EngagementSummary } from "@/components/engagement-summary";
+import { LikeButton } from "@/components/like-button";
 import { SearchBar } from "./search-bar";
 import { FilterSection } from "./codex-filters";
 import { MonsterSpineStage } from "./monster-spine-stage";
@@ -77,6 +79,7 @@ export function MonsterLibrary({
   const [selectedTypes, setSelectedTypes] = useState<Set<MonsterType>>(new Set());
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const { userId } = useAuth();
   const engagementCounts = useEngagementCounts();
 
   // Monster detail modal
@@ -367,10 +370,12 @@ export function MonsterLibrary({
                       key={monster.id}
                       monster={monster}
                       displayType={getDisplayMonsterType(monster)}
+                      threadKey={threadKey}
                       commentCount={engagementCounts.comments[threadKey] ?? 0}
                       likeCount={engagementCounts.likes[threadKey] ?? 0}
                       engagementLoading={engagementCounts.loading}
                       engagementUnavailable={engagementCounts.unavailable}
+                      userId={userId}
                       onClick={() => setSelectedMonster(monster)}
                     />
                   );
@@ -415,18 +420,22 @@ export function MonsterLibrary({
 function MonsterTile({
   monster,
   displayType,
+  threadKey,
   commentCount,
   likeCount,
   engagementLoading,
   engagementUnavailable,
+  userId,
   onClick,
 }: {
   monster: CodexMonster;
   displayType: MonsterType;
+  threadKey: string;
   commentCount: number;
   likeCount: number;
   engagementLoading: boolean;
   engagementUnavailable: boolean;
+  userId: string | null;
   onClick?: () => void;
 }) {
   const typeConfig = MONSTER_TYPE_CONFIG[displayType];
@@ -435,66 +444,76 @@ function MonsterTile({
   const hovering = hoverMoveId !== undefined;
 
   return (
-    <button
-      className="group relative flex items-center gap-3 rounded-md px-2.5 py-2 text-left transition-colors hover:bg-white/[0.06]"
+    <div
+      className="group relative flex items-center gap-2 rounded-md px-2.5 py-2 transition-colors hover:bg-white/[0.06]"
       onMouseEnter={() => setHoverMoveId(pickHoverMoveId(monster))}
       onMouseLeave={() => setHoverMoveId(undefined)}
-      onClick={onClick}
     >
-      {/* Thumbnail: Spine render or boss token */}
-      {(imageSrc || monster.spineAsset) ? (
-        <div className="relative flex h-12 w-14 shrink-0 items-center justify-center overflow-hidden">
-          {imageSrc && (
-            <Image
-              src={imageSrc}
-              alt={monster.name}
-              width={56}
-              height={48}
-              className={`max-h-12 max-w-14 object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)] transition-opacity ${
-                hovering && monster.spineAsset ? "opacity-0" : "opacity-100"
-              }`}
-            />
-          )}
-          {hovering && monster.spineAsset && (
-            <MonsterSpineStage
-              asset={monster.spineAsset}
-              fallbackImageUrl={imageSrc}
-              monsterName={monster.name}
-              selectedMoveId={hoverMoveId}
-              imagePriority={false}
-              showLoadingLabel={false}
-              className="absolute inset-0"
-            />
-          )}
-          {!imageSrc && !hovering && (
-            <div
-              className="h-8 w-1 rounded-full"
-              style={{ backgroundColor: typeConfig.color }}
-            />
-          )}
-        </div>
-      ) : (
-        <div
-          className="w-1 h-8 rounded-full shrink-0"
-          style={{ backgroundColor: typeConfig.color }}
-        />
-      )}
-
-      <div className="flex-1 min-w-0">
-        <div className="flex min-w-0 items-center gap-1.5">
-          <span className="min-w-0 truncate text-sm font-medium" style={{ color: typeConfig.color }}>{monster.name}</span>
-          <span className="min-w-0 truncate text-[10px] text-gray-500">{monster.nameEn}</span>
-          <EngagementSummary
-            commentCount={commentCount}
-            likeCount={likeCount}
-            loading={engagementLoading}
-            unavailable={engagementUnavailable}
-            showLikes
-            className="ml-auto shrink-0"
+      <button
+        className="flex min-w-0 flex-1 items-center gap-3 text-left"
+        onClick={onClick}
+      >
+        {/* Thumbnail: Spine render or boss token */}
+        {(imageSrc || monster.spineAsset) ? (
+          <div className="relative flex h-12 w-14 shrink-0 items-center justify-center overflow-hidden">
+            {imageSrc && (
+              <Image
+                src={imageSrc}
+                alt={monster.name}
+                width={56}
+                height={48}
+                className={`max-h-12 max-w-14 object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)] transition-opacity ${
+                  hovering && monster.spineAsset ? "opacity-0" : "opacity-100"
+                }`}
+              />
+            )}
+            {hovering && monster.spineAsset && (
+              <MonsterSpineStage
+                asset={monster.spineAsset}
+                fallbackImageUrl={imageSrc}
+                monsterName={monster.name}
+                selectedMoveId={hoverMoveId}
+                imagePriority={false}
+                showLoadingLabel={false}
+                className="absolute inset-0"
+              />
+            )}
+            {!imageSrc && !hovering && (
+              <div
+                className="h-8 w-1 rounded-full"
+                style={{ backgroundColor: typeConfig.color }}
+              />
+            )}
+          </div>
+        ) : (
+          <div
+            className="w-1 h-8 rounded-full shrink-0"
+            style={{ backgroundColor: typeConfig.color }}
           />
+        )}
+
+        <div className="flex-1 min-w-0">
+          <div className="flex min-w-0 items-center gap-1.5">
+            <span className="min-w-0 truncate text-sm font-medium" style={{ color: typeConfig.color }}>{monster.name}</span>
+            <span className="min-w-0 truncate text-[10px] text-gray-500">{monster.nameEn}</span>
+            <EngagementSummary
+              commentCount={commentCount}
+              loading={engagementLoading}
+              unavailable={engagementUnavailable}
+              className="shrink-0"
+            />
+          </div>
         </div>
-      </div>
-    </button>
+      </button>
+
+      <LikeButton
+        storyId={threadKey}
+        userId={userId}
+        initialCount={likeCount}
+        size={16}
+        className="shrink-0 px-1 py-1"
+      />
+    </div>
   );
 }
 

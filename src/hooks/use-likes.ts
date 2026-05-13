@@ -12,14 +12,23 @@ interface UseLikesReturn {
   toggle: () => void;
 }
 
-export function useLikes(storyId: string, userId: string | null): UseLikesReturn {
-  const [count, setCount] = useState(0);
+export function useLikes(
+  storyId: string,
+  userId: string | null,
+  { initialCount }: { initialCount?: number } = {},
+): UseLikesReturn {
+  const [fetchedCount, setFetchedCount] = useState(0);
+  const [optimisticDelta, setOptimisticDelta] = useState(0);
   const [liked, setLiked] = useState(false);
-  const [loading, setLoading] = useState(supabaseEnabled);
+  const [loading, setLoading] = useState(supabaseEnabled && initialCount === undefined);
   const [unavailable, setUnavailable] = useState(false);
+  const count = Math.max(0, (initialCount ?? fetchedCount) + optimisticDelta);
 
   // Count query — independent of auth
   useEffect(() => {
+    if (initialCount !== undefined) {
+      return;
+    }
     if (!supabaseEnabled) return;
 
     withSupabaseTimeout(
@@ -32,7 +41,7 @@ export function useLikes(storyId: string, userId: string | null): UseLikesReturn
     )
       .then(({ count: c, error }) => {
         if (error) throw error;
-        setCount(c ?? 0);
+        setFetchedCount(c ?? 0);
         setUnavailable(false);
         setLoading(false);
       })
@@ -40,7 +49,7 @@ export function useLikes(storyId: string, userId: string | null): UseLikesReturn
         setUnavailable(true);
         setLoading(false);
       });
-  }, [storyId]);
+  }, [storyId, initialCount]);
 
   // User like status — depends on auth
   useEffect(() => {
@@ -68,7 +77,7 @@ export function useLikes(storyId: string, userId: string | null): UseLikesReturn
 
     if (liked) {
       setLiked(false);
-      setCount((c) => Math.max(0, c - 1));
+      setOptimisticDelta((c) => c - 1);
       withSupabaseTimeout(
         "likes.delete",
         supabase
@@ -83,12 +92,12 @@ export function useLikes(storyId: string, userId: string | null): UseLikesReturn
         })
         .catch(() => {
           setLiked(true);
-          setCount((c) => c + 1);
+          setOptimisticDelta((c) => c + 1);
           setUnavailable(true);
         });
     } else {
       setLiked(true);
-      setCount((c) => c + 1);
+      setOptimisticDelta((c) => c + 1);
       withSupabaseTimeout(
         "likes.insert",
         supabase
@@ -100,7 +109,7 @@ export function useLikes(storyId: string, userId: string | null): UseLikesReturn
         })
         .catch(() => {
           setLiked(false);
-          setCount((c) => Math.max(0, c - 1));
+          setOptimisticDelta((c) => c - 1);
           setUnavailable(true);
         });
     }

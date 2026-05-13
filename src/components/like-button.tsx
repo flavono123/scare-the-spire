@@ -4,26 +4,38 @@ import Image from "@/components/ui/static-image";
 import { useLikes } from "@/hooks/use-likes";
 import { EngagementSpinner, EngagementUnavailableIcon } from "@/components/engagement-spinner";
 
-export function LikeButton({ storyId, userId }: { storyId: string; userId: string | null }) {
-  const { count, liked, loading, unavailable, toggle } = useLikes(storyId, userId);
+export function LikeButton({
+  storyId,
+  userId,
+  initialCount,
+  size = 20,
+  className = "",
+}: {
+  storyId: string;
+  userId: string | null;
+  initialCount?: number;
+  size?: number;
+  className?: string;
+}) {
+  const { count, liked, loading, unavailable, toggle } = useLikes(storyId, userId, { initialCount });
 
   return (
     <button
       onClick={toggle}
       disabled={!userId || loading || unavailable}
-      className="flex items-center gap-1 text-xs text-muted-foreground transition-all"
+      className={`flex items-center gap-1 text-xs text-muted-foreground transition-all ${className}`}
     >
       {unavailable ? (
-        <EngagementUnavailableIcon size={20} />
+        <EngagementUnavailableIcon size={size} />
       ) : loading ? (
-        <EngagementSpinner size={20} />
+        <EngagementSpinner size={size} />
       ) : (
         <>
           <Image
             src="/images/relics/runic-dodecahedron.webp"
             alt="like"
-            width={20}
-            height={20}
+            width={size}
+            height={size}
             className={`transition-all ${liked ? "" : "opacity-40 grayscale"}`}
           />
           <span>{count}</span>
