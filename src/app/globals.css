@@ -153,6 +153,14 @@
   --sidebar-ring: oklch(0.705 0.015 286.067);
 }
 
+[data-service-locale="ko"] {
+  --font-service-ui: var(--font-gc-batang, serif);
+}
+
+[data-service-locale="en"] {
+  --font-service-ui: var(--font-spectral, serif), var(--font-gc-batang, serif);
+}
+
 [data-game-locale="kor"] {
   --font-game-title-family: var(--font-gc-batang, serif);
   --font-game-text-family: var(--font-gc-batang, serif);
