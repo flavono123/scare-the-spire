@@ -20,9 +20,13 @@ export function useLikes(
   const [fetchedCount, setFetchedCount] = useState(0);
   const [optimisticDelta, setOptimisticDelta] = useState(0);
   const [liked, setLiked] = useState(false);
-  const [loading, setLoading] = useState(supabaseEnabled && initialCount === undefined);
+  const [countLoading, setCountLoading] = useState(supabaseEnabled && initialCount === undefined);
+  const [resolvedUserStatusKey, setResolvedUserStatusKey] = useState<string | null>(null);
   const [unavailable, setUnavailable] = useState(false);
   const count = Math.max(0, (initialCount ?? fetchedCount) + optimisticDelta);
+  const userStatusKey = userId ? `${storyId}:${userId}` : null;
+  const userStatusLoading = supabaseEnabled && !!userStatusKey && resolvedUserStatusKey !== userStatusKey;
+  const loading = countLoading || userStatusLoading;
 
   // Count query — independent of auth
   useEffect(() => {
@@ -43,11 +47,11 @@ export function useLikes(
         if (error) throw error;
         setFetchedCount(c ?? 0);
         setUnavailable(false);
-        setLoading(false);
+        setCountLoading(false);
       })
       .catch(() => {
         setUnavailable(true);
-        setLoading(false);
+        setCountLoading(false);
       });
   }, [storyId, initialCount]);
 
@@ -68,8 +72,12 @@ export function useLikes(
       .then(({ data, error }) => {
         if (error) throw error;
         setLiked(!!data);
+        setResolvedUserStatusKey(`${storyId}:${userId}`);
       })
-      .catch(() => setUnavailable(true));
+      .catch(() => {
+        setResolvedUserStatusKey(`${storyId}:${userId}`);
+        setUnavailable(true);
+      });
   }, [storyId, userId]);
 
   const toggle = useCallback(() => {

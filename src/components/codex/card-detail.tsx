@@ -49,7 +49,7 @@ interface CardDetailProps {
 
 export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const { userId } = useAuth();
+  const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
   const threadKey = buildCodexCommentThreadKey("card", card.id);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
@@ -395,7 +395,12 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
           <h2 className="text-sm font-bold text-gray-300">{serviceText.common.comments}</h2>
-          <LikeButton storyId={threadKey} userId={userId} />
+          <LikeButton
+            storyId={threadKey}
+            userId={userId}
+            authReady={authReady}
+            authUnavailable={authUnavailable}
+          />
         </div>
         <CommentSection threadKey={threadKey} />
       </div>

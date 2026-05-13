@@ -9,25 +9,31 @@ export function LikeButton({
   userId,
   initialCount,
   size = 20,
+  authReady = true,
+  authUnavailable = false,
   className = "",
 }: {
   storyId: string;
   userId: string | null;
   initialCount?: number;
   size?: number;
+  authReady?: boolean;
+  authUnavailable?: boolean;
   className?: string;
 }) {
   const { count, liked, loading, unavailable, toggle } = useLikes(storyId, userId, { initialCount });
+  const pending = !authReady || loading;
+  const blocked = authUnavailable || unavailable;
 
   return (
     <button
       onClick={toggle}
-      disabled={!userId || loading || unavailable}
+      disabled={!userId || pending || blocked}
       className={`flex items-center gap-1 text-xs text-muted-foreground transition-all ${className}`}
     >
-      {unavailable ? (
+      {blocked ? (
         <EngagementUnavailableIcon size={size} />
-      ) : loading ? (
+      ) : pending ? (
         <EngagementSpinner size={size} />
       ) : (
         <>

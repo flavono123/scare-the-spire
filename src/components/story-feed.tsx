@@ -393,6 +393,8 @@ function StoryCard({
   sts2ChangeMap,
   sts2PatchMap,
   userId,
+  authReady,
+  authUnavailable,
   expanded,
   onToggle,
   commentCount,
@@ -409,6 +411,8 @@ function StoryCard({
   sts2ChangeMap: Map<string, STS2Change>;
   sts2PatchMap: Map<string, STS2Patch>;
   userId: string | null;
+  authReady: boolean;
+  authUnavailable: boolean;
   expanded: boolean;
   onToggle: (storyId: string) => void;
   likeCount: number;
@@ -439,7 +443,12 @@ function StoryCard({
             </p>
           </button>
           <div className="shrink-0">
-            <LikeButton storyId={story.id} userId={userId} />
+            <LikeButton
+              storyId={story.id}
+              userId={userId}
+              authReady={authReady}
+              authUnavailable={authUnavailable}
+            />
           </div>
         </div>
 
@@ -484,7 +493,7 @@ export function StoryFeed({
   sts2Patches?: STS2Patch[];
   sts2Entities?: EntityInfo[];
 }) {
-  const { userId } = useAuth();
+  const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
   const counts = useEngagementCounts();
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set());
   const didMountRef = useRef(false);
@@ -559,6 +568,8 @@ export function StoryFeed({
             sts2ChangeMap={sts2ChangeMap}
             sts2PatchMap={sts2PatchMap}
             userId={userId}
+            authReady={authReady}
+            authUnavailable={authUnavailable}
             expanded={expandedIds.has(story.id)}
             onToggle={toggle}
             likeCount={counts.likes[story.id] ?? 0}
