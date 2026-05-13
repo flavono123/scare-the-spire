@@ -490,6 +490,7 @@ function MonsterTile({
             loading={engagementLoading}
             unavailable={engagementUnavailable}
             showZeroComments
+            showLikes
             className="ml-auto shrink-0"
           />
         </div>

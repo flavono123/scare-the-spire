@@ -46,7 +46,7 @@ export function EngagementSummary({
     <span className={`inline-flex items-center gap-1.5 align-middle ${className}`}>
       {shouldShowComments && (
         <span className="text-xs font-normal text-muted-foreground/50">
-          [{commentCount}]
+          ({commentCount})
         </span>
       )}
       {shouldShowLikes && (

@@ -739,7 +739,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
             onClick={() => setShowMultiplayer((v) => !v)}
           />
           <ToggleButton
-            label={gameUi.cardLibrary.viewStats}
+            label={serviceLocale === "ko" ? "댓글/좋아요 보기" : "Show Comments/Likes"}
             active={showEngagementStats}
             onClick={() => setShowEngagementStats((v) => !v)}
           />
@@ -810,6 +810,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
                       ? {
                           commentCount: engagementCounts.comments[threadKey] ?? 0,
                           likeCount: engagementCounts.likes[threadKey] ?? 0,
+                          loading: engagementCounts.loading,
                           unavailable: engagementCounts.unavailable,
                         }
                       : null}

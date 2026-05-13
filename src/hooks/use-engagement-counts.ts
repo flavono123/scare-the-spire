@@ -12,12 +12,12 @@ interface Counts {
 }
 
 export function useEngagementCounts({ enabled = true }: { enabled?: boolean } = {}) {
-  const [counts, setCounts] = useState<Counts>({
+  const [counts, setCounts] = useState<Omit<Counts, "loading">>({
     likes: {},
     comments: {},
-    loading: supabaseEnabled && enabled,
     unavailable: false,
   });
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (!enabled || !supabaseEnabled) return;
@@ -38,7 +38,8 @@ export function useEngagementCounts({ enabled = true }: { enabled?: boolean } = 
             if (row.comment_count) comments[row.story_id] = row.comment_count;
           }
           if (cancelled) return;
-          setCounts({ likes, comments, loading: false, unavailable: false });
+          setCounts({ likes, comments, unavailable: false });
+          setLoaded(true);
           return;
         }
 
@@ -62,17 +63,22 @@ export function useEngagementCounts({ enabled = true }: { enabled?: boolean } = 
             comments[row.story_id] = (comments[row.story_id] ?? 0) + 1;
           }
           if (cancelled) return;
-          setCounts({ likes, comments, loading: false, unavailable: false });
+          setCounts({ likes, comments, unavailable: false });
+          setLoaded(true);
         });
       })
       .catch(() => {
         if (cancelled) return;
-        setCounts({ likes: {}, comments: {}, loading: false, unavailable: true });
+        setCounts({ likes: {}, comments: {}, unavailable: true });
+        setLoaded(true);
       });
     return () => {
       cancelled = true;
     };
   }, [enabled]);
 
-  return counts;
+  return {
+    ...counts,
+    loading: supabaseEnabled && enabled && !loaded,
+  };
 }

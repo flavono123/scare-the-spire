@@ -156,6 +156,7 @@ interface CardTileProps {
   engagementStats?: {
     commentCount: number;
     likeCount: number;
+    loading: boolean;
     unavailable: boolean;
   } | null;
 }
@@ -669,6 +670,7 @@ export const CardTile = memo(function CardTile({
             <CardEngagementStatsOverlay
               commentCount={engagementStats.commentCount}
               likeCount={engagementStats.likeCount}
+              loading={engagementStats.loading}
               unavailable={engagementStats.unavailable}
               serviceLocale={serviceLocale}
             />
@@ -817,6 +819,7 @@ export const CardTile = memo(function CardTile({
           <CardEngagementStatsOverlay
             commentCount={engagementStats.commentCount}
             likeCount={engagementStats.likeCount}
+            loading={engagementStats.loading}
             unavailable={engagementStats.unavailable}
             serviceLocale={serviceLocale}
           />
