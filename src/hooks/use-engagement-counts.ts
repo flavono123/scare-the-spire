@@ -11,16 +11,18 @@ interface Counts {
   unavailable: boolean;
 }
 
-export function useEngagementCounts() {
+export function useEngagementCounts({ enabled = true }: { enabled?: boolean } = {}) {
   const [counts, setCounts] = useState<Counts>({
     likes: {},
     comments: {},
-    loading: supabaseEnabled,
+    loading: supabaseEnabled && enabled,
     unavailable: false,
   });
 
   useEffect(() => {
-    if (!supabaseEnabled) return;
+    if (!enabled || !supabaseEnabled) return;
+
+    let cancelled = false;
 
     // Try server-side RPC first (migration-003), fall back to client-side scan
     withSupabaseTimeout(
@@ -35,6 +37,7 @@ export function useEngagementCounts() {
             if (row.like_count) likes[row.story_id] = row.like_count;
             if (row.comment_count) comments[row.story_id] = row.comment_count;
           }
+          if (cancelled) return;
           setCounts({ likes, comments, loading: false, unavailable: false });
           return;
         }
@@ -58,13 +61,18 @@ export function useEngagementCounts() {
           for (const row of commentsRes.data ?? []) {
             comments[row.story_id] = (comments[row.story_id] ?? 0) + 1;
           }
+          if (cancelled) return;
           setCounts({ likes, comments, loading: false, unavailable: false });
         });
       })
       .catch(() => {
+        if (cancelled) return;
         setCounts({ likes: {}, comments: {}, loading: false, unavailable: true });
       });
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [enabled]);
 
   return counts;
 }
