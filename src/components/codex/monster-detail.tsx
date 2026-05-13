@@ -180,8 +180,8 @@ export function MonsterDetail({
               <div className="flex min-w-0 items-center gap-3">
                 <div className="h-11 w-1.5 rounded-full" style={{ backgroundColor: typeConfig.color }} />
                 <div className="min-w-0">
-                  <h1 className="break-keep text-3xl font-bold leading-tight text-gray-100 sm:text-4xl">{monster.name}</h1>
-                  <p className="text-sm text-gray-500">{monster.nameEn}</p>
+                  <h1 className="font-game-title break-keep text-3xl font-bold leading-tight text-gray-100 sm:text-4xl">{monster.name}</h1>
+                  <p className="font-game-text text-sm text-gray-500">{monster.nameEn}</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -212,7 +212,7 @@ export function MonsterDetail({
                     color: selectedAccent,
                   }}
                 >
-                  {selectedMove.move.name}
+                  <span className="font-game-title">{selectedMove.move.name}</span>
                 </span>
               )}
             </div>
@@ -245,9 +245,9 @@ export function MonsterDetail({
                           {index + 1}
                         </span>
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-sm font-semibold text-gray-100">{summary.move.name}</span>
+                          <span className="font-game-title block truncate text-sm font-semibold text-gray-100">{summary.move.name}</span>
                           {summary.move.nameEn !== summary.move.name && (
-                            <span className="block truncate text-[11px] text-gray-500">{summary.move.nameEn}</span>
+                            <span className="font-game-text block truncate text-[11px] text-gray-500">{summary.move.nameEn}</span>
                           )}
                         </span>
                         <MoveMetricChips
@@ -272,9 +272,9 @@ export function MonsterDetail({
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                  <div className="text-lg font-bold text-gray-100">{selectedMove.move.name}</div>
+                  <div className="font-game-title text-lg font-bold text-gray-100">{selectedMove.move.name}</div>
                   {selectedMove.move.nameEn !== selectedMove.move.name && (
-                    <div className="text-xs text-gray-500">{selectedMove.move.nameEn}</div>
+                    <div className="font-game-text text-xs text-gray-500">{selectedMove.move.nameEn}</div>
                   )}
                 </div>
                 <MoveMetricChips
@@ -425,8 +425,8 @@ export function MonsterDetail({
               return (
                 <div key={enc.id} className="flex flex-col gap-1.5 px-3 py-2.5 rounded-lg bg-white/[0.03] border border-white/5">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-200">{enc.name}</span>
-                    <span className="text-[10px] text-gray-500">{enc.nameEn}</span>
+                    <span className="font-game-title text-sm font-medium text-gray-200">{enc.name}</span>
+                    <span className="font-game-text text-[10px] text-gray-500">{enc.nameEn}</span>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}>
@@ -458,11 +458,11 @@ export function MonsterDetail({
                                 onClick={() => onMonsterClick(linked)}
                                 className="text-[10px] text-yellow-400 hover:text-yellow-300 underline underline-offset-2 transition-colors"
                               >
-                                {m.name}
+                                <span className="font-game-text">{m.name}</span>
                               </button>
                             );
                           }
-                          return <span key={m.id} className="text-[10px] text-gray-400">{m.name}</span>;
+                          return <span key={m.id} className="font-game-text text-[10px] text-gray-400">{m.name}</span>;
                         })}
                     </div>
                   )}

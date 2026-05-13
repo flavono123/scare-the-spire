@@ -79,16 +79,16 @@ export default async function EncounterDetailPage({
 
         {/* Title */}
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-100">{encounter.name}</h1>
-          <p className="text-sm text-gray-500">{encounter.nameEn}</p>
+          <h1 className="font-game-title text-2xl font-bold text-gray-100">{encounter.name}</h1>
+          <p className="font-game-text text-sm text-gray-500">{encounter.nameEn}</p>
         </div>
 
         {/* Badges */}
         <div className="flex flex-wrap justify-center gap-2">
-          <span className="text-xs font-medium px-2.5 py-1 rounded-lg" style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}>
+          <span className="font-game-text text-xs font-medium px-2.5 py-1 rounded-lg" style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}>
             {gameUi.encounterRoomTypes[encounter.roomType]}
           </span>
-          <span className={`text-xs px-2.5 py-1 rounded-lg ${actConfig.bg} ${actConfig.color}`}>
+          <span className={`font-game-text text-xs px-2.5 py-1 rounded-lg ${actConfig.bg} ${actConfig.color}`}>
             {encounter.act ? gameUi.acts[encounter.act] : serviceText.labels.acts.none}
           </span>
           {encounter.isWeak && (
@@ -123,8 +123,8 @@ export default async function EncounterDetailPage({
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <span className="text-sm font-medium text-gray-100">{mRef.name}</span>
-                    <span className="ml-1.5 text-[10px] text-gray-500">{mRef.nameEn}</span>
+                    <span className="font-game-title text-sm font-medium text-gray-100">{mRef.name}</span>
+                    <span className="font-game-text ml-1.5 text-[10px] text-gray-500">{mRef.nameEn}</span>
                     {monster && monster.minHp != null && monster.minHp !== 9999 && (
                       <div className="flex items-center gap-2 mt-0.5">
                         <span className="text-[10px] text-gray-500">

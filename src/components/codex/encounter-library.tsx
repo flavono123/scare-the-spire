@@ -412,12 +412,12 @@ function EncounterTile({
       {/* Name + meta */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <span className="text-sm font-medium text-gray-100 truncate">{encounter.name}</span>
-          <span className="text-[10px] text-gray-500 truncate">{encounter.nameEn}</span>
+          <span className="font-game-title text-sm font-medium text-gray-100 truncate">{encounter.name}</span>
+          <span className="font-game-text text-[10px] text-gray-500 truncate">{encounter.nameEn}</span>
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           <span
-            className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+            className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
             style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}
           >
             {gameUi.encounterRoomTypes[encounter.roomType]}
@@ -434,7 +434,7 @@ function EncounterTile({
       {/* Monster names */}
       <div className="hidden sm:flex flex-wrap gap-1 shrink-0 max-w-48">
         {uniqueMonsters.map((m) => (
-          <span key={m.id} className="text-[10px] text-gray-400 bg-white/5 px-1.5 py-0.5 rounded">{m.name}</span>
+          <span key={m.id} className="font-game-text text-[10px] text-gray-400 bg-white/5 px-1.5 py-0.5 rounded">{m.name}</span>
         ))}
       </div>
     </button>
@@ -482,16 +482,16 @@ function EncounterDetail({
 
       {/* Title */}
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-100">{encounter.name}</h1>
-        <p className="text-sm text-gray-500">{encounter.nameEn}</p>
+        <h1 className="font-game-title text-2xl font-bold text-gray-100">{encounter.name}</h1>
+        <p className="font-game-text text-sm text-gray-500">{encounter.nameEn}</p>
       </div>
 
       {/* Badges */}
       <div className="flex flex-wrap justify-center gap-2">
-        <span className="text-xs font-medium px-2.5 py-1 rounded-lg" style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}>
+        <span className="font-game-text text-xs font-medium px-2.5 py-1 rounded-lg" style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}>
           {gameUi.encounterRoomTypes[encounter.roomType]}
         </span>
-        <span className={`text-xs px-2.5 py-1 rounded-lg ${actConfig.bg} ${actConfig.color}`}>
+        <span className={`font-game-text text-xs px-2.5 py-1 rounded-lg ${actConfig.bg} ${actConfig.color}`}>
           {getActLabel(encounter.act, messages, gameUi)}
         </span>
         {encounter.isWeak && (
@@ -526,8 +526,8 @@ function EncounterDetail({
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <span className="text-sm font-medium text-gray-100">{mRef.name}</span>
-                  <span className="ml-1.5 text-[10px] text-gray-500">{mRef.nameEn}</span>
+                  <span className="font-game-title text-sm font-medium text-gray-100">{mRef.name}</span>
+                  <span className="font-game-text ml-1.5 text-[10px] text-gray-500">{mRef.nameEn}</span>
                   {monster && (
                     <div className="flex items-center gap-2 mt-0.5">
                       {monster.minHp != null && monster.minHp !== 9999 && (

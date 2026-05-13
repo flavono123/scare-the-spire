@@ -79,7 +79,7 @@ export function MonsterLibrary({
   const [selectedTypes, setSelectedTypes] = useState<Set<MonsterType>>(new Set());
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
-  const { userId } = useAuth();
+  const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
   const engagementCounts = useEngagementCounts();
 
   // Monster detail modal
@@ -376,6 +376,8 @@ export function MonsterLibrary({
                       engagementLoading={engagementCounts.loading}
                       engagementUnavailable={engagementCounts.unavailable}
                       userId={userId}
+                      authReady={authReady}
+                      authUnavailable={authUnavailable}
                       onClick={() => setSelectedMonster(monster)}
                     />
                   );
@@ -426,6 +428,8 @@ function MonsterTile({
   engagementLoading,
   engagementUnavailable,
   userId,
+  authReady,
+  authUnavailable,
   onClick,
 }: {
   monster: CodexMonster;
@@ -436,6 +440,8 @@ function MonsterTile({
   engagementLoading: boolean;
   engagementUnavailable: boolean;
   userId: string | null;
+  authReady: boolean;
+  authUnavailable: boolean;
   onClick?: () => void;
 }) {
   const typeConfig = MONSTER_TYPE_CONFIG[displayType];
@@ -494,8 +500,8 @@ function MonsterTile({
 
         <div className="flex-1 min-w-0">
           <div className="flex min-w-0 items-center gap-1.5">
-            <span className="min-w-0 truncate text-sm font-medium" style={{ color: typeConfig.color }}>{monster.name}</span>
-            <span className="min-w-0 truncate text-[10px] text-gray-500">{monster.nameEn}</span>
+            <span className="font-game-title min-w-0 truncate text-sm font-medium" style={{ color: typeConfig.color }}>{monster.name}</span>
+            <span className="font-game-text min-w-0 truncate text-[10px] text-gray-500">{monster.nameEn}</span>
             <EngagementSummary
               commentCount={commentCount}
               loading={engagementLoading}
@@ -511,6 +517,8 @@ function MonsterTile({
         userId={userId}
         initialCount={likeCount}
         size={16}
+        authReady={authReady}
+        authUnavailable={authUnavailable}
         className="shrink-0 px-1 py-1"
       />
     </div>
