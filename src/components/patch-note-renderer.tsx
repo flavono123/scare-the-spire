@@ -59,7 +59,7 @@ type RenderContext = {
 // --- Entity Preview (hover card image) ---
 
 const DEFAULT_ENTITY_LINK_CLASS =
-  "font-semibold spire-gold hover:text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 transition-colors cursor-pointer";
+  "font-game-title font-semibold spire-gold hover:text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 transition-colors cursor-pointer";
 
 function useCoarsePointer(): boolean {
   const [isCoarsePointer, setIsCoarsePointer] = useState(false);
@@ -133,6 +133,7 @@ export function EntityPreview({
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : hrefBase;
   const linkText = preferEntityLocaleLabel ? entity.nameKo : children;
+  const renderedLinkText = <span className="font-game-title">{linkText}</span>;
 
   const openTapPreview = useCallback((event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
     if (!useTapPreview) return;
@@ -209,7 +210,7 @@ export function EntityPreview({
           onClick={openTapPreview}
           aria-expanded={useTapPreview ? show : undefined}
         >
-          {linkText}
+          {renderedLinkText}
         </Link>
       )}
       {!forceShow && !href && (
@@ -225,7 +226,7 @@ export function EntityPreview({
           }}
           aria-expanded={useTapPreview ? show : undefined}
         >
-          {linkText}
+          {renderedLinkText}
         </span>
       )}
       {visible && useTapPreview && (
@@ -261,13 +262,13 @@ export function EntityPreview({
                 />
               )}
               <span className="block">
-                <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
-                <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+                <span className="block font-game-title font-bold text-sm text-yellow-400">{entity.nameKo}</span>
+                <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
               </span>
             </span>
             <span className="flex items-center gap-1.5 mb-2">
               <span
-                className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
                 style={{
                   backgroundColor: `${RELIC_RARITY_COLORS[entity.relicData.rarity]}20`,
                   color: RELIC_RARITY_COLORS[entity.relicData.rarity],
@@ -277,14 +278,14 @@ export function EntityPreview({
               </span>
               {entity.relicData.pool !== "shared" && (
                 <span
-                  className="text-[10px] font-medium"
+                  className="font-game-text text-[10px] font-medium"
                   style={{ color: getCharacterColor(entity.relicData.pool) }}
                 >
                   {POOL_LABELS[entity.relicData.pool as RelicFilterPool]}
                 </span>
               )}
             </span>
-            <span className="block text-xs text-gray-200 leading-relaxed">
+            <span className="block font-game-text text-xs text-gray-200 leading-relaxed">
               <DescriptionText description={entity.relicData.description} />
             </span>
           </span>,
@@ -305,13 +306,13 @@ export function EntityPreview({
                 }}
               />
               <span className="block">
-                <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
-                <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+                <span className="block font-game-title font-bold text-sm text-yellow-400">{entity.nameKo}</span>
+                <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
               </span>
             </span>
             <span className="flex items-center gap-1.5 mb-2">
               <span
-                className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
                 style={{
                   backgroundColor: `${POTION_RARITY_CONFIG[entity.potionData.rarity].color}20`,
                   color: POTION_RARITY_CONFIG[entity.potionData.rarity].color,
@@ -321,14 +322,14 @@ export function EntityPreview({
               </span>
               {entity.potionData.pool !== "shared" && (
                 <span
-                  className="text-[10px] font-medium"
+                  className="font-game-text text-[10px] font-medium"
                   style={{ color: getCharacterColor(entity.potionData.pool) }}
                 >
                   {entity.potionData.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[entity.potionData.pool as RelicFilterPool]}
                 </span>
               )}
             </span>
-            <span className="block text-xs text-gray-200 leading-relaxed">
+            <span className="block font-game-text text-xs text-gray-200 leading-relaxed">
               <DescriptionText description={entity.potionData.description} />
             </span>
           </span>,
@@ -348,15 +349,15 @@ export function EntityPreview({
                 />
               )}
               <span className="block">
-                <span className="block font-bold text-sm" style={{ color: POWER_TYPE_CONFIG[entity.powerData.type].color }}>
+                <span className="block font-game-title font-bold text-sm" style={{ color: POWER_TYPE_CONFIG[entity.powerData.type].color }}>
                   {entity.nameKo}
                 </span>
-                <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+                <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
               </span>
             </span>
             <span className="flex items-center gap-1.5 mb-2">
               <span
-                className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
                 style={{
                   backgroundColor: `${POWER_TYPE_CONFIG[entity.powerData.type].color}20`,
                   color: POWER_TYPE_CONFIG[entity.powerData.type].color,
@@ -365,7 +366,7 @@ export function EntityPreview({
                 {gameUi?.powers.types[entity.powerData.type].label || POWER_TYPE_CONFIG[entity.powerData.type].label}
               </span>
             </span>
-            <span className="block text-xs text-gray-200 leading-relaxed">
+            <span className="block font-game-text text-xs text-gray-200 leading-relaxed">
               <DescriptionText description={entity.powerData.description} />
             </span>
           </span>,
@@ -385,13 +386,13 @@ export function EntityPreview({
                 />
               )}
               <span className="block">
-                <span className="block font-bold text-sm text-purple-400">{entity.nameKo}</span>
-                <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+                <span className="block font-game-title font-bold text-sm text-purple-400">{entity.nameKo}</span>
+                <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
               </span>
             </span>
             <span className="flex items-center gap-1.5 mb-2">
               <span
-                className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
                 style={{
                   backgroundColor: `${ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].color}20`,
                   color: ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].color,
@@ -400,12 +401,12 @@ export function EntityPreview({
                 {ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].label}
               </span>
               {entity.enchantmentData.isStackable && (
-                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">
+                <span className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">
                   중첩
                 </span>
               )}
             </span>
-            <span className="block text-xs text-gray-200 leading-relaxed">
+            <span className="block font-game-text text-xs text-gray-200 leading-relaxed">
               <DescriptionText description={entity.enchantmentData.description} />
             </span>
           </span>,
@@ -425,14 +426,14 @@ export function EntityPreview({
                 />
                 <span className="absolute inset-0 bg-gradient-to-t from-[#0c0c20] to-transparent" />
                 <span className="absolute bottom-2 left-3 right-3">
-                  <span className="block font-bold text-sm text-yellow-400 drop-shadow-lg">{entity.nameKo}</span>
-                  {entity.nameEn && <span className="block text-[10px] text-gray-400 drop-shadow-lg">{entity.nameEn}</span>}
+                  <span className="block font-game-title font-bold text-sm text-yellow-400 drop-shadow-lg">{entity.nameKo}</span>
+                  {entity.nameEn && <span className="block font-game-text text-[10px] text-gray-400 drop-shadow-lg">{entity.nameEn}</span>}
                 </span>
               </span>
             )}
             {!entity.eventData.imageUrl && (
               <span className="block p-2">
-                <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
+                <span className="block font-game-title font-bold text-sm text-yellow-400">{entity.nameKo}</span>
               </span>
             )}
           </span>,
@@ -441,8 +442,8 @@ export function EntityPreview({
       {visible && entity.eventOptionDesc && (
         renderTooltip(
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-amber-500/20 bg-[#0c0c20]/95 p-3">
-            <span className="block font-bold text-sm text-amber-400 mb-1">{entity.nameKo}</span>
-            <span className="block text-xs text-gray-200 leading-relaxed">
+            <span className="block font-game-title font-bold text-sm text-amber-400 mb-1">{entity.nameKo}</span>
+            <span className="block font-game-text text-xs text-gray-200 leading-relaxed">
               <DescriptionText description={entity.eventOptionDesc} />
             </span>
           </span>,
@@ -462,13 +463,13 @@ export function EntityPreview({
                 />
               )}
               <span className="block">
-                <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
-                <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+                <span className="block font-game-title font-bold text-sm text-yellow-400">{entity.nameKo}</span>
+                <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
               </span>
             </span>
             <span className="flex items-center gap-1.5 mb-2">
               <span
-                className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
                 style={{
                   backgroundColor: `${MONSTER_TYPE_CONFIG[entity.monsterData.type].color}20`,
                   color: MONSTER_TYPE_CONFIG[entity.monsterData.type].color,
@@ -477,7 +478,7 @@ export function EntityPreview({
                 {gameUi?.monsterTypes[entity.monsterData.type].label ?? MONSTER_TYPE_CONFIG[entity.monsterData.type].label}
               </span>
               {entity.monsterData.minHp != null && entity.monsterData.minHp !== 9999 && (
-                <span className="text-[10px] text-gray-400">
+                <span className="font-game-text text-[10px] text-gray-400">
                   HP {entity.monsterData.maxHp && entity.monsterData.maxHp !== entity.monsterData.minHp
                     ? `${entity.monsterData.minHp}-${entity.monsterData.maxHp}`
                     : entity.monsterData.minHp}
@@ -485,7 +486,7 @@ export function EntityPreview({
               )}
             </span>
             {entity.monsterData.bestiaryMoves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).length > 0 && (
-              <span className="block text-xs text-gray-300 leading-relaxed">
+              <span className="block font-game-text text-xs text-gray-300 leading-relaxed">
                 {entity.monsterData.bestiaryMoves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).slice(0, 4).map((m) => m.name).join(", ")}
               </span>
             )}
@@ -496,12 +497,12 @@ export function EntityPreview({
         renderTooltip(
           <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
             <span className="block">
-              <span className="block font-bold text-sm text-yellow-400">{entity.nameKo}</span>
-              <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+              <span className="block font-game-title font-bold text-sm text-yellow-400">{entity.nameKo}</span>
+              <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
             </span>
             <span className="flex items-center gap-1.5 mt-1 mb-2">
               <span
-                className="text-[10px] font-medium px-1.5 py-0.5 rounded"
+                className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
                 style={{
                   backgroundColor: `${ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].color}20`,
                   color: ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].color,
@@ -510,15 +511,15 @@ export function EntityPreview({
                 {gameUi?.encounterRoomTypes[entity.encounterData.roomType] ?? ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].label}
               </span>
               {entity.encounterData.act && (
-                <span className={`text-[10px] ${(EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).color}`}>
+                <span className={`font-game-text text-[10px] ${(EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).color}`}>
                   {gameUi?.acts[entity.encounterData.act] ?? (EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
                 </span>
               )}
               {entity.encounterData.isWeak && (
-                <span className="text-[10px] text-green-400">쉬운 전투</span>
+                <span className="font-game-text text-[10px] text-green-400">쉬운 전투</span>
               )}
             </span>
-            <span className="block text-xs text-gray-300 leading-relaxed">
+            <span className="block font-game-text text-xs text-gray-300 leading-relaxed">
               {Array.from(new Map(entity.encounterData.monsters.map((m) => [m.id, m])).values()).map((m) => m.name).join(", ")}
             </span>
           </span>,
@@ -540,13 +541,13 @@ export function EntityPreview({
               </span>
             )}
             <span className="block p-3">
-              <span className="block font-bold text-sm text-blue-400">{entity.nameKo}</span>
-              <span className="block text-[10px] text-gray-500">{entity.nameEn}</span>
+              <span className="block font-game-title font-bold text-sm text-blue-400">{entity.nameKo}</span>
+              <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
               {entity.ancientData.epithet && (
-                <span className="block text-[10px] text-gray-400 mt-0.5">{entity.ancientData.epithet}</span>
+                <span className="block font-game-text text-[10px] text-gray-400 mt-0.5">{entity.ancientData.epithet}</span>
               )}
               {entity.ancientData.act && (
-                <span className={`inline-block mt-2 text-[10px] ${(EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).color}`}>
+                <span className={`inline-block mt-2 font-game-text text-[10px] ${(EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).color}`}>
                   {gameUi?.acts[entity.ancientData.act] ?? (EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
                 </span>
               )}
@@ -566,10 +567,10 @@ export function EntityPreview({
               unoptimized
             />
             <span className="block px-2 py-1 text-center">
-              <span className="text-xs font-bold text-yellow-400">
+              <span className="font-game-title text-xs font-bold text-yellow-400">
                 {entity.nameKo}
               </span>
-              <span className="text-[10px] text-muted-foreground ml-1">
+              <span className="font-game-text text-[10px] text-muted-foreground ml-1">
                 {entity.nameEn}
               </span>
             </span>
@@ -763,7 +764,7 @@ function renderBBNodes(
         // Not an entity, just gold styling
         const label = gameKeywordLabel(plainText, context);
         return (
-          <span key={key} className="spire-gold font-semibold">
+          <span key={key} className="font-game-text spire-gold font-semibold">
             {label ?? renderBBNodes(node.children, lookup, key, context)}
           </span>
         );
@@ -817,7 +818,7 @@ function renderSineBBNodes(
 
         const label = gameKeywordLabel(plainText, context);
         return (
-          <span key={key} className="spire-gold font-semibold">
+          <span key={key} className="font-game-text spire-gold font-semibold">
             {label ? renderSineText(label, key, offset) : renderSineBBNodes(node.children, lookup, key, context, offset)}
           </span>
         );
@@ -881,7 +882,7 @@ function renderMarkdownBold(
         enriched.push(
           <strong
             key={`${keyPrefix}-b${idx}-${j}`}
-            className="font-semibold spire-gold"
+            className="font-game-text font-semibold spire-gold"
           >
             {label}
           </strong>,
@@ -930,7 +931,7 @@ function renderLine(
   if (trimmed.startsWith("#### ")) {
     const heading = gameHeadingLabel(trimmed.slice(5), context);
     return (
-      <h4 key={key} className="text-sm font-semibold mt-4 mb-1 text-yellow-600">
+      <h4 key={key} className="font-game-title text-sm font-semibold mt-4 mb-1 text-yellow-600">
         {enrichLine(heading, lookup, key, context)}
       </h4>
     );
@@ -938,7 +939,7 @@ function renderLine(
   if (trimmed.startsWith("### ")) {
     const heading = gameHeadingLabel(trimmed.slice(4), context);
     return (
-      <h3 key={key} className="text-base font-semibold mt-6 mb-2 text-yellow-500">
+      <h3 key={key} className="font-game-title text-base font-semibold mt-6 mb-2 text-yellow-500">
         {enrichLine(heading, lookup, key, context)}
       </h3>
     );
@@ -948,7 +949,7 @@ function renderLine(
     return (
       <h2
         key={key}
-        className="text-lg font-bold mt-8 mb-3 text-yellow-400 border-b border-border pb-1"
+        className="font-game-title text-lg font-bold mt-8 mb-3 text-yellow-400 border-b border-border pb-1"
       >
         {enrichLine(heading, lookup, key, context)}
       </h2>
