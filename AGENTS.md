@@ -80,6 +80,8 @@ This project uses local project skills instead of global home-directory skill in
 
 ## 데이터
 
+게임 관련 데이터를 수정할 때는 추측값이나 서비스 편의상 손으로 맞춘 값을 쓰지 않는다. 반드시 이미 게임에서 추출된 원본 데이터/코드를 따르거나, 필요한 경우 직접 게임 원본 데이터를 추출해 확인한 뒤 그 결과를 기준으로 수정한다.
+
 ### STS1 (레거시)
 - 전체 카드 (~200장) + 전체 유물 (~180개) in `data/`
 - 변경 이력 없는 카드/유물도 데이터에 포함
