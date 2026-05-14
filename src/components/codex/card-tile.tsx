@@ -115,7 +115,8 @@ const TITLE_FONT = "var(--font-game-title)";
 const L = {
   art: { top: 9, left: 6, right: 6, bottom: 56 },
   portraitBorder: { width: 92, height: 50, top: 9 },
-  banner: { top: 3, height: 17, overhangX: 9 },
+  banner: { top: 2.2, width: 116, aspectRatio: "653/145", titlePaddingX: 18, titleTranslateY: -12 },
+  ancientBanner: { top: -0.5, width: 126, aspectRatio: "671/182", titlePaddingX: 13, titleTranslateY: -3 },
   plaque: { width: 22, top: 55 },
   desc: { top: 64, bottom: 95, paddingX: 9 },
   cost: { top: -3, left: -3, size: 17 },
@@ -616,12 +617,11 @@ export const CardTile = memo(function CardTile({
           </div>
 
           <div
-            className="absolute z-[3] flex items-center justify-center"
+            className="absolute left-1/2 z-[3] flex -translate-x-1/2 items-center justify-center"
             style={{
-              top: `${L.banner.top}%`,
-              left: `-${L.banner.overhangX}%`,
-              right: `-${L.banner.overhangX}%`,
-              height: `${L.banner.height}%`,
+              top: `${L.ancientBanner.top}%`,
+              width: `${L.ancientBanner.width}%`,
+              aspectRatio: L.ancientBanner.aspectRatio,
             }}
           >
             <Image
@@ -632,12 +632,15 @@ export const CardTile = memo(function CardTile({
               style={{ filter: ancientBannerFilter }}
             />
             <span
-              className="relative z-10 text-center truncate px-[18%] w-full"
+              className="relative z-10 w-full truncate text-center"
               style={{
-                marginTop: "-10%",
+                paddingLeft: `${L.ancientBanner.titlePaddingX}%`,
+                paddingRight: `${L.ancientBanner.titlePaddingX}%`,
+                transform: `translateY(${L.ancientBanner.titleTranslateY}%)`,
                 fontFamily: TITLE_FONT,
                 fontSize: `${FONT_CQI.title}cqi`,
                 fontWeight: 800,
+                lineHeight: 1,
                 color: titleColor,
                 ...(titleStroke as CSSProperties),
               }}
@@ -765,12 +768,11 @@ export const CardTile = memo(function CardTile({
         </div>
 
         <div
-          className="absolute z-[3] flex items-center justify-center"
+          className="absolute left-1/2 z-[3] flex -translate-x-1/2 items-center justify-center"
           style={{
             top: `${L.banner.top}%`,
-            left: `-${L.banner.overhangX}%`,
-            right: `-${L.banner.overhangX}%`,
-            height: `${L.banner.height}%`,
+            width: `${L.banner.width}%`,
+            aspectRatio: L.banner.aspectRatio,
           }}
         >
           <Image
@@ -781,12 +783,15 @@ export const CardTile = memo(function CardTile({
             style={{ filter: bannerFilter }}
           />
           <span
-            className="relative z-10 text-center truncate px-[18%] w-full"
+            className="relative z-10 w-full truncate text-center"
             style={{
-              marginTop: "-10%",
+              paddingLeft: `${L.banner.titlePaddingX}%`,
+              paddingRight: `${L.banner.titlePaddingX}%`,
+              transform: `translateY(${L.banner.titleTranslateY}%)`,
               fontFamily: TITLE_FONT,
               fontSize: `${FONT_CQI.title}cqi`,
               fontWeight: 800,
+              lineHeight: 1,
               color: titleColor,
               ...(titleStroke as CSSProperties),
             }}
