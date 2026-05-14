@@ -76,6 +76,20 @@ const ENERGY_ICONS: Record<string, string> = {
   quest: "/images/game-assets/card-misc/energy_quest.png",
 };
 
+const ANCIENT_RIBBON_GLOW_COLOR: Record<string, string> = {
+  ironclad: "rgba(255, 93, 93, 0.78)",
+  silent: "rgba(128, 255, 151, 0.78)",
+  defect: "rgba(92, 229, 255, 0.82)",
+  necrobinder: "rgba(255, 102, 218, 0.82)",
+  regent: "rgba(255, 184, 92, 0.78)",
+  colorless: "rgba(122, 232, 255, 0.82)",
+  event: "rgba(122, 232, 255, 0.82)",
+  token: "rgba(122, 232, 255, 0.82)",
+  curse: "rgba(196, 101, 255, 0.78)",
+  status: "rgba(186, 190, 126, 0.7)",
+  quest: "rgba(122, 232, 255, 0.82)",
+};
+
 const UPGRADE_ADDED_KEYWORDS: Record<string, string> = {
   add_innate: "선천성",
   innate: "선천성",
@@ -633,12 +647,28 @@ export const CardTile = memo(function CardTile({
               aspectRatio: L.ancientBanner.aspectRatio,
             }}
           >
-            <Image
-              src="/images/game-assets/card-misc/ancient_banner.png"
-              alt=""
-              fill
-              className="object-contain pointer-events-none"
-              style={{ filter: ancientBannerFilter }}
+          <Image
+            src="/images/game-assets/card-misc/ancient_banner.png"
+            alt=""
+            fill
+            className="object-contain pointer-events-none"
+              style={{
+                filter: `${ancientBannerFilter} drop-shadow(0 -1px 4px ${ANCIENT_RIBBON_GLOW_COLOR[card.color] ?? ANCIENT_RIBBON_GLOW_COLOR.colorless})`,
+              }}
+            />
+            <span
+              aria-hidden
+              className="pointer-events-none absolute left-1/2 z-[9]"
+              style={{
+                top: "-3%",
+                width: "5.5%",
+                aspectRatio: "1",
+                transform: "translateX(-50%) rotate(45deg)",
+                borderRadius: "18%",
+                background: `radial-gradient(circle, #ffffff 0%, ${ANCIENT_RIBBON_GLOW_COLOR[card.color] ?? ANCIENT_RIBBON_GLOW_COLOR.colorless} 44%, transparent 72%)`,
+                boxShadow: `0 0 ${(8 / 300) * cardWidth}px ${(2 / 300) * cardWidth}px ${ANCIENT_RIBBON_GLOW_COLOR[card.color] ?? ANCIENT_RIBBON_GLOW_COLOR.colorless}`,
+                opacity: 0.86,
+              }}
             />
             <span
               className="relative z-10 w-full truncate text-center"
