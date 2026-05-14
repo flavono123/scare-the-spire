@@ -635,18 +635,18 @@ export const CardTile = memo(function CardTile({
                 aria-hidden
                 className="pointer-events-none absolute left-1/2 z-[8]"
                 style={{
-                  top: "13%",
-                  width: "54%",
-                  height: "38%",
+                  top: "5%",
+                  width: "66%",
+                  height: "50%",
                   transform: "translateX(-50%)",
                   background: [
-                    "radial-gradient(ellipse at 36% 44%, rgba(96, 240, 255, 0.42) 0%, transparent 34%)",
-                    "radial-gradient(ellipse at 63% 42%, rgba(255, 151, 90, 0.34) 0%, transparent 35%)",
-                    "radial-gradient(ellipse at 50% 24%, rgba(222, 91, 255, 0.28) 0%, transparent 34%)",
+                    "linear-gradient(90deg, transparent 0%, rgba(83, 232, 255, 0.4) 22%, rgba(155, 255, 160, 0.26) 42%, rgba(255, 155, 78, 0.36) 70%, transparent 100%)",
+                    "radial-gradient(ellipse at 50% 18%, rgba(236, 90, 255, 0.32) 0%, transparent 38%)",
+                    "radial-gradient(ellipse at 50% 70%, rgba(255, 245, 190, 0.18) 0%, transparent 42%)",
                   ].join(", "),
-                  filter: "blur(1.2px)",
+                  filter: "blur(1.6px)",
                   mixBlendMode: "screen",
-                  opacity: 0.72,
+                  opacity: 0.9,
                 }}
               />
               <span
