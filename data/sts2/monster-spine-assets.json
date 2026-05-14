@@ -678,6 +678,33 @@
       "version3",
       "version4"
     ],
+    "skinVariants": [
+      {
+        "id": "default",
+        "label": "default",
+        "attachmentCount": 24
+      },
+      {
+        "id": "version1",
+        "label": "version1",
+        "attachmentCount": 2
+      },
+      {
+        "id": "version2",
+        "label": "version2",
+        "attachmentCount": 2
+      },
+      {
+        "id": "version3",
+        "label": "version3",
+        "attachmentCount": 2
+      },
+      {
+        "id": "version4",
+        "label": "version4",
+        "attachmentCount": 2
+      }
+    ],
     "animations": [
       "attack",
       "idle_egg_loop",
@@ -1024,6 +1051,43 @@
       "moss2",
       "moss3",
       "squareeye"
+    ],
+    "skinVariants": [
+      {
+        "id": "default",
+        "label": "default",
+        "attachmentCount": 23
+      },
+      {
+        "id": "circleeye",
+        "label": "circleeye",
+        "attachmentCount": 1
+      },
+      {
+        "id": "diamondeye",
+        "label": "diamondeye",
+        "attachmentCount": 1
+      },
+      {
+        "id": "moss1",
+        "label": "moss1",
+        "attachmentCount": 2
+      },
+      {
+        "id": "moss2",
+        "label": "moss2",
+        "attachmentCount": 2
+      },
+      {
+        "id": "moss3",
+        "label": "moss3",
+        "attachmentCount": 2
+      },
+      {
+        "id": "squareeye",
+        "label": "squareeye",
+        "attachmentCount": 1
+      }
     ],
     "animations": [
       "attack_finish",
@@ -2312,6 +2376,28 @@
       "hair_1",
       "hair_2",
       "hair_3"
+    ],
+    "skinVariants": [
+      {
+        "id": "default",
+        "label": "default",
+        "attachmentCount": 29
+      },
+      {
+        "id": "hair_1",
+        "label": "hair 1",
+        "attachmentCount": 1
+      },
+      {
+        "id": "hair_2",
+        "label": "hair 2",
+        "attachmentCount": 1
+      },
+      {
+        "id": "hair_3",
+        "label": "hair 3",
+        "attachmentCount": 1
+      }
     ],
     "animations": [
       "attack_boomerang",
@@ -3632,6 +3718,33 @@
       "spikes",
       "wing"
     ],
+    "skinVariants": [
+      {
+        "id": "default",
+        "label": "default",
+        "attachmentCount": 18
+      },
+      {
+        "id": "eyes",
+        "label": "eyes",
+        "attachmentCount": 3
+      },
+      {
+        "id": "horns",
+        "label": "horns",
+        "attachmentCount": 3
+      },
+      {
+        "id": "spikes",
+        "label": "spikes",
+        "attachmentCount": 2
+      },
+      {
+        "id": "wing",
+        "label": "wing",
+        "attachmentCount": 2
+      }
+    ],
     "animations": [
       "block",
       "block_dive",
@@ -3957,6 +4070,23 @@
       "default",
       "skin1",
       "skin2"
+    ],
+    "skinVariants": [
+      {
+        "id": "default",
+        "label": "default",
+        "attachmentCount": 4
+      },
+      {
+        "id": "skin1",
+        "label": "skin1",
+        "attachmentCount": 26
+      },
+      {
+        "id": "skin2",
+        "label": "skin2",
+        "attachmentCount": 20
+      }
     ],
     "animations": [
       "attack",
@@ -5511,6 +5641,33 @@
       "pattern1",
       "pattern2"
     ],
+    "skinVariants": [
+      {
+        "id": "default",
+        "label": "default",
+        "attachmentCount": 20
+      },
+      {
+        "id": "eye1",
+        "label": "eye1",
+        "attachmentCount": 1
+      },
+      {
+        "id": "eye2",
+        "label": "eye2",
+        "attachmentCount": 1
+      },
+      {
+        "id": "pattern1",
+        "label": "pattern1",
+        "attachmentCount": 1
+      },
+      {
+        "id": "pattern2",
+        "label": "pattern2",
+        "attachmentCount": 1
+      }
+    ],
     "animations": [
       "attack_single",
       "attack_single_buffed",
@@ -5695,6 +5852,23 @@
       "default",
       "egg1",
       "egg2"
+    ],
+    "skinVariants": [
+      {
+        "id": "default",
+        "label": "default",
+        "attachmentCount": 15
+      },
+      {
+        "id": "egg1",
+        "label": "egg1",
+        "attachmentCount": 5
+      },
+      {
+        "id": "egg2",
+        "label": "egg2",
+        "attachmentCount": 5
+      }
     ],
     "animations": [
       "attack",
@@ -6019,6 +6193,38 @@
       "head1",
       "head2",
       "head3"
+    ],
+    "skinVariants": [
+      {
+        "id": "default",
+        "label": "default",
+        "attachmentCount": 29
+      },
+      {
+        "id": "barnacles1",
+        "label": "barnacles1",
+        "attachmentCount": 1
+      },
+      {
+        "id": "barnacles2",
+        "label": "barnacles2",
+        "attachmentCount": 1
+      },
+      {
+        "id": "barnacles3",
+        "label": "barnacles3",
+        "attachmentCount": 1
+      },
+      {
+        "id": "head1",
+        "label": "head1",
+        "attachmentCount": 1
+      },
+      {
+        "id": "head2",
+        "label": "head2",
+        "attachmentCount": 1
+      }
     ],
     "animations": [
       "attack",

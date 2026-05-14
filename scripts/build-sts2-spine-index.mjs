@@ -77,6 +77,15 @@ function parseSkeleton({ folder, root, sharedAtlasFile = null }) {
     pngFiles,
     version: skeleton.version,
     skins: skeleton.skins.map((skin) => skin.name),
+    skinAttachmentCounts: Object.fromEntries(
+      skeleton.skins.map((skin) => {
+        let count = 0;
+        skin.attachments.forEach(() => {
+          count += 1;
+        });
+        return [skin.name, count];
+      }),
+    ),
     animations: skeleton.animations.map((animation) => ({
       name: animation.name,
       duration: Number(animation.duration.toFixed(3)),
@@ -260,12 +269,37 @@ function moveVfxCandidates(move, usableVfxIds) {
   return unique(candidates).filter((id) => usableVfxIds.has(id));
 }
 
+function skinVariantLabel(skin) {
+  if (skin === "default") return "default";
+  return skin.replaceAll("_", " ");
+}
+
+function buildSkinVariants(actor, alias) {
+  if (alias?.tags?.includes("shared-actor")) return [];
+
+  const selectedSkin = alias?.skin ?? null;
+  const variants = actor.skins
+    .filter((skin) => {
+      if (skin === "default") return true;
+      if (skin === selectedSkin) return true;
+      return (actor.skinAttachmentCounts[skin] ?? 0) > 0;
+    })
+    .map((skin) => ({
+      id: skin,
+      label: skinVariantLabel(skin),
+      attachmentCount: actor.skinAttachmentCounts[skin] ?? 0,
+    }));
+
+  return variants.length > 1 ? variants : [];
+}
+
 function buildMonsterAsset(monster, actor, alias, vfxById) {
   const animationNames = actor.animations.map((animation) => animation.name);
   const idleAnimation = chooseIdleAnimation(animationNames);
   const bestiaryAnimations = ["revive", "hurt", "die"].filter((animation) => animationNames.includes(animation));
   const moves = monster.bestiary_moves ?? monster.moves ?? [];
   const usableVfxIds = new Set([...vfxById.keys()]);
+  const skinVariants = buildSkinVariants(actor, alias);
   const moveAnimations = Object.fromEntries(
     moves.map((move) => [move.id, moveAnimationCandidates(monster, move, animationNames, idleAnimation)]),
   );
@@ -288,6 +322,7 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
     textureUrls: actor.pngFiles.map((file) => `/spine/sts2/monsters/${actor.folder}/${file}`),
     skin: alias?.skin ?? null,
     skins: actor.skins,
+    ...(skinVariants.length > 0 ? { skinVariants } : {}),
     animations: animationNames,
     bestiaryAnimations,
     idleAnimation,
