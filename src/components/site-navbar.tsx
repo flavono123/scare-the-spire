@@ -42,6 +42,7 @@ const sts1Items = [
 
 const devItems = [
   { href: "/dev/admin", label: "어드민", icon: "/images/sts2/nav/question_mark.png" },
+  { href: "/dev/profile", label: "프로필 Mock", icon: "/images/sts2/characters/character_icon_necrobinder.webp" },
   { href: "/dev/monsters", label: "몬스터 정리", icon: "/images/sts2/nav/happy_cultist.png" },
   { href: "/dev/og-images", label: "OG 이미지 프리뷰", icon: "/images/sts2/nav/patch_notes_icon.png" },
   { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },
