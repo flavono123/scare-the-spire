@@ -53,6 +53,8 @@ const ANCIENT_TEXT_BG: Record<string, string> = {
   파워: "/images/game-assets/card-misc/ancient_card_text_bg_power.png",
 };
 
+const ANCIENT_FLAME_SHEET = "/images/game-assets/card-misc/ancient_card_flame_sheet.png";
+
 const PORTRAIT_BORDER_ASSETS: Record<string, string> = {
   공격: "/images/game-assets/card-portraits/card_portrait_border_attack.png",
   스킬: "/images/game-assets/card-portraits/card_portrait_border_skill.png",
@@ -651,20 +653,27 @@ export const CardTile = memo(function CardTile({
               />
               <span
                 aria-hidden
-                className="pointer-events-none absolute left-1/2 z-[9]"
+                className="pointer-events-none absolute z-[9] overflow-hidden"
                 style={{
-                  top: "-3%",
-                  width: "7.2%",
-                  aspectRatio: "0.72",
-                  transform: "translateX(-50%)",
-                  clipPath: "polygon(50% 0%, 83% 28%, 72% 72%, 50% 100%, 28% 72%, 17% 28%)",
-                  background: "linear-gradient(180deg, #aefcff 0%, #42d9df 42%, #1b9fb7 100%)",
-                  boxShadow: [
-                    `0 0 ${(9 / 300) * cardWidth}px rgba(91, 239, 255, 0.82)`,
-                    `0 0 ${(18 / 300) * cardWidth}px rgba(91, 239, 255, 0.42)`,
-                  ].join(", "),
+                  left: "50.15%",
+                  top: "-12.05%",
+                  width: "9%",
+                  aspectRatio: "49 / 69",
+                  transform: "translate(-50%, -50%)",
                 }}
-              />
+              >
+                <Image
+                  src={ANCIENT_FLAME_SHEET}
+                  alt=""
+                  fill
+                  className="sts2-ancient-card-flame__sheet pointer-events-none"
+                  style={{
+                    width: "1000%",
+                    maxWidth: "none",
+                    height: "100%",
+                  }}
+                />
+              </span>
               <span
                 className="relative z-10 w-full truncate text-center"
               style={{

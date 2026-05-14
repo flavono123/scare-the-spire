@@ -69,6 +69,71 @@
   }
 }
 
+.sts2-ancient-card-flame__sheet {
+  transform: translateX(0);
+  transform-origin: left center;
+  animation: sts2-ancient-card-flame 1s steps(1, end) infinite;
+  will-change: transform;
+}
+
+@keyframes sts2-ancient-card-flame {
+  0%,
+  9.999% {
+    transform: translateX(0);
+  }
+
+  10%,
+  19.999% {
+    transform: translateX(-10%);
+  }
+
+  20%,
+  29.999% {
+    transform: translateX(-20%);
+  }
+
+  30%,
+  39.999% {
+    transform: translateX(-30%);
+  }
+
+  40%,
+  49.999% {
+    transform: translateX(-40%);
+  }
+
+  50%,
+  59.999% {
+    transform: translateX(-50%);
+  }
+
+  60%,
+  69.999% {
+    transform: translateX(-60%);
+  }
+
+  70%,
+  79.999% {
+    transform: translateX(-70%);
+  }
+
+  80%,
+  89.999% {
+    transform: translateX(-80%);
+  }
+
+  90%,
+  99.999% {
+    transform: translateX(-90%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sts2-ancient-card-flame__sheet {
+    animation: none;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
