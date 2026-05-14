@@ -76,20 +76,6 @@ const ENERGY_ICONS: Record<string, string> = {
   quest: "/images/game-assets/card-misc/energy_quest.png",
 };
 
-const ANCIENT_RIBBON_GLOW_COLOR: Record<string, string> = {
-  ironclad: "rgba(255, 93, 93, 0.78)",
-  silent: "rgba(128, 255, 151, 0.78)",
-  defect: "rgba(92, 229, 255, 0.82)",
-  necrobinder: "rgba(255, 102, 218, 0.82)",
-  regent: "rgba(255, 184, 92, 0.78)",
-  colorless: "rgba(122, 232, 255, 0.82)",
-  event: "rgba(122, 232, 255, 0.82)",
-  token: "rgba(122, 232, 255, 0.82)",
-  curse: "rgba(196, 101, 255, 0.78)",
-  status: "rgba(186, 190, 126, 0.7)",
-  quest: "rgba(122, 232, 255, 0.82)",
-};
-
 const UPGRADE_ADDED_KEYWORDS: Record<string, string> = {
   add_innate: "선천성",
   innate: "선천성",
@@ -617,15 +603,6 @@ export const CardTile = memo(function CardTile({
             sizes={`${cardWidth}px`}
           />
 
-          <Image
-            src="/images/game-assets/card-misc/card_highlight_ancient.png"
-            alt=""
-            fill
-            className="object-contain pointer-events-none z-[2] mix-blend-screen"
-            style={{ filter: frameFilter, opacity: 0.6 }}
-            sizes={`${cardWidth}px`}
-          />
-
           <div
             className="absolute z-[2] pointer-events-none"
             style={{ left: "5%", right: "5%", bottom: "1%", height: "45%" }}
@@ -647,31 +624,49 @@ export const CardTile = memo(function CardTile({
               aspectRatio: L.ancientBanner.aspectRatio,
             }}
           >
-          <Image
-            src="/images/game-assets/card-misc/ancient_banner.png"
-            alt=""
-            fill
-            className="object-contain pointer-events-none"
-              style={{
-                filter: `${ancientBannerFilter} drop-shadow(0 -1px 4px ${ANCIENT_RIBBON_GLOW_COLOR[card.color] ?? ANCIENT_RIBBON_GLOW_COLOR.colorless})`,
-              }}
-            />
-            <span
-              aria-hidden
-              className="pointer-events-none absolute left-1/2 z-[9]"
-              style={{
-                top: "-3%",
-                width: "5.5%",
-                aspectRatio: "1",
-                transform: "translateX(-50%) rotate(45deg)",
-                borderRadius: "18%",
-                background: `radial-gradient(circle, #ffffff 0%, ${ANCIENT_RIBBON_GLOW_COLOR[card.color] ?? ANCIENT_RIBBON_GLOW_COLOR.colorless} 44%, transparent 72%)`,
-                boxShadow: `0 0 ${(8 / 300) * cardWidth}px ${(2 / 300) * cardWidth}px ${ANCIENT_RIBBON_GLOW_COLOR[card.color] ?? ANCIENT_RIBBON_GLOW_COLOR.colorless}`,
-                opacity: 0.86,
-              }}
-            />
-            <span
-              className="relative z-10 w-full truncate text-center"
+              <Image
+                src="/images/game-assets/card-misc/ancient_banner.png"
+                alt=""
+                fill
+                className="object-contain pointer-events-none"
+                style={{ filter: ancientBannerFilter }}
+              />
+              <span
+                aria-hidden
+                className="pointer-events-none absolute left-1/2 z-[8]"
+                style={{
+                  top: "13%",
+                  width: "54%",
+                  height: "38%",
+                  transform: "translateX(-50%)",
+                  background: [
+                    "radial-gradient(ellipse at 36% 44%, rgba(96, 240, 255, 0.42) 0%, transparent 34%)",
+                    "radial-gradient(ellipse at 63% 42%, rgba(255, 151, 90, 0.34) 0%, transparent 35%)",
+                    "radial-gradient(ellipse at 50% 24%, rgba(222, 91, 255, 0.28) 0%, transparent 34%)",
+                  ].join(", "),
+                  filter: "blur(1.2px)",
+                  mixBlendMode: "screen",
+                  opacity: 0.72,
+                }}
+              />
+              <span
+                aria-hidden
+                className="pointer-events-none absolute left-1/2 z-[9]"
+                style={{
+                  top: "-3%",
+                  width: "7.2%",
+                  aspectRatio: "0.72",
+                  transform: "translateX(-50%)",
+                  clipPath: "polygon(50% 0%, 83% 28%, 72% 72%, 50% 100%, 28% 72%, 17% 28%)",
+                  background: "linear-gradient(180deg, #aefcff 0%, #42d9df 42%, #1b9fb7 100%)",
+                  boxShadow: [
+                    `0 0 ${(9 / 300) * cardWidth}px rgba(91, 239, 255, 0.82)`,
+                    `0 0 ${(18 / 300) * cardWidth}px rgba(91, 239, 255, 0.42)`,
+                  ].join(", "),
+                }}
+              />
+              <span
+                className="relative z-10 w-full truncate text-center"
               style={{
                 paddingLeft: `${L.ancientBanner.titlePaddingX}%`,
                 paddingRight: `${L.ancientBanner.titlePaddingX}%`,
