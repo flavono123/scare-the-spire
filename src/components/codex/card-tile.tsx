@@ -130,7 +130,7 @@ const L = {
   art: { top: 9, left: 6, right: 6, bottom: 56 },
   portraitBorder: { width: 92, height: 50, top: 9 },
   banner: { top: 3, height: 17, overhangX: 9 },
-  ancientBanner: { top: 0.1, width: 112, aspectRatio: "671/182", titlePaddingX: 16, titleTranslateY: -28 },
+  ancientBanner: { top: -2.4, width: 112, aspectRatio: "671/182", titlePaddingX: 16, titleTranslateY: -28 },
   plaque: { width: 22, top: 55 },
   desc: { top: 64, bottom: 95, paddingX: 9 },
   cost: { top: -3, left: -3, size: 17 },
