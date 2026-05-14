@@ -163,18 +163,28 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
     return renderTemplate(v ? branches[0] : branches[1], vars, name);
   }
 
-  // {Var:choose(N):a|b|...} — v==1 picks the first branch, else the last.
-  // No value → first (singular) branch, mirroring the data-layer default
-  // of "one stack" on PowerVar/CardsVar.
+  // {Var:choose(N):a|b|...} — value equal to N picks the first branch,
+  // otherwise the last. No numeric value with N=1 keeps the singular default;
+  // non-numeric choices like AllEnemies fall back to the false branch.
   const chooseMatch = body.match(/^(\w+):choose\(([^)]+)\):([\s\S]*)$/);
   if (chooseMatch) {
-    const [, name, , rest] = chooseMatch;
+    const [, name, expectedRaw, rest] = chooseMatch;
     const opts = splitBranches(rest);
     const v = looksLike(name, vars);
-    if (typeof v !== "number") {
-      return renderTemplate(opts[0] ?? "", vars, name);
+    const expectedNumber = Number(expectedRaw);
+    const expectedIsNumeric = Number.isFinite(expectedNumber);
+    let matches = false;
+
+    if (v === undefined) {
+      matches = expectedIsNumeric && expectedNumber === 1;
+    } else if (expectedIsNumeric) {
+      const valueNumber = toNumber(v);
+      matches = valueNumber !== null && valueNumber === expectedNumber;
+    } else {
+      matches = String(v) === expectedRaw;
     }
-    const idx = v === 1 ? 0 : opts.length - 1;
+
+    const idx = matches ? 0 : opts.length - 1;
     return renderTemplate(opts[idx] ?? opts[0] ?? "", vars, name);
   }
 
