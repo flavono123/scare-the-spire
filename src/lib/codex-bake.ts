@@ -62,6 +62,59 @@ function splitBranches(s: string): string[] {
   return out;
 }
 
+function findTopLevelQuestion(s: string): number {
+  let depth = 0;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (c === "{") depth++;
+    else if (c === "}") depth--;
+    else if (c === "?" && depth === 0) return i;
+  }
+  return -1;
+}
+
+function toNumber(value: VarValue | undefined): number | null {
+  if (typeof value === "number") return value;
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
+}
+
+function evaluateCondition(value: VarValue | undefined, predicate: string): boolean {
+  if (value === undefined) return false;
+
+  const trimmed = predicate.trim();
+  if (!trimmed) return Boolean(value);
+
+  const match = trimmed.match(/^(>=|<=|==|!=|>|<)\s*(.+)$/);
+  if (!match) return Boolean(value);
+
+  const [, operator, rhsRaw] = match;
+  const lhsNumber = toNumber(value);
+  const rhsNumber = Number(rhsRaw);
+
+  if (lhsNumber !== null && Number.isFinite(rhsNumber)) {
+    switch (operator) {
+      case ">": return lhsNumber > rhsNumber;
+      case "<": return lhsNumber < rhsNumber;
+      case ">=": return lhsNumber >= rhsNumber;
+      case "<=": return lhsNumber <= rhsNumber;
+      case "==": return lhsNumber === rhsNumber;
+      case "!=": return lhsNumber !== rhsNumber;
+      default: return false;
+    }
+  }
+
+  const lhsString = String(value);
+  switch (operator) {
+    case "==": return lhsString === rhsRaw;
+    case "!=": return lhsString !== rhsRaw;
+    default: return false;
+  }
+}
+
 // Render a template body — i.e. the text between { and }.
 // `body` is e.g. `Cards`, `Cards:diff()`, `Cards:choose(1):a|b`, or `` (self-ref `{}`).
 function renderBody(body: string, vars: Vars, selfName: string | null): string {
@@ -82,6 +135,31 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
     if (branches.length < 2) return `{${body}}`;
     const v = looksLike(name, vars);
     if (v === undefined) return renderTemplate(branches[1] ?? "", vars, name);
+    return renderTemplate(v ? branches[0] : branches[1], vars, name);
+  }
+
+  // {Var:cond:>1?a|b} / {Var:cond:a|b}. Missing data chooses the false
+  // branch, matching optional runtime-only card text such as Sovereign Blade's
+  // Parry block line.
+  const genericCondMatch = body.match(/^(\w+):cond:([\s\S]*)$/);
+  if (genericCondMatch) {
+    const [, name, rest] = genericCondMatch;
+    const questionIndex = findTopLevelQuestion(rest);
+    const v = looksLike(name, vars);
+
+    if (questionIndex >= 0) {
+      const predicate = rest.slice(0, questionIndex);
+      const branches = splitBranches(rest.slice(questionIndex + 1));
+      if (branches.length < 2) return `{${body}}`;
+      return renderTemplate(
+        evaluateCondition(v, predicate) ? branches[0] : branches[1],
+        vars,
+        name,
+      );
+    }
+
+    const branches = splitBranches(rest);
+    if (branches.length < 2) return `{${body}}`;
     return renderTemplate(v ? branches[0] : branches[1], vars, name);
   }
 

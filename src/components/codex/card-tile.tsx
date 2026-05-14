@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, memo, CSSProperties } from "react";
+import { useState, memo, Fragment, CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
@@ -86,6 +86,8 @@ const UPGRADE_REMOVED_KEYWORDS: Record<string, string> = {
   remove_exhaust: "소멸",
   remove_ethereal: "휘발성",
 };
+
+const PRE_DESCRIPTION_KEYWORD_ORDER = ["사용불가", "선천성", "휘발성"];
 
 function getUpgradeKeywords(
   upgrade: CodexCard["upgrade"],
@@ -260,10 +262,39 @@ export const CardTile = memo(function CardTile({
       (k) => !removedSet.has(k) && !baseKeywords.includes(k)
     ),
   ];
+  const keywordLookupKey = (keyword: string): string => keyword.split(/\s/)[0];
   const keywordDisplayText = (keyword: string): string => {
-    const [lookupKey] = keyword.split(/\s/);
+    const lookupKey = keywordLookupKey(keyword);
     const label = card.keywordLabels[lookupKey] ?? lookupKey;
     return keyword.replace(lookupKey, label);
+  };
+  const preDescriptionKeywords = displayKeywords
+    .filter((kw) => PRE_DESCRIPTION_KEYWORD_ORDER.includes(keywordLookupKey(kw)))
+    .sort((a, b) => (
+      PRE_DESCRIPTION_KEYWORD_ORDER.indexOf(keywordLookupKey(a)) -
+      PRE_DESCRIPTION_KEYWORD_ORDER.indexOf(keywordLookupKey(b))
+    ));
+  const postDescriptionKeywords = displayKeywords.filter(
+    (kw) => !PRE_DESCRIPTION_KEYWORD_ORDER.includes(keywordLookupKey(kw)),
+  );
+  const renderKeyword = (kw: string) => {
+    // 인챈트/강화 추가 키워드도 게임에선 일반 키워드와 동일한 골드.
+    // 키워드 hover lookup은 첫 단어만 (예: "재사용 1" → "재사용")
+    const lookupKey = keywordLookupKey(kw);
+    const displayText = keywordDisplayText(kw);
+    return (
+      <span
+        className="relative font-bold cursor-help"
+        style={{ color: TEXT_GOLD }}
+        onMouseEnter={() => setHoveredTerm(kw)}
+        onMouseLeave={() => setHoveredTerm(null)}
+      >
+        {displayText}
+        {hoveredTerm === kw && KEYWORD_DESC[lookupKey] && (
+          <TermTooltip name={displayText} desc={KEYWORD_DESC[lookupKey]} />
+        )}
+      </span>
+    );
   };
   // ─── 텍스트 파트 렌더 헬퍼 ───
   // mode="card": 일반 카드 본문 — 색 BBCode 그대로 (gold→골드 hover, blue→블루)
@@ -345,6 +376,13 @@ export const CardTile = memo(function CardTile({
         textShadow: `${(2 / 300) * cardWidth}px ${(2 / 300) * cardWidth}px 0 rgba(0,0,0,0.45)`,
       }}
     >
+      {preDescriptionKeywords.map((kw, i) => (
+        <Fragment key={`pre-kw-${kw}`}>
+          {i > 0 && <br />}
+          {renderKeyword(kw)}
+        </Fragment>
+      ))}
+      {preDescriptionKeywords.length > 0 && descParts.length > 0 && <br />}
       {renderParts(descParts, "card")}
       {suffixParts && (
         <>
@@ -352,31 +390,15 @@ export const CardTile = memo(function CardTile({
           <span style={{ color: "#EE82EE" }}>{renderParts(suffixParts, "suffix")}</span>
         </>
       )}
-      {displayKeywords.length > 0 && (
+      {postDescriptionKeywords.length > 0 && (
         <>
           <br />
-          {displayKeywords.map((kw, i) => {
-            // 인챈트 추가 키워드도 게임에선 일반 키워드와 동일한 골드.
-            // 키워드 hover lookup은 첫 단어만 (예: "재사용 1" → "재사용")
-            const lookupKey = kw.split(/\s/)[0];
-            const displayText = keywordDisplayText(kw);
-            return (
-              <span key={`kw-${i}`}>
-                {i > 0 && <span className="text-gray-500"> · </span>}
-                <span
-                  className="relative font-bold cursor-help"
-                  style={{ color: TEXT_GOLD }}
-                  onMouseEnter={() => setHoveredTerm(kw)}
-                  onMouseLeave={() => setHoveredTerm(null)}
-                >
-                  {displayText}
-                  {hoveredTerm === kw && KEYWORD_DESC[lookupKey] && (
-                    <TermTooltip name={displayText} desc={KEYWORD_DESC[lookupKey]} />
-                  )}
-                </span>
-              </span>
-            );
-          })}
+          {postDescriptionKeywords.map((kw, i) => (
+            <span key={`post-kw-${kw}`}>
+              {i > 0 && <span className="text-gray-500"> · </span>}
+              {renderKeyword(kw)}
+            </span>
+          ))}
         </>
       )}
     </div>
