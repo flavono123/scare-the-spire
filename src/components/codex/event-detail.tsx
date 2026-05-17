@@ -22,7 +22,6 @@ import {
 import { RichText } from "@/components/rich-text";
 import { CardTile } from "@/components/codex/card-tile";
 import {
-  getDefaultTinkerRiderForType,
   getMadSciencePreviewCard,
   getTinkerRiderIdsForType,
   isTinkerCardTypeId,
@@ -405,23 +404,6 @@ export function EventContentViewer({
   const previewCardsByOptionId = useMemo(() => {
     const previewCards = new Map<string, CodexCard>();
     if (event.id !== "TINKER_TIME" || !madScienceBaseCard) return previewCards;
-
-    if (currentPageId === "CHOOSE_CARD_TYPE") {
-      for (const option of options) {
-        if (!isTinkerCardTypeId(option.id)) continue;
-        const typeKo = TINKER_CARD_TYPE_TO_KO[option.id];
-        previewCards.set(
-          option.id,
-          getMadSciencePreviewCard(
-            madScienceBaseCard,
-            option.id,
-            getDefaultTinkerRiderForType(option.id),
-            gameUi.cardLibrary.types[typeKo] ?? typeKo,
-          ),
-        );
-      }
-      return previewCards;
-    }
 
     if (currentPageId === "CHOOSE_RIDER") {
       const selectedType = getTinkerSelectedType(currentEntry);
