@@ -22,7 +22,14 @@ export interface PetChoice {
   fallbackImageUrl: string;
   selectedSkin: string | null;
   selectedSkins: readonly string[] | null;
+  skinOptions: readonly PetSkinOption[];
   spineAsset: MonsterSpineAsset | null;
+}
+
+export interface PetSkinOption {
+  id: string;
+  label: string;
+  selectedSkins: readonly string[];
 }
 
 export interface AncientChoice {
@@ -72,11 +79,19 @@ export default function ProfilePage({
   const [characterId, setCharacterId] = useState(DEFAULTS.character);
   const [petId, setPetId] = useState(DEFAULTS.pet);
   const [ancientId, setAncientId] = useState(DEFAULTS.ancient);
+  const [petSkinById, setPetSkinById] = useState<Record<string, string>>({});
   const [characterAction, setCharacterAction] = useActionState();
   const [petAction, setPetAction] = useActionState();
 
   const character = findChoice(characters, characterId) ?? characters[0];
   const pet = findChoice(pets, petId) ?? pets[0];
+  const selectedPetSkinId = pet?.skinOptions.length
+    ? petSkinById[pet.id] ?? pet.skinOptions[0]?.id
+    : undefined;
+  const selectedPetSkin = selectedPetSkinId
+    ? pet?.skinOptions.find((option) => option.id === selectedPetSkinId)
+    : undefined;
+  const selectedPetSkins = selectedPetSkin?.selectedSkins ?? pet?.selectedSkins ?? null;
 
   return (
     <main className="mx-auto flex h-[calc(100svh-3.25rem)] w-full max-w-7xl flex-col gap-3 overflow-hidden px-3 py-2 sm:px-4">
@@ -135,12 +150,19 @@ export default function ProfilePage({
         <DuoRender
           character={character}
           pet={pet}
+          selectedPetSkins={selectedPetSkins}
+          selectedPetSkinId={selectedPetSkinId}
           characterAction={characterAction.action}
           characterActionNonce={characterAction.nonce}
           petAction={petAction.action}
           petActionNonce={petAction.nonce}
           onCharacterAction={setCharacterAction}
           onPetAction={setPetAction}
+          onPetSkinSelect={(skinId) => {
+            if (!pet) return;
+            setPetSkinById((current) => ({ ...current, [pet.id]: skinId }));
+            setPetAction("ATTACK");
+          }}
         />
       </section>
     </main>
@@ -283,21 +305,27 @@ function CarouselArrow({ direction, onClick }: { direction: "left" | "right"; on
 function DuoRender({
   character,
   pet,
+  selectedPetSkins,
+  selectedPetSkinId,
   characterAction,
   characterActionNonce,
   petAction,
   petActionNonce,
   onCharacterAction,
   onPetAction,
+  onPetSkinSelect,
 }: {
   character: CharacterChoice | undefined;
   pet: PetChoice | undefined;
+  selectedPetSkins: readonly string[] | null;
+  selectedPetSkinId: string | undefined;
   characterAction: ActionId;
   characterActionNonce: number;
   petAction: ActionId;
   petActionNonce: number;
   onCharacterAction: (action: ActionId) => void;
   onPetAction: (action: ActionId) => void;
+  onPetSkinSelect: (skinId: string) => void;
 }) {
   const petPlacement = getPetPlacement(pet?.monsterId);
 
@@ -336,7 +364,7 @@ function DuoRender({
             selectedMoveId={petAction}
             selectedMoveNonce={petActionNonce}
             selectedSkin={pet?.selectedSkin}
-            selectedSkins={pet?.selectedSkins}
+            selectedSkins={selectedPetSkins}
             imagePriority={false}
             showLoadingLabel={false}
             viewportTransitionTime={0}
@@ -349,6 +377,49 @@ function DuoRender({
         <ActionBar label="캐릭터" value={characterAction} onChange={onCharacterAction} />
         <ActionBar label="펫" value={petAction} onChange={onPetAction} />
       </div>
+      {pet && pet.skinOptions.length > 0 && (
+        <SkinOptionBar
+          options={pet.skinOptions}
+          selectedId={selectedPetSkinId}
+          onSelect={onPetSkinSelect}
+        />
+      )}
+    </div>
+  );
+}
+
+function SkinOptionBar({
+  options,
+  selectedId,
+  onSelect,
+}: {
+  options: readonly PetSkinOption[];
+  selectedId: string | undefined;
+  onSelect: (skinId: string) => void;
+}) {
+  return (
+    <div className="relative z-30 flex shrink-0 justify-end gap-1 pr-1 pb-1">
+      {options.map((option) => {
+        const active = option.id === selectedId;
+        return (
+          <button
+            key={option.id}
+            type="button"
+            aria-pressed={active}
+            aria-label={`펫 ${option.label}`}
+            title={option.label}
+            onClick={() => onSelect(option.id)}
+            className={cn(
+              "h-6 rounded px-2 text-[11px] font-semibold transition-colors",
+              active
+                ? "text-amber-100 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]"
+                : "text-zinc-500 hover:text-zinc-300",
+            )}
+          >
+            {option.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

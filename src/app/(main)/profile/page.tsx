@@ -37,12 +37,19 @@ const CHARACTER_SLUGS: Record<string, string> = {
 };
 
 const PET_CHOICES = [
-  { id: "OSTY", monsterId: "OSTY", labelSuffix: null, selectedSkins: null },
-  { id: "BYRDPIP_VERSION1", monsterId: "BYRDPIP", labelSuffix: "형태 1", selectedSkins: ["version1"] },
-  { id: "BYRDPIP_VERSION2", monsterId: "BYRDPIP", labelSuffix: "형태 2", selectedSkins: ["version2"] },
-  { id: "BYRDPIP_VERSION3", monsterId: "BYRDPIP", labelSuffix: "형태 3", selectedSkins: ["version3"] },
-  { id: "BYRDPIP_VERSION4", monsterId: "BYRDPIP", labelSuffix: "형태 4", selectedSkins: ["version4"] },
-  { id: "PAELS_LEGION", monsterId: "PAELS_LEGION", labelSuffix: null, selectedSkins: [] },
+  { id: "OSTY", monsterId: "OSTY", selectedSkins: null, skinOptions: [] },
+  {
+    id: "BYRDPIP",
+    monsterId: "BYRDPIP",
+    selectedSkins: ["version1"],
+    skinOptions: [
+      { id: "version1", label: "형태 1", selectedSkins: ["version1"] },
+      { id: "version2", label: "형태 2", selectedSkins: ["version2"] },
+      { id: "version3", label: "형태 3", selectedSkins: ["version3"] },
+      { id: "version4", label: "형태 4", selectedSkins: ["version4"] },
+    ],
+  },
+  { id: "PAELS_LEGION", monsterId: "PAELS_LEGION", selectedSkins: [], skinOptions: [] },
 ] as const;
 
 type PetMonsterId = (typeof PET_CHOICES)[number]["monsterId"];
@@ -104,16 +111,15 @@ function mapPet(
 ): PetChoice {
   const attackVfxId = PET_ATTACK_VFX[choice.monsterId];
   const attackVfx = attackVfxId ? vfxById.get(attackVfxId) ?? null : null;
-  const baseLabel = monster?.name ?? choice.monsterId;
-
   return {
     id: choice.id,
     monsterId: choice.monsterId,
-    label: choice.labelSuffix ? `${baseLabel} ${choice.labelSuffix}` : baseLabel,
+    label: monster?.name ?? choice.monsterId,
     iconUrl: PET_TOKENS[choice.monsterId],
     fallbackImageUrl: monster?.imageUrl ?? PET_TOKENS[choice.monsterId],
     selectedSkin: null,
     selectedSkins: choice.selectedSkins,
+    skinOptions: choice.skinOptions,
     spineAsset: monster?.spineAsset ? withProfileActions(monster.spineAsset, attackVfx) : null,
   };
 }
