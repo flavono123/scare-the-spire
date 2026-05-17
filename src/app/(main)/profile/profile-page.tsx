@@ -41,6 +41,8 @@ export interface AncientChoice {
   subtitle: string;
   iconUrl: string;
   backgroundImageUrl: string | null;
+  foregroundImageUrl: string | null;
+  spineAsset: MonsterSpineAsset | null;
 }
 
 type ActionId = "IDLE" | "ATTACK" | "HURT";
@@ -95,6 +97,13 @@ const PROFILE_SMALL_PET_VIEWPORT_PADDING = {
   padRight: "42%",
   padTop: "42%",
   padBottom: "24%",
+} as const;
+
+const PROFILE_ANCIENT_VIEWPORT_PADDING = {
+  padLeft: "0%",
+  padRight: "0%",
+  padTop: "0%",
+  padBottom: "0%",
 } as const;
 
 export default function ProfilePage({
@@ -389,6 +398,32 @@ function DuoRender({
               priority={false}
             />
           </div>
+        )}
+        {ancient?.spineAsset && (
+          <div className="pointer-events-none absolute inset-0 z-[1] opacity-75">
+            <MonsterSpineStage
+              key={`ancient-${ancient.id}`}
+              asset={ancient.spineAsset}
+              fallbackImageUrl={null}
+              monsterName={ancient.label}
+              selectedMoveId={null}
+              imagePriority={false}
+              showLoadingLabel={false}
+              viewportTransitionTime={0}
+              viewportPadding={PROFILE_ANCIENT_VIEWPORT_PADDING}
+              className="relative h-full w-full"
+            />
+          </div>
+        )}
+        {ancient?.foregroundImageUrl && (
+          <Image
+            src={ancient.foregroundImageUrl}
+            alt=""
+            width={240}
+            height={240}
+            className="pointer-events-none absolute right-[18%] top-[18%] z-[2] h-[clamp(7rem,16vw,14rem)] w-auto object-contain opacity-90 drop-shadow-[0_0_28px_rgba(96,165,250,0.38)]"
+            priority={false}
+          />
         )}
         <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-full w-[68rem] max-w-none origin-bottom-left scale-[0.8]">
           <MonsterSpineStage

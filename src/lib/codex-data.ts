@@ -575,6 +575,10 @@ export async function getCodexCharacterSpineAssets(): Promise<MonsterSpineAsset[
   return readJson<MonsterSpineAsset[]>("character-spine-assets.json").catch(() => []);
 }
 
+export async function getCodexAncientSpineAssets(): Promise<MonsterSpineAsset[]> {
+  return readJson<MonsterSpineAsset[]>("ancient-spine-assets.json").catch(() => []);
+}
+
 export async function getCodexSpineVfxAssets(): Promise<MonsterSpineEffectAsset[]> {
   return readJson<MonsterSpineEffectAsset[]>("spine-vfx-assets.json").catch(() => []);
 }
