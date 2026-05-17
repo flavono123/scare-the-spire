@@ -484,7 +484,7 @@ function getPetPlacement(petId: string | undefined): {
 
   return {
     bottom: "0%",
-    left: "30%",
+    left: "58%",
     width: "14rem",
     height: "34%",
   };
