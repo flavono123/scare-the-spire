@@ -33,7 +33,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { EngagementSummary } from "@/components/engagement-summary";
 import { LikeButton } from "@/components/like-button";
 import { SearchBar } from "./search-bar";
-import { FilterSection } from "./codex-filters";
+import { FilterSection, ToggleButton } from "./codex-filters";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import {
   CodexLibraryShell,
@@ -78,6 +78,7 @@ export function MonsterLibrary({
   const searchParams = useSearchParams();
   const [selectedTypes, setSelectedTypes] = useState<Set<MonsterType>>(new Set());
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
+  const [showOnlySkinVariants, setShowOnlySkinVariants] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
   const engagementCounts = useEngagementCounts();
@@ -171,6 +172,10 @@ export function MonsterLibrary({
   const filteredMonsters = useMemo(() => {
     let result = monsters.filter((m) => m.showInCompendium && isPublicBestiaryMonster(m.id));
 
+    if (showOnlySkinVariants) {
+      result = result.filter((m) => hasSkinVariants(m));
+    }
+
     // Type filter
     if (selectedTypes.size > 0) {
       result = result.filter((m) => selectedTypes.has(getDisplayMonsterType(m)));
@@ -207,7 +212,7 @@ export function MonsterLibrary({
     }
 
     return result;
-  }, [monsters, selectedTypes, selectedActs, parsedSearch, monsterActs]);
+  }, [monsters, showOnlySkinVariants, selectedTypes, selectedActs, parsedSearch, monsterActs]);
 
   const getPrimaryMonsterAct = useCallback(
     (monsterId: string): EventAct | null => {
@@ -324,6 +329,18 @@ export function MonsterLibrary({
                 </button>
               );
             })}
+          </div>
+        </FilterSection>
+
+        <div className="border-t border-white/10" />
+
+        <FilterSection label={serviceLocale === "ko" ? "표시" : "Display"}>
+          <div className="flex flex-col gap-1">
+            <ToggleButton
+              label={serviceLocale === "ko" ? "스킨 있음" : "Has skins"}
+              active={showOnlySkinVariants}
+              onClick={() => setShowOnlySkinVariants((value) => !value)}
+            />
           </div>
         </FilterSection>
         </>
@@ -586,6 +603,10 @@ function getMonsterTypeSortOrder(type: MonsterType): number {
 
 function getDisplayMonsterType(monster: CodexMonster): MonsterType {
   return getBestiaryDisplayMonsterType(monster.id, monster.type);
+}
+
+function hasSkinVariants(monster: CodexMonster): boolean {
+  return (monster.spineAsset?.skinVariants?.length ?? 0) > 1;
 }
 
 function getMeaningfulMoves(monster: CodexMonster) {
