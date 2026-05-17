@@ -400,20 +400,22 @@ function DuoRender({
           </div>
         )}
         {ancient?.spineAsset && (
-          <div className="pointer-events-none absolute inset-0 z-[1] opacity-75">
-            <MonsterSpineStage
-              key={`ancient-${ancient.id}`}
-              asset={ancient.spineAsset}
-              fallbackImageUrl={ancient.iconUrl}
-              monsterName={ancient.label}
-              selectedMoveId={null}
-              imagePriority={false}
-              showLoadingLabel={false}
-              viewportTransitionTime={0}
-              viewportPadding={PROFILE_ANCIENT_VIEWPORT_PADDING}
-              fallbackImageClassName="absolute left-1/2 top-1/2 z-10 h-[clamp(7rem,16vw,14rem)] w-auto -translate-x-1/2 -translate-y-1/2 object-contain opacity-90 drop-shadow-[0_0_28px_rgba(96,165,250,0.38)]"
-              className="relative h-full w-full"
-            />
+          <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden opacity-75">
+            <div className="absolute left-1/2 top-0 aspect-[2560/1200] h-full min-w-full -translate-x-1/2">
+              <MonsterSpineStage
+                key={`ancient-${ancient.id}`}
+                asset={ancient.spineAsset}
+                fallbackImageUrl={ancient.iconUrl}
+                monsterName={ancient.label}
+                selectedMoveId={null}
+                imagePriority={false}
+                showLoadingLabel={false}
+                viewportTransitionTime={0}
+                viewportPadding={PROFILE_ANCIENT_VIEWPORT_PADDING}
+                fallbackImageClassName="absolute left-1/2 top-1/2 z-10 h-[clamp(7rem,16vw,14rem)] w-auto -translate-x-1/2 -translate-y-1/2 object-contain opacity-90 drop-shadow-[0_0_28px_rgba(96,165,250,0.38)]"
+                className="relative h-full w-full"
+              />
+            </div>
           </div>
         )}
         {ancient?.foregroundImageUrl && (
