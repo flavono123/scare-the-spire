@@ -404,7 +404,7 @@ function DuoRender({
             <MonsterSpineStage
               key={`ancient-${ancient.id}`}
               asset={ancient.spineAsset}
-              fallbackImageUrl={null}
+              fallbackImageUrl={ancient.iconUrl}
               monsterName={ancient.label}
               selectedMoveId={null}
               imagePriority={false}
