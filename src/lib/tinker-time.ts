@@ -41,6 +41,12 @@ export const TINKER_CARD_TYPE_CHOICE_LABELS: Record<TinkerCardType, string> = {
   POWER: "도구",
 };
 
+export const TINKER_CARD_TYPE_CHOICE_LABELS_EN: Record<TinkerCardType, string> = {
+  ATTACK: "Weapon",
+  SKILL: "Protector",
+  POWER: "Gadget",
+};
+
 export const TINKER_RIDER_CHOICE_LABELS: Record<TinkerRiderId, string> = {
   SAPPING: "탈력",
   VIOLENCE: "폭력",
@@ -52,6 +58,22 @@ export const TINKER_RIDER_CHOICE_LABELS: Record<TinkerRiderId, string> = {
   CURIOUS: "호기심",
   IMPROVEMENT: "개선",
 };
+
+export const TINKER_RIDER_CHOICE_LABELS_EN: Record<TinkerRiderId, string> = {
+  SAPPING: "Sapping",
+  VIOLENCE: "Violence",
+  CHOKING: "Choking",
+  ENERGIZED: "Energized",
+  WISDOM: "Wisdom",
+  CHAOS: "Chaos",
+  EXPERTISE: "Expertise",
+  CURIOUS: "Curious",
+  IMPROVEMENT: "Improvement",
+};
+
+export const TINKER_TIME_TITLE_KEY = "TINKER_TIME.title";
+export const TINKER_TIME_TITLE_FALLBACK_KO = "땜질 시간";
+export const TINKER_TIME_TITLE_FALLBACK_EN = "Tinker Time";
 
 export const TINKER_CARD_TYPE_TO_KO: Record<TinkerCardType, CardTypeKo> = {
   ATTACK: "공격",
@@ -122,6 +144,14 @@ export function isTinkerCardTypeId(value: string): value is TinkerCardType {
 
 export function getMadScienceVariantId(cardType: TinkerCardType): string {
   return MAD_SCIENCE_CARD_ID_BY_TYPE[cardType];
+}
+
+export function getTinkerCardTypeChoiceKey(cardType: TinkerCardType): string {
+  return `TINKER_TIME.pages.CHOOSE_CARD_TYPE.options.${cardType}.title`;
+}
+
+export function getTinkerRiderChoiceKey(riderId: TinkerRiderId): string {
+  return `TINKER_TIME.pages.CHOOSE_RIDER.options.${riderId}.title`;
 }
 
 export function getMadScienceCardTypeFromId(id: string): TinkerCardType | null {
