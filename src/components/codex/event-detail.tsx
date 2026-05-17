@@ -323,7 +323,7 @@ export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps)
     ? "mx-auto flex max-w-[92rem] flex-col gap-4 p-3 sm:p-5"
     : "mx-auto flex max-w-6xl flex-col gap-5 p-4 sm:p-6";
   const textPanelClassName = isModal
-    ? "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[3%] sm:right-[3.5%] sm:top-[4%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[560px]"
+    ? "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[2%] sm:right-[3.5%] sm:top-[3%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[560px]"
     : "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]";
 
   return (
