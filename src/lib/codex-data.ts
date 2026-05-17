@@ -547,19 +547,45 @@ interface RawEvent {
   relics: string[] | null;
 }
 
+function hasEventSmartTemplate(text: string | null | undefined): boolean {
+  return Boolean(text && /\{[^}]+\}/.test(text));
+}
+
+function normalizeEventMarkup(text: string): string {
+  return text.replace(/\[sine\]([^\[]+?)\[\/rainbow\]\[\/sine\]/g, "[sine][rainbow]$1[/rainbow][/sine]");
+}
+
+function resolveEventText(localized: string, renderedFallback: string): string {
+  const normalized = normalizeEventMarkup(localized);
+  const fallback = normalizeEventMarkup(renderedFallback);
+  if (
+    hasEventSmartTemplate(normalized) &&
+    fallback &&
+    !hasEventSmartTemplate(fallback)
+  ) {
+    return fallback;
+  }
+  return bakeDescription(normalized, {});
+}
+
 function mapEventOptions(
   eventId: string,
   pageId: string,
   opts: RawEventOption[] | null,
+  fallbackOpts: RawEventOption[] | null,
   gameEvents: GameLocalizationTable,
 ): EventOption[] | null {
   if (!opts || opts.length === 0) return null;
+  const fallbackById = new Map((fallbackOpts ?? []).map((o) => [o.id, o]));
   return opts.map((o) => {
+    const fallback = fallbackById.get(o.id) ?? o;
     const baseKey = `${eventId}.pages.${pageId}.options.${o.id}`;
+    const title = gameText(gameEvents, `${baseKey}.title`, fallback.title);
+    const description = gameText(gameEvents, `${baseKey}.description`, fallback.description);
     return {
       id: o.id,
-      title: gameText(gameEvents, `${baseKey}.title`, o.title),
-      description: gameText(gameEvents, `${baseKey}.description`, o.description),
+      title: resolveEventText(title, fallback.title),
+      description: resolveEventText(description, fallback.description),
     };
   });
 }
@@ -567,18 +593,26 @@ function mapEventOptions(
 function mapEventPages(
   eventId: string,
   pages: RawEventPage[] | null,
+  fallbackPages: RawEventPage[] | null,
   gameEvents: GameLocalizationTable,
 ): EventPage[] | null {
   if (!pages || pages.length === 0) return null;
-  return pages.map((p) => ({
-    id: p.id,
-    description: gameNullableText(
+  const fallbackById = new Map((fallbackPages ?? []).map((p) => [p.id, p]));
+  return pages.map((p) => {
+    const fallback = fallbackById.get(p.id) ?? p;
+    const description = gameNullableText(
       gameEvents,
       `${eventId}.pages.${p.id}.description`,
-      p.description,
-    ),
-    options: mapEventOptions(eventId, p.id, p.options, gameEvents),
-  }));
+      fallback.description,
+    );
+    return {
+      id: p.id,
+      description: description === null
+        ? null
+        : resolveEventText(description, fallback.description ?? description),
+      options: mapEventOptions(eventId, p.id, p.options, fallback.options, gameEvents),
+    };
+  });
 }
 
 function mapEvent(
@@ -590,18 +624,22 @@ function mapEvent(
 ): CodexEvent {
   const key = kor.id.toLowerCase();
   const imageUrl = imageFiles.has(key) ? `/images/sts2/events/${key}.webp` : null;
+  const fallbackEvent = gameLocale === "kor" ? kor : eng;
+  const fallbackInitialPage = fallbackEvent.pages?.find((p) => p.id === "INITIAL") ?? null;
+  const fallbackDescription = fallbackInitialPage?.description ?? fallbackEvent.description;
+  const localizedDescription = gameText(
+    gameEvents,
+    `${kor.id}.pages.INITIAL.description`,
+    gameText(gameEvents, `${kor.id}.description`, fallbackDescription),
+  );
   return {
     id: kor.id,
     name: gameTitleText(gameEvents, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
-    description: gameText(
-      gameEvents,
-      `${kor.id}.pages.INITIAL.description`,
-      gameText(gameEvents, `${kor.id}.description`, kor.description),
-    ),
+    description: resolveEventText(localizedDescription, fallbackDescription),
     act: (kor.act as EventAct | null),
-    options: mapEventOptions(kor.id, "INITIAL", kor.options, gameEvents),
-    pages: mapEventPages(kor.id, kor.pages, gameEvents),
+    options: mapEventOptions(kor.id, "INITIAL", kor.options, fallbackInitialPage?.options ?? fallbackEvent.options, gameEvents),
+    pages: mapEventPages(kor.id, kor.pages, fallbackEvent.pages, gameEvents),
     imageUrl,
   };
 }
