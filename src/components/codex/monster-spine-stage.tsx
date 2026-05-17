@@ -10,6 +10,7 @@ interface MonsterSpineStageProps {
   fallbackImageUrl: string | null;
   monsterName: string;
   selectedMoveId: string | null;
+  selectedSkin?: string | null;
   className?: string;
   imagePriority?: boolean;
   showLoadingLabel?: boolean;
@@ -23,6 +24,7 @@ export function MonsterSpineStage({
   fallbackImageUrl,
   monsterName,
   selectedMoveId,
+  selectedSkin = null,
   className,
   imagePriority = true,
   showLoadingLabel = true,
@@ -58,7 +60,7 @@ export function MonsterSpineStage({
           atlasUrl: asset.atlasUrl,
           animation: asset.idleAnimation,
           animations: asset.animations,
-          skin: asset.skin ?? undefined,
+          skin: selectedSkin ?? asset.skin ?? undefined,
           skins: asset.skins,
           alpha: true,
           backgroundColor: "00000000",
@@ -94,7 +96,7 @@ export function MonsterSpineStage({
       player?.dispose();
       parent.replaceChildren();
     };
-  }, [asset, monsterName]);
+  }, [asset, monsterName, selectedSkin]);
 
   useEffect(() => {
     if (!asset || loadState !== "ready" || !playerRef.current || !selectedAnimation) return;
