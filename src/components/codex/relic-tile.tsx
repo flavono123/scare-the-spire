@@ -28,13 +28,16 @@ function pickStableVariant(relic: CodexRelic): RelicPool | null {
 interface RelicTileProps {
   serviceLocale?: ServiceLocale;
   relic: CodexRelic;
+  showBeta?: boolean;
   onClick?: (variantPool?: RelicPool) => void;
 }
 
-export function RelicTile({ serviceLocale = "ko", relic, onClick }: RelicTileProps) {
+export function RelicTile({ serviceLocale = "ko", relic, showBeta = false, onClick }: RelicTileProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const tileVariant = pickStableVariant(relic);
-  const tileImageUrl = relic.imageUrl ?? (tileVariant ? relic.variantImageUrls?.[tileVariant] ?? null : null);
+  const tileImageUrl = showBeta && relic.betaImageUrl
+    ? relic.betaImageUrl
+    : relic.imageUrl ?? (tileVariant ? relic.variantImageUrls?.[tileVariant] ?? null : null);
 
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);

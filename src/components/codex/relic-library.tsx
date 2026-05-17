@@ -34,7 +34,7 @@ import {
 import { RelicTile } from "./relic-tile";
 import { RelicDetail } from "./relic-detail";
 import { SearchBar } from "./search-bar";
-import { FilterSection, IconFilterButton } from "./codex-filters";
+import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
 import {
   CodexLibraryShell,
@@ -77,6 +77,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
   const [selectedRarities, setSelectedRarities] = useState<Set<RelicRarityKo>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+  const [showBeta, setShowBeta] = useState(false);
 
   // Relic detail modal — initialize from ?relic= query param
   const initialRelicId = searchParams.get("relic");
@@ -339,6 +340,16 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
             ))}
           </div>
         </FilterSection>
+
+        <div className="border-t border-white/10" />
+
+        <div className="flex flex-col gap-1">
+          <ToggleButton
+            label={serviceText.cardsView.toggles.betaArt}
+            active={showBeta}
+            onClick={() => setShowBeta((v) => !v)}
+          />
+        </div>
         </>
       )}
     >
@@ -409,7 +420,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {ancientRelics.map((relic) => (
-                          <RelicTile key={relic.id} serviceLocale={serviceLocale} relic={relic} onClick={(v) => selectRelic(relic, v)} />
+                          <RelicTile key={relic.id} serviceLocale={serviceLocale} relic={relic} showBeta={showBeta} onClick={(v) => selectRelic(relic, v)} />
                         ))}
                       </div>
                     </div>
@@ -419,7 +430,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
                 /* Regular relic icon grid */
                 <div className="flex flex-wrap gap-2">
                   {groupRelics.map((relic) => (
-                    <RelicTile key={relic.id} serviceLocale={serviceLocale} relic={relic} onClick={(v) => selectRelic(relic, v)} />
+                    <RelicTile key={relic.id} serviceLocale={serviceLocale} relic={relic} showBeta={showBeta} onClick={(v) => selectRelic(relic, v)} />
                   ))}
                 </div>
               )}
@@ -443,7 +454,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <RelicDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} relic={selectedRelic} poolLabels={poolLabels} initialVariant={selectedVariantPool} onClose={() => setSelectedRelic(null)} entities={entities} />
+            <RelicDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} relic={selectedRelic} poolLabels={poolLabels} initialVariant={selectedVariantPool} initialShowBeta={showBeta} onClose={() => setSelectedRelic(null)} entities={entities} />
           </div>
         </div>
       )}

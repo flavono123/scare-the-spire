@@ -40,6 +40,7 @@ interface RelicDetailProps {
   relic: CodexRelic;
   poolLabels: Record<RelicPool, string>;
   initialVariant?: RelicPool;
+  initialShowBeta?: boolean;
   onClose?: () => void;
   /** Cross-reference entities — when provided, descriptions become rich. */
   entities?: EntityInfo[];
@@ -47,7 +48,7 @@ interface RelicDetailProps {
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
-export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, onClose, entities }: RelicDetailProps) {
+export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities }: RelicDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   // Don't link the relic to itself in its own description
   const excludeSelf = useMemo(
@@ -61,11 +62,16 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
   const [selectedVariant, setSelectedVariant] = useState<RelicPool>(
     initialVariant && relic.variantImageUrls?.[initialVariant] ? initialVariant : variantPools[0] ?? relic.pool,
   );
+  const [showBeta, setShowBeta] = useState(initialShowBeta && Boolean(relic.betaImageUrl));
 
-  const displayImageUrl = relic.variantImageUrls
+  const displayImageUrl = showBeta && relic.betaImageUrl
+    ? relic.betaImageUrl
+    : relic.variantImageUrls
     ? relic.variantImageUrls[selectedVariant] ?? null
     : relic.imageUrl;
-  const displayOutlinePool = relic.variantImageUrls ? selectedVariant : relic.pool;
+  const displayOutlinePool = showBeta && relic.betaImageUrl
+    ? relic.pool
+    : relic.variantImageUrls ? selectedVariant : relic.pool;
 
   const rarityColor = RELIC_RARITY_COLORS[relic.rarity];
   const poolColor = relic.pool !== "shared" ? getCharacterColor(relic.pool) : undefined;
@@ -139,6 +145,19 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
             );
           })}
         </div>
+      )}
+
+      {relic.betaImageUrl && (
+        <button
+          onClick={() => setShowBeta((v) => !v)}
+          className={`px-3 py-1 text-xs rounded-lg border transition-all ${
+            showBeta
+              ? "bg-purple-500/20 text-purple-400 border-purple-500/50"
+              : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
+          }`}
+        >
+          {serviceText.cardsView.toggles.betaArt}
+        </button>
       )}
 
       {/* Relic Name */}

@@ -27,7 +27,7 @@ import {
 import { PowerTile } from "./power-tile";
 import { PowerDetail } from "./power-detail";
 import { SearchBar } from "./search-bar";
-import { FilterSection } from "./codex-filters";
+import { FilterSection, ToggleButton } from "./codex-filters";
 import { VersionSelector } from "./version-selector";
 import {
   CodexLibraryShell,
@@ -54,6 +54,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
   const [selectedTypes, setSelectedTypes] = useState<Set<PowerType>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+  const [showBeta, setShowBeta] = useState(false);
 
   // Power detail modal
   const initialPowerId = searchParams.get("power");
@@ -216,6 +217,16 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
             ))}
           </div>
         </FilterSection>
+
+        <div className="border-t border-white/10" />
+
+        <div className="flex flex-col gap-1">
+          <ToggleButton
+            label={serviceText.cardsView.toggles.betaArt}
+            active={showBeta}
+            onClick={() => setShowBeta((v) => !v)}
+          />
+        </div>
         </>
       )}
     >
@@ -268,7 +279,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
 
               <div className="flex flex-wrap gap-2">
                 {groupPowers.map((power) => (
-                  <PowerTile key={power.id} serviceLocale={serviceLocale} gameUi={gameUi} power={power} onClick={() => setSelectedPower(power)} />
+                  <PowerTile key={power.id} serviceLocale={serviceLocale} gameUi={gameUi} power={power} showBeta={showBeta} onClick={() => setSelectedPower(power)} />
                 ))}
               </div>
             </section>
@@ -291,7 +302,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <PowerDetail serviceLocale={serviceLocale} gameUi={gameUi} power={selectedPower} onClose={() => setSelectedPower(null)} />
+            <PowerDetail serviceLocale={serviceLocale} gameUi={gameUi} power={selectedPower} initialShowBeta={showBeta} onClose={() => setSelectedPower(null)} />
           </div>
         </div>
       )}

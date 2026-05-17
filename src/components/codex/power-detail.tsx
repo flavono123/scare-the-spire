@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -29,12 +30,15 @@ interface PowerDetailProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
   power: CodexPower;
+  initialShowBeta?: boolean;
   onClose?: () => void;
 }
 
-export function PowerDetail({ serviceLocale, gameUi, power, onClose }: PowerDetailProps) {
+export function PowerDetail({ serviceLocale, gameUi, power, initialShowBeta = false, onClose }: PowerDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const typeConfig = POWER_TYPE_CONFIG[power.type];
+  const [showBeta, setShowBeta] = useState(initialShowBeta && Boolean(power.betaImageUrl));
+  const imageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
 
   return (
     <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-lg mx-auto">
@@ -65,9 +69,9 @@ export function PowerDetail({ serviceLocale, gameUi, power, onClose }: PowerDeta
 
       {/* Large Power Image */}
       <div className="w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center">
-        {power.imageUrl ? (
+        {imageUrl ? (
           <Image
-            src={power.imageUrl}
+            src={imageUrl}
             alt={power.name}
             width={144}
             height={144}
@@ -79,6 +83,19 @@ export function PowerDetail({ serviceLocale, gameUi, power, onClose }: PowerDeta
           </div>
         )}
       </div>
+
+      {power.betaImageUrl && (
+        <button
+          onClick={() => setShowBeta((v) => !v)}
+          className={`px-3 py-1 text-xs rounded-lg border transition-all ${
+            showBeta
+              ? "bg-purple-500/20 text-purple-400 border-purple-500/50"
+              : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
+          }`}
+        >
+          {serviceText.cardsView.toggles.betaArt}
+        </button>
+      )}
 
       {/* Power Name */}
       <div className="text-center">
