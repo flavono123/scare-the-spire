@@ -8,6 +8,16 @@ import {
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { CardDetail } from "@/components/codex/card-detail";
+import {
+  getMadScienceCardTypeFromId,
+  getMadScienceVariantId,
+} from "@/lib/tinker-time";
+
+function findCardByRouteId<T extends { id: string }>(cards: T[], id: string): T | undefined {
+  const madScienceType = getMadScienceCardTypeFromId(id);
+  const resolvedId = madScienceType ? getMadScienceVariantId(madScienceType) : id;
+  return cards.find((c) => c.id.toLowerCase() === resolvedId.toLowerCase());
+}
 
 export async function generateStaticParams() {
   const cards = await getCodexCards();
@@ -29,7 +39,7 @@ export async function generateMetadata({
     getCodexCards({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-  const card = cards.find((c) => c.id.toLowerCase() === id.toLowerCase());
+  const card = findCardByRouteId(cards, id);
   if (!card) return {};
   return getCodexMetadata(serviceLocale, `${card.name} — ${gameUi.cardLibraryTitle}`);
 }
@@ -50,7 +60,7 @@ export default async function CardDetailPage({
     getCodexEnchantments({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-  const card = cards.find((c) => c.id.toLowerCase() === id.toLowerCase());
+  const card = findCardByRouteId(cards, id);
   if (!card) notFound();
 
   return (
