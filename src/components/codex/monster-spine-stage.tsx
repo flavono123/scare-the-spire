@@ -15,6 +15,7 @@ interface MonsterSpineStageProps {
   className?: string;
   imagePriority?: boolean;
   showLoadingLabel?: boolean;
+  viewportTransitionTime?: number;
 }
 
 type LoadState = "loading" | "ready" | "error";
@@ -30,6 +31,7 @@ export function MonsterSpineStage({
   className,
   imagePriority = true,
   showLoadingLabel = true,
+  viewportTransitionTime,
 }: MonsterSpineStageProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const vfxContainerRef = useRef<HTMLDivElement | null>(null);
@@ -55,7 +57,7 @@ export function MonsterSpineStage({
       .then(({ SpinePlayer: SpinePlayerCtor }) => {
         if (disposed || !containerRef.current) return;
         playerCtorRef.current = SpinePlayerCtor;
-        const viewport = getMonsterViewport(asset.id);
+        const viewport = getMonsterViewport(asset.id, viewportTransitionTime);
 
         player = new SpinePlayerCtor(parent, {
           binaryUrl: asset.binaryUrl,
@@ -239,14 +241,14 @@ function resolveSpineEffect(
   return asset.moveEffects[moveId]?.find((effect) => effect.usable !== false) ?? null;
 }
 
-function getMonsterViewport(monsterId: string): SpinePlayerConfig["viewport"] {
+function getMonsterViewport(monsterId: string, transitionTime = 0.12): SpinePlayerConfig["viewport"] {
   if (monsterId === "CUBEX_CONSTRUCT") {
     return {
       padLeft: "18%",
       padRight: "18%",
       padTop: "22%",
       padBottom: "18%",
-      transitionTime: 0.12,
+      transitionTime,
     };
   }
 
@@ -255,7 +257,7 @@ function getMonsterViewport(monsterId: string): SpinePlayerConfig["viewport"] {
     padRight: "4%",
     padTop: "4%",
     padBottom: "4%",
-    transitionTime: 0.12,
+    transitionTime,
   };
 }
 

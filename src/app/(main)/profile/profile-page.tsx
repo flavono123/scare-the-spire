@@ -298,6 +298,7 @@ function DuoRender({
             selectedMoveNonce={characterActionNonce}
             imagePriority={false}
             showLoadingLabel={false}
+            viewportTransitionTime={0}
             className="relative h-full w-full"
           />
         </div>
@@ -319,6 +320,7 @@ function DuoRender({
             selectedSkin={pet?.selectedSkin}
             imagePriority={false}
             showLoadingLabel={false}
+            viewportTransitionTime={0}
             className="relative h-full w-full"
           />
         </div>
