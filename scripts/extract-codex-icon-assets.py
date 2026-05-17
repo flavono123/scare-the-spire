@@ -52,6 +52,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-root", default=str(OUT_ROOT), help="Output root directory")
     parser.add_argument("--force", action="store_true", help="Refresh existing files")
     parser.add_argument("--dry-run", action="store_true", help="List work without writing files")
+    parser.add_argument("--offset", type=int, default=0, help="Start at this target index after sorting")
+    parser.add_argument("--limit", type=int, help="Maximum number of sorted targets to process")
     parser.add_argument(
         "--prune-stale",
         action="store_true",
@@ -200,14 +202,19 @@ def main() -> int:
     output_root = Path(args.output_root)
 
     with PCKReader(args.pck) as reader:
-        targets = discover_targets(reader, output_root, args.kind)
-        official = sum(1 for target in targets if not target.beta)
-        beta = sum(1 for target in targets if target.beta)
-        print(f"found {len(targets)} icon imports ({official} official, {beta} beta)")
+        all_targets = discover_targets(reader, output_root, args.kind)
+        official = sum(1 for target in all_targets if not target.beta)
+        beta = sum(1 for target in all_targets if target.beta)
+        print(f"found {len(all_targets)} icon imports ({official} official, {beta} beta)")
 
-        missing_refs = audit_data_refs(targets, args.kind) if args.audit_data else 0
+        missing_refs = audit_data_refs(all_targets, args.kind) if args.audit_data else 0
+        targets = all_targets[args.offset :]
+        if args.limit is not None:
+            targets = targets[: args.limit]
+        if args.offset or args.limit is not None:
+            print(f"processing {len(targets)} targets from offset {args.offset}")
         written, unchanged, skipped, failed = extract_targets(reader, targets, args.force, args.dry_run)
-        removed = prune_stale(output_root, targets, args.kind, args.dry_run) if args.prune_stale else 0
+        removed = prune_stale(output_root, all_targets, args.kind, args.dry_run) if args.prune_stale else 0
 
     prefix = "(dry-run) " if args.dry_run else ""
     print(
