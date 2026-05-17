@@ -5,7 +5,8 @@ export type BestiaryDevMonsterGroupId =
   | "minion"
   | "suspect"
   | "npc"
-  | "merged-phase";
+  | "merged-phase"
+  | "composite-scene";
 
 export interface BestiaryDevMonsterGroup {
   id: BestiaryDevMonsterGroupId;
@@ -79,6 +80,13 @@ export const BESTIARY_DEV_MONSTER_GROUPS: BestiaryDevMonsterGroup[] = [
     label: "합쳐질 보스 페이즈",
     description: "단독 몬스터가 아니라 보스 아트/페이즈로 합쳐야 하는 대상입니다.",
     monsterIds: ["DOOR"],
+    publicTreatment: "dev-only",
+  },
+  {
+    id: "composite-scene",
+    label: "복합 Scene",
+    description: "Godot scene이 여러 Spine actor를 조합해 만드는 대상입니다.",
+    monsterIds: ["DECIMILLIPEDE_SEGMENT"],
     publicTreatment: "dev-only",
   },
 ];

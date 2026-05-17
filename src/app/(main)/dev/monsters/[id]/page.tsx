@@ -15,8 +15,10 @@ export const metadata = {
 };
 
 export async function generateStaticParams() {
-  const petGroup = BESTIARY_DEV_MONSTER_GROUPS.find((group) => group.id === "pet");
-  return (petGroup?.monsterIds ?? []).map((id) => ({ id: id.toLowerCase() }));
+  return BESTIARY_DEV_MONSTER_GROUPS
+    .filter((group) => group.id === "pet" || group.id === "composite-scene")
+    .flatMap((group) => group.monsterIds)
+    .map((id) => ({ id: id.toLowerCase() }));
 }
 
 export default async function DevMonsterDetailPage({
@@ -34,7 +36,20 @@ export default async function DevMonsterDetailPage({
   if (!monster) notFound();
 
   const group = getBestiaryDevMonsterGroup(monster.id);
-  if (group?.id !== "pet") notFound();
+  if (group?.id !== "pet" && group?.id !== "composite-scene") notFound();
 
-  return <DevMonsterSpinePreview monster={monster} />;
+  return (
+    <DevMonsterSpinePreview
+      monster={monster}
+      fallbackImageUrl={getDevMonsterImageSrc(monster.id, monster.imageUrl ?? monster.bossImageUrl)}
+    />
+  );
+}
+
+function getDevMonsterImageSrc(monsterId: string, imageUrl: string | null): string | null {
+  if (imageUrl) return imageUrl;
+  if (monsterId === "DECIMILLIPEDE_SEGMENT") {
+    return "/images/sts2/monsters/decimillipede.webp";
+  }
+  return null;
 }

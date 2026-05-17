@@ -7,6 +7,7 @@ import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 
 interface DevMonsterSpinePreviewProps {
   monster: CodexMonster;
+  fallbackImageUrl: string | null;
 }
 
 interface PreviewAction {
@@ -15,8 +16,8 @@ interface PreviewAction {
   description: string;
 }
 
-export function DevMonsterSpinePreview({ monster }: DevMonsterSpinePreviewProps) {
-  const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
+export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonsterSpinePreviewProps) {
+  const imageSrc = fallbackImageUrl;
   const asset = monster.spineAsset;
   const actions = useMemo(() => buildPreviewActions(monster), [monster]);
   const [selectedActionId, setSelectedActionId] = useState<string | null>(
@@ -102,6 +103,17 @@ export function DevMonsterSpinePreview({ monster }: DevMonsterSpinePreviewProps)
         </section>
 
         <section className="flex flex-col gap-4">
+          {monster.id === "DECIMILLIPEDE_SEGMENT" && (
+            <div className="rounded-lg border border-sky-400/20 bg-sky-400/5 p-4">
+              <h2 className="mb-2 text-sm font-semibold text-sky-200">만각지네 Spine 진단</h2>
+              <div className="space-y-2 text-xs leading-relaxed text-zinc-400">
+                <p>게임 DLL에서 `ShouldShowInCompendium`가 false라 기본 Spine 인덱싱 대상에서 제외됩니다.</p>
+                <p>PCK에는 `decimillipede1/2/3.skel`과 `front/middle/back.atlas`가 따로 있고, Godot scene이 세 세그먼트를 조합합니다.</p>
+                <p>현재 추출기는 `.tres`의 skeleton-data 매핑을 해석하지 않아 `rockstone` actor만 단독 추출합니다.</p>
+              </div>
+            </div>
+          )}
+
           <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
             <h2 className="mb-3 text-sm font-semibold text-zinc-200">행동/애니메이션</h2>
             {actions.length > 0 ? (

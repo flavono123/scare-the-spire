@@ -85,7 +85,7 @@ export default async function DevMonstersPage() {
                       monsterId={monsterId}
                       monster={monstersById.get(monsterId) ?? null}
                       encounters={encountersByMonster.get(monsterId) ?? []}
-                      detailHref={group.id === "pet" ? `/dev/monsters/${monsterId.toLowerCase()}` : null}
+                      detailHref={group.id === "pet" || group.id === "composite-scene" ? `/dev/monsters/${monsterId.toLowerCase()}` : null}
                     />
                   ))}
                 </tbody>
@@ -109,7 +109,7 @@ function MonsterDevRow({
   encounters: CodexEncounter[];
   detailHref: string | null;
 }) {
-  const imageSrc = monster?.imageUrl ?? monster?.bossImageUrl ?? null;
+  const imageSrc = getDevMonsterImageSrc(monsterId, monster);
   const forcedAct = getForcedBestiaryAct(monsterId);
   const title = (
     <div className="min-w-0">
@@ -173,6 +173,16 @@ function MonsterDevRow({
       </td>
     </tr>
   );
+}
+
+function getDevMonsterImageSrc(monsterId: string, monster: CodexMonster | null): string | null {
+  if (monster?.imageUrl || monster?.bossImageUrl) {
+    return monster.imageUrl ?? monster.bossImageUrl;
+  }
+  if (monsterId === "DECIMILLIPEDE_SEGMENT") {
+    return "/images/sts2/monsters/decimillipede.webp";
+  }
+  return null;
 }
 
 function ActBadge({ act }: { act: EventAct }) {
