@@ -351,6 +351,7 @@ function DuoRender({
           className="pointer-events-none absolute z-20"
           style={{
             top: petPlacement.top,
+            bottom: petPlacement.bottom,
             left: petPlacement.left,
             width: petPlacement.width,
             height: petPlacement.height,
@@ -458,7 +459,8 @@ function ActionBar({
 }
 
 function getPetPlacement(petId: string | undefined): {
-  top: string;
+  top?: string;
+  bottom?: string;
   left: string;
   width: string;
   height: string;
@@ -473,8 +475,8 @@ function getPetPlacement(petId: string | undefined): {
   }
 
   return {
-    top: "42%",
-    left: "29%",
+    bottom: "0%",
+    left: "40%",
     width: "16rem",
     height: "42%",
   };
