@@ -18,6 +18,7 @@ interface MonsterSpineStageProps {
   showLoadingLabel?: boolean;
   viewportTransitionTime?: number;
   viewportPadding?: SpineViewportPadding;
+  fallbackImageClassName?: string;
 }
 
 type LoadState = "loading" | "ready" | "error";
@@ -44,6 +45,7 @@ export function MonsterSpineStage({
   showLoadingLabel = true,
   viewportTransitionTime,
   viewportPadding,
+  fallbackImageClassName,
 }: MonsterSpineStageProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const vfxContainerRef = useRef<HTMLDivElement | null>(null);
@@ -213,7 +215,7 @@ export function MonsterSpineStage({
           alt={monsterName}
           width={640}
           height={640}
-          className="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-2xl"
+          className={fallbackImageClassName ?? "absolute inset-0 z-10 h-full w-full object-contain drop-shadow-2xl"}
           priority={imagePriority}
         />
       )}
