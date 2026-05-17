@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
@@ -619,9 +619,6 @@ export function EventDetail({
   const isModal = Boolean(onClose);
   const [previewCard, setPreviewCard] = useState<CodexCard | null>(null);
   const artOverlays = EVENT_ART_OVERLAYS[event.id] ?? [];
-  useEffect(() => {
-    setPreviewCard(null);
-  }, [event.id]);
   const rootClassName = isModal
     ? "mx-auto flex max-w-[92rem] flex-col gap-4 p-3 sm:p-5"
     : "mx-auto flex max-w-6xl flex-col gap-5 p-4 sm:p-6";
