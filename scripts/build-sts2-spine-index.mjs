@@ -6,11 +6,13 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
+const ancientRoot = path.join(repoRoot, "public/spine/sts2/ancients");
 const characterRoot = path.join(repoRoot, "public/spine/sts2/characters");
 const monsterRoot = path.join(repoRoot, "public/spine/sts2/monsters");
 const vfxRoot = path.join(repoRoot, "public/spine/sts2/vfx");
 const charactersPath = path.join(repoRoot, "data/sts2/eng/characters.json");
 const monstersPath = path.join(repoRoot, "data/sts2/eng/monsters.json");
+const outAncientPath = path.join(repoRoot, "data/sts2/ancient-spine-assets.json");
 const outCharacterPath = path.join(repoRoot, "data/sts2/character-spine-assets.json");
 const outMonsterPath = path.join(repoRoot, "data/sts2/monster-spine-assets.json");
 const outMonsterFallbackPath = path.join(repoRoot, "data/sts2/monster-spine-fallbacks.json");
@@ -124,6 +126,11 @@ const CHARACTER_ALIASES = {
   NECROBINDER: { folder: "necrobinder", attackVfx: "VFX_SCRATCH" },
   REGENT: { folder: "regent", attackVfx: "VFX_SOVEREIGN_BLADE" },
   SILENT: { folder: "silent", attackVfx: "VFX_SCRATCH" },
+};
+
+const ANCIENT_SPINE_ALIASES = {
+  NEOW: { folder: "neow_room" },
+  TEZCATARA: { folder: "tezcatara" },
 };
 
 function readJson(filePath) {
@@ -531,10 +538,48 @@ function buildCharacterAssets(vfxById) {
   return assets.sort((a, b) => a.id.localeCompare(b.id));
 }
 
+function buildAncientAsset(id, actor) {
+  const animationNames = actor.animations.map((animation) => animation.name);
+  const idleAnimation = chooseIdleAnimation(animationNames);
+
+  return {
+    id,
+    source: `animations/backgrounds/${actor.folder}/${actor.base}`,
+    renderStatus: "spine",
+    renderTags: ["ancient-background"],
+    atlasUrl: `/spine/sts2/ancients/${actor.folder}/${actor.atlasFile}`,
+    binaryUrl: `/spine/sts2/ancients/${actor.folder}/${actor.skelFile}`,
+    textureUrls: actor.pngFiles.map((file) => `/spine/sts2/ancients/${actor.folder}/${file}`),
+    skin: null,
+    skins: actor.skins,
+    animations: animationNames,
+    bestiaryAnimations: [],
+    idleAnimation,
+    moveAnimations: {
+      IDLE: [idleAnimation],
+    },
+    moveEffects: {},
+  };
+}
+
+function buildAncientAssets() {
+  const actors = buildActorMap(ancientRoot);
+  const assets = [];
+
+  for (const [id, alias] of Object.entries(ANCIENT_SPINE_ALIASES)) {
+    const actor = actors.get(alias.folder);
+    if (!actor) continue;
+    assets.push(buildAncientAsset(id, actor));
+  }
+
+  return assets.sort((a, b) => a.id.localeCompare(b.id));
+}
+
 function main() {
   const actors = buildActorMap(monsterRoot);
   const vfxAssets = buildVfxAssets();
   const vfxById = new Map(vfxAssets.filter((asset) => asset.usable).map((asset) => [asset.id, asset]));
+  const ancientAssets = buildAncientAssets();
   const characterAssets = buildCharacterAssets(vfxById);
   const monsters = readJson(monstersPath).filter((monster) => monster.show_in_compendium !== false);
   const assets = [];
@@ -559,9 +604,11 @@ function main() {
   }
 
   writeJson(outVfxPath, vfxAssets);
+  writeJson(outAncientPath, ancientAssets);
   writeJson(outCharacterPath, characterAssets);
   writeJson(outMonsterPath, assets);
   writeJson(outMonsterFallbackPath, missing);
+  console.log(`indexed ${ancientAssets.length} Ancient Spine assets`);
   console.log(`indexed ${characterAssets.length} character Spine assets`);
   console.log(`indexed ${assets.length} monster Spine assets (${missing.length} static fallbacks)`);
   console.log(`indexed ${vfxAssets.length} Spine VFX assets (${vfxAssets.filter((asset) => asset.usable).length} usable)`);

@@ -27,11 +27,16 @@ from lib.pck import PCKReader, default_pck_path  # noqa: E402
 
 IMPORT_RE = re.compile(r'path(?:\.\w+)?\s*=\s*"res://([^"]+)"')
 DEFAULT_KINDS = ("monsters", "vfx")
-AVAILABLE_KINDS = ("monsters", "vfx", "characters")
+AVAILABLE_KINDS = ("monsters", "vfx", "characters", "ancients")
 PCK_PREFIX_BY_KIND = {
+    "ancients": "animations/backgrounds/",
     "characters": "animations/characters/",
     "monsters": "animations/monsters/",
     "vfx": "animations/vfx/",
+}
+ANCIENT_SPINE_PREFIXES = {
+    "animations/backgrounds/neow_room/neow",
+    "animations/backgrounds/tezcatara/tezcatara",
 }
 
 
@@ -107,6 +112,8 @@ def discover_actor_imports(reader: PCKReader, kind: str) -> list[SpineActorImpor
         for path in reader.entries
         if path.endswith(".skel.import") and path.startswith(pck_prefix)
     )
+    if kind == "ancients":
+        prefixes = [prefix for prefix in prefixes if prefix in ANCIENT_SPINE_PREFIXES]
     exact_renderable_dirs = {
         Path(prefix).parent.as_posix()
         for prefix in prefixes
