@@ -17,6 +17,7 @@ const COLOR_CLASSES: Record<string, string> = {
 const EFFECT_CLASSES: Record<string, string> = {
   sine: "rich-sine",
   jitter: "rich-jitter",
+  rainbow: "rich-rainbow",
   b: "font-bold",
   i: "italic",
 };
@@ -76,7 +77,7 @@ function renderSineNodes(nodes: TextNode[], key = "", offset: SineOffset = { cur
 function parseBBCode(input: string): TextNode[] {
   const nodes: TextNode[] = [];
   // Match opening tags, closing tags, energy/star icons, newlines, and other BBCode tags
-  const regex = /\[(\/?)(\w+)(?::(\w+))?\]|\n/g;
+  const regex = /\[(\/?)(\w+)(?::([^\]\s]+))?(?:\s+[^\]]*)?\]|\n/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
   const stack: { tag: string; param?: string; children: TextNode[] }[] = [];

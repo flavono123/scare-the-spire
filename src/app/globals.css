@@ -339,6 +339,16 @@
   75% { transform: translate(-1px, -1px); }
 }
 
+@keyframes rich-rainbow {
+  0% { color: #ff6464; }
+  16% { color: #ffb84d; }
+  33% { color: #f4e45c; }
+  50% { color: #65df78; }
+  66% { color: #5fd5ff; }
+  83% { color: #b48cff; }
+  100% { color: #ff6464; }
+}
+
 
 .rich-sine {
   display: inline-block;
@@ -357,9 +367,14 @@
   animation: rich-jitter 0.15s ease-in-out infinite;
 }
 
+.rich-rainbow {
+  animation: rich-rainbow 1.8s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .rich-sine-letter,
-  .rich-jitter {
+  .rich-jitter,
+  .rich-rainbow {
     animation: none;
   }
 }
