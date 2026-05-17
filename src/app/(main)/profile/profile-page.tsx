@@ -56,6 +56,7 @@ export default function ProfilePage({
   const [characterId, setCharacterId] = useState(DEFAULTS.character);
   const [petId, setPetId] = useState(DEFAULTS.pet);
   const [ancientId, setAncientId] = useState(DEFAULTS.ancient);
+  const [characterAction, setCharacterAction] = useActionState();
   const [petAction, setPetAction] = useActionState();
 
   const character = findChoice(characters, characterId) ?? characters[0];
@@ -79,8 +80,8 @@ export default function ProfilePage({
         </span>
       </header>
 
-      <section className="grid min-h-0 flex-1 grid-cols-[minmax(0,40%)_minmax(0,60%)] gap-4">
-        <div className="grid min-h-0 grid-rows-3 gap-3">
+      <section className="grid min-h-0 flex-1 grid-cols-[minmax(18rem,30%)_minmax(0,70%)] gap-4">
+        <div className="flex min-h-0 flex-col gap-1.5 self-start pt-1">
           <ProfileRow
             label="캐릭터"
             carousel={
@@ -89,7 +90,7 @@ export default function ProfilePage({
                 selectedId={character?.id}
                 onSelect={(id) => {
                   setCharacterId(id);
-                  setPetAction("IDLE");
+                  setCharacterAction("ATTACK");
                 }}
               />
             }
@@ -103,7 +104,7 @@ export default function ProfilePage({
                 selectedId={pet?.id}
                 onSelect={(id) => {
                   setPetId(id);
-                  setPetAction("IDLE");
+                  setPetAction("ATTACK");
                 }}
               />
             }
@@ -118,9 +119,12 @@ export default function ProfilePage({
         <DuoRender
           character={character}
           pet={pet}
-          action={petAction.action}
-          actionNonce={petAction.nonce}
-          onAction={setPetAction}
+          characterAction={characterAction.action}
+          characterActionNonce={characterAction.nonce}
+          petAction={petAction.action}
+          petActionNonce={petAction.nonce}
+          onCharacterAction={setCharacterAction}
+          onPetAction={setPetAction}
         />
       </section>
     </main>
@@ -135,9 +139,9 @@ function ProfileRow({
   carousel: React.ReactNode;
 }) {
   return (
-    <div className="grid min-h-0 grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-3">
+    <div className="grid min-h-0 grid-cols-[4rem_minmax(0,1fr)] items-center gap-2">
       <div className="flex items-center">
-        <h2 className="text-base font-bold text-zinc-100">{label}</h2>
+        <h2 className="text-sm font-bold text-zinc-100">{label}</h2>
       </div>
       <div className="min-w-0 self-center">{carousel}</div>
     </div>
@@ -192,7 +196,7 @@ function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; 
       )}
       <div
         ref={scrollerRef}
-        className="mx-9 flex gap-2 overflow-x-auto scroll-smooth py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="mx-7 flex gap-1.5 overflow-x-auto scroll-smooth py-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {items.map((item) => {
           const active = item.id === selectedId;
@@ -205,7 +209,7 @@ function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; 
               aria-label={item.subtitle ? `${item.label} ${item.subtitle}` : item.label}
               title={item.subtitle ? `${item.label} — ${item.subtitle}` : item.label}
               className={cn(
-                "group relative flex h-24 basis-[calc((100%-1rem)/3)] shrink-0 items-center justify-center p-2 text-center transition-transform hover:scale-105",
+                "group relative flex h-16 basis-[calc((100%-0.75rem)/3)] shrink-0 items-center justify-center p-1 text-center transition-transform hover:scale-105",
                 active
                   ? "scale-105"
                   : "opacity-75 hover:opacity-100",
@@ -217,14 +221,14 @@ function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; 
                 width={56}
                 height={56}
                 className={cn(
-                  "h-14 w-14 object-contain drop-shadow-lg transition-[filter,transform]",
+                  "h-11 w-11 object-contain drop-shadow-lg transition-[filter,transform]",
                   active
                     ? "drop-shadow-[0_0_12px_rgba(251,191,36,0.75)]"
                     : "group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.22)]",
                 )}
               />
               {active && (
-                <span className="absolute bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-amber-300 shadow-[0_0_8px_rgba(251,191,36,0.9)]" />
+                <span className="absolute bottom-0.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-amber-300 shadow-[0_0_8px_rgba(251,191,36,0.9)]" />
               )}
               <span className="pointer-events-none absolute left-1/2 top-full z-30 mt-1 hidden -translate-x-1/2 whitespace-nowrap rounded bg-black/80 px-2 py-1 text-[11px] font-semibold text-zinc-100 shadow-lg group-hover:block">
                 {item.label}
@@ -245,15 +249,15 @@ function CarouselArrow({ direction, onClick }: { direction: "left" | "right"; on
       aria-label={direction === "left" ? "이전" : "다음"}
       onClick={onClick}
       className={cn(
-        "absolute top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] transition-transform hover:scale-110",
+        "absolute top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] transition-transform hover:scale-110",
         direction === "left" ? "left-0" : "right-0",
       )}
     >
       <Image
         src={`/images/sts2/ui/settings_tiny_${direction}_arrow.png`}
         alt=""
-        width={32}
-        height={32}
+        width={28}
+        height={28}
         className="object-contain"
       />
     </button>
@@ -263,26 +267,32 @@ function CarouselArrow({ direction, onClick }: { direction: "left" | "right"; on
 function DuoRender({
   character,
   pet,
-  action,
-  actionNonce,
-  onAction,
+  characterAction,
+  characterActionNonce,
+  petAction,
+  petActionNonce,
+  onCharacterAction,
+  onPetAction,
 }: {
   character: CharacterChoice | undefined;
   pet: PetChoice | undefined;
-  action: ActionId;
-  actionNonce: number;
-  onAction: (action: ActionId) => void;
+  characterAction: ActionId;
+  characterActionNonce: number;
+  petAction: ActionId;
+  petActionNonce: number;
+  onCharacterAction: (action: ActionId) => void;
+  onPetAction: (action: ActionId) => void;
 }) {
-  const characterAction = action === "HURT" ? "IDLE" : action;
+  const petPlacement = getPetPlacement(pet?.id);
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-visible">
       <div className="relative min-h-0 flex-1">
-        <div className="absolute inset-y-0 left-0 w-[66%]">
+        <div className="absolute inset-y-0 left-[3%] z-10 w-[34rem] max-w-[60%]">
           <MonsterSpineStage
-            key={`duo-${character?.id ?? "none"}-${characterAction}-${actionNonce}`}
+            key={`duo-${character?.id ?? "none"}-${characterAction}-${characterActionNonce}`}
             asset={character?.spineAsset ?? null}
-            fallbackImageUrl={character?.fallbackImageUrl ?? null}
+            fallbackImageUrl={null}
             monsterName={character?.label ?? ""}
             selectedMoveId={characterAction}
             imagePriority={false}
@@ -290,13 +300,20 @@ function DuoRender({
             className="relative h-full w-full"
           />
         </div>
-        <div className="absolute inset-y-[8%] right-[4%] w-[44%]">
+        <div
+          className="absolute z-20"
+          style={{
+            insetBlock: petPlacement.insetBlock,
+            left: petPlacement.left,
+            width: petPlacement.width,
+          }}
+        >
           <MonsterSpineStage
-            key={`pet-${pet?.id ?? "none"}-${pet?.selectedSkin ?? "default"}-${action}-${actionNonce}`}
+            key={`pet-${pet?.id ?? "none"}-${pet?.selectedSkin ?? "default"}-${petAction}-${petActionNonce}`}
             asset={pet?.spineAsset ?? null}
-            fallbackImageUrl={pet?.fallbackImageUrl ?? null}
+            fallbackImageUrl={null}
             monsterName={pet?.label ?? ""}
-            selectedMoveId={action}
+            selectedMoveId={petAction}
             selectedSkin={pet?.selectedSkin}
             imagePriority={false}
             showLoadingLabel={false}
@@ -304,14 +321,26 @@ function DuoRender({
           />
         </div>
       </div>
-      <ActionBar value={action} onChange={onAction} />
+      <div className="grid shrink-0 grid-cols-2 gap-3 pb-1">
+        <ActionBar label="캐릭터" value={characterAction} onChange={onCharacterAction} />
+        <ActionBar label="펫" value={petAction} onChange={onPetAction} />
+      </div>
     </div>
   );
 }
 
-function ActionBar({ value, onChange }: { value: ActionId; onChange: (action: ActionId) => void }) {
+function ActionBar({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: ActionId;
+  onChange: (action: ActionId) => void;
+}) {
   return (
-    <div className="flex shrink-0 justify-center gap-1 p-1">
+    <div className="flex min-w-0 items-center justify-center gap-1 p-1">
+      <span className="mr-1 shrink-0 text-[11px] font-semibold text-zinc-500">{label}</span>
       {ACTIONS.map((action) => (
         <button
           key={action.id}
@@ -330,6 +359,26 @@ function ActionBar({ value, onChange }: { value: ActionId; onChange: (action: Ac
       ))}
     </div>
   );
+}
+
+function getPetPlacement(petId: string | undefined): {
+  insetBlock: string;
+  left: string;
+  width: string;
+} {
+  if (petId === "OSTY") {
+    return {
+      insetBlock: "13% 5%",
+      left: "43%",
+      width: "26rem",
+    };
+  }
+
+  return {
+    insetBlock: "20% -2%",
+    left: "36%",
+    width: "30rem",
+  };
 }
 
 function useActionState(): [{ action: ActionId; nonce: number }, (action: ActionId) => void] {
