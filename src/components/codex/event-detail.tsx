@@ -35,11 +35,11 @@ function OptionCard({ option }: { option: EventOption }) {
       className="rounded-md border border-[#8a6331]/70 bg-[#21170e]/85 px-4 py-2.5 backdrop-blur-[1px]"
       style={GAME_CHOICE_STYLE}
     >
-      <div className="mb-0.5 font-game-text text-sm font-semibold text-[#f0cf6a]">
+      <div className="mb-0.5 font-game-text text-[13px] font-semibold text-[#f0cf6a]">
         {option.title}
       </div>
       {option.description && (
-        <div className="font-game-text text-[13px] leading-relaxed text-[#f9ead1]">
+        <div className="font-game-text text-xs leading-relaxed text-[#f9ead1]">
           <RichText text={option.description} />
         </div>
       )}
@@ -172,7 +172,7 @@ export function EventContentViewer({
       {/* Description */}
       {description && (
         <div
-          className="mb-4 font-game-text text-[15px] leading-[1.75] text-[#fff4dc] sm:text-base"
+          className="mb-3 font-game-text text-sm leading-[1.65] text-[#fff4dc] sm:text-[15px]"
           style={{ textShadow: GAME_TEXT_SHADOW }}
         >
           <RichText text={description} />
@@ -211,7 +211,7 @@ export function EventContentViewer({
 
       {/* Options */}
       {options.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {options.map((opt) => {
             const navigable = hasPages && canNavigate(opt.id);
             if (!navigable) return <OptionCard key={opt.id} option={opt} />;
@@ -219,10 +219,10 @@ export function EventContentViewer({
               <button
                 key={opt.id}
                 onClick={() => navigateTo(opt.id)}
-                className="group w-full cursor-pointer rounded-md border border-[#8a6331]/70 bg-[#21170e]/85 px-4 py-2.5 text-left backdrop-blur-[1px] transition-all hover:-translate-y-0.5 hover:border-[#f0cf6a]/80 hover:bg-[#2c1f13]/90"
+                className="group w-full cursor-pointer rounded-md border border-[#8a6331]/70 bg-[#21170e]/85 px-3.5 py-2 text-left backdrop-blur-[1px] transition-all hover:-translate-y-0.5 hover:border-[#f0cf6a]/80 hover:bg-[#2c1f13]/90"
                 style={GAME_CHOICE_STYLE}
               >
-                <div className="mb-0.5 flex items-center gap-1.5 font-game-text text-sm font-semibold text-[#f0cf6a]">
+                <div className="mb-0.5 flex items-center gap-1.5 font-game-text text-[13px] font-semibold text-[#f0cf6a]">
                   {opt.title}
                   <svg
                     className="h-3 w-3 text-[#c89236]/70 transition-colors group-hover:text-[#f0cf6a]"
@@ -233,7 +233,7 @@ export function EventContentViewer({
                   </svg>
                 </div>
                 {opt.description && (
-                  <div className="font-game-text text-[13px] leading-relaxed text-[#f9ead1]">
+                  <div className="font-game-text text-xs leading-relaxed text-[#f9ead1]">
                     <RichText text={opt.description} />
                   </div>
                 )}
@@ -335,18 +335,18 @@ export function EventDetail({ serviceLocale, gameUi, event, onClose }: EventDeta
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(96,165,250,0.20),transparent_34%),linear-gradient(135deg,#111827,#050505_65%)]" />
           )}
           <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/30 to-transparent" />
-          <div className="absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[8%] sm:right-[3.5%] sm:top-[7%] sm:w-[43%] sm:min-w-[360px] sm:max-w-[520px]">
+          <div className="absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]">
             <div className="relative flex min-h-0 flex-1 flex-col">
               <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
               <div className="relative min-h-0 overflow-y-auto pr-2">
                 <h1
-                  className="font-game-title text-3xl font-bold leading-tight text-[#f3c640] sm:text-4xl"
+                  className="font-game-title text-3xl font-bold leading-tight text-[#f3c640]"
                   style={{ textShadow: GAME_TEXT_SHADOW }}
                 >
                   {event.name}
                 </h1>
                 <div
-                  className="mt-1 mb-4 flex flex-wrap items-center gap-2 font-game-text text-sm text-[#c6b99d]"
+                  className="mt-1 mb-3 flex flex-wrap items-center gap-2 font-game-text text-sm text-[#c6b99d]"
                   style={{ textShadow: GAME_TEXT_SHADOW }}
                 >
                   <span>{event.nameEn}</span>

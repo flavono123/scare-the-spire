@@ -381,7 +381,7 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => { if (e.target === e.currentTarget) setSelectedEvent(null); }}
         >
-          <div className="my-8 mx-4 w-full max-w-5xl rounded-xl border border-white/10 bg-[#1a1a2e] shadow-2xl">
+          <div className="my-8 mx-4 w-full max-w-6xl rounded-xl border border-white/10 bg-[#1a1a2e] shadow-2xl">
             <EventDetail serviceLocale={serviceLocale} gameUi={gameUi} event={selectedEvent} onClose={() => setSelectedEvent(null)} />
           </div>
         </div>
