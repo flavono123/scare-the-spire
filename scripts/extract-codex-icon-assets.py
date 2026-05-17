@@ -24,6 +24,13 @@ sys.path.insert(0, str(ROOT))
 from scripts.lib.ctex import ctex_to_image, parse_import_file
 from scripts.lib.pck import PCKReader, default_pck_path
 
+try:
+    from PIL import Image, ImageChops, ImageStat
+except ImportError:  # pragma: no cover
+    Image = None  # type: ignore
+    ImageChops = None  # type: ignore
+    ImageStat = None  # type: ignore
+
 
 OUT_ROOT = ROOT / "public/images/sts2"
 DATA_ROOT = ROOT / "data/sts2/kor"
@@ -98,13 +105,45 @@ def discover_targets(reader: PCKReader, output_root: Path, kind_filter: str) -> 
     return sorted(targets, key=lambda t: (t.kind, t.beta, t.name))
 
 
-def encode_webp(reader: PCKReader, import_path: str) -> bytes | None:
+def decode_import_image(reader: PCKReader, import_path: str):
     ctex_path = parse_import_file(reader.read_file(import_path))
     if not ctex_path or ctex_path not in reader.entries:
         return None
     image = ctex_to_image(reader.read_file(ctex_path))
     if image is None:
         return None
+    return image
+
+
+def composite_rgb(image, color: tuple[int, int, int, int]):
+    background = Image.new("RGBA", image.size, color)
+    background.alpha_composite(image.convert("RGBA"))
+    return background.convert("RGB")
+
+
+def composite_rms(a, b, color: tuple[int, int, int, int]) -> float:
+    diff = ImageChops.difference(composite_rgb(a, color), composite_rgb(b, color))
+    stat = ImageStat.Stat(diff)
+    return sum(value * value for value in stat.rms) ** 0.5
+
+
+def image_matches_existing(output_path: Path, image) -> bool:
+    if Image is None or ImageChops is None or ImageStat is None or not output_path.exists():
+        return False
+    with Image.open(output_path) as existing:
+        image_rgba = image.convert("RGBA")
+        existing_rgba = existing.convert("RGBA")
+        if existing_rgba.size != image_rgba.size:
+            return False
+        # Existing files are lossy WebP. Compare on black and white composites
+        # so transparent RGB noise does not force unrelated rewrites.
+        return max(
+            composite_rms(existing_rgba, image_rgba, (0, 0, 0, 255)),
+            composite_rms(existing_rgba, image_rgba, (255, 255, 255, 255)),
+        ) <= 6.5
+
+
+def encode_webp(image) -> bytes:
     output = io.BytesIO()
     image.save(output, "WEBP", quality=95, method=6)
     return output.getvalue()
@@ -121,14 +160,14 @@ def extract_targets(reader: PCKReader, targets: list[Target], force: bool, dry_r
             skipped += 1
             continue
 
-        data = encode_webp(reader, target.import_path)
-        if data is None:
+        image = decode_import_image(reader, target.import_path)
+        if image is None:
             print(f"skip {target.import_path}: decode failed")
             failed += 1
             continue
 
         status = "write"
-        if target.output_path.exists() and target.output_path.read_bytes() == data:
+        if image_matches_existing(target.output_path, image):
             status = "same"
             unchanged += 1
         else:
@@ -139,6 +178,7 @@ def extract_targets(reader: PCKReader, targets: list[Target], force: bool, dry_r
             continue
 
         if status == "write":
+            data = encode_webp(image)
             target.output_path.parent.mkdir(parents=True, exist_ok=True)
             target.output_path.write_bytes(data)
             print(f"wrote {target.output_path}")
