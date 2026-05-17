@@ -13,6 +13,33 @@ export const serviceMessages = {
       sts2Codex: "STS2 백과사전",
       sts1: "STS1",
     },
+    profile: {
+      navLabel: "프로필",
+      fallbackNickname: "프로필",
+      metadata: {
+        title: "프로필 — DEV",
+        description: "개발 전용 프로필 선택 화면",
+      },
+      devBadge: "DEV",
+      selectors: {
+        character: "캐릭터",
+        pet: "펫",
+        ancient: "고대신",
+      },
+      actions: {
+        idle: "대기",
+        attack: "공격",
+        hurt: "피격",
+      },
+      petSkin: {
+        label: "형태 {number}",
+        ariaLabel: "펫 {label}",
+      },
+      carousel: {
+        previous: "이전",
+        next: "다음",
+      },
+    },
     comments: {
       loading: "불러오는 중...",
       empty: "아직 댓글이 없습니다",
@@ -476,6 +503,33 @@ export const serviceMessages = {
     games: {
       sts2Codex: "STS2 Codex",
       sts1: "STS1",
+    },
+    profile: {
+      navLabel: "Profile",
+      fallbackNickname: "Profile",
+      metadata: {
+        title: "Profile — DEV",
+        description: "Development-only profile selection screen",
+      },
+      devBadge: "DEV",
+      selectors: {
+        character: "Character",
+        pet: "Pet",
+        ancient: "Ancient",
+      },
+      actions: {
+        idle: "Idle",
+        attack: "Attack",
+        hurt: "Hurt",
+      },
+      petSkin: {
+        label: "Variant {number}",
+        ariaLabel: "Pet {label}",
+      },
+      carousel: {
+        previous: "Previous",
+        next: "Next",
+      },
     },
     comments: {
       loading: "Loading...",
