@@ -128,7 +128,7 @@ function mapCharacter(character: CodexCharacter, spineAsset: MonsterSpineAsset |
     fallbackImageUrl: `/images/sts2/characters/combat_${slug}.webp`,
     nicknameOptions: CHARACTER_NICKNAMES[character.id] ?? {
       ko: [character.name],
-      en: [character.nameEn],
+      en: [character.id],
     },
     spineAsset,
   };
