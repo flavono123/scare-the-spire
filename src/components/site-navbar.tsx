@@ -27,7 +27,7 @@ const sts2Items = [
   { href: "/compendium/cards", labelKey: "cards", icon: "/images/sts2/nav/stats_cards.png" },
   { href: "/compendium/relics", labelKey: "relics", icon: "/images/sts2/relics/bing_bong.webp" },
   { href: "/compendium/potions", labelKey: "potions", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
-  { href: "/compendium/powers", labelKey: "powers", icon: "/images/sts2/powers/unmovable_power.webp" },
+  { href: "/compendium/powers", labelKey: "powers", icon: "/images/sts2/nav/unmovable_power_beta.webp" },
   { href: "/compendium/enchantments", labelKey: "enchantments", icon: "/images/sts2/enchantments/souls_power.webp" },
   { href: "/compendium/bestiary", labelKey: "monsters", icon: "/images/sts2/nav/happy_cultist.png" },
   { href: "/compendium/events", labelKey: "events", icon: "/images/sts2/nav/question_mark.png" },
