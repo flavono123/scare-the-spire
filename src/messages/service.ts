@@ -312,7 +312,6 @@ export const serviceMessages = {
           multiplayer: "멀티플레이 카드",
           upgrade: "강화 보기",
           betaArt: "베타 아트",
-          betaArtOnly: "베타 아트만",
         },
         enchantments: {
           possible: "가능한 인챈트",
@@ -777,7 +776,6 @@ export const serviceMessages = {
           multiplayer: "Multiplayer Cards",
           upgrade: "Show Upgrades",
           betaArt: "Beta Art",
-          betaArtOnly: "Beta Art Only",
         },
         enchantments: {
           possible: "Possible Enchantments",

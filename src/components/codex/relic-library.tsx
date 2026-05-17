@@ -78,7 +78,6 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
   const [showBeta, setShowBeta] = useState(false);
-  const [showOnlyBeta, setShowOnlyBeta] = useState(false);
   const hasBetaArt = relics.some((relic) => relic.betaImageUrl);
 
   // Relic detail modal — initialize from ?relic= query param
@@ -193,10 +192,6 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
       result = result.filter((r) => selectedRarities.has(r.rarity));
     }
 
-    if (showOnlyBeta) {
-      result = result.filter((r) => r.betaImageUrl);
-    }
-
     // Search token filters
     for (const token of parsedSearch.tokens) {
       if (token.type === "pool") {
@@ -219,7 +214,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
     }
 
     return result;
-  }, [versionedRelics, selectedPools, selectedRarities, showOnlyBeta, parsedSearch]);
+  }, [versionedRelics, selectedPools, selectedRarities, parsedSearch]);
 
   // Group filtered relics by rarity
   const groupedRelics = useMemo(() => {
@@ -356,15 +351,6 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
               label={serviceText.cardsView.toggles.betaArt}
               active={showBeta}
               onClick={() => setShowBeta((v) => !v)}
-            />
-            <ToggleButton
-              label={serviceText.cardsView.toggles.betaArtOnly}
-              active={showOnlyBeta}
-              onClick={() => {
-                const next = !showOnlyBeta;
-                setShowOnlyBeta(next);
-                if (next) setShowBeta(true);
-              }}
             />
           </div>
           </>
