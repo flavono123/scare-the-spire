@@ -1,0 +1,345 @@
+[
+  {
+    "id": "DEFECT",
+    "source": "animations/characters/defect/defect",
+    "renderStatus": "spine",
+    "renderTags": [],
+    "atlasUrl": "/spine/sts2/characters/defect/defect.atlas",
+    "binaryUrl": "/spine/sts2/characters/defect/defect.skel",
+    "textureUrls": [
+      "/spine/sts2/characters/defect/defect.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop",
+      "relaxed_loop",
+      "_ignore/cloth_loop",
+      "_ignore/glow_loop"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "IDLE": [
+        "idle_loop"
+      ],
+      "ATTACK": [
+        "attack",
+        "cast",
+        "idle_loop"
+      ],
+      "HURT": [
+        "hurt",
+        "idle_loop",
+        "attack"
+      ],
+      "DIE": [
+        "die",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {
+      "ATTACK": [
+        {
+          "id": "VFX_LASER",
+          "folder": "vfx_laser",
+          "source": "animations/vfx/vfx_laser/laser",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/laser.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "IRONCLAD",
+    "source": "animations/characters/ironclad/ironclad",
+    "renderStatus": "spine",
+    "renderTags": [],
+    "atlasUrl": "/spine/sts2/characters/ironclad/ironclad.atlas",
+    "binaryUrl": "/spine/sts2/characters/ironclad/ironclad.skel",
+    "textureUrls": [
+      "/spine/sts2/characters/ironclad/ironclad.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop",
+      "relaxed_loop",
+      "relaxed_loop2"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "IDLE": [
+        "idle_loop"
+      ],
+      "ATTACK": [
+        "attack",
+        "cast",
+        "idle_loop"
+      ],
+      "HURT": [
+        "hurt",
+        "idle_loop",
+        "attack"
+      ],
+      "DIE": [
+        "die",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {
+      "ATTACK": [
+        {
+          "id": "VFX_FLYING_SLASH",
+          "folder": "vfx_flying_slash",
+          "source": "animations/vfx/vfx_flying_slash/flying_slash",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_flying_slash/flying_slash.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/flying_slash.png"
+          ],
+          "animations": [
+            "chain"
+          ],
+          "idleAnimation": "chain",
+          "durationSeconds": 0.5,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "NECROBINDER",
+    "source": "animations/characters/necrobinder/necrobinder",
+    "renderStatus": "spine",
+    "renderTags": [],
+    "atlasUrl": "/spine/sts2/characters/necrobinder/necrobinder.atlas",
+    "binaryUrl": "/spine/sts2/characters/necrobinder/necrobinder.skel",
+    "textureUrls": [
+      "/spine/sts2/characters/necrobinder/necrobinder.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop",
+      "nervous_loop",
+      "relaxed_loop",
+      "_ignore/animation",
+      "_ignore/attack_w_settle",
+      "_ignore/extra_assets_pose",
+      "_ignore/sleeve_rigging_pose"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "IDLE": [
+        "idle_loop"
+      ],
+      "ATTACK": [
+        "attack",
+        "_ignore/attack_w_settle",
+        "cast",
+        "idle_loop"
+      ],
+      "HURT": [
+        "hurt",
+        "idle_loop",
+        "attack"
+      ],
+      "DIE": [
+        "die",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {
+      "ATTACK": [
+        {
+          "id": "VFX_SCRATCH",
+          "folder": "vfx_scratch",
+          "source": "animations/vfx/vfx_scratch/scratch",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/scratch.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "REGENT",
+    "source": "animations/characters/regent/regent",
+    "renderStatus": "spine",
+    "renderTags": [],
+    "atlasUrl": "/spine/sts2/characters/regent/regent.atlas",
+    "binaryUrl": "/spine/sts2/characters/regent/regent.skel",
+    "textureUrls": [
+      "/spine/sts2/characters/regent/regent.png",
+      "/spine/sts2/characters/regent/regent_weapon.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop",
+      "relaxed_loop"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "IDLE": [
+        "idle_loop"
+      ],
+      "ATTACK": [
+        "attack",
+        "cast",
+        "idle_loop"
+      ],
+      "HURT": [
+        "hurt",
+        "idle_loop",
+        "attack"
+      ],
+      "DIE": [
+        "die",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {
+      "ATTACK": [
+        {
+          "id": "VFX_SOVEREIGN_BLADE",
+          "folder": "vfx_sovereign_blade",
+          "source": "animations/vfx/vfx_sovereign_blade/soveriegn_blade",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_sovereign_blade/soveriegn_blade.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/sovereign_blade.png"
+          ],
+          "animations": [
+            "appear",
+            "attack",
+            "attack2",
+            "idle_demo1",
+            "idle_demo2",
+            "idle_demo3",
+            "idle_loop",
+            "idle_loop2"
+          ],
+          "idleAnimation": "idle_loop",
+          "durationSeconds": 0.9,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "SILENT",
+    "source": "animations/characters/silent/silent",
+    "renderStatus": "spine",
+    "renderTags": [],
+    "atlasUrl": "/spine/sts2/characters/silent/silent.atlas",
+    "binaryUrl": "/spine/sts2/characters/silent/silent.skel",
+    "textureUrls": [
+      "/spine/sts2/characters/silent/silent.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack",
+      "cast",
+      "die",
+      "hurt",
+      "idle_loop",
+      "relaxed_loop",
+      "shiv"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "IDLE": [
+        "idle_loop"
+      ],
+      "ATTACK": [
+        "attack",
+        "cast",
+        "idle_loop"
+      ],
+      "HURT": [
+        "hurt",
+        "idle_loop",
+        "attack"
+      ],
+      "DIE": [
+        "die",
+        "idle_loop",
+        "attack"
+      ]
+    },
+    "moveEffects": {
+      "ATTACK": [
+        {
+          "id": "VFX_SCRATCH",
+          "folder": "vfx_scratch",
+          "source": "animations/vfx/vfx_scratch/scratch",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_scratch/scratch.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/scratch.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  }
+]
