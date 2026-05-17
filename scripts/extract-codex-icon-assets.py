@@ -4,8 +4,10 @@
 Sources:
 - `images/relics/*.png.import` -> `public/images/sts2/relics/*.webp`
 - `images/relics/beta/*.png.import` -> `public/images/sts2/relics-beta/*.webp`
+- `images/relics/*_beta.png.import` -> `public/images/sts2/relics-beta/*.webp`
 - `images/powers/*.png.import` -> `public/images/sts2/powers/*.webp`
 - `images/powers/beta/*.png.import` -> `public/images/sts2/powers-beta/*.webp`
+- `images/powers/*_beta.png.import` -> `public/images/sts2/powers-beta/*.webp`
 """
 
 from __future__ import annotations
@@ -91,8 +93,10 @@ def discover_targets(reader: PCKReader, output_root: Path, kind_filter: str) -> 
         kind = match.group("kind")
         if kind_filter != "all" and kind != kind_filter:
             continue
-        beta = match.group("beta") == "beta"
-        name = match.group("name")
+        raw_name = match.group("name")
+        has_beta_suffix = raw_name.endswith("_beta")
+        beta = match.group("beta") == "beta" or has_beta_suffix
+        name = raw_name.removesuffix("_beta") if has_beta_suffix else raw_name
         targets.append(
             Target(
                 kind=kind,

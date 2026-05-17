@@ -108,8 +108,27 @@ function imageFilenameFromStaticUrl(url: string | null): string | null {
   return match ? `${match[1]}.webp` : null;
 }
 
-function betaImageUrlForFile(relativeDir: string, filenames: Set<string>, file: string | null): string | null {
-  return file && filenames.has(file) ? `/images/sts2/${relativeDir}/${file}` : null;
+function betaFileNameFromOfficialFile(file: string | null): string | null {
+  if (!file) return null;
+  const match = file.match(/^(.+)\.webp$/);
+  return match ? `${match[1]}_beta.webp` : null;
+}
+
+function betaImageUrlForFile(
+  relativeDir: string,
+  filenames: Set<string>,
+  file: string | null,
+  opts?: { exact?: boolean },
+): string | null {
+  if (!file) return null;
+  if (opts?.exact !== false && filenames.has(file)) return `/images/sts2/${relativeDir}/${file}`;
+
+  const namedBetaFile = betaFileNameFromOfficialFile(file);
+  if (namedBetaFile && filenames.has(namedBetaFile)) {
+    return `/images/sts2/${relativeDir}/${namedBetaFile}`;
+  }
+
+  return null;
 }
 
 function buildKeywordLabels(
@@ -303,11 +322,12 @@ async function scanRelicVariants(): Promise<Map<string, Partial<Record<RelicPool
 
 export async function getCodexRelics(opts?: { gameLocale?: GameLocale }): Promise<CodexRelic[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korRelics, engRelics, variantsByBase, betaImageFiles, gameRelics] = await Promise.all([
+  const [korRelics, engRelics, variantsByBase, betaImageFiles, officialImageFiles, gameRelics] = await Promise.all([
     readJson<RawRelic[]>("kor/relics.json"),
     readJson<RawRelic[]>("eng/relics.json"),
     scanRelicVariants(),
     scanImageFilenames("relics-beta"),
+    scanImageFilenames("relics"),
     readGameLocalizationTable(gameLocale, "relics"),
   ]);
 
@@ -319,11 +339,12 @@ export async function getCodexRelics(opts?: { gameLocale?: GameLocale }): Promis
     const baseMatch = kor.image_url?.match(/\/([^/]+)\.png$/);
     const baseName = baseMatch?.[1] ?? null;
     const variantMap = baseName ? variantsByBase.get(baseName) ?? null : null;
+    const imageFile = imageFilenameFromStaticUrl(kor.image_url);
     const betaImageUrl = betaImageUrlForFile(
       "relics-beta",
       betaImageFiles,
-      imageFilenameFromStaticUrl(kor.image_url),
-    );
+      imageFile,
+    ) ?? betaImageUrlForFile("relics", officialImageFiles, imageFile, { exact: false });
     return mapRelic(kor, eng, variantMap, betaImageUrl, gameRelics, gameLocale);
   });
 }
@@ -473,10 +494,11 @@ function mapPower(
 
 export async function getCodexPowers(opts?: { gameLocale?: GameLocale }): Promise<CodexPower[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korPowers, engPowers, betaImageFiles, gamePowers] = await Promise.all([
+  const [korPowers, engPowers, betaImageFiles, officialImageFiles, gamePowers] = await Promise.all([
     readJson<RawPower[]>("kor/powers.json"),
     readJson<RawPower[]>("eng/powers.json"),
     scanImageFilenames("powers-beta"),
+    scanImageFilenames("powers"),
     readGameLocalizationTable(gameLocale, "powers"),
   ]);
 
@@ -486,11 +508,12 @@ export async function getCodexPowers(opts?: { gameLocale?: GameLocale }): Promis
     .filter((p) => !p.deprecated && hasPowerLocalizationTitle(gamePowers, p.id) && !(p.type === "None" && !p.description))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
+      const imageFile = imageFilenameFromStaticUrl(kor.image_url);
       const betaImageUrl = betaImageUrlForFile(
         "powers-beta",
         betaImageFiles,
-        imageFilenameFromStaticUrl(kor.image_url),
-      );
+        imageFile,
+      ) ?? betaImageUrlForFile("powers", officialImageFiles, imageFile, { exact: false });
       return mapPower(kor, eng, betaImageUrl, gamePowers, gameLocale);
     });
 }
