@@ -6,9 +6,12 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
+const characterRoot = path.join(repoRoot, "public/spine/sts2/characters");
 const monsterRoot = path.join(repoRoot, "public/spine/sts2/monsters");
 const vfxRoot = path.join(repoRoot, "public/spine/sts2/vfx");
+const charactersPath = path.join(repoRoot, "data/sts2/eng/characters.json");
 const monstersPath = path.join(repoRoot, "data/sts2/eng/monsters.json");
+const outCharacterPath = path.join(repoRoot, "data/sts2/character-spine-assets.json");
 const outMonsterPath = path.join(repoRoot, "data/sts2/monster-spine-assets.json");
 const outMonsterFallbackPath = path.join(repoRoot, "data/sts2/monster-spine-fallbacks.json");
 const outVfxPath = path.join(repoRoot, "data/sts2/spine-vfx-assets.json");
@@ -36,6 +39,14 @@ const VFX_ALIASES = {
   VFX_LASER: "vfx_laser",
   VFX_MECHA_KNIGHT_SHIELD: "vfx_mecha_knight_shield",
   VFX_SCRATCH: "vfx_scratch",
+};
+
+const CHARACTER_ALIASES = {
+  DEFECT: { folder: "defect", attackVfx: "VFX_LASER" },
+  IRONCLAD: { folder: "ironclad", attackVfx: "VFX_FLYING_SLASH" },
+  NECROBINDER: { folder: "necrobinder", attackVfx: "VFX_SCRATCH" },
+  REGENT: { folder: "regent", attackVfx: "VFX_SOVEREIGN_BLADE" },
+  SILENT: { folder: "silent", attackVfx: "VFX_SCRATCH" },
 };
 
 function readJson(filePath) {
@@ -331,10 +342,60 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
   };
 }
 
+function characterActionCandidates(animationNames, needles, idleAnimation) {
+  const matches = matchingAnimationsByNeedlePriority(animationNames, needles);
+  return unique([...preferNonIdle(matches), idleAnimation, animationNames[0]]);
+}
+
+function buildCharacterAsset(character, actor, alias, vfxById) {
+  const animationNames = actor.animations.map((animation) => animation.name);
+  const idleAnimation = chooseIdleAnimation(animationNames);
+  const attackVfx = alias.attackVfx ? vfxById.get(alias.attackVfx) : null;
+
+  return {
+    id: character.id,
+    source: `animations/characters/${actor.folder}/${actor.base}`,
+    renderStatus: "spine",
+    renderTags: [],
+    atlasUrl: `/spine/sts2/characters/${actor.folder}/${actor.atlasFile}`,
+    binaryUrl: `/spine/sts2/characters/${actor.folder}/${actor.skelFile}`,
+    textureUrls: actor.pngFiles.map((file) => `/spine/sts2/characters/${actor.folder}/${file}`),
+    skin: null,
+    skins: actor.skins,
+    animations: animationNames,
+    bestiaryAnimations: [],
+    idleAnimation,
+    moveAnimations: {
+      IDLE: [idleAnimation],
+      ATTACK: characterActionCandidates(animationNames, ["attack", "slash", "strike", "stab", "shoot", "cast"], idleAnimation),
+      HURT: characterActionCandidates(animationNames, ["hurt", "hit", "damage"], idleAnimation),
+      DIE: characterActionCandidates(animationNames, ["die", "death", "dead"], idleAnimation),
+    },
+    moveEffects: attackVfx ? { ATTACK: [attackVfx] } : {},
+  };
+}
+
+function buildCharacterAssets(vfxById) {
+  const actors = buildActorMap(characterRoot);
+  const characters = readJson(charactersPath);
+  const assets = [];
+
+  for (const character of characters) {
+    const alias = CHARACTER_ALIASES[character.id];
+    if (!alias) continue;
+    const actor = actors.get(alias.folder);
+    if (!actor) continue;
+    assets.push(buildCharacterAsset(character, actor, alias, vfxById));
+  }
+
+  return assets.sort((a, b) => a.id.localeCompare(b.id));
+}
+
 function main() {
   const actors = buildActorMap(monsterRoot);
   const vfxAssets = buildVfxAssets();
   const vfxById = new Map(vfxAssets.filter((asset) => asset.usable).map((asset) => [asset.id, asset]));
+  const characterAssets = buildCharacterAssets(vfxById);
   const monsters = readJson(monstersPath).filter((monster) => monster.show_in_compendium !== false);
   const assets = [];
   const missing = [];
@@ -358,8 +419,10 @@ function main() {
   }
 
   writeJson(outVfxPath, vfxAssets);
+  writeJson(outCharacterPath, characterAssets);
   writeJson(outMonsterPath, assets);
   writeJson(outMonsterFallbackPath, missing);
+  console.log(`indexed ${characterAssets.length} character Spine assets`);
   console.log(`indexed ${assets.length} monster Spine assets (${missing.length} static fallbacks)`);
   console.log(`indexed ${vfxAssets.length} Spine VFX assets (${vfxAssets.filter((asset) => asset.usable).length} usable)`);
   if (missing.length > 0) console.log(`static fallback monsters: ${missing.map((entry) => entry.id).join(", ")}`);

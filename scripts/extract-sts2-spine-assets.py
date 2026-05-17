@@ -27,7 +27,9 @@ from lib.pck import PCKReader, default_pck_path  # noqa: E402
 
 IMPORT_RE = re.compile(r'path(?:\.\w+)?\s*=\s*"res://([^"]+)"')
 DEFAULT_KINDS = ("monsters", "vfx")
+AVAILABLE_KINDS = ("monsters", "vfx", "characters")
 PCK_PREFIX_BY_KIND = {
+    "characters": "animations/characters/",
     "monsters": "animations/monsters/",
     "vfx": "animations/vfx/",
 }
@@ -172,7 +174,7 @@ def main() -> int:
     parser.add_argument(
         "--kind",
         action="append",
-        choices=DEFAULT_KINDS,
+        choices=AVAILABLE_KINDS,
         help="Asset kind to extract. Repeatable. Defaults to monsters and vfx.",
     )
     parser.add_argument("--out-root", default="public/spine/sts2", help="Output root under the repo")

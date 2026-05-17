@@ -41,6 +41,7 @@ import {
   MonsterMove,
   MonsterMoveGraph,
   MonsterSpineAsset,
+  MonsterSpineEffectAsset,
   DamageValue,
   EncounterRoomType,
   EncounterMonsterRef,
@@ -381,6 +382,14 @@ export async function getCodexCharacters(opts?: { gameLocale?: GameLocale }): Pr
   });
 
   return mapped;
+}
+
+export async function getCodexCharacterSpineAssets(): Promise<MonsterSpineAsset[]> {
+  return readJson<MonsterSpineAsset[]>("character-spine-assets.json").catch(() => []);
+}
+
+export async function getCodexSpineVfxAssets(): Promise<MonsterSpineEffectAsset[]> {
+  return readJson<MonsterSpineEffectAsset[]>("spine-vfx-assets.json").catch(() => []);
 }
 
 // Raw STS2 JSON power shape
