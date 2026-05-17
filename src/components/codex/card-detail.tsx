@@ -100,14 +100,6 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
     [enchantments, previewCard]
   );
 
-  useEffect(() => {
-    if (!activeEnchantId) return;
-    if (eligibleEnchantments.some((e) => e.id === activeEnchantId)) return;
-    setActiveEnchantId(null);
-    setHoveredEnchantId(null);
-    setEnchantAmount(DEFAULT_ENCHANT_AMOUNT);
-  }, [activeEnchantId, eligibleEnchantments]);
-
   const activeEnchant = useMemo(
     () => eligibleEnchantments.find((e) => e.id === activeEnchantId) ?? null,
     [eligibleEnchantments, activeEnchantId]
@@ -280,6 +272,9 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
                   onClick={() => {
                     setMadScienceType(cardType);
                     setMadScienceRider(getDefaultTinkerRiderForType(cardType));
+                    setActiveEnchantId(null);
+                    setHoveredEnchantId(null);
+                    setEnchantAmount(DEFAULT_ENCHANT_AMOUNT);
                   }}
                   className={`min-h-9 rounded-md border px-2 text-sm font-bold transition-all ${
                     active
