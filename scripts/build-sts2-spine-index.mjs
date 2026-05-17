@@ -348,7 +348,9 @@ function characterActionCandidates(animationNames, needles, idleAnimation) {
 }
 
 function buildCharacterAsset(character, actor, alias, vfxById) {
-  const animationNames = actor.animations.map((animation) => animation.name);
+  const animationNames = actor.animations
+    .map((animation) => animation.name)
+    .filter((animation) => !animation.startsWith("_ignore/"));
   const idleAnimation = chooseIdleAnimation(animationNames);
   const attackVfx = alias.attackVfx ? vfxById.get(alias.attackVfx) : null;
 
