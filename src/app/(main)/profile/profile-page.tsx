@@ -288,7 +288,7 @@ function DuoRender({
   return (
     <div className="flex h-full min-h-0 flex-col overflow-visible">
       <div className="relative min-h-0 flex-1">
-        <div className="absolute inset-y-0 left-[3%] z-10 w-[34rem] max-w-[60%]">
+        <div className="absolute inset-y-0 left-[-1%] z-10 w-[44rem] max-w-[76%]">
           <MonsterSpineStage
             key={`duo-${character?.id ?? "none"}-${characterAction}-${characterActionNonce}`}
             asset={character?.spineAsset ?? null}
@@ -368,16 +368,16 @@ function getPetPlacement(petId: string | undefined): {
 } {
   if (petId === "OSTY") {
     return {
-      insetBlock: "13% 5%",
-      left: "43%",
-      width: "26rem",
+      insetBlock: "10% 4%",
+      left: "44%",
+      width: "28rem",
     };
   }
 
   return {
-    insetBlock: "20% -2%",
-    left: "36%",
-    width: "30rem",
+    insetBlock: "24% -4%",
+    left: "32%",
+    width: "32rem",
   };
 }
 
