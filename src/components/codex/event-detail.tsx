@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -17,7 +17,6 @@ import {
   CodexEvent,
   EventOption,
   EventPage,
-  EVENT_ACT_UNKNOWN,
 } from "@/lib/codex-types";
 import { RichText } from "@/components/rich-text";
 
@@ -28,13 +27,56 @@ const GAME_CHOICE_STYLE: CSSProperties = {
   boxShadow: GAME_CHOICE_SHADOW,
 };
 
+function GameChoiceFrame({
+  children,
+  onClick,
+}: {
+  children: ReactNode;
+  onClick?: () => void;
+}) {
+  const interactive = Boolean(onClick);
+  const className = `group relative w-full overflow-hidden text-left transition-all ${
+    interactive ? "cursor-pointer hover:-translate-y-0.5 hover:brightness-125" : ""
+  }`;
+  const content = (
+    <>
+      <Image
+        src="/images/sts2/ui/back_button.png"
+        alt=""
+        fill
+        sizes="520px"
+        className="pointer-events-none object-fill"
+        aria-hidden
+      />
+      <Image
+        src="/images/sts2/ui/back_button_outline.png"
+        alt=""
+        fill
+        sizes="520px"
+        className="pointer-events-none object-fill opacity-0 mix-blend-screen transition-opacity duration-150 group-hover:opacity-75"
+        aria-hidden
+      />
+      <div className="relative px-5 py-3 pr-9" style={GAME_CHOICE_STYLE}>
+        {children}
+      </div>
+    </>
+  );
+
+  if (interactive) {
+    return (
+      <button type="button" onClick={onClick} className={className}>
+        {content}
+      </button>
+    );
+  }
+
+  return <div className={className}>{content}</div>;
+}
+
 // --- Option card (static) ---
 function OptionCard({ option }: { option: EventOption }) {
   return (
-    <div
-      className="rounded-md border border-[#8a6331]/70 bg-[#21170e]/85 px-4 py-2.5 backdrop-blur-[1px]"
-      style={GAME_CHOICE_STYLE}
-    >
+    <GameChoiceFrame>
       <div className="mb-0.5 font-game-text text-[13px] font-semibold text-[#f0cf6a]">
         {option.title}
       </div>
@@ -43,7 +85,7 @@ function OptionCard({ option }: { option: EventOption }) {
           <RichText text={option.description} />
         </div>
       )}
-    </div>
+    </GameChoiceFrame>
   );
 }
 
@@ -216,11 +258,9 @@ export function EventContentViewer({
             const navigable = hasPages && canNavigate(opt.id);
             if (!navigable) return <OptionCard key={opt.id} option={opt} />;
             return (
-              <button
+              <GameChoiceFrame
                 key={opt.id}
                 onClick={() => navigateTo(opt.id)}
-                className="group w-full cursor-pointer rounded-md border border-[#8a6331]/70 bg-[#21170e]/85 px-3.5 py-2 text-left backdrop-blur-[1px] transition-all hover:-translate-y-0.5 hover:border-[#f0cf6a]/80 hover:bg-[#2c1f13]/90"
-                style={GAME_CHOICE_STYLE}
               >
                 <div className="mb-0.5 flex items-center gap-1.5 font-game-text text-[13px] font-semibold text-[#f0cf6a]">
                   {opt.title}
@@ -237,7 +277,7 @@ export function EventContentViewer({
                     <RichText text={opt.description} />
                   </div>
                 )}
-              </button>
+              </GameChoiceFrame>
             );
           })}
         </div>
@@ -260,30 +300,6 @@ export function EventContentViewer({
   );
 }
 
-// --- Act badge ---
-function ActBadge({
-  act,
-  messages,
-  gameUi,
-}: {
-  act: CodexEvent["act"];
-  messages: CodexServiceMessages;
-  gameUi: CodexGameUiLabels;
-}) {
-  const label = act ? gameUi.acts[act] : messages.labels.acts.none;
-  return (
-    <span
-      className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${
-        act
-          ? "border-blue-500/40 bg-blue-500/10 text-blue-300"
-          : `${EVENT_ACT_UNKNOWN.color} ${EVENT_ACT_UNKNOWN.border} ${EVENT_ACT_UNKNOWN.bg}`
-      }`}
-    >
-      {label}
-    </span>
-  );
-}
-
 // --- Event detail page (game-like: background art with right-side event text) ---
 interface EventDetailProps {
   serviceLocale: ServiceLocale;
@@ -292,7 +308,7 @@ interface EventDetailProps {
   onClose?: () => void;
 }
 
-export function EventDetail({ serviceLocale, gameUi, event, onClose }: EventDetailProps) {
+export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-5 p-4 sm:p-6">
@@ -345,13 +361,6 @@ export function EventDetail({ serviceLocale, gameUi, event, onClose }: EventDeta
                 >
                   {event.name}
                 </h1>
-                <div
-                  className="mt-1 mb-3 flex flex-wrap items-center gap-2 font-game-text text-sm text-[#c6b99d]"
-                  style={{ textShadow: GAME_TEXT_SHADOW }}
-                >
-                  <span>{event.nameEn}</span>
-                  <ActBadge act={event.act} messages={serviceText} gameUi={gameUi} />
-                </div>
                 <EventContentViewer event={event} messages={serviceText} />
               </div>
             </div>
