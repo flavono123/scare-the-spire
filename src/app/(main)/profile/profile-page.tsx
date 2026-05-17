@@ -268,13 +268,10 @@ function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; 
                 className={cn(
                   "h-11 w-11 object-contain drop-shadow-lg transition-[filter,transform]",
                   active
-                    ? "drop-shadow-[0_0_12px_rgba(251,191,36,0.75)]"
-                    : "group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.22)]",
+                    ? "drop-shadow-[0_0_7px_rgba(251,191,36,0.72)]"
+                    : "group-hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.22)]",
                 )}
               />
-              {active && (
-                <span className="absolute bottom-0.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-amber-300 shadow-[0_0_8px_rgba(251,191,36,0.9)]" />
-              )}
               <span className="pointer-events-none absolute left-1/2 top-full z-30 mt-1 hidden -translate-x-1/2 whitespace-nowrap rounded bg-black/80 px-2 py-1 text-[11px] font-semibold text-zinc-100 shadow-lg group-hover:block">
                 {item.label}
                 {item.subtitle && <span className="ml-1 text-zinc-400">{item.subtitle}</span>}
