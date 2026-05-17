@@ -36,19 +36,24 @@ const CHARACTER_SLUGS: Record<string, string> = {
   REGENT: "regent",
 };
 
-const PET_IDS = ["OSTY", "BYRDPIP", "PAELS_LEGION"] as const;
+const PET_CHOICES = [
+  { id: "OSTY", monsterId: "OSTY", labelSuffix: null, selectedSkins: null },
+  { id: "BYRDPIP_VERSION1", monsterId: "BYRDPIP", labelSuffix: "형태 1", selectedSkins: ["version1"] },
+  { id: "BYRDPIP_VERSION2", monsterId: "BYRDPIP", labelSuffix: "형태 2", selectedSkins: ["version2"] },
+  { id: "BYRDPIP_VERSION3", monsterId: "BYRDPIP", labelSuffix: "형태 3", selectedSkins: ["version3"] },
+  { id: "BYRDPIP_VERSION4", monsterId: "BYRDPIP", labelSuffix: "형태 4", selectedSkins: ["version4"] },
+  { id: "PAELS_LEGION", monsterId: "PAELS_LEGION", labelSuffix: null, selectedSkins: [] },
+] as const;
 
-const PET_TOKENS: Record<(typeof PET_IDS)[number], string> = {
+type PetMonsterId = (typeof PET_CHOICES)[number]["monsterId"];
+
+const PET_TOKENS: Record<PetMonsterId, string> = {
   OSTY: "/images/sts2/powers/calcify_power.webp",
   BYRDPIP: "/images/sts2/relics/byrdpip.webp",
   PAELS_LEGION: "/images/sts2/relics/paels_legion.webp",
 };
 
-const PET_SKINS: Partial<Record<(typeof PET_IDS)[number], string>> = {
-  BYRDPIP: "version4",
-};
-
-const PET_ATTACK_VFX: Partial<Record<(typeof PET_IDS)[number], string>> = {
+const PET_ATTACK_VFX: Partial<Record<PetMonsterId, string>> = {
   OSTY: "VFX_SCRATCH",
   BYRDPIP: "VFX_FLYING_SLASH",
   PAELS_LEGION: "VFX_MECHA_KNIGHT_SHIELD",
@@ -74,7 +79,7 @@ export default async function ProfileDevRoute() {
   return (
     <ProfilePage
       characters={characters.map((character) => mapCharacter(character, characterSpineById.get(character.id) ?? null))}
-      pets={PET_IDS.map((id) => mapPet(id, monsterById.get(id) ?? null, vfxById))}
+      pets={PET_CHOICES.map((choice) => mapPet(choice, monsterById.get(choice.monsterId) ?? null, vfxById))}
       ancients={ancients.map(mapAncient)}
     />
   );
@@ -93,19 +98,22 @@ function mapCharacter(character: CodexCharacter, spineAsset: MonsterSpineAsset |
 }
 
 function mapPet(
-  id: (typeof PET_IDS)[number],
+  choice: (typeof PET_CHOICES)[number],
   monster: CodexMonster | null,
   vfxById: Map<string, MonsterSpineEffectAsset>,
 ): PetChoice {
-  const attackVfxId = PET_ATTACK_VFX[id];
+  const attackVfxId = PET_ATTACK_VFX[choice.monsterId];
   const attackVfx = attackVfxId ? vfxById.get(attackVfxId) ?? null : null;
+  const baseLabel = monster?.name ?? choice.monsterId;
 
   return {
-    id,
-    label: monster?.name ?? id,
-    iconUrl: PET_TOKENS[id],
-    fallbackImageUrl: monster?.imageUrl ?? PET_TOKENS[id],
-    selectedSkin: PET_SKINS[id] ?? null,
+    id: choice.id,
+    monsterId: choice.monsterId,
+    label: choice.labelSuffix ? `${baseLabel} ${choice.labelSuffix}` : baseLabel,
+    iconUrl: PET_TOKENS[choice.monsterId],
+    fallbackImageUrl: monster?.imageUrl ?? PET_TOKENS[choice.monsterId],
+    selectedSkin: null,
+    selectedSkins: choice.selectedSkins,
     spineAsset: monster?.spineAsset ? withProfileActions(monster.spineAsset, attackVfx) : null,
   };
 }

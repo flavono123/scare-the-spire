@@ -12,7 +12,7 @@ interface MonsterSpineStageProps {
   selectedMoveId: string | null;
   selectedMoveNonce?: number;
   selectedSkin?: string | null;
-  selectedSkins?: string[] | null;
+  selectedSkins?: readonly string[] | null;
   className?: string;
   imagePriority?: boolean;
   showLoadingLabel?: boolean;
@@ -263,7 +263,7 @@ function applyCompositeSkin(
   player: SpinePlayer,
   SkinCtor: SpineSkinCtor,
   physics: SpinePhysics,
-  skinNames: string[],
+  skinNames: readonly string[],
   monsterName: string,
 ) {
   if (skinNames.length === 0 || !player.skeleton) return;

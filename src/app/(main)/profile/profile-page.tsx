@@ -16,10 +16,12 @@ export interface CharacterChoice {
 
 export interface PetChoice {
   id: string;
+  monsterId: string;
   label: string;
   iconUrl: string;
   fallbackImageUrl: string;
   selectedSkin: string | null;
+  selectedSkins: readonly string[] | null;
   spineAsset: MonsterSpineAsset | null;
 }
 
@@ -283,7 +285,7 @@ function DuoRender({
   onCharacterAction: (action: ActionId) => void;
   onPetAction: (action: ActionId) => void;
 }) {
-  const petPlacement = getPetPlacement(pet?.id);
+  const petPlacement = getPetPlacement(pet?.monsterId);
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-visible">
@@ -311,13 +313,14 @@ function DuoRender({
           }}
         >
           <MonsterSpineStage
-            key={`pet-${pet?.id ?? "none"}-${pet?.selectedSkin ?? "default"}`}
+            key={`pet-${pet?.id ?? "none"}`}
             asset={pet?.spineAsset ?? null}
             fallbackImageUrl={null}
             monsterName={pet?.label ?? ""}
             selectedMoveId={petAction}
             selectedMoveNonce={petActionNonce}
             selectedSkin={pet?.selectedSkin}
+            selectedSkins={pet?.selectedSkins}
             imagePriority={false}
             showLoadingLabel={false}
             viewportTransitionTime={0}
