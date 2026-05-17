@@ -34,6 +34,139 @@ const GAME_CHOICE_GLOW_STYLE: CSSProperties = {
   filter: "brightness(1.35) saturate(1.15)",
 };
 
+type TinkerCardType = "ATTACK" | "SKILL" | "POWER";
+
+const TINKER_CARD_TYPE_IDS = new Set<string>(["ATTACK", "SKILL", "POWER"]);
+const TINKER_RIDER_IDS_BY_TYPE: Record<TinkerCardType, string[]> = {
+  ATTACK: ["SAPPING", "VIOLENCE", "CHOKING"],
+  SKILL: ["ENERGIZED", "WISDOM", "CHAOS"],
+  POWER: ["EXPERTISE", "CURIOUS", "IMPROVEMENT"],
+};
+const TINKER_DYNAMIC_VALUES: Record<string, string> = {
+  Block: "8",
+  ChokingDamage: "6",
+  CuriousReduction: "1",
+  Damage: "12",
+  EnergizedEnergy: "[energy:2]",
+  ExpertiseDexterity: "2",
+  ExpertiseStrength: "2",
+  SappingVulnerable: "2",
+  SappingWeak: "2",
+  ViolenceHits: "3",
+  WisdomCards: "3",
+  energyPrefix: "[energy:1]",
+};
+
+const ABYSSAL_BATHS_BASE_DAMAGE = 3;
+const ABYSSAL_BATHS_HARD_LIMIT = 15;
+
+const FUTURE_OF_POTIONS_OPTIONS: EventOption[] = [
+  {
+    id: "POTION_COMMON_ATTACK",
+    title: "일반 포션: 공격 카드",
+    description: "[gold]일반 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]일반 공격[/gold] 카드를 얻습니다.",
+  },
+  {
+    id: "POTION_COMMON_SKILL",
+    title: "일반 포션: 스킬 카드",
+    description: "[gold]일반 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]일반 스킬[/gold] 카드를 얻습니다.",
+  },
+  {
+    id: "POTION_EVENT_ATTACK",
+    title: "이벤트 포션: 공격 카드",
+    description: "[gold]이벤트 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]희귀 공격[/gold] 카드를 얻습니다.",
+  },
+  {
+    id: "POTION_EVENT_POWER",
+    title: "이벤트 포션: 파워 카드",
+    description: "[gold]이벤트 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]희귀 파워[/gold] 카드를 얻습니다.",
+  },
+  {
+    id: "POTION_EVENT_SKILL",
+    title: "이벤트 포션: 스킬 카드",
+    description: "[gold]이벤트 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]희귀 스킬[/gold] 카드를 얻습니다.",
+  },
+  {
+    id: "POTION_RARE_ATTACK",
+    title: "희귀 포션: 공격 카드",
+    description: "[gold]희귀 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]희귀 공격[/gold] 카드를 얻습니다.",
+  },
+  {
+    id: "POTION_RARE_POWER",
+    title: "희귀 포션: 파워 카드",
+    description: "[gold]희귀 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]희귀 파워[/gold] 카드를 얻습니다.",
+  },
+  {
+    id: "POTION_RARE_SKILL",
+    title: "희귀 포션: 스킬 카드",
+    description: "[gold]희귀 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]희귀 스킬[/gold] 카드를 얻습니다.",
+  },
+  {
+    id: "POTION_TOKEN_ATTACK",
+    title: "토큰 포션: 공격 카드",
+    description: "[gold]토큰 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]일반 공격[/gold] 카드를 얻습니다.",
+  },
+  {
+    id: "POTION_TOKEN_SKILL",
+    title: "토큰 포션: 스킬 카드",
+    description: "[gold]토큰 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]일반 스킬[/gold] 카드를 얻습니다.",
+  },
+  {
+    id: "POTION_UNCOMMON_ATTACK",
+    title: "고급 포션: 공격 카드",
+    description: "[gold]고급 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]고급 공격[/gold] 카드를 얻습니다.",
+  },
+  {
+    id: "POTION_UNCOMMON_POWER",
+    title: "고급 포션: 파워 카드",
+    description: "[gold]고급 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]고급 파워[/gold] 카드를 얻습니다.",
+  },
+  {
+    id: "POTION_UNCOMMON_SKILL",
+    title: "고급 포션: 스킬 카드",
+    description: "[gold]고급 포션[/gold]을(를) 잃습니다. [gold]강화[/gold]된 [gold]고급 스킬[/gold] 카드를 얻습니다.",
+  },
+];
+
+function replaceTemplateValues(text: string, values: Record<string, string>): string {
+  return text
+    .replace(/\[([A-Za-z]\w*)\]/g, (match, key: string) => values[key] ?? match)
+    .replace(/\{([A-Za-z]\w*)(?::[^}]*)?\}/g, (match, key: string) => values[key] ?? match);
+}
+
+function getTinkerSelectedType(currentEntry: NavEntry | null): TinkerCardType | null {
+  if (!currentEntry || currentEntry.pageId !== "CHOOSE_RIDER") return null;
+  return TINKER_CARD_TYPE_IDS.has(currentEntry.optionId)
+    ? currentEntry.optionId as TinkerCardType
+    : null;
+}
+
+function applyAbyssalBathsDamage(option: EventOption, damage: number): EventOption {
+  if (option.id !== "IMMERSE" && option.id !== "LINGER") return option;
+  return {
+    ...option,
+    description: option.description.replace(/\[red\]\d+\[\/red\]/, `[red]${damage}[/red]`),
+  };
+}
+
+function resolveEventOptionPage(
+  eventId: string,
+  currentPageId: string | null,
+  optionId: string,
+  visitCount: number,
+  pageMap: Map<string, EventPage>,
+): string | null {
+  if (
+    eventId === "TINKER_TIME" &&
+    currentPageId === "CHOOSE_CARD_TYPE" &&
+    TINKER_CARD_TYPE_IDS.has(optionId) &&
+    pageMap.has("CHOOSE_RIDER")
+  ) {
+    return "CHOOSE_RIDER";
+  }
+  return resolveSequencePage(optionId, visitCount, pageMap);
+}
+
 function GameChoiceFrame({
   children,
   onClick,
@@ -171,9 +304,45 @@ export function EventContentViewer({
     return [];
   }, [currentPageId, pageMap, event.options, allPage]);
 
+  const displayOptions = useMemo(() => {
+    if (event.id === "THE_FUTURE_OF_POTIONS" && (!currentPageId || currentPageId === "INITIAL")) {
+      return FUTURE_OF_POTIONS_OPTIONS;
+    }
+
+    if (event.id === "TINKER_TIME" && currentPageId === "CHOOSE_RIDER") {
+      const selectedType = getTinkerSelectedType(currentEntry);
+      const riderIds = selectedType ? TINKER_RIDER_IDS_BY_TYPE[selectedType] : [];
+      const byId = new Map(rawOptions.map((option) => [option.id, option]));
+      return riderIds
+        .map((id) => byId.get(id))
+        .filter((option): option is EventOption => Boolean(option))
+        .map((option) => ({
+          ...option,
+          description: replaceTemplateValues(option.description, TINKER_DYNAMIC_VALUES),
+        }));
+    }
+
+    if (event.id === "TINKER_TIME") {
+      return rawOptions.map((option) => ({
+        ...option,
+        description: replaceTemplateValues(option.description, TINKER_DYNAMIC_VALUES),
+      }));
+    }
+
+    if (event.id === "ABYSSAL_BATHS") {
+      const bathCount = history.filter((entry) => entry.optionId === "IMMERSE" || entry.optionId === "LINGER").length;
+      const nextDamage = ABYSSAL_BATHS_BASE_DAMAGE + bathCount;
+      return rawOptions
+        .filter((option) => option.id !== "LINGER" || bathCount < ABYSSAL_BATHS_HARD_LIMIT)
+        .map((option) => applyAbyssalBathsDamage(option, nextDamage));
+    }
+
+    return rawOptions;
+  }, [currentEntry, currentPageId, event.id, history, rawOptions]);
+
   const options = useMemo(
-    () => rawOptions.filter((o) => !o.id.endsWith("_LOCKED") && o.title !== "잠김"),
-    [rawOptions],
+    () => displayOptions.filter((o) => !o.id.endsWith("_LOCKED") && o.title !== "잠김"),
+    [displayOptions],
   );
 
   const optionLabelMap = useMemo(() => {
@@ -187,22 +356,30 @@ export function EventContentViewer({
 
   const canNavigate = useCallback(
     (optionId: string): boolean => {
+      if (
+        event.id === "TINKER_TIME" &&
+        currentPageId === "CHOOSE_CARD_TYPE" &&
+        TINKER_CARD_TYPE_IDS.has(optionId) &&
+        pageMap.has("CHOOSE_RIDER")
+      ) {
+        return true;
+      }
       if (pageMap.has(optionId)) return true;
       if (pageMap.has(`${optionId}1`) || pageMap.has(`${optionId}_1`)) return true;
       if (pageMap.has(`${optionId}0`) || pageMap.has(`${optionId}_0`)) return true;
       return false;
     },
-    [pageMap],
+    [currentPageId, event.id, pageMap],
   );
 
   const navigateTo = useCallback(
     (optionId: string) => {
       const visitCount = history.filter((h) => h.optionId === optionId).length;
-      const resolved = resolveSequencePage(optionId, visitCount, pageMap);
+      const resolved = resolveEventOptionPage(event.id, currentPageId, optionId, visitCount, pageMap);
       if (!resolved) return;
       setHistory((prev) => [...prev, { pageId: resolved, optionId }]);
     },
-    [history, pageMap],
+    [currentPageId, event.id, history, pageMap],
   );
 
   const goBack = useCallback(() => {
@@ -225,7 +402,7 @@ export function EventContentViewer({
   const hasPages = pages.filter((p) => p.id !== "INITIAL").length > 0;
 
   return (
-    <>
+    <div className="flex min-h-0 flex-1 flex-col">
       {/* Description */}
       {description && (
         <div
@@ -268,7 +445,7 @@ export function EventContentViewer({
 
       {/* Options */}
       {options.length > 0 && (
-        <div className="space-y-2.5">
+        <div className="mt-auto space-y-2.5 pt-5">
           {options.map((opt) => {
             const navigable = hasPages && canNavigate(opt.id);
             if (!navigable) return <OptionCard key={opt.id} option={opt} />;
@@ -304,7 +481,7 @@ export function EventContentViewer({
           {messages.eventsView.previous}
         </button>
       )}
-    </>
+    </div>
   );
 }
 
@@ -370,7 +547,7 @@ export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps)
           <div className={textPanelClassName}>
             <div className="relative flex min-h-0 flex-1 flex-col">
               <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
-              <div className="relative min-h-0 flex-1 overflow-y-auto pr-2">
+              <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto pr-2">
                 <h1
                   className="font-game-title text-3xl font-bold leading-tight text-[#f3c640]"
                   style={{ textShadow: GAME_TEXT_SHADOW }}
