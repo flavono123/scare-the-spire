@@ -19,6 +19,12 @@ import {
   EventPage,
 } from "@/lib/codex-types";
 import { RichText } from "@/components/rich-text";
+import {
+  isTinkerCardTypeId,
+  replaceTinkerTemplateValues,
+  TINKER_RIDER_IDS_BY_TYPE,
+  type TinkerCardType,
+} from "@/lib/tinker-time";
 
 const GAME_TEXT_SHADOW = "3px 2px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.75)";
 const GAME_CHOICE_TEXT_SHADOW = "3px 2px 0 rgba(0,0,0,0.25)";
@@ -32,29 +38,6 @@ const GAME_CHOICE_FRAME_STYLE: CSSProperties = {
 const GAME_CHOICE_GLOW_STYLE: CSSProperties = {
   ...GAME_CHOICE_FRAME_STYLE,
   filter: "brightness(1.35) saturate(1.15)",
-};
-
-type TinkerCardType = "ATTACK" | "SKILL" | "POWER";
-
-const TINKER_CARD_TYPE_IDS = new Set<string>(["ATTACK", "SKILL", "POWER"]);
-const TINKER_RIDER_IDS_BY_TYPE: Record<TinkerCardType, string[]> = {
-  ATTACK: ["SAPPING", "VIOLENCE", "CHOKING"],
-  SKILL: ["ENERGIZED", "WISDOM", "CHAOS"],
-  POWER: ["EXPERTISE", "CURIOUS", "IMPROVEMENT"],
-};
-const TINKER_DYNAMIC_VALUES: Record<string, string> = {
-  Block: "8",
-  ChokingDamage: "6",
-  CuriousReduction: "1",
-  Damage: "12",
-  EnergizedEnergy: "[energy:2]",
-  ExpertiseDexterity: "2",
-  ExpertiseStrength: "2",
-  SappingVulnerable: "2",
-  SappingWeak: "2",
-  ViolenceHits: "3",
-  WisdomCards: "3",
-  energyPrefix: "[energy:1]",
 };
 
 const ABYSSAL_BATHS_BASE_DAMAGE = 3;
@@ -162,16 +145,10 @@ const EVENT_ART_OVERLAYS: Record<string, EventArtOverlay[]> = {
   ],
 };
 
-function replaceTemplateValues(text: string, values: Record<string, string>): string {
-  return text
-    .replace(/\[([A-Za-z]\w*)\]/g, (match, key: string) => values[key] ?? match)
-    .replace(/\{([A-Za-z]\w*)(?::[^}]*)?\}/g, (match, key: string) => values[key] ?? match);
-}
-
 function getTinkerSelectedType(currentEntry: NavEntry | null): TinkerCardType | null {
   if (!currentEntry || currentEntry.pageId !== "CHOOSE_RIDER") return null;
-  return TINKER_CARD_TYPE_IDS.has(currentEntry.optionId)
-    ? currentEntry.optionId as TinkerCardType
+  return isTinkerCardTypeId(currentEntry.optionId)
+    ? currentEntry.optionId
     : null;
 }
 
@@ -193,7 +170,7 @@ function resolveEventOptionPage(
   if (
     eventId === "TINKER_TIME" &&
     currentPageId === "CHOOSE_CARD_TYPE" &&
-    TINKER_CARD_TYPE_IDS.has(optionId) &&
+    isTinkerCardTypeId(optionId) &&
     pageMap.has("CHOOSE_RIDER")
   ) {
     return "CHOOSE_RIDER";
@@ -352,14 +329,14 @@ export function EventContentViewer({
         .filter((option): option is EventOption => Boolean(option))
         .map((option) => ({
           ...option,
-          description: replaceTemplateValues(option.description, TINKER_DYNAMIC_VALUES),
+          description: replaceTinkerTemplateValues(option.description),
         }));
     }
 
     if (event.id === "TINKER_TIME") {
       return rawOptions.map((option) => ({
         ...option,
-        description: replaceTemplateValues(option.description, TINKER_DYNAMIC_VALUES),
+        description: replaceTinkerTemplateValues(option.description),
       }));
     }
 
@@ -393,7 +370,7 @@ export function EventContentViewer({
       if (
         event.id === "TINKER_TIME" &&
         currentPageId === "CHOOSE_CARD_TYPE" &&
-        TINKER_CARD_TYPE_IDS.has(optionId) &&
+        isTinkerCardTypeId(optionId) &&
         pageMap.has("CHOOSE_RIDER")
       ) {
         return true;
