@@ -35,6 +35,20 @@ export const TINKER_RIDER_IDS_BY_TYPE = {
   POWER: ["EXPERTISE", "CURIOUS", "IMPROVEMENT"],
 } as const satisfies Record<TinkerCardType, readonly TinkerRiderId[]>;
 
+export const TINKER_RIDER_IDS: readonly TinkerRiderId[] = [
+  "SAPPING",
+  "VIOLENCE",
+  "CHOKING",
+  "ENERGIZED",
+  "WISDOM",
+  "CHAOS",
+  "EXPERTISE",
+  "CURIOUS",
+  "IMPROVEMENT",
+];
+
+export const TINKER_RIDER_ID_SET: ReadonlySet<TinkerRiderId> = new Set(TINKER_RIDER_IDS);
+
 export const TINKER_CARD_TYPE_CHOICE_LABELS: Record<TinkerCardType, string> = {
   ATTACK: "무기",
   SKILL: "보호대",
@@ -140,6 +154,10 @@ const TINKER_RIDER_SMART_VALUE: Record<TinkerRiderId, string> = {
 
 export function isTinkerCardTypeId(value: string): value is TinkerCardType {
   return TINKER_CARD_TYPE_IDS.has(value as TinkerCardType);
+}
+
+export function isTinkerRiderId(value: string): value is TinkerRiderId {
+  return TINKER_RIDER_ID_SET.has(value as TinkerRiderId);
 }
 
 export function getMadScienceVariantId(cardType: TinkerCardType): string {

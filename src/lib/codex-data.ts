@@ -341,6 +341,37 @@ export async function getCodexCards(opts?: {
     });
 }
 
+export async function getMadScienceBaseCard(opts?: {
+  gameLocale?: GameLocale;
+}): Promise<CodexCard | null> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [korCards, engCards, gameCards, korKeywords, gameKeywords, gameplay] = await Promise.all([
+    readJson<RawCard[]>("kor/cards.json"),
+    readJson<RawCard[]>("eng/cards.json"),
+    readGameLocalizationTable(gameLocale, "cards"),
+    readGameLocalizationTable("kor", "card_keywords"),
+    readGameLocalizationTable(gameLocale, "card_keywords"),
+    readGameLocalizationTable(gameLocale, "gameplay_ui"),
+  ]);
+
+  const kor = korCards.find((card) => card.id === MAD_SCIENCE_CARD_ID);
+  if (!kor) return null;
+
+  const engById = new Map(engCards.map((card) => [card.id, card]));
+  const keywordLabels = buildKeywordLabels(korKeywords, gameKeywords);
+  const typeLabels = getGameplayCardTypeLabels(gameplay);
+  const rarityLabels = getGameplayCardRarityLabels(gameplay);
+  return mapCard(
+    kor,
+    engById.get(kor.id) ?? kor,
+    gameCards,
+    typeLabels,
+    rarityLabels,
+    keywordLabels,
+    gameLocale,
+  );
+}
+
 // Raw STS2 JSON relic shape
 interface RawRelic {
   id: string;

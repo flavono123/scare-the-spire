@@ -11,6 +11,7 @@ import {
   type CodexServiceMessages,
 } from "@/lib/codex-service";
 import type {
+  CodexCard,
   CodexEvent,
   EventAct,
 } from "@/lib/codex-types";
@@ -123,13 +124,24 @@ interface EventListProps {
   gameUi: CodexGameUiLabels;
   title: string;
   events: CodexEvent[];
+  madScienceBaseCard?: CodexCard | null;
   versions: string[];
   currentVersion: string;
   patches: STS2Patch[];
   versionDiffs: EntityVersionDiff[];
 }
 
-export function EventList({ serviceLocale, gameUi, title, events, versions, currentVersion, patches, versionDiffs }: EventListProps) {
+export function EventList({
+  serviceLocale,
+  gameUi,
+  title,
+  events,
+  madScienceBaseCard,
+  versions,
+  currentVersion,
+  patches,
+  versionDiffs,
+}: EventListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
@@ -382,7 +394,13 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
           onClick={(e) => { if (e.target === e.currentTarget) setSelectedEvent(null); }}
         >
           <div className="mx-3 my-3 w-full max-w-[92rem] rounded-xl border border-white/10 bg-[#1a1a2e] shadow-2xl sm:mx-5 sm:my-4">
-            <EventDetail serviceLocale={serviceLocale} gameUi={gameUi} event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+            <EventDetail
+              serviceLocale={serviceLocale}
+              gameUi={gameUi}
+              event={selectedEvent}
+              madScienceBaseCard={madScienceBaseCard}
+              onClose={() => setSelectedEvent(null)}
+            />
           </div>
         </div>
       )}

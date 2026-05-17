@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
@@ -14,15 +14,21 @@ import {
   type CodexServiceMessages,
 } from "@/lib/codex-service";
 import {
+  CodexCard,
   CodexEvent,
   EventOption,
   EventPage,
 } from "@/lib/codex-types";
 import { RichText } from "@/components/rich-text";
+import { CardTile } from "@/components/codex/card-tile";
 import {
+  getDefaultTinkerRiderForType,
+  getMadSciencePreviewCard,
+  getTinkerRiderIdsForType,
   isTinkerCardTypeId,
+  isTinkerRiderId,
   replaceTinkerTemplateValues,
-  TINKER_RIDER_IDS_BY_TYPE,
+  TINKER_CARD_TYPE_TO_KO,
   type TinkerCardType,
 } from "@/lib/tinker-time";
 
@@ -181,11 +187,21 @@ function resolveEventOptionPage(
 function GameChoiceFrame({
   children,
   onClick,
+  onPreviewCardChange,
+  previewCard,
 }: {
   children: ReactNode;
   onClick?: () => void;
+  onPreviewCardChange?: (card: CodexCard | null) => void;
+  previewCard?: CodexCard | null;
 }) {
   const interactive = Boolean(onClick);
+  const showPreview = useCallback(() => {
+    if (previewCard) onPreviewCardChange?.(previewCard);
+  }, [onPreviewCardChange, previewCard]);
+  const hidePreview = useCallback(() => {
+    if (previewCard) onPreviewCardChange?.(null);
+  }, [onPreviewCardChange, previewCard]);
   const className = `group relative block min-h-[74px] w-full overflow-visible border-0 bg-transparent p-0 text-left transition-transform duration-150 ${
     interactive ? "cursor-pointer hover:-translate-y-0.5 focus-visible:outline-none" : ""
   }`;
@@ -223,19 +239,43 @@ function GameChoiceFrame({
 
   if (interactive) {
     return (
-      <button type="button" onClick={onClick} className={className}>
+      <button
+        type="button"
+        onClick={onClick}
+        onBlur={hidePreview}
+        onFocus={showPreview}
+        onMouseEnter={showPreview}
+        onMouseLeave={hidePreview}
+        className={className}
+      >
         {content}
       </button>
     );
   }
 
-  return <div className={className}>{content}</div>;
+  return (
+    <div
+      className={className}
+      onMouseEnter={showPreview}
+      onMouseLeave={hidePreview}
+    >
+      {content}
+    </div>
+  );
 }
 
 // --- Option card (static) ---
-function OptionCard({ option }: { option: EventOption }) {
+function OptionCard({
+  onPreviewCardChange,
+  option,
+  previewCard,
+}: {
+  onPreviewCardChange?: (card: CodexCard | null) => void;
+  option: EventOption;
+  previewCard?: CodexCard | null;
+}) {
   return (
-    <GameChoiceFrame>
+    <GameChoiceFrame previewCard={previewCard} onPreviewCardChange={onPreviewCardChange}>
       <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
         <RichText text={option.title} />
       </div>
@@ -288,10 +328,16 @@ function resolveSequencePage(
 // --- Interactive event content viewer (game-like flow) ---
 export function EventContentViewer({
   event,
+  gameUi,
+  madScienceBaseCard,
   messages,
+  onPreviewCardChange,
 }: {
   event: CodexEvent;
+  gameUi: CodexGameUiLabels;
+  madScienceBaseCard?: CodexCard | null;
   messages: CodexServiceMessages;
+  onPreviewCardChange?: (card: CodexCard | null) => void;
 }) {
   const [history, setHistory] = useState<NavEntry[]>([]);
   const pages = useMemo(() => event.pages ?? [], [event.pages]);
@@ -322,7 +368,7 @@ export function EventContentViewer({
 
     if (event.id === "TINKER_TIME" && currentPageId === "CHOOSE_RIDER") {
       const selectedType = getTinkerSelectedType(currentEntry);
-      const riderIds = selectedType ? TINKER_RIDER_IDS_BY_TYPE[selectedType] : [];
+      const riderIds = selectedType ? getTinkerRiderIdsForType(selectedType) : [];
       const byId = new Map(rawOptions.map((option) => [option.id, option]));
       return riderIds
         .map((id) => byId.get(id))
@@ -356,6 +402,48 @@ export function EventContentViewer({
     [displayOptions],
   );
 
+  const previewCardsByOptionId = useMemo(() => {
+    const previewCards = new Map<string, CodexCard>();
+    if (event.id !== "TINKER_TIME" || !madScienceBaseCard) return previewCards;
+
+    if (currentPageId === "CHOOSE_CARD_TYPE") {
+      for (const option of options) {
+        if (!isTinkerCardTypeId(option.id)) continue;
+        const typeKo = TINKER_CARD_TYPE_TO_KO[option.id];
+        previewCards.set(
+          option.id,
+          getMadSciencePreviewCard(
+            madScienceBaseCard,
+            option.id,
+            getDefaultTinkerRiderForType(option.id),
+            gameUi.cardLibrary.types[typeKo] ?? typeKo,
+          ),
+        );
+      }
+      return previewCards;
+    }
+
+    if (currentPageId === "CHOOSE_RIDER") {
+      const selectedType = getTinkerSelectedType(currentEntry);
+      if (!selectedType) return previewCards;
+      const typeKo = TINKER_CARD_TYPE_TO_KO[selectedType];
+      for (const option of options) {
+        if (!isTinkerRiderId(option.id)) continue;
+        previewCards.set(
+          option.id,
+          getMadSciencePreviewCard(
+            madScienceBaseCard,
+            selectedType,
+            option.id,
+            gameUi.cardLibrary.types[typeKo] ?? typeKo,
+          ),
+        );
+      }
+    }
+
+    return previewCards;
+  }, [currentEntry, currentPageId, event.id, gameUi.cardLibrary.types, madScienceBaseCard, options]);
+
   const optionLabelMap = useMemo(() => {
     const map = new Map<string, string>();
     for (const opt of event.options ?? []) map.set(opt.id, opt.title);
@@ -388,18 +476,21 @@ export function EventContentViewer({
       const visitCount = history.filter((h) => h.optionId === optionId).length;
       const resolved = resolveEventOptionPage(event.id, currentPageId, optionId, visitCount, pageMap);
       if (!resolved) return;
+      onPreviewCardChange?.(null);
       setHistory((prev) => [...prev, { pageId: resolved, optionId }]);
     },
-    [currentPageId, event.id, history, pageMap],
+    [currentPageId, event.id, history, onPreviewCardChange, pageMap],
   );
 
   const goBack = useCallback(() => {
+    onPreviewCardChange?.(null);
     setHistory((prev) => prev.slice(0, -1));
-  }, []);
+  }, [onPreviewCardChange]);
 
   const reset = useCallback(() => {
+    onPreviewCardChange?.(null);
     setHistory([]);
-  }, []);
+  }, [onPreviewCardChange]);
 
   const getBreadcrumbLabel = useCallback(
     (entry: NavEntry) => {
@@ -459,11 +550,23 @@ export function EventContentViewer({
         <div className="mt-auto space-y-2.5 pt-5">
           {options.map((opt) => {
             const navigable = hasPages && canNavigate(opt.id);
-            if (!navigable) return <OptionCard key={opt.id} option={opt} />;
+            const previewCard = previewCardsByOptionId.get(opt.id) ?? null;
+            if (!navigable) {
+              return (
+                <OptionCard
+                  key={opt.id}
+                  option={opt}
+                  previewCard={previewCard}
+                  onPreviewCardChange={onPreviewCardChange}
+                />
+              );
+            }
             return (
               <GameChoiceFrame
                 key={opt.id}
                 onClick={() => navigateTo(opt.id)}
+                previewCard={previewCard}
+                onPreviewCardChange={onPreviewCardChange}
               >
                 <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
                   <RichText text={opt.title} />
@@ -501,13 +604,24 @@ interface EventDetailProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
   event: CodexEvent;
+  madScienceBaseCard?: CodexCard | null;
   onClose?: () => void;
 }
 
-export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps) {
+export function EventDetail({
+  serviceLocale,
+  gameUi,
+  event,
+  madScienceBaseCard,
+  onClose,
+}: EventDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const isModal = Boolean(onClose);
+  const [previewCard, setPreviewCard] = useState<CodexCard | null>(null);
   const artOverlays = EVENT_ART_OVERLAYS[event.id] ?? [];
+  useEffect(() => {
+    setPreviewCard(null);
+  }, [event.id]);
   const rootClassName = isModal
     ? "mx-auto flex max-w-[92rem] flex-col gap-4 p-3 sm:p-5"
     : "mx-auto flex max-w-6xl flex-col gap-5 p-4 sm:p-6";
@@ -571,6 +685,18 @@ export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps)
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(96,165,250,0.20),transparent_34%),linear-gradient(135deg,#111827,#050505_65%)]" />
           )}
           <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/30 to-transparent" />
+          {previewCard && (
+            <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 w-[150px] -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_22px_40px_rgba(0,0,0,0.70)] sm:left-[27%] sm:w-[158px]">
+              <CardTile
+                card={previewCard}
+                showUpgrade={false}
+                showBeta={false}
+                width={158}
+                interactive={false}
+                serviceLocale={serviceLocale}
+              />
+            </div>
+          )}
           <div className={textPanelClassName}>
             <div className="relative flex min-h-0 flex-1 flex-col">
               <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
@@ -581,7 +707,13 @@ export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps)
                 >
                   {event.name}
                 </h1>
-                <EventContentViewer event={event} messages={serviceText} />
+                <EventContentViewer
+                  event={event}
+                  gameUi={gameUi}
+                  madScienceBaseCard={madScienceBaseCard}
+                  messages={serviceText}
+                  onPreviewCardChange={setPreviewCard}
+                />
               </div>
             </div>
           </div>
