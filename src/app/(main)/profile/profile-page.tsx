@@ -288,7 +288,7 @@ function DuoRender({
   return (
     <div className="flex h-full min-h-0 flex-col overflow-visible">
       <div className="relative min-h-0 flex-1">
-        <div className="absolute inset-y-0 left-[-1%] z-10 w-[44rem] max-w-[76%]">
+        <div className="pointer-events-none absolute inset-y-0 left-[-1%] z-10 w-[44rem] max-w-[76%]">
           <MonsterSpineStage
             key={`duo-${character?.id ?? "none"}`}
             asset={character?.spineAsset ?? null}
@@ -303,7 +303,7 @@ function DuoRender({
           />
         </div>
         <div
-          className="absolute z-20"
+          className="pointer-events-none absolute z-20"
           style={{
             insetBlock: petPlacement.insetBlock,
             left: petPlacement.left,
@@ -325,7 +325,7 @@ function DuoRender({
           />
         </div>
       </div>
-      <div className="grid shrink-0 grid-cols-2 gap-3 pb-1">
+      <div className="relative z-30 grid shrink-0 grid-cols-2 gap-3 pb-1">
         <ActionBar label="캐릭터" value={characterAction} onChange={onCharacterAction} />
         <ActionBar label="펫" value={petAction} onChange={onPetAction} />
       </div>
