@@ -1,6 +1,11 @@
 "use client";
 
 import { type CSSProperties, type ReactNode } from "react";
+import Image from "@/components/ui/static-image";
+import {
+  resolveSts2EnergyIcon,
+  type Sts2EnergyIconVariant,
+} from "@/lib/sts2-energy-icons";
 
 // BBCode tag -> CSS class mapping
 const COLOR_CLASSES: Record<string, string> = {
@@ -53,19 +58,59 @@ function renderSineText(text: string, keyPrefix: string, offset: SineOffset): Re
   });
 }
 
-function renderSineNodes(nodes: TextNode[], key = "", offset: SineOffset = { current: 0 }): ReactNode[] {
+interface RenderOptions {
+  energyIconVariant: Sts2EnergyIconVariant;
+}
+
+function renderEnergyIcons(
+  count: number,
+  keyPrefix: string,
+  energyIconVariant: Sts2EnergyIconVariant,
+): ReactNode {
+  const src = resolveSts2EnergyIcon(energyIconVariant);
+  return (
+    <span className="inline-flex items-baseline gap-0 align-baseline">
+      {Array.from({ length: count }, (_, i) => (
+        <Image
+          key={`${keyPrefix}-energy-${i}`}
+          src={src}
+          alt=""
+          width={16}
+          height={16}
+          className="inline-block align-text-bottom"
+          style={{ width: "1em", height: "1em" }}
+          aria-hidden
+        />
+      ))}
+    </span>
+  );
+}
+
+function renderSineNodes(
+  nodes: TextNode[],
+  key = "",
+  offset: SineOffset = { current: 0 },
+  options: RenderOptions,
+): ReactNode[] {
   return nodes.map((node, i) => {
     const k = `${key}-${i}`;
     if (node.type === "newline") return <br key={k} />;
     if (node.type === "text") return renderSineText(node.text ?? "", k, offset);
     if (node.type === "tag" && node.tag && node.children) {
-      if (node.tag === "sine") return renderSineNodes(node.children, k, offset);
+      if (node.tag === "energy") {
+        return (
+          <span key={k}>
+            {renderEnergyIcons(parseInt(node.param ?? "1", 10) || 1, k, options.energyIconVariant)}
+          </span>
+        );
+      }
+      if (node.tag === "sine") return renderSineNodes(node.children, k, offset, options);
       const colorClass = COLOR_CLASSES[node.tag] ?? "";
       const effectClass = EFFECT_CLASSES[node.tag] ?? "";
       const className = [colorClass, effectClass].filter(Boolean).join(" ");
       return (
         <span key={k} className={className || undefined}>
-          {renderSineNodes(node.children, k, offset)}
+          {renderSineNodes(node.children, k, offset, options)}
         </span>
       );
     }
@@ -109,10 +154,15 @@ function parseBBCode(input: string): TextNode[] {
     const tagParam = match[3]; // e.g., "1" from [energy:1]
 
     // Handle energy/star icons
-    if (!isClosing && (tagName === "energy" || tagName === "star") && tagParam) {
+    if (!isClosing && tagName === "energy" && tagParam) {
       const count = parseInt(tagParam, 10) || 1;
-      const icon = tagName === "energy" ? "⚡" : "★";
-      pushText(icon.repeat(count));
+      pushNode({ type: "tag", tag: "energy", param: String(count), children: [] });
+      continue;
+    }
+
+    if (!isClosing && tagName === "star" && tagParam) {
+      const count = parseInt(tagParam, 10) || 1;
+      pushText("★".repeat(count));
       continue;
     }
 
@@ -170,16 +220,23 @@ function parseBBCode(input: string): TextNode[] {
 }
 
 // Render parsed nodes to React elements
-function renderNodes(nodes: TextNode[], key = ""): ReactNode[] {
+function renderNodes(nodes: TextNode[], key = "", options: RenderOptions): ReactNode[] {
   return nodes.map((node, i) => {
     const k = `${key}-${i}`;
     if (node.type === "newline") return <br key={k} />;
     if (node.type === "text") return <span key={k}>{node.text}</span>;
     if (node.type === "tag" && node.tag && node.children) {
+      if (node.tag === "energy") {
+        return (
+          <span key={k}>
+            {renderEnergyIcons(parseInt(node.param ?? "1", 10) || 1, k, options.energyIconVariant)}
+          </span>
+        );
+      }
       if (node.tag === "sine") {
         return (
           <span key={k} className="rich-sine">
-            {renderSineNodes(node.children, k)}
+            {renderSineNodes(node.children, k, { current: 0 }, options)}
           </span>
         );
       }
@@ -188,7 +245,7 @@ function renderNodes(nodes: TextNode[], key = ""): ReactNode[] {
       const className = [colorClass, effectClass].filter(Boolean).join(" ");
       return (
         <span key={k} className={className || undefined}>
-          {renderNodes(node.children, k)}
+          {renderNodes(node.children, k, options)}
         </span>
       );
     }
@@ -199,12 +256,13 @@ function renderNodes(nodes: TextNode[], key = ""): ReactNode[] {
 export interface RichTextProps {
   text: string;
   className?: string;
+  energyIconVariant?: Sts2EnergyIconVariant;
 }
 
 // Render BBCode-formatted text with colors and effects
-export function RichText({ text, className }: RichTextProps) {
+export function RichText({ text, className, energyIconVariant = "colorless" }: RichTextProps) {
   const nodes = parseBBCode(text);
-  return <span className={className}>{renderNodes(nodes)}</span>;
+  return <span className={className}>{renderNodes(nodes, "", { energyIconVariant })}</span>;
 }
 
 // Export parser for reuse

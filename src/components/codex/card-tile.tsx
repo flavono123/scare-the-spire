@@ -33,6 +33,7 @@ import {
   FONT_CQI,
 } from "@/lib/sts2-card-style";
 import { CardEngagementStatsOverlay } from "./engagement-stats";
+import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 
 // =============================================================================
 // Game-extracted asset paths
@@ -62,20 +63,6 @@ const PORTRAIT_BORDER_ASSETS: Record<string, string> = {
   저주: "/images/game-assets/card-portraits/card_portrait_border_skill.png",
   상태이상: "/images/game-assets/card-portraits/card_portrait_border_skill.png",
   퀘스트: "/images/game-assets/card-portraits/card_portrait_border_skill.png",
-};
-
-const ENERGY_ICONS: Record<string, string> = {
-  ironclad: "/images/game-assets/card-misc/energy_ironclad.png",
-  silent: "/images/game-assets/card-misc/energy_silent.png",
-  defect: "/images/game-assets/card-misc/energy_defect.png",
-  necrobinder: "/images/game-assets/card-misc/energy_necrobinder.png",
-  regent: "/images/game-assets/card-misc/energy_regent.png",
-  colorless: "/images/game-assets/card-misc/energy_colorless.png",
-  curse: "/images/game-assets/card-misc/energy_colorless.png",
-  event: "/images/game-assets/card-misc/energy_colorless.png",
-  status: "/images/game-assets/card-misc/energy_colorless.png",
-  token: "/images/game-assets/card-misc/energy_colorless.png",
-  quest: "/images/game-assets/card-misc/energy_quest.png",
 };
 
 const UPGRADE_ADDED_KEYWORDS: Record<string, string> = {
@@ -220,7 +207,7 @@ export const CardTile = memo(function CardTile({
     : (TITLE_OUTLINE_COLOR[card.rarity] ?? TITLE_OUTLINE_COLOR["일반"]);
   const titleColor = isUpgraded ? TEXT_GREEN : TEXT_CREAM;
   const costOutline = ENERGY_OUTLINE_COLOR[card.color] ?? ENERGY_OUTLINE_COLOR.colorless;
-  const energyIcon = ENERGY_ICONS[card.color] ?? ENERGY_ICONS.colorless;
+  const energyIcon = resolveSts2EnergyIcon(card.color);
   const isAncientCard = card.rarity === "고대의 존재";
 
   // 게임 outline_size: title=12, cost=16, type=0, enchant amount=8 (card.tscn)
