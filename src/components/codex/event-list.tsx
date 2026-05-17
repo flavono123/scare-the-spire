@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
+  formatCodexCount,
   getCodexServiceMessages,
   type CodexServiceMessages,
 } from "@/lib/codex-service";
@@ -29,6 +30,11 @@ import {
 import { SearchBar } from "./search-bar";
 import { VersionSelector } from "./version-selector";
 import { FilterSection, ToggleButton } from "./codex-filters";
+import {
+  CodexLibraryShell,
+  CodexLibraryTopBar,
+  useCodexFilterDrawer,
+} from "./codex-filter-drawer";
 import { EventDetail } from "./event-detail";
 
 type EventSearchTokenType = "act";
@@ -263,120 +269,93 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
     return counts;
   }, [events]);
 
+  const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
+
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-yellow-900/30 bg-[#0d0d14]">
-        <div className="mx-auto max-w-5xl px-6 py-8 text-center">
-          <h1 className="font-game-title text-3xl md:text-4xl text-yellow-500 mb-2">
-            {title}
-          </h1>
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-5xl px-4 md:px-6 py-6">
-        <div className="flex gap-6">
-          {/* Sidebar filters */}
-          <aside className="hidden md:block w-48 flex-shrink-0 space-y-5">
-            <FilterSection trigger="%" label={serviceText.eventsView.actFilter}>
-              <div className="space-y-0.5">
-                {EVENT_ACT_ORDER.map((act) => {
-                  const key = act ?? "none";
-                  const count = actCounts.get(key) ?? 0;
-                  return (
-                    <ToggleButton
-                      key={key}
-                      label={`${getActLabel(act, serviceText, gameUi)} (${count})`}
-                      active={selectedActs.has(key)}
-                      onClick={() => toggleAct(key)}
-                    />
-                  );
-                })}
-              </div>
-            </FilterSection>
-          </aside>
-
-          {/* Main content */}
-          <div className="flex-1 min-w-0">
-            {/* Search + Version */}
-            <div className="mb-6 flex items-center gap-2">
-              <div className="flex-1">
-                <SearchBar
-                  value={searchQuery}
-                  onChange={setSearchQuery}
-                  inputId="codex-search"
-                  triggerGroups={eventTriggers}
-                  placeholder={serviceText.eventsView.searchPlaceholder}
+    <CodexLibraryShell
+      sidebarOpen={sidebarOpen}
+      setSidebarOpen={setSidebarOpen}
+      isMobile={isMobile}
+      sidebar={(
+        <FilterSection trigger="%" label={serviceText.eventsView.actFilter}>
+          <div className="flex flex-col gap-0.5">
+            {EVENT_ACT_ORDER.map((act) => {
+              const key = act ?? "none";
+              const count = actCounts.get(key) ?? 0;
+              return (
+                <ToggleButton
+                  key={key}
+                  label={`${getActLabel(act, serviceText, gameUi)} (${count})`}
+                  active={selectedActs.has(key)}
+                  onClick={() => toggleAct(key)}
                 />
-              </div>
-              <VersionSelector
-                versions={versions}
-                currentVersion={currentVersion}
-                selectedVersion={selectedVersion}
-                onChange={setSelectedVersion}
-              />
-            </div>
-
-            {/* Mobile act filter */}
-            <div className="flex md:hidden flex-wrap gap-1.5 mb-4">
-              {EVENT_ACT_ORDER.map((act) => {
-                const key = act ?? "none";
-                const config = act
-                  ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
-                  : EVENT_ACT_UNKNOWN;
-                return (
-                  <button
-                    key={key}
-                    onClick={() => toggleAct(key)}
-                    className={`text-[11px] px-2 py-1 rounded-full border transition-all ${
-                      selectedActs.has(key)
-                        ? `${config.border} ${config.bg} ${config.color}`
-                        : "border-zinc-700/40 text-zinc-500 hover:text-zinc-300"
-                    }`}
-                  >
-                    {getActLabel(act, serviceText, gameUi)}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Event list grouped by act */}
-            {groups.length === 0 ? (
-              <div className="text-center py-16 text-zinc-600">
-                <p className="text-lg">{serviceText.common.noResults}</p>
-              </div>
-            ) : (
-              <div className="space-y-8">
-                {groups.map((group) => (
-                  <section key={group.act ?? "none"}>
-                    <h2
-                      className={`mb-3 flex items-center gap-2 text-base font-semibold ${group.color}`}
-                    >
-                      {group.label}
-                      <span className="text-xs font-normal text-zinc-600">
-                        {group.events.length}
-                      </span>
-                    </h2>
-                    <div className="space-y-2">
-                      {group.events.map((event) => (
-                        <EventThumbnail
-                          key={event.id}
-                          event={event}
-                          messages={serviceText}
-                          gameUi={gameUi}
-                          onClick={() => setSelectedEvent(event)}
-                        />
-                      ))}
-                    </div>
-                  </section>
-                ))}
-              </div>
-            )}
+              );
+            })}
           </div>
-        </div>
-      </div>
+        </FilterSection>
+      )}
+    >
+      <main className="flex-1 flex flex-col overflow-hidden">
+        <CodexLibraryTopBar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          closeFiltersLabel={serviceText.common.closeFilters}
+          openFiltersLabel={serviceText.common.openFilters}
+          title={title}
+          search={(
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              inputId="codex-search"
+              triggerGroups={eventTriggers}
+              placeholder={serviceText.eventsView.searchPlaceholder}
+            />
+          )}
+          count={formatCodexCount(filtered.length, serviceText.labels.items, serviceLocale)}
+          trailing={(
+            <VersionSelector
+              versions={versions}
+              currentVersion={currentVersion}
+              selectedVersion={selectedVersion}
+              onChange={setSelectedVersion}
+            />
+          )}
+        />
 
-      <div className="h-16" />
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          {groups.length === 0 ? (
+            <div className="flex items-center justify-center h-64 text-gray-500">
+              {serviceText.common.noResults}
+            </div>
+          ) : (
+            <div className="space-y-8">
+              {groups.map((group) => (
+                <section key={group.act ?? "none"}>
+                  <h2
+                    className={`mb-3 flex items-center gap-2 text-base font-semibold ${group.color}`}
+                  >
+                    {group.label}
+                    <span className="text-xs font-normal text-zinc-600">
+                      {group.events.length}
+                    </span>
+                  </h2>
+                  <div className="space-y-2">
+                    {group.events.map((event) => (
+                      <EventThumbnail
+                        key={event.id}
+                        event={event}
+                        messages={serviceText}
+                        gameUi={gameUi}
+                        onClick={() => setSelectedEvent(event)}
+                      />
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
 
       {/* Event Detail Modal */}
       {selectedEvent && (
@@ -389,7 +368,7 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
           </div>
         </div>
       )}
-    </div>
+    </CodexLibraryShell>
   );
 }
 
