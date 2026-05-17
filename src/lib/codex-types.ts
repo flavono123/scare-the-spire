@@ -574,6 +574,18 @@ export interface MonsterSpineAsset {
   textureUrls: string[];
   skin: string | null;
   skins: string[];
+  skinParts?: {
+    id: string;
+    labelKo: string;
+    labelEn: string;
+    options: {
+      id: string;
+      labelKo: string;
+      labelEn: string;
+      attachmentCount: number;
+    }[];
+  }[];
+  defaultSkinCombination?: string[];
   skinVariants?: {
     id: string;
     label: string;

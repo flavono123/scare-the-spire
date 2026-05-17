@@ -22,13 +22,90 @@ const MONSTER_ALIASES = {
   BOWLBUG_ROCK: { folder: "bowlbug", skin: "rock", tags: ["shared-actor", "variant-skin"] },
   BOWLBUG_SILK: { folder: "bowlbug", skin: "web", tags: ["shared-actor", "variant-skin"] },
   CALCIFIED_CULTIST: { folder: "cultists", skin: "coral", tags: ["shared-actor", "variant-skin"] },
-  CUBEX_CONSTRUCT: { folder: "cubex_construct", skin: "moss1", tags: ["variant-skin"] },
+  CUBEX_CONSTRUCT: { folder: "cubex_construct", tags: ["variant-skin"] },
   DAMP_CULTIST: { folder: "cultists", skin: "slug", tags: ["shared-actor", "variant-skin"] },
   FLYCONID: { folder: "flying_mushrooms", tags: ["image-slug-alias"] },
   GLOBE_HEAD: { folder: "globe_head", tags: ["image-slug-alias"] },
-  SCROLL_OF_BITING: { folder: "scroll_of_biting", skin: "skin1", tags: ["variant-skin"] },
+  SCROLL_OF_BITING: { folder: "scroll_of_biting", tags: ["variant-skin"] },
   SKULKING_COLONY: { folder: "skulking_colony", tags: ["image-slug-alias"] },
   TORCH_HEAD_AMALGAM: { folder: "torch_head_amalgam", tags: ["image-slug-alias"] },
+};
+
+const MONSTER_SKIN_PARTS = {
+  BYRDPIP: [
+    skinPart("version", "형태", "Form", [
+      skinOption("version1", "형태 1", "Form 1"),
+      skinOption("version2", "형태 2", "Form 2"),
+      skinOption("version3", "형태 3", "Form 3"),
+      skinOption("version4", "형태 4", "Form 4"),
+    ]),
+  ],
+  CUBEX_CONSTRUCT: [
+    skinPart("eye", "눈", "Eye", [
+      skinOption("circleeye", "원형", "Circle", "circle"),
+      skinOption("diamondeye", "마름모", "Diamond", "diamond"),
+      skinOption("squareeye", "사각형", "Square", "square"),
+    ]),
+    skinPart("moss", "이끼", "Moss", [
+      skinOption("moss1", "이끼1", "Moss 1"),
+      skinOption("moss2", "이끼2", "Moss 2"),
+      skinOption("moss3", "이끼3", "Moss 3"),
+    ]),
+  ],
+  KIN_FOLLOWER: [
+    skinPart("hair", "머리", "Hair", [
+      skinOption("hair_1", "머리 1", "Hair 1"),
+      skinOption("hair_2", "머리 2", "Hair 2"),
+      skinOption("hair_3", "머리 3", "Hair 3"),
+    ]),
+  ],
+  PAELS_LEGION: [
+    skinPart("eyes", "눈", "Eyes", [
+      skinOption("eyes", "눈", "Eyes"),
+    ]),
+    skinPart("horns", "뿔", "Horns", [
+      skinOption("horns", "뿔", "Horns"),
+    ]),
+    skinPart("spikes", "가시", "Spikes", [
+      skinOption("spikes", "가시", "Spikes"),
+    ]),
+    skinPart("wing", "날개", "Wing", [
+      skinOption("wing", "날개", "Wing"),
+    ]),
+  ],
+  SCROLL_OF_BITING: [
+    skinPart("color", "색상", "Color", [
+      skinOption("skin1", "색상 1", "Color 1"),
+      skinOption("skin2", "색상 2", "Color 2"),
+    ]),
+  ],
+  TOADPOLE: [
+    skinPart("eye", "눈", "Eye", [
+      skinOption("eye1", "눈 1", "Eye 1"),
+      skinOption("eye2", "눈 2", "Eye 2"),
+    ]),
+    skinPart("pattern", "무늬", "Pattern", [
+      skinOption("pattern1", "무늬 1", "Pattern 1"),
+      skinOption("pattern2", "무늬 2", "Pattern 2"),
+    ]),
+  ],
+  TOUGH_EGG: [
+    skinPart("shell", "껍질", "Shell", [
+      skinOption("egg1", "껍질 1", "Shell 1"),
+      skinOption("egg2", "껍질 2", "Shell 2"),
+    ]),
+  ],
+  TWO_TAILED_RAT: [
+    skinPart("barnacles", "따개비", "Barnacles", [
+      skinOption("barnacles1", "따개비 1", "Barnacles 1"),
+      skinOption("barnacles2", "따개비 2", "Barnacles 2"),
+      skinOption("barnacles3", "따개비 3", "Barnacles 3"),
+    ]),
+    skinPart("head", "머리", "Head", [
+      skinOption("head1", "머리 1", "Head 1"),
+      skinOption("head2", "머리 2", "Head 2"),
+    ]),
+  ],
 };
 
 const VFX_ALIASES = {
@@ -206,6 +283,14 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))];
 }
 
+function skinPart(id, labelKo, labelEn, options) {
+  return { id, labelKo, labelEn, options };
+}
+
+function skinOption(id, labelKo, labelEn, sortKey = id) {
+  return { id, labelKo, labelEn, sortKey };
+}
+
 function matchingAnimations(animations, needles) {
   const loweredNeedles = needles.map((needle) => needle.toLowerCase());
   return animations.filter((animation) => {
@@ -280,18 +365,67 @@ function moveVfxCandidates(move, usableVfxIds) {
   return unique(candidates).filter((id) => usableVfxIds.has(id));
 }
 
+function compareSkinLabels(a, b) {
+  return (
+    a.labelKo.localeCompare(b.labelKo, "ko") ||
+    a.labelEn.localeCompare(b.labelEn, "en") ||
+    a.id.localeCompare(b.id)
+  );
+}
+
+function compareSkinOptions(a, b) {
+  return (
+    a.sortKey.localeCompare(b.sortKey, "en") ||
+    compareSkinLabels(a, b)
+  );
+}
+
 function skinVariantLabel(skin) {
-  if (skin === "default") return "default";
   return skin.replaceAll("_", " ");
 }
 
-function buildSkinVariants(actor, alias) {
+function buildSkinParts(monsterId, actor, alias) {
   if (alias?.tags?.includes("shared-actor")) return [];
+
+  const groups = MONSTER_SKIN_PARTS[monsterId] ?? [];
+  return groups
+    .map((part) => ({
+      id: part.id,
+      labelKo: part.labelKo,
+      labelEn: part.labelEn,
+      options: part.options
+        .filter((option) => actor.skins.includes(option.id) && (actor.skinAttachmentCounts[option.id] ?? 0) > 0)
+        .sort(compareSkinOptions)
+        .map((option) => ({
+          id: option.id,
+          labelKo: option.labelKo,
+          labelEn: option.labelEn,
+          attachmentCount: actor.skinAttachmentCounts[option.id] ?? 0,
+        })),
+    }))
+    .filter((part) => part.options.length > 0)
+    .sort(compareSkinLabels);
+}
+
+function buildDefaultSkinCombination(skinParts) {
+  return skinParts.map((part) => part.options[0]?.id).filter(Boolean);
+}
+
+function buildSkinVariants(actor, alias, skinParts) {
+  if (alias?.tags?.includes("shared-actor")) return [];
+  if (skinParts.length > 0) {
+    const variants = skinParts.flatMap((part) => part.options.map((option) => ({
+      id: option.id,
+      label: option.labelKo,
+      attachmentCount: option.attachmentCount,
+    })));
+    return variants.length > 1 ? variants : [];
+  }
 
   const selectedSkin = alias?.skin ?? null;
   const variants = actor.skins
     .filter((skin) => {
-      if (skin === "default") return true;
+      if (skin === "default") return false;
       if (skin === selectedSkin) return true;
       return (actor.skinAttachmentCounts[skin] ?? 0) > 0;
     })
@@ -310,7 +444,9 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
   const bestiaryAnimations = ["revive", "hurt", "die"].filter((animation) => animationNames.includes(animation));
   const moves = monster.bestiary_moves ?? monster.moves ?? [];
   const usableVfxIds = new Set([...vfxById.keys()]);
-  const skinVariants = buildSkinVariants(actor, alias);
+  const skinParts = buildSkinParts(monster.id, actor, alias);
+  const defaultSkinCombination = buildDefaultSkinCombination(skinParts);
+  const skinVariants = buildSkinVariants(actor, alias, skinParts);
   const moveAnimations = Object.fromEntries(
     moves.map((move) => [move.id, moveAnimationCandidates(monster, move, animationNames, idleAnimation)]),
   );
@@ -333,6 +469,8 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
     textureUrls: actor.pngFiles.map((file) => `/spine/sts2/monsters/${actor.folder}/${file}`),
     skin: alias?.skin ?? null,
     skins: actor.skins,
+    ...(skinParts.length > 0 ? { skinParts } : {}),
+    ...(defaultSkinCombination.length > 0 ? { defaultSkinCombination } : {}),
     ...(skinVariants.length > 0 ? { skinVariants } : {}),
     animations: animationNames,
     bestiaryAnimations,

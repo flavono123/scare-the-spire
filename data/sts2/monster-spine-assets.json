@@ -678,30 +678,61 @@
       "version3",
       "version4"
     ],
+    "skinParts": [
+      {
+        "id": "version",
+        "labelKo": "형태",
+        "labelEn": "Form",
+        "options": [
+          {
+            "id": "version1",
+            "labelKo": "형태 1",
+            "labelEn": "Form 1",
+            "attachmentCount": 2
+          },
+          {
+            "id": "version2",
+            "labelKo": "형태 2",
+            "labelEn": "Form 2",
+            "attachmentCount": 2
+          },
+          {
+            "id": "version3",
+            "labelKo": "형태 3",
+            "labelEn": "Form 3",
+            "attachmentCount": 2
+          },
+          {
+            "id": "version4",
+            "labelKo": "형태 4",
+            "labelEn": "Form 4",
+            "attachmentCount": 2
+          }
+        ]
+      }
+    ],
+    "defaultSkinCombination": [
+      "version1"
+    ],
     "skinVariants": [
       {
-        "id": "default",
-        "label": "default",
-        "attachmentCount": 24
-      },
-      {
         "id": "version1",
-        "label": "version1",
+        "label": "형태 1",
         "attachmentCount": 2
       },
       {
         "id": "version2",
-        "label": "version2",
+        "label": "형태 2",
         "attachmentCount": 2
       },
       {
         "id": "version3",
-        "label": "version3",
+        "label": "형태 3",
         "attachmentCount": 2
       },
       {
         "id": "version4",
-        "label": "version4",
+        "label": "형태 4",
         "attachmentCount": 2
       }
     ],
@@ -1042,7 +1073,7 @@
     "textureUrls": [
       "/spine/sts2/monsters/cubex_construct/cubex_construct.png"
     ],
-    "skin": "moss1",
+    "skin": null,
     "skins": [
       "default",
       "circleeye",
@@ -1052,41 +1083,92 @@
       "moss3",
       "squareeye"
     ],
-    "skinVariants": [
+    "skinParts": [
       {
-        "id": "default",
-        "label": "default",
-        "attachmentCount": 23
+        "id": "eye",
+        "labelKo": "눈",
+        "labelEn": "Eye",
+        "options": [
+          {
+            "id": "circleeye",
+            "labelKo": "원형",
+            "labelEn": "Circle",
+            "attachmentCount": 1
+          },
+          {
+            "id": "diamondeye",
+            "labelKo": "마름모",
+            "labelEn": "Diamond",
+            "attachmentCount": 1
+          },
+          {
+            "id": "squareeye",
+            "labelKo": "사각형",
+            "labelEn": "Square",
+            "attachmentCount": 1
+          }
+        ]
       },
       {
+        "id": "moss",
+        "labelKo": "이끼",
+        "labelEn": "Moss",
+        "options": [
+          {
+            "id": "moss1",
+            "labelKo": "이끼1",
+            "labelEn": "Moss 1",
+            "attachmentCount": 2
+          },
+          {
+            "id": "moss2",
+            "labelKo": "이끼2",
+            "labelEn": "Moss 2",
+            "attachmentCount": 2
+          },
+          {
+            "id": "moss3",
+            "labelKo": "이끼3",
+            "labelEn": "Moss 3",
+            "attachmentCount": 2
+          }
+        ]
+      }
+    ],
+    "defaultSkinCombination": [
+      "circleeye",
+      "moss1"
+    ],
+    "skinVariants": [
+      {
         "id": "circleeye",
-        "label": "circleeye",
+        "label": "원형",
         "attachmentCount": 1
       },
       {
         "id": "diamondeye",
-        "label": "diamondeye",
+        "label": "마름모",
+        "attachmentCount": 1
+      },
+      {
+        "id": "squareeye",
+        "label": "사각형",
         "attachmentCount": 1
       },
       {
         "id": "moss1",
-        "label": "moss1",
+        "label": "이끼1",
         "attachmentCount": 2
       },
       {
         "id": "moss2",
-        "label": "moss2",
+        "label": "이끼2",
         "attachmentCount": 2
       },
       {
         "id": "moss3",
-        "label": "moss3",
+        "label": "이끼3",
         "attachmentCount": 2
-      },
-      {
-        "id": "squareeye",
-        "label": "squareeye",
-        "attachmentCount": 1
       }
     ],
     "animations": [
@@ -2377,25 +2459,50 @@
       "hair_2",
       "hair_3"
     ],
+    "skinParts": [
+      {
+        "id": "hair",
+        "labelKo": "머리",
+        "labelEn": "Hair",
+        "options": [
+          {
+            "id": "hair_1",
+            "labelKo": "머리 1",
+            "labelEn": "Hair 1",
+            "attachmentCount": 1
+          },
+          {
+            "id": "hair_2",
+            "labelKo": "머리 2",
+            "labelEn": "Hair 2",
+            "attachmentCount": 1
+          },
+          {
+            "id": "hair_3",
+            "labelKo": "머리 3",
+            "labelEn": "Hair 3",
+            "attachmentCount": 1
+          }
+        ]
+      }
+    ],
+    "defaultSkinCombination": [
+      "hair_1"
+    ],
     "skinVariants": [
       {
-        "id": "default",
-        "label": "default",
-        "attachmentCount": 29
-      },
-      {
         "id": "hair_1",
-        "label": "hair 1",
+        "label": "머리 1",
         "attachmentCount": 1
       },
       {
         "id": "hair_2",
-        "label": "hair 2",
+        "label": "머리 2",
         "attachmentCount": 1
       },
       {
         "id": "hair_3",
-        "label": "hair 3",
+        "label": "머리 3",
         "attachmentCount": 1
       }
     ],
@@ -3718,31 +3825,86 @@
       "spikes",
       "wing"
     ],
-    "skinVariants": [
+    "skinParts": [
       {
-        "id": "default",
-        "label": "default",
-        "attachmentCount": 18
+        "id": "spikes",
+        "labelKo": "가시",
+        "labelEn": "Spikes",
+        "options": [
+          {
+            "id": "spikes",
+            "labelKo": "가시",
+            "labelEn": "Spikes",
+            "attachmentCount": 2
+          }
+        ]
+      },
+      {
+        "id": "wing",
+        "labelKo": "날개",
+        "labelEn": "Wing",
+        "options": [
+          {
+            "id": "wing",
+            "labelKo": "날개",
+            "labelEn": "Wing",
+            "attachmentCount": 2
+          }
+        ]
       },
       {
         "id": "eyes",
-        "label": "eyes",
-        "attachmentCount": 3
+        "labelKo": "눈",
+        "labelEn": "Eyes",
+        "options": [
+          {
+            "id": "eyes",
+            "labelKo": "눈",
+            "labelEn": "Eyes",
+            "attachmentCount": 3
+          }
+        ]
       },
       {
         "id": "horns",
-        "label": "horns",
-        "attachmentCount": 3
-      },
+        "labelKo": "뿔",
+        "labelEn": "Horns",
+        "options": [
+          {
+            "id": "horns",
+            "labelKo": "뿔",
+            "labelEn": "Horns",
+            "attachmentCount": 3
+          }
+        ]
+      }
+    ],
+    "defaultSkinCombination": [
+      "spikes",
+      "wing",
+      "eyes",
+      "horns"
+    ],
+    "skinVariants": [
       {
         "id": "spikes",
-        "label": "spikes",
+        "label": "가시",
         "attachmentCount": 2
       },
       {
         "id": "wing",
-        "label": "wing",
+        "label": "날개",
         "attachmentCount": 2
+      },
+      {
+        "id": "eyes",
+        "label": "눈",
+        "attachmentCount": 3
+      },
+      {
+        "id": "horns",
+        "label": "뿔",
+        "attachmentCount": 3
       }
     ],
     "animations": [
@@ -4065,26 +4227,45 @@
     "textureUrls": [
       "/spine/sts2/monsters/scroll_of_biting/scroll_of_biting.png"
     ],
-    "skin": "skin1",
+    "skin": null,
     "skins": [
       "default",
       "skin1",
       "skin2"
     ],
+    "skinParts": [
+      {
+        "id": "color",
+        "labelKo": "색상",
+        "labelEn": "Color",
+        "options": [
+          {
+            "id": "skin1",
+            "labelKo": "색상 1",
+            "labelEn": "Color 1",
+            "attachmentCount": 26
+          },
+          {
+            "id": "skin2",
+            "labelKo": "색상 2",
+            "labelEn": "Color 2",
+            "attachmentCount": 20
+          }
+        ]
+      }
+    ],
+    "defaultSkinCombination": [
+      "skin1"
+    ],
     "skinVariants": [
       {
-        "id": "default",
-        "label": "default",
-        "attachmentCount": 4
-      },
-      {
         "id": "skin1",
-        "label": "skin1",
+        "label": "색상 1",
         "attachmentCount": 26
       },
       {
         "id": "skin2",
-        "label": "skin2",
+        "label": "색상 2",
         "attachmentCount": 20
       }
     ],
@@ -5641,30 +5822,69 @@
       "pattern1",
       "pattern2"
     ],
-    "skinVariants": [
+    "skinParts": [
       {
-        "id": "default",
-        "label": "default",
-        "attachmentCount": 20
+        "id": "eye",
+        "labelKo": "눈",
+        "labelEn": "Eye",
+        "options": [
+          {
+            "id": "eye1",
+            "labelKo": "눈 1",
+            "labelEn": "Eye 1",
+            "attachmentCount": 1
+          },
+          {
+            "id": "eye2",
+            "labelKo": "눈 2",
+            "labelEn": "Eye 2",
+            "attachmentCount": 1
+          }
+        ]
       },
       {
+        "id": "pattern",
+        "labelKo": "무늬",
+        "labelEn": "Pattern",
+        "options": [
+          {
+            "id": "pattern1",
+            "labelKo": "무늬 1",
+            "labelEn": "Pattern 1",
+            "attachmentCount": 1
+          },
+          {
+            "id": "pattern2",
+            "labelKo": "무늬 2",
+            "labelEn": "Pattern 2",
+            "attachmentCount": 1
+          }
+        ]
+      }
+    ],
+    "defaultSkinCombination": [
+      "eye1",
+      "pattern1"
+    ],
+    "skinVariants": [
+      {
         "id": "eye1",
-        "label": "eye1",
+        "label": "눈 1",
         "attachmentCount": 1
       },
       {
         "id": "eye2",
-        "label": "eye2",
+        "label": "눈 2",
         "attachmentCount": 1
       },
       {
         "id": "pattern1",
-        "label": "pattern1",
+        "label": "무늬 1",
         "attachmentCount": 1
       },
       {
         "id": "pattern2",
-        "label": "pattern2",
+        "label": "무늬 2",
         "attachmentCount": 1
       }
     ],
@@ -5853,20 +6073,39 @@
       "egg1",
       "egg2"
     ],
+    "skinParts": [
+      {
+        "id": "shell",
+        "labelKo": "껍질",
+        "labelEn": "Shell",
+        "options": [
+          {
+            "id": "egg1",
+            "labelKo": "껍질 1",
+            "labelEn": "Shell 1",
+            "attachmentCount": 5
+          },
+          {
+            "id": "egg2",
+            "labelKo": "껍질 2",
+            "labelEn": "Shell 2",
+            "attachmentCount": 5
+          }
+        ]
+      }
+    ],
+    "defaultSkinCombination": [
+      "egg1"
+    ],
     "skinVariants": [
       {
-        "id": "default",
-        "label": "default",
-        "attachmentCount": 15
-      },
-      {
         "id": "egg1",
-        "label": "egg1",
+        "label": "껍질 1",
         "attachmentCount": 5
       },
       {
         "id": "egg2",
-        "label": "egg2",
+        "label": "껍질 2",
         "attachmentCount": 5
       }
     ],
@@ -6194,35 +6433,80 @@
       "head2",
       "head3"
     ],
-    "skinVariants": [
+    "skinParts": [
       {
-        "id": "default",
-        "label": "default",
-        "attachmentCount": 29
+        "id": "barnacles",
+        "labelKo": "따개비",
+        "labelEn": "Barnacles",
+        "options": [
+          {
+            "id": "barnacles1",
+            "labelKo": "따개비 1",
+            "labelEn": "Barnacles 1",
+            "attachmentCount": 1
+          },
+          {
+            "id": "barnacles2",
+            "labelKo": "따개비 2",
+            "labelEn": "Barnacles 2",
+            "attachmentCount": 1
+          },
+          {
+            "id": "barnacles3",
+            "labelKo": "따개비 3",
+            "labelEn": "Barnacles 3",
+            "attachmentCount": 1
+          }
+        ]
       },
       {
+        "id": "head",
+        "labelKo": "머리",
+        "labelEn": "Head",
+        "options": [
+          {
+            "id": "head1",
+            "labelKo": "머리 1",
+            "labelEn": "Head 1",
+            "attachmentCount": 1
+          },
+          {
+            "id": "head2",
+            "labelKo": "머리 2",
+            "labelEn": "Head 2",
+            "attachmentCount": 1
+          }
+        ]
+      }
+    ],
+    "defaultSkinCombination": [
+      "barnacles1",
+      "head1"
+    ],
+    "skinVariants": [
+      {
         "id": "barnacles1",
-        "label": "barnacles1",
+        "label": "따개비 1",
         "attachmentCount": 1
       },
       {
         "id": "barnacles2",
-        "label": "barnacles2",
+        "label": "따개비 2",
         "attachmentCount": 1
       },
       {
         "id": "barnacles3",
-        "label": "barnacles3",
+        "label": "따개비 3",
         "attachmentCount": 1
       },
       {
         "id": "head1",
-        "label": "head1",
+        "label": "머리 1",
         "attachmentCount": 1
       },
       {
         "id": "head2",
-        "label": "head2",
+        "label": "머리 2",
         "attachmentCount": 1
       }
     ],
