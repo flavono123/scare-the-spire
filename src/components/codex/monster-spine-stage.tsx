@@ -17,12 +17,19 @@ interface MonsterSpineStageProps {
   imagePriority?: boolean;
   showLoadingLabel?: boolean;
   viewportTransitionTime?: number;
+  viewportPadding?: SpineViewportPadding;
 }
 
 type LoadState = "loading" | "ready" | "error";
 type SpinePlayerCtor = new (element: HTMLElement, config: SpinePlayerConfig) => SpinePlayer;
 type SpineSkinCtor = new (name: string) => Skin;
 type SpinePhysics = typeof import("@esotericsoftware/spine-player")["Physics"];
+type SpineViewportPadding = {
+  padLeft?: string;
+  padRight?: string;
+  padTop?: string;
+  padBottom?: string;
+};
 
 export function MonsterSpineStage({
   asset,
@@ -36,6 +43,7 @@ export function MonsterSpineStage({
   imagePriority = true,
   showLoadingLabel = true,
   viewportTransitionTime,
+  viewportPadding,
 }: MonsterSpineStageProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const vfxContainerRef = useRef<HTMLDivElement | null>(null);
@@ -66,7 +74,7 @@ export function MonsterSpineStage({
       .then(({ SpinePlayer: SpinePlayerCtor, Skin: SpineSkinCtor, Physics }) => {
         if (disposed || !containerRef.current) return;
         playerCtorRef.current = SpinePlayerCtor;
-        const viewport = getMonsterViewport(asset.id, viewportTransitionTime);
+        const viewport = getMonsterViewport(asset.id, viewportTransitionTime, viewportPadding);
 
         player = new SpinePlayerCtor(parent, {
           binaryUrl: asset.binaryUrl,
@@ -110,7 +118,7 @@ export function MonsterSpineStage({
       player?.dispose();
       parent.replaceChildren();
     };
-  }, [asset, compositeSkinNames, monsterName, singleSkin, viewportTransitionTime]);
+  }, [asset, compositeSkinNames, monsterName, singleSkin, viewportPadding, viewportTransitionTime]);
 
   useEffect(() => {
     if (!asset || loadState !== "ready" || !playerRef.current || !selectedAnimation) return;
@@ -280,13 +288,18 @@ function applyCompositeSkin(
   skeleton.updateWorldTransform(physics.update);
 }
 
-function getMonsterViewport(monsterId: string, transitionTime = 0.12): SpinePlayerConfig["viewport"] {
+function getMonsterViewport(
+  monsterId: string,
+  transitionTime = 0.12,
+  viewportPadding?: SpineViewportPadding,
+): SpinePlayerConfig["viewport"] {
   if (monsterId === "CUBEX_CONSTRUCT") {
     return {
       padLeft: "18%",
       padRight: "18%",
       padTop: "22%",
       padBottom: "18%",
+      ...viewportPadding,
       transitionTime,
     };
   }
@@ -296,6 +309,7 @@ function getMonsterViewport(monsterId: string, transitionTime = 0.12): SpinePlay
     padRight: "4%",
     padTop: "4%",
     padBottom: "4%",
+    ...viewportPadding,
     transitionTime,
   };
 }
