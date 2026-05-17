@@ -44,11 +44,30 @@ export interface AncientChoice {
 
 type ActionId = "IDLE" | "ATTACK" | "HURT";
 
-const ACTIONS: { id: ActionId; label: string }[] = [
-  { id: "IDLE", label: "대기" },
-  { id: "ATTACK", label: "공격" },
-  { id: "HURT", label: "피격" },
-];
+export interface ProfilePageCopy {
+  fallbackNickname: string;
+  devBadge: string;
+  selectors: {
+    character: string;
+    pet: string;
+    ancient: string;
+  };
+  actions: {
+    idle: string;
+    attack: string;
+    hurt: string;
+  };
+  petSkin: {
+    label: string;
+    ariaLabel: string;
+  };
+  carousel: {
+    previous: string;
+    next: string;
+  };
+}
+
+const ACTION_IDS: ActionId[] = ["IDLE", "ATTACK", "HURT"];
 
 const DEFAULTS = {
   character: "NECROBINDER",
@@ -81,18 +100,20 @@ export default function ProfilePage({
   characters,
   pets,
   ancients,
+  copy,
   nicknameLocale = "ko",
 }: {
   characters: CharacterChoice[];
   pets: PetChoice[];
   ancients: AncientChoice[];
+  copy: ProfilePageCopy;
   nicknameLocale?: ProfileNicknameLocale;
 }) {
   const [characterId, setCharacterId] = useState(DEFAULTS.character);
   const [petId, setPetId] = useState(DEFAULTS.pet);
   const [ancientId, setAncientId] = useState(DEFAULTS.ancient);
   const [petSkinById, setPetSkinById] = useState<Record<string, string>>({});
-  const [profileNickname, setProfileNickname] = useState(() => getInitialNickname(characters, DEFAULTS.character, nicknameLocale));
+  const [profileNickname, setProfileNickname] = useState(() => getInitialNickname(characters, DEFAULTS.character, nicknameLocale, copy.fallbackNickname));
   const [characterAction, setCharacterAction] = useActionState();
   const [petAction, setPetAction] = useActionState();
 
@@ -120,22 +141,23 @@ export default function ProfilePage({
           <h1 className="truncate text-lg font-bold text-zinc-100">{profileNickname}</h1>
         </div>
         <span className="shrink-0 rounded border border-amber-300/30 bg-amber-400/10 px-2 py-0.5 text-[11px] font-semibold text-amber-100">
-          DEV
+          {copy.devBadge}
         </span>
       </header>
 
       <section className="grid min-h-0 flex-1 grid-cols-[minmax(18rem,30%)_minmax(0,70%)] gap-4">
         <div className="flex min-h-0 flex-col gap-1.5 self-start pt-1">
           <ProfileRow
-            label="캐릭터"
+            label={copy.selectors.character}
             carousel={
               <ChoiceCarousel
                 items={characters}
                 selectedId={character?.id}
+                labels={copy.carousel}
                 onSelect={(id) => {
                   const nextCharacter = findChoice(characters, id);
                   setCharacterId(id);
-                  setProfileNickname(pickCharacterNickname(nextCharacter, nicknameLocale));
+                  setProfileNickname(pickCharacterNickname(nextCharacter, nicknameLocale, copy.fallbackNickname));
                   setCharacterAction("ATTACK");
                 }}
               />
@@ -143,11 +165,12 @@ export default function ProfilePage({
           />
 
           <ProfileRow
-            label="펫"
+            label={copy.selectors.pet}
             carousel={
               <ChoiceCarousel
                 items={pets}
                 selectedId={pet?.id}
+                labels={copy.carousel}
                 onSelect={(id) => {
                   setPetId(id);
                   setPetAction("ATTACK");
@@ -157,8 +180,8 @@ export default function ProfilePage({
           />
 
           <ProfileRow
-            label="고대신"
-            carousel={<ChoiceCarousel items={ancients} selectedId={ancientId} onSelect={setAncientId} />}
+            label={copy.selectors.ancient}
+            carousel={<ChoiceCarousel items={ancients} selectedId={ancientId} labels={copy.carousel} onSelect={setAncientId} />}
           />
         </div>
 
@@ -171,6 +194,7 @@ export default function ProfilePage({
           characterActionNonce={characterAction.nonce}
           petAction={petAction.action}
           petActionNonce={petAction.nonce}
+          copy={copy}
           onCharacterAction={setCharacterAction}
           onPetAction={setPetAction}
           onPetSkinSelect={(skinId) => {
@@ -204,10 +228,12 @@ function ProfileRow({
 function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; subtitle?: string }>({
   items,
   selectedId,
+  labels,
   onSelect,
 }: {
   items: T[];
   selectedId: string | undefined;
+  labels: ProfilePageCopy["carousel"];
   onSelect: (id: string) => void;
 }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -242,10 +268,10 @@ function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; 
   return (
     <div className="relative">
       {canScrollLeft && (
-        <CarouselArrow direction="left" onClick={() => scrollBy(-1)} />
+        <CarouselArrow direction="left" label={labels.previous} onClick={() => scrollBy(-1)} />
       )}
       {canScrollRight && (
-        <CarouselArrow direction="right" onClick={() => scrollBy(1)} />
+        <CarouselArrow direction="right" label={labels.next} onClick={() => scrollBy(1)} />
       )}
       <div
         ref={scrollerRef}
@@ -292,11 +318,11 @@ function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; 
   );
 }
 
-function CarouselArrow({ direction, onClick }: { direction: "left" | "right"; onClick: () => void }) {
+function CarouselArrow({ direction, label, onClick }: { direction: "left" | "right"; label: string; onClick: () => void }) {
   return (
     <button
       type="button"
-      aria-label={direction === "left" ? "이전" : "다음"}
+      aria-label={label}
       onClick={onClick}
       className={cn(
         "absolute top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] transition-transform hover:scale-110",
@@ -323,6 +349,7 @@ function DuoRender({
   characterActionNonce,
   petAction,
   petActionNonce,
+  copy,
   onCharacterAction,
   onPetAction,
   onPetSkinSelect,
@@ -335,6 +362,7 @@ function DuoRender({
   characterActionNonce: number;
   petAction: ActionId;
   petActionNonce: number;
+  copy: ProfilePageCopy;
   onCharacterAction: (action: ActionId) => void;
   onPetAction: (action: ActionId) => void;
   onPetSkinSelect: (skinId: string) => void;
@@ -388,13 +416,14 @@ function DuoRender({
         </div>
       </div>
       <div className="relative z-30 grid shrink-0 grid-cols-2 gap-3 pb-1">
-        <ActionBar label="캐릭터" value={characterAction} onChange={onCharacterAction} />
-        <ActionBar label="펫" value={petAction} onChange={onPetAction} />
+        <ActionBar label={copy.selectors.character} labels={copy.actions} value={characterAction} onChange={onCharacterAction} />
+        <ActionBar label={copy.selectors.pet} labels={copy.actions} value={petAction} onChange={onPetAction} />
       </div>
       {pet && pet.skinOptions.length > 0 && (
         <SkinOptionBar
           options={pet.skinOptions}
           selectedId={selectedPetSkinId}
+          ariaLabelTemplate={copy.petSkin.ariaLabel}
           onSelect={onPetSkinSelect}
         />
       )}
@@ -405,10 +434,12 @@ function DuoRender({
 function SkinOptionBar({
   options,
   selectedId,
+  ariaLabelTemplate,
   onSelect,
 }: {
   options: readonly PetSkinOption[];
   selectedId: string | undefined;
+  ariaLabelTemplate: string;
   onSelect: (skinId: string) => void;
 }) {
   return (
@@ -420,7 +451,7 @@ function SkinOptionBar({
             key={option.id}
             type="button"
             aria-pressed={active}
-            aria-label={`펫 ${option.label}`}
+            aria-label={formatTemplate(ariaLabelTemplate, { label: option.label })}
             title={option.label}
             onClick={() => onSelect(option.id)}
             className={cn(
@@ -440,33 +471,38 @@ function SkinOptionBar({
 
 function ActionBar({
   label,
+  labels,
   value,
   onChange,
 }: {
   label: string;
+  labels: ProfilePageCopy["actions"];
   value: ActionId;
   onChange: (action: ActionId) => void;
 }) {
   return (
     <div className="flex min-w-0 items-center justify-center gap-1 p-1">
       <span className="mr-1 shrink-0 text-[11px] font-semibold text-zinc-500">{label}</span>
-      {ACTIONS.map((action) => (
-        <button
-          key={action.id}
-          type="button"
-          onClick={() => onChange(action.id)}
-          aria-pressed={value === action.id}
-          aria-label={`${label} ${action.label}`}
-          className={cn(
-            "h-7 rounded px-2 text-[11px] font-semibold transition-colors",
-            value === action.id
-              ? "text-amber-100 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]"
-              : "text-zinc-500 hover:text-zinc-300",
-          )}
-        >
-          {action.label}
-        </button>
-      ))}
+      {ACTION_IDS.map((action) => {
+        const actionLabel = getActionLabel(labels, action);
+        return (
+          <button
+            key={action}
+            type="button"
+            onClick={() => onChange(action)}
+            aria-pressed={value === action}
+            aria-label={`${label} ${actionLabel}`}
+            className={cn(
+              "h-7 rounded px-2 text-[11px] font-semibold transition-colors",
+              value === action
+                ? "text-amber-100 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]"
+                : "text-zinc-500 hover:text-zinc-300",
+            )}
+          >
+            {actionLabel}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -520,17 +556,34 @@ function getInitialNickname(
   characters: CharacterChoice[],
   characterId: string,
   locale: ProfileNicknameLocale,
+  fallback: string,
 ): string {
   const character = findChoice(characters, characterId) ?? characters[0];
-  return character?.nicknameOptions[locale]?.[0] ?? character?.label ?? "프로필";
+  return character?.nicknameOptions[locale]?.[0] ?? character?.label ?? fallback;
 }
 
 function pickCharacterNickname(
   character: CharacterChoice | undefined,
   locale: ProfileNicknameLocale,
+  fallback: string,
 ): string {
-  if (!character) return "프로필";
+  if (!character) return fallback;
   const options = character.nicknameOptions[locale];
   if (!options.length) return character.label;
   return options[Math.floor(Math.random() * options.length)] ?? character.label;
+}
+
+function getActionLabel(labels: ProfilePageCopy["actions"], action: ActionId): string {
+  switch (action) {
+    case "IDLE":
+      return labels.idle;
+    case "ATTACK":
+      return labels.attack;
+    case "HURT":
+      return labels.hurt;
+  }
+}
+
+function formatTemplate(template: string, values: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (match, key) => values[key] ?? match);
 }

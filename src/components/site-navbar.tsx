@@ -500,7 +500,7 @@ export function SiteNavbar() {
             <NavIconLink
               href={localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale)}
               icon="/images/sts2/characters/character_icon_necrobinder.webp"
-              label="프로필"
+              label={messages.profile.navLabel}
               iconSize={24}
               iconClassName="group-hover:scale-110"
             />

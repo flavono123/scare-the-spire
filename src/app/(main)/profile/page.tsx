@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   getCodexAncients,
@@ -13,21 +14,39 @@ import type {
   MonsterSpineAsset,
   MonsterSpineEffectAsset,
 } from "@/lib/codex-types";
+import {
+  getGameLocaleFromSearchRecord,
+  getServiceLocaleForGameLocale,
+} from "@/lib/i18n";
+import { serviceMessages } from "@/messages/service";
 import ProfilePage, {
   type AncientChoice,
   type CharacterChoice,
   type PetChoice,
+  type ProfilePageCopy,
   type ProfileNicknameLocale,
 } from "./profile-page";
 
-export const metadata = {
-  title: "프로필 — DEV",
-  description: "개발 전용 프로필 선택 화면",
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+type ProfileSearchParams = Record<string, string | string[] | undefined>;
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<ProfileSearchParams>;
+}): Promise<Metadata> {
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
+  const copy = serviceMessages[serviceLocale].profile;
+
+  return {
+    title: copy.metadata.title,
+    description: copy.metadata.description,
+    robots: {
+      index: false,
+      follow: false,
+    },
+  };
+}
 
 const CHARACTER_SLUGS: Record<string, string> = {
   IRONCLAD: "ironclad",
@@ -69,10 +88,10 @@ const PET_CHOICES = [
     monsterId: "BYRDPIP",
     selectedSkins: ["version1"],
     skinOptions: [
-      { id: "version1", label: "형태 1", selectedSkins: ["version1"] },
-      { id: "version2", label: "형태 2", selectedSkins: ["version2"] },
-      { id: "version3", label: "형태 3", selectedSkins: ["version3"] },
-      { id: "version4", label: "형태 4", selectedSkins: ["version4"] },
+      { id: "version1", selectedSkins: ["version1"] },
+      { id: "version2", selectedSkins: ["version2"] },
+      { id: "version3", selectedSkins: ["version3"] },
+      { id: "version4", selectedSkins: ["version4"] },
     ],
   },
   { id: "PAELS_LEGION", monsterId: "PAELS_LEGION", selectedSkins: [], skinOptions: [] },
@@ -92,16 +111,24 @@ const PET_ATTACK_VFX: Partial<Record<PetMonsterId, string>> = {
   PAELS_LEGION: "VFX_MECHA_KNIGHT_SHIELD",
 };
 
-export default async function ProfileDevRoute() {
+export default async function ProfileDevRoute({
+  searchParams,
+}: {
+  searchParams: Promise<ProfileSearchParams>;
+}) {
   if (process.env.NODE_ENV !== "development") {
     notFound();
   }
 
+  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+  const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
+  const copy = serviceMessages[serviceLocale].profile;
+
   const [characters, characterSpines, monsters, ancients, vfxAssets] = await Promise.all([
-    getCodexCharacters({ gameLocale: "kor" }),
+    getCodexCharacters({ gameLocale }),
     getCodexCharacterSpineAssets(),
-    getCodexMonsters({ gameLocale: "kor" }),
-    getCodexAncients({ gameLocale: "kor" }),
+    getCodexMonsters({ gameLocale }),
+    getCodexAncients({ gameLocale }),
     getCodexSpineVfxAssets(),
   ]);
 
@@ -111,9 +138,12 @@ export default async function ProfileDevRoute() {
 
   return (
     <ProfilePage
+      key={serviceLocale}
       characters={orderCharacters(characters).map((character) => mapCharacter(character, characterSpineById.get(character.id) ?? null))}
-      pets={PET_CHOICES.map((choice) => mapPet(choice, monsterById.get(choice.monsterId) ?? null, vfxById))}
+      pets={PET_CHOICES.map((choice) => mapPet(choice, monsterById.get(choice.monsterId) ?? null, vfxById, copy))}
       ancients={ancients.map(mapAncient)}
+      copy={copy}
+      nicknameLocale={serviceLocale}
     />
   );
 }
@@ -147,6 +177,7 @@ function mapPet(
   choice: (typeof PET_CHOICES)[number],
   monster: CodexMonster | null,
   vfxById: Map<string, MonsterSpineEffectAsset>,
+  copy: ProfilePageCopy,
 ): PetChoice {
   const attackVfxId = PET_ATTACK_VFX[choice.monsterId];
   const attackVfx = attackVfxId ? vfxById.get(attackVfxId) ?? null : null;
@@ -158,7 +189,10 @@ function mapPet(
     fallbackImageUrl: monster?.imageUrl ?? PET_TOKENS[choice.monsterId],
     selectedSkin: null,
     selectedSkins: choice.selectedSkins,
-    skinOptions: choice.skinOptions,
+    skinOptions: choice.skinOptions.map((option, index) => ({
+      ...option,
+      label: formatTemplate(copy.petSkin.label, { number: String(index + 1) }),
+    })),
     spineAsset: monster?.spineAsset ? withProfileActions(monster.spineAsset, attackVfx) : null,
   };
 }
@@ -170,6 +204,10 @@ function mapAncient(ancient: CodexAncient): AncientChoice {
     subtitle: ancient.epithet,
     iconUrl: ancient.imageUrl ?? "/images/sts2/nav/stats_ancients.png",
   };
+}
+
+function formatTemplate(template: string, values: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (match, key) => values[key] ?? match);
 }
 
 function withProfileActions(
