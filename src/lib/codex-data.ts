@@ -46,6 +46,10 @@ import {
   EncounterRoomType,
   EncounterMonsterRef,
 } from "./codex-types";
+import {
+  MAD_SCIENCE_CARD_ID,
+  MAD_SCIENCE_DEFAULT_IMAGE_URL,
+} from "./tinker-time";
 // Version reconstruction functions are in entity-versioning.ts (client-safe, no fs)
 
 const DATA_DIR = path.join(process.cwd(), "data/sts2");
@@ -94,6 +98,15 @@ function spireCodexImageToLocal(url: string | null): string | null {
   const mapped = relativePath.replace(/^cards\/beta\//, "cards-beta/");
   // Convert .png extension to .webp
   return `/images/sts2/${mapped.replace(/\.png$/, ".webp")}`;
+}
+
+function cardHasCodexImage(card: RawCard): boolean {
+  return Boolean(card.image_url || card.beta_image_url || card.id === MAD_SCIENCE_CARD_ID);
+}
+
+function codexCardImageUrl(card: RawCard): string | null {
+  return spireCodexImageToLocal(card.image_url) ??
+    (card.id === MAD_SCIENCE_CARD_ID ? MAD_SCIENCE_DEFAULT_IMAGE_URL : null);
 }
 
 async function scanImageFilenames(relativeDir: string): Promise<Set<string>> {
@@ -191,7 +204,7 @@ function mapCard(
     keywordLabels,
     tags: kor.tags ?? [],
     upgrade: kor.upgrade,
-    imageUrl: spireCodexImageToLocal(kor.image_url),
+    imageUrl: codexCardImageUrl(kor),
     betaImageUrl: spireCodexImageToLocal(kor.beta_image_url),
   };
 }
@@ -223,7 +236,7 @@ export async function getCodexCards(opts?: {
   const includeDeprecated = opts?.includeDeprecated ?? false;
 
   return korCards
-    .filter((c) => (c.image_url || c.beta_image_url) && (includeDeprecated || !c.deprecated))
+    .filter((c) => cardHasCodexImage(c) && (includeDeprecated || !c.deprecated))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
       return mapCard(kor, eng, gameCards, typeLabels, rarityLabels, keywordLabels, gameLocale);
