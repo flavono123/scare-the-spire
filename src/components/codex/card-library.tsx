@@ -35,6 +35,10 @@ import {
 } from "@/lib/codex-search";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
+import {
+  getMadScienceCardTypeFromId,
+  getMadScienceVariantId,
+} from "@/lib/tinker-time";
 
 // Sort key definitions
 export type SortKey = "color" | "type" | "rarity" | "cost" | "name";
@@ -82,6 +86,17 @@ function compareCards(a: CodexCard, b: CodexCard, key: SortKey, dir: SortDir): n
   }
   return dir === "desc" ? -cmp : cmp;
 }
+
+function resolveCardListId(id: string): string {
+  const madScienceType = getMadScienceCardTypeFromId(id);
+  return madScienceType ? getMadScienceVariantId(madScienceType) : id;
+}
+
+function findCardByListId(cards: CodexCard[], id: string): CodexCard | null {
+  const resolvedId = resolveCardListId(id);
+  return cards.find((c) => c.id.toLowerCase() === resolvedId.toLowerCase()) ?? null;
+}
+
 import { CardTile } from "./card-tile";
 import { CardDetail } from "./card-detail";
 import { SearchBar } from "./search-bar";
@@ -608,7 +623,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   const initialCardId = searchParams.get("card");
   const [selectedCard, setSelectedCard] = useState<CodexCard | null>(() => {
     if (!initialCardId) return null;
-    return cards.find((c) => c.id.toLowerCase() === initialCardId.toLowerCase()) ?? null;
+    return findCardByListId(cards, initialCardId);
   });
 
   // Update URL query param when modal opens/closes
@@ -632,8 +647,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       if (!cardParam) {
         setSelectedCard(null);
       } else {
-        const card = cards.find((c) => c.id.toLowerCase() === cardParam.toLowerCase());
-        setSelectedCard(card ?? null);
+        setSelectedCard(findCardByListId(cards, cardParam));
       }
     };
     window.addEventListener("popstate", handler);
