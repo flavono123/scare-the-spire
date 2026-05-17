@@ -100,7 +100,7 @@ export function MonsterSpineStage({
       player?.dispose();
       parent.replaceChildren();
     };
-  }, [asset, monsterName, selectedSkin]);
+  }, [asset, monsterName, selectedSkin, viewportTransitionTime]);
 
   useEffect(() => {
     if (!asset || loadState !== "ready" || !playerRef.current || !selectedAnimation) return;
