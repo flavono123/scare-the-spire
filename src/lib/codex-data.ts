@@ -445,6 +445,7 @@ function hasPowerLocalizationTitle(gamePowers: GameLocalizationTable, id: string
 function mapPower(
   kor: RawPower,
   eng: RawPower,
+  betaImageUrl: string | null,
   gamePowers: GameLocalizationTable,
   gameLocale: GameLocale,
 ): CodexPower {
@@ -466,14 +467,16 @@ function mapPower(
     stackType: (kor.stack_type ?? "None") as PowerStackType,
     allowNegative: kor.allow_negative ?? false,
     imageUrl: spireCodexImageToLocal(kor.image_url),
+    betaImageUrl,
   };
 }
 
 export async function getCodexPowers(opts?: { gameLocale?: GameLocale }): Promise<CodexPower[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korPowers, engPowers, gamePowers] = await Promise.all([
+  const [korPowers, engPowers, betaImageFiles, gamePowers] = await Promise.all([
     readJson<RawPower[]>("kor/powers.json"),
     readJson<RawPower[]>("eng/powers.json"),
+    scanImageFilenames("powers-beta"),
     readGameLocalizationTable(gameLocale, "powers"),
   ]);
 
@@ -483,7 +486,12 @@ export async function getCodexPowers(opts?: { gameLocale?: GameLocale }): Promis
     .filter((p) => !p.deprecated && hasPowerLocalizationTitle(gamePowers, p.id) && !(p.type === "None" && !p.description))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapPower(kor, eng, gamePowers, gameLocale);
+      const betaImageUrl = betaImageUrlForFile(
+        "powers-beta",
+        betaImageFiles,
+        imageFilenameFromStaticUrl(kor.image_url),
+      );
+      return mapPower(kor, eng, betaImageUrl, gamePowers, gameLocale);
     });
 }
 
