@@ -40,6 +40,7 @@ export interface AncientChoice {
   label: string;
   subtitle: string;
   iconUrl: string;
+  backgroundImageUrl: string | null;
 }
 
 type ActionId = "IDLE" | "ATTACK" | "HURT";
@@ -119,6 +120,7 @@ export default function ProfilePage({
 
   const character = findChoice(characters, characterId) ?? characters[0];
   const pet = findChoice(pets, petId) ?? pets[0];
+  const ancient = findChoice(ancients, ancientId) ?? ancients[0];
   const selectedPetSkinId = pet?.skinOptions.length
     ? petSkinById[pet.id] ?? pet.skinOptions[0]?.id
     : undefined;
@@ -188,6 +190,7 @@ export default function ProfilePage({
         <DuoRender
           character={character}
           pet={pet}
+          ancient={ancient}
           selectedPetSkins={selectedPetSkins}
           selectedPetSkinId={selectedPetSkinId}
           characterAction={characterAction.action}
@@ -343,6 +346,7 @@ function CarouselArrow({ direction, label, onClick }: { direction: "left" | "rig
 function DuoRender({
   character,
   pet,
+  ancient,
   selectedPetSkins,
   selectedPetSkinId,
   characterAction,
@@ -356,6 +360,7 @@ function DuoRender({
 }: {
   character: CharacterChoice | undefined;
   pet: PetChoice | undefined;
+  ancient: AncientChoice | undefined;
   selectedPetSkins: readonly string[] | null;
   selectedPetSkinId: string | undefined;
   characterAction: ActionId;
@@ -373,6 +378,18 @@ function DuoRender({
   return (
     <div className="flex h-full min-h-0 flex-col overflow-visible">
       <div className="relative min-h-0 flex-1">
+        {ancient?.backgroundImageUrl && (
+          <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
+            <Image
+              src={ancient.backgroundImageUrl}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 70vw"
+              className="object-contain opacity-80"
+              priority={false}
+            />
+          </div>
+        )}
         <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-full w-[68rem] max-w-none origin-bottom-left scale-[0.8]">
           <MonsterSpineStage
             key={`duo-${character?.id ?? "none"}`}
