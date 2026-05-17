@@ -53,6 +53,11 @@ export interface CodexCard {
   upgrade: Record<string, string | number> | null;
   imageUrl: string | null; // local path
   betaImageUrl: string | null; // local path
+  madScienceLabels?: {
+    eventTitle: string;
+    typeChoiceLabel: string;
+    riderChoiceLabels: Record<string, string>;
+  };
 }
 
 export interface CodexCharacter {
