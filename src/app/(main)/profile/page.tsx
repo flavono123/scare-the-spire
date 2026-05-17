@@ -17,6 +17,7 @@ import ProfilePage, {
   type AncientChoice,
   type CharacterChoice,
   type PetChoice,
+  type ProfileNicknameLocale,
 } from "./profile-page";
 
 export const metadata = {
@@ -34,6 +35,31 @@ const CHARACTER_SLUGS: Record<string, string> = {
   DEFECT: "defect",
   NECROBINDER: "necrobinder",
   REGENT: "regent",
+};
+
+const CHARACTER_ORDER = ["IRONCLAD", "SILENT", "REGENT", "NECROBINDER", "DEFECT"] as const;
+
+const CHARACTER_NICKNAMES: Record<string, Record<ProfileNicknameLocale, readonly string[]>> = {
+  IRONCLAD: {
+    ko: ["아클단", "아평", "아이언클래스", "아이언클레임", "아이돌클라스", "아장연"],
+    en: ["Clad", "The Clad", "Ironclad"],
+  },
+  SILENT: {
+    ko: ["사일단", "사평", "사장연"],
+    en: ["Silent", "The Silent", "Shiv Silent"],
+  },
+  REGENT: {
+    ko: ["리황", "리평"],
+    en: ["Regent", "Reggie", "King Reggie"],
+  },
+  NECROBINDER: {
+    ko: ["네바", "네크로맨서", "네평", "골골맘", "네크단"],
+    en: ["Necro", "Necrobinder", "Necro Binder"],
+  },
+  DEFECT: {
+    ko: ["디평", "디펙터", "디황"],
+    en: ["Defect", "The Defect", "Orb Defect"],
+  },
 };
 
 const PET_CHOICES = [
@@ -85,7 +111,7 @@ export default async function ProfileDevRoute() {
 
   return (
     <ProfilePage
-      characters={characters.map((character) => mapCharacter(character, characterSpineById.get(character.id) ?? null))}
+      characters={orderCharacters(characters).map((character) => mapCharacter(character, characterSpineById.get(character.id) ?? null))}
       pets={PET_CHOICES.map((choice) => mapPet(choice, monsterById.get(choice.monsterId) ?? null, vfxById))}
       ancients={ancients.map(mapAncient)}
     />
@@ -100,8 +126,21 @@ function mapCharacter(character: CodexCharacter, spineAsset: MonsterSpineAsset |
     label: character.name,
     iconUrl: `/images/sts2/characters/character_icon_${slug}.webp`,
     fallbackImageUrl: `/images/sts2/characters/combat_${slug}.webp`,
+    nicknameOptions: CHARACTER_NICKNAMES[character.id] ?? {
+      ko: [character.name],
+      en: [character.nameEn],
+    },
     spineAsset,
   };
+}
+
+function orderCharacters(characters: CodexCharacter[]): CodexCharacter[] {
+  const order = new Map(CHARACTER_ORDER.map((id, index) => [id, index]));
+  return [...characters].sort((a, b) => {
+    const orderA = order.get(a.id) ?? Number.MAX_SAFE_INTEGER;
+    const orderB = order.get(b.id) ?? Number.MAX_SAFE_INTEGER;
+    return orderA - orderB || a.name.localeCompare(b.name, "ko");
+  });
 }
 
 function mapPet(

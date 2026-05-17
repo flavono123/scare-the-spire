@@ -6,11 +6,14 @@ import Image from "@/components/ui/static-image";
 import type { MonsterSpineAsset } from "@/lib/codex-types";
 import { cn } from "@/lib/utils";
 
+export type ProfileNicknameLocale = "ko" | "en";
+
 export interface CharacterChoice {
   id: string;
   label: string;
   iconUrl: string;
   fallbackImageUrl: string;
+  nicknameOptions: Record<ProfileNicknameLocale, readonly string[]>;
   spineAsset: MonsterSpineAsset | null;
 }
 
@@ -78,15 +81,18 @@ export default function ProfilePage({
   characters,
   pets,
   ancients,
+  nicknameLocale = "ko",
 }: {
   characters: CharacterChoice[];
   pets: PetChoice[];
   ancients: AncientChoice[];
+  nicknameLocale?: ProfileNicknameLocale;
 }) {
   const [characterId, setCharacterId] = useState(DEFAULTS.character);
   const [petId, setPetId] = useState(DEFAULTS.pet);
   const [ancientId, setAncientId] = useState(DEFAULTS.ancient);
   const [petSkinById, setPetSkinById] = useState<Record<string, string>>({});
+  const [profileNickname, setProfileNickname] = useState(() => getInitialNickname(characters, DEFAULTS.character, nicknameLocale));
   const [characterAction, setCharacterAction] = useActionState();
   const [petAction, setPetAction] = useActionState();
 
@@ -111,7 +117,7 @@ export default function ProfilePage({
             height={28}
             className="h-7 w-7 object-contain"
           />
-          <h1 className="truncate text-lg font-bold text-zinc-100">프로필</h1>
+          <h1 className="truncate text-lg font-bold text-zinc-100">{profileNickname}</h1>
         </div>
         <span className="shrink-0 rounded border border-amber-300/30 bg-amber-400/10 px-2 py-0.5 text-[11px] font-semibold text-amber-100">
           DEV
@@ -127,7 +133,9 @@ export default function ProfilePage({
                 items={characters}
                 selectedId={character?.id}
                 onSelect={(id) => {
+                  const nextCharacter = findChoice(characters, id);
                   setCharacterId(id);
+                  setProfileNickname(pickCharacterNickname(nextCharacter, nicknameLocale));
                   setCharacterAction("ATTACK");
                 }}
               />
@@ -506,4 +514,23 @@ function useActionState(): [{ action: ActionId; nonce: number }, (action: Action
 
 function findChoice<T extends { id: string }>(items: T[], id: string): T | undefined {
   return items.find((item) => item.id === id);
+}
+
+function getInitialNickname(
+  characters: CharacterChoice[],
+  characterId: string,
+  locale: ProfileNicknameLocale,
+): string {
+  const character = findChoice(characters, characterId) ?? characters[0];
+  return character?.nicknameOptions[locale]?.[0] ?? character?.label ?? "프로필";
+}
+
+function pickCharacterNickname(
+  character: CharacterChoice | undefined,
+  locale: ProfileNicknameLocale,
+): string {
+  if (!character) return "프로필";
+  const options = character.nicknameOptions[locale];
+  if (!options.length) return character.label;
+  return options[Math.floor(Math.random() * options.length)] ?? character.label;
 }
