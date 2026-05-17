@@ -84,8 +84,7 @@ export function MonsterSpineStage({
           viewport,
           success: (loadedPlayer) => {
             if (disposed) return;
-            const skinNames = compositeSkinKey ? compositeSkinKey.split("|") : [];
-            applyCompositeSkin(loadedPlayer, SpineSkinCtor, Physics, skinNames, monsterName);
+            applyCompositeSkin(loadedPlayer, SpineSkinCtor, Physics, compositeSkinNames, monsterName);
             playerRef.current = loadedPlayer;
             setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? asset.animations);
             setLoadState("ready");
