@@ -20,11 +20,18 @@ import {
 } from "@/lib/codex-types";
 import { RichText } from "@/components/rich-text";
 
-const GAME_TEXT_SHADOW = "0 2px 0 rgba(0,0,0,0.85), 0 0 12px rgba(0,0,0,0.75)";
-const GAME_CHOICE_SHADOW = "0 2px 0 rgba(0,0,0,0.7), 0 10px 24px rgba(0,0,0,0.35)";
-const GAME_CHOICE_STYLE: CSSProperties = {
-  textShadow: GAME_TEXT_SHADOW,
-  boxShadow: GAME_CHOICE_SHADOW,
+const GAME_TEXT_SHADOW = "3px 2px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.75)";
+const GAME_CHOICE_TEXT_SHADOW = "3px 2px 0 rgba(0,0,0,0.25)";
+const GAME_CHOICE_FRAME_STYLE: CSSProperties = {
+  borderStyle: "solid",
+  borderWidth: "20px 54px",
+  borderImageSource: "url('/images/sts2/ui/event_button.png')",
+  borderImageSlice: "50 58 50 58 fill",
+  borderImageRepeat: "stretch",
+};
+const GAME_CHOICE_GLOW_STYLE: CSSProperties = {
+  ...GAME_CHOICE_FRAME_STYLE,
+  filter: "brightness(1.35) saturate(1.15)",
 };
 
 function GameChoiceFrame({
@@ -35,28 +42,36 @@ function GameChoiceFrame({
   onClick?: () => void;
 }) {
   const interactive = Boolean(onClick);
-  const className = `group relative w-full overflow-hidden text-left transition-all ${
-    interactive ? "cursor-pointer hover:-translate-y-0.5 hover:brightness-125" : ""
+  const className = `group relative block min-h-[74px] w-full overflow-visible border-0 bg-transparent p-0 text-left transition-transform duration-150 ${
+    interactive ? "cursor-pointer hover:-translate-y-0.5 focus-visible:outline-none" : ""
   }`;
   const content = (
     <>
-      <Image
-        src="/images/sts2/ui/back_button.png"
-        alt=""
-        fill
-        sizes="520px"
-        className="pointer-events-none object-fill"
+      <span
+        className="pointer-events-none absolute bottom-0 left-[22px] right-0 top-0 translate-x-1 translate-y-1 opacity-35 brightness-50"
+        style={GAME_CHOICE_FRAME_STYLE}
         aria-hidden
       />
-      <Image
-        src="/images/sts2/ui/back_button_outline.png"
-        alt=""
-        fill
-        sizes="520px"
-        className="pointer-events-none object-fill opacity-0 mix-blend-screen transition-opacity duration-150 group-hover:opacity-75"
+      <span
+        className="pointer-events-none absolute bottom-0 left-[22px] right-0 top-0 opacity-95"
+        style={GAME_CHOICE_FRAME_STYLE}
         aria-hidden
       />
-      <div className="relative px-5 py-3 pr-9" style={GAME_CHOICE_STYLE}>
+      <span
+        className="pointer-events-none absolute -bottom-0.5 left-[20px] right-[-2px] -top-0.5 opacity-0 mix-blend-screen blur-[1px] transition-opacity duration-150 group-hover:opacity-70 group-focus-visible:opacity-80"
+        style={GAME_CHOICE_GLOW_STYLE}
+        aria-hidden
+      />
+      {interactive && (
+        <span
+          className="pointer-events-none absolute left-0 top-1/2 h-0 w-0 -translate-y-1/2 border-y-[18px] border-l-[28px] border-y-transparent border-l-[#f1d06b] opacity-0 drop-shadow-[2px_2px_0_rgba(0,0,0,0.55)] transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+          aria-hidden
+        />
+      )}
+      <div
+        className="relative ml-[22px] flex min-h-[74px] flex-col justify-center px-[42px] py-[10px] pr-[46px]"
+        style={{ textShadow: GAME_CHOICE_TEXT_SHADOW }}
+      >
         {children}
       </div>
     </>
@@ -77,11 +92,11 @@ function GameChoiceFrame({
 function OptionCard({ option }: { option: EventOption }) {
   return (
     <GameChoiceFrame>
-      <div className="mb-0.5 font-game-text text-[13px] font-semibold text-[#f0cf6a]">
-        {option.title}
+      <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
+        <RichText text={option.title} />
       </div>
       {option.description && (
-        <div className="font-game-text text-xs leading-relaxed text-[#f9ead1]">
+        <div className="font-game-text text-[18px] leading-[1.08] text-[#fff6e2]">
           <RichText text={option.description} />
         </div>
       )}
@@ -253,7 +268,7 @@ export function EventContentViewer({
 
       {/* Options */}
       {options.length > 0 && (
-        <div className="space-y-1.5">
+        <div className="space-y-2.5">
           {options.map((opt) => {
             const navigable = hasPages && canNavigate(opt.id);
             if (!navigable) return <OptionCard key={opt.id} option={opt} />;
@@ -262,18 +277,11 @@ export function EventContentViewer({
                 key={opt.id}
                 onClick={() => navigateTo(opt.id)}
               >
-                <div className="mb-0.5 flex items-center gap-1.5 font-game-text text-[13px] font-semibold text-[#f0cf6a]">
-                  {opt.title}
-                  <svg
-                    className="h-3 w-3 text-[#c89236]/70 transition-colors group-hover:text-[#f0cf6a]"
-                    viewBox="0 0 16 16"
-                    fill="currentColor"
-                  >
-                    <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z" />
-                  </svg>
+                <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
+                  <RichText text={opt.title} />
                 </div>
                 {opt.description && (
-                  <div className="font-game-text text-xs leading-relaxed text-[#f9ead1]">
+                  <div className="font-game-text text-[18px] leading-[1.08] text-[#fff6e2]">
                     <RichText text={opt.description} />
                   </div>
                 )}
