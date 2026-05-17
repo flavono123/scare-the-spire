@@ -496,6 +496,15 @@ export function SiteNavbar() {
               align="right"
             />
           )}
+          {showDevMenu && (
+            <NavIconLink
+              href={localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale)}
+              icon="/images/sts2/characters/character_icon_necrobinder.webp"
+              label="프로필"
+              iconSize={24}
+              iconClassName="group-hover:scale-110"
+            />
+          )}
         </div>
       </div>
     </header>
