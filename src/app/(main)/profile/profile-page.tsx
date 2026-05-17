@@ -385,7 +385,7 @@ function DuoRender({
               alt=""
               fill
               sizes="(max-width: 768px) 100vw, 70vw"
-              className="object-contain opacity-80"
+              className="object-cover opacity-70"
               priority={false}
             />
           </div>
