@@ -67,6 +67,13 @@ const PROFILE_PET_VIEWPORT_PADDING = {
   padBottom: "4%",
 } as const;
 
+const PROFILE_SMALL_PET_VIEWPORT_PADDING = {
+  padLeft: "22%",
+  padRight: "22%",
+  padTop: "24%",
+  padBottom: "12%",
+} as const;
+
 export default function ProfilePage({
   characters,
   pets,
@@ -328,6 +335,7 @@ function DuoRender({
   onPetSkinSelect: (skinId: string) => void;
 }) {
   const petPlacement = getPetPlacement(pet?.monsterId);
+  const petViewportPadding = getPetViewportPadding(pet?.monsterId);
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-visible">
@@ -369,7 +377,7 @@ function DuoRender({
             imagePriority={false}
             showLoadingLabel={false}
             viewportTransitionTime={0}
-            viewportPadding={PROFILE_PET_VIEWPORT_PADDING}
+            viewportPadding={petViewportPadding}
             className="relative h-full w-full"
           />
         </div>
@@ -480,6 +488,10 @@ function getPetPlacement(petId: string | undefined): {
     width: "24rem",
     height: "58%",
   };
+}
+
+function getPetViewportPadding(petId: string | undefined) {
+  return petId === "OSTY" ? PROFILE_PET_VIEWPORT_PADDING : PROFILE_SMALL_PET_VIEWPORT_PADDING;
 }
 
 function useActionState(): [{ action: ActionId; nonce: number }, (action: ActionId) => void] {
