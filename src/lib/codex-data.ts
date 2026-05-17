@@ -47,8 +47,13 @@ import {
   EncounterMonsterRef,
 } from "./codex-types";
 import {
+  getDefaultTinkerRiderForType,
+  getMadSciencePreviewCard,
+  getMadScienceVariantId,
   MAD_SCIENCE_CARD_ID,
   MAD_SCIENCE_DEFAULT_IMAGE_URL,
+  TINKER_CARD_TYPES,
+  TINKER_CARD_TYPE_TO_KO,
 } from "./tinker-time";
 // Version reconstruction functions are in entity-versioning.ts (client-safe, no fs)
 
@@ -237,9 +242,23 @@ export async function getCodexCards(opts?: {
 
   return korCards
     .filter((c) => cardHasCodexImage(c) && (includeDeprecated || !c.deprecated))
-    .map((kor) => {
+    .flatMap((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      return mapCard(kor, eng, gameCards, typeLabels, rarityLabels, keywordLabels, gameLocale);
+      const card = mapCard(kor, eng, gameCards, typeLabels, rarityLabels, keywordLabels, gameLocale);
+      if (card.id !== MAD_SCIENCE_CARD_ID) return [card];
+
+      return TINKER_CARD_TYPES.map((cardType) => {
+        const typeKo = TINKER_CARD_TYPE_TO_KO[cardType];
+        return {
+          ...getMadSciencePreviewCard(
+            card,
+            cardType,
+            getDefaultTinkerRiderForType(cardType),
+            typeLabels[typeKo] ?? typeKo,
+          ),
+          id: getMadScienceVariantId(cardType),
+        };
+      });
     });
 }
 
