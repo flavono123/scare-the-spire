@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
@@ -84,31 +84,21 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
   const effectiveMadScienceRider = madScienceRiderIds.includes(madScienceRider)
     ? madScienceRider
     : getDefaultTinkerRiderForType(madScienceType);
-  const previewCard = useMemo(() => {
-    if (!isMadScience) return card;
-    return getMadSciencePreviewCard(
+  const previewCard = isMadScience
+    ? getMadSciencePreviewCard(
       card,
       madScienceType,
       effectiveMadScienceRider,
       card.typeLabel,
-    );
-  }, [card, effectiveMadScienceRider, isMadScience, madScienceType]);
+    )
+    : card;
 
   // 게임 CanEnchant 룰 그대로 적용 (카드별 가능 인챈트만 표시)
-  const eligibleEnchantments = useMemo(
-    () => enchantments.filter((e) => canEnchantCard(e, previewCard)),
-    [enchantments, previewCard]
-  );
+  const eligibleEnchantments = enchantments.filter((e) => canEnchantCard(e, previewCard));
 
-  const activeEnchant = useMemo(
-    () => eligibleEnchantments.find((e) => e.id === activeEnchantId) ?? null,
-    [eligibleEnchantments, activeEnchantId]
-  );
+  const activeEnchant = eligibleEnchantments.find((e) => e.id === activeEnchantId) ?? null;
 
-  const hoveredEnchant = useMemo(
-    () => eligibleEnchantments.find((e) => e.id === hoveredEnchantId) ?? null,
-    [eligibleEnchantments, hoveredEnchantId]
-  );
+  const hoveredEnchant = eligibleEnchantments.find((e) => e.id === hoveredEnchantId) ?? null;
 
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
   const canShowUpgrade = hasCardUpgrade(previewCard);
