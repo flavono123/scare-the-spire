@@ -249,9 +249,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
       {isMadScience && (
         <div className="w-full rounded-lg border border-yellow-500/25 bg-yellow-950/20 p-3">
           <div className="mb-2 flex items-center justify-between gap-3">
-            <h2 className="text-sm font-bold text-yellow-200">땜질 시간</h2>
+            <h2 className="text-sm font-bold text-yellow-200">
+              {card.madScienceLabels?.eventTitle ?? "땜질 시간"}
+            </h2>
             <span className="text-xs text-gray-400">
-              {TINKER_CARD_TYPE_CHOICE_LABELS[madScienceType]} · {previewCard.typeLabel}
+              {card.madScienceLabels?.typeChoiceLabel ?? TINKER_CARD_TYPE_CHOICE_LABELS[madScienceType]} · {previewCard.typeLabel}
             </span>
           </div>
           <div className="grid grid-cols-3 gap-2">
@@ -269,7 +271,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
                   }`}
                   aria-pressed={active}
                 >
-                  {TINKER_RIDER_CHOICE_LABELS[riderId]}
+                  {card.madScienceLabels?.riderChoiceLabels[riderId] ?? TINKER_RIDER_CHOICE_LABELS[riderId]}
                 </button>
               );
             })}
