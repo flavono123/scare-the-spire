@@ -4,6 +4,7 @@ Decodes:
 - Plain GST2 WebP  (data_format=2, `path=` in .import)
 - Plain GST2 PNG   (data_format=1)
 - GPU-compressed BC7 (BPTC)  (img_format=22, `path.bptc=` in .import)
+- GPU-compressed BC1 (S3TC/DXT1) (img_format=17, `path.s3tc=` in .import)
 - GPU-compressed BC3 (S3TC/DXT5) (img_format=19, `path.s3tc=` in .import)
 
 Returns a PIL.Image when decodable, else None.
@@ -29,6 +30,7 @@ except ImportError:  # pragma: no cover
 
 # Godot Image.Format enum values used by STS2 assets.
 FORMAT_BPTC_RGBA = 22  # BC7
+FORMAT_DXT1 = 17       # BC1
 FORMAT_DXT5 = 19       # BC3
 
 _CTEX_PATH_RE = re.compile(r'path(?:\.\w+)?\s*=\s*"res://([^"]+)"')
@@ -75,7 +77,7 @@ def _extract_compressed(raw: bytes):
     data_format = struct.unpack_from("<I", raw, 36)[0]
     if data_format != 0:
         return None
-    # Layout for GPU-compressed GST2 textures (BPTC/BC7, S3TC/BC3):
+    # Layout for GPU-compressed GST2 textures (BPTC/BC7, S3TC/BC1/BC3):
     #   off 40 uint16 aligned_width   (4-byte block aligned)
     #   off 42 uint16 aligned_height
     #   off 44-47      reserved/flags
@@ -91,13 +93,15 @@ def _extract_compressed(raw: bytes):
         return None
     bw = math.ceil(aligned_w / 4)
     bh = math.ceil(aligned_h / 4)
-    block_size = 16  # BC3 and BC7 both use 16-byte 4x4 blocks.
+    block_size = 8 if img_format == FORMAT_DXT1 else 16
     expected = bw * bh * block_size
     payload = raw[52 : 52 + expected]
     if len(payload) < expected:
         return None
     if img_format == FORMAT_BPTC_RGBA:
         pixels = _t2d.decode_bc7(payload, aligned_w, aligned_h)
+    elif img_format == FORMAT_DXT1:
+        pixels = _t2d.decode_bc1(payload, aligned_w, aligned_h)
     elif img_format == FORMAT_DXT5:
         pixels = _t2d.decode_bc3(payload, aligned_w, aligned_h)
     else:
