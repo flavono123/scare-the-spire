@@ -128,6 +128,40 @@ const FUTURE_OF_POTIONS_OPTIONS: EventOption[] = [
   },
 ];
 
+interface EventArtOverlay {
+  alt: string;
+  className: string;
+  fill?: boolean;
+  height?: number;
+  src: string;
+  style?: CSSProperties;
+  width?: number;
+}
+
+const EVENT_ART_OVERLAYS: Record<string, EventArtOverlay[]> = {
+  THE_FUTURE_OF_POTIONS: [
+    {
+      alt: "",
+      className: "pointer-events-none object-contain",
+      fill: true,
+      src: "/images/sts2/events/the_future_of_potions_foreground.webp",
+    },
+    {
+      alt: "",
+      className: "pointer-events-none absolute object-contain opacity-85 mix-blend-screen",
+      height: 657,
+      src: "/images/sts2/events/the_future_of_potions_glow.webp",
+      style: {
+        height: "65.7%",
+        left: "21%",
+        top: "28.8%",
+        width: "14.6%",
+      },
+      width: 315,
+    },
+  ],
+};
+
 function replaceTemplateValues(text: string, values: Record<string, string>): string {
   return text
     .replace(/\[([A-Za-z]\w*)\]/g, (match, key: string) => values[key] ?? match)
@@ -496,6 +530,7 @@ interface EventDetailProps {
 export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const isModal = Boolean(onClose);
+  const artOverlays = EVENT_ART_OVERLAYS[event.id] ?? [];
   const rootClassName = isModal
     ? "mx-auto flex max-w-[92rem] flex-col gap-4 p-3 sm:p-5"
     : "mx-auto flex max-w-6xl flex-col gap-5 p-4 sm:p-6";
@@ -532,14 +567,29 @@ export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps)
       >
         <div className="relative aspect-[3440/1616] min-h-[620px] w-full sm:min-h-0">
           {event.imageUrl ? (
-            <Image
-              src={event.imageUrl}
-              alt={event.name}
-              fill
-              sizes="(max-width: 768px) 100vw, 1152px"
-              className="object-contain"
-              priority={Boolean(onClose)}
-            />
+            <>
+              <Image
+                src={event.imageUrl}
+                alt={event.name}
+                fill
+                sizes="(max-width: 768px) 100vw, 1152px"
+                className="object-contain"
+                priority={Boolean(onClose)}
+              />
+              {artOverlays.map((overlay) => (
+                <Image
+                  key={overlay.src}
+                  src={overlay.src}
+                  alt={overlay.alt}
+                  fill={overlay.fill}
+                  width={overlay.width}
+                  height={overlay.height}
+                  className={overlay.className}
+                  style={overlay.style}
+                  aria-hidden={overlay.alt === "" ? true : undefined}
+                />
+              ))}
+            </>
           ) : (
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(96,165,250,0.20),transparent_34%),linear-gradient(135deg,#111827,#050505_65%)]" />
           )}
