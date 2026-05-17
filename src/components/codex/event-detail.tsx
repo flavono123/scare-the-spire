@@ -370,7 +370,7 @@ export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps)
           <div className={textPanelClassName}>
             <div className="relative flex min-h-0 flex-1 flex-col">
               <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
-              <div className="relative min-h-0 overflow-y-auto pr-2">
+              <div className="relative min-h-0 flex-1 overflow-y-auto pr-2">
                 <h1
                   className="font-game-title text-3xl font-bold leading-tight text-[#f3c640]"
                   style={{ textShadow: GAME_TEXT_SHADOW }}
