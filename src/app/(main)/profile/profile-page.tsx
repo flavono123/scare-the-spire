@@ -68,10 +68,10 @@ const PROFILE_PET_VIEWPORT_PADDING = {
 } as const;
 
 const PROFILE_SMALL_PET_VIEWPORT_PADDING = {
-  padLeft: "22%",
-  padRight: "22%",
-  padTop: "24%",
-  padBottom: "12%",
+  padLeft: "42%",
+  padRight: "42%",
+  padTop: "42%",
+  padBottom: "24%",
 } as const;
 
 export default function ProfilePage({
@@ -475,18 +475,18 @@ function getPetPlacement(petId: string | undefined): {
 } {
   if (petId === "OSTY") {
     return {
-      top: "4%",
-      left: "52%",
-      width: "28rem",
-      height: "82%",
+      top: "0%",
+      left: "62%",
+      width: "24rem",
+      height: "56%",
     };
   }
 
   return {
     bottom: "0%",
-    left: "calc(40% - 4rem)",
-    width: "24rem",
-    height: "58%",
+    left: "30%",
+    width: "14rem",
+    height: "34%",
   };
 }
 
