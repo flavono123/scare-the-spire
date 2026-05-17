@@ -166,21 +166,26 @@ def extract_targets(reader: PCKReader, targets: list[Target], force: bool, dry_r
             failed += 1
             continue
 
+        data: bytes | None = None
         status = "write"
         if image_matches_existing(target.output_path, image):
             status = "same"
             unchanged += 1
         else:
-            written += 1
+            data = encode_webp(image)
+            if target.output_path.exists() and target.output_path.read_bytes() == data:
+                status = "same"
+                unchanged += 1
+            else:
+                written += 1
 
         if dry_run:
             print(f"would {status} {target.output_path}")
             continue
 
         if status == "write":
-            data = encode_webp(image)
             target.output_path.parent.mkdir(parents=True, exist_ok=True)
-            target.output_path.write_bytes(data)
+            target.output_path.write_bytes(data if data is not None else encode_webp(image))
             print(f"wrote {target.output_path}")
 
     return written, unchanged, skipped, failed
