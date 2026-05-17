@@ -135,7 +135,7 @@ function mapCharacter(character: CodexCharacter, spineAsset: MonsterSpineAsset |
 }
 
 function orderCharacters(characters: CodexCharacter[]): CodexCharacter[] {
-  const order = new Map(CHARACTER_ORDER.map((id, index) => [id, index]));
+  const order: ReadonlyMap<string, number> = new Map(CHARACTER_ORDER.map((id, index) => [id, index]));
   return [...characters].sort((a, b) => {
     const orderA = order.get(a.id) ?? Number.MAX_SAFE_INTEGER;
     const orderB = order.get(b.id) ?? Number.MAX_SAFE_INTEGER;
