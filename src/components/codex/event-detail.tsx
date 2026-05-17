@@ -318,8 +318,16 @@ interface EventDetailProps {
 
 export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const isModal = Boolean(onClose);
+  const rootClassName = isModal
+    ? "mx-auto flex max-w-[92rem] flex-col gap-4 p-3 sm:p-5"
+    : "mx-auto flex max-w-6xl flex-col gap-5 p-4 sm:p-6";
+  const textPanelClassName = isModal
+    ? "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[3%] sm:right-[3.5%] sm:top-[4%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[560px]"
+    : "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]";
+
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-5 p-4 sm:p-6">
+    <div className={rootClassName}>
       <div className="flex items-center justify-between gap-3">
         <Link
           href={localizeHref("/compendium/events", serviceLocale)}
@@ -359,7 +367,7 @@ export function EventDetail({ serviceLocale, event, onClose }: EventDetailProps)
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(96,165,250,0.20),transparent_34%),linear-gradient(135deg,#111827,#050505_65%)]" />
           )}
           <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/30 to-transparent" />
-          <div className="absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]">
+          <div className={textPanelClassName}>
             <div className="relative flex min-h-0 flex-1 flex-col">
               <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
               <div className="relative min-h-0 overflow-y-auto pr-2">
