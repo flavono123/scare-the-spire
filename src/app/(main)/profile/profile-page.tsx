@@ -46,6 +46,20 @@ const DEFAULTS = {
   ancient: "OROBAS",
 };
 
+const PROFILE_CHARACTER_VIEWPORT_PADDING = {
+  padLeft: "2%",
+  padRight: "34%",
+  padTop: "14%",
+  padBottom: "0%",
+} as const;
+
+const PROFILE_PET_VIEWPORT_PADDING = {
+  padLeft: "8%",
+  padRight: "8%",
+  padTop: "8%",
+  padBottom: "4%",
+} as const;
+
 export default function ProfilePage({
   characters,
   pets,
@@ -290,7 +304,7 @@ function DuoRender({
   return (
     <div className="flex h-full min-h-0 flex-col overflow-visible">
       <div className="relative min-h-0 flex-1">
-        <div className="pointer-events-none absolute inset-y-0 left-[-1%] z-10 w-[44rem] max-w-[76%]">
+        <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-full w-[52rem] max-w-[98%] origin-bottom-left scale-[0.8]">
           <MonsterSpineStage
             key={`duo-${character?.id ?? "none"}`}
             asset={character?.spineAsset ?? null}
@@ -301,15 +315,17 @@ function DuoRender({
             imagePriority={false}
             showLoadingLabel={false}
             viewportTransitionTime={0}
+            viewportPadding={PROFILE_CHARACTER_VIEWPORT_PADDING}
             className="relative h-full w-full"
           />
         </div>
         <div
           className="pointer-events-none absolute z-20"
           style={{
-            insetBlock: petPlacement.insetBlock,
+            top: petPlacement.top,
             left: petPlacement.left,
             width: petPlacement.width,
+            height: petPlacement.height,
           }}
         >
           <MonsterSpineStage
@@ -324,6 +340,7 @@ function DuoRender({
             imagePriority={false}
             showLoadingLabel={false}
             viewportTransitionTime={0}
+            viewportPadding={PROFILE_PET_VIEWPORT_PADDING}
             className="relative h-full w-full"
           />
         </div>
@@ -370,22 +387,25 @@ function ActionBar({
 }
 
 function getPetPlacement(petId: string | undefined): {
-  insetBlock: string;
+  top: string;
   left: string;
   width: string;
+  height: string;
 } {
   if (petId === "OSTY") {
     return {
-      insetBlock: "10% 4%",
-      left: "44%",
+      top: "4%",
+      left: "52%",
       width: "28rem",
+      height: "82%",
     };
   }
 
   return {
-    insetBlock: "24% -4%",
-    left: "32%",
-    width: "32rem",
+    top: "42%",
+    left: "29%",
+    width: "16rem",
+    height: "42%",
   };
 }
 
