@@ -17,7 +17,6 @@ import {
 import type { CodexAncient, EventAct } from "@/lib/codex-types";
 import {
   EVENT_ACT_ALIASES,
-  EVENT_ACT_CONFIG,
   EVENT_ACT_ORDER,
   EVENT_ACT_UNKNOWN,
 } from "@/lib/codex-types";
@@ -27,7 +26,7 @@ import {
   stripCodexMarkup,
   type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
-import { FilterSection, ToggleButton } from "./codex-filters";
+import { FilterSection } from "./codex-filters";
 import {
   CodexLibraryShell,
   CodexLibraryTopBar,
@@ -36,6 +35,8 @@ import {
 import { SearchBar } from "./search-bar";
 
 type AncientSearchTokenType = "act";
+const COMPENDIUM_ACT_COLOR = "#60a5fa";
+const COMPENDIUM_ACT_TEXT_CLASS = "text-blue-300";
 
 function ActBadge({
   act,
@@ -46,13 +47,14 @@ function ActBadge({
   messages: CodexServiceMessages;
   gameUi: CodexGameUiLabels;
 }) {
-  const config = act
-    ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
-    : EVENT_ACT_UNKNOWN;
   const label = act ? gameUi.acts[act] : messages.labels.acts.none;
   return (
     <span
-      className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${config.color} ${config.border} ${config.bg}`}
+      className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${
+        act
+          ? "border-blue-500/40 bg-blue-500/10 text-blue-300"
+          : `${EVENT_ACT_UNKNOWN.border} ${EVENT_ACT_UNKNOWN.bg} ${EVENT_ACT_UNKNOWN.color}`
+      }`}
     >
       {label}
     </span>
@@ -121,13 +123,10 @@ export function AncientList({ serviceLocale, gameUi, ancients }: AncientListProp
         .sort((a, b) => a.name.localeCompare(b.name, "ko"));
       if (items.length === 0) continue;
 
-      const config = act
-        ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
-        : EVENT_ACT_UNKNOWN;
       groups.push({
         act,
         label: getActLabel(act, serviceText, gameUi),
-        color: config.color,
+        color: act ? COMPENDIUM_ACT_COLOR : "#a1a1aa",
         ancients: items,
       });
     }
@@ -168,13 +167,24 @@ export function AncientList({ serviceLocale, gameUi, ancients }: AncientListProp
             {EVENT_ACT_ORDER.map((act) => {
               const key = act ?? "none";
               const count = actCounts.get(key) ?? 0;
+              const label = getActLabel(act, serviceText, gameUi);
               return (
-                <ToggleButton
+                <button
                   key={key}
-                  label={`${getActLabel(act, serviceText, gameUi)} (${count})`}
-                  active={selectedActs.has(key)}
                   onClick={() => toggleAct(key)}
-                />
+                  className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
+                    selectedActs.has(key)
+                      ? "bg-yellow-500/20 text-yellow-400"
+                      : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
+                  }`}
+                >
+                  <span
+                    className="w-2 h-2 rounded-full shrink-0"
+                    style={{ backgroundColor: act ? COMPENDIUM_ACT_COLOR : "#666" }}
+                  />
+                  <span className={act ? COMPENDIUM_ACT_TEXT_CLASS : "text-zinc-400"}>{label}</span>
+                  <span className="text-xs text-zinc-600">({count})</span>
+                </button>
               );
             })}
           </div>
@@ -209,7 +219,7 @@ export function AncientList({ serviceLocale, gameUi, ancients }: AncientListProp
             <div className="space-y-8">
               {groupedAncients.map((group) => (
                 <section key={group.act ?? "none"}>
-                  <h2 className={`mb-3 flex items-center gap-2 text-base font-semibold ${group.color}`}>
+                  <h2 className="mb-3 flex items-center gap-2 text-base font-semibold" style={{ color: group.color }}>
                     {group.label}
                     <span className="text-xs font-normal text-zinc-600">
                       {group.ancients.length}

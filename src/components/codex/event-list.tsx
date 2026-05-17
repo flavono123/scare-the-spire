@@ -16,7 +16,6 @@ import type {
 } from "@/lib/codex-types";
 import {
   EVENT_ACT_ORDER,
-  EVENT_ACT_CONFIG,
   EVENT_ACT_UNKNOWN,
   EVENT_ACT_ALIASES,
 } from "@/lib/codex-types";
@@ -29,7 +28,7 @@ import {
 } from "@/lib/codex-search";
 import { SearchBar } from "./search-bar";
 import { VersionSelector } from "./version-selector";
-import { FilterSection, ToggleButton } from "./codex-filters";
+import { FilterSection } from "./codex-filters";
 import {
   CodexLibraryShell,
   CodexLibraryTopBar,
@@ -38,6 +37,8 @@ import {
 import { EventDetail } from "./event-detail";
 
 type EventSearchTokenType = "act";
+const COMPENDIUM_ACT_COLOR = "#60a5fa";
+const COMPENDIUM_ACT_TEXT_CLASS = "text-blue-300";
 
 // --- Act badge ---
 function ActBadge({
@@ -49,13 +50,14 @@ function ActBadge({
   messages: CodexServiceMessages;
   gameUi: CodexGameUiLabels;
 }) {
-  const config = act
-    ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
-    : EVENT_ACT_UNKNOWN;
   const label = getActLabel(act, messages, gameUi);
   return (
     <span
-      className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${config.color} ${config.border} ${config.bg}`}
+      className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${
+        act
+          ? "border-blue-500/40 bg-blue-500/10 text-blue-300"
+          : `${EVENT_ACT_UNKNOWN.border} ${EVENT_ACT_UNKNOWN.bg} ${EVENT_ACT_UNKNOWN.color}`
+      }`}
     >
       {label}
     </span>
@@ -240,11 +242,10 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
       const key = act ?? "__none__";
       const items = map.get(key);
       if (!items) continue;
-      const config = act ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN) : EVENT_ACT_UNKNOWN;
       ordered.push({
         act,
         label: getActLabel(act, serviceText, gameUi),
-        color: config.color,
+        color: act ? COMPENDIUM_ACT_COLOR : "#a1a1aa",
         events: items.sort((a, b) => a.name.localeCompare(b.name, "ko")),
       });
     }
@@ -282,13 +283,24 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
             {EVENT_ACT_ORDER.map((act) => {
               const key = act ?? "none";
               const count = actCounts.get(key) ?? 0;
+              const label = getActLabel(act, serviceText, gameUi);
               return (
-                <ToggleButton
+                <button
                   key={key}
-                  label={`${getActLabel(act, serviceText, gameUi)} (${count})`}
-                  active={selectedActs.has(key)}
                   onClick={() => toggleAct(key)}
-                />
+                  className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
+                    selectedActs.has(key)
+                      ? "bg-yellow-500/20 text-yellow-400"
+                      : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
+                  }`}
+                >
+                  <span
+                    className="w-2 h-2 rounded-full shrink-0"
+                    style={{ backgroundColor: act ? COMPENDIUM_ACT_COLOR : "#666" }}
+                  />
+                  <span className={act ? COMPENDIUM_ACT_TEXT_CLASS : "text-zinc-400"}>{label}</span>
+                  <span className="text-xs text-zinc-600">({count})</span>
+                </button>
               );
             })}
           </div>
@@ -332,7 +344,8 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
               {groups.map((group) => (
                 <section key={group.act ?? "none"}>
                   <h2
-                    className={`mb-3 flex items-center gap-2 text-base font-semibold ${group.color}`}
+                    className="mb-3 flex items-center gap-2 text-base font-semibold"
+                    style={{ color: group.color }}
                   >
                     {group.label}
                     <span className="text-xs font-normal text-zinc-600">
