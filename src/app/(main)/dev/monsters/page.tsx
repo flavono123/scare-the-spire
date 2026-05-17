@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import {
   BESTIARY_DEV_MONSTER_GROUPS,
@@ -84,6 +85,7 @@ export default async function DevMonstersPage() {
                       monsterId={monsterId}
                       monster={monstersById.get(monsterId) ?? null}
                       encounters={encountersByMonster.get(monsterId) ?? []}
+                      detailHref={group.id === "pet" ? `/dev/monsters/${monsterId.toLowerCase()}` : null}
                     />
                   ))}
                 </tbody>
@@ -100,13 +102,21 @@ function MonsterDevRow({
   monsterId,
   monster,
   encounters,
+  detailHref,
 }: {
   monsterId: string;
   monster: CodexMonster | null;
   encounters: CodexEncounter[];
+  detailHref: string | null;
 }) {
   const imageSrc = monster?.imageUrl ?? monster?.bossImageUrl ?? null;
   const forcedAct = getForcedBestiaryAct(monsterId);
+  const title = (
+    <div className="min-w-0">
+      <div className="truncate font-medium text-zinc-100">{monster?.name ?? "데이터 없음"}</div>
+      {monster && <div className="truncate text-xs text-zinc-500">{monster.nameEn}</div>}
+    </div>
+  );
 
   return (
     <tr className="border-t border-white/10 odd:bg-white/[0.015]">
@@ -125,10 +135,11 @@ function MonsterDevRow({
               <span className="text-xs text-zinc-600">no art</span>
             )}
           </div>
-          <div className="min-w-0">
-            <div className="truncate font-medium text-zinc-100">{monster?.name ?? "데이터 없음"}</div>
-            {monster && <div className="truncate text-xs text-zinc-500">{monster.nameEn}</div>}
-          </div>
+          {detailHref ? (
+            <Link href={detailHref} className="min-w-0 underline-offset-4 hover:underline">
+              {title}
+            </Link>
+          ) : title}
         </div>
       </td>
       <td className="px-3 py-2 font-mono text-xs text-zinc-400">{monsterId}</td>
