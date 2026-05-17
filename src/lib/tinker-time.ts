@@ -21,6 +21,12 @@ export const TINKER_CARD_TYPES: readonly TinkerCardType[] = [
   "POWER",
 ];
 
+export const MAD_SCIENCE_CARD_ID_BY_TYPE: Record<TinkerCardType, string> = {
+  ATTACK: `${MAD_SCIENCE_CARD_ID}_ATTACK`,
+  SKILL: `${MAD_SCIENCE_CARD_ID}_SKILL`,
+  POWER: `${MAD_SCIENCE_CARD_ID}_POWER`,
+};
+
 export const TINKER_CARD_TYPE_IDS: ReadonlySet<TinkerCardType> = new Set(TINKER_CARD_TYPES);
 
 export const TINKER_RIDER_IDS_BY_TYPE = {
@@ -112,6 +118,23 @@ const TINKER_RIDER_SMART_VALUE: Record<TinkerRiderId, string> = {
 
 export function isTinkerCardTypeId(value: string): value is TinkerCardType {
   return TINKER_CARD_TYPE_IDS.has(value as TinkerCardType);
+}
+
+export function getMadScienceVariantId(cardType: TinkerCardType): string {
+  return MAD_SCIENCE_CARD_ID_BY_TYPE[cardType];
+}
+
+export function getMadScienceCardTypeFromId(id: string): TinkerCardType | null {
+  const normalized = id.toUpperCase();
+  if (normalized === MAD_SCIENCE_CARD_ID) return MAD_SCIENCE_DEFAULT_TYPE;
+  for (const [cardType, cardId] of Object.entries(MAD_SCIENCE_CARD_ID_BY_TYPE)) {
+    if (normalized === cardId) return cardType as TinkerCardType;
+  }
+  return null;
+}
+
+export function isMadScienceCardId(id: string): boolean {
+  return getMadScienceCardTypeFromId(id) !== null;
 }
 
 export function getTinkerRiderIdsForType(cardType: TinkerCardType): readonly TinkerRiderId[] {
