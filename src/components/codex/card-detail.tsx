@@ -18,16 +18,13 @@ import { HoverTip, HoverTipVariant } from "./hover-tip";
 import { CARD_WIDTH_PRESET } from "@/lib/sts2-card-style";
 import {
   getDefaultTinkerRiderForType,
+  getMadScienceCardTypeFromId,
   getMadSciencePreviewCard,
   getTinkerRiderIdsForType,
-  MAD_SCIENCE_CARD_ID,
   MAD_SCIENCE_DEFAULT_RIDER,
   MAD_SCIENCE_DEFAULT_TYPE,
   TINKER_CARD_TYPE_CHOICE_LABELS,
-  TINKER_CARD_TYPE_TO_KO,
-  TINKER_CARD_TYPES,
   TINKER_RIDER_CHOICE_LABELS,
-  type TinkerCardType,
   type TinkerRiderId,
 } from "@/lib/tinker-time";
 import {
@@ -70,7 +67,6 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
   const [activeEnchantId, setActiveEnchantId] = useState<string | null>(null);
   const [hoveredEnchantId, setHoveredEnchantId] = useState<string | null>(null);
   const [enchantAmount, setEnchantAmount] = useState<number>(DEFAULT_ENCHANT_AMOUNT);
-  const [madScienceType, setMadScienceType] = useState<TinkerCardType>(MAD_SCIENCE_DEFAULT_TYPE);
   const [madScienceRider, setMadScienceRider] = useState<TinkerRiderId>(MAD_SCIENCE_DEFAULT_RIDER);
   const [isDesktop, setIsDesktop] = useState(false);
   useEffect(() => {
@@ -81,18 +77,22 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const isMadScience = card.id === MAD_SCIENCE_CARD_ID;
+  const fixedMadScienceType = getMadScienceCardTypeFromId(card.id);
+  const isMadScience = fixedMadScienceType !== null;
+  const madScienceType = fixedMadScienceType ?? MAD_SCIENCE_DEFAULT_TYPE;
   const madScienceRiderIds = getTinkerRiderIdsForType(madScienceType);
+  const effectiveMadScienceRider = madScienceRiderIds.includes(madScienceRider)
+    ? madScienceRider
+    : getDefaultTinkerRiderForType(madScienceType);
   const previewCard = useMemo(() => {
     if (!isMadScience) return card;
-    const cardTypeKo = TINKER_CARD_TYPE_TO_KO[madScienceType];
     return getMadSciencePreviewCard(
       card,
       madScienceType,
-      madScienceRider,
-      gameUi.cardLibrary.types[cardTypeKo] ?? cardTypeKo,
+      effectiveMadScienceRider,
+      card.typeLabel,
     );
-  }, [card, gameUi.cardLibrary.types, isMadScience, madScienceRider, madScienceType]);
+  }, [card, effectiveMadScienceRider, isMadScience, madScienceType]);
 
   // 게임 CanEnchant 룰 그대로 적용 (카드별 가능 인챈트만 표시)
   const eligibleEnchantments = useMemo(
@@ -260,37 +260,13 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
         <div className="w-full rounded-lg border border-yellow-500/25 bg-yellow-950/20 p-3">
           <div className="mb-2 flex items-center justify-between gap-3">
             <h2 className="text-sm font-bold text-yellow-200">땜질 시간</h2>
-            <span className="text-xs text-gray-400">{previewCard.typeLabel}</span>
+            <span className="text-xs text-gray-400">
+              {TINKER_CARD_TYPE_CHOICE_LABELS[madScienceType]} · {previewCard.typeLabel}
+            </span>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            {TINKER_CARD_TYPES.map((cardType) => {
-              const active = madScienceType === cardType;
-              return (
-                <button
-                  key={cardType}
-                  type="button"
-                  onClick={() => {
-                    setMadScienceType(cardType);
-                    setMadScienceRider(getDefaultTinkerRiderForType(cardType));
-                    setActiveEnchantId(null);
-                    setHoveredEnchantId(null);
-                    setEnchantAmount(DEFAULT_ENCHANT_AMOUNT);
-                  }}
-                  className={`min-h-9 rounded-md border px-2 text-sm font-bold transition-all ${
-                    active
-                      ? "border-yellow-400 bg-yellow-400/20 text-yellow-100"
-                      : "border-white/10 bg-white/5 text-gray-300 hover:border-yellow-400/50 hover:text-yellow-100"
-                  }`}
-                  aria-pressed={active}
-                >
-                  {TINKER_CARD_TYPE_CHOICE_LABELS[cardType]}
-                </button>
-              );
-            })}
-          </div>
-          <div className="mt-2 grid grid-cols-3 gap-2">
             {madScienceRiderIds.map((riderId) => {
-              const active = madScienceRider === riderId;
+              const active = effectiveMadScienceRider === riderId;
               return (
                 <button
                   key={riderId}
