@@ -30,18 +30,16 @@ interface PowerTileProps {
   serviceLocale?: ServiceLocale;
   gameUi: CodexGameUiLabels;
   power: CodexPower;
-  showBeta?: boolean;
   onClick?: () => void;
 }
 
-export const PowerTile = memo(function PowerTile({ serviceLocale = "ko", gameUi, power, showBeta = false, onClick }: PowerTileProps) {
+export const PowerTile = memo(function PowerTile({ serviceLocale = "ko", gameUi, power, onClick }: PowerTileProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
   const [tooltipSide, setTooltipSide] = useState<"right" | "left">("right");
 
   const style = TYPE_STYLES[power.type] ?? TYPE_STYLES.None;
-  const imageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
 
   const updateTooltipSide = useCallback(() => {
     if (!tileRef.current) return;
@@ -65,9 +63,9 @@ export const PowerTile = memo(function PowerTile({ serviceLocale = "ko", gameUi,
             : "border-transparent bg-white/5 hover:bg-white/10"
         }`}
       >
-        {imageUrl ? (
+        {power.imageUrl ? (
           <Image
-            src={imageUrl}
+            src={power.imageUrl}
             alt={power.name}
             width={56}
             height={56}

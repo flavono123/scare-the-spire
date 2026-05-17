@@ -340,7 +340,6 @@ export interface CodexPower {
   stackType: PowerStackType;
   allowNegative: boolean;
   imageUrl: string | null; // local path
-  betaImageUrl: string | null; // local path
 }
 
 export const POWER_TYPE_ORDER: PowerType[] = ["Buff", "Debuff", "None"];
