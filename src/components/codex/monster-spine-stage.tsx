@@ -45,8 +45,10 @@ export function MonsterSpineStage({
   const playerCtorRef = useRef<SpinePlayerCtor | null>(null);
   const [loadState, setLoadState] = useState<LoadState>(asset ? "loading" : "error");
   const [availableAnimations, setAvailableAnimations] = useState<string[]>(asset?.animations ?? []);
-  const compositeSkinNames = selectedSkins ?? asset?.defaultSkinCombination ?? [];
-  const compositeSkinKey = compositeSkinNames.join("|");
+  const compositeSkinNames = useMemo(
+    () => selectedSkins ?? asset?.defaultSkinCombination ?? [],
+    [asset?.defaultSkinCombination, selectedSkins],
+  );
   const singleSkin = compositeSkinNames.length > 0 ? null : selectedSkin ?? asset?.skin ?? null;
   const selectedAnimation = useMemo(
     () => asset ? resolveSpineAnimation(asset, selectedMoveId, availableAnimations) : null,
@@ -109,7 +111,7 @@ export function MonsterSpineStage({
       player?.dispose();
       parent.replaceChildren();
     };
-  }, [asset, compositeSkinKey, monsterName, singleSkin, viewportTransitionTime]);
+  }, [asset, compositeSkinNames, monsterName, singleSkin, viewportTransitionTime]);
 
   useEffect(() => {
     if (!asset || loadState !== "ready" || !playerRef.current || !selectedAnimation) return;
