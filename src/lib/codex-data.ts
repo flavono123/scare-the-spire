@@ -50,10 +50,20 @@ import {
   getDefaultTinkerRiderForType,
   getMadSciencePreviewCard,
   getMadScienceVariantId,
+  getTinkerCardTypeChoiceKey,
+  getTinkerRiderChoiceKey,
   MAD_SCIENCE_CARD_ID,
   MAD_SCIENCE_DEFAULT_IMAGE_URL,
   TINKER_CARD_TYPES,
   TINKER_CARD_TYPE_TO_KO,
+  TINKER_CARD_TYPE_CHOICE_LABELS,
+  TINKER_CARD_TYPE_CHOICE_LABELS_EN,
+  TINKER_RIDER_CHOICE_LABELS,
+  TINKER_RIDER_CHOICE_LABELS_EN,
+  TINKER_RIDER_IDS_BY_TYPE,
+  TINKER_TIME_TITLE_FALLBACK_EN,
+  TINKER_TIME_TITLE_FALLBACK_KO,
+  TINKER_TIME_TITLE_KEY,
 } from "./tinker-time";
 // Version reconstruction functions are in entity-versioning.ts (client-safe, no fs)
 
@@ -175,6 +185,67 @@ function gameTitleText(
   return gameText(table, key, gameTitleFallback(korFallback, engFallback, gameLocale));
 }
 
+function localizedGameText(
+  table: GameLocalizationTable,
+  englishTable: GameLocalizationTable,
+  key: string,
+  korFallback: string,
+  engFallback: string,
+  gameLocale: GameLocale,
+): string {
+  return gameText(
+    table,
+    key,
+    gameLocale === "kor" ? korFallback : gameText(englishTable, key, engFallback),
+  );
+}
+
+function buildMadScienceLabels(
+  gameEvents: GameLocalizationTable,
+  engEvents: GameLocalizationTable,
+  gameLocale: GameLocale,
+) {
+  const riderIds = TINKER_CARD_TYPES.flatMap((cardType) => TINKER_RIDER_IDS_BY_TYPE[cardType]);
+  const riderChoiceLabels = Object.fromEntries(
+    riderIds.map((riderId) => [
+      riderId,
+      localizedGameText(
+        gameEvents,
+        engEvents,
+        getTinkerRiderChoiceKey(riderId),
+        TINKER_RIDER_CHOICE_LABELS[riderId],
+        TINKER_RIDER_CHOICE_LABELS_EN[riderId],
+        gameLocale,
+      ),
+    ]),
+  );
+
+  return {
+    eventTitle: localizedGameText(
+      gameEvents,
+      engEvents,
+      TINKER_TIME_TITLE_KEY,
+      TINKER_TIME_TITLE_FALLBACK_KO,
+      TINKER_TIME_TITLE_FALLBACK_EN,
+      gameLocale,
+    ),
+    riderChoiceLabels,
+    typeChoiceLabels: Object.fromEntries(
+      TINKER_CARD_TYPES.map((cardType) => [
+        cardType,
+        localizedGameText(
+          gameEvents,
+          engEvents,
+          getTinkerCardTypeChoiceKey(cardType),
+          TINKER_CARD_TYPE_CHOICE_LABELS[cardType],
+          TINKER_CARD_TYPE_CHOICE_LABELS_EN[cardType],
+          gameLocale,
+        ),
+      ]),
+    ) as Record<(typeof TINKER_CARD_TYPES)[number], string>,
+  };
+}
+
 function mapCard(
   kor: RawCard,
   eng: RawCard,
@@ -225,10 +296,12 @@ export async function getCodexCards(opts?: {
   gameLocale?: GameLocale;
 }): Promise<CodexCard[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korCards, engCards, gameCards, korKeywords, gameKeywords, gameplay] = await Promise.all([
+  const [korCards, engCards, gameCards, gameEvents, engEvents, korKeywords, gameKeywords, gameplay] = await Promise.all([
     readJson<RawCard[]>("kor/cards.json"),
     readJson<RawCard[]>("eng/cards.json"),
     readGameLocalizationTable(gameLocale, "cards"),
+    readGameLocalizationTable(gameLocale, "events"),
+    readGameLocalizationTable("eng", "events"),
     readGameLocalizationTable("kor", "card_keywords"),
     readGameLocalizationTable(gameLocale, "card_keywords"),
     readGameLocalizationTable(gameLocale, "gameplay_ui"),
@@ -238,6 +311,7 @@ export async function getCodexCards(opts?: {
   const keywordLabels = buildKeywordLabels(korKeywords, gameKeywords);
   const typeLabels = getGameplayCardTypeLabels(gameplay);
   const rarityLabels = getGameplayCardRarityLabels(gameplay);
+  const madScienceLabels = buildMadScienceLabels(gameEvents, engEvents, gameLocale);
   const includeDeprecated = opts?.includeDeprecated ?? false;
 
   return korCards
@@ -257,6 +331,11 @@ export async function getCodexCards(opts?: {
             typeLabels[typeKo] ?? typeKo,
           ),
           id: getMadScienceVariantId(cardType),
+          madScienceLabels: {
+            eventTitle: madScienceLabels.eventTitle,
+            riderChoiceLabels: madScienceLabels.riderChoiceLabels,
+            typeChoiceLabel: madScienceLabels.typeChoiceLabels[cardType],
+          },
         };
       });
     });
