@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
@@ -113,18 +113,21 @@ export function MonsterDetail({
   const moveSummaries = useMemo(() => buildMoveSummaries(monster, meaningfulMoves), [monster, meaningfulMoves]);
   const transitionRows = useMemo(() => buildTransitionTableRows(monster), [monster]);
   const firstMoveId = monster.moveGraph?.initial ?? null;
-  const [selectedMoveId, setSelectedMoveId] = useState<string | null>(null);
-  const [selectedSkin, setSelectedSkin] = useState<string | null>(() => getDefaultMonsterSkin(monster));
+  const [selectedMoveState, setSelectedMoveState] = useState<{ monsterId: string; moveId: string | null }>({
+    monsterId: monster.id,
+    moveId: null,
+  });
+  const [selectedSkinState, setSelectedSkinState] = useState<{ monsterId: string; skin: string | null }>({
+    monsterId: monster.id,
+    skin: getDefaultMonsterSkin(monster),
+  });
+  const selectedMoveId = selectedMoveState.monsterId === monster.id ? selectedMoveState.moveId : null;
+  const selectedSkin = selectedSkinState.monsterId === monster.id ? selectedSkinState.skin : getDefaultMonsterSkin(monster);
   const selectedMove = moveSummaries.find((summary) => summary.move.id === selectedMoveId) ?? moveSummaries[0] ?? null;
   const selectedAccent = selectedMove ? getMoveToneColor(selectedMove.tone, typeConfig.color) : typeConfig.color;
   const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
   const skinVariants = monster.spineAsset?.skinVariants ?? [];
   const activeSkin = selectedSkin ?? getDefaultMonsterSkin(monster);
-
-  useEffect(() => {
-    setSelectedMoveId(null);
-    setSelectedSkin(getDefaultMonsterSkin(monster));
-  }, [monster.id, monster.spineAsset]);
 
   return (
     <div className="flex flex-col gap-6 p-4 sm:p-6 max-w-6xl mx-auto">
@@ -216,7 +219,7 @@ export function MonsterDetail({
                         <button
                           key={variant.id}
                           type="button"
-                          onClick={() => setSelectedSkin(variant.id)}
+                          onClick={() => setSelectedSkinState({ monsterId: monster.id, skin: variant.id })}
                           className="rounded border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-white/10"
                           style={{
                             backgroundColor: selected ? hexToRgba(typeConfig.color, 0.18) : "rgba(255,255,255,0.03)",
@@ -262,7 +265,7 @@ export function MonsterDetail({
                     <button
                       key={summary.move.id}
                       type="button"
-                      onClick={() => setSelectedMoveId(summary.move.id)}
+                      onClick={() => setSelectedMoveState({ monsterId: monster.id, moveId: summary.move.id })}
                       className="w-full rounded-lg border px-3 py-3 text-left transition-colors hover:bg-white/10"
                       style={{
                         backgroundColor: isSelected ? hexToRgba(toneColor, 0.14) : "rgba(255, 255, 255, 0.03)",

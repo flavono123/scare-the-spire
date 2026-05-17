@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import Image from "@/components/ui/static-image";
 import type { MonsterSpineAsset } from "@/lib/codex-types";
