@@ -19,9 +19,7 @@
       "die",
       "hurt",
       "idle_loop",
-      "relaxed_loop",
-      "_ignore/cloth_loop",
-      "_ignore/glow_loop"
+      "relaxed_loop"
     ],
     "bestiaryAnimations": [],
     "idleAnimation": "idle_loop",
@@ -153,11 +151,7 @@
       "hurt",
       "idle_loop",
       "nervous_loop",
-      "relaxed_loop",
-      "_ignore/animation",
-      "_ignore/attack_w_settle",
-      "_ignore/extra_assets_pose",
-      "_ignore/sleeve_rigging_pose"
+      "relaxed_loop"
     ],
     "bestiaryAnimations": [],
     "idleAnimation": "idle_loop",
@@ -167,7 +161,6 @@
       ],
       "ATTACK": [
         "attack",
-        "_ignore/attack_w_settle",
         "cast",
         "idle_loop"
       ],
