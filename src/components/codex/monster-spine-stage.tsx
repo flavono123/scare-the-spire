@@ -10,6 +10,7 @@ interface MonsterSpineStageProps {
   fallbackImageUrl: string | null;
   monsterName: string;
   selectedMoveId: string | null;
+  selectedMoveNonce?: number;
   selectedSkin?: string | null;
   className?: string;
   imagePriority?: boolean;
@@ -24,6 +25,7 @@ export function MonsterSpineStage({
   fallbackImageUrl,
   monsterName,
   selectedMoveId,
+  selectedMoveNonce = 0,
   selectedSkin = null,
   className,
   imagePriority = true,
@@ -112,7 +114,7 @@ export function MonsterSpineStage({
     } catch (error) {
       console.warn(`Failed to play Spine animation ${selectedAnimation} for ${monsterName}:`, error);
     }
-  }, [asset, loadState, monsterName, selectedAnimation, selectedMoveId]);
+  }, [asset, loadState, monsterName, selectedAnimation, selectedMoveId, selectedMoveNonce]);
 
   useEffect(() => {
     if (!asset || loadState !== "ready" || !selectedMoveId || !vfxContainerRef.current) return;
@@ -181,7 +183,7 @@ export function MonsterSpineStage({
     return () => {
       disposed = true;
     };
-  }, [asset, loadState, monsterName, selectedMoveId]);
+  }, [asset, loadState, monsterName, selectedMoveId, selectedMoveNonce]);
 
   return (
     <div className={className}>

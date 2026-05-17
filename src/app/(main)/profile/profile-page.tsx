@@ -290,11 +290,12 @@ function DuoRender({
       <div className="relative min-h-0 flex-1">
         <div className="absolute inset-y-0 left-[-1%] z-10 w-[44rem] max-w-[76%]">
           <MonsterSpineStage
-            key={`duo-${character?.id ?? "none"}-${characterAction}-${characterActionNonce}`}
+            key={`duo-${character?.id ?? "none"}`}
             asset={character?.spineAsset ?? null}
             fallbackImageUrl={null}
             monsterName={character?.label ?? ""}
             selectedMoveId={characterAction}
+            selectedMoveNonce={characterActionNonce}
             imagePriority={false}
             showLoadingLabel={false}
             className="relative h-full w-full"
@@ -309,11 +310,12 @@ function DuoRender({
           }}
         >
           <MonsterSpineStage
-            key={`pet-${pet?.id ?? "none"}-${pet?.selectedSkin ?? "default"}-${petAction}-${petActionNonce}`}
+            key={`pet-${pet?.id ?? "none"}-${pet?.selectedSkin ?? "default"}`}
             asset={pet?.spineAsset ?? null}
             fallbackImageUrl={null}
             monsterName={pet?.label ?? ""}
             selectedMoveId={petAction}
+            selectedMoveNonce={petActionNonce}
             selectedSkin={pet?.selectedSkin}
             imagePriority={false}
             showLoadingLabel={false}
