@@ -56,12 +56,10 @@ export default function ProfilePage({
   const [characterId, setCharacterId] = useState(DEFAULTS.character);
   const [petId, setPetId] = useState(DEFAULTS.pet);
   const [ancientId, setAncientId] = useState(DEFAULTS.ancient);
-  const [characterAction, setCharacterAction] = useActionState();
   const [petAction, setPetAction] = useActionState();
 
   const character = findChoice(characters, characterId) ?? characters[0];
   const pet = findChoice(pets, petId) ?? pets[0];
-  const ancient = findChoice(ancients, ancientId) ?? ancients[0];
 
   return (
     <main className="mx-auto flex h-[calc(100svh-3rem)] w-full max-w-7xl flex-col gap-3 overflow-hidden px-3 py-3 sm:px-4">
@@ -81,58 +79,48 @@ export default function ProfilePage({
         </span>
       </header>
 
-      <section className="grid min-h-0 flex-1 grid-rows-3 gap-3">
-        <ProfileRow
-          label="캐릭터"
-          carousel={
-            <ChoiceCarousel
-              items={characters}
-              selectedId={character?.id}
-              onSelect={(id) => {
-                setCharacterId(id);
-                setCharacterAction("IDLE");
-              }}
-            />
-          }
-          render={
-            <SpineRender
-              label={character?.label ?? ""}
-              asset={character?.spineAsset ?? null}
-              fallbackImageUrl={character?.fallbackImageUrl ?? null}
-              action={characterAction.action}
-              actionNonce={characterAction.nonce}
-              onAction={setCharacterAction}
-            />
-          }
-        />
+      <section className="grid min-h-0 flex-1 grid-cols-[minmax(0,40%)_minmax(0,60%)] gap-4">
+        <div className="grid min-h-0 grid-rows-3 gap-3">
+          <ProfileRow
+            label="캐릭터"
+            carousel={
+              <ChoiceCarousel
+                items={characters}
+                selectedId={character?.id}
+                onSelect={(id) => {
+                  setCharacterId(id);
+                  setPetAction("IDLE");
+                }}
+              />
+            }
+          />
 
-        <ProfileRow
-          label="펫"
-          carousel={
-            <ChoiceCarousel
-              items={pets}
-              selectedId={pet?.id}
-              onSelect={(id) => {
-                setPetId(id);
-                setPetAction("IDLE");
-              }}
-            />
-          }
-          render={
-            <DuoRender
-              character={character}
-              pet={pet}
-              action={petAction.action}
-              actionNonce={petAction.nonce}
-              onAction={setPetAction}
-            />
-          }
-        />
+          <ProfileRow
+            label="펫"
+            carousel={
+              <ChoiceCarousel
+                items={pets}
+                selectedId={pet?.id}
+                onSelect={(id) => {
+                  setPetId(id);
+                  setPetAction("IDLE");
+                }}
+              />
+            }
+          />
 
-        <ProfileRow
-          label="고대신"
-          carousel={<ChoiceCarousel items={ancients} selectedId={ancient?.id} onSelect={setAncientId} />}
-          render={<AncientRender ancient={ancient} />}
+          <ProfileRow
+            label="고대신"
+            carousel={<ChoiceCarousel items={ancients} selectedId={ancientId} onSelect={setAncientId} />}
+          />
+        </div>
+
+        <DuoRender
+          character={character}
+          pet={pet}
+          action={petAction.action}
+          actionNonce={petAction.nonce}
+          onAction={setPetAction}
         />
       </section>
     </main>
@@ -142,19 +130,16 @@ export default function ProfilePage({
 function ProfileRow({
   label,
   carousel,
-  render,
 }: {
   label: string;
   carousel: React.ReactNode;
-  render: React.ReactNode;
 }) {
   return (
-    <div className="grid min-h-0 grid-cols-[4.5rem_minmax(0,1fr)_minmax(13rem,17rem)] items-stretch gap-3 rounded-lg border border-white/10 bg-white/[0.03] p-3">
+    <div className="grid min-h-0 grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-3">
       <div className="flex items-center">
         <h2 className="text-base font-bold text-zinc-100">{label}</h2>
       </div>
       <div className="min-w-0 self-center">{carousel}</div>
-      <div className="min-w-0">{render}</div>
     </div>
   );
 }
@@ -217,18 +202,34 @@ function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; 
               type="button"
               onClick={() => onSelect(item.id)}
               aria-pressed={active}
+              aria-label={item.subtitle ? `${item.label} ${item.subtitle}` : item.label}
+              title={item.subtitle ? `${item.label} — ${item.subtitle}` : item.label}
               className={cn(
-                "flex h-24 basis-[calc((100%-1rem)/3)] shrink-0 flex-col items-center justify-center gap-1 rounded-lg border p-2 text-center transition-colors",
+                "group relative flex h-24 basis-[calc((100%-1rem)/3)] shrink-0 items-center justify-center p-2 text-center transition-transform hover:scale-105",
                 active
-                  ? "border-amber-300/70 bg-amber-400/10"
-                  : "border-white/10 bg-black/20 hover:border-white/25 hover:bg-white/[0.04]",
+                  ? "scale-105"
+                  : "opacity-75 hover:opacity-100",
               )}
             >
-              <Image src={item.iconUrl} alt="" width={48} height={48} className="h-12 w-12 object-contain drop-shadow-lg" />
-              <span className="max-w-full truncate text-xs font-semibold text-zinc-100">{item.label}</span>
-              {item.subtitle && (
-                <span className="max-w-full truncate text-[10px] text-zinc-500">{item.subtitle}</span>
+              <Image
+                src={item.iconUrl}
+                alt=""
+                width={56}
+                height={56}
+                className={cn(
+                  "h-14 w-14 object-contain drop-shadow-lg transition-[filter,transform]",
+                  active
+                    ? "drop-shadow-[0_0_12px_rgba(251,191,36,0.75)]"
+                    : "group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.22)]",
+                )}
+              />
+              {active && (
+                <span className="absolute bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-amber-300 shadow-[0_0_8px_rgba(251,191,36,0.9)]" />
               )}
+              <span className="pointer-events-none absolute left-1/2 top-full z-30 mt-1 hidden -translate-x-1/2 whitespace-nowrap rounded bg-black/80 px-2 py-1 text-[11px] font-semibold text-zinc-100 shadow-lg group-hover:block">
+                {item.label}
+                {item.subtitle && <span className="ml-1 text-zinc-400">{item.subtitle}</span>}
+              </span>
             </button>
           );
         })}
@@ -259,43 +260,6 @@ function CarouselArrow({ direction, onClick }: { direction: "left" | "right"; on
   );
 }
 
-function SpineRender({
-  label,
-  asset,
-  fallbackImageUrl,
-  action,
-  actionNonce,
-  onAction,
-  selectedSkin,
-}: {
-  label: string;
-  asset: MonsterSpineAsset | null;
-  fallbackImageUrl: string | null;
-  action: ActionId;
-  actionNonce: number;
-  onAction: (action: ActionId) => void;
-  selectedSkin?: string | null;
-}) {
-  return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-md border border-white/10 bg-black/25">
-      <div className="relative min-h-0 flex-1">
-        <MonsterSpineStage
-          key={`${asset?.id ?? label}-${selectedSkin ?? "default"}-${action}-${actionNonce}`}
-          asset={asset}
-          fallbackImageUrl={fallbackImageUrl}
-          monsterName={label}
-          selectedMoveId={action}
-          selectedSkin={selectedSkin}
-          imagePriority={false}
-          showLoadingLabel={false}
-          className="relative h-full w-full"
-        />
-      </div>
-      <ActionBar value={action} onChange={onAction} />
-    </div>
-  );
-}
-
 function DuoRender({
   character,
   pet,
@@ -312,9 +276,9 @@ function DuoRender({
   const characterAction = action === "HURT" ? "IDLE" : action;
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-md border border-white/10 bg-black/25">
+    <div className="flex h-full min-h-0 flex-col overflow-visible">
       <div className="relative min-h-0 flex-1">
-        <div className="absolute inset-y-0 left-0 w-[62%]">
+        <div className="absolute inset-y-0 left-0 w-[66%]">
           <MonsterSpineStage
             key={`duo-${character?.id ?? "none"}-${characterAction}-${actionNonce}`}
             asset={character?.spineAsset ?? null}
@@ -326,7 +290,7 @@ function DuoRender({
             className="relative h-full w-full"
           />
         </div>
-        <div className="absolute inset-y-0 right-0 w-[48%]">
+        <div className="absolute inset-y-[8%] right-[4%] w-[44%]">
           <MonsterSpineStage
             key={`pet-${pet?.id ?? "none"}-${pet?.selectedSkin ?? "default"}-${action}-${actionNonce}`}
             asset={pet?.spineAsset ?? null}
@@ -345,25 +309,9 @@ function DuoRender({
   );
 }
 
-function AncientRender({ ancient }: { ancient: AncientChoice | undefined }) {
-  return (
-    <div className="flex h-full min-h-0 items-center justify-center overflow-hidden rounded-md border border-white/10 bg-black/25 p-3">
-      {ancient && (
-        <div className="flex min-w-0 items-center gap-3">
-          <Image src={ancient.iconUrl} alt="" width={96} height={96} className="h-24 w-24 shrink-0 object-contain drop-shadow-2xl" />
-          <div className="min-w-0">
-            <div className="truncate text-lg font-bold text-sky-100">{ancient.label}</div>
-            <div className="mt-1 truncate text-xs text-zinc-500">{ancient.subtitle}</div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 function ActionBar({ value, onChange }: { value: ActionId; onChange: (action: ActionId) => void }) {
   return (
-    <div className="flex shrink-0 justify-center gap-1 border-t border-white/10 p-1">
+    <div className="flex shrink-0 justify-center gap-1 p-1">
       {ACTIONS.map((action) => (
         <button
           key={action.id}
@@ -371,10 +319,10 @@ function ActionBar({ value, onChange }: { value: ActionId; onChange: (action: Ac
           onClick={() => onChange(action.id)}
           aria-pressed={value === action.id}
           className={cn(
-            "h-7 rounded border px-2 text-[11px] font-semibold transition-colors",
+            "h-7 rounded px-2 text-[11px] font-semibold transition-colors",
             value === action.id
-              ? "border-amber-300/60 bg-amber-400/10 text-amber-100"
-              : "border-white/10 bg-white/[0.03] text-zinc-400 hover:bg-white/[0.07]",
+              ? "text-amber-100 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]"
+              : "text-zinc-500 hover:text-zinc-300",
           )}
         >
           {action.label}
