@@ -1,0 +1,58 @@
+[
+  {
+    "id": "NEOW",
+    "source": "animations/backgrounds/neow_room/neow",
+    "renderStatus": "spine",
+    "renderTags": [
+      "ancient-background"
+    ],
+    "atlasUrl": "/spine/sts2/ancients/neow_room/neow.atlas",
+    "binaryUrl": "/spine/sts2/ancients/neow_room/neow.skel",
+    "textureUrls": [
+      "/spine/sts2/ancients/neow_room/neow.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "idle_loop"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "IDLE": [
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "TEZCATARA",
+    "source": "animations/backgrounds/tezcatara/tezcatara",
+    "renderStatus": "spine",
+    "renderTags": [
+      "ancient-background"
+    ],
+    "atlasUrl": "/spine/sts2/ancients/tezcatara/tezcatara.atlas",
+    "binaryUrl": "/spine/sts2/ancients/tezcatara/tezcatara.skel",
+    "textureUrls": [
+      "/spine/sts2/ancients/tezcatara/tezcatara.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "animation"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "animation",
+    "moveAnimations": {
+      "IDLE": [
+        "animation"
+      ]
+    },
+    "moveEffects": {}
+  }
+]
