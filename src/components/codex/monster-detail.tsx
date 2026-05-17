@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
@@ -114,9 +114,17 @@ export function MonsterDetail({
   const transitionRows = useMemo(() => buildTransitionTableRows(monster), [monster]);
   const firstMoveId = monster.moveGraph?.initial ?? null;
   const [selectedMoveId, setSelectedMoveId] = useState<string | null>(null);
+  const [selectedSkin, setSelectedSkin] = useState<string | null>(() => getDefaultMonsterSkin(monster));
   const selectedMove = moveSummaries.find((summary) => summary.move.id === selectedMoveId) ?? moveSummaries[0] ?? null;
   const selectedAccent = selectedMove ? getMoveToneColor(selectedMove.tone, typeConfig.color) : typeConfig.color;
   const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
+  const skinVariants = monster.spineAsset?.skinVariants ?? [];
+  const activeSkin = selectedSkin ?? getDefaultMonsterSkin(monster);
+
+  useEffect(() => {
+    setSelectedMoveId(null);
+    setSelectedSkin(getDefaultMonsterSkin(monster));
+  }, [monster.id, monster.spineAsset]);
 
   return (
     <div className="flex flex-col gap-6 p-4 sm:p-6 max-w-6xl mx-auto">
@@ -158,11 +166,12 @@ export function MonsterDetail({
             />
             {imageSrc ? (
               <MonsterSpineStage
-                key={monster.id}
+                key={`${monster.id}-${activeSkin ?? "base"}`}
                 asset={monster.spineAsset}
                 fallbackImageUrl={imageSrc}
                 monsterName={monster.name}
                 selectedMoveId={selectedMove?.move.id ?? null}
+                selectedSkin={activeSkin}
                 className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
               />
             ) : (
@@ -196,6 +205,32 @@ export function MonsterDetail({
                   <StatBadge label={monsterText.stats.moves} value={`${meaningfulMoves.length}`} />
                 )}
               </div>
+              {skinVariants.length > 1 && (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">외형</span>
+                  <div className="flex flex-wrap gap-1" role="group" aria-label={`${monster.name} 외형`}>
+                    {skinVariants.map((variant) => {
+                      const selected = activeSkin === variant.id;
+
+                      return (
+                        <button
+                          key={variant.id}
+                          type="button"
+                          onClick={() => setSelectedSkin(variant.id)}
+                          className="rounded border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-white/10"
+                          style={{
+                            backgroundColor: selected ? hexToRgba(typeConfig.color, 0.18) : "rgba(255,255,255,0.03)",
+                            borderColor: selected ? `${typeConfig.color}88` : "rgba(255,255,255,0.1)",
+                            color: selected ? typeConfig.color : "#a1a1aa",
+                          }}
+                        >
+                          {variant.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -487,6 +522,12 @@ export function MonsterDetail({
 }
 
 const BESTIARY_START_COLOR = "#60a5fa";
+
+function getDefaultMonsterSkin(monster: CodexMonster): string | null {
+  if (!monster.spineAsset) return null;
+  if (monster.spineAsset.skin) return monster.spineAsset.skin;
+  return monster.spineAsset.skinVariants?.some((variant) => variant.id === "default") ? "default" : null;
+}
 
 function formatHp(monster: CodexMonster): string | null {
   if (monster.minHp == null || monster.minHp === 9999) return null;
