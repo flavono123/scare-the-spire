@@ -55,6 +55,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
   const [showBeta, setShowBeta] = useState(false);
+  const [showOnlyBeta, setShowOnlyBeta] = useState(false);
   const hasBetaArt = powers.some((power) => power.betaImageUrl);
 
   // Power detail modal
@@ -138,6 +139,10 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
       result = result.filter((p) => selectedTypes.has(p.type));
     }
 
+    if (showOnlyBeta) {
+      result = result.filter((p) => p.betaImageUrl);
+    }
+
     // Search token filters
     for (const token of parsedSearch.tokens) {
       if (token.type === "powerType") {
@@ -156,7 +161,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
     }
 
     return result;
-  }, [versionedPowers, selectedTypes, parsedSearch]);
+  }, [versionedPowers, selectedTypes, showOnlyBeta, parsedSearch]);
 
   // Group by type
   const groupedPowers = useMemo(() => {
@@ -228,6 +233,15 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
                 label={serviceText.cardsView.toggles.betaArt}
                 active={showBeta}
                 onClick={() => setShowBeta((v) => !v)}
+              />
+              <ToggleButton
+                label={serviceText.cardsView.toggles.betaArtOnly}
+                active={showOnlyBeta}
+                onClick={() => {
+                  const next = !showOnlyBeta;
+                  setShowOnlyBeta(next);
+                  if (next) setShowBeta(true);
+                }}
               />
             </div>
           </>
