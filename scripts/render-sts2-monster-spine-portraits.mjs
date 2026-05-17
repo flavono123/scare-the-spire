@@ -215,6 +215,8 @@ function createStaticServer() {
 
 function renderHtml(monster, asset, background) {
   const animation = asset.idleAnimation || asset.animations[0];
+  const compositeSkinNames = asset.defaultSkinCombination ?? [];
+  const singleSkin = compositeSkinNames.length > 0 ? undefined : asset.skin ?? undefined;
   return `<!doctype html>
 <html>
 <head>
@@ -249,7 +251,7 @@ function renderHtml(monster, asset, background) {
           atlasUrl: ${JSON.stringify(asset.atlasUrl)},
           animation: ${JSON.stringify(animation)},
           animations: ${JSON.stringify(asset.animations)},
-          skin: ${JSON.stringify(asset.skin ?? undefined)},
+          skin: ${JSON.stringify(singleSkin)},
           skins: ${JSON.stringify(asset.skins)},
           alpha: true,
           backgroundColor: "00000000",
@@ -266,6 +268,7 @@ function renderHtml(monster, asset, background) {
           },
           success: (player) => {
             try {
+              applyCompositeSkin(player, ${JSON.stringify(compositeSkinNames)});
               player.setAnimation(${JSON.stringify(animation)}, true);
               player.play();
               window.setTimeout(resolve, ${args.settleMs});
@@ -279,6 +282,23 @@ function renderHtml(monster, asset, background) {
         reject(error);
       }
     });
+
+    function applyCompositeSkin(player, skinNames) {
+      if (!skinNames.length || !player.skeleton) return;
+
+      const compositeSkin = new spine.Skin("combined:" + skinNames.join("+"));
+      const defaultSkin = player.skeleton.data.findSkin("default");
+      if (defaultSkin) compositeSkin.addSkin(defaultSkin);
+
+      for (const skinName of skinNames) {
+        const skin = player.skeleton.data.findSkin(skinName);
+        if (skin) compositeSkin.addSkin(skin);
+      }
+
+      player.skeleton.setSkin(compositeSkin);
+      player.skeleton.setSlotsToSetupPose();
+      player.skeleton.updateWorldTransform(spine.Physics.update);
+    }
   </script>
 </body>
 </html>`;

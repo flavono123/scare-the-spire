@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
-import type { SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
+import type { Skin, SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
 import Image from "@/components/ui/static-image";
 import type { MonsterSpineAsset, MonsterSpineEffectAsset } from "@/lib/codex-types";
 
@@ -12,6 +12,7 @@ interface MonsterSpineStageProps {
   selectedMoveId: string | null;
   selectedMoveNonce?: number;
   selectedSkin?: string | null;
+  selectedSkins?: string[] | null;
   className?: string;
   imagePriority?: boolean;
   showLoadingLabel?: boolean;
@@ -20,6 +21,8 @@ interface MonsterSpineStageProps {
 
 type LoadState = "loading" | "ready" | "error";
 type SpinePlayerCtor = new (element: HTMLElement, config: SpinePlayerConfig) => SpinePlayer;
+type SpineSkinCtor = new (name: string) => Skin;
+type SpinePhysics = typeof import("@esotericsoftware/spine-player")["Physics"];
 
 export function MonsterSpineStage({
   asset,
@@ -28,6 +31,7 @@ export function MonsterSpineStage({
   selectedMoveId,
   selectedMoveNonce = 0,
   selectedSkin = null,
+  selectedSkins = null,
   className,
   imagePriority = true,
   showLoadingLabel = true,
@@ -41,6 +45,9 @@ export function MonsterSpineStage({
   const playerCtorRef = useRef<SpinePlayerCtor | null>(null);
   const [loadState, setLoadState] = useState<LoadState>(asset ? "loading" : "error");
   const [availableAnimations, setAvailableAnimations] = useState<string[]>(asset?.animations ?? []);
+  const compositeSkinNames = selectedSkins ?? asset?.defaultSkinCombination ?? [];
+  const compositeSkinKey = compositeSkinNames.join("|");
+  const singleSkin = compositeSkinNames.length > 0 ? null : selectedSkin ?? asset?.skin ?? null;
   const selectedAnimation = useMemo(
     () => asset ? resolveSpineAnimation(asset, selectedMoveId, availableAnimations) : null,
     [asset, availableAnimations, selectedMoveId],
@@ -54,7 +61,7 @@ export function MonsterSpineStage({
     const parent = containerRef.current;
 
     void import("@esotericsoftware/spine-player")
-      .then(({ SpinePlayer: SpinePlayerCtor }) => {
+      .then(({ SpinePlayer: SpinePlayerCtor, Skin: SpineSkinCtor, Physics }) => {
         if (disposed || !containerRef.current) return;
         playerCtorRef.current = SpinePlayerCtor;
         const viewport = getMonsterViewport(asset.id, viewportTransitionTime);
@@ -64,7 +71,7 @@ export function MonsterSpineStage({
           atlasUrl: asset.atlasUrl,
           animation: asset.idleAnimation,
           animations: asset.animations,
-          skin: selectedSkin ?? asset.skin ?? undefined,
+          skin: singleSkin ?? undefined,
           skins: asset.skins,
           alpha: true,
           backgroundColor: "00000000",
@@ -75,6 +82,8 @@ export function MonsterSpineStage({
           viewport,
           success: (loadedPlayer) => {
             if (disposed) return;
+            const skinNames = compositeSkinKey ? compositeSkinKey.split("|") : [];
+            applyCompositeSkin(loadedPlayer, SpineSkinCtor, Physics, skinNames, monsterName);
             playerRef.current = loadedPlayer;
             setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? asset.animations);
             setLoadState("ready");
@@ -100,7 +109,7 @@ export function MonsterSpineStage({
       player?.dispose();
       parent.replaceChildren();
     };
-  }, [asset, monsterName, selectedSkin, viewportTransitionTime]);
+  }, [asset, compositeSkinKey, monsterName, singleSkin, viewportTransitionTime]);
 
   useEffect(() => {
     if (!asset || loadState !== "ready" || !playerRef.current || !selectedAnimation) return;
@@ -239,6 +248,35 @@ function resolveSpineEffect(
   moveId: string,
 ): MonsterSpineEffectAsset | null {
   return asset.moveEffects[moveId]?.find((effect) => effect.usable !== false) ?? null;
+}
+
+function applyCompositeSkin(
+  player: SpinePlayer,
+  SkinCtor: SpineSkinCtor,
+  physics: SpinePhysics,
+  skinNames: string[],
+  monsterName: string,
+) {
+  if (skinNames.length === 0 || !player.skeleton) return;
+
+  const skeleton = player.skeleton;
+  const skeletonData = skeleton.data;
+  const compositeSkin = new SkinCtor(`combined:${skinNames.join("+")}`);
+  const defaultSkin = skeletonData.findSkin("default");
+  if (defaultSkin) compositeSkin.addSkin(defaultSkin);
+
+  for (const skinName of skinNames) {
+    const skin = skeletonData.findSkin(skinName);
+    if (!skin) {
+      console.warn(`Missing Spine skin ${skinName} for ${monsterName}`);
+      continue;
+    }
+    compositeSkin.addSkin(skin);
+  }
+
+  skeleton.setSkin(compositeSkin);
+  skeleton.setSlotsToSetupPose();
+  skeleton.updateWorldTransform(physics.update);
 }
 
 function getMonsterViewport(monsterId: string, transitionTime = 0.12): SpinePlayerConfig["viewport"] {

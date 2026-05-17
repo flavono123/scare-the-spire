@@ -3,6 +3,16 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { CodexMonster } from "@/lib/codex-types";
+import {
+  getDefaultMonsterSkinSelections,
+  getMonsterSkinOptionLabel,
+  getMonsterSkinPartLabel,
+  getMonsterSkinParts,
+  getMonsterSkinRenderKey,
+  getSelectedMonsterSkinNames,
+  getSingleMonsterSkin,
+  type MonsterSkinSelections,
+} from "@/lib/monster-skins";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 
 interface DevMonsterSpinePreviewProps {
@@ -23,11 +33,17 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
   const [selectedActionId, setSelectedActionId] = useState<string | null>(
     actions[0]?.id ?? null,
   );
-  const [selectedSkin, setSelectedSkin] = useState<string | null>(
-    getDefaultMonsterSkin(monster),
-  );
-  const activeSkin = selectedSkin ?? getDefaultMonsterSkin(monster);
-  const skinVariants = asset?.skinVariants ?? [];
+  const [selectedSkinState, setSelectedSkinState] = useState<{ monsterId: string; selections: MonsterSkinSelections }>({
+    monsterId: monster.id,
+    selections: getDefaultMonsterSkinSelections(monster),
+  });
+  const selectedSkinSelections = selectedSkinState.monsterId === monster.id
+    ? selectedSkinState.selections
+    : getDefaultMonsterSkinSelections(monster);
+  const selectedSkinNames = getSelectedMonsterSkinNames(monster, selectedSkinSelections);
+  const selectedSingleSkin = selectedSkinNames.length > 0 ? null : getSingleMonsterSkin(monster);
+  const activeSkinKey = getMonsterSkinRenderKey(selectedSkinNames, selectedSingleSkin);
+  const skinParts = getMonsterSkinParts(asset);
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
@@ -48,12 +64,13 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
           <div className="relative flex min-h-[28rem] items-center justify-center overflow-hidden border-b border-white/10 px-4 py-6 sm:min-h-[36rem]">
             {imageSrc ? (
               <MonsterSpineStage
-                key={`${monster.id}-${activeSkin ?? "base"}`}
+                key={`${monster.id}-${activeSkinKey}`}
                 asset={asset}
                 fallbackImageUrl={imageSrc}
                 monsterName={monster.name}
                 selectedMoveId={selectedActionId}
-                selectedSkin={activeSkin}
+                selectedSkin={selectedSingleSkin}
+                selectedSkins={selectedSkinNames}
                 className="relative z-10 h-[24rem] w-full sm:h-[34rem]"
               />
             ) : (
@@ -74,26 +91,47 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
               </span>
             </div>
 
-            {skinVariants.length > 1 && (
-              <div className="flex flex-wrap items-center gap-2">
+            {skinParts.length > 0 && (
+              <div className="flex flex-col gap-2">
                 <span className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">외형</span>
-                <div className="flex flex-wrap gap-1">
-                  {skinVariants.map((variant) => {
-                    const selected = activeSkin === variant.id;
+                <div className="flex flex-col gap-2">
+                  {skinParts.map((part) => {
+                    const partLabel = getMonsterSkinPartLabel(part, "ko");
 
                     return (
-                      <button
-                        key={variant.id}
-                        type="button"
-                        onClick={() => setSelectedSkin(variant.id)}
-                        className={`rounded border px-2.5 py-1 text-xs transition-colors ${
-                          selected
-                            ? "border-amber-300/70 bg-amber-300/15 text-amber-200"
-                            : "border-white/10 bg-white/[0.03] text-zinc-400 hover:bg-white/10"
-                        }`}
-                      >
-                        {variant.label}
-                      </button>
+                      <div key={part.id} className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                        <span className="min-w-10 text-[11px] font-medium text-zinc-400">{partLabel}</span>
+                        <div className="flex flex-wrap gap-1">
+                          {part.options.map((option) => {
+                            const selected = selectedSkinSelections[part.id] === option.id;
+
+                            return (
+                              <button
+                                key={option.id}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedSkinState((state) => ({
+                                    monsterId: monster.id,
+                                    selections: {
+                                      ...(state.monsterId === monster.id
+                                        ? state.selections
+                                        : getDefaultMonsterSkinSelections(monster)),
+                                      [part.id]: option.id,
+                                    },
+                                  }));
+                                }}
+                                className={`rounded border px-2.5 py-1 text-xs transition-colors ${
+                                  selected
+                                    ? "border-amber-300/70 bg-amber-300/15 text-amber-200"
+                                    : "border-white/10 bg-white/[0.03] text-zinc-400 hover:bg-white/10"
+                                }`}
+                              >
+                                {getMonsterSkinOptionLabel(option, "ko")}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
                     );
                   })}
                 </div>
@@ -177,10 +215,4 @@ function buildPreviewActions(monster: CodexMonster): PreviewAction[] {
   }
 
   return [...actions.values()];
-}
-
-function getDefaultMonsterSkin(monster: CodexMonster): string | null {
-  if (!monster.spineAsset) return null;
-  if (monster.spineAsset.skin) return monster.spineAsset.skin;
-  return monster.spineAsset.skinVariants?.some((variant) => variant.id === "default") ? "default" : null;
 }

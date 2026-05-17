@@ -17,6 +17,16 @@ import type {
   MonsterMoveTransition,
 } from "@/lib/codex-types";
 import {
+  getDefaultMonsterSkinSelections,
+  getMonsterSkinOptionLabel,
+  getMonsterSkinPartLabel,
+  getMonsterSkinParts,
+  getMonsterSkinRenderKey,
+  getSelectedMonsterSkinNames,
+  getSingleMonsterSkin,
+  type MonsterSkinSelections,
+} from "@/lib/monster-skins";
+import {
   MONSTER_TYPE_CONFIG,
   EVENT_ACT_CONFIG,
   ENCOUNTER_ROOM_TYPE_CONFIG,
@@ -117,17 +127,21 @@ export function MonsterDetail({
     monsterId: monster.id,
     moveId: null,
   });
-  const [selectedSkinState, setSelectedSkinState] = useState<{ monsterId: string; skin: string | null }>({
+  const [selectedSkinState, setSelectedSkinState] = useState<{ monsterId: string; selections: MonsterSkinSelections }>({
     monsterId: monster.id,
-    skin: getDefaultMonsterSkin(monster),
+    selections: getDefaultMonsterSkinSelections(monster),
   });
   const selectedMoveId = selectedMoveState.monsterId === monster.id ? selectedMoveState.moveId : null;
-  const selectedSkin = selectedSkinState.monsterId === monster.id ? selectedSkinState.skin : getDefaultMonsterSkin(monster);
+  const selectedSkinSelections = selectedSkinState.monsterId === monster.id
+    ? selectedSkinState.selections
+    : getDefaultMonsterSkinSelections(monster);
+  const selectedSkinNames = getSelectedMonsterSkinNames(monster, selectedSkinSelections);
+  const selectedSingleSkin = selectedSkinNames.length > 0 ? null : getSingleMonsterSkin(monster);
   const selectedMove = moveSummaries.find((summary) => summary.move.id === selectedMoveId) ?? moveSummaries[0] ?? null;
   const selectedAccent = selectedMove ? getMoveToneColor(selectedMove.tone, typeConfig.color) : typeConfig.color;
   const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
-  const skinVariants = monster.spineAsset?.skinVariants ?? [];
-  const activeSkin = selectedSkin ?? getDefaultMonsterSkin(monster);
+  const skinParts = getMonsterSkinParts(monster.spineAsset);
+  const activeSkinKey = getMonsterSkinRenderKey(selectedSkinNames, selectedSingleSkin);
 
   return (
     <div className="flex flex-col gap-6 p-4 sm:p-6 max-w-6xl mx-auto">
@@ -169,12 +183,13 @@ export function MonsterDetail({
             />
             {imageSrc ? (
               <MonsterSpineStage
-                key={`${monster.id}-${activeSkin ?? "base"}`}
+                key={`${monster.id}-${activeSkinKey}`}
                 asset={monster.spineAsset}
                 fallbackImageUrl={imageSrc}
                 monsterName={monster.name}
                 selectedMoveId={selectedMove?.move.id ?? null}
-                selectedSkin={activeSkin}
+                selectedSkin={selectedSingleSkin}
+                selectedSkins={selectedSkinNames}
                 className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
               />
             ) : (
@@ -208,27 +223,50 @@ export function MonsterDetail({
                   <StatBadge label={monsterText.stats.moves} value={`${meaningfulMoves.length}`} />
                 )}
               </div>
-              {skinVariants.length > 1 && (
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">외형</span>
-                  <div className="flex flex-wrap gap-1" role="group" aria-label={`${monster.name} 외형`}>
-                    {skinVariants.map((variant) => {
-                      const selected = activeSkin === variant.id;
+              {skinParts.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                    {serviceLocale === "ko" ? "외형" : "Appearance"}
+                  </span>
+                  <div className="flex flex-col gap-2">
+                    {skinParts.map((part) => {
+                      const partLabel = getMonsterSkinPartLabel(part, serviceLocale);
 
                       return (
-                        <button
-                          key={variant.id}
-                          type="button"
-                          onClick={() => setSelectedSkinState({ monsterId: monster.id, skin: variant.id })}
-                          className="rounded border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-white/10"
-                          style={{
-                            backgroundColor: selected ? hexToRgba(typeConfig.color, 0.18) : "rgba(255,255,255,0.03)",
-                            borderColor: selected ? `${typeConfig.color}88` : "rgba(255,255,255,0.1)",
-                            color: selected ? typeConfig.color : "#a1a1aa",
-                          }}
-                        >
-                          {variant.label}
-                        </button>
+                        <div key={part.id} className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                          <span className="min-w-10 text-[11px] font-medium text-gray-400">{partLabel}</span>
+                          <div className="flex flex-wrap gap-1" role="group" aria-label={`${monster.name} ${partLabel}`}>
+                            {part.options.map((option) => {
+                              const selected = selectedSkinSelections[part.id] === option.id;
+
+                              return (
+                                <button
+                                  key={option.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedSkinState((state) => ({
+                                      monsterId: monster.id,
+                                      selections: {
+                                        ...(state.monsterId === monster.id
+                                          ? state.selections
+                                          : getDefaultMonsterSkinSelections(monster)),
+                                        [part.id]: option.id,
+                                      },
+                                    }));
+                                  }}
+                                  className="rounded border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-white/10"
+                                  style={{
+                                    backgroundColor: selected ? hexToRgba(typeConfig.color, 0.18) : "rgba(255,255,255,0.03)",
+                                    borderColor: selected ? `${typeConfig.color}88` : "rgba(255,255,255,0.1)",
+                                    color: selected ? typeConfig.color : "#a1a1aa",
+                                  }}
+                                >
+                                  {getMonsterSkinOptionLabel(option, serviceLocale)}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
                       );
                     })}
                   </div>
@@ -525,12 +563,6 @@ export function MonsterDetail({
 }
 
 const BESTIARY_START_COLOR = "#60a5fa";
-
-function getDefaultMonsterSkin(monster: CodexMonster): string | null {
-  if (!monster.spineAsset) return null;
-  if (monster.spineAsset.skin) return monster.spineAsset.skin;
-  return monster.spineAsset.skinVariants?.some((variant) => variant.id === "default") ? "default" : null;
-}
 
 function formatHp(monster: CodexMonster): string | null {
   if (monster.minHp == null || monster.minHp === 9999) return null;

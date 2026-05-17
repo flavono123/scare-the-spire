@@ -564,6 +564,20 @@ export interface MonsterSpineEffectAsset {
   parseError?: string;
 }
 
+export interface MonsterSkinPartOption {
+  id: string;
+  labelKo: string;
+  labelEn: string;
+  attachmentCount: number;
+}
+
+export interface MonsterSkinPart {
+  id: string;
+  labelKo: string;
+  labelEn: string;
+  options: MonsterSkinPartOption[];
+}
+
 export interface MonsterSpineAsset {
   id: string;
   source: string;
@@ -574,17 +588,7 @@ export interface MonsterSpineAsset {
   textureUrls: string[];
   skin: string | null;
   skins: string[];
-  skinParts?: {
-    id: string;
-    labelKo: string;
-    labelEn: string;
-    options: {
-      id: string;
-      labelKo: string;
-      labelEn: string;
-      attachmentCount: number;
-    }[];
-  }[];
+  skinParts?: MonsterSkinPart[];
   defaultSkinCombination?: string[];
   skinVariants?: {
     id: string;

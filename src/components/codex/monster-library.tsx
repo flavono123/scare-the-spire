@@ -28,6 +28,7 @@ import {
   isPublicBestiaryMonster,
 } from "@/lib/bestiary-monster-policy";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
+import { hasMonsterSkinParts } from "@/lib/monster-skins";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { useAuth } from "@/hooks/use-auth";
 import { EngagementSummary } from "@/components/engagement-summary";
@@ -606,7 +607,7 @@ function getDisplayMonsterType(monster: CodexMonster): MonsterType {
 }
 
 function hasSkinVariants(monster: CodexMonster): boolean {
-  return (monster.spineAsset?.skinVariants?.length ?? 0) > 1;
+  return hasMonsterSkinParts(monster);
 }
 
 function getMeaningfulMoves(monster: CodexMonster) {
