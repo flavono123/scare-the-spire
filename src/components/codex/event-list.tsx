@@ -79,7 +79,7 @@ function EventThumbnail({
   return (
     <button
       onClick={onClick}
-      className="group relative w-full h-[72px] overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 hover:border-yellow-700/40 transition-all cursor-pointer text-left"
+      className="group relative h-[72px] w-full cursor-pointer overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 text-left shadow-sm shadow-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-500/40 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-black/30"
     >
       {event.imageUrl ? (
         <div className="absolute inset-0">
@@ -88,9 +88,9 @@ function EventThumbnail({
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover object-[30%_center] opacity-40 group-hover:opacity-60 transition-opacity"
+            className="object-cover object-[30%_center] opacity-40 transition-all duration-300 group-hover:scale-[1.03] group-hover:opacity-65"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/60 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/60 to-black/80 transition-opacity duration-200 group-hover:opacity-90" />
         </div>
       ) : (
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-800/50 to-zinc-900/80" />
@@ -353,14 +353,19 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
                     </span>
                   </h2>
                   <div className="space-y-2">
-                    {group.events.map((event) => (
-                      <EventThumbnail
+                    {group.events.map((event, index) => (
+                      <div
                         key={event.id}
-                        event={event}
-                        messages={serviceText}
-                        gameUi={gameUi}
-                        onClick={() => setSelectedEvent(event)}
-                      />
+                        className="animate-card-enter"
+                        style={{ animationDelay: `${Math.min(index * 12, 180)}ms` }}
+                      >
+                        <EventThumbnail
+                          event={event}
+                          messages={serviceText}
+                          gameUi={gameUi}
+                          onClick={() => setSelectedEvent(event)}
+                        />
+                      </div>
                     ))}
                   </div>
                 </section>
@@ -376,7 +381,7 @@ export function EventList({ serviceLocale, gameUi, title, events, versions, curr
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => { if (e.target === e.currentTarget) setSelectedEvent(null); }}
         >
-          <div className="w-full max-w-3xl my-8 mx-4 bg-[#12121a] rounded-xl border border-yellow-900/30 shadow-2xl">
+          <div className="my-8 mx-4 w-full max-w-5xl rounded-xl border border-white/10 bg-[#1a1a2e] shadow-2xl">
             <EventDetail serviceLocale={serviceLocale} gameUi={gameUi} event={selectedEvent} onClose={() => setSelectedEvent(null)} />
           </div>
         </div>

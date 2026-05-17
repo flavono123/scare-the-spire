@@ -63,7 +63,7 @@ export default function ProfilePage({
   const pet = findChoice(pets, petId) ?? pets[0];
 
   return (
-    <main className="mx-auto flex h-[calc(100svh-3rem)] w-full max-w-7xl flex-col gap-3 overflow-hidden px-3 py-2 sm:px-4">
+    <main className="mx-auto flex h-[calc(100svh-3.25rem)] w-full max-w-7xl flex-col gap-3 overflow-hidden px-3 py-2 sm:px-4">
       <header className="flex h-10 shrink-0 items-center justify-between gap-3 border-b border-white/10 pb-2">
         <div className="flex min-w-0 items-center gap-2">
           <Image

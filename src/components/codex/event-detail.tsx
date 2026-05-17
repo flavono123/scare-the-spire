@@ -16,10 +16,11 @@ import {
   CodexEvent,
   EventOption,
   EventPage,
-  EVENT_ACT_CONFIG,
   EVENT_ACT_UNKNOWN,
 } from "@/lib/codex-types";
 import { RichText } from "@/components/rich-text";
+
+const EVENT_ACT_COLOR = "#60a5fa";
 
 // --- Option card (static) ---
 function OptionCard({ option }: { option: EventOption }) {
@@ -252,13 +253,14 @@ function ActBadge({
   messages: CodexServiceMessages;
   gameUi: CodexGameUiLabels;
 }) {
-  const config = act
-    ? (EVENT_ACT_CONFIG[act] ?? EVENT_ACT_UNKNOWN)
-    : EVENT_ACT_UNKNOWN;
   const label = act ? gameUi.acts[act] : messages.labels.acts.none;
   return (
     <span
-      className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${config.color} ${config.border} ${config.bg}`}
+      className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${
+        act
+          ? "border-blue-500/40 bg-blue-500/10 text-blue-300"
+          : `${EVENT_ACT_UNKNOWN.color} ${EVENT_ACT_UNKNOWN.border} ${EVENT_ACT_UNKNOWN.bg}`
+      }`}
     >
       {label}
     </span>
@@ -276,64 +278,71 @@ interface EventDetailProps {
 export function EventDetail({ serviceLocale, gameUi, event, onClose }: EventDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   return (
-    <div className="rounded-xl bg-[#12121a] overflow-hidden">
-      <div className="flex flex-col md:flex-row">
-        {/* Left: Event art */}
-        {event.imageUrl && (
-          <div className="relative md:w-[340px] h-[200px] md:h-auto md:min-h-[320px] flex-shrink-0">
+    <div className="mx-auto flex max-w-5xl flex-col gap-5 p-4 sm:p-6">
+      <div className="flex items-center justify-between gap-3">
+        <Link
+          href={localizeHref("/compendium/events", serviceLocale)}
+          className="text-sm text-gray-400 transition-colors hover:text-gray-200"
+          onClick={(e) => {
+            if (onClose) { e.preventDefault(); onClose(); }
+          }}
+        >
+          ← {serviceText.eventsView.backToList}
+        </Link>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white/10"
+            aria-label={serviceText.common.close}
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+      {event.imageUrl && (
+        <div
+          className="relative overflow-hidden rounded-xl border border-white/10 bg-black/40"
+          style={{ boxShadow: `inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.25)` }}
+        >
+          <div className="relative aspect-[3440/1616] w-full">
             <Image
               src={event.imageUrl}
               alt={event.name}
               fill
-              sizes="340px"
-              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 960px"
+              className="object-contain"
+              priority={Boolean(onClose)}
             />
-            <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-transparent via-transparent to-[#12121a]" />
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Right: Title + interactive content */}
-        <div className="flex-1 p-5 md:p-6 min-w-0">
-          {/* Header */}
-          <div className="flex items-start justify-between gap-3 mb-4">
-            <div>
-              <Link
-                href={localizeHref("/compendium/events", serviceLocale)}
-                className="text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors"
-                onClick={(e) => {
-                  if (onClose) { e.preventDefault(); onClose(); }
-                }}
-              >
-                ← {serviceText.eventsView.backToList}
-              </Link>
-              <h2 className="font-game-title text-xl text-yellow-400 mt-1">
+      <div className="flex flex-col gap-5 lg:grid lg:grid-cols-[minmax(0,1fr)_20rem]">
+        <section className="min-w-0 rounded-xl border border-white/10 bg-white/[0.04] p-4 sm:p-5">
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="font-game-title text-2xl font-bold leading-tight text-yellow-400 sm:text-3xl">
                 {event.name}
-              </h2>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="font-game-text text-xs text-zinc-500">{event.nameEn}</span>
+              </h1>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
+                <span className="font-game-text text-sm text-zinc-500">{event.nameEn}</span>
                 <ActBadge act={event.act} messages={serviceText} gameUi={gameUi} />
               </div>
             </div>
-            {onClose && (
-              <button
-                onClick={onClose}
-                className="text-zinc-600 hover:text-zinc-300 transition-colors p-1 flex-shrink-0"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z" />
-                </svg>
-              </button>
-            )}
+            <span
+              className="hidden h-10 w-1.5 shrink-0 rounded-full sm:block"
+              style={{ backgroundColor: event.act ? EVENT_ACT_COLOR : "#71717a" }}
+            />
           </div>
 
-          {/* Interactive content: description + choices */}
           <EventContentViewer event={event} messages={serviceText} />
+        </section>
 
-          <div className="mt-5 rounded-lg border border-white/10 bg-white/[0.03] p-4">
-            <h3 className="mb-3 text-sm font-bold text-gray-300">{serviceText.common.comments}</h3>
-            <CommentSection threadKey={buildCodexCommentThreadKey("event", event.id)} />
-          </div>
-        </div>
+        <aside className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+          <h2 className="mb-3 text-sm font-bold text-gray-300">{serviceText.common.comments}</h2>
+          <CommentSection threadKey={buildCodexCommentThreadKey("event", event.id)} />
+        </aside>
       </div>
     </div>
   );
