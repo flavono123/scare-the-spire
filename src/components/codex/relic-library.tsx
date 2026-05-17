@@ -78,6 +78,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
   const [showBeta, setShowBeta] = useState(false);
+  const hasBetaArt = relics.some((relic) => relic.betaImageUrl);
 
   // Relic detail modal — initialize from ?relic= query param
   const initialRelicId = searchParams.get("relic");
@@ -341,15 +342,19 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
           </div>
         </FilterSection>
 
-        <div className="border-t border-white/10" />
+        {hasBetaArt && (
+          <>
+          <div className="border-t border-white/10" />
 
-        <div className="flex flex-col gap-1">
-          <ToggleButton
-            label={serviceText.cardsView.toggles.betaArt}
-            active={showBeta}
-            onClick={() => setShowBeta((v) => !v)}
-          />
-        </div>
+          <div className="flex flex-col gap-1">
+            <ToggleButton
+              label={serviceText.cardsView.toggles.betaArt}
+              active={showBeta}
+              onClick={() => setShowBeta((v) => !v)}
+            />
+          </div>
+          </>
+        )}
         </>
       )}
     >

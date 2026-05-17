@@ -55,6 +55,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
   const [showBeta, setShowBeta] = useState(false);
+  const hasBetaArt = powers.some((power) => power.betaImageUrl);
 
   // Power detail modal
   const initialPowerId = searchParams.get("power");
@@ -218,15 +219,19 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
           </div>
         </FilterSection>
 
-        <div className="border-t border-white/10" />
+        {hasBetaArt && (
+          <>
+          <div className="border-t border-white/10" />
 
-        <div className="flex flex-col gap-1">
-          <ToggleButton
-            label={serviceText.cardsView.toggles.betaArt}
-            active={showBeta}
-            onClick={() => setShowBeta((v) => !v)}
-          />
-        </div>
+          <div className="flex flex-col gap-1">
+            <ToggleButton
+              label={serviceText.cardsView.toggles.betaArt}
+              active={showBeta}
+              onClick={() => setShowBeta((v) => !v)}
+            />
+          </div>
+          </>
+        )}
         </>
       )}
     >
