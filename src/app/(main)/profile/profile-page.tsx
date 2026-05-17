@@ -347,6 +347,7 @@ function ActionBar({
           type="button"
           onClick={() => onChange(action.id)}
           aria-pressed={value === action.id}
+          aria-label={`${label} ${action.label}`}
           className={cn(
             "h-7 rounded px-2 text-[11px] font-semibold transition-colors",
             value === action.id
