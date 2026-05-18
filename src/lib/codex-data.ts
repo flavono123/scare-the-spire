@@ -70,6 +70,18 @@ import {
 const DATA_DIR = path.join(process.cwd(), "data/sts2");
 const DEFAULT_CODEX_GAME_LOCALE = DEFAULT_GAME_LOCALE_BY_SERVICE.ko;
 
+type PublicImageFileIndex = Record<string, string[]>;
+
+let publicImageFileIndexPromise: Promise<PublicImageFileIndex> | null = null;
+
+async function readPublicImageFileIndex(): Promise<PublicImageFileIndex> {
+  publicImageFileIndexPromise ??= fs
+    .readFile(path.join(DATA_DIR, "public-image-files.json"), "utf-8")
+    .then((raw) => JSON.parse(raw) as PublicImageFileIndex)
+    .catch(() => ({}));
+  return publicImageFileIndexPromise;
+}
+
 // Raw STS2 JSON card shape (snake_case from API)
 interface RawCard {
   id: string;
@@ -125,9 +137,13 @@ function codexCardImageUrl(card: RawCard): string | null {
 }
 
 async function scanImageFilenames(relativeDir: string): Promise<Set<string>> {
-  const dir = path.join(process.cwd(), "public/images/sts2", relativeDir);
-  const files = await fs.readdir(dir).catch(() => [] as string[]);
-  return new Set(files.filter((file) => file.endsWith(".webp")));
+  const index = await readPublicImageFileIndex();
+  return new Set((index[relativeDir] ?? []).filter((file) => file.endsWith(".webp")));
+}
+
+async function scanImageSlugs(relativeDir: string): Promise<Set<string>> {
+  const files = await scanImageFilenames(relativeDir);
+  return new Set(Array.from(files, (file) => file.replace(/\.webp$/, "")));
 }
 
 function imageFilenameFromStaticUrl(url: string | null): string | null {
@@ -432,8 +448,7 @@ function mapRelic(
  * e.g. "yummy_cookie" -> { ironclad: "/images/sts2/relics/yummy_cookie_ironclad.webp", ... }
  */
 async function scanRelicVariants(): Promise<Map<string, Partial<Record<RelicPool, string>>>> {
-  const relicImgDir = path.join(process.cwd(), "public/images/sts2/relics");
-  const files = await fs.readdir(relicImgDir).catch(() => [] as string[]);
+  const files = await scanImageFilenames("relics");
 
   const variants = new Map<string, Partial<Record<RelicPool, string>>>();
 
@@ -847,14 +862,10 @@ function mapEvent(
 
 export async function getCodexEvents(opts?: { gameLocale?: GameLocale }): Promise<CodexEvent[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const EVENTS_IMG_DIR = path.join(process.cwd(), "public/images/sts2/events");
   const [korEvents, engEvents, imgFiles, gameEvents] = await Promise.all([
     readJson<RawEvent[]>("kor/events.json"),
     readJson<RawEvent[]>("eng/events.json"),
-    fs.readdir(EVENTS_IMG_DIR).then(
-      (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
-      () => new Set<string>(), // fallback if dir doesn't exist
-    ),
+    scanImageSlugs("events"),
     readGameLocalizationTable(gameLocale, "events"),
   ]);
 
@@ -1082,20 +1093,12 @@ function buildBestiaryAnimationMoves(
 
 export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Promise<CodexMonster[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const MONSTERS_IMG_DIR = path.join(process.cwd(), "public/images/sts2/monsters-render");
-  const BOSSES_IMG_DIR = path.join(process.cwd(), "public/images/sts2/bosses");
   const [korMonsters, engMonsters, spineAssetList, monsterFiles, bossFiles, gameMonsters, gameBestiary, engBestiary] = await Promise.all([
     readJson<RawMonster[]>("kor/monsters.json"),
     readJson<RawMonster[]>("eng/monsters.json"),
     readJson<MonsterSpineAsset[]>("monster-spine-assets.json").catch(() => []),
-    fs.readdir(MONSTERS_IMG_DIR).then(
-      (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
-      () => new Set<string>(),
-    ),
-    fs.readdir(BOSSES_IMG_DIR).then(
-      (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
-      () => new Set<string>(),
-    ),
+    scanImageSlugs("monsters-render"),
+    scanImageSlugs("bosses"),
     readGameLocalizationTable(gameLocale, "monsters"),
     readGameLocalizationTable(gameLocale, "bestiary"),
     readGameLocalizationTable("eng", "bestiary"),
@@ -1170,14 +1173,10 @@ function mapEncounter(
 
 export async function getCodexEncounters(opts?: { gameLocale?: GameLocale }): Promise<CodexEncounter[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const BOSSES_IMG_DIR = path.join(process.cwd(), "public/images/sts2/bosses");
   const [korEncounters, engEncounters, bossFiles, gameEncounters, gameMonsters] = await Promise.all([
     readJson<RawEncounter[]>("kor/encounters.json"),
     readJson<RawEncounter[]>("eng/encounters.json"),
-    fs.readdir(BOSSES_IMG_DIR).then(
-      (files) => new Set(files.filter((f) => f.endsWith(".webp")).map((f) => f.replace(".webp", ""))),
-      () => new Set<string>(),
-    ),
+    scanImageSlugs("bosses"),
     readGameLocalizationTable(gameLocale, "encounters"),
     readGameLocalizationTable(gameLocale, "monsters"),
   ]);

@@ -14,6 +14,7 @@
     "og:status": "tsx scripts/report-og-images.ts",
     "codex:diff": "tsx scripts/generate-entity-diffs.ts",
     "codex:validate": "tsx scripts/validate-entity-versions.ts",
+    "sts2:index-images": "node scripts/build-sts2-public-image-file-index.mjs",
     "sts2:render-monsters": "node scripts/render-sts2-monster-spine-portraits.mjs",
     "i18n:sync": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/sync-game-localization.py",
     "i18n:validate": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate-i18n.py",
