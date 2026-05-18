@@ -34,6 +34,7 @@ export interface CodexCard {
   nameEn: string; // English
   description: string; // selected game locale, with BBCode markup
   descriptionRaw: string; // selected game locale, with {Var:diff()} templates
+  madScienceBaseDescriptionRaw?: string; // original Mad Science template for variant recomputation
   vars: Record<string, number>; // Base variable values for description template
   cost: number;
   isXCost: boolean;

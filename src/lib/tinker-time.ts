@@ -296,11 +296,12 @@ function renderMadScienceConditionals(
 }
 
 export function getMadScienceDescriptionRaw(
-  card: Pick<CodexCard, "descriptionRaw">,
+  card: Pick<CodexCard, "descriptionRaw" | "madScienceBaseDescriptionRaw">,
   cardType: TinkerCardType,
   riderId: TinkerRiderId,
 ): string {
-  return renderMadScienceConditionals(card.descriptionRaw, cardType, riderId)
+  const templateRaw = card.madScienceBaseDescriptionRaw ?? card.descriptionRaw;
+  return renderMadScienceConditionals(templateRaw, cardType, riderId)
     .replace(/\{energyPrefix:energyIcons\(1\)\}/g, "[energy:1]")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
@@ -312,6 +313,7 @@ export function getMadSciencePreviewCard(
   riderId: TinkerRiderId,
   typeLabel: string,
 ): CodexCard {
+  const madScienceBaseDescriptionRaw = card.madScienceBaseDescriptionRaw ?? card.descriptionRaw;
   const descriptionRaw = getMadScienceDescriptionRaw(card, cardType, riderId);
   const vars = {
     ...card.vars,
@@ -326,6 +328,7 @@ export function getMadSciencePreviewCard(
     descriptionRaw,
     hitCount: riderId === "VIOLENCE" ? MAD_SCIENCE_DYNAMIC_VARS.ViolenceHits : null,
     imageUrl: TINKER_CARD_IMAGE_BY_TYPE[cardType],
+    madScienceBaseDescriptionRaw,
     type: TINKER_CARD_TYPE_TO_KO[cardType],
     typeLabel,
     vars,
