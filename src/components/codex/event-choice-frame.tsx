@@ -68,7 +68,7 @@ export function GameChoiceFrame<TPreview = unknown>({
         />
       )}
       <div
-        className="relative ml-[22px] flex min-h-[74px] flex-col justify-center px-[42px] py-[10px] pr-[46px]"
+        className="relative ml-[22px] flex min-h-[74px] flex-col justify-center break-keep px-[42px] py-[10px] pr-[46px]"
         style={{ textShadow: GAME_CHOICE_TEXT_SHADOW }}
       >
         {children}
