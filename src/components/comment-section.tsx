@@ -194,16 +194,26 @@ export function CommentSection({
   const { counts: likeCounts, liked: likedSet, toggle: toggleLike } = useCommentLikes(commentIds, userId);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
   const legacyInlineIndex = useMemo(() => buildLegacyInlineIndex(entities), [entities]);
+  const nicknameInputRef = useRef<HTMLInputElement>(null);
+
+  const commitNickname = async (rawNickname: string | undefined) => {
+    const nickname = rawNickname?.trim() || profileFallback.nickname;
+    await saveProfile({ ...profile, nickname }).catch(() => undefined);
+    if (nicknameInputRef.current) {
+      nicknameInputRef.current.value = nickname;
+    }
+    return nickname;
+  };
 
   const handleSubmit = async (blocks: PostBlock[]) => {
     const trimmed = blocksToPlainText(blocks).trim();
-    const nick = profile.nickname.trim();
+    const nick = nicknameInputRef.current?.value.trim() || profile.nickname.trim();
     if (!trimmed || !nick || !userId) return;
 
     setSubmitting(true);
     try {
-      await saveProfile(profile).catch(() => undefined);
-      await add(nick, trimmed, blocks);
+      const nickname = await commitNickname(nick);
+      await add(nickname, trimmed, blocks);
     } finally {
       setSubmitting(false);
     }
@@ -226,7 +236,9 @@ export function CommentSection({
       ) : (
         <ul className="space-y-3">
           {comments.map((comment) => {
-            const displayNickname = profileByUserId.get(comment.user_id)?.nickname ?? comment.nickname;
+            const displayNickname = comment.user_id === userId
+              ? profile.nickname
+              : profileByUserId.get(comment.user_id)?.nickname ?? comment.nickname;
             return (
               <li key={comment.id} className="rounded-lg border border-border/50 bg-card/20 px-3 py-2.5 text-sm">
                 <div className="flex items-center gap-2">
@@ -268,6 +280,18 @@ export function CommentSection({
 
       {ready && userId && !storageUnavailable && (
         <div className="space-y-2">
+          <input
+            key={profile.nickname}
+            ref={nicknameInputRef}
+            type="text"
+            placeholder={copy.nicknamePlaceholder}
+            defaultValue={profile.nickname}
+            maxLength={20}
+            onBlur={(event) => {
+              void commitNickname(event.currentTarget.value);
+            }}
+            className="w-full rounded bg-zinc-800 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-yellow-500/50"
+          />
           {entitiesLoading ? (
             <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card/30 px-3 py-2 text-xs text-muted-foreground">
               <EngagementSpinner size={14} />
