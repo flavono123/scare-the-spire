@@ -309,6 +309,23 @@ function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; 
     element.scrollBy({ left: direction * element.clientWidth * 0.78, behavior: "smooth" });
   };
 
+  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    const element = event.currentTarget;
+    if (element.scrollWidth <= element.clientWidth) return;
+
+    const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY)
+      ? event.deltaX
+      : event.deltaY;
+    if (delta === 0) return;
+
+    const atStart = element.scrollLeft <= 1;
+    const atEnd = element.scrollLeft + element.clientWidth >= element.scrollWidth - 1;
+    if ((delta < 0 && atStart) || (delta > 0 && atEnd)) return;
+
+    event.preventDefault();
+    element.scrollLeft += delta;
+  };
+
   return (
     <div className="relative">
       {canScrollLeft && (
@@ -319,6 +336,7 @@ function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; 
       )}
       <div
         ref={scrollerRef}
+        onWheel={handleWheel}
         className="mx-7 flex gap-1.5 overflow-x-auto scroll-smooth py-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {items.map((item) => {
