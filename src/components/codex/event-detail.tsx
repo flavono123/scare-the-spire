@@ -567,16 +567,20 @@ function EventPotionSetPreview({ potions }: { potions: CodexPotion[] }) {
       {potions.map((potion) => (
         <div
           key={potion.id}
-          className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-black/10 sm:h-14 sm:w-14"
+          className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-black/25 shadow-[0_0_18px_rgba(103,232,249,0.20),0_10px_22px_rgba(0,0,0,0.55)] ring-1 ring-white/10 backdrop-blur-[1px] sm:h-14 sm:w-14"
         >
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-1 rounded-full bg-cyan-200/15 blur-md"
+          />
           <Image
             src={potion.imageUrl}
             alt={potion.name}
             width={56}
             height={56}
-            className="h-11 w-11 object-contain sm:h-12 sm:w-12"
+            className="relative z-10 h-11 w-11 object-contain sm:h-12 sm:w-12"
             style={{
-              filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 3px 5px rgba(0,0,0,0.65))",
+              filter: `${characterOutlineFilter(potion.pool) ?? "drop-shadow(0 3px 5px rgba(0,0,0,0.65))"} drop-shadow(0 0 12px rgba(236,254,255,0.45))`,
             }}
           />
         </div>
