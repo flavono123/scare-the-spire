@@ -21,6 +21,11 @@ BACKGROUND_IMPORTS = {
     "neow": "animations/backgrounds/neow_room/neow_bg.png.import",
 }
 
+PROFILE_RENDER_IMPORTS = {
+    "nonupeipe": "images/packed/map/ancients/ancient_node_nonupeipe.png.import",
+    "vakuu": "images/packed/map/ancients/ancient_node_vakuu.png.import",
+}
+
 
 def extract_texture(reader: PCKReader, import_path: str):
     raw_import = reader.read_file(import_path)
@@ -47,8 +52,10 @@ def main() -> int:
     out_root = (REPO_ROOT / args.out_root).resolve()
     ancient_dir = out_root / "ancients"
     background_dir = out_root / "ancients-bg"
+    profile_dir = out_root / "ancients-profile"
     ancient_dir.mkdir(parents=True, exist_ok=True)
     background_dir.mkdir(parents=True, exist_ok=True)
+    profile_dir.mkdir(parents=True, exist_ok=True)
 
     with PCKReader(args.pck) as reader:
         for ancient_id in ANCIENT_IDS:
@@ -66,6 +73,14 @@ def main() -> int:
             image = extract_texture(reader, import_path)
             image.convert("RGB").save(out_path, "WEBP", quality=92, method=6)
             print(f"extracted Ancient background: {out_path.relative_to(REPO_ROOT)}")
+
+        for ancient_id, import_path in PROFILE_RENDER_IMPORTS.items():
+            out_path = profile_dir / f"{ancient_id}.webp"
+            if out_path.exists() and not args.force:
+                continue
+            image = extract_texture(reader, import_path)
+            image.save(out_path, "WEBP", lossless=True, method=6)
+            print(f"extracted Ancient profile render: {out_path.relative_to(REPO_ROOT)}")
 
     return 0
 
