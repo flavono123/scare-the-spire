@@ -16,6 +16,7 @@ export const serviceMessages = {
     profile: {
       navLabel: "프로필",
       fallbackNickname: "프로필",
+      nicknamePlaceholder: "닉네임",
       metadata: {
         title: "프로필",
         description: "댓글과 케미컬X에 사용할 프로필 선택 화면",
@@ -507,6 +508,7 @@ export const serviceMessages = {
     profile: {
       navLabel: "Profile",
       fallbackNickname: "Profile",
+      nicknamePlaceholder: "Nickname",
       metadata: {
         title: "Profile",
         description: "Profile selection screen for comments and Chemical X",

@@ -51,6 +51,7 @@ type ActionId = "IDLE" | "ATTACK" | "HURT";
 export interface ProfilePageCopy {
   fallbackNickname: string;
   devBadge: string;
+  nicknamePlaceholder: string;
   selectors: {
     character: string;
     pet: string;
@@ -143,6 +144,12 @@ export default function ProfilePage({
     },
     [fallbackProfile, saveProfile],
   );
+  const persistNickname = useCallback(() => {
+    persistProfile((current) => ({
+      ...current,
+      nickname: draftProfile.nickname,
+    }));
+  }, [draftProfile.nickname, persistProfile]);
 
   const character = findChoice(characters, draftProfile.characterId) ?? characters[0];
   const pet = findChoice(pets, draftProfile.petId) ?? pets[0];
@@ -164,7 +171,24 @@ export default function ProfilePage({
             height={28}
             className="h-7 w-7 object-contain"
           />
-          <h1 className="truncate text-lg font-bold text-zinc-100">{draftProfile.nickname}</h1>
+          <input
+            type="text"
+            aria-label={copy.nicknamePlaceholder}
+            value={draftProfile.nickname}
+            placeholder={copy.nicknamePlaceholder}
+            maxLength={20}
+            onChange={(event) => {
+              const nickname = event.target.value;
+              setDraftProfile((current) => ({ ...current, nickname }));
+            }}
+            onBlur={persistNickname}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.currentTarget.blur();
+              }
+            }}
+            className="min-w-0 bg-transparent text-lg font-bold text-zinc-100 outline-none placeholder:text-zinc-600 focus:text-amber-100"
+          />
         </div>
         {copy.devBadge && (
           <span className="shrink-0 rounded border border-amber-300/30 bg-amber-400/10 px-2 py-0.5 text-[11px] font-semibold text-amber-100">
