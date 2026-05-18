@@ -19,6 +19,8 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
+import { useStoredUserProfile } from "@/hooks/use-user-profile";
+import { characterIconUrl } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 
 // --- Dropdown data ---
@@ -424,6 +426,7 @@ export function SiteNavbar() {
   );
   const messages = serviceMessages[serviceLocale];
   const showDevMenu = process.env.NODE_ENV === "development";
+  const profile = useStoredUserProfile();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
@@ -496,15 +499,13 @@ export function SiteNavbar() {
               align="right"
             />
           )}
-          {showDevMenu && (
-            <NavIconLink
-              href={localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale)}
-              icon="/images/sts2/characters/character_icon_necrobinder.webp"
-              label={messages.profile.navLabel}
-              iconSize={24}
-              iconClassName="group-hover:scale-110"
-            />
-          )}
+          <NavIconLink
+            href={localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale)}
+            icon={characterIconUrl(profile.characterId)}
+            label={messages.profile.navLabel}
+            iconSize={24}
+            iconClassName="group-hover:scale-110"
+          />
         </div>
       </div>
     </header>

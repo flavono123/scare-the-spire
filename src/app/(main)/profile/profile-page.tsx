@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AncientNodeRender } from "@/components/codex/ancient-node-render";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import Image from "@/components/ui/static-image";
+import { useAuth } from "@/hooks/use-auth";
+import { useUserProfile } from "@/hooks/use-user-profile";
 import type { MonsterSpineAsset } from "@/lib/codex-types";
+import { normalizeUserProfile, type UserProfile } from "@/lib/user-profile";
 import { cn } from "@/lib/utils";
 
 export type ProfileNicknameLocale = "ko" | "en";
@@ -41,7 +44,6 @@ export interface AncientChoice {
   label: string;
   subtitle: string;
   iconUrl: string;
-  spineAsset: MonsterSpineAsset | null;
 }
 
 type ActionId = "IDLE" | "ATTACK" | "HURT";
@@ -111,23 +113,44 @@ export default function ProfilePage({
   copy: ProfilePageCopy;
   nicknameLocale?: ProfileNicknameLocale;
 }) {
-  const [characterId, setCharacterId] = useState(DEFAULTS.character);
-  const [petId, setPetId] = useState(DEFAULTS.pet);
-  const [ancientId, setAncientId] = useState(DEFAULTS.ancient);
-  const [petSkinById, setPetSkinById] = useState<Record<string, string>>({});
-  const [profileNickname, setProfileNickname] = useState(() => getInitialNickname(characters, DEFAULTS.character, nicknameLocale, copy.fallbackNickname));
+  const fallbackProfile = useMemo(
+    () => normalizeUserProfile({
+      nickname: getInitialNickname(characters, DEFAULTS.character, nicknameLocale, copy.fallbackNickname),
+      characterId: DEFAULTS.character,
+      petId: DEFAULTS.pet,
+      petSkinId: null,
+      ancientId: DEFAULTS.ancient,
+    }),
+    [characters, copy.fallbackNickname, nicknameLocale],
+  );
+  const { userId } = useAuth();
+  const { profile, saveProfile } = useUserProfile(userId, fallbackProfile);
+  const [draftProfile, setDraftProfile] = useState(fallbackProfile);
   const [characterAction, setCharacterAction] = useActionState();
   const [petAction, setPetAction] = useActionState();
 
-  const character = findChoice(characters, characterId) ?? characters[0];
-  const pet = findChoice(pets, petId) ?? pets[0];
-  const ancient = findChoice(ancients, ancientId) ?? ancients[0];
-  const selectedPetSkinId = pet?.skinOptions.length
-    ? petSkinById[pet.id] ?? pet.skinOptions[0]?.id
+  useEffect(() => {
+    setDraftProfile(profile);
+  }, [profile]);
+
+  const persistProfile = useCallback(
+    (getNext: (current: UserProfile) => UserProfile) => {
+      setDraftProfile((current) => {
+        const next = normalizeUserProfile(getNext(current), fallbackProfile);
+        void saveProfile(next).catch(() => undefined);
+        return next;
+      });
+    },
+    [fallbackProfile, saveProfile],
+  );
+
+  const character = findChoice(characters, draftProfile.characterId) ?? characters[0];
+  const pet = findChoice(pets, draftProfile.petId) ?? pets[0];
+  const ancient = findChoice(ancients, draftProfile.ancientId) ?? ancients[0];
+  const selectedPetSkin = pet?.skinOptions.length
+    ? pet.skinOptions.find((option) => option.id === draftProfile.petSkinId) ?? pet.skinOptions[0]
     : undefined;
-  const selectedPetSkin = selectedPetSkinId
-    ? pet?.skinOptions.find((option) => option.id === selectedPetSkinId)
-    : undefined;
+  const selectedPetSkinId = selectedPetSkin?.id;
   const selectedPetSkins = selectedPetSkin?.selectedSkins ?? pet?.selectedSkins ?? null;
 
   return (
@@ -141,7 +164,7 @@ export default function ProfilePage({
             height={28}
             className="h-7 w-7 object-contain"
           />
-          <h1 className="truncate text-lg font-bold text-zinc-100">{profileNickname}</h1>
+          <h1 className="truncate text-lg font-bold text-zinc-100">{draftProfile.nickname}</h1>
         </div>
         {copy.devBadge && (
           <span className="shrink-0 rounded border border-amber-300/30 bg-amber-400/10 px-2 py-0.5 text-[11px] font-semibold text-amber-100">
@@ -161,8 +184,11 @@ export default function ProfilePage({
                 labels={copy.carousel}
                 onSelect={(id) => {
                   const nextCharacter = findChoice(characters, id);
-                  setCharacterId(id);
-                  setProfileNickname(pickCharacterNickname(nextCharacter, nicknameLocale, copy.fallbackNickname));
+                  persistProfile((current) => ({
+                    ...current,
+                    characterId: id,
+                    nickname: pickCharacterNickname(nextCharacter, nicknameLocale, copy.fallbackNickname),
+                  }));
                   setCharacterAction("ATTACK");
                 }}
               />
@@ -177,7 +203,12 @@ export default function ProfilePage({
                 selectedId={pet?.id}
                 labels={copy.carousel}
                 onSelect={(id) => {
-                  setPetId(id);
+                  const nextPet = findChoice(pets, id);
+                  persistProfile((current) => ({
+                    ...current,
+                    petId: id,
+                    petSkinId: nextPet?.skinOptions[0]?.id ?? null,
+                  }));
                   setPetAction("ATTACK");
                 }}
               />
@@ -186,7 +217,14 @@ export default function ProfilePage({
 
           <ProfileRow
             label={copy.selectors.ancient}
-            carousel={<ChoiceCarousel items={ancients} selectedId={ancientId} labels={copy.carousel} onSelect={setAncientId} />}
+            carousel={
+              <ChoiceCarousel
+                items={ancients}
+                selectedId={ancient?.id}
+                labels={copy.carousel}
+                onSelect={(id) => persistProfile((current) => ({ ...current, ancientId: id }))}
+              />
+            }
           />
         </div>
 
@@ -205,7 +243,7 @@ export default function ProfilePage({
           onPetAction={setPetAction}
           onPetSkinSelect={(skinId) => {
             if (!pet) return;
-            setPetSkinById((current) => ({ ...current, [pet.id]: skinId }));
+            persistProfile((current) => ({ ...current, petSkinId: skinId }));
             setPetAction("ATTACK");
           }}
         />

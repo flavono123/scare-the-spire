@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import {
-  getCodexAncientSpineAssets,
   getCodexAncients,
   getCodexCharacters,
   getCodexCharacterSpineAssets,
@@ -120,17 +119,15 @@ export default async function ProfileDevRoute({
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const copy = serviceMessages[serviceLocale].profile;
 
-  const [characters, characterSpines, ancientSpines, monsters, ancients, vfxAssets] = await Promise.all([
+  const [characters, characterSpines, monsters, ancients, vfxAssets] = await Promise.all([
     getCodexCharacters({ gameLocale }),
     getCodexCharacterSpineAssets(),
-    getCodexAncientSpineAssets(),
     getCodexMonsters({ gameLocale }),
     getCodexAncients({ gameLocale }),
     getCodexSpineVfxAssets(),
   ]);
 
   const characterSpineById = new Map(characterSpines.map((asset) => [asset.id, asset]));
-  const ancientSpineById = new Map(ancientSpines.map((asset) => [asset.id, asset]));
   const monsterById = new Map(monsters.map((monster) => [monster.id, monster]));
   const vfxById = new Map(vfxAssets.filter((asset) => asset.usable !== false).map((asset) => [asset.id, asset]));
 
@@ -139,7 +136,7 @@ export default async function ProfileDevRoute({
       key={serviceLocale}
       characters={orderCharacters(characters).map((character) => mapCharacter(character, characterSpineById.get(character.id) ?? null))}
       pets={PET_CHOICES.map((choice) => mapPet(choice, monsterById.get(choice.monsterId) ?? null, vfxById, copy))}
-      ancients={ancients.map((ancient) => mapAncient(ancient, ancientSpineById.get(ancient.id) ?? null))}
+      ancients={ancients.map(mapAncient)}
       copy={copy}
       nicknameLocale={serviceLocale}
     />
@@ -195,14 +192,13 @@ function mapPet(
   };
 }
 
-function mapAncient(ancient: CodexAncient, spineAsset: MonsterSpineAsset | null): AncientChoice {
+function mapAncient(ancient: CodexAncient): AncientChoice {
   const iconUrl = ancient.imageUrl ?? "/images/sts2/nav/stats_ancients.png";
   return {
     id: ancient.id,
     label: ancient.name,
     subtitle: ancient.epithet,
     iconUrl,
-    spineAsset,
   };
 }
 
