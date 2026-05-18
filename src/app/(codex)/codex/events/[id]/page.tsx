@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexEvents, getMadScienceBaseCard } from "@/lib/codex-data";
+import { getCodexEvents, getCodexPotions, getMadScienceBaseCard } from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -45,10 +45,11 @@ export default async function EventDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [events, gameUi, madScienceBaseCard] = await Promise.all([
+  const [events, gameUi, madScienceBaseCard, potions] = await Promise.all([
     getCodexEvents({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
     getMadScienceBaseCard({ gameLocale }),
+    getCodexPotions({ gameLocale }),
   ]);
   const event = events.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!event) notFound();
@@ -60,6 +61,7 @@ export default async function EventDetailPage({
         gameUi={gameUi}
         event={event}
         madScienceBaseCard={madScienceBaseCard}
+        potions={potions}
       />
     </div>
   );

@@ -16,8 +16,11 @@ import {
 import {
   CodexCard,
   CodexEvent,
+  CodexPotion,
   EventOption,
   EventPage,
+  PotionRarityKo,
+  characterOutlineFilter,
 } from "@/lib/codex-types";
 import { RichText } from "@/components/rich-text";
 import { CardTile } from "@/components/codex/card-tile";
@@ -116,6 +119,26 @@ const FUTURE_OF_POTIONS_OPTIONS: EventOption[] = [
   },
 ];
 
+const FUTURE_OF_POTIONS_RARITY_BY_OPTION_ID: Record<string, PotionRarityKo> = {
+  POTION_COMMON_ATTACK: "일반",
+  POTION_COMMON_SKILL: "일반",
+  POTION_EVENT_ATTACK: "이벤트",
+  POTION_EVENT_POWER: "이벤트",
+  POTION_EVENT_SKILL: "이벤트",
+  POTION_RARE_ATTACK: "희귀",
+  POTION_RARE_POWER: "희귀",
+  POTION_RARE_SKILL: "희귀",
+  POTION_TOKEN_ATTACK: "토큰",
+  POTION_TOKEN_SKILL: "토큰",
+  POTION_UNCOMMON_ATTACK: "고급",
+  POTION_UNCOMMON_POWER: "고급",
+  POTION_UNCOMMON_SKILL: "고급",
+};
+
+type EventPreview =
+  | { kind: "card"; card: CodexCard }
+  | { kind: "potions"; potions: CodexPotion[]; rarity: PotionRarityKo };
+
 interface EventArtOverlay {
   alt: string;
   className: string;
@@ -186,21 +209,21 @@ function resolveEventOptionPage(
 function GameChoiceFrame({
   children,
   onClick,
-  onPreviewCardChange,
-  previewCard,
+  onPreviewChange,
+  preview,
 }: {
   children: ReactNode;
   onClick?: () => void;
-  onPreviewCardChange?: (card: CodexCard | null) => void;
-  previewCard?: CodexCard | null;
+  onPreviewChange?: (preview: EventPreview | null) => void;
+  preview?: EventPreview | null;
 }) {
   const interactive = Boolean(onClick);
   const showPreview = useCallback(() => {
-    if (previewCard) onPreviewCardChange?.(previewCard);
-  }, [onPreviewCardChange, previewCard]);
+    if (preview) onPreviewChange?.(preview);
+  }, [onPreviewChange, preview]);
   const hidePreview = useCallback(() => {
-    if (previewCard) onPreviewCardChange?.(null);
-  }, [onPreviewCardChange, previewCard]);
+    if (preview) onPreviewChange?.(null);
+  }, [onPreviewChange, preview]);
   const className = `group relative block min-h-[74px] w-full overflow-visible border-0 bg-transparent p-0 text-left transition-transform duration-150 ${
     interactive ? "cursor-pointer hover:-translate-y-0.5 focus-visible:outline-none" : ""
   }`;
@@ -265,16 +288,16 @@ function GameChoiceFrame({
 
 // --- Option card (static) ---
 function OptionCard({
-  onPreviewCardChange,
+  onPreviewChange,
   option,
-  previewCard,
+  preview,
 }: {
-  onPreviewCardChange?: (card: CodexCard | null) => void;
+  onPreviewChange?: (preview: EventPreview | null) => void;
   option: EventOption;
-  previewCard?: CodexCard | null;
+  preview?: EventPreview | null;
 }) {
   return (
-    <GameChoiceFrame previewCard={previewCard} onPreviewCardChange={onPreviewCardChange}>
+    <GameChoiceFrame preview={preview} onPreviewChange={onPreviewChange}>
       <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
         <RichText text={option.title} />
       </div>
@@ -330,13 +353,15 @@ export function EventContentViewer({
   gameUi,
   madScienceBaseCard,
   messages,
-  onPreviewCardChange,
+  onPreviewChange,
+  potions,
 }: {
   event: CodexEvent;
   gameUi: CodexGameUiLabels;
   madScienceBaseCard?: CodexCard | null;
   messages: CodexServiceMessages;
-  onPreviewCardChange?: (card: CodexCard | null) => void;
+  onPreviewChange?: (preview: EventPreview | null) => void;
+  potions?: CodexPotion[];
 }) {
   const [history, setHistory] = useState<NavEntry[]>([]);
   const pages = useMemo(() => event.pages ?? [], [event.pages]);
@@ -401,30 +426,56 @@ export function EventContentViewer({
     [displayOptions],
   );
 
-  const previewCardsByOptionId = useMemo(() => {
-    const previewCards = new Map<string, CodexCard>();
-    if (event.id !== "TINKER_TIME" || !madScienceBaseCard) return previewCards;
+  const previewByOptionId = useMemo(() => {
+    const previews = new Map<string, EventPreview>();
+
+    if (event.id === "THE_FUTURE_OF_POTIONS" && potions && potions.length > 0) {
+      const potionsByRarity = new Map<PotionRarityKo, CodexPotion[]>();
+      for (const potion of potions) {
+        const list = potionsByRarity.get(potion.rarity) ?? [];
+        list.push(potion);
+        potionsByRarity.set(potion.rarity, list);
+      }
+      for (const list of potionsByRarity.values()) {
+        list.sort((a, b) => a.name.localeCompare(b.name, "ko"));
+      }
+      for (const option of options) {
+        const rarity = FUTURE_OF_POTIONS_RARITY_BY_OPTION_ID[option.id];
+        if (!rarity) continue;
+        previews.set(option.id, {
+          kind: "potions",
+          potions: potionsByRarity.get(rarity) ?? [],
+          rarity,
+        });
+      }
+      return previews;
+    }
+
+    if (event.id !== "TINKER_TIME" || !madScienceBaseCard) return previews;
 
     if (currentPageId === "CHOOSE_RIDER") {
       const selectedType = getTinkerSelectedType(currentEntry);
-      if (!selectedType) return previewCards;
+      if (!selectedType) return previews;
       const typeKo = TINKER_CARD_TYPE_TO_KO[selectedType];
       for (const option of options) {
         if (!isTinkerRiderId(option.id)) continue;
-        previewCards.set(
+        previews.set(
           option.id,
-          getMadSciencePreviewCard(
-            madScienceBaseCard,
-            selectedType,
-            option.id,
-            gameUi.cardLibrary.types[typeKo] ?? typeKo,
-          ),
+          {
+            kind: "card",
+            card: getMadSciencePreviewCard(
+              madScienceBaseCard,
+              selectedType,
+              option.id,
+              gameUi.cardLibrary.types[typeKo] ?? typeKo,
+            ),
+          },
         );
       }
     }
 
-    return previewCards;
-  }, [currentEntry, currentPageId, event.id, gameUi.cardLibrary.types, madScienceBaseCard, options]);
+    return previews;
+  }, [currentEntry, currentPageId, event.id, gameUi.cardLibrary.types, madScienceBaseCard, options, potions]);
 
   const optionLabelMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -458,21 +509,21 @@ export function EventContentViewer({
       const visitCount = history.filter((h) => h.optionId === optionId).length;
       const resolved = resolveEventOptionPage(event.id, currentPageId, optionId, visitCount, pageMap);
       if (!resolved) return;
-      onPreviewCardChange?.(null);
+      onPreviewChange?.(null);
       setHistory((prev) => [...prev, { pageId: resolved, optionId }]);
     },
-    [currentPageId, event.id, history, onPreviewCardChange, pageMap],
+    [currentPageId, event.id, history, onPreviewChange, pageMap],
   );
 
   const goBack = useCallback(() => {
-    onPreviewCardChange?.(null);
+    onPreviewChange?.(null);
     setHistory((prev) => prev.slice(0, -1));
-  }, [onPreviewCardChange]);
+  }, [onPreviewChange]);
 
   const reset = useCallback(() => {
-    onPreviewCardChange?.(null);
+    onPreviewChange?.(null);
     setHistory([]);
-  }, [onPreviewCardChange]);
+  }, [onPreviewChange]);
 
   const getBreadcrumbLabel = useCallback(
     (entry: NavEntry) => {
@@ -532,14 +583,14 @@ export function EventContentViewer({
         <div className="mt-auto space-y-2.5 pt-5">
           {options.map((opt) => {
             const navigable = hasPages && canNavigate(opt.id);
-            const previewCard = previewCardsByOptionId.get(opt.id) ?? null;
+            const preview = previewByOptionId.get(opt.id) ?? null;
             if (!navigable) {
               return (
                 <OptionCard
                   key={opt.id}
                   option={opt}
-                  previewCard={previewCard}
-                  onPreviewCardChange={onPreviewCardChange}
+                  preview={preview}
+                  onPreviewChange={onPreviewChange}
                 />
               );
             }
@@ -547,8 +598,8 @@ export function EventContentViewer({
               <GameChoiceFrame
                 key={opt.id}
                 onClick={() => navigateTo(opt.id)}
-                previewCard={previewCard}
-                onPreviewCardChange={onPreviewCardChange}
+                preview={preview}
+                onPreviewChange={onPreviewChange}
               >
                 <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
                   <RichText text={opt.title} />
@@ -587,7 +638,64 @@ interface EventDetailProps {
   gameUi: CodexGameUiLabels;
   event: CodexEvent;
   madScienceBaseCard?: CodexCard | null;
+  potions?: CodexPotion[];
   onClose?: () => void;
+}
+
+function EventPotionSetPreview({ potions }: { potions: CodexPotion[] }) {
+  const columns = Math.min(5, Math.max(1, Math.ceil(Math.sqrt(potions.length))));
+
+  return (
+    <div
+      className="grid max-w-[320px] gap-2 drop-shadow-[0_18px_30px_rgba(0,0,0,0.75)]"
+      style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+    >
+      {potions.map((potion) => (
+        <div
+          key={potion.id}
+          className="relative flex h-12 w-12 items-center justify-center rounded-lg bg-black/10 sm:h-14 sm:w-14"
+        >
+          <Image
+            src={potion.imageUrl}
+            alt={potion.name}
+            width={56}
+            height={56}
+            className="h-11 w-11 object-contain sm:h-12 sm:w-12"
+            style={{
+              filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 3px 5px rgba(0,0,0,0.65))",
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function EventPreviewOverlay({
+  preview,
+  serviceLocale,
+}: {
+  preview: EventPreview;
+  serviceLocale: ServiceLocale;
+}) {
+  return (
+    <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 sm:left-[27%]">
+      {preview.kind === "card" ? (
+        <div className="w-[150px] drop-shadow-[0_22px_40px_rgba(0,0,0,0.70)] sm:w-[158px]">
+          <CardTile
+            card={preview.card}
+            showUpgrade={false}
+            showBeta={false}
+            width={158}
+            interactive={false}
+            serviceLocale={serviceLocale}
+          />
+        </div>
+      ) : (
+        <EventPotionSetPreview potions={preview.potions} />
+      )}
+    </div>
+  );
 }
 
 export function EventDetail({
@@ -595,11 +703,12 @@ export function EventDetail({
   gameUi,
   event,
   madScienceBaseCard,
+  potions,
   onClose,
 }: EventDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const isModal = Boolean(onClose);
-  const [previewCard, setPreviewCard] = useState<CodexCard | null>(null);
+  const [preview, setPreview] = useState<EventPreview | null>(null);
   const artOverlays = EVENT_ART_OVERLAYS[event.id] ?? [];
   const rootClassName = isModal
     ? "mx-auto flex max-w-[92rem] flex-col gap-4 p-3 sm:p-5"
@@ -664,18 +773,7 @@ export function EventDetail({
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(96,165,250,0.20),transparent_34%),linear-gradient(135deg,#111827,#050505_65%)]" />
           )}
           <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/30 to-transparent" />
-          {previewCard && (
-            <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 w-[150px] -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_22px_40px_rgba(0,0,0,0.70)] sm:left-[27%] sm:w-[158px]">
-              <CardTile
-                card={previewCard}
-                showUpgrade={false}
-                showBeta={false}
-                width={158}
-                interactive={false}
-                serviceLocale={serviceLocale}
-              />
-            </div>
-          )}
+          {preview && <EventPreviewOverlay preview={preview} serviceLocale={serviceLocale} />}
           <div className={textPanelClassName}>
             <div className="relative flex min-h-0 flex-1 flex-col">
               <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
@@ -691,7 +789,8 @@ export function EventDetail({
                   gameUi={gameUi}
                   madScienceBaseCard={madScienceBaseCard}
                   messages={serviceText}
-                  onPreviewCardChange={setPreviewCard}
+                  onPreviewChange={setPreview}
+                  potions={potions}
                 />
               </div>
             </div>
