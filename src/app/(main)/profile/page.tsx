@@ -82,8 +82,7 @@ const CHARACTER_NICKNAMES: Record<string, Record<ProfileNicknameLocale, readonly
   },
 };
 
-const ANCIENT_BACKGROUND_IDS = new Set(["DARV", "NEOW", "OROBAS", "PAEL", "TANX", "TEZCATARA"]);
-const ANCIENT_PROFILE_IMAGE_IDS = new Set(["NONUPEIPE", "VAKUU"]);
+const ANCIENT_BACKGROUND_IDS = new Set(["DARV", "NEOW", "NONUPEIPE", "OROBAS", "PAEL", "TANX", "TEZCATARA", "VAKUU"]);
 
 const PET_CHOICES = [
   { id: "OSTY", monsterId: "OSTY", selectedSkins: null, skinOptions: [] },
@@ -213,9 +212,6 @@ function mapAncient(ancient: CodexAncient, spineAsset: MonsterSpineAsset | null)
     iconUrl,
     backgroundImageUrl: ANCIENT_BACKGROUND_IDS.has(ancient.id)
       ? `/images/sts2/ancients-bg/${key}_bg.webp`
-      : null,
-    profileImageUrl: ANCIENT_PROFILE_IMAGE_IDS.has(ancient.id)
-      ? `/images/sts2/ancients-profile/${key}.webp`
       : null,
     spineAsset,
   };

@@ -41,7 +41,6 @@ export interface AncientChoice {
   subtitle: string;
   iconUrl: string;
   backgroundImageUrl: string | null;
-  profileImageUrl: string | null;
   spineAsset: MonsterSpineAsset | null;
 }
 
@@ -403,17 +402,6 @@ function DuoRender({
                 fallbackImageClassName="absolute left-1/2 top-1/2 z-10 h-[clamp(7rem,16vw,14rem)] w-auto -translate-x-1/2 -translate-y-1/2 object-contain opacity-90 drop-shadow-[0_0_28px_rgba(96,165,250,0.38)]"
                 className="relative h-full w-full"
               />
-            ) : ancient.profileImageUrl ? (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Image
-                  src={ancient.profileImageUrl}
-                  alt=""
-                  width={360}
-                  height={360}
-                  className="h-[86%] w-auto object-contain opacity-95 drop-shadow-[0_0_28px_rgba(96,165,250,0.28)]"
-                  priority={false}
-                />
-              </div>
             ) : ancient.backgroundImageUrl ? (
               <Image
                 src={ancient.backgroundImageUrl}
