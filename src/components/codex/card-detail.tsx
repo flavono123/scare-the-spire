@@ -28,6 +28,10 @@ import {
   type TinkerRiderId,
 } from "@/lib/tinker-time";
 import {
+  TINKER_TIME_EVENT_NAME_KO,
+  TINKER_TIME_EVENT_PATH,
+} from "@/lib/codex-references";
+import {
   canEnchantCard,
   shouldShowAmount,
   DEFAULT_ENCHANT_AMOUNT,
@@ -38,6 +42,7 @@ import {
   getEnchantAmountPresets,
   getEnchantStatModifier,
 } from "@/lib/sts2-enchant-rules";
+import { EntityReferenceLinks, type CodexReferenceLinkItem } from "./entity-reference-links";
 
 const ENCHANT_TIP_VARIANT: Record<string, HoverTipVariant> = {
   CORRUPTED: "debuff",
@@ -102,6 +107,17 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
 
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
   const canShowUpgrade = hasCardUpgrade(previewCard);
+  const madScienceReferenceLinks: CodexReferenceLinkItem[] = isMadScience
+    ? [
+        {
+          id: "tinker-time",
+          href: TINKER_TIME_EVENT_PATH,
+          title: card.madScienceLabels?.eventTitle ?? TINKER_TIME_EVENT_NAME_KO,
+          subtitle: `${card.madScienceLabels?.typeChoiceLabel ?? TINKER_CARD_TYPE_CHOICE_LABELS[madScienceType]} · ${previewCard.typeLabel}`,
+          description: `${card.madScienceLabels?.riderChoiceLabels[effectiveMadScienceRider] ?? TINKER_RIDER_CHOICE_LABELS[effectiveMadScienceRider]} 효과를 고른 괴짜 과학 선택지입니다.`,
+        },
+      ]
+    : [];
 
   // 활성 인챈트 효과: amount 치환, 추가/제거 키워드, forced cost, stat modifier
   const activeShowAmount = activeEnchant ? shouldShowAmount(activeEnchant) : false;
@@ -278,6 +294,12 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
           </div>
         </div>
       )}
+
+      <EntityReferenceLinks
+        serviceLocale={serviceLocale}
+        title="관련 이벤트"
+        items={madScienceReferenceLinks}
+      />
 
       {/* 강화 / 베타 토글 — 카드 바로 아래 */}
       {(canShowUpgrade || card.betaImageUrl) && (
