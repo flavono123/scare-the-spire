@@ -184,6 +184,23 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, relatedE
     el.scrollBy({ left: dir * el.clientWidth * 0.7, behavior: "smooth" });
   };
 
+  const handleEnchantWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    const el = event.currentTarget;
+    if (el.scrollWidth <= el.clientWidth) return;
+
+    const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY)
+      ? event.deltaX
+      : event.deltaY;
+    if (delta === 0) return;
+
+    const atStart = el.scrollLeft <= 1;
+    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+    if ((delta < 0 && atStart) || (delta > 0 && atEnd)) return;
+
+    event.preventDefault();
+    el.scrollLeft += delta;
+  };
+
   return (
     <div className="flex flex-col items-center gap-4 p-4 sm:p-6 max-w-3xl mx-auto">
       {/* Header */}
@@ -414,6 +431,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, relatedE
             <div
               ref={scrollerRef}
               data-testid="enchant-carousel"
+              onWheel={handleEnchantWheel}
               className="mx-10 flex gap-2 overflow-x-auto scroll-smooth py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {eligibleEnchantments.map((e) => {
