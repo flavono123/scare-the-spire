@@ -44,6 +44,13 @@ import {
   EVENT_FILTER_ICON,
   getCharacterTokenIcon,
 } from "./codex-filter-assets";
+import {
+  FUTURE_OF_POTIONS_EVENT_NAME_KO,
+  FUTURE_OF_POTIONS_OUTCOMES,
+  formatFuturePotionOutcome,
+  getFuturePotionOutcomeIdsForPotion,
+  type FuturePotionOutcomeId,
+} from "@/lib/codex-references";
 
 type PotionSectionKey = keyof CodexGameUiLabels["potionLab"]["sections"];
 
@@ -105,6 +112,9 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
     new Set()
   );
   const [selectedRarities, setSelectedRarities] = useState<Set<string>>(
+    new Set()
+  );
+  const [selectedFutureOutcomes, setSelectedFutureOutcomes] = useState<Set<FuturePotionOutcomeId>>(
     new Set()
   );
   const [searchQuery, setSearchQuery] = useState("");
@@ -212,6 +222,12 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
       });
     }
 
+    if (selectedFutureOutcomes.size > 0) {
+      result = result.filter((potion) =>
+        getFuturePotionOutcomeIdsForPotion(potion).some((id) => selectedFutureOutcomes.has(id))
+      );
+    }
+
     // Search token filters
     for (const token of parsedSearch.tokens) {
       if (token.type === "pool") {
@@ -232,7 +248,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
     }
 
     return result;
-  }, [versionedPotions, selectedPools, selectedRarities, parsedSearch]);
+  }, [versionedPotions, selectedPools, selectedRarities, selectedFutureOutcomes, parsedSearch]);
 
   // Group by rarity sections
   const sections = useMemo(() => {
@@ -261,6 +277,15 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
       const next = new Set(prev);
       if (next.has(rarity)) next.delete(rarity);
       else next.add(rarity);
+      return next;
+    });
+  }, []);
+
+  const toggleFutureOutcome = useCallback((outcomeId: FuturePotionOutcomeId) => {
+    setSelectedFutureOutcomes((prev) => {
+      const next = new Set(prev);
+      if (next.has(outcomeId)) next.delete(outcomeId);
+      else next.add(outcomeId);
       return next;
     });
   }, []);
@@ -376,6 +401,44 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
                 {r.label}
               </button>
             ))}
+          </div>
+        </FilterSection>
+
+        <div className="border-t border-white/10" />
+
+        <FilterSection trigger="?" label={FUTURE_OF_POTIONS_EVENT_NAME_KO}>
+          <div className="flex flex-col gap-1">
+            {FUTURE_OF_POTIONS_OUTCOMES.map((outcome) => {
+              const active = selectedFutureOutcomes.has(outcome.id);
+              return (
+                <label
+                  key={outcome.id}
+                  className={`flex cursor-pointer items-start gap-2 rounded px-2.5 py-1.5 text-left text-xs leading-relaxed transition-all ${
+                    active
+                      ? "bg-yellow-500/20 text-yellow-200"
+                      : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={active}
+                    onChange={() => toggleFutureOutcome(outcome.id)}
+                    className="sr-only"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className={`mt-0.5 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border text-[9px] font-bold ${
+                      active
+                        ? "border-yellow-300 bg-yellow-300 text-black"
+                        : "border-white/25 bg-black/20"
+                    }`}
+                  >
+                    {active ? "✓" : ""}
+                  </span>
+                  <span>{formatFuturePotionOutcome(outcome)}</span>
+                </label>
+              );
+            })}
           </div>
         </FilterSection>
         </>

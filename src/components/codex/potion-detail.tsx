@@ -16,6 +16,12 @@ import {
   getCharacterColor,
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
+import { EntityReferenceLinks, type CodexReferenceLinkItem } from "./entity-reference-links";
+import {
+  FUTURE_OF_POTIONS_EVENT_NAME_KO,
+  FUTURE_OF_POTIONS_EVENT_PATH,
+  getFuturePotionChoicesForPotion,
+} from "@/lib/codex-references";
 
 function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
@@ -43,6 +49,13 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
   const poolColor = potion.pool !== "shared" && potion.pool !== "event"
     ? getCharacterColor(potion.pool)
     : undefined;
+  const futurePotionLinks: CodexReferenceLinkItem[] = getFuturePotionChoicesForPotion(potion).map((choice) => ({
+    id: choice.id,
+    href: FUTURE_OF_POTIONS_EVENT_PATH,
+    title: FUTURE_OF_POTIONS_EVENT_NAME_KO,
+    subtitle: choice.title,
+    description: <DescriptionText description={choice.description} />,
+  }));
 
   return (
     <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-lg mx-auto">
@@ -111,6 +124,12 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
           <DescriptionText description={potion.description} />
         </div>
       </div>
+
+      <EntityReferenceLinks
+        serviceLocale={serviceLocale}
+        title="관련 이벤트"
+        items={futurePotionLinks}
+      />
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
         <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>
