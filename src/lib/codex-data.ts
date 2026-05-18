@@ -787,17 +787,89 @@ function normalizeEventMarkup(text: string): string {
   return text.replace(/\[sine\]([^\[]+?)\[\/rainbow\]\[\/sine\]/g, "[sine][rainbow]$1[/rainbow][/sine]");
 }
 
-function resolveEventText(localized: string, renderedFallback: string): string {
+type EventDisplayVars = Record<string, string | number>;
+
+function localizedEventPlaceholder(gameLocale: GameLocale, ko: string, en: string): string {
+  return gameLocale === "kor" ? ko : en;
+}
+
+function eventDisplayVars(eventId: string, gameLocale: GameLocale): EventDisplayVars {
+  const randomRelic = localizedEventPlaceholder(gameLocale, "무작위 유물", "a random Relic");
+  const randomPotion = localizedEventPlaceholder(gameLocale, "무작위 포션", "a random Potion");
+
+  switch (eventId) {
+    case "BATTLEWORN_DUMMY":
+      return {
+        Setting1Hp: 75,
+        Setting2Hp: 150,
+        Setting3Hp: 300,
+      };
+    case "DOLL_ROOM":
+      return {
+        TakeTimeHpLoss: 5,
+        ExamineHpLoss: 15,
+        RelicName: localizedEventPlaceholder(gameLocale, "인형 유물", "a Doll Relic"),
+      };
+    case "RANWID_THE_ELDER":
+      return {
+        Gold: 100,
+        Potion: localizedEventPlaceholder(gameLocale, "포션", "Potion"),
+        Relic: localizedEventPlaceholder(gameLocale, "유물", "Relic"),
+      };
+    case "RELIC_TRADER":
+      return {
+        TopRelicOwned: localizedEventPlaceholder(gameLocale, "보유 유물", "one of your Relics"),
+        TopRelicNew: randomRelic,
+        MiddleRelicOwned: localizedEventPlaceholder(gameLocale, "보유 유물", "one of your Relics"),
+        MiddleRelicNew: randomRelic,
+        BottomRelicOwned: localizedEventPlaceholder(gameLocale, "보유 유물", "one of your Relics"),
+        BottomRelicNew: randomRelic,
+      };
+    case "STONE_OF_ALL_TIME":
+      return {
+        DrinkRandomPotion: randomPotion,
+        DrinkMaxHpGain: 10,
+        PushHpLoss: 6,
+        PushVigorousAmount: 8,
+      };
+    case "TABLET_OF_TRUTH":
+      return {
+        SmashHPGain: 20,
+        DecipherMaxHpLoss: 3,
+      };
+    case "TRIAL":
+      return {
+        EntrantNumber: "???",
+      };
+    case "WELCOME_TO_WONGOS":
+      return {
+        BargainBinCost: 100,
+        FeaturedItemCost: 200,
+        MysteryBoxCost: 300,
+        MysteryBoxCombatCount: 5,
+        MysteryBoxRelicCount: 3,
+        RandomRelic: randomRelic,
+        WongoPointAmount: 0,
+        RemainingWongoPointAmount: 0,
+        TotalWongoBadgeAmount: 0,
+      };
+    default:
+      return {};
+  }
+}
+
+function resolveEventText(localized: string, renderedFallback: string, vars: EventDisplayVars = {}): string {
   const normalized = normalizeEventMarkup(localized);
   const fallback = normalizeEventMarkup(renderedFallback);
   if (
     hasEventSmartTemplate(normalized) &&
+    Object.keys(vars).length === 0 &&
     fallback &&
     !hasEventSmartTemplate(fallback)
   ) {
     return fallback;
   }
-  return bakeDescription(normalized, {});
+  return bakeDescription(normalized, vars);
 }
 
 function mapEventOptions(
@@ -806,9 +878,11 @@ function mapEventOptions(
   opts: RawEventOption[] | null,
   fallbackOpts: RawEventOption[] | null,
   gameEvents: GameLocalizationTable,
+  gameLocale: GameLocale,
 ): EventOption[] | null {
   if (!opts || opts.length === 0) return null;
   const fallbackById = new Map((fallbackOpts ?? []).map((o) => [o.id, o]));
+  const vars = eventDisplayVars(eventId, gameLocale);
   return opts.map((o) => {
     const fallback = fallbackById.get(o.id) ?? o;
     const baseKey = `${eventId}.pages.${pageId}.options.${o.id}`;
@@ -816,8 +890,8 @@ function mapEventOptions(
     const description = gameText(gameEvents, `${baseKey}.description`, fallback.description);
     return {
       id: o.id,
-      title: resolveEventText(title, fallback.title),
-      description: resolveEventText(description, fallback.description),
+      title: resolveEventText(title, fallback.title, vars),
+      description: resolveEventText(description, fallback.description, vars),
     };
   });
 }
@@ -827,9 +901,11 @@ function mapEventPages(
   pages: RawEventPage[] | null,
   fallbackPages: RawEventPage[] | null,
   gameEvents: GameLocalizationTable,
+  gameLocale: GameLocale,
 ): EventPage[] | null {
   if (!pages || pages.length === 0) return null;
   const fallbackById = new Map((fallbackPages ?? []).map((p) => [p.id, p]));
+  const vars = eventDisplayVars(eventId, gameLocale);
   return pages.map((p) => {
     const fallback = fallbackById.get(p.id) ?? p;
     const description = gameNullableText(
@@ -841,8 +917,8 @@ function mapEventPages(
       id: p.id,
       description: description === null
         ? null
-        : resolveEventText(description, fallback.description ?? description),
-      options: mapEventOptions(eventId, p.id, p.options, fallback.options, gameEvents),
+        : resolveEventText(description, fallback.description ?? description, vars),
+      options: mapEventOptions(eventId, p.id, p.options, fallback.options, gameEvents, gameLocale),
     };
   });
 }
@@ -864,14 +940,15 @@ function mapEvent(
     `${kor.id}.pages.INITIAL.description`,
     gameText(gameEvents, `${kor.id}.description`, fallbackDescription),
   );
+  const vars = eventDisplayVars(kor.id, gameLocale);
   return {
     id: kor.id,
     name: gameTitleText(gameEvents, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
-    description: resolveEventText(localizedDescription, fallbackDescription),
+    description: resolveEventText(localizedDescription, fallbackDescription, vars),
     act: (kor.act as EventAct | null),
-    options: mapEventOptions(kor.id, "INITIAL", kor.options, fallbackInitialPage?.options ?? fallbackEvent.options, gameEvents),
-    pages: mapEventPages(kor.id, kor.pages, fallbackEvent.pages, gameEvents),
+    options: mapEventOptions(kor.id, "INITIAL", kor.options, fallbackInitialPage?.options ?? fallbackEvent.options, gameEvents, gameLocale),
+    pages: mapEventPages(kor.id, kor.pages, fallbackEvent.pages, gameEvents, gameLocale),
     imageUrl,
   };
 }
