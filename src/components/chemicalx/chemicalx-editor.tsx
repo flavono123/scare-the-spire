@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
 import { RichContentEditor } from "@/components/rich-content-editor";
@@ -11,22 +11,42 @@ interface ChemicalXEditorProps {
   entities: EntityInfo[];
   placeholder: string;
   profileNickname: string;
-  onSubmit: (blocks: PostBlock[]) => Promise<void>;
+  onNicknameCommit: (nickname: string) => Promise<string>;
+  onSubmit: (blocks: PostBlock[], nickname: string) => Promise<void>;
 }
 
-export function ChemicalXEditor({ entities, placeholder, profileNickname, onSubmit }: ChemicalXEditorProps) {
+export function ChemicalXEditor({
+  entities,
+  placeholder,
+  profileNickname,
+  onNicknameCommit,
+  onSubmit,
+}: ChemicalXEditorProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
+  const nicknameInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
-    await onSubmit(blocks);
-  }, [onSubmit]);
+    const nickname = await onNicknameCommit(nicknameInputRef.current?.value ?? profileNickname);
+    await onSubmit(blocks, nickname);
+  }, [onNicknameCommit, onSubmit, profileNickname]);
 
   return (
     <div className="space-y-3">
       <div className="border border-border rounded-lg bg-card/30 overflow-visible">
         <div className="flex items-center gap-2 px-3 py-2 border-b border-border">
-          <span className="text-sm font-semibold text-gray-300">{profileNickname}</span>
+          <input
+            key={profileNickname}
+            ref={nicknameInputRef}
+            type="text"
+            defaultValue={profileNickname}
+            placeholder={copy.defaultNickname}
+            maxLength={20}
+            onBlur={(event) => {
+              void onNicknameCommit(event.currentTarget.value);
+            }}
+            className="w-full bg-transparent text-sm text-gray-300 placeholder:text-gray-600 outline-none"
+          />
         </div>
 
         <RichContentEditor

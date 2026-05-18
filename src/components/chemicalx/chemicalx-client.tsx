@@ -39,13 +39,20 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
 
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
 
+  const handleNicknameCommit = useCallback(
+    async (rawNickname: string) => {
+      const nickname = rawNickname.trim() || copy.defaultNickname;
+      await saveProfile({ ...profile, nickname }).catch(() => undefined);
+      return nickname;
+    },
+    [copy.defaultNickname, profile, saveProfile],
+  );
+
   const handleSubmit = useCallback(
-    async (blocks: PostBlock[]) => {
-      const nickname = profile.nickname.trim() || copy.defaultNickname;
-      await saveProfile(profile).catch(() => undefined);
+    async (blocks: PostBlock[], nickname: string) => {
       await add(blocks, nickname);
     },
-    [add, copy.defaultNickname, profile, saveProfile],
+    [add],
   );
 
   const handleDelete = useCallback(
@@ -78,6 +85,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
           entities={entities}
           placeholder={placeholder}
           profileNickname={profile.nickname}
+          onNicknameCommit={handleNicknameCommit}
           onSubmit={handleSubmit}
         />
       )}
@@ -116,7 +124,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
               entityMap={entityMap}
               forceShowTooltips={showAllTooltips}
               isOwner={post.user_id === userId}
-              profileNickname={profileByUserId.get(post.user_id)?.nickname}
+              profileNickname={post.user_id === userId ? profile.nickname : profileByUserId.get(post.user_id)?.nickname}
               onDelete={handleDelete}
             />
           ))}
