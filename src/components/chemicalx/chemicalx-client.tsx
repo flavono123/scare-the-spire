@@ -8,7 +8,9 @@ import type { PostBlock } from "@/lib/chemical-types";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useChemicalPosts } from "@/hooks/use-chemical-posts";
+import { usePublicUserProfiles, useUserProfile } from "@/hooks/use-user-profile";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { ChemicalXEditor } from "./chemicalx-editor";
@@ -26,15 +28,24 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
   const { userId, ready, unavailable: authUnavailable } = useAuth();
   const { posts, loading, unavailable, add, remove } = useChemicalPosts(userId);
   const [showAllTooltips, setShowAllTooltips] = useState(false);
+  const profileFallback = useMemo(
+    () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
+    [copy.defaultNickname],
+  );
+  const { profile, saveProfile } = useUserProfile(userId, profileFallback);
+  const postUserIds = useMemo(() => posts.map((post) => post.user_id), [posts]);
+  const profileByUserId = usePublicUserProfiles(postUserIds);
   const storageUnavailable = authUnavailable || unavailable;
 
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
 
   const handleSubmit = useCallback(
-    async (blocks: PostBlock[], nickname: string) => {
+    async (blocks: PostBlock[]) => {
+      const nickname = profile.nickname.trim() || copy.defaultNickname;
+      await saveProfile(profile).catch(() => undefined);
       await add(blocks, nickname);
     },
-    [add],
+    [add, copy.defaultNickname, profile, saveProfile],
   );
 
   const handleDelete = useCallback(
@@ -63,7 +74,12 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
 
       {/* Editor */}
       {ready && userId && !storageUnavailable && (
-        <ChemicalXEditor entities={entities} placeholder={placeholder} onSubmit={handleSubmit} />
+        <ChemicalXEditor
+          entities={entities}
+          placeholder={placeholder}
+          profileNickname={profile.nickname}
+          onSubmit={handleSubmit}
+        />
       )}
 
       {/* Toolbar */}
@@ -100,6 +116,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
               entityMap={entityMap}
               forceShowTooltips={showAllTooltips}
               isOwner={post.user_id === userId}
+              profileNickname={profileByUserId.get(post.user_id)?.nickname}
               onDelete={handleDelete}
             />
           ))}
