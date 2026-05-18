@@ -41,6 +41,8 @@ export interface AncientChoice {
   subtitle: string;
   iconUrl: string;
   backgroundImageUrl: string | null;
+  nodeImageUrl: string | null;
+  nodeOutlineImageUrl: string | null;
   spineAsset: MonsterSpineAsset | null;
 }
 
@@ -402,6 +404,11 @@ function DuoRender({
                 fallbackImageClassName="absolute left-1/2 top-1/2 z-10 h-[clamp(7rem,16vw,14rem)] w-auto -translate-x-1/2 -translate-y-1/2 object-contain opacity-90 drop-shadow-[0_0_28px_rgba(96,165,250,0.38)]"
                 className="relative h-full w-full"
               />
+            ) : ancient.nodeImageUrl && ancient.nodeOutlineImageUrl ? (
+              <AncientNodeRender
+                imageUrl={ancient.nodeImageUrl}
+                outlineImageUrl={ancient.nodeOutlineImageUrl}
+              />
             ) : ancient.backgroundImageUrl ? (
               <Image
                 src={ancient.backgroundImageUrl}
@@ -468,6 +475,37 @@ function DuoRender({
           onSelect={onPetSkinSelect}
         />
       )}
+    </div>
+  );
+}
+
+function AncientNodeRender({
+  imageUrl,
+  outlineImageUrl,
+}: {
+  imageUrl: string;
+  outlineImageUrl: string;
+}) {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="relative h-[82%] aspect-square">
+        <Image
+          src={outlineImageUrl}
+          alt=""
+          fill
+          sizes="14rem"
+          className="object-contain opacity-70 drop-shadow-[0_0_18px_rgba(96,165,250,0.5)]"
+          priority={false}
+        />
+        <Image
+          src={imageUrl}
+          alt=""
+          fill
+          sizes="14rem"
+          className="object-contain drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]"
+          priority={false}
+        />
+      </div>
     </div>
   );
 }
