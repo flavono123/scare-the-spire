@@ -44,6 +44,42 @@ const GAME_TEXT_SHADOW = "3px 2px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.75)";
 
 const ABYSSAL_BATHS_BASE_DAMAGE = 3;
 const ABYSSAL_BATHS_HARD_LIMIT = 15;
+const TABLET_OF_TRUTH_MAX_HP_REMAINING_LABEL_KO = "현재 최대 체력 - 1";
+const TABLET_OF_TRUTH_MAX_HP_REMAINING_LABEL_EN = "current Max HP - 1";
+
+const BATTLEWORN_DUMMY_SETTINGS: Record<string, { hp: number; titleEn: string; titleKo: string }> = {
+  SETTING_1: { hp: 75, titleEn: "75 HP", titleKo: "체력 75" },
+  SETTING_2: { hp: 150, titleEn: "150 HP", titleKo: "체력 150" },
+  SETTING_3: { hp: 300, titleEn: "300 HP", titleKo: "체력 300" },
+};
+
+const TABLET_OF_TRUTH_COST_BY_PAGE_ID: Record<string, number | "MAX_HP_MINUS_ONE"> = {
+  DECIPHER_1: 6,
+  DECIPHER_2: 12,
+  DECIPHER_3: 24,
+  DECIPHER_4: "MAX_HP_MINUS_ONE",
+};
+
+const TRIAL_CHOICE_GROUPS = [
+  {
+    id: "MERCHANT",
+    imageUrl: "/images/sts2/events/trial_merchant.webp",
+  },
+  {
+    id: "NOBLE",
+    imageUrl: "/images/sts2/events/trial_noble.webp",
+  },
+  {
+    id: "NONDESCRIPT",
+    imageUrl: "/images/sts2/events/trial_nondescript.webp",
+  },
+] as const;
+
+interface TrialChoiceGroup {
+  id: string;
+  imageUrl: string;
+  options: EventOption[];
+}
 
 const FUTURE_OF_POTIONS_OPTIONS: EventOption[] = [
   {
@@ -182,6 +218,94 @@ function applyAbyssalBathsDamage(option: EventOption, damage: number): EventOpti
   };
 }
 
+function isEnglishEvent(event: CodexEvent): boolean {
+  return event.name === event.nameEn;
+}
+
+function eventText(event: CodexEvent, ko: string, en: string): string {
+  return isEnglishEvent(event) ? en : ko;
+}
+
+function applyBattlewornDummyOption(option: EventOption, event: CodexEvent): EventOption {
+  const setting = BATTLEWORN_DUMMY_SETTINGS[option.id];
+  if (!setting) return option;
+  return {
+    ...option,
+    title: eventText(event, setting.titleKo, setting.titleEn),
+    description: option.description
+      .replace(/\[blue\](?:\[?Setting1Hp\]?|75)\[\/blue\]/, `[blue]${setting.hp}[/blue]`)
+      .replace(/\[blue\](?:\[?Setting2Hp\]?|150)\[\/blue\]/, `[blue]${setting.hp}[/blue]`)
+      .replace(/\[blue\](?:\[?Setting3Hp\]?|300)\[\/blue\]/, `[blue]${setting.hp}[/blue]`),
+  };
+}
+
+function tabletCostForOption(currentPageId: string | null, option: EventOption): number | "MAX_HP_MINUS_ONE" | null {
+  if (option.id === "DECIPHER_1") return 3;
+  if (option.id !== "DECIPHER" || !currentPageId) return null;
+  return TABLET_OF_TRUTH_COST_BY_PAGE_ID[currentPageId] ?? null;
+}
+
+function applyTabletOfTruthCost(option: EventOption, currentPageId: string | null, event: CodexEvent): EventOption {
+  const cost = tabletCostForOption(currentPageId, option);
+  if (!cost) return option;
+  const costText = cost === "MAX_HP_MINUS_ONE"
+    ? eventText(event, TABLET_OF_TRUTH_MAX_HP_REMAINING_LABEL_KO, TABLET_OF_TRUTH_MAX_HP_REMAINING_LABEL_EN)
+    : String(cost);
+  return {
+    ...option,
+    description: option.description.replace(/\[red\][^\[]+\[\/red\]/, `[red]${costText}[/red]`),
+  };
+}
+
+function applyHungryForMushroomsDescription(option: EventOption, event: CodexEvent): EventOption {
+  if (option.id === "BIG_MUSHROOM") {
+    return {
+      ...option,
+      description: eventText(
+        event,
+        "[gold]커다란 버섯[/gold]을 얻습니다. 매 전투 시작 시 카드를 [blue]2[/blue]장 [red]덜 뽑습니다[/red]. 최대 체력이 [green]20[/green] 증가합니다.",
+        "Obtain [gold]Big Mushroom[/gold]. Draw [blue]2[/blue] [red]fewer cards[/red] at the start of each combat. Raise your Max HP by [green]20[/green].",
+      ),
+    };
+  }
+  if (option.id === "FRAGRANT_MUSHROOM") {
+    return {
+      ...option,
+      description: eventText(
+        event,
+        "[gold]향기로운 버섯[/gold]을 얻습니다. 체력을 [red]15[/red] 잃습니다. 무작위 카드를 [blue]2[/blue]장 [gold]강화[/gold]합니다.",
+        "Obtain [gold]Fragrant Mushroom[/gold]. Lose [red]15[/red] HP. [gold]Upgrade[/gold] [blue]2[/blue] random cards.",
+      ),
+    };
+  }
+  return option;
+}
+
+function applyEventOptionDisplayFixups(
+  event: CodexEvent,
+  currentPageId: string | null,
+  option: EventOption,
+): EventOption {
+  if (event.id === "BATTLEWORN_DUMMY") return applyBattlewornDummyOption(option, event);
+  if (event.id === "HUNGRY_FOR_MUSHROOMS") return applyHungryForMushroomsDescription(option, event);
+  if (event.id === "TABLET_OF_TRUTH") return applyTabletOfTruthCost(option, currentPageId, event);
+  return option;
+}
+
+function buildTrialChoiceGroups(pageMap: Map<string, EventPage>): TrialChoiceGroup[] {
+  return TRIAL_CHOICE_GROUPS.map((group) => {
+    const page = pageMap.get(group.id);
+    return {
+      id: group.id,
+      imageUrl: group.imageUrl,
+      options: (page?.options ?? []).map((option) => ({
+        ...option,
+        id: `${group.id}_${option.id}`,
+      })),
+    };
+  }).filter((group) => group.options.length > 0);
+}
+
 function resolveEventOptionPage(
   eventId: string,
   currentPageId: string | null,
@@ -196,6 +320,11 @@ function resolveEventOptionPage(
     pageMap.has("CHOOSE_RIDER")
   ) {
     return "CHOOSE_RIDER";
+  }
+  if (eventId === "TRIAL") {
+    const [caseId, verdictId] = optionId.split("_");
+    const resultPageId = `${caseId}_${verdictId}`;
+    if (pageMap.has(resultPageId)) return resultPageId;
   }
   return resolveSequencePage(optionId, visitCount, pageMap);
 }
@@ -299,7 +428,16 @@ export function EventContentViewer({
     return [];
   }, [currentPageId, pageMap, event.options, allPage]);
 
+  const trialChoiceGroups = useMemo(() => {
+    if (event.id !== "TRIAL" || (currentPageId && currentPageId !== "INITIAL")) return [];
+    return buildTrialChoiceGroups(pageMap);
+  }, [currentPageId, event.id, pageMap]);
+
   const displayOptions = useMemo(() => {
+    if (trialChoiceGroups.length > 0) {
+      return trialChoiceGroups.flatMap((group) => group.options);
+    }
+
     if (event.id === "THE_FUTURE_OF_POTIONS" && (!currentPageId || currentPageId === "INITIAL")) {
       return FUTURE_OF_POTIONS_OPTIONS;
     }
@@ -332,8 +470,8 @@ export function EventContentViewer({
         .map((option) => applyAbyssalBathsDamage(option, nextDamage));
     }
 
-    return rawOptions;
-  }, [currentEntry, currentPageId, event.id, history, rawOptions]);
+    return rawOptions.map((option) => applyEventOptionDisplayFixups(event, currentPageId, option));
+  }, [currentEntry, currentPageId, event, history, rawOptions, trialChoiceGroups]);
 
   const options = useMemo(
     () => displayOptions.filter((o) => !o.id.endsWith("_LOCKED") && o.title !== "잠김"),
@@ -410,6 +548,10 @@ export function EventContentViewer({
       ) {
         return true;
       }
+      if (event.id === "TRIAL") {
+        const [caseId, verdictId] = optionId.split("_");
+        if (pageMap.has(`${caseId}_${verdictId}`)) return true;
+      }
       if (pageMap.has(optionId)) return true;
       if (pageMap.has(`${optionId}1`) || pageMap.has(`${optionId}_1`)) return true;
       if (pageMap.has(`${optionId}0`) || pageMap.has(`${optionId}_0`)) return true;
@@ -449,6 +591,38 @@ export function EventContentViewer({
   );
 
   const hasPages = pages.filter((p) => p.id !== "INITIAL").length > 0;
+
+  const renderOption = (opt: EventOption) => {
+    const navigable = hasPages && canNavigate(opt.id);
+    const preview = previewByOptionId.get(opt.id) ?? null;
+    if (!navigable) {
+      return (
+        <OptionCard
+          key={opt.id}
+          option={opt}
+          preview={preview}
+          onPreviewChange={onPreviewChange}
+        />
+      );
+    }
+    return (
+      <GameChoiceFrame
+        key={opt.id}
+        onClick={() => navigateTo(opt.id)}
+        preview={preview}
+        onPreviewChange={onPreviewChange}
+      >
+        <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
+          <RichText text={opt.title} />
+        </div>
+        {opt.description && (
+          <div className="font-game-text text-[18px] leading-[1.08] text-[#fff6e2]">
+            <RichText text={opt.description} />
+          </div>
+        )}
+      </GameChoiceFrame>
+    );
+  };
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -495,37 +669,27 @@ export function EventContentViewer({
       {/* Options */}
       {options.length > 0 && (
         <div className="mt-auto space-y-2.5 pt-5">
-          {options.map((opt) => {
-            const navigable = hasPages && canNavigate(opt.id);
-            const preview = previewByOptionId.get(opt.id) ?? null;
-            if (!navigable) {
-              return (
-                <OptionCard
-                  key={opt.id}
-                  option={opt}
-                  preview={preview}
-                  onPreviewChange={onPreviewChange}
-                />
-              );
-            }
-            return (
-              <GameChoiceFrame
-                key={opt.id}
-                onClick={() => navigateTo(opt.id)}
-                preview={preview}
-                onPreviewChange={onPreviewChange}
-              >
-                <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
-                  <RichText text={opt.title} />
-                </div>
-                {opt.description && (
-                  <div className="font-game-text text-[18px] leading-[1.08] text-[#fff6e2]">
-                    <RichText text={opt.description} />
+          {trialChoiceGroups.length > 0
+            ? trialChoiceGroups.map((group) => (
+                <div
+                  key={group.id}
+                  className="relative overflow-hidden rounded-lg border border-cyan-200/15 bg-black/45 p-2 shadow-[0_10px_24px_rgba(0,0,0,0.45)]"
+                >
+                  <Image
+                    src={group.imageUrl}
+                    alt=""
+                    fill
+                    sizes="(max-width: 768px) 90vw, 520px"
+                    className="pointer-events-none object-cover object-[50%_22%] opacity-30"
+                    aria-hidden
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/10" />
+                  <div className="relative space-y-2.5">
+                    {group.options.map(renderOption)}
                   </div>
-                )}
-              </GameChoiceFrame>
-            );
-          })}
+                </div>
+              ))
+            : options.map(renderOption)}
         </div>
       )}
 
@@ -628,6 +792,9 @@ export function EventDetail({
   const isModal = Boolean(onClose);
   const [preview, setPreview] = useState<EventPreview | null>(null);
   const artOverlays = EVENT_ART_OVERLAYS[event.id] ?? [];
+  const eventImageUrl = event.id === "TRIAL"
+    ? "/images/sts2/events/trial_started.webp"
+    : event.imageUrl;
   const rootClassName = isModal
     ? "mx-auto flex max-w-[92rem] flex-col gap-4 p-3 sm:p-5"
     : "mx-auto flex max-w-6xl flex-col gap-5 p-4 sm:p-6";
@@ -685,10 +852,10 @@ export function EventDetail({
         style={{ boxShadow: `inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.35)` }}
       >
         <div className="relative aspect-[3440/1616] min-h-[620px] w-full sm:min-h-0">
-          {event.imageUrl ? (
+          {eventImageUrl ? (
             <>
               <Image
-                src={event.imageUrl}
+                src={eventImageUrl}
                 alt={event.name}
                 fill
                 sizes="(max-width: 768px) 100vw, 1152px"
