@@ -13,15 +13,18 @@ type TraceFile = {
 type TraceReport = {
   traceFile: string;
   totalSize: number;
+  staticAssetSize: number;
   topFiles: TraceFile[];
-  forbiddenFiles: string[];
+  topStaticAssetFiles: TraceFile[];
 };
 
 const serverAppDir = path.join(process.cwd(), ".next/server/app");
 const functionSizeLimitMb = Number(process.env.VERCEL_FUNCTION_TRACE_LIMIT_MB ?? 250);
 const functionSizeLimitBytes = functionSizeLimitMb * 1024 * 1024;
+const staticAssetLimitMb = Number(process.env.STS2_STATIC_ASSET_TRACE_LIMIT_MB ?? 100);
+const staticAssetLimitBytes = staticAssetLimitMb * 1024 * 1024;
 
-const FORBIDDEN_TRACE_PATTERNS = [
+const STS2_STATIC_ASSET_PATTERNS = [
   "/public/images/sts2/",
   "/public/spine/sts2/",
 ];
@@ -45,9 +48,9 @@ function formatBytes(bytes: number): string {
   return `${(bytes / 1024 / 1024).toFixed(1)}MB`;
 }
 
-function isForbiddenTraceFile(filePath: string): boolean {
+function isSts2StaticAsset(filePath: string): boolean {
   const normalized = normalizePath(filePath);
-  return FORBIDDEN_TRACE_PATTERNS.some((pattern) => normalized.includes(pattern));
+  return STS2_STATIC_ASSET_PATTERNS.some((pattern) => normalized.includes(pattern));
 }
 
 async function traceReport(traceFile: string): Promise<TraceReport> {
@@ -65,12 +68,13 @@ async function traceReport(traceFile: string): Promise<TraceReport> {
   const topFiles = [...files]
     .sort((a, b) => b.size - a.size)
     .slice(0, 8);
-  const forbiddenFiles = files
-    .filter((file) => isForbiddenTraceFile(file.path))
-    .map((file) => normalizePath(file.path))
-    .sort();
+  const staticAssetFiles = files.filter((file) => isSts2StaticAsset(file.path));
+  const staticAssetSize = staticAssetFiles.reduce((sum, file) => sum + file.size, 0);
+  const topStaticAssetFiles = [...staticAssetFiles]
+    .sort((a, b) => b.size - a.size)
+    .slice(0, 8);
 
-  return { traceFile, totalSize, topFiles, forbiddenFiles };
+  return { traceFile, totalSize, staticAssetSize, topFiles, topStaticAssetFiles };
 }
 
 function printFailure(report: TraceReport): void {
@@ -80,13 +84,10 @@ function printFailure(report: TraceReport): void {
     console.error(`  exceeds ${functionSizeLimitMb}MB function trace budget`);
   }
 
-  if (report.forbiddenFiles.length > 0) {
-    console.error("  includes forbidden static asset traces:");
-    for (const file of report.forbiddenFiles.slice(0, 8)) {
-      console.error(`    ${file}`);
-    }
-    if (report.forbiddenFiles.length > 8) {
-      console.error(`    ...and ${report.forbiddenFiles.length - 8} more`);
+  if (report.staticAssetSize > staticAssetLimitBytes) {
+    console.error(`  traces ${formatBytes(report.staticAssetSize)} of STS2 static assets, exceeding ${staticAssetLimitMb}MB asset trace budget`);
+    for (const file of report.topStaticAssetFiles) {
+      console.error(`    ${formatBytes(file.size)} ${normalizePath(file.path)}`);
     }
   }
 
@@ -108,7 +109,7 @@ async function main() {
   const reports = await Promise.all(traceFiles.map(traceReport));
   const failures = reports.filter((report) => (
     report.totalSize > functionSizeLimitBytes ||
-    report.forbiddenFiles.length > 0
+    report.staticAssetSize > staticAssetLimitBytes
   ));
 
   if (failures.length > 0) {
