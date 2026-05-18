@@ -11,7 +11,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
-import { CodexCard, CodexEnchantment } from "@/lib/codex-types";
+import { CodexCard, CodexEnchantment, CodexEvent } from "@/lib/codex-types";
 import { CardTile } from "./card-tile";
 import { DescriptionText, hasCardUpgrade } from "./codex-description";
 import { GameChoiceFrame } from "./event-choice-frame";
@@ -62,10 +62,11 @@ interface CardDetailProps {
   gameUi: CodexGameUiLabels;
   card: CodexCard;
   enchantments: CodexEnchantment[];
+  relatedEvents?: CodexEvent[];
   onClose?: () => void;
 }
 
-export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose }: CardDetailProps) {
+export function CardDetail({ serviceLocale, gameUi, card, enchantments, relatedEvents = [], onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
   const threadKey = buildCodexCommentThreadKey("card", card.id);
@@ -109,11 +110,22 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
 
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
   const canShowUpgrade = hasCardUpgrade(previewCard);
+  const tinkerTimeEvent = relatedEvents.find((event) => event.id === "TINKER_TIME") ?? null;
   const madScienceEventTargets = isMadScience
     ? [{
         id: "tinker-time",
         href: TINKER_TIME_EVENT_PATH,
         title: card.madScienceLabels?.eventTitle ?? TINKER_TIME_EVENT_NAME_KO,
+        entity: {
+          id: "TINKER_TIME",
+          nameEn: tinkerTimeEvent?.nameEn ?? "Tinker Time",
+          nameKo: card.madScienceLabels?.eventTitle ?? TINKER_TIME_EVENT_NAME_KO,
+          imageUrl: tinkerTimeEvent?.imageUrl ?? null,
+          href: TINKER_TIME_EVENT_PATH,
+          color: "event",
+          type: "event" as const,
+          eventData: tinkerTimeEvent ?? undefined,
+        },
       }]
     : [];
 

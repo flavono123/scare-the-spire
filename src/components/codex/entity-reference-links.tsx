@@ -1,7 +1,9 @@
+"use client";
+
 import Image from "@/components/ui/static-image";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 
 type CodexReferenceKind = "card" | "event";
 
@@ -9,6 +11,7 @@ export interface CodexReferenceTarget {
   id: string;
   href: string;
   title: string;
+  entity?: EntityInfo;
 }
 
 interface EntityReferenceLinksProps {
@@ -52,16 +55,34 @@ export function EntityReferenceLinks({
         {targets.map((target, index) => (
           <span key={target.id} className="inline-flex items-center gap-1">
             {index > 0 ? <span className="text-gray-500">,</span> : null}
-            <Link
-              href={localizeHref(target.href, serviceLocale)}
-              className="text-yellow-200 transition-colors hover:text-yellow-100 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300/50"
+            <EntityPreview
+              entity={toPreviewEntity(target, kind, serviceLocale)}
+              preferEntityLocaleLabel={false}
             >
               {target.title}
-            </Link>
+            </EntityPreview>
           </span>
         ))}
       </div>
       {children}
     </section>
   );
+}
+
+function toPreviewEntity(
+  target: CodexReferenceTarget,
+  kind: CodexReferenceKind,
+  serviceLocale: ServiceLocale,
+): EntityInfo {
+  const href = localizeHref(target.href, serviceLocale);
+  return {
+    ...target.entity,
+    id: target.entity?.id ?? target.id,
+    nameEn: target.entity?.nameEn ?? target.title,
+    nameKo: target.entity?.nameKo ?? target.title,
+    imageUrl: target.entity?.imageUrl ?? null,
+    href,
+    color: target.entity?.color ?? kind,
+    type: target.entity?.type ?? kind,
+  };
 }

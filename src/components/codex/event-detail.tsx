@@ -737,27 +737,22 @@ export function EventDetail({
       <EntityReferenceLinks
         kind="card"
         serviceLocale={serviceLocale}
-        targets={relatedMadScienceCards.map(({ href, id, title }) => ({ href, id, title }))}
-      >
-        <div className="flex flex-wrap gap-4">
-          {relatedMadScienceCards.map(({ card, href, id }) => (
-            <Link
-              key={id}
-              href={localizeHref(href, serviceLocale)}
-              className="block rounded-md transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300/50"
-            >
-              <CardTile
-                card={card}
-                interactive={false}
-                serviceLocale={serviceLocale}
-                showBeta={false}
-                showUpgrade={false}
-                size="grid"
-              />
-            </Link>
-          ))}
-        </div>
-      </EntityReferenceLinks>
+        targets={relatedMadScienceCards.map(({ card, href, id, title }) => ({
+          href,
+          id,
+          title,
+          entity: {
+            id,
+            nameEn: card.nameEn,
+            nameKo: title,
+            imageUrl: card.imageUrl,
+            href,
+            color: card.color,
+            type: "card",
+            cardData: card,
+          },
+        }))}
+      />
 
       <aside className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
         <h2 className="mb-3 text-sm font-bold text-gray-300">{serviceText.common.comments}</h2>

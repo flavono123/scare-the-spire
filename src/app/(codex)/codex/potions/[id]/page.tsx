@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexCharacters, getCodexPotions } from "@/lib/codex-data";
+import { getCodexCharacters, getCodexEvents, getCodexPotions } from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -46,10 +46,11 @@ export default async function PotionDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [potions, characters, gameUi] = await Promise.all([
+  const [potions, characters, gameUi, events] = await Promise.all([
     getCodexPotions({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
+    getCodexEvents({ gameLocale }),
   ]);
   const potion = potions.find((p) => p.id.toLowerCase() === id.toLowerCase());
   if (!potion) notFound();
@@ -69,7 +70,7 @@ export default async function PotionDetailPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.potionLabTitle} potion={potion} poolLabels={poolLabels} />
+      <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.potionLabTitle} potion={potion} poolLabels={poolLabels} relatedEvents={events} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexCards, getCodexEnchantments } from "@/lib/codex-data";
+import { getCodexCards, getCodexEnchantments, getCodexEvents } from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -55,17 +55,18 @@ export default async function CardDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [cards, enchantments, gameUi] = await Promise.all([
+  const [cards, enchantments, gameUi, events] = await Promise.all([
     getCodexCards({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
+    getCodexEvents({ gameLocale }),
   ]);
   const card = findCardByRouteId(cards, id);
   if (!card) notFound();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={card} enchantments={enchantments} />
+      <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={card} enchantments={enchantments} relatedEvents={events} />
     </div>
   );
 }

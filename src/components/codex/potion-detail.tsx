@@ -10,6 +10,7 @@ import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   CodexPotion,
+  CodexEvent,
   PotionPool,
   POTION_RARITY_CONFIG,
   characterOutlineFilter,
@@ -42,16 +43,18 @@ interface PotionDetailProps {
   backToListTitle: string;
   potion: CodexPotion;
   poolLabels: Record<PotionPool, string>;
+  relatedEvents?: CodexEvent[];
   onClose?: () => void;
 }
 
-export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, onClose }: PotionDetailProps) {
+export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedEvents = [], onClose }: PotionDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
   const poolColor = potion.pool !== "shared" && potion.pool !== "event"
     ? getCharacterColor(potion.pool)
     : undefined;
   const futurePotionChoices = getFuturePotionChoicesForPotion(potion);
+  const futurePotionEvent = relatedEvents.find((event) => event.id === "THE_FUTURE_OF_POTIONS") ?? null;
 
   return (
     <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-lg mx-auto">
@@ -129,6 +132,16 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
             id: "future-of-potions",
             href: FUTURE_OF_POTIONS_EVENT_PATH,
             title: FUTURE_OF_POTIONS_EVENT_NAME_KO,
+            entity: {
+              id: "THE_FUTURE_OF_POTIONS",
+              nameEn: futurePotionEvent?.nameEn ?? "The Future of Potions?",
+              nameKo: FUTURE_OF_POTIONS_EVENT_NAME_KO,
+              imageUrl: futurePotionEvent?.imageUrl ?? null,
+              href: FUTURE_OF_POTIONS_EVENT_PATH,
+              color: "event",
+              type: "event",
+              eventData: futurePotionEvent ?? undefined,
+            },
           },
         ]}
       >
