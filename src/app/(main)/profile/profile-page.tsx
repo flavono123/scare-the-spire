@@ -40,7 +40,6 @@ export interface AncientChoice {
   label: string;
   subtitle: string;
   iconUrl: string;
-  backgroundImageUrl: string | null;
   nodeImageUrl: string | null;
   nodeOutlineImageUrl: string | null;
   spineAsset: MonsterSpineAsset | null;
@@ -390,7 +389,12 @@ function DuoRender({
       <div className="relative min-h-0 flex-1">
         {ancient && (
           <div className="pointer-events-none absolute left-1/2 top-0 z-[1] aspect-[2560/1200] w-[68%] max-w-[42rem] -translate-x-1/2 overflow-hidden opacity-80">
-            {ancient.spineAsset ? (
+            {ancient.nodeImageUrl && ancient.nodeOutlineImageUrl ? (
+              <AncientNodeRender
+                imageUrl={ancient.nodeImageUrl}
+                outlineImageUrl={ancient.nodeOutlineImageUrl}
+              />
+            ) : ancient.spineAsset ? (
               <MonsterSpineStage
                 key={`ancient-${ancient.id}`}
                 asset={ancient.spineAsset}
@@ -403,20 +407,6 @@ function DuoRender({
                 viewportPadding={PROFILE_ANCIENT_VIEWPORT_PADDING}
                 fallbackImageClassName="absolute left-1/2 top-1/2 z-10 h-[clamp(7rem,16vw,14rem)] w-auto -translate-x-1/2 -translate-y-1/2 object-contain opacity-90 drop-shadow-[0_0_28px_rgba(96,165,250,0.38)]"
                 className="relative h-full w-full"
-              />
-            ) : ancient.nodeImageUrl && ancient.nodeOutlineImageUrl ? (
-              <AncientNodeRender
-                imageUrl={ancient.nodeImageUrl}
-                outlineImageUrl={ancient.nodeOutlineImageUrl}
-              />
-            ) : ancient.backgroundImageUrl ? (
-              <Image
-                src={ancient.backgroundImageUrl}
-                alt=""
-                fill
-                sizes="(max-width: 768px) 70vw, 42rem"
-                className="object-cover object-center"
-                priority={false}
               />
             ) : null}
           </div>
