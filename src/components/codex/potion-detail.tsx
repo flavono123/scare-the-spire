@@ -16,7 +16,9 @@ import {
   getCharacterColor,
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
-import { EntityReferenceLinks, type CodexReferenceLinkItem } from "./entity-reference-links";
+import { EntityReferenceLinks } from "./entity-reference-links";
+import { GameChoiceFrame } from "./event-choice-frame";
+import { RichText } from "@/components/rich-text";
 import {
   FUTURE_OF_POTIONS_EVENT_NAME_KO,
   FUTURE_OF_POTIONS_EVENT_PATH,
@@ -49,13 +51,7 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
   const poolColor = potion.pool !== "shared" && potion.pool !== "event"
     ? getCharacterColor(potion.pool)
     : undefined;
-  const futurePotionLinks: CodexReferenceLinkItem[] = getFuturePotionChoicesForPotion(potion).map((choice) => ({
-    id: choice.id,
-    href: FUTURE_OF_POTIONS_EVENT_PATH,
-    title: FUTURE_OF_POTIONS_EVENT_NAME_KO,
-    subtitle: choice.title,
-    description: <DescriptionText description={choice.description} />,
-  }));
+  const futurePotionChoices = getFuturePotionChoicesForPotion(potion);
 
   return (
     <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-lg mx-auto">
@@ -126,10 +122,29 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
       </div>
 
       <EntityReferenceLinks
+        kind="event"
         serviceLocale={serviceLocale}
-        title="관련 이벤트"
-        items={futurePotionLinks}
-      />
+        targets={[
+          {
+            id: "future-of-potions",
+            href: FUTURE_OF_POTIONS_EVENT_PATH,
+            title: FUTURE_OF_POTIONS_EVENT_NAME_KO,
+          },
+        ]}
+      >
+        <div className="space-y-2.5">
+          {futurePotionChoices.map((choice) => (
+            <GameChoiceFrame key={choice.id}>
+              <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
+                <RichText text={choice.title} />
+              </div>
+              <div className="font-game-text text-[18px] leading-[1.08] text-[#fff6e2]">
+                <RichText text={choice.description} />
+              </div>
+            </GameChoiceFrame>
+          ))}
+        </div>
+      </EntityReferenceLinks>
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
         <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>

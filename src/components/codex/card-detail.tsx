@@ -14,7 +14,9 @@ import { getCodexServiceMessages } from "@/lib/codex-service";
 import { CodexCard, CodexEnchantment } from "@/lib/codex-types";
 import { CardTile } from "./card-tile";
 import { DescriptionText, hasCardUpgrade } from "./codex-description";
+import { GameChoiceFrame } from "./event-choice-frame";
 import { HoverTip, HoverTipVariant } from "./hover-tip";
+import { RichText } from "@/components/rich-text";
 import { CARD_WIDTH_PRESET } from "@/lib/sts2-card-style";
 import {
   getDefaultTinkerRiderForType,
@@ -23,8 +25,8 @@ import {
   getTinkerRiderIdsForType,
   MAD_SCIENCE_DEFAULT_RIDER,
   MAD_SCIENCE_DEFAULT_TYPE,
-  TINKER_CARD_TYPE_CHOICE_LABELS,
   TINKER_RIDER_CHOICE_LABELS,
+  replaceTinkerTemplateValues,
   type TinkerRiderId,
 } from "@/lib/tinker-time";
 import {
@@ -42,7 +44,7 @@ import {
   getEnchantAmountPresets,
   getEnchantStatModifier,
 } from "@/lib/sts2-enchant-rules";
-import { EntityReferenceLinks, type CodexReferenceLinkItem } from "./entity-reference-links";
+import { EntityReferenceLinks } from "./entity-reference-links";
 
 const ENCHANT_TIP_VARIANT: Record<string, HoverTipVariant> = {
   CORRUPTED: "debuff",
@@ -107,16 +109,12 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
 
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
   const canShowUpgrade = hasCardUpgrade(previewCard);
-  const madScienceReferenceLinks: CodexReferenceLinkItem[] = isMadScience
-    ? [
-        {
-          id: "tinker-time",
-          href: TINKER_TIME_EVENT_PATH,
-          title: card.madScienceLabels?.eventTitle ?? TINKER_TIME_EVENT_NAME_KO,
-          subtitle: `${card.madScienceLabels?.typeChoiceLabel ?? TINKER_CARD_TYPE_CHOICE_LABELS[madScienceType]} · ${previewCard.typeLabel}`,
-          description: `${card.madScienceLabels?.riderChoiceLabels[effectiveMadScienceRider] ?? TINKER_RIDER_CHOICE_LABELS[effectiveMadScienceRider]} 효과를 고른 괴짜 과학 선택지입니다.`,
-        },
-      ]
+  const madScienceEventTargets = isMadScience
+    ? [{
+        id: "tinker-time",
+        href: TINKER_TIME_EVENT_PATH,
+        title: card.madScienceLabels?.eventTitle ?? TINKER_TIME_EVENT_NAME_KO,
+      }]
     : [];
 
   // 활성 인챈트 효과: amount 치환, 추가/제거 키워드, forced cost, stat modifier
@@ -263,43 +261,37 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, onClose 
       </div>
 
       {isMadScience && (
-        <div className="w-full rounded-lg border border-yellow-500/25 bg-yellow-950/20 p-3">
-          <div className="mb-2 flex items-center justify-between gap-3">
-            <h2 className="text-sm font-bold text-yellow-200">
-              {card.madScienceLabels?.eventTitle ?? "땜질 시간"}
-            </h2>
-            <span className="text-xs text-gray-400">
-              {card.madScienceLabels?.typeChoiceLabel ?? TINKER_CARD_TYPE_CHOICE_LABELS[madScienceType]} · {previewCard.typeLabel}
-            </span>
-          </div>
-          <div className="grid grid-cols-3 gap-2">
+        <EntityReferenceLinks
+          kind="event"
+          serviceLocale={serviceLocale}
+          targets={madScienceEventTargets}
+        >
+          <div className="space-y-2.5">
             {madScienceRiderIds.map((riderId) => {
               const active = effectiveMadScienceRider === riderId;
+              const description = replaceTinkerTemplateValues(
+                card.madScienceLabels?.riderChoiceDescriptions[riderId] ?? "",
+              );
               return (
-                <button
+                <GameChoiceFrame
                   key={riderId}
-                  type="button"
+                  active={active}
                   onClick={() => setMadScienceRider(riderId)}
-                  className={`min-h-9 rounded-md border px-2 text-sm font-bold transition-all ${
-                    active
-                      ? "border-orange-300 bg-orange-400/20 text-orange-100"
-                      : "border-white/10 bg-white/5 text-gray-300 hover:border-orange-300/50 hover:text-orange-100"
-                  }`}
-                  aria-pressed={active}
                 >
-                  {card.madScienceLabels?.riderChoiceLabels[riderId] ?? TINKER_RIDER_CHOICE_LABELS[riderId]}
-                </button>
+                  <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
+                    <RichText text={card.madScienceLabels?.riderChoiceLabels[riderId] ?? TINKER_RIDER_CHOICE_LABELS[riderId]} />
+                  </div>
+                  {description && (
+                    <div className="font-game-text text-[18px] leading-[1.08] text-[#fff6e2]">
+                      <RichText text={description} />
+                    </div>
+                  )}
+                </GameChoiceFrame>
               );
             })}
           </div>
-        </div>
+        </EntityReferenceLinks>
       )}
-
-      <EntityReferenceLinks
-        serviceLocale={serviceLocale}
-        title="관련 이벤트"
-        items={madScienceReferenceLinks}
-      />
 
       {/* 강화 / 베타 토글 — 카드 바로 아래 */}
       {(canShowUpgrade || card.betaImageUrl) && (

@@ -26,20 +26,19 @@ import { RichText } from "@/components/rich-text";
 import { CardTile } from "@/components/codex/card-tile";
 import { GameChoiceFrame } from "@/components/codex/event-choice-frame";
 import {
+  getDefaultTinkerRiderForType,
   getMadScienceVariantId,
   getMadSciencePreviewCard,
   getTinkerRiderIdsForType,
   isTinkerCardTypeId,
   isTinkerRiderId,
   replaceTinkerTemplateValues,
-  TINKER_CARD_IMAGE_BY_TYPE,
-  TINKER_CARD_TYPE_CHOICE_LABELS,
   TINKER_CARD_TYPES,
   TINKER_CARD_TYPE_TO_KO,
   type TinkerCardType,
 } from "@/lib/tinker-time";
 import { TINKER_TIME_EVENT_ID } from "@/lib/codex-references";
-import { EntityReferenceLinks, type CodexReferenceLinkItem } from "./entity-reference-links";
+import { EntityReferenceLinks } from "./entity-reference-links";
 
 const GAME_TEXT_SHADOW = "3px 2px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.75)";
 
@@ -631,16 +630,27 @@ export function EventDetail({
   const textPanelClassName = isModal
     ? "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[2%] sm:right-[3.5%] sm:top-[3%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[560px]"
     : "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]";
-  const referenceLinks: CodexReferenceLinkItem[] = event.id === TINKER_TIME_EVENT_ID
-    ? TINKER_CARD_TYPES.map((cardType) => ({
-        id: getMadScienceVariantId(cardType),
-        href: `/compendium/cards/${getMadScienceVariantId(cardType).toLowerCase()}`,
-        title: madScienceBaseCard?.name ?? "괴짜 과학",
-        subtitle: `${TINKER_CARD_TYPE_CHOICE_LABELS[cardType]} · ${gameUi.cardLibrary.types[TINKER_CARD_TYPE_TO_KO[cardType]]}`,
-        description: "이 이벤트에서 만드는 카드입니다.",
-        imageSrc: TINKER_CARD_IMAGE_BY_TYPE[cardType],
-        imageAlt: madScienceBaseCard?.name ?? "괴짜 과학",
-      }))
+  const relatedMadScienceCards = event.id === TINKER_TIME_EVENT_ID && madScienceBaseCard
+    ? TINKER_CARD_TYPES.map((cardType) => {
+        const id = getMadScienceVariantId(cardType);
+        const typeKo = TINKER_CARD_TYPE_TO_KO[cardType];
+        const typeLabel = gameUi.cardLibrary.types[typeKo] ?? typeKo;
+        const card = {
+          ...getMadSciencePreviewCard(
+            madScienceBaseCard,
+            cardType,
+            getDefaultTinkerRiderForType(cardType),
+            typeLabel,
+          ),
+          id,
+        };
+        return {
+          card,
+          href: `/compendium/cards/${id.toLowerCase()}`,
+          id,
+          title: `${card.name}(${typeLabel})`,
+        };
+      })
     : [];
 
   return (
@@ -725,10 +735,29 @@ export function EventDetail({
       </section>
 
       <EntityReferenceLinks
+        kind="card"
         serviceLocale={serviceLocale}
-        title="관련 카드"
-        items={referenceLinks}
-      />
+        targets={relatedMadScienceCards.map(({ href, id, title }) => ({ href, id, title }))}
+      >
+        <div className="flex flex-wrap gap-4">
+          {relatedMadScienceCards.map(({ card, href, id }) => (
+            <Link
+              key={id}
+              href={localizeHref(href, serviceLocale)}
+              className="block rounded-md transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300/50"
+            >
+              <CardTile
+                card={card}
+                interactive={false}
+                serviceLocale={serviceLocale}
+                showBeta={false}
+                showUpgrade={false}
+                size="grid"
+              />
+            </Link>
+          ))}
+        </div>
+      </EntityReferenceLinks>
 
       <aside className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
         <h2 className="mb-3 text-sm font-bold text-gray-300">{serviceText.common.comments}</h2>
