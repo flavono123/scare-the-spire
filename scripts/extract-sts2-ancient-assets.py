@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -19,9 +20,9 @@ ANCIENT_IDS = ("darv", "neow", "nonupeipe", "orobas", "pael", "tanx", "tezcatara
 
 BACKGROUND_IMPORTS = {
     "neow": "animations/backgrounds/neow_room/neow_bg.png.import",
-    "nonupeipe": "images/ancients/nonupeipe_placeholder.png.import",
-    "vakuu": "images/ancients/vakuu_placeholder.png.import",
 }
+
+EVENT_ART_SCENE_IDS = ("nonupeipe", "vakuu")
 
 
 def extract_texture(reader: PCKReader, import_path: str):
@@ -34,6 +35,15 @@ def extract_texture(reader: PCKReader, import_path: str):
     if image is None:
         raise RuntimeError(f"{import_path}: could not decode texture target: {target}")
     return image
+
+
+def event_scene_texture_import(reader: PCKReader, ancient_id: str) -> str:
+    scene_path = f"scenes/events/background_scenes/{ancient_id}.tscn"
+    scene = reader.read_file(scene_path).decode("utf-8", errors="replace")
+    match = re.search(r'\[ext_resource type="Texture2D" [^\]]*path="res://([^"]+\.png)"', scene)
+    if not match:
+        raise FileNotFoundError(f"{scene_path}: Texture2D resource not found")
+    return f"{match.group(1)}.import"
 
 
 def main() -> int:
@@ -49,8 +59,10 @@ def main() -> int:
     out_root = (REPO_ROOT / args.out_root).resolve()
     ancient_dir = out_root / "ancients"
     background_dir = out_root / "ancients-bg"
+    event_art_dir = out_root / "ancients-event"
     ancient_dir.mkdir(parents=True, exist_ok=True)
     background_dir.mkdir(parents=True, exist_ok=True)
+    event_art_dir.mkdir(parents=True, exist_ok=True)
 
     with PCKReader(args.pck) as reader:
         for ancient_id in ANCIENT_IDS:
@@ -68,6 +80,14 @@ def main() -> int:
             image = extract_texture(reader, import_path)
             image.convert("RGB").save(out_path, "WEBP", quality=92, method=6)
             print(f"extracted Ancient background: {out_path.relative_to(REPO_ROOT)}")
+
+        for ancient_id in EVENT_ART_SCENE_IDS:
+            out_path = event_art_dir / f"{ancient_id}.webp"
+            if out_path.exists() and not args.force:
+                continue
+            image = extract_texture(reader, event_scene_texture_import(reader, ancient_id))
+            image.convert("RGB").save(out_path, "WEBP", quality=92, method=6)
+            print(f"extracted Ancient event art: {out_path.relative_to(REPO_ROOT)}")
 
     return 0
 

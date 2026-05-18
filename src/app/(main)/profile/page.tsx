@@ -82,7 +82,8 @@ const CHARACTER_NICKNAMES: Record<string, Record<ProfileNicknameLocale, readonly
   },
 };
 
-const ANCIENT_BACKGROUND_IDS = new Set(["DARV", "NEOW", "NONUPEIPE", "OROBAS", "PAEL", "TANX", "TEZCATARA", "VAKUU"]);
+const ANCIENT_BACKGROUND_IDS = new Set(["DARV", "NEOW", "OROBAS", "PAEL", "TANX", "TEZCATARA"]);
+const ANCIENT_EVENT_ART_IDS = new Set(["NONUPEIPE", "VAKUU"]);
 
 const PET_CHOICES = [
   { id: "OSTY", monsterId: "OSTY", selectedSkins: null, skinOptions: [] },
@@ -210,11 +211,19 @@ function mapAncient(ancient: CodexAncient, spineAsset: MonsterSpineAsset | null)
     label: ancient.name,
     subtitle: ancient.epithet,
     iconUrl,
-    backgroundImageUrl: ANCIENT_BACKGROUND_IDS.has(ancient.id)
-      ? `/images/sts2/ancients-bg/${key}_bg.webp`
-      : null,
+    backgroundImageUrl: getAncientBackgroundImageUrl(ancient.id, key),
     spineAsset,
   };
+}
+
+function getAncientBackgroundImageUrl(ancientId: string, key: string): string | null {
+  if (ANCIENT_EVENT_ART_IDS.has(ancientId)) {
+    return `/images/sts2/ancients-event/${key}.webp`;
+  }
+  if (ANCIENT_BACKGROUND_IDS.has(ancientId)) {
+    return `/images/sts2/ancients-bg/${key}_bg.webp`;
+  }
+  return null;
 }
 
 function formatTemplate(template: string, values: Record<string, string>): string {
