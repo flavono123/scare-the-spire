@@ -6,7 +6,6 @@ import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   DEFAULT_USER_PROFILE,
   USER_PROFILE_CHANGE_EVENT,
-  USER_PROFILE_STORAGE_KEY,
   normalizeUserProfile,
   readStoredUserProfile,
   rowToUserProfile,
@@ -15,6 +14,8 @@ import {
   type UserProfile,
   type UserProfileRow,
 } from "@/lib/user-profile";
+
+const EMPTY_PROFILE_MAP = new Map<string, UserProfile>();
 
 interface UseUserProfileReturn {
   profile: UserProfile;
@@ -36,7 +37,6 @@ export function useStoredUserProfile(fallback = DEFAULT_USER_PROFILE): UserProfi
       setProfile(normalizeUserProfile(next, fallback));
     };
 
-    updateFromStorage();
     window.addEventListener("storage", updateFromStorage);
     window.addEventListener(USER_PROFILE_CHANGE_EVENT, updateFromEvent);
     return () => {
@@ -53,20 +53,16 @@ export function useUserProfile(
   fallback = DEFAULT_USER_PROFILE,
 ): UseUserProfileReturn {
   const [profile, setProfile] = useState(() => readStoredUserProfile(fallback));
-  const [loading, setLoading] = useState(supabaseEnabled);
   const [unavailable, setUnavailable] = useState(false);
+  const [loadedRemoteKey, setLoadedRemoteKey] = useState<string | null>(null);
+  const remoteKey = supabaseEnabled && userId ? `${supabaseEnv}:${userId}` : null;
 
   useEffect(() => {
     const stored = readStoredUserProfile(fallback);
-    setProfile(stored);
 
-    if (!supabaseEnabled || !userId) {
-      setLoading(false);
-      return;
-    }
+    if (!remoteKey || !userId) return;
 
     let cancelled = false;
-    setLoading(true);
 
     withSupabaseTimeout(
       "user_profiles.select",
@@ -87,18 +83,19 @@ export function useUserProfile(
         setProfile(nextProfile);
         writeStoredUserProfile(nextProfile);
         setUnavailable(false);
+        setLoadedRemoteKey(remoteKey);
       })
       .catch(() => {
-        if (!cancelled) setUnavailable(true);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setUnavailable(true);
+          setLoadedRemoteKey(remoteKey);
+        }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [fallback, userId]);
+  }, [fallback, remoteKey, userId]);
 
   const saveProfile = useCallback(
     async (next: UserProfile) => {
@@ -127,21 +124,26 @@ export function useUserProfile(
     [fallback, userId],
   );
 
-  return { profile, loading, unavailable, saveProfile };
+  return {
+    profile,
+    loading: remoteKey !== null && loadedRemoteKey !== remoteKey,
+    unavailable,
+    saveProfile,
+  };
 }
 
 export function usePublicUserProfiles(userIds: readonly string[]): Map<string, UserProfile> {
   const uniqueIdsKey = useMemo(() => {
     return Array.from(new Set(userIds.filter(Boolean))).sort().join(",");
   }, [userIds]);
-  const [profiles, setProfiles] = useState<Map<string, UserProfile>>(new Map());
+  const [profileState, setProfileState] = useState<{
+    key: string;
+    profiles: Map<string, UserProfile>;
+  }>({ key: "", profiles: EMPTY_PROFILE_MAP });
 
   useEffect(() => {
     const userIdsForQuery = uniqueIdsKey ? uniqueIdsKey.split(",") : [];
-    if (!supabaseEnabled || userIdsForQuery.length === 0) {
-      setProfiles(new Map());
-      return;
-    }
+    if (!supabaseEnabled || userIdsForQuery.length === 0) return;
 
     let cancelled = false;
 
@@ -156,13 +158,16 @@ export function usePublicUserProfiles(userIds: readonly string[]): Map<string, U
       .then(({ data, error }) => {
         if (error) throw error;
         if (cancelled) return;
-        setProfiles(new Map((data ?? []).map((row) => {
-          const profileRow = row as UserProfileRow;
-          return [profileRow.user_id, rowToUserProfile(profileRow)] as const;
-        })));
+        setProfileState({
+          key: uniqueIdsKey,
+          profiles: new Map((data ?? []).map((row) => {
+            const profileRow = row as UserProfileRow;
+            return [profileRow.user_id, rowToUserProfile(profileRow)] as const;
+          })),
+        });
       })
       .catch(() => {
-        if (!cancelled) setProfiles(new Map());
+        if (!cancelled) setProfileState({ key: uniqueIdsKey, profiles: EMPTY_PROFILE_MAP });
       });
 
     return () => {
@@ -170,5 +175,6 @@ export function usePublicUserProfiles(userIds: readonly string[]): Map<string, U
     };
   }, [uniqueIdsKey]);
 
-  return profiles;
+  if (!uniqueIdsKey || profileState.key !== uniqueIdsKey) return EMPTY_PROFILE_MAP;
+  return profileState.profiles;
 }
