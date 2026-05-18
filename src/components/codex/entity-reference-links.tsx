@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
