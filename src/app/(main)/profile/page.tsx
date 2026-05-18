@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import {
   getCodexAncientSpineAssets,
   getCodexAncients,
@@ -82,8 +81,6 @@ const CHARACTER_NICKNAMES: Record<string, Record<ProfileNicknameLocale, readonly
   },
 };
 
-const ANCIENT_NODE_ART_IDS = new Set(["DARV", "NEOW", "NONUPEIPE", "OROBAS", "PAEL", "TANX", "TEZCATARA", "VAKUU"]);
-
 const PET_CHOICES = [
   { id: "OSTY", monsterId: "OSTY", selectedSkins: null, skinOptions: [] },
   {
@@ -119,10 +116,6 @@ export default async function ProfileDevRoute({
 }: {
   searchParams: Promise<ProfileSearchParams>;
 }) {
-  if (process.env.NODE_ENV !== "development") {
-    notFound();
-  }
-
   const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const copy = serviceMessages[serviceLocale].profile;
@@ -203,22 +196,14 @@ function mapPet(
 }
 
 function mapAncient(ancient: CodexAncient, spineAsset: MonsterSpineAsset | null): AncientChoice {
-  const key = ancient.id.toLowerCase();
   const iconUrl = ancient.imageUrl ?? "/images/sts2/nav/stats_ancients.png";
   return {
     id: ancient.id,
     label: ancient.name,
     subtitle: ancient.epithet,
     iconUrl,
-    nodeImageUrl: getAncientNodeImageUrl(ancient.id, key, false),
-    nodeOutlineImageUrl: getAncientNodeImageUrl(ancient.id, key, true),
     spineAsset,
   };
-}
-
-function getAncientNodeImageUrl(ancientId: string, key: string, outline: boolean): string | null {
-  if (!ANCIENT_NODE_ART_IDS.has(ancientId)) return null;
-  return `/images/sts2/ancient-nodes/ancient_node_${key}${outline ? "_outline" : ""}.webp`;
 }
 
 function formatTemplate(template: string, values: Record<string, string>): string {

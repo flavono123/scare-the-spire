@@ -17,14 +17,14 @@ export const serviceMessages = {
       navLabel: "프로필",
       fallbackNickname: "프로필",
       metadata: {
-        title: "프로필 — DEV",
-        description: "개발 전용 프로필 선택 화면",
+        title: "프로필",
+        description: "댓글과 케미컬X에 사용할 프로필 선택 화면",
       },
-      devBadge: "DEV",
+      devBadge: "",
       selectors: {
         character: "캐릭터",
         pet: "펫",
-        ancient: "고대신",
+        ancient: "종교",
       },
       actions: {
         idle: "대기",
@@ -508,14 +508,14 @@ export const serviceMessages = {
       navLabel: "Profile",
       fallbackNickname: "Profile",
       metadata: {
-        title: "Profile — DEV",
-        description: "Development-only profile selection screen",
+        title: "Profile",
+        description: "Profile selection screen for comments and Chemical X",
       },
-      devBadge: "DEV",
+      devBadge: "",
       selectors: {
         character: "Character",
         pet: "Pet",
-        ancient: "Ancient",
+        ancient: "Religion",
       },
       actions: {
         idle: "Idle",

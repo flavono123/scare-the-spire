@@ -3,8 +3,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Image from "@/components/ui/static-image";
 import Link from "next/link";
+import { AncientNodeRender } from "@/components/codex/ancient-node-render";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -266,16 +266,12 @@ function AncientCard({
       className="group relative overflow-hidden rounded-xl border border-blue-900/30 bg-[#12121a] hover:border-blue-600/50 transition-all duration-200"
     >
       {/* Image */}
-      <div className="relative w-full aspect-square overflow-hidden">
-        {ancient.imageUrl && (
-          <Image
-            src={ancient.imageUrl}
-            alt={ancient.name}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
-          />
-        )}
+      <div className="relative flex w-full aspect-square items-center justify-center overflow-hidden">
+        <AncientNodeRender
+          ancientId={ancient.id}
+          className="h-[62%] transition-transform duration-300 group-hover:scale-105"
+          sizes="(max-width: 640px) 62vw, (max-width: 1024px) 31vw, 16vw"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-[#12121a] via-transparent to-transparent" />
       </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { AncientNodeRender } from "@/components/codex/ancient-node-render";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import Image from "@/components/ui/static-image";
 import type { MonsterSpineAsset } from "@/lib/codex-types";
@@ -40,8 +41,6 @@ export interface AncientChoice {
   label: string;
   subtitle: string;
   iconUrl: string;
-  nodeImageUrl: string | null;
-  nodeOutlineImageUrl: string | null;
   spineAsset: MonsterSpineAsset | null;
 }
 
@@ -99,13 +98,6 @@ const PROFILE_SMALL_PET_VIEWPORT_PADDING = {
   padBottom: "24%",
 } as const;
 
-const PROFILE_ANCIENT_VIEWPORT_PADDING = {
-  padLeft: "0%",
-  padRight: "0%",
-  padTop: "0%",
-  padBottom: "0%",
-} as const;
-
 export default function ProfilePage({
   characters,
   pets,
@@ -151,9 +143,11 @@ export default function ProfilePage({
           />
           <h1 className="truncate text-lg font-bold text-zinc-100">{profileNickname}</h1>
         </div>
-        <span className="shrink-0 rounded border border-amber-300/30 bg-amber-400/10 px-2 py-0.5 text-[11px] font-semibold text-amber-100">
-          {copy.devBadge}
-        </span>
+        {copy.devBadge && (
+          <span className="shrink-0 rounded border border-amber-300/30 bg-amber-400/10 px-2 py-0.5 text-[11px] font-semibold text-amber-100">
+            {copy.devBadge}
+          </span>
+        )}
       </header>
 
       <section className="grid min-h-0 flex-1 grid-cols-[minmax(18rem,30%)_minmax(0,70%)] gap-4">
@@ -388,27 +382,10 @@ function DuoRender({
     <div className="flex h-full min-h-0 flex-col overflow-visible">
       <div className="relative min-h-0 flex-1">
         {ancient && (
-          <div className="pointer-events-none absolute left-1/2 top-0 z-[1] aspect-[2560/1200] w-[68%] max-w-[42rem] -translate-x-1/2 overflow-hidden opacity-80">
-            {ancient.nodeImageUrl && ancient.nodeOutlineImageUrl ? (
-              <AncientNodeRender
-                imageUrl={ancient.nodeImageUrl}
-                outlineImageUrl={ancient.nodeOutlineImageUrl}
-              />
-            ) : ancient.spineAsset ? (
-              <MonsterSpineStage
-                key={`ancient-${ancient.id}`}
-                asset={ancient.spineAsset}
-                fallbackImageUrl={ancient.iconUrl}
-                monsterName={ancient.label}
-                selectedMoveId={null}
-                imagePriority={false}
-                showLoadingLabel={false}
-                viewportTransitionTime={0}
-                viewportPadding={PROFILE_ANCIENT_VIEWPORT_PADDING}
-                fallbackImageClassName="absolute left-1/2 top-1/2 z-10 h-[clamp(7rem,16vw,14rem)] w-auto -translate-x-1/2 -translate-y-1/2 object-contain opacity-90 drop-shadow-[0_0_28px_rgba(96,165,250,0.38)]"
-                className="relative h-full w-full"
-              />
-            ) : null}
+          <div className="pointer-events-none absolute left-1/2 top-0 z-[1] aspect-[2560/1200] w-[68%] max-w-[42rem] -translate-x-1/2 overflow-hidden">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <AncientNodeRender ancientId={ancient.id} className="h-[82%]" />
+            </div>
           </div>
         )}
         <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-full w-[68rem] max-w-none origin-bottom-left scale-[0.8]">
@@ -465,37 +442,6 @@ function DuoRender({
           onSelect={onPetSkinSelect}
         />
       )}
-    </div>
-  );
-}
-
-function AncientNodeRender({
-  imageUrl,
-  outlineImageUrl,
-}: {
-  imageUrl: string;
-  outlineImageUrl: string;
-}) {
-  return (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <div className="relative h-[82%] aspect-square">
-        <Image
-          src={outlineImageUrl}
-          alt=""
-          fill
-          sizes="14rem"
-          className="object-contain opacity-70 drop-shadow-[0_0_18px_rgba(96,165,250,0.5)]"
-          priority={false}
-        />
-        <Image
-          src={imageUrl}
-          alt=""
-          fill
-          sizes="14rem"
-          className="object-contain drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]"
-          priority={false}
-        />
-      </div>
     </div>
   );
 }
