@@ -51,6 +51,7 @@ import {
   getMadSciencePreviewCard,
   getMadScienceVariantId,
   getTinkerCardTypeChoiceKey,
+  getTinkerRiderDescriptionKey,
   getTinkerRiderChoiceKey,
   MAD_SCIENCE_CARD_ID,
   MAD_SCIENCE_DEFAULT_IMAGE_URL,
@@ -235,6 +236,19 @@ function buildMadScienceLabels(
       ),
     ]),
   );
+  const riderChoiceDescriptions = Object.fromEntries(
+    riderIds.map((riderId) => [
+      riderId,
+      localizedGameText(
+        gameEvents,
+        engEvents,
+        getTinkerRiderDescriptionKey(riderId),
+        "",
+        "",
+        gameLocale,
+      ),
+    ]),
+  );
 
   return {
     eventTitle: localizedGameText(
@@ -245,6 +259,7 @@ function buildMadScienceLabels(
       TINKER_TIME_TITLE_FALLBACK_EN,
       gameLocale,
     ),
+    riderChoiceDescriptions,
     riderChoiceLabels,
     typeChoiceLabels: Object.fromEntries(
       TINKER_CARD_TYPES.map((cardType) => [
@@ -349,6 +364,7 @@ export async function getCodexCards(opts?: {
           id: getMadScienceVariantId(cardType),
           madScienceLabels: {
             eventTitle: madScienceLabels.eventTitle,
+            riderChoiceDescriptions: madScienceLabels.riderChoiceDescriptions,
             riderChoiceLabels: madScienceLabels.riderChoiceLabels,
             typeChoiceLabel: madScienceLabels.typeChoiceLabels[cardType],
           },

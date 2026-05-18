@@ -172,6 +172,10 @@ export function getTinkerRiderChoiceKey(riderId: TinkerRiderId): string {
   return `TINKER_TIME.pages.CHOOSE_RIDER.options.${riderId}.title`;
 }
 
+export function getTinkerRiderDescriptionKey(riderId: TinkerRiderId): string {
+  return `TINKER_TIME.pages.CHOOSE_RIDER.options.${riderId}.description`;
+}
+
 export function getMadScienceCardTypeFromId(id: string): TinkerCardType | null {
   const normalized = id.toUpperCase();
   if (normalized === MAD_SCIENCE_CARD_ID) return MAD_SCIENCE_DEFAULT_TYPE;

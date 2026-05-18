@@ -56,6 +56,7 @@ export interface CodexCard {
   betaImageUrl: string | null; // local path
   madScienceLabels?: {
     eventTitle: string;
+    riderChoiceDescriptions: Record<string, string>;
     typeChoiceLabel: string;
     riderChoiceLabels: Record<string, string>;
   };
