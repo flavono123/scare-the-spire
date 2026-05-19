@@ -1,0 +1,376 @@
+{
+  "bugslayer": [
+    {
+      "height": 21,
+      "source": "images/packed/vfx/event/infested_automaton_flies.png",
+      "src": "/images/sts2/event-vfx/infested_automaton_flies.webp",
+      "width": 122
+    }
+  ],
+  "byrdonis_nest": [
+    {
+      "height": 141,
+      "source": "images/packed/vfx/event/byrdonis_feathers.png",
+      "src": "/images/sts2/event-vfx/byrdonis_feathers.webp",
+      "width": 489
+    },
+    {
+      "height": 60,
+      "source": "images/packed/vfx/event/byrdonis_nest_shine.png",
+      "src": "/images/sts2/event-vfx/byrdonis_nest_shine.webp",
+      "width": 70
+    }
+  ],
+  "colossal_flower": [
+    {
+      "height": 2400,
+      "source": "images/packed/vfx/event/trial_stand_light.png",
+      "src": "/images/sts2/event-vfx/trial_stand_light.webp",
+      "width": 1251
+    }
+  ],
+  "dense_vegetation": [
+    {
+      "height": 143,
+      "source": "images/packed/vfx/event/dense_vegetation/vfx_dense_vegetation_bug_00.png",
+      "src": "/images/sts2/event-vfx/dense_vegetation/vfx_dense_vegetation_bug_00.webp",
+      "width": 239
+    },
+    {
+      "height": 143,
+      "source": "images/packed/vfx/event/dense_vegetation/vfx_dense_vegetation_bug_02.png",
+      "src": "/images/sts2/event-vfx/dense_vegetation/vfx_dense_vegetation_bug_02.webp",
+      "width": 239
+    },
+    {
+      "height": 143,
+      "source": "images/packed/vfx/event/dense_vegetation/vfx_dense_vegetation_bug_03.png",
+      "src": "/images/sts2/event-vfx/dense_vegetation/vfx_dense_vegetation_bug_03.webp",
+      "width": 239
+    },
+    {
+      "height": 143,
+      "source": "images/packed/vfx/event/dense_vegetation/vfx_dense_vegetation_bug_04.png",
+      "src": "/images/sts2/event-vfx/dense_vegetation/vfx_dense_vegetation_bug_04.webp",
+      "width": 239
+    },
+    {
+      "height": 143,
+      "source": "images/packed/vfx/event/dense_vegetation/vfx_dense_vegetation_bug_05.png",
+      "src": "/images/sts2/event-vfx/dense_vegetation/vfx_dense_vegetation_bug_05.webp",
+      "width": 239
+    }
+  ],
+  "doll_room": [
+    {
+      "height": 60,
+      "source": "images/packed/vfx/event/byrdonis_nest_shine.png",
+      "src": "/images/sts2/event-vfx/byrdonis_nest_shine.webp",
+      "width": 70
+    },
+    {
+      "height": 942,
+      "source": "images/packed/vfx/event/doll_room_foreground.png",
+      "src": "/images/sts2/event-vfx/doll_room_foreground.webp",
+      "width": 2560
+    },
+    {
+      "height": 35,
+      "source": "images/packed/vfx/event/doll_room_whisper_bubble_l.png",
+      "src": "/images/sts2/event-vfx/doll_room_whisper_bubble_l.webp",
+      "width": 35
+    },
+    {
+      "height": 35,
+      "source": "images/packed/vfx/event/doll_room_whisper_bubble_r.png",
+      "src": "/images/sts2/event-vfx/doll_room_whisper_bubble_r.webp",
+      "width": 35
+    },
+    {
+      "height": 31,
+      "source": "images/packed/vfx/event/doll_room_whispers.png",
+      "src": "/images/sts2/event-vfx/doll_room_whispers.webp",
+      "width": 93
+    }
+  ],
+  "infested_automaton": [
+    {
+      "height": 21,
+      "source": "images/packed/vfx/event/infested_automaton_flies.png",
+      "src": "/images/sts2/event-vfx/infested_automaton_flies.webp",
+      "width": 122
+    }
+  ],
+  "lost_wisp": [
+    {
+      "height": 1200,
+      "source": "images/packed/vfx/event/bedlam_beacon_foreground.png",
+      "src": "/images/sts2/event-vfx/bedlam_beacon_foreground.webp",
+      "width": 2560
+    },
+    {
+      "height": 21,
+      "source": "images/packed/vfx/event/infested_automaton_flies.png",
+      "src": "/images/sts2/event-vfx/infested_automaton_flies.webp",
+      "width": 122
+    }
+  ],
+  "morphic_grove": [
+    {
+      "height": 1200,
+      "source": "images/packed/vfx/event/morphic_grove/morphic_grove_foreground.png",
+      "src": "/images/sts2/event-vfx/morphic_grove/morphic_grove_foreground.webp",
+      "width": 2560
+    }
+  ],
+  "potion_courier": [
+    {
+      "height": 141,
+      "source": "images/packed/vfx/event/byrdonis_feathers.png",
+      "src": "/images/sts2/event-vfx/byrdonis_feathers.webp",
+      "width": 489
+    },
+    {
+      "height": 21,
+      "source": "images/packed/vfx/event/infested_automaton_flies.png",
+      "src": "/images/sts2/event-vfx/infested_automaton_flies.webp",
+      "width": 122
+    },
+    {
+      "height": 33,
+      "source": "images/packed/vfx/event/potion_courier_x.png",
+      "src": "/images/sts2/event-vfx/potion_courier_x.webp",
+      "width": 39
+    }
+  ],
+  "self_help_book": [
+    {
+      "height": 536,
+      "source": "images/packed/vfx/event/self_help_book_shine.png",
+      "src": "/images/sts2/event-vfx/self_help_book_shine.webp",
+      "width": 1764
+    }
+  ],
+  "symbiote": [
+    {
+      "height": 116,
+      "source": "images/packed/vfx/event/symbiote/eye_01.png",
+      "src": "/images/sts2/event-vfx/symbiote/eye_01.webp",
+      "width": 73
+    },
+    {
+      "height": 85,
+      "source": "images/packed/vfx/event/symbiote/eye_02.png",
+      "src": "/images/sts2/event-vfx/symbiote/eye_02.webp",
+      "width": 68
+    },
+    {
+      "height": 78,
+      "source": "images/packed/vfx/event/symbiote/eye_03.png",
+      "src": "/images/sts2/event-vfx/symbiote/eye_03.webp",
+      "width": 60
+    },
+    {
+      "height": 213,
+      "source": "images/packed/vfx/event/symbiote/symbiote_eye.png",
+      "src": "/images/sts2/event-vfx/symbiote/symbiote_eye.webp",
+      "width": 155
+    },
+    {
+      "height": 238,
+      "source": "images/packed/vfx/event/symbiote/symbiote_eye_blink_01.png",
+      "src": "/images/sts2/event-vfx/symbiote/symbiote_eye_blink_01.webp",
+      "width": 1314
+    },
+    {
+      "height": 237,
+      "source": "images/packed/vfx/event/symbiote/symbiote_eye_blink_02.png",
+      "src": "/images/sts2/event-vfx/symbiote/symbiote_eye_blink_02.webp",
+      "width": 916
+    },
+    {
+      "height": 196,
+      "source": "images/packed/vfx/event/symbiote/symbiote_eye_blink_03.png",
+      "src": "/images/sts2/event-vfx/symbiote/symbiote_eye_blink_03.webp",
+      "width": 830
+    },
+    {
+      "height": 328,
+      "source": "images/packed/vfx/event/symbiote/symbiote_eye_blink_06.png",
+      "src": "/images/sts2/event-vfx/symbiote/symbiote_eye_blink_06.webp",
+      "width": 715
+    },
+    {
+      "height": 170,
+      "source": "images/packed/vfx/event/symbiote/symbiote_eye_blink_09.png",
+      "src": "/images/sts2/event-vfx/symbiote/symbiote_eye_blink_09.webp",
+      "width": 376
+    },
+    {
+      "height": 254,
+      "source": "images/packed/vfx/event/symbiote/symbiote_eye_blink_13.png",
+      "src": "/images/sts2/event-vfx/symbiote/symbiote_eye_blink_13.webp",
+      "width": 294
+    },
+    {
+      "height": 116,
+      "source": "images/packed/vfx/event/symbiote/symbiote_highlight.png",
+      "src": "/images/sts2/event-vfx/symbiote/symbiote_highlight.webp",
+      "width": 151
+    }
+  ],
+  "tablet_of_truth": [
+    {
+      "height": 532,
+      "source": "images/packed/vfx/event/tablet_of_truth_rock.png",
+      "src": "/images/sts2/event-vfx/tablet_of_truth_rock.webp",
+      "width": 2128
+    }
+  ],
+  "tea_master": [
+    {
+      "height": 60,
+      "source": "images/packed/vfx/event/byrdonis_nest_shine.png",
+      "src": "/images/sts2/event-vfx/byrdonis_nest_shine.webp",
+      "width": 70
+    },
+    {
+      "height": 33,
+      "source": "images/packed/vfx/event/tea_master/tea_master_0.png",
+      "src": "/images/sts2/event-vfx/tea_master/tea_master_0.webp",
+      "width": 75
+    },
+    {
+      "height": 33,
+      "source": "images/packed/vfx/event/tea_master/tea_master_01.png",
+      "src": "/images/sts2/event-vfx/tea_master/tea_master_01.webp",
+      "width": 75
+    },
+    {
+      "height": 33,
+      "source": "images/packed/vfx/event/tea_master/tea_master_02.png",
+      "src": "/images/sts2/event-vfx/tea_master/tea_master_02.webp",
+      "width": 75
+    },
+    {
+      "height": 33,
+      "source": "images/packed/vfx/event/tea_master/tea_master_03.png",
+      "src": "/images/sts2/event-vfx/tea_master/tea_master_03.webp",
+      "width": 75
+    },
+    {
+      "height": 33,
+      "source": "images/packed/vfx/event/tea_master/tea_master_04.png",
+      "src": "/images/sts2/event-vfx/tea_master/tea_master_04.webp",
+      "width": 75
+    },
+    {
+      "height": 33,
+      "source": "images/packed/vfx/event/tea_master/tea_master_05.png",
+      "src": "/images/sts2/event-vfx/tea_master/tea_master_05.webp",
+      "width": 75
+    },
+    {
+      "height": 33,
+      "source": "images/packed/vfx/event/tea_master/tea_master_06.png",
+      "src": "/images/sts2/event-vfx/tea_master/tea_master_06.webp",
+      "width": 75
+    },
+    {
+      "height": 33,
+      "source": "images/packed/vfx/event/tea_master/tea_master_07.png",
+      "src": "/images/sts2/event-vfx/tea_master/tea_master_07.webp",
+      "width": 75
+    },
+    {
+      "height": 33,
+      "source": "images/packed/vfx/event/tea_master/tea_master_08.png",
+      "src": "/images/sts2/event-vfx/tea_master/tea_master_08.webp",
+      "width": 75
+    },
+    {
+      "height": 33,
+      "source": "images/packed/vfx/event/tea_master/tea_master_09.png",
+      "src": "/images/sts2/event-vfx/tea_master/tea_master_09.webp",
+      "width": 75
+    }
+  ],
+  "the_future_of_potions": [
+    {
+      "height": 1200,
+      "source": "images/packed/vfx/event/the_future_of_potions_foreground.png",
+      "src": "/images/sts2/event-vfx/the_future_of_potions_foreground.webp",
+      "width": 2560
+    },
+    {
+      "height": 657,
+      "source": "images/packed/vfx/event/the_future_of_potions_glow.png",
+      "src": "/images/sts2/event-vfx/the_future_of_potions_glow.webp",
+      "width": 315
+    }
+  ],
+  "this_or_that": [
+    {
+      "height": 21,
+      "source": "images/packed/vfx/event/infested_automaton_flies.png",
+      "src": "/images/sts2/event-vfx/infested_automaton_flies.webp",
+      "width": 122
+    }
+  ],
+  "trial": [
+    {
+      "height": 542,
+      "source": "images/packed/vfx/event/trial_light_beam.png",
+      "src": "/images/sts2/event-vfx/trial_light_beam.webp",
+      "width": 132
+    },
+    {
+      "height": 1200,
+      "source": "images/packed/vfx/event/trial_top_layer.png",
+      "src": "/images/sts2/event-vfx/trial_top_layer.webp",
+      "width": 2560
+    }
+  ],
+  "trial_merchant": [
+    {
+      "height": 1288,
+      "source": "images/packed/vfx/event/trial_merchant.png",
+      "src": "/images/sts2/event-vfx/trial_merchant.webp",
+      "width": 996
+    },
+    {
+      "height": 2400,
+      "source": "images/packed/vfx/event/trial_stand_light.png",
+      "src": "/images/sts2/event-vfx/trial_stand_light.webp",
+      "width": 1251
+    }
+  ],
+  "trial_noble": [
+    {
+      "height": 1288,
+      "source": "images/packed/vfx/event/trial_noble.png",
+      "src": "/images/sts2/event-vfx/trial_noble.webp",
+      "width": 996
+    },
+    {
+      "height": 2400,
+      "source": "images/packed/vfx/event/trial_stand_light.png",
+      "src": "/images/sts2/event-vfx/trial_stand_light.webp",
+      "width": 1251
+    }
+  ],
+  "trial_nondescript": [
+    {
+      "height": 1288,
+      "source": "images/packed/vfx/event/trial_nondescript.png",
+      "src": "/images/sts2/event-vfx/trial_nondescript.webp",
+      "width": 996
+    },
+    {
+      "height": 2400,
+      "source": "images/packed/vfx/event/trial_stand_light.png",
+      "src": "/images/sts2/event-vfx/trial_stand_light.webp",
+      "width": 1251
+    }
+  ]
+}
