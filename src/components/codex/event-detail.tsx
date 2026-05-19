@@ -323,6 +323,20 @@ const EVENT_OPTION_POTION_PREVIEW_IDS: Record<string, Record<string, readonly st
   },
 };
 
+const EVENT_OPTION_GENERATED_RANDOM_POTION_IDS: Record<string, readonly string[]> = {
+  BATTLEWORN_DUMMY: ["SETTING_1"],
+  ENDLESS_CONVEYOR: ["SUSPICIOUS_CONDIMENT"],
+  PUNCH_OFF: ["FIGHT"],
+  THE_LEGENDS_WERE_TRUE: ["SLOWLY_FIND_AN_EXIT"],
+  WAR_HISTORIAN_REPY: ["UNLOCK_CHEST"],
+  WELLSPRING: ["BOTTLE"],
+  WHISPERING_HOLLOW: ["GOLD"],
+};
+
+const EVENT_OPTION_OWNED_RANDOM_POTION_IDS: Record<string, readonly string[]> = {
+  STONE_OF_ALL_TIME: ["LIFT"],
+};
+
 type EventPreview = {
   cards?: CodexCard[];
   potions?: CodexPotion[];
@@ -927,6 +941,18 @@ function dedupeById<T extends { id: string }>(items: readonly T[]): T[] {
   });
 }
 
+function optionIdMatches(map: Record<string, readonly string[]>, eventId: string, optionId: string): boolean {
+  return map[eventId]?.includes(optionId) ?? false;
+}
+
+function isGeneratedPotionPoolPotion(potion: CodexPotion): boolean {
+  return potion.rarity !== "이벤트" && potion.rarity !== "토큰";
+}
+
+function sortPotionsForPreview(potions: readonly CodexPotion[]): CodexPotion[] {
+  return [...potions].sort((a, b) => a.name.localeCompare(b.name, "ko"));
+}
+
 function applyBattlewornDummyOption(option: EventOption, event: CodexEvent): EventOption {
   const setting = BATTLEWORN_DUMMY_SETTINGS[option.id];
   if (!setting) return option;
@@ -1341,6 +1367,8 @@ export function EventContentViewer({
     for (const list of potionsByRarity.values()) {
       list.sort((a, b) => a.name.localeCompare(b.name, "ko"));
     }
+    const generatedPotionPool = sortPotionsForPreview((potions ?? []).filter(isGeneratedPotionPoolPotion));
+    const ownedPotionPool = sortPotionsForPreview(potions ?? []);
 
     if (currentPageId === "CHOOSE_RIDER") {
       const selectedType = getTinkerSelectedType(currentEntry);
@@ -1383,14 +1411,13 @@ export function EventContentViewer({
         if (rarity) potionsForOption.push(...(potionsByRarity.get(rarity) ?? []));
       }
       if (event.id === "POTION_COURIER" && option.id === "RANSACK") {
-        potionsForOption.push(...(potionsByRarity.get("고급") ?? []));
+        potionsForOption.push(...(potionsByRarity.get("고급") ?? []).filter(isGeneratedPotionPoolPotion));
       }
-      if (
-        (event.id === "ENDLESS_CONVEYOR" && option.id === "SUSPICIOUS_CONDIMENT") ||
-        (event.id === "THE_LEGENDS_WERE_TRUE" && option.id === "SLOWLY_FIND_AN_EXIT") ||
-        (event.id === "WELLSPRING" && option.id === "BOTTLE")
-      ) {
-        potionsForOption.push(...(potions ?? []).filter((potion) => potion.rarity !== "이벤트" && potion.rarity !== "토큰"));
+      if (optionIdMatches(EVENT_OPTION_GENERATED_RANDOM_POTION_IDS, event.id, option.id)) {
+        potionsForOption.push(...generatedPotionPool);
+      }
+      if (optionIdMatches(EVENT_OPTION_OWNED_RANDOM_POTION_IDS, event.id, option.id)) {
+        potionsForOption.push(...ownedPotionPool);
       }
 
       if (cardsForOption.length > 0) preview.cards = [...(preview.cards ?? []), ...cardsForOption];
