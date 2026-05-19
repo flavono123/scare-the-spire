@@ -61,6 +61,7 @@
 
 ## 공통 컴포넌트 용어
 
+- `GameHoverTip`: 게임 hover tip 애셋 감각으로 이름, 설명, 짧은 메타 정보를 보여주는 표준 툴팁 컴포넌트명이다. 기존 일반 `HoverTip`과 구분한다.
 - `RelatedResourceLinks`: 관련 리소스 라인을 렌더하는 표준 컴포넌트명이다. 기존 `EntityReferenceLinks` 계열은 이 이름으로 리팩토링한다.
 
 ## 색상 의미
