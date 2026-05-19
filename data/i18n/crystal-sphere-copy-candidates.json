@@ -152,7 +152,7 @@
     },
     {
       "id": "crystalSphere.events.CRYSTAL.SPHERE.banter.START.2",
-      "status": "candidate",
+      "status": "include",
       "category": "crystal-sphere",
       "sourceTable": "events",
       "sourceKey": "CRYSTAL_SPHERE.banter.START.2",
