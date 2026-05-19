@@ -98,6 +98,17 @@ export interface STS2PatchFeaturedEntity {
   id: string;
 }
 
+export type STS2PatchArtType = "card" | "epoch" | "event" | "ancient" | "image";
+
+export interface STS2PatchArt {
+  type: STS2PatchArtType;
+  id?: string;
+  imageUrl?: string;
+  alt?: string;
+  altKo?: string;
+  objectPosition?: string;
+}
+
 export interface STS2Patch {
   id: string;
   version: string;
@@ -110,6 +121,7 @@ export interface STS2Patch {
   summary: string;
   summaryKo: string;
   hasBalanceChanges: boolean;
+  art?: STS2PatchArt;
   featuredEntities?: STS2PatchFeaturedEntity[];
 }
 
