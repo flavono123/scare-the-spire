@@ -47,19 +47,28 @@ Index/detail behavior while `status: "building"`:
 
 Remove `status` or set it to `"ready"` when the enriched notes are published.
 
-## Patch Index Preview Assets
+## Patch Representative Art
 
-Use `featuredEntities` in `data/sts2-patches.json` to replace the gray summary body on ready patch cards with related game assets.
+Use `art` in `data/sts2-patches.json` to select one representative image for each ready patch. The same art appears on the patch index card and near the top of the patch detail page.
+
+Preferred sources, in order:
+
+1. Patch-relevant epoch art, when a timeline/epoch unlock or theme clearly matches the patch.
+2. Patch-relevant event background art.
+3. Patch-relevant card art, especially for headline new cards, major reworks, or new portrait art.
+4. Patch-relevant Ancient background art from `public/images/sts2/ancients-bg/`.
+5. If there is no good patch-specific art, use the text-free STS2 banner at `public/images/sts2/patches/default-art.jpg`.
 
 Rules:
 
-- Treat `featuredEntities` as a priority-ordered shortlist, not an exhaustive list.
-- Keep at most 8 entries per patch; the index also caps rendering at 8.
-- Choose the most important patch subjects first: new cards/relics/potions, major reworks, balance headline items, then important monsters/events.
-- Use exact current Codex entity IDs and types. Valid types are `card`, `relic`, `potion`, `power`, `enchantment`, `event`, `monster`, `encounter`, and `ancient`.
-- Only include entities that resolve to an image in the current Codex data. If a patch keyword has no current Codex image, keep it in the rich note text but do not add it to `featuredEntities`.
-- Cards render as full card tiles; other entities render as image-only assets. Do not show labels, tooltips, links, borders, or hover scale in the index preview.
-- The current layout is a card-sized responsive slot: 4 columns on mobile, 8 on wider screens. Non-card assets can look vertically sparse or small in that slot, especially events; leave that as a UI TODO unless the task is specifically to redesign preview sizing.
+- Do not use a grid of up to 8 preview assets for the index anymore. Pick one art image.
+- Use exact current IDs and factual asset sources. Valid `art.type` values are `card`, `epoch`, `event`, `ancient`, and `image`.
+- Prefer `art: { "type": "epoch", "id": "REGENT5_EPOCH" }` style references over raw paths when the art maps to a known game concept.
+- Use `image` only for standalone assets such as the default STS2 banner, and include `imageUrl`.
+- Add `alt` and `altKo` when the automatic label would be unclear.
+- For `v0.105.0`, use the Friendship epoch art: `art.type = "epoch"`, `art.id = "REGENT5_EPOCH"`, Korean alt text `역사: 우정`.
+- If the best art for an older patch is unclear, ask the user or make an explicit recommendation instead of guessing silently.
+- Keep `featuredEntities` only as a priority-ordered semantic shortlist and fallback source. The current UI no longer renders it as an 8-item thumbnail grid.
 
 ## Full Rich Patch Workflow
 
@@ -72,7 +81,7 @@ Rules:
 3. Commit the English notes.
 4. Run or verify `update-game-assets` for the patched game version.
 5. Translate/enrich Korean notes at `data/sts2-patch-notes/{version}.ko.md`.
-6. Update `data/sts2-patches.json` with factual summaries and `hasBalanceChanges`.
+6. Update `data/sts2-patches.json` with factual summaries, `hasBalanceChanges`, representative `art`, and any useful `featuredEntities` fallback shortlist.
 7. Apply machine-readable data changes:
    - `data/sts2/{eng,kor}/cards.json`
    - `data/sts2/{eng,kor}/relics.json`
