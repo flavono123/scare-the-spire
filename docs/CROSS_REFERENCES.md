@@ -33,6 +33,123 @@
   (역참조 — 유물 상세에서 어떤 보스가 주는지는 아직 표시 안 함.)
 - **Encounter → Monsters** — `CodexEncounter.monsters[]` 가 데이터에 있고
   patch-note hover 에서만 사용 중.
+- **Event ↔ Card/Relic/Potion explicit reference links**
+  - 구현 위치:
+    - 관계 맵: `src/lib/codex-references.ts`
+    - 공용 UI: `src/components/codex/entity-reference-links.tsx`
+    - 이벤트 상세: `src/components/codex/event-detail.tsx`
+    - 카드 역링크: `src/components/codex/card-detail.tsx`
+    - 유물 역링크: `src/components/codex/relic-detail.tsx`
+    - 포션 역링크/결과군: `src/components/codex/potion-detail.tsx`
+  - 검증: `pnpm codex:validate-references`
+
+### Event ↔ Card/Relic/Potion explicit reference links
+
+현재 `Event ↔ Card/Relic` 관계는 이름 매칭이 아니라 게임 코드에서 확인한 보상/생성
+관계를 손으로 옮긴 explicit map이다. 맵은 ID만 들고, 상세 컴포넌트가 현재 `gameLocale`
+데이터에서 표시명/이미지/hover preview를 다시 만든다.
+
+| 맵 | 방향 | 설명 |
+|----|------|------|
+| `EVENT_RELATED_CARD_IDS` | Event → Card | 이벤트가 고정 카드, 저주 카드, 또는 코드에 박힌 유한 카드 풀을 생성/획득시키는 경우 |
+| `EVENT_RELATED_RELIC_IDS` | Event → Relic | 이벤트가 고정 유물, 또는 코드에 박힌 유한 유물 풀을 획득시키는 경우 |
+| `getRelatedEventIdsForCard(cardId)` | Card → Event | `EVENT_RELATED_CARD_IDS`의 reverse index |
+| `getRelatedEventIdsForRelic(relicId)` | Relic → Event | `EVENT_RELATED_RELIC_IDS`의 reverse index |
+
+포함 기준:
+
+- `ModelDb.Card<T>()`, `CardPileCmd.Add*<T>()`, `CardCmd.TransformTo<T>()`,
+  `CardPileCmd.AddCurseToDeck<T>()`처럼 코드에서 대상 카드가 명시되는 경우.
+- `RelicCmd.Obtain<T>()`, `ModelDb.Relic<T>()`처럼 코드에서 대상 유물이 명시되는 경우.
+- `TrashHeap`, `FakeMerchant`처럼 `static` 배열로 가능한 보상 풀이 정확히 박혀 있는 경우.
+
+제외 기준:
+
+- `RelicFactory.PullNextRelicFromFront(...)`, `new RelicReward(owner)`처럼 일반 랜덤 보상인 경우.
+- locale 문구 또는 유사한 이름만 있고 실제 이벤트 보상 코드에 없는 경우.
+  예: `DOLL_ROOM`의 `STORYBOOK`, `TABLET_OF_TRUTH`의 `HEFTY_TABLET`는 관계 없음.
+- 현재 explicit reference UI에 타입이 없는 대상. 예: `WOOD_CARVINGS`의 `SLITHER`
+  인챈트는 게임 코드에 있지만, 이 map은 현재 card/relic/potion/event UI만 대상으로 한다.
+
+현재 카드 관계:
+
+| Event ID | Card IDs |
+|----------|----------|
+| `AMALGAMATOR` | `ULTIMATE_STRIKE`, `ULTIMATE_DEFEND` |
+| `BUGSLAYER` | `EXTERMINATE`, `SQUASH` |
+| `BYRDONIS_NEST` | `BYRDONIS_EGG` |
+| `CRYSTAL_SPHERE` | `DEBT` |
+| `FIELD_OF_MAN_SIZED_HOLES` | `NORMALITY` |
+| `GRAVE_OF_THE_FORGOTTEN` | `DECAY` |
+| `LOST_WISP` | `DECAY` |
+| `LUMINOUS_CHOIR` | `SPORE_MIND` |
+| `PUNCH_OFF` | `INJURY` |
+| `REFLECTIONS` | `BAD_LUCK` |
+| `SUNKEN_TREASURY` | `GREED` |
+| `THIS_OR_THAT` | `CLUMSY` |
+| `TRASH_HEAP` | `CALTROPS`, `CLASH`, `DISTRACTION`, `DUAL_WIELD`, `ENTRENCH`, `HELLO_WORLD`, `OUTMANEUVER`, `REBOUND`, `RIP_AND_TEAR`, `STACK` |
+| `TRIAL` | `REGRET`, `SHAME`, `DOUBT` |
+| `UNREST_SITE` | `POOR_SLEEP` |
+| `WELLSPRING` | `GUILTY` |
+| `WOOD_CARVINGS` | `PECK`, `TORIC_TOUGHNESS` |
+
+현재 유물 관계:
+
+| Event ID | Relic IDs |
+|----------|-----------|
+| `COLOSSAL_FLOWER` | `POLLINOUS_CORE` |
+| `DOLL_ROOM` | `DAUGHTER_OF_THE_WIND`, `MR_STRUGGLES`, `BING_BONG` |
+| `DROWNING_BEACON` | `FRESNEL_LENS` |
+| `FAKE_MERCHANT` | `FAKE_ANCHOR`, `FAKE_BLOOD_VIAL`, `FAKE_HAPPY_FLOWER`, `FAKE_LEES_WAFFLE`, `FAKE_MANGO`, `FAKE_ORICHALCUM`, `FAKE_SNECKO_EYE`, `FAKE_STRIKE_DUMMY`, `FAKE_VENERABLE_TEA_SET`, `FAKE_MERCHANTS_RUG` |
+| `GRAVE_OF_THE_FORGOTTEN` | `FORGOTTEN_SOUL` |
+| `HUNGRY_FOR_MUSHROOMS` | `BIG_MUSHROOM`, `FRAGRANT_MUSHROOM` |
+| `LOST_WISP` | `LOST_WISP` |
+| `ROOM_FULL_OF_CHEESE` | `CHOSEN_CHEESE` |
+| `ROUND_TEA_PARTY` | `ROYAL_POISON` |
+| `SUNKEN_STATUE` | `SWORD_OF_STONE` |
+| `TEA_MASTER` | `BONE_TEA`, `EMBER_TEA`, `TEA_OF_DISCOURTESY` |
+| `TRASH_HEAP` | `DARKSTONE_PERIAPT`, `DREAM_CATCHER`, `HAND_DRILL`, `MAW_BANK`, `THE_BOOT` |
+| `WAR_HISTORIAN_REPY` | `HISTORY_COURSE` |
+| `WELCOME_TO_WONGOS` | `WONGO_CUSTOMER_APPRECIATION_BADGE`, `WONGOS_MYSTERY_TICKET` |
+
+특수 구현:
+
+- `TINKER_TIME`은 `EVENT_RELATED_CARD_IDS`에 직접 넣지 않는다.
+  `src/lib/tinker-time.ts`가 `MAD_SCIENCE_*` variant 카드를 생성하고,
+  `card-detail.tsx`가 실제 이벤트 선택지 3개를 `GameChoiceFrame`으로 렌더한다.
+- `THE_FUTURE_OF_POTIONS`는 모든 포션과 연결된다.
+  이벤트 상세는 `potions` 전체를 관련 포션으로 보여주고, 포션 상세는
+  `FUTURE_OF_POTIONS_CHOICES` / `FUTURE_OF_POTIONS_OUTCOMES`로 해당 포션 희귀도에서
+  가능한 카드 결과군을 보여준다.
+
+새 타입 관계를 추가할 때의 절차:
+
+1. `src/lib/codex-references.ts`에 ID 기반 맵과 reverse helper를 추가한다.
+2. `src/components/codex/entity-reference-links.tsx`의 `CodexReferenceKind`에 타입을 추가하고
+   메뉴/도감에서 쓰는 아이콘과 `관련 X` 라벨을 등록한다.
+3. 상세 컴포넌트에서 `CodexReferenceTarget`을 만든다. `entity`에는 `EntityPreview`가
+   hover를 그릴 수 있도록 `type`, `imageUrl`, `href`, 그리고 가능하면 `cardData` /
+   `relicData` 같은 full data를 넣는다.
+4. 상세 page/list route에서 대상 데이터(`getCodexCards`, `getCodexRelics` 등)를 로드해
+   modal과 개별 페이지 양쪽에 모두 전달한다.
+5. `scripts/validate-codex-references.ts`에 새 맵 검증을 추가한다.
+6. 최소 검증:
+
+```bash
+pnpm codex:validate-references
+pnpm lint
+pnpm build
+```
+
+화면에서 직접 볼 때의 smoke check:
+
+- `/compendium/events/doll_room`: `관련 유물`에 `DAUGHTER_OF_THE_WIND`, `MR_STRUGGLES`,
+  `BING_BONG`만 노출. `STORYBOOK`은 없어야 한다.
+- `/compendium/events/tablet_of_truth`: `HEFTY_TABLET` 관련 유물이 없어야 한다.
+- `/compendium/events/wood_carvings`: `관련 카드`에 `PECK`, `TORIC_TOUGHNESS`.
+- `/compendium/cards/peck`: `관련 이벤트`에 `WOOD_CARVINGS`.
+- `/compendium/events/trial`: `관련 카드`에 `REGRET`, `SHAME`, `DOUBT`.
+- `/compendium/relics/bing_bong`: `관련 이벤트`에 `DOLL_ROOM`.
 
 ## 2. JSON에서 바로 도출 가능한 관계 (low-cost)
 
