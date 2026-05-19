@@ -1619,7 +1619,9 @@ function EventPotionSetPreview({ potions }: { potions: CodexPotion[] }) {
 }
 
 function EventRelicSetPreview({ relics }: { relics: CodexRelic[] }) {
-  const columns = Math.min(5, Math.max(1, Math.ceil(Math.sqrt(relics.length))));
+  const visibleRelics = relics.filter((relic): relic is CodexRelic & { imageUrl: string } => Boolean(relic.imageUrl));
+  const columns = Math.min(5, Math.max(1, Math.ceil(Math.sqrt(visibleRelics.length))));
+  if (visibleRelics.length === 0) return null;
 
   return (
     <div className="drop-shadow-[0_18px_30px_rgba(0,0,0,0.75)]">
@@ -1627,7 +1629,7 @@ function EventRelicSetPreview({ relics }: { relics: CodexRelic[] }) {
         className="grid max-w-[320px] gap-2"
         style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
       >
-        {relics.map((relic) => (
+        {visibleRelics.map((relic) => (
           <div
             key={relic.id}
             className="relative flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14"
