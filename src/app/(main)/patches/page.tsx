@@ -14,7 +14,6 @@ import {
 import { getCodexMetadata } from "@/lib/codex-service";
 import { withPageOgImage } from "@/lib/page-og-images";
 import type { PatchType } from "@/lib/types";
-import type { EntityInfo } from "@/components/patch-note-renderer";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 
 const PATCH_COPY: Record<ServiceLocale, {
