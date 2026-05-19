@@ -13,9 +13,9 @@ import {
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { withPageOgImage } from "@/lib/page-og-images";
-import type { PatchType, STS2Patch } from "@/lib/types";
+import type { PatchType } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { CardTile } from "@/components/codex/card-tile";
+import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 
 const PATCH_COPY: Record<ServiceLocale, {
   title: string;
@@ -76,67 +76,22 @@ const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
   hotfix: "bg-orange-500/15 text-orange-400 border-orange-500/30",
 };
 
-const PATCH_FEATURED_ASSET_LIMIT = 8;
-
-function entityAssetUrl(entity: EntityInfo): string | null {
-  return entity.cardData?.imageUrl ?? entity.cardData?.betaImageUrl ?? entity.imageUrl;
-}
-
-function PatchFeaturedAssets({ entities }: { entities: EntityInfo[] }) {
-  const visibleEntities = entities
-    .filter((entity) => Boolean(entity.cardData || entityAssetUrl(entity)))
-    .slice(0, PATCH_FEATURED_ASSET_LIMIT);
-
-  if (visibleEntities.length === 0) return null;
-
+function PatchArtPreview({ art }: { art: ResolvedPatchArt }) {
   return (
     <div
-      className="mt-3 grid grid-cols-4 gap-x-2 gap-y-2 sm:grid-cols-8"
-      aria-label="패치 주요 변경 대상"
+      className="mt-3 aspect-[16/7] overflow-hidden rounded-md border border-border/70 bg-zinc-950"
+      aria-label="패치 대표 아트"
     >
-      {visibleEntities.map((entity) => {
-        const imageUrl = entityAssetUrl(entity);
-        const isMonster = entity.type === "monster";
-
-        return (
-          <span
-            key={`${entity.type}:${entity.id}`}
-            className="flex min-h-[92px] items-end justify-center overflow-visible"
-          >
-            {entity.cardData ? (
-              <span className="block w-[60px] shrink-0 overflow-visible">
-                <CardTile
-                  card={entity.cardData}
-                  showUpgrade={false}
-                  showBeta={false}
-                  width={60}
-                  interactive={false}
-                />
-              </span>
-            ) : (
-              // TODO: Revisit non-card preview scaling/alignment; the card-sized slot is intentional for now.
-              <Image
-                src={imageUrl!}
-                alt={entity.nameKo}
-                width={isMonster ? 60 : 48}
-                height={isMonster ? 60 : 48}
-                className={isMonster ? "h-[60px] w-[60px] object-contain" : "h-12 w-12 object-contain"}
-              />
-            )}
-          </span>
-        );
-      })}
+      <Image
+        src={art.imageUrl}
+        alt={art.alt}
+        width={960}
+        height={420}
+        className="h-full w-full object-cover"
+        style={{ objectPosition: art.objectPosition }}
+      />
     </div>
   );
-}
-
-function getFeaturedEntities(
-  patch: STS2Patch,
-  entitiesByKey: Map<string, EntityInfo>,
-): EntityInfo[] {
-  return (patch.featuredEntities ?? [])
-    .map((entity) => entitiesByKey.get(`${entity.type}:${entity.id}`))
-    .filter((entity): entity is EntityInfo => Boolean(entity));
 }
 
 export async function generateMetadata({
@@ -177,9 +132,8 @@ export default async function PatchesPage({
       <div className="mt-6 space-y-3">
         {sorted.map((patch) => {
           const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
-          const summary = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
           const isBuilding = patch.status === "building";
-          const featuredEntities = isBuilding ? [] : getFeaturedEntities(patch, entitiesByKey);
+          const patchArt = isBuilding ? null : resolvePatchArt(patch, entitiesByKey, serviceLocale);
 
           if (isBuilding) {
             return (
@@ -234,16 +188,8 @@ export default async function PatchesPage({
                 )}
               </div>
               <p className="mt-1 text-sm font-medium">{title}</p>
-              {featuredEntities.length > 0 ? (
-                <>
-                  <p className="mt-0.5 text-xs text-muted-foreground">{patch.date}</p>
-                  <PatchFeaturedAssets entities={featuredEntities} />
-                </>
-              ) : (
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {patch.date} — {summary}
-                </p>
-              )}
+              <p className="mt-0.5 text-xs text-muted-foreground">{patch.date}</p>
+              {patchArt && <PatchArtPreview art={patchArt} />}
             </Link>
           );
         })}
