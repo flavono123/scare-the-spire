@@ -71,8 +71,6 @@ export interface ProfilePageCopy {
   };
 }
 
-const ACTION_IDS: ActionId[] = ["IDLE", "ATTACK", "HURT"];
-
 const DEFAULTS = {
   character: "NECROBINDER",
   pet: "OSTY",
@@ -261,8 +259,6 @@ export default function ProfilePage({
           petAction={petAction.action}
           petActionNonce={petAction.nonce}
           copy={copy}
-          onCharacterAction={setCharacterAction}
-          onPetAction={setPetAction}
           onPetSkinSelect={(skinId) => {
             if (!pet) return;
             persistProfile((current) => ({ ...current, petSkinId: skinId }));
@@ -435,8 +431,6 @@ function DuoRender({
   petAction,
   petActionNonce,
   copy,
-  onCharacterAction,
-  onPetAction,
   onPetSkinSelect,
 }: {
   character: CharacterChoice | undefined;
@@ -449,8 +443,6 @@ function DuoRender({
   petAction: ActionId;
   petActionNonce: number;
   copy: ProfilePageCopy;
-  onCharacterAction: (action: ActionId) => void;
-  onPetAction: (action: ActionId) => void;
   onPetSkinSelect: (skinId: string) => void;
 }) {
   const petPlacement = getPetPlacement(pet?.monsterId);
@@ -508,10 +500,6 @@ function DuoRender({
           />
         </div>
       </div>
-      <div className="relative z-30 grid shrink-0 grid-cols-2 gap-3 pb-1">
-        <ActionBar label={copy.selectors.character} labels={copy.actions} value={characterAction} onChange={onCharacterAction} />
-        <ActionBar label={copy.selectors.pet} labels={copy.actions} value={petAction} onChange={onPetAction} />
-      </div>
       {pet && pet.skinOptions.length > 0 && (
         <SkinOptionBar
           options={pet.skinOptions}
@@ -555,44 +543,6 @@ function SkinOptionBar({
             )}
           >
             {option.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function ActionBar({
-  label,
-  labels,
-  value,
-  onChange,
-}: {
-  label: string;
-  labels: ProfilePageCopy["actions"];
-  value: ActionId;
-  onChange: (action: ActionId) => void;
-}) {
-  return (
-    <div className="flex min-w-0 items-center justify-center gap-1 p-1">
-      <span className="mr-1 shrink-0 text-[11px] font-semibold text-zinc-500">{label}</span>
-      {ACTION_IDS.map((action) => {
-        const actionLabel = getActionLabel(labels, action);
-        return (
-          <button
-            key={action}
-            type="button"
-            onClick={() => onChange(action)}
-            aria-pressed={value === action}
-            aria-label={`${label} ${actionLabel}`}
-            className={cn(
-              "h-7 rounded px-2 text-[11px] font-semibold transition-colors",
-              value === action
-                ? "text-amber-100 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]"
-                : "text-zinc-500 hover:text-zinc-300",
-            )}
-          >
-            {actionLabel}
           </button>
         );
       })}
@@ -664,17 +614,6 @@ function pickCharacterNickname(
   const options = character.nicknameOptions[locale];
   if (!options.length) return character.label;
   return options[Math.floor(Math.random() * options.length)] ?? character.label;
-}
-
-function getActionLabel(labels: ProfilePageCopy["actions"], action: ActionId): string {
-  switch (action) {
-    case "IDLE":
-      return labels.idle;
-    case "ATTACK":
-      return labels.attack;
-    case "HURT":
-      return labels.hurt;
-  }
 }
 
 function formatTemplate(template: string, values: Record<string, string>): string {
