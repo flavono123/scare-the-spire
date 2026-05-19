@@ -186,7 +186,10 @@ function mapPet(
     selectedSkins: choice.selectedSkins,
     skinOptions: choice.skinOptions.map((option, index) => ({
       ...option,
-      label: formatTemplate(copy.petSkin.label, { number: String(index + 1) }),
+      label: formatTemplate(
+        choice.monsterId === "BYRDPIP" ? copy.petSkin.byrdpipLabel : copy.petSkin.label,
+        { number: String(index + 1) },
+      ),
     })),
     spineAsset: monster?.spineAsset ? withProfileActions(monster.spineAsset, attackVfx) : null,
   };

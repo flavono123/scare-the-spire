@@ -63,6 +63,7 @@ export interface ProfilePageCopy {
   };
   petSkin: {
     label: string;
+    byrdpipLabel: string;
     ariaLabel: string;
   };
   carousel: {

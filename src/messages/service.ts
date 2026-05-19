@@ -34,6 +34,7 @@ export const serviceMessages = {
       },
       petSkin: {
         label: "형태 {number}",
+        byrdpipLabel: "깃{number}",
         ariaLabel: "펫 {label}",
       },
       carousel: {
@@ -526,6 +527,7 @@ export const serviceMessages = {
       },
       petSkin: {
         label: "Variant {number}",
+        byrdpipLabel: "Feather {number}",
         ariaLabel: "Pet {label}",
       },
       carousel: {
