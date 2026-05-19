@@ -6,18 +6,6 @@ export interface UserProfile {
   ancientId: string;
 }
 
-export interface UserProfileRow {
-  user_id: string;
-  env: string;
-  nickname: string;
-  character_id: string;
-  pet_id: string;
-  pet_skin_id: string | null;
-  ancient_id: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
 export const USER_PROFILE_STORAGE_KEY = "sts-user-profile";
 export const USER_PROFILE_CHANGE_EVENT = "sts-user-profile-change";
 
@@ -49,28 +37,6 @@ export function normalizeUserProfile(profile: Partial<UserProfile> | null | unde
     petId: profile?.petId || fallback.petId,
     petSkinId: profile?.petSkinId ?? fallback.petSkinId,
     ancientId: profile?.ancientId || fallback.ancientId,
-  };
-}
-
-export function rowToUserProfile(row: UserProfileRow, fallback = DEFAULT_USER_PROFILE): UserProfile {
-  return normalizeUserProfile({
-    nickname: row.nickname,
-    characterId: row.character_id,
-    petId: row.pet_id,
-    petSkinId: row.pet_skin_id,
-    ancientId: row.ancient_id,
-  }, fallback);
-}
-
-export function userProfileToRow(profile: UserProfile, userId: string, env: string): UserProfileRow {
-  return {
-    user_id: userId,
-    env,
-    nickname: cleanNickname(profile.nickname),
-    character_id: profile.characterId,
-    pet_id: profile.petId,
-    pet_skin_id: profile.petSkinId,
-    ancient_id: profile.ancientId,
   };
 }
 

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AncientNodeRender } from "@/components/codex/ancient-node-render";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import Image from "@/components/ui/static-image";
-import { useAuth } from "@/hooks/use-auth";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import type { MonsterSpineAsset } from "@/lib/codex-types";
 import { normalizeUserProfile, type UserProfile } from "@/lib/user-profile";
@@ -124,8 +123,7 @@ export default function ProfilePage({
     }),
     [characters, copy.fallbackNickname, nicknameLocale],
   );
-  const { userId } = useAuth();
-  const { profile, saveProfile } = useUserProfile(userId, fallbackProfile);
+  const { profile, saveProfile } = useUserProfile(fallbackProfile);
   const [draftProfile, setDraftProfile] = useState(fallbackProfile);
   const [characterAction, setCharacterAction] = useActionState();
   const [petAction, setPetAction] = useActionState();
