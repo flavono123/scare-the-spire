@@ -55,6 +55,11 @@ const ANCIENT_TEXT_BG: Record<string, string> = {
 };
 
 const ANCIENT_FLAME_SHEET = "/images/game-assets/card-misc/ancient_card_flame_sheet.png";
+const INFECTION_CARD_ID = "INFECTION";
+const INFECTION_BORDER_PATH =
+  "M36 17 C66 7 91 22 124 15 C160 6 190 21 224 13 C250 7 268 14 282 27 C284 72 277 118 284 165 C291 213 278 257 286 305 C293 347 279 382 264 405 C223 411 188 397 150 407 C108 419 78 399 36 407 C18 377 26 336 16 295 C5 252 22 213 15 171 C8 119 21 77 18 30 C23 24 28 20 36 17 Z";
+const INFECTION_INNER_BORDER_PATH =
+  "M42 23 C72 16 98 27 128 20 C163 13 191 27 223 19 C246 14 262 20 275 32 C275 77 269 119 276 164 C283 213 270 255 278 303 C284 341 271 374 257 396 C219 401 187 389 150 399 C110 409 81 390 43 398 C27 370 34 333 24 294 C14 253 30 214 23 173 C16 123 29 80 26 36 C31 30 36 26 42 23 Z";
 
 const PORTRAIT_BORDER_ASSETS: Record<string, string> = {
   공격: "/images/game-assets/card-portraits/card_portrait_border_attack.png",
@@ -64,6 +69,50 @@ const PORTRAIT_BORDER_ASSETS: Record<string, string> = {
   상태이상: "/images/game-assets/card-portraits/card_portrait_border_skill.png",
   퀘스트: "/images/game-assets/card-portraits/card_portrait_border_skill.png",
 };
+
+function InfectionCardBorderVfx() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="sts2-infection-card-vfx absolute inset-0 z-[2] pointer-events-none overflow-visible"
+      focusable="false"
+      viewBox="0 0 300 422"
+    >
+      <g className="sts2-infection-card-vfx__writhe">
+        <path
+          className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__shadow"
+          d={INFECTION_BORDER_PATH}
+          pathLength="1000"
+        />
+        <path
+          className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__base"
+          d={INFECTION_BORDER_PATH}
+          pathLength="1000"
+        />
+        <path
+          className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__base sts2-infection-card-vfx__base--inner"
+          d={INFECTION_INNER_BORDER_PATH}
+          pathLength="1000"
+        />
+        <path
+          className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__crawler sts2-infection-card-vfx__crawler--a"
+          d={INFECTION_BORDER_PATH}
+          pathLength="1000"
+        />
+        <path
+          className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__crawler sts2-infection-card-vfx__crawler--b"
+          d={INFECTION_INNER_BORDER_PATH}
+          pathLength="1000"
+        />
+        <path
+          className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__crawler sts2-infection-card-vfx__crawler--c"
+          d={INFECTION_BORDER_PATH}
+          pathLength="1000"
+        />
+      </g>
+    </svg>
+  );
+}
 
 const UPGRADE_ADDED_KEYWORDS: Record<string, string> = {
   add_innate: "선천성",
@@ -209,6 +258,7 @@ export const CardTile = memo(function CardTile({
   const costOutline = ENERGY_OUTLINE_COLOR[card.color] ?? ENERGY_OUTLINE_COLOR.colorless;
   const energyIcon = resolveSts2EnergyIcon(card.color);
   const isAncientCard = card.rarity === "고대의 존재";
+  const isInfectionCard = card.id === INFECTION_CARD_ID;
 
   // 게임 outline_size: title=12, cost=16, type=0, enchant amount=8 (card.tscn)
   const titleStroke = gameStroke(titleOutline, cardWidth, 12);
@@ -779,6 +829,8 @@ export const CardTile = memo(function CardTile({
           sizes={`${cardWidth}px`}
           priority={false}
         />
+
+        {isInfectionCard && <InfectionCardBorderVfx />}
 
         <div
           className="absolute z-[2] pointer-events-none left-1/2 -translate-x-1/2"
