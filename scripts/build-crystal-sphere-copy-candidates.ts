@@ -26,6 +26,18 @@ const SOURCE_TABLES = [
   "combat_messages",
 ] as const satisfies readonly SourceTable[];
 
+const CATEGORY_ORDER = [
+  "crystal-sphere",
+  "failure",
+  "game-over",
+  "card-reward",
+  "combat",
+  "event-line",
+  "event-option",
+  "event-title",
+  "event-text",
+];
+
 function candidateId(sourceTable: SourceTable, sourceKey: string): string {
   return `crystalSphere.${sourceTable}.${sourceKey}`
     .replace(/[^A-Za-z0-9]+/g, ".")
@@ -116,7 +128,13 @@ async function buildCandidates(): Promise<Candidate[]> {
     }
   }
 
-  return candidates;
+  return candidates.sort((a, b) => {
+    const categoryDelta = CATEGORY_ORDER.indexOf(a.category) - CATEGORY_ORDER.indexOf(b.category);
+    if (categoryDelta !== 0) return categoryDelta;
+    const tableDelta = SOURCE_TABLES.indexOf(a.sourceTable) - SOURCE_TABLES.indexOf(b.sourceTable);
+    if (tableDelta !== 0) return tableDelta;
+    return a.sourceKey.localeCompare(b.sourceKey);
+  });
 }
 
 async function main() {
