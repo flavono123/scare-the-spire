@@ -53,7 +53,7 @@
     },
     {
       "id": "crystalSphere.events.CRYSTAL.SPHERE.banter.REVEAL.BAD.1",
-      "status": "candidate",
+      "status": "include",
       "category": "crystal-sphere",
       "sourceTable": "events",
       "sourceKey": "CRYSTAL_SPHERE.banter.REVEAL_BAD.1",
