@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useComments, type Comment } from "@/hooks/use-comments";
 import { useCommentEntities } from "@/hooks/use-comment-entities";
 import { useCommentLikes } from "@/hooks/use-comment-likes";
-import { usePublicUserProfiles, useUserProfile } from "@/hooks/use-user-profile";
+import { useUserProfile } from "@/hooks/use-user-profile";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 import { EngagementSpinner } from "@/components/engagement-spinner";
@@ -175,7 +175,7 @@ export function CommentSection({
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],
   );
-  const { profile, saveProfile } = useUserProfile(userId, profileFallback);
+  const { profile } = useUserProfile(profileFallback);
   const storageUnavailable = authUnavailable || unavailable;
 
   const prevCount = useRef(0);
@@ -188,32 +188,20 @@ export function CommentSection({
 
   const [submitting, setSubmitting] = useState(false);
 
-  const commentUserIds = useMemo(() => comments.map((c) => c.user_id), [comments]);
-  const profileByUserId = usePublicUserProfiles(commentUserIds);
   const commentIds = useMemo(() => comments.map((c) => c.id), [comments]);
   const { counts: likeCounts, liked: likedSet, toggle: toggleLike } = useCommentLikes(commentIds, userId);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
   const legacyInlineIndex = useMemo(() => buildLegacyInlineIndex(entities), [entities]);
   const nicknameInputRef = useRef<HTMLInputElement>(null);
 
-  const commitNickname = async (rawNickname: string | undefined) => {
-    const nickname = rawNickname?.trim() || profileFallback.nickname;
-    await saveProfile({ ...profile, nickname }).catch(() => undefined);
-    if (nicknameInputRef.current) {
-      nicknameInputRef.current.value = nickname;
-    }
-    return nickname;
-  };
-
   const handleSubmit = async (blocks: PostBlock[]) => {
     const trimmed = blocksToPlainText(blocks).trim();
-    const nick = nicknameInputRef.current?.value.trim() || profile.nickname.trim();
+    const nick = nicknameInputRef.current?.value.trim() || profile.nickname.trim() || profileFallback.nickname;
     if (!trimmed || !nick || !userId) return;
 
     setSubmitting(true);
     try {
-      const nickname = await commitNickname(nick);
-      await add(nickname, trimmed, blocks);
+      await add(nick, trimmed, blocks);
     } finally {
       setSubmitting(false);
     }
@@ -235,46 +223,41 @@ export function CommentSection({
         <p className="text-xs text-muted-foreground">{copy.empty}</p>
       ) : (
         <ul className="space-y-3">
-          {comments.map((comment) => {
-            const displayNickname = comment.user_id === userId
-              ? profile.nickname
-              : profileByUserId.get(comment.user_id)?.nickname ?? comment.nickname;
-            return (
-              <li key={comment.id} className="rounded-lg border border-border/50 bg-card/20 px-3 py-2.5 text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-yellow-500">{displayNickname}</span>
-                  <span className="text-[10px] text-muted-foreground">
-                    {new Date(comment.created_at).toLocaleDateString(dateLocale)}
-                  </span>
+          {comments.map((comment) => (
+            <li key={comment.id} className="rounded-lg border border-border/50 bg-card/20 px-3 py-2.5 text-sm">
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-yellow-500">{comment.nickname}</span>
+                <span className="text-[10px] text-muted-foreground">
+                  {new Date(comment.created_at).toLocaleDateString(dateLocale)}
+                </span>
+                <button
+                  onClick={() => toggleLike(comment.id)}
+                  disabled={!userId}
+                  className="flex items-center gap-0.5 text-[10px] text-muted-foreground transition-all disabled:opacity-30"
+                >
+                  <Image
+                    src="/images/relics/runic-dodecahedron.webp"
+                    alt={copy.likeAlt}
+                    width={14}
+                    height={14}
+                    className={`transition-all ${likedSet.has(comment.id) ? "" : "opacity-40 grayscale"}`}
+                  />
+                  {(likeCounts.get(comment.id) ?? 0) > 0 && <span>{likeCounts.get(comment.id)}</span>}
+                </button>
+                {userId === comment.user_id && (
                   <button
-                    onClick={() => toggleLike(comment.id)}
-                    disabled={!userId}
-                    className="flex items-center gap-0.5 text-[10px] text-muted-foreground transition-all disabled:opacity-30"
+                    onClick={() => remove(comment.id)}
+                    className="text-[10px] text-muted-foreground hover:text-red-400"
                   >
-                    <Image
-                      src="/images/relics/runic-dodecahedron.webp"
-                      alt={copy.likeAlt}
-                      width={14}
-                      height={14}
-                      className={`transition-all ${likedSet.has(comment.id) ? "" : "opacity-40 grayscale"}`}
-                    />
-                    {(likeCounts.get(comment.id) ?? 0) > 0 && <span>{likeCounts.get(comment.id)}</span>}
+                    {copy.delete}
                   </button>
-                  {userId === comment.user_id && (
-                    <button
-                      onClick={() => remove(comment.id)}
-                      className="text-[10px] text-muted-foreground hover:text-red-400"
-                    >
-                      {copy.delete}
-                    </button>
-                  )}
-                </div>
-                <div className="mt-1.5 text-muted-foreground leading-relaxed break-words">
-                  <PostRenderer blocks={getCommentBlocks(comment, legacyInlineIndex)} entityMap={entityMap} />
-                </div>
-              </li>
-            );
-          })}
+                )}
+              </div>
+              <div className="mt-1.5 text-muted-foreground leading-relaxed break-words">
+                <PostRenderer blocks={getCommentBlocks(comment, legacyInlineIndex)} entityMap={entityMap} />
+              </div>
+            </li>
+          ))}
         </ul>
       )}
 
@@ -287,9 +270,6 @@ export function CommentSection({
             placeholder={copy.nicknamePlaceholder}
             defaultValue={profile.nickname}
             maxLength={20}
-            onBlur={(event) => {
-              void commitNickname(event.currentTarget.value);
-            }}
             className="w-full rounded bg-zinc-800 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-yellow-500/50"
           />
           {entitiesLoading ? (
