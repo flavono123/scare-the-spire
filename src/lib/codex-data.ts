@@ -810,6 +810,11 @@ function eventDisplayVars(eventId: string, gameLocale: GameLocale): EventDisplay
         ExamineHpLoss: 15,
         RelicName: localizedEventPlaceholder(gameLocale, "인형 유물", "a Doll Relic"),
       };
+    case "MORPHIC_GROVE":
+      return {
+        IsMultiplayer: 0,
+        MaxHp: 5,
+      };
     case "RANWID_THE_ELDER":
       return {
         Gold: 100,
