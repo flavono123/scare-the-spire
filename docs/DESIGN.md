@@ -62,6 +62,7 @@
 
 ## 공통 컴포넌트 용어
 
+- `CompendiumIndexLayout`: 좌측 필터, 상단바, 목록 본문을 묶는 백과사전 인덱스 공통 레이아웃 컴포넌트명이다. 기존 `CodexLibraryShell`은 이 이름으로 리팩토링한다.
 - `GameHoverTip`: 게임 hover tip 애셋 감각으로 이름, 설명, 짧은 메타 정보를 보여주는 표준 툴팁 컴포넌트명이다. 기존 일반 `HoverTip`과 구분한다.
 - `RelatedResourceLinks`: 관련 리소스 라인을 렌더하는 표준 컴포넌트명이다. 기존 `EntityReferenceLinks` 계열은 이 이름으로 리팩토링한다.
 - `ResourceDetailView`: 카드, 유물, 포션 같은 리소스의 상세 보기를 렌더하는 표준 컴포넌트명이다. 모달과 직접 URL 진입에서 같은 상세 보기를 공유한다.
