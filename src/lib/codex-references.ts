@@ -301,11 +301,11 @@ export const EVENT_RELATED_RELIC_IDS = {
 } as const satisfies Record<string, readonly string[]>;
 
 export function getRelatedCardIdsForEvent(eventId: string): readonly string[] {
-  return EVENT_RELATED_CARD_IDS[eventId] ?? [];
+  return (EVENT_RELATED_CARD_IDS as Record<string, readonly string[]>)[eventId] ?? [];
 }
 
 export function getRelatedRelicIdsForEvent(eventId: string): readonly string[] {
-  return EVENT_RELATED_RELIC_IDS[eventId] ?? [];
+  return (EVENT_RELATED_RELIC_IDS as Record<string, readonly string[]>)[eventId] ?? [];
 }
 
 export function getRelatedEventIdsForCard(cardId: string): readonly string[] {
