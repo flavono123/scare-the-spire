@@ -15,6 +15,10 @@ interface Candidate {
   curatorNote: string;
 }
 
+interface CandidateInventory {
+  candidates?: Candidate[];
+}
+
 const ROOT = process.cwd();
 const LOCALIZATION_DIR = path.join(ROOT, "data/sts2/localization");
 const OUT_PATH = path.join(ROOT, "data/i18n/crystal-sphere-copy-candidates.json");
@@ -99,8 +103,22 @@ async function readTable(locale: "kor" | "eng", table: SourceTable): Promise<Rec
   return JSON.parse(raw) as Record<string, string>;
 }
 
+async function readExistingCandidates(): Promise<Map<string, Candidate>> {
+  try {
+    const raw = await fs.readFile(OUT_PATH, "utf-8");
+    const inventory = JSON.parse(raw) as CandidateInventory;
+    return new Map((inventory.candidates ?? []).map((candidate) => [candidate.id, candidate]));
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return new Map();
+    }
+    throw error;
+  }
+}
+
 async function buildCandidates(): Promise<Candidate[]> {
   const candidates: Candidate[] = [];
+  const existingCandidates = await readExistingCandidates();
 
   for (const sourceTable of SOURCE_TABLES) {
     const [koTable, enTable] = await Promise.all([
@@ -116,14 +134,14 @@ async function buildCandidates(): Promise<Candidate[]> {
 
       candidates.push({
         id: candidateId(sourceTable, sourceKey),
-        status: "candidate",
+        status: existingCandidates.get(candidateId(sourceTable, sourceKey))?.status ?? "candidate",
         category,
         sourceTable,
         sourceKey,
         sourceTextKo,
         sourceTextEn,
         suggestedUse: suggestedUseFor(category),
-        curatorNote: "",
+        curatorNote: existingCandidates.get(candidateId(sourceTable, sourceKey))?.curatorNote ?? "",
       });
     }
   }
