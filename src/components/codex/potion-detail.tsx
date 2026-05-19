@@ -21,10 +21,21 @@ import { EntityReferenceLinks } from "./entity-reference-links";
 import { GameChoiceFrame } from "./event-choice-frame";
 import { RichText } from "@/components/rich-text";
 import {
+  FUTURE_OF_POTIONS_EVENT_ID,
   FUTURE_OF_POTIONS_EVENT_NAME_KO,
   FUTURE_OF_POTIONS_EVENT_PATH,
   getFuturePotionChoicesForPotion,
+  getRelatedEventIdsForPotion,
 } from "@/lib/codex-references";
+
+function dedupeIds(ids: readonly string[]): string[] {
+  const seen = new Set<string>();
+  return ids.filter((id) => {
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+}
 
 function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
@@ -54,7 +65,40 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
     ? getCharacterColor(potion.pool)
     : undefined;
   const futurePotionChoices = getFuturePotionChoicesForPotion(potion);
-  const futurePotionEvent = relatedEvents.find((event) => event.id === "THE_FUTURE_OF_POTIONS") ?? null;
+  const eventById = new Map(relatedEvents.map((event) => [event.id, event]));
+  const relatedEventIds = dedupeIds([
+    FUTURE_OF_POTIONS_EVENT_ID,
+    ...getRelatedEventIdsForPotion(potion.id),
+    ...(potion.rarity === "고급" ? ["POTION_COURIER"] : []),
+  ]);
+  const relatedEventTargets = relatedEventIds
+    .map((eventId) => {
+      const relatedEvent = eventById.get(eventId);
+      const href = eventId === FUTURE_OF_POTIONS_EVENT_ID
+        ? FUTURE_OF_POTIONS_EVENT_PATH
+        : `/compendium/events/${eventId.toLowerCase()}`;
+      const title = relatedEvent?.name ?? (eventId === FUTURE_OF_POTIONS_EVENT_ID ? FUTURE_OF_POTIONS_EVENT_NAME_KO : eventId);
+      return {
+        id: eventId,
+        href,
+        title,
+        entity: {
+          id: eventId,
+          nameEn: relatedEvent?.nameEn ?? title,
+          nameKo: title,
+          imageUrl: relatedEvent?.imageUrl ?? null,
+          href,
+          color: "event" as const,
+          type: "event" as const,
+          eventData: relatedEvent ?? undefined,
+        },
+      };
+    });
+  const potionCourierEvent = eventById.get("POTION_COURIER") ?? null;
+  const potionCourierChoices = (potionCourierEvent?.options ?? []).filter((option) => (
+    (potion.id === "FOUL_POTION" && option.id === "GRAB_POTIONS") ||
+    (potion.rarity === "고급" && option.id === "RANSACK")
+  ));
 
   return (
     <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-lg mx-auto">
@@ -127,27 +171,21 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
       <EntityReferenceLinks
         kind="event"
         serviceLocale={serviceLocale}
-        targets={[
-          {
-            id: "future-of-potions",
-            href: FUTURE_OF_POTIONS_EVENT_PATH,
-            title: FUTURE_OF_POTIONS_EVENT_NAME_KO,
-            entity: {
-              id: "THE_FUTURE_OF_POTIONS",
-              nameEn: futurePotionEvent?.nameEn ?? "The Future of Potions?",
-              nameKo: FUTURE_OF_POTIONS_EVENT_NAME_KO,
-              imageUrl: futurePotionEvent?.imageUrl ?? null,
-              href: FUTURE_OF_POTIONS_EVENT_PATH,
-              color: "event",
-              type: "event",
-              eventData: futurePotionEvent ?? undefined,
-            },
-          },
-        ]}
+        targets={relatedEventTargets}
       >
         <div className="space-y-2.5">
           {futurePotionChoices.map((choice) => (
             <GameChoiceFrame key={choice.id}>
+              <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
+                <RichText text={choice.title} />
+              </div>
+              <div className="font-game-text text-[18px] leading-[1.08] text-[#fff6e2]">
+                <RichText text={choice.description} />
+              </div>
+            </GameChoiceFrame>
+          ))}
+          {potionCourierChoices.map((choice) => (
+            <GameChoiceFrame key={`potion-courier-${choice.id}`}>
               <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
                 <RichText text={choice.title} />
               </div>
