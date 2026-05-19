@@ -210,10 +210,58 @@ interface EventSpineOverlayConfig {
   };
 }
 
-const EVENT_VFX_CANVAS_WIDTH = 2160;
-const EVENT_VFX_CANVAS_HEIGHT = 1000;
+const EVENT_PORTRAIT_RECT_WIDTH = 2560;
+const EVENT_PORTRAIT_RECT_HEIGHT = 1200;
+const EVENT_PORTRAIT_IMAGE_WIDTH = 3440;
+const EVENT_PORTRAIT_IMAGE_HEIGHT = 1616;
+const EVENT_PORTRAIT_IMAGE_SCALE = Math.min(
+  EVENT_PORTRAIT_RECT_WIDTH / EVENT_PORTRAIT_IMAGE_WIDTH,
+  EVENT_PORTRAIT_RECT_HEIGHT / EVENT_PORTRAIT_IMAGE_HEIGHT,
+);
+const EVENT_PORTRAIT_RENDERED_IMAGE_WIDTH = EVENT_PORTRAIT_IMAGE_WIDTH * EVENT_PORTRAIT_IMAGE_SCALE;
+const EVENT_PORTRAIT_RENDERED_IMAGE_HEIGHT = EVENT_PORTRAIT_IMAGE_HEIGHT * EVENT_PORTRAIT_IMAGE_SCALE;
+const EVENT_PORTRAIT_RENDERED_IMAGE_LEFT = (EVENT_PORTRAIT_RECT_WIDTH - EVENT_PORTRAIT_RENDERED_IMAGE_WIDTH) / 2;
+const EVENT_PORTRAIT_RENDERED_IMAGE_TOP = (EVENT_PORTRAIT_RECT_HEIGHT - EVENT_PORTRAIT_RENDERED_IMAGE_HEIGHT) / 2;
+
+type EventVfxAnchor = "default" | "trial";
+
+const EVENT_VFX_ANCHORS: Record<EventVfxAnchor, { scale: number; x: number; y: number }> = {
+  default: { scale: 1.04, x: 268, y: 49 },
+  trial: { scale: 1.04, x: 292, y: 68 },
+};
+
+function eventVfxRect({
+  anchor = "default",
+  height,
+  scale,
+  width,
+  x,
+  y,
+}: {
+  anchor?: EventVfxAnchor;
+  height: number;
+  scale: number;
+  width: number;
+  x: number;
+  y: number;
+}): CSSProperties {
+  const anchorConfig = EVENT_VFX_ANCHORS[anchor];
+  const totalScale = scale * anchorConfig.scale;
+  const scaledWidth = width * totalScale;
+  const scaledHeight = height * totalScale;
+  const centerX = anchorConfig.x + x * anchorConfig.scale;
+  const centerY = anchorConfig.y + y * anchorConfig.scale;
+
+  return {
+    height: `${(scaledHeight / EVENT_PORTRAIT_RENDERED_IMAGE_HEIGHT) * 100}%`,
+    left: `${((centerX - scaledWidth / 2 - EVENT_PORTRAIT_RENDERED_IMAGE_LEFT) / EVENT_PORTRAIT_RENDERED_IMAGE_WIDTH) * 100}%`,
+    top: `${((centerY - scaledHeight / 2 - EVENT_PORTRAIT_RENDERED_IMAGE_TOP) / EVENT_PORTRAIT_RENDERED_IMAGE_HEIGHT) * 100}%`,
+    width: `${(scaledWidth / EVENT_PORTRAIT_RENDERED_IMAGE_WIDTH) * 100}%`,
+  };
+}
 
 function eventVfxSpriteOverlay({
+  anchor,
   className = "",
   height,
   scale = 1,
@@ -223,6 +271,7 @@ function eventVfxSpriteOverlay({
   x,
   y,
 }: {
+  anchor?: EventVfxAnchor;
   className?: string;
   height: number;
   scale?: number;
@@ -232,19 +281,13 @@ function eventVfxSpriteOverlay({
   x: number;
   y: number;
 }): ImageEventArtOverlay {
-  const scaledWidth = width * scale;
-  const scaledHeight = height * scale;
-
   return {
     alt: "",
     className: `pointer-events-none absolute object-contain ${className}`.trim(),
     height,
     src,
     style: {
-      height: `${(scaledHeight / EVENT_VFX_CANVAS_HEIGHT) * 100}%`,
-      left: `${((x - scaledWidth / 2) / EVENT_VFX_CANVAS_WIDTH) * 100}%`,
-      top: `${((y - scaledHeight / 2) / EVENT_VFX_CANVAS_HEIGHT) * 100}%`,
-      width: `${(scaledWidth / EVENT_VFX_CANVAS_WIDTH) * 100}%`,
+      ...eventVfxRect({ anchor, height, scale, width, x, y }),
       ...style,
     },
     width,
@@ -252,6 +295,7 @@ function eventVfxSpriteOverlay({
 }
 
 function eventVfxSpriteSheetOverlay({
+  anchor,
   className = "",
   frameHeight,
   frameWidth,
@@ -264,6 +308,7 @@ function eventVfxSpriteSheetOverlay({
   x,
   y,
 }: {
+  anchor?: EventVfxAnchor;
   className?: string;
   frameHeight: number;
   frameWidth: number;
@@ -276,9 +321,6 @@ function eventVfxSpriteSheetOverlay({
   x: number;
   y: number;
 }): EventArtOverlay {
-  const scaledWidth = frameWidth * scale;
-  const scaledHeight = frameHeight * scale;
-
   return {
     className: `pointer-events-none absolute bg-no-repeat ${className}`.trim(),
     frameHeight,
@@ -289,10 +331,7 @@ function eventVfxSpriteSheetOverlay({
     kind: "sprite-sheet",
     src,
     style: {
-      height: `${(scaledHeight / EVENT_VFX_CANVAS_HEIGHT) * 100}%`,
-      left: `${((x - scaledWidth / 2) / EVENT_VFX_CANVAS_WIDTH) * 100}%`,
-      top: `${((y - scaledHeight / 2) / EVENT_VFX_CANVAS_HEIGHT) * 100}%`,
-      width: `${(scaledWidth / EVENT_VFX_CANVAS_WIDTH) * 100}%`,
+      ...eventVfxRect({ anchor, height: frameHeight, scale, width: frameWidth, x, y }),
       ...style,
     },
   };
@@ -673,6 +712,7 @@ const EVENT_ART_OVERLAYS: Record<string, EventArtOverlay[]> = {
   ],
   TRIAL: [
     eventVfxSpriteOverlay({
+      anchor: "trial",
       className: "opacity-95",
       height: 1200,
       scale: 0.94,
@@ -682,6 +722,7 @@ const EVENT_ART_OVERLAYS: Record<string, EventArtOverlay[]> = {
       y: 532,
     }),
     eventVfxSpriteOverlay({
+      anchor: "trial",
       className: "opacity-60 mix-blend-screen",
       height: 542,
       src: `${EVENT_VFX_ROOT}/trial_light_beam.webp`,
@@ -1304,6 +1345,7 @@ function EventSpriteSheetOverlay({ overlay }: { overlay: SpriteSheetEventArtOver
 
 function TrialNpcBackground({ overlay }: { overlay: TrialNpcOverlay }) {
   const npcOverlay = eventVfxSpriteOverlay({
+    anchor: "trial",
     className: "z-10 opacity-95 drop-shadow-[0_24px_28px_rgba(0,0,0,0.60)]",
     height: 1288,
     scale: 0.5,
@@ -1313,6 +1355,7 @@ function TrialNpcBackground({ overlay }: { overlay: TrialNpcOverlay }) {
     y: 778,
   });
   const lightOverlay = eventVfxSpriteOverlay({
+    anchor: "trial",
     className: "opacity-28 mix-blend-screen",
     height: 2400,
     scale: 0.72,
