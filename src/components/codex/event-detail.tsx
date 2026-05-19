@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import type { CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
@@ -19,12 +19,14 @@ import {
   CodexPotion,
   EventOption,
   EventPage,
+  MonsterSpineAsset,
   PotionRarityKo,
   characterOutlineFilter,
 } from "@/lib/codex-types";
 import { RichText } from "@/components/rich-text";
 import { CardTile } from "@/components/codex/card-tile";
 import { GameChoiceFrame } from "@/components/codex/event-choice-frame";
+import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import {
   getDefaultTinkerRiderForType,
   getMadScienceVariantId,
@@ -165,14 +167,47 @@ type EventPreview =
   | { kind: "card"; card: CodexCard }
   | { kind: "potions"; potions: CodexPotion[]; rarity: PotionRarityKo };
 
-interface EventArtOverlay {
+interface TrialNpcOverlay {
+  caseId: string;
+  imageUrl: string;
+}
+
+interface ImageEventArtOverlay {
   alt: string;
   className: string;
   fill?: boolean;
   height?: number;
+  kind?: "image";
   src: string;
   style?: CSSProperties;
   width?: number;
+}
+
+interface SpriteSheetEventArtOverlay {
+  className: string;
+  frameHeight: number;
+  frameWidth: number;
+  framesX: number;
+  framesY: number;
+  intervalMs?: number;
+  kind: "sprite-sheet";
+  src: string;
+  style?: CSSProperties;
+}
+
+type EventArtOverlay = ImageEventArtOverlay | SpriteSheetEventArtOverlay;
+
+interface EventSpineOverlayConfig {
+  asset: MonsterSpineAsset;
+  className: string;
+  fallbackImageUrl: string | null;
+  monsterName: string;
+  viewportPadding?: {
+    padBottom?: string;
+    padLeft?: string;
+    padRight?: string;
+    padTop?: string;
+  };
 }
 
 const EVENT_VFX_CANVAS_WIDTH = 2160;
@@ -196,7 +231,7 @@ function eventVfxSpriteOverlay({
   width: number;
   x: number;
   y: number;
-}): EventArtOverlay {
+}): ImageEventArtOverlay {
   const scaledWidth = width * scale;
   const scaledHeight = height * scale;
 
@@ -215,6 +250,123 @@ function eventVfxSpriteOverlay({
     width,
   };
 }
+
+function eventVfxSpriteSheetOverlay({
+  className = "",
+  frameHeight,
+  frameWidth,
+  framesX,
+  framesY,
+  intervalMs,
+  scale = 1,
+  src,
+  style,
+  x,
+  y,
+}: {
+  className?: string;
+  frameHeight: number;
+  frameWidth: number;
+  framesX: number;
+  framesY: number;
+  intervalMs?: number;
+  scale?: number;
+  src: string;
+  style?: CSSProperties;
+  x: number;
+  y: number;
+}): EventArtOverlay {
+  const scaledWidth = frameWidth * scale;
+  const scaledHeight = frameHeight * scale;
+
+  return {
+    className: `pointer-events-none absolute bg-no-repeat ${className}`.trim(),
+    frameHeight,
+    frameWidth,
+    framesX,
+    framesY,
+    intervalMs,
+    kind: "sprite-sheet",
+    src,
+    style: {
+      height: `${(scaledHeight / EVENT_VFX_CANVAS_HEIGHT) * 100}%`,
+      left: `${((x - scaledWidth / 2) / EVENT_VFX_CANVAS_WIDTH) * 100}%`,
+      top: `${((y - scaledHeight / 2) / EVENT_VFX_CANVAS_HEIGHT) * 100}%`,
+      width: `${(scaledWidth / EVENT_VFX_CANVAS_WIDTH) * 100}%`,
+      ...style,
+    },
+  };
+}
+
+const FLAIL_KNIGHT_EVENT_SPINE_ASSET: MonsterSpineAsset = {
+  id: "FLAIL_KNIGHT",
+  source: "animations/monsters/flail_knight/flailknight",
+  renderStatus: "spine",
+  renderTags: ["event-background"],
+  atlasUrl: "/spine/sts2/monsters/flail_knight/flailknight.atlas",
+  binaryUrl: "/spine/sts2/monsters/flail_knight/flailknight.skel",
+  textureUrls: ["/spine/sts2/monsters/flail_knight/flailknight.png"],
+  skin: null,
+  skins: ["default"],
+  animations: [
+    "attack_breaker",
+    "attack_flail",
+    "attack_ram",
+    "buff",
+    "die",
+    "hurt",
+    "idle_loop",
+  ],
+  bestiaryAnimations: ["hurt", "die"],
+  idleAnimation: "idle_loop",
+  moveAnimations: {},
+  moveEffects: {},
+};
+
+const FAKE_MERCHANT_EVENT_SPINE_ASSET: MonsterSpineAsset = {
+  id: "FAKE_MERCHANT_MONSTER",
+  source: "animations/backgrounds/fake_merchant_room/top/fake_merchant_top",
+  renderStatus: "spine",
+  renderTags: ["event-background"],
+  atlasUrl: "/spine/sts2/event-backgrounds/fake_merchant_room/top/fake_merchant_top.atlas",
+  binaryUrl: "/spine/sts2/event-backgrounds/fake_merchant_room/top/fake_merchant_top.skel",
+  textureUrls: ["/spine/sts2/event-backgrounds/fake_merchant_room/top/fake_merchant_top.png"],
+  skin: null,
+  skins: ["default", "outline"],
+  animations: [
+    "attack",
+    "attack_multi",
+    "attack_throw",
+    "buff",
+    "combat_idle_loop",
+    "die",
+    "hurt",
+    "idle_loop",
+  ],
+  bestiaryAnimations: ["hurt", "die"],
+  idleAnimation: "idle_loop",
+  moveAnimations: {},
+  moveEffects: {},
+};
+
+const EVENT_SPINE_OVERLAYS: Record<string, EventSpineOverlayConfig[]> = {
+  THE_LANTERN_KEY: [
+    {
+      asset: FLAIL_KNIGHT_EVENT_SPINE_ASSET,
+      className: "left-[5%] top-[9%] h-[84%] w-[44%] opacity-95 drop-shadow-[0_24px_34px_rgba(0,0,0,0.62)]",
+      fallbackImageUrl: "/images/sts2/monsters-render/flail_knight.webp",
+      monsterName: "철퇴 기사",
+    },
+  ],
+  FAKE_MERCHANT: [
+    {
+      asset: FAKE_MERCHANT_EVENT_SPINE_ASSET,
+      className: "left-[8%] top-[7%] h-[82%] w-[39%] opacity-95 drop-shadow-[0_24px_34px_rgba(0,0,0,0.62)]",
+      fallbackImageUrl: "/images/sts2/npcs/fake_merchant.webp",
+      monsterName: "상?인",
+    },
+  ],
+};
 
 const EVENT_ART_OVERLAYS: Record<string, EventArtOverlay[]> = {
   BUGSLAYER: [
@@ -449,11 +601,14 @@ const EVENT_ART_OVERLAYS: Record<string, EventArtOverlay[]> = {
     }),
   ],
   TABLET_OF_TRUTH: [
-    eventVfxSpriteOverlay({
-      className: "opacity-80 drop-shadow-[0_0_18px_rgba(255,214,110,0.25)]",
-      height: 532,
-      src: `${EVENT_VFX_ROOT}/tablet_of_truth_rock_piece.webp`,
-      width: 532,
+    eventVfxSpriteSheetOverlay({
+      className: "opacity-95 drop-shadow-[0_0_18px_rgba(255,214,110,0.25)]",
+      frameHeight: 266,
+      frameWidth: 266,
+      framesX: 8,
+      framesY: 2,
+      intervalMs: 90,
+      src: `${EVENT_VFX_ROOT}/tablet_of_truth_rock.webp`,
       x: 573,
       y: 554,
     }),
@@ -636,9 +791,9 @@ function buildTrialChoiceOptions(pageMap: Map<string, EventPage>): EventOption[]
   });
 }
 
-function trialChoiceBackgroundImageUrl(optionId: string): string | null {
+function trialNpcForOptionId(optionId: string): TrialNpcOverlay | null {
   const trialCase = TRIAL_CHOICE_CASES.find((entry) => optionId.startsWith(`${entry.id}_`));
-  return trialCase?.imageUrl ?? null;
+  return trialCase ? { caseId: trialCase.id, imageUrl: trialCase.imageUrl } : null;
 }
 
 function resolveEventOptionPage(
@@ -676,11 +831,15 @@ function resolveEventOptionPage(
 // --- Option card (static) ---
 function OptionCard({
   backgroundImageUrl,
+  onHoverEnd,
+  onHoverStart,
   onPreviewChange,
   option,
   preview,
 }: {
   backgroundImageUrl?: string | null;
+  onHoverEnd?: () => void;
+  onHoverStart?: () => void;
   onPreviewChange?: (preview: EventPreview | null) => void;
   option: EventOption;
   preview?: EventPreview | null;
@@ -688,6 +847,8 @@ function OptionCard({
   return (
     <GameChoiceFrame
       backgroundImageUrl={backgroundImageUrl}
+      onHoverEnd={onHoverEnd}
+      onHoverStart={onHoverStart}
       preview={preview}
       onPreviewChange={onPreviewChange}
     >
@@ -747,6 +908,7 @@ export function EventContentViewer({
   madScienceBaseCard,
   messages,
   onPreviewChange,
+  onTrialNpcChange,
   potions,
 }: {
   event: CodexEvent;
@@ -754,6 +916,7 @@ export function EventContentViewer({
   madScienceBaseCard?: CodexCard | null;
   messages: CodexServiceMessages;
   onPreviewChange?: (preview: EventPreview | null) => void;
+  onTrialNpcChange?: (overlay: TrialNpcOverlay | null) => void;
   potions?: CodexPotion[];
 }) {
   const [history, setHistory] = useState<NavEntry[]>([]);
@@ -829,6 +992,17 @@ export function EventContentViewer({
     () => displayOptions.filter((o) => !o.id.endsWith("_LOCKED") && o.title !== "잠김"),
     [displayOptions],
   );
+
+  const defaultTrialNpc = useMemo(() => {
+    if (event.id !== "TRIAL" || currentPageId !== TRIAL_CHOICES_PAGE_ID) return null;
+    return trialNpcForOptionId(options[0]?.id ?? "");
+  }, [currentPageId, event.id, options]);
+
+  useEffect(() => {
+    if (event.id !== "TRIAL") return;
+    onTrialNpcChange?.(defaultTrialNpc);
+    return () => onTrialNpcChange?.(null);
+  }, [defaultTrialNpc, event.id, onTrialNpcChange]);
 
   const previewByOptionId = useMemo(() => {
     const previews = new Map<string, EventPreview>();
@@ -950,14 +1124,20 @@ export function EventContentViewer({
   const renderOption = (opt: EventOption) => {
     const navigable = hasPages && canNavigate(opt.id);
     const preview = previewByOptionId.get(opt.id) ?? null;
-    const backgroundImageUrl = event.id === "TRIAL"
-      ? trialChoiceBackgroundImageUrl(opt.id)
-      : null;
+    const trialNpc = event.id === "TRIAL" ? trialNpcForOptionId(opt.id) : null;
+    const showTrialNpc = () => {
+      if (trialNpc) onTrialNpcChange?.(trialNpc);
+    };
+    const restoreTrialNpc = () => {
+      if (trialNpc) onTrialNpcChange?.(defaultTrialNpc);
+    };
     if (!navigable) {
       return (
         <OptionCard
           key={opt.id}
-          backgroundImageUrl={backgroundImageUrl}
+          backgroundImageUrl={null}
+          onHoverEnd={restoreTrialNpc}
+          onHoverStart={showTrialNpc}
           option={opt}
           preview={preview}
           onPreviewChange={onPreviewChange}
@@ -967,8 +1147,10 @@ export function EventContentViewer({
     return (
       <GameChoiceFrame
         key={opt.id}
-        backgroundImageUrl={backgroundImageUrl}
+        backgroundImageUrl={null}
         onClick={() => navigateTo(opt.id)}
+        onHoverEnd={restoreTrialNpc}
+        onHoverStart={showTrialNpc}
         preview={preview}
         onPreviewChange={onPreviewChange}
       >
@@ -1089,6 +1271,100 @@ function EventPotionSetPreview({ potions }: { potions: CodexPotion[] }) {
   );
 }
 
+function EventSpriteSheetOverlay({ overlay }: { overlay: SpriteSheetEventArtOverlay }) {
+  const totalFrames = overlay.framesX * overlay.framesY;
+  const [frame, setFrame] = useState(0);
+
+  useEffect(() => {
+    if (totalFrames <= 1) return;
+    const timer = window.setInterval(() => {
+      setFrame((current) => (current + 1) % totalFrames);
+    }, overlay.intervalMs ?? 100);
+    return () => window.clearInterval(timer);
+  }, [overlay.intervalMs, totalFrames]);
+
+  const column = frame % overlay.framesX;
+  const row = Math.floor(frame / overlay.framesX);
+  const x = overlay.framesX <= 1 ? 0 : (column / (overlay.framesX - 1)) * 100;
+  const y = overlay.framesY <= 1 ? 0 : (row / (overlay.framesY - 1)) * 100;
+
+  return (
+    <span
+      className={overlay.className}
+      style={{
+        ...overlay.style,
+        backgroundImage: `url('${overlay.src}')`,
+        backgroundPosition: `${x}% ${y}%`,
+        backgroundSize: `${overlay.framesX * 100}% ${overlay.framesY * 100}%`,
+      }}
+      aria-hidden
+    />
+  );
+}
+
+function TrialNpcBackground({ overlay }: { overlay: TrialNpcOverlay }) {
+  const npcOverlay = eventVfxSpriteOverlay({
+    className: "z-10 opacity-95 drop-shadow-[0_24px_28px_rgba(0,0,0,0.60)]",
+    height: 1288,
+    scale: 0.5,
+    src: overlay.imageUrl,
+    width: 996,
+    x: 568,
+    y: 778,
+  });
+  const lightOverlay = eventVfxSpriteOverlay({
+    className: "opacity-28 mix-blend-screen",
+    height: 2400,
+    scale: 0.72,
+    src: `${EVENT_VFX_ROOT}/trial_stand_light.webp`,
+    width: 1251,
+    x: 583,
+    y: 541,
+  });
+
+  return (
+    <>
+      <Image
+        src={lightOverlay.src}
+        alt=""
+        width={lightOverlay.width}
+        height={lightOverlay.height}
+        className={lightOverlay.className}
+        style={lightOverlay.style}
+        aria-hidden
+      />
+      <Image
+        src={npcOverlay.src}
+        alt=""
+        width={npcOverlay.width}
+        height={npcOverlay.height}
+        className={npcOverlay.className}
+        style={npcOverlay.style}
+        aria-hidden
+      />
+    </>
+  );
+}
+
+function EventSpineOverlay({ config }: { config: EventSpineOverlayConfig }) {
+  return (
+    <div className={`pointer-events-none absolute ${config.className}`} aria-hidden>
+      <MonsterSpineStage
+        asset={config.asset}
+        fallbackImageUrl={config.fallbackImageUrl}
+        fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-2xl"
+        imagePriority={false}
+        monsterName={config.monsterName}
+        selectedMoveId={null}
+        showLoadingLabel={false}
+        viewportPadding={config.viewportPadding}
+        viewportTransitionTime={0}
+        className="relative h-full w-full"
+      />
+    </div>
+  );
+}
+
 function EventPreviewOverlay({
   preview,
   serviceLocale,
@@ -1127,7 +1403,9 @@ export function EventDetail({
   const serviceText = getCodexServiceMessages(serviceLocale);
   const isModal = Boolean(onClose);
   const [preview, setPreview] = useState<EventPreview | null>(null);
+  const [trialNpcOverlay, setTrialNpcOverlay] = useState<TrialNpcOverlay | null>(null);
   const artOverlays = EVENT_ART_OVERLAYS[event.id] ?? [];
+  const eventSpineOverlays = EVENT_SPINE_OVERLAYS[event.id] ?? [];
   const eventImageUrl = event.id === "TRIAL"
     ? "/images/sts2/events/trial_started.webp"
     : event.imageUrl;
@@ -1189,32 +1467,41 @@ export function EventDetail({
       >
         <div className="relative aspect-[3440/1616] min-h-[620px] w-full sm:min-h-0">
           {eventImageUrl ? (
-            <>
-              <Image
-                src={eventImageUrl}
-                alt={event.name}
-                fill
-                sizes="(max-width: 768px) 100vw, 1152px"
-                className="object-contain"
-                priority={Boolean(onClose)}
-              />
-              {artOverlays.map((overlay, overlayIndex) => (
-                <Image
-                  key={`${overlay.src}-${overlayIndex}`}
-                  src={overlay.src}
-                  alt={overlay.alt}
-                  fill={overlay.fill}
-                  width={overlay.width}
-                  height={overlay.height}
-                  className={overlay.className}
-                  style={overlay.style}
-                  aria-hidden={overlay.alt === "" ? true : undefined}
-                />
-              ))}
-            </>
+            <Image
+              src={eventImageUrl}
+              alt={event.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 1152px"
+              className="object-contain"
+              priority={Boolean(onClose)}
+            />
           ) : (
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(96,165,250,0.20),transparent_34%),linear-gradient(135deg,#111827,#050505_65%)]" />
           )}
+          {artOverlays.map((overlay, overlayIndex) => (
+            overlay.kind === "sprite-sheet" ? (
+              <EventSpriteSheetOverlay
+                key={`${overlay.src}-${overlayIndex}`}
+                overlay={overlay}
+              />
+            ) : (
+              <Image
+                key={`${overlay.src}-${overlayIndex}`}
+                src={overlay.src}
+                alt={overlay.alt}
+                fill={overlay.fill}
+                width={overlay.width}
+                height={overlay.height}
+                className={overlay.className}
+                style={overlay.style}
+                aria-hidden={overlay.alt === "" ? true : undefined}
+              />
+            )
+          ))}
+          {trialNpcOverlay && <TrialNpcBackground overlay={trialNpcOverlay} />}
+          {eventSpineOverlays.map((config) => (
+            <EventSpineOverlay key={config.asset.id} config={config} />
+          ))}
           <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/30 to-transparent" />
           {preview && <EventPreviewOverlay preview={preview} serviceLocale={serviceLocale} />}
           <div className={textPanelClassName}>
@@ -1233,6 +1520,7 @@ export function EventDetail({
                   madScienceBaseCard={madScienceBaseCard}
                   messages={serviceText}
                   onPreviewChange={setPreview}
+                  onTrialNpcChange={setTrialNpcOverlay}
                   potions={potions}
                 />
               </div>

@@ -20,6 +20,8 @@ interface GameChoiceFrameProps<TPreview> {
   backgroundImageUrl?: string | null;
   children: ReactNode;
   onClick?: () => void;
+  onHoverEnd?: () => void;
+  onHoverStart?: () => void;
   onPreviewChange?: (preview: TPreview | null) => void;
   preview?: TPreview | null;
 }
@@ -29,16 +31,20 @@ export function GameChoiceFrame<TPreview = unknown>({
   backgroundImageUrl = null,
   children,
   onClick,
+  onHoverEnd,
+  onHoverStart,
   onPreviewChange,
   preview,
 }: GameChoiceFrameProps<TPreview>) {
   const interactive = Boolean(onClick);
   const showPreview = useCallback(() => {
+    onHoverStart?.();
     if (preview) onPreviewChange?.(preview);
-  }, [onPreviewChange, preview]);
+  }, [onHoverStart, onPreviewChange, preview]);
   const hidePreview = useCallback(() => {
+    onHoverEnd?.();
     if (preview) onPreviewChange?.(null);
-  }, [onPreviewChange, preview]);
+  }, [onHoverEnd, onPreviewChange, preview]);
   const className = `group relative block min-h-[74px] w-full overflow-visible border-0 bg-transparent p-0 text-left transition-transform duration-150 ${
     interactive ? "cursor-pointer hover:-translate-y-0.5 focus-visible:outline-none" : ""
   }`;
