@@ -42,7 +42,7 @@
     },
     {
       "id": "crystalSphere.events.CRYSTAL.SPHERE.banter.END.3",
-      "status": "candidate",
+      "status": "include",
       "category": "crystal-sphere",
       "sourceTable": "events",
       "sourceKey": "CRYSTAL_SPHERE.banter.END.3",
