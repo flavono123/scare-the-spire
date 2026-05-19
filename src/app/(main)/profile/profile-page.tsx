@@ -570,8 +570,8 @@ function getPetPlacement(petId: string | undefined): {
   return {
     bottom: "0%",
     left: "58%",
-    width: "14rem",
-    height: "34%",
+    width: petId === "PAELS_LEGION" ? "16.8rem" : "14rem",
+    height: petId === "PAELS_LEGION" ? "40.8%" : "34%",
   };
 }
 
