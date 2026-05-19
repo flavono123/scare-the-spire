@@ -108,7 +108,7 @@
     },
     {
       "id": "crystalSphere.events.CRYSTAL.SPHERE.banter.REVEAL.GOOD.3",
-      "status": "candidate",
+      "status": "include",
       "category": "crystal-sphere",
       "sourceTable": "events",
       "sourceKey": "CRYSTAL_SPHERE.banter.REVEAL_GOOD.3",
