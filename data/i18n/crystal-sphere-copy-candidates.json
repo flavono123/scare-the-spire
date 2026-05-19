@@ -20,7 +20,7 @@
   "candidates": [
     {
       "id": "crystalSphere.events.CRYSTAL.SPHERE.banter.END.1",
-      "status": "candidate",
+      "status": "include",
       "category": "crystal-sphere",
       "sourceTable": "events",
       "sourceKey": "CRYSTAL_SPHERE.banter.END.1",
