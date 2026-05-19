@@ -14,7 +14,6 @@ interface PostCardProps {
   entityMap: Map<string, EntityInfo>;
   forceShowTooltips?: boolean;
   isOwner: boolean;
-  profileNickname?: string;
   onDelete: (postId: string) => void;
 }
 
@@ -40,7 +39,7 @@ function timeAgo(
   return new Date(dateStr).toLocaleDateString(dateLocale);
 }
 
-export function PostCard({ post, entityMap, forceShowTooltips, isOwner, profileNickname, onDelete }: PostCardProps) {
+export function PostCard({ post, entityMap, forceShowTooltips, isOwner, onDelete }: PostCardProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
@@ -50,7 +49,7 @@ export function PostCard({ post, entityMap, forceShowTooltips, isOwner, profileN
       {/* Header: nickname + time */}
       <div className="flex items-center justify-between mb-1.5">
         <span className="text-sm font-semibold text-gray-300">
-          {profileNickname ?? post.nickname}
+          {post.nickname}
         </span>
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">

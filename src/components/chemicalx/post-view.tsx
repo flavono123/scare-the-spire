@@ -8,7 +8,6 @@ import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { localizeHref } from "@/lib/i18n";
 import type { ChemicalPost } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { usePublicUserProfiles } from "@/hooks/use-user-profile";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 import { PostRenderer, buildEntityMap } from "./post-renderer";
@@ -34,8 +33,6 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
   const [copied, setCopied] = useState(false);
   const [showTooltips, setShowTooltips] = useState(true);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
-  const postUserIds = useMemo(() => (post ? [post.user_id] : []), [post]);
-  const profileByUserId = usePublicUserProfiles(postUserIds);
 
   useEffect(() => {
     if (!supabaseEnabled) return;
@@ -85,7 +82,6 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
   }
 
   const textLen = blocksToPlainText(post.content).length;
-  const displayNickname = profileByUserId.get(post.user_id)?.nickname ?? post.nickname;
 
   return (
     <div className="space-y-4">
@@ -128,7 +124,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
 
         {/* Header */}
         <div className="relative flex items-center justify-between mb-4">
-          <span className="text-sm font-semibold text-gray-300">{displayNickname}</span>
+          <span className="text-sm font-semibold text-gray-300">{post.nickname}</span>
           <span className="text-xs text-gray-500">
             {new Date(post.created_at).toLocaleDateString(dateLocale)}
           </span>

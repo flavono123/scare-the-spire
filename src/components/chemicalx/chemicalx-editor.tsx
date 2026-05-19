@@ -11,7 +11,6 @@ interface ChemicalXEditorProps {
   entities: EntityInfo[];
   placeholder: string;
   profileNickname: string;
-  onNicknameCommit: (nickname: string) => Promise<string>;
   onSubmit: (blocks: PostBlock[], nickname: string) => Promise<void>;
 }
 
@@ -19,7 +18,6 @@ export function ChemicalXEditor({
   entities,
   placeholder,
   profileNickname,
-  onNicknameCommit,
   onSubmit,
 }: ChemicalXEditorProps) {
   const serviceLocale = useServiceLocale();
@@ -27,9 +25,9 @@ export function ChemicalXEditor({
   const nicknameInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = useCallback(async (blocks: PostBlock[]) => {
-    const nickname = await onNicknameCommit(nicknameInputRef.current?.value ?? profileNickname);
+    const nickname = nicknameInputRef.current?.value.trim() || profileNickname || copy.defaultNickname;
     await onSubmit(blocks, nickname);
-  }, [onNicknameCommit, onSubmit, profileNickname]);
+  }, [copy.defaultNickname, onSubmit, profileNickname]);
 
   return (
     <div className="space-y-3">
@@ -42,9 +40,6 @@ export function ChemicalXEditor({
             defaultValue={profileNickname}
             placeholder={copy.defaultNickname}
             maxLength={20}
-            onBlur={(event) => {
-              void onNicknameCommit(event.currentTarget.value);
-            }}
             className="w-full bg-transparent text-sm text-gray-300 placeholder:text-gray-600 outline-none"
           />
         </div>

@@ -8,7 +8,7 @@ import type { PostBlock } from "@/lib/chemical-types";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useChemicalPosts } from "@/hooks/use-chemical-posts";
-import { usePublicUserProfiles, useUserProfile } from "@/hooks/use-user-profile";
+import { useUserProfile } from "@/hooks/use-user-profile";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
@@ -32,21 +32,10 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],
   );
-  const { profile, saveProfile } = useUserProfile(userId, profileFallback);
-  const postUserIds = useMemo(() => posts.map((post) => post.user_id), [posts]);
-  const profileByUserId = usePublicUserProfiles(postUserIds);
+  const { profile } = useUserProfile(profileFallback);
   const storageUnavailable = authUnavailable || unavailable;
 
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
-
-  const handleNicknameCommit = useCallback(
-    async (rawNickname: string) => {
-      const nickname = rawNickname.trim() || copy.defaultNickname;
-      await saveProfile({ ...profile, nickname }).catch(() => undefined);
-      return nickname;
-    },
-    [copy.defaultNickname, profile, saveProfile],
-  );
 
   const handleSubmit = useCallback(
     async (blocks: PostBlock[], nickname: string) => {
@@ -85,7 +74,6 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
           entities={entities}
           placeholder={placeholder}
           profileNickname={profile.nickname}
-          onNicknameCommit={handleNicknameCommit}
           onSubmit={handleSubmit}
         />
       )}
@@ -124,7 +112,6 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
               entityMap={entityMap}
               forceShowTooltips={showAllTooltips}
               isOwner={post.user_id === userId}
-              profileNickname={post.user_id === userId ? profile.nickname : profileByUserId.get(post.user_id)?.nickname}
               onDelete={handleDelete}
             />
           ))}
