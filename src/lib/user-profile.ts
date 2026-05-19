@@ -77,7 +77,10 @@ export function userProfileToRow(profile: UserProfile, userId: string, env: stri
 export function readStoredUserProfile(fallback = DEFAULT_USER_PROFILE): UserProfile {
   if (typeof window === "undefined") return fallback;
 
-  const raw = window.localStorage.getItem(USER_PROFILE_STORAGE_KEY);
+  return parseStoredUserProfile(window.localStorage.getItem(USER_PROFILE_STORAGE_KEY), fallback);
+}
+
+export function parseStoredUserProfile(raw: string | null, fallback = DEFAULT_USER_PROFILE): UserProfile {
   if (!raw) return fallback;
 
   try {

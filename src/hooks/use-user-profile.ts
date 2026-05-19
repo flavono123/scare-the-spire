@@ -1,12 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import {
   DEFAULT_USER_PROFILE,
   USER_PROFILE_CHANGE_EVENT,
+  USER_PROFILE_STORAGE_KEY,
   normalizeUserProfile,
+  parseStoredUserProfile,
   readStoredUserProfile,
   rowToUserProfile,
   userProfileToRow,
@@ -24,28 +26,37 @@ interface UseUserProfileReturn {
   saveProfile: (profile: UserProfile) => Promise<void>;
 }
 
+function subscribeStoredUserProfile(onStoreChange: () => void) {
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === null || event.key === USER_PROFILE_STORAGE_KEY) {
+      onStoreChange();
+    }
+  };
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener(USER_PROFILE_CHANGE_EVENT, onStoreChange);
+  return () => {
+    window.removeEventListener("storage", handleStorage);
+    window.removeEventListener(USER_PROFILE_CHANGE_EVENT, onStoreChange);
+  };
+}
+
+function getStoredUserProfileSnapshot() {
+  if (typeof window === "undefined") return "";
+  return window.localStorage.getItem(USER_PROFILE_STORAGE_KEY) ?? "";
+}
+
+function getStoredUserProfileServerSnapshot() {
+  return "";
+}
+
 export function useStoredUserProfile(fallback = DEFAULT_USER_PROFILE): UserProfile {
-  const [profile, setProfile] = useState(() => readStoredUserProfile(fallback));
+  const snapshot = useSyncExternalStore(
+    subscribeStoredUserProfile,
+    getStoredUserProfileSnapshot,
+    getStoredUserProfileServerSnapshot,
+  );
 
-  useEffect(() => {
-    const updateFromStorage = () => {
-      setProfile(readStoredUserProfile(fallback));
-    };
-
-    const updateFromEvent = (event: Event) => {
-      const next = (event as CustomEvent<UserProfile>).detail;
-      setProfile(normalizeUserProfile(next, fallback));
-    };
-
-    window.addEventListener("storage", updateFromStorage);
-    window.addEventListener(USER_PROFILE_CHANGE_EVENT, updateFromEvent);
-    return () => {
-      window.removeEventListener("storage", updateFromStorage);
-      window.removeEventListener(USER_PROFILE_CHANGE_EVENT, updateFromEvent);
-    };
-  }, [fallback]);
-
-  return profile;
+  return useMemo(() => parseStoredUserProfile(snapshot, fallback), [fallback, snapshot]);
 }
 
 export function useUserProfile(
