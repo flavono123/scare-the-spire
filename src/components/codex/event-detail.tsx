@@ -174,19 +174,329 @@ interface EventArtOverlay {
   width?: number;
 }
 
+const EVENT_VFX_CANVAS_WIDTH = 2160;
+const EVENT_VFX_CANVAS_HEIGHT = 1000;
+const EVENT_VFX_ROOT = "/images/sts2/event-vfx";
+
+function eventVfxSpriteOverlay({
+  className = "",
+  height,
+  scale = 1,
+  src,
+  style,
+  width,
+  x,
+  y,
+}: {
+  className?: string;
+  height: number;
+  scale?: number;
+  src: string;
+  style?: CSSProperties;
+  width: number;
+  x: number;
+  y: number;
+}): EventArtOverlay {
+  const scaledWidth = width * scale;
+  const scaledHeight = height * scale;
+
+  return {
+    alt: "",
+    className: `pointer-events-none absolute object-contain ${className}`.trim(),
+    height,
+    src,
+    style: {
+      height: `${(scaledHeight / EVENT_VFX_CANVAS_HEIGHT) * 100}%`,
+      left: `${((x - scaledWidth / 2) / EVENT_VFX_CANVAS_WIDTH) * 100}%`,
+      top: `${((y - scaledHeight / 2) / EVENT_VFX_CANVAS_HEIGHT) * 100}%`,
+      width: `${(scaledWidth / EVENT_VFX_CANVAS_WIDTH) * 100}%`,
+      ...style,
+    },
+    width,
+  };
+}
+
 const EVENT_ART_OVERLAYS: Record<string, EventArtOverlay[]> = {
+  BUGSLAYER: [
+    eventVfxSpriteOverlay({
+      className: "opacity-80 drop-shadow-[0_0_8px_rgba(255,255,255,0.35)]",
+      height: 21,
+      src: `${EVENT_VFX_ROOT}/infested_automaton_flies.webp`,
+      width: 122,
+      x: 638,
+      y: 629,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-55 drop-shadow-[0_0_8px_rgba(255,255,255,0.35)]",
+      height: 21,
+      src: `${EVENT_VFX_ROOT}/infested_automaton_flies.webp`,
+      width: 122,
+      x: 741,
+      y: 593,
+    }),
+  ],
+  BYRDONIS_NEST: [
+    eventVfxSpriteOverlay({
+      className: "opacity-80",
+      height: 141,
+      src: `${EVENT_VFX_ROOT}/byrdonis_feathers.webp`,
+      width: 489,
+      x: 554,
+      y: -54,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-80",
+      height: 141,
+      src: `${EVENT_VFX_ROOT}/byrdonis_feathers.webp`,
+      width: 489,
+      x: 835.577,
+      y: -45.192,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-90 mix-blend-screen",
+      height: 60,
+      src: `${EVENT_VFX_ROOT}/byrdonis_nest_shine.webp`,
+      width: 70,
+      x: 557,
+      y: 535,
+    }),
+  ],
+  COLOSSAL_FLOWER: [
+    eventVfxSpriteOverlay({
+      className: "opacity-35 mix-blend-screen",
+      height: 2400,
+      src: `${EVENT_VFX_ROOT}/trial_stand_light.webp`,
+      width: 1251,
+      x: 521,
+      y: 352,
+    }),
+  ],
+  DENSE_VEGETATION: [
+    eventVfxSpriteOverlay({
+      className: "opacity-95",
+      height: 1200,
+      scale: 0.93,
+      src: "/images/sts2/events/dense_vegetation_foreground.webp",
+      width: 2560,
+      x: 970.208,
+      y: 512.808,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-75 drop-shadow-[0_0_8px_rgba(255,235,140,0.5)]",
+      height: 143,
+      scale: 0.5,
+      src: `${EVENT_VFX_ROOT}/dense_vegetation/vfx_dense_vegetation_bug_03.webp`,
+      width: 239,
+      x: 313.323,
+      y: 646.923,
+    }),
+  ],
+  DOLL_ROOM: [
+    eventVfxSpriteOverlay({
+      className: "opacity-95",
+      height: 942,
+      scale: 0.93,
+      src: `${EVENT_VFX_ROOT}/doll_room_foreground.webp`,
+      width: 2560,
+      x: 961,
+      y: 655,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-80 mix-blend-screen",
+      height: 35,
+      src: `${EVENT_VFX_ROOT}/doll_room_whisper_bubble_l.webp`,
+      width: 35,
+      x: 382,
+      y: 287,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-80 mix-blend-screen",
+      height: 35,
+      src: `${EVENT_VFX_ROOT}/doll_room_whisper_bubble_r.webp`,
+      width: 35,
+      x: 905,
+      y: 368,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-70 mix-blend-screen",
+      height: 31,
+      src: `${EVENT_VFX_ROOT}/doll_room_whispers.webp`,
+      width: 93,
+      x: 594,
+      y: 449,
+    }),
+  ],
+  INFESTED_AUTOMATON: [
+    eventVfxSpriteOverlay({
+      className: "opacity-80 drop-shadow-[0_0_8px_rgba(255,255,255,0.35)]",
+      height: 21,
+      src: `${EVENT_VFX_ROOT}/infested_automaton_flies.webp`,
+      width: 122,
+      x: 568,
+      y: 703,
+    }),
+  ],
+  LOST_WISP: [
+    eventVfxSpriteOverlay({
+      className: "opacity-95",
+      height: 1200,
+      src: `${EVENT_VFX_ROOT}/bedlam_beacon_foreground.webp`,
+      width: 2560,
+      x: 1014.62,
+      y: 520.192,
+    }),
+  ],
+  MORPHIC_GROVE: [
+    eventVfxSpriteOverlay({
+      className: "opacity-95",
+      height: 1200,
+      src: `${EVENT_VFX_ROOT}/morphic_grove/morphic_grove_foreground.webp`,
+      width: 2560,
+      x: 952,
+      y: 532,
+    }),
+  ],
+  POTION_COURIER: [
+    eventVfxSpriteOverlay({
+      className: "opacity-80",
+      height: 141,
+      src: `${EVENT_VFX_ROOT}/byrdonis_feathers.webp`,
+      width: 489,
+      x: 685.038,
+      y: 34.145,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-75 drop-shadow-[0_0_8px_rgba(255,255,255,0.35)]",
+      height: 21,
+      src: `${EVENT_VFX_ROOT}/infested_automaton_flies.webp`,
+      width: 122,
+      x: 561.038,
+      y: 655.144,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-90 drop-shadow-[0_0_8px_rgba(255,80,80,0.55)]",
+      height: 33,
+      src: `${EVENT_VFX_ROOT}/potion_courier_x.webp`,
+      width: 39,
+      x: 397.115,
+      y: 472.952,
+    }),
+  ],
+  SELF_HELP_BOOK: [
+    eventVfxSpriteOverlay({
+      className: "opacity-55 mix-blend-screen",
+      height: 536,
+      scale: 1.3,
+      src: `${EVENT_VFX_ROOT}/self_help_book_shine.webp`,
+      width: 1764,
+      x: 570.192,
+      y: 634.615,
+    }),
+  ],
+  SYMBIOTE: [
+    eventVfxSpriteOverlay({
+      className: "opacity-95 drop-shadow-[0_0_14px_rgba(117,255,203,0.35)]",
+      height: 213,
+      scale: 0.5,
+      src: `${EVENT_VFX_ROOT}/symbiote/symbiote_eye.webp`,
+      width: 155,
+      x: 662.5,
+      y: 631.7,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-75 mix-blend-screen",
+      height: 116,
+      src: `${EVENT_VFX_ROOT}/symbiote/symbiote_highlight.webp`,
+      width: 151,
+      x: 624,
+      y: 555.8,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-90 drop-shadow-[0_0_10px_rgba(117,255,203,0.35)]",
+      height: 116,
+      scale: 0.5,
+      src: `${EVENT_VFX_ROOT}/symbiote/eye_01.webp`,
+      width: 73,
+      x: 592.2,
+      y: 397,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-90 drop-shadow-[0_0_10px_rgba(117,255,203,0.35)]",
+      height: 78,
+      scale: 0.5,
+      src: `${EVENT_VFX_ROOT}/symbiote/eye_03.webp`,
+      width: 60,
+      x: 247.6,
+      y: 286.8,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-90 drop-shadow-[0_0_10px_rgba(117,255,203,0.35)]",
+      height: 85,
+      scale: 0.5,
+      src: `${EVENT_VFX_ROOT}/symbiote/eye_02.webp`,
+      width: 68,
+      x: 522.3,
+      y: 724.4,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-85 drop-shadow-[0_0_10px_rgba(117,255,203,0.35)]",
+      height: 78,
+      scale: 0.4,
+      src: `${EVENT_VFX_ROOT}/symbiote/eye_03.webp`,
+      width: 60,
+      x: 786.1,
+      y: 577.6,
+    }),
+  ],
+  TABLET_OF_TRUTH: [
+    eventVfxSpriteOverlay({
+      className: "opacity-80 drop-shadow-[0_0_18px_rgba(255,214,110,0.25)]",
+      height: 532,
+      src: `${EVENT_VFX_ROOT}/tablet_of_truth_rock.webp`,
+      width: 2128,
+      x: 573,
+      y: 554,
+    }),
+  ],
+  TEA_MASTER: [
+    eventVfxSpriteOverlay({
+      className: "opacity-90 mix-blend-screen",
+      height: 33,
+      scale: 0.95,
+      src: `${EVENT_VFX_ROOT}/tea_master/tea_master_05.webp`,
+      width: 75,
+      x: 554.501,
+      y: 489.423,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-90 mix-blend-screen",
+      height: 60,
+      src: `${EVENT_VFX_ROOT}/byrdonis_nest_shine.webp`,
+      width: 70,
+      x: 543.501,
+      y: 483.423,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-90 mix-blend-screen",
+      height: 60,
+      src: `${EVENT_VFX_ROOT}/byrdonis_nest_shine.webp`,
+      width: 70,
+      x: 581.501,
+      y: 485.423,
+    }),
+  ],
   THE_FUTURE_OF_POTIONS: [
     {
       alt: "",
       className: "pointer-events-none object-contain",
       fill: true,
-      src: "/images/sts2/events/the_future_of_potions_foreground.webp",
+      src: `${EVENT_VFX_ROOT}/the_future_of_potions_foreground.webp`,
     },
     {
       alt: "",
       className: "pointer-events-none absolute object-contain opacity-85 mix-blend-screen",
       height: 657,
-      src: "/images/sts2/events/the_future_of_potions_glow.webp",
+      src: `${EVENT_VFX_ROOT}/the_future_of_potions_glow.webp`,
       style: {
         height: "65.7%",
         left: "21%",
@@ -195,6 +505,35 @@ const EVENT_ART_OVERLAYS: Record<string, EventArtOverlay[]> = {
       },
       width: 315,
     },
+  ],
+  THIS_OR_THAT: [
+    eventVfxSpriteOverlay({
+      className: "opacity-75 drop-shadow-[0_0_8px_rgba(255,255,255,0.35)]",
+      height: 21,
+      src: `${EVENT_VFX_ROOT}/infested_automaton_flies.webp`,
+      width: 122,
+      x: 578.392,
+      y: 711.346,
+    }),
+  ],
+  TRIAL: [
+    eventVfxSpriteOverlay({
+      className: "opacity-95",
+      height: 1200,
+      scale: 0.94,
+      src: `${EVENT_VFX_ROOT}/trial_top_layer.webp`,
+      width: 2560,
+      x: 952,
+      y: 532,
+    }),
+    eventVfxSpriteOverlay({
+      className: "opacity-60 mix-blend-screen",
+      height: 542,
+      src: `${EVENT_VFX_ROOT}/trial_light_beam.webp`,
+      width: 132,
+      x: 541,
+      y: 305,
+    }),
   ],
 };
 
@@ -853,9 +1192,9 @@ export function EventDetail({
                 className="object-contain"
                 priority={Boolean(onClose)}
               />
-              {artOverlays.map((overlay) => (
+              {artOverlays.map((overlay, overlayIndex) => (
                 <Image
-                  key={overlay.src}
+                  key={`${overlay.src}-${overlayIndex}`}
                   src={overlay.src}
                   alt={overlay.alt}
                   fill={overlay.fill}
