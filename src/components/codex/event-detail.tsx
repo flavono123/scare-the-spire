@@ -333,10 +333,6 @@ const EVENT_OPTION_GENERATED_RANDOM_POTION_IDS: Record<string, readonly string[]
   WHISPERING_HOLLOW: ["GOLD"],
 };
 
-const EVENT_OPTION_OWNED_RANDOM_POTION_IDS: Record<string, readonly string[]> = {
-  STONE_OF_ALL_TIME: ["LIFT"],
-};
-
 type EventPreview = {
   cards?: CodexCard[];
   potions?: CodexPotion[];
@@ -1375,7 +1371,6 @@ export function EventContentViewer({
       list.sort((a, b) => a.name.localeCompare(b.name, "ko"));
     }
     const generatedPotionPool = sortPotionsForPreview((potions ?? []).filter(isGeneratedPotionPoolPotion));
-    const ownedPotionPool = sortPotionsForPreview(potions ?? []);
 
     if (currentPageId === "CHOOSE_RIDER") {
       const selectedType = getTinkerSelectedType(currentEntry);
@@ -1422,9 +1417,6 @@ export function EventContentViewer({
       }
       if (optionIdMatches(EVENT_OPTION_GENERATED_RANDOM_POTION_IDS, event.id, option.id)) {
         potionsForOption.push(...generatedPotionPool);
-      }
-      if (optionIdMatches(EVENT_OPTION_OWNED_RANDOM_POTION_IDS, event.id, option.id)) {
-        potionsForOption.push(...ownedPotionPool);
       }
 
       if (cardsForOption.length > 0) preview.cards = [...(preview.cards ?? []), ...cardsForOption];
