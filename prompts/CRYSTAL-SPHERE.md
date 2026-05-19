@@ -101,6 +101,8 @@
 - AI 런타임 생성 없이 게임 localization key를 차용한 fixture로 만든다.
 - fixture는 `sourceTable`, `sourceKey`, `sourceText`, `serviceText`,
   `replacements`를 가진다.
+- 차용 fixture는 개발자가 일방적으로 고르지 않는다. 먼저 후보 인벤토리를 만들고,
+  후보별로 include/exclude를 사용자 큐레이션으로 확정한다.
 - 예: `events.CRYSTAL_SPHERE.banter.REVEAL_GOOD.3`의
   `다정한 행운이 당신에게 깃들기를!`를 차용해 `다정한 {entity}이(가) 당신에게
   깃들기를!` 같은 서비스 문구로 변형한다.
@@ -121,6 +123,27 @@
 - `분할 납부`는 후속 기능으로 남긴다. 예를 들어 저주 카드를 하나 더 공개하고,
   대신 보조 징조를 하나 더 받는 선택지로 확장할 수 있다.
 
+## 문구 큐레이션 흐름
+
+차용 문구는 후보 전체를 먼저 볼 수 있어야 한다.
+
+1. 로컬 게임 localization에서 후보 문구를 추출한다.
+2. 후보마다 `sourceTable`, `sourceKey`, 한국어 원문, 영어 원문, 카테고리,
+   차용 아이디어, 상태를 붙인다.
+3. 상태는 `candidate`, `include`, `exclude`, `needs-edit`로 관리한다.
+4. 사용자는 후보를 하나씩 보며 채택 여부를 결정한다.
+5. `include`가 된 문구만 수정구 fixture 데이터로 승격한다.
+
+초기 후보 카테고리:
+
+| 카테고리 | 예시 source key | 용도 |
+| --- | --- | --- |
+| 수정구 점술 | `CRYSTAL_SPHERE.banter.*` | 세션 시작, 공개, 종료 |
+| 이벤트 선택 | `*.pages.*.options.*` | 선택지형 점괘, 분할 납부 확장 |
+| 이벤트 대사 | `*.pages.*.description` | 소제목, 결과 설명 |
+| 실패/죽음 | `*.loss`, `game_over_screen.*` | 위험 슬롯, 저주/상태이상 |
+| 전투/보상 UI | `card_reward_ui.*`, `combat_messages.*` | 카드 보상 판단, 오늘의 질문 |
+
 ## MVP 범위
 
 - `/crystal-sphere` 라우트
@@ -129,7 +152,8 @@
 - 소형 점술
 - 대형 점술
 - 결정론적 daily seed
-- 게임 문구 차용 fixture
+- 게임 문구 차용 후보 인벤토리
+- 사용자 큐레이션을 거친 게임 문구 차용 fixture
 - 결과 공유 URL
 - 백과사전 hover/link
 - 모바일 우선 화면
@@ -158,6 +182,7 @@
 - 결과에 나온 카드/유물/포션은 모두 백과사전 상세로 이동한다.
 - 게임에서 온 이름과 설명은 직접 번역하지 않는다.
 - 차용 문구는 source localization key와 원문을 추적한다.
+- fixture로 쓰는 차용 문구는 사용자 큐레이션 상태를 가진다.
 - 첫 화면에서 사용자는 별도 설명을 읽지 않아도 점술을 시작할 수 있다.
 
 ## 남은 질문
