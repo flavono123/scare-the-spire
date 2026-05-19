@@ -82,32 +82,70 @@ function InfectionCardBorderVfx() {
         <path
           className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__shadow"
           d={INFECTION_BORDER_PATH}
+          fill="none"
           pathLength="1000"
+          stroke="rgba(64, 58, 29, 0.74)"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="19"
         />
         <path
           className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__base"
           d={INFECTION_BORDER_PATH}
+          fill="none"
           pathLength="1000"
+          stroke="rgba(210, 184, 91, 0.92)"
+          strokeDasharray="62 7 44 9 34 8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="15"
         />
         <path
           className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__base sts2-infection-card-vfx__base--inner"
           d={INFECTION_INNER_BORDER_PATH}
+          fill="none"
           pathLength="1000"
+          stroke="rgba(236, 202, 117, 0.78)"
+          strokeDasharray="40 8 26 14 54 9"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="9"
         />
         <path
           className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__crawler sts2-infection-card-vfx__crawler--a"
           d={INFECTION_BORDER_PATH}
+          fill="none"
           pathLength="1000"
+          stroke="rgba(244, 214, 137, 0.98)"
+          strokeDasharray="22 48 12 64 30 74"
+          strokeDashoffset="70"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="9"
         />
         <path
           className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__crawler sts2-infection-card-vfx__crawler--b"
           d={INFECTION_INNER_BORDER_PATH}
+          fill="none"
           pathLength="1000"
+          stroke="rgba(166, 151, 31, 0.82)"
+          strokeDasharray="18 42 36 58 10 71"
+          strokeDashoffset="210"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="11"
         />
         <path
           className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__crawler sts2-infection-card-vfx__crawler--c"
           d={INFECTION_BORDER_PATH}
+          fill="none"
           pathLength="1000"
+          stroke="rgba(222, 190, 81, 0.86)"
+          strokeDasharray="12 31 26 55 18 63"
+          strokeDashoffset="340"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="7"
         />
       </g>
     </svg>
