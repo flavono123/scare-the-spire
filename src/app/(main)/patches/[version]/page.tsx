@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "@/components/ui/static-image";
 import type { Metadata } from "next";
 import fs from "fs/promises";
 import path from "path";
@@ -23,6 +24,7 @@ import {
 import { CommentSection } from "@/components/comment-section";
 import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import { withPageOgImage } from "@/lib/page-og-images";
+import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType } from "@/lib/types";
 
 const PATCH_COPY: Record<ServiceLocale, {
@@ -73,6 +75,21 @@ const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
   stable: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
   hotfix: "bg-orange-500/15 text-orange-400 border-orange-500/30",
 };
+
+function PatchArtHero({ art }: { art: ResolvedPatchArt }) {
+  return (
+    <div className="mt-6 aspect-[16/7] overflow-hidden rounded-lg border border-border/70 bg-zinc-950">
+      <Image
+        src={art.imageUrl}
+        alt={art.alt}
+        width={1120}
+        height={490}
+        className="h-full w-full object-cover"
+        style={{ objectPosition: art.objectPosition }}
+      />
+    </div>
+  );
+}
 
 const NOTES_DIR = path.join(process.cwd(), "data/sts2-patch-notes");
 
@@ -668,6 +685,8 @@ export default async function PatchDetailPage({
   const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
   const commentEntities = entities.filter((entity) => !entity.eventOptionDesc);
   const isBuilding = patch.status === "building";
+  const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
+  const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
 
   // Adjacent patches for navigation
   const sortedPatches = [...patches].sort((a, b) => a.date.localeCompare(b.date));
@@ -711,6 +730,8 @@ export default async function PatchDetailPage({
           )}
         </div>
       </div>
+
+      <PatchArtHero art={patchArt} />
 
       {/* Patch notes body */}
       {markdown ? (
