@@ -79,6 +79,13 @@ function InfectionCardBorderVfx() {
       viewBox="0 0 300 422"
     >
       <g className="sts2-infection-card-vfx__writhe">
+        <animateTransform
+          attributeName="transform"
+          dur="0.64s"
+          repeatCount="indefinite"
+          type="translate"
+          values="0 0; 1.05 -0.75; -0.72 0.95; 0.54 0.55; 0 0"
+        />
         <path
           className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__shadow"
           d={INFECTION_BORDER_PATH}
@@ -99,7 +106,14 @@ function InfectionCardBorderVfx() {
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="15"
-        />
+        >
+          <animate
+            attributeName="stroke-dashoffset"
+            dur="6.8s"
+            repeatCount="indefinite"
+            values="0; -1000"
+          />
+        </path>
         <path
           className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__base sts2-infection-card-vfx__base--inner"
           d={INFECTION_INNER_BORDER_PATH}
@@ -110,7 +124,14 @@ function InfectionCardBorderVfx() {
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="9"
-        />
+        >
+          <animate
+            attributeName="stroke-dashoffset"
+            dur="5.9s"
+            repeatCount="indefinite"
+            values="0; 1000"
+          />
+        </path>
         <path
           className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__crawler sts2-infection-card-vfx__crawler--a"
           d={INFECTION_BORDER_PATH}
@@ -122,7 +143,14 @@ function InfectionCardBorderVfx() {
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="9"
-        />
+        >
+          <animate
+            attributeName="stroke-dashoffset"
+            dur="2.7s"
+            repeatCount="indefinite"
+            values="70; -930"
+          />
+        </path>
         <path
           className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__crawler sts2-infection-card-vfx__crawler--b"
           d={INFECTION_INNER_BORDER_PATH}
@@ -134,7 +162,14 @@ function InfectionCardBorderVfx() {
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="11"
-        />
+        >
+          <animate
+            attributeName="stroke-dashoffset"
+            dur="3.15s"
+            repeatCount="indefinite"
+            values="210; 1210"
+          />
+        </path>
         <path
           className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__crawler sts2-infection-card-vfx__crawler--c"
           d={INFECTION_BORDER_PATH}
@@ -146,7 +181,14 @@ function InfectionCardBorderVfx() {
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="7"
-        />
+        >
+          <animate
+            attributeName="stroke-dashoffset"
+            dur="2.35s"
+            repeatCount="indefinite"
+            values="340; -660"
+          />
+        </path>
       </g>
     </svg>
   );
