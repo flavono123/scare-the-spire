@@ -21,6 +21,13 @@ function artAlt(art: STS2PatchArt, serviceLocale: ServiceLocale, fallback: strin
   return art.alt ?? art.altKo ?? fallback;
 }
 
+function defaultPatchArt(serviceLocale: ServiceLocale): ResolvedPatchArt {
+  return {
+    ...DEFAULT_PATCH_ART,
+    alt: serviceLocale === "ko" ? "슬레이 더 스파이어 2 배너 아트" : DEFAULT_PATCH_ART.alt,
+  };
+}
+
 function epochArtImageUrl(id: string): string {
   return `/images/sts2/epochs/${id.toLowerCase()}.webp`;
 }
@@ -40,7 +47,7 @@ function resolveExplicitPatchArt(
     if (!art.imageUrl) return null;
     return {
       imageUrl: art.imageUrl,
-      alt: artAlt(art, serviceLocale, DEFAULT_PATCH_ART.alt),
+      alt: artAlt(art, serviceLocale, defaultPatchArt(serviceLocale).alt),
       objectPosition,
     };
   }
@@ -102,5 +109,5 @@ export function resolvePatchArt(
     if (explicit) return explicit;
   }
 
-  return resolveFeaturedEntityArt(patch, entitiesByKey, serviceLocale) ?? DEFAULT_PATCH_ART;
+  return resolveFeaturedEntityArt(patch, entitiesByKey, serviceLocale) ?? defaultPatchArt(serviceLocale);
 }
