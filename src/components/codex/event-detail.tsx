@@ -1014,8 +1014,8 @@ function applySlipperyBridgeOption(option: EventOption, event: CodexEvent, holdC
       ...option,
       description: eventText(
         event,
-        "피해를 [red]10[/red] 받습니다. [red]무작위 카드[/red]가 사라집니다.",
-        "Take [red]10[/red] damage. A [red]random card[/red] vanishes.",
+        "[red]무작위 카드[/red] 1장이 [gold]덱[/gold]에서 제거됩니다.",
+        "A [red]random card[/red] is removed from your [gold]Deck[/gold].",
       ),
     };
   }
@@ -1133,6 +1133,13 @@ function resolveEventOptionPage(
   }
   if (eventId === "TRIAL" && optionId === "ACCEPT") {
     return TRIAL_CHOICES_PAGE_ID;
+  }
+  if (
+    eventId === "CRYSTAL_SPHERE" &&
+    (optionId === "UNCOVER_FUTURE" || optionId === "PAYMENT_PLAN") &&
+    pageMap.has("FINISH")
+  ) {
+    return "FINISH";
   }
   if (
     eventId === "ENDLESS_CONVEYOR" &&
