@@ -24,12 +24,17 @@ _Avoid_: using 도감 as the generic top-level product term
 A game item or game-derived page connected to the current resource through patch notes, hover links, or reverse references.
 _Avoid_: 관련 엔티티, entity
 
+**상세 보기**:
+The shared detail UI for a card, relic, potion, or other resource, whether opened from a list or loaded by direct URL.
+_Avoid_: 상세 표면
+
 ## Relationships
 
 - **Compendium** and **백과사전** are the same concept in different languages.
 - **카드 도서관** is one menu inside the **백과사전**.
 - **도감** may refer to the **백과사전** colloquially, but is not the canonical generic term.
 - A **관련 리소스** links one **백과사전** resource to another without introducing the generic term "entity."
+- A **상세 보기** can appear as a modal from a list or as a direct URL view without becoming a separate navigation depth.
 
 ## Example dialogue
 
@@ -40,3 +45,4 @@ _Avoid_: 관련 엔티티, entity
 
 - "Codex" was used as both a code namespace and a user-facing service term - resolved: new product language should use **백과사전** or the exact in-game menu name instead.
 - "entity" was used as a generic label for cards, relics, potions, events, and similar items - resolved: use **관련 리소스** for cross-reference surfaces and direct names like card or relic elsewhere.
+- "상세 표면" was used for the modal/page shared detail UI - resolved: use **상세 보기**.
