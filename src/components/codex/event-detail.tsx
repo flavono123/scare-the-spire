@@ -44,9 +44,10 @@ import {
   FUTURE_OF_POTIONS_EVENT_ID,
   TINKER_TIME_EVENT_ID,
   getRelatedCardIdsForEvent,
+  getRelatedPotionIdsForEvent,
   getRelatedRelicIdsForEvent,
 } from "@/lib/codex-references";
-import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 
 const GAME_TEXT_SHADOW = "3px 2px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.75)";
 
@@ -169,9 +170,152 @@ const FUTURE_OF_POTIONS_RARITY_BY_OPTION_ID: Record<string, PotionRarityKo> = {
   POTION_UNCOMMON_SKILL: "고급",
 };
 
-type EventPreview =
-  | { kind: "card"; card: CodexCard }
-  | { kind: "potions"; potions: CodexPotion[]; rarity: PotionRarityKo };
+const ENDLESS_CONVEYOR_DISH_OPTION_IDS = [
+  "CAVIAR",
+  "CLAM_ROLL",
+  "FRIED_EEL",
+  "GOLDEN_FYSH",
+  "JELLY_LIVER",
+  "SEAPUNK_SALAD",
+  "SPICY_SNAPPY",
+  "SUSPICIOUS_CONDIMENT",
+] as const;
+
+const EVENT_OPTION_CARD_PREVIEW_IDS: Record<string, Record<string, readonly string[]>> = {
+  AMALGAMATOR: {
+    COMBINE_DEFENDS: ["ULTIMATE_DEFEND"],
+    COMBINE_STRIKES: ["ULTIMATE_STRIKE"],
+  },
+  BUGSLAYER: {
+    EXTERMINATION: ["EXTERMINATE"],
+    SQUASH: ["SQUASH"],
+  },
+  BYRDONIS_NEST: {
+    TAKE: ["BYRDONIS_EGG"],
+  },
+  CRYSTAL_SPHERE: {
+    PAYMENT_PLAN: ["DEBT"],
+  },
+  ENDLESS_CONVEYOR: {
+    SEAPUNK_SALAD: ["FEEDING_FRENZY"],
+  },
+  FIELD_OF_MAN_SIZED_HOLES: {
+    RESIST: ["NORMALITY"],
+  },
+  GRAVE_OF_THE_FORGOTTEN: {
+    CONFRONT: ["DECAY"],
+  },
+  LOST_WISP: {
+    CLAIM: ["DECAY"],
+  },
+  LUMINOUS_CHOIR: {
+    REACH_INTO_THE_FLESH: ["SPORE_MIND"],
+  },
+  PUNCH_OFF: {
+    NAB: ["INJURY"],
+  },
+  REFLECTIONS: {
+    SHATTER: ["BAD_LUCK"],
+  },
+  SPIRIT_GRAFTER: {
+    LET_IT_IN: ["METAMORPHOSIS"],
+  },
+  SUNKEN_TREASURY: {
+    SECOND_CHEST: ["GREED"],
+  },
+  THE_LANTERN_KEY: {
+    FIGHT: ["LANTERN_KEY"],
+    KEEP_THE_KEY: ["LANTERN_KEY"],
+  },
+  THE_LEGENDS_WERE_TRUE: {
+    NAB_THE_MAP: ["SPOILS_MAP"],
+  },
+  THIS_OR_THAT: {
+    ORNATE: ["CLUMSY"],
+  },
+  TRASH_HEAP: {
+    GRAB: [
+      "CALTROPS",
+      "CLASH",
+      "DISTRACTION",
+      "DUAL_WIELD",
+      "ENTRENCH",
+      "HELLO_WORLD",
+      "OUTMANEUVER",
+      "REBOUND",
+      "RIP_AND_TEAR",
+      "STACK",
+    ],
+  },
+  TRIAL: {
+    MERCHANT_GUILTY: ["REGRET"],
+    MERCHANT_INNOCENT: ["SHAME"],
+    NOBLE_INNOCENT: ["REGRET"],
+    NONDESCRIPT_GUILTY: ["DOUBT"],
+    NONDESCRIPT_INNOCENT: ["DOUBT"],
+  },
+  UNREST_SITE: {
+    REST: ["POOR_SLEEP"],
+  },
+  WELLSPRING: {
+    BATHE: ["GUILTY"],
+  },
+  WOOD_CARVINGS: {
+    BIRD: ["PECK"],
+    TORUS: ["TORIC_TOUGHNESS"],
+  },
+  ZEN_WEAVER: {
+    BREATHING_TECHNIQUES: ["ENLIGHTENMENT"],
+  },
+};
+
+const EVENT_OPTION_RELIC_PREVIEW_IDS: Record<string, Record<string, readonly string[]>> = {
+  COLORFUL_PHILOSOPHERS: {
+    EQUALITY: ["PRISMATIC_GEM"],
+  },
+  COLOSSAL_FLOWER: {
+    POLLINOUS_CORE: ["POLLINOUS_CORE"],
+  },
+  DROWNING_BEACON: {
+    CLIMB: ["FRESNEL_LENS"],
+  },
+  GRAVE_OF_THE_FORGOTTEN: {
+    ACCEPT: ["FORGOTTEN_SOUL"],
+  },
+  HUNGRY_FOR_MUSHROOMS: {
+    BIG_MUSHROOM: ["BIG_MUSHROOM"],
+    FRAGRANT_MUSHROOM: ["FRAGRANT_MUSHROOM"],
+  },
+  LOST_WISP: {
+    CLAIM: ["LOST_WISP"],
+  },
+  TEA_MASTER: {
+    BONE_TEA: ["BONE_TEA"],
+    EMBER_TEA: ["EMBER_TEA"],
+    TEA_OF_DISCOURTESY: ["TEA_OF_DISCOURTESY"],
+  },
+  TRASH_HEAP: {
+    DIVE_IN: ["DARKSTONE_PERIAPT", "DREAM_CATCHER", "HAND_DRILL", "MAW_BANK", "THE_BOOT"],
+  },
+  WELCOME_TO_WONGOS: {
+    MYSTERY_BOX: ["WONGOS_MYSTERY_TICKET"],
+  },
+};
+
+const EVENT_OPTION_POTION_PREVIEW_IDS: Record<string, Record<string, readonly string[]>> = {
+  DROWNING_BEACON: {
+    BOTTLE: ["GLOWWATER_POTION"],
+  },
+  POTION_COURIER: {
+    GRAB_POTIONS: ["FOUL_POTION"],
+  },
+};
+
+type EventPreview = {
+  cards?: CodexCard[];
+  potions?: CodexPotion[];
+  relics?: CodexRelic[];
+};
 
 interface TrialNpcOverlay {
   caseId: string;
@@ -581,9 +725,9 @@ const EVENT_ART_OVERLAYS: Record<string, EventArtOverlay[]> = {
   ],
   SELF_HELP_BOOK: [
     eventVfxSpriteOverlay({
-      className: "opacity-55 mix-blend-screen",
+      className: "opacity-45 mix-blend-screen",
       height: 536,
-      scale: 1.3,
+      scale: 0.68,
       src: `${EVENT_VFX_ROOT}/self_help_book_shine.webp`,
       width: 1764,
       x: 570.192,
@@ -762,6 +906,15 @@ function eventText(event: CodexEvent, ko: string, en: string): string {
   return isEnglishEvent(event) ? en : ko;
 }
 
+function dedupeById<T extends { id: string }>(items: readonly T[]): T[] {
+  const seen = new Set<string>();
+  return items.filter((item) => {
+    if (seen.has(item.id)) return false;
+    seen.add(item.id);
+    return true;
+  });
+}
+
 function applyBattlewornDummyOption(option: EventOption, event: CodexEvent): EventOption {
   const setting = BATTLEWORN_DUMMY_SETTINGS[option.id];
   if (!setting) return option;
@@ -817,6 +970,49 @@ function applyHungryForMushroomsDescription(option: EventOption, event: CodexEve
   return option;
 }
 
+function applySlipperyBridgeOption(option: EventOption, event: CodexEvent, holdCount: number): EventOption {
+  if (option.id === "OVERCOME") {
+    return {
+      ...option,
+      description: eventText(
+        event,
+        "피해를 [red]10[/red] 받습니다. [red]무작위 카드[/red]가 사라집니다.",
+        "Take [red]10[/red] damage. A [red]random card[/red] vanishes.",
+      ),
+    };
+  }
+  if (!option.id.startsWith("HOLD_ON")) return option;
+  const damage = 3 + holdCount;
+  return {
+    ...option,
+    description: option.description.replace(/\[red\](?:\d+\+?|\[[^\]]+\])\[\/red\]/, `[red]${damage}[/red]`),
+  };
+}
+
+function applyTeaMasterOption(option: EventOption, event: CodexEvent): EventOption {
+  if (option.id === "BONE_TEA") {
+    return {
+      ...option,
+      description: eventText(
+        event,
+        "[gold]골드[/gold]를 [red]50[/red] 지불합니다. 다음 전투 시작 시, 손에 있는 모든 카드를 [gold]강화[/gold]합니다.",
+        "Pay [red]50[/red] [gold]Gold[/gold]. At the start of your next combat, [gold]Upgrade[/gold] all cards in your hand.",
+      ),
+    };
+  }
+  if (option.id === "EMBER_TEA") {
+    return {
+      ...option,
+      description: eventText(
+        event,
+        "[gold]골드[/gold]를 [red]150[/red] 지불합니다. 다음 전투 시작 시, [gold]힘[/gold]을 [blue]2[/blue] 얻습니다.",
+        "Pay [red]150[/red] [gold]Gold[/gold]. At the start of your next combat, gain [blue]2[/blue] [gold]Strength[/gold].",
+      ),
+    };
+  }
+  return option;
+}
+
 function applyEventOptionDisplayFixups(
   event: CodexEvent,
   currentPageId: string | null,
@@ -825,7 +1021,40 @@ function applyEventOptionDisplayFixups(
   if (event.id === "BATTLEWORN_DUMMY") return applyBattlewornDummyOption(option, event);
   if (event.id === "HUNGRY_FOR_MUSHROOMS") return applyHungryForMushroomsDescription(option, event);
   if (event.id === "TABLET_OF_TRUTH") return applyTabletOfTruthCost(option, currentPageId, event);
+  if (event.id === "TEA_MASTER") return applyTeaMasterOption(option, event);
   return option;
+}
+
+function getOptionLabel(
+  event: CodexEvent,
+  pages: readonly EventPage[],
+  optionId: string | null | undefined,
+): string | null {
+  if (!optionId) return null;
+  for (const option of event.options ?? []) {
+    if (option.id === optionId) return option.title;
+  }
+  for (const page of pages) {
+    for (const option of page.options ?? []) {
+      if (option.id === optionId) return option.title;
+    }
+  }
+  return null;
+}
+
+function applyEventDescriptionFixups(
+  event: CodexEvent,
+  currentPageId: string | null,
+  description: string | null | undefined,
+  currentEntry: NavEntry | null,
+  pages: readonly EventPage[],
+): string | null | undefined {
+  if (!description) return description;
+  if (event.id === "ENDLESS_CONVEYOR" && currentPageId === "GRAB_SOMETHING_OFF_THE_BELT") {
+    const title = getOptionLabel(event, pages, currentEntry?.optionId);
+    if (title) return description.replace(/\[gold\]Last Dish Title\[\/gold\]/g, `[gold]${title}[/gold]`);
+  }
+  return description;
 }
 
 function buildTrialChoiceOptions(pageMap: Map<string, EventPage>): EventOption[] {
@@ -866,6 +1095,12 @@ function resolveEventOptionPage(
   }
   if (eventId === "TRIAL" && optionId === "ACCEPT") {
     return TRIAL_CHOICES_PAGE_ID;
+  }
+  if (
+    eventId === "ENDLESS_CONVEYOR" &&
+    ENDLESS_CONVEYOR_DISH_OPTION_IDS.includes(optionId as typeof ENDLESS_CONVEYOR_DISH_OPTION_IDS[number])
+  ) {
+    return pageMap.has("GRAB_SOMETHING_OFF_THE_BELT") ? "GRAB_SOMETHING_OFF_THE_BELT" : null;
   }
   if (eventId === "TRIAL") {
     const [caseId, verdictId] = optionId.split("_");
@@ -950,6 +1185,7 @@ function resolveSequencePage(
 
 // --- Interactive event content viewer (game-like flow) ---
 export function EventContentViewer({
+  cards = [],
   event,
   gameUi,
   madScienceBaseCard,
@@ -957,7 +1193,9 @@ export function EventContentViewer({
   onPreviewChange,
   onTrialNpcChange,
   potions,
+  relics = [],
 }: {
+  cards?: CodexCard[];
   event: CodexEvent;
   gameUi: CodexGameUiLabels;
   madScienceBaseCard?: CodexCard | null;
@@ -965,6 +1203,7 @@ export function EventContentViewer({
   onPreviewChange?: (preview: EventPreview | null) => void;
   onTrialNpcChange?: (overlay: TrialNpcOverlay | null) => void;
   potions?: CodexPotion[];
+  relics?: CodexRelic[];
 }) {
   const [history, setHistory] = useState<NavEntry[]>([]);
   const pages = useMemo(() => event.pages ?? [], [event.pages]);
@@ -978,17 +1217,26 @@ export function EventContentViewer({
   const currentPageId = currentEntry?.pageId ?? null;
   const currentPage = currentPageId ? pageMap.get(currentPageId) ?? null : null;
 
-  const description = event.id === "TRIAL" && currentPageId === TRIAL_CHOICES_PAGE_ID
+  const baseDescription = event.id === "TRIAL" && currentPageId === TRIAL_CHOICES_PAGE_ID
     ? null
     : currentPage?.description ?? event.description;
+  const description = applyEventDescriptionFixups(event, currentPageId, baseDescription, currentEntry, pages);
 
   const rawOptions = useMemo(() => {
+    if (event.id === "ENDLESS_CONVEYOR") {
+      const dishOptions = (allPage?.options ?? []).filter((option) => option.id !== "LOCKED");
+      if (!currentPageId) return [...dishOptions, ...(event.options ?? [])];
+      if (currentPageId === "GRAB_SOMETHING_OFF_THE_BELT") {
+        const page = pageMap.get(currentPageId);
+        return [...dishOptions, ...(page?.options ?? [])];
+      }
+    }
     if (!currentPageId) return event.options ?? [];
     const page = pageMap.get(currentPageId);
     if (page?.options && page.options.length > 0) return page.options;
     if (allPage?.options && allPage.options.length > 0) return allPage.options;
     return [];
-  }, [currentPageId, pageMap, event.options, allPage]);
+  }, [currentPageId, pageMap, event.id, event.options, allPage]);
 
   const trialChoiceOptions = useMemo(() => {
     if (event.id !== "TRIAL" || currentPageId !== TRIAL_CHOICES_PAGE_ID) return [];
@@ -1032,6 +1280,22 @@ export function EventContentViewer({
         .map((option) => applyAbyssalBathsDamage(option, nextDamage));
     }
 
+    if (event.id === "SLIPPERY_BRIDGE") {
+      const holdCount = history.filter((entry) => entry.optionId.startsWith("HOLD_ON")).length;
+      const overcomeOption = event.options?.find((option) => option.id === "OVERCOME") ?? null;
+      const mergedOptions = currentPageId?.startsWith("HOLD_ON") && overcomeOption
+        ? [overcomeOption, ...rawOptions]
+        : rawOptions;
+      return mergedOptions.map((option) => applySlipperyBridgeOption(option, event, holdCount));
+    }
+
+    if (event.id === "SELF_HELP_BOOK") {
+      const hasReadOption = rawOptions.some((option) => option.id.startsWith("READ_") && !option.id.endsWith("_LOCKED"));
+      return rawOptions
+        .filter((option) => !(hasReadOption && option.id === "NO_OPTIONS"))
+        .map((option) => applyEventOptionDisplayFixups(event, currentPageId, option));
+    }
+
     return rawOptions.map((option) => applyEventOptionDisplayFixups(event, currentPageId, option));
   }, [currentEntry, currentPageId, event, history, rawOptions, trialChoiceOptions]);
 
@@ -1053,54 +1317,80 @@ export function EventContentViewer({
 
   const previewByOptionId = useMemo(() => {
     const previews = new Map<string, EventPreview>();
-
-    if (event.id === "THE_FUTURE_OF_POTIONS" && potions && potions.length > 0) {
-      const potionsByRarity = new Map<PotionRarityKo, CodexPotion[]>();
-      for (const potion of potions) {
-        const list = potionsByRarity.get(potion.rarity) ?? [];
-        list.push(potion);
-        potionsByRarity.set(potion.rarity, list);
-      }
-      for (const list of potionsByRarity.values()) {
-        list.sort((a, b) => a.name.localeCompare(b.name, "ko"));
-      }
-      for (const option of options) {
-        const rarity = FUTURE_OF_POTIONS_RARITY_BY_OPTION_ID[option.id];
-        if (!rarity) continue;
-        previews.set(option.id, {
-          kind: "potions",
-          potions: potionsByRarity.get(rarity) ?? [],
-          rarity,
-        });
-      }
-      return previews;
+    const cardById = new Map(cards.map((card) => [card.id, card]));
+    const potionById = new Map((potions ?? []).map((potion) => [potion.id, potion]));
+    const relicById = new Map(relics.map((relic) => [relic.id, relic]));
+    const potionsByRarity = new Map<PotionRarityKo, CodexPotion[]>();
+    for (const potion of potions ?? []) {
+      const list = potionsByRarity.get(potion.rarity) ?? [];
+      list.push(potion);
+      potionsByRarity.set(potion.rarity, list);
     }
-
-    if (event.id !== "TINKER_TIME" || !madScienceBaseCard) return previews;
+    for (const list of potionsByRarity.values()) {
+      list.sort((a, b) => a.name.localeCompare(b.name, "ko"));
+    }
 
     if (currentPageId === "CHOOSE_RIDER") {
       const selectedType = getTinkerSelectedType(currentEntry);
-      if (!selectedType) return previews;
-      const typeKo = TINKER_CARD_TYPE_TO_KO[selectedType];
-      for (const option of options) {
-        if (!isTinkerRiderId(option.id)) continue;
-        previews.set(
-          option.id,
-          {
-            kind: "card",
-            card: getMadSciencePreviewCard(
-              madScienceBaseCard,
-              selectedType,
-              option.id,
-              gameUi.cardLibrary.types[typeKo] ?? typeKo,
-            ),
-          },
-        );
+      if (selectedType && madScienceBaseCard) {
+        const typeKo = TINKER_CARD_TYPE_TO_KO[selectedType];
+        for (const option of options) {
+          if (!isTinkerRiderId(option.id)) continue;
+          previews.set(
+            option.id,
+            {
+              cards: [getMadSciencePreviewCard(
+                madScienceBaseCard,
+                selectedType,
+                option.id,
+                gameUi.cardLibrary.types[typeKo] ?? typeKo,
+              )],
+            },
+          );
+        }
+      }
+    }
+
+    for (const option of options) {
+      const preview = previews.get(option.id) ?? {};
+      const cardIds = EVENT_OPTION_CARD_PREVIEW_IDS[event.id]?.[option.id] ?? [];
+      const relicIds = EVENT_OPTION_RELIC_PREVIEW_IDS[event.id]?.[option.id] ?? [];
+      const potionIds = EVENT_OPTION_POTION_PREVIEW_IDS[event.id]?.[option.id] ?? [];
+      const cardsForOption = cardIds
+        .map((cardId) => cardById.get(cardId))
+        .filter((card): card is CodexCard => Boolean(card));
+      const relicsForOption = relicIds
+        .map((relicId) => relicById.get(relicId))
+        .filter((relic): relic is CodexRelic => Boolean(relic));
+      const potionsForOption = potionIds
+        .map((potionId) => potionById.get(potionId))
+        .filter((potion): potion is CodexPotion => Boolean(potion));
+
+      if (event.id === "THE_FUTURE_OF_POTIONS") {
+        const rarity = FUTURE_OF_POTIONS_RARITY_BY_OPTION_ID[option.id];
+        if (rarity) potionsForOption.push(...(potionsByRarity.get(rarity) ?? []));
+      }
+      if (event.id === "POTION_COURIER" && option.id === "RANSACK") {
+        potionsForOption.push(...(potionsByRarity.get("고급") ?? []));
+      }
+      if (
+        (event.id === "ENDLESS_CONVEYOR" && option.id === "SUSPICIOUS_CONDIMENT") ||
+        (event.id === "THE_LEGENDS_WERE_TRUE" && option.id === "SLOWLY_FIND_AN_EXIT") ||
+        (event.id === "WELLSPRING" && option.id === "BOTTLE")
+      ) {
+        potionsForOption.push(...(potions ?? []).filter((potion) => potion.rarity !== "이벤트" && potion.rarity !== "토큰"));
+      }
+
+      if (cardsForOption.length > 0) preview.cards = [...(preview.cards ?? []), ...cardsForOption];
+      if (relicsForOption.length > 0) preview.relics = [...(preview.relics ?? []), ...relicsForOption];
+      if (potionsForOption.length > 0) preview.potions = dedupeById([...(preview.potions ?? []), ...potionsForOption]);
+      if (preview.cards?.length || preview.relics?.length || preview.potions?.length) {
+        previews.set(option.id, preview);
       }
     }
 
     return previews;
-  }, [currentEntry, currentPageId, event.id, gameUi.cardLibrary.types, madScienceBaseCard, options, potions]);
+  }, [cards, currentEntry, currentPageId, event.id, gameUi.cardLibrary.types, madScienceBaseCard, options, potions, relics]);
 
   const optionLabelMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -1123,6 +1413,12 @@ export function EventContentViewer({
       }
       if (event.id === "TRIAL" && optionId === "ACCEPT") {
         return true;
+      }
+      if (
+        event.id === "ENDLESS_CONVEYOR" &&
+        ENDLESS_CONVEYOR_DISH_OPTION_IDS.includes(optionId as typeof ENDLESS_CONVEYOR_DISH_OPTION_IDS[number])
+      ) {
+        return pageMap.has("GRAB_SOMETHING_OFF_THE_BELT");
       }
       if (event.id === "TRIAL") {
         const [caseId, verdictId] = optionId.split("_");
@@ -1295,24 +1591,87 @@ function EventPotionSetPreview({ potions }: { potions: CodexPotion[] }) {
   const columns = Math.min(5, Math.max(1, Math.ceil(Math.sqrt(potions.length))));
 
   return (
+    <div className="drop-shadow-[0_18px_30px_rgba(0,0,0,0.75)]">
+      <div
+        className="grid max-w-[320px] gap-2"
+        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+      >
+        {potions.map((potion) => (
+          <div
+            key={potion.id}
+            className="relative flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14"
+          >
+            <Image
+              src={potion.imageUrl}
+              alt={potion.name}
+              width={56}
+              height={56}
+              className="h-11 w-11 object-contain sm:h-12 sm:w-12"
+              style={{
+                filter: `${characterOutlineFilter(potion.pool) ?? "drop-shadow(0 3px 5px rgba(0,0,0,0.65))"} drop-shadow(0 0 12px rgba(236,254,255,0.45))`,
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EventRelicSetPreview({ relics }: { relics: CodexRelic[] }) {
+  const columns = Math.min(5, Math.max(1, Math.ceil(Math.sqrt(relics.length))));
+
+  return (
+    <div className="drop-shadow-[0_18px_30px_rgba(0,0,0,0.75)]">
+      <div
+        className="grid max-w-[320px] gap-2"
+        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+      >
+        {relics.map((relic) => (
+          <div
+            key={relic.id}
+            className="relative flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14"
+          >
+            <Image
+              src={relic.imageUrl}
+              alt={relic.name}
+              width={56}
+              height={56}
+              className="h-11 w-11 object-contain sm:h-12 sm:w-12"
+              style={{
+                filter: `${characterOutlineFilter(relic.pool) ?? "drop-shadow(0 3px 5px rgba(0,0,0,0.65))"} drop-shadow(0 0 12px rgba(255,232,154,0.42))`,
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EventCardSetPreview({
+  cards,
+  serviceLocale,
+}: {
+  cards: CodexCard[];
+  serviceLocale: ServiceLocale;
+}) {
+  const columns = cards.length >= 4 ? 4 : Math.max(1, cards.length);
+
+  return (
     <div
-      className="grid max-w-[320px] gap-2 drop-shadow-[0_18px_30px_rgba(0,0,0,0.75)]"
+      className="grid max-w-[560px] gap-2 drop-shadow-[0_22px_40px_rgba(0,0,0,0.70)]"
       style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
     >
-      {potions.map((potion) => (
-        <div
-          key={potion.id}
-          className="relative flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14"
-        >
-          <Image
-            src={potion.imageUrl}
-            alt={potion.name}
-            width={56}
-            height={56}
-            className="h-11 w-11 object-contain sm:h-12 sm:w-12"
-            style={{
-              filter: `${characterOutlineFilter(potion.pool) ?? "drop-shadow(0 3px 5px rgba(0,0,0,0.65))"} drop-shadow(0 0 12px rgba(236,254,255,0.45))`,
-            }}
+      {cards.map((card) => (
+        <div key={card.id} className="w-[104px] sm:w-[118px]">
+          <CardTile
+            card={card}
+            showUpgrade={false}
+            showBeta={false}
+            width={118}
+            interactive={false}
+            serviceLocale={serviceLocale}
           />
         </div>
       ))}
@@ -1425,20 +1784,13 @@ function EventPreviewOverlay({
 }) {
   return (
     <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 sm:left-[27%]">
-      {preview.kind === "card" ? (
-        <div className="w-[150px] drop-shadow-[0_22px_40px_rgba(0,0,0,0.70)] sm:w-[158px]">
-          <CardTile
-            card={preview.card}
-            showUpgrade={false}
-            showBeta={false}
-            width={158}
-            interactive={false}
-            serviceLocale={serviceLocale}
-          />
-        </div>
-      ) : (
-        <EventPotionSetPreview potions={preview.potions} />
-      )}
+      <div className="flex max-h-[78%] max-w-[92vw] flex-col items-center justify-center gap-3">
+        {preview.cards?.length ? (
+          <EventCardSetPreview cards={preview.cards} serviceLocale={serviceLocale} />
+        ) : null}
+        {preview.relics?.length ? <EventRelicSetPreview relics={preview.relics} /> : null}
+        {preview.potions?.length ? <EventPotionSetPreview potions={preview.potions} /> : null}
+      </div>
     </div>
   );
 }
@@ -1517,9 +1869,19 @@ export function EventDetail({
     .map((relicId) => relicById.get(relicId))
     .filter((relic): relic is CodexRelic => Boolean(relic))
     .map(relicToReferenceTarget);
-  const relatedPotionTargets = event.id === FUTURE_OF_POTIONS_EVENT_ID && potions
-    ? potions.map(potionToReferenceTarget)
-    : [];
+  const potionById = new Map((potions ?? []).map((potion) => [potion.id, potion]));
+  const relatedPotionBase = getRelatedPotionIdsForEvent(event.id)
+    .map((potionId) => potionById.get(potionId))
+    .filter((potion): potion is CodexPotion => Boolean(potion));
+  const relatedPotionPool = event.id === FUTURE_OF_POTIONS_EVENT_ID && potions
+    ? potions
+    : event.id === "POTION_COURIER" && potions
+      ? [
+          ...relatedPotionBase,
+          ...potions.filter((potion) => potion.rarity === "고급"),
+        ]
+      : relatedPotionBase;
+  const relatedPotionTargets = dedupeById(relatedPotionPool).map(potionToReferenceTarget);
 
   return (
     <div className={rootClassName}>
@@ -1598,6 +1960,7 @@ export function EventDetail({
                   {event.name}
                 </h1>
                 <EventContentViewer
+                  cards={cards}
                   event={event}
                   gameUi={gameUi}
                   madScienceBaseCard={madScienceBaseCard}
@@ -1605,6 +1968,7 @@ export function EventDetail({
                   onPreviewChange={setPreview}
                   onTrialNpcChange={setTrialNpcOverlay}
                   potions={potions}
+                  relics={relics}
                 />
               </div>
             </div>
@@ -1612,22 +1976,13 @@ export function EventDetail({
         </div>
       </section>
 
-      <EntityReferenceLinks
-        kind="card"
+      <EntityReferenceGroupLinks
+        groups={[
+          { kind: "card", targets: relatedCardTargets },
+          { kind: "relic", targets: relatedRelicTargets },
+          { kind: "potion", targets: relatedPotionTargets },
+        ]}
         serviceLocale={serviceLocale}
-        targets={relatedCardTargets}
-      />
-
-      <EntityReferenceLinks
-        kind="relic"
-        serviceLocale={serviceLocale}
-        targets={relatedRelicTargets}
-      />
-
-      <EntityReferenceLinks
-        kind="potion"
-        serviceLocale={serviceLocale}
-        targets={relatedPotionTargets}
       />
 
       <aside className="rounded-xl border border-white/10 bg-white/[0.03] p-4">

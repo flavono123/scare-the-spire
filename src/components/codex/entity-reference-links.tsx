@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 
-type CodexReferenceKind = "card" | "event" | "potion" | "relic";
+export type CodexReferenceKind = "card" | "event" | "potion" | "relic";
 
 export interface CodexReferenceTarget {
   id: string;
@@ -19,6 +19,17 @@ interface EntityReferenceLinksProps {
   kind: CodexReferenceKind;
   serviceLocale: ServiceLocale;
   targets: readonly CodexReferenceTarget[];
+}
+
+export interface CodexReferenceGroup {
+  kind: CodexReferenceKind;
+  targets: readonly CodexReferenceTarget[];
+}
+
+interface EntityReferenceGroupLinksProps {
+  children?: ReactNode;
+  groups: readonly CodexReferenceGroup[];
+  serviceLocale: ServiceLocale;
 }
 
 const REFERENCE_KIND_CONFIG: Record<CodexReferenceKind, { icon: string; label: string }> = {
@@ -51,29 +62,79 @@ export function EntityReferenceLinks({
 
   return (
     <section className="w-full rounded-lg border border-white/10 bg-white/[0.04] p-4">
-      <div className="mb-3 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm font-bold text-gray-300">
-        <Image
-          src={config.icon}
-          alt=""
-          width={22}
-          height={22}
-          className="h-5 w-5 object-contain"
-        />
-        <span>{config.label}:</span>
-        {targets.map((target, index) => (
-          <span key={target.id} className="inline-flex items-center gap-1">
-            {index > 0 ? <span className="text-gray-500">,</span> : null}
-            <EntityPreview
-              entity={toPreviewEntity(target, kind, serviceLocale)}
-              preferEntityLocaleLabel={false}
-            >
-              {target.title}
-            </EntityPreview>
-          </span>
+      <ReferenceLine
+        config={config}
+        kind={kind}
+        serviceLocale={serviceLocale}
+        targets={targets}
+        withBottomMargin={Boolean(children)}
+      />
+      {children}
+    </section>
+  );
+}
+
+export function EntityReferenceGroupLinks({
+  children,
+  groups,
+  serviceLocale,
+}: EntityReferenceGroupLinksProps) {
+  const visibleGroups = groups.filter((group) => group.targets.length > 0);
+  if (visibleGroups.length === 0) return null;
+
+  return (
+    <section className="w-full rounded-lg border border-white/10 bg-white/[0.04] p-4">
+      <div className="space-y-2.5">
+        {visibleGroups.map((group) => (
+          <ReferenceLine
+            key={group.kind}
+            config={REFERENCE_KIND_CONFIG[group.kind]}
+            kind={group.kind}
+            serviceLocale={serviceLocale}
+            targets={group.targets}
+          />
         ))}
       </div>
       {children}
     </section>
+  );
+}
+
+function ReferenceLine({
+  config,
+  kind,
+  serviceLocale,
+  targets,
+  withBottomMargin = false,
+}: {
+  config: { icon: string; label: string };
+  kind: CodexReferenceKind;
+  serviceLocale: ServiceLocale;
+  targets: readonly CodexReferenceTarget[];
+  withBottomMargin?: boolean;
+}) {
+  return (
+    <div className={`flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm font-bold text-gray-300 ${withBottomMargin ? "mb-3" : ""}`}>
+      <Image
+        src={config.icon}
+        alt=""
+        width={22}
+        height={22}
+        className="h-5 w-5 object-contain"
+      />
+      <span>{config.label}:</span>
+      {targets.map((target, index) => (
+        <span key={target.id} className="inline-flex items-center gap-1">
+          {index > 0 ? <span className="text-gray-500">,</span> : null}
+          <EntityPreview
+            entity={toPreviewEntity(target, kind, serviceLocale)}
+            preferEntityLocaleLabel={false}
+          >
+            {target.title}
+          </EntityPreview>
+        </span>
+      ))}
+    </div>
   );
 }
 
