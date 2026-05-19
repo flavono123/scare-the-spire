@@ -246,6 +246,7 @@ export const EVENT_RELATED_CARD_IDS = {
   BUGSLAYER: ["EXTERMINATE", "SQUASH"],
   BYRDONIS_NEST: ["BYRDONIS_EGG"],
   CRYSTAL_SPHERE: ["DEBT"],
+  ENDLESS_CONVEYOR: ["FEEDING_FRENZY"],
   FIELD_OF_MAN_SIZED_HOLES: ["NORMALITY"],
   GRAVE_OF_THE_FORGOTTEN: ["DECAY"],
   LOST_WISP: ["DECAY"],
@@ -253,6 +254,9 @@ export const EVENT_RELATED_CARD_IDS = {
   PUNCH_OFF: ["INJURY"],
   REFLECTIONS: ["BAD_LUCK"],
   SUNKEN_TREASURY: ["GREED"],
+  SPIRIT_GRAFTER: ["METAMORPHOSIS"],
+  THE_LANTERN_KEY: ["LANTERN_KEY"],
+  THE_LEGENDS_WERE_TRUE: ["SPOILS_MAP"],
   THIS_OR_THAT: ["CLUMSY"],
   TRASH_HEAP: [
     "CALTROPS",
@@ -270,9 +274,11 @@ export const EVENT_RELATED_CARD_IDS = {
   UNREST_SITE: ["POOR_SLEEP"],
   WELLSPRING: ["GUILTY"],
   WOOD_CARVINGS: ["PECK", "TORIC_TOUGHNESS"],
+  ZEN_WEAVER: ["ENLIGHTENMENT"],
 } as const satisfies Record<string, readonly string[]>;
 
 export const EVENT_RELATED_RELIC_IDS = {
+  COLORFUL_PHILOSOPHERS: ["PRISMATIC_GEM"],
   COLOSSAL_FLOWER: ["POLLINOUS_CORE"],
   DOLL_ROOM: ["DAUGHTER_OF_THE_WIND", "MR_STRUGGLES", "BING_BONG"],
   DROWNING_BEACON: ["FRESNEL_LENS"],
@@ -300,6 +306,11 @@ export const EVENT_RELATED_RELIC_IDS = {
   WELCOME_TO_WONGOS: ["WONGO_CUSTOMER_APPRECIATION_BADGE", "WONGOS_MYSTERY_TICKET"],
 } as const satisfies Record<string, readonly string[]>;
 
+export const EVENT_RELATED_POTION_IDS = {
+  DROWNING_BEACON: ["GLOWWATER_POTION"],
+  POTION_COURIER: ["FOUL_POTION"],
+} as const satisfies Record<string, readonly string[]>;
+
 export function getRelatedCardIdsForEvent(eventId: string): readonly string[] {
   return (EVENT_RELATED_CARD_IDS as Record<string, readonly string[]>)[eventId] ?? [];
 }
@@ -308,12 +319,20 @@ export function getRelatedRelicIdsForEvent(eventId: string): readonly string[] {
   return (EVENT_RELATED_RELIC_IDS as Record<string, readonly string[]>)[eventId] ?? [];
 }
 
+export function getRelatedPotionIdsForEvent(eventId: string): readonly string[] {
+  return (EVENT_RELATED_POTION_IDS as Record<string, readonly string[]>)[eventId] ?? [];
+}
+
 export function getRelatedEventIdsForCard(cardId: string): readonly string[] {
   return invertEventRelations(EVENT_RELATED_CARD_IDS, cardId);
 }
 
 export function getRelatedEventIdsForRelic(relicId: string): readonly string[] {
   return invertEventRelations(EVENT_RELATED_RELIC_IDS, relicId);
+}
+
+export function getRelatedEventIdsForPotion(potionId: string): readonly string[] {
+  return invertEventRelations(EVENT_RELATED_POTION_IDS, potionId);
 }
 
 function invertEventRelations(

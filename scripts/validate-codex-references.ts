@@ -12,6 +12,7 @@ import fs from "fs";
 import path from "path";
 import {
   EVENT_RELATED_CARD_IDS,
+  EVENT_RELATED_POTION_IDS,
   EVENT_RELATED_RELIC_IDS,
 } from "../src/lib/codex-references";
 
@@ -81,6 +82,7 @@ function validateRelationMap({
 function main(): void {
   const eventIds = idsFrom("data/sts2/kor/events.json");
   const cardIds = idsFrom("data/sts2/kor/cards.json");
+  const potionIds = idsFrom("data/sts2/kor/potions.json");
   const relicIds = idsFrom("data/sts2/kor/relics.json");
 
   let errors = 0;
@@ -97,6 +99,13 @@ function main(): void {
     eventIds,
     map: EVENT_RELATED_RELIC_IDS,
     mapName: "EVENT_RELATED_RELIC_IDS",
+  });
+  errors += validateRelationMap({
+    entityIds: potionIds,
+    entityKind: "potion",
+    eventIds,
+    map: EVENT_RELATED_POTION_IDS,
+    mapName: "EVENT_RELATED_POTION_IDS",
   });
 
   if (errors > 0) {
