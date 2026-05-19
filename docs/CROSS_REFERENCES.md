@@ -53,14 +53,17 @@
 |----|------|------|
 | `EVENT_RELATED_CARD_IDS` | Event → Card | 이벤트가 고정 카드, 저주 카드, 또는 코드에 박힌 유한 카드 풀을 생성/획득시키는 경우 |
 | `EVENT_RELATED_RELIC_IDS` | Event → Relic | 이벤트가 고정 유물, 또는 코드에 박힌 유한 유물 풀을 획득시키는 경우 |
+| `EVENT_RELATED_POTION_IDS` | Event → Potion | 이벤트가 고정 포션을 생성/획득시키는 경우 |
 | `getRelatedEventIdsForCard(cardId)` | Card → Event | `EVENT_RELATED_CARD_IDS`의 reverse index |
 | `getRelatedEventIdsForRelic(relicId)` | Relic → Event | `EVENT_RELATED_RELIC_IDS`의 reverse index |
+| `getRelatedEventIdsForPotion(potionId)` | Potion → Event | `EVENT_RELATED_POTION_IDS`의 reverse index |
 
 포함 기준:
 
 - `ModelDb.Card<T>()`, `CardPileCmd.Add*<T>()`, `CardCmd.TransformTo<T>()`,
   `CardPileCmd.AddCurseToDeck<T>()`처럼 코드에서 대상 카드가 명시되는 경우.
 - `RelicCmd.Obtain<T>()`, `ModelDb.Relic<T>()`처럼 코드에서 대상 유물이 명시되는 경우.
+- `PotionFactory.Create<T>()`, 포션 선택지 코드처럼 대상 포션이 명시되는 경우.
 - `TrashHeap`, `FakeMerchant`처럼 `static` 배열로 가능한 보상 풀이 정확히 박혀 있는 경우.
 
 제외 기준:
@@ -73,14 +76,18 @@
 
 사람이 읽는 참조 목록:
 
-- 이벤트: 가라앉는 등대 - 유물: 프레넬 렌즈
+- 이벤트: 가라앉는 등대 - 유물: 프레넬 렌즈 / 포션: 발광수 포션
 - 이벤트: 가라앉은 보물 - 카드: 탐욕
 - 이벤트: 거대한 꽃 - 유물: 꽃가루 핵
 - 이벤트: 거울에 비치다 다치비 에울거 - 카드: 불운
+- 이벤트: 고요를 짜는 거미 - 카드: 계몽
 - 이벤트: 길 잃은 위습 - 카드: 부패 / 유물: 길 잃은 위습
 - 이벤트: 나무 조각 - 카드: 쪼기, 고리형 강인함
 - 이벤트: 난타전 - 카드: 상처
+- 이벤트: 다채로운 철학자들 - 유물: 프리즘 보석
 - 이벤트: 땜질 시간 - 카드: 괴짜 과학 계열
+- 이벤트: 랜턴 열쇠 - 카드: 랜턴 열쇠
+- 이벤트: 무한의 컨베이어 - 카드: 광란의 포식
 - 이벤트: 버섯이 먹고 싶어 - 유물: 커다란 버섯, 향기로운 버섯
 - 이벤트: 벌레 학살자 - 카드: 박멸, 짓누르기
 - 이벤트: 불안한 휴식 장소 - 카드: 수면 부족
@@ -98,11 +105,14 @@
 - 이벤트: 인형의 방 - 유물: 바람의 딸, 버둥 씨, 빙봉
 - 이벤트: 잊힌 자의 무덤 - 카드: 부패 / 유물: 잊힌 영혼
 - 이벤트: 재판 - 카드: 후회, 수치, 의심
+- 이벤트: 전설은 사실이었어 - 카드: 보물 지도
 - 이벤트: 전쟁사학자 레피 - 유물: 역사 강의서
+- 이벤트: 정령 접합자 - 카드: 탈바꿈
 - 이벤트: 차의 명인 - 유물: 뼈다귀 차, 잉걸불 차, 무례함의 차
 - 이벤트: 치즈로 가득한 방 - 유물: 엄선된 치즈
 - 이벤트: 침몰한 조각상 - 유물: 돌 검
-- 이벤트: 포션의 미래? - 포션: 전체 포션 / 카드 결과군: 강화된 일반 공격, 강화된 일반 스킬, 강화된 고급 공격, 강화된 고급 스킬, 강화된 고급 파워, 강화된 희귀 공격, 강화된 희귀 스킬, 강화된 희귀 파워
+- 이벤트: 포션 배달원 - 포션: 역겨운 포션, 고급 포션 전체(뒤져본다)
+- 이벤트: 포션의 미래? - 카드 결과군: 강화된 일반/고급/희귀 공격·스킬·파워 / 포션: 전체 포션
 
 현재 카드 관계:
 
@@ -112,24 +122,30 @@
 | `BUGSLAYER` | `EXTERMINATE`, `SQUASH` |
 | `BYRDONIS_NEST` | `BYRDONIS_EGG` |
 | `CRYSTAL_SPHERE` | `DEBT` |
+| `ENDLESS_CONVEYOR` | `FEEDING_FRENZY` |
 | `FIELD_OF_MAN_SIZED_HOLES` | `NORMALITY` |
 | `GRAVE_OF_THE_FORGOTTEN` | `DECAY` |
 | `LOST_WISP` | `DECAY` |
 | `LUMINOUS_CHOIR` | `SPORE_MIND` |
 | `PUNCH_OFF` | `INJURY` |
 | `REFLECTIONS` | `BAD_LUCK` |
+| `SPIRIT_GRAFTER` | `METAMORPHOSIS` |
 | `SUNKEN_TREASURY` | `GREED` |
+| `THE_LANTERN_KEY` | `LANTERN_KEY` |
+| `THE_LEGENDS_WERE_TRUE` | `SPOILS_MAP` |
 | `THIS_OR_THAT` | `CLUMSY` |
 | `TRASH_HEAP` | `CALTROPS`, `CLASH`, `DISTRACTION`, `DUAL_WIELD`, `ENTRENCH`, `HELLO_WORLD`, `OUTMANEUVER`, `REBOUND`, `RIP_AND_TEAR`, `STACK` |
 | `TRIAL` | `REGRET`, `SHAME`, `DOUBT` |
 | `UNREST_SITE` | `POOR_SLEEP` |
 | `WELLSPRING` | `GUILTY` |
 | `WOOD_CARVINGS` | `PECK`, `TORIC_TOUGHNESS` |
+| `ZEN_WEAVER` | `ENLIGHTENMENT` |
 
 현재 유물 관계:
 
 | Event ID | Relic IDs |
 |----------|-----------|
+| `COLORFUL_PHILOSOPHERS` | `PRISMATIC_GEM` |
 | `COLOSSAL_FLOWER` | `POLLINOUS_CORE` |
 | `DOLL_ROOM` | `DAUGHTER_OF_THE_WIND`, `MR_STRUGGLES`, `BING_BONG` |
 | `DROWNING_BEACON` | `FRESNEL_LENS` |
@@ -145,6 +161,13 @@
 | `WAR_HISTORIAN_REPY` | `HISTORY_COURSE` |
 | `WELCOME_TO_WONGOS` | `WONGO_CUSTOMER_APPRECIATION_BADGE`, `WONGOS_MYSTERY_TICKET` |
 
+현재 포션 관계:
+
+| Event ID | Potion IDs |
+|----------|------------|
+| `DROWNING_BEACON` | `GLOWWATER_POTION` |
+| `POTION_COURIER` | `FOUL_POTION` |
+
 특수 구현:
 
 - `TINKER_TIME`은 `EVENT_RELATED_CARD_IDS`에 직접 넣지 않는다.
@@ -154,6 +177,9 @@
   이벤트 상세는 `potions` 전체를 관련 포션으로 보여주고, 포션 상세는
   `FUTURE_OF_POTIONS_CHOICES` / `FUTURE_OF_POTIONS_OUTCOMES`로 해당 포션 희귀도에서
   가능한 카드 결과군을 보여준다.
+- `POTION_COURIER`의 `RANSACK`은 게임 코드에서 무작위 `고급` 포션을 생성한다.
+  따라서 explicit map에는 고정 생성 포션인 `FOUL_POTION`만 두고, 이벤트 상세 hover/관련 포션과
+  포션 상세 역링크에서는 현재 포션 데이터의 `rarity === "고급"` 전체를 동적으로 연결한다.
 
 새 타입 관계를 추가할 때의 절차:
 
@@ -180,7 +206,13 @@ pnpm build
   `BING_BONG`만 노출. `STORYBOOK`은 없어야 한다.
 - `/compendium/events/tablet_of_truth`: `HEFTY_TABLET` 관련 유물이 없어야 한다.
 - `/compendium/events/wood_carvings`: `관련 카드`에 `PECK`, `TORIC_TOUGHNESS`.
+- `/compendium/events/drowning_beacon`: `관련 포션`에 `GLOWWATER_POTION`.
+- `/compendium/events/potion_courier`: `관련 포션`에 `FOUL_POTION`과 `고급` 포션 전체가 보이고,
+  `RANSACK` 선택지 hover에도 같은 고급 포션 풀이 떠야 한다.
+- `/compendium/events/colossal_flower`: `POLLINOUS_CORE` 선택지 hover가 유물 glow 프리뷰를 띄워야 한다.
 - `/compendium/cards/peck`: `관련 이벤트`에 `WOOD_CARVINGS`.
+- `/compendium/cards/feeding_frenzy`: `관련 이벤트`에 `ENDLESS_CONVEYOR`.
+- `/compendium/potions/glowwater_potion`: `관련 이벤트`에 `DROWNING_BEACON`.
 - `/compendium/events/trial`: `관련 카드`에 `REGRET`, `SHAME`, `DOUBT`.
 - `/compendium/relics/bing_bong`: `관련 이벤트`에 `DOLL_ROOM`.
 
