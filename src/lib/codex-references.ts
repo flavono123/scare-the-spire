@@ -240,3 +240,88 @@ export function getFuturePotionOutcomeIdsForPotion(
 export function getFuturePotionChoiceById(id: string): FuturePotionChoice | null {
   return FUTURE_OF_POTIONS_CHOICES.find((choice) => choice.id === id) ?? null;
 }
+
+export const EVENT_RELATED_CARD_IDS = {
+  AMALGAMATOR: ["ULTIMATE_STRIKE", "ULTIMATE_DEFEND"],
+  BUGSLAYER: ["EXTERMINATE", "SQUASH"],
+  BYRDONIS_NEST: ["BYRDONIS_EGG"],
+  CRYSTAL_SPHERE: ["DEBT"],
+  FIELD_OF_MAN_SIZED_HOLES: ["NORMALITY"],
+  GRAVE_OF_THE_FORGOTTEN: ["DECAY"],
+  LOST_WISP: ["DECAY"],
+  LUMINOUS_CHOIR: ["SPORE_MIND"],
+  PUNCH_OFF: ["INJURY"],
+  REFLECTIONS: ["BAD_LUCK"],
+  SUNKEN_TREASURY: ["GREED"],
+  THIS_OR_THAT: ["CLUMSY"],
+  TRASH_HEAP: [
+    "CALTROPS",
+    "CLASH",
+    "DISTRACTION",
+    "DUAL_WIELD",
+    "ENTRENCH",
+    "HELLO_WORLD",
+    "OUTMANEUVER",
+    "REBOUND",
+    "RIP_AND_TEAR",
+    "STACK",
+  ],
+  TRIAL: ["REGRET", "SHAME", "DOUBT"],
+  UNREST_SITE: ["POOR_SLEEP"],
+  WELLSPRING: ["GUILTY"],
+  WOOD_CARVINGS: ["PECK", "TORIC_TOUGHNESS"],
+} as const satisfies Record<string, readonly string[]>;
+
+export const EVENT_RELATED_RELIC_IDS = {
+  COLOSSAL_FLOWER: ["POLLINOUS_CORE"],
+  DOLL_ROOM: ["DAUGHTER_OF_THE_WIND", "MR_STRUGGLES", "BING_BONG"],
+  DROWNING_BEACON: ["FRESNEL_LENS"],
+  FAKE_MERCHANT: [
+    "FAKE_ANCHOR",
+    "FAKE_BLOOD_VIAL",
+    "FAKE_HAPPY_FLOWER",
+    "FAKE_LEES_WAFFLE",
+    "FAKE_MANGO",
+    "FAKE_ORICHALCUM",
+    "FAKE_SNECKO_EYE",
+    "FAKE_STRIKE_DUMMY",
+    "FAKE_VENERABLE_TEA_SET",
+    "FAKE_MERCHANTS_RUG",
+  ],
+  GRAVE_OF_THE_FORGOTTEN: ["FORGOTTEN_SOUL"],
+  HUNGRY_FOR_MUSHROOMS: ["BIG_MUSHROOM", "FRAGRANT_MUSHROOM"],
+  LOST_WISP: ["LOST_WISP"],
+  ROOM_FULL_OF_CHEESE: ["CHOSEN_CHEESE"],
+  ROUND_TEA_PARTY: ["ROYAL_POISON"],
+  SUNKEN_STATUE: ["SWORD_OF_STONE"],
+  TEA_MASTER: ["BONE_TEA", "EMBER_TEA", "TEA_OF_DISCOURTESY"],
+  TRASH_HEAP: ["DARKSTONE_PERIAPT", "DREAM_CATCHER", "HAND_DRILL", "MAW_BANK", "THE_BOOT"],
+  WAR_HISTORIAN_REPY: ["HISTORY_COURSE"],
+  WELCOME_TO_WONGOS: ["WONGO_CUSTOMER_APPRECIATION_BADGE", "WONGOS_MYSTERY_TICKET"],
+} as const satisfies Record<string, readonly string[]>;
+
+export function getRelatedCardIdsForEvent(eventId: string): readonly string[] {
+  return EVENT_RELATED_CARD_IDS[eventId] ?? [];
+}
+
+export function getRelatedRelicIdsForEvent(eventId: string): readonly string[] {
+  return EVENT_RELATED_RELIC_IDS[eventId] ?? [];
+}
+
+export function getRelatedEventIdsForCard(cardId: string): readonly string[] {
+  return invertEventRelations(EVENT_RELATED_CARD_IDS, cardId);
+}
+
+export function getRelatedEventIdsForRelic(relicId: string): readonly string[] {
+  return invertEventRelations(EVENT_RELATED_RELIC_IDS, relicId);
+}
+
+function invertEventRelations(
+  relations: Record<string, readonly string[]>,
+  entityId: string,
+): string[] {
+  const normalizedEntityId = entityId.toUpperCase();
+  return Object.entries(relations)
+    .filter(([, ids]) => ids.some((id) => id.toUpperCase() === normalizedEntityId))
+    .map(([eventId]) => eventId);
+}
