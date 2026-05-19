@@ -46,6 +46,7 @@ const ABYSSAL_BATHS_BASE_DAMAGE = 3;
 const ABYSSAL_BATHS_HARD_LIMIT = 15;
 const TABLET_OF_TRUTH_MAX_HP_REMAINING_LABEL_KO = "현재 최대 체력 - 1";
 const TABLET_OF_TRUTH_MAX_HP_REMAINING_LABEL_EN = "current Max HP - 1";
+const TRIAL_CHOICES_PAGE_ID = "__TRIAL_CHOICES__";
 
 const BATTLEWORN_DUMMY_SETTINGS: Record<string, { hp: number; titleEn: string; titleKo: string }> = {
   SETTING_1: { hp: 75, titleEn: "75 HP", titleKo: "체력 75" },
@@ -60,7 +61,7 @@ const TABLET_OF_TRUTH_COST_BY_PAGE_ID: Record<string, number | "MAX_HP_MINUS_ONE
   DECIPHER_4: "MAX_HP_MINUS_ONE",
 };
 
-const TRIAL_CHOICE_GROUPS = [
+const TRIAL_CHOICE_CASES = [
   {
     id: "MERCHANT",
     imageUrl: "/images/sts2/events/trial_merchant.webp",
@@ -74,12 +75,6 @@ const TRIAL_CHOICE_GROUPS = [
     imageUrl: "/images/sts2/events/trial_nondescript.webp",
   },
 ] as const;
-
-interface TrialChoiceGroup {
-  id: string;
-  imageUrl: string;
-  options: EventOption[];
-}
 
 const FUTURE_OF_POTIONS_OPTIONS: EventOption[] = [
   {
@@ -292,18 +287,19 @@ function applyEventOptionDisplayFixups(
   return option;
 }
 
-function buildTrialChoiceGroups(pageMap: Map<string, EventPage>): TrialChoiceGroup[] {
-  return TRIAL_CHOICE_GROUPS.map((group) => {
-    const page = pageMap.get(group.id);
-    return {
-      id: group.id,
-      imageUrl: group.imageUrl,
-      options: (page?.options ?? []).map((option) => ({
-        ...option,
-        id: `${group.id}_${option.id}`,
-      })),
-    };
-  }).filter((group) => group.options.length > 0);
+function buildTrialChoiceOptions(pageMap: Map<string, EventPage>): EventOption[] {
+  return TRIAL_CHOICE_CASES.flatMap((trialCase) => {
+    const page = pageMap.get(trialCase.id);
+    return (page?.options ?? []).map((option) => ({
+      ...option,
+      id: `${trialCase.id}_${option.id}`,
+    }));
+  });
+}
+
+function trialChoiceBackgroundImageUrl(optionId: string): string | null {
+  const trialCase = TRIAL_CHOICE_CASES.find((entry) => optionId.startsWith(`${entry.id}_`));
+  return trialCase?.imageUrl ?? null;
 }
 
 function resolveEventOptionPage(
@@ -321,6 +317,9 @@ function resolveEventOptionPage(
   ) {
     return "CHOOSE_RIDER";
   }
+  if (eventId === "TRIAL" && optionId === "ACCEPT") {
+    return TRIAL_CHOICES_PAGE_ID;
+  }
   if (eventId === "TRIAL") {
     const [caseId, verdictId] = optionId.split("_");
     const resultPageId = `${caseId}_${verdictId}`;
@@ -331,16 +330,22 @@ function resolveEventOptionPage(
 
 // --- Option card (static) ---
 function OptionCard({
+  backgroundImageUrl,
   onPreviewChange,
   option,
   preview,
 }: {
+  backgroundImageUrl?: string | null;
   onPreviewChange?: (preview: EventPreview | null) => void;
   option: EventOption;
   preview?: EventPreview | null;
 }) {
   return (
-    <GameChoiceFrame preview={preview} onPreviewChange={onPreviewChange}>
+    <GameChoiceFrame
+      backgroundImageUrl={backgroundImageUrl}
+      preview={preview}
+      onPreviewChange={onPreviewChange}
+    >
       <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
         <RichText text={option.title} />
       </div>
@@ -418,7 +423,9 @@ export function EventContentViewer({
   const currentPageId = currentEntry?.pageId ?? null;
   const currentPage = currentPageId ? pageMap.get(currentPageId) ?? null : null;
 
-  const description = currentPage?.description ?? event.description;
+  const description = event.id === "TRIAL" && currentPageId === TRIAL_CHOICES_PAGE_ID
+    ? null
+    : currentPage?.description ?? event.description;
 
   const rawOptions = useMemo(() => {
     if (!currentPageId) return event.options ?? [];
@@ -428,14 +435,14 @@ export function EventContentViewer({
     return [];
   }, [currentPageId, pageMap, event.options, allPage]);
 
-  const trialChoiceGroups = useMemo(() => {
-    if (event.id !== "TRIAL" || (currentPageId && currentPageId !== "INITIAL")) return [];
-    return buildTrialChoiceGroups(pageMap);
+  const trialChoiceOptions = useMemo(() => {
+    if (event.id !== "TRIAL" || currentPageId !== TRIAL_CHOICES_PAGE_ID) return [];
+    return buildTrialChoiceOptions(pageMap);
   }, [currentPageId, event.id, pageMap]);
 
   const displayOptions = useMemo(() => {
-    if (trialChoiceGroups.length > 0) {
-      return trialChoiceGroups.flatMap((group) => group.options);
+    if (trialChoiceOptions.length > 0) {
+      return trialChoiceOptions;
     }
 
     if (event.id === "THE_FUTURE_OF_POTIONS" && (!currentPageId || currentPageId === "INITIAL")) {
@@ -471,7 +478,7 @@ export function EventContentViewer({
     }
 
     return rawOptions.map((option) => applyEventOptionDisplayFixups(event, currentPageId, option));
-  }, [currentEntry, currentPageId, event, history, rawOptions, trialChoiceGroups]);
+  }, [currentEntry, currentPageId, event, history, rawOptions, trialChoiceOptions]);
 
   const options = useMemo(
     () => displayOptions.filter((o) => !o.id.endsWith("_LOCKED") && o.title !== "잠김"),
@@ -548,6 +555,9 @@ export function EventContentViewer({
       ) {
         return true;
       }
+      if (event.id === "TRIAL" && optionId === "ACCEPT") {
+        return true;
+      }
       if (event.id === "TRIAL") {
         const [caseId, verdictId] = optionId.split("_");
         if (pageMap.has(`${caseId}_${verdictId}`)) return true;
@@ -595,10 +605,14 @@ export function EventContentViewer({
   const renderOption = (opt: EventOption) => {
     const navigable = hasPages && canNavigate(opt.id);
     const preview = previewByOptionId.get(opt.id) ?? null;
+    const backgroundImageUrl = event.id === "TRIAL"
+      ? trialChoiceBackgroundImageUrl(opt.id)
+      : null;
     if (!navigable) {
       return (
         <OptionCard
           key={opt.id}
+          backgroundImageUrl={backgroundImageUrl}
           option={opt}
           preview={preview}
           onPreviewChange={onPreviewChange}
@@ -608,6 +622,7 @@ export function EventContentViewer({
     return (
       <GameChoiceFrame
         key={opt.id}
+        backgroundImageUrl={backgroundImageUrl}
         onClick={() => navigateTo(opt.id)}
         preview={preview}
         onPreviewChange={onPreviewChange}
@@ -669,27 +684,7 @@ export function EventContentViewer({
       {/* Options */}
       {options.length > 0 && (
         <div className="mt-auto space-y-2.5 pt-5">
-          {trialChoiceGroups.length > 0
-            ? trialChoiceGroups.map((group) => (
-                <div
-                  key={group.id}
-                  className="relative overflow-hidden rounded-lg border border-cyan-200/15 bg-black/45 p-2 shadow-[0_10px_24px_rgba(0,0,0,0.45)]"
-                >
-                  <Image
-                    src={group.imageUrl}
-                    alt=""
-                    fill
-                    sizes="(max-width: 768px) 90vw, 520px"
-                    className="pointer-events-none object-cover object-[50%_22%] opacity-30"
-                    aria-hidden
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/10" />
-                  <div className="relative space-y-2.5">
-                    {group.options.map(renderOption)}
-                  </div>
-                </div>
-              ))
-            : options.map(renderOption)}
+          {options.map(renderOption)}
         </div>
       )}
 

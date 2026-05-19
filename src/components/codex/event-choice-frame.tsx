@@ -17,6 +17,7 @@ const GAME_CHOICE_GLOW_STYLE: CSSProperties = {
 
 interface GameChoiceFrameProps<TPreview> {
   active?: boolean;
+  backgroundImageUrl?: string | null;
   children: ReactNode;
   onClick?: () => void;
   onPreviewChange?: (preview: TPreview | null) => void;
@@ -25,6 +26,7 @@ interface GameChoiceFrameProps<TPreview> {
 
 export function GameChoiceFrame<TPreview = unknown>({
   active = false,
+  backgroundImageUrl = null,
   children,
   onClick,
   onPreviewChange,
@@ -52,6 +54,13 @@ export function GameChoiceFrame<TPreview = unknown>({
         style={GAME_CHOICE_FRAME_STYLE}
         aria-hidden
       />
+      {backgroundImageUrl && (
+        <span
+          className="pointer-events-none absolute bottom-[8px] left-[42px] right-[22px] top-[8px] rounded-sm bg-cover bg-center opacity-30 mix-blend-screen"
+          style={{ backgroundImage: `url('${backgroundImageUrl}')` }}
+          aria-hidden
+        />
+      )}
       <span
         className={`pointer-events-none absolute -bottom-0.5 left-[20px] right-[-2px] -top-0.5 mix-blend-screen blur-[1px] transition-opacity duration-150 group-hover:opacity-70 group-focus-visible:opacity-80 ${
           active ? "opacity-80" : "opacity-0"
