@@ -949,6 +949,15 @@ function sortPotionsForPreview(potions: readonly CodexPotion[]): CodexPotion[] {
   return [...potions].sort((a, b) => a.name.localeCompare(b.name, "ko"));
 }
 
+function sortSlipperyBridgeOptions(options: readonly EventOption[]): EventOption[] {
+  return [...options].sort((a, b) => {
+    const aHold = a.id.startsWith("HOLD_ON");
+    const bHold = b.id.startsWith("HOLD_ON");
+    if (aHold === bHold) return 0;
+    return aHold ? -1 : 1;
+  });
+}
+
 function applyBattlewornDummyOption(option: EventOption, event: CodexEvent): EventOption {
   const setting = BATTLEWORN_DUMMY_SETTINGS[option.id];
   if (!setting) return option;
@@ -1325,9 +1334,10 @@ export function EventContentViewer({
       const holdCount = history.filter((entry) => entry.optionId.startsWith("HOLD_ON")).length;
       const overcomeOption = event.options?.find((option) => option.id === "OVERCOME") ?? null;
       const mergedOptions = currentPageId?.startsWith("HOLD_ON") && overcomeOption
-        ? [overcomeOption, ...rawOptions]
+        ? [...rawOptions, overcomeOption]
         : rawOptions;
-      return mergedOptions.map((option) => applySlipperyBridgeOption(option, event, holdCount));
+      return sortSlipperyBridgeOptions(mergedOptions)
+        .map((option) => applySlipperyBridgeOption(option, event, holdCount));
     }
 
     if (event.id === "SELF_HELP_BOOK") {
