@@ -185,7 +185,7 @@
     },
     {
       "id": "crystalSphere.events.CRYSTAL.SPHERE.minigame.divinationsRemain",
-      "status": "candidate",
+      "status": "exclude",
       "category": "crystal-sphere",
       "sourceTable": "events",
       "sourceKey": "CRYSTAL_SPHERE.minigame.divinationsRemain",
