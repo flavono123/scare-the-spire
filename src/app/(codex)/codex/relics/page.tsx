@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexRelics, getCodexCharacters, getCodexAncients } from "@/lib/codex-data";
+import { getCodexAncients, getCodexCharacters, getCodexEvents, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
@@ -32,10 +32,11 @@ export default async function CodexRelicsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [relics, characters, ancients, patches, versionDiffs, meta, entities, gameUi] = await Promise.all([
+  const [relics, characters, ancients, events, patches, versionDiffs, meta, entities, gameUi] = await Promise.all([
     getCodexRelics({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getCodexAncients({ gameLocale }),
+    getCodexEvents({ gameLocale }),
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
@@ -59,6 +60,7 @@ export default async function CodexRelicsPage({
         patches={patches}
         versionDiffs={versionDiffs}
         entities={entities}
+        relatedEvents={events}
       />
     </Suspense>
   );

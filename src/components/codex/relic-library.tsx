@@ -14,6 +14,7 @@ import {
   CodexRelic,
   CodexCharacter,
   CodexAncient,
+  CodexEvent,
   RelicRarityKo,
   RelicPool,
   RelicFilterPool,
@@ -68,9 +69,10 @@ interface RelicLibraryProps {
   versionDiffs?: EntityVersionDiff[];
   /** All codex entities — enables rich cross-references in the detail modal. */
   entities?: EntityInfo[];
+  relatedEvents?: CodexEvent[];
 }
 
-export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters, ancients, versions, currentVersion, patches, versionDiffs, entities }: RelicLibraryProps) {
+export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters, ancients, versions, currentVersion, patches, versionDiffs, entities, relatedEvents = [] }: RelicLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<RelicPoolFilter>>(new Set());
@@ -459,7 +461,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <RelicDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} relic={selectedRelic} poolLabels={poolLabels} initialVariant={selectedVariantPool} initialShowBeta={showBeta} onClose={() => setSelectedRelic(null)} entities={entities} />
+            <RelicDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} relic={selectedRelic} poolLabels={poolLabels} initialVariant={selectedVariantPool} initialShowBeta={showBeta} onClose={() => setSelectedRelic(null)} entities={entities} relatedEvents={relatedEvents} />
           </div>
         </div>
       )}

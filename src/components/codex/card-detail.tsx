@@ -30,8 +30,10 @@ import {
   type TinkerRiderId,
 } from "@/lib/tinker-time";
 import {
+  TINKER_TIME_EVENT_ID,
   TINKER_TIME_EVENT_NAME_KO,
   TINKER_TIME_EVENT_PATH,
+  getRelatedEventIdsForCard,
 } from "@/lib/codex-references";
 import {
   canEnchantCard,
@@ -110,24 +112,34 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, relatedE
 
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
   const canShowUpgrade = hasCardUpgrade(previewCard);
-  const tinkerTimeEvent = relatedEvents.find((event) => event.id === "TINKER_TIME") ?? null;
-  const madScienceEventTargets = isMadScience
-    ? [{
-        id: "tinker-time",
-        href: TINKER_TIME_EVENT_PATH,
-        title: card.madScienceLabels?.eventTitle ?? TINKER_TIME_EVENT_NAME_KO,
-        entity: {
-          id: "TINKER_TIME",
-          nameEn: tinkerTimeEvent?.nameEn ?? "Tinker Time",
-          nameKo: card.madScienceLabels?.eventTitle ?? TINKER_TIME_EVENT_NAME_KO,
-          imageUrl: tinkerTimeEvent?.imageUrl ?? null,
-          href: TINKER_TIME_EVENT_PATH,
-          color: "event",
-          type: "event" as const,
-          eventData: tinkerTimeEvent ?? undefined,
-        },
-      }]
-    : [];
+  const relatedEventIds = [
+    ...getRelatedEventIdsForCard(card.id),
+    ...(isMadScience ? [TINKER_TIME_EVENT_ID] : []),
+  ].filter((eventId, index, eventIds) => eventIds.indexOf(eventId) === index);
+  const relatedEventTargets = relatedEventIds.map((eventId) => {
+    const relatedEvent = relatedEvents.find((event) => event.id === eventId) ?? null;
+    const href = eventId === TINKER_TIME_EVENT_ID
+      ? TINKER_TIME_EVENT_PATH
+      : `/compendium/events/${eventId.toLowerCase()}`;
+    const title = eventId === TINKER_TIME_EVENT_ID
+      ? card.madScienceLabels?.eventTitle ?? relatedEvent?.name ?? TINKER_TIME_EVENT_NAME_KO
+      : relatedEvent?.name ?? eventId;
+    return {
+      id: eventId,
+      href,
+      title,
+      entity: {
+        id: eventId,
+        nameEn: relatedEvent?.nameEn ?? title,
+        nameKo: title,
+        imageUrl: relatedEvent?.imageUrl ?? null,
+        href,
+        color: "event",
+        type: "event" as const,
+        eventData: relatedEvent ?? undefined,
+      },
+    };
+  });
 
   // 활성 인챈트 효과: amount 치환, 추가/제거 키워드, forced cost, stat modifier
   const activeShowAmount = activeEnchant ? shouldShowAmount(activeEnchant) : false;
@@ -289,36 +301,38 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, relatedE
         )}
       </div>
 
-      {isMadScience && (
+      {relatedEventTargets.length > 0 && (
         <EntityReferenceLinks
           kind="event"
           serviceLocale={serviceLocale}
-          targets={madScienceEventTargets}
+          targets={relatedEventTargets}
         >
-          <div className="space-y-2.5">
-            {madScienceRiderIds.map((riderId) => {
-              const active = effectiveMadScienceRider === riderId;
-              const description = replaceTinkerTemplateValues(
-                card.madScienceLabels?.riderChoiceDescriptions[riderId] ?? "",
-              );
-              return (
-                <GameChoiceFrame
-                  key={riderId}
-                  active={active}
-                  onClick={() => setMadScienceRider(riderId)}
-                >
-                  <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
-                    <RichText text={card.madScienceLabels?.riderChoiceLabels[riderId] ?? TINKER_RIDER_CHOICE_LABELS[riderId]} />
-                  </div>
-                  {description && (
-                    <div className="font-game-text text-[18px] leading-[1.08] text-[#fff6e2]">
-                      <RichText text={description} />
+          {isMadScience && (
+            <div className="space-y-2.5">
+              {madScienceRiderIds.map((riderId) => {
+                const active = effectiveMadScienceRider === riderId;
+                const description = replaceTinkerTemplateValues(
+                  card.madScienceLabels?.riderChoiceDescriptions[riderId] ?? "",
+                );
+                return (
+                  <GameChoiceFrame
+                    key={riderId}
+                    active={active}
+                    onClick={() => setMadScienceRider(riderId)}
+                  >
+                    <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
+                      <RichText text={card.madScienceLabels?.riderChoiceLabels[riderId] ?? TINKER_RIDER_CHOICE_LABELS[riderId]} />
                     </div>
-                  )}
-                </GameChoiceFrame>
-              );
-            })}
-          </div>
+                    {description && (
+                      <div className="font-game-text text-[18px] leading-[1.08] text-[#fff6e2]">
+                        <RichText text={description} />
+                      </div>
+                    )}
+                  </GameChoiceFrame>
+                );
+              })}
+            </div>
+          )}
         </EntityReferenceLinks>
       )}
 

@@ -1,6 +1,12 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexEvents, getCodexPotions, getMadScienceBaseCard } from "@/lib/codex-data";
+import {
+  getCodexCards,
+  getCodexEvents,
+  getCodexPotions,
+  getCodexRelics,
+  getMadScienceBaseCard,
+} from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
@@ -31,9 +37,11 @@ export default async function CodexEventsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [events, potions, madScienceBaseCard, patches, versionDiffs, meta, gameUi] = await Promise.all([
+  const [events, cards, potions, relics, madScienceBaseCard, patches, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexEvents({ gameLocale }),
+    getCodexCards({ gameLocale }),
     getCodexPotions({ gameLocale }),
+    getCodexRelics({ gameLocale }),
     getMadScienceBaseCard({ gameLocale }),
     getSTS2Patches(),
     getEntityVersionDiffs(),
@@ -49,9 +57,11 @@ export default async function CodexEventsPage({
         serviceLocale={serviceLocale}
         gameUi={gameUi}
         title={gameUi.eventsTitle}
+        cards={cards}
         events={events}
         madScienceBaseCard={madScienceBaseCard}
         potions={potions}
+        relics={relics}
         versions={versions}
         currentVersion={meta.version}
         patches={patches}

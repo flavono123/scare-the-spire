@@ -10,6 +10,7 @@ import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
+  CodexEvent,
   CodexRelic,
   RELIC_RARITY_COLORS,
   characterOutlineFilter,
@@ -20,7 +21,9 @@ import {
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
+import { EntityReferenceLinks } from "./entity-reference-links";
 import { RichDescription } from "./rich-description";
+import { getRelatedEventIdsForRelic } from "@/lib/codex-references";
 
 function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
@@ -44,11 +47,12 @@ interface RelicDetailProps {
   onClose?: () => void;
   /** Cross-reference entities — when provided, descriptions become rich. */
   entities?: EntityInfo[];
+  relatedEvents?: CodexEvent[];
 }
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
-export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities }: RelicDetailProps) {
+export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedEvents = [] }: RelicDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   // Don't link the relic to itself in its own description
   const excludeSelf = useMemo(
@@ -75,6 +79,26 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
 
   const rarityColor = RELIC_RARITY_COLORS[relic.rarity];
   const poolColor = relic.pool !== "shared" ? getCharacterColor(relic.pool) : undefined;
+  const relatedEventTargets = getRelatedEventIdsForRelic(relic.id).map((eventId) => {
+    const relatedEvent = relatedEvents.find((event) => event.id === eventId) ?? null;
+    const href = `/compendium/events/${eventId.toLowerCase()}`;
+    const title = relatedEvent?.name ?? eventId;
+    return {
+      id: eventId,
+      href,
+      title,
+      entity: {
+        id: eventId,
+        nameEn: relatedEvent?.nameEn ?? title,
+        nameKo: title,
+        imageUrl: relatedEvent?.imageUrl ?? null,
+        href,
+        color: "event",
+        type: "event" as const,
+        eventData: relatedEvent ?? undefined,
+      },
+    };
+  });
 
   return (
     <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-lg mx-auto">
@@ -214,6 +238,12 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
           )}
         </p>
       )}
+
+      <EntityReferenceLinks
+        kind="event"
+        serviceLocale={serviceLocale}
+        targets={relatedEventTargets}
+      />
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
         <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>

@@ -17,6 +17,7 @@ import {
   CodexCard,
   CodexEvent,
   CodexPotion,
+  CodexRelic,
   EventOption,
   EventPage,
   MonsterSpineAsset,
@@ -39,8 +40,13 @@ import {
   TINKER_CARD_TYPE_TO_KO,
   type TinkerCardType,
 } from "@/lib/tinker-time";
-import { TINKER_TIME_EVENT_ID } from "@/lib/codex-references";
-import { EntityReferenceLinks } from "./entity-reference-links";
+import {
+  FUTURE_OF_POTIONS_EVENT_ID,
+  TINKER_TIME_EVENT_ID,
+  getRelatedCardIdsForEvent,
+  getRelatedRelicIdsForEvent,
+} from "@/lib/codex-references";
+import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 
 const GAME_TEXT_SHADOW = "3px 2px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.75)";
 
@@ -1278,8 +1284,10 @@ interface EventDetailProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
   event: CodexEvent;
+  cards?: CodexCard[];
   madScienceBaseCard?: CodexCard | null;
   potions?: CodexPotion[];
+  relics?: CodexRelic[];
   onClose?: () => void;
 }
 
@@ -1439,8 +1447,10 @@ export function EventDetail({
   serviceLocale,
   gameUi,
   event,
+  cards = [],
   madScienceBaseCard,
   potions,
+  relics = [],
   onClose,
 }: EventDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -1479,6 +1489,36 @@ export function EventDetail({
           title: `${card.name}(${typeLabel})`,
         };
       })
+    : [];
+  const cardById = new Map(cards.map((card) => [card.id, card]));
+  const relicById = new Map(relics.map((relic) => [relic.id, relic]));
+  const relatedCardTargets = [
+    ...getRelatedCardIdsForEvent(event.id)
+      .map((cardId) => cardById.get(cardId))
+      .filter((card): card is CodexCard => Boolean(card))
+      .map(cardToReferenceTarget),
+    ...relatedMadScienceCards.map(({ card, href, id, title }) => ({
+      href,
+      id,
+      title,
+      entity: {
+        id,
+        nameEn: card.nameEn,
+        nameKo: title,
+        imageUrl: card.imageUrl,
+        href,
+        color: card.color,
+        type: "card" as const,
+        cardData: card,
+      },
+    })),
+  ];
+  const relatedRelicTargets = getRelatedRelicIdsForEvent(event.id)
+    .map((relicId) => relicById.get(relicId))
+    .filter((relic): relic is CodexRelic => Boolean(relic))
+    .map(relicToReferenceTarget);
+  const relatedPotionTargets = event.id === FUTURE_OF_POTIONS_EVENT_ID && potions
+    ? potions.map(potionToReferenceTarget)
     : [];
 
   return (
@@ -1575,21 +1615,19 @@ export function EventDetail({
       <EntityReferenceLinks
         kind="card"
         serviceLocale={serviceLocale}
-        targets={relatedMadScienceCards.map(({ card, href, id, title }) => ({
-          href,
-          id,
-          title,
-          entity: {
-            id,
-            nameEn: card.nameEn,
-            nameKo: title,
-            imageUrl: card.imageUrl,
-            href,
-            color: card.color,
-            type: "card",
-            cardData: card,
-          },
-        }))}
+        targets={relatedCardTargets}
+      />
+
+      <EntityReferenceLinks
+        kind="relic"
+        serviceLocale={serviceLocale}
+        targets={relatedRelicTargets}
+      />
+
+      <EntityReferenceLinks
+        kind="potion"
+        serviceLocale={serviceLocale}
+        targets={relatedPotionTargets}
       />
 
       <aside className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
@@ -1598,4 +1636,61 @@ export function EventDetail({
       </aside>
     </div>
   );
+}
+
+function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {
+  const href = `/compendium/cards/${card.id.toLowerCase()}`;
+  return {
+    href,
+    id: card.id,
+    title: card.name,
+    entity: {
+      id: card.id,
+      nameEn: card.nameEn,
+      nameKo: card.name,
+      imageUrl: card.imageUrl,
+      href,
+      color: card.color,
+      type: "card",
+      cardData: card,
+    },
+  };
+}
+
+function relicToReferenceTarget(relic: CodexRelic): CodexReferenceTarget {
+  const href = `/compendium/relics/${relic.id.toLowerCase()}`;
+  return {
+    href,
+    id: relic.id,
+    title: relic.name,
+    entity: {
+      id: relic.id,
+      nameEn: relic.nameEn,
+      nameKo: relic.name,
+      imageUrl: relic.imageUrl,
+      href,
+      color: relic.pool,
+      type: "relic",
+      relicData: relic,
+    },
+  };
+}
+
+function potionToReferenceTarget(potion: CodexPotion): CodexReferenceTarget {
+  const href = `/compendium/potions/${potion.id.toLowerCase()}`;
+  return {
+    href,
+    id: potion.id,
+    title: potion.name,
+    entity: {
+      id: potion.id,
+      nameEn: potion.nameEn,
+      nameKo: potion.name,
+      imageUrl: potion.imageUrl,
+      href,
+      color: potion.rarity,
+      type: "potion",
+      potionData: potion,
+    },
+  };
 }

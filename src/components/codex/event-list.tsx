@@ -14,6 +14,7 @@ import type {
   CodexCard,
   CodexEvent,
   CodexPotion,
+  CodexRelic,
   EventAct,
 } from "@/lib/codex-types";
 import {
@@ -124,9 +125,11 @@ interface EventListProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
   title: string;
+  cards?: CodexCard[];
   events: CodexEvent[];
   madScienceBaseCard?: CodexCard | null;
   potions?: CodexPotion[];
+  relics?: CodexRelic[];
   versions: string[];
   currentVersion: string;
   patches: STS2Patch[];
@@ -137,9 +140,11 @@ export function EventList({
   serviceLocale,
   gameUi,
   title,
+  cards,
   events,
   madScienceBaseCard,
   potions,
+  relics,
   versions,
   currentVersion,
   patches,
@@ -401,8 +406,10 @@ export function EventList({
               serviceLocale={serviceLocale}
               gameUi={gameUi}
               event={selectedEvent}
+              cards={cards}
               madScienceBaseCard={madScienceBaseCard}
               potions={potions}
+              relics={relics}
               onClose={() => setSelectedEvent(null)}
             />
           </div>
