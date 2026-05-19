@@ -56,10 +56,8 @@ const ANCIENT_TEXT_BG: Record<string, string> = {
 
 const ANCIENT_FLAME_SHEET = "/images/game-assets/card-misc/ancient_card_flame_sheet.png";
 const INFECTION_CARD_ID = "INFECTION";
-const INFECTION_BORDER_PATH =
-  "M36 17 C66 7 91 22 124 15 C160 6 190 21 224 13 C250 7 268 14 282 27 C284 72 277 118 284 165 C291 213 278 257 286 305 C293 347 279 382 264 405 C223 411 188 397 150 407 C108 419 78 399 36 407 C18 377 26 336 16 295 C5 252 22 213 15 171 C8 119 21 77 18 30 C23 24 28 20 36 17 Z";
-const INFECTION_INNER_BORDER_PATH =
-  "M42 23 C72 16 98 27 128 20 C163 13 191 27 223 19 C246 14 262 20 275 32 C275 77 269 119 276 164 C283 213 270 255 278 303 C284 341 271 374 257 396 C219 401 187 389 150 399 C110 409 81 390 43 398 C27 370 34 333 24 294 C14 253 30 214 23 173 C16 123 29 80 26 36 C31 30 36 26 42 23 Z";
+const INFECTION_OVERLAY_BASE = "/images/sts2/card-overlays/infection/base.webp";
+const INFECTION_OVERLAY_ANIMATED = "/images/sts2/card-overlays/infection/overlay.webp";
 
 const PORTRAIT_BORDER_ASSETS: Record<string, string> = {
   공격: "/images/game-assets/card-portraits/card_portrait_border_attack.png",
@@ -70,127 +68,35 @@ const PORTRAIT_BORDER_ASSETS: Record<string, string> = {
   퀘스트: "/images/game-assets/card-portraits/card_portrait_border_skill.png",
 };
 
-function InfectionCardBorderVfx() {
+function InfectionCardOverlay() {
   return (
-    <svg
+    <div
       aria-hidden="true"
-      className="sts2-infection-card-vfx absolute inset-0 z-[2] pointer-events-none overflow-visible"
-      focusable="false"
-      viewBox="0 0 300 422"
+      className="absolute inset-0 z-[3] pointer-events-none overflow-visible"
     >
-      <g className="sts2-infection-card-vfx__writhe">
-        <animateTransform
-          attributeName="transform"
-          dur="0.64s"
-          repeatCount="indefinite"
-          type="translate"
-          values="0 0; 1.05 -0.75; -0.72 0.95; 0.54 0.55; 0 0"
-        />
-        <path
-          className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__shadow"
-          d={INFECTION_BORDER_PATH}
-          fill="none"
-          pathLength="1000"
-          stroke="rgba(64, 58, 29, 0.74)"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="19"
-        />
-        <path
-          className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__base"
-          d={INFECTION_BORDER_PATH}
-          fill="none"
-          pathLength="1000"
-          stroke="rgba(210, 184, 91, 0.92)"
-          strokeDasharray="62 7 44 9 34 8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="15"
-        >
-          <animate
-            attributeName="stroke-dashoffset"
-            dur="6.8s"
-            repeatCount="indefinite"
-            values="0; -1000"
-          />
-        </path>
-        <path
-          className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__base sts2-infection-card-vfx__base--inner"
-          d={INFECTION_INNER_BORDER_PATH}
-          fill="none"
-          pathLength="1000"
-          stroke="rgba(236, 202, 117, 0.78)"
-          strokeDasharray="40 8 26 14 54 9"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="9"
-        >
-          <animate
-            attributeName="stroke-dashoffset"
-            dur="5.9s"
-            repeatCount="indefinite"
-            values="0; 1000"
-          />
-        </path>
-        <path
-          className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__crawler sts2-infection-card-vfx__crawler--a"
-          d={INFECTION_BORDER_PATH}
-          fill="none"
-          pathLength="1000"
-          stroke="rgba(244, 214, 137, 0.98)"
-          strokeDasharray="22 48 12 64 30 74"
-          strokeDashoffset="70"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="9"
-        >
-          <animate
-            attributeName="stroke-dashoffset"
-            dur="2.7s"
-            repeatCount="indefinite"
-            values="70; -930"
-          />
-        </path>
-        <path
-          className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__crawler sts2-infection-card-vfx__crawler--b"
-          d={INFECTION_INNER_BORDER_PATH}
-          fill="none"
-          pathLength="1000"
-          stroke="rgba(166, 151, 31, 0.82)"
-          strokeDasharray="18 42 36 58 10 71"
-          strokeDashoffset="210"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="11"
-        >
-          <animate
-            attributeName="stroke-dashoffset"
-            dur="3.15s"
-            repeatCount="indefinite"
-            values="210; 1210"
-          />
-        </path>
-        <path
-          className="sts2-infection-card-vfx__stroke sts2-infection-card-vfx__crawler sts2-infection-card-vfx__crawler--c"
-          d={INFECTION_BORDER_PATH}
-          fill="none"
-          pathLength="1000"
-          stroke="rgba(222, 190, 81, 0.86)"
-          strokeDasharray="12 31 26 55 18 63"
-          strokeDashoffset="340"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="7"
-        >
-          <animate
-            attributeName="stroke-dashoffset"
-            dur="2.35s"
-            repeatCount="indefinite"
-            values="340; -660"
-          />
-        </path>
-      </g>
-    </svg>
+      <Image
+        src={INFECTION_OVERLAY_BASE}
+        alt=""
+        className="absolute max-w-none object-fill"
+        style={{
+          left: "2.33%",
+          top: "1.18%",
+          width: "93.67%",
+          height: "93.84%",
+        }}
+      />
+      <Image
+        src={INFECTION_OVERLAY_ANIMATED}
+        alt=""
+        className="absolute max-w-none object-fill"
+        style={{
+          left: "-5.67%",
+          top: "-5.92%",
+          width: "111.05%",
+          height: "108.29%",
+        }}
+      />
+    </div>
   );
 }
 
@@ -910,8 +816,6 @@ export const CardTile = memo(function CardTile({
           priority={false}
         />
 
-        {isInfectionCard && <InfectionCardBorderVfx />}
-
         <div
           className="absolute z-[2] pointer-events-none left-1/2 -translate-x-1/2"
           style={{
@@ -928,6 +832,8 @@ export const CardTile = memo(function CardTile({
             style={{ filter: bannerFilter }}
           />
         </div>
+
+        {isInfectionCard && <InfectionCardOverlay />}
 
         <div
           className="absolute z-[3] flex items-center justify-center"
