@@ -47,6 +47,7 @@ const ABYSSAL_BATHS_HARD_LIMIT = 15;
 const TABLET_OF_TRUTH_MAX_HP_REMAINING_LABEL_KO = "현재 최대 체력 - 1";
 const TABLET_OF_TRUTH_MAX_HP_REMAINING_LABEL_EN = "current Max HP - 1";
 const TRIAL_CHOICES_PAGE_ID = "__TRIAL_CHOICES__";
+const EVENT_VFX_ROOT = "/images/sts2/event-vfx";
 
 const BATTLEWORN_DUMMY_SETTINGS: Record<string, { hp: number; titleEn: string; titleKo: string }> = {
   SETTING_1: { hp: 75, titleEn: "75 HP", titleKo: "체력 75" },
@@ -64,15 +65,15 @@ const TABLET_OF_TRUTH_COST_BY_PAGE_ID: Record<string, number | "MAX_HP_MINUS_ONE
 const TRIAL_CHOICE_CASES = [
   {
     id: "MERCHANT",
-    imageUrl: "/images/sts2/events/trial_merchant.webp",
+    imageUrl: `${EVENT_VFX_ROOT}/trial_merchant.webp`,
   },
   {
     id: "NOBLE",
-    imageUrl: "/images/sts2/events/trial_noble.webp",
+    imageUrl: `${EVENT_VFX_ROOT}/trial_noble.webp`,
   },
   {
     id: "NONDESCRIPT",
-    imageUrl: "/images/sts2/events/trial_nondescript.webp",
+    imageUrl: `${EVENT_VFX_ROOT}/trial_nondescript.webp`,
   },
 ] as const;
 
@@ -176,7 +177,6 @@ interface EventArtOverlay {
 
 const EVENT_VFX_CANVAS_WIDTH = 2160;
 const EVENT_VFX_CANVAS_HEIGHT = 1000;
-const EVENT_VFX_ROOT = "/images/sts2/event-vfx";
 
 function eventVfxSpriteOverlay({
   className = "",
@@ -452,8 +452,8 @@ const EVENT_ART_OVERLAYS: Record<string, EventArtOverlay[]> = {
     eventVfxSpriteOverlay({
       className: "opacity-80 drop-shadow-[0_0_18px_rgba(255,214,110,0.25)]",
       height: 532,
-      src: `${EVENT_VFX_ROOT}/tablet_of_truth_rock.webp`,
-      width: 2128,
+      src: `${EVENT_VFX_ROOT}/tablet_of_truth_rock_piece.webp`,
+      width: 532,
       x: 573,
       y: 554,
     }),
@@ -655,6 +655,12 @@ function resolveEventOptionPage(
     pageMap.has("CHOOSE_RIDER")
   ) {
     return "CHOOSE_RIDER";
+  }
+  if (eventId === "TABLET_OF_TRUTH" && optionId === "DECIPHER") {
+    const currentStep = currentPageId?.match(/^DECIPHER_(\d+)$/)?.[1];
+    const nextStep = currentStep ? Number(currentStep) + 1 : 1;
+    const pageId = `DECIPHER_${nextStep}`;
+    if (pageMap.has(pageId)) return pageId;
   }
   if (eventId === "TRIAL" && optionId === "ACCEPT") {
     return TRIAL_CHOICES_PAGE_ID;

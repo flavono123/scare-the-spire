@@ -56,8 +56,14 @@ export function GameChoiceFrame<TPreview = unknown>({
       />
       {backgroundImageUrl && (
         <span
-          className="pointer-events-none absolute bottom-[8px] left-[42px] right-[22px] top-[8px] rounded-sm bg-cover bg-center opacity-30 mix-blend-screen"
-          style={{ backgroundImage: `url('${backgroundImageUrl}')` }}
+          className="pointer-events-none absolute bottom-[8px] left-[42px] right-[22px] top-[8px] rounded-sm bg-no-repeat opacity-75 transition-opacity duration-150 group-hover:opacity-90 group-focus-visible:opacity-90"
+          style={{
+            backgroundImage: `url('${backgroundImageUrl}')`,
+            backgroundPosition: "right 2% center",
+            backgroundSize: "auto 260%",
+            maskImage: "linear-gradient(to left, black 0%, black 68%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to left, black 0%, black 68%, transparent 100%)",
+          }}
           aria-hidden
         />
       )}
