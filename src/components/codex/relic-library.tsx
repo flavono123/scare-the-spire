@@ -460,8 +460,21 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
             if (e.target === e.currentTarget) setSelectedRelic(null);
           }}
         >
-          <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <RelicDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} relic={selectedRelic} poolLabels={poolLabels} initialVariant={selectedVariantPool} initialShowBeta={showBeta} onClose={() => setSelectedRelic(null)} entities={entities} relatedEvents={relatedEvents} />
+          <div className="my-8 mx-4 w-full max-w-6xl">
+            <RelicDetail
+              serviceLocale={serviceLocale}
+              gameUi={gameUi}
+              backToListTitle={title}
+              relic={selectedRelic}
+              poolLabels={poolLabels}
+              initialVariant={selectedVariantPool}
+              initialShowBeta={showBeta}
+              onClose={() => setSelectedRelic(null)}
+              entities={entities}
+              relatedEvents={relatedEvents}
+              patches={patches}
+              versionDiffs={versionDiffs}
+            />
           </div>
         </div>
       )}
