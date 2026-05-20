@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import math
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -22,6 +23,10 @@ except ImportError:  # pragma: no cover
 
 
 OUT_ROOT = ROOT / "public/images/sts2/affliction-overlays"
+ANIMATION_FRAMES = 24
+ANIMATION_DURATION_MS = 70
+ANIMATION_LOOP_SECONDS = 2.0
+SHADER_RENDER_SIZE = 512
 
 TEXTURES: dict[str, list[str]] = {
     "common": [
@@ -135,6 +140,75 @@ def sample_repeat(image, u: float, v: float) -> tuple[int, int, int, int]:
     x = int((u % 1.0) * image.width) % image.width
     y = int((v % 1.0) * image.height) % image.height
     return image.getpixel((x, y))
+
+
+def polar_coordinates(
+    u: float,
+    v: float,
+    center: tuple[float, float] = (0.5, 0.5),
+    zoom: float = 1.0,
+    repeat: float = 1.0,
+) -> tuple[float, float]:
+    dx = u - center[0]
+    dy = v - center[1]
+    radius = math.sqrt(dx * dx + dy * dy) * 2.0 * zoom
+    angle = math.atan2(dy, dx) / (math.pi * 2.0)
+    return radius % 1.0, (angle * repeat) % 1.0
+
+
+def gradient_sample(
+    stops: list[tuple[float, tuple[float, float, float]]],
+    t: float,
+) -> tuple[float, float, float]:
+    if t <= stops[0][0]:
+        return stops[0][1]
+    for (left_t, left_color), (right_t, right_color) in zip(stops, stops[1:]):
+        if t <= right_t:
+            return lerp_color(left_color, right_color, (t - left_t) / (right_t - left_t))
+    return stops[-1][1]
+
+
+def curve_sample(points: list[tuple[float, float]], x: float) -> float:
+    if x <= points[0][0]:
+        return points[0][1]
+    for (left_x, left_y), (right_x, right_y) in zip(points, points[1:]):
+        if x <= right_x:
+            if left_x == right_x:
+                return right_y
+            t = (x - left_x) / (right_x - left_x)
+            return left_y + (right_y - left_y) * t
+    return points[-1][1]
+
+
+def shader_source(image, size: int = SHADER_RENDER_SIZE):
+    if Image is None:
+        raise RuntimeError("Pillow is required to build shader textures")
+    image = image.convert("RGBA")
+    if max(image.size) <= size:
+        return image
+    resampling = getattr(Image, "Resampling", Image).LANCZOS
+    return image.resize((size, size), resampling)
+
+
+def save_animation(frames, output: Path) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    frames[0].save(
+        output,
+        "WEBP",
+        save_all=True,
+        append_images=frames[1:],
+        duration=ANIMATION_DURATION_MS,
+        loop=0,
+        lossless=True,
+        method=6,
+    )
+
+
+def animation_times() -> list[float]:
+    return [
+        (frame / ANIMATION_FRAMES) * ANIMATION_LOOP_SECONDS
+        for frame in range(ANIMATION_FRAMES)
+    ]
 
 
 def build_bound_preview(image):
@@ -309,6 +383,308 @@ def build_smog_preview(noise, mask, outer: bool):
     return output
 
 
+def render_bound_shader(image, time: float):
+    source = shader_source(image)
+    output = Image.new("RGBA", source.size)
+    src = source.load()
+    dst = output.load()
+    vertex = (0.51294047, 0.819067, 0.24793532)
+    vertex_alpha = 0.78431374
+
+    for y in range(source.height):
+        v = y / source.height
+        for x in range(source.width):
+            r, _g, _b, alpha = src[x, y]
+            if alpha == 0:
+                continue
+            _bright_r, bright_g, _bright_b, _bright_a = sample_repeat(source, 0.5 * time, v)
+            energy_multiplier = 1.0 + (bright_g / 255.0) * 0.5
+            intensity = (r / 255.0) * energy_multiplier
+            dst[x, y] = (
+                clamp_channel(vertex[0] * 255 * intensity),
+                clamp_channel(vertex[1] * 255 * intensity),
+                clamp_channel(vertex[2] * 255 * intensity),
+                clamp_channel(alpha * vertex_alpha),
+            )
+
+    return output
+
+
+def render_galvanized_shader(image, time: float):
+    source = shader_source(image)
+    output = Image.new("RGBA", source.size)
+    src = source.load()
+    dst = output.load()
+    lut = [
+        (0.21008404, (0.2, 0.8, 1.0)),
+        (0.8935574, (0.9011674, 0.9920209, 1.0)),
+    ]
+
+    for y in range(source.height):
+        v = y / source.height
+        for x in range(source.width):
+            u = x / source.width
+            _blink_r, _blink_g, blink_b, _blink_a = sample_repeat(source, 0.67 * time, 0.0)
+            blink = smoothstep(0.2, 0.8, blink_b / 255.0)
+            polar_u, polar_v = polar_coordinates(u, v)
+            _dist_r, _dist_g, dist_b, _dist_a = sample_repeat(
+                source,
+                polar_u - 0.3 * time,
+                polar_v,
+            )
+            dist_b_norm = dist_b / 255.0
+            offset = (dist_b_norm - 0.5) * -0.4
+            distortion_x = (u + offset - 0.5) * dist_b_norm * -0.15
+            distortion_y = (v - 0.5) * dist_b_norm * -0.15
+            line_r, glow_g, _line_b, _line_a = sample_repeat(
+                source,
+                u + distortion_x,
+                v + distortion_y,
+            )
+            _raw_r, _raw_g, _raw_b, raw_a = src[x, y]
+            mask = smoothstep(0.7, 1.0, raw_a / 255.0)
+            color = gradient_sample(lut, blink)
+            alpha = max(line_r / 255.0, (glow_g / 255.0) * blink) * mask
+            if alpha <= 0:
+                continue
+            dst[x, y] = (
+                clamp_channel(color[0] * 255),
+                clamp_channel(color[1] * 255),
+                clamp_channel(color[2] * 255),
+                clamp_channel(alpha * 255),
+            )
+
+    return output
+
+
+def render_hexed_shader(image, time: float):
+    source = shader_source(image)
+    output = Image.new("RGBA", source.size)
+    src = source.load()
+    dst = output.load()
+    main_color = (0.654902, 0.5137255, 0.9490196)
+    bright_color = (0.76862746, 0.6745098, 0.9647059)
+    border_color = (0.6175565, 0.11198568, 1.0)
+
+    for y in range(source.height):
+        v = y / source.height
+        for x in range(source.width):
+            u = x / source.width
+            r, _g, _b, alpha = src[x, y]
+            if alpha == 0:
+                continue
+            polar_u, polar_v = polar_coordinates(u, v)
+            _noise_r, _noise_g, noise_b, _noise_a = sample_repeat(
+                source,
+                polar_u - 0.25 * time,
+                polar_v + 0.1 * time,
+            )
+            noise = smoothstep(0.5, 0.7, noise_b / 255.0)
+            inner = lerp_color(main_color, bright_color, noise)
+            color = lerp_color(border_color, inner, r / 255.0)
+            dst[x, y] = (
+                clamp_channel(color[0] * 255),
+                clamp_channel(color[1] * 255),
+                clamp_channel(color[2] * 255),
+                alpha,
+            )
+
+    return output
+
+
+def render_ringing_shader(image, time: float):
+    source = shader_source(image)
+    output = Image.new("RGBA", source.size)
+    src = source.load()
+    dst = output.load()
+    frac = (time * 0.4) % 1.0
+    ring_base_r = curve_sample([
+        (0.0, 0.09756088),
+        (0.118987344, 0.09756088),
+        (0.162, 0.3),
+        (0.6202532, 0.09756088),
+        (1.0, 0.09756088),
+    ], frac)
+    ring_base_g = curve_sample([
+        (0.0, 0.14634138),
+        (0.15949368, 0.14634138),
+        (0.2, 0.35),
+        (0.6607595, 0.14634138),
+        (1.0, 0.14634138),
+    ], frac)
+    ring_base_b = curve_sample([
+        (0.0, 0.20121944),
+        (0.2, 0.2),
+        (0.24050632, 0.4),
+        (0.6962026, 0.2),
+        (1.0, 0.2),
+    ], frac)
+    thin_offset = curve_sample([(0.0, 0.5487804), (1.0, -0.30487812)], frac)
+    thin_alpha = curve_sample([(0.0, 1.0), (1.0, 0.0)], frac)
+    color = (184, 238, 240)
+
+    for y in range(source.height):
+        v = y / source.height
+        for x in range(source.width):
+            u = x / source.width
+            r, g, b, _alpha = src[x, y]
+            polar_u, polar_v = polar_coordinates(u, v, zoom=0.8)
+            _pr, _pg, _pb, polar_alpha = sample_repeat(
+                source,
+                polar_u * 0.5 + thin_offset,
+                polar_v * 0.5,
+            )
+            final_alpha = max(
+                (r / 255.0) * ring_base_r,
+                (g / 255.0) * ring_base_g,
+                (b / 255.0) * ring_base_b,
+                (polar_alpha / 255.0) * thin_alpha,
+            )
+            final_alpha = max(0.0, (final_alpha - 0.035) * 1.8)
+            if final_alpha <= 0:
+                continue
+            dst[x, y] = (
+                color[0],
+                color[1],
+                color[2],
+                clamp_channel(min(final_alpha, 0.72) * 255),
+            )
+
+    return output
+
+
+def render_smog_shader(noise, mask, time: float, outer: bool):
+    noise_image = shader_source(noise)
+    mask_image = shader_source(mask)
+    output = Image.new("RGBA", mask_image.size)
+    mask_pixels = mask_image.load()
+    dst = output.load()
+    main_st = (0.4, 0.76, 0.43, 0.4) if outer else (0.5, 0.75, 0.35, 0.45)
+    secondary_st = (0.67, 0.5, 0.7, 0.1) if outer else (0.75, 0.5, 0.5, -0.1)
+    gradient = [
+        (0.10084034, (0.22166497, 0.056894522, 0.14145814)),
+        (0.859944, (0.5254902, 0.4, 0.49019608)),
+        (0.9579832, (0.64256185, 0.5156685, 0.6068731)),
+    ]
+
+    for y in range(mask_image.height):
+        v = y / mask_image.height
+        rotated_v = 1.0 - v
+        for x in range(mask_image.width):
+            u = x / mask_image.width
+            rotated_u = 1.0 - u
+            main_tex = sample_repeat(
+                noise_image,
+                rotated_u * main_st[0] + main_st[2] * time,
+                rotated_v * main_st[1] + main_st[3],
+            )
+            secondary_tex = sample_repeat(
+                noise_image,
+                rotated_u * secondary_st[0] + secondary_st[2] * time,
+                rotated_v * secondary_st[1] + secondary_st[3],
+            )
+            mask_r, mask_g, _mask_b, _mask_a = mask_pixels[x, y]
+            smoke_alpha = (
+                (main_tex[0] / 255.0) * 0.7 + (secondary_tex[0] / 255.0) * 0.3
+            ) * (mask_r / 255.0)
+            smoke_alpha = smoothstep(0.0, 1.0, smoke_alpha)
+            color = gradient_sample(gradient, smoke_alpha)
+            alpha = smoke_alpha + (mask_g / 255.0)
+            if alpha <= 0:
+                continue
+            dst[x, y] = (
+                clamp_channel(color[0] * 255),
+                clamp_channel(color[1] * 255),
+                clamp_channel(color[2] * 255),
+                clamp_channel(min(alpha, 1.0) * 255),
+            )
+
+    return output
+
+
+def build_animated_flipbook(source, columns: int, rows: int):
+    image = source.convert("RGBA")
+    frame_width = image.width // columns
+    frame_height = image.height // rows
+    frames = []
+    for row in range(rows):
+        for column in range(columns):
+            frames.append(image.crop((
+                column * frame_width,
+                row * frame_height,
+                (column + 1) * frame_width,
+                (row + 1) * frame_height,
+            )))
+    return frames
+
+
+def write_shader_animations(output_root: Path, dry_run: bool) -> int:
+    animations = [
+        (
+            output_root / "bound/bound_main.webp",
+            output_root / "bound/bound_main_shader.webp",
+            lambda image, time: render_bound_shader(image, time),
+        ),
+        (
+            output_root / "galvanized/galvanized_main.webp",
+            output_root / "galvanized/galvanized_main_shader.webp",
+            lambda image, time: render_galvanized_shader(image, time),
+        ),
+        (
+            output_root / "hexed/hexed_main.webp",
+            output_root / "hexed/hexed_main_shader.webp",
+            lambda image, time: render_hexed_shader(image, time),
+        ),
+        (
+            output_root / "ringing/ringing_main.webp",
+            output_root / "ringing/ringing_main_shader.webp",
+            lambda image, time: render_ringing_shader(image, time),
+        ),
+    ]
+    written = 0
+    for source, output, render in animations:
+        if dry_run:
+            print(f"would write {output}")
+            continue
+        image = Image.open(source).convert("RGBA")
+        frames = [render(image, time) for time in animation_times()]
+        save_animation(frames, output)
+        written += 1
+
+    smog_animations = [
+        (
+            output_root / "smog/smog_mask.webp",
+            output_root / "smog/smog_main_shader.webp",
+            False,
+        ),
+        (
+            output_root / "smog/smog_mask_outer.webp",
+            output_root / "smog/smog_outer_shader.webp",
+            True,
+        ),
+    ]
+    for mask, output, outer in smog_animations:
+        if dry_run:
+            print(f"would write {output}")
+            continue
+        noise = Image.open(output_root / "common/vfx_noise_1.webp").convert("RGBA")
+        mask_image = Image.open(mask).convert("RGBA")
+        frames = [render_smog_shader(noise, mask_image, time, outer) for time in animation_times()]
+        save_animation(frames, output)
+        written += 1
+
+    corner_source = output_root / "galvanized/galvanized_lightning_corner.webp"
+    corner_output = output_root / "galvanized/galvanized_lightning_corner_shader.webp"
+    if dry_run:
+        print(f"would write {corner_output}")
+    else:
+        corner_frames = build_animated_flipbook(Image.open(corner_source), 2, 2)
+        save_animation(corner_frames, corner_output)
+        written += 1
+
+    return written
+
+
 def write_preview_textures(output_root: Path, dry_run: bool) -> int:
     previews = [
         {
@@ -384,6 +760,7 @@ def main() -> int:
             written += 1
 
     written += write_preview_textures(output_root, args.dry_run)
+    written += write_shader_animations(output_root, args.dry_run)
     print(f"affliction overlay textures written={written}")
     return 0
 
