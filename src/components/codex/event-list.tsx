@@ -22,7 +22,7 @@ import {
   EVENT_ACT_UNKNOWN,
   EVENT_ACT_ALIASES,
 } from "@/lib/codex-types";
-import type { EntityVersionDiff, STS2Patch } from "@/lib/types";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { reconstructEventAtVersion } from "@/lib/entity-versioning";
 import {
   fuzzyMatchCodexText,
@@ -133,6 +133,7 @@ interface EventListProps {
   versions: string[];
   currentVersion: string;
   patches: STS2Patch[];
+  changes?: STS2Change[];
   versionDiffs: EntityVersionDiff[];
 }
 
@@ -148,6 +149,7 @@ export function EventList({
   versions,
   currentVersion,
   patches,
+  changes,
   versionDiffs,
 }: EventListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -410,6 +412,9 @@ export function EventList({
               madScienceBaseCard={madScienceBaseCard}
               potions={potions}
               relics={relics}
+              patches={patches}
+              changes={changes}
+              versionDiffs={versionDiffs}
               onClose={() => setSelectedEvent(null)}
             />
           </div>

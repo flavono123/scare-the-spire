@@ -9,6 +9,7 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
   getCodexServiceMessages,
   type CodexServiceMessages,
@@ -48,6 +49,7 @@ import {
   getRelatedRelicIdsForEvent,
 } from "@/lib/codex-references";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { STS2ChangeHistory } from "./sts2-change-history";
 
 const GAME_TEXT_SHADOW = "3px 2px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.75)";
 
@@ -1632,6 +1634,9 @@ interface EventDetailProps {
   madScienceBaseCard?: CodexCard | null;
   potions?: CodexPotion[];
   relics?: CodexRelic[];
+  patches?: STS2Patch[];
+  changes?: STS2Change[];
+  versionDiffs?: EntityVersionDiff[];
   onClose?: () => void;
 }
 
@@ -1853,9 +1858,15 @@ export function EventDetail({
   madScienceBaseCard,
   potions,
   relics = [],
+  patches,
+  changes,
+  versionDiffs,
   onClose,
 }: EventDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const detailLabels = serviceLocale === "ko"
+    ? { patchHistory: "패치 이력", noPatchHistory: "구조화 변경 없음" }
+    : { patchHistory: "Patch History", noPatchHistory: "No structured changes" };
   const isModal = Boolean(onClose);
   const [preview, setPreview] = useState<EventPreview | null>(null);
   const [trialNpcOverlay, setTrialNpcOverlay] = useState<TrialNpcOverlay | null>(null);
@@ -2034,6 +2045,19 @@ export function EventDetail({
         ]}
         serviceLocale={serviceLocale}
       />
+
+      <aside className="rounded-xl border border-white/10 bg-black/20 p-4">
+        <h2 className="mb-3 font-game-title text-sm font-bold text-gray-300">{detailLabels.patchHistory}</h2>
+        <STS2ChangeHistory
+          serviceLocale={serviceLocale}
+          entityType="event"
+          entityId={event.id}
+          changes={changes}
+          versionDiffs={versionDiffs}
+          patches={patches}
+          emptyLabel={detailLabels.noPatchHistory}
+        />
+      </aside>
 
       <aside className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
         <h2 className="mb-3 text-sm font-bold text-gray-300">{serviceText.common.comments}</h2>
