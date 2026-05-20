@@ -1,5 +1,6 @@
 {
   "affliction-overlays/bound": [
+    "bound_main_preview.webp",
     "bound_main.webp"
   ],
   "affliction-overlays/common": [
@@ -18,15 +19,19 @@
     "galvanized_main.webp"
   ],
   "affliction-overlays/hexed": [
+    "hexed_main_preview.webp",
     "hexed_main.webp"
   ],
   "affliction-overlays/ringing": [
     "ringing_beast_frame_horns_only.webp",
+    "ringing_main_preview.webp",
     "ringing_main.webp"
   ],
   "affliction-overlays/smog": [
+    "smog_main_preview.webp",
     "smog_mask_outer.webp",
-    "smog_mask.webp"
+    "smog_mask.webp",
+    "smog_outer_preview.webp"
   ],
   "ancient-nodes": [
     "ancient_node_darv_outline.webp",
