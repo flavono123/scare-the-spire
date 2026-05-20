@@ -120,12 +120,6 @@ def write_preview_textures(output_root: Path, dry_run: bool) -> int:
             (106, 220, 255),
             "rg",
         ),
-        (
-            output_root / "ringing/ringing_main.webp",
-            output_root / "ringing/ringing_main_preview.webp",
-            (185, 246, 255),
-            "rgb",
-        ),
     ]
     written = 0
     for source, output, color, mode in previews:

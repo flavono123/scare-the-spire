@@ -256,14 +256,6 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
           />
         )}
 
-        {id === "RINGING" && (
-          <AfflictionImageLayer
-            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_main_preview.webp`}
-            className="sts2-affliction-overlay__main sts2-affliction-overlay__main--ringing"
-            style={{ left: "-20.33%", top: 0, width: "140.67%", height: "100%" }}
-          />
-        )}
-
         {id === "SMOG" && (
           <>
             <span aria-hidden="true" className="absolute inset-0 sts2-affliction-overlay__smog-field" />
