@@ -7,6 +7,7 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
+import type { STS2Change, STS2Patch } from "@/lib/types";
 import { getBestiaryDisplayMonsterType } from "@/lib/bestiary-monster-policy";
 import { serviceMessages } from "@/messages/service";
 import type {
@@ -33,6 +34,7 @@ import {
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 import { MonsterSpineStage } from "./monster-spine-stage";
+import { STS2ChangeHistory } from "./sts2-change-history";
 
 type MoveTone = "attack" | "defense" | "mixed" | "setup";
 
@@ -95,6 +97,8 @@ interface MonsterDetailProps {
   monster: CodexMonster;
   encounters: CodexEncounter[];
   allMonsters?: CodexMonster[];
+  patches?: STS2Patch[];
+  changes?: STS2Change[];
   onClose?: () => void;
   onMonsterClick?: (m: CodexMonster) => void;
 }
@@ -106,12 +110,17 @@ export function MonsterDetail({
   monster,
   encounters,
   allMonsters,
+  patches,
+  changes,
   onClose,
   onMonsterClick,
 }: MonsterDetailProps) {
   const serviceText = serviceMessages[serviceLocale];
   const commonText = serviceText.codex.common;
   const monsterText = serviceText.codex.monstersView;
+  const detailLabels = serviceLocale === "ko"
+    ? { patchHistory: "패치 이력", noPatchHistory: "구조화 변경 없음" }
+    : { patchHistory: "Patch History", noPatchHistory: "No structured changes" };
   const displayType = getBestiaryDisplayMonsterType(monster.id, monster.type);
   const typeConfig = MONSTER_TYPE_CONFIG[displayType];
   const meaningfulMoves = useMemo(
@@ -553,6 +562,19 @@ export function MonsterDetail({
           </div>
         </div>
       )}
+
+      <div className="w-full rounded-lg border border-white/10 bg-black/20 p-4">
+        <h2 className="mb-3 font-game-title text-sm font-bold text-gray-300">{detailLabels.patchHistory}</h2>
+        <STS2ChangeHistory
+          serviceLocale={serviceLocale}
+          entityType="monster"
+          changeEntityTypes={["monster", "enemy"]}
+          entityId={monster.id}
+          changes={changes}
+          patches={patches}
+          emptyLabel={detailLabels.noPatchHistory}
+        />
+      </div>
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
         <h2 className="text-sm font-bold text-gray-300 mb-3">{commonText.comments}</h2>

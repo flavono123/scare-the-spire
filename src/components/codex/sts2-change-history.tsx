@@ -6,6 +6,7 @@ import type {
   EntityFieldDiff,
   EntityVersionDiff,
   STS2Change,
+  STS2EntityType,
   STS2Patch,
   VersionedEntityType,
 } from "@/lib/types";
@@ -15,7 +16,9 @@ import { DescriptionText } from "./codex-description";
 
 interface STS2ChangeHistoryProps {
   serviceLocale: ServiceLocale;
-  entityType: VersionedEntityType;
+  entityType: STS2EntityType;
+  changeEntityTypes?: STS2EntityType[];
+  versionEntityType?: VersionedEntityType;
   entityId: string;
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
@@ -27,6 +30,21 @@ interface HistoryEntry {
   patch: string;
   curatedChanges: STS2Change[];
   versionDiffs: EntityFieldDiff[];
+}
+
+const VERSIONED_ENTITY_TYPES: readonly VersionedEntityType[] = [
+  "card",
+  "relic",
+  "potion",
+  "power",
+  "enchantment",
+  "event",
+];
+
+function asVersionedEntityType(entityType: STS2EntityType): VersionedEntityType | null {
+  return (VERSIONED_ENTITY_TYPES as readonly string[]).includes(entityType)
+    ? entityType as VersionedEntityType
+    : null;
 }
 
 function normalizePatchId(patch: string): string {
@@ -181,6 +199,8 @@ function filterDuplicateDiffs(diffs: EntityFieldDiff[]): EntityFieldDiff[] {
 export function STS2ChangeHistory({
   serviceLocale,
   entityType,
+  changeEntityTypes,
+  versionEntityType,
   entityId,
   changes,
   versionDiffs,
@@ -189,6 +209,8 @@ export function STS2ChangeHistory({
 }: STS2ChangeHistoryProps) {
   const entries = useMemo<HistoryEntry[]>(() => {
     const byPatch = new Map<string, HistoryEntry>();
+    const effectiveChangeTypes = new Set(changeEntityTypes ?? [entityType]);
+    const effectiveVersionEntityType = versionEntityType ?? asVersionedEntityType(entityType);
     const ensureEntry = (patch: string) => {
       const normalizedPatch = normalizePatchId(patch);
       const existing = byPatch.get(normalizedPatch);
@@ -203,12 +225,12 @@ export function STS2ChangeHistory({
     };
 
     for (const change of changes ?? []) {
-      if (change.entityType !== entityType || change.entityId !== entityId) continue;
+      if (!effectiveChangeTypes.has(change.entityType) || change.entityId !== entityId) continue;
       ensureEntry(change.patch).curatedChanges.push(change);
     }
 
     for (const versionDiff of versionDiffs ?? []) {
-      if (versionDiff.entityType !== entityType || versionDiff.entityId !== entityId) continue;
+      if (!effectiveVersionEntityType || versionDiff.entityType !== effectiveVersionEntityType || versionDiff.entityId !== entityId) continue;
       ensureEntry(versionDiff.patch).versionDiffs.push(...versionDiff.diffs);
     }
 
@@ -221,7 +243,7 @@ export function STS2ChangeHistory({
         const rankDiff = getPatchRank(b.patch, patches) - getPatchRank(a.patch, patches);
         return rankDiff || b.patch.localeCompare(a.patch);
       });
-  }, [changes, entityId, entityType, patches, versionDiffs]);
+  }, [changeEntityTypes, changes, entityId, entityType, patches, versionDiffs, versionEntityType]);
 
   if (entries.length === 0) {
     return <p className="font-game-text text-sm text-gray-500">{emptyLabel}</p>;

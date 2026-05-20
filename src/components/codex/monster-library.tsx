@@ -6,6 +6,7 @@ import Image from "@/components/ui/static-image";
 import { MonsterDetail } from "./monster-detail";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
+import type { STS2Change, STS2Patch } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
 import {
   CodexMonster,
@@ -62,6 +63,8 @@ interface MonsterLibraryProps {
   title: string;
   monsters: CodexMonster[];
   encounters: CodexEncounter[];
+  patches?: STS2Patch[];
+  changes?: STS2Change[];
   trailing?: React.ReactNode;
 }
 
@@ -71,6 +74,8 @@ export function MonsterLibrary({
   title,
   monsters,
   encounters,
+  patches,
+  changes,
   trailing,
 }: MonsterLibraryProps) {
   const serviceText = serviceMessages[serviceLocale];
@@ -426,6 +431,8 @@ export function MonsterLibrary({
               monster={selectedMonster}
               encounters={getMonsterEncounters(selectedMonster.id)}
               allMonsters={monsters}
+              patches={patches}
+              changes={changes}
               onClose={() => setSelectedMonster(null)}
               onMonsterClick={(m) => setSelectedMonster(m)}
             />

@@ -5,6 +5,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { serviceMessages } from "@/messages/service";
 import type { CodexEncounter, CodexMonster } from "@/lib/codex-types";
+import type { STS2Change, STS2Patch } from "@/lib/types";
 import { MonsterLibrary } from "./monster-library";
 import { EncounterLibrary } from "./encounter-library";
 
@@ -15,6 +16,8 @@ interface BestiaryLibraryProps {
   gameUi: CodexGameUiLabels;
   monsters: CodexMonster[];
   encounters: CodexEncounter[];
+  patches?: STS2Patch[];
+  changes?: STS2Change[];
 }
 
 export function BestiaryLibrary({
@@ -22,6 +25,8 @@ export function BestiaryLibrary({
   gameUi,
   monsters,
   encounters,
+  patches,
+  changes,
 }: BestiaryLibraryProps) {
   const messages = serviceMessages[serviceLocale].codex;
   const searchParams = useSearchParams();
@@ -92,6 +97,8 @@ export function BestiaryLibrary({
       title={gameUi.bestiaryTitle}
       monsters={monsters}
       encounters={encounters}
+      patches={patches}
+      changes={changes}
       trailing={switcher}
     />
   );

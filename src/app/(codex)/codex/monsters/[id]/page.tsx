@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexMonsters, getCodexEncounters } from "@/lib/codex-data";
+import { getSTS2Patches, getSTS2Changes } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -45,9 +46,11 @@ export default async function MonsterDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [monsters, encounters, gameUi] = await Promise.all([
+  const [monsters, encounters, patches, changes, gameUi] = await Promise.all([
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
+    getSTS2Patches(),
+    getSTS2Changes(),
     getCodexGameUiLabels(gameLocale),
   ]);
   const monster = monsters.find((m) => m.id.toLowerCase() === id.toLowerCase());
@@ -66,6 +69,8 @@ export default async function MonsterDetailPage({
         monster={monster}
         encounters={monsterEncounters}
         allMonsters={monsters}
+        patches={patches}
+        changes={changes}
       />
     </div>
   );
