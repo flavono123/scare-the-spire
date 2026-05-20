@@ -14511,7 +14511,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Attack",
-    "rarity": "Uncommon",
+    "rarity": "Event",
     "target": "RandomEnemy",
     "color": "event",
     "damage": 7,

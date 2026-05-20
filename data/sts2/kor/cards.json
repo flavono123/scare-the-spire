@@ -14514,7 +14514,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "공격",
-    "rarity": "고급",
+    "rarity": "이벤트",
     "target": "RandomEnemy",
     "color": "event",
     "damage": 7,
