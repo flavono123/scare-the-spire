@@ -12,6 +12,8 @@ function normalizeId(id: string): string {
 }
 
 export function canAfflictCard(_affliction: CodexAffliction, _card: CodexCard): boolean {
+  void _affliction;
+  void _card;
   return true;
 }
 

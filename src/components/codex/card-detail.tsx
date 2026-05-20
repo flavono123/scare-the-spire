@@ -67,6 +67,7 @@ function getEnchantTipVariant(enchant: CodexEnchantment): HoverTipVariant {
 }
 
 function getAfflictionTipVariant(_affliction: CodexAffliction): HoverTipVariant {
+  void _affliction;
   return "debuff";
 }
 
