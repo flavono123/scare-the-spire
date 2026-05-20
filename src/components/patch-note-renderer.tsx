@@ -116,34 +116,42 @@ function GameResourcePreview({
   title,
   imageUrl,
   imageAlt,
+  imageFrameClassName = "flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-black/20",
   imageClassName = "h-14 w-14 object-contain",
+  imageWidth = 64,
+  imageHeight = 64,
   imageStyle,
+  hoverTipStyle = { minWidth: 240, maxWidth: 320 },
   meta,
   children,
 }: {
   title: string;
   imageUrl?: string | null;
   imageAlt: string;
+  imageFrameClassName?: string;
   imageClassName?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   imageStyle?: CSSProperties;
+  hoverTipStyle?: CSSProperties;
   meta?: ReactNode;
   children?: ReactNode;
 }) {
   return (
     <span className="flex w-max max-w-[25rem] items-start gap-2.5">
       {imageUrl && (
-        <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-black/20">
+        <span className={imageFrameClassName}>
           <Image
             src={imageUrl}
             alt={imageAlt}
-            width={64}
-            height={64}
+            width={imageWidth}
+            height={imageHeight}
             className={imageClassName}
             style={imageStyle}
           />
         </span>
       )}
-      <GameHoverTip title={title} style={{ minWidth: 240, maxWidth: 320 }}>
+      <GameHoverTip title={title} style={hoverTipStyle}>
         {meta && (
           <span className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[12px]">
             {meta}
@@ -418,7 +426,11 @@ export function EntityPreview({
             title={entity.nameKo}
             imageUrl={entity.eventData.imageUrl}
             imageAlt={entity.nameKo}
-            imageClassName="h-14 w-14 rounded object-cover"
+            imageFrameClassName="flex h-28 w-40 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-black/20"
+            imageClassName="h-full w-full rounded-lg object-cover"
+            imageWidth={160}
+            imageHeight={112}
+            hoverTipStyle={{ width: "max-content", maxWidth: 320, whiteSpace: "nowrap" }}
           />,
         )
       )}
