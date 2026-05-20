@@ -26,11 +26,8 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [powers, patches, changes, versionDiffs, gameUi] = await Promise.all([
+  const [powers, gameUi] = await Promise.all([
     getCodexPowers({ gameLocale }),
-    getSTS2Patches(),
-    getSTS2Changes(),
-    getEntityVersionDiffs(),
     getCodexGameUiLabels(gameLocale),
   ]);
   const power = powers.find((p) => p.id.toLowerCase() === id.toLowerCase());
@@ -49,8 +46,11 @@ export default async function PowerDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [powers, gameUi] = await Promise.all([
+  const [powers, patches, changes, versionDiffs, gameUi] = await Promise.all([
     getCodexPowers({ gameLocale }),
+    getSTS2Patches(),
+    getSTS2Changes(),
+    getEntityVersionDiffs(),
     getCodexGameUiLabels(gameLocale),
   ]);
   const power = powers.find((p) => p.id.toLowerCase() === id.toLowerCase());
