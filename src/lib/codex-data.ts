@@ -138,6 +138,23 @@ function codexCardImageUrl(card: RawCard): string | null {
     (card.id === MAD_SCIENCE_CARD_ID ? MAD_SCIENCE_DEFAULT_IMAGE_URL : null);
 }
 
+const CARD_VISUAL_COLOR_OVERRIDES: Record<string, CardColor> = {
+  CALTROPS: "silent",
+  CLASH: "ironclad",
+  DISTRACTION: "silent",
+  DUAL_WIELD: "ironclad",
+  ENTRENCH: "ironclad",
+  HELLO_WORLD: "defect",
+  OUTMANEUVER: "silent",
+  REBOUND: "defect",
+  RIP_AND_TEAR: "defect",
+  STACK: "defect",
+};
+
+function getCardVisualColor(card: RawCard): CardColor | undefined {
+  return CARD_VISUAL_COLOR_OVERRIDES[card.id];
+}
+
 async function scanImageFilenames(relativeDir: string): Promise<Set<string>> {
   const index = await readPublicImageFileIndex();
   return new Set((index[relativeDir] ?? []).filter((file) => file.endsWith(".webp")));
@@ -305,6 +322,7 @@ function mapCard(
     rarity: kor.rarity as CodexCard["rarity"],
     rarityLabel: rarityLabels[kor.rarity as CardRarityKo] ?? kor.rarity,
     color: kor.color as CardColor,
+    visualColor: getCardVisualColor(kor),
     damage: kor.damage,
     block: kor.block,
     hitCount: kor.hit_count,

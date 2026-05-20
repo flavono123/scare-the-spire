@@ -45,6 +45,7 @@ export interface CodexCard {
   rarity: CardRarityKo; // Korean canonical key
   rarityLabel: string; // selected game locale
   color: CardColor;
+  visualColor?: CardColor; // game VisualCardPool when frame/energy visuals differ from Pool
   damage: number | null;
   block: number | null;
   hitCount: number | null;

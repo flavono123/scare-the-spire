@@ -425,7 +425,8 @@ export const CardTile = memo(function CardTile({
 
   const frameAsset = FRAME_ASSETS[card.type] ?? FRAME_ASSETS["스킬"];
   const portraitBorderAsset = PORTRAIT_BORDER_ASSETS[card.type] ?? PORTRAIT_BORDER_ASSETS["스킬"];
-  const charHsv = CHAR_FRAME_HSV[card.color] ?? CHAR_FRAME_HSV.colorless;
+  const visualColor = card.visualColor ?? card.color;
+  const charHsv = CHAR_FRAME_HSV[visualColor] ?? CHAR_FRAME_HSV.colorless;
   const frameFilter = hsvToFilter(charHsv);
   const bannerHsv = RARITY_BANNER_HSV[card.rarity] ?? RARITY_BANNER_HSV["일반"];
   const bannerFilter = hsvToFilter(bannerHsv);
@@ -435,8 +436,8 @@ export const CardTile = memo(function CardTile({
     ? TITLE_UPGRADED_OUTLINE
     : (TITLE_OUTLINE_COLOR[card.rarity] ?? TITLE_OUTLINE_COLOR["일반"]);
   const titleColor = isUpgraded ? TEXT_GREEN : TEXT_CREAM;
-  const costOutline = ENERGY_OUTLINE_COLOR[card.color] ?? ENERGY_OUTLINE_COLOR.colorless;
-  const energyIcon = resolveSts2EnergyIcon(card.color);
+  const costOutline = ENERGY_OUTLINE_COLOR[visualColor] ?? ENERGY_OUTLINE_COLOR.colorless;
+  const energyIcon = resolveSts2EnergyIcon(visualColor);
   const isAncientCard = card.rarity === "고대의 존재";
   const isInfectionCard = card.id === INFECTION_CARD_ID;
 
