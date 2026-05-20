@@ -89,6 +89,23 @@ function compareCards(a: CodexCard, b: CodexCard, key: SortKey, dir: SortDir): n
   return dir === "desc" ? -cmp : cmp;
 }
 
+function cardMatchesFilterCategory(card: CodexCard, category: CardFilterCategory): boolean {
+  switch (category) {
+    case "ancient":
+      return card.rarity === "고대의 존재";
+    case "colorless":
+      return card.color === "colorless" || card.color === "token";
+    case "event":
+      return card.color === "event" || card.color === "quest";
+    case "curse":
+      return card.color === "curse" || card.rarity === "저주" || card.type === "저주";
+    case "status":
+      return card.color === "status" || card.rarity === "상태이상" || card.type === "상태이상";
+    default:
+      return card.color === category;
+  }
+}
+
 function resolveCardListId(id: string): string {
   const madScienceType = getMadScienceCardTypeFromId(id);
   return madScienceType ? getMadScienceVariantId(madScienceType) : id;
@@ -180,6 +197,8 @@ interface CardLibraryProps {
 
 export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedEvents = [] }: CardLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const colorlessTokenFilterLabel = `${serviceText.labels.pools.colorless}/${gameUi.cardLibrary.rarities.토큰}`;
+  const eventQuestFilterLabel = `${gameUi.cardLibrary.rarities.이벤트}/${gameUi.cardLibrary.rarities.퀘스트}`;
   const searchParams = useSearchParams();
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
   const [selectedColors, setSelectedColors] = useState<Set<CardFilterCategory>>(
@@ -244,8 +263,8 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           { value: "defect", label: serviceText.labels.pools.defect, desc: "Defect" },
           { value: "necrobinder", label: serviceText.labels.pools.necrobinder, desc: "Necrobinder" },
           { value: "regent", label: serviceText.labels.pools.regent, desc: "Regent" },
-          { value: "colorless", label: serviceText.labels.pools.colorless, desc: "Colorless" },
-          { value: "event", label: serviceText.labels.pools.event, desc: "Event" },
+          { value: "colorless", label: colorlessTokenFilterLabel, desc: "Colorless / Token" },
+          { value: "event", label: eventQuestFilterLabel, desc: "Event / Quest" },
           { value: "curse", label: serviceText.labels.pools.curse, desc: "Curse" },
           { value: "status", label: serviceText.labels.pools.status, desc: "Status" },
           { value: "ancient", label: serviceText.labels.pools.ancient, desc: "Ancient" },
@@ -305,7 +324,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
         chipColor: "bg-purple-500/20 text-purple-400",
       },
     ],
-    [gameUi, serviceText],
+    [colorlessTokenFilterLabel, eventQuestFilterLabel, gameUi, serviceText],
   );
 
   // Parse search query (uses debounced value)
@@ -340,12 +359,6 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     return card.rarity === rarityFilter;
   }, []);
 
-  const getCardCategory = useCallback((card: CodexCard): CardFilterCategory => {
-    if (card.rarity === "고대의 존재") return "ancient";
-    if (card.color === "event") return "event";
-    return card.color as CardFilterCategory;
-  }, []);
-
   // Reconstruct cards at the selected version (only when version differs from current)
   const versionedCards = useMemo(() => {
     if (selectedVersion === currentVersion) return cards;
@@ -360,16 +373,19 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
 
     // Color/category filter
     if (selectedColors.size > 0) {
-      result = result.filter((c) => selectedColors.has(getCardCategory(c)));
+      result = result.filter((c) => {
+        for (const category of selectedColors) {
+          if (cardMatchesFilterCategory(c, category)) return true;
+        }
+        return false;
+      });
     }
 
     // Search token filters
     for (const token of parsedSearch.tokens) {
       if (token.type === "color") {
         const cat = token.value as CardFilterCategory;
-        result = result.filter((c) =>
-          cat === "ancient" ? c.rarity === "고대의 존재" : c.color === cat
-        );
+        result = result.filter((c) => cardMatchesFilterCategory(c, cat));
       } else if (token.type === "type") {
         result = result.filter((c) => c.type === token.value);
       } else if (token.type === "rarity") {
@@ -461,7 +477,6 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     parsedSearch,
     matchCost,
     matchRaritySearch,
-    getCardCategory,
     sortKeys,
     sortDirs,
     engagementSort,
@@ -597,8 +612,8 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   }));
 
   const extraFilters = [
-    { key: "colorless" as const, label: serviceText.labels.pools.colorless, icon: CATEGORY_ICONS.colorless },
-    { key: "event" as const, label: gameUi.cardLibrary.rarities.이벤트, icon: CATEGORY_ICONS.event },
+    { key: "colorless" as const, label: colorlessTokenFilterLabel, icon: CATEGORY_ICONS.colorless },
+    { key: "event" as const, label: eventQuestFilterLabel, icon: CATEGORY_ICONS.event },
     { key: "curse" as const, label: gameUi.cardLibrary.rarities.저주, icon: CATEGORY_ICONS.curse },
     { key: "status" as const, label: gameUi.cardLibrary.rarities.상태이상, icon: CATEGORY_ICONS.status },
     { key: "ancient" as const, label: gameUi.cardLibrary.rarities["고대의 존재"], icon: CATEGORY_ICONS.ancient },
