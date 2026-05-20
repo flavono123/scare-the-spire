@@ -114,7 +114,6 @@ function previewHorizontalClass(horizontal: PreviewPlacement["horizontal"]): str
 
 function GameResourcePreview({
   title,
-  subtitle,
   imageUrl,
   imageAlt,
   imageClassName = "h-14 w-14 object-contain",
@@ -123,7 +122,6 @@ function GameResourcePreview({
   children,
 }: {
   title: string;
-  subtitle?: string;
   imageUrl?: string | null;
   imageAlt: string;
   imageClassName?: string;
@@ -146,9 +144,6 @@ function GameResourcePreview({
         </span>
       )}
       <GameHoverTip title={title} style={{ minWidth: 240, maxWidth: 320 }}>
-        {subtitle && (
-          <span className="mb-1 block text-gray-400">{subtitle}</span>
-        )}
         {meta && (
           <span className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[12px]">
             {meta}
@@ -332,7 +327,6 @@ export function EntityPreview({
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
-            subtitle={entity.nameEn}
             imageUrl={entity.relicData.imageUrl}
             imageAlt={entity.nameKo}
             imageStyle={{
@@ -359,7 +353,6 @@ export function EntityPreview({
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
-            subtitle={entity.nameEn}
             imageUrl={entity.potionData.imageUrl}
             imageAlt={entity.nameKo}
             imageStyle={{
@@ -386,7 +379,6 @@ export function EntityPreview({
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
-            subtitle={entity.nameEn}
             imageUrl={entity.powerData.imageUrl}
             imageAlt={entity.nameKo}
             meta={(
@@ -403,7 +395,6 @@ export function EntityPreview({
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
-            subtitle={entity.nameEn}
             imageUrl={entity.enchantmentData.imageUrl}
             imageAlt={entity.nameKo}
             meta={(
@@ -425,7 +416,6 @@ export function EntityPreview({
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
-            subtitle={entity.nameEn}
             imageUrl={entity.eventData.imageUrl}
             imageAlt={entity.nameKo}
             imageClassName="h-14 w-14 rounded object-cover"
@@ -447,7 +437,6 @@ export function EntityPreview({
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
-            subtitle={entity.nameEn}
             imageUrl={entity.monsterData.bossImageUrl ?? entity.monsterData.imageUrl}
             imageAlt={entity.nameKo}
             imageClassName="h-14 w-14 rounded object-cover"
@@ -474,7 +463,6 @@ export function EntityPreview({
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
-            subtitle={entity.nameEn}
             imageUrl={entity.imageUrl}
             imageAlt={entity.nameKo}
             meta={(
@@ -499,7 +487,6 @@ export function EntityPreview({
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
-            subtitle={entity.nameEn}
             imageUrl={entity.ancientData.imageUrl}
             imageAlt={entity.nameKo}
             imageClassName="h-14 w-14 rounded object-cover"
@@ -517,7 +504,6 @@ export function EntityPreview({
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
-            subtitle={entity.nameEn}
             imageUrl={entity.imageUrl}
             imageAlt={entity.nameKo}
             imageClassName="h-14 w-14 rounded object-cover"
