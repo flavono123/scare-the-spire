@@ -46,6 +46,13 @@ import {
   getEnchantAmountPresets,
   getEnchantStatModifier,
 } from "@/lib/sts2-enchant-rules";
+import {
+  DEFAULT_AFFLICTION_AMOUNT,
+  canAfflictCard,
+  getAfflictionAddedKeywords,
+  getAfflictionDescriptionSuffix,
+  getAfflictionForcedCost,
+} from "@/lib/sts2-affliction-rules";
 import { EntityReferenceLinks } from "./entity-reference-links";
 
 const ENCHANT_TIP_VARIANT: Record<string, HoverTipVariant> = {
@@ -57,6 +64,10 @@ function getEnchantTipVariant(enchant: CodexEnchantment): HoverTipVariant {
   if (ENCHANT_TIP_VARIANT[enchant.id]) return ENCHANT_TIP_VARIANT[enchant.id];
   if (enchant.cardType === "Attack") return "buff";
   return "default";
+}
+
+function getAfflictionTipVariant(_affliction: CodexAffliction): HoverTipVariant {
+  return "debuff";
 }
 
 interface CardDetailProps {
@@ -77,6 +88,8 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   const [showBeta, setShowBeta] = useState(false);
   const [activeEnchantId, setActiveEnchantId] = useState<string | null>(null);
   const [hoveredEnchantId, setHoveredEnchantId] = useState<string | null>(null);
+  const [activeAfflictionId, setActiveAfflictionId] = useState<string | null>(null);
+  const [hoveredAfflictionId, setHoveredAfflictionId] = useState<string | null>(null);
   const [enchantAmount, setEnchantAmount] = useState<number>(DEFAULT_ENCHANT_AMOUNT);
   const [madScienceRider, setMadScienceRider] = useState<TinkerRiderId>(MAD_SCIENCE_DEFAULT_RIDER);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -106,10 +119,13 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
 
   // 게임 CanEnchant 룰 그대로 적용 (카드별 가능 인챈트만 표시)
   const eligibleEnchantments = enchantments.filter((e) => canEnchantCard(e, previewCard));
+  const eligibleAfflictions = afflictions.filter((a) => canAfflictCard(a, previewCard));
 
   const activeEnchant = eligibleEnchantments.find((e) => e.id === activeEnchantId) ?? null;
+  const activeAffliction = eligibleAfflictions.find((a) => a.id === activeAfflictionId) ?? null;
 
   const hoveredEnchant = eligibleEnchantments.find((e) => e.id === hoveredEnchantId) ?? null;
+  const hoveredAffliction = eligibleAfflictions.find((a) => a.id === hoveredAfflictionId) ?? null;
 
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
   const canShowUpgrade = hasCardUpgrade(previewCard);
@@ -155,6 +171,24 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   const activeRemovedKeywords = activeEnchant ? getEnchantRemovedKeywords(activeEnchant) : [];
   const activeForcedCost = activeEnchant ? getEnchantForcedCost(activeEnchant) : null;
   const activeStatMod = activeEnchant ? getEnchantStatModifier(activeEnchant, enchantAmount) : null;
+  const activeAfflictionExtraText = activeAffliction
+    ? getAfflictionDescriptionSuffix(activeAffliction, DEFAULT_AFFLICTION_AMOUNT)
+    : null;
+  const activeAfflictionAddedKeywords = activeAffliction
+    ? getAfflictionAddedKeywords(activeAffliction)
+    : [];
+  const activeDescriptionSuffix = [activeExtraText, activeAfflictionExtraText]
+    .filter((text): text is string => Boolean(text))
+    .join("\n") || null;
+  const activeAddedKeywordsWithAffliction = [
+    ...activeAddedKeywords,
+    ...activeAfflictionAddedKeywords.filter((keyword) => !activeAddedKeywords.includes(keyword)),
+  ];
+  const activeForcedCostWithAffliction = getAfflictionForcedCost(activeAffliction, previewCard, {
+    showUpgrade,
+    enchantForcedCost: activeForcedCost,
+    amount: DEFAULT_AFFLICTION_AMOUNT,
+  });
 
   // hover 시 보여줄 미리보기 amount는 hovered 인챈트의 자체 프리셋을 쓴다.
   // 활성 인챈트 위에 hover한 경우만 사용자가 고른 amount 그대로.
@@ -168,6 +202,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     ? substituteAmount(hoveredEnchant.description, hoveredAmount, {
         asEnergyIcon: hoveredEnchant.id?.toUpperCase() === "SOWN",
       }) ?? hoveredEnchant.description
+    : null;
+  const hoveredAfflictionDesc = hoveredAffliction
+    ? substituteAmount(hoveredAffliction.description, DEFAULT_AFFLICTION_AMOUNT, {
+        asEnergyIcon: hoveredAffliction.id?.toUpperCase() === "ENTANGLED",
+      }) ?? hoveredAffliction.description
     : null;
 
   // 캐러셀: 좌/우 스크롤 가능 여부에 따라 게임 노란 화살표 노출
@@ -198,6 +237,49 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   };
 
   const handleEnchantWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    const el = event.currentTarget;
+    if (el.scrollWidth <= el.clientWidth) return;
+
+    const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY)
+      ? event.deltaX
+      : event.deltaY;
+    if (delta === 0) return;
+
+    const atStart = el.scrollLeft <= 1;
+    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+    if ((delta < 0 && atStart) || (delta > 0 && atEnd)) return;
+
+    event.preventDefault();
+    el.scrollLeft += delta;
+  };
+
+  const afflictionScrollerRef = useRef<HTMLDivElement>(null);
+  const [canScrollAfflictionLeft, setCanScrollAfflictionLeft] = useState(false);
+  const [canScrollAfflictionRight, setCanScrollAfflictionRight] = useState(false);
+  useEffect(() => {
+    const el = afflictionScrollerRef.current;
+    if (!el) return;
+    const update = () => {
+      setCanScrollAfflictionLeft(el.scrollLeft > 4);
+      setCanScrollAfflictionRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      ro.disconnect();
+    };
+  }, [eligibleAfflictions.length]);
+
+  const scrollAfflictionsBy = (dir: -1 | 1) => {
+    const el = afflictionScrollerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.7, behavior: "smooth" });
+  };
+
+  const handleAfflictionWheel = (event: React.WheelEvent<HTMLDivElement>) => {
     const el = event.currentTarget;
     if (el.scrollWidth <= el.clientWidth) return;
 
@@ -248,10 +330,12 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
         className="relative"
         style={{ width: cardWidth }}
         onMouseEnter={() => {
-          if (activeEnchantId) setHoveredEnchantId(activeEnchantId);
+          if (activeAfflictionId) setHoveredAfflictionId(activeAfflictionId);
+          else if (activeEnchantId) setHoveredEnchantId(activeEnchantId);
         }}
         onMouseLeave={() => {
           setHoveredEnchantId((cur) => (cur === activeEnchantId ? null : cur));
+          setHoveredAfflictionId((cur) => (cur === activeAfflictionId ? null : cur));
         }}
       >
           <CardTile
@@ -263,11 +347,12 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           enchantmentImageUrl={activeEnchant?.imageUrl ?? null}
           enchantmentLabel={activeEnchant?.name ?? null}
           enchantmentAmount={activeShowAmount ? enchantAmount : null}
-          forcedCost={activeForcedCost}
-          enchantAddedKeywords={activeAddedKeywords}
+          forcedCost={activeForcedCostWithAffliction}
+          enchantAddedKeywords={activeAddedKeywordsWithAffliction}
           enchantRemovedKeywords={activeRemovedKeywords}
-          descriptionSuffix={activeExtraText}
+          descriptionSuffix={activeDescriptionSuffix}
           enchantStatMod={activeStatMod}
+          afflictionId={activeAffliction?.id ?? null}
           onEnchantSlotClick={() => {
             setActiveEnchantId(null);
             setEnchantAmount(DEFAULT_ENCHANT_AMOUNT);
@@ -285,7 +370,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
               width: "max-content",
               maxWidth: 280,
               pointerEvents: "none",
-              zIndex: 50,
+            zIndex: 50,
             }}
           >
             <HoverTip
@@ -295,6 +380,31 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
             >
               <DescriptionText
                 description={hoveredDesc ?? hoveredEnchant.description}
+                className="block text-left"
+              />
+            </HoverTip>
+          </div>
+        )}
+        {hoveredAffliction && (
+          <div
+            className="hidden md:block"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "calc(100% + 16px)",
+              width: "max-content",
+              maxWidth: 280,
+              pointerEvents: "none",
+              zIndex: 51,
+            }}
+          >
+            <HoverTip
+              title={hoveredAffliction.name}
+              icon={hoveredAffliction.imageUrl ?? undefined}
+              variant={getAfflictionTipVariant(hoveredAffliction)}
+            >
+              <DescriptionText
+                description={hoveredAfflictionDesc ?? hoveredAffliction.description}
                 className="block text-left"
               />
             </HoverTip>
@@ -399,7 +509,10 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
               )}
               {activeEnchant && (
                 <button
-                  onClick={() => setActiveEnchantId(null)}
+                  onClick={() => {
+                    setActiveEnchantId(null);
+                    setHoveredEnchantId(null);
+                  }}
                   className="text-xs text-gray-500 hover:text-gray-300"
                 >
                   {serviceText.cardsView.enchantments.remove}
@@ -464,11 +577,17 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                         return e.id;
                       });
                     }}
-                    onMouseEnter={() => setHoveredEnchantId(e.id)}
+                    onMouseEnter={() => {
+                      setHoveredAfflictionId(null);
+                      setHoveredEnchantId(e.id);
+                    }}
                     onMouseLeave={() =>
                       setHoveredEnchantId((cur) => (cur === e.id ? null : cur))
                     }
-                    onFocus={() => setHoveredEnchantId(e.id)}
+                    onFocus={() => {
+                      setHoveredAfflictionId(null);
+                      setHoveredEnchantId(e.id);
+                    }}
                     onBlur={() =>
                       setHoveredEnchantId((cur) => (cur === e.id ? null : cur))
                     }
@@ -494,6 +613,119 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                     )}
                     <span className="text-[10px] text-gray-200 text-center leading-tight line-clamp-2">
                       {e.name}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 고난 캐러셀 */}
+      {eligibleAfflictions.length > 0 && (
+        <div className="w-full flex flex-col gap-2">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-sm font-bold text-gray-300">
+              {serviceText.cardsView.afflictions.possible} ({eligibleAfflictions.length})
+            </h2>
+            {activeAffliction && (
+              <button
+                onClick={() => {
+                  setActiveAfflictionId(null);
+                  setHoveredAfflictionId(null);
+                }}
+                className="text-xs text-gray-500 hover:text-gray-300"
+              >
+                {serviceText.cardsView.afflictions.remove}
+              </button>
+            )}
+          </div>
+
+          <div className="relative">
+            {canScrollAfflictionLeft && (
+              <button
+                type="button"
+                aria-label={serviceText.cardsView.afflictions.previous}
+                onClick={() => scrollAfflictionsBy(-1)}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center hover:scale-110 transition-transform drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
+              >
+                <Image
+                  src="/images/sts2/ui/settings_tiny_left_arrow.png"
+                  alt=""
+                  width={32}
+                  height={32}
+                  className="object-contain"
+                />
+              </button>
+            )}
+            {canScrollAfflictionRight && (
+              <button
+                type="button"
+                aria-label={serviceText.cardsView.afflictions.next}
+                onClick={() => scrollAfflictionsBy(1)}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center hover:scale-110 transition-transform drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
+              >
+                <Image
+                  src="/images/sts2/ui/settings_tiny_right_arrow.png"
+                  alt=""
+                  width={32}
+                  height={32}
+                  className="object-contain"
+                />
+              </button>
+            )}
+
+            <div
+              ref={afflictionScrollerRef}
+              data-testid="affliction-carousel"
+              onWheel={handleAfflictionWheel}
+              className="mx-10 flex gap-2 overflow-x-auto scroll-smooth py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+              {eligibleAfflictions.map((a) => {
+                const active = activeAfflictionId === a.id;
+                return (
+                  <button
+                    key={a.id}
+                    onClick={() => {
+                      setActiveAfflictionId((prev) => (prev === a.id ? null : a.id));
+                    }}
+                    onMouseEnter={() => {
+                      setHoveredEnchantId(null);
+                      setHoveredAfflictionId(a.id);
+                    }}
+                    onMouseLeave={() =>
+                      setHoveredAfflictionId((cur) => (cur === a.id ? null : cur))
+                    }
+                    onFocus={() => {
+                      setHoveredEnchantId(null);
+                      setHoveredAfflictionId(a.id);
+                    }}
+                    onBlur={() =>
+                      setHoveredAfflictionId((cur) => (cur === a.id ? null : cur))
+                    }
+                    className={`shrink-0 w-20 flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
+                      active
+                        ? "bg-red-500/15 border-red-400/60 ring-1 ring-red-400/30"
+                        : "bg-white/5 border-white/10 hover:border-white/30"
+                    }`}
+                    aria-pressed={active}
+                    title={a.name}
+                  >
+                    {a.imageUrl ? (
+                      <div className="relative w-10 h-10">
+                        <Image
+                          src={a.imageUrl}
+                          alt={a.name}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-10 h-10 rounded bg-white/5" />
+                    )}
+                    <span className="text-[10px] text-gray-200 text-center leading-tight line-clamp-2">
+                      {a.name}
                     </span>
                   </button>
                 );
