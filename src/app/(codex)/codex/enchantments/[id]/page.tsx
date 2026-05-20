@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexEnchantments, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
+import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -43,17 +44,20 @@ export default async function EnchantmentDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [enchantments, relics, entities] = await Promise.all([
+  const [enchantments, relics, entities, patches, changes, versionDiffs] = await Promise.all([
     getCodexEnchantments({ gameLocale }),
     getCodexRelics({ gameLocale }),
     loadAllEntities({ gameLocale }),
+    getSTS2Patches(),
+    getSTS2Changes(),
+    getEntityVersionDiffs(),
   ]);
   const ench = enchantments.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!ench) notFound();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <EnchantmentDetail serviceLocale={serviceLocale} enchantment={ench} entities={entities} relics={relics} />
+      <EnchantmentDetail serviceLocale={serviceLocale} enchantment={ench} entities={entities} relics={relics} patches={patches} changes={changes} versionDiffs={versionDiffs} />
     </div>
   );
 }

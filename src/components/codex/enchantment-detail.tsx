@@ -6,6 +6,7 @@ import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
@@ -18,6 +19,7 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
 import { RichDescription } from "./rich-description";
 import { RelicTile } from "./relic-tile";
+import { STS2ChangeHistory } from "./sts2-change-history";
 
 function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
@@ -38,6 +40,9 @@ interface EnchantmentDetailProps {
   entities?: EntityInfo[];
   /** All relics, used to surface ones that grant this enchantment. */
   relics?: CodexRelic[];
+  patches?: STS2Patch[];
+  changes?: STS2Change[];
+  versionDiffs?: EntityVersionDiff[];
 }
 
 /**
@@ -52,8 +57,21 @@ function relicMentionsEnchantment(relic: CodexRelic, ench: CodexEnchantment): bo
   return false;
 }
 
-export function EnchantmentDetail({ serviceLocale, enchantment, onClose, entities, relics }: EnchantmentDetailProps) {
+function getEnchantmentDetailLabels(serviceLocale: ServiceLocale) {
+  return serviceLocale === "ko"
+    ? {
+        patchHistory: "패치 이력",
+        noPatchHistory: "구조화 변경 없음",
+      }
+    : {
+        patchHistory: "Patch History",
+        noPatchHistory: "No structured changes",
+      };
+}
+
+export function EnchantmentDetail({ serviceLocale, enchantment, onClose, entities, relics, patches, changes, versionDiffs }: EnchantmentDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const detailLabels = getEnchantmentDetailLabels(serviceLocale);
   const cardTypeFilter: EnchantmentCardTypeFilter = enchantment.cardType ?? "Any";
   const cardTypeConfig = ENCHANTMENT_CARD_TYPE_CONFIG[cardTypeFilter];
 
@@ -191,6 +209,19 @@ export function EnchantmentDetail({ serviceLocale, enchantment, onClose, entitie
           </div>
         </div>
       )}
+
+      <div className="w-full rounded-lg border border-white/10 bg-black/20 p-4">
+        <h2 className="mb-3 font-game-title text-sm font-bold text-gray-300">{detailLabels.patchHistory}</h2>
+        <STS2ChangeHistory
+          serviceLocale={serviceLocale}
+          entityType="enchantment"
+          entityId={enchantment.id}
+          changes={changes}
+          versionDiffs={versionDiffs}
+          patches={patches}
+          emptyLabel={detailLabels.noPatchHistory}
+        />
+      </div>
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
         <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>

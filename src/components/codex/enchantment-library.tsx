@@ -15,7 +15,7 @@ import {
   ENCHANTMENT_CARD_TYPE_CONFIG,
   ENCHANTMENT_CARD_TYPE_ALIASES,
 } from "@/lib/codex-types";
-import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
+import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import {
@@ -48,6 +48,7 @@ interface EnchantmentLibraryProps {
   versions?: string[];
   currentVersion?: string;
   patches?: STS2Patch[];
+  changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
   /** All codex entities — enables rich cross-references in the detail modal. */
   entities?: EntityInfo[];
@@ -55,7 +56,7 @@ interface EnchantmentLibraryProps {
   relics?: CodexRelic[];
 }
 
-export function EnchantmentLibrary({ serviceLocale, enchantments, versions, currentVersion, patches, versionDiffs, entities, relics }: EnchantmentLibraryProps) {
+export function EnchantmentLibrary({ serviceLocale, enchantments, versions, currentVersion, patches, changes, versionDiffs, entities, relics }: EnchantmentLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedCardTypes, setSelectedCardTypes] = useState<Set<EnchantmentCardTypeFilter>>(new Set());
@@ -307,7 +308,7 @@ export function EnchantmentLibrary({ serviceLocale, enchantments, versions, curr
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <EnchantmentDetail serviceLocale={serviceLocale} enchantment={selectedEnchantment} onClose={() => setSelectedEnchantment(null)} entities={entities} relics={relics} />
+            <EnchantmentDetail serviceLocale={serviceLocale} enchantment={selectedEnchantment} onClose={() => setSelectedEnchantment(null)} entities={entities} relics={relics} patches={patches} changes={changes} versionDiffs={versionDiffs} />
           </div>
         </div>
       )}

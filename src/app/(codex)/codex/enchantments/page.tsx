@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getCodexEnchantments, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
-import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -29,10 +29,11 @@ export default async function CodexEnchantmentsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [enchantments, relics, patches, versionDiffs, meta, entities] = await Promise.all([
+  const [enchantments, relics, patches, changes, versionDiffs, meta, entities] = await Promise.all([
     getCodexEnchantments({ gameLocale }),
     getCodexRelics({ gameLocale }),
     getSTS2Patches(),
+    getSTS2Changes(),
     getEntityVersionDiffs(),
     getCodexMeta(),
     loadAllEntities({ gameLocale }),
@@ -48,6 +49,7 @@ export default async function CodexEnchantmentsPage({
         versions={versions}
         currentVersion={meta.version}
         patches={patches}
+        changes={changes}
         versionDiffs={versionDiffs}
         entities={entities}
         relics={relics}
