@@ -6,6 +6,7 @@ import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -14,6 +15,7 @@ import {
   POWER_TYPE_CONFIG,
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
+import { STS2ChangeHistory } from "./sts2-change-history";
 
 function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
@@ -31,11 +33,27 @@ interface PowerDetailProps {
   gameUi: CodexGameUiLabels;
   power: CodexPower;
   initialShowBeta?: boolean;
+  patches?: STS2Patch[];
+  changes?: STS2Change[];
+  versionDiffs?: EntityVersionDiff[];
   onClose?: () => void;
 }
 
-export function PowerDetail({ serviceLocale, gameUi, power, initialShowBeta = false, onClose }: PowerDetailProps) {
+function getPowerDetailLabels(serviceLocale: ServiceLocale) {
+  return serviceLocale === "ko"
+    ? {
+        patchHistory: "패치 이력",
+        noPatchHistory: "구조화 변경 없음",
+      }
+    : {
+        patchHistory: "Patch History",
+        noPatchHistory: "No structured changes",
+      };
+}
+
+export function PowerDetail({ serviceLocale, gameUi, power, initialShowBeta = false, patches, changes, versionDiffs, onClose }: PowerDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const detailLabels = getPowerDetailLabels(serviceLocale);
   const typeConfig = POWER_TYPE_CONFIG[power.type];
   const [showBeta, setShowBeta] = useState(initialShowBeta && Boolean(power.betaImageUrl));
   const displayImageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
@@ -124,6 +142,19 @@ export function PowerDetail({ serviceLocale, gameUi, power, initialShowBeta = fa
         <div className="text-sm text-gray-200 leading-relaxed">
           <DescriptionText description={power.description} />
         </div>
+      </div>
+
+      <div className="w-full rounded-lg border border-white/10 bg-black/20 p-4">
+        <h2 className="mb-3 font-game-title text-sm font-bold text-gray-300">{detailLabels.patchHistory}</h2>
+        <STS2ChangeHistory
+          serviceLocale={serviceLocale}
+          entityType="power"
+          entityId={power.id}
+          changes={changes}
+          versionDiffs={versionDiffs}
+          patches={patches}
+          emptyLabel={detailLabels.noPatchHistory}
+        />
       </div>
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">

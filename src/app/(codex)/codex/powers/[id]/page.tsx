@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexPowers } from "@/lib/codex-data";
+import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -25,8 +26,11 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [powers, gameUi] = await Promise.all([
+  const [powers, patches, changes, versionDiffs, gameUi] = await Promise.all([
     getCodexPowers({ gameLocale }),
+    getSTS2Patches(),
+    getSTS2Changes(),
+    getEntityVersionDiffs(),
     getCodexGameUiLabels(gameLocale),
   ]);
   const power = powers.find((p) => p.id.toLowerCase() === id.toLowerCase());
@@ -54,7 +58,7 @@ export default async function PowerDetailPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PowerDetail serviceLocale={serviceLocale} gameUi={gameUi} power={power} />
+      <PowerDetail serviceLocale={serviceLocale} gameUi={gameUi} power={power} patches={patches} changes={changes} versionDiffs={versionDiffs} />
     </div>
   );
 }

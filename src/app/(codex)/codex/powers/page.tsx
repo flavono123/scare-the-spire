@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getCodexPowers } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
-import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -31,9 +31,10 @@ export default async function CodexPowersPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [powers, patches, versionDiffs, meta, gameUi] = await Promise.all([
+  const [powers, patches, changes, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexPowers({ gameLocale }),
     getSTS2Patches(),
+    getSTS2Changes(),
     getEntityVersionDiffs(),
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
@@ -51,6 +52,7 @@ export default async function CodexPowersPage({
         versions={versions}
         currentVersion={meta.version}
         patches={patches}
+        changes={changes}
         versionDiffs={versionDiffs}
       />
     </Suspense>
