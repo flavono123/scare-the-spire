@@ -1,5 +1,6 @@
 {
   "affliction-overlays/bound": [
+    "bound_border_shader.webp",
     "bound_main_preview.webp",
     "bound_main_shader.webp",
     "bound_main.webp"
@@ -11,8 +12,10 @@
     "vfx_noise_1.webp"
   ],
   "affliction-overlays/entangled": [
+    "entangled_leaf_shader.webp",
     "entangled_leaf.webp",
     "entangled_main_preview.webp",
+    "entangled_main_shader.webp",
     "entangled_main.webp"
   ],
   "affliction-overlays/galvanized": [
