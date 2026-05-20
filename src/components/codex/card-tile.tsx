@@ -278,12 +278,12 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
           <AfflictionImageLayer
             src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_beast_frame_horns_only.webp`}
             className="sts2-affliction-overlay__ringing-horns sts2-affliction-overlay__ringing-horns--left"
-            style={{ left: "-83.67%", top: "34.83%", width: "170.67%", height: "30.33%" }}
+            style={{ left: "-37%", top: "36%", width: "92%", height: "22%" }}
           />
           <AfflictionImageLayer
             src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_beast_frame_horns_only.webp`}
             className="sts2-affliction-overlay__ringing-horns sts2-affliction-overlay__ringing-horns--right"
-            style={{ left: "13%", top: "34.83%", width: "170.67%", height: "30.33%" }}
+            style={{ right: "-37%", top: "36%", width: "92%", height: "22%" }}
           />
         </>
       )}

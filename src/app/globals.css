@@ -231,7 +231,7 @@
 }
 
 .sts2-affliction-overlay__ringing-horns {
-  opacity: 0.5;
+  opacity: 0.68;
   mix-blend-mode: screen;
   filter: drop-shadow(0 0 0.35em rgba(198, 250, 255, 0.42));
   transform-origin: 50% 50%;
@@ -239,11 +239,11 @@
 }
 
 .sts2-affliction-overlay__ringing-horns--left {
-  transform: rotate(-270deg) scale(0.75);
+  transform: rotate(-90deg);
 }
 
 .sts2-affliction-overlay__ringing-horns--right {
-  transform: rotate(-450deg) scale(0.75);
+  transform: rotate(90deg);
 }
 
 .sts2-affliction-overlay__smog-field {
