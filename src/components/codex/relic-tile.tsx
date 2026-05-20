@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState } from "react";
 import Image from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
-import { getCodexServiceMessages } from "@/lib/codex-service";
-import { CodexRelic, characterOutlineFilter, getCharacterColor, type RelicPool, type RelicFilterPool } from "@/lib/codex-types";
+import { CodexRelic, characterOutlineFilter, type RelicPool } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
+import { GameHoverTip } from "./hover-tip";
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_POOLS: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
@@ -33,29 +33,18 @@ interface RelicTileProps {
 }
 
 export function RelicTile({ serviceLocale = "ko", relic, showBeta = false, onClick }: RelicTileProps) {
-  const serviceText = getCodexServiceMessages(serviceLocale);
+  void serviceLocale;
   const tileVariant = pickStableVariant(relic);
   const tileImageUrl = showBeta && relic.betaImageUrl
     ? relic.betaImageUrl
     : relic.imageUrl ?? (tileVariant ? relic.variantImageUrls?.[tileVariant] ?? null : null);
 
   const [hovered, setHovered] = useState(false);
-  const tileRef = useRef<HTMLDivElement>(null);
-  const tooltipRef = useRef<HTMLDivElement>(null);
-  const [tooltipSide, setTooltipSide] = useState<"right" | "left">("right");
-
-  const updateTooltipSide = useCallback(() => {
-    if (!tileRef.current) return;
-    const rect = tileRef.current.getBoundingClientRect();
-    const spaceRight = window.innerWidth - rect.right;
-    setTooltipSide(spaceRight < 280 ? "left" : "right");
-  }, []);
 
   return (
     <div
-      ref={tileRef}
       className="relative group"
-      onMouseEnter={() => { updateTooltipSide(); setHovered(true); }}
+      onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={() => onClick?.(tileVariant ?? undefined)}
     >
@@ -87,32 +76,11 @@ export function RelicTile({ serviceLocale = "ko", relic, showBeta = false, onCli
       {/* Hover tooltip */}
       {hovered && (
         <div
-          ref={tooltipRef}
-          className={`absolute z-50 w-64 bg-[#0c0c20]/95 border border-white/15 rounded-lg shadow-2xl p-3 pointer-events-none ${
-            tooltipSide === "right"
-              ? "left-full ml-2 top-0"
-              : "right-full mr-2 top-0"
-          }`}
+          className="pointer-events-none absolute left-full top-0 z-50 ml-3 hidden w-max max-w-80 md:block"
         >
-          <div className="font-game-title font-bold text-yellow-400 text-sm mb-1">
-            {relic.name}
-          </div>
-          {relic.nameEn !== relic.name && (
-            <div className="font-game-text text-[10px] text-gray-500 mb-1.5">
-              {relic.nameEn}
-            </div>
-          )}
-          {relic.pool !== "shared" && (
-            <div
-              className="text-[10px] font-medium mb-1.5"
-              style={{ color: getCharacterColor(relic.pool) }}
-            >
-              {serviceText.labels.pools[relic.pool as RelicFilterPool]}
-            </div>
-          )}
-          <div className="font-game-text text-xs text-gray-200 leading-relaxed">
-            <DescriptionText description={relic.description} />
-          </div>
+          <GameHoverTip title={relic.name} style={{ minWidth: 280 }}>
+            <DescriptionText description={relic.description} className="block text-left" />
+          </GameHoverTip>
         </div>
       )}
     </div>
