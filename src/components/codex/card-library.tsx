@@ -96,7 +96,7 @@ function cardMatchesFilterCategory(card: CodexCard, category: CardFilterCategory
     case "colorless":
       return card.color === "colorless" || card.color === "token";
     case "event":
-      return card.color === "event" || card.color === "quest";
+      return card.rarity === "이벤트" || card.rarity === "퀘스트" || card.type === "퀘스트" || card.color === "quest";
     case "curse":
       return card.color === "curse" || card.rarity === "저주" || card.type === "저주";
     case "status":
