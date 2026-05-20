@@ -135,6 +135,7 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
     initialVariant && relic.variantImageUrls?.[initialVariant] ? initialVariant : variantPools[0] ?? relic.pool,
   );
   const [showBeta, setShowBeta] = useState(initialShowBeta && Boolean(relic.betaImageUrl));
+  const [commentCount, setCommentCount] = useState(0);
 
   const displayImageUrl = showBeta && relic.betaImageUrl
     ? relic.betaImageUrl
@@ -358,8 +359,11 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
             )}
           </InfoRailSection>
 
-          <InfoRailSection title={serviceText.common.comments}>
-            <CommentSection threadKey={buildCodexCommentThreadKey("relic", relic.id)} />
+          <InfoRailSection title={`${serviceText.common.comments}${commentCount > 0 ? ` (${commentCount})` : ""}`}>
+            <CommentSection
+              threadKey={buildCodexCommentThreadKey("relic", relic.id)}
+              onCountChange={setCommentCount}
+            />
           </InfoRailSection>
         </aside>
       </div>
