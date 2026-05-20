@@ -18,6 +18,7 @@ import {
 } from "@/lib/i18n";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
+import { GameHoverTip } from "@/components/codex/hover-tip";
 
 // Entity types that can appear in patch notes
 export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "event" | "monster" | "encounter" | "ancient" | "epoch";
@@ -75,6 +76,90 @@ function useCoarsePointer(): boolean {
   return isCoarsePointer;
 }
 
+type PreviewPlacement = {
+  vertical: "above" | "below";
+  horizontal: "left" | "center" | "right";
+};
+
+function estimatePreviewSize(entity: EntityInfo): { width: number; height: number } {
+  if (entity.type === "card" && entity.cardData) return { width: 156, height: 230 };
+  if (entity.eventData && !entity.eventOptionDesc) return { width: 360, height: 180 };
+  if (entity.eventOptionDesc) return { width: 340, height: 180 };
+  return { width: 380, height: 240 };
+}
+
+function getPreviewPlacement(
+  rect: DOMRect,
+  entity: EntityInfo,
+  forcedVertical?: "above" | "below",
+): PreviewPlacement {
+  const { width, height } = estimatePreviewSize(entity);
+  const margin = 12;
+  const centerX = rect.left + rect.width / 2;
+  const vertical = forcedVertical ?? (rect.top < height + margin ? "below" : "above");
+  const horizontal =
+    centerX + width / 2 > window.innerWidth - margin
+      ? "right"
+      : centerX - width / 2 < margin
+        ? "left"
+        : "center";
+  return { vertical, horizontal };
+}
+
+function previewHorizontalClass(horizontal: PreviewPlacement["horizontal"]): string {
+  if (horizontal === "left") return "left-0";
+  if (horizontal === "right") return "right-0";
+  return "left-1/2 -translate-x-1/2";
+}
+
+function GameResourcePreview({
+  title,
+  subtitle,
+  imageUrl,
+  imageAlt,
+  imageClassName = "h-14 w-14 object-contain",
+  imageStyle,
+  meta,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  imageUrl?: string | null;
+  imageAlt: string;
+  imageClassName?: string;
+  imageStyle?: CSSProperties;
+  meta?: ReactNode;
+  children?: ReactNode;
+}) {
+  return (
+    <span className="flex w-max max-w-[25rem] items-start gap-2.5">
+      {imageUrl && (
+        <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-black/20">
+          <Image
+            src={imageUrl}
+            alt={imageAlt}
+            width={64}
+            height={64}
+            className={imageClassName}
+            style={imageStyle}
+          />
+        </span>
+      )}
+      <GameHoverTip title={title} style={{ minWidth: 240, maxWidth: 320 }}>
+        {subtitle && (
+          <span className="mb-1 block text-gray-400">{subtitle}</span>
+        )}
+        {meta && (
+          <span className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[12px]">
+            {meta}
+          </span>
+        )}
+        {children}
+      </GameHoverTip>
+    </span>
+  );
+}
+
 export function EntityPreview({
   entity,
   children,
@@ -100,7 +185,10 @@ export function EntityPreview({
   const [show, setShow] = useState(false);
   const [previewPressed, setPreviewPressed] = useState(false);
   const [tapPreviewStyle, setTapPreviewStyle] = useState<React.CSSProperties | undefined>();
-  const [position, setPosition] = useState<"above" | "below">(forcePosition ?? "above");
+  const [placement, setPlacement] = useState<PreviewPlacement>({
+    vertical: forcePosition ?? "above",
+    horizontal: "center",
+  });
   const ref = useRef<HTMLSpanElement>(null);
   const isCoarsePointer = useCoarsePointer();
   const useTapPreview = isCoarsePointer && !forceShow;
@@ -109,13 +197,10 @@ export function EntityPreview({
   const handleMouseEnter = useCallback(() => {
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
-      // Card tile preview is taller (~340px), other rich tooltips ~200px
-      const hasRichData = entity.relicData || entity.potionData || entity.powerData || entity.enchantmentData || entity.ancientData;
-      const threshold = entity.cardData ? 380 : entity.eventOptionDesc ? 120 : entity.eventData ? 160 : entity.encounterData ? 260 : hasRichData ? 260 : 260;
-      setPosition(rect.top < threshold ? "below" : "above");
+      setPlacement(getPreviewPlacement(rect, entity, forcePosition));
     }
     setShow(true);
-  }, [entity.cardData, entity.relicData, entity.potionData, entity.powerData, entity.enchantmentData, entity.eventData, entity.eventOptionDesc, entity.encounterData, entity.ancientData]);
+  }, [entity, forcePosition]);
 
   const hrefMap: Partial<Record<EntityType, string>> = {
     card: `/compendium/cards?card=${entity.id.toLowerCase()}`,
@@ -139,9 +224,7 @@ export function EntityPreview({
     if (!useTapPreview) return;
     event.preventDefault();
     const rect = event.currentTarget.getBoundingClientRect();
-    const isCardPreview = entity.type === "card" && Boolean(entity.cardData);
-    const estimatedWidth = isCardPreview ? 156 : entity.eventData && !entity.eventOptionDesc ? 224 : 256;
-    const estimatedHeight = isCardPreview ? 230 : entity.eventData && !entity.eventOptionDesc ? 160 : 220;
+    const { width: estimatedWidth, height: estimatedHeight } = estimatePreviewSize(entity);
     const margin = 12;
     const topSafeArea = 56;
     const x = Math.min(
@@ -160,13 +243,13 @@ export function EntityPreview({
     setPreviewPressed(false);
     setTapPreviewStyle({ left: x, top: y });
     setShow(true);
-  }, [entity.cardData, entity.eventData, entity.eventOptionDesc, entity.type, useTapPreview]);
+  }, [entity, useTapPreview]);
 
   const tooltipPos = forceShow
     ? "relative z-50 mt-1"
     : useTapPreview
       ? "fixed z-[120] pointer-events-auto"
-    : `absolute left-1/2 -translate-x-1/2 z-50 pointer-events-none ${position === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
+    : `absolute ${previewHorizontalClass(placement.horizontal)} z-50 pointer-events-none ${placement.vertical === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
   const renderTooltip = (content: ReactNode, variant: "card" | "box" = "box") => (
     <span className={tooltipPos} style={useTapPreview ? tapPreviewStyle : undefined}>
       {useTapPreview ? (
@@ -247,334 +330,198 @@ export function EntityPreview({
       )}
       {visible && entity.type === "relic" && entity.relicData && (
         renderTooltip(
-          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
-            <span className="flex items-center gap-2 mb-1">
-              {entity.relicData.imageUrl && (
-                <Image
-                  src={entity.relicData.imageUrl}
-                  alt={entity.nameKo}
-                  width={32}
-                  height={32}
-                  className="w-8 h-8 object-contain"
-                  style={{
-                    filter: characterOutlineFilter(entity.relicData.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
-                  }}
-                />
-              )}
-              <span className="block">
-                <span className="block font-game-title font-bold text-sm text-yellow-400">{entity.nameKo}</span>
-                <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
-              </span>
-            </span>
-            <span className="flex items-center gap-1.5 mb-2">
-              <span
-                className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
-                style={{
-                  backgroundColor: `${RELIC_RARITY_COLORS[entity.relicData.rarity]}20`,
-                  color: RELIC_RARITY_COLORS[entity.relicData.rarity],
-                }}
-              >
-                {gameUi?.relicCollection.rarities[entity.relicData.rarity].label ?? RELIC_RARITY_LABELS[entity.relicData.rarity]}
-              </span>
-              {entity.relicData.pool !== "shared" && (
-                <span
-                  className="font-game-text text-[10px] font-medium"
-                  style={{ color: getCharacterColor(entity.relicData.pool) }}
-                >
-                  {POOL_LABELS[entity.relicData.pool as RelicFilterPool]}
+          <GameResourcePreview
+            title={entity.nameKo}
+            subtitle={entity.nameEn}
+            imageUrl={entity.relicData.imageUrl}
+            imageAlt={entity.nameKo}
+            imageStyle={{
+              filter: characterOutlineFilter(entity.relicData.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
+            }}
+            meta={(
+              <>
+                <span style={{ color: RELIC_RARITY_COLORS[entity.relicData.rarity] }}>
+                  {gameUi?.relicCollection.rarities[entity.relicData.rarity].label ?? RELIC_RARITY_LABELS[entity.relicData.rarity]}
                 </span>
-              )}
-            </span>
-            <span className="block font-game-text text-xs text-gray-200 leading-relaxed">
-              <DescriptionText description={entity.relicData.description} />
-            </span>
-          </span>,
+                {entity.relicData.pool !== "shared" && (
+                  <span style={{ color: getCharacterColor(entity.relicData.pool) }}>
+                    {POOL_LABELS[entity.relicData.pool as RelicFilterPool]}
+                  </span>
+                )}
+              </>
+            )}
+          >
+            <DescriptionText description={entity.relicData.description} />
+          </GameResourcePreview>,
         )
       )}
       {visible && entity.type === "potion" && entity.potionData && (
         renderTooltip(
-          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
-            <span className="flex items-center gap-2 mb-1">
-              <Image
-                src={entity.potionData.imageUrl}
-                alt={entity.nameKo}
-                width={32}
-                height={32}
-                className="w-8 h-8 object-contain"
-                style={{
-                  filter: characterOutlineFilter(entity.potionData.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
-                }}
-              />
-              <span className="block">
-                <span className="block font-game-title font-bold text-sm text-yellow-400">{entity.nameKo}</span>
-                <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
-              </span>
-            </span>
-            <span className="flex items-center gap-1.5 mb-2">
-              <span
-                className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
-                style={{
-                  backgroundColor: `${POTION_RARITY_CONFIG[entity.potionData.rarity].color}20`,
-                  color: POTION_RARITY_CONFIG[entity.potionData.rarity].color,
-                }}
-              >
-                {gameUi?.potionLab.rarities[entity.potionData.rarity].label ?? POTION_RARITY_CONFIG[entity.potionData.rarity].label}
-              </span>
-              {entity.potionData.pool !== "shared" && (
-                <span
-                  className="font-game-text text-[10px] font-medium"
-                  style={{ color: getCharacterColor(entity.potionData.pool) }}
-                >
-                  {entity.potionData.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[entity.potionData.pool as RelicFilterPool]}
+          <GameResourcePreview
+            title={entity.nameKo}
+            subtitle={entity.nameEn}
+            imageUrl={entity.potionData.imageUrl}
+            imageAlt={entity.nameKo}
+            imageStyle={{
+              filter: characterOutlineFilter(entity.potionData.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
+            }}
+            meta={(
+              <>
+                <span style={{ color: POTION_RARITY_CONFIG[entity.potionData.rarity].color }}>
+                  {gameUi?.potionLab.rarities[entity.potionData.rarity].label ?? POTION_RARITY_CONFIG[entity.potionData.rarity].label}
                 </span>
-              )}
-            </span>
-            <span className="block font-game-text text-xs text-gray-200 leading-relaxed">
-              <DescriptionText description={entity.potionData.description} />
-            </span>
-          </span>,
+                {entity.potionData.pool !== "shared" && (
+                  <span style={{ color: getCharacterColor(entity.potionData.pool) }}>
+                    {entity.potionData.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[entity.potionData.pool as RelicFilterPool]}
+                  </span>
+                )}
+              </>
+            )}
+          >
+            <DescriptionText description={entity.potionData.description} />
+          </GameResourcePreview>,
         )
       )}
       {visible && entity.type === "power" && entity.powerData && (
         renderTooltip(
-          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
-            <span className="flex items-center gap-2 mb-1">
-              {entity.powerData.imageUrl && (
-                <Image
-                  src={entity.powerData.imageUrl}
-                  alt={entity.nameKo}
-                  width={32}
-                  height={32}
-                  className="w-8 h-8 object-contain drop-shadow-md"
-                />
-              )}
-              <span className="block">
-                <span className="block font-game-title font-bold text-sm" style={{ color: POWER_TYPE_CONFIG[entity.powerData.type].color }}>
-                  {entity.nameKo}
-                </span>
-                <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
-              </span>
-            </span>
-            <span className="flex items-center gap-1.5 mb-2">
-              <span
-                className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
-                style={{
-                  backgroundColor: `${POWER_TYPE_CONFIG[entity.powerData.type].color}20`,
-                  color: POWER_TYPE_CONFIG[entity.powerData.type].color,
-                }}
-              >
+          <GameResourcePreview
+            title={entity.nameKo}
+            subtitle={entity.nameEn}
+            imageUrl={entity.powerData.imageUrl}
+            imageAlt={entity.nameKo}
+            meta={(
+              <span style={{ color: POWER_TYPE_CONFIG[entity.powerData.type].color }}>
                 {gameUi?.powers.types[entity.powerData.type].label || POWER_TYPE_CONFIG[entity.powerData.type].label}
               </span>
-            </span>
-            <span className="block font-game-text text-xs text-gray-200 leading-relaxed">
-              <DescriptionText description={entity.powerData.description} />
-            </span>
-          </span>,
+            )}
+          >
+            <DescriptionText description={entity.powerData.description} />
+          </GameResourcePreview>,
         )
       )}
       {visible && entity.type === "enchantment" && entity.enchantmentData && (
         renderTooltip(
-          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
-            <span className="flex items-center gap-2 mb-1">
-              {entity.enchantmentData.imageUrl && (
-                <Image
-                  src={entity.enchantmentData.imageUrl}
-                  alt={entity.nameKo}
-                  width={32}
-                  height={32}
-                  className="w-8 h-8 object-contain drop-shadow-md"
-                />
-              )}
-              <span className="block">
-                <span className="block font-game-title font-bold text-sm text-purple-400">{entity.nameKo}</span>
-                <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
-              </span>
-            </span>
-            <span className="flex items-center gap-1.5 mb-2">
-              <span
-                className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
-                style={{
-                  backgroundColor: `${ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].color}20`,
-                  color: ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].color,
-                }}
-              >
-                {ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].label}
-              </span>
-              {entity.enchantmentData.isStackable && (
-                <span className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400">
-                  중첩
+          <GameResourcePreview
+            title={entity.nameKo}
+            subtitle={entity.nameEn}
+            imageUrl={entity.enchantmentData.imageUrl}
+            imageAlt={entity.nameKo}
+            meta={(
+              <>
+                <span style={{ color: ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].color }}>
+                  {ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].label}
                 </span>
-              )}
-            </span>
-            <span className="block font-game-text text-xs text-gray-200 leading-relaxed">
-              <DescriptionText description={entity.enchantmentData.description} />
-            </span>
-          </span>,
+                {entity.enchantmentData.isStackable && (
+                  <span className="text-amber-400">중첩</span>
+                )}
+              </>
+            )}
+          >
+            <DescriptionText description={entity.enchantmentData.description} />
+          </GameResourcePreview>,
         )
       )}
       {visible && entity.type === "event" && entity.eventData && !entity.eventOptionDesc && (
         renderTooltip(
-          <span className="block w-56 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95">
-            {entity.eventData.imageUrl && (
-              <span className="block relative w-full h-28">
-                <Image
-                  src={entity.eventData.imageUrl}
-                  alt={entity.nameKo}
-                  fill
-                  sizes="224px"
-                  className="object-cover"
-                />
-                <span className="absolute inset-0 bg-gradient-to-t from-[#0c0c20] to-transparent" />
-                <span className="absolute bottom-2 left-3 right-3">
-                  <span className="block font-game-title font-bold text-sm text-yellow-400 drop-shadow-lg">{entity.nameKo}</span>
-                  {entity.nameEn && <span className="block font-game-text text-[10px] text-gray-400 drop-shadow-lg">{entity.nameEn}</span>}
-                </span>
-              </span>
-            )}
-            {!entity.eventData.imageUrl && (
-              <span className="block p-2">
-                <span className="block font-game-title font-bold text-sm text-yellow-400">{entity.nameKo}</span>
-              </span>
-            )}
-          </span>,
+          <GameResourcePreview
+            title={entity.nameKo}
+            subtitle={entity.nameEn}
+            imageUrl={entity.eventData.imageUrl}
+            imageAlt={entity.nameKo}
+            imageClassName="h-14 w-14 rounded object-cover"
+          />,
         )
       )}
       {visible && entity.eventOptionDesc && (
         renderTooltip(
-          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-amber-500/20 bg-[#0c0c20]/95 p-3">
-            <span className="block font-game-title font-bold text-sm text-amber-400 mb-1">{entity.nameKo}</span>
-            <span className="block font-game-text text-xs text-gray-200 leading-relaxed">
-              <DescriptionText description={entity.eventOptionDesc} />
-            </span>
-          </span>,
+          <GameResourcePreview
+            title={entity.nameKo}
+            imageUrl={entity.imageUrl}
+            imageAlt={entity.nameKo}
+          >
+            <DescriptionText description={entity.eventOptionDesc} />
+          </GameResourcePreview>,
         )
       )}
       {visible && entity.type === "monster" && entity.monsterData && (
         renderTooltip(
-          <span className={`block ${forceShow ? "w-fit" : "w-64"} rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3`}>
-            <span className="flex items-center gap-2 mb-1">
-              {(entity.monsterData.bossImageUrl || entity.monsterData.imageUrl) && (
-                <Image
-                  src={entity.monsterData.bossImageUrl ?? entity.monsterData.imageUrl!}
-                  alt={entity.nameKo}
-                  width={32}
-                  height={32}
-                  className="w-8 h-8 object-cover rounded"
-                />
-              )}
-              <span className="block">
-                <span className="block font-game-title font-bold text-sm text-yellow-400">{entity.nameKo}</span>
-                <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
-              </span>
-            </span>
-            <span className="flex items-center gap-1.5 mb-2">
-              <span
-                className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
-                style={{
-                  backgroundColor: `${MONSTER_TYPE_CONFIG[entity.monsterData.type].color}20`,
-                  color: MONSTER_TYPE_CONFIG[entity.monsterData.type].color,
-                }}
-              >
-                {gameUi?.monsterTypes[entity.monsterData.type].label ?? MONSTER_TYPE_CONFIG[entity.monsterData.type].label}
-              </span>
-              {entity.monsterData.minHp != null && entity.monsterData.minHp !== 9999 && (
-                <span className="font-game-text text-[10px] text-gray-400">
-                  HP {entity.monsterData.maxHp && entity.monsterData.maxHp !== entity.monsterData.minHp
-                    ? `${entity.monsterData.minHp}-${entity.monsterData.maxHp}`
-                    : entity.monsterData.minHp}
+          <GameResourcePreview
+            title={entity.nameKo}
+            subtitle={entity.nameEn}
+            imageUrl={entity.monsterData.bossImageUrl ?? entity.monsterData.imageUrl}
+            imageAlt={entity.nameKo}
+            imageClassName="h-14 w-14 rounded object-cover"
+            meta={(
+              <>
+                <span style={{ color: MONSTER_TYPE_CONFIG[entity.monsterData.type].color }}>
+                  {gameUi?.monsterTypes[entity.monsterData.type].label ?? MONSTER_TYPE_CONFIG[entity.monsterData.type].label}
                 </span>
-              )}
-            </span>
-            {entity.monsterData.bestiaryMoves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).length > 0 && (
-              <span className="block font-game-text text-xs text-gray-300 leading-relaxed">
-                {entity.monsterData.bestiaryMoves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).slice(0, 4).map((m) => m.name).join(", ")}
-              </span>
+                {entity.monsterData.minHp != null && entity.monsterData.minHp !== 9999 && (
+                  <span className="text-gray-300">
+                    HP {entity.monsterData.maxHp && entity.monsterData.maxHp !== entity.monsterData.minHp
+                      ? `${entity.monsterData.minHp}-${entity.monsterData.maxHp}`
+                      : entity.monsterData.minHp}
+                  </span>
+                )}
+              </>
             )}
-          </span>,
+          >
+            {entity.monsterData.bestiaryMoves.filter((m) => !["NOTHING", "SPAWNED", "DEAD"].includes(m.id)).slice(0, 4).map((m) => m.name).join(", ")}
+          </GameResourcePreview>,
         )
       )}
       {visible && entity.type === "encounter" && entity.encounterData && (
         renderTooltip(
-          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-white/15 bg-[#0c0c20]/95 p-3">
-            <span className="block">
-              <span className="block font-game-title font-bold text-sm text-yellow-400">{entity.nameKo}</span>
-              <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
-            </span>
-            <span className="flex items-center gap-1.5 mt-1 mb-2">
-              <span
-                className="font-game-text text-[10px] font-medium px-1.5 py-0.5 rounded"
-                style={{
-                  backgroundColor: `${ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].color}20`,
-                  color: ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].color,
-                }}
-              >
-                {gameUi?.encounterRoomTypes[entity.encounterData.roomType] ?? ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].label}
-              </span>
-              {entity.encounterData.act && (
-                <span className={`font-game-text text-[10px] ${(EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).color}`}>
-                  {gameUi?.acts[entity.encounterData.act] ?? (EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
+          <GameResourcePreview
+            title={entity.nameKo}
+            subtitle={entity.nameEn}
+            imageUrl={entity.imageUrl}
+            imageAlt={entity.nameKo}
+            meta={(
+              <>
+                <span style={{ color: ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].color }}>
+                  {gameUi?.encounterRoomTypes[entity.encounterData.roomType] ?? ENCOUNTER_ROOM_TYPE_CONFIG[entity.encounterData.roomType].label}
                 </span>
-              )}
-              {entity.encounterData.isWeak && (
-                <span className="font-game-text text-[10px] text-green-400">쉬운 전투</span>
-              )}
-            </span>
-            <span className="block font-game-text text-xs text-gray-300 leading-relaxed">
-              {Array.from(new Map(entity.encounterData.monsters.map((m) => [m.id, m])).values()).map((m) => m.name).join(", ")}
-            </span>
-          </span>,
+                {entity.encounterData.act && (
+                  <span className={(EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).color}>
+                    {gameUi?.acts[entity.encounterData.act] ?? (EVENT_ACT_CONFIG[entity.encounterData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
+                  </span>
+                )}
+                {entity.encounterData.isWeak && <span className="text-green-400">쉬운 전투</span>}
+              </>
+            )}
+          >
+            {Array.from(new Map(entity.encounterData.monsters.map((m) => [m.id, m])).values()).map((m) => m.name).join(", ")}
+          </GameResourcePreview>,
         )
       )}
       {visible && entity.type === "ancient" && entity.ancientData && (
         renderTooltip(
-          <span className="block w-64 rounded-lg overflow-hidden shadow-2xl border border-blue-500/20 bg-[#0c0c20]/95">
-            {entity.ancientData.imageUrl && (
-              <span className="block relative w-full h-28">
-                <Image
-                  src={entity.ancientData.imageUrl}
-                  alt={entity.nameKo}
-                  fill
-                  sizes="256px"
-                  className="object-cover"
-                />
-                <span className="absolute inset-0 bg-gradient-to-t from-[#0c0c20] to-transparent" />
+          <GameResourcePreview
+            title={entity.nameKo}
+            subtitle={entity.nameEn}
+            imageUrl={entity.ancientData.imageUrl}
+            imageAlt={entity.nameKo}
+            imageClassName="h-14 w-14 rounded object-cover"
+            meta={entity.ancientData.act ? (
+              <span className={(EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).color}>
+                {gameUi?.acts[entity.ancientData.act] ?? (EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
               </span>
-            )}
-            <span className="block p-3">
-              <span className="block font-game-title font-bold text-sm text-blue-400">{entity.nameKo}</span>
-              <span className="block font-game-text text-[10px] text-gray-500">{entity.nameEn}</span>
-              {entity.ancientData.epithet && (
-                <span className="block font-game-text text-[10px] text-gray-400 mt-0.5">{entity.ancientData.epithet}</span>
-              )}
-              {entity.ancientData.act && (
-                <span className={`inline-block mt-2 font-game-text text-[10px] ${(EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).color}`}>
-                  {gameUi?.acts[entity.ancientData.act] ?? (EVENT_ACT_CONFIG[entity.ancientData.act] ?? EVENT_ACT_UNKNOWN).labelKo}
-                </span>
-              )}
-            </span>
-          </span>,
+            ) : undefined}
+          >
+            {entity.ancientData.epithet}
+          </GameResourcePreview>,
         )
       )}
       {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && !entity.ancientData && entity.imageUrl && (
         renderTooltip(
-          <span className="block rounded-lg overflow-hidden shadow-2xl border border-yellow-500/20 bg-[#0a0a1a]">
-            <Image
-              src={entity.imageUrl}
-              alt={entity.nameKo}
-              width={280}
-              height={173}
-              className="block h-auto max-w-[280px]"
-              unoptimized
-            />
-            <span className="block px-2 py-1 text-center">
-              <span className="font-game-title text-xs font-bold text-yellow-400">
-                {entity.nameKo}
-              </span>
-              <span className="font-game-text text-[10px] text-muted-foreground ml-1">
-                {entity.nameEn}
-              </span>
-            </span>
-          </span>,
+          <GameResourcePreview
+            title={entity.nameKo}
+            subtitle={entity.nameEn}
+            imageUrl={entity.imageUrl}
+            imageAlt={entity.nameKo}
+            imageClassName="h-14 w-14 rounded object-cover"
+          />,
         )
       )}
     </span>
