@@ -1,4 +1,32 @@
 {
+  "affliction-overlays/bound": [
+    "bound_main.webp"
+  ],
+  "affliction-overlays/common": [
+    "border_glow.webp",
+    "border_vignette.webp",
+    "mask.webp",
+    "vfx_noise_1.webp"
+  ],
+  "affliction-overlays/entangled": [
+    "entangled_leaf.webp",
+    "entangled_main.webp"
+  ],
+  "affliction-overlays/galvanized": [
+    "galvanized_lightning_corner.webp",
+    "galvanized_main.webp"
+  ],
+  "affliction-overlays/hexed": [
+    "hexed_main.webp"
+  ],
+  "affliction-overlays/ringing": [
+    "ringing_beast_frame_horns_only.webp",
+    "ringing_main.webp"
+  ],
+  "affliction-overlays/smog": [
+    "smog_mask_outer.webp",
+    "smog_mask.webp"
+  ],
   "ancient-nodes": [
     "ancient_node_darv_outline.webp",
     "ancient_node_darv.webp",
@@ -34,10 +62,6 @@
     "pael_bg.webp",
     "tanx_bg.webp",
     "tezcatara_bg.webp"
-  ],
-  "ancients-event": [
-    "nonupeipe.webp",
-    "vakuu.webp"
   ],
   "boss-nodes": [
     "boss_node_aeonglass_outline.webp",
@@ -81,6 +105,10 @@
     "the_kin_boss.webp",
     "vantom_boss.webp",
     "waterfall_giant_boss.webp"
+  ],
+  "card-overlays/infection": [
+    "base.webp",
+    "overlay.webp"
   ],
   "cards": [
     "abrasive.png",
@@ -1969,6 +1997,62 @@
     "silent7_epoch.webp",
     "underdocks_epoch.webp"
   ],
+  "event-vfx": [
+    "bedlam_beacon_foreground.webp",
+    "byrdonis_feathers.webp",
+    "byrdonis_nest_shine.webp",
+    "doll_room_foreground.webp",
+    "doll_room_whisper_bubble_l.webp",
+    "doll_room_whisper_bubble_r.webp",
+    "doll_room_whispers.webp",
+    "infested_automaton_flies.webp",
+    "potion_courier_x.webp",
+    "self_help_book_shine.webp",
+    "tablet_of_truth_rock.webp",
+    "the_future_of_potions_foreground.webp",
+    "the_future_of_potions_glow.webp",
+    "trial_light_beam.webp",
+    "trial_merchant.webp",
+    "trial_noble.webp",
+    "trial_nondescript.webp",
+    "trial_stand_light.webp",
+    "trial_top_layer.webp"
+  ],
+  "event-vfx/dense_vegetation": [
+    "vfx_dense_vegetation_bug_00.webp",
+    "vfx_dense_vegetation_bug_02.webp",
+    "vfx_dense_vegetation_bug_03.webp",
+    "vfx_dense_vegetation_bug_04.webp",
+    "vfx_dense_vegetation_bug_05.webp"
+  ],
+  "event-vfx/morphic_grove": [
+    "morphic_grove_foreground.webp"
+  ],
+  "event-vfx/symbiote": [
+    "eye_01.webp",
+    "eye_02.webp",
+    "eye_03.webp",
+    "symbiote_eye_blink_01.webp",
+    "symbiote_eye_blink_02.webp",
+    "symbiote_eye_blink_03.webp",
+    "symbiote_eye_blink_06.webp",
+    "symbiote_eye_blink_09.webp",
+    "symbiote_eye_blink_13.webp",
+    "symbiote_eye.webp",
+    "symbiote_highlight.webp"
+  ],
+  "event-vfx/tea_master": [
+    "tea_master_0.webp",
+    "tea_master_01.webp",
+    "tea_master_02.webp",
+    "tea_master_03.webp",
+    "tea_master_04.webp",
+    "tea_master_05.webp",
+    "tea_master_06.webp",
+    "tea_master_07.webp",
+    "tea_master_08.webp",
+    "tea_master_09.webp"
+  ],
   "events": [
     "abyssal_baths.webp",
     "amalgamator.webp",
@@ -2020,6 +2104,9 @@
     "this_or_that.webp",
     "tinker_time.webp",
     "trash_heap.webp",
+    "trial_merchant.webp",
+    "trial_noble.webp",
+    "trial_nondescript.webp",
     "trial_started.webp",
     "trial.webp",
     "unrest_site.webp",
@@ -2426,6 +2513,9 @@
     "merchant.webp",
     "neow.webp",
     "tezcatara.webp"
+  ],
+  "patches": [
+    "default-art.jpg"
   ],
   "potions": [
     "ashwater.webp",
