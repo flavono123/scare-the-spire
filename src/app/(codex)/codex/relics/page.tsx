@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getCodexAncients, getCodexCharacters, getCodexEvents, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
-import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -32,12 +32,13 @@ export default async function CodexRelicsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [relics, characters, ancients, events, patches, versionDiffs, meta, entities, gameUi] = await Promise.all([
+  const [relics, characters, ancients, events, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
     getCodexRelics({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getCodexAncients({ gameLocale }),
     getCodexEvents({ gameLocale }),
     getSTS2Patches(),
+    getSTS2Changes(),
     getEntityVersionDiffs(),
     getCodexMeta(),
     loadAllEntities({ gameLocale }),
@@ -58,6 +59,7 @@ export default async function CodexRelicsPage({
         versions={versions}
         currentVersion={meta.version}
         patches={patches}
+        changes={changes}
         versionDiffs={versionDiffs}
         entities={entities}
         relatedEvents={events}

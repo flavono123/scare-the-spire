@@ -23,7 +23,7 @@ import {
   POOL_ALIASES,
   RARITY_ALIASES,
 } from "@/lib/codex-types";
-import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
+import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { reconstructRelicAtVersion } from "@/lib/entity-versioning";
 import {
@@ -66,13 +66,14 @@ interface RelicLibraryProps {
   versions?: string[];
   currentVersion?: string;
   patches?: STS2Patch[];
+  changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
   /** All codex entities — enables rich cross-references in the detail modal. */
   entities?: EntityInfo[];
   relatedEvents?: CodexEvent[];
 }
 
-export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters, ancients, versions, currentVersion, patches, versionDiffs, entities, relatedEvents = [] }: RelicLibraryProps) {
+export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters, ancients, versions, currentVersion, patches, changes, versionDiffs, entities, relatedEvents = [] }: RelicLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<RelicPoolFilter>>(new Set());
@@ -473,6 +474,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
               entities={entities}
               relatedEvents={relatedEvents}
               patches={patches}
+              changes={changes}
               versionDiffs={versionDiffs}
             />
           </div>

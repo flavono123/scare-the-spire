@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexCharacters, getCodexEvents, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
+import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -47,11 +48,14 @@ export default async function RelicDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [relics, characters, events, entities, gameUi] = await Promise.all([
+  const [relics, characters, events, entities, patches, changes, versionDiffs, gameUi] = await Promise.all([
     getCodexRelics({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getCodexEvents({ gameLocale }),
     loadAllEntities({ gameLocale }),
+    getSTS2Patches(),
+    getSTS2Changes(),
+    getEntityVersionDiffs(),
     getCodexGameUiLabels(gameLocale),
   ]);
   const relic = relics.find((r) => r.id.toLowerCase() === id.toLowerCase());
@@ -71,7 +75,7 @@ export default async function RelicDetailPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <RelicDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.relicCollectionTitle} relic={relic} poolLabels={poolLabels} entities={entities} relatedEvents={events} />
+      <RelicDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.relicCollectionTitle} relic={relic} poolLabels={poolLabels} entities={entities} relatedEvents={events} patches={patches} changes={changes} versionDiffs={versionDiffs} />
     </div>
   );
 }

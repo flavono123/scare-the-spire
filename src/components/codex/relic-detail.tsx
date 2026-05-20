@@ -9,7 +9,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import type { EntityVersionDiff, STS2Patch } from "@/lib/types";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
   CodexEvent,
   CodexRelic,
@@ -26,6 +26,7 @@ import { EntityReferenceLinks } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
 import { RichDescription } from "./rich-description";
 import { getRelatedEventIdsForRelic } from "@/lib/codex-references";
+import { STS2ChangeHistory } from "./sts2-change-history";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -77,30 +78,6 @@ function getRelicDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-function formatDiffField(field: string, serviceLocale: ServiceLocale): string {
-  const labels: Record<string, { ko: string; en: string }> = {
-    name: { ko: "이름", en: "Name" },
-    description: { ko: "효과", en: "Effect" },
-    flavor: { ko: "게임 문구", en: "Game text" },
-    rarity: { ko: "희귀도", en: "Rarity" },
-    pool: { ko: "출처", en: "Source" },
-    imageUrl: { ko: "이미지", en: "Image" },
-  };
-  const label = labels[field];
-  return label ? label[serviceLocale] : field;
-}
-
-function getPatchLabel(
-  patchVersion: string,
-  patches: readonly STS2Patch[] | undefined,
-  serviceLocale: ServiceLocale,
-): string {
-  const patch = patches?.find((p) => p.version === patchVersion || p.id === patchVersion);
-  if (!patch) return patchVersion;
-  const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
-  return title ? `${patchVersion} · ${title}` : patchVersion;
-}
-
 interface RelicDetailProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
@@ -114,12 +91,13 @@ interface RelicDetailProps {
   entities?: EntityInfo[];
   relatedEvents?: CodexEvent[];
   patches?: STS2Patch[];
+  changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
 }
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
-export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedEvents = [], patches, versionDiffs }: RelicDetailProps) {
+export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedEvents = [], patches, changes, versionDiffs }: RelicDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getRelicDetailLabels(serviceLocale);
   // Don't link the relic to itself in its own description
@@ -148,13 +126,6 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
 
   const rarityColor = RELIC_RARITY_COLORS[relic.rarity];
   const poolColor = relic.pool !== "shared" ? getCharacterColor(relic.pool) : undefined;
-  const relicPatchHistory = useMemo(
-    () =>
-      (versionDiffs ?? []).filter(
-        (diff) => diff.entityType === "relic" && diff.entityId === relic.id,
-      ),
-    [relic.id, versionDiffs],
-  );
   const relatedEventTargets = getRelatedEventIdsForRelic(relic.id).map((eventId) => {
     const relatedEvent = relatedEvents.find((event) => event.id === eventId) ?? null;
     const href = `/compendium/events/${eventId.toLowerCase()}`;
@@ -330,33 +301,15 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
           />
 
           <InfoRailSection title={detailLabels.patchHistory}>
-            {relicPatchHistory.length > 0 ? (
-              <div className="space-y-2">
-                {relicPatchHistory.map((diff) => (
-                  <Link
-                    key={`${diff.patch}-${diff.entityId}`}
-                    href={localizeHref(`/patches/${diff.patch}`, serviceLocale)}
-                    className="block rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-gray-300 transition-colors hover:border-yellow-500/40 hover:text-yellow-300"
-                  >
-                    <div className="font-game-title text-xs text-yellow-500">
-                      {getPatchLabel(diff.patch, patches, serviceLocale)}
-                    </div>
-                    <div className="mt-1 flex flex-wrap gap-1">
-                      {diff.diffs.map((fieldDiff) => (
-                        <span
-                          key={`${diff.patch}-${fieldDiff.field}-${fieldDiff.upgraded ? "upgraded" : "base"}`}
-                          className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] text-gray-400"
-                        >
-                          {formatDiffField(fieldDiff.field, serviceLocale)}
-                        </span>
-                      ))}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <p className="font-game-text text-sm text-gray-500">{detailLabels.noPatchHistory}</p>
-            )}
+            <STS2ChangeHistory
+              serviceLocale={serviceLocale}
+              entityType="relic"
+              entityId={relic.id}
+              changes={changes}
+              versionDiffs={versionDiffs}
+              patches={patches}
+              emptyLabel={detailLabels.noPatchHistory}
+            />
           </InfoRailSection>
 
           <InfoRailSection title={`${serviceText.common.comments}${commentCount > 0 ? ` (${commentCount})` : ""}`}>
