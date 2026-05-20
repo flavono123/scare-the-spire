@@ -14,6 +14,12 @@ sys.path.insert(0, str(ROOT))
 from scripts.lib.ctex import ctex_to_image, parse_import_file
 from scripts.lib.pck import PCKReader, default_pck_path
 
+try:
+    from PIL import Image, ImageChops
+except ImportError:  # pragma: no cover
+    Image = None  # type: ignore
+    ImageChops = None  # type: ignore
+
 
 OUT_ROOT = ROOT / "public/images/sts2/affliction-overlays"
 
@@ -90,6 +96,49 @@ def extract_image(reader: PCKReader, source: str):
     return image
 
 
+def channel_alpha(image, color: tuple[int, int, int], mode: str):
+    if Image is None or ImageChops is None:
+        raise RuntimeError("Pillow is required to build preview textures")
+
+    r, g, b, _a = image.convert("RGBA").split()
+    if mode == "rg":
+        alpha = ImageChops.lighter(r, g)
+        alpha = alpha.point(lambda v: max(0, min(255, int((v - 18) * 2.4))))
+    else:
+        alpha = ImageChops.lighter(ImageChops.lighter(r, g), b)
+        alpha = alpha.point(lambda v: max(0, min(190, int((v - 20) * 1.5))))
+    base = Image.new("RGBA", image.size, (*color, 0))
+    base.putalpha(alpha)
+    return base
+
+
+def write_preview_textures(output_root: Path, dry_run: bool) -> int:
+    previews = [
+        (
+            output_root / "galvanized/galvanized_main.webp",
+            output_root / "galvanized/galvanized_main_preview.webp",
+            (106, 220, 255),
+            "rg",
+        ),
+        (
+            output_root / "ringing/ringing_main.webp",
+            output_root / "ringing/ringing_main_preview.webp",
+            (185, 246, 255),
+            "rgb",
+        ),
+    ]
+    written = 0
+    for source, output, color, mode in previews:
+        if dry_run:
+            print(f"would write {output}")
+            continue
+        image = Image.open(source).convert("RGBA")
+        preview = channel_alpha(image, color, mode)
+        preview.save(output, "WEBP", lossless=True)
+        written += 1
+    return written
+
+
 def main() -> int:
     args = parse_args()
     output_root = Path(args.output_root)
@@ -107,6 +156,7 @@ def main() -> int:
             image.save(target.output, "WEBP", lossless=True)
             written += 1
 
+    written += write_preview_textures(output_root, args.dry_run)
     print(f"affliction overlay textures written={written}")
     return 0
 
