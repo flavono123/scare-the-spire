@@ -231,6 +231,30 @@
   animation: sts2-affliction-ringing-border 1.8s ease-in-out infinite;
 }
 
+.sts2-affliction-overlay--ringing::after {
+  content: "";
+  position: absolute;
+  inset: 0 -20.33%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(225, 91, 57, 0.34) 0 1px,
+      rgba(225, 91, 57, 0.08) 1px 3px,
+      transparent 3px 5px
+    ),
+    rgba(225, 91, 57, 0.18);
+  mix-blend-mode: screen;
+  opacity: 0.42;
+  pointer-events: none;
+  -webkit-mask-image: url("/images/sts2/affliction-overlays/common/border_vignette.webp");
+  mask-image: url("/images/sts2/affliction-overlays/common/border_vignette.webp");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  animation: sts2-affliction-ringing-border 2.2s ease-in-out infinite reverse;
+}
+
 .sts2-affliction-overlay__smog-field {
   mix-blend-mode: screen;
   opacity: 0.38;
@@ -356,6 +380,7 @@
   .sts2-affliction-overlay__main,
   .sts2-affliction-overlay__galvanized-corner,
   .sts2-affliction-overlay--ringing::before,
+  .sts2-affliction-overlay--ringing::after,
   .sts2-affliction-overlay__smog-field {
     animation: none;
   }
