@@ -58,6 +58,24 @@ const ANCIENT_FLAME_SHEET = "/images/game-assets/card-misc/ancient_card_flame_sh
 const INFECTION_CARD_ID = "INFECTION";
 const INFECTION_OVERLAY_BASE = "/images/sts2/card-overlays/infection/base.webp";
 const INFECTION_OVERLAY_ANIMATED = "/images/sts2/card-overlays/infection/overlay.webp";
+const AFFLICTION_OVERLAY_BASE = "/images/sts2/affliction-overlays";
+const AFFLICTION_OVERLAY_IDS = new Set([
+  "BOUND",
+  "ENTANGLED",
+  "GALVANIZED",
+  "HEXED",
+  "RINGING",
+  "SMOG",
+]);
+
+const AFFLICTION_COLORS: Record<string, { vignette: string; glow: string }> = {
+  BOUND: { vignette: "rgba(21, 126, 66, 0.22)", glow: "rgba(141, 255, 77, 0.58)" },
+  ENTANGLED: { vignette: "rgba(92, 29, 0, 0.34)", glow: "rgba(216, 122, 91, 0.56)" },
+  GALVANIZED: { vignette: "rgba(0, 162, 255, 0.25)", glow: "rgba(128, 223, 255, 0.7)" },
+  HEXED: { vignette: "rgba(43, 0, 81, 0.43)", glow: "rgba(165, 121, 219, 0.68)" },
+  RINGING: { vignette: "rgba(14, 0, 26, 0.34)", glow: "rgba(174, 252, 255, 0.66)" },
+  SMOG: { vignette: "rgba(51, 0, 64, 0.25)", glow: "rgba(202, 122, 202, 0.62)" },
+};
 
 const PORTRAIT_BORDER_ASSETS: Record<string, string> = {
   공격: "/images/game-assets/card-portraits/card_portrait_border_attack.png",
@@ -96,6 +114,187 @@ function InfectionCardOverlay() {
           height: "108.29%",
         }}
       />
+    </div>
+  );
+}
+
+function AfflictionImageLayer({
+  src,
+  className,
+  style,
+  imageClassName = "object-fill",
+}: {
+  src: string;
+  className?: string;
+  style?: CSSProperties;
+  imageClassName?: string;
+}) {
+  return (
+    <span aria-hidden="true" className={`absolute ${className ?? ""}`} style={style}>
+      <Image src={src} alt="" fill className={imageClassName} />
+    </span>
+  );
+}
+
+function AfflictionFrameTint({ id }: { id: string }) {
+  const colors = AFFLICTION_COLORS[id] ?? AFFLICTION_COLORS.BOUND;
+  return (
+    <>
+      <span
+        aria-hidden="true"
+        className="sts2-affliction-overlay__vignette"
+        style={{ backgroundColor: colors.vignette }}
+      />
+      <span
+        aria-hidden="true"
+        className="sts2-affliction-overlay__glow"
+        style={{ backgroundColor: colors.glow }}
+      />
+    </>
+  );
+}
+
+function EntangledLeaves() {
+  const leaves = [
+    { x: -34, y: -51.7, r: -30, s: 0.54 },
+    { x: -27.3, y: -49.1, r: 75.8, s: 0.41 },
+    { x: 35, y: -48.6, r: -62.5, s: 0.42 },
+    { x: 49.3, y: -33.2, r: 35.6, s: 0.54 },
+    { x: 49.3, y: -7.8, r: -33.9, s: 0.54 },
+    { x: 48.3, y: 19.2, r: -65.8, s: 0.4 },
+    { x: 48.7, y: 34.4, r: -4.1, s: 0.54 },
+    { x: 36.3, y: 48.1, r: -50.4, s: 0.44 },
+    { x: -48.3, y: 26.1, r: 28.8, s: 0.62 },
+    { x: -51, y: 6.4, r: -72, s: 0.68 },
+    { x: -52.7, y: -4, r: 28.2, s: 0.54 },
+  ];
+
+  return (
+    <>
+      {leaves.map((leaf, index) => (
+        <AfflictionImageLayer
+          key={index}
+          src={`${AFFLICTION_OVERLAY_BASE}/entangled/entangled_leaf.webp`}
+          className="sts2-affliction-overlay__entangled-leaf"
+          style={{
+            left: `${50 + leaf.x}%`,
+            top: `${50 + leaf.y}%`,
+            width: `${(128 / 300) * 100}%`,
+            aspectRatio: "1",
+            transform: `translate(-50%, -50%) rotate(${leaf.r}deg) scale(${leaf.s})`,
+            animationDelay: `${index * -0.23}s`,
+          }}
+        />
+      ))}
+    </>
+  );
+}
+
+function GalvanizedCorner({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: CSSProperties;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`absolute sts2-affliction-overlay__galvanized-corner ${className ?? ""}`}
+      style={{
+        backgroundImage: `url("${AFFLICTION_OVERLAY_BASE}/galvanized/galvanized_lightning_corner.webp")`,
+        ...style,
+      }}
+    />
+  );
+}
+
+function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null | undefined }) {
+  const id = afflictionId?.toUpperCase();
+  if (!id || !AFFLICTION_OVERLAY_IDS.has(id)) return null;
+
+  return (
+    <div
+      aria-hidden="true"
+      className={`absolute inset-0 z-[3] pointer-events-none overflow-visible sts2-affliction-overlay sts2-affliction-overlay--${id.toLowerCase()}`}
+    >
+      <div className="absolute inset-0 overflow-hidden sts2-affliction-overlay__mask">
+        <AfflictionFrameTint id={id} />
+
+        {id === "BOUND" && (
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/bound/bound_main.webp`}
+            className="sts2-affliction-overlay__main sts2-affliction-overlay__main--bound"
+            style={{ left: "-8%", top: "-4%", width: "116%", height: "108%" }}
+          />
+        )}
+
+        {id === "ENTANGLED" && (
+          <>
+            <AfflictionImageLayer
+              src={`${AFFLICTION_OVERLAY_BASE}/entangled/entangled_main.webp`}
+              className="sts2-affliction-overlay__main sts2-affliction-overlay__main--entangled"
+              style={{ left: "-10%", top: "-5%", width: "120%", height: "110%" }}
+            />
+            <EntangledLeaves />
+          </>
+        )}
+
+        {id === "GALVANIZED" && (
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/galvanized/galvanized_main.webp`}
+            className="sts2-affliction-overlay__main sts2-affliction-overlay__main--galvanized"
+            style={{ left: "-20.33%", top: 0, width: "140.67%", height: "100%" }}
+          />
+        )}
+
+        {id === "HEXED" && (
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/hexed/hexed_main.webp`}
+            className="sts2-affliction-overlay__main sts2-affliction-overlay__main--hexed"
+            style={{ left: "-20.33%", top: 0, width: "140.67%", height: "100%" }}
+          />
+        )}
+
+        {id === "RINGING" && (
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_main.webp`}
+            className="sts2-affliction-overlay__main sts2-affliction-overlay__main--ringing"
+            style={{ left: "-20.33%", top: 0, width: "140.67%", height: "100%" }}
+          />
+        )}
+
+        {id === "SMOG" && (
+          <>
+            <span aria-hidden="true" className="absolute inset-0 sts2-affliction-overlay__smog-field" />
+            <span aria-hidden="true" className="absolute sts2-affliction-overlay__smog-field sts2-affliction-overlay__smog-field--outer" />
+          </>
+        )}
+      </div>
+
+      {id === "GALVANIZED" && (
+        <>
+          <GalvanizedCorner style={{ left: "-6%", top: "-4%", transform: "rotate(0deg)" }} />
+          <GalvanizedCorner style={{ right: "-6%", top: "-4%", transform: "rotate(90deg)" }} />
+          <GalvanizedCorner style={{ right: "-6%", bottom: "-4%", transform: "rotate(180deg)" }} />
+          <GalvanizedCorner style={{ left: "-6%", bottom: "-4%", transform: "rotate(270deg)" }} />
+        </>
+      )}
+
+      {id === "RINGING" && (
+        <>
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_beast_frame_horns_only.webp`}
+            className="sts2-affliction-overlay__ringing-horns sts2-affliction-overlay__ringing-horns--left"
+            style={{ left: "-83.67%", top: "34.83%", width: "170.67%", height: "30.33%" }}
+          />
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_beast_frame_horns_only.webp`}
+            className="sts2-affliction-overlay__ringing-horns sts2-affliction-overlay__ringing-horns--right"
+            style={{ left: "13%", top: "34.83%", width: "170.67%", height: "30.33%" }}
+          />
+        </>
+      )}
     </div>
   );
 }
@@ -175,6 +374,8 @@ interface CardTileProps {
   descriptionSuffix?: string | null;
   /** 인챈트가 카드 damage/block 에 미치는 효과 — descriptionRaw 재렌더에 사용. */
   enchantStatMod?: EnchantVarMod | null;
+  /** Active affliction overlay id. */
+  afflictionId?: string | null;
   /** 카드에 박힌 인챈트 슬롯을 클릭했을 때 (해제 등). */
   onEnchantSlotClick?: () => void;
   onClick?: () => void;
@@ -203,6 +404,7 @@ export const CardTile = memo(function CardTile({
   enchantRemovedKeywords,
   descriptionSuffix,
   enchantStatMod,
+  afflictionId,
   onEnchantSlotClick,
   onClick,
   interactive = true,
@@ -628,6 +830,8 @@ export const CardTile = memo(function CardTile({
             sizes={`${cardWidth}px`}
           />
 
+          <AfflictionCardOverlay afflictionId={afflictionId} />
+
           <div
             className="absolute z-[2] pointer-events-none"
             style={{ left: "5%", right: "5%", bottom: "1%", height: "45%" }}
@@ -834,6 +1038,7 @@ export const CardTile = memo(function CardTile({
         </div>
 
         {isInfectionCard && <InfectionCardOverlay />}
+        <AfflictionCardOverlay afflictionId={afflictionId} />
 
         <div
           className="absolute z-[3] flex items-center justify-center"
