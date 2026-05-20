@@ -156,6 +156,27 @@ def polar_coordinates(
     return radius % 1.0, (angle * repeat) % 1.0
 
 
+def rotate_uv(
+    u: float,
+    v: float,
+    pivot: tuple[float, float],
+    angle: float,
+) -> tuple[float, float]:
+    u -= pivot[0]
+    v -= pivot[1]
+    sin_a = math.sin(angle)
+    cos_a = math.cos(angle)
+    rotated_u = u * sin_a + v * cos_a
+    rotated_v = -u * cos_a + v * sin_a
+    return rotated_u + pivot[0], rotated_v + pivot[1]
+
+
+def sample_clamp(image, u: float, v: float) -> tuple[int, int, int, int]:
+    x = max(0, min(image.width - 1, int(u * image.width)))
+    y = max(0, min(image.height - 1, int(v * image.height)))
+    return image.getpixel((x, y))
+
+
 def gradient_sample(
     stops: list[tuple[float, tuple[float, float, float]]],
     t: float,
@@ -397,7 +418,7 @@ def render_bound_shader(image, time: float):
             r, _g, _b, alpha = src[x, y]
             if alpha == 0:
                 continue
-            _bright_r, bright_g, _bright_b, _bright_a = sample_repeat(source, 0.5 * time, v)
+            _bright_r, bright_g, _bright_b, _bright_a = sample_repeat(source, 0.5 * time, 0.0)
             energy_multiplier = 1.0 + (bright_g / 255.0) * 0.5
             intensity = (r / 255.0) * energy_multiplier
             dst[x, y] = (
@@ -405,6 +426,108 @@ def render_bound_shader(image, time: float):
                 clamp_channel(vertex[1] * 255 * intensity),
                 clamp_channel(vertex[2] * 255 * intensity),
                 clamp_channel(alpha * vertex_alpha),
+            )
+
+    return output
+
+
+def render_bound_border_shader(noise, mask, time: float):
+    noise_image = shader_source(noise)
+    mask_image = shader_source(mask)
+    output = Image.new("RGBA", mask_image.size)
+    dst = output.load()
+    vertex = (0.27396876, 0.5137255, 0.12941176)
+    vertex_alpha = 0.76862746
+
+    for y in range(mask_image.height):
+        v = y / mask_image.height
+        for x in range(mask_image.width):
+            u = x / mask_image.width
+            polar_u, polar_v = polar_coordinates(u, v)
+            main_r, main_g, main_b, _main_a = sample_repeat(
+                noise_image,
+                polar_u + 0.25 * time,
+                polar_v * 3.0,
+            )
+            _mask_r, _mask_g, _mask_b, mask_a = sample_clamp(mask_image, u, v)
+            alpha = smoothstep(0.4, 1.0, (mask_a / 255.0) * vertex_alpha)
+            if alpha <= 0:
+                continue
+            dst[x, y] = (
+                clamp_channel((main_r / 255.0) * vertex[0] * 255),
+                clamp_channel((main_g / 255.0) * vertex[1] * 255),
+                clamp_channel((main_b / 255.0) * vertex[2] * 255),
+                clamp_channel(alpha * 255),
+            )
+
+    return output
+
+
+def render_entangled_main_shader(image, time: float):
+    source = shader_source(image)
+    output = Image.new("RGBA", source.size)
+    dst = output.load()
+    vertex = (0.84705883, 0.47843137, 0.35686275)
+    vine_lut = [
+        (0.09243698, (0.2234027, 0.0, 0.23524225)),
+        (1.0, (1.0, 1.0, 1.0)),
+    ]
+
+    for y in range(source.height):
+        v = y / source.height
+        for x in range(source.width):
+            u = x / source.width
+            _dist_r, _dist_g, dist_b, _dist_a = sample_repeat(
+                source,
+                u,
+                v + 0.175 * time,
+            )
+            distortion = (dist_b / 255.0) * 0.018
+            main_r, main_g, _main_b, _main_a = sample_clamp(source, u, v)
+            distorted_r, _distorted_g, _distorted_b, distorted_a = sample_clamp(
+                source,
+                u + distortion * (main_g / 255.0),
+                v,
+            )
+            if distorted_a == 0:
+                continue
+            lut = gradient_sample(vine_lut, distorted_r / 255.0)
+            dst[x, y] = (
+                clamp_channel(vertex[0] * lut[0] * 255),
+                clamp_channel(vertex[1] * lut[1] * 255),
+                clamp_channel(vertex[2] * lut[2] * 255),
+                distorted_a,
+            )
+
+    return output
+
+
+def render_entangled_leaf_shader(image, time: float):
+    source = image.convert("RGBA")
+    output = Image.new("RGBA", source.size)
+    dst = output.load()
+    lut = [
+        (0.0, (0.0, 0.0, 0.0)),
+        (1.0, (0.047058824, 0.57254905, 0.50980395)),
+    ]
+    _rot_r, _rot_g, rot_b, _rot_a = sample_repeat(source, 0.0, 0.1 * time)
+    rotation_factor = ((rot_b / 255.0) - 0.5) * 2.0
+    rotation = 0.35 * rotation_factor * math.pi * 0.5
+
+    for y in range(source.height):
+        v = y / source.height
+        for x in range(source.width):
+            u = x / source.width
+            rotated_u, rotated_v = rotate_uv(u, v, (0.5, 0.8), math.pi * 0.5 + rotation)
+            r, _g, _b, alpha = sample_clamp(source, rotated_u, rotated_v)
+            if alpha == 0:
+                continue
+            color = gradient_sample(lut, r / 255.0)
+            dst[x, y] = (
+                clamp_channel(color[0] * 255),
+                clamp_channel(color[1] * 255),
+                clamp_channel(color[2] * 255),
+                alpha,
             )
 
     return output
@@ -576,12 +699,12 @@ def render_smog_shader(noise, mask, time: float, outer: bool):
             main_tex = sample_repeat(
                 noise_image,
                 rotated_u * main_st[0] + main_st[2] * time,
-                rotated_v * main_st[1] + main_st[3],
+                rotated_v * main_st[1] + main_st[3] * time,
             )
             secondary_tex = sample_repeat(
                 noise_image,
                 rotated_u * secondary_st[0] + secondary_st[2] * time,
-                rotated_v * secondary_st[1] + secondary_st[3],
+                rotated_v * secondary_st[1] + secondary_st[3] * time,
             )
             mask_r, mask_g, _mask_b, _mask_a = mask_pixels[x, y]
             smoke_alpha = (
@@ -618,8 +741,41 @@ def build_animated_flipbook(source, columns: int, rows: int):
     return frames
 
 
+def render_galvanized_corner_frame(frame):
+    source = frame.convert("RGBA")
+    output = Image.new("RGBA", source.size)
+    dst = output.load()
+    lut = [
+        (0.0, (0.23036289, 0.74746776, 1.0)),
+        (1.0, (1.2731656, 1.3172153, 1.353256)),
+    ]
+    for y in range(source.height):
+        for x in range(source.width):
+            r, _g, _b, alpha = source.getpixel((x, y))
+            if alpha == 0:
+                continue
+            color = gradient_sample(lut, r / 255.0)
+            dst[x, y] = (
+                clamp_channel(color[0] * 255),
+                clamp_channel(color[1] * 255),
+                clamp_channel(color[2] * 255),
+                alpha,
+            )
+    return output
+
+
 def write_shader_animations(output_root: Path, dry_run: bool) -> int:
     animations = [
+        (
+            output_root / "entangled/entangled_main.webp",
+            output_root / "entangled/entangled_main_shader.webp",
+            lambda image, time: render_entangled_main_shader(image, time),
+        ),
+        (
+            output_root / "entangled/entangled_leaf.webp",
+            output_root / "entangled/entangled_leaf_shader.webp",
+            lambda image, time: render_entangled_leaf_shader(image, time),
+        ),
         (
             output_root / "bound/bound_main.webp",
             output_root / "bound/bound_main_shader.webp",
@@ -651,6 +807,16 @@ def write_shader_animations(output_root: Path, dry_run: bool) -> int:
         save_animation(frames, output)
         written += 1
 
+    bound_border_output = output_root / "bound/bound_border_shader.webp"
+    if dry_run:
+        print(f"would write {bound_border_output}")
+    else:
+        noise = Image.open(output_root / "common/vfx_noise_1.webp").convert("RGBA")
+        mask = Image.open(output_root / "common/border_vignette.webp").convert("RGBA")
+        frames = [render_bound_border_shader(noise, mask, time) for time in animation_times()]
+        save_animation(frames, bound_border_output)
+        written += 1
+
     smog_animations = [
         (
             output_root / "smog/smog_mask.webp",
@@ -678,7 +844,10 @@ def write_shader_animations(output_root: Path, dry_run: bool) -> int:
     if dry_run:
         print(f"would write {corner_output}")
     else:
-        corner_frames = build_animated_flipbook(Image.open(corner_source), 2, 2)
+        corner_frames = [
+            render_galvanized_corner_frame(frame)
+            for frame in build_animated_flipbook(Image.open(corner_source), 2, 2)
+        ]
         save_animation(corner_frames, corner_output)
         written += 1
 
