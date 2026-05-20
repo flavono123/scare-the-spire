@@ -29,7 +29,7 @@ interface HoverTipProps {
   style?: React.CSSProperties;
 }
 
-export function HoverTip({
+export function GameHoverTip({
   title,
   variant = "default",
   icon,
@@ -108,3 +108,5 @@ export function HoverTip({
     </div>
   );
 }
+
+export { GameHoverTip as HoverTip };
