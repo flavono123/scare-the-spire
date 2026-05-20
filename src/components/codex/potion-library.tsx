@@ -24,7 +24,7 @@ import {
   getCharacterColor,
   characterOutlineFilter,
 } from "@/lib/codex-types";
-import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
+import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import { reconstructPotionAtVersion } from "@/lib/entity-versioning";
 import {
   fuzzyMatchCodexText,
@@ -103,11 +103,12 @@ interface PotionLibraryProps {
   versions?: string[];
   currentVersion?: string;
   patches?: STS2Patch[];
+  changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
   relatedEvents?: CodexEvent[];
 }
 
-export function PotionLibrary({ serviceLocale, gameUi, title, potions, characters, versions, currentVersion, patches, versionDiffs, relatedEvents = [] }: PotionLibraryProps) {
+export function PotionLibrary({ serviceLocale, gameUi, title, potions, characters, versions, currentVersion, patches, changes, versionDiffs, relatedEvents = [] }: PotionLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<PotionPool>>(
@@ -535,7 +536,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
           }}
         >
           <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} potion={selectedPotion} poolLabels={poolLabels} relatedEvents={relatedEvents} onClose={() => setSelectedPotion(null)} />
+            <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} potion={selectedPotion} poolLabels={poolLabels} relatedEvents={relatedEvents} patches={patches} changes={changes} versionDiffs={versionDiffs} onClose={() => setSelectedPotion(null)} />
           </div>
         </div>
       )}

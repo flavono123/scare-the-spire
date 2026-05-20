@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -19,6 +20,7 @@ import {
 import { DescriptionText } from "./codex-description";
 import { EntityReferenceLinks } from "./entity-reference-links";
 import { GameChoiceFrame } from "./event-choice-frame";
+import { STS2ChangeHistory } from "./sts2-change-history";
 import { RichText } from "@/components/rich-text";
 import {
   FUTURE_OF_POTIONS_EVENT_ID,
@@ -55,11 +57,27 @@ interface PotionDetailProps {
   potion: CodexPotion;
   poolLabels: Record<PotionPool, string>;
   relatedEvents?: CodexEvent[];
+  patches?: STS2Patch[];
+  changes?: STS2Change[];
+  versionDiffs?: EntityVersionDiff[];
   onClose?: () => void;
 }
 
-export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedEvents = [], onClose }: PotionDetailProps) {
+function getPotionDetailLabels(serviceLocale: ServiceLocale) {
+  return serviceLocale === "ko"
+    ? {
+        patchHistory: "패치 이력",
+        noPatchHistory: "구조화 변경 없음",
+      }
+    : {
+        patchHistory: "Patch History",
+        noPatchHistory: "No structured changes",
+      };
+}
+
+export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedEvents = [], patches, changes, versionDiffs, onClose }: PotionDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const detailLabels = getPotionDetailLabels(serviceLocale);
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
   const poolColor = potion.pool !== "shared" && potion.pool !== "event"
     ? getCharacterColor(potion.pool)
@@ -196,6 +214,19 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
           ))}
         </div>
       </EntityReferenceLinks>
+
+      <div className="w-full rounded-lg border border-white/10 bg-black/20 p-4">
+        <h2 className="mb-3 font-game-title text-sm font-bold text-gray-300">{detailLabels.patchHistory}</h2>
+        <STS2ChangeHistory
+          serviceLocale={serviceLocale}
+          entityType="potion"
+          entityId={potion.id}
+          changes={changes}
+          versionDiffs={versionDiffs}
+          patches={patches}
+          emptyLabel={detailLabels.noPatchHistory}
+        />
+      </div>
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
         <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>

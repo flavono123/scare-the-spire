@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getCodexPotions, getCodexCharacters, getCodexEvents } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
-import { getSTS2Patches, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
+import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -31,10 +31,11 @@ export default async function CodexPotionsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [potions, characters, patches, versionDiffs, meta, gameUi, events] = await Promise.all([
+  const [potions, characters, patches, changes, versionDiffs, meta, gameUi, events] = await Promise.all([
     getCodexPotions({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getSTS2Patches(),
+    getSTS2Changes(),
     getEntityVersionDiffs(),
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
@@ -54,6 +55,7 @@ export default async function CodexPotionsPage({
         versions={versions}
         currentVersion={meta.version}
         patches={patches}
+        changes={changes}
         versionDiffs={versionDiffs}
         relatedEvents={events}
       />
