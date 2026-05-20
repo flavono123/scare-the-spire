@@ -68,14 +68,45 @@ const AFFLICTION_OVERLAY_IDS = new Set([
   "SMOG",
 ]);
 
-const AFFLICTION_COLORS: Record<string, { vignette: string; glow: string }> = {
-  BOUND: { vignette: "rgba(20, 126, 58, 0.2)", glow: "rgba(141, 255, 78, 0.56)" },
-  ENTANGLED: { vignette: "rgba(92, 29, 0, 0.34)", glow: "rgba(216, 122, 91, 0.56)" },
-  GALVANIZED: { vignette: "rgba(0, 162, 255, 0.25)", glow: "rgba(128, 223, 255, 0.7)" },
-  HEXED: { vignette: "rgba(43, 0, 81, 0.43)", glow: "rgba(165, 121, 219, 0.68)" },
-  RINGING: { vignette: "rgba(88, 28, 16, 0.22)", glow: "rgba(174, 252, 255, 0.52)" },
-  SMOG: { vignette: "rgba(51, 0, 64, 0.25)", glow: "rgba(202, 122, 202, 0.62)" },
+const AFFLICTION_FRAME_COLORS: Record<string, { vignette?: string; glow: string }> = {
+  BOUND: {
+    vignette: "rgba(38, 153, 80, 0.1254902)",
+    glow: "rgba(140, 255, 77, 1)",
+  },
+  ENTANGLED: {
+    vignette: "rgba(51, 18, 0, 0.3764706)",
+    glow: "rgba(216, 122, 91, 1)",
+  },
+  GALVANIZED: {
+    vignette: "rgba(0, 162, 255, 0.2509804)",
+    glow: "rgba(128, 223, 255, 1)",
+  },
+  HEXED: {
+    vignette: "rgba(14, 0, 26, 0.5019608)",
+    glow: "rgba(165, 121, 219, 1)",
+  },
+  RINGING: {
+    glow: "rgba(174, 252, 255, 1)",
+  },
+  SMOG: {
+    vignette: "rgba(14, 0, 26, 0.2509804)",
+    glow: "rgba(202, 122, 202, 1)",
+  },
 };
+
+const ENTANGLED_LEAVES = [
+  { x: -102, y: -218, rotation: -0.5255747, scale: 0.5397214 },
+  { x: -82, y: -207, rotation: 1.3220456, scale: 0.40900528 },
+  { x: 105, y: -205, rotation: -1.0907083, scale: 0.419221 },
+  { x: 148, y: -140, rotation: 0.62127, scale: 0.5397214 },
+  { x: 148, y: -33, rotation: -0.592255, scale: 0.5397214 },
+  { x: 145, y: 81, rotation: -1.1490887, scale: 0.39509588 },
+  { x: 146, y: 145, rotation: -0.0710828, scale: 0.5397214 },
+  { x: 109, y: 203, rotation: -0.87968427, scale: 0.44095248 },
+  { x: -145, y: 110, rotation: 0.50267345, scale: 0.6153229 },
+  { x: -153, y: 27, rotation: -1.2563549, scale: 0.6800933 },
+  { x: -158, y: -17, rotation: 0.49224094, scale: 0.5397214 },
+];
 
 const PORTRAIT_BORDER_ASSETS: Record<string, string> = {
   공격: "/images/game-assets/card-portraits/card_portrait_border_attack.png",
@@ -137,19 +168,53 @@ function AfflictionImageLayer({
 }
 
 function AfflictionFrameTint({ id }: { id: string }) {
-  const colors = AFFLICTION_COLORS[id] ?? AFFLICTION_COLORS.BOUND;
+  const colors = AFFLICTION_FRAME_COLORS[id] ?? AFFLICTION_FRAME_COLORS.BOUND;
   return (
     <>
-      <span
-        aria-hidden="true"
-        className="sts2-affliction-overlay__vignette"
-        style={{ backgroundColor: colors.vignette }}
-      />
+      {id === "BOUND" && (
+        <AfflictionImageLayer
+          src={`${AFFLICTION_OVERLAY_BASE}/bound/bound_border_shader.webp`}
+          className="sts2-affliction-overlay__border"
+          style={{ left: "-20.33%", top: 0, width: "140.67%", height: "100%" }}
+        />
+      )}
+      {colors.vignette && (
+        <span
+          aria-hidden="true"
+          className="sts2-affliction-overlay__vignette"
+          style={{ backgroundColor: colors.vignette }}
+        />
+      )}
       <span
         aria-hidden="true"
         className="sts2-affliction-overlay__glow"
         style={{ backgroundColor: colors.glow }}
       />
+    </>
+  );
+}
+
+function EntangledLeaves() {
+  return (
+    <>
+      {ENTANGLED_LEAVES.map((leaf, index) => {
+        const centerX = 150 + leaf.x;
+        const centerY = 211 + leaf.y;
+        return (
+          <AfflictionImageLayer
+            key={`${leaf.x}:${leaf.y}:${index}`}
+            src={`${AFFLICTION_OVERLAY_BASE}/entangled/entangled_leaf_shader.webp`}
+            className="sts2-affliction-overlay__entangled-leaf"
+            style={{
+              left: `${((centerX - 64) / 300) * 100}%`,
+              top: `${((centerY - 64) / 422) * 100}%`,
+              width: `${(128 / 300) * 100}%`,
+              height: `${(128 / 422) * 100}%`,
+              transform: `rotate(${leaf.rotation}rad) scale(${leaf.scale})`,
+            }}
+          />
+        );
+      })}
     </>
   );
 }
@@ -217,16 +282,31 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
         <AfflictionImageLayer
           src={`${AFFLICTION_OVERLAY_BASE}/bound/bound_main_shader.webp`}
           className="sts2-affliction-overlay__main sts2-affliction-overlay__main--bound"
-          style={{ left: "-18%", top: "-11%", width: "136%", height: "122%" }}
+          style={{
+            left: "-20.33%",
+            top: 0,
+            width: "140.67%",
+            height: "100%",
+            transform: "scale(1.2)",
+          }}
         />
       )}
 
       {id === "ENTANGLED" && (
-        <AfflictionImageLayer
-          src={`${AFFLICTION_OVERLAY_BASE}/entangled/entangled_main_preview.webp`}
-          className="sts2-affliction-overlay__main sts2-affliction-overlay__main--entangled"
-          style={{ left: "-17%", top: "-12%", width: "134%", height: "123%" }}
-        />
+        <>
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/entangled/entangled_main_shader.webp`}
+            className="sts2-affliction-overlay__main sts2-affliction-overlay__main--entangled"
+            style={{
+              left: "-34.33%",
+              top: "-9.95%",
+              width: "140.67%",
+              height: "100%",
+              transform: "scale(1.2)",
+            }}
+          />
+          <EntangledLeaves />
+        </>
       )}
 
       {id === "GALVANIZED" && (
@@ -244,6 +324,33 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
           className="sts2-affliction-overlay__smog-field sts2-affliction-overlay__smog-field--outer"
           style={{ left: "-20.33%", top: "-3.55%", width: "140.67%", height: "133.3%" }}
         />
+      )}
+
+      {id === "RINGING" && (
+        <>
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_beast_frame_horns_only.webp`}
+            className="sts2-affliction-overlay__ringing-horns"
+            style={{
+              left: "-83.67%",
+              top: "34.83%",
+              width: "170.67%",
+              height: "30.33%",
+              transform: "rotate(-4.712389rad) scale(0.75)",
+            }}
+          />
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_beast_frame_horns_only.webp`}
+            className="sts2-affliction-overlay__ringing-horns"
+            style={{
+              left: "13%",
+              top: "34.83%",
+              width: "170.67%",
+              height: "30.33%",
+              transform: "rotate(-7.853982rad) scale(0.75)",
+            }}
+          />
+        </>
       )}
     </div>
   );
