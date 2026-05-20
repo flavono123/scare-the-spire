@@ -3,12 +3,6 @@ import { substituteAmount } from "./sts2-enchant-rules";
 
 export const DEFAULT_AFFLICTION_AMOUNT = 1;
 
-const APPLICABLE_CARD_TYPES: Partial<Record<string, CodexCard["type"]>> = {
-  ENTANGLED: "공격",
-  GALVANIZED: "파워",
-  SMOG: "스킬",
-};
-
 const AFFLICTION_ADDED_KEYWORDS: Record<string, string[]> = {
   HEXED: ["휘발성"],
 };
@@ -17,9 +11,8 @@ function normalizeId(id: string): string {
   return id.toUpperCase();
 }
 
-export function canAfflictCard(affliction: CodexAffliction, card: CodexCard): boolean {
-  const requiredType = APPLICABLE_CARD_TYPES[normalizeId(affliction.id)];
-  return requiredType ? card.type === requiredType : true;
+export function canAfflictCard(_affliction: CodexAffliction, _card: CodexCard): boolean {
+  return true;
 }
 
 export function getAfflictionAddedKeywords(affliction: CodexAffliction): string[] {
