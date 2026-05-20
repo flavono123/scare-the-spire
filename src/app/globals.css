@@ -186,8 +186,8 @@
 }
 
 .sts2-affliction-overlay__main--entangled {
-  opacity: 0.9;
-  filter: hue-rotate(-48deg) saturate(0.78) brightness(0.92) drop-shadow(0 0 0.35em rgba(223, 103, 61, 0.34));
+  opacity: 0.86;
+  filter: drop-shadow(0 0 0.35em rgba(223, 103, 61, 0.34));
   animation: sts2-affliction-slow-breathe 3.2s ease-in-out infinite reverse;
 }
 
@@ -201,21 +201,6 @@
   opacity: 0.82;
   filter: drop-shadow(0 0 0.45em rgba(174, 92, 255, 0.52));
   animation: sts2-affliction-slow-breathe 2.2s ease-in-out infinite;
-}
-
-.sts2-affliction-overlay__main--ringing {
-  opacity: 0.72;
-  filter: drop-shadow(0 0 0.34em rgba(190, 253, 255, 0.5));
-  animation: sts2-affliction-ring-pulse 1.8s ease-in-out infinite;
-}
-
-.sts2-affliction-overlay__entangled-leaf {
-  mix-blend-mode: screen;
-  opacity: 0.72;
-  transform-origin: 50% 50%;
-  filter: hue-rotate(-52deg) saturate(0.7) brightness(0.9) drop-shadow(0 0 0.25em rgba(224, 117, 68, 0.38));
-  animation: sts2-affliction-leaf-glint 2.6s ease-in-out infinite;
-  will-change: opacity, filter;
 }
 
 .sts2-affliction-overlay__galvanized-corner {
@@ -234,10 +219,11 @@
   content: "";
   position: absolute;
   inset: -1%;
-  border: 1px solid rgba(217, 91, 57, 0.42);
+  border: 1px solid rgba(179, 239, 238, 0.5);
   border-radius: 3.6%;
   box-shadow:
-    inset 0 0 0.35em rgba(214, 83, 51, 0.32),
+    inset 0 0 0 1px rgba(214, 83, 51, 0.28),
+    inset 0 0 0.35em rgba(214, 83, 51, 0.24),
     0 0 0.25em rgba(176, 237, 240, 0.22);
   mix-blend-mode: screen;
   opacity: 0.6;
@@ -299,32 +285,6 @@
   63% {
     opacity: 1;
     filter: saturate(1.55) brightness(1.45);
-  }
-}
-
-@keyframes sts2-affliction-ring-pulse {
-  0%,
-  100% {
-    opacity: 0.58;
-    transform: scale(0.985);
-  }
-
-  45% {
-    opacity: 0.96;
-    transform: scale(1.02);
-  }
-}
-
-@keyframes sts2-affliction-leaf-glint {
-  0%,
-  100% {
-    opacity: 0.64;
-    filter: drop-shadow(0 0 0.16em rgba(255, 219, 117, 0.28));
-  }
-
-  50% {
-    opacity: 1;
-    filter: drop-shadow(0 0 0.36em rgba(255, 219, 117, 0.62));
   }
 }
 
@@ -394,7 +354,6 @@
 @media (prefers-reduced-motion: reduce) {
   .sts2-affliction-overlay__glow,
   .sts2-affliction-overlay__main,
-  .sts2-affliction-overlay__entangled-leaf,
   .sts2-affliction-overlay__galvanized-corner,
   .sts2-affliction-overlay--ringing::before,
   .sts2-affliction-overlay__smog-field {

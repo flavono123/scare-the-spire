@@ -154,42 +154,6 @@ function AfflictionFrameTint({ id }: { id: string }) {
   );
 }
 
-function EntangledLeaves() {
-  const leaves = [
-    { x: -34, y: -51.7, r: -30, s: 0.54 },
-    { x: -27.3, y: -49.1, r: 75.8, s: 0.41 },
-    { x: 35, y: -48.6, r: -62.5, s: 0.42 },
-    { x: 49.3, y: -33.2, r: 35.6, s: 0.54 },
-    { x: 49.3, y: -7.8, r: -33.9, s: 0.54 },
-    { x: 48.3, y: 19.2, r: -65.8, s: 0.4 },
-    { x: 48.7, y: 34.4, r: -4.1, s: 0.54 },
-    { x: 36.3, y: 48.1, r: -50.4, s: 0.44 },
-    { x: -48.3, y: 26.1, r: 28.8, s: 0.62 },
-    { x: -51, y: 6.4, r: -72, s: 0.68 },
-    { x: -52.7, y: -4, r: 28.2, s: 0.54 },
-  ];
-
-  return (
-    <>
-      {leaves.map((leaf, index) => (
-        <AfflictionImageLayer
-          key={index}
-          src={`${AFFLICTION_OVERLAY_BASE}/entangled/entangled_leaf.webp`}
-          className="sts2-affliction-overlay__entangled-leaf"
-          style={{
-            left: `${50 + leaf.x}%`,
-            top: `${50 + leaf.y}%`,
-            width: `${(128 / 300) * 100}%`,
-            aspectRatio: "1",
-            transform: `translate(-50%, -50%) rotate(${leaf.r}deg) scale(${leaf.s})`,
-            animationDelay: `${index * -0.23}s`,
-          }}
-        />
-      ))}
-    </>
-  );
-}
-
 function GalvanizedCorner({
   className,
   style,
@@ -237,14 +201,6 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
           />
         )}
 
-        {id === "RINGING" && (
-          <AfflictionImageLayer
-            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_main_preview.webp`}
-            className="sts2-affliction-overlay__main sts2-affliction-overlay__main--ringing"
-            style={{ left: "-20.33%", top: 0, width: "140.67%", height: "100%" }}
-          />
-        )}
-
         {id === "SMOG" && (
           <AfflictionImageLayer
             src={`${AFFLICTION_OVERLAY_BASE}/smog/smog_main_preview.webp`}
@@ -263,14 +219,11 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
       )}
 
       {id === "ENTANGLED" && (
-        <>
-          <AfflictionImageLayer
-            src={`${AFFLICTION_OVERLAY_BASE}/entangled/entangled_main.webp`}
-            className="sts2-affliction-overlay__main sts2-affliction-overlay__main--entangled"
-            style={{ left: "-17%", top: "-12%", width: "134%", height: "123%" }}
-          />
-          <EntangledLeaves />
-        </>
+        <AfflictionImageLayer
+          src={`${AFFLICTION_OVERLAY_BASE}/entangled/entangled_main_preview.webp`}
+          className="sts2-affliction-overlay__main sts2-affliction-overlay__main--entangled"
+          style={{ left: "-17%", top: "-12%", width: "134%", height: "123%" }}
+        />
       )}
 
       {id === "GALVANIZED" && (
