@@ -27,14 +27,14 @@ import { GameHoverTip } from "./hover-tip";
 import { RichDescription } from "./rich-description";
 import { getRelatedEventIdsForRelic } from "@/lib/codex-references";
 
-function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
+function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
-    <div className="flex flex-col gap-0.5 rounded-md border border-white/10 bg-white/[0.04] px-3 py-2">
-      <span className="text-[10px] text-gray-500 uppercase tracking-wider">{label}</span>
-      <span className="font-game-text text-sm font-bold" style={color ? { color } : undefined}>
-        {value}
-      </span>
-    </div>
+    <span
+      className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold"
+      style={color ? { color } : undefined}
+    >
+      {value}
+    </span>
   );
 }
 
@@ -64,14 +64,12 @@ function InfoRailSection({
 function getRelicDetailLabels(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
     ? {
-        meta: "정보",
         englishName: "영어명",
         gameText: "게임 문구",
         patchHistory: "패치 이력",
         noPatchHistory: "구조화 변경 없음",
       }
     : {
-        meta: "Info",
         englishName: "English name",
         gameText: "Game text",
         patchHistory: "Patch History",
@@ -283,22 +281,20 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
         </section>
 
         <aside className="flex flex-col gap-3">
-          <InfoRailSection title={detailLabels.meta}>
+          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
-                <StatBadge
-                  label={gameUi.common.rarity}
+                <MetaPill
                   value={gameUi.relicCollection.rarities[relic.rarity].label}
                   color={rarityColor}
                 />
                 {relic.pool !== "shared" ? (
-                  <StatBadge
-                    label={serviceText.relicsView.stats.source}
+                  <MetaPill
                     value={poolLabels[relic.pool as RelicFilterPool] ?? relic.pool}
                     color={poolColor}
                   />
                 ) : (
-                  <StatBadge label={serviceText.relicsView.stats.source} value={poolLabels.shared} />
+                  <MetaPill value={poolLabels.shared} />
                 )}
               </div>
               {relic.nameEn !== relic.name && (
@@ -324,7 +320,7 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
                 </div>
               )}
             </div>
-          </InfoRailSection>
+          </section>
 
           <EntityReferenceLinks
             kind="event"
@@ -332,7 +328,7 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
             targets={relatedEventTargets}
           />
 
-          <InfoRailSection title={detailLabels.patchHistory} defaultOpen={false}>
+          <InfoRailSection title={detailLabels.patchHistory}>
             {relicPatchHistory.length > 0 ? (
               <div className="space-y-2">
                 {relicPatchHistory.map((diff) => (
@@ -362,7 +358,7 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
             )}
           </InfoRailSection>
 
-          <InfoRailSection title={serviceText.common.comments} defaultOpen={false}>
+          <InfoRailSection title={serviceText.common.comments}>
             <CommentSection threadKey={buildCodexCommentThreadKey("relic", relic.id)} />
           </InfoRailSection>
         </aside>
