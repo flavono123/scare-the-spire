@@ -241,8 +241,8 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
         )}
 
         {id === "GALVANIZED" && (
-          <AfflictionImageLayer
-            src={`${AFFLICTION_OVERLAY_BASE}/galvanized/galvanized_main.webp`}
+            <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/galvanized/galvanized_main_preview.webp`}
             className="sts2-affliction-overlay__main sts2-affliction-overlay__main--galvanized"
             style={{ left: "-20.33%", top: 0, width: "140.67%", height: "100%" }}
           />
@@ -258,7 +258,7 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
 
         {id === "RINGING" && (
           <AfflictionImageLayer
-            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_main.webp`}
+            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_main_preview.webp`}
             className="sts2-affliction-overlay__main sts2-affliction-overlay__main--ringing"
             style={{ left: "-20.33%", top: 0, width: "140.67%", height: "100%" }}
           />

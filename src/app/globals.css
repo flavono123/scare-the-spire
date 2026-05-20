@@ -248,14 +248,14 @@
 
 .sts2-affliction-overlay__smog-field {
   background-image:
-    linear-gradient(180deg, rgba(87, 20, 56, 0.28), rgba(209, 160, 196, 0.68), rgba(93, 24, 74, 0.3)),
+    linear-gradient(180deg, rgba(87, 20, 56, 0.16), rgba(209, 160, 196, 0.36), rgba(93, 24, 74, 0.18)),
     url("/images/sts2/affliction-overlays/common/vfx_noise_1.webp");
   background-blend-mode: screen;
   background-size: 100% 100%, 180% 150%;
   background-position: center, 0 0;
   filter: blur(0.2px) saturate(1.1);
   mix-blend-mode: screen;
-  opacity: 0.78;
+  opacity: 0.34;
   -webkit-mask-image: url("/images/sts2/affliction-overlays/smog/smog_mask.webp");
   mask-image: url("/images/sts2/affliction-overlays/smog/smog_mask.webp");
   -webkit-mask-repeat: no-repeat;
@@ -270,7 +270,7 @@
   top: -3.55%;
   width: 140.67%;
   height: 133.3%;
-  opacity: 0.62;
+  opacity: 0.28;
   -webkit-mask-image: url("/images/sts2/affliction-overlays/smog/smog_mask_outer.webp");
   mask-image: url("/images/sts2/affliction-overlays/smog/smog_mask_outer.webp");
   animation-duration: 5.2s;

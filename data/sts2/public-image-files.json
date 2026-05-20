@@ -14,6 +14,7 @@
   ],
   "affliction-overlays/galvanized": [
     "galvanized_lightning_corner.webp",
+    "galvanized_main_preview.webp",
     "galvanized_main.webp"
   ],
   "affliction-overlays/hexed": [
@@ -21,6 +22,7 @@
   ],
   "affliction-overlays/ringing": [
     "ringing_beast_frame_horns_only.webp",
+    "ringing_main_preview.webp",
     "ringing_main.webp"
   ],
   "affliction-overlays/smog": [
