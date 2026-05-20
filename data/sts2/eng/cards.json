@@ -19591,6 +19591,39 @@
     "beta_image_url": "/static/images/cards/beta/wisp.png"
   },
   {
+    "id": "WITHER",
+    "name": "Wither",
+    "description": "At the end of your turn, if this is in your [gold]Hand[/gold], take 2 damage.",
+    "description_raw": "At the end of your turn, if this is in your [gold]Hand[/gold], take {Damage:diff()} damage.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Status",
+    "rarity": "Status",
+    "target": "None",
+    "color": "status",
+    "damage": 2,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust",
+      "Retain"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 2
+    },
+    "upgrade": null,
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/wither.png"
+  },
+  {
     "id": "WOUND",
     "name": "Wound",
     "description": "",
