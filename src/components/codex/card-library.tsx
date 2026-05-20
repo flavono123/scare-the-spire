@@ -20,7 +20,7 @@ import {
   COLOR_ALIASES,
   TYPE_ALIASES,
 } from "@/lib/codex-types";
-import type { STS2Patch, EntityVersionDiff } from "@/lib/types";
+import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import { reconstructCardAtVersion } from "@/lib/entity-versioning";
 import {
   annotateCard,
@@ -171,13 +171,14 @@ interface CardLibraryProps {
   versions: string[];
   currentVersion: string;
   patches: STS2Patch[];
+  changes?: STS2Change[];
   versionDiffs: EntityVersionDiff[];
   enchantments: CodexEnchantment[];
   afflictions: CodexAffliction[];
   relatedEvents?: CodexEvent[];
 }
 
-export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, versionDiffs, enchantments, afflictions, relatedEvents = [] }: CardLibraryProps) {
+export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedEvents = [] }: CardLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
@@ -925,7 +926,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           }}
         >
           <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-[#1a1a2e] border border-white/10 rounded-2xl shadow-2xl">
-            <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedEvents={relatedEvents} onClose={() => setSelectedCard(null)} />
+            <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedEvents={relatedEvents} patches={patches} changes={changes} versionDiffs={versionDiffs} onClose={() => setSelectedCard(null)} />
           </div>
         </div>
       )}

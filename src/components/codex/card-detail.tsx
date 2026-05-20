@@ -8,6 +8,7 @@ import { LikeButton } from "@/components/like-button";
 import { useAuth } from "@/hooks/use-auth";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
@@ -54,6 +55,7 @@ import {
   getAfflictionForcedCost,
 } from "@/lib/sts2-affliction-rules";
 import { EntityReferenceLinks } from "./entity-reference-links";
+import { STS2ChangeHistory } from "./sts2-change-history";
 
 const ENCHANT_TIP_VARIANT: Record<string, HoverTipVariant> = {
   CORRUPTED: "debuff",
@@ -78,11 +80,27 @@ interface CardDetailProps {
   enchantments: CodexEnchantment[];
   afflictions: CodexAffliction[];
   relatedEvents?: CodexEvent[];
+  patches?: STS2Patch[];
+  changes?: STS2Change[];
+  versionDiffs?: EntityVersionDiff[];
   onClose?: () => void;
 }
 
-export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedEvents = [], onClose }: CardDetailProps) {
+function getCardDetailLabels(serviceLocale: ServiceLocale) {
+  return serviceLocale === "ko"
+    ? {
+        patchHistory: "패치 이력",
+        noPatchHistory: "구조화 변경 없음",
+      }
+    : {
+        patchHistory: "Patch History",
+        noPatchHistory: "No structured changes",
+      };
+}
+
+export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedEvents = [], patches, changes, versionDiffs, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const detailLabels = getCardDetailLabels(serviceLocale);
   const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
   const threadKey = buildCodexCommentThreadKey("card", card.id);
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -735,6 +753,19 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           </div>
         </div>
       )}
+
+      <div className="w-full rounded-lg border border-white/10 bg-black/20 p-4">
+        <h2 className="mb-3 font-game-title text-sm font-bold text-gray-300">{detailLabels.patchHistory}</h2>
+        <STS2ChangeHistory
+          serviceLocale={serviceLocale}
+          entityType="card"
+          entityId={card.id}
+          changes={changes}
+          versionDiffs={versionDiffs}
+          patches={patches}
+          emptyLabel={detailLabels.noPatchHistory}
+        />
+      </div>
 
       <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
