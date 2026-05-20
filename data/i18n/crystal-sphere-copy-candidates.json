@@ -207,7 +207,7 @@
     },
     {
       "id": "crystalSphere.events.CRYSTAL.SPHERE.minigame.instructions.title",
-      "status": "candidate",
+      "status": "include",
       "category": "crystal-sphere",
       "sourceTable": "events",
       "sourceKey": "CRYSTAL_SPHERE.minigame.instructions.title",
