@@ -234,17 +234,10 @@
 .sts2-affliction-overlay--ringing::after {
   content: "";
   position: absolute;
-  inset: 0 -20.33%;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(225, 91, 57, 0.34) 0 1px,
-      rgba(225, 91, 57, 0.08) 1px 3px,
-      transparent 3px 5px
-    ),
-    rgba(225, 91, 57, 0.18);
+  inset: 0;
+  background: rgba(225, 91, 57, 0.2);
   mix-blend-mode: screen;
-  opacity: 0.42;
+  opacity: 0.32;
   pointer-events: none;
   -webkit-mask-image: url("/images/sts2/affliction-overlays/common/border_vignette.webp");
   mask-image: url("/images/sts2/affliction-overlays/common/border_vignette.webp");
