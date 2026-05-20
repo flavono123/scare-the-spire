@@ -200,6 +200,34 @@ def build_hexed_preview(image):
     return output
 
 
+def build_entangled_preview(image):
+    if Image is None:
+        raise RuntimeError("Pillow is required to build preview textures")
+
+    source = image.convert("RGBA")
+    output = Image.new("RGBA", source.size)
+    src = source.load()
+    dst = output.load()
+    dark = (132, 61, 39)
+    bright = (230, 118, 64)
+
+    for y in range(source.height):
+        for x in range(source.width):
+            r, g, b, alpha = src[x, y]
+            if alpha == 0:
+                continue
+            intensity = max(r, g, b) / 255.0
+            color = lerp_color(dark, bright, min(1.0, intensity * 1.2))
+            dst[x, y] = (
+                clamp_channel(color[0]),
+                clamp_channel(color[1]),
+                clamp_channel(color[2]),
+                clamp_channel(alpha * 0.82),
+            )
+
+    return output
+
+
 def build_ringing_preview(image):
     if Image is None:
         raise RuntimeError("Pillow is required to build preview textures")
@@ -212,9 +240,9 @@ def build_ringing_preview(image):
 
     for y in range(source.height):
         for x in range(source.width):
-            r, g, b, alpha = src[x, y]
-            channel_alpha_value = max(r * 0.36, g * 0.42, b * 0.5, alpha * 0.28)
-            channel_alpha_value = max(0.0, (channel_alpha_value - 20.0) * 1.35)
+            r, g, b, _alpha = src[x, y]
+            channel_alpha_value = max(r * 0.42, g * 0.46, b * 0.55)
+            channel_alpha_value = max(0.0, (channel_alpha_value - 48.0) * 1.7)
             if channel_alpha_value <= 0:
                 continue
             dst[x, y] = (*color, clamp_channel(min(channel_alpha_value, 170)))
@@ -287,6 +315,11 @@ def write_preview_textures(output_root: Path, dry_run: bool) -> int:
             "source": output_root / "bound/bound_main.webp",
             "output": output_root / "bound/bound_main_preview.webp",
             "build": build_bound_preview,
+        },
+        {
+            "source": output_root / "entangled/entangled_main.webp",
+            "output": output_root / "entangled/entangled_main_preview.webp",
+            "build": build_entangled_preview,
         },
         {
             "source": output_root / "galvanized/galvanized_main.webp",
