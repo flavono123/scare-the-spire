@@ -180,40 +180,40 @@
 }
 
 .sts2-affliction-overlay__main--bound {
-  opacity: 0.92;
-  filter: drop-shadow(0 0 0.45em rgba(139, 255, 62, 0.38));
+  opacity: 0.86;
+  filter: drop-shadow(0 0 0.42em rgba(129, 255, 91, 0.5));
   animation: sts2-affliction-slow-breathe 2.8s ease-in-out infinite;
 }
 
 .sts2-affliction-overlay__main--entangled {
-  opacity: 0.96;
-  filter: drop-shadow(0 0 0.35em rgba(255, 92, 92, 0.25));
+  opacity: 0.9;
+  filter: hue-rotate(-48deg) saturate(0.78) brightness(0.92) drop-shadow(0 0 0.35em rgba(223, 103, 61, 0.34));
   animation: sts2-affliction-slow-breathe 3.2s ease-in-out infinite reverse;
 }
 
 .sts2-affliction-overlay__main--galvanized {
-  opacity: 0.88;
+  opacity: 0.46;
   filter: saturate(1.25) brightness(1.22);
   animation: sts2-affliction-electric-flicker 1.15s steps(1, end) infinite;
 }
 
 .sts2-affliction-overlay__main--hexed {
-  opacity: 0.86;
+  opacity: 0.82;
   filter: drop-shadow(0 0 0.45em rgba(174, 92, 255, 0.52));
   animation: sts2-affliction-slow-breathe 2.2s ease-in-out infinite;
 }
 
 .sts2-affliction-overlay__main--ringing {
-  opacity: 0.82;
-  filter: drop-shadow(0 0 0.45em rgba(186, 255, 255, 0.52));
+  opacity: 0.72;
+  filter: drop-shadow(0 0 0.34em rgba(190, 253, 255, 0.5));
   animation: sts2-affliction-ring-pulse 1.8s ease-in-out infinite;
 }
 
 .sts2-affliction-overlay__entangled-leaf {
   mix-blend-mode: screen;
-  opacity: 0.9;
+  opacity: 0.72;
   transform-origin: 50% 50%;
-  filter: drop-shadow(0 0 0.25em rgba(255, 219, 117, 0.45));
+  filter: hue-rotate(-52deg) saturate(0.7) brightness(0.9) drop-shadow(0 0 0.25em rgba(224, 117, 68, 0.38));
   animation: sts2-affliction-leaf-glint 2.6s ease-in-out infinite;
   will-change: opacity, filter;
 }
@@ -230,49 +230,31 @@
     sts2-affliction-corner-pop 1.1s steps(1, end) infinite;
 }
 
-.sts2-affliction-overlay__ringing-horns {
-  opacity: 0.68;
+.sts2-affliction-overlay--ringing::before {
+  content: "";
+  position: absolute;
+  inset: -1%;
+  border: 1px solid rgba(217, 91, 57, 0.42);
+  border-radius: 3.6%;
+  box-shadow:
+    inset 0 0 0.35em rgba(214, 83, 51, 0.32),
+    0 0 0.25em rgba(176, 237, 240, 0.22);
   mix-blend-mode: screen;
-  filter: drop-shadow(0 0 0.35em rgba(198, 250, 255, 0.42));
-  transform-origin: 50% 50%;
-  animation: sts2-affliction-horns-hum 2s ease-in-out infinite;
-}
-
-.sts2-affliction-overlay__ringing-horns--left {
-  transform: rotate(-90deg);
-}
-
-.sts2-affliction-overlay__ringing-horns--right {
-  transform: rotate(90deg);
+  opacity: 0.6;
+  pointer-events: none;
+  animation: sts2-affliction-ringing-border 1.8s ease-in-out infinite;
 }
 
 .sts2-affliction-overlay__smog-field {
-  background-image:
-    linear-gradient(180deg, rgba(87, 20, 56, 0.16), rgba(209, 160, 196, 0.36), rgba(93, 24, 74, 0.18)),
-    url("/images/sts2/affliction-overlays/common/vfx_noise_1.webp");
-  background-blend-mode: screen;
-  background-size: 100% 100%, 180% 150%;
-  background-position: center, 0 0;
-  filter: blur(0.2px) saturate(1.1);
   mix-blend-mode: screen;
-  opacity: 0.34;
-  -webkit-mask-image: url("/images/sts2/affliction-overlays/smog/smog_mask.webp");
-  mask-image: url("/images/sts2/affliction-overlays/smog/smog_mask.webp");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  animation: sts2-affliction-smog-drift 4s linear infinite;
+  opacity: 0.38;
+  filter: blur(0.15px) saturate(1.08);
+  transform-origin: 50% 50%;
+  animation: sts2-affliction-smog-drift 4s ease-in-out infinite;
 }
 
 .sts2-affliction-overlay__smog-field--outer {
-  left: -20.33%;
-  top: -3.55%;
-  width: 140.67%;
-  height: 133.3%;
-  opacity: 0.28;
-  -webkit-mask-image: url("/images/sts2/affliction-overlays/smog/smog_mask_outer.webp");
-  mask-image: url("/images/sts2/affliction-overlays/smog/smog_mask_outer.webp");
+  opacity: 0.42;
   animation-duration: 5.2s;
   animation-direction: reverse;
 }
@@ -381,24 +363,31 @@
   }
 }
 
-@keyframes sts2-affliction-horns-hum {
+@keyframes sts2-affliction-ringing-border {
   0%,
   100% {
-    opacity: 0.38;
+    opacity: 0.42;
   }
 
   50% {
-    opacity: 0.62;
+    opacity: 0.7;
   }
 }
 
 @keyframes sts2-affliction-smog-drift {
   0% {
-    background-position: center, 0 0;
+    transform: translate3d(-1%, 0, 0) scale(1);
+    opacity: 0.28;
+  }
+
+  50% {
+    transform: translate3d(1%, -0.8%, 0) scale(1.015);
+    opacity: 0.42;
   }
 
   100% {
-    background-position: center, 160% 120%;
+    transform: translate3d(-1%, 0, 0) scale(1);
+    opacity: 0.28;
   }
 }
 
@@ -407,7 +396,7 @@
   .sts2-affliction-overlay__main,
   .sts2-affliction-overlay__entangled-leaf,
   .sts2-affliction-overlay__galvanized-corner,
-  .sts2-affliction-overlay__ringing-horns,
+  .sts2-affliction-overlay--ringing::before,
   .sts2-affliction-overlay__smog-field {
     animation: none;
   }

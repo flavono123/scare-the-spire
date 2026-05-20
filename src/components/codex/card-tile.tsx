@@ -69,11 +69,11 @@ const AFFLICTION_OVERLAY_IDS = new Set([
 ]);
 
 const AFFLICTION_COLORS: Record<string, { vignette: string; glow: string }> = {
-  BOUND: { vignette: "rgba(21, 126, 66, 0.22)", glow: "rgba(141, 255, 77, 0.58)" },
+  BOUND: { vignette: "rgba(20, 126, 58, 0.2)", glow: "rgba(141, 255, 78, 0.56)" },
   ENTANGLED: { vignette: "rgba(92, 29, 0, 0.34)", glow: "rgba(216, 122, 91, 0.56)" },
   GALVANIZED: { vignette: "rgba(0, 162, 255, 0.25)", glow: "rgba(128, 223, 255, 0.7)" },
   HEXED: { vignette: "rgba(43, 0, 81, 0.43)", glow: "rgba(165, 121, 219, 0.68)" },
-  RINGING: { vignette: "rgba(14, 0, 26, 0.34)", glow: "rgba(174, 252, 255, 0.66)" },
+  RINGING: { vignette: "rgba(88, 28, 16, 0.22)", glow: "rgba(174, 252, 255, 0.52)" },
   SMOG: { vignette: "rgba(51, 0, 64, 0.25)", glow: "rgba(202, 122, 202, 0.62)" },
 };
 
@@ -221,27 +221,8 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
       <div className="absolute inset-0 overflow-hidden sts2-affliction-overlay__mask">
         <AfflictionFrameTint id={id} />
 
-        {id === "BOUND" && (
-          <AfflictionImageLayer
-            src={`${AFFLICTION_OVERLAY_BASE}/bound/bound_main.webp`}
-            className="sts2-affliction-overlay__main sts2-affliction-overlay__main--bound"
-            style={{ left: "-8%", top: "-4%", width: "116%", height: "108%" }}
-          />
-        )}
-
-        {id === "ENTANGLED" && (
-          <>
-            <AfflictionImageLayer
-              src={`${AFFLICTION_OVERLAY_BASE}/entangled/entangled_main.webp`}
-              className="sts2-affliction-overlay__main sts2-affliction-overlay__main--entangled"
-              style={{ left: "-10%", top: "-5%", width: "120%", height: "110%" }}
-            />
-            <EntangledLeaves />
-          </>
-        )}
-
         {id === "GALVANIZED" && (
-            <AfflictionImageLayer
+          <AfflictionImageLayer
             src={`${AFFLICTION_OVERLAY_BASE}/galvanized/galvanized_main_preview.webp`}
             className="sts2-affliction-overlay__main sts2-affliction-overlay__main--galvanized"
             style={{ left: "-20.33%", top: 0, width: "140.67%", height: "100%" }}
@@ -250,19 +231,47 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
 
         {id === "HEXED" && (
           <AfflictionImageLayer
-            src={`${AFFLICTION_OVERLAY_BASE}/hexed/hexed_main.webp`}
+            src={`${AFFLICTION_OVERLAY_BASE}/hexed/hexed_main_preview.webp`}
             className="sts2-affliction-overlay__main sts2-affliction-overlay__main--hexed"
             style={{ left: "-20.33%", top: 0, width: "140.67%", height: "100%" }}
           />
         )}
 
+        {id === "RINGING" && (
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_main_preview.webp`}
+            className="sts2-affliction-overlay__main sts2-affliction-overlay__main--ringing"
+            style={{ left: "-20.33%", top: 0, width: "140.67%", height: "100%" }}
+          />
+        )}
+
         {id === "SMOG" && (
-          <>
-            <span aria-hidden="true" className="absolute inset-0 sts2-affliction-overlay__smog-field" />
-            <span aria-hidden="true" className="absolute sts2-affliction-overlay__smog-field sts2-affliction-overlay__smog-field--outer" />
-          </>
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/smog/smog_main_preview.webp`}
+            className="sts2-affliction-overlay__smog-field"
+            style={{ inset: 0 }}
+          />
         )}
       </div>
+
+      {id === "BOUND" && (
+        <AfflictionImageLayer
+          src={`${AFFLICTION_OVERLAY_BASE}/bound/bound_main_preview.webp`}
+          className="sts2-affliction-overlay__main sts2-affliction-overlay__main--bound"
+          style={{ left: "-18%", top: "-11%", width: "136%", height: "122%" }}
+        />
+      )}
+
+      {id === "ENTANGLED" && (
+        <>
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/entangled/entangled_main.webp`}
+            className="sts2-affliction-overlay__main sts2-affliction-overlay__main--entangled"
+            style={{ left: "-17%", top: "-12%", width: "134%", height: "123%" }}
+          />
+          <EntangledLeaves />
+        </>
+      )}
 
       {id === "GALVANIZED" && (
         <>
@@ -273,19 +282,12 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
         </>
       )}
 
-      {id === "RINGING" && (
-        <>
-          <AfflictionImageLayer
-            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_beast_frame_horns_only.webp`}
-            className="sts2-affliction-overlay__ringing-horns sts2-affliction-overlay__ringing-horns--left"
-            style={{ left: "-37%", top: "36%", width: "92%", height: "22%" }}
-          />
-          <AfflictionImageLayer
-            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_beast_frame_horns_only.webp`}
-            className="sts2-affliction-overlay__ringing-horns sts2-affliction-overlay__ringing-horns--right"
-            style={{ right: "-37%", top: "36%", width: "92%", height: "22%" }}
-          />
-        </>
+      {id === "SMOG" && (
+        <AfflictionImageLayer
+          src={`${AFFLICTION_OVERLAY_BASE}/smog/smog_outer_preview.webp`}
+          className="sts2-affliction-overlay__smog-field sts2-affliction-overlay__smog-field--outer"
+          style={{ left: "-20.33%", top: "-3.55%", width: "140.67%", height: "133.3%" }}
+        />
       )}
     </div>
   );
