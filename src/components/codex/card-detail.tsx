@@ -11,7 +11,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
-import { CodexCard, CodexEnchantment, CodexEvent } from "@/lib/codex-types";
+import { CodexAffliction, CodexCard, CodexEnchantment, CodexEvent } from "@/lib/codex-types";
 import { CardTile } from "./card-tile";
 import { DescriptionText, hasCardUpgrade } from "./codex-description";
 import { GameChoiceFrame } from "./event-choice-frame";
@@ -64,11 +64,12 @@ interface CardDetailProps {
   gameUi: CodexGameUiLabels;
   card: CodexCard;
   enchantments: CodexEnchantment[];
+  afflictions: CodexAffliction[];
   relatedEvents?: CodexEvent[];
   onClose?: () => void;
 }
 
-export function CardDetail({ serviceLocale, gameUi, card, enchantments, relatedEvents = [], onClose }: CardDetailProps) {
+export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedEvents = [], onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
   const threadKey = buildCodexCommentThreadKey("card", card.id);

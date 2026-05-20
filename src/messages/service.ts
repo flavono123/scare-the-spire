@@ -170,6 +170,7 @@ export const serviceMessages = {
       potions: "포션",
       powers: "파워",
       enchantments: "인챈트",
+      afflictions: "고난",
       monsters: "몬스터",
       events: "이벤트",
       encounters: "인카운터",
@@ -191,6 +192,7 @@ export const serviceMessages = {
         potions: "개",
         powers: "개",
         enchantments: "개",
+        afflictions: "개",
         encounters: "건",
         affiliation: "캐릭터",
         cardTypes: {
@@ -347,6 +349,12 @@ export const serviceMessages = {
           remove: "해제",
           previous: "이전 인챈트",
           next: "다음 인챈트",
+        },
+        afflictions: {
+          possible: "가능한 고난",
+          remove: "해제",
+          previous: "이전 고난",
+          next: "다음 고난",
         },
       },
       relicsView: {
@@ -663,6 +671,7 @@ export const serviceMessages = {
       potions: "Potions",
       powers: "Powers",
       enchantments: "Enchantments",
+      afflictions: "Afflictions",
       monsters: "Monsters",
       events: "Events",
       encounters: "Encounters",
@@ -684,6 +693,7 @@ export const serviceMessages = {
         potions: "potions",
         powers: "powers",
         enchantments: "enchantments",
+        afflictions: "afflictions",
         encounters: "encounters",
         affiliation: "Character",
         cardTypes: {
@@ -840,6 +850,12 @@ export const serviceMessages = {
           remove: "Remove",
           previous: "Previous enchantment",
           next: "Next enchantment",
+        },
+        afflictions: {
+          possible: "Possible Afflictions",
+          remove: "Remove",
+          previous: "Previous affliction",
+          next: "Next affliction",
         },
       },
       relicsView: {

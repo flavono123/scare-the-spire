@@ -384,6 +384,18 @@ export interface CodexEnchantment {
   imageUrl: string | null; // local path
 }
 
+// Affliction types
+export interface CodexAffliction {
+  id: string;
+  name: string;        // selected game locale
+  nameEn: string;      // English
+  description: string; // selected game locale, with BBCode markup
+  descriptionRaw: string | null;
+  extraCardText: string | null;
+  isStackable: boolean;
+  imageUrl: string | null; // local path
+}
+
 export type EnchantmentCardTypeFilter = "Attack" | "Skill" | "Any";
 
 export const ENCHANTMENT_CARD_TYPE_CONFIG: Record<EnchantmentCardTypeFilter, { label: string; color: string }> = {

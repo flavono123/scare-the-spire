@@ -12,6 +12,7 @@ import {
   CodexCard,
   CodexCharacter,
   CodexEnchantment,
+  CodexAffliction,
   CodexEvent,
   CardFilterCategory,
   CardTypeKo,
@@ -172,10 +173,11 @@ interface CardLibraryProps {
   patches: STS2Patch[];
   versionDiffs: EntityVersionDiff[];
   enchantments: CodexEnchantment[];
+  afflictions: CodexAffliction[];
   relatedEvents?: CodexEvent[];
 }
 
-export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, versionDiffs, enchantments, relatedEvents = [] }: CardLibraryProps) {
+export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, versionDiffs, enchantments, afflictions, relatedEvents = [] }: CardLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
@@ -923,7 +925,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           }}
         >
           <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-[#1a1a2e] border border-white/10 rounded-2xl shadow-2xl">
-            <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} relatedEvents={relatedEvents} onClose={() => setSelectedCard(null)} />
+            <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedEvents={relatedEvents} onClose={() => setSelectedCard(null)} />
           </div>
         </div>
       )}

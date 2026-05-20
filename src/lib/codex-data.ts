@@ -20,6 +20,7 @@ import {
   CodexPotion,
   CodexPower,
   CodexEnchantment,
+  CodexAffliction,
   CodexEvent,
   CodexAncient,
   AncientDialogueLine,
@@ -744,6 +745,63 @@ export async function getCodexEnchantments(opts?: { gameLocale?: GameLocale }): 
     const eng = engById.get(kor.id) ?? kor;
     return mapEnchantment(kor, eng, gameEnchantments, gameLocale);
   });
+}
+
+const AFFLICTION_IMAGE_URLS: Record<string, string> = {
+  BOUND: "/images/sts2/powers/chains_of_binding_power.webp",
+  ENTANGLED: "/images/sts2/powers/tangled_power.webp",
+  GALVANIZED: "/images/sts2/powers/galvanic_power.webp",
+  HEXED: "/images/sts2/powers/hex_power.webp",
+  RINGING: "/images/sts2/powers/ringing_power.webp",
+  SMOG: "/images/sts2/powers/smoggy_power.webp",
+};
+
+// Raw STS2 JSON affliction shape
+interface RawAffliction {
+  id: string;
+  name: string;
+  description: string;
+  description_raw?: string | null;
+  extra_card_text: string | null;
+  is_stackable: boolean;
+}
+
+function mapAffliction(
+  kor: RawAffliction,
+  eng: RawAffliction,
+  gameAfflictions: GameLocalizationTable,
+  gameLocale: GameLocale,
+): CodexAffliction {
+  const raw = gameNullableText(gameAfflictions, `${kor.id}.description`, kor.description_raw ?? kor.description);
+  const extraRaw = gameNullableText(gameAfflictions, `${kor.id}.extraCardText`, kor.extra_card_text);
+  return {
+    id: kor.id,
+    name: gameTitleText(gameAfflictions, `${kor.id}.title`, kor.name, eng.name, gameLocale),
+    nameEn: eng.name,
+    description: bakeDescription(raw ?? kor.description, {}),
+    descriptionRaw: raw,
+    extraCardText: extraRaw ? bakeDescription(extraRaw, {}) : extraRaw,
+    isStackable: kor.is_stackable,
+    imageUrl: AFFLICTION_IMAGE_URLS[kor.id] ?? null,
+  };
+}
+
+export async function getCodexAfflictions(opts?: { gameLocale?: GameLocale }): Promise<CodexAffliction[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [korAfflictions, engAfflictions, gameAfflictions] = await Promise.all([
+    readJson<RawAffliction[]>("kor/afflictions.json"),
+    readJson<RawAffliction[]>("eng/afflictions.json"),
+    readGameLocalizationTable(gameLocale, "afflictions"),
+  ]);
+
+  const engById = new Map(engAfflictions.map((a) => [a.id, a]));
+
+  return korAfflictions
+    .filter((a) => !a.id.startsWith("MOCK_"))
+    .map((kor) => {
+      const eng = engById.get(kor.id) ?? kor;
+      return mapAffliction(kor, eng, gameAfflictions, gameLocale);
+    });
 }
 
 // Raw STS2 JSON event shape

@@ -4,6 +4,7 @@ import {
   getCodexCards,
   getCodexCharacters,
   getCodexEnchantments,
+  getCodexAfflictions,
   getCodexEvents,
 } from "@/lib/codex-data";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
@@ -36,7 +37,7 @@ export default async function CodexCardsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [cards, characters, patches, versionDiffs, meta, enchantments, gameUi, events] =
+  const [cards, characters, patches, versionDiffs, meta, enchantments, afflictions, gameUi, events] =
     await Promise.all([
       getCodexCards({ gameLocale }),
       getCodexCharacters({ gameLocale }),
@@ -44,6 +45,7 @@ export default async function CodexCardsPage({
       getEntityVersionDiffs(),
       getCodexMeta(),
       getCodexEnchantments({ gameLocale }),
+      getCodexAfflictions({ gameLocale }),
       getCodexGameUiLabels(gameLocale),
       getCodexEvents({ gameLocale }),
     ]);
@@ -62,6 +64,7 @@ export default async function CodexCardsPage({
         patches={patches}
         versionDiffs={versionDiffs}
         enchantments={enchantments}
+        afflictions={afflictions}
         relatedEvents={events}
       />
     </Suspense>
