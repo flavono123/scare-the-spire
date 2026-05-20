@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
 import { CodexRelic, characterOutlineFilter, type RelicPool } from "@/lib/codex-types";
@@ -32,19 +32,49 @@ interface RelicTileProps {
   onClick?: (variantPool?: RelicPool) => void;
 }
 
+type TooltipPlacement = {
+  horizontal: "left" | "right";
+  vertical: "top" | "bottom";
+};
+
+const TOOLTIP_GAP = 12;
+const TOOLTIP_WIDTH = 320;
+const TOOLTIP_HEIGHT = 220;
+
 export function RelicTile({ serviceLocale = "ko", relic, showBeta = false, onClick }: RelicTileProps) {
   void serviceLocale;
+  const tileRef = useRef<HTMLDivElement>(null);
   const tileVariant = pickStableVariant(relic);
   const tileImageUrl = showBeta && relic.betaImageUrl
     ? relic.betaImageUrl
     : relic.imageUrl ?? (tileVariant ? relic.variantImageUrls?.[tileVariant] ?? null : null);
 
   const [hovered, setHovered] = useState(false);
+  const [placement, setPlacement] = useState<TooltipPlacement>({
+    horizontal: "right",
+    vertical: "top",
+  });
+
+  const updatePlacement = useCallback(() => {
+    const rect = tileRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const horizontal = rect.right + TOOLTIP_GAP + TOOLTIP_WIDTH > window.innerWidth
+      ? "left"
+      : "right";
+    const vertical = rect.top + TOOLTIP_HEIGHT > window.innerHeight
+      ? "bottom"
+      : "top";
+    setPlacement({ horizontal, vertical });
+  }, []);
 
   return (
     <div
+      ref={tileRef}
       className="relative group"
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={() => {
+        updatePlacement();
+        setHovered(true);
+      }}
       onMouseLeave={() => setHovered(false)}
       onClick={() => onClick?.(tileVariant ?? undefined)}
     >
@@ -76,7 +106,9 @@ export function RelicTile({ serviceLocale = "ko", relic, showBeta = false, onCli
       {/* Hover tooltip */}
       {hovered && (
         <div
-          className="pointer-events-none absolute left-full top-0 z-50 ml-3 hidden w-max max-w-80 md:block"
+          className={`pointer-events-none absolute z-50 hidden w-max max-w-80 md:block ${
+            placement.horizontal === "right" ? "left-full ml-3" : "right-full mr-3"
+          } ${placement.vertical === "top" ? "top-0" : "bottom-0"}`}
         >
           <GameHoverTip title={relic.name} style={{ minWidth: 280 }}>
             <DescriptionText description={relic.description} className="block text-left" />
