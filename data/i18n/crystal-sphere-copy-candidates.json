@@ -218,7 +218,7 @@
     },
     {
       "id": "crystalSphere.events.CRYSTAL.SPHERE.pages.FINISH.description",
-      "status": "candidate",
+      "status": "include",
       "category": "crystal-sphere",
       "sourceTable": "events",
       "sourceKey": "CRYSTAL_SPHERE.pages.FINISH.description",
