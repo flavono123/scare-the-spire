@@ -51,6 +51,10 @@ function normalizePatchId(patch: string): string {
   return patch.startsWith("v") ? patch : `v${patch}`;
 }
 
+function patchHref(patch: string): string {
+  return `/patches/${patch.replace(/^v/, "")}`;
+}
+
 function getPatch(
   patchVersion: string,
   patches: readonly STS2Patch[] | undefined,
@@ -263,7 +267,7 @@ export function STS2ChangeHistory({
         return (
           <Link
             key={entry.patch}
-            href={localizeHref(`/patches/${entry.patch}`, serviceLocale)}
+            href={localizeHref(patchHref(entry.patch), serviceLocale)}
             className="block rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 text-gray-300 transition-colors hover:border-yellow-500/40 hover:text-yellow-300"
           >
             <div className="font-game-title text-xs text-yellow-500">
