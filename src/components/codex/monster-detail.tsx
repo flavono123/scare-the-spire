@@ -257,9 +257,6 @@ export function MonsterDetail({
             >
               {monster.name}
             </h1>
-            {monster.nameEn !== monster.name && (
-              <p className="mt-1 font-game-text text-sm text-gray-500">{monster.nameEn}</p>
-            )}
           </div>
 
           {skinParts.length > 0 && (

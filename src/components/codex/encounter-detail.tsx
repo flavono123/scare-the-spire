@@ -202,9 +202,6 @@ export function EncounterDetail({
             >
               {encounter.name}
             </h1>
-            {encounter.nameEn !== encounter.name && (
-              <p className="mt-1 font-game-text text-sm text-gray-500">{encounter.nameEn}</p>
-            )}
           </div>
         </section>
 
