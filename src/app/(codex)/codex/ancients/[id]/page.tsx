@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCodexAncients, getCodexRelics } from "@/lib/codex-data";
+import { loadAllEntities } from "@/lib/load-all-entities";
+import { getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -39,9 +41,13 @@ export default async function AncientDetailPage({ params, searchParams }: Props)
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [ancients, relics, gameUi] = await Promise.all([
+  const [ancients, relics, patches, changes, versionDiffs, entities, gameUi] = await Promise.all([
     getCodexAncients({ gameLocale }),
     getCodexRelics({ gameLocale }),
+    getSTS2Patches(),
+    getSTS2Changes(),
+    getEntityVersionDiffs(),
+    loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
 
@@ -52,5 +58,17 @@ export default async function AncientDetailPage({ params, searchParams }: Props)
     .map((rid) => relics.find((r) => r.id === rid))
     .filter((r): r is CodexRelic => r !== undefined);
 
-  return <AncientDetail serviceLocale={serviceLocale} gameUi={gameUi} ancient={ancient} relics={ancientRelics} />;
+  return (
+    <AncientDetail
+      serviceLocale={serviceLocale}
+      gameUi={gameUi}
+      backToListTitle={gameUi.ancientsTitle}
+      ancient={ancient}
+      relics={ancientRelics}
+      entities={entities}
+      patches={patches}
+      changes={changes}
+      versionDiffs={versionDiffs}
+    />
+  );
 }
