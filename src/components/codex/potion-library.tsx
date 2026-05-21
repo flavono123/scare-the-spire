@@ -5,8 +5,10 @@ import { useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import { DescriptionText } from "./codex-description";
 import { PotionDetail } from "./potion-detail";
+import { GameHoverTip } from "./hover-tip";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
   formatCodexCount,
   getCodexServiceMessages,
@@ -18,10 +20,8 @@ import {
   CodexEvent,
   PotionRarityKo,
   PotionPool,
-  POTION_RARITY_CONFIG,
   POOL_ALIASES,
   POTION_RARITY_ALIASES,
-  getCharacterColor,
   characterOutlineFilter,
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
@@ -106,9 +106,10 @@ interface PotionLibraryProps {
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
   relatedEvents?: CodexEvent[];
+  entities?: EntityInfo[];
 }
 
-export function PotionLibrary({ serviceLocale, gameUi, title, potions, characters, versions, currentVersion, patches, changes, versionDiffs, relatedEvents = [] }: PotionLibraryProps) {
+export function PotionLibrary({ serviceLocale, gameUi, title, potions, characters, versions, currentVersion, patches, changes, versionDiffs, relatedEvents = [], entities }: PotionLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<PotionPool>>(
@@ -175,12 +176,6 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
       reconstructPotionAtVersion(potion, selectedVersion, currentVersion, versionDiffs, patches),
     );
   }, [potions, selectedVersion, currentVersion, versionDiffs, patches]);
-  const [hoveredPotion, setHoveredPotion] = useState<CodexPotion | null>(null);
-  const [tooltipPos, setTooltipPos] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
-  const tooltipRef = useRef<HTMLDivElement>(null);
 
   // Cmd+K to focus search
   useEffect(() => {
@@ -292,26 +287,6 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
       return next;
     });
   }, []);
-
-  // Hover tooltip positioning — dynamic left/right based on viewport half
-  const handlePotionHover = useCallback(
-    (potion: CodexPotion | null, e?: React.MouseEvent) => {
-      setHoveredPotion(potion);
-      if (potion && e) {
-        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-        const tooltipW = 288; // w-72
-        const tileCenterX = rect.left + rect.width / 2;
-        const isRightHalf = tileCenterX > window.innerWidth / 2;
-        const x = isRightHalf
-          ? rect.left - tooltipW - 12
-          : rect.right + 12;
-        setTooltipPos({ x, y: rect.top });
-      } else {
-        setTooltipPos(null);
-      }
-    },
-    []
-  );
 
   // Character filters from props
   const poolLabels = useMemo(() => {
@@ -499,7 +474,6 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
                   <PotionTile
                     key={potion.id}
                     potion={potion}
-                    onHover={handlePotionHover}
                     onClick={() => setSelectedPotion(potion)}
                   />
                 ))}
@@ -515,18 +489,6 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
         </div>
       </main>
 
-      {/* Hover Tooltip */}
-      {hoveredPotion && tooltipPos && (
-        <PotionTooltip
-          ref={tooltipRef}
-          potion={hoveredPotion}
-          x={tooltipPos.x}
-          y={tooltipPos.y}
-          gameUi={gameUi}
-          poolLabels={poolLabels}
-        />
-      )}
-
       {/* Potion Detail Modal */}
       {selectedPotion && (
         <div
@@ -535,8 +497,8 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
             if (e.target === e.currentTarget) setSelectedPotion(null);
           }}
         >
-          <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} potion={selectedPotion} poolLabels={poolLabels} relatedEvents={relatedEvents} patches={patches} changes={changes} versionDiffs={versionDiffs} onClose={() => setSelectedPotion(null)} />
+          <div className="my-8 mx-4 w-full max-w-6xl">
+            <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} potion={selectedPotion} poolLabels={poolLabels} relatedEvents={relatedEvents} patches={patches} changes={changes} versionDiffs={versionDiffs} entities={entities} onClose={() => setSelectedPotion(null)} />
           </div>
         </div>
       )}
@@ -544,122 +506,100 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
   );
 }
 
+type TooltipPlacement = {
+  horizontal: "left" | "right";
+  vertical: "top" | "bottom";
+};
+
+const TOOLTIP_GAP = 12;
+const TOOLTIP_WIDTH = 380;
+const TOOLTIP_HEIGHT = 220;
+
 // Individual potion icon tile
 function PotionTile({
   potion,
-  onHover,
   onClick,
 }: {
   potion: CodexPotion;
-  onHover: (potion: CodexPotion | null, e?: React.MouseEvent) => void;
   onClick?: () => void;
 }) {
-  return (
-    <button
-      data-potion-tile={potion.id}
-      className="group relative w-14 h-14 sm:w-16 sm:h-16 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/10 hover:border-yellow-500/40 transition-all flex items-center justify-center"
-      onMouseEnter={(e) => onHover(potion, e)}
-      onMouseLeave={() => onHover(null)}
-      onClick={onClick}
-    >
-      <Image
-        src={potion.imageUrl}
-        alt={potion.name}
-        width={48}
-        height={48}
-        className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
-        style={{
-          filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
-        }}
-      />
-    </button>
-  );
-}
+  const tileRef = useRef<HTMLDivElement>(null);
+  const [hovered, setHovered] = useState(false);
+  const [placement, setPlacement] = useState<TooltipPlacement>({
+    horizontal: "right",
+    vertical: "top",
+  });
 
-// Hover tooltip for potion details
-import { forwardRef } from "react";
-
-const PotionTooltip = forwardRef<
-  HTMLDivElement,
-  {
-    potion: CodexPotion;
-    x: number;
-    y: number;
-    gameUi: CodexGameUiLabels;
-    poolLabels: Record<PotionPool, string>;
-  }
->(function PotionTooltip({ potion, x, y, gameUi, poolLabels }, ref) {
-  const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
-
-  // Clamp to viewport bounds (position already computed by handler)
-  const style: React.CSSProperties = {
-    position: "fixed",
-    left: Math.max(0, Math.min(x, window.innerWidth - 288)),
-    top: Math.min(y, window.innerHeight - 200),
-    zIndex: 100,
-    pointerEvents: "none",
-  };
+  const updatePlacement = useCallback(() => {
+    const rect = tileRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const horizontal = rect.right + TOOLTIP_GAP + TOOLTIP_WIDTH > window.innerWidth
+      ? "left"
+      : "right";
+    const vertical = rect.top + TOOLTIP_HEIGHT > window.innerHeight
+      ? "bottom"
+      : "top";
+    setPlacement({ horizontal, vertical });
+  }, []);
 
   return (
     <div
-      ref={ref}
-      className="w-72 bg-[#1a1a3a] border border-white/20 rounded-lg shadow-2xl overflow-hidden"
-      style={style}
+      ref={tileRef}
+      className="group relative"
+      onMouseEnter={() => {
+        updatePlacement();
+        setHovered(true);
+      }}
+      onMouseLeave={() => setHovered(false)}
     >
-      <div className="p-3">
-        {/* Header with name and rarity */}
-        <div className="flex items-center gap-2 mb-1">
-          <Image
-            src={potion.imageUrl}
-            alt={potion.name}
-            width={32}
-            height={32}
-            className="w-8 h-8 object-contain"
-          />
-          <div>
-            <div className="font-game-title font-bold text-sm text-gray-100">{potion.name}</div>
-            <div className="font-game-text text-[10px] text-gray-500">{potion.nameEn}</div>
-          </div>
-        </div>
+      <button
+        data-potion-tile={potion.id}
+        className={`flex h-14 w-14 items-center justify-center rounded-lg border-2 p-1 transition-all sm:h-16 sm:w-16 ${
+          hovered
+            ? "z-10 scale-110 border-yellow-500/60 bg-yellow-500/10"
+            : "border-transparent bg-white/5 hover:bg-white/10"
+        }`}
+        onClick={onClick}
+      >
+        <Image
+          src={potion.imageUrl}
+          alt={potion.name}
+          width={48}
+          height={48}
+          className="h-10 w-10 object-contain sm:h-12 sm:w-12"
+          style={{
+            filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
+          }}
+        />
+      </button>
 
-        {/* Rarity + pool badge */}
-        <div className="flex items-center gap-1.5 mb-2">
-          <span
-            className="text-[10px] font-medium px-1.5 py-0.5 rounded"
-            style={{
-              backgroundColor: `${rarityConfig.color}20`,
-              color: rarityConfig.color,
-            }}
-          >
-            {gameUi.potionLab.rarities[potion.rarity].label}
-          </span>
-          {potion.pool !== "shared" && (
-            <span
-              className="text-[10px] font-medium"
-              style={{
-                color:
-                  potion.pool !== "event"
-                    ? getPoolColor(potion.pool)
-                    : undefined,
-              }}
-            >
-              {poolLabels[potion.pool]}
+      {hovered && (
+        <div
+          className={`pointer-events-none absolute z-50 hidden w-max max-w-[24rem] md:block ${
+            placement.horizontal === "right" ? "left-full ml-3" : "right-full mr-3"
+          } ${placement.vertical === "top" ? "top-0" : "bottom-0"}`}
+        >
+          <span className="flex w-max max-w-[24rem] items-start gap-2.5">
+            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-black/20">
+              <Image
+                src={potion.imageUrl}
+                alt={potion.name}
+                width={64}
+                height={64}
+                className="h-14 w-14 object-contain"
+                style={{
+                  filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
+                }}
+              />
             </span>
-          )}
+            <GameHoverTip title={potion.name} style={{ minWidth: 240, maxWidth: 320 }}>
+              <DescriptionText description={potion.description} className="block text-left" />
+            </GameHoverTip>
+          </span>
         </div>
-
-        {/* Description */}
-        <div className="text-sm text-gray-300 leading-relaxed">
-          <DescriptionText description={potion.description} />
-        </div>
-      </div>
+      )}
     </div>
   );
-});
-
-// Pool color mapping (delegates to shared CHARACTER_COLORS)
-function getPoolColor(pool: PotionPool): string {
-  return getCharacterColor(pool) ?? "#888";
 }
 
 function getPotionTriggers(
