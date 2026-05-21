@@ -1,12 +1,13 @@
 "use client";
 
-"use client";
-
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { AncientNodeRender } from "@/components/codex/ancient-node-render";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import type { EntityInfo } from "@/components/patch-note-renderer";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
@@ -14,7 +15,7 @@ import {
   getCodexServiceMessages,
   type CodexServiceMessages,
 } from "@/lib/codex-service";
-import type { CodexAncient, EventAct } from "@/lib/codex-types";
+import type { CodexAncient, CodexRelic, EventAct } from "@/lib/codex-types";
 import {
   EVENT_ACT_ALIASES,
   EVENT_ACT_ORDER,
@@ -33,6 +34,7 @@ import {
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { SearchBar } from "./search-bar";
+import { AncientDetail } from "./ancient-detail";
 
 type AncientSearchTokenType = "act";
 const COMPENDIUM_ACT_COLOR = "#60a5fa";
@@ -65,12 +67,83 @@ interface AncientListProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
   ancients: CodexAncient[];
+  relics?: CodexRelic[];
+  patches?: STS2Patch[];
+  changes?: STS2Change[];
+  versionDiffs?: EntityVersionDiff[];
+  entities?: EntityInfo[];
 }
 
-export function AncientList({ serviceLocale, gameUi, ancients }: AncientListProps) {
+export function AncientList({
+  serviceLocale,
+  gameUi,
+  ancients,
+  relics = [],
+  patches,
+  changes,
+  versionDiffs,
+  entities,
+}: AncientListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const searchParams = useSearchParams();
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const initialAncientId = searchParams.get("ancient");
+  const [selectedAncient, setSelectedAncient] = useState<CodexAncient | null>(() => {
+    if (!initialAncientId) return null;
+    return ancients.find((ancient) => ancient.id.toLowerCase() === initialAncientId.toLowerCase()) ?? null;
+  });
+
+  const relicById = useMemo(
+    () => new Map(relics.map((relic) => [relic.id, relic])),
+    [relics],
+  );
+  const selectedAncientRelics = useMemo(() => {
+    if (!selectedAncient) return [];
+    return selectedAncient.relicIds
+      .map((relicId) => relicById.get(relicId))
+      .filter((relic): relic is CodexRelic => Boolean(relic));
+  }, [relicById, selectedAncient]);
+
+  const selectAncient = useCallback((ancient: CodexAncient) => {
+    setSelectedAncient(ancient);
+  }, []);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (selectedAncient) {
+      url.searchParams.set("ancient", selectedAncient.id.toLowerCase());
+    } else {
+      url.searchParams.delete("ancient");
+    }
+    if (url.toString() !== window.location.href) {
+      window.history.pushState(null, "", url.toString());
+    }
+  }, [selectedAncient]);
+
+  useEffect(() => {
+    const handler = () => {
+      const url = new URL(window.location.href);
+      const ancientParam = url.searchParams.get("ancient");
+      if (!ancientParam) {
+        setSelectedAncient(null);
+      } else {
+        const ancient = ancients.find((item) => item.id.toLowerCase() === ancientParam.toLowerCase());
+        setSelectedAncient(ancient ?? null);
+      }
+    };
+    window.addEventListener("popstate", handler);
+    return () => window.removeEventListener("popstate", handler);
+  }, [ancients]);
+
+  useEffect(() => {
+    if (!selectedAncient) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedAncient(null);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [selectedAncient]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -234,6 +307,7 @@ export function AncientList({ serviceLocale, gameUi, ancients }: AncientListProp
                         serviceLocale={serviceLocale}
                         messages={serviceText}
                         gameUi={gameUi}
+                        onSelect={selectAncient}
                       />
                     ))}
                   </div>
@@ -243,6 +317,30 @@ export function AncientList({ serviceLocale, gameUi, ancients }: AncientListProp
           )}
         </div>
       </main>
+
+      {selectedAncient && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedAncient(null);
+          }}
+        >
+          <div className="my-8 mx-4 w-full max-w-6xl">
+            <AncientDetail
+              serviceLocale={serviceLocale}
+              gameUi={gameUi}
+              backToListTitle={gameUi.ancientsTitle}
+              ancient={selectedAncient}
+              relics={selectedAncientRelics}
+              onClose={() => setSelectedAncient(null)}
+              entities={entities}
+              patches={patches}
+              changes={changes}
+              versionDiffs={versionDiffs}
+            />
+          </div>
+        </div>
+      )}
     </CodexLibraryShell>
   );
 }
@@ -253,16 +351,23 @@ function AncientCard({
   serviceLocale,
   messages,
   gameUi,
+  onSelect,
 }: {
   ancient: CodexAncient;
   relicCount: number;
   serviceLocale: ServiceLocale;
   messages: CodexServiceMessages;
   gameUi: CodexGameUiLabels;
+  onSelect: (ancient: CodexAncient) => void;
 }) {
   return (
     <Link
       href={localizeHref(`/compendium/ancients/${ancient.id.toLowerCase()}`, serviceLocale)}
+      onClick={(event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+        event.preventDefault();
+        onSelect(ancient);
+      }}
       className="group relative overflow-hidden rounded-xl border border-blue-900/30 bg-[#12121a] hover:border-blue-600/50 transition-all duration-200"
     >
       {/* Image */}
