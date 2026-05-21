@@ -1916,7 +1916,15 @@ export function EventDetail({
     : event.imageUrl;
   const eventTypeLabel = serviceLocale === "ko" ? "이벤트" : "Event";
   const eventActLabel = event.act ? gameUi.acts[event.act] : serviceText.labels.acts.none;
-  const rootClassName = "mx-auto w-full max-w-[92rem] p-4 sm:p-6";
+  const rootClassName = isModal
+    ? "mx-auto w-full max-w-[92rem] p-3 sm:p-4"
+    : "mx-auto w-full max-w-[92rem] p-4 sm:p-6";
+  const detailStackClassName = isModal
+    ? "flex flex-col gap-3 sm:gap-4"
+    : "flex flex-col gap-5";
+  const stageSectionClassName = isModal
+    ? "flex min-h-[22rem] min-w-0 items-center justify-center py-1"
+    : "flex min-h-[22rem] min-w-0 items-center justify-center py-2";
   const textPanelClassName = isModal
     ? "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[2%] sm:right-[3.5%] sm:top-[3%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[560px]"
     : "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]";
@@ -2011,8 +2019,8 @@ export function EventDetail({
         )}
       </div>
 
-      <div className="flex flex-col gap-5">
-        <section className="flex min-h-[22rem] min-w-0 items-center justify-center py-2">
+      <div className={detailStackClassName}>
+        <section className={stageSectionClassName}>
           <div
             className="relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10"
             style={{ boxShadow: `inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.35)` }}
@@ -2059,7 +2067,7 @@ export function EventDetail({
               <div className={textPanelClassName}>
                 <div className="relative flex min-h-0 flex-1 flex-col">
                   <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
-                  <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto pr-2">
+                  <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto pr-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     <h1
                       className="font-game-title text-3xl font-bold leading-tight text-[#f3c640]"
                       style={{ textShadow: GAME_TEXT_SHADOW }}
