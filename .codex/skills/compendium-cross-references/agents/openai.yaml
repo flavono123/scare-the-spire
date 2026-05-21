@@ -1,0 +1,4 @@
+interface:
+  display_name: "Compendium Cross References"
+  short_description: "Build reciprocal related-resource rails."
+  default_prompt: "Use the Compendium cross-reference workflow to add related resources between STS2 Compendium detail views, keeping data reciprocal and rail UI consistent."

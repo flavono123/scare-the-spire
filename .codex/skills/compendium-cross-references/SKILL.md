@@ -1,85 +1,95 @@
 ---
 name: compendium-cross-references
-description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+description: Add or refactor STS2 백과사전/Compendium cross-resource references and related-resource rails. Use when connecting cards, relics, potions, events, monsters, encounters, ancients, powers, or enchantments to other resources; when adding "관련 리소스" rail rows; when making relationships reciprocal; or when replacing ad hoc related-link UI with the shared EntityReferenceLinks/GameHoverTip preview pattern.
 ---
 
 # Compendium Cross References
 
-## Overview
+Use this skill to add related-resource rails and reciprocal links between STS2 백과사전 resources without rediscovering the cross-reference pattern.
 
-[TODO: 1-2 sentences explaining what this skill enables]
+## Read First
 
-## Structuring This Skill
+Read only the files needed for the target resource.
 
-[TODO: Choose the structure that best fits this skill's purpose. Common patterns:
+- Detail design skill: `.codex/skills/compendium-resource-detail/SKILL.md`
+- Relationship helpers: `src/lib/codex-references.ts`
+- Shared rail UI: `src/components/codex/entity-reference-links.tsx`
+- Hover preview implementation: `src/components/patch-note-renderer.tsx`
+- Current examples: `src/components/codex/relic-detail.tsx`, `src/components/codex/card-detail.tsx`, `src/components/codex/event-detail.tsx`, `src/components/codex/monster-detail.tsx`, `src/components/codex/encounter-detail.tsx`, `src/components/codex/ancient-detail.tsx`
+- Data loaders for the resources being connected: `src/lib/codex-data.ts` and the relevant `src/app/(codex)/codex/.../page.tsx` route files.
 
-**1. Workflow-Based** (best for sequential processes)
-- Works well when there are clear step-by-step procedures
-- Example: DOCX skill with "Workflow Decision Tree" -> "Reading" -> "Creating" -> "Editing"
-- Structure: ## Overview -> ## Workflow Decision Tree -> ## Step 1 -> ## Step 2...
+## Language And Placement
 
-**2. Task-Based** (best for tool collections)
-- Works well when the skill offers different operations/capabilities
-- Example: PDF skill with "Quick Start" -> "Merge PDFs" -> "Split PDFs" -> "Extract Text"
-- Structure: ## Overview -> ## Quick Start -> ## Task Category 1 -> ## Task Category 2...
+- Use **관련 리소스** as the concept and direct nouns in row labels: `관련 카드`, `관련 유물`, `관련 이벤트`, `관련 몬스터`.
+- Do not introduce user-facing `Codex`, `도감`, or `entity` wording.
+- Put related resources in the information rail, not inside the game hover tip.
+- The related rail is always visible when non-empty. Do not add a collapse control for it.
+- Use one compact line per resource kind. When multiple kinds are present, use `EntityReferenceGroupLinks`.
 
-**3. Reference/Guidelines** (best for standards or specifications)
-- Works well for brand guidelines, coding standards, or requirements
-- Example: Brand styling with "Brand Guidelines" -> "Colors" -> "Typography" -> "Features"
-- Structure: ## Overview -> ## Guidelines -> ## Specifications -> ## Usage...
+## Relationship Rules
 
-**4. Capabilities-Based** (best for integrated systems)
-- Works well when the skill provides multiple interrelated features
-- Example: Product Management with "Core Capabilities" -> numbered capability list
-- Structure: ## Overview -> ## Core Capabilities -> ### 1. Feature -> ### 2. Feature...
+Prefer derived or extracted game data before curated maps.
 
-Patterns can be mixed and matched as needed. Most skills combine patterns (e.g., start with task-based, add workflow for complex operations).
+- Encounters and monsters: derive from encounter monster lists; expose inverse links rather than duplicate manual tables.
+- Ancients and relics: derive from ancient relic ownership/event data.
+- Events and cards/relics/potions: use `EVENT_RELATED_*_IDS` in `src/lib/codex-references.ts` only for relationships not already represented in structured extracted data.
+- Special event mechanics such as Tinker Time and Future of Potions belong in `src/lib/codex-references.ts` beside their constants and filters.
+- Store IDs in canonical game form. Preserve uppercase IDs in curated maps and compare case-insensitively only at lookup boundaries.
+- A relationship should normally be reciprocal. Prefer one source map plus inverse helpers such as `getRelatedEventIdsForCard` over maintaining two divergent maps.
 
-Delete this entire "Structuring This Skill" section when done - it's just guidance.]
+When adding a new related kind:
 
-## [TODO: Replace with the first main section based on chosen structure]
+1. Extend `CodexReferenceKind` and `REFERENCE_KIND_CONFIG` in `entity-reference-links.tsx`.
+2. Add or derive relationship helpers in `codex-references.ts`.
+3. Pass the target resource data through both the list modal path and direct `[id]` route.
+4. Build `CodexReferenceTarget` objects with `id`, `/compendium/...` href, localized title, and `EntityInfo` metadata when available.
+5. Render with `EntityReferenceLinks` or `EntityReferenceGroupLinks` in the rail.
 
-[TODO: Add content here. See examples in existing skills:
-- Code samples for technical skills
-- Decision trees for complex workflows
-- Concrete examples with realistic user requests
-- References to scripts/templates/references as needed]
+## Target Construction Pattern
 
-## Resources (optional)
+Use existing entity data to populate previews. Do not emit bare text links unless no entity metadata exists.
 
-Create only the resource directories this skill actually needs. Delete this section if no resources are required.
+```tsx
+const relatedEventTargets = getRelatedEventIdsForRelic(relic.id).map((eventId) => {
+  const event = relatedEvents.find((candidate) => candidate.id === eventId);
+  return {
+    id: eventId,
+    href: `/compendium/events/${eventId.toLowerCase()}`,
+    title: event?.name ?? eventId,
+    entity: event ? entities?.find((candidate) => candidate.id === event.id) : undefined,
+  };
+});
+```
 
-### scripts/
-Executable code (Python/Bash/etc.) that can be run directly to perform specific operations.
+`EntityPreview` must show the resource asset plus game-style hover tip. Do not regress to the old opaque web tooltip. Keep direct links localizable via `localizeHref`, which `EntityReferenceLinks` already applies.
 
-**Examples from other skills:**
-- PDF skill: `fill_fillable_fields.py`, `extract_form_field_info.py` - utilities for PDF manipulation
-- DOCX skill: `document.py`, `utilities.py` - Python modules for document processing
+## Implementation Checklist
 
-**Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
+1. Identify the relationship source: extracted game data, existing curated map, or a new curated relation.
+2. Verify both endpoint IDs exist in the current localized data.
+3. Add one canonical relationship source and inverse lookup helpers where useful.
+4. Thread required resource arrays and `entities` through list pages, modal detail props, and direct route props.
+5. Render the rail in the detail component with shared reference components.
+6. Check the reciprocal detail page also shows the relation or has a clear reason not to.
+7. Preserve unrelated dirty files and commit after each meaningful edit.
 
-**Note:** Scripts may be executed without loading into context, but can still be read by Codex for patching or environment adjustments.
+## Verification
 
-### references/
-Documentation and reference material intended to be loaded into context to inform Codex's process and thinking.
+Run narrow checks:
 
-**Examples from other skills:**
-- Product management: `communication.md`, `context_building.md` - detailed workflow guides
-- BigQuery: API reference documentation and query examples
-- Finance: Schema documentation, company policies
+```bash
+pnpm lint
+```
 
-**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that Codex should reference while working.
+Run a build when changing route data loading, shared reference components, or type contracts:
 
-### assets/
-Files not intended to be loaded into context, but rather used within the output Codex produces.
+```bash
+pnpm build
+```
 
-**Examples from other skills:**
-- Brand styling: PowerPoint template files (.pptx), logo files
-- Frontend builder: HTML/React boilerplate project directories
-- Typography: Font files (.ttf, .woff2)
+Use browser/Playwright smoke checks for visual or interaction changes:
 
-**Appropriate for:** Templates, boilerplate code, document templates, images, icons, fonts, or any files meant to be copied or used in the final output.
-
----
-
-**Not every skill requires all three types of resources.**
+- Source detail modal and direct `/compendium/.../[id]` route.
+- Target detail page showing the reciprocal relation.
+- Hovering a related resource link near a viewport edge.
+- A grouped rail with multiple related kinds when the resource has one.
