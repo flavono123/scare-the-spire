@@ -32,17 +32,21 @@ Use this when Steam has published the patch but rich notes are not ready yet.
 1. Add or update the `data/sts2-patches.json` entry with the real version/date/title/type/Steam URL.
 2. Keep `steamUrl` live.
 3. Set `status` to `"building"` so the index/detail UI labels the patch as being prepared.
-4. Mark the summary as work-in-progress in Korean and English instead of pretending the rich notes are done.
-5. Do not add placeholder rich note markdown unless there is real content.
-6. Commit this shell separately before asset extraction or translation work.
+4. Set `art` to the grayscale text-free STS2 banner:
+   - `type`: `"image"`
+   - `imageUrl`: `"/images/sts2/patches/default-art-building.jpg"`
+   - `alt`: `"Slay the Spire 2 WIP banner art"`
+   - `altKo`: `"작성 중인 슬레이 더 스파이어 2 배너 아트"`
+5. Mark the summary as work-in-progress in Korean and English instead of pretending the rich notes are done.
+6. Do not add placeholder rich note markdown unless there is real content.
+7. Commit this shell separately before asset extraction or translation work.
 
 Index/detail behavior while `status: "building"`:
 
 - The index card is not a link to the local detail page.
 - Keep the normal type/balance chips, but render them in disabled gray.
 - The only colored action is the Steam original chip; it links to `steamUrl` and opens the real Steam source.
-- The body shows gray per-letter sine text for "작성 중" / "Building"; do not add a separate "작성 중" chip.
-- The card footer shows the date only.
+- The card shows the date, the grayscale default STS2 banner thumbnail, and gray per-letter sine text for "작성 중" / "Building"; do not add a separate "작성 중" chip.
 - The detail page renders a stronger building state when markdown files are absent, but should not add another Steam link while building.
 
 Remove `status` or set it to `"ready"` when the enriched notes are published.
