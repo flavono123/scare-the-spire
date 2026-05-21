@@ -758,6 +758,7 @@ function mapEnchantment(
     description: bakeDescription(raw ?? kor.description, vars),
     descriptionRaw: raw,
     extraCardText: extraRaw ? bakeDescription(extraRaw, vars) : extraRaw,
+    vars,
     cardType: (kor.card_type as "Attack" | "Skill" | null),
     isStackable: kor.is_stackable,
     imageUrl: kor.image_url,

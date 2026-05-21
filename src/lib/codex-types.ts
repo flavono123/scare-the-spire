@@ -389,6 +389,7 @@ export interface CodexEnchantment {
   description: string; // Korean, with BBCode markup
   descriptionRaw: string | null;
   extraCardText: string | null;
+  vars: Record<string, number>; // Base variable values from extracted game code
   cardType: "Attack" | "Skill" | null; // null = any card type
   isStackable: boolean;
   imageUrl: string | null; // local path
