@@ -540,17 +540,19 @@ export function getRelatedAncientIdsForEvent(
 }
 
 export function getRelatedEnchantmentIdsForRelic(
-  relic: Pick<CodexRelic, "id">,
-  enchantments: readonly Pick<CodexEnchantment, "id">[],
+  relic: Pick<CodexRelic, "id" | "vars">,
+  enchantments: readonly Pick<CodexEnchantment, "id" | "name" | "nameEn">[],
 ): string[] {
-  void enchantments;
-  return dedupeIds((RELIC_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[relic.id] ?? []);
+  return dedupeIds([
+    ...((RELIC_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[relic.id] ?? []),
+    ...getEnchantmentIdsFromVars(relic.vars, enchantments),
+  ]);
 }
 
 export function getRelatedRelicIdsForEnchantment(
   enchantmentId: string,
-  relics: readonly Pick<CodexRelic, "id">[],
-  enchantments: readonly Pick<CodexEnchantment, "id">[],
+  relics: readonly Pick<CodexRelic, "id" | "vars">[],
+  enchantments: readonly Pick<CodexEnchantment, "id" | "name" | "nameEn">[],
 ): string[] {
   const normalizedEnchantmentId = enchantmentId.toUpperCase();
   return relics
@@ -559,6 +561,26 @@ export function getRelatedRelicIdsForEnchantment(
         .some((id) => id.toUpperCase() === normalizedEnchantmentId),
     )
     .map((relic) => relic.id);
+}
+
+function getEnchantmentIdsFromVars(
+  vars: Record<string, unknown> | null | undefined,
+  enchantments: readonly Pick<CodexEnchantment, "id" | "name" | "nameEn">[],
+): string[] {
+  if (!vars) return [];
+  const enchantmentByLabel = new Map<string, string>();
+  for (const enchantment of enchantments) {
+    enchantmentByLabel.set(enchantment.id.toLowerCase(), enchantment.id);
+    enchantmentByLabel.set(enchantment.name.toLowerCase(), enchantment.id);
+    enchantmentByLabel.set(enchantment.nameEn.toLowerCase(), enchantment.id);
+  }
+
+  return Object.entries(vars).flatMap(([key, value]) => {
+    if (!["enchantment", "enchantmentname"].includes(key.toLowerCase())) return [];
+    if (typeof value !== "string") return [];
+    const enchantmentId = enchantmentByLabel.get(value.trim().toLowerCase());
+    return enchantmentId ? [enchantmentId] : [];
+  });
 }
 
 type PowerReferenceSource = {
