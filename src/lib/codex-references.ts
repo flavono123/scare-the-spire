@@ -6,7 +6,9 @@ import type {
   CodexEnchantment,
   CodexEncounter,
   CodexEvent,
+  CodexMonster,
   CodexPotion,
+  CodexPower,
   CodexRelic,
   PotionRarityKo,
 } from "./codex-types";
@@ -334,6 +336,14 @@ export const EVENT_RELATED_ENCHANTMENT_IDS = {
   WOOD_CARVINGS: ["SLITHER"],
 } as const satisfies Record<string, readonly string[]>;
 
+export const EVENT_RELATED_POWER_IDS = {
+  BYRDONIS_NEST: ["HATCH"],
+  COLOSSAL_FLOWER: ["THORNS"],
+  TEA_MASTER: ["STRENGTH"],
+  TINKER_TIME: ["WEAK", "VULNERABLE", "STRENGTH", "DEXTERITY"],
+  WOOD_CARVINGS: ["SLIPPERY", "TORIC_TOUGHNESS"],
+} as const satisfies Record<string, readonly string[]>;
+
 export const CARD_RELATED_ENCHANTMENT_IDS = {
   BLADE_OF_INK: ["INKY"],
 } as const satisfies Record<string, readonly string[]>;
@@ -375,6 +385,18 @@ export const POTION_RELATED_POWER_IDS = {
 
 export const POTION_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<string, readonly string[]>;
 
+export const MONSTER_RELATED_CARD_IDS = {
+  BYRDONIS: ["BYRDONIS_EGG"],
+  BYRDPIP: ["BYRD_SWOOP"],
+} as const satisfies Record<string, readonly string[]>;
+
+export const MONSTER_RELATED_RELIC_IDS = {
+  BYRDPIP: ["BYRDPIP"],
+  PAELS_LEGION: ["PAELS_LEGION"],
+} as const satisfies Record<string, readonly string[]>;
+
+export const MONSTER_RELATED_POTION_IDS = {} as const satisfies Record<string, readonly string[]>;
+
 export function getRelatedCardIdsForEvent(eventId: string): readonly string[] {
   return (EVENT_RELATED_CARD_IDS as Record<string, readonly string[]>)[eventId] ?? [];
 }
@@ -391,6 +413,10 @@ export function getRelatedEnchantmentIdsForEvent(eventId: string): readonly stri
   return (EVENT_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[eventId] ?? [];
 }
 
+export function getRelatedPowerIdsForEvent(eventId: string): readonly string[] {
+  return (EVENT_RELATED_POWER_IDS as Record<string, readonly string[]>)[eventId] ?? [];
+}
+
 export function getRelatedEnchantmentIdsForCard(cardId: string): readonly string[] {
   return (CARD_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[cardId] ?? [];
 }
@@ -403,7 +429,7 @@ export function getRelatedCardIdsForPotion(potionId: string): readonly string[] 
   return (POTION_RELATED_CARD_IDS as Record<string, readonly string[]>)[potionId] ?? [];
 }
 
-export function getRelatedPowerIdsForPotion(potionId: string): readonly string[] {
+function getCuratedPowerIdsForPotion(potionId: string): readonly string[] {
   return (POTION_RELATED_POWER_IDS as Record<string, readonly string[]>)[potionId] ?? [];
 }
 
@@ -423,6 +449,10 @@ export function getRelatedEventIdsForEnchantment(enchantmentId: string): readonl
   return invertEventRelations(EVENT_RELATED_ENCHANTMENT_IDS, enchantmentId);
 }
 
+export function getRelatedEventIdsForPower(powerId: string): readonly string[] {
+  return invertEventRelations(EVENT_RELATED_POWER_IDS, powerId);
+}
+
 export function getRelatedCardIdsForEnchantment(enchantmentId: string): readonly string[] {
   return invertEventRelations(CARD_RELATED_ENCHANTMENT_IDS, enchantmentId);
 }
@@ -435,7 +465,7 @@ export function getRelatedPotionIdsForCard(cardId: string): readonly string[] {
   return invertEventRelations(POTION_RELATED_CARD_IDS, cardId);
 }
 
-export function getRelatedPotionIdsForPower(powerId: string): readonly string[] {
+function getCuratedPotionIdsForPower(powerId: string): readonly string[] {
   return invertEventRelations(POTION_RELATED_POWER_IDS, powerId);
 }
 
@@ -545,32 +575,274 @@ export function getRelatedRelicIdsForEnchantment(
     .map((relic) => relic.id);
 }
 
-export function getRelatedPowerIdsForCard(card: Pick<CodexCard, "appliedPowerIds">): readonly string[] {
-  return card.appliedPowerIds;
+type PowerReferenceSource = {
+  description?: string | null;
+  descriptionRaw?: string | null;
+  extraCardText?: string | null;
+  vars?: Record<string, unknown> | null;
+};
+
+type PowerReferenceIndex = readonly Pick<CodexPower, "id">[];
+
+function normalizeReferenceToken(token: string): string {
+  return token
+    .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+    .replace(/[^A-Za-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .toUpperCase();
 }
 
-export function getRelatedPowerIdsForRelic(relic: Pick<CodexRelic, "vars">): string[] {
-  return getPowerIdsFromVars(relic.vars);
+function powerTokenCandidates(token: string): string[] {
+  const normalized = normalizeReferenceToken(token);
+  const candidates = [normalized];
+  if (normalized.endsWith("_POWER") && normalized.length > "_POWER".length) {
+    candidates.push(normalized.slice(0, -"_POWER".length));
+  }
+  return candidates;
+}
+
+function buildPowerReferenceSet(powers?: PowerReferenceIndex): Set<string> | null {
+  if (!powers) return null;
+  return new Set(powers.map((power) => power.id.toUpperCase()));
+}
+
+function resolvePowerReferenceToken(
+  token: string,
+  powerIds: Set<string> | null,
+): string | null {
+  const candidates = powerTokenCandidates(token);
+  if (!powerIds) {
+    return candidates.find((candidate) => candidate !== candidates[0]) ?? null;
+  }
+  return candidates.find((candidate) => powerIds.has(candidate)) ?? null;
+}
+
+function extractPowerIdsFromTemplateText(
+  text: string | null | undefined,
+  powerIds: Set<string> | null,
+): string[] {
+  if (!text) return [];
+  const refs: string[] = [];
+  for (const match of text.matchAll(/\{\s*([A-Za-z][A-Za-z0-9_]*)/g)) {
+    const powerId = resolvePowerReferenceToken(match[1], powerIds);
+    if (powerId) refs.push(powerId);
+  }
+  return refs;
+}
+
+function extractPowerIdsFromTemplateVars(
+  vars: Record<string, unknown> | null | undefined,
+  powerIds: Set<string> | null,
+): string[] {
+  if (!vars) return [];
+  return Object.keys(vars)
+    .map((key) => resolvePowerReferenceToken(key, powerIds))
+    .filter((powerId): powerId is string => Boolean(powerId));
+}
+
+function getRelatedPowerIdsFromSource(
+  source: PowerReferenceSource,
+  powers?: PowerReferenceIndex,
+): string[] {
+  const powerIds = buildPowerReferenceSet(powers);
+  return dedupeIds([
+    ...extractPowerIdsFromTemplateText(source.descriptionRaw, powerIds),
+    ...extractPowerIdsFromTemplateText(source.extraCardText, powerIds),
+    ...extractPowerIdsFromTemplateText(source.description, powerIds),
+    ...extractPowerIdsFromTemplateVars(source.vars, powerIds),
+  ]);
+}
+
+export function getRelatedPowerIdsForCard(
+  card: Pick<CodexCard, "appliedPowerIds" | "description" | "descriptionRaw" | "vars">,
+  powers?: PowerReferenceIndex,
+): readonly string[] {
+  return dedupeIds([
+    ...card.appliedPowerIds,
+    ...getRelatedPowerIdsFromSource(card, powers),
+  ]);
+}
+
+export function getRelatedPowerIdsForRelic(
+  relic: Pick<CodexRelic, "description" | "descriptionRaw" | "vars">,
+  powers?: PowerReferenceIndex,
+): readonly string[] {
+  return getRelatedPowerIdsFromSource(relic, powers);
+}
+
+export function getRelatedPowerIdsForPotion(potionId: string): readonly string[];
+export function getRelatedPowerIdsForPotion(
+  potion: Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">,
+  powers?: PowerReferenceIndex,
+): readonly string[];
+export function getRelatedPowerIdsForPotion(
+  potionOrId: string | Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">,
+  powers?: PowerReferenceIndex,
+): readonly string[] {
+  if (typeof potionOrId === "string") return getCuratedPowerIdsForPotion(potionOrId);
+  return dedupeIds([
+    ...getCuratedPowerIdsForPotion(potionOrId.id),
+    ...getRelatedPowerIdsFromSource(potionOrId, powers),
+  ]);
+}
+
+export function getRelatedPowerIdsForEnchantment(
+  enchantment: Pick<CodexEnchantment, "description" | "descriptionRaw" | "extraCardText">,
+  powers?: PowerReferenceIndex,
+): readonly string[] {
+  return getRelatedPowerIdsFromSource(enchantment, powers);
 }
 
 export function getRelatedCardIdsForPower(
-  cards: readonly Pick<CodexCard, "id" | "appliedPowerIds">[],
+  cards: readonly Pick<CodexCard, "id" | "appliedPowerIds" | "description" | "descriptionRaw" | "vars">[],
   powerId: string,
 ): readonly string[] {
   const normalizedPowerId = powerId.toUpperCase();
   return cards
-    .filter((card) => card.appliedPowerIds.some((id) => id.toUpperCase() === normalizedPowerId))
+    .filter((card) =>
+      getRelatedPowerIdsForCard(card, [{ id: normalizedPowerId }])
+        .some((id) => id.toUpperCase() === normalizedPowerId),
+    )
     .map((card) => card.id);
 }
 
 export function getRelatedRelicIdsForPower(
-  relics: readonly Pick<CodexRelic, "id" | "vars">[],
+  relics: readonly Pick<CodexRelic, "id" | "description" | "descriptionRaw" | "vars">[],
   powerId: string,
 ): readonly string[] {
   const normalizedPowerId = powerId.toUpperCase();
   return relics
-    .filter((relic) => getRelatedPowerIdsForRelic(relic).some((id) => id.toUpperCase() === normalizedPowerId))
+    .filter((relic) =>
+      getRelatedPowerIdsForRelic(relic, [{ id: normalizedPowerId }])
+        .some((id) => id.toUpperCase() === normalizedPowerId),
+    )
     .map((relic) => relic.id);
+}
+
+export function getRelatedPotionIdsForPower(powerId: string): readonly string[];
+export function getRelatedPotionIdsForPower(
+  potions: readonly Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">[],
+  powerId: string,
+): readonly string[];
+export function getRelatedPotionIdsForPower(
+  potionsOrPowerId: string | readonly Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">[],
+  powerId?: string,
+): readonly string[] {
+  if (typeof potionsOrPowerId === "string") return getCuratedPotionIdsForPower(potionsOrPowerId);
+  const normalizedPowerId = (powerId ?? "").toUpperCase();
+  return potionsOrPowerId
+    .filter((potion) =>
+      getRelatedPowerIdsForPotion(potion, [{ id: normalizedPowerId }])
+        .some((id) => id.toUpperCase() === normalizedPowerId),
+    )
+    .map((potion) => potion.id);
+}
+
+export function getRelatedEnchantmentIdsForPower(
+  enchantments: readonly Pick<CodexEnchantment, "id" | "description" | "descriptionRaw" | "extraCardText">[],
+  powerId: string,
+): readonly string[] {
+  const normalizedPowerId = powerId.toUpperCase();
+  return enchantments
+    .filter((enchantment) =>
+      getRelatedPowerIdsForEnchantment(enchantment, [{ id: normalizedPowerId }])
+        .some((id) => id.toUpperCase() === normalizedPowerId),
+    )
+    .map((enchantment) => enchantment.id);
+}
+
+export function getRelatedEventIdsForPower(
+  powerId: string,
+  sources: {
+    cards?: readonly Pick<CodexCard, "id" | "appliedPowerIds" | "description" | "descriptionRaw" | "vars">[];
+    relics?: readonly Pick<CodexRelic, "id" | "description" | "descriptionRaw" | "vars">[];
+    potions?: readonly Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars" | "rarity">[];
+    enchantments?: readonly Pick<CodexEnchantment, "id" | "description" | "descriptionRaw" | "extraCardText">[];
+  },
+): readonly string[] {
+  const relatedCardIds = new Set(getRelatedCardIdsForPower(sources.cards ?? [], powerId).map((id) => id.toUpperCase()));
+  const relatedRelicIds = new Set(getRelatedRelicIdsForPower(sources.relics ?? [], powerId).map((id) => id.toUpperCase()));
+  const relatedPotionIds = new Set(getRelatedPotionIdsForPower(sources.potions ?? [], powerId).map((id) => id.toUpperCase()));
+  const relatedEnchantmentIds = new Set(getRelatedEnchantmentIdsForPower(sources.enchantments ?? [], powerId).map((id) => id.toUpperCase()));
+
+  const eventIds: string[] = [];
+  addEventsReferencingIds(eventIds, EVENT_RELATED_CARD_IDS, relatedCardIds);
+  addEventsReferencingIds(eventIds, EVENT_RELATED_RELIC_IDS, relatedRelicIds);
+  addEventsReferencingIds(eventIds, EVENT_RELATED_POTION_IDS, relatedPotionIds);
+  addEventsReferencingIds(eventIds, EVENT_RELATED_ENCHANTMENT_IDS, relatedEnchantmentIds);
+
+  for (const potion of sources.potions ?? []) {
+    if (!relatedPotionIds.has(potion.id.toUpperCase())) continue;
+    eventIds.push(FUTURE_OF_POTIONS_EVENT_ID);
+    if (potion.id === "FOUL_POTION" || potion.rarity === "고급") {
+      eventIds.push("POTION_COURIER");
+    }
+  }
+
+  return dedupeIds(eventIds);
+}
+
+export function getRelatedCardIdsForMonster(
+  monster: Pick<CodexMonster, "id">,
+  cards: readonly Pick<CodexCard, "id" | "description" | "descriptionRaw" | "tags" | "vars">[],
+): string[] {
+  return dedupeIds([
+    ...((MONSTER_RELATED_CARD_IDS as Record<string, readonly string[]>)[monster.id] ?? []),
+    ...(monster.id === "OSTY"
+      ? cards.filter(cardRelatesToOsty).map((card) => card.id)
+      : []),
+  ]);
+}
+
+export function getRelatedRelicIdsForMonster(
+  monster: Pick<CodexMonster, "id">,
+  relics: readonly Pick<CodexRelic, "id" | "description" | "descriptionRaw" | "vars">[],
+): string[] {
+  return dedupeIds([
+    ...((MONSTER_RELATED_RELIC_IDS as Record<string, readonly string[]>)[monster.id] ?? []),
+    ...(monster.id === "OSTY"
+      ? relics.filter(resourceRelatesToOsty).map((relic) => relic.id)
+      : []),
+  ]);
+}
+
+export function getRelatedPotionIdsForMonster(
+  monster: Pick<CodexMonster, "id">,
+  potions: readonly Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">[],
+): string[] {
+  return dedupeIds([
+    ...((MONSTER_RELATED_POTION_IDS as Record<string, readonly string[]>)[monster.id] ?? []),
+    ...(monster.id === "OSTY"
+      ? potions.filter(resourceRelatesToOsty).map((potion) => potion.id)
+      : []),
+  ]);
+}
+
+export function getRelatedMonsterIdsForCard(
+  card: Pick<CodexCard, "id" | "description" | "descriptionRaw" | "tags" | "vars">,
+  monsters: readonly Pick<CodexMonster, "id">[],
+): string[] {
+  return monsters
+    .filter((monster) => getRelatedCardIdsForMonster(monster, [card]).some((id) => sameId(id, card.id)))
+    .map((monster) => monster.id);
+}
+
+export function getRelatedMonsterIdsForRelic(
+  relic: Pick<CodexRelic, "id" | "description" | "descriptionRaw" | "vars">,
+  monsters: readonly Pick<CodexMonster, "id">[],
+): string[] {
+  return monsters
+    .filter((monster) => getRelatedRelicIdsForMonster(monster, [relic]).some((id) => sameId(id, relic.id)))
+    .map((monster) => monster.id);
+}
+
+export function getRelatedMonsterIdsForPotion(
+  potion: Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">,
+  monsters: readonly Pick<CodexMonster, "id">[],
+): string[] {
+  return monsters
+    .filter((monster) => getRelatedPotionIdsForMonster(monster, [potion]).some((id) => sameId(id, potion.id)))
+    .map((monster) => monster.id);
 }
 
 export function getRelatedEncounterIdsForMonster(
@@ -611,6 +883,18 @@ function invertEventRelations(
     .map(([eventId]) => eventId);
 }
 
+function addEventsReferencingIds(
+  target: string[],
+  relations: Record<string, readonly string[]>,
+  relatedIds: ReadonlySet<string>,
+) {
+  for (const [eventId, ids] of Object.entries(relations)) {
+    if (ids.some((id) => relatedIds.has(id.toUpperCase()))) {
+      target.push(eventId);
+    }
+  }
+}
+
 function dedupeIds(ids: readonly string[]): string[] {
   const seen = new Set<string>();
   return ids.filter((id) => {
@@ -619,6 +903,37 @@ function dedupeIds(ids: readonly string[]): string[] {
     seen.add(normalizedId);
     return true;
   });
+}
+
+function sameId(left: string, right: string): boolean {
+  return left.toUpperCase() === right.toUpperCase();
+}
+
+function cardRelatesToOsty(card: Pick<CodexCard, "description" | "descriptionRaw" | "tags" | "vars">): boolean {
+  if (card.tags?.some((tag) => tag.toUpperCase() === "OSTYATTACK")) return true;
+  if (Object.keys(card.vars ?? {}).some((key) => key === "Summon" || key.startsWith("Osty"))) return true;
+  return resourceTextMentionsOsty(card) || resourceTextMentionsSummon(card);
+}
+
+function resourceRelatesToOsty(
+  resource: Pick<CodexRelic | CodexPotion, "description" | "descriptionRaw" | "vars">,
+): boolean {
+  if (Object.keys(resource.vars ?? {}).some((key) => key === "Summon")) return true;
+  return resourceTextMentionsOsty(resource) || resourceTextMentionsSummon(resource);
+}
+
+function resourceTextMentionsOsty(resource: Pick<CodexCard | CodexRelic | CodexPotion, "description" | "descriptionRaw">): boolean {
+  const text = resourceText(resource);
+  return text.includes("골골이") || /\bosty\b/i.test(text);
+}
+
+function resourceTextMentionsSummon(resource: Pick<CodexCard | CodexRelic | CodexPotion, "description" | "descriptionRaw">): boolean {
+  const text = resourceText(resource);
+  return text.includes("[gold]소환[/gold]") || /\bsummon\b/i.test(text);
+}
+
+function resourceText(resource: Pick<CodexCard | CodexRelic | CodexPotion, "description" | "descriptionRaw">): string {
+  return `${resource.description ?? ""}\n${resource.descriptionRaw ?? ""}`;
 }
 
 type AncientRelationSource = Pick<CodexAncient, "id" | "name" | "nameEn" | "epithet" | "epithetEn">;
@@ -701,19 +1016,4 @@ function compactRelationValues(values: readonly (string | null | undefined)[]): 
 
 function normalizeRelationText(value: string): string {
   return value.toLocaleLowerCase();
-}
-
-function getPowerIdsFromVars(vars: Record<string, unknown> | null | undefined): string[] {
-  if (!vars) return [];
-  return dedupeIds(Object.keys(vars).flatMap((key) => {
-    const powerId = powerVarKeyToId(key);
-    return powerId ? [powerId] : [];
-  }));
-}
-
-function powerVarKeyToId(key: string): string | null {
-  if (!key.endsWith("Power")) return null;
-  const base = key.slice(0, -"Power".length);
-  if (!base) return null;
-  return base.replace(/([a-z0-9])([A-Z])/g, "$1_$2").toUpperCase();
 }
