@@ -339,6 +339,39 @@ export const CARD_RELATED_ENCHANTMENT_IDS = {
 
 export const RELIC_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<string, readonly string[]>;
 
+export const POTION_RELATED_CARD_IDS = {
+  CUNNING_POTION: ["SHIV"],
+  POT_OF_GHOULS: ["SOUL"],
+  SOLDIERS_STEW: [
+    "STRIKE_DEFECT",
+    "STRIKE_IRONCLAD",
+    "STRIKE_NECROBINDER",
+    "STRIKE_REGENT",
+    "STRIKE_SILENT",
+  ],
+} as const satisfies Record<string, readonly string[]>;
+
+export const POTION_RELATED_POWER_IDS = {
+  DEXTERITY_POTION: ["DEXTERITY"],
+  FLEX_POTION: ["STRENGTH"],
+  FOCUS_POTION: ["FOCUS"],
+  FYSH_OIL: ["STRENGTH", "DEXTERITY"],
+  GHOST_IN_A_JAR: ["INTANGIBLE"],
+  HEART_OF_IRON: ["PLATING"],
+  LIQUID_BRONZE: ["THORNS"],
+  LUCKY_TONIC: ["BUFFER"],
+  MAZALETHS_GIFT: ["RITUAL"],
+  POISON_POTION: ["POISON"],
+  POTION_OF_BINDING: ["WEAK", "VULNERABLE"],
+  POTION_OF_DOOM: ["DOOM"],
+  REGEN_POTION: ["REGEN"],
+  SHACKLING_POTION: ["STRENGTH"],
+  SPEED_POTION: ["DEXTERITY"],
+  STRENGTH_POTION: ["STRENGTH"],
+  VULNERABLE_POTION: ["VULNERABLE"],
+  WEAK_POTION: ["WEAK"],
+} as const satisfies Record<string, readonly string[]>;
+
 export const POTION_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<string, readonly string[]>;
 
 export function getRelatedCardIdsForEvent(eventId: string): readonly string[] {
@@ -365,6 +398,14 @@ export function getRelatedEnchantmentIdsForPotion(potionId: string): readonly st
   return (POTION_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[potionId] ?? [];
 }
 
+export function getRelatedCardIdsForPotion(potionId: string): readonly string[] {
+  return (POTION_RELATED_CARD_IDS as Record<string, readonly string[]>)[potionId] ?? [];
+}
+
+export function getRelatedPowerIdsForPotion(potionId: string): readonly string[] {
+  return (POTION_RELATED_POWER_IDS as Record<string, readonly string[]>)[potionId] ?? [];
+}
+
 export function getRelatedEventIdsForCard(cardId: string): readonly string[] {
   return invertEventRelations(EVENT_RELATED_CARD_IDS, cardId);
 }
@@ -387,6 +428,14 @@ export function getRelatedCardIdsForEnchantment(enchantmentId: string): readonly
 
 export function getRelatedPotionIdsForEnchantment(enchantmentId: string): readonly string[] {
   return invertEventRelations(POTION_RELATED_ENCHANTMENT_IDS, enchantmentId);
+}
+
+export function getRelatedPotionIdsForCard(cardId: string): readonly string[] {
+  return invertEventRelations(POTION_RELATED_CARD_IDS, cardId);
+}
+
+export function getRelatedPotionIdsForPower(powerId: string): readonly string[] {
+  return invertEventRelations(POTION_RELATED_POWER_IDS, powerId);
 }
 
 export function getRelatedAncientIdsForRelic(
