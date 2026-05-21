@@ -436,6 +436,14 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   const poolLabel = getCardPoolLabel(previewCard, serviceText);
   const poolColor = getCardPoolColor(previewCard);
   const costLabel = getCardCostLabel(previewCard, showUpgrade, serviceLocale);
+  const metaPills = [
+    { value: gameUi.cardLibrary.types[previewCard.type], color: CARD_TYPE_COLORS[previewCard.type] },
+    { value: gameUi.cardLibrary.rarities[previewCard.rarity], color: CARD_RARITY_COLORS[previewCard.rarity] },
+    { value: poolLabel, color: poolColor },
+    { value: costLabel, color: "#facc15" },
+  ].filter((pill, index, pills) => (
+    pills.findIndex((candidate) => candidate.value === pill.value) === index
+  ));
   const madScienceChoices = isMadScience ? (
     <div className="w-full max-w-2xl space-y-2.5">
       {madScienceRiderIds.map((riderId) => {
@@ -867,10 +875,9 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
-                <MetaPill value={gameUi.cardLibrary.types[previewCard.type]} color={CARD_TYPE_COLORS[previewCard.type]} />
-                <MetaPill value={gameUi.cardLibrary.rarities[previewCard.rarity]} color={CARD_RARITY_COLORS[previewCard.rarity]} />
-                <MetaPill value={poolLabel} color={poolColor} />
-                <MetaPill value={costLabel} color="#facc15" />
+                {metaPills.map((pill) => (
+                  <MetaPill key={pill.value} value={pill.value} color={pill.color} />
+                ))}
               </div>
               {previewCard.nameEn !== previewCard.name && (
                 <div>
