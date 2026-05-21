@@ -5,6 +5,7 @@ import type {
   CodexCard,
   CodexEnchantment,
   CodexEncounter,
+  CodexEvent,
   CodexPotion,
   CodexRelic,
   PotionRarityKo,
@@ -448,6 +449,66 @@ export function getRelatedAncientIdsForRelic(
     .map((ancient) => ancient.id);
 }
 
+export function getRelatedRelicIdsForAncient(
+  ancient: Pick<CodexAncient, "relicIds">,
+): string[] {
+  return dedupeIds(ancient.relicIds);
+}
+
+export function getRelatedCardIdsForAncient(
+  ancient: AncientRelationSource,
+  cards: readonly AncientCardRelationTarget[],
+): string[] {
+  return cards
+    .filter((card) => isAncientCard(card) || resourceMentionsAncient(cardText(card), ancient))
+    .map((card) => card.id);
+}
+
+export function getRelatedAncientIdsForCard(
+  card: AncientCardRelationTarget,
+  ancients: readonly AncientRelationSource[],
+): string[] {
+  return ancients
+    .filter((ancient) => isAncientCard(card) || resourceMentionsAncient(cardText(card), ancient))
+    .map((ancient) => ancient.id);
+}
+
+export function getRelatedPotionIdsForAncient(
+  ancient: AncientRelationSource,
+  potions: readonly AncientPotionRelationTarget[],
+): string[] {
+  return potions
+    .filter((potion) => resourceMentionsAncient(potionText(potion), ancient))
+    .map((potion) => potion.id);
+}
+
+export function getRelatedAncientIdsForPotion(
+  potion: AncientPotionRelationTarget,
+  ancients: readonly AncientRelationSource[],
+): string[] {
+  return ancients
+    .filter((ancient) => resourceMentionsAncient(potionText(potion), ancient))
+    .map((ancient) => ancient.id);
+}
+
+export function getRelatedEventIdsForAncient(
+  ancient: AncientRelationSource,
+  events: readonly AncientEventRelationTarget[],
+): string[] {
+  return events
+    .filter((event) => resourceMentionsAncient(eventText(event), ancient))
+    .map((event) => event.id);
+}
+
+export function getRelatedAncientIdsForEvent(
+  event: AncientEventRelationTarget,
+  ancients: readonly AncientRelationSource[],
+): string[] {
+  return ancients
+    .filter((ancient) => resourceMentionsAncient(eventText(event), ancient))
+    .map((ancient) => ancient.id);
+}
+
 export function relicMentionsEnchantment(
   relic: Pick<CodexRelic, "description" | "descriptionRaw">,
   enchantment: Pick<CodexEnchantment, "name" | "nameEn">,
@@ -558,6 +619,88 @@ function dedupeIds(ids: readonly string[]): string[] {
     seen.add(normalizedId);
     return true;
   });
+}
+
+type AncientRelationSource = Pick<CodexAncient, "id" | "name" | "nameEn" | "epithet" | "epithetEn">;
+
+type AncientCardRelationTarget = Pick<
+  CodexCard,
+  "id" | "name" | "nameEn" | "description" | "descriptionRaw" | "rarity"
+>;
+
+type AncientPotionRelationTarget = Pick<
+  CodexPotion,
+  "id" | "name" | "nameEn" | "description" | "descriptionRaw"
+>;
+
+type AncientEventRelationTarget = Pick<
+  CodexEvent,
+  "id" | "name" | "nameEn" | "description" | "options" | "pages"
+>;
+
+function isAncientCard(card: Pick<CodexCard, "rarity">): boolean {
+  return card.rarity === "고대의 존재";
+}
+
+function resourceMentionsAncient(text: string, ancient: AncientRelationSource): boolean {
+  const haystack = normalizeRelationText(text);
+  if (!haystack) return false;
+  return ancientRelationNeedles(ancient).some((needle) => haystack.includes(needle));
+}
+
+function ancientRelationNeedles(ancient: AncientRelationSource): string[] {
+  return compactRelationValues([
+    ancient.id,
+    ancient.name,
+    ancient.nameEn,
+    ancient.epithet,
+    ancient.epithetEn,
+  ]).map(normalizeRelationText);
+}
+
+function cardText(card: AncientCardRelationTarget): string {
+  return compactRelationValues([
+    card.id,
+    card.name,
+    card.nameEn,
+    card.description,
+    card.descriptionRaw,
+  ]).join(" ");
+}
+
+function potionText(potion: AncientPotionRelationTarget): string {
+  return compactRelationValues([
+    potion.id,
+    potion.name,
+    potion.nameEn,
+    potion.description,
+    potion.descriptionRaw,
+  ]).join(" ");
+}
+
+function eventText(event: AncientEventRelationTarget): string {
+  const optionText = event.options?.flatMap((option) => [option.title, option.description]) ?? [];
+  const pageText = event.pages?.flatMap((page) => [
+    page.description,
+    ...(page.options?.flatMap((option) => [option.title, option.description]) ?? []),
+  ]) ?? [];
+
+  return compactRelationValues([
+    event.id,
+    event.name,
+    event.nameEn,
+    event.description,
+    ...optionText,
+    ...pageText,
+  ]).join(" ");
+}
+
+function compactRelationValues(values: readonly (string | null | undefined)[]): string[] {
+  return values.filter((value): value is string => Boolean(value && value.trim()));
+}
+
+function normalizeRelationText(value: string): string {
+  return value.toLocaleLowerCase();
 }
 
 function getPowerIdsFromVars(vars: Record<string, unknown> | null | undefined): string[] {
