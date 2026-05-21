@@ -132,7 +132,7 @@ export default async function PatchesPage({
         {sorted.map((patch) => {
           const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
           const isBuilding = patch.status === "building";
-          const patchArt = isBuilding ? null : resolvePatchArt(patch, entitiesByKey, serviceLocale);
+          const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
 
           if (isBuilding) {
             return (
@@ -160,10 +160,11 @@ export default async function PatchesPage({
                   )}
                 </div>
                 <p className="mt-1 text-sm font-medium text-zinc-500">{title}</p>
+                <p className="mt-0.5 text-xs text-zinc-600">{patch.date}</p>
+                <PatchArtPreview art={patchArt} />
                 <div className="mt-3 text-sm font-semibold text-zinc-500">
                   <SineText text={copy.building} />
                 </div>
-                <p className="mt-2 text-xs text-zinc-600">{patch.date}</p>
               </article>
             );
           }
