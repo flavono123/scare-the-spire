@@ -17,6 +17,7 @@ import {
   CodexCard,
   CodexEnchantment,
   CodexEvent,
+  CodexPotion,
   CodexPower,
   getCharacterColor,
 } from "@/lib/codex-types";
@@ -44,6 +45,7 @@ import {
   TINKER_TIME_EVENT_PATH,
   getRelatedEnchantmentIdsForCard,
   getRelatedEventIdsForCard,
+  getRelatedPotionIdsForCard,
   getRelatedPowerIdsForCard,
 } from "@/lib/codex-references";
 import {
@@ -196,6 +198,7 @@ interface CardDetailProps {
   enchantments: CodexEnchantment[];
   afflictions: CodexAffliction[];
   relatedEvents?: CodexEvent[];
+  relatedPotions?: CodexPotion[];
   relatedPowers?: CodexPower[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
@@ -217,7 +220,7 @@ function getCardDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedEvents = [], relatedPowers = [], patches, changes, versionDiffs, onClose }: CardDetailProps) {
+export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedEvents = [], relatedPotions = [], relatedPowers = [], patches, changes, versionDiffs, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getCardDetailLabels(serviceLocale);
   const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
@@ -303,6 +306,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     .map((powerId) => powerById.get(powerId))
     .filter((power): power is CodexPower => Boolean(power))
     .map(powerToReferenceTarget);
+  const potionById = new Map(relatedPotions.map((potion) => [potion.id, potion]));
+  const relatedPotionTargets = getRelatedPotionIdsForCard(card.id)
+    .map((potionId) => potionById.get(potionId))
+    .filter((potion): potion is CodexPotion => Boolean(potion))
+    .map(potionToReferenceTarget);
   const enchantmentById = new Map(enchantments.map((enchantment) => [enchantment.id, enchantment]));
   const relatedEnchantmentTargets = getRelatedEnchantmentIdsForCard(card.id)
     .map((enchantmentId) => enchantmentById.get(enchantmentId))
@@ -907,6 +915,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
               { kind: "event", targets: relatedEventTargets },
               { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "power", targets: relatedPowerTargets },
+              { kind: "potion", targets: relatedPotionTargets },
             ]}
             serviceLocale={serviceLocale}
           />
@@ -938,6 +947,25 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
       </div>
     </div>
   );
+}
+
+function potionToReferenceTarget(potion: CodexPotion): CodexReferenceTarget {
+  const href = `/compendium/potions/${potion.id.toLowerCase()}`;
+  return {
+    href,
+    id: potion.id,
+    title: potion.name,
+    entity: {
+      id: potion.id,
+      nameEn: potion.nameEn,
+      nameKo: potion.name,
+      imageUrl: potion.imageUrl,
+      href,
+      color: potion.rarity,
+      type: "potion",
+      potionData: potion,
+    },
+  };
 }
 
 function powerToReferenceTarget(power: CodexPower): CodexReferenceTarget {

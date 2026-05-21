@@ -14,6 +14,7 @@ import {
   CodexEnchantment,
   CodexAffliction,
   CodexEvent,
+  CodexPotion,
   CodexPower,
   CardFilterCategory,
   CardTypeKo,
@@ -212,10 +213,11 @@ interface CardLibraryProps {
   enchantments: CodexEnchantment[];
   afflictions: CodexAffliction[];
   relatedEvents?: CodexEvent[];
+  relatedPotions?: CodexPotion[];
   relatedPowers?: CodexPower[];
 }
 
-export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedEvents = [], relatedPowers = [] }: CardLibraryProps) {
+export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedEvents = [], relatedPotions = [], relatedPowers = [] }: CardLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
@@ -963,7 +965,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedEvents={relatedEvents} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} onClose={() => setSelectedCard(null)} />
+            <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedEvents={relatedEvents} relatedPotions={relatedPotions} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} onClose={() => setSelectedCard(null)} />
           </div>
         </div>
       )}
