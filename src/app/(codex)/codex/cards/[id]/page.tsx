@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexAfflictions, getCodexCards, getCodexEnchantments, getCodexEvents } from "@/lib/codex-data";
+import { getCodexAfflictions, getCodexCards, getCodexEnchantments, getCodexEvents, getCodexPowers } from "@/lib/codex-data";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
@@ -56,7 +56,7 @@ export default async function CardDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [cards, enchantments, afflictions, patches, changes, versionDiffs, gameUi, events] = await Promise.all([
+  const [cards, enchantments, afflictions, patches, changes, versionDiffs, gameUi, events, powers] = await Promise.all([
     getCodexCards({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexAfflictions({ gameLocale }),
@@ -65,13 +65,14 @@ export default async function CardDetailPage({
     getEntityVersionDiffs(),
     getCodexGameUiLabels(gameLocale),
     getCodexEvents({ gameLocale }),
+    getCodexPowers({ gameLocale }),
   ]);
   const card = findCardByRouteId(cards, id);
   if (!card) notFound();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={card} enchantments={enchantments} afflictions={afflictions} relatedEvents={events} patches={patches} changes={changes} versionDiffs={versionDiffs} />
+      <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={card} enchantments={enchantments} afflictions={afflictions} relatedEvents={events} relatedPowers={powers} patches={patches} changes={changes} versionDiffs={versionDiffs} />
     </div>
   );
 }

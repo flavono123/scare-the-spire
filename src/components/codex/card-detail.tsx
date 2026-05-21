@@ -17,6 +17,7 @@ import {
   CodexCard,
   CodexEnchantment,
   CodexEvent,
+  CodexPower,
   getCharacterColor,
 } from "@/lib/codex-types";
 import { CardTile } from "./card-tile";
@@ -42,6 +43,7 @@ import {
   TINKER_TIME_EVENT_NAME_KO,
   TINKER_TIME_EVENT_PATH,
   getRelatedEventIdsForCard,
+  getRelatedPowerIdsForCard,
 } from "@/lib/codex-references";
 import {
   canEnchantCard,
@@ -61,7 +63,7 @@ import {
   getAfflictionForcedCost,
   getAfflictionPreviewAmount,
 } from "@/lib/sts2-affliction-rules";
-import { EntityReferenceLinks } from "./entity-reference-links";
+import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 const ENCHANT_TIP_VARIANT: Record<string, HoverTipVariant> = {
@@ -193,6 +195,7 @@ interface CardDetailProps {
   enchantments: CodexEnchantment[];
   afflictions: CodexAffliction[];
   relatedEvents?: CodexEvent[];
+  relatedPowers?: CodexPower[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
@@ -213,7 +216,7 @@ function getCardDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedEvents = [], patches, changes, versionDiffs, onClose }: CardDetailProps) {
+export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedEvents = [], relatedPowers = [], patches, changes, versionDiffs, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getCardDetailLabels(serviceLocale);
   const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
@@ -294,6 +297,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
       },
     };
   });
+  const powerById = new Map(relatedPowers.map((power) => [power.id, power]));
+  const relatedPowerTargets = getRelatedPowerIdsForCard(card)
+    .map((powerId) => powerById.get(powerId))
+    .filter((power): power is CodexPower => Boolean(power))
+    .map(powerToReferenceTarget);
 
   // 활성 인챈트 효과: amount 치환, 추가/제거 키워드, forced cost, stat modifier
   const activeShowAmount = activeEnchant ? shouldShowAmount(activeEnchant) : false;
@@ -888,10 +896,12 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
             </div>
           </section>
 
-          <EntityReferenceLinks
-            kind="event"
+          <EntityReferenceGroupLinks
+            groups={[
+              { kind: "event", targets: relatedEventTargets },
+              { kind: "power", targets: relatedPowerTargets },
+            ]}
             serviceLocale={serviceLocale}
-            targets={relatedEventTargets}
           />
 
           <InfoRailSection title={detailLabels.patchHistory}>
@@ -921,4 +931,23 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
       </div>
     </div>
   );
+}
+
+function powerToReferenceTarget(power: CodexPower): CodexReferenceTarget {
+  const href = `/compendium/powers/${power.id.toLowerCase()}`;
+  return {
+    href,
+    id: power.id,
+    title: power.name,
+    entity: {
+      id: power.id,
+      nameEn: power.nameEn,
+      nameKo: power.name,
+      imageUrl: power.imageUrl,
+      href,
+      color: power.type,
+      type: "power",
+      powerData: power,
+    },
+  };
 }
