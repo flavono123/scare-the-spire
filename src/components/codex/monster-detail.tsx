@@ -11,8 +11,11 @@ import type { STS2Change, STS2Patch } from "@/lib/types";
 import { getBestiaryDisplayMonsterType } from "@/lib/bestiary-monster-policy";
 import { serviceMessages } from "@/messages/service";
 import type {
-  CodexMonster,
+  CodexCard,
   CodexEncounter,
+  CodexMonster,
+  CodexPotion,
+  CodexRelic,
   DamageValue,
   MonsterMove,
   MonsterMoveTransition,
@@ -30,8 +33,13 @@ import {
 import {
   MONSTER_TYPE_CONFIG,
 } from "@/lib/codex-types";
-import { getRelatedEncounterIdsForMonster } from "@/lib/codex-references";
-import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import {
+  getRelatedCardIdsForMonster,
+  getRelatedEncounterIdsForMonster,
+  getRelatedPotionIdsForMonster,
+  getRelatedRelicIdsForMonster,
+} from "@/lib/codex-references";
+import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -120,6 +128,9 @@ interface MonsterDetailProps {
   backToListTitle: string;
   monster: CodexMonster;
   encounters: CodexEncounter[];
+  relatedCards?: CodexCard[];
+  relatedPotions?: CodexPotion[];
+  relatedRelics?: CodexRelic[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   onClose?: () => void;
@@ -131,6 +142,9 @@ export function MonsterDetail({
   backToListTitle,
   monster,
   encounters,
+  relatedCards = [],
+  relatedPotions = [],
+  relatedRelics = [],
   patches,
   changes,
   onClose,
@@ -185,6 +199,21 @@ export function MonsterDetail({
   const damageEntries = Object.entries(monster.damageValues ?? {});
   const blockEntries = Object.entries(monster.blockValues ?? {});
   const hasNumericDetails = damageEntries.length > 0 || blockEntries.length > 0;
+  const cardById = useMemo(() => new Map(relatedCards.map((card) => [card.id, card])), [relatedCards]);
+  const relatedCardTargets: CodexReferenceTarget[] = getRelatedCardIdsForMonster(monster, relatedCards)
+    .map((cardId) => cardById.get(cardId))
+    .filter((card): card is CodexCard => Boolean(card))
+    .map(cardToReferenceTarget);
+  const relicById = useMemo(() => new Map(relatedRelics.map((relic) => [relic.id, relic])), [relatedRelics]);
+  const relatedRelicTargets: CodexReferenceTarget[] = getRelatedRelicIdsForMonster(monster, relatedRelics)
+    .map((relicId) => relicById.get(relicId))
+    .filter((relic): relic is CodexRelic => Boolean(relic))
+    .map(relicToReferenceTarget);
+  const potionById = useMemo(() => new Map(relatedPotions.map((potion) => [potion.id, potion])), [relatedPotions]);
+  const relatedPotionTargets: CodexReferenceTarget[] = getRelatedPotionIdsForMonster(monster, relatedPotions)
+    .map((potionId) => potionById.get(potionId))
+    .filter((potion): potion is CodexPotion => Boolean(potion))
+    .map(potionToReferenceTarget);
   const encounterById = useMemo(() => new Map(encounters.map((encounter) => [encounter.id, encounter])), [encounters]);
   const relatedEncounterTargets: CodexReferenceTarget[] = getRelatedEncounterIdsForMonster(monster.id, encounters).flatMap((encounterId) => {
     const encounter = encounterById.get(encounterId);
@@ -508,10 +537,14 @@ export function MonsterDetail({
             </InfoRailSection>
           )}
 
-          <EntityReferenceLinks
-            kind="encounter"
+          <EntityReferenceGroupLinks
             serviceLocale={serviceLocale}
-            targets={relatedEncounterTargets}
+            groups={[
+              { kind: "card", targets: relatedCardTargets },
+              { kind: "relic", targets: relatedRelicTargets },
+              { kind: "potion", targets: relatedPotionTargets },
+              { kind: "encounter", targets: relatedEncounterTargets },
+            ]}
           />
 
           {hasNumericDetails && (
@@ -692,6 +725,63 @@ function getMoveName(monster: CodexMonster, moveId: string): string {
   if (moveId === "__START__") return "Start";
   const move = [...monster.bestiaryMoves, ...monster.moves].find((m) => m.id === moveId);
   return move?.name ?? moveId.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {
+  const href = `/compendium/cards/${card.id.toLowerCase()}`;
+  return {
+    href,
+    id: card.id,
+    title: card.name,
+    entity: {
+      id: card.id,
+      nameEn: card.nameEn,
+      nameKo: card.name,
+      imageUrl: card.imageUrl,
+      href,
+      color: card.color,
+      type: "card",
+      cardData: card,
+    },
+  };
+}
+
+function relicToReferenceTarget(relic: CodexRelic): CodexReferenceTarget {
+  const href = `/compendium/relics/${relic.id.toLowerCase()}`;
+  return {
+    href,
+    id: relic.id,
+    title: relic.name,
+    entity: {
+      id: relic.id,
+      nameEn: relic.nameEn,
+      nameKo: relic.name,
+      imageUrl: relic.imageUrl,
+      href,
+      color: relic.pool,
+      type: "relic",
+      relicData: relic,
+    },
+  };
+}
+
+function potionToReferenceTarget(potion: CodexPotion): CodexReferenceTarget {
+  const href = `/compendium/potions/${potion.id.toLowerCase()}`;
+  return {
+    href,
+    id: potion.id,
+    title: potion.name,
+    entity: {
+      id: potion.id,
+      nameEn: potion.nameEn,
+      nameKo: potion.name,
+      imageUrl: potion.imageUrl,
+      href,
+      color: potion.rarity,
+      type: "potion",
+      potionData: potion,
+    },
+  };
 }
 
 // Fuzzy match move ID to damage key
