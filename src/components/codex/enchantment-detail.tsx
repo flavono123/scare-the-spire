@@ -11,13 +11,15 @@ import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
   CodexEnchantment,
+  CodexEvent,
   CodexRelic,
   ENCHANTMENT_CARD_TYPE_CONFIG,
   type EnchantmentCardTypeFilter,
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
-import { EntityReferenceLinks } from "./entity-reference-links";
+import { getRelatedEventIdsForEnchantment } from "@/lib/codex-references";
+import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
@@ -63,6 +65,8 @@ interface EnchantmentDetailProps {
   onClose?: () => void;
   /** Cross-reference entities — when provided, descriptions become rich. */
   entities?: EntityInfo[];
+  /** Events that can grant or reference this enchantment. */
+  events?: CodexEvent[];
   /** All relics, used to surface ones that grant this enchantment. */
   relics?: CodexRelic[];
   patches?: STS2Patch[];
@@ -104,6 +108,7 @@ export function EnchantmentDetail({
   enchantment,
   onClose,
   entities,
+  events = [],
   relics,
   patches,
   changes,
@@ -140,6 +145,11 @@ export function EnchantmentDetail({
       },
     };
   });
+  const eventById = new Map(events.map((event) => [event.id, event]));
+  const relatedEventTargets = getRelatedEventIdsForEnchantment(enchantment.id)
+    .map((eventId) => eventById.get(eventId))
+    .filter((event): event is CodexEvent => Boolean(event))
+    .map(eventToReferenceTarget);
 
   const excludeSelf = useMemo(
     () => new Set([enchantment.name, enchantment.nameEn]),
@@ -247,10 +257,12 @@ export function EnchantmentDetail({
             </div>
           </section>
 
-          <EntityReferenceLinks
-            kind="relic"
+          <EntityReferenceGroupLinks
+            groups={[
+              { kind: "relic", targets: grantingRelicTargets },
+              { kind: "event", targets: relatedEventTargets },
+            ]}
             serviceLocale={serviceLocale}
-            targets={grantingRelicTargets}
           />
 
           <InfoRailSection title={detailLabels.patchHistory}>
@@ -275,4 +287,23 @@ export function EnchantmentDetail({
       </div>
     </div>
   );
+}
+
+function eventToReferenceTarget(event: CodexEvent): CodexReferenceTarget {
+  const href = `/compendium/events/${event.id.toLowerCase()}`;
+  return {
+    href,
+    id: event.id,
+    title: event.name,
+    entity: {
+      id: event.id,
+      nameEn: event.nameEn,
+      nameKo: event.name,
+      imageUrl: event.imageUrl,
+      href,
+      color: event.act ?? "event",
+      type: "event",
+      eventData: event,
+    },
+  };
 }

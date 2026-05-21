@@ -10,6 +10,7 @@ import {
 } from "@/lib/codex-service";
 import {
   CodexEnchantment,
+  CodexEvent,
   CodexRelic,
   EnchantmentCardTypeFilter,
   ENCHANTMENT_CARD_TYPE_CONFIG,
@@ -52,11 +53,13 @@ interface EnchantmentLibraryProps {
   versionDiffs?: EntityVersionDiff[];
   /** All codex entities — enables rich cross-references in the detail modal. */
   entities?: EntityInfo[];
+  /** Events — used to surface ones that grant or reference the selected enchantment. */
+  events?: CodexEvent[];
   /** Relics — used to surface ones that grant the selected enchantment. */
   relics?: CodexRelic[];
 }
 
-export function EnchantmentLibrary({ serviceLocale, enchantments, versions, currentVersion, patches, changes, versionDiffs, entities, relics }: EnchantmentLibraryProps) {
+export function EnchantmentLibrary({ serviceLocale, enchantments, versions, currentVersion, patches, changes, versionDiffs, entities, events, relics }: EnchantmentLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedCardTypes, setSelectedCardTypes] = useState<Set<EnchantmentCardTypeFilter>>(new Set());
@@ -314,6 +317,7 @@ export function EnchantmentLibrary({ serviceLocale, enchantments, versions, curr
               enchantment={selectedEnchantment}
               onClose={() => setSelectedEnchantment(null)}
               entities={entities}
+              events={events}
               relics={relics}
               patches={patches}
               changes={changes}
