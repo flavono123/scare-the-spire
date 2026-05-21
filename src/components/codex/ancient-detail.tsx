@@ -305,7 +305,7 @@ export function AncientDetail({
         <section className="flex min-h-[24rem] flex-col items-center justify-center py-4">
           {backgroundImageUrl ? (
             <div className="relative w-full max-w-[48rem] overflow-hidden rounded-lg border border-blue-900/30 bg-[#070910] shadow-2xl shadow-black/40">
-              <div className="relative aspect-[2560/1200] min-h-[18rem] w-full">
+              <div className="relative h-56 w-full sm:aspect-[2560/1200] sm:h-auto">
                 <Image
                   src={backgroundImageUrl}
                   alt={ancient.name}
