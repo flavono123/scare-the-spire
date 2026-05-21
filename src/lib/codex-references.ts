@@ -12,6 +12,7 @@ import type {
   CodexRelic,
   PotionRarityKo,
 } from "./codex-types";
+import { isPublicBestiaryMonster } from "./bestiary-monster-policy";
 
 export const FUTURE_OF_POTIONS_EVENT_ID = "THE_FUTURE_OF_POTIONS";
 export const FUTURE_OF_POTIONS_EVENT_NAME_KO = "포션의 미래?";
@@ -389,13 +390,9 @@ export const POTION_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<strin
 
 export const MONSTER_RELATED_CARD_IDS = {
   BYRDONIS: ["BYRDONIS_EGG"],
-  BYRDPIP: ["BYRD_SWOOP"],
 } as const satisfies Record<string, readonly string[]>;
 
-export const MONSTER_RELATED_RELIC_IDS = {
-  BYRDPIP: ["BYRDPIP"],
-  PAELS_LEGION: ["PAELS_LEGION"],
-} as const satisfies Record<string, readonly string[]>;
+export const MONSTER_RELATED_RELIC_IDS = {} as const satisfies Record<string, readonly string[]>;
 
 export const MONSTER_RELATED_POTION_IDS = {} as const satisfies Record<string, readonly string[]>;
 
@@ -757,11 +754,10 @@ export function getRelatedCardIdsForMonster(
   monster: Pick<CodexMonster, "id">,
   cards: readonly Pick<CodexCard, "id" | "tags" | "vars">[],
 ): string[] {
+  void cards;
+  if (!isPublicBestiaryMonster(monster.id)) return [];
   return dedupeIds([
     ...((MONSTER_RELATED_CARD_IDS as Record<string, readonly string[]>)[monster.id] ?? []),
-    ...(monster.id === "OSTY"
-      ? cards.filter(cardRelatesToOsty).map((card) => card.id)
-      : []),
   ]);
 }
 
@@ -769,11 +765,10 @@ export function getRelatedRelicIdsForMonster(
   monster: Pick<CodexMonster, "id">,
   relics: readonly Pick<CodexRelic, "id" | "vars">[],
 ): string[] {
+  void relics;
+  if (!isPublicBestiaryMonster(monster.id)) return [];
   return dedupeIds([
     ...((MONSTER_RELATED_RELIC_IDS as Record<string, readonly string[]>)[monster.id] ?? []),
-    ...(monster.id === "OSTY"
-      ? relics.filter(resourceRelatesToOsty).map((relic) => relic.id)
-      : []),
   ]);
 }
 
@@ -781,11 +776,10 @@ export function getRelatedPotionIdsForMonster(
   monster: Pick<CodexMonster, "id">,
   potions: readonly Pick<CodexPotion, "id" | "vars">[],
 ): string[] {
+  void potions;
+  if (!isPublicBestiaryMonster(monster.id)) return [];
   return dedupeIds([
     ...((MONSTER_RELATED_POTION_IDS as Record<string, readonly string[]>)[monster.id] ?? []),
-    ...(monster.id === "OSTY"
-      ? potions.filter(resourceRelatesToOsty).map((potion) => potion.id)
-      : []),
   ]);
 }
 
@@ -882,18 +876,6 @@ function sameId(left: string, right: string): boolean {
 
 function cardHasStrikeTag(card: Pick<CodexCard, "tags">): boolean {
   return card.tags?.some((tag) => tag.toUpperCase() === "STRIKE") ?? false;
-}
-
-function cardRelatesToOsty(card: Pick<CodexCard, "tags" | "vars">): boolean {
-  if (card.tags?.some((tag) => tag.toUpperCase() === "OSTYATTACK")) return true;
-  if (Object.keys(card.vars ?? {}).some((key) => key === "Summon" || key.startsWith("Osty"))) return true;
-  return false;
-}
-
-function resourceRelatesToOsty(
-  resource: Pick<CodexRelic | CodexPotion, "vars">,
-): boolean {
-  return Object.keys(resource.vars ?? {}).some((key) => key === "Summon");
 }
 
 type AncientRelationSource = Pick<CodexAncient, "id">;

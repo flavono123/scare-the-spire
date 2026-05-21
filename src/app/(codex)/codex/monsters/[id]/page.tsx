@@ -8,11 +8,14 @@ import {
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
 import { MonsterDetail } from "@/components/codex/monster-detail";
 
 export async function generateStaticParams() {
   const monsters = await getCodexMonsters();
-  return monsters.map((m) => ({ id: m.id.toLowerCase() }));
+  return monsters
+    .filter((monster) => monster.showInCompendium && isPublicBestiaryMonster(monster.id))
+    .map((monster) => ({ id: monster.id.toLowerCase() }));
 }
 
 export async function generateMetadata({
@@ -30,7 +33,11 @@ export async function generateMetadata({
     getCodexMonsters({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-  const monster = monsters.find((m) => m.id.toLowerCase() === id.toLowerCase());
+  const monster = monsters.find((m) => (
+    m.id.toLowerCase() === id.toLowerCase() &&
+    m.showInCompendium &&
+    isPublicBestiaryMonster(m.id)
+  ));
   if (!monster) return {};
   return getCodexMetadata(serviceLocale, `${monster.name} — ${gameUi.bestiaryTitle}`);
 }
@@ -56,7 +63,11 @@ export default async function MonsterDetailPage({
     getSTS2Changes(),
     getCodexGameUiLabels(gameLocale),
   ]);
-  const monster = monsters.find((m) => m.id.toLowerCase() === id.toLowerCase());
+  const monster = monsters.find((m) => (
+    m.id.toLowerCase() === id.toLowerCase() &&
+    m.showInCompendium &&
+    isPublicBestiaryMonster(m.id)
+  ));
   if (!monster) notFound();
 
   return (
