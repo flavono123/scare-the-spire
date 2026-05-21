@@ -214,11 +214,6 @@
   opacity: 1;
 }
 
-.sts2-affliction-overlay__ringing-horns {
-  opacity: 0.5019608;
-  transform-origin: 0 0;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

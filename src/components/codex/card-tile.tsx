@@ -167,7 +167,7 @@ function AfflictionImageLayer({
   );
 }
 
-function AfflictionFrameTint({ id }: { id: string }) {
+function AfflictionFrameBackdrop({ id }: { id: string }) {
   const colors = AFFLICTION_FRAME_COLORS[id] ?? AFFLICTION_FRAME_COLORS.BOUND;
   return (
     <>
@@ -185,6 +185,14 @@ function AfflictionFrameTint({ id }: { id: string }) {
           style={{ backgroundColor: colors.vignette }}
         />
       )}
+    </>
+  );
+}
+
+function AfflictionFrameGlow({ id }: { id: string }) {
+  const colors = AFFLICTION_FRAME_COLORS[id] ?? AFFLICTION_FRAME_COLORS.BOUND;
+  return (
+    <>
       <span
         aria-hidden="true"
         className="sts2-affliction-overlay__glow"
@@ -210,7 +218,7 @@ function EntangledLeaves() {
               top: `${((centerY - 64) / 422) * 100}%`,
               width: `${(128 / 300) * 100}%`,
               height: `${(128 / 422) * 100}%`,
-              transform: `rotate(${leaf.rotation}rad) scale(${leaf.scale})`,
+              transform: `rotate(${leaf.rotation}rad) scale(${leaf.scale * 0.48})`,
             }}
           />
         );
@@ -243,7 +251,7 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
       className={`absolute inset-0 z-[3] pointer-events-none overflow-visible sts2-affliction-overlay sts2-affliction-overlay--${id.toLowerCase()}`}
     >
       <div className="absolute inset-0 overflow-hidden sts2-affliction-overlay__mask">
-        <AfflictionFrameTint id={id} />
+        <AfflictionFrameBackdrop id={id} />
 
         {id === "GALVANIZED" && (
           <AfflictionImageLayer
@@ -276,6 +284,16 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
             style={{ inset: 0 }}
           />
         )}
+
+        {id === "SMOG" && (
+          <AfflictionImageLayer
+            src={`${AFFLICTION_OVERLAY_BASE}/smog/smog_outer_shader.webp`}
+            className="sts2-affliction-overlay__smog-field sts2-affliction-overlay__smog-field--outer"
+            style={{ left: "-20.33%", top: "-3.55%", width: "140.67%", height: "133.3%" }}
+          />
+        )}
+
+        <AfflictionFrameGlow id={id} />
       </div>
 
       {id === "BOUND" && (
@@ -283,8 +301,8 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
           src={`${AFFLICTION_OVERLAY_BASE}/bound/bound_main_shader.webp`}
           className="sts2-affliction-overlay__main sts2-affliction-overlay__main--bound"
           style={{
-            left: "-20.33%",
-            top: 0,
+            left: "-34.33%",
+            top: "-9.95%",
             width: "140.67%",
             height: "100%",
             transform: "scale(1.2)",
@@ -315,41 +333,6 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
           <GalvanizedCorner style={{ right: "-6%", top: "-4%", transform: "rotate(90deg)" }} />
           <GalvanizedCorner style={{ right: "-6%", bottom: "-4%", transform: "rotate(180deg)" }} />
           <GalvanizedCorner style={{ left: "-6%", bottom: "-4%", transform: "rotate(270deg)" }} />
-        </>
-      )}
-
-      {id === "SMOG" && (
-        <AfflictionImageLayer
-          src={`${AFFLICTION_OVERLAY_BASE}/smog/smog_outer_shader.webp`}
-          className="sts2-affliction-overlay__smog-field sts2-affliction-overlay__smog-field--outer"
-          style={{ left: "-20.33%", top: "-3.55%", width: "140.67%", height: "133.3%" }}
-        />
-      )}
-
-      {id === "RINGING" && (
-        <>
-          <AfflictionImageLayer
-            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_beast_frame_horns_only.webp`}
-            className="sts2-affliction-overlay__ringing-horns"
-            style={{
-              left: "-83.67%",
-              top: "34.83%",
-              width: "170.67%",
-              height: "30.33%",
-              transform: "rotate(-4.712389rad) scale(0.75)",
-            }}
-          />
-          <AfflictionImageLayer
-            src={`${AFFLICTION_OVERLAY_BASE}/ringing/ringing_beast_frame_horns_only.webp`}
-            className="sts2-affliction-overlay__ringing-horns"
-            style={{
-              left: "13%",
-              top: "34.83%",
-              width: "170.67%",
-              height: "30.33%",
-              transform: "rotate(-7.853982rad) scale(0.75)",
-            }}
-          />
         </>
       )}
     </div>
