@@ -516,16 +516,6 @@ export function getRelatedRelicIdsForPower(
     .map((relic) => relic.id);
 }
 
-export function getRelatedPotionIdsForPower(
-  potions: readonly Pick<CodexPotion, "id" | "vars">[],
-  powerId: string,
-): readonly string[] {
-  const normalizedPowerId = powerId.toUpperCase();
-  return potions
-    .filter((potion) => getRelatedPowerIdsForPotion(potion).some((id) => id.toUpperCase() === normalizedPowerId))
-    .map((potion) => potion.id);
-}
-
 export function getRelatedEncounterIdsForMonster(
   monsterId: string,
   encounters: readonly Pick<CodexEncounter, "id" | "monsters">[],
