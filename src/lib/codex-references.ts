@@ -337,11 +337,7 @@ export const EVENT_RELATED_ENCHANTMENT_IDS = {
 } as const satisfies Record<string, readonly string[]>;
 
 export const EVENT_RELATED_POWER_IDS = {
-  BYRDONIS_NEST: ["HATCH"],
-  COLOSSAL_FLOWER: ["THORNS"],
-  TEA_MASTER: ["STRENGTH"],
   TINKER_TIME: ["WEAK", "VULNERABLE", "STRENGTH", "DEXTERITY"],
-  WOOD_CARVINGS: ["SLIPPERY", "TORIC_TOUGHNESS"],
 } as const satisfies Record<string, readonly string[]>;
 
 export const CARD_RELATED_ENCHANTMENT_IDS = {
@@ -536,32 +532,18 @@ export function getRelatedAncientIdsForEvent(
   return [];
 }
 
-export function relicMentionsEnchantment(
-  relic: Pick<CodexRelic, "description" | "descriptionRaw">,
-  enchantment: Pick<CodexEnchantment, "name" | "nameEn">,
-): boolean {
-  const desc = `${relic.description ?? ""} ${relic.descriptionRaw ?? ""}`;
-  if (enchantment.name && desc.includes(enchantment.name)) return true;
-  if (enchantment.nameEn && desc.toLowerCase().includes(enchantment.nameEn.toLowerCase())) return true;
-  return false;
-}
-
 export function getRelatedEnchantmentIdsForRelic(
-  relic: Pick<CodexRelic, "id" | "description" | "descriptionRaw">,
-  enchantments: readonly Pick<CodexEnchantment, "id" | "name" | "nameEn">[],
+  relic: Pick<CodexRelic, "id">,
+  enchantments: readonly Pick<CodexEnchantment, "id">[],
 ): string[] {
-  return dedupeIds([
-    ...((RELIC_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[relic.id] ?? []),
-    ...enchantments
-    .filter((enchantment) => relicMentionsEnchantment(relic, enchantment))
-    .map((enchantment) => enchantment.id),
-  ]);
+  void enchantments;
+  return dedupeIds((RELIC_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[relic.id] ?? []);
 }
 
 export function getRelatedRelicIdsForEnchantment(
   enchantmentId: string,
-  relics: readonly Pick<CodexRelic, "id" | "description" | "descriptionRaw">[],
-  enchantments: readonly Pick<CodexEnchantment, "id" | "name" | "nameEn">[],
+  relics: readonly Pick<CodexRelic, "id">[],
+  enchantments: readonly Pick<CodexEnchantment, "id">[],
 ): string[] {
   const normalizedEnchantmentId = enchantmentId.toUpperCase();
   return relics
@@ -573,9 +555,7 @@ export function getRelatedRelicIdsForEnchantment(
 }
 
 type PowerReferenceSource = {
-  description?: string | null;
   descriptionRaw?: string | null;
-  extraCardText?: string | null;
   vars?: Record<string, unknown> | null;
 };
 
@@ -644,14 +624,12 @@ function getRelatedPowerIdsFromSource(
   const powerIds = buildPowerReferenceSet(powers);
   return dedupeIds([
     ...extractPowerIdsFromTemplateText(source.descriptionRaw, powerIds),
-    ...extractPowerIdsFromTemplateText(source.extraCardText, powerIds),
-    ...extractPowerIdsFromTemplateText(source.description, powerIds),
     ...extractPowerIdsFromTemplateVars(source.vars, powerIds),
   ]);
 }
 
 export function getRelatedPowerIdsForCard(
-  card: Pick<CodexCard, "appliedPowerIds" | "description" | "descriptionRaw" | "vars">,
+  card: Pick<CodexCard, "appliedPowerIds" | "descriptionRaw" | "vars">,
   powers?: PowerReferenceIndex,
 ): readonly string[] {
   return dedupeIds([
@@ -661,14 +639,14 @@ export function getRelatedPowerIdsForCard(
 }
 
 export function getRelatedPowerIdsForRelic(
-  relic: Pick<CodexRelic, "description" | "descriptionRaw" | "vars">,
+  relic: Pick<CodexRelic, "descriptionRaw" | "vars">,
   powers?: PowerReferenceIndex,
 ): readonly string[] {
   return getRelatedPowerIdsFromSource(relic, powers);
 }
 
 export function getRelatedPowerIdsForPotion(
-  potionOrId: string | Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">,
+  potionOrId: string | Pick<CodexPotion, "id" | "descriptionRaw" | "vars">,
   powers?: PowerReferenceIndex,
 ): readonly string[] {
   if (typeof potionOrId === "string") return getCuratedPowerIdsForPotion(potionOrId);
@@ -679,14 +657,14 @@ export function getRelatedPowerIdsForPotion(
 }
 
 export function getRelatedPowerIdsForEnchantment(
-  enchantment: Pick<CodexEnchantment, "description" | "descriptionRaw" | "extraCardText">,
+  enchantment: Pick<CodexEnchantment, "descriptionRaw" | "vars">,
   powers?: PowerReferenceIndex,
 ): readonly string[] {
   return getRelatedPowerIdsFromSource(enchantment, powers);
 }
 
 export function getRelatedCardIdsForPower(
-  cards: readonly Pick<CodexCard, "id" | "appliedPowerIds" | "description" | "descriptionRaw" | "vars">[],
+  cards: readonly Pick<CodexCard, "id" | "appliedPowerIds" | "descriptionRaw" | "vars">[],
   powerId: string,
 ): readonly string[] {
   const normalizedPowerId = powerId.toUpperCase();
@@ -699,7 +677,7 @@ export function getRelatedCardIdsForPower(
 }
 
 export function getRelatedRelicIdsForPower(
-  relics: readonly Pick<CodexRelic, "id" | "description" | "descriptionRaw" | "vars">[],
+  relics: readonly Pick<CodexRelic, "id" | "descriptionRaw" | "vars">[],
   powerId: string,
 ): readonly string[] {
   const normalizedPowerId = powerId.toUpperCase();
@@ -712,7 +690,7 @@ export function getRelatedRelicIdsForPower(
 }
 
 export function getRelatedPotionIdsForPower(
-  potionsOrPowerId: string | readonly Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">[],
+  potionsOrPowerId: string | readonly Pick<CodexPotion, "id" | "descriptionRaw" | "vars">[],
   powerId?: string,
 ): readonly string[] {
   if (typeof potionsOrPowerId === "string") return getCuratedPotionIdsForPower(potionsOrPowerId);
@@ -726,7 +704,7 @@ export function getRelatedPotionIdsForPower(
 }
 
 export function getRelatedEnchantmentIdsForPower(
-  enchantments: readonly Pick<CodexEnchantment, "id" | "description" | "descriptionRaw" | "extraCardText">[],
+  enchantments: readonly Pick<CodexEnchantment, "id" | "descriptionRaw" | "vars">[],
   powerId: string,
 ): readonly string[] {
   const normalizedPowerId = powerId.toUpperCase();
@@ -739,10 +717,10 @@ export function getRelatedEnchantmentIdsForPower(
 }
 
 type RelatedPowerEventSources = {
-  cards?: readonly Pick<CodexCard, "id" | "appliedPowerIds" | "description" | "descriptionRaw" | "vars">[];
-  relics?: readonly Pick<CodexRelic, "id" | "description" | "descriptionRaw" | "vars">[];
-  potions?: readonly Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars" | "rarity">[];
-  enchantments?: readonly Pick<CodexEnchantment, "id" | "description" | "descriptionRaw" | "extraCardText">[];
+  cards?: readonly Pick<CodexCard, "id" | "appliedPowerIds" | "descriptionRaw" | "vars">[];
+  relics?: readonly Pick<CodexRelic, "id" | "descriptionRaw" | "vars">[];
+  potions?: readonly Pick<CodexPotion, "id" | "descriptionRaw" | "vars" | "rarity">[];
+  enchantments?: readonly Pick<CodexEnchantment, "id" | "descriptionRaw" | "vars">[];
 };
 
 export function getRelatedEventIdsForPower(
@@ -776,7 +754,7 @@ export function getRelatedEventIdsForPower(
 
 export function getRelatedCardIdsForMonster(
   monster: Pick<CodexMonster, "id">,
-  cards: readonly Pick<CodexCard, "id" | "description" | "descriptionRaw" | "tags" | "vars">[],
+  cards: readonly Pick<CodexCard, "id" | "tags" | "vars">[],
 ): string[] {
   return dedupeIds([
     ...((MONSTER_RELATED_CARD_IDS as Record<string, readonly string[]>)[monster.id] ?? []),
@@ -788,7 +766,7 @@ export function getRelatedCardIdsForMonster(
 
 export function getRelatedRelicIdsForMonster(
   monster: Pick<CodexMonster, "id">,
-  relics: readonly Pick<CodexRelic, "id" | "description" | "descriptionRaw" | "vars">[],
+  relics: readonly Pick<CodexRelic, "id" | "vars">[],
 ): string[] {
   return dedupeIds([
     ...((MONSTER_RELATED_RELIC_IDS as Record<string, readonly string[]>)[monster.id] ?? []),
@@ -800,7 +778,7 @@ export function getRelatedRelicIdsForMonster(
 
 export function getRelatedPotionIdsForMonster(
   monster: Pick<CodexMonster, "id">,
-  potions: readonly Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">[],
+  potions: readonly Pick<CodexPotion, "id" | "vars">[],
 ): string[] {
   return dedupeIds([
     ...((MONSTER_RELATED_POTION_IDS as Record<string, readonly string[]>)[monster.id] ?? []),
@@ -811,7 +789,7 @@ export function getRelatedPotionIdsForMonster(
 }
 
 export function getRelatedMonsterIdsForCard(
-  card: Pick<CodexCard, "id" | "description" | "descriptionRaw" | "tags" | "vars">,
+  card: Pick<CodexCard, "id" | "tags" | "vars">,
   monsters: readonly Pick<CodexMonster, "id">[],
 ): string[] {
   return monsters
@@ -820,7 +798,7 @@ export function getRelatedMonsterIdsForCard(
 }
 
 export function getRelatedMonsterIdsForRelic(
-  relic: Pick<CodexRelic, "id" | "description" | "descriptionRaw" | "vars">,
+  relic: Pick<CodexRelic, "id" | "vars">,
   monsters: readonly Pick<CodexMonster, "id">[],
 ): string[] {
   return monsters
@@ -829,7 +807,7 @@ export function getRelatedMonsterIdsForRelic(
 }
 
 export function getRelatedMonsterIdsForPotion(
-  potion: Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">,
+  potion: Pick<CodexPotion, "id" | "vars">,
   monsters: readonly Pick<CodexMonster, "id">[],
 ): string[] {
   return monsters
@@ -901,31 +879,16 @@ function sameId(left: string, right: string): boolean {
   return left.toUpperCase() === right.toUpperCase();
 }
 
-function cardRelatesToOsty(card: Pick<CodexCard, "description" | "descriptionRaw" | "tags" | "vars">): boolean {
+function cardRelatesToOsty(card: Pick<CodexCard, "tags" | "vars">): boolean {
   if (card.tags?.some((tag) => tag.toUpperCase() === "OSTYATTACK")) return true;
   if (Object.keys(card.vars ?? {}).some((key) => key === "Summon" || key.startsWith("Osty"))) return true;
-  return resourceTextMentionsOsty(card) || resourceTextMentionsSummon(card);
+  return false;
 }
 
 function resourceRelatesToOsty(
-  resource: Pick<CodexRelic | CodexPotion, "description" | "descriptionRaw" | "vars">,
+  resource: Pick<CodexRelic | CodexPotion, "vars">,
 ): boolean {
-  if (Object.keys(resource.vars ?? {}).some((key) => key === "Summon")) return true;
-  return resourceTextMentionsOsty(resource) || resourceTextMentionsSummon(resource);
-}
-
-function resourceTextMentionsOsty(resource: Pick<CodexCard | CodexRelic | CodexPotion, "description" | "descriptionRaw">): boolean {
-  const text = resourceText(resource);
-  return text.includes("골골이") || /\bosty\b/i.test(text);
-}
-
-function resourceTextMentionsSummon(resource: Pick<CodexCard | CodexRelic | CodexPotion, "description" | "descriptionRaw">): boolean {
-  const text = resourceText(resource);
-  return text.includes("[gold]소환[/gold]") || /\bsummon\b/i.test(text);
-}
-
-function resourceText(resource: Pick<CodexCard | CodexRelic | CodexPotion, "description" | "descriptionRaw">): string {
-  return `${resource.description ?? ""}\n${resource.descriptionRaw ?? ""}`;
+  return Object.keys(resource.vars ?? {}).some((key) => key === "Summon");
 }
 
 type AncientRelationSource = Pick<CodexAncient, "id">;
