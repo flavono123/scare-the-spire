@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import {
+  getCodexAncients,
   getCodexCards,
   getCodexCharacters,
   getCodexEnchantments,
@@ -39,7 +40,7 @@ export default async function CodexCardsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [cards, characters, patches, changes, versionDiffs, meta, enchantments, afflictions, gameUi, events, potions, powers] =
+  const [cards, characters, patches, changes, versionDiffs, meta, enchantments, afflictions, gameUi, ancients, events, potions, powers] =
     await Promise.all([
       getCodexCards({ gameLocale }),
       getCodexCharacters({ gameLocale }),
@@ -50,6 +51,7 @@ export default async function CodexCardsPage({
       getCodexEnchantments({ gameLocale }),
       getCodexAfflictions({ gameLocale }),
       getCodexGameUiLabels(gameLocale),
+      getCodexAncients({ gameLocale }),
       getCodexEvents({ gameLocale }),
       getCodexPotions({ gameLocale }),
       getCodexPowers({ gameLocale }),
@@ -71,6 +73,7 @@ export default async function CodexCardsPage({
         versionDiffs={versionDiffs}
         enchantments={enchantments}
         afflictions={afflictions}
+        relatedAncients={ancients}
         relatedEvents={events}
         relatedPotions={potions}
         relatedPowers={powers}

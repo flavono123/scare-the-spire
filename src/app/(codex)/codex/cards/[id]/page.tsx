@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexAfflictions, getCodexCards, getCodexEnchantments, getCodexEvents, getCodexPotions, getCodexPowers } from "@/lib/codex-data";
+import { getCodexAfflictions, getCodexAncients, getCodexCards, getCodexEnchantments, getCodexEvents, getCodexPotions, getCodexPowers } from "@/lib/codex-data";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
@@ -56,7 +56,7 @@ export default async function CardDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [cards, enchantments, afflictions, patches, changes, versionDiffs, gameUi, events, potions, powers] = await Promise.all([
+  const [cards, enchantments, afflictions, patches, changes, versionDiffs, gameUi, ancients, events, potions, powers] = await Promise.all([
     getCodexCards({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexAfflictions({ gameLocale }),
@@ -64,6 +64,7 @@ export default async function CardDetailPage({
     getSTS2Changes(),
     getEntityVersionDiffs(),
     getCodexGameUiLabels(gameLocale),
+    getCodexAncients({ gameLocale }),
     getCodexEvents({ gameLocale }),
     getCodexPotions({ gameLocale }),
     getCodexPowers({ gameLocale }),
@@ -73,7 +74,7 @@ export default async function CardDetailPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={card} enchantments={enchantments} afflictions={afflictions} relatedEvents={events} relatedPotions={potions} relatedPowers={powers} patches={patches} changes={changes} versionDiffs={versionDiffs} />
+      <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={card} enchantments={enchantments} afflictions={afflictions} relatedAncients={ancients} relatedEvents={events} relatedPotions={potions} relatedPowers={powers} patches={patches} changes={changes} versionDiffs={versionDiffs} />
     </div>
   );
 }

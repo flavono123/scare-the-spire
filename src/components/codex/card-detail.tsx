@@ -14,6 +14,7 @@ import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
   CodexAffliction,
+  CodexAncient,
   CodexCard,
   CodexEnchantment,
   CodexEvent,
@@ -43,6 +44,7 @@ import {
   TINKER_TIME_EVENT_ID,
   TINKER_TIME_EVENT_NAME_KO,
   TINKER_TIME_EVENT_PATH,
+  getRelatedAncientIdsForCard,
   getRelatedEnchantmentIdsForCard,
   getRelatedEventIdsForCard,
   getRelatedPotionIdsForCard,
@@ -197,6 +199,7 @@ interface CardDetailProps {
   card: CodexCard;
   enchantments: CodexEnchantment[];
   afflictions: CodexAffliction[];
+  relatedAncients?: CodexAncient[];
   relatedEvents?: CodexEvent[];
   relatedPotions?: CodexPotion[];
   relatedPowers?: CodexPower[];
@@ -220,7 +223,7 @@ function getCardDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedEvents = [], relatedPotions = [], relatedPowers = [], patches, changes, versionDiffs, onClose }: CardDetailProps) {
+export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedPotions = [], relatedPowers = [], patches, changes, versionDiffs, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getCardDetailLabels(serviceLocale);
   const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
@@ -301,6 +304,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
       },
     };
   });
+  const ancientById = new Map(relatedAncients.map((ancient) => [ancient.id, ancient]));
+  const relatedAncientTargets = getRelatedAncientIdsForCard(card, relatedAncients)
+    .map((ancientId) => ancientById.get(ancientId))
+    .filter((ancient): ancient is CodexAncient => Boolean(ancient))
+    .map(ancientToReferenceTarget);
   const powerById = new Map(relatedPowers.map((power) => [power.id, power]));
   const relatedPowerTargets = getRelatedPowerIdsForCard(card)
     .map((powerId) => powerById.get(powerId))
@@ -912,6 +920,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
 
           <EntityReferenceGroupLinks
             groups={[
+              { kind: "ancient", targets: relatedAncientTargets },
               { kind: "event", targets: relatedEventTargets },
               { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "power", targets: relatedPowerTargets },
@@ -947,6 +956,25 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
       </div>
     </div>
   );
+}
+
+function ancientToReferenceTarget(ancient: CodexAncient): CodexReferenceTarget {
+  const href = `/compendium/ancients/${ancient.id.toLowerCase()}`;
+  return {
+    href,
+    id: ancient.id,
+    title: ancient.name,
+    entity: {
+      id: ancient.id,
+      nameEn: ancient.nameEn,
+      nameKo: ancient.name,
+      imageUrl: ancient.imageUrl,
+      href,
+      color: ancient.act ?? "ancient",
+      type: "ancient",
+      ancientData: ancient,
+    },
+  };
 }
 
 function potionToReferenceTarget(potion: CodexPotion): CodexReferenceTarget {
