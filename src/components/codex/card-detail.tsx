@@ -48,11 +48,11 @@ import {
   getEnchantStatModifier,
 } from "@/lib/sts2-enchant-rules";
 import {
-  DEFAULT_AFFLICTION_AMOUNT,
   canAfflictCard,
   getAfflictionAddedKeywords,
   getAfflictionDescriptionSuffix,
   getAfflictionForcedCost,
+  getAfflictionPreviewAmount,
 } from "@/lib/sts2-affliction-rules";
 import { EntityReferenceLinks } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
@@ -142,9 +142,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
 
   const activeEnchant = eligibleEnchantments.find((e) => e.id === activeEnchantId) ?? null;
   const activeAffliction = eligibleAfflictions.find((a) => a.id === activeAfflictionId) ?? null;
+  const activeAfflictionAmount = getAfflictionPreviewAmount(activeAffliction);
 
   const hoveredEnchant = eligibleEnchantments.find((e) => e.id === hoveredEnchantId) ?? null;
   const hoveredAffliction = eligibleAfflictions.find((a) => a.id === hoveredAfflictionId) ?? null;
+  const hoveredAfflictionAmount = getAfflictionPreviewAmount(hoveredAffliction);
 
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
   const canShowUpgrade = hasCardUpgrade(previewCard);
@@ -191,7 +193,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   const activeForcedCost = activeEnchant ? getEnchantForcedCost(activeEnchant) : null;
   const activeStatMod = activeEnchant ? getEnchantStatModifier(activeEnchant, enchantAmount) : null;
   const activeAfflictionExtraText = activeAffliction
-    ? getAfflictionDescriptionSuffix(activeAffliction, DEFAULT_AFFLICTION_AMOUNT)
+    ? getAfflictionDescriptionSuffix(activeAffliction, activeAfflictionAmount)
     : null;
   const activeAfflictionAddedKeywords = activeAffliction
     ? getAfflictionAddedKeywords(activeAffliction)
@@ -206,7 +208,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   const activeForcedCostWithAffliction = getAfflictionForcedCost(activeAffliction, previewCard, {
     showUpgrade,
     enchantForcedCost: activeForcedCost,
-    amount: DEFAULT_AFFLICTION_AMOUNT,
+    amount: activeAfflictionAmount,
   });
 
   // hover 시 보여줄 미리보기 amount는 hovered 인챈트의 자체 프리셋을 쓴다.
@@ -223,7 +225,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
       }) ?? hoveredEnchant.description
     : null;
   const hoveredAfflictionDesc = hoveredAffliction
-    ? substituteAmount(hoveredAffliction.description, DEFAULT_AFFLICTION_AMOUNT, {
+    ? substituteAmount(hoveredAffliction.description, hoveredAfflictionAmount, {
         asEnergyIcon: hoveredAffliction.id?.toUpperCase() === "ENTANGLED",
       }) ?? hoveredAffliction.description
     : null;
