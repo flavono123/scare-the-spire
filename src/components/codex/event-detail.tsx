@@ -2079,7 +2079,7 @@ export function EventDetail({
               <div className={textPanelClassName}>
                 <div className="relative flex min-h-0 flex-1 flex-col">
                   <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
-                  <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto pr-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto pr-2 [scrollbar-width:none] 2xl:overflow-y-clip [&::-webkit-scrollbar]:hidden">
                     <h1
                       className="font-game-title text-3xl font-bold leading-tight text-[#f3c640]"
                       style={{ textShadow: GAME_TEXT_SHADOW }}
