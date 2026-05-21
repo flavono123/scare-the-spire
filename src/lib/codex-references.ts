@@ -1,4 +1,4 @@
-import type { CardRarityKo, CardTypeKo, CodexPotion, PotionRarityKo } from "./codex-types";
+import type { CardRarityKo, CardTypeKo, CodexAncient, CodexPotion, PotionRarityKo } from "./codex-types";
 
 export const FUTURE_OF_POTIONS_EVENT_ID = "THE_FUTURE_OF_POTIONS";
 export const FUTURE_OF_POTIONS_EVENT_NAME_KO = "포션의 미래?";
@@ -333,6 +333,16 @@ export function getRelatedEventIdsForRelic(relicId: string): readonly string[] {
 
 export function getRelatedEventIdsForPotion(potionId: string): readonly string[] {
   return invertEventRelations(EVENT_RELATED_POTION_IDS, potionId);
+}
+
+export function getRelatedAncientIdsForRelic(
+  relicId: string,
+  ancients: readonly Pick<CodexAncient, "id" | "relicIds">[],
+): string[] {
+  const normalizedRelicId = relicId.toUpperCase();
+  return ancients
+    .filter((ancient) => ancient.relicIds.some((id) => id.toUpperCase() === normalizedRelicId))
+    .map((ancient) => ancient.id);
 }
 
 function invertEventRelations(
