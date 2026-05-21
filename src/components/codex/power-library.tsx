@@ -17,6 +17,7 @@ import {
   POWER_TYPE_ALIASES,
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import {
   fuzzyMatchCodexText,
@@ -47,9 +48,10 @@ interface PowerLibraryProps {
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
+  entities?: EntityInfo[];
 }
 
-export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, currentVersion, patches, changes, versionDiffs }: PowerLibraryProps) {
+export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, currentVersion, patches, changes, versionDiffs, entities }: PowerLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedTypes, setSelectedTypes] = useState<Set<PowerType>>(new Set());
@@ -315,15 +317,17 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
             if (e.target === e.currentTarget) setSelectedPower(null);
           }}
         >
-          <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
+          <div className="my-8 mx-4 w-full max-w-6xl">
             <PowerDetail
               serviceLocale={serviceLocale}
               gameUi={gameUi}
+              backToListTitle={title}
               power={selectedPower}
               initialShowBeta={showBeta}
               patches={patches}
               changes={changes}
               versionDiffs={versionDiffs}
+              entities={entities}
               onClose={() => setSelectedPower(null)}
             />
           </div>
