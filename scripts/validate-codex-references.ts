@@ -20,6 +20,7 @@ import {
   POTION_RELATED_CARD_IDS,
   POTION_RELATED_ENCHANTMENT_IDS,
   POTION_RELATED_POWER_IDS,
+  RELIC_RELATED_CARD_IDS,
   RELIC_RELATED_ENCHANTMENT_IDS,
 } from "../src/lib/codex-references";
 
@@ -139,6 +140,14 @@ function main(): void {
     sourceKind: "card",
     map: CARD_RELATED_ENCHANTMENT_IDS,
     mapName: "CARD_RELATED_ENCHANTMENT_IDS",
+  });
+  errors += validateRelationMap({
+    entityIds: cardIds,
+    entityKind: "card",
+    eventIds: relicIds,
+    sourceKind: "relic",
+    map: RELIC_RELATED_CARD_IDS,
+    mapName: "RELIC_RELATED_CARD_IDS",
   });
   errors += validateRelationMap({
     entityIds: enchantmentIds,

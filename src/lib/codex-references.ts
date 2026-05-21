@@ -343,7 +343,34 @@ export const CARD_RELATED_ENCHANTMENT_IDS = {
   BLADE_OF_INK: ["INKY"],
 } as const satisfies Record<string, readonly string[]>;
 
-export const RELIC_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<string, readonly string[]>;
+export const RELIC_RELATED_CARD_IDS = {
+  BLESSED_ANTLER: ["DAZED"],
+  BYRDPIP: ["BYRD_SWOOP"],
+  NEOWS_TORMENT: ["NEOWS_FURY"],
+  NINJA_SCROLL: ["SHIV"],
+  PRESERVED_FOG: ["FOLLY"],
+  SERE_TALON: ["WISH"],
+  STORYBOOK: ["BRIGHTEST_FLAME"],
+  TANXS_WHISTLE: ["WHISTLE"],
+  TEA_OF_DISCOURTESY: ["DAZED"],
+} as const satisfies Record<string, readonly string[]>;
+
+export const RELIC_RELATED_ENCHANTMENT_IDS = {
+  ELECTRIC_SHRYMP: ["IMBUED"],
+  GLITTER: ["GLAM"],
+  KIFUDA: ["ADROIT"],
+  NUTRITIOUS_SOUP: ["TEZCATARAS_EMBER"],
+  SILKEN_TRESS: ["GLAM"],
+  TRI_BOOMERANG: ["INSTINCT"],
+} as const satisfies Record<string, readonly string[]>;
+
+const RELIC_ENCHANTMENT_VAR_KEY_IDS = {
+  Momentum: ["MOMENTUM"],
+  NimbleAmount: ["NIMBLE"],
+  SharpAmount: ["SHARP"],
+  Swift: ["SWIFT"],
+  SwiftAmount: ["SWIFT"],
+} as const satisfies Record<string, readonly string[]>;
 
 // Potion relationships are derived from game code, not localized names or descriptions:
 // - concrete card creation/preview: HoverTipFactory.FromCard<TCard>, TCard.CreateInHand
@@ -410,6 +437,10 @@ export function getRelatedEnchantmentIdsForCard(cardId: string): readonly string
   return (CARD_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[cardId] ?? [];
 }
 
+export function getRelatedCardIdsForRelic(relicId: string): readonly string[] {
+  return (RELIC_RELATED_CARD_IDS as Record<string, readonly string[]>)[relicId] ?? [];
+}
+
 export function getRelatedEnchantmentIdsForPotion(potionId: string): readonly string[] {
   return (POTION_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[potionId] ?? [];
 }
@@ -450,6 +481,10 @@ export function getRelatedEventIdsForEnchantment(enchantmentId: string): readonl
 
 export function getRelatedCardIdsForEnchantment(enchantmentId: string): readonly string[] {
   return invertEventRelations(CARD_RELATED_ENCHANTMENT_IDS, enchantmentId);
+}
+
+export function getRelatedRelicIdsForCard(cardId: string): readonly string[] {
+  return invertEventRelations(RELIC_RELATED_CARD_IDS, cardId);
 }
 
 export function getRelatedPotionIdsForEnchantment(enchantmentId: string): readonly string[] {
@@ -547,6 +582,9 @@ export function getRelatedEnchantmentIdsForRelic(
 ): string[] {
   return dedupeIds([
     ...((RELIC_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[relic.id] ?? []),
+    ...Object.entries(RELIC_ENCHANTMENT_VAR_KEY_IDS)
+      .filter(([key]) => Object.prototype.hasOwnProperty.call(relic.vars ?? {}, key))
+      .flatMap(([, enchantmentIds]) => enchantmentIds),
     ...getEnchantmentIdsFromVars(relic.vars, enchantments),
   ]);
 }
@@ -601,8 +639,17 @@ function normalizeReferenceToken(token: string): string {
 
 function powerVarKeyCandidates(token: string): string[] {
   const normalized = normalizeReferenceToken(token);
-  if (!normalized.endsWith("_POWER") || normalized === "POWER") return [];
-  return [normalized, normalized.slice(0, -"_POWER".length)];
+  const candidates = [normalized];
+  if (normalized.endsWith("_POWER") && normalized !== "POWER") {
+    candidates.push(normalized.slice(0, -"_POWER".length));
+  }
+  if (normalized.startsWith("SELF_")) {
+    candidates.push(normalized.slice("SELF_".length));
+  }
+  if (normalized.startsWith("ENEMY_")) {
+    candidates.push(normalized.slice("ENEMY_".length));
+  }
+  return dedupeIds(candidates);
 }
 
 function buildPowerReferenceSet(powers?: PowerReferenceIndex): Set<string> | null {

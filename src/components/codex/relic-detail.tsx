@@ -12,6 +12,7 @@ import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
   CodexAncient,
+  CodexCard,
   CodexEnchantment,
   CodexEvent,
   CodexPower,
@@ -29,7 +30,7 @@ import { EntityReferenceGroupLinks } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
 import { GameCheckboxToggle } from "./game-checkbox";
 import { RichDescription } from "./rich-description";
-import { getRelatedAncientIdsForRelic, getRelatedEnchantmentIdsForRelic, getRelatedEventIdsForRelic, getRelatedPowerIdsForRelic } from "@/lib/codex-references";
+import { getRelatedAncientIdsForRelic, getRelatedCardIdsForRelic, getRelatedEnchantmentIdsForRelic, getRelatedEventIdsForRelic, getRelatedPowerIdsForRelic } from "@/lib/codex-references";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
@@ -93,6 +94,7 @@ interface RelicDetailProps {
   onClose?: () => void;
   /** Cross-reference entities — when provided, descriptions become rich. */
   entities?: EntityInfo[];
+  relatedCards?: CodexCard[];
   relatedEvents?: CodexEvent[];
   relatedAncients?: CodexAncient[];
   relatedEnchantments?: CodexEnchantment[];
@@ -104,7 +106,7 @@ interface RelicDetailProps {
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
-export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedEvents = [], relatedAncients = [], relatedEnchantments = [], relatedPowers = [], patches, changes, versionDiffs }: RelicDetailProps) {
+export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedCards = [], relatedEvents = [], relatedAncients = [], relatedEnchantments = [], relatedPowers = [], patches, changes, versionDiffs }: RelicDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getRelicDetailLabels(serviceLocale);
   // Don't link the relic to itself in its own description
@@ -133,6 +135,26 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
 
   const rarityColor = RELIC_RARITY_COLORS[relic.rarity];
   const poolColor = relic.pool !== "shared" ? getCharacterColor(relic.pool) : undefined;
+  const relatedCardTargets = getRelatedCardIdsForRelic(relic.id).map((cardId) => {
+    const relatedCard = relatedCards.find((card) => card.id === cardId) ?? null;
+    const href = `/compendium/cards/${cardId.toLowerCase()}`;
+    const title = relatedCard?.name ?? cardId;
+    return {
+      id: cardId,
+      href,
+      title,
+      entity: {
+        id: cardId,
+        nameEn: relatedCard?.nameEn ?? title,
+        nameKo: title,
+        imageUrl: relatedCard?.imageUrl ?? null,
+        href,
+        color: relatedCard?.color ?? "card",
+        type: "card" as const,
+        cardData: relatedCard ?? undefined,
+      },
+    };
+  });
   const relatedEventTargets = getRelatedEventIdsForRelic(relic.id).map((eventId) => {
     const relatedEvent = relatedEvents.find((event) => event.id === eventId) ?? null;
     const href = `/compendium/events/${eventId.toLowerCase()}`;
@@ -193,7 +215,7 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
       },
     };
   });
-  const relatedPowerTargets = getRelatedPowerIdsForRelic(relic).map((powerId) => {
+  const relatedPowerTargets = getRelatedPowerIdsForRelic(relic, relatedPowers).map((powerId) => {
     const relatedPower = relatedPowers.find((power) => power.id === powerId) ?? null;
     const href = `/compendium/powers/${powerId.toLowerCase()}`;
     const title = relatedPower?.name ?? powerId;
@@ -360,6 +382,7 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
           <EntityReferenceGroupLinks
             serviceLocale={serviceLocale}
             groups={[
+              { kind: "card", targets: relatedCardTargets },
               { kind: "event", targets: relatedEventTargets },
               { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "power", targets: relatedPowerTargets },
