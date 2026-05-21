@@ -2002,7 +2002,7 @@ export function EventDetail({
         )}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
+      <div className="flex flex-col gap-5">
         <section className="flex min-h-[22rem] min-w-0 items-center justify-center py-2">
           <div
             className="relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10"
@@ -2014,7 +2014,7 @@ export function EventDetail({
                   src={eventImageUrl}
                   alt={event.name}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 70vw, 1090px"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1536px) calc(100vw - 3rem), 1472px"
                   className="object-contain"
                   priority={Boolean(onClose)}
                 />
@@ -2075,7 +2075,7 @@ export function EventDetail({
           </div>
         </section>
 
-        <aside className="flex flex-col gap-3 lg:sticky lg:top-4">
+        <aside className="grid gap-3 lg:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)] xl:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)_minmax(18rem,1fr)_minmax(18rem,1fr)] xl:items-start">
           <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
