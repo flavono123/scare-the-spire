@@ -3,18 +3,14 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
-import Link from "next/link";
-import { CommentSection } from "@/components/comment-section";
-import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
-import { localizeHref } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
+import type { STS2Change, STS2Patch } from "@/lib/types";
 import {
   formatCodexCount,
   getCodexServiceMessages,
   type CodexServiceMessages,
 } from "@/lib/codex-service";
-import { DescriptionText } from "./codex-description";
 import {
   CodexEncounter,
   CodexMonster,
@@ -37,6 +33,7 @@ import {
   CodexLibraryTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
+import { EncounterDetail } from "./encounter-detail";
 
 // Room type display order and styling
 const ROOM_TYPE_ORDER: EncounterRoomType[] = ["Monster", "Elite", "Boss"];
@@ -58,6 +55,8 @@ interface EncounterLibraryProps {
   gameUi: CodexGameUiLabels;
   encounters: CodexEncounter[];
   monsters: CodexMonster[];
+  patches?: STS2Patch[];
+  changes?: STS2Change[];
   title?: string;
   trailing?: React.ReactNode;
 }
@@ -67,6 +66,8 @@ export function EncounterLibrary({
   gameUi,
   encounters,
   monsters,
+  patches,
+  changes,
   title,
   trailing,
 }: EncounterLibraryProps) {
@@ -345,13 +346,15 @@ export function EncounterLibrary({
             if (e.target === e.currentTarget) setSelectedEncounter(null);
           }}
         >
-          <div className="w-full max-w-2xl my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
+          <div className="my-8 mx-4 w-full max-w-6xl">
             <EncounterDetail
-              encounter={selectedEncounter}
-              monsterById={monsterById}
               serviceLocale={serviceLocale}
-              messages={serviceText}
               gameUi={gameUi}
+              backToListTitle={serviceText.encountersView.backToList}
+              encounter={selectedEncounter}
+              monsters={monsters}
+              patches={patches}
+              changes={changes}
               onClose={() => setSelectedEncounter(null)}
             />
           </div>
@@ -438,126 +441,6 @@ function EncounterTile({
         ))}
       </div>
     </button>
-  );
-}
-
-// Encounter detail modal content
-function EncounterDetail({
-  encounter,
-  monsterById,
-  serviceLocale,
-  messages,
-  gameUi,
-  onClose,
-}: {
-  encounter: CodexEncounter;
-  monsterById: Map<string, CodexMonster>;
-  serviceLocale: ServiceLocale;
-  messages: CodexServiceMessages;
-  gameUi: CodexGameUiLabels;
-  onClose: () => void;
-}) {
-  const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[encounter.roomType];
-  const actConfig = encounter.act ? EVENT_ACT_CONFIG[encounter.act] : EVENT_ACT_UNKNOWN;
-
-  const uniqueMonsters = Array.from(
-    new Map(encounter.monsters.map((m) => [m.id, m])).values(),
-  );
-
-  return (
-    <div className="flex flex-col gap-6 p-4 sm:p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between w-full">
-        <Link
-          href={localizeHref("/compendium/bestiary?view=encounters", serviceLocale)}
-          className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
-          onClick={(e) => { e.preventDefault(); onClose(); }}
-        >
-          ← {messages.encountersView.backToList}
-        </Link>
-        <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400" aria-label={messages.common.close}>
-          ✕
-        </button>
-      </div>
-
-      {/* Title */}
-      <div className="text-center">
-        <h1 className="font-game-title text-2xl font-bold text-gray-100">{encounter.name}</h1>
-        <p className="font-game-text text-sm text-gray-500">{encounter.nameEn}</p>
-      </div>
-
-      {/* Badges */}
-      <div className="flex flex-wrap justify-center gap-2">
-        <span className="font-game-text text-xs font-medium px-2.5 py-1 rounded-lg" style={{ backgroundColor: `${roomConfig.color}20`, color: roomConfig.color }}>
-          {gameUi.encounterRoomTypes[encounter.roomType]}
-        </span>
-        <span className={`font-game-text text-xs px-2.5 py-1 rounded-lg ${actConfig.bg} ${actConfig.color}`}>
-          {getActLabel(encounter.act, messages, gameUi)}
-        </span>
-        {encounter.isWeak && (
-          <span className="text-xs text-green-400 bg-green-500/10 px-2.5 py-1 rounded-lg">{messages.encountersView.weakEncounter}</span>
-        )}
-        {encounter.tags?.map((tag) => (
-          <span key={tag} className="text-xs text-gray-400 bg-white/5 px-2.5 py-1 rounded-lg">{tag}</span>
-        ))}
-      </div>
-
-      {/* Monster Composition */}
-      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">{messages.encountersView.monsterComposition}</h2>
-        <div className="flex flex-col gap-2">
-          {uniqueMonsters.map((mRef) => {
-            const monster = monsterById.get(mRef.id);
-            const imgUrl = monster?.imageUrl ?? monster?.bossImageUrl;
-
-            return (
-              <Link
-                key={mRef.id}
-                href={localizeHref(`/compendium/bestiary?monster=${mRef.id.toLowerCase()}`, serviceLocale)}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5 hover:bg-white/10 hover:border-yellow-500/30 transition-all"
-              >
-                {imgUrl ? (
-                  <div className="w-10 h-10 shrink-0 rounded overflow-hidden bg-white/5 flex items-center justify-center">
-                    <Image src={imgUrl} alt={mRef.name} width={40} height={40} className="w-10 h-10 object-contain" />
-                  </div>
-                ) : (
-                  <div className="w-10 h-10 shrink-0 rounded bg-white/10 flex items-center justify-center">
-                    <span className="text-xs text-gray-500">{mRef.name[0]}</span>
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <span className="font-game-title text-sm font-medium text-gray-100">{mRef.name}</span>
-                  <span className="font-game-text ml-1.5 text-[10px] text-gray-500">{mRef.nameEn}</span>
-                  {monster && (
-                    <div className="flex items-center gap-2 mt-0.5">
-                      {monster.minHp != null && monster.minHp !== 9999 && (
-                        <span className="text-[10px] text-gray-500">
-                          HP {monster.minHp}{monster.maxHp != null && monster.maxHp !== monster.minHp ? `-${monster.maxHp}` : ""}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-                <span className="text-[10px] text-gray-600">→</span>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Loss Text */}
-      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-2">{messages.encountersView.lossText}</h2>
-        <div className="text-sm text-gray-400 italic">
-          <DescriptionText description={encounter.lossText} />
-        </div>
-      </div>
-
-      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">{messages.common.comments}</h2>
-        <CommentSection threadKey={buildCodexCommentThreadKey("encounter", encounter.id)} />
-      </div>
-    </div>
   );
 }
 

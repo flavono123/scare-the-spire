@@ -85,6 +85,8 @@ export function BestiaryLibrary({
         title={gameUi.bestiaryTitle}
         encounters={encounters}
         monsters={monsters}
+        patches={patches}
+        changes={changes}
         trailing={switcher}
       />
     );
