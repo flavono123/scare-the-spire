@@ -333,6 +333,20 @@ export const EVENT_RELATED_ENCHANTMENT_IDS = {
   WOOD_CARVINGS: ["SLITHER"],
 } as const satisfies Record<string, readonly string[]>;
 
+export const CARD_RELATED_ENCHANTMENT_IDS = {
+  BLADE_OF_INK: ["INKY"],
+} as const satisfies Record<string, readonly string[]>;
+
+export const RELIC_RELATED_ENCHANTMENT_IDS = {
+  PAELS_CLAW: ["GOOPY"],
+  PAELS_GROWTH: ["SLUMBERING_ESSENCE"],
+  ROYAL_STAMP: ["ROYALLY_APPROVED"],
+} as const satisfies Record<string, readonly string[]>;
+
+export const POTION_RELATED_ENCHANTMENT_IDS = {
+  DUPLICATOR: ["CLONE"],
+} as const satisfies Record<string, readonly string[]>;
+
 export function getRelatedCardIdsForEvent(eventId: string): readonly string[] {
   return (EVENT_RELATED_CARD_IDS as Record<string, readonly string[]>)[eventId] ?? [];
 }
@@ -349,6 +363,14 @@ export function getRelatedEnchantmentIdsForEvent(eventId: string): readonly stri
   return (EVENT_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[eventId] ?? [];
 }
 
+export function getRelatedEnchantmentIdsForCard(cardId: string): readonly string[] {
+  return (CARD_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[cardId] ?? [];
+}
+
+export function getRelatedEnchantmentIdsForPotion(potionId: string): readonly string[] {
+  return (POTION_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[potionId] ?? [];
+}
+
 export function getRelatedEventIdsForCard(cardId: string): readonly string[] {
   return invertEventRelations(EVENT_RELATED_CARD_IDS, cardId);
 }
@@ -363,6 +385,14 @@ export function getRelatedEventIdsForPotion(potionId: string): readonly string[]
 
 export function getRelatedEventIdsForEnchantment(enchantmentId: string): readonly string[] {
   return invertEventRelations(EVENT_RELATED_ENCHANTMENT_IDS, enchantmentId);
+}
+
+export function getRelatedCardIdsForEnchantment(enchantmentId: string): readonly string[] {
+  return invertEventRelations(CARD_RELATED_ENCHANTMENT_IDS, enchantmentId);
+}
+
+export function getRelatedPotionIdsForEnchantment(enchantmentId: string): readonly string[] {
+  return invertEventRelations(POTION_RELATED_ENCHANTMENT_IDS, enchantmentId);
 }
 
 export function getRelatedAncientIdsForRelic(
@@ -386,12 +416,29 @@ export function relicMentionsEnchantment(
 }
 
 export function getRelatedEnchantmentIdsForRelic(
-  relic: Pick<CodexRelic, "description" | "descriptionRaw">,
+  relic: Pick<CodexRelic, "id" | "description" | "descriptionRaw">,
   enchantments: readonly Pick<CodexEnchantment, "id" | "name" | "nameEn">[],
 ): string[] {
-  return enchantments
+  return dedupeIds([
+    ...((RELIC_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[relic.id] ?? []),
+    ...enchantments
     .filter((enchantment) => relicMentionsEnchantment(relic, enchantment))
-    .map((enchantment) => enchantment.id);
+    .map((enchantment) => enchantment.id),
+  ]);
+}
+
+export function getRelatedRelicIdsForEnchantment(
+  enchantmentId: string,
+  relics: readonly Pick<CodexRelic, "id" | "description" | "descriptionRaw">[],
+  enchantments: readonly Pick<CodexEnchantment, "id" | "name" | "nameEn">[],
+): string[] {
+  const normalizedEnchantmentId = enchantmentId.toUpperCase();
+  return relics
+    .filter((relic) =>
+      getRelatedEnchantmentIdsForRelic(relic, enchantments)
+        .some((id) => id.toUpperCase() === normalizedEnchantmentId),
+    )
+    .map((relic) => relic.id);
 }
 
 export function getRelatedPowerIdsForCard(card: Pick<CodexCard, "appliedPowerIds">): readonly string[] {
@@ -444,4 +491,14 @@ function invertEventRelations(
   return Object.entries(relations)
     .filter(([, ids]) => ids.some((id) => id.toUpperCase() === normalizedEntityId))
     .map(([eventId]) => eventId);
+}
+
+function dedupeIds(ids: readonly string[]): string[] {
+  const seen = new Set<string>();
+  return ids.filter((id) => {
+    const normalizedId = id.toUpperCase();
+    if (seen.has(normalizedId)) return false;
+    seen.add(normalizedId);
+    return true;
+  });
 }
