@@ -388,9 +388,7 @@ export const POTION_RELATED_POWER_IDS = {
 
 export const POTION_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<string, readonly string[]>;
 
-export const MONSTER_RELATED_CARD_IDS = {
-  BYRDONIS: ["BYRDONIS_EGG"],
-} as const satisfies Record<string, readonly string[]>;
+export const MONSTER_RELATED_CARD_IDS = {} as const satisfies Record<string, readonly string[]>;
 
 export const MONSTER_RELATED_RELIC_IDS = {} as const satisfies Record<string, readonly string[]>;
 
