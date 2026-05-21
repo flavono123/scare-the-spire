@@ -393,8 +393,8 @@ export const serviceMessages = {
         },
       },
       enchantmentsView: {
-        title: "인챈트 도감",
-        backToList: "인챈트 도감",
+        title: "인챈트 목록",
+        backToList: "인챈트 목록",
         searchPlaceholder: "인챈트 검색...",
         cardTypeFilter: "카드 유형",
         attributeFilter: "속성",
@@ -894,8 +894,8 @@ export const serviceMessages = {
         },
       },
       enchantmentsView: {
-        title: "Enchantment Codex",
-        backToList: "Enchantment Codex",
+        title: "Enchantments",
+        backToList: "Enchantments",
         searchPlaceholder: "Search enchantments...",
         cardTypeFilter: "Card Type",
         attributeFilter: "Attributes",
