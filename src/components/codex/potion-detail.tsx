@@ -12,6 +12,7 @@ import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
+  CodexEnchantment,
   CodexPotion,
   CodexEvent,
   PotionPool,
@@ -20,7 +21,7 @@ import {
   getCharacterColor,
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
-import { EntityReferenceLinks } from "./entity-reference-links";
+import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameChoiceFrame } from "./event-choice-frame";
 import { GameHoverTip } from "./hover-tip";
 import { RichDescription } from "./rich-description";
@@ -31,6 +32,7 @@ import {
   FUTURE_OF_POTIONS_EVENT_NAME_KO,
   FUTURE_OF_POTIONS_EVENT_PATH,
   getFuturePotionChoicesForPotion,
+  getRelatedEnchantmentIdsForPotion,
   getRelatedEventIdsForPotion,
 } from "@/lib/codex-references";
 
@@ -83,6 +85,7 @@ interface PotionDetailProps {
   backToListTitle: string;
   potion: CodexPotion;
   poolLabels: Record<PotionPool, string>;
+  relatedEnchantments?: CodexEnchantment[];
   relatedEvents?: CodexEvent[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
@@ -104,7 +107,7 @@ function getPotionDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedEvents = [], patches, changes, versionDiffs, onClose, entities }: PotionDetailProps & { entities?: EntityInfo[] }) {
+export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedEnchantments = [], relatedEvents = [], patches, changes, versionDiffs, onClose, entities }: PotionDetailProps & { entities?: EntityInfo[] }) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getPotionDetailLabels(serviceLocale);
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
@@ -141,6 +144,11 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
         },
       };
     });
+  const enchantmentById = new Map(relatedEnchantments.map((enchantment) => [enchantment.id, enchantment]));
+  const relatedEnchantmentTargets = getRelatedEnchantmentIdsForPotion(potion.id)
+    .map((enchantmentId) => enchantmentById.get(enchantmentId))
+    .filter((enchantment): enchantment is CodexEnchantment => Boolean(enchantment))
+    .map(enchantmentToReferenceTarget);
   const potionCourierEvent = eventById.get("POTION_COURIER") ?? null;
   const potionCourierChoices = (potionCourierEvent?.options ?? []).filter((option) => (
     (potion.id === "FOUL_POTION" && option.id === "GRAB_POTIONS") ||
@@ -235,10 +243,12 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
             </div>
           </section>
 
-          <EntityReferenceLinks
-            kind="event"
+          <EntityReferenceGroupLinks
+            groups={[
+              { kind: "event", targets: relatedEventTargets },
+              { kind: "enchantment", targets: relatedEnchantmentTargets },
+            ]}
             serviceLocale={serviceLocale}
-            targets={relatedEventTargets}
           >
             <div className="space-y-2.5">
               {futurePotionChoices.map((choice) => (
@@ -262,7 +272,7 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
                 </GameChoiceFrame>
               ))}
             </div>
-          </EntityReferenceLinks>
+          </EntityReferenceGroupLinks>
 
           <InfoRailSection title={detailLabels.patchHistory}>
             <STS2ChangeHistory
@@ -286,4 +296,23 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
       </div>
     </div>
   );
+}
+
+function enchantmentToReferenceTarget(enchantment: CodexEnchantment): CodexReferenceTarget {
+  const href = `/compendium/enchantments/${enchantment.id.toLowerCase()}`;
+  return {
+    href,
+    id: enchantment.id,
+    title: enchantment.name,
+    entity: {
+      id: enchantment.id,
+      nameEn: enchantment.nameEn,
+      nameKo: enchantment.name,
+      imageUrl: enchantment.imageUrl,
+      href,
+      color: enchantment.cardType ?? "Any",
+      type: "enchantment",
+      enchantmentData: enchantment,
+    },
+  };
 }

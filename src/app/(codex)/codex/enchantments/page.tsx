@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexEnchantments, getCodexEvents, getCodexRelics } from "@/lib/codex-data";
+import { getCodexCards, getCodexEnchantments, getCodexEvents, getCodexPotions, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
@@ -29,9 +29,11 @@ export default async function CodexEnchantmentsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [enchantments, events, relics, patches, changes, versionDiffs, meta, entities] = await Promise.all([
+  const [enchantments, cards, events, potions, relics, patches, changes, versionDiffs, meta, entities] = await Promise.all([
     getCodexEnchantments({ gameLocale }),
+    getCodexCards({ gameLocale }),
     getCodexEvents({ gameLocale }),
+    getCodexPotions({ gameLocale }),
     getCodexRelics({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
@@ -53,7 +55,9 @@ export default async function CodexEnchantmentsPage({
         changes={changes}
         versionDiffs={versionDiffs}
         entities={entities}
+        cards={cards}
         events={events}
+        potions={potions}
         relics={relics}
       />
     </Suspense>

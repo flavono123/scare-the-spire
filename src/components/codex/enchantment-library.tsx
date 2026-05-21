@@ -9,8 +9,10 @@ import {
   type CodexServiceMessages,
 } from "@/lib/codex-service";
 import {
+  CodexCard,
   CodexEnchantment,
   CodexEvent,
+  CodexPotion,
   CodexRelic,
   EnchantmentCardTypeFilter,
   ENCHANTMENT_CARD_TYPE_CONFIG,
@@ -53,13 +55,17 @@ interface EnchantmentLibraryProps {
   versionDiffs?: EntityVersionDiff[];
   /** All codex entities — enables rich cross-references in the detail modal. */
   entities?: EntityInfo[];
+  /** Cards — used to surface ones that create or reference the selected enchantment. */
+  cards?: CodexCard[];
   /** Events — used to surface ones that grant or reference the selected enchantment. */
   events?: CodexEvent[];
+  /** Potions — used to surface ones that share the selected enchantment's game mechanic. */
+  potions?: CodexPotion[];
   /** Relics — used to surface ones that grant the selected enchantment. */
   relics?: CodexRelic[];
 }
 
-export function EnchantmentLibrary({ serviceLocale, enchantments, versions, currentVersion, patches, changes, versionDiffs, entities, events, relics }: EnchantmentLibraryProps) {
+export function EnchantmentLibrary({ serviceLocale, enchantments, versions, currentVersion, patches, changes, versionDiffs, entities, cards, events, potions, relics }: EnchantmentLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedCardTypes, setSelectedCardTypes] = useState<Set<EnchantmentCardTypeFilter>>(new Set());
@@ -317,7 +323,9 @@ export function EnchantmentLibrary({ serviceLocale, enchantments, versions, curr
               enchantment={selectedEnchantment}
               onClose={() => setSelectedEnchantment(null)}
               entities={entities}
+              cards={cards}
               events={events}
+              potions={potions}
               relics={relics}
               patches={patches}
               changes={changes}

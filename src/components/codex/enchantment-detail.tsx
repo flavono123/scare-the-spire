@@ -10,15 +10,22 @@ import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import {
+  CodexCard,
   CodexEnchantment,
   CodexEvent,
+  CodexPotion,
   CodexRelic,
   ENCHANTMENT_CARD_TYPE_CONFIG,
   type EnchantmentCardTypeFilter,
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
-import { getRelatedEventIdsForEnchantment, relicMentionsEnchantment } from "@/lib/codex-references";
+import {
+  getRelatedCardIdsForEnchantment,
+  getRelatedEventIdsForEnchantment,
+  getRelatedPotionIdsForEnchantment,
+  getRelatedRelicIdsForEnchantment,
+} from "@/lib/codex-references";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
 import { RichDescription } from "./rich-description";
@@ -65,8 +72,12 @@ interface EnchantmentDetailProps {
   onClose?: () => void;
   /** Cross-reference entities — when provided, descriptions become rich. */
   entities?: EntityInfo[];
+  /** Cards that directly create or reference this enchantment. */
+  cards?: CodexCard[];
   /** Events that can grant or reference this enchantment. */
   events?: CodexEvent[];
+  /** Potions that share this enchantment's game mechanic. */
+  potions?: CodexPotion[];
   /** All relics, used to surface ones that grant this enchantment. */
   relics?: CodexRelic[];
   patches?: STS2Patch[];
@@ -96,7 +107,9 @@ export function EnchantmentDetail({
   enchantment,
   onClose,
   entities,
+  cards = [],
   events = [],
+  potions = [],
   relics,
   patches,
   changes,
@@ -108,36 +121,31 @@ export function EnchantmentDetail({
   const cardTypeConfig = ENCHANTMENT_CARD_TYPE_CONFIG[cardTypeFilter];
   const [commentCount, setCommentCount] = useState(0);
 
-  const grantingRelics = useMemo(() => {
+  const relatedRelics = useMemo(() => {
     if (!relics) return [];
-    return relics
-      .filter((r) => relicMentionsEnchantment(r, enchantment))
+    const relicById = new Map(relics.map((relic) => [relic.id, relic]));
+    return getRelatedRelicIdsForEnchantment(enchantment.id, relics, [enchantment])
+      .map((relicId) => relicById.get(relicId))
+      .filter((relic): relic is CodexRelic => Boolean(relic))
       .sort((a, b) => a.name.localeCompare(b.name, "ko"));
   }, [relics, enchantment]);
 
-  const grantingRelicTargets = grantingRelics.map((relic) => {
-    const href = `/compendium/relics?relic=${relic.id.toLowerCase()}`;
-    return {
-      id: relic.id,
-      href,
-      title: relic.name,
-      entity: {
-        id: relic.id,
-        nameEn: relic.nameEn,
-        nameKo: relic.name,
-        imageUrl: relic.imageUrl,
-        href,
-        color: relic.pool,
-        type: "relic" as const,
-        relicData: relic,
-      },
-    };
-  });
+  const cardById = new Map(cards.map((card) => [card.id, card]));
+  const relatedCardTargets = getRelatedCardIdsForEnchantment(enchantment.id)
+    .map((cardId) => cardById.get(cardId))
+    .filter((card): card is CodexCard => Boolean(card))
+    .map(cardToReferenceTarget);
+  const relatedRelicTargets = relatedRelics.map(relicToReferenceTarget);
   const eventById = new Map(events.map((event) => [event.id, event]));
   const relatedEventTargets = getRelatedEventIdsForEnchantment(enchantment.id)
     .map((eventId) => eventById.get(eventId))
     .filter((event): event is CodexEvent => Boolean(event))
     .map(eventToReferenceTarget);
+  const potionById = new Map(potions.map((potion) => [potion.id, potion]));
+  const relatedPotionTargets = getRelatedPotionIdsForEnchantment(enchantment.id)
+    .map((potionId) => potionById.get(potionId))
+    .filter((potion): potion is CodexPotion => Boolean(potion))
+    .map(potionToReferenceTarget);
 
   const excludeSelf = useMemo(
     () => new Set([enchantment.name, enchantment.nameEn]),
@@ -247,7 +255,9 @@ export function EnchantmentDetail({
 
           <EntityReferenceGroupLinks
             groups={[
-              { kind: "relic", targets: grantingRelicTargets },
+              { kind: "card", targets: relatedCardTargets },
+              { kind: "relic", targets: relatedRelicTargets },
+              { kind: "potion", targets: relatedPotionTargets },
               { kind: "event", targets: relatedEventTargets },
             ]}
             serviceLocale={serviceLocale}
@@ -275,6 +285,63 @@ export function EnchantmentDetail({
       </div>
     </div>
   );
+}
+
+function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {
+  const href = `/compendium/cards/${card.id.toLowerCase()}`;
+  return {
+    href,
+    id: card.id,
+    title: card.name,
+    entity: {
+      id: card.id,
+      nameEn: card.nameEn,
+      nameKo: card.name,
+      imageUrl: card.imageUrl,
+      href,
+      color: card.color,
+      type: "card",
+      cardData: card,
+    },
+  };
+}
+
+function relicToReferenceTarget(relic: CodexRelic): CodexReferenceTarget {
+  const href = `/compendium/relics/${relic.id.toLowerCase()}`;
+  return {
+    href,
+    id: relic.id,
+    title: relic.name,
+    entity: {
+      id: relic.id,
+      nameEn: relic.nameEn,
+      nameKo: relic.name,
+      imageUrl: relic.imageUrl,
+      href,
+      color: relic.pool,
+      type: "relic",
+      relicData: relic,
+    },
+  };
+}
+
+function potionToReferenceTarget(potion: CodexPotion): CodexReferenceTarget {
+  const href = `/compendium/potions/${potion.id.toLowerCase()}`;
+  return {
+    href,
+    id: potion.id,
+    title: potion.name,
+    entity: {
+      id: potion.id,
+      nameEn: potion.nameEn,
+      nameKo: potion.name,
+      imageUrl: potion.imageUrl,
+      href,
+      color: potion.rarity,
+      type: "potion",
+      potionData: potion,
+    },
+  };
 }
 
 function eventToReferenceTarget(event: CodexEvent): CodexReferenceTarget {

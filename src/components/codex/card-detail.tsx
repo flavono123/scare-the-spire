@@ -42,6 +42,7 @@ import {
   TINKER_TIME_EVENT_ID,
   TINKER_TIME_EVENT_NAME_KO,
   TINKER_TIME_EVENT_PATH,
+  getRelatedEnchantmentIdsForCard,
   getRelatedEventIdsForCard,
   getRelatedPowerIdsForCard,
 } from "@/lib/codex-references";
@@ -302,6 +303,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     .map((powerId) => powerById.get(powerId))
     .filter((power): power is CodexPower => Boolean(power))
     .map(powerToReferenceTarget);
+  const enchantmentById = new Map(enchantments.map((enchantment) => [enchantment.id, enchantment]));
+  const relatedEnchantmentTargets = getRelatedEnchantmentIdsForCard(card.id)
+    .map((enchantmentId) => enchantmentById.get(enchantmentId))
+    .filter((enchantment): enchantment is CodexEnchantment => Boolean(enchantment))
+    .map(enchantmentToReferenceTarget);
 
   // 활성 인챈트 효과: amount 치환, 추가/제거 키워드, forced cost, stat modifier
   const activeShowAmount = activeEnchant ? shouldShowAmount(activeEnchant) : false;
@@ -899,6 +905,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           <EntityReferenceGroupLinks
             groups={[
               { kind: "event", targets: relatedEventTargets },
+              { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "power", targets: relatedPowerTargets },
             ]}
             serviceLocale={serviceLocale}
@@ -948,6 +955,25 @@ function powerToReferenceTarget(power: CodexPower): CodexReferenceTarget {
       color: power.type,
       type: "power",
       powerData: power,
+    },
+  };
+}
+
+function enchantmentToReferenceTarget(enchantment: CodexEnchantment): CodexReferenceTarget {
+  const href = `/compendium/enchantments/${enchantment.id.toLowerCase()}`;
+  return {
+    href,
+    id: enchantment.id,
+    title: enchantment.name,
+    entity: {
+      id: enchantment.id,
+      nameEn: enchantment.nameEn,
+      nameKo: enchantment.name,
+      imageUrl: enchantment.imageUrl,
+      href,
+      color: enchantment.cardType ?? "Any",
+      type: "enchantment",
+      enchantmentData: enchantment,
     },
   };
 }

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexEnchantments, getCodexEvents, getCodexRelics } from "@/lib/codex-data";
+import { getCodexCards, getCodexEnchantments, getCodexEvents, getCodexPotions, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs } from "@/lib/data";
 import {
@@ -44,9 +44,11 @@ export default async function EnchantmentDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [enchantments, events, relics, entities, patches, changes, versionDiffs] = await Promise.all([
+  const [enchantments, cards, events, potions, relics, entities, patches, changes, versionDiffs] = await Promise.all([
     getCodexEnchantments({ gameLocale }),
+    getCodexCards({ gameLocale }),
     getCodexEvents({ gameLocale }),
+    getCodexPotions({ gameLocale }),
     getCodexRelics({ gameLocale }),
     loadAllEntities({ gameLocale }),
     getSTS2Patches(),
@@ -64,7 +66,9 @@ export default async function EnchantmentDetailPage({
         backToListTitle={serviceText.enchantmentsView.title}
         enchantment={ench}
         entities={entities}
+        cards={cards}
         events={events}
+        potions={potions}
         relics={relics}
         patches={patches}
         changes={changes}

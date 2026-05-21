@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexCharacters, getCodexEvents, getCodexPotions } from "@/lib/codex-data";
+import { getCodexCharacters, getCodexEnchantments, getCodexEvents, getCodexPotions } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs } from "@/lib/data";
 import {
@@ -48,9 +48,10 @@ export default async function PotionDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [potions, characters, patches, changes, versionDiffs, gameUi, events, entities] = await Promise.all([
+  const [potions, characters, enchantments, patches, changes, versionDiffs, gameUi, events, entities] = await Promise.all([
     getCodexPotions({ gameLocale }),
     getCodexCharacters({ gameLocale }),
+    getCodexEnchantments({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
     getEntityVersionDiffs(),
@@ -76,7 +77,7 @@ export default async function PotionDetailPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.potionLabTitle} potion={potion} poolLabels={poolLabels} relatedEvents={events} patches={patches} changes={changes} versionDiffs={versionDiffs} entities={entities} />
+      <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.potionLabTitle} potion={potion} poolLabels={poolLabels} relatedEnchantments={enchantments} relatedEvents={events} patches={patches} changes={changes} versionDiffs={versionDiffs} entities={entities} />
     </div>
   );
 }
