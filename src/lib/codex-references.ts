@@ -439,6 +439,14 @@ export function getRelatedPowerIdsForCard(card: Pick<CodexCard, "appliedPowerIds
   return card.appliedPowerIds;
 }
 
+export function getRelatedPowerIdsForRelic(relic: Pick<CodexRelic, "vars">): string[] {
+  return getPowerIdsFromVars(relic.vars);
+}
+
+export function getRelatedPowerIdsForPotion(potion: Pick<CodexPotion, "vars">): string[] {
+  return getPowerIdsFromVars(potion.vars);
+}
+
 export function getRelatedCardIdsForPower(
   cards: readonly Pick<CodexCard, "id" | "appliedPowerIds">[],
   powerId: string,
@@ -447,6 +455,26 @@ export function getRelatedCardIdsForPower(
   return cards
     .filter((card) => card.appliedPowerIds.some((id) => id.toUpperCase() === normalizedPowerId))
     .map((card) => card.id);
+}
+
+export function getRelatedRelicIdsForPower(
+  relics: readonly Pick<CodexRelic, "id" | "vars">[],
+  powerId: string,
+): readonly string[] {
+  const normalizedPowerId = powerId.toUpperCase();
+  return relics
+    .filter((relic) => getRelatedPowerIdsForRelic(relic).some((id) => id.toUpperCase() === normalizedPowerId))
+    .map((relic) => relic.id);
+}
+
+export function getRelatedPotionIdsForPower(
+  potions: readonly Pick<CodexPotion, "id" | "vars">[],
+  powerId: string,
+): readonly string[] {
+  const normalizedPowerId = powerId.toUpperCase();
+  return potions
+    .filter((potion) => getRelatedPowerIdsForPotion(potion).some((id) => id.toUpperCase() === normalizedPowerId))
+    .map((potion) => potion.id);
 }
 
 export function getRelatedEncounterIdsForMonster(
@@ -495,4 +523,19 @@ function dedupeIds(ids: readonly string[]): string[] {
     seen.add(normalizedId);
     return true;
   });
+}
+
+function getPowerIdsFromVars(vars: Record<string, unknown> | null | undefined): string[] {
+  if (!vars) return [];
+  return dedupeIds(Object.keys(vars).flatMap((key) => {
+    const powerId = powerVarKeyToId(key);
+    return powerId ? [powerId] : [];
+  }));
+}
+
+function powerVarKeyToId(key: string): string | null {
+  if (!key.endsWith("Power")) return null;
+  const base = key.slice(0, -"Power".length);
+  if (!base) return null;
+  return base.replace(/([a-z0-9])([A-Z])/g, "$1_$2").toUpperCase();
 }
