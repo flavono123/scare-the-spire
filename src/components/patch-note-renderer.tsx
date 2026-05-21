@@ -9,7 +9,7 @@ import {
   EFFECT_CLASSES,
 } from "@/components/rich-text";
 import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent, CodexMonster, CodexEncounter, CodexAncient } from "@/lib/codex-types";
-import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, POWER_TYPE_CONFIG, ENCHANTMENT_CARD_TYPE_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool, type EnchantmentCardTypeFilter } from "@/lib/codex-types";
+import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, POWER_TYPE_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   localizeHrefWithGameLocale,
@@ -405,16 +405,6 @@ export function EntityPreview({
             title={entity.nameKo}
             imageUrl={entity.enchantmentData.imageUrl}
             imageAlt={entity.nameKo}
-            meta={(
-              <>
-                <span style={{ color: ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].color }}>
-                  {ENCHANTMENT_CARD_TYPE_CONFIG[(entity.enchantmentData.cardType ?? "Any") as EnchantmentCardTypeFilter].label}
-                </span>
-                {entity.enchantmentData.isStackable && (
-                  <span className="text-amber-400">중첩</span>
-                )}
-              </>
-            )}
           >
             <DescriptionText description={entity.enchantmentData.description} />
           </GameResourcePreview>,
