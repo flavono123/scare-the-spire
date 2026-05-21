@@ -275,12 +275,6 @@ export function MonsterLibrary({
     });
   }, []);
 
-  // Find encounters for a monster
-  const getMonsterEncounters = useCallback(
-    (monsterId: string) => encounters.filter((e) => e.monsters.some((m) => m.id === monsterId)),
-    [encounters],
-  );
-
   return (
     <CodexLibraryShell
       sidebarOpen={sidebarOpen}
@@ -429,7 +423,7 @@ export function MonsterLibrary({
               gameUi={gameUi}
               backToListTitle={title}
               monster={selectedMonster}
-              encounters={getMonsterEncounters(selectedMonster.id)}
+              encounters={encounters}
               patches={patches}
               changes={changes}
               onClose={() => setSelectedMonster(null)}

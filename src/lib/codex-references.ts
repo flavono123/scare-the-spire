@@ -1,4 +1,11 @@
-import type { CardRarityKo, CardTypeKo, CodexAncient, CodexPotion, PotionRarityKo } from "./codex-types";
+import type {
+  CardRarityKo,
+  CardTypeKo,
+  CodexAncient,
+  CodexEncounter,
+  CodexPotion,
+  PotionRarityKo,
+} from "./codex-types";
 
 export const FUTURE_OF_POTIONS_EVENT_ID = "THE_FUTURE_OF_POTIONS";
 export const FUTURE_OF_POTIONS_EVENT_NAME_KO = "포션의 미래?";
@@ -343,6 +350,34 @@ export function getRelatedAncientIdsForRelic(
   return ancients
     .filter((ancient) => ancient.relicIds.some((id) => id.toUpperCase() === normalizedRelicId))
     .map((ancient) => ancient.id);
+}
+
+export function getRelatedEncounterIdsForMonster(
+  monsterId: string,
+  encounters: readonly Pick<CodexEncounter, "id" | "monsters">[],
+): string[] {
+  const normalizedMonsterId = monsterId.toUpperCase();
+  return encounters
+    .filter((encounter) =>
+      encounter.monsters.some((monster) => monster.id.toUpperCase() === normalizedMonsterId),
+    )
+    .map((encounter) => encounter.id);
+}
+
+export function getRelatedMonsterIdsForEncounter(
+  encounter: Pick<CodexEncounter, "monsters">,
+): string[] {
+  const seen = new Set<string>();
+  const monsterIds: string[] = [];
+
+  for (const monster of encounter.monsters) {
+    const normalizedMonsterId = monster.id.toUpperCase();
+    if (seen.has(normalizedMonsterId)) continue;
+    seen.add(normalizedMonsterId);
+    monsterIds.push(monster.id);
+  }
+
+  return monsterIds;
 }
 
 function invertEventRelations(

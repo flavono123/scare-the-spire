@@ -30,6 +30,7 @@ import {
 import {
   MONSTER_TYPE_CONFIG,
 } from "@/lib/codex-types";
+import { getRelatedEncounterIdsForMonster } from "@/lib/codex-references";
 import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import { STS2ChangeHistory } from "./sts2-change-history";
@@ -184,8 +185,11 @@ export function MonsterDetail({
   const damageEntries = Object.entries(monster.damageValues ?? {});
   const blockEntries = Object.entries(monster.blockValues ?? {});
   const hasNumericDetails = damageEntries.length > 0 || blockEntries.length > 0;
-  const relatedEncounterTargets: CodexReferenceTarget[] = encounters.map((encounter) => {
-    const href = `/compendium/bestiary?view=encounters&encounter=${encounter.id.toLowerCase()}`;
+  const encounterById = useMemo(() => new Map(encounters.map((encounter) => [encounter.id, encounter])), [encounters]);
+  const relatedEncounterTargets: CodexReferenceTarget[] = getRelatedEncounterIdsForMonster(monster.id, encounters).flatMap((encounterId) => {
+    const encounter = encounterById.get(encounterId);
+    if (!encounter) return [];
+    const href = `/compendium/encounters/${encounter.id.toLowerCase()}`;
     return {
       id: encounter.id,
       href,

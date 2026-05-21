@@ -17,6 +17,7 @@ import {
   ENCOUNTER_ROOM_TYPE_CONFIG,
   MONSTER_TYPE_CONFIG,
 } from "@/lib/codex-types";
+import { getRelatedMonsterIdsForEncounter } from "@/lib/codex-references";
 import { DescriptionText } from "./codex-description";
 import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
@@ -102,9 +103,11 @@ export function EncounterDetail({
     [encounter.monsters],
   );
   const [commentCount, setCommentCount] = useState(0);
-  const relatedMonsterTargets: CodexReferenceTarget[] = uniqueMonsters.map((monsterRef) => {
+  const relatedMonsterTargets: CodexReferenceTarget[] = getRelatedMonsterIdsForEncounter(encounter).flatMap((monsterId) => {
+    const monsterRef = uniqueMonsters.find((candidate) => candidate.id === monsterId);
+    if (!monsterRef) return [];
     const monster = monsterById.get(monsterRef.id);
-    const href = `/compendium/bestiary?monster=${monsterRef.id.toLowerCase()}`;
+    const href = `/compendium/monsters/${monsterRef.id.toLowerCase()}`;
     return {
       id: monsterRef.id,
       href,

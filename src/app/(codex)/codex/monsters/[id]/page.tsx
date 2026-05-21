@@ -56,10 +56,6 @@ export default async function MonsterDetailPage({
   const monster = monsters.find((m) => m.id.toLowerCase() === id.toLowerCase());
   if (!monster) notFound();
 
-  const monsterEncounters = encounters.filter((e) =>
-    e.monsters.some((m) => m.id === monster.id),
-  );
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <MonsterDetail
@@ -67,7 +63,7 @@ export default async function MonsterDetailPage({
         gameUi={gameUi}
         backToListTitle={gameUi.bestiaryTitle}
         monster={monster}
-        encounters={monsterEncounters}
+        encounters={encounters}
         patches={patches}
         changes={changes}
       />
