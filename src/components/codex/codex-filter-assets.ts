@@ -8,6 +8,8 @@ export const CHARACTER_TOKEN_ICONS: Record<string, string> = {
 
 export const COLORLESS_FILTER_ICON = "/images/sts2/icons/colorless_energy_icon.webp";
 export const EVENT_FILTER_ICON = "/images/game-assets/card-library/filter_event.webp";
+export const TOKEN_FILTER_ICON = "/images/game-assets/card-library/pool_filter_other.webp";
+export const QUEST_FILTER_ICON = "/images/sts2/ui/topbar/top_bar_map.png";
 
 export function getCharacterTokenIcon(characterId: string, fallback: string): string {
   return CHARACTER_TOKEN_ICONS[characterId.toLowerCase()] ?? fallback;

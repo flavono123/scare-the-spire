@@ -94,9 +94,13 @@ function cardMatchesFilterCategory(card: CodexCard, category: CardFilterCategory
     case "ancient":
       return card.rarity === "고대의 존재";
     case "colorless":
-      return card.color === "colorless" || card.color === "token";
+      return card.color === "colorless";
+    case "token":
+      return card.color === "token" || card.rarity === "토큰";
     case "event":
-      return card.rarity === "이벤트" || card.rarity === "퀘스트" || card.type === "퀘스트" || card.color === "quest";
+      return card.rarity === "이벤트";
+    case "quest":
+      return card.rarity === "퀘스트" || card.type === "퀘스트" || card.color === "quest";
     case "curse":
       return card.color === "curse" || card.rarity === "저주" || card.type === "저주";
     case "status":
@@ -129,13 +133,17 @@ import {
 import {
   COLORLESS_FILTER_ICON,
   EVENT_FILTER_ICON,
+  QUEST_FILTER_ICON,
+  TOKEN_FILTER_ICON,
   getCharacterTokenIcon,
 } from "./codex-filter-assets";
 
 // Filter icon paths for non-character categories
 const CATEGORY_ICONS: Record<string, string> = {
   colorless: COLORLESS_FILTER_ICON,
+  token: TOKEN_FILTER_ICON,
   event: EVENT_FILTER_ICON,
+  quest: QUEST_FILTER_ICON,
   curse: "/images/game-assets/card-library/filter_curse.webp",
   status: "/images/game-assets/card-library/filter_status.webp",
   ancient: "/images/sts2/ancients/neow.webp",
@@ -197,8 +205,6 @@ interface CardLibraryProps {
 
 export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedEvents = [] }: CardLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const colorlessTokenFilterLabel = `${serviceText.labels.pools.colorless}/${gameUi.cardLibrary.rarities.토큰}`;
-  const eventQuestFilterLabel = `${gameUi.cardLibrary.rarities.이벤트}/${gameUi.cardLibrary.rarities.퀘스트}`;
   const searchParams = useSearchParams();
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
   const [selectedColors, setSelectedColors] = useState<Set<CardFilterCategory>>(
@@ -263,8 +269,10 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           { value: "defect", label: serviceText.labels.pools.defect, desc: "Defect" },
           { value: "necrobinder", label: serviceText.labels.pools.necrobinder, desc: "Necrobinder" },
           { value: "regent", label: serviceText.labels.pools.regent, desc: "Regent" },
-          { value: "colorless", label: colorlessTokenFilterLabel, desc: "Colorless / Token" },
-          { value: "event", label: eventQuestFilterLabel, desc: "Event / Quest" },
+          { value: "colorless", label: serviceText.labels.pools.colorless, desc: "Colorless" },
+          { value: "token", label: gameUi.cardLibrary.rarities.토큰, desc: "Token" },
+          { value: "event", label: gameUi.cardLibrary.rarities.이벤트, desc: "Event" },
+          { value: "quest", label: gameUi.cardLibrary.rarities.퀘스트, desc: "Quest" },
           { value: "curse", label: serviceText.labels.pools.curse, desc: "Curse" },
           { value: "status", label: serviceText.labels.pools.status, desc: "Status" },
           { value: "ancient", label: serviceText.labels.pools.ancient, desc: "Ancient" },
@@ -324,7 +332,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
         chipColor: "bg-purple-500/20 text-purple-400",
       },
     ],
-    [colorlessTokenFilterLabel, eventQuestFilterLabel, gameUi, serviceText],
+    [gameUi, serviceText],
   );
 
   // Parse search query (uses debounced value)
@@ -612,8 +620,10 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   }));
 
   const extraFilters = [
-    { key: "colorless" as const, label: colorlessTokenFilterLabel, icon: CATEGORY_ICONS.colorless },
-    { key: "event" as const, label: eventQuestFilterLabel, icon: CATEGORY_ICONS.event },
+    { key: "colorless" as const, label: serviceText.labels.pools.colorless, icon: CATEGORY_ICONS.colorless },
+    { key: "token" as const, label: gameUi.cardLibrary.rarities.토큰, icon: CATEGORY_ICONS.token },
+    { key: "event" as const, label: gameUi.cardLibrary.rarities.이벤트, icon: CATEGORY_ICONS.event },
+    { key: "quest" as const, label: gameUi.cardLibrary.rarities.퀘스트, icon: CATEGORY_ICONS.quest },
     { key: "curse" as const, label: gameUi.cardLibrary.rarities.저주, icon: CATEGORY_ICONS.curse },
     { key: "status" as const, label: gameUi.cardLibrary.rarities.상태이상, icon: CATEGORY_ICONS.status },
     { key: "ancient" as const, label: gameUi.cardLibrary.rarities["고대의 존재"], icon: CATEGORY_ICONS.ancient },

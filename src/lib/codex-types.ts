@@ -78,7 +78,9 @@ export type CardFilterCategory =
   | "necrobinder"
   | "regent"
   | "colorless"
+  | "token"
   | "event"
+  | "quest"
   | "curse"
   | "status"
   | "ancient";
@@ -90,8 +92,10 @@ export const COLOR_LABELS: Record<CardFilterCategory, string> = {
   defect: "디펙트",
   necrobinder: "네크로바인더",
   regent: "리젠트",
-  colorless: "무색/토큰",
-  event: "이벤트/퀘스트",
+  colorless: "무색",
+  token: "토큰",
+  event: "이벤트",
+  quest: "퀘스트",
   curse: "저주",
   status: "상태이상",
   ancient: "고대의 존재",
@@ -115,15 +119,13 @@ export const COLOR_ALIASES: Record<string, CardFilterCategory> = {
   리젠트: "regent",
   regent: "regent",
   무색: "colorless",
-  "무색/토큰": "colorless",
   colorless: "colorless",
-  토큰: "colorless",
-  token: "colorless",
+  토큰: "token",
+  token: "token",
   이벤트: "event",
-  "이벤트/퀘스트": "event",
   event: "event",
-  퀘스트: "event",
-  quest: "event",
+  퀘스트: "quest",
+  quest: "quest",
   저주: "curse",
   curse: "curse",
   상태이상: "status",
