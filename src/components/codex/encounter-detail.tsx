@@ -19,7 +19,6 @@ import {
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
-import { GameHoverTip } from "./hover-tip";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 const BESTIARY_ACT_COLOR = "#60a5fa";
@@ -196,11 +195,17 @@ export function EncounterDetail({
             })}
           </div>
 
-          <GameHoverTip
-            title={encounter.name}
-            className="w-full max-w-[23rem]"
-            style={{ minWidth: 220, width: "max-content", maxWidth: "100%" }}
-          />
+          <div className="text-center">
+            <h1
+              className="font-game-title break-keep text-3xl font-bold leading-tight text-gray-100 sm:text-4xl"
+              style={{ color: roomConfig.color }}
+            >
+              {encounter.name}
+            </h1>
+            {encounter.nameEn !== encounter.name && (
+              <p className="mt-1 font-game-text text-sm text-gray-500">{encounter.nameEn}</p>
+            )}
+          </div>
         </section>
 
         <aside className="flex flex-col gap-3">
