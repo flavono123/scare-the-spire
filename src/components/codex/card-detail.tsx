@@ -323,7 +323,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     .filter((power): power is CodexPower => Boolean(power))
     .map(powerToReferenceTarget);
   const potionById = new Map(relatedPotions.map((potion) => [potion.id, potion]));
-  const relatedPotionTargets = getRelatedPotionIdsForCard(card.id)
+  const relatedPotionTargets = getRelatedPotionIdsForCard(card)
     .map((potionId) => potionById.get(potionId))
     .filter((potion): potion is CodexPotion => Boolean(potion))
     .map(potionToReferenceTarget);

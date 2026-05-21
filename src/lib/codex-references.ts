@@ -427,11 +427,21 @@ export function getRelatedEnchantmentIdsForPotion(potionId: string): readonly st
   return (POTION_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[potionId] ?? [];
 }
 
-export function getRelatedCardIdsForPotion(potionId: string): readonly string[] {
-  return (POTION_RELATED_CARD_IDS as Record<string, readonly string[]>)[potionId] ?? [];
+type PotionCardRelationTarget = Pick<CodexCard, "id" | "tags">;
+
+export function getRelatedCardIdsForPotion(
+  potionId: string,
+  cards?: readonly PotionCardRelationTarget[],
+): readonly string[] {
+  return dedupeIds([
+    ...((POTION_RELATED_CARD_IDS as Record<string, readonly string[]>)[potionId] ?? []),
+    ...(sameId(potionId, "SOLDIERS_STEW")
+      ? (cards ?? []).filter(cardHasStrikeTag).map((card) => card.id)
+      : []),
+  ]);
 }
 
-function getCuratedPowerIdsForPotion(potionId: string): readonly string[] {
+function getCodePowerIdsForPotion(potionId: string): readonly string[] {
   return (POTION_RELATED_POWER_IDS as Record<string, readonly string[]>)[potionId] ?? [];
 }
 
@@ -459,11 +469,15 @@ export function getRelatedPotionIdsForEnchantment(enchantmentId: string): readon
   return invertEventRelations(POTION_RELATED_ENCHANTMENT_IDS, enchantmentId);
 }
 
-export function getRelatedPotionIdsForCard(cardId: string): readonly string[] {
-  return invertEventRelations(POTION_RELATED_CARD_IDS, cardId);
+export function getRelatedPotionIdsForCard(cardOrId: string | PotionCardRelationTarget): readonly string[] {
+  const cardId = typeof cardOrId === "string" ? cardOrId : cardOrId.id;
+  return dedupeIds([
+    ...invertEventRelations(POTION_RELATED_CARD_IDS, cardId),
+    ...(typeof cardOrId !== "string" && cardHasStrikeTag(cardOrId) ? ["SOLDIERS_STEW"] : []),
+  ]);
 }
 
-function getCuratedPotionIdsForPower(powerId: string): readonly string[] {
+function getCodePotionIdsForPower(powerId: string): readonly string[] {
   return invertEventRelations(POTION_RELATED_POWER_IDS, powerId);
 }
 
@@ -652,14 +666,12 @@ export function getRelatedPowerIdsForRelic(
 }
 
 export function getRelatedPowerIdsForPotion(
-  potionOrId: string | Pick<CodexPotion, "id" | "descriptionRaw" | "vars">,
+  potionOrId: string | Pick<CodexPotion, "id">,
   powers?: PowerReferenceIndex,
 ): readonly string[] {
-  if (typeof potionOrId === "string") return getCuratedPowerIdsForPotion(potionOrId);
-  return dedupeIds([
-    ...getCuratedPowerIdsForPotion(potionOrId.id),
-    ...getRelatedPowerIdsFromSource(potionOrId, powers),
-  ]);
+  void powers;
+  const potionId = typeof potionOrId === "string" ? potionOrId : potionOrId.id;
+  return getCodePowerIdsForPotion(potionId);
 }
 
 export function getRelatedPowerIdsForEnchantment(
@@ -699,7 +711,7 @@ export function getRelatedPotionIdsForPower(
   potionsOrPowerId: string | readonly Pick<CodexPotion, "id" | "descriptionRaw" | "vars">[],
   powerId?: string,
 ): readonly string[] {
-  if (typeof potionsOrPowerId === "string") return getCuratedPotionIdsForPower(potionsOrPowerId);
+  if (typeof potionsOrPowerId === "string") return getCodePotionIdsForPower(potionsOrPowerId);
   const normalizedPowerId = (powerId ?? "").toUpperCase();
   return potionsOrPowerId
     .filter((potion) =>
@@ -883,6 +895,10 @@ function dedupeIds(ids: readonly string[]): string[] {
 
 function sameId(left: string, right: string): boolean {
   return left.toUpperCase() === right.toUpperCase();
+}
+
+function cardHasStrikeTag(card: Pick<CodexCard, "tags">): boolean {
+  return card.tags?.some((tag) => tag.toUpperCase() === "STRIKE") ?? false;
 }
 
 function cardRelatesToOsty(card: Pick<CodexCard, "tags" | "vars">): boolean {

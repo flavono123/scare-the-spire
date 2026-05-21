@@ -122,7 +122,7 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
     : undefined;
   const futurePotionChoices = getFuturePotionChoicesForPotion(potion);
   const cardById = new Map(relatedCards.map((card) => [card.id, card]));
-  const relatedCardTargets = getRelatedCardIdsForPotion(potion.id)
+  const relatedCardTargets = getRelatedCardIdsForPotion(potion.id, relatedCards)
     .map((cardId) => cardById.get(cardId))
     .filter((card): card is CodexCard => Boolean(card))
     .map(cardToReferenceTarget);
