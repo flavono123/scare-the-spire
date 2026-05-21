@@ -307,8 +307,18 @@ export function EnchantmentLibrary({ serviceLocale, enchantments, versions, curr
             if (e.target === e.currentTarget) setSelectedEnchantment(null);
           }}
         >
-          <div className="w-full max-w-lg my-8 mx-4 bg-[#1a1a2e] rounded-xl border border-white/10 shadow-2xl">
-            <EnchantmentDetail serviceLocale={serviceLocale} enchantment={selectedEnchantment} onClose={() => setSelectedEnchantment(null)} entities={entities} relics={relics} patches={patches} changes={changes} versionDiffs={versionDiffs} />
+          <div className="my-8 mx-4 w-full max-w-6xl">
+            <EnchantmentDetail
+              serviceLocale={serviceLocale}
+              backToListTitle={serviceText.enchantmentsView.title}
+              enchantment={selectedEnchantment}
+              onClose={() => setSelectedEnchantment(null)}
+              entities={entities}
+              relics={relics}
+              patches={patches}
+              changes={changes}
+              versionDiffs={versionDiffs}
+            />
           </div>
         </div>
       )}

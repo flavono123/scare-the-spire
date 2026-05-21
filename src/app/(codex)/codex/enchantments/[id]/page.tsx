@@ -54,10 +54,20 @@ export default async function EnchantmentDetailPage({
   ]);
   const ench = enchantments.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!ench) notFound();
+  const serviceText = getCodexServiceMessages(serviceLocale);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <EnchantmentDetail serviceLocale={serviceLocale} enchantment={ench} entities={entities} relics={relics} patches={patches} changes={changes} versionDiffs={versionDiffs} />
+      <EnchantmentDetail
+        serviceLocale={serviceLocale}
+        backToListTitle={serviceText.enchantmentsView.title}
+        enchantment={ench}
+        entities={entities}
+        relics={relics}
+        patches={patches}
+        changes={changes}
+        versionDiffs={versionDiffs}
+      />
     </div>
   );
 }

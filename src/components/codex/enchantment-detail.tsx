@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -17,23 +17,48 @@ import {
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
+import { EntityReferenceLinks } from "./entity-reference-links";
+import { GameHoverTip } from "./hover-tip";
 import { RichDescription } from "./rich-description";
-import { RelicTile } from "./relic-tile";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
-function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
+function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
-    <div className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-      <span className="text-[10px] text-gray-500 uppercase tracking-wider">{label}</span>
-      <span className="text-sm font-bold" style={color ? { color } : undefined}>
-        {value}
-      </span>
-    </div>
+    <span
+      className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold"
+      style={color ? { color } : undefined}
+    >
+      {value}
+    </span>
+  );
+}
+
+function InfoRailSection({
+  title,
+  children,
+  defaultOpen = true,
+}: {
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}) {
+  return (
+    <details
+      className="group rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+      open={defaultOpen}
+    >
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
+        <span>{title}</span>
+        <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">⌄</span>
+      </summary>
+      <div className="mt-3">{children}</div>
+    </details>
   );
 }
 
 interface EnchantmentDetailProps {
   serviceLocale: ServiceLocale;
+  backToListTitle: string;
   enchantment: CodexEnchantment;
   onClose?: () => void;
   /** Cross-reference entities — when provided, descriptions become rich. */
@@ -60,20 +85,35 @@ function relicMentionsEnchantment(relic: CodexRelic, ench: CodexEnchantment): bo
 function getEnchantmentDetailLabels(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
     ? {
+        englishName: "영어명",
+        cardText: "카드 텍스트",
         patchHistory: "패치 이력",
         noPatchHistory: "구조화 변경 없음",
       }
     : {
+        englishName: "English name",
+        cardText: "Card text",
         patchHistory: "Patch History",
         noPatchHistory: "No structured changes",
       };
 }
 
-export function EnchantmentDetail({ serviceLocale, enchantment, onClose, entities, relics, patches, changes, versionDiffs }: EnchantmentDetailProps) {
+export function EnchantmentDetail({
+  serviceLocale,
+  backToListTitle,
+  enchantment,
+  onClose,
+  entities,
+  relics,
+  patches,
+  changes,
+  versionDiffs,
+}: EnchantmentDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getEnchantmentDetailLabels(serviceLocale);
   const cardTypeFilter: EnchantmentCardTypeFilter = enchantment.cardType ?? "Any";
   const cardTypeConfig = ENCHANTMENT_CARD_TYPE_CONFIG[cardTypeFilter];
+  const [commentCount, setCommentCount] = useState(0);
 
   const grantingRelics = useMemo(() => {
     if (!relics) return [];
@@ -82,18 +122,36 @@ export function EnchantmentDetail({ serviceLocale, enchantment, onClose, entitie
       .sort((a, b) => a.name.localeCompare(b.name, "ko"));
   }, [relics, enchantment]);
 
+  const grantingRelicTargets = grantingRelics.map((relic) => {
+    const href = `/compendium/relics?relic=${relic.id.toLowerCase()}`;
+    return {
+      id: relic.id,
+      href,
+      title: relic.name,
+      entity: {
+        id: relic.id,
+        nameEn: relic.nameEn,
+        nameKo: relic.name,
+        imageUrl: relic.imageUrl,
+        href,
+        color: relic.pool,
+        type: "relic" as const,
+        relicData: relic,
+      },
+    };
+  });
+
   const excludeSelf = useMemo(
     () => new Set([enchantment.name, enchantment.nameEn]),
     [enchantment.name, enchantment.nameEn],
   );
 
   return (
-    <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-lg mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between w-full">
+    <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <Link
           href={localizeHref("/compendium/enchantments", serviceLocale)}
-          className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+          className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(e) => {
             if (onClose) {
               e.preventDefault();
@@ -101,12 +159,12 @@ export function EnchantmentDetail({ serviceLocale, enchantment, onClose, entitie
             }
           }}
         >
-          ← {serviceText.enchantmentsView.backToList}
+          ← {backToListTitle}
         </Link>
         {onClose && (
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white/10"
             aria-label={serviceText.common.close}
           >
             ✕
@@ -114,118 +172,106 @@ export function EnchantmentDetail({ serviceLocale, enchantment, onClose, entitie
         )}
       </div>
 
-      {/* Large Enchantment Image */}
-      <div className="w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center">
-        {enchantment.imageUrl ? (
-          <Image
-            src={enchantment.imageUrl}
-            alt={enchantment.name}
-            width={144}
-            height={144}
-            className="w-full h-full object-contain drop-shadow-lg"
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
+        <section className="flex min-h-[22rem] flex-col items-center justify-center gap-5 py-4">
+          <div className="flex w-full flex-col items-center justify-center gap-5 md:flex-row md:items-center">
+            <div className="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
+              {enchantment.imageUrl ? (
+                <Image
+                  src={enchantment.imageUrl}
+                  alt={enchantment.name}
+                  width={160}
+                  height={160}
+                  className="h-full w-full object-contain drop-shadow-lg"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-2xl text-gray-600">
+                  ?
+                </div>
+              )}
+            </div>
+
+            <GameHoverTip
+              title={enchantment.name}
+              className="w-full max-w-[23rem]"
+              style={{ minWidth: 280 }}
+            >
+              {entities ? (
+                <RichDescription
+                  description={enchantment.description}
+                  entities={entities}
+                  excludeEntityTerms={excludeSelf}
+                  className="block text-left"
+                />
+              ) : (
+                <DescriptionText description={enchantment.description} className="block text-left" />
+              )}
+            </GameHoverTip>
+          </div>
+        </section>
+
+        <aside className="flex flex-col gap-3">
+          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+            <div className="space-y-3">
+              <div className="flex flex-wrap gap-2">
+                <MetaPill
+                  value={serviceText.labels.enchantmentCardTypes[cardTypeFilter].label}
+                  color={cardTypeConfig.color}
+                />
+                {enchantment.isStackable && (
+                  <MetaPill value={serviceText.enchantmentsView.stackable} color="#f59e0b" />
+                )}
+              </div>
+              {enchantment.nameEn !== enchantment.name && (
+                <div>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
+                  <div className="font-game-text text-sm text-gray-300">{enchantment.nameEn}</div>
+                </div>
+              )}
+              {enchantment.extraCardText && (
+                <div>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.cardText}</div>
+                  <div className="font-game-text text-sm leading-relaxed text-gray-300">
+                    {entities ? (
+                      <RichDescription
+                        description={enchantment.extraCardText}
+                        entities={entities}
+                        excludeEntityTerms={excludeSelf}
+                      />
+                    ) : (
+                      <DescriptionText description={enchantment.extraCardText} />
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+
+          <EntityReferenceLinks
+            kind="relic"
+            serviceLocale={serviceLocale}
+            targets={grantingRelicTargets}
           />
-        ) : (
-          <div className="w-full h-full rounded-lg bg-white/5 flex items-center justify-center text-gray-600 text-2xl">
-            ?
-          </div>
-        )}
-      </div>
 
-      {/* Enchantment Name */}
-      <div className="text-center">
-        <h1 className="font-game-title text-2xl font-bold text-gray-100">{enchantment.name}</h1>
-        <p className="font-game-text text-sm text-gray-500">{enchantment.nameEn}</p>
-      </div>
-
-      {/* Stats Row */}
-      <div className="flex flex-wrap justify-center gap-2">
-        <StatBadge
-          label={serviceText.enchantmentsView.cardTypeFilter}
-          value={serviceText.labels.enchantmentCardTypes[cardTypeFilter].label}
-          color={cardTypeConfig.color}
-        />
-        {enchantment.isStackable && (
-          <StatBadge label={serviceText.enchantmentsView.stackable} value={serviceText.enchantmentsView.possible} color="#f59e0b" />
-        )}
-      </div>
-
-      {/* Description */}
-      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <div className="text-sm text-gray-200 leading-relaxed">
-          {entities ? (
-            <RichDescription
-              description={enchantment.description}
-              entities={entities}
-              excludeEntityTerms={excludeSelf}
+          <InfoRailSection title={detailLabels.patchHistory}>
+            <STS2ChangeHistory
+              serviceLocale={serviceLocale}
+              entityType="enchantment"
+              entityId={enchantment.id}
+              changes={changes}
+              versionDiffs={versionDiffs}
+              patches={patches}
+              emptyLabel={detailLabels.noPatchHistory}
             />
-          ) : (
-            <DescriptionText description={enchantment.description} />
-          )}
-        </div>
-      </div>
+          </InfoRailSection>
 
-      {/* Extra card text */}
-      {enchantment.extraCardText && (
-        <div className="w-full rounded-lg border border-zinc-700/50 bg-zinc-800/50 px-4 py-3">
-          <span className="block text-xs font-medium text-gray-500 mb-1">
-            {serviceText.enchantmentsView.cardText}
-          </span>
-          <div className="text-sm text-zinc-300 leading-relaxed">
-            {entities ? (
-              <RichDescription
-                description={enchantment.extraCardText}
-                entities={entities}
-                excludeEntityTerms={excludeSelf}
-              />
-            ) : (
-              <DescriptionText description={enchantment.extraCardText} />
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Granting relics — relics whose effect mentions this enchantment */}
-      {grantingRelics.length > 0 && (
-        <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-          <h2 className="text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider">
-            {serviceText.enchantmentsView.grantingRelics}
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            {grantingRelics.map((r) => (
-              <Link
-                key={r.id}
-                href={`/compendium/relics?relic=${r.id.toLowerCase()}`}
-                className="block"
-                onClick={(e) => {
-                  // If we're inside the enchantment detail modal, the parent
-                  // controls navigation — let the link work as a hard nav.
-                  // Otherwise (standalone page) Link handles it.
-                  void e;
-                }}
-              >
-                <RelicTile serviceLocale={serviceLocale} relic={r} />
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="w-full rounded-lg border border-white/10 bg-black/20 p-4">
-        <h2 className="mb-3 font-game-title text-sm font-bold text-gray-300">{detailLabels.patchHistory}</h2>
-        <STS2ChangeHistory
-          serviceLocale={serviceLocale}
-          entityType="enchantment"
-          entityId={enchantment.id}
-          changes={changes}
-          versionDiffs={versionDiffs}
-          patches={patches}
-          emptyLabel={detailLabels.noPatchHistory}
-        />
-      </div>
-
-      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>
-        <CommentSection threadKey={buildCodexCommentThreadKey("enchantment", enchantment.id)} />
+          <InfoRailSection title={`${serviceText.common.comments}${commentCount > 0 ? ` (${commentCount})` : ""}`}>
+            <CommentSection
+              threadKey={buildCodexCommentThreadKey("enchantment", enchantment.id)}
+              onCountChange={setCommentCount}
+            />
+          </InfoRailSection>
+        </aside>
       </div>
     </div>
   );
