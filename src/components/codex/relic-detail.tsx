@@ -11,6 +11,7 @@ import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
+  CodexAncient,
   CodexEvent,
   CodexRelic,
   RELIC_RARITY_COLORS,
@@ -22,11 +23,11 @@ import {
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
-import { EntityReferenceLinks } from "./entity-reference-links";
+import { EntityReferenceGroupLinks } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
 import { GameCheckboxToggle } from "./game-checkbox";
 import { RichDescription } from "./rich-description";
-import { getRelatedEventIdsForRelic } from "@/lib/codex-references";
+import { getRelatedAncientIdsForRelic, getRelatedEventIdsForRelic } from "@/lib/codex-references";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
@@ -91,6 +92,7 @@ interface RelicDetailProps {
   /** Cross-reference entities — when provided, descriptions become rich. */
   entities?: EntityInfo[];
   relatedEvents?: CodexEvent[];
+  relatedAncients?: CodexAncient[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
@@ -98,7 +100,7 @@ interface RelicDetailProps {
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
-export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedEvents = [], patches, changes, versionDiffs }: RelicDetailProps) {
+export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedEvents = [], relatedAncients = [], patches, changes, versionDiffs }: RelicDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getRelicDetailLabels(serviceLocale);
   // Don't link the relic to itself in its own description
@@ -144,6 +146,26 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
         color: "event",
         type: "event" as const,
         eventData: relatedEvent ?? undefined,
+      },
+    };
+  });
+  const relatedAncientTargets = getRelatedAncientIdsForRelic(relic.id, relatedAncients).map((ancientId) => {
+    const relatedAncient = relatedAncients.find((ancient) => ancient.id === ancientId) ?? null;
+    const href = `/compendium/ancients/${ancientId.toLowerCase()}`;
+    const title = relatedAncient?.name ?? ancientId;
+    return {
+      id: ancientId,
+      href,
+      title,
+      entity: {
+        id: ancientId,
+        nameEn: relatedAncient?.nameEn ?? title,
+        nameKo: title,
+        imageUrl: relatedAncient?.imageUrl ?? null,
+        href,
+        color: relatedAncient?.act ?? "ancient",
+        type: "ancient" as const,
+        ancientData: relatedAncient ?? undefined,
       },
     };
   });
@@ -291,10 +313,12 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
             </div>
           </section>
 
-          <EntityReferenceLinks
-            kind="event"
+          <EntityReferenceGroupLinks
             serviceLocale={serviceLocale}
-            targets={relatedEventTargets}
+            groups={[
+              { kind: "event", targets: relatedEventTargets },
+              { kind: "ancient", targets: relatedAncientTargets },
+            ]}
           />
 
           <InfoRailSection title={detailLabels.patchHistory}>

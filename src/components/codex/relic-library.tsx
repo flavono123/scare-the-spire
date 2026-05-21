@@ -473,6 +473,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
               onClose={() => setSelectedRelic(null)}
               entities={entities}
               relatedEvents={relatedEvents}
+              relatedAncients={ancients}
               patches={patches}
               changes={changes}
               versionDiffs={versionDiffs}
