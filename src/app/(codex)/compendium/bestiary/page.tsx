@@ -1,11 +1,8 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import {
-  getCodexCards,
   getCodexEncounters,
   getCodexMonsters,
-  getCodexPotions,
-  getCodexRelics,
 } from "@/lib/codex-data";
 import { getSTS2Patches, getSTS2Changes } from "@/lib/data";
 import {
@@ -36,12 +33,9 @@ export default async function CompendiumBestiaryPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [monsters, encounters, cards, potions, relics, patches, changes, gameUi] = await Promise.all([
+  const [monsters, encounters, patches, changes, gameUi] = await Promise.all([
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
-    getCodexCards({ gameLocale }),
-    getCodexPotions({ gameLocale }),
-    getCodexRelics({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
     getCodexGameUiLabels(gameLocale),
@@ -54,9 +48,6 @@ export default async function CompendiumBestiaryPage({
         gameUi={gameUi}
         monsters={monsters}
         encounters={encounters}
-        cards={cards}
-        potions={potions}
-        relics={relics}
         patches={patches}
         changes={changes}
       />

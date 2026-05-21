@@ -5,11 +5,8 @@ import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { serviceMessages } from "@/messages/service";
 import type {
-  CodexCard,
   CodexEncounter,
   CodexMonster,
-  CodexPotion,
-  CodexRelic,
 } from "@/lib/codex-types";
 import type { STS2Change, STS2Patch } from "@/lib/types";
 import { MonsterLibrary } from "./monster-library";
@@ -22,9 +19,6 @@ interface BestiaryLibraryProps {
   gameUi: CodexGameUiLabels;
   monsters: CodexMonster[];
   encounters: CodexEncounter[];
-  cards?: CodexCard[];
-  potions?: CodexPotion[];
-  relics?: CodexRelic[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
 }
@@ -34,9 +28,6 @@ export function BestiaryLibrary({
   gameUi,
   monsters,
   encounters,
-  cards = [],
-  potions = [],
-  relics = [],
   patches,
   changes,
 }: BestiaryLibraryProps) {
@@ -111,9 +102,6 @@ export function BestiaryLibrary({
       title={gameUi.bestiaryTitle}
       monsters={monsters}
       encounters={encounters}
-      cards={cards}
-      potions={potions}
-      relics={relics}
       patches={patches}
       changes={changes}
       trailing={switcher}
