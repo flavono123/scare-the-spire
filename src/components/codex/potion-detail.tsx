@@ -1,11 +1,13 @@
 "use client";
 
+import { type ReactNode, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -20,6 +22,8 @@ import {
 import { DescriptionText } from "./codex-description";
 import { EntityReferenceLinks } from "./entity-reference-links";
 import { GameChoiceFrame } from "./event-choice-frame";
+import { GameHoverTip } from "./hover-tip";
+import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import { RichText } from "@/components/rich-text";
 import {
@@ -39,14 +43,37 @@ function dedupeIds(ids: readonly string[]): string[] {
   });
 }
 
-function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
+function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
-    <div className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-      <span className="text-[10px] text-gray-500 uppercase tracking-wider">{label}</span>
-      <span className="text-sm font-bold" style={color ? { color } : undefined}>
-        {value}
-      </span>
-    </div>
+    <span
+      className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold"
+      style={color ? { color } : undefined}
+    >
+      {value}
+    </span>
+  );
+}
+
+function InfoRailSection({
+  title,
+  children,
+  defaultOpen = true,
+}: {
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}) {
+  return (
+    <details
+      className="group rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+      open={defaultOpen}
+    >
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
+        <span>{title}</span>
+        <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">⌄</span>
+      </summary>
+      <div className="mt-3">{children}</div>
+    </details>
   );
 }
 
@@ -66,16 +93,18 @@ interface PotionDetailProps {
 function getPotionDetailLabels(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
     ? {
+        englishName: "영어명",
         patchHistory: "패치 이력",
         noPatchHistory: "구조화 변경 없음",
       }
     : {
+        englishName: "English name",
         patchHistory: "Patch History",
         noPatchHistory: "No structured changes",
       };
 }
 
-export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedEvents = [], patches, changes, versionDiffs, onClose }: PotionDetailProps) {
+export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedEvents = [], patches, changes, versionDiffs, onClose, entities }: PotionDetailProps & { entities?: EntityInfo[] }) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getPotionDetailLabels(serviceLocale);
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
@@ -117,11 +146,15 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
     (potion.id === "FOUL_POTION" && option.id === "GRAB_POTIONS") ||
     (potion.rarity === "고급" && option.id === "RANSACK")
   ));
+  const [commentCount, setCommentCount] = useState(0);
+  const excludeSelf = useMemo(
+    () => new Set([potion.name, potion.nameEn]),
+    [potion.name, potion.nameEn],
+  );
 
   return (
-    <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-lg mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between w-full">
+    <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <Link
           href={localizeHref("/compendium/potions", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
@@ -145,92 +178,111 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
         )}
       </div>
 
-      {/* Large Potion Image */}
-      <div className="w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center">
-        <Image
-          src={potion.imageUrl}
-          alt={potion.name}
-          width={160}
-          height={160}
-          className="w-full h-full object-contain"
-          style={{
-            filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 4px 8px rgba(0,0,0,0.5))",
-          }}
-        />
-      </div>
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
+        <section className="flex min-h-[22rem] flex-col items-center justify-center gap-5 py-4">
+          <div className="flex w-full flex-col items-center justify-center gap-5 md:flex-row md:items-center">
+            <div className="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
+              <Image
+                src={potion.imageUrl}
+                alt={potion.name}
+                width={160}
+                height={160}
+                className="h-full w-full object-contain"
+                style={{
+                  filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 4px 8px rgba(0,0,0,0.5))",
+                }}
+              />
+            </div>
 
-      {/* Potion Name */}
-      <div className="text-center">
-        <h1 className="font-game-title text-2xl font-bold text-gray-100">{potion.name}</h1>
-        <p className="font-game-text text-sm text-gray-500">{potion.nameEn}</p>
-      </div>
+            <GameHoverTip
+              title={potion.name}
+              className="w-full max-w-[23rem]"
+              style={{ minWidth: 280 }}
+            >
+              {entities ? (
+                <RichDescription
+                  description={potion.description}
+                  entities={entities}
+                  excludeEntityTerms={excludeSelf}
+                  className="block text-left"
+                />
+              ) : (
+                <DescriptionText description={potion.description} className="block text-left" />
+              )}
+            </GameHoverTip>
+          </div>
+        </section>
 
-      {/* Stats Row */}
-      <div className="flex flex-wrap justify-center gap-2">
-        <StatBadge
-          label={gameUi.common.rarity}
-          value={gameUi.potionLab.rarities[potion.rarity].label}
-          color={rarityConfig.color}
-        />
-        <StatBadge
-          label={serviceText.potionsView.stats.source}
-          value={poolLabels[potion.pool]}
-          color={poolColor}
-        />
-      </div>
-
-      {/* Description */}
-      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <div className="font-game-text text-sm text-gray-200 leading-relaxed">
-          <DescriptionText description={potion.description} />
-        </div>
-      </div>
-
-      <EntityReferenceLinks
-        kind="event"
-        serviceLocale={serviceLocale}
-        targets={relatedEventTargets}
-      >
-        <div className="space-y-2.5">
-          {futurePotionChoices.map((choice) => (
-            <GameChoiceFrame key={choice.id}>
-              <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
-                <RichText text={choice.title} />
+        <aside className="flex flex-col gap-3">
+          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+            <div className="space-y-3">
+              <div className="flex flex-wrap gap-2">
+                <MetaPill
+                  value={gameUi.potionLab.rarities[potion.rarity].label}
+                  color={rarityConfig.color}
+                />
+                <MetaPill
+                  value={poolLabels[potion.pool]}
+                  color={poolColor}
+                />
               </div>
-              <div className="font-game-text text-[18px] leading-[1.08] text-[#fff6e2]">
-                <RichText text={choice.description} />
-              </div>
-            </GameChoiceFrame>
-          ))}
-          {potionCourierChoices.map((choice) => (
-            <GameChoiceFrame key={`potion-courier-${choice.id}`}>
-              <div className="font-game-text text-[19px] font-bold leading-[1.05] text-[#d8cb72]">
-                <RichText text={choice.title} />
-              </div>
-              <div className="font-game-text text-[18px] leading-[1.08] text-[#fff6e2]">
-                <RichText text={choice.description} />
-              </div>
-            </GameChoiceFrame>
-          ))}
-        </div>
-      </EntityReferenceLinks>
+              {potion.nameEn !== potion.name && (
+                <div>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
+                  <div className="font-game-text text-sm text-gray-300">{potion.nameEn}</div>
+                </div>
+              )}
+            </div>
+          </section>
 
-      <div className="w-full rounded-lg border border-white/10 bg-black/20 p-4">
-        <h2 className="mb-3 font-game-title text-sm font-bold text-gray-300">{detailLabels.patchHistory}</h2>
-        <STS2ChangeHistory
-          serviceLocale={serviceLocale}
-          entityType="potion"
-          entityId={potion.id}
-          changes={changes}
-          versionDiffs={versionDiffs}
-          patches={patches}
-          emptyLabel={detailLabels.noPatchHistory}
-        />
-      </div>
+          <EntityReferenceLinks
+            kind="event"
+            serviceLocale={serviceLocale}
+            targets={relatedEventTargets}
+          >
+            <div className="space-y-2.5">
+              {futurePotionChoices.map((choice) => (
+                <GameChoiceFrame key={choice.id}>
+                  <div className="font-game-text text-[17px] font-bold leading-[1.05] text-[#d8cb72]">
+                    <RichText text={choice.title} />
+                  </div>
+                  <div className="font-game-text text-[16px] leading-[1.08] text-[#fff6e2]">
+                    <RichText text={choice.description} />
+                  </div>
+                </GameChoiceFrame>
+              ))}
+              {potionCourierChoices.map((choice) => (
+                <GameChoiceFrame key={`potion-courier-${choice.id}`}>
+                  <div className="font-game-text text-[17px] font-bold leading-[1.05] text-[#d8cb72]">
+                    <RichText text={choice.title} />
+                  </div>
+                  <div className="font-game-text text-[16px] leading-[1.08] text-[#fff6e2]">
+                    <RichText text={choice.description} />
+                  </div>
+                </GameChoiceFrame>
+              ))}
+            </div>
+          </EntityReferenceLinks>
 
-      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>
-        <CommentSection threadKey={buildCodexCommentThreadKey("potion", potion.id)} />
+          <InfoRailSection title={detailLabels.patchHistory}>
+            <STS2ChangeHistory
+              serviceLocale={serviceLocale}
+              entityType="potion"
+              entityId={potion.id}
+              changes={changes}
+              versionDiffs={versionDiffs}
+              patches={patches}
+              emptyLabel={detailLabels.noPatchHistory}
+            />
+          </InfoRailSection>
+
+          <InfoRailSection title={`${serviceText.common.comments}${commentCount > 0 ? ` (${commentCount})` : ""}`}>
+            <CommentSection
+              threadKey={buildCodexCommentThreadKey("potion", potion.id)}
+              onCountChange={setCommentCount}
+            />
+          </InfoRailSection>
+        </aside>
       </div>
     </div>
   );
