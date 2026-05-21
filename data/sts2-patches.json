@@ -299,5 +299,24 @@
       { "type": "relic", "id": "SILKEN_TRESS" },
       { "type": "monster", "id": "CEREMONIAL_BEAST" }
     ]
+  },
+  {
+    "id": "v0.106.0",
+    "version": "0.106.0",
+    "date": "2026-05-22",
+    "title": "Beta Patch Notes - v0.106.0",
+    "titleKo": "베타 패치 노트 - v0.106.0",
+    "type": "beta",
+    "status": "building",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/0000000000000000000",
+    "summary": "WIP: Steam patch is live. Rich patch notes are being translated, linked, and reviewed.",
+    "summaryKo": "작성 중: Steam 패치는 공개됐고, rich 패치노트 번역·링크·검수를 준비 중입니다.",
+    "hasBalanceChanges": false,
+    "art": {
+      "type": "image",
+      "imageUrl": "/images/sts2/patches/default-art-building.jpg",
+      "alt": "Slay the Spire 2 WIP banner art",
+      "altKo": "작성 중인 슬레이 더 스파이어 2 배너 아트"
+    }
   }
 ]
