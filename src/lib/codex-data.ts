@@ -101,6 +101,7 @@ interface RawCard {
   damage: number | null;
   block: number | null;
   hit_count: number | null;
+  powers_applied: { power: string; amount: number }[] | null;
   keywords: string[] | null;
   tags: string[] | null;
   upgrade: Record<string, string | number> | null;
@@ -153,6 +154,19 @@ const CARD_VISUAL_COLOR_OVERRIDES: Record<string, CardColor> = {
 
 function getCardVisualColor(card: RawCard): CardColor | undefined {
   return CARD_VISUAL_COLOR_OVERRIDES[card.id];
+}
+
+function powerNameToId(powerName: string): string {
+  return powerName
+    .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+    .replace(/[^A-Za-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .toUpperCase();
+}
+
+function getAppliedPowerIds(card: RawCard): string[] {
+  const powerIds = (card.powers_applied ?? []).map((power) => powerNameToId(power.power));
+  return [...new Set(powerIds)];
 }
 
 async function scanImageFilenames(relativeDir: string): Promise<Set<string>> {
@@ -329,6 +343,7 @@ function mapCard(
     keywords: kor.keywords ?? [],
     keywordLabels,
     tags: kor.tags ?? [],
+    appliedPowerIds: getAppliedPowerIds(eng),
     upgrade: kor.upgrade,
     imageUrl: codexCardImageUrl(kor),
     betaImageUrl: spireCodexImageToLocal(kor.beta_image_url),

@@ -52,6 +52,7 @@ export interface CodexCard {
   keywords: string[];
   keywordLabels: Record<string, string>; // Korean keyword -> selected game locale label
   tags: string[];
+  appliedPowerIds: string[]; // Canonical power ids applied or granted by this card
   upgrade: Record<string, string | number> | null;
   imageUrl: string | null; // local path
   betaImageUrl: string | null; // local path

@@ -2,6 +2,7 @@ import type {
   CardRarityKo,
   CardTypeKo,
   CodexAncient,
+  CodexCard,
   CodexEncounter,
   CodexPotion,
   PotionRarityKo,
@@ -350,6 +351,20 @@ export function getRelatedAncientIdsForRelic(
   return ancients
     .filter((ancient) => ancient.relicIds.some((id) => id.toUpperCase() === normalizedRelicId))
     .map((ancient) => ancient.id);
+}
+
+export function getRelatedPowerIdsForCard(card: Pick<CodexCard, "appliedPowerIds">): readonly string[] {
+  return card.appliedPowerIds;
+}
+
+export function getRelatedCardIdsForPower(
+  cards: readonly Pick<CodexCard, "id" | "appliedPowerIds">[],
+  powerId: string,
+): readonly string[] {
+  const normalizedPowerId = powerId.toUpperCase();
+  return cards
+    .filter((card) => card.appliedPowerIds.some((id) => id.toUpperCase() === normalizedPowerId))
+    .map((card) => card.id);
 }
 
 export function getRelatedEncounterIdsForMonster(

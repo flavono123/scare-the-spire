@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 
-export type CodexReferenceKind = "card" | "event" | "potion" | "relic" | "monster" | "encounter" | "ancient";
+export type CodexReferenceKind = "card" | "event" | "potion" | "relic" | "monster" | "encounter" | "ancient" | "power";
 
 export interface CodexReferenceTarget {
   id: string;
@@ -60,6 +60,10 @@ const REFERENCE_KIND_CONFIG: Record<CodexReferenceKind, { icon: string; label: s
   ancient: {
     icon: "/images/sts2/nav/stats_ancients.png",
     label: "관련 고대의 존재",
+  },
+  power: {
+    icon: "/images/sts2/nav/unmovable_power_beta.webp",
+    label: "관련 파워",
   },
 };
 
