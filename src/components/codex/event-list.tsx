@@ -403,7 +403,7 @@ export function EventList({
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => { if (e.target === e.currentTarget) setSelectedEvent(null); }}
         >
-          <div className="mx-3 my-3 w-full max-w-[92rem] rounded-xl border border-white/10 bg-[#1a1a2e] shadow-2xl sm:mx-5 sm:my-4">
+          <div className="mx-4 my-8 w-full max-w-[92rem]">
             <EventDetail
               serviceLocale={serviceLocale}
               gameUi={gameUi}
