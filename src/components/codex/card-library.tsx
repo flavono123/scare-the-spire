@@ -955,12 +955,12 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       {/* Card Detail Modal */}
       {selectedCard && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => {
             if (e.target === e.currentTarget) setSelectedCard(null);
           }}
         >
-          <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-[#1a1a2e] border border-white/10 rounded-2xl shadow-2xl">
+          <div className="my-8 mx-4 w-full max-w-6xl">
             <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedEvents={relatedEvents} patches={patches} changes={changes} versionDiffs={versionDiffs} onClose={() => setSelectedCard(null)} />
           </div>
         </div>
