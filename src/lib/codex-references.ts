@@ -485,8 +485,9 @@ export function getRelatedCardIdsForAncient(
   ancient: AncientRelationSource,
   cards: readonly AncientCardRelationTarget[],
 ): string[] {
+  void ancient;
   return cards
-    .filter((card) => isAncientCard(card) || resourceMentionsAncient(cardText(card), ancient))
+    .filter(isAncientCard)
     .map((card) => card.id);
 }
 
@@ -494,8 +495,8 @@ export function getRelatedAncientIdsForCard(
   card: AncientCardRelationTarget,
   ancients: readonly AncientRelationSource[],
 ): string[] {
+  if (!isAncientCard(card)) return [];
   return ancients
-    .filter((ancient) => isAncientCard(card) || resourceMentionsAncient(cardText(card), ancient))
     .map((ancient) => ancient.id);
 }
 
@@ -503,36 +504,36 @@ export function getRelatedPotionIdsForAncient(
   ancient: AncientRelationSource,
   potions: readonly AncientPotionRelationTarget[],
 ): string[] {
-  return potions
-    .filter((potion) => resourceMentionsAncient(potionText(potion), ancient))
-    .map((potion) => potion.id);
+  void ancient;
+  void potions;
+  return [];
 }
 
 export function getRelatedAncientIdsForPotion(
   potion: AncientPotionRelationTarget,
   ancients: readonly AncientRelationSource[],
 ): string[] {
-  return ancients
-    .filter((ancient) => resourceMentionsAncient(potionText(potion), ancient))
-    .map((ancient) => ancient.id);
+  void potion;
+  void ancients;
+  return [];
 }
 
 export function getRelatedEventIdsForAncient(
   ancient: AncientRelationSource,
   events: readonly AncientEventRelationTarget[],
 ): string[] {
-  return events
-    .filter((event) => resourceMentionsAncient(eventText(event), ancient))
-    .map((event) => event.id);
+  void ancient;
+  void events;
+  return [];
 }
 
 export function getRelatedAncientIdsForEvent(
   event: AncientEventRelationTarget,
   ancients: readonly AncientRelationSource[],
 ): string[] {
-  return ancients
-    .filter((ancient) => resourceMentionsAncient(eventText(event), ancient))
-    .map((ancient) => ancient.id);
+  void event;
+  void ancients;
+  return [];
 }
 
 export function relicMentionsEnchantment(
@@ -927,84 +928,23 @@ function resourceText(resource: Pick<CodexCard | CodexRelic | CodexPotion, "desc
   return `${resource.description ?? ""}\n${resource.descriptionRaw ?? ""}`;
 }
 
-type AncientRelationSource = Pick<CodexAncient, "id" | "name" | "nameEn" | "epithet" | "epithetEn">;
+type AncientRelationSource = Pick<CodexAncient, "id">;
 
 type AncientCardRelationTarget = Pick<
   CodexCard,
-  "id" | "name" | "nameEn" | "description" | "descriptionRaw" | "rarity"
+  "id" | "rarity"
 >;
 
 type AncientPotionRelationTarget = Pick<
   CodexPotion,
-  "id" | "name" | "nameEn" | "description" | "descriptionRaw"
+  "id"
 >;
 
 type AncientEventRelationTarget = Pick<
   CodexEvent,
-  "id" | "name" | "nameEn" | "description" | "options" | "pages"
+  "id"
 >;
 
 function isAncientCard(card: Pick<CodexCard, "rarity">): boolean {
   return card.rarity === "고대의 존재";
-}
-
-function resourceMentionsAncient(text: string, ancient: AncientRelationSource): boolean {
-  const haystack = normalizeRelationText(text);
-  if (!haystack) return false;
-  return ancientRelationNeedles(ancient).some((needle) => haystack.includes(needle));
-}
-
-function ancientRelationNeedles(ancient: AncientRelationSource): string[] {
-  return compactRelationValues([
-    ancient.id,
-    ancient.name,
-    ancient.nameEn,
-    ancient.epithet,
-    ancient.epithetEn,
-  ]).map(normalizeRelationText);
-}
-
-function cardText(card: AncientCardRelationTarget): string {
-  return compactRelationValues([
-    card.id,
-    card.name,
-    card.nameEn,
-    card.description,
-    card.descriptionRaw,
-  ]).join(" ");
-}
-
-function potionText(potion: AncientPotionRelationTarget): string {
-  return compactRelationValues([
-    potion.id,
-    potion.name,
-    potion.nameEn,
-    potion.description,
-    potion.descriptionRaw,
-  ]).join(" ");
-}
-
-function eventText(event: AncientEventRelationTarget): string {
-  const optionText = event.options?.flatMap((option) => [option.title, option.description]) ?? [];
-  const pageText = event.pages?.flatMap((page) => [
-    page.description,
-    ...(page.options?.flatMap((option) => [option.title, option.description]) ?? []),
-  ]) ?? [];
-
-  return compactRelationValues([
-    event.id,
-    event.name,
-    event.nameEn,
-    event.description,
-    ...optionText,
-    ...pageText,
-  ]).join(" ");
-}
-
-function compactRelationValues(values: readonly (string | null | undefined)[]): string[] {
-  return values.filter((value): value is string => Boolean(value && value.trim()));
-}
-
-function normalizeRelationText(value: string): string {
-  return value.toLocaleLowerCase();
 }
