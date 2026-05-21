@@ -3,9 +3,9 @@
 import { useState, useRef, useCallback, memo } from "react";
 import Image from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
-import { getCodexServiceMessages } from "@/lib/codex-service";
 import { CodexEnchantment } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
+import { GameHoverTip } from "./hover-tip";
 
 interface EnchantmentTileProps {
   serviceLocale?: ServiceLocale;
@@ -13,24 +13,41 @@ interface EnchantmentTileProps {
   onClick?: () => void;
 }
 
+type TooltipPlacement = {
+  horizontal: "left" | "right";
+  vertical: "top" | "bottom";
+};
+
+const TOOLTIP_GAP = 12;
+const TOOLTIP_WIDTH = 400;
+const TOOLTIP_HEIGHT = 220;
+
 export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "ko", enchantment, onClick }: EnchantmentTileProps) {
-  const serviceText = getCodexServiceMessages(serviceLocale);
+  void serviceLocale;
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
-  const [tooltipSide, setTooltipSide] = useState<"right" | "left">("right");
+  const [placement, setPlacement] = useState<TooltipPlacement>({
+    horizontal: "right",
+    vertical: "top",
+  });
 
-  const updateTooltipSide = useCallback(() => {
-    if (!tileRef.current) return;
-    const rect = tileRef.current.getBoundingClientRect();
-    const spaceRight = window.innerWidth - rect.right;
-    setTooltipSide(spaceRight < 320 ? "left" : "right");
+  const updatePlacement = useCallback(() => {
+    const rect = tileRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const horizontal = rect.right + TOOLTIP_GAP + TOOLTIP_WIDTH > window.innerWidth
+      ? "left"
+      : "right";
+    const vertical = rect.top + TOOLTIP_HEIGHT > window.innerHeight
+      ? "bottom"
+      : "top";
+    setPlacement({ horizontal, vertical });
   }, []);
 
   return (
     <div
       ref={tileRef}
       className="relative group"
-      onMouseEnter={() => { updateTooltipSide(); setHovered(true); }}
+      onMouseEnter={() => { updatePlacement(); setHovered(true); }}
       onMouseLeave={() => setHovered(false)}
       onClick={onClick}
     >
@@ -59,55 +76,24 @@ export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "
       {/* Hover tooltip */}
       {hovered && (
         <div
-          className={`absolute z-50 w-72 bg-[#0c0c20]/95 border border-white/15 rounded-lg shadow-2xl p-3 pointer-events-none ${
-            tooltipSide === "right"
-              ? "left-full ml-2 top-0"
-              : "right-full mr-2 top-0"
-          }`}
+          className={`pointer-events-none absolute z-50 hidden max-w-[25rem] items-start gap-2.5 md:flex ${
+            placement.horizontal === "right" ? "left-full ml-3" : "right-full mr-3"
+          } ${placement.vertical === "top" ? "top-0" : "bottom-0"}`}
         >
-          {/* Name + badges */}
-          <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="font-game-title font-bold text-sm text-purple-400">
-              {enchantment.name}
-            </span>
-            {enchantment.cardType && (
-              <span className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[9px] font-medium ${
-                enchantment.cardType === "Attack"
-                  ? "bg-red-500/15 text-red-400 border-red-500/30"
-                  : "bg-blue-500/15 text-blue-400 border-blue-500/30"
-              }`}>
-                {serviceText.labels.enchantmentCardTypes[enchantment.cardType].exclusive}
-              </span>
-            )}
-            {enchantment.isStackable && (
-              <span className="inline-flex items-center rounded-full border border-amber-500/30 bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-medium text-amber-400">
-                {serviceText.enchantmentsView.stackable}
-              </span>
-            )}
-          </div>
-
-          {enchantment.nameEn !== enchantment.name && (
-            <div className="font-game-text text-[10px] text-gray-500 mb-1.5">
-              {enchantment.nameEn}
+          {enchantment.imageUrl && (
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-black/20">
+              <Image
+                src={enchantment.imageUrl}
+                alt={enchantment.name}
+                width={64}
+                height={64}
+                className="h-14 w-14 object-contain drop-shadow-md"
+              />
             </div>
           )}
-
-          {/* Description */}
-          <div className="font-game-text text-xs text-gray-200 leading-relaxed">
-            <DescriptionText description={enchantment.description} />
-          </div>
-
-          {/* Extra card text */}
-          {enchantment.extraCardText && (
-            <div className="mt-2 rounded border border-zinc-700/50 bg-zinc-800/50 px-2 py-1.5">
-              <span className="block text-[9px] font-medium text-gray-500 mb-0.5">
-                {serviceText.enchantmentsView.cardText}
-              </span>
-              <div className="font-game-text text-[11px] text-zinc-300 leading-relaxed">
-                <DescriptionText description={enchantment.extraCardText} />
-              </div>
-            </div>
-          )}
+          <GameHoverTip title={enchantment.name} style={{ minWidth: 280, maxWidth: 320 }}>
+            <DescriptionText description={enchantment.description} className="block text-left" />
+          </GameHoverTip>
         </div>
       )}
     </div>
