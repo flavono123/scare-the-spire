@@ -2213,7 +2213,8 @@
     "pool": "shared",
     "image_url": "/static/images/relics/paels_claw.png",
     "vars": {
-      "Cards": 3
+      "Cards": 3,
+      "EnchantmentName": "점착"
     }
   },
   {
@@ -2249,7 +2250,9 @@
     "rarity": "고대 유물",
     "pool": "shared",
     "image_url": "/static/images/relics/paels_growth.png",
-    "vars": {}
+    "vars": {
+      "EnchantmentName": "복제"
+    }
   },
   {
     "id": "PAELS_HORN",
@@ -2827,7 +2830,8 @@
     "pool": "shared",
     "image_url": "/static/images/relics/royal_stamp.png",
     "vars": {
-      "Cards": 1
+      "Cards": 1,
+      "Enchantment": "왕실 인증"
     }
   },
   {

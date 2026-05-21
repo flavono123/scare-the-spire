@@ -2213,7 +2213,8 @@
     "pool": "shared",
     "image_url": "/static/images/relics/paels_claw.png",
     "vars": {
-      "Cards": 3
+      "Cards": 3,
+      "EnchantmentName": "Goopy"
     }
   },
   {
@@ -2249,7 +2250,9 @@
     "rarity": "Ancient Relic",
     "pool": "shared",
     "image_url": "/static/images/relics/paels_growth.png",
-    "vars": {}
+    "vars": {
+      "EnchantmentName": "Clone"
+    }
   },
   {
     "id": "PAELS_HORN",
@@ -2827,7 +2830,8 @@
     "pool": "shared",
     "image_url": "/static/images/relics/royal_stamp.png",
     "vars": {
-      "Cards": 1
+      "Cards": 1,
+      "Enchantment": "Royally Approved"
     }
   },
   {

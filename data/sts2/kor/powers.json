@@ -1063,7 +1063,9 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/galvanic_power.png",
-    "vars": {}
+    "vars": {
+      "AfflictionTitle": "전기 자극"
+    }
   },
   {
     "id": "GENESIS",
