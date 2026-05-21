@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexCards, getCodexEncounters, getCodexMonsters, getCodexPotions, getCodexRelics } from "@/lib/codex-data";
+import { getCodexEncounters, getCodexMonsters } from "@/lib/codex-data";
 import { getSTS2Patches, getSTS2Changes } from "@/lib/data";
 import {
   getGameLocaleFromSearchRecord,
@@ -53,12 +53,9 @@ export default async function MonsterDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [monsters, encounters, cards, potions, relics, patches, changes, gameUi] = await Promise.all([
+  const [monsters, encounters, patches, changes, gameUi] = await Promise.all([
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
-    getCodexCards({ gameLocale }),
-    getCodexPotions({ gameLocale }),
-    getCodexRelics({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
     getCodexGameUiLabels(gameLocale),
@@ -78,9 +75,6 @@ export default async function MonsterDetailPage({
         backToListTitle={gameUi.bestiaryTitle}
         monster={monster}
         encounters={encounters}
-        relatedCards={cards}
-        relatedPotions={potions}
-        relatedRelics={relics}
         patches={patches}
         changes={changes}
       />

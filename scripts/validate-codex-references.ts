@@ -17,23 +17,15 @@ import {
   EVENT_RELATED_POTION_IDS,
   EVENT_RELATED_POWER_IDS,
   EVENT_RELATED_RELIC_IDS,
-  MONSTER_RELATED_CARD_IDS,
-  MONSTER_RELATED_POTION_IDS,
-  MONSTER_RELATED_RELIC_IDS,
   POTION_RELATED_CARD_IDS,
   POTION_RELATED_ENCHANTMENT_IDS,
   POTION_RELATED_POWER_IDS,
   RELIC_RELATED_ENCHANTMENT_IDS,
 } from "../src/lib/codex-references";
-import { isPublicBestiaryMonster } from "../src/lib/bestiary-monster-policy";
 
 interface CodexEntity {
   id?: unknown;
   name?: unknown;
-}
-
-interface CodexMonsterEntity extends CodexEntity {
-  show_in_compendium?: unknown;
 }
 
 type RelationMap = Record<string, readonly string[]>;
@@ -48,18 +40,6 @@ function idsFrom(relPath: string): Set<string> {
     readJson<CodexEntity[]>(relPath)
       .map((entity) => entity.id)
       .filter((id): id is string => typeof id === "string"),
-  );
-}
-
-function publicMonsterIdsFrom(relPath: string): Set<string> {
-  return new Set(
-    readJson<CodexMonsterEntity[]>(relPath)
-      .filter((entity) => (
-        typeof entity.id === "string" &&
-        entity.show_in_compendium !== false &&
-        isPublicBestiaryMonster(entity.id)
-      ))
-      .map((entity) => entity.id as string),
   );
 }
 
@@ -110,7 +90,6 @@ function validateRelationMap({
 
 function main(): void {
   const eventIds = idsFrom("data/sts2/kor/events.json");
-  const publicMonsterIds = publicMonsterIdsFrom("data/sts2/kor/monsters.json");
   const cardIds = idsFrom("data/sts2/kor/cards.json");
   const enchantmentIds = idsFrom("data/sts2/kor/enchantments.json");
   const potionIds = idsFrom("data/sts2/kor/potions.json");
@@ -193,31 +172,6 @@ function main(): void {
     map: POTION_RELATED_ENCHANTMENT_IDS,
     mapName: "POTION_RELATED_ENCHANTMENT_IDS",
   });
-  errors += validateRelationMap({
-    entityIds: cardIds,
-    entityKind: "card",
-    eventIds: publicMonsterIds,
-    sourceKind: "monster",
-    map: MONSTER_RELATED_CARD_IDS,
-    mapName: "MONSTER_RELATED_CARD_IDS",
-  });
-  errors += validateRelationMap({
-    entityIds: relicIds,
-    entityKind: "relic",
-    eventIds: publicMonsterIds,
-    sourceKind: "monster",
-    map: MONSTER_RELATED_RELIC_IDS,
-    mapName: "MONSTER_RELATED_RELIC_IDS",
-  });
-  errors += validateRelationMap({
-    entityIds: potionIds,
-    entityKind: "potion",
-    eventIds: publicMonsterIds,
-    sourceKind: "monster",
-    map: MONSTER_RELATED_POTION_IDS,
-    mapName: "MONSTER_RELATED_POTION_IDS",
-  });
-
   if (errors > 0) {
     console.error(`\nCodex reference validation FAILED: ${errors} error(s).`);
     process.exit(1);

@@ -15,7 +15,6 @@ import {
   CodexCard,
   CodexEnchantment,
   CodexEvent,
-  CodexMonster,
   CodexPotion,
   CodexPower,
   PotionPool,
@@ -38,7 +37,6 @@ import {
   getRelatedCardIdsForPotion,
   getRelatedEnchantmentIdsForPotion,
   getRelatedEventIdsForPotion,
-  getRelatedMonsterIdsForPotion,
   getRelatedPowerIdsForPotion,
 } from "@/lib/codex-references";
 
@@ -94,7 +92,6 @@ interface PotionDetailProps {
   relatedCards?: CodexCard[];
   relatedEnchantments?: CodexEnchantment[];
   relatedEvents?: CodexEvent[];
-  relatedMonsters?: CodexMonster[];
   relatedPowers?: CodexPower[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
@@ -116,7 +113,7 @@ function getPotionDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedCards = [], relatedEnchantments = [], relatedEvents = [], relatedMonsters = [], relatedPowers = [], patches, changes, versionDiffs, onClose, entities }: PotionDetailProps & { entities?: EntityInfo[] }) {
+export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedCards = [], relatedEnchantments = [], relatedEvents = [], relatedPowers = [], patches, changes, versionDiffs, onClose, entities }: PotionDetailProps & { entities?: EntityInfo[] }) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getPotionDetailLabels(serviceLocale);
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
@@ -163,11 +160,6 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
     .map((enchantmentId) => enchantmentById.get(enchantmentId))
     .filter((enchantment): enchantment is CodexEnchantment => Boolean(enchantment))
     .map(enchantmentToReferenceTarget);
-  const monsterById = new Map(relatedMonsters.map((monster) => [monster.id, monster]));
-  const relatedMonsterTargets = getRelatedMonsterIdsForPotion(potion, relatedMonsters)
-    .map((monsterId) => monsterById.get(monsterId))
-    .filter((monster): monster is CodexMonster => Boolean(monster))
-    .map(monsterToReferenceTarget);
   const powerById = new Map(relatedPowers.map((power) => [power.id, power]));
   const relatedPowerTargets = getRelatedPowerIdsForPotion(potion, relatedPowers)
     .map((powerId) => powerById.get(powerId))
@@ -270,7 +262,6 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
           <EntityReferenceGroupLinks
             groups={[
               { kind: "card", targets: relatedCardTargets },
-              { kind: "monster", targets: relatedMonsterTargets },
               { kind: "power", targets: relatedPowerTargets },
               { kind: "event", targets: relatedEventTargets },
               { kind: "enchantment", targets: relatedEnchantmentTargets },
@@ -340,25 +331,6 @@ function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {
       color: card.color,
       type: "card",
       cardData: card,
-    },
-  };
-}
-
-function monsterToReferenceTarget(monster: CodexMonster): CodexReferenceTarget {
-  const href = `/compendium/monsters/${monster.id.toLowerCase()}`;
-  return {
-    href,
-    id: monster.id,
-    title: monster.name,
-    entity: {
-      id: monster.id,
-      nameEn: monster.nameEn,
-      nameKo: monster.name,
-      imageUrl: monster.imageUrl ?? monster.bossImageUrl,
-      href,
-      color: monster.type,
-      type: "monster",
-      monsterData: monster,
     },
   };
 }

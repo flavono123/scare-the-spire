@@ -6,13 +6,11 @@ import type {
   CodexEnchantment,
   CodexEncounter,
   CodexEvent,
-  CodexMonster,
   CodexPotion,
   CodexPower,
   CodexRelic,
   PotionRarityKo,
 } from "./codex-types";
-import { isPublicBestiaryMonster } from "./bestiary-monster-policy";
 
 export const FUTURE_OF_POTIONS_EVENT_ID = "THE_FUTURE_OF_POTIONS";
 export const FUTURE_OF_POTIONS_EVENT_NAME_KO = "포션의 미래?";
@@ -388,12 +386,6 @@ export const POTION_RELATED_POWER_IDS = {
 
 export const POTION_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<string, readonly string[]>;
 
-export const MONSTER_RELATED_CARD_IDS = {} as const satisfies Record<string, readonly string[]>;
-
-export const MONSTER_RELATED_RELIC_IDS = {} as const satisfies Record<string, readonly string[]>;
-
-export const MONSTER_RELATED_POTION_IDS = {} as const satisfies Record<string, readonly string[]>;
-
 export function getRelatedCardIdsForEvent(eventId: string): readonly string[] {
   return (EVENT_RELATED_CARD_IDS as Record<string, readonly string[]>)[eventId] ?? [];
 }
@@ -746,66 +738,6 @@ export function getRelatedEventIdsForPower(
   }
 
   return dedupeIds(eventIds);
-}
-
-export function getRelatedCardIdsForMonster(
-  monster: Pick<CodexMonster, "id">,
-  cards: readonly Pick<CodexCard, "id" | "tags" | "vars">[],
-): string[] {
-  void cards;
-  if (!isPublicBestiaryMonster(monster.id)) return [];
-  return dedupeIds([
-    ...((MONSTER_RELATED_CARD_IDS as Record<string, readonly string[]>)[monster.id] ?? []),
-  ]);
-}
-
-export function getRelatedRelicIdsForMonster(
-  monster: Pick<CodexMonster, "id">,
-  relics: readonly Pick<CodexRelic, "id" | "vars">[],
-): string[] {
-  void relics;
-  if (!isPublicBestiaryMonster(monster.id)) return [];
-  return dedupeIds([
-    ...((MONSTER_RELATED_RELIC_IDS as Record<string, readonly string[]>)[monster.id] ?? []),
-  ]);
-}
-
-export function getRelatedPotionIdsForMonster(
-  monster: Pick<CodexMonster, "id">,
-  potions: readonly Pick<CodexPotion, "id" | "vars">[],
-): string[] {
-  void potions;
-  if (!isPublicBestiaryMonster(monster.id)) return [];
-  return dedupeIds([
-    ...((MONSTER_RELATED_POTION_IDS as Record<string, readonly string[]>)[monster.id] ?? []),
-  ]);
-}
-
-export function getRelatedMonsterIdsForCard(
-  card: Pick<CodexCard, "id" | "tags" | "vars">,
-  monsters: readonly Pick<CodexMonster, "id">[],
-): string[] {
-  return monsters
-    .filter((monster) => getRelatedCardIdsForMonster(monster, [card]).some((id) => sameId(id, card.id)))
-    .map((monster) => monster.id);
-}
-
-export function getRelatedMonsterIdsForRelic(
-  relic: Pick<CodexRelic, "id" | "vars">,
-  monsters: readonly Pick<CodexMonster, "id">[],
-): string[] {
-  return monsters
-    .filter((monster) => getRelatedRelicIdsForMonster(monster, [relic]).some((id) => sameId(id, relic.id)))
-    .map((monster) => monster.id);
-}
-
-export function getRelatedMonsterIdsForPotion(
-  potion: Pick<CodexPotion, "id" | "vars">,
-  monsters: readonly Pick<CodexMonster, "id">[],
-): string[] {
-  return monsters
-    .filter((monster) => getRelatedPotionIdsForMonster(monster, [potion]).some((id) => sameId(id, potion.id)))
-    .map((monster) => monster.id);
 }
 
 export function getRelatedEncounterIdsForMonster(

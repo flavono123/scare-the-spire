@@ -14,7 +14,6 @@ import {
   CodexAncient,
   CodexEnchantment,
   CodexEvent,
-  CodexMonster,
   CodexPower,
   CodexRelic,
   RELIC_RARITY_COLORS,
@@ -30,7 +29,7 @@ import { EntityReferenceGroupLinks } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
 import { GameCheckboxToggle } from "./game-checkbox";
 import { RichDescription } from "./rich-description";
-import { getRelatedAncientIdsForRelic, getRelatedEnchantmentIdsForRelic, getRelatedEventIdsForRelic, getRelatedMonsterIdsForRelic, getRelatedPowerIdsForRelic } from "@/lib/codex-references";
+import { getRelatedAncientIdsForRelic, getRelatedEnchantmentIdsForRelic, getRelatedEventIdsForRelic, getRelatedPowerIdsForRelic } from "@/lib/codex-references";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
@@ -97,7 +96,6 @@ interface RelicDetailProps {
   relatedEvents?: CodexEvent[];
   relatedAncients?: CodexAncient[];
   relatedEnchantments?: CodexEnchantment[];
-  relatedMonsters?: CodexMonster[];
   relatedPowers?: CodexPower[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
@@ -106,7 +104,7 @@ interface RelicDetailProps {
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
-export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedEvents = [], relatedAncients = [], relatedEnchantments = [], relatedMonsters = [], relatedPowers = [], patches, changes, versionDiffs }: RelicDetailProps) {
+export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedEvents = [], relatedAncients = [], relatedEnchantments = [], relatedPowers = [], patches, changes, versionDiffs }: RelicDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getRelicDetailLabels(serviceLocale);
   // Don't link the relic to itself in its own description
@@ -192,26 +190,6 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
         color: relatedEnchantment?.cardType ?? "Any",
         type: "enchantment" as const,
         enchantmentData: relatedEnchantment ?? undefined,
-      },
-    };
-  });
-  const relatedMonsterTargets = getRelatedMonsterIdsForRelic(relic, relatedMonsters).map((monsterId) => {
-    const relatedMonster = relatedMonsters.find((monster) => monster.id === monsterId) ?? null;
-    const href = `/compendium/monsters/${monsterId.toLowerCase()}`;
-    const title = relatedMonster?.name ?? monsterId;
-    return {
-      id: monsterId,
-      href,
-      title,
-      entity: {
-        id: monsterId,
-        nameEn: relatedMonster?.nameEn ?? title,
-        nameKo: title,
-        imageUrl: relatedMonster?.imageUrl ?? relatedMonster?.bossImageUrl ?? null,
-        href,
-        color: relatedMonster?.type ?? "monster",
-        type: "monster" as const,
-        monsterData: relatedMonster ?? undefined,
       },
     };
   });
@@ -383,7 +361,6 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
             serviceLocale={serviceLocale}
             groups={[
               { kind: "event", targets: relatedEventTargets },
-              { kind: "monster", targets: relatedMonsterTargets },
               { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "power", targets: relatedPowerTargets },
               { kind: "ancient", targets: relatedAncientTargets },
