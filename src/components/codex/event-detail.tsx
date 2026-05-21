@@ -15,7 +15,6 @@ import {
   type CodexServiceMessages,
 } from "@/lib/codex-service";
 import {
-  CodexAncient,
   CodexCard,
   CodexEnchantment,
   CodexEvent,
@@ -46,7 +45,6 @@ import {
 import {
   FUTURE_OF_POTIONS_EVENT_ID,
   TINKER_TIME_EVENT_ID,
-  getRelatedAncientIdsForEvent,
   getRelatedCardIdsForEvent,
   getRelatedEnchantmentIdsForEvent,
   getRelatedPotionIdsForEvent,
@@ -1668,7 +1666,6 @@ interface EventDetailProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
   event: CodexEvent;
-  ancients?: CodexAncient[];
   cards?: CodexCard[];
   enchantments?: CodexEnchantment[];
   madScienceBaseCard?: CodexCard | null;
@@ -1894,7 +1891,6 @@ export function EventDetail({
   serviceLocale,
   gameUi,
   event,
-  ancients = [],
   cards = [],
   enchantments = [],
   madScienceBaseCard,
@@ -1958,13 +1954,8 @@ export function EventDetail({
       })
     : [];
   const cardById = new Map(cards.map((card) => [card.id, card]));
-  const ancientById = new Map(ancients.map((ancient) => [ancient.id, ancient]));
   const enchantmentById = new Map(enchantments.map((enchantment) => [enchantment.id, enchantment]));
   const relicById = new Map(relics.map((relic) => [relic.id, relic]));
-  const relatedAncientTargets = getRelatedAncientIdsForEvent(event, ancients)
-    .map((ancientId) => ancientById.get(ancientId))
-    .filter((ancient): ancient is CodexAncient => Boolean(ancient))
-    .map(ancientToReferenceTarget);
   const relatedCardTargets = [
     ...getRelatedCardIdsForEvent(event.id)
       .map((cardId) => cardById.get(cardId))
@@ -2122,7 +2113,6 @@ export function EventDetail({
 
           <EntityReferenceGroupLinks
             groups={[
-              { kind: "ancient", targets: relatedAncientTargets },
               { kind: "card", targets: relatedCardTargets },
               { kind: "relic", targets: relatedRelicTargets },
               { kind: "enchantment", targets: relatedEnchantmentTargets },
@@ -2153,25 +2143,6 @@ export function EventDetail({
       </div>
     </div>
   );
-}
-
-function ancientToReferenceTarget(ancient: CodexAncient): CodexReferenceTarget {
-  const href = `/compendium/ancients/${ancient.id.toLowerCase()}`;
-  return {
-    href,
-    id: ancient.id,
-    title: ancient.name,
-    entity: {
-      id: ancient.id,
-      nameEn: ancient.nameEn,
-      nameKo: ancient.name,
-      imageUrl: ancient.imageUrl,
-      href,
-      color: ancient.act ?? "ancient",
-      type: "ancient",
-      ancientData: ancient,
-    },
-  };
 }
 
 function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {

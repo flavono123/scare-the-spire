@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
-  getCodexAncients,
   getCodexCards,
   getCodexEnchantments,
   getCodexEvents,
@@ -54,9 +53,8 @@ export default async function EventDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [events, ancients, cards, enchantments, relics, patches, changes, versionDiffs, gameUi, madScienceBaseCard, potions] = await Promise.all([
+  const [events, cards, enchantments, relics, patches, changes, versionDiffs, gameUi, madScienceBaseCard, potions] = await Promise.all([
     getCodexEvents({ gameLocale }),
-    getCodexAncients({ gameLocale }),
     getCodexCards({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -76,7 +74,6 @@ export default async function EventDetailPage({
         serviceLocale={serviceLocale}
         gameUi={gameUi}
         event={event}
-        ancients={ancients}
         cards={cards}
         enchantments={enchantments}
         madScienceBaseCard={madScienceBaseCard}

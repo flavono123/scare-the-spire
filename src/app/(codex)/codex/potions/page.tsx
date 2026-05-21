@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexAncients, getCodexCards, getCodexPotions, getCodexCharacters, getCodexEnchantments, getCodexEvents, getCodexPowers } from "@/lib/codex-data";
+import { getCodexCards, getCodexPotions, getCodexCharacters, getCodexEnchantments, getCodexEvents, getCodexPowers } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
@@ -32,9 +32,8 @@ export default async function CodexPotionsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [potions, ancients, cards, characters, enchantments, patches, changes, versionDiffs, meta, gameUi, events, powers, entities] = await Promise.all([
+  const [potions, cards, characters, enchantments, patches, changes, versionDiffs, meta, gameUi, events, powers, entities] = await Promise.all([
     getCodexPotions({ gameLocale }),
-    getCodexAncients({ gameLocale }),
     getCodexCards({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
@@ -63,7 +62,6 @@ export default async function CodexPotionsPage({
         patches={patches}
         changes={changes}
         versionDiffs={versionDiffs}
-        relatedAncients={ancients}
         relatedCards={cards}
         relatedEnchantments={enchantments}
         relatedEvents={events}

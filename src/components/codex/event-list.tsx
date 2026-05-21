@@ -11,7 +11,6 @@ import {
   type CodexServiceMessages,
 } from "@/lib/codex-service";
 import type {
-  CodexAncient,
   CodexCard,
   CodexEnchantment,
   CodexEvent,
@@ -127,7 +126,6 @@ interface EventListProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
   title: string;
-  ancients?: CodexAncient[];
   cards?: CodexCard[];
   enchantments?: CodexEnchantment[];
   events: CodexEvent[];
@@ -145,7 +143,6 @@ export function EventList({
   serviceLocale,
   gameUi,
   title,
-  ancients,
   cards,
   enchantments,
   events,
@@ -414,7 +411,6 @@ export function EventList({
               serviceLocale={serviceLocale}
               gameUi={gameUi}
               event={selectedEvent}
-              ancients={ancients}
               cards={cards}
               enchantments={enchantments}
               madScienceBaseCard={madScienceBaseCard}

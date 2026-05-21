@@ -15,7 +15,6 @@ import {
   type CodexServiceMessages,
 } from "@/lib/codex-service";
 import {
-  CodexAncient,
   CodexCard,
   CodexEnchantment,
   CodexPotion,
@@ -110,7 +109,6 @@ interface PotionLibraryProps {
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
-  relatedAncients?: CodexAncient[];
   relatedCards?: CodexCard[];
   relatedEnchantments?: CodexEnchantment[];
   relatedEvents?: CodexEvent[];
@@ -118,7 +116,7 @@ interface PotionLibraryProps {
   entities?: EntityInfo[];
 }
 
-export function PotionLibrary({ serviceLocale, gameUi, title, potions, characters, versions, currentVersion, patches, changes, versionDiffs, relatedAncients = [], relatedCards = [], relatedEnchantments = [], relatedEvents = [], relatedPowers = [], entities }: PotionLibraryProps) {
+export function PotionLibrary({ serviceLocale, gameUi, title, potions, characters, versions, currentVersion, patches, changes, versionDiffs, relatedCards = [], relatedEnchantments = [], relatedEvents = [], relatedPowers = [], entities }: PotionLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<PotionPool>>(
@@ -491,7 +489,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} potion={selectedPotion} poolLabels={poolLabels} relatedAncients={relatedAncients} relatedCards={relatedCards} relatedEnchantments={relatedEnchantments} relatedEvents={relatedEvents} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} entities={entities} onClose={() => setSelectedPotion(null)} />
+            <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} potion={selectedPotion} poolLabels={poolLabels} relatedCards={relatedCards} relatedEnchantments={relatedEnchantments} relatedEvents={relatedEvents} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} entities={entities} onClose={() => setSelectedPotion(null)} />
           </div>
         </div>
       )}

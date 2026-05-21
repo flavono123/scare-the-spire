@@ -12,7 +12,6 @@ import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
-  CodexAncient,
   CodexCard,
   CodexEnchantment,
   CodexEvent,
@@ -35,7 +34,6 @@ import {
   FUTURE_OF_POTIONS_EVENT_NAME_KO,
   FUTURE_OF_POTIONS_EVENT_PATH,
   getFuturePotionChoicesForPotion,
-  getRelatedAncientIdsForPotion,
   getRelatedCardIdsForPotion,
   getRelatedEnchantmentIdsForPotion,
   getRelatedEventIdsForPotion,
@@ -91,7 +89,6 @@ interface PotionDetailProps {
   backToListTitle: string;
   potion: CodexPotion;
   poolLabels: Record<PotionPool, string>;
-  relatedAncients?: CodexAncient[];
   relatedCards?: CodexCard[];
   relatedEnchantments?: CodexEnchantment[];
   relatedEvents?: CodexEvent[];
@@ -116,7 +113,7 @@ function getPotionDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedAncients = [], relatedCards = [], relatedEnchantments = [], relatedEvents = [], relatedPowers = [], patches, changes, versionDiffs, onClose, entities }: PotionDetailProps & { entities?: EntityInfo[] }) {
+export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedCards = [], relatedEnchantments = [], relatedEvents = [], relatedPowers = [], patches, changes, versionDiffs, onClose, entities }: PotionDetailProps & { entities?: EntityInfo[] }) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getPotionDetailLabels(serviceLocale);
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
@@ -124,11 +121,6 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
     ? getCharacterColor(potion.pool)
     : undefined;
   const futurePotionChoices = getFuturePotionChoicesForPotion(potion);
-  const ancientById = new Map(relatedAncients.map((ancient) => [ancient.id, ancient]));
-  const relatedAncientTargets = getRelatedAncientIdsForPotion(potion, relatedAncients)
-    .map((ancientId) => ancientById.get(ancientId))
-    .filter((ancient): ancient is CodexAncient => Boolean(ancient))
-    .map(ancientToReferenceTarget);
   const cardById = new Map(relatedCards.map((card) => [card.id, card]));
   const relatedCardTargets = getRelatedCardIdsForPotion(potion.id)
     .map((cardId) => cardById.get(cardId))
@@ -269,7 +261,6 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
 
           <EntityReferenceGroupLinks
             groups={[
-              { kind: "ancient", targets: relatedAncientTargets },
               { kind: "card", targets: relatedCardTargets },
               { kind: "power", targets: relatedPowerTargets },
               { kind: "event", targets: relatedEventTargets },
@@ -323,25 +314,6 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
       </div>
     </div>
   );
-}
-
-function ancientToReferenceTarget(ancient: CodexAncient): CodexReferenceTarget {
-  const href = `/compendium/ancients/${ancient.id.toLowerCase()}`;
-  return {
-    href,
-    id: ancient.id,
-    title: ancient.name,
-    entity: {
-      id: ancient.id,
-      nameEn: ancient.nameEn,
-      nameKo: ancient.name,
-      imageUrl: ancient.imageUrl,
-      href,
-      color: ancient.act ?? "ancient",
-      type: "ancient",
-      ancientData: ancient,
-    },
-  };
 }
 
 function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {

@@ -15,7 +15,7 @@ import {
   getCodexServiceMessages,
   type CodexServiceMessages,
 } from "@/lib/codex-service";
-import type { CodexAncient, CodexCard, CodexEvent, CodexPotion, CodexRelic, AncientDialogueLine } from "@/lib/codex-types";
+import type { CodexAncient, CodexCard, CodexRelic, AncientDialogueLine } from "@/lib/codex-types";
 import {
   EVENT_ACT_UNKNOWN,
   CHARACTER_COLORS,
@@ -26,8 +26,6 @@ import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import {
   getRelatedCardIdsForAncient,
-  getRelatedEventIdsForAncient,
-  getRelatedPotionIdsForAncient,
   getRelatedRelicIdsForAncient,
 } from "@/lib/codex-references";
 
@@ -232,8 +230,6 @@ interface AncientDetailProps {
   ancient: CodexAncient;
   cards?: CodexCard[];
   relics: CodexRelic[];
-  potions?: CodexPotion[];
-  events?: CodexEvent[];
   onClose?: () => void;
   entities?: EntityInfo[];
   patches?: STS2Patch[];
@@ -248,8 +244,6 @@ export function AncientDetail({
   ancient,
   cards = [],
   relics,
-  potions = [],
-  events = [],
   onClose,
   entities,
   patches,
@@ -266,8 +260,6 @@ export function AncientDetail({
   );
   const cardById = new Map(cards.map((card) => [card.id, card]));
   const relicById = new Map(relics.map((relic) => [relic.id, relic]));
-  const potionById = new Map(potions.map((potion) => [potion.id, potion]));
-  const eventById = new Map(events.map((event) => [event.id, event]));
   const relatedCardTargets = getRelatedCardIdsForAncient(ancient, cards)
     .map((cardId) => cardById.get(cardId))
     .filter((card): card is CodexCard => Boolean(card))
@@ -276,14 +268,6 @@ export function AncientDetail({
     .map((relicId) => relicById.get(relicId))
     .filter((relic): relic is CodexRelic => Boolean(relic))
     .map(relicToReferenceTarget);
-  const relatedPotionTargets = getRelatedPotionIdsForAncient(ancient, potions)
-    .map((potionId) => potionById.get(potionId))
-    .filter((potion): potion is CodexPotion => Boolean(potion))
-    .map(potionToReferenceTarget);
-  const relatedEventTargets = getRelatedEventIdsForAncient(ancient, events)
-    .map((eventId) => eventById.get(eventId))
-    .filter((event): event is CodexEvent => Boolean(event))
-    .map(eventToReferenceTarget);
   const actLabel = getAncientActLabel(ancient, serviceText, gameUi);
   const actPillClass = ancient.act
     ? "border-blue-500/40 bg-blue-500/10 text-blue-300"
@@ -419,8 +403,6 @@ export function AncientDetail({
             groups={[
               { kind: "card", targets: relatedCardTargets },
               { kind: "relic", targets: relatedRelicTargets },
-              { kind: "potion", targets: relatedPotionTargets },
-              { kind: "event", targets: relatedEventTargets },
             ]}
           />
 
@@ -494,44 +476,6 @@ function relicToReferenceTarget(relic: CodexRelic): CodexReferenceTarget {
       color: relic.pool,
       type: "relic",
       relicData: relic,
-    },
-  };
-}
-
-function potionToReferenceTarget(potion: CodexPotion): CodexReferenceTarget {
-  const href = `/compendium/potions/${potion.id.toLowerCase()}`;
-  return {
-    href,
-    id: potion.id,
-    title: potion.name,
-    entity: {
-      id: potion.id,
-      nameEn: potion.nameEn,
-      nameKo: potion.name,
-      imageUrl: potion.imageUrl,
-      href,
-      color: potion.rarity,
-      type: "potion",
-      potionData: potion,
-    },
-  };
-}
-
-function eventToReferenceTarget(event: CodexEvent): CodexReferenceTarget {
-  const href = `/compendium/events/${event.id.toLowerCase()}`;
-  return {
-    href,
-    id: event.id,
-    title: event.name,
-    entity: {
-      id: event.id,
-      nameEn: event.nameEn,
-      nameKo: event.name,
-      imageUrl: event.imageUrl,
-      href,
-      color: event.act ?? "event",
-      type: "event",
-      eventData: event,
     },
   };
 }
