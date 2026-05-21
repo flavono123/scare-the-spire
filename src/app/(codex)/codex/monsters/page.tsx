@@ -1,6 +1,12 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexCards, getCodexEncounters, getCodexMonsters, getCodexPotions, getCodexRelics } from "@/lib/codex-data";
+import {
+  getCodexCards,
+  getCodexEncounters,
+  getCodexMonsters,
+  getCodexPotions,
+  getCodexRelics,
+} from "@/lib/codex-data";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
