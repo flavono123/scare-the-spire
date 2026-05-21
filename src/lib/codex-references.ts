@@ -490,7 +490,7 @@ export function getRelatedCardIdsForAncient(
 ): string[] {
   const cardIds = ANCIENT_RELATED_CARD_IDS[ancient.id.toUpperCase()] ?? [];
   const existingCardIds = new Set(cards.map((card) => card.id.toUpperCase()));
-  return cardIds.filter((cardId) => existingCardIds.has(cardId.toUpperCase()));
+  return dedupeIds(cardIds.filter((cardId) => existingCardIds.has(cardId.toUpperCase())));
 }
 
 export function getRelatedAncientIdsForCard(
@@ -846,6 +846,21 @@ type AncientEventRelationTarget = Pick<
   "id"
 >;
 
+// `NeowsBones` and `SereTalon` add curses from CurseCardPool with
+// `CanBeGeneratedByModifiers`; these are the current generated curse options.
+const GENERATED_CURSE_CARD_IDS = [
+  "CLUMSY",
+  "DEBT",
+  "DECAY",
+  "DOUBT",
+  "GUILTY",
+  "INJURY",
+  "NORMALITY",
+  "REGRET",
+  "SHAME",
+  "WRITHE",
+] as const;
+
 // Derived from the current game DLL:
 // Ancient event option pools plus the card-producing relic effects they can offer.
 const ANCIENT_RELATED_CARD_IDS: Record<string, readonly string[]> = {
@@ -855,12 +870,13 @@ const ANCIENT_RELATED_CARD_IDS: Record<string, readonly string[]> = {
     "THE_SEALED_THRONE",
     "FORBIDDEN_GRIMOIRE",
     "BIASED_COGNITION",
+    "CURSE_OF_THE_BELL",
   ],
-  NEOW: ["NEOWS_FURY"],
+  NEOW: ["NEOWS_FURY", "GREED", "INJURY", ...GENERATED_CURSE_CARD_IDS],
   NONUPEIPE: ["APOTHEOSIS"],
   OROBAS: ["BREAK", "SUPPRESS", "PROTECTOR", "METEOR_SHOWER", "QUADCAST"],
   PAEL: ["RELAX"],
   TANX: ["MAUL", "WHISTLE"],
   TEZCATARA: ["BRIGHTEST_FLAME"],
-  VAKUU: ["WISH", "APPARITION"],
+  VAKUU: ["WISH", "APPARITION", "ENTHRALLED", "FOLLY", ...GENERATED_CURSE_CARD_IDS],
 };
