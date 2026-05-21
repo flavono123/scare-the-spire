@@ -339,13 +339,10 @@ export const CARD_RELATED_ENCHANTMENT_IDS = {
 
 export const RELIC_RELATED_ENCHANTMENT_IDS = {
   PAELS_CLAW: ["GOOPY"],
-  PAELS_GROWTH: ["SLUMBERING_ESSENCE"],
   ROYAL_STAMP: ["ROYALLY_APPROVED"],
 } as const satisfies Record<string, readonly string[]>;
 
-export const POTION_RELATED_ENCHANTMENT_IDS = {
-  DUPLICATOR: ["CLONE"],
-} as const satisfies Record<string, readonly string[]>;
+export const POTION_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<string, readonly string[]>;
 
 export function getRelatedCardIdsForEvent(eventId: string): readonly string[] {
   return (EVENT_RELATED_CARD_IDS as Record<string, readonly string[]>)[eventId] ?? [];
