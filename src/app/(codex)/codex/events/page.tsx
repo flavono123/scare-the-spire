@@ -5,6 +5,7 @@ import {
   getCodexEnchantments,
   getCodexEvents,
   getCodexPotions,
+  getCodexPowers,
   getCodexRelics,
   getMadScienceBaseCard,
 } from "@/lib/codex-data";
@@ -38,11 +39,12 @@ export default async function CodexEventsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [events, cards, enchantments, potions, relics, madScienceBaseCard, patches, changes, versionDiffs, meta, gameUi] = await Promise.all([
+  const [events, cards, enchantments, potions, powers, relics, madScienceBaseCard, patches, changes, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexEvents({ gameLocale }),
     getCodexCards({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexPotions({ gameLocale }),
+    getCodexPowers({ gameLocale }),
     getCodexRelics({ gameLocale }),
     getMadScienceBaseCard({ gameLocale }),
     getSTS2Patches(),
@@ -65,6 +67,7 @@ export default async function CodexEventsPage({
         events={events}
         madScienceBaseCard={madScienceBaseCard}
         potions={potions}
+        powers={powers}
         relics={relics}
         versions={versions}
         currentVersion={meta.version}

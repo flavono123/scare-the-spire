@@ -19,6 +19,7 @@ import {
   CodexEnchantment,
   CodexEvent,
   CodexPotion,
+  CodexPower,
   CodexRelic,
   EventOption,
   EventPage,
@@ -47,6 +48,7 @@ import {
   TINKER_TIME_EVENT_ID,
   getRelatedCardIdsForEvent,
   getRelatedEnchantmentIdsForEvent,
+  getRelatedPowerIdsForEvent,
   getRelatedPotionIdsForEvent,
   getRelatedRelicIdsForEvent,
 } from "@/lib/codex-references";
@@ -1670,6 +1672,7 @@ interface EventDetailProps {
   enchantments?: CodexEnchantment[];
   madScienceBaseCard?: CodexCard | null;
   potions?: CodexPotion[];
+  powers?: CodexPower[];
   relics?: CodexRelic[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
@@ -1895,6 +1898,7 @@ export function EventDetail({
   enchantments = [],
   madScienceBaseCard,
   potions,
+  powers = [],
   relics = [],
   patches,
   changes,
@@ -1955,6 +1959,7 @@ export function EventDetail({
     : [];
   const cardById = new Map(cards.map((card) => [card.id, card]));
   const enchantmentById = new Map(enchantments.map((enchantment) => [enchantment.id, enchantment]));
+  const powerById = new Map(powers.map((power) => [power.id, power]));
   const relicById = new Map(relics.map((relic) => [relic.id, relic]));
   const relatedCardTargets = [
     ...getRelatedCardIdsForEvent(event.id)
@@ -1985,6 +1990,10 @@ export function EventDetail({
     .map((enchantmentId) => enchantmentById.get(enchantmentId))
     .filter((enchantment): enchantment is CodexEnchantment => Boolean(enchantment))
     .map(enchantmentToReferenceTarget);
+  const relatedPowerTargets = getRelatedPowerIdsForEvent(event.id)
+    .map((powerId) => powerById.get(powerId))
+    .filter((power): power is CodexPower => Boolean(power))
+    .map(powerToReferenceTarget);
   const potionById = new Map((potions ?? []).map((potion) => [potion.id, potion]));
   const relatedPotionBase = getRelatedPotionIdsForEvent(event.id)
     .map((potionId) => potionById.get(potionId))
@@ -2116,6 +2125,7 @@ export function EventDetail({
               { kind: "card", targets: relatedCardTargets },
               { kind: "relic", targets: relatedRelicTargets },
               { kind: "enchantment", targets: relatedEnchantmentTargets },
+              { kind: "power", targets: relatedPowerTargets },
               { kind: "potion", targets: relatedPotionTargets },
             ]}
             serviceLocale={serviceLocale}
@@ -2198,6 +2208,25 @@ function enchantmentToReferenceTarget(enchantment: CodexEnchantment): CodexRefer
       color: enchantment.cardType ?? "Any",
       type: "enchantment",
       enchantmentData: enchantment,
+    },
+  };
+}
+
+function powerToReferenceTarget(power: CodexPower): CodexReferenceTarget {
+  const href = `/compendium/powers/${power.id.toLowerCase()}`;
+  return {
+    href,
+    id: power.id,
+    title: power.name,
+    entity: {
+      id: power.id,
+      nameEn: power.nameEn,
+      nameKo: power.name,
+      imageUrl: power.imageUrl,
+      href,
+      color: power.type,
+      type: "power",
+      powerData: power,
     },
   };
 }

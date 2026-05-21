@@ -15,6 +15,7 @@ import type {
   CodexEnchantment,
   CodexEvent,
   CodexPotion,
+  CodexPower,
   CodexRelic,
   EventAct,
 } from "@/lib/codex-types";
@@ -131,6 +132,7 @@ interface EventListProps {
   events: CodexEvent[];
   madScienceBaseCard?: CodexCard | null;
   potions?: CodexPotion[];
+  powers?: CodexPower[];
   relics?: CodexRelic[];
   versions: string[];
   currentVersion: string;
@@ -148,6 +150,7 @@ export function EventList({
   events,
   madScienceBaseCard,
   potions,
+  powers,
   relics,
   versions,
   currentVersion,
@@ -415,6 +418,7 @@ export function EventList({
               enchantments={enchantments}
               madScienceBaseCard={madScienceBaseCard}
               potions={potions}
+              powers={powers}
               relics={relics}
               patches={patches}
               changes={changes}
