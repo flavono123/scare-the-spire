@@ -18,7 +18,7 @@ import {
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
-import { getRelatedEventIdsForEnchantment } from "@/lib/codex-references";
+import { getRelatedEventIdsForEnchantment, relicMentionsEnchantment } from "@/lib/codex-references";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
 import { RichDescription } from "./rich-description";
@@ -72,18 +72,6 @@ interface EnchantmentDetailProps {
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
-}
-
-/**
- * Decide whether a relic grants this enchantment by scanning its description
- * for the enchantment's KO or EN name. SSOT lives in the game's relic effects,
- * but the description is the closest thing to a public contract for now.
- */
-function relicMentionsEnchantment(relic: CodexRelic, ench: CodexEnchantment): boolean {
-  const desc = `${relic.description ?? ""} ${relic.descriptionRaw ?? ""}`;
-  if (ench.name && desc.includes(ench.name)) return true;
-  if (ench.nameEn && desc.toLowerCase().includes(ench.nameEn.toLowerCase())) return true;
-  return false;
 }
 
 function getEnchantmentDetailLabels(serviceLocale: ServiceLocale) {

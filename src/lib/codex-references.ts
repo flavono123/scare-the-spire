@@ -3,8 +3,10 @@ import type {
   CardTypeKo,
   CodexAncient,
   CodexCard,
+  CodexEnchantment,
   CodexEncounter,
   CodexPotion,
+  CodexRelic,
   PotionRarityKo,
 } from "./codex-types";
 
@@ -371,6 +373,25 @@ export function getRelatedAncientIdsForRelic(
   return ancients
     .filter((ancient) => ancient.relicIds.some((id) => id.toUpperCase() === normalizedRelicId))
     .map((ancient) => ancient.id);
+}
+
+export function relicMentionsEnchantment(
+  relic: Pick<CodexRelic, "description" | "descriptionRaw">,
+  enchantment: Pick<CodexEnchantment, "name" | "nameEn">,
+): boolean {
+  const desc = `${relic.description ?? ""} ${relic.descriptionRaw ?? ""}`;
+  if (enchantment.name && desc.includes(enchantment.name)) return true;
+  if (enchantment.nameEn && desc.toLowerCase().includes(enchantment.nameEn.toLowerCase())) return true;
+  return false;
+}
+
+export function getRelatedEnchantmentIdsForRelic(
+  relic: Pick<CodexRelic, "description" | "descriptionRaw">,
+  enchantments: readonly Pick<CodexEnchantment, "id" | "name" | "nameEn">[],
+): string[] {
+  return enchantments
+    .filter((enchantment) => relicMentionsEnchantment(relic, enchantment))
+    .map((enchantment) => enchantment.id);
 }
 
 export function getRelatedPowerIdsForCard(card: Pick<CodexCard, "appliedPowerIds">): readonly string[] {
