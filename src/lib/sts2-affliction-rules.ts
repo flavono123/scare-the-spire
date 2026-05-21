@@ -7,14 +7,28 @@ const AFFLICTION_ADDED_KEYWORDS: Record<string, string[]> = {
   HEXED: ["휘발성"],
 };
 
+const AFFLICTION_CARD_TYPE_RESTRICTIONS: Record<string, CodexCard["type"]> = {
+  GALVANIZED: "파워",
+  ENTANGLED: "공격",
+  SMOG: "스킬",
+};
+
+const AFFLICTION_PREVIEW_AMOUNTS: Record<string, number> = {
+  GALVANIZED: 6,
+};
+
 function normalizeId(id: string): string {
   return id.toUpperCase();
 }
 
-export function canAfflictCard(_affliction: CodexAffliction, _card: CodexCard): boolean {
-  void _affliction;
-  void _card;
-  return true;
+export function canAfflictCard(affliction: CodexAffliction, card: CodexCard): boolean {
+  const requiredType = AFFLICTION_CARD_TYPE_RESTRICTIONS[normalizeId(affliction.id)];
+  return !requiredType || card.type === requiredType;
+}
+
+export function getAfflictionPreviewAmount(affliction: CodexAffliction | null | undefined): number {
+  if (!affliction) return DEFAULT_AFFLICTION_AMOUNT;
+  return AFFLICTION_PREVIEW_AMOUNTS[normalizeId(affliction.id)] ?? DEFAULT_AFFLICTION_AMOUNT;
 }
 
 export function getAfflictionAddedKeywords(affliction: CodexAffliction): string[] {
