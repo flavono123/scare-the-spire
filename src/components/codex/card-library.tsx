@@ -53,7 +53,7 @@ interface EngagementSortState {
 
 const COLOR_SORT_ORDER: Record<string, number> = {
   ironclad: 0, silent: 1, defect: 2, necrobinder: 3, regent: 4,
-  colorless: 5, event: 6, curse: 7, status: 8, token: 9, quest: 10,
+  colorless: 5, ancient: 6, status: 7, curse: 8, event: 9, quest: 10, token: 11,
 };
 
 const TYPE_SORT_ORDER: Record<string, number> = {
@@ -67,11 +67,21 @@ const RARITY_SORT_ORDER: Record<string, number> = {
 
 const DEFAULT_SORT_KEYS: SortKey[] = ["color", "type", "rarity", "cost", "name"];
 
+function getCardSortCategory(card: CodexCard): string {
+  if (card.rarity === "고대의 존재") return "ancient";
+  if (card.color === "status" || card.rarity === "상태이상" || card.type === "상태이상") return "status";
+  if (card.color === "curse" || card.rarity === "저주" || card.type === "저주") return "curse";
+  if (card.rarity === "이벤트") return "event";
+  if (card.color === "quest" || card.rarity === "퀘스트" || card.type === "퀘스트") return "quest";
+  if (card.color === "token" || card.rarity === "토큰") return "token";
+  return card.color;
+}
+
 function compareCards(a: CodexCard, b: CodexCard, key: SortKey, dir: SortDir): number {
   let cmp = 0;
   switch (key) {
     case "color":
-      cmp = (COLOR_SORT_ORDER[a.color] ?? 99) - (COLOR_SORT_ORDER[b.color] ?? 99);
+      cmp = (COLOR_SORT_ORDER[getCardSortCategory(a)] ?? 99) - (COLOR_SORT_ORDER[getCardSortCategory(b)] ?? 99);
       break;
     case "type":
       cmp = (TYPE_SORT_ORDER[a.type] ?? 99) - (TYPE_SORT_ORDER[b.type] ?? 99);
@@ -621,12 +631,12 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
 
   const extraFilters = [
     { key: "colorless" as const, label: serviceText.labels.pools.colorless, icon: CATEGORY_ICONS.colorless },
-    { key: "token" as const, label: gameUi.cardLibrary.rarities.토큰, icon: CATEGORY_ICONS.token },
+    { key: "ancient" as const, label: gameUi.cardLibrary.rarities["고대의 존재"], icon: CATEGORY_ICONS.ancient },
+    { key: "status" as const, label: gameUi.cardLibrary.rarities.상태이상, icon: CATEGORY_ICONS.status },
+    { key: "curse" as const, label: gameUi.cardLibrary.rarities.저주, icon: CATEGORY_ICONS.curse },
     { key: "event" as const, label: gameUi.cardLibrary.rarities.이벤트, icon: CATEGORY_ICONS.event },
     { key: "quest" as const, label: gameUi.cardLibrary.rarities.퀘스트, icon: CATEGORY_ICONS.quest },
-    { key: "curse" as const, label: gameUi.cardLibrary.rarities.저주, icon: CATEGORY_ICONS.curse },
-    { key: "status" as const, label: gameUi.cardLibrary.rarities.상태이상, icon: CATEGORY_ICONS.status },
-    { key: "ancient" as const, label: gameUi.cardLibrary.rarities["고대의 존재"], icon: CATEGORY_ICONS.ancient },
+    { key: "token" as const, label: gameUi.cardLibrary.rarities.토큰, icon: CATEGORY_ICONS.token },
   ];
 
   const availableTypes: CardTypeKo[] = ["공격", "스킬", "파워"];
