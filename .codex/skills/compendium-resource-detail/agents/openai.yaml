@@ -1,0 +1,4 @@
+interface:
+  display_name: "Compendium Resource Detail"
+  short_description: "Build STS2 백과사전 detail/modals"
+  default_prompt: "Use -resource-detail to extend the STS2 백과사전 resource detail/modal UI from the relic pattern."
