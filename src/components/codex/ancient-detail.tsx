@@ -356,6 +356,7 @@ export function AncientDetail({
                 )}
               </div>
             </div>
+          )}
         </section>
 
         <aside className="flex flex-col gap-3">

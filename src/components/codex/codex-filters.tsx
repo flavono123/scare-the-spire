@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "@/components/ui/static-image";
+import { GameCheckboxToggle } from "./game-checkbox";
 
 export function FilterSection({
   trigger,
@@ -110,26 +111,12 @@ export function ToggleButton({
   onClick: () => void;
 }) {
   return (
-    <button
-      onClick={onClick}
-      className={`flex items-center gap-2 text-xs px-2.5 py-1 rounded transition-all ${
-        active
-          ? "bg-yellow-500/15 text-yellow-400"
-          : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
-      }`}
-    >
-      <span
-        className={`w-3.5 h-3.5 rounded border-[1.5px] flex items-center justify-center transition-all ${
-          active ? "border-yellow-500 bg-yellow-500" : "border-gray-600"
-        }`}
-      >
-        {active && (
-          <svg className="w-2.5 h-2.5 text-black" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" />
-          </svg>
-        )}
-      </span>
-      {label}
-    </button>
+    <GameCheckboxToggle
+      checked={active}
+      onCheckedChange={onClick}
+      label={label}
+      size="sm"
+      className="w-full"
+    />
   );
 }
