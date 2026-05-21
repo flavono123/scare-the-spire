@@ -607,12 +607,12 @@ def render_hexed_shader(image, time: float):
             noise = smoothstep(0.5, 0.7, noise_b / 255.0)
             inner = lerp_color(main_color, bright_color, noise)
             color = lerp_color(border_color, inner, r / 255.0)
-            intensity = 1.0 + noise * 0.32
+            intensity = 1.0 + noise * 0.7
             dst[x, y] = (
                 clamp_channel(color[0] * intensity * 255),
                 clamp_channel(color[1] * intensity * 255),
                 clamp_channel(color[2] * intensity * 255),
-                clamp_channel(alpha * (0.78 + noise * 0.22)),
+                clamp_channel(alpha * (0.58 + noise * 0.42)),
             )
 
     return output
