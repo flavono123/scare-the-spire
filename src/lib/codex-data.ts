@@ -444,7 +444,7 @@ interface RawRelic {
   name: string;
   description: string;
   description_raw: string;
-  vars?: Record<string, number> | null;
+  vars?: Record<string, number | string> | null;
   flavor: string;
   rarity: string;
   pool: string;
@@ -562,7 +562,7 @@ interface RawPotion {
   name: string;
   description: string;
   description_raw: string;
-  vars?: Record<string, number> | null;
+  vars?: Record<string, number | string> | null;
   rarity: string;
   pool: string;
   image_url: string;
@@ -654,7 +654,7 @@ interface RawPower {
   name: string;
   description: string;
   description_raw: string | null;
-  vars?: Record<string, number> | null;
+  vars?: Record<string, number | string> | null;
   type: string;
   stack_type: string | null;
   allow_negative: boolean | null;

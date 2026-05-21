@@ -21,6 +21,7 @@ import json
 import re
 from collections import OrderedDict
 from pathlib import Path
+from typing import Any
 
 REPO = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO / "data/sts2"
@@ -51,6 +52,15 @@ ENTITY_DIRS = {
     "powers": "MegaCrit.Sts2.Core.Models.Powers",
 }
 
+TITLE_REF_TABLES = {
+    "Enchantment": "enchantments",
+    "Affliction": "afflictions",
+}
+
+TITLE_REF_RE = re.compile(
+    r"ModelDb\.(Enchantment|Affliction)<(\w+)>\(\)\.Title\.GetFormattedText\(\)"
+)
+
 
 def slugify(name: str) -> str:
     """PascalCase -> SCREAMING_SNAKE_CASE, mirroring StringHelper.Slugify."""
@@ -70,6 +80,17 @@ def parse_decimal(s: str):
         return int(s)
     except ValueError:
         return None
+
+
+def parse_title_ref(expr: str) -> dict[str, str] | None:
+    match = TITLE_REF_RE.fullmatch(expr.strip())
+    if not match:
+        return None
+    model_kind, class_name = match.groups()
+    table = TITLE_REF_TABLES.get(model_kind)
+    if not table:
+        return None
+    return {"__titleRef": table, "id": slugify(class_name)}
 
 
 def split_top_level(args: str, delim: str = ",") -> list[str]:
@@ -146,7 +167,8 @@ def find_var_calls(block: str) -> list[tuple[str, str | None, str]]:
 def parse_var(cls: str, generic: str | None, args_str: str):
     """Resolve one `new XxxVar(...)` to (name, value) or None to skip.
 
-    Skips StringVars and any value that depends on runtime computation.
+    Skips StringVars that depend on runtime state. Static title references are
+    resolved per locale when writing each JSON file.
     """
     args = split_top_level(args_str) if args_str.strip() else []
     if not args:
@@ -155,7 +177,11 @@ def parse_var(cls: str, generic: str | None, args_str: str):
     rest = args[1:]
 
     if cls == "StringVar":
-        return None  # placeholder values are rendered client-side
+        if first.startswith('"') and first.endswith('"') and rest:
+            title_ref = parse_title_ref(rest[0])
+            if title_ref:
+                return (first[1:-1], title_ref)
+        return None
 
     if cls == "PowerVar":
         if first.startswith('"') and first.endswith('"') and len(rest) >= 1:
@@ -195,11 +221,11 @@ def class_name(text: str) -> str | None:
     return m.group(1) if m else None
 
 
-def extract_vars_from_file(cs_path: Path) -> tuple[str | None, dict[str, int | float]]:
+def extract_vars_from_file(cs_path: Path) -> tuple[str | None, dict[str, Any]]:
     text = cs_path.read_text(encoding="utf-8")
     cls = class_name(text)
     block = extract_canonical_block(text)
-    vars_: dict[str, int | float] = OrderedDict()
+    vars_: dict[str, Any] = OrderedDict()
     if block:
         for v_cls, generic, args in find_var_calls(block):
             parsed = parse_var(v_cls, generic, args)
@@ -210,19 +236,45 @@ def extract_vars_from_file(cs_path: Path) -> tuple[str | None, dict[str, int | f
     return cls, vars_
 
 
+def localized_titles(lang: str, table: str) -> dict[str, str]:
+    path = DATA_DIR / lang / f"{table}.json"
+    if not path.exists():
+        return {}
+    rows = json.loads(path.read_text(encoding="utf-8"))
+    return {row["id"]: row["name"] for row in rows if row.get("id") and row.get("name")}
+
+
+def resolve_locale_vars(vars_: dict[str, Any], lang: str) -> dict[str, int | float | str]:
+    resolved: dict[str, int | float | str] = OrderedDict()
+    title_cache: dict[str, dict[str, str]] = {}
+    for name, value in vars_.items():
+        if isinstance(value, dict) and "__titleRef" in value:
+            table = value["__titleRef"]
+            title_cache.setdefault(table, localized_titles(lang, table))
+            title = title_cache[table].get(value["id"])
+            if title is None:
+                continue
+            resolved[name] = title
+        else:
+            resolved[name] = value
+    return resolved
+
+
 def merge_vars_into_file(json_path: Path, vars_by_id: dict[str, dict]) -> tuple[int, int]:
     """Update json_path's entries in place. Returns (updated, missing)."""
     data = json.loads(json_path.read_text(encoding="utf-8"))
     updated = 0
     missing = 0
+    lang = json_path.parent.name
     for entry in data:
         eid = entry.get("id")
         if not eid:
             continue
-        new_vars = vars_by_id.get(eid)
-        if new_vars is None:
+        raw_vars = vars_by_id.get(eid)
+        if raw_vars is None:
             missing += 1
             continue
+        new_vars = resolve_locale_vars(raw_vars, lang)
         # Only set non-empty vars; empty dict means we found nothing useful.
         entry["vars"] = new_vars
         updated += 1

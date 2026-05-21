@@ -160,7 +160,7 @@ export interface CodexRelic {
   nameEn: string; // English
   description: string; // Korean, with BBCode markup (templates baked from vars)
   descriptionRaw: string; // Korean, with {Var} templates
-  vars: Record<string, number>; // Base variable values for description template
+  vars: Record<string, number | string>; // Base variable values for description template
   flavor: string;
   rarity: RelicRarityKo;
   pool: RelicPool;
@@ -281,7 +281,7 @@ export interface CodexPotion {
   nameEn: string; // English
   description: string; // Korean, with BBCode markup (templates baked from vars)
   descriptionRaw: string; // Korean, with {Var:diff()} templates
-  vars: Record<string, number>; // Base variable values for description template
+  vars: Record<string, number | string>; // Base variable values for description template
   rarity: PotionRarityKo;
   pool: PotionPool;
   imageUrl: string; // local path
@@ -352,7 +352,7 @@ export interface CodexPower {
   nameEn: string;      // English
   description: string; // Korean, with BBCode markup (templates baked from vars)
   descriptionRaw: string | null;
-  vars: Record<string, number>; // Base variable values for description template
+  vars: Record<string, number | string>; // Base variable values for description template
   type: PowerType;
   stackType: PowerStackType;
   allowNegative: boolean;
