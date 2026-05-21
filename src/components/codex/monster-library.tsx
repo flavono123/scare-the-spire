@@ -9,8 +9,11 @@ import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { STS2Change, STS2Patch } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
 import {
+  CodexCard,
   CodexMonster,
   CodexEncounter,
+  CodexPotion,
+  CodexRelic,
   MonsterType,
   MONSTER_TYPE_CONFIG,
   MONSTER_TYPE_ORDER,
@@ -63,6 +66,9 @@ interface MonsterLibraryProps {
   title: string;
   monsters: CodexMonster[];
   encounters: CodexEncounter[];
+  cards?: CodexCard[];
+  potions?: CodexPotion[];
+  relics?: CodexRelic[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   trailing?: React.ReactNode;
@@ -74,6 +80,9 @@ export function MonsterLibrary({
   title,
   monsters,
   encounters,
+  cards = [],
+  potions = [],
+  relics = [],
   patches,
   changes,
   trailing,
@@ -424,6 +433,9 @@ export function MonsterLibrary({
               backToListTitle={title}
               monster={selectedMonster}
               encounters={encounters}
+              relatedCards={cards}
+              relatedPotions={potions}
+              relatedRelics={relics}
               patches={patches}
               changes={changes}
               onClose={() => setSelectedMonster(null)}
