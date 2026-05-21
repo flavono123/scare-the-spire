@@ -68,7 +68,6 @@ export default async function MonsterDetailPage({
         backToListTitle={gameUi.bestiaryTitle}
         monster={monster}
         encounters={monsterEncounters}
-        allMonsters={monsters}
         patches={patches}
         changes={changes}
       />

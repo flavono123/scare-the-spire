@@ -430,11 +430,9 @@ export function MonsterLibrary({
               backToListTitle={title}
               monster={selectedMonster}
               encounters={getMonsterEncounters(selectedMonster.id)}
-              allMonsters={monsters}
               patches={patches}
               changes={changes}
               onClose={() => setSelectedMonster(null)}
-              onMonsterClick={(m) => setSelectedMonster(m)}
             />
           </div>
         </div>
