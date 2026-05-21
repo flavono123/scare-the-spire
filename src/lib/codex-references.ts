@@ -346,34 +346,40 @@ export const CARD_RELATED_ENCHANTMENT_IDS = {
 
 export const RELIC_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<string, readonly string[]>;
 
+// Potion relationships are derived from game code, not localized names or descriptions:
+// - concrete card creation/preview: HoverTipFactory.FromCard<TCard>, TCard.CreateInHand
+// - strike-wide interaction: SoldiersStew.cs filters CardTag.Strike
+// - power application/preview: PowerCmd.Apply<TPower>, PowerVar<TPower>, HoverTipFactory.FromPower<TPower>
+// Temporary potion wrapper powers are normalized to the public power they preview/apply internally.
 export const POTION_RELATED_CARD_IDS = {
   CUNNING_POTION: ["SHIV"],
   POT_OF_GHOULS: ["SOUL"],
-  SOLDIERS_STEW: [
-    "STRIKE_DEFECT",
-    "STRIKE_IRONCLAD",
-    "STRIKE_NECROBINDER",
-    "STRIKE_REGENT",
-    "STRIKE_SILENT",
-  ],
 } as const satisfies Record<string, readonly string[]>;
 
 export const POTION_RELATED_POWER_IDS = {
+  BEETLE_JUICE: ["SHRINK"],
+  CLARITY: ["CLARITY"],
   DEXTERITY_POTION: ["DEXTERITY"],
+  DUPLICATOR: ["DUPLICATION"],
   FLEX_POTION: ["STRENGTH"],
   FOCUS_POTION: ["FOCUS"],
   FYSH_OIL: ["STRENGTH", "DEXTERITY"],
   GHOST_IN_A_JAR: ["INTANGIBLE"],
+  GIGANTIFICATION_POTION: ["GIGANTIFICATION"],
   HEART_OF_IRON: ["PLATING"],
   LIQUID_BRONZE: ["THORNS"],
   LUCKY_TONIC: ["BUFFER"],
-  MAZALETHS_GIFT: ["RITUAL"],
+  MAZALETHS_GIFT: ["RITUAL", "STRENGTH"],
   POISON_POTION: ["POISON"],
   POTION_OF_BINDING: ["WEAK", "VULNERABLE"],
   POTION_OF_DOOM: ["DOOM"],
+  POWDERED_DEMISE: ["DEMISE"],
+  RADIANT_TINCTURE: ["RADIANCE"],
   REGEN_POTION: ["REGEN"],
   SHACKLING_POTION: ["STRENGTH"],
+  SHIP_IN_A_BOTTLE: ["BLOCK_NEXT_TURN"],
   SPEED_POTION: ["DEXTERITY"],
+  STABLE_SERUM: ["RETAIN_HAND"],
   STRENGTH_POTION: ["STRENGTH"],
   VULNERABLE_POTION: ["VULNERABLE"],
   WEAK_POTION: ["WEAK"],
