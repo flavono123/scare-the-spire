@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -14,54 +14,110 @@ import {
   CodexPower,
   POWER_TYPE_CONFIG,
 } from "@/lib/codex-types";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
+import { GameHoverTip, type HoverTipVariant } from "./hover-tip";
+import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
-function StatBadge({ label, value, color }: { label: string; value: string; color?: string }) {
+function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
-    <div className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-      <span className="text-[10px] text-gray-500 uppercase tracking-wider">{label}</span>
-      <span className="text-sm font-bold" style={color ? { color } : undefined}>
-        {value}
-      </span>
-    </div>
+    <span
+      className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold"
+      style={color ? { color } : undefined}
+    >
+      {value}
+    </span>
+  );
+}
+
+function InfoRailSection({
+  title,
+  children,
+  defaultOpen = true,
+}: {
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}) {
+  return (
+    <details
+      className="group rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+      open={defaultOpen}
+    >
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
+        <span>{title}</span>
+        <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">⌄</span>
+      </summary>
+      <div className="mt-3">{children}</div>
+    </details>
   );
 }
 
 interface PowerDetailProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
+  backToListTitle?: string;
   power: CodexPower;
   initialShowBeta?: boolean;
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
+  entities?: EntityInfo[];
   onClose?: () => void;
 }
 
 function getPowerDetailLabels(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
     ? {
+        englishName: "영어명",
+        negativeAllowed: "음수 허용",
         patchHistory: "패치 이력",
         noPatchHistory: "구조화 변경 없음",
       }
     : {
+        englishName: "English name",
+        negativeAllowed: "Negative allowed",
         patchHistory: "Patch History",
         noPatchHistory: "No structured changes",
       };
 }
 
-export function PowerDetail({ serviceLocale, gameUi, power, initialShowBeta = false, patches, changes, versionDiffs, onClose }: PowerDetailProps) {
+function getPowerHoverTipVariant(power: CodexPower): HoverTipVariant {
+  if (power.type === "Buff") return "buff";
+  if (power.type === "Debuff") return "debuff";
+  return "default";
+}
+
+export function PowerDetail({
+  serviceLocale,
+  gameUi,
+  backToListTitle,
+  power,
+  initialShowBeta = false,
+  patches,
+  changes,
+  versionDiffs,
+  entities,
+  onClose,
+}: PowerDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getPowerDetailLabels(serviceLocale);
   const typeConfig = POWER_TYPE_CONFIG[power.type];
   const [showBeta, setShowBeta] = useState(initialShowBeta && Boolean(power.betaImageUrl));
+  const [commentCount, setCommentCount] = useState(0);
+  const excludeSelf = useMemo(
+    () => new Set([power.name, power.nameEn]),
+    [power.name, power.nameEn],
+  );
   const displayImageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
+  const typeLabel = gameUi.powers.types[power.type].label || serviceText.labels.powerTypes[power.type].label;
+  const stackLabel = serviceText.labels.powerStackTypes[power.stackType] ?? power.stackType;
+  const backTitle = backToListTitle ?? gameUi.nav.powers;
 
   return (
-    <div className="flex flex-col items-center gap-6 p-4 sm:p-6 max-w-lg mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between w-full">
+    <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <Link
           href={localizeHref("/compendium/powers", serviceLocale)}
           className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
@@ -72,12 +128,12 @@ export function PowerDetail({ serviceLocale, gameUi, power, initialShowBeta = fa
             }
           }}
         >
-          ← {serviceText.powersView.backToList}
+          ← {backTitle}
         </Link>
         {onClose && (
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-400"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white/10"
             aria-label={serviceText.common.close}
           >
             ✕
@@ -85,81 +141,98 @@ export function PowerDetail({ serviceLocale, gameUi, power, initialShowBeta = fa
         )}
       </div>
 
-      {/* Large Power Image */}
-      <div className="w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center">
-        {displayImageUrl ? (
-          <Image
-            src={displayImageUrl}
-            alt={power.name}
-            width={144}
-            height={144}
-            className="w-full h-full object-contain drop-shadow-lg"
-          />
-        ) : (
-          <div className="w-full h-full rounded-full bg-white/5 flex items-center justify-center text-gray-600 text-2xl">
-            ?
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
+        <section className="flex min-h-[22rem] flex-col items-center justify-center gap-5 py-4">
+          <div className="flex w-full flex-col items-center justify-center gap-5 md:flex-row md:items-center">
+            <div className="flex shrink-0 flex-col items-center gap-3">
+              <div className="flex h-32 w-32 items-center justify-center sm:h-40 sm:w-40">
+                {displayImageUrl ? (
+                  <Image
+                    src={displayImageUrl}
+                    alt={power.name}
+                    width={160}
+                    height={160}
+                    className="h-full w-full object-contain drop-shadow-lg"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-2xl text-gray-600">
+                    ?
+                  </div>
+                )}
+              </div>
+
+              {power.betaImageUrl && (
+                <button
+                  onClick={() => setShowBeta((v) => !v)}
+                  className={`rounded-lg border px-3 py-1 text-xs transition-all ${
+                    showBeta
+                      ? "border-purple-500/50 bg-purple-500/20 text-purple-400"
+                      : "border-white/10 bg-white/5 text-gray-400 hover:border-white/30"
+                  }`}
+                >
+                  {serviceText.cardsView.toggles.betaArt}
+                </button>
+              )}
+            </div>
+
+            <GameHoverTip
+              title={power.name}
+              variant={getPowerHoverTipVariant(power)}
+              className="w-full max-w-[23rem]"
+              style={{ minWidth: 280 }}
+            >
+              {entities ? (
+                <RichDescription
+                  description={power.description}
+                  entities={entities}
+                  excludeEntityTerms={excludeSelf}
+                  className="block text-left"
+                />
+              ) : (
+                <DescriptionText description={power.description} className="block text-left" />
+              )}
+            </GameHoverTip>
           </div>
-        )}
-      </div>
+        </section>
 
-      {power.betaImageUrl && (
-        <button
-          onClick={() => setShowBeta((v) => !v)}
-          className={`px-3 py-1 text-xs rounded-lg border transition-all ${
-            showBeta
-              ? "bg-purple-500/20 text-purple-400 border-purple-500/50"
-              : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
-          }`}
-        >
-          {serviceText.cardsView.toggles.betaArt}
-        </button>
-      )}
+        <aside className="flex flex-col gap-3">
+          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+            <div className="space-y-3">
+              <div className="flex flex-wrap gap-2">
+                <MetaPill value={typeLabel} color={typeConfig.color} />
+                <MetaPill value={stackLabel} />
+                {power.allowNegative && (
+                  <MetaPill value={detailLabels.negativeAllowed} color="#ef5350" />
+                )}
+              </div>
+              {power.nameEn !== power.name && (
+                <div>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
+                  <div className="font-game-text text-sm text-gray-300">{power.nameEn}</div>
+                </div>
+              )}
+            </div>
+          </section>
 
-      {/* Power Name */}
-      <div className="text-center">
-        <h1 className="font-game-title text-2xl font-bold text-gray-100">{power.name}</h1>
-        <p className="font-game-text text-sm text-gray-500">{power.nameEn}</p>
-      </div>
+          <InfoRailSection title={detailLabels.patchHistory}>
+            <STS2ChangeHistory
+              serviceLocale={serviceLocale}
+              entityType="power"
+              entityId={power.id}
+              changes={changes}
+              versionDiffs={versionDiffs}
+              patches={patches}
+              emptyLabel={detailLabels.noPatchHistory}
+            />
+          </InfoRailSection>
 
-      {/* Stats Row */}
-      <div className="flex flex-wrap justify-center gap-2">
-        <StatBadge
-          label={serviceText.powersView.stats.type}
-          value={gameUi.powers.types[power.type].label || serviceText.labels.powerTypes[power.type].label}
-          color={typeConfig.color}
-        />
-        <StatBadge
-          label={serviceText.powersView.stats.stack}
-          value={serviceText.labels.powerStackTypes[power.stackType] ?? power.stackType}
-        />
-        {power.allowNegative && (
-          <StatBadge label={serviceText.powersView.stats.negative} value={serviceText.powersView.stats.allowed} color="#ef5350" />
-        )}
-      </div>
-
-      {/* Description */}
-      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <div className="text-sm text-gray-200 leading-relaxed">
-          <DescriptionText description={power.description} />
-        </div>
-      </div>
-
-      <div className="w-full rounded-lg border border-white/10 bg-black/20 p-4">
-        <h2 className="mb-3 font-game-title text-sm font-bold text-gray-300">{detailLabels.patchHistory}</h2>
-        <STS2ChangeHistory
-          serviceLocale={serviceLocale}
-          entityType="power"
-          entityId={power.id}
-          changes={changes}
-          versionDiffs={versionDiffs}
-          patches={patches}
-          emptyLabel={detailLabels.noPatchHistory}
-        />
-      </div>
-
-      <div className="w-full bg-white/5 border border-white/10 rounded-lg p-4">
-        <h2 className="text-sm font-bold text-gray-300 mb-3">{serviceText.common.comments}</h2>
-        <CommentSection threadKey={buildCodexCommentThreadKey("power", power.id)} />
+          <InfoRailSection title={`${serviceText.common.comments}${commentCount > 0 ? ` (${commentCount})` : ""}`}>
+            <CommentSection
+              threadKey={buildCodexCommentThreadKey("power", power.id)}
+              onCountChange={setCommentCount}
+            />
+          </InfoRailSection>
+        </aside>
       </div>
     </div>
   );
