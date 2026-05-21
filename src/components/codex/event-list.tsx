@@ -12,6 +12,7 @@ import {
 } from "@/lib/codex-service";
 import type {
   CodexCard,
+  CodexEnchantment,
   CodexEvent,
   CodexPotion,
   CodexRelic,
@@ -126,6 +127,7 @@ interface EventListProps {
   gameUi: CodexGameUiLabels;
   title: string;
   cards?: CodexCard[];
+  enchantments?: CodexEnchantment[];
   events: CodexEvent[];
   madScienceBaseCard?: CodexCard | null;
   potions?: CodexPotion[];
@@ -142,6 +144,7 @@ export function EventList({
   gameUi,
   title,
   cards,
+  enchantments,
   events,
   madScienceBaseCard,
   potions,
@@ -409,6 +412,7 @@ export function EventList({
               gameUi={gameUi}
               event={selectedEvent}
               cards={cards}
+              enchantments={enchantments}
               madScienceBaseCard={madScienceBaseCard}
               potions={potions}
               relics={relics}

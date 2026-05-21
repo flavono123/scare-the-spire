@@ -16,6 +16,7 @@ import {
 } from "@/lib/codex-service";
 import {
   CodexCard,
+  CodexEnchantment,
   CodexEvent,
   CodexPotion,
   CodexRelic,
@@ -45,6 +46,7 @@ import {
   FUTURE_OF_POTIONS_EVENT_ID,
   TINKER_TIME_EVENT_ID,
   getRelatedCardIdsForEvent,
+  getRelatedEnchantmentIdsForEvent,
   getRelatedPotionIdsForEvent,
   getRelatedRelicIdsForEvent,
 } from "@/lib/codex-references";
@@ -1665,6 +1667,7 @@ interface EventDetailProps {
   gameUi: CodexGameUiLabels;
   event: CodexEvent;
   cards?: CodexCard[];
+  enchantments?: CodexEnchantment[];
   madScienceBaseCard?: CodexCard | null;
   potions?: CodexPotion[];
   relics?: CodexRelic[];
@@ -1889,6 +1892,7 @@ export function EventDetail({
   gameUi,
   event,
   cards = [],
+  enchantments = [],
   madScienceBaseCard,
   potions,
   relics = [],
@@ -1939,6 +1943,7 @@ export function EventDetail({
       })
     : [];
   const cardById = new Map(cards.map((card) => [card.id, card]));
+  const enchantmentById = new Map(enchantments.map((enchantment) => [enchantment.id, enchantment]));
   const relicById = new Map(relics.map((relic) => [relic.id, relic]));
   const relatedCardTargets = [
     ...getRelatedCardIdsForEvent(event.id)
@@ -1965,6 +1970,10 @@ export function EventDetail({
     .map((relicId) => relicById.get(relicId))
     .filter((relic): relic is CodexRelic => Boolean(relic))
     .map(relicToReferenceTarget);
+  const relatedEnchantmentTargets = getRelatedEnchantmentIdsForEvent(event.id)
+    .map((enchantmentId) => enchantmentById.get(enchantmentId))
+    .filter((enchantment): enchantment is CodexEnchantment => Boolean(enchantment))
+    .map(enchantmentToReferenceTarget);
   const potionById = new Map((potions ?? []).map((potion) => [potion.id, potion]));
   const relatedPotionBase = getRelatedPotionIdsForEvent(event.id)
     .map((potionId) => potionById.get(potionId))
@@ -2095,6 +2104,7 @@ export function EventDetail({
             groups={[
               { kind: "card", targets: relatedCardTargets },
               { kind: "relic", targets: relatedRelicTargets },
+              { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "potion", targets: relatedPotionTargets },
             ]}
             serviceLocale={serviceLocale}
@@ -2158,6 +2168,25 @@ function relicToReferenceTarget(relic: CodexRelic): CodexReferenceTarget {
       color: relic.pool,
       type: "relic",
       relicData: relic,
+    },
+  };
+}
+
+function enchantmentToReferenceTarget(enchantment: CodexEnchantment): CodexReferenceTarget {
+  const href = `/compendium/enchantments/${enchantment.id.toLowerCase()}`;
+  return {
+    href,
+    id: enchantment.id,
+    title: enchantment.name,
+    entity: {
+      id: enchantment.id,
+      nameEn: enchantment.nameEn,
+      nameKo: enchantment.name,
+      imageUrl: enchantment.imageUrl,
+      href,
+      color: enchantment.cardType ?? "Any",
+      type: "enchantment",
+      enchantmentData: enchantment,
     },
   };
 }
