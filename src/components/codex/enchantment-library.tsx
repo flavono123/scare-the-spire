@@ -13,6 +13,7 @@ import {
   CodexEnchantment,
   CodexEvent,
   CodexPotion,
+  CodexPower,
   CodexRelic,
   EnchantmentCardTypeFilter,
   ENCHANTMENT_CARD_TYPE_CONFIG,
@@ -61,11 +62,13 @@ interface EnchantmentLibraryProps {
   events?: CodexEvent[];
   /** Potions — used to surface ones that share the selected enchantment's game mechanic. */
   potions?: CodexPotion[];
+  /** Powers — used to surface ones referenced by the selected enchantment. */
+  powers?: CodexPower[];
   /** Relics — used to surface ones that grant the selected enchantment. */
   relics?: CodexRelic[];
 }
 
-export function EnchantmentLibrary({ serviceLocale, enchantments, versions, currentVersion, patches, changes, versionDiffs, entities, cards, events, potions, relics }: EnchantmentLibraryProps) {
+export function EnchantmentLibrary({ serviceLocale, enchantments, versions, currentVersion, patches, changes, versionDiffs, entities, cards, events, potions, powers, relics }: EnchantmentLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedCardTypes, setSelectedCardTypes] = useState<Set<EnchantmentCardTypeFilter>>(new Set());
@@ -326,6 +329,7 @@ export function EnchantmentLibrary({ serviceLocale, enchantments, versions, curr
               cards={cards}
               events={events}
               potions={potions}
+              powers={powers}
               relics={relics}
               patches={patches}
               changes={changes}

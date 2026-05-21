@@ -14,6 +14,7 @@ import {
   CodexEnchantment,
   CodexEvent,
   CodexPotion,
+  CodexPower,
   CodexRelic,
   ENCHANTMENT_CARD_TYPE_CONFIG,
   type EnchantmentCardTypeFilter,
@@ -24,6 +25,7 @@ import {
   getRelatedCardIdsForEnchantment,
   getRelatedEventIdsForEnchantment,
   getRelatedPotionIdsForEnchantment,
+  getRelatedPowerIdsForEnchantment,
   getRelatedRelicIdsForEnchantment,
 } from "@/lib/codex-references";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
@@ -78,6 +80,8 @@ interface EnchantmentDetailProps {
   events?: CodexEvent[];
   /** Potions that share this enchantment's game mechanic. */
   potions?: CodexPotion[];
+  /** Powers referenced by this enchantment's game text. */
+  powers?: CodexPower[];
   /** All relics, used to surface ones that grant this enchantment. */
   relics?: CodexRelic[];
   patches?: STS2Patch[];
@@ -110,6 +114,7 @@ export function EnchantmentDetail({
   cards = [],
   events = [],
   potions = [],
+  powers = [],
   relics,
   patches,
   changes,
@@ -146,6 +151,11 @@ export function EnchantmentDetail({
     .map((potionId) => potionById.get(potionId))
     .filter((potion): potion is CodexPotion => Boolean(potion))
     .map(potionToReferenceTarget);
+  const powerById = new Map(powers.map((power) => [power.id, power]));
+  const relatedPowerTargets = getRelatedPowerIdsForEnchantment(enchantment, powers)
+    .map((powerId) => powerById.get(powerId))
+    .filter((power): power is CodexPower => Boolean(power))
+    .map(powerToReferenceTarget);
 
   const excludeSelf = useMemo(
     () => new Set([enchantment.name, enchantment.nameEn]),
@@ -258,6 +268,7 @@ export function EnchantmentDetail({
               { kind: "card", targets: relatedCardTargets },
               { kind: "relic", targets: relatedRelicTargets },
               { kind: "potion", targets: relatedPotionTargets },
+              { kind: "power", targets: relatedPowerTargets },
               { kind: "event", targets: relatedEventTargets },
             ]}
             serviceLocale={serviceLocale}
@@ -340,6 +351,25 @@ function potionToReferenceTarget(potion: CodexPotion): CodexReferenceTarget {
       color: potion.rarity,
       type: "potion",
       potionData: potion,
+    },
+  };
+}
+
+function powerToReferenceTarget(power: CodexPower): CodexReferenceTarget {
+  const href = `/compendium/powers/${power.id.toLowerCase()}`;
+  return {
+    href,
+    id: power.id,
+    title: power.name,
+    entity: {
+      id: power.id,
+      nameEn: power.nameEn,
+      nameKo: power.name,
+      imageUrl: power.imageUrl,
+      href,
+      color: power.type,
+      type: "power",
+      powerData: power,
     },
   };
 }
