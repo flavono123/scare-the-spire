@@ -575,7 +575,6 @@ export function getRelatedRelicIdsForEnchantment(
 }
 
 type PowerReferenceSource = {
-  descriptionRaw?: string | null;
   vars?: Record<string, unknown> | null;
 };
 
@@ -589,13 +588,10 @@ function normalizeReferenceToken(token: string): string {
     .toUpperCase();
 }
 
-function powerTokenCandidates(token: string): string[] {
+function powerVarKeyCandidates(token: string): string[] {
   const normalized = normalizeReferenceToken(token);
-  const candidates = [normalized];
-  if (normalized.endsWith("_POWER") && normalized.length > "_POWER".length) {
-    candidates.push(normalized.slice(0, -"_POWER".length));
-  }
-  return candidates;
+  if (!normalized.endsWith("_POWER") || normalized === "POWER") return [];
+  return [normalized, normalized.slice(0, -"_POWER".length)];
 }
 
 function buildPowerReferenceSet(powers?: PowerReferenceIndex): Set<string> | null {
@@ -603,37 +599,25 @@ function buildPowerReferenceSet(powers?: PowerReferenceIndex): Set<string> | nul
   return new Set(powers.map((power) => power.id.toUpperCase()));
 }
 
-function resolvePowerReferenceToken(
+function resolvePowerVarKey(
   token: string,
   powerIds: Set<string> | null,
 ): string | null {
-  const candidates = powerTokenCandidates(token);
+  const candidates = powerVarKeyCandidates(token);
+  if (candidates.length === 0) return null;
   if (!powerIds) {
     return candidates.find((candidate) => candidate !== candidates[0]) ?? null;
   }
   return candidates.find((candidate) => powerIds.has(candidate)) ?? null;
 }
 
-function extractPowerIdsFromTemplateText(
-  text: string | null | undefined,
-  powerIds: Set<string> | null,
-): string[] {
-  if (!text) return [];
-  const refs: string[] = [];
-  for (const match of text.matchAll(/\{\s*([A-Za-z][A-Za-z0-9_]*)/g)) {
-    const powerId = resolvePowerReferenceToken(match[1], powerIds);
-    if (powerId) refs.push(powerId);
-  }
-  return refs;
-}
-
-function extractPowerIdsFromTemplateVars(
+function extractPowerIdsFromVars(
   vars: Record<string, unknown> | null | undefined,
   powerIds: Set<string> | null,
 ): string[] {
   if (!vars) return [];
   return Object.keys(vars)
-    .map((key) => resolvePowerReferenceToken(key, powerIds))
+    .map((key) => resolvePowerVarKey(key, powerIds))
     .filter((powerId): powerId is string => Boolean(powerId));
 }
 
@@ -643,13 +627,12 @@ function getRelatedPowerIdsFromSource(
 ): string[] {
   const powerIds = buildPowerReferenceSet(powers);
   return dedupeIds([
-    ...extractPowerIdsFromTemplateText(source.descriptionRaw, powerIds),
-    ...extractPowerIdsFromTemplateVars(source.vars, powerIds),
+    ...extractPowerIdsFromVars(source.vars, powerIds),
   ]);
 }
 
 export function getRelatedPowerIdsForCard(
-  card: Pick<CodexCard, "appliedPowerIds" | "descriptionRaw" | "vars">,
+  card: Pick<CodexCard, "appliedPowerIds" | "vars">,
   powers?: PowerReferenceIndex,
 ): readonly string[] {
   return dedupeIds([
@@ -659,7 +642,7 @@ export function getRelatedPowerIdsForCard(
 }
 
 export function getRelatedPowerIdsForRelic(
-  relic: Pick<CodexRelic, "descriptionRaw" | "vars">,
+  relic: Pick<CodexRelic, "vars">,
   powers?: PowerReferenceIndex,
 ): readonly string[] {
   return getRelatedPowerIdsFromSource(relic, powers);
@@ -675,14 +658,14 @@ export function getRelatedPowerIdsForPotion(
 }
 
 export function getRelatedPowerIdsForEnchantment(
-  enchantment: Pick<CodexEnchantment, "descriptionRaw" | "vars">,
+  enchantment: Pick<CodexEnchantment, "vars">,
   powers?: PowerReferenceIndex,
 ): readonly string[] {
   return getRelatedPowerIdsFromSource(enchantment, powers);
 }
 
 export function getRelatedCardIdsForPower(
-  cards: readonly Pick<CodexCard, "id" | "appliedPowerIds" | "descriptionRaw" | "vars">[],
+  cards: readonly Pick<CodexCard, "id" | "appliedPowerIds" | "vars">[],
   powerId: string,
 ): readonly string[] {
   const normalizedPowerId = powerId.toUpperCase();
@@ -695,7 +678,7 @@ export function getRelatedCardIdsForPower(
 }
 
 export function getRelatedRelicIdsForPower(
-  relics: readonly Pick<CodexRelic, "id" | "descriptionRaw" | "vars">[],
+  relics: readonly Pick<CodexRelic, "id" | "vars">[],
   powerId: string,
 ): readonly string[] {
   const normalizedPowerId = powerId.toUpperCase();
@@ -708,7 +691,7 @@ export function getRelatedRelicIdsForPower(
 }
 
 export function getRelatedPotionIdsForPower(
-  potionsOrPowerId: string | readonly Pick<CodexPotion, "id" | "descriptionRaw" | "vars">[],
+  potionsOrPowerId: string | readonly Pick<CodexPotion, "id" | "vars">[],
   powerId?: string,
 ): readonly string[] {
   if (typeof potionsOrPowerId === "string") return getCodePotionIdsForPower(potionsOrPowerId);
@@ -722,7 +705,7 @@ export function getRelatedPotionIdsForPower(
 }
 
 export function getRelatedEnchantmentIdsForPower(
-  enchantments: readonly Pick<CodexEnchantment, "id" | "descriptionRaw" | "vars">[],
+  enchantments: readonly Pick<CodexEnchantment, "id" | "vars">[],
   powerId: string,
 ): readonly string[] {
   const normalizedPowerId = powerId.toUpperCase();
@@ -735,10 +718,10 @@ export function getRelatedEnchantmentIdsForPower(
 }
 
 type RelatedPowerEventSources = {
-  cards?: readonly Pick<CodexCard, "id" | "appliedPowerIds" | "descriptionRaw" | "vars">[];
-  relics?: readonly Pick<CodexRelic, "id" | "descriptionRaw" | "vars">[];
-  potions?: readonly Pick<CodexPotion, "id" | "descriptionRaw" | "vars" | "rarity">[];
-  enchantments?: readonly Pick<CodexEnchantment, "id" | "descriptionRaw" | "vars">[];
+  cards?: readonly Pick<CodexCard, "id" | "appliedPowerIds" | "vars">[];
+  relics?: readonly Pick<CodexRelic, "id" | "vars">[];
+  potions?: readonly Pick<CodexPotion, "id" | "vars" | "rarity">[];
+  enchantments?: readonly Pick<CodexEnchantment, "id" | "vars">[];
 };
 
 export function getRelatedEventIdsForPower(
