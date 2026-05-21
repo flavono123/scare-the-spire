@@ -24,6 +24,7 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
 import { EntityReferenceLinks } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
+import { GameCheckboxToggle } from "./game-checkbox";
 import { RichDescription } from "./rich-description";
 import { getRelatedEventIdsForRelic } from "@/lib/codex-references";
 import { STS2ChangeHistory } from "./sts2-change-history";
@@ -220,16 +221,12 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
               )}
 
               {relic.betaImageUrl && (
-                <button
-                  onClick={() => setShowBeta((v) => !v)}
-                  className={`rounded-lg border px-3 py-1 text-xs transition-all ${
-                    showBeta
-                      ? "border-purple-500/50 bg-purple-500/20 text-purple-400"
-                      : "border-white/10 bg-white/5 text-gray-400 hover:border-white/30"
-                  }`}
-                >
-                  {serviceText.cardsView.toggles.betaArt}
-                </button>
+                <GameCheckboxToggle
+                  checked={showBeta}
+                  onCheckedChange={setShowBeta}
+                  label={serviceText.cardsView.toggles.betaArt}
+                  size="md"
+                />
               )}
             </div>
 

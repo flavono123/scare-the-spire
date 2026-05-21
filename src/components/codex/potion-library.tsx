@@ -35,6 +35,7 @@ import {
 import { VersionSelector } from "./version-selector";
 import { SearchBar } from "./search-bar";
 import { FilterSection, IconFilterButton } from "./codex-filters";
+import { GameCheckboxToggle } from "./game-checkbox";
 import {
   CodexLibraryShell,
   CodexLibraryTopBar,
@@ -389,32 +390,16 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
             {FUTURE_OF_POTIONS_OUTCOMES.map((outcome) => {
               const active = selectedFutureOutcomes.has(outcome.id);
               return (
-                <label
+                <GameCheckboxToggle
                   key={outcome.id}
-                  className={`flex cursor-pointer items-start gap-2 rounded px-2.5 py-1.5 text-left text-xs leading-relaxed transition-all ${
-                    active
-                      ? "bg-yellow-500/20 text-yellow-200"
-                      : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={active}
-                    onChange={() => toggleFutureOutcome(outcome.id)}
-                    className="sr-only"
-                  />
-                  <span
-                    aria-hidden="true"
-                    className={`mt-0.5 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded border text-[9px] font-bold ${
-                      active
-                        ? "border-yellow-300 bg-yellow-300 text-black"
-                        : "border-white/25 bg-black/20"
-                    }`}
-                  >
-                    {active ? "✓" : ""}
-                  </span>
-                  <span>{formatFuturePotionOutcome(outcome)}</span>
-                </label>
+                  checked={active}
+                  onCheckedChange={() => toggleFutureOutcome(outcome.id)}
+                  label={formatFuturePotionOutcome(outcome)}
+                  size="sm"
+                  align="start"
+                  className="w-full py-1.5"
+                  labelClassName="font-game-text text-xs leading-relaxed text-[#e5d68a]"
+                />
               );
             })}
           </div>

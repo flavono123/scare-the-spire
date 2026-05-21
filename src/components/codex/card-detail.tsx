@@ -22,6 +22,7 @@ import {
 import { CardTile } from "./card-tile";
 import { DescriptionText, hasCardUpgrade } from "./codex-description";
 import { GameChoiceFrame } from "./event-choice-frame";
+import { GameCheckboxToggle } from "./game-checkbox";
 import { HoverTip, HoverTipVariant } from "./hover-tip";
 import { RichText } from "@/components/rich-text";
 import { CARD_WIDTH_PRESET } from "@/lib/sts2-card-style";
@@ -581,30 +582,22 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
 
           {/* 강화 / 베타 토글 — 카드 바로 아래 */}
           {(canShowUpgrade || card.betaImageUrl) && (
-            <div className="flex gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-2">
               {canShowUpgrade && (
-                <button
-                  onClick={() => setShowUpgrade((v) => !v)}
-                  className={`px-3 py-1 text-xs rounded-lg border transition-all ${
-                    showUpgrade
-                      ? "bg-green-500/20 text-green-400 border-green-500/50"
-                      : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
-                  }`}
-                >
-                  {gameUi.cardLibrary.viewUpgrades}
-                </button>
+                <GameCheckboxToggle
+                  checked={showUpgrade}
+                  onCheckedChange={setShowUpgrade}
+                  label={gameUi.cardLibrary.viewUpgrades}
+                  size="md"
+                />
               )}
               {card.betaImageUrl && (
-                <button
-                  onClick={() => setShowBeta((v) => !v)}
-                  className={`px-3 py-1 text-xs rounded-lg border transition-all ${
-                    showBeta
-                      ? "bg-purple-500/20 text-purple-400 border-purple-500/50"
-                      : "bg-white/5 text-gray-400 border-white/10 hover:border-white/30"
-                  }`}
-                >
-                  {serviceText.cardsView.toggles.betaArt}
-                </button>
+                <GameCheckboxToggle
+                  checked={showBeta}
+                  onCheckedChange={setShowBeta}
+                  label={serviceText.cardsView.toggles.betaArt}
+                  size="md"
+                />
               )}
             </div>
           )}
