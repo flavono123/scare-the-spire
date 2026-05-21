@@ -492,10 +492,6 @@ export function getRelatedPowerIdsForRelic(relic: Pick<CodexRelic, "vars">): str
   return getPowerIdsFromVars(relic.vars);
 }
 
-export function getRelatedPowerIdsForPotion(potion: Pick<CodexPotion, "vars">): string[] {
-  return getPowerIdsFromVars(potion.vars);
-}
-
 export function getRelatedCardIdsForPower(
   cards: readonly Pick<CodexCard, "id" | "appliedPowerIds">[],
   powerId: string,
