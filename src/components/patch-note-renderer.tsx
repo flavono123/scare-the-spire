@@ -9,7 +9,7 @@ import {
   EFFECT_CLASSES,
 } from "@/components/rich-text";
 import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent, CodexMonster, CodexEncounter, CodexAncient } from "@/lib/codex-types";
-import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, POWER_TYPE_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool } from "@/lib/codex-types";
+import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   localizeHrefWithGameLocale,
@@ -389,11 +389,6 @@ export function EntityPreview({
             title={entity.nameKo}
             imageUrl={entity.powerData.imageUrl}
             imageAlt={entity.nameKo}
-            meta={(
-              <span style={{ color: POWER_TYPE_CONFIG[entity.powerData.type].color }}>
-                {gameUi?.powers.types[entity.powerData.type].label || POWER_TYPE_CONFIG[entity.powerData.type].label}
-              </span>
-            )}
           >
             <DescriptionText description={entity.powerData.description} />
           </GameResourcePreview>,
