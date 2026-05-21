@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexCharacters, getCodexEnchantments, getCodexEvents, getCodexPotions } from "@/lib/codex-data";
+import { getCodexCards, getCodexCharacters, getCodexEnchantments, getCodexEvents, getCodexPotions, getCodexPowers } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs } from "@/lib/data";
 import {
@@ -48,8 +48,9 @@ export default async function PotionDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [potions, characters, enchantments, patches, changes, versionDiffs, gameUi, events, entities] = await Promise.all([
+  const [potions, cards, characters, enchantments, patches, changes, versionDiffs, gameUi, events, powers, entities] = await Promise.all([
     getCodexPotions({ gameLocale }),
+    getCodexCards({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getSTS2Patches(),
@@ -57,6 +58,7 @@ export default async function PotionDetailPage({
     getEntityVersionDiffs(),
     getCodexGameUiLabels(gameLocale),
     getCodexEvents({ gameLocale }),
+    getCodexPowers({ gameLocale }),
     loadAllEntities({ gameLocale }),
   ]);
   const potion = potions.find((p) => p.id.toLowerCase() === id.toLowerCase());
@@ -77,7 +79,7 @@ export default async function PotionDetailPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.potionLabTitle} potion={potion} poolLabels={poolLabels} relatedEnchantments={enchantments} relatedEvents={events} patches={patches} changes={changes} versionDiffs={versionDiffs} entities={entities} />
+      <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.potionLabTitle} potion={potion} poolLabels={poolLabels} relatedCards={cards} relatedEnchantments={enchantments} relatedEvents={events} relatedPowers={powers} patches={patches} changes={changes} versionDiffs={versionDiffs} entities={entities} />
     </div>
   );
 }

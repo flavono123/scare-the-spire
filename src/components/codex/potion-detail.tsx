@@ -12,9 +12,11 @@ import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
+  CodexCard,
   CodexEnchantment,
-  CodexPotion,
   CodexEvent,
+  CodexPotion,
+  CodexPower,
   PotionPool,
   POTION_RARITY_CONFIG,
   characterOutlineFilter,
@@ -32,8 +34,10 @@ import {
   FUTURE_OF_POTIONS_EVENT_NAME_KO,
   FUTURE_OF_POTIONS_EVENT_PATH,
   getFuturePotionChoicesForPotion,
+  getRelatedCardIdsForPotion,
   getRelatedEnchantmentIdsForPotion,
   getRelatedEventIdsForPotion,
+  getRelatedPowerIdsForPotion,
 } from "@/lib/codex-references";
 
 function dedupeIds(ids: readonly string[]): string[] {
@@ -85,8 +89,10 @@ interface PotionDetailProps {
   backToListTitle: string;
   potion: CodexPotion;
   poolLabels: Record<PotionPool, string>;
+  relatedCards?: CodexCard[];
   relatedEnchantments?: CodexEnchantment[];
   relatedEvents?: CodexEvent[];
+  relatedPowers?: CodexPower[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
@@ -107,7 +113,7 @@ function getPotionDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedEnchantments = [], relatedEvents = [], patches, changes, versionDiffs, onClose, entities }: PotionDetailProps & { entities?: EntityInfo[] }) {
+export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedCards = [], relatedEnchantments = [], relatedEvents = [], relatedPowers = [], patches, changes, versionDiffs, onClose, entities }: PotionDetailProps & { entities?: EntityInfo[] }) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getPotionDetailLabels(serviceLocale);
   const rarityConfig = POTION_RARITY_CONFIG[potion.rarity];
@@ -115,6 +121,11 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
     ? getCharacterColor(potion.pool)
     : undefined;
   const futurePotionChoices = getFuturePotionChoicesForPotion(potion);
+  const cardById = new Map(relatedCards.map((card) => [card.id, card]));
+  const relatedCardTargets = getRelatedCardIdsForPotion(potion.id)
+    .map((cardId) => cardById.get(cardId))
+    .filter((card): card is CodexCard => Boolean(card))
+    .map(cardToReferenceTarget);
   const eventById = new Map(relatedEvents.map((event) => [event.id, event]));
   const relatedEventIds = dedupeIds([
     FUTURE_OF_POTIONS_EVENT_ID,
@@ -149,6 +160,11 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
     .map((enchantmentId) => enchantmentById.get(enchantmentId))
     .filter((enchantment): enchantment is CodexEnchantment => Boolean(enchantment))
     .map(enchantmentToReferenceTarget);
+  const powerById = new Map(relatedPowers.map((power) => [power.id, power]));
+  const relatedPowerTargets = getRelatedPowerIdsForPotion(potion.id)
+    .map((powerId) => powerById.get(powerId))
+    .filter((power): power is CodexPower => Boolean(power))
+    .map(powerToReferenceTarget);
   const potionCourierEvent = eventById.get("POTION_COURIER") ?? null;
   const potionCourierChoices = (potionCourierEvent?.options ?? []).filter((option) => (
     (potion.id === "FOUL_POTION" && option.id === "GRAB_POTIONS") ||
@@ -245,6 +261,8 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
 
           <EntityReferenceGroupLinks
             groups={[
+              { kind: "card", targets: relatedCardTargets },
+              { kind: "power", targets: relatedPowerTargets },
               { kind: "event", targets: relatedEventTargets },
               { kind: "enchantment", targets: relatedEnchantmentTargets },
             ]}
@@ -296,6 +314,44 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
       </div>
     </div>
   );
+}
+
+function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {
+  const href = `/compendium/cards/${card.id.toLowerCase()}`;
+  return {
+    href,
+    id: card.id,
+    title: card.name,
+    entity: {
+      id: card.id,
+      nameEn: card.nameEn,
+      nameKo: card.name,
+      imageUrl: card.imageUrl,
+      href,
+      color: card.color,
+      type: "card",
+      cardData: card,
+    },
+  };
+}
+
+function powerToReferenceTarget(power: CodexPower): CodexReferenceTarget {
+  const href = `/compendium/powers/${power.id.toLowerCase()}`;
+  return {
+    href,
+    id: power.id,
+    title: power.name,
+    entity: {
+      id: power.id,
+      nameEn: power.nameEn,
+      nameKo: power.name,
+      imageUrl: power.imageUrl,
+      href,
+      color: power.type,
+      type: "power",
+      powerData: power,
+    },
+  };
 }
 
 function enchantmentToReferenceTarget(enchantment: CodexEnchantment): CodexReferenceTarget {
