@@ -449,10 +449,6 @@ export function getRelatedEventIdsForEnchantment(enchantmentId: string): readonl
   return invertEventRelations(EVENT_RELATED_ENCHANTMENT_IDS, enchantmentId);
 }
 
-export function getRelatedEventIdsForPower(powerId: string): readonly string[] {
-  return invertEventRelations(EVENT_RELATED_POWER_IDS, powerId);
-}
-
 export function getRelatedCardIdsForEnchantment(enchantmentId: string): readonly string[] {
   return invertEventRelations(CARD_RELATED_ENCHANTMENT_IDS, enchantmentId);
 }
@@ -670,11 +666,6 @@ export function getRelatedPowerIdsForRelic(
   return getRelatedPowerIdsFromSource(relic, powers);
 }
 
-export function getRelatedPowerIdsForPotion(potionId: string): readonly string[];
-export function getRelatedPowerIdsForPotion(
-  potion: Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">,
-  powers?: PowerReferenceIndex,
-): readonly string[];
 export function getRelatedPowerIdsForPotion(
   potionOrId: string | Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">,
   powers?: PowerReferenceIndex,
@@ -719,11 +710,6 @@ export function getRelatedRelicIdsForPower(
     .map((relic) => relic.id);
 }
 
-export function getRelatedPotionIdsForPower(powerId: string): readonly string[];
-export function getRelatedPotionIdsForPower(
-  potions: readonly Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">[],
-  powerId: string,
-): readonly string[];
 export function getRelatedPotionIdsForPower(
   potionsOrPowerId: string | readonly Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars">[],
   powerId?: string,
@@ -751,21 +737,26 @@ export function getRelatedEnchantmentIdsForPower(
     .map((enchantment) => enchantment.id);
 }
 
+type RelatedPowerEventSources = {
+  cards?: readonly Pick<CodexCard, "id" | "appliedPowerIds" | "description" | "descriptionRaw" | "vars">[];
+  relics?: readonly Pick<CodexRelic, "id" | "description" | "descriptionRaw" | "vars">[];
+  potions?: readonly Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars" | "rarity">[];
+  enchantments?: readonly Pick<CodexEnchantment, "id" | "description" | "descriptionRaw" | "extraCardText">[];
+};
+
 export function getRelatedEventIdsForPower(
   powerId: string,
-  sources: {
-    cards?: readonly Pick<CodexCard, "id" | "appliedPowerIds" | "description" | "descriptionRaw" | "vars">[];
-    relics?: readonly Pick<CodexRelic, "id" | "description" | "descriptionRaw" | "vars">[];
-    potions?: readonly Pick<CodexPotion, "id" | "description" | "descriptionRaw" | "vars" | "rarity">[];
-    enchantments?: readonly Pick<CodexEnchantment, "id" | "description" | "descriptionRaw" | "extraCardText">[];
-  },
+  sources?: RelatedPowerEventSources,
 ): readonly string[] {
+  const directEventIds = invertEventRelations(EVENT_RELATED_POWER_IDS, powerId);
+  if (!sources) return directEventIds;
+
   const relatedCardIds = new Set(getRelatedCardIdsForPower(sources.cards ?? [], powerId).map((id) => id.toUpperCase()));
   const relatedRelicIds = new Set(getRelatedRelicIdsForPower(sources.relics ?? [], powerId).map((id) => id.toUpperCase()));
   const relatedPotionIds = new Set(getRelatedPotionIdsForPower(sources.potions ?? [], powerId).map((id) => id.toUpperCase()));
   const relatedEnchantmentIds = new Set(getRelatedEnchantmentIdsForPower(sources.enchantments ?? [], powerId).map((id) => id.toUpperCase()));
 
-  const eventIds: string[] = [];
+  const eventIds = [...directEventIds];
   addEventsReferencingIds(eventIds, EVENT_RELATED_CARD_IDS, relatedCardIds);
   addEventsReferencingIds(eventIds, EVENT_RELATED_RELIC_IDS, relatedRelicIds);
   addEventsReferencingIds(eventIds, EVENT_RELATED_POTION_IDS, relatedPotionIds);
