@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, type ReactNode } from "react";
 import type { CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
@@ -52,6 +52,40 @@ import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-r
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 const GAME_TEXT_SHADOW = "3px 2px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.75)";
+
+function MetaPill({ value, color }: { value: string; color?: string }) {
+  return (
+    <span
+      className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold"
+      style={color ? { color } : undefined}
+    >
+      {value}
+    </span>
+  );
+}
+
+function InfoRailSection({
+  title,
+  children,
+  defaultOpen = true,
+}: {
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}) {
+  return (
+    <details
+      className="group rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+      open={defaultOpen}
+    >
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
+        <span>{title}</span>
+        <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">⌄</span>
+      </summary>
+      <div className="mt-3">{children}</div>
+    </details>
+  );
+}
 
 const ABYSSAL_BATHS_BASE_DAMAGE = 3;
 const ABYSSAL_BATHS_HARD_LIMIT = 15;
@@ -1865,19 +1899,20 @@ export function EventDetail({
 }: EventDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = serviceLocale === "ko"
-    ? { patchHistory: "패치 이력", noPatchHistory: "구조화 변경 없음" }
-    : { patchHistory: "Patch History", noPatchHistory: "No structured changes" };
+    ? { englishName: "영어명", patchHistory: "패치 이력", noPatchHistory: "구조화 변경 없음" }
+    : { englishName: "English name", patchHistory: "Patch History", noPatchHistory: "No structured changes" };
   const isModal = Boolean(onClose);
   const [preview, setPreview] = useState<EventPreview | null>(null);
+  const [commentCount, setCommentCount] = useState(0);
   const [trialNpcOverlay, setTrialNpcOverlay] = useState<TrialNpcOverlay | null>(null);
   const artOverlays = EVENT_ART_OVERLAYS[event.id] ?? [];
   const eventSpineOverlays = EVENT_SPINE_OVERLAYS[event.id] ?? [];
   const eventImageUrl = event.id === "TRIAL"
     ? "/images/sts2/events/trial_started.webp"
     : event.imageUrl;
-  const rootClassName = isModal
-    ? "mx-auto flex max-w-[92rem] flex-col gap-4 p-3 sm:p-5"
-    : "mx-auto flex max-w-6xl flex-col gap-5 p-4 sm:p-6";
+  const eventTypeLabel = serviceLocale === "ko" ? "이벤트" : "Event";
+  const eventActLabel = event.act ? gameUi.acts[event.act] : serviceText.labels.acts.none;
+  const rootClassName = "mx-auto w-full max-w-[92rem] p-4 sm:p-6";
   const textPanelClassName = isModal
     ? "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[2%] sm:right-[3.5%] sm:top-[3%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[560px]"
     : "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]";
@@ -1967,102 +2002,124 @@ export function EventDetail({
         )}
       </div>
 
-      <section
-        className="relative overflow-hidden rounded-xl border border-white/10 bg-black shadow-2xl"
-        style={{ boxShadow: `inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.35)` }}
-      >
-        <div className="relative aspect-[3440/1616] min-h-[620px] w-full sm:min-h-0">
-          {eventImageUrl ? (
-            <Image
-              src={eventImageUrl}
-              alt={event.name}
-              fill
-              sizes="(max-width: 768px) 100vw, 1152px"
-              className="object-contain"
-              priority={Boolean(onClose)}
-            />
-          ) : (
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(96,165,250,0.20),transparent_34%),linear-gradient(135deg,#111827,#050505_65%)]" />
-          )}
-          {artOverlays.map((overlay, overlayIndex) => (
-            overlay.kind === "sprite-sheet" ? (
-              <EventSpriteSheetOverlay
-                key={`${overlay.src}-${overlayIndex}`}
-                overlay={overlay}
-              />
-            ) : (
-              <Image
-                key={`${overlay.src}-${overlayIndex}`}
-                src={overlay.src}
-                alt={overlay.alt}
-                fill={overlay.fill}
-                width={overlay.width}
-                height={overlay.height}
-                className={overlay.className}
-                style={overlay.style}
-                aria-hidden={overlay.alt === "" ? true : undefined}
-              />
-            )
-          ))}
-          {trialNpcOverlay && <TrialNpcBackground overlay={trialNpcOverlay} />}
-          {eventSpineOverlays.map((config) => (
-            <EventSpineOverlay key={config.asset.id} config={config} />
-          ))}
-          <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/30 to-transparent" />
-          {preview && <EventPreviewOverlay preview={preview} serviceLocale={serviceLocale} />}
-          <div className={textPanelClassName}>
-            <div className="relative flex min-h-0 flex-1 flex-col">
-              <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
-              <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto pr-2">
-                <h1
-                  className="font-game-title text-3xl font-bold leading-tight text-[#f3c640]"
-                  style={{ textShadow: GAME_TEXT_SHADOW }}
-                >
-                  {event.name}
-                </h1>
-                <EventContentViewer
-                  cards={cards}
-                  event={event}
-                  gameUi={gameUi}
-                  madScienceBaseCard={madScienceBaseCard}
-                  messages={serviceText}
-                  onPreviewChange={setPreview}
-                  onTrialNpcChange={setTrialNpcOverlay}
-                  potions={potions}
-                  relics={relics}
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
+        <section className="flex min-h-[22rem] items-center justify-center py-2">
+          <div
+            className="relative w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10"
+            style={{ boxShadow: `inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.35)` }}
+          >
+            <div className="relative aspect-[3440/1616] min-h-[34rem] w-full sm:min-h-0">
+              {eventImageUrl ? (
+                <Image
+                  src={eventImageUrl}
+                  alt={event.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 70vw, 1090px"
+                  className="object-contain"
+                  priority={Boolean(onClose)}
                 />
+              ) : (
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(96,165,250,0.20),transparent_34%),linear-gradient(135deg,#111827,#050505_65%)]" />
+              )}
+              {artOverlays.map((overlay, overlayIndex) => (
+                overlay.kind === "sprite-sheet" ? (
+                  <EventSpriteSheetOverlay
+                    key={`${overlay.src}-${overlayIndex}`}
+                    overlay={overlay}
+                  />
+                ) : (
+                  <Image
+                    key={`${overlay.src}-${overlayIndex}`}
+                    src={overlay.src}
+                    alt={overlay.alt}
+                    fill={overlay.fill}
+                    width={overlay.width}
+                    height={overlay.height}
+                    className={overlay.className}
+                    style={overlay.style}
+                    aria-hidden={overlay.alt === "" ? true : undefined}
+                  />
+                )
+              ))}
+              {trialNpcOverlay && <TrialNpcBackground overlay={trialNpcOverlay} />}
+              {eventSpineOverlays.map((config) => (
+                <EventSpineOverlay key={config.asset.id} config={config} />
+              ))}
+              <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/30 to-transparent" />
+              {preview && <EventPreviewOverlay preview={preview} serviceLocale={serviceLocale} />}
+              <div className={textPanelClassName}>
+                <div className="relative flex min-h-0 flex-1 flex-col">
+                  <div className="pointer-events-none absolute -inset-6 rounded-full bg-black/35 blur-2xl" />
+                  <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto pr-2">
+                    <h1
+                      className="font-game-title text-3xl font-bold leading-tight text-[#f3c640]"
+                      style={{ textShadow: GAME_TEXT_SHADOW }}
+                    >
+                      {event.name}
+                    </h1>
+                    <EventContentViewer
+                      cards={cards}
+                      event={event}
+                      gameUi={gameUi}
+                      madScienceBaseCard={madScienceBaseCard}
+                      messages={serviceText}
+                      onPreviewChange={setPreview}
+                      onTrialNpcChange={setTrialNpcOverlay}
+                      potions={potions}
+                      relics={relics}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <EntityReferenceGroupLinks
-        groups={[
-          { kind: "card", targets: relatedCardTargets },
-          { kind: "relic", targets: relatedRelicTargets },
-          { kind: "potion", targets: relatedPotionTargets },
-        ]}
-        serviceLocale={serviceLocale}
-      />
+        <aside className="flex flex-col gap-3 lg:sticky lg:top-4">
+          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+            <div className="space-y-3">
+              <div className="flex flex-wrap gap-2">
+                <MetaPill value={eventTypeLabel} color="#f3c640" />
+                <MetaPill value={eventActLabel} color="#60a5fa" />
+              </div>
+              {event.nameEn !== event.name && (
+                <div>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
+                  <div className="font-game-text text-sm text-gray-300">{event.nameEn}</div>
+                </div>
+              )}
+            </div>
+          </section>
 
-      <aside className="rounded-xl border border-white/10 bg-black/20 p-4">
-        <h2 className="mb-3 font-game-title text-sm font-bold text-gray-300">{detailLabels.patchHistory}</h2>
-        <STS2ChangeHistory
-          serviceLocale={serviceLocale}
-          entityType="event"
-          entityId={event.id}
-          changes={changes}
-          versionDiffs={versionDiffs}
-          patches={patches}
-          emptyLabel={detailLabels.noPatchHistory}
-        />
-      </aside>
+          <EntityReferenceGroupLinks
+            groups={[
+              { kind: "card", targets: relatedCardTargets },
+              { kind: "relic", targets: relatedRelicTargets },
+              { kind: "potion", targets: relatedPotionTargets },
+            ]}
+            serviceLocale={serviceLocale}
+          />
 
-      <aside className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-        <h2 className="mb-3 text-sm font-bold text-gray-300">{serviceText.common.comments}</h2>
-        <CommentSection threadKey={buildCodexCommentThreadKey("event", event.id)} />
-      </aside>
+          <InfoRailSection title={detailLabels.patchHistory}>
+            <STS2ChangeHistory
+              serviceLocale={serviceLocale}
+              entityType="event"
+              entityId={event.id}
+              changes={changes}
+              versionDiffs={versionDiffs}
+              patches={patches}
+              emptyLabel={detailLabels.noPatchHistory}
+            />
+          </InfoRailSection>
+
+          <InfoRailSection title={`${serviceText.common.comments}${commentCount > 0 ? ` (${commentCount})` : ""}`}>
+            <CommentSection
+              threadKey={buildCodexCommentThreadKey("event", event.id)}
+              onCountChange={setCommentCount}
+            />
+          </InfoRailSection>
+        </aside>
+      </div>
     </div>
   );
 }
