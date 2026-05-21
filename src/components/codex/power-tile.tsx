@@ -3,26 +3,20 @@
 import { useState, useRef, useCallback, memo } from "react";
 import Image from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
-import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import { CodexPower } from "@/lib/codex-types";
+import type { CodexPower } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
+import { GameHoverTip, type HoverTipVariant } from "./hover-tip";
 
-const TYPE_STYLES: Record<string, { border: string; text: string; badge: string }> = {
+const TYPE_STYLES: Record<string, { border: string }> = {
   Buff: {
     border: "border-green-500/60 bg-green-500/10",
-    text: "text-green-400",
-    badge: "bg-green-500/15 text-green-400 border-green-500/30",
   },
   Debuff: {
     border: "border-red-500/60 bg-red-500/10",
-    text: "text-red-400",
-    badge: "bg-red-500/15 text-red-400 border-red-500/30",
   },
   None: {
     border: "border-zinc-500/60 bg-zinc-500/10",
-    text: "text-zinc-400",
-    badge: "bg-zinc-500/15 text-zinc-400 border-zinc-500/30",
   },
 };
 
@@ -34,27 +28,52 @@ interface PowerTileProps {
   onClick?: () => void;
 }
 
-export const PowerTile = memo(function PowerTile({ serviceLocale = "ko", gameUi, power, showBeta = false, onClick }: PowerTileProps) {
-  const serviceText = getCodexServiceMessages(serviceLocale);
+type TooltipPlacement = {
+  horizontal: "left" | "right";
+  vertical: "top" | "bottom";
+};
+
+const TOOLTIP_GAP = 12;
+const TOOLTIP_WIDTH = 320;
+const TOOLTIP_HEIGHT = 220;
+
+function getPowerHoverTipVariant(power: CodexPower): HoverTipVariant {
+  if (power.type === "Buff") return "buff";
+  if (power.type === "Debuff") return "debuff";
+  return "default";
+}
+
+export const PowerTile = memo(function PowerTile({ power, showBeta = false, onClick }: PowerTileProps) {
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
-  const [tooltipSide, setTooltipSide] = useState<"right" | "left">("right");
+  const [placement, setPlacement] = useState<TooltipPlacement>({
+    horizontal: "right",
+    vertical: "top",
+  });
 
   const style = TYPE_STYLES[power.type] ?? TYPE_STYLES.None;
   const imageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
 
-  const updateTooltipSide = useCallback(() => {
-    if (!tileRef.current) return;
-    const rect = tileRef.current.getBoundingClientRect();
-    const spaceRight = window.innerWidth - rect.right;
-    setTooltipSide(spaceRight < 280 ? "left" : "right");
+  const updatePlacement = useCallback(() => {
+    const rect = tileRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const horizontal = rect.right + TOOLTIP_GAP + TOOLTIP_WIDTH > window.innerWidth
+      ? "left"
+      : "right";
+    const vertical = rect.top + TOOLTIP_HEIGHT > window.innerHeight
+      ? "bottom"
+      : "top";
+    setPlacement({ horizontal, vertical });
   }, []);
 
   return (
     <div
       ref={tileRef}
       className="relative group"
-      onMouseEnter={() => { updateTooltipSide(); setHovered(true); }}
+      onMouseEnter={() => {
+        updatePlacement();
+        setHovered(true);
+      }}
       onMouseLeave={() => setHovered(false)}
       onClick={onClick}
     >
@@ -83,28 +102,17 @@ export const PowerTile = memo(function PowerTile({ serviceLocale = "ko", gameUi,
       {/* Hover tooltip */}
       {hovered && (
         <div
-          className={`absolute z-50 w-64 bg-[#0c0c20]/95 border border-white/15 rounded-lg shadow-2xl p-3 pointer-events-none ${
-            tooltipSide === "right"
-              ? "left-full ml-2 top-0"
-              : "right-full mr-2 top-0"
-          }`}
+          className={`pointer-events-none absolute z-50 hidden w-max max-w-80 md:block ${
+            placement.horizontal === "right" ? "left-full ml-3" : "right-full mr-3"
+          } ${placement.vertical === "top" ? "top-0" : "bottom-0"}`}
         >
-          <div className="flex items-center gap-2 mb-1">
-            <span className={`font-game-title font-bold text-sm ${style.text}`}>
-              {power.name}
-            </span>
-            <span className={`font-game-text inline-flex items-center rounded-full border px-1.5 py-0.5 text-[9px] font-medium ${style.badge}`}>
-              {gameUi.powers.types[power.type].label || serviceText.labels.powerTypes[power.type].label}
-            </span>
-          </div>
-          {power.nameEn !== power.name && (
-            <div className="font-game-text text-[10px] text-gray-500 mb-1.5">
-              {power.nameEn}
-            </div>
-          )}
-          <div className="font-game-text text-xs text-gray-200 leading-relaxed">
-            <DescriptionText description={power.description} />
-          </div>
+          <GameHoverTip
+            title={power.name}
+            variant={getPowerHoverTipVariant(power)}
+            style={{ minWidth: 280 }}
+          >
+            <DescriptionText description={power.description} className="block text-left" />
+          </GameHoverTip>
         </div>
       )}
     </div>
