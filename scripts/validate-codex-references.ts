@@ -11,9 +11,19 @@
 import fs from "fs";
 import path from "path";
 import {
+  CARD_RELATED_ENCHANTMENT_IDS,
   EVENT_RELATED_CARD_IDS,
+  EVENT_RELATED_ENCHANTMENT_IDS,
   EVENT_RELATED_POTION_IDS,
+  EVENT_RELATED_POWER_IDS,
   EVENT_RELATED_RELIC_IDS,
+  MONSTER_RELATED_CARD_IDS,
+  MONSTER_RELATED_POTION_IDS,
+  MONSTER_RELATED_RELIC_IDS,
+  POTION_RELATED_CARD_IDS,
+  POTION_RELATED_ENCHANTMENT_IDS,
+  POTION_RELATED_POWER_IDS,
+  RELIC_RELATED_ENCHANTMENT_IDS,
 } from "../src/lib/codex-references";
 
 interface CodexEntity {
@@ -40,12 +50,14 @@ function validateRelationMap({
   entityIds,
   entityKind,
   eventIds,
+  sourceKind = "event",
   map,
   mapName,
 }: {
   entityIds: Set<string>;
   entityKind: string;
   eventIds: Set<string>;
+  sourceKind?: string;
   map: RelationMap;
   mapName: string;
 }): number {
@@ -54,7 +66,7 @@ function validateRelationMap({
 
   for (const [eventId, relatedIds] of Object.entries(map)) {
     if (!eventIds.has(eventId)) {
-      console.error(`[ERROR] ${mapName}: unknown event id ${eventId}`);
+      console.error(`[ERROR] ${mapName}: unknown ${sourceKind} id ${eventId}`);
       errors++;
     }
 
@@ -75,14 +87,17 @@ function validateRelationMap({
     }
   }
 
-  console.log(`${mapName}: ${Object.keys(map).length} events, ${edgeCount} ${entityKind} references`);
+  console.log(`${mapName}: ${Object.keys(map).length} ${sourceKind}s, ${edgeCount} ${entityKind} references`);
   return errors;
 }
 
 function main(): void {
   const eventIds = idsFrom("data/sts2/kor/events.json");
+  const monsterIds = idsFrom("data/sts2/kor/monsters.json");
   const cardIds = idsFrom("data/sts2/kor/cards.json");
+  const enchantmentIds = idsFrom("data/sts2/kor/enchantments.json");
   const potionIds = idsFrom("data/sts2/kor/potions.json");
+  const powerIds = idsFrom("data/sts2/kor/powers.json");
   const relicIds = idsFrom("data/sts2/kor/relics.json");
 
   let errors = 0;
@@ -106,6 +121,84 @@ function main(): void {
     eventIds,
     map: EVENT_RELATED_POTION_IDS,
     mapName: "EVENT_RELATED_POTION_IDS",
+  });
+  errors += validateRelationMap({
+    entityIds: enchantmentIds,
+    entityKind: "enchantment",
+    eventIds,
+    map: EVENT_RELATED_ENCHANTMENT_IDS,
+    mapName: "EVENT_RELATED_ENCHANTMENT_IDS",
+  });
+  errors += validateRelationMap({
+    entityIds: powerIds,
+    entityKind: "power",
+    eventIds,
+    map: EVENT_RELATED_POWER_IDS,
+    mapName: "EVENT_RELATED_POWER_IDS",
+  });
+  errors += validateRelationMap({
+    entityIds: enchantmentIds,
+    entityKind: "enchantment",
+    eventIds: cardIds,
+    sourceKind: "card",
+    map: CARD_RELATED_ENCHANTMENT_IDS,
+    mapName: "CARD_RELATED_ENCHANTMENT_IDS",
+  });
+  errors += validateRelationMap({
+    entityIds: enchantmentIds,
+    entityKind: "enchantment",
+    eventIds: relicIds,
+    sourceKind: "relic",
+    map: RELIC_RELATED_ENCHANTMENT_IDS,
+    mapName: "RELIC_RELATED_ENCHANTMENT_IDS",
+  });
+  errors += validateRelationMap({
+    entityIds: cardIds,
+    entityKind: "card",
+    eventIds: potionIds,
+    sourceKind: "potion",
+    map: POTION_RELATED_CARD_IDS,
+    mapName: "POTION_RELATED_CARD_IDS",
+  });
+  errors += validateRelationMap({
+    entityIds: powerIds,
+    entityKind: "power",
+    eventIds: potionIds,
+    sourceKind: "potion",
+    map: POTION_RELATED_POWER_IDS,
+    mapName: "POTION_RELATED_POWER_IDS",
+  });
+  errors += validateRelationMap({
+    entityIds: enchantmentIds,
+    entityKind: "enchantment",
+    eventIds: potionIds,
+    sourceKind: "potion",
+    map: POTION_RELATED_ENCHANTMENT_IDS,
+    mapName: "POTION_RELATED_ENCHANTMENT_IDS",
+  });
+  errors += validateRelationMap({
+    entityIds: cardIds,
+    entityKind: "card",
+    eventIds: monsterIds,
+    sourceKind: "monster",
+    map: MONSTER_RELATED_CARD_IDS,
+    mapName: "MONSTER_RELATED_CARD_IDS",
+  });
+  errors += validateRelationMap({
+    entityIds: relicIds,
+    entityKind: "relic",
+    eventIds: monsterIds,
+    sourceKind: "monster",
+    map: MONSTER_RELATED_RELIC_IDS,
+    mapName: "MONSTER_RELATED_RELIC_IDS",
+  });
+  errors += validateRelationMap({
+    entityIds: potionIds,
+    entityKind: "potion",
+    eventIds: monsterIds,
+    sourceKind: "monster",
+    map: MONSTER_RELATED_POTION_IDS,
+    mapName: "MONSTER_RELATED_POTION_IDS",
   });
 
   if (errors > 0) {
