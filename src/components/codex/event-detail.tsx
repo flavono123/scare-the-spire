@@ -2003,12 +2003,12 @@ export function EventDetail({
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
-        <section className="flex min-h-[22rem] items-center justify-center py-2">
+        <section className="flex min-h-[22rem] min-w-0 items-center justify-center py-2">
           <div
-            className="relative w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10"
+            className="relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10"
             style={{ boxShadow: `inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.35)` }}
           >
-            <div className="relative aspect-[3440/1616] min-h-[34rem] w-full sm:min-h-0">
+            <div className="relative h-[34rem] w-full sm:h-auto sm:aspect-[3440/1616]">
               {eventImageUrl ? (
                 <Image
                   src={eventImageUrl}
