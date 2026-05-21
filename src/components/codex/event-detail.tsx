@@ -15,6 +15,7 @@ import {
   type CodexServiceMessages,
 } from "@/lib/codex-service";
 import {
+  CodexAncient,
   CodexCard,
   CodexEnchantment,
   CodexEvent,
@@ -45,6 +46,7 @@ import {
 import {
   FUTURE_OF_POTIONS_EVENT_ID,
   TINKER_TIME_EVENT_ID,
+  getRelatedAncientIdsForEvent,
   getRelatedCardIdsForEvent,
   getRelatedEnchantmentIdsForEvent,
   getRelatedPotionIdsForEvent,
@@ -1666,6 +1668,7 @@ interface EventDetailProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
   event: CodexEvent;
+  ancients?: CodexAncient[];
   cards?: CodexCard[];
   enchantments?: CodexEnchantment[];
   madScienceBaseCard?: CodexCard | null;
@@ -1891,6 +1894,7 @@ export function EventDetail({
   serviceLocale,
   gameUi,
   event,
+  ancients = [],
   cards = [],
   enchantments = [],
   madScienceBaseCard,
@@ -1925,6 +1929,9 @@ export function EventDetail({
   const stageSectionClassName = isModal
     ? "flex min-h-[22rem] min-w-0 items-center justify-center py-1"
     : "flex min-h-[22rem] min-w-0 items-center justify-center py-2";
+  const stageFrameClassName = isModal
+    ? "relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10 lg:max-w-[min(100%,calc((100vh-18.5rem)*3440/1616))]"
+    : "relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10";
   const textPanelClassName = isModal
     ? "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[2%] sm:right-[3.5%] sm:top-[3%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[560px]"
     : "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]";
@@ -1951,8 +1958,13 @@ export function EventDetail({
       })
     : [];
   const cardById = new Map(cards.map((card) => [card.id, card]));
+  const ancientById = new Map(ancients.map((ancient) => [ancient.id, ancient]));
   const enchantmentById = new Map(enchantments.map((enchantment) => [enchantment.id, enchantment]));
   const relicById = new Map(relics.map((relic) => [relic.id, relic]));
+  const relatedAncientTargets = getRelatedAncientIdsForEvent(event, ancients)
+    .map((ancientId) => ancientById.get(ancientId))
+    .filter((ancient): ancient is CodexAncient => Boolean(ancient))
+    .map(ancientToReferenceTarget);
   const relatedCardTargets = [
     ...getRelatedCardIdsForEvent(event.id)
       .map((cardId) => cardById.get(cardId))
@@ -2022,7 +2034,7 @@ export function EventDetail({
       <div className={detailStackClassName}>
         <section className={stageSectionClassName}>
           <div
-            className="relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10"
+            className={stageFrameClassName}
             style={{ boxShadow: `inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.35)` }}
           >
             <div className="relative h-[34rem] w-full sm:h-auto sm:aspect-[3440/1616]">
@@ -2110,6 +2122,7 @@ export function EventDetail({
 
           <EntityReferenceGroupLinks
             groups={[
+              { kind: "ancient", targets: relatedAncientTargets },
               { kind: "card", targets: relatedCardTargets },
               { kind: "relic", targets: relatedRelicTargets },
               { kind: "enchantment", targets: relatedEnchantmentTargets },
@@ -2140,6 +2153,25 @@ export function EventDetail({
       </div>
     </div>
   );
+}
+
+function ancientToReferenceTarget(ancient: CodexAncient): CodexReferenceTarget {
+  const href = `/compendium/ancients/${ancient.id.toLowerCase()}`;
+  return {
+    href,
+    id: ancient.id,
+    title: ancient.name,
+    entity: {
+      id: ancient.id,
+      nameEn: ancient.nameEn,
+      nameKo: ancient.name,
+      imageUrl: ancient.imageUrl,
+      href,
+      color: ancient.act ?? "ancient",
+      type: "ancient",
+      ancientData: ancient,
+    },
+  };
 }
 
 function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {
