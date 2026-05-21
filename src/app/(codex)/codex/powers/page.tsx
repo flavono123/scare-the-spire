@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexPowers } from "@/lib/codex-data";
+import { getCodexCards, getCodexPowers } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
@@ -32,8 +32,9 @@ export default async function CodexPowersPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [powers, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
+  const [powers, cards, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
     getCodexPowers({ gameLocale }),
+    getCodexCards({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
     getEntityVersionDiffs(),
@@ -51,6 +52,7 @@ export default async function CodexPowersPage({
         gameUi={gameUi}
         title={gameUi.nav.powers}
         powers={powers}
+        cards={cards}
         versions={versions}
         currentVersion={meta.version}
         patches={patches}

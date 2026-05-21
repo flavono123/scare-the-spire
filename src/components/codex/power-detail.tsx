@@ -11,14 +11,17 @@ import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
+  CodexCard,
   CodexPower,
   POWER_TYPE_CONFIG,
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
+import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameHoverTip, type HoverTipVariant } from "./hover-tip";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
+import { getRelatedCardIdsForPower } from "@/lib/codex-references";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -64,6 +67,7 @@ interface PowerDetailProps {
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
   entities?: EntityInfo[];
+  relatedCards?: CodexCard[];
   onClose?: () => void;
 }
 
@@ -99,6 +103,7 @@ export function PowerDetail({
   changes,
   versionDiffs,
   entities,
+  relatedCards = [],
   onClose,
 }: PowerDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -114,6 +119,28 @@ export function PowerDetail({
   const typeLabel = gameUi.powers.types[power.type].label || serviceText.labels.powerTypes[power.type].label;
   const stackLabel = serviceText.labels.powerStackTypes[power.stackType] ?? power.stackType;
   const backTitle = backToListTitle ?? gameUi.nav.powers;
+  const cardById = new Map(relatedCards.map((card) => [card.id, card]));
+  const relatedCardTargets: CodexReferenceTarget[] = getRelatedCardIdsForPower(relatedCards, power.id)
+    .map((cardId) => cardById.get(cardId))
+    .filter((card): card is CodexCard => Boolean(card))
+    .map((card) => {
+      const href = `/compendium/cards/${card.id.toLowerCase()}`;
+      return {
+        id: card.id,
+        href,
+        title: card.name,
+        entity: {
+          id: card.id,
+          nameEn: card.nameEn,
+          nameKo: card.name,
+          imageUrl: card.imageUrl,
+          href,
+          color: card.color,
+          type: "card" as const,
+          cardData: card,
+        },
+      };
+    });
 
   return (
     <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
@@ -213,6 +240,12 @@ export function PowerDetail({
               )}
             </div>
           </section>
+
+          <EntityReferenceLinks
+            kind="card"
+            serviceLocale={serviceLocale}
+            targets={relatedCardTargets}
+          />
 
           <InfoRailSection title={detailLabels.patchHistory}>
             <STS2ChangeHistory

@@ -10,6 +10,7 @@ import {
   type CodexServiceMessages,
 } from "@/lib/codex-service";
 import {
+  CodexCard,
   CodexPower,
   PowerType,
   POWER_TYPE_ORDER,
@@ -43,6 +44,7 @@ interface PowerLibraryProps {
   gameUi: CodexGameUiLabels;
   title: string;
   powers: CodexPower[];
+  cards?: CodexCard[];
   versions?: string[];
   currentVersion?: string;
   patches?: STS2Patch[];
@@ -51,7 +53,7 @@ interface PowerLibraryProps {
   entities?: EntityInfo[];
 }
 
-export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, currentVersion, patches, changes, versionDiffs, entities }: PowerLibraryProps) {
+export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [], versions, currentVersion, patches, changes, versionDiffs, entities }: PowerLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedTypes, setSelectedTypes] = useState<Set<PowerType>>(new Set());
@@ -328,6 +330,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, versions, c
               changes={changes}
               versionDiffs={versionDiffs}
               entities={entities}
+              relatedCards={cards}
               onClose={() => setSelectedPower(null)}
             />
           </div>
