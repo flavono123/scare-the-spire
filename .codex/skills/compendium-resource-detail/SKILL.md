@@ -1,85 +1,96 @@
 ---
 name: compendium-resource-detail
-description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+description: Build or refactor STS2 백과사전/Compendium resource detail and modal UIs from the finalized relic detail pattern. Use when extending card, relic, potion, power, enchantment, event, monster, encounter, or ancient detail views; when adding related resources, comments, patch history, or GameHoverTip previews; or when aligning existing Codex-named components with the Compendium design rules.
 ---
 
 # Compendium Resource Detail
 
-## Overview
+Use this skill to extend the current relic detail/modal implementation to other STS2 백과사전 resources without re-opening the product/design decisions.
 
-[TODO: 1-2 sentences explaining what this skill enables]
+## Read First
 
-## Structuring This Skill
+Read only the files needed for the target resource.
 
-[TODO: Choose the structure that best fits this skill's purpose. Common patterns:
+- Product language: `CONTEXT.md`
+- Design rules: `docs/DESIGN.md`
+- Naming ADR: `docs/adr/0001-gradual-codex-deprecation.md`
+- Relic reference implementation: `src/components/codex/relic-detail.tsx`, `src/components/codex/relic-library.tsx`, `src/components/codex/relic-tile.tsx`
+- Shared UI/data helpers: `src/components/codex/hover-tip.tsx`, `src/components/codex/entity-reference-links.tsx`, `src/components/codex/sts2-change-history.tsx`, `src/components/patch-note-renderer.tsx`
+- Data loaders and version diffs: `src/lib/data.ts`, `src/lib/entity-versioning.ts`
 
-**1. Workflow-Based** (best for sequential processes)
-- Works well when there are clear step-by-step procedures
-- Example: DOCX skill with "Workflow Decision Tree" -> "Reading" -> "Creating" -> "Editing"
-- Structure: ## Overview -> ## Workflow Decision Tree -> ## Step 1 -> ## Step 2...
+## Product Language
 
-**2. Task-Based** (best for tool collections)
-- Works well when the skill offers different operations/capabilities
-- Example: PDF skill with "Quick Start" -> "Merge PDFs" -> "Split PDFs" -> "Extract Text"
-- Structure: ## Overview -> ## Quick Start -> ## Task Category 1 -> ## Task Category 2...
+- Use **백과사전** / **Compendium** as product language.
+- Do not introduce new user-facing `Codex`, `도감`, or `entity` wording.
+- Use direct resource nouns in UI copy: 카드, 유물, 포션, 파워, 인챈트, 이벤트, 몬스터.
+- Use **관련 리소스** for cross-resource links.
+- Treat modal and direct URL as the same **상세 보기**, not separate navigation depths.
 
-**3. Reference/Guidelines** (best for standards or specifications)
-- Works well for brand guidelines, coding standards, or requirements
-- Example: Brand styling with "Brand Guidelines" -> "Colors" -> "Typography" -> "Features"
-- Structure: ## Overview -> ## Guidelines -> ## Specifications -> ## Usage...
+## Detail Pattern
 
-**4. Capabilities-Based** (best for integrated systems)
-- Works well when the skill provides multiple interrelated features
-- Example: Product Management with "Core Capabilities" -> numbered capability list
-- Structure: ## Overview -> ## Core Capabilities -> ### 1. Feature -> ### 2. Feature...
+Use `src/components/codex/relic-detail.tsx` as the current source pattern.
 
-Patterns can be mixed and matched as needed. Most skills combine patterns (e.g., start with task-based, add workflow for complex operations).
+- One detail component must serve both list modal and direct route.
+- List pages open the detail as a modal and keep URL query state (`?relic=...`, `?potion=...`, etc.).
+- Direct routes render the same detail component without adding a second UX depth.
+- Desktop layout: main game resource stage left, information rail right.
+- Mobile layout: stack the same content; do not create a separate mobile-only feature set.
+- Main stage should feel like the game resource floats on the background, not like a web card inside another card.
+- Additional service information belongs in the rail, not in the game hover tip.
 
-Delete this entire "Structuring This Skill" section when done - it's just guidance.]
+## Game Hover Tip Rules
 
-## [TODO: Replace with the first main section based on chosen structure]
+- Use `GameHoverTip` for non-card resource name/effect presentation.
+- `GameHoverTip` content should contain the official game name and game effect/description only.
+- Do not put English canonical names, rarity/source labels, internal IDs, or service metadata inside the main game hover tip.
+- For patch-note and related-resource keyword hover, render **resource asset + GameHoverTip**, not the old opaque web tooltip.
+- Cards can continue to use `CardTile` as the preview body.
+- Event previews use a larger background crop next to a compact `GameHoverTip`; the tip should shrink to title width when no body text is needed.
+- Keep tooltip placement inside the viewport. Right-edge resources should show previews to the left; low resources should prefer upward placement.
 
-[TODO: Add content here. See examples in existing skills:
-- Code samples for technical skills
-- Decision trees for complex workflows
-- Concrete examples with realistic user requests
-- References to scripts/templates/references as needed]
+## Rail Rules
 
-## Resources (optional)
+- The metadata/info rail itself is always visible, has no "정보" title, and has no collapse button.
+- Metadata pills show values only. For example, show `이벤트`, `공용`, `희귀`; do not show labels like `희귀도` or `이벤트`.
+- Related resources are always visible when present and should use one compact line per kind, e.g. `관련 이벤트: ...`.
+- Other rails such as 패치 이력 and 댓글 default to open if they are collapsible.
+- Comments title must show the count as `(n)` when count is greater than zero. Use `CommentSection` `onCountChange` where available.
 
-Create only the resource directories this skill actually needs. Delete this section if no resources are required.
+## Patch History Rules
 
-### scripts/
-Executable code (Python/Bash/etc.) that can be run directly to perform specific operations.
+- Use `STS2ChangeHistory` for structured STS2 history.
+- Pass both curated `STS2Change[]` from `getSTS2Changes()` and machine-applicable `EntityVersionDiff[]` from `getEntityVersionDiffs()` when available.
+- Show actual structured changes for the current resource only. Do not mix in patch-note mentions that merely name the resource.
+- Patch history links must use `/patches/{version}` without a leading `v` in the route, even when displayed labels include `v0.105.0`.
+- For monsters, accept both `monster` and old patch-note `enemy` change types when needed.
 
-**Examples from other skills:**
-- PDF skill: `fill_fillable_fields.py`, `extract_form_field_info.py` - utilities for PDF manipulation
-- DOCX skill: `document.py`, `utilities.py` - Python modules for document processing
+## Implementation Checklist
 
-**Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
+1. Inspect the existing target detail, library/list, direct route, and data loader files.
+2. Compare against the relic detail pattern before editing.
+3. Add missing props for `patches`, `changes`, `versionDiffs`, `entities`, and related resources only where the target needs them.
+4. Keep existing resource-specific gameplay controls; do not flatten card upgrade, enchantment, event-choice, monster-move, or skin controls into a generic detail abstraction.
+5. Replace old web hover cards with `EntityPreview`/`GameHoverTip` behavior where the resource appears as a keyword or related link.
+6. Preserve existing user changes and unrelated dirty files.
+7. Commit immediately after each meaningful edit, matching `AGENTS.md`.
 
-**Note:** Scripts may be executed without loading into context, but can still be read by Codex for patching or environment adjustments.
+## Verification
 
-### references/
-Documentation and reference material intended to be loaded into context to inform Codex's process and thinking.
+Run narrow checks first:
 
-**Examples from other skills:**
-- Product management: `communication.md`, `context_building.md` - detailed workflow guides
-- BigQuery: API reference documentation and query examples
-- Finance: Schema documentation, company policies
+```bash
+pnpm lint
+```
 
-**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that Codex should reference while working.
+Run a build when changing server routes, data loading, shared components, or type contracts:
 
-### assets/
-Files not intended to be loaded into context, but rather used within the output Codex produces.
+```bash
+pnpm build
+```
 
-**Examples from other skills:**
-- Brand styling: PowerPoint template files (.pptx), logo files
-- Frontend builder: HTML/React boilerplate project directories
-- Typography: Font files (.ttf, .woff2)
+For visual changes, use browser/Playwright smoke checks on:
 
-**Appropriate for:** Templates, boilerplate code, document templates, images, icons, fonts, or any files meant to be copied or used in the final output.
-
----
-
-**Not every skill requires all three types of resources.**
+- The target list modal.
+- The direct `/compendium/.../[id]` route.
+- A right-edge or bottom-edge hover target.
+- A patch-note or related-resource keyword hover.
