@@ -35,6 +35,7 @@ REGRESSION_TITLE_KEYS = {
 }
 KNOWN_UPSTREAM_MISSING_CODEX_TITLE_KEYS = {
     "esp": {
+        "cards:WITHER.title",
         "monsters:AEONGLASS.name",
         "encounters:AEONGLASS_BOSS.title",
         "relics:SILKEN_TRESS.title",
@@ -49,18 +50,21 @@ KNOWN_UPSTREAM_MISSING_CODEX_TITLE_KEYS = {
         "relics:SILKEN_TRESS.title",
     },
     "pol": {
+        "cards:WITHER.title",
         "monsters:AEONGLASS.name",
         "encounters:AEONGLASS_BOSS.title",
         "relics:KALEIDOSCOPE.title",
         "relics:SILKEN_TRESS.title",
     },
     "spa": {
+        "cards:WITHER.title",
         "monsters:AEONGLASS.name",
         "encounters:AEONGLASS_BOSS.title",
         "relics:KALEIDOSCOPE.title",
         "relics:SILKEN_TRESS.title",
     },
     "tur": {
+        "cards:WITHER.title",
         "monsters:AEONGLASS.name",
         "encounters:AEONGLASS_BOSS.title",
         "relics:SILKEN_TRESS.title",
