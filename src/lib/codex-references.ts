@@ -488,18 +488,20 @@ export function getRelatedCardIdsForAncient(
   ancient: AncientRelationSource,
   cards: readonly AncientCardRelationTarget[],
 ): string[] {
-  void ancient;
-  return cards
-    .filter(isAncientCard)
-    .map((card) => card.id);
+  const cardIds = ANCIENT_RELATED_CARD_IDS[ancient.id.toUpperCase()] ?? [];
+  const existingCardIds = new Set(cards.map((card) => card.id.toUpperCase()));
+  return cardIds.filter((cardId) => existingCardIds.has(cardId.toUpperCase()));
 }
 
 export function getRelatedAncientIdsForCard(
   card: AncientCardRelationTarget,
   ancients: readonly AncientRelationSource[],
 ): string[] {
-  if (!isAncientCard(card)) return [];
+  const normalizedCardId = card.id.toUpperCase();
   return ancients
+    .filter((ancient) =>
+      ANCIENT_RELATED_CARD_IDS[ancient.id.toUpperCase()]?.some((cardId) => cardId.toUpperCase() === normalizedCardId),
+    )
     .map((ancient) => ancient.id);
 }
 
@@ -832,10 +834,7 @@ function cardHasStrikeTag(card: Pick<CodexCard, "tags">): boolean {
 
 type AncientRelationSource = Pick<CodexAncient, "id">;
 
-type AncientCardRelationTarget = Pick<
-  CodexCard,
-  "id" | "rarity"
->;
+type AncientCardRelationTarget = Pick<CodexCard, "id">;
 
 type AncientPotionRelationTarget = Pick<
   CodexPotion,
@@ -847,6 +846,21 @@ type AncientEventRelationTarget = Pick<
   "id"
 >;
 
-function isAncientCard(card: Pick<CodexCard, "rarity">): boolean {
-  return card.rarity === "고대의 존재";
-}
+// Derived from the current game DLL:
+// Ancient event option pools plus the card-producing relic effects they can offer.
+const ANCIENT_RELATED_CARD_IDS: Record<string, readonly string[]> = {
+  DARV: [
+    "CORRUPTION",
+    "WRAITH_FORM",
+    "THE_SEALED_THRONE",
+    "FORBIDDEN_GRIMOIRE",
+    "BIASED_COGNITION",
+  ],
+  NEOW: ["NEOWS_FURY"],
+  NONUPEIPE: ["APOTHEOSIS"],
+  OROBAS: ["BREAK", "SUPPRESS", "PROTECTOR", "METEOR_SHOWER", "QUADCAST"],
+  PAEL: ["RELAX"],
+  TANX: ["MAUL", "WHISTLE"],
+  TEZCATARA: ["BRIGHTEST_FLAME"],
+  VAKUU: ["WISH", "APPARITION"],
+};
