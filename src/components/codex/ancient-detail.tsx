@@ -15,15 +15,21 @@ import {
   getCodexServiceMessages,
   type CodexServiceMessages,
 } from "@/lib/codex-service";
-import type { CodexAncient, CodexRelic, AncientDialogueLine } from "@/lib/codex-types";
+import type { CodexAncient, CodexCard, CodexEvent, CodexPotion, CodexRelic, AncientDialogueLine } from "@/lib/codex-types";
 import {
   EVENT_ACT_UNKNOWN,
   CHARACTER_COLORS,
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
-import { EntityReferenceLinks } from "./entity-reference-links";
+import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
+import {
+  getRelatedCardIdsForAncient,
+  getRelatedEventIdsForAncient,
+  getRelatedPotionIdsForAncient,
+  getRelatedRelicIdsForAncient,
+} from "@/lib/codex-references";
 
 const CHARACTERS = [
   { key: "Ironclad", pool: "ironclad", color: CHARACTER_COLORS.ironclad },
@@ -224,7 +230,10 @@ interface AncientDetailProps {
   gameUi: CodexGameUiLabels;
   backToListTitle?: string;
   ancient: CodexAncient;
+  cards?: CodexCard[];
   relics: CodexRelic[];
+  potions?: CodexPotion[];
+  events?: CodexEvent[];
   onClose?: () => void;
   entities?: EntityInfo[];
   patches?: STS2Patch[];
@@ -237,7 +246,10 @@ export function AncientDetail({
   gameUi,
   backToListTitle,
   ancient,
+  cards = [],
   relics,
+  potions = [],
+  events = [],
   onClose,
   entities,
   patches,
@@ -252,24 +264,26 @@ export function AncientDetail({
     () => new Set([ancient.name, ancient.nameEn]),
     [ancient.name, ancient.nameEn],
   );
-  const relatedRelicTargets = relics.map((relic) => {
-    const href = `/compendium/relics?relic=${relic.id.toLowerCase()}`;
-    return {
-      id: relic.id,
-      href,
-      title: relic.name,
-      entity: {
-        id: relic.id,
-        nameEn: relic.nameEn,
-        nameKo: relic.name,
-        imageUrl: relic.imageUrl,
-        href,
-        color: relic.pool,
-        type: "relic" as const,
-        relicData: relic,
-      },
-    };
-  });
+  const cardById = new Map(cards.map((card) => [card.id, card]));
+  const relicById = new Map(relics.map((relic) => [relic.id, relic]));
+  const potionById = new Map(potions.map((potion) => [potion.id, potion]));
+  const eventById = new Map(events.map((event) => [event.id, event]));
+  const relatedCardTargets = getRelatedCardIdsForAncient(ancient, cards)
+    .map((cardId) => cardById.get(cardId))
+    .filter((card): card is CodexCard => Boolean(card))
+    .map(cardToReferenceTarget);
+  const relatedRelicTargets = getRelatedRelicIdsForAncient(ancient)
+    .map((relicId) => relicById.get(relicId))
+    .filter((relic): relic is CodexRelic => Boolean(relic))
+    .map(relicToReferenceTarget);
+  const relatedPotionTargets = getRelatedPotionIdsForAncient(ancient, potions)
+    .map((potionId) => potionById.get(potionId))
+    .filter((potion): potion is CodexPotion => Boolean(potion))
+    .map(potionToReferenceTarget);
+  const relatedEventTargets = getRelatedEventIdsForAncient(ancient, events)
+    .map((eventId) => eventById.get(eventId))
+    .filter((event): event is CodexEvent => Boolean(event))
+    .map(eventToReferenceTarget);
   const actLabel = getAncientActLabel(ancient, serviceText, gameUi);
   const actPillClass = ancient.act
     ? "border-blue-500/40 bg-blue-500/10 text-blue-300"
@@ -400,10 +414,14 @@ export function AncientDetail({
             </div>
           </section>
 
-          <EntityReferenceLinks
-            kind="relic"
+          <EntityReferenceGroupLinks
             serviceLocale={serviceLocale}
-            targets={relatedRelicTargets}
+            groups={[
+              { kind: "card", targets: relatedCardTargets },
+              { kind: "relic", targets: relatedRelicTargets },
+              { kind: "potion", targets: relatedPotionTargets },
+              { kind: "event", targets: relatedEventTargets },
+            ]}
           />
 
           <InfoRailSection title={serviceText.ancientsView.dialogue}>
@@ -440,4 +458,80 @@ export function AncientDetail({
       </div>
     </div>
   );
+}
+
+function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {
+  const href = `/compendium/cards/${card.id.toLowerCase()}`;
+  return {
+    href,
+    id: card.id,
+    title: card.name,
+    entity: {
+      id: card.id,
+      nameEn: card.nameEn,
+      nameKo: card.name,
+      imageUrl: card.imageUrl,
+      href,
+      color: card.color,
+      type: "card",
+      cardData: card,
+    },
+  };
+}
+
+function relicToReferenceTarget(relic: CodexRelic): CodexReferenceTarget {
+  const href = `/compendium/relics/${relic.id.toLowerCase()}`;
+  return {
+    href,
+    id: relic.id,
+    title: relic.name,
+    entity: {
+      id: relic.id,
+      nameEn: relic.nameEn,
+      nameKo: relic.name,
+      imageUrl: relic.imageUrl,
+      href,
+      color: relic.pool,
+      type: "relic",
+      relicData: relic,
+    },
+  };
+}
+
+function potionToReferenceTarget(potion: CodexPotion): CodexReferenceTarget {
+  const href = `/compendium/potions/${potion.id.toLowerCase()}`;
+  return {
+    href,
+    id: potion.id,
+    title: potion.name,
+    entity: {
+      id: potion.id,
+      nameEn: potion.nameEn,
+      nameKo: potion.name,
+      imageUrl: potion.imageUrl,
+      href,
+      color: potion.rarity,
+      type: "potion",
+      potionData: potion,
+    },
+  };
+}
+
+function eventToReferenceTarget(event: CodexEvent): CodexReferenceTarget {
+  const href = `/compendium/events/${event.id.toLowerCase()}`;
+  return {
+    href,
+    id: event.id,
+    title: event.name,
+    entity: {
+      id: event.id,
+      nameEn: event.nameEn,
+      nameKo: event.name,
+      imageUrl: event.imageUrl,
+      href,
+      color: event.act ?? "event",
+      type: "event",
+      eventData: event,
+    },
+  };
 }

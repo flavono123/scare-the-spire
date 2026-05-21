@@ -15,7 +15,7 @@ import {
   getCodexServiceMessages,
   type CodexServiceMessages,
 } from "@/lib/codex-service";
-import type { CodexAncient, CodexRelic, EventAct } from "@/lib/codex-types";
+import type { CodexAncient, CodexCard, CodexEvent, CodexPotion, CodexRelic, EventAct } from "@/lib/codex-types";
 import {
   EVENT_ACT_ALIASES,
   EVENT_ACT_ORDER,
@@ -67,7 +67,10 @@ interface AncientListProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
   ancients: CodexAncient[];
+  cards?: CodexCard[];
   relics?: CodexRelic[];
+  potions?: CodexPotion[];
+  events?: CodexEvent[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
@@ -78,7 +81,10 @@ export function AncientList({
   serviceLocale,
   gameUi,
   ancients,
+  cards = [],
   relics = [],
+  potions = [],
+  events = [],
   patches,
   changes,
   versionDiffs,
@@ -331,7 +337,10 @@ export function AncientList({
               gameUi={gameUi}
               backToListTitle={gameUi.ancientsTitle}
               ancient={selectedAncient}
+              cards={cards}
               relics={selectedAncientRelics}
+              potions={potions}
+              events={events}
               onClose={() => setSelectedAncient(null)}
               entities={entities}
               patches={patches}

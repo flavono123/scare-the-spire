@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexAncients, getCodexRelics } from "@/lib/codex-data";
+import { getCodexAncients, getCodexCards, getCodexEvents, getCodexPotions, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/data";
 import {
@@ -41,9 +41,12 @@ export default async function AncientDetailPage({ params, searchParams }: Props)
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [ancients, relics, patches, changes, versionDiffs, entities, gameUi] = await Promise.all([
+  const [ancients, cards, relics, potions, events, patches, changes, versionDiffs, entities, gameUi] = await Promise.all([
     getCodexAncients({ gameLocale }),
+    getCodexCards({ gameLocale }),
     getCodexRelics({ gameLocale }),
+    getCodexPotions({ gameLocale }),
+    getCodexEvents({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
     getEntityVersionDiffs(),
@@ -64,7 +67,10 @@ export default async function AncientDetailPage({ params, searchParams }: Props)
       gameUi={gameUi}
       backToListTitle={gameUi.ancientsTitle}
       ancient={ancient}
+      cards={cards}
       relics={ancientRelics}
+      potions={potions}
+      events={events}
       entities={entities}
       patches={patches}
       changes={changes}
