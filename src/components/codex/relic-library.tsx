@@ -16,6 +16,7 @@ import {
   CodexAncient,
   CodexEnchantment,
   CodexEvent,
+  CodexMonster,
   CodexPower,
   RelicRarityKo,
   RelicPool,
@@ -74,10 +75,11 @@ interface RelicLibraryProps {
   entities?: EntityInfo[];
   relatedEvents?: CodexEvent[];
   relatedEnchantments?: CodexEnchantment[];
+  relatedMonsters?: CodexMonster[];
   relatedPowers?: CodexPower[];
 }
 
-export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters, ancients, versions, currentVersion, patches, changes, versionDiffs, entities, relatedEvents = [], relatedEnchantments = [], relatedPowers = [] }: RelicLibraryProps) {
+export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters, ancients, versions, currentVersion, patches, changes, versionDiffs, entities, relatedEvents = [], relatedEnchantments = [], relatedMonsters = [], relatedPowers = [] }: RelicLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<RelicPoolFilter>>(new Set());
@@ -479,6 +481,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
               relatedEvents={relatedEvents}
               relatedAncients={ancients}
               relatedEnchantments={relatedEnchantments}
+              relatedMonsters={relatedMonsters}
               relatedPowers={relatedPowers}
               patches={patches}
               changes={changes}
