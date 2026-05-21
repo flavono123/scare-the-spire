@@ -212,7 +212,7 @@ export function EncounterDetail({
                   color={roomConfig.color}
                 />
                 <MetaPill
-                  value={getActLabel(encounter.act, gameUi, serviceText)}
+                  value={getActLabel(encounter.act, gameUi, serviceText.codex)}
                   color={encounter.act ? BESTIARY_ACT_COLOR : "#a1a1aa"}
                 />
                 {encounter.isWeak && (
