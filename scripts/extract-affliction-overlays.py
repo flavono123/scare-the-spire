@@ -409,7 +409,9 @@ def render_bound_shader(image, time: float):
     output = Image.new("RGBA", source.size)
     src = source.load()
     dst = output.load()
-    vertex = (0.51294047, 0.819067, 0.24793532)
+    # Godot renders this through the card VFX stack and bloom; bake a brighter
+    # display color so the extracted atlas keeps the same fluorescent read.
+    vertex = (0.64, 1.0, 0.28)
     vertex_alpha = 0.78431374
 
     for y in range(source.height):
@@ -419,7 +421,7 @@ def render_bound_shader(image, time: float):
             if alpha == 0:
                 continue
             _bright_r, bright_g, _bright_b, _bright_a = sample_repeat(source, 0.5 * time, 0.0)
-            energy_multiplier = 1.0 + (bright_g / 255.0) * 0.5
+            energy_multiplier = 1.15 + (bright_g / 255.0) * 0.85
             intensity = (r / 255.0) * energy_multiplier
             dst[x, y] = (
                 clamp_channel(vertex[0] * 255 * intensity),
@@ -510,7 +512,7 @@ def render_entangled_leaf_shader(image, time: float):
         (0.0, (0.0, 0.0, 0.0)),
         (1.0, (0.047058824, 0.57254905, 0.50980395)),
     ]
-    _rot_r, _rot_g, rot_b, _rot_a = sample_repeat(source, 0.0, 0.1 * time)
+    _rot_r, _rot_g, rot_b, _rot_a = sample_repeat(source, 0.5, 0.5 + 0.1 * time)
     rotation_factor = ((rot_b / 255.0) - 0.5) * 2.0
     rotation = 0.35 * rotation_factor * math.pi * 0.5
 
@@ -605,11 +607,12 @@ def render_hexed_shader(image, time: float):
             noise = smoothstep(0.5, 0.7, noise_b / 255.0)
             inner = lerp_color(main_color, bright_color, noise)
             color = lerp_color(border_color, inner, r / 255.0)
+            intensity = 1.0 + noise * 0.32
             dst[x, y] = (
-                clamp_channel(color[0] * 255),
-                clamp_channel(color[1] * 255),
-                clamp_channel(color[2] * 255),
-                alpha,
+                clamp_channel(color[0] * intensity * 255),
+                clamp_channel(color[1] * intensity * 255),
+                clamp_channel(color[2] * intensity * 255),
+                clamp_channel(alpha * (0.78 + noise * 0.22)),
             )
 
     return output
@@ -699,12 +702,12 @@ def render_smog_shader(noise, mask, time: float, outer: bool):
             main_tex = sample_repeat(
                 noise_image,
                 rotated_u * main_st[0] + main_st[2] * time,
-                rotated_v * main_st[1] + main_st[3] * time,
+                rotated_v * main_st[1] + main_st[3],
             )
             secondary_tex = sample_repeat(
                 noise_image,
                 rotated_u * secondary_st[0] + secondary_st[2] * time,
-                rotated_v * secondary_st[1] + secondary_st[3] * time,
+                rotated_v * secondary_st[1] + secondary_st[3],
             )
             mask_r, mask_g, _mask_b, _mask_a = mask_pixels[x, y]
             smoke_alpha = (
