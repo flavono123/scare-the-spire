@@ -31,7 +31,6 @@ import {
   MONSTER_TYPE_CONFIG,
 } from "@/lib/codex-types";
 import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
-import { GameHoverTip } from "./hover-tip";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -84,21 +83,6 @@ function InfoRailSection({
       </summary>
       <div className="mt-3">{children}</div>
     </details>
-  );
-}
-
-function DetailPanel({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
-      <h2 className="mb-3 text-sm font-bold text-gray-300">{title}</h2>
-      {children}
-    </section>
   );
 }
 
@@ -239,96 +223,119 @@ export function MonsterDetail({
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
-        <section className="flex flex-col gap-4">
-          <section className="flex min-h-[26rem] flex-col items-center justify-center gap-5 py-4">
-            <div className="flex w-full flex-col items-center justify-center gap-5 xl:flex-row xl:items-center">
-              <div className="relative flex min-h-[22rem] w-full max-w-2xl items-center justify-center overflow-hidden">
-                <div
-                  className="absolute bottom-10 left-[18%] right-[18%] h-8 rounded-[50%] blur-md"
-                  style={{ backgroundColor: hexToRgba(selectedAccent, 0.18) }}
-                />
-                {imageSrc ? (
-                  <MonsterSpineStage
-                    key={`${monster.id}-${activeSkinKey}`}
-                    asset={monster.spineAsset}
-                    fallbackImageUrl={imageSrc}
-                    monsterName={monster.name}
-                    selectedMoveId={selectedMove?.move.id ?? null}
-                    selectedSkin={selectedSingleSkin}
-                    selectedSkins={selectedSkinNames}
-                    className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
-                  />
-                ) : (
-                  <div
-                    className="relative z-10 flex h-52 w-52 items-center justify-center rounded-full border text-5xl font-bold"
-                    style={{ borderColor: `${typeConfig.color}66`, color: typeConfig.color }}
-                  >
-                    {monster.name.slice(0, 1)}
-                  </div>
+        <section className="flex min-h-[26rem] flex-col items-center justify-center gap-4 py-4">
+          <div className="relative flex min-h-[22rem] w-full max-w-2xl items-center justify-center overflow-hidden">
+            <div
+              className="absolute bottom-10 left-[18%] right-[18%] h-8 rounded-[50%] blur-md"
+              style={{ backgroundColor: hexToRgba(selectedAccent, 0.18) }}
+            />
+            {imageSrc ? (
+              <MonsterSpineStage
+                key={`${monster.id}-${activeSkinKey}`}
+                asset={monster.spineAsset}
+                fallbackImageUrl={imageSrc}
+                monsterName={monster.name}
+                selectedMoveId={selectedMove?.move.id ?? null}
+                selectedSkin={selectedSingleSkin}
+                selectedSkins={selectedSkinNames}
+                className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
+              />
+            ) : (
+              <div
+                className="relative z-10 flex h-52 w-52 items-center justify-center rounded-full border text-5xl font-bold"
+                style={{ borderColor: `${typeConfig.color}66`, color: typeConfig.color }}
+              >
+                {monster.name.slice(0, 1)}
+              </div>
+            )}
+          </div>
+
+          <div className="text-center">
+            <h1
+              className="font-game-title break-keep text-3xl font-bold leading-tight text-gray-100 sm:text-4xl"
+              style={{ color: typeConfig.color }}
+            >
+              {monster.name}
+            </h1>
+            {monster.nameEn !== monster.name && (
+              <p className="mt-1 font-game-text text-sm text-gray-500">{monster.nameEn}</p>
+            )}
+          </div>
+
+          {skinParts.length > 0 && (
+            <div className="w-full max-w-xl rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+              <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                {serviceLocale === "ko" ? "외형" : "Appearance"}
+              </div>
+              <div className="flex flex-col gap-2">
+                {skinParts.map((part) => {
+                  const partLabel = getMonsterSkinPartLabel(part, serviceLocale);
+
+                  return (
+                    <div key={part.id} className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                      <span className="min-w-10 text-[11px] font-medium text-gray-400">{partLabel}</span>
+                      <div className="flex flex-wrap gap-1" role="group" aria-label={`${monster.name} ${partLabel}`}>
+                        {part.options.map((option) => {
+                          const selected = selectedSkinSelections[part.id] === option.id;
+
+                          return (
+                            <button
+                              key={option.id}
+                              type="button"
+                              onClick={() => {
+                                setSelectedSkinState((state) => ({
+                                  monsterId: monster.id,
+                                  selections: {
+                                    ...(state.monsterId === monster.id
+                                      ? state.selections
+                                      : getDefaultMonsterSkinSelections(monster)),
+                                    [part.id]: option.id,
+                                  },
+                                }));
+                              }}
+                              className="rounded border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-white/10"
+                              style={{
+                                backgroundColor: selected ? hexToRgba(typeConfig.color, 0.18) : "rgba(255,255,255,0.03)",
+                                borderColor: selected ? `${typeConfig.color}88` : "rgba(255,255,255,0.1)",
+                                color: selected ? typeConfig.color : "#a1a1aa",
+                              }}
+                            >
+                              {getMonsterSkinOptionLabel(option, serviceLocale)}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </section>
+
+        <aside className="flex flex-col gap-3">
+          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+            <div className="space-y-3">
+              <div className="flex flex-wrap gap-2">
+                <MetaPill value={gameUi.monsterTypes[displayType].label} color={typeConfig.color} />
+                {formatHp(monster) && <MetaPill value={`${monsterText.stats.hp} ${formatHp(monster)}`} />}
+                {formatHpAscension(monster) && (
+                  <MetaPill value={`${monsterText.stats.hpAscension} ${formatHpAscension(monster)}`} color="#ff8a65" />
+                )}
+                {meaningfulMoves.length > 0 && (
+                  <MetaPill value={`${monsterText.stats.moves} ${meaningfulMoves.length}`} />
                 )}
               </div>
-
-              <div className="flex w-full max-w-[24rem] flex-col items-center gap-3 xl:items-start">
-                <GameHoverTip
-                  title={monster.name}
-                  className="w-full max-w-[23rem]"
-                  style={{ minWidth: 220, width: "max-content", maxWidth: "100%" }}
-                />
-
-                {skinParts.length > 0 && (
-                  <div className="w-full rounded-lg border border-white/10 bg-black/20 px-4 py-3">
-                    <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500">
-                      {serviceLocale === "ko" ? "외형" : "Appearance"}
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      {skinParts.map((part) => {
-                        const partLabel = getMonsterSkinPartLabel(part, serviceLocale);
-
-                        return (
-                          <div key={part.id} className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
-                            <span className="min-w-10 text-[11px] font-medium text-gray-400">{partLabel}</span>
-                            <div className="flex flex-wrap gap-1" role="group" aria-label={`${monster.name} ${partLabel}`}>
-                              {part.options.map((option) => {
-                                const selected = selectedSkinSelections[part.id] === option.id;
-
-                                return (
-                                  <button
-                                    key={option.id}
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedSkinState((state) => ({
-                                        monsterId: monster.id,
-                                        selections: {
-                                          ...(state.monsterId === monster.id
-                                            ? state.selections
-                                            : getDefaultMonsterSkinSelections(monster)),
-                                          [part.id]: option.id,
-                                        },
-                                      }));
-                                    }}
-                                    className="rounded border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-white/10"
-                                    style={{
-                                      backgroundColor: selected ? hexToRgba(typeConfig.color, 0.18) : "rgba(255,255,255,0.03)",
-                                      borderColor: selected ? `${typeConfig.color}88` : "rgba(255,255,255,0.1)",
-                                      color: selected ? typeConfig.color : "#a1a1aa",
-                                    }}
-                                  >
-                                    {getMonsterSkinOptionLabel(option, serviceLocale)}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
+              {monster.nameEn !== monster.name && (
+                <div>
+                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
+                  <div className="font-game-text text-sm text-gray-300">{monster.nameEn}</div>
+                </div>
+              )}
             </div>
           </section>
 
-          <DetailPanel title={monsterText.actionPreview}>
+          <InfoRailSection title={monsterText.actionPreview}>
             {selectedMove && (
               <div className="mb-3 flex justify-end">
                 <span
@@ -390,58 +397,58 @@ export function MonsterDetail({
             )}
 
             {selectedMove && (
-            <div
-              className="mt-4 rounded-lg border bg-black/20 p-4"
-              style={{ borderColor: `${selectedAccent}55` }}
-            >
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <div className="font-game-title text-lg font-bold text-gray-100">{selectedMove.move.name}</div>
-                  {selectedMove.move.nameEn !== selectedMove.move.name && (
-                    <div className="font-game-text text-xs text-gray-500">{selectedMove.move.nameEn}</div>
-                  )}
+              <div
+                className="mt-4 rounded-lg border bg-black/20 p-4"
+                style={{ borderColor: `${selectedAccent}55` }}
+              >
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <div className="font-game-title text-lg font-bold text-gray-100">{selectedMove.move.name}</div>
+                    {selectedMove.move.nameEn !== selectedMove.move.name && (
+                      <div className="font-game-text text-xs text-gray-500">{selectedMove.move.nameEn}</div>
+                    )}
+                  </div>
+                  <MoveMetricChips
+                    summary={selectedMove}
+                    damageLabel={monsterText.damagePreview}
+                    blockLabel={monsterText.block}
+                  />
                 </div>
-                <MoveMetricChips
-                  summary={selectedMove}
-                  damageLabel={monsterText.damagePreview}
-                  blockLabel={monsterText.block}
-                />
-              </div>
 
-              {selectedMove.outgoing.length > 0 && (
-                <div className="mt-4">
-                  <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-500">
-                    {monsterText.nextActions}
-                  </div>
-                  <div className="space-y-2">
-                    {selectedMove.outgoing.map((transition) => (
-                      <div key={`${transition.from}-${transition.to}-${transition.chance ?? "unknown"}`} className="grid grid-cols-[minmax(6rem,1fr)_minmax(5rem,9rem)] items-center gap-3">
-                        <span className="truncate text-xs text-gray-300">{getMoveName(monster, transition.to)}</span>
-                        <span className="flex items-center gap-2">
-                          <span className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
-                            <span
-                              className="block h-full rounded-full"
-                              style={{
-                                width: `${transition.chance ?? 100}%`,
-                                backgroundColor: selectedAccent,
-                              }}
-                            />
+                {selectedMove.outgoing.length > 0 && (
+                  <div className="mt-4">
+                    <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                      {monsterText.nextActions}
+                    </div>
+                    <div className="space-y-2">
+                      {selectedMove.outgoing.map((transition) => (
+                        <div key={`${transition.from}-${transition.to}-${transition.chance ?? "unknown"}`} className="grid grid-cols-[minmax(6rem,1fr)_minmax(5rem,9rem)] items-center gap-3">
+                          <span className="truncate text-xs text-gray-300">{getMoveName(monster, transition.to)}</span>
+                          <span className="flex items-center gap-2">
+                            <span className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
+                              <span
+                                className="block h-full rounded-full"
+                                style={{
+                                  width: `${transition.chance ?? 100}%`,
+                                  backgroundColor: selectedAccent,
+                                }}
+                              />
+                            </span>
+                            <span className="w-9 text-right text-[10px] tabular-nums text-gray-500">
+                              {transition.chance == null ? "?" : `${transition.chance}%`}
+                            </span>
                           </span>
-                          <span className="w-9 text-right text-[10px] tabular-nums text-gray-500">
-                            {transition.chance == null ? "?" : `${transition.chance}%`}
-                          </span>
-                        </span>
-                      </div>
-                    ))}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
             )}
-          </DetailPanel>
+          </InfoRailSection>
 
           {transitionRows.length > 0 && (
-            <DetailPanel title={monsterText.actionGraph}>
+            <InfoRailSection title={monsterText.actionGraph}>
               <div className="mb-3 flex justify-end">
                 {firstMoveId && (
                   <span className="text-[10px] text-gray-500">
@@ -497,31 +504,8 @@ export function MonsterDetail({
               {monster.moveGraph?.confidence === "partial" && (
                 <p className="mt-3 text-[11px] leading-relaxed text-gray-500">{monsterText.graphPartial}</p>
               )}
-            </DetailPanel>
+            </InfoRailSection>
           )}
-        </section>
-
-        <aside className="flex flex-col gap-3">
-          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
-            <div className="space-y-3">
-              <div className="flex flex-wrap gap-2">
-                <MetaPill value={gameUi.monsterTypes[displayType].label} color={typeConfig.color} />
-                {formatHp(monster) && <MetaPill value={`${monsterText.stats.hp} ${formatHp(monster)}`} />}
-                {formatHpAscension(monster) && (
-                  <MetaPill value={`${monsterText.stats.hpAscension} ${formatHpAscension(monster)}`} color="#ff8a65" />
-                )}
-                {meaningfulMoves.length > 0 && (
-                  <MetaPill value={`${monsterText.stats.moves} ${meaningfulMoves.length}`} />
-                )}
-              </div>
-              {monster.nameEn !== monster.name && (
-                <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
-                  <div className="font-game-text text-sm text-gray-300">{monster.nameEn}</div>
-                </div>
-              )}
-            </div>
-          </section>
 
           <EntityReferenceLinks
             kind="encounter"
