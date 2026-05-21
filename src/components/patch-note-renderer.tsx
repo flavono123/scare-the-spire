@@ -396,13 +396,9 @@ export function EntityPreview({
       )}
       {visible && entity.type === "enchantment" && entity.enchantmentData && (
         renderTooltip(
-          <GameResourcePreview
-            title={entity.nameKo}
-            imageUrl={entity.enchantmentData.imageUrl}
-            imageAlt={entity.nameKo}
-          >
+          <GameHoverTip title={entity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
             <DescriptionText description={entity.enchantmentData.description} />
-          </GameResourcePreview>,
+          </GameHoverTip>,
         )
       )}
       {visible && entity.type === "event" && entity.eventData && !entity.eventOptionDesc && (
