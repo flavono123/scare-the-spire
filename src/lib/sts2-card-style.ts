@@ -84,8 +84,8 @@ export const CHAR_FRAME_HSV: Record<string, HSV> = {
   curse: { h: 0.85, s: 0.05, v: 0.55 },
   quest: { h: 1.0, s: 1.0, v: 1.0 },
   event: { h: 1.0, s: 0.0, v: 1.0 },
-  status: { h: 0.12, s: 0.3, v: 0.7 },
-  token: { h: 1.0, s: 0.0, v: 0.8 },
+  status: { h: 1.0, s: 0.0, v: 1.2 },
+  token: { h: 1.0, s: 0.0, v: 1.2 },
 };
 
 export const RARITY_BANNER_HSV: Record<string, HSV> = {
