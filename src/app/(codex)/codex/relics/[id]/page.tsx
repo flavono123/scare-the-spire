@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexAncients, getCodexCharacters, getCodexEvents, getCodexRelics } from "@/lib/codex-data";
+import { getCodexAncients, getCodexCharacters, getCodexEnchantments, getCodexEvents, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs } from "@/lib/data";
 import {
@@ -48,11 +48,12 @@ export default async function RelicDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [relics, characters, events, ancients, entities, patches, changes, versionDiffs, gameUi] = await Promise.all([
+  const [relics, characters, events, ancients, enchantments, entities, patches, changes, versionDiffs, gameUi] = await Promise.all([
     getCodexRelics({ gameLocale }),
     getCodexCharacters({ gameLocale }),
     getCodexEvents({ gameLocale }),
     getCodexAncients({ gameLocale }),
+    getCodexEnchantments({ gameLocale }),
     loadAllEntities({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
@@ -76,7 +77,7 @@ export default async function RelicDetailPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <RelicDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.relicCollectionTitle} relic={relic} poolLabels={poolLabels} entities={entities} relatedEvents={events} relatedAncients={ancients} patches={patches} changes={changes} versionDiffs={versionDiffs} />
+      <RelicDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.relicCollectionTitle} relic={relic} poolLabels={poolLabels} entities={entities} relatedEvents={events} relatedAncients={ancients} relatedEnchantments={enchantments} patches={patches} changes={changes} versionDiffs={versionDiffs} />
     </div>
   );
 }

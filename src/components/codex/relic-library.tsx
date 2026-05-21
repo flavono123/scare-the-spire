@@ -14,6 +14,7 @@ import {
   CodexRelic,
   CodexCharacter,
   CodexAncient,
+  CodexEnchantment,
   CodexEvent,
   RelicRarityKo,
   RelicPool,
@@ -71,9 +72,10 @@ interface RelicLibraryProps {
   /** All codex entities — enables rich cross-references in the detail modal. */
   entities?: EntityInfo[];
   relatedEvents?: CodexEvent[];
+  relatedEnchantments?: CodexEnchantment[];
 }
 
-export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters, ancients, versions, currentVersion, patches, changes, versionDiffs, entities, relatedEvents = [] }: RelicLibraryProps) {
+export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters, ancients, versions, currentVersion, patches, changes, versionDiffs, entities, relatedEvents = [], relatedEnchantments = [] }: RelicLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedPools, setSelectedPools] = useState<Set<RelicPoolFilter>>(new Set());
@@ -474,6 +476,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
               entities={entities}
               relatedEvents={relatedEvents}
               relatedAncients={ancients}
+              relatedEnchantments={relatedEnchantments}
               patches={patches}
               changes={changes}
               versionDiffs={versionDiffs}

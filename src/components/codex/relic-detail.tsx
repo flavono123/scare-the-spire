@@ -12,6 +12,7 @@ import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
   CodexAncient,
+  CodexEnchantment,
   CodexEvent,
   CodexRelic,
   RELIC_RARITY_COLORS,
@@ -27,7 +28,7 @@ import { EntityReferenceGroupLinks } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
 import { GameCheckboxToggle } from "./game-checkbox";
 import { RichDescription } from "./rich-description";
-import { getRelatedAncientIdsForRelic, getRelatedEventIdsForRelic } from "@/lib/codex-references";
+import { getRelatedAncientIdsForRelic, getRelatedEnchantmentIdsForRelic, getRelatedEventIdsForRelic } from "@/lib/codex-references";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
@@ -93,6 +94,7 @@ interface RelicDetailProps {
   entities?: EntityInfo[];
   relatedEvents?: CodexEvent[];
   relatedAncients?: CodexAncient[];
+  relatedEnchantments?: CodexEnchantment[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
@@ -100,7 +102,7 @@ interface RelicDetailProps {
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
-export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedEvents = [], relatedAncients = [], patches, changes, versionDiffs }: RelicDetailProps) {
+export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedEvents = [], relatedAncients = [], relatedEnchantments = [], patches, changes, versionDiffs }: RelicDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getRelicDetailLabels(serviceLocale);
   // Don't link the relic to itself in its own description
@@ -166,6 +168,26 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
         color: relatedAncient?.act ?? "ancient",
         type: "ancient" as const,
         ancientData: relatedAncient ?? undefined,
+      },
+    };
+  });
+  const relatedEnchantmentTargets = getRelatedEnchantmentIdsForRelic(relic, relatedEnchantments).map((enchantmentId) => {
+    const relatedEnchantment = relatedEnchantments.find((enchantment) => enchantment.id === enchantmentId) ?? null;
+    const href = `/compendium/enchantments/${enchantmentId.toLowerCase()}`;
+    const title = relatedEnchantment?.name ?? enchantmentId;
+    return {
+      id: enchantmentId,
+      href,
+      title,
+      entity: {
+        id: enchantmentId,
+        nameEn: relatedEnchantment?.nameEn ?? title,
+        nameKo: title,
+        imageUrl: relatedEnchantment?.imageUrl ?? null,
+        href,
+        color: relatedEnchantment?.cardType ?? "Any",
+        type: "enchantment" as const,
+        enchantmentData: relatedEnchantment ?? undefined,
       },
     };
   });
@@ -317,6 +339,7 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
             serviceLocale={serviceLocale}
             groups={[
               { kind: "event", targets: relatedEventTargets },
+              { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "ancient", targets: relatedAncientTargets },
             ]}
           />
