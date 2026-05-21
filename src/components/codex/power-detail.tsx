@@ -12,8 +12,11 @@ import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   CodexCard,
+  CodexEnchantment,
+  CodexEvent,
   CodexPotion,
   CodexPower,
+  CodexRelic,
   POWER_TYPE_CONFIG,
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -22,7 +25,13 @@ import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-r
 import { GameHoverTip, type HoverTipVariant } from "./hover-tip";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
-import { getRelatedCardIdsForPower, getRelatedPotionIdsForPower } from "@/lib/codex-references";
+import {
+  getRelatedCardIdsForPower,
+  getRelatedEnchantmentIdsForPower,
+  getRelatedEventIdsForPower,
+  getRelatedPotionIdsForPower,
+  getRelatedRelicIdsForPower,
+} from "@/lib/codex-references";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -69,7 +78,10 @@ interface PowerDetailProps {
   versionDiffs?: EntityVersionDiff[];
   entities?: EntityInfo[];
   relatedCards?: CodexCard[];
+  relatedRelics?: CodexRelic[];
   relatedPotions?: CodexPotion[];
+  relatedEnchantments?: CodexEnchantment[];
+  relatedEvents?: CodexEvent[];
   onClose?: () => void;
 }
 
@@ -106,7 +118,10 @@ export function PowerDetail({
   versionDiffs,
   entities,
   relatedCards = [],
+  relatedRelics = [],
   relatedPotions = [],
+  relatedEnchantments = [],
+  relatedEvents = [],
   onClose,
 }: PowerDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -126,29 +141,32 @@ export function PowerDetail({
   const relatedCardTargets: CodexReferenceTarget[] = getRelatedCardIdsForPower(relatedCards, power.id)
     .map((cardId) => cardById.get(cardId))
     .filter((card): card is CodexCard => Boolean(card))
-    .map((card) => {
-      const href = `/compendium/cards/${card.id.toLowerCase()}`;
-      return {
-        id: card.id,
-        href,
-        title: card.name,
-        entity: {
-          id: card.id,
-          nameEn: card.nameEn,
-          nameKo: card.name,
-          imageUrl: card.imageUrl,
-          href,
-          color: card.color,
-          type: "card" as const,
-          cardData: card,
-        },
-      };
-    });
+    .map(cardToReferenceTarget);
+  const relicById = new Map(relatedRelics.map((relic) => [relic.id, relic]));
+  const relatedRelicTargets = getRelatedRelicIdsForPower(relatedRelics, power.id)
+    .map((relicId) => relicById.get(relicId))
+    .filter((relic): relic is CodexRelic => Boolean(relic))
+    .map(relicToReferenceTarget);
   const potionById = new Map(relatedPotions.map((potion) => [potion.id, potion]));
-  const relatedPotionTargets = getRelatedPotionIdsForPower(power.id)
+  const relatedPotionTargets = getRelatedPotionIdsForPower(relatedPotions, power.id)
     .map((potionId) => potionById.get(potionId))
     .filter((potion): potion is CodexPotion => Boolean(potion))
     .map(potionToReferenceTarget);
+  const enchantmentById = new Map(relatedEnchantments.map((enchantment) => [enchantment.id, enchantment]));
+  const relatedEnchantmentTargets = getRelatedEnchantmentIdsForPower(relatedEnchantments, power.id)
+    .map((enchantmentId) => enchantmentById.get(enchantmentId))
+    .filter((enchantment): enchantment is CodexEnchantment => Boolean(enchantment))
+    .map(enchantmentToReferenceTarget);
+  const eventById = new Map(relatedEvents.map((event) => [event.id, event]));
+  const relatedEventTargets = getRelatedEventIdsForPower(power.id, {
+    cards: relatedCards,
+    relics: relatedRelics,
+    potions: relatedPotions,
+    enchantments: relatedEnchantments,
+  })
+    .map((eventId) => eventById.get(eventId))
+    .filter((event): event is CodexEvent => Boolean(event))
+    .map(eventToReferenceTarget);
 
   return (
     <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
@@ -252,7 +270,10 @@ export function PowerDetail({
           <EntityReferenceGroupLinks
             groups={[
               { kind: "card", targets: relatedCardTargets },
+              { kind: "relic", targets: relatedRelicTargets },
               { kind: "potion", targets: relatedPotionTargets },
+              { kind: "enchantment", targets: relatedEnchantmentTargets },
+              { kind: "event", targets: relatedEventTargets },
             ]}
             serviceLocale={serviceLocale}
           />
@@ -281,6 +302,44 @@ export function PowerDetail({
   );
 }
 
+function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {
+  const href = `/compendium/cards/${card.id.toLowerCase()}`;
+  return {
+    href,
+    id: card.id,
+    title: card.name,
+    entity: {
+      id: card.id,
+      nameEn: card.nameEn,
+      nameKo: card.name,
+      imageUrl: card.imageUrl,
+      href,
+      color: card.color,
+      type: "card",
+      cardData: card,
+    },
+  };
+}
+
+function relicToReferenceTarget(relic: CodexRelic): CodexReferenceTarget {
+  const href = `/compendium/relics/${relic.id.toLowerCase()}`;
+  return {
+    href,
+    id: relic.id,
+    title: relic.name,
+    entity: {
+      id: relic.id,
+      nameEn: relic.nameEn,
+      nameKo: relic.name,
+      imageUrl: relic.imageUrl,
+      href,
+      color: relic.pool,
+      type: "relic",
+      relicData: relic,
+    },
+  };
+}
+
 function potionToReferenceTarget(potion: CodexPotion): CodexReferenceTarget {
   const href = `/compendium/potions/${potion.id.toLowerCase()}`;
   return {
@@ -296,6 +355,44 @@ function potionToReferenceTarget(potion: CodexPotion): CodexReferenceTarget {
       color: potion.rarity,
       type: "potion",
       potionData: potion,
+    },
+  };
+}
+
+function enchantmentToReferenceTarget(enchantment: CodexEnchantment): CodexReferenceTarget {
+  const href = `/compendium/enchantments/${enchantment.id.toLowerCase()}`;
+  return {
+    href,
+    id: enchantment.id,
+    title: enchantment.name,
+    entity: {
+      id: enchantment.id,
+      nameEn: enchantment.nameEn,
+      nameKo: enchantment.name,
+      imageUrl: enchantment.imageUrl,
+      href,
+      color: enchantment.cardType ?? "Any",
+      type: "enchantment",
+      enchantmentData: enchantment,
+    },
+  };
+}
+
+function eventToReferenceTarget(event: CodexEvent): CodexReferenceTarget {
+  const href = `/compendium/events/${event.id.toLowerCase()}`;
+  return {
+    href,
+    id: event.id,
+    title: event.name,
+    entity: {
+      id: event.id,
+      nameEn: event.nameEn,
+      nameKo: event.name,
+      imageUrl: event.imageUrl,
+      href,
+      color: event.act ?? "event",
+      type: "event",
+      eventData: event,
     },
   };
 }

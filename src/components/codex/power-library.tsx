@@ -11,8 +11,11 @@ import {
 } from "@/lib/codex-service";
 import {
   CodexCard,
+  CodexEnchantment,
+  CodexEvent,
   CodexPotion,
   CodexPower,
+  CodexRelic,
   PowerType,
   POWER_TYPE_ORDER,
   POWER_TYPE_CONFIG,
@@ -46,7 +49,10 @@ interface PowerLibraryProps {
   title: string;
   powers: CodexPower[];
   cards?: CodexCard[];
+  relics?: CodexRelic[];
   potions?: CodexPotion[];
+  enchantments?: CodexEnchantment[];
+  events?: CodexEvent[];
   versions?: string[];
   currentVersion?: string;
   patches?: STS2Patch[];
@@ -55,7 +61,7 @@ interface PowerLibraryProps {
   entities?: EntityInfo[];
 }
 
-export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [], potions = [], versions, currentVersion, patches, changes, versionDiffs, entities }: PowerLibraryProps) {
+export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [], relics = [], potions = [], enchantments = [], events = [], versions, currentVersion, patches, changes, versionDiffs, entities }: PowerLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedTypes, setSelectedTypes] = useState<Set<PowerType>>(new Set());
@@ -333,7 +339,10 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
               versionDiffs={versionDiffs}
               entities={entities}
               relatedCards={cards}
+              relatedRelics={relics}
               relatedPotions={potions}
+              relatedEnchantments={enchantments}
+              relatedEvents={events}
               onClose={() => setSelectedPower(null)}
             />
           </div>
