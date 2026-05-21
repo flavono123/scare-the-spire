@@ -221,11 +221,11 @@ export function getEnchantForcedCost(
 
 // =============================================================================
 // 인챈트 텍스트 amount 치환
-// description/extra_card_text의 [blue]X[/blue] 또는 X를 실제 amount로 교체.
+// description/extra_card_text의 [blue]X[/blue], X, [Amount], {Amount}를 실제 amount로 교체.
 // =============================================================================
 
 /**
- * "X" 또는 "[blue]X[/blue]" 자리를 amount로 치환.
+ * "X", "[blue]X[/blue]", "[Amount]", "{Amount}" 자리를 amount로 치환.
  * "Apply [blue]X[/blue] [gold]Weak[/gold]." → "Apply [blue]2[/blue] [gold]Weak[/gold]."
  *
  * asEnergyIcon=true: X 자리에 [energy:N] (Sown — 에너지 아이콘 N개로 표시).
@@ -243,6 +243,8 @@ export function substituteAmount(
   let out = text.replace(/\[blue\]X\[\/blue\]/g, replacement);
   // 단독 X (영문/한글 단어 경계) → replacement
   out = out.replace(/(^|[^A-Za-z])X([^A-Za-z]|$)/g, `$1${replacement}$2`);
+  out = out.replace(/\[Amount\]/g, replacement);
+  out = out.replace(/\{Amount\}/g, replacement);
   // SmartFormat {Amount:energyIcons()} 도 처리 (description_raw 직접 사용 시)
   out = out.replace(/\{Amount:energyIcons\(\)\}/g, `[energy:${amount}]`);
   return out;
