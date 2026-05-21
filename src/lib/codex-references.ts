@@ -319,6 +319,18 @@ export const EVENT_RELATED_POTION_IDS = {
   POTION_COURIER: ["FOUL_POTION"],
 } as const satisfies Record<string, readonly string[]>;
 
+export const EVENT_RELATED_ENCHANTMENT_IDS = {
+  FIELD_OF_MAN_SIZED_HOLES: ["PERFECT_FIT"],
+  GRAVE_OF_THE_FORGOTTEN: ["SOULS_POWER"],
+  SAPPHIRE_SEED: ["SOWN"],
+  SELF_HELP_BOOK: ["NIMBLE", "SHARP", "SWIFT"],
+  SPIRALING_WHIRLPOOL: ["SPIRAL"],
+  STONE_OF_ALL_TIME: ["VIGOROUS"],
+  SYMBIOTE: ["CORRUPTED"],
+  WATERLOGGED_SCRIPTORIUM: ["STEADY"],
+  WOOD_CARVINGS: ["SLITHER"],
+} as const satisfies Record<string, readonly string[]>;
+
 export function getRelatedCardIdsForEvent(eventId: string): readonly string[] {
   return (EVENT_RELATED_CARD_IDS as Record<string, readonly string[]>)[eventId] ?? [];
 }
@@ -331,6 +343,10 @@ export function getRelatedPotionIdsForEvent(eventId: string): readonly string[] 
   return (EVENT_RELATED_POTION_IDS as Record<string, readonly string[]>)[eventId] ?? [];
 }
 
+export function getRelatedEnchantmentIdsForEvent(eventId: string): readonly string[] {
+  return (EVENT_RELATED_ENCHANTMENT_IDS as Record<string, readonly string[]>)[eventId] ?? [];
+}
+
 export function getRelatedEventIdsForCard(cardId: string): readonly string[] {
   return invertEventRelations(EVENT_RELATED_CARD_IDS, cardId);
 }
@@ -341,6 +357,10 @@ export function getRelatedEventIdsForRelic(relicId: string): readonly string[] {
 
 export function getRelatedEventIdsForPotion(potionId: string): readonly string[] {
   return invertEventRelations(EVENT_RELATED_POTION_IDS, potionId);
+}
+
+export function getRelatedEventIdsForEnchantment(enchantmentId: string): readonly string[] {
+  return invertEventRelations(EVENT_RELATED_ENCHANTMENT_IDS, enchantmentId);
 }
 
 export function getRelatedAncientIdsForRelic(

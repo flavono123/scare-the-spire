@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 
-export type CodexReferenceKind = "card" | "event" | "potion" | "relic" | "monster" | "encounter" | "ancient" | "power";
+export type CodexReferenceKind = "card" | "event" | "potion" | "relic" | "enchantment" | "monster" | "encounter" | "ancient" | "power";
 
 export interface CodexReferenceTarget {
   id: string;
@@ -48,6 +48,10 @@ const REFERENCE_KIND_CONFIG: Record<CodexReferenceKind, { icon: string; label: s
   relic: {
     icon: "/images/sts2/relics/bing_bong.webp",
     label: "관련 유물",
+  },
+  enchantment: {
+    icon: "/images/sts2/enchantments/swift.webp",
+    label: "관련 인챈트",
   },
   monster: {
     icon: "/images/sts2/nav/stats_monsters.png",
