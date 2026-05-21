@@ -337,10 +337,7 @@ export const CARD_RELATED_ENCHANTMENT_IDS = {
   BLADE_OF_INK: ["INKY"],
 } as const satisfies Record<string, readonly string[]>;
 
-export const RELIC_RELATED_ENCHANTMENT_IDS = {
-  PAELS_CLAW: ["GOOPY"],
-  ROYAL_STAMP: ["ROYALLY_APPROVED"],
-} as const satisfies Record<string, readonly string[]>;
+export const RELIC_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<string, readonly string[]>;
 
 export const POTION_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<string, readonly string[]>;
 
