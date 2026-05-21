@@ -76,21 +76,10 @@ export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "
       {/* Hover tooltip */}
       {hovered && (
         <div
-          className={`pointer-events-none absolute z-50 hidden max-w-[25rem] items-start gap-2.5 md:flex ${
+          className={`pointer-events-none absolute z-50 hidden md:block ${
             placement.horizontal === "right" ? "left-full ml-3" : "right-full mr-3"
           } ${placement.vertical === "top" ? "top-0" : "bottom-0"}`}
         >
-          {enchantment.imageUrl && (
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-black/20">
-              <Image
-                src={enchantment.imageUrl}
-                alt={enchantment.name}
-                width={64}
-                height={64}
-                className="h-14 w-14 object-contain drop-shadow-md"
-              />
-            </div>
-          )}
           <GameHoverTip title={enchantment.name} style={{ minWidth: 280, maxWidth: 320 }}>
             <DescriptionText description={enchantment.description} className="block text-left" />
           </GameHoverTip>
