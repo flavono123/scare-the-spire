@@ -5,6 +5,7 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleForGameLocale,
 } from "@/lib/i18n";
+import { withPageOgImage } from "@/lib/page-og-images";
 import { getHistoryCourseLandingGameCopy } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 
@@ -16,10 +17,10 @@ export async function generateMetadata({
   const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const copy = await getHistoryCourseLandingGameCopy(gameLocale);
-  return {
+  return withPageOgImage({
     title: `${copy.title} — ${serviceMessages[serviceLocale].historyCourse.runTitleSuffix}`,
     description: serviceMessages[serviceLocale].historyCourse.runDescription,
-  };
+  }, "/history-course/[runId]");
 }
 
 // runId is content-addressable and per-browser; we never enumerate.

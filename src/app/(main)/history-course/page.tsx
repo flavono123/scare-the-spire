@@ -5,6 +5,7 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleForGameLocale,
 } from "@/lib/i18n";
+import { withPageOgImage } from "@/lib/page-og-images";
 import { getHistoryCourseLandingGameCopy } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 
@@ -16,13 +17,13 @@ export async function generateMetadata({
   const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const copy = await getHistoryCourseLandingGameCopy(gameLocale);
-  return {
+  return withPageOgImage({
     title: copy.title,
     description: serviceMessages[serviceLocale].historyCourse.description.replace(
       "{runHistory}",
       copy.runHistoryLabel,
     ),
-  };
+  }, "/history-course");
 }
 
 export default async function HistoryCourseIndexPage({

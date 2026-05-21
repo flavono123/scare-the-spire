@@ -27,7 +27,41 @@ export const PATCH_NOTES_PAGE_OG_IMAGE: PageOgImage = {
   alt: "슬서운 이야기 패치 노트 — 필연적인 결과 Foregone Conclusion",
 };
 
+export const CHEMICAL_X_PAGE_OG_IMAGE: PageOgImage = {
+  url: "/images/sts2/cards/eradicate.webp",
+  width: 1000,
+  height: 760,
+  alt: "케미컬X — 척결 Eradicate",
+};
+
+export const HISTORY_COURSE_PAGE_OG_IMAGE: PageOgImage = {
+  url: "/images/sts2/cards/spoils_map.webp",
+  width: 1000,
+  height: 760,
+  alt: "히스토리 코스 — 보물 지도 Spoils Map",
+};
+
 export const PAGE_OG_IMAGE_RULES = [
+  {
+    pattern: "/chemical-x",
+    label: "케미컬X",
+    image: CHEMICAL_X_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/chemical-x/*",
+    label: "케미컬X 상세",
+    image: CHEMICAL_X_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/history-course",
+    label: "히스토리 코스",
+    image: HISTORY_COURSE_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/history-course/*",
+    label: "히스토리 코스 상세",
+    image: HISTORY_COURSE_PAGE_OG_IMAGE,
+  },
   {
     pattern: "/patches",
     label: "패치 목록",

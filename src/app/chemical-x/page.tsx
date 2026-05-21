@@ -5,6 +5,7 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleForGameLocale,
 } from "@/lib/i18n";
+import { withPageOgImage } from "@/lib/page-og-images";
 import { getChemicalXPlaceholder } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 
@@ -15,9 +16,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  return {
+  return withPageOgImage({
     title: serviceMessages[serviceLocale].chemicalX.title,
-  };
+  }, "/chemical-x");
 }
 
 export default async function ChemicalXPage({
