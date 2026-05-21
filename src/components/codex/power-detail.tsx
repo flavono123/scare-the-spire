@@ -12,16 +12,17 @@ import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   CodexCard,
+  CodexPotion,
   CodexPower,
   POWER_TYPE_CONFIG,
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
-import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameHoverTip, type HoverTipVariant } from "./hover-tip";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
-import { getRelatedCardIdsForPower } from "@/lib/codex-references";
+import { getRelatedCardIdsForPower, getRelatedPotionIdsForPower } from "@/lib/codex-references";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -68,6 +69,7 @@ interface PowerDetailProps {
   versionDiffs?: EntityVersionDiff[];
   entities?: EntityInfo[];
   relatedCards?: CodexCard[];
+  relatedPotions?: CodexPotion[];
   onClose?: () => void;
 }
 
@@ -104,6 +106,7 @@ export function PowerDetail({
   versionDiffs,
   entities,
   relatedCards = [],
+  relatedPotions = [],
   onClose,
 }: PowerDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -141,6 +144,11 @@ export function PowerDetail({
         },
       };
     });
+  const potionById = new Map(relatedPotions.map((potion) => [potion.id, potion]));
+  const relatedPotionTargets = getRelatedPotionIdsForPower(power.id)
+    .map((potionId) => potionById.get(potionId))
+    .filter((potion): potion is CodexPotion => Boolean(potion))
+    .map(potionToReferenceTarget);
 
   return (
     <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
@@ -241,10 +249,12 @@ export function PowerDetail({
             </div>
           </section>
 
-          <EntityReferenceLinks
-            kind="card"
+          <EntityReferenceGroupLinks
+            groups={[
+              { kind: "card", targets: relatedCardTargets },
+              { kind: "potion", targets: relatedPotionTargets },
+            ]}
             serviceLocale={serviceLocale}
-            targets={relatedCardTargets}
           />
 
           <InfoRailSection title={detailLabels.patchHistory}>
@@ -269,4 +279,23 @@ export function PowerDetail({
       </div>
     </div>
   );
+}
+
+function potionToReferenceTarget(potion: CodexPotion): CodexReferenceTarget {
+  const href = `/compendium/potions/${potion.id.toLowerCase()}`;
+  return {
+    href,
+    id: potion.id,
+    title: potion.name,
+    entity: {
+      id: potion.id,
+      nameEn: potion.nameEn,
+      nameKo: potion.name,
+      imageUrl: potion.imageUrl,
+      href,
+      color: potion.rarity,
+      type: "potion",
+      potionData: potion,
+    },
+  };
 }

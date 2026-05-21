@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCodexCards, getCodexPowers } from "@/lib/codex-data";
+import { getCodexCards, getCodexPotions, getCodexPowers } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs } from "@/lib/data";
 import {
@@ -47,9 +47,10 @@ export default async function PowerDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [powers, cards, entities, patches, changes, versionDiffs, gameUi] = await Promise.all([
+  const [powers, cards, potions, entities, patches, changes, versionDiffs, gameUi] = await Promise.all([
     getCodexPowers({ gameLocale }),
     getCodexCards({ gameLocale }),
+    getCodexPotions({ gameLocale }),
     loadAllEntities({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
@@ -61,7 +62,7 @@ export default async function PowerDetailPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PowerDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.nav.powers} power={power} entities={entities} relatedCards={cards} patches={patches} changes={changes} versionDiffs={versionDiffs} />
+      <PowerDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={gameUi.nav.powers} power={power} entities={entities} relatedCards={cards} relatedPotions={potions} patches={patches} changes={changes} versionDiffs={versionDiffs} />
     </div>
   );
 }
