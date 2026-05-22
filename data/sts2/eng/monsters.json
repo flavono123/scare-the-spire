@@ -1228,7 +1228,7 @@
     "id": "CRUSHER",
     "name": "Crusher",
     "type": "Boss",
-    "show_in_compendium": false,
+    "show_in_compendium": true,
     "min_hp": 209,
     "max_hp": null,
     "min_hp_ascension": 219,
@@ -2997,10 +2997,6 @@
     "max_hp_ascension": null,
     "moves": [
       {
-        "id": "RAMMING_SPEED",
-        "name": "Ramming Speed"
-      },
-      {
         "id": "SWIPE",
         "name": "Swipe"
       },
@@ -3029,60 +3025,26 @@
     ],
     "move_graph": {
       "initial": "HAUNT",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
-          "from": "RAMMING_SPEED",
-          "to": "SWIPE",
-          "chance": null
-        },
-        {
-          "from": "RAMMING_SPEED",
-          "to": "STOMP",
-          "chance": null
-        },
-        {
-          "from": "SWIPE",
-          "to": "RAMMING_SPEED",
-          "chance": null
-        },
-        {
           "from": "SWIPE",
           "to": "STOMP",
-          "chance": null
-        },
-        {
-          "from": "STOMP",
-          "to": "RAMMING_SPEED",
-          "chance": null
+          "chance": 100.0
         },
         {
           "from": "STOMP",
           "to": "SWIPE",
-          "chance": null
-        },
-        {
-          "from": "HAUNT",
-          "to": "RAMMING_SPEED",
-          "chance": null
+          "chance": 100.0
         },
         {
           "from": "HAUNT",
           "to": "SWIPE",
-          "chance": null
-        },
-        {
-          "from": "HAUNT",
-          "to": "STOMP",
-          "chance": null
+          "chance": 100.0
         }
       ]
     },
     "damage_values": {
-      "RammingSpeed": {
-        "normal": 10,
-        "ascension": 11
-      },
       "Swipe": {
         "normal": 13,
         "ascension": 14
@@ -3181,9 +3143,9 @@
     "name": "Infested Prism",
     "type": "Elite",
     "show_in_compendium": true,
-    "min_hp": 200,
+    "min_hp": 161,
     "max_hp": null,
-    "min_hp_ascension": 215,
+    "min_hp_ascension": 171,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -3249,15 +3211,19 @@
     },
     "damage_values": {
       "Jab": {
-        "normal": 22,
-        "ascension": 24
+        "normal": 15,
+        "ascension": 17
       },
       "Radiate": {
-        "normal": 16,
-        "ascension": 18
+        "normal": 11,
+        "ascension": 13
       },
       "Whirlwind": {
-        "normal": 9,
+        "normal": 5,
+        "ascension": 6
+      },
+      "Pulsate": {
+        "normal": 8,
         "ascension": 10
       }
     },
@@ -5035,17 +5001,17 @@
       "transitions": [
         {
           "from": "READY",
-          "to": "STRONG_PUNCH",
-          "chance": 100.0
-        },
-        {
-          "from": "STRONG_PUNCH",
           "to": "FAST_PUNCH",
           "chance": 100.0
         },
         {
-          "from": "FAST_PUNCH",
+          "from": "STRONG_PUNCH",
           "to": "READY",
+          "chance": 100.0
+        },
+        {
+          "from": "FAST_PUNCH",
+          "to": "STRONG_PUNCH",
           "chance": 100.0
         }
       ]
@@ -5146,7 +5112,7 @@
     "id": "ROCKET",
     "name": "Rocket",
     "type": "Boss",
-    "show_in_compendium": false,
+    "show_in_compendium": true,
     "min_hp": 199,
     "max_hp": null,
     "min_hp_ascension": 209,
@@ -5516,18 +5482,18 @@
     "name": "Skulking Colony",
     "type": "Elite",
     "show_in_compendium": true,
-    "min_hp": 70,
+    "min_hp": 75,
     "max_hp": null,
-    "min_hp_ascension": 75,
+    "min_hp_ascension": 80,
     "max_hp_ascension": null,
     "moves": [
       {
-        "id": "SMASH",
-        "name": "Smash"
-      },
-      {
         "id": "ZOOM",
         "name": "Zoom"
+      },
+      {
+        "id": "ZOOM_MOVE_2",
+        "name": "Zoom Move 2"
       },
       {
         "id": "INERTIA",
@@ -5540,12 +5506,12 @@
     ],
     "bestiary_moves": [
       {
-        "id": "SMASH",
-        "name": "Smash"
-      },
-      {
         "id": "ZOOM",
         "name": "Zoom"
+      },
+      {
+        "id": "ZOOM_MOVE_2",
+        "name": "Zoom Move 2"
       },
       {
         "id": "INERTIA",
@@ -5557,16 +5523,16 @@
       }
     ],
     "move_graph": {
-      "initial": "SMASH",
+      "initial": "ZOOM",
       "confidence": "static",
       "transitions": [
         {
-          "from": "SMASH",
-          "to": "ZOOM",
+          "from": "ZOOM",
+          "to": "ZOOM_MOVE_2",
           "chance": 100.0
         },
         {
-          "from": "ZOOM",
+          "from": "ZOOM_MOVE_2",
           "to": "INERTIA",
           "chance": 100.0
         },
@@ -5577,16 +5543,12 @@
         },
         {
           "from": "PIERCING_STABS",
-          "to": "SMASH",
+          "to": "ZOOM",
           "chance": 100.0
         }
       ]
     },
     "damage_values": {
-      "Smash": {
-        "normal": 12,
-        "ascension": 13
-      },
       "Zoom": {
         "normal": 14,
         "ascension": 16
@@ -7526,7 +7488,7 @@
     "moves": [
       {
         "id": "HATCH",
-        "name": "HATCH"
+        "name": "Hatch"
       },
       {
         "id": "NIBBLE",
@@ -7536,7 +7498,7 @@
     "bestiary_moves": [
       {
         "id": "HATCH",
-        "name": "HATCH"
+        "name": "Hatch"
       },
       {
         "id": "NIBBLE",

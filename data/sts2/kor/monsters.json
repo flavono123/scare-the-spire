@@ -1228,7 +1228,7 @@
     "id": "CRUSHER",
     "name": "분쇄자",
     "type": "Boss",
-    "show_in_compendium": false,
+    "show_in_compendium": true,
     "min_hp": 209,
     "max_hp": null,
     "min_hp_ascension": 219,
@@ -1487,7 +1487,7 @@
       },
       {
         "id": "CONSTRICT",
-        "name": "Constrict"
+        "name": "수축"
       },
       {
         "id": "DEAD",
@@ -1509,7 +1509,7 @@
       },
       {
         "id": "CONSTRICT",
-        "name": "Constrict"
+        "name": "수축"
       },
       {
         "id": "DEAD",
@@ -2271,7 +2271,7 @@
       },
       {
         "id": "SMASH",
-        "name": "부수기"
+        "name": "후려치기"
       }
     ],
     "bestiary_moves": [
@@ -2285,7 +2285,7 @@
       },
       {
         "id": "SMASH",
-        "name": "부수기"
+        "name": "후려치기"
       }
     ],
     "move_graph": {
@@ -2448,7 +2448,7 @@
       },
       {
         "id": "LASH",
-        "name": "후려치기"
+        "name": "휘둘러치기"
       }
     ],
     "bestiary_moves": [
@@ -2462,7 +2462,7 @@
       },
       {
         "id": "LASH",
-        "name": "후려치기"
+        "name": "휘둘러치기"
       }
     ],
     "move_graph": {
@@ -2997,10 +2997,6 @@
     "max_hp_ascension": null,
     "moves": [
       {
-        "id": "RAMMING_SPEED",
-        "name": "전속력"
-      },
-      {
         "id": "SWIPE",
         "name": "밀쳐내기"
       },
@@ -3029,60 +3025,26 @@
     ],
     "move_graph": {
       "initial": "HAUNT",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
-          "from": "RAMMING_SPEED",
-          "to": "SWIPE",
-          "chance": null
-        },
-        {
-          "from": "RAMMING_SPEED",
-          "to": "STOMP",
-          "chance": null
-        },
-        {
-          "from": "SWIPE",
-          "to": "RAMMING_SPEED",
-          "chance": null
-        },
-        {
           "from": "SWIPE",
           "to": "STOMP",
-          "chance": null
-        },
-        {
-          "from": "STOMP",
-          "to": "RAMMING_SPEED",
-          "chance": null
+          "chance": 100.0
         },
         {
           "from": "STOMP",
           "to": "SWIPE",
-          "chance": null
-        },
-        {
-          "from": "HAUNT",
-          "to": "RAMMING_SPEED",
-          "chance": null
+          "chance": 100.0
         },
         {
           "from": "HAUNT",
           "to": "SWIPE",
-          "chance": null
-        },
-        {
-          "from": "HAUNT",
-          "to": "STOMP",
-          "chance": null
+          "chance": 100.0
         }
       ]
     },
     "damage_values": {
-      "RammingSpeed": {
-        "normal": 10,
-        "ascension": 11
-      },
       "Swipe": {
         "normal": 13,
         "ascension": 14
@@ -3181,9 +3143,9 @@
     "name": "감염된 프리즘",
     "type": "Elite",
     "show_in_compendium": true,
-    "min_hp": 200,
+    "min_hp": 161,
     "max_hp": null,
-    "min_hp_ascension": 215,
+    "min_hp_ascension": 171,
     "max_hp_ascension": null,
     "moves": [
       {
@@ -3249,15 +3211,19 @@
     },
     "damage_values": {
       "Jab": {
-        "normal": 22,
-        "ascension": 24
+        "normal": 15,
+        "ascension": 17
       },
       "Radiate": {
-        "normal": 16,
-        "ascension": 18
+        "normal": 11,
+        "ascension": 13
       },
       "Whirlwind": {
-        "normal": 9,
+        "normal": 5,
+        "ascension": 6
+      },
+      "Pulsate": {
+        "normal": 8,
         "ascension": 10
       }
     },
@@ -3911,7 +3877,7 @@
       },
       {
         "id": "SMASH",
-        "name": "부수기"
+        "name": "후려치기"
       }
     ],
     "bestiary_moves": [
@@ -3921,7 +3887,7 @@
       },
       {
         "id": "SMASH",
-        "name": "부수기"
+        "name": "후려치기"
       }
     ],
     "move_graph": {
@@ -4596,7 +4562,7 @@
       },
       {
         "id": "SMASH",
-        "name": "부수기"
+        "name": "후려치기"
       },
       {
         "id": "TENDERIZER",
@@ -4614,7 +4580,7 @@
       },
       {
         "id": "SMASH",
-        "name": "부수기"
+        "name": "후려치기"
       },
       {
         "id": "NUTRITIONAL_PASTE",
@@ -4846,7 +4812,7 @@
       },
       {
         "id": "LASH",
-        "name": "후려치기"
+        "name": "휘둘러치기"
       },
       {
         "id": "FLAIL",
@@ -4864,7 +4830,7 @@
       },
       {
         "id": "LASH",
-        "name": "후려치기"
+        "name": "휘둘러치기"
       },
       {
         "id": "FLAIL",
@@ -4954,7 +4920,7 @@
       },
       {
         "id": "LASH",
-        "name": "후려치기"
+        "name": "휘둘러치기"
       }
     ],
     "bestiary_moves": [
@@ -4964,7 +4930,7 @@
       },
       {
         "id": "LASH",
-        "name": "후려치기"
+        "name": "휘둘러치기"
       }
     ],
     "move_graph": {
@@ -5035,17 +5001,17 @@
       "transitions": [
         {
           "from": "READY",
-          "to": "STRONG_PUNCH",
-          "chance": 100.0
-        },
-        {
-          "from": "STRONG_PUNCH",
           "to": "FAST_PUNCH",
           "chance": 100.0
         },
         {
-          "from": "FAST_PUNCH",
+          "from": "STRONG_PUNCH",
           "to": "READY",
+          "chance": 100.0
+        },
+        {
+          "from": "FAST_PUNCH",
+          "to": "STRONG_PUNCH",
           "chance": 100.0
         }
       ]
@@ -5146,7 +5112,7 @@
     "id": "ROCKET",
     "name": "로켓",
     "type": "Boss",
-    "show_in_compendium": false,
+    "show_in_compendium": true,
     "min_hp": 199,
     "max_hp": null,
     "min_hp_ascension": 209,
@@ -5516,18 +5482,18 @@
     "name": "잠행 군체",
     "type": "Elite",
     "show_in_compendium": true,
-    "min_hp": 70,
+    "min_hp": 75,
     "max_hp": null,
-    "min_hp_ascension": 75,
+    "min_hp_ascension": 80,
     "max_hp_ascension": null,
     "moves": [
       {
-        "id": "SMASH",
-        "name": "Smash"
-      },
-      {
         "id": "ZOOM",
         "name": "급가속"
+      },
+      {
+        "id": "ZOOM_MOVE_2",
+        "name": "Zoom Move 2"
       },
       {
         "id": "INERTIA",
@@ -5540,12 +5506,12 @@
     ],
     "bestiary_moves": [
       {
-        "id": "SMASH",
-        "name": "Smash"
-      },
-      {
         "id": "ZOOM",
         "name": "급가속"
+      },
+      {
+        "id": "ZOOM_MOVE_2",
+        "name": "Zoom Move 2"
       },
       {
         "id": "INERTIA",
@@ -5557,16 +5523,16 @@
       }
     ],
     "move_graph": {
-      "initial": "SMASH",
+      "initial": "ZOOM",
       "confidence": "static",
       "transitions": [
         {
-          "from": "SMASH",
-          "to": "ZOOM",
+          "from": "ZOOM",
+          "to": "ZOOM_MOVE_2",
           "chance": 100.0
         },
         {
-          "from": "ZOOM",
+          "from": "ZOOM_MOVE_2",
           "to": "INERTIA",
           "chance": 100.0
         },
@@ -5577,16 +5543,12 @@
         },
         {
           "from": "PIERCING_STABS",
-          "to": "SMASH",
+          "to": "ZOOM",
           "chance": 100.0
         }
       ]
     },
     "damage_values": {
-      "Smash": {
-        "normal": 12,
-        "ascension": 13
-      },
       "Zoom": {
         "normal": 14,
         "ascension": 16
@@ -5703,7 +5665,7 @@
       },
       {
         "id": "LASH",
-        "name": "후려치기"
+        "name": "휘둘러치기"
       }
     ],
     "bestiary_moves": [
@@ -5717,7 +5679,7 @@
       },
       {
         "id": "LASH",
-        "name": "후려치기"
+        "name": "휘둘러치기"
       }
     ],
     "move_graph": {
@@ -6398,7 +6360,7 @@
       },
       {
         "id": "TERROR",
-        "name": "위협"
+        "name": "공포 유발"
       }
     ],
     "bestiary_moves": [
@@ -6412,7 +6374,7 @@
       },
       {
         "id": "TERROR",
-        "name": "위협"
+        "name": "공포 유발"
       }
     ],
     "move_graph": {
@@ -6574,7 +6536,7 @@
     "moves": [
       {
         "id": "SMASH",
-        "name": "부수기"
+        "name": "후려치기"
       },
       {
         "id": "BEAM",
@@ -6588,7 +6550,7 @@
     "bestiary_moves": [
       {
         "id": "SMASH",
-        "name": "부수기"
+        "name": "후려치기"
       },
       {
         "id": "BEAM",
@@ -7530,7 +7492,7 @@
       },
       {
         "id": "NIBBLE",
-        "name": "Nibble"
+        "name": "베어물기"
       }
     ],
     "bestiary_moves": [
@@ -7540,7 +7502,7 @@
       },
       {
         "id": "NIBBLE",
-        "name": "Nibble"
+        "name": "베어물기"
       }
     ],
     "move_graph": {
