@@ -28,6 +28,7 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
    ```bash
    pnpm i18n:sync
    python3 scripts/extract-card-portraits.py --force
+   env PYTHONPATH=/tmp/sts2-spine-deps:. PYTHONDONTWRITEBYTECODE=1 python3 scripts/extract-epoch-portraits.py --force
    env PYTHONPATH=. python3.12 scripts/extract-map-assets.py --force
    env PYTHONPATH=. python3.12 scripts/extract-boss-icons.py --force
    python3 scripts/parse-enchantments.py
