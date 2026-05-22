@@ -9,7 +9,7 @@ export interface ResolvedPatchArt {
 }
 
 const DEFAULT_PATCH_ART: ResolvedPatchArt = {
-  imageUrl: "/images/sts2/patches/default-art.jpg",
+  imageUrl: "/images/sts2/patches/default-art.webp",
   alt: "Slay the Spire 2 banner art",
   objectPosition: "center",
 };
