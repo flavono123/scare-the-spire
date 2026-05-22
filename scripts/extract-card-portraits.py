@@ -2,8 +2,8 @@
 """Extract card portrait images from the local STS2 game PCK file.
 
 Reads the Godot 4.x PCK file directly (no GDRE Tools needed),
-finds card portrait .import -> .ctex mappings, extracts WebP data
-from GST2 compressed textures, and converts to PNG.
+    finds card portrait .import -> .ctex mappings, extracts WebP data
+    from GST2 compressed textures, and writes PNG + WebP outputs.
 
 Usage:
     python3 scripts/extract-card-portraits.py [options]
@@ -247,6 +247,17 @@ def webp_to_png(webp_data: bytes) -> bytes:
                 os.unlink(tmp_out_path)
 
 
+def png_to_webp(png_data: bytes) -> bytes | None:
+    """Convert PNG bytes to WebP bytes for the Codex image pipeline."""
+    if not HAS_PILLOW:
+        return None
+    import io
+    img = Image.open(io.BytesIO(png_data))
+    buf = io.BytesIO()
+    img.save(buf, format="WEBP", quality=95, method=6)
+    return buf.getvalue()
+
+
 def extract_portrait(reader: PCKReader, portrait: CardPortrait) -> bytes | None:
     """Extract a single card portrait as PNG bytes."""
     if not portrait.ctex_path:
@@ -332,6 +343,7 @@ def main():
 
         for portrait in sorted(group, key=lambda p: p.name):
             out_path = os.path.join(out_dir, f"{portrait.name}.png")
+            webp_path = os.path.join(out_dir, f"{portrait.name}.webp")
             exists = os.path.exists(out_path)
 
             if args.dry_run:
@@ -371,6 +383,10 @@ def main():
             if not args.diff_only or not exists or stats["updated"] > 0:
                 with open(out_path, "wb") as f:
                     f.write(png_data)
+                webp_data = png_to_webp(png_data)
+                if webp_data is not None:
+                    with open(webp_path, "wb") as f:
+                        f.write(webp_data)
                 stats["extracted"] += 1
 
     reader.close()
