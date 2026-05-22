@@ -427,7 +427,8 @@ export function MonsterDetail({
     : getDefaultMonsterSkinSelections(monster);
   const selectedSkinNames = getSelectedMonsterSkinNames(monster, selectedSkinSelections);
   const selectedSingleSkin = selectedSkinNames.length > 0 ? null : getSingleMonsterSkin(monster);
-  const selectedMove = moveSummaries.find((summary) => summary.move.id === selectedMoveId) ?? moveSummaries[0] ?? null;
+  const defaultSelectedMove = moveSummaries.find((summary) => summary.move.id === firstMoveId) ?? moveSummaries[0] ?? null;
+  const selectedMove = moveSummaries.find((summary) => summary.move.id === selectedMoveId) ?? defaultSelectedMove;
   const selectedAccent = selectedMove ? getMoveToneColor(selectedMove.tone, typeConfig.color) : typeConfig.color;
   const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
   const skinParts = getMonsterSkinParts(monster.spineAsset);
@@ -902,7 +903,6 @@ function buildMonsterActionMoves(monster: CodexMonster): MonsterMove[] {
     if (!byId.has(move.id)) byId.set(move.id, move);
   };
 
-  monster.bestiaryMoves.forEach(addMove);
   const allMoves = [...monster.moves, ...monster.bestiaryMoves];
   const allMovesById = new Map(allMoves.map((move) => [move.id, move]));
 
@@ -912,9 +912,8 @@ function buildMonsterActionMoves(monster: CodexMonster): MonsterMove[] {
     addMove(allMovesById.get(transition.to));
   }
 
-  monster.moves.forEach((move) => {
-    if (byId.size === 0 || byId.has(move.id)) addMove(move);
-  });
+  monster.bestiaryMoves.forEach(addMove);
+  if (byId.size === 0) monster.moves.forEach(addMove);
 
   return Array.from(byId.values());
 }
