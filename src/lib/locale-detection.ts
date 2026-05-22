@@ -138,12 +138,35 @@ function gameLocaleFromLanguageTag(
   }
 }
 
-export function detectGameLocaleFromHeaders(headers: HeaderReader): GameLocale {
-  const country = countryFromHeaders(headers);
-  for (const tag of parseAcceptLanguage(headers.get("accept-language"))) {
+export function detectGameLocaleFromLanguageTags(
+  tags: readonly string[],
+  country: string | null = null,
+): GameLocale | null {
+  for (const tag of tags) {
     const gameLocale = gameLocaleFromLanguageTag(tag, country);
     if (gameLocale) return gameLocale;
   }
+
+  return null;
+}
+
+export function detectGameLocaleFromNavigator(
+  navigatorLike: Pick<Navigator, "language" | "languages">,
+): GameLocale {
+  const tags = navigatorLike.languages.length > 0
+    ? navigatorLike.languages
+    : [navigatorLike.language].filter(Boolean);
+
+  return detectGameLocaleFromLanguageTags(tags) ?? DEFAULT_GAME_LOCALE_BY_SERVICE.ko;
+}
+
+export function detectGameLocaleFromHeaders(headers: HeaderReader): GameLocale {
+  const country = countryFromHeaders(headers);
+  const gameLocale = detectGameLocaleFromLanguageTags(
+    parseAcceptLanguage(headers.get("accept-language")),
+    country,
+  );
+  if (gameLocale) return gameLocale;
 
   if (country) {
     return COUNTRY_GAME_LOCALES[country] ?? DEFAULT_GAME_LOCALE_BY_SERVICE.en;
