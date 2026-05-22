@@ -42,6 +42,7 @@ import {
   MonsterType,
   MonsterMove,
   MonsterMoveGraph,
+  MonsterMoveCardApplication,
   MonsterMovePowerApplication,
   MonsterMovePowerTarget,
   MonsterSpineAsset,
@@ -1167,11 +1168,17 @@ interface RawMonsterMove {
   action_types?: MonsterActionType[];
   intents?: string[];
   power_applications?: RawMonsterMovePowerApplication[];
+  card_applications?: RawMonsterMoveCardApplication[];
 }
 
 interface RawMonsterMovePowerApplication {
   power_id: string;
   target: MonsterMovePowerTarget;
+  amount: RawDamageValue | null;
+}
+
+interface RawMonsterMoveCardApplication {
+  card_id: string;
   amount: RawDamageValue | null;
 }
 
@@ -1200,6 +1207,7 @@ interface RawMonster {
 }
 
 type MonsterPowerDisplay = Pick<MonsterMovePowerApplication, "powerId" | "powerName" | "powerNameEn" | "powerType" | "imageUrl">;
+type MonsterCardDisplay = Pick<MonsterMoveCardApplication, "cardId" | "cardName" | "cardNameEn" | "imageUrl">;
 
 function buildMonsterPowerDisplays(korPowers: RawPower[], engPowers: RawPower[]): Map<string, MonsterPowerDisplay> {
   const engById = new Map(engPowers.map((power) => [power.id, power]));
@@ -1221,6 +1229,25 @@ function buildMonsterPowerDisplays(korPowers: RawPower[], engPowers: RawPower[])
   );
 }
 
+function buildMonsterCardDisplays(korCards: RawCard[], engCards: RawCard[]): Map<string, MonsterCardDisplay> {
+  const engById = new Map(engCards.map((card) => [card.id, card]));
+
+  return new Map(
+    korCards.map((card) => {
+      const eng = engById.get(card.id) ?? card;
+      return [
+        card.id,
+        {
+          cardId: card.id,
+          cardName: card.name,
+          cardNameEn: eng.name,
+          imageUrl: spireCodexImageToLocal(card.image_url),
+        },
+      ];
+    }),
+  );
+}
+
 function mapMonster(
   kor: RawMonster,
   eng: RawMonster,
@@ -1232,6 +1259,7 @@ function mapMonster(
   gameLocale: GameLocale,
   spineAssets: Map<string, MonsterSpineAsset>,
   powerDisplays: Map<string, MonsterPowerDisplay>,
+  cardDisplays: Map<string, MonsterCardDisplay>,
 ): CodexMonster {
   const placeholderArt = hasPlaceholderBestiaryArt(kor.id);
   const spineAsset = placeholderArt ? null : (spineAssets.get(kor.id) ?? null);
@@ -1259,6 +1287,16 @@ function mapMonster(
           target: application.target,
           amount: application.amount,
           imageUrl: display?.imageUrl ?? `/images/sts2/powers/${application.power_id.toLowerCase()}_power.webp`,
+        };
+      }),
+      cardApplications: (km.card_applications ?? []).map((application) => {
+        const display = cardDisplays.get(application.card_id);
+        return {
+          cardId: application.card_id,
+          cardName: display?.cardName ?? application.card_id,
+          cardNameEn: display?.cardNameEn ?? application.card_id,
+          amount: application.amount,
+          imageUrl: display?.imageUrl ?? `/images/sts2/cards/${application.card_id.toLowerCase()}.webp`,
         };
       }),
     };
@@ -1340,6 +1378,7 @@ function buildBestiaryAnimationMoves(
     actionTypes: [],
     intents: [],
     powerApplications: [],
+    cardApplications: [],
   }));
 }
 
@@ -1350,6 +1389,8 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
     engMonsters,
     korPowers,
     engPowers,
+    korCards,
+    engCards,
     spineAssetList,
     monsterFiles,
     bossFiles,
@@ -1361,6 +1402,8 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
     readJson<RawMonster[]>("eng/monsters.json"),
     readJson<RawPower[]>("kor/powers.json"),
     readJson<RawPower[]>("eng/powers.json"),
+    readJson<RawCard[]>("kor/cards.json"),
+    readJson<RawCard[]>("eng/cards.json"),
     readJson<MonsterSpineAsset[]>("monster-spine-assets.json").catch(() => []),
     scanImageSlugs("monsters-render"),
     scanImageSlugs("bosses"),
@@ -1372,10 +1415,11 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
   const engById = new Map(engMonsters.map((m) => [m.id, m]));
   const spineAssets = new Map(spineAssetList.map((asset) => [asset.id, asset]));
   const powerDisplays = buildMonsterPowerDisplays(korPowers, engPowers);
+  const cardDisplays = buildMonsterCardDisplays(korCards, engCards);
 
   return korMonsters.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters, gameBestiary, engBestiary, gameLocale, spineAssets, powerDisplays);
+    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters, gameBestiary, engBestiary, gameLocale, spineAssets, powerDisplays, cardDisplays);
   });
 }
 

@@ -567,6 +567,7 @@ export interface MonsterMove {
   actionTypes: MonsterActionType[];
   intents: string[];
   powerApplications: MonsterMovePowerApplication[];
+  cardApplications: MonsterMoveCardApplication[];
 }
 
 export interface DamageValue {
@@ -584,6 +585,14 @@ export interface MonsterMovePowerApplication {
   powerNameEn: string;
   powerType: PowerType | "None";
   target: MonsterMovePowerTarget;
+  amount: DamageValue | null;
+  imageUrl: string | null;
+}
+
+export interface MonsterMoveCardApplication {
+  cardId: string;
+  cardName: string;
+  cardNameEn: string;
   amount: DamageValue | null;
   imageUrl: string | null;
 }

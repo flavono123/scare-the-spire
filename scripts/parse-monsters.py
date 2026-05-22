@@ -65,6 +65,7 @@ _POWER_APPLY_GENERIC_RE = re.compile(r"PowerCmd\.Apply<(?P<power>\w+Power)>\((?P
 _POWER_APPLY_DYNAMIC_RE = re.compile(r"PowerCmd\.Apply\((?P<args>.*?)\);", re.DOTALL)
 _POWER_VAR_DECL_RE = re.compile(r"(?P<class>\w+Power)\s+(?P<var>\w+)\b")
 _POWER_MODELDB_ASSIGN_RE = re.compile(r"(?P<var>\w+)\s*=\s*\((?P<class>\w+Power)\)ModelDb\.Power<\w+Power>")
+_CARD_ADD_RE = re.compile(r"CardPileCmd\.AddToCombatAndPreview<(?P<card>\w+)>\((?P<args>.*?)\);", re.DOTALL)
 _GAIN_BLOCK_RE = re.compile(r"CreatureCmd\.GainBlock\([^,]+,\s*(?P<value>[^,\)]+)")
 
 INTENT_ACTION_TYPES = {
@@ -473,6 +474,10 @@ def power_id_from_class(class_name: str) -> str:
     return re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", cls).upper()
 
 
+def card_id_from_class(class_name: str) -> str:
+    return re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", class_name).upper()
+
+
 def classify_power_target(target_expr: str) -> str:
     target = target_expr.strip()
     if "base.Creature" in target:
@@ -535,6 +540,28 @@ def parse_power_applications(body: str, int_props: dict[str, dict]) -> list[dict
     return applications
 
 
+def parse_card_applications(body: str, int_props: dict[str, dict]) -> list[dict]:
+    applications: list[dict] = []
+    seen: set[tuple] = set()
+
+    for m in _CARD_ADD_RE.finditer(body):
+        args = split_top_level_args(m.group("args"))
+        if len(args) < 3:
+            continue
+        card_id = card_id_from_class(m.group("card"))
+        amount = numeric_value(args[2], int_props)
+        key = (card_id, json.dumps(amount, sort_keys=True))
+        if key in seen:
+            continue
+        seen.add(key)
+        applications.append({
+            "card_id": card_id,
+            "amount": amount,
+        })
+
+    return applications
+
+
 def parse_moves_and_damage(text: str) -> tuple[list[str], dict, dict, dict]:
     """Return (ordered move ids, damage values, block values, per-move metadata)."""
     int_props = parse_int_props(text)
@@ -585,8 +612,10 @@ def parse_moves_and_damage(text: str) -> tuple[list[str], dict, dict, dict]:
                     block_values.setdefault(blk_key, prop)
         method_body_text = method_body_by_name(text, method_name) if method_name else None
         power_applications: list[dict] = []
+        card_applications: list[dict] = []
         if method_body_text:
             power_applications = parse_power_applications(method_body_text, int_props)
+            card_applications = parse_card_applications(method_body_text, int_props)
             for block_match in _GAIN_BLOCK_RE.finditer(method_body_text):
                 block_value = numeric_value(block_match.group("value"), int_props)
                 if block_value is None:
@@ -598,6 +627,7 @@ def parse_moves_and_damage(text: str) -> tuple[list[str], dict, dict, dict]:
             "action_types": action_types,
             "intents": intents,
             "power_applications": power_applications,
+            "card_applications": card_applications,
         }
     return move_ids, damage_values, block_values, move_metadata
 
@@ -669,6 +699,7 @@ def build_entries(
                         "action_types": metadata.get("action_types", []),
                         "intents": metadata.get("intents", []),
                         "power_applications": metadata.get("power_applications", []),
+                        "card_applications": metadata.get("card_applications", []),
                     })
                 bestiary_moves = []
                 generic_lnode = loc_by_id.get("GENERIC", {})
@@ -684,6 +715,7 @@ def build_entries(
                         "action_types": metadata.get("action_types", []),
                         "intents": metadata.get("intents", []),
                         "power_applications": metadata.get("power_applications", []),
+                        "card_applications": metadata.get("card_applications", []),
                     })
             elif locale_fallback_moves:
                 moves = []
