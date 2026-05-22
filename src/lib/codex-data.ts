@@ -674,6 +674,17 @@ function hasPowerLocalizationTitle(gamePowers: GameLocalizationTable, id: string
   return `${powerLocalizationBase(gamePowers, id)}.title` in gamePowers;
 }
 
+function powerDescriptionText(
+  gamePowers: GameLocalizationTable,
+  l10nBase: string,
+  fallback: string | null,
+): string {
+  const description = gameText(gamePowers, `${l10nBase}.description`, fallback ?? "");
+  const smartDescription = gamePowers[`${l10nBase}.smartDescription`];
+  if (smartDescription && !smartDescription.includes("{OwnerName}")) return smartDescription;
+  return description;
+}
+
 function mapPower(
   kor: RawPower,
   eng: RawPower,
@@ -683,11 +694,7 @@ function mapPower(
 ): CodexPower {
   const vars = kor.vars ?? {};
   const l10nBase = powerLocalizationBase(gamePowers, kor.id);
-  const raw = gameText(
-    gamePowers,
-    `${l10nBase}.smartDescription`,
-    gameText(gamePowers, `${l10nBase}.description`, kor.description_raw ?? kor.description),
-  );
+  const raw = powerDescriptionText(gamePowers, l10nBase, kor.description_raw ?? kor.description);
   return {
     id: kor.id,
     name: gameTitleText(gamePowers, `${l10nBase}.title`, kor.name, eng.name, gameLocale),
