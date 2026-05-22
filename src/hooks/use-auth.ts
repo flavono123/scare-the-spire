@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { SUPABASE_AUTH_TIMEOUT_MS, withSupabaseTimeout } from "@/lib/supabase-timeout";
 
@@ -8,6 +8,41 @@ export function useAuth() {
   const [userId, setUserId] = useState<string | null>(null);
   const [ready, setReady] = useState(!supabaseEnabled);
   const [unavailable, setUnavailable] = useState(false);
+
+  const ensureUser = useCallback(async (): Promise<string | null> => {
+    if (!supabaseEnabled) return null;
+    if (userId) return userId;
+
+    try {
+      const { data: { session }, error } = await withSupabaseTimeout(
+        "auth.getSession",
+        supabase.auth.getSession(),
+        SUPABASE_AUTH_TIMEOUT_MS,
+      );
+      if (error) throw error;
+      if (session?.user) {
+        setUserId(session.user.id);
+        setUnavailable(false);
+        return session.user.id;
+      }
+
+      const { data, error: signInError } = await withSupabaseTimeout(
+        "auth.signInAnonymously",
+        supabase.auth.signInAnonymously(),
+        SUPABASE_AUTH_TIMEOUT_MS,
+      );
+      if (signInError) throw signInError;
+
+      const nextUserId = data.session?.user.id ?? null;
+      setUserId(nextUserId);
+      setUnavailable(!nextUserId);
+      return nextUserId;
+    } catch {
+      setUserId(null);
+      setUnavailable(true);
+      return null;
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (!supabaseEnabled) return;
@@ -28,16 +63,8 @@ export function useAuth() {
           return;
         }
 
-        const { data, error: signInError } = await withSupabaseTimeout(
-          "auth.signInAnonymously",
-          supabase.auth.signInAnonymously(),
-          SUPABASE_AUTH_TIMEOUT_MS,
-        );
-        if (signInError) throw signInError;
-        if (!cancelled) {
-          setUserId(data.session?.user.id ?? null);
-          setUnavailable(!data.session?.user);
-        }
+        setUserId(null);
+        setUnavailable(false);
       } catch {
         if (!cancelled) {
           setUserId(null);
@@ -61,5 +88,5 @@ export function useAuth() {
     };
   }, []);
 
-  return { userId, ready, unavailable };
+  return { userId, ready, unavailable, ensureUser };
 }

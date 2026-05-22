@@ -226,7 +226,7 @@ function getCardDetailLabels(serviceLocale: ServiceLocale) {
 export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedPotions = [], relatedPowers = [], patches, changes, versionDiffs, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getCardDetailLabels(serviceLocale);
-  const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
+  const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
   const threadKey = buildCodexCommentThreadKey("card", card.id);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [showBeta, setShowBeta] = useState(false);
@@ -948,6 +948,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                 userId={userId}
                 authReady={authReady}
                 authUnavailable={authUnavailable}
+                ensureUser={ensureUser}
               />
             </div>
             <CommentSection threadKey={threadKey} onCountChange={setCommentCount} />

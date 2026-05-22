@@ -100,7 +100,7 @@ export interface RunUploadZoneProps {
 export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
   const historyCopy = serviceMessages[useServiceLocale()].historyCourse;
   const copy = historyCopy.upload;
-  const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
+  const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
   const [errors, setErrors] = useState<ParseError[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isParsing, setIsParsing] = useState(false);
@@ -146,16 +146,21 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
               message: copy.shareFailed.replace("{message}", historyCopy.lists.unavailableTitle),
               tone: "error",
             });
-          } else if (!authReady || !userId) {
+          } else if (!authReady) {
             setDonationToast({ message: copy.authNotReady, tone: "error" });
           } else {
+            const activeUserId = userId ?? await ensureUser();
+            if (!activeUserId) {
+              setDonationToast({ message: copy.authNotReady, tone: "error" });
+              return;
+            }
             const result = await donateRunsBatch({
               runs: toShare.map((p) => ({
                 runId: p.slug,
                 raw: p.raw,
                 run: p.run,
               })),
-              donorUserId: userId,
+              donorUserId: activeUserId,
             });
             if (result.errorMessage) {
               setDonationToast({
@@ -178,7 +183,7 @@ export function RunUploadZone({ onUploadComplete }: RunUploadZoneProps = {}) {
         setIsParsing(false);
       }
     },
-    [authReady, authUnavailable, copy, historyCopy.lists.unavailableTitle, onUploadComplete, shareOnUpload, userId],
+    [authReady, authUnavailable, copy, ensureUser, historyCopy.lists.unavailableTitle, onUploadComplete, shareOnUpload, userId],
   );
 
   const onDrop = useCallback(

@@ -168,7 +168,7 @@ export function CommentSection({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].comments;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
-  const { userId, ready, unavailable: authUnavailable } = useAuth();
+  const { userId, ready, unavailable: authUnavailable, ensureUser } = useAuth();
   const { entities, loading: entitiesLoading } = useCommentEntities(initialEntities);
   const { comments, loading, unavailable, add, remove } = useComments(threadKey, userId);
   const profileFallback = useMemo(
@@ -197,14 +197,22 @@ export function CommentSection({
   const handleSubmit = async (blocks: PostBlock[]) => {
     const trimmed = blocksToPlainText(blocks).trim();
     const nick = nicknameInputRef.current?.value.trim() || profile.nickname.trim() || profileFallback.nickname;
-    if (!trimmed || !nick || !userId) return;
+    if (!trimmed || !nick) return;
 
     setSubmitting(true);
     try {
-      await add(nick, trimmed, blocks);
+      const activeUserId = userId ?? await ensureUser();
+      if (!activeUserId) return;
+      await add(nick, trimmed, blocks, activeUserId);
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleCommentLike = async (commentId: string) => {
+    const activeUserId = userId ?? await ensureUser();
+    if (!activeUserId) return;
+    toggleLike(commentId, activeUserId);
   };
 
   return (
@@ -231,8 +239,8 @@ export function CommentSection({
                   {new Date(comment.created_at).toLocaleDateString(dateLocale)}
                 </span>
                 <button
-                  onClick={() => toggleLike(comment.id)}
-                  disabled={!userId}
+                  onClick={() => handleCommentLike(comment.id)}
+                  disabled={!ready || storageUnavailable}
                   className="flex items-center gap-0.5 text-[10px] text-muted-foreground transition-all disabled:opacity-30"
                 >
                   <Image
@@ -261,7 +269,7 @@ export function CommentSection({
         </ul>
       )}
 
-      {ready && userId && !storageUnavailable && (
+      {ready && !storageUnavailable && (
         <div className="space-y-2">
           <input
             key={profile.nickname}

@@ -6,7 +6,7 @@ import { supabase, supabaseEnabled } from "@/lib/supabase";
 interface UseCommentLikesReturn {
   counts: Map<string, number>;
   liked: Set<string>;
-  toggle: (commentId: string) => void;
+  toggle: (commentId: string, activeUserId?: string) => void;
 }
 
 export function useCommentLikes(commentIds: string[], userId: string | null): UseCommentLikesReturn {
@@ -43,11 +43,11 @@ export function useCommentLikes(commentIds: string[], userId: string | null): Us
   }, [commentIds.join(","), userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggle = useCallback(
-    async (commentId: string) => {
-      if (!userId || !supabaseEnabled) return;
+    async (commentId: string, activeUserId = userId) => {
+      if (!activeUserId || !supabaseEnabled) return;
 
       if (liked.has(commentId)) {
-        await supabase.from("comment_likes").delete().eq("comment_id", commentId).eq("user_id", userId);
+        await supabase.from("comment_likes").delete().eq("comment_id", commentId).eq("user_id", activeUserId);
         setLiked((prev) => {
           const next = new Set(prev);
           next.delete(commentId);
@@ -59,7 +59,7 @@ export function useCommentLikes(commentIds: string[], userId: string | null): Us
           return next;
         });
       } else {
-        await supabase.from("comment_likes").insert({ comment_id: commentId, user_id: userId });
+        await supabase.from("comment_likes").insert({ comment_id: commentId, user_id: activeUserId });
         setLiked((prev) => new Set(prev).add(commentId));
         setCounts((prev) => {
           const next = new Map(prev);

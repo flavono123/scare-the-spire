@@ -86,7 +86,7 @@ export function MonsterLibrary({
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [showOnlySkinVariants, setShowOnlySkinVariants] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { userId, ready: authReady, unavailable: authUnavailable } = useAuth();
+  const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
   const engagementCounts = useEngagementCounts();
 
   // Monster detail modal
@@ -395,6 +395,7 @@ export function MonsterLibrary({
                       userId={userId}
                       authReady={authReady}
                       authUnavailable={authUnavailable}
+                      ensureUser={ensureUser}
                       onClick={() => setSelectedMonster(monster)}
                     />
                   );
@@ -447,6 +448,7 @@ function MonsterTile({
   userId,
   authReady,
   authUnavailable,
+  ensureUser,
   onClick,
 }: {
   monster: CodexMonster;
@@ -459,6 +461,7 @@ function MonsterTile({
   userId: string | null;
   authReady: boolean;
   authUnavailable: boolean;
+  ensureUser: () => Promise<string | null>;
   onClick?: () => void;
 }) {
   const typeConfig = MONSTER_TYPE_CONFIG[displayType];
@@ -536,6 +539,7 @@ function MonsterTile({
         size={16}
         authReady={authReady}
         authUnavailable={authUnavailable}
+        ensureUser={ensureUser}
         className="shrink-0 px-1 py-1"
       />
     </div>

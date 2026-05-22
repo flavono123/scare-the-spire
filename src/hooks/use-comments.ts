@@ -21,7 +21,7 @@ interface UseCommentsReturn {
   comments: Comment[];
   loading: boolean;
   unavailable: boolean;
-  add: (nickname: string, content: string, contentBlocks?: PostBlock[]) => Promise<void>;
+  add: (nickname: string, content: string, contentBlocks?: PostBlock[], activeUserId?: string) => Promise<void>;
   remove: (commentId: string) => Promise<void>;
 }
 
@@ -61,12 +61,12 @@ export function useComments(storyId: string, userId: string | null): UseComments
   }, [storyId]);
 
   const add = useCallback(
-    async (nickname: string, content: string, contentBlocks?: PostBlock[]) => {
-      if (!userId || !supabaseEnabled) return;
+    async (nickname: string, content: string, contentBlocks?: PostBlock[], activeUserId = userId) => {
+      if (!activeUserId || !supabaseEnabled) return;
 
       const basePayload = {
         story_id: storyId,
-        user_id: userId,
+        user_id: activeUserId,
         nickname,
         content,
         env: supabaseEnv,

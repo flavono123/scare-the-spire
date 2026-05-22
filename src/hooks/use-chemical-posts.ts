@@ -10,7 +10,7 @@ interface UseChemicalPostsReturn {
   posts: ChemicalPost[];
   loading: boolean;
   unavailable: boolean;
-  add: (blocks: PostBlock[], nickname: string) => Promise<void>;
+  add: (blocks: PostBlock[], nickname: string, activeUserId?: string) => Promise<void>;
   remove: (postId: string) => Promise<void>;
 }
 
@@ -88,8 +88,8 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
   }, []);
 
   const add = useCallback(
-    async (blocks: PostBlock[], nickname: string) => {
-      if (!userId || !supabaseEnabled) return;
+    async (blocks: PostBlock[], nickname: string, activeUserId = userId) => {
+      if (!activeUserId || !supabaseEnabled) return;
       const contentText = blocksToPlainText(blocks);
 
       const { data, error } = await withSupabaseTimeout(
@@ -97,7 +97,7 @@ export function useChemicalPosts(userId: string | null): UseChemicalPostsReturn 
         supabase
           .from("chemical_posts")
           .insert({
-            user_id: userId,
+            user_id: activeUserId,
             nickname,
             content: blocks,
             content_text: contentText,

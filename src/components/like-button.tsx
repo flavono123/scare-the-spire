@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "@/components/ui/static-image";
 import { useLikes } from "@/hooks/use-likes";
 import { EngagementSpinner, EngagementUnavailableIcon } from "@/components/engagement-spinner";
@@ -11,6 +12,7 @@ export function LikeButton({
   size = 20,
   authReady = true,
   authUnavailable = false,
+  ensureUser,
   className = "",
 }: {
   storyId: string;
@@ -19,16 +21,33 @@ export function LikeButton({
   size?: number;
   authReady?: boolean;
   authUnavailable?: boolean;
+  ensureUser?: () => Promise<string | null>;
   className?: string;
 }) {
   const { count, liked, loading, unavailable, toggle } = useLikes(storyId, userId, { initialCount });
-  const pending = !authReady || loading;
+  const [authPending, setAuthPending] = useState(false);
+  const pending = !authReady || loading || authPending;
   const blocked = authUnavailable || unavailable;
+
+  const handleClick = async () => {
+    if (pending || blocked) return;
+    let activeUserId = userId;
+    if (!activeUserId && ensureUser) {
+      setAuthPending(true);
+      try {
+        activeUserId = await ensureUser();
+      } finally {
+        setAuthPending(false);
+      }
+    }
+    if (!activeUserId) return;
+    toggle(activeUserId);
+  };
 
   return (
     <button
-      onClick={toggle}
-      disabled={!userId || pending || blocked}
+      onClick={handleClick}
+      disabled={pending || blocked || (!userId && !ensureUser)}
       className={`flex items-center gap-1 text-xs text-muted-foreground transition-all ${className}`}
     >
       {blocked ? (

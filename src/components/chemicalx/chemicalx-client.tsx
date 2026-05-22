@@ -25,7 +25,7 @@ interface ChemicalXClientProps {
 export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
-  const { userId, ready, unavailable: authUnavailable } = useAuth();
+  const { userId, ready, unavailable: authUnavailable, ensureUser } = useAuth();
   const { posts, loading, unavailable, add, remove } = useChemicalPosts(userId);
   const [showAllTooltips, setShowAllTooltips] = useState(false);
   const profileFallback = useMemo(
@@ -39,9 +39,11 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
 
   const handleSubmit = useCallback(
     async (blocks: PostBlock[], nickname: string) => {
-      await add(blocks, nickname);
+      const activeUserId = userId ?? await ensureUser();
+      if (!activeUserId) return;
+      await add(blocks, nickname, activeUserId);
     },
-    [add],
+    [add, ensureUser, userId],
   );
 
   const handleDelete = useCallback(
@@ -69,7 +71,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
       </div>
 
       {/* Editor */}
-      {ready && userId && !storageUnavailable && (
+      {ready && !storageUnavailable && (
         <ChemicalXEditor
           entities={entities}
           placeholder={placeholder}

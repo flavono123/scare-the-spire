@@ -32,7 +32,7 @@ interface Entry {
 export function MyRunsList({ refreshKey = 0 }: Props) {
   const copy = serviceMessages[useServiceLocale()].historyCourse.lists;
   const router = useRouter();
-  const { userId } = useAuth();
+  const { userId, ensureUser } = useAuth();
   const [entries, setEntries] = useState<Entry[] | null>(null);
   const [donatedIds, setDonatedIds] = useState<Set<string>>(new Set());
 
@@ -105,7 +105,9 @@ export function MyRunsList({ refreshKey = 0 }: Props) {
 
   const handleShare = useCallback(
     async (entry: Entry) => {
-      if (!userId || !supabaseEnabled) return;
+      if (!supabaseEnabled) return;
+      const activeUserId = userId ?? await ensureUser();
+      if (!activeUserId) return;
       const wasDonated = donatedIds.has(entry.runId);
       if (wasDonated) {
         const ok = await deleteDonatedRun(entry.runId);
@@ -122,7 +124,7 @@ export function MyRunsList({ refreshKey = 0 }: Props) {
         runId: entry.runId,
         raw: entry.raw,
         run: entry.run,
-        donorUserId: userId,
+        donorUserId: activeUserId,
       });
       if (result.ok || (!result.ok && result.alreadyDonated)) {
         setDonatedIds((prev) => {
@@ -132,7 +134,7 @@ export function MyRunsList({ refreshKey = 0 }: Props) {
         });
       }
     },
-    [donatedIds, userId],
+    [donatedIds, ensureUser, userId],
   );
 
   if (entries === null) return null;
@@ -166,7 +168,7 @@ export function MyRunsList({ refreshKey = 0 }: Props) {
                   onPick={() => handlePick(entry)}
                   onDelete={() => handleDelete(entry)}
                   onShare={
-                    supabaseEnabled && userId
+                    supabaseEnabled
                       ? () => handleShare(entry)
                       : undefined
                   }

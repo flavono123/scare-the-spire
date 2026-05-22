@@ -24,7 +24,7 @@ interface Props {
 
 export function DonationPanel({ runId, run, raw, source }: Props) {
   const copy = serviceMessages[useServiceLocale()].historyCourse.donation;
-  const { userId, ready } = useAuth();
+  const { userId, ready, ensureUser } = useAuth();
   // We know it's donated if we loaded it from Supabase. Otherwise we
   // don't know yet — null means "checking", false/true after lookup.
   const [donated, setDonated] = useState<boolean | null>(
@@ -74,14 +74,15 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
       : `/history-course/${runId}`;
 
   const onShare = async () => {
-    if (!userId) return;
+    const activeUserId = userId ?? await ensureUser();
+    if (!activeUserId) return;
     setBusy(true);
     setError(null);
     const result = await donateRun({
       runId,
       raw,
       run,
-      donorUserId: userId,
+      donorUserId: activeUserId,
     });
     setBusy(false);
     if (result.ok || result.alreadyDonated) {
@@ -183,7 +184,7 @@ export function DonationPanel({ runId, run, raw, source }: Props) {
             <button
               type="button"
               onClick={onShare}
-              disabled={busy || !ready || !userId}
+              disabled={busy || !ready}
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-semibold transition",
                 "bg-amber-500/15 text-amber-100 ring-1 ring-amber-400/30 hover:bg-amber-500/25",

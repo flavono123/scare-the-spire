@@ -9,7 +9,7 @@ interface UseLikesReturn {
   liked: boolean;
   loading: boolean;
   unavailable: boolean;
-  toggle: () => void;
+  toggle: (activeUserId?: string) => void;
 }
 
 export function useLikes(
@@ -80,8 +80,8 @@ export function useLikes(
       });
   }, [storyId, userId]);
 
-  const toggle = useCallback(() => {
-    if (!userId || !supabaseEnabled) return;
+  const toggle = useCallback((activeUserId = userId) => {
+    if (!activeUserId || !supabaseEnabled) return;
 
     if (liked) {
       setLiked(false);
@@ -92,7 +92,7 @@ export function useLikes(
           .from("likes")
           .delete()
           .eq("story_id", storyId)
-          .eq("user_id", userId)
+          .eq("user_id", activeUserId)
           .eq("env", supabaseEnv),
       )
         .then(({ error }) => {
@@ -110,7 +110,7 @@ export function useLikes(
         "likes.insert",
         supabase
           .from("likes")
-          .insert({ story_id: storyId, user_id: userId, env: supabaseEnv }),
+          .insert({ story_id: storyId, user_id: activeUserId, env: supabaseEnv }),
       )
         .then(({ error }) => {
           if (error) throw error;
