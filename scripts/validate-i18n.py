@@ -49,6 +49,9 @@ KNOWN_UPSTREAM_MISSING_CODEX_TITLE_KEYS = {
         "encounters:AEONGLASS_BOSS.title",
         "relics:SILKEN_TRESS.title",
     },
+    "jpn": {
+        "cards:SCARE.title",
+    },
     "pol": {
         "cards:WITHER.title",
         "monsters:AEONGLASS.name",
