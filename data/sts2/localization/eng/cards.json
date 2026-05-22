@@ -439,6 +439,8 @@
   "FOCUSED_STRIKE.title": "Focused Strike",
   "FOLLY.description": "",
   "FOLLY.title": "Folly",
+  "FOLLOW_THROUGH.description": "Deal {Damage:diff()} damage.\nIf you have {CardCount} or more other {CardCount:plural:card|cards} in your [gold]Hand[/gold], hits an additional time.",
+  "FOLLOW_THROUGH.title": "Follow Through",
   "FOOTWORK.description": "Gain {DexterityPower:diff()} [gold]Dexterity[/gold].",
   "FOOTWORK.title": "Footwork",
   "FORBIDDEN_GRIMOIRE.description": "At the end of combat, you may remove a card from your [gold]Deck[/gold].",

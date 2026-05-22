@@ -433,6 +433,8 @@
   "FOCUSED_STRIKE.description": "{Damage:diff()}ダメージを与える。\nターン終了時まで[gold]集中力[/gold]{FocusPower:diff()}を得る。",
   "FOCUSED_STRIKE.title": "フォーカスストライク",
   "FOLLY.title": "愚行",
+  "FOLLOW_THROUGH.description": "{Damage:diff()}ダメージを与える。\n[gold]手札[/gold]に他のカードが{CardCount}以上ある場合、攻撃回数が1回増える。",
+  "FOLLOW_THROUGH.title": "追い打ち",
   "FOOTWORK.description": "[gold]敏捷[/gold]{DexterityPower:diff()}を得る。",
   "FOOTWORK.title": "フットワーク",
   "FORBIDDEN_GRIMOIRE.description": "戦闘終了時、[gold]デッキ[/gold]からカードを1枚削除してもよい。",

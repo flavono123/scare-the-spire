@@ -433,6 +433,8 @@
   "FOCUSED_STRIKE.description": "Zadaj {Damage:diff()} pkt. obrażeń.\nZyskaj {FocusPower:diff()} pkt. [gold]Skupienia[/gold] w tej turze.",
   "FOCUSED_STRIKE.title": "Skupione uderzenie",
   "FOLLY.title": "Głupota",
+  "FOLLOW_THROUGH.description": "Zadaj {Damage:diff()} pkt. obrażeń.\nUderza dodatkowy raz, jeżeli masz co najmniej {CardCount} {CardCount:plural:kartę|karty|kart} w [gold]ręcę[/gold].",
+  "FOLLOW_THROUGH.title": "Wykończenie",
   "FOOTWORK.description": "Zyskaj {DexterityPower:diff()} pkt. [gold]Zręczności[/gold].",
   "FOOTWORK.title": "Praca nóg",
   "FORBIDDEN_GRIMOIRE.description": "Pod koniec walki możesz usunąć kartę z [gold]talii[/gold].",

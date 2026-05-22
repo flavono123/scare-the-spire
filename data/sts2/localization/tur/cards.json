@@ -433,6 +433,8 @@
   "FOCUSED_STRIKE.description": "{Damage:diff()} hasar ver.\nBu tur {FocusPower:diff()} [gold]Odak[/gold] elde et.",
   "FOCUSED_STRIKE.title": "Odaklanmış Saldırı",
   "FOLLY.title": "Aptallık",
+  "FOLLOW_THROUGH.description": "{Damage:diff()} hasar ver.\nEğer [gold]El[/gold]'inde bu kart hariç {CardCount} veya daha fazla {CardCount:plural:kart|kart} varsa bir kez daha vurur.",
+  "FOLLOW_THROUGH.title": "Devam Hamlesi",
   "FOOTWORK.description": "{DexterityPower:diff()} [gold]Beceriklilik[/gold] elde et.",
   "FOOTWORK.title": "Ayak Tekniği",
   "FORBIDDEN_GRIMOIRE.description": "Savaşın sonunda bir kartı [gold]Deste[/gold]'nden çıkarabilirsin.",

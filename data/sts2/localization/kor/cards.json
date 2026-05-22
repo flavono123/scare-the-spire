@@ -433,6 +433,8 @@
   "FOCUSED_STRIKE.description": "피해를 {Damage:diff()} 줍니다.\n이번 턴에\n[gold]밀집[/gold]을 {FocusPower:diff()} 얻습니다.",
   "FOCUSED_STRIKE.title": "밀집 타격",
   "FOLLY.title": "어리석음",
+  "FOLLOW_THROUGH.description": "피해를 {Damage:diff()} 줍니다.\n[gold]손[/gold]에 다른 카드가\n{CardCount}장 이상 있다면,\n1번 추가로 적중합니다.",
+  "FOLLOW_THROUGH.title": "완수",
   "FOOTWORK.description": "[gold]민첩[/gold]을 {DexterityPower:diff()} 얻습니다.",
   "FOOTWORK.title": "발놀림",
   "FORBIDDEN_GRIMOIRE.description": "전투 종료 시, [gold]덱[/gold]에서\n카드를 1장 제거합니다.",

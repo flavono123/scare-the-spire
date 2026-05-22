@@ -433,6 +433,8 @@
   "FOCUSED_STRIKE.description": "Füge {Damage:diff()} Schaden zu.\nErhalte für diesen Zug {FocusPower:diff()} [gold]Fokus[/gold].",
   "FOCUSED_STRIKE.title": "Fokus-Schlag",
   "FOLLY.title": "Torheit",
+  "FOLLOW_THROUGH.description": "Füge {Damage:diff()} Schaden zu.\nTrifft ein weiteres Mal, falls du {CardCount} oder mehr andere [gold]Handkarten[/gold] hast.",
+  "FOLLOW_THROUGH.title": "Zu Ende bringen",
   "FOOTWORK.description": "Erhalte {DexterityPower:diff()} [gold]Geschicklichkeit[/gold].",
   "FOOTWORK.title": "Beinarbeit",
   "FORBIDDEN_GRIMOIRE.description": "Du darfst am Ende des Kampfes eine Karte aus deinem [gold]Deck[/gold] entfernen.",

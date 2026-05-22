@@ -433,6 +433,8 @@
   "FOCUSED_STRIKE.description": "Inflige {Damage:diff()} de daño.\nGana {FocusPower:diff()} de [gold]Concentración[/gold] este turno.",
   "FOCUSED_STRIKE.title": "Golpe preciso",
   "FOLLY.title": "Futilidad",
+  "FOLLOW_THROUGH.description": "Inflige {Damage:diff()} de daño.\nSi tienes {CardCount} o más {CardCount:plural:carta|cartas} en tu [gold]Mano[/gold], golpea una vez más.",
+  "FOLLOW_THROUGH.title": "Tajos encadenados",
   "FOOTWORK.description": "Gana {DexterityPower:diff()} de [gold]Destreza[/gold].",
   "FOOTWORK.title": "Juego de pies",
   "FORBIDDEN_GRIMOIRE.description": "Al final del combate, puedes eliminar una carta de tu [gold]Mazo[/gold].",

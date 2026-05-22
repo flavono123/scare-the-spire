@@ -433,6 +433,8 @@
   "FOCUSED_STRIKE.description": "Infligez {Damage:diff()} dégâts.\nGagnez {FocusPower:diff()} de [gold]Focalisation[/gold] jusqu'à la fin du tour.",
   "FOCUSED_STRIKE.title": "Frappe focalisée",
   "FOLLY.title": "Hubris",
+  "FOLLOW_THROUGH.description": "Infligez {Damage:diff()} dégâts.\nSe déclenche une fois de plus si vous avez au moins {CardCount} {CardCount:plural:autre carte|autres cartes} dans votre [gold]Main[/gold].",
+  "FOLLOW_THROUGH.title": "Fin du geste",
   "FOOTWORK.description": "Gagnez {DexterityPower:diff()} de [gold]Dextérité[/gold].",
   "FOOTWORK.title": "Jeu de jambes",
   "FORBIDDEN_GRIMOIRE.description": "À la fin du combat, vous pouvez retirer une carte de votre [gold]Deck[/gold].",

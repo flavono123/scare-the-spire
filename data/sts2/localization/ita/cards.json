@@ -433,6 +433,8 @@
   "FOCUSED_STRIKE.description": "Infliggi {Damage:diff()} di danno.\nIn questo turno, ottieni {FocusPower:diff()} di [gold]Focus[/gold].",
   "FOCUSED_STRIKE.title": "Colpo Focalizzato",
   "FOLLY.title": "Capriccio",
+  "FOLLOW_THROUGH.description": "Infliggi {Damage:diff()} di danno.\nSe hai {CardCount} o più {CardCount:plural:carte|carte} nella tua [gold]mano[/gold], colpisce una volta in più.",
+  "FOLLOW_THROUGH.title": "Perseveranza",
   "FOOTWORK.description": "Ottieni {DexterityPower:diff()} di [gold]Destrezza[/gold].",
   "FOOTWORK.title": "Gioco di Gambe",
   "FORBIDDEN_GRIMOIRE.description": "Al termine del combattimento, puoi rimuovere una carta dal tuo [gold]mazzo[/gold].",
