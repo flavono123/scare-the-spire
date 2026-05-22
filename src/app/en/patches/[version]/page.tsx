@@ -16,14 +16,14 @@ export async function generateMetadata({
   params: Promise<{ version: string }>;
 }): Promise<Metadata> {
   const { version } = await params;
-  return getPatchDetailMetadata({ version, serviceLocale: "ko" });
+  return getPatchDetailMetadata({ version, serviceLocale: "en" });
 }
 
-export default async function KoreanPatchDetailPage({
+export default async function EnglishPatchDetailPage({
   params,
 }: {
   params: Promise<{ version: string }>;
 }) {
   const { version } = await params;
-  return <PatchDetailPage version={version} serviceLocale="ko" gameLocale="kor" />;
+  return <PatchDetailPage version={version} serviceLocale="en" gameLocale="eng" />;
 }
