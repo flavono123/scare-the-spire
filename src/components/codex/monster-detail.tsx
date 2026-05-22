@@ -2,6 +2,7 @@
 
 import { type ReactNode, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -14,7 +15,11 @@ import type {
   CodexEncounter,
   CodexMonster,
   DamageValue,
+  MonsterActionType,
   MonsterMove,
+  MonsterMoveCardApplication,
+  MonsterMovePowerApplication,
+  MonsterMoveTransitionKind,
   MonsterMoveTransition,
 } from "@/lib/codex-types";
 import {
@@ -47,12 +52,28 @@ interface MoveSummary {
   tone: MoveTone;
 }
 
+type PatternKind = "fixed" | "random" | "conditional" | "mixed" | "unknown";
+
+interface PatternPhase {
+  id: string;
+  label: string;
+  moveIds: string[];
+}
+
+interface PatternSummary {
+  kind: PatternKind;
+  hasPhases: boolean;
+  phases: PatternPhase[];
+}
+
 interface TransitionTableRow {
   key: string;
   from: string;
   to: string;
   chance: number | null;
   isStart: boolean;
+  kind: MonsterMoveTransitionKind | "start" | "unknown";
+  condition: string | null;
 }
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
@@ -101,17 +122,230 @@ function MoveMetricChips({
   return (
     <span className="flex shrink-0 flex-wrap justify-end gap-1.5">
       {summary.damageEntry && (
-        <span className="rounded bg-red-500/10 px-1.5 py-0.5 text-xs font-semibold text-red-400">
-          {formatDamageValue(summary.damageEntry)}
-          <span className="ml-1 text-[10px] font-normal text-red-400/50">{damageLabel}</span>
-        </span>
+        <MoveMetricBadge value={summary.damageEntry} label={damageLabel} tone="attack" />
       )}
       {summary.blockEntry != null && (
-        <span className="rounded bg-blue-500/10 px-1.5 py-0.5 text-xs font-semibold text-blue-400">
-          {formatNumericValue(summary.blockEntry)}
-          <span className="ml-1 text-[10px] font-normal text-blue-400/50">{blockLabel}</span>
+        <MoveMetricBadge value={summary.blockEntry} label={blockLabel} tone="block" />
+      )}
+    </span>
+  );
+}
+
+function MoveMetricBadge({
+  value,
+  label,
+  tone,
+}: {
+  value: DamageValue;
+  label: string;
+  tone: "attack" | "block";
+}) {
+  const toneClass = tone === "attack"
+    ? "bg-red-500/10 text-red-400"
+    : "bg-blue-500/10 text-blue-400";
+  const labelClass = tone === "attack" ? "text-red-400/50" : "text-blue-400/50";
+
+  return (
+    <span className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-semibold ${toneClass}`}>
+      <span>{value.normal ?? "?"}</span>
+      {value.ascension != null && value.ascension !== value.normal && (
+        <span className="inline-flex items-center gap-0.5">
+          <AscensionBadge level={9} />
+          <span>{value.ascension}</span>
         </span>
       )}
+      <span className={`text-[10px] font-normal ${labelClass}`}>{label}</span>
+    </span>
+  );
+}
+
+function AscensionBadge({ level }: { level: number }) {
+  return (
+    <span className="relative inline-flex h-4 w-4 items-center justify-center align-middle">
+      <Image
+        src="/images/sts2/ui/topbar/top_bar_ascension.png"
+        alt=""
+        width={16}
+        height={16}
+        className="h-4 w-4 object-contain"
+      />
+      <span className="absolute inset-0 flex items-center justify-center pt-px text-[8px] font-black leading-none text-white drop-shadow">
+        {level}
+      </span>
+    </span>
+  );
+}
+
+function ActionTypeChips({
+  types,
+  serviceLocale,
+}: {
+  types: readonly MonsterActionType[];
+  serviceLocale: ServiceLocale;
+}) {
+  const visibleTypes = types.length > 0 ? types : (["special"] as const);
+
+  return (
+    <span className="flex flex-wrap gap-1">
+      {visibleTypes.map((type) => {
+        const config = ACTION_TYPE_CONFIG[type];
+        return (
+          <span
+            key={type}
+            className="rounded border px-1.5 py-0.5 text-[10px] font-semibold"
+            style={{
+              borderColor: `${config.color}55`,
+              backgroundColor: hexToRgba(config.color, 0.12),
+              color: config.color,
+            }}
+          >
+            {serviceLocale === "ko" ? config.labelKo : config.labelEn}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
+
+function MoveApplicationChips({
+  powers,
+  cards,
+  serviceLocale,
+}: {
+  powers: readonly MonsterMovePowerApplication[];
+  cards: readonly MonsterMoveCardApplication[];
+  serviceLocale: ServiceLocale;
+}) {
+  if (powers.length === 0 && cards.length === 0) return null;
+
+  return (
+    <span className="flex flex-wrap gap-1.5">
+      {powers.map((application) => (
+        <MoveApplicationChip
+          key={`power-${application.powerId}-${application.target}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
+          imageUrl={application.imageUrl}
+          name={serviceLocale === "ko" ? application.powerName : application.powerNameEn}
+          amount={application.amount}
+          tone={application.powerType === "Debuff" ? "debuff" : "buff"}
+        />
+      ))}
+      {cards.map((application) => (
+        <MoveApplicationChip
+          key={`card-${application.cardId}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
+          imageUrl={application.imageUrl}
+          name={serviceLocale === "ko" ? application.cardName : application.cardNameEn}
+          amount={application.amount}
+          tone="debuff"
+        />
+      ))}
+    </span>
+  );
+}
+
+function MoveApplicationChip({
+  imageUrl,
+  name,
+  amount,
+  tone,
+}: {
+  imageUrl: string | null;
+  name: string;
+  amount: DamageValue | null;
+  tone: "buff" | "debuff";
+}) {
+  const color = tone === "buff" ? "#22c55e" : "#f87171";
+
+  return (
+    <span
+      className="inline-flex max-w-full items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] font-semibold text-gray-200"
+      style={{ borderColor: `${color}44`, backgroundColor: hexToRgba(color, 0.1) }}
+      title={name}
+    >
+      {imageUrl ? (
+        <Image src={imageUrl} alt="" width={18} height={18} className="h-4 w-4 shrink-0 object-contain" />
+      ) : (
+        <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+      )}
+      <span className="truncate">{name}</span>
+      {amount && (
+        <span className="shrink-0 tabular-nums text-gray-400">
+          {formatNumericValue(amount)}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function PatternBadge({
+  label,
+  value,
+  color,
+}: {
+  label: string;
+  value: string;
+  color: string;
+}) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded border border-white/10 bg-white/[0.03] px-2 py-1 text-[10px]">
+      <span className="text-gray-500">{label}</span>
+      <span className="font-semibold" style={{ color }}>{value}</span>
+    </span>
+  );
+}
+
+function PatternTransitionRow({
+  row,
+  monster,
+  startLabel,
+  chanceLabel,
+}: {
+  row: TransitionTableRow;
+  monster: CodexMonster;
+  startLabel: string;
+  chanceLabel: string;
+}) {
+  const color = getTransitionKindColor(row.kind);
+  const chanceText = row.kind === "start"
+    ? "100%"
+    : row.chance == null ? "?" : `${row.chance}%`;
+
+  return (
+    <div
+      className="rounded-lg border bg-white/[0.03] px-3 py-2"
+      style={{ borderColor: `${color}44` }}
+    >
+      <div className="grid grid-cols-[minmax(0,1fr)_1.25rem_minmax(0,1fr)_3rem] items-center gap-2 text-xs">
+        <PatternStateNode
+          label={row.isStart ? startLabel : getMoveName(monster, row.from)}
+          color={row.isStart ? BESTIARY_START_COLOR : color}
+        />
+        <span className="text-center text-sm font-bold" style={{ color }}>→</span>
+        <PatternStateNode label={getMoveName(monster, row.to)} color={color} />
+        <span className="text-right text-[10px] font-semibold tabular-nums text-gray-500" title={chanceLabel}>
+          {chanceText}
+        </span>
+      </div>
+      {row.condition && (
+        <div className="mt-1 truncate text-[10px] text-red-300/80">
+          {row.condition}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PatternStateNode({ label, color }: { label: string; color: string }) {
+  return (
+    <span
+      className="block min-w-0 truncate rounded border px-2 py-1 font-game-title text-[11px] font-semibold"
+      style={{
+        borderColor: `${color}55`,
+        backgroundColor: hexToRgba(color, 0.12),
+        color,
+      }}
+      title={label}
+    >
+      {label}
     </span>
   );
 }
@@ -146,33 +380,48 @@ export function MonsterDetail({
         patchHistory: "패치 이력",
         noPatchHistory: "구조화 변경 없음",
         numericDetails: "수치",
+        actionTypes: "행동 타입",
+        appliedTokens: "적용 토큰",
+        patternKind: "패턴 종류",
+        phases: "페이즈",
+        hasPhases: "페이즈 있음",
+        noPhases: "페이즈 없음",
+        noPattern: "패턴 데이터 없음",
       }
     : {
         englishName: "English name",
         patchHistory: "Patch History",
         noPatchHistory: "No structured changes",
         numericDetails: "Numbers",
+        actionTypes: "Action Types",
+        appliedTokens: "Applied Tokens",
+        patternKind: "Pattern Type",
+        phases: "Phases",
+        hasPhases: "Has phases",
+        noPhases: "No phases",
+        noPattern: "No pattern data",
       };
   const displayType = getBestiaryDisplayMonsterType(monster.id, monster.type);
   const typeConfig = MONSTER_TYPE_CONFIG[displayType];
   const meaningfulMoves = useMemo(
-    () => monster.bestiaryMoves.filter(
-      (m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD",
-    ),
+    () => buildMonsterActionMoves(monster),
     [monster],
   );
   const moveSummaries = useMemo(() => buildMoveSummaries(monster, meaningfulMoves), [monster, meaningfulMoves]);
   const transitionRows = useMemo(() => buildTransitionTableRows(monster), [monster]);
+  const patternSummary = useMemo(() => buildPatternSummary(monster), [monster]);
   const firstMoveId = monster.moveGraph?.initial ?? null;
-  const [selectedMoveState, setSelectedMoveState] = useState<{ monsterId: string; moveId: string | null }>({
+  const [selectedMoveState, setSelectedMoveState] = useState<{ monsterId: string; moveId: string | null; nonce: number }>({
     monsterId: monster.id,
     moveId: null,
+    nonce: 0,
   });
   const [selectedSkinState, setSelectedSkinState] = useState<{ monsterId: string; selections: MonsterSkinSelections }>({
     monsterId: monster.id,
     selections: getDefaultMonsterSkinSelections(monster),
   });
   const selectedMoveId = selectedMoveState.monsterId === monster.id ? selectedMoveState.moveId : null;
+  const selectedMoveNonce = selectedMoveState.monsterId === monster.id ? selectedMoveState.nonce : 0;
   const selectedSkinSelections = selectedSkinState.monsterId === monster.id
     ? selectedSkinState.selections
     : getDefaultMonsterSkinSelections(monster);
@@ -242,6 +491,7 @@ export function MonsterDetail({
                 fallbackImageUrl={imageSrc}
                 monsterName={monster.name}
                 selectedMoveId={selectedMove?.move.id ?? null}
+                selectedMoveNonce={selectedMoveNonce}
                 selectedSkin={selectedSingleSkin}
                 selectedSkins={selectedSkinNames}
                 className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
@@ -362,7 +612,11 @@ export function MonsterDetail({
                     <button
                       key={summary.move.id}
                       type="button"
-                      onClick={() => setSelectedMoveState({ monsterId: monster.id, moveId: summary.move.id })}
+                      onClick={() => setSelectedMoveState((state) => ({
+                        monsterId: monster.id,
+                        moveId: summary.move.id,
+                        nonce: state.monsterId === monster.id ? state.nonce + 1 : 1,
+                      }))}
                       className="w-full rounded-lg border px-3 py-3 text-left transition-colors hover:bg-white/10"
                       style={{
                         backgroundColor: isSelected ? hexToRgba(toneColor, 0.14) : "rgba(255, 255, 255, 0.03)",
@@ -379,17 +633,32 @@ export function MonsterDetail({
                         >
                           {index + 1}
                         </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="font-game-title block truncate text-sm font-semibold text-gray-100">{summary.move.name}</span>
-                          {summary.move.nameEn !== summary.move.name && (
-                            <span className="font-game-text block truncate text-[11px] text-gray-500">{summary.move.nameEn}</span>
+                        <span className="flex min-w-0 flex-1 flex-col gap-1.5">
+                          <span>
+                            <span className="font-game-title block truncate text-sm font-semibold text-gray-100">{summary.move.name}</span>
+                            {summary.move.nameEn !== summary.move.name && (
+                              <span className="font-game-text block truncate text-[11px] text-gray-500">{summary.move.nameEn}</span>
+                            )}
+                          </span>
+                          <ActionTypeChips types={summary.move.actionTypes} serviceLocale={serviceLocale} />
+                          <MoveApplicationChips
+                            powers={summary.move.powerApplications}
+                            cards={summary.move.cardApplications}
+                            serviceLocale={serviceLocale}
+                          />
+                        </span>
+                        <span className="flex shrink-0 flex-col items-end gap-1">
+                          <MoveMetricChips
+                            summary={summary}
+                            damageLabel={monsterText.damagePreview}
+                            blockLabel={monsterText.block}
+                          />
+                          {summary.move.kind === "animation" && (
+                            <span className="text-[10px] text-gray-600">
+                              VFX
+                            </span>
                           )}
                         </span>
-                        <MoveMetricChips
-                          summary={summary}
-                          damageLabel={monsterText.damagePreview}
-                          blockLabel={monsterText.block}
-                        />
                       </div>
                     </button>
                   );
@@ -418,31 +687,61 @@ export function MonsterDetail({
                   />
                 </div>
 
+                <div className="mt-3 space-y-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                      {detailLabels.actionTypes}
+                    </span>
+                    <ActionTypeChips types={selectedMove.move.actionTypes} serviceLocale={serviceLocale} />
+                  </div>
+                  {(selectedMove.move.powerApplications.length > 0 || selectedMove.move.cardApplications.length > 0) && (
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                        {detailLabels.appliedTokens}
+                      </span>
+                      <MoveApplicationChips
+                        powers={selectedMove.move.powerApplications}
+                        cards={selectedMove.move.cardApplications}
+                        serviceLocale={serviceLocale}
+                      />
+                    </div>
+                  )}
+                </div>
+
                 {selectedMove.outgoing.length > 0 && (
                   <div className="mt-4">
                     <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-500">
                       {monsterText.nextActions}
                     </div>
                     <div className="space-y-2">
-                      {selectedMove.outgoing.map((transition) => (
-                        <div key={`${transition.from}-${transition.to}-${transition.chance ?? "unknown"}`} className="grid grid-cols-[minmax(6rem,1fr)_minmax(5rem,9rem)] items-center gap-3">
-                          <span className="truncate text-xs text-gray-300">{getMoveName(monster, transition.to)}</span>
-                          <span className="flex items-center gap-2">
-                            <span className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
-                              <span
-                                className="block h-full rounded-full"
-                                style={{
-                                  width: `${transition.chance ?? 100}%`,
-                                  backgroundColor: selectedAccent,
-                                }}
-                              />
-                            </span>
-                            <span className="w-9 text-right text-[10px] tabular-nums text-gray-500">
-                              {transition.chance == null ? "?" : `${transition.chance}%`}
-                            </span>
-                          </span>
-                        </div>
-                      ))}
+                      {selectedMove.outgoing.map((transition) => {
+                        const transitionColor = getTransitionKindColor(transition.kind ?? inferTransitionKind(transition));
+
+                        return (
+                          <div key={`${transition.from}-${transition.to}-${transition.chance ?? "unknown"}-${transition.condition ?? ""}`} className="space-y-1">
+                            <div className="grid grid-cols-[minmax(6rem,1fr)_minmax(5rem,9rem)] items-center gap-3">
+                              <span className="truncate text-xs text-gray-300">{getMoveName(monster, transition.to)}</span>
+                              <span className="flex items-center gap-2">
+                                <span className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
+                                  <span
+                                    className="block h-full rounded-full"
+                                    style={{
+                                      width: `${transition.chance ?? 100}%`,
+                                      backgroundColor: transitionColor,
+                                    }}
+                                  />
+                                </span>
+                                <span className="w-9 text-right text-[10px] tabular-nums text-gray-500">
+                                  {transition.chance == null ? "?" : `${transition.chance}%`}
+                                </span>
+                              </span>
+                            </div>
+                            {transition.condition && (
+                              <div className="truncate text-[10px] text-red-300/80">{transition.condition}</div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -452,57 +751,55 @@ export function MonsterDetail({
 
           {transitionRows.length > 0 && (
             <InfoRailSection title={monsterText.actionGraph}>
-              <div className="mb-3 flex justify-end">
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                <PatternBadge
+                  label={detailLabels.patternKind}
+                  value={getPatternKindLabel(patternSummary.kind, serviceLocale)}
+                  color={getPatternKindColor(patternSummary.kind)}
+                />
+                <PatternBadge
+                  label={detailLabels.phases}
+                  value={patternSummary.hasPhases ? detailLabels.hasPhases : detailLabels.noPhases}
+                  color={patternSummary.hasPhases ? "#f87171" : "#a1a1aa"}
+                />
                 {firstMoveId && (
-                  <span className="text-[10px] text-gray-500">
-                    {monsterText.firstAction}: {getMoveName(monster, firstMoveId)}
-                  </span>
+                  <PatternBadge
+                    label={monsterText.firstAction}
+                    value={getMoveName(monster, firstMoveId)}
+                    color={BESTIARY_START_COLOR}
+                  />
                 )}
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[34rem] border-separate border-spacing-y-1 text-left">
-                  <thead>
-                    <tr className="text-[10px] uppercase tracking-wide text-gray-500">
-                      <th className="px-3 py-1 font-medium">{monsterText.currentAction}</th>
-                      <th className="px-3 py-1 font-medium">{monsterText.nextActions}</th>
-                      <th className="w-40 px-3 py-1 font-medium">{monsterText.chance}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {transitionRows.map((row) => {
-                      const chance = row.chance ?? 100;
 
-                      return (
-                        <tr key={row.key} className="text-xs">
-                          <td className="rounded-l-md bg-white/[0.03] px-3 py-2">
-                            <span className={row.isStart ? "font-semibold text-blue-300" : "text-gray-300"}>
-                              {row.isStart ? monsterText.startPoint : getMoveName(monster, row.from)}
-                            </span>
-                          </td>
-                          <td className="bg-white/[0.03] px-3 py-2 text-gray-200">
-                            {getMoveName(monster, row.to)}
-                          </td>
-                          <td className="rounded-r-md bg-white/[0.03] px-3 py-2">
-                            <span className="flex items-center gap-2">
-                              <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
-                                <span
-                                  className="block h-full rounded-full"
-                                  style={{
-                                    width: `${chance}%`,
-                                    backgroundColor: row.isStart ? BESTIARY_START_COLOR : selectedAccent,
-                                  }}
-                                />
-                              </span>
-                              <span className="w-9 text-right text-[10px] tabular-nums text-gray-500">
-                                {row.chance == null ? "?" : `${row.chance}%`}
-                              </span>
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+              {patternSummary.hasPhases && (
+                <div className="mb-3 grid gap-2">
+                  {patternSummary.phases.map((phase) => (
+                    <div key={phase.id} className="rounded-md border border-red-400/20 bg-red-500/10 px-3 py-2">
+                      <div className="mb-1 font-game-title text-xs font-semibold text-red-200">
+                        {serviceLocale === "ko" ? `페이즈 ${phase.label}` : `Phase ${phase.label}`}
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {phase.moveIds.map((moveId) => (
+                          <span key={moveId} className="rounded bg-black/20 px-1.5 py-0.5 text-[10px] text-gray-300">
+                            {getMoveName(monster, moveId)}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="max-h-[24rem] space-y-2 overflow-y-auto pr-1">
+                {transitionRows.map((row) => (
+                  <PatternTransitionRow
+                    key={row.key}
+                    row={row}
+                    monster={monster}
+                    startLabel={monsterText.startPoint}
+                    chanceLabel={monsterText.chance}
+                  />
+                ))}
               </div>
               {monster.moveGraph?.confidence === "partial" && (
                 <p className="mt-3 text-[11px] leading-relaxed text-gray-500">{monsterText.graphPartial}</p>
@@ -532,7 +829,10 @@ export function MonsterDetail({
                           <div className="flex items-center gap-1.5">
                             <span className="text-sm font-bold text-red-400">{val.normal ?? "?"}</span>
                             {val.ascension != null && val.ascension !== val.normal && (
-                              <span className="text-[10px] text-orange-400">→ {val.ascension}</span>
+                              <span className="inline-flex items-center gap-0.5 text-[10px] text-orange-400">
+                                <AscensionBadge level={9} />
+                                {val.ascension}
+                              </span>
                             )}
                           </div>
                         </div>
@@ -585,6 +885,204 @@ export function MonsterDetail({
 }
 
 const BESTIARY_START_COLOR = "#60a5fa";
+
+const ACTION_TYPE_CONFIG: Record<MonsterActionType, { labelKo: string; labelEn: string; color: string }> = {
+  attack: { labelKo: "공격", labelEn: "Attack", color: "#f87171" },
+  defense: { labelKo: "방어", labelEn: "Defense", color: "#60a5fa" },
+  debuff: { labelKo: "디버프", labelEn: "Debuff", color: "#fb7185" },
+  buff: { labelKo: "버프", labelEn: "Buff", color: "#22c55e" },
+  special: { labelKo: "특수", labelEn: "Special", color: "#a1a1aa" },
+};
+
+function buildMonsterActionMoves(monster: CodexMonster): MonsterMove[] {
+  const byId = new Map<string, MonsterMove>();
+  const addMove = (move: MonsterMove | undefined) => {
+    if (!move) return;
+    if (move.id === "DEAD" || move.id === "SPAWNED") return;
+    if (!byId.has(move.id)) byId.set(move.id, move);
+  };
+
+  monster.bestiaryMoves.forEach(addMove);
+  const allMoves = [...monster.moves, ...monster.bestiaryMoves];
+  const allMovesById = new Map(allMoves.map((move) => [move.id, move]));
+
+  if (monster.moveGraph?.initial) addMove(allMovesById.get(monster.moveGraph.initial));
+  for (const transition of monster.moveGraph?.transitions ?? []) {
+    if (transition.from !== "__START__") addMove(allMovesById.get(transition.from));
+    addMove(allMovesById.get(transition.to));
+  }
+
+  monster.moves.forEach((move) => {
+    if (byId.size === 0 || byId.has(move.id)) addMove(move);
+  });
+
+  return Array.from(byId.values());
+}
+
+function buildPatternSummary(monster: CodexMonster): PatternSummary {
+  const transitions = monster.moveGraph?.transitions ?? [];
+  if (transitions.length === 0) {
+    return { kind: "unknown", hasPhases: false, phases: [] };
+  }
+
+  const kinds = new Set(transitions.map((transition) => transition.kind ?? inferTransitionKind(transition)));
+  const hasRandom = kinds.has("random");
+  const hasConditional = kinds.has("conditional");
+  const kind: PatternKind = hasRandom && hasConditional
+    ? "mixed"
+    : hasConditional ? "conditional"
+      : hasRandom ? "random"
+        : "fixed";
+  const phases = buildPatternPhases(monster);
+
+  return {
+    kind,
+    hasPhases: phases.length > 1,
+    phases,
+  };
+}
+
+function buildPatternPhases(monster: CodexMonster): PatternPhase[] {
+  const transitions = monster.moveGraph?.transitions ?? [];
+  const nodes = new Set<string>();
+  const outgoing = new Map<string, string[]>();
+
+  for (const transition of transitions) {
+    if (transition.from !== "__START__") nodes.add(transition.from);
+    nodes.add(transition.to);
+    if (transition.from !== "__START__") {
+      outgoing.set(transition.from, [...(outgoing.get(transition.from) ?? []), transition.to]);
+    }
+  }
+
+  const components = getStronglyConnectedComponents(Array.from(nodes), outgoing);
+  const recurrent = components.filter((component) => {
+    if (component.length > 1) return true;
+    const [node] = component;
+    return (outgoing.get(node) ?? []).includes(node);
+  });
+
+  if (recurrent.length <= 1) return [];
+
+  const order = getReachableOrder(monster.moveGraph?.initial ?? transitions[0]?.to ?? null, outgoing);
+  return recurrent
+    .sort((a, b) => componentOrder(a, order) - componentOrder(b, order))
+    .map((component, index) => ({
+      id: component.join("|"),
+      label: `${index + 1}`,
+      moveIds: component.sort((a, b) => (order.get(a) ?? Number.MAX_SAFE_INTEGER) - (order.get(b) ?? Number.MAX_SAFE_INTEGER)),
+    }));
+}
+
+function getStronglyConnectedComponents(nodes: string[], outgoing: Map<string, string[]>): string[][] {
+  const indexByNode = new Map<string, number>();
+  const lowLinkByNode = new Map<string, number>();
+  const stack: string[] = [];
+  const onStack = new Set<string>();
+  const components: string[][] = [];
+  let index = 0;
+
+  const visit = (node: string) => {
+    indexByNode.set(node, index);
+    lowLinkByNode.set(node, index);
+    index += 1;
+    stack.push(node);
+    onStack.add(node);
+
+    for (const next of outgoing.get(node) ?? []) {
+      if (!indexByNode.has(next)) {
+        visit(next);
+        lowLinkByNode.set(node, Math.min(lowLinkByNode.get(node) ?? 0, lowLinkByNode.get(next) ?? 0));
+      } else if (onStack.has(next)) {
+        lowLinkByNode.set(node, Math.min(lowLinkByNode.get(node) ?? 0, indexByNode.get(next) ?? 0));
+      }
+    }
+
+    if (lowLinkByNode.get(node) !== indexByNode.get(node)) return;
+
+    const component: string[] = [];
+    let current: string | undefined;
+    do {
+      current = stack.pop();
+      if (!current) break;
+      onStack.delete(current);
+      component.push(current);
+    } while (current !== node);
+    components.push(component);
+  };
+
+  nodes.forEach((node) => {
+    if (!indexByNode.has(node)) visit(node);
+  });
+
+  return components;
+}
+
+function getReachableOrder(start: string | null, outgoing: Map<string, string[]>): Map<string, number> {
+  const order = new Map<string, number>();
+  if (!start) return order;
+  const queue = [start];
+
+  while (queue.length > 0) {
+    const node = queue.shift();
+    if (!node || order.has(node)) continue;
+    order.set(node, order.size);
+    for (const next of outgoing.get(node) ?? []) queue.push(next);
+  }
+
+  return order;
+}
+
+function componentOrder(component: string[], order: Map<string, number>): number {
+  return Math.min(...component.map((node) => order.get(node) ?? Number.MAX_SAFE_INTEGER));
+}
+
+function inferTransitionKind(transition: MonsterMoveTransition): MonsterMoveTransitionKind {
+  if (transition.condition) return "conditional";
+  if (transition.chance != null && transition.chance < 100) return "random";
+  return "fixed";
+}
+
+function getPatternKindLabel(kind: PatternKind, serviceLocale: ServiceLocale): string {
+  const labels: Record<PatternKind, { ko: string; en: string }> = {
+    fixed: { ko: "고정 반복", en: "Fixed" },
+    random: { ko: "무작위", en: "Random" },
+    conditional: { ko: "조건부", en: "Conditional" },
+    mixed: { ko: "혼합", en: "Mixed" },
+    unknown: { ko: "미확인", en: "Unknown" },
+  };
+  return serviceLocale === "ko" ? labels[kind].ko : labels[kind].en;
+}
+
+function getPatternKindColor(kind: PatternKind): string {
+  switch (kind) {
+    case "fixed":
+      return "#eab308";
+    case "random":
+      return "#38bdf8";
+    case "conditional":
+      return "#f87171";
+    case "mixed":
+      return "#f59e0b";
+    case "unknown":
+      return "#a1a1aa";
+  }
+}
+
+function getTransitionKindColor(kind: MonsterMoveTransitionKind | "start" | "unknown"): string {
+  switch (kind) {
+    case "start":
+      return BESTIARY_START_COLOR;
+    case "random":
+      return "#38bdf8";
+    case "conditional":
+      return "#f87171";
+    case "fixed":
+      return "#eab308";
+    case "unknown":
+      return "#a1a1aa";
+  }
+}
 
 function formatHp(monster: CodexMonster): string | null {
   if (monster.minHp == null || monster.minHp === 9999) return null;
@@ -646,10 +1144,6 @@ function getMoveToneColor(tone: MoveTone, fallback: string): string {
   }
 }
 
-function formatDamageValue(value: DamageValue): string {
-  return formatNumericValue(value);
-}
-
 function formatNumericValue(value: DamageValue): string {
   const normal = value.normal ?? "?";
   if (value.ascension != null && value.ascension !== value.normal) {
@@ -683,6 +1177,8 @@ function buildTransitionTableRows(monster: CodexMonster): TransitionTableRow[] {
       to: monster.moveGraph.initial,
       chance: 100,
       isStart: true,
+      kind: "start",
+      condition: null,
     });
   }
 
@@ -693,6 +1189,8 @@ function buildTransitionTableRows(monster: CodexMonster): TransitionTableRow[] {
       to: transition.to,
       chance: transition.chance,
       isStart: transition.from === "__START__",
+      kind: transition.from === "__START__" ? "start" : transition.kind ?? inferTransitionKind(transition),
+      condition: transition.condition ?? null,
     });
   });
 
