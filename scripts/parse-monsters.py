@@ -59,6 +59,31 @@ _FOLLOWUP_RE = re.compile(r"(?P<from>\w+)\.FollowUpState\s*=\s*(?P<target>\w+)")
 _INLINE_MOVE_FOLLOWUP_RE = re.compile(r"MoveState\s+(?P<target>\w+)\s*=[^;\n]*\((?P<from>\w+)\.FollowUpState\s*=\s*new\s+MoveState")
 _ADD_BRANCH_RE = re.compile(r"(?P<branch>\w+)\.AddBranch\((?P<args>[^;]+)\);")
 _ADD_CONDITIONAL_STATE_RE = re.compile(r"(?P<branch>\w+)\.AddState\((?P<target>\w+),")
+_ADD_CONDITIONAL_STATE_ARGS_RE = re.compile(r"(?P<branch>\w+)\.AddState\((?P<args>[^;]+)\);")
+_MOVE_PROPERTY_RE = re.compile(r"(?<!\.)\b(?P<var>[A-Z]\w*)\s*=\s*new\s+MoveState\(\s*\"(?P<id>\w+)\"", re.DOTALL)
+_POWER_APPLY_GENERIC_RE = re.compile(r"PowerCmd\.Apply<(?P<power>\w+Power)>\((?P<args>.*?)\);", re.DOTALL)
+_POWER_APPLY_DYNAMIC_RE = re.compile(r"PowerCmd\.Apply\((?P<args>.*?)\);", re.DOTALL)
+_POWER_VAR_DECL_RE = re.compile(r"(?P<class>\w+Power)\s+(?P<var>\w+)\b")
+_POWER_MODELDB_ASSIGN_RE = re.compile(r"(?P<var>\w+)\s*=\s*\((?P<class>\w+Power)\)ModelDb\.Power<\w+Power>")
+_GAIN_BLOCK_RE = re.compile(r"CreatureCmd\.GainBlock\([^,]+,\s*(?P<value>[^,\)]+)")
+
+INTENT_ACTION_TYPES = {
+    "SingleAttackIntent": "attack",
+    "MultiAttackIntent": "attack",
+    "DeathBlowIntent": "attack",
+    "AttackIntent": "attack",
+    "DefendIntent": "defense",
+    "DebuffIntent": "debuff",
+    "CardDebuffIntent": "debuff",
+    "StatusIntent": "debuff",
+    "BuffIntent": "buff",
+    "HealIntent": "buff",
+    "SummonIntent": "buff",
+    "EscapeIntent": "special",
+    "HiddenIntent": "special",
+    "SleepIntent": "special",
+    "StunIntent": "special",
+}
 
 
 def _balanced_span(text: str, start: int) -> int:
@@ -205,7 +230,39 @@ def build_bestiary_move_ids(move_ids: list[str], text: str) -> list[str]:
 
 
 def split_args(args: str) -> list[str]:
-    return [arg.strip() for arg in args.split(",") if arg.strip()]
+    return split_top_level_args(args)
+
+
+def split_top_level_args(args: str) -> list[str]:
+    out: list[str] = []
+    start = 0
+    paren = bracket = brace = angle = 0
+    for i, ch in enumerate(args):
+        if ch == "(":
+            paren += 1
+        elif ch == ")":
+            paren = max(0, paren - 1)
+        elif ch == "[":
+            bracket += 1
+        elif ch == "]":
+            bracket = max(0, bracket - 1)
+        elif ch == "{":
+            brace += 1
+        elif ch == "}":
+            brace = max(0, brace - 1)
+        elif ch == "<":
+            angle += 1
+        elif ch == ">":
+            angle = max(0, angle - 1)
+        elif ch == "," and paren == 0 and bracket == 0 and brace == 0 and angle == 0:
+            part = args[start:i].strip()
+            if part:
+                out.append(part)
+            start = i + 1
+    tail = args[start:].strip()
+    if tail:
+        out.append(tail)
+    return out
 
 
 def parse_weight(args: list[str]) -> float | None:
@@ -228,6 +285,10 @@ def parse_move_graph(text: str) -> dict | None:
         m.group("var"): strip_move_suffix(m.group("id"))
         for m in _MOVE_VAR_RE.finditer(text)
     }
+    move_vars.update({
+        m.group("var"): strip_move_suffix(m.group("id"))
+        for m in _MOVE_PROPERTY_RE.finditer(text)
+    })
     if not move_vars:
         return None
 
@@ -276,12 +337,18 @@ def parse_move_graph(text: str) -> dict | None:
             "cooldown": len(args) > 2 and args[1].isdigit() and int(args[1]) > 0,
         })
 
-    conditional_branches: dict[str, list[str]] = {}
-    for m in _ADD_CONDITIONAL_STATE_RE.finditer(text):
+    conditional_branches: dict[str, list[dict]] = {}
+    for m in _ADD_CONDITIONAL_STATE_ARGS_RE.finditer(text):
         branch_var = m.group("branch")
-        target_var = m.group("target")
+        args = split_args(m.group("args"))
+        if not args:
+            continue
+        target_var = args[0]
         if branch_var in conditional_branch_vars and target_var in move_vars:
-            conditional_branches.setdefault(branch_var, []).append(target_var)
+            conditional_branches.setdefault(branch_var, []).append({
+                "target_var": target_var,
+                "condition": simplify_condition(args[1]) if len(args) > 1 else None,
+            })
 
     transitions: list[dict] = []
     confidence = "static"
@@ -308,18 +375,25 @@ def parse_move_graph(text: str) -> dict | None:
                 "from": move_vars[from_var],
                 "to": move_vars[entry["target_var"]],
                 "chance": chance,
+                "kind": "random",
             })
 
     for from_var, from_id in move_vars.items():
         target_var = followups.get(from_var)
         if target_var in move_vars:
-            transitions.append({"from": from_id, "to": move_vars[target_var], "chance": 100.0})
+            transitions.append({"from": from_id, "to": move_vars[target_var], "chance": 100.0, "kind": "fixed"})
         elif target_var in random_branches:
             add_random_transitions(from_var, target_var)
         elif target_var in conditional_branches:
             confidence = "partial"
-            for target in conditional_branches[target_var]:
-                transitions.append({"from": from_id, "to": move_vars[target], "chance": None})
+            for entry in conditional_branches[target_var]:
+                transitions.append({
+                    "from": from_id,
+                    "to": move_vars[entry["target_var"]],
+                    "chance": None,
+                    "kind": "conditional",
+                    "condition": entry["condition"],
+                })
 
     if initial_var in random_branches:
         entries = random_branches[initial_var]
@@ -332,11 +406,18 @@ def parse_move_graph(text: str) -> dict | None:
                 "from": "__START__",
                 "to": move_vars[entry["target_var"]],
                 "chance": round((weight / total) * 100, 1) if weight is not None and total > 0 else None,
+                "kind": "random",
             })
     elif initial_var in conditional_branches:
         confidence = "partial"
-        for target in conditional_branches[initial_var]:
-            transitions.append({"from": "__START__", "to": move_vars[target], "chance": None})
+        for entry in conditional_branches[initial_var]:
+            transitions.append({
+                "from": "__START__",
+                "to": move_vars[entry["target_var"]],
+                "chance": None,
+                "kind": "conditional",
+                "condition": entry["condition"],
+            })
 
     if not transitions:
         return None
@@ -347,15 +428,124 @@ def parse_move_graph(text: str) -> dict | None:
     }
 
 
-def parse_moves_and_damage(text: str) -> tuple[list[str], dict, dict]:
-    """Return (ordered move ids, damage_values map, block_values map)."""
+def simplify_condition(condition: str | None) -> str | None:
+    if not condition:
+        return None
+    return re.sub(r"\s+", " ", condition.replace("() =>", "").strip())
+
+
+def method_body_by_name(text: str, method_name: str) -> str | None:
+    m = re.search(rf"\b(?:private|protected|public)\s+(?:async\s+)?[\w<>\?\s]+\s+{re.escape(method_name)}\s*\(", text)
+    if not m:
+        return None
+    open_paren = text.find("(", m.end() - 1)
+    close_paren = _balanced_span(text, open_paren)
+    if close_paren < 0:
+        return None
+    open_brace = text.find("{", close_paren)
+    if open_brace < 0:
+        return None
+    depth = 0
+    for i in range(open_brace, len(text)):
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                return text[open_brace + 1 : i]
+    return None
+
+
+def numeric_value(expr: str, int_props: dict[str, dict]) -> dict | None:
+    expr = expr.strip().strip("()")
+    if expr in int_props:
+        return int_props[expr]
+    m = re.fullmatch(r"(?P<num>-?\d+(?:\.\d+)?)(?:m|f)?", expr)
+    if m:
+        value = float(m.group("num"))
+        normalized = int(value) if value.is_integer() else value
+        return {"normal": normalized, "ascension": None}
+    return None
+
+
+def power_id_from_class(class_name: str) -> str:
+    cls = class_name[:-len("Power")] if class_name.endswith("Power") else class_name
+    return re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", cls).upper()
+
+
+def classify_power_target(target_expr: str) -> str:
+    target = target_expr.strip()
+    if "base.Creature" in target:
+        return "self"
+    if target in {"target", "targets"} or "Player" in target:
+        return "player"
+    if "Teammates" in target or "teammate" in target:
+        return "ally"
+    if "Enemy" in target or "Enemies" in target:
+        return "enemy"
+    return "unknown"
+
+
+def power_variable_types(body: str) -> dict[str, str]:
+    out = {m.group("var"): m.group("class") for m in _POWER_VAR_DECL_RE.finditer(body)}
+    out.update({m.group("var"): m.group("class") for m in _POWER_MODELDB_ASSIGN_RE.finditer(body)})
+    return out
+
+
+def parse_power_applications(body: str, int_props: dict[str, dict]) -> list[dict]:
+    applications: list[dict] = []
+    seen: set[tuple] = set()
+    var_types = power_variable_types(body)
+
+    def add(power_class: str, args_text: str, generic: bool) -> None:
+        args = split_top_level_args(args_text)
+        if len(args) < 3:
+            return
+        target_index = 1 if generic else 2
+        amount_index = 2 if generic else 3
+        if len(args) <= amount_index:
+            return
+        power_id = power_id_from_class(power_class)
+        target = classify_power_target(args[target_index])
+        amount = numeric_value(args[amount_index], int_props)
+        key = (power_id, target, json.dumps(amount, sort_keys=True))
+        if key in seen:
+            return
+        seen.add(key)
+        applications.append({
+            "power_id": power_id,
+            "target": target,
+            "amount": amount,
+        })
+
+    for m in _POWER_APPLY_GENERIC_RE.finditer(body):
+        add(m.group("power"), m.group("args"), True)
+
+    for m in _POWER_APPLY_DYNAMIC_RE.finditer(body):
+        start = m.start()
+        if start >= 1 and body[start - 1] == ">":
+            continue
+        args = split_top_level_args(m.group("args"))
+        if len(args) < 4:
+            continue
+        power_class = var_types.get(args[1].strip())
+        if power_class:
+            add(power_class, m.group("args"), False)
+
+    return applications
+
+
+def parse_moves_and_damage(text: str) -> tuple[list[str], dict, dict, dict]:
+    """Return (ordered move ids, damage values, block values, per-move metadata)."""
     int_props = parse_int_props(text)
     move_ids: list[str] = []
     damage_values: dict[str, dict] = {}
     block_values: dict[str, dict] = {}
+    move_metadata: dict[str, dict] = {}
 
     for m in _MOVESTATE_START_RE.finditer(text):
         move_id = m.group("id")
+        stripped_move_id = strip_move_suffix(move_id)
         if move_id not in move_ids:
             move_ids.append(move_id)
         # Walk forward to the matching ')' of the MoveState constructor.
@@ -367,8 +557,16 @@ def parse_moves_and_damage(text: str) -> tuple[list[str], dict, dict]:
         if close_paren < 0:
             continue
         body = text[open_paren + 1 : close_paren]
+        constructor_args = split_top_level_args(body)
+        method_name = constructor_args[1] if len(constructor_args) > 1 else None
+        action_types: list[str] = []
+        intents: list[str] = []
         for intent_match in _INTENT_RE.finditer(body):
             kind = intent_match.group("kind")
+            intents.append(kind)
+            action_type = INTENT_ACTION_TYPES.get(kind, "special")
+            if action_type not in action_types:
+                action_types.append(action_type)
             args = [a.strip() for a in intent_match.group("args").split(",") if a.strip()]
             if not args:
                 continue
@@ -385,7 +583,23 @@ def parse_moves_and_damage(text: str) -> tuple[list[str], dict, dict]:
                 if prop is not None:
                     blk_key = first[:-len("Block")] if first.endswith("Block") else first
                     block_values.setdefault(blk_key, prop)
-    return move_ids, damage_values, block_values
+        method_body_text = method_body_by_name(text, method_name) if method_name else None
+        power_applications: list[dict] = []
+        if method_body_text:
+            power_applications = parse_power_applications(method_body_text, int_props)
+            for block_match in _GAIN_BLOCK_RE.finditer(method_body_text):
+                block_value = numeric_value(block_match.group("value"), int_props)
+                if block_value is None:
+                    continue
+                block_key = block_match.group("value").strip()
+                block_key = block_key[:-len("Block")] if block_key.endswith("Block") else stripped_move_id
+                block_values.setdefault(block_key, block_value)
+        move_metadata[stripped_move_id] = {
+            "action_types": action_types,
+            "intents": intents,
+            "power_applications": power_applications,
+        }
+    return move_ids, damage_values, block_values, move_metadata
 
 
 def build_entries(
@@ -416,13 +630,14 @@ def build_entries(
         if cs is not None:
             text = cs.read_text()
             hp = parse_hp(text)
-            move_ids, damage_values, block_values = parse_moves_and_damage(text)
+            move_ids, damage_values, block_values, move_metadata = parse_moves_and_damage(text)
             show_in_compendium = parse_show_in_compendium(text)
             bestiary_move_ids = build_bestiary_move_ids(move_ids, text)
             move_graph = parse_move_graph(text)
         else:
             hp = {"min_hp": None, "max_hp": None, "min_hp_ascension": None, "max_hp_ascension": None}
             move_ids, damage_values, block_values = [], {}, {}
+            move_metadata = {}
             show_in_compendium = old_kor_by_id.get(ent_id, {}).get("show_in_compendium", True)
             bestiary_move_ids = []
             move_graph = old_kor_by_id.get(ent_id, {}).get("move_graph")
@@ -447,13 +662,18 @@ def build_entries(
                 moves = []
                 for mid in move_ids:
                     stripped = strip_move_suffix(mid)
+                    metadata = move_metadata.get(stripped, {})
                     moves.append({
                         "id": stripped,
                         "name": resolve_move_title(lnode, mid) or stripped.replace("_", " ").title(),
+                        "action_types": metadata.get("action_types", []),
+                        "intents": metadata.get("intents", []),
+                        "power_applications": metadata.get("power_applications", []),
                     })
                 bestiary_moves = []
                 generic_lnode = loc_by_id.get("GENERIC", {})
                 for mid in bestiary_move_ids:
+                    metadata = move_metadata.get(strip_move_suffix(mid), {})
                     bestiary_moves.append({
                         "id": mid,
                         "name": (
@@ -461,6 +681,9 @@ def build_entries(
                             or resolve_move_title(generic_lnode, mid)
                             or mid.replace("_", " ").title()
                         ),
+                        "action_types": metadata.get("action_types", []),
+                        "intents": metadata.get("intents", []),
+                        "power_applications": metadata.get("power_applications", []),
                     })
             elif locale_fallback_moves:
                 moves = []
