@@ -42,7 +42,7 @@ type MoveTone = "attack" | "defense" | "mixed" | "setup";
 interface MoveSummary {
   move: MonsterMove;
   damageEntry: DamageValue | null;
-  blockEntry: number | null;
+  blockEntry: DamageValue | null;
   outgoing: MonsterMoveTransition[];
   tone: MoveTone;
 }
@@ -108,7 +108,7 @@ function MoveMetricChips({
       )}
       {summary.blockEntry != null && (
         <span className="rounded bg-blue-500/10 px-1.5 py-0.5 text-xs font-semibold text-blue-400">
-          {summary.blockEntry}
+          {formatNumericValue(summary.blockEntry)}
           <span className="ml-1 text-[10px] font-normal text-blue-400/50">{blockLabel}</span>
         </span>
       )}
@@ -550,7 +550,7 @@ export function MonsterDetail({
                       {blockEntries.map(([key, val]) => (
                         <div key={key} className="flex items-center gap-2 rounded border border-blue-500/20 bg-blue-500/10 px-3 py-1.5">
                           <span className="text-[10px] text-blue-400/70">{key}</span>
-                          <span className="text-sm font-bold text-blue-400">{val}</span>
+                          <span className="text-sm font-bold text-blue-400">{formatNumericValue(normalizeNumericValue(val))}</span>
                         </div>
                       ))}
                     </div>
@@ -622,7 +622,7 @@ function buildMoveSummaries(monster: CodexMonster, moves: MonsterMove[]): MoveSu
   });
 }
 
-function getMoveTone(move: MonsterMove, damageEntry: DamageValue | null, blockEntry: number | null): MoveTone {
+function getMoveTone(move: MonsterMove, damageEntry: DamageValue | null, blockEntry: DamageValue | null): MoveTone {
   if (damageEntry && blockEntry != null) return "mixed";
   if (damageEntry) return "attack";
   if (blockEntry != null) return "defense";
@@ -647,11 +647,19 @@ function getMoveToneColor(tone: MoveTone, fallback: string): string {
 }
 
 function formatDamageValue(value: DamageValue): string {
+  return formatNumericValue(value);
+}
+
+function formatNumericValue(value: DamageValue): string {
   const normal = value.normal ?? "?";
   if (value.ascension != null && value.ascension !== value.normal) {
     return `${normal} (${value.ascension})`;
   }
   return `${normal}`;
+}
+
+function normalizeNumericValue(value: DamageValue | number): DamageValue {
+  return typeof value === "number" ? { normal: value, ascension: null } : value;
 }
 
 function hexToRgba(hex: string, alpha: number): string {
@@ -712,14 +720,14 @@ function findDamageForMove(moveId: string, damageValues: Record<string, { normal
   return null;
 }
 
-function findBlockForMove(moveId: string, blockValues: Record<string, number>): number | null {
+function findBlockForMove(moveId: string, blockValues: Record<string, DamageValue | number>): DamageValue | null {
   const moveIdLower = moveId.toLowerCase().replace(/_/g, "");
   for (const [key, val] of Object.entries(blockValues)) {
-    if (key.toLowerCase().replace(/_/g, "") === moveIdLower) return val;
+    if (key.toLowerCase().replace(/_/g, "") === moveIdLower) return normalizeNumericValue(val);
   }
   for (const [key, val] of Object.entries(blockValues)) {
     const keyLower = key.toLowerCase();
-    if (moveIdLower.includes(keyLower) || keyLower.includes(moveIdLower)) return val;
+    if (moveIdLower.includes(keyLower) || keyLower.includes(moveIdLower)) return normalizeNumericValue(val);
   }
   return null;
 }

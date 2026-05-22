@@ -564,6 +564,9 @@ export interface MonsterMove {
   nameEn: string; // English
   kind?: "move" | "animation";
   animationId?: string;
+  actionTypes: MonsterActionType[];
+  intents: string[];
+  powerApplications: MonsterMovePowerApplication[];
 }
 
 export interface DamageValue {
@@ -571,10 +574,28 @@ export interface DamageValue {
   ascension: number | null;
 }
 
+export type MonsterActionType = "attack" | "defense" | "debuff" | "buff" | "special";
+
+export type MonsterMovePowerTarget = "self" | "player" | "ally" | "enemy" | "unknown";
+
+export interface MonsterMovePowerApplication {
+  powerId: string;
+  powerName: string;
+  powerNameEn: string;
+  powerType: PowerType | "None";
+  target: MonsterMovePowerTarget;
+  amount: DamageValue | null;
+  imageUrl: string | null;
+}
+
+export type MonsterMoveTransitionKind = "fixed" | "random" | "conditional";
+
 export interface MonsterMoveTransition {
   from: string;
   to: string;
   chance: number | null;
+  kind?: MonsterMoveTransitionKind;
+  condition?: string | null;
 }
 
 export interface MonsterMoveGraph {
@@ -648,7 +669,7 @@ export interface CodexMonster {
   bestiaryMoves: MonsterMove[];
   moveGraph: MonsterMoveGraph | null;
   damageValues: Record<string, DamageValue> | null;
-  blockValues: Record<string, number> | null;
+  blockValues: Record<string, DamageValue> | null;
   imageUrl: string | null;       // Spine render portrait (512x512)
   bossImageUrl: string | null;   // boss encounter token icon (bosses/ dir)
   spineAsset: MonsterSpineAsset | null;

@@ -38,9 +38,12 @@ import {
   PotionPool,
   PowerType,
   PowerStackType,
+  MonsterActionType,
   MonsterType,
   MonsterMove,
   MonsterMoveGraph,
+  MonsterMovePowerApplication,
+  MonsterMovePowerTarget,
   MonsterSpineAsset,
   MonsterSpineEffectAsset,
   DamageValue,
@@ -1161,6 +1164,15 @@ export async function getCodexAncients(opts?: { gameLocale?: GameLocale }): Prom
 interface RawMonsterMove {
   id: string;
   name: string;
+  action_types?: MonsterActionType[];
+  intents?: string[];
+  power_applications?: RawMonsterMovePowerApplication[];
+}
+
+interface RawMonsterMovePowerApplication {
+  power_id: string;
+  target: MonsterMovePowerTarget;
+  amount: RawDamageValue | null;
 }
 
 interface RawDamageValue {
@@ -1181,10 +1193,32 @@ interface RawMonster {
   bestiary_moves?: RawMonsterMove[];
   move_graph?: MonsterMoveGraph | null;
   damage_values: Record<string, RawDamageValue> | null;
-  block_values: Record<string, number> | null;
+  block_values: Record<string, RawDamageValue> | null;
   image_url: string | null;
   deprecated?: boolean;
   deprecatedInPatch?: string;
+}
+
+type MonsterPowerDisplay = Pick<MonsterMovePowerApplication, "powerId" | "powerName" | "powerNameEn" | "powerType" | "imageUrl">;
+
+function buildMonsterPowerDisplays(korPowers: RawPower[], engPowers: RawPower[]): Map<string, MonsterPowerDisplay> {
+  const engById = new Map(engPowers.map((power) => [power.id, power]));
+
+  return new Map(
+    korPowers.map((power) => {
+      const eng = engById.get(power.id) ?? power;
+      return [
+        power.id,
+        {
+          powerId: power.id,
+          powerName: power.name,
+          powerNameEn: eng.name,
+          powerType: power.type as MonsterPowerDisplay["powerType"],
+          imageUrl: spireCodexImageToLocal(power.image_url),
+        },
+      ];
+    }),
+  );
 }
 
 function mapMonster(
@@ -1197,6 +1231,7 @@ function mapMonster(
   engBestiary: GameLocalizationTable,
   gameLocale: GameLocale,
   spineAssets: Map<string, MonsterSpineAsset>,
+  powerDisplays: Map<string, MonsterPowerDisplay>,
 ): CodexMonster {
   const placeholderArt = hasPlaceholderBestiaryArt(kor.id);
   const spineAsset = placeholderArt ? null : (spineAssets.get(kor.id) ?? null);
@@ -1212,6 +1247,20 @@ function mapMonster(
       ),
       nameEn: em?.name ?? km.name,
       kind: "move",
+      actionTypes: km.action_types ?? [],
+      intents: km.intents ?? [],
+      powerApplications: (km.power_applications ?? []).map((application) => {
+        const display = powerDisplays.get(application.power_id);
+        return {
+          powerId: application.power_id,
+          powerName: display?.powerName ?? application.power_id,
+          powerNameEn: display?.powerNameEn ?? application.power_id,
+          powerType: display?.powerType ?? "None",
+          target: application.target,
+          amount: application.amount,
+          imageUrl: display?.imageUrl ?? `/images/sts2/powers/${application.power_id.toLowerCase()}_power.webp`,
+        };
+      }),
     };
   });
 
@@ -1288,14 +1337,30 @@ function buildBestiaryAnimationMoves(
     nameEn: gameText(engBestiary, `ACTION_NAME.${animationId}`, animationId),
     kind: "animation",
     animationId,
+    actionTypes: [],
+    intents: [],
+    powerApplications: [],
   }));
 }
 
 export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Promise<CodexMonster[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korMonsters, engMonsters, spineAssetList, monsterFiles, bossFiles, gameMonsters, gameBestiary, engBestiary] = await Promise.all([
+  const [
+    korMonsters,
+    engMonsters,
+    korPowers,
+    engPowers,
+    spineAssetList,
+    monsterFiles,
+    bossFiles,
+    gameMonsters,
+    gameBestiary,
+    engBestiary,
+  ] = await Promise.all([
     readJson<RawMonster[]>("kor/monsters.json"),
     readJson<RawMonster[]>("eng/monsters.json"),
+    readJson<RawPower[]>("kor/powers.json"),
+    readJson<RawPower[]>("eng/powers.json"),
     readJson<MonsterSpineAsset[]>("monster-spine-assets.json").catch(() => []),
     scanImageSlugs("monsters-render"),
     scanImageSlugs("bosses"),
@@ -1306,10 +1371,11 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
 
   const engById = new Map(engMonsters.map((m) => [m.id, m]));
   const spineAssets = new Map(spineAssetList.map((asset) => [asset.id, asset]));
+  const powerDisplays = buildMonsterPowerDisplays(korPowers, engPowers);
 
   return korMonsters.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters, gameBestiary, engBestiary, gameLocale, spineAssets);
+    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters, gameBestiary, engBestiary, gameLocale, spineAssets, powerDisplays);
   });
 }
 
