@@ -1426,6 +1426,10 @@
       {
         "id": "THE_OBSCURA",
         "name": "The Obscura"
+      },
+      {
+        "id": "PARAFRIGHT",
+        "name": "Parafright"
       }
     ],
     "loss_text": "[gold]{encounter}[/gold] and its illusion smashed {character}."

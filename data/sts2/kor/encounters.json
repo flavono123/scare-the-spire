@@ -1426,6 +1426,10 @@
       {
         "id": "THE_OBSCURA",
         "name": "영사자"
+      },
+      {
+        "id": "PARAFRIGHT",
+        "name": "투사된 공포"
       }
     ],
     "loss_text": "{character}는 [gold]{encounter}[/gold]와 그것의 환영에 의해 박살났습니다."
