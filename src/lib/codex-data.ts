@@ -678,10 +678,11 @@ function powerDescriptionText(
   gamePowers: GameLocalizationTable,
   l10nBase: string,
   fallback: string | null,
+  vars: Record<string, number | string>,
 ): string {
   const description = gameText(gamePowers, `${l10nBase}.description`, fallback ?? "");
-  const smartDescription = gamePowers[`${l10nBase}.smartDescription`];
-  if (smartDescription && !smartDescription.includes("{OwnerName}")) return smartDescription;
+  const smartDescription = gamePowers[`${l10nBase}.smartDescription`]?.replace("{OwnerName}'s[/gold]의", "{OwnerName}[/gold]의");
+  if (smartDescription && (!smartDescription.includes("{OwnerName}") || vars.OwnerName)) return smartDescription;
   return description;
 }
 
@@ -692,9 +693,11 @@ function mapPower(
   gamePowers: GameLocalizationTable,
   gameLocale: GameLocale,
 ): CodexPower {
-  const vars = kor.vars ?? {};
+  const vars = { ...(kor.vars ?? {}) };
+  if (gameLocale === "eng" && eng.vars) Object.assign(vars, eng.vars);
+  if (gameLocale !== "kor" && gameLocale !== "eng") delete vars.OwnerName;
   const l10nBase = powerLocalizationBase(gamePowers, kor.id);
-  const raw = powerDescriptionText(gamePowers, l10nBase, kor.description_raw ?? kor.description);
+  const raw = powerDescriptionText(gamePowers, l10nBase, kor.description_raw ?? kor.description, vars);
   return {
     id: kor.id,
     name: gameTitleText(gamePowers, `${l10nBase}.title`, kor.name, eng.name, gameLocale),

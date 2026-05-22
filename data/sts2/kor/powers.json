@@ -2682,14 +2682,15 @@
   {
     "id": "TERRITORIAL",
     "name": "영역 동물",
-    "description": "이 생물의 턴 종료 시, 대상이 [gold]힘[/gold]을 [blue]1[/blue] 얻습니다.",
-    "description_raw": "이 생물의 턴 종료 시, 대상이 [gold]힘[/gold]을 [blue]{Amount}[/blue] 얻습니다.",
+    "description": "[gold]섀도니스[/gold]의 턴 종료 시, 대상이 [gold]힘[/gold]을 [blue]1[/blue] 얻습니다.",
+    "description_raw": "[gold]{OwnerName}[/gold]의 턴 종료 시, 대상이 [gold]힘[/gold]을 [blue]{Amount}[/blue] 얻습니다.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/territorial_power.png",
     "vars": {
-      "Amount": 1
+      "Amount": 1,
+      "OwnerName": "섀도니스"
     }
   },
   {
