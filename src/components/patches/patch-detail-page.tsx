@@ -251,9 +251,53 @@ function patchTextIncludesLabel(searchText: string, label: string | undefined): 
   return searchText.includes(normalized);
 }
 
+function addExplicitPatchTagLabel(
+  labelsByType: Map<EntityInfo["type"], Set<string>>,
+  type: string,
+  label: string,
+) {
+  const normalized = stripGameMarkup(label).toLowerCase();
+  if (!normalized) return;
+
+  const entityType = type as EntityInfo["type"];
+  const labels = labelsByType.get(entityType);
+  if (labels) labels.add(normalized);
+  else labelsByType.set(entityType, new Set([normalized]));
+}
+
+function explicitPatchTagLabels(markdown: string): Map<EntityInfo["type"], Set<string>> {
+  const labelsByType = new Map<EntityInfo["type"], Set<string>>();
+  const tagRe = /\[gold:([a-z]+)\]([\s\S]*?)\[\/gold\]/gi;
+  let match: RegExpExecArray | null;
+
+  while ((match = tagRe.exec(markdown)) !== null) {
+    addExplicitPatchTagLabel(labelsByType, match[1], match[2]);
+  }
+
+  return labelsByType;
+}
+
+function patchEntityIsExplicitlyTagged(
+  labelsByType: Map<EntityInfo["type"], Set<string>>,
+  entity: EntityInfo,
+): boolean {
+  const labels = labelsByType.get(entity.type);
+  if (!labels) return false;
+
+  return [
+    entity.nameEn,
+    entity.nameKo,
+    ...(entity.aliasesEn ?? []),
+    ...(entity.aliasesKo ?? []),
+  ].some((label) => labels.has(stripGameMarkup(label).toLowerCase()));
+}
+
 function filterPatchNoteEntities(markdown: string, entities: EntityInfo[]): EntityInfo[] {
   const searchText = normalizedPatchSearchText(markdown);
+  const explicitlyTaggedLabels = explicitPatchTagLabels(markdown);
   return entities.filter((entity) => {
+    if (patchEntityIsExplicitlyTagged(explicitlyTaggedLabels, entity)) return true;
+
     const labels = [
       entity.nameEn,
       entity.nameKo,
