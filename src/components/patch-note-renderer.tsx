@@ -55,6 +55,8 @@ type RenderContext = {
   preferEntityLocaleLabel?: boolean;
   gameKeywordLabels?: Record<string, string>;
   gameHeadingLabels?: Record<string, string>;
+  forceShowEntityPreviews?: boolean;
+  onEntityPreview?: (entity: EntityInfo) => void;
 };
 
 // --- Entity Preview (hover card image) ---
@@ -535,6 +537,18 @@ function withPatchChangeEffects(markdown: string): string {
   });
 }
 
+function isEditableShortcutTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  const tagName = target.tagName.toLowerCase();
+  return (
+    tagName === "input" ||
+    tagName === "textarea" ||
+    tagName === "select" ||
+    target.isContentEditable ||
+    target.getAttribute("role") === "textbox"
+  );
+}
+
 // --- Entity Lookup ---
 
 export interface EntityLookup {
@@ -647,6 +661,60 @@ function extractPlainText(nodes: TextNode[]): string {
   return result;
 }
 
+function entityPreviewKey(entity: EntityInfo): string {
+  return `${entity.type}:${entity.id}`;
+}
+
+function noteEntityPreview(entity: EntityInfo, context: RenderContext) {
+  if (context.forceShowEntityPreviews) context.onEntityPreview?.(entity);
+}
+
+function linePreviewContext(context: RenderContext, entities: EntityInfo[]): RenderContext {
+  if (!context.forceShowEntityPreviews) return context;
+
+  const seen = new Set<string>();
+  return {
+    ...context,
+    onEntityPreview: (entity) => {
+      const key = entityPreviewKey(entity);
+      if (!seen.has(key)) {
+        seen.add(key);
+        entities.push(entity);
+      }
+      context.onEntityPreview?.(entity);
+    },
+  };
+}
+
+function ExpandedEntityPreviews({
+  entities,
+  context,
+}: {
+  entities: EntityInfo[];
+  context: RenderContext;
+}) {
+  if (entities.length === 0) return null;
+
+  return (
+    <span className="mt-2 flex flex-wrap gap-2">
+      {entities.map((entity) => (
+        <EntityPreview
+          key={entityPreviewKey(entity)}
+          entity={entity}
+          forceShow
+          forcePosition="below"
+          gameUi={context.gameUi}
+          serviceLocale={context.serviceLocale}
+          gameLocale={context.gameLocale}
+          preferEntityLocaleLabel={context.preferEntityLocaleLabel}
+        >
+          {entity.nameKo}
+        </EntityPreview>
+      ))}
+    </span>
+  );
+}
+
 // --- Render BBCode nodes with entity matching ---
 
 function renderBBNodes(
@@ -680,6 +748,7 @@ function renderBBNodes(
         const entity = findEntity(plainText, lookup, node.param);
 
         if (entity) {
+          noteEntityPreview(entity, context);
           return (
             <EntityPreview key={key} entity={entity} {...context}>
               {plainText}
@@ -735,6 +804,7 @@ function renderSineBBNodes(
         const entity = findEntity(plainText, lookup, node.param);
 
         if (entity) {
+          noteEntityPreview(entity, context);
           return (
             <EntityPreview key={key} entity={entity} {...context}>
               {renderSineText(plainText, key, offset)}
@@ -798,6 +868,7 @@ function renderMarkdownBold(
 
       const entity = findEntity(name, lookup);
       if (entity) {
+        noteEntityPreview(entity, context);
         enriched.push(
           <EntityPreview key={`${keyPrefix}-b${idx}-${j}`} entity={entity} {...context}>
             {name}
@@ -849,36 +920,47 @@ function renderLine(
   context: RenderContext,
 ): ReactNode {
   const trimmed = line.trimStart();
+  const expandedEntities: EntityInfo[] = [];
+  const lineContext = linePreviewContext(context, expandedEntities);
+  const expandedPreviews = (
+    <ExpandedEntityPreviews entities={expandedEntities} context={context} />
+  );
 
   // Skip HTML comments (<!-- TODO: ... -->)
   if (trimmed.startsWith("<!--")) return null;
 
   // Heading levels (check longer prefixes first)
   if (trimmed.startsWith("#### ")) {
-    const heading = gameHeadingLabel(trimmed.slice(5), context);
+    const heading = gameHeadingLabel(trimmed.slice(5), lineContext);
     return (
-      <h4 key={key} className="font-game-title text-sm font-semibold mt-4 mb-1 text-yellow-600">
-        {enrichLine(heading, lookup, key, context)}
-      </h4>
+      <div key={key}>
+        <h4 className="font-game-title text-sm font-semibold mt-4 mb-1 text-yellow-600">
+          {enrichLine(heading, lookup, key, lineContext)}
+        </h4>
+        {expandedPreviews}
+      </div>
     );
   }
   if (trimmed.startsWith("### ")) {
-    const heading = gameHeadingLabel(trimmed.slice(4), context);
+    const heading = gameHeadingLabel(trimmed.slice(4), lineContext);
     return (
-      <h3 key={key} className="font-game-title text-base font-semibold mt-6 mb-2 text-yellow-500">
-        {enrichLine(heading, lookup, key, context)}
-      </h3>
+      <div key={key}>
+        <h3 className="font-game-title text-base font-semibold mt-6 mb-2 text-yellow-500">
+          {enrichLine(heading, lookup, key, lineContext)}
+        </h3>
+        {expandedPreviews}
+      </div>
     );
   }
   if (trimmed.startsWith("## ")) {
-    const heading = gameHeadingLabel(trimmed.slice(3), context);
+    const heading = gameHeadingLabel(trimmed.slice(3), lineContext);
     return (
-      <h2
-        key={key}
-        className="font-game-title text-lg font-bold mt-8 mb-3 text-yellow-400 border-b border-border pb-1"
-      >
-        {enrichLine(heading, lookup, key, context)}
-      </h2>
+      <div key={key}>
+        <h2 className="font-game-title text-lg font-bold mt-8 mb-3 text-yellow-400 border-b border-border pb-1">
+          {enrichLine(heading, lookup, key, lineContext)}
+        </h2>
+        {expandedPreviews}
+      </div>
     );
   }
   if (trimmed.startsWith("# ")) {
@@ -899,7 +981,8 @@ function renderLine(
         className={`text-sm ${bulletClass} mb-1 list-outside`}
         style={{ marginLeft: `${1 + indentLevel * 1.25}rem` }}
       >
-        {enrichLine(bulletMatch[2], lookup, key, context)}
+        {enrichLine(bulletMatch[2], lookup, key, lineContext)}
+        {expandedPreviews}
       </li>
     );
   }
@@ -910,9 +993,19 @@ function renderLine(
   }
 
   // Regular paragraph
+  const paragraphContent = enrichLine(trimmed, lookup, key, lineContext);
+  if (expandedEntities.length > 0) {
+    return (
+      <div key={key} className="mb-1 text-sm text-muted-foreground">
+        <p>{paragraphContent}</p>
+        {expandedPreviews}
+      </div>
+    );
+  }
+
   return (
     <p key={key} className="text-sm text-muted-foreground mb-1">
-      {enrichLine(trimmed, lookup, key, context)}
+      {paragraphContent}
     </p>
   );
 }
@@ -981,11 +1074,35 @@ export function PatchNoteRenderer({
   gameKeywordLabels?: Record<string, string>;
   gameHeadingLabels?: Record<string, string>;
 }) {
+  const [forceShowEntityPreviews, setForceShowEntityPreviews] = useState(false);
   const allEntities = useMemo(() => entities ?? cards ?? [], [entities, cards]);
   const lookup = useMemo(() => buildEntityLookup(allEntities), [allEntities]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
+      if (isEditableShortcutTarget(event.target)) return;
+      if (event.key !== "?" && !(event.key === "/" && event.shiftKey)) return;
+
+      event.preventDefault();
+      setForceShowEntityPreviews((value) => !value);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const context = useMemo<RenderContext>(
-    () => ({ gameUi, serviceLocale, gameLocale, preferEntityLocaleLabel, gameKeywordLabels, gameHeadingLabels }),
-    [gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, preferEntityLocaleLabel, serviceLocale],
+    () => ({
+      gameUi,
+      serviceLocale,
+      gameLocale,
+      preferEntityLocaleLabel,
+      gameKeywordLabels,
+      gameHeadingLabels,
+      forceShowEntityPreviews,
+    }),
+    [forceShowEntityPreviews, gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, preferEntityLocaleLabel, serviceLocale],
   );
   const lines = withPatchChangeEffects(markdown).split("\n");
 
