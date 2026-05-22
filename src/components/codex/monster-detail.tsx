@@ -166,7 +166,7 @@ function InfoRailSection({
 }) {
   return (
     <details
-      className="group rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+      className="group min-w-0 rounded-lg border border-white/10 bg-black/20 px-4 py-3"
       open={defaultOpen}
     >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
@@ -385,7 +385,7 @@ function PatternStateTransitionDiagram({
   const markerPrefix = sanitizeSvgId(`monster-pattern-${monster.id}`);
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-white/10 bg-[#070914]/85 p-3">
+    <div className="max-w-full overflow-x-auto rounded-lg border border-white/10 bg-[#070914]/85 p-3">
       <div
         className="relative"
         style={{ width: diagram.width, height: diagram.height }}
@@ -872,7 +872,7 @@ export function MonsterDetail({
           )}
         </section>
 
-        <aside className="flex flex-col gap-3">
+        <aside className="flex min-w-0 flex-col gap-3">
           <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
