@@ -876,6 +876,7 @@ interface RawEvent {
   name: string;
   type: string;
   act: string | null;
+  acts?: string[] | null;
   description: string;
   options: RawEventOption[] | null;
   pages: RawEventPage[] | null;
@@ -1058,6 +1059,7 @@ function mapEvent(
     nameEn: eng.name,
     description: resolveEventText(localizedDescription, fallbackDescription, vars),
     act: (kor.act as EventAct | null),
+    acts: (kor.acts as EventAct[] | null | undefined) ?? null,
     options: mapEventOptions(kor.id, "INITIAL", kor.options, fallbackInitialPage?.options ?? fallbackEvent.options, gameEvents, gameLocale),
     pages: mapEventPages(kor.id, kor.pages, fallbackEvent.pages, gameEvents, gameLocale),
     imageUrl,

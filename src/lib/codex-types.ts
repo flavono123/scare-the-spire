@@ -446,6 +446,7 @@ export interface CodexEvent {
   nameEn: string;      // English
   description: string; // Korean, with BBCode markup
   act: EventAct | null;
+  acts: EventAct[] | null;
   options: EventOption[] | null;
   pages: EventPage[] | null;
   imageUrl: string | null; // local path to event art
@@ -489,6 +490,11 @@ export const EVENT_ACT_CONFIG: Record<string, { label: string; labelKo: string; 
 export const EVENT_ACT_UNKNOWN = {
   label: "Any Act", labelKo: "막 무관", color: "text-zinc-400", border: "border-zinc-500/40", bg: "bg-zinc-500/10",
 };
+
+export function getEventActs(event: Pick<CodexEvent, "act" | "acts">): (EventAct | null)[] {
+  if (event.acts && event.acts.length > 0) return event.acts;
+  return [event.act];
+}
 
 export const EVENT_ACT_ALIASES: Record<string, EventAct | "none"> = {
   "1막": "Act 1 - Overgrowth",

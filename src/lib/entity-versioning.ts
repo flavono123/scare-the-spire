@@ -185,6 +185,9 @@ export function reconstructEventAtVersion(
   if (event.options) {
     result.options = event.options.map((o) => ({ ...o }));
   }
+  if (event.acts) {
+    result.acts = [...event.acts];
+  }
   if (event.pages) {
     result.pages = event.pages.map((p) => ({
       ...p,

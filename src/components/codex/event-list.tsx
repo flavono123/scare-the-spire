@@ -23,6 +23,7 @@ import {
   EVENT_ACT_ORDER,
   EVENT_ACT_UNKNOWN,
   EVENT_ACT_ALIASES,
+  getEventActs,
 } from "@/lib/codex-types";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { reconstructEventAtVersion } from "@/lib/entity-versioning";
@@ -45,7 +46,31 @@ type EventSearchTokenType = "act";
 const COMPENDIUM_ACT_COLOR = "#60a5fa";
 const COMPENDIUM_ACT_TEXT_CLASS = "text-blue-300";
 
-// --- Act badge ---
+function eventActKey(act: EventAct | null): string {
+  return act ?? "none";
+}
+
+function eventMatchesActKeys(event: CodexEvent, actKeys: Set<string>): boolean {
+  if (actKeys.size === 0) return true;
+
+  const eventKeys = getEventActs(event).map(eventActKey);
+  if (eventKeys.includes("none")) {
+    if (actKeys.has("none")) return true;
+    return [...actKeys].some((key) => key !== "none");
+  }
+
+  return eventKeys.some((key) => actKeys.has(key));
+}
+
+function getGroupingActs(event: CodexEvent, activeActKeys: Set<string>): (EventAct | null)[] {
+  const acts = getEventActs(event);
+  if (activeActKeys.size === 0) return acts;
+
+  const matchingActs = acts.filter((act) => activeActKeys.has(eventActKey(act)));
+  return matchingActs.length > 0 ? matchingActs : acts;
+}
+
+// --- Act badges ---
 function ActBadge({
   act,
   messages,
@@ -65,6 +90,24 @@ function ActBadge({
       }`}
     >
       {label}
+    </span>
+  );
+}
+
+function ActBadges({
+  event,
+  messages,
+  gameUi,
+}: {
+  event: CodexEvent;
+  messages: CodexServiceMessages;
+  gameUi: CodexGameUiLabels;
+}) {
+  return (
+    <span className="flex flex-wrap justify-end gap-1">
+      {getEventActs(event).map((act) => (
+        <ActBadge key={eventActKey(act)} act={act} messages={messages} gameUi={gameUi} />
+      ))}
     </span>
   );
 }
@@ -109,7 +152,7 @@ function EventThumbnail({
             {event.nameEn}
           </span>
         </div>
-        <ActBadge act={event.act} messages={messages} gameUi={gameUi} />
+        <ActBadges event={event} messages={messages} gameUi={gameUi} />
         <svg
           className="w-4 h-4 text-zinc-600 group-hover:text-yellow-500 transition-colors flex-shrink-0"
           viewBox="0 0 16 16"
@@ -232,22 +275,26 @@ export function EventList({
     [searchQuery, eventTriggers],
   );
 
-  // Filter events — 막 무관 events pass through any act filter
+  const activeActKeys = useMemo(
+    () => new Set([
+      ...selectedActs,
+      ...parsedSearch.tokens
+        .filter((token) => token.type === "act")
+        .map((token) => token.value),
+    ]),
+    [selectedActs, parsedSearch.tokens],
+  );
+
+  // Filter events — 막 무관 events pass through any specific act filter
   const filtered = useMemo(() => {
     return versionedEvents.filter((e) => {
-      if (selectedActs.size > 0 && e.act !== null) {
-        const actKey = e.act ?? "none";
-        if (!selectedActs.has(actKey)) return false;
-      }
-      if (selectedActs.size > 0 && e.act === null && !selectedActs.has("none")) {
-        const hasSpecificAct = [...selectedActs].some((a) => a !== "none");
-        if (!hasSpecificAct) return false;
-      }
-      const actTokens = parsedSearch.tokens.filter((token) => token.type === "act");
-      if (actTokens.length > 0 && e.act !== null) {
-        const actKey = e.act ?? "none";
-        if (!actTokens.some((token) => token.value === actKey)) return false;
-      }
+      if (selectedActs.size > 0 && !eventMatchesActKeys(e, selectedActs)) return false;
+      const tokenActKeys = new Set(
+        parsedSearch.tokens
+          .filter((token) => token.type === "act")
+          .map((token) => token.value),
+      );
+      if (tokenActKeys.size > 0 && !eventMatchesActKeys(e, tokenActKeys)) return false;
       if (parsedSearch.text) {
         const nameMatch = fuzzyMatchCodexText(e.name, parsedSearch.text);
         const nameEnMatch = fuzzyMatchCodexText(e.nameEn, parsedSearch.text);
@@ -261,9 +308,11 @@ export function EventList({
   const groups = useMemo(() => {
     const map = new Map<string, CodexEvent[]>();
     for (const e of filtered) {
-      const key = e.act ?? "__none__";
-      if (!map.has(key)) map.set(key, []);
-      map.get(key)!.push(e);
+      for (const act of getGroupingActs(e, activeActKeys)) {
+        const key = act ?? "__none__";
+        if (!map.has(key)) map.set(key, []);
+        map.get(key)!.push(e);
+      }
     }
     const ordered: { act: EventAct | null; label: string; color: string; events: CodexEvent[] }[] = [];
     for (const act of EVENT_ACT_ORDER) {
@@ -278,7 +327,7 @@ export function EventList({
       });
     }
     return ordered;
-  }, [filtered, gameUi, serviceText]);
+  }, [filtered, activeActKeys, gameUi, serviceText]);
 
   const toggleAct = useCallback((act: string) => {
     setSelectedActs((prev) => {
@@ -292,8 +341,10 @@ export function EventList({
   const actCounts = useMemo(() => {
     const counts = new Map<string, number>();
     for (const e of events) {
-      const key = e.act ?? "none";
-      counts.set(key, (counts.get(key) ?? 0) + 1);
+      for (const act of getEventActs(e)) {
+        const key = eventActKey(act);
+        counts.set(key, (counts.get(key) ?? 0) + 1);
+      }
     }
     return counts;
   }, [events]);

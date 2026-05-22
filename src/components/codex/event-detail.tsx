@@ -26,6 +26,7 @@ import {
   MonsterSpineAsset,
   PotionRarityKo,
   characterOutlineFilter,
+  getEventActs,
 } from "@/lib/codex-types";
 import { RichText } from "@/components/rich-text";
 import { CardTile } from "@/components/codex/card-tile";
@@ -1919,7 +1920,9 @@ export function EventDetail({
     ? "/images/sts2/events/trial_started.webp"
     : event.imageUrl;
   const eventTypeLabel = serviceLocale === "ko" ? "이벤트" : "Event";
-  const eventActLabel = event.act ? gameUi.acts[event.act] : serviceText.labels.acts.none;
+  const eventActLabel = getEventActs(event)
+    .map((act) => act ? gameUi.acts[act] : serviceText.labels.acts.none)
+    .join(" / ");
   const rootClassName = isModal
     ? "mx-auto w-full max-w-[92rem] p-3 sm:p-4"
     : "mx-auto w-full max-w-[92rem] p-4 sm:p-6";
