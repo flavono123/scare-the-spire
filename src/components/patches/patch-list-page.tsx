@@ -74,7 +74,13 @@ const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
   hotfix: "bg-orange-500/15 text-orange-400 border-orange-500/30",
 };
 
-function PatchArtPreview({ art }: { art: ResolvedPatchArt }) {
+function PatchArtPreview({
+  art,
+  priority = false,
+}: {
+  art: ResolvedPatchArt;
+  priority?: boolean;
+}) {
   return (
     <div
       className="mt-3 aspect-[16/7] overflow-hidden rounded-md border border-border/70 bg-zinc-950"
@@ -85,6 +91,9 @@ function PatchArtPreview({ art }: { art: ResolvedPatchArt }) {
         alt={art.alt}
         width={960}
         height={420}
+        loading={priority ? undefined : "lazy"}
+        fetchPriority={priority ? "high" : "low"}
+        priority={priority}
         className="h-full w-full object-cover"
         style={{ objectPosition: art.objectPosition }}
       />
@@ -121,7 +130,7 @@ export async function PatchListPage({
       <h1 className="text-2xl font-bold">{copy.title}</h1>
 
       <div className="mt-6 space-y-3">
-        {sorted.map((patch) => {
+        {sorted.map((patch, index) => {
           const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
           const isBuilding = patch.status === "building";
           const patchArt = isBuilding ? null : resolvePatchArt(patch, entitiesByKey, serviceLocale);
@@ -180,7 +189,7 @@ export async function PatchListPage({
               </div>
               <p className="mt-1 text-sm font-medium">{title}</p>
               <p className="mt-0.5 text-xs text-muted-foreground">{patch.date}</p>
-              {patchArt && <PatchArtPreview art={patchArt} />}
+              {patchArt && <PatchArtPreview art={patchArt} priority={index === 0} />}
             </Link>
           );
         })}
