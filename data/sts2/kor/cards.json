@@ -19642,9 +19642,9 @@
   {
     "id": "WITHER",
     "name": "침체",
-    "description": "내 턴 종료 시\n이 카드가 [gold]손[/gold]에 있다면,\n피해를 2 받습니다.",
+    "description": "내 턴 종료 시\n이 카드가 [gold]손[/gold]에 있다면,\n피해를 3 받습니다.",
     "description_raw": "내 턴 종료 시\n이 카드가 [gold]손[/gold]에 있다면,\n피해를 {Damage:diff()} 받습니다.",
-    "cost": 1,
+    "cost": -1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -19652,7 +19652,7 @@
     "rarity": "상태이상",
     "target": "None",
     "color": "status",
-    "damage": 2,
+    "damage": 3,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -19660,17 +19660,19 @@
     "energy_gain": null,
     "hp_loss": null,
     "keywords": [
-      "소멸",
-      "보존"
+      "사용불가"
     ],
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 2
+      "Damage": 3
     },
-    "upgrade": null,
+    "upgrade": {
+      "damage": "+3"
+    },
     "image_url": null,
-    "beta_image_url": "/static/images/cards/beta/wither.png"
+    "beta_image_url": "/static/images/cards/beta/wither.png",
+    "max_upgrade_level": 2147483647
   },
   {
     "id": "WOUND",
