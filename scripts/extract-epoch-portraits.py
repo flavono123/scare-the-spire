@@ -38,6 +38,8 @@ def main() -> None:
         imports = sorted(p for p in reader.entries if IMPORT_RE.match(p))
         for import_path in imports:
             name = IMPORT_RE.match(import_path).group("name")  # type: ignore[union-attr]
+            if name.startswith("placeholder/"):
+                name = name.removeprefix("placeholder/")
             output_path = output_root / f"{name}.webp"
             if output_path.exists() and not args.force:
                 skipped += 1
