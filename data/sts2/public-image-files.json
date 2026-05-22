@@ -1034,6 +1034,8 @@
     "safety.webp",
     "salvo.png",
     "salvo.webp",
+    "scare.png",
+    "scare.webp",
     "scavenge.png",
     "scavenge.webp",
     "scourge.png",
@@ -2533,7 +2535,8 @@
     "tezcatara.webp"
   ],
   "patches": [
-    "default-art.jpg"
+    "default-art.jpg",
+    "default-art.webp"
   ],
   "potions": [
     "ashwater.webp",
