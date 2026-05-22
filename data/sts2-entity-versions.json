@@ -1400,5 +1400,308 @@
         "after": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]{CombatCount}[/blue]번의 전투 후에 불이 꺼집니다. [gold]휴식 장소[/gold]에서 다시 [gold]불을 붙일[/gold] 수 있습니다."
       }
     ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "DEATH_MARCH",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "피해를 11 줍니다.\n내 턴 동안 뽑은 카드 1장당 피해량이 3 증가합니다.",
+        "after": "피해를 12 줍니다.\n내 턴 동안 뽑은 카드\n1장당 피해량이\n4 증가합니다."
+      },
+      {
+        "field": "vars.ExtraDamage",
+        "before": 3,
+        "after": 4
+      },
+      {
+        "field": "vars.CalculatedDamage",
+        "before": 11,
+        "after": 12
+      },
+      {
+        "field": "upgrade.extradamage",
+        "before": "+1",
+        "after": "+2"
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "DEBILITATE",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "피해를 7 줍니다.\n다음 3턴 동안 이 적을 대상으로 하는 [gold]취약[/gold]과 [gold]약화[/gold]의 효과가 2배가 됩니다.",
+        "after": "피해를 10 줍니다.\n다음 2턴 동안\n이 적을 대상으로 하는\n[gold]취약[/gold]과 [gold]약화[/gold]의 효과가\n2배가 됩니다."
+      },
+      {
+        "field": "damage",
+        "before": 7,
+        "after": 10
+      },
+      {
+        "field": "vars.DebilitatePower",
+        "before": 3,
+        "after": 2
+      },
+      {
+        "field": "vars.Debilitate",
+        "before": 3,
+        "after": 2
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "FASTEN",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "수비 카드를 통해 얻는 [gold]방어도[/gold]가 5 증가합니다.",
+        "after": "수비 카드를 통해 얻는\n[gold]방어도[/gold]가 4 증가합니다."
+      },
+      {
+        "field": "vars.ExtraBlock",
+        "before": 5,
+        "after": 4
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "FURNACE",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "내 턴 시작 시, [gold]단조[/gold] 4.",
+        "after": "내 턴 시작 시, [gold]단조[/gold] 5."
+      },
+      {
+        "field": "vars.Forge",
+        "before": 4,
+        "after": 5
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "FUSION",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "cost",
+        "before": 2,
+        "after": 1
+      },
+      {
+        "field": "keywords",
+        "before": [],
+        "after": [
+          "소멸"
+        ]
+      },
+      {
+        "field": "upgrade.cost",
+        "before": 1
+      },
+      {
+        "field": "upgrade.remove_exhaust",
+        "after": 1
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "HOWL_FROM_BEYOND",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "모든 적에게 피해를 16 줍니다.\n내 턴 시작 시, [gold]소멸된 카드 더미[/gold]에서 사용됩니다.",
+        "after": "모든 적에게\n피해를 16 줍니다.\n내 턴 종료 시, 이 카드가\n[gold]소멸된 카드 더미[/gold]에 있다면,\n사용합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n내 턴 시작 시, 이 카드가\n[gold]소멸된 카드 더미[/gold]에 있다면,\n사용합니다.",
+        "after": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n내 턴 종료 시, 이 카드가\n[gold]소멸된 카드 더미[/gold]에 있다면,\n사용합니다."
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "MINION_SACRIFICE",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 9 얻습니다.",
+        "after": "[gold]방어도[/gold]를 8 얻습니다."
+      },
+      {
+        "field": "block",
+        "before": 9,
+        "after": 8
+      },
+      {
+        "field": "vars.Block",
+        "before": 9,
+        "after": 8
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "POUNCE",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "피해를 12 줍니다.\n다음에 사용하는 스킬 카드의 비용이 0 [energy:1]이 됩니다.",
+        "after": "피해를 14 줍니다.\n다음에 사용하는\n스킬 카드의 비용이\n0 [energy:1]이 됩니다."
+      },
+      {
+        "field": "damage",
+        "before": 12,
+        "after": 14
+      },
+      {
+        "field": "vars.Damage",
+        "before": 12,
+        "after": 14
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "PREDATOR",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "rarity",
+        "before": "고급",
+        "after": "일반"
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "SHATTER",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "모든 적에게\n피해를 11 줍니다.\n모든 구체를 2번\n[gold]발현[/gold]합니다.",
+        "after": "모든 적에게\n피해를 7 줍니다.\n모든 구체를 2번\n[gold]발현[/gold]합니다."
+      },
+      {
+        "field": "damage",
+        "before": 11,
+        "after": 7
+      },
+      {
+        "field": "vars.Damage",
+        "before": 11,
+        "after": 7
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "SYNTHESIS",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "피해를 12 줍니다.\n다음에 사용하는 파워 카드의 비용이 0 [energy:1]이 됩니다.",
+        "after": "피해를 14 줍니다.\n다음에 사용하는\n파워 카드의 비용이\n0 [energy:1]이 됩니다."
+      },
+      {
+        "field": "damage",
+        "before": 12,
+        "after": 14
+      },
+      {
+        "field": "vars.Damage",
+        "before": 12,
+        "after": 14
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "THE_SEALED_THRONE",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "upgrade.add_innate",
+        "before": 1
+      },
+      {
+        "field": "upgrade.cost",
+        "after": 0
+      }
+    ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "UNRELENTING",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "피해를 12 줍니다.\n다음에 사용하는 공격 카드의 비용이 0 [energy:1]이 됩니다.",
+        "after": "피해를 14 줍니다.\n다음에 사용하는\n공격 카드의 비용이\n0 [energy:1]이 됩니다."
+      },
+      {
+        "field": "damage",
+        "before": 12,
+        "after": 14
+      },
+      {
+        "field": "vars.Damage",
+        "before": 12,
+        "after": 14
+      }
+    ]
+  },
+  {
+    "entityType": "relic",
+    "entityId": "SCROLL_BOXES",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "획득 시, 모든 [gold]골드[/gold]를 잃고 카드 팩 [blue]2[/blue]개 중 [blue]1[/blue]개를 선택해 [gold]덱[/gold]에 추가합니다.",
+        "after": "획득 시, 카드 팩 [blue]2[/blue]개 중 [blue]1[/blue]개를 선택해 [gold]덱[/gold]에 추가합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "획득 시, 모든 [gold]골드[/gold]를 잃고 카드 팩 [blue]2[/blue]개 중 [blue]1[/blue]개를 선택해 [gold]덱[/gold]에 추가합니다.",
+        "after": "획득 시, 카드 팩 [blue]2[/blue]개 중 [blue]1[/blue]개를 선택해 [gold]덱[/gold]에 추가합니다."
+      }
+    ]
+  },
+  {
+    "entityType": "relic",
+    "entityId": "SILKEN_TRESS",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다.",
+        "after": "획득 시, 모든 [gold]골드[/gold]를 잃습니다. 처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다.",
+        "after": "획득 시, 모든 [gold]골드[/gold]를 잃습니다. 처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다."
+      }
+    ]
   }
 ]
