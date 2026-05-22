@@ -2,6 +2,20 @@
 
 import { type ReactNode, useMemo, useState } from "react";
 import Link from "next/link";
+import {
+  ArrowDown,
+  ArrowUp,
+  Ban,
+  CircleHelp,
+  HeartPulse,
+  Shield,
+  Sparkles,
+  Sword,
+  Swords,
+  TriangleAlert,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
@@ -74,6 +88,51 @@ interface TransitionTableRow {
   isStart: boolean;
   kind: MonsterMoveTransitionKind | "start" | "unknown";
   condition: string | null;
+}
+
+interface PatternDiagramNode {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  isInitial: boolean;
+  phaseId: string | null;
+}
+
+interface PatternDiagramEdge {
+  key: string;
+  from: string;
+  to: string;
+  path: string;
+  color: string;
+  marker: "normal" | "conditional" | "start";
+  label: string | null;
+  labelX: number;
+  labelY: number;
+}
+
+interface PatternDiagramPhaseBox {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+interface PatternDiagramPhaseConnector {
+  key: string;
+  path: string;
+}
+
+interface PatternDiagramModel {
+  width: number;
+  height: number;
+  nodes: PatternDiagramNode[];
+  edges: PatternDiagramEdge[];
+  phaseBoxes: PatternDiagramPhaseBox[];
+  phaseConnectors: PatternDiagramPhaseConnector[];
 }
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
@@ -293,59 +352,281 @@ function PatternBadge({
   );
 }
 
-function PatternTransitionRow({
-  row,
+function PatternStateTransitionDiagram({
   monster,
   startLabel,
-  chanceLabel,
+  phases,
+  rows,
+  serviceLocale,
+  onSelectMove,
 }: {
-  row: TransitionTableRow;
   monster: CodexMonster;
   startLabel: string;
-  chanceLabel: string;
+  phases: PatternPhase[];
+  rows: TransitionTableRow[];
+  serviceLocale: ServiceLocale;
+  onSelectMove: (moveId: string) => void;
 }) {
-  const color = getTransitionKindColor(row.kind);
-  const chanceText = row.kind === "start"
-    ? "100%"
-    : row.chance == null ? "?" : `${row.chance}%`;
+  const diagram = useMemo(
+    () => buildPatternDiagramModel(monster, rows, phases, serviceLocale),
+    [monster, phases, rows, serviceLocale],
+  );
+  if (!diagram) return null;
+
+  const markerPrefix = sanitizeSvgId(`monster-pattern-${monster.id}`);
 
   return (
-    <div
-      className="rounded-lg border bg-white/[0.03] px-3 py-2"
-      style={{ borderColor: `${color}44` }}
-    >
-      <div className="grid grid-cols-[minmax(0,1fr)_1.25rem_minmax(0,1fr)_3rem] items-center gap-2 text-xs">
-        <PatternStateNode
-          label={row.isStart ? startLabel : getMoveName(monster, row.from)}
-          color={row.isStart ? BESTIARY_START_COLOR : color}
-        />
-        <span className="text-center text-sm font-bold" style={{ color }}>→</span>
-        <PatternStateNode label={getMoveName(monster, row.to)} color={color} />
-        <span className="text-right text-[10px] font-semibold tabular-nums text-gray-500" title={chanceLabel}>
-          {chanceText}
-        </span>
+    <div className="overflow-x-auto rounded-lg border border-white/10 bg-[#070914]/85 p-3">
+      <div
+        className="relative"
+        style={{ width: diagram.width, height: diagram.height }}
+      >
+        <svg
+          className="pointer-events-none absolute inset-0"
+          width={diagram.width}
+          height={diagram.height}
+          viewBox={`0 0 ${diagram.width} ${diagram.height}`}
+          aria-hidden="true"
+        >
+          <defs>
+            <marker
+              id={`${markerPrefix}-arrow-normal`}
+              markerWidth="12"
+              markerHeight="12"
+              refX="10"
+              refY="6"
+              orient="auto"
+              markerUnits="strokeWidth"
+            >
+              <path d="M2,2 L10,6 L2,10 Z" fill={DIAGRAM_ARROW_COLOR} />
+            </marker>
+            <marker
+              id={`${markerPrefix}-arrow-conditional`}
+              markerWidth="12"
+              markerHeight="12"
+              refX="10"
+              refY="6"
+              orient="auto"
+              markerUnits="strokeWidth"
+            >
+              <path d="M2,2 L10,6 L2,10 Z" fill={DIAGRAM_CONDITIONAL_COLOR} />
+            </marker>
+            <marker
+              id={`${markerPrefix}-arrow-start`}
+              markerWidth="12"
+              markerHeight="12"
+              refX="10"
+              refY="6"
+              orient="auto"
+              markerUnits="strokeWidth"
+            >
+              <path d="M2,2 L10,6 L2,10 Z" fill={BESTIARY_START_COLOR} />
+            </marker>
+          </defs>
+          {diagram.phaseBoxes.map((box) => (
+            <g key={box.id}>
+              <rect
+                x={box.x}
+                y={box.y}
+                width={box.width}
+                height={box.height}
+                rx="7"
+                fill="rgba(16, 24, 40, 0.55)"
+                stroke={DIAGRAM_GROUP_COLOR}
+                strokeWidth="2"
+              />
+              <text
+                x={box.x + 9}
+                y={box.y + 16}
+                fill={DIAGRAM_GROUP_COLOR}
+                fontSize="11"
+                fontWeight="700"
+              >
+                {box.label}
+              </text>
+            </g>
+          ))}
+          {diagram.phaseConnectors.map((connector) => (
+            <path
+              key={connector.key}
+              d={connector.path}
+              fill="none"
+              stroke={DIAGRAM_CONDITIONAL_COLOR}
+              strokeWidth="4"
+              strokeLinecap="square"
+              strokeLinejoin="miter"
+              markerEnd={`url(#${markerPrefix}-arrow-conditional)`}
+            />
+          ))}
+          {diagram.edges.map((edge) => (
+            <path
+              key={edge.key}
+              d={edge.path}
+              fill="none"
+              stroke={edge.color}
+              strokeWidth="4"
+              strokeLinecap="square"
+              strokeLinejoin="miter"
+              markerEnd={`url(#${markerPrefix}-arrow-${edge.marker})`}
+            />
+          ))}
+        </svg>
+
+        {diagram.edges.map((edge) => edge.label && (
+          <span
+            key={`${edge.key}-label`}
+            className="pointer-events-none absolute z-20 max-w-28 truncate rounded bg-[#070914]/90 px-1.5 py-0.5 text-[10px] font-bold tabular-nums"
+            style={{
+              left: edge.labelX,
+              top: edge.labelY,
+              color: edge.color,
+              transform: "translate(-50%, -50%)",
+            }}
+            title={edge.label}
+          >
+            {edge.label}
+          </span>
+        ))}
+
+        {diagram.nodes.map((node) => (
+          <PatternMoveStateNode
+            key={node.id}
+            node={node}
+            monster={monster}
+            serviceLocale={serviceLocale}
+            startLabel={startLabel}
+            onSelectMove={onSelectMove}
+          />
+        ))}
       </div>
-      {row.condition && (
-        <div className="mt-1 truncate text-[10px] text-red-300/80">
-          {row.condition}
-        </div>
-      )}
     </div>
   );
 }
 
-function PatternStateNode({ label, color }: { label: string; color: string }) {
+function PatternMoveStateNode({
+  node,
+  monster,
+  serviceLocale,
+  startLabel,
+  onSelectMove,
+}: {
+  node: PatternDiagramNode;
+  monster: CodexMonster;
+  serviceLocale: ServiceLocale;
+  startLabel: string;
+  onSelectMove: (moveId: string) => void;
+}) {
+  const move = getMonsterMove(monster, node.id);
+  const damageEntry = monster.damageValues ? findDamageForMove(node.id, monster.damageValues) : null;
+  const blockEntry = monster.blockValues ? findBlockForMove(node.id, monster.blockValues) : null;
+  const tone = move ? getMoveTone(move, damageEntry, blockEntry) : "setup";
+  const toneColor = getMoveToneColor(tone, "#a1a1aa");
+  const title = move ? `${move.name}${move.nameEn !== move.name ? ` / ${move.nameEn}` : ""}` : getMoveName(monster, node.id);
+  const intentKeys = getMoveIntentKeys(move);
+  const tokenApplications = move
+    ? [...move.powerApplications, ...move.cardApplications].slice(0, 3)
+    : [];
+
+  return (
+    <button
+      type="button"
+      className="absolute z-10 rounded-md border bg-[#111827]/95 px-1.5 py-1 text-center shadow-[0_0_18px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#1f2937]"
+      style={{
+        left: node.x,
+        top: node.y,
+        width: node.width,
+        height: node.height,
+        borderColor: node.phaseId ? `${DIAGRAM_GROUP_COLOR}cc` : `${toneColor}77`,
+      }}
+      title={title}
+      aria-label={title}
+      onClick={() => onSelectMove(node.id)}
+    >
+      {node.isInitial && (
+        <span className="absolute left-1.5 top-1 text-[10px] font-bold text-[#efc851]">
+          {startLabel}
+        </span>
+      )}
+      <span className="flex h-full flex-col items-center justify-center gap-1 pt-2">
+        <span className="flex min-h-7 items-center justify-center gap-1">
+          {intentKeys.slice(0, 3).map((intent, index) => (
+            <PatternIntentGlyph key={`${intent}-${index}`} intent={intent} />
+          ))}
+        </span>
+        <span className="flex min-h-4 items-center justify-center gap-1">
+          {damageEntry && (
+            <PatternMetricValue value={damageEntry} tone="attack" />
+          )}
+          {blockEntry && (
+            <PatternMetricValue value={blockEntry} tone="block" />
+          )}
+          {!damageEntry && !blockEntry && tokenApplications.length === 0 && (
+            <span className="text-[10px] font-semibold text-gray-500">
+              {serviceLocale === "ko" ? "행동" : "Move"}
+            </span>
+          )}
+        </span>
+        {tokenApplications.length > 0 && (
+          <span className="flex min-h-4 max-w-full items-center justify-center gap-0.5">
+            {tokenApplications.map((application) => (
+              <span
+                key={`${"powerId" in application ? application.powerId : application.cardId}-${application.imageUrl ?? ""}`}
+                className="inline-flex h-4 w-4 items-center justify-center overflow-hidden rounded-sm bg-black/30"
+                title={"powerName" in application
+                  ? serviceLocale === "ko" ? application.powerName : application.powerNameEn
+                  : serviceLocale === "ko" ? application.cardName : application.cardNameEn}
+              >
+                {application.imageUrl ? (
+                  <Image src={application.imageUrl} alt="" width={16} height={16} className="h-4 w-4 object-contain" />
+                ) : (
+                  <span className="h-2 w-2 rounded-full bg-gray-400" />
+                )}
+              </span>
+            ))}
+          </span>
+        )}
+      </span>
+    </button>
+  );
+}
+
+function PatternIntentGlyph({ intent }: { intent: string }) {
+  const config = getIntentIconConfig(intent);
+  const Icon = config.icon;
+
   return (
     <span
-      className="block min-w-0 truncate rounded border px-2 py-1 font-game-title text-[11px] font-semibold"
-      style={{
-        borderColor: `${color}55`,
-        backgroundColor: hexToRgba(color, 0.12),
-        color,
-      }}
-      title={label}
+      className="inline-flex h-7 w-7 items-center justify-center"
+      title={config.label}
     >
-      {label}
+      <Icon
+        aria-hidden="true"
+        className="h-6 w-6 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]"
+        strokeWidth={2.5}
+        style={{ color: config.color }}
+      />
+    </span>
+  );
+}
+
+function PatternMetricValue({
+  value,
+  tone,
+}: {
+  value: DamageValue;
+  tone: "attack" | "block";
+}) {
+  const color = tone === "attack" ? "#fff6e2" : "#bfdbfe";
+
+  return (
+    <span className="inline-flex items-center gap-0.5 text-[12px] font-bold leading-none" style={{ color }}>
+      <span>{value.normal ?? "?"}</span>
+      {value.ascension != null && value.ascension !== value.normal && (
+        <span className="inline-flex items-center gap-0.5 text-[9px] text-orange-300">
+          <AscensionBadge level={9} />
+          {value.ascension}
+        </span>
+      )}
     </span>
   );
 }
@@ -422,6 +703,13 @@ export function MonsterDetail({
   });
   const selectedMoveId = selectedMoveState.monsterId === monster.id ? selectedMoveState.moveId : null;
   const selectedMoveNonce = selectedMoveState.monsterId === monster.id ? selectedMoveState.nonce : 0;
+  const selectMove = (moveId: string) => {
+    setSelectedMoveState((state) => ({
+      monsterId: monster.id,
+      moveId,
+      nonce: state.monsterId === monster.id ? state.nonce + 1 : 1,
+    }));
+  };
   const selectedSkinSelections = selectedSkinState.monsterId === monster.id
     ? selectedSkinState.selections
     : getDefaultMonsterSkinSelections(monster);
@@ -613,11 +901,7 @@ export function MonsterDetail({
                     <button
                       key={summary.move.id}
                       type="button"
-                      onClick={() => setSelectedMoveState((state) => ({
-                        monsterId: monster.id,
-                        moveId: summary.move.id,
-                        nonce: state.monsterId === monster.id ? state.nonce + 1 : 1,
-                      }))}
+                      onClick={() => selectMove(summary.move.id)}
                       className="w-full rounded-lg border px-3 py-3 text-left transition-colors hover:bg-white/10"
                       style={{
                         backgroundColor: isSelected ? hexToRgba(toneColor, 0.14) : "rgba(255, 255, 255, 0.03)",
@@ -791,17 +1075,14 @@ export function MonsterDetail({
                 </div>
               )}
 
-              <div className="max-h-[24rem] space-y-2 overflow-y-auto pr-1">
-                {transitionRows.map((row) => (
-                  <PatternTransitionRow
-                    key={row.key}
-                    row={row}
-                    monster={monster}
-                    startLabel={monsterText.startPoint}
-                    chanceLabel={monsterText.chance}
-                  />
-                ))}
-              </div>
+              <PatternStateTransitionDiagram
+                monster={monster}
+                startLabel={monsterText.startPoint}
+                phases={patternSummary.phases}
+                rows={transitionRows}
+                serviceLocale={serviceLocale}
+                onSelectMove={selectMove}
+              />
               {monster.moveGraph?.confidence === "partial" && (
                 <p className="mt-3 text-[11px] leading-relaxed text-gray-500">{monsterText.graphPartial}</p>
               )}
@@ -885,6 +1166,15 @@ export function MonsterDetail({
   );
 }
 
+const DIAGRAM_CELL_WIDTH = 88;
+const DIAGRAM_CELL_HEIGHT = 84;
+const DIAGRAM_H_GAP = 88;
+const DIAGRAM_V_GAP = 24;
+const DIAGRAM_PAD = 54;
+const DIAGRAM_ROW_GAP = 76;
+const DIAGRAM_ARROW_COLOR = "#efc851";
+const DIAGRAM_CONDITIONAL_COLOR = "#ff4545";
+const DIAGRAM_GROUP_COLOR = "#29ebc0";
 const BESTIARY_START_COLOR = "#60a5fa";
 
 const ACTION_TYPE_CONFIG: Record<MonsterActionType, { labelKo: string; labelEn: string; color: string }> = {
@@ -894,6 +1184,386 @@ const ACTION_TYPE_CONFIG: Record<MonsterActionType, { labelKo: string; labelEn: 
   buff: { labelKo: "버프", labelEn: "Buff", color: "#22c55e" },
   special: { labelKo: "특수", labelEn: "Special", color: "#a1a1aa" },
 };
+
+function buildPatternDiagramModel(
+  monster: CodexMonster,
+  rows: TransitionTableRow[],
+  phases: PatternPhase[],
+  serviceLocale: ServiceLocale,
+): PatternDiagramModel | null {
+  const transitions = rows.filter((row) => !row.isStart && row.from !== "__START__" && row.to !== "__START__");
+  const initialMoveId = monster.moveGraph?.initial ?? rows.find((row) => row.isStart)?.to ?? null;
+  const nodeIds = new Set<string>();
+  if (initialMoveId) nodeIds.add(initialMoveId);
+  transitions.forEach((transition) => {
+    nodeIds.add(transition.from);
+    nodeIds.add(transition.to);
+  });
+
+  const orderedNodeIds = Array.from(nodeIds).filter((nodeId) => !isHiddenDiagramMove(nodeId));
+  if (orderedNodeIds.length === 0) return null;
+
+  const outgoing = buildOutgoingMap(transitions);
+  const order = getReachableOrder(initialMoveId ?? orderedNodeIds[0] ?? null, outgoing);
+  const sortedNodeIds = orderedNodeIds.sort((a, b) => getDiagramOrder(a, orderedNodeIds, order) - getDiagramOrder(b, orderedNodeIds, order));
+  const phaseAssignments = buildDiagramPhaseAssignments(sortedNodeIds, outgoing, phases);
+  const phaseById = new Map(phases.map((phase) => [phase.id, phase]));
+  const groups = buildDiagramGroups(sortedNodeIds, phaseAssignments, phases, initialMoveId, serviceLocale);
+
+  const nodes: PatternDiagramNode[] = [];
+  const phaseBoxes: PatternDiagramPhaseBox[] = [];
+  let cursorY = DIAGRAM_PAD;
+  let maxRight = DIAGRAM_PAD + DIAGRAM_CELL_WIDTH;
+
+  groups.forEach((group) => {
+    const groupNodeSet = new Set(group.nodeIds);
+    const localOutgoing = new Map<string, string[]>();
+    transitions.forEach((transition) => {
+      if (!groupNodeSet.has(transition.from) || !groupNodeSet.has(transition.to)) return;
+      localOutgoing.set(transition.from, [...(localOutgoing.get(transition.from) ?? []), transition.to]);
+    });
+
+    const localIncoming = new Map<string, number>();
+    transitions.forEach((transition) => {
+      if (groupNodeSet.has(transition.from) && groupNodeSet.has(transition.to)) {
+        localIncoming.set(transition.to, (localIncoming.get(transition.to) ?? 0) + 1);
+      }
+    });
+
+    const groupStart = group.nodeIds.includes(initialMoveId ?? "")
+      ? initialMoveId
+      : group.nodeIds.find((nodeId) => !localIncoming.has(nodeId)) ?? group.nodeIds[0] ?? null;
+    const depths = buildDiagramDepths(group.nodeIds, localOutgoing, groupStart);
+    const columns = new Map<number, string[]>();
+    group.nodeIds.forEach((nodeId) => {
+      const depth = depths.get(nodeId) ?? 0;
+      columns.set(depth, [...(columns.get(depth) ?? []), nodeId]);
+    });
+
+    const sortedColumns = Array.from(columns.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([depth, columnNodeIds]) => [
+        depth,
+        columnNodeIds.sort((a, b) => getDiagramOrder(a, sortedNodeIds, order) - getDiagramOrder(b, sortedNodeIds, order)),
+      ] as const);
+    const maxColumnHeight = Math.max(
+      DIAGRAM_CELL_HEIGHT,
+      ...sortedColumns.map(([, columnNodeIds]) => (
+        columnNodeIds.length * DIAGRAM_CELL_HEIGHT + Math.max(0, columnNodeIds.length - 1) * DIAGRAM_V_GAP
+      )),
+    );
+    const nodeAreaTop = cursorY + (group.isPhase ? 26 : 0);
+
+    sortedColumns.forEach(([depth, columnNodeIds]) => {
+      const columnHeight = columnNodeIds.length * DIAGRAM_CELL_HEIGHT + Math.max(0, columnNodeIds.length - 1) * DIAGRAM_V_GAP;
+      const columnTop = nodeAreaTop + (maxColumnHeight - columnHeight) / 2;
+      columnNodeIds.forEach((nodeId, index) => {
+        const x = DIAGRAM_PAD + depth * (DIAGRAM_CELL_WIDTH + DIAGRAM_H_GAP);
+        const y = columnTop + index * (DIAGRAM_CELL_HEIGHT + DIAGRAM_V_GAP);
+        nodes.push({
+          id: nodeId,
+          x,
+          y,
+          width: DIAGRAM_CELL_WIDTH,
+          height: DIAGRAM_CELL_HEIGHT,
+          isInitial: nodeId === initialMoveId,
+          phaseId: phaseAssignments.get(nodeId) ?? null,
+        });
+        maxRight = Math.max(maxRight, x + DIAGRAM_CELL_WIDTH + DIAGRAM_PAD);
+      });
+    });
+
+    if (group.isPhase && group.nodeIds.length > 0) {
+      const groupNodes = nodes.filter((node) => groupNodeSet.has(node.id));
+      const minX = Math.min(...groupNodes.map((node) => node.x));
+      const minY = Math.min(...groupNodes.map((node) => node.y));
+      const maxX = Math.max(...groupNodes.map((node) => node.x + node.width));
+      const maxY = Math.max(...groupNodes.map((node) => node.y + node.height));
+      const phase = phaseById.get(group.id);
+      phaseBoxes.push({
+        id: group.id,
+        label: phase ? group.label : group.label,
+        x: minX - 18,
+        y: minY - 28,
+        width: maxX - minX + 36,
+        height: maxY - minY + 44,
+      });
+    }
+
+    cursorY = nodeAreaTop + maxColumnHeight + DIAGRAM_ROW_GAP;
+  });
+
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
+  const edges = transitions.flatMap((transition, index) => {
+    const edge = buildDiagramEdge(transition, nodeById, index);
+    return edge ? [edge] : [];
+  });
+  const phaseConnectors = buildPhaseConnectors(phaseBoxes);
+
+  return {
+    width: Math.max(360, maxRight),
+    height: Math.max(180, cursorY + DIAGRAM_PAD - DIAGRAM_ROW_GAP),
+    nodes,
+    edges,
+    phaseBoxes,
+    phaseConnectors,
+  };
+}
+
+function buildDiagramGroups(
+  nodeIds: string[],
+  phaseAssignments: Map<string, string>,
+  phases: PatternPhase[],
+  initialMoveId: string | null,
+  serviceLocale: ServiceLocale,
+): Array<{ id: string; label: string; nodeIds: string[]; isPhase: boolean }> {
+  if (phases.length <= 1) {
+    return [{ id: "main", label: "", nodeIds, isPhase: false }];
+  }
+
+  const groups = phases.flatMap((phase) => {
+    const assignedNodeIds = nodeIds.filter((nodeId) => phaseAssignments.get(nodeId) === phase.id);
+    if (assignedNodeIds.length === 0) return [];
+    return [{
+      id: phase.id,
+      label: serviceLocale === "ko" ? `페이즈 ${phase.label}` : `Phase ${phase.label}`,
+      nodeIds: assignedNodeIds,
+      isPhase: true,
+    }];
+  });
+  const unassigned = nodeIds.filter((nodeId) => !phaseAssignments.has(nodeId));
+  if (unassigned.length === 0) return groups;
+
+  const unassignedGroup = {
+    id: "unassigned",
+    label: serviceLocale === "ko" ? "조건 전이" : "Conditional",
+    nodeIds: unassigned,
+    isPhase: false,
+  };
+
+  if (initialMoveId && unassigned.includes(initialMoveId)) {
+    return [unassignedGroup, ...groups];
+  }
+  return [...groups, unassignedGroup];
+}
+
+function buildDiagramPhaseAssignments(
+  nodeIds: string[],
+  outgoing: Map<string, string[]>,
+  phases: PatternPhase[],
+): Map<string, string> {
+  const assignments = new Map<string, string>();
+  const phaseByMove = new Map<string, string>();
+  phases.forEach((phase) => {
+    phase.moveIds.forEach((moveId) => phaseByMove.set(moveId, phase.id));
+  });
+  const reachablePhaseCache = new Map<string, Set<string>>();
+
+  const collectReachablePhases = (nodeId: string, seen = new Set<string>()): Set<string> => {
+    if (reachablePhaseCache.has(nodeId)) return new Set(reachablePhaseCache.get(nodeId));
+    if (seen.has(nodeId)) return new Set();
+    seen.add(nodeId);
+
+    const phaseId = phaseByMove.get(nodeId);
+    const reachable = new Set<string>();
+    if (phaseId) reachable.add(phaseId);
+    for (const next of outgoing.get(nodeId) ?? []) {
+      collectReachablePhases(next, new Set(seen)).forEach((reachablePhaseId) => reachable.add(reachablePhaseId));
+    }
+    reachablePhaseCache.set(nodeId, reachable);
+    return new Set(reachable);
+  };
+
+  nodeIds.forEach((nodeId) => {
+    const directPhaseId = phaseByMove.get(nodeId);
+    if (directPhaseId) {
+      assignments.set(nodeId, directPhaseId);
+      return;
+    }
+
+    if (phases.length <= 1) return;
+    const reachablePhases = collectReachablePhases(nodeId);
+    if (reachablePhases.size === 1) {
+      assignments.set(nodeId, Array.from(reachablePhases)[0]);
+    }
+  });
+
+  return assignments;
+}
+
+function buildDiagramDepths(
+  nodeIds: string[],
+  outgoing: Map<string, string[]>,
+  start: string | null,
+): Map<string, number> {
+  const nodeSet = new Set(nodeIds);
+  const depths = new Map<string, number>();
+  const queue: Array<{ nodeId: string; depth: number }> = [];
+  if (start && nodeSet.has(start)) queue.push({ nodeId: start, depth: 0 });
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (!current || depths.has(current.nodeId)) continue;
+    depths.set(current.nodeId, current.depth);
+    for (const next of outgoing.get(current.nodeId) ?? []) {
+      if (nodeSet.has(next) && !depths.has(next)) {
+        queue.push({ nodeId: next, depth: current.depth + 1 });
+      }
+    }
+  }
+
+  let fallbackDepth = depths.size > 0 ? Math.max(...depths.values()) + 1 : 0;
+  nodeIds.forEach((nodeId) => {
+    if (depths.has(nodeId)) return;
+    depths.set(nodeId, fallbackDepth);
+    fallbackDepth += 1;
+  });
+  return depths;
+}
+
+function buildDiagramEdge(
+  transition: TransitionTableRow,
+  nodeById: Map<string, PatternDiagramNode>,
+  index: number,
+): PatternDiagramEdge | null {
+  const from = nodeById.get(transition.from);
+  const to = nodeById.get(transition.to);
+  if (!from || !to) return null;
+
+  const kind = transition.kind === "conditional" ? "conditional" : transition.kind === "start" ? "start" : "fixed";
+  const color = kind === "conditional" ? DIAGRAM_CONDITIONAL_COLOR : kind === "start" ? BESTIARY_START_COLOR : DIAGRAM_ARROW_COLOR;
+  const marker = kind === "conditional" ? "conditional" : kind === "start" ? "start" : "normal";
+  const laneOffset = (index % 5) * 7;
+  const label = getDiagramEdgeLabel(transition);
+  let path: string;
+  let labelX: number;
+  let labelY: number;
+
+  if (from.id === to.id) {
+    const startX = from.x + from.width;
+    const startY = from.y + from.height / 2;
+    const loopX = startX + 34 + laneOffset;
+    const loopY = from.y - 20 - laneOffset;
+    const endX = from.x + from.width * 0.58;
+    const endY = from.y;
+    path = `M ${startX} ${startY} H ${loopX} V ${loopY} H ${endX} V ${endY}`;
+    labelX = loopX;
+    labelY = loopY - 8;
+  } else if (to.x > from.x + from.width / 2) {
+    const startX = from.x + from.width;
+    const startY = from.y + from.height / 2;
+    const endX = to.x;
+    const endY = to.y + to.height / 2;
+    const midX = (startX + endX) / 2 + laneOffset;
+    path = `M ${startX} ${startY} H ${midX} V ${endY} H ${endX}`;
+    labelX = midX;
+    labelY = (startY + endY) / 2;
+  } else if (to.x + to.width < from.x + from.width / 2) {
+    const startX = from.x;
+    const startY = from.y + from.height / 2;
+    const endX = to.x + to.width;
+    const endY = to.y + to.height / 2;
+    const channelX = Math.min(startX, endX) - 38 - laneOffset;
+    path = `M ${startX} ${startY} H ${channelX} V ${endY} H ${endX}`;
+    labelX = channelX;
+    labelY = (startY + endY) / 2;
+  } else {
+    const startX = from.x + from.width;
+    const startY = from.y + from.height / 2;
+    const endX = to.x + to.width;
+    const endY = to.y + to.height / 2;
+    const channelX = Math.max(startX, endX) + 38 + laneOffset;
+    path = `M ${startX} ${startY} H ${channelX} V ${endY} H ${endX}`;
+    labelX = channelX;
+    labelY = (startY + endY) / 2;
+  }
+
+  return {
+    key: transition.key,
+    from: transition.from,
+    to: transition.to,
+    path,
+    color,
+    marker,
+    label,
+    labelX,
+    labelY,
+  };
+}
+
+function buildPhaseConnectors(phaseBoxes: PatternDiagramPhaseBox[]): PatternDiagramPhaseConnector[] {
+  const sortedPhaseBoxes = [...phaseBoxes].sort((a, b) => a.y - b.y);
+  return sortedPhaseBoxes.flatMap((box, index) => {
+    const next = sortedPhaseBoxes[index + 1];
+    if (!next) return [];
+    const fromX = box.x + box.width / 2;
+    const fromY = box.y + box.height;
+    const toX = next.x + next.width / 2;
+    const toY = next.y;
+    const midY = (fromY + toY) / 2;
+    const path = fromX === toX
+      ? `M ${fromX} ${fromY} V ${toY}`
+      : `M ${fromX} ${fromY} V ${midY} H ${toX} V ${toY}`;
+    return [{ key: `${box.id}-${next.id}`, path }];
+  });
+}
+
+function buildOutgoingMap(rows: TransitionTableRow[]): Map<string, string[]> {
+  const outgoing = new Map<string, string[]>();
+  rows.forEach((row) => {
+    if (row.from === "__START__") return;
+    outgoing.set(row.from, [...(outgoing.get(row.from) ?? []), row.to]);
+  });
+  return outgoing;
+}
+
+function getDiagramOrder(nodeId: string, nodeIds: string[], order: Map<string, number>): number {
+  return order.get(nodeId) ?? nodeIds.indexOf(nodeId) + 1000;
+}
+
+function getDiagramEdgeLabel(row: TransitionTableRow): string | null {
+  if (row.condition) return row.condition;
+  if (row.kind === "random") {
+    return row.chance == null ? "?" : formatChancePercent(row.chance);
+  }
+  return null;
+}
+
+function formatChancePercent(chance: number): string {
+  return `${Number.isInteger(chance) ? chance : chance.toFixed(1)}%`;
+}
+
+function isHiddenDiagramMove(moveId: string): boolean {
+  return moveId === "DEAD" || moveId === "SPAWNED" || moveId === "__START__";
+}
+
+function sanitizeSvgId(value: string): string {
+  return value.replace(/[^a-zA-Z0-9_-]/g, "-");
+}
+
+function getMoveIntentKeys(move: MonsterMove | null): string[] {
+  if (!move) return ["unknown"];
+  if (move.intents.length > 0) return move.intents;
+  if (move.actionTypes.length > 0) return move.actionTypes.map((type) => `action:${type}`);
+  return ["unknown"];
+}
+
+function getIntentIconConfig(intent: string): { icon: LucideIcon; color: string; label: string } {
+  const normalized = intent.toLowerCase();
+  if (normalized.includes("multiattack")) return { icon: Swords, color: "#f87171", label: intent };
+  if (normalized.includes("attack")) return { icon: Sword, color: "#f87171", label: intent };
+  if (normalized.includes("defend") || normalized.includes("block") || normalized.includes("shield")) {
+    return { icon: Shield, color: "#60a5fa", label: intent };
+  }
+  if (normalized.includes("debuff")) return { icon: ArrowDown, color: "#fb7185", label: intent };
+  if (normalized.includes("buff")) return { icon: ArrowUp, color: "#22c55e", label: intent };
+  if (normalized.includes("heal")) return { icon: HeartPulse, color: "#34d399", label: intent };
+  if (normalized.includes("status")) return { icon: TriangleAlert, color: "#f59e0b", label: intent };
+  if (normalized.includes("stun")) return { icon: Ban, color: "#a78bfa", label: intent };
+  if (normalized.includes("summon")) return { icon: Sparkles, color: "#c084fc", label: intent };
+  if (normalized.includes("special")) return { icon: Zap, color: "#facc15", label: intent };
+  return { icon: CircleHelp, color: "#a1a1aa", label: intent };
+}
 
 function buildMonsterActionMoves(monster: CodexMonster): MonsterMove[] {
   const byId = new Map<string, MonsterMove>();
@@ -1196,9 +1866,13 @@ function buildTransitionTableRows(monster: CodexMonster): TransitionTableRow[] {
   return rows;
 }
 
+function getMonsterMove(monster: CodexMonster, moveId: string): MonsterMove | null {
+  return [...monster.bestiaryMoves, ...monster.moves].find((move) => move.id === moveId) ?? null;
+}
+
 function getMoveName(monster: CodexMonster, moveId: string): string {
   if (moveId === "__START__") return "Start";
-  const move = [...monster.bestiaryMoves, ...monster.moves].find((m) => m.id === moveId);
+  const move = getMonsterMove(monster, moveId);
   return move?.name ?? moveId.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
