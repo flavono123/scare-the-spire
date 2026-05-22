@@ -39,6 +39,7 @@ Use this when Steam has published the patch but rich notes are not ready yet.
 Index/detail behavior while `status: "building"`:
 
 - The index card is not a link to the local detail page.
+- The index card still shows one muted grayscale thumbnail. If no `art` is present yet, the UI falls back to the default STS2 banner; do not omit the thumbnail area in WIP.
 - Keep the normal type/balance chips, but render them in disabled gray.
 - The only colored action is the Steam original chip; it links to `steamUrl` and opens the real Steam source.
 - The body shows gray per-letter sine text for "작성 중" / "Building"; do not add a separate "작성 중" chip.
