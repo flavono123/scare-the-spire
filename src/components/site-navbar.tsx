@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import {
+  DEFAULT_GAME_LOCALE_BY_SERVICE,
   GAME_LOCALE_NATIVE_LABELS,
   GAME_LOCALE_COOKIE,
   LOCALE_COOKIE_MAX_AGE,
@@ -12,12 +13,15 @@ import {
   getGameLocaleFromSearch,
   getServiceLocaleForGameLocale,
   getServiceLocaleFromPath,
+  isGameLocale,
+  isServiceLocale,
   localizeHrefWithGameLocale,
   switchServiceLocaleHref,
   withGameLocaleSearch,
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { detectGameLocaleFromNavigator } from "@/lib/locale-detection";
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import { characterIconUrl } from "@/lib/user-profile";
@@ -80,6 +84,35 @@ function languageHref(
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const search = withGameLocaleSearch(searchParams, gameLocale, serviceLocale);
   return switchServiceLocaleHref(pathname, serviceLocale, search);
+}
+
+function readCookie(name: string): string | null {
+  const prefix = `${name}=`;
+  const cookie = document.cookie
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(prefix));
+
+  return cookie ? cookie.slice(prefix.length) : null;
+}
+
+function getLocalePreference(): GameLocale | null {
+  const gameLocale = readCookie(GAME_LOCALE_COOKIE);
+  if (gameLocale && isGameLocale(gameLocale)) return gameLocale;
+
+  const serviceLocale = readCookie(SERVICE_LOCALE_COOKIE);
+  if (serviceLocale && isServiceLocale(serviceLocale)) {
+    return DEFAULT_GAME_LOCALE_BY_SERVICE[serviceLocale];
+  }
+
+  return null;
+}
+
+function writeLocalePreferenceCookies(gameLocale: GameLocale) {
+  const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
+  const cookieSuffix = `Max-Age=${LOCALE_COOKIE_MAX_AGE}; Path=/; SameSite=Lax`;
+  document.cookie = `${SERVICE_LOCALE_COOKIE}=${serviceLocale}; ${cookieSuffix}`;
+  document.cookie = `${GAME_LOCALE_COOKIE}=${gameLocale}; ${cookieSuffix}`;
 }
 
 function localizeNavItems<T extends { href: string; labelKey: CodexLabelKey; icon: string }>(
@@ -324,7 +357,10 @@ function LanguageDropdown({
                 prefetch={false}
                 role="menuitem"
                 aria-current={active ? "true" : undefined}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  writeLocalePreferenceCookies(locale);
+                  setOpen(false);
+                }}
                 className={`flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors ${
                   active
                     ? "bg-yellow-500/10 text-yellow-300"
@@ -357,7 +393,10 @@ function LanguageDropdown({
                 prefetch={false}
                 role="menuitem"
                 aria-current={active ? "true" : undefined}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  writeLocalePreferenceCookies(locale);
+                  setOpen(false);
+                }}
                 className={`block px-3 py-2 text-sm transition-colors ${
                   active
                     ? "bg-yellow-500/10 text-yellow-300"
@@ -376,6 +415,31 @@ function LanguageDropdown({
   );
 }
 
+function InitialLocaleDetector() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (getLocalePreference()) return;
+
+    const detectedGameLocale = detectGameLocaleFromNavigator(navigator);
+    const targetHref = languageHref(
+      pathname,
+      new URLSearchParams(searchParams.toString()),
+      detectedGameLocale,
+    );
+    const currentSearch = searchParams.toString();
+    const currentHref = `${pathname}${currentSearch ? `?${currentSearch}` : ""}`;
+
+    if (targetHref !== currentHref) {
+      router.replace(targetHref);
+    }
+  }, [pathname, router, searchParams]);
+
+  return null;
+}
+
 function LocaleCanonicalizer({
   serviceLocale,
   gameLocale,
@@ -388,28 +452,22 @@ function LocaleCanonicalizer({
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const expectedServiceLocale = getServiceLocaleForGameLocale(gameLocale);
-    if (serviceLocale === expectedServiceLocale) return;
+    const savedGameLocale = getLocalePreference();
+    if (!savedGameLocale) return;
+
+    const expectedServiceLocale = getServiceLocaleForGameLocale(savedGameLocale);
+    if (gameLocale === savedGameLocale && serviceLocale === expectedServiceLocale) {
+      return;
+    }
 
     router.replace(
       languageHref(
         pathname,
         new URLSearchParams(searchParams.toString()),
-        gameLocale,
+        savedGameLocale,
       ),
     );
   }, [gameLocale, pathname, router, searchParams, serviceLocale]);
-
-  return null;
-}
-
-function LocaleCookieSync({ gameLocale }: { gameLocale: GameLocale }) {
-  useEffect(() => {
-    const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-    const cookieSuffix = `Max-Age=${LOCALE_COOKIE_MAX_AGE}; Path=/; SameSite=Lax`;
-    document.cookie = `${SERVICE_LOCALE_COOKIE}=${serviceLocale}; ${cookieSuffix}`;
-    document.cookie = `${GAME_LOCALE_COOKIE}=${gameLocale}; ${cookieSuffix}`;
-  }, [gameLocale]);
 
   return null;
 }
@@ -430,8 +488,8 @@ export function SiteNavbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
+      <InitialLocaleDetector />
       <LocaleCanonicalizer serviceLocale={serviceLocale} gameLocale={gameLocale} />
-      <LocaleCookieSync gameLocale={gameLocale} />
       <div className="mx-auto flex h-12 items-center justify-between gap-2 px-2 sm:px-4">
         {/* Left: brand + services */}
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
