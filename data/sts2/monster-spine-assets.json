@@ -1785,7 +1785,21 @@
     ],
     "skin": null,
     "skins": [
-      "default"
+      "default",
+      "normal",
+      "phobia"
+    ],
+    "skinVariants": [
+      {
+        "id": "normal",
+        "label": "normal",
+        "attachmentCount": 4
+      },
+      {
+        "id": "phobia",
+        "label": "phobia",
+        "attachmentCount": 2
+      }
     ],
     "animations": [
       "attack",
@@ -2201,7 +2215,21 @@
     ],
     "skin": null,
     "skins": [
-      "default"
+      "default",
+      "normal",
+      "phobia"
+    ],
+    "skinVariants": [
+      {
+        "id": "normal",
+        "label": "normal",
+        "attachmentCount": 2
+      },
+      {
+        "id": "phobia",
+        "label": "phobia",
+        "attachmentCount": 2
+      }
     ],
     "animations": [
       "attack",
@@ -2371,11 +2399,11 @@
       ],
       "PULSATE": [
         "pulsate",
-        "buff",
         "attack",
         "attack_block",
         "attack_double",
         "_ignore/attack_double_alt",
+        "buff",
         "idle_loop"
       ],
       "hurt": [
@@ -4502,7 +4530,21 @@
     ],
     "skin": null,
     "skins": [
-      "default"
+      "default",
+      "normal",
+      "phobia"
+    ],
+    "skinVariants": [
+      {
+        "id": "normal",
+        "label": "normal",
+        "attachmentCount": 7
+      },
+      {
+        "id": "phobia",
+        "label": "phobia",
+        "attachmentCount": 7
+      }
     ],
     "animations": [
       "attack",
@@ -4519,18 +4561,20 @@
     ],
     "idleAnimation": "idle_loop",
     "moveAnimations": {
-      "SMASH": [
-        "smash",
+      "ZOOM": [
+        "zoom",
         "attack",
         "attack_buff",
         "attack_double",
         "attack_heavy",
         "idle_loop"
       ],
-      "ZOOM": [
-        "zoom",
-        "attack",
+      "ZOOM_MOVE_2": [
+        "zoom_move_2",
+        "zoommove2",
+        "zoom-move-2",
         "attack_buff",
+        "attack",
         "attack_double",
         "attack_heavy",
         "idle_loop"
@@ -5668,7 +5712,21 @@
     ],
     "skin": null,
     "skins": [
-      "default"
+      "default",
+      "normal",
+      "phobia"
+    ],
+    "skinVariants": [
+      {
+        "id": "normal",
+        "label": "normal",
+        "attachmentCount": 34
+      },
+      {
+        "id": "phobia",
+        "label": "phobia",
+        "attachmentCount": 2
+      }
     ],
     "animations": [
       "attack",
@@ -6327,7 +6385,21 @@
     ],
     "skin": null,
     "skins": [
-      "default"
+      "default",
+      "normal",
+      "phobia"
+    ],
+    "skinVariants": [
+      {
+        "id": "normal",
+        "label": "normal",
+        "attachmentCount": 3
+      },
+      {
+        "id": "phobia",
+        "label": "phobia",
+        "attachmentCount": 2
+      }
     ],
     "animations": [
       "attack",
@@ -6766,7 +6838,6 @@
       "heal",
       "hurt",
       "idle_loop",
-      "_ignore/die3",
       "_tracks/buildup1",
       "_tracks/buildup2",
       "_tracks/buildup3"
