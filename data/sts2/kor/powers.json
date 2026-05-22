@@ -2881,9 +2881,7 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/vital_spark_power.png",
-    "vars": {
-      "Energy": 1
-    }
+    "vars": {}
   },
   {
     "id": "VOID_FORM",
