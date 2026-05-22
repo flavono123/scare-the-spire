@@ -67,7 +67,7 @@ Rules:
 - Prefer `art: { "type": "epoch", "id": "REGENT5_EPOCH" }` style references over raw paths when the art maps to a known game concept.
 - Use `image` only for standalone assets such as the default STS2 banner, and include `imageUrl`.
 - Add `alt` and `altKo` when the automatic label would be unclear.
-- For `v0.105.0`, use the Friendship epoch art: `art.type = "epoch"`, `art.id = "REGENT5_EPOCH"`, Korean alt text `역사: 우정`.
+- For `v0.105.0`, use the Friendship epoch art: `art.type = "epoch"`, `art.id = "REGENT5_EPOCH"`, Korean alt text `역사: 친구`.
 - If the best art for an older patch is unclear, ask the user or make an explicit recommendation instead of guessing silently.
 - Keep `featuredEntities` only as a priority-ordered semantic shortlist and fallback source. The current UI no longer renders it as an 8-item thumbnail grid.
 

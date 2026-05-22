@@ -270,7 +270,7 @@
       "type": "epoch",
       "id": "REGENT5_EPOCH",
       "alt": "Friendship epoch art",
-      "altKo": "역사: 우정"
+      "altKo": "역사: 친구"
     },
     "featuredEntities": [
       { "type": "monster", "id": "AEONGLASS" },
