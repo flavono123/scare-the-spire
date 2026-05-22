@@ -351,7 +351,8 @@ const UPGRADE_REMOVED_KEYWORDS: Record<string, string> = {
   remove_ethereal: "휘발성",
 };
 
-const PRE_DESCRIPTION_KEYWORD_ORDER = ["사용불가", "선천성", "휘발성"];
+const PRE_DESCRIPTION_KEYWORD_ORDER = ["사용불가", "선천성", "보존", "교활", "휘발성"];
+const POST_DESCRIPTION_KEYWORD_ORDER = ["소멸", "영구"];
 
 function getUpgradeKeywords(
   upgrade: CodexCard["upgrade"],
@@ -558,7 +559,14 @@ export const CardTile = memo(function CardTile({
     ));
   const postDescriptionKeywords = displayKeywords.filter(
     (kw) => !PRE_DESCRIPTION_KEYWORD_ORDER.includes(keywordLookupKey(kw)),
-  );
+  ).sort((a, b) => {
+    const ai = POST_DESCRIPTION_KEYWORD_ORDER.indexOf(keywordLookupKey(a));
+    const bi = POST_DESCRIPTION_KEYWORD_ORDER.indexOf(keywordLookupKey(b));
+    if (ai === -1 && bi === -1) return 0;
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
   const renderKeyword = (kw: string) => {
     // 인챈트/강화 추가 키워드도 게임에선 일반 키워드와 동일한 골드.
     // 키워드 hover lookup은 첫 단어만 (예: "재사용 1" → "재사용")
@@ -571,7 +579,7 @@ export const CardTile = memo(function CardTile({
         onMouseEnter={() => setHoveredTerm(kw)}
         onMouseLeave={() => setHoveredTerm(null)}
       >
-        {displayText}
+        {displayText}.
         {hoveredTerm === kw && KEYWORD_DESC[lookupKey] && (
           <TermTooltip name={displayText} desc={KEYWORD_DESC[lookupKey]} />
         )}
@@ -676,10 +684,10 @@ export const CardTile = memo(function CardTile({
         <>
           <br />
           {postDescriptionKeywords.map((kw, i) => (
-            <span key={`post-kw-${kw}`}>
-              {i > 0 && <span className="text-gray-500"> · </span>}
+            <Fragment key={`post-kw-${kw}`}>
+              {i > 0 && <br />}
               {renderKeyword(kw)}
-            </span>
+            </Fragment>
           ))}
         </>
       )}
