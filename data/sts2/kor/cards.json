@@ -4487,7 +4487,7 @@
   {
     "id": "DEATH_MARCH",
     "name": "죽음의 행진",
-    "description": "피해를 11 줍니다.\n내 턴 동안 뽑은 카드 1장당 피해량이 3 증가합니다.",
+    "description": "피해를 12 줍니다.\n내 턴 동안 뽑은 카드\n1장당 피해량이\n4 증가합니다.",
     "description_raw": "피해를 {CalculatedDamage:diff()} 줍니다.\n내 턴 동안 뽑은 카드\n1장당 피해량이\n{ExtraDamage:diff()} 증가합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -4509,13 +4509,13 @@
     "spawns_cards": null,
     "vars": {
       "CalculationBase": 8,
-      "ExtraDamage": 3,
-      "CalculatedDamage": 11
+      "ExtraDamage": 4,
+      "CalculatedDamage": 12
     },
     "upgrade": {
       "damage": "+1",
       "calculationbase": "+1",
-      "extradamage": "+1"
+      "extradamage": "+2"
     },
     "image_url": "/static/images/cards/death_march.png",
     "beta_image_url": null
@@ -4600,7 +4600,7 @@
   {
     "id": "DEBILITATE",
     "name": "쇠락",
-    "description": "피해를 7 줍니다.\n다음 3턴 동안 이 적을 대상으로 하는 [gold]취약[/gold]과 [gold]약화[/gold]의 효과가 2배가 됩니다.",
+    "description": "피해를 10 줍니다.\n다음 2턴 동안\n이 적을 대상으로 하는\n[gold]취약[/gold]과 [gold]약화[/gold]의 효과가\n2배가 됩니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n다음 {DebilitatePower:diff()}턴 동안\n이 적을 대상으로 하는\n[gold]취약[/gold]과 [gold]약화[/gold]의 효과가\n2배가 됩니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -4610,7 +4610,7 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "necrobinder",
-    "damage": 7,
+    "damage": 10,
     "block": null,
     "hit_count": null,
     "powers_applied": [
@@ -4627,8 +4627,8 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 10,
-      "DebilitatePower": 3,
-      "Debilitate": 3
+      "DebilitatePower": 2,
+      "Debilitate": 2
     },
     "upgrade": {
       "damage": "+2",
@@ -6589,7 +6589,7 @@
   {
     "id": "FASTEN",
     "name": "고정시키기",
-    "description": "수비 카드를 통해 얻는 [gold]방어도[/gold]가 5 증가합니다.",
+    "description": "수비 카드를 통해 얻는\n[gold]방어도[/gold]가 4 증가합니다.",
     "description_raw": "수비 카드를 통해 얻는\n[gold]방어도[/gold]가 {ExtraBlock:diff()} 증가합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -6612,7 +6612,7 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "ExtraBlock": 5
+      "ExtraBlock": 4
     },
     "upgrade": {
       "extrablock": "+2"
@@ -7365,7 +7365,8 @@
       "damage": "+2"
     },
     "image_url": "/static/images/cards/follow_through.png",
-    "beta_image_url": null
+    "beta_image_url": null,
+    "deprecatedInPatch": "v0.106.0"
   },
   {
     "id": "FOLLY",
@@ -7675,7 +7676,7 @@
   {
     "id": "FURNACE",
     "name": "용광로",
-    "description": "내 턴 시작 시, [gold]단조[/gold] 4.",
+    "description": "내 턴 시작 시, [gold]단조[/gold] 5.",
     "description_raw": "내 턴 시작 시, [gold]단조[/gold] {Forge:diff()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -7696,7 +7697,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Forge": 4
+      "Forge": 5
     },
     "upgrade": {
       "forge": "+2"
@@ -7709,7 +7710,7 @@
     "name": "융합",
     "description": "[gold]플라즈마[/gold]를 1번 [gold]영창[/gold]합니다.",
     "description_raw": "[gold]플라즈마[/gold]를 1번 [gold]영창[/gold]합니다.",
-    "cost": 2,
+    "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -7724,12 +7725,14 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "소멸"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": null,
     "upgrade": {
-      "cost": 1
+      "remove_exhaust": 1
     },
     "image_url": "/static/images/cards/fusion.png",
     "beta_image_url": null
@@ -9283,8 +9286,8 @@
   {
     "id": "HOWL_FROM_BEYOND",
     "name": "저편의 울음소리",
-    "description": "모든 적에게 피해를 16 줍니다.\n내 턴 시작 시, [gold]소멸된 카드 더미[/gold]에서 사용됩니다.",
-    "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n내 턴 시작 시, 이 카드가\n[gold]소멸된 카드 더미[/gold]에 있다면,\n사용합니다.",
+    "description": "모든 적에게\n피해를 16 줍니다.\n내 턴 종료 시, 이 카드가\n[gold]소멸된 카드 더미[/gold]에 있다면,\n사용합니다.",
+    "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n내 턴 종료 시, 이 카드가\n[gold]소멸된 카드 더미[/gold]에 있다면,\n사용합니다.",
     "cost": 3,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -11312,7 +11315,7 @@
   {
     "id": "MINION_SACRIFICE",
     "name": "하수인 희생",
-    "description": "[gold]방어도[/gold]를 9 얻습니다.",
+    "description": "[gold]방어도[/gold]를 8 얻습니다.",
     "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.",
     "cost": 0,
     "is_x_cost": null,
@@ -11323,7 +11326,7 @@
     "target": "Self",
     "color": "token",
     "damage": null,
-    "block": 9,
+    "block": 8,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -11337,7 +11340,7 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Block": 9
+      "Block": 8
     },
     "upgrade": {
       "block": "+3"
@@ -13113,7 +13116,7 @@
   {
     "id": "POUNCE",
     "name": "덮치기",
-    "description": "피해를 12 줍니다.\n다음에 사용하는 스킬 카드의 비용이 0 [energy:1]이 됩니다.",
+    "description": "피해를 14 줍니다.\n다음에 사용하는\n스킬 카드의 비용이\n0 [energy:1]이 됩니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n다음에 사용하는\n스킬 카드의 비용이\n0 {energyPrefix:energyIcons(1)}이 됩니다.",
     "cost": 2,
     "is_x_cost": null,
@@ -13123,7 +13126,7 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "silent",
-    "damage": 12,
+    "damage": 14,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -13134,7 +13137,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 12
+      "Damage": 14
     },
     "upgrade": {
       "damage": "+6"
@@ -13186,7 +13189,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "공격",
-    "rarity": "고급",
+    "rarity": "일반",
     "target": "AnyEnemy",
     "color": "silent",
     "damage": 15,
@@ -14779,6 +14782,43 @@
     "beta_image_url": "/static/images/cards/beta/salvo.png"
   },
   {
+    "id": "SCARE",
+    "name": "위협",
+    "description": "모든 적에게\n[gold]약화[/gold]를 1 부여합니다.",
+    "description_raw": "모든 적에게\n[gold]약화[/gold]를 1 부여합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "스킬",
+    "rarity": "고급",
+    "target": "AllEnemies",
+    "color": "silent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "약화",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "소멸"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": {
+      "remove_exhaust": 1
+    },
+    "image_url": "/static/images/cards/scare.png",
+    "beta_image_url": null
+  },
+  {
     "id": "SCAVENGE",
     "name": "포집",
     "description": "카드를 1장 [gold]소멸[/gold]시킵니다.\n다음 턴에, [energy:2]를 얻습니다.",
@@ -15503,7 +15543,7 @@
   {
     "id": "SHATTER",
     "name": "산산조각",
-    "description": "모든 적에게\n피해를 11 줍니다.\n모든 구체를 2번\n[gold]발현[/gold]합니다.",
+    "description": "모든 적에게\n피해를 7 줍니다.\n모든 구체를 2번\n[gold]발현[/gold]합니다.",
     "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n모든 구체를 2번\n[gold]발현[/gold]합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -15513,7 +15553,7 @@
     "rarity": "희귀",
     "target": "AllEnemies",
     "color": "defect",
-    "damage": 11,
+    "damage": 7,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -15524,7 +15564,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 11
+      "Damage": 7
     },
     "upgrade": {
       "damage": "+4"
@@ -17731,7 +17771,7 @@
   {
     "id": "SYNTHESIS",
     "name": "합성",
-    "description": "피해를 12 줍니다.\n다음에 사용하는 파워 카드의 비용이 0 [energy:1]이 됩니다.",
+    "description": "피해를 14 줍니다.\n다음에 사용하는\n파워 카드의 비용이\n0 [energy:1]이 됩니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n다음에 사용하는\n파워 카드의 비용이\n0 {energyPrefix:energyIcons(1)}이 됩니다.",
     "cost": 2,
     "is_x_cost": null,
@@ -17741,7 +17781,7 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "defect",
-    "damage": 12,
+    "damage": 14,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -17752,7 +17792,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 12
+      "Damage": 14
     },
     "upgrade": {
       "damage": "+6"
@@ -18191,7 +18231,7 @@
       "StarCost": 3
     },
     "upgrade": {
-      "add_innate": 1
+      "cost": 0
     },
     "image_url": "/static/images/cards/the_sealed_throne.png",
     "beta_image_url": "/static/images/cards/beta/the_sealed_throne.png"
@@ -18968,7 +19008,7 @@
   {
     "id": "UNRELENTING",
     "name": "무자비",
-    "description": "피해를 12 줍니다.\n다음에 사용하는 공격 카드의 비용이 0 [energy:1]이 됩니다.",
+    "description": "피해를 14 줍니다.\n다음에 사용하는\n공격 카드의 비용이\n0 [energy:1]이 됩니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n다음에 사용하는\n공격 카드의 비용이\n0 {energyPrefix:energyIcons(1)}이 됩니다.",
     "cost": 2,
     "is_x_cost": null,
@@ -18978,7 +19018,7 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "ironclad",
-    "damage": 12,
+    "damage": 14,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -18989,7 +19029,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 12
+      "Damage": 14
     },
     "upgrade": {
       "damage": "+6"

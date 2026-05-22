@@ -2911,8 +2911,8 @@
   {
     "id": "SCROLL_BOXES",
     "name": "Scroll Boxes",
-    "description": "Upon pickup, lose all [gold]Gold[/gold] and choose [blue]1[/blue] of [blue]2[/blue] packs of cards to add to your [gold]Deck[/gold].",
-    "description_raw": "Upon pickup, lose all [gold]Gold[/gold] and choose [blue]1[/blue] of [blue]2[/blue] packs of cards to add to your [gold]Deck[/gold].",
+    "description": "Upon pickup, choose [blue]1[/blue] of [blue]2[/blue] packs of cards to add to your [gold]Deck[/gold].",
+    "description_raw": "Upon pickup, choose [blue]1[/blue] of [blue]2[/blue] packs of cards to add to your [gold]Deck[/gold].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",
@@ -3014,8 +3014,8 @@
   {
     "id": "SILKEN_TRESS",
     "name": "Silken Tress",
-    "description": "[gold]Enchant[/gold] all cards in the first card reward with [purple]Glam[/purple].",
-    "description_raw": "[gold]Enchant[/gold] all cards in the first card reward with [purple]Glam[/purple].",
+    "description": "Upon pickup, lose all [gold]Gold[/gold]. [gold]Enchant[/gold] all cards in the first card reward with [purple]Glam[/purple].",
+    "description_raw": "Upon pickup, lose all [gold]Gold[/gold]. [gold]Enchant[/gold] all cards in the first card reward with [purple]Glam[/purple].",
     "flavor": "[red]Details for this relic will be revealed in the future...[/red]",
     "rarity": "Ancient Relic",
     "pool": "shared",

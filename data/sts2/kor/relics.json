@@ -2911,8 +2911,8 @@
   {
     "id": "SCROLL_BOXES",
     "name": "두루마리 상자",
-    "description": "획득 시, 모든 [gold]골드[/gold]를 잃고 카드 팩 [blue]2[/blue]개 중 [blue]1[/blue]개를 선택해 [gold]덱[/gold]에 추가합니다.",
-    "description_raw": "획득 시, 모든 [gold]골드[/gold]를 잃고 카드 팩 [blue]2[/blue]개 중 [blue]1[/blue]개를 선택해 [gold]덱[/gold]에 추가합니다.",
+    "description": "획득 시, 카드 팩 [blue]2[/blue]개 중 [blue]1[/blue]개를 선택해 [gold]덱[/gold]에 추가합니다.",
+    "description_raw": "획득 시, 카드 팩 [blue]2[/blue]개 중 [blue]1[/blue]개를 선택해 [gold]덱[/gold]에 추가합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
@@ -3014,8 +3014,8 @@
   {
     "id": "SILKEN_TRESS",
     "name": "부드러운 머리칼",
-    "description": "처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다.",
-    "description_raw": "처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다.",
+    "description": "획득 시, 모든 [gold]골드[/gold]를 잃습니다. 처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다.",
+    "description_raw": "획득 시, 모든 [gold]골드[/gold]를 잃습니다. 처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "고대 유물",
     "pool": "shared",
