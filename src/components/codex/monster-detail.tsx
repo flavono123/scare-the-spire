@@ -121,6 +121,14 @@ interface PatternDiagramPhaseBox {
   height: number;
 }
 
+interface PatternDiagramChoiceBox {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 interface PatternDiagramPhaseConnector {
   key: string;
   path: string;
@@ -132,6 +140,7 @@ interface PatternDiagramModel {
   nodes: PatternDiagramNode[];
   edges: PatternDiagramEdge[];
   phaseBoxes: PatternDiagramPhaseBox[];
+  choiceBoxes: PatternDiagramChoiceBox[];
   phaseConnectors: PatternDiagramPhaseConnector[];
 }
 
@@ -423,6 +432,19 @@ function PatternStateTransitionDiagram({
               <path d="M1,1 L9,5 L1,9 Z" fill={BESTIARY_START_COLOR} />
             </marker>
           </defs>
+          {diagram.choiceBoxes.map((box) => (
+            <rect
+              key={box.id}
+              x={box.x}
+              y={box.y}
+              width={box.width}
+              height={box.height}
+              rx="7"
+              fill="rgba(16, 24, 40, 0.35)"
+              stroke={DIAGRAM_GROUP_COLOR}
+              strokeWidth="2"
+            />
+          ))}
           {diagram.phaseBoxes.map((box) => (
             <g key={box.id}>
               <rect
@@ -559,11 +581,6 @@ function PatternMoveStateNode({
           )}
           {blockEntry && (
             <PatternMetricValue value={blockEntry} tone="block" />
-          )}
-          {!damageEntry && !blockEntry && tokenApplications.length === 0 && (
-            <span className="text-[10px] font-semibold text-gray-500">
-              {serviceLocale === "ko" ? "행동" : "Move"}
-            </span>
           )}
         </span>
         {tokenApplications.length > 0 && (
@@ -1298,6 +1315,7 @@ function buildPatternDiagramModel(
     const edge = buildDiagramEdge(transition, nodeById, index);
     return edge ? [edge] : [];
   });
+  const choiceBoxes = buildChoiceBoxes(transitions, nodeById);
   const phaseConnectors = buildPhaseConnectors(phaseBoxes);
 
   return {
@@ -1306,6 +1324,7 @@ function buildPatternDiagramModel(
     nodes,
     edges,
     phaseBoxes,
+    choiceBoxes,
     phaseConnectors,
   };
 }
@@ -1505,6 +1524,42 @@ function buildPhaseConnectors(phaseBoxes: PatternDiagramPhaseBox[]): PatternDiag
       ? `M ${fromX} ${fromY} V ${toY}`
       : `M ${fromX} ${fromY} V ${midY} H ${toX} V ${toY}`;
     return [{ key: `${box.id}-${next.id}`, path }];
+  });
+}
+
+function buildChoiceBoxes(
+  transitions: TransitionTableRow[],
+  nodeById: Map<string, PatternDiagramNode>,
+): PatternDiagramChoiceBox[] {
+  const bySource = new Map<string, TransitionTableRow[]>();
+  transitions.forEach((transition) => {
+    if (transition.kind !== "random" && transition.kind !== "conditional") return;
+    bySource.set(transition.from, [...(bySource.get(transition.from) ?? []), transition]);
+  });
+
+  return Array.from(bySource.entries()).flatMap(([sourceId, sourceTransitions]) => {
+    const sourceNode = nodeById.get(sourceId);
+    if (!sourceNode || sourceTransitions.length < 2) return [];
+    const targetNodes = Array.from(new Set(sourceTransitions.map((transition) => transition.to)))
+      .map((targetId) => nodeById.get(targetId))
+      .filter((node): node is PatternDiagramNode => Boolean(node));
+    if (targetNodes.length < 2) return [];
+
+    const minTargetX = Math.min(...targetNodes.map((node) => node.x));
+    if (minTargetX <= sourceNode.x + sourceNode.width) return [];
+
+    const minX = Math.min(...targetNodes.map((node) => node.x)) - 16;
+    const minY = Math.min(...targetNodes.map((node) => node.y)) - 16;
+    const maxX = Math.max(...targetNodes.map((node) => node.x + node.width)) + 16;
+    const maxY = Math.max(...targetNodes.map((node) => node.y + node.height)) + 16;
+
+    return [{
+      id: `choice-${sourceId}`,
+      x: minX,
+      y: minY,
+      width: maxX - minX,
+      height: maxY - minY,
+    }];
   });
 }
 
