@@ -1366,5 +1366,541 @@
         "diffType": "text"
       }
     ]
+  },
+  {
+    "id": "drum-of-battle-v106-buff",
+    "entityType": "card",
+    "entityId": "DRUM_OF_BATTLE",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "ironclad",
+    "summary": "Drum of Battle energy gain on Exhaust now respects Replay and card duplication effects.",
+    "summaryKo": "전투의 북소리: 소멸 시 에너지 획득이 이제 재사용 및 카드 복제 효과를 반영합니다.",
+    "diffs": [
+      {
+        "attribute": "effect",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Energy gain triggers once when exhausted.",
+        "after": "Energy gain respects Replay and card duplication effects.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "howl-from-beyond-v106-buff",
+    "entityType": "card",
+    "entityId": "HOWL_FROM_BEYOND",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "ironclad",
+    "summary": "Howl from Beyond trigger moved from start of turn to end of turn.",
+    "summaryKo": "저편의 울음소리: 발동 시점이 턴 시작에서 턴 종료로 이동했습니다.",
+    "diffs": [
+      {
+        "attribute": "trigger",
+        "displayName": "Trigger",
+        "displayNameKo": "발동 시점",
+        "before": "Start of turn",
+        "after": "End of turn",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "entrench-v106-buff",
+    "entityType": "card",
+    "entityId": "ENTRENCH",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "ironclad",
+    "summary": "Entrench can now gain extra Block from enchantments like Nimble.",
+    "summaryKo": "참호: 이제 날렵함 같은 인챈트먼트로 추가 방어도를 얻을 수 있습니다.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block Scaling",
+        "displayNameKo": "방어도 보정",
+        "before": "Did not receive extra Block from enchantments.",
+        "after": "Receives extra Block from enchantments like Nimble.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "unrelenting-v106-buff",
+    "entityType": "card",
+    "entityId": "UNRELENTING",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "ironclad",
+    "summary": "Unrelenting damage increased: 12(18) -> 14(20).",
+    "summaryKo": "무자비 피해량 증가: 12(18) -> 14(20).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "12(18)",
+        "after": "14(20)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "scare-v106-rework",
+    "entityType": "card",
+    "entityId": "SCARE",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "silent",
+    "summary": "Follow Through was reworked and renamed to Scare: now an Uncommon 0-cost Skill that applies 1 Weak to all enemies and loses Exhaust on upgrade.",
+    "summaryKo": "완수가 위협으로 리워크/개명: 이제 고급 0비용 스킬로, 모든 적에게 약화 1을 부여하고 강화 시 소멸을 잃습니다.",
+    "diffs": [
+      {
+        "attribute": "identity",
+        "displayName": "Card",
+        "displayNameKo": "카드",
+        "before": "Follow Through",
+        "after": "Scare",
+        "diffType": "rework"
+      },
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Common",
+        "after": "Uncommon",
+        "diffType": "text"
+      },
+      {
+        "attribute": "effect",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "Deal 7(9) damage; repeat if hand size condition is met.",
+        "after": "Apply 1 Weak to ALL enemies; Exhaust, and loses Exhaust on upgrade.",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "predator-v106-change",
+    "entityType": "card",
+    "entityId": "PREDATOR",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "silent",
+    "summary": "Predator rarity decreased: Uncommon -> Common.",
+    "summaryKo": "천적 희귀도 하락: 고급 -> 일반.",
+    "diffs": [
+      {
+        "attribute": "rarity",
+        "displayName": "Rarity",
+        "displayNameKo": "희귀도",
+        "before": "Uncommon",
+        "after": "Common",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "pounce-v106-buff",
+    "entityType": "card",
+    "entityId": "POUNCE",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "silent",
+    "summary": "Pounce damage increased: 12(18) -> 14(20).",
+    "summaryKo": "덮치기 피해량 증가: 12(18) -> 14(20).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "12(18)",
+        "after": "14(20)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "furnace-v106-buff",
+    "entityType": "card",
+    "entityId": "FURNACE",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "regent",
+    "summary": "Furnace Forge increased: 4(6) -> 5(7).",
+    "summaryKo": "용광로 단조 증가: 4(6) -> 5(7).",
+    "diffs": [
+      {
+        "attribute": "forge",
+        "displayName": "Forge",
+        "displayNameKo": "단조",
+        "before": "4(6)",
+        "after": "5(7)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "minion-sacrifice-v106-nerf",
+    "entityType": "card",
+    "entityId": "MINION_SACRIFICE",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "regent",
+    "summary": "Minion Sacrifice Block decreased: 9(12) -> 8(11).",
+    "summaryKo": "하수인 희생 방어도 감소: 9(12) -> 8(11).",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "9(12)",
+        "after": "8(11)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "sealed-throne-v106-change",
+    "entityType": "card",
+    "entityId": "THE_SEALED_THRONE",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "regent",
+    "summary": "The Sealed Throne upgrade changed from Innate to lowering Energy cost by 1.",
+    "summaryKo": "봉인된 왕좌 강화가 선천성 부여에서 비용 1 감소로 변경되었습니다.",
+    "diffs": [
+      {
+        "attribute": "upgrade",
+        "displayName": "Upgrade",
+        "displayNameKo": "강화",
+        "before": "Innate",
+        "after": "Cost reduced by 1",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "death-march-v106-buff",
+    "entityType": "card",
+    "entityId": "DEATH_MARCH",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "necrobinder",
+    "summary": "Death March additional damage increased: 3(4) -> 4(6).",
+    "summaryKo": "죽음의 행진 추가 피해 증가: 3(4) -> 4(6).",
+    "diffs": [
+      {
+        "attribute": "additionalDamage",
+        "displayName": "Additional Damage",
+        "displayNameKo": "추가 피해",
+        "before": "3(4)",
+        "after": "4(6)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "debilitate-v106-nerf",
+    "entityType": "card",
+    "entityId": "DEBILITATE",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "necrobinder",
+    "summary": "Debilitate duration decreased: 3(4) turns -> 2(3) turns.",
+    "summaryKo": "쇠락 지속 턴 감소: 3(4)턴 -> 2(3)턴.",
+    "diffs": [
+      {
+        "attribute": "duration",
+        "displayName": "Duration",
+        "displayNameKo": "지속 턴",
+        "before": "3(4) turns",
+        "after": "2(3) turns",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "fusion-v106-change",
+    "entityType": "card",
+    "entityId": "FUSION",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "defect",
+    "summary": "Fusion cost decreased to 1, now Exhausts, and loses Exhaust on upgrade.",
+    "summaryKo": "융합 비용이 1로 감소했지만 이제 소멸하며, 강화 시 소멸을 잃습니다.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": "2(1)",
+        "after": "1",
+        "diffType": "text"
+      },
+      {
+        "attribute": "keyword",
+        "displayName": "Keyword",
+        "displayNameKo": "키워드",
+        "before": "No Exhaust",
+        "after": "Exhaust; upgrade removes Exhaust",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "synthesis-v106-buff",
+    "entityType": "card",
+    "entityId": "SYNTHESIS",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "defect",
+    "summary": "Synthesis damage increased: 12(18) -> 14(20).",
+    "summaryKo": "합성 피해량 증가: 12(18) -> 14(20).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "12(18)",
+        "after": "14(20)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "shatter-v106-nerf",
+    "entityType": "card",
+    "entityId": "SHATTER",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "defect",
+    "summary": "Shatter damage decreased: 11(15) -> 7(11).",
+    "summaryKo": "산산조각 피해량 감소: 11(15) -> 7(11).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "11(15)",
+        "after": "7(11)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "fasten-v106-nerf",
+    "entityType": "card",
+    "entityId": "FASTEN",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "colorless",
+    "summary": "Fasten additional Block decreased: 5(7) -> 4(6).",
+    "summaryKo": "고정시키기 추가 방어도 감소: 5(7) -> 4(6).",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Additional Block",
+        "displayNameKo": "추가 방어도",
+        "before": "5(7)",
+        "after": "4(6)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "scroll-boxes-v106-change",
+    "entityType": "relic",
+    "entityId": "SCROLL_BOXES",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": null,
+    "summary": "Scroll Boxes no longer has the lose-all-Gold downside after the Neow relic downside/pool swap.",
+    "summaryKo": "두루마리 상자는 니오우 유물 단점/풀 교환 이후 모든 골드를 잃는 단점이 제거되었습니다.",
+    "diffs": [
+      {
+        "attribute": "downside",
+        "displayName": "Downside",
+        "displayNameKo": "단점",
+        "before": "Lose all Gold.",
+        "after": "No lose-all-Gold downside.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "silken-tress-v106-nerf",
+    "entityType": "relic",
+    "entityId": "SILKEN_TRESS",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": null,
+    "summary": "Silken Tress now has the lose-all-Gold downside after the Neow relic downside/pool swap.",
+    "summaryKo": "부드러운 머리칼은 니오우 유물 단점/풀 교환 이후 모든 골드를 잃는 단점을 갖습니다.",
+    "diffs": [
+      {
+        "attribute": "downside",
+        "displayName": "Downside",
+        "displayNameKo": "단점",
+        "before": "No lose-all-Gold downside.",
+        "after": "Lose all Gold.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "mummified-hand-v106-buff",
+    "entityType": "relic",
+    "entityId": "MUMMIFIED_HAND",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": null,
+    "summary": "Mummified Hand now prioritizes paid cards in a way more favorable to the player.",
+    "summaryKo": "미라의 손이 이제 플레이어에게 더 유리하게 유료 카드를 우선 선택합니다.",
+    "diffs": [
+      {
+        "attribute": "targeting",
+        "displayName": "Card Selection",
+        "displayNameKo": "카드 선택",
+        "before": "Random card in hand.",
+        "after": "Prioritizes cards that currently or normally cost 1+ before falling back to random.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "infested-prism-v106-rework",
+    "entityType": "enemy",
+    "entityId": "INFESTED_PRISM",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": null,
+    "summary": "Infested Prism was reworked.",
+    "summaryKo": "감염된 프리즘이 리워크되었습니다.",
+    "diffs": [
+      {
+        "attribute": "moveset",
+        "displayName": "Moveset",
+        "displayNameKo": "행동 패턴",
+        "before": "Previous Infested Prism behavior",
+        "after": "Reworked behavior",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "aeonglass-v106-change",
+    "entityType": "monster",
+    "entityId": "AEONGLASS",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": null,
+    "summary": "Aeonglass moveset adjusted, with Wither status and Withering Presence power reworked.",
+    "summaryKo": "영겁의 모래시계 행동 패턴이 조정되고 침체 상태이상 및 쇠락하는 존재감 파워가 리워크되었습니다.",
+    "diffs": [
+      {
+        "attribute": "moveset",
+        "displayName": "Moveset",
+        "displayNameKo": "행동 패턴",
+        "before": "Previous moveset",
+        "after": "Adjusted moveset",
+        "diffType": "text"
+      },
+      {
+        "attribute": "wither",
+        "displayName": "Wither",
+        "displayNameKo": "침체",
+        "before": "Previous Wither/Withering Presence behavior",
+        "after": "Reworked Wither status and Withering Presence power",
+        "diffType": "rework"
+      }
+    ]
+  },
+  {
+    "id": "haunted-ship-v106-change",
+    "entityType": "enemy",
+    "entityId": "HAUNTED_SHIP",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": null,
+    "summary": "Haunted Ship lost Ramming Speed and now alternates Swipe and Stomp after Haunt.",
+    "summaryKo": "유령선은 전속력 행동이 제거되고, 출몰 이후 밀쳐내기와 짓밟기를 번갈아 사용합니다.",
+    "diffs": [
+      {
+        "attribute": "moveset",
+        "displayName": "Moveset",
+        "displayNameKo": "행동 패턴",
+        "before": "Ramming Speed included.",
+        "after": "Ramming Speed removed; alternates Swipe and Stomp.",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "punch-construct-v106-change",
+    "entityType": "enemy",
+    "entityId": "PUNCH_CONSTRUCT",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": null,
+    "summary": "Punch Construct move flow changed and now applies Frail instead of Weak.",
+    "summaryKo": "주먹 구조물 행동 흐름이 바뀌고, 이제 약화 대신 허약을 부여합니다.",
+    "diffs": [
+      {
+        "attribute": "moveset",
+        "displayName": "Moveset",
+        "displayNameKo": "행동 패턴",
+        "before": "Strong Punch led into Fast Punch.",
+        "after": "Fast Punch leads into Strong Punch; Ready leads into Fast Punch.",
+        "diffType": "text"
+      },
+      {
+        "attribute": "debuff",
+        "displayName": "Debuff",
+        "displayNameKo": "디버프",
+        "before": "Weak",
+        "after": "Frail",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
+    "id": "skulking-colony-v106-change",
+    "entityType": "enemy",
+    "entityId": "SKULKING_COLONY",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": null,
+    "summary": "Skulking Colony HP and Hardened Shell increased, Smash removed, and it no longer gains Block.",
+    "summaryKo": "잠행 군체 HP와 단단한 껍질 수치가 증가했고, 강타가 제거되었으며 더 이상 방어도를 얻지 않습니다.",
+    "diffs": [
+      {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "HP",
+        "before": "70(75)",
+        "after": "75(80)",
+        "diffType": "text"
+      },
+      {
+        "attribute": "hardenedShell",
+        "displayName": "Hardened Shell",
+        "displayNameKo": "단단한 껍질",
+        "before": "15",
+        "after": "20",
+        "diffType": "text"
+      },
+      {
+        "attribute": "moveset",
+        "displayName": "Moveset",
+        "displayNameKo": "행동 패턴",
+        "before": "Smash included; gains Block.",
+        "after": "Uses Zoom on turns 1 and 2; no longer gains Block.",
+        "diffType": "text"
+      }
+    ]
   }
 ]
