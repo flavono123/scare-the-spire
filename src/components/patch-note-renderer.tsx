@@ -56,6 +56,7 @@ type RenderContext = {
   gameKeywordLabels?: Record<string, string>;
   gameHeadingLabels?: Record<string, string>;
   forceShowEntityPreviews?: boolean;
+  onEntityPreview?: (entity: EntityInfo) => void;
 };
 
 // --- Entity Preview (hover card image) ---
@@ -168,7 +169,6 @@ export function EntityPreview({
   entity,
   children,
   forceShow,
-  forceShowInline,
   forcePosition,
   linkClassName,
   gameUi,
@@ -179,7 +179,6 @@ export function EntityPreview({
   entity: EntityInfo;
   children: ReactNode;
   forceShow?: boolean;
-  forceShowInline?: boolean;
   forcePosition?: "above" | "below";
   /** Override the link's CSS classes — used when embedded inside an already-colored span (e.g. [purple]…[/purple] in a description). */
   linkClassName?: string;
@@ -197,8 +196,8 @@ export function EntityPreview({
   });
   const ref = useRef<HTMLSpanElement>(null);
   const isCoarsePointer = useCoarsePointer();
-  const useTapPreview = isCoarsePointer && !forceShow && !forceShowInline;
-  const visible = show || forceShow || forceShowInline;
+  const useTapPreview = isCoarsePointer && !forceShow;
+  const visible = show || forceShow;
 
   const handleMouseEnter = useCallback(() => {
     if (ref.current) {
@@ -207,11 +206,6 @@ export function EntityPreview({
     }
     setShow(true);
   }, [entity, forcePosition]);
-
-  useEffect(() => {
-    if (!forceShowInline || !ref.current) return;
-    setPlacement(getPreviewPlacement(ref.current.getBoundingClientRect(), entity, forcePosition));
-  }, [entity, forcePosition, forceShowInline]);
 
   const hrefMap: Partial<Record<EntityType, string>> = {
     card: `/compendium/cards?card=${entity.id.toLowerCase()}`,
@@ -667,6 +661,60 @@ function extractPlainText(nodes: TextNode[]): string {
   return result;
 }
 
+function entityPreviewKey(entity: EntityInfo): string {
+  return `${entity.type}:${entity.id}`;
+}
+
+function noteEntityPreview(entity: EntityInfo, context: RenderContext) {
+  if (context.forceShowEntityPreviews) context.onEntityPreview?.(entity);
+}
+
+function linePreviewContext(context: RenderContext, entities: EntityInfo[]): RenderContext {
+  if (!context.forceShowEntityPreviews) return context;
+
+  const seen = new Set<string>();
+  return {
+    ...context,
+    onEntityPreview: (entity) => {
+      const key = entityPreviewKey(entity);
+      if (!seen.has(key)) {
+        seen.add(key);
+        entities.push(entity);
+      }
+      context.onEntityPreview?.(entity);
+    },
+  };
+}
+
+function ExpandedEntityPreviews({
+  entities,
+  context,
+}: {
+  entities: EntityInfo[];
+  context: RenderContext;
+}) {
+  if (entities.length === 0) return null;
+
+  return (
+    <span className="mt-2 flex flex-wrap gap-2">
+      {entities.map((entity) => (
+        <EntityPreview
+          key={entityPreviewKey(entity)}
+          entity={entity}
+          forceShow
+          forcePosition="below"
+          gameUi={context.gameUi}
+          serviceLocale={context.serviceLocale}
+          gameLocale={context.gameLocale}
+          preferEntityLocaleLabel={context.preferEntityLocaleLabel}
+        >
+          {entity.nameKo}
+        </EntityPreview>
+      ))}
+    </span>
+  );
+}
+
 // --- Render BBCode nodes with entity matching ---
 
 function renderBBNodes(
@@ -700,8 +748,9 @@ function renderBBNodes(
         const entity = findEntity(plainText, lookup, node.param);
 
         if (entity) {
+          noteEntityPreview(entity, context);
           return (
-            <EntityPreview key={key} entity={entity} forceShowInline={context.forceShowEntityPreviews} {...context}>
+            <EntityPreview key={key} entity={entity} {...context}>
               {plainText}
             </EntityPreview>
           );
@@ -755,8 +804,9 @@ function renderSineBBNodes(
         const entity = findEntity(plainText, lookup, node.param);
 
         if (entity) {
+          noteEntityPreview(entity, context);
           return (
-            <EntityPreview key={key} entity={entity} forceShowInline={context.forceShowEntityPreviews} {...context}>
+            <EntityPreview key={key} entity={entity} {...context}>
               {renderSineText(plainText, key, offset)}
             </EntityPreview>
           );
@@ -818,8 +868,9 @@ function renderMarkdownBold(
 
       const entity = findEntity(name, lookup);
       if (entity) {
+        noteEntityPreview(entity, context);
         enriched.push(
-          <EntityPreview key={`${keyPrefix}-b${idx}-${j}`} entity={entity} forceShowInline={context.forceShowEntityPreviews} {...context}>
+          <EntityPreview key={`${keyPrefix}-b${idx}-${j}`} entity={entity} {...context}>
             {name}
           </EntityPreview>,
         );
@@ -869,36 +920,47 @@ function renderLine(
   context: RenderContext,
 ): ReactNode {
   const trimmed = line.trimStart();
+  const expandedEntities: EntityInfo[] = [];
+  const lineContext = linePreviewContext(context, expandedEntities);
+  const expandedPreviews = (
+    <ExpandedEntityPreviews entities={expandedEntities} context={context} />
+  );
 
   // Skip HTML comments (<!-- TODO: ... -->)
   if (trimmed.startsWith("<!--")) return null;
 
   // Heading levels (check longer prefixes first)
   if (trimmed.startsWith("#### ")) {
-    const heading = gameHeadingLabel(trimmed.slice(5), context);
+    const heading = gameHeadingLabel(trimmed.slice(5), lineContext);
     return (
-      <h4 key={key} className="font-game-title text-sm font-semibold mt-4 mb-1 text-yellow-600">
-        {enrichLine(heading, lookup, key, context)}
-      </h4>
+      <div key={key}>
+        <h4 className="font-game-title text-sm font-semibold mt-4 mb-1 text-yellow-600">
+          {enrichLine(heading, lookup, key, lineContext)}
+        </h4>
+        {expandedPreviews}
+      </div>
     );
   }
   if (trimmed.startsWith("### ")) {
-    const heading = gameHeadingLabel(trimmed.slice(4), context);
+    const heading = gameHeadingLabel(trimmed.slice(4), lineContext);
     return (
-      <h3 key={key} className="font-game-title text-base font-semibold mt-6 mb-2 text-yellow-500">
-        {enrichLine(heading, lookup, key, context)}
-      </h3>
+      <div key={key}>
+        <h3 className="font-game-title text-base font-semibold mt-6 mb-2 text-yellow-500">
+          {enrichLine(heading, lookup, key, lineContext)}
+        </h3>
+        {expandedPreviews}
+      </div>
     );
   }
   if (trimmed.startsWith("## ")) {
-    const heading = gameHeadingLabel(trimmed.slice(3), context);
+    const heading = gameHeadingLabel(trimmed.slice(3), lineContext);
     return (
-      <h2
-        key={key}
-        className="font-game-title text-lg font-bold mt-8 mb-3 text-yellow-400 border-b border-border pb-1"
-      >
-        {enrichLine(heading, lookup, key, context)}
-      </h2>
+      <div key={key}>
+        <h2 className="font-game-title text-lg font-bold mt-8 mb-3 text-yellow-400 border-b border-border pb-1">
+          {enrichLine(heading, lookup, key, lineContext)}
+        </h2>
+        {expandedPreviews}
+      </div>
     );
   }
   if (trimmed.startsWith("# ")) {
@@ -919,7 +981,8 @@ function renderLine(
         className={`text-sm ${bulletClass} mb-1 list-outside`}
         style={{ marginLeft: `${1 + indentLevel * 1.25}rem` }}
       >
-        {enrichLine(bulletMatch[2], lookup, key, context)}
+        {enrichLine(bulletMatch[2], lookup, key, lineContext)}
+        {expandedPreviews}
       </li>
     );
   }
@@ -930,9 +993,19 @@ function renderLine(
   }
 
   // Regular paragraph
+  const paragraphContent = enrichLine(trimmed, lookup, key, lineContext);
+  if (expandedEntities.length > 0) {
+    return (
+      <div key={key} className="mb-1 text-sm text-muted-foreground">
+        <p>{paragraphContent}</p>
+        {expandedPreviews}
+      </div>
+    );
+  }
+
   return (
     <p key={key} className="text-sm text-muted-foreground mb-1">
-      {enrichLine(trimmed, lookup, key, context)}
+      {paragraphContent}
     </p>
   );
 }
