@@ -24,48 +24,24 @@ export function useEngagementCounts({ enabled = true }: { enabled?: boolean } = 
 
     let cancelled = false;
 
-    // Try server-side RPC first (migration-003), fall back to client-side scan
+    // Keep aggregation server-side. A client-side full-table scan is too
+    // expensive when Supabase is already under Disk IO pressure.
     withSupabaseTimeout(
       "engagement_counts.rpc",
       supabase.rpc("get_engagement_counts", { p_env: supabaseEnv }),
     )
       .then(({ data, error }) => {
-        if (!error && data) {
-          const likes: Record<string, number> = {};
-          const comments: Record<string, number> = {};
-          for (const row of data as { story_id: string; like_count: number; comment_count: number }[]) {
-            if (row.like_count) likes[row.story_id] = row.like_count;
-            if (row.comment_count) comments[row.story_id] = row.comment_count;
-          }
-          if (cancelled) return;
-          setCounts({ likes, comments, unavailable: false });
-          setLoaded(true);
-          return;
+        if (error) throw error;
+        const likes: Record<string, number> = {};
+        const comments: Record<string, number> = {};
+        const rows = (data ?? []) as { story_id: string; like_count: number; comment_count: number }[];
+        for (const row of rows) {
+          if (row.like_count) likes[row.story_id] = row.like_count;
+          if (row.comment_count) comments[row.story_id] = row.comment_count;
         }
-
-        // Fallback: client-side scan (before migration-003 is applied)
-        withSupabaseTimeout(
-          "engagement_counts.fallback",
-          Promise.all([
-            supabase.from("likes").select("story_id").eq("env", supabaseEnv),
-            supabase.from("comments").select("story_id").eq("env", supabaseEnv),
-          ]),
-        ).then(([likesRes, commentsRes]) => {
-          if (likesRes.error || commentsRes.error) {
-            throw likesRes.error ?? commentsRes.error;
-          }
-          const likes: Record<string, number> = {};
-          for (const row of likesRes.data ?? []) {
-            likes[row.story_id] = (likes[row.story_id] ?? 0) + 1;
-          }
-          const comments: Record<string, number> = {};
-          for (const row of commentsRes.data ?? []) {
-            comments[row.story_id] = (comments[row.story_id] ?? 0) + 1;
-          }
-          if (cancelled) return;
-          setCounts({ likes, comments, unavailable: false });
-          setLoaded(true);
-        });
+        if (cancelled) return;
+        setCounts({ likes, comments, unavailable: false });
+        setLoaded(true);
       })
       .catch(() => {
         if (cancelled) return;
