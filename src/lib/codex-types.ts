@@ -54,6 +54,7 @@ export interface CodexCard {
   tags: string[];
   appliedPowerIds: string[]; // Canonical power ids applied or granted by this card
   upgrade: Record<string, string | number> | null;
+  maxUpgradeLevel: number;
   imageUrl: string | null; // local path
   betaImageUrl: string | null; // local path
   madScienceLabels?: {

@@ -6,6 +6,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import { CodexCard } from "@/lib/codex-types";
 import {
+  getCardMaxUpgradeLevel,
   hasCardUpgrade,
   parseDescription,
   renderCardDescription,
@@ -397,6 +398,7 @@ interface CardTileProps {
   card: CodexCard;
   serviceLocale?: ServiceLocale;
   showUpgrade: boolean;
+  upgradeLevel?: number;
   showBeta: boolean;
   /** 고정 픽셀 폭. 게임처럼 반응형 X. 미지정 시 size="grid" 기본. */
   width?: number;
@@ -433,6 +435,7 @@ export const CardTile = memo(function CardTile({
   card,
   serviceLocale = "ko",
   showUpgrade,
+  upgradeLevel,
   showBeta,
   width,
   size = "grid",
@@ -462,12 +465,23 @@ export const CardTile = memo(function CardTile({
   else if (card.imageUrl) imageSrc = card.imageUrl;
   else if (card.betaImageUrl) imageSrc = card.betaImageUrl;
 
+  const requestedUpgradeLevel = Math.max(
+    0,
+    Math.floor(upgradeLevel ?? (showUpgrade ? 1 : 0)),
+  );
+  const effectiveUpgradeLevel = hasCardUpgrade(card) ? requestedUpgradeLevel : 0;
+  const isUpgraded = effectiveUpgradeLevel > 0;
+  const maxUpgradeLevel = getCardMaxUpgradeLevel(card);
+  const titleUpgradeSuffix = isUpgraded
+    ? maxUpgradeLevel > 1 ? `+${effectiveUpgradeLevel}` : "+"
+    : "";
+
   let costDisplay = "";
   if (forcedCost !== undefined && forcedCost !== null) {
     costDisplay = String(forcedCost);
   } else if (card.isXCost) costDisplay = "X";
   else if (card.cost >= 0) {
-    costDisplay = showUpgrade && hasCardUpgrade(card) && card.upgrade?.cost !== undefined
+    costDisplay = isUpgraded && card.upgrade?.cost !== undefined
       ? String(card.upgrade.cost) : String(card.cost);
   }
 
@@ -479,7 +493,6 @@ export const CardTile = memo(function CardTile({
   const bannerHsv = RARITY_BANNER_HSV[card.rarity] ?? RARITY_BANNER_HSV["일반"];
   const bannerFilter = hsvToFilter(bannerHsv);
 
-  const isUpgraded = showUpgrade && hasCardUpgrade(card);
   const titleOutline = isUpgraded
     ? TITLE_UPGRADED_OUTLINE
     : (TITLE_OUTLINE_COLOR[card.rarity] ?? TITLE_OUTLINE_COLOR["일반"]);
@@ -503,7 +516,7 @@ export const CardTile = memo(function CardTile({
   );
   const descText = isUpgraded || hasEnchantStat
     ? renderCardDescription(card, {
-        upgrade: isUpgraded,
+        upgradeLevel: effectiveUpgradeLevel,
         enchantMod: hasEnchantStat ? enchantStatMod : null,
       })
     : card.description;
@@ -956,7 +969,7 @@ export const CardTile = memo(function CardTile({
                 ...(titleStroke as CSSProperties),
               }}
             >
-              {card.name}{isUpgraded && "+"}
+              {card.name}{titleUpgradeSuffix}
             </span>
           </div>
 
@@ -1108,7 +1121,7 @@ export const CardTile = memo(function CardTile({
               ...(titleStroke as CSSProperties),
             }}
           >
-            {card.name}{isUpgraded && "+"}
+            {card.name}{titleUpgradeSuffix}
           </span>
         </div>
 

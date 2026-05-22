@@ -109,6 +109,7 @@ interface RawCard {
   keywords: string[] | null;
   tags: string[] | null;
   upgrade: Record<string, string | number> | null;
+  max_upgrade_level?: number | null;
   image_url: string | null;
   beta_image_url: string | null;
   deprecated?: boolean;
@@ -349,6 +350,7 @@ function mapCard(
     tags: kor.tags ?? [],
     appliedPowerIds: getAppliedPowerIds(eng),
     upgrade: kor.upgrade,
+    maxUpgradeLevel: kor.max_upgrade_level ?? (kor.upgrade ? 1 : 0),
     imageUrl: codexCardImageUrl(kor),
     betaImageUrl: spireCodexImageToLocal(kor.beta_image_url),
   };

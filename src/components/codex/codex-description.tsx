@@ -90,6 +90,7 @@ export interface EnchantVarMod {
 
 interface RenderCardOptions {
   upgrade?: boolean;
+  upgradeLevel?: number;
   enchantMod?: EnchantVarMod | null;
 }
 
@@ -188,6 +189,13 @@ export function hasCardUpgrade(
   return card.upgrade != null || /\{IfUpgraded:show:/.test(card.descriptionRaw ?? "");
 }
 
+export function getCardMaxUpgradeLevel(
+  card: Pick<CodexCard, "upgrade" | "descriptionRaw" | "maxUpgradeLevel">,
+): number {
+  if (!hasCardUpgrade(card)) return 0;
+  return Math.max(1, Math.floor(card.maxUpgradeLevel || 1));
+}
+
 export function renderCardDescription(
   card: CodexCard,
   options: RenderCardOptions = {},
@@ -195,14 +203,18 @@ export function renderCardDescription(
   const raw = card.descriptionRaw;
   if (!raw) return card.description;
 
+  const upgradeLevel = Math.max(
+    0,
+    Math.floor(options.upgradeLevel ?? (options.upgrade ? 1 : 0)),
+  );
   const finalVars: Record<string, number> = { ...card.vars };
   const upgradeChanged = new Set<string>();
   const enchantChanged = new Set<string>();
 
-  if (options.upgrade && card.upgrade) {
+  if (upgradeLevel > 0 && card.upgrade) {
     for (const [key, diff] of Object.entries(card.upgrade)) {
       if (typeof diff === "string" && /^[+-]\d+/.test(diff)) {
-        const delta = parseInt(diff, 10);
+        const delta = parseInt(diff, 10) * upgradeLevel;
         const varKey = findVarKey(finalVars, key);
         if (varKey && delta !== 0) {
           finalVars[varKey] = (finalVars[varKey] ?? 0) + delta;
@@ -233,7 +245,7 @@ export function renderCardDescription(
 
   const varsForTemplate: Record<string, number | string> = {
     ...finalVars,
-    IfUpgraded: options.upgrade ? 1 : 0,
+    IfUpgraded: upgradeLevel > 0 ? 1 : 0,
   };
   const coloredRaw = raw.replace(/\{(\w+)(?::diff\(\))?\}/g, (match, varName: string) => {
     const key = findVarKey(finalVars, varName);
@@ -246,7 +258,7 @@ export function renderCardDescription(
   });
 
   return bakeDescription(
-    options.upgrade ? colorUpgradeOnlyBranches(coloredRaw) : coloredRaw,
+    upgradeLevel > 0 ? colorUpgradeOnlyBranches(coloredRaw) : coloredRaw,
     varsForTemplate,
   );
 }

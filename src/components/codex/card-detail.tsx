@@ -23,7 +23,7 @@ import {
   getCharacterColor,
 } from "@/lib/codex-types";
 import { CardTile } from "./card-tile";
-import { DescriptionText, hasCardUpgrade } from "./codex-description";
+import { DescriptionText, getCardMaxUpgradeLevel, hasCardUpgrade } from "./codex-description";
 import { GameChoiceFrame } from "./event-choice-frame";
 import { GameCheckboxToggle } from "./game-checkbox";
 import { HoverTip, HoverTipVariant } from "./hover-tip";
@@ -228,7 +228,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   const detailLabels = getCardDetailLabels(serviceLocale);
   const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
   const threadKey = buildCodexCommentThreadKey("card", card.id);
-  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [upgradeLevel, setUpgradeLevel] = useState(0);
   const [showBeta, setShowBeta] = useState(false);
   const [activeEnchantId, setActiveEnchantId] = useState<string | null>(null);
   const [hoveredEnchantId, setHoveredEnchantId] = useState<string | null>(null);
@@ -276,6 +276,12 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
 
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
   const canShowUpgrade = hasCardUpgrade(previewCard);
+  const maxUpgradeLevel = getCardMaxUpgradeLevel(previewCard);
+  const previewUpgradeLevels = Array.from(
+    { length: Math.min(maxUpgradeLevel, 3) },
+    (_, index) => index + 1,
+  );
+  const showUpgrade = canShowUpgrade && upgradeLevel > 0;
   const relatedEventIds = [
     ...getRelatedEventIdsForCard(card.id),
     ...(isMadScience ? [TINKER_TIME_EVENT_ID] : []),
@@ -548,6 +554,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
             card={previewCard}
             serviceLocale={serviceLocale}
             showUpgrade={showUpgrade}
+            upgradeLevel={upgradeLevel}
             showBeta={showBeta}
             width={cardWidth}
             enchantmentImageUrl={activeEnchant?.imageUrl ?? null}
@@ -621,13 +628,31 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           {/* 강화 / 베타 토글 — 카드 바로 아래 */}
           {(canShowUpgrade || card.betaImageUrl) && (
             <div className="flex flex-wrap items-center justify-center gap-2">
-              {canShowUpgrade && (
+              {canShowUpgrade && maxUpgradeLevel <= 1 && (
                 <GameCheckboxToggle
                   checked={showUpgrade}
-                  onCheckedChange={setShowUpgrade}
+                  onCheckedChange={(checked) => setUpgradeLevel(checked ? 1 : 0)}
                   label={gameUi.cardLibrary.viewUpgrades}
                   size="md"
                 />
+              )}
+              {canShowUpgrade && maxUpgradeLevel > 1 && (
+                <div className="flex items-center overflow-hidden rounded-md border border-white/10 bg-black/30 p-0.5 font-game-text text-xs font-bold">
+                  {[0, ...previewUpgradeLevels].map((level) => (
+                    <button
+                      key={level}
+                      type="button"
+                      onClick={() => setUpgradeLevel(level)}
+                      className={`min-w-10 rounded px-2.5 py-1 transition-colors ${
+                        upgradeLevel === level
+                          ? "bg-green-500/25 text-green-300"
+                          : "text-zinc-400 hover:bg-white/10 hover:text-zinc-100"
+                      }`}
+                    >
+                      {level === 0 ? (serviceLocale === "ko" ? "기본" : "Base") : `+${level}`}
+                    </button>
+                  ))}
+                </div>
               )}
               {card.betaImageUrl && (
                 <GameCheckboxToggle
