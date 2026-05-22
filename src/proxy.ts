@@ -5,7 +5,6 @@ import {
   LOCALE_COOKIE_MAX_AGE,
   SERVICE_LOCALE_COOKIE,
   getServiceLocaleForGameLocale,
-  getServiceLocaleFromPath,
   isGameLocale,
   isServiceLocale,
   stripServiceLocaleFromPath,
@@ -68,6 +67,7 @@ function respondWithLocale(
   request: NextRequest,
   serviceLocale: ServiceLocale,
   gameLocale: GameLocale,
+  options: { persist?: boolean } = {},
 ): NextResponse {
   const targetUrl = localeUrl(request, serviceLocale, gameLocale);
   const currentPath = request.nextUrl.pathname;
@@ -76,7 +76,7 @@ function respondWithLocale(
     ? NextResponse.redirect(targetUrl)
     : NextResponse.next();
 
-  return setLocaleCookies(response, serviceLocale, gameLocale);
+  return options.persist ? setLocaleCookies(response, serviceLocale, gameLocale) : response;
 }
 
 function cookieGameLocale(request: NextRequest): GameLocale | null {
@@ -96,30 +96,13 @@ export function proxy(request: NextRequest) {
     return new NextResponse(null, { status: 404 });
   }
 
-  const requestedGameLocale = request.nextUrl.searchParams.get("gl");
-  if (requestedGameLocale && isGameLocale(requestedGameLocale)) {
-    return respondWithLocale(
-      request,
-      getServiceLocaleForGameLocale(requestedGameLocale),
-      requestedGameLocale,
-    );
-  }
-
-  const pathServiceLocale = getServiceLocaleFromPath(request.nextUrl.pathname);
-  if (request.nextUrl.pathname === "/en" || request.nextUrl.pathname.startsWith("/en/")) {
-    return respondWithLocale(
-      request,
-      pathServiceLocale,
-      DEFAULT_GAME_LOCALE_BY_SERVICE[pathServiceLocale],
-    );
-  }
-
   const savedGameLocale = cookieGameLocale(request);
   if (savedGameLocale) {
     return respondWithLocale(
       request,
       getServiceLocaleForGameLocale(savedGameLocale),
       savedGameLocale,
+      { persist: true },
     );
   }
 
@@ -129,6 +112,7 @@ export function proxy(request: NextRequest) {
       request,
       savedServiceLocale,
       DEFAULT_GAME_LOCALE_BY_SERVICE[savedServiceLocale],
+      { persist: true },
     );
   }
 
