@@ -6,8 +6,8 @@ import {
 
 export const dynamic = "force-static";
 
-export const metadata: Metadata = getPatchListMetadata("ko");
+export const metadata: Metadata = getPatchListMetadata("en");
 
-export default function PatchesPage() {
-  return <PatchListPage serviceLocale="ko" gameLocale="kor" />;
+export default function EnglishPatchesPage() {
+  return <PatchListPage serviceLocale="en" gameLocale="eng" />;
 }
