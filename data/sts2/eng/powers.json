@@ -2682,13 +2682,15 @@
   {
     "id": "TERRITORIAL",
     "name": "Territorial",
-    "description": "At the end of its turn, gains [blue]1[/blue] [gold]Strength[/gold].",
-    "description_raw": "At the end of its turn, gains [blue]{Amount}[/blue] [gold]Strength[/gold].",
+    "description": "At the end of this creature's turn, it gains [blue]1[/blue] [gold]Strength[/gold].",
+    "description_raw": "At the end of this creature's turn, it gains [blue]{Amount}[/blue] [gold]Strength[/gold].",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/territorial_power.png",
-    "vars": {}
+    "vars": {
+      "Amount": 1
+    }
   },
   {
     "id": "THE_BOMB",
@@ -2941,6 +2943,19 @@
     "allow_negative": null,
     "image_url": "/static/images/powers/well_laid_plans_power.png",
     "vars": {}
+  },
+  {
+    "id": "WITHERING_PRESENCE",
+    "name": "Withering Presence",
+    "description": "Every [blue]6[/blue] cards you play, add a [gold]Wither[/gold] to your [gold]Hand[/gold].",
+    "description_raw": "Every [blue]6[/blue] cards you play, add a [gold]Wither[/gold] to your [gold]Hand[/gold].",
+    "type": "Buff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/withering_presence_power.png",
+    "vars": {
+      "CardsLeft": 6
+    }
   },
   {
     "id": "WRAITH_FORM",
