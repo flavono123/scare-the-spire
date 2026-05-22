@@ -39,6 +39,7 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
    PYTHONPATH=/tmp/sts2-spine-deps PYTHONDONTWRITEBYTECODE=1 python3 scripts/extract-sts2-spine-assets.py --force
    PYTHONPATH=/tmp/sts2-spine-deps PYTHONDONTWRITEBYTECODE=1 python3 scripts/extract-sts2-spine-assets.py --kind ancients --force
    node scripts/build-sts2-spine-index.mjs
+   pnpm sts2:index-images
    ```
    Use the `sts2-spine-assets` skill for dependency setup, coverage review, fallback policy, and VFX-specific notes.
    After event data changes, compare each `AncientEventModel.AllPossibleOptions`
