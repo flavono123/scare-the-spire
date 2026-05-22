@@ -391,36 +391,36 @@ function PatternStateTransitionDiagram({
           <defs>
             <marker
               id={`${markerPrefix}-arrow-normal`}
-              markerWidth="12"
-              markerHeight="12"
-              refX="10"
-              refY="6"
+              markerWidth="10"
+              markerHeight="10"
+              refX="9"
+              refY="5"
               orient="auto"
-              markerUnits="strokeWidth"
+              markerUnits="userSpaceOnUse"
             >
-              <path d="M2,2 L10,6 L2,10 Z" fill={DIAGRAM_ARROW_COLOR} />
+              <path d="M1,1 L9,5 L1,9 Z" fill={DIAGRAM_ARROW_COLOR} />
             </marker>
             <marker
               id={`${markerPrefix}-arrow-conditional`}
-              markerWidth="12"
-              markerHeight="12"
-              refX="10"
-              refY="6"
+              markerWidth="10"
+              markerHeight="10"
+              refX="9"
+              refY="5"
               orient="auto"
-              markerUnits="strokeWidth"
+              markerUnits="userSpaceOnUse"
             >
-              <path d="M2,2 L10,6 L2,10 Z" fill={DIAGRAM_CONDITIONAL_COLOR} />
+              <path d="M1,1 L9,5 L1,9 Z" fill={DIAGRAM_CONDITIONAL_COLOR} />
             </marker>
             <marker
               id={`${markerPrefix}-arrow-start`}
-              markerWidth="12"
-              markerHeight="12"
-              refX="10"
-              refY="6"
+              markerWidth="10"
+              markerHeight="10"
+              refX="9"
+              refY="5"
               orient="auto"
-              markerUnits="strokeWidth"
+              markerUnits="userSpaceOnUse"
             >
-              <path d="M2,2 L10,6 L2,10 Z" fill={BESTIARY_START_COLOR} />
+              <path d="M1,1 L9,5 L1,9 Z" fill={BESTIARY_START_COLOR} />
             </marker>
           </defs>
           {diagram.phaseBoxes.map((box) => (
