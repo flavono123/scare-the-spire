@@ -77,9 +77,11 @@ const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
 function PatchArtPreview({
   art,
   priority = false,
+  muted = false,
 }: {
   art: ResolvedPatchArt;
   priority?: boolean;
+  muted?: boolean;
 }) {
   return (
     <div
@@ -94,7 +96,7 @@ function PatchArtPreview({
         loading={priority ? undefined : "lazy"}
         fetchPriority={priority ? "high" : "low"}
         priority={priority}
-        className="h-full w-full object-cover"
+        className={muted ? "h-full w-full object-cover grayscale opacity-45 saturate-0" : "h-full w-full object-cover"}
         style={{ objectPosition: art.objectPosition }}
       />
     </div>
@@ -133,7 +135,7 @@ export async function PatchListPage({
         {sorted.map((patch, index) => {
           const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
           const isBuilding = patch.status === "building";
-          const patchArt = isBuilding ? null : resolvePatchArt(patch, entitiesByKey, serviceLocale);
+          const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
 
           if (isBuilding) {
             return (
@@ -165,6 +167,7 @@ export async function PatchListPage({
                   <SineText text={copy.building} />
                 </div>
                 <p className="mt-2 text-xs text-zinc-600">{patch.date}</p>
+                <PatchArtPreview art={patchArt} priority={index === 0} muted />
               </article>
             );
           }
