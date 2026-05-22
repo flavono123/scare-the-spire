@@ -886,14 +886,20 @@ function renderLine(
     return null;
   }
 
-  // Bullet points
-  if (trimmed.startsWith("- ")) {
+  // Bullet points. Preserve markdown indentation visually; the renderer keeps a
+  // flat list structure, but nested patch-note details should still read as
+  // child bullets.
+  const bulletMatch = line.match(/^(\s*)-\s+(.*)$/);
+  if (bulletMatch) {
+    const indentLevel = Math.min(Math.floor(bulletMatch[1].length / 2), 3);
+    const bulletClass = indentLevel > 0 ? "list-[circle] text-zinc-500" : "list-disc text-muted-foreground";
     return (
       <li
         key={key}
-        className="text-sm text-muted-foreground ml-4 mb-1 list-disc list-outside"
+        className={`text-sm ${bulletClass} mb-1 list-outside`}
+        style={{ marginLeft: `${1 + indentLevel * 1.25}rem` }}
       >
-        {enrichLine(trimmed.slice(2), lookup, key, context)}
+        {enrichLine(bulletMatch[2], lookup, key, context)}
       </li>
     );
   }
@@ -1036,7 +1042,7 @@ export function PatchNoteRenderer({
     // Skip orphaned [devnote:en] lines
     if (DEVNOTE_EN_RE.test(trimmed)) continue;
 
-    if (trimmed.startsWith("- ")) {
+    if (/^\s*-\s+/.test(lines[i])) {
       listBuffer.push(renderLine(lines[i], lookup, `line-${i}`, context));
       wasInList = true;
     } else {
