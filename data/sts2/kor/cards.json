@@ -7366,7 +7366,8 @@
     },
     "image_url": "/static/images/cards/follow_through.png",
     "beta_image_url": null,
-    "deprecatedInPatch": "v0.106.0"
+    "deprecatedInPatch": "v0.106.0",
+    "deprecated": true
   },
   {
     "id": "FOLLY",
