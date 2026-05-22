@@ -225,6 +225,42 @@ function addPatchKeywordLabels(
   }
 }
 
+function normalizedPatchSearchText(markdown: string): string {
+  return markdown
+    .replace(/\[\/?[a-z_]+(?:=[^\]]+)?(?::[^\]]+)?\]/gi, " ")
+    .replace(/\*\*/g, " ")
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function patchTextIncludesLabel(searchText: string, label: string | undefined): boolean {
+  const normalized = label?.trim().toLowerCase();
+  if (!normalized || Array.from(normalized).length < 2) return false;
+
+  if (/^[a-z0-9][a-z0-9\s'&:.,!?-]*$/i.test(normalized)) {
+    return new RegExp(`(^|[^a-z0-9])${escapeRegExp(normalized)}(?=$|[^a-z0-9])`, "i").test(searchText);
+  }
+
+  return searchText.includes(normalized);
+}
+
+function filterPatchNoteEntities(markdown: string, entities: EntityInfo[]): EntityInfo[] {
+  const searchText = normalizedPatchSearchText(markdown);
+  return entities.filter((entity) => {
+    const labels = [
+      entity.nameEn,
+      entity.nameKo,
+      ...(entity.aliasesEn ?? []),
+      ...(entity.aliasesKo ?? []),
+    ];
+    return labels.some((label) => patchTextIncludesLabel(searchText, label));
+  });
+}
+
 async function getPatchGameKeywordLabels(gameLocale: GameLocale): Promise<Record<string, string>> {
   const tableNames = [
     "badges",
@@ -677,7 +713,7 @@ export async function PatchDetailPage({
   ];
 
   const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
-  const commentEntities = entities.filter((entity) => !entity.eventOptionDesc);
+  const rendererEntities = filterPatchNoteEntities(markdown, entities);
   const isBuilding = patch.status === "building";
   const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
   const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
@@ -732,7 +768,7 @@ export async function PatchDetailPage({
         <section className="mt-6">
           <PatchNoteRenderer
             markdown={markdown}
-            entities={entities}
+            entities={rendererEntities}
             gameUi={gameUi}
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
@@ -758,7 +794,6 @@ export async function PatchDetailPage({
         <h2 className="mb-3 text-sm font-bold text-foreground">{copy.comments}</h2>
         <CommentSection
           threadKey={buildPatchCommentThreadKey(patch.version)}
-          initialEntities={commentEntities}
         />
       </section>
 
