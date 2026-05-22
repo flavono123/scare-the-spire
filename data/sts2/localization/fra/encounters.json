@@ -1,4 +1,6 @@
 {
+  "AEONGLASS_BOSS.loss": "[gold]{encounter}[/gold] n’a guère apprécié que {character} vienne troubler sa quiétude.",
+  "AEONGLASS_BOSS.title": "Clepséon",
   "AXEBOTS_NORMAL.loss": "{character} a été démembré{characterGender:choose(feminine):e|} par un [gold]Hachebot[/gold].",
   "AXEBOTS_NORMAL.title": "Hachebot",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.loss": "Un [gold]Mannequin de combat usé[/gold] serait venu à bout de {character} ???",

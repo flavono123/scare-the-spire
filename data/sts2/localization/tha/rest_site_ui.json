@@ -10,6 +10,8 @@
   "OPTION_HATCH.name": "ฟักไข่",
   "OPTION_HEAL.description": "ฟื้นฟู 30% ของ HP สูงสุด ({Heal}){ExtraText}",
   "OPTION_HEAL.name": "พักผ่อน",
+  "OPTION_KINDLE.description": "เพิ่มการใช้งาน[gold]{RelicName}[/gold] {RekindleAmount} ครั้ง",
+  "OPTION_KINDLE.name": "จุดเทียน",
   "OPTION_LIFT.description": "เริ่มการต่อสู้ด้วย +1 ความแข็งแรง (เหลือ {LiftsLeft})",
   "OPTION_LIFT.name": "ฝึกซ้อม",
   "OPTION_MEND.description": "ฟื้นฟู {HasTarget:{Name}|คนอื่น} เป็นจำนวน 30% ของ HP สูงสุดของเป้าหมาย {HasTarget: ({Heal})|}",

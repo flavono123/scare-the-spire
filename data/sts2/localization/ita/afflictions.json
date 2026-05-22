@@ -17,5 +17,8 @@
   "RINGING.extraCardText": "Rintocco.",
   "RINGING.title": "Rintocco",
   "SMOG.description": "In questo turno, non puoi giocare altre carte [gold]Abilità[/gold]. L'effetto si rimuove al termine del turno.",
-  "SMOG.title": "Contaminazione"
+  "SMOG.title": "Contaminazione",
+  "TAINTED.description": "Ottieni [blue]{Amount}[/blue] di [gold]Contagio[/gold] quando viene giocata.",
+  "TAINTED.extraCardText": "Ottieni {Amount} di Contagio.",
+  "TAINTED.title": "Contagio"
 }

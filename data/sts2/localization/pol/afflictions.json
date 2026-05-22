@@ -17,5 +17,8 @@
   "RINGING.extraCardText": "Dzwonienie.",
   "RINGING.title": "Dzwonienie",
   "SMOG.description": "W tej turze nie możesz już zagrać [gold]Umiejętności[/gold]. Znika pod koniec tury.",
-  "SMOG.title": "Smog"
+  "SMOG.title": "Smog",
+  "TAINTED.description": "Po zagraniu otrzymaj [blue]{Amount}[/blue] pkt. [gold]Skażenia[/gold].",
+  "TAINTED.extraCardText": "Otrzymaj {Amount} pkt. Skażenia.",
+  "TAINTED.title": "Skażenie"
 }

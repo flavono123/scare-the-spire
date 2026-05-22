@@ -1,4 +1,6 @@
 {
+  "AEONGLASS_BOSS.loss": "A la [gold]{encounter}[/gold] no le hizo ni pizca de gracia la impertinencia de {character}.",
+  "AEONGLASS_BOSS.title": "Clepsamia eónica",
   "AXEBOTS_NORMAL.loss": "Un [gold]{encounter}[/gold] ha desmembrado a {character}.",
   "AXEBOTS_NORMAL.title": "Hachatrón",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.loss": "De alguna manera, un [gold]{encounter}[/gold] se ha cargado a {character}.",

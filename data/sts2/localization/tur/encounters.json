@@ -1,4 +1,6 @@
 {
+  "AEONGLASS_BOSS.loss": "{character}, [gold]{encounter}[/gold]’ni rahatsız etmenin bedelini ödedi.",
+  "AEONGLASS_BOSS.title": "Ebedi Kum Saati",
   "AXEBOTS_NORMAL.loss": "{character}, bir [gold]{encounter}[/gold] tarafından parçalara ayrıldı.",
   "AXEBOTS_NORMAL.title": "Baltabot",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.loss": "{character}, nasıl olduysa [gold]{encounter}[/gold] tarafından mı öldürüldü???",

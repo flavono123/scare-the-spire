@@ -17,5 +17,8 @@
   "RINGING.extraCardText": "Ressonante.",
   "RINGING.title": "Ressonante",
   "SMOG.description": "Você não pode jogar [gold]Técnicas[/gold] adicionais neste turno. É removida no final do turno.",
-  "SMOG.title": "Poluição"
+  "SMOG.title": "Poluição",
+  "TAINTED.description": "Receba [blue]{Amount}[/blue] de [gold]Contaminação[/gold] quando jogada.",
+  "TAINTED.extraCardText": "Receba {Amount} de Contaminação.",
+  "TAINTED.title": "Contaminação"
 }

@@ -10,6 +10,8 @@
   "OPTION_HATCH.name": "Eclosionar",
   "OPTION_HEAL.description": "Recuperas un 30 % de tus PV máx. ({Heal}).{ExtraText}",
   "OPTION_HEAL.name": "Descansar",
+  "OPTION_KINDLE.description": "Añade {RekindleAmount} cargas a [gold]{RelicName}[/gold].",
+  "OPTION_KINDLE.name": "Encender",
   "OPTION_LIFT.description": "Comienza las batallas con +1 de Fuerza. (Quedan {LiftsLeft}).",
   "OPTION_LIFT.name": "Entrenar",
   "OPTION_MEND.description": "Cura a {HasTarget:{Name}|otro personaje} un 30 % de sus PV máx.{HasTarget: ({Heal})|}.",

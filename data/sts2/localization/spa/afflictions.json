@@ -17,5 +17,8 @@
   "RINGING.extraCardText": "Tañido",
   "RINGING.title": "Tañido",
   "SMOG.description": "No puedes jugar más [gold]Habilidades[/gold] este turno. Desaparece al final del turno.",
-  "SMOG.title": "Polución"
+  "SMOG.title": "Polución",
+  "TAINTED.description": "Al jugar esta carta, obtienes [blue]{Amount}[/blue] de [gold]Impureza[/gold]",
+  "TAINTED.extraCardText": "Obtienes {Amount} de Impureza.",
+  "TAINTED.title": "Impureza"
 }

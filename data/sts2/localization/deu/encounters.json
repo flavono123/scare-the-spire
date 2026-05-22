@@ -164,7 +164,7 @@
   "THE_LOST_AND_FORGOTTEN_NORMAL.title": "Verlassene und Vergessene",
   "THE_OBSCURA_NORMAL.loss": "[gold]{encounter}[/gold] und ihre Illusion zerschmetterten {character}.",
   "THE_OBSCURA_NORMAL.title": "Die Obscura",
-  "THIEVING_HOPPER_WEAK.customRewardDescription": "Erhalte deine gestohlene Karte zurück.",
+  "THIEVING_HOPPER_WEAK.customRewardDescription": "Nimm deine gestohlene Karte zurück.",
   "THIEVING_HOPPER_WEAK.loss": "Ein [gold]{encounter}[/gold] raubte {characterObject} aus.",
   "THIEVING_HOPPER_WEAK.title": "Diebischer Hüpfer",
   "TOADPOLES_WEAK.loss": "{character} konnte nicht mit ein paar [gold]{encounter}n[/gold] umgehen.",

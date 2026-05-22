@@ -432,8 +432,6 @@
   "FLICK_FLACK.title": "フリック・フラック",
   "FOCUSED_STRIKE.description": "{Damage:diff()}ダメージを与える。\nターン終了時まで[gold]集中力[/gold]{FocusPower:diff()}を得る。",
   "FOCUSED_STRIKE.title": "フォーカスストライク",
-  "FOLLOW_THROUGH.description": "{Damage:diff()}ダメージを与える。\n[gold]手札[/gold]に他のカードが{CardCount}以上ある場合、攻撃回数が1回増える。",
-  "FOLLOW_THROUGH.title": "追い打ち",
   "FOLLY.title": "愚行",
   "FOOTWORK.description": "[gold]敏捷[/gold]{DexterityPower:diff()}を得る。",
   "FOOTWORK.title": "フットワーク",

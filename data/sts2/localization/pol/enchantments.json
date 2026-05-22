@@ -45,7 +45,7 @@
   "SOWN.description": "Gdy zagrasz tę kartę po raz pierwszy w walce, zyskaj {Amount:energyIcons()}.",
   "SOWN.extraCardText": "Zyskaj {Amount:energyIcons()}.",
   "SOWN.title": "Nasiono",
-  "SPIRAL.description": "Karta otrzymuje [blue]1[/blue] [gold]Powtórkę[/gold].",
+  "SPIRAL.description": "Karta otrzymuje [gold]Powtórkę[/gold] [blue]1[/blue].",
   "SPIRAL.title": "Spirala",
   "STEADY.description": "Karta otrzymuje [gold]Zachowanie[/gold].",
   "STEADY.title": "Pewnik",

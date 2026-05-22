@@ -17,5 +17,8 @@
   "RINGING.extraCardText": "Çınlama.",
   "RINGING.title": "Çınlama",
   "SMOG.description": "Bu tur ilave [gold]Beceri[/gold] kartları oynayamazsın. Tur sonunda kaldırılır.",
-  "SMOG.title": "Duman"
+  "SMOG.title": "Duman",
+  "TAINTED.description": "Oynandığında [blue]{Amount}[/blue] [gold]Lekeli[/gold] elde et.",
+  "TAINTED.extraCardText": "{Amount} Lekeli elde et.",
+  "TAINTED.title": "Lekeli"
 }

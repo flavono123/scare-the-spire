@@ -1,4 +1,6 @@
 {
+  "AEONGLASS_BOSS.loss": "{character} ha infastidito a una [gold]{encounter}[/gold], che non l'ha presa bene.",
+  "AEONGLASS_BOSS.title": "Clessidra eonica",
   "AXEBOTS_NORMAL.loss": "Un [gold]{encounter}[/gold] ha smembrato {character}.",
   "AXEBOTS_NORMAL.title": "Affettabot",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.loss": "In qualche modo, un [gold]{encounter}[/gold] ha ucciso {character}.",

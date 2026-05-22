@@ -1,4 +1,6 @@
 {
+  "AEONGLASS_BOSS.loss": "A [gold]{encounter}[/gold] no le gustó el alboroto que causó {character}.",
+  "AEONGLASS_BOSS.title": "Clepsidreón",
   "AXEBOTS_NORMAL.loss": "Un [gold]{encounter}[/gold] desmembró a {character}.",
   "AXEBOTS_NORMAL.title": "Hachabot",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.loss": "De alguna forma, un [gold]{encounter}[/gold] mató a {character}.",

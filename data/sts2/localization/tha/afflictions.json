@@ -17,5 +17,8 @@
   "RINGING.extraCardText": "หูดับ",
   "RINGING.title": "หูดับ",
   "SMOG.description": "ไม่สามารถเล่น[gold]ทักษะ[/gold]เพิ่มได้ในเทิร์นนี้ ผลสิ้นสุดเมื่อจบเทิร์น",
-  "SMOG.title": "ควัน"
+  "SMOG.title": "ควัน",
+  "TAINTED.description": "ได้รับ [blue]{Amount}[/blue] [gold]ปนเปื้อน[/gold]เมื่อเล่น",
+  "TAINTED.extraCardText": "ได้รับ {Amount} ปนเปื้อน",
+  "TAINTED.title": "ปนเปื้อน"
 }

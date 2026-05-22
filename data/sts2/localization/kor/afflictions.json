@@ -17,5 +17,8 @@
   "RINGING.extraCardText": "공명.",
   "RINGING.title": "공명",
   "SMOG.description": "이번 턴에는 [gold]스킬[/gold]을 추가로 사용할 수 없습니다. 턴이 끝날 시 사라집니다.",
-  "SMOG.title": "안개"
+  "SMOG.title": "안개",
+  "TAINTED.description": "사용 시 [gold]훼손됨[/gold]을 [blue]{Amount}[/blue] 얻습니다.",
+  "TAINTED.extraCardText": "훼손됨을 {Amount} 얻습니다.",
+  "TAINTED.title": "훼손됨"
 }

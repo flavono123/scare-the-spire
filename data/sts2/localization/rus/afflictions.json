@@ -17,5 +17,8 @@
   "RINGING.extraCardText": "Звон в ушах.",
   "RINGING.title": "Звон в ушах",
   "SMOG.description": "Вы больше не сможете разыгрывать [gold]Навыки[/gold] в этом ходу. Рассеивается в конце хода.",
-  "SMOG.title": "Смог"
+  "SMOG.title": "Смог",
+  "TAINTED.description": "Вы получите [blue]{Amount}[/blue] [gold]порчи[/gold], если разыграете эту карту.",
+  "TAINTED.extraCardText": "Дает {Amount} порчи.",
+  "TAINTED.title": "Порча"
 }

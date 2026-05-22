@@ -10,6 +10,8 @@
   "OPTION_HATCH.name": "Wykluj",
   "OPTION_HEAL.description": "Przywróć 30% maks. PŻ ({Heal}).{ExtraText}",
   "OPTION_HEAL.name": "Odpocznij",
+  "OPTION_KINDLE.description": "[gold]{RelicName}[/gold] zyskuje {RekindleAmount} ładunki.",
+  "OPTION_KINDLE.name": "Rozpal",
   "OPTION_LIFT.description": "Zyskaj na stałe +1 pkt. Siły. (zostało {LiftsLeft})",
   "OPTION_LIFT.name": "Ćwicz",
   "OPTION_MEND.description": "Przywróć {HasTarget:{Name}|komuś innemu} 30% maks. PŻ{HasTarget: ({Heal})|}.",

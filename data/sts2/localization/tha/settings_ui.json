@@ -34,6 +34,7 @@
   "FEEDBACK_CATEGORY.balance": "สมดุล",
   "FEEDBACK_CATEGORY.bug": "บัค",
   "FEEDBACK_CATEGORY.feedback": "ข้อเสนอแนะ",
+  "FEEDBACK_CATEGORY.translation": "ปัญหาด้านการแปลภาษา",
   "FEEDBACK_CATEGORY_LABEL": "หมวดหมู่",
   "FEEDBACK_DESCRIPTION_PLACEHOLDER": "เขียนข้อเสนอแนะอันยอดเยี่ยมได้สูงสุด 8000 ตัวอักษร",
   "FEEDBACK_EMOJI_LABEL": "เพิ่มอีโมจิ",

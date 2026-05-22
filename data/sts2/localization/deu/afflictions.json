@@ -17,5 +17,8 @@
   "RINGING.extraCardText": "Klingeln.",
   "RINGING.title": "Klingeln",
   "SMOG.description": "Du kannst in diesem Zug keine [gold]Fertigkeiten[/gold] mehr spielen. Löst sich am Ende des Zuges auf.",
-  "SMOG.title": "Vernebelt"
+  "SMOG.title": "Vernebelt",
+  "TAINTED.description": "Erhalte beim Spielen [blue]{Amount}[/blue] [gold]Schmutzig[/gold].",
+  "TAINTED.extraCardText": "Erhalte {Amount} Schmutzig.",
+  "TAINTED.title": "Schmutzig"
 }

@@ -61,6 +61,7 @@
   "DAILY_RUN_MENU.DATE_FORMAT": "MMMM d, yyyy",
   "DAILY_RUN_MENU.FETCHING_TIME": "[thinky_dots]Fetching Time...[/thinky_dots]",
   "DAILY_RUN_MENU.LEADERBOARDS.fetchingScores": "[thinky_dots]Fetching Scores...[/thinky_dots]",
+  "DAILY_RUN_MENU.LEADERBOARDS.globalTickbox": "Global Rank",
   "DAILY_RUN_MENU.LEADERBOARDS.noFriends": "None of your friends have submitted a score.\nTell your friends to play!",
   "DAILY_RUN_MENU.LEADERBOARDS.noScore": "No scores have been submitted.\nGet climbing!",
   "DAILY_RUN_MENU.LEADERBOARDS.title": "Leaderboards",

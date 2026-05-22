@@ -10,6 +10,8 @@
   "OPTION_HATCH.name": "Schiudi",
   "OPTION_HEAL.description": "Recuperi il 30% dei tuoi PV massimi ({Heal}).{ExtraText}",
   "OPTION_HEAL.name": "Riposa",
+  "OPTION_KINDLE.description": "Aggiungi {RekindleAmount} cariche a [gold]{RelicName}[/gold].",
+  "OPTION_KINDLE.name": "Accendi",
   "OPTION_LIFT.description": "Inizi le battaglie con +1 di Forza. (Ancora {LiftsLeft})",
   "OPTION_LIFT.name": "Allenati",
   "OPTION_MEND.description": "Fai recuperare il 30% dei PV massimi a {HasTarget:{Name}|un altro personaggio} {HasTarget: ({Heal})|}.",

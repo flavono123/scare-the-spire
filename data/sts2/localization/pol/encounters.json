@@ -1,4 +1,6 @@
 {
+  "AEONGLASS_BOSS.loss": "{character} {characterGender:choose(masculine|feminine|neutral):przegrał|przegrała|przegrał} wyścig z czasem.",
+  "AEONGLASS_BOSS.title": "Wieczny Obserwator",
   "AXEBOTS_NORMAL.loss": "{character} {characterGender:choose(masculine|feminine|neutral):został poćwiartowany|została poćwiartowana|został poćwiartowany} przez [gold]Siekierobota[/gold].",
   "AXEBOTS_NORMAL.title": "Siekierobot",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.loss": "{character} jakimś cudem {characterGender:choose(masculine|feminine|neutral):zginął|zginęła|zginął} w walce z [gold]Drewnobotem[/gold]???",
@@ -47,7 +49,7 @@
   "FLYCONID_NORMAL.title": "Grzyb i śluz",
   "FLYCONID_WEAK.loss": "{character} {characterGender:choose(masculine|feminine|neutral):został zgniecony|została zgniecona |został zgniecony} przez [gold]Musznicę[/gold].",
   "FLYCONID_WEAK.title": "Musznica",
-  "FOGMOG_NORMAL.loss": "{character} {characterGender:choose(masculine|feminine|neutral):został rozproszony|została rozproszona|został rozproszony} przez halucynacje [gold]Grzybola[/gold].",
+  "FOGMOG_NORMAL.loss": "{character} {characterGender:choose(masculine|feminine|neutral):uległ|uległa|uległ} halucynacjom [gold]Grzybola[/gold].",
   "FOGMOG_NORMAL.title": "Grzybol",
   "FOSSIL_STALKER_NORMAL.loss": "{character} {characterGender:choose(masculine|feminine|neutral):wpadł|wpadła|wpadł} w zasadzkę [gold]Skamieliniaka[/gold].",
   "FOSSIL_STALKER_NORMAL.title": "Skamieliniak",

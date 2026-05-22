@@ -17,5 +17,8 @@
   "RINGING.extraCardText": "Vibración",
   "RINGING.title": "Vibración",
   "SMOG.description": "No puedes jugar [gold]habilidades[/gold] extra en este turno. El efecto desaparece al final del turno.",
-  "SMOG.title": "Contaminación"
+  "SMOG.title": "Contaminación",
+  "TAINTED.description": "Al jugarla, obtienes [blue]{Amount}[/blue] de [gold]corrupción[/gold].",
+  "TAINTED.extraCardText": "Obtienes {Amount} de corrupción.",
+  "TAINTED.title": "Corrupción"
 }

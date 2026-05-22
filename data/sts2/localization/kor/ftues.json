@@ -1,7 +1,7 @@
 {
   "AFFLICTION_FTUE_DESCRIPTION": "적은 카드에 고난을 부여해 당신의 카드를 망칠 수 있습니다.\n한 카드에는 한 번에 하나의 고난만 부여될 수 있습니다. 고난의 효과는 전투 종료 시 사라집니다.",
   "AFFLICTION_FTUE_TITLE": "고난이 뭔가요?",
-  "ASCENSION_MULTIPLAYER_FTUE_DESCRIPTION": "축하합니다, [red]아키텍트[/red]를 만나 멀티플레이\n승천이 해금되었습니다!\n\n멀티플레이 승천은 자신에게 더 큰 도전을 부여하고,\n멀티플레이에서 자신의 숙련도를 증명하는\n방법입니다.\n\n[blue]3[/blue][gold]막[/gold]을 완료하면 점점 더 어려운 도전이\n순차적으로 해금됩니다.",
+  "ASCENSION_MULTIPLAYER_FTUE_DESCRIPTION": "축하합니다, [red]아키텍트[/red]를 만나 멀티플레이\n승천이 해금되었습니다!\n\n멀티플레이 승천은 자신에게 더 큰 도전을\n부여하고, 멀티플레이에서 자신의 숙련도를\n증명하는 방법입니다.\n\n[blue]3[/blue][gold]막[/gold]을 완료하면 점점 더 어려운 도전이\n순차적으로 해금됩니다.",
   "ASCENSION_MULTIPLAYER_FTUE_DISCLAIMER": "참고: 멀티플레이에서는 승천이 싱글플레이와 별도로 기록되며, 모든 캐릭터 간에 공유됩니다.",
   "ASCENSION_MULTIPLAYER_FTUE_TITLE": "멀티플레이 승천!",
   "ASCENSION_SINGLEPLAYER_FTUE_DESCRIPTION": "축하합니다, [red]아키텍트[/red]를 만나 멀티플레이\n승천이 해금되었습니다!\n\n승천은 자신에게 더 큰 도전을 부여하고,\n각 캐릭터에 대한 자신의 숙련도를 증명하는\n방법입니다.\n\n승천이 적용된 상태로 [blue]3[/blue][gold]막[/gold]을 완료하면 점점 더 어려운 도전이 순차적으로 해금됩니다.",

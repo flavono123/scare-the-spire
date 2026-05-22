@@ -108,7 +108,7 @@
   "MODDING_POPUP.title": "Carregar Mods?",
   "MOD_ERROR.ASSEMBLY_LOAD": "Não foi possível carregar o Assembly DLL para o mod [red]{id}[/red]! Consulte os registros para obter mais informações.",
   "MOD_ERROR.CIRCULAR_DEPENDENCY": "O mod [red]{id}[/red] é parte de uma corrente circular de dependência: {dependencyChain}. Isto não é permitido!",
-  "MOD_ERROR.DEPENDENCY_MIN_VERSION_INVALID": "O mod [red]{id}[/red] depende do mod {dependency} com versão mínima {minVersion} que não pode ser analisada.",
+  "MOD_ERROR.DEPENDENCY_MIN_VERSION_INVALID": "O mod [red]{id}[/red] depende do mod {dependency} com versão mínima {minVersion}, que não pode ser analisada.",
   "MOD_ERROR.DEPENDENCY_VERSION_INVALID": "O mod [red]{id}[/red] depende do mod {dependency} com versão mínima {minVersion}, mas o mod declarou uma versão inválida {version}!",
   "MOD_ERROR.DEPENDENCY_VERSION_MISSING": "O mod [red]{id}[/red] depende do mod {dependency} com versão mínima {minVersion}, mas o mod não declarou nenhuma versão!",
   "MOD_ERROR.DEPENDENCY_VERSION_UNSUPPORTED": "O mod [red]{id}[/red] depende do mod {dependency} com versão mínima {minVersion}, mas você possui {version}!",

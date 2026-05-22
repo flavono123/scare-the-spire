@@ -10,6 +10,8 @@
   "OPTION_HATCH.name": "Yumurtadan Çıkar",
   "OPTION_HEAL.description": "Maksimum CP'nin %30'u kadar iyileş ({Heal}).{ExtraText}",
   "OPTION_HEAL.name": "Dinlen",
+  "OPTION_KINDLE.description": "[gold]{RelicName}[/gold] {RekindleAmount} kez doldurulur.",
+  "OPTION_KINDLE.name": "Tutuştur",
   "OPTION_LIFT.description": "Savaşlara +1 Kuvvet ile başla. ({LiftsLeft} Kaldı)",
   "OPTION_LIFT.name": "Antrenman Yap",
   "OPTION_MEND.description": "{HasTarget:{Name}|Bir başkası}, sahip olduğu Maksimum CP'nin %30'u kadar iyileşir {HasTarget: ({Heal})|}.",
