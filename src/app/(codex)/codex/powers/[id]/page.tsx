@@ -11,14 +11,6 @@ import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { PowerDetail } from "@/components/codex/power-detail";
 
-export const dynamic = "force-static";
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const powers = await getCodexPowers();
-  return powers.map((p) => ({ id: p.id.toLowerCase() }));
-}
-
 export async function generateMetadata({
   params,
   searchParams,

@@ -11,14 +11,6 @@ import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { EnchantmentDetail } from "@/components/codex/enchantment-detail";
 
-export const dynamic = "force-static";
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const enchantments = await getCodexEnchantments();
-  return enchantments.map((e) => ({ id: e.id.toLowerCase() }));
-}
-
 export async function generateMetadata({
   params,
   searchParams,

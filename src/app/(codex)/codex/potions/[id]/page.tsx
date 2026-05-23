@@ -12,14 +12,6 @@ import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { PotionPool } from "@/lib/codex-types";
 import { PotionDetail } from "@/components/codex/potion-detail";
 
-export const dynamic = "force-static";
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const potions = await getCodexPotions();
-  return potions.map((p) => ({ id: p.id.toLowerCase() }));
-}
-
 export async function generateMetadata({
   params,
   searchParams,

@@ -12,17 +12,9 @@ import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { AncientDetail } from "@/components/codex/ancient-detail";
 import type { CodexRelic } from "@/lib/codex-types";
 
-export const dynamic = "force-static";
-export const dynamicParams = false;
-
 interface Props {
   params: Promise<{ id: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
-export async function generateStaticParams() {
-  const ancients = await getCodexAncients();
-  return ancients.map((a) => ({ id: a.id.toLowerCase() }));
 }
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {

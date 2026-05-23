@@ -11,16 +11,6 @@ import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
 import { MonsterDetail } from "@/components/codex/monster-detail";
 
-export const dynamic = "force-static";
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const monsters = await getCodexMonsters();
-  return monsters
-    .filter((monster) => monster.showInCompendium && isPublicBestiaryMonster(monster.id))
-    .map((monster) => ({ id: monster.id.toLowerCase() }));
-}
-
 export async function generateMetadata({
   params,
   searchParams,

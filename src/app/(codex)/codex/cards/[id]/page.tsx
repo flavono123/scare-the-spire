@@ -14,18 +14,10 @@ import {
   getMadScienceVariantId,
 } from "@/lib/tinker-time";
 
-export const dynamic = "force-static";
-export const dynamicParams = false;
-
 function findCardByRouteId<T extends { id: string }>(cards: T[], id: string): T | undefined {
   const madScienceType = getMadScienceCardTypeFromId(id);
   const resolvedId = madScienceType ? getMadScienceVariantId(madScienceType) : id;
   return cards.find((c) => c.id.toLowerCase() === resolvedId.toLowerCase());
-}
-
-export async function generateStaticParams() {
-  const cards = await getCodexCards();
-  return cards.map((c) => ({ id: c.id.toLowerCase() }));
 }
 
 export async function generateMetadata({
