@@ -424,8 +424,8 @@ export const serviceMessages = {
         lossText: "패배 시",
       },
       ancientsView: {
-        title: "에인션트",
-        backToList: "에인션트 목록",
+        title: "고대의 존재",
+        backToList: "고대의 존재 목록",
         subtitle: "첨탑에 깃든 고대의 존재들",
         relicCount: "유물 {count}개",
         dialogue: "대사",

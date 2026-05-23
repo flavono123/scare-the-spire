@@ -11,7 +11,7 @@ const items = [
   { href: "/compendium/powers", label: "파워" },
   { href: "/compendium/enchantments", label: "인챈트" },
   { href: "/compendium/bestiary", label: "몬스터 도감" },
-  { href: "/compendium/ancients", label: "에인션트" },
+  { href: "/compendium/ancients", label: "고대의 존재" },
 ];
 
 export function EncyclopediaDropdown() {
