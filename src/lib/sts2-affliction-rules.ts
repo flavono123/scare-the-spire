@@ -26,6 +26,10 @@ export function canAfflictCard(affliction: CodexAffliction, card: CodexCard): bo
   return !requiredType || card.type === requiredType;
 }
 
+export function getAfflictionCardTypeRestriction(affliction: CodexAffliction): CodexCard["type"] | null {
+  return AFFLICTION_CARD_TYPE_RESTRICTIONS[normalizeId(affliction.id)] ?? null;
+}
+
 export function getAfflictionPreviewAmount(affliction: CodexAffliction | null | undefined): number {
   if (!affliction) return DEFAULT_AFFLICTION_AMOUNT;
   return AFFLICTION_PREVIEW_AMOUNTS[normalizeId(affliction.id)] ?? DEFAULT_AFFLICTION_AMOUNT;

@@ -10,9 +10,11 @@ import {
   type CodexServiceMessages,
 } from "@/lib/codex-service";
 import {
+  CodexAffliction,
   CodexCard,
   CodexEnchantment,
   CodexEvent,
+  CodexMonster,
   CodexPotion,
   CodexPower,
   CodexRelic,
@@ -23,6 +25,7 @@ import {
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
+import { getAfflictionCardTypeRestriction } from "@/lib/sts2-affliction-rules";
 import {
   fuzzyMatchCodexText,
   parseCodexSearch,
@@ -42,15 +45,27 @@ import {
 
 const CARD_TYPE_ORDER: EnchantmentCardTypeFilter[] = ["Any", "Attack", "Skill"];
 type EnchantmentSearchTokenType = "cardType";
+type SelectedEnchantmentResource =
+  | { kind: "enchantment"; item: CodexEnchantment }
+  | { kind: "affliction"; item: CodexAffliction };
 
 function getCardTypeFilter(cardType: "Attack" | "Skill" | null): EnchantmentCardTypeFilter {
   return cardType ?? "Any";
+}
+
+function getAfflictionTypeFilter(affliction: CodexAffliction): EnchantmentCardTypeFilter | null {
+  const cardType = getAfflictionCardTypeRestriction(affliction);
+  if (cardType === "공격") return "Attack";
+  if (cardType === "스킬") return "Skill";
+  if (!cardType) return "Any";
+  return null;
 }
 
 interface EnchantmentLibraryProps {
   serviceLocale: ServiceLocale;
   gameUi?: CodexGameUiLabels;
   enchantments: CodexEnchantment[];
+  afflictions?: CodexAffliction[];
   versions?: string[];
   currentVersion?: string;
   patches?: STS2Patch[];
@@ -68,9 +83,11 @@ interface EnchantmentLibraryProps {
   powers?: CodexPower[];
   /** Relics — used to surface ones that grant the selected enchantment. */
   relics?: CodexRelic[];
+  /** Monsters — used to surface ones that apply the selected affliction. */
+  monsters?: CodexMonster[];
 }
 
-export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, versions, currentVersion, patches, changes, versionDiffs, entities, cards, events, potions, powers, relics }: EnchantmentLibraryProps) {
+export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflictions = [], versions, currentVersion, patches, changes, versionDiffs, entities, cards, events, potions, powers, relics, monsters }: EnchantmentLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedCardTypes, setSelectedCardTypes] = useState<Set<EnchantmentCardTypeFilter>>(new Set());
@@ -78,47 +95,67 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, versio
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
 
-  // Enchantment detail modal
+  // Enchantment or affliction detail modal
   const initialEnchId = searchParams.get("enchantment");
-  const [selectedEnchantment, setSelectedEnchantment] = useState<CodexEnchantment | null>(() => {
-    if (!initialEnchId) return null;
-    return enchantments.find((e) => e.id.toLowerCase() === initialEnchId.toLowerCase()) ?? null;
+  const initialAfflictionId = searchParams.get("affliction");
+  const [selectedResource, setSelectedResource] = useState<SelectedEnchantmentResource | null>(() => {
+    if (initialEnchId) {
+      const enchantment = enchantments.find((e) => e.id.toLowerCase() === initialEnchId.toLowerCase());
+      if (enchantment) return { kind: "enchantment", item: enchantment };
+    }
+    if (initialAfflictionId) {
+      const affliction = afflictions.find((a) => a.id.toLowerCase() === initialAfflictionId.toLowerCase());
+      if (affliction) return { kind: "affliction", item: affliction };
+    }
+    return null;
   });
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    if (selectedEnchantment) {
-      url.searchParams.set("enchantment", selectedEnchantment.id.toLowerCase());
+    if (selectedResource?.kind === "enchantment") {
+      url.searchParams.set("enchantment", selectedResource.item.id.toLowerCase());
+      url.searchParams.delete("affliction");
+    } else if (selectedResource?.kind === "affliction") {
+      url.searchParams.set("affliction", selectedResource.item.id.toLowerCase());
+      url.searchParams.delete("enchantment");
     } else {
       url.searchParams.delete("enchantment");
+      url.searchParams.delete("affliction");
     }
     if (url.toString() !== window.location.href) {
       window.history.pushState(null, "", url.toString());
     }
-  }, [selectedEnchantment]);
+  }, [selectedResource]);
 
   useEffect(() => {
     const handler = () => {
       const url = new URL(window.location.href);
-      const param = url.searchParams.get("enchantment");
-      if (!param) {
-        setSelectedEnchantment(null);
-      } else {
-        setSelectedEnchantment(enchantments.find((e) => e.id.toLowerCase() === param.toLowerCase()) ?? null);
+      const enchantmentParam = url.searchParams.get("enchantment");
+      const afflictionParam = url.searchParams.get("affliction");
+      if (enchantmentParam) {
+        const enchantment = enchantments.find((e) => e.id.toLowerCase() === enchantmentParam.toLowerCase());
+        setSelectedResource(enchantment ? { kind: "enchantment", item: enchantment } : null);
+        return;
       }
+      if (afflictionParam) {
+        const affliction = afflictions.find((a) => a.id.toLowerCase() === afflictionParam.toLowerCase());
+        setSelectedResource(affliction ? { kind: "affliction", item: affliction } : null);
+        return;
+      }
+      setSelectedResource(null);
     };
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
-  }, [enchantments]);
+  }, [afflictions, enchantments]);
 
   useEffect(() => {
-    if (!selectedEnchantment) return;
+    if (!selectedResource) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedEnchantment(null);
+      if (e.key === "Escape") setSelectedResource(null);
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedEnchantment]);
+  }, [selectedResource]);
 
   const versionedEnchantments = useMemo(() => {
     if (!currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion) return enchantments;
@@ -183,6 +220,40 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, versio
 
     return result;
   }, [versionedEnchantments, selectedCardTypes, stackableOnly, parsedSearch]);
+
+  const filteredAfflictions = useMemo(() => {
+    let result = afflictions;
+
+    if (selectedCardTypes.size > 0) {
+      result = result.filter((a) => {
+        const filter = getAfflictionTypeFilter(a);
+        return filter ? selectedCardTypes.has(filter) : false;
+      });
+    }
+
+    if (stackableOnly) {
+      result = result.filter((a) => a.isStackable);
+    }
+
+    for (const token of parsedSearch.tokens) {
+      if (token.type === "cardType") {
+        result = result.filter((a) => getAfflictionTypeFilter(a) === token.value);
+      }
+    }
+
+    if (parsedSearch.text) {
+      result = result.filter(
+        (a) =>
+          fuzzyMatchCodexText(a.name, parsedSearch.text) ||
+          fuzzyMatchCodexText(a.nameEn, parsedSearch.text) ||
+          stripCodexMarkup(a.description).toLowerCase().includes(parsedSearch.text),
+      );
+    }
+
+    return [...result].sort((a, b) => a.name.localeCompare(b.name, "ko"));
+  }, [afflictions, selectedCardTypes, stackableOnly, parsedSearch]);
+
+  const filteredResourceCount = filteredEnchantments.length + filteredAfflictions.length;
 
   // Group by card type restriction
   const groupedEnchantments = useMemo(() => {
@@ -270,7 +341,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, versio
               placeholder={serviceText.enchantmentsView.searchPlaceholder}
             />
           )}
-          count={formatCodexCount(filteredEnchantments.length, serviceText.labels.enchantments, serviceLocale)}
+          count={formatCodexCount(filteredResourceCount, serviceText.labels.entries, serviceLocale)}
           trailing={versions && versions.length > 0 && currentVersion ? (
             <VersionSelector
               versions={versions}
@@ -299,13 +370,42 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, versio
 
               <div className="flex flex-wrap gap-2">
                 {groupEnchantments.map((ench) => (
-                  <EnchantmentTile key={ench.id} serviceLocale={serviceLocale} enchantment={ench} onClick={() => setSelectedEnchantment(ench)} />
+                  <EnchantmentTile
+                    key={ench.id}
+                    serviceLocale={serviceLocale}
+                    resource={ench}
+                    onClick={() => setSelectedResource({ kind: "enchantment", item: ench })}
+                  />
                 ))}
               </div>
             </section>
           ))}
 
-          {filteredEnchantments.length === 0 && (
+          {filteredAfflictions.length > 0 && (
+            <section className="mb-8 last:mb-0">
+              <div className="mb-3">
+                <h2 className="font-game-title text-lg font-bold mb-0.5 text-amber-400">
+                  {serviceText.afflictions}
+                  <span className="font-game-text text-sm font-normal text-gray-400 ml-2">
+                    {formatCodexCount(filteredAfflictions.length, serviceText.labels.afflictions, serviceLocale)}
+                  </span>
+                </h2>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {filteredAfflictions.map((affliction) => (
+                  <EnchantmentTile
+                    key={affliction.id}
+                    serviceLocale={serviceLocale}
+                    resource={affliction}
+                    onClick={() => setSelectedResource({ kind: "affliction", item: affliction })}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {filteredResourceCount === 0 && (
             <div className="flex items-center justify-center h-64 text-gray-500">
               {serviceText.common.noResults}
             </div>
@@ -313,31 +413,45 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, versio
         </div>
       </main>
 
-      {/* Enchantment Detail Modal */}
-      {selectedEnchantment && (
+      {/* Enchantment or affliction detail modal */}
+      {selectedResource && (
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedEnchantment(null);
+            if (e.target === e.currentTarget) setSelectedResource(null);
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <EnchantmentDetail
-              serviceLocale={serviceLocale}
-              gameUi={gameUi}
-              backToListTitle={serviceText.enchantmentsView.title}
-              enchantment={selectedEnchantment}
-              onClose={() => setSelectedEnchantment(null)}
-              entities={entities}
-              cards={cards}
-              events={events}
-              potions={potions}
-              powers={powers}
-              relics={relics}
-              patches={patches}
-              changes={changes}
-              versionDiffs={versionDiffs}
-            />
+            {selectedResource.kind === "enchantment" ? (
+              <EnchantmentDetail
+                serviceLocale={serviceLocale}
+                gameUi={gameUi}
+                backToListTitle={serviceText.enchantmentsView.title}
+                enchantment={selectedResource.item}
+                onClose={() => setSelectedResource(null)}
+                entities={entities}
+                cards={cards}
+                events={events}
+                potions={potions}
+                powers={powers}
+                relics={relics}
+                patches={patches}
+                changes={changes}
+                versionDiffs={versionDiffs}
+              />
+            ) : (
+              <EnchantmentDetail
+                serviceLocale={serviceLocale}
+                gameUi={gameUi}
+                backToListTitle={serviceText.enchantmentsView.title}
+                affliction={selectedResource.item}
+                onClose={() => setSelectedResource(null)}
+                entities={entities}
+                monsters={monsters}
+                patches={patches}
+                changes={changes}
+              />
+            )}
           </div>
         </div>
       )}

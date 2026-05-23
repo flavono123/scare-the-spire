@@ -3,13 +3,13 @@
 import { useState, useRef, useCallback, memo } from "react";
 import Image from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
-import { CodexEnchantment } from "@/lib/codex-types";
+import type { CodexAffliction, CodexEnchantment } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 import { GameHoverTip } from "./hover-tip";
 
 interface EnchantmentTileProps {
   serviceLocale?: ServiceLocale;
-  enchantment: CodexEnchantment;
+  resource: CodexEnchantment | CodexAffliction;
   onClick?: () => void;
 }
 
@@ -22,7 +22,7 @@ const TOOLTIP_GAP = 12;
 const TOOLTIP_WIDTH = 400;
 const TOOLTIP_HEIGHT = 220;
 
-export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "ko", enchantment, onClick }: EnchantmentTileProps) {
+export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "ko", resource, onClick }: EnchantmentTileProps) {
   void serviceLocale;
   const [hovered, setHovered] = useState(false);
   const tileRef = useRef<HTMLDivElement>(null);
@@ -58,10 +58,10 @@ export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "
             : "border-transparent bg-white/5 hover:bg-white/10"
         }`}
       >
-        {enchantment.imageUrl ? (
+        {resource.imageUrl ? (
           <Image
-            src={enchantment.imageUrl}
-            alt={enchantment.name}
+            src={resource.imageUrl}
+            alt={resource.name}
             width={56}
             height={56}
             className="w-full h-full object-contain drop-shadow-md"
@@ -80,8 +80,8 @@ export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "
             placement.horizontal === "right" ? "left-full ml-3" : "right-full mr-3"
           } ${placement.vertical === "top" ? "top-0" : "bottom-0"}`}
         >
-          <GameHoverTip title={enchantment.name} style={{ minWidth: 280, maxWidth: 320 }}>
-            <DescriptionText description={enchantment.description} className="block text-left" />
+          <GameHoverTip title={resource.name} style={{ minWidth: 280, maxWidth: 320 }}>
+            <DescriptionText description={resource.description} className="block text-left" />
           </GameHoverTip>
         </div>
       )}

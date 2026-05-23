@@ -11,9 +11,11 @@ import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
+  CodexAffliction,
   CodexCard,
   CodexEnchantment,
   CodexEvent,
+  CodexMonster,
   CodexPotion,
   CodexPower,
   CodexRelic,
@@ -23,12 +25,14 @@ import {
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
 import {
+  getRelatedMonsterIdsForAffliction,
   getRelatedCardIdsForEnchantment,
   getRelatedEventIdsForEnchantment,
   getRelatedPotionIdsForEnchantment,
   getRelatedPowerIdsForEnchantment,
   getRelatedRelicIdsForEnchantment,
 } from "@/lib/codex-references";
+import { getAfflictionCardTypeRestriction } from "@/lib/sts2-affliction-rules";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
 import { RichDescription } from "./rich-description";
@@ -68,11 +72,10 @@ function InfoRailSection({
   );
 }
 
-interface EnchantmentDetailProps {
+interface EnchantmentDetailBaseProps {
   serviceLocale: ServiceLocale;
   gameUi?: CodexGameUiLabels;
   backToListTitle: string;
-  enchantment: CodexEnchantment;
   onClose?: () => void;
   /** Cross-reference entities — when provided, descriptions become rich. */
   entities?: EntityInfo[];
@@ -86,10 +89,17 @@ interface EnchantmentDetailProps {
   powers?: CodexPower[];
   /** All relics, used to surface ones that grant this enchantment. */
   relics?: CodexRelic[];
+  /** Monsters, used to surface those that apply this affliction. */
+  monsters?: CodexMonster[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
 }
+
+type EnchantmentDetailProps = EnchantmentDetailBaseProps & (
+  | { enchantment: CodexEnchantment; affliction?: never }
+  | { affliction: CodexAffliction; enchantment?: never }
+);
 
 function getEnchantmentDetailLabels(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
@@ -107,62 +117,71 @@ function getEnchantmentDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
-export function EnchantmentDetail({
-  serviceLocale,
-  gameUi,
-  backToListTitle,
-  enchantment,
-  onClose,
-  entities,
-  cards = [],
-  events = [],
-  potions = [],
-  powers = [],
-  relics,
-  patches,
-  changes,
-  versionDiffs,
-}: EnchantmentDetailProps) {
+export function EnchantmentDetail(props: EnchantmentDetailProps) {
+  const {
+    serviceLocale,
+    gameUi,
+    backToListTitle,
+    onClose,
+    entities,
+    cards = [],
+    events = [],
+    potions = [],
+    powers = [],
+    relics,
+    monsters = [],
+    patches,
+    changes,
+    versionDiffs,
+  } = props;
+  const resourceKind = props.affliction ? "affliction" : "enchantment";
+  const resource = props.affliction ?? props.enchantment;
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getEnchantmentDetailLabels(serviceLocale);
-  const cardTypeFilter: EnchantmentCardTypeFilter = enchantment.cardType ?? "Any";
+  const cardTypeFilter: EnchantmentCardTypeFilter = props.enchantment?.cardType ?? "Any";
   const cardTypeConfig = ENCHANTMENT_CARD_TYPE_CONFIG[cardTypeFilter];
+  const afflictionCardType = props.affliction ? getAfflictionCardTypeRestriction(props.affliction) : null;
   const [commentCount, setCommentCount] = useState(0);
 
   const relatedRelics = useMemo(() => {
-    if (!relics) return [];
+    if (!relics || !props.enchantment) return [];
     const relicById = new Map(relics.map((relic) => [relic.id, relic]));
-    return getRelatedRelicIdsForEnchantment(enchantment.id, relics, [enchantment])
+    return getRelatedRelicIdsForEnchantment(props.enchantment.id, relics, [props.enchantment])
       .map((relicId) => relicById.get(relicId))
       .filter((relic): relic is CodexRelic => Boolean(relic))
       .sort((a, b) => a.name.localeCompare(b.name, "ko"));
-  }, [relics, enchantment]);
+  }, [relics, props.enchantment]);
 
   const cardById = new Map(cards.map((card) => [card.id, card]));
-  const relatedCardTargets = getRelatedCardIdsForEnchantment(enchantment.id)
+  const relatedCardTargets = props.enchantment ? getRelatedCardIdsForEnchantment(props.enchantment.id)
     .map((cardId) => cardById.get(cardId))
     .filter((card): card is CodexCard => Boolean(card))
-    .map(cardToReferenceTarget);
+    .map(cardToReferenceTarget) : [];
   const relatedRelicTargets = relatedRelics.map(relicToReferenceTarget);
   const eventById = new Map(events.map((event) => [event.id, event]));
-  const relatedEventTargets = getRelatedEventIdsForEnchantment(enchantment.id)
+  const relatedEventTargets = props.enchantment ? getRelatedEventIdsForEnchantment(props.enchantment.id)
     .map((eventId) => eventById.get(eventId))
     .filter((event): event is CodexEvent => Boolean(event))
-    .map(eventToReferenceTarget);
+    .map(eventToReferenceTarget) : [];
   const potionById = new Map(potions.map((potion) => [potion.id, potion]));
-  const relatedPotionTargets = getRelatedPotionIdsForEnchantment(enchantment.id)
+  const relatedPotionTargets = props.enchantment ? getRelatedPotionIdsForEnchantment(props.enchantment.id)
     .map((potionId) => potionById.get(potionId))
     .filter((potion): potion is CodexPotion => Boolean(potion))
-    .map(potionToReferenceTarget);
+    .map(potionToReferenceTarget) : [];
   const powerById = new Map(powers.map((power) => [power.id, power]));
-  const relatedPowerTargets = getRelatedPowerIdsForEnchantment(enchantment, powers)
+  const relatedPowerTargets = props.enchantment ? getRelatedPowerIdsForEnchantment(props.enchantment, powers)
     .map((powerId) => powerById.get(powerId))
     .filter((power): power is CodexPower => Boolean(power))
-    .map(powerToReferenceTarget);
+    .map(powerToReferenceTarget) : [];
+  const monsterById = new Map(monsters.map((monster) => [monster.id, monster]));
+  const relatedMonsterTargets = props.affliction ? getRelatedMonsterIdsForAffliction(props.affliction.id, monsters)
+    .map((monsterId) => monsterById.get(monsterId))
+    .filter((monster): monster is CodexMonster => Boolean(monster))
+    .map(monsterToReferenceTarget) : [];
 
   const excludeSelf = useMemo(
-    () => new Set([enchantment.name, enchantment.nameEn]),
-    [enchantment.name, enchantment.nameEn],
+    () => new Set([resource.name, resource.nameEn]),
+    [resource.name, resource.nameEn],
   );
 
   return (
@@ -195,10 +214,10 @@ export function EnchantmentDetail({
         <section className="flex min-h-[22rem] flex-col items-center justify-center gap-5 py-4">
           <div className="flex w-full flex-col items-center justify-center gap-5 md:flex-row md:items-center">
             <div className="flex h-32 w-32 shrink-0 items-center justify-center sm:h-40 sm:w-40">
-              {enchantment.imageUrl ? (
+              {resource.imageUrl ? (
                 <Image
-                  src={enchantment.imageUrl}
-                  alt={enchantment.name}
+                  src={resource.imageUrl}
+                  alt={resource.name}
                   width={160}
                   height={160}
                   className="h-full w-full object-contain drop-shadow-lg"
@@ -211,19 +230,19 @@ export function EnchantmentDetail({
             </div>
 
             <GameHoverTip
-              title={enchantment.name}
+              title={resource.name}
               className="w-full max-w-[23rem]"
               style={{ minWidth: 280 }}
             >
               {entities ? (
                 <RichDescription
-                  description={enchantment.description}
+                  description={resource.description}
                   entities={entities}
                   excludeEntityTerms={excludeSelf}
                   className="block text-left"
                 />
               ) : (
-                <DescriptionText description={enchantment.description} className="block text-left" />
+                <DescriptionText description={resource.description} className="block text-left" />
               )}
             </GameHoverTip>
           </div>
@@ -233,32 +252,41 @@ export function EnchantmentDetail({
           <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
-                <MetaPill
-                  value={serviceText.labels.enchantmentCardTypes[cardTypeFilter].label}
-                  color={cardTypeConfig.color}
-                />
-                {enchantment.isStackable && (
+                {props.enchantment ? (
+                  <MetaPill
+                    value={serviceText.labels.enchantmentCardTypes[cardTypeFilter].label}
+                    color={cardTypeConfig.color}
+                  />
+                ) : (
+                  <>
+                    <MetaPill value={serviceText.afflictions} color="#f59e0b" />
+                    {afflictionCardType && (
+                      <MetaPill value={serviceText.labels.cardTypes[afflictionCardType]} color={afflictionCardTypeColor(afflictionCardType)} />
+                    )}
+                  </>
+                )}
+                {resource.isStackable && (
                   <MetaPill value={serviceText.enchantmentsView.stackable} color="#f59e0b" />
                 )}
               </div>
-              {enchantment.nameEn !== enchantment.name && (
+              {resource.nameEn !== resource.name && (
                 <div>
                   <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
-                  <div className="font-game-text text-sm text-gray-300">{enchantment.nameEn}</div>
+                  <div className="font-game-text text-sm text-gray-300">{resource.nameEn}</div>
                 </div>
               )}
-              {enchantment.extraCardText && (
+              {resource.extraCardText && (
                 <div>
                   <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.cardText}</div>
                   <div className="font-game-text text-sm leading-relaxed text-gray-300">
                     {entities ? (
                       <RichDescription
-                        description={enchantment.extraCardText}
+                        description={resource.extraCardText}
                         entities={entities}
                         excludeEntityTerms={excludeSelf}
                       />
                     ) : (
-                      <DescriptionText description={enchantment.extraCardText} />
+                      <DescriptionText description={resource.extraCardText} />
                     )}
                   </div>
                 </div>
@@ -274,6 +302,7 @@ export function EnchantmentDetail({
               { kind: "potion", targets: relatedPotionTargets },
               { kind: "power", targets: relatedPowerTargets },
               { kind: "event", targets: relatedEventTargets },
+              { kind: "monster", targets: relatedMonsterTargets },
             ]}
             serviceLocale={serviceLocale}
           />
@@ -281,10 +310,10 @@ export function EnchantmentDetail({
           <InfoRailSection title={detailLabels.patchHistory}>
             <STS2ChangeHistory
               serviceLocale={serviceLocale}
-              entityType="enchantment"
-              entityId={enchantment.id}
+              entityType={resourceKind}
+              entityId={resource.id}
               changes={changes}
-              versionDiffs={versionDiffs}
+              versionDiffs={props.enchantment ? versionDiffs : undefined}
               patches={patches}
               emptyLabel={detailLabels.noPatchHistory}
             />
@@ -292,7 +321,7 @@ export function EnchantmentDetail({
 
           <InfoRailSection title={`${serviceText.common.comments}${commentCount > 0 ? ` (${commentCount})` : ""}`}>
             <CommentSection
-              threadKey={buildCodexCommentThreadKey("enchantment", enchantment.id)}
+              threadKey={buildCodexCommentThreadKey(resourceKind, resource.id)}
               onCountChange={setCommentCount}
             />
           </InfoRailSection>
@@ -395,4 +424,30 @@ function eventToReferenceTarget(event: CodexEvent): CodexReferenceTarget {
       eventData: event,
     },
   };
+}
+
+function monsterToReferenceTarget(monster: CodexMonster): CodexReferenceTarget {
+  const href = `/compendium/bestiary?monster=${monster.id.toLowerCase()}`;
+  return {
+    href,
+    id: monster.id,
+    title: monster.name,
+    entity: {
+      id: monster.id,
+      nameEn: monster.nameEn,
+      nameKo: monster.name,
+      imageUrl: monster.bossImageUrl ?? monster.imageUrl,
+      href,
+      color: monster.type,
+      type: "monster",
+      monsterData: monster,
+    },
+  };
+}
+
+function afflictionCardTypeColor(cardType: CodexCard["type"]): string {
+  if (cardType === "공격") return ENCHANTMENT_CARD_TYPE_CONFIG.Attack.color;
+  if (cardType === "스킬") return ENCHANTMENT_CARD_TYPE_CONFIG.Skill.color;
+  if (cardType === "파워") return "#c084fc";
+  return "#b0b0b0";
 }

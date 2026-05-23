@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexCards, getCodexEnchantments, getCodexEvents, getCodexPotions, getCodexPowers, getCodexRelics } from "@/lib/codex-data";
+import { getCodexAfflictions, getCodexCards, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexPotions, getCodexPowers, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
@@ -32,10 +32,12 @@ export default async function CodexEnchantmentsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [enchantments, cards, events, potions, powers, relics, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
+  const [enchantments, afflictions, cards, events, monsters, potions, powers, relics, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
     getCodexEnchantments({ gameLocale }),
+    getCodexAfflictions({ gameLocale }),
     getCodexCards({ gameLocale }),
     getCodexEvents({ gameLocale }),
+    getCodexMonsters({ gameLocale }),
     getCodexPotions({ gameLocale }),
     getCodexPowers({ gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -55,6 +57,7 @@ export default async function CodexEnchantmentsPage({
         serviceLocale={serviceLocale}
         gameUi={gameUi}
         enchantments={enchantments}
+        afflictions={afflictions}
         versions={versions}
         currentVersion={meta.version}
         patches={patches}
@@ -63,6 +66,7 @@ export default async function CodexEnchantmentsPage({
         entities={entities}
         cards={cards}
         events={events}
+        monsters={monsters}
         potions={potions}
         powers={powers}
         relics={relics}
