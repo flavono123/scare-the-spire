@@ -964,17 +964,36 @@ const DIAGRAM_ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
 const GAME_PANEL_BORDER_STYLE: CSSProperties = {
   borderStyle: "solid",
   borderColor: "transparent",
-  borderWidth: "16px",
-  borderImageSource: "url('/images/sts2/ui/tiny_nine_patch.png')",
-  borderImageSlice: "32 fill",
-  borderImageWidth: "16px",
+  borderTopWidth: "16px",
+  borderRightWidth: "34px",
+  borderBottomWidth: "12px",
+  borderLeftWidth: "20px",
+  borderImageSource: "url('/images/sts2/ui/hover_tip.png')",
+  borderImageSlice: "43 91 32 55 fill",
+  borderImageWidth: "16px 34px 12px 20px",
   borderImageRepeat: "stretch",
-  backgroundClip: "padding-box",
+  boxSizing: "border-box",
 };
 const METRIC_TOKEN_ICONS = {
-  attack: "/images/sts2/potions/attack_potion.webp",
-  block: "/images/sts2/potions/block_potion.webp",
+  attack: "/images/sts2/intents/attack.png",
+  block: "/images/sts2/ui/combat/block.png",
   hp: "/images/sts2/ui/topbar/top_bar_heart.png",
+};
+const INTENT_ICON_IMAGES = {
+  attack: "/images/sts2/intents/attack.png",
+  buff: "/images/sts2/intents/buff.png",
+  cardDebuff: "/images/sts2/intents/card_debuff.png",
+  deathBlow: "/images/sts2/intents/death_blow.png",
+  debuff: "/images/sts2/intents/debuff.png",
+  defend: "/images/sts2/intents/defend.png",
+  escape: "/images/sts2/intents/escape.png",
+  heal: "/images/sts2/intents/heal.png",
+  hidden: "/images/sts2/intents/hidden.png",
+  sleep: "/images/sts2/intents/sleep.png",
+  statusCard: "/images/sts2/intents/status_card.png",
+  stun: "/images/sts2/intents/stun.png",
+  summon: "/images/sts2/intents/summon.png",
+  unknown: "/images/sts2/intents/unknown.png",
 };
 
 function buildPowerEntity(
@@ -1414,19 +1433,25 @@ function getMoveIntentKeys(move: MonsterMove | null): string[] {
 
 function getIntentIconConfig(intent: string): { image: string; label: string } {
   const normalized = intent.toLowerCase();
-  if (normalized.includes("multiattack")) return { image: METRIC_TOKEN_ICONS.attack, label: intent };
-  if (normalized.includes("attack")) return { image: METRIC_TOKEN_ICONS.attack, label: intent };
+  if (normalized.includes("death")) return { image: INTENT_ICON_IMAGES.deathBlow, label: intent };
+  if (normalized.includes("multiattack")) return { image: INTENT_ICON_IMAGES.attack, label: intent };
+  if (normalized.includes("attack")) return { image: INTENT_ICON_IMAGES.attack, label: intent };
   if (normalized.includes("defend") || normalized.includes("block") || normalized.includes("shield")) {
-    return { image: METRIC_TOKEN_ICONS.block, label: intent };
+    return { image: INTENT_ICON_IMAGES.defend, label: intent };
   }
-  if (normalized.includes("debuff")) return { image: "/images/sts2/powers/vulnerable_power.webp", label: intent };
-  if (normalized.includes("buff")) return { image: "/images/sts2/powers/strength_power.webp", label: intent };
-  if (normalized.includes("heal")) return { image: METRIC_TOKEN_ICONS.hp, label: intent };
-  if (normalized.includes("status")) return { image: "/images/sts2/cards/burn.webp", label: intent };
-  if (normalized.includes("stun")) return { image: "/images/sts2/ui/potion_popup.png", label: intent };
-  if (normalized.includes("summon")) return { image: "/images/sts2/run-history/monster.png", label: intent };
-  if (normalized.includes("special")) return { image: "/images/sts2/icons/colorless_energy_icon.webp", label: intent };
-  return { image: "/images/sts2/ui/topbar/submenu_history_icon.png", label: intent };
+  if (normalized.includes("card_debuff") || normalized.includes("carddebuff")) {
+    return { image: INTENT_ICON_IMAGES.cardDebuff, label: intent };
+  }
+  if (normalized.includes("debuff")) return { image: INTENT_ICON_IMAGES.debuff, label: intent };
+  if (normalized.includes("buff")) return { image: INTENT_ICON_IMAGES.buff, label: intent };
+  if (normalized.includes("escape")) return { image: INTENT_ICON_IMAGES.escape, label: intent };
+  if (normalized.includes("heal")) return { image: INTENT_ICON_IMAGES.heal, label: intent };
+  if (normalized.includes("sleep")) return { image: INTENT_ICON_IMAGES.sleep, label: intent };
+  if (normalized.includes("status")) return { image: INTENT_ICON_IMAGES.statusCard, label: intent };
+  if (normalized.includes("stun")) return { image: INTENT_ICON_IMAGES.stun, label: intent };
+  if (normalized.includes("summon")) return { image: INTENT_ICON_IMAGES.summon, label: intent };
+  if (normalized.includes("hidden")) return { image: INTENT_ICON_IMAGES.hidden, label: intent };
+  return { image: INTENT_ICON_IMAGES.unknown, label: intent };
 }
 
 function buildMonsterActionMoves(monster: CodexMonster): MonsterMove[] {
