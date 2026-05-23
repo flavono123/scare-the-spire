@@ -1,1 +1,1 @@
-export { default, generateMetadata } from "../../codex/potions/page";
+export { default, dynamic, generateMetadata } from "../../codex/potions/page";

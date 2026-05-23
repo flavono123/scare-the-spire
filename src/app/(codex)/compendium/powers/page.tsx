@@ -1,1 +1,1 @@
-export { default, generateMetadata } from "../../codex/powers/page";
+export { default, dynamic, generateMetadata } from "../../codex/powers/page";

@@ -1,1 +1,1 @@
-export { default, generateMetadata } from "../../compendium/bestiary/page";
+export { default, dynamic, generateMetadata } from "../../compendium/bestiary/page";

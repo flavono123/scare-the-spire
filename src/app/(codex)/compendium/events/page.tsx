@@ -1,1 +1,1 @@
-export { default, generateMetadata } from "../../codex/events/page";
+export { default, dynamic, generateMetadata } from "../../codex/events/page";
