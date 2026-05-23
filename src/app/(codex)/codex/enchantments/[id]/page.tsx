@@ -65,9 +65,9 @@ export default async function EnchantmentDetailPage({
   if (!ench && !affliction) notFound();
   const serviceText = getCodexServiceMessages(serviceLocale);
 
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      {ench ? (
+  if (ench) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
         <EnchantmentDetail
           serviceLocale={serviceLocale}
           gameUi={gameUi}
@@ -83,18 +83,24 @@ export default async function EnchantmentDetailPage({
           changes={changes}
           versionDiffs={versionDiffs}
         />
-      ) : (
-        <EnchantmentDetail
-          serviceLocale={serviceLocale}
-          gameUi={gameUi}
-          backToListTitle={serviceText.enchantmentsView.title}
-          affliction={affliction}
-          entities={entities}
-          monsters={monsters}
-          patches={patches}
-          changes={changes}
-        />
-      )}
+      </div>
+    );
+  }
+
+  if (!affliction) notFound();
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <EnchantmentDetail
+        serviceLocale={serviceLocale}
+        gameUi={gameUi}
+        backToListTitle={serviceText.enchantmentsView.title}
+        affliction={affliction}
+        entities={entities}
+        monsters={monsters}
+        patches={patches}
+        changes={changes}
+      />
     </div>
   );
 }
