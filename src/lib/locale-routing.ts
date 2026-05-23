@@ -30,6 +30,16 @@ export function getGameLocaleFromRouteParam(segment: string | undefined): GameLo
   return gameLocaleFromPathSegment(segment) ?? DEFAULT_ROUTE_GAME_LOCALE;
 }
 
+export function searchRecordForGameLocale(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+): Record<string, string> {
+  const { serviceLocale } = getLocalePair(gameLocale);
+  return {
+    gl: gameLocale,
+    _sl: serviceLocale,
+  };
+}
+
 export async function getLocalePairFromParams<T extends Record<string, string>>(
   params: Promise<LocaleRouteParams<T>>,
 ): Promise<LocalePair & T> {
