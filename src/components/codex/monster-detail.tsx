@@ -55,6 +55,29 @@ interface MoveSummary {
   tone: MoveTone;
 }
 
+type MonsterIntentKind =
+  | "attack"
+  | "buff"
+  | "cardDebuff"
+  | "deathBlow"
+  | "debuff"
+  | "defend"
+  | "escape"
+  | "heal"
+  | "hidden"
+  | "sleep"
+  | "statusCard"
+  | "stun"
+  | "summon"
+  | "unknown";
+
+interface MonsterIntentPreviewItem {
+  key: string;
+  kind: MonsterIntentKind;
+  icon: string;
+  label: string | null;
+}
+
 type PatternKind = "fixed" | "random" | "conditional" | "mixed" | "unknown";
 
 interface PatternPhase {
@@ -273,6 +296,41 @@ function AscensionBadge({ level }: { level: number }) {
   );
 }
 
+function MonsterIntentPreview({ summary }: { summary: MoveSummary | null }) {
+  const intents = summary ? buildMonsterIntentPreviewItems(summary) : [];
+  if (intents.length === 0) return null;
+
+  return (
+    <div
+      className="pointer-events-none absolute left-1/2 top-[9%] z-40 flex -translate-x-1/2 items-end justify-center gap-1 sm:top-[7%]"
+      aria-hidden="true"
+    >
+      {intents.map((intent) => (
+        <span
+          key={intent.key}
+          className="relative inline-flex h-14 w-14 items-center justify-center sm:h-16 sm:w-16"
+        >
+          <Image
+            src={intent.icon}
+            alt=""
+            width={64}
+            height={64}
+            className="h-12 w-12 object-contain drop-shadow-[0_5px_6px_rgba(0,0,0,0.78)] sm:h-14 sm:w-14"
+          />
+          {intent.label && (
+            <span
+              className="font-game-title absolute -bottom-0.5 left-1/2 -translate-x-1/2 text-lg font-black leading-none text-[#fff8db] sm:text-xl"
+              style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
+            >
+              {intent.label}
+            </span>
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function MoveApplicationTokens({
   powers,
   cards,
@@ -353,6 +411,7 @@ function PatternStateTransitionDiagram({
   rows,
   serviceLocale,
   onSelectMove,
+  onPreviewMoveIntent,
   powerById,
   cardById,
 }: {
@@ -361,6 +420,7 @@ function PatternStateTransitionDiagram({
   rows: TransitionTableRow[];
   serviceLocale: ServiceLocale;
   onSelectMove: (moveId: string) => void;
+  onPreviewMoveIntent: (moveId: string | null) => void;
   powerById: Map<string, CodexPower>;
   cardById: Map<string, CodexCard>;
 }) {
@@ -573,6 +633,7 @@ function PatternStateTransitionDiagram({
             monster={monster}
             serviceLocale={serviceLocale}
             onSelectMove={onSelectMove}
+            onPreviewMoveIntent={onPreviewMoveIntent}
             powerById={powerById}
             cardById={cardById}
             shouldSuppressDiagramClick={shouldSuppressDiagramClick}
@@ -588,6 +649,7 @@ function PatternMoveStateNode({
   monster,
   serviceLocale,
   onSelectMove,
+  onPreviewMoveIntent,
   powerById,
   cardById,
   shouldSuppressDiagramClick,
@@ -596,6 +658,7 @@ function PatternMoveStateNode({
   monster: CodexMonster;
   serviceLocale: ServiceLocale;
   onSelectMove: (moveId: string) => void;
+  onPreviewMoveIntent: (moveId: string | null) => void;
   powerById: Map<string, CodexPower>;
   cardById: Map<string, CodexCard>;
   shouldSuppressDiagramClick: () => boolean;
@@ -620,6 +683,10 @@ function PatternMoveStateNode({
       title={title}
       aria-label={title}
       data-pattern-node="true"
+      onMouseEnter={() => onPreviewMoveIntent(node.id)}
+      onMouseLeave={() => onPreviewMoveIntent(null)}
+      onFocus={() => onPreviewMoveIntent(node.id)}
+      onBlur={() => onPreviewMoveIntent(null)}
       onClick={(event) => {
         if (shouldSuppressDiagramClick()) {
           event.preventDefault();
@@ -738,6 +805,10 @@ export function MonsterDetail({
     moveId: null,
     nonce: 0,
   });
+  const [intentPreviewState, setIntentPreviewState] = useState<{ monsterId: string; moveId: string | null }>({
+    monsterId: monster.id,
+    moveId: null,
+  });
   const [selectedSkinState, setSelectedSkinState] = useState<{ monsterId: string; selections: MonsterSkinSelections }>({
     monsterId: monster.id,
     selections: getDefaultMonsterSkinSelections(monster),
@@ -751,6 +822,11 @@ export function MonsterDetail({
       nonce: state.monsterId === monster.id ? state.nonce + 1 : 1,
     }));
   };
+  const previewMoveIntent = useCallback((moveId: string | null) => {
+    setIntentPreviewState({ monsterId: monster.id, moveId });
+  }, [monster.id]);
+  const intentPreviewMoveId = intentPreviewState.monsterId === monster.id ? intentPreviewState.moveId : null;
+  const intentPreviewSummary = moveSummaries.find((summary) => summary.move.id === intentPreviewMoveId) ?? null;
   const selectedSkinSelections = selectedSkinState.monsterId === monster.id
     ? selectedSkinState.selections
     : getDefaultMonsterSkinSelections(monster);
@@ -816,6 +892,7 @@ export function MonsterDetail({
         rows={transitionRows}
         serviceLocale={serviceLocale}
         onSelectMove={selectMove}
+        onPreviewMoveIntent={previewMoveIntent}
         powerById={powerById}
         cardById={cardById}
       />
@@ -872,6 +949,7 @@ export function MonsterDetail({
                 {monster.name.slice(0, 1)}
               </div>
             )}
+            <MonsterIntentPreview summary={intentPreviewSummary} />
           </div>
 
           <div className="text-center">
@@ -968,6 +1046,10 @@ export function MonsterDetail({
                       key={summary.move.id}
                       type="button"
                       onClick={() => selectMove(summary.move.id)}
+                      onMouseEnter={() => previewMoveIntent(summary.move.id)}
+                      onMouseLeave={() => previewMoveIntent(null)}
+                      onFocus={() => previewMoveIntent(summary.move.id)}
+                      onBlur={() => previewMoveIntent(null)}
                       className="w-full rounded-md border px-2.5 py-2.5 text-left transition-colors hover:bg-white/[0.06]"
                       style={{
                         backgroundColor: isSelected ? "rgba(255,255,255,0.055)" : "rgba(255,255,255,0.015)",
@@ -1067,6 +1149,93 @@ const METRIC_TOKEN_ICONS = {
   block: "/images/sts2/ui/combat/block.png",
   hp: "/images/sts2/ui/topbar/top_bar_heart.png",
 };
+const MONSTER_INTENT_ICONS: Record<MonsterIntentKind, string> = {
+  attack: "/images/sts2/intents/attack.png",
+  buff: "/images/sts2/intents/buff.png",
+  cardDebuff: "/images/sts2/intents/card_debuff.png",
+  deathBlow: "/images/sts2/intents/death_blow.png",
+  debuff: "/images/sts2/intents/debuff.png",
+  defend: "/images/sts2/intents/defend.png",
+  escape: "/images/sts2/intents/escape.png",
+  heal: "/images/sts2/intents/heal.png",
+  hidden: "/images/sts2/intents/hidden.png",
+  sleep: "/images/sts2/intents/sleep.png",
+  statusCard: "/images/sts2/intents/status_card.png",
+  stun: "/images/sts2/intents/stun.png",
+  summon: "/images/sts2/intents/summon.png",
+  unknown: "/images/sts2/intents/unknown.png",
+};
+const MONSTER_INTENT_CLASS_TO_KIND: Record<string, MonsterIntentKind> = {
+  AttackIntent: "attack",
+  SingleAttackIntent: "attack",
+  MultiAttackIntent: "attack",
+  BuffIntent: "buff",
+  CardDebuffIntent: "cardDebuff",
+  DeathBlowIntent: "deathBlow",
+  DebuffIntent: "debuff",
+  DebuffStrongIntent: "debuff",
+  DefendIntent: "defend",
+  EscapeIntent: "escape",
+  HealIntent: "heal",
+  HiddenIntent: "hidden",
+  SleepIntent: "sleep",
+  StatusIntent: "statusCard",
+  StunIntent: "stun",
+  SummonIntent: "summon",
+  UnknownIntent: "unknown",
+};
+
+function buildMonsterIntentPreviewItems(summary: MoveSummary): MonsterIntentPreviewItem[] {
+  return summary.move.intents.flatMap((intent, index) => {
+    const kind = getMonsterIntentKind(intent);
+    if (kind === "hidden") return [];
+
+    return [{
+      key: `${intent}-${index}`,
+      kind,
+      icon: MONSTER_INTENT_ICONS[kind],
+      label: getMonsterIntentPreviewLabel(intent, kind, summary),
+    }];
+  });
+}
+
+function getMonsterIntentKind(intent: string): MonsterIntentKind {
+  const kind = MONSTER_INTENT_CLASS_TO_KIND[intent];
+  if (kind) return kind;
+  if (intent.includes("Attack")) return "attack";
+  if (intent.includes("Buff")) return "buff";
+  if (intent.includes("Debuff")) return "debuff";
+  if (intent.includes("Defend")) return "defend";
+  if (intent.includes("Status")) return "statusCard";
+  return "unknown";
+}
+
+function getMonsterIntentPreviewLabel(intent: string, kind: MonsterIntentKind, summary: MoveSummary): string | null {
+  if (kind === "attack" || kind === "deathBlow") {
+    const damage = summary.damageEntry?.normal;
+    if (damage == null) return null;
+    return intent === "MultiAttackIntent" ? formatMultiAttackIntentLabel(damage, summary) : String(damage);
+  }
+
+  if (kind === "statusCard") {
+    const amount = summary.move.cardApplications[0]?.amount?.normal;
+    return amount == null ? null : String(amount);
+  }
+
+  return null;
+}
+
+function formatMultiAttackIntentLabel(damage: number, summary: MoveSummary): string {
+  const repeat = inferMultiAttackRepeat(summary);
+  return repeat == null ? String(damage) : `${damage}x${repeat}`;
+}
+
+function inferMultiAttackRepeat(summary: MoveSummary): number | null {
+  const explicitRepeat = summary.move.powerApplications.find((application) => (
+    application.powerId.toLowerCase().includes("repeat") && application.amount?.normal != null
+  ))?.amount?.normal;
+  return explicitRepeat ?? null;
+}
 
 function buildPowerEntity(
   application: MonsterMovePowerApplication,
