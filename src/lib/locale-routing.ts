@@ -1,0 +1,46 @@
+import {
+  CANONICAL_GAME_LOCALE_PATH_SEGMENTS,
+  DEFAULT_GAME_LOCALE_BY_SERVICE,
+  gameLocaleFromPathSegment,
+  getServiceLocaleForGameLocale,
+  type GameLocale,
+  type GameLocalePathSegment,
+  type ServiceLocale,
+} from "@/lib/i18n";
+
+export const DEFAULT_ROUTE_GAME_LOCALE = DEFAULT_GAME_LOCALE_BY_SERVICE.ko;
+
+export type LocaleRouteParams<T extends Record<string, string> = Record<string, never>> = T & {
+  gameLocale?: GameLocalePathSegment;
+};
+
+export type LocalePair = {
+  gameLocale: GameLocale;
+  serviceLocale: ServiceLocale;
+};
+
+export function getLocalePair(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE): LocalePair {
+  return {
+    gameLocale,
+    serviceLocale: getServiceLocaleForGameLocale(gameLocale),
+  };
+}
+
+export function getGameLocaleFromRouteParam(segment: string | undefined): GameLocale {
+  return gameLocaleFromPathSegment(segment) ?? DEFAULT_ROUTE_GAME_LOCALE;
+}
+
+export async function getLocalePairFromParams<T extends Record<string, string>>(
+  params: Promise<LocaleRouteParams<T>>,
+): Promise<LocalePair & T> {
+  const resolvedParams = await params;
+  const gameLocale = getGameLocaleFromRouteParam(resolvedParams.gameLocale);
+  return {
+    ...resolvedParams,
+    ...getLocalePair(gameLocale),
+  };
+}
+
+export function generateLocaleStaticParams() {
+  return CANONICAL_GAME_LOCALE_PATH_SEGMENTS.map((gameLocale) => ({ gameLocale }));
+}

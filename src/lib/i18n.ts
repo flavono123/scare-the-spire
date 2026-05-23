@@ -48,6 +48,10 @@ export const GAME_LOCALE_PATH_SEGMENTS = Object.keys(
   GAME_LOCALE_PATH_ALIASES,
 ) as GameLocalePathSegment[];
 
+export const CANONICAL_GAME_LOCALE_PATH_SEGMENTS = GAME_LOCALE_PATH_SEGMENTS.filter(
+  (segment) => segment !== "eng",
+);
+
 export const DEFAULT_SERVICE_LOCALE: ServiceLocale = "ko";
 export const DEFAULT_GAME_LOCALE_BY_SERVICE: Record<ServiceLocale, GameLocale> = {
   ko: "kor",
