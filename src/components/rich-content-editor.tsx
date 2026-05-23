@@ -15,7 +15,15 @@ import { CustomKeyword } from "@/components/chemicalx/custom-keyword";
 import { MentionList, type MentionListRef } from "@/components/chemicalx/mention-list";
 import { EntityMapProvider } from "@/components/chemicalx/entity-context";
 import { buildEntityMap } from "@/components/chemicalx/post-renderer";
-import { tiptapToBlocks, blocksToPlainText, entityDisplayNames, matchEntities } from "@/lib/chemical-utils";
+import {
+  buildEntityKeywordIndex,
+  blocksToPlainText,
+  entityKeywordDescription,
+  matchEntities,
+  normalizeKeywordLookupKey,
+  resolveEntityKeyword,
+  tiptapToBlocks,
+} from "@/lib/chemical-utils";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import type { PostBlock } from "@/lib/chemical-types";
 
@@ -26,13 +34,6 @@ import type { PostBlock } from "@/lib/chemical-types";
 const KEYWORD_RE_SOURCE = /(\S+)\{(\S(?:[^{}\n]*\S)?)\}/.source;
 const KEYWORD_AT_CURSOR_RE = /(\S+)\{(\S(?:[^{}\n]*\S)?)\}$/;
 
-// When the same display name exists across multiple entity types (e.g.
-// 전투의 북소리 is both a card and a power), the fallback picks by priority.
-// To force a specific choice, use the `{` suggestion popup.
-const TYPE_FALLBACK_PRIORITY = [
-  "card", "relic", "power", "potion", "enchantment", "affliction", "monster", "event",
-] as const;
-
 function cleanTooltipText(text: string): string {
   return text
     .replace(/\[\/?\w+(?::[^/\]]+)?\]/g, "")
@@ -42,14 +43,6 @@ function cleanTooltipText(text: string): string {
 
 function sanitizeKeywordPart(text: string): string {
   return text.replace(/\uFFFC/g, "").trim();
-}
-
-function normalizeKeywordKey(text: string): string {
-  return sanitizeKeywordPart(text).replace(/\s+/g, " ");
-}
-
-function compactKeywordKey(text: string): string {
-  return normalizeKeywordKey(text).replace(/\s+/g, "");
 }
 
 interface KeywordResolution {
@@ -242,64 +235,28 @@ export function RichContentEditor({
   const submitRef = useRef<() => void>(() => {});
   const suggestionOpenRef = useRef(false);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
-  const keywordEntityMap = useMemo(() => {
-    const map = new Map<string, Array<{ id: string; type: EntityType }>>();
-    for (const entity of entities) {
-      for (const name of entityDisplayNames(entity)) {
-        for (const key of [normalizeKeywordKey(name), compactKeywordKey(name)]) {
-          const bucket = map.get(key) ?? [];
-          if (!bucket.some((c) => c.id === entity.id && c.type === entity.type)) {
-            bucket.push({ id: entity.id, type: entity.type });
-          }
-          map.set(key, bucket);
-        }
-      }
-    }
-    return map;
-  }, [entities]);
+  const keywordEntityIndex = useMemo(() => buildEntityKeywordIndex(entities), [entities]);
   const keywordDescriptionMap = useMemo(() => {
     const map = new Map<string, string>();
 
     for (const [k, v] of Object.entries(KEYWORD_DESC)) {
-      map.set(normalizeKeywordKey(k), cleanTooltipText(v));
-      map.set(compactKeywordKey(k), cleanTooltipText(v));
+      map.set(normalizeKeywordLookupKey(k), cleanTooltipText(v));
     }
     for (const [k, v] of Object.entries(GOLD_TERM_DESC)) {
-      map.set(normalizeKeywordKey(k), cleanTooltipText(v));
-      map.set(compactKeywordKey(k), cleanTooltipText(v));
-    }
-
-    for (const entity of entities) {
-      const description =
-        entity.powerData?.description
-        ?? entity.relicData?.description
-        ?? entity.potionData?.description
-        ?? entity.enchantmentData?.description;
-      if (!description) continue;
-      const cleaned = cleanTooltipText(description);
-      if (!cleaned) continue;
-      for (const name of entityDisplayNames(entity)) {
-        map.set(normalizeKeywordKey(name), cleaned);
-        map.set(compactKeywordKey(name), cleaned);
-      }
+      map.set(normalizeKeywordLookupKey(k), cleanTooltipText(v));
     }
 
     return map;
-  }, [entities]);
+  }, []);
 
   const resolveKeyword = useCallback((keyword: string): KeywordResolution => {
     const cleanKeyword = sanitizeKeywordPart(keyword);
-    const normalized = normalizeKeywordKey(cleanKeyword);
-    const compact = compactKeywordKey(cleanKeyword);
-    const candidates = keywordEntityMap.get(normalized) ?? keywordEntityMap.get(compact) ?? [];
-    const entity = [...candidates].sort(
-      (a, b) =>
-        TYPE_FALLBACK_PRIORITY.indexOf(a.type as (typeof TYPE_FALLBACK_PRIORITY)[number])
-        - TYPE_FALLBACK_PRIORITY.indexOf(b.type as (typeof TYPE_FALLBACK_PRIORITY)[number]),
-    )[0];
+    const lookupKey = normalizeKeywordLookupKey(cleanKeyword);
+    const entity = resolveEntityKeyword(cleanKeyword, keywordEntityIndex);
+    const entityDescription = entity ? entityKeywordDescription(entity) : null;
     const description =
-      keywordDescriptionMap.get(normalized)
-      ?? keywordDescriptionMap.get(compact)
+      (entityDescription ? cleanTooltipText(entityDescription) : null)
+      ?? keywordDescriptionMap.get(lookupKey)
       ?? cleanKeyword;
     return {
       keyword: cleanKeyword,
@@ -307,7 +264,7 @@ export function RichContentEditor({
       entityId: entity?.id,
       entityType: entity?.type,
     };
-  }, [keywordDescriptionMap, keywordEntityMap]);
+  }, [keywordDescriptionMap, keywordEntityIndex]);
 
   const syncEditorState = useCallback((editor: Editor) => {
     const json = editor.getJSON();
