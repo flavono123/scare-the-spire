@@ -1,5 +1,4 @@
 import {
-  CANONICAL_GAME_LOCALE_PATH_SEGMENTS,
   DEFAULT_GAME_LOCALE_BY_SERVICE,
   gameLocaleFromPathSegment,
   getServiceLocaleForGameLocale,
@@ -9,6 +8,7 @@ import {
 } from "@/lib/i18n";
 
 export const DEFAULT_ROUTE_GAME_LOCALE = DEFAULT_GAME_LOCALE_BY_SERVICE.ko;
+const PRERENDERED_GAME_LOCALE_PATH_SEGMENTS = ["en"] as const satisfies readonly GameLocalePathSegment[];
 
 export type LocaleRouteParams<T extends Record<string, string> = Record<string, never>> = T & {
   gameLocale?: GameLocalePathSegment;
@@ -52,5 +52,5 @@ export async function getLocalePairFromParams<T extends Record<string, string>>(
 }
 
 export function generateLocaleStaticParams() {
-  return CANONICAL_GAME_LOCALE_PATH_SEGMENTS.map((gameLocale) => ({ gameLocale }));
+  return PRERENDERED_GAME_LOCALE_PATH_SEGMENTS.map((gameLocale) => ({ gameLocale }));
 }
