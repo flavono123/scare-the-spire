@@ -1,6 +1,6 @@
 "use client";
 
-import { type CSSProperties, type ReactNode, useMemo, useState } from "react";
+import { type CSSProperties, type PointerEvent, type ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
@@ -117,6 +117,20 @@ interface PatternDiagramChoiceBox {
   y: number;
   width: number;
   height: number;
+}
+
+interface PatternDiagramPan {
+  x: number;
+  y: number;
+}
+
+interface PatternDiagramDragState {
+  pointerId: number;
+  startX: number;
+  startY: number;
+  originX: number;
+  originY: number;
+  moved: boolean;
 }
 
 interface PatternDiagramPhaseConnector {
@@ -357,14 +371,83 @@ function PatternStateTransitionDiagram({
   if (!diagram) return null;
 
   const markerPrefix = sanitizeSvgId(`monster-pattern-${monster.id}`);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<PatternDiagramDragState | null>(null);
+  const suppressClickUntilRef = useRef(0);
+  const viewportHeight = Math.max(DIAGRAM_VIEWPORT_MIN_HEIGHT, diagram.height + DIAGRAM_VIEWPORT_HEIGHT_EXTRA);
+  const [pan, setPan] = useState<PatternDiagramPan>({ x: 0, y: DIAGRAM_VIEWPORT_TOP_GUTTER });
+  const [isDragging, setIsDragging] = useState(false);
+
+  const clampPan = useCallback((next: PatternDiagramPan): PatternDiagramPan => {
+    const viewport = viewportRef.current;
+    const viewportWidth = viewport?.clientWidth ?? diagram.width;
+    const viewportClientHeight = viewport?.clientHeight ?? viewportHeight;
+    const minX = Math.min(DIAGRAM_DRAG_GUTTER, viewportWidth - diagram.width - DIAGRAM_DRAG_GUTTER);
+    const minY = Math.min(DIAGRAM_DRAG_GUTTER, viewportClientHeight - diagram.height - DIAGRAM_DRAG_GUTTER);
+
+    return {
+      x: Math.min(DIAGRAM_DRAG_GUTTER, Math.max(minX, next.x)),
+      y: Math.min(DIAGRAM_DRAG_GUTTER, Math.max(minY, next.y)),
+    };
+  }, [diagram.height, diagram.width, viewportHeight]);
+
+  const handlePointerDown = useCallback((event: PointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: pan.x,
+      originY: pan.y,
+      moved: false,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setIsDragging(true);
+  }, [pan.x, pan.y]);
+
+  const handlePointerMove = useCallback((event: PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const deltaX = event.clientX - drag.startX;
+    const deltaY = event.clientY - drag.startY;
+    if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+      drag.moved = true;
+    }
+    setPan(clampPan({ x: drag.originX + deltaX, y: drag.originY + deltaY }));
+  }, [clampPan]);
+
+  const handlePointerEnd = useCallback((event: PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    if (drag.moved) {
+      suppressClickUntilRef.current = Date.now() + 160;
+    }
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    dragRef.current = null;
+    setIsDragging(false);
+  }, []);
+
+  const shouldSuppressDiagramClick = useCallback(() => Date.now() < suppressClickUntilRef.current, []);
 
   return (
     <div
-      className="max-w-full overflow-x-auto rounded-md border border-white/10 bg-black/15 p-3"
+      ref={viewportRef}
+      className={`relative max-w-full touch-none overflow-hidden rounded-md border border-white/10 bg-black/15 select-none ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+      style={{ height: viewportHeight }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerEnd}
+      onPointerCancel={handlePointerEnd}
     >
       <div
         className="relative"
-        style={{ width: diagram.width, height: diagram.height }}
+        style={{
+          width: diagram.width,
+          height: diagram.height,
+          transform: `translate3d(${pan.x}px, ${pan.y}px, 0)`,
+        }}
       >
         {diagram.choiceBoxes.map((box) => (
           <div
@@ -491,6 +574,7 @@ function PatternStateTransitionDiagram({
             onSelectMove={onSelectMove}
             powerById={powerById}
             cardById={cardById}
+            shouldSuppressDiagramClick={shouldSuppressDiagramClick}
           />
         ))}
       </div>
@@ -505,6 +589,7 @@ function PatternMoveStateNode({
   onSelectMove,
   powerById,
   cardById,
+  shouldSuppressDiagramClick,
 }: {
   node: PatternDiagramNode;
   monster: CodexMonster;
@@ -512,6 +597,7 @@ function PatternMoveStateNode({
   onSelectMove: (moveId: string) => void;
   powerById: Map<string, CodexPower>;
   cardById: Map<string, CodexCard>;
+  shouldSuppressDiagramClick: () => boolean;
 }) {
   const move = getMonsterMove(monster, node.id);
   const damageEntry = monster.damageValues ? findDamageForMove(node.id, monster.damageValues) : null;
@@ -532,7 +618,15 @@ function PatternMoveStateNode({
       }}
       title={title}
       aria-label={title}
-      onClick={() => onSelectMove(node.id)}
+      data-pattern-node="true"
+      onClick={(event) => {
+        if (shouldSuppressDiagramClick()) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+        onSelectMove(node.id);
+      }}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
@@ -552,7 +646,10 @@ function PatternMoveStateNode({
         {move && (move.powerApplications.length > 0 || move.cardApplications.length > 0) && (
           <span
             className="flex max-w-full flex-wrap items-center justify-center gap-0.5"
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event) => {
+              if (shouldSuppressDiagramClick()) event.preventDefault();
+              event.stopPropagation();
+            }}
             onKeyDown={(event) => event.stopPropagation()}
           >
             <MoveApplicationTokens
@@ -941,8 +1038,12 @@ const DIAGRAM_CELL_WIDTH = 148;
 const DIAGRAM_CELL_HEIGHT = 96;
 const DIAGRAM_H_GAP = 32;
 const DIAGRAM_V_GAP = 24;
-const DIAGRAM_PAD = 44;
+const DIAGRAM_PAD = 58;
 const DIAGRAM_ROW_GAP = 76;
+const DIAGRAM_VIEWPORT_MIN_HEIGHT = 270;
+const DIAGRAM_VIEWPORT_HEIGHT_EXTRA = 42;
+const DIAGRAM_VIEWPORT_TOP_GUTTER = 18;
+const DIAGRAM_DRAG_GUTTER = 24;
 const DIAGRAM_ARROW_COLOR = "#efc851";
 const DIAGRAM_CONDITIONAL_COLOR = "#ff4545";
 const BESTIARY_START_COLOR = "#60a5fa";
@@ -1275,7 +1376,7 @@ function buildDiagramEdge(
     const startX = from.x + from.width;
     const startY = from.y + from.height / 2;
     const loopX = startX + 34 + laneOffset;
-    const loopY = from.y - 20 - laneOffset;
+    const loopY = from.y - 16 - laneOffset * 0.45;
     const endX = from.x + from.width * 0.58;
     const endY = from.y;
     path = `M ${startX} ${startY} H ${loopX} V ${loopY} H ${endX} V ${endY}`;
@@ -1295,7 +1396,7 @@ function buildDiagramEdge(
     const startY = from.y;
     const endX = to.x + to.width / 2;
     const endY = to.y;
-    const loopY = Math.min(from.y, to.y) - 34 - laneOffset;
+    const loopY = Math.min(from.y, to.y) - 22 - laneOffset * 0.45;
     path = `M ${startX} ${startY} V ${loopY} H ${endX} V ${endY}`;
     labelX = (startX + endX) / 2;
     labelY = loopY - 8;
