@@ -23,7 +23,7 @@ interface Props {
 export function DonatedRunsSection({ refreshKey = 0 }: Props) {
   const copy = serviceMessages[useServiceLocale()].historyCourse.lists;
   const router = useRouter();
-  const { userId, unavailable: authUnavailable } = useAuth();
+  const { userId } = useAuth();
   const [runs, setRuns] = useState<DonatedRunSummary[] | null>(null);
   const [unavailable, setUnavailable] = useState(false);
 
@@ -64,7 +64,7 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
   if (!supabaseEnabled) {
     return null;
   }
-  const storageUnavailable = authUnavailable || unavailable;
+  const storageUnavailable = unavailable;
   const loading = runs === null && !storageUnavailable;
 
   return (

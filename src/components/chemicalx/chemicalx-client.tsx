@@ -25,7 +25,7 @@ interface ChemicalXClientProps {
 export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
-  const { userId, ready, unavailable: authUnavailable, ensureUser } = useAuth();
+  const { userId, ready, ensureUser } = useAuth();
   const { posts, loading, unavailable, add, remove } = useChemicalPosts(userId);
   const [showAllTooltips, setShowAllTooltips] = useState(false);
   const profileFallback = useMemo(
@@ -33,7 +33,7 @@ export function ChemicalXClient({ entities, placeholder }: ChemicalXClientProps)
     [copy.defaultNickname],
   );
   const { profile } = useUserProfile(profileFallback);
-  const storageUnavailable = authUnavailable || unavailable;
+  const storageUnavailable = unavailable;
 
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
 

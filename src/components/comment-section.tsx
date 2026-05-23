@@ -168,7 +168,7 @@ export function CommentSection({
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].comments;
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
-  const { userId, ready, unavailable: authUnavailable, ensureUser } = useAuth();
+  const { userId, ready, ensureUser } = useAuth();
   const { entities, loading: entitiesLoading } = useCommentEntities(initialEntities);
   const { comments, loading, unavailable, add, remove } = useComments(threadKey, userId);
   const profileFallback = useMemo(
@@ -176,7 +176,7 @@ export function CommentSection({
     [copy.defaultNickname],
   );
   const { profile } = useUserProfile(profileFallback);
-  const storageUnavailable = authUnavailable || unavailable;
+  const storageUnavailable = unavailable;
 
   const prevCount = useRef(0);
   useEffect(() => {

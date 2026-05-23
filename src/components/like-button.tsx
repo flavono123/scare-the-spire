@@ -11,7 +11,6 @@ export function LikeButton({
   initialCount,
   size = 20,
   authReady = true,
-  authUnavailable = false,
   ensureUser,
   className = "",
 }: {
@@ -27,7 +26,7 @@ export function LikeButton({
   const { count, liked, loading, unavailable, toggle } = useLikes(storyId, userId, { initialCount });
   const [authPending, setAuthPending] = useState(false);
   const pending = !authReady || loading || authPending;
-  const blocked = authUnavailable || unavailable;
+  const blocked = unavailable;
 
   const handleClick = async () => {
     if (pending || blocked) return;
