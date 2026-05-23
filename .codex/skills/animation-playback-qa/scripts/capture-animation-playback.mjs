@@ -188,7 +188,11 @@ async function captureStage(page, captures, options) {
 }
 
 function buildSummary(input) {
-  const publicCaptures = input.captures.map(({ bytes: _bytes, ...capture }) => capture);
+  const publicCaptures = input.captures.map((capture) => {
+    const publicCapture = { ...capture };
+    delete publicCapture.bytes;
+    return publicCapture;
+  });
   const elementIds = publicCaptures.map((capture) => capture.elementInfo?.id ?? null);
   const uniqueElementIds = [...new Set(elementIds.filter((id) => id !== null))];
   const nonZeroFrameDiffs = publicCaptures.filter((capture) => (capture.diffFromPrevious ?? 0) > 0).length;

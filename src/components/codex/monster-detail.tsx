@@ -931,7 +931,6 @@ const DIAGRAM_PAD = 84;
 const DIAGRAM_ROW_GAP = 76;
 const DIAGRAM_ARROW_COLOR = "#efc851";
 const DIAGRAM_CONDITIONAL_COLOR = "#ff4545";
-const DIAGRAM_GROUP_COLOR = "#29ebc0";
 const BESTIARY_START_COLOR = "#60a5fa";
 const DIAGRAM_ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
 const PATTERN_MOVE_PANEL_STYLE: CSSProperties = {
