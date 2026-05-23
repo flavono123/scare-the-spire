@@ -8,6 +8,7 @@ type CodexNavGameLabelKey =
   | "monsters"
   | "events"
   | "ancients"
+  | "epochs"
   | "historyCourse";
 
 // Exact client-safe labels from STS2 localization tables:
@@ -21,6 +22,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiarium",
     events: "Ereignis",
     ancients: "Ahnen",
+    epochs: "Epochen",
     historyCourse: "Geschichtskurs",
   },
   eng: {
@@ -31,6 +33,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiary",
     events: "Event",
     ancients: "Ancients",
+    epochs: "Epochs",
     historyCourse: "History Course",
   },
   esp: {
@@ -41,6 +44,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiario",
     events: "Evento",
     ancients: "Ancestrales",
+    epochs: "Eras",
     historyCourse: "Clase de historia",
   },
   fra: {
@@ -51,6 +55,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiaire",
     events: "Événement",
     ancients: "Les Anciens",
+    epochs: "Ères",
     historyCourse: "Manuel d'Histoire",
   },
   ita: {
@@ -61,6 +66,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiario",
     events: "Evento",
     ancients: "Gli Antichi",
+    epochs: "Epoche",
     historyCourse: "Corso di Storia",
   },
   jpn: {
@@ -71,6 +77,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "モンスター図鑑",
     events: "イベント",
     ancients: "エンシェント",
+    epochs: "断章",
     historyCourse: "歴史学教程",
   },
   kor: {
@@ -81,6 +88,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "몬스터 도감",
     events: "이벤트",
     ancients: "고대의 존재",
+    epochs: "역사",
     historyCourse: "역사 강의서",
   },
   pol: {
@@ -91,6 +99,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiariusz",
     events: "Wydarzenie",
     ancients: "Starożytni",
+    epochs: "Epoki",
     historyCourse: "Podręcznik do historii",
   },
   ptb: {
@@ -101,6 +110,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiário",
     events: "Evento",
     ancients: "Ancestrais",
+    epochs: "Épocas",
     historyCourse: "Estudos de História",
   },
   rus: {
@@ -111,6 +121,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Бестиарий",
     events: "Событие",
     ancients: "Древние",
+    epochs: "Эпохи",
     historyCourse: "Лекция по истории",
   },
   spa: {
@@ -121,6 +132,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Bestiario",
     events: "Evento",
     ancients: "Los Antiguos",
+    epochs: "Épocas",
     historyCourse: "Libro de historia",
   },
   tha: {
@@ -131,6 +143,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "คลังอสูร",
     events: "เหตุการณ์",
     ancients: "เทพโบราณ",
+    epochs: "ศักราช",
     historyCourse: "หลักสูตรประวัติศาสตร์",
   },
   tur: {
@@ -141,6 +154,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "Yaratık Ansiklopedisi",
     events: "Etkinlik",
     ancients: "Kadimler",
+    epochs: "Çağlar",
     historyCourse: "Tarih Dersi",
   },
   zhs: {
@@ -151,6 +165,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "怪物图鉴",
     events: "事件",
     ancients: "先古之民",
+    epochs: "历史节点",
     historyCourse: "历史课",
   },
 };

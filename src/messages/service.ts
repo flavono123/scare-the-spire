@@ -175,6 +175,7 @@ export const serviceMessages = {
       events: "이벤트",
       encounters: "인카운터",
       ancients: "고대의 존재",
+      epochs: "역사",
       index: "전체 보기",
       common: {
         close: "닫기",
@@ -676,6 +677,7 @@ export const serviceMessages = {
       events: "Events",
       encounters: "Encounters",
       ancients: "Ancients",
+      epochs: "Epochs",
       index: "All",
       common: {
         close: "Close",

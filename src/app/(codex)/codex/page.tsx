@@ -112,6 +112,18 @@ const categories = [
       "/images/sts2/ancients/darv.webp",
     ],
   },
+  {
+    href: "/compendium/epochs",
+    labelKey: "epochs",
+    count: 57,
+    description: null,
+    images: [
+      "/images/sts2/epochs/colorless1_epoch.webp",
+      "/images/sts2/epochs/neow_epoch.webp",
+      "/images/sts2/epochs/underdocks_epoch.webp",
+      "/images/sts2/epochs/darv_epoch.webp",
+    ],
+  },
 ] as const;
 
 export async function generateMetadata({
@@ -144,6 +156,7 @@ export default async function CodexIndexPage({
     monsters: gameUi.bestiaryTitle,
     events: gameUi.eventsTitle,
     ancients: gameUi.ancientsTitle,
+    epochs: gameUi.epochsTitle,
   };
 
   return (
@@ -223,4 +236,5 @@ const ENGLISH_LABELS: Record<(typeof categories)[number]["labelKey"], string> = 
   monsters: "Bestiary",
   events: "Events",
   ancients: "Ancients",
+  epochs: "Epochs",
 };

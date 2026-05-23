@@ -130,6 +130,8 @@ function sts2EntityHref(entity: EntityInfo): string | null {
       return `/compendium/bestiary?view=encounters&encounter=${entity.id.toLowerCase()}`;
     case "ancient":
       return `/compendium/ancients/${entity.id.toLowerCase()}`;
+    case "epoch":
+      return `/compendium/epochs?epoch=${entity.id.toLowerCase()}`;
     default:
       return null;
   }
