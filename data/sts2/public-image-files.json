@@ -2534,6 +2534,9 @@
     "neow.webp",
     "tezcatara.webp"
   ],
+  "og": [
+    "patch-notes.jpg"
+  ],
   "patches": [
     "default-art.jpg",
     "default-art.webp"
