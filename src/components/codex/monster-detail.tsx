@@ -688,6 +688,44 @@ export function MonsterDetail({
   });
   const cardById = useMemo(() => new Map(cards.map((card) => [card.id, card])), [cards]);
   const powerById = useMemo(() => new Map(powers.map((power) => [power.id, power])), [powers]);
+  const patternRail = transitionRows.length > 0 ? (
+    <InfoRailSection title={monsterText.actionGraph}>
+      <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-gray-400">
+        <span>{getPatternKindLabel(patternSummary.kind, serviceLocale)}</span>
+        {loopLength && (
+          <span className="font-semibold text-[#efc851]">
+            {serviceLocale === "ko" ? `${loopLength}턴 반복` : `${loopLength}-turn loop`}
+          </span>
+        )}
+      </div>
+
+      {patternSummary.hasPhases && (
+        <div className="mb-3 grid gap-1.5 text-xs text-gray-400">
+          {patternSummary.phases.map((phase) => (
+            <div key={phase.id} className="flex flex-wrap items-center gap-1.5">
+              <span className="font-game-title font-semibold text-[#29ebc0]">
+                {serviceLocale === "ko" ? `페이즈 ${phase.label}` : `Phase ${phase.label}`}
+              </span>
+              <span>{phase.moveIds.map((moveId) => getMoveName(monster, moveId)).join(" → ")}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <PatternStateTransitionDiagram
+        monster={monster}
+        phases={patternSummary.phases}
+        rows={transitionRows}
+        serviceLocale={serviceLocale}
+        onSelectMove={selectMove}
+        powerById={powerById}
+        cardById={cardById}
+      />
+      {monster.moveGraph?.confidence === "partial" && (
+        <p className="mt-3 text-[11px] leading-relaxed text-gray-500">{monsterText.graphPartial}</p>
+      )}
+    </InfoRailSection>
+  ) : null;
 
   return (
     <div className="mx-auto w-full max-w-6xl p-4 sm:p-6">
