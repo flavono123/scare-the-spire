@@ -2,6 +2,8 @@
 
 import fsSync from "node:fs";
 import fs from "node:fs/promises";
+import { createRequire } from "node:module";
+import os from "node:os";
 import path from "node:path";
 
 const args = parseArgs(process.argv.slice(2));
@@ -36,14 +38,7 @@ const outputDir = path.resolve(
 );
 const browserExecutable = stringArg(args, "browser-executable", defaultChromeExecutable());
 
-let chromium;
-try {
-  ({ chromium } = await import("playwright"));
-} catch (error) {
-  console.error("Unable to import Playwright. Install it in the project or run with a NODE_PATH that exposes playwright.");
-  console.error(error instanceof Error ? error.message : String(error));
-  process.exit(2);
-}
+const { chromium } = await loadPlaywright();
 
 await fs.mkdir(outputDir, { recursive: true });
 
@@ -286,6 +281,35 @@ function sanitizeName(value) {
 function defaultChromeExecutable() {
   const macChrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
   return fsSync.existsSync(macChrome) ? macChrome : null;
+}
+
+async function loadPlaywright() {
+  try {
+    return await import("playwright");
+  } catch (bareImportError) {
+    const require = createRequire(import.meta.url);
+    const candidateRoots = [
+      process.env.PLAYWRIGHT_NODE_MODULES,
+      process.env.NODE_PATH,
+      path.join(os.homedir(), ".cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules"),
+    ].filter(Boolean);
+
+    for (const root of candidateRoots) {
+      for (const packageRoot of String(root).split(path.delimiter)) {
+        const packageJson = path.join(packageRoot, "playwright", "package.json");
+        if (!fsSync.existsSync(packageJson)) continue;
+        try {
+          return require(path.join(packageRoot, "playwright"));
+        } catch {
+          continue;
+        }
+      }
+    }
+
+    console.error("Unable to import Playwright. Install it in the project, set PLAYWRIGHT_NODE_MODULES, or set NODE_PATH.");
+    console.error(bareImportError instanceof Error ? bareImportError.message : String(bareImportError));
+    process.exit(2);
+  }
 }
 
 function printHelp() {
