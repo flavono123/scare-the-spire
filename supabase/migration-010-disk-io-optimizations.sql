@@ -35,8 +35,13 @@ create index if not exists idx_likes_env_story
 create index if not exists idx_comments_env_story
   on public.comments(env, story_id);
 
-create index if not exists idx_comment_likes_user_comment
-  on public.comment_likes(user_id, comment_id);
+do $$
+begin
+  if to_regclass('public.comment_likes') is not null then
+    create index if not exists idx_comment_likes_user_comment
+      on public.comment_likes(user_id, comment_id);
+  end if;
+end $$;
 
 create index if not exists idx_runs_env_created_desc
   on public.runs(env, created_at desc);
