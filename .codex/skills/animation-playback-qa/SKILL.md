@@ -1,85 +1,64 @@
 ---
 name: animation-playback-qa
-description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+description: Local browser QA workflow for verifying animation playback and replay with screenshots. Use when Codex needs to test that clicking or otherwise triggering a UI animation actually plays on first and repeated triggers, including SpinePlayer actors, VFX overlays, Godot shader/canvas effects, WebGL/canvas animations, video-like render surfaces, and local frontend animation regressions.
 ---
 
-# Animation Playback Qa
+# Animation Playback QA
 
-## Overview
+Use this skill when an animation bug report is about "plays once", "does not replay", "VFX does not show", "shader is blank", "first click works but second click does not", or any similar local UI animation behavior.
 
-[TODO: 1-2 sentences explaining what this skill enables]
+## Core Workflow
 
-## Structuring This Skill
+1. Start or reuse the local app server.
+2. Identify the page URL, the render surface selector, and the trigger locator.
+   - Render surface examples: `.sts2-spine-stage canvas`, `.vfx-layer canvas`, `canvas`, `video`, or a positioned VFX container.
+   - Trigger examples: `text=방출`, `button:has-text("Play")`, `[data-testid=attack]`.
+3. Run `scripts/capture-animation-playback.mjs` to capture before, first trigger, and repeated trigger frames.
+4. Inspect the saved screenshots. Do not treat nonzero pixel differences alone as proof; idle loops, camera jitter, or shader noise can create false positives.
+5. Report whether the expected non-idle/nonblank frame appears after both the first trigger and the repeated trigger.
 
-[TODO: Choose the structure that best fits this skill's purpose. Common patterns:
+## Capture Script
 
-**1. Workflow-Based** (best for sequential processes)
-- Works well when there are clear step-by-step procedures
-- Example: DOCX skill with "Workflow Decision Tree" -> "Reading" -> "Creating" -> "Editing"
-- Structure: ## Overview -> ## Workflow Decision Tree -> ## Step 1 -> ## Step 2...
+Run from this skill directory or pass the absolute script path:
 
-**2. Task-Based** (best for tool collections)
-- Works well when the skill offers different operations/capabilities
-- Example: PDF skill with "Quick Start" -> "Merge PDFs" -> "Split PDFs" -> "Extract Text"
-- Structure: ## Overview -> ## Quick Start -> ## Task Category 1 -> ## Task Category 2...
+```bash
+node .codex/skills/animation-playback-qa/scripts/capture-animation-playback.mjs \
+  --url http://localhost:3000/compendium/monsters/infested_prism \
+  --stage ".sts2-spine-stage canvas" \
+  --trigger "text=방출" \
+  --repeat 2 \
+  --delays 80,120,240,480
+```
 
-**3. Reference/Guidelines** (best for standards or specifications)
-- Works well for brand guidelines, coding standards, or requirements
-- Example: Brand styling with "Brand Guidelines" -> "Colors" -> "Typography" -> "Features"
-- Structure: ## Overview -> ## Guidelines -> ## Specifications -> ## Usage...
+The script writes PNG frames and `summary.json` under `/tmp/animation-playback-qa/<timestamp>` by default. Use `--output <dir>` only when the artifacts should be kept.
 
-**4. Capabilities-Based** (best for integrated systems)
-- Works well when the skill provides multiple interrelated features
-- Example: Product Management with "Core Capabilities" -> numbered capability list
-- Structure: ## Overview -> ## Core Capabilities -> ### 1. Feature -> ### 2. Feature...
+Important options:
 
-Patterns can be mixed and matched as needed. Most skills combine patterns (e.g., start with task-based, add workflow for complex operations).
+- `--url`: page URL to test.
+- `--stage`: CSS selector for the element to screenshot.
+- `--trigger`: Playwright locator to click. Repeat this option to test multiple controls.
+- `--repeat`: number of times to click each trigger; use at least `2` for replay bugs.
+- `--delays`: capture offsets after each click. Include a known action frame such as `120` ms when possible.
+- `--pre-wait`: initial wait after navigation for loaders/assets.
+- `--settle`: wait after each trigger sequence before clicking again.
+- Omit `--trigger` for passive continuous animations such as always-running shaders; the script captures the stage at the configured delays without clicking.
 
-Delete this entire "Structuring This Skill" section when done - it's just guidance.]
+## Validation Rules
 
-## [TODO: Replace with the first main section based on chosen structure]
+- For replay bugs, compare the same delay after trigger 1 and trigger 2. Both must show the expected action/VFX/shader state, not just any pixel change.
+- For SpinePlayer regressions, check `summary.json` `checks.uniqueStageElementIds` when a fix relies on remounting. If the ids do not change, the component may still be reusing stale playback state.
+- For VFX overlays, target the overlay render surface if it is separate from the actor. Run a second pass for the actor if both must animate.
+- For Godot shader or generic canvas effects, use the canvas/container as `--stage`; if the effect is triggered, provide the triggering locator, otherwise use passive capture.
+- Treat console warnings/errors in `summary.json` as part of the result.
+- If the action is visually subtle, capture more offsets: `--delays 40,80,120,180,240,360,480`.
 
-[TODO: Add content here. See examples in existing skills:
-- Code samples for technical skills
-- Decision trees for complex workflows
-- Concrete examples with realistic user requests
-- References to scripts/templates/references as needed]
+## Reporting
 
-## Resources (optional)
+Include:
 
-Create only the resource directories this skill actually needs. Delete this section if no resources are required.
-
-### scripts/
-Executable code (Python/Bash/etc.) that can be run directly to perform specific operations.
-
-**Examples from other skills:**
-- PDF skill: `fill_fillable_fields.py`, `extract_form_field_info.py` - utilities for PDF manipulation
-- DOCX skill: `document.py`, `utilities.py` - Python modules for document processing
-
-**Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
-
-**Note:** Scripts may be executed without loading into context, but can still be read by Codex for patching or environment adjustments.
-
-### references/
-Documentation and reference material intended to be loaded into context to inform Codex's process and thinking.
-
-**Examples from other skills:**
-- Product management: `communication.md`, `context_building.md` - detailed workflow guides
-- BigQuery: API reference documentation and query examples
-- Finance: Schema documentation, company policies
-
-**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that Codex should reference while working.
-
-### assets/
-Files not intended to be loaded into context, but rather used within the output Codex produces.
-
-**Examples from other skills:**
-- Brand styling: PowerPoint template files (.pptx), logo files
-- Frontend builder: HTML/React boilerplate project directories
-- Typography: Font files (.ttf, .woff2)
-
-**Appropriate for:** Templates, boilerplate code, document templates, images, icons, fonts, or any files meant to be copied or used in the final output.
-
----
-
-**Not every skill requires all three types of resources.**
+- the exact command run,
+- the `summary.json` path,
+- whether first and repeated triggers show the expected frame,
+- whether the render surface remounted or reused state when relevant,
+- console errors/warnings,
+- any residual uncertainty, such as an animation whose expected frame is not visually distinguishable.
