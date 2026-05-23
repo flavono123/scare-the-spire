@@ -152,10 +152,36 @@ def strip_move_suffix(move_id: str) -> str:
     return move_id[:-5] if move_id.endswith("_MOVE") else move_id
 
 
+def move_title_candidates(move_id: str) -> list[str]:
+    """Return localization lookup keys for a move, preserving distinct move IDs."""
+    candidates: list[str] = []
+
+    def add(candidate: str) -> None:
+        if candidate and candidate not in candidates:
+            candidates.append(candidate)
+
+    add(move_id)
+    add(strip_move_suffix(move_id))
+
+    move_number_match = re.match(r"(.+)_MOVE_\d+$", move_id)
+    if move_number_match:
+        add(move_number_match.group(1))
+
+    trailing_number_match = re.match(r"(.+?)\d+$", move_id)
+    if trailing_number_match:
+        add(trailing_number_match.group(1))
+
+    underscore_number_match = re.match(r"(.+)_\d+$", move_id)
+    if underscore_number_match:
+        add(underscore_number_match.group(1))
+
+    return candidates
+
+
 def resolve_move_title(loc_entry: dict, move_id: str) -> str | None:
-    """Try locale under the full ID and the suffix-stripped ID, both title and _self."""
+    """Try locale under move ID variants, both title and _self."""
     moves = loc_entry.get("moves", {}) or {}
-    for key in (move_id, strip_move_suffix(move_id)):
+    for key in move_title_candidates(move_id):
         node = moves.get(key)
         if isinstance(node, dict):
             title = node.get("title") or node.get("_self")
