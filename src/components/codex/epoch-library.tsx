@@ -113,12 +113,19 @@ export function EpochLibrary({
   }, []);
 
   useEffect(() => {
-    const url = new URL(window.location.href);
-    const epochParam = url.searchParams.get("epoch");
-    setSelectedEpoch(epochParam
-      ? epochs.find((epoch) => epoch.id.toLowerCase() === epochParam.toLowerCase()) ?? null
-      : null);
-    setUrlReady(true);
+    let cancelled = false;
+    window.setTimeout(() => {
+      if (cancelled) return;
+      const url = new URL(window.location.href);
+      const epochParam = url.searchParams.get("epoch");
+      setSelectedEpoch(epochParam
+        ? epochs.find((epoch) => epoch.id.toLowerCase() === epochParam.toLowerCase()) ?? null
+        : null);
+      setUrlReady(true);
+    }, 0);
+    return () => {
+      cancelled = true;
+    };
   }, [epochs]);
 
   useEffect(() => {
