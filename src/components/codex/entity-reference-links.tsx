@@ -4,6 +4,7 @@ import Image from "@/components/ui/static-image";
 import type { ReactNode } from "react";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 
 export type CodexReferenceKind = "card" | "event" | "potion" | "relic" | "enchantment" | "monster" | "encounter" | "ancient" | "power";
 
@@ -16,6 +17,7 @@ export interface CodexReferenceTarget {
 
 interface EntityReferenceLinksProps {
   children?: ReactNode;
+  gameUi?: CodexGameUiLabels;
   kind: CodexReferenceKind;
   serviceLocale: ServiceLocale;
   targets: readonly CodexReferenceTarget[];
@@ -28,57 +30,99 @@ export interface CodexReferenceGroup {
 
 interface EntityReferenceGroupLinksProps {
   children?: ReactNode;
+  gameUi?: CodexGameUiLabels;
   groups: readonly CodexReferenceGroup[];
   serviceLocale: ServiceLocale;
 }
 
-const REFERENCE_KIND_CONFIG: Record<CodexReferenceKind, { icon: string; label: string }> = {
+const REFERENCE_KIND_CONFIG: Record<CodexReferenceKind, { icon: string; fallbackLabel: Record<ServiceLocale, string> }> = {
   card: {
     icon: "/images/sts2/nav/stats_cards.png",
-    label: "관련 카드",
+    fallbackLabel: { ko: "카드", en: "Card" },
   },
   event: {
     icon: "/images/sts2/nav/question_mark.png",
-    label: "관련 이벤트",
+    fallbackLabel: { ko: "이벤트", en: "Event" },
   },
   potion: {
     icon: "/images/sts2/potions/potion_shaped_rock.webp",
-    label: "관련 포션",
+    fallbackLabel: { ko: "포션", en: "Potion" },
   },
   relic: {
     icon: "/images/sts2/relics/bing_bong.webp",
-    label: "관련 유물",
+    fallbackLabel: { ko: "유물", en: "Relic" },
   },
   enchantment: {
     icon: "/images/sts2/enchantments/swift.webp",
-    label: "관련 인챈트",
+    fallbackLabel: { ko: "인챈트", en: "Enchantment" },
   },
   monster: {
     icon: "/images/sts2/nav/stats_monsters.png",
-    label: "관련 몬스터",
+    fallbackLabel: { ko: "몬스터", en: "Monster" },
   },
   encounter: {
     icon: "/images/sts2/run-history/monster.png",
-    label: "관련 인카운터",
+    fallbackLabel: { ko: "전투", en: "Encounter" },
   },
   ancient: {
     icon: "/images/sts2/nav/stats_ancients.png",
-    label: "관련 고대의 존재",
+    fallbackLabel: { ko: "고대의 존재", en: "Ancient" },
   },
   power: {
     icon: "/images/sts2/nav/unmovable_power_beta.webp",
-    label: "관련 파워",
+    fallbackLabel: { ko: "파워", en: "Power" },
   },
 };
 
+const COLLECTION_SUFFIX_PATTERN = /\s*(목록|모음집|연구실|도감|Library|Collection|Lab|Codex|Bestiary)$/i;
+
+function compactCollectionLabel(label: string): string {
+  return label.replace(COLLECTION_SUFFIX_PATTERN, "").trim() || label;
+}
+
+function relatedResourceLabel(
+  kind: CodexReferenceKind,
+  serviceLocale: ServiceLocale,
+  gameUi?: CodexGameUiLabels,
+): string {
+  const fallback = REFERENCE_KIND_CONFIG[kind].fallbackLabel[serviceLocale];
+  const resourceLabel = (() => {
+    if (!gameUi) return fallback;
+    switch (kind) {
+      case "card":
+        return compactCollectionLabel(gameUi.cardLibraryTitle);
+      case "relic":
+        return compactCollectionLabel(gameUi.relicCollectionTitle);
+      case "potion":
+        return compactCollectionLabel(gameUi.potionLabTitle);
+      case "power":
+        return gameUi.nav.powers;
+      case "monster":
+        return compactCollectionLabel(gameUi.bestiaryTitle);
+      case "event":
+        return gameUi.eventsTitle;
+      case "ancient":
+        return gameUi.ancientsTitle;
+      case "encounter":
+      case "enchantment":
+        return fallback;
+    }
+  })();
+  return serviceLocale === "ko" ? `관련 ${resourceLabel}` : `Related ${resourceLabel}`;
+}
+
 export function EntityReferenceLinks({
   children,
+  gameUi,
   kind,
   serviceLocale,
   targets,
 }: EntityReferenceLinksProps) {
   if (targets.length === 0) return null;
-  const config = REFERENCE_KIND_CONFIG[kind];
+  const config = {
+    icon: REFERENCE_KIND_CONFIG[kind].icon,
+    label: relatedResourceLabel(kind, serviceLocale, gameUi),
+  };
 
   return (
     <section className="w-full rounded-lg border border-white/10 bg-white/[0.04] p-4">
@@ -96,6 +140,7 @@ export function EntityReferenceLinks({
 
 export function EntityReferenceGroupLinks({
   children,
+  gameUi,
   groups,
   serviceLocale,
 }: EntityReferenceGroupLinksProps) {
@@ -108,7 +153,10 @@ export function EntityReferenceGroupLinks({
         {visibleGroups.map((group) => (
           <ReferenceLine
             key={group.kind}
-            config={REFERENCE_KIND_CONFIG[group.kind]}
+            config={{
+              icon: REFERENCE_KIND_CONFIG[group.kind].icon,
+              label: relatedResourceLabel(group.kind, serviceLocale, gameUi),
+            }}
             kind={group.kind}
             serviceLocale={serviceLocale}
             targets={group.targets}

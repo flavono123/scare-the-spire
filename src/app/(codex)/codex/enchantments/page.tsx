@@ -9,6 +9,7 @@ import {
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
 import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { EnchantmentLibrary } from "@/components/codex/enchantment-library";
 
 export async function generateMetadata({
@@ -29,7 +30,7 @@ export default async function CodexEnchantmentsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [enchantments, cards, events, potions, powers, relics, patches, changes, versionDiffs, meta, entities] = await Promise.all([
+  const [enchantments, cards, events, potions, powers, relics, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
     getCodexEnchantments({ gameLocale }),
     getCodexCards({ gameLocale }),
     getCodexEvents({ gameLocale }),
@@ -41,6 +42,7 @@ export default async function CodexEnchantmentsPage({
     getEntityVersionDiffs(),
     getCodexMeta(),
     loadAllEntities({ gameLocale }),
+    getCodexGameUiLabels(gameLocale),
   ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);
@@ -49,6 +51,7 @@ export default async function CodexEnchantmentsPage({
     <Suspense>
       <EnchantmentLibrary
         serviceLocale={serviceLocale}
+        gameUi={gameUi}
         enchantments={enchantments}
         versions={versions}
         currentVersion={meta.version}

@@ -138,7 +138,10 @@ export default async function CodexIndexPage({
     cards: gameUi.cardLibraryTitle,
     relics: gameUi.relicCollectionTitle,
     potions: gameUi.potionLabTitle,
+    powers: gameUi.nav.powers,
     monsters: gameUi.bestiaryTitle,
+    events: gameUi.eventsTitle,
+    ancients: gameUi.ancientsTitle,
   };
 
   return (

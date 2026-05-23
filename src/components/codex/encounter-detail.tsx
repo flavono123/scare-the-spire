@@ -237,6 +237,7 @@ export function EncounterDetail({
           </section>
 
           <EntityReferenceLinks
+            gameUi={gameUi}
             kind="monster"
             serviceLocale={serviceLocale}
             targets={relatedMonsterTargets}

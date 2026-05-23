@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import type { ServiceLocale } from "@/lib/i18n";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
   getCodexServiceMessages,
@@ -48,6 +49,7 @@ function getCardTypeFilter(cardType: "Attack" | "Skill" | null): EnchantmentCard
 
 interface EnchantmentLibraryProps {
   serviceLocale: ServiceLocale;
+  gameUi?: CodexGameUiLabels;
   enchantments: CodexEnchantment[];
   versions?: string[];
   currentVersion?: string;
@@ -68,7 +70,7 @@ interface EnchantmentLibraryProps {
   relics?: CodexRelic[];
 }
 
-export function EnchantmentLibrary({ serviceLocale, enchantments, versions, currentVersion, patches, changes, versionDiffs, entities, cards, events, potions, powers, relics }: EnchantmentLibraryProps) {
+export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, versions, currentVersion, patches, changes, versionDiffs, entities, cards, events, potions, powers, relics }: EnchantmentLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
   const [selectedCardTypes, setSelectedCardTypes] = useState<Set<EnchantmentCardTypeFilter>>(new Set());
@@ -322,6 +324,7 @@ export function EnchantmentLibrary({ serviceLocale, enchantments, versions, curr
           <div className="my-8 mx-4 w-full max-w-6xl">
             <EnchantmentDetail
               serviceLocale={serviceLocale}
+              gameUi={gameUi}
               backToListTitle={serviceText.enchantmentsView.title}
               enchantment={selectedEnchantment}
               onClose={() => setSelectedEnchantment(null)}

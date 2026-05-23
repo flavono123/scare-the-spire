@@ -9,6 +9,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { localizeHref } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   CodexCard,
   CodexEnchantment,
@@ -69,6 +70,7 @@ function InfoRailSection({
 
 interface EnchantmentDetailProps {
   serviceLocale: ServiceLocale;
+  gameUi?: CodexGameUiLabels;
   backToListTitle: string;
   enchantment: CodexEnchantment;
   onClose?: () => void;
@@ -107,6 +109,7 @@ function getEnchantmentDetailLabels(serviceLocale: ServiceLocale) {
 
 export function EnchantmentDetail({
   serviceLocale,
+  gameUi,
   backToListTitle,
   enchantment,
   onClose,
@@ -264,6 +267,7 @@ export function EnchantmentDetail({
           </section>
 
           <EntityReferenceGroupLinks
+            gameUi={gameUi}
             groups={[
               { kind: "card", targets: relatedCardTargets },
               { kind: "relic", targets: relatedRelicTargets },

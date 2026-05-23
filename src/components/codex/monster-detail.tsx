@@ -921,6 +921,7 @@ export function MonsterDetail({
           )}
 
           <EntityReferenceGroupLinks
+            gameUi={gameUi}
             serviceLocale={serviceLocale}
             groups={[
               { kind: "encounter", targets: relatedEncounterTargets },

@@ -8,6 +8,7 @@ import {
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
 import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { EnchantmentDetail } from "@/components/codex/enchantment-detail";
 
 export async function generateStaticParams() {
@@ -44,7 +45,7 @@ export default async function EnchantmentDetailPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [enchantments, cards, events, potions, powers, relics, entities, patches, changes, versionDiffs] = await Promise.all([
+  const [enchantments, cards, events, potions, powers, relics, entities, patches, changes, versionDiffs, gameUi] = await Promise.all([
     getCodexEnchantments({ gameLocale }),
     getCodexCards({ gameLocale }),
     getCodexEvents({ gameLocale }),
@@ -55,6 +56,7 @@ export default async function EnchantmentDetailPage({
     getSTS2Patches(),
     getSTS2Changes(),
     getEntityVersionDiffs(),
+    getCodexGameUiLabels(gameLocale),
   ]);
   const ench = enchantments.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!ench) notFound();
@@ -64,6 +66,7 @@ export default async function EnchantmentDetailPage({
     <div className="min-h-screen bg-background text-foreground">
       <EnchantmentDetail
         serviceLocale={serviceLocale}
+        gameUi={gameUi}
         backToListTitle={serviceText.enchantmentsView.title}
         enchantment={ench}
         entities={entities}

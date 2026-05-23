@@ -399,6 +399,7 @@ export function AncientDetail({
           </section>
 
           <EntityReferenceGroupLinks
+            gameUi={gameUi}
             serviceLocale={serviceLocale}
             groups={[
               { kind: "card", targets: relatedCardTargets },

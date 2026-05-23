@@ -380,6 +380,7 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
           </section>
 
           <EntityReferenceGroupLinks
+            gameUi={gameUi}
             serviceLocale={serviceLocale}
             groups={[
               { kind: "card", targets: relatedCardTargets },

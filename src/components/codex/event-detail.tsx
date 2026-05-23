@@ -2124,6 +2124,7 @@ export function EventDetail({
           </section>
 
           <EntityReferenceGroupLinks
+            gameUi={gameUi}
             groups={[
               { kind: "card", targets: relatedCardTargets },
               { kind: "relic", targets: relatedRelicTargets },

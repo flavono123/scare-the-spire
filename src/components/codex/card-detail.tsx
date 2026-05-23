@@ -939,6 +939,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           </section>
 
           <EntityReferenceGroupLinks
+            gameUi={gameUi}
             groups={[
               { kind: "ancient", targets: relatedAncientTargets },
               { kind: "event", targets: relatedEventTargets },

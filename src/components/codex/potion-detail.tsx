@@ -260,6 +260,7 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
           </section>
 
           <EntityReferenceGroupLinks
+            gameUi={gameUi}
             groups={[
               { kind: "card", targets: relatedCardTargets },
               { kind: "power", targets: relatedPowerTargets },
