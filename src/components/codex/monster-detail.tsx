@@ -368,28 +368,28 @@ function PatternStateTransitionDiagram({
     () => buildPatternDiagramModel(monster, rows, phases, serviceLocale),
     [monster, phases, rows, serviceLocale],
   );
-  if (!diagram) return null;
-
   const markerPrefix = sanitizeSvgId(`monster-pattern-${monster.id}`);
+  const diagramWidth = diagram?.width ?? 0;
+  const diagramHeight = diagram?.height ?? 0;
   const viewportRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<PatternDiagramDragState | null>(null);
   const suppressClickUntilRef = useRef(0);
-  const viewportHeight = Math.max(DIAGRAM_VIEWPORT_MIN_HEIGHT, diagram.height + DIAGRAM_VIEWPORT_HEIGHT_EXTRA);
+  const viewportHeight = Math.max(DIAGRAM_VIEWPORT_MIN_HEIGHT, diagramHeight + DIAGRAM_VIEWPORT_HEIGHT_EXTRA);
   const [pan, setPan] = useState<PatternDiagramPan>({ x: 0, y: DIAGRAM_VIEWPORT_TOP_GUTTER });
   const [isDragging, setIsDragging] = useState(false);
 
   const clampPan = useCallback((next: PatternDiagramPan): PatternDiagramPan => {
     const viewport = viewportRef.current;
-    const viewportWidth = viewport?.clientWidth ?? diagram.width;
+    const viewportWidth = viewport?.clientWidth ?? diagramWidth;
     const viewportClientHeight = viewport?.clientHeight ?? viewportHeight;
-    const minX = Math.min(DIAGRAM_DRAG_GUTTER, viewportWidth - diagram.width - DIAGRAM_DRAG_GUTTER);
-    const minY = Math.min(DIAGRAM_DRAG_GUTTER, viewportClientHeight - diagram.height - DIAGRAM_DRAG_GUTTER);
+    const minX = Math.min(DIAGRAM_DRAG_GUTTER, viewportWidth - diagramWidth - DIAGRAM_DRAG_GUTTER);
+    const minY = Math.min(DIAGRAM_DRAG_GUTTER, viewportClientHeight - diagramHeight - DIAGRAM_DRAG_GUTTER);
 
     return {
       x: Math.min(DIAGRAM_DRAG_GUTTER, Math.max(minX, next.x)),
       y: Math.min(DIAGRAM_DRAG_GUTTER, Math.max(minY, next.y)),
     };
-  }, [diagram.height, diagram.width, viewportHeight]);
+  }, [diagramHeight, diagramWidth, viewportHeight]);
 
   const handlePointerDown = useCallback((event: PointerEvent<HTMLDivElement>) => {
     if (event.button !== 0) return;
@@ -430,6 +430,7 @@ function PatternStateTransitionDiagram({
   }, []);
 
   const shouldSuppressDiagramClick = useCallback(() => Date.now() < suppressClickUntilRef.current, []);
+  if (!diagram) return null;
 
   return (
     <div
