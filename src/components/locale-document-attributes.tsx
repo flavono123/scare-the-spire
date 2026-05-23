@@ -4,8 +4,10 @@ import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
   getGameLocaleFromSearch,
+  getGameLocaleFromPathname,
   getServiceLocaleForGameLocale,
   getServiceLocaleFromPath,
+  hasGameLocalePathPrefix,
   type ServiceLocale,
 } from "@/lib/i18n";
 
@@ -18,7 +20,9 @@ export function LocaleDocumentAttributes() {
   const pathname = usePathname() ?? "/";
   const searchParams = useSearchParams();
   const pathServiceLocale = getServiceLocaleFromPath(pathname);
-  const gameLocale = getGameLocaleFromSearch(searchParams, pathServiceLocale);
+  const gameLocale = searchParams.has("gl") && !hasGameLocalePathPrefix(pathname)
+    ? getGameLocaleFromSearch(searchParams, pathServiceLocale)
+    : getGameLocaleFromPathname(pathname);
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
 
   useEffect(() => {

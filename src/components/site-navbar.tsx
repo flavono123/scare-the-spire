@@ -10,13 +10,15 @@ import {
   GAME_LOCALE_COOKIE,
   LOCALE_COOKIE_MAX_AGE,
   SERVICE_LOCALE_COOKIE,
+  getGameLocaleFromPathname,
   getGameLocaleFromSearch,
   getServiceLocaleForGameLocale,
   getServiceLocaleFromPath,
+  hasGameLocalePathPrefix,
   isGameLocale,
   isServiceLocale,
   localizeHrefWithGameLocale,
-  switchServiceLocaleHref,
+  switchGameLocaleHref,
   withGameLocaleSearch,
   type GameLocale,
   type ServiceLocale,
@@ -83,7 +85,7 @@ function languageHref(
 ) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const search = withGameLocaleSearch(searchParams, gameLocale, serviceLocale);
-  return switchServiceLocaleHref(pathname, serviceLocale, search);
+  return switchGameLocaleHref(pathname, gameLocale, search);
 }
 
 function readCookie(name: string): string | null {
@@ -421,6 +423,8 @@ function InitialLocaleDetector() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    if (hasGameLocalePathPrefix(pathname)) return;
+    if (searchParams.has("gl")) return;
     if (getLocalePreference()) return;
 
     const detectedGameLocale = detectGameLocaleFromNavigator(navigator);
@@ -452,6 +456,20 @@ function LocaleCanonicalizer({
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    const legacyGameLocale = searchParams.get("gl");
+    if (legacyGameLocale && isGameLocale(legacyGameLocale)) {
+      router.replace(
+        languageHref(
+          pathname,
+          new URLSearchParams(searchParams.toString()),
+          legacyGameLocale,
+        ),
+      );
+      return;
+    }
+
+    if (hasGameLocalePathPrefix(pathname)) return;
+
     const savedGameLocale = getLocalePreference();
     if (!savedGameLocale) return;
 
@@ -477,11 +495,16 @@ function LocaleCanonicalizer({
 export function SiteNavbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const serviceLocale = getServiceLocaleFromPath(pathname);
-  const gameLocale = getGameLocaleFromSearch(
+  const pathGameLocale = getGameLocaleFromPathname(pathname);
+  const pathServiceLocale = getServiceLocaleFromPath(pathname);
+  const legacyGameLocale = getGameLocaleFromSearch(
     new URLSearchParams(searchParams.toString()),
-    serviceLocale,
+    pathServiceLocale,
   );
+  const gameLocale = searchParams.has("gl") && !hasGameLocalePathPrefix(pathname)
+    ? legacyGameLocale
+    : pathGameLocale;
+  const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const messages = serviceMessages[serviceLocale];
   const showDevMenu = process.env.NODE_ENV === "development";
   const profile = useStoredUserProfile();
