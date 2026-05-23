@@ -26,6 +26,7 @@ import { CardTile } from "./card-tile";
 import { DescriptionText, getCardMaxUpgradeLevel, hasCardUpgrade } from "./codex-description";
 import { GameChoiceFrame } from "./event-choice-frame";
 import { GameCheckboxToggle } from "./game-checkbox";
+import { CARD_DETAIL_UPGRADE_LEVEL_CAP, GameUpgradeToggle } from "./game-upgrade-toggle";
 import { HoverTip, HoverTipVariant } from "./hover-tip";
 import { RichText } from "@/components/rich-text";
 import { CARD_WIDTH_PRESET } from "@/lib/sts2-card-style";
@@ -277,11 +278,14 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
   const canShowUpgrade = hasCardUpgrade(previewCard);
   const maxUpgradeLevel = getCardMaxUpgradeLevel(previewCard);
-  const previewUpgradeLevels = Array.from(
-    { length: Math.min(maxUpgradeLevel, 3) },
-    (_, index) => index + 1,
+  const selectableMaxUpgradeLevel = Math.min(
+    maxUpgradeLevel,
+    CARD_DETAIL_UPGRADE_LEVEL_CAP,
   );
-  const showUpgrade = canShowUpgrade && upgradeLevel > 0;
+  const effectiveUpgradeLevel = canShowUpgrade
+    ? Math.max(0, Math.min(upgradeLevel, selectableMaxUpgradeLevel))
+    : 0;
+  const showUpgrade = effectiveUpgradeLevel > 0;
   const relatedEventIds = [
     ...getRelatedEventIdsForCard(card.id),
     ...(isMadScience ? [TINKER_TIME_EVENT_ID] : []),
@@ -554,7 +558,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
             card={previewCard}
             serviceLocale={serviceLocale}
             showUpgrade={showUpgrade}
-            upgradeLevel={upgradeLevel}
+            upgradeLevel={effectiveUpgradeLevel}
             showBeta={showBeta}
             width={cardWidth}
             enchantmentImageUrl={activeEnchant?.imageUrl ?? null}
@@ -637,22 +641,13 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                 />
               )}
               {canShowUpgrade && maxUpgradeLevel > 1 && (
-                <div className="flex items-center overflow-hidden rounded-md border border-white/10 bg-black/30 p-0.5 font-game-text text-xs font-bold">
-                  {[0, ...previewUpgradeLevels].map((level) => (
-                    <button
-                      key={level}
-                      type="button"
-                      onClick={() => setUpgradeLevel(level)}
-                      className={`min-w-10 rounded px-2.5 py-1 transition-colors ${
-                        upgradeLevel === level
-                          ? "bg-green-500/25 text-green-300"
-                          : "text-zinc-400 hover:bg-white/10 hover:text-zinc-100"
-                      }`}
-                    >
-                      {level === 0 ? (serviceLocale === "ko" ? "기본" : "Base") : `+${level}`}
-                    </button>
-                  ))}
-                </div>
+                <GameUpgradeToggle
+                  upgradeLevel={effectiveUpgradeLevel}
+                  maxUpgradeLevel={selectableMaxUpgradeLevel}
+                  onUpgradeLevelChange={setUpgradeLevel}
+                  label={gameUi.cardLibrary.viewUpgrades}
+                  serviceLocale={serviceLocale}
+                />
               )}
               {card.betaImageUrl && (
                 <GameCheckboxToggle
