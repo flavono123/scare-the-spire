@@ -268,8 +268,7 @@ function restartSpineAnimation(
   animation: string,
   loop: boolean,
 ) {
-  player.pause();
-  player.animationState?.clearTracks();
+  player.animationState?.clearTrack(0);
   player.skeleton?.setToSetupPose();
   const entry = player.setAnimation(animation, loop);
   entry.mixDuration = 0;
