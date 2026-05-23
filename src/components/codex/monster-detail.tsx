@@ -96,6 +96,7 @@ interface PatternDiagramEdge {
   path: string;
   color: string;
   marker: "normal" | "conditional" | "start";
+  isLoop: boolean;
   label: string | null;
   labelX: number;
   labelY: number;
@@ -188,20 +189,28 @@ function MetricTokenValue({
   value,
   kind,
   ascensionLevel,
+  compact = false,
 }: {
   value: DamageValue;
   kind: "attack" | "block" | "hp";
   ascensionLevel?: number;
+  compact?: boolean;
 }) {
   const icon = METRIC_TOKEN_ICONS[kind];
   const level = ascensionLevel ?? (kind === "hp" ? 8 : 9);
 
   return (
-    <span className="inline-flex items-center gap-1 font-game-text text-sm font-bold leading-none text-gray-100">
-      <Image src={icon} alt="" width={22} height={22} className="h-5 w-5 shrink-0 object-contain" />
+    <span className={`inline-flex items-center font-game-text font-bold leading-none text-gray-100 ${compact ? "gap-0.5 text-xs" : "gap-1 text-sm"}`}>
+      <Image
+        src={icon}
+        alt=""
+        width={compact ? 18 : 22}
+        height={compact ? 18 : 22}
+        className={`${compact ? "h-4 w-4" : "h-5 w-5"} shrink-0 object-contain`}
+      />
       <span>{value.normal ?? "?"}</span>
       {value.ascension != null && value.ascension !== value.normal && (
-        <span className="inline-flex items-center gap-1 text-orange-300">
+        <span className={`inline-flex items-center text-orange-300 ${compact ? "gap-0.5" : "gap-1"}`}>
           <span className="text-gray-500">(</span>
           <AscensionBadge level={level} />
           <span>{value.ascension}</span>
@@ -326,7 +335,6 @@ function MoveApplicationToken({
 
 function PatternStateTransitionDiagram({
   monster,
-  startLabel,
   phases,
   rows,
   serviceLocale,
@@ -335,7 +343,6 @@ function PatternStateTransitionDiagram({
   cardById,
 }: {
   monster: CodexMonster;
-  startLabel: string;
   phases: PatternPhase[];
   rows: TransitionTableRow[];
   serviceLocale: ServiceLocale;
@@ -353,8 +360,7 @@ function PatternStateTransitionDiagram({
 
   return (
     <div
-      className="max-w-full overflow-x-auto p-3"
-      style={GAME_PANEL_BORDER_STYLE}
+      className="max-w-full overflow-x-auto rounded-md border border-white/10 bg-black/15 p-3"
     >
       <div
         className="relative"
@@ -365,11 +371,12 @@ function PatternStateTransitionDiagram({
             key={box.id}
             className="pointer-events-none absolute z-0"
             style={{
-              ...GAME_PANEL_BORDER_STYLE,
               left: box.x,
               top: box.y,
               width: box.width,
               height: box.height,
+              border: "1px solid rgba(239, 200, 81, 0.28)",
+              backgroundColor: "rgba(7, 9, 20, 0.22)",
             }}
           />
         ))}
@@ -378,11 +385,12 @@ function PatternStateTransitionDiagram({
             key={box.id}
             className="pointer-events-none absolute z-0"
             style={{
-              ...GAME_PANEL_BORDER_STYLE,
               left: box.x,
               top: box.y,
               width: box.width,
               height: box.height,
+              border: "1px solid rgba(41, 235, 192, 0.32)",
+              backgroundColor: "rgba(7, 9, 20, 0.18)",
             }}
           >
             <span className="absolute left-3 top-2 font-game-title text-[11px] font-bold text-[#29ebc0]">
@@ -450,7 +458,7 @@ function PatternStateTransitionDiagram({
               d={edge.path}
               fill="none"
               stroke={edge.color}
-              strokeWidth="4"
+              strokeWidth={edge.isLoop ? "3" : "4"}
               strokeLinecap="square"
               strokeLinejoin="miter"
               markerEnd={`url(#${markerPrefix}-arrow-${edge.marker})`}
@@ -480,7 +488,6 @@ function PatternStateTransitionDiagram({
             node={node}
             monster={monster}
             serviceLocale={serviceLocale}
-            startLabel={startLabel}
             onSelectMove={onSelectMove}
             powerById={powerById}
             cardById={cardById}
@@ -495,7 +502,6 @@ function PatternMoveStateNode({
   node,
   monster,
   serviceLocale,
-  startLabel,
   onSelectMove,
   powerById,
   cardById,
@@ -503,7 +509,6 @@ function PatternMoveStateNode({
   node: PatternDiagramNode;
   monster: CodexMonster;
   serviceLocale: ServiceLocale;
-  startLabel: string;
   onSelectMove: (moveId: string) => void;
   powerById: Map<string, CodexPower>;
   cardById: Map<string, CodexCard>;
@@ -511,47 +516,34 @@ function PatternMoveStateNode({
   const move = getMonsterMove(monster, node.id);
   const damageEntry = monster.damageValues ? findDamageForMove(node.id, monster.damageValues) : null;
   const blockEntry = monster.blockValues ? findBlockForMove(node.id, monster.blockValues) : null;
-  const tone = move ? getMoveTone(move, damageEntry, blockEntry) : "setup";
-  const toneColor = getMoveToneColor(tone, "#a1a1aa");
   const title = move ? `${move.name}${move.nameEn !== move.name ? ` / ${move.nameEn}` : ""}` : getMoveName(monster, node.id);
-  const intentKeys = getMoveIntentKeys(move);
 
   return (
     <button
       type="button"
-      className="absolute z-10 rounded-md border bg-[#111827]/95 px-1.5 py-1 text-center shadow-[0_0_18px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#1f2937]"
+      className="absolute z-10 overflow-hidden bg-transparent px-3 py-2 text-center shadow-[0_0_18px_rgba(0,0,0,0.25)] transition-transform hover:scale-[1.02]"
       style={{
+        ...PATTERN_MOVE_PANEL_STYLE,
         left: node.x,
         top: node.y,
         width: node.width,
         height: node.height,
-        borderColor: node.phaseId ? `${DIAGRAM_GROUP_COLOR}cc` : `${toneColor}77`,
       }}
       title={title}
       aria-label={title}
       onClick={() => onSelectMove(node.id)}
     >
-      {node.isInitial && (
-        <span className="absolute left-1.5 top-1 text-[10px] font-bold text-[#efc851]">
-          {startLabel}
-        </span>
-      )}
-      <span className="flex h-full flex-col items-center justify-center gap-1 pt-2">
-        <span className="flex min-h-7 items-center justify-center gap-1">
-          {intentKeys.slice(0, 3).map((intent, index) => (
-            <PatternIntentGlyph key={`${intent}-${index}`} intent={intent} />
-          ))}
-        </span>
-        <span className="flex min-h-4 items-center justify-center gap-1">
+      <span className="relative z-10 flex h-full min-w-0 flex-col items-center justify-center gap-1">
+        <span className="flex max-w-full flex-wrap items-center justify-center gap-x-1 gap-y-0.5">
           {damageEntry && (
-            <MetricTokenValue value={damageEntry} kind="attack" />
+            <MetricTokenValue value={damageEntry} kind="attack" compact />
           )}
           {blockEntry && (
-            <MetricTokenValue value={blockEntry} kind="block" />
+            <MetricTokenValue value={blockEntry} kind="block" compact />
           )}
         </span>
         {move && (move.powerApplications.length > 0 || move.cardApplications.length > 0) && (
-          <span className="flex min-h-4 max-w-full items-center justify-center gap-0.5">
+          <span className="flex max-w-full flex-wrap items-center justify-center gap-0.5 overflow-hidden">
             <MoveApplicationTokens
               powers={move.powerApplications.slice(0, 3)}
               cards={move.cardApplications.slice(0, 3)}
@@ -563,25 +555,6 @@ function PatternMoveStateNode({
         )}
       </span>
     </button>
-  );
-}
-
-function PatternIntentGlyph({ intent }: { intent: string }) {
-  const config = getIntentIconConfig(intent);
-
-  return (
-    <span
-      className="inline-flex h-7 w-7 items-center justify-center"
-      title={config.label}
-    >
-      <Image
-        src={config.image}
-        alt=""
-        width={28}
-        height={28}
-        className="h-7 w-7 object-contain drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]"
-      />
-    </span>
   );
 }
 
@@ -888,7 +861,6 @@ export function MonsterDetail({
                     {serviceLocale === "ko" ? `${loopLength}턴 반복` : `${loopLength}-turn loop`}
                   </span>
                 )}
-                {firstMoveId && <span>{monsterText.firstAction}: {getMoveName(monster, firstMoveId)}</span>}
               </div>
 
               {patternSummary.hasPhases && (
@@ -906,7 +878,6 @@ export function MonsterDetail({
 
               <PatternStateTransitionDiagram
                 monster={monster}
-                startLabel={monsterText.startPoint}
                 phases={patternSummary.phases}
                 rows={transitionRows}
                 serviceLocale={serviceLocale}
@@ -952,27 +923,27 @@ export function MonsterDetail({
   );
 }
 
-const DIAGRAM_CELL_WIDTH = 88;
-const DIAGRAM_CELL_HEIGHT = 84;
-const DIAGRAM_H_GAP = 88;
+const DIAGRAM_CELL_WIDTH = 148;
+const DIAGRAM_CELL_HEIGHT = 96;
+const DIAGRAM_H_GAP = 82;
 const DIAGRAM_V_GAP = 24;
-const DIAGRAM_PAD = 54;
+const DIAGRAM_PAD = 84;
 const DIAGRAM_ROW_GAP = 76;
 const DIAGRAM_ARROW_COLOR = "#efc851";
 const DIAGRAM_CONDITIONAL_COLOR = "#ff4545";
 const DIAGRAM_GROUP_COLOR = "#29ebc0";
 const BESTIARY_START_COLOR = "#60a5fa";
 const DIAGRAM_ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
-const GAME_PANEL_BORDER_STYLE: CSSProperties = {
+const PATTERN_MOVE_PANEL_STYLE: CSSProperties = {
   borderStyle: "solid",
   borderColor: "transparent",
-  borderTopWidth: "16px",
-  borderRightWidth: "34px",
-  borderBottomWidth: "12px",
-  borderLeftWidth: "20px",
+  borderTopWidth: "12px",
+  borderRightWidth: "24px",
+  borderBottomWidth: "10px",
+  borderLeftWidth: "16px",
   borderImageSource: "url('/images/sts2/ui/hover_tip.png')",
   borderImageSlice: "43 91 32 55 fill",
-  borderImageWidth: "16px 34px 12px 20px",
+  borderImageWidth: "12px 24px 10px 16px",
   borderImageRepeat: "stretch",
   boxSizing: "border-box",
 };
@@ -980,22 +951,6 @@ const METRIC_TOKEN_ICONS = {
   attack: "/images/sts2/intents/attack.png",
   block: "/images/sts2/ui/combat/block.png",
   hp: "/images/sts2/ui/topbar/top_bar_heart.png",
-};
-const INTENT_ICON_IMAGES = {
-  attack: "/images/sts2/intents/attack.png",
-  buff: "/images/sts2/intents/buff.png",
-  cardDebuff: "/images/sts2/intents/card_debuff.png",
-  deathBlow: "/images/sts2/intents/death_blow.png",
-  debuff: "/images/sts2/intents/debuff.png",
-  defend: "/images/sts2/intents/defend.png",
-  escape: "/images/sts2/intents/escape.png",
-  heal: "/images/sts2/intents/heal.png",
-  hidden: "/images/sts2/intents/hidden.png",
-  sleep: "/images/sts2/intents/sleep.png",
-  statusCard: "/images/sts2/intents/status_card.png",
-  stun: "/images/sts2/intents/stun.png",
-  summon: "/images/sts2/intents/summon.png",
-  unknown: "/images/sts2/intents/unknown.png",
 };
 
 function buildPowerEntity(
@@ -1298,6 +1253,7 @@ function buildDiagramEdge(
   const marker = kind === "conditional" ? "conditional" : kind === "start" ? "start" : "normal";
   const laneOffset = (index % 5) * 7;
   const label = getDiagramEdgeLabel(transition);
+  const isLoop = from.id === to.id || to.x <= from.x;
   let path: string;
   let labelX: number;
   let labelY: number;
@@ -1322,14 +1278,14 @@ function buildDiagramEdge(
     labelX = midX;
     labelY = (startY + endY) / 2;
   } else if (to.x + to.width < from.x + from.width / 2) {
-    const startX = from.x;
-    const startY = from.y + from.height / 2;
-    const endX = to.x + to.width;
-    const endY = to.y + to.height / 2;
-    const channelX = Math.min(startX, endX) - 38 - laneOffset;
-    path = `M ${startX} ${startY} H ${channelX} V ${endY} H ${endX}`;
-    labelX = channelX;
-    labelY = (startY + endY) / 2;
+    const startX = from.x + from.width / 2;
+    const startY = from.y;
+    const endX = to.x + to.width / 2;
+    const endY = to.y;
+    const loopY = Math.min(from.y, to.y) - 34 - laneOffset;
+    path = `M ${startX} ${startY} V ${loopY} H ${endX} V ${endY}`;
+    labelX = (startX + endX) / 2;
+    labelY = loopY - 8;
   } else {
     const startX = from.x + from.width;
     const startY = from.y + from.height / 2;
@@ -1348,6 +1304,7 @@ function buildDiagramEdge(
     path,
     color,
     marker,
+    isLoop,
     label,
     labelX,
     labelY,
@@ -1438,36 +1395,6 @@ function isHiddenDiagramMove(moveId: string): boolean {
 
 function sanitizeSvgId(value: string): string {
   return value.replace(/[^a-zA-Z0-9_-]/g, "-");
-}
-
-function getMoveIntentKeys(move: MonsterMove | null): string[] {
-  if (!move) return ["unknown"];
-  if (move.intents.length > 0) return move.intents;
-  if (move.actionTypes.length > 0) return move.actionTypes.map((type) => `action:${type}`);
-  return ["unknown"];
-}
-
-function getIntentIconConfig(intent: string): { image: string; label: string } {
-  const normalized = intent.toLowerCase();
-  if (normalized.includes("death")) return { image: INTENT_ICON_IMAGES.deathBlow, label: intent };
-  if (normalized.includes("multiattack")) return { image: INTENT_ICON_IMAGES.attack, label: intent };
-  if (normalized.includes("attack")) return { image: INTENT_ICON_IMAGES.attack, label: intent };
-  if (normalized.includes("defend") || normalized.includes("block") || normalized.includes("shield")) {
-    return { image: INTENT_ICON_IMAGES.defend, label: intent };
-  }
-  if (normalized.includes("card_debuff") || normalized.includes("carddebuff")) {
-    return { image: INTENT_ICON_IMAGES.cardDebuff, label: intent };
-  }
-  if (normalized.includes("debuff")) return { image: INTENT_ICON_IMAGES.debuff, label: intent };
-  if (normalized.includes("buff")) return { image: INTENT_ICON_IMAGES.buff, label: intent };
-  if (normalized.includes("escape")) return { image: INTENT_ICON_IMAGES.escape, label: intent };
-  if (normalized.includes("heal")) return { image: INTENT_ICON_IMAGES.heal, label: intent };
-  if (normalized.includes("sleep")) return { image: INTENT_ICON_IMAGES.sleep, label: intent };
-  if (normalized.includes("status")) return { image: INTENT_ICON_IMAGES.statusCard, label: intent };
-  if (normalized.includes("stun")) return { image: INTENT_ICON_IMAGES.stun, label: intent };
-  if (normalized.includes("summon")) return { image: INTENT_ICON_IMAGES.summon, label: intent };
-  if (normalized.includes("hidden")) return { image: INTENT_ICON_IMAGES.hidden, label: intent };
-  return { image: INTENT_ICON_IMAGES.unknown, label: intent };
 }
 
 function buildMonsterActionMoves(monster: CodexMonster): MonsterMove[] {
