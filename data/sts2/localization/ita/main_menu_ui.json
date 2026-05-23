@@ -61,6 +61,7 @@
   "DAILY_RUN_MENU.DATE_FORMAT": "d MMMM yyyy",
   "DAILY_RUN_MENU.FETCHING_TIME": "[thinky_dots]Recupero tempo...[/thinky_dots]",
   "DAILY_RUN_MENU.LEADERBOARDS.fetchingScores": "[thinky_dots]Recupero punteggi...[/thinky_dots]",
+  "DAILY_RUN_MENU.LEADERBOARDS.globalTickbox": "Classifica globale",
   "DAILY_RUN_MENU.LEADERBOARDS.noFriends": "Nessuno dei tuoi amici ha registrato un punteggio.\nInvita i tuoi amici a giocare!",
   "DAILY_RUN_MENU.LEADERBOARDS.noScore": "Non è stato registrato nessun punteggio.\nInizia a scalare la Guglia!",
   "DAILY_RUN_MENU.LEADERBOARDS.title": "Classifiche",

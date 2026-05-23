@@ -61,6 +61,7 @@
   "DAILY_RUN_MENU.DATE_FORMAT": "d. MMMM yyyy",
   "DAILY_RUN_MENU.FETCHING_TIME": "[thinky_dots]Zeit abrufen...[/thinky_dots]",
   "DAILY_RUN_MENU.LEADERBOARDS.fetchingScores": "[thinky_dots]Wertungen abrufen...[/thinky_dots]",
+  "DAILY_RUN_MENU.LEADERBOARDS.globalTickbox": "Globaler Rang",
   "DAILY_RUN_MENU.LEADERBOARDS.noFriends": "Niemand von deinen Freunden hat eine Wertung eingereicht.\nErmuntere deine Freunde, zu spielen!",
   "DAILY_RUN_MENU.LEADERBOARDS.noScore": "Keine Wertungen wurden eingereicht.\nFang an zu klettern!",
   "DAILY_RUN_MENU.LEADERBOARDS.title": "Ranglisten",

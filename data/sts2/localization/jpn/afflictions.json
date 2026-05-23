@@ -17,5 +17,8 @@
   "RINGING.extraCardText": "鳴動",
   "RINGING.title": "鳴動",
   "SMOG.description": "このターン、これ以上[gold]スキル[/gold]をプレイできない。ターン終了時に解除される。",
-  "SMOG.title": "スモッグ"
+  "SMOG.title": "スモッグ",
+  "TAINTED.description": "プレイした時、[gold]汚染[/gold][blue]{Amount}[/blue]を受ける。",
+  "TAINTED.extraCardText": "汚染{Amount}を受ける。",
+  "TAINTED.title": "汚染"
 }

@@ -85,6 +85,8 @@
   "HOST.description": "호스팅을 통해 최대\n4명이서 일반 / 일일 도전 /\n커스텀 도전을 즐겨보세요.",
   "HOST.title": "호스트",
   "HP_AMOUNT": "체력: {amount}",
+  "INTERNAL_ERROR.description": "내부 오류가 발생했습니다. 개발진에게 해당 문제를 제보해주세요.\n\n자세한 정보: {info}",
+  "INTERNAL_ERROR.title": "내부 오류!",
   "INVALID_SAVE_POPUP.description_progress": "진행도 세이브 파일을 불러오던 중 문제가 발생했습니다.\n\n문제를 해결할 수 있도록 버그 리포트를 보내주시길 바랍니다.",
   "INVALID_SAVE_POPUP.description_run": "해당 도전을 불러올 수 없습니다.\n\n문제를 해결할 수 있도록 버그 리포트를 보내주시길 바랍니다.",
   "INVALID_SAVE_POPUP.description_settings": "설정 세이브 파일을 불러오던 중 문제가 발생했습니다.\n\n문제를 해결할 수 있도록 버그 리포트를 보내주시길 바랍니다.",

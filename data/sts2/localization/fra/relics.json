@@ -968,7 +968,7 @@
   "WINGED_BOOTS.description": "Vous pouvez ignorer les trajets indiqués sur la carte lorsque vous choisissez la prochaine salle [blue]{Rooms}[/blue] fois.",
   "WINGED_BOOTS.flavor": "[red]Les détails de cette relique seront révélés plus tard...[/red]",
   "WINGED_BOOTS.title": "Bottes ailées",
-  "WING_CHARM.description": "Une carte aléatoire de chaque récompense de carte est [gold]Envoûtée[/gold] avec [purple]Rapide[/purple] [blue]{SwiftAmount}[/blue].",
+  "WING_CHARM.description": "Une carte aléatoire de chaque récompense de carte est [gold]Envoûtée[/gold] avec [purple]Célérité[/purple] [blue]{SwiftAmount}[/blue].",
   "WING_CHARM.flavor": "[red]Les détails de cette relique seront révélés plus tard...[/red]",
   "WING_CHARM.title": "Aile fétiche",
   "WONGOS_MYSTERY_TICKET.description": "Recevez [blue]{Repeat}[/blue] [gold]{Repeat:plural:Relique aléatoire|Reliques aléatoires}[/gold] après [blue]{RemainingCombats}[/blue] {RemainingCombats:plural:combat|combats}.",

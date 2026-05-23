@@ -18,7 +18,7 @@
   "CONFIRM_BUTTON": "わかった！",
   "ENCHANTMENT_FTUE_DESCRIPTION": "エンチャントは、付与されたカードを永続的に強化する。\n1枚のカードに付与できるエンチャントは1つまでだ。",
   "ENCHANTMENT_FTUE_TITLE": "ヒント: エンチャントとは？",
-  "MAP_SELECT_DESCRIPTION": "スパイアを登るには、次に進む部屋を選択する。その部屋をクリアしたら、さらに登るため、上部に隣接する部屋を選択しよう。",
+  "MAP_SELECT_DESCRIPTION": "スパイアを登るには、次に進む部屋を選択する。その部屋をクリアしたら、上部に隣接する部屋を選択してさらに上を目指そう。",
   "MAP_SELECT_TITLE": "ヒント: 移動する部屋の選択",
   "MERCHANT_FTUE_DESCRIPTION": "次の部屋に進む前に、忘れずに[blue]商人[/blue]の品物を見ておこう。\n\n「いらっしゃい！さあ、[gold]ゴールド[/gold]で買い物していってよ！！」",
   "MERCHANT_FTUE_TITLE": "ヒント: 商人を素通りしないこと！",

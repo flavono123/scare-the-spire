@@ -433,8 +433,6 @@
   "FOCUSED_STRIKE.description": "Наносит {Damage:diff()} урона.\nДает {FocusPower:diff()} [gold]фокуса[/gold] на этот ход.",
   "FOCUSED_STRIKE.title": "Фокусирующий удар",
   "FOLLY.title": "Тщетность",
-  "FOLLOW_THROUGH.description": "Наносит {Damage:diff()} урона.\nНаносит урон еще раз, если в [gold]руке[/gold] не менее {CardCount} {CardCount:plural(ru):другой карты|других карт|других карт}.",
-  "FOLLOW_THROUGH.title": "До конца",
   "FOOTWORK.description": "Дает {DexterityPower:diff()} [gold]ловкости[/gold].",
   "FOOTWORK.title": "Грация",
   "FORBIDDEN_GRIMOIRE.description": "Позволяет удалить карту из [gold]колоды[/gold] в конце боя.",

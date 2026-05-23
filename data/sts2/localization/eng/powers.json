@@ -725,7 +725,7 @@
   "TAG_TEAM_POWER.remoteDescription": "The next Attack another player plays on the enemy is played an extra time because of [gold]{ApplierName}[/gold].",
   "TAG_TEAM_POWER.smartDescription": "The next Attack another player plays on the enemy is played an extra time.",
   "TAG_TEAM_POWER.title": "Tag Team",
-  "TAINTED_POWER.description": "Take [blue]{Amount}[/blue] additional damage from Attacks this turn.",
+  "TAINTED_POWER.description": "Take additional damage from Attacks this turn.",
   "TAINTED_POWER.smartDescription": "Take [blue]{Amount}[/blue] additional damage from Attacks this turn.",
   "TAINTED_POWER.title": "Tainted",
   "TANGLED_POWER.description": "Attacks cost [blue]1[/blue] additional [gold]Energy[/gold] this turn.",

@@ -61,6 +61,7 @@
   "DAILY_RUN_MENU.DATE_FORMAT": "d MMMM yyyy",
   "DAILY_RUN_MENU.FETCHING_TIME": "[thinky_dots]Chargement du temps...[/thinky_dots]",
   "DAILY_RUN_MENU.LEADERBOARDS.fetchingScores": "[thinky_dots]Chargement des scores...[/thinky_dots]",
+  "DAILY_RUN_MENU.LEADERBOARDS.globalTickbox": "Classement mondial",
   "DAILY_RUN_MENU.LEADERBOARDS.noFriends": "Aucun de vos amis n'a envoyé de score.\nDites-leur de jouer !",
   "DAILY_RUN_MENU.LEADERBOARDS.noScore": "Aucun score n'a été envoyé.\nÀ votre tour !",
   "DAILY_RUN_MENU.LEADERBOARDS.title": "Classements",

@@ -392,6 +392,7 @@
   "IRON_CLUB.description": "Po zagraniu [blue]{Cards}[/blue] {Cards:plural:karty|kart|kart}, dobierz [blue]1[/blue] kartę.",
   "IRON_CLUB.flavor": "[red]Szczegóły tego artefaktu zostaną ujawnione w przyszłości...[/red]",
   "IRON_CLUB.title": "Żelazna maczuga",
+  "IVORY_TILE.description": "Kiedykolwiek zagrasz kartę kosztującą co najmniej {EnergyThreshold:energyIcons()}, zyskaj {Energy:energyIcons()}.",
   "IVORY_TILE.flavor": "[red]Szczegóły tego artefaktu zostaną ujawnione w przyszłości...[/red]",
   "IVORY_TILE.title": "Płytka z kości słoniowej",
   "JEWELED_MASK.description": "Na początku każdej walki przenieś losową Moc ze [gold]stosu rozgrywającego[/gold] do [gold]ręki[/gold]. W tej walce jest darmowa.",

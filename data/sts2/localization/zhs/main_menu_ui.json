@@ -61,6 +61,7 @@
   "DAILY_RUN_MENU.DATE_FORMAT": "yyyy MMMM d",
   "DAILY_RUN_MENU.FETCHING_TIME": "[thinky_dots]正在获取时间...[/thinky_dots]",
   "DAILY_RUN_MENU.LEADERBOARDS.fetchingScores": "[thinky_dots]正在获取分数...[/thinky_dots]",
+  "DAILY_RUN_MENU.LEADERBOARDS.globalTickbox": "全球排名",
   "DAILY_RUN_MENU.LEADERBOARDS.noFriends": "你的好友们都没有上传今日分数。\n快叫你的朋友来玩吧！",
   "DAILY_RUN_MENU.LEADERBOARDS.noScore": "还没有分数\n这还不去爬趟塔先！",
   "DAILY_RUN_MENU.LEADERBOARDS.title": "排行榜",

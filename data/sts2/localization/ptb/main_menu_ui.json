@@ -61,6 +61,7 @@
   "DAILY_RUN_MENU.DATE_FORMAT": "d MMMM, yyyy",
   "DAILY_RUN_MENU.FETCHING_TIME": "[thinky_dots]Carregando...[/thinky_dots]",
   "DAILY_RUN_MENU.LEADERBOARDS.fetchingScores": "[thinky_dots]Carregando Pontuações...[/thinky_dots]",
+  "DAILY_RUN_MENU.LEADERBOARDS.globalTickbox": "Classificação Global",
   "DAILY_RUN_MENU.LEADERBOARDS.noFriends": "Nenhum de seus amigos enviou uma pontuação ainda.\nConvide suas amizades a jogar!",
   "DAILY_RUN_MENU.LEADERBOARDS.noScore": "Nenhuma pontuação foi enviada.\nHora de escalar!",
   "DAILY_RUN_MENU.LEADERBOARDS.title": "Tabela de Classificação",

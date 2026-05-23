@@ -61,6 +61,7 @@
   "DAILY_RUN_MENU.DATE_FORMAT": "d MMMM yyyy",
   "DAILY_RUN_MENU.FETCHING_TIME": "[thinky_dots]Pobieranie daty...[/thinky_dots]",
   "DAILY_RUN_MENU.LEADERBOARDS.fetchingScores": "[thinky_dots]Pobieranie wyników...[/thinky_dots]",
+  "DAILY_RUN_MENU.LEADERBOARDS.globalTickbox": "Globalna ranga",
   "DAILY_RUN_MENU.LEADERBOARDS.noFriends": "Nikt z twoich znajomych nie przesłał swojego wyniku.\nDaj im znać, aby ukończyli Wyzwanie!",
   "DAILY_RUN_MENU.LEADERBOARDS.noScore": "Nie przesłano żadnych wyników.\nCzas na wspinaczkę!",
   "DAILY_RUN_MENU.LEADERBOARDS.title": "Rankingi",

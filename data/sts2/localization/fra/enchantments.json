@@ -51,7 +51,7 @@
   "STEADY.title": "Stabilité",
   "SWIFT.description": "La première fois que vous jouez cette carte, piochez [blue]{Amount}[/blue] {Amount:plural:carte|cartes}.",
   "SWIFT.extraCardText": "Piochez {Amount} {Amount:plural:carte|cartes} la première fois que cette carte est jouée.",
-  "SWIFT.title": "Rapide",
+  "SWIFT.title": "Célérité",
   "TEZCATARAS_EMBER.description": "Coûte [blue]0[/blue], inflige [blue]{Damage}[/blue] dégâts supplémentaires, et gagne [gold]Éternel[/gold].",
   "TEZCATARAS_EMBER.title": "Braise de Tezcatara",
   "VIGOROUS.description": "La première fois que cette carte est jouée, elle inflige [blue]{Amount}[/blue] dégâts supplémentaires.",

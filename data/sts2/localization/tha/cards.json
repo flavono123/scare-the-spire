@@ -364,8 +364,6 @@
   "FOCUSED_STRIKE.description": "สร้างความเสียหาย {Damage:diff()}\nได้รับ {FocusPower:diff()} [gold]โฟกัส[/gold]ในเทิร์นนี้",
   "FOCUSED_STRIKE.title": "จู่โจมโฟกัส",
   "FOLLY.title": "โง่เขลา",
-  "FOLLOW_THROUGH.description": "สร้างความเสียหาย {Damage:diff()}\nถ้าคุณมีการ์ดอื่นใน[gold]มือ[/gold] {CardCount} ใบขึ้นไป โจมตีเพิ่มอีกครั้ง",
-  "FOLLOW_THROUGH.title": "กระบวนท่าส่งต่อ",
   "FOOTWORK.description": "ได้รับ {DexterityPower:diff()} [gold]ความชำนาญ[/gold]",
   "FOOTWORK.title": "จังหวะก้าวเท้า",
   "FORBIDDEN_GRIMOIRE.description": "ตอนจบการต่อสู้ คุณสามารถกำจัดการ์ด 1 ใบใน[gold]กองการ์ด[/gold]ได้",
