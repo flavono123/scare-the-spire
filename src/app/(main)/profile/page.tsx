@@ -13,10 +13,8 @@ import type {
   MonsterSpineAsset,
   MonsterSpineEffectAsset,
 } from "@/lib/codex-types";
-import {
-  getGameLocaleFromSearchRecord,
-  getServiceLocaleForGameLocale,
-} from "@/lib/i18n";
+import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
+import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { serviceMessages } from "@/messages/service";
 import ProfilePage, {
   type AncientChoice,
@@ -26,14 +24,9 @@ import ProfilePage, {
   type ProfileNicknameLocale,
 } from "./profile-page";
 
-type ProfileSearchParams = Record<string, string | string[] | undefined>;
-
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<ProfileSearchParams>;
-}): Promise<Metadata> {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+export async function generateProfileMetadata(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const copy = serviceMessages[serviceLocale].profile;
 
@@ -45,6 +38,10 @@ export async function generateMetadata({
       follow: false,
     },
   };
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generateProfileMetadata();
 }
 
 const CHARACTER_SLUGS: Record<string, string> = {
@@ -110,12 +107,9 @@ const PET_ATTACK_VFX: Partial<Record<PetMonsterId, string>> = {
   PAELS_LEGION: "VFX_MECHA_KNIGHT_SHIELD",
 };
 
-export default async function ProfileDevRoute({
-  searchParams,
-}: {
-  searchParams: Promise<ProfileSearchParams>;
-}) {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+export async function renderProfilePage(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const copy = serviceMessages[serviceLocale].profile;
 
@@ -141,6 +135,10 @@ export default async function ProfileDevRoute({
       nicknameLocale={serviceLocale}
     />
   );
+}
+
+export default async function ProfileDevRoute() {
+  return renderProfilePage();
 }
 
 function mapCharacter(character: CodexCharacter, spineAsset: MonsterSpineAsset | null): CharacterChoice {

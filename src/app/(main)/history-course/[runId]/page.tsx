@@ -1,20 +1,15 @@
 import type { Metadata } from "next";
 import { RunDetailLoader } from "@/components/history-course/run-detail-loader";
 import { getCodexCards, getCodexRelics } from "@/lib/codex-data";
-import {
-  getGameLocaleFromSearchRecord,
-  getServiceLocaleForGameLocale,
-} from "@/lib/i18n";
+import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
+import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { withPageOgImage } from "@/lib/page-og-images";
 import { getHistoryCourseLandingGameCopy } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}): Promise<Metadata> {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+export async function generateHistoryCourseRunMetadata(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const copy = await getHistoryCourseLandingGameCopy(gameLocale);
   return withPageOgImage({
@@ -23,19 +18,18 @@ export async function generateMetadata({
   }, "/history-course/[runId]");
 }
 
+export async function generateMetadata(): Promise<Metadata> {
+  return generateHistoryCourseRunMetadata();
+}
+
 // runId is content-addressable and per-browser; we never enumerate.
 // The loader resolves runId from IndexedDB on the client.
 export const dynamic = "force-dynamic";
 
-export default async function HistoryCourseRunPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ runId: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
-  const { runId } = await params;
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+export async function renderHistoryCourseRunPage(
+  runId: string,
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+) {
   const [allCards, allRelics] = await Promise.all([
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
@@ -43,4 +37,13 @@ export default async function HistoryCourseRunPage({
   return (
     <RunDetailLoader runId={runId} allCards={allCards} allRelics={allRelics} />
   );
+}
+
+export default async function HistoryCourseRunPage({
+  params,
+}: {
+  params: Promise<{ runId: string }>;
+}) {
+  const { runId } = await params;
+  return renderHistoryCourseRunPage(runId);
 }

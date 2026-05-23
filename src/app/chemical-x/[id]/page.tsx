@@ -1,34 +1,28 @@
 import type { Metadata } from "next";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { ChemicalXPostView } from "@/components/chemicalx/post-view";
-import {
-  getGameLocaleFromSearchRecord,
-  getServiceLocaleForGameLocale,
-} from "@/lib/i18n";
+import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
+import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { withPageOgImage } from "@/lib/page-og-images";
 import { serviceMessages } from "@/messages/service";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}): Promise<Metadata> {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+export async function generateChemicalXPostMetadata(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   return withPageOgImage({
     title: serviceMessages[serviceLocale].chemicalX.title,
   }, "/chemical-x/[id]");
 }
 
-export default async function ChemicalXPostPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
-  const { id } = await params;
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+export async function generateMetadata(): Promise<Metadata> {
+  return generateChemicalXPostMetadata();
+}
+
+export async function renderChemicalXPostPage(
+  id: string,
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+) {
   const entities = await loadAllEntities({ gameLocale });
 
   return (
@@ -36,4 +30,13 @@ export default async function ChemicalXPostPage({
       <ChemicalXPostView postId={id} entities={entities} />
     </div>
   );
+}
+
+export default async function ChemicalXPostPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return renderChemicalXPostPage(id);
 }

@@ -1,20 +1,15 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { HistoryCourseLanding } from "@/components/history-course/history-course-landing";
-import {
-  getGameLocaleFromSearchRecord,
-  getServiceLocaleForGameLocale,
-} from "@/lib/i18n";
+import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
+import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { withPageOgImage } from "@/lib/page-og-images";
 import { getHistoryCourseLandingGameCopy } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}): Promise<Metadata> {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+export async function generateHistoryCourseMetadata(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const copy = await getHistoryCourseLandingGameCopy(gameLocale);
   return withPageOgImage({
@@ -26,12 +21,13 @@ export async function generateMetadata({
   }, "/history-course");
 }
 
-export default async function HistoryCourseIndexPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+export async function generateMetadata(): Promise<Metadata> {
+  return generateHistoryCourseMetadata();
+}
+
+export async function renderHistoryCourseIndexPage(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+) {
   const copy = await getHistoryCourseLandingGameCopy(gameLocale);
 
   return (
@@ -59,4 +55,8 @@ export default async function HistoryCourseIndexPage({
       </div>
     </div>
   );
+}
+
+export default async function HistoryCourseIndexPage() {
+  return renderHistoryCourseIndexPage();
 }

@@ -1,32 +1,28 @@
 import type { Metadata } from "next";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { ChemicalXClient } from "@/components/chemicalx/chemicalx-client";
-import {
-  getGameLocaleFromSearchRecord,
-  getServiceLocaleForGameLocale,
-} from "@/lib/i18n";
+import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
+import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { withPageOgImage } from "@/lib/page-og-images";
 import { getChemicalXPlaceholder } from "@/lib/borrowed-game-copy";
 import { serviceMessages } from "@/messages/service";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}): Promise<Metadata> {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+export async function generateChemicalXMetadata(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   return withPageOgImage({
     title: serviceMessages[serviceLocale].chemicalX.title,
   }, "/chemical-x");
 }
 
-export default async function ChemicalXPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
-  const gameLocale = getGameLocaleFromSearchRecord(await searchParams);
+export async function generateMetadata(): Promise<Metadata> {
+  return generateChemicalXMetadata();
+}
+
+export async function renderChemicalXPage(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+) {
   const [entities, placeholder] = await Promise.all([
     loadAllEntities({ gameLocale }),
     getChemicalXPlaceholder(gameLocale),
@@ -37,4 +33,8 @@ export default async function ChemicalXPage({
       <ChemicalXClient entities={entities} placeholder={placeholder} />
     </div>
   );
+}
+
+export default async function ChemicalXPage() {
+  return renderChemicalXPage();
 }
