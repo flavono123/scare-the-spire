@@ -97,13 +97,14 @@ export function getEpochAffiliationLabel(
 }
 
 export function getEpochAffiliationColor(affiliation: EpochAffiliation): string {
-  return getCharacterColor(affiliation) ?? {
+  const fallbackColors: Partial<Record<EpochAffiliation, string>> = {
     ancient: "#60a5fa",
     world: "#eab308",
     spire: "#c084fc",
     reopening: "#38bdf8",
     unknown: "#a1a1aa",
-  }[affiliation] ?? "#a1a1aa";
+  };
+  return getCharacterColor(affiliation) ?? fallbackColors[affiliation] ?? "#a1a1aa";
 }
 
 export function getEpochUnlockKindLabel(
