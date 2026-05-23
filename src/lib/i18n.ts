@@ -25,6 +25,29 @@ export const GAME_LOCALES = [
 
 export type GameLocale = (typeof GAME_LOCALES)[number];
 
+const GAME_LOCALE_PATH_ALIASES = {
+  en: "eng",
+  eng: "eng",
+  zhs: "zhs",
+  jpn: "jpn",
+  deu: "deu",
+  fra: "fra",
+  ita: "ita",
+  spa: "spa",
+  esp: "esp",
+  ptb: "ptb",
+  rus: "rus",
+  pol: "pol",
+  tha: "tha",
+  tur: "tur",
+} as const satisfies Record<string, GameLocale>;
+
+export type GameLocalePathSegment = keyof typeof GAME_LOCALE_PATH_ALIASES;
+
+export const GAME_LOCALE_PATH_SEGMENTS = Object.keys(
+  GAME_LOCALE_PATH_ALIASES,
+) as GameLocalePathSegment[];
+
 export const DEFAULT_SERVICE_LOCALE: ServiceLocale = "ko";
 export const DEFAULT_GAME_LOCALE_BY_SERVICE: Record<ServiceLocale, GameLocale> = {
   ko: "kor",
@@ -82,9 +105,29 @@ export function isGameLocale(value: string): value is GameLocale {
   return (GAME_LOCALES as readonly string[]).includes(value);
 }
 
-export function getServiceLocaleFromPath(pathname: string): ServiceLocale {
+export function gameLocaleFromPathSegment(segment: string | undefined): GameLocale | null {
+  if (!segment) return null;
+  return GAME_LOCALE_PATH_ALIASES[segment.toLowerCase() as GameLocalePathSegment] ?? null;
+}
+
+export function hasGameLocalePathPrefix(pathname: string): boolean {
   const firstSegment = pathname.split("/").filter(Boolean)[0];
-  return firstSegment === "en" ? "en" : DEFAULT_SERVICE_LOCALE;
+  return gameLocaleFromPathSegment(firstSegment) !== null;
+}
+
+export function getGameLocaleFromPathname(pathname: string): GameLocale {
+  const firstSegment = pathname.split("/").filter(Boolean)[0];
+  return gameLocaleFromPathSegment(firstSegment) ?? DEFAULT_GAME_LOCALE_BY_SERVICE.ko;
+}
+
+export function pathPrefixForGameLocale(gameLocale: GameLocale): string {
+  if (gameLocale === "kor") return "";
+  if (gameLocale === "eng") return "/en";
+  return `/${gameLocale}`;
+}
+
+export function getServiceLocaleFromPath(pathname: string): ServiceLocale {
+  return getServiceLocaleForGameLocale(getGameLocaleFromPathname(pathname));
 }
 
 export function getServiceLocaleFromInternalParam(
@@ -100,16 +143,26 @@ export function stripServiceLocaleFromPath(pathname: string): string {
   return pathname || "/";
 }
 
+export function stripGameLocaleFromPath(pathname: string): string {
+  const normalized = pathname || "/";
+  const segments = normalized.split("/").filter(Boolean);
+  if (segments.length === 0) return "/";
+  if (!gameLocaleFromPathSegment(segments[0])) return normalized;
+
+  const stripped = `/${segments.slice(1).join("/")}`;
+  return stripped === "/" ? "/" : stripped.replace(/\/$/, "");
+}
+
 export function localizeHref(href: string, locale: ServiceLocale): string {
   if (!href.startsWith("/") || href.startsWith("//")) return href;
 
   const [path, suffix = ""] = href.split(/(?=[?#])/, 2);
-  const unprefixed = stripServiceLocaleFromPath(path);
-  const localizedPath = locale === "en" && unprefixed !== "/"
-    ? `/en${unprefixed}`
-    : locale === "en"
-      ? "/en"
-      : unprefixed;
+  const unprefixed = stripGameLocaleFromPath(stripServiceLocaleFromPath(path));
+  const gameLocale = locale === "ko" ? "kor" : "eng";
+  const prefix = pathPrefixForGameLocale(gameLocale);
+  const localizedPath = prefix
+    ? unprefixed === "/" ? prefix : `${prefix}${unprefixed}`
+    : unprefixed;
 
   return `${localizedPath}${suffix}`;
 }
@@ -128,7 +181,7 @@ export function localizeHrefWithGameLocale(
   const [path, search = ""] = pathAndSearch.split("?", 2);
   const searchParams = new URLSearchParams(search);
   const gameSearch = withGameLocaleSearch(searchParams, gameLocale, serviceLocale);
-  return `${path}${gameSearch}${hash ? `#${hash}` : ""}`;
+  return `${switchGameLocalePath(path, gameLocale)}${gameSearch}${hash ? `#${hash}` : ""}`;
 }
 
 export function switchServiceLocaleHref(
@@ -137,6 +190,24 @@ export function switchServiceLocaleHref(
   search = "",
 ): string {
   const localizedPath = localizeHref(stripServiceLocaleFromPath(pathname), locale);
+  const normalizedSearch = search.replace(/^\?/, "");
+  return normalizedSearch ? `${localizedPath}?${normalizedSearch}` : localizedPath;
+}
+
+export function switchGameLocalePath(pathname: string, gameLocale: GameLocale): string {
+  const unprefixed = stripGameLocaleFromPath(stripServiceLocaleFromPath(pathname));
+  const prefix = pathPrefixForGameLocale(gameLocale);
+  return prefix
+    ? unprefixed === "/" ? prefix : `${prefix}${unprefixed}`
+    : unprefixed;
+}
+
+export function switchGameLocaleHref(
+  pathname: string,
+  gameLocale: GameLocale,
+  search = "",
+): string {
+  const localizedPath = switchGameLocalePath(pathname, gameLocale);
   const normalizedSearch = search.replace(/^\?/, "");
   return normalizedSearch ? `${localizedPath}?${normalizedSearch}` : localizedPath;
 }
@@ -157,11 +228,9 @@ export function withGameLocaleSearch(
 ): string {
   const next = new URLSearchParams(searchParams);
   next.delete(INTERNAL_SERVICE_LOCALE_QUERY);
-  if (gameLocale === DEFAULT_GAME_LOCALE_BY_SERVICE[serviceLocale]) {
-    next.delete("gl");
-  } else {
-    next.set("gl", gameLocale);
-  }
+  void gameLocale;
+  void serviceLocale;
+  next.delete("gl");
 
   const query = next.toString();
   return query ? `?${query}` : "";
