@@ -733,7 +733,7 @@ export function MonsterDetail({
             />
             {imageSrc ? (
               <MonsterSpineStage
-                key={`${monster.id}-${activeSkinKey}`}
+                key={`${monster.id}-${activeSkinKey}-${selectedMoveId ?? "idle"}-${selectedMoveNonce}`}
                 asset={monster.spineAsset}
                 fallbackImageUrl={imageSrc}
                 monsterName={monster.name}
