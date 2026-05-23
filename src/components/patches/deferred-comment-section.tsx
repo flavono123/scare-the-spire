@@ -25,9 +25,9 @@ export function DeferredCommentSection({
     const target = mountRef.current;
     if (!target || shouldLoad) return;
 
-    if (!("IntersectionObserver" in window)) {
-      const timeoutId = window.setTimeout(() => setShouldLoad(true), 0);
-      return () => window.clearTimeout(timeoutId);
+    if (typeof IntersectionObserver === "undefined") {
+      const timeoutId = setTimeout(() => setShouldLoad(true), 0);
+      return () => clearTimeout(timeoutId);
     }
 
     const observer = new IntersectionObserver(
