@@ -239,6 +239,45 @@ function gameTitleText(
   return gameText(table, key, gameTitleFallback(korFallback, engFallback, gameLocale));
 }
 
+function stripMonsterMoveSuffix(moveId: string): string {
+  return moveId.endsWith("_MOVE") ? moveId.slice(0, -"_MOVE".length) : moveId;
+}
+
+function monsterMoveTitleCandidates(moveId: string): string[] {
+  const candidates: string[] = [];
+  const add = (candidate: string) => {
+    if (candidate && !candidates.includes(candidate)) candidates.push(candidate);
+  };
+
+  for (const seed of [moveId, stripMonsterMoveSuffix(moveId)]) {
+    add(seed);
+
+    const moveNumberMatch = seed.match(/^(.+)_MOVE_\d+$/);
+    if (moveNumberMatch) add(moveNumberMatch[1]);
+
+    const trailingNumberMatch = seed.match(/^(.+?)\d+$/);
+    if (trailingNumberMatch) add(trailingNumberMatch[1]);
+
+    const underscoreNumberMatch = seed.match(/^(.+)_\d+$/);
+    if (underscoreNumberMatch) add(underscoreNumberMatch[1]);
+  }
+
+  return candidates;
+}
+
+function monsterMoveTitleText(
+  table: GameLocalizationTable,
+  monsterId: string,
+  moveId: string,
+  fallback: string,
+): string {
+  for (const candidate of monsterMoveTitleCandidates(moveId)) {
+    const title = table[`${monsterId}.moves.${candidate}.title`];
+    if (title) return title;
+  }
+  return fallback;
+}
+
 function localizedGameText(
   table: GameLocalizationTable,
   englishTable: GameLocalizationTable,
@@ -1272,9 +1311,10 @@ function mapMonster(
     const em = engMovesById.get(km.id);
     return {
       id: km.id,
-      name: gameText(
+      name: monsterMoveTitleText(
         gameMonsters,
-        `${kor.id}.moves.${km.id}.title`,
+        kor.id,
+        km.id,
         gameTitleFallback(km.name, em?.name ?? km.name, gameLocale),
       ),
       nameEn: em?.name ?? km.name,
