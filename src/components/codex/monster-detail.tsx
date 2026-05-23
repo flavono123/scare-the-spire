@@ -1002,7 +1002,7 @@ function buildCardEntity(
   return {
     id: application.cardId,
     nameEn: card?.nameEn ?? application.cardNameEn,
-    nameKo: card?.nameKo ?? application.cardName,
+    nameKo: card?.name ?? application.cardName,
     imageUrl: card?.imageUrl ?? application.imageUrl,
     href,
     color: card?.pool ?? "card",
