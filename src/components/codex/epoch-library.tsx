@@ -439,6 +439,9 @@ export function EpochLibrary({
 
       {selectedEpoch && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={selectedEpoch.name}
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(event) => {
             if (event.target === event.currentTarget) setSelectedEpoch(null);
