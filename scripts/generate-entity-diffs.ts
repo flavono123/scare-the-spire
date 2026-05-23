@@ -60,6 +60,7 @@ interface RawCard {
   upgrade: Record<string, string | number> | null;
   image_url: string | null;
   beta_image_url: string | null;
+  max_upgrade_level?: number | null;
 }
 
 interface RawRelic {
@@ -128,6 +129,7 @@ const CARD_SIMPLE_FIELDS = [
   "star_cost",
   "is_x_cost",
   "is_x_star_cost",
+  "max_upgrade_level",
 ] as const;
 
 // Map from raw snake_case field to the camelCase field used in EntityVersionDiff
@@ -143,6 +145,7 @@ const CARD_FIELD_MAP: Record<string, string> = {
   star_cost: "starCost",
   is_x_cost: "isXCost",
   is_x_star_cost: "isXStarCost",
+  max_upgrade_level: "maxUpgradeLevel",
 };
 
 function diffCards(oldCard: RawCard, newCard: RawCard): EntityFieldDiff[] {

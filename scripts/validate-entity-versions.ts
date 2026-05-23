@@ -102,6 +102,7 @@ const FIELD_TO_RAW: Record<string, string> = {
   starCost: "star_cost",
   isXCost: "is_x_cost",
   isXStarCost: "is_x_star_cost",
+  maxUpgradeLevel: "max_upgrade_level",
   vars: "vars",
   keywords: "keywords",
   tags: "tags",
@@ -295,7 +296,7 @@ function main() {
   const validCardFields = new Set([
     "cost", "type", "rarity", "description", "descriptionRaw",
     "damage", "block", "hitCount", "starCost", "isXCost", "isXStarCost",
-    "vars", "keywords", "tags", "upgrade",
+    "maxUpgradeLevel", "vars", "keywords", "tags", "upgrade",
   ]);
   const validRelicFields = new Set([
     "description", "descriptionRaw", "rarity", "pool", "flavor",
