@@ -2688,10 +2688,7 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/territorial_power.png",
-    "vars": {
-      "Amount": 1,
-      "OwnerName": "섀도니스"
-    }
+    "vars": {}
   },
   {
     "id": "THE_BOMB",
