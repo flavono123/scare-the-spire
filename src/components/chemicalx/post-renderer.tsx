@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { PostBlock } from "@/lib/chemical-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EntityPreview } from "@/components/patch-note-renderer";
+import {
+  buildEntityKeywordIndex,
+  resolveEntityKeyword,
+} from "@/lib/chemical-utils";
 
 interface PostRendererProps {
   blocks: PostBlock[];
@@ -12,6 +16,20 @@ interface PostRendererProps {
 }
 
 export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRendererProps) {
+  const keywordEntityIndex = useMemo(
+    () => buildEntityKeywordIndex(Array.from(entityMap.values())),
+    [entityMap],
+  );
+
+  const resolveKeywordBlockEntity = (block: Extract<PostBlock, { type: "keyword" }>): EntityInfo | undefined => {
+    if (block.entityId && block.entityType) {
+      const entity = entityMap.get(`${block.entityType}:${block.entityId}`);
+      if (entity) return entity;
+    }
+
+    return resolveEntityKeyword(block.keyword || block.text, keywordEntityIndex);
+  };
+
   // Collect entities + keywords for the expanded preview section
   const expandedEntities: EntityInfo[] = [];
   const expandedKeywords: { text: string; keyword?: string; description: string }[] = [];
@@ -25,16 +43,14 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
         const entity = entityMap.get(key);
         if (entity) expandedEntities.push(entity);
       } else if (block.type === "keyword") {
-        if (block.entityId && block.entityType) {
-          const entity = entityMap.get(`${block.entityType}:${block.entityId}`);
-          if (entity) {
-            const key = `${entity.type}:${entity.id}`;
-            if (!seen.has(key)) {
-              seen.add(key);
-              expandedEntities.push(entity);
-            }
-            continue;
+        const entity = resolveKeywordBlockEntity(block);
+        if (entity) {
+          const key = `${entity.type}:${entity.id}`;
+          if (!seen.has(key)) {
+            seen.add(key);
+            expandedEntities.push(entity);
           }
+          continue;
         }
 
         const keyName = block.keyword || block.text;
@@ -56,15 +72,13 @@ export function PostRenderer({ blocks, entityMap, forceShowTooltips }: PostRende
           }
 
           if (block.type === "keyword") {
-            if (block.entityId && block.entityType) {
-              const entity = entityMap.get(`${block.entityType}:${block.entityId}`);
-              if (entity) {
-                return (
-                  <EntityPreview key={i} entity={entity}>
-                    {block.text}
-                  </EntityPreview>
-                );
-              }
+            const entity = resolveKeywordBlockEntity(block);
+            if (entity) {
+              return (
+                <EntityPreview key={i} entity={entity}>
+                  {block.text}
+                </EntityPreview>
+              );
             }
             return <KeywordSpan key={i} text={block.text} keyword={block.keyword} description={block.description} />;
           }
