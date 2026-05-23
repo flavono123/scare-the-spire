@@ -6,7 +6,9 @@ import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { serviceMessages } from "@/messages/service";
 import type {
   CodexEncounter,
+  CodexCard,
   CodexMonster,
+  CodexPower,
 } from "@/lib/codex-types";
 import type { STS2Change, STS2Patch } from "@/lib/types";
 import { MonsterLibrary } from "./monster-library";
@@ -19,6 +21,8 @@ interface BestiaryLibraryProps {
   gameUi: CodexGameUiLabels;
   monsters: CodexMonster[];
   encounters: CodexEncounter[];
+  cards?: CodexCard[];
+  powers?: CodexPower[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
 }
@@ -28,6 +32,8 @@ export function BestiaryLibrary({
   gameUi,
   monsters,
   encounters,
+  cards,
+  powers,
   patches,
   changes,
 }: BestiaryLibraryProps) {
@@ -102,6 +108,8 @@ export function BestiaryLibrary({
       title={gameUi.bestiaryTitle}
       monsters={monsters}
       encounters={encounters}
+      cards={cards}
+      powers={powers}
       patches={patches}
       changes={changes}
       trailing={switcher}

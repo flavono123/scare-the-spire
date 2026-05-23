@@ -27,7 +27,9 @@ import { getBestiaryDisplayMonsterType } from "@/lib/bestiary-monster-policy";
 import { serviceMessages } from "@/messages/service";
 import type {
   CodexEncounter,
+  CodexCard,
   CodexMonster,
+  CodexPower,
   DamageValue,
   MonsterActionType,
   MonsterMove,
@@ -654,6 +656,8 @@ interface MonsterDetailProps {
   backToListTitle: string;
   monster: CodexMonster;
   encounters: CodexEncounter[];
+  cards?: CodexCard[];
+  powers?: CodexPower[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   onClose?: () => void;
@@ -665,6 +669,8 @@ export function MonsterDetail({
   backToListTitle,
   monster,
   encounters,
+  cards = [],
+  powers = [],
   patches,
   changes,
   onClose,

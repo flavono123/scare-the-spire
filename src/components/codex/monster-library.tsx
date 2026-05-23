@@ -11,6 +11,8 @@ import { serviceMessages } from "@/messages/service";
 import {
   CodexMonster,
   CodexEncounter,
+  CodexCard,
+  CodexPower,
   MonsterType,
   MONSTER_TYPE_CONFIG,
   MONSTER_TYPE_ORDER,
@@ -63,6 +65,8 @@ interface MonsterLibraryProps {
   title: string;
   monsters: CodexMonster[];
   encounters: CodexEncounter[];
+  cards?: CodexCard[];
+  powers?: CodexPower[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
   trailing?: React.ReactNode;
@@ -74,6 +78,8 @@ export function MonsterLibrary({
   title,
   monsters,
   encounters,
+  cards = [],
+  powers = [],
   patches,
   changes,
   trailing,
@@ -425,6 +431,8 @@ export function MonsterLibrary({
               backToListTitle={title}
               monster={selectedMonster}
               encounters={encounters}
+              cards={cards}
+              powers={powers}
               patches={patches}
               changes={changes}
               onClose={() => setSelectedMonster(null)}
