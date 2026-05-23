@@ -1,4 +1,4 @@
 interface:
   display_name: "Animation Playback QA"
   short_description: "Verify animation replay with browser captures"
-  default_prompt: "Use -playback-qa to verify that a local UI animation replays on first and repeated triggers."
+  default_prompt: "Use $animation-playback-qa to verify that a local UI animation replays on first and repeated triggers."
