@@ -75,6 +75,24 @@ try {
     delayMs: 0,
   });
 
+  if (triggerSpecs.length === 0) {
+    let elapsed = 0;
+    const startedAt = Date.now();
+    for (const delay of delays) {
+      const waitFor = Math.max(0, delay - elapsed);
+      if (waitFor > 0) await page.waitForTimeout(waitFor);
+      elapsed = Date.now() - startedAt;
+      await captureStage(page, captures, {
+        outputDir,
+        stageSelector,
+        label: `passive-${delay}ms`,
+        trigger: null,
+        repeatIndex: 0,
+        delayMs: delay,
+      });
+    }
+  }
+
   for (const trigger of triggerSpecs) {
     const locator = page.locator(trigger).first();
     const count = await locator.count();
