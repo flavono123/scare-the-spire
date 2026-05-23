@@ -1,4 +1,4 @@
--- Disk IO reduction indexes for public engagement and history-course reads.
+-- Disk IO reduction indexes for the currently used Supabase content tables.
 -- Safe to rerun from the Supabase SQL Editor.
 
 create or replace function public.get_engagement_counts(p_env text)
@@ -35,21 +35,8 @@ create index if not exists idx_likes_env_story
 create index if not exists idx_comments_env_story
   on public.comments(env, story_id);
 
-do $$
-begin
-  if to_regclass('public.comment_likes') is not null then
-    create index if not exists idx_comment_likes_user_comment
-      on public.comment_likes(user_id, comment_id);
-  end if;
-end $$;
+create index if not exists idx_runs_env_created_desc
+  on public.runs(env, created_at desc);
 
-do $$
-begin
-  if to_regclass('public.runs') is not null then
-    create index if not exists idx_runs_env_created_desc
-      on public.runs(env, created_at desc);
-
-    create index if not exists idx_runs_env_donor
-      on public.runs(env, donor_user_id);
-  end if;
-end $$;
+create index if not exists idx_runs_env_donor
+  on public.runs(env, donor_user_id);
