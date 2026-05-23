@@ -11,6 +11,7 @@ export function LikeButton({
   initialCount,
   size = 20,
   authReady = true,
+  userStatusLoading = "eager",
   ensureUser,
   className = "",
 }: {
@@ -19,28 +20,31 @@ export function LikeButton({
   initialCount?: number;
   size?: number;
   authReady?: boolean;
-  authUnavailable?: boolean;
+  userStatusLoading?: "eager" | "lazy";
   ensureUser?: () => Promise<string | null>;
   className?: string;
 }) {
-  const { count, liked, loading, unavailable, toggle } = useLikes(storyId, userId, { initialCount });
+  const { count, liked, loading, unavailable, toggle } = useLikes(storyId, userId, {
+    initialCount,
+    userStatusLoading,
+  });
   const [authPending, setAuthPending] = useState(false);
   const pending = !authReady || loading || authPending;
   const blocked = unavailable;
 
   const handleClick = async () => {
     if (pending || blocked) return;
-    let activeUserId = userId;
-    if (!activeUserId && ensureUser) {
-      setAuthPending(true);
-      try {
+    setAuthPending(true);
+    try {
+      let activeUserId = userId;
+      if (!activeUserId && ensureUser) {
         activeUserId = await ensureUser();
-      } finally {
-        setAuthPending(false);
       }
+      if (!activeUserId) return;
+      await toggle(activeUserId);
+    } finally {
+      setAuthPending(false);
     }
-    if (!activeUserId) return;
-    toggle(activeUserId);
   };
 
   return (

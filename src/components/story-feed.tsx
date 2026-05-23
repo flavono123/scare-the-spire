@@ -394,10 +394,10 @@ function StoryCard({
   sts2PatchMap,
   userId,
   authReady,
-  authUnavailable,
   ensureUser,
   expanded,
   onToggle,
+  likeCount,
   commentCount,
   engagementLoading,
   engagementUnavailable,
@@ -413,7 +413,6 @@ function StoryCard({
   sts2PatchMap: Map<string, STS2Patch>;
   userId: string | null;
   authReady: boolean;
-  authUnavailable: boolean;
   ensureUser: () => Promise<string | null>;
   expanded: boolean;
   onToggle: (storyId: string) => void;
@@ -448,8 +447,9 @@ function StoryCard({
             <LikeButton
               storyId={story.id}
               userId={userId}
+              initialCount={likeCount}
               authReady={authReady}
-              authUnavailable={authUnavailable}
+              userStatusLoading="lazy"
               ensureUser={ensureUser}
             />
           </div>
@@ -496,7 +496,7 @@ export function StoryFeed({
   sts2Patches?: STS2Patch[];
   sts2Entities?: EntityInfo[];
 }) {
-  const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
+  const { userId, ready: authReady, ensureUser } = useAuth();
   const counts = useEngagementCounts();
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set());
   const didMountRef = useRef(false);
@@ -572,7 +572,6 @@ export function StoryFeed({
             sts2PatchMap={sts2PatchMap}
             userId={userId}
             authReady={authReady}
-            authUnavailable={authUnavailable}
             ensureUser={ensureUser}
             expanded={expandedIds.has(story.id)}
             onToggle={toggle}

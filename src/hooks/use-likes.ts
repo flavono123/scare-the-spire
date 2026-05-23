@@ -9,13 +9,21 @@ interface UseLikesReturn {
   liked: boolean;
   loading: boolean;
   unavailable: boolean;
-  toggle: (activeUserId?: string) => void;
+  toggle: (activeUserId?: string) => Promise<void>;
 }
+
+type UserStatusLoadingMode = "eager" | "lazy";
 
 export function useLikes(
   storyId: string,
   userId: string | null,
-  { initialCount }: { initialCount?: number } = {},
+  {
+    initialCount,
+    userStatusLoading: userStatusLoadingMode = "eager",
+  }: {
+    initialCount?: number;
+    userStatusLoading?: UserStatusLoadingMode;
+  } = {},
 ): UseLikesReturn {
   const [fetchedCount, setFetchedCount] = useState(0);
   const [optimisticDelta, setOptimisticDelta] = useState(0);
@@ -26,7 +34,7 @@ export function useLikes(
   const count = Math.max(0, (initialCount ?? fetchedCount) + optimisticDelta);
   const userStatusKey = userId ? `${storyId}:${userId}` : null;
   const userStatusLoading = supabaseEnabled && !!userStatusKey && resolvedUserStatusKey !== userStatusKey;
-  const loading = countLoading || userStatusLoading;
+  const loading = countLoading || (userStatusLoadingMode === "eager" && userStatusLoading);
 
   // Count query — independent of auth
   useEffect(() => {
@@ -58,6 +66,7 @@ export function useLikes(
   // User like status — depends on auth
   useEffect(() => {
     if (!supabaseEnabled || !userId) return;
+    if (userStatusLoadingMode !== "eager") return;
 
     withSupabaseTimeout(
       "likes.user_status",
@@ -78,12 +87,43 @@ export function useLikes(
         setResolvedUserStatusKey(`${storyId}:${userId}`);
         setUnavailable(true);
       });
-  }, [storyId, userId]);
+  }, [storyId, userId, userStatusLoadingMode]);
 
-  const toggle = useCallback((activeUserId = userId) => {
+  const resolveUserStatus = useCallback(async (activeUserId: string) => {
+    const key = `${storyId}:${activeUserId}`;
+    if (resolvedUserStatusKey === key) return liked;
+
+    const { data, error } = await withSupabaseTimeout(
+      "likes.user_status",
+      supabase
+        .from("likes")
+        .select("id")
+        .eq("story_id", storyId)
+        .eq("user_id", activeUserId)
+        .eq("env", supabaseEnv)
+        .maybeSingle(),
+    );
+    if (error) throw error;
+    const nextLiked = !!data;
+    setLiked(nextLiked);
+    setResolvedUserStatusKey(key);
+    return nextLiked;
+  }, [liked, resolvedUserStatusKey, storyId]);
+
+  const toggle = useCallback(async (activeUserId = userId) => {
     if (!activeUserId || !supabaseEnabled) return;
 
-    if (liked) {
+    let activeLiked = liked;
+    if (resolvedUserStatusKey !== `${storyId}:${activeUserId}`) {
+      try {
+        activeLiked = await resolveUserStatus(activeUserId);
+      } catch {
+        setUnavailable(true);
+        return;
+      }
+    }
+
+    if (activeLiked) {
       setLiked(false);
       setOptimisticDelta((c) => c - 1);
       withSupabaseTimeout(
@@ -121,7 +161,7 @@ export function useLikes(
           setUnavailable(true);
         });
     }
-  }, [storyId, userId, liked]);
+  }, [storyId, userId, liked, resolvedUserStatusKey, resolveUserStatus]);
 
   return { count, liked, loading, unavailable, toggle };
 }
