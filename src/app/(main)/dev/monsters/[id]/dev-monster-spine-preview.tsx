@@ -66,7 +66,7 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
           <div className="relative flex min-h-[28rem] items-center justify-center overflow-hidden border-b border-white/10 px-4 py-6 sm:min-h-[36rem]">
             {imageSrc ? (
               <MonsterSpineStage
-                key={`${monster.id}-${activeSkinKey}`}
+                key={`${monster.id}-${activeSkinKey}-${selectedActionId ?? "idle"}-${selectedActionState.nonce}`}
                 asset={asset}
                 fallbackImageUrl={imageSrc}
                 monsterName={monster.name}
