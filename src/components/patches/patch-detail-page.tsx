@@ -33,7 +33,6 @@ const PATCH_COPY: Record<ServiceLocale, {
   buildingTitle: string;
   buildingBody: string;
   comments: string;
-  loadComments: string;
   types: Record<PatchType, string>;
 }> = {
   ko: {
@@ -44,7 +43,6 @@ const PATCH_COPY: Record<ServiceLocale, {
     buildingTitle: "슬서운변경을 만드는 중입니다.",
     buildingBody: "Steam 패치는 공개됐고, 이 페이지에는 번역·링크·툴팁 검수가 끝난 rich 패치노트를 게시합니다.",
     comments: "댓글",
-    loadComments: "댓글 보기",
     types: {
       release: "출시",
       beta: "베타",
@@ -60,7 +58,6 @@ const PATCH_COPY: Record<ServiceLocale, {
     buildingTitle: "Rich patch notes are being prepared.",
     buildingBody: "The Steam patch is live; this page will show the enriched translation after link and tooltip review.",
     comments: "Comments",
-    loadComments: "Show comments",
     types: {
       release: "Release",
       beta: "Beta",
@@ -841,7 +838,6 @@ export async function PatchDetailPage({
         <h2 className="mb-3 text-sm font-bold text-foreground">{copy.comments}</h2>
         <DeferredCommentSection
           threadKey={buildPatchCommentThreadKey(patch.version)}
-          loadLabel={copy.loadComments}
         />
       </section>
 

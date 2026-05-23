@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const CommentSection = dynamic(
   () => import("@/components/comment-section").then((mod) => mod.CommentSection),
@@ -15,22 +15,40 @@ const CommentSection = dynamic(
 
 export function DeferredCommentSection({
   threadKey,
-  loadLabel,
 }: {
   threadKey: string;
-  loadLabel: string;
 }) {
-  const [open, setOpen] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const mountRef = useRef<HTMLDivElement | null>(null);
 
-  if (!open) {
+  useEffect(() => {
+    const target = mountRef.current;
+    if (!target || shouldLoad) return;
+
+    if (!("IntersectionObserver" in window)) {
+      setShouldLoad(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setShouldLoad(true);
+        observer.disconnect();
+      },
+      { rootMargin: "320px 0px" },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [shouldLoad]);
+
+  if (!shouldLoad) {
     return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="rounded-md border border-border/70 bg-card/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:border-yellow-500/40 hover:text-foreground"
-      >
-        {loadLabel}
-      </button>
+      <div
+        ref={mountRef}
+        className="h-4 w-24 rounded bg-muted/20"
+        aria-hidden="true"
+      />
     );
   }
 
