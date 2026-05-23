@@ -747,7 +747,8 @@ export function MonsterDetail({
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
-        <section className="flex min-h-[26rem] flex-col items-center justify-center gap-4 py-4">
+        <div className="flex min-w-0 flex-col gap-4">
+          <section className="flex min-h-[26rem] flex-col items-center justify-center gap-4 py-4">
           <div className="relative flex min-h-[22rem] w-full max-w-2xl items-center justify-center overflow-hidden">
             <div
               className="absolute bottom-10 left-[18%] right-[18%] h-8 rounded-[50%] blur-md"
@@ -833,7 +834,10 @@ export function MonsterDetail({
               </div>
             </div>
           )}
-        </section>
+          </section>
+
+          {patternRail}
+        </div>
 
         <aside className="flex min-w-0 flex-col gap-3">
           <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
