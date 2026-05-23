@@ -7,36 +7,30 @@ import {
   getCodexPowers,
 } from "@/lib/codex-data";
 import { getSTS2Patches, getSTS2Changes } from "@/lib/data";
-import {
-  getGameLocaleFromSearchRecord,
-  getServiceLocaleFromSearchRecord,
-} from "@/lib/i18n";
+import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
+import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { BestiaryLibrary } from "@/components/codex/bestiary-library";
 
 export const dynamic = "force-static";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}): Promise<Metadata> {
-  const resolvedSearchParams = await searchParams;
-  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
-  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+export async function generateCompendiumBestiaryMetadata(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+): Promise<Metadata> {
+  const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const gameUi = await getCodexGameUiLabels(gameLocale);
   return getCodexMetadata(serviceLocale, gameUi.bestiaryTitle);
 }
 
-export default async function CompendiumBestiaryPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
-  const resolvedSearchParams = await searchParams;
-  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
-  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+export async function generateMetadata(): Promise<Metadata> {
+  return generateCompendiumBestiaryMetadata();
+}
+
+export async function renderCompendiumBestiaryPage(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+) {
+  const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const [monsters, encounters, cards, powers, patches, changes, gameUi] = await Promise.all([
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
@@ -61,4 +55,8 @@ export default async function CompendiumBestiaryPage({
       />
     </Suspense>
   );
+}
+
+export default async function CompendiumBestiaryPage() {
+  return renderCompendiumBestiaryPage();
 }
