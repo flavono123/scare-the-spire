@@ -336,10 +336,15 @@
     "titleKo": "베타 핫픽스 패치 노트 - v0.106.1",
     "type": "hotfix",
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/670617878982034085",
-    "status": "building",
-    "summary": "Rich patch notes are being prepared from the Steam hotfix notes.",
-    "summaryKo": "Steam 핫픽스 노트를 바탕으로 슬서운변경을 작성 중입니다.",
+    "summary": "Aeonglass Wither hotfix: Wither can no longer be upgraded, retained Wither cards no longer remain in hand, and localization updates.",
+    "summaryKo": "영겁의 모래시계 침체 핫픽스: 침체 강화 차단, 보존된 침체가 손에 남는 문제 수정, 번역 갱신.",
     "hasBalanceChanges": false,
+    "art": {
+      "type": "image",
+      "imageUrl": "/images/sts2/patches/default-art.webp",
+      "alt": "Slay the Spire 2 patch notes banner",
+      "altKo": "슬레이 더 스파이어 2 패치 노트 배너"
+    },
     "featuredEntities": [
       { "type": "monster", "id": "AEONGLASS" },
       { "type": "card", "id": "WITHER" },
