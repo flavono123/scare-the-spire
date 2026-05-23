@@ -1,7 +1,7 @@
-import BasePage, { dynamic, generateMetadata as generateBaseMetadata } from "@/app/(codex)/codex/powers/page";
+import BasePage, { generateMetadata as generateBaseMetadata } from "@/app/(codex)/codex/powers/page";
 import { getLocalePairFromParams, searchRecordForGameLocale, type LocaleRouteParams } from "@/lib/locale-routing";
 
-export { dynamic };
+export const dynamic = "force-static";
 
 type Props = {
   params: Promise<LocaleRouteParams>;

@@ -1,12 +1,13 @@
 import BasePage, {
-  dynamic,
-  dynamicParams,
   generateMetadata as generateBaseMetadata,
   generateStaticParams,
 } from "@/app/(codex)/codex/potions/[id]/page";
 import { getLocalePairFromParams, searchRecordForGameLocale, type LocaleRouteParams } from "@/lib/locale-routing";
 
-export { dynamic, dynamicParams, generateStaticParams };
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export { generateStaticParams };
 
 type Props = {
   params: Promise<LocaleRouteParams<{ id: string }>>;

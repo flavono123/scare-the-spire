@@ -1,7 +1,7 @@
-import BasePage, { dynamic, generateMetadata as generateBaseMetadata } from "@/app/(codex)/compendium/bestiary/page";
+import BasePage, { generateMetadata as generateBaseMetadata } from "@/app/(codex)/compendium/bestiary/page";
 import { getLocalePairFromParams, searchRecordForGameLocale, type LocaleRouteParams } from "@/lib/locale-routing";
 
-export { dynamic };
+export const dynamic = "force-static";
 
 type Props = {
   params: Promise<LocaleRouteParams>;
