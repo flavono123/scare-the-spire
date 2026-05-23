@@ -128,6 +128,9 @@ export function MonsterSpineStage({
     const player = playerRef.current;
     const loops = selectedAnimation === asset.idleAnimation || selectedMoveId == null;
     try {
+      if (!loops && asset.idleAnimation) {
+        player.setAnimation(asset.idleAnimation, true);
+      }
       player.setAnimation(selectedAnimation, loops);
       if (!loops && asset.idleAnimation && selectedAnimation !== asset.idleAnimation) {
         player.addAnimation(asset.idleAnimation, true, 0);
