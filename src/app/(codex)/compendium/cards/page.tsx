@@ -1,1 +1,3 @@
-export { default, dynamic, generateMetadata } from "../../codex/cards/page";
+export { default, generateMetadata } from "../../codex/cards/page";
+
+export const dynamic = "force-static";

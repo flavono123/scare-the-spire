@@ -1,1 +1,3 @@
-export { default, dynamic, generateMetadata } from "../../codex/relics/page";
+export { default, generateMetadata } from "../../codex/relics/page";
+
+export const dynamic = "force-static";
