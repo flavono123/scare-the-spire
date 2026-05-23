@@ -128,13 +128,13 @@ export function MonsterSpineStage({
     const player = playerRef.current;
     const loops = selectedAnimation === asset.idleAnimation || selectedMoveId == null;
     try {
-      if (!loops && asset.idleAnimation) {
-        player.setAnimation(asset.idleAnimation, true);
-      }
-      player.setAnimation(selectedAnimation, loops);
+      const entry = restartSpineAnimation(player, selectedAnimation, loops);
       if (!loops && asset.idleAnimation && selectedAnimation !== asset.idleAnimation) {
         player.addAnimation(asset.idleAnimation, true, 0);
       }
+      entry.trackTime = 0;
+      entry.trackLast = -1;
+      entry.animationLast = -1;
       player.play();
     } catch (error) {
       console.warn(`Failed to play Spine animation ${selectedAnimation} for ${monsterName}:`, error);
@@ -262,6 +262,16 @@ function resolveSpineEffect(
   moveId: string,
 ): MonsterSpineEffectAsset | null {
   return asset.moveEffects[moveId]?.find((effect) => effect.usable !== false) ?? null;
+}
+
+function restartSpineAnimation(
+  player: SpinePlayer,
+  animation: string,
+  loop: boolean,
+) {
+  player.animationState?.clearTrack(0);
+  player.skeleton?.setToSetupPose();
+  return player.setAnimation(animation, loop);
 }
 
 function applyCompositeSkin(
