@@ -4,10 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
 from PIL import Image
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT))
 
 from scripts.lib.ctex import ctex_to_image, parse_import_file
 from scripts.lib.pck import PCKReader, default_pck_path
