@@ -728,7 +728,7 @@ export function MonsterDetail({
   ) : null;
 
   return (
-    <div className="mx-auto w-full max-w-6xl p-4 sm:p-6">
+    <div className="mx-auto w-full max-w-6xl p-4 sm:p-6 xl:max-w-7xl">
       <div className="mb-4 flex w-full items-center justify-between gap-3">
         <Link
           href={localizeHref("/compendium/bestiary", serviceLocale)}
