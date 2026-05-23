@@ -2381,8 +2381,8 @@
       ],
       "RADIATE": [
         "radiate",
-        "attack",
         "attack_block",
+        "attack",
         "attack_double",
         "_ignore/attack_double_alt",
         "buff",
@@ -2399,8 +2399,8 @@
       ],
       "PULSATE": [
         "pulsate",
-        "attack",
         "attack_block",
+        "attack",
         "attack_double",
         "_ignore/attack_double_alt",
         "buff",
@@ -4156,6 +4156,7 @@
     "moveAnimations": {
       "READY": [
         "ready",
+        "block",
         "attack",
         "attack_double",
         "idle_loop"
