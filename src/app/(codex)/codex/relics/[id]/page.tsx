@@ -12,6 +12,9 @@ import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { RelicPool } from "@/lib/codex-types";
 import { RelicDetail } from "@/components/codex/relic-detail";
 
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const relics = await getCodexRelics();
   return relics.map((r) => ({ id: r.id.toLowerCase() }));

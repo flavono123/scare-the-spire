@@ -12,6 +12,9 @@ import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { AncientDetail } from "@/components/codex/ancient-detail";
 import type { CodexRelic } from "@/lib/codex-types";
 
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
 interface Props {
   params: Promise<{ id: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;

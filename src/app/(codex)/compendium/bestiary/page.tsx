@@ -15,6 +15,8 @@ import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { BestiaryLibrary } from "@/components/codex/bestiary-library";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   searchParams,
 }: {

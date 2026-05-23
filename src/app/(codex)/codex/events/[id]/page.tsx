@@ -18,6 +18,9 @@ import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { EventDetail } from "@/components/codex/event-detail";
 
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const events = await getCodexEvents();
   return events.map((e) => ({ id: e.id.toLowerCase() }));

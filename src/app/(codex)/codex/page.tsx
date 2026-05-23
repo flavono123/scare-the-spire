@@ -13,6 +13,8 @@ import {
 } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 
+export const dynamic = "force-static";
+
 const categories = [
   {
     href: "/compendium/cards",

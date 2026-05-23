@@ -10,6 +10,9 @@ import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { EncounterDetail } from "@/components/codex/encounter-detail";
 
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const encounters = await getCodexEncounters();
   return encounters.map((e) => ({ id: e.id.toLowerCase() }));

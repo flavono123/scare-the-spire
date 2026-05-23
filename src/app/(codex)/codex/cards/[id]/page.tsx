@@ -14,6 +14,9 @@ import {
   getMadScienceVariantId,
 } from "@/lib/tinker-time";
 
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
 function findCardByRouteId<T extends { id: string }>(cards: T[], id: string): T | undefined {
   const madScienceType = getMadScienceCardTypeFromId(id);
   const resolvedId = madScienceType ? getMadScienceVariantId(madScienceType) : id;

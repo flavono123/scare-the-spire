@@ -12,6 +12,8 @@ import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { RelicLibrary } from "@/components/codex/relic-library";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   searchParams,
 }: {

@@ -20,6 +20,8 @@ import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { CardLibrary } from "@/components/codex/card-library";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   searchParams,
 }: {

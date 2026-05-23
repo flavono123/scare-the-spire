@@ -19,6 +19,8 @@ import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { EventList } from "@/components/codex/event-list";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   searchParams,
 }: {

@@ -12,6 +12,8 @@ import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { PowerLibrary } from "@/components/codex/power-library";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   searchParams,
 }: {

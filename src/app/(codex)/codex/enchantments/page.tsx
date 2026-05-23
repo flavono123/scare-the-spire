@@ -12,6 +12,8 @@ import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { EnchantmentLibrary } from "@/components/codex/enchantment-library";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   searchParams,
 }: {
