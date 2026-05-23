@@ -834,7 +834,7 @@ export function MonsterDetail({
 
           <InfoRailSection title={monsterText.actionPreview}>
             {moveSummaries.length > 0 ? (
-              <div className="max-h-[22rem] space-y-1.5 overflow-y-auto pr-1">
+              <div className="space-y-1.5 pr-1">
                 {moveSummaries.map((summary) => {
                   const isSelected = selectedMove?.move.id === summary.move.id;
 
