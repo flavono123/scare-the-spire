@@ -1,21 +1,7 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { type CSSProperties, type ReactNode, useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowDown,
-  ArrowUp,
-  Ban,
-  CircleHelp,
-  HeartPulse,
-  Shield,
-  Sparkles,
-  Sword,
-  Swords,
-  TriangleAlert,
-  Zap,
-  type LucideIcon,
-} from "lucide-react";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
@@ -31,7 +17,6 @@ import type {
   CodexMonster,
   CodexPower,
   DamageValue,
-  MonsterActionType,
   MonsterMove,
   MonsterMoveCardApplication,
   MonsterMovePowerApplication,
@@ -55,6 +40,7 @@ import {
   getRelatedEncounterIdsForMonster,
 } from "@/lib/codex-references";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -146,13 +132,13 @@ interface PatternDiagramModel {
   phaseConnectors: PatternDiagramPhaseConnector[];
 }
 
-function MetaPill({ value, color }: { value: string; color?: string }) {
+function MetaPill({ value, color, children }: { value?: string; color?: string; children?: ReactNode }) {
   return (
     <span
-      className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 font-game-text text-sm font-bold"
+      className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1.5 font-game-text text-sm font-bold"
       style={color ? { color } : undefined}
     >
-      {value}
+      {children ?? value}
     </span>
   );
 }
@@ -180,51 +166,68 @@ function InfoRailSection({
   );
 }
 
-function MoveMetricChips({
+function MoveMetrics({
   summary,
-  damageLabel,
-  blockLabel,
 }: {
   summary: MoveSummary;
-  damageLabel: string;
-  blockLabel: string;
 }) {
   return (
-    <span className="flex shrink-0 flex-wrap justify-end gap-1.5">
+    <span className="flex shrink-0 flex-wrap justify-end gap-2">
       {summary.damageEntry && (
-        <MoveMetricBadge value={summary.damageEntry} label={damageLabel} tone="attack" />
+        <MetricTokenValue value={summary.damageEntry} kind="attack" />
       )}
       {summary.blockEntry != null && (
-        <MoveMetricBadge value={summary.blockEntry} label={blockLabel} tone="block" />
+        <MetricTokenValue value={summary.blockEntry} kind="block" />
       )}
     </span>
   );
 }
 
-function MoveMetricBadge({
+function MetricTokenValue({
   value,
-  label,
-  tone,
+  kind,
+  ascensionLevel,
 }: {
   value: DamageValue;
-  label: string;
-  tone: "attack" | "block";
+  kind: "attack" | "block" | "hp";
+  ascensionLevel?: number;
 }) {
-  const toneClass = tone === "attack"
-    ? "bg-red-500/10 text-red-400"
-    : "bg-blue-500/10 text-blue-400";
-  const labelClass = tone === "attack" ? "text-red-400/50" : "text-blue-400/50";
+  const icon = METRIC_TOKEN_ICONS[kind];
+  const level = ascensionLevel ?? (kind === "hp" ? 8 : 9);
 
   return (
-    <span className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-semibold ${toneClass}`}>
+    <span className="inline-flex items-center gap-1 font-game-text text-sm font-bold leading-none text-gray-100">
+      <Image src={icon} alt="" width={22} height={22} className="h-5 w-5 shrink-0 object-contain" />
       <span>{value.normal ?? "?"}</span>
       {value.ascension != null && value.ascension !== value.normal && (
-        <span className="inline-flex items-center gap-0.5">
-          <AscensionBadge level={9} />
+        <span className="inline-flex items-center gap-1 text-orange-300">
+          <span className="text-gray-500">(</span>
+          <AscensionBadge level={level} />
           <span>{value.ascension}</span>
+          <span className="text-gray-500">)</span>
         </span>
       )}
-      <span className={`text-[10px] font-normal ${labelClass}`}>{label}</span>
+    </span>
+  );
+}
+
+function HpTokenValue({ monster }: { monster: CodexMonster }) {
+  const normal = formatHp(monster);
+  const ascension = formatHpAscension(monster);
+  if (!normal) return null;
+
+  return (
+    <span className="inline-flex items-center gap-1 font-game-text text-sm font-bold leading-none text-gray-100">
+      <Image src={METRIC_TOKEN_ICONS.hp} alt="" width={22} height={22} className="h-5 w-5 shrink-0 object-contain" />
+      <span>{normal}</span>
+      {ascension && ascension !== normal && (
+        <span className="inline-flex items-center gap-1 text-orange-300">
+          <span className="text-gray-500">(</span>
+          <AscensionBadge level={8} />
+          <span>{ascension}</span>
+          <span className="text-gray-500">)</span>
+        </span>
+      )}
     </span>
   );
 }
@@ -246,120 +249,77 @@ function AscensionBadge({ level }: { level: number }) {
   );
 }
 
-function ActionTypeChips({
-  types,
-  serviceLocale,
-}: {
-  types: readonly MonsterActionType[];
-  serviceLocale: ServiceLocale;
-}) {
-  const visibleTypes = types.length > 0 ? types : (["special"] as const);
-
-  return (
-    <span className="flex flex-wrap gap-1">
-      {visibleTypes.map((type) => {
-        const config = ACTION_TYPE_CONFIG[type];
-        return (
-          <span
-            key={type}
-            className="rounded border px-1.5 py-0.5 text-[10px] font-semibold"
-            style={{
-              borderColor: `${config.color}55`,
-              backgroundColor: hexToRgba(config.color, 0.12),
-              color: config.color,
-            }}
-          >
-            {serviceLocale === "ko" ? config.labelKo : config.labelEn}
-          </span>
-        );
-      })}
-    </span>
-  );
-}
-
-function MoveApplicationChips({
+function MoveApplicationTokens({
   powers,
   cards,
   serviceLocale,
+  powerById,
+  cardById,
 }: {
   powers: readonly MonsterMovePowerApplication[];
   cards: readonly MonsterMoveCardApplication[];
   serviceLocale: ServiceLocale;
+  powerById: Map<string, CodexPower>;
+  cardById: Map<string, CodexCard>;
 }) {
   if (powers.length === 0 && cards.length === 0) return null;
 
   return (
-    <span className="flex flex-wrap gap-1.5">
+    <span className="flex flex-wrap items-center gap-1.5">
       {powers.map((application) => (
-        <MoveApplicationChip
+        <MoveApplicationToken
           key={`power-${application.powerId}-${application.target}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
+          entity={buildPowerEntity(application, powerById.get(application.powerId))}
           imageUrl={application.imageUrl}
-          name={serviceLocale === "ko" ? application.powerName : application.powerNameEn}
+          label={serviceLocale === "ko" ? application.powerName : application.powerNameEn}
           amount={application.amount}
-          tone={application.powerType === "Debuff" ? "debuff" : "buff"}
+          serviceLocale={serviceLocale}
         />
       ))}
       {cards.map((application) => (
-        <MoveApplicationChip
+        <MoveApplicationToken
           key={`card-${application.cardId}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
+          entity={buildCardEntity(application, cardById.get(application.cardId))}
           imageUrl={application.imageUrl}
-          name={serviceLocale === "ko" ? application.cardName : application.cardNameEn}
+          label={serviceLocale === "ko" ? application.cardName : application.cardNameEn}
           amount={application.amount}
-          tone="debuff"
+          serviceLocale={serviceLocale}
         />
       ))}
     </span>
   );
 }
 
-function MoveApplicationChip({
+function MoveApplicationToken({
+  entity,
   imageUrl,
-  name,
+  label,
   amount,
-  tone,
+  serviceLocale,
 }: {
+  entity: EntityInfo;
   imageUrl: string | null;
-  name: string;
+  label: string;
   amount: DamageValue | null;
-  tone: "buff" | "debuff";
+  serviceLocale: ServiceLocale;
 }) {
-  const color = tone === "buff" ? "#22c55e" : "#f87171";
-
   return (
-    <span
-      className="inline-flex max-w-full items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] font-semibold text-gray-200"
-      style={{ borderColor: `${color}44`, backgroundColor: hexToRgba(color, 0.1) }}
-      title={name}
+    <EntityPreview
+      entity={entity}
+      serviceLocale={serviceLocale}
+      linkClassName="relative inline-flex h-7 w-7 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70"
     >
-      {imageUrl ? (
-        <Image src={imageUrl} alt="" width={18} height={18} className="h-4 w-4 shrink-0 object-contain" />
-      ) : (
-        <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: color }} />
-      )}
-      <span className="truncate">{name}</span>
+      <span className="relative inline-flex h-7 w-7 items-center justify-center" title={label}>
+        {imageUrl && (
+          <Image src={imageUrl} alt="" width={28} height={28} className="h-7 w-7 object-contain" />
+        )}
+      </span>
       {amount && (
-        <span className="shrink-0 tabular-nums text-gray-400">
-          {formatNumericValue(amount)}
+        <span className="pointer-events-none absolute -bottom-0.5 -right-1 rounded bg-black/75 px-0.5 text-[9px] font-bold tabular-nums text-gray-100">
+          {amount.normal ?? "?"}
         </span>
       )}
-    </span>
-  );
-}
-
-function PatternBadge({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string;
-  color: string;
-}) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded border border-white/10 bg-white/[0.03] px-2 py-1 text-[10px]">
-      <span className="text-gray-500">{label}</span>
-      <span className="font-semibold" style={{ color }}>{value}</span>
-    </span>
+    </EntityPreview>
   );
 }
 
@@ -370,6 +330,8 @@ function PatternStateTransitionDiagram({
   rows,
   serviceLocale,
   onSelectMove,
+  powerById,
+  cardById,
 }: {
   monster: CodexMonster;
   startLabel: string;
@@ -377,6 +339,8 @@ function PatternStateTransitionDiagram({
   rows: TransitionTableRow[];
   serviceLocale: ServiceLocale;
   onSelectMove: (moveId: string) => void;
+  powerById: Map<string, CodexPower>;
+  cardById: Map<string, CodexCard>;
 }) {
   const diagram = useMemo(
     () => buildPatternDiagramModel(monster, rows, phases, serviceLocale),
@@ -387,13 +351,46 @@ function PatternStateTransitionDiagram({
   const markerPrefix = sanitizeSvgId(`monster-pattern-${monster.id}`);
 
   return (
-    <div className="max-w-full overflow-x-auto rounded-lg border border-white/10 bg-[#070914]/85 p-3">
+    <div
+      className="max-w-full overflow-x-auto p-3"
+      style={GAME_PANEL_BORDER_STYLE}
+    >
       <div
         className="relative"
         style={{ width: diagram.width, height: diagram.height }}
       >
+        {diagram.choiceBoxes.map((box) => (
+          <div
+            key={box.id}
+            className="pointer-events-none absolute z-0"
+            style={{
+              ...GAME_PANEL_BORDER_STYLE,
+              left: box.x,
+              top: box.y,
+              width: box.width,
+              height: box.height,
+            }}
+          />
+        ))}
+        {diagram.phaseBoxes.map((box) => (
+          <div
+            key={box.id}
+            className="pointer-events-none absolute z-0"
+            style={{
+              ...GAME_PANEL_BORDER_STYLE,
+              left: box.x,
+              top: box.y,
+              width: box.width,
+              height: box.height,
+            }}
+          >
+            <span className="absolute left-3 top-2 font-game-title text-[11px] font-bold text-[#29ebc0]">
+              {box.label}
+            </span>
+          </div>
+        ))}
         <svg
-          className="pointer-events-none absolute inset-0"
+          className="pointer-events-none absolute inset-0 z-[5]"
           width={diagram.width}
           height={diagram.height}
           viewBox={`0 0 ${diagram.width} ${diagram.height}`}
@@ -409,7 +406,7 @@ function PatternStateTransitionDiagram({
               orient="auto"
               markerUnits="userSpaceOnUse"
             >
-              <path d="M1,1 L9,5 L1,9 Z" fill={DIAGRAM_ARROW_COLOR} />
+              <image href={DIAGRAM_ARROW_ICON} x="0" y="0" width="10" height="10" preserveAspectRatio="xMidYMid meet" />
             </marker>
             <marker
               id={`${markerPrefix}-arrow-conditional`}
@@ -420,7 +417,7 @@ function PatternStateTransitionDiagram({
               orient="auto"
               markerUnits="userSpaceOnUse"
             >
-              <path d="M1,1 L9,5 L1,9 Z" fill={DIAGRAM_CONDITIONAL_COLOR} />
+              <image href={DIAGRAM_ARROW_ICON} x="0" y="0" width="10" height="10" preserveAspectRatio="xMidYMid meet" />
             </marker>
             <marker
               id={`${markerPrefix}-arrow-start`}
@@ -431,45 +428,9 @@ function PatternStateTransitionDiagram({
               orient="auto"
               markerUnits="userSpaceOnUse"
             >
-              <path d="M1,1 L9,5 L1,9 Z" fill={BESTIARY_START_COLOR} />
+              <image href={DIAGRAM_ARROW_ICON} x="0" y="0" width="10" height="10" preserveAspectRatio="xMidYMid meet" />
             </marker>
           </defs>
-          {diagram.choiceBoxes.map((box) => (
-            <rect
-              key={box.id}
-              x={box.x}
-              y={box.y}
-              width={box.width}
-              height={box.height}
-              rx="7"
-              fill="rgba(16, 24, 40, 0.35)"
-              stroke={DIAGRAM_GROUP_COLOR}
-              strokeWidth="2"
-            />
-          ))}
-          {diagram.phaseBoxes.map((box) => (
-            <g key={box.id}>
-              <rect
-                x={box.x}
-                y={box.y}
-                width={box.width}
-                height={box.height}
-                rx="7"
-                fill="rgba(16, 24, 40, 0.55)"
-                stroke={DIAGRAM_GROUP_COLOR}
-                strokeWidth="2"
-              />
-              <text
-                x={box.x + 9}
-                y={box.y + 16}
-                fill={DIAGRAM_GROUP_COLOR}
-                fontSize="11"
-                fontWeight="700"
-              >
-                {box.label}
-              </text>
-            </g>
-          ))}
           {diagram.phaseConnectors.map((connector) => (
             <path
               key={connector.key}
@@ -520,6 +481,8 @@ function PatternStateTransitionDiagram({
             serviceLocale={serviceLocale}
             startLabel={startLabel}
             onSelectMove={onSelectMove}
+            powerById={powerById}
+            cardById={cardById}
           />
         ))}
       </div>
@@ -533,12 +496,16 @@ function PatternMoveStateNode({
   serviceLocale,
   startLabel,
   onSelectMove,
+  powerById,
+  cardById,
 }: {
   node: PatternDiagramNode;
   monster: CodexMonster;
   serviceLocale: ServiceLocale;
   startLabel: string;
   onSelectMove: (moveId: string) => void;
+  powerById: Map<string, CodexPower>;
+  cardById: Map<string, CodexCard>;
 }) {
   const move = getMonsterMove(monster, node.id);
   const damageEntry = monster.damageValues ? findDamageForMove(node.id, monster.damageValues) : null;
@@ -547,9 +514,6 @@ function PatternMoveStateNode({
   const toneColor = getMoveToneColor(tone, "#a1a1aa");
   const title = move ? `${move.name}${move.nameEn !== move.name ? ` / ${move.nameEn}` : ""}` : getMoveName(monster, node.id);
   const intentKeys = getMoveIntentKeys(move);
-  const tokenApplications = move
-    ? [...move.powerApplications, ...move.cardApplications].slice(0, 3)
-    : [];
 
   return (
     <button
@@ -579,29 +543,21 @@ function PatternMoveStateNode({
         </span>
         <span className="flex min-h-4 items-center justify-center gap-1">
           {damageEntry && (
-            <PatternMetricValue value={damageEntry} tone="attack" />
+            <MetricTokenValue value={damageEntry} kind="attack" />
           )}
           {blockEntry && (
-            <PatternMetricValue value={blockEntry} tone="block" />
+            <MetricTokenValue value={blockEntry} kind="block" />
           )}
         </span>
-        {tokenApplications.length > 0 && (
+        {move && (move.powerApplications.length > 0 || move.cardApplications.length > 0) && (
           <span className="flex min-h-4 max-w-full items-center justify-center gap-0.5">
-            {tokenApplications.map((application) => (
-              <span
-                key={`${"powerId" in application ? application.powerId : application.cardId}-${application.imageUrl ?? ""}`}
-                className="inline-flex h-4 w-4 items-center justify-center overflow-hidden rounded-sm bg-black/30"
-                title={"powerName" in application
-                  ? serviceLocale === "ko" ? application.powerName : application.powerNameEn
-                  : serviceLocale === "ko" ? application.cardName : application.cardNameEn}
-              >
-                {application.imageUrl ? (
-                  <Image src={application.imageUrl} alt="" width={16} height={16} className="h-4 w-4 object-contain" />
-                ) : (
-                  <span className="h-2 w-2 rounded-full bg-gray-400" />
-                )}
-              </span>
-            ))}
+            <MoveApplicationTokens
+              powers={move.powerApplications.slice(0, 3)}
+              cards={move.cardApplications.slice(0, 3)}
+              serviceLocale={serviceLocale}
+              powerById={powerById}
+              cardById={cardById}
+            />
           </span>
         )}
       </span>
@@ -611,41 +567,19 @@ function PatternMoveStateNode({
 
 function PatternIntentGlyph({ intent }: { intent: string }) {
   const config = getIntentIconConfig(intent);
-  const Icon = config.icon;
 
   return (
     <span
       className="inline-flex h-7 w-7 items-center justify-center"
       title={config.label}
     >
-      <Icon
-        aria-hidden="true"
-        className="h-6 w-6 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]"
-        strokeWidth={2.5}
-        style={{ color: config.color }}
+      <Image
+        src={config.image}
+        alt=""
+        width={28}
+        height={28}
+        className="h-7 w-7 object-contain drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]"
       />
-    </span>
-  );
-}
-
-function PatternMetricValue({
-  value,
-  tone,
-}: {
-  value: DamageValue;
-  tone: "attack" | "block";
-}) {
-  const color = tone === "attack" ? "#fff6e2" : "#bfdbfe";
-
-  return (
-    <span className="inline-flex items-center gap-0.5 text-[12px] font-bold leading-none" style={{ color }}>
-      <span>{value.normal ?? "?"}</span>
-      {value.ascension != null && value.ascension !== value.normal && (
-        <span className="inline-flex items-center gap-0.5 text-[9px] text-orange-300">
-          <AscensionBadge level={9} />
-          {value.ascension}
-        </span>
-      )}
     </span>
   );
 }
@@ -714,6 +648,7 @@ export function MonsterDetail({
   const moveSummaries = useMemo(() => buildMoveSummaries(monster, meaningfulMoves), [monster, meaningfulMoves]);
   const transitionRows = useMemo(() => buildTransitionTableRows(monster), [monster]);
   const patternSummary = useMemo(() => buildPatternSummary(monster), [monster]);
+  const loopLength = useMemo(() => getFixedLoopLength(monster), [monster]);
   const firstMoveId = monster.moveGraph?.initial ?? null;
   const [selectedMoveState, setSelectedMoveState] = useState<{ monsterId: string; moveId: string | null; nonce: number }>({
     monsterId: monster.id,
@@ -745,9 +680,6 @@ export function MonsterDetail({
   const skinParts = getMonsterSkinParts(monster.spineAsset);
   const activeSkinKey = getMonsterSkinRenderKey(selectedSkinNames, selectedSingleSkin);
   const [commentCount, setCommentCount] = useState(0);
-  const damageEntries = Object.entries(monster.damageValues ?? {});
-  const blockEntries = Object.entries(monster.blockValues ?? {});
-  const hasNumericDetails = damageEntries.length > 0 || blockEntries.length > 0;
   const encounterById = useMemo(() => new Map(encounters.map((encounter) => [encounter.id, encounter])), [encounters]);
   const relatedEncounterTargets: CodexReferenceTarget[] = getRelatedEncounterIdsForMonster(monster.id, encounters).flatMap((encounterId) => {
     const encounter = encounterById.get(encounterId);
@@ -769,6 +701,8 @@ export function MonsterDetail({
       },
     };
   });
+  const cardById = useMemo(() => new Map(cards.map((card) => [card.id, card])), [cards]);
+  const powerById = useMemo(() => new Map(powers.map((power) => [power.id, power])), [powers]);
 
   return (
     <div className="mx-auto w-full max-w-6xl p-4 sm:p-6">
@@ -883,12 +817,10 @@ export function MonsterDetail({
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
                 <MetaPill value={gameUi.monsterTypes[displayType].label} color={typeConfig.color} />
-                {formatHp(monster) && <MetaPill value={`${monsterText.stats.hp} ${formatHp(monster)}`} />}
-                {formatHpAscension(monster) && (
-                  <MetaPill value={`${monsterText.stats.hpAscension} ${formatHpAscension(monster)}`} color="#ff8a65" />
-                )}
-                {meaningfulMoves.length > 0 && (
-                  <MetaPill value={`${monsterText.stats.moves} ${meaningfulMoves.length}`} />
+                {formatHp(monster) && (
+                  <MetaPill>
+                    <HpTokenValue monster={monster} />
+                  </MetaPill>
                 )}
               </div>
               {monster.nameEn !== monster.name && (
@@ -901,46 +833,23 @@ export function MonsterDetail({
           </section>
 
           <InfoRailSection title={monsterText.actionPreview}>
-            {selectedMove && (
-              <div className="mb-3 flex justify-end">
-                <span
-                  className="rounded px-2 py-1 text-[10px] font-semibold uppercase tracking-wide"
-                  style={{
-                    backgroundColor: hexToRgba(selectedAccent, 0.16),
-                    color: selectedAccent,
-                  }}
-                >
-                  <span className="font-game-title">{selectedMove.move.name}</span>
-                </span>
-              </div>
-            )}
             {moveSummaries.length > 0 ? (
-              <div className="max-h-[22rem] space-y-2 overflow-y-auto pr-1">
-                {moveSummaries.map((summary, index) => {
+              <div className="max-h-[22rem] space-y-1.5 overflow-y-auto pr-1">
+                {moveSummaries.map((summary) => {
                   const isSelected = selectedMove?.move.id === summary.move.id;
-                  const toneColor = getMoveToneColor(summary.tone, typeConfig.color);
 
                   return (
                     <button
                       key={summary.move.id}
                       type="button"
                       onClick={() => selectMove(summary.move.id)}
-                      className="w-full rounded-lg border px-3 py-3 text-left transition-colors hover:bg-white/10"
+                      className="w-full rounded-md border px-2.5 py-2.5 text-left transition-colors hover:bg-white/[0.06]"
                       style={{
-                        backgroundColor: isSelected ? hexToRgba(toneColor, 0.14) : "rgba(255, 255, 255, 0.03)",
-                        borderColor: isSelected ? `${toneColor}88` : "rgba(255, 255, 255, 0.08)",
+                        backgroundColor: isSelected ? "rgba(255,255,255,0.055)" : "rgba(255,255,255,0.015)",
+                        borderColor: isSelected ? "rgba(239,200,81,0.65)" : "rgba(255, 255, 255, 0.06)",
                       }}
                     >
-                      <div className="flex items-start gap-3">
-                        <span
-                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-xs font-bold tabular-nums"
-                          style={{
-                            backgroundColor: hexToRgba(toneColor, 0.18),
-                            color: toneColor,
-                          }}
-                        >
-                          {index + 1}
-                        </span>
+                      <div className="flex items-start gap-2.5">
                         <span className="flex min-w-0 flex-1 flex-col gap-1.5">
                           <span>
                             <span className="font-game-title block truncate text-sm font-semibold text-gray-100">{summary.move.name}</span>
@@ -948,24 +857,16 @@ export function MonsterDetail({
                               <span className="font-game-text block truncate text-[11px] text-gray-500">{summary.move.nameEn}</span>
                             )}
                           </span>
-                          <ActionTypeChips types={summary.move.actionTypes} serviceLocale={serviceLocale} />
-                          <MoveApplicationChips
+                          <MoveApplicationTokens
                             powers={summary.move.powerApplications}
                             cards={summary.move.cardApplications}
                             serviceLocale={serviceLocale}
+                            powerById={powerById}
+                            cardById={cardById}
                           />
                         </span>
                         <span className="flex shrink-0 flex-col items-end gap-1">
-                          <MoveMetricChips
-                            summary={summary}
-                            damageLabel={monsterText.damagePreview}
-                            blockLabel={monsterText.block}
-                          />
-                          {summary.move.kind === "animation" && (
-                            <span className="text-[10px] text-gray-600">
-                              VFX
-                            </span>
-                          )}
+                          <MoveMetrics summary={summary} />
                         </span>
                       </div>
                     </button>
@@ -975,124 +876,28 @@ export function MonsterDetail({
             ) : (
               <p className="text-sm text-gray-500">{commonText.noResults}</p>
             )}
-
-            {selectedMove && (
-              <div
-                className="mt-4 rounded-lg border bg-black/20 p-4"
-                style={{ borderColor: `${selectedAccent}55` }}
-              >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
-                    <div className="font-game-title text-lg font-bold text-gray-100">{selectedMove.move.name}</div>
-                    {selectedMove.move.nameEn !== selectedMove.move.name && (
-                      <div className="font-game-text text-xs text-gray-500">{selectedMove.move.nameEn}</div>
-                    )}
-                  </div>
-                  <MoveMetricChips
-                    summary={selectedMove}
-                    damageLabel={monsterText.damagePreview}
-                    blockLabel={monsterText.block}
-                  />
-                </div>
-
-                <div className="mt-3 space-y-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
-                      {detailLabels.actionTypes}
-                    </span>
-                    <ActionTypeChips types={selectedMove.move.actionTypes} serviceLocale={serviceLocale} />
-                  </div>
-                  {(selectedMove.move.powerApplications.length > 0 || selectedMove.move.cardApplications.length > 0) && (
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
-                        {detailLabels.appliedTokens}
-                      </span>
-                      <MoveApplicationChips
-                        powers={selectedMove.move.powerApplications}
-                        cards={selectedMove.move.cardApplications}
-                        serviceLocale={serviceLocale}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {selectedMove.outgoing.length > 0 && (
-                  <div className="mt-4">
-                    <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-500">
-                      {monsterText.nextActions}
-                    </div>
-                    <div className="space-y-2">
-                      {selectedMove.outgoing.map((transition) => {
-                        const transitionColor = getTransitionKindColor(transition.kind ?? inferTransitionKind(transition));
-
-                        return (
-                          <div key={`${transition.from}-${transition.to}-${transition.chance ?? "unknown"}-${transition.condition ?? ""}`} className="space-y-1">
-                            <div className="grid grid-cols-[minmax(6rem,1fr)_minmax(5rem,9rem)] items-center gap-3">
-                              <span className="truncate text-xs text-gray-300">{getMoveName(monster, transition.to)}</span>
-                              <span className="flex items-center gap-2">
-                                <span className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
-                                  <span
-                                    className="block h-full rounded-full"
-                                    style={{
-                                      width: `${transition.chance ?? 100}%`,
-                                      backgroundColor: transitionColor,
-                                    }}
-                                  />
-                                </span>
-                                <span className="w-9 text-right text-[10px] tabular-nums text-gray-500">
-                                  {transition.chance == null ? "?" : `${transition.chance}%`}
-                                </span>
-                              </span>
-                            </div>
-                            {transition.condition && (
-                              <div className="truncate text-[10px] text-red-300/80">{transition.condition}</div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
           </InfoRailSection>
 
           {transitionRows.length > 0 && (
             <InfoRailSection title={monsterText.actionGraph}>
-              <div className="mb-3 flex flex-wrap items-center gap-2">
-                <PatternBadge
-                  label={detailLabels.patternKind}
-                  value={getPatternKindLabel(patternSummary.kind, serviceLocale)}
-                  color={getPatternKindColor(patternSummary.kind)}
-                />
-                <PatternBadge
-                  label={detailLabels.phases}
-                  value={patternSummary.hasPhases ? detailLabels.hasPhases : detailLabels.noPhases}
-                  color={patternSummary.hasPhases ? "#f87171" : "#a1a1aa"}
-                />
-                {firstMoveId && (
-                  <PatternBadge
-                    label={monsterText.firstAction}
-                    value={getMoveName(monster, firstMoveId)}
-                    color={BESTIARY_START_COLOR}
-                  />
+              <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-gray-400">
+                <span>{getPatternKindLabel(patternSummary.kind, serviceLocale)}</span>
+                {loopLength && (
+                  <span className="font-semibold text-[#efc851]">
+                    {serviceLocale === "ko" ? `${loopLength}턴 반복` : `${loopLength}-turn loop`}
+                  </span>
                 )}
+                {firstMoveId && <span>{monsterText.firstAction}: {getMoveName(monster, firstMoveId)}</span>}
               </div>
 
               {patternSummary.hasPhases && (
-                <div className="mb-3 grid gap-2">
+                <div className="mb-3 grid gap-1.5 text-xs text-gray-400">
                   {patternSummary.phases.map((phase) => (
-                    <div key={phase.id} className="rounded-md border border-red-400/20 bg-red-500/10 px-3 py-2">
-                      <div className="mb-1 font-game-title text-xs font-semibold text-red-200">
+                    <div key={phase.id} className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-game-title font-semibold text-[#29ebc0]">
                         {serviceLocale === "ko" ? `페이즈 ${phase.label}` : `Phase ${phase.label}`}
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {phase.moveIds.map((moveId) => (
-                          <span key={moveId} className="rounded bg-black/20 px-1.5 py-0.5 text-[10px] text-gray-300">
-                            {getMoveName(monster, moveId)}
-                          </span>
-                        ))}
-                      </div>
+                      </span>
+                      <span>{phase.moveIds.map((moveId) => getMoveName(monster, moveId)).join(" → ")}</span>
                     </div>
                   ))}
                 </div>
@@ -1105,6 +910,8 @@ export function MonsterDetail({
                 rows={transitionRows}
                 serviceLocale={serviceLocale}
                 onSelectMove={selectMove}
+                powerById={powerById}
+                cardById={cardById}
               />
               {monster.moveGraph?.confidence === "partial" && (
                 <p className="mt-3 text-[11px] leading-relaxed text-gray-500">{monsterText.graphPartial}</p>
@@ -1118,52 +925,6 @@ export function MonsterDetail({
               { kind: "encounter", targets: relatedEncounterTargets },
             ]}
           />
-
-          {hasNumericDetails && (
-            <InfoRailSection title={detailLabels.numericDetails}>
-              <div className="space-y-3">
-                {damageEntries.length > 0 && (
-                  <div>
-                    <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-500">
-                      {monsterText.damageDetails}
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      {damageEntries.map(([key, val]) => (
-                        <div key={key} className="flex flex-col items-center gap-0.5 rounded border border-white/5 bg-white/[0.03] px-2 py-1.5">
-                          <span className="text-[10px] text-gray-500">{key}</span>
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-sm font-bold text-red-400">{val.normal ?? "?"}</span>
-                            {val.ascension != null && val.ascension !== val.normal && (
-                              <span className="inline-flex items-center gap-0.5 text-[10px] text-orange-400">
-                                <AscensionBadge level={9} />
-                                {val.ascension}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {blockEntries.length > 0 && (
-                  <div>
-                    <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-gray-500">
-                      {monsterText.block}
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {blockEntries.map(([key, val]) => (
-                        <div key={key} className="flex items-center gap-2 rounded border border-blue-500/20 bg-blue-500/10 px-3 py-1.5">
-                          <span className="text-[10px] text-blue-400/70">{key}</span>
-                          <span className="text-sm font-bold text-blue-400">{formatNumericValue(normalizeNumericValue(val))}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </InfoRailSection>
-          )}
 
           <InfoRailSection title={detailLabels.patchHistory}>
             <STS2ChangeHistory
@@ -1199,14 +960,56 @@ const DIAGRAM_ARROW_COLOR = "#efc851";
 const DIAGRAM_CONDITIONAL_COLOR = "#ff4545";
 const DIAGRAM_GROUP_COLOR = "#29ebc0";
 const BESTIARY_START_COLOR = "#60a5fa";
-
-const ACTION_TYPE_CONFIG: Record<MonsterActionType, { labelKo: string; labelEn: string; color: string }> = {
-  attack: { labelKo: "공격", labelEn: "Attack", color: "#f87171" },
-  defense: { labelKo: "방어", labelEn: "Defense", color: "#60a5fa" },
-  debuff: { labelKo: "디버프", labelEn: "Debuff", color: "#fb7185" },
-  buff: { labelKo: "버프", labelEn: "Buff", color: "#22c55e" },
-  special: { labelKo: "특수", labelEn: "Special", color: "#a1a1aa" },
+const DIAGRAM_ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
+const GAME_PANEL_BORDER_STYLE: CSSProperties = {
+  borderStyle: "solid",
+  borderColor: "transparent",
+  borderWidth: "16px",
+  borderImageSource: "url('/images/sts2/ui/tiny_nine_patch.png')",
+  borderImageSlice: "32 fill",
+  borderImageWidth: "16px",
+  borderImageRepeat: "stretch",
+  backgroundClip: "padding-box",
 };
+const METRIC_TOKEN_ICONS = {
+  attack: "/images/sts2/potions/attack_potion.webp",
+  block: "/images/sts2/potions/block_potion.webp",
+  hp: "/images/sts2/ui/topbar/top_bar_heart.png",
+};
+
+function buildPowerEntity(
+  application: MonsterMovePowerApplication,
+  power: CodexPower | undefined,
+): EntityInfo {
+  const href = `/compendium/powers?power=${application.powerId.toLowerCase()}`;
+  return {
+    id: application.powerId,
+    nameEn: power?.nameEn ?? application.powerNameEn,
+    nameKo: power?.name ?? application.powerName,
+    imageUrl: power?.imageUrl ?? application.imageUrl,
+    href,
+    color: power?.type ?? application.powerType,
+    type: "power",
+    powerData: power,
+  };
+}
+
+function buildCardEntity(
+  application: MonsterMoveCardApplication,
+  card: CodexCard | undefined,
+): EntityInfo {
+  const href = `/compendium/cards?card=${application.cardId.toLowerCase()}`;
+  return {
+    id: application.cardId,
+    nameEn: card?.nameEn ?? application.cardNameEn,
+    nameKo: card?.nameKo ?? application.cardName,
+    imageUrl: card?.imageUrl ?? application.imageUrl,
+    href,
+    color: card?.pool ?? "card",
+    type: "card",
+    cardData: card,
+  };
+}
 
 function buildPatternDiagramModel(
   monster: CodexMonster,
@@ -1609,21 +1412,21 @@ function getMoveIntentKeys(move: MonsterMove | null): string[] {
   return ["unknown"];
 }
 
-function getIntentIconConfig(intent: string): { icon: LucideIcon; color: string; label: string } {
+function getIntentIconConfig(intent: string): { image: string; label: string } {
   const normalized = intent.toLowerCase();
-  if (normalized.includes("multiattack")) return { icon: Swords, color: "#f87171", label: intent };
-  if (normalized.includes("attack")) return { icon: Sword, color: "#f87171", label: intent };
+  if (normalized.includes("multiattack")) return { image: METRIC_TOKEN_ICONS.attack, label: intent };
+  if (normalized.includes("attack")) return { image: METRIC_TOKEN_ICONS.attack, label: intent };
   if (normalized.includes("defend") || normalized.includes("block") || normalized.includes("shield")) {
-    return { icon: Shield, color: "#60a5fa", label: intent };
+    return { image: METRIC_TOKEN_ICONS.block, label: intent };
   }
-  if (normalized.includes("debuff")) return { icon: ArrowDown, color: "#fb7185", label: intent };
-  if (normalized.includes("buff")) return { icon: ArrowUp, color: "#22c55e", label: intent };
-  if (normalized.includes("heal")) return { icon: HeartPulse, color: "#34d399", label: intent };
-  if (normalized.includes("status")) return { icon: TriangleAlert, color: "#f59e0b", label: intent };
-  if (normalized.includes("stun")) return { icon: Ban, color: "#a78bfa", label: intent };
-  if (normalized.includes("summon")) return { icon: Sparkles, color: "#c084fc", label: intent };
-  if (normalized.includes("special")) return { icon: Zap, color: "#facc15", label: intent };
-  return { icon: CircleHelp, color: "#a1a1aa", label: intent };
+  if (normalized.includes("debuff")) return { image: "/images/sts2/powers/vulnerable_power.webp", label: intent };
+  if (normalized.includes("buff")) return { image: "/images/sts2/powers/strength_power.webp", label: intent };
+  if (normalized.includes("heal")) return { image: METRIC_TOKEN_ICONS.hp, label: intent };
+  if (normalized.includes("status")) return { image: "/images/sts2/cards/burn.webp", label: intent };
+  if (normalized.includes("stun")) return { image: "/images/sts2/ui/potion_popup.png", label: intent };
+  if (normalized.includes("summon")) return { image: "/images/sts2/run-history/monster.png", label: intent };
+  if (normalized.includes("special")) return { image: "/images/sts2/icons/colorless_energy_icon.webp", label: intent };
+  return { image: "/images/sts2/ui/topbar/submenu_history_icon.png", label: intent };
 }
 
 function buildMonsterActionMoves(monster: CodexMonster): MonsterMove[] {
@@ -1784,34 +1587,30 @@ function getPatternKindLabel(kind: PatternKind, serviceLocale: ServiceLocale): s
   return serviceLocale === "ko" ? labels[kind].ko : labels[kind].en;
 }
 
-function getPatternKindColor(kind: PatternKind): string {
-  switch (kind) {
-    case "fixed":
-      return "#eab308";
-    case "random":
-      return "#38bdf8";
-    case "conditional":
-      return "#f87171";
-    case "mixed":
-      return "#f59e0b";
-    case "unknown":
-      return "#a1a1aa";
+function getFixedLoopLength(monster: CodexMonster): number | null {
+  const graph = monster.moveGraph;
+  if (!graph?.initial) return null;
+  const transitions = graph.transitions.filter((transition) => {
+    const kind = transition.kind ?? inferTransitionKind(transition);
+    return kind === "fixed" && transition.from !== "__START__";
+  });
+  if (transitions.length === 0 || transitions.length !== graph.transitions.length) return null;
+  const nextByMove = new Map<string, string>();
+  for (const transition of transitions) {
+    if (nextByMove.has(transition.from)) return null;
+    nextByMove.set(transition.from, transition.to);
   }
-}
 
-function getTransitionKindColor(kind: MonsterMoveTransitionKind | "start" | "unknown"): string {
-  switch (kind) {
-    case "start":
-      return BESTIARY_START_COLOR;
-    case "random":
-      return "#38bdf8";
-    case "conditional":
-      return "#f87171";
-    case "fixed":
-      return "#eab308";
-    case "unknown":
-      return "#a1a1aa";
+  const seen = new Set<string>();
+  let current = graph.initial;
+  while (!seen.has(current)) {
+    seen.add(current);
+    const next = nextByMove.get(current);
+    if (!next) return null;
+    current = next;
   }
+
+  return current === graph.initial ? seen.size : null;
 }
 
 function formatHp(monster: CodexMonster): string | null {
