@@ -30,9 +30,11 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
   const imageSrc = fallbackImageUrl;
   const asset = monster.spineAsset;
   const actions = useMemo(() => buildPreviewActions(monster), [monster]);
-  const [selectedActionId, setSelectedActionId] = useState<string | null>(
-    actions[0]?.id ?? null,
-  );
+  const [selectedActionState, setSelectedActionState] = useState<{ id: string | null; nonce: number }>({
+    id: null,
+    nonce: 0,
+  });
+  const selectedActionId = selectedActionState.id;
   const [selectedSkinState, setSelectedSkinState] = useState<{ monsterId: string; selections: MonsterSkinSelections }>({
     monsterId: monster.id,
     selections: getDefaultMonsterSkinSelections(monster),
@@ -69,6 +71,7 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
                 fallbackImageUrl={imageSrc}
                 monsterName={monster.name}
                 selectedMoveId={selectedActionId}
+                selectedMoveNonce={selectedActionState.nonce}
                 selectedSkin={selectedSingleSkin}
                 selectedSkins={selectedSkinNames}
                 className="relative z-10 h-[24rem] w-full sm:h-[34rem]"
@@ -164,7 +167,12 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
                     <button
                       key={action.id}
                       type="button"
-                      onClick={() => setSelectedActionId(action.id)}
+                      onClick={() => {
+                        setSelectedActionState((state) => ({
+                          id: action.id,
+                          nonce: state.nonce + 1,
+                        }));
+                      }}
                       className={`rounded border px-3 py-2 text-left transition-colors ${
                         selected
                           ? "border-amber-300/60 bg-amber-300/12"
