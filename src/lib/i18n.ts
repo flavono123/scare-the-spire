@@ -25,32 +25,36 @@ export const GAME_LOCALES = [
 
 export type GameLocale = (typeof GAME_LOCALES)[number];
 
-const GAME_LOCALE_PATH_ALIASES = {
+const GAME_LOCALE_BY_PATH_SEGMENT = {
   en: "eng",
-  eng: "eng",
-  zhs: "zhs",
-  jpn: "jpn",
-  deu: "deu",
-  fra: "fra",
-  ita: "ita",
-  spa: "spa",
-  esp: "esp",
-  ptb: "ptb",
-  rus: "rus",
-  pol: "pol",
-  tha: "tha",
-  tur: "tur",
+  zh: "zhs",
+  ja: "jpn",
+  de: "deu",
+  fr: "fra",
+  it: "ita",
+  es: "spa",
+  "es-419": "esp",
+  pt: "ptb",
+  ru: "rus",
+  pl: "pol",
+  th: "tha",
+  tr: "tur",
 } as const satisfies Record<string, GameLocale>;
 
-export type GameLocalePathSegment = keyof typeof GAME_LOCALE_PATH_ALIASES;
+export type GameLocalePathSegment = keyof typeof GAME_LOCALE_BY_PATH_SEGMENT;
 
 export const GAME_LOCALE_PATH_SEGMENTS = Object.keys(
-  GAME_LOCALE_PATH_ALIASES,
+  GAME_LOCALE_BY_PATH_SEGMENT,
 ) as GameLocalePathSegment[];
 
-export const CANONICAL_GAME_LOCALE_PATH_SEGMENTS = GAME_LOCALE_PATH_SEGMENTS.filter(
-  (segment) => segment !== "eng",
-);
+export const CANONICAL_GAME_LOCALE_PATH_SEGMENTS = GAME_LOCALE_PATH_SEGMENTS;
+
+const PATH_SEGMENT_BY_GAME_LOCALE = Object.fromEntries(
+  Object.entries(GAME_LOCALE_BY_PATH_SEGMENT).map(([segment, gameLocale]) => [
+    gameLocale,
+    segment,
+  ]),
+) as Record<Exclude<GameLocale, "kor">, GameLocalePathSegment>;
 
 export const DEFAULT_SERVICE_LOCALE: ServiceLocale = "ko";
 export const DEFAULT_GAME_LOCALE_BY_SERVICE: Record<ServiceLocale, GameLocale> = {
@@ -111,7 +115,7 @@ export function isGameLocale(value: string): value is GameLocale {
 
 export function gameLocaleFromPathSegment(segment: string | undefined): GameLocale | null {
   if (!segment) return null;
-  return GAME_LOCALE_PATH_ALIASES[segment.toLowerCase() as GameLocalePathSegment] ?? null;
+  return GAME_LOCALE_BY_PATH_SEGMENT[segment.toLowerCase() as GameLocalePathSegment] ?? null;
 }
 
 export function hasGameLocalePathPrefix(pathname: string): boolean {
@@ -126,8 +130,7 @@ export function getGameLocaleFromPathname(pathname: string): GameLocale {
 
 export function pathPrefixForGameLocale(gameLocale: GameLocale): string {
   if (gameLocale === "kor") return "";
-  if (gameLocale === "eng") return "/en";
-  return `/${gameLocale}`;
+  return `/${PATH_SEGMENT_BY_GAME_LOCALE[gameLocale]}`;
 }
 
 export function getServiceLocaleFromPath(pathname: string): ServiceLocale {
