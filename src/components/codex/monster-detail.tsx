@@ -1214,7 +1214,7 @@ function getMonsterIntentPreviewLabel(intent: string, kind: MonsterIntentKind, s
   if (kind === "attack" || kind === "deathBlow") {
     const damage = summary.damageEntry?.normal;
     if (damage == null) return null;
-    return intent === "MultiAttackIntent" ? formatMultiAttackIntentLabel(damage, summary) : String(damage);
+    return String(damage);
   }
 
   if (kind === "statusCard") {
@@ -1223,18 +1223,6 @@ function getMonsterIntentPreviewLabel(intent: string, kind: MonsterIntentKind, s
   }
 
   return null;
-}
-
-function formatMultiAttackIntentLabel(damage: number, summary: MoveSummary): string {
-  const repeat = inferMultiAttackRepeat(summary);
-  return repeat == null ? String(damage) : `${damage}x${repeat}`;
-}
-
-function inferMultiAttackRepeat(summary: MoveSummary): number | null {
-  const explicitRepeat = summary.move.powerApplications.find((application) => (
-    application.powerId.toLowerCase().includes("repeat") && application.amount?.normal != null
-  ))?.amount?.normal;
-  return explicitRepeat ?? null;
 }
 
 function buildPowerEntity(
