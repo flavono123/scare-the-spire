@@ -1,1 +1,4 @@
-export { default, dynamic, dynamicParams, generateMetadata, generateStaticParams } from "../../../codex/encounters/[id]/page";
+export { default, generateMetadata, generateStaticParams } from "../../../codex/encounters/[id]/page";
+
+export const dynamic = "force-static";
+export const dynamicParams = false;
