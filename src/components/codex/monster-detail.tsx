@@ -939,9 +939,9 @@ export function MonsterDetail({
 
 const DIAGRAM_CELL_WIDTH = 148;
 const DIAGRAM_CELL_HEIGHT = 96;
-const DIAGRAM_H_GAP = 82;
+const DIAGRAM_H_GAP = 32;
 const DIAGRAM_V_GAP = 24;
-const DIAGRAM_PAD = 84;
+const DIAGRAM_PAD = 44;
 const DIAGRAM_ROW_GAP = 76;
 const DIAGRAM_ARROW_COLOR = "#efc851";
 const DIAGRAM_CONDITIONAL_COLOR = "#ff4545";
