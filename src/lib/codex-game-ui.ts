@@ -29,6 +29,7 @@ export type CodexGameUiLabels = {
   bestiaryTitle: string;
   eventsTitle: string;
   ancientsTitle: string;
+  epochsTitle: string;
   nav: {
     cards: string;
     relics: string;
@@ -37,6 +38,7 @@ export type CodexGameUiLabels = {
     monsters: string;
     events: string;
     ancients: string;
+    epochs: string;
   };
   common: {
     rarity: string;
@@ -176,6 +178,14 @@ function extractGoldTerm(source: string, fallback: string): string {
   return match?.[1]?.trim() || fallback;
 }
 
+function extractStatsCountLabel(source: string, fallback: string): string {
+  const label = stripGameMarkup(source)
+    .replace(/\{Amount\}/g, "")
+    .replace(/[：:.]\s*$/g, "")
+    .trim();
+  return label || fallback;
+}
+
 function formatActLabel(
   gameplay: Record<string, string>,
   acts: Record<string, string>,
@@ -200,6 +210,7 @@ export async function getCodexGameUiLabels(
     map,
     staticHoverTips,
     epochs,
+    statsScreen,
     intents,
   ] = await Promise.all([
     readGameLocalizationTable(gameLocale, "main_menu_ui"),
@@ -211,6 +222,7 @@ export async function getCodexGameUiLabels(
     readGameLocalizationTable(gameLocale, "map"),
     readGameLocalizationTable(gameLocale, "static_hover_tips"),
     readGameLocalizationTable(gameLocale, "epochs"),
+    readGameLocalizationTable(gameLocale, "stats_screen"),
     readGameLocalizationTable(gameLocale, "intents"),
   ]);
 
@@ -315,6 +327,10 @@ export async function getCodexGameUiLabels(
   const powerTitle = gameText(gameplay, "CARD_TYPE.POWER", "파워");
   const eventsTitle = gameText(staticHoverTips, "ROOM_EVENT.title", "이벤트");
   const ancientsTitle = gameText(epochs, "RELIC2_EPOCH.title", gameText(staticHoverTips, "ROOM_ANCIENT.title", "고대의 존재"));
+  const epochsTitle = extractStatsCountLabel(
+    gameText(statsScreen, "ENTRY_ACHIEVEMENTS.bottom", "역사 [blue]{Amount}[/blue]"),
+    "역사",
+  );
 
   return {
     compendiumTitle: gameText(mainMenu, "COMPENDIUM", "백과사전"),
@@ -324,6 +340,7 @@ export async function getCodexGameUiLabels(
     bestiaryTitle: gameText(mainMenu, "COMPENDIUM_BESTIARY.title", "몬스터 도감"),
     eventsTitle,
     ancientsTitle,
+    epochsTitle,
     nav: {
       cards: gameText(mainMenu, "COMPENDIUM_CARD_LIBRARY.title", "카드 목록"),
       relics: gameText(mainMenu, "COMPENDIUM_RELIC_COLLECTION.title", "유물 모음집"),
@@ -332,6 +349,7 @@ export async function getCodexGameUiLabels(
       monsters: gameText(mainMenu, "COMPENDIUM_BESTIARY.title", "몬스터 도감"),
       events: eventsTitle,
       ancients: ancientsTitle,
+      epochs: epochsTitle,
     },
     common: {
       rarity: gameText(gameplay, "SORT_RARITY", "희귀도"),

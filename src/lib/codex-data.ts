@@ -22,6 +22,7 @@ import {
   CodexEnchantment,
   CodexAffliction,
   CodexEvent,
+  CodexEpoch,
   CodexAncient,
   AncientDialogueLine,
   CodexMonster,
@@ -29,6 +30,8 @@ import {
   EventOption,
   EventPage,
   EventAct,
+  EpochAffiliation,
+  EpochUnlockKind,
   CardColor,
   CardTypeKo,
   CardRarityKo,
@@ -927,12 +930,173 @@ interface RawEvent {
   relics: string[] | null;
 }
 
+interface RawEpoch {
+  id: string;
+  title: string;
+  description: string;
+  era: string;
+  era_name: string | null;
+  era_year: string | null;
+  era_position: number;
+  sort_order: number;
+  story_id: string | null;
+  unlock_info: string;
+  unlock_text: string | null;
+  unlocks_cards: string[];
+  unlocks_relics: string[];
+  unlocks_potions: string[];
+  expands_timeline: string[];
+}
+
 function hasEventSmartTemplate(text: string | null | undefined): boolean {
   return Boolean(text && /\{[^}]+\}/.test(text));
 }
 
 function normalizeEventMarkup(text: string): string {
   return text.replace(/\[sine\]([^\[]+?)\[\/rainbow\]\[\/sine\]/g, "[sine][rainbow]$1[/rainbow][/sine]");
+}
+
+function normalizeEpochMarkup(text: string): string {
+  return text.replace(/\[sine\]([^\[]+?)\[\/rainbow\]\[\/sine\]/g, "[sine][rainbow]$1[/rainbow][/sine]");
+}
+
+function epochEraGroup(era: string): string {
+  return era.match(/^[A-Za-z]+/)?.[0] ?? era;
+}
+
+const EPOCH_CHARACTER_STORY_IDS: Record<string, EpochAffiliation> = {
+  Ironclad: "ironclad",
+  Silent: "silent",
+  Defect: "defect",
+  Necrobinder: "necrobinder",
+  Regent: "regent",
+};
+
+const ANCIENT_EPOCH_IDS = new Set(["DARV_EPOCH", "NEOW_EPOCH", "OROBAS_EPOCH", "RELIC2_EPOCH"]);
+
+function inferEpochAffiliation(kor: RawEpoch, eng: RawEpoch): EpochAffiliation {
+  if (ANCIENT_EPOCH_IDS.has(kor.id)) return "ancient";
+  const storyAffiliation = kor.story_id ? EPOCH_CHARACTER_STORY_IDS[kor.story_id] : undefined;
+  if (storyAffiliation) return storyAffiliation;
+
+  const source = `${kor.unlock_text ?? ""} ${eng.unlock_text ?? ""}`.toLowerCase();
+  if (source.includes("고대의 존재 해금") || source.includes("unlocked ancient")) return "ancient";
+
+  if (kor.story_id === "Magnum_Opus") return "world";
+  if (kor.story_id === "Reopening") return "reopening";
+  if (kor.story_id === "Tales_From_The_Spire") return "spire";
+  return "unknown";
+}
+
+function inferEpochUnlockKinds(kor: RawEpoch, eng: RawEpoch): EpochUnlockKind[] {
+  const kinds = new Set<EpochUnlockKind>();
+  if (kor.unlocks_cards.length > 0) kinds.add("card");
+  if (kor.unlocks_relics.length > 0) kinds.add("relic");
+  if (kor.unlocks_potions.length > 0) kinds.add("potion");
+
+  const source = [
+    kor.unlock_info,
+    kor.unlock_text,
+    eng.unlock_info,
+    eng.unlock_text,
+  ].filter(Boolean).join(" ").toLowerCase();
+
+  if (source.includes("플레이 가능한 캐릭터") || source.includes("playable character")) kinds.add("character");
+  if (source.includes("고대의 존재 해금") || source.includes("unlocked ancient")) kinds.add("ancient");
+  if (source.includes("이벤트 해금") || source.includes("unlocked event")) kinds.add("event");
+  if (source.includes("게임 모드 해금") || source.includes("unlocked game mode")) kinds.add("mode");
+  if (source.includes("교체되는 1막") || source.includes("location") || source.includes("act")) kinds.add("act");
+  if (source.includes("승천") || source.includes("ascension")) kinds.add("ascension");
+  if (source.includes("아직 알 수 없습니다") || source.includes("not yet known")) kinds.add("unknown");
+  if (kinds.size === 0) kinds.add("story");
+
+  return Array.from(kinds);
+}
+
+function inferEpochActs(kor: RawEpoch, eng: RawEpoch): EventAct[] {
+  const source = [
+    kor.id,
+    kor.unlock_info,
+    kor.unlock_text,
+    eng.unlock_info,
+    eng.unlock_text,
+  ].filter(Boolean).join(" ");
+  const acts: EventAct[] = [];
+  const add = (act: EventAct) => {
+    if (!acts.includes(act)) acts.push(act);
+  };
+
+  if (/underdocks|지하\s*선착장/i.test(source)) add("Underdocks");
+  if (/1막|act\s*1|overgrowth|과성장/i.test(source)) add("Act 1 - Overgrowth");
+  if (/2막|act\s*2|hive|군락/i.test(source)) add("Act 2 - Hive");
+  if (/3막|act\s*3|glory|영광/i.test(source)) add("Act 3 - Glory");
+
+  return acts;
+}
+
+function mapEpoch(
+  kor: RawEpoch,
+  eng: RawEpoch,
+  selected: RawEpoch,
+  eraMeta: Map<string, { name: string | null; year: string | null }>,
+  imageFiles: Set<string>,
+): CodexEpoch {
+  const group = epochEraGroup(kor.era);
+  const meta = eraMeta.get(group);
+  const imageKey = kor.id.toLowerCase();
+  return {
+    id: kor.id,
+    name: selected.title,
+    nameEn: eng.title,
+    description: normalizeEpochMarkup(selected.description),
+    era: kor.era,
+    eraGroup: group,
+    eraName: selected.era_name ?? meta?.name ?? null,
+    eraYear: selected.era_year ?? meta?.year ?? null,
+    eraPosition: kor.era_position,
+    sortOrder: kor.sort_order,
+    storyId: kor.story_id,
+    affiliation: inferEpochAffiliation(kor, eng),
+    unlockInfo: normalizeEpochMarkup(selected.unlock_info),
+    unlockText: selected.unlock_text ? normalizeEpochMarkup(selected.unlock_text) : null,
+    unlockKinds: inferEpochUnlockKinds(kor, eng),
+    unlocksCards: kor.unlocks_cards ?? [],
+    unlocksRelics: kor.unlocks_relics ?? [],
+    unlocksPotions: kor.unlocks_potions ?? [],
+    expandsTimeline: kor.expands_timeline ?? [],
+    acts: inferEpochActs(kor, eng),
+    imageUrl: imageFiles.has(imageKey) ? `/images/sts2/epochs/${imageKey}.webp` : null,
+  };
+}
+
+export async function getCodexEpochs(opts?: { gameLocale?: GameLocale }): Promise<CodexEpoch[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [korEpochs, engEpochs, imageFiles] = await Promise.all([
+    readJson<RawEpoch[]>("kor/epochs.json"),
+    readJson<RawEpoch[]>("eng/epochs.json"),
+    scanImageSlugs("epochs"),
+  ]);
+
+  const engById = new Map(engEpochs.map((epoch) => [epoch.id, epoch]));
+  const selectedEpochs = gameLocale === "kor" ? korEpochs : engEpochs;
+  const selectedById = new Map(selectedEpochs.map((epoch) => [epoch.id, epoch]));
+  const eraMeta = new Map<string, { name: string | null; year: string | null }>();
+  for (const epoch of selectedEpochs) {
+    const group = epochEraGroup(epoch.era);
+    const current = eraMeta.get(group);
+    eraMeta.set(group, {
+      name: current?.name ?? epoch.era_name ?? null,
+      year: current?.year ?? epoch.era_year ?? null,
+    });
+  }
+
+  return korEpochs
+    .map((kor) => {
+      const eng = engById.get(kor.id) ?? kor;
+      const selected = selectedById.get(kor.id) ?? (gameLocale === "kor" ? kor : eng);
+      return mapEpoch(kor, eng, selected, eraMeta, imageFiles);
+    })
+    .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 type EventDisplayVars = Record<string, string | number>;

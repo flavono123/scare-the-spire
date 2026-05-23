@@ -8,7 +8,7 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent, CodexMonster, CodexEncounter, CodexAncient } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch } from "@/lib/codex-types";
 import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -43,6 +43,7 @@ export interface EntityInfo {
   monsterData?: CodexMonster; // Full monster data for rich preview
   encounterData?: CodexEncounter; // Full encounter data for rich preview
   ancientData?: CodexAncient; // Full ancient data for rich preview
+  epochData?: CodexEpoch; // Full epoch data for rich preview
 }
 
 // Keep backward compat alias
@@ -84,6 +85,7 @@ type PreviewPlacement = {
 function estimatePreviewSize(entity: EntityInfo): { width: number; height: number } {
   if (entity.type === "card" && entity.cardData) return { width: 156, height: 230 };
   if (entity.eventData && !entity.eventOptionDesc) return { width: 360, height: 180 };
+  if (entity.epochData) return { width: 360, height: 180 };
   if (entity.eventOptionDesc) return { width: 340, height: 180 };
   return { width: 380, height: 240 };
 }
@@ -215,6 +217,7 @@ export function EntityPreview({
     monster: `/compendium/bestiary?monster=${entity.id.toLowerCase()}`,
     encounter: `/compendium/bestiary?view=encounters&encounter=${entity.id.toLowerCase()}`,
     ancient: `/compendium/ancients/${entity.id.toLowerCase()}`,
+    epoch: `/compendium/epochs?epoch=${entity.id.toLowerCase()}`,
   };
   const hrefBase = entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
   const href = hrefBase && serviceLocale && gameLocale
@@ -493,7 +496,26 @@ export function EntityPreview({
           </GameResourcePreview>,
         )
       )}
-      {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && !entity.ancientData && entity.imageUrl && (
+      {visible && entity.type === "epoch" && entity.epochData && (
+        renderTooltip(
+          <GameResourcePreview
+            title={entity.nameKo}
+            imageUrl={entity.epochData.imageUrl}
+            imageAlt={entity.nameKo}
+            imageFrameClassName="flex h-28 w-40 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-black/20"
+            imageClassName="h-full w-full rounded-lg object-cover"
+            imageWidth={160}
+            imageHeight={112}
+            hoverTipStyle={{ width: "max-content", maxWidth: 320, whiteSpace: "nowrap" }}
+            meta={entity.epochData.eraName ? (
+              <span className="text-blue-300">
+                {entity.epochData.eraYear ? `${entity.epochData.eraName} ${entity.epochData.eraYear}` : entity.epochData.eraName}
+              </span>
+            ) : undefined}
+          />,
+        )
+      )}
+      {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && !entity.ancientData && !entity.epochData && entity.imageUrl && (
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}

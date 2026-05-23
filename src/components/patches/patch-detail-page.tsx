@@ -749,7 +749,7 @@ export async function PatchDetailPage({
           ...(override?.aliasesKo ?? []),
         ].filter((alias): alias is string => Boolean(alias)),
         imageUrl: epochImageFiles.has(idLower) ? `/images/sts2/epochs/${idLower}.webp` : null,
-        href: null,
+        href: `/compendium/epochs?epoch=${idLower}`,
         color: "epoch",
         type: "epoch" as const,
       };

@@ -6,7 +6,7 @@ import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 
-export type CodexReferenceKind = "card" | "event" | "potion" | "relic" | "enchantment" | "monster" | "encounter" | "ancient" | "power";
+export type CodexReferenceKind = "card" | "event" | "potion" | "relic" | "enchantment" | "monster" | "encounter" | "ancient" | "power" | "epoch";
 
 export interface CodexReferenceTarget {
   id: string;
@@ -72,6 +72,10 @@ const REFERENCE_KIND_CONFIG: Record<CodexReferenceKind, { icon: string; fallback
     icon: "/images/sts2/nav/unmovable_power_beta.webp",
     fallbackLabel: { ko: "파워", en: "Power" },
   },
+  epoch: {
+    icon: "/images/sts2/relics/history_course.webp",
+    fallbackLabel: { ko: "역사", en: "Epoch" },
+  },
 };
 
 const COLLECTION_SUFFIX_PATTERN = /\s*(목록|모음집|연구실|도감|Library|Collection|Lab|Codex|Bestiary)$/i;
@@ -103,6 +107,8 @@ function relatedResourceLabel(
         return gameUi.eventsTitle;
       case "ancient":
         return gameUi.ancientsTitle;
+      case "epoch":
+        return gameUi.epochsTitle;
       case "encounter":
       case "enchantment":
         return fallback;

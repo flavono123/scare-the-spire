@@ -522,6 +522,82 @@ export const EVENT_ACT_ALIASES: Record<string, EventAct | "none"> = {
   any: "none",
 };
 
+export type EpochAffiliation =
+  | "ironclad"
+  | "silent"
+  | "defect"
+  | "necrobinder"
+  | "regent"
+  | "ancient"
+  | "world"
+  | "spire"
+  | "reopening"
+  | "unknown";
+
+export type EpochUnlockKind =
+  | "card"
+  | "relic"
+  | "potion"
+  | "character"
+  | "ancient"
+  | "event"
+  | "mode"
+  | "act"
+  | "ascension"
+  | "story"
+  | "unknown";
+
+export interface CodexEpoch {
+  id: string;
+  name: string;        // selected game locale
+  nameEn: string;      // English
+  description: string; // selected game locale, with BBCode markup
+  era: string;
+  eraGroup: string;
+  eraName: string | null;
+  eraYear: string | null;
+  eraPosition: number;
+  sortOrder: number;
+  storyId: string | null;
+  affiliation: EpochAffiliation;
+  unlockInfo: string;
+  unlockText: string | null;
+  unlockKinds: EpochUnlockKind[];
+  unlocksCards: string[];
+  unlocksRelics: string[];
+  unlocksPotions: string[];
+  expandsTimeline: string[];
+  acts: EventAct[];
+  imageUrl: string | null;
+}
+
+export const EPOCH_AFFILIATION_ORDER: EpochAffiliation[] = [
+  "ironclad",
+  "silent",
+  "regent",
+  "necrobinder",
+  "defect",
+  "ancient",
+  "world",
+  "reopening",
+  "spire",
+  "unknown",
+];
+
+export const EPOCH_UNLOCK_KIND_ORDER: EpochUnlockKind[] = [
+  "card",
+  "relic",
+  "potion",
+  "character",
+  "ancient",
+  "event",
+  "mode",
+  "act",
+  "ascension",
+  "story",
+  "unknown",
+];
+
 export const TYPE_ALIASES: Record<string, CardTypeKo> = {
   공격: "공격",
   attack: "공격",
