@@ -737,7 +737,7 @@ export function MonsterDetail({
                 asset={monster.spineAsset}
                 fallbackImageUrl={imageSrc}
                 monsterName={monster.name}
-                selectedMoveId={selectedMove?.move.id ?? null}
+                selectedMoveId={selectedMoveId}
                 selectedMoveNonce={selectedMoveNonce}
                 selectedSkin={selectedSingleSkin}
                 selectedSkins={selectedSkinNames}
@@ -837,7 +837,7 @@ export function MonsterDetail({
             {moveSummaries.length > 0 ? (
               <div className="space-y-1.5 pr-1">
                 {moveSummaries.map((summary) => {
-                  const isSelected = selectedMove?.move.id === summary.move.id;
+                  const isSelected = selectedMoveId === summary.move.id;
 
                   return (
                     <button
