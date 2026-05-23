@@ -8,7 +8,7 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch } from "@/lib/codex-types";
 import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -21,7 +21,7 @@ import { DescriptionText } from "@/components/codex/codex-description";
 import { GameHoverTip } from "@/components/codex/hover-tip";
 
 // Entity types that can appear in patch notes
-export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "event" | "monster" | "encounter" | "ancient" | "epoch";
+export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "encounter" | "ancient" | "epoch";
 
 export interface EntityInfo {
   id: string;
@@ -38,6 +38,7 @@ export interface EntityInfo {
   potionData?: CodexPotion; // Full potion data for rich preview
   powerData?: CodexPower; // Full power data for rich preview
   enchantmentData?: CodexEnchantment; // Full enchantment data for rich preview
+  afflictionData?: CodexAffliction; // Full affliction data for rich preview
   eventData?: CodexEvent; // Full event data for rich preview
   eventOptionDesc?: string; // BBCode description for event option tooltips
   monsterData?: CodexMonster; // Full monster data for rich preview
@@ -213,6 +214,7 @@ export function EntityPreview({
     potion: `/compendium/potions?potion=${entity.id.toLowerCase()}`,
     power: `/compendium/powers?power=${entity.id.toLowerCase()}`,
     enchantment: `/compendium/enchantments?enchantment=${entity.id.toLowerCase()}`,
+    affliction: `/compendium/enchantments?affliction=${entity.id.toLowerCase()}`,
     event: `/compendium/events/${entity.id.toLowerCase()}`,
     monster: `/compendium/bestiary?monster=${entity.id.toLowerCase()}`,
     encounter: `/compendium/bestiary?view=encounters&encounter=${entity.id.toLowerCase()}`,
@@ -404,6 +406,13 @@ export function EntityPreview({
           </GameHoverTip>,
         )
       )}
+      {visible && entity.type === "affliction" && entity.afflictionData && (
+        renderTooltip(
+          <GameHoverTip title={entity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+            <DescriptionText description={entity.afflictionData.description} />
+          </GameHoverTip>,
+        )
+      )}
       {visible && entity.type === "event" && entity.eventData && !entity.eventOptionDesc && (
         renderTooltip(
           <GameResourcePreview
@@ -515,7 +524,7 @@ export function EntityPreview({
           />,
         )
       )}
-      {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && !entity.ancientData && !entity.epochData && entity.imageUrl && (
+      {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && !entity.ancientData && !entity.epochData && entity.imageUrl && (
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}

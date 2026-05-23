@@ -1,11 +1,13 @@
 import type {
   CardRarityKo,
   CardTypeKo,
+  CodexAffliction,
   CodexAncient,
   CodexCard,
   CodexEnchantment,
   CodexEncounter,
   CodexEvent,
+  CodexMonster,
   CodexPotion,
   CodexPower,
   CodexRelic,
@@ -413,6 +415,17 @@ export const POTION_RELATED_POWER_IDS = {
 
 export const POTION_RELATED_ENCHANTMENT_IDS = {} as const satisfies Record<string, readonly string[]>;
 
+// Monster affliction relationships are derived from current monster move data.
+// This map only normalizes the public power IDs that apply each card affliction.
+export const AFFLICTION_RELATED_POWER_IDS = {
+  BOUND: ["CHAINS_OF_BINDING"],
+  ENTANGLED: ["TANGLED"],
+  GALVANIZED: ["GALVANIC_POWER"],
+  HEXED: ["HEX"],
+  RINGING: ["RINGING"],
+  SMOG: ["SMOGGY"],
+} as const satisfies Record<string, readonly string[]>;
+
 export function getRelatedCardIdsForEvent(eventId: string): readonly string[] {
   return (EVENT_RELATED_CARD_IDS as Record<string, readonly string[]>)[eventId] ?? [];
 }
@@ -489,6 +502,45 @@ export function getRelatedRelicIdsForCard(cardId: string): readonly string[] {
 
 export function getRelatedPotionIdsForEnchantment(enchantmentId: string): readonly string[] {
   return invertEventRelations(POTION_RELATED_ENCHANTMENT_IDS, enchantmentId);
+}
+
+export function getRelatedPowerIdsForAffliction(
+  afflictionOrId: string | Pick<CodexAffliction, "id">,
+): readonly string[] {
+  const afflictionId = typeof afflictionOrId === "string" ? afflictionOrId : afflictionOrId.id;
+  return invertIdRelations(AFFLICTION_RELATED_POWER_IDS, afflictionId);
+}
+
+export function getRelatedAfflictionIdsForMonster(
+  monster: Pick<CodexMonster, "moves" | "bestiaryMoves">,
+): string[] {
+  const powerIds = new Set<string>();
+  for (const move of [...monster.moves, ...monster.bestiaryMoves]) {
+    for (const application of move.powerApplications) {
+      powerIds.add(application.powerId.toUpperCase());
+    }
+  }
+
+  return dedupeIds(
+    Object.entries(AFFLICTION_RELATED_POWER_IDS)
+      .filter(([, sourcePowerIds]) =>
+        sourcePowerIds.some((powerId) => powerIds.has(powerId.toUpperCase())),
+      )
+      .map(([afflictionId]) => afflictionId),
+  );
+}
+
+export function getRelatedMonsterIdsForAffliction(
+  afflictionId: string,
+  monsters: readonly Pick<CodexMonster, "id" | "moves" | "bestiaryMoves">[],
+): string[] {
+  const normalizedAfflictionId = afflictionId.toUpperCase();
+  return monsters
+    .filter((monster) =>
+      getRelatedAfflictionIdsForMonster(monster)
+        .some((id) => id.toUpperCase() === normalizedAfflictionId),
+    )
+    .map((monster) => monster.id);
 }
 
 export function getRelatedPotionIdsForCard(cardOrId: string | PotionCardRelationTarget): readonly string[] {
@@ -843,10 +895,17 @@ function invertEventRelations(
   relations: Record<string, readonly string[]>,
   entityId: string,
 ): string[] {
+  return invertIdRelations(relations, entityId);
+}
+
+function invertIdRelations(
+  relations: Record<string, readonly string[]>,
+  entityId: string,
+): string[] {
   const normalizedEntityId = entityId.toUpperCase();
   return Object.entries(relations)
     .filter(([, ids]) => ids.some((id) => id.toUpperCase() === normalizedEntityId))
-    .map(([eventId]) => eventId);
+    .map(([sourceId]) => sourceId);
 }
 
 function addEventsReferencingIds(
