@@ -19659,12 +19659,10 @@
     "vars": {
       "Damage": 3
     },
-    "upgrade": {
-      "damage": "+3"
-    },
+    "upgrade": null,
     "image_url": null,
     "beta_image_url": "/static/images/cards/beta/wither.png",
-    "max_upgrade_level": 2147483647
+    "max_upgrade_level": 0
   },
   {
     "id": "WOUND",

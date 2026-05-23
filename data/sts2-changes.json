@@ -1902,5 +1902,25 @@
         "diffType": "text"
       }
     ]
+  },
+  {
+    "id": "wither-v1061-upgrade-fix",
+    "entityType": "card",
+    "entityId": "WITHER",
+    "patch": "v0.106.1",
+    "date": "2026-05-23",
+    "character": null,
+    "summary": "Wither status cards can no longer be upgraded.",
+    "summaryKo": "침체 상태이상 카드는 더 이상 강화할 수 없습니다.",
+    "diffs": [
+      {
+        "attribute": "upgrade",
+        "displayName": "Upgrade",
+        "displayNameKo": "강화",
+        "before": "Upgradeable (+3 damage per level)",
+        "after": "Cannot be upgraded",
+        "diffType": "text"
+      }
+    ]
   }
 ]

@@ -1703,5 +1703,24 @@
         "after": "획득 시, 모든 [gold]골드[/gold]를 잃습니다. 처음 카드 보상의 모든 카드에 [purple]호화[/purple]를 [gold]인챈트[/gold]합니다."
       }
     ]
+  },
+  {
+    "entityType": "card",
+    "entityId": "WITHER",
+    "patch": "v0.106.1",
+    "diffs": [
+      {
+        "field": "upgrade",
+        "before": {
+          "damage": "+3"
+        },
+        "after": null
+      },
+      {
+        "field": "maxUpgradeLevel",
+        "before": 2147483647,
+        "after": 0
+      }
+    ]
   }
 ]
