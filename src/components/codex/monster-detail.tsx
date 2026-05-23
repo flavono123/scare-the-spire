@@ -8,6 +8,7 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
+import { bakeDescription } from "@/lib/codex-bake";
 import type { STS2Change, STS2Patch } from "@/lib/types";
 import { getBestiaryDisplayMonsterType } from "@/lib/bestiary-monster-policy";
 import { serviceMessages } from "@/messages/service";
@@ -1001,15 +1002,29 @@ function buildPowerEntity(
   power: CodexPower | undefined,
 ): EntityInfo {
   const href = `/compendium/powers?power=${application.powerId.toLowerCase()}`;
+  const powerData = power ? applyMovePowerAmount(power, application.amount) : undefined;
   return {
     id: application.powerId,
-    nameEn: power?.nameEn ?? application.powerNameEn,
-    nameKo: power?.name ?? application.powerName,
-    imageUrl: power?.imageUrl ?? application.imageUrl,
+    nameEn: powerData?.nameEn ?? application.powerNameEn,
+    nameKo: powerData?.name ?? application.powerName,
+    imageUrl: powerData?.imageUrl ?? application.imageUrl,
     href,
-    color: power?.type ?? application.powerType,
+    color: powerData?.type ?? application.powerType,
     type: "power",
-    powerData: power,
+    powerData,
+  };
+}
+
+function applyMovePowerAmount(power: CodexPower, amount: DamageValue | null): CodexPower {
+  if (!amount || amount.normal == null || !power.descriptionRaw?.includes("{Amount}")) return power;
+  const vars = {
+    ...power.vars,
+    Amount: amount.normal,
+  };
+  return {
+    ...power,
+    vars,
+    description: bakeDescription(power.descriptionRaw, vars),
   };
 }
 
