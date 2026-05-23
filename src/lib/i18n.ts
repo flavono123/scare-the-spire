@@ -200,10 +200,13 @@ export function switchServiceLocaleHref(
 
 export function switchGameLocalePath(pathname: string, gameLocale: GameLocale): string {
   const unprefixed = stripGameLocaleFromPath(stripServiceLocaleFromPath(pathname));
+  const canonicalPath = unprefixed === "/codex" || unprefixed.startsWith("/codex/")
+    ? unprefixed.replace(/^\/codex/, "/compendium")
+    : unprefixed;
   const prefix = pathPrefixForGameLocale(gameLocale);
   return prefix
-    ? unprefixed === "/" ? prefix : `${prefix}${unprefixed}`
-    : unprefixed;
+    ? canonicalPath === "/" ? prefix : `${prefix}${canonicalPath}`
+    : canonicalPath;
 }
 
 export function switchGameLocaleHref(
