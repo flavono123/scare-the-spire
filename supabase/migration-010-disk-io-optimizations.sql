@@ -43,8 +43,13 @@ begin
   end if;
 end $$;
 
-create index if not exists idx_runs_env_created_desc
-  on public.runs(env, created_at desc);
+do $$
+begin
+  if to_regclass('public.runs') is not null then
+    create index if not exists idx_runs_env_created_desc
+      on public.runs(env, created_at desc);
 
-create index if not exists idx_runs_env_donor
-  on public.runs(env, donor_user_id);
+    create index if not exists idx_runs_env_donor
+      on public.runs(env, donor_user_id);
+  end if;
+end $$;
