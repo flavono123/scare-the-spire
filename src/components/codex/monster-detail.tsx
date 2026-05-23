@@ -1005,7 +1005,7 @@ function buildCardEntity(
     nameKo: card?.name ?? application.cardName,
     imageUrl: card?.imageUrl ?? application.imageUrl,
     href,
-    color: card?.pool ?? "card",
+    color: "card",
     type: "card",
     cardData: card,
   };
