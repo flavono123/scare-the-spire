@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -102,22 +101,28 @@ export function EpochLibrary({
   entities,
 }: EpochLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const searchParams = useSearchParams();
   const [selectedAffiliations, setSelectedAffiliations] = useState<Set<EpochAffiliation>>(new Set());
   const [selectedUnlockKinds, setSelectedUnlockKinds] = useState<Set<EpochUnlockKind>>(new Set());
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
-  const initialEpochId = searchParams.get("epoch");
-  const [selectedEpoch, setSelectedEpoch] = useState<CodexEpoch | null>(() => {
-    if (!initialEpochId) return null;
-    return epochs.find((epoch) => epoch.id.toLowerCase() === initialEpochId.toLowerCase()) ?? null;
-  });
+  const [selectedEpoch, setSelectedEpoch] = useState<CodexEpoch | null>(null);
+  const [urlReady, setUrlReady] = useState(false);
 
   const selectEpoch = useCallback((epoch: CodexEpoch) => {
     setSelectedEpoch(epoch);
   }, []);
 
   useEffect(() => {
+    const url = new URL(window.location.href);
+    const epochParam = url.searchParams.get("epoch");
+    setSelectedEpoch(epochParam
+      ? epochs.find((epoch) => epoch.id.toLowerCase() === epochParam.toLowerCase()) ?? null
+      : null);
+    setUrlReady(true);
+  }, [epochs]);
+
+  useEffect(() => {
+    if (!urlReady) return;
     const url = new URL(window.location.href);
     if (selectedEpoch) {
       url.searchParams.set("epoch", selectedEpoch.id.toLowerCase());
@@ -127,7 +132,7 @@ export function EpochLibrary({
     if (url.toString() !== window.location.href) {
       window.history.pushState(null, "", url.toString());
     }
-  }, [selectedEpoch]);
+  }, [selectedEpoch, urlReady]);
 
   useEffect(() => {
     const handler = () => {
