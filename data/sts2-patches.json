@@ -327,5 +327,23 @@
       { "type": "relic", "id": "SILKEN_TRESS" },
       { "type": "card", "id": "SHATTER" }
     ]
+  },
+  {
+    "id": "v0.106.1",
+    "version": "0.106.1",
+    "date": "2026-05-23",
+    "title": "Beta Hotfix Patch Notes - v0.106.1",
+    "titleKo": "베타 핫픽스 패치 노트 - v0.106.1",
+    "type": "hotfix",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/670617878982034085",
+    "status": "building",
+    "summary": "Rich patch notes are being prepared from the Steam hotfix notes.",
+    "summaryKo": "Steam 핫픽스 노트를 바탕으로 슬서운변경을 작성 중입니다.",
+    "hasBalanceChanges": false,
+    "featuredEntities": [
+      { "type": "monster", "id": "AEONGLASS" },
+      { "type": "card", "id": "WITHER" },
+      { "type": "relic", "id": "RUNIC_PYRAMID" }
+    ]
   }
 ]
