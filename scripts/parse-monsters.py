@@ -160,20 +160,21 @@ def move_title_candidates(move_id: str) -> list[str]:
         if candidate and candidate not in candidates:
             candidates.append(candidate)
 
-    add(move_id)
-    add(strip_move_suffix(move_id))
+    seeds = [move_id, strip_move_suffix(move_id)]
+    for seed in seeds:
+        add(seed)
 
-    move_number_match = re.match(r"(.+)_MOVE_\d+$", move_id)
-    if move_number_match:
-        add(move_number_match.group(1))
+        move_number_match = re.match(r"(.+)_MOVE_\d+$", seed)
+        if move_number_match:
+            add(move_number_match.group(1))
 
-    trailing_number_match = re.match(r"(.+?)\d+$", move_id)
-    if trailing_number_match:
-        add(trailing_number_match.group(1))
+        trailing_number_match = re.match(r"(.+?)\d+$", seed)
+        if trailing_number_match:
+            add(trailing_number_match.group(1))
 
-    underscore_number_match = re.match(r"(.+)_\d+$", move_id)
-    if underscore_number_match:
-        add(underscore_number_match.group(1))
+        underscore_number_match = re.match(r"(.+)_\d+$", seed)
+        if underscore_number_match:
+            add(underscore_number_match.group(1))
 
     return candidates
 

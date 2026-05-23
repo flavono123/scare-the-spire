@@ -830,7 +830,7 @@
       },
       {
         "id": "THRASH2",
-        "name": "Thrash2",
+        "name": "Thrash",
         "action_types": [
           "attack"
         ],
@@ -877,7 +877,7 @@
       },
       {
         "id": "THRASH2",
-        "name": "Thrash2",
+        "name": "Thrash",
         "action_types": [
           "attack"
         ],
@@ -1261,7 +1261,7 @@
       },
       {
         "id": "SLEEP_MOVE_2",
-        "name": "Sleep Move 2",
+        "name": "Sleep",
         "action_types": [
           "special"
         ],
@@ -1320,7 +1320,7 @@
       },
       {
         "id": "SLEEP_MOVE_2",
-        "name": "Sleep Move 2",
+        "name": "Sleep",
         "action_types": [
           "special"
         ],
@@ -2617,7 +2617,7 @@
       },
       {
         "id": "REPEATER_BLAST_MOVE_2",
-        "name": "Repeater Blast Move 2",
+        "name": "Repeater Blast",
         "action_types": [
           "attack",
           "buff"
@@ -2698,7 +2698,7 @@
       },
       {
         "id": "REPEATER_BLAST_MOVE_2",
-        "name": "Repeater Blast Move 2",
+        "name": "Repeater Blast",
         "action_types": [
           "attack",
           "buff"
@@ -6910,7 +6910,7 @@
       },
       {
         "id": "SLASH2",
-        "name": "Slash2",
+        "name": "Slash",
         "action_types": [
           "attack",
           "defense"
@@ -7009,7 +7009,7 @@
       },
       {
         "id": "SLASH2",
-        "name": "Slash2",
+        "name": "Slash",
         "action_types": [
           "attack",
           "defense"
@@ -10801,7 +10801,7 @@
       },
       {
         "id": "ZOOM_MOVE_2",
-        "name": "Zoom Move 2",
+        "name": "Zoom",
         "action_types": [
           "attack"
         ],
@@ -10862,7 +10862,7 @@
       },
       {
         "id": "ZOOM_MOVE_2",
-        "name": "Zoom Move 2",
+        "name": "Zoom",
         "action_types": [
           "attack"
         ],
@@ -13784,7 +13784,7 @@
       },
       {
         "id": "THRASH_MOVE_2",
-        "name": "Thrash Move 2",
+        "name": "Thrash",
         "action_types": [
           "attack"
         ],
@@ -13866,7 +13866,7 @@
       },
       {
         "id": "THRASH_MOVE_2",
-        "name": "Thrash Move 2",
+        "name": "Thrash",
         "action_types": [
           "attack"
         ],
@@ -14692,7 +14692,7 @@
       },
       {
         "id": "TACKLE_2",
-        "name": "Tackle 2",
+        "name": "Tackle",
         "action_types": [
           "attack"
         ],
@@ -14716,7 +14716,7 @@
       },
       {
         "id": "TACKLE_3",
-        "name": "Tackle 3",
+        "name": "Tackle",
         "action_types": [
           "attack"
         ],
@@ -14728,7 +14728,7 @@
       },
       {
         "id": "TACKLE_4",
-        "name": "Tackle 4",
+        "name": "Tackle",
         "action_types": [
           "attack"
         ],
@@ -14754,7 +14754,7 @@
       },
       {
         "id": "TACKLE_2",
-        "name": "Tackle 2",
+        "name": "Tackle",
         "action_types": [
           "attack"
         ],
@@ -14778,7 +14778,7 @@
       },
       {
         "id": "TACKLE_3",
-        "name": "Tackle 3",
+        "name": "Tackle",
         "action_types": [
           "attack"
         ],
@@ -14790,7 +14790,7 @@
       },
       {
         "id": "TACKLE_4",
-        "name": "Tackle 4",
+        "name": "Tackle",
         "action_types": [
           "attack"
         ],
@@ -15218,7 +15218,7 @@
       },
       {
         "id": "UNLOAD_MOVE_2",
-        "name": "Unload Move 2",
+        "name": "Unload!",
         "action_types": [
           "attack"
         ],
@@ -15265,7 +15265,7 @@
       },
       {
         "id": "UNLOAD_MOVE_2",
-        "name": "Unload Move 2",
+        "name": "Unload!",
         "action_types": [
           "attack"
         ],
