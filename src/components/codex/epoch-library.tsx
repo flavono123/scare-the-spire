@@ -425,7 +425,6 @@ export function EpochLibrary({
                           epoch={epoch}
                           serviceLocale={serviceLocale}
                           messages={serviceText}
-                          gameUi={gameUi}
                           onSelect={selectEpoch}
                         />
                       </div>
@@ -508,13 +507,11 @@ function EpochThumbnail({
   epoch,
   serviceLocale,
   messages,
-  gameUi,
   onSelect,
 }: {
   epoch: CodexEpoch;
   serviceLocale: ServiceLocale;
   messages: CodexServiceMessages;
-  gameUi: CodexGameUiLabels;
   onSelect: (epoch: CodexEpoch) => void;
 }) {
   const affiliationLabel = getEpochAffiliationLabel(epoch.affiliation, messages, serviceLocale);
