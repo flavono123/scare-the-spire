@@ -145,6 +145,18 @@ function localizePlainNavItems<T extends { href: string; label: string; icon: st
   }));
 }
 
+function legacySts1NavItems<T extends { href: string; labelKey: CodexLabelKey; icon: string }>(
+  items: readonly T[],
+  serviceLocale: ServiceLocale,
+) {
+  const messages = serviceMessages[serviceLocale];
+  return items.map((item) => ({
+    href: item.href,
+    label: messages.codex[item.labelKey],
+    icon: item.icon,
+  }));
+}
+
 // --- Nav icon with game-style tooltip ---
 
 function NavIconLink({
@@ -569,7 +581,7 @@ export function SiteNavbar() {
           <GameDropdown
             icon="/images/sts1_app_icon.png"
             alt={messages.games.sts1}
-            items={localizeNavItems(sts1Items, serviceLocale, gameLocale)}
+            items={legacySts1NavItems(sts1Items, serviceLocale)}
             align="right"
           />
           {showDevMenu && (
