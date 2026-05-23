@@ -13,6 +13,7 @@ import type { STS2Change, STS2Patch } from "@/lib/types";
 import { getBestiaryDisplayMonsterType } from "@/lib/bestiary-monster-policy";
 import { serviceMessages } from "@/messages/service";
 import type {
+  CodexAffliction,
   CodexEncounter,
   CodexCard,
   CodexMonster,
@@ -38,6 +39,7 @@ import {
   MONSTER_TYPE_CONFIG,
 } from "@/lib/codex-types";
 import {
+  getRelatedAfflictionIdsForMonster,
   getRelatedEncounterIdsForMonster,
 } from "@/lib/codex-references";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
@@ -740,6 +742,7 @@ interface MonsterDetailProps {
   backToListTitle: string;
   monster: CodexMonster;
   encounters: CodexEncounter[];
+  afflictions?: CodexAffliction[];
   cards?: CodexCard[];
   powers?: CodexPower[];
   patches?: STS2Patch[];
@@ -753,6 +756,7 @@ export function MonsterDetail({
   backToListTitle,
   monster,
   encounters,
+  afflictions = [],
   cards = [],
   powers = [],
   patches,
@@ -860,6 +864,11 @@ export function MonsterDetail({
       },
     };
   });
+  const afflictionById = useMemo(() => new Map(afflictions.map((affliction) => [affliction.id, affliction])), [afflictions]);
+  const relatedAfflictionTargets: CodexReferenceTarget[] = getRelatedAfflictionIdsForMonster(monster)
+    .map((afflictionId) => afflictionById.get(afflictionId))
+    .filter((affliction): affliction is CodexAffliction => Boolean(affliction))
+    .map(afflictionToReferenceTarget);
   const cardById = useMemo(() => new Map(cards.map((card) => [card.id, card])), [cards]);
   const powerById = useMemo(() => new Map(powers.map((power) => [power.id, power])), [powers]);
   const patternRail = transitionRows.length > 0 ? (
@@ -1089,6 +1098,7 @@ export function MonsterDetail({
             gameUi={gameUi}
             serviceLocale={serviceLocale}
             groups={[
+              { kind: "affliction", targets: relatedAfflictionTargets },
               { kind: "encounter", targets: relatedEncounterTargets },
             ]}
           />
@@ -1270,6 +1280,25 @@ function buildCardEntity(
     color: "card",
     type: "card",
     cardData: card,
+  };
+}
+
+function afflictionToReferenceTarget(affliction: CodexAffliction): CodexReferenceTarget {
+  const href = `/compendium/enchantments/${affliction.id.toLowerCase()}`;
+  return {
+    href,
+    id: affliction.id,
+    title: affliction.name,
+    entity: {
+      id: affliction.id,
+      nameEn: affliction.nameEn,
+      nameKo: affliction.name,
+      imageUrl: affliction.imageUrl,
+      href,
+      color: "affliction",
+      type: "affliction",
+      afflictionData: affliction,
+    },
   };
 }
 

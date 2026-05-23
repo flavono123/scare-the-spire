@@ -9,6 +9,7 @@ import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { STS2Change, STS2Patch } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
 import {
+  CodexAffliction,
   CodexMonster,
   CodexEncounter,
   CodexCard,
@@ -65,6 +66,7 @@ interface MonsterLibraryProps {
   title: string;
   monsters: CodexMonster[];
   encounters: CodexEncounter[];
+  afflictions?: CodexAffliction[];
   cards?: CodexCard[];
   powers?: CodexPower[];
   patches?: STS2Patch[];
@@ -78,6 +80,7 @@ export function MonsterLibrary({
   title,
   monsters,
   encounters,
+  afflictions = [],
   cards = [],
   powers = [],
   patches,
@@ -430,6 +433,7 @@ export function MonsterLibrary({
               backToListTitle={title}
               monster={selectedMonster}
               encounters={encounters}
+              afflictions={afflictions}
               cards={cards}
               powers={powers}
               patches={patches}
