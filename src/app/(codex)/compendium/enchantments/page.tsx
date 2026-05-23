@@ -1,3 +1,16 @@
 export const dynamic = "force-static";
 
-export { default, generateMetadata } from "../../codex/enchantments/page";
+import BasePage, { generateMetadata as generateBaseMetadata } from "../../codex/enchantments/page";
+import { defaultRouteSearchParams } from "../static-locale";
+
+export function generateMetadata() {
+  return generateBaseMetadata({
+    searchParams: defaultRouteSearchParams(),
+  });
+}
+
+export default function CompendiumEnchantmentsPage() {
+  return BasePage({
+    searchParams: defaultRouteSearchParams(),
+  });
+}
