@@ -519,9 +519,10 @@ function PatternMoveStateNode({
   const title = move ? `${move.name}${move.nameEn !== move.name ? ` / ${move.nameEn}` : ""}` : getMoveName(monster, node.id);
 
   return (
-    <button
-      type="button"
-      className="absolute z-10 overflow-hidden bg-transparent px-3 py-2 text-center shadow-[0_0_18px_rgba(0,0,0,0.25)] transition-transform hover:scale-[1.02]"
+    <div
+      role="button"
+      tabIndex={0}
+      className="absolute z-10 cursor-pointer bg-transparent px-3 py-2 text-center shadow-[0_0_18px_rgba(0,0,0,0.25)] transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-300/70"
       style={{
         ...PATTERN_MOVE_PANEL_STYLE,
         left: node.x,
@@ -532,6 +533,12 @@ function PatternMoveStateNode({
       title={title}
       aria-label={title}
       onClick={() => onSelectMove(node.id)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onSelectMove(node.id);
+        }
+      }}
     >
       <span className="relative z-10 flex h-full min-w-0 flex-col items-center justify-center gap-1">
         <span className="flex max-w-full flex-wrap items-center justify-center gap-x-1 gap-y-0.5">
@@ -543,7 +550,11 @@ function PatternMoveStateNode({
           )}
         </span>
         {move && (move.powerApplications.length > 0 || move.cardApplications.length > 0) && (
-          <span className="flex max-w-full flex-wrap items-center justify-center gap-0.5 overflow-hidden">
+          <span
+            className="flex max-w-full flex-wrap items-center justify-center gap-0.5"
+            onClick={(event) => event.stopPropagation()}
+            onKeyDown={(event) => event.stopPropagation()}
+          >
             <MoveApplicationTokens
               powers={move.powerApplications.slice(0, 3)}
               cards={move.cardApplications.slice(0, 3)}
@@ -554,7 +565,7 @@ function PatternMoveStateNode({
           </span>
         )}
       </span>
-    </button>
+    </div>
   );
 }
 
