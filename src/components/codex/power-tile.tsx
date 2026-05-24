@@ -90,6 +90,7 @@ export const PowerTile = memo(function PowerTile({ power, showBeta = false, onCl
             alt={power.name}
             width={56}
             height={56}
+            loading="lazy"
             className="w-full h-full object-contain drop-shadow-md"
           />
         ) : (
