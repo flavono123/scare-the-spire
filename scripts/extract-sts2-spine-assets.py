@@ -48,6 +48,28 @@ EVENT_BACKGROUND_SPINE_PREFIXES = {
 class SpineActorImport:
     skel_prefix: str
     atlas_prefix: str
+    output_folder: str | None = None
+
+
+MANUAL_ACTOR_IMPORTS = {
+    "monsters": (
+        SpineActorImport(
+            skel_prefix="animations/monsters/decimillipede/decimillipede1",
+            atlas_prefix="animations/monsters/decimillipede/decimillipede_front",
+            output_folder="decimillipede_front",
+        ),
+        SpineActorImport(
+            skel_prefix="animations/monsters/decimillipede/decimillipede2",
+            atlas_prefix="animations/monsters/decimillipede/decimillipede_middle",
+            output_folder="decimillipede_middle",
+        ),
+        SpineActorImport(
+            skel_prefix="animations/monsters/decimillipede/decimillipede3",
+            atlas_prefix="animations/monsters/decimillipede/decimillipede_back",
+            output_folder="decimillipede_back",
+        ),
+    ),
+}
 
 
 def import_target(raw: bytes) -> str | None:
@@ -116,6 +138,13 @@ def discover_actor_imports(reader: PCKReader, kind: str) -> list[SpineActorImpor
         for path in reader.entries
         if path.endswith(".skel.import") and path.startswith(pck_prefix)
     )
+    manual_actors = [
+        actor
+        for actor in MANUAL_ACTOR_IMPORTS.get(kind, ())
+        if f"{actor.skel_prefix}.skel.import" in reader.entries
+        and f"{actor.atlas_prefix}.atlas.import" in reader.entries
+    ]
+    manual_prefixes = {actor.skel_prefix for actor in manual_actors}
     if kind == "ancients":
         prefixes = [prefix for prefix in prefixes if prefix in ANCIENT_SPINE_PREFIXES]
     elif kind == "event-backgrounds":
@@ -125,8 +154,10 @@ def discover_actor_imports(reader: PCKReader, kind: str) -> list[SpineActorImpor
         for prefix in prefixes
         if f"{prefix}.atlas.import" in reader.entries and f"{prefix}.png.import" in reader.entries
     }
-    actors: list[SpineActorImport] = []
+    actors: list[SpineActorImport] = list(manual_actors)
     for skel_prefix in prefixes:
+        if skel_prefix in manual_prefixes:
+            continue
         if f"{skel_prefix}.atlas.import" in reader.entries and f"{skel_prefix}.png.import" in reader.entries:
             actors.append(SpineActorImport(skel_prefix=skel_prefix, atlas_prefix=skel_prefix))
             continue
@@ -156,8 +187,12 @@ def discover_actor_imports(reader: PCKReader, kind: str) -> list[SpineActorImpor
     return actors
 
 
-def output_folder_for(prefix: str, kind: str, out_root: Path) -> Path:
+def output_folder_for(actor: SpineActorImport, kind: str, out_root: Path) -> Path:
+    if actor.output_folder:
+        return out_root / kind / actor.output_folder
+
     pck_prefix = PCK_PREFIX_BY_KIND[kind]
+    prefix = actor.skel_prefix
     relative = prefix[len(pck_prefix) :]
     folder = Path(relative).parent
     if str(folder) == ".":
@@ -169,7 +204,7 @@ def extract_actor(reader: PCKReader, actor: SpineActorImport, kind: str, out_roo
     skel_base_name = Path(actor.skel_prefix).name
     atlas_base_name = Path(actor.atlas_prefix).name
     actor_dir = Path(actor.atlas_prefix).parent.as_posix()
-    out_dir = output_folder_for(actor.skel_prefix, kind, out_root)
+    out_dir = output_folder_for(actor, kind, out_root)
     atlas_path = out_dir / f"{atlas_base_name}.atlas"
     extract_binary_import(reader, f"{actor.atlas_prefix}.atlas.import", atlas_path)
     extract_binary_import(reader, f"{actor.skel_prefix}.skel.import", out_dir / f"{skel_base_name}.skel")
