@@ -15,7 +15,8 @@ Use this skill when an animation bug report is about "plays once", "does not rep
    - Trigger examples: `text=방출`, `button:has-text("Play")`, `[data-testid=attack]`.
 3. Run `scripts/capture-animation-playback.mjs` to capture before, first trigger, and repeated trigger frames.
 4. Inspect the saved screenshots. Do not treat nonzero pixel differences alone as proof; idle loops, camera jitter, or shader noise can create false positives.
-5. Report whether the expected non-idle/nonblank frame appears after both the first trigger and the repeated trigger.
+5. When the fix touches page layout, render surface sizing, or a mobile-visible actor, run `$mobile-viewport-qa` on the same route as the final mobile layout hook.
+6. Report whether the expected non-idle/nonblank frame appears after both the first trigger and the repeated trigger.
 
 ## Capture Script
 
@@ -51,6 +52,7 @@ Important options:
 - For Godot shader or generic canvas effects, use the canvas/container as `--stage`; if the effect is triggered, provide the triggering locator, otherwise use passive capture.
 - Treat console warnings/errors in `summary.json` as part of the result.
 - If the action is visually subtle, capture more offsets: `--delays 40,80,120,180,240,360,480`.
+- Mobile layout is a separate pass: animation playback can succeed while the render surface is clipped or offscreen on mobile. Use `.codex/skills/mobile-viewport-qa/SKILL.md` after playback checks for responsive pages.
 
 ## Reporting
 
