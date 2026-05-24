@@ -91,6 +91,7 @@ export function RelicTile({ serviceLocale = "ko", relic, showBeta = false, onCli
             alt={relic.name}
             width={56}
             height={56}
+            loading="lazy"
             className="w-full h-full object-contain"
             style={{
               filter: characterOutlineFilter(relic.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
