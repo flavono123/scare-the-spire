@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, memo, Fragment, CSSProperties } from "react";
-import Image from "@/components/ui/static-image";
+import { useState, memo, Fragment, CSSProperties, type ComponentProps } from "react";
+import StaticImage from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import { CodexCard } from "@/lib/codex-types";
@@ -35,6 +35,18 @@ import {
 } from "@/lib/sts2-card-style";
 import { CardEngagementStatsOverlay } from "./engagement-stats";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
+
+type StaticImageProps = ComponentProps<typeof StaticImage>;
+
+function Image({ loading, priority, ...props }: StaticImageProps) {
+  return (
+    <StaticImage
+      {...props}
+      priority={priority}
+      loading={priority ? (loading ?? "eager") : (loading ?? "lazy")}
+    />
+  );
+}
 
 // =============================================================================
 // Game-extracted asset paths
