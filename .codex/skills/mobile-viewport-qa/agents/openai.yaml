@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mobile Viewport QA"
+  short_description: "Verify key mobile layouts with Playwright"
+  default_prompt: "Use $mobile-viewport-qa to verify a local route across the repository mobile viewport presets."
