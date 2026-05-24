@@ -557,6 +557,7 @@ function PotionTile({
           alt={potion.name}
           width={48}
           height={48}
+          loading="lazy"
           className="h-10 w-10 object-contain sm:h-12 sm:w-12"
           style={{
             filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
@@ -577,6 +578,7 @@ function PotionTile({
                 alt={potion.name}
                 width={64}
                 height={64}
+                loading="lazy"
                 className="h-14 w-14 object-contain"
                 style={{
                   filter: characterOutlineFilter(potion.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
