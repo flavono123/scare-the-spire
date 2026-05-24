@@ -136,6 +136,7 @@ function EventThumbnail({
             alt=""
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
+            loading="lazy"
             className="object-cover object-[30%_center] opacity-40 transition-all duration-300 group-hover:scale-[1.03] group-hover:opacity-65"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/60 to-black/80 transition-opacity duration-200 group-hover:opacity-90" />
