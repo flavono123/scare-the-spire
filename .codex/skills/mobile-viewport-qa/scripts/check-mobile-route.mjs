@@ -357,10 +357,18 @@ function joinUrl(baseUrl, route) {
 
 function parseArgs(argv) {
   const parsed = {};
-  for (const arg of argv) {
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
     if (arg.startsWith("--")) {
       const [key, ...rest] = arg.slice(2).split("=");
-      parsed[key] = rest.length ? rest.join("=") : true;
+      if (rest.length) {
+        parsed[key] = rest.join("=");
+      } else if (argv[index + 1] && !argv[index + 1].startsWith("--")) {
+        parsed[key] = argv[index + 1];
+        index += 1;
+      } else {
+        parsed[key] = true;
+      }
     }
   }
   return parsed;
