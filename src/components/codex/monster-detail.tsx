@@ -21,6 +21,7 @@ import type {
   DamageValue,
   MonsterMove,
   MonsterMoveCardApplication,
+  MonsterMoveIntentDetail,
   MonsterMovePowerApplication,
   MonsterMoveTransitionKind,
   MonsterMoveTransition,
@@ -77,6 +78,13 @@ interface MonsterIntentPreviewItem {
   kind: MonsterIntentKind;
   icon: string;
   label: string | null;
+}
+
+interface MoveAttackMetric {
+  value: DamageValue;
+  icon: string;
+  normalLabel: string;
+  ascensionLabel: string | null;
 }
 
 type PatternKind = "fixed" | "random" | "conditional" | "mixed" | "unknown";
@@ -216,10 +224,18 @@ function MoveMetrics({
 }: {
   summary: MoveSummary;
 }) {
+  const attackMetric = getMoveAttackMetric(summary);
+
   return (
     <span className="flex shrink-0 flex-wrap justify-end gap-2">
-      {summary.damageEntry && (
-        <MetricTokenValue value={summary.damageEntry} kind="attack" />
+      {attackMetric && (
+        <MetricTokenValue
+          value={attackMetric.value}
+          kind="attack"
+          iconOverride={attackMetric.icon}
+          normalLabel={attackMetric.normalLabel}
+          ascensionLabel={attackMetric.ascensionLabel}
+        />
       )}
       {summary.blockEntry != null && (
         <MetricTokenValue value={summary.blockEntry} kind="block" />
@@ -232,15 +248,24 @@ function MetricTokenValue({
   value,
   kind,
   ascensionLevel,
+  iconOverride,
+  normalLabel,
+  ascensionLabel,
   compact = false,
 }: {
   value: DamageValue;
   kind: "attack" | "block" | "hp";
   ascensionLevel?: number;
+  iconOverride?: string;
+  normalLabel?: string;
+  ascensionLabel?: string | null;
   compact?: boolean;
 }) {
-  const icon = METRIC_TOKEN_ICONS[kind];
+  const icon = iconOverride ?? METRIC_TOKEN_ICONS[kind];
   const level = ascensionLevel ?? (kind === "hp" ? 8 : 9);
+  const normalText = normalLabel ?? String(value.normal ?? "?");
+  const ascensionText = ascensionLabel ?? (value.ascension != null ? String(value.ascension) : null);
+  const showAscension = ascensionText != null && ascensionText !== normalText;
 
   return (
     <span className={`inline-flex items-center font-game-text font-bold leading-none text-gray-100 ${compact ? "gap-0.5 text-xs" : "gap-1 text-sm"}`}>
@@ -251,12 +276,12 @@ function MetricTokenValue({
         height={compact ? 18 : 22}
         className={`${compact ? "h-4 w-4" : "h-5 w-5"} shrink-0 object-contain`}
       />
-      <span>{value.normal ?? "?"}</span>
-      {value.ascension != null && value.ascension !== value.normal && (
+      <span>{normalText}</span>
+      {showAscension && (
         <span className={`inline-flex items-center text-orange-300 ${compact ? "gap-0.5" : "gap-1"}`}>
           <span className="text-gray-500">(</span>
           <AscensionBadge level={level} />
-          <span>{value.ascension}</span>
+          <span>{ascensionText}</span>
           <span className="text-gray-500">)</span>
         </span>
       )}
@@ -677,6 +702,7 @@ function PatternMoveStateNode({
   const move = getMonsterMove(monster, node.id);
   const damageEntry = moveSummary?.damageEntry ?? (monster.damageValues ? findDamageForMove(node.id, monster.damageValues) : null);
   const blockEntry = moveSummary?.blockEntry ?? (monster.blockValues ? findBlockForMove(node.id, monster.blockValues) : null);
+  const attackMetric = moveSummary ? getMoveAttackMetric(moveSummary) : damageEntry ? buildAttackMetric(damageEntry, null) : null;
   const title = move ? `${move.name}${move.nameEn !== move.name ? ` / ${move.nameEn}` : ""}` : getMoveName(monster, node.id);
 
   return (
@@ -715,8 +741,15 @@ function PatternMoveStateNode({
     >
       <span className="relative z-10 flex h-full min-w-0 flex-col items-center justify-center gap-1">
         <span className="flex max-w-full flex-wrap items-center justify-center gap-x-1 gap-y-0.5">
-          {damageEntry && (
-            <MetricTokenValue value={damageEntry} kind="attack" compact />
+          {attackMetric && (
+            <MetricTokenValue
+              value={attackMetric.value}
+              kind="attack"
+              iconOverride={attackMetric.icon}
+              normalLabel={attackMetric.normalLabel}
+              ascensionLabel={attackMetric.ascensionLabel}
+              compact
+            />
           )}
           {blockEntry && (
             <MetricTokenValue value={blockEntry} kind="block" compact />
@@ -1180,12 +1213,12 @@ const PATTERN_MOVE_PANEL_STYLE: CSSProperties = {
   boxSizing: "border-box",
 };
 const METRIC_TOKEN_ICONS = {
-  attack: "/images/sts2/intents/attack.png",
+  attack: "/images/sts2/intents/attack_3.png",
   block: "/images/sts2/ui/combat/block.png",
   hp: "/images/sts2/ui/topbar/top_bar_heart.png",
 };
 const MONSTER_INTENT_ICONS: Record<MonsterIntentKind, string> = {
-  attack: "/images/sts2/intents/attack.png",
+  attack: "/images/sts2/intents/attack_3.png",
   buff: "/images/sts2/intents/buff.png",
   cardDebuff: "/images/sts2/intents/card_debuff.png",
   deathBlow: "/images/sts2/intents/death_blow.png",
@@ -1219,19 +1252,25 @@ const MONSTER_INTENT_CLASS_TO_KIND: Record<string, MonsterIntentKind> = {
   SummonIntent: "summon",
   UnknownIntent: "unknown",
 };
+const SINGLE_ATTACK_REPEAT: DamageValue = { normal: 1, ascension: null };
 
 function buildMonsterIntentPreviewItems(summary: MoveSummary): MonsterIntentPreviewItem[] {
-  return summary.move.intents.flatMap((intent, index) => {
-    const kind = getMonsterIntentKind(intent);
+  return getMoveIntentDetails(summary.move).flatMap((intent, index) => {
+    const kind = getMonsterIntentKind(intent.type);
     if (kind === "hidden") return [];
 
     return [{
-      key: `${intent}-${index}`,
+      key: `${intent.type}-${index}`,
       kind,
-      icon: MONSTER_INTENT_ICONS[kind],
+      icon: getMonsterIntentIcon(kind, summary, intent),
       label: getMonsterIntentPreviewLabel(intent, kind, summary),
     }];
   });
+}
+
+function getMoveIntentDetails(move: MonsterMove): MonsterMoveIntentDetail[] {
+  if (move.intentDetails.length > 0) return move.intentDetails;
+  return move.intents.map((type) => ({ type }));
 }
 
 function getMonsterIntentKind(intent: string): MonsterIntentKind {
@@ -1245,11 +1284,16 @@ function getMonsterIntentKind(intent: string): MonsterIntentKind {
   return "unknown";
 }
 
-function getMonsterIntentPreviewLabel(intent: string, kind: MonsterIntentKind, summary: MoveSummary): string | null {
+function getMonsterIntentIcon(kind: MonsterIntentKind, summary: MoveSummary, intent: MonsterMoveIntentDetail): string {
+  if (kind === "attack") {
+    return getAttackIntentIcon(summary.damageEntry, getIntentRepeat(intent));
+  }
+  return MONSTER_INTENT_ICONS[kind];
+}
+
+function getMonsterIntentPreviewLabel(intent: MonsterMoveIntentDetail, kind: MonsterIntentKind, summary: MoveSummary): string | null {
   if (kind === "attack" || kind === "deathBlow") {
-    const damage = summary.damageEntry?.normal;
-    if (damage == null) return null;
-    return String(damage);
+    return formatAttackMetricLabel(summary.damageEntry, getIntentRepeat(intent), "normal");
   }
 
   if (kind === "statusCard") {
@@ -1258,6 +1302,77 @@ function getMonsterIntentPreviewLabel(intent: string, kind: MonsterIntentKind, s
   }
 
   return null;
+}
+
+function getMoveAttackMetric(summary: MoveSummary): MoveAttackMetric | null {
+  if (!summary.damageEntry) return null;
+  return buildAttackMetric(summary.damageEntry, getPrimaryAttackIntent(summary.move));
+}
+
+function buildAttackMetric(value: DamageValue, intent: MonsterMoveIntentDetail | null): MoveAttackMetric {
+  const repeat = getIntentRepeat(intent);
+  return {
+    value,
+    icon: getAttackIntentIcon(value, repeat),
+    normalLabel: formatAttackMetricLabel(value, repeat, "normal") ?? String(value.normal ?? "?"),
+    ascensionLabel: formatAttackMetricLabel(value, repeat, "ascension"),
+  };
+}
+
+function getPrimaryAttackIntent(move: MonsterMove): MonsterMoveIntentDetail | null {
+  return getMoveIntentDetails(move).find((intent) => {
+    const kind = getMonsterIntentKind(intent.type);
+    return kind === "attack" || kind === "deathBlow";
+  }) ?? null;
+}
+
+function getIntentRepeat(intent: MonsterMoveIntentDetail | null): DamageValue | null {
+  if (!intent) return null;
+  if (intent.repeat) return intent.repeat;
+  const kind = getMonsterIntentKind(intent.type);
+  return kind === "attack" || kind === "deathBlow" ? SINGLE_ATTACK_REPEAT : null;
+}
+
+function formatAttackMetricLabel(
+  damage: DamageValue | null,
+  repeat: DamageValue | null,
+  mode: "normal" | "ascension",
+): string | null {
+  const damageValue = getDamageModeValue(damage, mode);
+  if (damageValue == null) return null;
+  const repeatValue = getDamageModeValue(repeat, mode) ?? 1;
+  return repeatValue > 1 ? `${damageValue}x${repeatValue}` : String(damageValue);
+}
+
+function getAttackIntentIcon(damage: DamageValue | null, repeat: DamageValue | null): string {
+  const totalDamage = getAttackTotalDamage(damage, repeat, "normal")
+    ?? getAttackTotalDamage(damage, repeat, "ascension")
+    ?? 10;
+  return `/images/sts2/intents/attack_${getAttackIntentTier(totalDamage)}.png`;
+}
+
+function getAttackTotalDamage(
+  damage: DamageValue | null,
+  repeat: DamageValue | null,
+  mode: "normal" | "ascension",
+): number | null {
+  const damageValue = getDamageModeValue(damage, mode);
+  if (damageValue == null) return null;
+  const repeatValue = getDamageModeValue(repeat, mode) ?? 1;
+  return damageValue * repeatValue;
+}
+
+function getDamageModeValue(value: DamageValue | null, mode: "normal" | "ascension"): number | null {
+  if (!value) return null;
+  return mode === "ascension" ? (value.ascension ?? value.normal) : value.normal;
+}
+
+function getAttackIntentTier(totalDamage: number): 1 | 2 | 3 | 4 | 5 {
+  if (totalDamage < 5) return 1;
+  if (totalDamage < 10) return 2;
+  if (totalDamage < 20) return 3;
+  if (totalDamage < 40) return 4;
+  return 5;
 }
 
 function buildPowerEntity(
