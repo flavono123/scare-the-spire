@@ -30,7 +30,6 @@ import {
   getMonsterSkinOptionLabel,
   getMonsterSkinPartLabel,
   getMonsterSkinParts,
-  getMonsterSkinRenderKey,
   getSelectedMonsterSkinNames,
   getSingleMonsterSkin,
   type MonsterSkinSelections,
@@ -304,7 +303,7 @@ function MonsterIntentPreview({ summary }: { summary: MoveSummary | null }) {
 
   return (
     <div
-      className="pointer-events-none absolute left-1/2 top-[9%] z-40 flex -translate-x-1/2 items-end justify-center gap-1 sm:top-[7%]"
+      className="pointer-events-none absolute left-1/2 top-2 z-40 flex -translate-x-1/2 items-end justify-center gap-1 sm:top-3"
       aria-hidden="true"
     >
       {intents.map((intent) => (
@@ -834,14 +833,16 @@ export function MonsterDetail({
   const selectedSkinSelections = selectedSkinState.monsterId === monster.id
     ? selectedSkinState.selections
     : getDefaultMonsterSkinSelections(monster);
-  const selectedSkinNames = getSelectedMonsterSkinNames(monster, selectedSkinSelections);
+  const selectedSkinNames = useMemo(
+    () => getSelectedMonsterSkinNames(monster, selectedSkinSelections),
+    [monster, selectedSkinSelections],
+  );
   const selectedSingleSkin = selectedSkinNames.length > 0 ? null : getSingleMonsterSkin(monster);
   const defaultSelectedMove = moveSummaries.find((summary) => summary.move.id === firstMoveId) ?? moveSummaries[0] ?? null;
   const selectedMove = moveSummaries.find((summary) => summary.move.id === selectedMoveId) ?? defaultSelectedMove;
   const selectedAccent = selectedMove ? getMoveToneColor(selectedMove.tone, typeConfig.color) : typeConfig.color;
   const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
   const skinParts = getMonsterSkinParts(monster.spineAsset);
-  const activeSkinKey = getMonsterSkinRenderKey(selectedSkinNames, selectedSingleSkin);
   const [commentCount, setCommentCount] = useState(0);
   const encounterById = useMemo(() => new Map(encounters.map((encounter) => [encounter.id, encounter])), [encounters]);
   const relatedEncounterTargets: CodexReferenceTarget[] = getRelatedEncounterIdsForMonster(monster.id, encounters).flatMap((encounterId) => {
@@ -940,7 +941,6 @@ export function MonsterDetail({
             />
             {imageSrc ? (
               <MonsterSpineStage
-                key={`${monster.id}-${activeSkinKey}-${selectedMoveId ?? "idle"}-${selectedMoveNonce}`}
                 asset={monster.spineAsset}
                 fallbackImageUrl={imageSrc}
                 monsterName={monster.name}
@@ -949,6 +949,7 @@ export function MonsterDetail({
                 selectedSkin={selectedSingleSkin}
                 selectedSkins={selectedSkinNames}
                 className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
+                viewportPadding={MONSTER_DETAIL_VIEWPORT_PADDING}
               />
             ) : (
               <div
@@ -1141,6 +1142,12 @@ const DIAGRAM_ARROW_COLOR = "#efc851";
 const DIAGRAM_CONDITIONAL_COLOR = "#ff4545";
 const BESTIARY_START_COLOR = "#60a5fa";
 const DIAGRAM_ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
+const MONSTER_DETAIL_VIEWPORT_PADDING = {
+  padLeft: "8%",
+  padRight: "8%",
+  padTop: "24%",
+  padBottom: "4%",
+};
 const PATTERN_MOVE_PANEL_STYLE: CSSProperties = {
   borderStyle: "solid",
   borderColor: "transparent",
