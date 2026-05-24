@@ -17,6 +17,7 @@ Read only the files needed for the target resource.
 - Hover preview implementation: `src/components/patch-note-renderer.tsx`
 - Current examples: `src/components/codex/relic-detail.tsx`, `src/components/codex/card-detail.tsx`, `src/components/codex/event-detail.tsx`, `src/components/codex/monster-detail.tsx`, `src/components/codex/encounter-detail.tsx`, `src/components/codex/ancient-detail.tsx`
 - Data loaders for the resources being connected: `src/lib/codex-data.ts` and the relevant `src/app/(codex)/codex/.../page.tsx` route files.
+- Mobile QA hook: `.codex/skills/mobile-viewport-qa/SKILL.md`
 
 ## Language And Placement
 
@@ -93,3 +94,5 @@ Use browser/Playwright smoke checks for visual or interaction changes:
 - Target detail page showing the reciprocal relation.
 - Hovering a related resource link near a viewport edge.
 - A grouped rail with multiple related kinds when the resource has one.
+
+Finish visual or interaction work by running `$mobile-viewport-qa` on each changed source/target route. This catches related-resource rails, hover previews, and modal/detail layout regressions that only appear in the repository mobile presets.
