@@ -133,13 +133,11 @@ export default function ProfilePage({
 
   const persistProfile = useCallback(
     (getNext: (current: UserProfile) => UserProfile) => {
-      setDraftProfile((current) => {
-        const next = normalizeUserProfile(getNext(current), fallbackProfile);
-        void saveProfile(next).catch(() => undefined);
-        return next;
-      });
+      const next = normalizeUserProfile(getNext(draftProfile), fallbackProfile);
+      setDraftProfile(next);
+      void saveProfile(next).catch(() => undefined);
     },
-    [fallbackProfile, saveProfile],
+    [draftProfile, fallbackProfile, saveProfile],
   );
   const persistNickname = useCallback(() => {
     persistProfile((current) => ({
