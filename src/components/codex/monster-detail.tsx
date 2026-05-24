@@ -1978,7 +1978,7 @@ function buildMoveCombatStatStateById(monster: CodexMonster): Map<string, Monste
       combatStats = applyMoveCombatStatChanges(combatStats, move);
     }
 
-    const nextMoveId = fixedNextByMoveId.get(currentMoveId) ?? null;
+    const nextMoveId: string | null = fixedNextByMoveId.get(currentMoveId) ?? null;
     if (!nextMoveId || stateByMoveId.has(nextMoveId)) break;
     currentMoveId = nextMoveId;
   }
