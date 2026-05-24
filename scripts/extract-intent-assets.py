@@ -24,7 +24,12 @@ class DirectImageSpec:
 
 
 INTENT_IMAGES = [
+    DirectImageSpec("images/packed/intents/attack/intent_attack_1.png.import", "intents/attack_1.png"),
+    DirectImageSpec("images/packed/intents/attack/intent_attack_2.png.import", "intents/attack_2.png"),
     DirectImageSpec("images/packed/intents/attack/intent_attack_3.png.import", "intents/attack.png"),
+    DirectImageSpec("images/packed/intents/attack/intent_attack_3.png.import", "intents/attack_3.png"),
+    DirectImageSpec("images/packed/intents/attack/intent_attack_4.png.import", "intents/attack_4.png"),
+    DirectImageSpec("images/packed/intents/attack/intent_attack_5.png.import", "intents/attack_5.png"),
     DirectImageSpec("images/packed/intents/intent_buff.png.import", "intents/buff.png"),
     DirectImageSpec("images/packed/intents/intent_card_debuff.png.import", "intents/card_debuff.png"),
     DirectImageSpec("images/packed/intents/intent_death_blow.png.import", "intents/death_blow.png"),
