@@ -1422,8 +1422,17 @@ interface RawMonsterMove {
   name: string;
   action_types?: MonsterActionType[];
   intents?: string[];
+  intent_details?: RawMonsterMoveIntentDetail[];
   power_applications?: RawMonsterMovePowerApplication[];
   card_applications?: RawMonsterMoveCardApplication[];
+}
+
+interface RawMonsterMoveIntentDetail {
+  type: string;
+  damage_key?: string | null;
+  block_key?: string | null;
+  repeat?: RawDamageValue | null;
+  repeat_expression?: string | null;
 }
 
 interface RawMonsterMovePowerApplication {
@@ -1533,6 +1542,13 @@ function mapMonster(
       kind: "move",
       actionTypes: km.action_types ?? [],
       intents: km.intents ?? [],
+      intentDetails: (km.intent_details ?? []).map((intent) => ({
+        type: intent.type,
+        damageKey: intent.damage_key ?? null,
+        blockKey: intent.block_key ?? null,
+        repeat: intent.repeat ?? null,
+        repeatExpression: intent.repeat_expression ?? null,
+      })),
       powerApplications: (km.power_applications ?? []).map((application) => {
         const display = powerDisplays.get(application.power_id);
         return {
@@ -1633,6 +1649,7 @@ function buildBestiaryAnimationMoves(
     animationId,
     actionTypes: [],
     intents: [],
+    intentDetails: [],
     powerApplications: [],
     cardApplications: [],
   }));

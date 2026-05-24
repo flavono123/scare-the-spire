@@ -691,6 +691,7 @@ export interface MonsterMove {
   animationId?: string;
   actionTypes: MonsterActionType[];
   intents: string[];
+  intentDetails: MonsterMoveIntentDetail[];
   powerApplications: MonsterMovePowerApplication[];
   cardApplications: MonsterMoveCardApplication[];
 }
@@ -698,6 +699,14 @@ export interface MonsterMove {
 export interface DamageValue {
   normal: number | null;
   ascension: number | null;
+}
+
+export interface MonsterMoveIntentDetail {
+  type: string;
+  damageKey?: string | null;
+  blockKey?: string | null;
+  repeat?: DamageValue | null;
+  repeatExpression?: string | null;
 }
 
 export type MonsterActionType = "attack" | "defense" | "debuff" | "buff" | "special";
