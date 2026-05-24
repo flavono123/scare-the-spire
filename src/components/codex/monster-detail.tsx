@@ -172,6 +172,11 @@ interface PatternDiagramModel {
   phaseConnectors: PatternDiagramPhaseConnector[];
 }
 
+interface MonsterCombatStatState {
+  strength: DamageValue;
+  dexterity: DamageValue;
+}
+
 function MetaPill({ value, color, children }: { value?: string; color?: string; children?: ReactNode }) {
   return (
     <span
@@ -413,6 +418,7 @@ function PatternStateTransitionDiagram({
   serviceLocale,
   onSelectMove,
   onPreviewMoveIntent,
+  moveSummaryById,
   powerById,
   cardById,
 }: {
@@ -422,6 +428,7 @@ function PatternStateTransitionDiagram({
   serviceLocale: ServiceLocale;
   onSelectMove: (moveId: string) => void;
   onPreviewMoveIntent: (moveId: string | null) => void;
+  moveSummaryById: Map<string, MoveSummary>;
   powerById: Map<string, CodexPower>;
   cardById: Map<string, CodexCard>;
 }) {
@@ -635,6 +642,7 @@ function PatternStateTransitionDiagram({
             serviceLocale={serviceLocale}
             onSelectMove={onSelectMove}
             onPreviewMoveIntent={onPreviewMoveIntent}
+            moveSummary={moveSummaryById.get(node.id) ?? null}
             powerById={powerById}
             cardById={cardById}
             shouldSuppressDiagramClick={shouldSuppressDiagramClick}
@@ -651,6 +659,7 @@ function PatternMoveStateNode({
   serviceLocale,
   onSelectMove,
   onPreviewMoveIntent,
+  moveSummary,
   powerById,
   cardById,
   shouldSuppressDiagramClick,
@@ -660,13 +669,14 @@ function PatternMoveStateNode({
   serviceLocale: ServiceLocale;
   onSelectMove: (moveId: string) => void;
   onPreviewMoveIntent: (moveId: string | null) => void;
+  moveSummary: MoveSummary | null;
   powerById: Map<string, CodexPower>;
   cardById: Map<string, CodexCard>;
   shouldSuppressDiagramClick: () => boolean;
 }) {
   const move = getMonsterMove(monster, node.id);
-  const damageEntry = monster.damageValues ? findDamageForMove(node.id, monster.damageValues) : null;
-  const blockEntry = monster.blockValues ? findBlockForMove(node.id, monster.blockValues) : null;
+  const damageEntry = moveSummary?.damageEntry ?? (monster.damageValues ? findDamageForMove(node.id, monster.damageValues) : null);
+  const blockEntry = moveSummary?.blockEntry ?? (monster.blockValues ? findBlockForMove(node.id, monster.blockValues) : null);
   const title = move ? `${move.name}${move.nameEn !== move.name ? ` / ${move.nameEn}` : ""}` : getMoveName(monster, node.id);
 
   return (
@@ -799,6 +809,7 @@ export function MonsterDetail({
     [monster],
   );
   const moveSummaries = useMemo(() => buildMoveSummaries(monster, meaningfulMoves), [monster, meaningfulMoves]);
+  const moveSummaryById = useMemo(() => new Map(moveSummaries.map((summary) => [summary.move.id, summary])), [moveSummaries]);
   const transitionRows = useMemo(() => buildTransitionTableRows(monster), [monster]);
   const patternSummary = useMemo(() => buildPatternSummary(monster), [monster]);
   const loopLength = useMemo(() => getFixedLoopLength(monster), [monster]);
@@ -903,6 +914,7 @@ export function MonsterDetail({
         serviceLocale={serviceLocale}
         onSelectMove={selectMove}
         onPreviewMoveIntent={previewMoveIntent}
+        moveSummaryById={moveSummaryById}
         powerById={powerById}
         cardById={cardById}
       />
@@ -1147,6 +1159,11 @@ const MONSTER_DETAIL_VIEWPORT_PADDING = {
   padRight: "8%",
   padTop: "24%",
   padBottom: "4%",
+};
+const ZERO_DAMAGE_VALUE: DamageValue = { normal: 0, ascension: null };
+const EMPTY_MONSTER_COMBAT_STAT_STATE: MonsterCombatStatState = {
+  strength: ZERO_DAMAGE_VALUE,
+  dexterity: ZERO_DAMAGE_VALUE,
 };
 const PATTERN_MOVE_PANEL_STYLE: CSSProperties = {
   borderStyle: "solid",
@@ -1906,13 +1923,18 @@ function formatHpAscension(monster: CodexMonster): string | null {
 }
 
 function buildMoveSummaries(monster: CodexMonster, moves: MonsterMove[]): MoveSummary[] {
+  const combatStatStateByMoveId = buildMoveCombatStatStateById(monster);
+
   return moves.map((move) => {
-    const damageEntry = monster.damageValues
+    const baseDamageEntry = monster.damageValues
       ? findDamageForMove(move.id, monster.damageValues)
       : null;
-    const blockEntry = monster.blockValues
+    const baseBlockEntry = monster.blockValues
       ? findBlockForMove(move.id, monster.blockValues)
       : null;
+    const combatStats = combatStatStateByMoveId.get(move.id) ?? EMPTY_MONSTER_COMBAT_STAT_STATE;
+    const damageEntry = addDamageValueBonus(baseDamageEntry, combatStats.strength);
+    const blockEntry = addDamageValueBonus(baseBlockEntry, combatStats.dexterity);
     const outgoing = monster.moveGraph?.transitions.filter((transition) => transition.from === move.id) ?? [];
 
     return {
@@ -1923,6 +1945,97 @@ function buildMoveSummaries(monster: CodexMonster, moves: MonsterMove[]): MoveSu
       tone: getMoveTone(move, damageEntry, blockEntry),
     };
   });
+}
+
+function buildMoveCombatStatStateById(monster: CodexMonster): Map<string, MonsterCombatStatState> {
+  const initialMoveId = monster.moveGraph?.initial;
+  if (!initialMoveId) return new Map();
+
+  const fixedNextByMoveId = new Map<string, string>();
+  for (const transition of monster.moveGraph?.transitions ?? []) {
+    if (transition.from === "__START__" || transition.to === "__START__") continue;
+    const isDeterministic = transition.condition == null && (transition.kind === "fixed" || transition.chance === 100);
+    if (!isDeterministic) continue;
+    if (fixedNextByMoveId.has(transition.from)) {
+      fixedNextByMoveId.delete(transition.from);
+      continue;
+    }
+    fixedNextByMoveId.set(transition.from, transition.to);
+  }
+
+  const stateByMoveId = new Map<string, MonsterCombatStatState>();
+  let currentMoveId: string | null = initialMoveId;
+  let combatStats = cloneMonsterCombatStatState(EMPTY_MONSTER_COMBAT_STAT_STATE);
+  const maxSteps = Math.max(8, (monster.moves.length + monster.bestiaryMoves.length + fixedNextByMoveId.size) * 2);
+
+  for (let step = 0; currentMoveId && step < maxSteps; step += 1) {
+    if (!stateByMoveId.has(currentMoveId)) {
+      stateByMoveId.set(currentMoveId, cloneMonsterCombatStatState(combatStats));
+    }
+
+    const move = getMonsterMove(monster, currentMoveId);
+    if (move) {
+      combatStats = applyMoveCombatStatChanges(combatStats, move);
+    }
+
+    const nextMoveId = fixedNextByMoveId.get(currentMoveId) ?? null;
+    if (!nextMoveId || stateByMoveId.has(nextMoveId)) break;
+    currentMoveId = nextMoveId;
+  }
+
+  return stateByMoveId;
+}
+
+function applyMoveCombatStatChanges(state: MonsterCombatStatState, move: MonsterMove): MonsterCombatStatState {
+  let next = state;
+
+  for (const application of move.powerApplications) {
+    if (application.target !== "self") continue;
+    if (application.powerId === "STRENGTH") {
+      next = {
+        ...next,
+        strength: addDamageValues(next.strength, normalizeNullableDamageValue(application.amount)),
+      };
+    }
+    if (application.powerId === "DEXTERITY") {
+      next = {
+        ...next,
+        dexterity: addDamageValues(next.dexterity, normalizeNullableDamageValue(application.amount)),
+      };
+    }
+  }
+
+  return next;
+}
+
+function addDamageValueBonus(value: DamageValue | null, bonus: DamageValue): DamageValue | null {
+  if (!value || isZeroDamageValue(bonus)) return value;
+  return addDamageValues(value, bonus);
+}
+
+function addDamageValues(base: DamageValue, bonus: DamageValue): DamageValue {
+  const normal = base.normal == null ? null : base.normal + (bonus.normal ?? 0);
+  const shouldShowAscension = base.ascension != null || bonus.ascension != null;
+  const ascensionBase = base.ascension ?? base.normal;
+  const ascensionBonus = bonus.ascension ?? bonus.normal ?? 0;
+  const ascension = shouldShowAscension && ascensionBase != null ? ascensionBase + ascensionBonus : null;
+
+  return { normal, ascension };
+}
+
+function normalizeNullableDamageValue(value: DamageValue | null): DamageValue {
+  return value ? normalizeNumericValue(value) : ZERO_DAMAGE_VALUE;
+}
+
+function cloneMonsterCombatStatState(state: MonsterCombatStatState): MonsterCombatStatState {
+  return {
+    strength: { ...state.strength },
+    dexterity: { ...state.dexterity },
+  };
+}
+
+function isZeroDamageValue(value: DamageValue): boolean {
+  return (value.normal ?? 0) === 0 && (value.ascension ?? 0) === 0;
 }
 
 function getMoveTone(move: MonsterMove, damageEntry: DamageValue | null, blockEntry: DamageValue | null): MoveTone {
