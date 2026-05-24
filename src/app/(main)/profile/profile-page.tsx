@@ -158,7 +158,10 @@ export default function ProfilePage({
   const selectedPetSkins = selectedPetSkin?.selectedSkins ?? pet?.selectedSkins ?? null;
 
   return (
-    <main className="mx-auto flex h-[calc(100svh-3.25rem)] w-full max-w-7xl flex-col gap-3 overflow-hidden px-3 py-2 sm:px-4">
+    <main
+      data-profile-page
+      className="mx-auto flex h-[calc(100svh-3.25rem)] w-full max-w-7xl flex-col gap-3 overflow-hidden px-3 py-2 sm:px-4"
+    >
       <header className="flex h-10 shrink-0 items-center justify-between gap-3 border-b border-white/10 pb-2">
         <div className="flex min-w-0 items-center gap-2">
           <Image
@@ -194,12 +197,16 @@ export default function ProfilePage({
         )}
       </header>
 
-      <section className="grid min-h-0 flex-1 grid-cols-[minmax(18rem,30%)_minmax(0,70%)] gap-4">
-        <div className="flex min-h-0 flex-col gap-1.5 self-start pt-1">
+      <section
+        data-profile-layout
+        className="grid min-h-0 flex-1 grid-rows-[auto_minmax(0,1fr)] gap-3 md:grid-cols-[minmax(18rem,30%)_minmax(0,70%)] md:grid-rows-1 md:gap-4"
+      >
+        <div data-profile-controls className="flex min-h-0 flex-col gap-1.5 self-start pt-1">
           <ProfileRow
             label={copy.selectors.character}
             carousel={
               <ChoiceCarousel
+                choiceType="character"
                 items={characters}
                 selectedId={character?.id}
                 labels={copy.carousel}
@@ -220,6 +227,7 @@ export default function ProfilePage({
             label={copy.selectors.pet}
             carousel={
               <ChoiceCarousel
+                choiceType="pet"
                 items={pets}
                 selectedId={pet?.id}
                 labels={copy.carousel}
@@ -240,6 +248,7 @@ export default function ProfilePage({
             label={copy.selectors.ancient}
             carousel={
               <ChoiceCarousel
+                choiceType="ancient"
                 items={ancients}
                 selectedId={ancient?.id}
                 labels={copy.carousel}
@@ -289,11 +298,13 @@ function ProfileRow({
 }
 
 function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; subtitle?: string }>({
+  choiceType,
   items,
   selectedId,
   labels,
   onSelect,
 }: {
+  choiceType: "character" | "pet" | "ancient";
   items: T[];
   selectedId: string | undefined;
   labels: ProfilePageCopy["carousel"];
@@ -364,6 +375,9 @@ function ChoiceCarousel<T extends { id: string; label: string; iconUrl: string; 
             <button
               key={item.id}
               type="button"
+              data-profile-choice
+              data-profile-choice-type={choiceType}
+              data-profile-choice-id={item.id}
               onClick={() => onSelect(item.id)}
               aria-pressed={active}
               aria-label={item.subtitle ? `${item.label} ${item.subtitle}` : item.label}
@@ -450,16 +464,22 @@ function DuoRender({
   const petViewportPadding = getPetViewportPadding(pet?.monsterId);
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-visible">
+    <div
+      data-profile-render
+      data-profile-character-id={character?.id ?? ""}
+      data-profile-pet-id={pet?.id ?? ""}
+      data-profile-ancient-id={ancient?.id ?? ""}
+      className="flex h-full min-h-[18rem] flex-col overflow-visible md:min-h-0"
+    >
       <div className="relative min-h-0 flex-1">
         {ancient && (
-          <div className="pointer-events-none absolute left-1/2 top-0 z-[1] aspect-[2560/1200] w-[68%] max-w-[42rem] -translate-x-1/2 overflow-hidden">
+          <div className="pointer-events-none absolute left-1/2 top-2 z-[1] aspect-[2560/1200] w-[92%] max-w-[26rem] -translate-x-1/2 overflow-hidden md:top-0 md:w-[68%] md:max-w-[42rem]">
             <div className="absolute inset-0 flex items-center justify-center">
-              <AncientNodeRender ancientId={ancient.id} className="h-[82%]" />
+              <AncientNodeRender ancientId={ancient.id} className="h-[92%] md:h-[82%]" />
             </div>
           </div>
         )}
-        <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-full w-[68rem] max-w-none origin-bottom-left scale-[0.8]">
+        <div className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-full w-[46rem] max-w-none origin-bottom -translate-x-[46%] scale-[0.6] md:left-0 md:w-[68rem] md:origin-bottom-left md:translate-x-0 md:scale-[0.8]">
           <MonsterSpineStage
             key={`duo-${character?.id ?? "none"}`}
             asset={character?.spineAsset ?? null}
@@ -475,14 +495,19 @@ function DuoRender({
           />
         </div>
         <div
-          className="pointer-events-none absolute z-20"
+          className="pointer-events-none absolute z-20 top-[var(--profile-pet-mobile-top)] bottom-[var(--profile-pet-mobile-bottom)] left-[var(--profile-pet-mobile-left)] h-[var(--profile-pet-mobile-height)] w-[var(--profile-pet-mobile-width)] md:top-[var(--profile-pet-top)] md:bottom-[var(--profile-pet-bottom)] md:left-[var(--profile-pet-left)] md:h-[var(--profile-pet-height)] md:w-[var(--profile-pet-width)]"
           style={{
-            top: petPlacement.top,
-            bottom: petPlacement.bottom,
-            left: petPlacement.left,
-            width: petPlacement.width,
-            height: petPlacement.height,
-          }}
+            "--profile-pet-top": petPlacement.top,
+            "--profile-pet-bottom": petPlacement.bottom,
+            "--profile-pet-left": petPlacement.left,
+            "--profile-pet-width": petPlacement.width,
+            "--profile-pet-height": petPlacement.height,
+            "--profile-pet-mobile-top": petPlacement.mobileTop,
+            "--profile-pet-mobile-bottom": petPlacement.mobileBottom,
+            "--profile-pet-mobile-left": petPlacement.mobileLeft,
+            "--profile-pet-mobile-width": petPlacement.mobileWidth,
+            "--profile-pet-mobile-height": petPlacement.mobileHeight,
+          } as React.CSSProperties}
         >
           <MonsterSpineStage
             key={`pet-${pet?.id ?? "none"}`}
@@ -552,26 +577,43 @@ function SkinOptionBar({
 }
 
 function getPetPlacement(petId: string | undefined): {
-  top?: string;
-  bottom?: string;
+  top: string;
+  bottom: string;
   left: string;
   width: string;
   height: string;
+  mobileTop: string;
+  mobileBottom: string;
+  mobileLeft: string;
+  mobileWidth: string;
+  mobileHeight: string;
 } {
   if (petId === "OSTY") {
     return {
       top: "0%",
+      bottom: "auto",
       left: "62%",
       width: "24rem",
       height: "56%",
+      mobileTop: "9%",
+      mobileBottom: "auto",
+      mobileLeft: "55%",
+      mobileWidth: "12rem",
+      mobileHeight: "38%",
     };
   }
 
   return {
+    top: "auto",
     bottom: "0%",
     left: "58%",
     width: petId === "PAELS_LEGION" ? "16.8rem" : "14rem",
     height: petId === "PAELS_LEGION" ? "40.8%" : "34%",
+    mobileTop: "auto",
+    mobileBottom: "2%",
+    mobileLeft: "56%",
+    mobileWidth: petId === "PAELS_LEGION" ? "10rem" : "8.8rem",
+    mobileHeight: petId === "PAELS_LEGION" ? "31%" : "27%",
   };
 }
 
