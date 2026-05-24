@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
+import { memo, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 import type { Skin, SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
 import Image from "@/components/ui/static-image";
 import type { MonsterSpineAsset, MonsterSpineEffectAsset } from "@/lib/codex-types";
@@ -32,7 +32,7 @@ type SpineViewportPadding = {
   padBottom?: string;
 };
 
-export function MonsterSpineStage({
+function MonsterSpineStageComponent({
   asset,
   fallbackImageUrl,
   monsterName,
@@ -239,6 +239,9 @@ export function MonsterSpineStage({
     </div>
   );
 }
+
+export const MonsterSpineStage = memo(MonsterSpineStageComponent);
+MonsterSpineStage.displayName = "MonsterSpineStage";
 
 function resolveSpineAnimation(
   asset: MonsterSpineAsset,
