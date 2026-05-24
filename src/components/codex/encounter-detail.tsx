@@ -103,6 +103,7 @@ export function EncounterDetail({
     [encounter.monsters],
   );
   const [commentCount, setCommentCount] = useState(0);
+  const representativeImageUrl = getRepresentativeEncounterImageUrl(encounter.imageUrl);
   const relatedMonsterTargets: CodexReferenceTarget[] = getRelatedMonsterIdsForEncounter(encounter).flatMap((monsterId) => {
     const monsterRef = uniqueMonsters.find((candidate) => candidate.id === monsterId);
     if (!monsterRef) return [];
@@ -153,14 +154,14 @@ export function EncounterDetail({
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[28rem] flex-col items-center justify-center gap-5 py-4">
-          {encounter.imageUrl && (
+          {representativeImageUrl && (
             <div className="relative flex h-48 w-full max-w-4xl items-center justify-center sm:h-64">
               <div
                 className="absolute bottom-8 left-[14%] right-[14%] h-8 rounded-[50%] blur-xl"
                 style={{ backgroundColor: `${roomConfig.color}22` }}
               />
               <Image
-                src={encounter.imageUrl}
+                src={representativeImageUrl}
                 alt={encounter.name}
                 width={960}
                 height={360}
@@ -170,50 +171,52 @@ export function EncounterDetail({
             </div>
           )}
 
-          <div className="flex w-full flex-wrap items-end justify-center gap-x-6 gap-y-4">
-            {uniqueMonsters.map((monsterRef) => {
-              const monster = monsterById.get(monsterRef.id);
-              const imageUrl = monster?.imageUrl ?? monster?.bossImageUrl ?? null;
-              const displayType = monster
-                ? getBestiaryDisplayMonsterType(monster.id, monster.type)
-                : null;
-              const color = displayType ? MONSTER_TYPE_CONFIG[displayType].color : roomConfig.color;
+          {!representativeImageUrl && (
+            <div className="flex w-full flex-wrap items-end justify-center gap-x-6 gap-y-4">
+              {uniqueMonsters.map((monsterRef) => {
+                const monster = monsterById.get(monsterRef.id);
+                const imageUrl = monster?.imageUrl ?? monster?.bossImageUrl ?? null;
+                const displayType = monster
+                  ? getBestiaryDisplayMonsterType(monster.id, monster.type)
+                  : null;
+                const color = displayType ? MONSTER_TYPE_CONFIG[displayType].color : roomConfig.color;
 
-              return (
-                <Link
-                  key={monsterRef.id}
-                  href={localizeHref(`/compendium/bestiary?monster=${monsterRef.id.toLowerCase()}`, serviceLocale)}
-                  className="group flex min-w-[7rem] flex-col items-center gap-2 text-center"
-                >
-                  <div className="relative flex h-32 w-36 items-center justify-center sm:h-40 sm:w-44">
-                    <div
-                      className="absolute bottom-2 left-[18%] right-[18%] h-5 rounded-[50%] blur-md"
-                      style={{ backgroundColor: `${color}33` }}
-                    />
-                    {imageUrl ? (
-                      <Image
-                        src={imageUrl}
-                        alt={monsterRef.name}
-                        width={176}
-                        height={160}
-                        className="relative z-10 max-h-full max-w-full object-contain drop-shadow-[0_18px_24px_rgba(0,0,0,0.45)] transition-transform group-hover:scale-105"
-                      />
-                    ) : (
+                return (
+                  <Link
+                    key={monsterRef.id}
+                    href={localizeHref(`/compendium/bestiary?monster=${monsterRef.id.toLowerCase()}`, serviceLocale)}
+                    className="group flex min-w-[7rem] flex-col items-center gap-2 text-center"
+                  >
+                    <div className="relative flex h-32 w-36 items-center justify-center sm:h-40 sm:w-44">
                       <div
-                        className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full border text-2xl font-bold"
-                        style={{ borderColor: `${color}66`, color }}
-                      >
-                        {monsterRef.name.slice(0, 1)}
-                      </div>
-                    )}
-                  </div>
-                  <span className="font-game-title text-sm font-bold" style={{ color }}>
-                    {monsterRef.name}
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
+                        className="absolute bottom-2 left-[18%] right-[18%] h-5 rounded-[50%] blur-md"
+                        style={{ backgroundColor: `${color}33` }}
+                      />
+                      {imageUrl ? (
+                        <Image
+                          src={imageUrl}
+                          alt={monsterRef.name}
+                          width={176}
+                          height={160}
+                          className="relative z-10 max-h-full max-w-full object-contain drop-shadow-[0_18px_24px_rgba(0,0,0,0.45)] transition-transform group-hover:scale-105"
+                        />
+                      ) : (
+                        <div
+                          className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full border text-2xl font-bold"
+                          style={{ borderColor: `${color}66`, color }}
+                        >
+                          {monsterRef.name.slice(0, 1)}
+                        </div>
+                      )}
+                    </div>
+                    <span className="font-game-title text-sm font-bold" style={{ color }}>
+                      {monsterRef.name}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
 
           <div className="text-center">
             <h1
@@ -289,6 +292,13 @@ export function EncounterDetail({
       </div>
     </div>
   );
+}
+
+function getRepresentativeEncounterImageUrl(imageUrl: string | null): string | null {
+  if (!imageUrl) return null;
+  return imageUrl.includes("/encounters-render/") || imageUrl.includes("/monsters-render/")
+    ? imageUrl
+    : null;
 }
 
 function getActLabel(

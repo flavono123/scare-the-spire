@@ -379,6 +379,7 @@ function EncounterTile({
   onClick: () => void;
 }) {
   const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[encounter.roomType];
+  const representativeImageUrl = getRepresentativeEncounterImageUrl(encounter.imageUrl);
 
   // Deduplicate monster display (some encounters list same monster multiple times)
   const uniqueMonsters = Array.from(
@@ -390,10 +391,10 @@ function EncounterTile({
       onClick={onClick}
       className="group flex items-center gap-3 px-3 py-2.5 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/10 hover:border-yellow-500/40 transition-all text-left"
     >
-      {encounter.imageUrl ? (
+      {representativeImageUrl ? (
         <div className="flex h-10 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md border border-white/10 bg-white/[0.03]">
           <Image
-            src={encounter.imageUrl}
+            src={representativeImageUrl}
             alt={encounter.name}
             width={96}
             height={48}
@@ -454,6 +455,13 @@ function EncounterTile({
       </div>
     </button>
   );
+}
+
+function getRepresentativeEncounterImageUrl(imageUrl: string | null): string | null {
+  if (!imageUrl) return null;
+  return imageUrl.includes("/encounters-render/") || imageUrl.includes("/monsters-render/")
+    ? imageUrl
+    : null;
 }
 
 function getEncounterTriggers(
