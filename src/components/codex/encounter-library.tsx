@@ -397,7 +397,7 @@ function EncounterTile({
           const imgUrl = monster?.imageUrl ?? monster?.bossImageUrl;
           return imgUrl ? (
             <div key={mRef.id} className="w-8 h-8 rounded-full overflow-hidden bg-white/5 border-2 border-[#1a1a2e]">
-              <Image src={imgUrl} alt={mRef.name} width={32} height={32} className="w-8 h-8 object-contain" />
+              <Image src={imgUrl} alt={mRef.name} width={32} height={32} loading="lazy" className="w-8 h-8 object-contain" />
             </div>
           ) : (
             <div key={mRef.id} className="w-8 h-8 rounded-full bg-white/10 border-2 border-[#1a1a2e] flex items-center justify-center">
