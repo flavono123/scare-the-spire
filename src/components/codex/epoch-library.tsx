@@ -514,6 +514,7 @@ function EpochThumbnail({
             alt=""
             fill
             sizes="(max-width: 1280px) 100vw, 50vw"
+            loading="lazy"
             className="object-cover opacity-45 transition-all duration-300 group-hover:scale-[1.03] group-hover:opacity-70"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/35 via-black/65 to-black/90 transition-opacity duration-200 group-hover:opacity-90" />
