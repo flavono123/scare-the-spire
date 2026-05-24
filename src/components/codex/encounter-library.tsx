@@ -390,27 +390,39 @@ function EncounterTile({
       onClick={onClick}
       className="group flex items-center gap-3 px-3 py-2.5 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/10 hover:border-yellow-500/40 transition-all text-left"
     >
-      {/* Monster portraits */}
-      <div className="flex -space-x-2 shrink-0">
-        {uniqueMonsters.slice(0, 4).map((mRef) => {
-          const monster = monsterById.get(mRef.id);
-          const imgUrl = monster?.imageUrl ?? monster?.bossImageUrl;
-          return imgUrl ? (
-            <div key={mRef.id} className="w-8 h-8 rounded-full overflow-hidden bg-white/5 border-2 border-[#1a1a2e]">
-              <Image src={imgUrl} alt={mRef.name} width={32} height={32} loading="lazy" className="w-8 h-8 object-contain" />
+      {encounter.imageUrl ? (
+        <div className="flex h-10 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md border border-white/10 bg-white/[0.03]">
+          <Image
+            src={encounter.imageUrl}
+            alt={encounter.name}
+            width={96}
+            height={48}
+            loading="lazy"
+            className="h-full w-full object-contain"
+          />
+        </div>
+      ) : (
+        <div className="flex -space-x-2 shrink-0">
+          {uniqueMonsters.slice(0, 4).map((mRef) => {
+            const monster = monsterById.get(mRef.id);
+            const imgUrl = monster?.imageUrl ?? monster?.bossImageUrl;
+            return imgUrl ? (
+              <div key={mRef.id} className="w-8 h-8 rounded-full overflow-hidden bg-white/5 border-2 border-[#1a1a2e]">
+                <Image src={imgUrl} alt={mRef.name} width={32} height={32} loading="lazy" className="w-8 h-8 object-contain" />
+              </div>
+            ) : (
+              <div key={mRef.id} className="w-8 h-8 rounded-full bg-white/10 border-2 border-[#1a1a2e] flex items-center justify-center">
+                <span className="text-[9px] text-gray-500">{mRef.name[0]}</span>
+              </div>
+            );
+          })}
+          {uniqueMonsters.length > 4 && (
+            <div className="w-8 h-8 rounded-full bg-white/10 border-2 border-[#1a1a2e] flex items-center justify-center">
+              <span className="text-[9px] text-gray-500">+{uniqueMonsters.length - 4}</span>
             </div>
-          ) : (
-            <div key={mRef.id} className="w-8 h-8 rounded-full bg-white/10 border-2 border-[#1a1a2e] flex items-center justify-center">
-              <span className="text-[9px] text-gray-500">{mRef.name[0]}</span>
-            </div>
-          );
-        })}
-        {uniqueMonsters.length > 4 && (
-          <div className="w-8 h-8 rounded-full bg-white/10 border-2 border-[#1a1a2e] flex items-center justify-center">
-            <span className="text-[9px] text-gray-500">+{uniqueMonsters.length - 4}</span>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       {/* Name + meta */}
       <div className="flex-1 min-w-0">
