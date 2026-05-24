@@ -961,6 +961,10 @@ function normalizeEpochMarkup(text: string): string {
   return text.replace(/\[sine\]([^\[]+?)\[\/rainbow\]\[\/sine\]/g, "[sine][rainbow]$1[/rainbow][/sine]");
 }
 
+function stripCodexMarkup(text: string): string {
+  return text.replace(/\[\/?\w+(?::?\w*)*\]/g, " ");
+}
+
 function epochEraGroup(era: string): string {
   return era.match(/^[A-Za-z]+/)?.[0] ?? era;
 }
@@ -1031,19 +1035,24 @@ function inferEpochAffiliations(kor: RawEpoch, eng: RawEpoch): EpochAffiliation[
 function inferEpochUnlockConditions(kor: RawEpoch, eng: RawEpoch): EpochUnlockCondition[] {
   const conditions = new Set<EpochUnlockCondition>();
   const source = [kor.unlock_info, eng.unlock_info].filter(Boolean).join(" ").toLowerCase();
+  const plainSource = stripCodexMarkup(source);
 
-  if (source.includes("accumulating score") || source.includes("점수")) conditions.add("score");
-  if (/play (a|one|single) run/.test(source) || source.includes("도전")) conditions.add("play_run");
-  if (source.includes("every character") || source.includes("all characters") || source.includes("모든 캐릭터")) {
+  if (plainSource.includes("accumulating score") || plainSource.includes("점수")) conditions.add("score");
+  if (/play (a|one|single) run/.test(plainSource) || plainSource.includes("도전")) conditions.add("play_run");
+  if (
+    plainSource.includes("every character") ||
+    plainSource.includes("all characters") ||
+    plainSource.includes("모든 캐릭터")
+  ) {
     conditions.add("all_characters");
   }
-  if (/act\]\s*\[blue\]1|act\s*1|1막/.test(source)) conditions.add("beat_act1");
-  if (/act\]\s*\[blue\]2|act\s*2|2막/.test(source)) conditions.add("beat_act2");
-  if (/act\]\s*\[blue\]3|act\s*3|3막/.test(source)) conditions.add("beat_act3");
-  if (source.includes("elites") || source.includes("엘리트")) conditions.add("kill_elites");
-  if (source.includes("bosses") || source.includes("보스")) conditions.add("kill_bosses");
-  if (source.includes("ascension") || source.includes("승천")) conditions.add("ascension");
-  if (source.includes("all other") && source.includes("ancients")) conditions.add("encounter_ancients");
+  if (/act\s*1|1막/.test(plainSource)) conditions.add("beat_act1");
+  if (/act\s*2|2막/.test(plainSource)) conditions.add("beat_act2");
+  if (/act\s*3|3막/.test(plainSource)) conditions.add("beat_act3");
+  if (plainSource.includes("elites") || plainSource.includes("엘리트")) conditions.add("kill_elites");
+  if (plainSource.includes("bosses") || plainSource.includes("보스")) conditions.add("kill_bosses");
+  if (plainSource.includes("ascension") || plainSource.includes("승천")) conditions.add("ascension");
+  if (plainSource.includes("all other") && plainSource.includes("ancients")) conditions.add("encounter_ancients");
 
   return Array.from(conditions);
 }
