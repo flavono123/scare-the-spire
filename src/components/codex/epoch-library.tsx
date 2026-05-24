@@ -18,14 +18,13 @@ import type {
   CodexPotion,
   CodexRelic,
   EpochAffiliation,
-  EpochUnlockKind,
-  EventAct,
+  EpochUnlockCondition,
+  EpochUnlockReward,
 } from "@/lib/codex-types";
 import {
   EPOCH_AFFILIATION_ORDER,
-  EPOCH_UNLOCK_KIND_ORDER,
-  EVENT_ACT_ALIASES,
-  EVENT_ACT_ORDER,
+  EPOCH_UNLOCK_CONDITION_ORDER,
+  EPOCH_UNLOCK_REWARD_ORDER,
 } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
@@ -34,7 +33,7 @@ import {
   stripCodexMarkup,
   type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
-import { FilterSection, ToggleButton } from "./codex-filters";
+import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
 import {
   CodexLibraryShell,
   CodexLibraryTopBar,
@@ -42,20 +41,19 @@ import {
 } from "./codex-filter-drawer";
 import { SearchBar } from "./search-bar";
 import { EpochDetail } from "./epoch-detail";
-import { getCharacterTokenIcon } from "./codex-filter-assets";
+import { EVENT_FILTER_ICON, getCharacterTokenIcon } from "./codex-filter-assets";
 import {
   EPOCH_AFFILIATION_ALIASES,
-  EPOCH_UNLOCK_KIND_ALIASES,
+  EPOCH_UNLOCK_CONDITION_ALIASES,
+  EPOCH_UNLOCK_REWARD_ALIASES,
   getEpochAffiliationColor,
   getEpochAffiliationLabel,
-  getEpochUnlockKindColor,
-  getEpochUnlockKindLabel,
+  getEpochUnlockConditionLabel,
+  getEpochUnlockRewardColor,
+  getEpochUnlockRewardLabel,
 } from "./epoch-display";
 
-type EpochSearchTokenType = "affiliation" | "unlock" | "act";
-
-const COMPENDIUM_ACT_COLOR = "#60a5fa";
-const COMPENDIUM_ACT_TEXT_CLASS = "text-blue-300";
+type EpochSearchTokenType = "affiliation" | "condition" | "reward";
 
 const AFFILIATION_ICONS: Partial<Record<EpochAffiliation, string>> = {
   ironclad: getCharacterTokenIcon("ironclad", "/images/sts2/characters/character_icon_ironclad.webp"),
@@ -63,21 +61,19 @@ const AFFILIATION_ICONS: Partial<Record<EpochAffiliation, string>> = {
   regent: getCharacterTokenIcon("regent", "/images/sts2/characters/character_icon_regent.webp"),
   necrobinder: getCharacterTokenIcon("necrobinder", "/images/sts2/characters/character_icon_necrobinder.webp"),
   defect: getCharacterTokenIcon("defect", "/images/sts2/characters/character_icon_defect.webp"),
-  ancient: "/images/sts2/nav/stats_ancients.png",
+  neow: "/images/sts2/run-history/neow.png",
+  darv: "/images/sts2/run-history/darv.png",
+  orobas: "/images/sts2/run-history/orobas.png",
+  pael: "/images/sts2/run-history/pael.png",
+  tanx: "/images/sts2/run-history/tanx.png",
+  tezcatara: "/images/sts2/run-history/tezcatara.png",
+  nonupeipe: "/images/sts2/run-history/nonupeipe.png",
+  vakuu: "/images/sts2/run-history/vakuu.png",
   world: "/images/sts2/icons/app_icon.png",
-  spire: "/images/sts2/relics/history_course.webp",
-  reopening: "/images/sts2/nav/patch_notes_icon.png",
+  spire: "/images/sts2/relics/storybook.webp",
+  reopening: "/images/sts2/relics/new_leaf.webp",
+  unknown: EVENT_FILTER_ICON,
 };
-
-function epochActKey(act: EventAct | null): string {
-  return act ?? "none";
-}
-
-function epochMatchesActKeys(epoch: CodexEpoch, actKeys: Set<string>): boolean {
-  if (actKeys.size === 0) return true;
-  if (epoch.acts.length === 0) return actKeys.has("none");
-  return epoch.acts.some((act) => actKeys.has(epochActKey(act)));
-}
 
 interface EpochLibraryProps {
   serviceLocale: ServiceLocale;
@@ -102,8 +98,8 @@ export function EpochLibrary({
 }: EpochLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [selectedAffiliations, setSelectedAffiliations] = useState<Set<EpochAffiliation>>(new Set());
-  const [selectedUnlockKinds, setSelectedUnlockKinds] = useState<Set<EpochUnlockKind>>(new Set());
-  const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
+  const [selectedUnlockConditions, setSelectedUnlockConditions] = useState<Set<EpochUnlockCondition>>(new Set());
+  const [selectedUnlockRewards, setSelectedUnlockRewards] = useState<Set<EpochUnlockReward>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedEpoch, setSelectedEpoch] = useState<CodexEpoch | null>(null);
   const [urlReady, setUrlReady] = useState(false);
@@ -176,8 +172,8 @@ export function EpochLibrary({
   }, []);
 
   const epochTriggers = useMemo(
-    () => getEpochTriggers(serviceText, gameUi, serviceLocale),
-    [serviceText, gameUi, serviceLocale],
+    () => getEpochTriggers(serviceText, serviceLocale),
+    [serviceText, serviceLocale],
   );
   const parsedSearch = useMemo(
     () => parseCodexSearch(searchQuery, epochTriggers),
@@ -193,30 +189,45 @@ export function EpochLibrary({
     ]),
     [selectedAffiliations, parsedSearch.tokens],
   );
-  const activeUnlockKinds = useMemo(
-    () => new Set<EpochUnlockKind>([
-      ...selectedUnlockKinds,
+  const activeUnlockConditions = useMemo(
+    () => new Set<EpochUnlockCondition>([
+      ...selectedUnlockConditions,
       ...parsedSearch.tokens
-        .filter((token) => token.type === "unlock")
-        .map((token) => token.value as EpochUnlockKind),
+        .filter((token) => token.type === "condition")
+        .map((token) => token.value as EpochUnlockCondition),
     ]),
-    [selectedUnlockKinds, parsedSearch.tokens],
+    [selectedUnlockConditions, parsedSearch.tokens],
   );
-  const activeActKeys = useMemo(
-    () => new Set([
-      ...selectedActs,
+  const activeUnlockRewards = useMemo(
+    () => new Set<EpochUnlockReward>([
+      ...selectedUnlockRewards,
       ...parsedSearch.tokens
-        .filter((token) => token.type === "act")
-        .map((token) => token.value),
+        .filter((token) => token.type === "reward")
+        .map((token) => token.value as EpochUnlockReward),
     ]),
-    [selectedActs, parsedSearch.tokens],
+    [selectedUnlockRewards, parsedSearch.tokens],
   );
 
   const filteredEpochs = useMemo(() => {
     return epochs.filter((epoch) => {
-      if (activeAffiliations.size > 0 && !activeAffiliations.has(epoch.affiliation)) return false;
-      if (activeUnlockKinds.size > 0 && !epoch.unlockKinds.some((kind) => activeUnlockKinds.has(kind))) return false;
-      if (!epochMatchesActKeys(epoch, activeActKeys)) return false;
+      if (
+        activeAffiliations.size > 0 &&
+        !epoch.affiliations.some((affiliation) => activeAffiliations.has(affiliation))
+      ) {
+        return false;
+      }
+      if (
+        activeUnlockConditions.size > 0 &&
+        !epoch.unlockConditions.some((condition) => activeUnlockConditions.has(condition))
+      ) {
+        return false;
+      }
+      if (
+        activeUnlockRewards.size > 0 &&
+        !epoch.unlockRewards.some((reward) => activeUnlockRewards.has(reward))
+      ) {
+        return false;
+      }
 
       if (!parsedSearch.text) return true;
       return (
@@ -228,7 +239,7 @@ export function EpochLibrary({
         stripCodexMarkup(epoch.unlockText ?? "").toLowerCase().includes(parsedSearch.text)
       );
     });
-  }, [epochs, activeAffiliations, activeUnlockKinds, activeActKeys, parsedSearch]);
+  }, [epochs, activeAffiliations, activeUnlockConditions, activeUnlockRewards, parsedSearch]);
 
   const groupedEpochs = useMemo(() => {
     const map = new Map<string, CodexEpoch[]>();
@@ -256,31 +267,28 @@ export function EpochLibrary({
   const affiliationCounts = useMemo(() => {
     const counts = new Map<EpochAffiliation, number>();
     for (const epoch of epochs) {
-      counts.set(epoch.affiliation, (counts.get(epoch.affiliation) ?? 0) + 1);
-    }
-    return counts;
-  }, [epochs]);
-
-  const unlockKindCounts = useMemo(() => {
-    const counts = new Map<EpochUnlockKind, number>();
-    for (const epoch of epochs) {
-      for (const kind of epoch.unlockKinds) {
-        counts.set(kind, (counts.get(kind) ?? 0) + 1);
+      for (const affiliation of epoch.affiliations) {
+        counts.set(affiliation, (counts.get(affiliation) ?? 0) + 1);
       }
     }
     return counts;
   }, [epochs]);
 
-  const actCounts = useMemo(() => {
-    const counts = new Map<string, number>();
+  const unlockConditionCounts = useMemo(() => {
+    const counts = new Map<EpochUnlockCondition, number>();
     for (const epoch of epochs) {
-      if (epoch.acts.length === 0) {
-        counts.set("none", (counts.get("none") ?? 0) + 1);
-        continue;
+      for (const condition of epoch.unlockConditions) {
+        counts.set(condition, (counts.get(condition) ?? 0) + 1);
       }
-      for (const act of epoch.acts) {
-        const key = epochActKey(act);
-        counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return counts;
+  }, [epochs]);
+
+  const unlockRewardCounts = useMemo(() => {
+    const counts = new Map<EpochUnlockReward, number>();
+    for (const epoch of epochs) {
+      for (const reward of epoch.unlockRewards) {
+        counts.set(reward, (counts.get(reward) ?? 0) + 1);
       }
     }
     return counts;
@@ -295,20 +303,20 @@ export function EpochLibrary({
     });
   }, []);
 
-  const toggleUnlockKind = useCallback((kind: EpochUnlockKind) => {
-    setSelectedUnlockKinds((prev) => {
+  const toggleUnlockCondition = useCallback((condition: EpochUnlockCondition) => {
+    setSelectedUnlockConditions((prev) => {
       const next = new Set(prev);
-      if (next.has(kind)) next.delete(kind);
-      else next.add(kind);
+      if (next.has(condition)) next.delete(condition);
+      else next.add(condition);
       return next;
     });
   }, []);
 
-  const toggleAct = useCallback((act: string) => {
-    setSelectedActs((prev) => {
+  const toggleUnlockReward = useCallback((reward: EpochUnlockReward) => {
+    setSelectedUnlockRewards((prev) => {
       const next = new Set(prev);
-      if (next.has(act)) next.delete(act);
-      else next.add(act);
+      if (next.has(reward)) next.delete(reward);
+      else next.add(reward);
       return next;
     });
   }, []);
@@ -326,18 +334,16 @@ export function EpochLibrary({
       sidebar={(
         <>
           <FilterSection trigger="@" label={serviceText.labels.affiliation}>
-            <div className="grid grid-cols-2 gap-1.5">
+            <div className="grid grid-cols-5 gap-1.5">
               {EPOCH_AFFILIATION_ORDER.map((affiliation) => {
                 const count = affiliationCounts.get(affiliation) ?? 0;
                 if (count === 0) return null;
                 return (
-                  <EpochFilterButton
+                  <IconFilterButton
                     key={affiliation}
-                    icon={AFFILIATION_ICONS[affiliation]}
+                    icon={AFFILIATION_ICONS[affiliation] ?? EVENT_FILTER_ICON}
                     label={getEpochAffiliationLabel(affiliation, serviceText, serviceLocale)}
-                    count={count}
                     active={selectedAffiliations.has(affiliation)}
-                    color={getEpochAffiliationColor(affiliation)}
                     onClick={() => toggleAffiliation(affiliation)}
                   />
                 );
@@ -345,47 +351,35 @@ export function EpochLibrary({
             </div>
           </FilterSection>
 
-          <FilterSection trigger="#" label={serviceLocale === "ko" ? "해금" : "Unlock"}>
+          <FilterSection trigger="#" label={serviceLocale === "ko" ? "해금 조건" : "Unlock Condition"}>
             <div className="flex flex-col gap-0.5">
-              {EPOCH_UNLOCK_KIND_ORDER.map((kind) => {
-                const count = unlockKindCounts.get(kind) ?? 0;
+              {EPOCH_UNLOCK_CONDITION_ORDER.map((condition) => {
+                const count = unlockConditionCounts.get(condition) ?? 0;
                 if (count === 0) return null;
                 return (
                   <ToggleButton
-                    key={kind}
-                    label={`${getEpochUnlockKindLabel(kind, serviceLocale)} (${count})`}
-                    active={selectedUnlockKinds.has(kind)}
-                    onClick={() => toggleUnlockKind(kind)}
+                    key={condition}
+                    label={`${getEpochUnlockConditionLabel(condition, serviceLocale)} (${count})`}
+                    active={selectedUnlockConditions.has(condition)}
+                    onClick={() => toggleUnlockCondition(condition)}
                   />
                 );
               })}
             </div>
           </FilterSection>
 
-          <FilterSection trigger="%" label={serviceText.eventsView.actFilter}>
+          <FilterSection trigger="$" label={serviceLocale === "ko" ? "해금 대상" : "Unlock Target"}>
             <div className="flex flex-col gap-0.5">
-              {EVENT_ACT_ORDER.map((act) => {
-                const key = epochActKey(act);
-                const count = actCounts.get(key) ?? 0;
+              {EPOCH_UNLOCK_REWARD_ORDER.map((reward) => {
+                const count = unlockRewardCounts.get(reward) ?? 0;
                 if (count === 0) return null;
-                const label = getActLabel(act, serviceText, gameUi);
                 return (
-                  <button
-                    key={key}
-                    onClick={() => toggleAct(key)}
-                    className={`flex items-center gap-2 rounded px-2.5 py-1 text-left text-sm transition-all ${
-                      selectedActs.has(key)
-                        ? "bg-yellow-500/20 text-yellow-400"
-                        : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
-                    }`}
-                  >
-                    <span
-                      className="h-2 w-2 shrink-0 rounded-full"
-                      style={{ backgroundColor: act ? COMPENDIUM_ACT_COLOR : "#666" }}
-                    />
-                    <span className={act ? COMPENDIUM_ACT_TEXT_CLASS : "text-zinc-400"}>{label}</span>
-                    <span className="text-xs text-zinc-600">({count})</span>
-                  </button>
+                  <ToggleButton
+                    key={reward}
+                    label={`${getEpochUnlockRewardLabel(reward, serviceLocale)} (${count})`}
+                    active={selectedUnlockRewards.has(reward)}
+                    onClick={() => toggleUnlockReward(reward)}
+                  />
                 );
               })}
             </div>
@@ -423,8 +417,14 @@ export function EpochLibrary({
                 <section key={group.eraGroup}>
                   <h2 className="mb-3 flex items-baseline gap-2 text-base font-semibold text-blue-300">
                     {group.label}
-                    {group.year && <span className="text-xs font-normal text-blue-300/55">{group.year}</span>}
-                    <span className="text-xs font-normal text-zinc-600">{group.epochs.length}</span>
+                    {group.year && (
+                      <span className="text-xs font-normal text-blue-300/55">
+                        {formatEraYear(group.year, serviceLocale)}
+                      </span>
+                    )}
+                    <span className="text-xs font-normal text-zinc-600">
+                      {formatEpochCount(group.epochs.length, serviceLocale)}
+                    </span>
                   </h2>
                   <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
                     {group.epochs.map((epoch, index) => (
@@ -480,44 +480,6 @@ export function EpochLibrary({
   );
 }
 
-function EpochFilterButton({
-  icon,
-  label,
-  count,
-  active,
-  color,
-  onClick,
-}: {
-  icon?: string;
-  label: string;
-  count: number;
-  active: boolean;
-  color: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex min-h-11 items-center gap-2 rounded border px-2 py-1.5 text-left transition-all ${
-        active
-          ? "border-yellow-500/60 bg-yellow-500/15"
-          : "border-white/10 bg-white/5 hover:border-white/30 hover:bg-white/10"
-      }`}
-      title={label}
-    >
-      {icon && (
-        <span className="relative h-6 w-6 shrink-0">
-          <Image src={icon} alt="" fill sizes="24px" className="object-contain" />
-        </span>
-      )}
-      <span className="min-w-0 flex-1">
-        <span className="block truncate text-xs font-bold" style={{ color }}>{label}</span>
-        <span className="block text-[10px] text-zinc-600">{count}</span>
-      </span>
-    </button>
-  );
-}
-
 function EpochThumbnail({
   epoch,
   serviceLocale,
@@ -529,10 +491,11 @@ function EpochThumbnail({
   messages: CodexServiceMessages;
   onSelect: (epoch: CodexEpoch) => void;
 }) {
-  const affiliationLabel = getEpochAffiliationLabel(epoch.affiliation, messages, serviceLocale);
-  const eraLabel = epoch.eraName
-    ? epoch.eraYear ? `${epoch.eraName} ${epoch.eraYear}` : epoch.eraName
-    : epoch.eraGroup;
+  const eraLabel = formatEraLabel(epoch.eraName ?? epoch.eraGroup, epoch.eraYear, serviceLocale);
+  const affiliationBadges = epoch.affiliations.slice(0, 2);
+  const rewardBadges = epoch.unlockRewards.filter((reward) => reward !== "none").slice(0, 1);
+  const extraBadgeCount = Math.max(0, epoch.affiliations.length - affiliationBadges.length)
+    + Math.max(0, epoch.unlockRewards.filter((reward) => reward !== "none").length - rewardBadges.length);
 
   return (
     <Link
@@ -569,16 +532,22 @@ function EpochThumbnail({
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
           <Badge value={eraLabel} color="#60a5fa" />
-          <Badge value={affiliationLabel} color={getEpochAffiliationColor(epoch.affiliation)} />
-          {epoch.unlockKinds.slice(0, 2).map((kind) => (
+          {affiliationBadges.map((affiliation) => (
             <Badge
-              key={kind}
-              value={getEpochUnlockKindLabel(kind, serviceLocale)}
-              color={getEpochUnlockKindColor(kind)}
+              key={affiliation}
+              value={getEpochAffiliationLabel(affiliation, messages, serviceLocale)}
+              color={getEpochAffiliationColor(affiliation)}
             />
           ))}
-          {epoch.unlockKinds.length > 2 && (
-            <span className="text-[10px] text-zinc-500">+{epoch.unlockKinds.length - 2}</span>
+          {rewardBadges.map((reward) => (
+            <Badge
+              key={reward}
+              value={getEpochUnlockRewardLabel(reward, serviceLocale)}
+              color={getEpochUnlockRewardColor(reward)}
+            />
+          ))}
+          {extraBadgeCount > 0 && (
+            <span className="text-[10px] text-zinc-500">+{extraBadgeCount}</span>
           )}
         </div>
       </div>
@@ -597,17 +566,20 @@ function Badge({ value, color }: { value: string; color: string }) {
   );
 }
 
-function getActLabel(
-  act: EventAct | null,
-  serviceText: CodexServiceMessages,
-  gameUi: CodexGameUiLabels,
-): string {
-  return act ? gameUi.acts[act] : serviceText.labels.acts.none;
+function formatEraYear(year: string, serviceLocale: ServiceLocale): string {
+  return serviceLocale === "ko" ? `${year}년` : `Year ${year}`;
+}
+
+function formatEraLabel(label: string, year: string | null, serviceLocale: ServiceLocale): string {
+  return year ? `${label} · ${formatEraYear(year, serviceLocale)}` : label;
+}
+
+function formatEpochCount(count: number, serviceLocale: ServiceLocale): string {
+  return serviceLocale === "ko" ? `${count}개` : `${count} items`;
 }
 
 function getEpochTriggers(
   serviceText: CodexServiceMessages,
-  gameUi: CodexGameUiLabels,
   serviceLocale: ServiceLocale,
 ): CodexSearchTriggerGroup<EpochSearchTokenType>[] {
   return [
@@ -625,29 +597,27 @@ function getEpochTriggers(
     },
     {
       trigger: "#",
-      type: "unlock",
-      label: serviceLocale === "ko" ? "해금" : "Unlock",
-      items: EPOCH_UNLOCK_KIND_ORDER.map((kind) => ({
-        value: kind,
-        label: getEpochUnlockKindLabel(kind, serviceLocale),
-        desc: kind,
+      type: "condition",
+      label: serviceLocale === "ko" ? "해금 조건" : "Unlock Condition",
+      items: EPOCH_UNLOCK_CONDITION_ORDER.map((condition) => ({
+        value: condition,
+        label: getEpochUnlockConditionLabel(condition, serviceLocale),
+        desc: condition,
       })),
-      validate: (value) => EPOCH_UNLOCK_KIND_ALIASES[value] ?? null,
+      validate: (value) => EPOCH_UNLOCK_CONDITION_ALIASES[value] ?? null,
       chipColor: "bg-purple-500/20 text-purple-300",
     },
     {
-      trigger: "%",
-      type: "act",
-      label: serviceText.eventsView.actFilter,
-      items: [
-        { value: "act1", label: gameUi.acts["Act 1 - Overgrowth"], desc: "Act 1 Overgrowth" },
-        { value: "underdocks", label: gameUi.acts.Underdocks, desc: "Underdocks" },
-        { value: "act2", label: gameUi.acts["Act 2 - Hive"], desc: "Act 2 Hive" },
-        { value: "act3", label: gameUi.acts["Act 3 - Glory"], desc: "Act 3 Glory" },
-        { value: "none", label: serviceText.labels.acts.none, desc: "Any act" },
-      ],
-      validate: (value) => EVENT_ACT_ALIASES[value] ?? null,
-      chipColor: "bg-blue-500/20 text-blue-400",
+      trigger: "$",
+      type: "reward",
+      label: serviceLocale === "ko" ? "해금 대상" : "Unlock Target",
+      items: EPOCH_UNLOCK_REWARD_ORDER.map((reward) => ({
+        value: reward,
+        label: getEpochUnlockRewardLabel(reward, serviceLocale),
+        desc: reward,
+      })),
+      validate: (value) => EPOCH_UNLOCK_REWARD_ALIASES[value] ?? null,
+      chipColor: "bg-blue-500/20 text-blue-300",
     },
   ];
 }

@@ -31,7 +31,8 @@ import {
   EventPage,
   EventAct,
   EpochAffiliation,
-  EpochUnlockKind,
+  EpochUnlockCondition,
+  EpochUnlockReward,
   CardColor,
   CardTypeKo,
   CardRarityKo,
@@ -972,15 +973,26 @@ const EPOCH_CHARACTER_STORY_IDS: Record<string, EpochAffiliation> = {
   Regent: "regent",
 };
 
-const ANCIENT_EPOCH_IDS = new Set(["DARV_EPOCH", "NEOW_EPOCH", "OROBAS_EPOCH", "RELIC2_EPOCH"]);
+const EPOCH_ANCIENT_AFFILIATIONS = [
+  { affiliation: "neow", id: "NEOW", names: ["Neow", "니오우"] },
+  { affiliation: "darv", id: "DARV", names: ["Darv", "다브"] },
+  { affiliation: "orobas", id: "OROBAS", names: ["Orobas", "오로바스"] },
+  { affiliation: "pael", id: "PAEL", names: ["Pael", "파엘"] },
+  { affiliation: "tanx", id: "TANX", names: ["Tanx", "탄스"] },
+  { affiliation: "tezcatara", id: "TEZCATARA", names: ["Tezcatara", "테즈카타라"] },
+  { affiliation: "nonupeipe", id: "NONUPEIPE", names: ["Nonupeipe", "노누파이페"] },
+  { affiliation: "vakuu", id: "VAKUU", names: ["Vakuu", "바쿠"] },
+] as const satisfies readonly {
+  affiliation: EpochAffiliation;
+  id: string;
+  names: readonly string[];
+}[];
 
-function inferEpochAffiliation(kor: RawEpoch, eng: RawEpoch): EpochAffiliation {
-  if (ANCIENT_EPOCH_IDS.has(kor.id)) return "ancient";
+const GENERAL_ANCIENTS_EPOCH_IDS = new Set(["RELIC2_EPOCH"]);
+
+function inferEpochPrimaryAffiliation(kor: RawEpoch): EpochAffiliation {
   const storyAffiliation = kor.story_id ? EPOCH_CHARACTER_STORY_IDS[kor.story_id] : undefined;
   if (storyAffiliation) return storyAffiliation;
-
-  const source = `${kor.unlock_text ?? ""} ${eng.unlock_text ?? ""}`.toLowerCase();
-  if (source.includes("고대의 존재 해금") || source.includes("unlocked ancient")) return "ancient";
 
   if (kor.story_id === "Magnum_Opus") return "world";
   if (kor.story_id === "Reopening") return "reopening";
@@ -988,50 +1000,76 @@ function inferEpochAffiliation(kor: RawEpoch, eng: RawEpoch): EpochAffiliation {
   return "unknown";
 }
 
-function inferEpochUnlockKinds(kor: RawEpoch, eng: RawEpoch): EpochUnlockKind[] {
-  const kinds = new Set<EpochUnlockKind>();
-  if (kor.unlocks_cards.length > 0) kinds.add("card");
-  if (kor.unlocks_relics.length > 0) kinds.add("relic");
-  if (kor.unlocks_potions.length > 0) kinds.add("potion");
-
+function inferEpochAffiliations(kor: RawEpoch, eng: RawEpoch): EpochAffiliation[] {
+  const affiliations = new Set<EpochAffiliation>([inferEpochPrimaryAffiliation(kor)]);
   const source = [
+    kor.id,
+    kor.title,
+    kor.description,
     kor.unlock_info,
     kor.unlock_text,
+    eng.id,
+    eng.title,
+    eng.description,
     eng.unlock_info,
     eng.unlock_text,
   ].filter(Boolean).join(" ").toLowerCase();
 
-  if (source.includes("플레이 가능한 캐릭터") || source.includes("playable character")) kinds.add("character");
-  if (source.includes("고대의 존재 해금") || source.includes("unlocked ancient")) kinds.add("ancient");
-  if (source.includes("이벤트 해금") || source.includes("unlocked event")) kinds.add("event");
-  if (source.includes("게임 모드 해금") || source.includes("unlocked game mode")) kinds.add("mode");
-  if (source.includes("교체되는 1막") || source.includes("location") || source.includes("act")) kinds.add("act");
-  if (source.includes("승천") || source.includes("ascension")) kinds.add("ascension");
-  if (source.includes("아직 알 수 없습니다") || source.includes("not yet known")) kinds.add("unknown");
-  if (kinds.size === 0) kinds.add("story");
+  for (const ancient of EPOCH_ANCIENT_AFFILIATIONS) {
+    if (
+      GENERAL_ANCIENTS_EPOCH_IDS.has(kor.id) ||
+      ancient.id === kor.id.replace(/_EPOCH$/, "") ||
+      ancient.names.some((name) => source.includes(name.toLowerCase()))
+    ) {
+      affiliations.add(ancient.affiliation);
+    }
+  }
 
-  return Array.from(kinds);
+  return Array.from(affiliations);
 }
 
-function inferEpochActs(kor: RawEpoch, eng: RawEpoch): EventAct[] {
+function inferEpochUnlockConditions(kor: RawEpoch, eng: RawEpoch): EpochUnlockCondition[] {
+  const conditions = new Set<EpochUnlockCondition>();
+  const source = [kor.unlock_info, eng.unlock_info].filter(Boolean).join(" ").toLowerCase();
+
+  if (source.includes("accumulating score") || source.includes("점수")) conditions.add("score");
+  if (/play (a|one|single) run/.test(source) || source.includes("도전")) conditions.add("play_run");
+  if (source.includes("every character") || source.includes("all characters") || source.includes("모든 캐릭터")) {
+    conditions.add("all_characters");
+  }
+  if (/act\]\s*\[blue\]1|act\s*1|1막/.test(source)) conditions.add("beat_act1");
+  if (/act\]\s*\[blue\]2|act\s*2|2막/.test(source)) conditions.add("beat_act2");
+  if (/act\]\s*\[blue\]3|act\s*3|3막/.test(source)) conditions.add("beat_act3");
+  if (source.includes("elites") || source.includes("엘리트")) conditions.add("kill_elites");
+  if (source.includes("bosses") || source.includes("보스")) conditions.add("kill_bosses");
+  if (source.includes("ascension") || source.includes("승천")) conditions.add("ascension");
+  if (source.includes("all other") && source.includes("ancients")) conditions.add("encounter_ancients");
+
+  return Array.from(conditions);
+}
+
+function inferEpochUnlockRewards(kor: RawEpoch, eng: RawEpoch): EpochUnlockReward[] {
+  const rewards = new Set<EpochUnlockReward>();
+  if (kor.unlocks_cards.length > 0) rewards.add("card");
+  if (kor.unlocks_relics.length > 0) rewards.add("relic");
+  if (kor.unlocks_potions.length > 0) rewards.add("potion");
+  if (kor.expands_timeline.length > 0) rewards.add("timeline");
+
   const source = [
-    kor.id,
-    kor.unlock_info,
     kor.unlock_text,
-    eng.unlock_info,
     eng.unlock_text,
-  ].filter(Boolean).join(" ");
-  const acts: EventAct[] = [];
-  const add = (act: EventAct) => {
-    if (!acts.includes(act)) acts.push(act);
-  };
+  ].filter(Boolean).join(" ").toLowerCase();
 
-  if (/underdocks|지하\s*선착장/i.test(source)) add("Underdocks");
-  if (/1막|act\s*1|overgrowth|과성장/i.test(source)) add("Act 1 - Overgrowth");
-  if (/2막|act\s*2|hive|군락/i.test(source)) add("Act 2 - Hive");
-  if (/3막|act\s*3|glory|영광/i.test(source)) add("Act 3 - Glory");
+  if (source.includes("플레이 가능한 캐릭터") || source.includes("playable character")) rewards.add("character");
+  if (source.includes("고대의 존재 해금") || source.includes("unlocked ancient")) rewards.add("ancient");
+  if (source.includes("이벤트 해금") || source.includes("unlocked event")) rewards.add("event");
+  if (source.includes("게임 모드 해금") || source.includes("unlocked game mode")) rewards.add("mode");
+  if (source.includes("교체되는 1막") || source.includes("location") || source.includes("act")) rewards.add("act");
+  if (source.includes("승천") || source.includes("ascension")) rewards.add("ascension");
+  if (source.includes("아직 알 수 없습니다") || source.includes("not yet known")) rewards.add("unknown");
+  if (rewards.size === 0) rewards.add("none");
 
-  return acts;
+  return Array.from(rewards);
 }
 
 function mapEpoch(
@@ -1056,15 +1094,16 @@ function mapEpoch(
     eraPosition: kor.era_position,
     sortOrder: kor.sort_order,
     storyId: kor.story_id,
-    affiliation: inferEpochAffiliation(kor, eng),
+    affiliation: inferEpochPrimaryAffiliation(kor),
+    affiliations: inferEpochAffiliations(kor, eng),
     unlockInfo: normalizeEpochMarkup(selected.unlock_info),
     unlockText: selected.unlock_text ? normalizeEpochMarkup(selected.unlock_text) : null,
-    unlockKinds: inferEpochUnlockKinds(kor, eng),
+    unlockConditions: inferEpochUnlockConditions(kor, eng),
+    unlockRewards: inferEpochUnlockRewards(kor, eng),
     unlocksCards: kor.unlocks_cards ?? [],
     unlocksRelics: kor.unlocks_relics ?? [],
     unlocksPotions: kor.unlocks_potions ?? [],
     expandsTimeline: kor.expands_timeline ?? [],
-    acts: inferEpochActs(kor, eng),
     imageUrl: imageFiles.has(imageKey) ? `/images/sts2/epochs/${imageKey}.webp` : null,
   };
 }

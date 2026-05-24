@@ -528,13 +528,32 @@ export type EpochAffiliation =
   | "defect"
   | "necrobinder"
   | "regent"
-  | "ancient"
+  | "darv"
+  | "neow"
+  | "nonupeipe"
+  | "orobas"
+  | "pael"
+  | "tanx"
+  | "tezcatara"
+  | "vakuu"
   | "world"
   | "spire"
   | "reopening"
   | "unknown";
 
-export type EpochUnlockKind =
+export type EpochUnlockCondition =
+  | "score"
+  | "play_run"
+  | "all_characters"
+  | "beat_act1"
+  | "beat_act2"
+  | "beat_act3"
+  | "kill_elites"
+  | "kill_bosses"
+  | "ascension"
+  | "encounter_ancients";
+
+export type EpochUnlockReward =
   | "card"
   | "relic"
   | "potion"
@@ -544,7 +563,8 @@ export type EpochUnlockKind =
   | "mode"
   | "act"
   | "ascension"
-  | "story"
+  | "timeline"
+  | "none"
   | "unknown";
 
 export interface CodexEpoch {
@@ -560,14 +580,15 @@ export interface CodexEpoch {
   sortOrder: number;
   storyId: string | null;
   affiliation: EpochAffiliation;
+  affiliations: EpochAffiliation[];
   unlockInfo: string;
   unlockText: string | null;
-  unlockKinds: EpochUnlockKind[];
+  unlockConditions: EpochUnlockCondition[];
+  unlockRewards: EpochUnlockReward[];
   unlocksCards: string[];
   unlocksRelics: string[];
   unlocksPotions: string[];
   expandsTimeline: string[];
-  acts: EventAct[];
   imageUrl: string | null;
 }
 
@@ -577,14 +598,34 @@ export const EPOCH_AFFILIATION_ORDER: EpochAffiliation[] = [
   "regent",
   "necrobinder",
   "defect",
-  "ancient",
+  "neow",
+  "darv",
+  "orobas",
+  "pael",
+  "tanx",
+  "tezcatara",
+  "nonupeipe",
+  "vakuu",
   "world",
   "reopening",
   "spire",
   "unknown",
 ];
 
-export const EPOCH_UNLOCK_KIND_ORDER: EpochUnlockKind[] = [
+export const EPOCH_UNLOCK_CONDITION_ORDER: EpochUnlockCondition[] = [
+  "score",
+  "play_run",
+  "all_characters",
+  "beat_act1",
+  "beat_act2",
+  "beat_act3",
+  "kill_elites",
+  "kill_bosses",
+  "ascension",
+  "encounter_ancients",
+];
+
+export const EPOCH_UNLOCK_REWARD_ORDER: EpochUnlockReward[] = [
   "card",
   "relic",
   "potion",
@@ -594,7 +635,8 @@ export const EPOCH_UNLOCK_KIND_ORDER: EpochUnlockKind[] = [
   "mode",
   "act",
   "ascension",
-  "story",
+  "timeline",
+  "none",
   "unknown",
 ];
 

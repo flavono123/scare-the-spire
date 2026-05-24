@@ -88,7 +88,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     monsters: "몬스터 도감",
     events: "이벤트",
     ancients: "고대의 존재",
-    epochs: "역사",
+    epochs: "연대기",
     historyCourse: "역사 강의서",
   },
   pol: {

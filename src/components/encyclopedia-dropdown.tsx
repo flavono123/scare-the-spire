@@ -12,7 +12,7 @@ const items = [
   { href: "/compendium/enchantments", label: "인챈트" },
   { href: "/compendium/bestiary", label: "몬스터 도감" },
   { href: "/compendium/ancients", label: "고대의 존재" },
-  { href: "/compendium/epochs", label: "역사" },
+  { href: "/compendium/epochs", label: "연대기" },
 ];
 
 export function EncyclopediaDropdown() {

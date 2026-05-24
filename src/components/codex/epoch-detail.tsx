@@ -16,6 +16,7 @@ import type {
   CodexEpoch,
   CodexPotion,
   CodexRelic,
+  EpochAffiliation,
 } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
@@ -23,14 +24,21 @@ import { RichDescription } from "./rich-description";
 import {
   getEpochAffiliationColor,
   getEpochAffiliationLabel,
-  getEpochUnlockKindColor,
-  getEpochUnlockKindLabel,
+  getEpochUnlockConditionColor,
+  getEpochUnlockConditionLabel,
+  getEpochUnlockRewardColor,
+  getEpochUnlockRewardLabel,
 } from "./epoch-display";
 
-const EPOCH_ANCIENT_IDS: Record<string, string[]> = {
-  DARV_EPOCH: ["DARV"],
-  NEOW_EPOCH: ["NEOW"],
-  OROBAS_EPOCH: ["OROBAS"],
+const EPOCH_ANCIENT_AFFILIATION_IDS: Partial<Record<EpochAffiliation, string>> = {
+  darv: "DARV",
+  neow: "NEOW",
+  nonupeipe: "NONUPEIPE",
+  orobas: "OROBAS",
+  pael: "PAEL",
+  tanx: "TANX",
+  tezcatara: "TEZCATARA",
+  vakuu: "VAKUU",
 };
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
@@ -134,7 +142,9 @@ export function EpochDetail({
     .map((potionId) => potionById.get(potionId))
     .filter((potion): potion is CodexPotion => Boolean(potion))
     .map(potionToReferenceTarget);
-  const relatedAncientTargets = (EPOCH_ANCIENT_IDS[epoch.id] ?? [])
+  const relatedAncientTargets = epoch.affiliations
+    .map((affiliation) => EPOCH_ANCIENT_AFFILIATION_IDS[affiliation])
+    .filter((ancientId): ancientId is string => Boolean(ancientId))
     .map((ancientId) => ancientById.get(ancientId))
     .filter((ancient): ancient is CodexAncient => Boolean(ancient))
     .map(ancientToReferenceTarget);
@@ -146,7 +156,6 @@ export function EpochDetail({
   const rootClassName = isModal
     ? "mx-auto w-full max-w-[92rem] p-3 sm:p-4"
     : "mx-auto w-full max-w-[92rem] p-4 sm:p-6";
-  const affiliationLabel = getEpochAffiliationLabel(epoch.affiliation, serviceText, serviceLocale);
   const eraLabel = epoch.eraName
     ? epoch.eraYear ? `${epoch.eraName} ${epoch.eraYear}` : epoch.eraName
     : epoch.eraGroup;
@@ -233,12 +242,25 @@ export function EpochDetail({
           <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
-                <MetaPill value={affiliationLabel} color={getEpochAffiliationColor(epoch.affiliation)} />
-                {epoch.unlockKinds.map((kind) => (
+                {epoch.affiliations.map((affiliation) => (
                   <MetaPill
-                    key={kind}
-                    value={getEpochUnlockKindLabel(kind, serviceLocale)}
-                    color={getEpochUnlockKindColor(kind)}
+                    key={affiliation}
+                    value={getEpochAffiliationLabel(affiliation, serviceText, serviceLocale)}
+                    color={getEpochAffiliationColor(affiliation)}
+                  />
+                ))}
+                {epoch.unlockConditions.map((condition) => (
+                  <MetaPill
+                    key={condition}
+                    value={getEpochUnlockConditionLabel(condition, serviceLocale)}
+                    color={getEpochUnlockConditionColor(condition)}
+                  />
+                ))}
+                {epoch.unlockRewards.map((reward) => (
+                  <MetaPill
+                    key={reward}
+                    value={getEpochUnlockRewardLabel(reward, serviceLocale)}
+                    color={getEpochUnlockRewardColor(reward)}
                   />
                 ))}
               </div>

@@ -40,7 +40,7 @@ const sts2Items = [
   { href: "/compendium/bestiary", labelKey: "monsters", icon: "/images/sts2/nav/happy_cultist.png" },
   { href: "/compendium/events", labelKey: "events", icon: "/images/sts2/nav/question_mark.png" },
   { href: "/compendium/ancients", labelKey: "ancients", icon: "/images/sts2/nav/stats_ancients.png" },
-  { href: "/compendium/epochs", labelKey: "epochs", icon: "/images/sts2/relics/history_course.webp" },
+  { href: "/compendium/epochs", labelKey: "epochs", icon: "/images/sts2/relics/astrolabe.webp" },
 ] as const;
 
 const sts1Items = [
