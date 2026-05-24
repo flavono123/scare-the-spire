@@ -158,8 +158,7 @@ async function renderEncounter({ id, config, outputPath, baseUrl, browser }) {
   }
 
   const tmpBase = path.join(os.tmpdir(), `sts2-encounter-render-${id.toLowerCase()}-${Date.now()}`);
-  const tmpBlackPng = `${tmpBase}-black.png`;
-  const tmpWhitePng = `${tmpBase}-white.png`;
+  const tmpPng = `${tmpBase}.png`;
   const page = await browser.newPage({
     viewport: { width: config.stageWidth, height: config.stageHeight },
     deviceScaleFactor: 1,
@@ -171,20 +170,18 @@ async function renderEncounter({ id, config, outputPath, baseUrl, browser }) {
         console.warn(`${id} browser error: ${message.text()}`);
       }
     });
-    await captureMatte(page, `${baseUrl}/render/${id}?bg=000000`, tmpBlackPng);
-    await captureMatte(page, `${baseUrl}/render/${id}?bg=ffffff`, tmpWhitePng);
-    writeWebpFromMattes(tmpBlackPng, tmpWhitePng, outputPath, args.padding);
+    await captureTransparent(page, `${baseUrl}/render/${id}`, tmpPng);
+    writeCroppedWebpFromPng(tmpPng, outputPath, args.padding);
   } finally {
     await page.close();
-    fs.rmSync(tmpBlackPng, { force: true });
-    fs.rmSync(tmpWhitePng, { force: true });
+    fs.rmSync(tmpPng, { force: true });
   }
 }
 
-async function captureMatte(page, url, outputPath) {
+async function captureTransparent(page, url, outputPath) {
   await page.goto(url);
   await page.evaluate(() => window.renderDone);
-  await page.screenshot({ path: outputPath, omitBackground: false });
+  await page.screenshot({ path: outputPath, omitBackground: true });
 }
 
 function createStaticServer() {
@@ -212,7 +209,7 @@ function createStaticServer() {
         return;
       }
       response.setHeader("content-type", "text/html; charset=utf-8");
-      response.end(renderHtml(config, normalizeBackground(requestUrl.searchParams.get("bg"))));
+      response.end(renderHtml(config));
       return;
     }
 
@@ -225,7 +222,7 @@ function createStaticServer() {
   });
 }
 
-function renderHtml(config, background) {
+function renderHtml(config) {
   const partNodes = config.parts.map((part, index) => (
     `<div id="part-${index}" class="part" style="left:${part.left}px;top:${part.top}px;width:${part.width}px;height:${part.height}px;z-index:${part.zIndex};--scale:${part.scale}"></div>`
   )).join("");
@@ -240,7 +237,7 @@ function renderHtml(config, background) {
       width: ${config.stageWidth}px;
       height: ${config.stageHeight}px;
       overflow: hidden;
-      background: #${background};
+      background: transparent;
     }
     #stage {
       position: relative;
@@ -302,7 +299,7 @@ function renderHtml(config, background) {
 </html>`;
 }
 
-function writeWebpFromMattes(blackPng, whitePng, outputPath, padding) {
+function writeCroppedWebpFromPng(inputPng, outputPath, padding) {
   const result = spawnSync(
     "python3",
     [
@@ -311,24 +308,9 @@ function writeWebpFromMattes(blackPng, whitePng, outputPath, padding) {
 from PIL import Image
 import sys
 
-black_src, white_src, dst, raw_padding = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+src, dst, raw_padding = sys.argv[1], sys.argv[2], sys.argv[3]
 padding = int(raw_padding)
-black = Image.open(black_src).convert("RGB")
-white = Image.open(white_src).convert("RGB")
-if black.size != white.size:
-    raise SystemExit("matte screenshots have different sizes")
-
-pixels = []
-for black_pixel, white_pixel in zip(black.getdata(), white.getdata()):
-    diff = max(max(0, white_pixel[channel] - black_pixel[channel]) for channel in range(3))
-    alpha = max(0, min(255, 255 - diff))
-    if alpha == 0:
-        pixels.append((0, 0, 0, 0))
-    else:
-        pixels.append(tuple(max(0, min(255, round(black_pixel[channel] * 255 / alpha))) for channel in range(3)) + (alpha,))
-
-image = Image.new("RGBA", black.size)
-image.putdata(pixels)
+image = Image.open(src).convert("RGBA")
 bbox = image.getchannel("A").getbbox()
 if bbox is None:
     raise SystemExit("rendered image is fully transparent")
@@ -340,8 +322,7 @@ bottom = min(image.height, bottom + padding)
 cropped = image.crop((left, top, right, bottom))
 cropped.save(dst, "WEBP", lossless=True, quality=95, method=6, exact=True)
 `,
-      blackPng,
-      whitePng,
+      inputPng,
       outputPath,
       String(padding),
     ],
@@ -358,11 +339,6 @@ cropped.save(dst, "WEBP", lossless=True, quality=95, method=6, exact=True)
   if (result.status !== 0) {
     throw new Error(result.stderr || result.stdout || "failed to crop rendered portrait");
   }
-}
-
-function normalizeBackground(raw) {
-  if (raw && /^[0-9a-fA-F]{6}$/.test(raw)) return raw.toLowerCase();
-  return "000000";
 }
 
 function ensurePillowAvailable() {
