@@ -24,7 +24,7 @@ const kreon = localFont({
 });
 
 const gcBatang = localFont({
-  src: "../../public/fonts/GyeonggiCheonnyeonBatangBold.ttf",
+  src: "../../public/fonts/GyeonggiCheonnyeonBatangBold.woff2",
   variable: "--font-gc-batang",
   weight: "700",
 });
