@@ -126,6 +126,20 @@ pnpm lint
 
 For tooltip/link changes, inspect the patch detail page in the browser and hover several cards, relics, powers, and unknown keyword-only highlights.
 
+For ready-state patch page changes, run `$mobile-viewport-qa` after the browser smoke checks on both `/patches` and `/patches/{version}`. Use `main` as the render selector and a non-matching controls selector unless the page has a route-specific QA selector:
+
+```bash
+node .codex/skills/mobile-viewport-qa/scripts/check-mobile-route.mjs \
+  --route /patches \
+  --render-selector main \
+  --controls-selector "[data-mobile-qa-none]"
+
+node .codex/skills/mobile-viewport-qa/scripts/check-mobile-route.mjs \
+  --route /patches/0.106.0 \
+  --render-selector main \
+  --controls-selector "[data-mobile-qa-none]"
+```
+
 ## Developer Notes
 
 Only include developer intent/commentary in the Korean rich file:
