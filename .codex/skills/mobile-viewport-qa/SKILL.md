@@ -15,6 +15,21 @@ Use this skill for mobile layout QA in this repository, especially when a page w
 4. Inspect failures and screenshots under `/tmp/mobile-viewport-qa/<timestamp>`.
 5. Fix the page, then rerun the same command.
 
+## Hook Contract
+
+Other project skills should call this as their final visual QA hook when they changed mobile-sensitive UI, render surfaces, detail rails, hover previews, patch pages, or page-level layout.
+
+Use stable `data-*` selectors when the route has interactive state to verify. For generic visual routes without a separate control block, skip the vertical-order assertion by passing a selector that should not exist:
+
+```bash
+node .codex/skills/mobile-viewport-qa/scripts/check-mobile-route.mjs \
+  --route /compendium/cards \
+  --render-selector main \
+  --controls-selector "[data-mobile-qa-none]"
+```
+
+Do not replace feature-specific checks with this hook. Run it after narrow lint/build/interaction checks so mobile layout failures are caught before final reporting.
+
 ## Profile Page QA
 
 For `/profile`, verify that:
