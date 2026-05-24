@@ -17,6 +17,7 @@ Read only the files needed for the target resource.
 - Relic reference implementation: `src/components/codex/relic-detail.tsx`, `src/components/codex/relic-library.tsx`, `src/components/codex/relic-tile.tsx`
 - Shared UI/data helpers: `src/components/codex/hover-tip.tsx`, `src/components/codex/entity-reference-links.tsx`, `src/components/codex/sts2-change-history.tsx`, `src/components/patch-note-renderer.tsx`
 - Data loaders and version diffs: `src/lib/data.ts`, `src/lib/entity-versioning.ts`
+- Mobile QA hook: `.codex/skills/mobile-viewport-qa/SKILL.md`
 
 ## Product Language
 
@@ -94,3 +95,5 @@ For visual changes, use browser/Playwright smoke checks on:
 - The direct `/compendium/.../[id]` route.
 - A right-edge or bottom-edge hover target.
 - A patch-note or related-resource keyword hover.
+
+Then run `$mobile-viewport-qa` as the final layout hook for every changed list/detail route that has mobile-visible UI. Use stable route-specific selectors when available; otherwise use `main` with a non-matching controls selector as documented in `.codex/skills/mobile-viewport-qa/SKILL.md`.
