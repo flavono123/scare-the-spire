@@ -50,7 +50,7 @@ _INT_PROP_PLAIN_RE = re.compile(
     r"(?:public|private|protected)\s+(?:static\s+)?int\s+(?P<name>\w+)\s*=>\s*(?P<val>\d+)\s*;"
 )
 _MOVESTATE_START_RE = re.compile(r'new\s+MoveState\(\s*"(?P<id>\w+)"')
-_INTENT_RE = re.compile(r"new\s+(?P<kind>\w+Intent)\s*\((?P<args>[^)]*)\)")
+_INTENT_START_RE = re.compile(r"new\s+(?P<kind>\w+Intent)\s*\(")
 _MOVE_VAR_RE = re.compile(r"MoveState\s+(?P<var>\w+)\s*=.*?new\s+MoveState\(\s*\"(?P<id>\w+)\"", re.DOTALL)
 _RANDOM_BRANCH_VAR_RE = re.compile(r"RandomBranchState\s+(?P<var>\w+)\s*=.*?new\s+RandomBranchState\(\s*\"(?P<id>\w+)\"", re.DOTALL)
 _CONDITIONAL_BRANCH_VAR_RE = re.compile(r"ConditionalBranchState\s+(?P<var>\w+)\s*=.*?new\s+ConditionalBranchState\(\s*\"(?P<id>\w+)\"", re.DOTALL)
@@ -496,6 +496,53 @@ def numeric_value(expr: str, int_props: dict[str, dict]) -> dict | None:
     return None
 
 
+def normalize_lambda_expr(expr: str) -> str:
+    expr = expr.strip()
+    if expr.startswith("() =>"):
+        return expr[5:].strip()
+    return expr
+
+
+def intent_value_key(expr: str, suffix: str) -> str:
+    expr = normalize_lambda_expr(expr).strip()
+    if expr.endswith(suffix):
+        return expr[:-len(suffix)]
+    return expr
+
+
+def iter_intent_constructors(text: str):
+    for match in _INTENT_START_RE.finditer(text):
+        open_paren = text.find("(", match.start(), match.end())
+        if open_paren < 0:
+            continue
+        close_paren = _balanced_span(text, open_paren)
+        if close_paren < 0:
+            continue
+        yield match.group("kind"), text[open_paren + 1 : close_paren]
+
+
+def parse_intent_detail(kind: str, args: list[str], int_props: dict[str, dict]) -> dict:
+    detail: dict = {"type": kind}
+    if not args:
+        return detail
+
+    first = normalize_lambda_expr(args[0])
+    if kind in ("SingleAttackIntent", "MultiAttackIntent", "DeathBlowIntent", "AttackIntent"):
+        detail["damage_key"] = intent_value_key(first, "Damage")
+        if kind == "MultiAttackIntent" and len(args) > 1:
+            repeat_expr = normalize_lambda_expr(args[1])
+            repeat = numeric_value(repeat_expr, int_props)
+            detail["repeat"] = repeat
+            if repeat is None:
+                detail["repeat_expression"] = repeat_expr
+        else:
+            detail["repeat"] = {"normal": 1, "ascension": None}
+    elif kind == "DefendIntent":
+        detail["block_key"] = intent_value_key(first, "Block")
+
+    return detail
+
+
 def power_id_from_class(class_name: str) -> str:
     cls = class_name[:-len("Power")] if class_name.endswith("Power") else class_name
     return re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", cls).upper()
@@ -615,13 +662,14 @@ def parse_moves_and_damage(text: str) -> tuple[list[str], dict, dict, dict]:
         method_name = constructor_args[1] if len(constructor_args) > 1 else None
         action_types: list[str] = []
         intents: list[str] = []
-        for intent_match in _INTENT_RE.finditer(body):
-            kind = intent_match.group("kind")
+        intent_details: list[dict] = []
+        for kind, args_text in iter_intent_constructors(body):
             intents.append(kind)
             action_type = INTENT_ACTION_TYPES.get(kind, "special")
             if action_type not in action_types:
                 action_types.append(action_type)
-            args = [a.strip() for a in intent_match.group("args").split(",") if a.strip()]
+            args = split_top_level_args(args_text)
+            intent_details.append(parse_intent_detail(kind, args, int_props))
             if not args:
                 continue
             first = args[0]
@@ -653,6 +701,7 @@ def parse_moves_and_damage(text: str) -> tuple[list[str], dict, dict, dict]:
         move_metadata[stripped_move_id] = {
             "action_types": action_types,
             "intents": intents,
+            "intent_details": intent_details,
             "power_applications": power_applications,
             "card_applications": card_applications,
         }
@@ -725,6 +774,7 @@ def build_entries(
                         "name": resolve_move_title(lnode, mid) or stripped.replace("_", " ").title(),
                         "action_types": metadata.get("action_types", []),
                         "intents": metadata.get("intents", []),
+                        "intent_details": metadata.get("intent_details", []),
                         "power_applications": metadata.get("power_applications", []),
                         "card_applications": metadata.get("card_applications", []),
                     })
@@ -741,6 +791,7 @@ def build_entries(
                         ),
                         "action_types": metadata.get("action_types", []),
                         "intents": metadata.get("intents", []),
+                        "intent_details": metadata.get("intent_details", []),
                         "power_applications": metadata.get("power_applications", []),
                         "card_applications": metadata.get("card_applications", []),
                     })
