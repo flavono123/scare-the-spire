@@ -64,6 +64,7 @@ export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "
             alt={resource.name}
             width={56}
             height={56}
+            loading="lazy"
             className="w-full h-full object-contain drop-shadow-md"
           />
         ) : (
