@@ -153,6 +153,23 @@ export function EncounterDetail({
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[28rem] flex-col items-center justify-center gap-5 py-4">
+          {encounter.imageUrl && (
+            <div className="relative flex h-48 w-full max-w-4xl items-center justify-center sm:h-64">
+              <div
+                className="absolute bottom-8 left-[14%] right-[14%] h-8 rounded-[50%] blur-xl"
+                style={{ backgroundColor: `${roomConfig.color}22` }}
+              />
+              <Image
+                src={encounter.imageUrl}
+                alt={encounter.name}
+                width={960}
+                height={360}
+                priority
+                className="relative z-10 max-h-full max-w-full object-contain drop-shadow-[0_24px_30px_rgba(0,0,0,0.5)]"
+              />
+            </div>
+          )}
+
           <div className="flex w-full flex-wrap items-end justify-center gap-x-6 gap-y-4">
             {uniqueMonsters.map((monsterRef) => {
               const monster = monsterById.get(monsterRef.id);
