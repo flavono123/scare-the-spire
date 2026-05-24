@@ -87,6 +87,11 @@ interface MoveAttackMetric {
   ascensionLabel: string | null;
 }
 
+interface AttackRepeatInfo {
+  value: DamageValue | null;
+  isMulti: boolean;
+}
+
 type PatternKind = "fixed" | "random" | "conditional" | "mixed" | "unknown";
 
 interface PatternPhase {
@@ -1286,14 +1291,14 @@ function getMonsterIntentKind(intent: string): MonsterIntentKind {
 
 function getMonsterIntentIcon(kind: MonsterIntentKind, summary: MoveSummary, intent: MonsterMoveIntentDetail): string {
   if (kind === "attack") {
-    return getAttackIntentIcon(summary.damageEntry, getIntentRepeat(intent));
+    return getAttackIntentIcon(summary.damageEntry, getIntentRepeatInfo(intent));
   }
   return MONSTER_INTENT_ICONS[kind];
 }
 
 function getMonsterIntentPreviewLabel(intent: MonsterMoveIntentDetail, kind: MonsterIntentKind, summary: MoveSummary): string | null {
   if (kind === "attack" || kind === "deathBlow") {
-    return formatAttackMetricLabel(summary.damageEntry, getIntentRepeat(intent), "normal");
+    return formatAttackMetricLabel(summary.damageEntry, getIntentRepeatInfo(intent), "normal");
   }
 
   if (kind === "statusCard") {
@@ -1310,7 +1315,7 @@ function getMoveAttackMetric(summary: MoveSummary): MoveAttackMetric | null {
 }
 
 function buildAttackMetric(value: DamageValue, intent: MonsterMoveIntentDetail | null): MoveAttackMetric {
-  const repeat = getIntentRepeat(intent);
+  const repeat = getIntentRepeatInfo(intent);
   return {
     value,
     icon: getAttackIntentIcon(value, repeat),
@@ -1326,25 +1331,29 @@ function getPrimaryAttackIntent(move: MonsterMove): MonsterMoveIntentDetail | nu
   }) ?? null;
 }
 
-function getIntentRepeat(intent: MonsterMoveIntentDetail | null): DamageValue | null {
-  if (!intent) return null;
-  if (intent.repeat) return intent.repeat;
+function getIntentRepeatInfo(intent: MonsterMoveIntentDetail | null): AttackRepeatInfo {
+  if (!intent) return { value: null, isMulti: false };
+  if (intent.repeat) return { value: intent.repeat, isMulti: intent.type === "MultiAttackIntent" };
+  if (intent.type === "MultiAttackIntent") return { value: null, isMulti: true };
   const kind = getMonsterIntentKind(intent.type);
-  return kind === "attack" || kind === "deathBlow" ? SINGLE_ATTACK_REPEAT : null;
+  return kind === "attack" || kind === "deathBlow"
+    ? { value: SINGLE_ATTACK_REPEAT, isMulti: false }
+    : { value: null, isMulti: false };
 }
 
 function formatAttackMetricLabel(
   damage: DamageValue | null,
-  repeat: DamageValue | null,
+  repeat: AttackRepeatInfo,
   mode: "normal" | "ascension",
 ): string | null {
   const damageValue = getDamageModeValue(damage, mode);
   if (damageValue == null) return null;
-  const repeatValue = getDamageModeValue(repeat, mode) ?? 1;
-  return repeatValue > 1 ? `${damageValue}x${repeatValue}` : String(damageValue);
+  const repeatValue = getDamageModeValue(repeat.value, mode);
+  if (repeat.isMulti) return `${damageValue}x${repeatValue ?? "?"}`;
+  return String(damageValue);
 }
 
-function getAttackIntentIcon(damage: DamageValue | null, repeat: DamageValue | null): string {
+function getAttackIntentIcon(damage: DamageValue | null, repeat: AttackRepeatInfo): string {
   const totalDamage = getAttackTotalDamage(damage, repeat, "normal")
     ?? getAttackTotalDamage(damage, repeat, "ascension")
     ?? 10;
@@ -1353,12 +1362,12 @@ function getAttackIntentIcon(damage: DamageValue | null, repeat: DamageValue | n
 
 function getAttackTotalDamage(
   damage: DamageValue | null,
-  repeat: DamageValue | null,
+  repeat: AttackRepeatInfo,
   mode: "normal" | "ascension",
 ): number | null {
   const damageValue = getDamageModeValue(damage, mode);
   if (damageValue == null) return null;
-  const repeatValue = getDamageModeValue(repeat, mode) ?? 1;
+  const repeatValue = getDamageModeValue(repeat.value, mode) ?? 1;
   return damageValue * repeatValue;
 }
 
