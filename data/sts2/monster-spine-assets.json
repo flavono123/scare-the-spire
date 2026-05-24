@@ -1789,17 +1789,8 @@
       "normal",
       "phobia"
     ],
-    "skinVariants": [
-      {
-        "id": "normal",
-        "label": "normal",
-        "attachmentCount": 4
-      },
-      {
-        "id": "phobia",
-        "label": "phobia",
-        "attachmentCount": 2
-      }
+    "defaultSkinCombination": [
+      "normal"
     ],
     "animations": [
       "attack",
@@ -2219,17 +2210,8 @@
       "normal",
       "phobia"
     ],
-    "skinVariants": [
-      {
-        "id": "normal",
-        "label": "normal",
-        "attachmentCount": 2
-      },
-      {
-        "id": "phobia",
-        "label": "phobia",
-        "attachmentCount": 2
-      }
+    "defaultSkinCombination": [
+      "normal"
     ],
     "animations": [
       "attack",
@@ -4535,17 +4517,8 @@
       "normal",
       "phobia"
     ],
-    "skinVariants": [
-      {
-        "id": "normal",
-        "label": "normal",
-        "attachmentCount": 7
-      },
-      {
-        "id": "phobia",
-        "label": "phobia",
-        "attachmentCount": 7
-      }
+    "defaultSkinCombination": [
+      "normal"
     ],
     "animations": [
       "attack",
@@ -5717,17 +5690,8 @@
       "normal",
       "phobia"
     ],
-    "skinVariants": [
-      {
-        "id": "normal",
-        "label": "normal",
-        "attachmentCount": 34
-      },
-      {
-        "id": "phobia",
-        "label": "phobia",
-        "attachmentCount": 2
-      }
+    "defaultSkinCombination": [
+      "normal"
     ],
     "animations": [
       "attack",
@@ -6390,17 +6354,8 @@
       "normal",
       "phobia"
     ],
-    "skinVariants": [
-      {
-        "id": "normal",
-        "label": "normal",
-        "attachmentCount": 3
-      },
-      {
-        "id": "phobia",
-        "label": "phobia",
-        "attachmentCount": 2
-      }
+    "defaultSkinCombination": [
+      "normal"
     ],
     "animations": [
       "attack",

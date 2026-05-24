@@ -110,6 +110,9 @@ const MONSTER_SKIN_PARTS = {
   ],
 };
 
+const BASE_COMPOSITE_SKIN_BY_NAME = new Set(["normal"]);
+const INTERNAL_SKIN_NAMES = new Set(["normal", "phobia"]);
+
 const VFX_ALIASES = {
   VFX_CHAIN: "vfx_chain",
   VFX_FLYING_SLASH: "vfx_flying_slash",
@@ -418,6 +421,15 @@ function buildDefaultSkinCombination(skinParts) {
   return skinParts.map((part) => part.options[0]?.id).filter(Boolean);
 }
 
+function buildBaseSkinCombination(actor, alias, skinParts) {
+  if (alias?.tags?.includes("shared-actor")) return [];
+  if (skinParts.length > 0) return buildDefaultSkinCombination(skinParts);
+
+  return actor.skins
+    .filter((skin) => BASE_COMPOSITE_SKIN_BY_NAME.has(skin) && (actor.skinAttachmentCounts[skin] ?? 0) > 0)
+    .sort();
+}
+
 function buildSkinVariants(actor, alias, skinParts) {
   if (alias?.tags?.includes("shared-actor")) return [];
   if (skinParts.length > 0) {
@@ -433,6 +445,7 @@ function buildSkinVariants(actor, alias, skinParts) {
   const variants = actor.skins
     .filter((skin) => {
       if (skin === "default") return false;
+      if (INTERNAL_SKIN_NAMES.has(skin)) return false;
       if (skin === selectedSkin) return true;
       return (actor.skinAttachmentCounts[skin] ?? 0) > 0;
     })
@@ -452,7 +465,7 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
   const moves = monster.bestiary_moves ?? monster.moves ?? [];
   const usableVfxIds = new Set([...vfxById.keys()]);
   const skinParts = buildSkinParts(monster.id, actor, alias);
-  const defaultSkinCombination = buildDefaultSkinCombination(skinParts);
+  const defaultSkinCombination = buildBaseSkinCombination(actor, alias, skinParts);
   const skinVariants = buildSkinVariants(actor, alias, skinParts);
   const moveAnimations = Object.fromEntries(
     moves.map((move) => [move.id, moveAnimationCandidates(monster, move, animationNames, idleAnimation)]),
