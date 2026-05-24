@@ -1715,28 +1715,44 @@ interface RawEncounter {
   deprecatedInPatch?: string;
 }
 
+const ENCOUNTER_IMAGE_OVERRIDES: Record<string, string> = {
+  DECIMILLIPEDE_ELITE: "/images/sts2/encounters-render/decimillipede_elite.webp",
+  KAISER_CRAB_BOSS: "/images/sts2/monsters-render/kaiser_crab.webp",
+};
+
+const ENCOUNTER_MONSTER_REF_OVERRIDES: Record<string, string> = {
+  DECIMILLIPEDE_SEGMENT_BACK: "DECIMILLIPEDE_SEGMENT",
+  DECIMILLIPEDE_SEGMENT_FRONT: "DECIMILLIPEDE_SEGMENT",
+  DECIMILLIPEDE_SEGMENT_MIDDLE: "DECIMILLIPEDE_SEGMENT",
+};
+
 function mapEncounter(
   kor: RawEncounter,
   eng: RawEncounter,
   bossImages: Set<string>,
   gameEncounters: GameLocalizationTable,
   gameMonsters: GameLocalizationTable,
+  engGameMonsters: GameLocalizationTable,
   gameLocale: GameLocale,
 ): CodexEncounter {
-  const monsters: EncounterMonsterRef[] = kor.monsters.map((km, i) => ({
-    id: km.id,
-    name: gameText(
-      gameMonsters,
-      `${km.id}.name`,
-      gameTitleFallback(km.name, eng.monsters[i]?.name ?? km.name, gameLocale),
-    ),
-    nameEn: eng.monsters[i]?.name ?? km.name,
-  }));
+  const monsters: EncounterMonsterRef[] = kor.monsters.map((km, i) => {
+    const displayId = ENCOUNTER_MONSTER_REF_OVERRIDES[km.id] ?? km.id;
+    const nameEn = gameText(engGameMonsters, `${displayId}.name`, eng.monsters[i]?.name ?? km.name);
+    return {
+      id: displayId,
+      name: gameText(
+        gameMonsters,
+        `${displayId}.name`,
+        gameTitleFallback(km.name, nameEn, gameLocale),
+      ),
+      nameEn,
+    };
+  });
 
   // Check for boss encounter image
-  let imageUrl: string | null = null;
+  let imageUrl: string | null = ENCOUNTER_IMAGE_OVERRIDES[kor.id] ?? null;
   const idLower = kor.id.toLowerCase();
-  if (bossImages.has(idLower)) {
+  if (!imageUrl && bossImages.has(idLower)) {
     imageUrl = `/images/sts2/bosses/${idLower}.webp`;
   }
 
@@ -1756,18 +1772,19 @@ function mapEncounter(
 
 export async function getCodexEncounters(opts?: { gameLocale?: GameLocale }): Promise<CodexEncounter[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korEncounters, engEncounters, bossFiles, gameEncounters, gameMonsters] = await Promise.all([
+  const [korEncounters, engEncounters, bossFiles, gameEncounters, gameMonsters, engGameMonsters] = await Promise.all([
     readJson<RawEncounter[]>("kor/encounters.json"),
     readJson<RawEncounter[]>("eng/encounters.json"),
     scanImageSlugs("bosses"),
     readGameLocalizationTable(gameLocale, "encounters"),
     readGameLocalizationTable(gameLocale, "monsters"),
+    readGameLocalizationTable("eng", "monsters"),
   ]);
 
   const engById = new Map(engEncounters.map((e) => [e.id, e]));
 
   return korEncounters.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapEncounter(kor, eng, bossFiles, gameEncounters, gameMonsters, gameLocale);
+    return mapEncounter(kor, eng, bossFiles, gameEncounters, gameMonsters, engGameMonsters, gameLocale);
   });
 }
