@@ -31,6 +31,7 @@ export function AncientNodeRender({
         sizes={sizes}
         className="scale-[1.08] object-contain drop-shadow-[0_0_18px_rgba(96,165,250,0.45)]"
         priority={imagePriority}
+        loading={imagePriority ? "eager" : "lazy"}
       />
       <Image
         src={outlineImageUrl}
@@ -39,6 +40,7 @@ export function AncientNodeRender({
         sizes={sizes}
         className="object-contain brightness-0"
         priority={imagePriority}
+        loading={imagePriority ? "eager" : "lazy"}
       />
       <Image
         src={imageUrl}
@@ -47,6 +49,7 @@ export function AncientNodeRender({
         sizes={sizes}
         className="object-contain drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]"
         priority={imagePriority}
+        loading={imagePriority ? "eager" : "lazy"}
       />
     </div>
   );
