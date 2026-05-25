@@ -16,6 +16,7 @@ import {
   type MonsterSkinSelections,
 } from "@/lib/monster-skins";
 import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
+import { DecimillipedeSpineStage } from "@/components/codex/decimillipede-spine-stage";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 
 interface DevMonsterSpinePreviewProps {
@@ -73,7 +74,15 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)]">
         <section className="overflow-hidden rounded-lg border border-white/10 bg-[#18182b]">
           <div className="relative flex min-h-[28rem] items-center justify-center overflow-hidden border-b border-white/10 px-4 py-6 sm:min-h-[36rem]">
-            {imageSrc ? (
+            {monster.id === "DECIMILLIPEDE_SEGMENT" ? (
+              <DecimillipedeSpineStage
+                fallbackImageUrl={imageSrc}
+                monsterName={monster.name}
+                selectedMoveId={selectedActionId}
+                selectedMoveNonce={selectedActionState.nonce}
+                className="relative z-10 h-[24rem] w-full sm:h-[34rem]"
+              />
+            ) : imageSrc ? (
               <MonsterSpineStage
                 key={`${monster.id}-${activeSkinKey}-${selectedActionId ?? "idle"}-${selectedActionState.nonce}`}
                 asset={asset}
@@ -166,9 +175,8 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
             <div className="rounded-lg border border-sky-400/20 bg-sky-400/5 p-4">
               <h2 className="mb-2 text-sm font-semibold text-sky-200">만각지네 Spine 진단</h2>
               <div className="space-y-2 text-xs leading-relaxed text-zinc-400">
-                <p>게임 DLL에서 `ShouldShowInCompendium`가 false라 기본 Spine 인덱싱 대상에서 제외됩니다.</p>
-                <p>PCK에는 `decimillipede1/2/3.skel`과 `front/middle/back.atlas`가 따로 있고, Godot scene이 세 세그먼트를 조합합니다.</p>
-                <p>현재 추출기는 `.tres`의 skeleton-data 매핑을 해석하지 않아 `rockstone` actor만 단독 추출합니다.</p>
+                <p>게임 DLL에서 개별 Segment는 `ShouldShowInCompendium`가 false이고, 도감은 `DECIMILLIPEDE_ELITE` encounter 특수 레이아웃으로 세 Segment를 조합합니다.</p>
+                <p>이 미리보기는 `decimillipede_front`, `decimillipede_middle`, `decimillipede_back` Spine actor를 동시에 올려 사이트 쪽 특수 렌더를 검증합니다.</p>
               </div>
             </div>
           )}
