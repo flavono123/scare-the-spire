@@ -46,7 +46,7 @@ const ENCOUNTER_CONFIGS = {
         bones: {
           link_r_3: { x: 286.667, y: 275.556 },
         },
-        zIndex: 30,
+        zIndex: 10,
       },
       {
         folder: "decimillipede_middle",
@@ -71,7 +71,7 @@ const ENCOUNTER_CONFIGS = {
         bones: {
           link_l_1: { x: -344.445, y: 228.889 },
         },
-        zIndex: 10,
+        zIndex: 30,
       },
     ],
   },

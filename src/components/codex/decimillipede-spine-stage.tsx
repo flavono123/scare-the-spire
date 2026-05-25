@@ -96,7 +96,7 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     boneTargets: {
       link_r_3: { x: 286.667, y: 275.556 },
     },
-    zIndex: 30,
+    zIndex: 10,
   },
   {
     id: "segment2-middle-model",
@@ -141,7 +141,7 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     boneTargets: {
       link_l_1: { x: -344.445, y: 228.889 },
     },
-    zIndex: 10,
+    zIndex: 30,
   },
 ];
 
