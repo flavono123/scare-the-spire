@@ -224,6 +224,45 @@ function getCardDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
+function isCardUpgradeRecord(value: unknown): value is NonNullable<CodexCard["upgrade"]> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function getRemovedUpgradePreviewCard(
+  card: CodexCard,
+  versionDiffs?: EntityVersionDiff[],
+): CodexCard {
+  if (hasCardUpgrade(card)) return card;
+
+  const cardDiffs = versionDiffs?.filter(
+    (versionDiff) => versionDiff.entityType === "card" && versionDiff.entityId === card.id,
+  ) ?? [];
+  const removedUpgradeDiff = cardDiffs
+    .flatMap((versionDiff) => versionDiff.diffs)
+    .find((diff) => (
+      diff.field === "upgrade" &&
+      isCardUpgradeRecord(diff.before) &&
+      diff.after === null
+    ));
+
+  if (!removedUpgradeDiff || !isCardUpgradeRecord(removedUpgradeDiff.before)) return card;
+
+  const removedMaxLevelDiff = cardDiffs
+    .flatMap((versionDiff) => versionDiff.diffs)
+    .find((diff) => (
+      diff.field === "maxUpgradeLevel" &&
+      typeof diff.before === "number"
+    ));
+
+  return {
+    ...card,
+    upgrade: { ...removedUpgradeDiff.before },
+    maxUpgradeLevel: typeof removedMaxLevelDiff?.before === "number"
+      ? removedMaxLevelDiff.before
+      : 1,
+  };
+}
+
 export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedPotions = [], relatedPowers = [], patches, changes, versionDiffs, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getCardDetailLabels(serviceLocale);
@@ -262,6 +301,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
       card.typeLabel,
     )
     : card;
+  const upgradePreviewCard = getRemovedUpgradePreviewCard(previewCard, versionDiffs);
 
   // 게임 CanEnchant 룰 그대로 적용 (카드별 가능 인챈트만 표시)
   const eligibleEnchantments = enchantments.filter((e) => canEnchantCard(e, previewCard));
@@ -276,8 +316,8 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   const hoveredAfflictionAmount = getAfflictionPreviewAmount(hoveredAffliction);
 
   const cardWidth = isDesktop ? CARD_WIDTH_PRESET.detail : CARD_WIDTH_PRESET.hover;
-  const canShowUpgrade = hasCardUpgrade(previewCard);
-  const maxUpgradeLevel = getCardMaxUpgradeLevel(previewCard);
+  const canShowUpgrade = hasCardUpgrade(upgradePreviewCard);
+  const maxUpgradeLevel = getCardMaxUpgradeLevel(upgradePreviewCard);
   const selectableMaxUpgradeLevel = Math.min(
     maxUpgradeLevel,
     CARD_DETAIL_UPGRADE_LEVEL_CAP,
@@ -361,7 +401,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     ...activeAddedKeywords,
     ...activeAfflictionAddedKeywords.filter((keyword) => !activeAddedKeywords.includes(keyword)),
   ];
-  const activeForcedCostWithAffliction = getAfflictionForcedCost(activeAffliction, previewCard, {
+  const activeForcedCostWithAffliction = getAfflictionForcedCost(activeAffliction, upgradePreviewCard, {
     showUpgrade,
     enchantForcedCost: activeForcedCost,
     amount: activeAfflictionAmount,
@@ -555,7 +595,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
             }}
           >
           <CardTile
-            card={previewCard}
+            card={upgradePreviewCard}
             serviceLocale={serviceLocale}
             showUpgrade={showUpgrade}
             upgradeLevel={effectiveUpgradeLevel}
