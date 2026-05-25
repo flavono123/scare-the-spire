@@ -755,6 +755,7 @@ function PatternMoveStateNode({
   const standaloneIntents = moveSummary ? getStandaloneMoveIntentItems(moveSummary) : [];
   const hasApplications = Boolean(move && (move.powerApplications.length > 0 || move.cardApplications.length > 0));
   const hasPrimaryContent = Boolean(attackMetric || blockEntry || hasApplications || standaloneIntents.length > 0);
+  const showStateName = Boolean(move && !attackMetric && !blockEntry && !hasApplications);
   const title = move ? `${move.name}${move.nameEn !== move.name ? ` / ${move.nameEn}` : ""}` : getMoveName(monster, node.id);
 
   return (
@@ -828,7 +829,7 @@ function PatternMoveStateNode({
             />
           </span>
         )}
-        {move && !hasPrimaryContent && (
+        {move && (showStateName || !hasPrimaryContent) && (
           <span className="font-game-title max-w-full truncate text-xs font-bold text-gray-100">
             {move.name}
           </span>
