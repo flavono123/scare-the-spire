@@ -842,6 +842,7 @@ export interface CodexMonster {
   blockValues: Record<string, DamageValue> | null;
   imageUrl: string | null;       // Spine render portrait (512x512)
   bossImageUrl: string | null;   // boss encounter token icon (bosses/ dir)
+  phobiaModeImageUrl: string | null;
   spineAsset: MonsterSpineAsset | null;
 }
 

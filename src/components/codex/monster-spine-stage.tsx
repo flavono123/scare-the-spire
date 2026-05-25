@@ -13,6 +13,9 @@ interface MonsterSpineStageProps {
   selectedMoveNonce?: number;
   selectedSkin?: string | null;
   selectedSkins?: readonly string[] | null;
+  showPhobiaMode?: boolean;
+  phobiaModeImageUrl?: string | null;
+  phobiaImageClassName?: string;
   className?: string;
   imagePriority?: boolean;
   showLoadingLabel?: boolean;
@@ -40,6 +43,9 @@ function MonsterSpineStageComponent({
   selectedMoveNonce = 0,
   selectedSkin = null,
   selectedSkins = null,
+  showPhobiaMode = false,
+  phobiaModeImageUrl = null,
+  phobiaImageClassName,
   className,
   imagePriority = true,
   showLoadingLabel = true,
@@ -54,6 +60,7 @@ function MonsterSpineStageComponent({
   const vfxTimeoutRef = useRef<number | null>(null);
   const playerCtorRef = useRef<SpinePlayerCtor | null>(null);
   const [loadState, setLoadState] = useState<LoadState>(asset ? "loading" : "error");
+  const showStaticPhobiaMode = showPhobiaMode && Boolean(phobiaModeImageUrl);
   const [availableAnimations, setAvailableAnimations] = useState<string[]>(asset?.animations ?? []);
   const compositeSkinNames = useMemo(
     () => selectedSkins ?? asset?.defaultSkinCombination ?? [],
@@ -220,7 +227,7 @@ function MonsterSpineStageComponent({
 
   return (
     <div className={className}>
-      {fallbackImageUrl && loadState !== "ready" && (
+      {fallbackImageUrl && loadState !== "ready" && !showStaticPhobiaMode && (
         <Image
           src={fallbackImageUrl}
           alt={monsterName}
@@ -230,17 +237,27 @@ function MonsterSpineStageComponent({
           priority={imagePriority}
         />
       )}
+      {showStaticPhobiaMode && phobiaModeImageUrl && (
+        <Image
+          src={phobiaModeImageUrl}
+          alt={monsterName}
+          width={960}
+          height={960}
+          className={phobiaImageClassName ?? fallbackImageClassName ?? "absolute inset-0 z-20 h-full w-full object-contain drop-shadow-2xl"}
+          priority={imagePriority}
+        />
+      )}
       <div
         ref={containerRef}
-        className={`sts2-spine-stage absolute inset-0 z-20 transition-opacity duration-300 ${loadState === "ready" ? "opacity-100" : "opacity-0"}`}
-        aria-hidden={loadState !== "ready"}
+        className={`sts2-spine-stage absolute inset-0 z-20 transition-opacity duration-300 ${loadState === "ready" && !showStaticPhobiaMode ? "opacity-100" : "opacity-0"}`}
+        aria-hidden={loadState !== "ready" || showStaticPhobiaMode}
       />
       <div
         ref={vfxContainerRef}
-        className="sts2-spine-stage pointer-events-none absolute inset-0 z-30"
+        className={`sts2-spine-stage pointer-events-none absolute inset-0 z-30 ${showStaticPhobiaMode ? "opacity-0" : "opacity-100"}`}
         aria-hidden
       />
-      {showLoadingLabel && asset && loadState === "loading" && (
+      {showLoadingLabel && asset && loadState === "loading" && !showStaticPhobiaMode && (
         <div className="absolute bottom-4 right-4 z-40 rounded bg-black/30 px-2 py-1 text-[10px] text-gray-400">
           Spine loading
         </div>

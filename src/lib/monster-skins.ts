@@ -50,7 +50,7 @@ export function hasMonsterSkinParts(monster: CodexMonster): boolean {
 }
 
 export function hasMonsterPhobiaMode(monster: CodexMonster): boolean {
-  return Boolean(monster.spineAsset?.phobiaMode);
+  return Boolean(monster.spineAsset?.phobiaMode || monster.phobiaModeImageUrl);
 }
 
 export function getMonsterPhobiaModeLabel(serviceLocale: ServiceLocale): string {

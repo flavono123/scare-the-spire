@@ -126,6 +126,11 @@ interface RawCharacter {
   image_url: string;
 }
 
+interface MonsterPhobiaModeAsset {
+  id: string;
+  imageUrl: string;
+}
+
 function spireCodexImageToLocal(url: string | null): string | null {
   if (!url) return null;
   // /static/images/cards/abrasive.png -> /images/sts2/cards/abrasive.webp
@@ -1526,11 +1531,13 @@ function mapMonster(
   engBestiary: GameLocalizationTable,
   gameLocale: GameLocale,
   spineAssets: Map<string, MonsterSpineAsset>,
+  phobiaModeAssets: Map<string, MonsterPhobiaModeAsset>,
   powerDisplays: Map<string, MonsterPowerDisplay>,
   cardDisplays: Map<string, MonsterCardDisplay>,
 ): CodexMonster {
   const placeholderArt = hasPlaceholderBestiaryArt(kor.id);
   const spineAsset = placeholderArt ? null : (spineAssets.get(kor.id) ?? null);
+  const phobiaModeImageUrl = phobiaModeAssets.get(kor.id)?.imageUrl ?? null;
   const engMovesById = new Map(eng.moves.map((move) => [move.id, move]));
   const mapMoves = (rawMoves: RawMonsterMove[]): MonsterMove[] => rawMoves.map((km) => {
     const em = engMovesById.get(km.id);
@@ -1623,6 +1630,7 @@ function mapMonster(
     blockValues: kor.block_values,
     imageUrl,
     bossImageUrl,
+    phobiaModeImageUrl,
     spineAsset,
   };
 }
@@ -1671,6 +1679,7 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
     korCards,
     engCards,
     spineAssetList,
+    phobiaModeAssetList,
     monsterFiles,
     bossFiles,
     gameMonsters,
@@ -1684,6 +1693,7 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
     readJson<RawCard[]>("kor/cards.json"),
     readJson<RawCard[]>("eng/cards.json"),
     readJson<MonsterSpineAsset[]>("monster-spine-assets.json").catch(() => []),
+    readJson<MonsterPhobiaModeAsset[]>("monster-phobia-assets.json").catch(() => []),
     scanImageSlugs("monsters-render"),
     scanImageSlugs("bosses"),
     readGameLocalizationTable(gameLocale, "monsters"),
@@ -1693,12 +1703,13 @@ export async function getCodexMonsters(opts?: { gameLocale?: GameLocale }): Prom
 
   const engById = new Map(engMonsters.map((m) => [m.id, m]));
   const spineAssets = new Map(spineAssetList.map((asset) => [asset.id, asset]));
+  const phobiaModeAssets = new Map(phobiaModeAssetList.map((asset) => [asset.id, asset]));
   const powerDisplays = buildMonsterPowerDisplays(korPowers, engPowers);
   const cardDisplays = buildMonsterCardDisplays(korCards, engCards);
 
   return korMonsters.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters, gameBestiary, engBestiary, gameLocale, spineAssets, powerDisplays, cardDisplays);
+    return mapMonster(kor, eng, monsterFiles, bossFiles, gameMonsters, gameBestiary, engBestiary, gameLocale, spineAssets, phobiaModeAssets, powerDisplays, cardDisplays);
   });
 }
 

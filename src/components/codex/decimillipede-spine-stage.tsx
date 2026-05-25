@@ -9,6 +9,8 @@ interface DecimillipedeSpineStageProps {
   monsterName: string;
   selectedMoveId: string | null;
   selectedMoveNonce?: number;
+  showPhobiaMode?: boolean;
+  phobiaModeImageUrl?: string | null;
   className?: string;
   imagePriority?: boolean;
   showLoadingLabel?: boolean;
@@ -151,6 +153,8 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
   monsterName,
   selectedMoveId,
   selectedMoveNonce = 0,
+  showPhobiaMode = false,
+  phobiaModeImageUrl = null,
   className,
   imagePriority = true,
   showLoadingLabel = true,
@@ -161,6 +165,7 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
   const selectedAnimationRef = useRef("idle_loop");
   const animationStartRef = useRef(0);
   const [loadState, setLoadState] = useState<LoadState>("loading");
+  const showStaticPhobiaMode = showPhobiaMode && Boolean(phobiaModeImageUrl);
   const selectedAnimation = useMemo(
     () => resolveDecimillipedeAnimation(selectedMoveId),
     [selectedMoveId],
@@ -273,7 +278,7 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
 
   return (
     <div className={className}>
-      {fallbackImageUrl && loadState !== "ready" && (
+      {fallbackImageUrl && loadState !== "ready" && !showStaticPhobiaMode && (
         <Image
           src={fallbackImageUrl}
           alt={monsterName}
@@ -283,9 +288,19 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
           priority={imagePriority}
         />
       )}
+      {showStaticPhobiaMode && phobiaModeImageUrl && (
+        <Image
+          src={phobiaModeImageUrl}
+          alt={monsterName}
+          width={1400}
+          height={600}
+          className={fallbackImageClassName ?? "absolute inset-0 z-30 h-full w-full translate-y-[6%] scale-[0.92] object-contain drop-shadow-2xl"}
+          priority={imagePriority}
+        />
+      )}
       <div
-        className={`absolute inset-0 z-20 transition-opacity duration-300 ${loadState === "ready" ? "opacity-100" : "opacity-0"}`}
-        aria-hidden={loadState !== "ready"}
+        className={`absolute inset-0 z-20 transition-opacity duration-300 ${loadState === "ready" && !showStaticPhobiaMode ? "opacity-100" : "opacity-0"}`}
+        aria-hidden={loadState !== "ready" || showStaticPhobiaMode}
       >
         {DECIMILLIPEDE_PARTS.map((part) => (
           <div
@@ -302,7 +317,7 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
           </div>
         ))}
       </div>
-      {showLoadingLabel && loadState === "loading" && (
+      {showLoadingLabel && loadState === "loading" && !showStaticPhobiaMode && (
         <div className="absolute bottom-4 right-4 z-40 rounded bg-black/30 px-2 py-1 text-[10px] text-gray-400">
           Spine loading
         </div>

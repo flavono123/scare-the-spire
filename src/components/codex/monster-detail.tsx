@@ -944,6 +944,7 @@ export function MonsterDetail({
     : getDefaultMonsterSkinSelections(monster);
   const hasPhobiaMode = hasMonsterPhobiaMode(monster);
   const phobiaModeEnabled = hasPhobiaMode && phobiaModeState.monsterId === monster.id && phobiaModeState.enabled;
+  const phobiaModeImageUrl = monster.phobiaModeImageUrl;
   const selectedSkinNames = useMemo(
     () => getSelectedMonsterSkinNames(monster, selectedSkinSelections, { phobiaMode: phobiaModeEnabled }),
     [monster, selectedSkinSelections, phobiaModeEnabled],
@@ -1051,10 +1052,10 @@ export function MonsterDetail({
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <div className="flex min-w-0 flex-col gap-4">
           <section className="flex min-h-[26rem] flex-col items-center justify-center gap-4 py-4">
-          <div
-            className="relative flex min-h-[22rem] w-full max-w-2xl items-center justify-center overflow-hidden"
-            data-monster-detail-render
-          >
+            <div
+              className="relative flex min-h-[22rem] w-full max-w-2xl items-center justify-center overflow-hidden"
+              data-monster-detail-render
+            >
             <div
               className="absolute bottom-10 left-[18%] right-[18%] h-8 rounded-[50%] blur-md"
               style={{ backgroundColor: hexToRgba(selectedAccent, 0.18) }}
@@ -1065,6 +1066,8 @@ export function MonsterDetail({
                 monsterName={monster.name}
                 selectedMoveId={selectedMoveId}
                 selectedMoveNonce={selectedMoveNonce}
+                showPhobiaMode={phobiaModeEnabled}
+                phobiaModeImageUrl={phobiaModeImageUrl}
                 className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
                 fallbackImageClassName="absolute inset-0 z-10 h-full w-full translate-y-[8%] scale-[0.92] object-contain drop-shadow-2xl"
               />
@@ -1077,6 +1080,8 @@ export function MonsterDetail({
                 selectedMoveNonce={selectedMoveNonce}
                 selectedSkin={selectedSingleSkin}
                 selectedSkins={selectedSkinNames}
+                showPhobiaMode={phobiaModeEnabled}
+                phobiaModeImageUrl={phobiaModeImageUrl}
                 className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
                 viewportPadding={MONSTER_DETAIL_VIEWPORT_PADDING}
                 fallbackImageClassName="absolute inset-0 z-10 h-full w-full translate-y-[8%] scale-[0.78] object-contain drop-shadow-2xl"
@@ -1102,26 +1107,21 @@ export function MonsterDetail({
           </div>
 
           {(skinParts.length > 0 || hasPhobiaMode) && (
-            <div className="w-full max-w-xl rounded-lg border border-white/10 bg-black/20 px-4 py-3">
-              <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500">
-                {serviceLocale === "ko" ? "외형" : "Appearance"}
-              </div>
-              <div className="flex flex-col gap-2">
-                {hasPhobiaMode && (
-                  <GameCheckboxToggle
-                    checked={phobiaModeEnabled}
-                    onCheckedChange={(enabled) => setPhobiaModeState({ monsterId: monster.id, enabled })}
-                    label={getMonsterPhobiaModeLabel(serviceLocale)}
-                    size="sm"
-                    align="start"
-                  />
-                )}
-                {skinParts.map((part) => {
-                  const partLabel = getMonsterSkinPartLabel(part, serviceLocale);
+            <div className="flex w-full max-w-2xl flex-wrap items-center justify-center gap-x-3 gap-y-2">
+              {hasPhobiaMode && (
+                <GameCheckboxToggle
+                  checked={phobiaModeEnabled}
+                  onCheckedChange={(enabled) => setPhobiaModeState({ monsterId: monster.id, enabled })}
+                  label={getMonsterPhobiaModeLabel(serviceLocale)}
+                  size="md"
+                />
+              )}
+              {skinParts.map((part) => {
+                const partLabel = getMonsterSkinPartLabel(part, serviceLocale);
 
                   return (
-                    <div key={part.id} className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
-                      <span className="min-w-10 text-[11px] font-medium text-gray-400">{partLabel}</span>
+                    <div key={part.id} className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5">
+                      <span className="font-game-title text-sm font-bold text-[#f1c94f] [text-shadow:2px_2px_0_rgba(0,0,0,0.82)]">{partLabel}</span>
                       <div className="flex flex-wrap gap-1" role="group" aria-label={`${monster.name} ${partLabel}`}>
                         {part.options.map((option) => {
                           const selected = selectedSkinSelections[part.id] === option.id;
@@ -1155,8 +1155,7 @@ export function MonsterDetail({
                       </div>
                     </div>
                   );
-                })}
-              </div>
+              })}
             </div>
           )}
           </section>
