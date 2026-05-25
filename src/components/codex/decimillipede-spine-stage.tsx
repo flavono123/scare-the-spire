@@ -208,11 +208,15 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
         {DECIMILLIPEDE_PARTS.map((part) => (
           <div
             key={part.id}
-            ref={(node) => {
-              partRefs.current[part.id] = node;
-            }}
-            className={`sts2-spine-stage absolute ${part.className}`}
-          />
+            className={`absolute ${part.className}`}
+          >
+            <div
+              ref={(node) => {
+                partRefs.current[part.id] = node;
+              }}
+              className="sts2-spine-stage h-full w-full"
+            />
+          </div>
         ))}
       </div>
       {showLoadingLabel && loadState === "loading" && (
