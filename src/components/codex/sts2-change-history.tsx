@@ -91,6 +91,7 @@ function formatFieldLabel(field: string, serviceLocale: ServiceLocale): string {
     description: { ko: "효과", en: "Effect" },
     descriptionRaw: { ko: "효과 원문", en: "Raw effect" },
     flavor: { ko: "게임 문구", en: "Game text" },
+    hitCount: { ko: "타수", en: "Hits" },
     imageUrl: { ko: "이미지", en: "Image" },
     keywords: { ko: "키워드", en: "Keywords" },
     name: { ko: "이름", en: "Name" },
