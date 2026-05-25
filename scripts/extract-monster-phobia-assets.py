@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 from typing import Iterable
 
+from PIL import Image
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
@@ -105,7 +107,7 @@ def extract_decimillipede(reader: PCKReader) -> dict[str, object]:
 
     width = max(part["offset"][0] + image.width for part, image, _ in loaded_parts)
     height = max(part["offset"][1] + image.height for part, image, _ in loaded_parts)
-    canvas = loaded_parts[0][1].__class__.new("RGBA", (width, height), (0, 0, 0, 0))
+    canvas = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     for part, image, _ in loaded_parts:
         canvas.alpha_composite(image, dest=part["offset"])
 
