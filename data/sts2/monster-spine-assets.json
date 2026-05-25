@@ -1792,6 +1792,10 @@
     "defaultSkinCombination": [
       "normal"
     ],
+    "phobiaMode": {
+      "normalSkin": "normal",
+      "phobiaSkin": "phobia"
+    },
     "animations": [
       "attack",
       "attack_double",
@@ -2213,6 +2217,10 @@
     "defaultSkinCombination": [
       "normal"
     ],
+    "phobiaMode": {
+      "normalSkin": "normal",
+      "phobiaSkin": "phobia"
+    },
     "animations": [
       "attack",
       "attack_triple",
@@ -4520,6 +4528,10 @@
     "defaultSkinCombination": [
       "normal"
     ],
+    "phobiaMode": {
+      "normalSkin": "normal",
+      "phobiaSkin": "phobia"
+    },
     "animations": [
       "attack",
       "attack_buff",
@@ -5693,6 +5705,10 @@
     "defaultSkinCombination": [
       "normal"
     ],
+    "phobiaMode": {
+      "normalSkin": "normal",
+      "phobiaSkin": "phobia"
+    },
     "animations": [
       "attack",
       "cast",
@@ -6357,6 +6373,10 @@
     "defaultSkinCombination": [
       "normal"
     ],
+    "phobiaMode": {
+      "normalSkin": "normal",
+      "phobiaSkin": "phobia"
+    },
     "animations": [
       "attack",
       "cast",
