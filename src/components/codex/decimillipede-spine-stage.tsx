@@ -103,13 +103,14 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
   useEffect(() => {
     let disposed = false;
     const createdPlayers: SpinePlayer[] = [];
+    const mountedPartRefs = { ...partRefs.current };
     let readyCount = 0;
     setLoadState("loading");
 
     void import("@esotericsoftware/spine-player")
       .then(({ SpinePlayer: SpinePlayerCtor }) => {
         for (const part of DECIMILLIPEDE_PARTS) {
-          const parent = partRefs.current[part.id];
+          const parent = mountedPartRefs[part.id];
           if (!parent || disposed) continue;
           const player = new (SpinePlayerCtor as SpinePlayerCtor)(parent, {
             binaryUrl: part.binaryUrl,
@@ -155,7 +156,7 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
       disposed = true;
       playerRefs.current = {};
       for (const player of createdPlayers) player.dispose();
-      for (const part of DECIMILLIPEDE_PARTS) partRefs.current[part.id]?.replaceChildren();
+      for (const part of DECIMILLIPEDE_PARTS) mountedPartRefs[part.id]?.replaceChildren();
     };
   }, [monsterName]);
 
