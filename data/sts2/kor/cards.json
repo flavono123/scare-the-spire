@@ -776,8 +776,8 @@
   {
     "id": "ASTRAL_PULSE",
     "name": "별의 파동",
-    "description": "모든 적에게 피해를 14 줍니다.",
-    "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.",
+    "description": "모든 적에게 피해를 6만큼 2번 줍니다.",
+    "description_raw": "모든 적에게\n피해를 {Damage:diff()}만큼 2번 줍니다.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -786,9 +786,9 @@
     "rarity": "일반",
     "target": "AllEnemies",
     "color": "regent",
-    "damage": 14,
+    "damage": 6,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -797,11 +797,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 14,
+      "Damage": 6,
       "StarCost": 3
     },
     "upgrade": {
-      "damage": "+4"
+      "damage": "+2"
     },
     "image_url": "/static/images/cards/astral_pulse.png",
     "beta_image_url": "/static/images/cards/beta/astral_pulse.png"

@@ -776,8 +776,8 @@
   {
     "id": "ASTRAL_PULSE",
     "name": "Astral Pulse",
-    "description": "Deal 14 damage to ALL enemies.",
-    "description_raw": "Deal {Damage:diff()} damage to ALL enemies.",
+    "description": "Deal 6 damage to ALL enemies twice.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies twice.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -786,9 +786,9 @@
     "rarity": "Common",
     "target": "AllEnemies",
     "color": "regent",
-    "damage": 14,
+    "damage": 6,
     "block": null,
-    "hit_count": null,
+    "hit_count": 2,
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
@@ -797,11 +797,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 14,
+      "Damage": 6,
       "StarCost": 3
     },
     "upgrade": {
-      "damage": "+4"
+      "damage": "+2"
     },
     "image_url": "/static/images/cards/astral_pulse.png",
     "beta_image_url": "/static/images/cards/beta/astral_pulse.png"
