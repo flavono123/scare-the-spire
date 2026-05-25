@@ -71,7 +71,7 @@ const AFFILIATION_ICONS: Partial<Record<EpochAffiliation, string>> = {
   vakuu: "/images/sts2/run-history/vakuu.png",
   world: "/images/sts2/icons/app_icon.png",
   spire: "/images/sts2/relics/storybook.webp",
-  reopening: "/images/sts2/run-history/doormaker_boss.png",
+  reopening: "/images/sts2/relics/new_leaf.webp",
   unknown: EVENT_FILTER_ICON,
 };
 
