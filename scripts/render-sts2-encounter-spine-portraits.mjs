@@ -87,7 +87,8 @@ const baseUrl = `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch({
   headless: true,
   args: [
-    "--use-gl=swiftshader",
+    "--use-gl=angle",
+    "--use-angle=swiftshader-webgl",
     "--enable-unsafe-swiftshader",
     "--ignore-gpu-blocklist",
     "--enable-webgl",
