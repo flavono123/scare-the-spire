@@ -786,6 +786,17 @@ export interface MonsterSpineTrackAnimation {
   idleAnimation?: string;
 }
 
+export interface MonsterSpineViewport {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  padLeft?: string | number;
+  padRight?: string | number;
+  padTop?: string | number;
+  padBottom?: string | number;
+}
+
 export interface MonsterSpineAsset {
   id: string;
   source: string;
@@ -799,6 +810,7 @@ export interface MonsterSpineAsset {
   skinParts?: MonsterSkinPart[];
   defaultSkinCombination?: string[];
   phobiaMode?: MonsterPhobiaModeSkin;
+  viewport?: MonsterSpineViewport;
   skinVariants?: {
     id: string;
     label: string;

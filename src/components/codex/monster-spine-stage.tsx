@@ -80,7 +80,7 @@ function MonsterSpineStageComponent({
       .then(({ SpinePlayer: SpinePlayerCtor, Skin: SpineSkinCtor, Physics }) => {
         if (disposed || !containerRef.current) return;
         playerCtorRef.current = SpinePlayerCtor;
-        const viewport = getMonsterViewport(asset.id, viewportTransitionTime, viewportPadding);
+        const viewport = getMonsterViewport(asset, viewportTransitionTime, viewportPadding);
 
         player = new SpinePlayerCtor(parent, {
           binaryUrl: asset.binaryUrl,
@@ -377,11 +377,23 @@ function applyCompositeSkin(
 }
 
 function getMonsterViewport(
-  monsterId: string,
+  asset: MonsterSpineAsset,
   transitionTime = 0.12,
   viewportPadding?: SpineViewportPadding,
 ): SpinePlayerConfig["viewport"] {
-  if (monsterId === "CUBEX_CONSTRUCT") {
+  if (asset.viewport) {
+    return {
+      padLeft: "4%",
+      padRight: "4%",
+      padTop: "4%",
+      padBottom: "4%",
+      ...asset.viewport,
+      ...viewportPadding,
+      transitionTime,
+    };
+  }
+
+  if (asset.id === "CUBEX_CONSTRUCT") {
     return {
       padLeft: "18%",
       padRight: "18%",

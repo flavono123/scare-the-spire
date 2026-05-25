@@ -217,6 +217,7 @@ function renderHtml(monster, asset, background) {
   const animation = asset.idleAnimation || asset.animations[0];
   const compositeSkinNames = asset.defaultSkinCombination ?? [];
   const singleSkin = compositeSkinNames.length > 0 ? undefined : asset.skin ?? undefined;
+  const viewport = buildRenderViewport(asset);
   return `<!doctype html>
 <html>
 <head>
@@ -259,13 +260,7 @@ function renderHtml(monster, asset, background) {
           premultipliedAlpha: false,
           showControls: false,
           showLoading: false,
-          viewport: {
-            padLeft: "4%",
-            padRight: "4%",
-            padTop: "4%",
-            padBottom: "4%",
-            transitionTime: 0
-          },
+          viewport: ${JSON.stringify(viewport)},
           success: (player) => {
             try {
               applyCompositeSkin(player, ${JSON.stringify(compositeSkinNames)});
@@ -317,6 +312,17 @@ function renderHtml(monster, asset, background) {
   </script>
 </body>
 </html>`;
+}
+
+function buildRenderViewport(asset) {
+  return {
+    padLeft: "4%",
+    padRight: "4%",
+    padTop: "4%",
+    padBottom: "4%",
+    ...(asset.viewport ?? {}),
+    transitionTime: 0,
+  };
 }
 
 function writeWebpFromMattes(blackPng, whitePng, outputPath, padding) {
