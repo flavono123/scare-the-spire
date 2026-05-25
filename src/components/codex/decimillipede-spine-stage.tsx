@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
 import Image from "@/components/ui/static-image";
 
@@ -12,7 +12,6 @@ interface DecimillipedeSpineStageProps {
   mode?: "encounter" | "part";
   partId?: DecimillipedePartId;
   showPhobiaMode?: boolean;
-  phobiaModeImageUrl?: string | null;
   className?: string;
   imagePriority?: boolean;
   showLoadingLabel?: boolean;
@@ -31,10 +30,19 @@ interface DecimillipedePart {
   atlasUrl: string;
   binaryUrl: string;
   animationIds: string[];
+  visualOffset: { x: number; y: number };
   spineX: number;
   spineY: number;
   standaloneOffsetX: number;
   boneTargets: Record<string, { x: number; y: number }>;
+  phobiaSprite: {
+    imageUrl: string;
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+    scale: number;
+  };
   zIndex: number;
 }
 
@@ -50,6 +58,8 @@ const DECIMILLIPEDE_VIEWPORT = {
   width: 1120,
   height: 620,
 } as const;
+
+const DECIMILLIPEDE_PHOBIA_MIRROR_SCALE_X = -1;
 
 function toBrowserSpineY(godotY: number): number {
   return DECIMILLIPEDE_GAME_SCREEN_HEIGHT - godotY;
@@ -111,11 +121,20 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
       "alt_track/writhe_die",
       "alt_track/writhe_idle",
     ],
+    visualOffset: { x: 318, y: -19 },
     spineX: 1103 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET + 318,
     spineY: toBrowserSpineY(740 - 19),
     standaloneOffsetX: 210,
     boneTargets: {
       link_r_3: { x: 286.667, y: 275.556 },
+    },
+    phobiaSprite: {
+      imageUrl: "/images/sts2/monsters-phobia/decimillipede_front.webp",
+      width: 849,
+      height: 683,
+      x: 15,
+      y: -155.99998,
+      scale: 0.4565774,
     },
     zIndex: 10,
   },
@@ -137,12 +156,21 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
       "alt_track/writhe_die",
       "alt_track/writhe_idle",
     ],
+    visualOffset: { x: -54, y: -43 },
     spineX: 1451 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 54,
     spineY: toBrowserSpineY(740 - 43),
     standaloneOffsetX: 0,
     boneTargets: {
       link_l_2: { x: -442.222, y: 202.222 },
       link_r_2: { x: 220, y: 228.889 },
+    },
+    phobiaSprite: {
+      imageUrl: "/images/sts2/monsters-phobia/decimillipede_middle.webp",
+      width: 828,
+      height: 591,
+      x: 5,
+      y: -144,
+      scale: 0.4565774,
     },
     zIndex: 20,
   },
@@ -164,11 +192,20 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
       "alt_track/writhe_die",
       "alt_track/writhe_idle",
     ],
+    visualOffset: { x: -344, y: -28 },
     spineX: 1797 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 344,
     spineY: toBrowserSpineY(740 - 28),
     standaloneOffsetX: -290,
     boneTargets: {
       link_l_1: { x: -344.445, y: 228.889 },
+    },
+    phobiaSprite: {
+      imageUrl: "/images/sts2/monsters-phobia/decimillipede_back.webp",
+      width: 973,
+      height: 594,
+      x: -3.0000005,
+      y: -149,
+      scale: 0.4109914,
     },
     zIndex: 30,
   },
@@ -188,18 +225,17 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
   mode = "encounter",
   partId = "middle",
   showPhobiaMode = false,
-  phobiaModeImageUrl = null,
   className,
   imagePriority = true,
   showLoadingLabel = true,
   fallbackImageClassName,
 }: DecimillipedeSpineStageProps) {
   const partRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const phobiaSpriteRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const playerRefs = useRef<Record<string, SpinePlayer | null>>({});
   const selectedAnimationRef = useRef("idle_loop");
   const animationStartRef = useRef(0);
   const [loadState, setLoadState] = useState<LoadState>("loading");
-  const showStaticPhobiaMode = showPhobiaMode && Boolean(phobiaModeImageUrl);
   const selectedAnimation = useMemo(
     () => resolveDecimillipedeAnimation(selectedMoveId),
     [selectedMoveId],
@@ -213,6 +249,35 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
     selectedAnimationRef.current = selectedAnimation;
     animationStartRef.current = performance.now();
   }, [selectedAnimation, selectedMoveNonce]);
+
+  useEffect(() => {
+    if (!showPhobiaMode) return;
+
+    let frame = 0;
+    const mountedPhobiaSpriteRefs = { ...phobiaSpriteRefs.current };
+    const applyOffset = () => {
+      const attackOffsetX =
+        selectedAnimationRef.current === "alt_track/writhe_attack"
+          ? decimillipedeAttackOffsetX(performance.now() - animationStartRef.current)
+          : 0;
+      const attackOffsetPercent = (attackOffsetX / DECIMILLIPEDE_VIEWPORT.width) * 100;
+      for (const part of visibleParts) {
+        mountedPhobiaSpriteRefs[part.id]?.style.setProperty(
+          "--decimillipede-phobia-attack-x",
+          `${attackOffsetPercent}%`,
+        );
+      }
+      frame = window.requestAnimationFrame(applyOffset);
+    };
+
+    applyOffset();
+    return () => {
+      window.cancelAnimationFrame(frame);
+      for (const part of visibleParts) {
+        mountedPhobiaSpriteRefs[part.id]?.style.setProperty("--decimillipede-phobia-attack-x", "0%");
+      }
+    };
+  }, [showPhobiaMode, visibleParts]);
 
   useEffect(() => {
     let disposed = false;
@@ -316,7 +381,7 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
 
   return (
     <div className={className}>
-      {fallbackImageUrl && loadState !== "ready" && !showStaticPhobiaMode && (
+      {fallbackImageUrl && loadState !== "ready" && !showPhobiaMode && (
         <Image
           src={fallbackImageUrl}
           alt={monsterName}
@@ -326,19 +391,9 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
           priority={imagePriority}
         />
       )}
-      {showStaticPhobiaMode && phobiaModeImageUrl && (
-        <Image
-          src={phobiaModeImageUrl}
-          alt={monsterName}
-          width={1400}
-          height={600}
-          className={fallbackImageClassName ?? "absolute inset-0 z-30 h-full w-full translate-y-[6%] scale-[0.92] object-contain drop-shadow-2xl"}
-          priority={imagePriority}
-        />
-      )}
       <div
-        className={`absolute inset-0 z-20 transition-opacity duration-300 ${loadState === "ready" && !showStaticPhobiaMode ? "opacity-100" : "opacity-0"}`}
-        aria-hidden={loadState !== "ready" || showStaticPhobiaMode}
+        className={`absolute inset-0 z-20 transition-opacity duration-300 ${loadState === "ready" && !showPhobiaMode ? "opacity-100" : "opacity-0"}`}
+        aria-hidden={loadState !== "ready" || showPhobiaMode}
       >
         {visibleParts.map((part) => (
           <div
@@ -355,7 +410,27 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
           </div>
         ))}
       </div>
-      {showLoadingLabel && loadState === "loading" && !showStaticPhobiaMode && (
+      {showPhobiaMode && visibleParts.map((part) => (
+        <div
+          key={`${part.id}-phobia`}
+          ref={(node) => {
+            phobiaSpriteRefs.current[part.id] = node;
+          }}
+          className="pointer-events-none absolute z-30 drop-shadow-2xl transition-opacity duration-150"
+          style={getDecimillipedePhobiaSpriteStyle(part, mode)}
+          aria-hidden
+        >
+          <Image
+            src={part.phobiaSprite.imageUrl}
+            alt={monsterName}
+            width={part.phobiaSprite.width}
+            height={part.phobiaSprite.height}
+            className="h-full w-full object-contain"
+            priority={imagePriority}
+          />
+        </div>
+      ))}
+      {showLoadingLabel && loadState === "loading" && !showPhobiaMode && (
         <div className="absolute bottom-4 right-4 z-40 rounded bg-black/30 px-2 py-1 text-[10px] text-gray-400">
           Spine loading
         </div>
@@ -363,6 +438,29 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
     </div>
   );
 });
+
+function getDecimillipedePhobiaSpriteStyle(
+  part: DecimillipedePart,
+  stageMode: "encounter" | "part",
+): CSSProperties {
+  const worldX = part.spineX
+    + (stageMode === "part" ? part.standaloneOffsetX : 0)
+    - part.visualOffset.x
+    + part.phobiaSprite.x;
+  const worldY = part.spineY + part.visualOffset.y - part.phobiaSprite.y;
+  const widthPercent = (part.phobiaSprite.width * part.phobiaSprite.scale / DECIMILLIPEDE_VIEWPORT.width) * 100;
+  const heightPercent = (part.phobiaSprite.height * part.phobiaSprite.scale / DECIMILLIPEDE_VIEWPORT.height) * 100;
+
+  return {
+    left: `${((worldX - DECIMILLIPEDE_VIEWPORT.x) / DECIMILLIPEDE_VIEWPORT.width) * 100}%`,
+    top: `${((worldY - DECIMILLIPEDE_VIEWPORT.y) / DECIMILLIPEDE_VIEWPORT.height) * 100}%`,
+    width: `${widthPercent}%`,
+    height: `${heightPercent}%`,
+    transform: `translate(calc(-50% + var(--decimillipede-phobia-attack-x, 0%)), -50%) scaleX(${DECIMILLIPEDE_PHOBIA_MIRROR_SCALE_X})`,
+    transformOrigin: "50% 50%",
+    willChange: "transform",
+  };
+}
 
 function resolveDecimillipedeAnimation(moveId: string | null): string {
   switch (moveId) {

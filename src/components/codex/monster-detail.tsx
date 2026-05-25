@@ -976,9 +976,7 @@ export function MonsterDetail({
     : "middle";
   const hasPhobiaMode = hasMonsterPhobiaMode(monster);
   const phobiaModeEnabled = hasPhobiaMode && phobiaModeState.monsterId === monster.id && phobiaModeState.enabled;
-  const phobiaModeImageUrl = monster.id === "DECIMILLIPEDE_SEGMENT"
-    ? monster.phobiaModePartImageUrls?.[selectedDecimillipedePart] ?? monster.phobiaModeImageUrl
-    : monster.phobiaModeImageUrl;
+  const phobiaModeImageUrl = monster.id === "DECIMILLIPEDE_SEGMENT" ? null : monster.phobiaModeImageUrl;
   const selectedSkinNames = useMemo(
     () => getSelectedMonsterSkinNames(monster, selectedSkinSelections, { phobiaMode: phobiaModeEnabled }),
     [monster, selectedSkinSelections, phobiaModeEnabled],
@@ -1091,14 +1089,13 @@ export function MonsterDetail({
             />
             {monster.id === "DECIMILLIPEDE_SEGMENT" ? (
               <DecimillipedeSpineStage
-                fallbackImageUrl={imageSrc}
+                fallbackImageUrl={null}
                 monsterName={monster.name}
                 selectedMoveId={selectedMoveId}
                 selectedMoveNonce={selectedMoveNonce}
                 mode="part"
                 partId={selectedDecimillipedePart}
                 showPhobiaMode={phobiaModeEnabled}
-                phobiaModeImageUrl={phobiaModeImageUrl}
                 className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
                 fallbackImageClassName="absolute inset-0 z-10 h-full w-full translate-y-[8%] scale-[0.92] object-contain drop-shadow-2xl"
               />
