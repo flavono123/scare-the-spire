@@ -1584,6 +1584,26 @@
     ]
   },
   {
+    "id": "astral-pulse-v106-change",
+    "entityType": "card",
+    "entityId": "ASTRAL_PULSE",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": "regent",
+    "summary": "Astral Pulse damage changed: 14(18) -> 6x2(8x2).",
+    "summaryKo": "별의 파동 피해량 변경: 14(18) -> 6x2(8x2).",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해량",
+        "before": "14(18)",
+        "after": "6x2(8x2)",
+        "diffType": "text"
+      }
+    ]
+  },
+  {
     "id": "death-march-v106-buff",
     "entityType": "card",
     "entityId": "DEATH_MARCH",

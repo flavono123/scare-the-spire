@@ -1403,6 +1403,43 @@
   },
   {
     "entityType": "card",
+    "entityId": "ASTRAL_PULSE",
+    "patch": "v0.106.0",
+    "diffs": [
+      {
+        "field": "description",
+        "before": "모든 적에게 피해를 14 줍니다.",
+        "after": "모든 적에게 피해를 6만큼 2번 줍니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "모든 적에게\n피해를 {Damage:diff()} 줍니다.",
+        "after": "모든 적에게\n피해를 {Damage:diff()}만큼 2번 줍니다."
+      },
+      {
+        "field": "damage",
+        "before": 14,
+        "after": 6
+      },
+      {
+        "field": "hitCount",
+        "before": null,
+        "after": 2
+      },
+      {
+        "field": "vars.Damage",
+        "before": 14,
+        "after": 6
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+4",
+        "after": "+2"
+      }
+    ]
+  },
+  {
+    "entityType": "card",
     "entityId": "DEATH_MARCH",
     "patch": "v0.106.0",
     "diffs": [
