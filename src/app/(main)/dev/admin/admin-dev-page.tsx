@@ -22,6 +22,7 @@ const ROW_LIMIT = 50;
 const STATS_SAMPLE_LIMIT = 1000;
 const COMMENT_ANALYSIS_LIMIT = 2000;
 const ADMIN_DATA_ENV = "production";
+const PRODUCTION_SITE_ORIGIN = "https://scare-the-spire.vercel.app";
 
 interface CommentRow {
   id: string;
@@ -614,7 +615,7 @@ function analyzeComments(
 
 function hrefForStoryId(storyId: string): string | null {
   if (storyId.startsWith("sts2-patch:")) {
-    return `/patches/${storyId.slice("sts2-patch:".length)}`;
+    return productionHref(`/patches/${storyId.slice("sts2-patch:".length)}`);
   }
 
   const match = /^sts2-codex:([^:]+):(.+)$/.exec(storyId);
@@ -622,7 +623,11 @@ function hrefForStoryId(storyId: string): string | null {
 
   const [, type, id] = match;
   const path = CODEX_PATHS[type];
-  return path ? `/compendium/${path}/${id}` : null;
+  return path ? productionHref(`/compendium/${path}/${id}`) : null;
+}
+
+function productionHref(path: string): string {
+  return `${PRODUCTION_SITE_ORIGIN}${path}`;
 }
 
 function countLabel(state: QueryState<unknown[]>): string {
@@ -998,7 +1003,7 @@ export default async function SupabaseAdminPage() {
                       <td className="px-3 py-2 text-lime-200">{post.nickname}</td>
                       <td className="px-3 py-2">{truncate(blockText(post.content) || post.content_text, 80)}</td>
                       <td className="px-3 py-2">
-                        <Link href={`/chemical-x/${post.id}`} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                        <Link href={productionHref(`/chemical-x/${post.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
                           {post.id.slice(0, 8)}
                         </Link>
                       </td>
@@ -1045,7 +1050,7 @@ export default async function SupabaseAdminPage() {
                       <td className="px-3 py-2"><code className="text-[11px] text-muted-foreground">{run.build}</code></td>
                       <td className="px-3 py-2"><code className="text-[11px] text-muted-foreground">{run.seed}</code></td>
                       <td className="px-3 py-2">
-                        <Link href={`/history-course/${run.id}`} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
+                        <Link href={productionHref(`/history-course/${run.id}`)} prefetch={false} className="text-cyan-300 underline-offset-4 hover:underline">
                           {run.id}
                         </Link>
                       </td>
