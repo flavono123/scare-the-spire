@@ -33,7 +33,7 @@ const DECIMILLIPEDE_ENCOUNTER_X_OFFSET = -459;
 const DECIMILLIPEDE_GAME_SCREEN_HEIGHT = 1080;
 const DECIMILLIPEDE_SPINE_SCALE = 0.45;
 // Source: bestiary_layout_decimillipede.tscn + decimillipede_elite.tscn slots.
-// The segment scenes intentionally point at different skel_data resources than their filenames imply.
+// Browser actors are placed by their visible Spine folder order: front, middle, back.
 const DECIMILLIPEDE_VIEWPORT = {
   x: 420,
   y: 240,
@@ -78,8 +78,8 @@ function lerp(from: number, to: number, amount: number): number {
 const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
   {
     id: "segment1-front-model",
-    atlasUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede_back.atlas",
-    binaryUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede3.skel",
+    atlasUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
+    binaryUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede1.skel",
     animationIds: [
       "dead_loop",
       "dead_static",
@@ -94,7 +94,7 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     spineX: 1103 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET + 318,
     spineY: toBrowserSpineY(740 - 19),
     boneTargets: {
-      link_r_3: { x: 286.667, y: 275.556 },
+      link_l_1: { x: -344.445, y: 228.889 },
     },
     zIndex: 10,
   },
@@ -123,8 +123,8 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
   },
   {
     id: "segment3-back-model",
-    atlasUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
-    binaryUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede1.skel",
+    atlasUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede_back.atlas",
+    binaryUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede3.skel",
     animationIds: [
       "dead_loop",
       "dead_static",
@@ -139,7 +139,7 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     spineX: 1797 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 344,
     spineY: toBrowserSpineY(740 - 28),
     boneTargets: {
-      link_l_1: { x: -344.445, y: 228.889 },
+      link_r_3: { x: 286.667, y: 275.556 },
     },
     zIndex: 30,
   },
