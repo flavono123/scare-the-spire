@@ -3,7 +3,8 @@
 import { memo, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 import type { Skin, SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
 import Image from "@/components/ui/static-image";
-import type { MonsterSpineAsset, MonsterSpineEffectAsset, MonsterSpineTrackAnimation } from "@/lib/codex-types";
+import type { MonsterPhobiaModeScene, MonsterSpineAsset, MonsterSpineEffectAsset, MonsterSpineTrackAnimation } from "@/lib/codex-types";
+import { MonsterPhobiaSceneStage } from "./monster-phobia-scene-stage";
 
 interface MonsterSpineStageProps {
   asset: MonsterSpineAsset | null;
@@ -15,6 +16,7 @@ interface MonsterSpineStageProps {
   selectedSkins?: readonly string[] | null;
   showPhobiaMode?: boolean;
   phobiaModeImageUrl?: string | null;
+  phobiaModeScene?: MonsterPhobiaModeScene | null;
   phobiaImageClassName?: string;
   className?: string;
   imagePriority?: boolean;
@@ -45,6 +47,7 @@ function MonsterSpineStageComponent({
   selectedSkins = null,
   showPhobiaMode = false,
   phobiaModeImageUrl = null,
+  phobiaModeScene = null,
   phobiaImageClassName,
   className,
   imagePriority = true,
@@ -238,14 +241,23 @@ function MonsterSpineStageComponent({
         />
       )}
       {showStaticPhobiaMode && phobiaModeImageUrl && (
-        <Image
-          src={phobiaModeImageUrl}
-          alt={monsterName}
-          width={960}
-          height={960}
-          className={phobiaImageClassName ?? fallbackImageClassName ?? "absolute inset-0 z-20 h-full w-full object-contain drop-shadow-2xl"}
-          priority={imagePriority}
-        />
+        phobiaModeScene ? (
+          <MonsterPhobiaSceneStage
+            imageUrl={phobiaModeImageUrl}
+            scene={phobiaModeScene}
+            monsterName={monsterName}
+            className={phobiaImageClassName ?? "absolute inset-0 z-20 h-full w-full drop-shadow-2xl"}
+          />
+        ) : (
+          <Image
+            src={phobiaModeImageUrl}
+            alt={monsterName}
+            width={960}
+            height={960}
+            className={phobiaImageClassName ?? fallbackImageClassName ?? "absolute inset-0 z-20 h-full w-full object-contain drop-shadow-2xl"}
+            priority={imagePriority}
+          />
+        )
       )}
       <div
         ref={containerRef}

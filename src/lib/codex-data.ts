@@ -130,6 +130,8 @@ interface MonsterPhobiaModeAsset {
   id: string;
   imageUrl: string;
   partImageUrls?: Record<string, string>;
+  scene?: CodexMonster["phobiaModeScene"];
+  partScenes?: CodexMonster["phobiaModePartScenes"];
 }
 
 function spireCodexImageToLocal(url: string | null): string | null {
@@ -1634,6 +1636,8 @@ function mapMonster(
     bossImageUrl,
     phobiaModeImageUrl,
     phobiaModePartImageUrls: phobiaModeAsset?.partImageUrls ?? null,
+    phobiaModeScene: phobiaModeAsset?.scene ?? null,
+    phobiaModePartScenes: phobiaModeAsset?.partScenes ?? null,
     spineAsset,
   };
 }

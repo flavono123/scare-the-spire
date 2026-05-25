@@ -956,6 +956,7 @@ export function MonsterDetail({
   const hasPhobiaMode = hasMonsterPhobiaMode(monster);
   const phobiaModeEnabled = hasPhobiaMode && phobiaModeState.monsterId === monster.id && phobiaModeState.enabled;
   const phobiaModeImageUrl = monster.id === "DECIMILLIPEDE_SEGMENT" ? null : monster.phobiaModeImageUrl;
+  const phobiaModeScene = monster.id === "DECIMILLIPEDE_SEGMENT" ? null : monster.phobiaModeScene;
   const selectedSkinNames = useMemo(
     () => getSelectedMonsterSkinNames(monster, selectedSkinSelections, { phobiaMode: phobiaModeEnabled }),
     [monster, selectedSkinSelections, phobiaModeEnabled],
@@ -1089,6 +1090,7 @@ export function MonsterDetail({
                 selectedSkins={selectedSkinNames}
                 showPhobiaMode={phobiaModeEnabled}
                 phobiaModeImageUrl={phobiaModeImageUrl}
+                phobiaModeScene={phobiaModeScene}
                 className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
                 viewportPadding={MONSTER_DETAIL_VIEWPORT_PADDING}
                 fallbackImageClassName="absolute inset-0 z-10 h-full w-full translate-y-[8%] scale-[0.78] object-contain drop-shadow-2xl"

@@ -81,7 +81,6 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
                 selectedMoveId={selectedActionId}
                 selectedMoveNonce={selectedActionState.nonce}
                 showPhobiaMode={phobiaModeEnabled}
-                phobiaModeImageUrl={monster.phobiaModeImageUrl}
                 className="relative z-10 h-[24rem] w-full sm:h-[34rem]"
               />
             ) : imageSrc ? (
@@ -96,6 +95,7 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
                 selectedSkins={selectedSkinNames}
                 showPhobiaMode={phobiaModeEnabled}
                 phobiaModeImageUrl={monster.phobiaModeImageUrl}
+                phobiaModeScene={monster.phobiaModeScene}
                 className="relative z-10 h-[24rem] w-full sm:h-[34rem]"
               />
             ) : (

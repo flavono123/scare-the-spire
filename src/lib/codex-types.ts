@@ -825,6 +825,56 @@ export interface MonsterSpineAsset {
   moveEffects: Record<string, MonsterSpineEffectAsset[]>;
 }
 
+export interface MonsterPhobiaModeScene {
+  scenePath: string;
+  viewBox: MonsterPhobiaModeRect;
+  sprite: {
+    position: MonsterPhobiaModeVector;
+    scale: MonsterPhobiaModeVector;
+    width: number;
+    height: number;
+  };
+  particles: MonsterPhobiaModeParticle[];
+}
+
+export interface MonsterPhobiaModeParticle {
+  name: string;
+  type: "GPUParticles2D" | "CPUParticles2D";
+  position: MonsterPhobiaModeVector;
+  amount: number;
+  lifetime: number;
+  preprocess: number;
+  localCoords: boolean;
+  texture: {
+    imageUrl: string;
+    source: string;
+    ctex: string;
+    width: number;
+    height: number;
+  };
+  material: {
+    emissionRingRadius: number;
+    emissionRingInnerRadius: number;
+    initialVelocityMin: number;
+    initialVelocityMax: number;
+    orbitVelocityMin: number;
+    orbitVelocityMax: number;
+    scaleMin: number;
+    scaleMax: number;
+    spread: number;
+  };
+}
+
+export interface MonsterPhobiaModeVector {
+  x: number;
+  y: number;
+}
+
+export interface MonsterPhobiaModeRect extends MonsterPhobiaModeVector {
+  width: number;
+  height: number;
+}
+
 export interface CodexMonster {
   id: string;
   name: string;        // Korean
@@ -844,6 +894,8 @@ export interface CodexMonster {
   bossImageUrl: string | null;   // boss encounter token icon (bosses/ dir)
   phobiaModeImageUrl: string | null;
   phobiaModePartImageUrls: Record<string, string> | null;
+  phobiaModeScene: MonsterPhobiaModeScene | null;
+  phobiaModePartScenes: Record<string, MonsterPhobiaModeScene> | null;
   spineAsset: MonsterSpineAsset | null;
 }
 
