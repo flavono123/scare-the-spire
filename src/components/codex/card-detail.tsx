@@ -578,7 +578,10 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
-        <section className="flex min-h-[34rem] flex-col items-center justify-center gap-4 py-4">
+        <section
+          data-card-detail-stage
+          className="flex min-h-[34rem] flex-col items-center justify-center gap-4 py-4"
+        >
           {/* 카드 + hover popover (popover는 카드 우측, 캐러셀은 카드 아래라 안 겹침).
               활성 인챈트가 있으면 카드 hover 시에도 그 인챈트의 툴팁이 뜨고,
               카드 슬롯 클릭으로 해제 가능. */}
