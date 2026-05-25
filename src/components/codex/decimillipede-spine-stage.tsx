@@ -78,7 +78,7 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
       "alt_track/writhe_die",
       "alt_track/writhe_idle",
     ],
-    className: "left-[54%] top-[15%] z-10 h-[70%] w-[44%]",
+    className: "left-[30%] top-[0%] z-10 h-[90%] w-[70%]",
   },
 ];
 
