@@ -18,9 +18,10 @@ const spinePlayerPath = path.join(
 
 const DECIMILLIPEDE_ENCOUNTER_X_OFFSET = -459;
 const DECIMILLIPEDE_GAME_SCREEN_HEIGHT = 1080;
-const DECIMILLIPEDE_SPINE_SCALE = 0.45;
+const DECIMILLIPEDE_SPINE_SCALE_X = -0.45;
+const DECIMILLIPEDE_SPINE_SCALE_Y = 0.45;
 // Source: bestiary_layout_decimillipede.tscn + decimillipede_elite.tscn slots.
-// Browser actors are placed by their visible Spine folder order: front, middle, back.
+// Browser actors match the game scene slot order, then mirror the Spine skeletons like the encounter.
 const DECIMILLIPEDE_VIEWPORT = {
   x: 420,
   y: 240,
@@ -37,14 +38,15 @@ const ENCOUNTER_CONFIGS = {
     viewport: DECIMILLIPEDE_VIEWPORT,
     parts: [
       {
-        folder: "decimillipede_front",
-        skel: "decimillipede1.skel",
-        atlas: "decimillipede_front.atlas",
+        folder: "decimillipede_back",
+        skel: "decimillipede3.skel",
+        atlas: "decimillipede_back.atlas",
         x: 1103 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET + 318,
         y: toBrowserSpineY(740 - 19),
-        scale: DECIMILLIPEDE_SPINE_SCALE,
+        scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
+        scaleY: DECIMILLIPEDE_SPINE_SCALE_Y,
         bones: {
-          link_l_1: { x: -344.445, y: 228.889 },
+          link_r_3: { x: 286.667, y: 275.556 },
         },
         zIndex: 10,
       },
@@ -54,7 +56,8 @@ const ENCOUNTER_CONFIGS = {
         atlas: "decimillipede_middle.atlas",
         x: 1451 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 54,
         y: toBrowserSpineY(740 - 43),
-        scale: DECIMILLIPEDE_SPINE_SCALE,
+        scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
+        scaleY: DECIMILLIPEDE_SPINE_SCALE_Y,
         bones: {
           link_l_2: { x: -442.222, y: 202.222 },
           link_r_2: { x: 220, y: 228.889 },
@@ -62,14 +65,15 @@ const ENCOUNTER_CONFIGS = {
         zIndex: 20,
       },
       {
-        folder: "decimillipede_back",
-        skel: "decimillipede3.skel",
-        atlas: "decimillipede_back.atlas",
+        folder: "decimillipede_front",
+        skel: "decimillipede1.skel",
+        atlas: "decimillipede_front.atlas",
         x: 1797 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 344,
         y: toBrowserSpineY(740 - 28),
-        scale: DECIMILLIPEDE_SPINE_SCALE,
+        scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
+        scaleY: DECIMILLIPEDE_SPINE_SCALE_Y,
         bones: {
-          link_r_3: { x: 286.667, y: 275.556 },
+          link_l_1: { x: -344.445, y: 228.889 },
         },
         zIndex: 30,
       },
@@ -311,8 +315,8 @@ function renderHtml(config) {
           update: (player) => {
             player.skeleton.x = part.x;
             player.skeleton.y = part.y;
-            player.skeleton.scaleX = part.scale;
-            player.skeleton.scaleY = part.scale;
+            player.skeleton.scaleX = part.scaleX;
+            player.skeleton.scaleY = part.scaleY;
             for (const [boneName, target] of Object.entries(part.bones)) {
               const bone = player.skeleton.findBone(boneName);
               if (!bone) continue;
@@ -324,8 +328,8 @@ function renderHtml(config) {
           success: (player) => {
             player.skeleton.x = part.x;
             player.skeleton.y = part.y;
-            player.skeleton.scaleX = part.scale;
-            player.skeleton.scaleY = part.scale;
+            player.skeleton.scaleX = part.scaleX;
+            player.skeleton.scaleY = part.scaleY;
             for (const [boneName, target] of Object.entries(part.bones)) {
               const bone = player.skeleton.findBone(boneName);
               if (!bone) continue;

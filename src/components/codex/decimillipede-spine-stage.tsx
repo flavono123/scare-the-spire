@@ -31,9 +31,10 @@ interface DecimillipedePart {
 
 const DECIMILLIPEDE_ENCOUNTER_X_OFFSET = -459;
 const DECIMILLIPEDE_GAME_SCREEN_HEIGHT = 1080;
-const DECIMILLIPEDE_SPINE_SCALE = 0.45;
+const DECIMILLIPEDE_SPINE_SCALE_X = -0.45;
+const DECIMILLIPEDE_SPINE_SCALE_Y = 0.45;
 // Source: bestiary_layout_decimillipede.tscn + decimillipede_elite.tscn slots.
-// Browser actors are placed by their visible Spine folder order: front, middle, back.
+// Browser actors match the game scene slot order, then mirror the Spine skeletons like the encounter.
 const DECIMILLIPEDE_VIEWPORT = {
   x: 420,
   y: 240,
@@ -48,8 +49,8 @@ function toBrowserSpineY(godotY: number): number {
 function applyDecimillipedeTransform(player: SpinePlayer, part: DecimillipedePart, attackOffsetX = 0) {
   player.skeleton.x = part.spineX;
   player.skeleton.y = part.spineY;
-  player.skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE;
-  player.skeleton.scaleY = DECIMILLIPEDE_SPINE_SCALE;
+  player.skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE_X;
+  player.skeleton.scaleY = DECIMILLIPEDE_SPINE_SCALE_Y;
   for (const [boneName, target] of Object.entries(part.boneTargets)) {
     const bone = player.skeleton.findBone(boneName);
     if (!bone) continue;
@@ -77,9 +78,9 @@ function lerp(from: number, to: number, amount: number): number {
 
 const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
   {
-    id: "segment1-front-model",
-    atlasUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
-    binaryUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede1.skel",
+    id: "segment1-back-model",
+    atlasUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede_back.atlas",
+    binaryUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede3.skel",
     animationIds: [
       "dead_loop",
       "dead_static",
@@ -94,7 +95,7 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     spineX: 1103 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET + 318,
     spineY: toBrowserSpineY(740 - 19),
     boneTargets: {
-      link_l_1: { x: -344.445, y: 228.889 },
+      link_r_3: { x: 286.667, y: 275.556 },
     },
     zIndex: 10,
   },
@@ -122,9 +123,9 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     zIndex: 20,
   },
   {
-    id: "segment3-back-model",
-    atlasUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede_back.atlas",
-    binaryUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede3.skel",
+    id: "segment3-front-model",
+    atlasUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
+    binaryUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede1.skel",
     animationIds: [
       "dead_loop",
       "dead_static",
@@ -139,7 +140,7 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     spineX: 1797 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 344,
     spineY: toBrowserSpineY(740 - 28),
     boneTargets: {
-      link_r_3: { x: 286.667, y: 275.556 },
+      link_l_1: { x: -344.445, y: 228.889 },
     },
     zIndex: 30,
   },
