@@ -112,6 +112,10 @@ const MONSTER_SKIN_PARTS = {
 
 const BASE_COMPOSITE_SKIN_BY_NAME = new Set(["normal"]);
 const INTERNAL_SKIN_NAMES = new Set(["normal", "phobia"]);
+const PHOBIA_MODE_SKINS = {
+  normalSkin: "normal",
+  phobiaSkin: "phobia",
+};
 
 const VFX_ALIASES = {
   VFX_CHAIN: "vfx_chain",
@@ -430,6 +434,17 @@ function buildBaseSkinCombination(actor, alias, skinParts) {
     .sort();
 }
 
+function buildPhobiaMode(actor, alias) {
+  if (alias?.tags?.includes("shared-actor")) return null;
+
+  const hasNormal = actor.skins.includes(PHOBIA_MODE_SKINS.normalSkin)
+    && (actor.skinAttachmentCounts[PHOBIA_MODE_SKINS.normalSkin] ?? 0) > 0;
+  const hasPhobia = actor.skins.includes(PHOBIA_MODE_SKINS.phobiaSkin)
+    && (actor.skinAttachmentCounts[PHOBIA_MODE_SKINS.phobiaSkin] ?? 0) > 0;
+
+  return hasNormal && hasPhobia ? PHOBIA_MODE_SKINS : null;
+}
+
 function buildSkinVariants(actor, alias, skinParts) {
   if (alias?.tags?.includes("shared-actor")) return [];
   if (skinParts.length > 0) {
@@ -466,6 +481,7 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
   const usableVfxIds = new Set([...vfxById.keys()]);
   const skinParts = buildSkinParts(monster.id, actor, alias);
   const defaultSkinCombination = buildBaseSkinCombination(actor, alias, skinParts);
+  const phobiaMode = buildPhobiaMode(actor, alias);
   const skinVariants = buildSkinVariants(actor, alias, skinParts);
   const moveAnimations = Object.fromEntries(
     moves.map((move) => [move.id, moveAnimationCandidates(monster, move, animationNames, idleAnimation)]),
@@ -491,6 +507,7 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
     skins: actor.skins,
     ...(skinParts.length > 0 ? { skinParts } : {}),
     ...(defaultSkinCombination.length > 0 ? { defaultSkinCombination } : {}),
+    ...(phobiaMode ? { phobiaMode } : {}),
     ...(skinVariants.length > 0 ? { skinVariants } : {}),
     animations: animationNames,
     bestiaryAnimations,

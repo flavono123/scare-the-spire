@@ -774,6 +774,11 @@ export interface MonsterSkinPart {
   options: MonsterSkinPartOption[];
 }
 
+export interface MonsterPhobiaModeSkin {
+  normalSkin: string;
+  phobiaSkin: string;
+}
+
 export interface MonsterSpineAsset {
   id: string;
   source: string;
@@ -786,6 +791,7 @@ export interface MonsterSpineAsset {
   skins: string[];
   skinParts?: MonsterSkinPart[];
   defaultSkinCombination?: string[];
+  phobiaMode?: MonsterPhobiaModeSkin;
   skinVariants?: {
     id: string;
     label: string;

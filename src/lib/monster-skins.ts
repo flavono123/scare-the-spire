@@ -19,13 +19,22 @@ export function getDefaultMonsterSkinSelections(monster: CodexMonster): MonsterS
 export function getSelectedMonsterSkinNames(
   monster: CodexMonster,
   selections: MonsterSkinSelections,
+  options?: { phobiaMode?: boolean },
 ): string[] {
   const parts = getMonsterSkinParts(monster.spineAsset);
-  if (parts.length === 0) return monster.spineAsset?.defaultSkinCombination ?? [];
+  if (parts.length === 0) {
+    return applyMonsterPhobiaModeSkinNames(
+      monster.spineAsset,
+      monster.spineAsset?.defaultSkinCombination ?? [],
+      options?.phobiaMode ?? false,
+    );
+  }
 
-  return parts
+  const skinNames = parts
     .map((part) => selections[part.id] ?? part.options[0]?.id)
     .filter((skinName): skinName is string => Boolean(skinName));
+
+  return applyMonsterPhobiaModeSkinNames(monster.spineAsset, skinNames, options?.phobiaMode ?? false);
 }
 
 export function getSingleMonsterSkin(monster: CodexMonster): string | null {
@@ -40,10 +49,32 @@ export function hasMonsterSkinParts(monster: CodexMonster): boolean {
   return getMonsterSkinParts(monster.spineAsset).length > 0 || (monster.spineAsset?.skinVariants?.length ?? 0) > 1;
 }
 
+export function hasMonsterPhobiaMode(monster: CodexMonster): boolean {
+  return Boolean(monster.spineAsset?.phobiaMode);
+}
+
+export function getMonsterPhobiaModeLabel(serviceLocale: ServiceLocale): string {
+  return serviceLocale === "ko" ? "공포 완화 모드" : "Phobia Mode";
+}
+
 export function getMonsterSkinPartLabel(part: MonsterSkinPart, serviceLocale: ServiceLocale): string {
   return serviceLocale === "ko" ? part.labelKo : part.labelEn;
 }
 
 export function getMonsterSkinOptionLabel(option: MonsterSkinPartOption, serviceLocale: ServiceLocale): string {
   return serviceLocale === "ko" ? option.labelKo : option.labelEn;
+}
+
+function applyMonsterPhobiaModeSkinNames(
+  asset: MonsterSpineAsset | null | undefined,
+  skinNames: readonly string[],
+  enabled: boolean,
+): string[] {
+  const phobiaMode = asset?.phobiaMode;
+  if (!enabled || !phobiaMode) return [...skinNames];
+
+  const names = skinNames.filter((skinName) => (
+    skinName !== phobiaMode.normalSkin && skinName !== phobiaMode.phobiaSkin
+  ));
+  return [...names, phobiaMode.phobiaSkin];
 }
