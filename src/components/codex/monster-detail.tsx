@@ -47,7 +47,11 @@ import {
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import { GameCheckboxToggle } from "./game-checkbox";
-import { DecimillipedeSpineStage } from "./decimillipede-spine-stage";
+import {
+  DECIMILLIPEDE_PART_OPTIONS,
+  DecimillipedeSpineStage,
+  type DecimillipedePartId,
+} from "./decimillipede-spine-stage";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -925,6 +929,10 @@ export function MonsterDetail({
     monsterId: monster.id,
     enabled: false,
   });
+  const [decimillipedePartState, setDecimillipedePartState] = useState<{ monsterId: string; partId: DecimillipedePartId }>({
+    monsterId: monster.id,
+    partId: "middle",
+  });
   const selectedMoveId = selectedMoveState.monsterId === monster.id ? selectedMoveState.moveId : null;
   const selectedMoveNonce = selectedMoveState.monsterId === monster.id ? selectedMoveState.nonce : 0;
   const selectMove = (moveId: string) => {
@@ -945,6 +953,9 @@ export function MonsterDetail({
   const hasPhobiaMode = hasMonsterPhobiaMode(monster);
   const phobiaModeEnabled = hasPhobiaMode && phobiaModeState.monsterId === monster.id && phobiaModeState.enabled;
   const phobiaModeImageUrl = monster.phobiaModeImageUrl;
+  const selectedDecimillipedePart = decimillipedePartState.monsterId === monster.id
+    ? decimillipedePartState.partId
+    : "middle";
   const selectedSkinNames = useMemo(
     () => getSelectedMonsterSkinNames(monster, selectedSkinSelections, { phobiaMode: phobiaModeEnabled }),
     [monster, selectedSkinSelections, phobiaModeEnabled],
@@ -1066,6 +1077,8 @@ export function MonsterDetail({
                 monsterName={monster.name}
                 selectedMoveId={selectedMoveId}
                 selectedMoveNonce={selectedMoveNonce}
+                mode="part"
+                partId={selectedDecimillipedePart}
                 showPhobiaMode={phobiaModeEnabled}
                 phobiaModeImageUrl={phobiaModeImageUrl}
                 className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
@@ -1106,8 +1119,35 @@ export function MonsterDetail({
             </h1>
           </div>
 
-          {(skinParts.length > 0 || hasPhobiaMode) && (
+          {(skinParts.length > 0 || hasPhobiaMode || monster.id === "DECIMILLIPEDE_SEGMENT") && (
             <div className="flex w-full max-w-2xl flex-wrap items-center justify-center gap-x-3 gap-y-2">
+              {monster.id === "DECIMILLIPEDE_SEGMENT" && (
+                <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5">
+                  <span className="font-game-title text-sm font-bold text-[#f1c94f] [text-shadow:2px_2px_0_rgba(0,0,0,0.82)]">
+                    {serviceLocale === "ko" ? "부위" : "Part"}
+                  </span>
+                  <div className="flex flex-wrap gap-1" role="group" aria-label={`${monster.name} ${serviceLocale === "ko" ? "부위" : "part"}`}>
+                    {DECIMILLIPEDE_PART_OPTIONS.map((part) => {
+                      const selected = selectedDecimillipedePart === part.id;
+                      return (
+                        <button
+                          key={part.id}
+                          type="button"
+                          onClick={() => setDecimillipedePartState({ monsterId: monster.id, partId: part.id })}
+                          className="rounded border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-white/10"
+                          style={{
+                            backgroundColor: selected ? hexToRgba(typeConfig.color, 0.18) : "rgba(255,255,255,0.03)",
+                            borderColor: selected ? `${typeConfig.color}88` : "rgba(255,255,255,0.1)",
+                            color: selected ? typeConfig.color : "#a1a1aa",
+                          }}
+                        >
+                          {serviceLocale === "ko" ? part.labelKo : part.labelEn}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               {hasPhobiaMode && (
                 <GameCheckboxToggle
                   checked={phobiaModeEnabled}

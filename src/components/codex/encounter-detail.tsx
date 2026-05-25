@@ -19,6 +19,7 @@ import {
 } from "@/lib/codex-types";
 import { getRelatedMonsterIdsForEncounter } from "@/lib/codex-references";
 import { DescriptionText } from "./codex-description";
+import { DecimillipedeSpineStage } from "./decimillipede-spine-stage";
 import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -154,7 +155,27 @@ export function EncounterDetail({
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[28rem] flex-col items-center justify-center gap-5 py-4">
-          {representativeImageUrl && (
+          {encounter.id === "DECIMILLIPEDE_ELITE" && (
+            <div
+              className="relative flex h-56 w-full max-w-4xl items-center justify-center sm:h-72 lg:h-80"
+              data-encounter-detail-render
+            >
+              <div
+                className="absolute bottom-8 left-[14%] right-[14%] h-8 rounded-[50%] blur-xl"
+                style={{ backgroundColor: `${roomConfig.color}22` }}
+              />
+              <DecimillipedeSpineStage
+                fallbackImageUrl={representativeImageUrl}
+                monsterName={encounter.name}
+                selectedMoveId={null}
+                mode="encounter"
+                className="relative z-10 h-full w-full"
+                fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_24px_30px_rgba(0,0,0,0.5)]"
+              />
+            </div>
+          )}
+
+          {representativeImageUrl && encounter.id !== "DECIMILLIPEDE_ELITE" && (
             <div className="relative flex h-48 w-full max-w-4xl items-center justify-center sm:h-64">
               <div
                 className="absolute bottom-8 left-[14%] right-[14%] h-8 rounded-[50%] blur-xl"
@@ -171,7 +192,7 @@ export function EncounterDetail({
             </div>
           )}
 
-          {!representativeImageUrl && (
+          {!representativeImageUrl && encounter.id !== "DECIMILLIPEDE_ELITE" && (
             <div className="flex w-full flex-wrap items-end justify-center gap-x-6 gap-y-4">
               {uniqueMonsters.map((monsterRef) => {
                 const monster = monsterById.get(monsterRef.id);

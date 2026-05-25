@@ -61,17 +61,19 @@ function applyDecimillipedeTransform(
   stageMode: "encounter" | "part",
   attackOffsetX = 0,
 ) {
-  player.skeleton.x = part.spineX + (stageMode === "part" ? part.standaloneOffsetX : 0);
-  player.skeleton.y = part.spineY;
-  player.skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE_X;
-  player.skeleton.scaleY = DECIMILLIPEDE_SPINE_SCALE_Y;
+  const skeleton = player.skeleton;
+  if (!skeleton) return;
+  skeleton.x = part.spineX + (stageMode === "part" ? part.standaloneOffsetX : 0);
+  skeleton.y = part.spineY;
+  skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE_X;
+  skeleton.scaleY = DECIMILLIPEDE_SPINE_SCALE_Y;
   for (const [boneName, target] of Object.entries(part.boneTargets)) {
-    const bone = player.skeleton.findBone(boneName);
+    const bone = skeleton.findBone(boneName);
     if (!bone) continue;
     bone.x = target.x + attackOffsetX;
     bone.y = target.y;
   }
-  player.skeleton.updateWorldTransform(2);
+  skeleton.updateWorldTransform(2);
 }
 
 function decimillipedeAttackOffsetX(elapsedMs: number): number {
