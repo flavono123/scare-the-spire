@@ -16,49 +16,60 @@ const spinePlayerPath = path.join(
   "node_modules/@esotericsoftware/spine-player/dist/iife/spine-player.min.js",
 );
 
+const DECIMILLIPEDE_ENCOUNTER_X_OFFSET = -459;
+const DECIMILLIPEDE_GAME_SCREEN_HEIGHT = 1080;
+const DECIMILLIPEDE_SPINE_SCALE = 0.45;
+// Source: bestiary_layout_decimillipede.tscn + decimillipede_elite.tscn slots.
+// The segment scenes intentionally point at different skel_data resources than their filenames imply.
+const DECIMILLIPEDE_VIEWPORT = {
+  x: 420,
+  y: 240,
+  width: 1120,
+  height: 620,
+};
+
 const ENCOUNTER_CONFIGS = {
   DECIMILLIPEDE_ELITE: {
     outputSlug: "decimillipede_elite",
-    stageWidth: 1040,
-    stageHeight: 360,
-    settleMs: 800,
+    stageWidth: 1200,
+    stageHeight: 700,
+    settleMs: 1200,
+    viewport: DECIMILLIPEDE_VIEWPORT,
     parts: [
       {
-        folder: "decimillipede_front",
-        skel: "decimillipede1.skel",
-        atlas: "decimillipede_front.atlas",
-        left: 20,
-        top: 18,
-        width: 335,
-        height: 300,
-        scale: 1.02,
-        zIndex: 3,
+        folder: "decimillipede_back",
+        skel: "decimillipede3.skel",
+        atlas: "decimillipede_back.atlas",
+        x: 1103 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET + 318,
+        y: toBrowserSpineY(740 - 19),
+        scale: DECIMILLIPEDE_SPINE_SCALE,
+        zIndex: 30,
       },
       {
         folder: "decimillipede_middle",
         skel: "decimillipede2.skel",
         atlas: "decimillipede_middle.atlas",
-        left: 270,
-        top: 26,
-        width: 355,
-        height: 290,
-        scale: 1,
-        zIndex: 2,
+        x: 1451 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 54,
+        y: toBrowserSpineY(740 - 43),
+        scale: DECIMILLIPEDE_SPINE_SCALE,
+        zIndex: 20,
       },
       {
-        folder: "decimillipede_back",
-        skel: "decimillipede3.skel",
-        atlas: "decimillipede_back.atlas",
-        left: 610,
-        top: 72,
-        width: 390,
-        height: 245,
-        scale: 1.7,
-        zIndex: 1,
+        folder: "decimillipede_front",
+        skel: "decimillipede1.skel",
+        atlas: "decimillipede_front.atlas",
+        x: 1797 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 344,
+        y: toBrowserSpineY(740 - 28),
+        scale: DECIMILLIPEDE_SPINE_SCALE,
+        zIndex: 10,
       },
     ],
   },
 };
+
+function toBrowserSpineY(godotY) {
+  return DECIMILLIPEDE_GAME_SCREEN_HEIGHT - godotY;
+}
 
 const args = parseArgs(process.argv.slice(2));
 const requestedIds = resolveRequestedIds(args);
@@ -224,7 +235,7 @@ function createStaticServer() {
 
 function renderHtml(config) {
   const partNodes = config.parts.map((part, index) => (
-    `<div id="part-${index}" class="part" style="left:${part.left}px;top:${part.top}px;width:${part.width}px;height:${part.height}px;z-index:${part.zIndex};--scale:${part.scale}"></div>`
+    `<div id="part-${index}" class="part" style="z-index:${part.zIndex}"></div>`
   )).join("");
 
   return `<!doctype html>
@@ -247,11 +258,8 @@ function renderHtml(config) {
     }
     .part {
       position: absolute;
+      inset: 0;
       overflow: visible;
-    }
-    .part canvas {
-      transform: scale(var(--scale));
-      transform-origin: center center;
     }
   </style>
 </head>
@@ -279,11 +287,22 @@ function renderHtml(config) {
           showControls: false,
           showLoading: false,
           viewport: {
+            x: ${config.viewport.x},
+            y: ${config.viewport.y},
+            width: ${config.viewport.width},
+            height: ${config.viewport.height},
             padLeft: "0%",
             padRight: "0%",
             padTop: "0%",
             padBottom: "0%",
             transitionTime: 0
+          },
+          updateWorldTransform: (player) => {
+            player.skeleton.x = part.x;
+            player.skeleton.y = part.y;
+            player.skeleton.scaleX = part.scale;
+            player.skeleton.scaleY = part.scale;
+            player.skeleton.updateWorldTransform(2);
           },
           success: (player) => {
             player.setAnimation("idle_loop", true);

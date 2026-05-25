@@ -23,14 +23,32 @@ interface DecimillipedePart {
   atlasUrl: string;
   binaryUrl: string;
   animationIds: string[];
-  className: string;
+  spineX: number;
+  spineY: number;
+  zIndex: number;
+}
+
+const DECIMILLIPEDE_ENCOUNTER_X_OFFSET = -459;
+const DECIMILLIPEDE_GAME_SCREEN_HEIGHT = 1080;
+const DECIMILLIPEDE_SPINE_SCALE = 0.45;
+// Source: bestiary_layout_decimillipede.tscn + decimillipede_elite.tscn slots.
+// The segment scenes intentionally point at different skel_data resources than their filenames imply.
+const DECIMILLIPEDE_VIEWPORT = {
+  x: 420,
+  y: 240,
+  width: 1120,
+  height: 620,
+} as const;
+
+function toBrowserSpineY(godotY: number): number {
+  return DECIMILLIPEDE_GAME_SCREEN_HEIGHT - godotY;
 }
 
 const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
   {
-    id: "front",
-    atlasUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
-    binaryUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede1.skel",
+    id: "segment1-front-model",
+    atlasUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede_back.atlas",
+    binaryUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede3.skel",
     animationIds: [
       "dead_loop",
       "dead_static",
@@ -42,10 +60,12 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
       "alt_track/writhe_die",
       "alt_track/writhe_idle",
     ],
-    className: "left-[2%] top-[10%] z-30 h-[82%] w-[39%]",
+    spineX: 1103 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET + 318,
+    spineY: toBrowserSpineY(740 - 19),
+    zIndex: 30,
   },
   {
-    id: "middle",
+    id: "segment2-middle-model",
     atlasUrl: "/spine/sts2/monsters/decimillipede_middle/decimillipede_middle.atlas",
     binaryUrl: "/spine/sts2/monsters/decimillipede_middle/decimillipede2.skel",
     animationIds: [
@@ -60,12 +80,14 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
       "alt_track/writhe_die",
       "alt_track/writhe_idle",
     ],
-    className: "left-[31%] top-[11%] z-20 h-[78%] w-[37%]",
+    spineX: 1451 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 54,
+    spineY: toBrowserSpineY(740 - 43),
+    zIndex: 20,
   },
   {
-    id: "back",
-    atlasUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede_back.atlas",
-    binaryUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede3.skel",
+    id: "segment3-back-model",
+    atlasUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
+    binaryUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede1.skel",
     animationIds: [
       "dead_loop",
       "dead_static",
@@ -78,7 +100,9 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
       "alt_track/writhe_die",
       "alt_track/writhe_idle",
     ],
-    className: "left-[25%] top-[8%] z-10 h-[104%] w-[78%]",
+    spineX: 1797 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 344,
+    spineY: toBrowserSpineY(740 - 28),
+    zIndex: 10,
   },
 ];
 
@@ -124,11 +148,19 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
             showControls: false,
             showLoading: false,
             viewport: {
-              padLeft: "2%",
-              padRight: "2%",
-              padTop: "2%",
-              padBottom: "2%",
-              transitionTime: 0.12,
+              ...DECIMILLIPEDE_VIEWPORT,
+              padLeft: "0%",
+              padRight: "0%",
+              padTop: "0%",
+              padBottom: "0%",
+              transitionTime: 0,
+            },
+            updateWorldTransform: (loadedPlayer) => {
+              loadedPlayer.skeleton.x = part.spineX;
+              loadedPlayer.skeleton.y = part.spineY;
+              loadedPlayer.skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE;
+              loadedPlayer.skeleton.scaleY = DECIMILLIPEDE_SPINE_SCALE;
+              loadedPlayer.skeleton.updateWorldTransform(2);
             },
             success: (loadedPlayer) => {
               if (disposed) return;
@@ -208,7 +240,8 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
         {DECIMILLIPEDE_PARTS.map((part) => (
           <div
             key={part.id}
-            className={`absolute ${part.className}`}
+            className="pointer-events-none absolute inset-0"
+            style={{ zIndex: part.zIndex }}
           >
             <div
               ref={(node) => {
