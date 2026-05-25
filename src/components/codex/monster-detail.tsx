@@ -132,13 +132,6 @@ interface PatternDiagramNode {
   height: number;
   isInitial: boolean;
   phaseId: string | null;
-  startMarkers?: PatternDiagramStartMarker[];
-}
-
-interface PatternDiagramStartMarker {
-  label: string;
-  color: string;
-  title: string;
 }
 
 interface PatternDiagramEdge {
@@ -803,20 +796,6 @@ function PatternMoveStateNode({
         }
       }}
     >
-      {node.startMarkers?.map((marker, index) => (
-        <span
-          key={`${marker.label}-${index}`}
-          className="font-game-title pointer-events-none absolute -top-4 z-20 flex h-6 w-6 items-center justify-center rounded-full border border-black/70 text-[11px] font-black leading-none text-black shadow-[0_2px_6px_rgba(0,0,0,0.7)]"
-          style={{
-            left: 10 + index * 24,
-            backgroundColor: marker.color,
-            boxShadow: `0 0 0 1px rgba(255,255,255,0.2), 0 0 10px ${hexToRgba(marker.color, 0.45)}`,
-          }}
-          title={marker.title}
-        >
-          {marker.label}
-        </span>
-      ))}
       <span className="relative z-10 flex h-full min-w-0 flex-col items-center justify-center gap-1">
         <span className="flex max-w-full flex-wrap items-center justify-center gap-x-1 gap-y-0.5">
           {attackMetric && (
@@ -1758,23 +1737,10 @@ function buildDecimillipedePatternDiagramModel(
   const x1 = DIAGRAM_PAD;
   const x2 = x1 + DIAGRAM_CELL_WIDTH + localHGap;
   const x3 = x2 + DIAGRAM_CELL_WIDTH + localHGap;
-  const startMarkerTitle = serviceLocale === "ko" ? "부위 시작점" : "Part start";
   const nodes: PatternDiagramNode[] = [
-    buildPatternNode("WRITHE", x1, topY, [{
-      label: "1",
-      color: "#efc851",
-      title: `${startMarkerTitle} 1`,
-    }]),
-    buildPatternNode("CONSTRICT", x2, topY, [{
-      label: "2",
-      color: "#60a5fa",
-      title: `${startMarkerTitle} 2`,
-    }]),
-    buildPatternNode("BULK", x3, topY, [{
-      label: "3",
-      color: "#f87171",
-      title: `${startMarkerTitle} 3`,
-    }]),
+    buildPatternNode("WRITHE", x1, topY),
+    buildPatternNode("CONSTRICT", x2, topY),
+    buildPatternNode("BULK", x3, topY),
     buildPatternNode("DEAD", x1, bottomY),
     buildPatternNode("REATTACH", x2, bottomY),
   ];
@@ -1822,7 +1788,9 @@ function buildDecimillipedePatternDiagramModel(
   const mainY = writhe.y + writhe.height / 2;
   const bottomMainY = dead.y + dead.height / 2;
   const topLoopY = writhe.y - 58;
-  const conditionLaneY = writhe.y + writhe.height + 34;
+  const conditionLaneY1 = writhe.y + writhe.height + 28;
+  const conditionLaneY2 = conditionLaneY1 + 24;
+  const conditionLaneY3 = conditionLaneY2 + 24;
   const randomLaneY1 = writhe.y + writhe.height + 78;
   const randomLaneY2 = randomLaneY1 + 28;
   const randomLaneY3 = randomLaneY2 + 28;
@@ -1855,13 +1823,33 @@ function buildDecimillipedePatternDiagramModel(
       topLoopY - 8,
     ),
     edge(
-      "decimillipede-zero-hp-dead",
+      "decimillipede-writhe-zero-hp-dead",
       "WRITHE",
       "DEAD",
-      `M ${writhe.x + 28} ${writhe.y + writhe.height} V ${conditionLaneY} H ${dead.x + 36} V ${dead.y}`,
+      `M ${writhe.x + 32} ${writhe.y + writhe.height} V ${conditionLaneY1} H ${dead.x + 38} V ${dead.y}`,
+      null,
+      dead.x + 74,
+      conditionLaneY1 - 6,
+      "conditional",
+    ),
+    edge(
+      "decimillipede-constrict-zero-hp-dead",
+      "CONSTRICT",
+      "DEAD",
+      `M ${constrict.x + constrict.width * 0.36} ${constrict.y + constrict.height} V ${conditionLaneY2} H ${dead.x + 82} V ${dead.y}`,
       conditionLabel,
-      dead.x + 86,
-      conditionLaneY - 6,
+      dead.x + 122,
+      conditionLaneY2 - 6,
+      "conditional",
+    ),
+    edge(
+      "decimillipede-bulk-zero-hp-dead",
+      "BULK",
+      "DEAD",
+      `M ${bulk.x + bulk.width * 0.24} ${bulk.y + bulk.height} V ${conditionLaneY3} H ${dead.x + 126} V ${dead.y}`,
+      null,
+      dead.x + 170,
+      conditionLaneY3 - 6,
       "conditional",
     ),
     edge(
@@ -1926,7 +1914,6 @@ function buildPatternNode(
   id: string,
   x: number,
   y: number,
-  startMarkers?: PatternDiagramStartMarker[],
 ): PatternDiagramNode {
   return {
     id,
@@ -1936,7 +1923,6 @@ function buildPatternNode(
     height: DIAGRAM_CELL_HEIGHT,
     isInitial: false,
     phaseId: null,
-    startMarkers,
   };
 }
 
