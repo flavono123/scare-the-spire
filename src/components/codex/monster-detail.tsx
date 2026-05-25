@@ -1383,6 +1383,18 @@ const MONSTER_INTENT_ICONS: Record<MonsterIntentKind, string> = {
   summon: "/images/sts2/intents/summon.png",
   unknown: "/images/sts2/intents/unknown.png",
 };
+const MONSTER_INTENT_ANIMATED_ICONS: Partial<Record<MonsterIntentKind, string>> = {
+  buff: "/images/sts2/intents/animated/buff.webp",
+  cardDebuff: "/images/sts2/intents/animated/card_debuff.webp",
+  debuff: "/images/sts2/intents/animated/debuff.webp",
+  escape: "/images/sts2/intents/animated/escape.webp",
+  heal: "/images/sts2/intents/animated/heal.webp",
+  sleep: "/images/sts2/intents/animated/sleep.webp",
+  statusCard: "/images/sts2/intents/animated/status_card.webp",
+  stun: "/images/sts2/intents/animated/stun.webp",
+  summon: "/images/sts2/intents/animated/summon.webp",
+  unknown: "/images/sts2/intents/animated/unknown.webp",
+};
 const MONSTER_INTENT_CLASS_TO_KIND: Record<string, MonsterIntentKind> = {
   AttackIntent: "attack",
   SingleAttackIntent: "attack",
@@ -1449,7 +1461,7 @@ function getMonsterIntentIcon(kind: MonsterIntentKind, summary: MoveSummary, int
   if (kind === "attack") {
     return getAttackIntentIcon(summary.damageEntry, getIntentRepeatInfo(intent));
   }
-  return MONSTER_INTENT_ICONS[kind];
+  return MONSTER_INTENT_ANIMATED_ICONS[kind] ?? MONSTER_INTENT_ICONS[kind];
 }
 
 function getMonsterIntentPreviewLabel(intent: MonsterMoveIntentDetail, kind: MonsterIntentKind, summary: MoveSummary): string | null {
