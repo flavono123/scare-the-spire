@@ -269,7 +269,7 @@ function renderHtml(monster, asset, background) {
           success: (player) => {
             try {
               applyCompositeSkin(player, ${JSON.stringify(compositeSkinNames)});
-              player.setAnimation(${JSON.stringify(animation)}, true);
+              applyIdleTracks(player, ${JSON.stringify(asset.idleTracks ?? [])}, ${JSON.stringify(animation)});
               player.play();
               window.setTimeout(resolve, ${args.settleMs});
             } catch (error) {
@@ -298,6 +298,21 @@ function renderHtml(monster, asset, background) {
       player.skeleton.setSkin(compositeSkin);
       player.skeleton.setSlotsToSetupPose();
       player.skeleton.updateWorldTransform(spine.Physics.update);
+    }
+
+    function applyIdleTracks(player, idleTracks, fallbackAnimation) {
+      if (!idleTracks.length) {
+        player.setAnimation(fallbackAnimation, true);
+        return;
+      }
+
+      player.animationState.clearTracks();
+      player.skeleton.setToSetupPose();
+      for (const idleTrack of idleTracks) {
+        const entry = player.animationState.setAnimation(idleTrack.track, idleTrack.animation, idleTrack.loop ?? true);
+        entry.mixDuration = 0;
+        entry.mixTime = 0;
+      }
     }
   </script>
 </body>

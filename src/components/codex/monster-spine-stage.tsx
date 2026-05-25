@@ -3,7 +3,7 @@
 import { memo, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 import type { Skin, SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
 import Image from "@/components/ui/static-image";
-import type { MonsterSpineAsset, MonsterSpineEffectAsset } from "@/lib/codex-types";
+import type { MonsterSpineAsset, MonsterSpineEffectAsset, MonsterSpineTrackAnimation } from "@/lib/codex-types";
 
 interface MonsterSpineStageProps {
   asset: MonsterSpineAsset | null;
@@ -64,6 +64,10 @@ function MonsterSpineStageComponent({
     () => asset ? resolveSpineAnimation(asset, selectedMoveId, availableAnimations) : null,
     [asset, availableAnimations, selectedMoveId],
   );
+  const selectedTrackAnimations = useMemo(
+    () => asset && selectedMoveId ? asset.moveAnimationTracks?.[selectedMoveId] ?? null : null,
+    [asset, selectedMoveId],
+  );
 
   useEffect(() => {
     if (!asset || !containerRef.current) return;
@@ -95,6 +99,7 @@ function MonsterSpineStageComponent({
           success: (loadedPlayer) => {
             if (disposed) return;
             applyCompositeSkin(loadedPlayer, SpineSkinCtor, Physics, compositeSkinNames, monsterName);
+            applyIdleTracks(loadedPlayer, asset.idleTracks);
             playerRef.current = loadedPlayer;
             setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? asset.animations);
             setLoadState("ready");
@@ -128,8 +133,12 @@ function MonsterSpineStageComponent({
     const player = playerRef.current;
     const loops = selectedAnimation === asset.idleAnimation || selectedMoveId == null;
     try {
-      restartSpineAnimation(player, selectedAnimation, loops);
-      if (!loops && asset.idleAnimation && selectedAnimation !== asset.idleAnimation) {
+      if (selectedTrackAnimations?.length) {
+        restartSpineTrackAnimations(player, selectedTrackAnimations, asset.idleTracks);
+      } else {
+        restartSpineAnimation(player, selectedAnimation, loops);
+      }
+      if (!selectedTrackAnimations?.length && !loops && asset.idleAnimation && selectedAnimation !== asset.idleAnimation) {
         const idleEntry = player.addAnimation(asset.idleAnimation, true, 0);
         idleEntry.mixDuration = 0;
         idleEntry.mixTime = 0;
@@ -138,7 +147,7 @@ function MonsterSpineStageComponent({
     } catch (error) {
       console.warn(`Failed to play Spine animation ${selectedAnimation} for ${monsterName}:`, error);
     }
-  }, [asset, loadState, monsterName, selectedAnimation, selectedMoveId, selectedMoveNonce]);
+  }, [asset, loadState, monsterName, selectedAnimation, selectedMoveId, selectedMoveNonce, selectedTrackAnimations]);
 
   useEffect(() => {
     if (!asset || loadState !== "ready" || !selectedMoveId || !vfxContainerRef.current) return;
@@ -281,6 +290,61 @@ function restartSpineAnimation(
   entry.animationLast = -1;
   entry.alpha = 1;
   return entry;
+}
+
+function applyIdleTracks(
+  player: SpinePlayer,
+  idleTracks: readonly MonsterSpineTrackAnimation[] | undefined,
+) {
+  if (!idleTracks?.length) return;
+
+  restartSpineTrackAnimations(player, idleTracks);
+}
+
+function restartSpineTrackAnimations(
+  player: SpinePlayer,
+  trackAnimations: readonly MonsterSpineTrackAnimation[],
+  idleTracks?: readonly MonsterSpineTrackAnimation[],
+) {
+  player.animationState?.clearTracks();
+  player.skeleton?.setToSetupPose();
+
+  for (const trackAnimation of trackAnimations) {
+    const entry = player.animationState?.setAnimation(
+      trackAnimation.track,
+      trackAnimation.animation,
+      trackAnimation.loop ?? false,
+    );
+    if (!entry) continue;
+    entry.mixDuration = 0;
+    entry.mixTime = 0;
+    entry.trackTime = 0;
+    entry.trackLast = -1;
+    entry.animationLast = -1;
+    entry.alpha = 1;
+
+    if (trackAnimation.loop === false && trackAnimation.idleAnimation) {
+      const idleEntry = player.animationState?.addAnimation(
+        trackAnimation.track,
+        trackAnimation.idleAnimation,
+        true,
+        0,
+      );
+      if (idleEntry) {
+        idleEntry.mixDuration = 0;
+        idleEntry.mixTime = 0;
+      }
+    }
+  }
+
+  const configuredTracks = new Set(trackAnimations.map((trackAnimation) => trackAnimation.track));
+  for (const idleTrack of idleTracks ?? []) {
+    if (configuredTracks.has(idleTrack.track)) continue;
+    const entry = player.animationState?.setAnimation(idleTrack.track, idleTrack.animation, idleTrack.loop ?? true);
+    if (!entry) continue;
+    entry.mixDuration = 0;
+    entry.mixTime = 0;
+  }
 }
 
 function applyCompositeSkin(

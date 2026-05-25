@@ -779,6 +779,13 @@ export interface MonsterPhobiaModeSkin {
   phobiaSkin: string;
 }
 
+export interface MonsterSpineTrackAnimation {
+  track: number;
+  animation: string;
+  loop?: boolean;
+  idleAnimation?: string;
+}
+
 export interface MonsterSpineAsset {
   id: string;
   source: string;
@@ -800,7 +807,9 @@ export interface MonsterSpineAsset {
   animations: string[];
   bestiaryAnimations: string[];
   idleAnimation: string;
+  idleTracks?: MonsterSpineTrackAnimation[];
   moveAnimations: Record<string, string[]>;
+  moveAnimationTracks?: Record<string, MonsterSpineTrackAnimation[]>;
   moveEffects: Record<string, MonsterSpineEffectAsset[]>;
 }
 
