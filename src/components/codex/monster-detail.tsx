@@ -47,6 +47,7 @@ import {
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import { GameCheckboxToggle } from "./game-checkbox";
+import { DecimillipedeSpineStage } from "./decimillipede-spine-stage";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -998,7 +999,16 @@ export function MonsterDetail({
               className="absolute bottom-10 left-[18%] right-[18%] h-8 rounded-[50%] blur-md"
               style={{ backgroundColor: hexToRgba(selectedAccent, 0.18) }}
             />
-            {imageSrc ? (
+            {monster.id === "DECIMILLIPEDE_SEGMENT" ? (
+              <DecimillipedeSpineStage
+                fallbackImageUrl={imageSrc}
+                monsterName={monster.name}
+                selectedMoveId={selectedMoveId}
+                selectedMoveNonce={selectedMoveNonce}
+                className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
+                fallbackImageClassName="absolute inset-0 z-10 h-full w-full translate-y-[8%] scale-[0.92] object-contain drop-shadow-2xl"
+              />
+            ) : imageSrc ? (
               <MonsterSpineStage
                 asset={monster.spineAsset}
                 fallbackImageUrl={imageSrc}
