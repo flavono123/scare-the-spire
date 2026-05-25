@@ -9,6 +9,8 @@ interface DecimillipedeSpineStageProps {
   monsterName: string;
   selectedMoveId: string | null;
   selectedMoveNonce?: number;
+  mode?: "encounter" | "part";
+  partId?: DecimillipedePartId;
   showPhobiaMode?: boolean;
   phobiaModeImageUrl?: string | null;
   className?: string;
@@ -19,14 +21,19 @@ interface DecimillipedeSpineStageProps {
 
 type LoadState = "loading" | "ready" | "error";
 type SpinePlayerCtor = new (element: HTMLElement, config: SpinePlayerConfig) => SpinePlayer;
+export type DecimillipedePartId = "back" | "middle" | "front";
 
 interface DecimillipedePart {
   id: string;
+  partId: DecimillipedePartId;
+  labelKo: string;
+  labelEn: string;
   atlasUrl: string;
   binaryUrl: string;
   animationIds: string[];
   spineX: number;
   spineY: number;
+  standaloneOffsetX: number;
   boneTargets: Record<string, { x: number; y: number }>;
   zIndex: number;
 }
@@ -48,8 +55,13 @@ function toBrowserSpineY(godotY: number): number {
   return DECIMILLIPEDE_GAME_SCREEN_HEIGHT - godotY;
 }
 
-function applyDecimillipedeTransform(player: SpinePlayer, part: DecimillipedePart, attackOffsetX = 0) {
-  player.skeleton.x = part.spineX;
+function applyDecimillipedeTransform(
+  player: SpinePlayer,
+  part: DecimillipedePart,
+  stageMode: "encounter" | "part",
+  attackOffsetX = 0,
+) {
+  player.skeleton.x = part.spineX + (stageMode === "part" ? part.standaloneOffsetX : 0);
   player.skeleton.y = part.spineY;
   player.skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE_X;
   player.skeleton.scaleY = DECIMILLIPEDE_SPINE_SCALE_Y;
@@ -81,6 +93,9 @@ function lerp(from: number, to: number, amount: number): number {
 const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
   {
     id: "segment1-back-model",
+    partId: "back",
+    labelKo: "뒤쪽",
+    labelEn: "Back",
     atlasUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede_back.atlas",
     binaryUrl: "/spine/sts2/monsters/decimillipede_back/decimillipede3.skel",
     animationIds: [
@@ -96,6 +111,7 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     ],
     spineX: 1103 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET + 318,
     spineY: toBrowserSpineY(740 - 19),
+    standaloneOffsetX: 210,
     boneTargets: {
       link_r_3: { x: 286.667, y: 275.556 },
     },
@@ -103,6 +119,9 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
   },
   {
     id: "segment2-middle-model",
+    partId: "middle",
+    labelKo: "가운데",
+    labelEn: "Middle",
     atlasUrl: "/spine/sts2/monsters/decimillipede_middle/decimillipede_middle.atlas",
     binaryUrl: "/spine/sts2/monsters/decimillipede_middle/decimillipede2.skel",
     animationIds: [
@@ -118,6 +137,7 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     ],
     spineX: 1451 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 54,
     spineY: toBrowserSpineY(740 - 43),
+    standaloneOffsetX: 0,
     boneTargets: {
       link_l_2: { x: -442.222, y: 202.222 },
       link_r_2: { x: 220, y: 228.889 },
@@ -126,6 +146,9 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
   },
   {
     id: "segment3-front-model",
+    partId: "front",
+    labelKo: "앞쪽",
+    labelEn: "Front",
     atlasUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
     binaryUrl: "/spine/sts2/monsters/decimillipede_front/decimillipede1.skel",
     animationIds: [
@@ -141,6 +164,7 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     ],
     spineX: 1797 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 344,
     spineY: toBrowserSpineY(740 - 28),
+    standaloneOffsetX: -290,
     boneTargets: {
       link_l_1: { x: -344.445, y: 228.889 },
     },
@@ -148,11 +172,19 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
   },
 ];
 
+export const DECIMILLIPEDE_PART_OPTIONS = DECIMILLIPEDE_PARTS.map((part) => ({
+  id: part.partId,
+  labelKo: part.labelKo,
+  labelEn: part.labelEn,
+}));
+
 export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
   fallbackImageUrl,
   monsterName,
   selectedMoveId,
   selectedMoveNonce = 0,
+  mode = "encounter",
+  partId = "middle",
   showPhobiaMode = false,
   phobiaModeImageUrl = null,
   className,
@@ -170,6 +202,10 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
     () => resolveDecimillipedeAnimation(selectedMoveId),
     [selectedMoveId],
   );
+  const visibleParts = useMemo(() => {
+    if (mode === "encounter") return DECIMILLIPEDE_PARTS;
+    return DECIMILLIPEDE_PARTS.filter((part) => part.partId === partId);
+  }, [mode, partId]);
 
   useEffect(() => {
     selectedAnimationRef.current = selectedAnimation;
@@ -185,7 +221,7 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
 
     void import("@esotericsoftware/spine-player")
       .then(({ SpinePlayer: SpinePlayerCtor }) => {
-        for (const part of DECIMILLIPEDE_PARTS) {
+        for (const part of visibleParts) {
           const parent = mountedPartRefs[part.id];
           if (!parent || disposed) continue;
           const player = new (SpinePlayerCtor as SpinePlayerCtor)(parent, {
@@ -212,14 +248,14 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
                 selectedAnimationRef.current === "alt_track/writhe_attack"
                   ? decimillipedeAttackOffsetX(performance.now() - animationStartRef.current)
                   : 0;
-              applyDecimillipedeTransform(loadedPlayer, part, attackOffsetX);
+              applyDecimillipedeTransform(loadedPlayer, part, mode, attackOffsetX);
             },
             success: (loadedPlayer) => {
               if (disposed) return;
-              applyDecimillipedeTransform(loadedPlayer, part);
+              applyDecimillipedeTransform(loadedPlayer, part, mode);
               playerRefs.current[part.id] = loadedPlayer;
               readyCount += 1;
-              if (readyCount === DECIMILLIPEDE_PARTS.length) setLoadState("ready");
+              if (readyCount === visibleParts.length) setLoadState("ready");
             },
             error: (_loadedPlayer, message) => {
               if (disposed) return;
@@ -241,22 +277,22 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
       disposed = true;
       playerRefs.current = {};
       for (const player of createdPlayers) player.dispose();
-      for (const part of DECIMILLIPEDE_PARTS) mountedPartRefs[part.id]?.replaceChildren();
+      for (const part of visibleParts) mountedPartRefs[part.id]?.replaceChildren();
     };
-  }, [monsterName]);
+  }, [mode, monsterName, visibleParts]);
 
   useEffect(() => {
     if (loadState !== "ready") return;
-    for (const part of DECIMILLIPEDE_PARTS) {
+    for (const part of visibleParts) {
       const player = playerRefs.current[part.id];
       if (!player) continue;
       const animation = part.animationIds.includes(selectedAnimation) ? selectedAnimation : "idle_loop";
       const loop = animation === "idle_loop" || animation === "dead_loop";
       try {
-        applyDecimillipedeTransform(player, part);
+        applyDecimillipedeTransform(player, part, mode);
         player.animationState?.clearTrack(0);
         player.skeleton?.setToSetupPose();
-        applyDecimillipedeTransform(player, part);
+        applyDecimillipedeTransform(player, part, mode);
         const entry = player.setAnimation(animation, loop);
         entry.mixDuration = 0;
         entry.mixTime = 0;
@@ -274,7 +310,7 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
         console.warn(`Failed to play Decimillipede animation ${animation} for ${monsterName}:`, error);
       }
     }
-  }, [loadState, monsterName, selectedAnimation, selectedMoveNonce]);
+  }, [loadState, mode, monsterName, selectedAnimation, selectedMoveNonce, visibleParts]);
 
   return (
     <div className={className}>
@@ -302,7 +338,7 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
         className={`absolute inset-0 z-20 transition-opacity duration-300 ${loadState === "ready" && !showStaticPhobiaMode ? "opacity-100" : "opacity-0"}`}
         aria-hidden={loadState !== "ready" || showStaticPhobiaMode}
       >
-        {DECIMILLIPEDE_PARTS.map((part) => (
+        {visibleParts.map((part) => (
           <div
             key={part.id}
             className="pointer-events-none absolute inset-0"
