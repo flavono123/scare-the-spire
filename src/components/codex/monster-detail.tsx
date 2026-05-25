@@ -855,6 +855,7 @@ export function MonsterDetail({
   const transitionRows = useMemo(() => buildTransitionTableRows(monster), [monster]);
   const patternSummary = useMemo(() => buildPatternSummary(monster), [monster]);
   const loopLength = useMemo(() => getFixedLoopLength(monster), [monster]);
+  const specialPatternNote = getSpecialPatternNote(monster, serviceLocale);
   const firstMoveId = monster.moveGraph?.initial ?? null;
   const [selectedMoveState, setSelectedMoveState] = useState<{ monsterId: string; moveId: string | null; nonce: number }>({
     monsterId: monster.id,
@@ -940,6 +941,11 @@ export function MonsterDetail({
             {serviceLocale === "ko" ? `${loopLength}턴 반복` : `${loopLength}-turn loop`}
           </span>
         )}
+        {monster.id === "DECIMILLIPEDE_SEGMENT" && (
+          <span className="text-[#efc851]">
+            {serviceLocale === "ko" ? "각 세그먼트는 서로 다른 시작점에서 순환" : "Each segment starts at a different point"}
+          </span>
+        )}
       </div>
 
       {patternSummary.hasPhases && (
@@ -966,6 +972,14 @@ export function MonsterDetail({
         powerById={powerById}
         cardById={cardById}
       />
+      {specialPatternNote && (
+        <div className="mt-3 rounded-md border border-[#efc851]/20 bg-black/20 px-3 py-2 text-xs leading-relaxed text-gray-300">
+          <span className="font-game-title font-bold text-[#efc851]">
+            {serviceLocale === "ko" ? "특수 조건" : "Special"}
+          </span>
+          <span className="ml-2">{specialPatternNote}</span>
+        </div>
+      )}
       {monster.moveGraph?.confidence === "partial" && (
         <p className="mt-3 text-[11px] leading-relaxed text-gray-500">{monsterText.graphPartial}</p>
       )}
@@ -1899,7 +1913,7 @@ function buildMonsterActionMoves(monster: CodexMonster): MonsterMove[] {
 }
 
 function buildPatternSummary(monster: CodexMonster): PatternSummary {
-  const transitions = monster.moveGraph?.transitions ?? [];
+  const transitions = getDisplayPatternTransitions(monster);
   if (transitions.length === 0) {
     return { kind: "unknown", hasPhases: false, phases: [] };
   }
@@ -1922,7 +1936,7 @@ function buildPatternSummary(monster: CodexMonster): PatternSummary {
 }
 
 function buildPatternPhases(monster: CodexMonster): PatternPhase[] {
-  const transitions = monster.moveGraph?.transitions ?? [];
+  const transitions = getDisplayPatternTransitions(monster);
   const nodes = new Set<string>();
   const outgoing = new Map<string, string[]>();
 
@@ -2035,12 +2049,13 @@ function getPatternKindLabel(kind: PatternKind, serviceLocale: ServiceLocale): s
 
 function getFixedLoopLength(monster: CodexMonster): number | null {
   const graph = monster.moveGraph;
-  if (!graph?.initial) return null;
-  const transitions = graph.transitions.filter((transition) => {
+  if (!graph) return null;
+  const displayTransitions = getDisplayPatternTransitions(monster);
+  const transitions = displayTransitions.filter((transition) => {
     const kind = transition.kind ?? inferTransitionKind(transition);
     return kind === "fixed" && transition.from !== "__START__";
   });
-  if (transitions.length === 0 || transitions.length !== graph.transitions.length) return null;
+  if (transitions.length === 0 || transitions.length !== displayTransitions.length) return null;
   const nextByMove = new Map<string, string>();
   for (const transition of transitions) {
     if (nextByMove.has(transition.from)) return null;
@@ -2048,7 +2063,9 @@ function getFixedLoopLength(monster: CodexMonster): number | null {
   }
 
   const seen = new Set<string>();
-  let current = graph.initial;
+  const start = graph.initial ?? transitions[0]?.from ?? null;
+  let current = start;
+  if (!current) return null;
   while (!seen.has(current)) {
     seen.add(current);
     const next = nextByMove.get(current);
@@ -2056,7 +2073,27 @@ function getFixedLoopLength(monster: CodexMonster): number | null {
     current = next;
   }
 
-  return current === graph.initial ? seen.size : null;
+  return current === start ? seen.size : null;
+}
+
+function getDisplayPatternTransitions(monster: CodexMonster): MonsterMoveTransition[] {
+  const transitions = monster.moveGraph?.transitions ?? [];
+  if (monster.id !== "DECIMILLIPEDE_SEGMENT") return transitions;
+
+  return transitions.filter((transition) => (
+    transition.from !== "DEAD" &&
+    transition.from !== "REATTACH" &&
+    transition.to !== "DEAD" &&
+    transition.to !== "REATTACH"
+  ));
+}
+
+function getSpecialPatternNote(monster: CodexMonster, serviceLocale: ServiceLocale): string | null {
+  if (monster.id !== "DECIMILLIPEDE_SEGMENT") return null;
+
+  return serviceLocale === "ko"
+    ? "체력이 0이 되면 죽음 상태로 한 턴 쉬고, 다음 턴 재연결로 체력을 절반 회복한 뒤 3턴 순환의 임의 시작점으로 복귀합니다."
+    : "At 0 HP, it spends one turn dead, then Reattach restores half HP and returns to a random point in the 3-turn loop.";
 }
 
 function formatHp(monster: CodexMonster): string | null {
@@ -2237,7 +2274,7 @@ function hexToRgba(hex: string, alpha: number): string {
 }
 
 function buildTransitionTableRows(monster: CodexMonster): TransitionTableRow[] {
-  const transitions = monster.moveGraph?.transitions ?? [];
+  const transitions = getDisplayPatternTransitions(monster);
   const hasExplicitStart = transitions.some((transition) => transition.from === "__START__");
   const rows: TransitionTableRow[] = [];
 
