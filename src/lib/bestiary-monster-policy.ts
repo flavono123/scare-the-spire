@@ -17,6 +17,7 @@ export interface BestiaryDevMonsterGroup {
 }
 
 export const BESTIARY_FORCED_ACTS: Record<string, EventAct> = {
+  DECIMILLIPEDE_SEGMENT: "Act 2 - Hive",
   PARAFRIGHT: "Act 2 - Hive",
   GUARDBOT: "Act 3 - Glory",
   NOISEBOT: "Act 3 - Glory",
@@ -87,7 +88,7 @@ export const BESTIARY_DEV_MONSTER_GROUPS: BestiaryDevMonsterGroup[] = [
     label: "복합 Scene",
     description: "Godot scene이 여러 Spine actor를 조합해 만드는 대상입니다.",
     monsterIds: ["DECIMILLIPEDE_SEGMENT"],
-    publicTreatment: "dev-only",
+    publicTreatment: "forced-act",
   },
 ];
 

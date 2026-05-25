@@ -11,7 +11,7 @@ import {
   getGameplayCardRarityLabels,
   getGameplayCardTypeLabels,
 } from "./codex-game-ui";
-import { hasPlaceholderBestiaryArt } from "./bestiary-monster-policy";
+import { getForcedBestiaryAct, hasPlaceholderBestiaryArt } from "./bestiary-monster-policy";
 import { DEFAULT_GAME_LOCALE_BY_SERVICE, type GameLocale } from "./i18n";
 import {
   CodexCard,
@@ -1473,6 +1473,10 @@ interface RawMonster {
 type MonsterPowerDisplay = Pick<MonsterMovePowerApplication, "powerId" | "powerName" | "powerNameEn" | "powerType" | "imageUrl">;
 type MonsterCardDisplay = Pick<MonsterMoveCardApplication, "cardId" | "cardName" | "cardNameEn" | "imageUrl">;
 
+const MONSTER_IMAGE_OVERRIDES: Record<string, string> = {
+  DECIMILLIPEDE_SEGMENT: "/images/sts2/encounters-render/decimillipede_elite.webp",
+};
+
 function buildMonsterPowerDisplays(korPowers: RawPower[], engPowers: RawPower[]): Map<string, MonsterPowerDisplay> {
   const engById = new Map(engPowers.map((power) => [power.id, power]));
 
@@ -1595,7 +1599,9 @@ function mapMonster(
   // bossImageUrl = boss encounter token icon from bosses/ dir
   const idLower = kor.id.toLowerCase();
   const imageSlug = resolveMonsterRenderSlug(idLower, kor.image_url, monsterImages);
-  const imageUrl = !placeholderArt && imageSlug ? `/images/sts2/monsters-render/${imageSlug}.webp` : null;
+  const imageUrl = !placeholderArt
+    ? MONSTER_IMAGE_OVERRIDES[kor.id] ?? (imageSlug ? `/images/sts2/monsters-render/${imageSlug}.webp` : null)
+    : null;
   const bossImageUrl = bossImages.has(`${idLower}_boss`)
     ? `/images/sts2/bosses/${idLower}_boss.webp`
     : null;
@@ -1605,7 +1611,7 @@ function mapMonster(
     name: gameTitleText(gameMonsters, `${kor.id}.name`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     type: kor.type as MonsterType,
-    showInCompendium: kor.show_in_compendium ?? true,
+    showInCompendium: (kor.show_in_compendium ?? true) || getForcedBestiaryAct(kor.id) !== null,
     minHp: kor.min_hp,
     maxHp: kor.max_hp,
     minHpAscension: kor.min_hp_ascension,
