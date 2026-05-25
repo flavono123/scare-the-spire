@@ -52,16 +52,19 @@ DECIMILLIPEDE_PARTS = [
     {
         "id": "back",
         "source": "images/monsters/phobia_mode/decimillipede_segment_back_phobia.png.import",
+        "fileName": "decimillipede_back.webp",
         "offset": (0, 86),
     },
     {
         "id": "middle",
         "source": "images/monsters/phobia_mode/decimillipede_segment_middle_phobia.png.import",
+        "fileName": "decimillipede_middle.webp",
         "offset": (390, 84),
     },
     {
         "id": "front",
         "source": "images/monsters/phobia_mode/decimillipede_segment_front_phobia.png.import",
+        "fileName": "decimillipede_front.webp",
         "offset": (745, 0),
     },
 ]
@@ -124,9 +127,16 @@ def extract_decimillipede(reader: PCKReader) -> dict[str, object]:
     output_image = fit_for_web(canvas)
     out_path = PHOBIA_OUTPUT_DIR / "decimillipede.webp"
     save_webp(output_image, out_path)
+    part_image_urls: dict[str, str] = {}
+    for part, image, _ in loaded_parts:
+        part_output = fit_for_web(image)
+        part_out_path = PHOBIA_OUTPUT_DIR / part["fileName"]
+        save_webp(part_output, part_out_path)
+        part_image_urls[part["id"]] = f"/images/sts2/monsters-phobia/{part['fileName']}"
     return {
         "id": "DECIMILLIPEDE_SEGMENT",
         "imageUrl": "/images/sts2/monsters-phobia/decimillipede.webp",
+        "partImageUrls": part_image_urls,
         "source": [part["source"] for part, _, _ in loaded_parts],
         "ctex": [ctex_path for _, _, ctex_path in loaded_parts],
         "width": output_image.width,

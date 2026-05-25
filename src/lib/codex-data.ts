@@ -129,6 +129,7 @@ interface RawCharacter {
 interface MonsterPhobiaModeAsset {
   id: string;
   imageUrl: string;
+  partImageUrls?: Record<string, string>;
 }
 
 function spireCodexImageToLocal(url: string | null): string | null {
@@ -1537,7 +1538,8 @@ function mapMonster(
 ): CodexMonster {
   const placeholderArt = hasPlaceholderBestiaryArt(kor.id);
   const spineAsset = placeholderArt ? null : (spineAssets.get(kor.id) ?? null);
-  const phobiaModeImageUrl = phobiaModeAssets.get(kor.id)?.imageUrl ?? null;
+  const phobiaModeAsset = phobiaModeAssets.get(kor.id) ?? null;
+  const phobiaModeImageUrl = phobiaModeAsset?.imageUrl ?? null;
   const engMovesById = new Map(eng.moves.map((move) => [move.id, move]));
   const mapMoves = (rawMoves: RawMonsterMove[]): MonsterMove[] => rawMoves.map((km) => {
     const em = engMovesById.get(km.id);
@@ -1631,6 +1633,7 @@ function mapMonster(
     imageUrl,
     bossImageUrl,
     phobiaModeImageUrl,
+    phobiaModePartImageUrls: phobiaModeAsset?.partImageUrls ?? null,
     spineAsset,
   };
 }

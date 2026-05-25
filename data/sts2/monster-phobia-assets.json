@@ -2,6 +2,11 @@
   {
     "id": "DECIMILLIPEDE_SEGMENT",
     "imageUrl": "/images/sts2/monsters-phobia/decimillipede.webp",
+    "partImageUrls": {
+      "back": "/images/sts2/monsters-phobia/decimillipede_back.webp",
+      "middle": "/images/sts2/monsters-phobia/decimillipede_middle.webp",
+      "front": "/images/sts2/monsters-phobia/decimillipede_front.webp"
+    },
     "source": [
       "images/monsters/phobia_mode/decimillipede_segment_back_phobia.png.import",
       "images/monsters/phobia_mode/decimillipede_segment_middle_phobia.png.import",
