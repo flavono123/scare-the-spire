@@ -44,6 +44,13 @@ function toBrowserSpineY(godotY: number): number {
   return DECIMILLIPEDE_GAME_SCREEN_HEIGHT - godotY;
 }
 
+function applyDecimillipedeTransform(player: SpinePlayer, part: DecimillipedePart) {
+  player.skeleton.x = part.spineX;
+  player.skeleton.y = part.spineY;
+  player.skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE;
+  player.skeleton.scaleY = DECIMILLIPEDE_SPINE_SCALE;
+}
+
 const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
   {
     id: "segment1-front-model",
@@ -155,15 +162,9 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
               padBottom: "0%",
               transitionTime: 0,
             },
-            updateWorldTransform: (loadedPlayer) => {
-              loadedPlayer.skeleton.x = part.spineX;
-              loadedPlayer.skeleton.y = part.spineY;
-              loadedPlayer.skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE;
-              loadedPlayer.skeleton.scaleY = DECIMILLIPEDE_SPINE_SCALE;
-              loadedPlayer.skeleton.updateWorldTransform(2);
-            },
             success: (loadedPlayer) => {
               if (disposed) return;
+              applyDecimillipedeTransform(loadedPlayer, part);
               playerRefs.current[part.id] = loadedPlayer;
               readyCount += 1;
               if (readyCount === DECIMILLIPEDE_PARTS.length) setLoadState("ready");
@@ -200,8 +201,10 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
       const animation = part.animationIds.includes(selectedAnimation) ? selectedAnimation : "idle_loop";
       const loop = animation === "idle_loop" || animation === "dead_loop";
       try {
+        applyDecimillipedeTransform(player, part);
         player.animationState?.clearTrack(0);
         player.skeleton?.setToSetupPose();
+        applyDecimillipedeTransform(player, part);
         const entry = player.setAnimation(animation, loop);
         entry.mixDuration = 0;
         entry.mixTime = 0;

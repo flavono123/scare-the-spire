@@ -297,14 +297,11 @@ function renderHtml(config) {
             padBottom: "0%",
             transitionTime: 0
           },
-          updateWorldTransform: (player) => {
+          success: (player) => {
             player.skeleton.x = part.x;
             player.skeleton.y = part.y;
             player.skeleton.scaleX = part.scale;
             player.skeleton.scaleY = part.scale;
-            player.skeleton.updateWorldTransform(2);
-          },
-          success: (player) => {
             player.setAnimation("idle_loop", true);
             player.play();
             window.setTimeout(resolve, 300);
