@@ -60,16 +60,6 @@
     "reason": "No renderable animations/monsters Spine actor was found in the PCK."
   },
   {
-    "id": "CRUSHER",
-    "imageSlug": "crusher",
-    "renderStatus": "static-only",
-    "renderTags": [
-      "no-renderable-spine-actor"
-    ],
-    "fallbackImageUrl": "/static/images/monsters/crusher.png",
-    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
-  },
-  {
     "id": "DOOR",
     "imageSlug": "door",
     "renderStatus": "static-only",
@@ -127,16 +117,6 @@
       "no-renderable-spine-actor"
     ],
     "fallbackImageUrl": null,
-    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
-  },
-  {
-    "id": "ROCKET",
-    "imageSlug": "rocket",
-    "renderStatus": "static-only",
-    "renderTags": [
-      "no-renderable-spine-actor"
-    ],
-    "fallbackImageUrl": "/static/images/monsters/rocket.png",
     "reason": "No renderable animations/monsters Spine actor was found in the PCK."
   },
   {

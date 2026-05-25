@@ -1062,6 +1062,276 @@
     "moveEffects": {}
   },
   {
+    "id": "CRUSHER",
+    "source": "animations/monsters/kaiser_crab/kaiser_crab",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "kaiser-crab",
+      "kaiser-crab-left"
+    ],
+    "atlasUrl": "/spine/sts2/monsters/kaiser_crab/kaiser_crab.atlas",
+    "binaryUrl": "/spine/sts2/monsters/kaiser_crab/kaiser_crab.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/kaiser_crab/kaiser_crab.png",
+      "/spine/sts2/monsters/kaiser_crab/kaiser_crab_2.png",
+      "/spine/sts2/monsters/kaiser_crab/kaiser_crab_3.png",
+      "/spine/sts2/monsters/kaiser_crab/kaiser_crab_4.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "viewport": {
+      "x": -3250,
+      "y": -1120,
+      "width": 3950,
+      "height": 2850,
+      "padLeft": "2%",
+      "padRight": "4%",
+      "padTop": "4%",
+      "padBottom": "3%"
+    },
+    "animations": [
+      "empty",
+      "body/die",
+      "body/idle_loop",
+      "left/attack_double",
+      "left/attack_heavy",
+      "left/attack_med",
+      "left/block",
+      "left/buff",
+      "left/die",
+      "left/hurt",
+      "left/idle_loop",
+      "reactions/attack_left",
+      "reactions/attack_right",
+      "reactions/hurt_left",
+      "reactions/hurt_right",
+      "right/attack",
+      "right/attack_heavy",
+      "right/attack_med",
+      "right/charged_loop",
+      "right/charge_up",
+      "right/die",
+      "right/die_resting",
+      "right/hurt",
+      "right/hurt_charged",
+      "right/hurt_resting",
+      "right/idle_loop",
+      "right/rest_loop",
+      "right/wake_up"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
+    "idleAnimation": "body/idle_loop",
+    "idleTracks": [
+      {
+        "track": 0,
+        "animation": "body/idle_loop"
+      },
+      {
+        "track": 1,
+        "animation": "left/idle_loop"
+      },
+      {
+        "track": 2,
+        "animation": "right/idle_loop"
+      }
+    ],
+    "moveAnimations": {
+      "THRASH": [
+        "left/attack_heavy",
+        "left/idle_loop",
+        "body/idle_loop"
+      ],
+      "ENLARGING_STRIKE": [
+        "left/attack_med",
+        "left/idle_loop",
+        "body/idle_loop"
+      ],
+      "BUG_STING": [
+        "left/attack_double",
+        "left/idle_loop",
+        "body/idle_loop"
+      ],
+      "ADAPT": [
+        "left/buff",
+        "left/idle_loop",
+        "body/idle_loop"
+      ],
+      "GUARDED_STRIKE": [
+        "left/attack_med",
+        "left/idle_loop",
+        "body/idle_loop"
+      ],
+      "hurt": [
+        "left/hurt",
+        "left/idle_loop",
+        "body/idle_loop"
+      ],
+      "die": [
+        "left/die",
+        "body/idle_loop"
+      ]
+    },
+    "moveAnimationTracks": {
+      "THRASH": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/attack_heavy",
+          "loop": false,
+          "idleAnimation": "left/idle_loop"
+        },
+        {
+          "track": 3,
+          "animation": "reactions/attack_left",
+          "loop": false
+        }
+      ],
+      "ENLARGING_STRIKE": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/attack_med",
+          "loop": false,
+          "idleAnimation": "left/idle_loop"
+        },
+        {
+          "track": 3,
+          "animation": "reactions/attack_left",
+          "loop": false
+        }
+      ],
+      "BUG_STING": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/attack_double",
+          "loop": false,
+          "idleAnimation": "left/idle_loop"
+        },
+        {
+          "track": 3,
+          "animation": "reactions/attack_left",
+          "loop": false
+        }
+      ],
+      "ADAPT": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/buff",
+          "loop": false,
+          "idleAnimation": "left/idle_loop"
+        },
+        {
+          "track": 3,
+          "animation": "reactions/attack_left",
+          "loop": false
+        }
+      ],
+      "GUARDED_STRIKE": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/attack_med",
+          "loop": false,
+          "idleAnimation": "left/idle_loop"
+        },
+        {
+          "track": 3,
+          "animation": "reactions/attack_left",
+          "loop": false
+        }
+      ],
+      "hurt": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/hurt",
+          "loop": false,
+          "idleAnimation": "left/idle_loop"
+        },
+        {
+          "track": 3,
+          "animation": "reactions/hurt_left",
+          "loop": false
+        }
+      ],
+      "die": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/die",
+          "loop": false
+        },
+        {
+          "track": 3,
+          "animation": "reactions/hurt_left",
+          "loop": false
+        }
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
     "id": "CUBEX_CONSTRUCT",
     "source": "animations/monsters/cubex_construct/cubex_construct",
     "renderStatus": "spine",
@@ -4233,6 +4503,308 @@
       ]
     },
     "moveEffects": {}
+  },
+  {
+    "id": "ROCKET",
+    "source": "animations/monsters/kaiser_crab/kaiser_crab",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "kaiser-crab",
+      "kaiser-crab-right"
+    ],
+    "atlasUrl": "/spine/sts2/monsters/kaiser_crab/kaiser_crab.atlas",
+    "binaryUrl": "/spine/sts2/monsters/kaiser_crab/kaiser_crab.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/kaiser_crab/kaiser_crab.png",
+      "/spine/sts2/monsters/kaiser_crab/kaiser_crab_2.png",
+      "/spine/sts2/monsters/kaiser_crab/kaiser_crab_3.png",
+      "/spine/sts2/monsters/kaiser_crab/kaiser_crab_4.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "viewport": {
+      "x": -700,
+      "y": -1120,
+      "width": 4250,
+      "height": 2850,
+      "padLeft": "4%",
+      "padRight": "2%",
+      "padTop": "4%",
+      "padBottom": "3%"
+    },
+    "animations": [
+      "empty",
+      "body/die",
+      "body/idle_loop",
+      "left/attack_double",
+      "left/attack_heavy",
+      "left/attack_med",
+      "left/block",
+      "left/buff",
+      "left/die",
+      "left/hurt",
+      "left/idle_loop",
+      "reactions/attack_left",
+      "reactions/attack_right",
+      "reactions/hurt_left",
+      "reactions/hurt_right",
+      "right/attack",
+      "right/attack_heavy",
+      "right/attack_med",
+      "right/charged_loop",
+      "right/charge_up",
+      "right/die",
+      "right/die_resting",
+      "right/hurt",
+      "right/hurt_charged",
+      "right/hurt_resting",
+      "right/idle_loop",
+      "right/rest_loop",
+      "right/wake_up"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
+    "idleAnimation": "body/idle_loop",
+    "idleTracks": [
+      {
+        "track": 0,
+        "animation": "body/idle_loop"
+      },
+      {
+        "track": 1,
+        "animation": "left/idle_loop"
+      },
+      {
+        "track": 2,
+        "animation": "right/idle_loop"
+      }
+    ],
+    "moveAnimations": {
+      "TARGETING_RETICLE": [
+        "right/attack",
+        "right/idle_loop",
+        "body/idle_loop"
+      ],
+      "PRECISION_BEAM": [
+        "right/attack_med",
+        "right/idle_loop",
+        "body/idle_loop"
+      ],
+      "CHARGE_UP": [
+        "right/charge_up",
+        "right/charged_loop",
+        "body/idle_loop"
+      ],
+      "LASER": [
+        "right/attack_heavy",
+        "right/rest_loop",
+        "body/idle_loop"
+      ],
+      "RECHARGE": [
+        "right/wake_up",
+        "right/idle_loop",
+        "body/idle_loop"
+      ],
+      "hurt": [
+        "right/hurt",
+        "right/idle_loop",
+        "body/idle_loop"
+      ],
+      "die": [
+        "right/die",
+        "body/idle_loop"
+      ]
+    },
+    "moveAnimationTracks": {
+      "TARGETING_RETICLE": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/attack",
+          "loop": false,
+          "idleAnimation": "right/idle_loop"
+        },
+        {
+          "track": 3,
+          "animation": "reactions/attack_right",
+          "loop": false
+        }
+      ],
+      "PRECISION_BEAM": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/attack_med",
+          "loop": false,
+          "idleAnimation": "right/idle_loop"
+        },
+        {
+          "track": 3,
+          "animation": "reactions/attack_right",
+          "loop": false
+        }
+      ],
+      "CHARGE_UP": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/charge_up",
+          "loop": false,
+          "idleAnimation": "right/charged_loop"
+        },
+        {
+          "track": 3,
+          "animation": "reactions/attack_right",
+          "loop": false
+        }
+      ],
+      "LASER": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/attack_heavy",
+          "loop": false,
+          "idleAnimation": "right/rest_loop"
+        },
+        {
+          "track": 3,
+          "animation": "reactions/attack_right",
+          "loop": false
+        }
+      ],
+      "RECHARGE": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/wake_up",
+          "loop": false,
+          "idleAnimation": "right/idle_loop"
+        }
+      ],
+      "hurt": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/hurt",
+          "loop": false,
+          "idleAnimation": "right/idle_loop"
+        },
+        {
+          "track": 3,
+          "animation": "reactions/hurt_right",
+          "loop": false
+        }
+      ],
+      "die": [
+        {
+          "track": 0,
+          "animation": "body/idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "left/idle_loop"
+        },
+        {
+          "track": 2,
+          "animation": "right/die",
+          "loop": false
+        },
+        {
+          "track": 3,
+          "animation": "reactions/hurt_right",
+          "loop": false
+        }
+      ]
+    },
+    "moveEffects": {
+      "PRECISION_BEAM": [
+        {
+          "id": "VFX_LASER",
+          "folder": "vfx_laser",
+          "source": "animations/vfx/vfx_laser/laser",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/laser.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ],
+      "LASER": [
+        {
+          "id": "VFX_LASER",
+          "folder": "vfx_laser",
+          "source": "animations/vfx/vfx_laser/laser",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/laser.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
   },
   {
     "id": "SCROLL_OF_BITING",
