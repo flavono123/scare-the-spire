@@ -18,8 +18,7 @@ const spinePlayerPath = path.join(
 
 const DECIMILLIPEDE_ENCOUNTER_X_OFFSET = -459;
 const DECIMILLIPEDE_GAME_SCREEN_HEIGHT = 1080;
-const DECIMILLIPEDE_SPINE_SCALE_X = -0.45;
-const DECIMILLIPEDE_SPINE_SCALE_Y = 0.45;
+const DECIMILLIPEDE_SPINE_SCALE = 0.45;
 // Source: bestiary_layout_decimillipede.tscn + decimillipede_elite.tscn slots.
 // The segment scenes intentionally point at different skel_data resources than their filenames imply.
 const DECIMILLIPEDE_VIEWPORT = {
@@ -43,8 +42,10 @@ const ENCOUNTER_CONFIGS = {
         atlas: "decimillipede_back.atlas",
         x: 1103 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET + 318,
         y: toBrowserSpineY(740 - 19),
-        scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
-        scaleY: DECIMILLIPEDE_SPINE_SCALE_Y,
+        scale: DECIMILLIPEDE_SPINE_SCALE,
+        bones: {
+          link_r_3: { x: 286.667, y: 275.556 },
+        },
         zIndex: 30,
       },
       {
@@ -53,8 +54,11 @@ const ENCOUNTER_CONFIGS = {
         atlas: "decimillipede_middle.atlas",
         x: 1451 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 54,
         y: toBrowserSpineY(740 - 43),
-        scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
-        scaleY: DECIMILLIPEDE_SPINE_SCALE_Y,
+        scale: DECIMILLIPEDE_SPINE_SCALE,
+        bones: {
+          link_l_2: { x: -442.222, y: 202.222 },
+          link_r_2: { x: 220, y: 228.889 },
+        },
         zIndex: 20,
       },
       {
@@ -63,8 +67,10 @@ const ENCOUNTER_CONFIGS = {
         atlas: "decimillipede_front.atlas",
         x: 1797 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 344,
         y: toBrowserSpineY(740 - 28),
-        scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
-        scaleY: DECIMILLIPEDE_SPINE_SCALE_Y,
+        scale: DECIMILLIPEDE_SPINE_SCALE,
+        bones: {
+          link_l_1: { x: -344.445, y: 228.889 },
+        },
         zIndex: 10,
       },
     ],
@@ -302,11 +308,31 @@ function renderHtml(config) {
             padBottom: "0%",
             transitionTime: 0
           },
+          update: (player) => {
+            player.skeleton.x = part.x;
+            player.skeleton.y = part.y;
+            player.skeleton.scaleX = part.scale;
+            player.skeleton.scaleY = part.scale;
+            for (const [boneName, target] of Object.entries(part.bones)) {
+              const bone = player.skeleton.findBone(boneName);
+              if (!bone) continue;
+              bone.x = target.x;
+              bone.y = target.y;
+            }
+            player.skeleton.updateWorldTransform(2);
+          },
           success: (player) => {
             player.skeleton.x = part.x;
             player.skeleton.y = part.y;
-            player.skeleton.scaleX = part.scaleX;
-            player.skeleton.scaleY = part.scaleY;
+            player.skeleton.scaleX = part.scale;
+            player.skeleton.scaleY = part.scale;
+            for (const [boneName, target] of Object.entries(part.bones)) {
+              const bone = player.skeleton.findBone(boneName);
+              if (!bone) continue;
+              bone.x = target.x;
+              bone.y = target.y;
+            }
+            player.skeleton.updateWorldTransform(2);
             player.setAnimation("idle_loop", true);
             player.play();
             window.setTimeout(resolve, 300);

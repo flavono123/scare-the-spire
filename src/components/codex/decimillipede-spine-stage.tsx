@@ -25,13 +25,13 @@ interface DecimillipedePart {
   animationIds: string[];
   spineX: number;
   spineY: number;
+  boneTargets: Record<string, { x: number; y: number }>;
   zIndex: number;
 }
 
 const DECIMILLIPEDE_ENCOUNTER_X_OFFSET = -459;
 const DECIMILLIPEDE_GAME_SCREEN_HEIGHT = 1080;
-const DECIMILLIPEDE_SPINE_SCALE_X = -0.45;
-const DECIMILLIPEDE_SPINE_SCALE_Y = 0.45;
+const DECIMILLIPEDE_SPINE_SCALE = 0.45;
 // Source: bestiary_layout_decimillipede.tscn + decimillipede_elite.tscn slots.
 // The segment scenes intentionally point at different skel_data resources than their filenames imply.
 const DECIMILLIPEDE_VIEWPORT = {
@@ -48,8 +48,15 @@ function toBrowserSpineY(godotY: number): number {
 function applyDecimillipedeTransform(player: SpinePlayer, part: DecimillipedePart) {
   player.skeleton.x = part.spineX;
   player.skeleton.y = part.spineY;
-  player.skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE_X;
-  player.skeleton.scaleY = DECIMILLIPEDE_SPINE_SCALE_Y;
+  player.skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE;
+  player.skeleton.scaleY = DECIMILLIPEDE_SPINE_SCALE;
+  for (const [boneName, target] of Object.entries(part.boneTargets)) {
+    const bone = player.skeleton.findBone(boneName);
+    if (!bone) continue;
+    bone.x = target.x;
+    bone.y = target.y;
+  }
+  player.skeleton.updateWorldTransform(2);
 }
 
 const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
@@ -70,6 +77,9 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     ],
     spineX: 1103 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET + 318,
     spineY: toBrowserSpineY(740 - 19),
+    boneTargets: {
+      link_r_3: { x: 286.667, y: 275.556 },
+    },
     zIndex: 30,
   },
   {
@@ -89,6 +99,10 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     ],
     spineX: 1451 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 54,
     spineY: toBrowserSpineY(740 - 43),
+    boneTargets: {
+      link_l_2: { x: -442.222, y: 202.222 },
+      link_r_2: { x: 220, y: 228.889 },
+    },
     zIndex: 20,
   },
   {
@@ -108,6 +122,9 @@ const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
     ],
     spineX: 1797 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 344,
     spineY: toBrowserSpineY(740 - 28),
+    boneTargets: {
+      link_l_1: { x: -344.445, y: 228.889 },
+    },
     zIndex: 10,
   },
 ];
@@ -160,6 +177,9 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
               padTop: "0%",
               padBottom: "0%",
               transitionTime: 0,
+            },
+            update: (loadedPlayer) => {
+              applyDecimillipedeTransform(loadedPlayer, part);
             },
             success: (loadedPlayer) => {
               if (disposed) return;
