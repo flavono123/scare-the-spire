@@ -18,16 +18,116 @@ const outMonsterPath = path.join(repoRoot, "data/sts2/monster-spine-assets.json"
 const outMonsterFallbackPath = path.join(repoRoot, "data/sts2/monster-spine-fallbacks.json");
 const outVfxPath = path.join(repoRoot, "data/sts2/spine-vfx-assets.json");
 
+const KAISER_CRAB_IDLE_TRACKS = [
+  spineTrack(0, "body/idle_loop"),
+  spineTrack(1, "left/idle_loop"),
+  spineTrack(2, "right/idle_loop"),
+];
+
+const KAISER_CRAB_LEFT_IDLE = [
+  spineTrack(0, "body/idle_loop"),
+  spineTrack(1, "left/idle_loop"),
+  spineTrack(2, "right/idle_loop"),
+];
+
+const KAISER_CRAB_RIGHT_IDLE = [
+  spineTrack(0, "body/idle_loop"),
+  spineTrack(1, "left/idle_loop"),
+  spineTrack(2, "right/idle_loop"),
+];
+
+const CRUSHER_MOVE_ANIMATIONS = {
+  THRASH: ["left/attack_heavy", "left/idle_loop", "body/idle_loop"],
+  ENLARGING_STRIKE: ["left/attack_med", "left/idle_loop", "body/idle_loop"],
+  BUG_STING: ["left/attack_double", "left/idle_loop", "body/idle_loop"],
+  ADAPT: ["left/buff", "left/idle_loop", "body/idle_loop"],
+  GUARDED_STRIKE: ["left/attack_med", "left/idle_loop", "body/idle_loop"],
+  hurt: ["left/hurt", "left/idle_loop", "body/idle_loop"],
+  die: ["left/die", "body/idle_loop"],
+};
+
+const ROCKET_MOVE_ANIMATIONS = {
+  TARGETING_RETICLE: ["right/attack", "right/idle_loop", "body/idle_loop"],
+  PRECISION_BEAM: ["right/attack_med", "right/idle_loop", "body/idle_loop"],
+  CHARGE_UP: ["right/charge_up", "right/charged_loop", "body/idle_loop"],
+  LASER: ["right/attack_heavy", "right/rest_loop", "body/idle_loop"],
+  RECHARGE: ["right/wake_up", "right/idle_loop", "body/idle_loop"],
+  hurt: ["right/hurt", "right/idle_loop", "body/idle_loop"],
+  die: ["right/die", "body/idle_loop"],
+};
+
+const CRUSHER_TRACKS = {
+  THRASH: kaiserCrabLeftMove("left/attack_heavy"),
+  ENLARGING_STRIKE: kaiserCrabLeftMove("left/attack_med"),
+  BUG_STING: kaiserCrabLeftMove("left/attack_double"),
+  ADAPT: kaiserCrabLeftMove("left/buff"),
+  GUARDED_STRIKE: kaiserCrabLeftMove("left/attack_med"),
+  hurt: [
+    ...KAISER_CRAB_LEFT_IDLE,
+    spineTrack(1, "left/hurt", { loop: false, idleAnimation: "left/idle_loop" }),
+    spineTrack(3, "reactions/hurt_left", { loop: false }),
+  ],
+  die: [
+    spineTrack(0, "body/idle_loop"),
+    spineTrack(2, "right/idle_loop"),
+    spineTrack(1, "left/die", { loop: false }),
+    spineTrack(3, "reactions/hurt_left", { loop: false }),
+  ],
+};
+
+const ROCKET_TRACKS = {
+  TARGETING_RETICLE: kaiserCrabRightMove("right/attack"),
+  PRECISION_BEAM: kaiserCrabRightMove("right/attack_med"),
+  CHARGE_UP: kaiserCrabRightMove("right/charge_up", "right/charged_loop"),
+  LASER: kaiserCrabRightMove("right/attack_heavy", "right/rest_loop"),
+  RECHARGE: [
+    spineTrack(0, "body/idle_loop"),
+    spineTrack(1, "left/idle_loop"),
+    spineTrack(2, "right/wake_up", { loop: false, idleAnimation: "right/idle_loop" }),
+  ],
+  hurt: [
+    ...KAISER_CRAB_RIGHT_IDLE,
+    spineTrack(2, "right/hurt", { loop: false, idleAnimation: "right/idle_loop" }),
+    spineTrack(3, "reactions/hurt_right", { loop: false }),
+  ],
+  die: [
+    spineTrack(0, "body/idle_loop"),
+    spineTrack(1, "left/idle_loop"),
+    spineTrack(2, "right/die", { loop: false }),
+    spineTrack(3, "reactions/hurt_right", { loop: false }),
+  ],
+};
+
 const MONSTER_ALIASES = {
   BOWLBUG_EGG: { folder: "bowlbug", skin: "cocoon", tags: ["shared-actor", "variant-skin"] },
   BOWLBUG_NECTAR: { folder: "bowlbug", skin: "goop", tags: ["shared-actor", "variant-skin"] },
   BOWLBUG_ROCK: { folder: "bowlbug", skin: "rock", tags: ["shared-actor", "variant-skin"] },
   BOWLBUG_SILK: { folder: "bowlbug", skin: "web", tags: ["shared-actor", "variant-skin"] },
   CALCIFIED_CULTIST: { folder: "cultists", skin: "coral", tags: ["shared-actor", "variant-skin"] },
+  CRUSHER: {
+    folder: "kaiser_crab",
+    tags: ["shared-actor", "kaiser-crab", "kaiser-crab-left"],
+    idleAnimation: "body/idle_loop",
+    idleTracks: KAISER_CRAB_IDLE_TRACKS,
+    moveAnimations: CRUSHER_MOVE_ANIMATIONS,
+    moveAnimationTracks: CRUSHER_TRACKS,
+    bestiaryAnimations: ["hurt", "die"],
+    viewport: { x: -3250, y: -1120, width: 3950, height: 2850, padLeft: "2%", padRight: "4%", padTop: "4%", padBottom: "3%" },
+  },
   CUBEX_CONSTRUCT: { folder: "cubex_construct", tags: ["variant-skin"] },
   DAMP_CULTIST: { folder: "cultists", skin: "slug", tags: ["shared-actor", "variant-skin"] },
   FLYCONID: { folder: "flying_mushrooms", tags: ["image-slug-alias"] },
   GLOBE_HEAD: { folder: "globe_head", tags: ["image-slug-alias"] },
+  ROCKET: {
+    folder: "kaiser_crab",
+    tags: ["shared-actor", "kaiser-crab", "kaiser-crab-right"],
+    idleAnimation: "body/idle_loop",
+    idleTracks: KAISER_CRAB_IDLE_TRACKS,
+    moveAnimations: ROCKET_MOVE_ANIMATIONS,
+    moveAnimationTracks: ROCKET_TRACKS,
+    bestiaryAnimations: ["hurt", "die"],
+    viewport: { x: -700, y: -1120, width: 4250, height: 2850, padLeft: "4%", padRight: "2%", padTop: "4%", padBottom: "3%" },
+  },
   SCROLL_OF_BITING: { folder: "scroll_of_biting", tags: ["variant-skin"] },
   SKULKING_COLONY: { folder: "skulking_colony", tags: ["image-slug-alias"] },
   TORCH_HEAD_AMALGAM: { folder: "torch_head_amalgam", tags: ["image-slug-alias"] },
@@ -305,6 +405,33 @@ function skinOption(id, labelKo, labelEn, sortKey = id) {
   return { id, labelKo, labelEn, sortKey };
 }
 
+function spineTrack(track, animation, options = {}) {
+  return {
+    track,
+    animation,
+    ...(options.loop === false ? { loop: false } : {}),
+    ...(options.idleAnimation ? { idleAnimation: options.idleAnimation } : {}),
+  };
+}
+
+function kaiserCrabLeftMove(animation) {
+  return [
+    spineTrack(0, "body/idle_loop"),
+    spineTrack(2, "right/idle_loop"),
+    spineTrack(1, animation, { loop: false, idleAnimation: "left/idle_loop" }),
+    spineTrack(3, "reactions/attack_left", { loop: false }),
+  ];
+}
+
+function kaiserCrabRightMove(animation, idleAnimation = "right/idle_loop") {
+  return [
+    spineTrack(0, "body/idle_loop"),
+    spineTrack(1, "left/idle_loop"),
+    spineTrack(2, animation, { loop: false, idleAnimation }),
+    spineTrack(3, "reactions/attack_right", { loop: false }),
+  ];
+}
+
 function matchingAnimations(animations, needles) {
   const loweredNeedles = needles.map((needle) => needle.toLowerCase());
   return animations.filter((animation) => {
@@ -475,8 +602,13 @@ function buildSkinVariants(actor, alias, skinParts) {
 
 function buildMonsterAsset(monster, actor, alias, vfxById) {
   const animationNames = actor.animations.map((animation) => animation.name);
-  const idleAnimation = chooseIdleAnimation(animationNames);
-  const bestiaryAnimations = ["revive", "hurt", "die"].filter((animation) => animationNames.includes(animation));
+  const idleAnimation = alias?.idleAnimation && animationNames.includes(alias.idleAnimation)
+    ? alias.idleAnimation
+    : chooseIdleAnimation(animationNames);
+  const bestiaryAnimations = unique([
+    ...["revive", "hurt", "die"].filter((animation) => animationNames.includes(animation)),
+    ...(alias?.bestiaryAnimations ?? []),
+  ]);
   const moves = monster.bestiary_moves ?? monster.moves ?? [];
   const usableVfxIds = new Set([...vfxById.keys()]);
   const skinParts = buildSkinParts(monster.id, actor, alias);
@@ -484,10 +616,13 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
   const phobiaMode = buildPhobiaMode(actor, alias);
   const skinVariants = buildSkinVariants(actor, alias, skinParts);
   const moveAnimations = Object.fromEntries(
-    moves.map((move) => [move.id, moveAnimationCandidates(monster, move, animationNames, idleAnimation)]),
+    moves.map((move) => [
+      move.id,
+      alias?.moveAnimations?.[move.id] ?? moveAnimationCandidates(monster, move, animationNames, idleAnimation),
+    ]),
   );
   for (const animationId of bestiaryAnimations) {
-    moveAnimations[animationId] = [animationId, idleAnimation];
+    moveAnimations[animationId] = alias?.moveAnimations?.[animationId] ?? [animationId, idleAnimation];
   }
   const moveEffects = Object.fromEntries(
     moves
@@ -508,11 +643,14 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
     ...(skinParts.length > 0 ? { skinParts } : {}),
     ...(defaultSkinCombination.length > 0 ? { defaultSkinCombination } : {}),
     ...(phobiaMode ? { phobiaMode } : {}),
+    ...(alias?.viewport ? { viewport: alias.viewport } : {}),
     ...(skinVariants.length > 0 ? { skinVariants } : {}),
     animations: animationNames,
     bestiaryAnimations,
     idleAnimation,
+    ...(alias?.idleTracks ? { idleTracks: alias.idleTracks } : {}),
     moveAnimations,
+    ...(alias?.moveAnimationTracks ? { moveAnimationTracks: alias.moveAnimationTracks } : {}),
     moveEffects,
   };
 }

@@ -313,7 +313,7 @@ function restartSpineTrackAnimations(
     const entry = player.animationState?.setAnimation(
       trackAnimation.track,
       trackAnimation.animation,
-      trackAnimation.loop ?? false,
+      trackAnimation.loop ?? true,
     );
     if (!entry) continue;
     entry.mixDuration = 0;
