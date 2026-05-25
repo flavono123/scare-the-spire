@@ -249,6 +249,46 @@ function MoveMetrics({
       {summary.blockEntry != null && (
         <MetricTokenValue value={summary.blockEntry} kind="block" />
       )}
+      <MoveStandaloneIntentTokens summary={summary} />
+    </span>
+  );
+}
+
+function MoveStandaloneIntentTokens({
+  summary,
+  compact = false,
+}: {
+  summary: MoveSummary;
+  compact?: boolean;
+}) {
+  const intents = getStandaloneMoveIntentItems(summary);
+  if (intents.length === 0) return null;
+
+  return (
+    <span className={`inline-flex items-center justify-center ${compact ? "gap-0.5" : "gap-1"}`}>
+      {intents.map((intent) => (
+        <span
+          key={intent.key}
+          className={`relative inline-flex items-center justify-center ${compact ? "h-5 w-5" : "h-6 w-6"}`}
+          title={intent.label ?? intent.kind}
+        >
+          <Image
+            src={intent.icon}
+            alt=""
+            width={compact ? 20 : 24}
+            height={compact ? 20 : 24}
+            className="h-full w-full object-contain"
+          />
+          {intent.label && (
+            <span
+              className="font-game-title absolute -bottom-0.5 left-1/2 -translate-x-1/2 text-[9px] font-black leading-none text-[#fff8db]"
+              style={{ textShadow: "0 1px 0 #000, 0 0 3px #000" }}
+            >
+              {intent.label}
+            </span>
+          )}
+        </span>
+      ))}
     </span>
   );
 }
@@ -712,6 +752,9 @@ function PatternMoveStateNode({
   const damageEntry = moveSummary?.damageEntry ?? (monster.damageValues ? findDamageForMove(node.id, monster.damageValues) : null);
   const blockEntry = moveSummary?.blockEntry ?? (monster.blockValues ? findBlockForMove(node.id, monster.blockValues) : null);
   const attackMetric = moveSummary ? getMoveAttackMetric(moveSummary) : damageEntry ? buildAttackMetric(damageEntry, null) : null;
+  const standaloneIntents = moveSummary ? getStandaloneMoveIntentItems(moveSummary) : [];
+  const hasApplications = Boolean(move && (move.powerApplications.length > 0 || move.cardApplications.length > 0));
+  const hasPrimaryContent = Boolean(attackMetric || blockEntry || hasApplications || standaloneIntents.length > 0);
   const title = move ? `${move.name}${move.nameEn !== move.name ? ` / ${move.nameEn}` : ""}` : getMoveName(monster, node.id);
 
   return (
@@ -763,8 +806,11 @@ function PatternMoveStateNode({
           {blockEntry && (
             <MetricTokenValue value={blockEntry} kind="block" compact />
           )}
+          {moveSummary && standaloneIntents.length > 0 && (
+            <MoveStandaloneIntentTokens summary={moveSummary} compact />
+          )}
         </span>
-        {move && (move.powerApplications.length > 0 || move.cardApplications.length > 0) && (
+        {move && hasApplications && (
           <span
             className="flex max-w-full flex-wrap items-center justify-center gap-0.5"
             onClick={(event) => {
@@ -780,6 +826,11 @@ function PatternMoveStateNode({
               powerById={powerById}
               cardById={cardById}
             />
+          </span>
+        )}
+        {move && !hasPrimaryContent && (
+          <span className="font-game-title max-w-full truncate text-xs font-bold text-gray-100">
+            {move.name}
           </span>
         )}
       </span>
@@ -855,7 +906,6 @@ export function MonsterDetail({
   const transitionRows = useMemo(() => buildTransitionTableRows(monster), [monster]);
   const patternSummary = useMemo(() => buildPatternSummary(monster), [monster]);
   const loopLength = useMemo(() => getFixedLoopLength(monster), [monster]);
-  const specialPatternNote = getSpecialPatternNote(monster, serviceLocale);
   const firstMoveId = monster.moveGraph?.initial ?? null;
   const [selectedMoveState, setSelectedMoveState] = useState<{ monsterId: string; moveId: string | null; nonce: number }>({
     monsterId: monster.id,
@@ -943,7 +993,7 @@ export function MonsterDetail({
         )}
         {monster.id === "DECIMILLIPEDE_SEGMENT" && (
           <span className="text-[#efc851]">
-            {serviceLocale === "ko" ? "각 세그먼트는 서로 다른 시작점에서 순환" : "Each segment starts at a different point"}
+            {serviceLocale === "ko" ? "각 부위는 서로 다른 시작점에서 순환" : "Each body part starts at a different point"}
           </span>
         )}
       </div>
@@ -972,14 +1022,6 @@ export function MonsterDetail({
         powerById={powerById}
         cardById={cardById}
       />
-      {specialPatternNote && (
-        <div className="mt-3 rounded-md border border-[#efc851]/20 bg-black/20 px-3 py-2 text-xs leading-relaxed text-gray-300">
-          <span className="font-game-title font-bold text-[#efc851]">
-            {serviceLocale === "ko" ? "특수 조건" : "Special"}
-          </span>
-          <span className="ml-2">{specialPatternNote}</span>
-        </div>
-      )}
       {monster.moveGraph?.confidence === "partial" && (
         <p className="mt-3 text-[11px] leading-relaxed text-gray-500">{monsterText.graphPartial}</p>
       )}
@@ -1318,6 +1360,17 @@ function buildMonsterIntentPreviewItems(summary: MoveSummary): MonsterIntentPrev
   });
 }
 
+function getStandaloneMoveIntentItems(summary: MoveSummary): MonsterIntentPreviewItem[] {
+  return buildMonsterIntentPreviewItems(summary).filter((intent) => (
+    intent.kind === "heal" ||
+    intent.kind === "summon" ||
+    intent.kind === "escape" ||
+    intent.kind === "sleep" ||
+    intent.kind === "stun" ||
+    intent.kind === "unknown"
+  ));
+}
+
 function getMoveIntentDetails(move: MonsterMove): MonsterMoveIntentDetail[] {
   if (move.intentDetails.length > 0) return move.intentDetails;
   return move.intents.map((type) => ({ type }));
@@ -1502,6 +1555,10 @@ function buildPatternDiagramModel(
   phases: PatternPhase[],
   serviceLocale: ServiceLocale,
 ): PatternDiagramModel | null {
+  if (monster.id === "DECIMILLIPEDE_SEGMENT") {
+    return buildDecimillipedePatternDiagramModel(rows, serviceLocale);
+  }
+
   const transitions = rows.filter((row) => !row.isStart && row.from !== "__START__" && row.to !== "__START__");
   const initialMoveId = monster.moveGraph?.initial ?? rows.find((row) => row.isStart)?.to ?? null;
   const nodeIds = new Set<string>();
@@ -1620,6 +1677,179 @@ function buildPatternDiagramModel(
     phaseBoxes,
     choiceBoxes,
     phaseConnectors,
+  };
+}
+
+function buildDecimillipedePatternDiagramModel(
+  rows: TransitionTableRow[],
+  serviceLocale: ServiceLocale,
+): PatternDiagramModel | null {
+  const requiredMoveIds = ["WRITHE", "CONSTRICT", "BULK", "DEAD", "REATTACH"];
+  const presentMoveIds = new Set(rows.flatMap((row) => [row.from, row.to]));
+  if (!requiredMoveIds.every((moveId) => presentMoveIds.has(moveId))) return null;
+
+  const topY = 76;
+  const bottomY = 232;
+  const x1 = DIAGRAM_PAD;
+  const x2 = x1 + DIAGRAM_CELL_WIDTH + DIAGRAM_H_GAP;
+  const x3 = x2 + DIAGRAM_CELL_WIDTH + DIAGRAM_H_GAP;
+  const nodes: PatternDiagramNode[] = [
+    buildPatternNode("WRITHE", x1, topY),
+    buildPatternNode("CONSTRICT", x2, topY),
+    buildPatternNode("BULK", x3, topY),
+    buildPatternNode("DEAD", x1, bottomY),
+    buildPatternNode("REATTACH", x2, bottomY),
+  ];
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
+  const rowByEdge = new Map(rows.map((row) => [`${row.from}->${row.to}`, row]));
+  const randomLabel = getDiagramEdgeLabel(rowByEdge.get("REATTACH->WRITHE") ?? {
+    key: "reattach-random",
+    from: "REATTACH",
+    to: "WRITHE",
+    chance: 33.3,
+    isStart: false,
+    kind: "random",
+    condition: null,
+  });
+  const conditionLabel = serviceLocale === "ko" ? "체력 0" : "0 HP";
+  const edge = (
+    key: string,
+    from: string,
+    to: string,
+    path: string,
+    label: string | null,
+    labelX: number,
+    labelY: number,
+    kind: MonsterMoveTransitionKind = "fixed",
+  ): PatternDiagramEdge => ({
+    key,
+    from,
+    to,
+    path,
+    color: kind === "conditional" ? DIAGRAM_CONDITIONAL_COLOR : DIAGRAM_ARROW_COLOR,
+    marker: kind === "conditional" ? "conditional" : "normal",
+    isLoop: to === "WRITHE" && from === "BULK",
+    label,
+    labelX,
+    labelY,
+  });
+
+  const writhe = nodeById.get("WRITHE");
+  const constrict = nodeById.get("CONSTRICT");
+  const bulk = nodeById.get("BULK");
+  const dead = nodeById.get("DEAD");
+  const reattach = nodeById.get("REATTACH");
+  if (!writhe || !constrict || !bulk || !dead || !reattach) return null;
+
+  const mainY = writhe.y + writhe.height / 2;
+  const bottomMainY = dead.y + dead.height / 2;
+  const loopY = writhe.y - 32;
+  const returnY = writhe.y + writhe.height + 26;
+  const edges: PatternDiagramEdge[] = [
+    edge(
+      "decimillipede-writhe-constrict",
+      "WRITHE",
+      "CONSTRICT",
+      `M ${writhe.x + writhe.width} ${mainY} H ${constrict.x}`,
+      null,
+      (writhe.x + writhe.width + constrict.x) / 2,
+      mainY - 8,
+    ),
+    edge(
+      "decimillipede-constrict-bulk",
+      "CONSTRICT",
+      "BULK",
+      `M ${constrict.x + constrict.width} ${mainY} H ${bulk.x}`,
+      null,
+      (constrict.x + constrict.width + bulk.x) / 2,
+      mainY - 8,
+    ),
+    edge(
+      "decimillipede-bulk-writhe",
+      "BULK",
+      "WRITHE",
+      `M ${bulk.x + bulk.width / 2} ${bulk.y} V ${loopY} H ${writhe.x + writhe.width / 2} V ${writhe.y}`,
+      null,
+      (bulk.x + writhe.x + writhe.width) / 2,
+      loopY - 8,
+    ),
+    edge(
+      "decimillipede-zero-hp-dead",
+      "CONSTRICT",
+      "DEAD",
+      `M ${constrict.x + constrict.width / 2} ${constrict.y + constrict.height} V ${returnY} H ${dead.x + dead.width / 2} V ${dead.y}`,
+      conditionLabel,
+      (constrict.x + dead.x + dead.width) / 2,
+      returnY - 8,
+      "conditional",
+    ),
+    edge(
+      "decimillipede-dead-reattach",
+      "DEAD",
+      "REATTACH",
+      `M ${dead.x + dead.width} ${bottomMainY} H ${reattach.x}`,
+      null,
+      (dead.x + dead.width + reattach.x) / 2,
+      bottomMainY - 8,
+    ),
+    edge(
+      "decimillipede-reattach-writhe",
+      "REATTACH",
+      "WRITHE",
+      `M ${reattach.x + reattach.width * 0.25} ${reattach.y} V ${returnY} H ${writhe.x + writhe.width / 2} V ${writhe.y + writhe.height}`,
+      randomLabel,
+      (reattach.x + writhe.x + writhe.width) / 2,
+      returnY + 12,
+      "random",
+    ),
+    edge(
+      "decimillipede-reattach-constrict",
+      "REATTACH",
+      "CONSTRICT",
+      `M ${reattach.x + reattach.width / 2} ${reattach.y} V ${constrict.y + constrict.height}`,
+      randomLabel,
+      reattach.x + reattach.width / 2 + 24,
+      returnY + 2,
+      "random",
+    ),
+    edge(
+      "decimillipede-reattach-bulk",
+      "REATTACH",
+      "BULK",
+      `M ${reattach.x + reattach.width * 0.75} ${reattach.y} V ${returnY} H ${bulk.x + bulk.width / 2} V ${bulk.y + bulk.height}`,
+      randomLabel,
+      (reattach.x + bulk.x + bulk.width) / 2,
+      returnY + 12,
+      "random",
+    ),
+  ];
+
+  return {
+    width: x3 + DIAGRAM_CELL_WIDTH + DIAGRAM_PAD,
+    height: bottomY + DIAGRAM_CELL_HEIGHT + DIAGRAM_PAD,
+    nodes,
+    edges,
+    phaseBoxes: [],
+    choiceBoxes: [{
+      id: "decimillipede-loop",
+      x: x1 - 18,
+      y: topY - 32,
+      width: x3 + DIAGRAM_CELL_WIDTH - x1 + 36,
+      height: DIAGRAM_CELL_HEIGHT + 58,
+    }],
+    phaseConnectors: [],
+  };
+}
+
+function buildPatternNode(id: string, x: number, y: number): PatternDiagramNode {
+  return {
+    id,
+    x,
+    y,
+    width: DIAGRAM_CELL_WIDTH,
+    height: DIAGRAM_CELL_HEIGHT,
+    isInitial: false,
+    phaseId: null,
   };
 }
 
@@ -1896,7 +2126,7 @@ function buildMonsterActionMoves(monster: CodexMonster): MonsterMove[] {
   const byId = new Map<string, MonsterMove>();
   const addMove = (move: MonsterMove | undefined) => {
     if (!move) return;
-    if (move.id === "DEAD" || move.id === "SPAWNED") return;
+    if ((move.id === "DEAD" && monster.id !== "DECIMILLIPEDE_SEGMENT") || move.id === "SPAWNED") return;
     if (!byId.has(move.id)) byId.set(move.id, move);
   };
 
@@ -1919,6 +2149,9 @@ function buildPatternSummary(monster: CodexMonster): PatternSummary {
   const transitions = getDisplayPatternTransitions(monster);
   if (transitions.length === 0) {
     return { kind: "unknown", hasPhases: false, phases: [] };
+  }
+  if (monster.id === "DECIMILLIPEDE_SEGMENT") {
+    return { kind: "mixed", hasPhases: false, phases: [] };
   }
 
   const kinds = new Set(transitions.map((transition) => transition.kind ?? inferTransitionKind(transition)));
@@ -2053,7 +2286,7 @@ function getPatternKindLabel(kind: PatternKind, serviceLocale: ServiceLocale): s
 function getFixedLoopLength(monster: CodexMonster): number | null {
   const graph = monster.moveGraph;
   if (!graph) return null;
-  const displayTransitions = getDisplayPatternTransitions(monster);
+  const displayTransitions = getLoopLengthPatternTransitions(monster);
   const transitions = displayTransitions.filter((transition) => {
     const kind = transition.kind ?? inferTransitionKind(transition);
     return kind === "fixed" && transition.from !== "__START__";
@@ -2080,7 +2313,11 @@ function getFixedLoopLength(monster: CodexMonster): number | null {
 }
 
 function getDisplayPatternTransitions(monster: CodexMonster): MonsterMoveTransition[] {
-  const transitions = monster.moveGraph?.transitions ?? [];
+  return monster.moveGraph?.transitions ?? [];
+}
+
+function getLoopLengthPatternTransitions(monster: CodexMonster): MonsterMoveTransition[] {
+  const transitions = getDisplayPatternTransitions(monster);
   if (monster.id !== "DECIMILLIPEDE_SEGMENT") return transitions;
 
   return transitions.filter((transition) => (
@@ -2089,14 +2326,6 @@ function getDisplayPatternTransitions(monster: CodexMonster): MonsterMoveTransit
     transition.to !== "DEAD" &&
     transition.to !== "REATTACH"
   ));
-}
-
-function getSpecialPatternNote(monster: CodexMonster, serviceLocale: ServiceLocale): string | null {
-  if (monster.id !== "DECIMILLIPEDE_SEGMENT") return null;
-
-  return serviceLocale === "ko"
-    ? "체력이 0이 되면 죽음 상태로 한 턴 쉬고, 다음 턴 재연결로 체력을 절반 회복한 뒤 3턴 순환의 임의 시작점으로 복귀합니다."
-    : "At 0 HP, it spends one turn dead, then Reattach restores half HP and returns to a random point in the 3-turn loop.";
 }
 
 function formatHp(monster: CodexMonster): string | null {
