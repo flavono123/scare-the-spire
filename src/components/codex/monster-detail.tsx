@@ -132,6 +132,13 @@ interface PatternDiagramNode {
   height: number;
   isInitial: boolean;
   phaseId: string | null;
+  startMarkers?: PatternDiagramStartMarker[];
+}
+
+interface PatternDiagramStartMarker {
+  label: string;
+  color: string;
+  title: string;
 }
 
 interface PatternDiagramEdge {
@@ -796,6 +803,20 @@ function PatternMoveStateNode({
         }
       }}
     >
+      {node.startMarkers?.map((marker, index) => (
+        <span
+          key={`${marker.label}-${index}`}
+          className="font-game-title pointer-events-none absolute -top-4 z-20 flex h-6 w-6 items-center justify-center rounded-full border border-black/70 text-[11px] font-black leading-none text-black shadow-[0_2px_6px_rgba(0,0,0,0.7)]"
+          style={{
+            left: 10 + index * 24,
+            backgroundColor: marker.color,
+            boxShadow: `0 0 0 1px rgba(255,255,255,0.2), 0 0 10px ${hexToRgba(marker.color, 0.45)}`,
+          }}
+          title={marker.title}
+        >
+          {marker.label}
+        </span>
+      ))}
       <span className="relative z-10 flex h-full min-w-0 flex-col items-center justify-center gap-1">
         <span className="flex max-w-full flex-wrap items-center justify-center gap-x-1 gap-y-0.5">
           {attackMetric && (
@@ -950,12 +971,14 @@ export function MonsterDetail({
   const selectedSkinSelections = selectedSkinState.monsterId === monster.id
     ? selectedSkinState.selections
     : getDefaultMonsterSkinSelections(monster);
-  const hasPhobiaMode = hasMonsterPhobiaMode(monster);
-  const phobiaModeEnabled = hasPhobiaMode && phobiaModeState.monsterId === monster.id && phobiaModeState.enabled;
-  const phobiaModeImageUrl = monster.phobiaModeImageUrl;
   const selectedDecimillipedePart = decimillipedePartState.monsterId === monster.id
     ? decimillipedePartState.partId
     : "middle";
+  const hasPhobiaMode = hasMonsterPhobiaMode(monster);
+  const phobiaModeEnabled = hasPhobiaMode && phobiaModeState.monsterId === monster.id && phobiaModeState.enabled;
+  const phobiaModeImageUrl = monster.id === "DECIMILLIPEDE_SEGMENT"
+    ? monster.phobiaModePartImageUrls?.[selectedDecimillipedePart] ?? monster.phobiaModeImageUrl
+    : monster.phobiaModeImageUrl;
   const selectedSkinNames = useMemo(
     () => getSelectedMonsterSkinNames(monster, selectedSkinSelections, { phobiaMode: phobiaModeEnabled }),
     [monster, selectedSkinSelections, phobiaModeEnabled],
@@ -1002,11 +1025,6 @@ export function MonsterDetail({
         {loopLength && (
           <span className="font-semibold text-[#efc851]">
             {serviceLocale === "ko" ? `${loopLength}턴 반복` : `${loopLength}-turn loop`}
-          </span>
-        )}
-        {monster.id === "DECIMILLIPEDE_SEGMENT" && (
-          <span className="text-[#efc851]">
-            {serviceLocale === "ko" ? "각 부위는 서로 다른 시작점에서 순환" : "Each body part starts at a different point"}
           </span>
         )}
       </div>
@@ -1702,10 +1720,7 @@ function buildPatternDiagramModel(
   });
 
   const nodeById = new Map(nodes.map((node) => [node.id, node]));
-  const edges = transitions.flatMap((transition, index) => {
-    const edge = buildDiagramEdge(transition, nodeById, index);
-    return edge ? [edge] : [];
-  });
+  const edges = buildDiagramEdges(transitions, nodeById);
   const choiceBoxes = buildChoiceBoxes(transitions, nodeById);
   const phaseConnectors = buildPhaseConnectors(phaseBoxes);
 
@@ -1728,15 +1743,29 @@ function buildDecimillipedePatternDiagramModel(
   const presentMoveIds = new Set(rows.flatMap((row) => [row.from, row.to]));
   if (!requiredMoveIds.every((moveId) => presentMoveIds.has(moveId))) return null;
 
-  const topY = 76;
-  const bottomY = 232;
+  const topY = 116;
+  const bottomY = 356;
+  const localHGap = 74;
   const x1 = DIAGRAM_PAD;
-  const x2 = x1 + DIAGRAM_CELL_WIDTH + DIAGRAM_H_GAP;
-  const x3 = x2 + DIAGRAM_CELL_WIDTH + DIAGRAM_H_GAP;
+  const x2 = x1 + DIAGRAM_CELL_WIDTH + localHGap;
+  const x3 = x2 + DIAGRAM_CELL_WIDTH + localHGap;
+  const startMarkerTitle = serviceLocale === "ko" ? "부위 시작점" : "Part start";
   const nodes: PatternDiagramNode[] = [
-    buildPatternNode("WRITHE", x1, topY),
-    buildPatternNode("CONSTRICT", x2, topY),
-    buildPatternNode("BULK", x3, topY),
+    buildPatternNode("WRITHE", x1, topY, [{
+      label: "1",
+      color: "#efc851",
+      title: `${startMarkerTitle} 1`,
+    }]),
+    buildPatternNode("CONSTRICT", x2, topY, [{
+      label: "2",
+      color: "#60a5fa",
+      title: `${startMarkerTitle} 2`,
+    }]),
+    buildPatternNode("BULK", x3, topY, [{
+      label: "3",
+      color: "#f87171",
+      title: `${startMarkerTitle} 3`,
+    }]),
     buildPatternNode("DEAD", x1, bottomY),
     buildPatternNode("REATTACH", x2, bottomY),
   ];
@@ -1783,8 +1812,11 @@ function buildDecimillipedePatternDiagramModel(
 
   const mainY = writhe.y + writhe.height / 2;
   const bottomMainY = dead.y + dead.height / 2;
-  const loopY = writhe.y - 32;
-  const returnY = writhe.y + writhe.height + 26;
+  const topLoopY = writhe.y - 58;
+  const conditionLaneY = writhe.y + writhe.height + 34;
+  const randomLaneY1 = writhe.y + writhe.height + 78;
+  const randomLaneY2 = randomLaneY1 + 28;
+  const randomLaneY3 = randomLaneY2 + 28;
   const edges: PatternDiagramEdge[] = [
     edge(
       "decimillipede-writhe-constrict",
@@ -1808,19 +1840,19 @@ function buildDecimillipedePatternDiagramModel(
       "decimillipede-bulk-writhe",
       "BULK",
       "WRITHE",
-      `M ${bulk.x + bulk.width / 2} ${bulk.y} V ${loopY} H ${writhe.x + writhe.width / 2} V ${writhe.y}`,
+      `M ${bulk.x + bulk.width / 2} ${bulk.y} V ${topLoopY} H ${writhe.x + writhe.width / 2} V ${writhe.y}`,
       null,
       (bulk.x + writhe.x + writhe.width) / 2,
-      loopY - 8,
+      topLoopY - 8,
     ),
     edge(
       "decimillipede-zero-hp-dead",
-      "CONSTRICT",
+      "WRITHE",
       "DEAD",
-      `M ${constrict.x + constrict.width / 2} ${constrict.y + constrict.height} V ${returnY} H ${dead.x + dead.width / 2} V ${dead.y}`,
+      `M ${writhe.x + 28} ${writhe.y + writhe.height} V ${conditionLaneY} H ${dead.x + dead.width / 2} V ${dead.y}`,
       conditionLabel,
-      (constrict.x + dead.x + dead.width) / 2,
-      returnY - 8,
+      dead.x + dead.width / 2 + 36,
+      conditionLaneY - 6,
       "conditional",
     ),
     edge(
@@ -1836,30 +1868,30 @@ function buildDecimillipedePatternDiagramModel(
       "decimillipede-reattach-writhe",
       "REATTACH",
       "WRITHE",
-      `M ${reattach.x + reattach.width * 0.25} ${reattach.y} V ${returnY} H ${writhe.x + writhe.width / 2} V ${writhe.y + writhe.height}`,
+      `M ${reattach.x + reattach.width * 0.18} ${reattach.y} V ${randomLaneY1} H ${writhe.x + writhe.width / 2} V ${writhe.y + writhe.height}`,
       randomLabel,
       (reattach.x + writhe.x + writhe.width) / 2,
-      returnY + 12,
+      randomLaneY1 + 12,
       "random",
     ),
     edge(
       "decimillipede-reattach-constrict",
       "REATTACH",
       "CONSTRICT",
-      `M ${reattach.x + reattach.width / 2} ${reattach.y} V ${constrict.y + constrict.height}`,
+      `M ${reattach.x + reattach.width / 2} ${reattach.y} V ${randomLaneY2} H ${constrict.x + constrict.width / 2} V ${constrict.y + constrict.height}`,
       randomLabel,
-      reattach.x + reattach.width / 2 + 24,
-      returnY + 2,
+      reattach.x + reattach.width / 2 + 32,
+      randomLaneY2 + 12,
       "random",
     ),
     edge(
       "decimillipede-reattach-bulk",
       "REATTACH",
       "BULK",
-      `M ${reattach.x + reattach.width * 0.75} ${reattach.y} V ${returnY} H ${bulk.x + bulk.width / 2} V ${bulk.y + bulk.height}`,
+      `M ${reattach.x + reattach.width * 0.82} ${reattach.y} V ${randomLaneY3} H ${bulk.x + bulk.width / 2} V ${bulk.y + bulk.height}`,
       randomLabel,
       (reattach.x + bulk.x + bulk.width) / 2,
-      returnY + 12,
+      randomLaneY3 + 12,
       "random",
     ),
   ];
@@ -1875,13 +1907,18 @@ function buildDecimillipedePatternDiagramModel(
       x: x1 - 18,
       y: topY - 32,
       width: x3 + DIAGRAM_CELL_WIDTH - x1 + 36,
-      height: DIAGRAM_CELL_HEIGHT + 58,
+      height: DIAGRAM_CELL_HEIGHT + 72,
     }],
     phaseConnectors: [],
   };
 }
 
-function buildPatternNode(id: string, x: number, y: number): PatternDiagramNode {
+function buildPatternNode(
+  id: string,
+  x: number,
+  y: number,
+  startMarkers?: PatternDiagramStartMarker[],
+): PatternDiagramNode {
   return {
     id,
     x,
@@ -1890,6 +1927,7 @@ function buildPatternNode(id: string, x: number, y: number): PatternDiagramNode 
     height: DIAGRAM_CELL_HEIGHT,
     isInitial: false,
     phaseId: null,
+    startMarkers,
   };
 }
 
@@ -2004,10 +2042,45 @@ function buildDiagramDepths(
   return depths;
 }
 
+function buildDiagramEdges(
+  transitions: TransitionTableRow[],
+  nodeById: Map<string, PatternDiagramNode>,
+): PatternDiagramEdge[] {
+  const laneByRoute = new Map<string, number>();
+
+  return transitions.flatMap((transition, index) => {
+    const from = nodeById.get(transition.from);
+    const to = nodeById.get(transition.to);
+    if (!from || !to) return [];
+
+    const routeKey = getDiagramEdgeRouteKey(from, to);
+    const laneIndex = laneByRoute.get(routeKey) ?? 0;
+    laneByRoute.set(routeKey, laneIndex + 1);
+    const edge = buildDiagramEdge(transition, nodeById, index, laneIndex);
+    return edge ? [edge] : [];
+  });
+}
+
+function getDiagramEdgeRouteKey(from: PatternDiagramNode, to: PatternDiagramNode): string {
+  if (from.id === to.id) return `self:${from.id}`;
+  const fromColumn = Math.round(from.x / (DIAGRAM_CELL_WIDTH + DIAGRAM_H_GAP));
+  const toColumn = Math.round(to.x / (DIAGRAM_CELL_WIDTH + DIAGRAM_H_GAP));
+  const fromRow = Math.round(from.y / (DIAGRAM_CELL_HEIGHT + DIAGRAM_V_GAP));
+  const toRow = Math.round(to.y / (DIAGRAM_CELL_HEIGHT + DIAGRAM_V_GAP));
+  const direction = to.x > from.x + from.width / 2
+    ? "forward"
+    : to.x + to.width < from.x + from.width / 2
+      ? "back"
+      : "same-column";
+
+  return `${direction}:${Math.min(fromColumn, toColumn)}-${Math.max(fromColumn, toColumn)}:${Math.min(fromRow, toRow)}-${Math.max(fromRow, toRow)}`;
+}
+
 function buildDiagramEdge(
   transition: TransitionTableRow,
   nodeById: Map<string, PatternDiagramNode>,
   index: number,
+  laneIndex = 0,
 ): PatternDiagramEdge | null {
   const from = nodeById.get(transition.from);
   const to = nodeById.get(transition.to);
@@ -2016,7 +2089,7 @@ function buildDiagramEdge(
   const kind = transition.kind === "conditional" ? "conditional" : transition.kind === "start" ? "start" : "fixed";
   const color = kind === "conditional" ? DIAGRAM_CONDITIONAL_COLOR : kind === "start" ? BESTIARY_START_COLOR : DIAGRAM_ARROW_COLOR;
   const marker = kind === "conditional" ? "conditional" : kind === "start" ? "start" : "normal";
-  const laneOffset = (index % 5) * 7;
+  const laneOffset = laneIndex * 16 + (index % 2) * 4;
   const label = getDiagramEdgeLabel(transition);
   const isLoop = from.id === to.id || to.x <= from.x;
   let path: string;
