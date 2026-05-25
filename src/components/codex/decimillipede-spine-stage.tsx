@@ -45,7 +45,7 @@ function toBrowserSpineY(godotY: number): number {
   return DECIMILLIPEDE_GAME_SCREEN_HEIGHT - godotY;
 }
 
-function applyDecimillipedeTransform(player: SpinePlayer, part: DecimillipedePart) {
+function applyDecimillipedeTransform(player: SpinePlayer, part: DecimillipedePart, attackOffsetX = 0) {
   player.skeleton.x = part.spineX;
   player.skeleton.y = part.spineY;
   player.skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE;
@@ -53,10 +53,26 @@ function applyDecimillipedeTransform(player: SpinePlayer, part: DecimillipedePar
   for (const [boneName, target] of Object.entries(part.boneTargets)) {
     const bone = player.skeleton.findBone(boneName);
     if (!bone) continue;
-    bone.x = target.x;
+    bone.x = target.x + attackOffsetX;
     bone.y = target.y;
   }
   player.skeleton.updateWorldTransform(2);
+}
+
+function decimillipedeAttackOffsetX(elapsedMs: number): number {
+  const elapsed = Math.max(0, elapsedMs) / 1000;
+  if (elapsed < 0.4) return easeInOutSine(elapsed / 0.4) * -100;
+  if (elapsed < 0.5) return lerp(-100, 100, easeInOutSine((elapsed - 0.4) / 0.1));
+  if (elapsed < 1.25) return lerp(100, 0, easeInOutSine((elapsed - 0.5) / 0.75));
+  return 0;
+}
+
+function easeInOutSine(value: number): number {
+  return -(Math.cos(Math.PI * Math.min(1, Math.max(0, value))) - 1) / 2;
+}
+
+function lerp(from: number, to: number, amount: number): number {
+  return from + (to - from) * amount;
 }
 
 const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
@@ -141,11 +157,18 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
 }: DecimillipedeSpineStageProps) {
   const partRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const playerRefs = useRef<Record<string, SpinePlayer | null>>({});
+  const selectedAnimationRef = useRef("idle_loop");
+  const animationStartRef = useRef(0);
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const selectedAnimation = useMemo(
     () => resolveDecimillipedeAnimation(selectedMoveId),
     [selectedMoveId],
   );
+
+  useEffect(() => {
+    selectedAnimationRef.current = selectedAnimation;
+    animationStartRef.current = performance.now();
+  }, [selectedAnimation, selectedMoveNonce]);
 
   useEffect(() => {
     let disposed = false;
@@ -179,7 +202,11 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
               transitionTime: 0,
             },
             update: (loadedPlayer) => {
-              applyDecimillipedeTransform(loadedPlayer, part);
+              const attackOffsetX =
+                selectedAnimationRef.current === "alt_track/writhe_attack"
+                  ? decimillipedeAttackOffsetX(performance.now() - animationStartRef.current)
+                  : 0;
+              applyDecimillipedeTransform(loadedPlayer, part, attackOffsetX);
             },
             success: (loadedPlayer) => {
               if (disposed) return;
