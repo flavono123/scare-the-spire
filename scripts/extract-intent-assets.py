@@ -23,6 +23,14 @@ class DirectImageSpec:
     output: str
 
 
+@dataclass(frozen=True)
+class AnimatedImageSpec:
+    source_prefix: str
+    frame_count: int
+    output: str
+    duration_ms: int = 33
+
+
 INTENT_IMAGES = [
     DirectImageSpec("images/packed/intents/attack/intent_attack_1.png.import", "intents/attack_1.png"),
     DirectImageSpec("images/packed/intents/attack/intent_attack_2.png.import", "intents/attack_2.png"),
@@ -44,6 +52,19 @@ INTENT_IMAGES = [
     DirectImageSpec("images/packed/intents/intent_summon.png.import", "intents/summon.png"),
     DirectImageSpec("images/packed/intents/intent_unknown.png.import", "intents/unknown.png"),
     DirectImageSpec("images/ui/combat/block.png.import", "ui/combat/block.png"),
+]
+
+ANIMATED_INTENT_IMAGES = [
+    AnimatedImageSpec("images/packed/intents/buff/intent_buff", 30, "intents/animated/buff.webp"),
+    AnimatedImageSpec("images/packed/intents/card_debuff/intent_carddebuff", 15, "intents/animated/card_debuff.webp"),
+    AnimatedImageSpec("images/packed/intents/debuff/intent_megadebuff", 11, "intents/animated/debuff.webp"),
+    AnimatedImageSpec("images/packed/intents/escape/intent_escape", 40, "intents/animated/escape.webp"),
+    AnimatedImageSpec("images/packed/intents/heal/intent_heal", 45, "intents/animated/heal.webp"),
+    AnimatedImageSpec("images/packed/intents/sleep/intent_sleep", 16, "intents/animated/sleep.webp"),
+    AnimatedImageSpec("images/packed/intents/status/intent_statuscard", 19, "intents/animated/status_card.webp"),
+    AnimatedImageSpec("images/packed/intents/stun/intent_stunned", 16, "intents/animated/stun.webp"),
+    AnimatedImageSpec("images/packed/intents/summon/intent_summon", 25, "intents/animated/summon.webp"),
+    AnimatedImageSpec("images/packed/intents/unknown/intent_unknown", 30, "intents/animated/unknown.webp"),
 ]
 
 
@@ -80,6 +101,34 @@ def save_image(image: Image.Image, output_path: Path, *, dry_run: bool, force: b
     return True
 
 
+def save_animated_webp(
+    frames: list[Image.Image],
+    output_path: Path,
+    *,
+    duration_ms: int,
+    dry_run: bool,
+    force: bool,
+) -> bool:
+    if output_path.exists() and not force:
+        return False
+    if dry_run:
+        print(f"would write {output_path}")
+        return True
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    first, *rest = [frame.convert("RGBA") for frame in frames]
+    first.save(
+        output_path,
+        save_all=True,
+        append_images=rest,
+        duration=duration_ms,
+        loop=0,
+        lossless=True,
+        method=6,
+    )
+    return True
+
+
 def main() -> None:
     args = parse_args()
     output_root = Path(args.output)
@@ -99,6 +148,23 @@ def main() -> None:
             if save_image(image, output_path, dry_run=args.dry_run, force=args.force):
                 extracted += 1
                 print(f"wrote {output_path} ({image.size[0]}x{image.size[1]})")
+            else:
+                skipped += 1
+
+        for spec in ANIMATED_INTENT_IMAGES:
+            output_path = output_root / spec.output
+            frames: list[Image.Image] = []
+            try:
+                for index in range(spec.frame_count):
+                    frames.append(open_import_image(reader, f"{spec.source_prefix}_{index:02d}.png.import"))
+            except Exception as exc:
+                print(f"skip {spec.source_prefix}: {exc}")
+                skipped += 1
+                continue
+
+            if save_animated_webp(frames, output_path, duration_ms=spec.duration_ms, dry_run=args.dry_run, force=args.force):
+                extracted += 1
+                print(f"wrote {output_path} ({len(frames)} frames)")
             else:
                 skipped += 1
 
