@@ -42,6 +42,7 @@ yarn-error.log*
 next-env.d.ts
 
 # dev artifacts
+__pycache__/
 .dev-screenshots/
 .playwright-mcp/
 docs/CARD_UI_REVIEW.md
