@@ -18,7 +18,8 @@ const spinePlayerPath = path.join(
 
 const DECIMILLIPEDE_ENCOUNTER_X_OFFSET = -459;
 const DECIMILLIPEDE_GAME_SCREEN_HEIGHT = 1080;
-const DECIMILLIPEDE_SPINE_SCALE = 0.45;
+const DECIMILLIPEDE_SPINE_SCALE_X = -0.45;
+const DECIMILLIPEDE_SPINE_SCALE_Y = 0.45;
 // Source: bestiary_layout_decimillipede.tscn + decimillipede_elite.tscn slots.
 // The segment scenes intentionally point at different skel_data resources than their filenames imply.
 const DECIMILLIPEDE_VIEWPORT = {
@@ -42,7 +43,8 @@ const ENCOUNTER_CONFIGS = {
         atlas: "decimillipede_back.atlas",
         x: 1103 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET + 318,
         y: toBrowserSpineY(740 - 19),
-        scale: DECIMILLIPEDE_SPINE_SCALE,
+        scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
+        scaleY: DECIMILLIPEDE_SPINE_SCALE_Y,
         zIndex: 30,
       },
       {
@@ -51,7 +53,8 @@ const ENCOUNTER_CONFIGS = {
         atlas: "decimillipede_middle.atlas",
         x: 1451 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 54,
         y: toBrowserSpineY(740 - 43),
-        scale: DECIMILLIPEDE_SPINE_SCALE,
+        scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
+        scaleY: DECIMILLIPEDE_SPINE_SCALE_Y,
         zIndex: 20,
       },
       {
@@ -60,7 +63,8 @@ const ENCOUNTER_CONFIGS = {
         atlas: "decimillipede_front.atlas",
         x: 1797 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 344,
         y: toBrowserSpineY(740 - 28),
-        scale: DECIMILLIPEDE_SPINE_SCALE,
+        scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
+        scaleY: DECIMILLIPEDE_SPINE_SCALE_Y,
         zIndex: 10,
       },
     ],
@@ -301,8 +305,8 @@ function renderHtml(config) {
           success: (player) => {
             player.skeleton.x = part.x;
             player.skeleton.y = part.y;
-            player.skeleton.scaleX = part.scale;
-            player.skeleton.scaleY = part.scale;
+            player.skeleton.scaleX = part.scaleX;
+            player.skeleton.scaleY = part.scaleY;
             player.setAnimation("idle_loop", true);
             player.play();
             window.setTimeout(resolve, 300);

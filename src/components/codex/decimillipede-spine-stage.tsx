@@ -30,7 +30,8 @@ interface DecimillipedePart {
 
 const DECIMILLIPEDE_ENCOUNTER_X_OFFSET = -459;
 const DECIMILLIPEDE_GAME_SCREEN_HEIGHT = 1080;
-const DECIMILLIPEDE_SPINE_SCALE = 0.45;
+const DECIMILLIPEDE_SPINE_SCALE_X = -0.45;
+const DECIMILLIPEDE_SPINE_SCALE_Y = 0.45;
 // Source: bestiary_layout_decimillipede.tscn + decimillipede_elite.tscn slots.
 // The segment scenes intentionally point at different skel_data resources than their filenames imply.
 const DECIMILLIPEDE_VIEWPORT = {
@@ -47,8 +48,8 @@ function toBrowserSpineY(godotY: number): number {
 function applyDecimillipedeTransform(player: SpinePlayer, part: DecimillipedePart) {
   player.skeleton.x = part.spineX;
   player.skeleton.y = part.spineY;
-  player.skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE;
-  player.skeleton.scaleY = DECIMILLIPEDE_SPINE_SCALE;
+  player.skeleton.scaleX = DECIMILLIPEDE_SPINE_SCALE_X;
+  player.skeleton.scaleY = DECIMILLIPEDE_SPINE_SCALE_Y;
 }
 
 const DECIMILLIPEDE_PARTS: DecimillipedePart[] = [
