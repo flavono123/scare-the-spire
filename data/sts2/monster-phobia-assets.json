@@ -7,6 +7,74 @@
       "middle": "/images/sts2/monsters-phobia/decimillipede_middle.webp",
       "front": "/images/sts2/monsters-phobia/decimillipede_front.webp"
     },
+    "partScenes": {
+      "back": {
+        "scenePath": "scenes/creature_visuals/decimillipede_segment_back.tscn",
+        "viewBox": {
+          "x": -218.9473166,
+          "y": -344.0,
+          "width": 431.8946322,
+          "height": 360.0
+        },
+        "sprite": {
+          "position": {
+            "x": -3.0000005,
+            "y": -149.0
+          },
+          "scale": {
+            "x": 0.4109914,
+            "y": 0.4109914
+          },
+          "width": 973,
+          "height": 594
+        },
+        "particles": []
+      },
+      "middle": {
+        "scenePath": "scenes/creature_visuals/decimillipede_segment_middle.tscn",
+        "viewBox": {
+          "x": -208.0,
+          "y": -338.0,
+          "width": 418.02304360000005,
+          "height": 354.0
+        },
+        "sprite": {
+          "position": {
+            "x": 5.0,
+            "y": -144.0
+          },
+          "scale": {
+            "x": 0.4565774,
+            "y": 0.45657733
+          },
+          "width": 828,
+          "height": 591
+        },
+        "particles": []
+      },
+      "front": {
+        "scenePath": "scenes/creature_visuals/decimillipede_segment_front.tscn",
+        "viewBox": {
+          "x": -205.0,
+          "y": -327.921138195,
+          "width": 429.8171063,
+          "height": 343.921138195
+        },
+        "sprite": {
+          "position": {
+            "x": 15.0,
+            "y": -155.99998
+          },
+          "scale": {
+            "x": 0.4565774,
+            "y": 0.45657733
+          },
+          "width": 849,
+          "height": 683
+        },
+        "particles": []
+      }
+    },
     "source": [
       "images/monsters/phobia_mode/decimillipede_segment_back_phobia.png.import",
       "images/monsters/phobia_mode/decimillipede_segment_middle_phobia.png.import",
@@ -26,7 +94,60 @@
     "source": "images/monsters/phobia_mode/phobia_entomancer.png.import",
     "ctex": ".godot/imported/phobia_entomancer.png-acf0d31aecfd1766c8c24623d7c94ae0.ctex",
     "width": 1179,
-    "height": 1101
+    "height": 1101,
+    "scene": {
+      "scenePath": "scenes/creature_visuals/entomancer.tscn",
+      "viewBox": {
+        "x": -228.0,
+        "y": -349.0,
+        "width": 463.0,
+        "height": 375.5618065
+      },
+      "sprite": {
+        "position": {
+          "x": -22.95124,
+          "y": -153.2191
+        },
+        "scale": {
+          "x": 0.297513,
+          "y": 0.297513
+        },
+        "width": 1179,
+        "height": 1101
+      },
+      "particles": [
+        {
+          "name": "SwarmParticles",
+          "type": "GPUParticles2D",
+          "position": {
+            "x": 77.143654,
+            "y": -73.209915
+          },
+          "amount": 100,
+          "lifetime": 2.0,
+          "preprocess": 2.0,
+          "localCoords": true,
+          "texture": {
+            "imageUrl": "/images/sts2/monsters-phobia/effects/entomancer_bug_particle.webp",
+            "source": "images/vfx/monsters/entomancer/entomancer_bug_particle.png.import",
+            "ctex": ".godot/imported/entomancer_bug_particle.png-fc98122caee14939b14ec0e3e2757768.ctex",
+            "width": 15,
+            "height": 15
+          },
+          "material": {
+            "emissionRingRadius": 400.0,
+            "emissionRingInnerRadius": 50.0,
+            "initialVelocityMin": 100.0,
+            "initialVelocityMax": 200.0,
+            "orbitVelocityMin": -1.0,
+            "orbitVelocityMax": 1.0,
+            "scaleMin": 1,
+            "scaleMax": 1.5,
+            "spread": 180.0
+          }
+        }
+      ]
+    }
   },
   {
     "id": "PHROG_PARASITE",
@@ -34,7 +155,29 @@
     "source": "images/monsters/phobia_mode/phrog_parasite_phobia.png.import",
     "ctex": ".godot/imported/phrog_parasite_phobia.png-55707488b9d8197d797a170f7a7a44b0.ctex",
     "width": 1400,
-    "height": 1259
+    "height": 1259,
+    "scene": {
+      "scenePath": "scenes/creature_visuals/phrog_parasite.tscn",
+      "viewBox": {
+        "x": -268.0,
+        "y": -496.0,
+        "width": 536.0,
+        "height": 516.70382716
+      },
+      "sprite": {
+        "position": {
+          "x": 18.0,
+          "y": -203.0
+        },
+        "scale": {
+          "x": 0.32384846,
+          "y": 0.32995048
+        },
+        "width": 1400,
+        "height": 1259
+      },
+      "particles": []
+    }
   },
   {
     "id": "TERROR_EEL",
@@ -42,7 +185,29 @@
     "source": "images/monsters/phobia_mode/terror_eel_phobia.png.import",
     "ctex": ".godot/imported/terror_eel_phobia.png-62219144efebbc14c15087e91bb6eef3.ctex",
     "width": 1400,
-    "height": 517
+    "height": 517,
+    "scene": {
+      "scenePath": "scenes/creature_visuals/terror_eel.tscn",
+      "viewBox": {
+        "x": -372.0,
+        "y": -373.0,
+        "width": 744.0,
+        "height": 389.0
+      },
+      "sprite": {
+        "position": {
+          "x": 18.0,
+          "y": -180.0
+        },
+        "scale": {
+          "x": 0.19855697,
+          "y": 0.20229825
+        },
+        "width": 1400,
+        "height": 517
+      },
+      "particles": []
+    }
   },
   {
     "id": "THE_INSATIABLE",
@@ -50,7 +215,29 @@
     "source": "images/monsters/phobia_mode/the_insatiable_phobia.png.import",
     "ctex": ".godot/imported/the_insatiable_phobia.png-5d5803fb5a381cf2c992652834f4887d.bptc.ctex",
     "width": 1064,
-    "height": 1219
+    "height": 1219,
+    "scene": {
+      "scenePath": "scenes/creature_visuals/the_insatiable.tscn",
+      "viewBox": {
+        "x": -250.0,
+        "y": -488.0,
+        "width": 500.0,
+        "height": 504.0
+      },
+      "sprite": {
+        "position": {
+          "x": 19.0,
+          "y": -208.0
+        },
+        "scale": {
+          "x": 0.32384846,
+          "y": 0.32995048
+        },
+        "width": 1064,
+        "height": 1219
+      },
+      "particles": []
+    }
   },
   {
     "id": "WRIGGLER",
@@ -58,6 +245,28 @@
     "source": "images/monsters/phobia_mode/wriggler_phobia.png.import",
     "ctex": ".godot/imported/wriggler_phobia.png-904fe1a21245d9f2660e7876961978af.ctex",
     "width": 782,
-    "height": 523
+    "height": 523,
+    "scene": {
+      "scenePath": "scenes/creature_visuals/wriggler.tscn",
+      "viewBox": {
+        "x": -106.0,
+        "y": -164.0,
+        "width": 212.0,
+        "height": 185.790272635
+      },
+      "sprite": {
+        "position": {
+          "x": 4.7683716e-07,
+          "y": -54.0
+        },
+        "scale": {
+          "x": 0.22441502,
+          "y": 0.22864349
+        },
+        "width": 782,
+        "height": 523
+      },
+      "particles": []
+    }
   }
 ]

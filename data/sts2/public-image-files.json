@@ -1305,6 +1305,18 @@
     "summon.png",
     "unknown.png"
   ],
+  "intents/animated": [
+    "buff.webp",
+    "card_debuff.webp",
+    "debuff.webp",
+    "escape.webp",
+    "heal.webp",
+    "sleep.webp",
+    "status_card.webp",
+    "stun.webp",
+    "summon.webp",
+    "unknown.webp"
+  ],
   "map/backgrounds/glory": [
     "bottom.png",
     "middle.png",
@@ -1565,6 +1577,9 @@
     "terror_eel.webp",
     "the_insatiable.webp",
     "wriggler.webp"
+  ],
+  "monsters-phobia/effects": [
+    "entomancer_bug_particle.webp"
   ],
   "monsters-render": [
     "amalgam.webp",
