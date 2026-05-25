@@ -32,7 +32,11 @@ import {
   isPublicBestiaryMonster,
 } from "@/lib/bestiary-monster-policy";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
-import { hasMonsterSkinParts } from "@/lib/monster-skins";
+import {
+  getMonsterPhobiaModeLabel,
+  hasMonsterPhobiaMode,
+  hasMonsterSkinParts,
+} from "@/lib/monster-skins";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { useAuth } from "@/hooks/use-auth";
 import { EngagementSummary } from "@/components/engagement-summary";
@@ -94,6 +98,7 @@ export function MonsterLibrary({
   const [selectedTypes, setSelectedTypes] = useState<Set<MonsterType>>(new Set());
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [showOnlySkinVariants, setShowOnlySkinVariants] = useState(false);
+  const [showOnlyPhobiaMode, setShowOnlyPhobiaMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { userId, ready: authReady, ensureUser } = useAuth();
   const engagementCounts = useEngagementCounts();
@@ -190,6 +195,9 @@ export function MonsterLibrary({
     if (showOnlySkinVariants) {
       result = result.filter((m) => hasSkinVariants(m));
     }
+    if (showOnlyPhobiaMode) {
+      result = result.filter((m) => hasMonsterPhobiaMode(m));
+    }
 
     // Type filter
     if (selectedTypes.size > 0) {
@@ -227,7 +235,7 @@ export function MonsterLibrary({
     }
 
     return result;
-  }, [monsters, showOnlySkinVariants, selectedTypes, selectedActs, parsedSearch, monsterActs]);
+  }, [monsters, showOnlySkinVariants, showOnlyPhobiaMode, selectedTypes, selectedActs, parsedSearch, monsterActs]);
 
   const getPrimaryMonsterAct = useCallback(
     (monsterId: string): EventAct | null => {
@@ -349,6 +357,11 @@ export function MonsterLibrary({
               label={serviceLocale === "ko" ? "스킨 있음" : "Has skins"}
               active={showOnlySkinVariants}
               onClick={() => setShowOnlySkinVariants((value) => !value)}
+            />
+            <ToggleButton
+              label={getMonsterPhobiaModeLabel(serviceLocale)}
+              active={showOnlyPhobiaMode}
+              onClick={() => setShowOnlyPhobiaMode((value) => !value)}
             />
           </div>
         </FilterSection>

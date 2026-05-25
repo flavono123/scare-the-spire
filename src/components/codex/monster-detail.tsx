@@ -28,11 +28,13 @@ import type {
 } from "@/lib/codex-types";
 import {
   getDefaultMonsterSkinSelections,
+  getMonsterPhobiaModeLabel,
   getMonsterSkinOptionLabel,
   getMonsterSkinPartLabel,
   getMonsterSkinParts,
   getSelectedMonsterSkinNames,
   getSingleMonsterSkin,
+  hasMonsterPhobiaMode,
   type MonsterSkinSelections,
 } from "@/lib/monster-skins";
 import {
@@ -44,6 +46,7 @@ import {
 } from "@/lib/codex-references";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
+import { GameCheckboxToggle } from "./game-checkbox";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -865,6 +868,10 @@ export function MonsterDetail({
     monsterId: monster.id,
     selections: getDefaultMonsterSkinSelections(monster),
   });
+  const [phobiaModeState, setPhobiaModeState] = useState<{ monsterId: string; enabled: boolean }>({
+    monsterId: monster.id,
+    enabled: false,
+  });
   const selectedMoveId = selectedMoveState.monsterId === monster.id ? selectedMoveState.moveId : null;
   const selectedMoveNonce = selectedMoveState.monsterId === monster.id ? selectedMoveState.nonce : 0;
   const selectMove = (moveId: string) => {
@@ -882,9 +889,11 @@ export function MonsterDetail({
   const selectedSkinSelections = selectedSkinState.monsterId === monster.id
     ? selectedSkinState.selections
     : getDefaultMonsterSkinSelections(monster);
+  const hasPhobiaMode = hasMonsterPhobiaMode(monster);
+  const phobiaModeEnabled = hasPhobiaMode && phobiaModeState.monsterId === monster.id && phobiaModeState.enabled;
   const selectedSkinNames = useMemo(
-    () => getSelectedMonsterSkinNames(monster, selectedSkinSelections),
-    [monster, selectedSkinSelections],
+    () => getSelectedMonsterSkinNames(monster, selectedSkinSelections, { phobiaMode: phobiaModeEnabled }),
+    [monster, selectedSkinSelections, phobiaModeEnabled],
   );
   const selectedSingleSkin = selectedSkinNames.length > 0 ? null : getSingleMonsterSkin(monster);
   const defaultSelectedMove = moveSummaries.find((summary) => summary.move.id === firstMoveId) ?? moveSummaries[0] ?? null;
@@ -1022,12 +1031,21 @@ export function MonsterDetail({
             </h1>
           </div>
 
-          {skinParts.length > 0 && (
+          {(skinParts.length > 0 || hasPhobiaMode) && (
             <div className="w-full max-w-xl rounded-lg border border-white/10 bg-black/20 px-4 py-3">
               <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500">
                 {serviceLocale === "ko" ? "외형" : "Appearance"}
               </div>
               <div className="flex flex-col gap-2">
+                {hasPhobiaMode && (
+                  <GameCheckboxToggle
+                    checked={phobiaModeEnabled}
+                    onCheckedChange={(enabled) => setPhobiaModeState({ monsterId: monster.id, enabled })}
+                    label={getMonsterPhobiaModeLabel(serviceLocale)}
+                    size="sm"
+                    align="start"
+                  />
+                )}
                 {skinParts.map((part) => {
                   const partLabel = getMonsterSkinPartLabel(part, serviceLocale);
 

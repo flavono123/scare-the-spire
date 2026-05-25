@@ -5,14 +5,17 @@ import Link from "next/link";
 import type { CodexMonster } from "@/lib/codex-types";
 import {
   getDefaultMonsterSkinSelections,
+  getMonsterPhobiaModeLabel,
   getMonsterSkinOptionLabel,
   getMonsterSkinPartLabel,
   getMonsterSkinParts,
   getMonsterSkinRenderKey,
   getSelectedMonsterSkinNames,
   getSingleMonsterSkin,
+  hasMonsterPhobiaMode,
   type MonsterSkinSelections,
 } from "@/lib/monster-skins";
+import { GameCheckboxToggle } from "@/components/codex/game-checkbox";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 
 interface DevMonsterSpinePreviewProps {
@@ -42,7 +45,13 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
   const selectedSkinSelections = selectedSkinState.monsterId === monster.id
     ? selectedSkinState.selections
     : getDefaultMonsterSkinSelections(monster);
-  const selectedSkinNames = getSelectedMonsterSkinNames(monster, selectedSkinSelections);
+  const [phobiaModeState, setPhobiaModeState] = useState<{ monsterId: string; enabled: boolean }>({
+    monsterId: monster.id,
+    enabled: false,
+  });
+  const hasPhobiaMode = hasMonsterPhobiaMode(monster);
+  const phobiaModeEnabled = hasPhobiaMode && phobiaModeState.monsterId === monster.id && phobiaModeState.enabled;
+  const selectedSkinNames = getSelectedMonsterSkinNames(monster, selectedSkinSelections, { phobiaMode: phobiaModeEnabled });
   const selectedSingleSkin = selectedSkinNames.length > 0 ? null : getSingleMonsterSkin(monster);
   const activeSkinKey = getMonsterSkinRenderKey(selectedSkinNames, selectedSingleSkin);
   const skinParts = getMonsterSkinParts(asset);
@@ -94,10 +103,19 @@ export function DevMonsterSpinePreview({ monster, fallbackImageUrl }: DevMonster
               </span>
             </div>
 
-            {skinParts.length > 0 && (
+            {(skinParts.length > 0 || hasPhobiaMode) && (
               <div className="flex flex-col gap-2">
                 <span className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">외형</span>
                 <div className="flex flex-col gap-2">
+                  {hasPhobiaMode && (
+                    <GameCheckboxToggle
+                      checked={phobiaModeEnabled}
+                      onCheckedChange={(enabled) => setPhobiaModeState({ monsterId: monster.id, enabled })}
+                      label={getMonsterPhobiaModeLabel("ko")}
+                      size="sm"
+                      align="start"
+                    />
+                  )}
                   {skinParts.map((part) => {
                     const partLabel = getMonsterSkinPartLabel(part, "ko");
 
