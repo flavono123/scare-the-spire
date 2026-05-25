@@ -1,0 +1,58 @@
+[
+  {
+    "id": "DECIMILLIPEDE_SEGMENT",
+    "imageUrl": "/images/sts2/monsters-phobia/decimillipede.webp",
+    "source": [
+      "images/monsters/phobia_mode/decimillipede_segment_back_phobia.png.import",
+      "images/monsters/phobia_mode/decimillipede_segment_middle_phobia.png.import",
+      "images/monsters/phobia_mode/decimillipede_segment_front_phobia.png.import"
+    ],
+    "ctex": [
+      ".godot/imported/decimillipede_segment_back_phobia.png-27f775fd172fa36849235467d82ac9ca.ctex",
+      ".godot/imported/decimillipede_segment_middle_phobia.png-a498b9ba18f568970438a7c329fcac9c.ctex",
+      ".godot/imported/decimillipede_segment_front_phobia.png-32e03926070901f462103c9e833909f8.ctex"
+    ],
+    "width": 1400,
+    "height": 600
+  },
+  {
+    "id": "ENTOMANCER",
+    "imageUrl": "/images/sts2/monsters-phobia/entomancer.webp",
+    "source": "images/monsters/phobia_mode/phobia_entomancer.png.import",
+    "ctex": ".godot/imported/phobia_entomancer.png-acf0d31aecfd1766c8c24623d7c94ae0.ctex",
+    "width": 1179,
+    "height": 1101
+  },
+  {
+    "id": "PHROG_PARASITE",
+    "imageUrl": "/images/sts2/monsters-phobia/phrog_parasite.webp",
+    "source": "images/monsters/phobia_mode/phrog_parasite_phobia.png.import",
+    "ctex": ".godot/imported/phrog_parasite_phobia.png-55707488b9d8197d797a170f7a7a44b0.ctex",
+    "width": 1400,
+    "height": 1259
+  },
+  {
+    "id": "TERROR_EEL",
+    "imageUrl": "/images/sts2/monsters-phobia/terror_eel.webp",
+    "source": "images/monsters/phobia_mode/terror_eel_phobia.png.import",
+    "ctex": ".godot/imported/terror_eel_phobia.png-62219144efebbc14c15087e91bb6eef3.ctex",
+    "width": 1400,
+    "height": 517
+  },
+  {
+    "id": "THE_INSATIABLE",
+    "imageUrl": "/images/sts2/monsters-phobia/the_insatiable.webp",
+    "source": "images/monsters/phobia_mode/the_insatiable_phobia.png.import",
+    "ctex": ".godot/imported/the_insatiable_phobia.png-5d5803fb5a381cf2c992652834f4887d.bptc.ctex",
+    "width": 1064,
+    "height": 1219
+  },
+  {
+    "id": "WRIGGLER",
+    "imageUrl": "/images/sts2/monsters-phobia/wriggler.webp",
+    "source": "images/monsters/phobia_mode/wriggler_phobia.png.import",
+    "ctex": ".godot/imported/wriggler_phobia.png-904fe1a21245d9f2660e7876961978af.ctex",
+    "width": 782,
+    "height": 523
+  }
+]

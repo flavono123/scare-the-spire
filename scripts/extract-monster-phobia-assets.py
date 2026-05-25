@@ -18,6 +18,7 @@ from scripts.lib.pck import PCKReader, default_pck_path  # noqa: E402
 
 PHOBIA_OUTPUT_DIR = ROOT / "public/images/sts2/monsters-phobia"
 PHOBIA_DATA_PATH = ROOT / "data/sts2/monster-phobia-assets.json"
+MAX_OUTPUT_DIMENSION = 1400
 
 DIRECT_ASSETS = [
     {
@@ -82,19 +83,28 @@ def save_webp(image, out_path: Path) -> None:
     image.save(out_path, "WEBP", lossless=True, quality=95, method=6)
 
 
+def fit_for_web(image):
+    if max(image.width, image.height) <= MAX_OUTPUT_DIMENSION:
+        return image
+    resized = image.copy()
+    resized.thumbnail((MAX_OUTPUT_DIMENSION, MAX_OUTPUT_DIMENSION), Image.Resampling.LANCZOS)
+    return resized
+
+
 def extract_direct_assets(reader: PCKReader) -> list[dict[str, object]]:
     records: list[dict[str, object]] = []
     for asset in DIRECT_ASSETS:
         image, ctex_path = load_imported_image(reader, asset["source"])
+        output_image = fit_for_web(image)
         out_path = PHOBIA_OUTPUT_DIR / asset["fileName"]
-        save_webp(image, out_path)
+        save_webp(output_image, out_path)
         records.append({
             "id": asset["id"],
             "imageUrl": f"/images/sts2/monsters-phobia/{asset['fileName']}",
             "source": asset["source"],
             "ctex": ctex_path,
-            "width": image.width,
-            "height": image.height,
+            "width": output_image.width,
+            "height": output_image.height,
         })
     return records
 
@@ -111,15 +121,16 @@ def extract_decimillipede(reader: PCKReader) -> dict[str, object]:
     for part, image, _ in loaded_parts:
         canvas.alpha_composite(image, dest=part["offset"])
 
+    output_image = fit_for_web(canvas)
     out_path = PHOBIA_OUTPUT_DIR / "decimillipede.webp"
-    save_webp(canvas, out_path)
+    save_webp(output_image, out_path)
     return {
         "id": "DECIMILLIPEDE_SEGMENT",
         "imageUrl": "/images/sts2/monsters-phobia/decimillipede.webp",
         "source": [part["source"] for part, _, _ in loaded_parts],
         "ctex": [ctex_path for _, _, ctex_path in loaded_parts],
-        "width": canvas.width,
-        "height": canvas.height,
+        "width": output_image.width,
+        "height": output_image.height,
     }
 
 
