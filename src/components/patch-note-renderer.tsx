@@ -19,6 +19,7 @@ import {
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { GameHoverTip } from "@/components/codex/hover-tip";
+import { InfestedPrismReworkBlock } from "@/components/codex/monster-move-visuals";
 
 // Entity types that can appear in patch notes
 export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "encounter" | "ancient" | "epoch";
@@ -952,6 +953,7 @@ function renderLine(
 
 const DEVNOTE_KO_RE = /^\[devnote\](.*)\[\/devnote\]$/;
 const DEVNOTE_EN_RE = /^\[devnote:en\](.*)\[\/devnote\]$/;
+const MONSTER_PATTERN_DIFF_RE = /^\[monster-pattern-diff:([a-z0-9_]+)(?::([v0-9.]+))?(?::(full|compact))?\]$/i;
 
 function DevnoteBlock({
   koContent,
@@ -1040,6 +1042,27 @@ export function PatchNoteRenderer({
 
   for (let i = 0; i < lines.length; i++) {
     const trimmed = lines[i].trimStart();
+
+    const monsterPatternDiffMatch = trimmed.match(MONSTER_PATTERN_DIFF_RE);
+    if (monsterPatternDiffMatch) {
+      flushList();
+      wasInList = false;
+      const monsterId = monsterPatternDiffMatch[1].toUpperCase();
+      const patchId = monsterPatternDiffMatch[2] ?? "";
+      const variant = (monsterPatternDiffMatch[3] as "full" | "compact" | undefined) ?? "full";
+      const monster = allEntities.find((entity) => entity.type === "monster" && entity.id === monsterId)?.monsterData;
+      if (monsterId === "INFESTED_PRISM" && (!patchId || patchId === "v0.106.0") && monster) {
+        elements.push(
+          <InfestedPrismReworkBlock
+            key={`monster-pattern-diff-${i}`}
+            monster={monster}
+            serviceLocale={context.serviceLocale ?? "ko"}
+            variant={variant}
+          />,
+        );
+      }
+      continue;
+    }
 
     // Developer comment: [devnote]Korean[/devnote] + optional [devnote:en]English[/devnote]
     const koMatch = trimmed.match(DEVNOTE_KO_RE);

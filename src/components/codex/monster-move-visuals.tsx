@@ -1,0 +1,688 @@
+"use client";
+
+import { useState, type ReactNode } from "react";
+import Link from "next/link";
+import Image from "@/components/ui/static-image";
+import type {
+  CodexMonster,
+  DamageValue,
+  MonsterMove,
+  MonsterMoveCardApplication,
+  MonsterMoveIntentDetail,
+  MonsterMovePowerApplication,
+} from "@/lib/codex-types";
+import type { ServiceLocale } from "@/lib/i18n";
+import { localizeHref } from "@/lib/i18n";
+import { GameHoverTip } from "./hover-tip";
+import { MonsterSpineStage } from "./monster-spine-stage";
+
+type IntentKind =
+  | "attack"
+  | "buff"
+  | "cardDebuff"
+  | "deathBlow"
+  | "debuff"
+  | "defend"
+  | "escape"
+  | "heal"
+  | "hidden"
+  | "sleep"
+  | "statusCard"
+  | "stun"
+  | "summon"
+  | "unknown";
+
+type MoveChangeTone = "buff" | "nerf" | "added" | "removed" | null;
+
+interface MoveVisual {
+  id: string;
+  name: string;
+  nameEn: string;
+  damage: DamageValue | null;
+  block: DamageValue | null;
+  intents: MonsterMoveIntentDetail[];
+  powers: readonly MonsterMovePowerApplication[];
+  cards: readonly MonsterMoveCardApplication[];
+  damageChange?: MoveChangeTone;
+  blockChange?: MoveChangeTone;
+  powerChange?: MoveChangeTone;
+}
+
+interface InfestedPrismReworkBlockProps {
+  monster: CodexMonster;
+  serviceLocale: ServiceLocale;
+  variant?: "full" | "compact";
+}
+
+const INFESTED_PRISM_MOVE_ORDER = ["JAB", "RADIATE", "WHIRLWIND", "PULSATE"];
+const ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
+const ASCENSION_ICON = "/images/sts2/ui/topbar/top_bar_ascension.png";
+const BLOCK_ICON = "/images/sts2/ui/combat/block.png";
+const INTENT_ICONS: Record<IntentKind, string> = {
+  attack: "/images/sts2/intents/attack_3.png",
+  buff: "/images/sts2/intents/buff.png",
+  cardDebuff: "/images/sts2/intents/card_debuff.png",
+  deathBlow: "/images/sts2/intents/death_blow.png",
+  debuff: "/images/sts2/intents/debuff.png",
+  defend: "/images/sts2/intents/defend.png",
+  escape: "/images/sts2/intents/escape.png",
+  heal: "/images/sts2/intents/heal.png",
+  hidden: "/images/sts2/intents/hidden.png",
+  sleep: "/images/sts2/intents/sleep.png",
+  statusCard: "/images/sts2/intents/status_card.png",
+  stun: "/images/sts2/intents/stun.png",
+  summon: "/images/sts2/intents/summon.png",
+  unknown: "/images/sts2/intents/unknown.png",
+};
+const ANIMATED_INTENT_ICONS: Partial<Record<IntentKind, string>> = {
+  buff: "/images/sts2/intents/animated/buff.webp",
+  cardDebuff: "/images/sts2/intents/animated/card_debuff.webp",
+  debuff: "/images/sts2/intents/animated/debuff.webp",
+  escape: "/images/sts2/intents/animated/escape.webp",
+  heal: "/images/sts2/intents/animated/heal.webp",
+  sleep: "/images/sts2/intents/animated/sleep.webp",
+  statusCard: "/images/sts2/intents/animated/status_card.webp",
+  stun: "/images/sts2/intents/animated/stun.webp",
+  summon: "/images/sts2/intents/animated/summon.webp",
+  unknown: "/images/sts2/intents/animated/unknown.webp",
+};
+const INTENT_CLASS_TO_KIND: Record<string, IntentKind> = {
+  AttackIntent: "attack",
+  SingleAttackIntent: "attack",
+  MultiAttackIntent: "attack",
+  BuffIntent: "buff",
+  CardDebuffIntent: "cardDebuff",
+  DeathBlowIntent: "deathBlow",
+  DebuffIntent: "debuff",
+  DebuffStrongIntent: "debuff",
+  DefendIntent: "defend",
+  EscapeIntent: "escape",
+  HealIntent: "heal",
+  HiddenIntent: "hidden",
+  SleepIntent: "sleep",
+  StatusIntent: "statusCard",
+  StunIntent: "stun",
+  SummonIntent: "summon",
+  UnknownIntent: "unknown",
+};
+const SINGLE_ATTACK_REPEAT: DamageValue = { normal: 1, ascension: null };
+
+const OLD_INFESTED_PRISM_MOVES: MoveVisual[] = [
+  {
+    id: "JAB",
+    name: "찌르기",
+    nameEn: "Jab",
+    damage: { normal: 22, ascension: 24 },
+    block: null,
+    intents: [{ type: "SingleAttackIntent", damageKey: "Jab", repeat: SINGLE_ATTACK_REPEAT }],
+    powers: [],
+    cards: [],
+    damageChange: "removed",
+  },
+  {
+    id: "RADIATE",
+    name: "방출",
+    nameEn: "Radiate",
+    damage: { normal: 16, ascension: 18 },
+    block: null,
+    intents: [{ type: "SingleAttackIntent", damageKey: "Radiate", repeat: SINGLE_ATTACK_REPEAT }],
+    powers: [],
+    cards: [],
+    damageChange: "removed",
+  },
+  {
+    id: "WHIRLWIND",
+    name: "소용돌이",
+    nameEn: "Whirlwind",
+    damage: { normal: 9, ascension: 10 },
+    block: null,
+    intents: [{ type: "MultiAttackIntent", damageKey: "Whirlwind", repeat: { normal: 3, ascension: null } }],
+    powers: [],
+    cards: [],
+    damageChange: "removed",
+  },
+  {
+    id: "PULSATE",
+    name: "맥박",
+    nameEn: "Pulsate",
+    damage: null,
+    block: null,
+    intents: [],
+    powers: [],
+    cards: [],
+  },
+];
+
+export function InfestedPrismReworkBlock({
+  monster,
+  serviceLocale,
+  variant = "full",
+}: InfestedPrismReworkBlockProps) {
+  if (monster.id !== "INFESTED_PRISM") return null;
+
+  const currentMoves = buildCurrentMoveVisuals(monster);
+  const compact = variant === "compact";
+  const href = localizeHref(`/compendium/bestiary?monster=${monster.id.toLowerCase()}`, serviceLocale);
+  const labels = serviceLocale === "ko"
+    ? {
+        title: "감염된 프리즘 리워크",
+        before: "이전",
+        after: "이후",
+        pattern: "4턴 고정 반복 유지",
+        body: "같은 4턴 루프를 유지하지만 공격 피해가 크게 낮아지고, 방출과 맥박에 방어가 붙었습니다. 맥박은 생명의 불꽃을 얻는 행동으로 바뀌어 단순 공격 반복이 아니라 방어/버프 턴으로 읽히게 됩니다.",
+        hp: "체력",
+      }
+    : {
+        title: "Infested Prism Rework",
+        before: "Before",
+        after: "After",
+        pattern: "Fixed 4-turn loop retained",
+        body: "The same four-turn loop remains, but attack damage is much lower. Radiate and Pulsate now include Block, and Pulsate also gains Vital Spark, making the loop read as attack, defense, and buff turns rather than pure damage pressure.",
+        hp: "HP",
+      };
+
+  return (
+    <div className={compact ? "mt-2" : "my-4"}>
+      <div className="rounded-lg border border-yellow-400/20 bg-black/25 p-3 shadow-[0_18px_45px_rgba(0,0,0,0.28)]">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <Link
+            href={href}
+            className="font-game-title text-sm font-bold text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 hover:text-yellow-200"
+          >
+            {labels.title}
+          </Link>
+          <span className="rounded bg-yellow-400/10 px-2 py-0.5 font-game-text text-[11px] font-bold text-yellow-300">
+            {labels.pattern}
+          </span>
+        </div>
+
+        {!compact && (
+          <p className="mb-3 font-game-text text-xs leading-relaxed text-zinc-400">
+            {labels.body}
+          </p>
+        )}
+
+        <div className="mb-3 flex flex-wrap items-center gap-2 font-game-text text-xs text-zinc-400">
+          <span className="text-zinc-500">{labels.hp}</span>
+          <span className="font-bold text-red-300">200 <AscensionValue value={215} level={8} /></span>
+          <span className="text-zinc-600">→</span>
+          <span className="font-bold text-green-300">161 <AscensionValue value={171} level={8} /></span>
+        </div>
+
+        <div className="space-y-3">
+          <MoveSequenceRail
+            label={labels.before}
+            moves={OLD_INFESTED_PRISM_MOVES}
+            monster={monster}
+            serviceLocale={serviceLocale}
+            tone="before"
+          />
+          <MoveSequenceRail
+            label={labels.after}
+            moves={currentMoves}
+            monster={monster}
+            serviceLocale={serviceLocale}
+            tone="after"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MoveSequenceRail({
+  label,
+  moves,
+  monster,
+  serviceLocale,
+  tone,
+}: {
+  label: string;
+  moves: MoveVisual[];
+  monster: CodexMonster;
+  serviceLocale: ServiceLocale;
+  tone: "before" | "after";
+}) {
+  return (
+    <div className="grid gap-2 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:items-center">
+      <div className={`font-game-title text-xs font-bold ${tone === "after" ? "text-green-300" : "text-red-300"}`}>
+        {label}
+      </div>
+      <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+        {moves.map((move, index) => (
+          <span key={move.id} className="flex min-w-0 items-center gap-1.5">
+            <MovePanel
+              move={move}
+              monster={monster}
+              serviceLocale={serviceLocale}
+              tone={tone}
+            />
+            <Image
+              src={ARROW_ICON}
+              alt=""
+              width={16}
+              height={16}
+              className={`h-4 w-4 object-contain ${index === moves.length - 1 ? "opacity-90" : ""}`}
+            />
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MovePanel({
+  move,
+  monster,
+  serviceLocale,
+  tone,
+}: {
+  move: MoveVisual;
+  monster: CodexMonster;
+  serviceLocale: ServiceLocale;
+  tone: "before" | "after";
+}) {
+  return (
+    <MovePreviewPopover move={move} monster={monster} serviceLocale={serviceLocale}>
+      <span
+        className={`inline-flex min-h-20 w-[8.4rem] flex-col justify-between rounded-md border px-2.5 py-2 ${
+          tone === "after"
+            ? "border-green-400/25 bg-green-400/[0.045]"
+            : "border-red-400/20 bg-red-400/[0.035]"
+        }`}
+      >
+        <span className="truncate font-game-title text-[12px] font-bold text-zinc-100">
+          {serviceLocale === "ko" ? move.name : move.nameEn}
+        </span>
+        <span className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5">
+          <MoveMetricTokens move={move} compact />
+          <MoveApplicationIcons move={move} serviceLocale={serviceLocale} interactive={false} />
+        </span>
+      </span>
+    </MovePreviewPopover>
+  );
+}
+
+function MovePreviewPopover({
+  move,
+  monster,
+  serviceLocale,
+  children,
+}: {
+  move: MoveVisual;
+  monster: CodexMonster;
+  serviceLocale: ServiceLocale;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  const [nonce, setNonce] = useState(0);
+  const href = localizeHref(`/compendium/bestiary?monster=${monster.id.toLowerCase()}`, serviceLocale);
+  const title = serviceLocale === "ko" ? move.name : move.nameEn;
+
+  return (
+    <span
+      className="relative inline-flex"
+      onMouseEnter={() => {
+        setNonce((value) => value + 1);
+        setOpen(true);
+      }}
+      onMouseLeave={() => setOpen(false)}
+      onFocus={() => {
+        setNonce((value) => value + 1);
+        setOpen(true);
+      }}
+      onBlur={() => setOpen(false)}
+    >
+      <Link href={href} className="outline-none transition-transform hover:scale-[1.015] focus-visible:ring-2 focus-visible:ring-yellow-300/70">
+        {children}
+      </Link>
+      {open && (
+        <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2">
+          <GameHoverTip title={title} style={{ width: 280, maxWidth: 280 }}>
+            <span className="relative mb-2 block h-36 overflow-hidden rounded bg-black/25">
+              <MonsterSpineStage
+                asset={monster.spineAsset}
+                fallbackImageUrl={monster.bossImageUrl ?? monster.imageUrl}
+                monsterName={monster.name}
+                selectedMoveId={move.id}
+                selectedMoveNonce={nonce}
+                imagePriority={false}
+                showLoadingLabel={false}
+                viewportTransitionTime={0}
+                fallbackImageClassName="absolute inset-0 h-full w-full object-contain opacity-80"
+                className="absolute inset-0"
+              />
+              <MoveIntentPreview move={move} />
+            </span>
+            <span className="flex flex-wrap items-center gap-2">
+              <MoveMetricTokens move={move} />
+              <MoveApplicationIcons move={move} serviceLocale={serviceLocale} />
+            </span>
+          </GameHoverTip>
+        </span>
+      )}
+    </span>
+  );
+}
+
+function MoveIntentPreview({ move }: { move: MoveVisual }) {
+  const intents = move.intents
+    .map((intent, index) => ({ intent, kind: getIntentKind(intent.type), key: `${intent.type}-${index}` }))
+    .filter((item) => item.kind !== "hidden");
+  if (intents.length === 0) return null;
+
+  return (
+    <span className="pointer-events-none absolute left-1/2 top-2 z-40 flex -translate-x-1/2 items-end justify-center gap-1">
+      {intents.map(({ intent, kind, key }) => (
+        <span key={key} className="relative inline-flex h-12 w-12 items-center justify-center">
+          <Image
+            src={getIntentIcon(kind, move, intent)}
+            alt=""
+            width={48}
+            height={48}
+            className="h-11 w-11 object-contain drop-shadow-[0_5px_6px_rgba(0,0,0,0.78)]"
+          />
+          {kind === "attack" && move.damage && (
+            <span
+              className="font-game-title absolute -bottom-0.5 left-1/2 -translate-x-1/2 text-base font-black leading-none text-[#fff8db]"
+              style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
+            >
+              {formatAttackLabel(move.damage, getRepeatInfo(intent), "normal")}
+            </span>
+          )}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function MoveMetricTokens({ move, compact = false }: { move: MoveVisual; compact?: boolean }) {
+  const attackIntent = move.intents.find((intent) => getIntentKind(intent.type) === "attack" || getIntentKind(intent.type) === "deathBlow") ?? null;
+  return (
+    <>
+      {move.damage && (
+        <MetricToken
+          icon={getAttackIcon(move.damage, getRepeatInfo(attackIntent))}
+          value={move.damage}
+          normalLabel={formatAttackLabel(move.damage, getRepeatInfo(attackIntent), "normal")}
+          ascensionLabel={formatAttackLabel(move.damage, getRepeatInfo(attackIntent), "ascension")}
+          change={move.damageChange}
+          compact={compact}
+        />
+      )}
+      {move.block && (
+        <MetricToken
+          icon={BLOCK_ICON}
+          value={move.block}
+          change={move.blockChange}
+          compact={compact}
+        />
+      )}
+    </>
+  );
+}
+
+function MoveApplicationIcons({
+  move,
+  serviceLocale,
+  interactive = true,
+}: {
+  move: MoveVisual;
+  serviceLocale: ServiceLocale;
+  interactive?: boolean;
+}) {
+  if (move.powers.length === 0 && move.cards.length === 0) return null;
+
+  return (
+    <>
+      {move.powers.map((power) => (
+        <PowerApplicationIcon
+          key={`${move.id}-${power.powerId}`}
+          power={power}
+          serviceLocale={serviceLocale}
+          added={move.powerChange === "added"}
+          interactive={interactive}
+        />
+      ))}
+      {move.cards.map((card) => (
+        <span key={`${move.id}-${card.cardId}`} className="relative inline-flex h-6 w-6 items-center justify-center" title={serviceLocale === "ko" ? card.cardName : card.cardNameEn}>
+          {card.imageUrl && <Image src={card.imageUrl} alt="" width={24} height={24} className="h-6 w-6 object-contain" />}
+        </span>
+      ))}
+    </>
+  );
+}
+
+function PowerApplicationIcon({
+  power,
+  serviceLocale,
+  added,
+  interactive,
+}: {
+  power: MonsterMovePowerApplication;
+  serviceLocale: ServiceLocale;
+  added: boolean;
+  interactive: boolean;
+}) {
+  const className = "relative inline-flex h-6 w-6 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70";
+  const title = serviceLocale === "ko" ? power.powerName : power.powerNameEn;
+  const content = (
+    <>
+      {power.imageUrl && <Image src={power.imageUrl} alt="" width={24} height={24} className="h-6 w-6 object-contain" />}
+      {power.amount && (
+        <span className="pointer-events-none absolute -bottom-0.5 -right-1 rounded bg-black/75 px-0.5 text-[9px] font-bold tabular-nums text-zinc-100">
+          {power.amount.normal ?? "?"}
+        </span>
+      )}
+      {added && (
+        <span className="pointer-events-none absolute -top-1 -right-1 text-[10px] font-black text-green-300">+</span>
+      )}
+    </>
+  );
+
+  if (!interactive) {
+    return (
+      <span className={className} title={title}>
+        {content}
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      href={localizeHref(`/compendium/powers?power=${power.powerId.toLowerCase()}`, serviceLocale)}
+      className={className}
+      title={title}
+    >
+      {content}
+    </Link>
+  );
+}
+
+function MetricToken({
+  icon,
+  value,
+  normalLabel,
+  ascensionLabel,
+  change,
+  compact = false,
+}: {
+  icon: string;
+  value: DamageValue;
+  normalLabel?: string | null;
+  ascensionLabel?: string | null;
+  change?: MoveChangeTone;
+  compact?: boolean;
+}) {
+  const normalText = normalLabel ?? String(value.normal ?? "?");
+  const ascensionText = ascensionLabel ?? (value.ascension == null ? null : String(value.ascension));
+  const showAscension = ascensionText != null && ascensionText !== normalText;
+  const changeClass = change === "added"
+    ? "text-green-300"
+    : change === "removed"
+      ? "text-red-300"
+      : change === "nerf"
+        ? "text-green-300"
+        : change === "buff"
+          ? "text-red-300"
+          : "text-zinc-100";
+
+  return (
+    <span className={`inline-flex items-center font-game-text font-bold leading-none ${changeClass} ${compact ? "gap-0.5 text-xs" : "gap-1 text-sm"}`}>
+      <Image src={icon} alt="" width={compact ? 18 : 22} height={compact ? 18 : 22} className={`${compact ? "h-4 w-4" : "h-5 w-5"} object-contain`} />
+      <span>{normalText}</span>
+      {showAscension && <AscensionValue value={ascensionText} compact={compact} />}
+      {change === "added" && <span className="text-[10px] font-black text-green-300">+</span>}
+    </span>
+  );
+}
+
+function AscensionValue({ value, level = 9, compact = false }: { value: string | number; level?: number; compact?: boolean }) {
+  return (
+    <span className={`inline-flex items-center text-orange-300 ${compact ? "gap-0.5" : "gap-1"}`}>
+      <span className="text-zinc-500">(</span>
+      <span className="relative inline-flex h-4 w-4 items-center justify-center align-middle">
+        <Image src={ASCENSION_ICON} alt="" width={16} height={16} className="h-4 w-4 object-contain" />
+        <span className="absolute inset-0 flex items-center justify-center pt-px text-[8px] font-black leading-none text-white drop-shadow">{level}</span>
+      </span>
+      <span>{value}</span>
+      <span className="text-zinc-500">)</span>
+    </span>
+  );
+}
+
+function buildCurrentMoveVisuals(monster: CodexMonster): MoveVisual[] {
+  const moveById = new Map([...monster.bestiaryMoves, ...monster.moves].map((move) => [move.id, move]));
+  const oldById = new Map(OLD_INFESTED_PRISM_MOVES.map((move) => [move.id, move]));
+
+  return INFESTED_PRISM_MOVE_ORDER.flatMap((moveId) => {
+    const move = moveById.get(moveId);
+    if (!move) return [];
+    const visual = buildMoveVisual(monster, move);
+    const old = oldById.get(moveId);
+    return [{
+      ...visual,
+      damageChange: getDamageChange(old?.damage ?? null, visual.damage),
+      blockChange: old?.block ? getDamageChange(old.block, visual.block) : visual.block ? "added" : null,
+      powerChange: old?.powers.length ? null : visual.powers.length > 0 ? "added" : null,
+    }];
+  });
+}
+
+function buildMoveVisual(monster: CodexMonster, move: MonsterMove): MoveVisual {
+  return {
+    id: move.id,
+    name: move.name,
+    nameEn: move.nameEn,
+    damage: findDamageForMove(monster, move),
+    block: findBlockForMove(monster, move),
+    intents: getMoveIntentDetails(move),
+    powers: move.powerApplications,
+    cards: move.cardApplications,
+  };
+}
+
+function getMoveIntentDetails(move: MonsterMove): MonsterMoveIntentDetail[] {
+  if (move.intentDetails.length > 0) return move.intentDetails;
+  return move.intents.map((type) => ({ type }));
+}
+
+function findDamageForMove(monster: CodexMonster, move: MonsterMove): DamageValue | null {
+  if (!monster.damageValues) return null;
+  const explicitKey = getMoveIntentDetails(move).find((intent) => intent.damageKey)?.damageKey;
+  if (explicitKey && monster.damageValues[explicitKey]) return monster.damageValues[explicitKey];
+  return findValueForMoveId(move.id, monster.damageValues);
+}
+
+function findBlockForMove(monster: CodexMonster, move: MonsterMove): DamageValue | null {
+  if (!monster.blockValues) return null;
+  const explicitKey = getMoveIntentDetails(move).find((intent) => intent.blockKey)?.blockKey;
+  if (explicitKey && monster.blockValues[explicitKey]) return monster.blockValues[explicitKey];
+  return findValueForMoveId(move.id, monster.blockValues);
+}
+
+function findValueForMoveId(moveId: string, values: Record<string, DamageValue>): DamageValue | null {
+  const moveKey = normalizeKey(moveId);
+  for (const [key, value] of Object.entries(values)) {
+    if (normalizeKey(key) === moveKey) return value;
+  }
+  for (const [key, value] of Object.entries(values)) {
+    const normalizedKey = normalizeKey(key);
+    if (moveKey.includes(normalizedKey) || normalizedKey.includes(moveKey)) return value;
+  }
+  return null;
+}
+
+function normalizeKey(value: string): string {
+  return value.toLowerCase().replace(/_/g, "");
+}
+
+function getIntentKind(intent: string): IntentKind {
+  const kind = INTENT_CLASS_TO_KIND[intent];
+  if (kind) return kind;
+  if (intent.includes("Attack")) return "attack";
+  if (intent.includes("Buff")) return "buff";
+  if (intent.includes("Debuff")) return "debuff";
+  if (intent.includes("Defend")) return "defend";
+  if (intent.includes("Status")) return "statusCard";
+  return "unknown";
+}
+
+function getIntentIcon(kind: IntentKind, move: MoveVisual, intent: MonsterMoveIntentDetail): string {
+  if (kind === "attack" || kind === "deathBlow") {
+    return getAttackIcon(move.damage, getRepeatInfo(intent));
+  }
+  return ANIMATED_INTENT_ICONS[kind] ?? INTENT_ICONS[kind];
+}
+
+function getRepeatInfo(intent: MonsterMoveIntentDetail | null): { value: DamageValue | null; multi: boolean } {
+  if (!intent) return { value: null, multi: false };
+  if (intent.repeat) return { value: intent.repeat, multi: intent.type === "MultiAttackIntent" };
+  return { value: SINGLE_ATTACK_REPEAT, multi: intent.type === "MultiAttackIntent" };
+}
+
+function getAttackIcon(damage: DamageValue | null, repeat: { value: DamageValue | null; multi: boolean }): string {
+  const total = getAttackTotal(damage, repeat, "normal") ?? getAttackTotal(damage, repeat, "ascension") ?? 10;
+  if (total < 5) return "/images/sts2/intents/attack_1.png";
+  if (total < 10) return "/images/sts2/intents/attack_2.png";
+  if (total < 20) return "/images/sts2/intents/attack_3.png";
+  if (total < 40) return "/images/sts2/intents/attack_4.png";
+  return "/images/sts2/intents/attack_5.png";
+}
+
+function getAttackTotal(
+  damage: DamageValue | null,
+  repeat: { value: DamageValue | null; multi: boolean },
+  mode: "normal" | "ascension",
+): number | null {
+  const damageValue = getModeValue(damage, mode);
+  if (damageValue == null) return null;
+  return damageValue * (getModeValue(repeat.value, mode) ?? 1);
+}
+
+function formatAttackLabel(
+  damage: DamageValue | null,
+  repeat: { value: DamageValue | null; multi: boolean },
+  mode: "normal" | "ascension",
+): string | null {
+  const damageValue = getModeValue(damage, mode);
+  if (damageValue == null) return null;
+  if (!repeat.multi) return String(damageValue);
+  return `${damageValue}x${getModeValue(repeat.value, mode) ?? "?"}`;
+}
+
+function getModeValue(value: DamageValue | null, mode: "normal" | "ascension"): number | null {
+  if (!value) return null;
+  return mode === "ascension" ? value.ascension ?? value.normal : value.normal;
+}
+
+function getDamageChange(before: DamageValue | null, after: DamageValue | null): MoveChangeTone {
+  if (!before && after) return "added";
+  if (before && !after) return "removed";
+  if (!before || !after) return null;
+  const beforeTotal = before.normal ?? 0;
+  const afterTotal = after.normal ?? 0;
+  if (afterTotal < beforeTotal) return "nerf";
+  if (afterTotal > beforeTotal) return "buff";
+  return null;
+}

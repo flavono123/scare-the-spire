@@ -10,9 +10,11 @@ import type {
   STS2Patch,
   VersionedEntityType,
 } from "@/lib/types";
+import type { CodexMonster } from "@/lib/codex-types";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { DescriptionText } from "./codex-description";
+import { InfestedPrismReworkBlock } from "./monster-move-visuals";
 
 interface STS2ChangeHistoryProps {
   serviceLocale: ServiceLocale;
@@ -25,6 +27,7 @@ interface STS2ChangeHistoryProps {
   patches?: STS2Patch[];
   introducedInPatch?: string;
   deprecatedInPatch?: string;
+  monster?: CodexMonster;
   emptyLabel: string;
 }
 
@@ -240,6 +243,7 @@ export function STS2ChangeHistory({
   patches,
   introducedInPatch,
   deprecatedInPatch,
+  monster,
   emptyLabel,
 }: STS2ChangeHistoryProps) {
   const entries = useMemo<HistoryEntry[]>(() => {
@@ -306,21 +310,27 @@ export function STS2ChangeHistory({
         const curatedDiffs = entry.curatedChanges.flatMap((change) => change.diffs);
         const hasVersionDiffs = entry.versionDiffs.length > 0;
         const hasLifecycleChanges = entry.lifecycleChanges.length > 0;
+        const showInfestedPrismRework = monster?.id === "INFESTED_PRISM" &&
+          entry.curatedChanges.some((change) => change.id === "infested-prism-v106-rework");
 
         return (
-          <Link
+          <div
             key={entry.patch}
-            href={localizeHref(patchHref(entry.patch), serviceLocale)}
-            className="block rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 text-gray-300 transition-colors hover:border-yellow-500/40 hover:text-yellow-300"
+            className="rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 text-gray-300 transition-colors hover:border-yellow-500/40"
           >
-            <div className="font-game-title text-xs text-yellow-500">
-              {getPatchLabel(entry.patch, patches, serviceLocale)}
-            </div>
-            {(patch?.date || entry.curatedChanges.some((change) => change.date)) && (
-              <div className="mt-0.5 text-[10px] text-gray-500">
-                {entry.curatedChanges.find((change) => change.date)?.date ?? patch?.date}
+            <Link
+              href={localizeHref(patchHref(entry.patch), serviceLocale)}
+              className="block transition-colors hover:text-yellow-300"
+            >
+              <div className="font-game-title text-xs text-yellow-500">
+                {getPatchLabel(entry.patch, patches, serviceLocale)}
               </div>
-            )}
+              {(patch?.date || entry.curatedChanges.some((change) => change.date)) && (
+                <div className="mt-0.5 text-[10px] text-gray-500">
+                  {entry.curatedChanges.find((change) => change.date)?.date ?? patch?.date}
+                </div>
+              )}
+            </Link>
             {summary && (
               <p className="mt-1 font-game-text text-xs leading-relaxed text-gray-400">
                 {summary}
@@ -342,7 +352,14 @@ export function STS2ChangeHistory({
                     <CuratedDiffLine key={`${entry.patch}-${diff.attribute}-${index}`} diff={diff} />
                   ))}
             </div>
-          </Link>
+            {showInfestedPrismRework && (
+              <InfestedPrismReworkBlock
+                monster={monster}
+                serviceLocale={serviceLocale}
+                variant="compact"
+              />
+            )}
+          </div>
         );
       })}
     </div>
