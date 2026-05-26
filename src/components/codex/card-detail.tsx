@@ -18,6 +18,7 @@ import {
   CodexCard,
   CodexEnchantment,
   CodexEvent,
+  CodexMonster,
   CodexPotion,
   CodexPower,
   getCharacterColor,
@@ -48,9 +49,11 @@ import {
   getRelatedAncientIdsForCard,
   getRelatedEnchantmentIdsForCard,
   getRelatedEventIdsForCard,
+  getRelatedMonsterIdsForCard,
   getRelatedPotionIdsForCard,
   getRelatedPowerIdsForCard,
 } from "@/lib/codex-references";
+import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
 import {
   canEnchantCard,
   shouldShowAmount,
@@ -202,6 +205,7 @@ interface CardDetailProps {
   afflictions: CodexAffliction[];
   relatedAncients?: CodexAncient[];
   relatedEvents?: CodexEvent[];
+  relatedMonsters?: CodexMonster[];
   relatedPotions?: CodexPotion[];
   relatedPowers?: CodexPower[];
   patches?: STS2Patch[];
@@ -263,7 +267,7 @@ function getRemovedUpgradePreviewCard(
   };
 }
 
-export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedPotions = [], relatedPowers = [], patches, changes, versionDiffs, onClose }: CardDetailProps) {
+export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], patches, changes, versionDiffs, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getCardDetailLabels(serviceLocale);
   const { userId, ready: authReady, ensureUser } = useAuth();
@@ -374,6 +378,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     .map((enchantmentId) => enchantmentById.get(enchantmentId))
     .filter((enchantment): enchantment is CodexEnchantment => Boolean(enchantment))
     .map(enchantmentToReferenceTarget);
+  const monsterById = new Map(relatedMonsters.map((monster) => [monster.id, monster]));
+  const relatedMonsterTargets = getRelatedMonsterIdsForCard(card.id, relatedMonsters)
+    .map((monsterId) => monsterById.get(monsterId))
+    .filter((monster): monster is CodexMonster => Boolean(monster?.showInCompendium && isPublicBestiaryMonster(monster.id)))
+    .map(monsterToReferenceTarget);
 
   // 활성 인챈트 효과: amount 치환, 추가/제거 키워드, forced cost, stat modifier
   const activeShowAmount = activeEnchant ? shouldShowAmount(activeEnchant) : false;
@@ -986,6 +995,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
             groups={[
               { kind: "ancient", targets: relatedAncientTargets },
               { kind: "event", targets: relatedEventTargets },
+              { kind: "monster", targets: relatedMonsterTargets },
               { kind: "enchantment", targets: relatedEnchantmentTargets },
               { kind: "power", targets: relatedPowerTargets },
               { kind: "potion", targets: relatedPotionTargets },
@@ -1096,6 +1106,25 @@ function enchantmentToReferenceTarget(enchantment: CodexEnchantment): CodexRefer
       color: enchantment.cardType ?? "Any",
       type: "enchantment",
       enchantmentData: enchantment,
+    },
+  };
+}
+
+function monsterToReferenceTarget(monster: CodexMonster): CodexReferenceTarget {
+  const href = `/compendium/bestiary?monster=${monster.id.toLowerCase()}`;
+  return {
+    href,
+    id: monster.id,
+    title: monster.name,
+    entity: {
+      id: monster.id,
+      nameEn: monster.nameEn,
+      nameKo: monster.name,
+      imageUrl: monster.bossImageUrl ?? monster.imageUrl,
+      href,
+      color: monster.type,
+      type: "monster",
+      monsterData: monster,
     },
   };
 }

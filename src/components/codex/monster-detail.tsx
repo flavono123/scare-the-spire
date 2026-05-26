@@ -43,6 +43,7 @@ import {
 } from "@/lib/codex-types";
 import {
   getRelatedAfflictionIdsForMonster,
+  getRelatedCardIdsForMonster,
   getRelatedEncounterIdsForMonster,
   getRelatedPowerIdsForMonster,
 } from "@/lib/codex-references";
@@ -1190,6 +1191,10 @@ export function MonsterDetail({
     .filter((affliction): affliction is CodexAffliction => Boolean(affliction))
     .map(afflictionToReferenceTarget);
   const cardById = useMemo(() => new Map(cards.map((card) => [card.id, card])), [cards]);
+  const relatedCardTargets: CodexReferenceTarget[] = getRelatedCardIdsForMonster(monster)
+    .map((cardId) => cardById.get(cardId))
+    .filter((card): card is CodexCard => Boolean(card))
+    .map(cardToReferenceTarget);
   const powerById = useMemo(() => new Map(powers.map((power) => [power.id, power])), [powers]);
   const relatedPowerTargets: CodexReferenceTarget[] = getRelatedPowerIdsForMonster(monster)
     .map((powerId) => powerById.get(powerId))
@@ -1490,6 +1495,7 @@ export function MonsterDetail({
             gameUi={gameUi}
             serviceLocale={serviceLocale}
             groups={[
+              { kind: "card", targets: relatedCardTargets },
               { kind: "power", targets: relatedPowerTargets },
               { kind: "affliction", targets: relatedAfflictionTargets },
               { kind: "encounter", targets: relatedEncounterTargets },
@@ -1796,6 +1802,25 @@ function buildCardEntity(
     color: "card",
     type: "card",
     cardData: card,
+  };
+}
+
+function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {
+  const href = `/compendium/cards/${card.id.toLowerCase()}`;
+  return {
+    href,
+    id: card.id,
+    title: card.name,
+    entity: {
+      id: card.id,
+      nameEn: card.nameEn,
+      nameKo: card.name,
+      imageUrl: card.imageUrl,
+      href,
+      color: card.color,
+      type: "card",
+      cardData: card,
+    },
   };
 }
 

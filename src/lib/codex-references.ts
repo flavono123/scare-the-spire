@@ -536,6 +536,29 @@ export function getRelatedPowerIdsForMonster(
   ]);
 }
 
+export function getRelatedCardIdsForMonster(
+  monster: Pick<CodexMonster, "moves" | "bestiaryMoves">,
+): string[] {
+  return dedupeIds(
+    [...monster.moves, ...monster.bestiaryMoves].flatMap((move) =>
+      move.cardApplications.map((application) => application.cardId),
+    ),
+  );
+}
+
+export function getRelatedMonsterIdsForCard(
+  cardId: string,
+  monsters: readonly Pick<CodexMonster, "id" | "moves" | "bestiaryMoves">[],
+): string[] {
+  const normalizedCardId = cardId.toUpperCase();
+  return monsters
+    .filter((monster) =>
+      getRelatedCardIdsForMonster(monster)
+        .some((id) => id.toUpperCase() === normalizedCardId),
+    )
+    .map((monster) => monster.id);
+}
+
 export function getRelatedMonsterIdsForAffliction(
   afflictionId: string,
   monsters: readonly (Pick<CodexMonster, "id" | "moves" | "bestiaryMoves"> & Partial<Pick<CodexMonster, "initialPowerApplications">>)[],
