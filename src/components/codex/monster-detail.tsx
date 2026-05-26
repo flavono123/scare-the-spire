@@ -54,7 +54,7 @@ import {
   DecimillipedeSpineStage,
   type DecimillipedePartId,
 } from "./decimillipede-spine-stage";
-import { MonsterSpineStage } from "./monster-spine-stage";
+import { MonsterSpineStage, type MonsterStageVisualBounds } from "./monster-spine-stage";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 type MoveTone = "attack" | "defense" | "mixed" | "setup";
@@ -421,17 +421,21 @@ function MonsterInitialPowerPreview({
   applications,
   serviceLocale,
   powerById,
+  visualBounds,
 }: {
   applications: readonly MonsterMovePowerApplication[];
   serviceLocale: ServiceLocale;
   powerById: Map<string, CodexPower>;
+  visualBounds: MonsterStageVisualBounds | null;
 }) {
   if (applications.length === 0) return null;
 
   return (
     <div
-      className="absolute bottom-5 left-1/2 z-40 flex max-w-[calc(100%-2rem)] -translate-x-1/2 flex-wrap items-end justify-center gap-1.5 sm:bottom-7"
+      className="absolute z-40 flex max-w-[calc(100%-1rem)] flex-wrap items-end justify-start gap-1.5"
+      style={getInitialPowerPreviewStyle(visualBounds)}
       aria-label={serviceLocale === "ko" ? "시작 효과" : "Starting effects"}
+      data-monster-starting-effects
     >
       {applications.map((application) => {
         const power = powerById.get(application.powerId);
@@ -470,6 +474,45 @@ function MonsterInitialPowerPreview({
       })}
     </div>
   );
+}
+
+function getInitialPowerPreviewStyle(bounds: MonsterStageVisualBounds | null): CSSProperties {
+  if (!bounds) {
+    return {
+      left: 16,
+      bottom: 20,
+    };
+  }
+
+  const safeInset = bounds.stageWidth < 480 ? 8 : 16;
+  const tokenSize = bounds.stageWidth < 480 ? 36 : 40;
+  const gap = bounds.stageWidth < 480 ? 6 : 8;
+  const left = clampNumber(bounds.left, safeInset, Math.max(safeInset, bounds.stageWidth - tokenSize - safeInset));
+  const top = clampNumber(bounds.bottom + gap, safeInset, Math.max(safeInset, bounds.stageHeight - tokenSize - safeInset));
+
+  return {
+    left,
+    top,
+    maxWidth: Math.max(tokenSize, bounds.stageWidth - left - safeInset),
+  };
+}
+
+function areStageVisualBoundsEqual(
+  a: MonsterStageVisualBounds | null,
+  b: MonsterStageVisualBounds | null,
+): boolean {
+  if (a === b) return true;
+  if (!a || !b) return false;
+  return Math.abs(a.left - b.left) < 0.5
+    && Math.abs(a.top - b.top) < 0.5
+    && Math.abs(a.right - b.right) < 0.5
+    && Math.abs(a.bottom - b.bottom) < 0.5
+    && Math.abs(a.stageWidth - b.stageWidth) < 0.5
+    && Math.abs(a.stageHeight - b.stageHeight) < 0.5;
+}
+
+function clampNumber(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
 }
 
 function MoveApplicationTokens({
@@ -1074,6 +1117,10 @@ export function MonsterDetail({
     monsterId: monster.id,
     partId: "middle",
   });
+  const [stageVisualBoundsState, setStageVisualBoundsState] = useState<{ monsterId: string; bounds: MonsterStageVisualBounds | null }>({
+    monsterId: monster.id,
+    bounds: null,
+  });
   const selectedMoveId = selectedMoveState.monsterId === monster.id ? selectedMoveState.moveId : null;
   const selectedMoveNonce = selectedMoveState.monsterId === monster.id ? selectedMoveState.nonce : 0;
   const selectMove = (moveId: string) => {
@@ -1085,6 +1132,12 @@ export function MonsterDetail({
   };
   const previewMoveIntent = useCallback((moveId: string | null) => {
     setIntentPreviewState({ monsterId: monster.id, moveId });
+  }, [monster.id]);
+  const handleStageVisualBoundsChange = useCallback((bounds: MonsterStageVisualBounds | null) => {
+    setStageVisualBoundsState((state) => {
+      if (state.monsterId === monster.id && areStageVisualBoundsEqual(state.bounds, bounds)) return state;
+      return { monsterId: monster.id, bounds };
+    });
   }, [monster.id]);
   const intentPreviewMoveId = intentPreviewState.monsterId === monster.id ? intentPreviewState.moveId : null;
   const intentPreviewSummary = moveSummaries.find((summary) => summary.move.id === intentPreviewMoveId) ?? null;
@@ -1107,6 +1160,7 @@ export function MonsterDetail({
   const selectedMove = moveSummaries.find((summary) => summary.move.id === selectedMoveId) ?? defaultSelectedMove;
   const selectedAccent = selectedMove ? getMoveToneColor(selectedMove.tone, typeConfig.color) : typeConfig.color;
   const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
+  const stageVisualBounds = stageVisualBoundsState.monsterId === monster.id ? stageVisualBoundsState.bounds : null;
   const skinParts = getMonsterSkinParts(monster.spineAsset);
   const [commentCount, setCommentCount] = useState(0);
   const encounterById = useMemo(() => new Map(encounters.map((encounter) => [encounter.id, encounter])), [encounters]);
@@ -1223,6 +1277,7 @@ export function MonsterDetail({
                 showPhobiaMode={phobiaModeEnabled}
                 className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
                 fallbackImageClassName="absolute inset-0 z-10 h-full w-full translate-y-[8%] scale-[0.92] object-contain drop-shadow-2xl"
+                onVisualBoundsChange={handleStageVisualBoundsChange}
               />
             ) : imageSrc ? (
               <MonsterSpineStage
@@ -1239,6 +1294,7 @@ export function MonsterDetail({
                 className="relative z-10 h-[22rem] w-full sm:h-[30rem] lg:h-[34rem]"
                 viewportPadding={MONSTER_DETAIL_VIEWPORT_PADDING}
                 fallbackImageClassName="absolute inset-0 z-10 h-full w-full translate-y-[8%] scale-[0.78] object-contain drop-shadow-2xl"
+                onVisualBoundsChange={handleStageVisualBoundsChange}
               />
             ) : (
               <div
@@ -1253,6 +1309,7 @@ export function MonsterDetail({
               applications={monster.initialPowerApplications}
               serviceLocale={serviceLocale}
               powerById={powerById}
+              visualBounds={stageVisualBounds}
             />
           </div>
 
@@ -1484,7 +1541,7 @@ const MONSTER_DETAIL_VIEWPORT_PADDING = {
   padLeft: "8%",
   padRight: "8%",
   padTop: "24%",
-  padBottom: "4%",
+  padBottom: "16%",
 };
 const ZERO_DAMAGE_VALUE: DamageValue = { normal: 0, ascension: null };
 const EMPTY_MONSTER_COMBAT_STAT_STATE: MonsterCombatStatState = {

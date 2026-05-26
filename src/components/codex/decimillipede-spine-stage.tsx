@@ -3,6 +3,7 @@
 import { memo, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
 import Image from "@/components/ui/static-image";
+import { measureSpinePlayerVisualBounds, type MonsterStageVisualBounds } from "./monster-spine-stage";
 
 interface DecimillipedeSpineStageProps {
   fallbackImageUrl: string | null;
@@ -16,6 +17,7 @@ interface DecimillipedeSpineStageProps {
   imagePriority?: boolean;
   showLoadingLabel?: boolean;
   fallbackImageClassName?: string;
+  onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void;
 }
 
 type LoadState = "loading" | "ready" | "error";
@@ -229,7 +231,9 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
   imagePriority = true,
   showLoadingLabel = true,
   fallbackImageClassName,
+  onVisualBoundsChange,
 }: DecimillipedeSpineStageProps) {
+  const stageRef = useRef<HTMLDivElement | null>(null);
   const partRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const phobiaSpriteRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const playerRefs = useRef<Record<string, SpinePlayer | null>>({});
@@ -379,8 +383,31 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
     }
   }, [loadState, mode, monsterName, selectedAnimation, selectedMoveNonce, visibleParts]);
 
+  useEffect(() => {
+    if (!onVisualBoundsChange) return;
+    if (loadState !== "ready" || showPhobiaMode || !stageRef.current) {
+      onVisualBoundsChange(null);
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      if (!stageRef.current) {
+        onVisualBoundsChange(null);
+        return;
+      }
+      const bounds = visibleParts
+        .map((part) => playerRefs.current[part.id])
+        .filter((player): player is SpinePlayer => Boolean(player))
+        .map((player) => measureSpinePlayerVisualBounds(player, stageRef.current as HTMLElement))
+        .filter((bounds): bounds is MonsterStageVisualBounds => Boolean(bounds));
+      onVisualBoundsChange(mergeStageVisualBounds(bounds));
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [loadState, onVisualBoundsChange, selectedAnimation, selectedMoveNonce, showPhobiaMode, visibleParts]);
+
   return (
-    <div className={className}>
+    <div ref={stageRef} className={className}>
       {fallbackImageUrl && loadState !== "ready" && !showPhobiaMode && (
         <Image
           src={fallbackImageUrl}
@@ -438,6 +465,26 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
     </div>
   );
 });
+
+function mergeStageVisualBounds(bounds: MonsterStageVisualBounds[]): MonsterStageVisualBounds | null {
+  const first = bounds[0];
+  if (!first) return null;
+
+  const left = Math.min(...bounds.map((bound) => bound.left));
+  const top = Math.min(...bounds.map((bound) => bound.top));
+  const right = Math.max(...bounds.map((bound) => bound.right));
+  const bottom = Math.max(...bounds.map((bound) => bound.bottom));
+  return {
+    left,
+    top,
+    right,
+    bottom,
+    width: right - left,
+    height: bottom - top,
+    stageWidth: first.stageWidth,
+    stageHeight: first.stageHeight,
+  };
+}
 
 function getDecimillipedePhobiaSpriteStyle(
   part: DecimillipedePart,

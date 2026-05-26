@@ -24,6 +24,7 @@ interface MonsterSpineStageProps {
   viewportTransitionTime?: number;
   viewportPadding?: SpineViewportPadding;
   fallbackImageClassName?: string;
+  onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void;
 }
 
 type LoadState = "loading" | "ready" | "error";
@@ -36,6 +37,27 @@ type SpineViewportPadding = {
   padTop?: string;
   padBottom?: string;
 };
+type ResolvedSpineViewport = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  padLeft?: number;
+  padRight?: number;
+  padTop?: number;
+  padBottom?: number;
+};
+
+export interface MonsterStageVisualBounds {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
+  stageWidth: number;
+  stageHeight: number;
+}
 
 function MonsterSpineStageComponent({
   asset,
@@ -55,6 +77,7 @@ function MonsterSpineStageComponent({
   viewportTransitionTime,
   viewportPadding,
   fallbackImageClassName,
+  onVisualBoundsChange,
 }: MonsterSpineStageProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const vfxContainerRef = useRef<HTMLDivElement | null>(null);
@@ -113,6 +136,7 @@ function MonsterSpineStageComponent({
             playerRef.current = loadedPlayer;
             setAvailableAnimations(loadedPlayer.skeleton?.data.animations.map((animation) => animation.name) ?? asset.animations);
             setLoadState("ready");
+            reportSpineVisualBounds(loadedPlayer, parent, onVisualBoundsChange);
           },
           error: (_loadedPlayer, message) => {
             if (disposed) return;
@@ -135,7 +159,7 @@ function MonsterSpineStageComponent({
       player?.dispose();
       parent.replaceChildren();
     };
-  }, [asset, compositeSkinNames, monsterName, singleSkin, viewportPadding, viewportTransitionTime]);
+  }, [asset, compositeSkinNames, monsterName, onVisualBoundsChange, singleSkin, viewportPadding, viewportTransitionTime]);
 
   useEffect(() => {
     if (!asset || loadState !== "ready" || !playerRef.current || !selectedAnimation) return;
@@ -154,10 +178,16 @@ function MonsterSpineStageComponent({
         idleEntry.mixTime = 0;
       }
       player.play();
+      reportSpineVisualBounds(player, containerRef.current, onVisualBoundsChange);
     } catch (error) {
       console.warn(`Failed to play Spine animation ${selectedAnimation} for ${monsterName}:`, error);
     }
-  }, [asset, loadState, monsterName, selectedAnimation, selectedMoveId, selectedMoveNonce, selectedTrackAnimations]);
+  }, [asset, loadState, monsterName, onVisualBoundsChange, selectedAnimation, selectedMoveId, selectedMoveNonce, selectedTrackAnimations]);
+
+  useEffect(() => {
+    if (!onVisualBoundsChange) return;
+    if (showStaticPhobiaMode || loadState !== "ready") onVisualBoundsChange(null);
+  }, [loadState, onVisualBoundsChange, showStaticPhobiaMode]);
 
   useEffect(() => {
     if (!asset || loadState !== "ready" || !selectedMoveId || !vfxContainerRef.current) return;
@@ -441,6 +471,119 @@ function getMonsterViewport(
     ...viewportPadding,
     transitionTime,
   };
+}
+
+export function measureSpinePlayerVisualBounds(
+  player: SpinePlayer,
+  stageElement: HTMLElement,
+): MonsterStageVisualBounds | null {
+  const canvas = player.canvas;
+  const skeleton = player.skeleton;
+  const currentViewport = (player as unknown as { currentViewport?: ResolvedSpineViewport }).currentViewport;
+  if (!canvas || !skeleton || !currentViewport || !hasValidViewport(currentViewport)) return null;
+
+  const skeletonBounds = skeleton.getBoundsRect();
+  const contentBounds = hasValidWorldRect(skeletonBounds)
+    ? skeletonBounds
+    : {
+        x: currentViewport.x,
+        y: currentViewport.y,
+        width: currentViewport.width,
+        height: currentViewport.height,
+      };
+  return mapWorldBoundsToStage(contentBounds, currentViewport, canvas, stageElement);
+}
+
+function reportSpineVisualBounds(
+  player: SpinePlayer,
+  stageElement: HTMLElement | null,
+  onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void,
+) {
+  if (!onVisualBoundsChange || !stageElement) return;
+  window.requestAnimationFrame(() => {
+    onVisualBoundsChange(measureSpinePlayerVisualBounds(player, stageElement));
+  });
+}
+
+function mapWorldBoundsToStage(
+  worldBounds: { x: number; y: number; width: number; height: number },
+  currentViewport: ResolvedSpineViewport,
+  canvas: HTMLCanvasElement,
+  stageElement: HTMLElement,
+): MonsterStageVisualBounds | null {
+  const canvasRect = canvas.getBoundingClientRect();
+  const stageRect = stageElement.getBoundingClientRect();
+  const paddedViewport = getPaddedViewport(currentViewport);
+  const zoom = canvas.height / canvas.width > paddedViewport.height / paddedViewport.width
+    ? paddedViewport.width / canvas.width
+    : paddedViewport.height / canvas.height;
+  const visibleWorldWidth = canvas.width * zoom;
+  const visibleWorldHeight = canvas.height * zoom;
+  const worldCenterX = paddedViewport.x + paddedViewport.width / 2;
+  const worldCenterY = paddedViewport.y + paddedViewport.height / 2;
+  const worldLeft = worldCenterX - visibleWorldWidth / 2;
+  const worldTop = worldCenterY + visibleWorldHeight / 2;
+  const worldRight = worldBounds.x + worldBounds.width;
+  const worldBottom = worldBounds.y;
+  const worldBoundsTop = worldBounds.y + worldBounds.height;
+  const canvasOffsetLeft = canvasRect.left - stageRect.left;
+  const canvasOffsetTop = canvasRect.top - stageRect.top;
+  const left = canvasOffsetLeft + ((worldBounds.x - worldLeft) / visibleWorldWidth) * canvasRect.width;
+  const right = canvasOffsetLeft + ((worldRight - worldLeft) / visibleWorldWidth) * canvasRect.width;
+  const top = canvasOffsetTop + ((worldTop - worldBoundsTop) / visibleWorldHeight) * canvasRect.height;
+  const bottom = canvasOffsetTop + ((worldTop - worldBottom) / visibleWorldHeight) * canvasRect.height;
+  const clampedLeft = clamp(left, 0, stageRect.width);
+  const clampedTop = clamp(top, 0, stageRect.height);
+  const clampedRight = clamp(right, 0, stageRect.width);
+  const clampedBottom = clamp(bottom, 0, stageRect.height);
+
+  if (clampedRight <= clampedLeft || clampedBottom <= clampedTop) return null;
+  return {
+    left: clampedLeft,
+    top: clampedTop,
+    right: clampedRight,
+    bottom: clampedBottom,
+    width: clampedRight - clampedLeft,
+    height: clampedBottom - clampedTop,
+    stageWidth: stageRect.width,
+    stageHeight: stageRect.height,
+  };
+}
+
+function getPaddedViewport(viewport: ResolvedSpineViewport) {
+  const padLeft = viewport.padLeft ?? 0;
+  const padRight = viewport.padRight ?? 0;
+  const padTop = viewport.padTop ?? 0;
+  const padBottom = viewport.padBottom ?? 0;
+
+  return {
+    x: viewport.x - padLeft,
+    y: viewport.y - padBottom,
+    width: viewport.width + padLeft + padRight,
+    height: viewport.height + padBottom + padTop,
+  };
+}
+
+function hasValidViewport(viewport: ResolvedSpineViewport): boolean {
+  return Number.isFinite(viewport.x)
+    && Number.isFinite(viewport.y)
+    && Number.isFinite(viewport.width)
+    && Number.isFinite(viewport.height)
+    && viewport.width > 0
+    && viewport.height > 0;
+}
+
+function hasValidWorldRect(rect: { x: number; y: number; width: number; height: number }): boolean {
+  return Number.isFinite(rect.x)
+    && Number.isFinite(rect.y)
+    && Number.isFinite(rect.width)
+    && Number.isFinite(rect.height)
+    && rect.width > 0
+    && rect.height > 0;
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
 }
 
 function clearVfx(
