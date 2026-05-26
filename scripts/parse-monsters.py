@@ -849,7 +849,7 @@ def build_entries(
                 if cs is None and not moves:
                     show_in_compendium = False
 
-            out.append({
+            entry = {
                 "id": ent_id,
                 "name": lnode.get("name") or old.get("name"),
                 "type": old.get("type") or "Normal",
@@ -857,12 +857,17 @@ def build_entries(
                 **hp,
                 "moves": moves,
                 "bestiary_moves": bestiary_moves,
-                "initial_power_applications": initial_power_applications,
                 "move_graph": move_graph,
                 "damage_values": damage_values or old.get("damage_values"),
                 "block_values": block_values or old.get("block_values"),
                 "image_url": old.get("image_url"),
-            })
+            }
+            if initial_power_applications:
+                entry["initial_power_applications"] = initial_power_applications
+            for lifecycle_key in ("introducedInPatch", "deprecated", "deprecatedInPatch"):
+                if old.get(lifecycle_key) is not None:
+                    entry[lifecycle_key] = old[lifecycle_key]
+            out.append(entry)
 
         if ent_id not in old_kor_by_id:
             added.append(ent_id)
