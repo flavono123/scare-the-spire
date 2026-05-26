@@ -661,7 +661,6 @@ function PatternStateTransitionDiagram({
                 width="10"
                 height="10"
                 preserveAspectRatio="xMidYMid meet"
-                filter={`url(#${markerPrefix}-arrow-conditional-tint)`}
               />
             </marker>
             <marker
@@ -673,7 +672,15 @@ function PatternStateTransitionDiagram({
               orient="auto"
               markerUnits="userSpaceOnUse"
             >
-              <image href={DIAGRAM_ARROW_ICON} x="0" y="0" width="10" height="10" preserveAspectRatio="xMidYMid meet" />
+              <image
+                href={DIAGRAM_ARROW_ICON}
+                x="0"
+                y="0"
+                width="10"
+                height="10"
+                preserveAspectRatio="xMidYMid meet"
+                filter={`url(#${markerPrefix}-arrow-conditional-tint)`}
+              />
             </marker>
             <marker
               id={`${markerPrefix}-arrow-start`}
