@@ -636,6 +636,15 @@ function PatternStateTransitionDiagram({
           aria-hidden="true"
         >
           <defs>
+            <filter
+              id={`${markerPrefix}-arrow-conditional-tint`}
+              colorInterpolationFilters="sRGB"
+            >
+              <feColorMatrix
+                type="matrix"
+                values="0 0 0 0 1 0 0 0 0 0.2706 0 0 0 0 0.2706 0 0 0 1 0"
+              />
+            </filter>
             <marker
               id={`${markerPrefix}-arrow-normal`}
               markerWidth="10"
@@ -645,7 +654,15 @@ function PatternStateTransitionDiagram({
               orient="auto"
               markerUnits="userSpaceOnUse"
             >
-              <image href={DIAGRAM_ARROW_ICON} x="0" y="0" width="10" height="10" preserveAspectRatio="xMidYMid meet" />
+              <image
+                href={DIAGRAM_ARROW_ICON}
+                x="0"
+                y="0"
+                width="10"
+                height="10"
+                preserveAspectRatio="xMidYMid meet"
+                filter={`url(#${markerPrefix}-arrow-conditional-tint)`}
+              />
             </marker>
             <marker
               id={`${markerPrefix}-arrow-conditional`}
@@ -1790,9 +1807,11 @@ function buildDecimillipedePatternDiagramModel(
   const mainY = writhe.y + writhe.height / 2;
   const bottomMainY = dead.y + dead.height / 2;
   const topLoopY = writhe.y - 58;
-  const conditionLaneY1 = writhe.y + writhe.height + 28;
-  const conditionLaneY2 = conditionLaneY1 + 24;
-  const conditionLaneY3 = conditionLaneY2 + 24;
+  const conditionBusY = writhe.y + writhe.height + 48;
+  const writheConditionX = writhe.x + 32;
+  const constrictConditionX = constrict.x + constrict.width * 0.36;
+  const bulkConditionX = bulk.x + bulk.width * 0.24;
+  const deadConditionX = dead.x + 38;
   const randomLaneY1 = writhe.y + writhe.height + 78;
   const randomLaneY2 = randomLaneY1 + 28;
   const randomLaneY3 = randomLaneY2 + 28;
@@ -1825,33 +1844,18 @@ function buildDecimillipedePatternDiagramModel(
       topLoopY - 8,
     ),
     edge(
-      "decimillipede-writhe-zero-hp-dead",
+      "decimillipede-zero-hp-dead",
       "WRITHE",
       "DEAD",
-      `M ${writhe.x + 32} ${writhe.y + writhe.height} V ${conditionLaneY1} H ${dead.x + 38} V ${dead.y}`,
-      null,
-      dead.x + 74,
-      conditionLaneY1 - 6,
-      "conditional",
-    ),
-    edge(
-      "decimillipede-constrict-zero-hp-dead",
-      "CONSTRICT",
-      "DEAD",
-      `M ${constrict.x + constrict.width * 0.36} ${constrict.y + constrict.height} V ${conditionLaneY2} H ${dead.x + 82} V ${dead.y}`,
+      [
+        `M ${writheConditionX} ${writhe.y + writhe.height} V ${conditionBusY}`,
+        `M ${constrictConditionX} ${constrict.y + constrict.height} V ${conditionBusY}`,
+        `M ${bulkConditionX} ${bulk.y + bulk.height} V ${conditionBusY}`,
+        `M ${bulkConditionX} ${conditionBusY} H ${deadConditionX} V ${dead.y}`,
+      ].join(" "),
       conditionLabel,
-      dead.x + 122,
-      conditionLaneY2 - 6,
-      "conditional",
-    ),
-    edge(
-      "decimillipede-bulk-zero-hp-dead",
-      "BULK",
-      "DEAD",
-      `M ${bulk.x + bulk.width * 0.24} ${bulk.y + bulk.height} V ${conditionLaneY3} H ${dead.x + 126} V ${dead.y}`,
-      null,
-      dead.x + 170,
-      conditionLaneY3 - 6,
+      (deadConditionX + constrictConditionX) / 2,
+      conditionBusY - 6,
       "conditional",
     ),
     edge(
