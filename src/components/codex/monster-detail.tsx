@@ -417,6 +417,61 @@ function MonsterIntentPreview({ summary }: { summary: MoveSummary | null }) {
   );
 }
 
+function MonsterInitialPowerPreview({
+  applications,
+  serviceLocale,
+  powerById,
+}: {
+  applications: readonly MonsterMovePowerApplication[];
+  serviceLocale: ServiceLocale;
+  powerById: Map<string, CodexPower>;
+}) {
+  if (applications.length === 0) return null;
+
+  return (
+    <div
+      className="absolute bottom-5 left-4 z-40 flex max-w-[calc(100%-2rem)] flex-wrap items-end justify-start gap-1.5 sm:bottom-7 sm:left-8"
+      aria-label={serviceLocale === "ko" ? "시작 효과" : "Starting effects"}
+    >
+      {applications.map((application) => {
+        const power = powerById.get(application.powerId);
+        const label = serviceLocale === "ko" ? application.powerName : application.powerNameEn;
+        const counterAmount = getPowerApplicationCounterAmount(application, power);
+
+        return (
+          <EntityPreview
+            key={`initial-stage-${application.powerId}-${application.target}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
+            entity={buildPowerEntity(application, power)}
+            serviceLocale={serviceLocale}
+            forcePosition="above"
+            linkClassName="relative inline-flex h-9 w-9 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70 sm:h-10 sm:w-10"
+          >
+            <span className="relative inline-flex h-9 w-9 items-center justify-center sm:h-10 sm:w-10" title={label}>
+              {application.imageUrl && (
+                <Image
+                  src={application.imageUrl}
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="h-9 w-9 object-contain drop-shadow-[0_5px_6px_rgba(0,0,0,0.78)] sm:h-10 sm:w-10"
+                />
+              )}
+              {counterAmount && (
+                <span
+                  className="pointer-events-none absolute -bottom-1 -right-1 font-game-title text-sm font-black leading-none text-[#fff8db]"
+                  style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
+                >
+                  {counterAmount.normal ?? "?"}
+                </span>
+              )}
+            </span>
+          </EntityPreview>
+        );
+      })}
+    </div>
+  );
+}
+
 function MoveApplicationTokens({
   powers,
   cards,
@@ -1194,6 +1249,11 @@ export function MonsterDetail({
               </div>
             )}
             <MonsterIntentPreview summary={intentPreviewSummary} />
+            <MonsterInitialPowerPreview
+              applications={monster.initialPowerApplications}
+              serviceLocale={serviceLocale}
+              powerById={powerById}
+            />
           </div>
 
           <div className="text-center">
@@ -1203,17 +1263,6 @@ export function MonsterDetail({
             >
               {monster.name}
             </h1>
-            {monster.initialPowerApplications.length > 0 && (
-              <div className="mt-3 flex justify-center">
-                <MoveApplicationTokens
-                  powers={monster.initialPowerApplications}
-                  cards={[]}
-                  serviceLocale={serviceLocale}
-                  powerById={powerById}
-                  cardById={cardById}
-                />
-              </div>
-            )}
           </div>
 
           {(skinParts.length > 0 || hasPhobiaMode || monster.id === "DECIMILLIPEDE_SEGMENT") && (
