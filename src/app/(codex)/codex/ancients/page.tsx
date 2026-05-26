@@ -2,7 +2,8 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { getCodexAncients, getCodexCards, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
-import { getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/data";
+import { getCodexMeta, getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/data";
+import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
@@ -33,16 +34,18 @@ export default async function CodexAncientsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [ancients, cards, relics, patches, changes, versionDiffs, entities, gameUi] = await Promise.all([
+  const [ancients, cards, relics, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
     getCodexAncients({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
     getEntityVersionDiffs(),
+    getCodexMeta(),
     loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
+  const versions = getVersionsWithDiffs(patches, versionDiffs);
 
   return (
     <Suspense>
@@ -55,6 +58,8 @@ export default async function CodexAncientsPage({
         patches={patches}
         changes={changes}
         versionDiffs={versionDiffs}
+        versions={versions}
+        currentVersion={meta.version}
         entities={entities}
       />
     </Suspense>

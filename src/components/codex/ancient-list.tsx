@@ -27,6 +27,7 @@ import {
   stripCodexMarkup,
   type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
+import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
 import { FilterSection } from "./codex-filters";
 import {
   CodexLibraryShell,
@@ -35,6 +36,7 @@ import {
 } from "./codex-filter-drawer";
 import { SearchBar } from "./search-bar";
 import { AncientDetail } from "./ancient-detail";
+import { VersionSelector } from "./version-selector";
 
 type AncientSearchTokenType = "act";
 const COMPENDIUM_ACT_COLOR = "#60a5fa";
@@ -72,6 +74,8 @@ interface AncientListProps {
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
+  versions?: string[];
+  currentVersion?: string;
   entities?: EntityInfo[];
 }
 
@@ -84,10 +88,13 @@ export function AncientList({
   patches,
   changes,
   versionDiffs,
+  versions,
+  currentVersion,
   entities,
 }: AncientListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const searchParams = useSearchParams();
+  const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const initialAncientId = searchParams.get("ancient");
@@ -95,6 +102,10 @@ export function AncientList({
     if (!initialAncientId) return null;
     return ancients.find((ancient) => ancient.id.toLowerCase() === initialAncientId.toLowerCase()) ?? null;
   });
+  const versionedAncients = useMemo(() => {
+    if (!currentVersion || !selectedVersion) return ancients;
+    return withEntityLifecycleForVersion(ancients, selectedVersion, { changes, entityType: "ancient" });
+  }, [ancients, changes, currentVersion, selectedVersion]);
 
   const relicById = useMemo(
     () => new Map(relics.map((relic) => [relic.id, relic])),
@@ -130,13 +141,19 @@ export function AncientList({
       if (!ancientParam) {
         setSelectedAncient(null);
       } else {
-        const ancient = ancients.find((item) => item.id.toLowerCase() === ancientParam.toLowerCase());
+        const ancient = versionedAncients.find((item) => item.id.toLowerCase() === ancientParam.toLowerCase());
         setSelectedAncient(ancient ?? null);
       }
     };
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
-  }, [ancients]);
+  }, [versionedAncients]);
+
+  useEffect(() => {
+    if (!selectedAncient) return;
+    const versioned = versionedAncients.find((item) => item.id === selectedAncient.id);
+    setSelectedAncient(versioned ?? null);
+  }, [selectedAncient, versionedAncients]);
 
   useEffect(() => {
     if (!selectedAncient) return;
@@ -169,7 +186,7 @@ export function AncientList({
   );
 
   const filteredAncients = useMemo(() => {
-    return ancients.filter((ancient) => {
+    return versionedAncients.filter((ancient) => {
       const actKey = ancient.act ?? "none";
       if (selectedActs.size > 0 && !selectedActs.has(actKey)) return false;
 
@@ -188,7 +205,7 @@ export function AncientList({
         stripCodexMarkup(ancient.description).toLowerCase().includes(parsedSearch.text)
       );
     });
-  }, [ancients, selectedActs, parsedSearch]);
+  }, [versionedAncients, selectedActs, parsedSearch]);
 
   const groupedAncients = useMemo(() => {
     const groups: { act: EventAct | null; label: string; color: string; ancients: CodexAncient[] }[] = [];
@@ -210,12 +227,12 @@ export function AncientList({
 
   const actCounts = useMemo(() => {
     const counts = new Map<string, number>();
-    for (const ancient of ancients) {
+    for (const ancient of versionedAncients) {
       const key = ancient.act ?? "none";
       counts.set(key, (counts.get(key) ?? 0) + 1);
     }
     return counts;
-  }, [ancients]);
+  }, [versionedAncients]);
 
   const toggleAct = useCallback((act: string) => {
     setSelectedActs((prev) => {
@@ -283,6 +300,14 @@ export function AncientList({
             />
           )}
           count={formatCodexCount(filteredAncients.length, serviceText.labels.items, serviceLocale)}
+          trailing={versions && currentVersion ? (
+            <VersionSelector
+              versions={versions}
+              currentVersion={currentVersion}
+              selectedVersion={selectedVersion}
+              onChange={setSelectedVersion}
+            />
+          ) : undefined}
         />
 
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
@@ -371,7 +396,9 @@ function AncientCard({
         event.preventDefault();
         onSelect(ancient);
       }}
-      className="group relative overflow-hidden rounded-xl border border-blue-900/30 bg-[#12121a] hover:border-blue-600/50 transition-all duration-200"
+      className={`group relative overflow-hidden rounded-xl border border-blue-900/30 bg-[#12121a] transition-all duration-200 hover:border-blue-600/50 ${
+        ancient.deprecated ? "opacity-50 grayscale saturate-0" : ""
+      }`}
     >
       {/* Image */}
       <div className="relative flex w-full aspect-square items-center justify-center overflow-hidden">
