@@ -403,13 +403,15 @@ function MonsterDetailHealthBar({
   monster,
   ascensionLevel,
   visualBounds,
+  reserveStartEffects,
 }: {
   monster: CodexMonster;
   ascensionLevel: number;
   visualBounds: MonsterStageVisualBounds | null;
+  reserveStartEffects: boolean;
 }) {
   return (
-    <div className="pointer-events-none absolute z-40 flex justify-center" style={getHealthBarPreviewStyle(visualBounds)}>
+    <div className="pointer-events-none absolute z-40 flex justify-center" style={getHealthBarPreviewStyle(visualBounds, reserveStartEffects)}>
       <MonsterHealthBar monster={monster} ascensionLevel={ascensionLevel} compact={false} />
     </div>
   );
@@ -432,7 +434,7 @@ function MonsterInitialPowerPreview({
 
   return (
     <div
-      className="absolute z-40 flex max-w-[calc(100%-1rem)] flex-wrap items-end justify-start gap-1.5"
+      className="absolute z-40 flex max-w-[calc(100%-1rem)] flex-wrap items-end justify-center gap-1.5"
       style={getInitialPowerPreviewStyle(visualBounds)}
       aria-label={serviceLocale === "ko" ? "시작 효과" : "Starting effects"}
       data-monster-starting-effects
@@ -480,29 +482,30 @@ function MonsterInitialPowerPreview({
 function getInitialPowerPreviewStyle(bounds: MonsterStageVisualBounds | null): CSSProperties {
   if (!bounds) {
     return {
-      left: 16,
+      left: "50%",
       bottom: 8,
+      transform: "translateX(-50%)",
     };
   }
 
   const safeInset = bounds.stageWidth < 480 ? 8 : 16;
   const tokenSize = bounds.stageWidth < 480 ? 36 : 40;
-  const gap = bounds.stageWidth < 480 ? 6 : 8;
-  const left = clampNumber(bounds.left, safeInset, Math.max(safeInset, bounds.stageWidth - tokenSize - safeInset));
-  const top = clampNumber(bounds.bottom + gap + 30, safeInset, Math.max(safeInset, bounds.stageHeight - tokenSize - safeInset));
+  const centerX = bounds.left + bounds.width / 2;
+  const left = clampNumber(centerX, safeInset + tokenSize / 2, Math.max(safeInset + tokenSize / 2, bounds.stageWidth - safeInset - tokenSize / 2));
 
   return {
     left,
-    top,
-    maxWidth: Math.max(tokenSize, bounds.stageWidth - left - safeInset),
+    bottom: safeInset,
+    transform: "translateX(-50%)",
+    maxWidth: Math.max(tokenSize, bounds.stageWidth - safeInset * 2),
   };
 }
 
-function getHealthBarPreviewStyle(bounds: MonsterStageVisualBounds | null): CSSProperties {
+function getHealthBarPreviewStyle(bounds: MonsterStageVisualBounds | null, reserveStartEffects: boolean): CSSProperties {
   if (!bounds) {
     return {
       left: "50%",
-      bottom: 42,
+      bottom: reserveStartEffects ? 58 : 24,
       transform: "translateX(-50%)",
     };
   }
@@ -510,12 +513,13 @@ function getHealthBarPreviewStyle(bounds: MonsterStageVisualBounds | null): CSSP
   const safeInset = bounds.stageWidth < 480 ? 8 : 16;
   const barWidth = bounds.stageWidth < 480 ? 128 : 160;
   const gap = bounds.stageWidth < 480 ? 4 : 6;
+  const reservedBottom = reserveStartEffects ? (bounds.stageWidth < 480 ? 44 : 50) : 0;
   const left = clampNumber(
     bounds.left + bounds.width / 2 - barWidth / 2,
     safeInset,
     Math.max(safeInset, bounds.stageWidth - barWidth - safeInset),
   );
-  const top = clampNumber(bounds.bottom + gap, safeInset, Math.max(safeInset, bounds.stageHeight - 24 - safeInset));
+  const top = clampNumber(bounds.bottom + gap, safeInset, Math.max(safeInset, bounds.stageHeight - 24 - safeInset - reservedBottom));
 
   return {
     left,
@@ -1355,6 +1359,7 @@ export function MonsterDetail({
               monster={monster}
               ascensionLevel={monsterAscensionLevel}
               visualBounds={stageVisualBounds}
+              reserveStartEffects={monster.initialPowerApplications.length > 0}
             />
             <MonsterInitialPowerPreview
               applications={monster.initialPowerApplications}
