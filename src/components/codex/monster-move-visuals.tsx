@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import type {
@@ -14,7 +13,14 @@ import type {
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { GameHoverTip } from "./hover-tip";
-import { MonsterSpineStage, type MonsterStageVisualBounds } from "./monster-spine-stage";
+import {
+  getEffectiveDamageValue,
+  MONSTER_MOVE_ASCENSION_LEVEL,
+  MonsterAscensionStepper,
+  MonsterHealthBar,
+  useMonsterAscensionLevel,
+} from "./monster-ascension";
+import { MonsterSpineStage } from "./monster-spine-stage";
 
 type IntentKind =
   | "attack"
@@ -58,11 +64,9 @@ interface InfestedPrismReworkBlockProps {
 
 const INFESTED_PRISM_MOVE_ORDER = ["JAB", "RADIATE", "WHIRLWIND", "PULSATE"];
 const ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
-const ASCENSION_ICON = "/images/sts2/ui/topbar/top_bar_ascension.png";
 const BLOCK_ICON = "/images/sts2/ui/combat/block.png";
 const MOVE_PREVIEW_VIEWPORT_PADDING = { padTop: "0%", padBottom: "0%" } as const;
-const MOVE_PREVIEW_STAGE_TOP = 56;
-const MOVE_PREVIEW_STAGE_BOTTOM = 0;
+const OLD_INFESTED_PRISM_HP: DamageValue = { normal: 200, ascension: 215 };
 const INTENT_ICONS: Record<IntentKind, string> = {
   attack: "/images/sts2/intents/attack_3.png",
   buff: "/images/sts2/intents/buff.png",
@@ -202,13 +206,6 @@ export function InfestedPrismReworkBlock({
           </p>
         )}
 
-        <div className="mb-3 flex flex-wrap items-center gap-2 font-game-text text-xs text-zinc-400">
-          <span className="text-zinc-500">{labels.hp}</span>
-          <span className="font-bold text-red-300">200 <AscensionValue value={215} level={8} /></span>
-          <span className="text-zinc-600">→</span>
-          <span className="font-bold text-green-300">161 <AscensionValue value={171} level={8} /></span>
-        </div>
-
         <div className="space-y-3">
           <MoveSequenceRail
             label={labels.before}
@@ -216,6 +213,8 @@ export function InfestedPrismReworkBlock({
             monster={monster}
             serviceLocale={serviceLocale}
             tone="before"
+            hpOverride={OLD_INFESTED_PRISM_HP}
+            initialPowerApplications={[]}
           />
           <MoveSequenceRail
             label={labels.after}
@@ -236,25 +235,31 @@ function MoveSequenceRail({
   monster,
   serviceLocale,
   tone,
+  hpOverride,
+  initialPowerApplications,
 }: {
   label: string;
   moves: MoveVisual[];
   monster: CodexMonster;
   serviceLocale: ServiceLocale;
   tone: "before" | "after";
+  hpOverride?: DamageValue | null;
+  initialPowerApplications?: readonly MonsterMovePowerApplication[] | null;
 }) {
   return (
     <div className="grid gap-2 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:items-center">
       <div className={`font-game-title text-xs font-bold ${tone === "after" ? "text-green-300" : "text-red-300"}`}>
         {label}
       </div>
-      <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+      <div className="flex min-w-0 flex-nowrap items-center gap-1.5 overflow-x-auto pb-1">
         {moves.map((move, index) => (
-          <span key={move.id} className="flex min-w-0 items-center gap-1.5">
+          <span key={move.id} className="flex shrink-0 items-center gap-1.5">
             <MovePanel
               move={move}
               monster={monster}
               serviceLocale={serviceLocale}
+              hpOverride={hpOverride}
+              initialPowerApplications={initialPowerApplications}
             />
             <Image
               src={ARROW_ICON}
@@ -274,17 +279,25 @@ function MovePanel({
   move,
   monster,
   serviceLocale,
+  hpOverride,
+  initialPowerApplications,
 }: {
   move: MoveVisual;
   monster: CodexMonster;
   serviceLocale: ServiceLocale;
+  hpOverride?: DamageValue | null;
+  initialPowerApplications?: readonly MonsterMovePowerApplication[] | null;
 }) {
   return (
-    <span className="inline-flex w-[17.5rem] max-w-full">
+    <span className="inline-flex w-44 shrink-0">
       <MonsterMoveHoverPreview
         move={move}
         monster={monster}
         serviceLocale={serviceLocale}
+        variant="inline"
+        loopAnimation
+        hpOverride={hpOverride}
+        initialPowerApplications={initialPowerApplications}
       />
     </span>
   );
@@ -296,30 +309,102 @@ export function MonsterMoveHoverPreview({
   serviceLocale,
   selectedMoveNonce = 0,
   title,
+  variant = "hover",
+  hpOverride = null,
+  initialPowerApplications,
+  loopAnimation = false,
 }: {
   move: MonsterMoveVisual;
   monster: CodexMonster;
   serviceLocale: ServiceLocale;
   selectedMoveNonce?: number;
   title?: string;
+  variant?: "hover" | "inline";
+  hpOverride?: DamageValue | null;
+  initialPowerApplications?: readonly MonsterMovePowerApplication[] | null;
+  loopAnimation?: boolean;
 }) {
-  const [visualBounds, setVisualBounds] = useState<MonsterStageVisualBounds | null>(null);
-  const handleVisualBoundsChange = useCallback((bounds: MonsterStageVisualBounds | null) => {
-    setVisualBounds((current) => areStageVisualBoundsEqual(current, bounds) ? current : bounds);
-  }, []);
+  const [ascensionLevel, setAscensionLevel] = useMonsterAscensionLevel();
   const resolvedTitle = title ?? (serviceLocale === "ko" ? move.name : move.nameEn);
   const monsterName = serviceLocale === "ko" ? monster.name : monster.nameEn;
+  const startingEffects = initialPowerApplications ?? monster.initialPowerApplications;
+  const previewSurface = (
+    <MovePreviewSurface
+      move={move}
+      monster={monster}
+      serviceLocale={serviceLocale}
+      selectedMoveNonce={selectedMoveNonce}
+      ascensionLevel={ascensionLevel}
+      setAscensionLevel={setAscensionLevel}
+      variant={variant}
+      hpOverride={hpOverride}
+      initialPowerApplications={startingEffects}
+      loopAnimation={loopAnimation}
+    />
+  );
+
+  if (variant === "inline") {
+    return previewSurface;
+  }
 
   return (
     <GameHoverTip title={resolvedTitle} style={{ width: 280, maxWidth: 280 }}>
       <span className="mb-1.5 block font-game-text text-[11px] text-zinc-400">
         {monsterName}
       </span>
-      <span className="relative mb-2 block h-52 overflow-hidden rounded bg-black/25">
-        <span
-          className="absolute inset-x-0"
-          style={{ top: MOVE_PREVIEW_STAGE_TOP, bottom: MOVE_PREVIEW_STAGE_BOTTOM }}
-        >
+      {previewSurface}
+      <span className="flex flex-wrap items-center gap-2">
+        <MoveMetricTokens move={move} ascensionLevel={ascensionLevel} />
+        <MoveApplicationIcons move={move} serviceLocale={serviceLocale} ascensionLevel={ascensionLevel} />
+      </span>
+    </GameHoverTip>
+  );
+}
+
+function MovePreviewSurface({
+  move,
+  monster,
+  serviceLocale,
+  selectedMoveNonce,
+  ascensionLevel,
+  setAscensionLevel,
+  variant,
+  hpOverride,
+  initialPowerApplications,
+  loopAnimation,
+}: {
+  move: MoveVisual;
+  monster: CodexMonster;
+  serviceLocale: ServiceLocale;
+  selectedMoveNonce: number;
+  ascensionLevel: number;
+  setAscensionLevel: (level: number | ((current: number) => number)) => void;
+  variant: "hover" | "inline";
+  hpOverride: DamageValue | null;
+  initialPowerApplications: readonly MonsterMovePowerApplication[];
+  loopAnimation: boolean;
+}) {
+  const compact = variant === "inline";
+  const surfaceClass = compact
+    ? "relative mb-0 block h-44 w-full overflow-hidden rounded bg-black/10"
+    : "relative mb-2 block h-56 overflow-hidden rounded bg-black/25";
+  const gridRows = compact
+    ? "grid-rows-[2rem_minmax(0,1fr)_1.35rem_1.5rem]"
+    : "grid-rows-[2.75rem_minmax(0,1fr)_1.65rem_1.9rem]";
+
+  return (
+    <span className={surfaceClass}>
+      <span className="absolute left-1 top-1 z-50">
+        <MonsterAscensionStepper
+          level={ascensionLevel}
+          onChange={setAscensionLevel}
+          serviceLocale={serviceLocale}
+          compact={compact}
+        />
+      </span>
+      <span className={`grid h-full w-full ${gridRows}`}>
+        <MoveIntentPreview move={move} ascensionLevel={ascensionLevel} compact={compact} />
+        <span className="relative min-h-0">
           <MonsterSpineStage
             asset={monster.spineAsset}
             fallbackImageUrl={monster.bossImageUrl ?? monster.imageUrl}
@@ -332,39 +417,44 @@ export function MonsterMoveHoverPreview({
             viewportPadding={MOVE_PREVIEW_VIEWPORT_PADDING}
             fallbackImageClassName="absolute inset-0 h-full w-full object-contain opacity-80"
             className="absolute inset-0"
-            onVisualBoundsChange={handleVisualBoundsChange}
+            loopSelectedMove={loopAnimation}
           />
         </span>
-        <MoveIntentPreview move={move} visualBounds={visualBounds} />
+        <span className="relative z-40 flex items-center justify-center">
+          <MonsterHealthBar
+            monster={monster}
+            ascensionLevel={ascensionLevel}
+            hpOverride={hpOverride}
+            compact={compact}
+          />
+        </span>
         <InitialPowerPreview
-          applications={monster.initialPowerApplications}
+          applications={initialPowerApplications}
           serviceLocale={serviceLocale}
-          visualBounds={visualBounds}
+          ascensionLevel={ascensionLevel}
+          compact={compact}
         />
       </span>
-      <span className="flex flex-wrap items-center gap-2">
-        <MoveMetricTokens move={move} />
-        <MoveApplicationIcons move={move} serviceLocale={serviceLocale} />
-      </span>
-    </GameHoverTip>
+    </span>
   );
 }
 
 function InitialPowerPreview({
   applications,
   serviceLocale,
-  visualBounds,
+  ascensionLevel,
+  compact,
 }: {
   applications: readonly MonsterMovePowerApplication[];
   serviceLocale: ServiceLocale;
-  visualBounds: MonsterStageVisualBounds | null;
+  ascensionLevel: number;
+  compact: boolean;
 }) {
   if (applications.length === 0) return null;
 
   return (
     <span
-      className="pointer-events-none absolute z-40 flex items-end justify-center gap-1"
-      style={getInitialPowerPreviewStyle(visualBounds, applications.length)}
+      className={`pointer-events-none relative z-40 flex h-full items-center justify-center gap-1 ${compact ? "px-1" : "px-2"}`}
       aria-label={serviceLocale === "ko" ? "시작 효과" : "Starting effects"}
     >
       {applications.map((power) => (
@@ -374,6 +464,8 @@ function InitialPowerPreview({
           serviceLocale={serviceLocale}
           added={false}
           interactive={false}
+          ascensionLevel={ascensionLevel}
+          compact={compact}
         />
       ))}
     </span>
@@ -382,10 +474,12 @@ function InitialPowerPreview({
 
 function MoveIntentPreview({
   move,
-  visualBounds,
+  ascensionLevel,
+  compact,
 }: {
   move: MoveVisual;
-  visualBounds: MonsterStageVisualBounds | null;
+  ascensionLevel: number;
+  compact: boolean;
 }) {
   const intents = move.intents
     .map((intent, index) => ({ intent, kind: getIntentKind(intent.type), key: `${intent.type}-${index}` }))
@@ -394,24 +488,23 @@ function MoveIntentPreview({
 
   return (
     <span
-      className="pointer-events-none absolute z-40 flex items-end justify-center gap-1"
-      style={getIntentPreviewStyle(visualBounds, intents.length)}
+      className={`pointer-events-none relative z-40 flex h-full items-end justify-center gap-1 ${compact ? "pt-1" : "pt-2"}`}
     >
       {intents.map(({ intent, kind, key }) => (
-        <span key={key} className="relative inline-flex h-12 w-12 items-center justify-center">
+        <span key={key} className={`relative inline-flex items-center justify-center ${compact ? "h-9 w-9" : "h-12 w-12"}`}>
           <Image
-            src={getIntentIcon(kind, move, intent)}
+            src={getIntentIcon(kind, move, intent, ascensionLevel)}
             alt=""
-            width={48}
-            height={48}
-            className="h-11 w-11 object-contain drop-shadow-[0_5px_6px_rgba(0,0,0,0.78)]"
+            width={compact ? 36 : 48}
+            height={compact ? 36 : 48}
+            className={`${compact ? "h-8 w-8" : "h-11 w-11"} object-contain drop-shadow-[0_5px_6px_rgba(0,0,0,0.78)]`}
           />
-          {kind === "attack" && move.damage && (
+          {getIntentLabel(kind, move, intent, ascensionLevel) && (
             <span
-              className="font-game-title absolute -bottom-0.5 left-1/2 -translate-x-1/2 text-base font-black leading-none text-[#fff8db]"
+              className={`font-game-title absolute -bottom-0.5 left-1/2 -translate-x-1/2 font-black leading-none text-[#fff8db] ${compact ? "text-xs" : "text-base"}`}
               style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
             >
-              {formatAttackLabel(move.damage, getRepeatInfo(intent), "normal")}
+              {getIntentLabel(kind, move, intent, ascensionLevel)}
             </span>
           )}
         </span>
@@ -420,76 +513,22 @@ function MoveIntentPreview({
   );
 }
 
-function getIntentPreviewStyle(bounds: MonsterStageVisualBounds | null, count: number): CSSProperties {
-  if (!bounds) {
-    return {
-      left: "50%",
-      top: 4,
-      transform: "translateX(-50%)",
-    };
-  }
-
-  const safeInset = 4;
-  const tokenSize = 48;
-  const gap = 4;
-  const groupWidth = Math.max(tokenSize, count * tokenSize + Math.max(0, count - 1) * gap);
-  const halfWidth = groupWidth / 2;
-  const centerX = bounds.left + bounds.width / 2;
-  const left = clampNumber(centerX, safeInset + halfWidth, Math.max(safeInset + halfWidth, bounds.stageWidth - safeInset - halfWidth));
-  const stageFrameHeight = MOVE_PREVIEW_STAGE_TOP + bounds.stageHeight + MOVE_PREVIEW_STAGE_BOTTOM;
-  const top = clampNumber(
-    MOVE_PREVIEW_STAGE_TOP + bounds.top - tokenSize - gap,
-    safeInset,
-    Math.max(safeInset, stageFrameHeight - tokenSize - safeInset),
-  );
-
-  return {
-    left,
-    top,
-    transform: "translateX(-50%)",
-  };
-}
-
-function getInitialPowerPreviewStyle(bounds: MonsterStageVisualBounds | null, count: number): CSSProperties {
-  if (!bounds) {
-    return {
-      left: "50%",
-      bottom: 4,
-      transform: "translateX(-50%)",
-    };
-  }
-
-  const safeInset = 4;
-  const tokenSize = 24;
-  const gap = 4;
-  const groupWidth = Math.max(tokenSize, count * tokenSize + Math.max(0, count - 1) * gap);
-  const halfWidth = groupWidth / 2;
-  const centerX = bounds.left + bounds.width / 2;
-  const left = clampNumber(centerX, safeInset + halfWidth, Math.max(safeInset + halfWidth, bounds.stageWidth - safeInset - halfWidth));
-  const stageFrameHeight = MOVE_PREVIEW_STAGE_TOP + bounds.stageHeight + MOVE_PREVIEW_STAGE_BOTTOM;
-  const top = clampNumber(
-    MOVE_PREVIEW_STAGE_TOP + bounds.bottom + 4,
-    safeInset,
-    Math.max(safeInset, stageFrameHeight - tokenSize - safeInset),
-  );
-
-  return {
-    left,
-    top,
-    transform: "translateX(-50%)",
-  };
-}
-
-function MoveMetricTokens({ move, compact = false }: { move: MoveVisual; compact?: boolean }) {
+function MoveMetricTokens({
+  move,
+  ascensionLevel,
+  compact = false,
+}: {
+  move: MoveVisual;
+  ascensionLevel: number;
+  compact?: boolean;
+}) {
   const attackIntent = move.intents.find((intent) => getIntentKind(intent.type) === "attack" || getIntentKind(intent.type) === "deathBlow") ?? null;
   return (
     <>
       {move.damage && (
         <MetricToken
-          icon={getAttackIcon(move.damage, getRepeatInfo(attackIntent))}
-          value={move.damage}
-          normalLabel={formatAttackLabel(move.damage, getRepeatInfo(attackIntent), "normal")}
-          ascensionLabel={formatAttackLabel(move.damage, getRepeatInfo(attackIntent), "ascension")}
+          icon={getAttackIcon(move.damage, getRepeatInfo(attackIntent), ascensionLevel)}
+          label={formatAttackLabel(move.damage, getRepeatInfo(attackIntent), ascensionLevel)}
           change={move.damageChange}
           compact={compact}
         />
@@ -497,7 +536,7 @@ function MoveMetricTokens({ move, compact = false }: { move: MoveVisual; compact
       {move.block && (
         <MetricToken
           icon={BLOCK_ICON}
-          value={move.block}
+          label={formatEffectiveValue(move.block, ascensionLevel)}
           change={move.blockChange}
           compact={compact}
         />
@@ -509,10 +548,12 @@ function MoveMetricTokens({ move, compact = false }: { move: MoveVisual; compact
 function MoveApplicationIcons({
   move,
   serviceLocale,
+  ascensionLevel,
   interactive = true,
 }: {
   move: MoveVisual;
   serviceLocale: ServiceLocale;
+  ascensionLevel: number;
   interactive?: boolean;
 }) {
   if (move.powers.length === 0 && move.cards.length === 0) return null;
@@ -526,6 +567,8 @@ function MoveApplicationIcons({
           serviceLocale={serviceLocale}
           added={move.powerChange === "added"}
           interactive={interactive}
+          ascensionLevel={ascensionLevel}
+          compact={false}
         />
       ))}
       {move.cards.map((card) => (
@@ -542,20 +585,33 @@ function PowerApplicationIcon({
   serviceLocale,
   added,
   interactive,
+  ascensionLevel,
+  compact,
 }: {
   power: MonsterMovePowerApplication;
   serviceLocale: ServiceLocale;
   added: boolean;
   interactive: boolean;
+  ascensionLevel: number;
+  compact: boolean;
 }) {
-  const className = "relative inline-flex h-6 w-6 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70";
+  const className = `relative inline-flex items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70 ${compact ? "h-5 w-5" : "h-6 w-6"}`;
   const title = serviceLocale === "ko" ? power.powerName : power.powerNameEn;
+  const amount = getEffectiveDamageValue(power.amount, ascensionLevel);
   const content = (
     <>
-      {power.imageUrl && <Image src={power.imageUrl} alt="" width={24} height={24} className="h-6 w-6 object-contain" />}
-      {power.amount && (
+      {power.imageUrl && (
+        <Image
+          src={power.imageUrl}
+          alt=""
+          width={compact ? 20 : 24}
+          height={compact ? 20 : 24}
+          className={`${compact ? "h-5 w-5" : "h-6 w-6"} object-contain`}
+        />
+      )}
+      {amount != null && (
         <span className="pointer-events-none absolute -bottom-0.5 -right-1 rounded bg-black/75 px-0.5 text-[9px] font-bold tabular-nums text-zinc-100">
-          {power.amount.normal ?? "?"}
+          {amount}
         </span>
       )}
       {added && (
@@ -585,22 +641,15 @@ function PowerApplicationIcon({
 
 function MetricToken({
   icon,
-  value,
-  normalLabel,
-  ascensionLabel,
+  label,
   change,
   compact = false,
 }: {
   icon: string;
-  value: DamageValue;
-  normalLabel?: string | null;
-  ascensionLabel?: string | null;
+  label: string | null;
   change?: MoveChangeTone;
   compact?: boolean;
 }) {
-  const normalText = normalLabel ?? String(value.normal ?? "?");
-  const ascensionText = ascensionLabel ?? (value.ascension == null ? null : String(value.ascension));
-  const showAscension = ascensionText != null && ascensionText !== normalText;
   const changeClass = change === "added"
     ? "text-green-300"
     : change === "removed"
@@ -614,23 +663,8 @@ function MetricToken({
   return (
     <span className={`inline-flex items-center font-game-text font-bold leading-none ${changeClass} ${compact ? "gap-0.5 text-xs" : "gap-1 text-sm"}`}>
       <Image src={icon} alt="" width={compact ? 18 : 22} height={compact ? 18 : 22} className={`${compact ? "h-4 w-4" : "h-5 w-5"} object-contain`} />
-      <span>{normalText}</span>
-      {showAscension && <AscensionValue value={ascensionText} compact={compact} />}
+      <span>{label ?? "?"}</span>
       {change === "added" && <span className="text-[10px] font-black text-green-300">+</span>}
-    </span>
-  );
-}
-
-function AscensionValue({ value, level = 9, compact = false }: { value: string | number; level?: number; compact?: boolean }) {
-  return (
-    <span className={`inline-flex items-center text-orange-300 ${compact ? "gap-0.5" : "gap-1"}`}>
-      <span className="text-zinc-500">(</span>
-      <span className="relative inline-flex h-4 w-4 items-center justify-center align-middle">
-        <Image src={ASCENSION_ICON} alt="" width={16} height={16} className="h-4 w-4 object-contain" />
-        <span className="absolute inset-0 flex items-center justify-center pt-px text-[8px] font-black leading-none text-white drop-shadow">{level}</span>
-      </span>
-      <span>{value}</span>
-      <span className="text-zinc-500">)</span>
     </span>
   );
 }
@@ -716,11 +750,34 @@ function getIntentKind(intent: string): IntentKind {
   return "unknown";
 }
 
-function getIntentIcon(kind: IntentKind, move: MoveVisual, intent: MonsterMoveIntentDetail): string {
+function getIntentIcon(
+  kind: IntentKind,
+  move: MoveVisual,
+  intent: MonsterMoveIntentDetail,
+  ascensionLevel: number,
+): string {
   if (kind === "attack" || kind === "deathBlow") {
-    return getAttackIcon(move.damage, getRepeatInfo(intent));
+    return getAttackIcon(move.damage, getRepeatInfo(intent), ascensionLevel);
   }
   return ANIMATED_INTENT_ICONS[kind] ?? INTENT_ICONS[kind];
+}
+
+function getIntentLabel(
+  kind: IntentKind,
+  move: MoveVisual,
+  intent: MonsterMoveIntentDetail,
+  ascensionLevel: number,
+): string | null {
+  if (kind === "attack" || kind === "deathBlow") {
+    return formatAttackLabel(move.damage, getRepeatInfo(intent), ascensionLevel);
+  }
+  if (kind === "defend") {
+    return formatEffectiveValue(move.block, ascensionLevel);
+  }
+  if (kind === "statusCard") {
+    return formatEffectiveValue(move.cards[0]?.amount ?? null, ascensionLevel);
+  }
+  return null;
 }
 
 function getRepeatInfo(intent: MonsterMoveIntentDetail | null): { value: DamageValue | null; multi: boolean } {
@@ -729,8 +786,12 @@ function getRepeatInfo(intent: MonsterMoveIntentDetail | null): { value: DamageV
   return { value: SINGLE_ATTACK_REPEAT, multi: intent.type === "MultiAttackIntent" };
 }
 
-function getAttackIcon(damage: DamageValue | null, repeat: { value: DamageValue | null; multi: boolean }): string {
-  const total = getAttackTotal(damage, repeat, "normal") ?? getAttackTotal(damage, repeat, "ascension") ?? 10;
+function getAttackIcon(
+  damage: DamageValue | null,
+  repeat: { value: DamageValue | null; multi: boolean },
+  ascensionLevel: number,
+): string {
+  const total = getAttackTotal(damage, repeat, ascensionLevel) ?? 10;
   if (total < 5) return "/images/sts2/intents/attack_1.png";
   if (total < 10) return "/images/sts2/intents/attack_2.png";
   if (total < 20) return "/images/sts2/intents/attack_3.png";
@@ -741,45 +802,27 @@ function getAttackIcon(damage: DamageValue | null, repeat: { value: DamageValue 
 function getAttackTotal(
   damage: DamageValue | null,
   repeat: { value: DamageValue | null; multi: boolean },
-  mode: "normal" | "ascension",
+  ascensionLevel: number,
 ): number | null {
-  const damageValue = getModeValue(damage, mode);
+  const damageValue = getEffectiveDamageValue(damage, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
   if (damageValue == null) return null;
-  return damageValue * (getModeValue(repeat.value, mode) ?? 1);
+  return damageValue * (getEffectiveDamageValue(repeat.value, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL) ?? 1);
 }
 
 function formatAttackLabel(
   damage: DamageValue | null,
   repeat: { value: DamageValue | null; multi: boolean },
-  mode: "normal" | "ascension",
+  ascensionLevel: number,
 ): string | null {
-  const damageValue = getModeValue(damage, mode);
+  const damageValue = getEffectiveDamageValue(damage, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
   if (damageValue == null) return null;
   if (!repeat.multi) return String(damageValue);
-  return `${damageValue}x${getModeValue(repeat.value, mode) ?? "?"}`;
+  return `${damageValue}x${getEffectiveDamageValue(repeat.value, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL) ?? "?"}`;
 }
 
-function getModeValue(value: DamageValue | null, mode: "normal" | "ascension"): number | null {
-  if (!value) return null;
-  return mode === "ascension" ? value.ascension ?? value.normal : value.normal;
-}
-
-function areStageVisualBoundsEqual(
-  a: MonsterStageVisualBounds | null,
-  b: MonsterStageVisualBounds | null,
-): boolean {
-  if (a === b) return true;
-  if (!a || !b) return false;
-  return Math.abs(a.left - b.left) < 0.5
-    && Math.abs(a.top - b.top) < 0.5
-    && Math.abs(a.right - b.right) < 0.5
-    && Math.abs(a.bottom - b.bottom) < 0.5
-    && Math.abs(a.stageWidth - b.stageWidth) < 0.5
-    && Math.abs(a.stageHeight - b.stageHeight) < 0.5;
-}
-
-function clampNumber(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
+function formatEffectiveValue(value: DamageValue | null, ascensionLevel: number): string | null {
+  const resolved = getEffectiveDamageValue(value, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
+  return resolved == null ? null : String(resolved);
 }
 
 function getDamageChange(before: DamageValue | null, after: DamageValue | null): MoveChangeTone {
