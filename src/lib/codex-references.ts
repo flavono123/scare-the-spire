@@ -512,14 +512,9 @@ export function getRelatedPowerIdsForAffliction(
 }
 
 export function getRelatedAfflictionIdsForMonster(
-  monster: Pick<CodexMonster, "moves" | "bestiaryMoves">,
+  monster: Pick<CodexMonster, "moves" | "bestiaryMoves"> & Partial<Pick<CodexMonster, "initialPowerApplications">>,
 ): string[] {
-  const powerIds = new Set<string>();
-  for (const move of [...monster.moves, ...monster.bestiaryMoves]) {
-    for (const application of move.powerApplications) {
-      powerIds.add(application.powerId.toUpperCase());
-    }
-  }
+  const powerIds = new Set(getRelatedPowerIdsForMonster(monster).map((powerId) => powerId.toUpperCase()));
 
   return dedupeIds(
     Object.entries(AFFLICTION_RELATED_POWER_IDS)
@@ -530,9 +525,20 @@ export function getRelatedAfflictionIdsForMonster(
   );
 }
 
+export function getRelatedPowerIdsForMonster(
+  monster: Pick<CodexMonster, "moves" | "bestiaryMoves"> & Partial<Pick<CodexMonster, "initialPowerApplications">>,
+): string[] {
+  return dedupeIds([
+    ...(monster.initialPowerApplications ?? []).map((application) => application.powerId),
+    ...[...monster.moves, ...monster.bestiaryMoves].flatMap((move) =>
+      move.powerApplications.map((application) => application.powerId),
+    ),
+  ]);
+}
+
 export function getRelatedMonsterIdsForAffliction(
   afflictionId: string,
-  monsters: readonly Pick<CodexMonster, "id" | "moves" | "bestiaryMoves">[],
+  monsters: readonly (Pick<CodexMonster, "id" | "moves" | "bestiaryMoves"> & Partial<Pick<CodexMonster, "initialPowerApplications">>)[],
 ): string[] {
   const normalizedAfflictionId = afflictionId.toUpperCase();
   return monsters

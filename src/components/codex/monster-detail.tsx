@@ -23,6 +23,7 @@ import type {
   MonsterMoveCardApplication,
   MonsterMoveIntentDetail,
   MonsterMovePowerApplication,
+  MonsterMovePowerTarget,
   MonsterMoveTransitionKind,
   MonsterMoveTransition,
 } from "@/lib/codex-types";
@@ -43,6 +44,7 @@ import {
 import {
   getRelatedAfflictionIdsForMonster,
   getRelatedEncounterIdsForMonster,
+  getRelatedPowerIdsForMonster,
 } from "@/lib/codex-references";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
@@ -486,6 +488,61 @@ function MoveApplicationToken({
         </span>
       )}
     </EntityPreview>
+  );
+}
+
+function InitialPowerApplicationsRail({
+  applications,
+  serviceLocale,
+  powerById,
+}: {
+  applications: readonly MonsterMovePowerApplication[];
+  serviceLocale: ServiceLocale;
+  powerById: Map<string, CodexPower>;
+}) {
+  return (
+    <div className="space-y-1.5">
+      {applications.map((application) => {
+        const power = powerById.get(application.powerId);
+        const label = serviceLocale === "ko" ? application.powerName : application.powerNameEn;
+        const targetLabel = getPowerTargetLabel(application.target, serviceLocale);
+
+        return (
+          <EntityPreview
+            key={`initial-${application.powerId}-${application.target}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
+            entity={buildPowerEntity(application, power)}
+            serviceLocale={serviceLocale}
+            linkClassName="block rounded-md border border-white/[0.07] bg-white/[0.025] px-2.5 py-2 transition-colors hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-yellow-300/70"
+          >
+            <span className="flex min-w-0 items-center gap-2.5">
+              <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-black/30">
+                {application.imageUrl && (
+                  <Image src={application.imageUrl} alt="" width={32} height={32} className="h-8 w-8 object-contain" />
+                )}
+              </span>
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate text-sm font-semibold text-gray-100">{label}</span>
+                {power && power.nameEn !== power.name && (
+                  <span className="font-game-text truncate text-[11px] text-gray-500">{power.nameEn}</span>
+                )}
+              </span>
+              <span className="flex shrink-0 items-center gap-1.5">
+                {application.amount && (
+                  <span className="rounded border border-[#efc851]/25 bg-[#efc851]/10 px-1.5 py-0.5 text-[11px] font-bold tabular-nums text-[#efc851]">
+                    {formatNumericValue(application.amount)}
+                  </span>
+                )}
+                {targetLabel && (
+                  <span className="rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-medium text-gray-400">
+                    {targetLabel}
+                  </span>
+                )}
+              </span>
+            </span>
+          </EntityPreview>
+        );
+      })}
+    </div>
   );
 }
 
@@ -1020,6 +1077,10 @@ export function MonsterDetail({
     .map(afflictionToReferenceTarget);
   const cardById = useMemo(() => new Map(cards.map((card) => [card.id, card])), [cards]);
   const powerById = useMemo(() => new Map(powers.map((power) => [power.id, power])), [powers]);
+  const relatedPowerTargets: CodexReferenceTarget[] = getRelatedPowerIdsForMonster(monster)
+    .map((powerId) => powerById.get(powerId))
+    .filter((power): power is CodexPower => Boolean(power))
+    .map(powerToReferenceTarget);
   const patternRail = transitionRows.length > 0 ? (
     <InfoRailSection title={monsterText.actionGraph}>
       <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-gray-400">
@@ -1137,6 +1198,17 @@ export function MonsterDetail({
             >
               {monster.name}
             </h1>
+            {monster.initialPowerApplications.length > 0 && (
+              <div className="mt-3 flex justify-center">
+                <MoveApplicationTokens
+                  powers={monster.initialPowerApplications}
+                  cards={[]}
+                  serviceLocale={serviceLocale}
+                  powerById={powerById}
+                  cardById={cardById}
+                />
+              </div>
+            )}
           </div>
 
           {(skinParts.length > 0 || hasPhobiaMode || monster.id === "DECIMILLIPEDE_SEGMENT") && (
@@ -1243,6 +1315,16 @@ export function MonsterDetail({
             </div>
           </section>
 
+          {monster.initialPowerApplications.length > 0 && (
+            <InfoRailSection title={monsterText.startingEffects}>
+              <InitialPowerApplicationsRail
+                applications={monster.initialPowerApplications}
+                serviceLocale={serviceLocale}
+                powerById={powerById}
+              />
+            </InfoRailSection>
+          )}
+
           <InfoRailSection title={monsterText.actionPreview}>
             {moveSummaries.length > 0 ? (
               <div className="space-y-1.5 pr-1">
@@ -1297,6 +1379,7 @@ export function MonsterDetail({
             gameUi={gameUi}
             serviceLocale={serviceLocale}
             groups={[
+              { kind: "power", targets: relatedPowerTargets },
               { kind: "affliction", targets: relatedAfflictionTargets },
               { kind: "encounter", targets: relatedEncounterTargets },
             ]}
@@ -1622,6 +1705,36 @@ function afflictionToReferenceTarget(affliction: CodexAffliction): CodexReferenc
       afflictionData: affliction,
     },
   };
+}
+
+function powerToReferenceTarget(power: CodexPower): CodexReferenceTarget {
+  const href = `/compendium/powers?power=${power.id.toLowerCase()}`;
+  return {
+    href,
+    id: power.id,
+    title: power.name,
+    entity: {
+      id: power.id,
+      nameEn: power.nameEn,
+      nameKo: power.name,
+      imageUrl: power.imageUrl,
+      href,
+      color: power.type,
+      type: "power",
+      powerData: power,
+    },
+  };
+}
+
+function getPowerTargetLabel(target: MonsterMovePowerTarget, serviceLocale: ServiceLocale): string | null {
+  if (target === "self") return null;
+  const labels: Record<Exclude<MonsterMovePowerTarget, "self">, { ko: string; en: string }> = {
+    player: { ko: "플레이어", en: "Player" },
+    ally: { ko: "아군", en: "Ally" },
+    enemy: { ko: "적", en: "Enemy" },
+    unknown: { ko: "대상", en: "Target" },
+  };
+  return labels[target][serviceLocale];
 }
 
 function buildPatternDiagramModel(
