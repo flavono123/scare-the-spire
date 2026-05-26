@@ -2,6 +2,7 @@
   {
     "id": "AEONGLASS",
     "name": "Aeonglass",
+    "introducedInPatch": "v0.105.0",
     "type": "Normal",
     "show_in_compendium": true,
     "min_hp": 512,

@@ -2,6 +2,7 @@
   {
     "id": "AEONGLASS_BOSS",
     "name": "Aeonglass",
+    "introducedInPatch": "v0.105.0",
     "room_type": "Boss",
     "is_weak": false,
     "act": "Act 3 - Glory",

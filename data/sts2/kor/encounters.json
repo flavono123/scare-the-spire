@@ -2,6 +2,7 @@
   {
     "id": "AEONGLASS_BOSS",
     "name": "영겁의 모래시계",
+    "introducedInPatch": "v0.105.0",
     "room_type": "Boss",
     "is_weak": false,
     "act": "Act 3 - Glory",

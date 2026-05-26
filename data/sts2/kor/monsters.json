@@ -2,6 +2,7 @@
   {
     "id": "AEONGLASS",
     "name": "영겁의 모래시계",
+    "introducedInPatch": "v0.105.0",
     "type": "Normal",
     "show_in_compendium": true,
     "min_hp": 512,
