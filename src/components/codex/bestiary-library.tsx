@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -27,6 +28,8 @@ interface BestiaryLibraryProps {
   powers?: CodexPower[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
+  versions?: string[];
+  currentVersion?: string;
 }
 
 export function BestiaryLibrary({
@@ -39,11 +42,14 @@ export function BestiaryLibrary({
   powers,
   patches,
   changes,
+  versions,
+  currentVersion,
 }: BestiaryLibraryProps) {
   const messages = serviceMessages[serviceLocale].codex;
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
+  const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
   const explicitView = searchParams.get("view");
   const activeView: BestiaryView =
     explicitView === "encounters" || searchParams.has("encounter")
@@ -99,6 +105,10 @@ export function BestiaryLibrary({
         monsters={monsters}
         patches={patches}
         changes={changes}
+        versions={versions}
+        currentVersion={currentVersion}
+        selectedVersion={selectedVersion}
+        onVersionChange={setSelectedVersion}
         trailing={switcher}
       />
     );
@@ -116,6 +126,10 @@ export function BestiaryLibrary({
       powers={powers}
       patches={patches}
       changes={changes}
+      versions={versions}
+      currentVersion={currentVersion}
+      selectedVersion={selectedVersion}
+      onVersionChange={setSelectedVersion}
       trailing={switcher}
     />
   );

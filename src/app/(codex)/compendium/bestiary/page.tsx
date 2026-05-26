@@ -7,7 +7,8 @@ import {
   getCodexMonsters,
   getCodexPowers,
 } from "@/lib/codex-data";
-import { getSTS2Patches, getSTS2Changes } from "@/lib/data";
+import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches, getSTS2Changes } from "@/lib/data";
+import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { getCodexMetadata } from "@/lib/codex-service";
@@ -32,7 +33,7 @@ export async function renderCompendiumBestiaryPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  const [monsters, encounters, afflictions, cards, powers, patches, changes, gameUi] = await Promise.all([
+  const [monsters, encounters, afflictions, cards, powers, patches, changes, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
     getCodexAfflictions({ gameLocale }),
@@ -40,8 +41,11 @@ export async function renderCompendiumBestiaryPage(
     getCodexPowers({ includeDeprecated: true, gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
+    getEntityVersionDiffs(),
+    getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
   ]);
+  const versions = getVersionsWithDiffs(patches, versionDiffs);
 
   return (
     <Suspense>
@@ -55,6 +59,8 @@ export async function renderCompendiumBestiaryPage(
         powers={powers}
         patches={patches}
         changes={changes}
+        versions={versions}
+        currentVersion={meta.version}
       />
     </Suspense>
   );
