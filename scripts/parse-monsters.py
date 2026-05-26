@@ -852,6 +852,11 @@ def build_entries(
             entry = {
                 "id": ent_id,
                 "name": lnode.get("name") or old.get("name"),
+            }
+            for lifecycle_key in ("introducedInPatch", "deprecated", "deprecatedInPatch"):
+                if old.get(lifecycle_key) is not None:
+                    entry[lifecycle_key] = old[lifecycle_key]
+            entry.update({
                 "type": old.get("type") or "Normal",
                 "show_in_compendium": show_in_compendium,
                 **hp,
@@ -861,12 +866,9 @@ def build_entries(
                 "damage_values": damage_values or old.get("damage_values"),
                 "block_values": block_values or old.get("block_values"),
                 "image_url": old.get("image_url"),
-            }
+            })
             if initial_power_applications:
                 entry["initial_power_applications"] = initial_power_applications
-            for lifecycle_key in ("introducedInPatch", "deprecated", "deprecatedInPatch"):
-                if old.get(lifecycle_key) is not None:
-                    entry[lifecycle_key] = old[lifecycle_key]
             out.append(entry)
 
         if ent_id not in old_kor_by_id:
