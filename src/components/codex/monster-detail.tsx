@@ -55,6 +55,15 @@ import {
   DecimillipedeSpineStage,
   type DecimillipedePartId,
 } from "./decimillipede-spine-stage";
+import {
+  getEffectiveDamageValue,
+  getMonsterHpDisplay,
+  MONSTER_HP_ASCENSION_LEVEL,
+  MONSTER_MOVE_ASCENSION_LEVEL,
+  MonsterAscensionStepper,
+  MonsterHealthBar,
+  useMonsterAscensionLevel,
+} from "./monster-ascension";
 import { MonsterSpineStage, type MonsterStageVisualBounds } from "./monster-spine-stage";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -94,8 +103,7 @@ interface MonsterIntentPreviewItem {
 interface MoveAttackMetric {
   value: DamageValue;
   icon: string;
-  normalLabel: string;
-  ascensionLabel: string | null;
+  label: string;
 }
 
 interface AttackRepeatInfo {
@@ -237,10 +245,12 @@ function InfoRailSection({
 
 function MoveMetrics({
   summary,
+  ascensionLevel,
 }: {
   summary: MoveSummary;
+  ascensionLevel: number;
 }) {
-  const attackMetric = getMoveAttackMetric(summary);
+  const attackMetric = getMoveAttackMetric(summary, ascensionLevel);
 
   return (
     <span className="flex shrink-0 flex-wrap justify-end gap-2">
@@ -249,26 +259,28 @@ function MoveMetrics({
           value={attackMetric.value}
           kind="attack"
           iconOverride={attackMetric.icon}
-          normalLabel={attackMetric.normalLabel}
-          ascensionLabel={attackMetric.ascensionLabel}
+          label={attackMetric.label}
+          ascensionLevel={ascensionLevel}
         />
       )}
       {summary.blockEntry != null && (
-        <MetricTokenValue value={summary.blockEntry} kind="block" />
+        <MetricTokenValue value={summary.blockEntry} kind="block" ascensionLevel={ascensionLevel} />
       )}
-      <MoveStandaloneIntentTokens summary={summary} />
+      <MoveStandaloneIntentTokens summary={summary} ascensionLevel={ascensionLevel} />
     </span>
   );
 }
 
 function MoveStandaloneIntentTokens({
   summary,
+  ascensionLevel,
   compact = false,
 }: {
   summary: MoveSummary;
+  ascensionLevel: number;
   compact?: boolean;
 }) {
-  const intents = getStandaloneMoveIntentItems(summary);
+  const intents = getStandaloneMoveIntentItems(summary, ascensionLevel);
   if (intents.length === 0) return null;
 
   return (
@@ -305,23 +317,20 @@ function MetricTokenValue({
   kind,
   ascensionLevel,
   iconOverride,
-  normalLabel,
-  ascensionLabel,
+  label,
   compact = false,
 }: {
   value: DamageValue;
   kind: "attack" | "block" | "hp";
   ascensionLevel?: number;
   iconOverride?: string;
-  normalLabel?: string;
-  ascensionLabel?: string | null;
+  label?: string | null;
   compact?: boolean;
 }) {
   const icon = iconOverride ?? METRIC_TOKEN_ICONS[kind];
-  const level = ascensionLevel ?? (kind === "hp" ? 8 : 9);
-  const normalText = normalLabel ?? String(value.normal ?? "?");
-  const ascensionText = ascensionLabel ?? (value.ascension != null ? String(value.ascension) : null);
-  const showAscension = ascensionText != null && ascensionText !== normalText;
+  const level = ascensionLevel ?? 0;
+  const threshold = kind === "hp" ? MONSTER_HP_ASCENSION_LEVEL : MONSTER_MOVE_ASCENSION_LEVEL;
+  const resolvedLabel = label ?? String(getEffectiveDamageValue(value, level, threshold) ?? "?");
 
   return (
     <span className={`inline-flex items-center font-game-text font-bold leading-none text-gray-100 ${compact ? "gap-0.5 text-xs" : "gap-1 text-sm"}`}>
@@ -332,59 +341,31 @@ function MetricTokenValue({
         height={compact ? 18 : 22}
         className={`${compact ? "h-4 w-4" : "h-5 w-5"} shrink-0 object-contain`}
       />
-      <span>{normalText}</span>
-      {showAscension && (
-        <span className={`inline-flex items-center text-orange-300 ${compact ? "gap-0.5" : "gap-1"}`}>
-          <span className="text-gray-500">(</span>
-          <AscensionBadge level={level} />
-          <span>{ascensionText}</span>
-          <span className="text-gray-500">)</span>
-        </span>
-      )}
+      <span>{resolvedLabel}</span>
     </span>
   );
 }
 
-function HpTokenValue({ monster }: { monster: CodexMonster }) {
-  const normal = formatHp(monster);
-  const ascension = formatHpAscension(monster);
-  if (!normal) return null;
+function HpTokenValue({ monster, ascensionLevel }: { monster: CodexMonster; ascensionLevel: number }) {
+  const hp = getMonsterHpDisplay(monster, ascensionLevel);
+  if (!hp) return null;
 
   return (
     <span className="inline-flex items-center gap-1 font-game-text text-sm font-bold leading-none text-gray-100">
       <Image src={METRIC_TOKEN_ICONS.hp} alt="" width={22} height={22} className="h-5 w-5 shrink-0 object-contain" />
-      <span>{normal}</span>
-      {ascension && ascension !== normal && (
-        <span className="inline-flex items-center gap-1 text-orange-300">
-          <span className="text-gray-500">(</span>
-          <AscensionBadge level={8} />
-          <span>{ascension}</span>
-          <span className="text-gray-500">)</span>
-        </span>
-      )}
+      <span>{hp.value}</span>
     </span>
   );
 }
 
-function AscensionBadge({ level }: { level: number }) {
-  return (
-    <span className="relative inline-flex h-4 w-4 items-center justify-center align-middle">
-      <Image
-        src="/images/sts2/ui/topbar/top_bar_ascension.png"
-        alt=""
-        width={16}
-        height={16}
-        className="h-4 w-4 object-contain"
-      />
-      <span className="absolute inset-0 flex items-center justify-center pt-px text-[8px] font-black leading-none text-white drop-shadow">
-        {level}
-      </span>
-    </span>
-  );
-}
-
-function MonsterIntentPreview({ summary }: { summary: MoveSummary | null }) {
-  const intents = summary ? buildMonsterIntentPreviewItems(summary) : [];
+function MonsterIntentPreview({
+  summary,
+  ascensionLevel,
+}: {
+  summary: MoveSummary | null;
+  ascensionLevel: number;
+}) {
+  const intents = summary ? buildMonsterIntentPreviewItems(summary, ascensionLevel) : [];
   if (intents.length === 0) return null;
 
   return (
@@ -418,16 +399,34 @@ function MonsterIntentPreview({ summary }: { summary: MoveSummary | null }) {
   );
 }
 
+function MonsterDetailHealthBar({
+  monster,
+  ascensionLevel,
+  visualBounds,
+}: {
+  monster: CodexMonster;
+  ascensionLevel: number;
+  visualBounds: MonsterStageVisualBounds | null;
+}) {
+  return (
+    <div className="pointer-events-none absolute z-40 flex justify-center" style={getHealthBarPreviewStyle(visualBounds)}>
+      <MonsterHealthBar monster={monster} ascensionLevel={ascensionLevel} compact={false} />
+    </div>
+  );
+}
+
 function MonsterInitialPowerPreview({
   applications,
   serviceLocale,
   powerById,
   visualBounds,
+  ascensionLevel,
 }: {
   applications: readonly MonsterMovePowerApplication[];
   serviceLocale: ServiceLocale;
   powerById: Map<string, CodexPower>;
   visualBounds: MonsterStageVisualBounds | null;
+  ascensionLevel: number;
 }) {
   if (applications.length === 0) return null;
 
@@ -442,6 +441,7 @@ function MonsterInitialPowerPreview({
         const power = powerById.get(application.powerId);
         const label = serviceLocale === "ko" ? application.powerName : application.powerNameEn;
         const counterAmount = getPowerApplicationCounterAmount(application, power);
+        const displayedAmount = getEffectiveDamageValue(counterAmount, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
 
         return (
           <EntityPreview
@@ -461,12 +461,12 @@ function MonsterInitialPowerPreview({
                   className="h-9 w-9 object-contain drop-shadow-[0_5px_6px_rgba(0,0,0,0.78)] sm:h-10 sm:w-10"
                 />
               )}
-              {counterAmount && (
+              {displayedAmount != null && (
                 <span
                   className="pointer-events-none absolute -bottom-1 -right-1 font-game-title text-sm font-black leading-none text-[#fff8db]"
                   style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
                 >
-                  {counterAmount.normal ?? "?"}
+                  {displayedAmount}
                 </span>
               )}
             </span>
@@ -481,7 +481,7 @@ function getInitialPowerPreviewStyle(bounds: MonsterStageVisualBounds | null): C
   if (!bounds) {
     return {
       left: 16,
-      bottom: 20,
+      bottom: 8,
     };
   }
 
@@ -489,12 +489,38 @@ function getInitialPowerPreviewStyle(bounds: MonsterStageVisualBounds | null): C
   const tokenSize = bounds.stageWidth < 480 ? 36 : 40;
   const gap = bounds.stageWidth < 480 ? 6 : 8;
   const left = clampNumber(bounds.left, safeInset, Math.max(safeInset, bounds.stageWidth - tokenSize - safeInset));
-  const top = clampNumber(bounds.bottom + gap, safeInset, Math.max(safeInset, bounds.stageHeight - tokenSize - safeInset));
+  const top = clampNumber(bounds.bottom + gap + 30, safeInset, Math.max(safeInset, bounds.stageHeight - tokenSize - safeInset));
 
   return {
     left,
     top,
     maxWidth: Math.max(tokenSize, bounds.stageWidth - left - safeInset),
+  };
+}
+
+function getHealthBarPreviewStyle(bounds: MonsterStageVisualBounds | null): CSSProperties {
+  if (!bounds) {
+    return {
+      left: "50%",
+      bottom: 42,
+      transform: "translateX(-50%)",
+    };
+  }
+
+  const safeInset = bounds.stageWidth < 480 ? 8 : 16;
+  const barWidth = bounds.stageWidth < 480 ? 128 : 160;
+  const gap = bounds.stageWidth < 480 ? 4 : 6;
+  const left = clampNumber(
+    bounds.left + bounds.width / 2 - barWidth / 2,
+    safeInset,
+    Math.max(safeInset, bounds.stageWidth - barWidth - safeInset),
+  );
+  const top = clampNumber(bounds.bottom + gap, safeInset, Math.max(safeInset, bounds.stageHeight - 24 - safeInset));
+
+  return {
+    left,
+    top,
+    width: barWidth,
   };
 }
 
@@ -570,6 +596,9 @@ function MoveApplicationToken({
   amount: DamageValue | null;
   serviceLocale: ServiceLocale;
 }) {
+  const [monsterAscensionLevel] = useMonsterAscensionLevel();
+  const displayedAmount = getEffectiveDamageValue(amount, monsterAscensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
+
   return (
     <EntityPreview
       entity={entity}
@@ -581,12 +610,12 @@ function MoveApplicationToken({
           <Image src={imageUrl} alt="" width={28} height={28} className="h-7 w-7 object-contain" />
         )}
       </span>
-      {amount && (
+      {displayedAmount != null && (
         <span
           className="pointer-events-none absolute -bottom-1 -right-1 font-game-title text-[11px] font-black leading-none text-[#fff8db]"
           style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
         >
-          {amount.normal ?? "?"}
+          {displayedAmount}
         </span>
       )}
     </EntityPreview>
@@ -602,6 +631,8 @@ function InitialPowerApplicationsRail({
   serviceLocale: ServiceLocale;
   powerById: Map<string, CodexPower>;
 }) {
+  const [monsterAscensionLevel] = useMonsterAscensionLevel();
+
   return (
     <div className="space-y-1.5">
       {applications.map((application) => {
@@ -609,6 +640,7 @@ function InitialPowerApplicationsRail({
         const label = serviceLocale === "ko" ? application.powerName : application.powerNameEn;
         const targetLabel = getPowerTargetLabel(application.target, serviceLocale);
         const counterAmount = getPowerApplicationCounterAmount(application, power);
+        const displayedAmount = getEffectiveDamageValue(counterAmount, monsterAscensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
 
         return (
           <EntityPreview
@@ -622,12 +654,12 @@ function InitialPowerApplicationsRail({
                 {application.imageUrl && (
                   <Image src={application.imageUrl} alt="" width={32} height={32} className="h-8 w-8 object-contain" />
                 )}
-                {counterAmount && (
+                {displayedAmount != null && (
                   <span
                     className="pointer-events-none absolute -bottom-1 -right-1 font-game-title text-xs font-black leading-none text-[#fff8db]"
                     style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
                   >
-                    {counterAmount.normal ?? "?"}
+                    {displayedAmount}
                   </span>
                 )}
               </span>
@@ -937,11 +969,12 @@ function PatternMoveStateNode({
   cardById: Map<string, CodexCard>;
   shouldSuppressDiagramClick: () => boolean;
 }) {
+  const [monsterAscensionLevel] = useMonsterAscensionLevel();
   const move = getMonsterMove(monster, node.id);
   const damageEntry = moveSummary?.damageEntry ?? (monster.damageValues ? findDamageForMove(node.id, monster.damageValues) : null);
   const blockEntry = moveSummary?.blockEntry ?? (monster.blockValues ? findBlockForMove(node.id, monster.blockValues) : null);
-  const attackMetric = moveSummary ? getMoveAttackMetric(moveSummary) : damageEntry ? buildAttackMetric(damageEntry, null) : null;
-  const standaloneIntents = moveSummary ? getStandaloneMoveIntentItems(moveSummary) : [];
+  const attackMetric = moveSummary ? getMoveAttackMetric(moveSummary, monsterAscensionLevel) : damageEntry ? buildAttackMetric(damageEntry, null, monsterAscensionLevel) : null;
+  const standaloneIntents = moveSummary ? getStandaloneMoveIntentItems(moveSummary, monsterAscensionLevel) : [];
   const hasApplications = Boolean(move && (move.powerApplications.length > 0 || move.cardApplications.length > 0));
   const hasPrimaryContent = Boolean(attackMetric || blockEntry || hasApplications || standaloneIntents.length > 0);
   const showStateName = Boolean(move && !attackMetric && !blockEntry && !hasApplications);
@@ -988,16 +1021,16 @@ function PatternMoveStateNode({
               value={attackMetric.value}
               kind="attack"
               iconOverride={attackMetric.icon}
-              normalLabel={attackMetric.normalLabel}
-              ascensionLabel={attackMetric.ascensionLabel}
+              label={attackMetric.label}
+              ascensionLevel={monsterAscensionLevel}
               compact
             />
           )}
           {blockEntry && (
-            <MetricTokenValue value={blockEntry} kind="block" compact />
+            <MetricTokenValue value={blockEntry} kind="block" ascensionLevel={monsterAscensionLevel} compact />
           )}
           {moveSummary && standaloneIntents.length > 0 && (
-            <MoveStandaloneIntentTokens summary={moveSummary} compact />
+            <MoveStandaloneIntentTokens summary={moveSummary} ascensionLevel={monsterAscensionLevel} compact />
           )}
         </span>
         {move && hasApplications && (
@@ -1124,6 +1157,7 @@ export function MonsterDetail({
   });
   const selectedMoveId = selectedMoveState.monsterId === monster.id ? selectedMoveState.moveId : null;
   const selectedMoveNonce = selectedMoveState.monsterId === monster.id ? selectedMoveState.nonce : 0;
+  const [monsterAscensionLevel, setMonsterAscensionLevel] = useMonsterAscensionLevel();
   const selectMove = (moveId: string) => {
     setSelectedMoveState((state) => ({
       monsterId: monster.id,
@@ -1267,6 +1301,13 @@ export function MonsterDetail({
               className="relative flex min-h-[22rem] w-full max-w-2xl items-center justify-center overflow-hidden"
               data-monster-detail-render
             >
+            <div className="absolute left-2 top-2 z-50 sm:left-3 sm:top-3">
+              <MonsterAscensionStepper
+                level={monsterAscensionLevel}
+                onChange={setMonsterAscensionLevel}
+                serviceLocale={serviceLocale}
+              />
+            </div>
             <div
               className="absolute bottom-10 left-[18%] right-[18%] h-8 rounded-[50%] blur-md"
               style={{ backgroundColor: hexToRgba(selectedAccent, 0.18) }}
@@ -1309,12 +1350,18 @@ export function MonsterDetail({
                 {monster.name.slice(0, 1)}
               </div>
             )}
-            <MonsterIntentPreview summary={intentPreviewSummary} />
+            <MonsterIntentPreview summary={intentPreviewSummary} ascensionLevel={monsterAscensionLevel} />
+            <MonsterDetailHealthBar
+              monster={monster}
+              ascensionLevel={monsterAscensionLevel}
+              visualBounds={stageVisualBounds}
+            />
             <MonsterInitialPowerPreview
               applications={monster.initialPowerApplications}
               serviceLocale={serviceLocale}
               powerById={powerById}
               visualBounds={stageVisualBounds}
+              ascensionLevel={monsterAscensionLevel}
             />
           </div>
 
@@ -1418,7 +1465,7 @@ export function MonsterDetail({
                 <MetaPill value={gameUi.monsterTypes[displayType].label} color={typeConfig.color} />
                 {formatHp(monster) && (
                   <MetaPill>
-                    <HpTokenValue monster={monster} />
+                    <HpTokenValue monster={monster} ascensionLevel={monsterAscensionLevel} />
                   </MetaPill>
                 )}
               </div>
@@ -1479,7 +1526,7 @@ export function MonsterDetail({
                           />
                         </span>
                         <span className="flex shrink-0 flex-col items-end gap-1">
-                          <MoveMetrics summary={summary} />
+                          <MoveMetrics summary={summary} ascensionLevel={monsterAscensionLevel} />
                         </span>
                       </div>
                     </button>
@@ -1621,7 +1668,7 @@ const MONSTER_INTENT_CLASS_TO_KIND: Record<string, MonsterIntentKind> = {
 };
 const SINGLE_ATTACK_REPEAT: DamageValue = { normal: 1, ascension: null };
 
-function buildMonsterIntentPreviewItems(summary: MoveSummary): MonsterIntentPreviewItem[] {
+function buildMonsterIntentPreviewItems(summary: MoveSummary, ascensionLevel: number): MonsterIntentPreviewItem[] {
   return getMoveIntentDetails(summary.move).flatMap((intent, index) => {
     const kind = getMonsterIntentKind(intent.type);
     if (kind === "hidden") return [];
@@ -1629,14 +1676,14 @@ function buildMonsterIntentPreviewItems(summary: MoveSummary): MonsterIntentPrev
     return [{
       key: `${intent.type}-${index}`,
       kind,
-      icon: getMonsterIntentIcon(kind, summary, intent),
-      label: getMonsterIntentPreviewLabel(intent, kind, summary),
+      icon: getMonsterIntentIcon(kind, summary, intent, ascensionLevel),
+      label: getMonsterIntentPreviewLabel(intent, kind, summary, ascensionLevel),
     }];
   });
 }
 
-function getStandaloneMoveIntentItems(summary: MoveSummary): MonsterIntentPreviewItem[] {
-  return buildMonsterIntentPreviewItems(summary).filter((intent) => (
+function getStandaloneMoveIntentItems(summary: MoveSummary, ascensionLevel: number): MonsterIntentPreviewItem[] {
+  return buildMonsterIntentPreviewItems(summary, ascensionLevel).filter((intent) => (
     intent.kind === "heal" ||
     intent.kind === "summon" ||
     intent.kind === "escape" ||
@@ -1662,38 +1709,47 @@ function getMonsterIntentKind(intent: string): MonsterIntentKind {
   return "unknown";
 }
 
-function getMonsterIntentIcon(kind: MonsterIntentKind, summary: MoveSummary, intent: MonsterMoveIntentDetail): string {
+function getMonsterIntentIcon(
+  kind: MonsterIntentKind,
+  summary: MoveSummary,
+  intent: MonsterMoveIntentDetail,
+  ascensionLevel: number,
+): string {
   if (kind === "attack") {
-    return getAttackIntentIcon(summary.damageEntry, getIntentRepeatInfo(intent));
+    return getAttackIntentIcon(summary.damageEntry, getIntentRepeatInfo(intent), ascensionLevel);
   }
   return MONSTER_INTENT_ANIMATED_ICONS[kind] ?? MONSTER_INTENT_ICONS[kind];
 }
 
-function getMonsterIntentPreviewLabel(intent: MonsterMoveIntentDetail, kind: MonsterIntentKind, summary: MoveSummary): string | null {
+function getMonsterIntentPreviewLabel(
+  intent: MonsterMoveIntentDetail,
+  kind: MonsterIntentKind,
+  summary: MoveSummary,
+  ascensionLevel: number,
+): string | null {
   if (kind === "attack" || kind === "deathBlow") {
-    return formatAttackMetricLabel(summary.damageEntry, getIntentRepeatInfo(intent), "normal");
+    return formatAttackMetricLabel(summary.damageEntry, getIntentRepeatInfo(intent), ascensionLevel);
   }
 
   if (kind === "statusCard") {
-    const amount = summary.move.cardApplications[0]?.amount?.normal;
+    const amount = getEffectiveDamageValue(summary.move.cardApplications[0]?.amount ?? null, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
     return amount == null ? null : String(amount);
   }
 
   return null;
 }
 
-function getMoveAttackMetric(summary: MoveSummary): MoveAttackMetric | null {
+function getMoveAttackMetric(summary: MoveSummary, ascensionLevel: number): MoveAttackMetric | null {
   if (!summary.damageEntry) return null;
-  return buildAttackMetric(summary.damageEntry, getPrimaryAttackIntent(summary.move));
+  return buildAttackMetric(summary.damageEntry, getPrimaryAttackIntent(summary.move), ascensionLevel);
 }
 
-function buildAttackMetric(value: DamageValue, intent: MonsterMoveIntentDetail | null): MoveAttackMetric {
+function buildAttackMetric(value: DamageValue, intent: MonsterMoveIntentDetail | null, ascensionLevel: number): MoveAttackMetric {
   const repeat = getIntentRepeatInfo(intent);
   return {
     value,
-    icon: getAttackIntentIcon(value, repeat),
-    normalLabel: formatAttackMetricLabel(value, repeat, "normal") ?? String(value.normal ?? "?"),
-    ascensionLabel: formatAttackMetricLabel(value, repeat, "ascension"),
+    icon: getAttackIntentIcon(value, repeat, ascensionLevel),
+    label: formatAttackMetricLabel(value, repeat, ascensionLevel) ?? String(getEffectiveDamageValue(value, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL) ?? "?"),
   };
 }
 
@@ -1717,36 +1773,29 @@ function getIntentRepeatInfo(intent: MonsterMoveIntentDetail | null): AttackRepe
 function formatAttackMetricLabel(
   damage: DamageValue | null,
   repeat: AttackRepeatInfo,
-  mode: "normal" | "ascension",
+  ascensionLevel: number,
 ): string | null {
-  const damageValue = getDamageModeValue(damage, mode);
+  const damageValue = getEffectiveDamageValue(damage, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
   if (damageValue == null) return null;
-  const repeatValue = getDamageModeValue(repeat.value, mode);
+  const repeatValue = getEffectiveDamageValue(repeat.value, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
   if (repeat.isMulti) return `${damageValue}x${repeatValue ?? "?"}`;
   return String(damageValue);
 }
 
-function getAttackIntentIcon(damage: DamageValue | null, repeat: AttackRepeatInfo): string {
-  const totalDamage = getAttackTotalDamage(damage, repeat, "normal")
-    ?? getAttackTotalDamage(damage, repeat, "ascension")
-    ?? 10;
+function getAttackIntentIcon(damage: DamageValue | null, repeat: AttackRepeatInfo, ascensionLevel: number): string {
+  const totalDamage = getAttackTotalDamage(damage, repeat, ascensionLevel) ?? 10;
   return `/images/sts2/intents/attack_${getAttackIntentTier(totalDamage)}.png`;
 }
 
 function getAttackTotalDamage(
   damage: DamageValue | null,
   repeat: AttackRepeatInfo,
-  mode: "normal" | "ascension",
+  ascensionLevel: number,
 ): number | null {
-  const damageValue = getDamageModeValue(damage, mode);
+  const damageValue = getEffectiveDamageValue(damage, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
   if (damageValue == null) return null;
-  const repeatValue = getDamageModeValue(repeat.value, mode) ?? 1;
+  const repeatValue = getEffectiveDamageValue(repeat.value, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL) ?? 1;
   return damageValue * repeatValue;
-}
-
-function getDamageModeValue(value: DamageValue | null, mode: "normal" | "ascension"): number | null {
-  if (!value) return null;
-  return mode === "ascension" ? (value.ascension ?? value.normal) : value.normal;
 }
 
 function getAttackIntentTier(totalDamage: number): 1 | 2 | 3 | 4 | 5 {
@@ -2707,14 +2756,6 @@ function formatHp(monster: CodexMonster): string | null {
     return `${monster.minHp}-${monster.maxHp}`;
   }
   return `${monster.minHp}`;
-}
-
-function formatHpAscension(monster: CodexMonster): string | null {
-  if (monster.minHpAscension == null) return null;
-  if (monster.maxHpAscension != null && monster.maxHpAscension !== monster.minHpAscension) {
-    return `${monster.minHpAscension}-${monster.maxHpAscension}`;
-  }
-  return `${monster.minHpAscension}`;
 }
 
 function buildMoveSummaries(monster: CodexMonster, moves: MonsterMove[]): MoveSummary[] {
