@@ -430,7 +430,7 @@ function MonsterInitialPowerPreview({
 
   return (
     <div
-      className="absolute bottom-5 left-4 z-40 flex max-w-[calc(100%-2rem)] flex-wrap items-end justify-start gap-1.5 sm:bottom-7 sm:left-8"
+      className="absolute bottom-5 left-1/2 z-40 flex max-w-[calc(100%-2rem)] -translate-x-1/2 flex-wrap items-end justify-center gap-1.5 sm:bottom-7"
       aria-label={serviceLocale === "ko" ? "시작 효과" : "Starting effects"}
     >
       {applications.map((application) => {
