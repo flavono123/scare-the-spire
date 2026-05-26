@@ -8,7 +8,6 @@ import type { ServiceLocale } from "@/lib/i18n";
 export const MONSTER_ASCENSION_STORAGE_KEY = "sts2.monsterAscensionLevel";
 const MONSTER_ASCENSION_EVENT = "sts2:monster-ascension-level";
 const ASCENSION_ICON = "/images/sts2/ui/topbar/top_bar_ascension.png";
-const HEART_ICON = "/images/sts2/ui/topbar/top_bar_heart.png";
 
 export const MONSTER_HP_ASCENSION_LEVEL = 8;
 export const MONSTER_MOVE_ASCENSION_LEVEL = 9;
@@ -140,24 +139,24 @@ export function MonsterHealthBar({
   const hp = getMonsterHpDisplay(monster, ascensionLevel, hpOverride);
   if (!hp) return null;
 
+  const hpLabel = `${hp.value}/${hp.value}`;
+
   return (
     <span
-      className={`relative inline-flex items-center justify-center overflow-hidden rounded-[3px] border border-black/80 bg-[#2a0b0c] shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_2px_8px_rgba(0,0,0,0.55)] ${compact ? "h-5 min-w-24 px-5" : "h-6 min-w-32 px-6"} ${className}`}
-      aria-label={`HP ${hp.value}`}
+      className={`relative inline-flex items-center justify-center overflow-visible ${compact ? "h-6 w-36 max-w-full" : "h-7 w-full min-w-48 max-w-80"} ${className}`}
+      aria-label={`HP ${hpLabel}`}
     >
-      <span className="absolute inset-[3px] rounded-[2px] bg-gradient-to-b from-[#ff6b5e] via-[#c81d24] to-[#66080b]" />
-      <Image
-        src={HEART_ICON}
-        alt=""
-        width={compact ? 18 : 22}
-        height={compact ? 18 : 22}
-        className={`absolute left-1 z-10 object-contain drop-shadow ${compact ? "h-4 w-4" : "h-5 w-5"}`}
-      />
+      <span aria-hidden="true" className="absolute left-0 right-0 top-1/2 h-3 -translate-y-1/2">
+        <span className="absolute inset-x-1 top-1/2 h-[7px] -translate-y-1/2 rounded-[2px] bg-[#52080a] shadow-[0_2px_3px_rgba(0,0,0,0.72),inset_0_1px_0_rgba(255,255,255,0.16)]" />
+        <span className="absolute inset-x-[5px] top-1/2 h-[5px] -translate-y-1/2 rounded-[1px] bg-[#F1373E] shadow-[inset_0_1px_0_rgba(255,142,126,0.72),inset_0_-1px_0_rgba(93,0,0,0.75)]" />
+        <span className="absolute left-0 top-1/2 h-0 w-0 -translate-y-1/2 border-y-[6px] border-r-[10px] border-y-transparent border-r-[#F1373E] drop-shadow-[0_2px_1px_rgba(0,0,0,0.75)]" />
+        <span className="absolute right-0 top-1/2 h-0 w-0 -translate-y-1/2 border-y-[6px] border-l-[10px] border-y-transparent border-l-[#F1373E] drop-shadow-[0_2px_1px_rgba(0,0,0,0.75)]" />
+      </span>
       <span
-        className={`relative z-10 font-game-title font-black leading-none text-[#fff8db] ${compact ? "text-xs" : "text-sm"}`}
-        style={{ textShadow: "0 2px 0 #000, 0 0 4px #000" }}
+        className={`relative z-10 font-game-title font-black leading-none text-[#fff8db] ${compact ? "text-sm" : "text-lg"}`}
+        style={{ textShadow: "0 2px 0 #900000, 1px 1px 0 #900000, -1px 1px 0 #900000, 0 0 4px #000" }}
       >
-        {hp.value}
+        {hpLabel}
       </span>
     </span>
   );

@@ -511,7 +511,12 @@ function getHealthBarPreviewStyle(bounds: MonsterStageVisualBounds | null, reser
   }
 
   const safeInset = bounds.stageWidth < 480 ? 8 : 16;
-  const barWidth = bounds.stageWidth < 480 ? 128 : 160;
+  const gameWidth = bounds.width + 24;
+  const barWidth = clampNumber(
+    gameWidth,
+    bounds.stageWidth < 480 ? 136 : 184,
+    Math.max(bounds.stageWidth < 480 ? 136 : 184, bounds.stageWidth - safeInset * 2),
+  );
   const gap = bounds.stageWidth < 480 ? 4 : 6;
   const reservedBottom = reserveStartEffects ? (bounds.stageWidth < 480 ? 44 : 50) : 0;
   const left = clampNumber(
@@ -519,7 +524,7 @@ function getHealthBarPreviewStyle(bounds: MonsterStageVisualBounds | null, reser
     safeInset,
     Math.max(safeInset, bounds.stageWidth - barWidth - safeInset),
   );
-  const top = clampNumber(bounds.bottom + gap, safeInset, Math.max(safeInset, bounds.stageHeight - 24 - safeInset - reservedBottom));
+  const top = clampNumber(bounds.bottom + gap, safeInset, Math.max(safeInset, bounds.stageHeight - 28 - safeInset - reservedBottom));
 
   return {
     left,
