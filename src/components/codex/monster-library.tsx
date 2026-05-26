@@ -26,6 +26,7 @@ import {
   parseCodexSearch,
   type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
+import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
 import {
   BESTIARY_FORCED_ACTS,
   getBestiaryDisplayMonsterType,
@@ -49,6 +50,7 @@ import {
   CodexLibraryTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
+import { VersionSelector } from "./version-selector";
 
 type MonsterViewMessages =
   (typeof serviceMessages)[ServiceLocale]["codex"]["monstersView"];
@@ -75,6 +77,10 @@ interface MonsterLibraryProps {
   powers?: CodexPower[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
+  versions?: string[];
+  currentVersion?: string;
+  selectedVersion?: string;
+  onVersionChange?: (version: string) => void;
   trailing?: React.ReactNode;
 }
 
@@ -89,6 +95,10 @@ export function MonsterLibrary({
   powers = [],
   patches,
   changes,
+  versions,
+  currentVersion,
+  selectedVersion,
+  onVersionChange,
   trailing,
 }: MonsterLibraryProps) {
   const serviceText = serviceMessages[serviceLocale];
@@ -100,8 +110,19 @@ export function MonsterLibrary({
   const [showOnlySkinVariants, setShowOnlySkinVariants] = useState(false);
   const [showOnlyPhobiaMode, setShowOnlyPhobiaMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [internalSelectedVersion, setInternalSelectedVersion] = useState(currentVersion ?? "");
+  const activeVersion = selectedVersion ?? internalSelectedVersion;
+  const setActiveVersion = onVersionChange ?? setInternalSelectedVersion;
   const { userId, ready: authReady, ensureUser } = useAuth();
   const engagementCounts = useEngagementCounts();
+  const versionedMonsters = useMemo(() => {
+    if (!currentVersion || !activeVersion) return monsters;
+    return withEntityLifecycleForVersion(monsters, activeVersion, { changes, entityType: "monster" });
+  }, [monsters, activeVersion, changes, currentVersion]);
+  const versionedEncounters = useMemo(() => {
+    if (!currentVersion || !activeVersion) return encounters;
+    return withEntityLifecycleForVersion(encounters, activeVersion, { changes, entityType: "encounter" });
+  }, [encounters, activeVersion, changes, currentVersion]);
 
   // Monster detail modal
   const initialMonsterId = searchParams.get("monster");
@@ -109,6 +130,12 @@ export function MonsterLibrary({
     if (!initialMonsterId) return null;
     return monsters.find((m) => m.id.toLowerCase() === initialMonsterId.toLowerCase()) ?? null;
   });
+
+  useEffect(() => {
+    if (!selectedMonster) return;
+    const versioned = versionedMonsters.find((monster) => monster.id === selectedMonster.id);
+    setSelectedMonster(versioned ?? null);
+  }, [selectedMonster, versionedMonsters]);
 
   // URL sync
   useEffect(() => {
@@ -131,12 +158,12 @@ export function MonsterLibrary({
       if (!param) {
         setSelectedMonster(null);
       } else {
-        setSelectedMonster(monsters.find((m) => m.id.toLowerCase() === param.toLowerCase()) ?? null);
+        setSelectedMonster(versionedMonsters.find((m) => m.id.toLowerCase() === param.toLowerCase()) ?? null);
       }
     };
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
-  }, [monsters]);
+  }, [versionedMonsters]);
 
   // Escape to close
   useEffect(() => {
@@ -165,7 +192,7 @@ export function MonsterLibrary({
   // Build monster -> acts mapping from encounters
   const monsterActs = useMemo(() => {
     const map = new Map<string, Set<string>>();
-    for (const enc of encounters) {
+    for (const enc of versionedEncounters) {
       for (const m of enc.monsters) {
         if (!map.has(m.id)) map.set(m.id, new Set());
         map.get(m.id)!.add(enc.act ?? "none");
@@ -175,7 +202,7 @@ export function MonsterLibrary({
       map.set(monsterId, new Set([act]));
     }
     return map;
-  }, [encounters]);
+  }, [versionedEncounters]);
 
   const monsterTriggers = useMemo(
     () => getMonsterTriggers(monsterText, gameUi),
@@ -190,7 +217,7 @@ export function MonsterLibrary({
 
   // Filter monsters
   const filteredMonsters = useMemo(() => {
-    let result = monsters.filter((m) => m.showInCompendium && isPublicBestiaryMonster(m.id));
+    let result = versionedMonsters.filter((m) => m.showInCompendium && isPublicBestiaryMonster(m.id));
 
     if (showOnlySkinVariants) {
       result = result.filter((m) => hasSkinVariants(m));
@@ -235,7 +262,7 @@ export function MonsterLibrary({
     }
 
     return result;
-  }, [monsters, showOnlySkinVariants, showOnlyPhobiaMode, selectedTypes, selectedActs, parsedSearch, monsterActs]);
+  }, [versionedMonsters, showOnlySkinVariants, showOnlyPhobiaMode, selectedTypes, selectedActs, parsedSearch, monsterActs]);
 
   const getPrimaryMonsterAct = useCallback(
     (monsterId: string): EventAct | null => {
@@ -291,6 +318,20 @@ export function MonsterLibrary({
       return next;
     });
   }, []);
+
+  const topBarTrailing = trailing || (versions && currentVersion) ? (
+    <div className="flex shrink-0 items-center gap-2">
+      {trailing}
+      {versions && currentVersion ? (
+        <VersionSelector
+          versions={versions}
+          currentVersion={currentVersion}
+          selectedVersion={activeVersion}
+          onChange={setActiveVersion}
+        />
+      ) : null}
+    </div>
+  ) : undefined;
 
   return (
     <CodexLibraryShell
@@ -387,7 +428,7 @@ export function MonsterLibrary({
             />
           )}
           count={formatCount(filteredMonsters.length, monsterText.resultUnit, serviceLocale)}
-          trailing={trailing}
+          trailing={topBarTrailing}
         />
 
         {/* Monster Grid */}
@@ -445,7 +486,7 @@ export function MonsterLibrary({
               gameUi={gameUi}
               backToListTitle={title}
               monster={selectedMonster}
-              encounters={encounters}
+              encounters={versionedEncounters}
               afflictions={afflictions}
               cards={cards}
               powers={powers}
@@ -493,7 +534,9 @@ function MonsterTile({
 
   return (
     <div
-      className="group relative flex items-center gap-2 rounded-md px-2.5 py-2 transition-colors hover:bg-white/[0.06]"
+      className={`group relative flex items-center gap-2 rounded-md px-2.5 py-2 transition-colors hover:bg-white/[0.06] ${
+        monster.deprecated ? "opacity-50 grayscale saturate-0" : ""
+      }`}
       onMouseEnter={() => setHoverMoveId(pickHoverMoveId(monster))}
       onMouseLeave={() => setHoverMoveId(undefined)}
     >

@@ -11,6 +11,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMeta, getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/data";
+import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { MonsterLibrary } from "@/components/codex/monster-library";
@@ -37,14 +39,19 @@ export default async function CodexMonstersPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [monsters, encounters, afflictions, cards, powers, gameUi] = await Promise.all([
+  const [monsters, encounters, afflictions, cards, powers, patches, changes, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
     getCodexAfflictions({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexPowers({ includeDeprecated: true, gameLocale }),
+    getSTS2Patches(),
+    getSTS2Changes(),
+    getEntityVersionDiffs(),
+    getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
   ]);
+  const versions = getVersionsWithDiffs(patches, versionDiffs);
 
   return (
     <Suspense>
@@ -57,6 +64,10 @@ export default async function CodexMonstersPage({
         afflictions={afflictions}
         cards={cards}
         powers={powers}
+        patches={patches}
+        changes={changes}
+        versions={versions}
+        currentVersion={meta.version}
       />
     </Suspense>
   );
