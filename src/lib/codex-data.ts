@@ -992,6 +992,9 @@ interface RawEpoch {
   unlocks_relics: string[];
   unlocks_potions: string[];
   expands_timeline: string[];
+  introducedInPatch?: string;
+  deprecated?: boolean;
+  deprecatedInPatch?: string;
 }
 
 function hasEventSmartTemplate(text: string | null | undefined): boolean {
@@ -1159,6 +1162,9 @@ function mapEpoch(
     unlocksPotions: kor.unlocks_potions ?? [],
     expandsTimeline: kor.expands_timeline ?? [],
     imageUrl: imageFiles.has(imageKey) ? `/images/sts2/epochs/${imageKey}.webp` : null,
+    introducedInPatch: kor.introducedInPatch,
+    deprecated: kor.deprecated,
+    deprecatedInPatch: kor.deprecatedInPatch,
   };
 }
 
