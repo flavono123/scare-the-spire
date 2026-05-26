@@ -168,16 +168,14 @@ export function InfestedPrismReworkBlock({
         title: "감염된 프리즘 리워크",
         before: "이전",
         after: "이후",
-        pattern: "4턴 고정 반복 유지",
-        body: "같은 4턴 루프를 유지하지만 공격 피해가 크게 낮아지고, 방출과 맥박에 방어가 붙었습니다. 맥박은 생명의 불꽃을 얻는 행동으로 바뀌어 단순 공격 반복이 아니라 방어/버프 턴으로 읽히게 됩니다.",
+        body: "공격 피해가 크게 낮아지고, 방출과 맥박에 방어가 붙었습니다. 맥박은 피해와 방어를 함께 수행하며 생명의 불꽃을 얻는 행동으로 바뀌었습니다.",
         hp: "체력",
       }
     : {
         title: "Infested Prism Rework",
         before: "Before",
         after: "After",
-        pattern: "Fixed 4-turn loop retained",
-        body: "The same four-turn loop remains, but attack damage is much lower. Radiate and Pulsate now include Block, and Pulsate also gains Vital Spark, making the loop read as attack, defense, and buff turns rather than pure damage pressure.",
+        body: "Attack damage is much lower. Radiate and Pulsate now include Block, and Pulsate now deals damage, blocks, and gains Vital Spark.",
         hp: "HP",
       };
 
@@ -191,9 +189,6 @@ export function InfestedPrismReworkBlock({
           >
             {labels.title}
           </Link>
-          <span className="rounded bg-yellow-400/10 px-2 py-0.5 font-game-text text-[11px] font-bold text-yellow-300">
-            {labels.pattern}
-          </span>
         </div>
 
         {!compact && (
@@ -339,7 +334,7 @@ function MovePreviewPopover({
       {open && (
         <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2">
           <GameHoverTip title={title} style={{ width: 280, maxWidth: 280 }}>
-            <span className="relative mb-2 block h-36 overflow-hidden rounded bg-black/25">
+            <span className="relative mb-2 block h-44 overflow-hidden rounded bg-black/25">
               <MonsterSpineStage
                 asset={monster.spineAsset}
                 fallbackImageUrl={monster.bossImageUrl ?? monster.imageUrl}
@@ -349,10 +344,12 @@ function MovePreviewPopover({
                 imagePriority={false}
                 showLoadingLabel={false}
                 viewportTransitionTime={0}
+                viewportPadding={{ padTop: "16%", padBottom: "2%" }}
                 fallbackImageClassName="absolute inset-0 h-full w-full object-contain opacity-80"
-                className="absolute inset-0"
+                className="absolute inset-x-0 bottom-4 top-10"
               />
               <MoveIntentPreview move={move} />
+              <InitialPowerPreview applications={monster.initialPowerApplications} serviceLocale={serviceLocale} />
             </span>
             <span className="flex flex-wrap items-center gap-2">
               <MoveMetricTokens move={move} />
@@ -365,6 +362,33 @@ function MovePreviewPopover({
   );
 }
 
+function InitialPowerPreview({
+  applications,
+  serviceLocale,
+}: {
+  applications: readonly MonsterMovePowerApplication[];
+  serviceLocale: ServiceLocale;
+}) {
+  if (applications.length === 0) return null;
+
+  return (
+    <span
+      className="pointer-events-none absolute bottom-1 left-1/2 z-40 flex -translate-x-1/2 items-end justify-center gap-1"
+      aria-label={serviceLocale === "ko" ? "시작 효과" : "Starting effects"}
+    >
+      {applications.map((power) => (
+        <PowerApplicationIcon
+          key={`initial-${power.powerId}-${power.target}`}
+          power={power}
+          serviceLocale={serviceLocale}
+          added={false}
+          interactive={false}
+        />
+      ))}
+    </span>
+  );
+}
+
 function MoveIntentPreview({ move }: { move: MoveVisual }) {
   const intents = move.intents
     .map((intent, index) => ({ intent, kind: getIntentKind(intent.type), key: `${intent.type}-${index}` }))
@@ -372,7 +396,7 @@ function MoveIntentPreview({ move }: { move: MoveVisual }) {
   if (intents.length === 0) return null;
 
   return (
-    <span className="pointer-events-none absolute left-1/2 top-2 z-40 flex -translate-x-1/2 items-end justify-center gap-1">
+    <span className="pointer-events-none absolute left-1/2 top-1 z-40 flex -translate-x-1/2 items-end justify-center gap-1">
       {intents.map(({ intent, kind, key }) => (
         <span key={key} className="relative inline-flex h-12 w-12 items-center justify-center">
           <Image
