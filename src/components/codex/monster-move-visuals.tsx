@@ -60,9 +60,9 @@ const INFESTED_PRISM_MOVE_ORDER = ["JAB", "RADIATE", "WHIRLWIND", "PULSATE"];
 const ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
 const ASCENSION_ICON = "/images/sts2/ui/topbar/top_bar_ascension.png";
 const BLOCK_ICON = "/images/sts2/ui/combat/block.png";
-const MOVE_PREVIEW_VIEWPORT_PADDING = { padTop: "8%", padBottom: "0%" } as const;
-const MOVE_PREVIEW_STAGE_TOP = 24;
-const MOVE_PREVIEW_STAGE_BOTTOM = 4;
+const MOVE_PREVIEW_VIEWPORT_PADDING = { padTop: "0%", padBottom: "0%" } as const;
+const MOVE_PREVIEW_STAGE_TOP = 56;
+const MOVE_PREVIEW_STAGE_BOTTOM = 0;
 const INTENT_ICONS: Record<IntentKind, string> = {
   attack: "/images/sts2/intents/attack_3.png",
   buff: "/images/sts2/intents/buff.png",
@@ -315,7 +315,7 @@ export function MonsterMoveHoverPreview({
       <span className="mb-1.5 block font-game-text text-[11px] text-zinc-400">
         {monsterName}
       </span>
-      <span className="relative mb-2 block h-44 overflow-hidden rounded bg-black/25">
+      <span className="relative mb-2 block h-52 overflow-hidden rounded bg-black/25">
         <span
           className="absolute inset-x-0"
           style={{ top: MOVE_PREVIEW_STAGE_TOP, bottom: MOVE_PREVIEW_STAGE_BOTTOM }}
@@ -430,8 +430,8 @@ function getIntentPreviewStyle(bounds: MonsterStageVisualBounds | null, count: n
   }
 
   const safeInset = 4;
-  const tokenSize = 56;
-  const gap = 8;
+  const tokenSize = 48;
+  const gap = 4;
   const groupWidth = Math.max(tokenSize, count * tokenSize + Math.max(0, count - 1) * gap);
   const halfWidth = groupWidth / 2;
   const centerX = bounds.left + bounds.width / 2;
