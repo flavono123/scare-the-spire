@@ -24,6 +24,7 @@ interface MonsterSpineStageProps {
   viewportTransitionTime?: number;
   viewportPadding?: SpineViewportPadding;
   fallbackImageClassName?: string;
+  loopSelectedMove?: boolean;
   onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void;
 }
 
@@ -77,6 +78,7 @@ function MonsterSpineStageComponent({
   viewportTransitionTime,
   viewportPadding,
   fallbackImageClassName,
+  loopSelectedMove = false,
   onVisualBoundsChange,
 }: MonsterSpineStageProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -169,7 +171,7 @@ function MonsterSpineStageComponent({
     if (!asset || loadState !== "ready" || !playerRef.current || !selectedAnimation) return;
 
     const player = playerRef.current;
-    const loops = selectedAnimation === asset.idleAnimation || selectedMoveId == null;
+    const loops = selectedAnimation === asset.idleAnimation || selectedMoveId == null || loopSelectedMove;
     try {
       if (selectedTrackAnimations?.length) {
         restartSpineTrackAnimations(player, selectedTrackAnimations, asset.idleTracks);
@@ -186,7 +188,7 @@ function MonsterSpineStageComponent({
     } catch (error) {
       console.warn(`Failed to play Spine animation ${selectedAnimation} for ${monsterName}:`, error);
     }
-  }, [asset, loadState, monsterName, onVisualBoundsChange, selectedAnimation, selectedMoveId, selectedMoveNonce, selectedTrackAnimations]);
+  }, [asset, loadState, loopSelectedMove, monsterName, onVisualBoundsChange, selectedAnimation, selectedMoveId, selectedMoveNonce, selectedTrackAnimations]);
 
   useEffect(() => {
     if (!onVisualBoundsChange) return;
