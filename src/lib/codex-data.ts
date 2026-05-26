@@ -1482,7 +1482,7 @@ type MonsterPowerDisplay = Pick<MonsterMovePowerApplication, "powerId" | "powerN
 type MonsterCardDisplay = Pick<MonsterMoveCardApplication, "cardId" | "cardName" | "cardNameEn" | "imageUrl">;
 
 const MONSTER_IMAGE_OVERRIDES: Record<string, string> = {
-  DECIMILLIPEDE_SEGMENT: "/images/sts2/encounters-render/decimillipede_elite.webp",
+  DECIMILLIPEDE_SEGMENT: "/images/sts2/monsters-render/decimillipede.webp",
 };
 
 function buildMonsterPowerDisplays(korPowers: RawPower[], engPowers: RawPower[]): Map<string, MonsterPowerDisplay> {

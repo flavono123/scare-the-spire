@@ -21,6 +21,41 @@ const DEFAULT_STAGE_SIZE = 512;
 const DEFAULT_PADDING = 20;
 const DEFAULT_SETTLE_MS = 800;
 const PLACEHOLDER_ART_MONSTER_IDS = new Set();
+const DECIMILLIPEDE_ENCOUNTER_X_OFFSET = -459;
+const DECIMILLIPEDE_GAME_SCREEN_HEIGHT = 1080;
+const DECIMILLIPEDE_SPINE_SCALE_X = -0.45;
+const DECIMILLIPEDE_SPINE_SCALE_Y = 0.45;
+const DECIMILLIPEDE_VIEWPORT = {
+  x: 420,
+  y: 240,
+  width: 1120,
+  height: 620,
+  padLeft: "0%",
+  padRight: "0%",
+  padTop: "0%",
+  padBottom: "0%",
+  transitionTime: 0,
+};
+const MANUAL_MONSTER_RENDER_CONFIGS = {
+  DECIMILLIPEDE_SEGMENT: {
+    outputSlug: "decimillipede",
+    binaryUrl: "/spine/sts2/monsters/decimillipede_middle/decimillipede2.skel",
+    atlasUrl: "/spine/sts2/monsters/decimillipede_middle/decimillipede_middle.atlas",
+    animation: "idle_loop",
+    stageSize: 1200,
+    viewport: DECIMILLIPEDE_VIEWPORT,
+    transform: {
+      x: 1451 + DECIMILLIPEDE_ENCOUNTER_X_OFFSET - 54,
+      y: DECIMILLIPEDE_GAME_SCREEN_HEIGHT - (740 - 43),
+      scaleX: DECIMILLIPEDE_SPINE_SCALE_X,
+      scaleY: DECIMILLIPEDE_SPINE_SCALE_Y,
+      bones: {
+        link_l_2: { x: -442.222, y: 202.222 },
+        link_r_2: { x: 220, y: 228.889 },
+      },
+    },
+  },
+};
 
 const args = parseArgs(process.argv.slice(2));
 const monsters = readJson(monstersPath);
@@ -60,7 +95,8 @@ try {
       skipped += 1;
       continue;
     }
-    if (!asset || asset.renderStatus !== "spine") {
+    const manualConfig = MANUAL_MONSTER_RENDER_CONFIGS[id] ?? null;
+    if ((!asset || asset.renderStatus !== "spine") && !manualConfig) {
       console.warn(`skip ${id}: no renderable Spine asset`);
       skipped += 1;
       continue;
@@ -71,14 +107,14 @@ try {
       continue;
     }
 
-    const outputSlug = monsterRenderSlug(monster);
+    const outputSlug = manualConfig?.outputSlug ?? monsterRenderSlug(monster);
     const outputPath = path.join(outDir, `${outputSlug}.webp`);
     if (fs.existsSync(outputPath) && args.all && !args.force) {
       skipped += 1;
       continue;
     }
 
-    await renderMonsterPortrait({ id, outputPath, baseUrl, browser });
+    await renderMonsterPortrait({ id, outputPath, baseUrl, browser, manualConfig });
     rendered += 1;
     console.log(`rendered ${id} -> ${path.relative(repoRoot, outputPath)}`);
   }
@@ -132,17 +168,19 @@ function parseArgs(argv) {
 
 function resolveRequestedIds(parsed) {
   if (parsed.all) {
-    return spineAssets
-      .filter((asset) => asset.renderStatus === "spine")
-      .map((asset) => asset.id)
-      .sort();
+    return [
+      ...spineAssets
+        .filter((asset) => asset.renderStatus === "spine")
+        .map((asset) => asset.id),
+      ...Object.keys(MANUAL_MONSTER_RENDER_CONFIGS),
+    ].sort();
   }
 
   return [...new Set(parsed.ids)];
 }
 
-async function renderMonsterPortrait({ id, outputPath, baseUrl, browser }) {
-  const stageSize = args.stageSize;
+async function renderMonsterPortrait({ id, outputPath, baseUrl, browser, manualConfig = null }) {
+  const stageSize = manualConfig?.stageSize ?? args.stageSize;
   const tmpBase = path.join(os.tmpdir(), `sts2-monster-render-${id.toLowerCase()}-${Date.now()}`);
   const tmpBlackPng = `${tmpBase}-black.png`;
   const tmpWhitePng = `${tmpBase}-white.png`;
@@ -194,13 +232,14 @@ function createStaticServer() {
       const background = normalizeBackground(requestUrl.searchParams.get("bg"));
       const asset = spineAssetsById.get(id);
       const monster = monstersById.get(id);
-      if (!asset || !monster) {
+      const manualConfig = MANUAL_MONSTER_RENDER_CONFIGS[id] ?? null;
+      if ((!asset && !manualConfig) || !monster) {
         response.writeHead(404);
         response.end("not found");
         return;
       }
       response.setHeader("content-type", "text/html; charset=utf-8");
-      response.end(renderHtml(monster, asset, background));
+      response.end(manualConfig ? renderManualHtml(manualConfig, background) : renderHtml(monster, asset, background));
       return;
     }
 
@@ -211,6 +250,86 @@ function createStaticServer() {
   return new Promise((resolve) => {
     server.listen(0, "127.0.0.1", () => resolve(server));
   });
+}
+
+function renderManualHtml(config, background) {
+  const stageSize = config.stageSize ?? args.stageSize;
+  return `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    html, body {
+      margin: 0;
+      width: ${stageSize}px;
+      height: ${stageSize}px;
+      overflow: hidden;
+      background: #${background};
+    }
+    #stage {
+      position: absolute;
+      inset: 0;
+      width: ${stageSize}px;
+      height: ${stageSize}px;
+    }
+    #stage canvas {
+      image-rendering: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="stage"></div>
+  <script src="/__spine/spine-player.js"></script>
+  <script>
+    const transform = ${JSON.stringify(config.transform)};
+    window.renderDone = new Promise((resolve, reject) => {
+      try {
+        new spine.SpinePlayer(document.getElementById("stage"), {
+          binaryUrl: ${JSON.stringify(config.binaryUrl)},
+          atlasUrl: ${JSON.stringify(config.atlasUrl)},
+          animation: ${JSON.stringify(config.animation)},
+          alpha: true,
+          backgroundColor: "00000000",
+          preserveDrawingBuffer: false,
+          premultipliedAlpha: false,
+          showControls: false,
+          showLoading: false,
+          viewport: ${JSON.stringify(config.viewport)},
+          update: applyTransform,
+          success: (player) => {
+            try {
+              applyTransform(player);
+              player.setAnimation(${JSON.stringify(config.animation)}, true);
+              player.play();
+              window.setTimeout(resolve, ${args.settleMs});
+            } catch (error) {
+              reject(error);
+            }
+          },
+          error: (_player, message) => reject(new Error(message))
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+
+    function applyTransform(player) {
+      if (!player.skeleton) return;
+      player.skeleton.x = transform.x;
+      player.skeleton.y = transform.y;
+      player.skeleton.scaleX = transform.scaleX;
+      player.skeleton.scaleY = transform.scaleY;
+      for (const [boneName, target] of Object.entries(transform.bones)) {
+        const bone = player.skeleton.findBone(boneName);
+        if (!bone) continue;
+        bone.x = target.x;
+        bone.y = target.y;
+      }
+      player.skeleton.updateWorldTransform(2);
+    }
+  </script>
+</body>
+</html>`;
 }
 
 function renderHtml(monster, asset, background) {
