@@ -139,12 +139,6 @@ export function EpochLibrary({
   }, [versionedEpochs]);
 
   useEffect(() => {
-    if (!selectedEpoch) return;
-    const versioned = versionedEpochs.find((epoch) => epoch.id === selectedEpoch.id);
-    setSelectedEpoch(versioned ?? null);
-  }, [selectedEpoch, versionedEpochs]);
-
-  useEffect(() => {
     if (!urlReady) return;
     const url = new URL(window.location.href);
     if (selectedEpoch) {

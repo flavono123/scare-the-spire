@@ -151,12 +151,6 @@ export function AncientList({
 
   useEffect(() => {
     if (!selectedAncient) return;
-    const versioned = versionedAncients.find((item) => item.id === selectedAncient.id);
-    setSelectedAncient(versioned ?? null);
-  }, [selectedAncient, versionedAncients]);
-
-  useEffect(() => {
-    if (!selectedAncient) return;
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSelectedAncient(null);
     };

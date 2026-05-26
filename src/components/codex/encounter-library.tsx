@@ -120,12 +120,6 @@ export function EncounterLibrary({
     return encounters.find((e) => e.id.toLowerCase() === initialEncId.toLowerCase()) ?? null;
   });
 
-  useEffect(() => {
-    if (!selectedEncounter) return;
-    const versioned = versionedEncounters.find((encounter) => encounter.id === selectedEncounter.id);
-    setSelectedEncounter(versioned ?? null);
-  }, [selectedEncounter, versionedEncounters]);
-
   // URL sync
   useEffect(() => {
     const url = new URL(window.location.href);

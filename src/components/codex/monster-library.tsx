@@ -131,12 +131,6 @@ export function MonsterLibrary({
     return monsters.find((m) => m.id.toLowerCase() === initialMonsterId.toLowerCase()) ?? null;
   });
 
-  useEffect(() => {
-    if (!selectedMonster) return;
-    const versioned = versionedMonsters.find((monster) => monster.id === selectedMonster.id);
-    setSelectedMonster(versioned ?? null);
-  }, [selectedMonster, versionedMonsters]);
-
   // URL sync
   useEffect(() => {
     const url = new URL(window.location.href);
