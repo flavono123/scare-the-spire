@@ -28,6 +28,7 @@ export const BESTIARY_FORCED_ACTS: Record<string, EventAct> = {
 
 export const BESTIARY_TYPE_OVERRIDES: Record<string, MonsterType> = {
   AEONGLASS: "Boss",
+  DECIMILLIPEDE_SEGMENT: "Elite",
 };
 
 export const BESTIARY_PLACEHOLDER_ART_MONSTER_IDS = new Set<string>();
