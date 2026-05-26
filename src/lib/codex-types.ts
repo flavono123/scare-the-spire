@@ -893,6 +893,7 @@ export interface CodexMonster extends CodexLifecycle {
   maxHpAscension: number | null;
   moves: MonsterMove[];
   bestiaryMoves: MonsterMove[];
+  initialPowerApplications: MonsterMovePowerApplication[];
   moveGraph: MonsterMoveGraph | null;
   damageValues: Record<string, DamageValue> | null;
   blockValues: Record<string, DamageValue> | null;

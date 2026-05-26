@@ -1519,6 +1519,7 @@ interface RawMonster {
   show_in_compendium?: boolean;
   moves: RawMonsterMove[];
   bestiary_moves?: RawMonsterMove[];
+  initial_power_applications?: RawMonsterMovePowerApplication[];
   move_graph?: MonsterMoveGraph | null;
   damage_values: Record<string, RawDamageValue> | null;
   block_values: Record<string, RawDamageValue> | null;
@@ -1593,6 +1594,19 @@ function mapMonster(
   const phobiaModeAsset = phobiaModeAssets.get(kor.id) ?? null;
   const phobiaModeImageUrl = phobiaModeAsset?.imageUrl ?? null;
   const engMovesById = new Map(eng.moves.map((move) => [move.id, move]));
+  const mapPowerApplications = (applications: RawMonsterMovePowerApplication[] | undefined): MonsterMovePowerApplication[] =>
+    (applications ?? []).map((application) => {
+      const display = powerDisplays.get(application.power_id);
+      return {
+        powerId: application.power_id,
+        powerName: display?.powerName ?? application.power_id,
+        powerNameEn: display?.powerNameEn ?? application.power_id,
+        powerType: display?.powerType ?? "None",
+        target: application.target,
+        amount: application.amount,
+        imageUrl: display?.imageUrl ?? `/images/sts2/powers/${application.power_id.toLowerCase()}_power.webp`,
+      };
+    });
   const mapMoves = (rawMoves: RawMonsterMove[]): MonsterMove[] => rawMoves.map((km) => {
     const em = engMovesById.get(km.id);
     return {
@@ -1614,18 +1628,7 @@ function mapMonster(
         repeat: intent.repeat ?? null,
         repeatExpression: intent.repeat_expression ?? null,
       })),
-      powerApplications: (km.power_applications ?? []).map((application) => {
-        const display = powerDisplays.get(application.power_id);
-        return {
-          powerId: application.power_id,
-          powerName: display?.powerName ?? application.power_id,
-          powerNameEn: display?.powerNameEn ?? application.power_id,
-          powerType: display?.powerType ?? "None",
-          target: application.target,
-          amount: application.amount,
-          imageUrl: display?.imageUrl ?? `/images/sts2/powers/${application.power_id.toLowerCase()}_power.webp`,
-        };
-      }),
+      powerApplications: mapPowerApplications(km.power_applications),
       cardApplications: (km.card_applications ?? []).map((application) => {
         const display = cardDisplays.get(application.card_id);
         return {
@@ -1644,6 +1647,7 @@ function mapMonster(
     ...mapMoves(kor.bestiary_moves ?? kor.moves),
     ...buildBestiaryAnimationMoves(spineAsset, gameBestiary, engBestiary),
   ];
+  const initialPowerApplications = mapPowerApplications(kor.initial_power_applications);
 
   // Map damage values
   const damageValues: Record<string, DamageValue> | null = kor.damage_values
@@ -1679,6 +1683,7 @@ function mapMonster(
     maxHpAscension: kor.max_hp_ascension,
     moves,
     bestiaryMoves,
+    initialPowerApplications,
     moveGraph: kor.move_graph ?? null,
     damageValues: damageValues,
     blockValues: kor.block_values,
