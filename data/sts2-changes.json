@@ -1798,15 +1798,35 @@
     "patch": "v0.106.0",
     "date": "2026-05-22",
     "character": null,
-    "summary": "Infested Prism was reworked.",
-    "summaryKo": "감염된 프리즘이 리워크되었습니다.",
+    "summary": "Infested Prism reworked: HP 200(215) -> 161(171), same 4-turn loop, lower attacks, Radiate/Pulsate gain Block, and Pulsate gains Vital Spark 2(3).",
+    "summaryKo": "감염된 프리즘 리워크: 체력 200(215) -> 161(171), 4턴 반복은 유지, 공격 수치 감소, 방출/맥박에 방어 추가, 맥박에 생명의 불꽃 2(3) 추가.",
     "diffs": [
       {
+        "attribute": "hp",
+        "displayName": "HP",
+        "displayNameKo": "체력",
+        "before": "200 (A8 215)",
+        "after": "161 (A8 171)",
+        "diffType": "number"
+      },
+      {
+        "attribute": "pattern",
+        "displayName": "Pattern",
+        "displayNameKo": "패턴",
+        "before": "Jab -> Radiate -> Whirlwind -> Pulsate -> repeat",
+        "beforeKo": "찌르기 -> 방출 -> 소용돌이 -> 맥박 -> 반복",
+        "after": "Jab -> Radiate -> Whirlwind -> Pulsate -> repeat",
+        "afterKo": "찌르기 -> 방출 -> 소용돌이 -> 맥박 -> 반복",
+        "diffType": "text"
+      },
+      {
         "attribute": "moveset",
-        "displayName": "Moveset",
-        "displayNameKo": "행동 패턴",
-        "before": "Previous Infested Prism behavior",
-        "after": "Reworked behavior",
+        "displayName": "Moves",
+        "displayNameKo": "행동",
+        "before": "Jab 22(24), Radiate 16(18), Whirlwind 9x3(10x3), Pulsate",
+        "beforeKo": "찌르기 22(24), 방출 16(18), 소용돌이 9x3(10x3), 맥박",
+        "after": "Jab 15(17), Radiate 11(13) + Block 11(13), Whirlwind 5x3(6x3), Pulsate 8(10) + Block 20(22) + Vital Spark 2(3)",
+        "afterKo": "찌르기 15(17), 방출 11(13) + 방어 11(13), 소용돌이 5x3(6x3), 맥박 8(10) + 방어 20(22) + 생명의 불꽃 2(3)",
         "diffType": "rework"
       }
     ]
