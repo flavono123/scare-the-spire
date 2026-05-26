@@ -80,6 +80,8 @@ function MonsterSpineStageComponent({
   onVisualBoundsChange,
 }: MonsterSpineStageProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const fallbackImageRef = useRef<HTMLImageElement | null>(null);
+  const phobiaImageRef = useRef<HTMLImageElement | null>(null);
   const vfxContainerRef = useRef<HTMLDivElement | null>(null);
   const playerRef = useRef<SpinePlayer | null>(null);
   const vfxPlayerRef = useRef<SpinePlayer | null>(null);
@@ -142,6 +144,7 @@ function MonsterSpineStageComponent({
             if (disposed) return;
             console.warn(`Failed to load Spine asset for ${monsterName}: ${message}`);
             setLoadState("error");
+            reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange);
           },
         });
         playerRef.current = player;
@@ -150,6 +153,7 @@ function MonsterSpineStageComponent({
         if (disposed) return;
         console.warn(`Failed to import Spine player for ${monsterName}:`, error);
         setLoadState("error");
+        reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange);
       });
 
     return () => {
@@ -186,7 +190,13 @@ function MonsterSpineStageComponent({
 
   useEffect(() => {
     if (!onVisualBoundsChange) return;
-    if (showStaticPhobiaMode || loadState !== "ready") onVisualBoundsChange(null);
+    if (showStaticPhobiaMode) {
+      reportImageVisualBounds(phobiaImageRef.current, containerRef.current, onVisualBoundsChange);
+      return;
+    }
+    if (loadState !== "ready") {
+      reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange);
+    }
   }, [loadState, onVisualBoundsChange, showStaticPhobiaMode]);
 
   useEffect(() => {
@@ -262,12 +272,14 @@ function MonsterSpineStageComponent({
     <div className={className}>
       {fallbackImageUrl && loadState !== "ready" && !showStaticPhobiaMode && (
         <Image
+          ref={fallbackImageRef}
           src={fallbackImageUrl}
           alt={monsterName}
           width={640}
           height={640}
           className={fallbackImageClassName ?? "absolute inset-0 z-10 h-full w-full object-contain drop-shadow-2xl"}
           priority={imagePriority}
+          onLoad={() => reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange)}
         />
       )}
       {showStaticPhobiaMode && phobiaModeImageUrl && (
@@ -280,12 +292,14 @@ function MonsterSpineStageComponent({
           />
         ) : (
           <Image
+            ref={phobiaImageRef}
             src={phobiaModeImageUrl}
             alt={monsterName}
             width={960}
             height={960}
             className={phobiaImageClassName ?? fallbackImageClassName ?? "absolute inset-0 z-20 h-full w-full object-contain drop-shadow-2xl"}
             priority={imagePriority}
+            onLoad={() => reportImageVisualBounds(phobiaImageRef.current, containerRef.current, onVisualBoundsChange)}
           />
         )
       )}
@@ -503,6 +517,51 @@ function reportSpineVisualBounds(
   window.requestAnimationFrame(() => {
     onVisualBoundsChange(measureSpinePlayerVisualBounds(player, stageElement));
   });
+}
+
+function reportImageVisualBounds(
+  image: HTMLImageElement | null,
+  stageElement: HTMLElement | null,
+  onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void,
+) {
+  if (!onVisualBoundsChange || !image || !stageElement) return;
+  window.requestAnimationFrame(() => {
+    onVisualBoundsChange(measureContainedImageVisualBounds(image, stageElement));
+  });
+}
+
+function measureContainedImageVisualBounds(
+  image: HTMLImageElement,
+  stageElement: HTMLElement,
+): MonsterStageVisualBounds | null {
+  if (!image.naturalWidth || !image.naturalHeight) return null;
+
+  const imageRect = image.getBoundingClientRect();
+  const stageRect = stageElement.getBoundingClientRect();
+  const imageAspect = image.naturalWidth / image.naturalHeight;
+  const frameAspect = imageRect.width / imageRect.height;
+  const width = frameAspect > imageAspect ? imageRect.height * imageAspect : imageRect.width;
+  const height = frameAspect > imageAspect ? imageRect.height : imageRect.width / imageAspect;
+  const left = imageRect.left - stageRect.left + (imageRect.width - width) / 2;
+  const top = imageRect.top - stageRect.top + (imageRect.height - height) / 2;
+  const right = left + width;
+  const bottom = top + height;
+  const clampedLeft = clamp(left, 0, stageRect.width);
+  const clampedTop = clamp(top, 0, stageRect.height);
+  const clampedRight = clamp(right, 0, stageRect.width);
+  const clampedBottom = clamp(bottom, 0, stageRect.height);
+
+  if (clampedRight <= clampedLeft || clampedBottom <= clampedTop) return null;
+  return {
+    left: clampedLeft,
+    top: clampedTop,
+    right: clampedRight,
+    bottom: clampedBottom,
+    width: clampedRight - clampedLeft,
+    height: clampedBottom - clampedTop,
+    stageWidth: stageRect.width,
+    stageHeight: stageRect.height,
+  };
 }
 
 function mapWorldBoundsToStage(
