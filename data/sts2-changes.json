@@ -1798,8 +1798,8 @@
     "patch": "v0.106.0",
     "date": "2026-05-22",
     "character": null,
-    "summary": "Infested Prism reworked: HP 200(215) -> 161(171), lower attacks, Radiate/Pulsate gain Block, and Pulsate gains Vital Spark 2(3).",
-    "summaryKo": "감염된 프리즘 리워크: 체력 200(215) -> 161(171), 공격 수치 감소, 방출/맥박에 방어 추가, 맥박에 생명의 불꽃 2(3) 추가.",
+    "summary": "Infested Prism reworked: HP 200(215) -> 161(171), lower attacks, Radiate/Pulsate gain Block, and Pulsate gains damage.",
+    "summaryKo": "감염된 프리즘 리워크: 체력 200(215) -> 161(171), 공격 수치 감소, 방출/맥박에 방어 추가, 맥박 피해 추가.",
     "diffs": [
       {
         "attribute": "hp",
