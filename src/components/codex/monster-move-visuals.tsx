@@ -484,7 +484,9 @@ function MoveIntentPreview({
   const intents = move.intents
     .map((intent, index) => ({ intent, kind: getIntentKind(intent.type), key: `${intent.type}-${index}` }))
     .filter((item) => item.kind !== "hidden");
-  if (intents.length === 0) return null;
+  if (intents.length === 0) {
+    return <span className="pointer-events-none relative z-40 block h-full" aria-hidden="true" />;
+  }
 
   return (
     <span
