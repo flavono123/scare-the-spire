@@ -168,14 +168,14 @@ export function InfestedPrismReworkBlock({
         title: "감염된 프리즘 리워크",
         before: "이전",
         after: "이후",
-        body: "공격 피해가 크게 낮아지고, 방출과 맥박에 방어가 붙었습니다. 맥박은 피해와 방어를 함께 수행하며 생명의 불꽃을 얻는 행동으로 바뀌었습니다.",
+        body: "공격 피해가 크게 낮아지고, 방출과 맥박에 방어가 붙었습니다. 맥박은 피해/방어와 생명의 불꽃 적용이 함께 보이는 행동입니다.",
         hp: "체력",
       }
     : {
         title: "Infested Prism Rework",
         before: "Before",
         after: "After",
-        body: "Attack damage is much lower. Radiate and Pulsate now include Block, and Pulsate now deals damage, blocks, and gains Vital Spark.",
+        body: "Attack damage is much lower. Radiate and Pulsate now include Block, and Pulsate is shown with damage, Block, and Vital Spark application.",
         hp: "HP",
       };
 
@@ -588,7 +588,7 @@ function buildCurrentMoveVisuals(monster: CodexMonster): MoveVisual[] {
       ...visual,
       damageChange: getDamageChange(old?.damage ?? null, visual.damage),
       blockChange: old?.block ? getDamageChange(old.block, visual.block) : visual.block ? "added" : null,
-      powerChange: old?.powers.length ? null : visual.powers.length > 0 ? "added" : null,
+      powerChange: null,
     }];
   });
 }
