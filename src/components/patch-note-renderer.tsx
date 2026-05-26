@@ -8,7 +8,7 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch, DamageValue, MonsterMove, MonsterMoveIntentDetail } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch, DamageValue, MonsterMove } from "@/lib/codex-types";
 import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -19,8 +19,11 @@ import {
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { GameHoverTip } from "@/components/codex/hover-tip";
-import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
-import { InfestedPrismReworkBlock } from "@/components/codex/monster-move-visuals";
+import {
+  buildMonsterMoveVisual,
+  InfestedPrismReworkBlock,
+  MonsterMoveHoverPreview,
+} from "@/components/codex/monster-move-visuals";
 
 // Entity types that can appear in patch notes
 export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch";
@@ -174,45 +177,6 @@ function GameResourcePreview({
   );
 }
 
-const MONSTER_MOVE_INTENT_ICONS: Record<string, string> = {
-  attack: "/images/sts2/intents/attack_3.png",
-  buff: "/images/sts2/intents/animated/buff.webp",
-  cardDebuff: "/images/sts2/intents/animated/card_debuff.webp",
-  deathBlow: "/images/sts2/intents/death_blow.png",
-  debuff: "/images/sts2/intents/animated/debuff.webp",
-  defend: "/images/sts2/intents/defend.png",
-  escape: "/images/sts2/intents/animated/escape.webp",
-  heal: "/images/sts2/intents/animated/heal.webp",
-  hidden: "/images/sts2/intents/hidden.png",
-  sleep: "/images/sts2/intents/animated/sleep.webp",
-  statusCard: "/images/sts2/intents/animated/status_card.webp",
-  stun: "/images/sts2/intents/animated/stun.webp",
-  summon: "/images/sts2/intents/animated/summon.webp",
-  unknown: "/images/sts2/intents/animated/unknown.webp",
-};
-
-const MONSTER_MOVE_INTENT_CLASS_TO_KIND: Record<string, string> = {
-  AttackIntent: "attack",
-  SingleAttackIntent: "attack",
-  MultiAttackIntent: "attack",
-  BuffIntent: "buff",
-  CardDebuffIntent: "cardDebuff",
-  DeathBlowIntent: "deathBlow",
-  DebuffIntent: "debuff",
-  DebuffStrongIntent: "debuff",
-  DefendIntent: "defend",
-  EscapeIntent: "escape",
-  HealIntent: "heal",
-  HiddenIntent: "hidden",
-  SleepIntent: "sleep",
-  StatusIntent: "statusCard",
-  StunIntent: "stun",
-  SummonIntent: "summon",
-  UnknownIntent: "unknown",
-};
-
-const SINGLE_ATTACK_REPEAT: DamageValue = { normal: 1, ascension: null };
-
 function MonsterMoveKeywordPreview({
   entity,
   serviceLocale,
@@ -227,107 +191,19 @@ function MonsterMoveKeywordPreview({
   if (!move || !monster) return null;
 
   const title = serviceLocale === "ko" ? entity.nameKo : entity.nameEn;
-  const monsterName = serviceLocale === "ko" ? monster.name : monster.nameEn;
+  const visual = buildMonsterMoveVisual(monster, move, {
+    damage: entity.monsterMoveDamageValue,
+    block: entity.monsterMoveBlockValue,
+  });
 
   return (
-    <GameHoverTip title={title} style={{ width: 280, maxWidth: 280 }}>
-      <span className="mb-1.5 block font-game-text text-[11px] text-zinc-400">
-        {monsterName}
-      </span>
-      <span className="relative mb-2 block h-44 overflow-hidden rounded bg-black/25">
-        <MonsterSpineStage
-          asset={monster.spineAsset}
-          fallbackImageUrl={monster.bossImageUrl ?? monster.imageUrl}
-          monsterName={monster.name}
-          selectedMoveId={move.id}
-          selectedMoveNonce={previewNonce}
-          imagePriority={false}
-          showLoadingLabel={false}
-          viewportTransitionTime={0}
-          viewportPadding={{ padTop: "16%", padBottom: "2%" }}
-          fallbackImageClassName="absolute inset-0 h-full w-full object-contain opacity-80"
-          className="absolute inset-x-0 bottom-4 top-10"
-        />
-        <MonsterMoveIntentPreview entity={entity} />
-      </span>
-      <MonsterMoveMetricPreview entity={entity} />
-    </GameHoverTip>
-  );
-}
-
-function MonsterMoveIntentPreview({ entity }: { entity: EntityInfo }) {
-  const move = entity.monsterMoveData;
-  const monster = entity.monsterMoveMonsterData;
-  if (!move || !monster) return null;
-
-  const damage = entity.monsterMoveDamageValue ?? findMoveDamage(monster, move);
-  const intents = getMoveIntentDetails(move)
-    .map((intent, index) => ({ intent, kind: getMoveIntentKind(intent.type), key: `${intent.type}-${index}` }))
-    .filter((item) => item.kind !== "hidden");
-  if (intents.length === 0) return null;
-
-  return (
-    <span className="pointer-events-none absolute left-1/2 top-1 z-40 flex -translate-x-1/2 items-end justify-center gap-1">
-      {intents.map(({ intent, kind, key }) => (
-        <span key={key} className="relative inline-flex h-12 w-12 items-center justify-center">
-          <Image
-            src={getMoveIntentIcon(kind, damage, getMoveRepeatInfo(intent))}
-            alt=""
-            width={48}
-            height={48}
-            className="h-11 w-11 object-contain drop-shadow-[0_5px_6px_rgba(0,0,0,0.78)]"
-          />
-          {kind === "attack" && damage && (
-            <span
-              className="font-game-title absolute -bottom-0.5 left-1/2 -translate-x-1/2 text-base font-black leading-none text-[#fff8db]"
-              style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
-            >
-              {formatMoveAttackLabel(damage, getMoveRepeatInfo(intent), "normal")}
-            </span>
-          )}
-        </span>
-      ))}
-    </span>
-  );
-}
-
-function MonsterMoveMetricPreview({ entity }: { entity: EntityInfo }) {
-  const move = entity.monsterMoveData;
-  const monster = entity.monsterMoveMonsterData;
-  if (!move || !monster) return null;
-
-  const attackIntent = getMoveIntentDetails(move).find((intent) => getMoveIntentKind(intent.type) === "attack") ?? null;
-  const damage = entity.monsterMoveDamageValue ?? findMoveDamage(monster, move);
-  const block = entity.monsterMoveBlockValue ?? findMoveBlock(monster, move);
-  if (!damage && !block) return null;
-
-  return (
-    <span className="flex flex-wrap items-center gap-2 font-game-text text-sm font-bold text-zinc-100">
-      {damage && (
-        <span className="inline-flex items-center gap-1">
-          <Image
-            src={getMoveAttackIcon(damage, getMoveRepeatInfo(attackIntent))}
-            alt=""
-            width={22}
-            height={22}
-            className="h-5 w-5 object-contain"
-          />
-          <span>{formatMoveAttackLabel(damage, getMoveRepeatInfo(attackIntent), "normal")}</span>
-          {damage.ascension != null && damage.ascension !== damage.normal && (
-            <span className="text-orange-300">({formatMoveAttackLabel(damage, getMoveRepeatInfo(attackIntent), "ascension")})</span>
-          )}
-        </span>
-      )}
-      {block && (
-        <span className="inline-flex items-center gap-1">
-          <Image src="/images/sts2/ui/combat/block.png" alt="" width={22} height={22} className="h-5 w-5 object-contain" />
-          <span>{block.normal ?? "?"}</span>
-          {block.ascension != null && block.ascension !== block.normal && (
-            <span className="text-orange-300">({block.ascension})</span>
-          )}
-        </span>
-      )}
-    </span>
+    <MonsterMoveHoverPreview
+      move={visual}
+      monster={monster}
+      serviceLocale={serviceLocale}
+      selectedMoveNonce={previewNonce}
+      title={title}
+    />
   );
 }
 
@@ -744,102 +620,6 @@ function withPatchChangeEffects(markdown: string): string {
       .replace(/\bnerf\b/gi, (value) => `[red][jitter]${value}[/jitter][/red]`);
     return `(${tagged})`;
   });
-}
-
-function getMoveIntentDetails(move: MonsterMove): MonsterMoveIntentDetail[] {
-  if (move.intentDetails.length > 0) return move.intentDetails;
-  return move.intents.map((type) => ({ type }));
-}
-
-function getMoveIntentKind(intent: string): string {
-  const kind = MONSTER_MOVE_INTENT_CLASS_TO_KIND[intent];
-  if (kind) return kind;
-  if (intent.includes("Attack")) return "attack";
-  if (intent.includes("Buff")) return "buff";
-  if (intent.includes("Debuff")) return "debuff";
-  if (intent.includes("Defend")) return "defend";
-  if (intent.includes("Status")) return "statusCard";
-  return "unknown";
-}
-
-function getMoveRepeatInfo(intent: MonsterMoveIntentDetail | null): { value: DamageValue | null; multi: boolean } {
-  if (!intent) return { value: null, multi: false };
-  if (intent.repeat) return { value: intent.repeat, multi: intent.type === "MultiAttackIntent" };
-  return { value: SINGLE_ATTACK_REPEAT, multi: intent.type === "MultiAttackIntent" };
-}
-
-function getMoveIntentIcon(
-  kind: string,
-  damage: DamageValue | null,
-  repeat: { value: DamageValue | null; multi: boolean },
-): string {
-  if (kind === "attack" || kind === "deathBlow") return getMoveAttackIcon(damage, repeat);
-  return MONSTER_MOVE_INTENT_ICONS[kind] ?? MONSTER_MOVE_INTENT_ICONS.unknown;
-}
-
-function getMoveAttackIcon(damage: DamageValue | null, repeat: { value: DamageValue | null; multi: boolean }): string {
-  const total = getMoveAttackTotal(damage, repeat, "normal") ?? getMoveAttackTotal(damage, repeat, "ascension") ?? 10;
-  if (total < 5) return "/images/sts2/intents/attack_1.png";
-  if (total < 10) return "/images/sts2/intents/attack_2.png";
-  if (total < 20) return "/images/sts2/intents/attack_3.png";
-  if (total < 40) return "/images/sts2/intents/attack_4.png";
-  return "/images/sts2/intents/attack_5.png";
-}
-
-function getMoveAttackTotal(
-  damage: DamageValue | null,
-  repeat: { value: DamageValue | null; multi: boolean },
-  mode: "normal" | "ascension",
-): number | null {
-  const damageValue = getModeDamageValue(damage, mode);
-  if (damageValue == null) return null;
-  return damageValue * (getModeDamageValue(repeat.value, mode) ?? 1);
-}
-
-function formatMoveAttackLabel(
-  damage: DamageValue | null,
-  repeat: { value: DamageValue | null; multi: boolean },
-  mode: "normal" | "ascension",
-): string | null {
-  const damageValue = getModeDamageValue(damage, mode);
-  if (damageValue == null) return null;
-  if (!repeat.multi) return String(damageValue);
-  return `${damageValue}x${getModeDamageValue(repeat.value, mode) ?? "?"}`;
-}
-
-function getModeDamageValue(value: DamageValue | null, mode: "normal" | "ascension"): number | null {
-  if (!value) return null;
-  return mode === "ascension" ? value.ascension ?? value.normal : value.normal;
-}
-
-function findMoveDamage(monster: CodexMonster, move: MonsterMove): DamageValue | null {
-  if (!monster.damageValues) return null;
-  const explicitKey = getMoveIntentDetails(move).find((intent) => intent.damageKey)?.damageKey;
-  if (explicitKey && monster.damageValues[explicitKey]) return monster.damageValues[explicitKey];
-  return findMoveValue(move.id, monster.damageValues);
-}
-
-function findMoveBlock(monster: CodexMonster, move: MonsterMove): DamageValue | null {
-  if (!monster.blockValues) return null;
-  const explicitKey = getMoveIntentDetails(move).find((intent) => intent.blockKey)?.blockKey;
-  if (explicitKey && monster.blockValues[explicitKey]) return monster.blockValues[explicitKey];
-  return findMoveValue(move.id, monster.blockValues);
-}
-
-function findMoveValue(moveId: string, values: Record<string, DamageValue>): DamageValue | null {
-  const moveKey = normalizeMoveKey(moveId);
-  for (const [key, value] of Object.entries(values)) {
-    if (normalizeMoveKey(key) === moveKey) return value;
-  }
-  for (const [key, value] of Object.entries(values)) {
-    const normalizedKey = normalizeMoveKey(key);
-    if (moveKey.includes(normalizedKey) || normalizedKey.includes(moveKey)) return value;
-  }
-  return null;
-}
-
-function normalizeMoveKey(value: string): string {
-  return value.toLowerCase().replace(/_/g, "");
 }
 
 // --- Entity Lookup ---

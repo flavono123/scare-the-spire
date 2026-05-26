@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useCallback, useState, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import type {
@@ -14,7 +14,7 @@ import type {
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { GameHoverTip } from "./hover-tip";
-import { MonsterSpineStage } from "./monster-spine-stage";
+import { MonsterSpineStage, type MonsterStageVisualBounds } from "./monster-spine-stage";
 
 type IntentKind =
   | "attack"
@@ -34,7 +34,7 @@ type IntentKind =
 
 type MoveChangeTone = "buff" | "nerf" | "added" | "removed" | null;
 
-interface MoveVisual {
+export interface MonsterMoveVisual {
   id: string;
   name: string;
   nameEn: string;
@@ -48,6 +48,8 @@ interface MoveVisual {
   powerChange?: MoveChangeTone;
 }
 
+type MoveVisual = MonsterMoveVisual;
+
 interface InfestedPrismReworkBlockProps {
   monster: CodexMonster;
   serviceLocale: ServiceLocale;
@@ -58,6 +60,9 @@ const INFESTED_PRISM_MOVE_ORDER = ["JAB", "RADIATE", "WHIRLWIND", "PULSATE"];
 const ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
 const ASCENSION_ICON = "/images/sts2/ui/topbar/top_bar_ascension.png";
 const BLOCK_ICON = "/images/sts2/ui/combat/block.png";
+const MOVE_PREVIEW_VIEWPORT_PADDING = { padTop: "24%", padBottom: "2%" } as const;
+const MOVE_PREVIEW_STAGE_TOP = 40;
+const MOVE_PREVIEW_STAGE_BOTTOM = 16;
 const INTENT_ICONS: Record<IntentKind, string> = {
   attack: "/images/sts2/intents/attack_3.png",
   buff: "/images/sts2/intents/buff.png",
@@ -333,47 +338,94 @@ function MovePreviewPopover({
       </Link>
       {open && (
         <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2">
-          <GameHoverTip title={title} style={{ width: 280, maxWidth: 280 }}>
-            <span className="relative mb-2 block h-44 overflow-hidden rounded bg-black/25">
-              <MonsterSpineStage
-                asset={monster.spineAsset}
-                fallbackImageUrl={monster.bossImageUrl ?? monster.imageUrl}
-                monsterName={monster.name}
-                selectedMoveId={move.id}
-                selectedMoveNonce={nonce}
-                imagePriority={false}
-                showLoadingLabel={false}
-                viewportTransitionTime={0}
-                viewportPadding={{ padTop: "16%", padBottom: "2%" }}
-                fallbackImageClassName="absolute inset-0 h-full w-full object-contain opacity-80"
-                className="absolute inset-x-0 bottom-4 top-10"
-              />
-              <MoveIntentPreview move={move} />
-              <InitialPowerPreview applications={monster.initialPowerApplications} serviceLocale={serviceLocale} />
-            </span>
-            <span className="flex flex-wrap items-center gap-2">
-              <MoveMetricTokens move={move} />
-              <MoveApplicationIcons move={move} serviceLocale={serviceLocale} />
-            </span>
-          </GameHoverTip>
+          <MonsterMoveHoverPreview
+            move={move}
+            monster={monster}
+            serviceLocale={serviceLocale}
+            selectedMoveNonce={nonce}
+            title={title}
+          />
         </span>
       )}
     </span>
   );
 }
 
+export function MonsterMoveHoverPreview({
+  move,
+  monster,
+  serviceLocale,
+  selectedMoveNonce = 0,
+  title,
+}: {
+  move: MonsterMoveVisual;
+  monster: CodexMonster;
+  serviceLocale: ServiceLocale;
+  selectedMoveNonce?: number;
+  title?: string;
+}) {
+  const [visualBounds, setVisualBounds] = useState<MonsterStageVisualBounds | null>(null);
+  const handleVisualBoundsChange = useCallback((bounds: MonsterStageVisualBounds | null) => {
+    setVisualBounds((current) => areStageVisualBoundsEqual(current, bounds) ? current : bounds);
+  }, []);
+  const resolvedTitle = title ?? (serviceLocale === "ko" ? move.name : move.nameEn);
+  const monsterName = serviceLocale === "ko" ? monster.name : monster.nameEn;
+
+  return (
+    <GameHoverTip title={resolvedTitle} style={{ width: 280, maxWidth: 280 }}>
+      <span className="mb-1.5 block font-game-text text-[11px] text-zinc-400">
+        {monsterName}
+      </span>
+      <span className="relative mb-2 block h-44 overflow-hidden rounded bg-black/25">
+        <span
+          className="absolute inset-x-0"
+          style={{ top: MOVE_PREVIEW_STAGE_TOP, bottom: MOVE_PREVIEW_STAGE_BOTTOM }}
+        >
+          <MonsterSpineStage
+            asset={monster.spineAsset}
+            fallbackImageUrl={monster.bossImageUrl ?? monster.imageUrl}
+            monsterName={monster.name}
+            selectedMoveId={move.id}
+            selectedMoveNonce={selectedMoveNonce}
+            imagePriority={false}
+            showLoadingLabel={false}
+            viewportTransitionTime={0}
+            viewportPadding={MOVE_PREVIEW_VIEWPORT_PADDING}
+            fallbackImageClassName="absolute inset-0 h-full w-full object-contain opacity-80"
+            className="absolute inset-0"
+            onVisualBoundsChange={handleVisualBoundsChange}
+          />
+        </span>
+        <MoveIntentPreview move={move} visualBounds={visualBounds} />
+        <InitialPowerPreview
+          applications={monster.initialPowerApplications}
+          serviceLocale={serviceLocale}
+          visualBounds={visualBounds}
+        />
+      </span>
+      <span className="flex flex-wrap items-center gap-2">
+        <MoveMetricTokens move={move} />
+        <MoveApplicationIcons move={move} serviceLocale={serviceLocale} />
+      </span>
+    </GameHoverTip>
+  );
+}
+
 function InitialPowerPreview({
   applications,
   serviceLocale,
+  visualBounds,
 }: {
   applications: readonly MonsterMovePowerApplication[];
   serviceLocale: ServiceLocale;
+  visualBounds: MonsterStageVisualBounds | null;
 }) {
   if (applications.length === 0) return null;
 
   return (
     <span
-      className="pointer-events-none absolute bottom-1 left-1/2 z-40 flex -translate-x-1/2 items-end justify-center gap-1"
+      className="pointer-events-none absolute z-40 flex items-end justify-center gap-1"
+      style={getInitialPowerPreviewStyle(visualBounds, applications.length)}
       aria-label={serviceLocale === "ko" ? "시작 효과" : "Starting effects"}
     >
       {applications.map((power) => (
@@ -389,14 +441,23 @@ function InitialPowerPreview({
   );
 }
 
-function MoveIntentPreview({ move }: { move: MoveVisual }) {
+function MoveIntentPreview({
+  move,
+  visualBounds,
+}: {
+  move: MoveVisual;
+  visualBounds: MonsterStageVisualBounds | null;
+}) {
   const intents = move.intents
     .map((intent, index) => ({ intent, kind: getIntentKind(intent.type), key: `${intent.type}-${index}` }))
     .filter((item) => item.kind !== "hidden");
   if (intents.length === 0) return null;
 
   return (
-    <span className="pointer-events-none absolute right-3 top-1 z-40 flex items-end justify-center gap-1">
+    <span
+      className="pointer-events-none absolute z-40 flex items-end justify-center gap-1"
+      style={getIntentPreviewStyle(visualBounds, intents.length)}
+    >
       {intents.map(({ intent, kind, key }) => (
         <span key={key} className="relative inline-flex h-12 w-12 items-center justify-center">
           <Image
@@ -418,6 +479,66 @@ function MoveIntentPreview({ move }: { move: MoveVisual }) {
       ))}
     </span>
   );
+}
+
+function getIntentPreviewStyle(bounds: MonsterStageVisualBounds | null, count: number): CSSProperties {
+  if (!bounds) {
+    return {
+      left: "50%",
+      top: 4,
+      transform: "translateX(-50%)",
+    };
+  }
+
+  const safeInset = 4;
+  const tokenSize = 48;
+  const gap = 4;
+  const groupWidth = Math.max(tokenSize, count * tokenSize + Math.max(0, count - 1) * gap);
+  const halfWidth = groupWidth / 2;
+  const centerX = bounds.left + bounds.width / 2;
+  const left = clampNumber(centerX, safeInset + halfWidth, Math.max(safeInset + halfWidth, bounds.stageWidth - safeInset - halfWidth));
+  const stageFrameHeight = MOVE_PREVIEW_STAGE_TOP + bounds.stageHeight + MOVE_PREVIEW_STAGE_BOTTOM;
+  const top = clampNumber(
+    MOVE_PREVIEW_STAGE_TOP + bounds.top - tokenSize - gap,
+    safeInset,
+    Math.max(safeInset, stageFrameHeight - tokenSize - safeInset),
+  );
+
+  return {
+    left,
+    top,
+    transform: "translateX(-50%)",
+  };
+}
+
+function getInitialPowerPreviewStyle(bounds: MonsterStageVisualBounds | null, count: number): CSSProperties {
+  if (!bounds) {
+    return {
+      left: "50%",
+      bottom: 4,
+      transform: "translateX(-50%)",
+    };
+  }
+
+  const safeInset = 4;
+  const tokenSize = 24;
+  const gap = 4;
+  const groupWidth = Math.max(tokenSize, count * tokenSize + Math.max(0, count - 1) * gap);
+  const halfWidth = groupWidth / 2;
+  const centerX = bounds.left + bounds.width / 2;
+  const left = clampNumber(centerX, safeInset + halfWidth, Math.max(safeInset + halfWidth, bounds.stageWidth - safeInset - halfWidth));
+  const stageFrameHeight = MOVE_PREVIEW_STAGE_TOP + bounds.stageHeight + MOVE_PREVIEW_STAGE_BOTTOM;
+  const top = clampNumber(
+    MOVE_PREVIEW_STAGE_TOP + bounds.bottom + 4,
+    safeInset,
+    Math.max(safeInset, stageFrameHeight - tokenSize - safeInset),
+  );
+
+  return {
+    left,
+    top,
+    transform: "translateX(-50%)",
+  };
 }
 
 function MoveMetricTokens({ move, compact = false }: { move: MoveVisual; compact?: boolean }) {
@@ -582,7 +703,7 @@ function buildCurrentMoveVisuals(monster: CodexMonster): MoveVisual[] {
   return INFESTED_PRISM_MOVE_ORDER.flatMap((moveId) => {
     const move = moveById.get(moveId);
     if (!move) return [];
-    const visual = buildMoveVisual(monster, move);
+    const visual = buildMonsterMoveVisual(monster, move);
     const old = oldById.get(moveId);
     return [{
       ...visual,
@@ -593,13 +714,17 @@ function buildCurrentMoveVisuals(monster: CodexMonster): MoveVisual[] {
   });
 }
 
-function buildMoveVisual(monster: CodexMonster, move: MonsterMove): MoveVisual {
+export function buildMonsterMoveVisual(
+  monster: CodexMonster,
+  move: MonsterMove,
+  options: { damage?: DamageValue | null; block?: DamageValue | null } = {},
+): MonsterMoveVisual {
   return {
     id: move.id,
     name: move.name,
     nameEn: move.nameEn,
-    damage: findDamageForMove(monster, move),
-    block: findBlockForMove(monster, move),
+    damage: options.damage !== undefined ? options.damage : findDamageForMove(monster, move),
+    block: options.block !== undefined ? options.block : findBlockForMove(monster, move),
     intents: getMoveIntentDetails(move),
     powers: move.powerApplications,
     cards: move.cardApplications,
@@ -698,6 +823,24 @@ function formatAttackLabel(
 function getModeValue(value: DamageValue | null, mode: "normal" | "ascension"): number | null {
   if (!value) return null;
   return mode === "ascension" ? value.ascension ?? value.normal : value.normal;
+}
+
+function areStageVisualBoundsEqual(
+  a: MonsterStageVisualBounds | null,
+  b: MonsterStageVisualBounds | null,
+): boolean {
+  if (a === b) return true;
+  if (!a || !b) return false;
+  return Math.abs(a.left - b.left) < 0.5
+    && Math.abs(a.top - b.top) < 0.5
+    && Math.abs(a.right - b.right) < 0.5
+    && Math.abs(a.bottom - b.bottom) < 0.5
+    && Math.abs(a.stageWidth - b.stageWidth) < 0.5
+    && Math.abs(a.stageHeight - b.stageHeight) < 0.5;
+}
+
+function clampNumber(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
 }
 
 function getDamageChange(before: DamageValue | null, after: DamageValue | null): MoveChangeTone {
