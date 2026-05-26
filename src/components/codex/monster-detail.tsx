@@ -440,7 +440,7 @@ function MoveApplicationTokens({
           entity={buildPowerEntity(application, powerById.get(application.powerId))}
           imageUrl={application.imageUrl}
           label={serviceLocale === "ko" ? application.powerName : application.powerNameEn}
-          amount={application.amount}
+          amount={getPowerApplicationCounterAmount(application, powerById.get(application.powerId))}
           serviceLocale={serviceLocale}
         />
       ))}
@@ -483,7 +483,10 @@ function MoveApplicationToken({
         )}
       </span>
       {amount && (
-        <span className="pointer-events-none absolute -bottom-0.5 -right-1 rounded bg-black/75 px-0.5 text-[9px] font-bold tabular-nums text-gray-100">
+        <span
+          className="pointer-events-none absolute -bottom-1 -right-1 font-game-title text-[11px] font-black leading-none text-[#fff8db]"
+          style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
+        >
           {amount.normal ?? "?"}
         </span>
       )}
@@ -506,6 +509,7 @@ function InitialPowerApplicationsRail({
         const power = powerById.get(application.powerId);
         const label = serviceLocale === "ko" ? application.powerName : application.powerNameEn;
         const targetLabel = getPowerTargetLabel(application.target, serviceLocale);
+        const counterAmount = getPowerApplicationCounterAmount(application, power);
 
         return (
           <EntityPreview
@@ -519,6 +523,14 @@ function InitialPowerApplicationsRail({
                 {application.imageUrl && (
                   <Image src={application.imageUrl} alt="" width={32} height={32} className="h-8 w-8 object-contain" />
                 )}
+                {counterAmount && (
+                  <span
+                    className="pointer-events-none absolute -bottom-1 -right-1 font-game-title text-xs font-black leading-none text-[#fff8db]"
+                    style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
+                  >
+                    {counterAmount.normal ?? "?"}
+                  </span>
+                )}
               </span>
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="truncate text-sm font-semibold text-gray-100">{label}</span>
@@ -526,18 +538,11 @@ function InitialPowerApplicationsRail({
                   <span className="font-game-text truncate text-[11px] text-gray-500">{power.nameEn}</span>
                 )}
               </span>
-              <span className="flex shrink-0 items-center gap-1.5">
-                {application.amount && (
-                  <span className="rounded border border-[#efc851]/25 bg-[#efc851]/10 px-1.5 py-0.5 text-[11px] font-bold tabular-nums text-[#efc851]">
-                    {formatNumericValue(application.amount)}
-                  </span>
-                )}
-                {targetLabel && (
-                  <span className="rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-medium text-gray-400">
-                    {targetLabel}
-                  </span>
-                )}
-              </span>
+              {targetLabel && (
+                <span className="shrink-0 rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-medium text-gray-400">
+                  {targetLabel}
+                </span>
+              )}
             </span>
           </EntityPreview>
         );
@@ -2727,6 +2732,18 @@ function formatNumericValue(value: DamageValue): string {
     return `${normal} (${value.ascension})`;
   }
   return `${normal}`;
+}
+
+function getPowerApplicationCounterAmount(
+  application: MonsterMovePowerApplication,
+  power: CodexPower | undefined,
+): DamageValue | null {
+  if (!application.amount || !isCountablePower(power)) return null;
+  return application.amount;
+}
+
+function isCountablePower(power: CodexPower | undefined): boolean {
+  return power?.stackType === "Counter" || power?.stackType === "Duration" || power?.stackType === "Intensity";
 }
 
 function normalizeNumericValue(value: DamageValue | number): DamageValue {
