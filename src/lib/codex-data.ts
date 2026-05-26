@@ -752,13 +752,25 @@ function hasPowerLocalizationTitle(gamePowers: GameLocalizationTable, id: string
 function powerDescriptionText(
   gamePowers: GameLocalizationTable,
   l10nBase: string,
-  fallback: string | null,
+  fallbackRaw: string | null,
+  fallbackDescription: string,
   vars: Record<string, number | string>,
-): string {
-  const description = gameText(gamePowers, `${l10nBase}.description`, fallback ?? "");
+  gameLocale: GameLocale,
+): { raw: string; description?: string } {
+  const description = gameText(gamePowers, `${l10nBase}.description`, fallbackRaw ?? "");
   const smartDescription = gamePowers[`${l10nBase}.smartDescription`]?.replace("{OwnerName}'s[/gold]의", "{OwnerName}[/gold]의");
-  if (smartDescription && (!smartDescription.includes("{OwnerName}") || vars.OwnerName)) return smartDescription;
-  return description;
+  if (smartDescription && (!smartDescription.includes("{OwnerName}") || vars.OwnerName)) {
+    return { raw: smartDescription };
+  }
+
+  if (smartDescription?.includes("{OwnerName}") && !vars.OwnerName && (gameLocale === "kor" || gameLocale === "eng")) {
+    return {
+      raw: fallbackRaw ?? fallbackDescription,
+      description: fallbackDescription,
+    };
+  }
+
+  return { raw: description };
 }
 
 function mapPower(
@@ -772,13 +784,21 @@ function mapPower(
   if (gameLocale === "eng" && eng.vars) Object.assign(vars, eng.vars);
   if (gameLocale !== "kor" && gameLocale !== "eng") delete vars.OwnerName;
   const l10nBase = powerLocalizationBase(gamePowers, kor.id);
-  const raw = powerDescriptionText(gamePowers, l10nBase, kor.description_raw ?? kor.description, vars);
+  const fallbackPower = gameLocale === "eng" ? eng : kor;
+  const powerText = powerDescriptionText(
+    gamePowers,
+    l10nBase,
+    fallbackPower.description_raw ?? fallbackPower.description,
+    fallbackPower.description,
+    vars,
+    gameLocale,
+  );
   return {
     id: kor.id,
     name: gameTitleText(gamePowers, `${l10nBase}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
-    description: bakeDescription(raw ?? "", vars),
-    descriptionRaw: raw,
+    description: powerText.description ?? bakeDescription(powerText.raw ?? "", vars),
+    descriptionRaw: powerText.raw,
     vars,
     type: kor.type as PowerType,
     stackType: (kor.stack_type ?? "None") as PowerStackType,
