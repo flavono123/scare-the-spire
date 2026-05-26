@@ -6,7 +6,15 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { RichContentEditor } from "@/components/rich-content-editor";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
-import { blocksToPlainText, entityDisplayNames } from "@/lib/chemical-utils";
+import {
+  blocksToPlainText,
+  blocksToStorageText,
+  entityDisplayNames,
+  entityKeywordDescription,
+  resolveEntityKeyword,
+  type EntityKeywordIndex,
+  buildEntityKeywordIndex,
+} from "@/lib/chemical-utils";
 import type { PostBlock } from "@/lib/chemical-types";
 import { useAuth } from "@/hooks/use-auth";
 import { useComments, type Comment } from "@/hooks/use-comments";
@@ -31,6 +39,8 @@ interface LegacyInlineCandidate {
   entityType?: EntityInfo["type"];
   description?: string;
 }
+
+const EXPLICIT_KEYWORD_RE = /(\S+)\{(\S(?:[^{}\n]*\S)?)\}/g;
 
 function buildLegacyInlineIndex(entities: EntityInfo[]): Map<string, LegacyInlineCandidate[]> {
   const index = new Map<string, LegacyInlineCandidate[]>();
@@ -149,10 +159,55 @@ function parseLegacyCommentBlocks(content: string, index: Map<string, LegacyInli
   return blocks.length > 0 ? blocks : [{ type: "text", text: content }];
 }
 
-function getCommentBlocks(comment: Comment, legacyInlineIndex: Map<string, LegacyInlineCandidate[]>): PostBlock[] {
+function parseExplicitKeywordBlocks(content: string, keywordEntityIndex: EntityKeywordIndex): PostBlock[] | null {
+  const blocks: PostBlock[] = [];
+  let cursor = 0;
+  let found = false;
+
+  for (const match of content.matchAll(EXPLICIT_KEYWORD_RE)) {
+    if (match.index == null) continue;
+
+    const full = match[0] ?? "";
+    const text = match[1]?.trim() ?? "";
+    const keyword = match[2]?.trim() ?? "";
+    if (!text || !keyword) continue;
+
+    if (cursor < match.index) {
+      blocks.push({ type: "text", text: content.slice(cursor, match.index) });
+    }
+
+    const entity = resolveEntityKeyword(keyword, keywordEntityIndex);
+    const description = entity ? entityKeywordDescription(entity) ?? keyword : keyword;
+    blocks.push({
+      type: "keyword",
+      text,
+      keyword,
+      description,
+      entityId: entity?.id,
+      entityType: entity?.type,
+    });
+
+    cursor = match.index + full.length;
+    found = true;
+  }
+
+  if (!found) return null;
+  if (cursor < content.length) {
+    blocks.push({ type: "text", text: content.slice(cursor) });
+  }
+  return blocks.length > 0 ? blocks : null;
+}
+
+function getCommentBlocks(
+  comment: Comment,
+  legacyInlineIndex: Map<string, LegacyInlineCandidate[]>,
+  keywordEntityIndex: EntityKeywordIndex,
+): PostBlock[] {
   if (comment.content_blocks?.length) {
     return comment.content_blocks;
   }
+  const explicitKeywordBlocks = parseExplicitKeywordBlocks(comment.content, keywordEntityIndex);
+  if (explicitKeywordBlocks) return explicitKeywordBlocks;
   return parseLegacyCommentBlocks(comment.content, legacyInlineIndex);
 }
 
@@ -191,11 +246,13 @@ export function CommentSection({
   const commentIds = useMemo(() => comments.map((c) => c.id), [comments]);
   const { counts: likeCounts, liked: likedSet, toggle: toggleLike } = useCommentLikes(commentIds, userId);
   const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
+  const keywordEntityIndex = useMemo(() => buildEntityKeywordIndex(entities), [entities]);
   const legacyInlineIndex = useMemo(() => buildLegacyInlineIndex(entities), [entities]);
   const nicknameInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (blocks: PostBlock[]) => {
     const trimmed = blocksToPlainText(blocks).trim();
+    const storedContent = blocksToStorageText(blocks);
     const nick = nicknameInputRef.current?.value.trim() || profile.nickname.trim() || profileFallback.nickname;
     if (!trimmed || !nick) return;
 
@@ -203,7 +260,7 @@ export function CommentSection({
     try {
       const activeUserId = userId ?? await ensureUser();
       if (!activeUserId) return;
-      await add(nick, trimmed, blocks, activeUserId);
+      await add(nick, storedContent, blocks, activeUserId);
     } finally {
       setSubmitting(false);
     }
@@ -262,7 +319,7 @@ export function CommentSection({
                 )}
               </div>
               <div className="mt-1.5 text-muted-foreground leading-relaxed break-words">
-                <PostRenderer blocks={getCommentBlocks(comment, legacyInlineIndex)} entityMap={entityMap} />
+                <PostRenderer blocks={getCommentBlocks(comment, legacyInlineIndex, keywordEntityIndex)} entityMap={entityMap} />
               </div>
             </li>
           ))}

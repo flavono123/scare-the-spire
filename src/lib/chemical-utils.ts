@@ -79,6 +79,27 @@ export function blocksToPlainText(blocks: PostBlock[]): string {
     .join("");
 }
 
+/**
+ * Convert PostBlock array to a recoverable plain text form for legacy storage.
+ *
+ * `content_blocks` is the canonical rich payload, but comments also keep a
+ * plain `content` column for legacy/fallback reads. Keyword blocks need their
+ * lookup keyword preserved there; otherwise `label{keyword}` degrades to just
+ * `label` if the rich column is unavailable.
+ */
+export function blocksToStorageText(blocks: PostBlock[]): string {
+  return blocks
+    .map((b) => {
+      if (b.type === "text") return b.text;
+      if (b.type === "entity") return b.displayText;
+
+      const text = b.text;
+      const keyword = b.keyword?.trim();
+      return keyword ? `${text}{${keyword}}` : text;
+    })
+    .join("");
+}
+
 export function entityDisplayNames(entity: EntityInfo): string[] {
   return uniqueStrings([
     entity.nameKo,
