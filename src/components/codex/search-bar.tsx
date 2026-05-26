@@ -193,7 +193,7 @@ export function SearchBar({ value, onChange, inputId, triggerGroups, placeholder
             setIsFocused(false);
           }, 150)}
           placeholder={placeholder}
-          className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-16 py-1.5 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-all"
+          className="h-10 w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-9 py-0 text-base leading-[1.5] text-gray-200 placeholder-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-all sm:h-8 sm:pr-16 sm:text-sm"
         />
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
           {value && (
