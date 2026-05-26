@@ -1001,6 +1001,8 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
               changes={changes}
               versionDiffs={versionDiffs}
               patches={patches}
+              introducedInPatch={card.introducedInPatch}
+              deprecatedInPatch={card.deprecatedInPatch}
               emptyLabel={detailLabels.noPatchHistory}
             />
           </InfoRailSection>

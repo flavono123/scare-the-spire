@@ -25,6 +25,7 @@ import {
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import { reconstructCardAtVersion } from "@/lib/entity-versioning";
+import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
 import {
   annotateCard,
   isEtcRarity,
@@ -385,11 +386,13 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
 
   // Reconstruct cards at the selected version (only when version differs from current)
   const versionedCards = useMemo(() => {
-    if (selectedVersion === currentVersion) return cards;
-    return cards.map((card) =>
-      reconstructCardAtVersion(card, selectedVersion, currentVersion, versionDiffs, patches),
+    const reconstructed = selectedVersion === currentVersion
+      ? cards
+      : cards.map((card) =>
+        reconstructCardAtVersion(card, selectedVersion, currentVersion, versionDiffs, patches),
     );
-  }, [cards, selectedVersion, currentVersion, versionDiffs, patches]);
+    return withEntityLifecycleForVersion(reconstructed, selectedVersion, { changes, entityType: "card" });
+  }, [cards, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   // Filtered & sorted cards (always sorted by name)
   const filteredCards = useMemo(() => {

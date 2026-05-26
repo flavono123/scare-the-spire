@@ -1310,6 +1310,8 @@ export function MonsterDetail({
               entityId={monster.id}
               changes={changes}
               patches={patches}
+              introducedInPatch={monster.introducedInPatch}
+              deprecatedInPatch={monster.deprecatedInPatch}
               emptyLabel={detailLabels.noPatchHistory}
             />
           </InfoRailSection>

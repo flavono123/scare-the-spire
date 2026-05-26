@@ -2143,6 +2143,8 @@ export function EventDetail({
               changes={changes}
               versionDiffs={versionDiffs}
               patches={patches}
+              introducedInPatch={event.introducedInPatch}
+              deprecatedInPatch={event.deprecatedInPatch}
               emptyLabel={detailLabels.noPatchHistory}
             />
           </InfoRailSection>

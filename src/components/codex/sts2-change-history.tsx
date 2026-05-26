@@ -23,6 +23,8 @@ interface STS2ChangeHistoryProps {
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
   patches?: STS2Patch[];
+  introducedInPatch?: string;
+  deprecatedInPatch?: string;
   emptyLabel: string;
 }
 
@@ -30,7 +32,10 @@ interface HistoryEntry {
   patch: string;
   curatedChanges: STS2Change[];
   versionDiffs: EntityFieldDiff[];
+  lifecycleChanges: LifecycleChangeKind[];
 }
+
+type LifecycleChangeKind = "introduced" | "deprecated";
 
 const VERSIONED_ENTITY_TYPES: readonly VersionedEntityType[] = [
   "card",
@@ -196,6 +201,29 @@ function VersionDiffLine({
   );
 }
 
+function LifecycleDiffLine({
+  kind,
+  serviceLocale,
+}: {
+  kind: LifecycleChangeKind;
+  serviceLocale: ServiceLocale;
+}) {
+  const label = kind === "introduced"
+    ? serviceLocale === "ko" ? "추가됨" : "Added"
+    : serviceLocale === "ko" ? "삭제됨" : "Removed";
+  const className = kind === "introduced"
+    ? "border-green-400/30 bg-green-500/10 text-green-300"
+    : "border-zinc-400/30 bg-zinc-500/10 text-zinc-300";
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 font-game-text text-xs text-gray-300">
+      <span className={`rounded border px-1.5 py-0.5 text-[10px] font-bold ${className}`}>
+        {label}
+      </span>
+    </div>
+  );
+}
+
 function filterDuplicateDiffs(diffs: EntityFieldDiff[]): EntityFieldDiff[] {
   const hasDescription = diffs.some((diff) => diff.field === "description");
   return diffs.filter((diff) => !(hasDescription && diff.field === "descriptionRaw"));
@@ -210,6 +238,8 @@ export function STS2ChangeHistory({
   changes,
   versionDiffs,
   patches,
+  introducedInPatch,
+  deprecatedInPatch,
   emptyLabel,
 }: STS2ChangeHistoryProps) {
   const entries = useMemo<HistoryEntry[]>(() => {
@@ -224,6 +254,7 @@ export function STS2ChangeHistory({
         patch: normalizedPatch,
         curatedChanges: [],
         versionDiffs: [],
+        lifecycleChanges: [],
       };
       byPatch.set(normalizedPatch, entry);
       return entry;
@@ -239,6 +270,16 @@ export function STS2ChangeHistory({
       ensureEntry(versionDiff.patch).versionDiffs.push(...versionDiff.diffs);
     }
 
+    if (introducedInPatch) {
+      const entry = ensureEntry(introducedInPatch);
+      if (!entry.lifecycleChanges.includes("introduced")) entry.lifecycleChanges.push("introduced");
+    }
+
+    if (deprecatedInPatch) {
+      const entry = ensureEntry(deprecatedInPatch);
+      if (!entry.lifecycleChanges.includes("deprecated")) entry.lifecycleChanges.push("deprecated");
+    }
+
     return [...byPatch.values()]
       .map((entry) => ({
         ...entry,
@@ -248,7 +289,7 @@ export function STS2ChangeHistory({
         const rankDiff = getPatchRank(b.patch, patches) - getPatchRank(a.patch, patches);
         return rankDiff || b.patch.localeCompare(a.patch);
       });
-  }, [changeEntityTypes, changes, entityId, entityType, patches, versionDiffs, versionEntityType]);
+  }, [changeEntityTypes, changes, deprecatedInPatch, entityId, entityType, introducedInPatch, patches, versionDiffs, versionEntityType]);
 
   if (entries.length === 0) {
     return <p className="font-game-text text-sm text-gray-500">{emptyLabel}</p>;
@@ -264,6 +305,7 @@ export function STS2ChangeHistory({
           .join(" ");
         const curatedDiffs = entry.curatedChanges.flatMap((change) => change.diffs);
         const hasVersionDiffs = entry.versionDiffs.length > 0;
+        const hasLifecycleChanges = entry.lifecycleChanges.length > 0;
 
         return (
           <Link
@@ -285,6 +327,9 @@ export function STS2ChangeHistory({
               </p>
             )}
             <div className="mt-2 space-y-1.5">
+              {hasLifecycleChanges && entry.lifecycleChanges.map((kind) => (
+                <LifecycleDiffLine key={`${entry.patch}-${kind}`} kind={kind} serviceLocale={serviceLocale} />
+              ))}
               {hasVersionDiffs
                 ? entry.versionDiffs.map((diff, index) => (
                     <VersionDiffLine

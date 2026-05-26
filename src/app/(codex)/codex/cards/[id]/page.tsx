@@ -32,7 +32,7 @@ export async function generateMetadata({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [cards, gameUi] = await Promise.all([
-    getCodexCards({ gameLocale }),
+    getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
   const card = findCardByRouteId(cards, id);
@@ -52,7 +52,7 @@ export default async function CardDetailPage({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [cards, enchantments, afflictions, patches, changes, versionDiffs, gameUi, ancients, events, potions, powers] = await Promise.all([
-    getCodexCards({ gameLocale }),
+    getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexAfflictions({ gameLocale }),
     getSTS2Patches(),
@@ -62,7 +62,7 @@ export default async function CardDetailPage({
     getCodexAncients({ gameLocale }),
     getCodexEvents({ gameLocale }),
     getCodexPotions({ gameLocale }),
-    getCodexPowers({ gameLocale }),
+    getCodexPowers({ includeDeprecated: true, gameLocale }),
   ]);
   const card = findCardByRouteId(cards, id);
   if (!card) notFound();

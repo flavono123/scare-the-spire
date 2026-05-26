@@ -29,10 +29,10 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
     codexAncients,
     codexEpochs,
   ] = await Promise.all([
-    getCodexCards({ gameLocale }),
+    getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
     getCodexPotions({ gameLocale }),
-    getCodexPowers({ gameLocale }),
+    getCodexPowers({ includeDeprecated: true, gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexAfflictions({ gameLocale }),
     getCodexEvents({ gameLocale }),

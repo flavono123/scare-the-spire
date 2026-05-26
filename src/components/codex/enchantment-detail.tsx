@@ -315,6 +315,8 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
               changes={changes}
               versionDiffs={props.enchantment ? versionDiffs : undefined}
               patches={patches}
+              introducedInPatch={resource.introducedInPatch}
+              deprecatedInPatch={resource.deprecatedInPatch}
               emptyLabel={detailLabels.noPatchHistory}
             />
           </InfoRailSection>

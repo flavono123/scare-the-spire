@@ -49,7 +49,7 @@ export default async function EpochDetailPage({
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [epochs, cards, relics, potions, ancients, entities, gameUi] = await Promise.all([
     getCodexEpochs({ gameLocale }),
-    getCodexCards({ gameLocale }),
+    getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
     getCodexPotions({ gameLocale }),
     getCodexAncients({ gameLocale }),

@@ -48,6 +48,7 @@ export function RelicTile({ serviceLocale = "ko", relic, showBeta = false, onCli
   const tileImageUrl = showBeta && relic.betaImageUrl
     ? relic.betaImageUrl
     : relic.imageUrl ?? (tileVariant ? relic.variantImageUrls?.[tileVariant] ?? null : null);
+  const lifecycleClassName = relic.deprecated ? " opacity-50 grayscale saturate-0" : "";
 
   const [hovered, setHovered] = useState(false);
   const [placement, setPlacement] = useState<TooltipPlacement>({
@@ -79,7 +80,7 @@ export function RelicTile({ serviceLocale = "ko", relic, showBeta = false, onCli
       onClick={() => onClick?.(tileVariant ?? undefined)}
     >
       <div
-        className={`w-14 h-14 sm:w-16 sm:h-16 rounded-lg border-2 p-1 transition-all cursor-pointer ${
+        className={`w-14 h-14 sm:w-16 sm:h-16 rounded-lg border-2 p-1 transition-all cursor-pointer${lifecycleClassName} ${
           hovered
             ? "border-yellow-500/60 bg-yellow-500/10 scale-110 z-10"
             : "border-transparent bg-white/5 hover:bg-white/10"

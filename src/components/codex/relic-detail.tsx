@@ -399,6 +399,8 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
               changes={changes}
               versionDiffs={versionDiffs}
               patches={patches}
+              introducedInPatch={relic.introducedInPatch}
+              deprecatedInPatch={relic.deprecatedInPatch}
               emptyLabel={detailLabels.noPatchHistory}
             />
           </InfoRailSection>

@@ -29,6 +29,7 @@ import {
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import { reconstructPotionAtVersion } from "@/lib/entity-versioning";
+import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
 import {
   fuzzyMatchCodexText,
   parseCodexSearch,
@@ -178,11 +179,13 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
   }, [selectedPotion]);
 
   const versionedPotions = useMemo(() => {
-    if (!currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion) return potions;
-    return potions.map((potion) =>
-      reconstructPotionAtVersion(potion, selectedVersion, currentVersion, versionDiffs, patches),
-    );
-  }, [potions, selectedVersion, currentVersion, versionDiffs, patches]);
+    const reconstructed = !currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion
+      ? potions
+      : potions.map((potion) =>
+        reconstructPotionAtVersion(potion, selectedVersion, currentVersion, versionDiffs, patches),
+      );
+    return withEntityLifecycleForVersion(reconstructed, selectedVersion, { changes, entityType: "potion" });
+  }, [potions, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   // Cmd+K to focus search
   useEffect(() => {
@@ -520,6 +523,7 @@ function PotionTile({
     horizontal: "right",
     vertical: "top",
   });
+  const lifecycleClassName = potion.deprecated ? " opacity-50 grayscale saturate-0" : "";
 
   const updatePlacement = useCallback(() => {
     const rect = tileRef.current?.getBoundingClientRect();
@@ -545,7 +549,7 @@ function PotionTile({
     >
       <button
         data-potion-tile={potion.id}
-        className={`flex h-14 w-14 items-center justify-center rounded-lg border-2 p-1 transition-all sm:h-16 sm:w-16 ${
+        className={`flex h-14 w-14 items-center justify-center rounded-lg border-2 p-1 transition-all sm:h-16 sm:w-16${lifecycleClassName} ${
           hovered
             ? "z-10 scale-110 border-yellow-500/60 bg-yellow-500/10"
             : "border-transparent bg-white/5 hover:bg-white/10"

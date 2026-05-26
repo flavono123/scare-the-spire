@@ -116,7 +116,9 @@ interface RawCard {
   max_upgrade_level?: number | null;
   image_url: string | null;
   beta_image_url: string | null;
+  introducedInPatch?: string;
   deprecated?: boolean;
+  deprecatedInPatch?: string;
 }
 
 interface RawCharacter {
@@ -404,6 +406,9 @@ function mapCard(
     maxUpgradeLevel: kor.max_upgrade_level ?? (kor.upgrade ? 1 : 0),
     imageUrl: codexCardImageUrl(kor),
     betaImageUrl: spireCodexImageToLocal(kor.beta_image_url),
+    introducedInPatch: kor.introducedInPatch,
+    deprecated: kor.deprecated,
+    deprecatedInPatch: kor.deprecatedInPatch,
   };
 }
 
@@ -506,6 +511,9 @@ interface RawRelic {
   rarity: string;
   pool: string;
   image_url: string | null;
+  introducedInPatch?: string;
+  deprecated?: boolean;
+  deprecatedInPatch?: string;
 }
 
 // File suffix -> RelicPool mapping for character-variant images
@@ -546,6 +554,9 @@ function mapRelic(
     imageUrl: variantMap ? null : baseUrl,
     betaImageUrl,
     variantImageUrls: variantMap,
+    introducedInPatch: kor.introducedInPatch,
+    deprecated: kor.deprecated,
+    deprecatedInPatch: kor.deprecatedInPatch,
   };
 }
 
@@ -623,6 +634,9 @@ interface RawPotion {
   rarity: string;
   pool: string;
   image_url: string;
+  introducedInPatch?: string;
+  deprecated?: boolean;
+  deprecatedInPatch?: string;
 }
 
 function mapPotion(
@@ -647,6 +661,9 @@ function mapPotion(
     rarity: kor.rarity as PotionRarityKo,
     pool: kor.pool as PotionPool,
     imageUrl: spireCodexImageToLocal(kor.image_url) ?? "",
+    introducedInPatch: kor.introducedInPatch,
+    deprecated: kor.deprecated,
+    deprecatedInPatch: kor.deprecatedInPatch,
   };
 }
 
@@ -716,6 +733,7 @@ interface RawPower {
   stack_type: string | null;
   allow_negative: boolean | null;
   image_url: string | null;
+  introducedInPatch?: string;
   deprecated?: boolean;
   deprecatedInPatch?: string;
 }
@@ -767,10 +785,13 @@ function mapPower(
     allowNegative: kor.allow_negative ?? false,
     imageUrl: spireCodexImageToLocal(kor.image_url),
     betaImageUrl,
+    introducedInPatch: kor.introducedInPatch,
+    deprecated: kor.deprecated,
+    deprecatedInPatch: kor.deprecatedInPatch,
   };
 }
 
-export async function getCodexPowers(opts?: { gameLocale?: GameLocale }): Promise<CodexPower[]> {
+export async function getCodexPowers(opts?: { gameLocale?: GameLocale; includeDeprecated?: boolean }): Promise<CodexPower[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
   const [korPowers, engPowers, betaImageFiles, officialImageFiles, gamePowers] = await Promise.all([
     readJson<RawPower[]>("kor/powers.json"),
@@ -781,9 +802,10 @@ export async function getCodexPowers(opts?: { gameLocale?: GameLocale }): Promis
   ]);
 
   const engById = new Map(engPowers.map((p) => [p.id, p]));
+  const includeDeprecated = opts?.includeDeprecated ?? false;
 
   return korPowers
-    .filter((p) => !p.deprecated && hasPowerLocalizationTitle(gamePowers, p.id) && !(p.type === "None" && !p.description))
+    .filter((p) => (includeDeprecated || !p.deprecated) && hasPowerLocalizationTitle(gamePowers, p.id) && !(p.type === "None" && !p.description))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
       const imageFile = imageFilenameFromStaticUrl(kor.image_url);
@@ -807,6 +829,9 @@ interface RawEnchantment {
   card_type: string | null;
   is_stackable: boolean;
   image_url: string | null;
+  introducedInPatch?: string;
+  deprecated?: boolean;
+  deprecatedInPatch?: string;
 }
 
 function mapEnchantment(
@@ -829,6 +854,9 @@ function mapEnchantment(
     cardType: (kor.card_type as "Attack" | "Skill" | null),
     isStackable: kor.is_stackable,
     imageUrl: kor.image_url,
+    introducedInPatch: kor.introducedInPatch,
+    deprecated: kor.deprecated,
+    deprecatedInPatch: kor.deprecatedInPatch,
   };
 }
 
@@ -865,6 +893,9 @@ interface RawAffliction {
   description_raw?: string | null;
   extra_card_text: string | null;
   is_stackable: boolean;
+  introducedInPatch?: string;
+  deprecated?: boolean;
+  deprecatedInPatch?: string;
 }
 
 function mapAffliction(
@@ -884,6 +915,9 @@ function mapAffliction(
     extraCardText: extraRaw ? bakeDescription(extraRaw, {}) : extraRaw,
     isStackable: kor.is_stackable,
     imageUrl: AFFLICTION_IMAGE_URLS[kor.id] ?? null,
+    introducedInPatch: kor.introducedInPatch,
+    deprecated: kor.deprecated,
+    deprecatedInPatch: kor.deprecatedInPatch,
   };
 }
 
@@ -937,6 +971,9 @@ interface RawEvent {
   epithet: string | null;
   image_url: string | null;
   relics: string[] | null;
+  introducedInPatch?: string;
+  deprecated?: boolean;
+  deprecatedInPatch?: string;
 }
 
 interface RawEpoch {
@@ -1324,6 +1361,9 @@ function mapEvent(
     options: mapEventOptions(kor.id, "INITIAL", kor.options, fallbackInitialPage?.options ?? fallbackEvent.options, gameEvents, gameLocale),
     pages: mapEventPages(kor.id, kor.pages, fallbackEvent.pages, gameEvents, gameLocale),
     imageUrl,
+    introducedInPatch: kor.introducedInPatch,
+    deprecated: kor.deprecated,
+    deprecatedInPatch: kor.deprecatedInPatch,
   };
 }
 
@@ -1403,6 +1443,9 @@ function mapAncient(
     relicIds: kor.relics ?? [],
     dialogue,
     imageUrl,
+    introducedInPatch: kor.introducedInPatch,
+    deprecated: kor.deprecated,
+    deprecatedInPatch: kor.deprecatedInPatch,
   };
 }
 
@@ -1474,6 +1517,7 @@ interface RawMonster {
   damage_values: Record<string, RawDamageValue> | null;
   block_values: Record<string, RawDamageValue> | null;
   image_url: string | null;
+  introducedInPatch?: string;
   deprecated?: boolean;
   deprecatedInPatch?: string;
 }
@@ -1639,6 +1683,9 @@ function mapMonster(
     phobiaModeScene: phobiaModeAsset?.scene ?? null,
     phobiaModePartScenes: phobiaModeAsset?.partScenes ?? null,
     spineAsset,
+    introducedInPatch: kor.introducedInPatch,
+    deprecated: kor.deprecated,
+    deprecatedInPatch: kor.deprecatedInPatch,
   };
 }
 
@@ -1735,6 +1782,7 @@ interface RawEncounter {
   tags: string[] | null;
   monsters: RawEncounterMonster[];
   loss_text: string;
+  introducedInPatch?: string;
   deprecated?: boolean;
   deprecatedInPatch?: string;
 }
@@ -1791,6 +1839,9 @@ function mapEncounter(
     monsters,
     lossText: gameText(gameEncounters, `${kor.id}.loss`, kor.loss_text),
     imageUrl,
+    introducedInPatch: kor.introducedInPatch,
+    deprecated: kor.deprecated,
+    deprecatedInPatch: kor.deprecatedInPatch,
   };
 }
 

@@ -36,7 +36,7 @@ export default async function CodexPotionsPage({
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [potions, cards, characters, enchantments, patches, changes, versionDiffs, meta, gameUi, events, powers, entities] = await Promise.all([
     getCodexPotions({ gameLocale }),
-    getCodexCards({ gameLocale }),
+    getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexCharacters({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getSTS2Patches(),
@@ -45,7 +45,7 @@ export default async function CodexPotionsPage({
     getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
     getCodexEvents({ gameLocale }),
-    getCodexPowers({ gameLocale }),
+    getCodexPowers({ includeDeprecated: true, gameLocale }),
     loadAllEntities({ gameLocale }),
   ]);
 

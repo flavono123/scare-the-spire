@@ -38,7 +38,7 @@ export default async function AncientDetailPage({ params, searchParams }: Props)
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [ancients, cards, relics, patches, changes, versionDiffs, entities, gameUi] = await Promise.all([
     getCodexAncients({ gameLocale }),
-    getCodexCards({ gameLocale }),
+    getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),

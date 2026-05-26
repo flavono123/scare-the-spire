@@ -53,6 +53,7 @@ export const PowerTile = memo(function PowerTile({ power, showBeta = false, onCl
 
   const style = TYPE_STYLES[power.type] ?? TYPE_STYLES.None;
   const imageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
+  const lifecycleClassName = power.deprecated ? " opacity-50 grayscale saturate-0" : "";
 
   const updatePlacement = useCallback(() => {
     const rect = tileRef.current?.getBoundingClientRect();
@@ -78,7 +79,7 @@ export const PowerTile = memo(function PowerTile({ power, showBeta = false, onCl
       onClick={onClick}
     >
       <div
-        className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 p-1 transition-all cursor-pointer ${
+        className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 p-1 transition-all cursor-pointer${lifecycleClassName} ${
           hovered
             ? `${style.border} scale-110 z-10`
             : "border-transparent bg-white/5 hover:bg-white/10"

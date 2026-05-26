@@ -23,7 +23,7 @@ export async function generateMetadata({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [powers, gameUi] = await Promise.all([
-    getCodexPowers({ gameLocale }),
+    getCodexPowers({ includeDeprecated: true, gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
   const power = powers.find((p) => p.id.toLowerCase() === id.toLowerCase());
@@ -43,8 +43,8 @@ export default async function PowerDetailPage({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [powers, cards, relics, potions, enchantments, events, entities, patches, changes, versionDiffs, gameUi] = await Promise.all([
-    getCodexPowers({ gameLocale }),
-    getCodexCards({ gameLocale }),
+    getCodexPowers({ includeDeprecated: true, gameLocale }),
+    getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
     getCodexPotions({ gameLocale }),
     getCodexEnchantments({ gameLocale }),

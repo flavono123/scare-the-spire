@@ -43,10 +43,10 @@ export default async function CodexEventsPage({
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [events, cards, enchantments, potions, powers, relics, madScienceBaseCard, patches, changes, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexEvents({ gameLocale }),
-    getCodexCards({ gameLocale }),
+    getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexPotions({ gameLocale }),
-    getCodexPowers({ gameLocale }),
+    getCodexPowers({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
     getMadScienceBaseCard({ gameLocale }),
     getSTS2Patches(),

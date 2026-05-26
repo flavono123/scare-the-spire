@@ -44,7 +44,7 @@ export default async function CodexCardsPage({
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const [cards, characters, patches, changes, versionDiffs, meta, enchantments, afflictions, gameUi, ancients, events, potions, powers] =
     await Promise.all([
-      getCodexCards({ gameLocale }),
+      getCodexCards({ includeDeprecated: true, gameLocale }),
       getCodexCharacters({ gameLocale }),
       getSTS2Patches(),
       getSTS2Changes(),
@@ -56,7 +56,7 @@ export default async function CodexCardsPage({
       getCodexAncients({ gameLocale }),
       getCodexEvents({ gameLocale }),
       getCodexPotions({ gameLocale }),
-      getCodexPowers({ gameLocale }),
+      getCodexPowers({ includeDeprecated: true, gameLocale }),
     ]);
 
   const versions = getVersionsWithDiffs(patches, versionDiffs);

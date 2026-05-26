@@ -35,11 +35,11 @@ export default async function CodexEnchantmentsPage({
   const [enchantments, afflictions, cards, events, monsters, potions, powers, relics, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
     getCodexEnchantments({ gameLocale }),
     getCodexAfflictions({ gameLocale }),
-    getCodexCards({ gameLocale }),
+    getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexEvents({ gameLocale }),
     getCodexMonsters({ gameLocale }),
     getCodexPotions({ gameLocale }),
-    getCodexPowers({ gameLocale }),
+    getCodexPowers({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),

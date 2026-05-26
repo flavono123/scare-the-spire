@@ -27,6 +27,7 @@ import {
 } from "@/lib/codex-types";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { reconstructEventAtVersion } from "@/lib/entity-versioning";
+import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
 import {
   fuzzyMatchCodexText,
   parseCodexSearch,
@@ -124,10 +125,11 @@ function EventThumbnail({
   messages: CodexServiceMessages;
   gameUi: CodexGameUiLabels;
 }) {
+  const lifecycleClassName = event.deprecated ? " opacity-50 grayscale saturate-0" : "";
   return (
     <button
       onClick={onClick}
-      className="group relative h-[72px] w-full cursor-pointer overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 text-left shadow-sm shadow-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-500/40 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-black/30"
+      className={`group relative h-[72px] w-full cursor-pointer overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 text-left shadow-sm shadow-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-500/40 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-black/30${lifecycleClassName}`}
     >
       {event.imageUrl ? (
         <div className="absolute inset-0">
@@ -247,11 +249,13 @@ export function EventList({
 
   // Reconstruct events at selected version
   const versionedEvents = useMemo(() => {
-    if (selectedVersion === currentVersion) return events;
-    return events.map((event) =>
-      reconstructEventAtVersion(event, selectedVersion, currentVersion, versionDiffs, patches),
-    );
-  }, [events, selectedVersion, currentVersion, versionDiffs, patches]);
+    const reconstructed = selectedVersion === currentVersion
+      ? events
+      : events.map((event) =>
+        reconstructEventAtVersion(event, selectedVersion, currentVersion, versionDiffs, patches),
+      );
+    return withEntityLifecycleForVersion(reconstructed, selectedVersion, { changes, entityType: "event" });
+  }, [events, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   // Cmd+K to focus search
   useEffect(() => {

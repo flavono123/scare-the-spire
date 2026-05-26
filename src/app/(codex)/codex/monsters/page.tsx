@@ -41,8 +41,8 @@ export default async function CodexMonstersPage({
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
     getCodexAfflictions({ gameLocale }),
-    getCodexCards({ gameLocale }),
-    getCodexPowers({ gameLocale }),
+    getCodexCards({ includeDeprecated: true, gameLocale }),
+    getCodexPowers({ includeDeprecated: true, gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
 

@@ -301,6 +301,8 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
               changes={changes}
               versionDiffs={versionDiffs}
               patches={patches}
+              introducedInPatch={potion.introducedInPatch}
+              deprecatedInPatch={potion.deprecatedInPatch}
               emptyLabel={detailLabels.noPatchHistory}
             />
           </InfoRailSection>

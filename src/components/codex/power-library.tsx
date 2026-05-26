@@ -24,6 +24,7 @@ import {
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
+import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
 import {
   fuzzyMatchCodexText,
   parseCodexSearch,
@@ -113,11 +114,13 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
   }, [selectedPower]);
 
   const versionedPowers = useMemo(() => {
-    if (!currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion) return powers;
-    return powers.map((power) =>
-      reconstructEntityAtVersion(power, "power", selectedVersion, currentVersion, versionDiffs, patches),
-    );
-  }, [powers, selectedVersion, currentVersion, versionDiffs, patches]);
+    const reconstructed = !currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion
+      ? powers
+      : powers.map((power) =>
+        reconstructEntityAtVersion(power, "power", selectedVersion, currentVersion, versionDiffs, patches),
+      );
+    return withEntityLifecycleForVersion(reconstructed, selectedVersion, { changes, entityType: "power" });
+  }, [powers, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   // Cmd+K to focus search
   useEffect(() => {

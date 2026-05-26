@@ -299,6 +299,8 @@ export function EncounterDetail({
               entityId={encounter.id}
               changes={changes}
               patches={patches}
+              introducedInPatch={encounter.introducedInPatch}
+              deprecatedInPatch={encounter.deprecatedInPatch}
               emptyLabel={detailLabels.noPatchHistory}
             />
           </InfoRailSection>

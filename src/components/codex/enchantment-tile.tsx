@@ -30,6 +30,7 @@ export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "
     horizontal: "right",
     vertical: "top",
   });
+  const lifecycleClassName = resource.deprecated ? " opacity-50 grayscale saturate-0" : "";
 
   const updatePlacement = useCallback(() => {
     const rect = tileRef.current?.getBoundingClientRect();
@@ -52,7 +53,7 @@ export const EnchantmentTile = memo(function EnchantmentTile({ serviceLocale = "
       onClick={onClick}
     >
       <div
-        className={`w-14 h-14 sm:w-16 sm:h-16 rounded-lg border-2 p-1 transition-all cursor-pointer ${
+        className={`w-14 h-14 sm:w-16 sm:h-16 rounded-lg border-2 p-1 transition-all cursor-pointer${lifecycleClassName} ${
           hovered
             ? "border-purple-500/60 bg-purple-500/10 scale-110 z-10"
             : "border-transparent bg-white/5 hover:bg-white/10"

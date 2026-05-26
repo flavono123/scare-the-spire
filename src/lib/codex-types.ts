@@ -1,5 +1,11 @@
 // Types for STS2 codex card data
 
+export interface CodexLifecycle {
+  introducedInPatch?: string;
+  deprecated?: boolean;
+  deprecatedInPatch?: string;
+}
+
 export type CardColor =
   | "ironclad"
   | "silent"
@@ -28,7 +34,7 @@ export type CardRarityKo =
 
 export type CharacterColor = "red" | "green" | "blue" | "purple" | "orange";
 
-export interface CodexCard {
+export interface CodexCard extends CodexLifecycle {
   id: string;
   name: string; // selected game locale
   nameEn: string; // English
@@ -155,7 +161,7 @@ export type RelicPool =
   | "necrobinder"
   | "regent";
 
-export interface CodexRelic {
+export interface CodexRelic extends CodexLifecycle {
   id: string;
   name: string; // Korean
   nameEn: string; // English
@@ -276,7 +282,7 @@ export type PotionPool =
   | "regent"
   | "event";
 
-export interface CodexPotion {
+export interface CodexPotion extends CodexLifecycle {
   id: string;
   name: string; // Korean
   nameEn: string; // English
@@ -347,7 +353,7 @@ export const POTION_RARITY_ALIASES: Record<string, PotionRarityKo> = {
 export type PowerType = "Buff" | "Debuff" | "None";
 export type PowerStackType = "Counter" | "Single" | "Duration" | "Intensity" | "None";
 
-export interface CodexPower {
+export interface CodexPower extends CodexLifecycle {
   id: string;
   name: string;        // Korean
   nameEn: string;      // English
@@ -383,7 +389,7 @@ export const POWER_STACK_TYPE_ALIASES: Record<string, PowerStackType> = {
 };
 
 // Enchantment types
-export interface CodexEnchantment {
+export interface CodexEnchantment extends CodexLifecycle {
   id: string;
   name: string;        // Korean
   nameEn: string;      // English
@@ -397,7 +403,7 @@ export interface CodexEnchantment {
 }
 
 // Affliction types
-export interface CodexAffliction {
+export interface CodexAffliction extends CodexLifecycle {
   id: string;
   name: string;        // selected game locale
   nameEn: string;      // English
@@ -441,7 +447,7 @@ export type EventAct =
   | "Act 2 - Hive"
   | "Act 3 - Glory";
 
-export interface CodexEvent {
+export interface CodexEvent extends CodexLifecycle {
   id: string;
   name: string;        // Korean
   nameEn: string;      // English
@@ -460,7 +466,7 @@ export interface AncientDialogueLine {
   text: string;        // Korean, with BBCode markup
 }
 
-export interface CodexAncient {
+export interface CodexAncient extends CodexLifecycle {
   id: string;
   name: string;        // Korean
   nameEn: string;      // English
@@ -567,7 +573,7 @@ export type EpochUnlockReward =
   | "none"
   | "unknown";
 
-export interface CodexEpoch {
+export interface CodexEpoch extends CodexLifecycle {
   id: string;
   name: string;        // selected game locale
   nameEn: string;      // English
@@ -875,7 +881,7 @@ export interface MonsterPhobiaModeRect extends MonsterPhobiaModeVector {
   height: number;
 }
 
-export interface CodexMonster {
+export interface CodexMonster extends CodexLifecycle {
   id: string;
   name: string;        // Korean
   nameEn: string;      // English
@@ -907,7 +913,7 @@ export interface EncounterMonsterRef {
   nameEn: string; // English
 }
 
-export interface CodexEncounter {
+export interface CodexEncounter extends CodexLifecycle {
   id: string;
   name: string;        // Korean
   nameEn: string;      // English

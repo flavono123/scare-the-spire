@@ -576,7 +576,7 @@ export async function PatchDetailPage({
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
     getCodexPotions({ gameLocale }),
-    getCodexPowers({ gameLocale }),
+    getCodexPowers({ includeDeprecated: true, gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexEvents({ gameLocale }),
     getCodexMonsters({ gameLocale }),

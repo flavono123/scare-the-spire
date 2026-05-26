@@ -863,6 +863,7 @@ export const CardTile = memo(function CardTile({
   const cardRootClassName = interactive
     ? "group relative cursor-pointer select-none transition-transform hover:scale-[1.03] hover:z-10"
     : "group relative select-none";
+  const lifecycleClassName = card.deprecated ? " opacity-50 grayscale saturate-0" : "";
 
   // =====================================================================
   // ANCIENT CARD
@@ -873,7 +874,7 @@ export const CardTile = memo(function CardTile({
 
     return (
       <div
-        className={cardRootClassName}
+        className={`${cardRootClassName}${lifecycleClassName}`}
         style={cardContainerStyle}
         onClick={onClick}
       >
@@ -1054,7 +1055,7 @@ export const CardTile = memo(function CardTile({
   // =====================================================================
   return (
     <div
-      className={cardRootClassName}
+      className={`${cardRootClassName}${lifecycleClassName}`}
       style={cardContainerStyle}
       onClick={onClick}
     >

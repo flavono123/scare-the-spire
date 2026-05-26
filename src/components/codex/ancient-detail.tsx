@@ -427,6 +427,8 @@ export function AncientDetail({
               changes={changes}
               versionDiffs={versionDiffs}
               patches={patches}
+              introducedInPatch={ancient.introducedInPatch}
+              deprecatedInPatch={ancient.deprecatedInPatch}
               emptyLabel={detailLabels.noPatchHistory}
             />
           </InfoRailSection>

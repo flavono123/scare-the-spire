@@ -287,6 +287,8 @@ export function PowerDetail({
               changes={changes}
               versionDiffs={versionDiffs}
               patches={patches}
+              introducedInPatch={power.introducedInPatch}
+              deprecatedInPatch={power.deprecatedInPatch}
               emptyLabel={detailLabels.noPatchHistory}
             />
           </InfoRailSection>
