@@ -71,7 +71,8 @@ export type StoryEntityType =
   | "event"
   | "monster"
   | "encounter"
-  | "ancient";
+  | "ancient"
+  | "epoch";
 
 export interface LinkedEntity {
   entityType: StoryEntityType;
@@ -93,7 +94,8 @@ export type STS2PatchFeaturedEntityType =
   | "event"
   | "monster"
   | "encounter"
-  | "ancient";
+  | "ancient"
+  | "epoch";
 
 export interface STS2PatchFeaturedEntity {
   type: STS2PatchFeaturedEntityType;
