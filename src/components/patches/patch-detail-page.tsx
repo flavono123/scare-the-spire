@@ -24,6 +24,7 @@ import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import { withPageOgImage } from "@/lib/page-og-images";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType } from "@/lib/types";
+import type { CodexMonster, DamageValue, MonsterActionType, MonsterMove } from "@/lib/codex-types";
 
 const PATCH_COPY: Record<ServiceLocale, {
   backToList: string;
@@ -303,6 +304,133 @@ function filterPatchNoteEntities(markdown: string, entities: EntityInfo[]): Enti
     ];
     return labels.some((label) => patchTextIncludesLabel(searchText, label));
   });
+}
+
+type PatchMonsterMoveOverride = {
+  monsterId: string;
+  id: string;
+  nameKo: string;
+  nameEn: string;
+  actionTypes: MonsterActionType[];
+  intents: string[];
+  damageKey?: string;
+  damage?: DamageValue;
+  repeat?: DamageValue;
+  aliasesKo?: string[];
+  aliasesEn?: string[];
+};
+
+const PATCH_MONSTER_MOVE_ALIASES_KO: Record<string, Record<string, string[]>> = {
+  HAUNTED_SHIP: {
+    STOMP: ["짓밟기"],
+  },
+};
+
+const PATCH_REMOVED_MONSTER_MOVES: Record<string, PatchMonsterMoveOverride[]> = {
+  "0.106.0": [
+    {
+      monsterId: "HAUNTED_SHIP",
+      id: "RAMMING_SPEED",
+      nameKo: "전속력",
+      nameEn: "Ramming Speed",
+      actionTypes: ["attack"],
+      intents: ["SingleAttackIntent"],
+      damageKey: "RammingSpeed",
+      damage: { normal: 10, ascension: 11 },
+      repeat: { normal: 1, ascension: null },
+    },
+    {
+      monsterId: "SKULKING_COLONY",
+      id: "SMASH",
+      nameKo: "강타",
+      nameEn: "Smash",
+      actionTypes: ["attack"],
+      intents: ["SingleAttackIntent"],
+      damageKey: "Smash",
+      damage: { normal: 12, ascension: 13 },
+      repeat: { normal: 1, ascension: null },
+    },
+  ],
+};
+
+function buildPatchMonsterMoveEntities(
+  monsters: CodexMonster[],
+  patchVersion: string,
+  gameLocale: GameLocale,
+): EntityInfo[] {
+  const entities: EntityInfo[] = [];
+  const seen = new Set<string>();
+
+  for (const monster of monsters) {
+    for (const move of [...monster.bestiaryMoves, ...monster.moves]) {
+      if (["NOTHING", "SPAWNED", "DEAD"].includes(move.id)) continue;
+      const key = `${monster.id}:${move.id}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      entities.push(buildMonsterMoveEntity(monster, move, gameLocale, {
+        aliasesKo: PATCH_MONSTER_MOVE_ALIASES_KO[monster.id]?.[move.id],
+      }));
+    }
+  }
+
+  for (const override of PATCH_REMOVED_MONSTER_MOVES[patchVersion] ?? []) {
+    const monster = monsters.find((candidate) => candidate.id === override.monsterId);
+    if (!monster) continue;
+    const move = buildRemovedMonsterMove(override);
+    entities.push(buildMonsterMoveEntity(monster, move, gameLocale, {
+      aliasesKo: override.aliasesKo,
+      aliasesEn: override.aliasesEn,
+      damage: override.damage,
+    }));
+  }
+
+  return entities;
+}
+
+function buildMonsterMoveEntity(
+  monster: CodexMonster,
+  move: MonsterMove,
+  gameLocale: GameLocale,
+  options: {
+    aliasesKo?: string[];
+    aliasesEn?: string[];
+    damage?: DamageValue;
+    block?: DamageValue;
+  } = {},
+): EntityInfo {
+  return {
+    id: `${monster.id}__MOVE__${move.id}`,
+    nameEn: move.nameEn,
+    nameKo: patchDisplayName(move.name, move.nameEn, gameLocale),
+    aliasesKo: options.aliasesKo,
+    aliasesEn: options.aliasesEn,
+    imageUrl: monster.bossImageUrl ?? monster.imageUrl,
+    href: `/compendium/bestiary?monster=${monster.id.toLowerCase()}`,
+    color: monster.type,
+    type: "monsterMove",
+    monsterMoveData: move,
+    monsterMoveMonsterData: monster,
+    monsterMoveDamageValue: options.damage,
+    monsterMoveBlockValue: options.block,
+  };
+}
+
+function buildRemovedMonsterMove(override: PatchMonsterMoveOverride): MonsterMove {
+  return {
+    id: override.id,
+    name: override.nameKo,
+    nameEn: override.nameEn,
+    kind: "move",
+    actionTypes: override.actionTypes,
+    intents: override.intents,
+    intentDetails: override.intents.map((type) => ({
+      type,
+      damageKey: override.damageKey,
+      repeat: override.repeat,
+    })),
+    powerApplications: [],
+    cardApplications: [],
+  };
 }
 
 async function getPatchGameKeywordLabels(gameLocale: GameLocale): Promise<Record<string, string>> {
@@ -712,6 +840,7 @@ export async function PatchDetailPage({
       type: "monster" as const,
       monsterData: m,
     })),
+    ...buildPatchMonsterMoveEntities(codexMonsters, patch.version, gameLocale),
     ...codexEncounters.map((e) => ({
       id: e.id,
       nameEn: e.nameEn,

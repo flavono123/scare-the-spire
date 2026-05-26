@@ -8,7 +8,7 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch } from "@/lib/codex-types";
+import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch, DamageValue, MonsterMove, MonsterMoveIntentDetail } from "@/lib/codex-types";
 import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -19,10 +19,11 @@ import {
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { GameHoverTip } from "@/components/codex/hover-tip";
+import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import { InfestedPrismReworkBlock } from "@/components/codex/monster-move-visuals";
 
 // Entity types that can appear in patch notes
-export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "encounter" | "ancient" | "epoch";
+export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch";
 
 export interface EntityInfo {
   id: string;
@@ -43,6 +44,10 @@ export interface EntityInfo {
   eventData?: CodexEvent; // Full event data for rich preview
   eventOptionDesc?: string; // BBCode description for event option tooltips
   monsterData?: CodexMonster; // Full monster data for rich preview
+  monsterMoveData?: MonsterMove; // Monster move keyword preview data
+  monsterMoveMonsterData?: CodexMonster; // Parent monster for move preview/linking
+  monsterMoveDamageValue?: DamageValue | null; // Historical move values for removed moves
+  monsterMoveBlockValue?: DamageValue | null; // Historical move block for removed moves
   encounterData?: CodexEncounter; // Full encounter data for rich preview
   ancientData?: CodexAncient; // Full ancient data for rich preview
   epochData?: CodexEpoch; // Full epoch data for rich preview
@@ -58,6 +63,7 @@ type RenderContext = {
   preferEntityLocaleLabel?: boolean;
   gameKeywordLabels?: Record<string, string>;
   gameHeadingLabels?: Record<string, string>;
+  preferredMonsterIds?: string[];
 };
 
 // --- Entity Preview (hover card image) ---
@@ -86,6 +92,7 @@ type PreviewPlacement = {
 
 function estimatePreviewSize(entity: EntityInfo): { width: number; height: number } {
   if (entity.type === "card" && entity.cardData) return { width: 156, height: 230 };
+  if (entity.type === "monsterMove") return { width: 280, height: 260 };
   if (entity.eventData && !entity.eventOptionDesc) return { width: 360, height: 180 };
   if (entity.epochData) return { width: 360, height: 180 };
   if (entity.eventOptionDesc) return { width: 340, height: 180 };
@@ -167,6 +174,163 @@ function GameResourcePreview({
   );
 }
 
+const MONSTER_MOVE_INTENT_ICONS: Record<string, string> = {
+  attack: "/images/sts2/intents/attack_3.png",
+  buff: "/images/sts2/intents/animated/buff.webp",
+  cardDebuff: "/images/sts2/intents/animated/card_debuff.webp",
+  deathBlow: "/images/sts2/intents/death_blow.png",
+  debuff: "/images/sts2/intents/animated/debuff.webp",
+  defend: "/images/sts2/intents/defend.png",
+  escape: "/images/sts2/intents/animated/escape.webp",
+  heal: "/images/sts2/intents/animated/heal.webp",
+  hidden: "/images/sts2/intents/hidden.png",
+  sleep: "/images/sts2/intents/animated/sleep.webp",
+  statusCard: "/images/sts2/intents/animated/status_card.webp",
+  stun: "/images/sts2/intents/animated/stun.webp",
+  summon: "/images/sts2/intents/animated/summon.webp",
+  unknown: "/images/sts2/intents/animated/unknown.webp",
+};
+
+const MONSTER_MOVE_INTENT_CLASS_TO_KIND: Record<string, string> = {
+  AttackIntent: "attack",
+  SingleAttackIntent: "attack",
+  MultiAttackIntent: "attack",
+  BuffIntent: "buff",
+  CardDebuffIntent: "cardDebuff",
+  DeathBlowIntent: "deathBlow",
+  DebuffIntent: "debuff",
+  DebuffStrongIntent: "debuff",
+  DefendIntent: "defend",
+  EscapeIntent: "escape",
+  HealIntent: "heal",
+  HiddenIntent: "hidden",
+  SleepIntent: "sleep",
+  StatusIntent: "statusCard",
+  StunIntent: "stun",
+  SummonIntent: "summon",
+  UnknownIntent: "unknown",
+};
+
+const SINGLE_ATTACK_REPEAT: DamageValue = { normal: 1, ascension: null };
+
+function MonsterMoveKeywordPreview({
+  entity,
+  serviceLocale,
+  previewNonce,
+}: {
+  entity: EntityInfo;
+  serviceLocale: ServiceLocale;
+  previewNonce: number;
+}) {
+  const move = entity.monsterMoveData;
+  const monster = entity.monsterMoveMonsterData;
+  if (!move || !monster) return null;
+
+  const title = serviceLocale === "ko" ? entity.nameKo : entity.nameEn;
+  const monsterName = serviceLocale === "ko" ? monster.name : monster.nameEn;
+
+  return (
+    <GameHoverTip title={title} style={{ width: 280, maxWidth: 280 }}>
+      <span className="mb-1.5 block font-game-text text-[11px] text-zinc-400">
+        {monsterName}
+      </span>
+      <span className="relative mb-2 block h-44 overflow-hidden rounded bg-black/25">
+        <MonsterSpineStage
+          asset={monster.spineAsset}
+          fallbackImageUrl={monster.bossImageUrl ?? monster.imageUrl}
+          monsterName={monster.name}
+          selectedMoveId={move.id}
+          selectedMoveNonce={previewNonce}
+          imagePriority={false}
+          showLoadingLabel={false}
+          viewportTransitionTime={0}
+          viewportPadding={{ padTop: "16%", padBottom: "2%" }}
+          fallbackImageClassName="absolute inset-0 h-full w-full object-contain opacity-80"
+          className="absolute inset-x-0 bottom-4 top-10"
+        />
+        <MonsterMoveIntentPreview entity={entity} />
+      </span>
+      <MonsterMoveMetricPreview entity={entity} />
+    </GameHoverTip>
+  );
+}
+
+function MonsterMoveIntentPreview({ entity }: { entity: EntityInfo }) {
+  const move = entity.monsterMoveData;
+  const monster = entity.monsterMoveMonsterData;
+  if (!move || !monster) return null;
+
+  const damage = entity.monsterMoveDamageValue ?? findMoveDamage(monster, move);
+  const intents = getMoveIntentDetails(move)
+    .map((intent, index) => ({ intent, kind: getMoveIntentKind(intent.type), key: `${intent.type}-${index}` }))
+    .filter((item) => item.kind !== "hidden");
+  if (intents.length === 0) return null;
+
+  return (
+    <span className="pointer-events-none absolute right-3 top-1 z-40 flex items-end justify-center gap-1">
+      {intents.map(({ intent, kind, key }) => (
+        <span key={key} className="relative inline-flex h-12 w-12 items-center justify-center">
+          <Image
+            src={getMoveIntentIcon(kind, damage, getMoveRepeatInfo(intent))}
+            alt=""
+            width={48}
+            height={48}
+            className="h-11 w-11 object-contain drop-shadow-[0_5px_6px_rgba(0,0,0,0.78)]"
+          />
+          {kind === "attack" && damage && (
+            <span
+              className="font-game-title absolute -bottom-0.5 left-1/2 -translate-x-1/2 text-base font-black leading-none text-[#fff8db]"
+              style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
+            >
+              {formatMoveAttackLabel(damage, getMoveRepeatInfo(intent), "normal")}
+            </span>
+          )}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function MonsterMoveMetricPreview({ entity }: { entity: EntityInfo }) {
+  const move = entity.monsterMoveData;
+  const monster = entity.monsterMoveMonsterData;
+  if (!move || !monster) return null;
+
+  const attackIntent = getMoveIntentDetails(move).find((intent) => getMoveIntentKind(intent.type) === "attack") ?? null;
+  const damage = entity.monsterMoveDamageValue ?? findMoveDamage(monster, move);
+  const block = entity.monsterMoveBlockValue ?? findMoveBlock(monster, move);
+  if (!damage && !block) return null;
+
+  return (
+    <span className="flex flex-wrap items-center gap-2 font-game-text text-sm font-bold text-zinc-100">
+      {damage && (
+        <span className="inline-flex items-center gap-1">
+          <Image
+            src={getMoveAttackIcon(damage, getMoveRepeatInfo(attackIntent))}
+            alt=""
+            width={22}
+            height={22}
+            className="h-5 w-5 object-contain"
+          />
+          <span>{formatMoveAttackLabel(damage, getMoveRepeatInfo(attackIntent), "normal")}</span>
+          {damage.ascension != null && damage.ascension !== damage.normal && (
+            <span className="text-orange-300">({formatMoveAttackLabel(damage, getMoveRepeatInfo(attackIntent), "ascension")})</span>
+          )}
+        </span>
+      )}
+      {block && (
+        <span className="inline-flex items-center gap-1">
+          <Image src="/images/sts2/ui/combat/block.png" alt="" width={22} height={22} className="h-5 w-5 object-contain" />
+          <span>{block.normal ?? "?"}</span>
+          {block.ascension != null && block.ascension !== block.normal && (
+            <span className="text-orange-300">({block.ascension})</span>
+          )}
+        </span>
+      )}
+    </span>
+  );
+}
+
 export function EntityPreview({
   entity,
   children,
@@ -192,6 +356,7 @@ export function EntityPreview({
   const [show, setShow] = useState(false);
   const [previewPressed, setPreviewPressed] = useState(false);
   const [tapPreviewStyle, setTapPreviewStyle] = useState<React.CSSProperties | undefined>();
+  const [previewNonce, setPreviewNonce] = useState(0);
   const [placement, setPlacement] = useState<PreviewPlacement>({
     vertical: forcePosition ?? "above",
     horizontal: "center",
@@ -202,6 +367,7 @@ export function EntityPreview({
   const visible = show || forceShow;
 
   const handleMouseEnter = useCallback(() => {
+    setPreviewNonce((value) => value + 1);
     if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
       setPlacement(getPreviewPlacement(rect, entity, forcePosition));
@@ -218,6 +384,9 @@ export function EntityPreview({
     affliction: `/compendium/enchantments?affliction=${entity.id.toLowerCase()}`,
     event: `/compendium/events/${entity.id.toLowerCase()}`,
     monster: `/compendium/bestiary?monster=${entity.id.toLowerCase()}`,
+    monsterMove: entity.monsterMoveMonsterData
+      ? `/compendium/bestiary?monster=${entity.monsterMoveMonsterData.id.toLowerCase()}`
+      : undefined,
     encounter: `/compendium/bestiary?view=encounters&encounter=${entity.id.toLowerCase()}`,
     ancient: `/compendium/ancients/${entity.id.toLowerCase()}`,
     epoch: `/compendium/epochs?epoch=${entity.id.toLowerCase()}`,
@@ -250,6 +419,7 @@ export function EntityPreview({
     );
 
     setPreviewPressed(false);
+    setPreviewNonce((value) => value + 1);
     setTapPreviewStyle({ left: x, top: y });
     setShow(true);
   }, [entity, useTapPreview]);
@@ -465,6 +635,15 @@ export function EntityPreview({
           </GameResourcePreview>,
         )
       )}
+      {visible && entity.type === "monsterMove" && entity.monsterMoveData && entity.monsterMoveMonsterData && (
+        renderTooltip(
+          <MonsterMoveKeywordPreview
+            entity={entity}
+            serviceLocale={serviceLocale ?? "ko"}
+            previewNonce={previewNonce}
+          />,
+        )
+      )}
       {visible && entity.type === "encounter" && entity.encounterData && (
         renderTooltip(
           <GameResourcePreview
@@ -525,7 +704,7 @@ export function EntityPreview({
           />,
         )
       )}
-      {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.encounterData && !entity.ancientData && !entity.epochData && entity.imageUrl && (
+      {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.monsterMoveData && !entity.encounterData && !entity.ancientData && !entity.epochData && entity.imageUrl && (
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
@@ -567,6 +746,102 @@ function withPatchChangeEffects(markdown: string): string {
   });
 }
 
+function getMoveIntentDetails(move: MonsterMove): MonsterMoveIntentDetail[] {
+  if (move.intentDetails.length > 0) return move.intentDetails;
+  return move.intents.map((type) => ({ type }));
+}
+
+function getMoveIntentKind(intent: string): string {
+  const kind = MONSTER_MOVE_INTENT_CLASS_TO_KIND[intent];
+  if (kind) return kind;
+  if (intent.includes("Attack")) return "attack";
+  if (intent.includes("Buff")) return "buff";
+  if (intent.includes("Debuff")) return "debuff";
+  if (intent.includes("Defend")) return "defend";
+  if (intent.includes("Status")) return "statusCard";
+  return "unknown";
+}
+
+function getMoveRepeatInfo(intent: MonsterMoveIntentDetail | null): { value: DamageValue | null; multi: boolean } {
+  if (!intent) return { value: null, multi: false };
+  if (intent.repeat) return { value: intent.repeat, multi: intent.type === "MultiAttackIntent" };
+  return { value: SINGLE_ATTACK_REPEAT, multi: intent.type === "MultiAttackIntent" };
+}
+
+function getMoveIntentIcon(
+  kind: string,
+  damage: DamageValue | null,
+  repeat: { value: DamageValue | null; multi: boolean },
+): string {
+  if (kind === "attack" || kind === "deathBlow") return getMoveAttackIcon(damage, repeat);
+  return MONSTER_MOVE_INTENT_ICONS[kind] ?? MONSTER_MOVE_INTENT_ICONS.unknown;
+}
+
+function getMoveAttackIcon(damage: DamageValue | null, repeat: { value: DamageValue | null; multi: boolean }): string {
+  const total = getMoveAttackTotal(damage, repeat, "normal") ?? getMoveAttackTotal(damage, repeat, "ascension") ?? 10;
+  if (total < 5) return "/images/sts2/intents/attack_1.png";
+  if (total < 10) return "/images/sts2/intents/attack_2.png";
+  if (total < 20) return "/images/sts2/intents/attack_3.png";
+  if (total < 40) return "/images/sts2/intents/attack_4.png";
+  return "/images/sts2/intents/attack_5.png";
+}
+
+function getMoveAttackTotal(
+  damage: DamageValue | null,
+  repeat: { value: DamageValue | null; multi: boolean },
+  mode: "normal" | "ascension",
+): number | null {
+  const damageValue = getModeDamageValue(damage, mode);
+  if (damageValue == null) return null;
+  return damageValue * (getModeDamageValue(repeat.value, mode) ?? 1);
+}
+
+function formatMoveAttackLabel(
+  damage: DamageValue | null,
+  repeat: { value: DamageValue | null; multi: boolean },
+  mode: "normal" | "ascension",
+): string | null {
+  const damageValue = getModeDamageValue(damage, mode);
+  if (damageValue == null) return null;
+  if (!repeat.multi) return String(damageValue);
+  return `${damageValue}x${getModeDamageValue(repeat.value, mode) ?? "?"}`;
+}
+
+function getModeDamageValue(value: DamageValue | null, mode: "normal" | "ascension"): number | null {
+  if (!value) return null;
+  return mode === "ascension" ? value.ascension ?? value.normal : value.normal;
+}
+
+function findMoveDamage(monster: CodexMonster, move: MonsterMove): DamageValue | null {
+  if (!monster.damageValues) return null;
+  const explicitKey = getMoveIntentDetails(move).find((intent) => intent.damageKey)?.damageKey;
+  if (explicitKey && monster.damageValues[explicitKey]) return monster.damageValues[explicitKey];
+  return findMoveValue(move.id, monster.damageValues);
+}
+
+function findMoveBlock(monster: CodexMonster, move: MonsterMove): DamageValue | null {
+  if (!monster.blockValues) return null;
+  const explicitKey = getMoveIntentDetails(move).find((intent) => intent.blockKey)?.blockKey;
+  if (explicitKey && monster.blockValues[explicitKey]) return monster.blockValues[explicitKey];
+  return findMoveValue(move.id, monster.blockValues);
+}
+
+function findMoveValue(moveId: string, values: Record<string, DamageValue>): DamageValue | null {
+  const moveKey = normalizeMoveKey(moveId);
+  for (const [key, value] of Object.entries(values)) {
+    if (normalizeMoveKey(key) === moveKey) return value;
+  }
+  for (const [key, value] of Object.entries(values)) {
+    const normalizedKey = normalizeMoveKey(key);
+    if (moveKey.includes(normalizedKey) || normalizedKey.includes(moveKey)) return value;
+  }
+  return null;
+}
+
+function normalizeMoveKey(value: string): string {
+  return value.toLowerCase().replace(/_/g, "");
+}
+
 // --- Entity Lookup ---
 
 export interface EntityLookup {
@@ -574,6 +849,15 @@ export interface EntityLookup {
   byEn: Map<string, EntityInfo>;
   allByKo?: Map<string, EntityInfo[]>;
   allByEn?: Map<string, EntityInfo[]>;
+  monsterMoveKeywords?: MonsterMoveKeyword[];
+  monsterEntities?: EntityInfo[];
+}
+
+interface MonsterMoveKeyword {
+  label: string;
+  lower: string;
+  entity: EntityInfo;
+  ascii: boolean;
 }
 
 function addLookupEntry(
@@ -596,13 +880,29 @@ export function buildEntityLookup(entities: EntityInfo[]): EntityLookup {
   const byEn = new Map<string, EntityInfo>();
   const allByKo = new Map<string, EntityInfo[]>();
   const allByEn = new Map<string, EntityInfo[]>();
+  const monsterMoveKeywords: MonsterMoveKeyword[] = [];
+  const monsterEntities: EntityInfo[] = [];
   for (const e of entities) {
     addLookupEntry(byKo, allByKo, e.nameKo, e);
     addLookupEntry(byEn, allByEn, e.nameEn, e);
     for (const alias of e.aliasesKo ?? []) addLookupEntry(byKo, allByKo, alias, e);
     for (const alias of e.aliasesEn ?? []) addLookupEntry(byEn, allByEn, alias, e);
+    if (e.type === "monster") monsterEntities.push(e);
+    if (e.type === "monsterMove") {
+      for (const label of [e.nameKo, e.nameEn, ...(e.aliasesKo ?? []), ...(e.aliasesEn ?? [])]) {
+        const trimmed = label.trim();
+        if (!trimmed) continue;
+        monsterMoveKeywords.push({
+          label: trimmed,
+          lower: trimmed.toLowerCase(),
+          entity: e,
+          ascii: /^[\x00-\x7F]+$/.test(trimmed),
+        });
+      }
+    }
   }
-  return { byKo, byEn, allByKo, allByEn };
+  monsterMoveKeywords.sort((a, b) => b.label.length - a.label.length);
+  return { byKo, byEn, allByKo, allByEn, monsterMoveKeywords, monsterEntities };
 }
 
 export function findEntity(text: string, lookup: EntityLookup, typeHint?: string): EntityInfo | null {
@@ -812,7 +1112,12 @@ function renderMarkdownBold(
 
   while ((match = regex.exec(text)) !== null) {
     if (match.index > lastIndex) {
-      parts.push(text.slice(lastIndex, match.index));
+      parts.push(...renderPlainTextWithMonsterMoveLinks(
+        text.slice(lastIndex, match.index),
+        lookup,
+        `${keyPrefix}-t${idx}`,
+        context,
+      ));
     }
 
     const boldText = match[1];
@@ -828,7 +1133,7 @@ function renderMarkdownBold(
         enriched.push(sep);
       }
 
-      const entity = findEntity(name, lookup);
+      const entity = findMonsterMoveEntity(name, lookup, context) ?? findEntity(name, lookup);
       if (entity) {
         enriched.push(
           <EntityPreview key={`${keyPrefix}-b${idx}-${j}`} entity={entity} {...context}>
@@ -855,9 +1160,114 @@ function renderMarkdownBold(
     lastIndex = match.index + match[0].length;
   }
 
-  if (lastIndex === 0) return text; // No bold patterns
-  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  if (lastIndex === 0) {
+    const plain = renderPlainTextWithMonsterMoveLinks(text, lookup, `${keyPrefix}-plain`, context);
+    if (plain.length === 1 && typeof plain[0] === "string") return plain[0];
+    return <span key={keyPrefix}>{plain}</span>;
+  }
+  if (lastIndex < text.length) {
+    parts.push(...renderPlainTextWithMonsterMoveLinks(
+      text.slice(lastIndex),
+      lookup,
+      `${keyPrefix}-tail`,
+      context,
+    ));
+  }
   return <span key={keyPrefix}>{parts}</span>;
+}
+
+function renderPlainTextWithMonsterMoveLinks(
+  text: string,
+  lookup: EntityLookup,
+  keyPrefix: string,
+  context: RenderContext,
+): ReactNode[] {
+  const preferredMonsterIds = context.preferredMonsterIds ?? [];
+  if (preferredMonsterIds.length === 0 || !lookup.monsterMoveKeywords?.length) return [text];
+
+  let remaining = text;
+  const parts: ReactNode[] = [];
+  let cursor = 0;
+  let matchIndex = 0;
+
+  while (cursor < remaining.length) {
+    const match = findMonsterMoveKeywordAt(remaining.toLowerCase(), cursor, lookup.monsterMoveKeywords, context);
+    if (!match) {
+      cursor += 1;
+      continue;
+    }
+
+    if (match.start > 0) parts.push(remaining.slice(0, match.start));
+    const label = remaining.slice(match.start, match.start + match.keyword.label.length);
+    parts.push(
+      <EntityPreview key={`${keyPrefix}-move-${matchIndex}`} entity={match.keyword.entity} {...context}>
+        {label}
+      </EntityPreview>,
+    );
+    remaining = remaining.slice(match.start + match.keyword.label.length);
+    cursor = 0;
+    matchIndex += 1;
+  }
+
+  if (remaining) parts.push(remaining);
+  return parts.length > 0 ? parts : [text];
+}
+
+function findMonsterMoveKeywordAt(
+  lowerText: string,
+  start: number,
+  keywords: MonsterMoveKeyword[],
+  context: RenderContext,
+): { keyword: MonsterMoveKeyword; start: number } | null {
+  const matches = keywords.filter((keyword) => {
+    if (!lowerText.startsWith(keyword.lower, start)) return false;
+    if (!monsterMoveMatchesContext(keyword.entity, context)) return false;
+    return !keyword.ascii || hasAsciiTokenBoundary(lowerText, start, keyword.lower.length);
+  });
+  if (matches.length === 0) return null;
+  matches.sort((a, b) => (
+    Number(monsterMoveMatchesPreferred(b.entity, context)) - Number(monsterMoveMatchesPreferred(a.entity, context)) ||
+    b.label.length - a.label.length
+  ));
+  return { keyword: matches[0], start };
+}
+
+function findMonsterMoveEntity(
+  text: string,
+  lookup: EntityLookup,
+  context: RenderContext,
+): EntityInfo | null {
+  const lower = text.trim().toLowerCase();
+  if (!lower) return null;
+  const matches = [
+    ...(lookup.allByKo?.get(lower) ?? []),
+    ...(lookup.allByEn?.get(lower) ?? []),
+  ].filter((entity) => entity.type === "monsterMove" && monsterMoveMatchesContext(entity, context));
+  if (matches.length === 0) return null;
+  matches.sort((a, b) => (
+    Number(monsterMoveMatchesPreferred(b, context)) - Number(monsterMoveMatchesPreferred(a, context))
+  ));
+  return matches[0];
+}
+
+function monsterMoveMatchesContext(entity: EntityInfo, context: RenderContext): boolean {
+  const preferredMonsterIds = context.preferredMonsterIds ?? [];
+  if (preferredMonsterIds.length === 0) return false;
+  return preferredMonsterIds.includes(entity.monsterMoveMonsterData?.id ?? "");
+}
+
+function monsterMoveMatchesPreferred(entity: EntityInfo, context: RenderContext): boolean {
+  return (context.preferredMonsterIds ?? []).includes(entity.monsterMoveMonsterData?.id ?? "");
+}
+
+function hasAsciiTokenBoundary(text: string, start: number, length: number): boolean {
+  const before = start > 0 ? text[start - 1] : "";
+  const after = start + length < text.length ? text[start + length] : "";
+  return !isAsciiWordChar(before) && !isAsciiWordChar(after);
+}
+
+function isAsciiWordChar(char: string): boolean {
+  return /^[a-z0-9_]$/i.test(char);
 }
 
 // --- Enrich a line of text (BBCode + markdown bold) ---
@@ -990,6 +1400,27 @@ function DevnoteBlock({
   );
 }
 
+function mentionedMonsterIds(line: string, lookup: EntityLookup): string[] {
+  const lower = line.toLowerCase();
+  const ids: string[] = [];
+  for (const entity of lookup.monsterEntities ?? []) {
+    const labels = [
+      entity.nameKo,
+      entity.nameEn,
+      ...(entity.aliasesKo ?? []),
+      ...(entity.aliasesEn ?? []),
+    ].map((label) => label.trim().toLowerCase()).filter(Boolean);
+    if (labels.some((label) => lower.includes(label))) ids.push(entity.id);
+  }
+  return ids;
+}
+
+function bulletIndentLevel(line: string): number | null {
+  const bulletMatch = line.match(/^(\s*)-\s+/);
+  if (!bulletMatch) return null;
+  return Math.min(Math.floor(bulletMatch[1].length / 2), 3);
+}
+
 // --- Main Component ---
 
 export function PatchNoteRenderer({
@@ -1027,6 +1458,7 @@ export function PatchNoteRenderer({
   let listBuffer: ReactNode[] = [];
   let listKey = 0;
   let wasInList = false;
+  let currentMonsterContext: string[] = [];
 
   function flushList() {
     if (listBuffer.length > 0) {
@@ -1096,15 +1528,27 @@ export function PatchNoteRenderer({
     // Skip orphaned [devnote:en] lines
     if (DEVNOTE_EN_RE.test(trimmed)) continue;
 
+    const indentLevel = bulletIndentLevel(lines[i]);
+    const mentionedMonsters = mentionedMonsterIds(lines[i], lookup);
+    const preferredMonsterIds = mentionedMonsters.length > 0
+      ? mentionedMonsters
+      : indentLevel != null && indentLevel > 0
+        ? currentMonsterContext
+        : [];
+    const lineContext = preferredMonsterIds.length > 0 ? { ...context, preferredMonsterIds } : context;
+
     if (/^\s*-\s+/.test(lines[i])) {
-      listBuffer.push(renderLine(lines[i], lookup, `line-${i}`, context));
+      listBuffer.push(renderLine(lines[i], lookup, `line-${i}`, lineContext));
       wasInList = true;
     } else {
       flushList();
       wasInList = false;
-      const el = renderLine(lines[i], lookup, `line-${i}`, context);
+      const el = renderLine(lines[i], lookup, `line-${i}`, lineContext);
       if (el) elements.push(el);
     }
+
+    if (indentLevel === 0) currentMonsterContext = mentionedMonsters;
+    if (indentLevel == null && trimmed !== "") currentMonsterContext = [];
   }
   flushList();
 
