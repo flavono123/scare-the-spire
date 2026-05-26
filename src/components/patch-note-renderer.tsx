@@ -267,7 +267,7 @@ function MonsterMoveIntentPreview({ entity }: { entity: EntityInfo }) {
   if (intents.length === 0) return null;
 
   return (
-    <span className="pointer-events-none absolute right-3 top-1 z-40 flex items-end justify-center gap-1">
+    <span className="pointer-events-none absolute left-1/2 top-1 z-40 flex -translate-x-1/2 items-end justify-center gap-1">
       {intents.map(({ intent, kind, key }) => (
         <span key={key} className="relative inline-flex h-12 w-12 items-center justify-center">
           <Image
