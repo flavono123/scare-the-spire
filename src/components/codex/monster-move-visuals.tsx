@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, type CSSProperties, type ReactNode } from "react";
+import { useCallback, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import type {
@@ -60,9 +60,9 @@ const INFESTED_PRISM_MOVE_ORDER = ["JAB", "RADIATE", "WHIRLWIND", "PULSATE"];
 const ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
 const ASCENSION_ICON = "/images/sts2/ui/topbar/top_bar_ascension.png";
 const BLOCK_ICON = "/images/sts2/ui/combat/block.png";
-const MOVE_PREVIEW_VIEWPORT_PADDING = { padTop: "24%", padBottom: "2%" } as const;
-const MOVE_PREVIEW_STAGE_TOP = 40;
-const MOVE_PREVIEW_STAGE_BOTTOM = 16;
+const MOVE_PREVIEW_VIEWPORT_PADDING = { padTop: "8%", padBottom: "0%" } as const;
+const MOVE_PREVIEW_STAGE_TOP = 24;
+const MOVE_PREVIEW_STAGE_BOTTOM = 4;
 const INTENT_ICONS: Record<IntentKind, string> = {
   attack: "/images/sts2/intents/attack_3.png",
   buff: "/images/sts2/intents/buff.png",
@@ -255,7 +255,6 @@ function MoveSequenceRail({
               move={move}
               monster={monster}
               serviceLocale={serviceLocale}
-              tone={tone}
             />
             <Image
               src={ARROW_ICON}
@@ -275,78 +274,18 @@ function MovePanel({
   move,
   monster,
   serviceLocale,
-  tone,
 }: {
   move: MoveVisual;
   monster: CodexMonster;
   serviceLocale: ServiceLocale;
-  tone: "before" | "after";
 }) {
   return (
-    <MovePreviewPopover move={move} monster={monster} serviceLocale={serviceLocale}>
-      <span
-        className={`inline-flex min-h-20 w-[7.5rem] flex-col justify-between rounded-md border px-2 py-2 ${
-          tone === "after"
-            ? "border-green-400/25 bg-green-400/[0.045]"
-            : "border-red-400/20 bg-red-400/[0.035]"
-        }`}
-      >
-        <span className="truncate font-game-title text-[12px] font-bold text-zinc-100">
-          {serviceLocale === "ko" ? move.name : move.nameEn}
-        </span>
-        <span className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5">
-          <MoveMetricTokens move={move} compact />
-          <MoveApplicationIcons move={move} serviceLocale={serviceLocale} interactive={false} />
-        </span>
-      </span>
-    </MovePreviewPopover>
-  );
-}
-
-function MovePreviewPopover({
-  move,
-  monster,
-  serviceLocale,
-  children,
-}: {
-  move: MoveVisual;
-  monster: CodexMonster;
-  serviceLocale: ServiceLocale;
-  children: ReactNode;
-}) {
-  const [open, setOpen] = useState(false);
-  const [nonce, setNonce] = useState(0);
-  const href = localizeHref(`/compendium/bestiary?monster=${monster.id.toLowerCase()}`, serviceLocale);
-  const title = serviceLocale === "ko" ? move.name : move.nameEn;
-
-  return (
-    <span
-      className="relative inline-flex"
-      onMouseEnter={() => {
-        setNonce((value) => value + 1);
-        setOpen(true);
-      }}
-      onMouseLeave={() => setOpen(false)}
-      onFocus={() => {
-        setNonce((value) => value + 1);
-        setOpen(true);
-      }}
-      onBlur={() => setOpen(false)}
-    >
-      <Link href={href} className="outline-none transition-transform hover:scale-[1.015] focus-visible:ring-2 focus-visible:ring-yellow-300/70">
-        {children}
-      </Link>
-      {open && (
-        <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2">
-          <MonsterMoveHoverPreview
-            move={move}
-            monster={monster}
-            serviceLocale={serviceLocale}
-            selectedMoveNonce={nonce}
-            title={title}
-          />
-        </span>
-      )}
+    <span className="inline-flex w-[17.5rem] max-w-full">
+      <MonsterMoveHoverPreview
+        move={move}
+        monster={monster}
+        serviceLocale={serviceLocale}
+      />
     </span>
   );
 }
@@ -491,8 +430,8 @@ function getIntentPreviewStyle(bounds: MonsterStageVisualBounds | null, count: n
   }
 
   const safeInset = 4;
-  const tokenSize = 48;
-  const gap = 4;
+  const tokenSize = 56;
+  const gap = 8;
   const groupWidth = Math.max(tokenSize, count * tokenSize + Math.max(0, count - 1) * gap);
   const halfWidth = groupWidth / 2;
   const centerX = bounds.left + bounds.width / 2;
