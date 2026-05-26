@@ -14813,6 +14813,7 @@
     "upgrade": {
       "remove_exhaust": 1
     },
+    "introducedInPatch": "v0.106.0",
     "image_url": "/static/images/cards/scare.png",
     "beta_image_url": null
   },
