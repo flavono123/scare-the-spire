@@ -186,10 +186,10 @@ export function InfestedPrismReworkBlock({
         after: "After",
         body: "Attack damage is much lower. Radiate and Pulsate now include Block, and Pulsate is shown with damage, Block, and Vital Spark application.",
         hp: "HP",
-      };
+  };
 
   return (
-    <div className={compact ? "mt-2" : "my-4"}>
+    <div className={compact ? "mt-2" : "relative left-1/2 my-4 w-[min(96vw,72rem)] -translate-x-1/2"}>
       <div className="rounded-lg border border-yellow-400/20 bg-black/25 p-3 shadow-[0_18px_45px_rgba(0,0,0,0.28)]">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <Link
