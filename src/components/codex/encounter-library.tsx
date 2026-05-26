@@ -26,6 +26,7 @@ import {
   parseCodexSearch,
   type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
+import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
 import { SearchBar } from "./search-bar";
 import { FilterSection } from "./codex-filters";
 import {
@@ -34,6 +35,7 @@ import {
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { EncounterDetail } from "./encounter-detail";
+import { VersionSelector } from "./version-selector";
 
 // Room type display order and styling
 const ROOM_TYPE_ORDER: EncounterRoomType[] = ["Monster", "Elite", "Boss"];
@@ -57,6 +59,10 @@ interface EncounterLibraryProps {
   monsters: CodexMonster[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
+  versions?: string[];
+  currentVersion?: string;
+  selectedVersion?: string;
+  onVersionChange?: (version: string) => void;
   title?: string;
   trailing?: React.ReactNode;
 }
@@ -68,6 +74,10 @@ export function EncounterLibrary({
   monsters,
   patches,
   changes,
+  versions,
+  currentVersion,
+  selectedVersion,
+  onVersionChange,
   title,
   trailing,
 }: EncounterLibraryProps) {
@@ -77,11 +87,22 @@ export function EncounterLibrary({
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [showWeakOnly, setShowWeakOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [internalSelectedVersion, setInternalSelectedVersion] = useState(currentVersion ?? "");
+  const activeVersion = selectedVersion ?? internalSelectedVersion;
+  const setActiveVersion = onVersionChange ?? setInternalSelectedVersion;
+  const versionedEncounters = useMemo(() => {
+    if (!currentVersion || !activeVersion) return encounters;
+    return withEntityLifecycleForVersion(encounters, activeVersion, { changes, entityType: "encounter" });
+  }, [encounters, activeVersion, changes, currentVersion]);
+  const versionedMonsters = useMemo(() => {
+    if (!currentVersion || !activeVersion) return monsters;
+    return withEntityLifecycleForVersion(monsters, activeVersion, { changes, entityType: "monster" });
+  }, [monsters, activeVersion, changes, currentVersion]);
 
   // Monster lookup
   const monsterById = useMemo(
-    () => new Map(monsters.map((m) => [m.id, m])),
-    [monsters],
+    () => new Map(versionedMonsters.map((m) => [m.id, m])),
+    [versionedMonsters],
   );
   const encounterTriggers = useMemo(
     () => getEncounterTriggers(serviceText, gameUi),
@@ -98,6 +119,12 @@ export function EncounterLibrary({
     if (!initialEncId) return null;
     return encounters.find((e) => e.id.toLowerCase() === initialEncId.toLowerCase()) ?? null;
   });
+
+  useEffect(() => {
+    if (!selectedEncounter) return;
+    const versioned = versionedEncounters.find((encounter) => encounter.id === selectedEncounter.id);
+    setSelectedEncounter(versioned ?? null);
+  }, [selectedEncounter, versionedEncounters]);
 
   // URL sync
   useEffect(() => {
@@ -120,12 +147,12 @@ export function EncounterLibrary({
       if (!param) {
         setSelectedEncounter(null);
       } else {
-        setSelectedEncounter(encounters.find((e) => e.id.toLowerCase() === param.toLowerCase()) ?? null);
+        setSelectedEncounter(versionedEncounters.find((e) => e.id.toLowerCase() === param.toLowerCase()) ?? null);
       }
     };
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
-  }, [encounters]);
+  }, [versionedEncounters]);
 
   // Escape to close
   useEffect(() => {
@@ -139,7 +166,7 @@ export function EncounterLibrary({
 
   // Filter
   const filtered = useMemo(() => {
-    let result = encounters;
+    let result = versionedEncounters;
 
     if (selectedRoomTypes.size > 0) {
       result = result.filter((e) => selectedRoomTypes.has(e.roomType));
@@ -173,7 +200,21 @@ export function EncounterLibrary({
     }
 
     return result;
-  }, [encounters, selectedRoomTypes, selectedActs, showWeakOnly, parsedSearch]);
+  }, [versionedEncounters, selectedRoomTypes, selectedActs, showWeakOnly, parsedSearch]);
+
+  const topBarTrailing = trailing || (versions && currentVersion) ? (
+    <div className="flex shrink-0 items-center gap-2">
+      {trailing}
+      {versions && currentVersion ? (
+        <VersionSelector
+          versions={versions}
+          currentVersion={currentVersion}
+          selectedVersion={activeVersion}
+          onChange={setActiveVersion}
+        />
+      ) : null}
+    </div>
+  ) : undefined;
 
   // Group by act
   const sections = useMemo(() => {
@@ -303,7 +344,7 @@ export function EncounterLibrary({
             />
           )}
           count={formatCodexCount(filtered.length, serviceText.labels.encounters, serviceLocale)}
-          trailing={trailing}
+          trailing={topBarTrailing}
         />
 
         {/* Encounter List */}
@@ -352,7 +393,7 @@ export function EncounterLibrary({
               gameUi={gameUi}
               backToListTitle={serviceText.encountersView.backToList}
               encounter={selectedEncounter}
-              monsters={monsters}
+              monsters={versionedMonsters}
               patches={patches}
               changes={changes}
               onClose={() => setSelectedEncounter(null)}
@@ -389,7 +430,9 @@ function EncounterTile({
   return (
     <button
       onClick={onClick}
-      className="group flex items-center gap-3 px-3 py-2.5 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/10 hover:border-yellow-500/40 transition-all text-left"
+      className={`group flex items-center gap-3 rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2.5 text-left transition-all hover:border-yellow-500/40 hover:bg-white/10 ${
+        encounter.deprecated ? "opacity-50 grayscale saturate-0" : ""
+      }`}
     >
       {representativeImageUrl ? (
         <div className="flex h-10 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md border border-white/10 bg-white/[0.03]">

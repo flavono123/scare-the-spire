@@ -5,6 +5,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMeta, getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/data";
+import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { EncounterLibrary } from "@/components/codex/encounter-library";
@@ -29,15 +31,29 @@ export default async function CodexEncountersPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [encounters, monsters, gameUi] = await Promise.all([
+  const [encounters, monsters, patches, changes, versionDiffs, meta, gameUi] = await Promise.all([
     getCodexEncounters({ gameLocale }),
     getCodexMonsters({ gameLocale }),
+    getSTS2Patches(),
+    getSTS2Changes(),
+    getEntityVersionDiffs(),
+    getCodexMeta(),
     getCodexGameUiLabels(gameLocale),
   ]);
+  const versions = getVersionsWithDiffs(patches, versionDiffs);
 
   return (
     <Suspense>
-      <EncounterLibrary serviceLocale={serviceLocale} gameUi={gameUi} encounters={encounters} monsters={monsters} />
+      <EncounterLibrary
+        serviceLocale={serviceLocale}
+        gameUi={gameUi}
+        encounters={encounters}
+        monsters={monsters}
+        patches={patches}
+        changes={changes}
+        versions={versions}
+        currentVersion={meta.version}
+      />
     </Suspense>
   );
 }
