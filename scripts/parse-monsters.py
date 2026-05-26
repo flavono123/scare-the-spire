@@ -49,6 +49,20 @@ _INT_PROP_ASC_RE = re.compile(
 _INT_PROP_PLAIN_RE = re.compile(
     r"(?:public|private|protected)\s+(?:static\s+)?int\s+(?P<name>\w+)\s*=>\s*(?P<val>\d+)\s*;"
 )
+_INT_PROP_DEFAULT_GETTER_RE = re.compile(
+    r"(?:public|private|protected)\s+(?:static\s+)?int\s+(?P<name>\w+)\s*\{.*?"
+    r"return\s+[^;]*\?\?\s*(?P<val>\d+)\s*;.*?\n\t\}",
+    re.DOTALL,
+)
+_INT_LOCAL_ASC_RE = re.compile(
+    r"\bint\s+(?P<name>\w+)\s*=\s*"
+    r"AscensionHelper\.GetValueIfAscension\([^,]+,\s*(?P<asc>\d+)\s*,\s*(?P<base>\d+)\s*\)\s*;"
+)
+_INT_LOCAL_ENEMY_SIDE_TERNARY_RE = re.compile(
+    r"\bint\s+(?P<name>\w+)\s*=\s*"
+    r"\(\(base\.CombatState\.CurrentSide\s*!=\s*CombatSide\.Enemy\)\s*\?\s*\d+\s*:\s*(?P<enemy>\d+)\)\s*;"
+)
+_INT_LOCAL_PLAIN_RE = re.compile(r"\bint\s+(?P<name>\w+)\s*=\s*(?P<val>\d+)\s*;")
 _MOVESTATE_START_RE = re.compile(r'new\s+MoveState\(\s*"(?P<id>\w+)"')
 _INTENT_START_RE = re.compile(r"new\s+(?P<kind>\w+Intent)\s*\(")
 _MOVE_VAR_RE = re.compile(r"MoveState\s+(?P<var>\w+)\s*=.*?new\s+MoveState\(\s*\"(?P<id>\w+)\"", re.DOTALL)
@@ -142,6 +156,21 @@ def parse_int_props(text: str) -> dict[str, dict]:
             "ascension": int(m.group("asc")),
         }
     for m in _INT_PROP_PLAIN_RE.finditer(text):
+        name = m.group("name")
+        if name not in out:
+            out[name] = {"normal": int(m.group("val")), "ascension": None}
+    for m in _INT_PROP_DEFAULT_GETTER_RE.finditer(text):
+        name = m.group("name")
+        if name not in out:
+            out[name] = {"normal": int(m.group("val")), "ascension": None}
+    for m in _INT_LOCAL_ASC_RE.finditer(text):
+        out[m.group("name")] = {
+            "normal": int(m.group("base")),
+            "ascension": int(m.group("asc")),
+        }
+    for m in _INT_LOCAL_ENEMY_SIDE_TERNARY_RE.finditer(text):
+        out[m.group("name")] = {"normal": int(m.group("enemy")), "ascension": None}
+    for m in _INT_LOCAL_PLAIN_RE.finditer(text):
         name = m.group("name")
         if name not in out:
             out[name] = {"normal": int(m.group("val")), "ascension": None}
@@ -554,6 +583,8 @@ def card_id_from_class(class_name: str) -> str:
 
 def classify_power_target(target_expr: str) -> str:
     target = target_expr.strip()
+    if "GetOpponentsOf(base.Creature)" in target:
+        return "player"
     if "base.Creature" in target:
         return "self"
     if target in {"target", "targets"} or "Player" in target:
@@ -612,6 +643,13 @@ def parse_power_applications(body: str, int_props: dict[str, dict]) -> list[dict
             add(power_class, m.group("args"), False)
 
     return applications
+
+
+def parse_initial_power_applications(text: str) -> list[dict]:
+    body = method_body_by_name(text, "AfterAddedToRoom")
+    if not body:
+        return []
+    return parse_power_applications(body, parse_int_props(text))
 
 
 def parse_card_applications(body: str, int_props: dict[str, dict]) -> list[dict]:
@@ -737,6 +775,7 @@ def build_entries(
             text = cs.read_text()
             hp = parse_hp(text)
             move_ids, damage_values, block_values, move_metadata = parse_moves_and_damage(text)
+            initial_power_applications = parse_initial_power_applications(text)
             show_in_compendium = parse_show_in_compendium(text)
             bestiary_move_ids = build_bestiary_move_ids(move_ids, text)
             move_graph = parse_move_graph(text)
@@ -744,6 +783,7 @@ def build_entries(
             hp = {"min_hp": None, "max_hp": None, "min_hp_ascension": None, "max_hp_ascension": None}
             move_ids, damage_values, block_values = [], {}, {}
             move_metadata = {}
+            initial_power_applications = old_kor_by_id.get(ent_id, {}).get("initial_power_applications", [])
             show_in_compendium = old_kor_by_id.get(ent_id, {}).get("show_in_compendium", True)
             bestiary_move_ids = []
             move_graph = old_kor_by_id.get(ent_id, {}).get("move_graph")
@@ -817,6 +857,7 @@ def build_entries(
                 **hp,
                 "moves": moves,
                 "bestiary_moves": bestiary_moves,
+                "initial_power_applications": initial_power_applications,
                 "move_graph": move_graph,
                 "damage_values": damage_values or old.get("damage_values"),
                 "block_values": block_values or old.get("block_values"),
