@@ -33,6 +33,8 @@ import {
   stripCodexMarkup,
   type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
+import type { STS2Change } from "@/lib/types";
+import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
 import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
 import {
   CodexLibraryShell,
@@ -41,6 +43,7 @@ import {
 } from "./codex-filter-drawer";
 import { SearchBar } from "./search-bar";
 import { EpochDetail } from "./epoch-detail";
+import { VersionSelector } from "./version-selector";
 import { EVENT_FILTER_ICON, getCharacterTokenIcon } from "./codex-filter-assets";
 import {
   EPOCH_AFFILIATION_ALIASES,
@@ -83,6 +86,9 @@ interface EpochLibraryProps {
   relics?: CodexRelic[];
   potions?: CodexPotion[];
   ancients?: CodexAncient[];
+  changes?: STS2Change[];
+  versions?: string[];
+  currentVersion?: string;
   entities?: EntityInfo[];
 }
 
@@ -94,15 +100,23 @@ export function EpochLibrary({
   relics = [],
   potions = [],
   ancients = [],
+  changes,
+  versions,
+  currentVersion,
   entities,
 }: EpochLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
   const [selectedAffiliations, setSelectedAffiliations] = useState<Set<EpochAffiliation>>(new Set());
   const [selectedUnlockConditions, setSelectedUnlockConditions] = useState<Set<EpochUnlockCondition>>(new Set());
   const [selectedUnlockRewards, setSelectedUnlockRewards] = useState<Set<EpochUnlockReward>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedEpoch, setSelectedEpoch] = useState<CodexEpoch | null>(null);
   const [urlReady, setUrlReady] = useState(false);
+  const versionedEpochs = useMemo(() => {
+    if (!currentVersion || !selectedVersion) return epochs;
+    return withEntityLifecycleForVersion(epochs, selectedVersion, { changes, entityType: "epoch" });
+  }, [epochs, changes, currentVersion, selectedVersion]);
 
   const selectEpoch = useCallback((epoch: CodexEpoch) => {
     setSelectedEpoch(epoch);
@@ -115,14 +129,20 @@ export function EpochLibrary({
       const url = new URL(window.location.href);
       const epochParam = url.searchParams.get("epoch");
       setSelectedEpoch(epochParam
-        ? epochs.find((epoch) => epoch.id.toLowerCase() === epochParam.toLowerCase()) ?? null
+        ? versionedEpochs.find((epoch) => epoch.id.toLowerCase() === epochParam.toLowerCase()) ?? null
         : null);
       setUrlReady(true);
     }, 0);
     return () => {
       cancelled = true;
     };
-  }, [epochs]);
+  }, [versionedEpochs]);
+
+  useEffect(() => {
+    if (!selectedEpoch) return;
+    const versioned = versionedEpochs.find((epoch) => epoch.id === selectedEpoch.id);
+    setSelectedEpoch(versioned ?? null);
+  }, [selectedEpoch, versionedEpochs]);
 
   useEffect(() => {
     if (!urlReady) return;
@@ -144,12 +164,12 @@ export function EpochLibrary({
       if (!epochParam) {
         setSelectedEpoch(null);
       } else {
-        setSelectedEpoch(epochs.find((epoch) => epoch.id.toLowerCase() === epochParam.toLowerCase()) ?? null);
+        setSelectedEpoch(versionedEpochs.find((epoch) => epoch.id.toLowerCase() === epochParam.toLowerCase()) ?? null);
       }
     };
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
-  }, [epochs]);
+  }, [versionedEpochs]);
 
   useEffect(() => {
     if (!selectedEpoch) return;
@@ -209,7 +229,7 @@ export function EpochLibrary({
   );
 
   const filteredEpochs = useMemo(() => {
-    return epochs.filter((epoch) => {
+    return versionedEpochs.filter((epoch) => {
       if (
         activeAffiliations.size > 0 &&
         !epoch.affiliations.some((affiliation) => activeAffiliations.has(affiliation))
@@ -239,7 +259,7 @@ export function EpochLibrary({
         stripCodexMarkup(epoch.unlockText ?? "").toLowerCase().includes(parsedSearch.text)
       );
     });
-  }, [epochs, activeAffiliations, activeUnlockConditions, activeUnlockRewards, parsedSearch]);
+  }, [versionedEpochs, activeAffiliations, activeUnlockConditions, activeUnlockRewards, parsedSearch]);
 
   const groupedEpochs = useMemo(() => {
     const map = new Map<string, CodexEpoch[]>();
@@ -266,33 +286,33 @@ export function EpochLibrary({
 
   const affiliationCounts = useMemo(() => {
     const counts = new Map<EpochAffiliation, number>();
-    for (const epoch of epochs) {
+    for (const epoch of versionedEpochs) {
       for (const affiliation of epoch.affiliations) {
         counts.set(affiliation, (counts.get(affiliation) ?? 0) + 1);
       }
     }
     return counts;
-  }, [epochs]);
+  }, [versionedEpochs]);
 
   const unlockConditionCounts = useMemo(() => {
     const counts = new Map<EpochUnlockCondition, number>();
-    for (const epoch of epochs) {
+    for (const epoch of versionedEpochs) {
       for (const condition of epoch.unlockConditions) {
         counts.set(condition, (counts.get(condition) ?? 0) + 1);
       }
     }
     return counts;
-  }, [epochs]);
+  }, [versionedEpochs]);
 
   const unlockRewardCounts = useMemo(() => {
     const counts = new Map<EpochUnlockReward, number>();
-    for (const epoch of epochs) {
+    for (const epoch of versionedEpochs) {
       for (const reward of epoch.unlockRewards) {
         counts.set(reward, (counts.get(reward) ?? 0) + 1);
       }
     }
     return counts;
-  }, [epochs]);
+  }, [versionedEpochs]);
 
   const toggleAffiliation = useCallback((affiliation: EpochAffiliation) => {
     setSelectedAffiliations((prev) => {
@@ -404,6 +424,14 @@ export function EpochLibrary({
             />
           )}
           count={formatCodexCount(filteredEpochs.length, serviceText.labels.items, serviceLocale)}
+          trailing={versions && currentVersion ? (
+            <VersionSelector
+              versions={versions}
+              currentVersion={currentVersion}
+              selectedVersion={selectedVersion}
+              onChange={setSelectedVersion}
+            />
+          ) : undefined}
         />
 
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
@@ -469,7 +497,7 @@ export function EpochLibrary({
               relics={relics}
               potions={potions}
               ancients={ancients}
-              epochs={epochs}
+              epochs={versionedEpochs}
               entities={entities}
               onClose={() => setSelectedEpoch(null)}
             />
@@ -505,7 +533,9 @@ function EpochThumbnail({
         event.preventDefault();
         onSelect(epoch);
       }}
-      className="group relative block h-[132px] overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 text-left shadow-sm shadow-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-500/40 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-black/30"
+      className={`group relative block h-[132px] overflow-hidden rounded-lg border border-zinc-700/40 bg-zinc-900/80 text-left shadow-sm shadow-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:border-yellow-500/40 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-black/30 ${
+        epoch.deprecated ? "opacity-50 grayscale saturate-0" : ""
+      }`}
     >
       {epoch.imageUrl ? (
         <div className="absolute inset-0">

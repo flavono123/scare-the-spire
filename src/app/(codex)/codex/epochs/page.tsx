@@ -11,6 +11,8 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
+import { getCodexMeta, getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/data";
+import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { loadAllEntities } from "@/lib/load-all-entities";
@@ -38,15 +40,20 @@ export default async function CodexEpochsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [epochs, cards, relics, potions, ancients, entities, gameUi] = await Promise.all([
+  const [epochs, cards, relics, potions, ancients, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
     getCodexEpochs({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
     getCodexPotions({ gameLocale }),
     getCodexAncients({ gameLocale }),
+    getSTS2Patches(),
+    getSTS2Changes(),
+    getEntityVersionDiffs(),
+    getCodexMeta(),
     loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
+  const versions = getVersionsWithDiffs(patches, versionDiffs);
 
   return (
     <Suspense>
@@ -58,6 +65,9 @@ export default async function CodexEpochsPage({
         relics={relics}
         potions={potions}
         ancients={ancients}
+        changes={changes}
+        versions={versions}
+        currentVersion={meta.version}
         entities={entities}
       />
     </Suspense>
