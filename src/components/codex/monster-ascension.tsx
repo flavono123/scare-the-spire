@@ -21,10 +21,11 @@ export interface MonsterHpDisplay {
 }
 
 export function useMonsterAscensionLevel(): [number, (level: number | ((current: number) => number)) => void] {
-  const [level, setLevelState] = useState(() => readMonsterAscensionLevel());
+  const [level, setLevelState] = useState(0);
 
   useEffect(() => {
     const sync = () => setLevelState(readMonsterAscensionLevel());
+    sync();
 
     window.addEventListener("storage", sync);
     window.addEventListener(MONSTER_ASCENSION_EVENT, sync);
