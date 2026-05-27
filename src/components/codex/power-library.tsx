@@ -75,45 +75,38 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
 
   // Power detail modal
   const initialPowerId = searchParams.get("power");
-  const [selectedPower, setSelectedPower] = useState<CodexPower | null>(() => {
-    if (!initialPowerId) return null;
-    return powers.find((p) => p.id.toLowerCase() === initialPowerId.toLowerCase()) ?? null;
-  });
+  const [selectedPowerId, setSelectedPowerId] = useState<string | null>(initialPowerId);
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    if (selectedPower) {
-      url.searchParams.set("power", selectedPower.id.toLowerCase());
+    if (selectedPowerId) {
+      url.searchParams.set("power", selectedPowerId.toLowerCase());
     } else {
       url.searchParams.delete("power");
     }
     if (url.toString() !== window.location.href) {
       window.history.pushState(null, "", url.toString());
     }
-  }, [selectedPower]);
+  }, [selectedPowerId]);
 
   useEffect(() => {
     const handler = () => {
       const url = new URL(window.location.href);
       const param = url.searchParams.get("power");
-      if (!param) {
-        setSelectedPower(null);
-      } else {
-        setSelectedPower(powers.find((p) => p.id.toLowerCase() === param.toLowerCase()) ?? null);
-      }
+      setSelectedPowerId(param);
     };
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
-  }, [powers]);
+  }, []);
 
   useEffect(() => {
-    if (!selectedPower) return;
+    if (!selectedPowerId) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedPower(null);
+      if (e.key === "Escape") setSelectedPowerId(null);
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedPower]);
+  }, [selectedPowerId]);
 
   const versionedPowers = useMemo(() => {
     const reconstructed = !currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion
@@ -123,6 +116,11 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
       );
     return withEntityLifecycleForVersion(reconstructed, selectedVersion, { changes, entityType: "power" });
   }, [powers, selectedVersion, currentVersion, versionDiffs, patches, changes]);
+
+  const selectedPower = useMemo(() => {
+    if (!selectedPowerId) return null;
+    return versionedPowers.find((p) => p.id.toLowerCase() === selectedPowerId.toLowerCase()) ?? null;
+  }, [selectedPowerId, versionedPowers]);
 
   // Cmd+K to focus search
   useEffect(() => {
@@ -309,7 +307,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
                     gameUi={gameUi}
                     power={power}
                     showBeta={showBeta}
-                    onClick={() => setSelectedPower(power)}
+                    onClick={() => setSelectedPowerId(power.id)}
                   />
                 ))}
               </div>
@@ -329,7 +327,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedPower(null);
+            if (e.target === e.currentTarget) setSelectedPowerId(null);
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
@@ -349,7 +347,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
               relatedEnchantments={enchantments}
               relatedEvents={events}
               relatedMonsters={monsters}
-              onClose={() => setSelectedPower(null)}
+              onClose={() => setSelectedPowerId(null)}
             />
           </div>
         </div>
