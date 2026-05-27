@@ -981,24 +981,46 @@ function MoveApplicationIcons({
           compact={false}
         />
       ))}
-      {move.cards.map((card) => (
-        <span key={`${move.id}-${card.cardId}`} className="relative inline-flex h-7 w-7 items-center justify-center" title={serviceLocale === "ko" ? card.cardName : card.cardNameEn}>
-          <TinyCardIcon
-            card={{ color: card.cardColor, rarity: card.cardRarity, type: card.cardType }}
-            width={28}
-          />
-          {getEffectiveDamageValue(card.amount, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL) != null && (
-            <span
-              className="font-game-title pointer-events-none absolute -bottom-1 -right-1 text-[11px] font-black leading-none text-[#fff8db]"
-              style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
-            >
-              {getEffectiveDamageValue(card.amount, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL)}
-            </span>
-          )}
-        </span>
-      ))}
+      {move.cards.map((card) => {
+        const displayedAmount = getCardApplicationDisplayAmount(card, ascensionLevel);
+        const label = getCardApplicationLabel(card, serviceLocale);
+        return (
+          <span key={`${move.id}-${card.cardId}`} className="relative inline-flex h-7 w-7 items-center justify-center" title={label}>
+            <TinyCardIcon
+              card={{ color: card.cardColor, rarity: card.cardRarity, type: card.cardType, upgraded: isUpgradeCardApplication(card) }}
+              width={28}
+            />
+            {displayedAmount != null && (
+              <span
+                className="font-game-title pointer-events-none absolute -bottom-1 -right-1 text-[11px] font-black leading-none text-[#fff8db]"
+                style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
+              >
+                {displayedAmount}
+              </span>
+            )}
+          </span>
+        );
+      })}
     </span>
   );
+}
+
+function isUpgradeCardApplication(card: MonsterMoveCardApplication): boolean {
+  return card.applicationKind === "upgrade";
+}
+
+function getCardApplicationDisplayAmount(
+  card: MonsterMoveCardApplication,
+  ascensionLevel: number,
+): number | null {
+  if (isUpgradeCardApplication(card)) return null;
+  return getEffectiveDamageValue(card.amount, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
+}
+
+function getCardApplicationLabel(card: MonsterMoveCardApplication, serviceLocale: ServiceLocale): string {
+  const cardName = serviceLocale === "ko" ? card.cardName : card.cardNameEn;
+  if (!isUpgradeCardApplication(card)) return cardName;
+  return serviceLocale === "ko" ? `${cardName} 강화` : `Upgrade ${cardName}`;
 }
 
 function PowerApplicationIcon({
@@ -1249,7 +1271,9 @@ function getIntentLabel(
     return formatEffectiveValue(move.block, ascensionLevel);
   }
   if (kind === "statusCard") {
-    return formatEffectiveValue(move.cards[0]?.amount ?? null, ascensionLevel);
+    const card = move.cards[0] ?? null;
+    if (!card || isUpgradeCardApplication(card)) return null;
+    return formatEffectiveValue(card.amount, ascensionLevel);
   }
   return null;
 }

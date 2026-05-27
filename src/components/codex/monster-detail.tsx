@@ -646,7 +646,12 @@ function MoveCardApplicationToken({
   serviceLocale: ServiceLocale;
 }) {
   const [monsterAscensionLevel] = useMonsterAscensionLevel();
-  const displayedAmount = getEffectiveDamageValue(amount, monsterAscensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
+  const displayedAmount = isUpgradeCardApplication(card)
+    ? null
+    : getEffectiveDamageValue(amount, monsterAscensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
+  const displayLabel = isUpgradeCardApplication(card)
+    ? serviceLocale === "ko" ? `${label} 강화` : `Upgrade ${label}`
+    : label;
 
   return (
     <EntityPreview
@@ -654,9 +659,9 @@ function MoveCardApplicationToken({
       serviceLocale={serviceLocale}
       linkClassName="relative inline-flex h-7 w-7 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70"
     >
-      <span className="relative inline-flex h-7 w-7 items-center justify-center" title={label}>
+      <span className="relative inline-flex h-7 w-7 items-center justify-center" title={displayLabel}>
         <TinyCardIcon
-          card={{ color: card.cardColor, rarity: card.cardRarity, type: card.cardType }}
+          card={{ color: card.cardColor, rarity: card.cardRarity, type: card.cardType, upgraded: isUpgradeCardApplication(card) }}
           width={28}
         />
       </span>
@@ -670,6 +675,10 @@ function MoveCardApplicationToken({
       )}
     </EntityPreview>
   );
+}
+
+function isUpgradeCardApplication(card: MonsterMoveCardApplication): boolean {
+  return card.applicationKind === "upgrade";
 }
 
 function InitialPowerApplicationsRail({
@@ -1784,7 +1793,9 @@ function getMonsterIntentPreviewLabel(
   }
 
   if (kind === "statusCard") {
-    const amount = getEffectiveDamageValue(summary.move.cardApplications[0]?.amount ?? null, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
+    const card = summary.move.cardApplications[0] ?? null;
+    if (!card || isUpgradeCardApplication(card)) return null;
+    const amount = getEffectiveDamageValue(card.amount, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
     return amount == null ? null : String(amount);
   }
 
