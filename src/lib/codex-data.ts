@@ -1550,7 +1550,7 @@ interface RawMonster {
 }
 
 type MonsterPowerDisplay = Pick<MonsterMovePowerApplication, "powerId" | "powerName" | "powerNameEn" | "powerType" | "imageUrl">;
-type MonsterCardDisplay = Pick<MonsterMoveCardApplication, "cardId" | "cardName" | "cardNameEn" | "imageUrl">;
+type MonsterCardDisplay = Pick<MonsterMoveCardApplication, "cardId" | "cardName" | "cardNameEn" | "cardType" | "cardRarity" | "cardColor" | "imageUrl">;
 
 const MONSTER_IMAGE_OVERRIDES: Record<string, string> = {
   DECIMILLIPEDE_SEGMENT: "/images/sts2/monsters-render/decimillipede.webp",
@@ -1588,6 +1588,9 @@ function buildMonsterCardDisplays(korCards: RawCard[], engCards: RawCard[]): Map
           cardId: card.id,
           cardName: card.name,
           cardNameEn: eng.name,
+          cardType: card.type as CardTypeKo,
+          cardRarity: card.rarity as CardRarityKo,
+          cardColor: card.color as CardColor,
           imageUrl: spireCodexImageToLocal(card.image_url),
         },
       ];
@@ -1655,6 +1658,9 @@ function mapMonster(
           cardId: application.card_id,
           cardName: display?.cardName ?? application.card_id,
           cardNameEn: display?.cardNameEn ?? application.card_id,
+          cardType: display?.cardType ?? "상태이상",
+          cardRarity: display?.cardRarity ?? "상태이상",
+          cardColor: display?.cardColor ?? "status",
           amount: application.amount,
           imageUrl: display?.imageUrl ?? `/images/sts2/cards/${application.card_id.toLowerCase()}.webp`,
         };

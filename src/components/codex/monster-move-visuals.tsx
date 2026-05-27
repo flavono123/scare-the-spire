@@ -1092,6 +1092,9 @@ function cardApplication(
     cardId,
     cardName,
     cardNameEn,
+    cardType: "상태이상",
+    cardRarity: "상태이상",
+    cardColor: "status",
     amount,
     imageUrl: cardId === "WITHER" ? "/images/sts2/cards-beta/wither.webp" : `/images/sts2/cards/${cardId.toLowerCase()}.webp`,
   };
