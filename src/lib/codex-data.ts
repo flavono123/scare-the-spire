@@ -1598,6 +1598,17 @@ function buildMonsterCardDisplays(korCards: RawCard[], engCards: RawCard[]): Map
   );
 }
 
+function getMonsterCardApplicationKind(
+  monsterId: string,
+  moveId: string,
+  cardId: string,
+): MonsterMoveCardApplication["applicationKind"] {
+  if (monsterId === "AEONGLASS" && moveId === "INCREASING_INTENSITY" && cardId === "WITHER") {
+    return "upgrade";
+  }
+  return "add";
+}
+
 function mapMonster(
   kor: RawMonster,
   eng: RawMonster,
@@ -1661,6 +1672,7 @@ function mapMonster(
           cardType: display?.cardType ?? "상태이상",
           cardRarity: display?.cardRarity ?? "상태이상",
           cardColor: display?.cardColor ?? "status",
+          applicationKind: getMonsterCardApplicationKind(kor.id, km.id, application.card_id),
           amount: application.amount,
           imageUrl: display?.imageUrl ?? `/images/sts2/cards/${application.card_id.toLowerCase()}.webp`,
         };

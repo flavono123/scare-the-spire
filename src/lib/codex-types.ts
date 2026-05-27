@@ -736,6 +736,7 @@ export interface MonsterMoveCardApplication {
   cardType: CardTypeKo;
   cardRarity: CardRarityKo;
   cardColor: CardColor;
+  applicationKind: "add" | "upgrade";
   amount: DamageValue | null;
   imageUrl: string | null;
 }
