@@ -50,6 +50,7 @@ import {
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
+import { TEXT_CREAM, TEXT_GREEN } from "@/lib/sts2-card-style";
 import { GameCheckboxToggle } from "./game-checkbox";
 import {
   DECIMILLIPEDE_PART_OPTIONS,
@@ -646,31 +647,39 @@ function MoveCardApplicationToken({
   serviceLocale: ServiceLocale;
 }) {
   const [monsterAscensionLevel] = useMonsterAscensionLevel();
+  const upgraded = isUpgradeCardApplication(card);
   const displayedAmount = isUpgradeCardApplication(card)
     ? null
     : getEffectiveDamageValue(amount, monsterAscensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
-  const displayLabel = isUpgradeCardApplication(card)
-    ? serviceLocale === "ko" ? `${label} 강화` : `Upgrade ${label}`
-    : label;
+  const displayLabel = upgraded ? `${label}+` : label;
 
   return (
     <EntityPreview
       entity={entity}
       serviceLocale={serviceLocale}
-      linkClassName="relative inline-flex h-7 w-7 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70"
+      linkClassName="inline-flex min-h-7 items-center gap-1 rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70"
     >
-      <span className="relative inline-flex h-7 w-7 items-center justify-center" title={displayLabel}>
+      <span className="inline-flex min-h-7 items-center gap-1 whitespace-nowrap" title={displayLabel}>
         <TinyCardIcon
-          card={{ color: card.cardColor, rarity: card.cardRarity, type: card.cardType, upgraded: isUpgradeCardApplication(card) }}
-          width={28}
+          card={{ color: card.cardColor, rarity: card.cardRarity, type: card.cardType }}
+          width={24}
         />
-      </span>
-      {displayedAmount != null && (
         <span
-          className="pointer-events-none absolute -bottom-1 -right-1 font-game-title text-[11px] font-black leading-none text-[#fff8db]"
+          className="font-game-title text-sm font-black leading-none"
+          style={{
+            color: upgraded ? TEXT_GREEN : TEXT_CREAM,
+            textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000",
+          }}
+        >
+          {displayLabel}
+        </span>
+      </span>
+      {displayedAmount != null && displayedAmount > 1 && (
+        <span
+          className="pointer-events-none font-game-title text-[11px] font-black leading-none text-[#fff8db]"
           style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
         >
-          {displayedAmount}
+          x{displayedAmount}
         </span>
       )}
     </EntityPreview>

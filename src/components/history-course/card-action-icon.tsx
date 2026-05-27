@@ -3,7 +3,6 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import type { CardColor, CardRarityKo, CardTypeKo, CodexCard } from "@/lib/codex-types";
-import { TEXT_GREEN, TITLE_UPGRADED_OUTLINE } from "@/lib/sts2-card-style";
 
 // Direct port of `scenes/cards/tiny_card.tscn` + NTinyCard.cs from the PCK.
 // Sprite assets live under public/images/sts2/tiny-card/ and are pure
@@ -67,7 +66,6 @@ export interface TinyCardVisual {
   color: CardColor;
   rarity: CardRarityKo;
   type: CardTypeKo;
-  upgraded?: boolean;
 }
 
 interface TinyCardIconProps {
@@ -97,14 +95,6 @@ function maskLayer(src: string, color: string, opacity = 1): CSSProperties {
   };
 }
 
-function upgradeOutlineLayer(src: string, width: number): CSSProperties {
-  return {
-    ...maskLayer(src, TITLE_UPGRADED_OUTLINE, 0.9),
-    inset: "-12%",
-    filter: `drop-shadow(0 0 ${Math.max(2, Math.round(width / 8))}px ${TEXT_GREEN})`,
-  };
-}
-
 export function TinyCardIcon({ card, width }: TinyCardIconProps) {
   const cardBackColor = POOL_COLOR[card.color] ?? POOL_COLOR.colorless;
   const bannerColor = BANNER_COLOR[card.rarity] ?? BANNER_COLOR["일반"];
@@ -115,14 +105,8 @@ export function TinyCardIcon({ card, width }: TinyCardIconProps) {
       className="relative shrink-0 select-none"
       style={{ width, height: width }}
     >
-      {card.upgraded && (
-        <div style={upgradeOutlineLayer(`${TINY}/card_back.png`, width)} />
-      )}
       {/* CardBack — outer silhouette, character color */}
       <div style={maskLayer(`${TINY}/card_back.png`, cardBackColor)} />
-      {card.upgraded && (
-        <div style={maskLayer(`${TINY}/card_back.png`, TEXT_GREEN, 0.18)} />
-      )}
       {/* Description box — dark inset overlay (opacity from tscn modulate alpha) */}
       <div style={maskLayer(`${TINY}/desc_box.png`, "#000000", 0.25)} />
       {/* PortraitShadow — pre-tinted (renders as <img> for its own RGBA) */}
@@ -137,9 +121,9 @@ export function TinyCardIcon({ card, width }: TinyCardIconProps) {
       {/* Portrait — type-specific shape, cream tinted */}
       <div style={maskLayer(`${TINY}/${portrait}.png`, PORTRAIT_TINT)} />
       {/* Banner shadow — accent behind banner */}
-      <div style={maskLayer(`${TINY}/banner_shadow.png`, card.upgraded ? TEXT_GREEN : BANNER_SHADOW_TINT)} />
+      <div style={maskLayer(`${TINY}/banner_shadow.png`, BANNER_SHADOW_TINT)} />
       {/* Banner — rarity-colored top ribbon */}
-      <div style={maskLayer(`${TINY}/banner.png`, card.upgraded ? TITLE_UPGRADED_OUTLINE : bannerColor)} />
+      <div style={maskLayer(`${TINY}/banner.png`, bannerColor)} />
     </div>
   );
 }

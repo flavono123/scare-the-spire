@@ -14,6 +14,7 @@ import type {
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
+import { TEXT_CREAM, TEXT_GREEN } from "@/lib/sts2-card-style";
 import { GameHoverTip } from "./hover-tip";
 import {
   getEffectiveDamageValue,
@@ -983,19 +984,29 @@ function MoveApplicationIcons({
       ))}
       {move.cards.map((card) => {
         const displayedAmount = getCardApplicationDisplayAmount(card, ascensionLevel);
-        const label = getCardApplicationLabel(card, serviceLocale);
+        const label = getCardApplicationDisplayName(card, serviceLocale);
+        const upgraded = isUpgradeCardApplication(card);
         return (
-          <span key={`${move.id}-${card.cardId}`} className="relative inline-flex h-7 w-7 items-center justify-center" title={label}>
+          <span key={`${move.id}-${card.cardId}`} className="inline-flex min-h-7 items-center gap-1 whitespace-nowrap" title={label}>
             <TinyCardIcon
-              card={{ color: card.cardColor, rarity: card.cardRarity, type: card.cardType, upgraded: isUpgradeCardApplication(card) }}
-              width={28}
+              card={{ color: card.cardColor, rarity: card.cardRarity, type: card.cardType }}
+              width={24}
             />
-            {displayedAmount != null && (
+            <span
+              className="font-game-title text-sm font-black leading-none"
+              style={{
+                color: upgraded ? TEXT_GREEN : TEXT_CREAM,
+                textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000",
+              }}
+            >
+              {label}
+            </span>
+            {displayedAmount != null && displayedAmount > 1 && (
               <span
-                className="font-game-title pointer-events-none absolute -bottom-1 -right-1 text-[11px] font-black leading-none text-[#fff8db]"
+                className="font-game-title text-[11px] font-black leading-none text-[#fff8db]"
                 style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
               >
-                {displayedAmount}
+                x{displayedAmount}
               </span>
             )}
           </span>
@@ -1017,10 +1028,10 @@ function getCardApplicationDisplayAmount(
   return getEffectiveDamageValue(card.amount, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
 }
 
-function getCardApplicationLabel(card: MonsterMoveCardApplication, serviceLocale: ServiceLocale): string {
+function getCardApplicationDisplayName(card: MonsterMoveCardApplication, serviceLocale: ServiceLocale): string {
   const cardName = serviceLocale === "ko" ? card.cardName : card.cardNameEn;
   if (!isUpgradeCardApplication(card)) return cardName;
-  return serviceLocale === "ko" ? `${cardName} 강화` : `Upgrade ${cardName}`;
+  return `${cardName}+`;
 }
 
 function PowerApplicationIcon({
