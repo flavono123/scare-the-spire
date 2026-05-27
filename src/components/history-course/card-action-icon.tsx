@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import type { CSSProperties } from "react";
-import { CodexCard } from "@/lib/codex-types";
+import type { CardColor, CardRarityKo, CardTypeKo, CodexCard } from "@/lib/codex-types";
 
 // Direct port of `scenes/cards/tiny_card.tscn` + NTinyCard.cs from the PCK.
 // Sprite assets live under public/images/sts2/tiny-card/ and are pure
@@ -62,10 +62,20 @@ const BANNER_SHADOW_TINT = "#64FFFF";
 // Portrait modulate — cream/gold from the tscn (Color 0.95, 0.92, 0.69).
 const PORTRAIT_TINT = "#F2EBB1";
 
-interface CardActionIconProps {
-  card: CodexCard;
+export interface TinyCardVisual {
+  color: CardColor;
+  rarity: CardRarityKo;
+  type: CardTypeKo;
+}
+
+interface TinyCardIconProps {
+  card: TinyCardVisual;
   /** Pixel width. Aspect 1/1 — the in-game tiny_card scene is 32×32. */
   width: number;
+}
+
+interface CardActionIconProps extends TinyCardIconProps {
+  card: CodexCard;
 }
 
 function maskLayer(src: string, color: string, opacity = 1): CSSProperties {
@@ -85,7 +95,7 @@ function maskLayer(src: string, color: string, opacity = 1): CSSProperties {
   };
 }
 
-export function CardActionIcon({ card, width }: CardActionIconProps) {
+export function TinyCardIcon({ card, width }: TinyCardIconProps) {
   const cardBackColor = POOL_COLOR[card.color] ?? POOL_COLOR.colorless;
   const bannerColor = BANNER_COLOR[card.rarity] ?? BANNER_COLOR["일반"];
   const portrait = portraitName(card.type);
@@ -116,4 +126,8 @@ export function CardActionIcon({ card, width }: CardActionIconProps) {
       <div style={maskLayer(`${TINY}/banner.png`, bannerColor)} />
     </div>
   );
+}
+
+export function CardActionIcon(props: CardActionIconProps) {
+  return <TinyCardIcon {...props} />;
 }
