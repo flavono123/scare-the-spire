@@ -709,7 +709,7 @@ function MovePreviewSurface({
 
     const observer = new IntersectionObserver(
       ([entry]) => setStageMounted(entry.isIntersecting),
-      { rootMargin: "240px 0px" },
+      { rootMargin: "0px" },
     );
     observer.observe(node);
 
