@@ -19,5 +19,38 @@
       "보스",
       "3막"
     ]
+  },
+  {
+    "id": "sts2-infested-prism-energy-vending-machine",
+    "game": "sts2",
+    "sentence": "프리즘은 원래 때리면 1코를 주는 자판기였다",
+    "entityType": "monster",
+    "entityId": "INFESTED_PRISM",
+    "changeId": "infested-prism-v106-rework",
+    "source": "v0.106.0",
+    "tags": [
+      "리워크",
+      "적"
+    ]
+  },
+  {
+    "id": "sts2-wither-int-max-upgrades",
+    "game": "sts2",
+    "sentence": "침체는 플레이어가 2147483647 번 강화시킬 수 있었다",
+    "entityType": "card",
+    "entityId": "WITHER",
+    "changeId": "wither-v1061-upgrade-fix",
+    "linkedEntities": [
+      {
+        "entityType": "monster",
+        "entityId": "AEONGLASS",
+        "label": "생성"
+      }
+    ],
+    "source": "v0.106.1",
+    "tags": [
+      "버그수정",
+      "상태이상"
+    ]
   }
 ]
