@@ -759,6 +759,17 @@
     "vars": {}
   },
   {
+    "id": "EBB",
+    "name": "감쇠",
+    "description": "이번 턴에 [gold]힘[/gold]을 [blue]3[/blue] 잃고 [gold]민첩[/gold]을 [blue]3[/blue] 잃습니다.",
+    "description_raw": "이번 턴에 [gold]힘[/gold]을 [blue]{Amount}[/blue] 잃고 [gold]민첩[/gold]을 [blue]{Amount}[/blue] 잃습니다.",
+    "type": "Debuff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/ebb_power.png",
+    "vars": {}
+  },
+  {
     "id": "ECHO_FORM",
     "name": "메아리의 형상",
     "description": "매 턴마다 처음으로 사용하는 카드가 1번 추가로 사용됩니다.",

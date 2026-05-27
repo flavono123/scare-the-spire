@@ -759,6 +759,17 @@
     "vars": {}
   },
   {
+    "id": "EBB",
+    "name": "Ebb",
+    "description": "Lose [blue]3[/blue] [gold]Strength[/gold] and [blue]3[/blue] [gold]Dexterity[/gold] this turn.",
+    "description_raw": "Lose [blue]{Amount}[/blue] [gold]Strength[/gold] and [blue]{Amount}[/blue] [gold]Dexterity[/gold] this turn.",
+    "type": "Debuff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/ebb_power.png",
+    "vars": {}
+  },
+  {
     "id": "ECHO_FORM",
     "name": "Echo Form",
     "description": "The first card you play each turn is played an extra time.",
