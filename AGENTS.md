@@ -6,6 +6,13 @@
 
 All task instructions must be followed by an immediate speculative commit after each modification. Do not batch changes — commit after every meaningful edit.
 
+## Git Commit Language
+
+This repository is not a Krafton/PUBG/company work repository.
+
+- Use English for Git commit messages and PR/MR descriptions by default.
+- Use Korean only when the user explicitly asks for Korean, or when working in a company/work repository whose local instructions require Korean.
+
 ## Local Skills (Project-Scoped)
 
 This project uses local project skills instead of global home-directory skill installation.
