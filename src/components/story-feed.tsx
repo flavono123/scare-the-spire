@@ -10,6 +10,7 @@ import { useEngagementCounts } from "@/hooks/use-engagement-counts";
 import { LikeButton } from "@/components/like-button";
 import { CommentSection } from "@/components/comment-section";
 import { EngagementSummary } from "@/components/engagement-summary";
+import { VersionDiffLine } from "@/components/codex/sts2-change-history";
 
 function stableHash(value: string) {
   let hash = 0;
@@ -221,6 +222,7 @@ function STS2ChangeBlock({ change, story, patch }: { change?: STS2Change; story:
   const href = patchHref(change, story);
   const patchLabel = change?.patch ?? story.source;
   const summary = change?.summaryKo ?? change?.summary;
+  const fieldDiffs = change?.fieldDiffs ?? [];
 
   return (
     <div className="rounded-lg border border-border bg-card/30 p-4">
@@ -241,9 +243,17 @@ function STS2ChangeBlock({ change, story, patch }: { change?: STS2Change; story:
       )}
       {change && (
         <div className="space-y-1">
-          {change.diffs.map((d, i) => (
-            <STS2DiffLine key={i} diff={d} />
-          ))}
+          {fieldDiffs.length > 0
+            ? fieldDiffs.map((diff, index) => (
+                <VersionDiffLine
+                  key={`${change.id}-${diff.field}-${diff.upgraded ? "upgraded" : "base"}-${index}`}
+                  diff={diff}
+                  serviceLocale="ko"
+                />
+              ))
+            : change.diffs.map((d, i) => (
+                <STS2DiffLine key={i} diff={d} />
+              ))}
         </div>
       )}
     </div>

@@ -166,7 +166,7 @@ function CuratedDiffLine({
   );
 }
 
-function VersionDiffLine({
+export function VersionDiffLine({
   diff,
   serviceLocale,
 }: {
