@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import type {
@@ -672,9 +672,12 @@ function MovePreviewSurface({
   loopAnimation: boolean;
 }) {
   const compact = variant === "inline";
+  const surfaceRef = useRef<HTMLSpanElement | null>(null);
   const [loopNonce, setLoopNonce] = useState(0);
+  const [stageMounted, setStageMounted] = useState(!loopAnimation);
   const stageMoveId = move.animationId ?? move.id;
   const stageMoveNonce = selectedMoveNonce + loopNonce;
+  const fallbackImageUrl = monster.bossImageUrl ?? monster.imageUrl;
   const surfaceClass = compact
     ? "relative mb-0 block h-44 w-full overflow-hidden rounded bg-black/10"
     : "relative mb-2 block h-56 overflow-hidden rounded bg-black/25";
@@ -695,8 +698,26 @@ function MovePreviewSurface({
     return () => window.clearInterval(interval);
   }, [loopAnimation, stageMoveId]);
 
+  useEffect(() => {
+    if (!loopAnimation) {
+      setStageMounted(true);
+      return;
+    }
+
+    const node = surfaceRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setStageMounted(entry.isIntersecting),
+      { rootMargin: "240px 0px" },
+    );
+    observer.observe(node);
+
+    return () => observer.disconnect();
+  }, [loopAnimation]);
+
   return (
-    <span className={surfaceClass}>
+    <span ref={surfaceRef} className={surfaceClass}>
       <span className="absolute left-1 top-1 z-50">
         <MonsterAscensionStepper
           level={ascensionLevel}
@@ -708,20 +729,30 @@ function MovePreviewSurface({
       <span className={`grid h-full w-full ${gridRows}`}>
         <MoveIntentPreview move={move} ascensionLevel={ascensionLevel} compact={compact} />
         <span className="relative min-h-0">
-          <MonsterSpineStage
-            asset={monster.spineAsset}
-            fallbackImageUrl={monster.bossImageUrl ?? monster.imageUrl}
-            monsterName={monster.name}
-            selectedMoveId={stageMoveId}
-            selectedMoveNonce={stageMoveNonce}
-            imagePriority={false}
-            showLoadingLabel={false}
-            viewportTransitionTime={0}
-            viewportPadding={MOVE_PREVIEW_VIEWPORT_PADDING}
-            fallbackImageClassName="absolute inset-0 h-full w-full object-contain opacity-80"
-            className="absolute inset-0"
-            loopSelectedMove={loopAnimation}
-          />
+          {stageMounted ? (
+            <MonsterSpineStage
+              asset={monster.spineAsset}
+              fallbackImageUrl={fallbackImageUrl}
+              monsterName={monster.name}
+              selectedMoveId={stageMoveId}
+              selectedMoveNonce={stageMoveNonce}
+              imagePriority={false}
+              showLoadingLabel={false}
+              viewportTransitionTime={0}
+              viewportPadding={MOVE_PREVIEW_VIEWPORT_PADDING}
+              fallbackImageClassName="absolute inset-0 h-full w-full object-contain opacity-80"
+              className="absolute inset-0"
+              loopSelectedMove={loopAnimation}
+            />
+          ) : fallbackImageUrl ? (
+            <Image
+              src={fallbackImageUrl}
+              alt={monster.name}
+              width={640}
+              height={640}
+              className="absolute inset-0 h-full w-full object-contain opacity-80"
+            />
+          ) : null}
         </span>
         <span className="relative z-40 flex items-center justify-center">
           <MonsterHealthBar
