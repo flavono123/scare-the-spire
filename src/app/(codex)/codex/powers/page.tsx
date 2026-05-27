@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getCodexCards, getCodexEnchantments, getCodexEvents, getCodexPotions, getCodexPowers, getCodexRelics } from "@/lib/codex-data";
+import { getCodexCards, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexPotions, getCodexPowers, getCodexRelics } from "@/lib/codex-data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getSTS2Patches, getSTS2Changes, getEntityVersionDiffs, getCodexMeta } from "@/lib/data";
@@ -34,13 +34,14 @@ export default async function CodexPowersPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [powers, cards, relics, potions, enchantments, events, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
+  const [powers, cards, relics, potions, enchantments, events, monsters, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
     getCodexPowers({ includeDeprecated: true, gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
     getCodexPotions({ gameLocale }),
     getCodexEnchantments({ gameLocale }),
     getCodexEvents({ gameLocale }),
+    getCodexMonsters({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
     getEntityVersionDiffs(),
@@ -63,6 +64,7 @@ export default async function CodexPowersPage({
         potions={potions}
         enchantments={enchantments}
         events={events}
+        monsters={monsters}
         versions={versions}
         currentVersion={meta.version}
         patches={patches}

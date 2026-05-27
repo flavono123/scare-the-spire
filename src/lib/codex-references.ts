@@ -559,6 +559,19 @@ export function getRelatedMonsterIdsForCard(
     .map((monster) => monster.id);
 }
 
+export function getRelatedMonsterIdsForPower(
+  powerId: string,
+  monsters: readonly (Pick<CodexMonster, "id" | "moves" | "bestiaryMoves"> & Partial<Pick<CodexMonster, "initialPowerApplications">>)[],
+): string[] {
+  const normalizedPowerId = powerId.toUpperCase();
+  return monsters
+    .filter((monster) =>
+      getRelatedPowerIdsForMonster(monster)
+        .some((id) => id.toUpperCase() === normalizedPowerId),
+    )
+    .map((monster) => monster.id);
+}
+
 export function getRelatedMonsterIdsForAffliction(
   afflictionId: string,
   monsters: readonly (Pick<CodexMonster, "id" | "moves" | "bestiaryMoves"> & Partial<Pick<CodexMonster, "initialPowerApplications">>)[],

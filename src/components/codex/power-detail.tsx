@@ -14,6 +14,7 @@ import {
   CodexCard,
   CodexEnchantment,
   CodexEvent,
+  CodexMonster,
   CodexPotion,
   CodexPower,
   CodexRelic,
@@ -29,6 +30,7 @@ import {
   getRelatedCardIdsForPower,
   getRelatedEnchantmentIdsForPower,
   getRelatedEventIdsForPower,
+  getRelatedMonsterIdsForPower,
   getRelatedPotionIdsForPower,
   getRelatedRelicIdsForPower,
 } from "@/lib/codex-references";
@@ -82,6 +84,7 @@ interface PowerDetailProps {
   relatedPotions?: CodexPotion[];
   relatedEnchantments?: CodexEnchantment[];
   relatedEvents?: CodexEvent[];
+  relatedMonsters?: CodexMonster[];
   onClose?: () => void;
 }
 
@@ -122,6 +125,7 @@ export function PowerDetail({
   relatedPotions = [],
   relatedEnchantments = [],
   relatedEvents = [],
+  relatedMonsters = [],
   onClose,
 }: PowerDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
@@ -167,6 +171,11 @@ export function PowerDetail({
     .map((eventId) => eventById.get(eventId))
     .filter((event): event is CodexEvent => Boolean(event))
     .map(eventToReferenceTarget);
+  const monsterById = new Map(relatedMonsters.map((monster) => [monster.id, monster]));
+  const relatedMonsterTargets = getRelatedMonsterIdsForPower(power.id, relatedMonsters)
+    .map((monsterId) => monsterById.get(monsterId))
+    .filter((monster): monster is CodexMonster => Boolean(monster))
+    .map(monsterToReferenceTarget);
 
   return (
     <div className="mx-auto w-full max-w-5xl p-4 sm:p-6">
@@ -274,6 +283,7 @@ export function PowerDetail({
               { kind: "relic", targets: relatedRelicTargets },
               { kind: "potion", targets: relatedPotionTargets },
               { kind: "enchantment", targets: relatedEnchantmentTargets },
+              { kind: "monster", targets: relatedMonsterTargets },
               { kind: "event", targets: relatedEventTargets },
             ]}
             serviceLocale={serviceLocale}
@@ -396,6 +406,25 @@ function eventToReferenceTarget(event: CodexEvent): CodexReferenceTarget {
       color: event.act ?? "event",
       type: "event",
       eventData: event,
+    },
+  };
+}
+
+function monsterToReferenceTarget(monster: CodexMonster): CodexReferenceTarget {
+  const href = `/compendium/bestiary?monster=${monster.id.toLowerCase()}`;
+  return {
+    href,
+    id: monster.id,
+    title: monster.name,
+    entity: {
+      id: monster.id,
+      nameEn: monster.nameEn,
+      nameKo: monster.name,
+      imageUrl: monster.bossImageUrl ?? monster.imageUrl,
+      href,
+      color: monster.type,
+      type: "monster",
+      monsterData: monster,
     },
   };
 }
