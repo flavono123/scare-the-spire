@@ -310,7 +310,7 @@ export function STS2ChangeHistory({
         const curatedDiffs = entry.curatedChanges.flatMap((change) => change.diffs);
         const hasVersionDiffs = entry.versionDiffs.length > 0;
         const hasLifecycleChanges = entry.lifecycleChanges.length > 0;
-        const showMonsterAnimationDiff = Boolean(monster) && hasMonsterAnimationPatchDiff(monster.id, entry.patch);
+        const showMonsterAnimationDiff = monster ? hasMonsterAnimationPatchDiff(monster.id, entry.patch) : false;
 
         return (
           <div
