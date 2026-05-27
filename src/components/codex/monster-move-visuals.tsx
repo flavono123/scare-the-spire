@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import type {
@@ -45,6 +45,7 @@ export interface MonsterMoveVisual {
   id: string;
   name: string;
   nameEn: string;
+  animationId?: string;
   damage: DamageValue | null;
   block: DamageValue | null;
   intents: MonsterMoveIntentDetail[];
@@ -71,7 +72,7 @@ interface MonsterPatchDiffSequence {
   moveIds?: string[];
   hpOverride?: DamageValue | null;
   initialPowerApplications?: readonly MonsterMovePowerApplication[] | null;
-  changes?: Record<string, Pick<MonsterMoveVisual, "damageChange" | "blockChange" | "powerChange">>;
+  changes?: Record<string, Pick<MonsterMoveVisual, "animationId" | "damageChange" | "blockChange" | "powerChange">>;
 }
 
 interface MonsterPatchDiffSpec {
@@ -143,6 +144,7 @@ const OLD_INFESTED_PRISM_MOVES: MoveVisual[] = [
     id: "JAB",
     name: "찌르기",
     nameEn: "Jab",
+    animationId: "attack",
     damage: { normal: 22, ascension: 24 },
     block: null,
     intents: [{ type: "SingleAttackIntent", damageKey: "Jab", repeat: SINGLE_ATTACK_REPEAT }],
@@ -154,6 +156,7 @@ const OLD_INFESTED_PRISM_MOVES: MoveVisual[] = [
     id: "RADIATE",
     name: "방출",
     nameEn: "Radiate",
+    animationId: "attack_block",
     damage: { normal: 16, ascension: 18 },
     block: null,
     intents: [{ type: "SingleAttackIntent", damageKey: "Radiate", repeat: SINGLE_ATTACK_REPEAT }],
@@ -165,6 +168,7 @@ const OLD_INFESTED_PRISM_MOVES: MoveVisual[] = [
     id: "WHIRLWIND",
     name: "소용돌이",
     nameEn: "Whirlwind",
+    animationId: "attack_double",
     damage: { normal: 9, ascension: 10 },
     block: null,
     intents: [{ type: "MultiAttackIntent", damageKey: "Whirlwind", repeat: { normal: 3, ascension: null } }],
@@ -176,6 +180,7 @@ const OLD_INFESTED_PRISM_MOVES: MoveVisual[] = [
     id: "PULSATE",
     name: "맥박",
     nameEn: "Pulsate",
+    animationId: "buff",
     damage: null,
     block: null,
     intents: [],
@@ -220,6 +225,7 @@ const OLD_HAUNTED_SHIP_MOVES: MoveVisual[] = [
     id: "RAMMING_SPEED",
     name: "전속력",
     nameEn: "Ramming Speed",
+    animationId: "attack",
     damage: { normal: 10, ascension: 11 },
     intents: [{ type: "SingleAttackIntent", damageKey: "RammingSpeed", repeat: SINGLE_ATTACK_REPEAT }],
     damageChange: "removed",
@@ -273,6 +279,7 @@ const OLD_SKULKING_COLONY_MOVES: MoveVisual[] = [
     id: "SMASH",
     name: "강타",
     nameEn: "Smash",
+    animationId: "attack_heavy",
     damage: { normal: 12, ascension: 13 },
     intents: [{ type: "SingleAttackIntent", damageKey: "Smash", repeat: SINGLE_ATTACK_REPEAT }],
     damageChange: "removed",
@@ -320,6 +327,12 @@ const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> 
         labelKo: "이후",
         labelEn: "After",
         moveIds: INFESTED_PRISM_MOVE_ORDER,
+        changes: {
+          JAB: { animationId: "attack" },
+          RADIATE: { animationId: "attack_block" },
+          WHIRLWIND: { animationId: "attack_double" },
+          PULSATE: { animationId: "buff" },
+        },
       },
     },
     AEONGLASS: {
@@ -659,12 +672,28 @@ function MovePreviewSurface({
   loopAnimation: boolean;
 }) {
   const compact = variant === "inline";
+  const [loopNonce, setLoopNonce] = useState(0);
+  const stageMoveId = move.animationId ?? move.id;
+  const stageMoveNonce = selectedMoveNonce + loopNonce;
   const surfaceClass = compact
     ? "relative mb-0 block h-44 w-full overflow-hidden rounded bg-black/10"
     : "relative mb-2 block h-56 overflow-hidden rounded bg-black/25";
   const gridRows = compact
     ? "grid-rows-[2rem_minmax(0,1fr)_1.35rem_1.5rem]"
     : "grid-rows-[2.75rem_minmax(0,1fr)_1.65rem_1.9rem]";
+
+  useEffect(() => {
+    if (!loopAnimation) {
+      setLoopNonce(0);
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setLoopNonce((current) => (current + 1) % 100000);
+    }, 1250);
+
+    return () => window.clearInterval(interval);
+  }, [loopAnimation, stageMoveId]);
 
   return (
     <span className={surfaceClass}>
@@ -683,15 +712,15 @@ function MovePreviewSurface({
             asset={monster.spineAsset}
             fallbackImageUrl={monster.bossImageUrl ?? monster.imageUrl}
             monsterName={monster.name}
-            selectedMoveId={move.id}
-            selectedMoveNonce={selectedMoveNonce}
+            selectedMoveId={stageMoveId}
+            selectedMoveNonce={stageMoveNonce}
             imagePriority={false}
             showLoadingLabel={false}
             viewportTransitionTime={0}
             viewportPadding={MOVE_PREVIEW_VIEWPORT_PADDING}
             fallbackImageClassName="absolute inset-0 h-full w-full object-contain opacity-80"
             className="absolute inset-0"
-            loopSelectedMove={loopAnimation}
+            loopSelectedMove={false}
           />
         </span>
         <span className="relative z-40 flex items-center justify-center">
@@ -957,6 +986,7 @@ function buildSequenceMoves(monster: CodexMonster, sequence: MonsterPatchDiffSeq
     const changes = sequence.changes?.[moveId];
     return [{
       ...visual,
+      animationId: changes?.animationId ?? visual.animationId,
       damageChange: changes?.damageChange ?? visual.damageChange,
       blockChange: changes?.blockChange ?? visual.blockChange,
       powerChange: changes?.powerChange ?? visual.powerChange,
@@ -970,6 +1000,7 @@ function createMoveVisual({
   nameEn,
   damage = null,
   block = null,
+  animationId,
   intents = [],
   powers = [],
   cards = [],
@@ -982,6 +1013,7 @@ function createMoveVisual({
   nameEn: string;
   damage?: DamageValue | null;
   block?: DamageValue | null;
+  animationId?: string;
   intents?: MonsterMoveIntentDetail[];
   powers?: readonly MonsterMovePowerApplication[];
   cards?: readonly MonsterMoveCardApplication[];
@@ -993,6 +1025,7 @@ function createMoveVisual({
     id,
     name,
     nameEn,
+    animationId,
     damage,
     block,
     intents,
