@@ -720,7 +720,7 @@ function MovePreviewSurface({
             viewportPadding={MOVE_PREVIEW_VIEWPORT_PADDING}
             fallbackImageClassName="absolute inset-0 h-full w-full object-contain opacity-80"
             className="absolute inset-0"
-            loopSelectedMove={false}
+            loopSelectedMove={loopAnimation}
           />
         </span>
         <span className="relative z-40 flex items-center justify-center">
