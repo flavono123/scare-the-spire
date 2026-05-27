@@ -418,7 +418,7 @@ export function MonsterAnimationPatchDiffBlock({
     <details className={compact ? "group mt-2" : "group my-4"} open>
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-md border border-yellow-400/20 bg-black/30 px-3 py-2 marker:hidden">
         <span className="flex min-w-0 flex-col gap-1">
-          <span className="font-game-title text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+          <span className="font-game-title text-[11px] font-bold text-zinc-500">
             {serviceLocale === "ko" ? "애니메이션 패치 diff" : "Animation Patch Diff"}
           </span>
           <Link
