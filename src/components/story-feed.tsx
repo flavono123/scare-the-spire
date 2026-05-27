@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import type { Story, Card, Change, Relic, Potion, LinkedEntity, STS2Change, STS2Patch, StoryEntityType } from "@/lib/types";
+import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useAuth } from "@/hooks/use-auth";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
@@ -46,16 +47,17 @@ function DiffLine({ diff }: { diff: Change["diffs"][0] }) {
   );
 }
 
-function STS2DiffLine({ diff }: { diff: STS2Change["diffs"][0] }) {
-  const before = diff.beforeKo ?? diff.before;
-  const after = diff.afterKo ?? diff.after;
+function STS2DiffLine({ diff, serviceLocale }: { diff: STS2Change["diffs"][0]; serviceLocale: ServiceLocale }) {
+  const before = serviceLocale === "ko" ? diff.beforeKo ?? diff.before : diff.before ?? diff.beforeKo;
+  const after = serviceLocale === "ko" ? diff.afterKo ?? diff.after : diff.after ?? diff.afterKo;
+  const displayName = serviceLocale === "ko" ? diff.displayNameKo || diff.displayName : diff.displayName || diff.displayNameKo;
 
   return (
     <div className="flex items-center gap-1.5 text-sm">
       {diff.upgraded && (
         <span className="rounded bg-green-500/10 px-1 text-[10px] font-medium text-green-400">+</span>
       )}
-      <span className="text-muted-foreground">{diff.displayNameKo || diff.displayName}</span>
+      <span className="shrink-0 whitespace-nowrap text-muted-foreground">{displayName}</span>
       <span className="font-medium text-red-400">{String(before)}</span>
       <span className="text-muted-foreground">→</span>
       <span className="font-medium text-green-400">{String(after)}</span>
@@ -218,17 +220,17 @@ function patchHref(change: STS2Change | undefined, story: Story): string | null 
   return `/patches/${patch.replace(/^v/, "")}`;
 }
 
-function STS2ChangeBlock({ change, story, patch }: { change?: STS2Change; story: Story; patch?: STS2Patch }) {
+function STS2ChangeBlock({ change, story, patch, serviceLocale }: { change?: STS2Change; story: Story; patch?: STS2Patch; serviceLocale: ServiceLocale }) {
   const href = patchHref(change, story);
   const patchLabel = change?.patch ?? story.source;
-  const summary = change?.summaryKo ?? change?.summary;
+  const summary = serviceLocale === "ko" ? change?.summaryKo ?? change?.summary : change?.summary ?? change?.summaryKo;
   const fieldDiffs = change?.fieldDiffs ?? [];
 
   return (
     <div className="rounded-lg border border-border bg-card/30 p-4">
       <div className="mb-2 flex items-center gap-2">
         {href && patchLabel ? (
-          <Link href={href} className="text-sm font-medium text-yellow-500 hover:text-yellow-400">
+          <Link href={localizeHref(href, serviceLocale)} className="text-sm font-medium text-yellow-500 hover:text-yellow-400">
             {patchLabel}
           </Link>
         ) : patchLabel ? (
@@ -248,11 +250,11 @@ function STS2ChangeBlock({ change, story, patch }: { change?: STS2Change; story:
                 <VersionDiffLine
                   key={`${change.id}-${diff.field}-${diff.upgraded ? "upgraded" : "base"}-${index}`}
                   diff={diff}
-                  serviceLocale="ko"
+                  serviceLocale={serviceLocale}
                 />
               ))
             : change.diffs.map((d, i) => (
-                <STS2DiffLine key={i} diff={d} />
+                <STS2DiffLine key={i} diff={d} serviceLocale={serviceLocale} />
               ))}
         </div>
       )}
@@ -293,6 +295,7 @@ function ChangeBlock({ change }: { change: Change }) {
 
 function StoryExpanded({
   story,
+  serviceLocale,
   entityChanges,
   cardMap,
   relicMap,
@@ -303,6 +306,7 @@ function StoryExpanded({
   sts2PatchMap,
 }: {
   story: Story;
+  serviceLocale: ServiceLocale;
   entityChanges: Change[];
   cardMap: Map<string, Card>;
   relicMap: Map<string, Relic>;
@@ -324,7 +328,7 @@ function StoryExpanded({
     return (
       <div className="space-y-3">
         <STS2EntityInfoBlock entity={entity} label={primaryLabel} />
-        <STS2ChangeBlock change={change} story={story} patch={patch} />
+        <STS2ChangeBlock change={change} story={story} patch={patch} serviceLocale={serviceLocale} />
 
         {story.linkedEntities?.map((linked) => (
           <div key={`${linked.entityType}-${linked.entityId}`} className="space-y-3 border-t border-border/30 pt-3">
@@ -396,6 +400,7 @@ function StoryExpanded({
 
 function StoryCard({
   story,
+  serviceLocale,
   entityChanges,
   cardMap,
   relicMap,
@@ -415,6 +420,7 @@ function StoryCard({
   engagementUnavailable,
 }: {
   story: Story;
+  serviceLocale: ServiceLocale;
   entityChanges: Change[];
   cardMap: Map<string, Card>;
   relicMap: Map<string, Relic>;
@@ -472,6 +478,7 @@ function StoryCard({
           <div className="mt-4 space-y-3">
             <StoryExpanded
               story={story}
+              serviceLocale={serviceLocale}
               entityChanges={entityChanges}
               cardMap={cardMap}
               relicMap={relicMap}
@@ -490,6 +497,7 @@ function StoryCard({
 }
 
 export function StoryFeed({
+  serviceLocale = "ko",
   stories,
   cards,
   relics,
@@ -499,6 +507,7 @@ export function StoryFeed({
   sts2Patches = [],
   sts2Entities = [],
 }: {
+  serviceLocale?: ServiceLocale;
   stories: Story[];
   cards: Card[];
   relics: Relic[];
@@ -574,6 +583,7 @@ export function StoryFeed({
           <StoryCard
             key={story.id}
             story={story}
+            serviceLocale={serviceLocale}
             entityChanges={entityChangeIndex.get(key) ?? []}
             cardMap={cardMap}
             relicMap={relicMap}

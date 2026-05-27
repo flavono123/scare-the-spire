@@ -181,7 +181,7 @@ export function VersionDiffLine({
         {diff.upgraded && (
           <span className="rounded bg-green-500/10 px-1 text-[10px] font-bold text-green-400">+</span>
         )}
-        <span className="text-gray-500">{label}</span>
+        <span className="shrink-0 whitespace-nowrap text-gray-500">{label}</span>
         <span className="font-bold text-red-400"><DiffValue value={diff.before} /></span>
         <span className="text-gray-600">→</span>
         <span className="font-bold text-green-400"><DiffValue value={diff.after} /></span>

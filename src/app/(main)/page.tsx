@@ -1,8 +1,11 @@
 import { getStories, getSTS2Stories, getCards, getRelics, getPotions, getChanges, getSTS2Changes, getSTS2Patches } from "@/lib/data";
 import { StoryFeed } from "@/components/story-feed";
 import { loadAllEntities } from "@/lib/load-all-entities";
+import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
+import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 
-export default async function Home() {
+export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE) {
+  const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const [stories, sts2Stories, cards, relics, potions, changes, sts2Changes, sts2Patches, sts2Entities] = await Promise.all([
     getStories(),
     getSTS2Stories(),
@@ -12,7 +15,7 @@ export default async function Home() {
     getChanges(),
     getSTS2Changes(),
     getSTS2Patches(),
-    loadAllEntities(),
+    loadAllEntities({ gameLocale }),
   ]);
   const mergedStories = [...stories, ...sts2Stories];
 
@@ -27,6 +30,7 @@ export default async function Home() {
             </div>
           ) : (
             <StoryFeed
+              serviceLocale={serviceLocale}
               stories={mergedStories}
               cards={cards}
               relics={relics}
@@ -41,4 +45,8 @@ export default async function Home() {
       </main>
     </div>
   );
+}
+
+export default async function Home() {
+  return renderHome();
 }
