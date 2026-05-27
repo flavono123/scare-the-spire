@@ -690,8 +690,11 @@ function MovePanel({
   hpOverride?: DamageValue | null;
   initialPowerApplications?: readonly MonsterMovePowerApplication[] | null;
 }) {
+  const [ascensionLevel] = useMonsterAscensionLevel();
+  const hasApplications = move.powers.length > 0 || move.cards.length > 0;
+
   return (
-    <span className="inline-flex w-44 shrink-0">
+    <span className="inline-flex w-44 shrink-0 flex-col items-center gap-1">
       <MonsterMoveHoverPreview
         move={move}
         monster={monster}
@@ -701,6 +704,16 @@ function MovePanel({
         hpOverride={hpOverride}
         initialPowerApplications={initialPowerApplications}
       />
+      {hasApplications && (
+        <span className="flex max-w-full justify-center overflow-hidden px-1">
+          <MoveApplicationIcons
+            move={move}
+            serviceLocale={serviceLocale}
+            ascensionLevel={ascensionLevel}
+            interactive={false}
+          />
+        </span>
+      )}
     </span>
   );
 }
