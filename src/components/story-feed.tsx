@@ -12,6 +12,7 @@ import { LikeButton } from "@/components/like-button";
 import { CommentSection } from "@/components/comment-section";
 import { EngagementSummary } from "@/components/engagement-summary";
 import { VersionDiffLine } from "@/components/codex/sts2-change-history";
+import { CardTile } from "@/components/codex/card-tile";
 
 function stableHash(value: string) {
   let hash = 0;
@@ -140,36 +141,67 @@ function sts2EntityHref(entity: EntityInfo): string | null {
   }
 }
 
-function STS2EntityInfoBlock({ entity, label }: { entity?: EntityInfo; label?: string }) {
+function STS2EntityInfoBlock({ entity, label, serviceLocale }: { entity?: EntityInfo; label?: string; serviceLocale: ServiceLocale }) {
   if (!entity) return null;
 
   const href = sts2EntityHref(entity);
   const image = entity.imageUrl;
-  const body = (
-    <div className="flex gap-3 items-start group">
-      {image ? (
-        <Image
-          src={image}
-          alt={entity.nameKo}
-          width={64}
-          height={64}
-          className="h-16 w-16 shrink-0 object-contain transition-transform group-hover:scale-105"
+  const imageAlt = entity.nameKo || entity.nameEn;
+  const title = serviceLocale === "ko" ? entity.nameKo || entity.nameEn : entity.nameEn || entity.nameKo;
+  const subtitle = serviceLocale === "ko" ? entity.nameEn : entity.nameKo;
+  const body = entity.type === "card" && entity.cardData ? (
+    <div className="flex items-start gap-3 group">
+      <div className="shrink-0">
+        <CardTile
+          card={entity.cardData}
+          serviceLocale={serviceLocale}
+          showUpgrade={false}
+          showBeta={false}
+          width={96}
+          interactive={false}
         />
-      ) : (
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded border border-border bg-zinc-900">
-          <span className="px-1 text-center text-[9px] text-muted-foreground">{entity.nameKo}</span>
-        </div>
-      )}
-      <div>
+      </div>
+      <div className="min-w-0 pt-2">
         <p className="font-medium transition-colors group-hover:text-yellow-500">
-          {entity.nameKo}
+          {title}
           {label && (
             <span className="ml-1.5 rounded bg-red-500/10 px-1 py-0.5 text-[10px] font-medium text-red-400">
               {label}
             </span>
           )}
         </p>
-        <p className="text-xs text-muted-foreground">{entity.nameEn}</p>
+        {subtitle && subtitle !== title && (
+          <p className="text-xs text-muted-foreground">{subtitle}</p>
+        )}
+      </div>
+    </div>
+  ) : (
+    <div className="flex gap-3 items-start group">
+      {image ? (
+        <Image
+          src={image}
+          alt={imageAlt}
+          width={64}
+          height={64}
+          className="h-16 w-16 shrink-0 object-contain transition-transform group-hover:scale-105"
+        />
+      ) : (
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded border border-border bg-zinc-900">
+          <span className="px-1 text-center text-[9px] text-muted-foreground">{title}</span>
+        </div>
+      )}
+      <div>
+        <p className="font-medium transition-colors group-hover:text-yellow-500">
+          {title}
+          {label && (
+            <span className="ml-1.5 rounded bg-red-500/10 px-1 py-0.5 text-[10px] font-medium text-red-400">
+              {label}
+            </span>
+          )}
+        </p>
+        {subtitle && subtitle !== title && (
+          <p className="text-xs text-muted-foreground">{subtitle}</p>
+        )}
       </div>
     </div>
   );
@@ -327,7 +359,7 @@ function StoryExpanded({
 
     return (
       <div className="space-y-3">
-        <STS2EntityInfoBlock entity={entity} label={primaryLabel} />
+        <STS2EntityInfoBlock entity={entity} label={primaryLabel} serviceLocale={serviceLocale} />
         <STS2ChangeBlock change={change} story={story} patch={patch} serviceLocale={serviceLocale} />
 
         {story.linkedEntities?.map((linked) => (
@@ -339,6 +371,7 @@ function StoryExpanded({
             <STS2EntityInfoBlock
               entity={sts2EntityMap.get(`${linked.entityType}:${linked.entityId}`)}
               label={linked.label}
+              serviceLocale={serviceLocale}
             />
           </div>
         ))}
