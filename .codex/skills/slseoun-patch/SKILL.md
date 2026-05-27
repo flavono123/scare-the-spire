@@ -108,6 +108,27 @@ Rules:
 
 When a name can be both a card and a power, always use a type hint. Patch notes usually mean cards in card-change sections, so prefer `[gold:card]` there.
 
+## Monster Animation Patch Diff
+
+Use this only for monster reworks, moveset changes, intent/action changes, HP or power changes that are clearer as animated before/after panels. The current supported target is monsters.
+
+Rules:
+
+- Keep Steam patch-note prose outside the diff block. Do not move official bullets like "Adjusted moveset" or "Reworked Wither status..." into service commentary.
+- Put service-authored explanation inside the animation diff component, where it is visibly labeled `애니메이션 패치 diff` / `Animation Patch Diff`.
+- Add a standalone marker line below the relevant monster bullet:
+
+```markdown
+[monster-pattern-diff:MONSTER_ID:v0.106.0:full]
+```
+
+- Use `full` on patch detail pages. Compact rendering is for monster patch-history rails.
+- The diff block must be collapsible and default-open. When collapsed, only the narrow summary header should remain; do not force the full wide animation row to reserve space.
+- Build before/after move panels from game data whenever possible. Use current Codex/game data for the after state. For before values, prefer prior extracted data or an existing pre-patch commit over memory.
+- Include HP bars when HP changed and starting effects when starting powers changed. If a power/card is mentioned in service commentary, link it as a real Codex keyword.
+- Do not add an animation diff just because a monster is mentioned. Use it when behavior or pattern changed enough that prose alone hides the actual player-facing difference.
+- Current implementation lives in `src/components/codex/monster-move-visuals.tsx` and is rendered by `src/components/patch-note-renderer.tsx`.
+
 ## Keyword And Link Validation
 
 Before finalizing `.ko.md`, audit all `[gold...]...[/gold]` names against current Codex data:
