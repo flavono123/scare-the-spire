@@ -128,6 +128,7 @@ Rules:
 - Keywords inside service-authored diff explanation must use the game gold treatment and real hover previews/links. Monster move keywords link to the parent monster page and preview the move animation + intent. Power/card keywords use their game hover tip.
 - Build before/after move panels from game data whenever possible. Use current Codex/game data for the after state. For before values, prefer prior extracted data or an existing pre-patch commit over memory.
 - Include HP bars when HP changed and starting effects when starting powers changed. If a power/card is mentioned in service commentary, link it as a real Codex keyword.
+- For monster move card applications, distinguish adding a card from upgrading/strengthening an existing status/card effect. Upgrade-style applications should render an upgraded tiny-card visual without a quantity badge.
 - Do not add an animation diff just because a monster is mentioned. Use it when behavior or pattern changed enough that prose alone hides the actual player-facing difference.
 - Current implementation lives in `src/components/codex/monster-move-visuals.tsx` and is rendered by `src/components/patch-note-renderer.tsx`.
 
