@@ -24,7 +24,7 @@ interface EntityFieldDiff {
 }
 
 interface EntityVersionDiff {
-  entityType: "card" | "relic" | "potion";
+  entityType: "card" | "relic" | "potion" | "power";
   entityId: string;
   patch: string;
   diffs: EntityFieldDiff[];
@@ -114,6 +114,8 @@ const FIELD_TO_RAW: Record<string, string> = {
   keywords: "keywords",
   tags: "tags",
   upgrade: "upgrade",
+  stackType: "stack_type",
+  allowNegative: "allow_negative",
   pool: "pool",
   flavor: "flavor",
 };
@@ -192,7 +194,7 @@ function validateAncientRelicCoverage(
 }
 
 function deriveEntityVersionDiffs(changes: readonly STS2Change[]): EntityVersionDiff[] {
-  const versionedEntityTypes = new Set(["card", "relic", "potion"]);
+  const versionedEntityTypes = new Set(["card", "relic", "potion", "power"]);
   return changes.flatMap((change) => {
     if (!change.fieldDiffs?.length || !versionedEntityTypes.has(change.entityType)) return [];
     return [{
@@ -217,6 +219,7 @@ function main() {
   const cards = readJson<Record<string, unknown>[]>("data/sts2/kor/cards.json");
   const relics = readJson<Record<string, unknown>[]>("data/sts2/kor/relics.json");
   const potions = readJson<Record<string, unknown>[]>("data/sts2/kor/potions.json");
+  const powers = readJson<Record<string, unknown>[]>("data/sts2/kor/powers.json");
   const korEvents = readJson<CodexEvent[]>("data/sts2/kor/events.json");
   const engEvents = readJson<CodexEvent[]>("data/sts2/eng/events.json");
 
@@ -224,6 +227,7 @@ function main() {
     card: new Map(cards.map((c) => [c.id as string, c])),
     relic: new Map(relics.map((r) => [r.id as string, r])),
     potion: new Map(potions.map((p) => [p.id as string, p])),
+    power: new Map(powers.map((p) => [p.id as string, p])),
   };
 
   let errors = 0;
@@ -325,11 +329,15 @@ function main() {
   const validPotionFields = new Set([
     "description", "descriptionRaw", "rarity", "pool",
   ]);
+  const validPowerFields = new Set([
+    "description", "descriptionRaw", "vars", "type", "stackType", "allowNegative",
+  ]);
 
   const fieldSets: Record<string, Set<string>> = {
     card: validCardFields,
     relic: validRelicFields,
     potion: validPotionFields,
+    power: validPowerFields,
   };
 
   for (const d of diffs) {
