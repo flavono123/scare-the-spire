@@ -88,8 +88,8 @@ Rules:
    - `data/sts2/{eng,kor}/relics.json`
    - `data/sts2/{eng,kor}/potions.json`
    - `data/sts2/{eng,kor}/powers.json`
-   - `data/sts2-entity-versions.json`
-   - `data/sts2-changes.json`
+   - `data/sts2-changes.json` is the SSOT for structured patch changes. Put player-facing `diffs`, machine-applicable `fieldDiffs`, cross-resource `relatedEntities`, and optional `visualDiff` on the same `STS2Change` record.
+   - Do not hand-author `data/sts2-entity-versions.json`; `getEntityVersionDiffs()` derives version diffs from `data/sts2-changes.json`.
    - `data/sts2/meta.json`
 8. Commit each meaningful file group independently.
 
@@ -122,6 +122,7 @@ Rules:
 [monster-pattern-diff:MONSTER_ID:v0.106.0:full]
 ```
 
+- Also set `visualDiff: { "type": "monster-pattern" }` on the corresponding `data/sts2-changes.json` record. Patch-history rails use that structured change record to decide whether to show the compact monster diff.
 - Use `full` on patch detail pages. Compact rendering is for monster patch-history rails.
 - The diff block must be collapsible and default-open. When collapsed, only the narrow summary header should remain; do not force the full wide animation row to reserve space.
 - The collapsible summary text is only the expand/collapse trigger. Do not make the summary title itself link to the monster page.

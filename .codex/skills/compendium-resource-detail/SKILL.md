@@ -60,7 +60,7 @@ Use `src/components/codex/relic-detail.tsx` as the current source pattern.
 ## Patch History Rules
 
 - Use `STS2ChangeHistory` for structured STS2 history.
-- Pass both curated `STS2Change[]` from `getSTS2Changes()` and machine-applicable `EntityVersionDiff[]` from `getEntityVersionDiffs()` when available.
+- Pass `STS2Change[]` from `getSTS2Changes()`. Pass `EntityVersionDiff[]` from `getEntityVersionDiffs()` when the target already needs version reconstruction; those diffs are derived from `STS2Change.fieldDiffs`, not a separate source of truth.
 - Show actual structured changes for the current resource only. Do not mix in patch-note mentions that merely name the resource.
 - Patch history links must use `/patches/{version}` without a leading `v` in the route, even when displayed labels include `v0.105.0`.
 - For monsters, accept both `monster` and old patch-note `enemy` change types when needed.

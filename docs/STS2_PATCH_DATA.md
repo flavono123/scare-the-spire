@@ -214,13 +214,14 @@ STS2 launched in Early Access on **March 5, 2026** (Steam app ID: 2868840). Init
 ]
 ```
 
-### 3.2 Balance changes (`data/sts2-changes.json`)
+### 3.2 Structured patch changes (`data/sts2-changes.json`)
 
-Reuse the existing `Change` / `AttributeDiff` interface from `src/lib/types.ts` with these adaptations:
+`data/sts2-changes.json` is the SSOT for STS2 structured patch changes. Reuse the existing `Change` / `AttributeDiff` interface from `src/lib/types.ts` with these adaptations:
 
 1. **`entityId`** must map to STS2 card/relic IDs (uppercase, snake_case: `PREPARED`, `DOMINATE`, `WHISPERING_EARRING`)
 2. **`entityType`** expanded: `"card" | "relic" | "potion" | "enemy" | "blessing"` for STS2's broader scope
 3. **New `diffType` values**: add `"rework"` (already used informally in STS1 data) and `"boolean"` (for toggles like "now Exhausts")
+4. **Machine-applicable diffs**: put field-level version diffs on the same record as `fieldDiffs`. `getEntityVersionDiffs()` derives compendium version reconstruction data from this field; do not maintain a separate hand-authored source.
 
 ```json
 [

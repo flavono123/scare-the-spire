@@ -65,7 +65,7 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
 - `pnpm codex:validate` must report zero Ancient relic owner coverage errors.
   This guards the relic index against new Ancient/Neow relics that exist in
   `relics.json` but are absent from `events.json` Ancient `relics` mappings.
-- For patch-note-only balance changes, record machine-applicable diffs in `data/sts2-entity-versions.json` or `data/sts2-changes.json` following the existing schema.
+- For patch-note-only balance changes, record the structured change in `data/sts2-changes.json`. Put machine-applicable diffs in the same record's `fieldDiffs`; do not hand-author `data/sts2-entity-versions.json`.
 
 ## Verification
 
