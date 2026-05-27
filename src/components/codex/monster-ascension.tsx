@@ -140,17 +140,26 @@ export function MonsterHealthBar({
   if (!hp) return null;
 
   const hpLabel = `${hp.value}/${hp.value}`;
+  const barClipPath = "polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%)";
 
   return (
     <span
       className={`relative inline-flex items-center justify-center overflow-visible ${compact ? "h-6 w-36 max-w-full" : "h-7 w-full min-w-48 max-w-80"} ${className}`}
       aria-label={`HP ${hpLabel}`}
     >
-      <span aria-hidden="true" className="absolute left-0 right-0 top-1/2 h-3 -translate-y-1/2">
-        <span className="absolute inset-x-1 top-1/2 h-[7px] -translate-y-1/2 rounded-[2px] bg-[#52080a] shadow-[0_2px_3px_rgba(0,0,0,0.72),inset_0_1px_0_rgba(255,255,255,0.16)]" />
-        <span className="absolute inset-x-[5px] top-1/2 h-[5px] -translate-y-1/2 rounded-[1px] bg-[#F1373E] shadow-[inset_0_1px_0_rgba(255,142,126,0.72),inset_0_-1px_0_rgba(93,0,0,0.75)]" />
-        <span className="absolute left-0 top-1/2 h-0 w-0 -translate-y-1/2 border-y-[6px] border-r-[10px] border-y-transparent border-r-[#F1373E] drop-shadow-[0_2px_1px_rgba(0,0,0,0.75)]" />
-        <span className="absolute right-0 top-1/2 h-0 w-0 -translate-y-1/2 border-y-[6px] border-l-[10px] border-y-transparent border-l-[#F1373E] drop-shadow-[0_2px_1px_rgba(0,0,0,0.75)]" />
+      <span
+        aria-hidden="true"
+        className="absolute left-0 right-0 top-1/2 h-[10px] -translate-y-1/2 bg-[#4d5a61] shadow-[0_2px_3px_rgba(0,0,0,0.72)]"
+        style={{ clipPath: barClipPath }}
+      >
+        <span
+          className="absolute inset-[2px] bg-[#071a1a]"
+          style={{ clipPath: barClipPath }}
+        />
+        <span
+          className="absolute inset-y-[2px] left-[2px] right-[2px] bg-gradient-to-b from-[#ff6258] via-[#F1373E] to-[#b11219] shadow-[inset_0_1px_0_rgba(255,153,132,0.72),inset_0_-1px_0_rgba(92,0,0,0.7)]"
+          style={{ clipPath: barClipPath }}
+        />
       </span>
       <span
         className={`relative z-10 font-game-title font-black leading-none text-[#fff8db] ${compact ? "text-sm" : "text-lg"}`}
