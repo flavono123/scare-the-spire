@@ -162,7 +162,7 @@ function MonsterSpineStageComponent({
       disposed = true;
       clearVfx(vfxPlayerRef, vfxContainerRef, vfxTimeoutRef);
       playerRef.current = null;
-      player?.dispose();
+      releaseSpinePlayer(player);
       parent.replaceChildren();
     };
   }, [asset, compositeSkinNames, monsterName, onVisualBoundsChange, singleSkin, viewportPadding, viewportTransitionTime]);
@@ -656,7 +656,20 @@ function clearVfx(
     window.clearTimeout(timeoutRef.current);
     timeoutRef.current = null;
   }
-  playerRef.current?.dispose();
+  releaseSpinePlayer(playerRef.current);
   playerRef.current = null;
   containerRef.current?.replaceChildren();
+}
+
+function releaseSpinePlayer(player: SpinePlayer | null) {
+  if (!player) return;
+
+  try {
+    const gl = player.canvas?.getContext("webgl2") ?? player.canvas?.getContext("webgl");
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
+  } catch {
+    // Best-effort cleanup only; dispose below still releases the Spine player.
+  }
+
+  player.dispose();
 }
