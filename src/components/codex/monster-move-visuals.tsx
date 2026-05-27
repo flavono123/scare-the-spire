@@ -79,14 +79,13 @@ interface MonsterPatchDiffSequence {
 interface MonsterPatchDiffSpec {
   titleKo: string;
   titleEn: string;
-  summary: (serviceLocale: ServiceLocale) => ReactNode;
+  summary: (serviceLocale: ServiceLocale, monster: CodexMonster) => ReactNode;
   before: MonsterPatchDiffSequence;
   after: MonsterPatchDiffSequence;
 }
 
 const INFESTED_PRISM_MOVE_ORDER = ["JAB", "RADIATE", "WHIRLWIND", "PULSATE"];
 const ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
-const BLOCK_ICON = "/images/sts2/ui/combat/block.png";
 const MOVE_PREVIEW_VIEWPORT_PADDING = { padTop: "0%", padBottom: "0%" } as const;
 const OLD_INFESTED_PRISM_HP: DamageValue = { normal: 200, ascension: 215 };
 const INTENT_ICONS: Record<IntentKind, string> = {
@@ -314,9 +313,9 @@ const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> 
     INFESTED_PRISM: {
       titleKo: "감염된 프리즘 리워크",
       titleEn: "Infested Prism Rework",
-      summary: (serviceLocale) => serviceLocale === "ko"
-        ? <>공격 피해가 낮아지고, 방출과 맥박에 방어가 붙었습니다. 맥박은 피해/방어와 <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>생명의 불꽃</PatchDiffPowerLink> 적용이 함께 보이는 행동입니다.</>
-        : <>Attack damage is lower. Radiate and Pulsate now include Block, and Pulsate is shown with damage, Block, and <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>Vital Spark</PatchDiffPowerLink> application.</>,
+      summary: (serviceLocale, monster) => serviceLocale === "ko"
+        ? <>공격 피해가 낮아지고, <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "RADIATE", OLD_INFESTED_PRISM_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>방출</PatchDiffMoveLink>과 <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "PULSATE", OLD_INFESTED_PRISM_MOVES[3])} monster={monster} serviceLocale={serviceLocale}>맥박</PatchDiffMoveLink>에 <PatchDiffPlainKeyword>방어</PatchDiffPlainKeyword>가 붙었습니다. 맥박은 피해/방어와 <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>생명의 불꽃</PatchDiffPowerLink> 적용이 함께 보이는 행동입니다.</>
+        : <>Attack damage is lower. <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "RADIATE", OLD_INFESTED_PRISM_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>Radiate</PatchDiffMoveLink> and <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "PULSATE", OLD_INFESTED_PRISM_MOVES[3])} monster={monster} serviceLocale={serviceLocale}>Pulsate</PatchDiffMoveLink> now include <PatchDiffPlainKeyword>Block</PatchDiffPlainKeyword>, and Pulsate is shown with damage, Block, and <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>Vital Spark</PatchDiffPowerLink> application.</>,
       before: {
         labelKo: "이전",
         labelEn: "Before",
@@ -339,9 +338,9 @@ const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> 
     AEONGLASS: {
       titleKo: "영겁의 모래시계 행동 변화",
       titleEn: "Aeonglass Move Changes",
-      summary: (serviceLocale) => serviceLocale === "ko"
-        ? <>행동 패턴 조정과 함께 강도 증가에 방어/상태이상/버프 의도가 함께 드러납니다. <PatchDiffCardLink cardId="WITHER" serviceLocale={serviceLocale}>침체</PatchDiffCardLink>와 <PatchDiffPowerLink powerId="WITHERING_PRESENCE" serviceLocale={serviceLocale}>시들어가는 존재</PatchDiffPowerLink>는 별도 리워크 대상입니다.</>
-        : <>The move pattern adjustment makes Increasing Intensity show defense, status, and buff intent together. <PatchDiffCardLink cardId="WITHER" serviceLocale={serviceLocale}>Wither</PatchDiffCardLink> and <PatchDiffPowerLink powerId="WITHERING_PRESENCE" serviceLocale={serviceLocale}>Withering Presence</PatchDiffPowerLink> are separate rework targets.</>,
+      summary: (serviceLocale, monster) => serviceLocale === "ko"
+        ? <>행동 패턴 조정과 함께 <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "INCREASING_INTENSITY", OLD_AEONGLASS_MOVES[2])} monster={monster} serviceLocale={serviceLocale}>강도 증가</PatchDiffMoveLink>에 방어/상태이상/버프 의도가 함께 드러납니다. <PatchDiffCardLink cardId="WITHER" serviceLocale={serviceLocale}>침체</PatchDiffCardLink>와 <PatchDiffPowerLink powerId="WITHERING_PRESENCE" serviceLocale={serviceLocale}>시들어가는 존재</PatchDiffPowerLink>는 별도 리워크 대상입니다.</>
+        : <>The move pattern adjustment makes <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "INCREASING_INTENSITY", OLD_AEONGLASS_MOVES[2])} monster={monster} serviceLocale={serviceLocale}>Increasing Intensity</PatchDiffMoveLink> show defense, status, and buff intent together. <PatchDiffCardLink cardId="WITHER" serviceLocale={serviceLocale}>Wither</PatchDiffCardLink> and <PatchDiffPowerLink powerId="WITHERING_PRESENCE" serviceLocale={serviceLocale}>Withering Presence</PatchDiffPowerLink> are separate rework targets.</>,
       before: {
         labelKo: "이전",
         labelEn: "Before",
@@ -359,9 +358,9 @@ const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> 
     HAUNTED_SHIP: {
       titleKo: "유령선 행동 변화",
       titleEn: "Haunted Ship Move Changes",
-      summary: (serviceLocale) => serviceLocale === "ko"
-        ? <>전속력이 빠지고, 출몰 이후 밀쳐내기와 발구르기를 번갈아 쓰는 흐름으로 바뀝니다. 출몰 다음 첫 공격은 밀쳐내기입니다.</>
-        : <>Ramming Speed is removed. After Haunt, the ship alternates Swipe and Stomp, starting with Swipe.</>,
+      summary: (serviceLocale, monster) => serviceLocale === "ko"
+        ? <><PatchDiffMoveLink move={OLD_HAUNTED_SHIP_MOVES[1]} monster={monster} serviceLocale={serviceLocale}>전속력</PatchDiffMoveLink>이 빠지고, <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "HAUNT", OLD_HAUNTED_SHIP_MOVES[0])} monster={monster} serviceLocale={serviceLocale}>출몰</PatchDiffMoveLink> 이후 <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "SWIPE", OLD_HAUNTED_SHIP_MOVES[2])} monster={monster} serviceLocale={serviceLocale}>밀쳐내기</PatchDiffMoveLink>와 <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "STOMP", OLD_HAUNTED_SHIP_MOVES[3])} monster={monster} serviceLocale={serviceLocale}>발구르기</PatchDiffMoveLink>를 번갈아 쓰는 흐름으로 바뀝니다. 출몰 다음 첫 공격은 밀쳐내기입니다.</>
+        : <><PatchDiffMoveLink move={OLD_HAUNTED_SHIP_MOVES[1]} monster={monster} serviceLocale={serviceLocale}>Ramming Speed</PatchDiffMoveLink> is removed. After <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "HAUNT", OLD_HAUNTED_SHIP_MOVES[0])} monster={monster} serviceLocale={serviceLocale}>Haunt</PatchDiffMoveLink>, the ship alternates <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "SWIPE", OLD_HAUNTED_SHIP_MOVES[2])} monster={monster} serviceLocale={serviceLocale}>Swipe</PatchDiffMoveLink> and <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "STOMP", OLD_HAUNTED_SHIP_MOVES[3])} monster={monster} serviceLocale={serviceLocale}>Stomp</PatchDiffMoveLink>, starting with Swipe.</>,
       before: {
         labelKo: "이전",
         labelEn: "Before",
@@ -376,9 +375,9 @@ const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> 
     PUNCH_CONSTRUCT: {
       titleKo: "권투형 구조체 행동 변화",
       titleEn: "Punch Construct Move Changes",
-      summary: (serviceLocale) => serviceLocale === "ko"
-        ? <>준비가 빠른 펀치로 이어지고, 빠른 펀치 다음에 강한 펀치가 옵니다. 빠른 펀치의 디버프는 약화에서 손상으로 바뀝니다.</>
-        : <>Ready now leads into Fast Punch, and Fast Punch leads into Strong Punch. Fast Punch applies Frail instead of Weak.</>,
+      summary: (serviceLocale, monster) => serviceLocale === "ko"
+        ? <><PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "READY", OLD_PUNCH_CONSTRUCT_MOVES[0])} monster={monster} serviceLocale={serviceLocale}>준비</PatchDiffMoveLink>가 <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "FAST_PUNCH", OLD_PUNCH_CONSTRUCT_MOVES[2])} monster={monster} serviceLocale={serviceLocale}>빠른 펀치</PatchDiffMoveLink>로 이어지고, 빠른 펀치 다음에 <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "STRONG_PUNCH", OLD_PUNCH_CONSTRUCT_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>강한 펀치</PatchDiffMoveLink>가 옵니다. 빠른 펀치의 디버프는 <PatchDiffPowerLink powerId="WEAK" serviceLocale={serviceLocale}>약화</PatchDiffPowerLink>에서 <PatchDiffPowerLink powerId="FRAIL" serviceLocale={serviceLocale}>손상</PatchDiffPowerLink>으로 바뀝니다.</>
+        : <><PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "READY", OLD_PUNCH_CONSTRUCT_MOVES[0])} monster={monster} serviceLocale={serviceLocale}>Ready</PatchDiffMoveLink> now leads into <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "FAST_PUNCH", OLD_PUNCH_CONSTRUCT_MOVES[2])} monster={monster} serviceLocale={serviceLocale}>Fast Punch</PatchDiffMoveLink>, and Fast Punch leads into <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "STRONG_PUNCH", OLD_PUNCH_CONSTRUCT_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>Strong Punch</PatchDiffMoveLink>. Fast Punch applies <PatchDiffPowerLink powerId="FRAIL" serviceLocale={serviceLocale}>Frail</PatchDiffPowerLink> instead of <PatchDiffPowerLink powerId="WEAK" serviceLocale={serviceLocale}>Weak</PatchDiffPowerLink>.</>,
       before: {
         labelKo: "이전",
         labelEn: "Before",
@@ -396,9 +395,9 @@ const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> 
     SKULKING_COLONY: {
       titleKo: "잠행 군체 행동 변화",
       titleEn: "Skulking Colony Move Changes",
-      summary: (serviceLocale) => serviceLocale === "ko"
-        ? <>체력과 단단한 껍질 수치가 올라가고, 강타가 빠집니다. 전투 초반에는 급가속을 두 번 사용하며 더 이상 방어도를 얻지 않습니다.</>
-        : <>HP and Hardened Shell increase, and Smash is removed. It now uses Zoom twice at the start and no longer gains Block.</>,
+      summary: (serviceLocale, monster) => serviceLocale === "ko"
+        ? <>체력과 <PatchDiffPowerLink powerId="HARDENED_SHELL" serviceLocale={serviceLocale}>단단한 껍질</PatchDiffPowerLink> 수치가 올라가고, <PatchDiffMoveLink move={OLD_SKULKING_COLONY_MOVES[0]} monster={monster} serviceLocale={serviceLocale}>강타</PatchDiffMoveLink>가 빠집니다. 전투 초반에는 <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "ZOOM", OLD_SKULKING_COLONY_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>급가속</PatchDiffMoveLink>을 두 번 사용하며 더 이상 <PatchDiffPlainKeyword>방어도</PatchDiffPlainKeyword>를 얻지 않습니다.</>
+        : <>HP and <PatchDiffPowerLink powerId="HARDENED_SHELL" serviceLocale={serviceLocale}>Hardened Shell</PatchDiffPowerLink> increase, and <PatchDiffMoveLink move={OLD_SKULKING_COLONY_MOVES[0]} monster={monster} serviceLocale={serviceLocale}>Smash</PatchDiffMoveLink> is removed. It now uses <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "ZOOM", OLD_SKULKING_COLONY_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>Zoom</PatchDiffMoveLink> twice at the start and no longer gains <PatchDiffPlainKeyword>Block</PatchDiffPlainKeyword>.</>,
       before: {
         labelKo: "이전",
         labelEn: "Before",
@@ -425,25 +424,20 @@ export function MonsterAnimationPatchDiffBlock({
   if (!spec) return null;
 
   const compact = variant === "compact";
-  const href = localizeHref(`/compendium/bestiary?monster=${monster.id.toLowerCase()}`, serviceLocale);
   const title = serviceLocale === "ko" ? spec.titleKo : spec.titleEn;
 
   return (
     <details className={compact ? "group mt-2" : "group my-4"} open>
       <summary className="inline-flex cursor-pointer list-none items-center gap-2 text-sm text-blue-400 transition-colors marker:hidden hover:text-blue-300">
-        <Link
-          href={href}
-          className="font-game-title font-bold underline decoration-blue-400/30 underline-offset-2"
-          onClick={(event) => event.stopPropagation()}
-        >
+        <span className="font-game-title font-bold">
           {title}
-        </Link>
+        </span>
         <span className="shrink-0 text-xs transition-transform group-open:rotate-180">⌄</span>
       </summary>
       <div className={compact ? "mt-2" : "relative left-1/2 mt-2 w-[min(96vw,72rem)] -translate-x-1/2"}>
         <div className={compact ? "" : "px-0"}>
           <p className="mb-3 font-game-text text-xs leading-relaxed text-zinc-400">
-            {spec.summary(serviceLocale)}
+            {spec.summary(serviceLocale, monster)}
           </p>
 
           <div className="space-y-3">
@@ -482,6 +476,68 @@ function normalizePatchId(patchId: string): string {
   return patchId.startsWith("v") ? patchId : `v${patchId}`;
 }
 
+const PATCH_DIFF_POWERS: Record<string, { nameKo: string; nameEn: string; imageUrl: string }> = {
+  FRAIL: { nameKo: "손상", nameEn: "Frail", imageUrl: "/images/sts2/powers/frail_power.webp" },
+  HARDENED_SHELL: { nameKo: "단단한 껍질", nameEn: "Hardened Shell", imageUrl: "/images/sts2/powers/hardened_shell_power.webp" },
+  VITAL_SPARK: { nameKo: "생명의 불꽃", nameEn: "Vital Spark", imageUrl: "/images/sts2/powers/vital_spark_power.webp" },
+  WEAK: { nameKo: "약화", nameEn: "Weak", imageUrl: "/images/sts2/powers/weak_power.webp" },
+  WITHERING_PRESENCE: { nameKo: "시들어가는 존재", nameEn: "Withering Presence", imageUrl: "/images/sts2/powers/withering_presence_power.webp" },
+};
+
+const PATCH_DIFF_CARDS: Record<string, { nameKo: string; nameEn: string; imageUrl: string; typeKo: string; typeEn: string }> = {
+  WITHER: { nameKo: "침체", nameEn: "Wither", imageUrl: "/images/sts2/cards-beta/wither.webp", typeKo: "상태이상", typeEn: "Status" },
+};
+
+function getPatchDiffMoveVisual(monster: CodexMonster, moveId: string, fallback?: MoveVisual): MoveVisual | null {
+  const move = [...monster.bestiaryMoves, ...monster.moves].find((candidate) => candidate.id === moveId);
+  return move ? buildMonsterMoveVisual(monster, move) : fallback ?? null;
+}
+
+function PatchDiffInlinePreview({
+  href,
+  children,
+  preview,
+}: {
+  href: string;
+  children: ReactNode;
+  preview: (nonce: number) => ReactNode;
+}) {
+  const [show, setShow] = useState(false);
+  const [previewNonce, setPreviewNonce] = useState(0);
+
+  return (
+    <span
+      className="relative inline"
+      onMouseEnter={() => {
+        setPreviewNonce((value) => value + 1);
+        setShow(true);
+      }}
+      onMouseLeave={() => setShow(false)}
+      onFocus={() => {
+        setPreviewNonce((value) => value + 1);
+        setShow(true);
+      }}
+      onBlur={() => setShow(false)}
+    >
+      <Link
+        href={href}
+        className="font-game-title font-semibold spire-gold underline decoration-yellow-500/30 underline-offset-2 transition-colors hover:text-yellow-300"
+      >
+        {children}
+      </Link>
+      {show && (
+        <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2">
+          {preview(previewNonce)}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function PatchDiffPlainKeyword({ children }: { children: ReactNode }) {
+  return <span className="font-game-title font-semibold spire-gold">{children}</span>;
+}
+
 function PatchDiffPowerLink({
   powerId,
   serviceLocale,
@@ -491,13 +547,25 @@ function PatchDiffPowerLink({
   serviceLocale: ServiceLocale;
   children: ReactNode;
 }) {
+  const power = PATCH_DIFF_POWERS[powerId] ?? null;
+  const title = power ? (serviceLocale === "ko" ? power.nameKo : power.nameEn) : String(children);
+
   return (
-    <Link
+    <PatchDiffInlinePreview
       href={localizeHref(`/compendium/powers?power=${powerId.toLowerCase()}`, serviceLocale)}
-      className="font-bold text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 hover:text-yellow-200"
+      preview={() => (
+        <GameHoverTip title={title} style={{ minWidth: 220, maxWidth: 280 }}>
+          {power?.imageUrl && (
+            <span className="flex items-center gap-2">
+              <Image src={power.imageUrl} alt="" width={36} height={36} className="h-9 w-9 object-contain" />
+              <span className="font-game-title spire-gold">{title}</span>
+            </span>
+          )}
+        </GameHoverTip>
+      )}
     >
       {children}
-    </Link>
+    </PatchDiffInlinePreview>
   );
 }
 
@@ -510,13 +578,58 @@ function PatchDiffCardLink({
   serviceLocale: ServiceLocale;
   children: ReactNode;
 }) {
+  const card = PATCH_DIFF_CARDS[cardId] ?? null;
+  const title = card ? (serviceLocale === "ko" ? card.nameKo : card.nameEn) : String(children);
+  const type = card ? (serviceLocale === "ko" ? card.typeKo : card.typeEn) : null;
+
   return (
-    <Link
+    <PatchDiffInlinePreview
       href={localizeHref(`/compendium/cards?card=${cardId.toLowerCase()}`, serviceLocale)}
-      className="font-bold text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 hover:text-yellow-200"
+      preview={() => (
+        <GameHoverTip title={title} style={{ minWidth: 220, maxWidth: 280 }}>
+          {card?.imageUrl && (
+            <span className="flex items-center gap-2">
+              <Image src={card.imageUrl} alt="" width={42} height={42} className="h-11 w-11 rounded object-cover" />
+              {type && <span className="font-game-title spire-gold">{type}</span>}
+            </span>
+          )}
+        </GameHoverTip>
+      )}
     >
       {children}
-    </Link>
+    </PatchDiffInlinePreview>
+  );
+}
+
+function PatchDiffMoveLink({
+  move,
+  monster,
+  serviceLocale,
+  children,
+}: {
+  move: MoveVisual | null;
+  monster: CodexMonster;
+  serviceLocale: ServiceLocale;
+  children: ReactNode;
+}) {
+  if (!move) return <PatchDiffPlainKeyword>{children}</PatchDiffPlainKeyword>;
+
+  return (
+    <PatchDiffInlinePreview
+      href={localizeHref(`/compendium/bestiary?monster=${monster.id.toLowerCase()}`, serviceLocale)}
+      preview={(nonce) => (
+        <MonsterMoveHoverPreview
+          move={move}
+          monster={monster}
+          serviceLocale={serviceLocale}
+          selectedMoveNonce={nonce}
+          title={serviceLocale === "ko" ? move.name : move.nameEn}
+          loopAnimation
+        />
+      )}
+    >
+      {children}
+    </PatchDiffInlinePreview>
   );
 }
 
