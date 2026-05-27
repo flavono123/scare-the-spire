@@ -21,7 +21,8 @@ import { DescriptionText } from "@/components/codex/codex-description";
 import { GameHoverTip } from "@/components/codex/hover-tip";
 import {
   buildMonsterMoveVisual,
-  InfestedPrismReworkBlock,
+  hasMonsterAnimationPatchDiff,
+  MonsterAnimationPatchDiffBlock,
   MonsterMoveHoverPreview,
 } from "@/components/codex/monster-move-visuals";
 
@@ -1263,12 +1264,13 @@ export function PatchNoteRenderer({
       const patchId = monsterPatternDiffMatch[2] ?? "";
       const variant = (monsterPatternDiffMatch[3] as "full" | "compact" | undefined) ?? "full";
       const monster = allEntities.find((entity) => entity.type === "monster" && entity.id === monsterId)?.monsterData;
-      if (monsterId === "INFESTED_PRISM" && (!patchId || patchId === "v0.106.0") && monster) {
+      if (monster && hasMonsterAnimationPatchDiff(monsterId, patchId || "v0.106.0")) {
         elements.push(
-          <InfestedPrismReworkBlock
+          <MonsterAnimationPatchDiffBlock
             key={`monster-pattern-diff-${i}`}
             monster={monster}
             serviceLocale={context.serviceLocale ?? "ko"}
+            patchId={patchId || "v0.106.0"}
             variant={variant}
           />,
         );

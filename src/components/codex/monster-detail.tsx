@@ -1315,6 +1315,7 @@ export function MonsterDetail({
                 level={monsterAscensionLevel}
                 onChange={setMonsterAscensionLevel}
                 serviceLocale={serviceLocale}
+                prominent
               />
             </div>
             <div

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import type {
@@ -56,10 +57,29 @@ export interface MonsterMoveVisual {
 
 type MoveVisual = MonsterMoveVisual;
 
-interface InfestedPrismReworkBlockProps {
+interface MonsterAnimationPatchDiffBlockProps {
   monster: CodexMonster;
   serviceLocale: ServiceLocale;
+  patchId?: string;
   variant?: "full" | "compact";
+}
+
+interface MonsterPatchDiffSequence {
+  labelKo: string;
+  labelEn: string;
+  moves?: MoveVisual[];
+  moveIds?: string[];
+  hpOverride?: DamageValue | null;
+  initialPowerApplications?: readonly MonsterMovePowerApplication[] | null;
+  changes?: Record<string, Pick<MonsterMoveVisual, "damageChange" | "blockChange" | "powerChange">>;
+}
+
+interface MonsterPatchDiffSpec {
+  titleKo: string;
+  titleEn: string;
+  summary: (serviceLocale: ServiceLocale) => ReactNode;
+  before: MonsterPatchDiffSequence;
+  after: MonsterPatchDiffSequence;
 }
 
 const INFESTED_PRISM_MOVE_ORDER = ["JAB", "RADIATE", "WHIRLWIND", "PULSATE"];
@@ -115,6 +135,8 @@ const INTENT_CLASS_TO_KIND: Record<string, IntentKind> = {
   UnknownIntent: "unknown",
 };
 const SINGLE_ATTACK_REPEAT: DamageValue = { normal: 1, ascension: null };
+const DOUBLE_ATTACK_REPEAT: DamageValue = { normal: 2, ascension: null };
+const TRIPLE_ATTACK_REPEAT: DamageValue = { normal: 3, ascension: null };
 
 const OLD_INFESTED_PRISM_MOVES: MoveVisual[] = [
   {
@@ -162,90 +184,347 @@ const OLD_INFESTED_PRISM_MOVES: MoveVisual[] = [
   },
 ];
 
-export function InfestedPrismReworkBlock({
+const OLD_AEONGLASS_MOVES: MoveVisual[] = [
+  createMoveVisual({
+    id: "EBB",
+    name: "감쇠",
+    nameEn: "Ebb",
+    damage: { normal: 26, ascension: 32 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "Ebb", repeat: SINGLE_ATTACK_REPEAT }, { type: "DebuffIntent" }],
+  }),
+  createMoveVisual({
+    id: "EYE_LASERS",
+    name: "눈 레이저",
+    nameEn: "Eye Lasers",
+    damage: { normal: 11, ascension: 12 },
+    intents: [{ type: "MultiAttackIntent", damageKey: "EyeLasers", repeat: DOUBLE_ATTACK_REPEAT }],
+  }),
+  createMoveVisual({
+    id: "INCREASING_INTENSITY",
+    name: "강도 증가",
+    nameEn: "Increasing Intensity",
+    intents: [{ type: "StatusIntent" }, { type: "BuffIntent" }],
+  }),
+];
+
+const OLD_HAUNTED_SHIP_MOVES: MoveVisual[] = [
+  createMoveVisual({
+    id: "HAUNT",
+    name: "출몰",
+    nameEn: "Haunt",
+    intents: [{ type: "DebuffIntent" }, { type: "StatusIntent" }],
+    powers: [powerApplication("WEAK", "약화", "Weak", "Debuff", "player", { normal: 3, ascension: null })],
+    cards: [cardApplication("DAZED", "어지러움", "Dazed", { normal: 5, ascension: null })],
+  }),
+  createMoveVisual({
+    id: "RAMMING_SPEED",
+    name: "전속력",
+    nameEn: "Ramming Speed",
+    damage: { normal: 10, ascension: 11 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "RammingSpeed", repeat: SINGLE_ATTACK_REPEAT }],
+    damageChange: "removed",
+  }),
+  createMoveVisual({
+    id: "SWIPE",
+    name: "밀쳐내기",
+    nameEn: "Swipe",
+    damage: { normal: 13, ascension: 14 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "Swipe", repeat: SINGLE_ATTACK_REPEAT }],
+  }),
+  createMoveVisual({
+    id: "STOMP",
+    name: "발구르기",
+    nameEn: "Stomp",
+    damage: { normal: 4, ascension: 5 },
+    intents: [{ type: "MultiAttackIntent", damageKey: "Stomp", repeat: TRIPLE_ATTACK_REPEAT }],
+  }),
+];
+
+const OLD_PUNCH_CONSTRUCT_MOVES: MoveVisual[] = [
+  createMoveVisual({
+    id: "READY",
+    name: "준비",
+    nameEn: "Ready",
+    intents: [{ type: "DefendIntent" }],
+  }),
+  createMoveVisual({
+    id: "STRONG_PUNCH",
+    name: "강한 펀치",
+    nameEn: "Strong Punch",
+    damage: { normal: 14, ascension: 16 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "StrongPunch", repeat: SINGLE_ATTACK_REPEAT }],
+  }),
+  createMoveVisual({
+    id: "FAST_PUNCH",
+    name: "빠른 펀치",
+    nameEn: "Fast Punch",
+    damage: { normal: 5, ascension: 6 },
+    intents: [{ type: "MultiAttackIntent", damageKey: "FastPunch", repeat: DOUBLE_ATTACK_REPEAT }, { type: "DebuffIntent" }],
+    powers: [powerApplication("WEAK", "약화", "Weak", "Debuff", "player", { normal: 1, ascension: null })],
+  }),
+];
+
+const OLD_SKULKING_COLONY_HP: DamageValue = { normal: 70, ascension: 75 };
+const OLD_SKULKING_COLONY_INITIAL_POWERS = [
+  powerApplication("HARDENED_SHELL", "단단한 껍질", "Hardened Shell", "Buff", "self", { normal: 15, ascension: null }),
+];
+const OLD_SKULKING_COLONY_MOVES: MoveVisual[] = [
+  createMoveVisual({
+    id: "SMASH",
+    name: "강타",
+    nameEn: "Smash",
+    damage: { normal: 12, ascension: 13 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "Smash", repeat: SINGLE_ATTACK_REPEAT }],
+    damageChange: "removed",
+  }),
+  createMoveVisual({
+    id: "ZOOM",
+    name: "급가속",
+    nameEn: "Zoom",
+    damage: { normal: 14, ascension: 16 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "Zoom", repeat: SINGLE_ATTACK_REPEAT }],
+  }),
+  createMoveVisual({
+    id: "INERTIA",
+    name: "관성",
+    nameEn: "Inertia",
+    damage: { normal: 9, ascension: 11 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "Inertia", repeat: SINGLE_ATTACK_REPEAT }, { type: "BuffIntent" }],
+    powers: [powerApplication("STRENGTH", "힘", "Strength", "Buff", "self", { normal: 2, ascension: 3 })],
+  }),
+  createMoveVisual({
+    id: "PIERCING_STABS",
+    name: "꿰뚫는 찌르기",
+    nameEn: "Piercing Stabs",
+    damage: { normal: 7, ascension: 8 },
+    intents: [{ type: "MultiAttackIntent", damageKey: "PiercingStabs", repeat: DOUBLE_ATTACK_REPEAT }],
+  }),
+];
+
+const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> = {
+  "v0.106.0": {
+    INFESTED_PRISM: {
+      titleKo: "감염된 프리즘 리워크",
+      titleEn: "Infested Prism Rework",
+      summary: (serviceLocale) => serviceLocale === "ko"
+        ? <>공격 피해가 낮아지고, 방출과 맥박에 방어가 붙었습니다. 맥박은 피해/방어와 <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>생명의 불꽃</PatchDiffPowerLink> 적용이 함께 보이는 행동입니다.</>
+        : <>Attack damage is lower. Radiate and Pulsate now include Block, and Pulsate is shown with damage, Block, and <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>Vital Spark</PatchDiffPowerLink> application.</>,
+      before: {
+        labelKo: "이전",
+        labelEn: "Before",
+        moves: OLD_INFESTED_PRISM_MOVES,
+        hpOverride: OLD_INFESTED_PRISM_HP,
+        initialPowerApplications: [],
+      },
+      after: {
+        labelKo: "이후",
+        labelEn: "After",
+        moveIds: INFESTED_PRISM_MOVE_ORDER,
+      },
+    },
+    AEONGLASS: {
+      titleKo: "영겁의 모래시계 행동 변화",
+      titleEn: "Aeonglass Move Changes",
+      summary: (serviceLocale) => serviceLocale === "ko"
+        ? <>행동 패턴 조정과 함께 강도 증가에 방어/상태이상/버프 의도가 함께 드러납니다. <PatchDiffCardLink cardId="WITHER" serviceLocale={serviceLocale}>침체</PatchDiffCardLink>와 <PatchDiffPowerLink powerId="WITHERING_PRESENCE" serviceLocale={serviceLocale}>시들어가는 존재</PatchDiffPowerLink>는 별도 리워크 대상입니다.</>
+        : <>The move pattern adjustment makes Increasing Intensity show defense, status, and buff intent together. <PatchDiffCardLink cardId="WITHER" serviceLocale={serviceLocale}>Wither</PatchDiffCardLink> and <PatchDiffPowerLink powerId="WITHERING_PRESENCE" serviceLocale={serviceLocale}>Withering Presence</PatchDiffPowerLink> are separate rework targets.</>,
+      before: {
+        labelKo: "이전",
+        labelEn: "Before",
+        moves: OLD_AEONGLASS_MOVES,
+      },
+      after: {
+        labelKo: "이후",
+        labelEn: "After",
+        moveIds: ["EBB", "EYE_LASERS", "INCREASING_INTENSITY"],
+        changes: {
+          INCREASING_INTENSITY: { blockChange: "added", powerChange: "added" },
+        },
+      },
+    },
+    HAUNTED_SHIP: {
+      titleKo: "유령선 행동 변화",
+      titleEn: "Haunted Ship Move Changes",
+      summary: (serviceLocale) => serviceLocale === "ko"
+        ? <>전속력이 빠지고, 출몰 이후 밀쳐내기와 발구르기를 번갈아 쓰는 흐름으로 바뀝니다. 출몰 다음 첫 공격은 밀쳐내기입니다.</>
+        : <>Ramming Speed is removed. After Haunt, the ship alternates Swipe and Stomp, starting with Swipe.</>,
+      before: {
+        labelKo: "이전",
+        labelEn: "Before",
+        moves: OLD_HAUNTED_SHIP_MOVES,
+      },
+      after: {
+        labelKo: "이후",
+        labelEn: "After",
+        moveIds: ["HAUNT", "SWIPE", "STOMP"],
+      },
+    },
+    PUNCH_CONSTRUCT: {
+      titleKo: "권투형 구조체 행동 변화",
+      titleEn: "Punch Construct Move Changes",
+      summary: (serviceLocale) => serviceLocale === "ko"
+        ? <>준비가 빠른 펀치로 이어지고, 빠른 펀치 다음에 강한 펀치가 옵니다. 빠른 펀치의 디버프는 약화에서 손상으로 바뀝니다.</>
+        : <>Ready now leads into Fast Punch, and Fast Punch leads into Strong Punch. Fast Punch applies Frail instead of Weak.</>,
+      before: {
+        labelKo: "이전",
+        labelEn: "Before",
+        moves: OLD_PUNCH_CONSTRUCT_MOVES,
+      },
+      after: {
+        labelKo: "이후",
+        labelEn: "After",
+        moveIds: ["READY", "FAST_PUNCH", "STRONG_PUNCH"],
+        changes: {
+          FAST_PUNCH: { powerChange: "added" },
+        },
+      },
+    },
+    SKULKING_COLONY: {
+      titleKo: "잠행 군체 행동 변화",
+      titleEn: "Skulking Colony Move Changes",
+      summary: (serviceLocale) => serviceLocale === "ko"
+        ? <>체력과 단단한 껍질 수치가 올라가고, 강타가 빠집니다. 전투 초반에는 급가속을 두 번 사용하며 더 이상 방어도를 얻지 않습니다.</>
+        : <>HP and Hardened Shell increase, and Smash is removed. It now uses Zoom twice at the start and no longer gains Block.</>,
+      before: {
+        labelKo: "이전",
+        labelEn: "Before",
+        moves: OLD_SKULKING_COLONY_MOVES,
+        hpOverride: OLD_SKULKING_COLONY_HP,
+        initialPowerApplications: OLD_SKULKING_COLONY_INITIAL_POWERS,
+      },
+      after: {
+        labelKo: "이후",
+        labelEn: "After",
+        moveIds: ["ZOOM", "ZOOM_MOVE_2", "INERTIA", "PIERCING_STABS"],
+      },
+    },
+  },
+};
+
+export function MonsterAnimationPatchDiffBlock({
   monster,
   serviceLocale,
+  patchId = "v0.106.0",
   variant = "full",
-}: InfestedPrismReworkBlockProps) {
-  if (monster.id !== "INFESTED_PRISM") return null;
+}: MonsterAnimationPatchDiffBlockProps) {
+  const spec = getMonsterPatchDiffSpec(monster.id, patchId);
+  if (!spec) return null;
 
-  const currentMoves = buildCurrentMoveVisuals(monster);
   const compact = variant === "compact";
   const href = localizeHref(`/compendium/bestiary?monster=${monster.id.toLowerCase()}`, serviceLocale);
-  const labels = serviceLocale === "ko"
-    ? {
-        title: "감염된 프리즘 리워크",
-        before: "이전",
-        after: "이후",
-        body: "공격 피해가 크게 낮아지고, 방출과 맥박에 방어가 붙었습니다. 맥박은 피해/방어와 생명의 불꽃 적용이 함께 보이는 행동입니다.",
-        hp: "체력",
-      }
-    : {
-        title: "Infested Prism Rework",
-        before: "Before",
-        after: "After",
-        body: "Attack damage is much lower. Radiate and Pulsate now include Block, and Pulsate is shown with damage, Block, and Vital Spark application.",
-        hp: "HP",
-  };
+  const title = serviceLocale === "ko" ? spec.titleKo : spec.titleEn;
 
   return (
-    <div className={compact ? "mt-2" : "relative left-1/2 my-4 w-[min(96vw,72rem)] -translate-x-1/2"}>
-      <div className="rounded-lg border border-yellow-400/20 bg-black/25 p-3 shadow-[0_18px_45px_rgba(0,0,0,0.28)]">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+    <details className={compact ? "group mt-2" : "group my-4"} open>
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-md border border-yellow-400/20 bg-black/30 px-3 py-2 marker:hidden">
+        <span className="flex min-w-0 flex-col gap-1">
+          <span className="font-game-title text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+            {serviceLocale === "ko" ? "애니메이션 패치 diff" : "Animation Patch Diff"}
+          </span>
           <Link
             href={href}
             className="font-game-title text-sm font-bold text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 hover:text-yellow-200"
+            onClick={(event) => event.stopPropagation()}
           >
-            {labels.title}
+            {title}
           </Link>
-        </div>
-
-        {!compact && (
+        </span>
+        <span className="shrink-0 text-xs text-zinc-500 transition-transform group-open:rotate-180">⌄</span>
+      </summary>
+      <div className={compact ? "mt-2" : "relative left-1/2 mt-2 w-[min(96vw,72rem)] -translate-x-1/2"}>
+        <div className="rounded-lg border border-yellow-400/20 bg-black/25 p-3 shadow-[0_18px_45px_rgba(0,0,0,0.28)]">
           <p className="mb-3 font-game-text text-xs leading-relaxed text-zinc-400">
-            {labels.body}
+            {spec.summary(serviceLocale)}
           </p>
-        )}
 
-        <div className="space-y-3">
-          <MoveSequenceRail
-            label={labels.before}
-            moves={OLD_INFESTED_PRISM_MOVES}
-            monster={monster}
-            serviceLocale={serviceLocale}
-            tone="before"
-            hpOverride={OLD_INFESTED_PRISM_HP}
-            initialPowerApplications={[]}
-          />
-          <MoveSequenceRail
-            label={labels.after}
-            moves={currentMoves}
-            monster={monster}
-            serviceLocale={serviceLocale}
-            tone="after"
-          />
+          <div className="space-y-3">
+            <MoveSequenceRail
+              sequence={spec.before}
+              monster={monster}
+              serviceLocale={serviceLocale}
+              tone="before"
+            />
+            <MoveSequenceRail
+              sequence={spec.after}
+              monster={monster}
+              serviceLocale={serviceLocale}
+              tone="after"
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </details>
+  );
+}
+
+export function InfestedPrismReworkBlock(props: Omit<MonsterAnimationPatchDiffBlockProps, "patchId">) {
+  return <MonsterAnimationPatchDiffBlock {...props} patchId="v0.106.0" />;
+}
+
+export function hasMonsterAnimationPatchDiff(monsterId: string, patchId: string): boolean {
+  return Boolean(getMonsterPatchDiffSpec(monsterId, patchId));
+}
+
+function getMonsterPatchDiffSpec(monsterId: string, patchId: string): MonsterPatchDiffSpec | null {
+  return MONSTER_PATCH_DIFFS[normalizePatchId(patchId)]?.[monsterId.toUpperCase()] ?? null;
+}
+
+function normalizePatchId(patchId: string): string {
+  return patchId.startsWith("v") ? patchId : `v${patchId}`;
+}
+
+function PatchDiffPowerLink({
+  powerId,
+  serviceLocale,
+  children,
+}: {
+  powerId: string;
+  serviceLocale: ServiceLocale;
+  children: ReactNode;
+}) {
+  return (
+    <Link
+      href={localizeHref(`/compendium/powers?power=${powerId.toLowerCase()}`, serviceLocale)}
+      className="font-bold text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 hover:text-yellow-200"
+    >
+      {children}
+    </Link>
+  );
+}
+
+function PatchDiffCardLink({
+  cardId,
+  serviceLocale,
+  children,
+}: {
+  cardId: string;
+  serviceLocale: ServiceLocale;
+  children: ReactNode;
+}) {
+  return (
+    <Link
+      href={localizeHref(`/compendium/cards?card=${cardId.toLowerCase()}`, serviceLocale)}
+      className="font-bold text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 hover:text-yellow-200"
+    >
+      {children}
+    </Link>
   );
 }
 
 function MoveSequenceRail({
-  label,
-  moves,
+  sequence,
   monster,
   serviceLocale,
   tone,
-  hpOverride,
-  initialPowerApplications,
 }: {
-  label: string;
-  moves: MoveVisual[];
+  sequence: MonsterPatchDiffSequence;
   monster: CodexMonster;
   serviceLocale: ServiceLocale;
   tone: "before" | "after";
-  hpOverride?: DamageValue | null;
-  initialPowerApplications?: readonly MonsterMovePowerApplication[] | null;
 }) {
+  const moves = buildSequenceMoves(monster, sequence);
+  const label = serviceLocale === "ko" ? sequence.labelKo : sequence.labelEn;
+
   return (
     <div className="grid gap-2 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:items-center">
       <div className={`font-game-title text-xs font-bold ${tone === "after" ? "text-green-300" : "text-red-300"}`}>
@@ -258,8 +537,8 @@ function MoveSequenceRail({
               move={move}
               monster={monster}
               serviceLocale={serviceLocale}
-              hpOverride={hpOverride}
-              initialPowerApplications={initialPowerApplications}
+              hpOverride={sequence.hpOverride}
+              initialPowerApplications={sequence.initialPowerApplications}
             />
             <Image
               src={ARROW_ICON}
@@ -400,6 +679,7 @@ function MovePreviewSurface({
           onChange={setAscensionLevel}
           serviceLocale={serviceLocale}
           compact={compact}
+          prominent
         />
       </span>
       <span className={`grid h-full w-full ${gridRows}`}>
@@ -490,10 +770,10 @@ function MoveIntentPreview({
 
   return (
     <span
-      className={`pointer-events-none relative z-40 flex h-full items-end justify-center gap-1 ${compact ? "pt-1" : "pt-2"}`}
+      className={`pointer-events-none relative z-40 flex h-full items-end justify-center ${compact ? "gap-0 pl-14 pr-1 pt-1" : "gap-0.5 pl-16 pr-2 pt-2"}`}
     >
       {intents.map(({ intent, kind, key }) => (
-        <span key={key} className={`relative inline-flex items-center justify-center ${compact ? "h-9 w-9" : "h-12 w-12"}`}>
+        <span key={key} className={`relative inline-flex items-center justify-center ${compact ? "h-8 w-8" : "h-11 w-11"}`}>
           <Image
             src={getIntentIcon(kind, move, intent, ascensionLevel)}
             alt=""
@@ -671,22 +951,97 @@ function MetricToken({
   );
 }
 
-function buildCurrentMoveVisuals(monster: CodexMonster): MoveVisual[] {
-  const moveById = new Map([...monster.bestiaryMoves, ...monster.moves].map((move) => [move.id, move]));
-  const oldById = new Map(OLD_INFESTED_PRISM_MOVES.map((move) => [move.id, move]));
+function buildSequenceMoves(monster: CodexMonster, sequence: MonsterPatchDiffSequence): MoveVisual[] {
+  if (sequence.moves) return sequence.moves;
+  if (!sequence.moveIds) return [];
 
-  return INFESTED_PRISM_MOVE_ORDER.flatMap((moveId) => {
+  const moveById = new Map([...monster.bestiaryMoves, ...monster.moves].map((move) => [move.id, move]));
+  return sequence.moveIds.flatMap((moveId) => {
     const move = moveById.get(moveId);
     if (!move) return [];
     const visual = buildMonsterMoveVisual(monster, move);
-    const old = oldById.get(moveId);
+    const changes = sequence.changes?.[moveId];
     return [{
       ...visual,
-      damageChange: getDamageChange(old?.damage ?? null, visual.damage),
-      blockChange: old?.block ? getDamageChange(old.block, visual.block) : visual.block ? "added" : null,
-      powerChange: null,
+      damageChange: changes?.damageChange ?? visual.damageChange,
+      blockChange: changes?.blockChange ?? visual.blockChange,
+      powerChange: changes?.powerChange ?? visual.powerChange,
     }];
   });
+}
+
+function createMoveVisual({
+  id,
+  name,
+  nameEn,
+  damage = null,
+  block = null,
+  intents = [],
+  powers = [],
+  cards = [],
+  damageChange,
+  blockChange,
+  powerChange,
+}: {
+  id: string;
+  name: string;
+  nameEn: string;
+  damage?: DamageValue | null;
+  block?: DamageValue | null;
+  intents?: MonsterMoveIntentDetail[];
+  powers?: readonly MonsterMovePowerApplication[];
+  cards?: readonly MonsterMoveCardApplication[];
+  damageChange?: MoveChangeTone;
+  blockChange?: MoveChangeTone;
+  powerChange?: MoveChangeTone;
+}): MoveVisual {
+  return {
+    id,
+    name,
+    nameEn,
+    damage,
+    block,
+    intents,
+    powers,
+    cards,
+    damageChange,
+    blockChange,
+    powerChange,
+  };
+}
+
+function powerApplication(
+  powerId: string,
+  powerName: string,
+  powerNameEn: string,
+  powerType: MonsterMovePowerApplication["powerType"],
+  target: MonsterMovePowerApplication["target"],
+  amount: DamageValue | null,
+): MonsterMovePowerApplication {
+  return {
+    powerId,
+    powerName,
+    powerNameEn,
+    powerType,
+    target,
+    amount,
+    imageUrl: `/images/sts2/powers/${powerId.toLowerCase()}_power.webp`,
+  };
+}
+
+function cardApplication(
+  cardId: string,
+  cardName: string,
+  cardNameEn: string,
+  amount: DamageValue | null,
+): MonsterMoveCardApplication {
+  return {
+    cardId,
+    cardName,
+    cardNameEn,
+    amount,
+    imageUrl: cardId === "WITHER" ? "/images/sts2/cards-beta/wither.webp" : `/images/sts2/cards/${cardId.toLowerCase()}.webp`,
+  };
 }
 
 export function buildMonsterMoveVisual(
@@ -825,15 +1180,4 @@ function formatAttackLabel(
 function formatEffectiveValue(value: DamageValue | null, ascensionLevel: number): string | null {
   const resolved = getEffectiveDamageValue(value, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
   return resolved == null ? null : String(resolved);
-}
-
-function getDamageChange(before: DamageValue | null, after: DamageValue | null): MoveChangeTone {
-  if (!before && after) return "added";
-  if (before && !after) return "removed";
-  if (!before || !after) return null;
-  const beforeTotal = before.normal ?? 0;
-  const afterTotal = after.normal ?? 0;
-  if (afterTotal < beforeTotal) return "nerf";
-  if (afterTotal > beforeTotal) return "buff";
-  return null;
 }

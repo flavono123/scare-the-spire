@@ -54,21 +54,27 @@ export function MonsterAscensionStepper({
   onChange,
   serviceLocale,
   compact = false,
+  prominent = false,
   className = "",
 }: {
   level: number;
   onChange: (level: number | ((current: number) => number)) => void;
   serviceLocale: ServiceLocale;
   compact?: boolean;
+  prominent?: boolean;
   className?: string;
 }) {
   const decreaseLabel = serviceLocale === "ko" ? "승천 감소" : "Decrease ascension";
   const increaseLabel = serviceLocale === "ko" ? "승천 증가" : "Increase ascension";
   const groupLabel = serviceLocale === "ko" ? `승천 ${level}` : `Ascension ${level}`;
   const buttonClass = compact
-    ? "h-4 w-4 text-[10px]"
-    : "h-5 w-5 text-xs";
-  const iconSize = compact ? 16 : 18;
+    ? prominent ? "h-5 w-5 text-xs" : "h-4 w-4 text-[10px]"
+    : prominent ? "h-6 w-6 text-sm" : "h-5 w-5 text-xs";
+  const iconSize = compact ? (prominent ? 24 : 16) : (prominent ? 27 : 18);
+  const iconClass = compact
+    ? prominent ? "h-6 w-6" : "h-4 w-4"
+    : prominent ? "h-[27px] w-[27px]" : "h-[18px] w-[18px]";
+  const counterClass = prominent ? "text-[10px]" : "text-[8px]";
 
   return (
     <span
@@ -93,9 +99,9 @@ export function MonsterAscensionStepper({
           alt=""
           width={iconSize}
           height={iconSize}
-          className={`${compact ? "h-4 w-4" : "h-[18px] w-[18px]"} object-contain`}
+          className={`${iconClass} object-contain`}
         />
-        <span className="absolute inset-0 flex items-center justify-center pt-px text-[8px] leading-none drop-shadow">
+        <span className={`absolute inset-0 flex items-center justify-center pt-px ${counterClass} leading-none drop-shadow`}>
           {level}
         </span>
       </span>

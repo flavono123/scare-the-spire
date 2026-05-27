@@ -14,7 +14,7 @@ import type { CodexMonster } from "@/lib/codex-types";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { DescriptionText } from "./codex-description";
-import { InfestedPrismReworkBlock } from "./monster-move-visuals";
+import { hasMonsterAnimationPatchDiff, MonsterAnimationPatchDiffBlock } from "./monster-move-visuals";
 
 interface STS2ChangeHistoryProps {
   serviceLocale: ServiceLocale;
@@ -310,8 +310,7 @@ export function STS2ChangeHistory({
         const curatedDiffs = entry.curatedChanges.flatMap((change) => change.diffs);
         const hasVersionDiffs = entry.versionDiffs.length > 0;
         const hasLifecycleChanges = entry.lifecycleChanges.length > 0;
-        const showInfestedPrismRework = monster?.id === "INFESTED_PRISM" &&
-          entry.curatedChanges.some((change) => change.id === "infested-prism-v106-rework");
+        const showMonsterAnimationDiff = Boolean(monster) && hasMonsterAnimationPatchDiff(monster.id, entry.patch);
 
         return (
           <div
@@ -352,10 +351,11 @@ export function STS2ChangeHistory({
                     <CuratedDiffLine key={`${entry.patch}-${diff.attribute}-${index}`} diff={diff} />
                   ))}
             </div>
-            {showInfestedPrismRework && (
-              <InfestedPrismReworkBlock
+            {showMonsterAnimationDiff && monster && (
+              <MonsterAnimationPatchDiffBlock
                 monster={monster}
                 serviceLocale={serviceLocale}
+                patchId={entry.patch}
                 variant="compact"
               />
             )}
