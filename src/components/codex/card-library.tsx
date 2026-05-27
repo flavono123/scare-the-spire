@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { useSearchParams } from "next/navigation";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -224,7 +223,6 @@ interface CardLibraryProps {
 
 export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [] }: CardLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const searchParams = useSearchParams();
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
   const [selectedColors, setSelectedColors] = useState<Set<CardFilterCategory>>(
     new Set()
@@ -670,15 +668,19 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     quest: gameUi.cardLibrary.rarities.퀘스트,
   };
 
-  // Card detail modal — initialize from ?card= query param
-  const initialCardId = searchParams.get("card");
-  const [selectedCard, setSelectedCard] = useState<CodexCard | null>(() => {
-    if (!initialCardId) return null;
-    return findCardByListId(cards, initialCardId);
-  });
+  // Card detail modal
+  const [selectedCard, setSelectedCard] = useState<CodexCard | null>(null);
+  const [urlSelectionReady, setUrlSelectionReady] = useState(false);
+
+  useEffect(() => {
+    const cardParam = new URL(window.location.href).searchParams.get("card");
+    setSelectedCard(cardParam ? findCardByListId(cards, cardParam) : null);
+    setUrlSelectionReady(true);
+  }, [cards]);
 
   // Update URL query param when modal opens/closes
   useEffect(() => {
+    if (!urlSelectionReady) return;
     const url = new URL(window.location.href);
     if (selectedCard) {
       url.searchParams.set("card", selectedCard.id.toLowerCase());
@@ -688,7 +690,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     if (url.toString() !== window.location.href) {
       window.history.pushState(null, "", url.toString());
     }
-  }, [selectedCard]);
+  }, [selectedCard, urlSelectionReady]);
 
   // Handle browser back button
   useEffect(() => {

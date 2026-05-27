@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import { MonsterDetail } from "./monster-detail";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -104,7 +103,6 @@ export function MonsterLibrary({
   const serviceText = serviceMessages[serviceLocale];
   const commonText = serviceText.codex.common;
   const monsterText = serviceText.codex.monstersView;
-  const searchParams = useSearchParams();
   const [selectedTypes, setSelectedTypes] = useState<Set<MonsterType>>(new Set());
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [showOnlySkinVariants, setShowOnlySkinVariants] = useState(false);
@@ -125,14 +123,20 @@ export function MonsterLibrary({
   }, [encounters, activeVersion, changes, currentVersion]);
 
   // Monster detail modal
-  const initialMonsterId = searchParams.get("monster");
-  const [selectedMonster, setSelectedMonster] = useState<CodexMonster | null>(() => {
-    if (!initialMonsterId) return null;
-    return monsters.find((m) => m.id.toLowerCase() === initialMonsterId.toLowerCase()) ?? null;
-  });
+  const [selectedMonster, setSelectedMonster] = useState<CodexMonster | null>(null);
+  const [urlSelectionReady, setUrlSelectionReady] = useState(false);
+
+  useEffect(() => {
+    const monsterParam = new URL(window.location.href).searchParams.get("monster");
+    setSelectedMonster(monsterParam
+      ? monsters.find((m) => m.id.toLowerCase() === monsterParam.toLowerCase()) ?? null
+      : null);
+    setUrlSelectionReady(true);
+  }, [monsters]);
 
   // URL sync
   useEffect(() => {
+    if (!urlSelectionReady) return;
     const url = new URL(window.location.href);
     if (selectedMonster) {
       url.searchParams.set("monster", selectedMonster.id.toLowerCase());
@@ -142,7 +146,7 @@ export function MonsterLibrary({
     if (url.toString() !== window.location.href) {
       window.history.pushState(null, "", url.toString());
     }
-  }, [selectedMonster]);
+  }, [selectedMonster, urlSelectionReady]);
 
   // Browser back button
   useEffect(() => {
