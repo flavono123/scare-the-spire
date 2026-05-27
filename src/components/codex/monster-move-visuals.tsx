@@ -416,23 +416,18 @@ export function MonsterAnimationPatchDiffBlock({
 
   return (
     <details className={compact ? "group mt-2" : "group my-4"} open>
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-md border border-yellow-400/20 bg-black/30 px-3 py-2 marker:hidden">
-        <span className="flex min-w-0 flex-col gap-1">
-          <span className="font-game-title text-[11px] font-bold text-zinc-500">
-            {serviceLocale === "ko" ? "애니메이션 패치 diff" : "Animation Patch Diff"}
-          </span>
-          <Link
-            href={href}
-            className="font-game-title text-sm font-bold text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 hover:text-yellow-200"
-            onClick={(event) => event.stopPropagation()}
-          >
-            {title}
-          </Link>
-        </span>
-        <span className="shrink-0 text-xs text-zinc-500 transition-transform group-open:rotate-180">⌄</span>
+      <summary className="inline-flex cursor-pointer list-none items-center gap-2 text-sm text-blue-400 transition-colors marker:hidden hover:text-blue-300">
+        <Link
+          href={href}
+          className="font-game-title font-bold underline decoration-blue-400/30 underline-offset-2"
+          onClick={(event) => event.stopPropagation()}
+        >
+          {title}
+        </Link>
+        <span className="shrink-0 text-xs transition-transform group-open:rotate-180">⌄</span>
       </summary>
       <div className={compact ? "mt-2" : "relative left-1/2 mt-2 w-[min(96vw,72rem)] -translate-x-1/2"}>
-        <div className="rounded-lg border border-yellow-400/20 bg-black/25 p-3 shadow-[0_18px_45px_rgba(0,0,0,0.28)]">
+        <div className={compact ? "" : "px-0"}>
           <p className="mb-3 font-game-text text-xs leading-relaxed text-zinc-400">
             {spec.summary(serviceLocale)}
           </p>
@@ -679,7 +674,6 @@ function MovePreviewSurface({
           onChange={setAscensionLevel}
           serviceLocale={serviceLocale}
           compact={compact}
-          prominent
         />
       </span>
       <span className={`grid h-full w-full ${gridRows}`}>
@@ -770,16 +764,16 @@ function MoveIntentPreview({
 
   return (
     <span
-      className={`pointer-events-none relative z-40 flex h-full items-end justify-center ${compact ? "gap-0 pl-14 pr-1 pt-1" : "gap-0.5 pl-16 pr-2 pt-2"}`}
+      className={`pointer-events-none relative z-40 flex h-full items-end justify-center ${compact ? "gap-0 pt-1" : "gap-0.5 pt-2"}`}
     >
       {intents.map(({ intent, kind, key }) => (
-        <span key={key} className={`relative inline-flex items-center justify-center ${compact ? "h-8 w-8" : "h-11 w-11"}`}>
+        <span key={key} className={`relative inline-flex items-center justify-center ${compact ? "h-7 w-7" : "h-10 w-10"}`}>
           <Image
             src={getIntentIcon(kind, move, intent, ascensionLevel)}
             alt=""
             width={compact ? 36 : 48}
             height={compact ? 36 : 48}
-            className={`${compact ? "h-8 w-8" : "h-11 w-11"} object-contain drop-shadow-[0_5px_6px_rgba(0,0,0,0.78)]`}
+            className={`${compact ? "h-7 w-7" : "h-10 w-10"} object-contain drop-shadow-[0_5px_6px_rgba(0,0,0,0.78)]`}
           />
           {getIntentLabel(kind, move, intent, ascensionLevel) && (
             <span
