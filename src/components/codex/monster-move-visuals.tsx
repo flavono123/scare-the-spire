@@ -674,9 +674,10 @@ function MovePreviewSurface({
   const compact = variant === "inline";
   const surfaceRef = useRef<HTMLSpanElement | null>(null);
   const [loopNonce, setLoopNonce] = useState(0);
-  const [stageMounted, setStageMounted] = useState(!loopAnimation);
+  const [stageInView, setStageInView] = useState(false);
   const stageMoveId = move.animationId ?? move.id;
   const stageMoveNonce = selectedMoveNonce + loopNonce;
+  const stageMounted = !loopAnimation || stageInView;
   const fallbackImageUrl = monster.bossImageUrl ?? monster.imageUrl;
   const surfaceClass = compact
     ? "relative mb-0 block h-44 w-full overflow-hidden rounded bg-black/10"
@@ -686,10 +687,7 @@ function MovePreviewSurface({
     : "grid-rows-[2.75rem_minmax(0,1fr)_1.65rem_1.9rem]";
 
   useEffect(() => {
-    if (!loopAnimation) {
-      setLoopNonce(0);
-      return;
-    }
+    if (!loopAnimation) return;
 
     const interval = window.setInterval(() => {
       setLoopNonce((current) => (current + 1) % 100000);
@@ -699,16 +697,13 @@ function MovePreviewSurface({
   }, [loopAnimation, stageMoveId]);
 
   useEffect(() => {
-    if (!loopAnimation) {
-      setStageMounted(true);
-      return;
-    }
+    if (!loopAnimation) return;
 
     const node = surfaceRef.current;
     if (!node) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => setStageMounted(entry.isIntersecting && entry.intersectionRatio >= 0.55),
+      ([entry]) => setStageInView(entry.isIntersecting && entry.intersectionRatio >= 0.55),
       { threshold: [0, 0.55] },
     );
     observer.observe(node);
