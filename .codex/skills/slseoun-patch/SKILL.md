@@ -115,7 +115,7 @@ Use this only for monster reworks, moveset changes, intent/action changes, HP or
 Rules:
 
 - Keep Steam patch-note prose outside the diff block. Do not move official bullets like "Adjusted moveset" or "Reworked Wither status..." into service commentary.
-- Put service-authored explanation inside the animation diff component, where it is visibly labeled `애니메이션 패치 diff` / `Animation Patch Diff`.
+- Put service-authored explanation inside the animation diff component, but do not label the UI as `애니메이션 패치 diff` / `Animation Patch Diff`. The collapsible summary should read like the Steam original-view disclosure: compact, text-only, and borderless.
 - Add a standalone marker line below the relevant monster bullet:
 
 ```markdown
@@ -124,6 +124,8 @@ Rules:
 
 - Use `full` on patch detail pages. Compact rendering is for monster patch-history rails.
 - The diff block must be collapsible and default-open. When collapsed, only the narrow summary header should remain; do not force the full wide animation row to reserve space.
+- The collapsible summary text is only the expand/collapse trigger. Do not make the summary title itself link to the monster page.
+- Keywords inside service-authored diff explanation must use the game gold treatment and real hover previews/links. Monster move keywords link to the parent monster page and preview the move animation + intent. Power/card keywords use their game hover tip.
 - Build before/after move panels from game data whenever possible. Use current Codex/game data for the after state. For before values, prefer prior extracted data or an existing pre-patch commit over memory.
 - Include HP bars when HP changed and starting effects when starting powers changed. If a power/card is mentioned in service commentary, link it as a real Codex keyword.
 - Do not add an animation diff just because a monster is mentioned. Use it when behavior or pattern changed enough that prose alone hides the actual player-facing difference.
