@@ -23,7 +23,7 @@
   {
     "id": "sts2-infested-prism-energy-vending-machine",
     "game": "sts2",
-    "sentence": "프리즘은 원래 때리면 1코를 주는 자판기였다",
+    "sentence": "프리즘은 원래 때리면 1코 주는 자판기였다",
     "entityType": "monster",
     "entityId": "INFESTED_PRISM",
     "changeId": "infested-prism-v106-rework",
