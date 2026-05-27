@@ -13,6 +13,7 @@ import type {
 } from "@/lib/codex-types";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import { TinyCardIcon } from "@/components/history-course/card-action-icon";
 import { GameHoverTip } from "./hover-tip";
 import {
   getEffectiveDamageValue,
@@ -640,10 +641,7 @@ export function MonsterMoveHoverPreview({
         {monsterName}
       </span>
       {previewSurface}
-      <span className="flex flex-wrap items-center gap-2">
-        <MoveMetricTokens move={move} ascensionLevel={ascensionLevel} />
-        <MoveApplicationIcons move={move} serviceLocale={serviceLocale} ascensionLevel={ascensionLevel} />
-      </span>
+      <MoveApplicationIcons move={move} serviceLocale={serviceLocale} ascensionLevel={ascensionLevel} />
     </GameHoverTip>
   );
 }
@@ -844,38 +842,6 @@ function MoveIntentPreview({
   );
 }
 
-function MoveMetricTokens({
-  move,
-  ascensionLevel,
-  compact = false,
-}: {
-  move: MoveVisual;
-  ascensionLevel: number;
-  compact?: boolean;
-}) {
-  const attackIntent = move.intents.find((intent) => getIntentKind(intent.type) === "attack" || getIntentKind(intent.type) === "deathBlow") ?? null;
-  return (
-    <>
-      {move.damage && (
-        <MetricToken
-          icon={getAttackIcon(move.damage, getRepeatInfo(attackIntent), ascensionLevel)}
-          label={formatAttackLabel(move.damage, getRepeatInfo(attackIntent), ascensionLevel)}
-          change={move.damageChange}
-          compact={compact}
-        />
-      )}
-      {move.block && (
-        <MetricToken
-          icon={BLOCK_ICON}
-          label={formatEffectiveValue(move.block, ascensionLevel)}
-          change={move.blockChange}
-          compact={compact}
-        />
-      )}
-    </>
-  );
-}
-
 function MoveApplicationIcons({
   move,
   serviceLocale,
@@ -890,7 +856,7 @@ function MoveApplicationIcons({
   if (move.powers.length === 0 && move.cards.length === 0) return null;
 
   return (
-    <>
+    <span className="flex flex-wrap items-center gap-2">
       {move.powers.map((power) => (
         <PowerApplicationIcon
           key={`${move.id}-${power.powerId}`}
@@ -903,11 +869,22 @@ function MoveApplicationIcons({
         />
       ))}
       {move.cards.map((card) => (
-        <span key={`${move.id}-${card.cardId}`} className="relative inline-flex h-6 w-6 items-center justify-center" title={serviceLocale === "ko" ? card.cardName : card.cardNameEn}>
-          {card.imageUrl && <Image src={card.imageUrl} alt="" width={24} height={24} className="h-6 w-6 object-contain" />}
+        <span key={`${move.id}-${card.cardId}`} className="relative inline-flex h-7 w-7 items-center justify-center" title={serviceLocale === "ko" ? card.cardName : card.cardNameEn}>
+          <TinyCardIcon
+            card={{ color: card.cardColor, rarity: card.cardRarity, type: card.cardType }}
+            width={28}
+          />
+          {getEffectiveDamageValue(card.amount, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL) != null && (
+            <span
+              className="font-game-title pointer-events-none absolute -bottom-1 -right-1 text-[11px] font-black leading-none text-[#fff8db]"
+              style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
+            >
+              {getEffectiveDamageValue(card.amount, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL)}
+            </span>
+          )}
         </span>
       ))}
-    </>
+    </span>
   );
 }
 
@@ -967,36 +944,6 @@ function PowerApplicationIcon({
     >
       {content}
     </Link>
-  );
-}
-
-function MetricToken({
-  icon,
-  label,
-  change,
-  compact = false,
-}: {
-  icon: string;
-  label: string | null;
-  change?: MoveChangeTone;
-  compact?: boolean;
-}) {
-  const changeClass = change === "added"
-    ? "text-green-300"
-    : change === "removed"
-      ? "text-red-300"
-      : change === "nerf"
-        ? "text-green-300"
-        : change === "buff"
-          ? "text-red-300"
-          : "text-zinc-100";
-
-  return (
-    <span className={`inline-flex items-center font-game-text font-bold leading-none ${changeClass} ${compact ? "gap-0.5 text-xs" : "gap-1 text-sm"}`}>
-      <Image src={icon} alt="" width={compact ? 18 : 22} height={compact ? 18 : 22} className={`${compact ? "h-4 w-4" : "h-5 w-5"} object-contain`} />
-      <span>{label ?? "?"}</span>
-      {change === "added" && <span className="text-[10px] font-black text-green-300">+</span>}
-    </span>
   );
 }
 

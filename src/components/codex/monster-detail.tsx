@@ -49,6 +49,7 @@ import {
 } from "@/lib/codex-references";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
+import { TinyCardIcon } from "@/components/history-course/card-action-icon";
 import { GameCheckboxToggle } from "./game-checkbox";
 import {
   DECIMILLIPEDE_PART_OPTIONS,
@@ -579,11 +580,11 @@ function MoveApplicationTokens({
         />
       ))}
       {cards.map((application) => (
-        <MoveApplicationToken
+        <MoveCardApplicationToken
           key={`card-${application.cardId}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
           entity={buildCardEntity(application, cardById.get(application.cardId))}
-          imageUrl={application.imageUrl}
           label={serviceLocale === "ko" ? application.cardName : application.cardNameEn}
+          card={application}
           amount={application.amount}
           serviceLocale={serviceLocale}
         />
@@ -618,6 +619,46 @@ function MoveApplicationToken({
         {imageUrl && (
           <Image src={imageUrl} alt="" width={28} height={28} className="h-7 w-7 object-contain" />
         )}
+      </span>
+      {displayedAmount != null && (
+        <span
+          className="pointer-events-none absolute -bottom-1 -right-1 font-game-title text-[11px] font-black leading-none text-[#fff8db]"
+          style={{ textShadow: "0 2px 0 #000, 0 0 4px #000, 1px 1px 0 #000" }}
+        >
+          {displayedAmount}
+        </span>
+      )}
+    </EntityPreview>
+  );
+}
+
+function MoveCardApplicationToken({
+  entity,
+  label,
+  card,
+  amount,
+  serviceLocale,
+}: {
+  entity: EntityInfo;
+  label: string;
+  card: MonsterMoveCardApplication;
+  amount: DamageValue | null;
+  serviceLocale: ServiceLocale;
+}) {
+  const [monsterAscensionLevel] = useMonsterAscensionLevel();
+  const displayedAmount = getEffectiveDamageValue(amount, monsterAscensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
+
+  return (
+    <EntityPreview
+      entity={entity}
+      serviceLocale={serviceLocale}
+      linkClassName="relative inline-flex h-7 w-7 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70"
+    >
+      <span className="relative inline-flex h-7 w-7 items-center justify-center" title={label}>
+        <TinyCardIcon
+          card={{ color: card.cardColor, rarity: card.cardRarity, type: card.cardType }}
+          width={28}
+        />
       </span>
       {displayedAmount != null && (
         <span
