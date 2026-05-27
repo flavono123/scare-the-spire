@@ -3,7 +3,7 @@
  * generate-entity-diffs.ts
  *
  * Compares old (backup) vs new (current) STS2 codex data and generates
- * EntityVersionDiff entries for the backward compaction system.
+ * machine-applicable field diffs for structured STS2 patch changes.
  *
  * Usage:
  *   npx tsx scripts/generate-entity-diffs.ts --old data/sts2-old --new data/sts2 --patch v0.102.0
@@ -11,7 +11,7 @@
  * The script:
  * 1. Reads old and new cards/relics/potions JSON (kor language, which is the primary)
  * 2. Compares field-by-field using the normalized CodexCard/CodexRelic/CodexPotion shapes
- * 3. Outputs EntityVersionDiff[] to stdout (or appends to sts2-entity-versions.json with --write)
+ * 3. Outputs EntityVersionDiff[] to stdout (or merges fieldDiffs into sts2-changes.json with --write)
  */
 
 import fs from "fs";
@@ -33,6 +33,19 @@ interface EntityVersionDiff {
   entityId: string;
   patch: string;
   diffs: EntityFieldDiff[];
+}
+
+interface STS2Change {
+  id: string;
+  entityType: string;
+  entityId: string;
+  patch: string;
+  date?: string;
+  character: string | null;
+  summary?: string;
+  summaryKo?: string;
+  diffs: unknown[];
+  fieldDiffs?: EntityFieldDiff[];
 }
 
 // ---------------------------------------------------------------------------
@@ -309,7 +322,7 @@ function parseArgs(): { oldDir: string; newDir: string; patch: string; write: bo
     console.error("  --old    Path to old STS2 data directory (e.g. data/sts2-old)");
     console.error("  --new    Path to new STS2 data directory (e.g. data/sts2)");
     console.error("  --patch  Patch version string (e.g. v0.102.0)");
-    console.error("  --write  Append results to data/sts2-entity-versions.json (default: stdout only)");
+    console.error("  --write  Merge results into data/sts2-changes.json fieldDiffs (default: stdout only)");
     process.exit(1);
   }
 
@@ -437,20 +450,47 @@ function main() {
   console.log(JSON.stringify(allDiffs, null, 2));
 
   if (write) {
-    const versionsPath = path.join(process.cwd(), "data/sts2-entity-versions.json");
-    const existing: EntityVersionDiff[] = fs.existsSync(versionsPath)
-      ? readJson<EntityVersionDiff[]>(versionsPath)
+    const changesPath = path.join(process.cwd(), "data/sts2-changes.json");
+    const changes: STS2Change[] = fs.existsSync(changesPath)
+      ? readJson<STS2Change[]>(changesPath)
       : [];
+    const byKey = new Map(changes.map((change) => [`${change.entityType}:${change.entityId}:${change.patch}`, change]));
+    const existingIds = new Set(changes.map((change) => change.id));
+    const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const uniqueId = (base: string) => {
+      let id = base;
+      let index = 2;
+      while (existingIds.has(id)) {
+        id = `${base}-${index}`;
+        index += 1;
+      }
+      existingIds.add(id);
+      return id;
+    };
 
-    // Remove any existing diffs for this patch (idempotent re-run)
-    const filtered = existing.filter((d) => d.patch !== patch);
-    const merged = [...filtered, ...allDiffs];
+    for (const diff of allDiffs) {
+      const key = `${diff.entityType}:${diff.entityId}:${diff.patch}`;
+      let change = byKey.get(key);
+      if (!change) {
+        change = {
+          id: uniqueId(`${slug(diff.entityId)}-${slug(diff.patch)}-field-diff`),
+          entityType: diff.entityType,
+          entityId: diff.entityId,
+          patch: diff.patch,
+          character: null,
+          diffs: [],
+        };
+        changes.push(change);
+        byKey.set(key, change);
+      }
+      change.fieldDiffs = diff.diffs;
+    }
 
-    fs.writeFileSync(versionsPath, JSON.stringify(merged, null, 2) + "\n");
-    console.error(`\nWritten ${allDiffs.length} entries to ${versionsPath}`);
-    console.error(`Total entries in file: ${merged.length}`);
+    fs.writeFileSync(changesPath, JSON.stringify(changes, null, 2) + "\n");
+    console.error(`\nMerged ${allDiffs.length} field diff groups into ${changesPath}`);
+    console.error(`Total structured changes in file: ${changes.length}`);
   } else {
-    console.error("\nDry run — use --write to append to sts2-entity-versions.json");
+    console.error("\nDry run — use --write to merge fieldDiffs into sts2-changes.json");
   }
 }
 

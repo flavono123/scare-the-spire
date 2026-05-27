@@ -232,6 +232,10 @@ function filterDuplicateDiffs(diffs: EntityFieldDiff[]): EntityFieldDiff[] {
   return diffs.filter((diff) => !(hasDescription && diff.field === "descriptionRaw"));
 }
 
+function isChangeRelatedToEntity(change: STS2Change, entityType: STS2EntityType, entityId: string): boolean {
+  return change.relatedEntities?.some((related) => related.type === entityType && related.id === entityId) ?? false;
+}
+
 export function STS2ChangeHistory({
   serviceLocale,
   entityType,
@@ -248,6 +252,7 @@ export function STS2ChangeHistory({
 }: STS2ChangeHistoryProps) {
   const entries = useMemo<HistoryEntry[]>(() => {
     const byPatch = new Map<string, HistoryEntry>();
+    const seenFieldDiffGroups = new Set<string>();
     const effectiveChangeTypes = new Set(changeEntityTypes ?? [entityType]);
     const effectiveVersionEntityType = versionEntityType ?? asVersionedEntityType(entityType);
     const ensureEntry = (patch: string) => {
@@ -264,14 +269,33 @@ export function STS2ChangeHistory({
       return entry;
     };
 
+    const addFieldDiffs = (patch: string, fieldDiffs: EntityFieldDiff[], groupKey: string) => {
+      if (seenFieldDiffGroups.has(groupKey)) return;
+      seenFieldDiffGroups.add(groupKey);
+      ensureEntry(patch).versionDiffs.push(...fieldDiffs);
+    };
+
     for (const change of changes ?? []) {
-      if (!effectiveChangeTypes.has(change.entityType) || change.entityId !== entityId) continue;
+      const primaryMatch = effectiveChangeTypes.has(change.entityType) && change.entityId === entityId;
+      const relatedMatch = isChangeRelatedToEntity(change, entityType, entityId);
+      if (!primaryMatch && !relatedMatch) continue;
       ensureEntry(change.patch).curatedChanges.push(change);
+      if (change.fieldDiffs?.length && (primaryMatch || relatedMatch)) {
+        addFieldDiffs(
+          change.patch,
+          change.fieldDiffs,
+          `${normalizePatchId(change.patch)}:${change.entityType}:${change.entityId}`,
+        );
+      }
     }
 
     for (const versionDiff of versionDiffs ?? []) {
       if (!effectiveVersionEntityType || versionDiff.entityType !== effectiveVersionEntityType || versionDiff.entityId !== entityId) continue;
-      ensureEntry(versionDiff.patch).versionDiffs.push(...versionDiff.diffs);
+      addFieldDiffs(
+        versionDiff.patch,
+        versionDiff.diffs,
+        `${normalizePatchId(versionDiff.patch)}:${versionDiff.entityType}:${versionDiff.entityId}`,
+      );
     }
 
     if (introducedInPatch) {
@@ -310,7 +334,12 @@ export function STS2ChangeHistory({
         const curatedDiffs = entry.curatedChanges.flatMap((change) => change.diffs);
         const hasVersionDiffs = entry.versionDiffs.length > 0;
         const hasLifecycleChanges = entry.lifecycleChanges.length > 0;
-        const showMonsterAnimationDiff = monster ? hasMonsterAnimationPatchDiff(monster.id, entry.patch) : false;
+        const visualDiff = monster
+          ? entry.curatedChanges.find((change) => change.visualDiff?.type === "monster-pattern")?.visualDiff
+          : undefined;
+        const showMonsterAnimationDiff = monster
+          ? Boolean(visualDiff) || hasMonsterAnimationPatchDiff(monster.id, entry.patch)
+          : false;
 
         return (
           <div
@@ -356,7 +385,7 @@ export function STS2ChangeHistory({
                 monster={monster}
                 serviceLocale={serviceLocale}
                 patchId={entry.patch}
-                variant="compact"
+                variant={visualDiff?.variant ?? "compact"}
               />
             )}
           </div>

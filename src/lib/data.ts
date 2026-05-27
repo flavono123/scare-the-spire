@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import type { Card, Change, Story, Relic, Potion, CardClass, CardType, CharacterClass, PotionRarity, STS2Patch, STS2Change, EntityVersionDiff, CodexMeta } from "./types";
+import type { Card, Change, Story, Relic, Potion, CardClass, CardType, CharacterClass, PotionRarity, STS2Patch, STS2Change, EntityVersionDiff, CodexMeta, VersionedEntityType } from "./types";
 
 function toSlug(name: string, cardClass?: string): string {
   const base = name
@@ -127,10 +127,26 @@ export async function getSTS2Changes(): Promise<STS2Change[]> {
   );
 }
 
+const VERSIONED_ENTITY_TYPES = new Set<string>(["card", "relic", "potion", "power", "enchantment", "event"]);
+
+function isVersionedEntityType(entityType: string): entityType is VersionedEntityType {
+  return VERSIONED_ENTITY_TYPES.has(entityType);
+}
+
+export function deriveEntityVersionDiffs(changes: readonly STS2Change[]): EntityVersionDiff[] {
+  return changes.flatMap((change) => {
+    if (!change.fieldDiffs?.length || !isVersionedEntityType(change.entityType)) return [];
+    return [{
+      entityType: change.entityType,
+      entityId: change.entityId,
+      patch: change.patch,
+      diffs: change.fieldDiffs,
+    }];
+  });
+}
+
 export async function getEntityVersionDiffs(): Promise<EntityVersionDiff[]> {
-  return JSON.parse(
-    await fs.readFile(path.join(DATA_DIR, "sts2-entity-versions.json"), "utf-8"),
-  );
+  return deriveEntityVersionDiffs(await getSTS2Changes());
 }
 
 export async function getCodexMeta(): Promise<CodexMeta> {

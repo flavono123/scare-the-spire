@@ -30,6 +30,13 @@ interface EntityVersionDiff {
   diffs: EntityFieldDiff[];
 }
 
+interface STS2Change {
+  entityType: string;
+  entityId: string;
+  patch: string;
+  fieldDiffs?: EntityFieldDiff[];
+}
+
 interface STS2Patch {
   id: string;
   version: string;
@@ -184,6 +191,19 @@ function validateAncientRelicCoverage(
   return errors;
 }
 
+function deriveEntityVersionDiffs(changes: readonly STS2Change[]): EntityVersionDiff[] {
+  const versionedEntityTypes = new Set(["card", "relic", "potion"]);
+  return changes.flatMap((change) => {
+    if (!change.fieldDiffs?.length || !versionedEntityTypes.has(change.entityType)) return [];
+    return [{
+      entityType: change.entityType as EntityVersionDiff["entityType"],
+      entityId: change.entityId,
+      patch: change.patch,
+      diffs: change.fieldDiffs,
+    }];
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -191,7 +211,8 @@ function validateAncientRelicCoverage(
 function main() {
   const meta = readJson<CodexMeta>("data/sts2/meta.json");
   const patches = readJson<STS2Patch[]>("data/sts2-patches.json");
-  const diffs = readJson<EntityVersionDiff[]>("data/sts2-entity-versions.json");
+  const changes = readJson<STS2Change[]>("data/sts2-changes.json");
+  const diffs = deriveEntityVersionDiffs(changes);
 
   const cards = readJson<Record<string, unknown>[]>("data/sts2/kor/cards.json");
   const relics = readJson<Record<string, unknown>[]>("data/sts2/kor/relics.json");
@@ -210,7 +231,7 @@ function main() {
 
   const currentVersion = `v${meta.version}`;
   console.log(`Baseline version: ${currentVersion}`);
-  console.log(`Patches: ${patches.length}, Entity diffs: ${diffs.length}\n`);
+  console.log(`Patches: ${patches.length}, Structured changes: ${changes.length}, Entity diffs: ${diffs.length}\n`);
 
   // ── Check 1: Baseline-latest consistency ──
   // For the latest patch that touches each entity, "after" must match baseline

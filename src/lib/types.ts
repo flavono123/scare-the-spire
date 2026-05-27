@@ -141,6 +141,16 @@ export interface STS2AttributeDiff {
   upgraded?: boolean;
 }
 
+export interface STS2ChangeRelatedEntity {
+  type: STS2EntityType;
+  id: string;
+}
+
+export interface STS2ChangeVisualDiff {
+  type: "monster-pattern";
+  variant?: "full" | "compact";
+}
+
 export interface STS2Change {
   id: string;
   entityType: STS2EntityType;
@@ -151,6 +161,9 @@ export interface STS2Change {
   summary?: string;
   summaryKo?: string;
   diffs: STS2AttributeDiff[];
+  fieldDiffs?: EntityFieldDiff[];
+  relatedEntities?: STS2ChangeRelatedEntity[];
+  visualDiff?: STS2ChangeVisualDiff;
 }
 
 // =============================================================================
@@ -162,8 +175,8 @@ export type VersionedEntityType = "card" | "relic" | "potion" | "power" | "encha
 /** A single field-level diff that maps to an actual entity field (e.g. CodexCard.cost). */
 export interface EntityFieldDiff {
   field: string;              // CodexCard/CodexRelic/CodexPotion field name
-  before: unknown;            // Exact value BEFORE this patch
-  after: unknown;             // Exact value AFTER this patch
+  before?: unknown;           // Exact value BEFORE this patch
+  after?: unknown;            // Exact value AFTER this patch
   upgraded?: boolean;         // true = applies to upgrade sub-fields only
 }
 
