@@ -45,6 +45,10 @@ import {
   getMadScienceCardTypeFromId,
   getMadScienceVariantId,
 } from "@/lib/tinker-time";
+import {
+  notifyCodexUrlChange,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
 
 // Sort key definitions
 export type SortKey = "color" | "type" | "rarity" | "cost" | "name";
@@ -669,53 +673,58 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   };
 
   // Card detail modal
-  const [selectedCard, setSelectedCard] = useState<CodexCard | null>(null);
-  const [urlSelectionReady, setUrlSelectionReady] = useState(false);
+  const urlCardId = useHydrationSafeSearchParam("card");
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const selectedCard = useMemo(() => {
+    const activeCardId = useUrlSelection ? urlCardId : selectedCardId;
+    return activeCardId ? findCardByListId(cards, activeCardId) : null;
+  }, [cards, selectedCardId, useUrlSelection, urlCardId]);
 
-  useEffect(() => {
-    const cardParam = new URL(window.location.href).searchParams.get("card");
-    setSelectedCard(cardParam ? findCardByListId(cards, cardParam) : null);
-    setUrlSelectionReady(true);
-  }, [cards]);
+  const openSelectedCard = useCallback((card: CodexCard) => {
+    setUseUrlSelection(false);
+    setSelectedCardId(card.id);
+  }, []);
+
+  const closeSelectedCard = useCallback(() => {
+    setUseUrlSelection(false);
+    setSelectedCardId(null);
+  }, []);
 
   // Update URL query param when modal opens/closes
   useEffect(() => {
-    if (!urlSelectionReady) return;
+    if (useUrlSelection) return;
     const url = new URL(window.location.href);
-    if (selectedCard) {
-      url.searchParams.set("card", selectedCard.id.toLowerCase());
+    if (selectedCardId) {
+      url.searchParams.set("card", selectedCardId.toLowerCase());
     } else {
       url.searchParams.delete("card");
     }
     if (url.toString() !== window.location.href) {
       window.history.pushState(null, "", url.toString());
+      notifyCodexUrlChange();
     }
-  }, [selectedCard, urlSelectionReady]);
+  }, [selectedCardId, useUrlSelection]);
 
   // Handle browser back button
   useEffect(() => {
     const handler = () => {
-      const url = new URL(window.location.href);
-      const cardParam = url.searchParams.get("card");
-      if (!cardParam) {
-        setSelectedCard(null);
-      } else {
-        setSelectedCard(findCardByListId(cards, cardParam));
-      }
+      setUseUrlSelection(true);
+      setSelectedCardId(null);
     };
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
-  }, [cards]);
+  }, []);
 
   // Close modal on Escape
   useEffect(() => {
     if (!selectedCard) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedCard(null);
+      if (e.key === "Escape") closeSelectedCard();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedCard]);
+  }, [closeSelectedCard, selectedCard]);
 
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
@@ -947,7 +956,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
                           unavailable: engagementCounts.unavailable,
                         }
                       : null}
-                    onClick={() => setSelectedCard(card)}
+                    onClick={() => openSelectedCard(card)}
                   />
                 </div>
               );
@@ -970,11 +979,11 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
         <div
           className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedCard(null);
+            if (e.target === e.currentTarget) closeSelectedCard();
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedAncients={relatedAncients} relatedEvents={relatedEvents} relatedMonsters={relatedMonsters} relatedPotions={relatedPotions} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} onClose={() => setSelectedCard(null)} />
+            <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedAncients={relatedAncients} relatedEvents={relatedEvents} relatedMonsters={relatedMonsters} relatedPotions={relatedPotions} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} onClose={closeSelectedCard} />
           </div>
         </div>
       )}

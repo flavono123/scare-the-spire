@@ -50,6 +50,10 @@ import {
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
 import { VersionSelector } from "./version-selector";
+import {
+  notifyCodexUrlChange,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
 
 type MonsterViewMessages =
   (typeof serviceMessages)[ServiceLocale]["codex"]["monstersView"];
@@ -123,55 +127,60 @@ export function MonsterLibrary({
   }, [encounters, activeVersion, changes, currentVersion]);
 
   // Monster detail modal
-  const [selectedMonster, setSelectedMonster] = useState<CodexMonster | null>(null);
-  const [urlSelectionReady, setUrlSelectionReady] = useState(false);
+  const urlMonsterId = useHydrationSafeSearchParam("monster");
+  const [selectedMonsterId, setSelectedMonsterId] = useState<string | null>(null);
+  const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const selectedMonster = useMemo(() => {
+    const activeMonsterId = useUrlSelection ? urlMonsterId : selectedMonsterId;
+    return activeMonsterId
+      ? monsters.find((m) => m.id.toLowerCase() === activeMonsterId.toLowerCase()) ?? null
+      : null;
+  }, [monsters, selectedMonsterId, useUrlSelection, urlMonsterId]);
 
-  useEffect(() => {
-    const monsterParam = new URL(window.location.href).searchParams.get("monster");
-    setSelectedMonster(monsterParam
-      ? monsters.find((m) => m.id.toLowerCase() === monsterParam.toLowerCase()) ?? null
-      : null);
-    setUrlSelectionReady(true);
-  }, [monsters]);
+  const openSelectedMonster = useCallback((monster: CodexMonster) => {
+    setUseUrlSelection(false);
+    setSelectedMonsterId(monster.id);
+  }, []);
+
+  const closeSelectedMonster = useCallback(() => {
+    setUseUrlSelection(false);
+    setSelectedMonsterId(null);
+  }, []);
 
   // URL sync
   useEffect(() => {
-    if (!urlSelectionReady) return;
+    if (useUrlSelection) return;
     const url = new URL(window.location.href);
-    if (selectedMonster) {
-      url.searchParams.set("monster", selectedMonster.id.toLowerCase());
+    if (selectedMonsterId) {
+      url.searchParams.set("monster", selectedMonsterId.toLowerCase());
     } else {
       url.searchParams.delete("monster");
     }
     if (url.toString() !== window.location.href) {
       window.history.pushState(null, "", url.toString());
+      notifyCodexUrlChange();
     }
-  }, [selectedMonster, urlSelectionReady]);
+  }, [selectedMonsterId, useUrlSelection]);
 
   // Browser back button
   useEffect(() => {
     const handler = () => {
-      const url = new URL(window.location.href);
-      const param = url.searchParams.get("monster");
-      if (!param) {
-        setSelectedMonster(null);
-      } else {
-        setSelectedMonster(versionedMonsters.find((m) => m.id.toLowerCase() === param.toLowerCase()) ?? null);
-      }
+      setUseUrlSelection(true);
+      setSelectedMonsterId(null);
     };
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
-  }, [versionedMonsters]);
+  }, []);
 
   // Escape to close
   useEffect(() => {
     if (!selectedMonster) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedMonster(null);
+      if (e.key === "Escape") closeSelectedMonster();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedMonster]);
+  }, [closeSelectedMonster, selectedMonster]);
 
   // Cmd+K to focus search
   useEffect(() => {
@@ -456,7 +465,7 @@ export function MonsterLibrary({
                       userId={userId}
                       authReady={authReady}
                       ensureUser={ensureUser}
-                      onClick={() => setSelectedMonster(monster)}
+                      onClick={() => openSelectedMonster(monster)}
                     />
                   );
                 })}
@@ -475,7 +484,7 @@ export function MonsterLibrary({
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedMonster(null);
+            if (e.target === e.currentTarget) closeSelectedMonster();
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
@@ -490,7 +499,7 @@ export function MonsterLibrary({
               powers={powers}
               patches={patches}
               changes={changes}
-              onClose={() => setSelectedMonster(null)}
+              onClose={closeSelectedMonster}
             />
           </div>
         </div>
