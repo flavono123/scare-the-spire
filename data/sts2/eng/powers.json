@@ -2886,13 +2886,15 @@
   {
     "id": "VITAL_SPARK",
     "name": "Vital Spark",
-    "description": "The first time this enemy takes Attack damage each turn, the attacker gains [blue]1[/blue] [gold]Energy[/gold].",
-    "description_raw": "The first time [gold]{OwnerName}[/gold] takes Attack damage each turn, the attacker gains {Energy:energyIcons()}.",
+    "description": "ALL [gold]Skills[/gold] are [gold]Tainted[/gold] [blue]2[/blue].",
+    "description_raw": "ALL [gold]Skills[/gold] are [gold]Tainted[/gold] [blue]{Amount}[/blue].",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/vital_spark_power.png",
-    "vars": {}
+    "vars": {
+      "Amount": 2
+    }
   },
   {
     "id": "VOID_FORM",

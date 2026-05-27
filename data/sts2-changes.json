@@ -2241,6 +2241,53 @@
     }
   },
   {
+    "id": "vital-spark-v106-rework",
+    "entityType": "power",
+    "entityId": "VITAL_SPARK",
+    "patch": "v0.106.0",
+    "date": "2026-05-22",
+    "character": null,
+    "summary": "Vital Spark reworked from granting Energy on Attack damage to Tainting all Skills.",
+    "summaryKo": "생명의 불꽃이 공격 피해 시 에너지를 주는 효과에서 모든 스킬 카드에 훼손됨을 부여하는 효과로 리워크되었습니다.",
+    "diffs": [
+      {
+        "attribute": "effect",
+        "displayName": "Effect",
+        "displayNameKo": "효과",
+        "before": "The first time this enemy takes Attack damage each turn, the attacker gains 1 Energy.",
+        "beforeKo": "이 적이 매 턴마다 처음으로 공격 피해를 받을 시, 공격자가 에너지를 1 얻습니다.",
+        "after": "ALL Skills are Tainted 2.",
+        "afterKo": "모든 스킬 카드에 훼손됨이 2 추가됩니다.",
+        "diffType": "rework"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "이 적이 매 턴마다 처음으로 공격 피해를 받을 시, 공격자가 [gold]에너지[/gold]를 [blue]1[/blue] 얻습니다.",
+        "after": "모든 [gold]스킬[/gold] 카드에 [gold]훼손됨[/gold]이 [blue]2[/blue] 추가됩니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]{OwnerName}[/gold]이 매 턴마다 처음으로 공격 피해를 받을 시, 공격자가 {Energy:energyIcons()}를 얻습니다.",
+        "after": "모든 [gold]스킬[/gold] 카드에 [gold]훼손됨[/gold]이 [blue]{Amount}[/blue] 추가됩니다."
+      },
+      {
+        "field": "vars",
+        "before": {},
+        "after": {
+          "Amount": 2
+        }
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "enemy",
+        "id": "INFESTED_PRISM"
+      }
+    ]
+  },
+  {
     "id": "aeonglass-v106-change",
     "entityType": "monster",
     "entityId": "AEONGLASS",

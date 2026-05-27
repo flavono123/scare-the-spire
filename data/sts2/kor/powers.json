@@ -2886,13 +2886,15 @@
   {
     "id": "VITAL_SPARK",
     "name": "생명의 불꽃",
-    "description": "이 적이 매 턴마다 처음으로 공격 피해를 받을 시, 공격자가 [gold]에너지[/gold]를 [blue]1[/blue] 얻습니다.",
-    "description_raw": "[gold]{OwnerName}[/gold]이 매 턴마다 처음으로 공격 피해를 받을 시, 공격자가 {Energy:energyIcons()}를 얻습니다.",
+    "description": "모든 [gold]스킬[/gold] 카드에 [gold]훼손됨[/gold]이 [blue]2[/blue] 추가됩니다.",
+    "description_raw": "모든 [gold]스킬[/gold] 카드에 [gold]훼손됨[/gold]이 [blue]{Amount}[/blue] 추가됩니다.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/vital_spark_power.png",
-    "vars": {}
+    "vars": {
+      "Amount": 2
+    }
   },
   {
     "id": "VOID_FORM",
