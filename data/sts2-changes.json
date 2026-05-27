@@ -1952,5 +1952,27 @@
         "diffType": "text"
       }
     ]
+  },
+  {
+    "id": "aeonglass-v1061-wither-hotfix",
+    "entityType": "monster",
+    "entityId": "AEONGLASS",
+    "patch": "v0.106.1",
+    "date": "2026-05-23",
+    "character": null,
+    "summary": "Aeonglass Wither hotfix: Wither status cards can no longer be upgraded.",
+    "summaryKo": "영겁의 모래시계 침체 핫픽스: 침체 상태이상 카드는 더 이상 강화할 수 없습니다.",
+    "diffs": [
+      {
+        "attribute": "witherUpgrade",
+        "displayName": "Wither upgrade",
+        "displayNameKo": "침체 강화",
+        "before": "Upgradeable",
+        "beforeKo": "강화 가능",
+        "after": "Cannot be upgraded",
+        "afterKo": "강화 불가",
+        "diffType": "text"
+      }
+    ]
   }
 ]
