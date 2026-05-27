@@ -65,6 +65,7 @@ interface MonsterAnimationPatchDiffBlockProps {
   serviceLocale: ServiceLocale;
   patchId?: string;
   variant?: "full" | "compact";
+  defaultOpen?: boolean;
 }
 
 interface MonsterPatchDiffSequence {
@@ -420,6 +421,7 @@ export function MonsterAnimationPatchDiffBlock({
   serviceLocale,
   patchId = "v0.106.0",
   variant = "full",
+  defaultOpen = true,
 }: MonsterAnimationPatchDiffBlockProps) {
   const spec = getMonsterPatchDiffSpec(monster.id, patchId);
   if (!spec) return null;
@@ -428,7 +430,7 @@ export function MonsterAnimationPatchDiffBlock({
   const title = serviceLocale === "ko" ? spec.titleKo : spec.titleEn;
 
   return (
-    <details className={compact ? "group mt-2" : "group my-4"} open>
+    <details className={compact ? "group mt-2" : "group my-4"} open={defaultOpen}>
       <summary className="inline-flex cursor-pointer list-none items-center gap-2 text-sm text-blue-400 transition-colors marker:hidden hover:text-blue-300">
         <span className="font-game-title font-bold">
           {title}

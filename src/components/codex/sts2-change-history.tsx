@@ -386,6 +386,7 @@ export function STS2ChangeHistory({
                 serviceLocale={serviceLocale}
                 patchId={entry.patch}
                 variant={visualDiff?.variant ?? "compact"}
+                defaultOpen={false}
               />
             )}
           </div>
