@@ -424,6 +424,7 @@ export const AFFLICTION_RELATED_POWER_IDS = {
   HEXED: ["HEX"],
   RINGING: ["RINGING"],
   SMOG: ["SMOGGY"],
+  TAINTED: ["VITAL_SPARK"],
 } as const satisfies Record<string, readonly string[]>;
 
 export function getRelatedCardIdsForEvent(eventId: string): readonly string[] {
@@ -508,7 +509,7 @@ export function getRelatedPowerIdsForAffliction(
   afflictionOrId: string | Pick<CodexAffliction, "id">,
 ): readonly string[] {
   const afflictionId = typeof afflictionOrId === "string" ? afflictionOrId : afflictionOrId.id;
-  return invertIdRelations(AFFLICTION_RELATED_POWER_IDS, afflictionId);
+  return (AFFLICTION_RELATED_POWER_IDS as Record<string, readonly string[]>)[afflictionId.toUpperCase()] ?? [];
 }
 
 export function getRelatedAfflictionIdsForMonster(

@@ -67,5 +67,13 @@
     "extra_card_text": null,
     "is_stackable": false,
     "description_raw": "이번 턴에는 [gold]스킬[/gold]을 추가로 사용할 수 없습니다. 턴이 끝날 시 사라집니다."
+  },
+  {
+    "id": "TAINTED",
+    "name": "훼손됨",
+    "description": "사용 시 [gold]훼손됨[/gold]을 [blue][Amount][/blue] 얻습니다.",
+    "extra_card_text": "훼손됨을 [Amount] 얻습니다.",
+    "is_stackable": true,
+    "description_raw": "사용 시 [gold]훼손됨[/gold]을 [blue]{Amount}[/blue] 얻습니다."
   }
 ]

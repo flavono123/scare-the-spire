@@ -70,5 +70,13 @@
     "extra_card_text": null,
     "is_stackable": false,
     "description_raw": "You cannot play additional [gold]Skills[/gold] this turn. Clears at the end of the turn."
+  },
+  {
+    "id": "TAINTED",
+    "name": "Tainted",
+    "description": "Gain [blue][Amount][/blue] [gold]Tainted[/gold] when played.",
+    "extra_card_text": "Gain [Amount] Tainted.",
+    "is_stackable": true,
+    "description_raw": "Gain [blue]{Amount}[/blue] [gold]Tainted[/gold] when played."
   }
 ]

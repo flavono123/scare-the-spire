@@ -11,6 +11,7 @@ const AFFLICTION_CARD_TYPE_RESTRICTIONS: Record<string, CodexCard["type"]> = {
   GALVANIZED: "파워",
   ENTANGLED: "공격",
   SMOG: "스킬",
+  TAINTED: "스킬",
 };
 
 const AFFLICTION_PREVIEW_AMOUNTS: Record<string, number> = {
