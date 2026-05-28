@@ -903,6 +903,7 @@ const AFFLICTION_IMAGE_URLS: Record<string, string> = {
   HEXED: "/images/sts2/powers/hex_power.webp",
   RINGING: "/images/sts2/powers/ringing_power.webp",
   SMOG: "/images/sts2/powers/smoggy_power.webp",
+  TAINTED: "/images/sts2/powers/tainted_power.webp",
 };
 
 // Raw STS2 JSON affliction shape

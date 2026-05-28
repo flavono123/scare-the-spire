@@ -466,10 +466,17 @@ def render_bound_border_shader(noise, mask, time: float):
 
 
 def render_entangled_main_shader(image, time: float):
+    return render_vine_main_shader(image, time, (0.84705883, 0.47843137, 0.35686275))
+
+
+def render_tainted_main_shader(image, time: float):
+    return render_vine_main_shader(image, time, (0.7, 0.2, 0.85))
+
+
+def render_vine_main_shader(image, time: float, vertex: tuple[float, float, float]):
     source = shader_source(image)
     output = Image.new("RGBA", source.size)
     dst = output.load()
-    vertex = (0.84705883, 0.47843137, 0.35686275)
     vine_lut = [
         (0.09243698, (0.2234027, 0.0, 0.23524225)),
         (1.0, (1.0, 1.0, 1.0)),
@@ -798,6 +805,11 @@ def write_shader_animations(output_root: Path, dry_run: bool) -> int:
             output_root / "ringing/ringing_main.webp",
             output_root / "ringing/ringing_main_shader.webp",
             lambda image, time: render_ringing_shader(image, time),
+        ),
+        (
+            output_root / "entangled/entangled_main.webp",
+            output_root / "tainted/tainted_main_shader.webp",
+            lambda image, time: render_tainted_main_shader(image, time),
         ),
     ]
     written = 0

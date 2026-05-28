@@ -44,6 +44,9 @@
     "smog_outer_preview.webp",
     "smog_outer_shader.webp"
   ],
+  "affliction-overlays/tainted": [
+    "tainted_main_shader.webp"
+  ],
   "ancient-nodes": [
     "ancient_node_darv_outline.webp",
     "ancient_node_darv.webp",
@@ -2023,6 +2026,7 @@
     "sword_sage_power.webp",
     "synchronize_power.webp",
     "tag_team_power.webp",
+    "tainted_power.webp",
     "tangled_power.webp",
     "tank_power.webp",
     "tender_power.webp",

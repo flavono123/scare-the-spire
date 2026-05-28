@@ -2630,7 +2630,7 @@
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
-    "image_url": "/static/images/powers/missing_power.png",
+    "image_url": "/static/images/powers/tainted_power.png",
     "vars": {}
   },
   {

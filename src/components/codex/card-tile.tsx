@@ -79,6 +79,7 @@ const AFFLICTION_OVERLAY_IDS = new Set([
   "HEXED",
   "RINGING",
   "SMOG",
+  "TAINTED",
 ]);
 
 const AFFLICTION_FRAME_COLORS: Record<string, { vignette?: string; glow: string }> = {
@@ -104,6 +105,10 @@ const AFFLICTION_FRAME_COLORS: Record<string, { vignette?: string; glow: string 
   SMOG: {
     vignette: "rgba(14, 0, 26, 0.2509804)",
     glow: "rgba(202, 122, 202, 1)",
+  },
+  TAINTED: {
+    vignette: "rgba(51, 0, 64, 0.6)",
+    glow: "rgba(178, 51, 217, 1)",
   },
 };
 
@@ -338,6 +343,20 @@ function AfflictionCardOverlay({ afflictionId }: { afflictionId: string | null |
           />
           <EntangledLeaves />
         </>
+      )}
+
+      {id === "TAINTED" && (
+        <AfflictionImageLayer
+          src={`${AFFLICTION_OVERLAY_BASE}/tainted/tainted_main_shader.webp`}
+          className="sts2-affliction-overlay__main sts2-affliction-overlay__main--tainted"
+          style={{
+            left: "-34.33%",
+            top: "-9.95%",
+            width: "140.67%",
+            height: "100%",
+            transform: "scale(1.2)",
+          }}
+        />
       )}
 
       {id === "GALVANIZED" && (
