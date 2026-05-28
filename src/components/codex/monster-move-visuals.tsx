@@ -14,6 +14,8 @@ import type {
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
+import { DescriptionText } from "@/components/codex/codex-description";
+import { bakeDescription } from "@/lib/codex-bake";
 import { TEXT_CREAM, TEXT_GREEN } from "@/lib/sts2-card-style";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import { GameHoverTip } from "./hover-tip";
@@ -92,6 +94,7 @@ const INFESTED_PRISM_MOVE_ORDER = ["JAB", "RADIATE", "WHIRLWIND", "PULSATE"];
 const ARROW_ICON = "/images/sts2/ui/settings_tiny_right_arrow.png";
 const MOVE_PREVIEW_VIEWPORT_PADDING = { padTop: "0%", padBottom: "0%" } as const;
 const OLD_INFESTED_PRISM_HP: DamageValue = { normal: 200, ascension: 215 };
+const INFESTED_PRISM_VITAL_SPARK_AMOUNT: DamageValue = { normal: 2, ascension: 3 };
 const INTENT_ICONS: Record<IntentKind, string> = {
   attack: "/images/sts2/intents/attack_3.png",
   buff: "/images/sts2/intents/buff.png",
@@ -318,8 +321,8 @@ const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> 
       titleKo: "감염된 프리즘 리워크",
       titleEn: "Infested Prism Rework",
       summary: (serviceLocale, monster) => serviceLocale === "ko"
-        ? <>이전 <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>생명의 불꽃</PatchDiffPowerLink>은 공격 피해를 처음 받을 때 에너지 1을 주는 효과였고, 이후에는 전투 시작 시 3이 붙은 뒤 <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "PULSATE", OLD_INFESTED_PRISM_MOVES[3])} monster={monster} serviceLocale={serviceLocale}>맥박</PatchDiffMoveLink>에서 +3을 더 얻습니다. 공격 피해가 낮아지고, <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "RADIATE", OLD_INFESTED_PRISM_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>방출</PatchDiffMoveLink>과 맥박에 <PatchDiffPlainKeyword>방어</PatchDiffPlainKeyword>가 붙었습니다.</>
-        : <>Old <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>Vital Spark</PatchDiffPowerLink> granted 1 Energy the first time it took Attack damage each turn. After the rework, it starts with 3 and gains +3 more on <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "PULSATE", OLD_INFESTED_PRISM_MOVES[3])} monster={monster} serviceLocale={serviceLocale}>Pulsate</PatchDiffMoveLink>. Attack damage is lower, and <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "RADIATE", OLD_INFESTED_PRISM_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>Radiate</PatchDiffMoveLink> and Pulsate now include <PatchDiffPlainKeyword>Block</PatchDiffPlainKeyword>.</>,
+        ? <>이전 <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale} versionContext="before">생명의 불꽃</PatchDiffPowerLink>은 공격 피해를 처음 받을 때 에너지 1을 주는 효과였고, 이후에는 전투 시작 시 3이 붙은 뒤 <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "PULSATE", OLD_INFESTED_PRISM_MOVES[3])} monster={monster} serviceLocale={serviceLocale}>맥박</PatchDiffMoveLink>에서 +3을 더 얻습니다. 공격 피해가 낮아지고, <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "RADIATE", OLD_INFESTED_PRISM_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>방출</PatchDiffMoveLink>과 맥박에 <PatchDiffPlainKeyword>방어</PatchDiffPlainKeyword>가 붙었습니다.</>
+        : <>Old <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale} versionContext="before">Vital Spark</PatchDiffPowerLink> granted 1 Energy the first time it took Attack damage each turn. After the rework, it starts with 3 and gains +3 more on <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "PULSATE", OLD_INFESTED_PRISM_MOVES[3])} monster={monster} serviceLocale={serviceLocale}>Pulsate</PatchDiffMoveLink>. Attack damage is lower, and <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "RADIATE", OLD_INFESTED_PRISM_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>Radiate</PatchDiffMoveLink> and Pulsate now include <PatchDiffPlainKeyword>Block</PatchDiffPlainKeyword>.</>,
       before: {
         labelKo: "이전",
         labelEn: "Before",
@@ -483,12 +486,68 @@ function normalizePatchId(patchId: string): string {
   return patchId.startsWith("v") ? patchId : `v${patchId}`;
 }
 
-const PATCH_DIFF_POWERS: Record<string, { nameKo: string; nameEn: string; imageUrl: string }> = {
-  FRAIL: { nameKo: "손상", nameEn: "Frail", imageUrl: "/images/sts2/powers/frail_power.webp" },
-  HARDENED_SHELL: { nameKo: "단단한 껍질", nameEn: "Hardened Shell", imageUrl: "/images/sts2/powers/hardened_shell_power.webp" },
-  VITAL_SPARK: { nameKo: "생명의 불꽃", nameEn: "Vital Spark", imageUrl: "/images/sts2/powers/vital_spark_power.webp" },
-  WEAK: { nameKo: "약화", nameEn: "Weak", imageUrl: "/images/sts2/powers/weak_power.webp" },
-  WITHERING_PRESENCE: { nameKo: "시들어가는 존재", nameEn: "Withering Presence", imageUrl: "/images/sts2/powers/withering_presence_power.webp" },
+type PatchDiffPowerVersionContext = "before" | "after";
+
+interface PatchDiffPowerPreviewData {
+  nameKo: string;
+  nameEn: string;
+  imageUrl: string;
+  type: "buff" | "debuff" | "default";
+  descriptionKo: string;
+  descriptionEn: string;
+  descriptionRawKo?: string;
+  descriptionRawEn?: string;
+  vars?: Record<string, number | string>;
+  beforeDescriptionKo?: string;
+  beforeDescriptionEn?: string;
+}
+
+const PATCH_DIFF_POWERS: Record<string, PatchDiffPowerPreviewData> = {
+  FRAIL: {
+    nameKo: "손상",
+    nameEn: "Frail",
+    imageUrl: "/images/sts2/powers/frail_power.webp",
+    type: "debuff",
+    descriptionKo: "손상 상태인 동안, 카드를 통해 얻는 [gold]방어도[/gold]가 [blue]25%[/blue] 감소합니다.",
+    descriptionEn: "While Frail, gain [blue]25%[/blue] less [gold]Block[/gold] from cards.",
+  },
+  HARDENED_SHELL: {
+    nameKo: "단단한 껍질",
+    nameEn: "Hardened Shell",
+    imageUrl: "/images/sts2/powers/hardened_shell_power.webp",
+    type: "buff",
+    descriptionKo: "이 생물은 한 턴에 체력을 [blue]20[/blue] 이상 잃을 수 없습니다.",
+    descriptionEn: "This creature cannot lose more than [blue]20[/blue] HP each turn.",
+  },
+  VITAL_SPARK: {
+    nameKo: "생명의 불꽃",
+    nameEn: "Vital Spark",
+    imageUrl: "/images/sts2/powers/vital_spark_power.webp",
+    type: "buff",
+    descriptionKo: "모든 [gold]스킬[/gold] 카드에 [gold]훼손됨[/gold]이 [blue]2[/blue] 추가됩니다.",
+    descriptionEn: "ALL [gold]Skills[/gold] are [gold]Tainted[/gold] [blue]2[/blue].",
+    descriptionRawKo: "모든 [gold]스킬[/gold] 카드에 [gold]훼손됨[/gold]이 [blue]{Amount}[/blue] 추가됩니다.",
+    descriptionRawEn: "ALL [gold]Skills[/gold] are [gold]Tainted[/gold] [blue]{Amount}[/blue].",
+    vars: { Amount: 2 },
+    beforeDescriptionKo: "이 적이 매 턴마다 처음으로 공격 피해를 받을 시, 공격자가 [gold]에너지[/gold]를 [blue]1[/blue] 얻습니다.",
+    beforeDescriptionEn: "The first time this enemy takes Attack damage each turn, the attacker gains [blue]1[/blue] [gold]Energy[/gold].",
+  },
+  WEAK: {
+    nameKo: "약화",
+    nameEn: "Weak",
+    imageUrl: "/images/sts2/powers/weak_power.webp",
+    type: "debuff",
+    descriptionKo: "약화 상태인 생물의 공격은 가하는 피해량이 [blue]25%[/blue] 감소합니다.",
+    descriptionEn: "Weakened creatures deal [blue]25%[/blue] less damage with Attacks.",
+  },
+  WITHERING_PRESENCE: {
+    nameKo: "시들어가는 존재",
+    nameEn: "Withering Presence",
+    imageUrl: "/images/sts2/powers/withering_presence_power.webp",
+    type: "buff",
+    descriptionKo: "카드를 [blue]6[/blue]장 사용할 때마다, [gold]침체[/gold]를 1장 [gold]손[/gold]으로 가져옵니다.",
+    descriptionEn: "Every [blue]6[/blue] cards you play, add a [gold]Wither[/gold] to your [gold]Hand[/gold].",
+  },
 };
 
 const PATCH_DIFF_CARDS: Record<string, { nameKo: string; nameEn: string; imageUrl: string; typeKo: string; typeEn: string }> = {
@@ -565,7 +624,7 @@ function InlineEnergyIcon({ amount = 1 }: { amount?: number }) {
 function VitalSparkPreviousEffectNote({ serviceLocale }: { serviceLocale: ServiceLocale }) {
   return (
     <>
-      <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>
+      <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale} versionContext="before">
         {serviceLocale === "ko" ? "생명의 불꽃" : "Vital Spark"}
       </PatchDiffPowerLink>
       <span className="text-zinc-500">:</span>
@@ -585,11 +644,16 @@ function VitalSparkCurrentEffectNote({
   serviceLocale: ServiceLocale;
   ascensionLevel: number;
 }) {
-  const amount = getEffectiveDamageValue({ normal: 2, ascension: 3 }, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL) ?? 2;
+  const amount = getEffectiveDamageValue(INFESTED_PRISM_VITAL_SPARK_AMOUNT, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL) ?? 2;
 
   return (
     <>
-      <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>
+      <PatchDiffPowerLink
+        powerId="VITAL_SPARK"
+        serviceLocale={serviceLocale}
+        versionContext="after"
+        amount={INFESTED_PRISM_VITAL_SPARK_AMOUNT}
+      >
         {serviceLocale === "ko" ? "생명의 불꽃" : "Vital Spark"}
       </PatchDiffPowerLink>
       <span className="text-zinc-500">:</span>
@@ -605,32 +669,72 @@ function VitalSparkCurrentEffectNote({
 function PatchDiffPowerLink({
   powerId,
   serviceLocale,
+  versionContext = "after",
+  amount = null,
   children,
 }: {
   powerId: string;
   serviceLocale: ServiceLocale;
+  versionContext?: PatchDiffPowerVersionContext;
+  amount?: DamageValue | null;
   children: ReactNode;
 }) {
+  const [ascensionLevel] = useMonsterAscensionLevel();
   const power = PATCH_DIFF_POWERS[powerId] ?? null;
   const title = power ? (serviceLocale === "ko" ? power.nameKo : power.nameEn) : String(children);
+  const description = power
+    ? getPatchDiffPowerDescription(power, serviceLocale, versionContext, amount, ascensionLevel)
+    : null;
 
   return (
     <PatchDiffInlinePreview
       href={localizeHref(`/compendium/powers?power=${powerId.toLowerCase()}`, serviceLocale)}
       preview={() => (
-        <GameHoverTip title={title} style={{ minWidth: 220, maxWidth: 280 }}>
-          {power?.imageUrl && (
-            <span className="flex items-center gap-2">
-              <Image src={power.imageUrl} alt="" width={36} height={36} className="h-9 w-9 object-contain" />
+        <GameHoverTip
+          title={title}
+          variant={power?.type === "buff" ? "buff" : power?.type === "debuff" ? "debuff" : "default"}
+          style={{ minWidth: 240, maxWidth: 320 }}
+        >
+          <span className="flex items-start gap-2.5">
+            {power?.imageUrl && (
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-black/20">
+                <Image src={power.imageUrl} alt="" width={36} height={36} className="h-9 w-9 object-contain" />
+              </span>
+            )}
+            {description ? (
+              <DescriptionText description={description} />
+            ) : (
               <span className="font-game-title spire-gold">{title}</span>
-            </span>
-          )}
+            )}
+          </span>
         </GameHoverTip>
       )}
     >
       {children}
     </PatchDiffInlinePreview>
   );
+}
+
+function getPatchDiffPowerDescription(
+  power: PatchDiffPowerPreviewData,
+  serviceLocale: ServiceLocale,
+  versionContext: PatchDiffPowerVersionContext,
+  amount: DamageValue | null,
+  ascensionLevel: number,
+): string {
+  if (versionContext === "before") {
+    return serviceLocale === "ko"
+      ? power.beforeDescriptionKo ?? power.descriptionKo
+      : power.beforeDescriptionEn ?? power.descriptionEn;
+  }
+
+  const raw = serviceLocale === "ko" ? power.descriptionRawKo : power.descriptionRawEn;
+  if (!raw) return serviceLocale === "ko" ? power.descriptionKo : power.descriptionEn;
+
+  const vars = { ...(power.vars ?? {}) };
+  const amountValue = getEffectiveDamageValue(amount, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
+  if (amountValue != null) vars.Amount = amountValue;
+  return bakeDescription(raw, vars);
 }
 
 function PatchDiffCardLink({
