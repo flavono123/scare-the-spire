@@ -4,7 +4,7 @@ import Image from "@/components/ui/static-image";
 import type { Metadata } from "next";
 import fs from "fs/promises";
 import path from "path";
-import { getSTS2Patches } from "@/lib/data";
+import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches } from "@/lib/data";
 import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients } from "@/lib/codex-data";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -699,8 +699,10 @@ export async function PatchDetailPage({
 }) {
   const copy = PATCH_COPY[serviceLocale];
   const epochsDir = path.join(process.cwd(), "public/images/sts2/epochs");
-  const [patches, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, korEpochData, engEpochData, gameEpochs, epochImageFiles, gameUi, gameKeywordLabels, gameHeadingLabels] = await Promise.all([
+  const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, korEpochData, engEpochData, gameEpochs, epochImageFiles, gameUi, gameKeywordLabels, gameHeadingLabels] = await Promise.all([
     getSTS2Patches(),
+    getEntityVersionDiffs(),
+    getCodexMeta(),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
     getCodexPotions({ gameLocale }),
@@ -948,6 +950,10 @@ export async function PatchDetailPage({
             preferEntityLocaleLabel={serviceLocale !== "ko" || gameLocale !== "kor"}
             gameKeywordLabels={gameKeywordLabels}
             gameHeadingLabels={gameHeadingLabels}
+            patchVersion={patch.version}
+            currentVersion={codexMeta.version}
+            patches={patches}
+            versionDiffs={versionDiffs}
           />
         </section>
       ) : (

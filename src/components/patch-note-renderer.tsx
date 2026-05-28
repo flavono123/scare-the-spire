@@ -16,6 +16,8 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
+import type { EntityVersionDiff, STS2Patch } from "@/lib/types";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { GameHoverTip } from "@/components/codex/hover-tip";
@@ -68,6 +70,10 @@ type RenderContext = {
   gameKeywordLabels?: Record<string, string>;
   gameHeadingLabels?: Record<string, string>;
   preferredMonsterIds?: string[];
+  patchVersion?: string;
+  currentVersion?: string;
+  patches?: STS2Patch[];
+  versionDiffs?: EntityVersionDiff[];
 };
 
 // --- Entity Preview (hover card image) ---
@@ -218,6 +224,10 @@ export function EntityPreview({
   serviceLocale,
   gameLocale,
   preferEntityLocaleLabel = false,
+  patchVersion,
+  currentVersion,
+  patches,
+  versionDiffs,
 }: {
   entity: EntityInfo;
   children: ReactNode;
@@ -229,6 +239,10 @@ export function EntityPreview({
   serviceLocale?: ServiceLocale;
   gameLocale?: GameLocale;
   preferEntityLocaleLabel?: boolean;
+  patchVersion?: string;
+  currentVersion?: string;
+  patches?: STS2Patch[];
+  versionDiffs?: EntityVersionDiff[];
 }) {
   const [show, setShow] = useState(false);
   const [previewPressed, setPreviewPressed] = useState(false);
@@ -242,6 +256,10 @@ export function EntityPreview({
   const isCoarsePointer = useCoarsePointer();
   const useTapPreview = isCoarsePointer && !forceShow;
   const visible = show || forceShow;
+  const previewEntity = useMemo(
+    () => reconstructPatchPreviewEntity(entity, patchVersion, currentVersion, versionDiffs, patches),
+    [currentVersion, entity, patchVersion, patches, versionDiffs],
+  );
 
   const handleMouseEnter = useCallback(() => {
     setPreviewNonce((value) => value + 1);
@@ -272,7 +290,7 @@ export function EntityPreview({
   const href = hrefBase && serviceLocale && gameLocale
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : hrefBase;
-  const linkText = preferEntityLocaleLabel ? entity.nameKo : children;
+  const linkText = preferEntityLocaleLabel ? previewEntity.nameKo : children;
   const renderedLinkText = <span className="font-game-title">{linkText}</span>;
 
   const openTapPreview = useCallback((event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
@@ -376,97 +394,97 @@ export function EntityPreview({
           onClick={() => setShow(false)}
         />
       )}
-      {visible && entity.type === "card" && entity.cardData && (
+      {visible && previewEntity.type === "card" && previewEntity.cardData && (
         renderTooltip(
           <span className="block w-36 drop-shadow-2xl">
-            <CardTile card={entity.cardData} showUpgrade={false} showBeta={false} />
+            <CardTile card={previewEntity.cardData} showUpgrade={false} showBeta={false} />
           </span>,
           "card",
         )
       )}
-      {visible && entity.type === "relic" && entity.relicData && (
+      {visible && previewEntity.type === "relic" && previewEntity.relicData && (
         renderTooltip(
           <GameResourcePreview
-            title={entity.nameKo}
-            imageUrl={entity.relicData.imageUrl}
-            imageAlt={entity.nameKo}
+            title={previewEntity.nameKo}
+            imageUrl={previewEntity.relicData.imageUrl}
+            imageAlt={previewEntity.nameKo}
             imageStyle={{
-              filter: characterOutlineFilter(entity.relicData.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
+              filter: characterOutlineFilter(previewEntity.relicData.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
             }}
             meta={(
               <>
-                <span style={{ color: RELIC_RARITY_COLORS[entity.relicData.rarity] }}>
-                  {gameUi?.relicCollection.rarities[entity.relicData.rarity].label ?? RELIC_RARITY_LABELS[entity.relicData.rarity]}
+                <span style={{ color: RELIC_RARITY_COLORS[previewEntity.relicData.rarity] }}>
+                  {gameUi?.relicCollection.rarities[previewEntity.relicData.rarity].label ?? RELIC_RARITY_LABELS[previewEntity.relicData.rarity]}
                 </span>
-                {entity.relicData.pool !== "shared" && (
-                  <span style={{ color: getCharacterColor(entity.relicData.pool) }}>
-                    {POOL_LABELS[entity.relicData.pool as RelicFilterPool]}
+                {previewEntity.relicData.pool !== "shared" && (
+                  <span style={{ color: getCharacterColor(previewEntity.relicData.pool) }}>
+                    {POOL_LABELS[previewEntity.relicData.pool as RelicFilterPool]}
                   </span>
                 )}
               </>
             )}
           >
-            <DescriptionText description={entity.relicData.description} />
+            <DescriptionText description={previewEntity.relicData.description} />
           </GameResourcePreview>,
         )
       )}
-      {visible && entity.type === "potion" && entity.potionData && (
+      {visible && previewEntity.type === "potion" && previewEntity.potionData && (
         renderTooltip(
           <GameResourcePreview
-            title={entity.nameKo}
-            imageUrl={entity.potionData.imageUrl}
-            imageAlt={entity.nameKo}
+            title={previewEntity.nameKo}
+            imageUrl={previewEntity.potionData.imageUrl}
+            imageAlt={previewEntity.nameKo}
             imageStyle={{
-              filter: characterOutlineFilter(entity.potionData.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
+              filter: characterOutlineFilter(previewEntity.potionData.pool) ?? "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
             }}
             meta={(
               <>
-                <span style={{ color: POTION_RARITY_CONFIG[entity.potionData.rarity].color }}>
-                  {gameUi?.potionLab.rarities[entity.potionData.rarity].label ?? POTION_RARITY_CONFIG[entity.potionData.rarity].label}
+                <span style={{ color: POTION_RARITY_CONFIG[previewEntity.potionData.rarity].color }}>
+                  {gameUi?.potionLab.rarities[previewEntity.potionData.rarity].label ?? POTION_RARITY_CONFIG[previewEntity.potionData.rarity].label}
                 </span>
-                {entity.potionData.pool !== "shared" && (
-                  <span style={{ color: getCharacterColor(entity.potionData.pool) }}>
-                    {entity.potionData.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[entity.potionData.pool as RelicFilterPool]}
+                {previewEntity.potionData.pool !== "shared" && (
+                  <span style={{ color: getCharacterColor(previewEntity.potionData.pool) }}>
+                    {previewEntity.potionData.pool === "event" ? gameUi?.eventsTitle ?? "이벤트" : POOL_LABELS[previewEntity.potionData.pool as RelicFilterPool]}
                   </span>
                 )}
               </>
             )}
           >
-            <DescriptionText description={entity.potionData.description} />
+            <DescriptionText description={previewEntity.potionData.description} />
           </GameResourcePreview>,
         )
       )}
-      {visible && entity.type === "power" && entity.powerData && (
+      {visible && previewEntity.type === "power" && previewEntity.powerData && (
         renderTooltip(
           <GameResourcePreview
-            title={entity.nameKo}
-            imageUrl={entity.powerData.imageUrl}
-            imageAlt={entity.nameKo}
+            title={previewEntity.nameKo}
+            imageUrl={previewEntity.powerData.imageUrl}
+            imageAlt={previewEntity.nameKo}
           >
-            <DescriptionText description={entity.powerData.description} />
+            <DescriptionText description={previewEntity.powerData.description} />
           </GameResourcePreview>,
         )
       )}
-      {visible && entity.type === "enchantment" && entity.enchantmentData && (
+      {visible && previewEntity.type === "enchantment" && previewEntity.enchantmentData && (
         renderTooltip(
-          <GameHoverTip title={entity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
-            <DescriptionText description={entity.enchantmentData.description} />
+          <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+            <DescriptionText description={previewEntity.enchantmentData.description} />
           </GameHoverTip>,
         )
       )}
-      {visible && entity.type === "affliction" && entity.afflictionData && (
+      {visible && previewEntity.type === "affliction" && previewEntity.afflictionData && (
         renderTooltip(
-          <GameHoverTip title={entity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
-            <DescriptionText description={entity.afflictionData.description} />
+          <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+            <DescriptionText description={previewEntity.afflictionData.description} />
           </GameHoverTip>,
         )
       )}
-      {visible && entity.type === "event" && entity.eventData && !entity.eventOptionDesc && (
+      {visible && previewEntity.type === "event" && previewEntity.eventData && !previewEntity.eventOptionDesc && (
         renderTooltip(
           <GameResourcePreview
-            title={entity.nameKo}
-            imageUrl={entity.eventData.imageUrl}
-            imageAlt={entity.nameKo}
+            title={previewEntity.nameKo}
+            imageUrl={previewEntity.eventData.imageUrl}
+            imageAlt={previewEntity.nameKo}
             imageFrameClassName="flex h-28 w-40 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-black/20"
             imageClassName="h-full w-full rounded-lg object-cover"
             imageWidth={160}
@@ -475,14 +493,14 @@ export function EntityPreview({
           />,
         )
       )}
-      {visible && entity.eventOptionDesc && (
+      {visible && previewEntity.eventOptionDesc && (
         renderTooltip(
           <GameResourcePreview
-            title={entity.nameKo}
-            imageUrl={entity.imageUrl}
-            imageAlt={entity.nameKo}
+            title={previewEntity.nameKo}
+            imageUrl={previewEntity.imageUrl}
+            imageAlt={previewEntity.nameKo}
           >
-            <DescriptionText description={entity.eventOptionDesc} />
+            <DescriptionText description={previewEntity.eventOptionDesc} />
           </GameResourcePreview>,
         )
       )}
@@ -593,6 +611,58 @@ export function EntityPreview({
       )}
     </span>
   );
+}
+
+function reconstructPatchPreviewEntity(
+  entity: EntityInfo,
+  patchVersion?: string,
+  currentVersion?: string,
+  versionDiffs?: EntityVersionDiff[],
+  patches?: STS2Patch[],
+): EntityInfo {
+  if (!patchVersion || !currentVersion || !versionDiffs?.length || !patches?.length) return entity;
+
+  switch (entity.type) {
+    case "card": {
+      if (!entity.cardData) return entity;
+      const card = reconstructEntityAtVersion(entity.cardData, "card", patchVersion, currentVersion, versionDiffs, patches);
+      return { ...entity, nameKo: card.name, nameEn: card.nameEn, imageUrl: card.imageUrl, color: card.color, cardData: card };
+    }
+    case "relic": {
+      if (!entity.relicData) return entity;
+      const relic = reconstructEntityAtVersion(entity.relicData, "relic", patchVersion, currentVersion, versionDiffs, patches);
+      return { ...entity, nameKo: relic.name, nameEn: relic.nameEn, imageUrl: relic.imageUrl, color: relic.pool, relicData: relic };
+    }
+    case "potion": {
+      if (!entity.potionData) return entity;
+      const potion = reconstructEntityAtVersion(entity.potionData, "potion", patchVersion, currentVersion, versionDiffs, patches);
+      return { ...entity, nameKo: potion.name, nameEn: potion.nameEn, imageUrl: potion.imageUrl, color: potion.pool, potionData: potion };
+    }
+    case "power": {
+      if (!entity.powerData) return entity;
+      const power = reconstructEntityAtVersion(entity.powerData, "power", patchVersion, currentVersion, versionDiffs, patches);
+      return { ...entity, nameKo: power.name, nameEn: power.nameEn, imageUrl: power.imageUrl, color: power.type, powerData: power };
+    }
+    case "enchantment": {
+      if (!entity.enchantmentData) return entity;
+      const enchantment = reconstructEntityAtVersion(entity.enchantmentData, "enchantment", patchVersion, currentVersion, versionDiffs, patches);
+      return {
+        ...entity,
+        nameKo: enchantment.name,
+        nameEn: enchantment.nameEn,
+        imageUrl: enchantment.imageUrl,
+        color: enchantment.cardType ?? "Any",
+        enchantmentData: enchantment,
+      };
+    }
+    case "event": {
+      if (!entity.eventData || entity.eventOptionDesc) return entity;
+      const event = reconstructEntityAtVersion(entity.eventData, "event", patchVersion, currentVersion, versionDiffs, patches);
+      return { ...entity, nameKo: event.name, nameEn: event.nameEn, imageUrl: event.imageUrl, color: event.act ?? "none", eventData: event };
+    }
+    default:
+      return entity;
+  }
 }
 
 function gameKeywordLabel(text: string, context: RenderContext): string | null {
@@ -1215,6 +1285,10 @@ export function PatchNoteRenderer({
   preferEntityLocaleLabel,
   gameKeywordLabels,
   gameHeadingLabels,
+  patchVersion,
+  currentVersion,
+  patches,
+  versionDiffs,
 }: {
   markdown: string;
   entities?: EntityInfo[];
@@ -1225,12 +1299,27 @@ export function PatchNoteRenderer({
   preferEntityLocaleLabel?: boolean;
   gameKeywordLabels?: Record<string, string>;
   gameHeadingLabels?: Record<string, string>;
+  patchVersion?: string;
+  currentVersion?: string;
+  patches?: STS2Patch[];
+  versionDiffs?: EntityVersionDiff[];
 }) {
   const allEntities = useMemo(() => entities ?? cards ?? [], [entities, cards]);
   const lookup = useMemo(() => buildEntityLookup(allEntities), [allEntities]);
   const context = useMemo<RenderContext>(
-    () => ({ gameUi, serviceLocale, gameLocale, preferEntityLocaleLabel, gameKeywordLabels, gameHeadingLabels }),
-    [gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, preferEntityLocaleLabel, serviceLocale],
+    () => ({
+      gameUi,
+      serviceLocale,
+      gameLocale,
+      preferEntityLocaleLabel,
+      gameKeywordLabels,
+      gameHeadingLabels,
+      patchVersion,
+      currentVersion,
+      patches,
+      versionDiffs,
+    }),
+    [currentVersion, gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, patchVersion, patches, preferEntityLocaleLabel, serviceLocale, versionDiffs],
   );
   const lines = withPatchChangeEffects(markdown).split("\n");
 
