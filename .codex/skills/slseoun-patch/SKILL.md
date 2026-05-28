@@ -93,6 +93,16 @@ Rules:
    - `data/sts2/meta.json`
 8. Commit each meaningful file group independently.
 
+## Compendium Versioning Contract
+
+Every Codex resource changed by a patch needs machine-readable `fieldDiffs` in `data/sts2-changes.json`, not only rich prose or a visual diff. The shared version selector is driven by `src/lib/codex-versioning.ts`, which derives historical resource state from `fieldDiffs`; do not add one-off reconstruction logic inside individual library/detail components.
+
+- Supported compendium version targets include cards, relics, potions, powers, enchantments, afflictions, events, monsters, encounters, ancients, and epochs. Steam/game `enemy` changes are normalized to compendium `monster` versioning.
+- For monster reworks, pair `visualDiff: { "type": "monster-pattern" }` with resource field diffs for the actual changed data, such as `minHp`, `minHpAscension`, `damageValues`, `blockValues`, `moves`, `bestiaryMoves`, and `initialPowerApplications`.
+- Patch-history rails may suppress raw field-diff prose when a curated visual diff exists, but the field diffs must still exist so old versions render correctly in the Compendium.
+- Context-free compendium pages should not bake action-specific amounts into resource descriptions. For example, a power description with `{Amount}` should show `X` unless a monster move, card, relic, or patch visual passes a concrete amount into the shared game hover tip.
+- If a resource needs patch-specific behavior beyond generic field reconstruction, add a small extension around the common versioning path instead of bypassing it.
+
 ## Korean Rich Markup
 
 - Cards: `[gold:card]이름[/gold]`
