@@ -624,7 +624,9 @@ function reconstructPatchPreviewEntity(
   versionDiffs?: EntityVersionDiff[],
   patches?: STS2Patch[],
 ): EntityInfo {
-  if (!patchVersion || !currentVersion || !versionDiffs?.length || !patches?.length) return entity;
+  if (!patchVersion || !currentVersion || !versionDiffs?.length || !patches?.length) {
+    return applyPreviewEntityContext(entity);
+  }
 
   switch (entity.type) {
     case "card": {
@@ -645,13 +647,7 @@ function reconstructPatchPreviewEntity(
     case "power": {
       if (!entity.powerData) return entity;
       const power = reconstructEntityAtVersion(entity.powerData, "power", patchVersion, currentVersion, versionDiffs, patches);
-      const powerData = applyPowerAmountForPreview(
-        power,
-        entity.powerAmount,
-        entity.powerAmountAscensionLevel,
-        entity.powerAmountAscensionThreshold,
-      );
-      return { ...entity, nameKo: powerData.name, nameEn: powerData.nameEn, imageUrl: powerData.imageUrl, color: powerData.type, powerData };
+      return applyPreviewEntityContext({ ...entity, nameKo: power.name, nameEn: power.nameEn, imageUrl: power.imageUrl, color: power.type, powerData: power });
     }
     case "enchantment": {
       if (!entity.enchantmentData) return entity;
@@ -673,6 +669,24 @@ function reconstructPatchPreviewEntity(
     default:
       return entity;
   }
+}
+
+function applyPreviewEntityContext(entity: EntityInfo): EntityInfo {
+  if (entity.type !== "power" || !entity.powerData) return entity;
+  const powerData = applyPowerAmountForPreview(
+    entity.powerData,
+    entity.powerAmount,
+    entity.powerAmountAscensionLevel,
+    entity.powerAmountAscensionThreshold,
+  );
+  return {
+    ...entity,
+    nameKo: powerData.name,
+    nameEn: powerData.nameEn,
+    imageUrl: powerData.imageUrl,
+    color: powerData.type,
+    powerData,
+  };
 }
 
 function gameKeywordLabel(text: string, context: RenderContext): string | null {
