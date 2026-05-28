@@ -2623,6 +2623,17 @@
     "vars": {}
   },
   {
+    "id": "TAINTED",
+    "name": "훼손됨",
+    "description": "이번 턴 동안 공격을 통해 받는 피해량이 [blue][Amount][/blue] 증가합니다.",
+    "description_raw": "이번 턴 동안 공격을 통해 받는 피해량이 [blue]{Amount}[/blue] 증가합니다.",
+    "type": "Debuff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/missing_power.png",
+    "vars": {}
+  },
+  {
     "id": "TANGLED",
     "name": "뒤얽힘",
     "description": "이번 턴 동안 공격 카드의 [gold]에너지[/gold] 비용이 [blue]1[/blue] 증가합니다.",

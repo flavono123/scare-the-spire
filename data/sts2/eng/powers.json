@@ -2623,6 +2623,17 @@
     "vars": {}
   },
   {
+    "id": "TAINTED",
+    "name": "Tainted",
+    "description": "Take additional damage from Attacks this turn.",
+    "description_raw": "Take [blue]{Amount}[/blue] additional damage from Attacks this turn.",
+    "type": "Debuff",
+    "stack_type": "Counter",
+    "allow_negative": null,
+    "image_url": "/static/images/powers/missing_power.png",
+    "vars": {}
+  },
+  {
     "id": "TANGLED",
     "name": "Tangled",
     "description": "Attacks cost [blue]1[/blue] additional [gold]Energy[/gold] this turn.",
