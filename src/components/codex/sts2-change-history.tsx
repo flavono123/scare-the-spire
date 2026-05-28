@@ -15,6 +15,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { DescriptionText } from "./codex-description";
 import { hasMonsterAnimationPatchDiff, MonsterAnimationPatchDiffBlock } from "./monster-move-visuals";
+import { normalizeVersionedEntityType } from "@/lib/codex-versioning";
 
 interface STS2ChangeHistoryProps {
   serviceLocale: ServiceLocale;
@@ -40,19 +41,8 @@ interface HistoryEntry {
 
 type LifecycleChangeKind = "introduced" | "deprecated";
 
-const VERSIONED_ENTITY_TYPES: readonly VersionedEntityType[] = [
-  "card",
-  "relic",
-  "potion",
-  "power",
-  "enchantment",
-  "event",
-];
-
 function asVersionedEntityType(entityType: STS2EntityType): VersionedEntityType | null {
-  return (VERSIONED_ENTITY_TYPES as readonly string[]).includes(entityType)
-    ? entityType as VersionedEntityType
-    : null;
+  return normalizeVersionedEntityType(entityType);
 }
 
 function normalizePatchId(patch: string): string {
@@ -340,6 +330,7 @@ export function STS2ChangeHistory({
         const showMonsterAnimationDiff = monster
           ? Boolean(visualDiff) || hasMonsterAnimationPatchDiff(monster.id, entry.patch)
           : false;
+        const showVersionDiffs = hasVersionDiffs && !showMonsterAnimationDiff;
 
         return (
           <div
@@ -368,7 +359,7 @@ export function STS2ChangeHistory({
               {hasLifecycleChanges && entry.lifecycleChanges.map((kind) => (
                 <LifecycleDiffLine key={`${entry.patch}-${kind}`} kind={kind} serviceLocale={serviceLocale} />
               ))}
-              {hasVersionDiffs
+              {showVersionDiffs
                 ? entry.versionDiffs.map((diff, index) => (
                     <VersionDiffLine
                       key={`${entry.patch}-${diff.field}-${diff.upgraded ? "upgraded" : "base"}-${index}`}

@@ -4,6 +4,18 @@ import { bakeDescription } from "@/lib/codex-bake";
 import type { CodexPower, DamageValue } from "@/lib/codex-types";
 import { getEffectiveDamageValue, MONSTER_MOVE_ASCENSION_LEVEL } from "./monster-ascension";
 
+const CONTEXTLESS_AMOUNT_POWER_IDS = new Set(["VITAL_SPARK"]);
+
+export function getPowerCompendiumDescription(power: CodexPower): string {
+  if (!CONTEXTLESS_AMOUNT_POWER_IDS.has(power.id) || !power.descriptionRaw?.includes("{Amount}")) {
+    return power.description;
+  }
+  return bakeDescription(power.descriptionRaw, {
+    ...power.vars,
+    Amount: "X",
+  });
+}
+
 export function bakePowerAmountDescription(
   descriptionRaw: string | null | undefined,
   vars: Record<string, number | string> | null | undefined,

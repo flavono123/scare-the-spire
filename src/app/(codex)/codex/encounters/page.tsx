@@ -53,6 +53,7 @@ export default async function CodexEncountersPage({
         changes={changes}
         versions={versions}
         currentVersion={meta.version}
+        versionDiffs={versionDiffs}
       />
     </Suspense>
   );

@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import type { STS2Change, STS2Patch } from "@/lib/types";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
   formatCodexCount,
   getCodexServiceMessages,
@@ -26,7 +26,7 @@ import {
   parseCodexSearch,
   type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
-import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
+import { versionCodexEntities } from "@/lib/codex-versioning";
 import { SearchBar } from "./search-bar";
 import { FilterSection } from "./codex-filters";
 import {
@@ -59,6 +59,7 @@ interface EncounterLibraryProps {
   monsters: CodexMonster[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
+  versionDiffs?: EntityVersionDiff[];
   versions?: string[];
   currentVersion?: string;
   selectedVersion?: string;
@@ -74,6 +75,7 @@ export function EncounterLibrary({
   monsters,
   patches,
   changes,
+  versionDiffs,
   versions,
   currentVersion,
   selectedVersion,
@@ -91,13 +93,23 @@ export function EncounterLibrary({
   const activeVersion = selectedVersion ?? internalSelectedVersion;
   const setActiveVersion = onVersionChange ?? setInternalSelectedVersion;
   const versionedEncounters = useMemo(() => {
-    if (!currentVersion || !activeVersion) return encounters;
-    return withEntityLifecycleForVersion(encounters, activeVersion, { changes, entityType: "encounter" });
-  }, [encounters, activeVersion, changes, currentVersion]);
+    return versionCodexEntities(encounters, "encounter", {
+      selectedVersion: activeVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
+  }, [encounters, activeVersion, currentVersion, versionDiffs, patches, changes]);
   const versionedMonsters = useMemo(() => {
-    if (!currentVersion || !activeVersion) return monsters;
-    return withEntityLifecycleForVersion(monsters, activeVersion, { changes, entityType: "monster" });
-  }, [monsters, activeVersion, changes, currentVersion]);
+    return versionCodexEntities(monsters, "monster", {
+      selectedVersion: activeVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
+  }, [monsters, activeVersion, currentVersion, versionDiffs, patches, changes]);
 
   // Monster lookup
   const monsterById = useMemo(

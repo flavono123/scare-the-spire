@@ -61,6 +61,7 @@ export async function renderCompendiumBestiaryPage(
         changes={changes}
         versions={versions}
         currentVersion={meta.version}
+        versionDiffs={versionDiffs}
       />
     </Suspense>
   );

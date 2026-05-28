@@ -68,6 +68,7 @@ export default async function CodexMonstersPage({
         changes={changes}
         versions={versions}
         currentVersion={meta.version}
+        versionDiffs={versionDiffs}
       />
     </Suspense>
   );

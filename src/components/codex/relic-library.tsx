@@ -28,8 +28,7 @@ import {
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { reconstructRelicAtVersion } from "@/lib/entity-versioning";
-import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
+import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
   fuzzyMatchCodexText,
   parseCodexSearch,
@@ -143,12 +142,13 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
   }, [selectedRelic]);
 
   const versionedRelics = useMemo(() => {
-    const reconstructed = !currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion
-      ? relics
-      : relics.map((relic) =>
-        reconstructRelicAtVersion(relic, selectedVersion, currentVersion, versionDiffs, patches),
-      );
-    return withEntityLifecycleForVersion(reconstructed, selectedVersion, { changes, entityType: "relic" });
+    return versionCodexEntities(relics, "relic", {
+      selectedVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
   }, [relics, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   // Cmd+K to focus search

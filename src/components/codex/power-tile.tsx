@@ -7,6 +7,7 @@ import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { CodexPower } from "@/lib/codex-types";
 import { DescriptionText } from "./codex-description";
 import { GameHoverTip, type HoverTipVariant } from "./hover-tip";
+import { getPowerCompendiumDescription } from "./power-preview";
 
 const TYPE_STYLES: Record<string, { border: string }> = {
   Buff: {
@@ -54,6 +55,7 @@ export const PowerTile = memo(function PowerTile({ power, showBeta = false, onCl
   const style = TYPE_STYLES[power.type] ?? TYPE_STYLES.None;
   const imageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
   const lifecycleClassName = power.deprecated ? " opacity-50 grayscale saturate-0" : "";
+  const description = getPowerCompendiumDescription(power);
 
   const updatePlacement = useCallback(() => {
     const rect = tileRef.current?.getBoundingClientRect();
@@ -113,7 +115,7 @@ export const PowerTile = memo(function PowerTile({ power, showBeta = false, onCl
             variant={getPowerHoverTipVariant(power)}
             style={{ minWidth: 280 }}
           >
-            <DescriptionText description={power.description} className="block text-left" />
+            <DescriptionText description={description} className="block text-left" />
           </GameHoverTip>
         </div>
       )}

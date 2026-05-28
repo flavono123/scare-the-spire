@@ -8,7 +8,7 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import type { STS2Change, STS2Patch } from "@/lib/types";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { getBestiaryDisplayMonsterType } from "@/lib/bestiary-monster-policy";
 import { serviceMessages } from "@/messages/service";
 import type {
@@ -1141,6 +1141,7 @@ interface MonsterDetailProps {
   powers?: CodexPower[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
+  versionDiffs?: EntityVersionDiff[];
   onClose?: () => void;
 }
 
@@ -1155,6 +1156,7 @@ export function MonsterDetail({
   powers = [],
   patches,
   changes,
+  versionDiffs,
   onClose,
 }: MonsterDetailProps) {
   const serviceText = serviceMessages[serviceLocale];
@@ -1627,6 +1629,7 @@ export function MonsterDetail({
               changeEntityTypes={["monster", "enemy"]}
               entityId={monster.id}
               changes={changes}
+              versionDiffs={versionDiffs}
               patches={patches}
               monster={monster}
               introducedInPatch={monster.introducedInPatch}

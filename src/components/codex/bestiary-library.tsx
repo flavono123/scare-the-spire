@@ -12,7 +12,7 @@ import type {
   CodexMonster,
   CodexPower,
 } from "@/lib/codex-types";
-import type { STS2Change, STS2Patch } from "@/lib/types";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { MonsterLibrary } from "./monster-library";
 import { EncounterLibrary } from "./encounter-library";
 
@@ -30,6 +30,7 @@ interface BestiaryLibraryProps {
   changes?: STS2Change[];
   versions?: string[];
   currentVersion?: string;
+  versionDiffs?: EntityVersionDiff[];
 }
 
 export function BestiaryLibrary({
@@ -44,6 +45,7 @@ export function BestiaryLibrary({
   changes,
   versions,
   currentVersion,
+  versionDiffs,
 }: BestiaryLibraryProps) {
   const messages = serviceMessages[serviceLocale].codex;
   const searchParams = useSearchParams();
@@ -107,6 +109,7 @@ export function BestiaryLibrary({
         changes={changes}
         versions={versions}
         currentVersion={currentVersion}
+        versionDiffs={versionDiffs}
         selectedVersion={selectedVersion}
         onVersionChange={setSelectedVersion}
         trailing={switcher}
@@ -128,6 +131,7 @@ export function BestiaryLibrary({
       changes={changes}
       versions={versions}
       currentVersion={currentVersion}
+      versionDiffs={versionDiffs}
       selectedVersion={selectedVersion}
       onVersionChange={setSelectedVersion}
       trailing={switcher}

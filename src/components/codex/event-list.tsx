@@ -26,8 +26,7 @@ import {
   getEventActs,
 } from "@/lib/codex-types";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
-import { reconstructEventAtVersion } from "@/lib/entity-versioning";
-import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
+import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
   fuzzyMatchCodexText,
   parseCodexSearch,
@@ -247,14 +246,14 @@ export function EventList({
     return () => window.removeEventListener("keydown", handler);
   }, [selectedEvent]);
 
-  // Reconstruct events at selected version
   const versionedEvents = useMemo(() => {
-    const reconstructed = selectedVersion === currentVersion
-      ? events
-      : events.map((event) =>
-        reconstructEventAtVersion(event, selectedVersion, currentVersion, versionDiffs, patches),
-      );
-    return withEntityLifecycleForVersion(reconstructed, selectedVersion, { changes, entityType: "event" });
+    return versionCodexEntities(events, "event", {
+      selectedVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
   }, [events, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   // Cmd+K to focus search

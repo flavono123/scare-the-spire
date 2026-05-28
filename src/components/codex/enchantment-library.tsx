@@ -24,8 +24,7 @@ import {
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
-import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
+import { versionCodexEntities } from "@/lib/codex-versioning";
 import { getAfflictionCardTypeRestriction } from "@/lib/sts2-affliction-rules";
 import {
   fuzzyMatchCodexText,
@@ -159,12 +158,13 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
   }, [selectedResource]);
 
   const versionedEnchantments = useMemo(() => {
-    const reconstructed = !currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion
-      ? enchantments
-      : enchantments.map((ench) =>
-        reconstructEntityAtVersion(ench, "enchantment", selectedVersion, currentVersion, versionDiffs, patches),
-      );
-    return withEntityLifecycleForVersion(reconstructed, selectedVersion, { changes, entityType: "enchantment" });
+    return versionCodexEntities(enchantments, "enchantment", {
+      selectedVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
   }, [enchantments, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   // Cmd+K to focus search

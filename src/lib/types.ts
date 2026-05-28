@@ -170,7 +170,18 @@ export interface STS2Change {
 // Entity versioning — machine-applicable diffs for reconstructing past versions
 // =============================================================================
 
-export type VersionedEntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "event";
+export type VersionedEntityType =
+  | "card"
+  | "relic"
+  | "potion"
+  | "power"
+  | "enchantment"
+  | "affliction"
+  | "event"
+  | "monster"
+  | "encounter"
+  | "ancient"
+  | "epoch";
 
 /** A single field-level diff that maps to an actual entity field (e.g. CodexCard.cost). */
 export interface EntityFieldDiff {

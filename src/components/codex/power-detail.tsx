@@ -24,6 +24,7 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameHoverTip, type HoverTipVariant } from "./hover-tip";
+import { getPowerCompendiumDescription } from "./power-preview";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
 import {
@@ -138,6 +139,7 @@ export function PowerDetail({
     [power.name, power.nameEn],
   );
   const displayImageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
+  const displayDescription = getPowerCompendiumDescription(power);
   const typeLabel = gameUi.powers.types[power.type].label || serviceText.labels.powerTypes[power.type].label;
   const stackLabel = serviceText.labels.powerStackTypes[power.stackType] ?? power.stackType;
   const backTitle = backToListTitle ?? gameUi.nav.powers;
@@ -245,13 +247,13 @@ export function PowerDetail({
             >
               {entities ? (
                 <RichDescription
-                  description={power.description}
+                  description={displayDescription}
                   entities={entities}
                   excludeEntityTerms={excludeSelf}
                   className="block text-left"
                 />
               ) : (
-                <DescriptionText description={power.description} className="block text-left" />
+                <DescriptionText description={displayDescription} className="block text-left" />
               )}
             </GameHoverTip>
           </div>

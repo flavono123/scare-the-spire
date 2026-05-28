@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
-import type { Card, Change, Story, Relic, Potion, CardClass, CardType, CharacterClass, PotionRarity, STS2Patch, STS2Change, EntityVersionDiff, CodexMeta, VersionedEntityType } from "./types";
+import type { Card, Change, Story, Relic, Potion, CardClass, CardType, CharacterClass, PotionRarity, STS2Patch, STS2Change, EntityVersionDiff, CodexMeta } from "./types";
+import { normalizeVersionedEntityType } from "./codex-versioning";
 
 function toSlug(name: string, cardClass?: string): string {
   const base = name
@@ -127,17 +128,12 @@ export async function getSTS2Changes(): Promise<STS2Change[]> {
   );
 }
 
-const VERSIONED_ENTITY_TYPES = new Set<string>(["card", "relic", "potion", "power", "enchantment", "event"]);
-
-function isVersionedEntityType(entityType: string): entityType is VersionedEntityType {
-  return VERSIONED_ENTITY_TYPES.has(entityType);
-}
-
 export function deriveEntityVersionDiffs(changes: readonly STS2Change[]): EntityVersionDiff[] {
   return changes.flatMap((change) => {
-    if (!change.fieldDiffs?.length || !isVersionedEntityType(change.entityType)) return [];
+    const entityType = normalizeVersionedEntityType(change.entityType);
+    if (!change.fieldDiffs?.length || !entityType) return [];
     return [{
-      entityType: change.entityType,
+      entityType,
       entityId: change.entityId,
       patch: change.patch,
       diffs: change.fieldDiffs,

@@ -5,7 +5,7 @@ import Image from "@/components/ui/static-image";
 import { MonsterDetail } from "./monster-detail";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import type { STS2Change, STS2Patch } from "@/lib/types";
+import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
 import {
   CodexAffliction,
@@ -25,7 +25,7 @@ import {
   parseCodexSearch,
   type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
-import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
+import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
   BESTIARY_FORCED_ACTS,
   getBestiaryDisplayMonsterType,
@@ -80,6 +80,7 @@ interface MonsterLibraryProps {
   powers?: CodexPower[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
+  versionDiffs?: EntityVersionDiff[];
   versions?: string[];
   currentVersion?: string;
   selectedVersion?: string;
@@ -98,6 +99,7 @@ export function MonsterLibrary({
   powers = [],
   patches,
   changes,
+  versionDiffs,
   versions,
   currentVersion,
   selectedVersion,
@@ -118,13 +120,41 @@ export function MonsterLibrary({
   const { userId, ready: authReady, ensureUser } = useAuth();
   const engagementCounts = useEngagementCounts();
   const versionedMonsters = useMemo(() => {
-    if (!currentVersion || !activeVersion) return monsters;
-    return withEntityLifecycleForVersion(monsters, activeVersion, { changes, entityType: "monster" });
-  }, [monsters, activeVersion, changes, currentVersion]);
+    return versionCodexEntities(monsters, "monster", {
+      selectedVersion: activeVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
+  }, [monsters, activeVersion, currentVersion, versionDiffs, patches, changes]);
   const versionedEncounters = useMemo(() => {
-    if (!currentVersion || !activeVersion) return encounters;
-    return withEntityLifecycleForVersion(encounters, activeVersion, { changes, entityType: "encounter" });
-  }, [encounters, activeVersion, changes, currentVersion]);
+    return versionCodexEntities(encounters, "encounter", {
+      selectedVersion: activeVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
+  }, [encounters, activeVersion, currentVersion, versionDiffs, patches, changes]);
+  const versionedCards = useMemo(() => {
+    return versionCodexEntities(cards, "card", {
+      selectedVersion: activeVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
+  }, [cards, activeVersion, currentVersion, versionDiffs, patches, changes]);
+  const versionedPowers = useMemo(() => {
+    return versionCodexEntities(powers, "power", {
+      selectedVersion: activeVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
+  }, [powers, activeVersion, currentVersion, versionDiffs, patches, changes]);
 
   // Monster detail modal
   const urlMonsterId = useHydrationSafeSearchParam("monster");
@@ -133,9 +163,9 @@ export function MonsterLibrary({
   const selectedMonster = useMemo(() => {
     const activeMonsterId = useUrlSelection ? urlMonsterId : selectedMonsterId;
     return activeMonsterId
-      ? monsters.find((m) => m.id.toLowerCase() === activeMonsterId.toLowerCase()) ?? null
+      ? versionedMonsters.find((m) => m.id.toLowerCase() === activeMonsterId.toLowerCase()) ?? null
       : null;
-  }, [monsters, selectedMonsterId, useUrlSelection, urlMonsterId]);
+  }, [selectedMonsterId, useUrlSelection, urlMonsterId, versionedMonsters]);
 
   const openSelectedMonster = useCallback((monster: CodexMonster) => {
     setUseUrlSelection(false);
@@ -495,10 +525,11 @@ export function MonsterLibrary({
               monster={selectedMonster}
               encounters={versionedEncounters}
               afflictions={afflictions}
-              cards={cards}
-              powers={powers}
+              cards={versionedCards}
+              powers={versionedPowers}
               patches={patches}
               changes={changes}
+              versionDiffs={versionDiffs}
               onClose={closeSelectedMonster}
             />
           </div>

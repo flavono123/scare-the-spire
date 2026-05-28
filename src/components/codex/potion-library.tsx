@@ -28,8 +28,7 @@ import {
   characterOutlineFilter,
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
-import { reconstructPotionAtVersion } from "@/lib/entity-versioning";
-import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
+import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
   fuzzyMatchCodexText,
   parseCodexSearch,
@@ -179,12 +178,13 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
   }, [selectedPotion]);
 
   const versionedPotions = useMemo(() => {
-    const reconstructed = !currentVersion || !versionDiffs || !patches || selectedVersion === currentVersion
-      ? potions
-      : potions.map((potion) =>
-        reconstructPotionAtVersion(potion, selectedVersion, currentVersion, versionDiffs, patches),
-      );
-    return withEntityLifecycleForVersion(reconstructed, selectedVersion, { changes, entityType: "potion" });
+    return versionCodexEntities(potions, "potion", {
+      selectedVersion,
+      currentVersion,
+      versionDiffs,
+      patches,
+      changes,
+    });
   }, [potions, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
   // Cmd+K to focus search

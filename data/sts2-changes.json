@@ -2236,6 +2236,259 @@
         "diffType": "rework"
       }
     ],
+    "fieldDiffs": [
+      { "field": "minHp", "before": 200, "after": 161 },
+      { "field": "minHpAscension", "before": 215, "after": 171 },
+      {
+        "field": "damageValues",
+        "before": {
+          "Jab": { "normal": 22, "ascension": 24 },
+          "Radiate": { "normal": 16, "ascension": 18 },
+          "Whirlwind": { "normal": 9, "ascension": 10 }
+        },
+        "after": {
+          "Jab": { "normal": 15, "ascension": 17 },
+          "Radiate": { "normal": 11, "ascension": 13 },
+          "Whirlwind": { "normal": 5, "ascension": 6 },
+          "Pulsate": { "normal": 8, "ascension": 10 }
+        }
+      },
+      {
+        "field": "blockValues",
+        "before": null,
+        "after": {
+          "Radiate": { "normal": 11, "ascension": 13 },
+          "Pulsate": { "normal": 20, "ascension": 22 }
+        }
+      },
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "JAB",
+            "name": "찌르기",
+            "nameEn": "Jab",
+            "kind": "move",
+            "animationId": "attack",
+            "actionTypes": ["attack"],
+            "intents": ["SingleAttackIntent"],
+            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "Jab", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null }],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RADIATE",
+            "name": "방출",
+            "nameEn": "Radiate",
+            "kind": "move",
+            "animationId": "attack_block",
+            "actionTypes": ["attack"],
+            "intents": ["SingleAttackIntent"],
+            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "Radiate", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null }],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "WHIRLWIND",
+            "name": "소용돌이",
+            "nameEn": "Whirlwind",
+            "kind": "move",
+            "animationId": "attack_double",
+            "actionTypes": ["attack"],
+            "intents": ["MultiAttackIntent"],
+            "intentDetails": [{ "type": "MultiAttackIntent", "damageKey": "Whirlwind", "blockKey": null, "repeat": { "normal": 3, "ascension": null }, "repeatExpression": null }],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PULSATE",
+            "name": "맥박",
+            "nameEn": "Pulsate",
+            "kind": "move",
+            "animationId": "buff",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "JAB",
+            "name": "찌르기",
+            "nameEn": "Jab",
+            "kind": "move",
+            "actionTypes": ["attack"],
+            "intents": ["SingleAttackIntent"],
+            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "Jab", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null }],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RADIATE",
+            "name": "방출",
+            "nameEn": "Radiate",
+            "kind": "move",
+            "actionTypes": ["attack", "defense"],
+            "intents": ["SingleAttackIntent", "DefendIntent"],
+            "intentDetails": [
+              { "type": "SingleAttackIntent", "damageKey": "Radiate", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null },
+              { "type": "DefendIntent", "damageKey": null, "blockKey": null, "repeat": null, "repeatExpression": null }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "WHIRLWIND",
+            "name": "소용돌이",
+            "nameEn": "Whirlwind",
+            "kind": "move",
+            "actionTypes": ["attack"],
+            "intents": ["MultiAttackIntent"],
+            "intentDetails": [{ "type": "MultiAttackIntent", "damageKey": "Whirlwind", "blockKey": null, "repeat": { "normal": 3, "ascension": null }, "repeatExpression": null }],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PULSATE",
+            "name": "맥박",
+            "nameEn": "Pulsate",
+            "kind": "move",
+            "actionTypes": ["attack", "buff", "defense"],
+            "intents": ["SingleAttackIntent", "BuffIntent", "DefendIntent"],
+            "intentDetails": [
+              { "type": "SingleAttackIntent", "damageKey": "Pulsate", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null },
+              { "type": "BuffIntent", "damageKey": null, "blockKey": null, "repeat": null, "repeatExpression": null },
+              { "type": "DefendIntent", "damageKey": null, "blockKey": null, "repeat": null, "repeatExpression": null }
+            ],
+            "powerApplications": [
+              { "powerId": "VITAL_SPARK", "powerName": "생명의 불꽃", "powerNameEn": "Vital Spark", "powerType": "Buff", "target": "self", "amount": { "normal": 2, "ascension": 3 }, "imageUrl": "/images/sts2/powers/vital_spark_power.webp" }
+            ],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "JAB",
+            "name": "찌르기",
+            "nameEn": "Jab",
+            "kind": "move",
+            "animationId": "attack",
+            "actionTypes": ["attack"],
+            "intents": ["SingleAttackIntent"],
+            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "Jab", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null }],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RADIATE",
+            "name": "방출",
+            "nameEn": "Radiate",
+            "kind": "move",
+            "animationId": "attack_block",
+            "actionTypes": ["attack"],
+            "intents": ["SingleAttackIntent"],
+            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "Radiate", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null }],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "WHIRLWIND",
+            "name": "소용돌이",
+            "nameEn": "Whirlwind",
+            "kind": "move",
+            "animationId": "attack_double",
+            "actionTypes": ["attack"],
+            "intents": ["MultiAttackIntent"],
+            "intentDetails": [{ "type": "MultiAttackIntent", "damageKey": "Whirlwind", "blockKey": null, "repeat": { "normal": 3, "ascension": null }, "repeatExpression": null }],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PULSATE",
+            "name": "맥박",
+            "nameEn": "Pulsate",
+            "kind": "move",
+            "animationId": "buff",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          { "id": "hurt", "name": "피격", "nameEn": "Hurt", "kind": "animation", "animationId": "hurt", "actionTypes": [], "intents": [], "intentDetails": [], "powerApplications": [], "cardApplications": [] },
+          { "id": "die", "name": "죽음", "nameEn": "Die", "kind": "animation", "animationId": "die", "actionTypes": [], "intents": [], "intentDetails": [], "powerApplications": [], "cardApplications": [] }
+        ],
+        "after": [
+          {
+            "id": "JAB",
+            "name": "찌르기",
+            "nameEn": "Jab",
+            "kind": "move",
+            "actionTypes": ["attack"],
+            "intents": ["SingleAttackIntent"],
+            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "Jab", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null }],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "RADIATE",
+            "name": "방출",
+            "nameEn": "Radiate",
+            "kind": "move",
+            "actionTypes": ["attack", "defense"],
+            "intents": ["SingleAttackIntent", "DefendIntent"],
+            "intentDetails": [
+              { "type": "SingleAttackIntent", "damageKey": "Radiate", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null },
+              { "type": "DefendIntent", "damageKey": null, "blockKey": null, "repeat": null, "repeatExpression": null }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "WHIRLWIND",
+            "name": "소용돌이",
+            "nameEn": "Whirlwind",
+            "kind": "move",
+            "actionTypes": ["attack"],
+            "intents": ["MultiAttackIntent"],
+            "intentDetails": [{ "type": "MultiAttackIntent", "damageKey": "Whirlwind", "blockKey": null, "repeat": { "normal": 3, "ascension": null }, "repeatExpression": null }],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "PULSATE",
+            "name": "맥박",
+            "nameEn": "Pulsate",
+            "kind": "move",
+            "actionTypes": ["attack", "buff", "defense"],
+            "intents": ["SingleAttackIntent", "BuffIntent", "DefendIntent"],
+            "intentDetails": [
+              { "type": "SingleAttackIntent", "damageKey": "Pulsate", "blockKey": null, "repeat": { "normal": 1, "ascension": null }, "repeatExpression": null },
+              { "type": "BuffIntent", "damageKey": null, "blockKey": null, "repeat": null, "repeatExpression": null },
+              { "type": "DefendIntent", "damageKey": null, "blockKey": null, "repeat": null, "repeatExpression": null }
+            ],
+            "powerApplications": [
+              { "powerId": "VITAL_SPARK", "powerName": "생명의 불꽃", "powerNameEn": "Vital Spark", "powerType": "Buff", "target": "self", "amount": { "normal": 2, "ascension": 3 }, "imageUrl": "/images/sts2/powers/vital_spark_power.webp" }
+            ],
+            "cardApplications": []
+          },
+          { "id": "hurt", "name": "피격", "nameEn": "Hurt", "kind": "animation", "animationId": "hurt", "actionTypes": [], "intents": [], "intentDetails": [], "powerApplications": [], "cardApplications": [] },
+          { "id": "die", "name": "죽음", "nameEn": "Die", "kind": "animation", "animationId": "die", "actionTypes": [], "intents": [], "intentDetails": [], "powerApplications": [], "cardApplications": [] }
+        ]
+      },
+      {
+        "field": "initialPowerApplications",
+        "before": [],
+        "after": [
+          { "powerId": "VITAL_SPARK", "powerName": "생명의 불꽃", "powerNameEn": "Vital Spark", "powerType": "Buff", "target": "self", "amount": { "normal": 2, "ascension": 3 }, "imageUrl": "/images/sts2/powers/vital_spark_power.webp" }
+        ]
+      }
+    ],
     "visualDiff": {
       "type": "monster-pattern"
     }
