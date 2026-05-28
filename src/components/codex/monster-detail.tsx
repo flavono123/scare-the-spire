@@ -8,7 +8,6 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import { bakeDescription } from "@/lib/codex-bake";
 import type { STS2Change, STS2Patch } from "@/lib/types";
 import { getBestiaryDisplayMonsterType } from "@/lib/bestiary-monster-policy";
 import { serviceMessages } from "@/messages/service";
@@ -450,7 +449,7 @@ function MonsterInitialPowerPreview({
         return (
           <EntityPreview
             key={`initial-stage-${application.powerId}-${application.target}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
-            entity={buildPowerEntity(application, power)}
+            entity={buildPowerEntity(application, power, ascensionLevel)}
             serviceLocale={serviceLocale}
             forcePosition="above"
             linkClassName="relative inline-flex h-9 w-9 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70 sm:h-10 sm:w-10"
@@ -566,6 +565,8 @@ function MoveApplicationTokens({
   powerById: Map<string, CodexPower>;
   cardById: Map<string, CodexCard>;
 }) {
+  const [monsterAscensionLevel] = useMonsterAscensionLevel();
+
   if (powers.length === 0 && cards.length === 0) return null;
 
   return (
@@ -573,7 +574,7 @@ function MoveApplicationTokens({
       {powers.map((application) => (
         <MoveApplicationToken
           key={`power-${application.powerId}-${application.target}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
-          entity={buildPowerEntity(application, powerById.get(application.powerId))}
+          entity={buildPowerEntity(application, powerById.get(application.powerId), monsterAscensionLevel)}
           imageUrl={application.imageUrl}
           label={serviceLocale === "ko" ? application.powerName : application.powerNameEn}
           amount={getPowerApplicationCounterAmount(application, powerById.get(application.powerId))}
@@ -713,7 +714,7 @@ function InitialPowerApplicationsRail({
         return (
           <EntityPreview
             key={`initial-${application.powerId}-${application.target}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
-            entity={buildPowerEntity(application, power)}
+            entity={buildPowerEntity(application, power, monsterAscensionLevel)}
             serviceLocale={serviceLocale}
             linkClassName="block rounded-md border border-white/[0.07] bg-white/[0.025] px-2.5 py-2 transition-colors hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-yellow-300/70"
           >
@@ -1881,31 +1882,21 @@ function getAttackIntentTier(totalDamage: number): 1 | 2 | 3 | 4 | 5 {
 function buildPowerEntity(
   application: MonsterMovePowerApplication,
   power: CodexPower | undefined,
+  ascensionLevel = 0,
 ): EntityInfo {
   const href = `/compendium/powers?power=${application.powerId.toLowerCase()}`;
-  const powerData = power ? applyMovePowerAmount(power, application.amount) : undefined;
   return {
     id: application.powerId,
-    nameEn: powerData?.nameEn ?? application.powerNameEn,
-    nameKo: powerData?.name ?? application.powerName,
-    imageUrl: powerData?.imageUrl ?? application.imageUrl,
+    nameEn: power?.nameEn ?? application.powerNameEn,
+    nameKo: power?.name ?? application.powerName,
+    imageUrl: power?.imageUrl ?? application.imageUrl,
     href,
-    color: powerData?.type ?? application.powerType,
+    color: power?.type ?? application.powerType,
     type: "power",
-    powerData,
-  };
-}
-
-function applyMovePowerAmount(power: CodexPower, amount: DamageValue | null): CodexPower {
-  if (!amount || amount.normal == null || !power.descriptionRaw?.includes("{Amount}")) return power;
-  const vars = {
-    ...power.vars,
-    Amount: amount.normal,
-  };
-  return {
-    ...power,
-    vars,
-    description: bakeDescription(power.descriptionRaw, vars),
+    powerData: power,
+    powerAmount: application.amount,
+    powerAmountAscensionLevel: ascensionLevel,
+    powerAmountAscensionThreshold: MONSTER_MOVE_ASCENSION_LEVEL,
   };
 }
 

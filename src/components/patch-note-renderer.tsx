@@ -27,6 +27,7 @@ import {
   MonsterAnimationPatchDiffBlock,
   MonsterMoveHoverPreview,
 } from "@/components/codex/monster-move-visuals";
+import { applyPowerAmountForPreview } from "@/components/codex/power-preview";
 
 // Entity types that can appear in patch notes
 export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch";
@@ -45,6 +46,9 @@ export interface EntityInfo {
   relicData?: CodexRelic; // Full relic data for rich preview
   potionData?: CodexPotion; // Full potion data for rich preview
   powerData?: CodexPower; // Full power data for rich preview
+  powerAmount?: DamageValue | null; // Contextual amount used by monster power applications.
+  powerAmountAscensionLevel?: number;
+  powerAmountAscensionThreshold?: number;
   enchantmentData?: CodexEnchantment; // Full enchantment data for rich preview
   afflictionData?: CodexAffliction; // Full affliction data for rich preview
   eventData?: CodexEvent; // Full event data for rich preview
@@ -641,7 +645,13 @@ function reconstructPatchPreviewEntity(
     case "power": {
       if (!entity.powerData) return entity;
       const power = reconstructEntityAtVersion(entity.powerData, "power", patchVersion, currentVersion, versionDiffs, patches);
-      return { ...entity, nameKo: power.name, nameEn: power.nameEn, imageUrl: power.imageUrl, color: power.type, powerData: power };
+      const powerData = applyPowerAmountForPreview(
+        power,
+        entity.powerAmount,
+        entity.powerAmountAscensionLevel,
+        entity.powerAmountAscensionThreshold,
+      );
+      return { ...entity, nameKo: powerData.name, nameEn: powerData.nameEn, imageUrl: powerData.imageUrl, color: powerData.type, powerData };
     }
     case "enchantment": {
       if (!entity.enchantmentData) return entity;

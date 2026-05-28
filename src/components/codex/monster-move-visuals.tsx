@@ -15,10 +15,10 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
 import { DescriptionText } from "@/components/codex/codex-description";
-import { bakeDescription } from "@/lib/codex-bake";
 import { TEXT_CREAM, TEXT_GREEN } from "@/lib/sts2-card-style";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import { GameHoverTip } from "./hover-tip";
+import { bakePowerAmountDescription } from "./power-preview";
 import {
   getEffectiveDamageValue,
   MONSTER_MOVE_ASCENSION_LEVEL,
@@ -731,10 +731,8 @@ function getPatchDiffPowerDescription(
   const raw = serviceLocale === "ko" ? power.descriptionRawKo : power.descriptionRawEn;
   if (!raw) return serviceLocale === "ko" ? power.descriptionKo : power.descriptionEn;
 
-  const vars = { ...(power.vars ?? {}) };
-  const amountValue = getEffectiveDamageValue(amount, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL);
-  if (amountValue != null) vars.Amount = amountValue;
-  return bakeDescription(raw, vars);
+  return bakePowerAmountDescription(raw, power.vars, amount, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL)
+    ?? (serviceLocale === "ko" ? power.descriptionKo : power.descriptionEn);
 }
 
 function PatchDiffCardLink({
