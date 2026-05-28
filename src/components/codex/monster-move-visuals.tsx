@@ -15,6 +15,7 @@ import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
 import { TEXT_CREAM, TEXT_GREEN } from "@/lib/sts2-card-style";
+import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
 import { GameHoverTip } from "./hover-tip";
 import {
   getEffectiveDamageValue,
@@ -75,6 +76,7 @@ interface MonsterPatchDiffSequence {
   moveIds?: string[];
   hpOverride?: DamageValue | null;
   initialPowerApplications?: readonly MonsterMovePowerApplication[] | null;
+  effectNote?: (serviceLocale: ServiceLocale, ascensionLevel: number) => ReactNode;
   changes?: Record<string, Pick<MonsterMoveVisual, "animationId" | "damageChange" | "blockChange" | "powerChange">>;
 }
 
@@ -316,24 +318,26 @@ const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> 
       titleKo: "감염된 프리즘 리워크",
       titleEn: "Infested Prism Rework",
       summary: (serviceLocale, monster) => serviceLocale === "ko"
-        ? <>공격 피해가 낮아지고, <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "RADIATE", OLD_INFESTED_PRISM_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>방출</PatchDiffMoveLink>과 <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "PULSATE", OLD_INFESTED_PRISM_MOVES[3])} monster={monster} serviceLocale={serviceLocale}>맥박</PatchDiffMoveLink>에 <PatchDiffPlainKeyword>방어</PatchDiffPlainKeyword>가 붙었습니다. 맥박은 피해/방어와 <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>생명의 불꽃</PatchDiffPowerLink> 적용이 함께 보이는 행동입니다.</>
-        : <>Attack damage is lower. <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "RADIATE", OLD_INFESTED_PRISM_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>Radiate</PatchDiffMoveLink> and <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "PULSATE", OLD_INFESTED_PRISM_MOVES[3])} monster={monster} serviceLocale={serviceLocale}>Pulsate</PatchDiffMoveLink> now include <PatchDiffPlainKeyword>Block</PatchDiffPlainKeyword>, and Pulsate is shown with damage, Block, and <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>Vital Spark</PatchDiffPowerLink> application.</>,
+        ? <>이전 <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>생명의 불꽃</PatchDiffPowerLink>은 공격 피해를 처음 받을 때 에너지 1을 주는 효과였고, 이후에는 전투 시작 시 3이 붙은 뒤 <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "PULSATE", OLD_INFESTED_PRISM_MOVES[3])} monster={monster} serviceLocale={serviceLocale}>맥박</PatchDiffMoveLink>에서 +3을 더 얻습니다. 공격 피해가 낮아지고, <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "RADIATE", OLD_INFESTED_PRISM_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>방출</PatchDiffMoveLink>과 맥박에 <PatchDiffPlainKeyword>방어</PatchDiffPlainKeyword>가 붙었습니다.</>
+        : <>Old <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>Vital Spark</PatchDiffPowerLink> granted 1 Energy the first time it took Attack damage each turn. After the rework, it starts with 3 and gains +3 more on <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "PULSATE", OLD_INFESTED_PRISM_MOVES[3])} monster={monster} serviceLocale={serviceLocale}>Pulsate</PatchDiffMoveLink>. Attack damage is lower, and <PatchDiffMoveLink move={getPatchDiffMoveVisual(monster, "RADIATE", OLD_INFESTED_PRISM_MOVES[1])} monster={monster} serviceLocale={serviceLocale}>Radiate</PatchDiffMoveLink> and Pulsate now include <PatchDiffPlainKeyword>Block</PatchDiffPlainKeyword>.</>,
       before: {
         labelKo: "이전",
         labelEn: "Before",
         moves: OLD_INFESTED_PRISM_MOVES,
         hpOverride: OLD_INFESTED_PRISM_HP,
         initialPowerApplications: [],
+        effectNote: (locale) => <VitalSparkPreviousEffectNote serviceLocale={locale} />,
       },
       after: {
         labelKo: "이후",
         labelEn: "After",
         moveIds: INFESTED_PRISM_MOVE_ORDER,
+        effectNote: (locale, ascensionLevel) => <VitalSparkCurrentEffectNote serviceLocale={locale} ascensionLevel={ascensionLevel} />,
         changes: {
           JAB: { animationId: "attack" },
           RADIATE: { animationId: "attack_block" },
           WHIRLWIND: { animationId: "attack_double" },
-          PULSATE: { animationId: "buff" },
+          PULSATE: { animationId: "buff", powerChange: "added" },
         },
       },
     },
@@ -541,6 +545,63 @@ function PatchDiffPlainKeyword({ children }: { children: ReactNode }) {
   return <span className="font-game-title font-semibold spire-gold">{children}</span>;
 }
 
+function InlineEnergyIcon({ amount = 1 }: { amount?: number }) {
+  return (
+    <span className="inline-flex items-center gap-0.5 align-middle">
+      {Array.from({ length: amount }).map((_, index) => (
+        <Image
+          key={`energy-${index}`}
+          src={resolveSts2EnergyIcon("colorless")}
+          alt=""
+          width={14}
+          height={14}
+          className="h-3.5 w-3.5 object-contain"
+        />
+      ))}
+    </span>
+  );
+}
+
+function VitalSparkPreviousEffectNote({ serviceLocale }: { serviceLocale: ServiceLocale }) {
+  return (
+    <>
+      <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>
+        {serviceLocale === "ko" ? "생명의 불꽃" : "Vital Spark"}
+      </PatchDiffPowerLink>
+      <span className="text-zinc-500">:</span>
+      {serviceLocale === "ko" ? (
+        <span>공격 피해를 처음 받으면 <InlineEnergyIcon /> 1</span>
+      ) : (
+        <span>first Attack damage taken grants <InlineEnergyIcon /> 1</span>
+      )}
+    </>
+  );
+}
+
+function VitalSparkCurrentEffectNote({
+  serviceLocale,
+  ascensionLevel,
+}: {
+  serviceLocale: ServiceLocale;
+  ascensionLevel: number;
+}) {
+  const amount = getEffectiveDamageValue({ normal: 2, ascension: 3 }, ascensionLevel, MONSTER_MOVE_ASCENSION_LEVEL) ?? 2;
+
+  return (
+    <>
+      <PatchDiffPowerLink powerId="VITAL_SPARK" serviceLocale={serviceLocale}>
+        {serviceLocale === "ko" ? "생명의 불꽃" : "Vital Spark"}
+      </PatchDiffPowerLink>
+      <span className="text-zinc-500">:</span>
+      {serviceLocale === "ko" ? (
+        <span>전투 시작 {amount}, 맥박에서 +{amount}</span>
+      ) : (
+        <span>starts at {amount}, Pulsate adds +{amount}</span>
+      )}
+    </>
+  );
+}
+
 function PatchDiffPowerLink({
   powerId,
   serviceLocale,
@@ -647,33 +708,42 @@ function MoveSequenceRail({
   serviceLocale: ServiceLocale;
   tone: "before" | "after";
 }) {
+  const [ascensionLevel] = useMonsterAscensionLevel();
   const moves = buildSequenceMoves(monster, sequence);
   const label = serviceLocale === "ko" ? sequence.labelKo : sequence.labelEn;
+  const effectNote = sequence.effectNote?.(serviceLocale, ascensionLevel);
 
   return (
     <div className="grid gap-2 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:items-center">
       <div className={`font-game-title text-xs font-bold ${tone === "after" ? "text-green-300" : "text-red-300"}`}>
         {label}
       </div>
-      <div className="flex min-w-0 flex-nowrap items-center gap-1.5 overflow-x-auto pb-1">
-        {moves.map((move, index) => (
-          <span key={move.id} className="flex shrink-0 items-center gap-1.5">
-            <MovePanel
-              move={move}
-              monster={monster}
-              serviceLocale={serviceLocale}
-              hpOverride={sequence.hpOverride}
-              initialPowerApplications={sequence.initialPowerApplications}
-            />
-            <Image
-              src={ARROW_ICON}
-              alt=""
-              width={16}
-              height={16}
-              className={`h-4 w-4 object-contain ${index === moves.length - 1 ? "opacity-90" : ""}`}
-            />
-          </span>
-        ))}
+      <div className="min-w-0">
+        {effectNote && (
+          <div className="mb-1.5 flex flex-wrap items-center gap-1.5 font-game-text text-[11px] leading-tight text-zinc-400">
+            {effectNote}
+          </div>
+        )}
+        <div className="flex min-w-0 flex-nowrap items-center gap-1.5 overflow-x-auto pb-1">
+          {moves.map((move, index) => (
+            <span key={move.id} className="flex shrink-0 items-center gap-1.5">
+              <MovePanel
+                move={move}
+                monster={monster}
+                serviceLocale={serviceLocale}
+                hpOverride={sequence.hpOverride}
+                initialPowerApplications={sequence.initialPowerApplications}
+              />
+              <Image
+                src={ARROW_ICON}
+                alt=""
+                width={16}
+                height={16}
+                className={`h-4 w-4 object-contain ${index === moves.length - 1 ? "opacity-90" : ""}`}
+              />
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -1067,6 +1137,7 @@ function PowerApplicationIcon({
   const className = `relative inline-flex items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70 ${compact ? "h-5 w-5" : "h-6 w-6"}`;
   const title = serviceLocale === "ko" ? power.powerName : power.powerNameEn;
   const amount = getEffectiveDamageValue(power.amount, ascensionLevel);
+  const amountLabel = amount != null ? `${added ? "+" : ""}${amount}` : null;
   const content = (
     <>
       {power.imageUrl && (
@@ -1078,12 +1149,12 @@ function PowerApplicationIcon({
           className={`${compact ? "h-5 w-5" : "h-6 w-6"} object-contain`}
         />
       )}
-      {amount != null && (
-        <span className="pointer-events-none absolute -bottom-0.5 -right-1 rounded bg-black/75 px-0.5 text-[9px] font-bold tabular-nums text-zinc-100">
-          {amount}
+      {amountLabel != null && (
+        <span className={`pointer-events-none absolute -bottom-0.5 -right-1 rounded bg-black/75 px-0.5 text-[9px] font-bold tabular-nums ${added ? "text-green-300" : "text-zinc-100"}`}>
+          {amountLabel}
         </span>
       )}
-      {added && (
+      {added && amountLabel == null && (
         <span className="pointer-events-none absolute -top-1 -right-1 text-[10px] font-black text-green-300">+</span>
       )}
     </>
