@@ -271,10 +271,11 @@ export function STS2ChangeHistory({
       if (!primaryMatch && !relatedMatch) continue;
       ensureEntry(change.patch).curatedChanges.push(change);
       if (change.fieldDiffs?.length && (primaryMatch || relatedMatch)) {
+        const fieldDiffEntityType = normalizeVersionedEntityType(change.entityType) ?? change.entityType;
         addFieldDiffs(
           change.patch,
           change.fieldDiffs,
-          `${normalizePatchId(change.patch)}:${change.entityType}:${change.entityId}`,
+          `${normalizePatchId(change.patch)}:${fieldDiffEntityType}:${change.entityId}`,
         );
       }
     }
