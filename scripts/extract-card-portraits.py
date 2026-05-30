@@ -22,10 +22,12 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import os
 import re
 import struct
 import sys
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -49,6 +51,7 @@ DEFAULT_PCK_PATHS = {
 }
 
 PORTRAIT_PREFIX = "images/packed/card_portraits/"
+STATIC_CARD_IMAGE_RE = re.compile(r"^/static/images/cards/(?:(?P<beta>beta)/)?(?P<slug>[^/]+)\.png$")
 
 
 @dataclass
@@ -218,6 +221,75 @@ def resolve_ctex_paths(reader: PCKReader, portraits: list[CardPortrait]):
             p.ctex_path = ctex_path
 
 
+def find_duplicate_portrait_names(portraits: list[CardPortrait], *, is_beta: bool) -> set[str]:
+    """Return portrait names that exist in more than one character folder."""
+    characters_by_name: dict[str, set[str]] = defaultdict(set)
+    for p in portraits:
+        if p.is_beta == is_beta:
+            characters_by_name[p.name].add(p.character)
+    return {
+        name
+        for name, characters in characters_by_name.items()
+        if len(characters) > 1
+    }
+
+
+def load_card_image_owners(project_root: str) -> tuple[dict[str, set[str]], dict[str, set[str]]]:
+    """Map card image slugs to the card colors that reference them in Codex data."""
+    cards_path = Path(project_root) / "data/sts2/eng/cards.json"
+    if not cards_path.exists():
+        return {}, {}
+
+    official: dict[str, set[str]] = defaultdict(set)
+    beta: dict[str, set[str]] = defaultdict(set)
+
+    with cards_path.open(encoding="utf-8") as f:
+        cards = json.load(f)
+
+    for card in cards:
+        if not isinstance(card, dict):
+            continue
+        color = card.get("color")
+        if not isinstance(color, str):
+            continue
+        for field, owners in (("image_url", official), ("beta_image_url", beta)):
+            image_url = card.get(field)
+            if not isinstance(image_url, str):
+                continue
+            match = STATIC_CARD_IMAGE_RE.match(image_url)
+            if match:
+                owners[match.group("slug")].add(color)
+
+    return official, beta
+
+
+def filter_portraits_by_card_data(
+    portraits: list[CardPortrait],
+    owners_by_name: dict[str, set[str]],
+    duplicate_names: set[str],
+    label: str,
+) -> list[CardPortrait]:
+    """Skip duplicate-name portraits that belong to a different card pool."""
+    filtered: list[CardPortrait] = []
+    skipped: list[tuple[CardPortrait, set[str]]] = []
+
+    for portrait in portraits:
+        owners = owners_by_name.get(portrait.name)
+        if portrait.name in duplicate_names and owners and portrait.character not in owners:
+            skipped.append((portrait, owners))
+            continue
+        filtered.append(portrait)
+
+    if skipped:
+        print(f"Skipped {len(skipped)} {label} duplicate portrait(s) that do not match card data:")
+        for portrait, owners in skipped:
+            owner_list = ", ".join(sorted(owners))
+            print(f"  [SKIP_DUPLICATE] {label}/{portrait.character}/{portrait.name}.png "
+                  f"(data color: {owner_list})")
+
+    return filtered
+
+
 def webp_to_png(webp_data: bytes) -> bytes:
     """Convert WebP bytes to PNG bytes."""
     if HAS_PILLOW:
@@ -319,6 +391,9 @@ def main():
 
     # Find portraits
     portraits = find_card_portraits(reader)
+    official_duplicate_names = find_duplicate_portrait_names(portraits, is_beta=False)
+    beta_duplicate_names = find_duplicate_portrait_names(portraits, is_beta=True)
+    official_owners, beta_owners = load_card_image_owners(project_root)
     print(f"Found {len(portraits)} card portraits "
           f"({sum(1 for p in portraits if not p.is_beta)} official, "
           f"{sum(1 for p in portraits if p.is_beta)} beta)")
@@ -333,8 +408,18 @@ def main():
     print(f"Resolved {len(resolved)}/{len(portraits)} ctex paths")
 
     # Group by official/beta
-    official = [p for p in resolved if not p.is_beta]
-    beta = [p for p in resolved if p.is_beta]
+    official = filter_portraits_by_card_data(
+        [p for p in resolved if not p.is_beta],
+        official_owners,
+        official_duplicate_names,
+        "official",
+    )
+    beta = filter_portraits_by_card_data(
+        [p for p in resolved if p.is_beta],
+        beta_owners,
+        beta_duplicate_names,
+        "beta",
+    )
 
     stats = {"extracted": 0, "skipped": 0, "failed": 0, "new": 0, "updated": 0}
 
