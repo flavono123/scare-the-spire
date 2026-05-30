@@ -351,5 +351,26 @@
       { "type": "card", "id": "WITHER" },
       { "type": "relic", "id": "RUNIC_PYRAMID" }
     ]
+  },
+  {
+    "id": "build-23478716",
+    "version": "build-23478716",
+    "versionLabel": "Steam Build 23478716",
+    "versionLabelKo": "Steam 빌드 23478716",
+    "date": "2026-05-29",
+    "title": "May Bug Fixes",
+    "titleKo": "5월 버그 수정",
+    "type": "hotfix",
+    "status": "building",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/668366713382766475",
+    "summary": "Work in progress: Steam's May bug-fix patch is live, and rich patch notes are being prepared.",
+    "summaryKo": "작성 중: Steam의 5월 버그 수정 패치가 공개되어 rich 패치노트를 준비 중입니다.",
+    "hasBalanceChanges": false,
+    "art": {
+      "type": "image",
+      "imageUrl": "/images/sts2/patches/default-art.webp",
+      "alt": "Slay the Spire 2 patch notes banner",
+      "altKo": "슬레이 더 스파이어 2 패치 노트 배너"
+    }
   }
 ]
