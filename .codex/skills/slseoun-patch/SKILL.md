@@ -12,6 +12,7 @@ Create or update STS2 rich patch notes. Steam is the source of truth for patch-n
 - Run `update-game-assets` first when the target patch is newer than `data/sts2/meta.json` or when patch notes mention changed game content.
 - Do not finalize Korean rich notes until Codex data reflects the patched game version.
 - Use official Korean names from PCK/Codex. Cards with official English names such as `hello world` and `null` stay English.
+- Follow `docs/I18N.md` for patch-note locale behavior; `serviceLocale` selects the patch-note file, while game entity names and hover/link targets follow `gameLocale`.
 - Every meaningful edit gets its own speculative commit, following `AGENTS.md`.
 - Never construct a Steam store/news URL from the Steam API `gid`; use a real store URL from the announcement or user.
 
@@ -79,6 +80,7 @@ Rules:
    - Skip greetings, community fluff, image placeholders, and unrelated promo text.
    - Use `##`/`###` sections and bullet items.
    - Preserve numeric values exactly, including upgrade notation like `5(7)`.
+   - This is also a rich note file, not raw plain text. Add Codex keyword markup for cards, relics, powers, events, monsters, ancients, and important game terms so `/en` and other game-only locale pages keep hover/link previews.
 3. Commit the English notes.
 4. Run or verify `update-game-assets` for the patched game version.
 5. Translate/enrich Korean notes at `data/sts2-patch-notes/{version}.ko.md`.
@@ -103,10 +105,23 @@ Every Codex resource changed by a patch needs machine-readable `fieldDiffs` in `
 - Context-free compendium pages should not bake action-specific amounts into resource descriptions. For example, a power description with `{Amount}` should show `X` unless a monster move, card, relic, or patch visual passes a concrete amount into the shared game hover tip.
 - If a resource needs patch-specific behavior beyond generic field reconstruction, add a small extension around the common versioning path instead of bypassing it.
 
-## Korean Rich Markup
+## Patch Note I18N Contract
+
+Patch notes follow the truth table in `docs/I18N.md`.
+
+- `serviceLocale=ko` reads `data/sts2-patch-notes/{version}.ko.md`; `serviceLocale=en` reads `data/sts2-patch-notes/{version}.md`.
+- `gameLocale` controls displayed game names, hover cards, and Compendium links. For example, `/en/patches/0.106.1` should use English service UI and English game text, while `/zh/patches/0.106.1` should keep the English-authored prose but show Chinese game entity names in linked keywords.
+- English files need the same entity coverage as Korean files. Do not leave names as plain text just because Steam prose is English.
+- In both files, use `[gold:type]Name[/gold]` when the target is a Codex resource, `[gold]term[/gold]` when it is only a game term, and `[blue]Ancient[/blue]` / `[blue]고대의 존재[/blue]` for the category.
+- When a card mention includes an upgrade suffix, put the suffix inside the entity tag, e.g. `[gold:card]Largesse+[/gold]` or `[gold:card]하사+[/gold]`, so the hover preview renders the upgraded card.
+- After adding a new ready patch, smoke test the Korean route and the English game-locale route, e.g. `/patches/{version}` and `/en/patches/{version}`.
+
+## Rich Markup
 
 - Cards: `[gold:card]이름[/gold]`
+- Cards in English notes: `[gold:card]Name[/gold]`
 - Relics: `[gold:relic]이름[/gold]` when needed, otherwise `[gold]이름[/gold]`
+- Relics in English notes: `[gold:relic]Name[/gold]`
 - Potions: `[gold:potion]이름[/gold]`
 - Powers: `[gold:power]이름[/gold]`
 - Enchantments: `[gold:enchantment]이름[/gold]`
@@ -145,9 +160,9 @@ Rules:
 
 ## Keyword And Link Validation
 
-Before finalizing `.ko.md`, audit all `[gold...]...[/gold]` names against current Codex data:
+Before finalizing `.md` and `.ko.md`, audit all `[gold...]...[/gold]` names against current Codex data:
 
-- If the name exists in current Codex data, the BBCode must match the official Korean display name and use a type hint whenever ambiguous.
+- If the name exists in current Codex data, the BBCode must match the official display name for that file and use a type hint whenever ambiguous.
 - If the patch note mentions a real game term that is not a current Codex page, keep `[gold]term[/gold]`; the renderer will show yellow bold text without tooltip/link.
 - Do not translate entity names by memory when PCK has a Korean title.
 - For new entities from the patch, update Codex data first, then use their official names in the rich note.
