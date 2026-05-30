@@ -42,6 +42,7 @@ export interface EntityInfo {
   href?: string | null;
   color: string; // card color or pool
   type: EntityType;
+  cardPreviewUpgradeLevel?: number; // Patch-note token explicitly refers to an upgraded card, e.g. Largesse+.
   cardData?: CodexCard; // Full card data for rich preview
   relicData?: CodexRelic; // Full relic data for rich preview
   potionData?: CodexPotion; // Full potion data for rich preview
@@ -401,7 +402,12 @@ export function EntityPreview({
       {visible && previewEntity.type === "card" && previewEntity.cardData && (
         renderTooltip(
           <span className="block w-36 drop-shadow-2xl">
-            <CardTile card={previewEntity.cardData} showUpgrade={false} showBeta={false} />
+            <CardTile
+              card={previewEntity.cardData}
+              showUpgrade={Boolean(previewEntity.cardPreviewUpgradeLevel)}
+              upgradeLevel={previewEntity.cardPreviewUpgradeLevel}
+              showBeta={false}
+            />
           </span>,
           "card",
         )
@@ -781,7 +787,8 @@ export function buildEntityLookup(entities: EntityInfo[]): EntityLookup {
 }
 
 export function findEntity(text: string, lookup: EntityLookup, typeHint?: string): EntityInfo | null {
-  const lower = text.toLowerCase();
+  const lower = text.trim().toLowerCase();
+  const upgradedCardToken = parseUpgradedCardToken(lower, typeHint);
   if (typeHint) {
     // [gold:card], [gold:relic], etc. — filter by entity type
     const koMatch = lookup.byKo.get(lower);
@@ -799,6 +806,10 @@ export function findEntity(text: string, lookup: EntityLookup, typeHint?: string
       const match = enAll.find((e) => e.type === typeHint);
       if (match) return match;
     }
+    if (upgradedCardToken) {
+      const card = findEntity(upgradedCardToken.baseText, lookup, "card");
+      if (card) return withCardPreviewUpgrade(card, upgradedCardToken.level);
+    }
     return null;
   }
 
@@ -807,13 +818,37 @@ export function findEntity(text: string, lookup: EntityLookup, typeHint?: string
     return matches.find((entity) => entity.type !== "epoch") ?? matches[0];
   };
 
-  return (
+  const match =
     preferDirectEntity(lookup.allByKo?.get(lower)) ??
     preferDirectEntity(lookup.allByEn?.get(lower)) ??
     lookup.byKo.get(lower) ??
     lookup.byEn.get(lower) ??
-    null
-  );
+    null;
+  if (match) return match;
+
+  if (upgradedCardToken) {
+    const card = findEntity(upgradedCardToken.baseText, lookup, "card");
+    if (card) return withCardPreviewUpgrade(card, upgradedCardToken.level);
+  }
+
+  return null;
+}
+
+function parseUpgradedCardToken(
+  lowerText: string,
+  typeHint?: string,
+): { baseText: string; level: number } | null {
+  if (typeHint && typeHint !== "card") return null;
+  const match = lowerText.match(/^(.+?)(\++)$/);
+  if (!match) return null;
+  const baseText = match[1].trim();
+  if (!baseText) return null;
+  return { baseText, level: match[2].length };
+}
+
+function withCardPreviewUpgrade(entity: EntityInfo, level: number): EntityInfo {
+  if (entity.type !== "card") return entity;
+  return { ...entity, cardPreviewUpgradeLevel: Math.max(1, level) };
 }
 
 // --- BBCode node types from rich-text.tsx ---
