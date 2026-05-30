@@ -12,6 +12,7 @@ import {
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { withPageOgImage } from "@/lib/page-og-images";
+import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType } from "@/lib/types";
 
@@ -134,6 +135,7 @@ export async function PatchListPage({
       <div className="mt-6 space-y-3">
         {sorted.map((patch, index) => {
           const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
+          const versionLabel = getPatchVersionLabel(patch, serviceLocale);
           const isBuilding = patch.status === "building";
           const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
 
@@ -144,7 +146,7 @@ export async function PatchListPage({
                 className="block rounded-lg border border-zinc-800 bg-zinc-950/35 p-4 shadow-inner"
               >
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-lg font-semibold text-zinc-500">v{patch.version}</span>
+                  <span className="text-lg font-semibold text-zinc-500">{versionLabel}</span>
                   <Badge variant="outline" className="border-zinc-700 bg-zinc-900/50 text-zinc-500">
                     {copy.types[patch.type]}
                   </Badge>
@@ -180,7 +182,7 @@ export async function PatchListPage({
               className="block rounded-lg border border-border bg-card/50 p-4 hover:border-yellow-500/40 hover:bg-card/80 transition-colors"
             >
               <div className="flex items-center gap-2">
-                <span className="text-lg font-semibold">v{patch.version}</span>
+                <span className="text-lg font-semibold">{versionLabel}</span>
                 <Badge variant="outline" className={PATCH_TYPE_CLASSES[patch.type]}>
                   {copy.types[patch.type]}
                 </Badge>

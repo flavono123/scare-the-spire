@@ -22,6 +22,7 @@ import {
 import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
 import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import { withPageOgImage } from "@/lib/page-og-images";
+import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType } from "@/lib/types";
 import type { CodexMonster, DamageValue, MonsterActionType, MonsterMove } from "@/lib/codex-types";
@@ -681,9 +682,10 @@ export async function getPatchDetailMetadata({
 
   const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
   const description = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
+  const versionLabel = getPatchVersionLabel(patch, serviceLocale);
 
   return withPageOgImage({
-    ...getCodexMetadata(serviceLocale, `v${patch.version} ${title}`),
+    ...getCodexMetadata(serviceLocale, `${versionLabel} ${title}`),
     description,
   }, `/patches/${patch.version}`);
 }
@@ -888,6 +890,7 @@ export async function PatchDetailPage({
   ];
 
   const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
+  const versionLabel = getPatchVersionLabel(patch, serviceLocale);
   const rendererEntities = filterPatchNoteEntities(markdown, entities);
   const isBuilding = patch.status === "building";
   const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
@@ -910,7 +913,7 @@ export async function PatchDetailPage({
 
       <div className="mt-4">
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold">v{patch.version}</h1>
+          <h1 className="text-2xl font-bold">{versionLabel}</h1>
           <Badge variant="outline" className={PATCH_TYPE_CLASSES[patch.type]}>
             {copy.types[patch.type]}
           </Badge>
@@ -983,7 +986,7 @@ export async function PatchDetailPage({
             href={localizeHrefWithGameLocale(`/patches/${prevPatch.version}`, serviceLocale, gameLocale)}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            &larr; v{prevPatch.version}
+            &larr; {getPatchVersionLabel(prevPatch, serviceLocale)}
           </Link>
         ) : (
           <span />
@@ -993,7 +996,7 @@ export async function PatchDetailPage({
             href={localizeHrefWithGameLocale(`/patches/${nextPatch.version}`, serviceLocale, gameLocale)}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            v{nextPatch.version} &rarr;
+            {getPatchVersionLabel(nextPatch, serviceLocale)} &rarr;
           </Link>
         ) : (
           <span />

@@ -116,6 +116,8 @@ export interface STS2PatchArt {
 export interface STS2Patch {
   id: string;
   version: string;
+  versionLabel?: string;
+  versionLabelKo?: string;
   date: string;
   title: string;
   titleKo: string;
