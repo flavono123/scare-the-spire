@@ -295,7 +295,9 @@ export function EntityPreview({
   const href = hrefBase && serviceLocale && gameLocale
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : hrefBase;
-  const linkText = preferEntityLocaleLabel ? previewEntity.nameKo : children;
+  const linkText = preferEntityLocaleLabel
+    ? `${previewEntity.nameKo}${cardPreviewUpgradeSuffix(previewEntity)}`
+    : children;
   const renderedLinkText = <span className="font-game-title">{linkText}</span>;
 
   const openTapPreview = useCallback((event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
@@ -849,6 +851,13 @@ function parseUpgradedCardToken(
 function withCardPreviewUpgrade(entity: EntityInfo, level: number): EntityInfo {
   if (entity.type !== "card") return entity;
   return { ...entity, cardPreviewUpgradeLevel: Math.max(1, level) };
+}
+
+function cardPreviewUpgradeSuffix(entity: EntityInfo): string {
+  const level = entity.cardPreviewUpgradeLevel ?? 0;
+  if (entity.type !== "card" || level <= 0) return "";
+  const maxUpgradeLevel = entity.cardData?.maxUpgradeLevel ?? 1;
+  return maxUpgradeLevel > 1 ? `+${level}` : "+";
 }
 
 // --- BBCode node types from rich-text.tsx ---
