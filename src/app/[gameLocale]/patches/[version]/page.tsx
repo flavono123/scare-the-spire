@@ -4,12 +4,21 @@ import {
   generatePatchDetailStaticParams,
   getPatchDetailMetadata,
 } from "@/components/patches/patch-detail-page";
-import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
+import {
+  generateLocaleStaticParams,
+  getLocalePairFromParams,
+  type LocaleRouteParams,
+} from "@/lib/locale-routing";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
-export const generateStaticParams = generatePatchDetailStaticParams;
+export async function generateStaticParams() {
+  const versions = await generatePatchDetailStaticParams();
+  return generateLocaleStaticParams().flatMap(({ gameLocale }) =>
+    versions.map(({ version }) => ({ gameLocale, version })),
+  );
+}
 
 type Props = {
   params: Promise<LocaleRouteParams<{ version: string }>>;
