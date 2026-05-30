@@ -1,5 +1,6 @@
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
+  GAME_LOCALE_PATH_SEGMENTS,
   gameLocaleFromPathSegment,
   getServiceLocaleForGameLocale,
   type GameLocale,
@@ -8,7 +9,7 @@ import {
 } from "@/lib/i18n";
 
 export const DEFAULT_ROUTE_GAME_LOCALE = DEFAULT_GAME_LOCALE_BY_SERVICE.ko;
-const PRERENDERED_GAME_LOCALE_PATH_SEGMENTS = ["en"] as const satisfies readonly GameLocalePathSegment[];
+const PRERENDERED_GAME_LOCALE_PATH_SEGMENTS = GAME_LOCALE_PATH_SEGMENTS;
 
 export type LocaleRouteParams<T extends Record<string, string> = Record<string, never>> = T & {
   gameLocale?: GameLocalePathSegment;
