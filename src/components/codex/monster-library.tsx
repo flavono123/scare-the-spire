@@ -36,7 +36,13 @@ import { useAuth } from "@/hooks/use-auth";
 import { EngagementSummary } from "@/components/engagement-summary";
 import { LikeButton } from "@/components/like-button";
 import { SearchBar } from "./search-bar";
-import { FilterSection, ToggleButton } from "./codex-filters";
+import {
+  FilterSection,
+  ToggleButton,
+  orderByFilterSortDir,
+  toggleFilterSortDir,
+  type FilterSortDir,
+} from "./codex-filters";
 import { MonsterSpineStage } from "./monster-spine-stage";
 import {
   CodexLibraryShell,
@@ -108,6 +114,8 @@ export function MonsterLibrary({
   const [showOnlyPhobiaMode, setShowOnlyPhobiaMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [internalSelectedVersion, setInternalSelectedVersion] = useState(currentVersion ?? "");
+  const [typeSortDir, setTypeSortDir] = useState<FilterSortDir>("asc");
+  const [actSortDir, setActSortDir] = useState<FilterSortDir>("asc");
   const activeVersion = selectedVersion ?? internalSelectedVersion;
   const setActiveVersion = onVersionChange ?? setInternalSelectedVersion;
   const { userId, ready: authReady, ensureUser } = useAuth();
@@ -283,7 +291,7 @@ export function MonsterLibrary({
 
   // Group by act, then sort like the in-game Bestiary list: monster room, elite, boss, name.
   const sections = useMemo(() => {
-    return ACT_ORDER.map((act) => ({
+    return orderByFilterSortDir(ACT_ORDER, actSortDir).map((act) => ({
       act,
       key: act ?? "none",
       color: act ? BESTIARY_ACT_COLOR : "#a1a1aa",
@@ -291,12 +299,14 @@ export function MonsterLibrary({
       monsters: filteredMonsters
         .filter((monster) => getPrimaryMonsterAct(monster.id) === act)
         .sort((a, b) => {
-          const typeDiff = getMonsterTypeSortOrder(getDisplayMonsterType(a)) - getMonsterTypeSortOrder(getDisplayMonsterType(b));
+          const typeDiff = typeSortDir === "asc"
+            ? getMonsterTypeSortOrder(getDisplayMonsterType(a)) - getMonsterTypeSortOrder(getDisplayMonsterType(b))
+            : getMonsterTypeSortOrder(getDisplayMonsterType(b)) - getMonsterTypeSortOrder(getDisplayMonsterType(a));
           if (typeDiff !== 0) return typeDiff;
           return a.name.localeCompare(b.name, "ko");
         }),
     })).filter((s) => s.monsters.length > 0);
-  }, [filteredMonsters, gameUi, getPrimaryMonsterAct, monsterText]);
+  }, [filteredMonsters, gameUi, getPrimaryMonsterAct, monsterText, actSortDir, typeSortDir]);
 
   const toggleType = useCallback((type: MonsterType) => {
     setSelectedTypes((prev) => {
@@ -345,9 +355,9 @@ export function MonsterLibrary({
         />
 
         {/* Type Filters */}
-        <FilterSection trigger="#" label={monsterText.typeFilter}>
+        <FilterSection trigger="#" label={monsterText.typeFilter} sortDir={typeSortDir} onSortToggle={() => setTypeSortDir(toggleFilterSortDir)} sortTitle={commonText.sortButtonTitle}>
           <div className="flex flex-col gap-0.5">
-            {MONSTER_TYPE_ORDER.map((type) => {
+            {orderByFilterSortDir(MONSTER_TYPE_ORDER, typeSortDir).map((type) => {
               const config = MONSTER_TYPE_CONFIG[type];
               const typeText = gameUi.monsterTypes[type];
               return (
@@ -371,9 +381,9 @@ export function MonsterLibrary({
         <div className="border-t border-white/10" />
 
         {/* Act Filters */}
-        <FilterSection trigger="%" label={monsterText.actFilter}>
+        <FilterSection trigger="%" label={monsterText.actFilter} sortDir={actSortDir} onSortToggle={() => setActSortDir(toggleFilterSortDir)} sortTitle={commonText.sortButtonTitle}>
           <div className="flex flex-col gap-0.5">
-            {ACT_ORDER.map((act) => {
+            {orderByFilterSortDir(ACT_ORDER, actSortDir).map((act) => {
               const key = act ?? "none";
               const label = getActLabel(act, monsterText, gameUi);
               return (
