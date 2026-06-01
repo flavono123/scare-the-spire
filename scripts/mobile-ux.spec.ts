@@ -65,6 +65,6 @@ test.describe("mobile patch note entity preview", () => {
     await entityLinks.first().click();
     await expect(entityLinks).toHaveCount(2);
     await entityLinks.last().click();
-    await expect(page).toHaveURL(/\/codex\/cards\?card=not_yet/);
+    await expect(page).toHaveURL(/\/(?:en\/)?compendium\/cards\?card=not_yet/);
   });
 });

@@ -4,7 +4,18 @@ import type { Page } from "@playwright/test";
 const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 const TOKEN_HINT_NAMES = ["@", "#", "$", "!", "%"];
 
+async function useKoreanServiceLocale(page: Page) {
+  await page.context().addCookies([
+    {
+      name: "sts-game-locale",
+      value: "kor",
+      url: BASE,
+    },
+  ]);
+}
+
 async function openCompendium(page: Page, selector: string) {
+  await useKoreanServiceLocale(page);
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto(`${BASE}${selector}`, { waitUntil: "networkidle" });
 }
@@ -46,6 +57,7 @@ test.describe("Codex sidebar search", () => {
   });
 
   test("keeps sidebar search available in the mobile filter drawer", async ({ page }) => {
+    await useKoreanServiceLocale(page);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(`${BASE}/compendium/cards`, { waitUntil: "networkidle" });
 
