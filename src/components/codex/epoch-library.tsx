@@ -33,7 +33,14 @@ import {
 } from "@/lib/codex-search";
 import type { STS2Change } from "@/lib/types";
 import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
-import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
+import {
+  FilterSection,
+  IconFilterButton,
+  ToggleButton,
+  orderByFilterSortDir,
+  toggleFilterSortDir,
+  type FilterSortDir,
+} from "./codex-filters";
 import {
   CodexLibraryShell,
   CodexLibraryTopBar,
@@ -104,6 +111,9 @@ export function EpochLibrary({
   const [selectedUnlockConditions, setSelectedUnlockConditions] = useState<Set<EpochUnlockCondition>>(new Set());
   const [selectedUnlockRewards, setSelectedUnlockRewards] = useState<Set<EpochUnlockReward>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [affiliationSortDir, setAffiliationSortDir] = useState<FilterSortDir>("asc");
+  const [unlockConditionSortDir, setUnlockConditionSortDir] = useState<FilterSortDir>("asc");
+  const [unlockRewardSortDir, setUnlockRewardSortDir] = useState<FilterSortDir>("asc");
   const [selectedEpoch, setSelectedEpoch] = useState<CodexEpoch | null>(null);
   const [urlReady, setUrlReady] = useState(false);
   const versionedEpochs = useMemo(() => {
@@ -314,9 +324,9 @@ export function EpochLibrary({
             placeholder={serviceLocale === "ko" ? "검색" : "Search"}
           />
 
-          <FilterSection trigger="@" label={serviceText.labels.affiliation}>
+          <FilterSection trigger="@" label={serviceText.labels.affiliation} sortDir={affiliationSortDir} onSortToggle={() => setAffiliationSortDir(toggleFilterSortDir)} sortTitle={serviceText.common.sortButtonTitle}>
             <div className="grid grid-cols-5 gap-1.5">
-              {EPOCH_AFFILIATION_ORDER.map((affiliation) => {
+              {orderByFilterSortDir(EPOCH_AFFILIATION_ORDER, affiliationSortDir).map((affiliation) => {
                 const count = affiliationCounts.get(affiliation) ?? 0;
                 if (count === 0) return null;
                 return (
@@ -332,9 +342,9 @@ export function EpochLibrary({
             </div>
           </FilterSection>
 
-          <FilterSection trigger="#" label={serviceLocale === "ko" ? "해금 조건" : "Unlock Condition"}>
+          <FilterSection trigger="#" label={serviceLocale === "ko" ? "해금 조건" : "Unlock Condition"} sortDir={unlockConditionSortDir} onSortToggle={() => setUnlockConditionSortDir(toggleFilterSortDir)} sortTitle={serviceText.common.sortButtonTitle}>
             <div className="flex flex-col gap-0.5">
-              {EPOCH_UNLOCK_CONDITION_ORDER.map((condition) => {
+              {orderByFilterSortDir(EPOCH_UNLOCK_CONDITION_ORDER, unlockConditionSortDir).map((condition) => {
                 const count = unlockConditionCounts.get(condition) ?? 0;
                 if (count === 0) return null;
                 return (
@@ -349,9 +359,9 @@ export function EpochLibrary({
             </div>
           </FilterSection>
 
-          <FilterSection trigger="$" label={serviceLocale === "ko" ? "해금 대상" : "Unlock Target"}>
+          <FilterSection trigger="$" label={serviceLocale === "ko" ? "해금 대상" : "Unlock Target"} sortDir={unlockRewardSortDir} onSortToggle={() => setUnlockRewardSortDir(toggleFilterSortDir)} sortTitle={serviceText.common.sortButtonTitle}>
             <div className="flex flex-col gap-0.5">
-              {EPOCH_UNLOCK_REWARD_ORDER.map((reward) => {
+              {orderByFilterSortDir(EPOCH_UNLOCK_REWARD_ORDER, unlockRewardSortDir).map((reward) => {
                 const count = unlockRewardCounts.get(reward) ?? 0;
                 if (count === 0) return null;
                 return (
