@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
@@ -25,6 +25,7 @@ import {
 } from "@/lib/i18n";
 import { detectGameLocaleFromNavigator } from "@/lib/locale-detection";
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
+import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import { characterIconUrl } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
@@ -56,6 +57,46 @@ const devItems = [
   { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },
   { href: "/dev/reference", label: "레퍼런스", icon: "/images/sts2/nav/stats_cards.png" },
 ] as const;
+
+const searchTypeLabels = {
+  ko: {
+    card: "카드",
+    relic: "유물",
+    potion: "포션",
+    power: "파워",
+    enchantment: "마법부여",
+    affliction: "고난",
+    event: "이벤트",
+    monster: "몬스터",
+    monsterMove: "패턴",
+    encounter: "전투",
+    ancient: "고대의 존재",
+    epoch: "시대",
+  },
+  en: {
+    card: "Card",
+    relic: "Relic",
+    potion: "Potion",
+    power: "Power",
+    enchantment: "Enchantment",
+    affliction: "Affliction",
+    event: "Event",
+    monster: "Monster",
+    monsterMove: "Move",
+    encounter: "Encounter",
+    ancient: "Ancient",
+    epoch: "Epoch",
+  },
+} as const;
+
+type SearchIndexItem = {
+  id: string;
+  type: keyof typeof searchTypeLabels.ko;
+  title: string;
+  titleEn: string;
+  imageUrl: string | null;
+  href: string;
+};
 
 type CodexLabelKey = {
   [Key in keyof typeof serviceMessages.ko.codex]:
@@ -503,6 +544,183 @@ function LocaleCanonicalizer({
   return null;
 }
 
+function TopBarTextLink({
+  href,
+  icon,
+  label,
+}: {
+  href: string;
+  icon: string;
+  label: string;
+}) {
+  return (
+    <Link
+      href={href}
+      prefetch={false}
+      className="flex h-9 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm font-bold text-foreground/85 transition-colors hover:bg-white/5 hover:text-yellow-300"
+    >
+      <Image
+        src={icon}
+        alt=""
+        width={22}
+        height={22}
+        className="h-5 w-5 object-contain"
+      />
+      <span className="hidden lg:inline">{label}</span>
+    </Link>
+  );
+}
+
+function GlobalSearch({
+  serviceLocale,
+  gameLocale,
+}: {
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+}) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [items, setItems] = useState<SearchIndexItem[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const copy = serviceLocale === "ko"
+    ? { placeholder: "전체 검색", empty: "검색어를 입력하세요", noResults: "검색 결과 없음" }
+    : { placeholder: "Search all", empty: "Type to search", noResults: "No results" };
+  const labels = searchTypeLabels[serviceLocale];
+
+  const loadIndex = useCallback(async () => {
+    if (loaded) return;
+    const response = await fetch("/api/search-index");
+    if (!response.ok) return;
+    const data = await response.json() as { items?: SearchIndexItem[] };
+    setItems(data.items ?? []);
+    setLoaded(true);
+  }, [loaded]);
+
+  const openSearch = useCallback(() => {
+    setOpen(true);
+    void loadIndex();
+    window.setTimeout(() => inputRef.current?.focus(), 0);
+  }, [loadIndex]);
+
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        openSearch();
+      }
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [openSearch]);
+
+  const results = useMemo(() => {
+    const text = query.trim();
+    if (!text) return [];
+    return items
+      .filter((item) =>
+        fuzzyMatchCodexText(item.title, text) ||
+        fuzzyMatchCodexText(item.titleEn, text) ||
+        fuzzyMatchCodexText(item.id, text) ||
+        fuzzyMatchCodexText(labels[item.type], text)
+      )
+      .slice(0, 12);
+  }, [items, labels, query]);
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={openSearch}
+        className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-2.5 text-left text-sm text-muted-foreground transition-colors hover:border-yellow-500/40 hover:bg-white/[0.07] sm:max-w-[18rem] lg:max-w-[22rem]"
+        aria-label={copy.placeholder}
+      >
+        <svg className="h-4 w-4 shrink-0 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+        <span className="min-w-0 flex-1 truncate">{copy.placeholder}</span>
+        <kbd className="hidden shrink-0 rounded border border-white/10 bg-black/20 px-1.5 py-0.5 font-mono text-[10px] text-gray-500 sm:inline">
+          ⌘K
+        </kbd>
+      </button>
+
+      {open && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/60 px-3 pt-16 backdrop-blur-sm sm:pt-24"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setOpen(false);
+          }}
+        >
+          <div className="mx-auto w-full max-w-xl overflow-hidden rounded-lg border border-white/10 bg-[#111827] shadow-2xl">
+            <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2">
+              <svg className="h-4 w-4 shrink-0 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <input
+                ref={inputRef}
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={copy.placeholder}
+                className="h-10 min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground"
+                inputMode="search"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+              />
+            </div>
+            <div className="max-h-[min(28rem,calc(100dvh-9rem))] overflow-y-auto p-1.5">
+              {!query.trim() && (
+                <div className="px-3 py-8 text-center text-sm text-muted-foreground">
+                  {copy.empty}
+                </div>
+              )}
+              {query.trim() && results.length === 0 && (
+                <div className="px-3 py-8 text-center text-sm text-muted-foreground">
+                  {copy.noResults}
+                </div>
+              )}
+              {results.map((item) => (
+                <Link
+                  key={`${item.type}-${item.id}`}
+                  href={localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale)}
+                  prefetch={false}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors hover:bg-white/[0.07]"
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-white/5">
+                    {item.imageUrl ? (
+                      <Image
+                        src={item.imageUrl}
+                        alt=""
+                        width={32}
+                        height={32}
+                        className="h-8 w-8 object-contain"
+                      />
+                    ) : (
+                      <span className="text-xs font-bold text-yellow-500">{labels[item.type][0]}</span>
+                    )}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-semibold text-foreground">{item.title}</span>
+                    <span className="block truncate text-xs text-muted-foreground">
+                      {labels[item.type]} · {item.titleEn}
+                    </span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 // --- Main navbar ---
 
 export function SiteNavbar() {
@@ -521,20 +739,35 @@ export function SiteNavbar() {
   const messages = serviceMessages[serviceLocale];
   const showDevMenu = process.env.NODE_ENV === "development";
   const profile = useStoredUserProfile();
+  const toyBoxItems = localizePlainNavItems(
+    [
+      {
+        href: "/chemical-x",
+        label: messages.nav.chemicalX,
+        icon: "/images/sts2/relics/chemical_x.webp",
+      },
+      {
+        href: "/history-course",
+        label: getCodexNavGameLabel(gameLocale, "historyCourse") ?? messages.nav.historyCourse,
+        icon: "/images/sts2/relics/history_course.webp",
+      },
+      ...(showDevMenu ? devItems : []),
+    ],
+    serviceLocale,
+    gameLocale,
+  );
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
       <InitialLocaleDetector />
       <LocaleCanonicalizer serviceLocale={serviceLocale} gameLocale={gameLocale} />
-      <div className="mx-auto flex h-12 items-center justify-between gap-2 px-2 sm:px-4">
-        {/* Left: brand + services */}
-        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
+      <div className="mx-auto flex h-12 items-center gap-1.5 px-2 sm:gap-2 sm:px-4">
+        <div className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2">
           <Link
             href={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
             prefetch={false}
             className="flex shrink-0 items-center gap-1 text-sm font-bold text-yellow-500 sm:gap-1.5 sm:text-base"
           >
-            {messages.brand}
             <Image
               src="/images/bone_tea.png"
               alt=""
@@ -542,37 +775,28 @@ export function SiteNavbar() {
               height={22}
               className="h-[18px] w-[18px] object-contain sm:h-[22px] sm:w-[22px]"
             />
+            <span className="max-[560px]:sr-only">{messages.brand}</span>
           </Link>
 
-          <nav className="flex shrink-0 items-center gap-0.5 text-sm sm:gap-2">
-            <NavIconLink
-              href={localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale)}
-              icon="/images/sts2/nav/patch_notes_icon.png"
-              label={messages.nav.patches}
-              iconSize={22}
-              iconClassName="group-hover:rotate-[8deg]"
-            />
-            <NavIconLink
-              href={localizeHrefWithGameLocale("/chemical-x", serviceLocale, gameLocale)}
-              icon="/images/sts2/relics/chemical_x.webp"
-              label={messages.nav.chemicalX}
-              iconSize={18}
-              iconClassName="group-hover:rotate-[8deg]"
-            />
-            <NavIconLink
-              href={localizeHrefWithGameLocale("/history-course", serviceLocale, gameLocale)}
-              icon="/images/sts2/relics/history_course.webp"
-              label={getCodexNavGameLabel(gameLocale, "historyCourse") ?? messages.nav.historyCourse}
-              iconSize={20}
-              iconClassName="group-hover:rotate-[8deg]"
-              className="hidden sm:block"
-            />
-          </nav>
+          <TopBarTextLink
+            href={localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale)}
+            icon="/images/sts2/nav/patch_notes_icon.png"
+            label={messages.nav.patches}
+          />
+
+          <GameDropdown
+            icon="/images/sts2/relics/toy_box.webp"
+            alt={serviceLocale === "ko" ? "장난감 상자" : "Toy Box"}
+            items={toyBoxItems}
+            align="left"
+          />
         </div>
 
-        {/* Right: language + game dropdowns */}
-        <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
-          <LanguageDropdown value={gameLocale} label={messages.languageSelect} />
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-0.5 sm:gap-1">
+          <GlobalSearch serviceLocale={serviceLocale} gameLocale={gameLocale} />
+          <div className="hidden xl:block">
+            <LanguageDropdown value={gameLocale} label={messages.languageSelect} />
+          </div>
           <GameDropdown
             icon="/images/sts2/icons/app_icon.png"
             alt={messages.games.sts2Codex}
@@ -585,14 +809,6 @@ export function SiteNavbar() {
             items={legacySts1NavItems(sts1Items, serviceLocale)}
             align="right"
           />
-          {showDevMenu && (
-            <GameDropdown
-              icon="/images/sts2/nav/question_mark.png"
-              alt="DEV"
-              items={localizePlainNavItems(devItems, serviceLocale, gameLocale)}
-              align="right"
-            />
-          )}
           <NavIconLink
             href={localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale)}
             icon={characterIconUrl(profile.characterId)}
