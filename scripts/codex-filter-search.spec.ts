@@ -79,7 +79,10 @@ test.describe("Unified topbar search", () => {
     await header.getByRole("button", { name: "통합 검색" }).click();
     const search = page.locator('input[placeholder="통합 검색"]');
     await expect(search).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(search).toHaveCount(0);
 
+    await header.getByRole("button", { name: "통합 검색" }).click();
     await search.fill("strike");
     await expect(page.getByText("카드", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("카드 · Strike")).toHaveCount(0);
