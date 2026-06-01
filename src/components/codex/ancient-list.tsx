@@ -25,7 +25,12 @@ import {
   stripCodexMarkup,
 } from "@/lib/codex-search";
 import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
-import { FilterSection } from "./codex-filters";
+import {
+  FilterSection,
+  orderByFilterSortDir,
+  toggleFilterSortDir,
+  type FilterSortDir,
+} from "./codex-filters";
 import {
   CodexLibraryShell,
   CodexLibraryTopBar,
@@ -93,6 +98,7 @@ export function AncientList({
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [actSortDir, setActSortDir] = useState<FilterSortDir>("asc");
   const initialAncientId = searchParams.get("ancient");
   const [selectedAncient, setSelectedAncient] = useState<CodexAncient | null>(() => {
     if (!initialAncientId) return null;
@@ -176,7 +182,7 @@ export function AncientList({
 
   const groupedAncients = useMemo(() => {
     const groups: { act: EventAct | null; label: string; color: string; ancients: CodexAncient[] }[] = [];
-    for (const act of EVENT_ACT_ORDER) {
+    for (const act of orderByFilterSortDir(EVENT_ACT_ORDER, actSortDir)) {
       const items = filteredAncients
         .filter((ancient) => ancient.act === act)
         .sort((a, b) => a.name.localeCompare(b.name, "ko"));
@@ -190,7 +196,7 @@ export function AncientList({
       });
     }
     return groups;
-  }, [filteredAncients, gameUi, serviceText]);
+  }, [filteredAncients, gameUi, serviceText, actSortDir]);
 
   const actCounts = useMemo(() => {
     const counts = new Map<string, number>();
@@ -226,9 +232,9 @@ export function AncientList({
             placeholder={serviceLocale === "ko" ? "검색" : "Search"}
           />
 
-          <FilterSection trigger="%" label={serviceText.eventsView.actFilter}>
+          <FilterSection trigger="%" label={serviceText.eventsView.actFilter} sortDir={actSortDir} onSortToggle={() => setActSortDir(toggleFilterSortDir)} sortTitle={serviceText.common.sortButtonTitle}>
             <div className="flex flex-col gap-0.5">
-              {EVENT_ACT_ORDER.map((act) => {
+              {orderByFilterSortDir(EVENT_ACT_ORDER, actSortDir).map((act) => {
                 const key = act ?? "none";
                 const count = actCounts.get(key) ?? 0;
                 const label = getActLabel(act, serviceText, gameUi);
