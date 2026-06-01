@@ -32,7 +32,13 @@ import {
 } from "@/lib/codex-search";
 import { VersionSelector } from "./version-selector";
 import { SearchBar } from "./search-bar";
-import { FilterSection, IconFilterButton } from "./codex-filters";
+import {
+  FilterSection,
+  IconFilterButton,
+  orderByFilterSortDir,
+  toggleFilterSortDir,
+  type FilterSortDir,
+} from "./codex-filters";
 import { GameCheckboxToggle } from "./game-checkbox";
 import {
   CodexLibraryShell,
@@ -53,6 +59,7 @@ import {
 } from "@/lib/codex-references";
 
 type PotionSectionKey = keyof CodexGameUiLabels["potionLab"]["sections"];
+type PotionSortKey = "pool" | "rarity" | "future";
 
 // Rarity sections to display (merge 이벤트 + 토큰 into 특별)
 const DISPLAY_SECTIONS: {
@@ -123,6 +130,11 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+  const [sortDirs, setSortDirs] = useState<Record<PotionSortKey, FilterSortDir>>({
+    pool: "asc",
+    rarity: "asc",
+    future: "asc",
+  });
 
   // Potion detail modal — initialize from ?potion= query param
   const initialPotionId = searchParams.get("potion");
@@ -224,7 +236,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
 
   // Group by rarity sections
   const sections = useMemo(() => {
-    return DISPLAY_SECTIONS.map((section) => ({
+    return orderByFilterSortDir(DISPLAY_SECTIONS, sortDirs.rarity).map((section) => ({
       ...section,
       label: gameUi.potionLab.sections[section.key].label,
       description: gameUi.potionLab.sections[section.key].description,
@@ -232,7 +244,11 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
         .filter((p) => section.rarities.includes(p.rarity))
         .sort((a, b) => a.name.localeCompare(b.name, "ko")),
     })).filter((s) => s.potions.length > 0);
-  }, [filteredPotions, gameUi]);
+  }, [filteredPotions, gameUi, sortDirs.rarity]);
+
+  const toggleSort = useCallback((key: PotionSortKey) => {
+    setSortDirs((prev) => ({ ...prev, [key]: toggleFilterSortDir(prev[key]) }));
+  }, []);
 
   // Toggle helpers
   const togglePool = useCallback((pool: PotionPool) => {
@@ -279,7 +295,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
     return labels;
   }, [characters, gameUi.eventsTitle, serviceText]);
 
-  const characterFilters = characters
+  const characterFilters = orderByFilterSortDir(characters, sortDirs.pool)
     .filter((c) =>
       CHARACTER_POOLS.includes(c.id.toLowerCase() as PotionPool)
     )
@@ -289,12 +305,12 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
       icon: getCharacterTokenIcon(c.id, c.imageUrl),
     }));
 
-  const extraPoolFilters = [
+  const extraPoolFilters = orderByFilterSortDir([
     { key: "shared" as const, label: poolLabels.shared, icon: COLORLESS_FILTER_ICON },
     { key: "event" as const, label: poolLabels.event, icon: EVENT_FILTER_ICON },
-  ];
+  ], sortDirs.pool);
 
-  const rarityFilters = DISPLAY_SECTIONS.map((s) => ({
+  const rarityFilters = orderByFilterSortDir(DISPLAY_SECTIONS, sortDirs.rarity).map((s) => ({
     key: s.key,
     label: gameUi.potionLab.sections[s.key].label,
     color: s.color,
@@ -315,7 +331,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
         />
 
         {/* Character/Pool Filters */}
-        <FilterSection trigger="@" label={serviceText.labels.affiliation}>
+        <FilterSection trigger="@" label={serviceText.labels.affiliation} sortDir={sortDirs.pool} onSortToggle={() => toggleSort("pool")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="grid grid-cols-5 gap-1.5">
             {characterFilters.map((cf) => (
               <IconFilterButton
@@ -341,7 +357,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
         <div className="border-t border-white/10" />
 
         {/* Rarity */}
-        <FilterSection trigger="$" label={gameUi.common.rarity}>
+        <FilterSection trigger="$" label={gameUi.common.rarity} sortDir={sortDirs.rarity} onSortToggle={() => toggleSort("rarity")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-col gap-0.5">
             {rarityFilters.map((r) => (
               <button
@@ -365,9 +381,9 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
 
         <div className="border-t border-white/10" />
 
-        <FilterSection trigger="?" label={FUTURE_OF_POTIONS_EVENT_NAME_KO}>
+        <FilterSection trigger="?" label={FUTURE_OF_POTIONS_EVENT_NAME_KO} sortDir={sortDirs.future} onSortToggle={() => toggleSort("future")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-col gap-1">
-            {FUTURE_OF_POTIONS_OUTCOMES.map((outcome) => {
+            {orderByFilterSortDir(FUTURE_OF_POTIONS_OUTCOMES, sortDirs.future).map((outcome) => {
               const active = selectedFutureOutcomes.has(outcome.id);
               return (
                 <GameCheckboxToggle
