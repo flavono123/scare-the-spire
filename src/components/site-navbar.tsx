@@ -72,6 +72,8 @@ const searchTypeLabels = {
     encounter: "전투",
     ancient: "고대의 존재",
     epoch: "시대",
+    patch: "패치 노트",
+    story: "슬서운 이야기",
   },
   en: {
     card: "Card",
@@ -86,6 +88,8 @@ const searchTypeLabels = {
     encounter: "Encounter",
     ancient: "Ancient",
     epoch: "Epoch",
+    patch: "Patch Note",
+    story: "Story",
   },
 } as const;
 
@@ -94,8 +98,49 @@ type SearchIndexItem = {
   type: keyof typeof searchTypeLabels.ko;
   title: string;
   titleEn: string;
+  description: string;
+  descriptionEn: string;
   imageUrl: string | null;
   href: string;
+};
+
+const searchTypeOrder = [
+  "patch",
+  "story",
+  "card",
+  "relic",
+  "potion",
+  "power",
+  "enchantment",
+  "affliction",
+  "event",
+  "monster",
+  "encounter",
+  "ancient",
+  "epoch",
+  "monsterMove",
+] as const satisfies readonly (keyof typeof searchTypeLabels.ko)[];
+
+const searchTypeStyles: Record<keyof typeof searchTypeLabels.ko, {
+  icon: string;
+  color: string;
+  bg: string;
+  border: string;
+}> = {
+  patch: { icon: "/images/sts2/nav/patch_notes_icon.png", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-400/30" },
+  story: { icon: "/images/bone_tea.png", color: "text-cyan-200", bg: "bg-cyan-500/10", border: "border-cyan-400/30" },
+  card: { icon: "/images/sts2/nav/stats_cards.png", color: "text-rose-200", bg: "bg-rose-500/10", border: "border-rose-400/30" },
+  relic: { icon: "/images/sts2/relics/bing_bong.webp", color: "text-yellow-200", bg: "bg-yellow-500/10", border: "border-yellow-400/30" },
+  potion: { icon: "/images/sts2/potions/potion_shaped_rock.webp", color: "text-emerald-200", bg: "bg-emerald-500/10", border: "border-emerald-400/30" },
+  power: { icon: "/images/sts2/nav/unmovable_power_beta.webp", color: "text-sky-200", bg: "bg-sky-500/10", border: "border-sky-400/30" },
+  enchantment: { icon: "/images/sts2/enchantments/souls_power.webp", color: "text-fuchsia-200", bg: "bg-fuchsia-500/10", border: "border-fuchsia-400/30" },
+  affliction: { icon: "/images/sts2/enchantments/souls_power.webp", color: "text-purple-200", bg: "bg-purple-500/10", border: "border-purple-400/30" },
+  event: { icon: "/images/sts2/nav/question_mark.png", color: "text-lime-200", bg: "bg-lime-500/10", border: "border-lime-400/30" },
+  monster: { icon: "/images/sts2/nav/happy_cultist.png", color: "text-red-200", bg: "bg-red-500/10", border: "border-red-400/30" },
+  monsterMove: { icon: "/images/sts2/nav/happy_cultist.png", color: "text-orange-200", bg: "bg-orange-500/10", border: "border-orange-400/30" },
+  encounter: { icon: "/images/sts2/nav/happy_cultist.png", color: "text-stone-200", bg: "bg-stone-500/10", border: "border-stone-400/30" },
+  ancient: { icon: "/images/sts2/nav/stats_ancients.png", color: "text-blue-200", bg: "bg-blue-500/10", border: "border-blue-400/30" },
+  epoch: { icon: "/images/sts2/relics/planisphere.webp", color: "text-teal-200", bg: "bg-teal-500/10", border: "border-teal-400/30" },
 };
 
 type CodexLabelKey = {
@@ -544,33 +589,6 @@ function LocaleCanonicalizer({
   return null;
 }
 
-function TopBarTextLink({
-  href,
-  icon,
-  label,
-}: {
-  href: string;
-  icon: string;
-  label: string;
-}) {
-  return (
-    <Link
-      href={href}
-      prefetch={false}
-      className="flex h-9 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm font-bold text-foreground/85 transition-colors hover:bg-white/5 hover:text-yellow-300"
-    >
-      <Image
-        src={icon}
-        alt=""
-        width={22}
-        height={22}
-        className="h-5 w-5 object-contain"
-      />
-      <span className="hidden lg:inline">{label}</span>
-    </Link>
-  );
-}
-
 function GlobalSearch({
   serviceLocale,
   gameLocale,
@@ -583,9 +601,10 @@ function GlobalSearch({
   const [items, setItems] = useState<SearchIndexItem[]>([]);
   const [loaded, setLoaded] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const copy = serviceLocale === "ko"
-    ? { placeholder: "전체 검색", empty: "검색어를 입력하세요", noResults: "검색 결과 없음" }
-    : { placeholder: "Search all", empty: "Type to search", noResults: "No results" };
+    ? { placeholder: "통합 검색", empty: "검색어를 입력하세요", noResults: "검색 결과 없음" }
+    : { placeholder: "Unified search", empty: "Type to search", noResults: "No results" };
   const labels = searchTypeLabels[serviceLocale];
 
   const loadIndex = useCallback(async () => {
@@ -624,11 +643,25 @@ function GlobalSearch({
       .filter((item) =>
         fuzzyMatchCodexText(item.title, text) ||
         fuzzyMatchCodexText(item.titleEn, text) ||
+        fuzzyMatchCodexText(item.description, text) ||
+        fuzzyMatchCodexText(item.descriptionEn, text) ||
         fuzzyMatchCodexText(item.id, text) ||
         fuzzyMatchCodexText(labels[item.type], text)
       )
-      .slice(0, 12);
+      .slice(0, 40);
   }, [items, labels, query]);
+
+  const groupedResults = useMemo(() => {
+    const byType = new Map<SearchIndexItem["type"], SearchIndexItem[]>();
+    for (const item of results) {
+      const group = byType.get(item.type);
+      if (group) group.push(item);
+      else byType.set(item.type, [item]);
+    }
+    return searchTypeOrder
+      .map((type) => ({ type, items: byType.get(type) ?? [] }))
+      .filter((group) => group.items.length > 0);
+  }, [results]);
 
   return (
     <>
@@ -652,10 +685,14 @@ function GlobalSearch({
         <div
           className="fixed inset-0 z-[100] bg-black/60 px-3 pt-16 backdrop-blur-sm sm:pt-24"
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setOpen(false);
+            const target = event.target as Node;
+            if (!panelRef.current?.contains(target)) setOpen(false);
           }}
         >
-          <div className="mx-auto w-full max-w-xl overflow-hidden rounded-lg border border-white/10 bg-[#111827] shadow-2xl">
+          <div
+            ref={panelRef}
+            className="mx-auto w-full max-w-xl overflow-hidden rounded-lg border border-white/10 bg-[#111827] shadow-2xl"
+          >
             <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2">
               <svg className="h-4 w-4 shrink-0 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <circle cx="11" cy="11" r="8" />
@@ -684,35 +721,46 @@ function GlobalSearch({
                   {copy.noResults}
                 </div>
               )}
-              {results.map((item) => (
-                <Link
-                  key={`${item.type}-${item.id}`}
-                  href={localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale)}
-                  prefetch={false}
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors hover:bg-white/[0.07]"
-                >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-white/5">
-                    {item.imageUrl ? (
-                      <Image
-                        src={item.imageUrl}
-                        alt=""
-                        width={32}
-                        height={32}
-                        className="h-8 w-8 object-contain"
-                      />
-                    ) : (
-                      <span className="text-xs font-bold text-yellow-500">{labels[item.type][0]}</span>
-                    )}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate font-semibold text-foreground">{item.title}</span>
-                    <span className="block truncate text-xs text-muted-foreground">
-                      {labels[item.type]} · {item.titleEn}
-                    </span>
-                  </span>
-                </Link>
-              ))}
+              {groupedResults.map((group) => {
+                const style = searchTypeStyles[group.type];
+                return (
+                  <section key={group.type} className="py-1">
+                    <div className="flex items-center gap-2 px-2.5 py-1">
+                      <span className={`inline-flex h-5 items-center rounded border px-1.5 text-[10px] font-bold ${style.bg} ${style.border} ${style.color}`}>
+                        {labels[group.type]}
+                      </span>
+                      <span className="text-[10px] tabular-nums text-muted-foreground">
+                        {group.items.length}
+                      </span>
+                    </div>
+                    {group.items.slice(0, 8).map((item) => (
+                      <Link
+                        key={`${item.type}-${item.id}`}
+                        href={localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale)}
+                        prefetch={false}
+                        onClick={() => setOpen(false)}
+                        className="flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors hover:bg-white/[0.07]"
+                      >
+                        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded border ${style.bg} ${style.border}`}>
+                          <Image
+                            src={item.imageUrl ?? style.icon}
+                            alt=""
+                            width={32}
+                            height={32}
+                            className="h-8 w-8 object-contain"
+                          />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate font-semibold text-foreground">{item.title}</span>
+                          <span className={`block truncate text-xs ${style.color}`}>
+                            {labels[item.type]}
+                          </span>
+                        </span>
+                      </Link>
+                    ))}
+                  </section>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -778,10 +826,11 @@ export function SiteNavbar() {
             <span className="max-[560px]:sr-only">{messages.brand}</span>
           </Link>
 
-          <TopBarTextLink
+          <NavIconLink
             href={localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale)}
             icon="/images/sts2/nav/patch_notes_icon.png"
             label={messages.nav.patches}
+            iconSize={22}
           />
 
           <GameDropdown
