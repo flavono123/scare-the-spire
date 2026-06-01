@@ -31,7 +31,13 @@ import {
 import { PowerTile } from "./power-tile";
 import { PowerDetail } from "./power-detail";
 import { SearchBar } from "./search-bar";
-import { FilterSection, ToggleButton } from "./codex-filters";
+import {
+  FilterSection,
+  ToggleButton,
+  orderByFilterSortDir,
+  toggleFilterSortDir,
+  type FilterSortDir,
+} from "./codex-filters";
 import { VersionSelector } from "./version-selector";
 import {
   CodexLibraryShell,
@@ -65,6 +71,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
   const [showBeta, setShowBeta] = useState(false);
+  const [typeSortDir, setTypeSortDir] = useState<FilterSortDir>("asc");
   const hasBetaArt = powers.some((power) => power.betaImageUrl);
 
   // Power detail modal
@@ -145,7 +152,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
   // Group by type
   const groupedPowers = useMemo(() => {
     const groups: { type: PowerType; powers: CodexPower[] }[] = [];
-    for (const type of POWER_TYPE_ORDER) {
+    for (const type of orderByFilterSortDir(POWER_TYPE_ORDER, typeSortDir)) {
       const group = filteredPowers
         .filter((p) => p.type === type)
         .sort((a, b) => a.name.localeCompare(b.name, "ko"));
@@ -154,7 +161,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
       }
     }
     return groups;
-  }, [filteredPowers]);
+  }, [filteredPowers, typeSortDir]);
 
   const toggleType = useCallback((type: PowerType) => {
     setSelectedTypes((prev) => {
@@ -165,7 +172,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
     });
   }, []);
 
-  const typeFilters = POWER_TYPE_ORDER.filter((t) => t !== "None").map((t) => ({
+  const typeFilters = orderByFilterSortDir(POWER_TYPE_ORDER.filter((t) => t !== "None"), typeSortDir).map((t) => ({
     key: t,
     label: getPowerTypeLabel(t, serviceText, gameUi),
     color: POWER_TYPE_CONFIG[t].color,
@@ -188,7 +195,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
         />
 
         {/* Type filter */}
-        <FilterSection trigger="#" label={serviceText.powersView.typeFilter}>
+        <FilterSection trigger="#" label={serviceText.powersView.typeFilter} sortDir={typeSortDir} onSortToggle={() => setTypeSortDir(toggleFilterSortDir)} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-col gap-0.5">
             {typeFilters.map((t) => (
               <button
