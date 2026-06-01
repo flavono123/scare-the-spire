@@ -66,3 +66,32 @@ test.describe("Codex sidebar search", () => {
     await expect(page.locator("aside input#codex-filter-search").first()).toBeVisible();
   });
 });
+
+test.describe("Unified topbar search", () => {
+  test("keeps patch notes icon-only and groups global results", async ({ page }) => {
+    await openCompendium(page, "/compendium/cards");
+
+    const header = page.locator("header");
+    await expect(header.locator('a[href$="/patches"]')).toHaveCount(1);
+    await expect(header).not.toContainText("패치 노트");
+    await expect(header.getByRole("button", { name: "통합 검색" })).toBeVisible();
+
+    await header.getByRole("button", { name: "통합 검색" }).click();
+    const search = page.locator('input[placeholder="통합 검색"]');
+    await expect(search).toBeVisible();
+
+    await search.fill("strike");
+    await expect(page.getByText("카드", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("카드 · Strike")).toHaveCount(0);
+
+    await page.mouse.click(20, 20);
+    await expect(search).toHaveCount(0);
+
+    await header.getByRole("button", { name: "통합 검색" }).click();
+    await page.locator('input[placeholder="통합 검색"]').fill("0.106");
+    await expect(page.getByText("패치 노트", { exact: true }).first()).toBeVisible();
+
+    await page.locator('input[placeholder="통합 검색"]').fill("문을 만드는 자");
+    await expect(page.getByText("슬서운 이야기", { exact: true }).first()).toBeVisible();
+  });
+});
