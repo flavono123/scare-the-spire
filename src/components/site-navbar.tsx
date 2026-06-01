@@ -628,13 +628,33 @@ function GlobalSearch({
         event.preventDefault();
         openSearch();
       }
-      if (event.key === "Escape") {
-        setOpen(false);
-      }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [openSearch]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (target instanceof Node && panelRef.current?.contains(target)) return;
+      setOpen(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" && event.code !== "Escape") return;
+      event.preventDefault();
+      event.stopPropagation();
+      setOpen(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown, true);
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown, true);
+      document.removeEventListener("keydown", handleKeyDown, true);
+    };
+  }, [open]);
 
   const results = useMemo(() => {
     const text = query.trim();
@@ -684,10 +704,6 @@ function GlobalSearch({
       {open && (
         <div
           className="fixed inset-0 z-[100] bg-black/60 px-3 pt-16 backdrop-blur-sm sm:pt-24"
-          onMouseDown={(event) => {
-            const target = event.target as Node;
-            if (!panelRef.current?.contains(target)) setOpen(false);
-          }}
         >
           <div
             ref={panelRef}
