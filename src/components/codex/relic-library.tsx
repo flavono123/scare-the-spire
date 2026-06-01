@@ -33,7 +33,14 @@ import {
 import { RelicTile } from "./relic-tile";
 import { RelicDetail } from "./relic-detail";
 import { SearchBar } from "./search-bar";
-import { FilterSection, IconFilterButton, ToggleButton } from "./codex-filters";
+import {
+  FilterSection,
+  IconFilterButton,
+  ToggleButton,
+  orderByFilterSortDir,
+  toggleFilterSortDir,
+  type FilterSortDir,
+} from "./codex-filters";
 import { VersionSelector } from "./version-selector";
 import {
   CodexLibraryShell,
@@ -47,6 +54,7 @@ import {
 } from "./codex-filter-assets";
 
 type RelicPoolFilter = RelicFilterPool | "event";
+type RelicSortKey = "pool" | "rarity";
 
 interface RelicLibraryProps {
   serviceLocale: ServiceLocale;
@@ -76,6 +84,10 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
   const [showBeta, setShowBeta] = useState(false);
+  const [sortDirs, setSortDirs] = useState<Record<RelicSortKey, FilterSortDir>>({
+    pool: "asc",
+    rarity: "asc",
+  });
   const hasBetaArt = relics.some((relic) => relic.betaImageUrl);
 
   // Relic detail modal — initialize from ?relic= query param
@@ -186,19 +198,28 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
     return result;
   }, [versionedRelics, selectedPools, selectedRarities, searchText]);
 
+  const toggleSort = useCallback((key: RelicSortKey) => {
+    setSortDirs((prev) => ({ ...prev, [key]: toggleFilterSortDir(prev[key]) }));
+  }, []);
+
   // Group filtered relics by rarity
   const groupedRelics = useMemo(() => {
     const groups: { rarity: RelicRarityKo; relics: CodexRelic[] }[] = [];
-    for (const rarity of RELIC_RARITY_ORDER) {
+    for (const rarity of orderByFilterSortDir(RELIC_RARITY_ORDER, sortDirs.rarity)) {
       const group = filteredRelics
         .filter((r) => r.rarity === rarity)
-        .sort((a, b) => a.name.localeCompare(b.name, "ko"));
+        .sort((a, b) => {
+          const poolOrder = sortDirs.pool === "asc"
+            ? a.pool.localeCompare(b.pool, "ko")
+            : b.pool.localeCompare(a.pool, "ko");
+          return poolOrder || a.name.localeCompare(b.name, "ko");
+        });
       if (group.length > 0) {
         groups.push({ rarity, relics: group });
       }
     }
     return groups;
-  }, [filteredRelics]);
+  }, [filteredRelics, sortDirs]);
 
   // Sub-group ancient relics by their ancient boss
   const ancientSubgroups = useMemo(() => {
@@ -238,18 +259,18 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
     });
   }, []);
 
-  const characterFilters = characters.map((c) => ({
+  const characterFilters = orderByFilterSortDir(characters, sortDirs.pool).map((c) => ({
     key: c.id.toLowerCase() as RelicPoolFilter,
     label: c.name,
     icon: getCharacterTokenIcon(c.id, c.imageUrl),
   }));
 
-  const extraPoolFilters = [
+  const extraPoolFilters = orderByFilterSortDir([
     { key: "shared" as const, label: poolLabels.shared, icon: COLORLESS_FILTER_ICON },
     { key: "event" as const, label: gameUi.relicCollection.rarities["이벤트 유물"].label, icon: EVENT_FILTER_ICON },
-  ];
+  ], sortDirs.pool);
 
-  const rarityFilters = RELIC_RARITY_ORDER.filter((r) => r !== "None").map((r) => ({
+  const rarityFilters = orderByFilterSortDir(RELIC_RARITY_ORDER.filter((r) => r !== "None"), sortDirs.rarity).map((r) => ({
     key: r,
     label: gameUi.relicCollection.rarities[r].label,
     color: RELIC_RARITY_COLORS[r],
@@ -271,7 +292,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
           placeholder={serviceLocale === "ko" ? "검색" : "Search"}
         />
 
-        <FilterSection trigger="@" label={serviceText.labels.affiliation}>
+        <FilterSection trigger="@" label={serviceText.labels.affiliation} sortDir={sortDirs.pool} onSortToggle={() => toggleSort("pool")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="grid grid-cols-5 gap-1.5">
             {characterFilters.map((cf) => (
               <IconFilterButton
@@ -297,7 +318,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
         <div className="border-t border-white/10" />
 
         {/* Rarity filter */}
-        <FilterSection trigger="$" label={gameUi.common.rarity}>
+        <FilterSection trigger="$" label={gameUi.common.rarity} sortDir={sortDirs.rarity} onSortToggle={() => toggleSort("rarity")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-col gap-0.5">
             {rarityFilters.map((r) => (
               <button

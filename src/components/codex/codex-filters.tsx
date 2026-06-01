@@ -3,6 +3,17 @@
 import Image from "@/components/ui/static-image";
 import { GameCheckboxToggle } from "./game-checkbox";
 
+export type FilterSortDir = "asc" | "desc";
+
+export function toggleFilterSortDir(sortDir: FilterSortDir): FilterSortDir {
+  return sortDir === "asc" ? "desc" : "asc";
+}
+
+export function orderByFilterSortDir<T>(items: readonly T[], sortDir: FilterSortDir): T[] {
+  const ordered = [...items];
+  return sortDir === "asc" ? ordered : ordered.reverse();
+}
+
 export function FilterSection({
   label,
   children,
