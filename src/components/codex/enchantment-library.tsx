@@ -31,7 +31,13 @@ import {
 import { EnchantmentTile } from "./enchantment-tile";
 import { EnchantmentDetail } from "./enchantment-detail";
 import { SearchBar } from "./search-bar";
-import { FilterSection, ToggleButton } from "./codex-filters";
+import {
+  FilterSection,
+  ToggleButton,
+  orderByFilterSortDir,
+  toggleFilterSortDir,
+  type FilterSortDir,
+} from "./codex-filters";
 import { VersionSelector } from "./version-selector";
 import {
   CodexLibraryShell,
@@ -89,6 +95,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
   const [stackableOnly, setStackableOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
+  const [cardTypeSortDir, setCardTypeSortDir] = useState<FilterSortDir>("asc");
 
   // Enchantment or affliction detail modal
   const initialEnchId = searchParams.get("enchantment");
@@ -226,7 +233,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
   // Group by card type restriction
   const groupedEnchantments = useMemo(() => {
     const groups: { cardType: EnchantmentCardTypeFilter; enchantments: CodexEnchantment[] }[] = [];
-    for (const ct of CARD_TYPE_ORDER) {
+    for (const ct of orderByFilterSortDir(CARD_TYPE_ORDER, cardTypeSortDir)) {
       const group = filteredEnchantments
         .filter((e) => getCardTypeFilter(e.cardType) === ct)
         .sort((a, b) => a.name.localeCompare(b.name, "ko"));
@@ -235,7 +242,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
       }
     }
     return groups;
-  }, [filteredEnchantments]);
+  }, [filteredEnchantments, cardTypeSortDir]);
 
   const toggleCardType = useCallback((ct: EnchantmentCardTypeFilter) => {
     setSelectedCardTypes((prev) => {
@@ -263,9 +270,9 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
         />
 
         {/* Card type filter */}
-        <FilterSection trigger="#" label={serviceText.enchantmentsView.cardTypeFilter}>
+        <FilterSection trigger="#" label={serviceText.enchantmentsView.cardTypeFilter} sortDir={cardTypeSortDir} onSortToggle={() => setCardTypeSortDir(toggleFilterSortDir)} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-col gap-0.5">
-            {CARD_TYPE_ORDER.map((ct) => (
+            {orderByFilterSortDir(CARD_TYPE_ORDER, cardTypeSortDir).map((ct) => (
               <button
                 key={ct}
                 onClick={() => toggleCardType(ct)}
