@@ -101,7 +101,6 @@ export function CodexLibraryTopBar({
   closeFiltersLabel,
   openFiltersLabel,
   title,
-  search,
   count,
   trailing,
 }: {
@@ -110,7 +109,6 @@ export function CodexLibraryTopBar({
   closeFiltersLabel: string;
   openFiltersLabel: string;
   title: string;
-  search: React.ReactNode;
   count: React.ReactNode;
   trailing?: React.ReactNode;
 }) {
@@ -129,8 +127,8 @@ export function CodexLibraryTopBar({
           )}
         </svg>
       </button>
-      <h1 className={`text-base font-bold text-yellow-500 shrink-0 ${trailing ? "max-[430px]:sr-only" : ""}`}>{title}</h1>
-      <div className="min-w-0 flex-1 max-w-xl mx-auto">{search}</div>
+      <h1 className={`min-w-0 truncate text-base font-bold text-yellow-500 ${trailing ? "max-[430px]:sr-only" : ""}`}>{title}</h1>
+      <div className="min-w-0 flex-1" />
       <span className={`${trailing ? "hidden sm:inline" : "inline"} text-sm text-gray-500 shrink-0 tabular-nums`}>{count}</span>
       {trailing}
     </div>

@@ -19,13 +19,8 @@ import {
   EVENT_ACT_CONFIG,
   EVENT_ACT_UNKNOWN,
   EVENT_ACT_ORDER,
-  EVENT_ACT_ALIASES,
 } from "@/lib/codex-types";
-import {
-  fuzzyMatchCodexText,
-  parseCodexSearch,
-  type CodexSearchTriggerGroup,
-} from "@/lib/codex-search";
+import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import { versionCodexEntities } from "@/lib/codex-versioning";
 import { SearchBar } from "./search-bar";
 import { FilterSection } from "./codex-filters";
@@ -39,18 +34,6 @@ import { VersionSelector } from "./version-selector";
 
 // Room type display order and styling
 const ROOM_TYPE_ORDER: EncounterRoomType[] = ["Monster", "Elite", "Boss"];
-type EncounterSearchTokenType = "roomType" | "act";
-
-const ENCOUNTER_ROOM_TYPE_ALIASES: Record<string, EncounterRoomType> = {
-  일반: "Monster",
-  monster: "Monster",
-  normal: "Monster",
-  몬스터: "Monster",
-  엘리트: "Elite",
-  elite: "Elite",
-  보스: "Boss",
-  boss: "Boss",
-};
 
 interface EncounterLibraryProps {
   serviceLocale: ServiceLocale;
@@ -116,14 +99,7 @@ export function EncounterLibrary({
     () => new Map(versionedMonsters.map((m) => [m.id, m])),
     [versionedMonsters],
   );
-  const encounterTriggers = useMemo(
-    () => getEncounterTriggers(serviceText, gameUi),
-    [serviceText, gameUi],
-  );
-  const parsedSearch = useMemo(
-    () => parseCodexSearch(searchQuery, encounterTriggers),
-    [searchQuery, encounterTriggers],
-  );
+  const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   // Detail modal
   const initialEncId = searchParams.get("encounter");
@@ -184,29 +160,21 @@ export function EncounterLibrary({
       result = result.filter((e) => e.isWeak);
     }
 
-    for (const token of parsedSearch.tokens) {
-      if (token.type === "roomType") {
-        result = result.filter((e) => e.roomType === token.value);
-      } else if (token.type === "act") {
-        result = result.filter((e) => (e.act ?? "none") === token.value);
-      }
-    }
-
-    if (parsedSearch.text) {
+    if (searchText) {
       result = result.filter(
         (e) =>
-          fuzzyMatchCodexText(e.name, parsedSearch.text) ||
-          fuzzyMatchCodexText(e.nameEn, parsedSearch.text) ||
+          fuzzyMatchCodexText(e.name, searchText) ||
+          fuzzyMatchCodexText(e.nameEn, searchText) ||
           e.monsters.some(
             (m) =>
-              fuzzyMatchCodexText(m.name, parsedSearch.text) ||
-              fuzzyMatchCodexText(m.nameEn, parsedSearch.text),
+              fuzzyMatchCodexText(m.name, searchText) ||
+              fuzzyMatchCodexText(m.nameEn, searchText),
           ),
       );
     }
 
     return result;
-  }, [versionedEncounters, selectedRoomTypes, selectedActs, showWeakOnly, parsedSearch]);
+  }, [versionedEncounters, selectedRoomTypes, selectedActs, showWeakOnly, searchText]);
 
   const topBarTrailing = trailing || (versions && currentVersion) ? (
     <div className="flex shrink-0 items-center gap-2">
@@ -256,6 +224,13 @@ export function EncounterLibrary({
       isMobile={isMobile}
       sidebar={(
         <>
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          inputId="codex-filter-search"
+          placeholder={serviceLocale === "ko" ? "검색" : "Search"}
+        />
+
         {/* Room Type Filters */}
         <FilterSection trigger="#" label={serviceText.encountersView.roomTypeFilter}>
           <div className="flex flex-col gap-0.5">
@@ -340,15 +315,6 @@ export function EncounterLibrary({
           closeFiltersLabel={serviceText.common.closeFilters}
           openFiltersLabel={serviceText.common.openFilters}
           title={title ?? serviceText.encountersView.title}
-          search={(
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              inputId="encounter-search"
-              triggerGroups={encounterTriggers}
-              placeholder={serviceText.encountersView.searchPlaceholder}
-            />
-          )}
           count={formatCodexCount(filtered.length, serviceText.labels.encounters, serviceLocale)}
           trailing={topBarTrailing}
         />
@@ -511,40 +477,6 @@ function getRepresentativeEncounterImageUrl(imageUrl: string | null): string | n
   return imageUrl.includes("/encounters-render/") || imageUrl.includes("/monsters-render/")
     ? imageUrl
     : null;
-}
-
-function getEncounterTriggers(
-  messages: CodexServiceMessages,
-  gameUi: CodexGameUiLabels,
-): CodexSearchTriggerGroup<EncounterSearchTokenType>[] {
-  return [
-    {
-      trigger: "#",
-      type: "roomType",
-      label: messages.encountersView.roomTypeFilter,
-      items: ROOM_TYPE_ORDER.map((roomType) => ({
-        value: roomType.toLowerCase(),
-        label: gameUi.encounterRoomTypes[roomType],
-        desc: roomType,
-      })),
-      validate: (val) => ENCOUNTER_ROOM_TYPE_ALIASES[val] ?? null,
-      chipColor: "bg-green-500/20 text-green-400",
-    },
-    {
-      trigger: "%",
-      type: "act",
-      label: messages.encountersView.actFilter,
-      items: [
-        { value: "act1", label: gameUi.acts["Act 1 - Overgrowth"], desc: "Act 1 Overgrowth" },
-        { value: "underdocks", label: gameUi.acts.Underdocks, desc: "Underdocks" },
-        { value: "act2", label: gameUi.acts["Act 2 - Hive"], desc: "Act 2 Hive" },
-        { value: "act3", label: gameUi.acts["Act 3 - Glory"], desc: "Act 3 Glory" },
-        { value: "none", label: messages.labels.acts.none, desc: "Any act" },
-      ],
-      validate: (val) => EVENT_ACT_ALIASES[val] ?? null,
-      chipColor: "bg-blue-500/20 text-blue-400",
-    },
-  ];
 }
 
 function getActLabel(

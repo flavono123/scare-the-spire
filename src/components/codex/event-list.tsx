@@ -22,16 +22,11 @@ import type {
 import {
   EVENT_ACT_ORDER,
   EVENT_ACT_UNKNOWN,
-  EVENT_ACT_ALIASES,
   getEventActs,
 } from "@/lib/codex-types";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
-import {
-  fuzzyMatchCodexText,
-  parseCodexSearch,
-  type CodexSearchTriggerGroup,
-} from "@/lib/codex-search";
+import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import { SearchBar } from "./search-bar";
 import { VersionSelector } from "./version-selector";
 import { FilterSection } from "./codex-filters";
@@ -42,7 +37,6 @@ import {
 } from "./codex-filter-drawer";
 import { EventDetail } from "./event-detail";
 
-type EventSearchTokenType = "act";
 const COMPENDIUM_ACT_COLOR = "#60a5fa";
 const COMPENDIUM_ACT_TEXT_CLASS = "text-blue-300";
 
@@ -256,57 +250,25 @@ export function EventList({
     });
   }, [events, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
-  // Cmd+K to focus search
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        document.getElementById("codex-search")?.focus();
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
-
-  const eventTriggers = useMemo(
-    () => getEventTriggers(serviceText, gameUi),
-    [serviceText, gameUi],
-  );
-
-  // Parse search query
-  const parsedSearch = useMemo(
-    () => parseCodexSearch(searchQuery, eventTriggers),
-    [searchQuery, eventTriggers],
-  );
+  const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   const activeActKeys = useMemo(
-    () => new Set([
-      ...selectedActs,
-      ...parsedSearch.tokens
-        .filter((token) => token.type === "act")
-        .map((token) => token.value),
-    ]),
-    [selectedActs, parsedSearch.tokens],
+    () => new Set(selectedActs),
+    [selectedActs],
   );
 
   // Filter events — 막 무관 events pass through any specific act filter
   const filtered = useMemo(() => {
     return versionedEvents.filter((e) => {
       if (selectedActs.size > 0 && !eventMatchesActKeys(e, selectedActs)) return false;
-      const tokenActKeys = new Set(
-        parsedSearch.tokens
-          .filter((token) => token.type === "act")
-          .map((token) => token.value),
-      );
-      if (tokenActKeys.size > 0 && !eventMatchesActKeys(e, tokenActKeys)) return false;
-      if (parsedSearch.text) {
-        const nameMatch = fuzzyMatchCodexText(e.name, parsedSearch.text);
-        const nameEnMatch = fuzzyMatchCodexText(e.nameEn, parsedSearch.text);
+      if (searchText) {
+        const nameMatch = fuzzyMatchCodexText(e.name, searchText);
+        const nameEnMatch = fuzzyMatchCodexText(e.nameEn, searchText);
         if (!nameMatch && !nameEnMatch) return false;
       }
       return true;
     });
-  }, [versionedEvents, selectedActs, parsedSearch]);
+  }, [versionedEvents, selectedActs, searchText]);
 
   // Group by act
   const groups = useMemo(() => {
@@ -361,33 +323,42 @@ export function EventList({
       setSidebarOpen={setSidebarOpen}
       isMobile={isMobile}
       sidebar={(
-        <FilterSection trigger="%" label={serviceText.eventsView.actFilter}>
-          <div className="flex flex-col gap-0.5">
-            {EVENT_ACT_ORDER.map((act) => {
-              const key = act ?? "none";
-              const count = actCounts.get(key) ?? 0;
-              const label = getActLabel(act, serviceText, gameUi);
-              return (
-                <button
-                  key={key}
-                  onClick={() => toggleAct(key)}
-                  className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
-                    selectedActs.has(key)
-                      ? "bg-yellow-500/20 text-yellow-400"
-                      : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
-                  }`}
-                >
-                  <span
-                    className="w-2 h-2 rounded-full shrink-0"
-                    style={{ backgroundColor: act ? COMPENDIUM_ACT_COLOR : "#666" }}
-                  />
-                  <span className={act ? COMPENDIUM_ACT_TEXT_CLASS : "text-zinc-400"}>{label}</span>
-                  <span className="text-xs text-zinc-600">({count})</span>
-                </button>
-              );
-            })}
-          </div>
-        </FilterSection>
+        <>
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            inputId="codex-filter-search"
+            placeholder={serviceLocale === "ko" ? "검색" : "Search"}
+          />
+
+          <FilterSection trigger="%" label={serviceText.eventsView.actFilter}>
+            <div className="flex flex-col gap-0.5">
+              {EVENT_ACT_ORDER.map((act) => {
+                const key = act ?? "none";
+                const count = actCounts.get(key) ?? 0;
+                const label = getActLabel(act, serviceText, gameUi);
+                return (
+                  <button
+                    key={key}
+                    onClick={() => toggleAct(key)}
+                    className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
+                      selectedActs.has(key)
+                        ? "bg-yellow-500/20 text-yellow-400"
+                        : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
+                    }`}
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ backgroundColor: act ? COMPENDIUM_ACT_COLOR : "#666" }}
+                    />
+                    <span className={act ? COMPENDIUM_ACT_TEXT_CLASS : "text-zinc-400"}>{label}</span>
+                    <span className="text-xs text-zinc-600">({count})</span>
+                  </button>
+                );
+              })}
+            </div>
+          </FilterSection>
+        </>
       )}
     >
       <main className="flex-1 flex flex-col overflow-hidden">
@@ -397,15 +368,6 @@ export function EventList({
           closeFiltersLabel={serviceText.common.closeFilters}
           openFiltersLabel={serviceText.common.openFilters}
           title={title}
-          search={(
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              inputId="codex-search"
-              triggerGroups={eventTriggers}
-              placeholder={serviceText.eventsView.searchPlaceholder}
-            />
-          )}
           count={formatCodexCount(filtered.length, serviceText.labels.items, serviceLocale)}
           trailing={(
             <VersionSelector
@@ -493,26 +455,4 @@ function getActLabel(
   gameUi: CodexGameUiLabels,
 ): string {
   return act ? gameUi.acts[act] : serviceText.labels.acts.none;
-}
-
-function getEventTriggers(
-  serviceText: CodexServiceMessages,
-  gameUi: CodexGameUiLabels,
-): CodexSearchTriggerGroup<EventSearchTokenType>[] {
-  return [
-    {
-      trigger: "%",
-      type: "act",
-      label: serviceText.eventsView.actFilter,
-      items: [
-        { value: "act1", label: gameUi.acts["Act 1 - Overgrowth"], desc: "Act 1 Overgrowth" },
-        { value: "underdocks", label: gameUi.acts.Underdocks, desc: "Underdocks" },
-        { value: "act2", label: gameUi.acts["Act 2 - Hive"], desc: "Act 2 Hive" },
-        { value: "act3", label: gameUi.acts["Act 3 - Glory"], desc: "Act 3 Glory" },
-        { value: "none", label: serviceText.labels.acts.none, desc: "Any act" },
-      ],
-      validate: (val) => EVENT_ACT_ALIASES[val] ?? null,
-      chipColor: "bg-blue-500/20 text-blue-400",
-    },
-  ];
 }

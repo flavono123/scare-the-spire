@@ -19,9 +19,6 @@ import {
   CodexPower,
   CardFilterCategory,
   CardTypeKo,
-  CardRarityKo,
-  COLOR_ALIASES,
-  TYPE_ALIASES,
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
@@ -34,9 +31,7 @@ import {
 } from "@/lib/card-annotations";
 import {
   fuzzyMatchCodexText,
-  parseCodexSearch,
   stripCodexMarkup,
-  type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
@@ -175,35 +170,6 @@ const RARITY_COLORS: Record<string, string> = {
 };
 
 const COST_OPTIONS = [0, 1, 2, 3, "3+", "X"] as const;
-type CardSearchTokenType = "color" | "type" | "rarity" | "cost";
-
-const CARD_RARITY_ALIASES: Record<string, CardRarityKo | "기타" | RarityDetail> = {
-  기본: "기본",
-  starter: "기본",
-  basic: "기본",
-  일반: "일반",
-  common: "일반",
-  고급: "고급",
-  uncommon: "고급",
-  희귀: "희귀",
-  rare: "희귀",
-  기타: "기타",
-  other: "기타",
-  unique: "unique",
-  고유: "unique",
-  고대: "ancient",
-  ancient: "ancient",
-  이벤트: "event",
-  event: "event",
-  토큰: "token",
-  token: "token",
-  저주: "curse",
-  curse: "curse",
-  상태이상: "status",
-  status: "status",
-  퀘스트: "quest",
-  quest: "quest",
-};
 
 interface CardLibraryProps {
   serviceLocale: ServiceLocale;
@@ -264,102 +230,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     color: "asc", type: "asc", rarity: "asc", cost: "asc", name: "asc",
   });
 
-  // Cmd+K to focus search
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        document.getElementById("codex-search")?.focus();
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
-
-  const searchTriggers = useMemo<CodexSearchTriggerGroup<CardSearchTokenType>[]>(
-    () => [
-      {
-        trigger: "@",
-        type: "color",
-        label: serviceText.labels.affiliation,
-        maxPreviewItems: 4,
-        items: [
-          { value: "ironclad", label: serviceText.labels.pools.ironclad, desc: "Ironclad" },
-          { value: "silent", label: serviceText.labels.pools.silent, desc: "Silent" },
-          { value: "defect", label: serviceText.labels.pools.defect, desc: "Defect" },
-          { value: "necrobinder", label: serviceText.labels.pools.necrobinder, desc: "Necrobinder" },
-          { value: "regent", label: serviceText.labels.pools.regent, desc: "Regent" },
-          { value: "colorless", label: serviceText.labels.pools.colorless, desc: "Colorless" },
-          { value: "token", label: gameUi.cardLibrary.rarities.토큰, desc: "Token" },
-          { value: "event", label: gameUi.cardLibrary.rarities.이벤트, desc: "Event" },
-          { value: "quest", label: gameUi.cardLibrary.rarities.퀘스트, desc: "Quest" },
-          { value: "curse", label: serviceText.labels.pools.curse, desc: "Curse" },
-          { value: "status", label: serviceText.labels.pools.status, desc: "Status" },
-          { value: "ancient", label: serviceText.labels.pools.ancient, desc: "Ancient" },
-        ],
-        validate: (val: string) => COLOR_ALIASES[val] ?? null,
-        chipColor: "bg-blue-500/20 text-blue-400",
-      },
-      {
-        trigger: "#",
-        type: "type",
-        label: gameUi.cardLibrary.sort.type,
-        items: [
-          { value: "attack", label: gameUi.cardLibrary.types.공격, desc: "Attack" },
-          { value: "skill", label: gameUi.cardLibrary.types.스킬, desc: "Skill" },
-          { value: "power", label: gameUi.cardLibrary.types.파워, desc: "Power" },
-        ],
-        validate: (val: string) => TYPE_ALIASES[val] ?? null,
-        chipColor: "bg-green-500/20 text-green-400",
-      },
-      {
-        trigger: "!",
-        type: "cost",
-        label: gameUi.cardLibrary.sort.cost,
-        items: [
-          { value: "0", label: "0", desc: `${gameUi.cardLibrary.sort.cost} 0` },
-          { value: "1", label: "1", desc: `${gameUi.cardLibrary.sort.cost} 1` },
-          { value: "2", label: "2", desc: `${gameUi.cardLibrary.sort.cost} 2` },
-          { value: "3", label: "3", desc: `${gameUi.cardLibrary.sort.cost} 3` },
-          { value: "3+", label: "3+", desc: `${gameUi.cardLibrary.sort.cost} 3+` },
-          { value: "2-", label: "2-", desc: `${gameUi.cardLibrary.sort.cost} 2-` },
-          { value: "X", label: "X", desc: `${gameUi.cardLibrary.sort.cost} X` },
-        ],
-        validate: (val: string) => {
-          if (val === "x") return "X";
-          return COST_OPTIONS.map(String).includes(val) || val === "2-" ? val : null;
-        },
-        chipColor: "bg-amber-500/20 text-amber-400",
-      },
-      {
-        trigger: "$",
-        type: "rarity",
-        label: gameUi.cardLibrary.sort.rarity,
-        items: [
-          { value: "common", label: gameUi.cardLibrary.rarities.일반, desc: "Common" },
-          { value: "uncommon", label: gameUi.cardLibrary.rarities.고급, desc: "Uncommon" },
-          { value: "rare", label: gameUi.cardLibrary.rarities.희귀, desc: "Rare" },
-          { value: "other", label: gameUi.cardLibrary.rarities.기타, desc: "Other" },
-          { value: "starter", label: gameUi.cardLibrary.rarities.기본, desc: "Starter" },
-          { value: "ancient", label: gameUi.cardLibrary.rarities["고대의 존재"], desc: "Ancient" },
-          { value: "event", label: gameUi.cardLibrary.rarities.이벤트, desc: "Event" },
-          { value: "token", label: gameUi.cardLibrary.rarities.토큰, desc: "Token" },
-          { value: "curse", label: gameUi.cardLibrary.rarities.저주, desc: "Curse" },
-          { value: "status", label: gameUi.cardLibrary.rarities.상태이상, desc: "Status" },
-          { value: "quest", label: gameUi.cardLibrary.rarities.퀘스트, desc: "Quest" },
-        ],
-        validate: (val: string) => CARD_RARITY_ALIASES[val] ?? null,
-        chipColor: "bg-purple-500/20 text-purple-400",
-      },
-    ],
-    [gameUi, serviceText],
-  );
-
-  // Parse search query (uses debounced value)
-  const parsedSearch = useMemo(
-    () => parseCodexSearch(debouncedQuery, searchTriggers),
-    [debouncedQuery, searchTriggers],
-  );
+  const searchText = useMemo(() => debouncedQuery.trim().toLowerCase(), [debouncedQuery]);
 
   const matchCost = useCallback(
     (card: CodexCard, costFilter: string): boolean => {
@@ -378,14 +249,6 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     },
     []
   );
-
-  const matchRaritySearch = useCallback((card: CodexCard, rarityFilter: string): boolean => {
-    if (rarityFilter === "기타") return isEtcRarity(card);
-    if ((RARITY_DETAIL_ORDER as readonly string[]).includes(rarityFilter)) {
-      return annotateCard(card).rarityDetail === rarityFilter;
-    }
-    return card.rarity === rarityFilter;
-  }, []);
 
   const versionedCards = useMemo(() => {
     return versionCodexEntities(cards, "card", {
@@ -409,20 +272,6 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
         }
         return false;
       });
-    }
-
-    // Search token filters
-    for (const token of parsedSearch.tokens) {
-      if (token.type === "color") {
-        const cat = token.value as CardFilterCategory;
-        result = result.filter((c) => cardMatchesFilterCategory(c, cat));
-      } else if (token.type === "type") {
-        result = result.filter((c) => c.type === token.value);
-      } else if (token.type === "rarity") {
-        result = result.filter((c) => matchRaritySearch(c, token.value));
-      } else if (token.type === "cost") {
-        result = result.filter((c) => matchCost(c, token.value));
-      }
     }
 
     // Type filter
@@ -461,14 +310,14 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     }
 
     // Text search (name + description + keywords)
-    if (parsedSearch.text) {
+    if (searchText) {
       result = result.filter(
         (c) =>
-          fuzzyMatchCodexText(c.name, parsedSearch.text) ||
-          fuzzyMatchCodexText(c.nameEn, parsedSearch.text) ||
-          stripCodexMarkup(c.description).toLowerCase().includes(parsedSearch.text) ||
-          c.keywords.some((kw) => kw.toLowerCase().includes(parsedSearch.text)) ||
-          Object.values(c.keywordLabels).some((kw) => kw.toLowerCase().includes(parsedSearch.text))
+          fuzzyMatchCodexText(c.name, searchText) ||
+          fuzzyMatchCodexText(c.nameEn, searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(c.description), searchText) ||
+          c.keywords.some((kw) => fuzzyMatchCodexText(kw, searchText)) ||
+          Object.values(c.keywordLabels).some((kw) => fuzzyMatchCodexText(kw, searchText))
       );
     }
 
@@ -504,9 +353,8 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     selectedRarities,
     selectedRarityDetails,
     selectedCosts,
-    parsedSearch,
+    searchText,
     matchCost,
-    matchRaritySearch,
     sortKeys,
     sortDirs,
     engagementSort,
@@ -519,8 +367,8 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   // Build a stable key from filter inputs to reset visibleCount on change
   const filterKey = useMemo(
     () =>
-      `${[...selectedColors].sort()}-${[...selectedTypes].sort()}-${[...selectedRarities].sort()}-${[...selectedRarityDetails].sort()}-${[...selectedCosts].sort()}-${parsedSearch.text}`,
-    [selectedColors, selectedTypes, selectedRarities, selectedRarityDetails, selectedCosts, parsedSearch],
+      `${[...selectedColors].sort()}-${[...selectedTypes].sort()}-${[...selectedRarities].sort()}-${[...selectedRarityDetails].sort()}-${[...selectedCosts].sort()}-${searchText}`,
+    [selectedColors, selectedTypes, selectedRarities, selectedRarityDetails, selectedCosts, searchText],
   );
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -734,6 +582,13 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       isMobile={isMobile}
       sidebar={(
         <>
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          inputId="codex-filter-search"
+          placeholder={serviceLocale === "ko" ? "검색" : "Search"}
+        />
+
         {/* Character + Extra Filters (5 per row, 2 rows) */}
         <FilterSection trigger="@" label={serviceText.labels.affiliation} sortDir={sortDirs.color} onSortToggle={() => toggleSort("color")} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="grid grid-cols-5 gap-1.5">
@@ -907,15 +762,6 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           closeFiltersLabel={serviceText.common.closeFilters}
           openFiltersLabel={serviceText.common.openFilters}
           title={gameUi.cardLibraryTitle}
-          search={(
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              inputId="codex-search"
-              triggerGroups={searchTriggers}
-              placeholder={gameUi.cardLibrary.searchPlaceholder}
-            />
-          )}
           count={formatCodexCount(filteredCards.length, serviceText.labels.cards, serviceLocale)}
           trailing={(
             <VersionSelector

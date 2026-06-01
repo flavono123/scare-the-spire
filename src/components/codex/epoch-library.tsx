@@ -29,9 +29,7 @@ import {
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
   fuzzyMatchCodexText,
-  parseCodexSearch,
   stripCodexMarkup,
-  type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
 import type { STS2Change } from "@/lib/types";
 import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
@@ -46,17 +44,12 @@ import { EpochDetail } from "./epoch-detail";
 import { VersionSelector } from "./version-selector";
 import { EVENT_FILTER_ICON, getCharacterTokenIcon } from "./codex-filter-assets";
 import {
-  EPOCH_AFFILIATION_ALIASES,
-  EPOCH_UNLOCK_CONDITION_ALIASES,
-  EPOCH_UNLOCK_REWARD_ALIASES,
   getEpochAffiliationColor,
   getEpochAffiliationLabel,
   getEpochUnlockConditionLabel,
   getEpochUnlockRewardColor,
   getEpochUnlockRewardLabel,
 } from "./epoch-display";
-
-type EpochSearchTokenType = "affiliation" | "condition" | "reward";
 
 const AFFILIATION_ICONS: Partial<Record<EpochAffiliation, string>> = {
   ironclad: getCharacterTokenIcon("ironclad", "/images/sts2/characters/character_icon_ironclad.webp"),
@@ -174,52 +167,19 @@ export function EpochLibrary({
     return () => window.removeEventListener("keydown", handler);
   }, [selectedEpoch]);
 
-  useEffect(() => {
-    const handler = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
-        event.preventDefault();
-        document.getElementById("codex-search")?.focus();
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
-
-  const epochTriggers = useMemo(
-    () => getEpochTriggers(serviceText, serviceLocale),
-    [serviceText, serviceLocale],
-  );
-  const parsedSearch = useMemo(
-    () => parseCodexSearch(searchQuery, epochTriggers),
-    [searchQuery, epochTriggers],
-  );
+  const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   const activeAffiliations = useMemo(
-    () => new Set<EpochAffiliation>([
-      ...selectedAffiliations,
-      ...parsedSearch.tokens
-        .filter((token) => token.type === "affiliation")
-        .map((token) => token.value as EpochAffiliation),
-    ]),
-    [selectedAffiliations, parsedSearch.tokens],
+    () => new Set<EpochAffiliation>(selectedAffiliations),
+    [selectedAffiliations],
   );
   const activeUnlockConditions = useMemo(
-    () => new Set<EpochUnlockCondition>([
-      ...selectedUnlockConditions,
-      ...parsedSearch.tokens
-        .filter((token) => token.type === "condition")
-        .map((token) => token.value as EpochUnlockCondition),
-    ]),
-    [selectedUnlockConditions, parsedSearch.tokens],
+    () => new Set<EpochUnlockCondition>(selectedUnlockConditions),
+    [selectedUnlockConditions],
   );
   const activeUnlockRewards = useMemo(
-    () => new Set<EpochUnlockReward>([
-      ...selectedUnlockRewards,
-      ...parsedSearch.tokens
-        .filter((token) => token.type === "reward")
-        .map((token) => token.value as EpochUnlockReward),
-    ]),
-    [selectedUnlockRewards, parsedSearch.tokens],
+    () => new Set<EpochUnlockReward>(selectedUnlockRewards),
+    [selectedUnlockRewards],
   );
 
   const filteredEpochs = useMemo(() => {
@@ -243,17 +203,17 @@ export function EpochLibrary({
         return false;
       }
 
-      if (!parsedSearch.text) return true;
+      if (!searchText) return true;
       return (
-        fuzzyMatchCodexText(epoch.name, parsedSearch.text) ||
-        fuzzyMatchCodexText(epoch.nameEn, parsedSearch.text) ||
-        fuzzyMatchCodexText(epoch.eraName ?? "", parsedSearch.text) ||
-        stripCodexMarkup(epoch.description).toLowerCase().includes(parsedSearch.text) ||
-        stripCodexMarkup(epoch.unlockInfo).toLowerCase().includes(parsedSearch.text) ||
-        stripCodexMarkup(epoch.unlockText ?? "").toLowerCase().includes(parsedSearch.text)
+        fuzzyMatchCodexText(epoch.name, searchText) ||
+        fuzzyMatchCodexText(epoch.nameEn, searchText) ||
+        fuzzyMatchCodexText(epoch.eraName ?? "", searchText) ||
+        fuzzyMatchCodexText(stripCodexMarkup(epoch.description), searchText) ||
+        fuzzyMatchCodexText(stripCodexMarkup(epoch.unlockInfo), searchText) ||
+        fuzzyMatchCodexText(stripCodexMarkup(epoch.unlockText ?? ""), searchText)
       );
     });
-  }, [versionedEpochs, activeAffiliations, activeUnlockConditions, activeUnlockRewards, parsedSearch]);
+  }, [versionedEpochs, activeAffiliations, activeUnlockConditions, activeUnlockRewards, searchText]);
 
   const groupedEpochs = useMemo(() => {
     const map = new Map<string, CodexEpoch[]>();
@@ -336,9 +296,6 @@ export function EpochLibrary({
   }, []);
 
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
-  const searchPlaceholder = serviceLocale === "ko"
-    ? `${gameUi.epochsTitle} 검색... (⌘K)`
-    : `Search ${gameUi.epochsTitle.toLowerCase()}... (⌘K)`;
 
   return (
     <CodexLibraryShell
@@ -347,6 +304,13 @@ export function EpochLibrary({
       isMobile={isMobile}
       sidebar={(
         <>
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            inputId="codex-filter-search"
+            placeholder={serviceLocale === "ko" ? "검색" : "Search"}
+          />
+
           <FilterSection trigger="@" label={serviceText.labels.affiliation}>
             <div className="grid grid-cols-5 gap-1.5">
               {EPOCH_AFFILIATION_ORDER.map((affiliation) => {
@@ -408,15 +372,6 @@ export function EpochLibrary({
           closeFiltersLabel={serviceText.common.closeFilters}
           openFiltersLabel={serviceText.common.openFilters}
           title={gameUi.epochsTitle}
-          search={(
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              inputId="codex-search"
-              triggerGroups={epochTriggers}
-              placeholder={searchPlaceholder}
-            />
-          )}
           count={formatCodexCount(filteredEpochs.length, serviceText.labels.items, serviceLocale)}
           trailing={versions && currentVersion ? (
             <VersionSelector
@@ -601,48 +556,4 @@ function formatEraLabel(label: string, year: string | null, serviceLocale: Servi
 
 function formatEpochCount(count: number, serviceLocale: ServiceLocale): string {
   return serviceLocale === "ko" ? `${count}개` : `${count} items`;
-}
-
-function getEpochTriggers(
-  serviceText: CodexServiceMessages,
-  serviceLocale: ServiceLocale,
-): CodexSearchTriggerGroup<EpochSearchTokenType>[] {
-  return [
-    {
-      trigger: "@",
-      type: "affiliation",
-      label: serviceText.labels.affiliation,
-      items: EPOCH_AFFILIATION_ORDER.map((affiliation) => ({
-        value: affiliation,
-        label: getEpochAffiliationLabel(affiliation, serviceText, serviceLocale),
-        desc: affiliation,
-      })),
-      validate: (value) => EPOCH_AFFILIATION_ALIASES[value] ?? null,
-      chipColor: "bg-yellow-500/20 text-yellow-400",
-    },
-    {
-      trigger: "#",
-      type: "condition",
-      label: serviceLocale === "ko" ? "해금 조건" : "Unlock Condition",
-      items: EPOCH_UNLOCK_CONDITION_ORDER.map((condition) => ({
-        value: condition,
-        label: getEpochUnlockConditionLabel(condition, serviceLocale),
-        desc: condition,
-      })),
-      validate: (value) => EPOCH_UNLOCK_CONDITION_ALIASES[value] ?? null,
-      chipColor: "bg-purple-500/20 text-purple-300",
-    },
-    {
-      trigger: "$",
-      type: "reward",
-      label: serviceLocale === "ko" ? "해금 대상" : "Unlock Target",
-      items: EPOCH_UNLOCK_REWARD_ORDER.map((reward) => ({
-        value: reward,
-        label: getEpochUnlockRewardLabel(reward, serviceLocale),
-        desc: reward,
-      })),
-      validate: (value) => EPOCH_UNLOCK_REWARD_ALIASES[value] ?? null,
-      chipColor: "bg-blue-500/20 text-blue-300",
-    },
-  ];
 }

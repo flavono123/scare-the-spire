@@ -20,16 +20,13 @@ import {
   PowerType,
   POWER_TYPE_ORDER,
   POWER_TYPE_CONFIG,
-  POWER_TYPE_ALIASES,
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
   fuzzyMatchCodexText,
-  parseCodexSearch,
   stripCodexMarkup,
-  type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
 import { PowerTile } from "./power-tile";
 import { PowerDetail } from "./power-detail";
@@ -41,8 +38,6 @@ import {
   CodexLibraryTopBar,
   useCodexFilterDrawer,
 } from "./codex-filter-drawer";
-
-type PowerSearchTokenType = "powerType";
 
 interface PowerLibraryProps {
   serviceLocale: ServiceLocale;
@@ -122,28 +117,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
     return versionedPowers.find((p) => p.id.toLowerCase() === selectedPowerId.toLowerCase()) ?? null;
   }, [selectedPowerId, versionedPowers]);
 
-  // Cmd+K to focus search
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        document.getElementById("codex-search")?.focus();
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
-
-  const powerTriggers = useMemo(
-    () => getPowerTriggers(serviceText, gameUi),
-    [serviceText, gameUi],
-  );
-
-  // Parse search query
-  const parsedSearch = useMemo(
-    () => parseCodexSearch(searchQuery, powerTriggers),
-    [searchQuery, powerTriggers],
-  );
+  const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   // Filtered powers
   const filteredPowers = useMemo(() => {
@@ -154,25 +128,18 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
       result = result.filter((p) => selectedTypes.has(p.type));
     }
 
-    // Search token filters
-    for (const token of parsedSearch.tokens) {
-      if (token.type === "powerType") {
-        result = result.filter((p) => p.type === token.value);
-      }
-    }
-
     // Text search
-    if (parsedSearch.text) {
+    if (searchText) {
       result = result.filter(
         (p) =>
-          fuzzyMatchCodexText(p.name, parsedSearch.text) ||
-          fuzzyMatchCodexText(p.nameEn, parsedSearch.text) ||
-          stripCodexMarkup(p.description).toLowerCase().includes(parsedSearch.text)
+          fuzzyMatchCodexText(p.name, searchText) ||
+          fuzzyMatchCodexText(p.nameEn, searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(p.description), searchText)
       );
     }
 
     return result;
-  }, [versionedPowers, selectedTypes, parsedSearch]);
+  }, [versionedPowers, selectedTypes, searchText]);
 
   // Group by type
   const groupedPowers = useMemo(() => {
@@ -212,6 +179,13 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
       isMobile={isMobile}
       sidebar={(
         <>
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          inputId="codex-filter-search"
+          placeholder={serviceLocale === "ko" ? "검색" : "Search"}
+        />
+
         {/* Type filter */}
         <FilterSection trigger="#" label={serviceText.powersView.typeFilter}>
           <div className="flex flex-col gap-0.5">
@@ -261,15 +235,6 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
           closeFiltersLabel={serviceText.common.closeFilters}
           openFiltersLabel={serviceText.common.openFilters}
           title={title}
-          search={(
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              inputId="codex-search"
-              triggerGroups={powerTriggers}
-              placeholder={serviceText.powersView.searchPlaceholder}
-            />
-          )}
           count={formatCodexCount(filteredPowers.length, serviceText.labels.powers, serviceLocale)}
           trailing={versions && versions.length > 0 && currentVersion ? (
             <VersionSelector
@@ -370,24 +335,4 @@ function getPowerTypeDescription(
   gameUi: CodexGameUiLabels,
 ): string {
   return gameUi.powers.types[type].description || (type === "None" ? serviceText.labels.powerTypes[type].description : "");
-}
-
-function getPowerTriggers(
-  serviceText: CodexServiceMessages,
-  gameUi: CodexGameUiLabels,
-): CodexSearchTriggerGroup<PowerSearchTokenType>[] {
-  return [
-    {
-      trigger: "#",
-      type: "powerType",
-      label: serviceText.powersView.typeFilter,
-      items: [
-        { value: "buff", label: getPowerTypeLabel("Buff", serviceText, gameUi), desc: "Buff" },
-        { value: "debuff", label: getPowerTypeLabel("Debuff", serviceText, gameUi), desc: "Debuff" },
-        { value: "other", label: getPowerTypeLabel("None", serviceText, gameUi), desc: "Other" },
-      ],
-      validate: (val) => POWER_TYPE_ALIASES[val] ?? null,
-      chipColor: "bg-green-500/20 text-green-400",
-    },
-  ];
 }

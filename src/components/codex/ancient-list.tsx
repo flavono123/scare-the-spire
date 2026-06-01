@@ -17,15 +17,12 @@ import {
 } from "@/lib/codex-service";
 import type { CodexAncient, CodexCard, CodexRelic, EventAct } from "@/lib/codex-types";
 import {
-  EVENT_ACT_ALIASES,
   EVENT_ACT_ORDER,
   EVENT_ACT_UNKNOWN,
 } from "@/lib/codex-types";
 import {
   fuzzyMatchCodexText,
-  parseCodexSearch,
   stripCodexMarkup,
-  type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
 import { withEntityLifecycleForVersion } from "@/lib/entity-lifecycle";
 import { FilterSection } from "./codex-filters";
@@ -38,7 +35,6 @@ import { SearchBar } from "./search-bar";
 import { AncientDetail } from "./ancient-detail";
 import { VersionSelector } from "./version-selector";
 
-type AncientSearchTokenType = "act";
 const COMPENDIUM_ACT_COLOR = "#60a5fa";
 const COMPENDIUM_ACT_TEXT_CLASS = "text-blue-300";
 
@@ -158,48 +154,24 @@ export function AncientList({
     return () => window.removeEventListener("keydown", handler);
   }, [selectedAncient]);
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        document.getElementById("codex-search")?.focus();
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
-
-  const ancientTriggers = useMemo(
-    () => getAncientTriggers(serviceText, gameUi),
-    [serviceText, gameUi],
-  );
-
-  const parsedSearch = useMemo(
-    () => parseCodexSearch(searchQuery, ancientTriggers),
-    [searchQuery, ancientTriggers],
-  );
+  const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   const filteredAncients = useMemo(() => {
     return versionedAncients.filter((ancient) => {
       const actKey = ancient.act ?? "none";
       if (selectedActs.size > 0 && !selectedActs.has(actKey)) return false;
 
-      const actTokens = parsedSearch.tokens.filter((token) => token.type === "act");
-      if (actTokens.length > 0 && !actTokens.some((token) => token.value === actKey)) {
-        return false;
-      }
-
-      if (!parsedSearch.text) return true;
+      if (!searchText) return true;
 
       return (
-        fuzzyMatchCodexText(ancient.name, parsedSearch.text) ||
-        fuzzyMatchCodexText(ancient.nameEn, parsedSearch.text) ||
-        fuzzyMatchCodexText(ancient.epithet, parsedSearch.text) ||
-        fuzzyMatchCodexText(ancient.epithetEn, parsedSearch.text) ||
-        stripCodexMarkup(ancient.description).toLowerCase().includes(parsedSearch.text)
+        fuzzyMatchCodexText(ancient.name, searchText) ||
+        fuzzyMatchCodexText(ancient.nameEn, searchText) ||
+        fuzzyMatchCodexText(ancient.epithet, searchText) ||
+        fuzzyMatchCodexText(ancient.epithetEn, searchText) ||
+        fuzzyMatchCodexText(stripCodexMarkup(ancient.description), searchText)
       );
     });
-  }, [versionedAncients, selectedActs, parsedSearch]);
+  }, [versionedAncients, selectedActs, searchText]);
 
   const groupedAncients = useMemo(() => {
     const groups: { act: EventAct | null; label: string; color: string; ancients: CodexAncient[] }[] = [];
@@ -238,9 +210,6 @@ export function AncientList({
   }, []);
 
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
-  const searchPlaceholder = serviceLocale === "ko"
-    ? `${gameUi.ancientsTitle} 검색...`
-    : `Search ${gameUi.ancientsTitle.toLowerCase()}...`;
 
   return (
     <CodexLibraryShell
@@ -248,33 +217,42 @@ export function AncientList({
       setSidebarOpen={setSidebarOpen}
       isMobile={isMobile}
       sidebar={(
-        <FilterSection trigger="%" label={serviceText.eventsView.actFilter}>
-          <div className="flex flex-col gap-0.5">
-            {EVENT_ACT_ORDER.map((act) => {
-              const key = act ?? "none";
-              const count = actCounts.get(key) ?? 0;
-              const label = getActLabel(act, serviceText, gameUi);
-              return (
-                <button
-                  key={key}
-                  onClick={() => toggleAct(key)}
-                  className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
-                    selectedActs.has(key)
-                      ? "bg-yellow-500/20 text-yellow-400"
-                      : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
-                  }`}
-                >
-                  <span
-                    className="w-2 h-2 rounded-full shrink-0"
-                    style={{ backgroundColor: act ? COMPENDIUM_ACT_COLOR : "#666" }}
-                  />
-                  <span className={act ? COMPENDIUM_ACT_TEXT_CLASS : "text-zinc-400"}>{label}</span>
-                  <span className="text-xs text-zinc-600">({count})</span>
-                </button>
-              );
-            })}
-          </div>
-        </FilterSection>
+        <>
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            inputId="codex-filter-search"
+            placeholder={serviceLocale === "ko" ? "검색" : "Search"}
+          />
+
+          <FilterSection trigger="%" label={serviceText.eventsView.actFilter}>
+            <div className="flex flex-col gap-0.5">
+              {EVENT_ACT_ORDER.map((act) => {
+                const key = act ?? "none";
+                const count = actCounts.get(key) ?? 0;
+                const label = getActLabel(act, serviceText, gameUi);
+                return (
+                  <button
+                    key={key}
+                    onClick={() => toggleAct(key)}
+                    className={`flex items-center gap-2 text-left text-sm px-2.5 py-1 rounded transition-all ${
+                      selectedActs.has(key)
+                        ? "bg-yellow-500/20 text-yellow-400"
+                        : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
+                    }`}
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ backgroundColor: act ? COMPENDIUM_ACT_COLOR : "#666" }}
+                    />
+                    <span className={act ? COMPENDIUM_ACT_TEXT_CLASS : "text-zinc-400"}>{label}</span>
+                    <span className="text-xs text-zinc-600">({count})</span>
+                  </button>
+                );
+              })}
+            </div>
+          </FilterSection>
+        </>
       )}
     >
       <main className="flex-1 flex flex-col overflow-hidden">
@@ -284,15 +262,6 @@ export function AncientList({
           closeFiltersLabel={serviceText.common.closeFilters}
           openFiltersLabel={serviceText.common.openFilters}
           title={gameUi.ancientsTitle}
-          search={(
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              inputId="codex-search"
-              triggerGroups={ancientTriggers}
-              placeholder={searchPlaceholder}
-            />
-          )}
           count={formatCodexCount(filteredAncients.length, serviceText.labels.items, serviceLocale)}
           trailing={versions && currentVersion ? (
             <VersionSelector
@@ -428,26 +397,4 @@ function getActLabel(
   gameUi: CodexGameUiLabels,
 ): string {
   return act ? gameUi.acts[act] : serviceText.labels.acts.none;
-}
-
-function getAncientTriggers(
-  serviceText: CodexServiceMessages,
-  gameUi: CodexGameUiLabels,
-): CodexSearchTriggerGroup<AncientSearchTokenType>[] {
-  return [
-    {
-      trigger: "%",
-      type: "act",
-      label: serviceText.eventsView.actFilter,
-      items: [
-        { value: "act1", label: gameUi.acts["Act 1 - Overgrowth"], desc: "Act 1 Overgrowth" },
-        { value: "underdocks", label: gameUi.acts.Underdocks, desc: "Underdocks" },
-        { value: "act2", label: gameUi.acts["Act 2 - Hive"], desc: "Act 2 Hive" },
-        { value: "act3", label: gameUi.acts["Act 3 - Glory"], desc: "Act 3 Glory" },
-        { value: "none", label: serviceText.labels.acts.none, desc: "Any act" },
-      ],
-      validate: (val) => EVENT_ACT_ALIASES[val] ?? null,
-      chipColor: "bg-blue-500/20 text-blue-400",
-    },
-  ];
 }

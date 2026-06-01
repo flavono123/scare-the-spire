@@ -8,7 +8,6 @@ import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
   getCodexServiceMessages,
-  type CodexServiceMessages,
 } from "@/lib/codex-service";
 import {
   CodexRelic,
@@ -23,17 +22,13 @@ import {
   RelicFilterPool,
   RELIC_RARITY_ORDER,
   RELIC_RARITY_COLORS,
-  POOL_ALIASES,
-  RARITY_ALIASES,
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
   fuzzyMatchCodexText,
-  parseCodexSearch,
   stripCodexMarkup,
-  type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
 import { RelicTile } from "./relic-tile";
 import { RelicDetail } from "./relic-detail";
@@ -51,13 +46,7 @@ import {
   getCharacterTokenIcon,
 } from "./codex-filter-assets";
 
-type RelicSearchTokenType = "pool" | "rarity";
 type RelicPoolFilter = RelicFilterPool | "event";
-const RELIC_POOL_FILTER_ALIASES: Record<string, RelicPoolFilter> = {
-  ...POOL_ALIASES,
-  이벤트: "event",
-  event: "event",
-};
 
 interface RelicLibraryProps {
   serviceLocale: ServiceLocale;
@@ -151,18 +140,6 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
     });
   }, [relics, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
-  // Cmd+K to focus search
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        document.getElementById("codex-search")?.focus();
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
-
   // Character filters for pool
   const poolLabels = useMemo(() => {
     const labels: Record<RelicPool, string> = {
@@ -179,16 +156,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
     return labels;
   }, [characters, serviceText]);
 
-  const relicTriggers = useMemo(
-    () => getRelicTriggers(serviceText, gameUi, poolLabels),
-    [serviceText, gameUi, poolLabels],
-  );
-
-  // Parse search query
-  const parsedSearch = useMemo(
-    () => parseCodexSearch(searchQuery, relicTriggers),
-    [searchQuery, relicTriggers],
-  );
+  const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   // Filtered relics
   const filteredRelics = useMemo(() => {
@@ -204,29 +172,18 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
       result = result.filter((r) => selectedRarities.has(r.rarity));
     }
 
-    // Search token filters
-    for (const token of parsedSearch.tokens) {
-      if (token.type === "pool") {
-        result = result.filter((r) =>
-          token.value === "event" ? r.rarity === "이벤트 유물" : r.pool === token.value
-        );
-      } else if (token.type === "rarity") {
-        result = result.filter((r) => r.rarity === token.value);
-      }
-    }
-
     // Text search (name + description)
-    if (parsedSearch.text) {
+    if (searchText) {
       result = result.filter(
         (r) =>
-          fuzzyMatchCodexText(r.name, parsedSearch.text) ||
-          fuzzyMatchCodexText(r.nameEn, parsedSearch.text) ||
-          stripCodexMarkup(r.description).toLowerCase().includes(parsedSearch.text)
+          fuzzyMatchCodexText(r.name, searchText) ||
+          fuzzyMatchCodexText(r.nameEn, searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(r.description), searchText)
       );
     }
 
     return result;
-  }, [versionedRelics, selectedPools, selectedRarities, parsedSearch]);
+  }, [versionedRelics, selectedPools, selectedRarities, searchText]);
 
   // Group filtered relics by rarity
   const groupedRelics = useMemo(() => {
@@ -306,6 +263,13 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
       isMobile={isMobile}
       sidebar={(
         <>
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          inputId="codex-filter-search"
+          placeholder={serviceLocale === "ko" ? "검색" : "Search"}
+        />
+
         <FilterSection trigger="@" label={serviceText.labels.affiliation}>
           <div className="grid grid-cols-5 gap-1.5">
             {characterFilters.map((cf) => (
@@ -379,15 +343,6 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
           closeFiltersLabel={serviceText.common.closeFilters}
           openFiltersLabel={serviceText.common.openFilters}
           title={title}
-          search={(
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              inputId="codex-search"
-              triggerGroups={relicTriggers}
-              placeholder={serviceText.relicsView.searchPlaceholder}
-            />
-          )}
           count={formatCodexCount(filteredRelics.length, serviceText.labels.relics, serviceLocale)}
           trailing={versions && versions.length > 0 && currentVersion ? (
             <VersionSelector
@@ -495,46 +450,4 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
       )}
     </CodexLibraryShell>
   );
-}
-
-function getRelicTriggers(
-  serviceText: CodexServiceMessages,
-  gameUi: CodexGameUiLabels,
-  poolLabels: Record<RelicPool, string>,
-): CodexSearchTriggerGroup<RelicSearchTokenType>[] {
-  return [
-    {
-      trigger: "@",
-      type: "pool",
-      label: serviceText.labels.affiliation,
-      maxPreviewItems: 4,
-      items: [
-        { value: "shared", label: poolLabels.shared, desc: "Shared" },
-        { value: "ironclad", label: poolLabels.ironclad, desc: "Ironclad" },
-        { value: "silent", label: poolLabels.silent, desc: "Silent" },
-        { value: "defect", label: poolLabels.defect, desc: "Defect" },
-        { value: "necrobinder", label: poolLabels.necrobinder, desc: "Necrobinder" },
-        { value: "regent", label: poolLabels.regent, desc: "Regent" },
-        { value: "event", label: gameUi.relicCollection.rarities["이벤트 유물"].label, desc: "Event" },
-      ],
-      validate: (val) => RELIC_POOL_FILTER_ALIASES[val] ?? null,
-      chipColor: "bg-blue-500/20 text-blue-400",
-    },
-    {
-      trigger: "$",
-      type: "rarity",
-      label: gameUi.common.rarity,
-      items: [
-        { value: "starter", label: gameUi.relicCollection.rarities["시작 유물"].label, desc: "Starter" },
-        { value: "common", label: gameUi.relicCollection.rarities["일반 유물"].label, desc: "Common" },
-        { value: "uncommon", label: gameUi.relicCollection.rarities["고급 유물"].label, desc: "Uncommon" },
-        { value: "rare", label: gameUi.relicCollection.rarities["희귀 유물"].label, desc: "Rare" },
-        { value: "shop", label: gameUi.relicCollection.rarities["상점 유물"].label, desc: "Shop" },
-        { value: "event", label: gameUi.relicCollection.rarities["이벤트 유물"].label, desc: "Event" },
-        { value: "ancient", label: gameUi.relicCollection.rarities["고대 유물"].label, desc: "Ancient/Boss" },
-      ],
-      validate: (val) => RARITY_ALIASES[val] ?? null,
-      chipColor: "bg-green-500/20 text-green-400",
-    },
-  ];
 }

@@ -20,7 +20,6 @@ import {
   CodexRelic,
   EnchantmentCardTypeFilter,
   ENCHANTMENT_CARD_TYPE_CONFIG,
-  ENCHANTMENT_CARD_TYPE_ALIASES,
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -28,9 +27,7 @@ import { versionCodexEntities } from "@/lib/codex-versioning";
 import { getAfflictionCardTypeRestriction } from "@/lib/sts2-affliction-rules";
 import {
   fuzzyMatchCodexText,
-  parseCodexSearch,
   stripCodexMarkup,
-  type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
 import { EnchantmentTile } from "./enchantment-tile";
 import { EnchantmentDetail } from "./enchantment-detail";
@@ -44,7 +41,6 @@ import {
 } from "./codex-filter-drawer";
 
 const CARD_TYPE_ORDER: EnchantmentCardTypeFilter[] = ["Any", "Attack", "Skill"];
-type EnchantmentSearchTokenType = "cardType";
 type SelectedEnchantmentResource =
   | { kind: "enchantment"; item: CodexEnchantment }
   | { kind: "affliction"; item: CodexAffliction };
@@ -167,28 +163,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
     });
   }, [enchantments, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
-  // Cmd+K to focus search
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        document.getElementById("codex-search")?.focus();
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
-
-  const enchantmentTriggers = useMemo(
-    () => getEnchantmentTriggers(serviceText),
-    [serviceText],
-  );
-
-  // Parse search query
-  const parsedSearch = useMemo(
-    () => parseCodexSearch(searchQuery, enchantmentTriggers),
-    [searchQuery, enchantmentTriggers],
-  );
+  const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   // Filtered enchantments
   const filteredEnchantments = useMemo(() => {
@@ -204,25 +179,18 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
       result = result.filter((e) => e.isStackable);
     }
 
-    // Search token filters
-    for (const token of parsedSearch.tokens) {
-      if (token.type === "cardType") {
-        result = result.filter((e) => getCardTypeFilter(e.cardType) === token.value);
-      }
-    }
-
     // Text search
-    if (parsedSearch.text) {
+    if (searchText) {
       result = result.filter(
         (e) =>
-          fuzzyMatchCodexText(e.name, parsedSearch.text) ||
-          fuzzyMatchCodexText(e.nameEn, parsedSearch.text) ||
-          stripCodexMarkup(e.description).toLowerCase().includes(parsedSearch.text)
+          fuzzyMatchCodexText(e.name, searchText) ||
+          fuzzyMatchCodexText(e.nameEn, searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(e.description), searchText)
       );
     }
 
     return result;
-  }, [versionedEnchantments, selectedCardTypes, stackableOnly, parsedSearch]);
+  }, [versionedEnchantments, selectedCardTypes, stackableOnly, searchText]);
 
   const filteredAfflictions = useMemo(() => {
     let result = afflictions;
@@ -238,23 +206,17 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
       result = result.filter((a) => a.isStackable);
     }
 
-    for (const token of parsedSearch.tokens) {
-      if (token.type === "cardType") {
-        result = result.filter((a) => getAfflictionTypeFilter(a) === token.value);
-      }
-    }
-
-    if (parsedSearch.text) {
+    if (searchText) {
       result = result.filter(
         (a) =>
-          fuzzyMatchCodexText(a.name, parsedSearch.text) ||
-          fuzzyMatchCodexText(a.nameEn, parsedSearch.text) ||
-          stripCodexMarkup(a.description).toLowerCase().includes(parsedSearch.text),
+          fuzzyMatchCodexText(a.name, searchText) ||
+          fuzzyMatchCodexText(a.nameEn, searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(a.description), searchText),
       );
     }
 
     return [...result].sort((a, b) => a.name.localeCompare(b.name, "ko"));
-  }, [afflictions, selectedCardTypes, stackableOnly, parsedSearch]);
+  }, [afflictions, selectedCardTypes, stackableOnly, searchText]);
 
   const filteredResourceCount = filteredEnchantments.length + filteredAfflictions.length;
 
@@ -290,6 +252,13 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
       isMobile={isMobile}
       sidebar={(
         <>
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          inputId="codex-filter-search"
+          placeholder={serviceLocale === "ko" ? "검색" : "Search"}
+        />
+
         {/* Card type filter */}
         <FilterSection trigger="#" label={serviceText.enchantmentsView.cardTypeFilter}>
           <div className="flex flex-col gap-0.5">
@@ -335,15 +304,6 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
           closeFiltersLabel={serviceText.common.closeFilters}
           openFiltersLabel={serviceText.common.openFilters}
           title={serviceText.enchantmentsView.title}
-          search={(
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              inputId="codex-search"
-              triggerGroups={enchantmentTriggers}
-              placeholder={serviceText.enchantmentsView.searchPlaceholder}
-            />
-          )}
           count={formatCodexCount(filteredResourceCount, serviceText.labels.entries, serviceLocale)}
           trailing={versions && versions.length > 0 && currentVersion ? (
             <VersionSelector
@@ -460,23 +420,4 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
       )}
     </CodexLibraryShell>
   );
-}
-
-function getEnchantmentTriggers(
-  serviceText: CodexServiceMessages,
-): CodexSearchTriggerGroup<EnchantmentSearchTokenType>[] {
-  return [
-    {
-      trigger: "#",
-      type: "cardType",
-      label: serviceText.enchantmentsView.cardTypeFilter,
-      items: [
-        { value: "attack", label: serviceText.labels.enchantmentCardTypes.Attack.label, desc: "Attack" },
-        { value: "skill", label: serviceText.labels.enchantmentCardTypes.Skill.label, desc: "Skill" },
-        { value: "any", label: serviceText.labels.enchantmentCardTypes.Any.label, desc: "Any card type" },
-      ],
-      validate: (val) => ENCHANTMENT_CARD_TYPE_ALIASES[val] ?? null,
-      chipColor: "bg-purple-500/20 text-purple-400",
-    },
-  ];
 }

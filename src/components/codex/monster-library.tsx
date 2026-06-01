@@ -16,15 +16,9 @@ import {
   MonsterType,
   MONSTER_TYPE_CONFIG,
   MONSTER_TYPE_ORDER,
-  MONSTER_TYPE_ALIASES,
-  EVENT_ACT_ALIASES,
   EventAct,
 } from "@/lib/codex-types";
-import {
-  fuzzyMatchCodexText,
-  parseCodexSearch,
-  type CodexSearchTriggerGroup,
-} from "@/lib/codex-search";
+import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
   BESTIARY_FORCED_ACTS,
@@ -57,7 +51,6 @@ import {
 
 type MonsterViewMessages =
   (typeof serviceMessages)[ServiceLocale]["codex"]["monstersView"];
-type MonsterSearchTokenType = "monsterType" | "act";
 
 // Act display order
 const ACT_ORDER: (EventAct | null)[] = [
@@ -212,18 +205,6 @@ export function MonsterLibrary({
     return () => window.removeEventListener("keydown", handler);
   }, [closeSelectedMonster, selectedMonster]);
 
-  // Cmd+K to focus search
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        document.getElementById("monster-search")?.focus();
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
-
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
   // Build monster -> acts mapping from encounters
@@ -241,16 +222,7 @@ export function MonsterLibrary({
     return map;
   }, [versionedEncounters]);
 
-  const monsterTriggers = useMemo(
-    () => getMonsterTriggers(monsterText, gameUi),
-    [monsterText, gameUi],
-  );
-
-  // Parse search
-  const parsedSearch = useMemo(
-    () => parseCodexSearch(searchQuery, monsterTriggers),
-    [searchQuery, monsterTriggers],
-  );
+  const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   // Filter monsters
   const filteredMonsters = useMemo(() => {
@@ -277,29 +249,17 @@ export function MonsterLibrary({
       });
     }
 
-    // Search tokens
-    for (const token of parsedSearch.tokens) {
-      if (token.type === "monsterType") {
-        result = result.filter((m) => getDisplayMonsterType(m) === token.value);
-      } else if (token.type === "act") {
-        result = result.filter((m) => {
-          const acts = monsterActs.get(m.id);
-          return acts?.has(token.value === "none" ? "none" : token.value) ?? false;
-        });
-      }
-    }
-
     // Text search
-    if (parsedSearch.text) {
+    if (searchText) {
       result = result.filter(
         (m) =>
-          fuzzyMatchCodexText(m.name, parsedSearch.text) ||
-          fuzzyMatchCodexText(m.nameEn, parsedSearch.text),
+          fuzzyMatchCodexText(m.name, searchText) ||
+          fuzzyMatchCodexText(m.nameEn, searchText),
       );
     }
 
     return result;
-  }, [versionedMonsters, showOnlySkinVariants, showOnlyPhobiaMode, selectedTypes, selectedActs, parsedSearch, monsterActs]);
+  }, [versionedMonsters, showOnlySkinVariants, showOnlyPhobiaMode, selectedTypes, selectedActs, searchText, monsterActs]);
 
   const getPrimaryMonsterAct = useCallback(
     (monsterId: string): EventAct | null => {
@@ -377,6 +337,13 @@ export function MonsterLibrary({
       isMobile={isMobile}
       sidebar={(
         <>
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          inputId="codex-filter-search"
+          placeholder={serviceLocale === "ko" ? "검색" : "Search"}
+        />
+
         {/* Type Filters */}
         <FilterSection trigger="#" label={monsterText.typeFilter}>
           <div className="flex flex-col gap-0.5">
@@ -455,15 +422,6 @@ export function MonsterLibrary({
           closeFiltersLabel={commonText.closeFilters}
           openFiltersLabel={commonText.openFilters}
           title={title}
-          search={(
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              inputId="monster-search"
-              triggerGroups={monsterTriggers}
-              placeholder={monsterText.searchPlaceholder}
-            />
-          )}
           count={formatCount(filteredMonsters.length, monsterText.resultUnit, serviceLocale)}
           trailing={topBarTrailing}
         />
@@ -648,40 +606,6 @@ function MonsterTile({
       />
     </div>
   );
-}
-
-function getMonsterTriggers(
-  messages: MonsterViewMessages,
-  gameUi: CodexGameUiLabels,
-): CodexSearchTriggerGroup<MonsterSearchTokenType>[] {
-  return [
-    {
-      trigger: "#",
-      type: "monsterType",
-      label: messages.filters.typeHints.label,
-      items: MONSTER_TYPE_ORDER.map((type) => ({
-        value: type.toLowerCase(),
-        label: gameUi.monsterTypes[type].label,
-        desc: type,
-      })),
-      validate: (val) => MONSTER_TYPE_ALIASES[val] ?? null,
-      chipColor: "bg-green-500/20 text-green-400",
-    },
-    {
-      trigger: "%",
-      type: "act",
-      label: messages.filters.actHints.label,
-      items: [
-        { value: "act1", label: gameUi.acts["Act 1 - Overgrowth"], desc: "Act 1 Overgrowth" },
-        { value: "underdocks", label: gameUi.acts.Underdocks, desc: "Underdocks" },
-        { value: "act2", label: gameUi.acts["Act 2 - Hive"], desc: "Act 2 Hive" },
-        { value: "act3", label: gameUi.acts["Act 3 - Glory"], desc: "Act 3 Glory" },
-        { value: "none", label: messages.acts.none, desc: "Any act" },
-      ],
-      validate: (val) => EVENT_ACT_ALIASES[val] ?? null,
-      chipColor: "bg-blue-500/20 text-blue-400",
-    },
-  ];
 }
 
 function formatCount(count: number, unit: string, serviceLocale: ServiceLocale): string {

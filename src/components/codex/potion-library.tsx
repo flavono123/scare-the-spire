@@ -12,7 +12,6 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
   formatCodexCount,
   getCodexServiceMessages,
-  type CodexServiceMessages,
 } from "@/lib/codex-service";
 import {
   CodexCard,
@@ -23,17 +22,13 @@ import {
   CodexPower,
   PotionRarityKo,
   PotionPool,
-  POOL_ALIASES,
-  POTION_RARITY_ALIASES,
   characterOutlineFilter,
 } from "@/lib/codex-types";
 import type { STS2Patch, STS2Change, EntityVersionDiff } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
 import {
   fuzzyMatchCodexText,
-  parseCodexSearch,
   stripCodexMarkup,
-  type CodexSearchTriggerGroup,
 } from "@/lib/codex-search";
 import { VersionSelector } from "./version-selector";
 import { SearchBar } from "./search-bar";
@@ -95,8 +90,6 @@ const CHARACTER_POOLS: PotionPool[] = [
   "necrobinder",
   "regent",
 ];
-
-type PotionSearchTokenType = "pool" | "rarity";
 
 interface PotionLibraryProps {
   serviceLocale: ServiceLocale;
@@ -187,30 +180,9 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
     });
   }, [potions, selectedVersion, currentVersion, versionDiffs, patches, changes]);
 
-  // Cmd+K to focus search
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        document.getElementById("potion-search")?.focus();
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
-
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
-  const potionTriggers = useMemo(
-    () => getPotionTriggers(serviceText, gameUi),
-    [serviceText, gameUi],
-  );
-
-  // Parse search query for @ (pool) and $ (rarity) tokens
-  const parsedSearch = useMemo(
-    () => parseCodexSearch(searchQuery, potionTriggers),
-    [searchQuery, potionTriggers],
-  );
+  const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   // Filter potions
   const filteredPotions = useMemo(() => {
@@ -236,27 +208,18 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
       );
     }
 
-    // Search token filters
-    for (const token of parsedSearch.tokens) {
-      if (token.type === "pool") {
-        result = result.filter((p) => p.pool === token.value);
-      } else if (token.type === "rarity") {
-        result = result.filter((p) => p.rarity === token.value);
-      }
-    }
-
     // Text search
-    if (parsedSearch.text) {
+    if (searchText) {
       result = result.filter(
         (p) =>
-          fuzzyMatchCodexText(p.name, parsedSearch.text) ||
-          fuzzyMatchCodexText(p.nameEn, parsedSearch.text) ||
-          stripCodexMarkup(p.description).toLowerCase().includes(parsedSearch.text)
+          fuzzyMatchCodexText(p.name, searchText) ||
+          fuzzyMatchCodexText(p.nameEn, searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(p.description), searchText)
       );
     }
 
     return result;
-  }, [versionedPotions, selectedPools, selectedRarities, selectedFutureOutcomes, parsedSearch]);
+  }, [versionedPotions, selectedPools, selectedRarities, selectedFutureOutcomes, searchText]);
 
   // Group by rarity sections
   const sections = useMemo(() => {
@@ -343,6 +306,13 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
       isMobile={isMobile}
       sidebar={(
         <>
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          inputId="codex-filter-search"
+          placeholder={serviceLocale === "ko" ? "검색" : "Search"}
+        />
+
         {/* Character/Pool Filters */}
         <FilterSection trigger="@" label={serviceText.labels.affiliation}>
           <div className="grid grid-cols-5 gap-1.5">
@@ -425,15 +395,6 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
           closeFiltersLabel={serviceText.common.closeFilters}
           openFiltersLabel={serviceText.common.openFilters}
           title={title}
-          search={(
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              inputId="potion-search"
-              triggerGroups={potionTriggers}
-              placeholder={serviceText.potionsView.searchPlaceholder}
-            />
-          )}
           count={formatCodexCount(filteredPotions.length, serviceText.labels.potions, serviceLocale)}
           trailing={versions && versions.length > 0 && currentVersion ? (
             <VersionSelector
@@ -597,45 +558,6 @@ function PotionTile({
       )}
     </div>
   );
-}
-
-function getPotionTriggers(
-  serviceText: CodexServiceMessages,
-  gameUi: CodexGameUiLabels,
-): CodexSearchTriggerGroup<PotionSearchTokenType>[] {
-  return [
-    {
-      trigger: "@",
-      type: "pool",
-      label: serviceText.labels.affiliation,
-      items: [
-        { value: "ironclad", label: serviceText.labels.pools.ironclad, desc: "Ironclad" },
-        { value: "silent", label: serviceText.labels.pools.silent, desc: "Silent" },
-        { value: "defect", label: serviceText.labels.pools.defect, desc: "Defect" },
-        { value: "necrobinder", label: serviceText.labels.pools.necrobinder, desc: "Necrobinder" },
-        { value: "regent", label: serviceText.labels.pools.regent, desc: "Regent" },
-        { value: "shared", label: serviceText.labels.pools.shared, desc: "Shared" },
-        { value: "event", label: gameUi.eventsTitle, desc: "Event" },
-      ],
-      validate: (val) => POOL_ALIASES[val] ?? null,
-      chipColor: "bg-blue-500/20 text-blue-400",
-      maxPreviewItems: 4,
-    },
-    {
-      trigger: "$",
-      type: "rarity",
-      label: gameUi.common.rarity,
-      items: [
-        { value: "common", label: gameUi.potionLab.rarities.일반.label, desc: "Common" },
-        { value: "uncommon", label: gameUi.potionLab.rarities.고급.label, desc: "Uncommon" },
-        { value: "rare", label: gameUi.potionLab.rarities.희귀.label, desc: "Rare" },
-        { value: "event", label: gameUi.potionLab.rarities.이벤트.label, desc: "Event" },
-        { value: "token", label: gameUi.potionLab.rarities.토큰.label, desc: "Token" },
-      ],
-      validate: (val) => POTION_RARITY_ALIASES[val] ?? null,
-      chipColor: "bg-green-500/20 text-green-400",
-    },
-  ];
 }
 
 function getPotionSectionKey(rarity: PotionRarityKo): string {
