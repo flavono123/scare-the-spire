@@ -4,7 +4,6 @@ import Image from "@/components/ui/static-image";
 import { GameCheckboxToggle } from "./game-checkbox";
 
 export function FilterSection({
-  trigger,
   label,
   children,
   sortDir,
@@ -21,11 +20,6 @@ export function FilterSection({
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center gap-1.5 bg-[#3a5a5a]/60 rounded px-2 py-1">
-        {trigger && (
-          <span className="text-[10px] font-mono font-bold text-yellow-500/70 bg-yellow-500/10 rounded px-1 py-0.5 leading-none">
-            {trigger}
-          </span>
-        )}
         {label && (
           <span className="text-sm text-gray-200 font-bold tracking-wide">
             {label}
