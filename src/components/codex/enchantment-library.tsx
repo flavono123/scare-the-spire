@@ -185,7 +185,9 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
         (e) =>
           fuzzyMatchCodexText(e.name, searchText) ||
           fuzzyMatchCodexText(e.nameEn, searchText) ||
-          fuzzyMatchCodexText(stripCodexMarkup(e.description), searchText)
+          fuzzyMatchCodexText(stripCodexMarkup(e.description), searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(e.descriptionEn), searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(e.extraCardTextEn ?? ""), searchText)
       );
     }
 
@@ -211,7 +213,9 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
         (a) =>
           fuzzyMatchCodexText(a.name, searchText) ||
           fuzzyMatchCodexText(a.nameEn, searchText) ||
-          fuzzyMatchCodexText(stripCodexMarkup(a.description), searchText),
+          fuzzyMatchCodexText(stripCodexMarkup(a.description), searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(a.descriptionEn), searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(a.extraCardTextEn ?? ""), searchText),
       );
     }
 

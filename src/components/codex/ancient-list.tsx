@@ -168,7 +168,8 @@ export function AncientList({
         fuzzyMatchCodexText(ancient.nameEn, searchText) ||
         fuzzyMatchCodexText(ancient.epithet, searchText) ||
         fuzzyMatchCodexText(ancient.epithetEn, searchText) ||
-        fuzzyMatchCodexText(stripCodexMarkup(ancient.description), searchText)
+        fuzzyMatchCodexText(stripCodexMarkup(ancient.description), searchText) ||
+        fuzzyMatchCodexText(stripCodexMarkup(ancient.descriptionEn), searchText)
       );
     });
   }, [versionedAncients, selectedActs, searchText]);

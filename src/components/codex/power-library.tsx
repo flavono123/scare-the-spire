@@ -134,7 +134,8 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
         (p) =>
           fuzzyMatchCodexText(p.name, searchText) ||
           fuzzyMatchCodexText(p.nameEn, searchText) ||
-          fuzzyMatchCodexText(stripCodexMarkup(p.description), searchText)
+          fuzzyMatchCodexText(stripCodexMarkup(p.description), searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(p.descriptionEn), searchText)
       );
     }
 

@@ -26,7 +26,7 @@ import {
 } from "@/lib/codex-types";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { versionCodexEntities } from "@/lib/codex-versioning";
-import { fuzzyMatchCodexText } from "@/lib/codex-search";
+import { fuzzyMatchCodexText, stripCodexMarkup } from "@/lib/codex-search";
 import { SearchBar } from "./search-bar";
 import { VersionSelector } from "./version-selector";
 import { FilterSection } from "./codex-filters";
@@ -264,7 +264,9 @@ export function EventList({
       if (searchText) {
         const nameMatch = fuzzyMatchCodexText(e.name, searchText);
         const nameEnMatch = fuzzyMatchCodexText(e.nameEn, searchText);
-        if (!nameMatch && !nameEnMatch) return false;
+        const descriptionMatch = fuzzyMatchCodexText(stripCodexMarkup(e.description), searchText);
+        const descriptionEnMatch = fuzzyMatchCodexText(stripCodexMarkup(e.descriptionEn), searchText);
+        if (!nameMatch && !nameEnMatch && !descriptionMatch && !descriptionEnMatch) return false;
       }
       return true;
     });

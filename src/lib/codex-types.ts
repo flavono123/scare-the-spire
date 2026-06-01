@@ -39,7 +39,9 @@ export interface CodexCard extends CodexLifecycle {
   name: string; // selected game locale
   nameEn: string; // English
   description: string; // selected game locale, with BBCode markup
+  descriptionEn: string; // English, with BBCode markup
   descriptionRaw: string; // selected game locale, with {Var:diff()} templates
+  descriptionRawEn: string; // English, with {Var:diff()} templates
   madScienceBaseDescriptionRaw?: string; // original Mad Science template for variant recomputation
   vars: Record<string, number>; // Base variable values for description template
   cost: number;
@@ -166,7 +168,9 @@ export interface CodexRelic extends CodexLifecycle {
   name: string; // Korean
   nameEn: string; // English
   description: string; // Korean, with BBCode markup (templates baked from vars)
+  descriptionEn: string; // English, with BBCode markup (templates baked from vars)
   descriptionRaw: string; // Korean, with {Var} templates
+  descriptionRawEn: string; // English, with {Var} templates
   vars: Record<string, number | string>; // Base variable values for description template
   flavor: string;
   rarity: RelicRarityKo;
@@ -287,7 +291,9 @@ export interface CodexPotion extends CodexLifecycle {
   name: string; // Korean
   nameEn: string; // English
   description: string; // Korean, with BBCode markup (templates baked from vars)
+  descriptionEn: string; // English, with BBCode markup (templates baked from vars)
   descriptionRaw: string; // Korean, with {Var:diff()} templates
+  descriptionRawEn: string; // English, with {Var:diff()} templates
   vars: Record<string, number | string>; // Base variable values for description template
   rarity: PotionRarityKo;
   pool: PotionPool;
@@ -358,7 +364,9 @@ export interface CodexPower extends CodexLifecycle {
   name: string;        // Korean
   nameEn: string;      // English
   description: string; // Korean, with BBCode markup (templates baked from vars)
+  descriptionEn: string; // English, with BBCode markup (templates baked from vars)
   descriptionRaw: string | null;
+  descriptionRawEn: string | null;
   vars: Record<string, number | string>; // Base variable values for description template
   type: PowerType;
   stackType: PowerStackType;
@@ -394,8 +402,11 @@ export interface CodexEnchantment extends CodexLifecycle {
   name: string;        // Korean
   nameEn: string;      // English
   description: string; // Korean, with BBCode markup
+  descriptionEn: string; // English, with BBCode markup
   descriptionRaw: string | null;
+  descriptionRawEn: string | null;
   extraCardText: string | null;
+  extraCardTextEn: string | null;
   vars: Record<string, number>; // Base variable values from extracted game code
   cardType: "Attack" | "Skill" | null; // null = any card type
   isStackable: boolean;
@@ -408,8 +419,11 @@ export interface CodexAffliction extends CodexLifecycle {
   name: string;        // selected game locale
   nameEn: string;      // English
   description: string; // selected game locale, with BBCode markup
+  descriptionEn: string; // English, with BBCode markup
   descriptionRaw: string | null;
+  descriptionRawEn: string | null;
   extraCardText: string | null;
+  extraCardTextEn: string | null;
   isStackable: boolean;
   imageUrl: string | null; // local path
 }
@@ -452,6 +466,7 @@ export interface CodexEvent extends CodexLifecycle {
   name: string;        // Korean
   nameEn: string;      // English
   description: string; // Korean, with BBCode markup
+  descriptionEn: string; // English, with BBCode markup
   act: EventAct | null;
   acts: EventAct[] | null;
   options: EventOption[] | null;
@@ -473,6 +488,7 @@ export interface CodexAncient extends CodexLifecycle {
   epithet: string;     // Korean title/alias
   epithetEn: string;   // English title/alias
   description: string; // Korean, with BBCode markup
+  descriptionEn: string; // English, with BBCode markup
   act: EventAct | null;
   relicIds: string[];  // IDs of relics this ancient drops
   dialogue: Record<string, AncientDialogueLine[]>; // key = character name or "Returning"/"First Visit"
@@ -578,6 +594,7 @@ export interface CodexEpoch extends CodexLifecycle {
   name: string;        // selected game locale
   nameEn: string;      // English
   description: string; // selected game locale, with BBCode markup
+  descriptionEn: string; // English, with BBCode markup
   era: string;
   eraGroup: string;
   eraName: string | null;
@@ -588,7 +605,9 @@ export interface CodexEpoch extends CodexLifecycle {
   affiliation: EpochAffiliation;
   affiliations: EpochAffiliation[];
   unlockInfo: string;
+  unlockInfoEn: string;
   unlockText: string | null;
+  unlockTextEn: string | null;
   unlockConditions: EpochUnlockCondition[];
   unlockRewards: EpochUnlockReward[];
   unlocksCards: string[];

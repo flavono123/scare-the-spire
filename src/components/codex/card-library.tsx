@@ -316,6 +316,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           fuzzyMatchCodexText(c.name, searchText) ||
           fuzzyMatchCodexText(c.nameEn, searchText) ||
           fuzzyMatchCodexText(stripCodexMarkup(c.description), searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(c.descriptionEn), searchText) ||
           c.keywords.some((kw) => fuzzyMatchCodexText(kw, searchText)) ||
           Object.values(c.keywordLabels).some((kw) => fuzzyMatchCodexText(kw, searchText))
       );

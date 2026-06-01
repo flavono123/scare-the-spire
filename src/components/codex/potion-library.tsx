@@ -214,7 +214,8 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
         (p) =>
           fuzzyMatchCodexText(p.name, searchText) ||
           fuzzyMatchCodexText(p.nameEn, searchText) ||
-          fuzzyMatchCodexText(stripCodexMarkup(p.description), searchText)
+          fuzzyMatchCodexText(stripCodexMarkup(p.description), searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(p.descriptionEn), searchText)
       );
     }
 

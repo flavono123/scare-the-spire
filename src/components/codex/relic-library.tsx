@@ -178,7 +178,8 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
         (r) =>
           fuzzyMatchCodexText(r.name, searchText) ||
           fuzzyMatchCodexText(r.nameEn, searchText) ||
-          fuzzyMatchCodexText(stripCodexMarkup(r.description), searchText)
+          fuzzyMatchCodexText(stripCodexMarkup(r.description), searchText) ||
+          fuzzyMatchCodexText(stripCodexMarkup(r.descriptionEn), searchText)
       );
     }
 

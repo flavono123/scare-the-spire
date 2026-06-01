@@ -209,8 +209,11 @@ export function EpochLibrary({
         fuzzyMatchCodexText(epoch.nameEn, searchText) ||
         fuzzyMatchCodexText(epoch.eraName ?? "", searchText) ||
         fuzzyMatchCodexText(stripCodexMarkup(epoch.description), searchText) ||
+        fuzzyMatchCodexText(stripCodexMarkup(epoch.descriptionEn), searchText) ||
         fuzzyMatchCodexText(stripCodexMarkup(epoch.unlockInfo), searchText) ||
-        fuzzyMatchCodexText(stripCodexMarkup(epoch.unlockText ?? ""), searchText)
+        fuzzyMatchCodexText(stripCodexMarkup(epoch.unlockInfoEn), searchText) ||
+        fuzzyMatchCodexText(stripCodexMarkup(epoch.unlockText ?? ""), searchText) ||
+        fuzzyMatchCodexText(stripCodexMarkup(epoch.unlockTextEn ?? ""), searchText)
       );
     });
   }, [versionedEpochs, activeAffiliations, activeUnlockConditions, activeUnlockRewards, searchText]);

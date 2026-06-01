@@ -378,12 +378,16 @@ function mapCard(
 ): CodexCard {
   const vars = kor.vars ?? {};
   const raw = gameText(gameCards, `${kor.id}.description`, kor.description_raw);
+  const varsEn = eng.vars ?? vars;
+  const rawEn = eng.description_raw ?? eng.description;
   return {
     id: kor.id,
     name: gameTitleText(gameCards, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: bakeDescription(raw, vars),
+    descriptionEn: bakeDescription(rawEn, varsEn),
     descriptionRaw: raw,
+    descriptionRawEn: rawEn,
     vars,
     cost: kor.cost,
     isXCost: kor.is_x_cost ?? false,
@@ -536,17 +540,21 @@ function mapRelic(
 ): CodexRelic {
   const baseUrl = spireCodexImageToLocal(kor.image_url);
   const vars = kor.vars ?? {};
+  const varsEn = eng.vars ?? vars;
   const raw = gameText(
     gameRelics,
     `${kor.id}.description`,
     kor.description_raw ?? kor.description,
   );
+  const rawEn = eng.description_raw ?? eng.description;
   return {
     id: kor.id,
     name: gameTitleText(gameRelics, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: bakeDescription(raw, vars),
+    descriptionEn: bakeDescription(rawEn, varsEn),
     descriptionRaw: raw,
+    descriptionRawEn: rawEn,
     vars,
     flavor: gameText(gameRelics, `${kor.id}.flavor`, kor.flavor),
     rarity: kor.rarity as RelicRarityKo,
@@ -646,17 +654,21 @@ function mapPotion(
   gameLocale: GameLocale,
 ): CodexPotion {
   const vars = kor.vars ?? {};
+  const varsEn = eng.vars ?? vars;
   const raw = gameText(
     gamePotions,
     `${kor.id}.description`,
     kor.description_raw ?? kor.description,
   );
+  const rawEn = eng.description_raw ?? eng.description;
   return {
     id: kor.id,
     name: gameTitleText(gamePotions, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: bakeDescription(raw, vars),
+    descriptionEn: bakeDescription(rawEn, varsEn),
     descriptionRaw: raw,
+    descriptionRawEn: rawEn,
     vars,
     rarity: kor.rarity as PotionRarityKo,
     pool: kor.pool as PotionPool,
@@ -781,10 +793,12 @@ function mapPower(
   gameLocale: GameLocale,
 ): CodexPower {
   const vars = { ...(kor.vars ?? {}) };
+  const varsEn = { ...(eng.vars ?? {}) };
   if (gameLocale === "eng" && eng.vars) Object.assign(vars, eng.vars);
   if (gameLocale !== "kor" && gameLocale !== "eng") delete vars.OwnerName;
   const l10nBase = powerLocalizationBase(gamePowers, kor.id);
   const fallbackPower = gameLocale === "eng" ? eng : kor;
+  const rawEn = eng.description_raw ?? eng.description;
   const powerText = powerDescriptionText(
     gamePowers,
     l10nBase,
@@ -798,7 +812,9 @@ function mapPower(
     name: gameTitleText(gamePowers, `${l10nBase}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: powerText.description ?? bakeDescription(powerText.raw ?? "", vars),
+    descriptionEn: bakeDescription(rawEn ?? "", varsEn),
     descriptionRaw: powerText.raw,
+    descriptionRawEn: rawEn,
     vars,
     type: kor.type as PowerType,
     stackType: (kor.stack_type ?? "None") as PowerStackType,
@@ -861,15 +877,21 @@ function mapEnchantment(
   gameLocale: GameLocale,
 ): CodexEnchantment {
   const vars = kor.vars ?? {};
+  const varsEn = eng.vars ?? vars;
   const raw = gameNullableText(gameEnchantments, `${kor.id}.description`, kor.description_raw);
+  const rawEn = eng.description_raw;
   const extraRaw = gameNullableText(gameEnchantments, `${kor.id}.extraCardText`, kor.extra_card_text);
+  const extraRawEn = eng.extra_card_text;
   return {
     id: kor.id,
     name: gameTitleText(gameEnchantments, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: bakeDescription(raw ?? kor.description, vars),
+    descriptionEn: bakeDescription(rawEn ?? eng.description, varsEn),
     descriptionRaw: raw,
+    descriptionRawEn: rawEn,
     extraCardText: extraRaw ? bakeDescription(extraRaw, vars) : extraRaw,
+    extraCardTextEn: extraRawEn ? bakeDescription(extraRawEn, varsEn) : extraRawEn,
     vars,
     cardType: (kor.card_type as "Attack" | "Skill" | null),
     isStackable: kor.is_stackable,
@@ -926,14 +948,19 @@ function mapAffliction(
   gameLocale: GameLocale,
 ): CodexAffliction {
   const raw = gameNullableText(gameAfflictions, `${kor.id}.description`, kor.description_raw ?? kor.description);
+  const rawEn = eng.description_raw ?? eng.description;
   const extraRaw = gameNullableText(gameAfflictions, `${kor.id}.extraCardText`, kor.extra_card_text);
+  const extraRawEn = eng.extra_card_text;
   return {
     id: kor.id,
     name: gameTitleText(gameAfflictions, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: bakeDescription(raw ?? kor.description, {}),
+    descriptionEn: bakeDescription(rawEn ?? "", {}),
     descriptionRaw: raw,
+    descriptionRawEn: rawEn,
     extraCardText: extraRaw ? bakeDescription(extraRaw, {}) : extraRaw,
+    extraCardTextEn: extraRawEn ? bakeDescription(extraRawEn, {}) : extraRawEn,
     isStackable: kor.is_stackable,
     imageUrl: AFFLICTION_IMAGE_URLS[kor.id] ?? null,
     introducedInPatch: kor.introducedInPatch,
@@ -1165,6 +1192,7 @@ function mapEpoch(
     name: selected.title,
     nameEn: eng.title,
     description: normalizeEpochMarkup(selected.description),
+    descriptionEn: normalizeEpochMarkup(eng.description),
     era: kor.era,
     eraGroup: group,
     eraName: selected.era_name ?? meta?.name ?? null,
@@ -1175,7 +1203,9 @@ function mapEpoch(
     affiliation: inferEpochPrimaryAffiliation(kor),
     affiliations: inferEpochAffiliations(kor, eng),
     unlockInfo: normalizeEpochMarkup(selected.unlock_info),
+    unlockInfoEn: normalizeEpochMarkup(eng.unlock_info),
     unlockText: selected.unlock_text ? normalizeEpochMarkup(selected.unlock_text) : null,
+    unlockTextEn: eng.unlock_text ? normalizeEpochMarkup(eng.unlock_text) : null,
     unlockConditions: inferEpochUnlockConditions(kor, eng),
     unlockRewards: inferEpochUnlockRewards(kor, eng),
     unlocksCards: kor.unlocks_cards ?? [],
@@ -1372,17 +1402,21 @@ function mapEvent(
   const fallbackEvent = gameLocale === "kor" ? kor : eng;
   const fallbackInitialPage = fallbackEvent.pages?.find((p) => p.id === "INITIAL") ?? null;
   const fallbackDescription = fallbackInitialPage?.description ?? fallbackEvent.description;
+  const engInitialPage = eng.pages?.find((p) => p.id === "INITIAL") ?? null;
+  const fallbackDescriptionEn = engInitialPage?.description ?? eng.description;
   const localizedDescription = gameText(
     gameEvents,
     `${kor.id}.pages.INITIAL.description`,
     gameText(gameEvents, `${kor.id}.description`, fallbackDescription),
   );
   const vars = eventDisplayVars(kor.id, gameLocale);
+  const varsEn = eventDisplayVars(kor.id, "eng");
   return {
     id: kor.id,
     name: gameTitleText(gameEvents, `${kor.id}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
     description: resolveEventText(localizedDescription, fallbackDescription, vars),
+    descriptionEn: resolveEventText(fallbackDescriptionEn, fallbackDescriptionEn, varsEn),
     act: (kor.act as EventAct | null),
     acts: (kor.acts as EventAct[] | null | undefined) ?? null,
     options: mapEventOptions(kor.id, "INITIAL", kor.options, fallbackInitialPage?.options ?? fallbackEvent.options, gameEvents, gameLocale),
@@ -1466,6 +1500,7 @@ function mapAncient(
       `${kor.id}.talk.firstVisitEver.0-0.ancient`,
       kor.description,
     ),
+    descriptionEn: eng.description,
     act: (kor.act as EventAct) ?? null,
     relicIds: kor.relics ?? [],
     dialogue,
