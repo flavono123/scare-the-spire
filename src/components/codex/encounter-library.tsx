@@ -23,7 +23,12 @@ import {
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import { versionCodexEntities } from "@/lib/codex-versioning";
 import { SearchBar } from "./search-bar";
-import { FilterSection } from "./codex-filters";
+import {
+  FilterSection,
+  orderByFilterSortDir,
+  toggleFilterSortDir,
+  type FilterSortDir,
+} from "./codex-filters";
 import {
   CodexLibraryShell,
   CodexLibraryTopBar,
@@ -73,6 +78,8 @@ export function EncounterLibrary({
   const [showWeakOnly, setShowWeakOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [internalSelectedVersion, setInternalSelectedVersion] = useState(currentVersion ?? "");
+  const [roomTypeSortDir, setRoomTypeSortDir] = useState<FilterSortDir>("asc");
+  const [actSortDir, setActSortDir] = useState<FilterSortDir>("asc");
   const activeVersion = selectedVersion ?? internalSelectedVersion;
   const setActiveVersion = onVersionChange ?? setInternalSelectedVersion;
   const versionedEncounters = useMemo(() => {
@@ -192,7 +199,7 @@ export function EncounterLibrary({
 
   // Group by act
   const sections = useMemo(() => {
-    const ACT_ORDER_WITH_NULL = [...EVENT_ACT_ORDER];
+    const ACT_ORDER_WITH_NULL = orderByFilterSortDir(EVENT_ACT_ORDER, actSortDir);
     return ACT_ORDER_WITH_NULL.map((act) => {
       const actKey = act ?? "none";
       const config = act ? EVENT_ACT_CONFIG[act] : EVENT_ACT_UNKNOWN;
@@ -200,7 +207,9 @@ export function EncounterLibrary({
         .filter((e) => (e.act ?? "none") === actKey)
         .sort((a, b) => {
           // Sort: weak first, then by room type order, then by name
-          const roomOrder = ROOM_TYPE_ORDER.indexOf(a.roomType) - ROOM_TYPE_ORDER.indexOf(b.roomType);
+          const roomOrder = roomTypeSortDir === "asc"
+            ? ROOM_TYPE_ORDER.indexOf(a.roomType) - ROOM_TYPE_ORDER.indexOf(b.roomType)
+            : ROOM_TYPE_ORDER.indexOf(b.roomType) - ROOM_TYPE_ORDER.indexOf(a.roomType);
           if (roomOrder !== 0) return roomOrder;
           if (a.isWeak !== b.isWeak) return a.isWeak ? 1 : -1;
           return a.name.localeCompare(b.name, "ko");
@@ -213,7 +222,7 @@ export function EncounterLibrary({
         encounters: actEncounters,
       };
     }).filter((s) => s.encounters.length > 0);
-  }, [filtered, gameUi, serviceText]);
+  }, [filtered, gameUi, serviceText, actSortDir, roomTypeSortDir]);
 
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
@@ -232,9 +241,9 @@ export function EncounterLibrary({
         />
 
         {/* Room Type Filters */}
-        <FilterSection trigger="#" label={serviceText.encountersView.roomTypeFilter}>
+        <FilterSection trigger="#" label={serviceText.encountersView.roomTypeFilter} sortDir={roomTypeSortDir} onSortToggle={() => setRoomTypeSortDir(toggleFilterSortDir)} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-col gap-0.5">
-            {ROOM_TYPE_ORDER.map((type) => {
+            {orderByFilterSortDir(ROOM_TYPE_ORDER, roomTypeSortDir).map((type) => {
               const config = ENCOUNTER_ROOM_TYPE_CONFIG[type];
               return (
                 <button
@@ -261,9 +270,9 @@ export function EncounterLibrary({
         <div className="border-t border-white/10" />
 
         {/* Act Filters */}
-        <FilterSection trigger="%" label={serviceText.encountersView.actFilter}>
+        <FilterSection trigger="%" label={serviceText.encountersView.actFilter} sortDir={actSortDir} onSortToggle={() => setActSortDir(toggleFilterSortDir)} sortTitle={serviceText.common.sortButtonTitle}>
           <div className="flex flex-col gap-0.5">
-            {EVENT_ACT_ORDER.map((act) => {
+            {orderByFilterSortDir(EVENT_ACT_ORDER, actSortDir).map((act) => {
               const config = act ? EVENT_ACT_CONFIG[act] : EVENT_ACT_UNKNOWN;
               const key = act ?? "none";
               return (
