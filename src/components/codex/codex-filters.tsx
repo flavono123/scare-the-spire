@@ -21,7 +21,7 @@ export function FilterSection({
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center gap-1.5 bg-[#3a5a5a]/60 rounded px-2 py-1">
         {label && (
-          <span className="text-sm text-gray-200 font-bold tracking-wide">
+          <span className="font-game-text text-sm font-semibold spire-gold tracking-wide">
             {label}
           </span>
         )}
