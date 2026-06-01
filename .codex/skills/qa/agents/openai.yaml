@@ -1,0 +1,4 @@
+interface:
+  display_name: "QA"
+  short_description: "Run scoped QA for this repository"
+  default_prompt: "Use  to run the QA checks that match the current implementation scope."
