@@ -7,7 +7,6 @@ import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
   getCodexServiceMessages,
-  type CodexServiceMessages,
 } from "@/lib/codex-service";
 import {
   CodexAffliction,

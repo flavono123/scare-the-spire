@@ -113,7 +113,7 @@ export function EpochLibrary({
 
   const selectEpoch = useCallback((epoch: CodexEpoch) => {
     setSelectedEpoch(epoch);
-  }, []);
+  }, [setSelectedEpoch]);
 
   useEffect(() => {
     let cancelled = false;
