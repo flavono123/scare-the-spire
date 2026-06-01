@@ -47,11 +47,11 @@ function entityHref(entity: EntityInfo): string | null {
 export async function GET() {
   const entities = await loadAllEntities({ gameLocale: "kor" });
   const items: SearchIndexItem[] = entities
-    .map((entity) => {
+    .flatMap((entity) => {
       const href = entityHref(entity);
-      if (!href) return null;
+      if (!href) return [];
 
-      return {
+      return [{
         id: entity.id,
         type: entity.type,
         title: entity.nameKo,
@@ -60,9 +60,8 @@ export async function GET() {
         descriptionEn: "",
         imageUrl: entity.imageUrl,
         href,
-      };
-    })
-    .filter((item): item is SearchIndexItem => Boolean(item));
+      }];
+    });
 
   const [patches, stories, sts2Stories] = await Promise.all([
     getSTS2Patches(),
