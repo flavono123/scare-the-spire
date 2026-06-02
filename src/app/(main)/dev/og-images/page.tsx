@@ -9,11 +9,20 @@ export const metadata = {
   },
 };
 
-export default async function OgImagesDevPage() {
+function firstParam(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default async function OgImagesDevPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   if (process.env.NODE_ENV !== "development") {
     notFound();
   }
 
+  const resolvedSearchParams = await searchParams;
   const { default: OgImagesDevDashboard } = await import("./og-images-dev-page");
-  return <OgImagesDevDashboard />;
+  return <OgImagesDevDashboard previewPath={firstParam(resolvedSearchParams.path)} />;
 }

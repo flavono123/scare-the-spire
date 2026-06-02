@@ -1,9 +1,187 @@
+import { headers } from "next/headers";
 import Image from "@/components/ui/static-image";
 import {
   getPageOgStatus,
   pageOgStatusLabel,
   type PageOgStatusRow,
 } from "@/lib/page-og-status";
+
+const productionOrigin = "https://scare-the-spire.vercel.app";
+
+type OgMetadataPreview = {
+  inputPath: string;
+  normalizedPath: string;
+  fetchUrl?: string;
+  status?: number;
+  title?: string;
+  description?: string;
+  image?: string;
+  imageDisplayUrl?: string;
+  error?: string;
+};
+
+function parseAttributes(tag: string): Record<string, string> {
+  const attrs: Record<string, string> = {};
+  const attrPattern = /([^\s=<>/"']+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = attrPattern.exec(tag)) !== null) {
+    attrs[match[1].toLowerCase()] = match[2] ?? match[3] ?? match[4] ?? "";
+  }
+
+  return attrs;
+}
+
+function decodeHtmlEntities(value: string): string {
+  const namedEntities: Record<string, string> = {
+    amp: "&",
+    apos: "'",
+    gt: ">",
+    lt: "<",
+    nbsp: " ",
+    quot: "\"",
+  };
+
+  return value.replace(/&(#x[\da-f]+|#\d+|[a-z]+);/gi, (entity, body: string) => {
+    const normalized = body.toLowerCase();
+    if (normalized.startsWith("#x")) {
+      const codePoint = Number.parseInt(normalized.slice(2), 16);
+      return Number.isFinite(codePoint) ? String.fromCodePoint(codePoint) : entity;
+    }
+    if (normalized.startsWith("#")) {
+      const codePoint = Number.parseInt(normalized.slice(1), 10);
+      return Number.isFinite(codePoint) ? String.fromCodePoint(codePoint) : entity;
+    }
+    return namedEntities[normalized] ?? entity;
+  });
+}
+
+function extractMetaContent(html: string, key: "name" | "property", value: string): string | undefined {
+  const metaPattern = /<meta\s+[^>]*>/gi;
+  let match: RegExpExecArray | null;
+
+  while ((match = metaPattern.exec(html)) !== null) {
+    const attrs = parseAttributes(match[0]);
+    if (attrs[key]?.toLowerCase() === value.toLowerCase() && attrs.content) {
+      return decodeHtmlEntities(attrs.content.trim());
+    }
+  }
+
+  return undefined;
+}
+
+function extractTitle(html: string): string | undefined {
+  const match = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  return match ? decodeHtmlEntities(match[1].trim()) : undefined;
+}
+
+function normalizePreviewPath(inputPath: string): { path?: string; error?: string } {
+  const trimmed = inputPath.trim();
+  if (!trimmed) return { error: "상대경로를 입력하세요." };
+  if (/^(?:[a-z][a-z\d+\-.]*:)?\/\//i.test(trimmed)) {
+    return { error: "외부 URL이 아니라 로컬 상대경로만 입력할 수 있습니다." };
+  }
+
+  const withoutHash = trimmed.split("#", 1)[0] ?? "";
+  const questionIndex = withoutHash.indexOf("?");
+  const rawPath = questionIndex >= 0 ? withoutHash.slice(0, questionIndex) : withoutHash;
+  const query = questionIndex >= 0 ? withoutHash.slice(questionIndex) : "";
+  const pathWithLeadingSlash = rawPath.startsWith("/") ? rawPath : `/${rawPath}`;
+  const normalizedPath = pathWithLeadingSlash.replace(/\/+/g, "/").replace(/\/$/, "") || "/";
+
+  if (normalizedPath === "/dev/og-images") {
+    return { error: "OG 이미지 확인 페이지 자신은 미리보기 대상에서 제외합니다." };
+  }
+
+  return { path: `${normalizedPath}${query}` };
+}
+
+function requestOrigin(requestHeaders: Headers): string {
+  const forwardedHost = requestHeaders.get("x-forwarded-host")?.split(",")[0]?.trim();
+  const host = forwardedHost || requestHeaders.get("host")?.split(",")[0]?.trim() || "localhost:3000";
+  const forwardedProto = requestHeaders.get("x-forwarded-proto")?.split(",")[0]?.trim();
+  const proto = forwardedProto || (/^(localhost|127\.0\.0\.1|\[::1\])(?::|$)/.test(host) ? "http" : "https");
+  return `${proto}://${host}`;
+}
+
+function localDisplayImageUrl(imageUrl: string | undefined, origin: string): string | undefined {
+  if (!imageUrl) return undefined;
+
+  try {
+    const url = new URL(imageUrl, origin);
+    if (url.origin === origin || url.origin === productionOrigin) {
+      return `${url.pathname}${url.search}`;
+    }
+    return url.href;
+  } catch {
+    return imageUrl;
+  }
+}
+
+async function getOgMetadataPreview(inputPath: string | undefined): Promise<OgMetadataPreview | null> {
+  if (!inputPath) return null;
+
+  const normalized = normalizePreviewPath(inputPath);
+  if (normalized.error || !normalized.path) {
+    return {
+      inputPath,
+      normalizedPath: inputPath,
+      error: normalized.error ?? "상대경로를 해석하지 못했습니다.",
+    };
+  }
+
+  const origin = requestOrigin(await headers());
+  const fetchUrl = new URL(normalized.path, origin);
+
+  try {
+    const response = await fetch(fetchUrl, {
+      cache: "no-store",
+      headers: {
+        accept: "text/html",
+        "user-agent": "slseoun-og-dev-preview",
+      },
+    });
+
+    if (!response.ok) {
+      return {
+        inputPath,
+        normalizedPath: normalized.path,
+        fetchUrl: fetchUrl.href,
+        status: response.status,
+        error: `페이지를 불러오지 못했습니다. HTTP ${response.status}`,
+      };
+    }
+
+    const html = await response.text();
+    const image =
+      extractMetaContent(html, "property", "og:image") ??
+      extractMetaContent(html, "name", "twitter:image");
+
+    return {
+      inputPath,
+      normalizedPath: normalized.path,
+      fetchUrl: fetchUrl.href,
+      status: response.status,
+      title:
+        extractMetaContent(html, "property", "og:title") ??
+        extractMetaContent(html, "name", "twitter:title") ??
+        extractTitle(html),
+      description:
+        extractMetaContent(html, "property", "og:description") ??
+        extractMetaContent(html, "name", "description") ??
+        extractMetaContent(html, "name", "twitter:description"),
+      image,
+      imageDisplayUrl: localDisplayImageUrl(image, origin),
+    };
+  } catch (error) {
+    return {
+      inputPath,
+      normalizedPath: normalized.path,
+      fetchUrl: fetchUrl.href,
+      error: error instanceof Error ? error.message : "페이지를 불러오지 못했습니다.",
+    };
+  }
+}
 
 function StatusBadge({ ok }: { ok: boolean }) {
   return (
@@ -61,8 +239,71 @@ function RouteChips({ rows }: { rows: PageOgStatusRow[] }) {
   );
 }
 
-export default async function OgImagesDevPage() {
+function OgMetadataPreviewCard({ preview }: { preview: OgMetadataPreview }) {
+  if (preview.error) {
+    return (
+      <div className="mt-4 rounded-md border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-100">
+        <div className="font-semibold text-red-200">미리보기 실패</div>
+        <p className="mt-1 text-red-100/80">{preview.error}</p>
+        {preview.fetchUrl ? (
+          <p className="mt-2 break-all font-mono text-xs text-red-100/60">{preview.fetchUrl}</p>
+        ) : null}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 grid gap-4 rounded-lg border border-zinc-800 bg-zinc-950/70 p-4 md:grid-cols-[260px_1fr]">
+      <div className="space-y-2">
+        <OgImagePreview
+          src={preview.imageDisplayUrl ?? preview.image ?? ""}
+          alt={preview.title ?? "OG image"}
+          className="aspect-[1000/760] w-full"
+        />
+        <p className="break-all font-mono text-xs text-zinc-500">
+          {preview.image ?? "og:image 없음"}
+        </p>
+      </div>
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500">
+          <span className="rounded-full border border-zinc-700 px-2 py-0.5">
+            HTTP {preview.status ?? "-"}
+          </span>
+          <span className="break-all font-mono">{preview.normalizedPath}</span>
+        </div>
+        <div className="mt-4 rounded-md border border-zinc-800 bg-zinc-900/60 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+            Link preview
+          </p>
+          <h3 className="mt-2 text-lg font-bold text-zinc-50">
+            {preview.title ?? "og:title 없음"}
+          </h3>
+          <p className="mt-2 text-sm leading-6 text-zinc-300">
+            {preview.description ?? "og:description 없음"}
+          </p>
+        </div>
+        <dl className="mt-4 grid gap-2 text-sm">
+          <div className="grid gap-1 md:grid-cols-[120px_1fr]">
+            <dt className="text-zinc-500">og:title</dt>
+            <dd className="break-words text-zinc-200">{preview.title ?? "-"}</dd>
+          </div>
+          <div className="grid gap-1 md:grid-cols-[120px_1fr]">
+            <dt className="text-zinc-500">og:description</dt>
+            <dd className="break-words text-zinc-200">{preview.description ?? "-"}</dd>
+          </div>
+          <div className="grid gap-1 md:grid-cols-[120px_1fr]">
+            <dt className="text-zinc-500">og:image</dt>
+            <dd className="break-all font-mono text-xs text-zinc-300">{preview.image ?? "-"}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  );
+}
+
+export default async function OgImagesDevPage({ previewPath }: { previewPath?: string }) {
   const status = await getPageOgStatus();
+  const preview = await getOgMetadataPreview(previewPath);
   const groupedMappedRows = status.rules.map(({ rule, exists }) => ({
     rule,
     exists,
@@ -104,6 +345,27 @@ export default async function OgImagesDevPage() {
           </div>
         </div>
       </header>
+
+      <section className="mt-6 rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
+        <form className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
+          <label className="grid gap-2">
+            <span className="text-sm font-semibold text-amber-300">링크 프리뷰 확인</span>
+            <input
+              name="path"
+              defaultValue={previewPath ?? ""}
+              placeholder="/compendium/cards/coordinate"
+              className="h-10 rounded-md border border-zinc-700 bg-zinc-900 px-3 font-mono text-sm text-zinc-100 outline-none focus:border-amber-400"
+            />
+          </label>
+          <button
+            type="submit"
+            className="h-10 rounded-md border border-amber-400/40 bg-amber-400/10 px-4 text-sm font-semibold text-amber-200 hover:bg-amber-400/15"
+          >
+            확인
+          </button>
+        </form>
+        {preview ? <OgMetadataPreviewCard preview={preview} /> : null}
+      </section>
 
       <section className="mt-8">
         <div className="mb-3 flex items-center justify-between">
