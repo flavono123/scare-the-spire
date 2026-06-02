@@ -293,10 +293,6 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   }, [card.betaImageUrl, onShowBetaChange]);
 
   useEffect(() => {
-    setShowBetaState(initialShowBeta && Boolean(card.betaImageUrl));
-  }, [card.betaImageUrl, card.id, initialShowBeta]);
-
-  useEffect(() => {
     if (!syncBetaSearchParam) return;
 
     const url = new URL(window.location.href);

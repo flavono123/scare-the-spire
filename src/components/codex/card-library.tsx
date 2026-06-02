@@ -530,6 +530,8 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   const urlBetaArt = useHydrationSafeSearchParam("beta");
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const urlBetaArtEnabled = isBetaArtParamEnabled(urlBetaArt);
+  const activeShowBeta = useUrlSelection && urlBetaArt !== null ? urlBetaArtEnabled : showBeta;
   const selectedCard = useMemo(() => {
     const activeCardId = useUrlSelection ? urlCardId : selectedCardId;
     return activeCardId ? findCardByListId(cards, activeCardId) : null;
@@ -544,11 +546,6 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     setUseUrlSelection(false);
     setSelectedCardId(null);
   }, []);
-
-  useEffect(() => {
-    if (!useUrlSelection) return;
-    setShowBeta(isBetaArtParamEnabled(urlBetaArt));
-  }, [urlBetaArt, useUrlSelection]);
 
   // Update URL query param when modal opens/closes
   useEffect(() => {
@@ -736,8 +733,11 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           />
           <ToggleButton
             label={serviceText.cardsView.toggles.betaArt}
-            active={showBeta}
-            onClick={() => setShowBeta((v) => !v)}
+            active={activeShowBeta}
+            onClick={() => {
+              setUseUrlSelection(false);
+              setShowBeta(!activeShowBeta);
+            }}
           />
         </div>
 
@@ -809,7 +809,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
                     card={card}
                     serviceLocale={serviceLocale}
                     showUpgrade={showUpgrades}
-                    showBeta={showBeta}
+                    showBeta={activeShowBeta}
                     size="grid"
                     engagementStats={showEngagementStats
                       ? {
@@ -846,7 +846,11 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedAncients={relatedAncients} relatedEvents={relatedEvents} relatedMonsters={relatedMonsters} relatedPotions={relatedPotions} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} initialShowBeta={showBeta} onShowBetaChange={setShowBeta} onClose={closeSelectedCard} />
+            <CardDetail key={`${selectedCard.id}:${activeShowBeta ? "beta" : "normal"}`} serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedAncients={relatedAncients} relatedEvents={relatedEvents} relatedMonsters={relatedMonsters} relatedPotions={relatedPotions} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} initialShowBeta={activeShowBeta} onShowBetaChange={(next) => {
+              setUseUrlSelection(false);
+              setSelectedCardId(selectedCard.id);
+              setShowBeta(next);
+            }} onClose={closeSelectedCard} />
           </div>
         </div>
       )}
