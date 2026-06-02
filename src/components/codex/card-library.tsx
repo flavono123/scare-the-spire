@@ -540,12 +540,12 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   const openSelectedCard = useCallback((card: CodexCard) => {
     setUseUrlSelection(false);
     setSelectedCardId(card.id);
-  }, []);
+  }, [setSelectedCardId, setUseUrlSelection]);
 
   const closeSelectedCard = useCallback(() => {
     setUseUrlSelection(false);
     setSelectedCardId(null);
-  }, []);
+  }, [setSelectedCardId, setUseUrlSelection]);
 
   // Update URL query param when modal opens/closes
   useEffect(() => {
