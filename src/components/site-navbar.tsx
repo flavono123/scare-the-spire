@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { createPortal } from "react-dom";
 import Image from "@/components/ui/static-image";
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
@@ -600,12 +601,17 @@ function GlobalSearch({
   const [query, setQuery] = useState("");
   const [items, setItems] = useState<SearchIndexItem[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const copy = serviceLocale === "ko"
     ? { placeholder: "통합 검색", empty: "검색어를 입력하세요", noResults: "검색 결과 없음" }
     : { placeholder: "Unified search", empty: "Type to search", noResults: "No results" };
   const labels = searchTypeLabels[serviceLocale];
+
+  useEffect(() => {
+    setPortalRoot(document.body);
+  }, []);
 
   const loadIndex = useCallback(async () => {
     if (loaded) return;
@@ -683,6 +689,89 @@ function GlobalSearch({
       .filter((group) => group.items.length > 0);
   }, [results]);
 
+  const searchOverlay = open && (
+    <div className="fixed inset-0 z-[1000] px-3 pt-16 sm:pt-24">
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        aria-hidden="true"
+      />
+      <div
+        ref={panelRef}
+        className="relative z-10 mx-auto w-full max-w-xl overflow-hidden rounded-lg border border-white/10 bg-[#111827] shadow-2xl"
+      >
+        <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2">
+          <svg className="h-4 w-4 shrink-0 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            ref={inputRef}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={copy.placeholder}
+            className="h-10 min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground"
+            inputMode="search"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+          />
+        </div>
+        <div className="max-h-[min(28rem,calc(100dvh-9rem))] overflow-y-auto p-1.5">
+          {!query.trim() && (
+            <div className="px-3 py-8 text-center text-sm text-muted-foreground">
+              {copy.empty}
+            </div>
+          )}
+          {query.trim() && results.length === 0 && (
+            <div className="px-3 py-8 text-center text-sm text-muted-foreground">
+              {copy.noResults}
+            </div>
+          )}
+          {groupedResults.map((group) => {
+            const style = searchTypeStyles[group.type];
+            return (
+              <section key={group.type} className="py-1">
+                <div className="flex items-center gap-2 px-2.5 py-1">
+                  <span className={`inline-flex h-5 items-center rounded border px-1.5 text-[10px] font-bold ${style.bg} ${style.border} ${style.color}`}>
+                    {labels[group.type]}
+                  </span>
+                  <span className="text-[10px] tabular-nums text-muted-foreground">
+                    {group.items.length}
+                  </span>
+                </div>
+                {group.items.slice(0, 8).map((item) => (
+                  <Link
+                    key={`${item.type}-${item.id}`}
+                    href={localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale)}
+                    prefetch={false}
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors hover:bg-white/[0.07]"
+                  >
+                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded border ${style.bg} ${style.border}`}>
+                      <Image
+                        src={item.imageUrl ?? style.icon}
+                        alt=""
+                        width={32}
+                        height={32}
+                        className="h-8 w-8 object-contain"
+                      />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate font-semibold text-foreground">{item.title}</span>
+                      <span className={`block truncate text-xs ${style.color}`}>
+                        {labels[item.type]}
+                      </span>
+                    </span>
+                  </Link>
+                ))}
+              </section>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <button
@@ -701,86 +790,7 @@ function GlobalSearch({
         </kbd>
       </button>
 
-      {open && (
-        <div
-          className="fixed inset-0 z-[100] bg-black/60 px-3 pt-16 backdrop-blur-sm sm:pt-24"
-        >
-          <div
-            ref={panelRef}
-            className="mx-auto w-full max-w-xl overflow-hidden rounded-lg border border-white/10 bg-[#111827] shadow-2xl"
-          >
-            <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2">
-              <svg className="h-4 w-4 shrink-0 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-              <input
-                ref={inputRef}
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={copy.placeholder}
-                className="h-10 min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground"
-                inputMode="search"
-                autoCapitalize="none"
-                autoCorrect="off"
-                spellCheck={false}
-              />
-            </div>
-            <div className="max-h-[min(28rem,calc(100dvh-9rem))] overflow-y-auto p-1.5">
-              {!query.trim() && (
-                <div className="px-3 py-8 text-center text-sm text-muted-foreground">
-                  {copy.empty}
-                </div>
-              )}
-              {query.trim() && results.length === 0 && (
-                <div className="px-3 py-8 text-center text-sm text-muted-foreground">
-                  {copy.noResults}
-                </div>
-              )}
-              {groupedResults.map((group) => {
-                const style = searchTypeStyles[group.type];
-                return (
-                  <section key={group.type} className="py-1">
-                    <div className="flex items-center gap-2 px-2.5 py-1">
-                      <span className={`inline-flex h-5 items-center rounded border px-1.5 text-[10px] font-bold ${style.bg} ${style.border} ${style.color}`}>
-                        {labels[group.type]}
-                      </span>
-                      <span className="text-[10px] tabular-nums text-muted-foreground">
-                        {group.items.length}
-                      </span>
-                    </div>
-                    {group.items.slice(0, 8).map((item) => (
-                      <Link
-                        key={`${item.type}-${item.id}`}
-                        href={localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale)}
-                        prefetch={false}
-                        onClick={() => setOpen(false)}
-                        className="flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors hover:bg-white/[0.07]"
-                      >
-                        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded border ${style.bg} ${style.border}`}>
-                          <Image
-                            src={item.imageUrl ?? style.icon}
-                            alt=""
-                            width={32}
-                            height={32}
-                            className="h-8 w-8 object-contain"
-                          />
-                        </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="block truncate font-semibold text-foreground">{item.title}</span>
-                          <span className={`block truncate text-xs ${style.color}`}>
-                            {labels[item.type]}
-                          </span>
-                        </span>
-                      </Link>
-                    ))}
-                  </section>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
+      {portalRoot && createPortal(searchOverlay, portalRoot)}
     </>
   );
 }
