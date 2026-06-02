@@ -117,6 +117,6 @@ test.describe("Unified topbar search", () => {
 
     await search.fill("gain block");
     await expect(page.getByText("카드", { exact: true }).first()).toBeVisible();
-    await expect(page.getByText("수비", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("희망의 등불", { exact: true }).first()).toBeVisible();
   });
 });
