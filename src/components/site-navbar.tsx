@@ -144,6 +144,40 @@ const searchTypeStyles: Record<keyof typeof searchTypeLabels.ko, {
   epoch: { icon: "/images/sts2/relics/planisphere.webp", color: "text-teal-200", bg: "bg-teal-500/10", border: "border-teal-400/30" },
 };
 
+function globalSearchFieldScore(value: string, query: string, weight: number): number | null {
+  const text = value.toLowerCase();
+  const normalizedQuery = query.toLowerCase();
+  if (!text || !normalizedQuery) return null;
+
+  const exactIndex = text.indexOf(normalizedQuery);
+  if (exactIndex >= 0) return weight + 1000 - Math.min(exactIndex, 100);
+
+  const words = normalizedQuery.split(/\s+/).filter(Boolean);
+  if (words.length > 1) {
+    return words.every((word) => text.includes(word)) ? weight + 600 : null;
+  }
+
+  return fuzzyMatchCodexText(value, query) ? weight : null;
+}
+
+function globalSearchItemScore(
+  item: SearchIndexItem,
+  query: string,
+  labels: Record<SearchIndexItem["type"], string>,
+): number | null {
+  const scores = [
+    globalSearchFieldScore(item.title, query, 700),
+    globalSearchFieldScore(item.titleEn, query, 650),
+    globalSearchFieldScore(labels[item.type], query, 600),
+    globalSearchFieldScore(item.description, query, 300),
+    globalSearchFieldScore(item.descriptionEn, query, 300),
+    globalSearchFieldScore(item.id, query, 200),
+  ].filter((score): score is number => score !== null);
+
+  if (scores.length === 0) return null;
+  return Math.max(...scores);
+}
+
 type CodexLabelKey = {
   [Key in keyof typeof serviceMessages.ko.codex]:
     (typeof serviceMessages.ko.codex)[Key] extends string ? Key : never;
@@ -662,14 +696,16 @@ function GlobalSearch({
     const text = query.trim();
     if (!text) return [];
     return items
-      .filter((item) =>
-        fuzzyMatchCodexText(item.title, text) ||
-        fuzzyMatchCodexText(item.titleEn, text) ||
-        fuzzyMatchCodexText(item.description, text) ||
-        fuzzyMatchCodexText(item.descriptionEn, text) ||
-        fuzzyMatchCodexText(item.id, text) ||
-        fuzzyMatchCodexText(labels[item.type], text)
-      )
+      .map((item) => ({
+        item,
+        score: globalSearchItemScore(item, text, labels),
+      }))
+      .filter((entry): entry is { item: SearchIndexItem; score: number } => entry.score !== null)
+      .sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return searchTypeOrder.indexOf(a.item.type) - searchTypeOrder.indexOf(b.item.type);
+      })
+      .map((entry) => entry.item)
       .slice(0, 40);
   }, [items, labels, query]);
 
