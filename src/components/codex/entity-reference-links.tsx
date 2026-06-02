@@ -78,7 +78,7 @@ const REFERENCE_KIND_CONFIG: Record<CodexReferenceKind, { icon: string; fallback
   },
   epoch: {
     icon: "/images/sts2/relics/history_course.webp",
-    fallbackLabel: { ko: "역사", en: "Epoch" },
+    fallbackLabel: { ko: "연대기", en: "Epoch" },
   },
 };
 

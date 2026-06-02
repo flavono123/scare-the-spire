@@ -72,7 +72,7 @@ const searchTypeLabels = {
     monsterMove: "패턴",
     encounter: "전투",
     ancient: "고대의 존재",
-    epoch: "시대",
+    epoch: "연대기",
     patch: "패치 노트",
     story: "슬서운 이야기",
   },

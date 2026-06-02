@@ -327,10 +327,11 @@ export async function getCodexGameUiLabels(
   const powerTitle = gameText(gameplay, "CARD_TYPE.POWER", "파워");
   const eventsTitle = gameText(staticHoverTips, "ROOM_EVENT.title", "이벤트");
   const ancientsTitle = gameText(epochs, "RELIC2_EPOCH.title", gameText(staticHoverTips, "ROOM_ANCIENT.title", "고대의 존재"));
-  const epochsTitle = extractStatsCountLabel(
+  const gameEpochsTitle = extractStatsCountLabel(
     gameText(statsScreen, "ENTRY_ACHIEVEMENTS.bottom", "역사 [blue]{Amount}[/blue]"),
     "역사",
   );
+  const epochsTitle = gameLocale === "kor" ? "연대기" : gameEpochsTitle;
 
   return {
     compendiumTitle: gameText(mainMenu, "COMPENDIUM", "백과사전"),
