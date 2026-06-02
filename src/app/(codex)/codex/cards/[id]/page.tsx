@@ -8,6 +8,8 @@ import {
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import { stripCodexMarkup } from "@/lib/codex-search";
+import { DEFAULT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { CardDetail } from "@/components/codex/card-detail";
 import {
   getMadScienceCardTypeFromId,
@@ -18,6 +20,10 @@ function findCardByRouteId<T extends { id: string }>(cards: T[], id: string): T 
   const madScienceType = getMadScienceCardTypeFromId(id);
   const resolvedId = madScienceType ? getMadScienceVariantId(madScienceType) : id;
   return cards.find((c) => c.id.toLowerCase() === resolvedId.toLowerCase());
+}
+
+function cardOgDescription(description: string): string {
+  return stripCodexMarkup(description).replace(/\s+/g, " ").trim();
 }
 
 export async function generateMetadata({
@@ -37,7 +43,31 @@ export async function generateMetadata({
   ]);
   const card = findCardByRouteId(cards, id);
   if (!card) return {};
-  return getCodexMetadata(serviceLocale, `${card.name} — ${gameUi.cardLibraryTitle}`);
+  const metadata = getCodexMetadata(serviceLocale, `${card.name} — ${gameUi.cardLibraryTitle}`);
+  const description = cardOgDescription(card.description);
+  const imageUrl = card.imageUrl ?? card.betaImageUrl ?? DEFAULT_PAGE_OG_IMAGE.url;
+  const image = {
+    url: imageUrl,
+    width: 1000,
+    height: 760,
+    alt: card.name,
+  };
+
+  return {
+    ...metadata,
+    description,
+    openGraph: {
+      title: card.name,
+      description,
+      images: [image],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: card.name,
+      description,
+      images: [imageUrl],
+    },
+  };
 }
 
 export default async function CardDetailPage({
