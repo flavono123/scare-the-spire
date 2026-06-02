@@ -19,6 +19,11 @@ import {
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  findCardByCodexRouteId,
+  firstSearchParam,
+  getCodexCardOgMetadata,
+} from "@/lib/codex-card-og";
 import { CardLibrary } from "@/components/codex/card-library";
 
 export const dynamic = "force-static";
@@ -31,7 +36,13 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const gameUi = await getCodexGameUiLabels(gameLocale);
+  const cardId = firstSearchParam(resolvedSearchParams.card);
+  const [gameUi, cards] = await Promise.all([
+    getCodexGameUiLabels(gameLocale),
+    cardId ? getCodexCards({ includeDeprecated: true, gameLocale }) : Promise.resolve(null),
+  ]);
+  const card = cards ? findCardByCodexRouteId(cards, cardId) : undefined;
+  if (card) return getCodexCardOgMetadata(serviceLocale, gameUi.cardLibraryTitle, card);
   return getCodexMetadata(serviceLocale, gameUi.cardLibraryTitle);
 }
 
