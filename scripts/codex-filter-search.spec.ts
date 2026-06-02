@@ -97,4 +97,26 @@ test.describe("Unified topbar search", () => {
     await page.locator('input[placeholder="통합 검색"]').fill("문을 만드는 자");
     await expect(page.getByText("슬서운 이야기", { exact: true }).first()).toBeVisible();
   });
+
+  test("indexes compendium detail text and uses chronicle terminology", async ({ page }) => {
+    await openCompendium(page, "/compendium/epochs");
+
+    await expect(page.getByRole("heading", { name: "연대기", exact: true })).toBeVisible();
+
+    const header = page.locator("header");
+    await header.getByRole("button", { name: "통합 검색" }).click();
+    const search = page.locator('input[placeholder="통합 검색"]');
+
+    await search.fill("재미가");
+    await expect(page.getByText("연대기", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("검색 결과 없음", { exact: true })).toHaveCount(0);
+
+    await search.fill("giant seamless mirror");
+    await expect(page.getByText("이벤트", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("거울에 비치다 다치비 에울거", { exact: true }).first()).toBeVisible();
+
+    await search.fill("gain block");
+    await expect(page.getByText("카드", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("수비", { exact: true }).first()).toBeVisible();
+  });
 });
