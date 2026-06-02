@@ -15,6 +15,11 @@ export function firstSearchParam(value: SearchParamValue): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
 
+export function isBetaArtSearchParam(value: SearchParamValue): boolean {
+  const normalized = firstSearchParam(value)?.toLowerCase();
+  return normalized === "true" || normalized === "1" || normalized === "yes";
+}
+
 export function findCardByCodexRouteId<T extends { id: string }>(
   cards: T[],
   id: string | undefined,
@@ -33,10 +38,15 @@ export function getCodexCardOgMetadata(
   serviceLocale: ServiceLocale,
   cardLibraryTitle: string,
   card: CodexCard,
+  opts?: {
+    useBetaArt?: boolean;
+  },
 ): Metadata {
   const metadata = getCodexMetadata(serviceLocale, `${card.name} — ${cardLibraryTitle}`);
   const description = cardOgDescription(card.description);
-  const imageUrl = card.imageUrl ?? card.betaImageUrl ?? DEFAULT_PAGE_OG_IMAGE.url;
+  const imageUrl = opts?.useBetaArt && card.betaImageUrl
+    ? card.betaImageUrl
+    : card.imageUrl ?? card.betaImageUrl ?? DEFAULT_PAGE_OG_IMAGE.url;
   const image = {
     url: imageUrl,
     width: 1000,

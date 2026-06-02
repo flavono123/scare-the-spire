@@ -69,6 +69,11 @@ const RARITY_SORT_ORDER: Record<string, number> = {
 
 const DEFAULT_SORT_KEYS: SortKey[] = ["color", "type", "rarity", "cost", "name"];
 
+function isBetaArtParamEnabled(value: string | null): boolean {
+  const normalized = value?.toLowerCase();
+  return normalized === "true" || normalized === "1" || normalized === "yes";
+}
+
 function getCardSortCategory(card: CodexCard): string {
   if (card.rarity === "고대의 존재") return "ancient";
   if (card.color === "status" || card.rarity === "상태이상" || card.type === "상태이상") return "status";
@@ -522,6 +527,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
 
   // Card detail modal
   const urlCardId = useHydrationSafeSearchParam("card");
+  const urlBetaArt = useHydrationSafeSearchParam("beta");
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [useUrlSelection, setUseUrlSelection] = useState(true);
   const selectedCard = useMemo(() => {
@@ -539,20 +545,31 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     setSelectedCardId(null);
   }, []);
 
+  useEffect(() => {
+    if (!useUrlSelection) return;
+    setShowBeta(isBetaArtParamEnabled(urlBetaArt));
+  }, [urlBetaArt, useUrlSelection]);
+
   // Update URL query param when modal opens/closes
   useEffect(() => {
     if (useUrlSelection) return;
     const url = new URL(window.location.href);
     if (selectedCardId) {
       url.searchParams.set("card", selectedCardId.toLowerCase());
+      if (showBeta) {
+        url.searchParams.set("beta", "true");
+      } else {
+        url.searchParams.delete("beta");
+      }
     } else {
       url.searchParams.delete("card");
+      url.searchParams.delete("beta");
     }
     if (url.toString() !== window.location.href) {
       window.history.pushState(null, "", url.toString());
       notifyCodexUrlChange();
     }
-  }, [selectedCardId, useUrlSelection]);
+  }, [selectedCardId, showBeta, useUrlSelection]);
 
   // Handle browser back button
   useEffect(() => {
@@ -829,7 +846,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedAncients={relatedAncients} relatedEvents={relatedEvents} relatedMonsters={relatedMonsters} relatedPotions={relatedPotions} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} onClose={closeSelectedCard} />
+            <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={selectedCard} enchantments={enchantments} afflictions={afflictions} relatedAncients={relatedAncients} relatedEvents={relatedEvents} relatedMonsters={relatedMonsters} relatedPotions={relatedPotions} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} initialShowBeta={showBeta} onShowBetaChange={setShowBeta} onClose={closeSelectedCard} />
           </div>
         </div>
       )}

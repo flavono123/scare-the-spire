@@ -23,6 +23,7 @@ import {
   findCardByCodexRouteId,
   firstSearchParam,
   getCodexCardOgMetadata,
+  isBetaArtSearchParam,
 } from "@/lib/codex-card-og";
 import { CardLibrary } from "@/components/codex/card-library";
 
@@ -42,7 +43,11 @@ export async function generateMetadata({
     cardId ? getCodexCards({ includeDeprecated: true, gameLocale }) : Promise.resolve(null),
   ]);
   const card = cards ? findCardByCodexRouteId(cards, cardId) : undefined;
-  if (card) return getCodexCardOgMetadata(serviceLocale, gameUi.cardLibraryTitle, card);
+  if (card) {
+    return getCodexCardOgMetadata(serviceLocale, gameUi.cardLibraryTitle, card, {
+      useBetaArt: isBetaArtSearchParam(resolvedSearchParams.beta),
+    });
+  }
   return getCodexMetadata(serviceLocale, gameUi.cardLibraryTitle);
 }
 

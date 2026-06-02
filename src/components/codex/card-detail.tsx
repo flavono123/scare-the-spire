@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import { CommentSection } from "@/components/comment-section";
@@ -54,6 +54,7 @@ import {
   getRelatedPowerIdsForCard,
 } from "@/lib/codex-references";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
+import { notifyCodexUrlChange } from "./use-hydration-safe-search-param";
 import {
   canEnchantCard,
   shouldShowAmount,
@@ -211,6 +212,9 @@ interface CardDetailProps {
   patches?: STS2Patch[];
   changes?: STS2Change[];
   versionDiffs?: EntityVersionDiff[];
+  initialShowBeta?: boolean;
+  onShowBetaChange?: (showBeta: boolean) => void;
+  syncBetaSearchParam?: boolean;
   onClose?: () => void;
 }
 
@@ -267,13 +271,13 @@ function getRemovedUpgradePreviewCard(
   };
 }
 
-export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], patches, changes, versionDiffs, onClose }: CardDetailProps) {
+export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], patches, changes, versionDiffs, initialShowBeta = false, onShowBetaChange, syncBetaSearchParam = false, onClose }: CardDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getCardDetailLabels(serviceLocale);
   const { userId, ready: authReady, ensureUser } = useAuth();
   const threadKey = buildCodexCommentThreadKey("card", card.id);
   const [upgradeLevel, setUpgradeLevel] = useState(0);
-  const [showBeta, setShowBeta] = useState(false);
+  const [showBeta, setShowBetaState] = useState(() => initialShowBeta && Boolean(card.betaImageUrl));
   const [activeEnchantId, setActiveEnchantId] = useState<string | null>(null);
   const [hoveredEnchantId, setHoveredEnchantId] = useState<string | null>(null);
   const [activeAfflictionId, setActiveAfflictionId] = useState<string | null>(null);
@@ -282,6 +286,32 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   const [madScienceRider, setMadScienceRider] = useState<TinkerRiderId>(MAD_SCIENCE_DEFAULT_RIDER);
   const [isDesktop, setIsDesktop] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
+  const setShowBeta = useCallback((checked: boolean) => {
+    const next = checked && Boolean(card.betaImageUrl);
+    setShowBetaState(next);
+    onShowBetaChange?.(next);
+  }, [card.betaImageUrl, onShowBetaChange]);
+
+  useEffect(() => {
+    setShowBetaState(initialShowBeta && Boolean(card.betaImageUrl));
+  }, [card.betaImageUrl, card.id, initialShowBeta]);
+
+  useEffect(() => {
+    if (!syncBetaSearchParam) return;
+
+    const url = new URL(window.location.href);
+    if (showBeta) {
+      url.searchParams.set("beta", "true");
+    } else {
+      url.searchParams.delete("beta");
+    }
+
+    if (url.toString() !== window.location.href) {
+      window.history.replaceState(null, "", url.toString());
+      notifyCodexUrlChange();
+    }
+  }, [showBeta, syncBetaSearchParam]);
+
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
     const update = () => setIsDesktop(mq.matches);

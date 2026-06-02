@@ -10,6 +10,7 @@ import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   findCardByCodexRouteId,
   getCodexCardOgMetadata,
+  isBetaArtSearchParam,
 } from "@/lib/codex-card-og";
 import { CardDetail } from "@/components/codex/card-detail";
 
@@ -30,7 +31,9 @@ export async function generateMetadata({
   ]);
   const card = findCardByCodexRouteId(cards, id);
   if (!card) return {};
-  return getCodexCardOgMetadata(serviceLocale, gameUi.cardLibraryTitle, card);
+  return getCodexCardOgMetadata(serviceLocale, gameUi.cardLibraryTitle, card, {
+    useBetaArt: isBetaArtSearchParam(resolvedSearchParams.beta),
+  });
 }
 
 export default async function CardDetailPage({
@@ -60,10 +63,11 @@ export default async function CardDetailPage({
   ]);
   const card = findCardByCodexRouteId(cards, id);
   if (!card) notFound();
+  const showBetaArt = isBetaArtSearchParam(resolvedSearchParams.beta);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={card} enchantments={enchantments} afflictions={afflictions} relatedAncients={ancients} relatedEvents={events} relatedMonsters={monsters} relatedPotions={potions} relatedPowers={powers} patches={patches} changes={changes} versionDiffs={versionDiffs} />
+      <CardDetail serviceLocale={serviceLocale} gameUi={gameUi} card={card} enchantments={enchantments} afflictions={afflictions} relatedAncients={ancients} relatedEvents={events} relatedMonsters={monsters} relatedPotions={potions} relatedPowers={powers} patches={patches} changes={changes} versionDiffs={versionDiffs} initialShowBeta={showBetaArt} syncBetaSearchParam />
     </div>
   );
 }
