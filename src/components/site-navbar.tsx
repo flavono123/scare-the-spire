@@ -601,17 +601,13 @@ function GlobalSearch({
   const [query, setQuery] = useState("");
   const [items, setItems] = useState<SearchIndexItem[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const copy = serviceLocale === "ko"
     ? { placeholder: "통합 검색", empty: "검색어를 입력하세요", noResults: "검색 결과 없음" }
     : { placeholder: "Unified search", empty: "Type to search", noResults: "No results" };
   const labels = searchTypeLabels[serviceLocale];
-
-  useEffect(() => {
-    setPortalRoot(document.body);
-  }, []);
+  const portalRoot = typeof document === "undefined" ? null : document.body;
 
   const loadIndex = useCallback(async () => {
     if (loaded) return;
