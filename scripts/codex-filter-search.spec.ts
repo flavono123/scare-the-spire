@@ -119,4 +119,30 @@ test.describe("Unified topbar search", () => {
     await expect(page.getByText("카드", { exact: true }).first()).toBeVisible();
     await expect(page.getByText("희망의 등불", { exact: true }).first()).toBeVisible();
   });
+
+  test("opens same-library query results without rerouting through Next", async ({ page }) => {
+    await openCompendium(page, "/compendium/epochs");
+
+    const header = page.locator("header");
+    await header.getByRole("button", { name: "통합 검색" }).click();
+    const search = page.locator('input[placeholder="통합 검색"]');
+    await search.fill("불만");
+
+    const result = page.locator('div.fixed.inset-0 a[href="/compendium/epochs?epoch=regent6_epoch"]').first();
+    await expect(result).toBeVisible();
+
+    const routeRequests: string[] = [];
+    page.on("request", (request) => {
+      const url = request.url();
+      if (url.includes("/compendium/epochs") && url.includes("_rsc")) {
+        routeRequests.push(url);
+      }
+    });
+
+    await result.click();
+
+    await expect(page.getByRole("dialog", { name: "불만" })).toBeVisible();
+    expect(page.url()).toContain("/compendium/epochs?epoch=regent6_epoch");
+    expect(routeRequests).toEqual([]);
+  });
 });
