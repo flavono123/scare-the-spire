@@ -587,7 +587,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
   ) : null;
 
   return (
-    <div className="mx-auto w-full max-w-6xl p-4 sm:p-6">
+    <div className="mx-auto w-full max-w-6xl min-w-0 overflow-x-hidden p-4 sm:p-6">
       <div className="mb-4 flex w-full items-center justify-between gap-3">
         <Link
           href={localizeHref("/compendium/cards", serviceLocale)}
@@ -612,10 +612,10 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
         )}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
+      <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section
           data-card-detail-stage
-          className="flex min-h-[34rem] flex-col items-center justify-center gap-4 py-4"
+          className="flex min-h-[34rem] w-full min-w-0 flex-col items-center justify-center gap-4 py-4"
         >
           {/* 카드 + hover popover (popover는 카드 우측, 캐러셀은 카드 아래라 안 겹침).
               활성 인챈트가 있으면 카드 hover 시에도 그 인챈트의 툴팁이 뜨고,
@@ -742,7 +742,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
 
           {/* 인챈트 캐러셀 */}
           {eligibleEnchantments.length > 0 && (
-            <div className="w-full max-w-3xl flex flex-col gap-2">
+            <div className="flex w-full max-w-full flex-col gap-2 sm:max-w-3xl">
               <div className="flex items-center justify-between px-1">
                 <h2 className="text-sm font-bold text-gray-300">
                   {serviceText.cardsView.enchantments.possible} ({eligibleEnchantments.length})
@@ -823,7 +823,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                   ref={scrollerRef}
                   data-testid="enchant-carousel"
                   onWheel={handleEnchantWheel}
-                  className="mx-10 flex gap-2 overflow-x-auto scroll-smooth py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                  className="mx-7 flex gap-2 overflow-x-auto scroll-smooth py-1 sm:mx-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                 >
                   {eligibleEnchantments.map((e) => {
                     const active = activeEnchantId === e.id;
@@ -854,7 +854,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                         onBlur={() =>
                           setHoveredEnchantId((cur) => (cur === e.id ? null : cur))
                         }
-                        className={`shrink-0 w-20 flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
+                        className={`flex w-16 shrink-0 flex-col items-center gap-1 rounded-lg border p-1.5 transition-all sm:w-20 sm:p-2 ${
                           active
                             ? "bg-yellow-500/15 border-yellow-500/60 ring-1 ring-yellow-500/30"
                             : "bg-white/5 border-white/10 hover:border-white/30"
@@ -863,7 +863,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                         title={e.name}
                       >
                         {e.imageUrl ? (
-                          <div className="relative w-10 h-10">
+                          <div className="relative h-9 w-9 sm:h-10 sm:w-10">
                             <Image
                               src={e.imageUrl}
                               alt={e.name}
@@ -872,9 +872,9 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                             />
                           </div>
                         ) : (
-                          <div className="w-10 h-10 rounded bg-white/5" />
+                          <div className="h-9 w-9 rounded bg-white/5 sm:h-10 sm:w-10" />
                         )}
-                        <span className="text-[10px] text-gray-200 text-center leading-tight line-clamp-2">
+                        <span className="text-center text-[9px] leading-tight text-gray-200 line-clamp-2 sm:text-[10px]">
                           {e.name}
                         </span>
                       </button>
@@ -887,7 +887,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
 
           {/* 고난 캐러셀 */}
           {eligibleAfflictions.length > 0 && (
-            <div className="w-full max-w-3xl flex flex-col gap-2">
+            <div className="flex w-full max-w-full flex-col gap-2 sm:max-w-3xl">
               <div className="flex items-center justify-between px-1">
                 <h2 className="text-sm font-bold text-gray-300">
                   {serviceText.cardsView.afflictions.possible} ({eligibleAfflictions.length})
@@ -943,7 +943,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                   ref={afflictionScrollerRef}
                   data-testid="affliction-carousel"
                   onWheel={handleAfflictionWheel}
-                  className="mx-10 flex gap-2 overflow-x-auto scroll-smooth py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                  className="mx-7 flex gap-2 overflow-x-auto scroll-smooth py-1 sm:mx-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                 >
                   {eligibleAfflictions.map((a) => {
                     const active = activeAfflictionId === a.id;
@@ -967,7 +967,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                         onBlur={() =>
                           setHoveredAfflictionId((cur) => (cur === a.id ? null : cur))
                         }
-                        className={`shrink-0 w-20 flex flex-col items-center gap-1 p-2 rounded-lg border transition-all ${
+                        className={`flex w-16 shrink-0 flex-col items-center gap-1 rounded-lg border p-1.5 transition-all sm:w-20 sm:p-2 ${
                           active
                             ? "bg-red-500/15 border-red-400/60 ring-1 ring-red-400/30"
                             : "bg-white/5 border-white/10 hover:border-white/30"
@@ -976,7 +976,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                         title={a.name}
                       >
                         {a.imageUrl ? (
-                          <div className="relative w-10 h-10">
+                          <div className="relative h-9 w-9 sm:h-10 sm:w-10">
                             <Image
                               src={a.imageUrl}
                               alt={a.name}
@@ -985,9 +985,9 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                             />
                           </div>
                         ) : (
-                          <div className="w-10 h-10 rounded bg-white/5" />
+                          <div className="h-9 w-9 rounded bg-white/5 sm:h-10 sm:w-10" />
                         )}
-                        <span className="text-[10px] text-gray-200 text-center leading-tight line-clamp-2">
+                        <span className="text-center text-[9px] leading-tight text-gray-200 line-clamp-2 sm:text-[10px]">
                           {a.name}
                         </span>
                       </button>
@@ -999,7 +999,7 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
           )}
         </section>
 
-        <aside className="flex flex-col gap-3">
+        <aside className="flex min-w-0 flex-col gap-3">
           <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
