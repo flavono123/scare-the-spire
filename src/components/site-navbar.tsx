@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback, type MouseEvent } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, type MouseEvent as ReactMouseEvent } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
@@ -178,7 +178,7 @@ function globalSearchItemScore(
   return Math.max(...scores);
 }
 
-function isPlainPrimaryClick(event: MouseEvent<HTMLAnchorElement>): boolean {
+function isPlainPrimaryClick(event: ReactMouseEvent<HTMLAnchorElement>): boolean {
   return !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && event.button === 0;
 }
 
