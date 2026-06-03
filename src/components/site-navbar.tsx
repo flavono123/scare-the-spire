@@ -197,6 +197,12 @@ function pushSamePathUrl(href: string): boolean {
   return true;
 }
 
+function isSamePathHref(href: string): boolean {
+  if (typeof window === "undefined") return false;
+  const targetUrl = new URL(href, window.location.href);
+  return targetUrl.origin === window.location.origin && targetUrl.pathname === window.location.pathname;
+}
+
 type CodexLabelKey = {
   [Key in keyof typeof serviceMessages.ko.codex]:
     (typeof serviceMessages.ko.codex)[Key] extends string ? Key : never;
@@ -798,8 +804,12 @@ function GlobalSearch({
                       key={`${item.type}-${item.id}`}
                       href={href}
                       prefetch={false}
-                      onFocus={() => router.prefetch(href)}
-                      onPointerEnter={() => router.prefetch(href)}
+                      onFocus={() => {
+                        if (!isSamePathHref(href)) router.prefetch(href);
+                      }}
+                      onPointerEnter={() => {
+                        if (!isSamePathHref(href)) router.prefetch(href);
+                      }}
                       onClick={(event) => {
                         if (isPlainPrimaryClick(event) && pushSamePathUrl(href)) {
                           event.preventDefault();
