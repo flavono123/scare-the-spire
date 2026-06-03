@@ -193,9 +193,11 @@ interface CardLibraryProps {
   relatedMonsters?: CodexMonster[];
   relatedPotions?: CodexPotion[];
   relatedPowers?: CodexPower[];
+  initialCardId?: string | null;
+  initialShowBeta?: boolean;
 }
 
-export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [] }: CardLibraryProps) {
+export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions, currentVersion, patches, changes, versionDiffs, enchantments, afflictions, relatedAncients = [], relatedEvents = [], relatedMonsters = [], relatedPotions = [], relatedPowers = [], initialCardId = null, initialShowBeta = false }: CardLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
   const [selectedColors, setSelectedColors] = useState<Set<CardFilterCategory>>(
@@ -530,12 +532,23 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   const urlBetaArt = useHydrationSafeSearchParam("beta");
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const [searchParamsHydrated, setSearchParamsHydrated] = useState(false);
   const urlBetaArtEnabled = isBetaArtParamEnabled(urlBetaArt);
-  const activeShowBeta = useUrlSelection && urlBetaArt !== null ? urlBetaArtEnabled : showBeta;
+  const activeShowBeta = useUrlSelection
+    ? searchParamsHydrated
+      ? urlBetaArt !== null && urlBetaArtEnabled
+      : initialShowBeta
+    : showBeta;
   const selectedCard = useMemo(() => {
-    const activeCardId = useUrlSelection ? urlCardId : selectedCardId;
+    const activeCardId = useUrlSelection
+      ? searchParamsHydrated ? urlCardId : initialCardId
+      : selectedCardId;
     return activeCardId ? findCardByListId(cards, activeCardId) : null;
-  }, [cards, selectedCardId, useUrlSelection, urlCardId]);
+  }, [cards, initialCardId, searchParamsHydrated, selectedCardId, useUrlSelection, urlCardId]);
+
+  useEffect(() => {
+    setSearchParamsHydrated(true);
+  }, []);
 
   const openSelectedCard = useCallback((card: CodexCard) => {
     setUseUrlSelection(false);

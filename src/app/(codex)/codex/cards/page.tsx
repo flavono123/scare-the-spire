@@ -59,6 +59,8 @@ export default async function CodexCardsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const initialCardId = firstSearchParam(resolvedSearchParams.card) ?? null;
+  const initialShowBeta = isBetaArtSearchParam(resolvedSearchParams.beta);
   const [cards, characters, patches, changes, versionDiffs, meta, enchantments, afflictions, gameUi, ancients, events, monsters, potions, powers] =
     await Promise.all([
       getCodexCards({ includeDeprecated: true, gameLocale }),
@@ -98,6 +100,8 @@ export default async function CodexCardsPage({
         relatedMonsters={monsters}
         relatedPotions={potions}
         relatedPowers={powers}
+        initialCardId={initialCardId}
+        initialShowBeta={initialShowBeta}
       />
     </Suspense>
   );
