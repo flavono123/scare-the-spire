@@ -714,10 +714,8 @@ function GlobalSearch({
   const [items, setItems] = useState<SearchIndexItem[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [pendingResult, setPendingResult] = useState<PendingSearchResult | null>(null);
-  const [showPendingIndicator, setShowPendingIndicator] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const pendingIndicatorTimerRef = useRef<number | null>(null);
   const pendingNavigationTimerRef = useRef<number | null>(null);
   const pendingPollTimerRef = useRef<number | null>(null);
   const pendingCloseTimerRef = useRef<number | null>(null);
@@ -738,10 +736,6 @@ function GlobalSearch({
   }, [loaded]);
 
   const clearPendingTimers = useCallback(() => {
-    if (pendingIndicatorTimerRef.current !== null) {
-      window.clearTimeout(pendingIndicatorTimerRef.current);
-      pendingIndicatorTimerRef.current = null;
-    }
     if (pendingNavigationTimerRef.current !== null) {
       window.clearTimeout(pendingNavigationTimerRef.current);
       pendingNavigationTimerRef.current = null;
@@ -763,7 +757,6 @@ function GlobalSearch({
   const resetPendingResult = useCallback(() => {
     clearPendingTimers();
     setPendingResult(null);
-    setShowPendingIndicator(false);
   }, [clearPendingTimers]);
 
   const closeSearch = useCallback(() => {
@@ -802,11 +795,6 @@ function GlobalSearch({
   const startPendingSearchNavigation = useCallback((item: SearchIndexItem, href: string) => {
     clearPendingTimers();
     setPendingResult({ key: searchResultKey(item) });
-    setShowPendingIndicator(false);
-
-    pendingIndicatorTimerRef.current = window.setTimeout(() => {
-      setShowPendingIndicator(true);
-    }, 150);
 
     pendingFallbackTimerRef.current = window.setTimeout(() => {
       closeSearch();
@@ -989,7 +977,7 @@ function GlobalSearch({
                           {labels[item.type]}
                         </span>
                       </span>
-                      {isPending && showPendingIndicator && (
+                      {isPending && (
                         <GlobalSearchPendingIndicator />
                       )}
                     </Link>

@@ -145,4 +145,35 @@ test.describe("Unified topbar search", () => {
     expect(page.url()).toContain("/compendium/epochs?epoch=regent6_epoch");
     expect(routeRequests).toEqual([]);
   });
+
+  test("shows withering presence countdown while local result navigation is pending", async ({ page }) => {
+    await openCompendium(page, "/compendium/epochs");
+
+    await page.evaluate(() => {
+      window.addEventListener("popstate", () => {
+        const startedAt = performance.now();
+        while (performance.now() - startedAt < 260) {
+          // Simulate a slow detail render so the pending indicator has time to paint.
+        }
+      });
+    });
+
+    const header = page.locator("header");
+    await header.getByRole("button", { name: "통합 검색" }).click();
+    const search = page.locator('input[placeholder="통합 검색"]');
+    await search.fill("불만");
+
+    const result = page.locator('div.fixed.inset-0 a[href="/compendium/epochs?epoch=regent6_epoch"]').first();
+    await expect(result).toBeVisible();
+
+    await result.click();
+
+    const pendingRow = page.locator('[data-global-search-pending="true"]').first();
+    await expect(pendingRow).toBeVisible();
+    await expect(pendingRow.locator('img[src*="withering_presence_power"]')).toBeVisible();
+    await expect(pendingRow).toContainText(/[1-6]/);
+
+    await expect(page.getByRole("dialog", { name: "불만" })).toBeVisible();
+    await expect(search).toHaveCount(0);
+  });
 });
