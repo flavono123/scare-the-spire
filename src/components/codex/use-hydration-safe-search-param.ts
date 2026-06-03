@@ -14,8 +14,10 @@ function subscribeToUrlChanges(onStoreChange: () => void): () => void {
 
   window.addEventListener("popstate", onStoreChange);
   window.addEventListener(URL_CHANGE_EVENT, onStoreChange);
+  const hydrationRefresh = window.setTimeout(onStoreChange, 0);
 
   return () => {
+    window.clearTimeout(hydrationRefresh);
     window.removeEventListener("popstate", onStoreChange);
     window.removeEventListener(URL_CHANGE_EVENT, onStoreChange);
   };
