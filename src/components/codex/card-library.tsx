@@ -528,27 +528,16 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   };
 
   // Card detail modal
-  const urlCardId = useHydrationSafeSearchParam("card");
-  const urlBetaArt = useHydrationSafeSearchParam("beta");
+  const urlCardId = useHydrationSafeSearchParam("card", initialCardId);
+  const urlBetaArt = useHydrationSafeSearchParam("beta", initialShowBeta ? "true" : null);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [useUrlSelection, setUseUrlSelection] = useState(true);
-  const [searchParamsHydrated, setSearchParamsHydrated] = useState(false);
   const urlBetaArtEnabled = isBetaArtParamEnabled(urlBetaArt);
-  const activeShowBeta = useUrlSelection
-    ? searchParamsHydrated
-      ? urlBetaArt !== null && urlBetaArtEnabled
-      : initialShowBeta
-    : showBeta;
+  const activeShowBeta = useUrlSelection && urlBetaArt !== null ? urlBetaArtEnabled : showBeta;
   const selectedCard = useMemo(() => {
-    const activeCardId = useUrlSelection
-      ? searchParamsHydrated ? urlCardId : initialCardId
-      : selectedCardId;
+    const activeCardId = useUrlSelection ? urlCardId : selectedCardId;
     return activeCardId ? findCardByListId(cards, activeCardId) : null;
-  }, [cards, initialCardId, searchParamsHydrated, selectedCardId, useUrlSelection, urlCardId]);
-
-  useEffect(() => {
-    setSearchParamsHydrated(true);
-  }, []);
+  }, [cards, selectedCardId, useUrlSelection, urlCardId]);
 
   const openSelectedCard = useCallback((card: CodexCard) => {
     setUseUrlSelection(false);

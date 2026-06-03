@@ -26,10 +26,13 @@ export function notifyCodexUrlChange(): void {
   window.dispatchEvent(new Event(URL_CHANGE_EVENT));
 }
 
-export function useHydrationSafeSearchParam(paramName: string): string | null {
+export function useHydrationSafeSearchParam(
+  paramName: string,
+  serverSnapshot: string | null = null,
+): string | null {
   return useSyncExternalStore(
     subscribeToUrlChanges,
     () => readSearchParam(paramName),
-    () => null,
+    () => serverSnapshot,
   );
 }
