@@ -58,6 +58,19 @@ function ancientBackgroundImageUrl(ancientId: string): string | null {
     : null;
 }
 
+function collectEpochTerms(entities?: EntityInfo[]): string[] {
+  if (!entities) return [];
+  const terms = new Set<string>();
+  for (const entity of entities) {
+    if (entity.type !== "epoch") continue;
+    for (const term of [entity.nameKo, entity.nameEn, ...(entity.aliasesKo ?? []), ...(entity.aliasesEn ?? [])]) {
+      const normalized = term.trim();
+      if (normalized) terms.add(normalized);
+    }
+  }
+  return [...terms];
+}
+
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
     <span
@@ -157,6 +170,10 @@ function DialogueViewer({
     ? activeTab
     : availableTabs[0]?.key ?? activeTab;
   const lines = dialogue[resolvedActiveTab] ?? [];
+  const dialogueExcludeTerms = useMemo(
+    () => new Set([...(excludeSelf ?? []), ...collectEpochTerms(entities)]),
+    [entities, excludeSelf],
+  );
 
   return (
     <div>
@@ -205,7 +222,7 @@ function DialogueViewer({
                   <RichDescription
                     description={line.text}
                     entities={entities}
-                    excludeEntityTerms={excludeSelf}
+                    excludeEntityTerms={dialogueExcludeTerms}
                   />
                 ) : (
                   <DescriptionText description={line.text} />

@@ -34,7 +34,7 @@ export function cleanDescription(desc: string): string {
 export function parseDescription(rawDesc: string): DescPart[] {
   const desc = cleanDescription(rawDesc);
   const parts: DescPart[] = [];
-  const regex = /\[gold\](.*?)\[\/gold\]|\[green\](.*?)\[\/green\]|\[red\](.*?)\[\/red\]|\[blue\](.*?)\[\/blue\]|\[purple\](.*?)\[\/purple\]|\[pink\](.*?)\[\/pink\]|\[energy:(\d+)\]|\[star:(\d+)\]|\[\/?\w+(?::?\w*)*\]|\n/g;
+  const regex = /\[gold\](.*?)\[\/gold\]|\[green\](.*?)\[\/green\]|\[red\](.*?)\[\/red\]|\[blue\](.*?)\[\/blue\]|\[purple\](.*?)\[\/purple\]|\[pink\](.*?)\[\/pink\]|\[energy:(\d+)\]|\[star:(\d+)\]|\[\/?\w+(?:[:=][^\]\s]+)?(?:\s+[^\]]*)?\]|\n/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
 

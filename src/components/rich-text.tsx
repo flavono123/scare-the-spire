@@ -122,7 +122,7 @@ function renderSineNodes(
 function parseBBCode(input: string): TextNode[] {
   const nodes: TextNode[] = [];
   // Match opening tags, closing tags, energy/star icons, newlines, and other BBCode tags
-  const regex = /\[(\/?)(\w+)(?::([^\]\s]+))?(?:\s+[^\]]*)?\]|\n/g;
+  const regex = /\[(\/?)(\w+)(?:[:=]([^\]\s]+))?(?:\s+[^\]]*)?\]|\n/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
   const stack: { tag: string; param?: string; children: TextNode[] }[] = [];
