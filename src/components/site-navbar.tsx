@@ -105,6 +105,10 @@ type SearchIndexItem = {
   href: string;
 };
 
+type PendingSearchResult = {
+  key: string;
+};
+
 const searchTypeOrder = [
   "patch",
   "story",
@@ -201,6 +205,54 @@ function isSamePathHref(href: string): boolean {
   if (typeof window === "undefined") return false;
   const targetUrl = new URL(href, window.location.href);
   return targetUrl.origin === window.location.origin && targetUrl.pathname === window.location.pathname;
+}
+
+function searchResultKey(item: SearchIndexItem): string {
+  return `${item.type}:${item.id}`;
+}
+
+function locationMatchesSearchTarget(href: string): boolean {
+  if (typeof window === "undefined") return false;
+
+  const currentUrl = new URL(window.location.href);
+  const targetUrl = new URL(href, window.location.href);
+  if (currentUrl.origin !== targetUrl.origin) return false;
+  if (currentUrl.pathname !== targetUrl.pathname) return false;
+
+  for (const [key, value] of targetUrl.searchParams.entries()) {
+    if ((currentUrl.searchParams.get(key) ?? "").toLowerCase() !== value.toLowerCase()) {
+      return false;
+    }
+  }
+  return true;
+}
+
+const pendingPowerCounts = [6, 5, 4, 3, 2, 1] as const;
+
+function GlobalSearchPendingIndicator() {
+  const [countIndex, setCountIndex] = useState(0);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setCountIndex((index) => (index + 1) % pendingPowerCounts.length);
+    }, 120);
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  return (
+    <span className="relative flex h-7 w-7 shrink-0 items-center justify-center" aria-hidden="true">
+      <Image
+        src="/images/sts2/powers/withering_presence_power.webp"
+        alt=""
+        width={28}
+        height={28}
+        className="h-7 w-7 object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
+      />
+      <span className="pointer-events-none absolute -bottom-0.5 -right-0.5 rounded bg-black/75 px-0.5 font-game-text text-[9px] font-bold leading-none text-zinc-100 shadow-[0_0_3px_rgba(0,0,0,0.85)] tabular-nums">
+        {pendingPowerCounts[countIndex]}
+      </span>
+    </span>
+  );
 }
 
 type CodexLabelKey = {
@@ -661,8 +713,15 @@ function GlobalSearch({
   const [query, setQuery] = useState("");
   const [items, setItems] = useState<SearchIndexItem[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [pendingResult, setPendingResult] = useState<PendingSearchResult | null>(null);
+  const [showPendingIndicator, setShowPendingIndicator] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const pendingIndicatorTimerRef = useRef<number | null>(null);
+  const pendingNavigationTimerRef = useRef<number | null>(null);
+  const pendingPollTimerRef = useRef<number | null>(null);
+  const pendingCloseTimerRef = useRef<number | null>(null);
+  const pendingFallbackTimerRef = useRef<number | null>(null);
   const copy = serviceLocale === "ko"
     ? { placeholder: "통합 검색", empty: "검색어를 입력하세요", noResults: "검색 결과 없음" }
     : { placeholder: "Unified search", empty: "Type to search", noResults: "No results" };
@@ -678,11 +737,88 @@ function GlobalSearch({
     setLoaded(true);
   }, [loaded]);
 
+  const clearPendingTimers = useCallback(() => {
+    if (pendingIndicatorTimerRef.current !== null) {
+      window.clearTimeout(pendingIndicatorTimerRef.current);
+      pendingIndicatorTimerRef.current = null;
+    }
+    if (pendingNavigationTimerRef.current !== null) {
+      window.clearTimeout(pendingNavigationTimerRef.current);
+      pendingNavigationTimerRef.current = null;
+    }
+    if (pendingPollTimerRef.current !== null) {
+      window.clearTimeout(pendingPollTimerRef.current);
+      pendingPollTimerRef.current = null;
+    }
+    if (pendingCloseTimerRef.current !== null) {
+      window.clearTimeout(pendingCloseTimerRef.current);
+      pendingCloseTimerRef.current = null;
+    }
+    if (pendingFallbackTimerRef.current !== null) {
+      window.clearTimeout(pendingFallbackTimerRef.current);
+      pendingFallbackTimerRef.current = null;
+    }
+  }, []);
+
+  const resetPendingResult = useCallback(() => {
+    clearPendingTimers();
+    setPendingResult(null);
+    setShowPendingIndicator(false);
+  }, [clearPendingTimers]);
+
+  const closeSearch = useCallback(() => {
+    setOpen(false);
+    resetPendingResult();
+  }, [resetPendingResult]);
+
   const openSearch = useCallback(() => {
+    resetPendingResult();
     setOpen(true);
     void loadIndex();
     window.setTimeout(() => inputRef.current?.focus(), 0);
-  }, [loadIndex]);
+  }, [loadIndex, resetPendingResult]);
+
+  const closePendingSearchAfterTargetPaint = useCallback(() => {
+    if (pendingCloseTimerRef.current !== null) {
+      window.clearTimeout(pendingCloseTimerRef.current);
+    }
+    pendingCloseTimerRef.current = window.setTimeout(() => {
+      closeSearch();
+    }, 120);
+  }, [closeSearch]);
+
+  const waitForPendingSearchTarget = useCallback((href: string) => {
+    const checkTarget = () => {
+      if (locationMatchesSearchTarget(href)) {
+        closePendingSearchAfterTargetPaint();
+        return;
+      }
+      pendingPollTimerRef.current = window.setTimeout(checkTarget, 50);
+    };
+
+    checkTarget();
+  }, [closePendingSearchAfterTargetPaint]);
+
+  const startPendingSearchNavigation = useCallback((item: SearchIndexItem, href: string) => {
+    clearPendingTimers();
+    setPendingResult({ key: searchResultKey(item) });
+    setShowPendingIndicator(false);
+
+    pendingIndicatorTimerRef.current = window.setTimeout(() => {
+      setShowPendingIndicator(true);
+    }, 150);
+
+    pendingFallbackTimerRef.current = window.setTimeout(() => {
+      closeSearch();
+    }, 3000);
+
+    pendingNavigationTimerRef.current = window.setTimeout(() => {
+      if (!pushSamePathUrl(href)) {
+        router.push(href);
+      }
+      waitForPendingSearchTarget(href);
+    }, 0);
+  }, [clearPendingTimers, closeSearch, router, waitForPendingSearchTarget]);
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
@@ -696,18 +832,22 @@ function GlobalSearch({
   }, [openSearch]);
 
   useEffect(() => {
+    return () => clearPendingTimers();
+  }, [clearPendingTimers]);
+
+  useEffect(() => {
     if (!open) return;
 
     const handlePointerDown = (event: PointerEvent) => {
       const target = event.target;
       if (target instanceof Node && panelRef.current?.contains(target)) return;
-      setOpen(false);
+      closeSearch();
     };
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape" && event.code !== "Escape") return;
       event.preventDefault();
       event.stopPropagation();
-      setOpen(false);
+      closeSearch();
     };
 
     document.addEventListener("pointerdown", handlePointerDown, true);
@@ -716,7 +856,7 @@ function GlobalSearch({
       document.removeEventListener("pointerdown", handlePointerDown, true);
       document.removeEventListener("keydown", handleKeyDown, true);
     };
-  }, [open]);
+  }, [closeSearch, open]);
 
   const results = useMemo(() => {
     const text = query.trim();
@@ -799,24 +939,40 @@ function GlobalSearch({
                 </div>
                 {group.items.slice(0, 8).map((item) => {
                   const href = localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale);
+                  const resultKey = searchResultKey(item);
+                  const isPending = pendingResult?.key === resultKey;
+                  const hasPendingResult = pendingResult !== null;
                   return (
                     <Link
-                      key={`${item.type}-${item.id}`}
+                      key={resultKey}
                       href={href}
                       prefetch={false}
                       onFocus={() => {
-                        if (!isSamePathHref(href)) router.prefetch(href);
+                        if (!hasPendingResult && !isSamePathHref(href)) router.prefetch(href);
                       }}
                       onPointerEnter={() => {
-                        if (!isSamePathHref(href)) router.prefetch(href);
+                        if (!hasPendingResult && !isSamePathHref(href)) router.prefetch(href);
                       }}
                       onClick={(event) => {
-                        if (isPlainPrimaryClick(event) && pushSamePathUrl(href)) {
+                        if (hasPendingResult) {
                           event.preventDefault();
+                          return;
                         }
-                        setOpen(false);
+                        if (!isPlainPrimaryClick(event)) return;
+                        event.preventDefault();
+                        startPendingSearchNavigation(item, href);
                       }}
-                      className="flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors hover:bg-white/[0.07]"
+                      aria-busy={isPending || undefined}
+                      aria-disabled={hasPendingResult || undefined}
+                      tabIndex={hasPendingResult && !isPending ? -1 : undefined}
+                      data-global-search-pending={isPending ? "true" : undefined}
+                      className={`flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors ${
+                        isPending
+                          ? "bg-white/[0.08] ring-1 ring-yellow-500/25"
+                          : hasPendingResult
+                            ? "cursor-wait opacity-45"
+                            : "hover:bg-white/[0.07]"
+                      }`}
                     >
                       <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded border ${style.bg} ${style.border}`}>
                         <Image
@@ -833,6 +989,9 @@ function GlobalSearch({
                           {labels[item.type]}
                         </span>
                       </span>
+                      {isPending && showPendingIndicator && (
+                        <GlobalSearchPendingIndicator />
+                      )}
                     </Link>
                   );
                 })}
