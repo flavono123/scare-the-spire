@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, type MouseEvent } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
@@ -176,6 +176,25 @@ function globalSearchItemScore(
 
   if (scores.length === 0) return null;
   return Math.max(...scores);
+}
+
+function isPlainPrimaryClick(event: MouseEvent<HTMLAnchorElement>): boolean {
+  return !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && event.button === 0;
+}
+
+function pushSamePathUrl(href: string): boolean {
+  if (typeof window === "undefined") return false;
+  const targetUrl = new URL(href, window.location.href);
+  if (targetUrl.origin !== window.location.origin) return false;
+  if (targetUrl.pathname !== window.location.pathname) return false;
+
+  const nextUrl = `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
+  const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  if (nextUrl === currentUrl) return true;
+
+  window.history.pushState(null, "", nextUrl);
+  window.dispatchEvent(new PopStateEvent("popstate", { state: null }));
+  return true;
 }
 
 type CodexLabelKey = {
@@ -631,6 +650,7 @@ function GlobalSearch({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [items, setItems] = useState<SearchIndexItem[]>([]);
@@ -771,31 +791,41 @@ function GlobalSearch({
                     {group.items.length}
                   </span>
                 </div>
-                {group.items.slice(0, 8).map((item) => (
-                  <Link
-                    key={`${item.type}-${item.id}`}
-                    href={localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale)}
-                    prefetch={false}
-                    onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors hover:bg-white/[0.07]"
-                  >
-                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded border ${style.bg} ${style.border}`}>
-                      <Image
-                        src={item.imageUrl ?? style.icon}
-                        alt=""
-                        width={32}
-                        height={32}
-                        className="h-8 w-8 object-contain"
-                      />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate font-semibold text-foreground">{item.title}</span>
-                      <span className={`block truncate text-xs ${style.color}`}>
-                        {labels[item.type]}
+                {group.items.slice(0, 8).map((item) => {
+                  const href = localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale);
+                  return (
+                    <Link
+                      key={`${item.type}-${item.id}`}
+                      href={href}
+                      prefetch={false}
+                      onFocus={() => router.prefetch(href)}
+                      onPointerEnter={() => router.prefetch(href)}
+                      onClick={(event) => {
+                        if (isPlainPrimaryClick(event) && pushSamePathUrl(href)) {
+                          event.preventDefault();
+                        }
+                        setOpen(false);
+                      }}
+                      className="flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors hover:bg-white/[0.07]"
+                    >
+                      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded border ${style.bg} ${style.border}`}>
+                        <Image
+                          src={item.imageUrl ?? style.icon}
+                          alt=""
+                          width={32}
+                          height={32}
+                          className="h-8 w-8 object-contain"
+                        />
                       </span>
-                    </span>
-                  </Link>
-                ))}
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate font-semibold text-foreground">{item.title}</span>
+                        <span className={`block truncate text-xs ${style.color}`}>
+                          {labels[item.type]}
+                        </span>
+                      </span>
+                    </Link>
+                  );
+                })}
               </section>
             );
           })}
