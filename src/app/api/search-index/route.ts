@@ -296,7 +296,7 @@ export async function GET() {
       story.changeId,
       story.source,
       ...(story.tags ?? []),
-      ...(story.linkedEntities?.map((entity) => `${entity.entityType} ${entity.entityId} ${entity.label ?? ""}`) ?? []),
+      ...(story.linkedEntities?.map((entity) => `${entity.game ?? ""} ${entity.entityType} ${entity.entityId} ${entity.label ?? ""}`) ?? []),
     ].filter(Boolean).join(" "),
     descriptionEn: "",
     imageUrl: "/images/bone_tea.png",

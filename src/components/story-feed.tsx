@@ -360,21 +360,41 @@ function StoryExpanded({
     return (
       <div className="space-y-3">
         <STS2EntityInfoBlock entity={entity} label={primaryLabel} serviceLocale={serviceLocale} />
-        <STS2ChangeBlock change={change} story={story} patch={patch} serviceLocale={serviceLocale} />
+        {(change || story.source) && (
+          <STS2ChangeBlock change={change} story={story} patch={patch} serviceLocale={serviceLocale} />
+        )}
 
-        {story.linkedEntities?.map((linked) => (
-          <div key={`${linked.entityType}-${linked.entityId}`} className="space-y-3 border-t border-border/30 pt-3">
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <span>↳</span>
-              <span>관련 항목</span>
+        {story.linkedEntities?.map((linked) => {
+          const isSTS1LinkedEntity = linked.game === "sts1" && isSTS1EntityType(linked.entityType);
+          const heading = isSTS1LinkedEntity && linked.entityType === "card"
+            ? "STS1에는 이런 카드가 있었다"
+            : "관련 항목";
+
+          return (
+            <div key={`${linked.game ?? "sts2"}-${linked.entityType}-${linked.entityId}`} className="space-y-3 border-t border-border/30 pt-3">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span>↳</span>
+                <span>{heading}</span>
+              </div>
+              {isSTS1LinkedEntity ? (
+                <EntityInfoBlock
+                  entityType={linked.entityType}
+                  entityId={linked.entityId}
+                  card={cardMap.get(linked.entityId)}
+                  relic={relicMap.get(linked.entityId)}
+                  potion={potionMap.get(linked.entityId)}
+                  label={linked.label}
+                />
+              ) : (
+                <STS2EntityInfoBlock
+                  entity={sts2EntityMap.get(`${linked.entityType}:${linked.entityId}`)}
+                  label={linked.label}
+                  serviceLocale={serviceLocale}
+                />
+              )}
             </div>
-            <STS2EntityInfoBlock
-              entity={sts2EntityMap.get(`${linked.entityType}:${linked.entityId}`)}
-              label={linked.label}
-              serviceLocale={serviceLocale}
-            />
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   }
@@ -408,7 +428,7 @@ function StoryExpanded({
         if (!isSTS1EntityType(linked.entityType)) return null;
         const linkedChanges = linked.changeId ? [changeMap.get(linked.changeId)].filter(Boolean) as Change[] : [];
         return (
-          <div key={`${linked.entityType}-${linked.entityId}`} className="border-t border-border/30 pt-3 space-y-3">
+          <div key={`${linked.game ?? "sts1"}-${linked.entityType}-${linked.entityId}`} className="border-t border-border/30 pt-3 space-y-3">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <span>↳</span>
               <span>관련 {linked.entityType === "card" ? "카드" : linked.entityType === "relic" ? "유물" : "포션"}</span>

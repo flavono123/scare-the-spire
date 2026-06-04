@@ -75,6 +75,7 @@ export type StoryEntityType =
   | "epoch";
 
 export interface LinkedEntity {
+  game?: StoryGame;
   entityType: StoryEntityType;
   entityId: string;
   changeId?: string;
