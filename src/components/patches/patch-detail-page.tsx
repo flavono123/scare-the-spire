@@ -6,9 +6,9 @@ import fs from "fs/promises";
 import path from "path";
 import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches } from "@/lib/data";
 import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients } from "@/lib/codex-data";
-import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { readGameLocalizationTable, type GameLocalizationTable } from "@/lib/game-localization";
+import { loadAllEntities } from "@/lib/load-all-entities";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -21,7 +21,10 @@ import {
 } from "@/components/patch-note-renderer";
 import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
 import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
-import { withPageOgImage } from "@/lib/page-og-images";
+import {
+  getServiceMetadataCopy,
+  getServiceOgMetadata,
+} from "@/lib/service-metadata";
 import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType } from "@/lib/types";
@@ -92,6 +95,52 @@ function PatchArtHero({ art }: { art: ResolvedPatchArt }) {
 }
 
 const NOTES_DIR = path.join(process.cwd(), "data/sts2-patch-notes");
+const PATCH_OG_DESCRIPTION_MAX_LENGTH = 200;
+
+function truncateOgDescription(text: string, maxLength = PATCH_OG_DESCRIPTION_MAX_LENGTH): string {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 1).trimEnd()}…`;
+}
+
+function plainPatchMarkdownForOg(markdown: string, serviceLocale: ServiceLocale): string {
+  const localeFiltered = serviceLocale === "ko"
+    ? markdown.replace(/\[devnote:en\][\s\S]*?\[\/devnote\]/gi, " ")
+    : markdown;
+
+  const withoutStructuralLines = localeFiltered
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith("#"))
+    .map((line) => line.replace(/^[-*+]\s+/, ""))
+    .join(" ");
+
+  return withoutStructuralLines
+    .replace(/\[devnote(?::en)?\]([\s\S]*?)\[\/devnote\]/gi, "$1")
+    .replace(/!\[[^\]]*]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
+    .replace(/\[\/?[a-z][a-z0-9_-]*(?::[a-z0-9_-]+)?(?:=[^\]]+)?\]/gi, "")
+    .replace(/[`*_~]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+async function readPatchOgDescription({
+  version,
+  serviceLocale,
+  fallback,
+}: {
+  version: string;
+  serviceLocale: ServiceLocale;
+  fallback: string;
+}): Promise<string> {
+  const markdownPath = path.join(
+    NOTES_DIR,
+    serviceLocale === "ko" ? `v${version}.ko.md` : `v${version}.md`,
+  );
+  const markdown = await fs.readFile(markdownPath, "utf-8").catch(() => null);
+  const description = markdown ? plainPatchMarkdownForOg(markdown, serviceLocale) : "";
+  return truncateOgDescription(description || fallback);
+}
 
 const PATCH_ENTITY_ALIASES_EN: Record<string, string[]> = {
   AXEBOTS_NORMAL: ["Axebots"],
@@ -681,13 +730,28 @@ export async function getPatchDetailMetadata({
   if (!patch) return {};
 
   const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
-  const description = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
-  const versionLabel = getPatchVersionLabel(patch, serviceLocale);
+  const fallbackDescription = serviceLocale === "ko" ? patch.summaryKo : patch.summary;
+  const [description, entities] = await Promise.all([
+    readPatchOgDescription({
+      version: patch.version,
+      serviceLocale,
+      fallback: fallbackDescription,
+    }),
+    loadAllEntities({ gameLocale: serviceLocale === "ko" ? "kor" : "eng" }),
+  ]);
+  const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
+  const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
+  const copy = getServiceMetadataCopy(serviceLocale);
 
-  return withPageOgImage({
-    ...getCodexMetadata(serviceLocale, `${versionLabel} ${title}`),
+  return getServiceOgMetadata({
+    serviceLocale,
+    title: `${copy.patchesTitle} ${title}`,
     description,
-  }, `/patches/${patch.version}`);
+    image: {
+      url: patchArt.imageUrl,
+      alt: patchArt.alt,
+    },
+  });
 }
 
 export async function PatchDetailPage({

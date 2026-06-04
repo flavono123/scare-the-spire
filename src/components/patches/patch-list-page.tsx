@@ -10,8 +10,11 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
-import { getCodexMetadata } from "@/lib/codex-service";
-import { withPageOgImage } from "@/lib/page-og-images";
+import { PATCH_NOTES_PAGE_OG_IMAGE } from "@/lib/page-og-images";
+import {
+  getServiceMetadataCopy,
+  getServiceOgMetadata,
+} from "@/lib/service-metadata";
 import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType } from "@/lib/types";
@@ -105,11 +108,13 @@ function PatchArtPreview({
 }
 
 export function getPatchListMetadata(serviceLocale: ServiceLocale): Metadata {
-  const copy = PATCH_COPY[serviceLocale];
-  return withPageOgImage({
-    ...getCodexMetadata(serviceLocale, copy.title),
-    description: copy.description,
-  }, "/patches");
+  const copy = getServiceMetadataCopy(serviceLocale);
+  return getServiceOgMetadata({
+    serviceLocale,
+    title: copy.patchesTitle,
+    description: copy.patchesDescription,
+    image: PATCH_NOTES_PAGE_OG_IMAGE,
+  });
 }
 
 export async function PatchListPage({
