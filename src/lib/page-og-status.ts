@@ -54,6 +54,10 @@ function pageFileToRoute(file: string): string {
   return route || "/";
 }
 
+function canonicalStatusRoute(route: string): string {
+  return route.replace(/^\/codex(?=\/|$)/, "/compendium");
+}
+
 function localImagePath(image: PageOgImage): string | null {
   if (!image.url.startsWith("/")) return null;
   return path.join(publicDir, image.url.replace(/^\//, ""));
@@ -80,7 +84,9 @@ export async function getPageOgStatus(): Promise<PageOgStatus> {
   const pageFiles = (await walk(appDir))
     .filter((file) => file.endsWith(`${path.sep}page.tsx`))
     .sort();
-  const pageRoutes = pageFiles.map(pageFileToRoute);
+  const pageRoutes = [
+    ...new Set(pageFiles.map((file) => canonicalStatusRoute(pageFileToRoute(file)))),
+  ];
   const rows = await Promise.all(pageRoutes.map(async (route) => {
     const rule = findPageOgImageRule(route);
     const image = getPageOgImage(route);

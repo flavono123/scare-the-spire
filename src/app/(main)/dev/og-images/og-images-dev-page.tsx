@@ -323,7 +323,7 @@ export default async function OgImagesDevPage({ previewPath }: { previewPath?: s
         <div>
           <h1 className="text-2xl font-bold text-zinc-50">OG 이미지 현황</h1>
           <p className="mt-1 text-sm text-zinc-400">
-            상단은 입력한 URL의 실제 링크 프리뷰, 하단은 query 없는 라우트 템플릿의 기본 이미지 현황입니다.
+            상단은 입력한 URL의 실제 링크 프리뷰, 아래는 query 없는 canonical route의 기본 이미지 현황입니다.
           </p>
         </div>
         <div className="grid grid-cols-4 gap-2 text-center">
@@ -431,39 +431,6 @@ export default async function OgImagesDevPage({ previewPath }: { previewPath?: s
             <RouteChips rows={status.defaultRows} />
           </div>
         </article>
-      </section>
-
-      <section className="mt-8">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-amber-300">정적 라우트 템플릿</h2>
-          <span className="text-xs text-zinc-500">{status.rows.length} pages</span>
-        </div>
-        <p className="mb-3 text-xs text-zinc-500">
-          이 목록은 query를 제외한 라우트 템플릿의 기본 OG 이미지입니다. 리소스별 동적 이미지는 상단 링크 프리뷰에서 확인합니다.
-        </p>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {status.rows.map((row) => (
-            <article
-              key={row.route}
-              className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-3"
-            >
-              <OgImagePreview
-                src={row.image.url}
-                alt={row.image.alt}
-                className="aspect-[1000/760] w-full"
-              />
-              <div className="mt-3 flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate font-mono text-xs text-zinc-200">{row.route}</p>
-                  <p className="mt-1 truncate text-xs text-zinc-500">
-                    {row.rule?.label ?? "기본 이미지"}
-                  </p>
-                </div>
-                <StatusBadge ok={row.exists} />
-              </div>
-            </article>
-          ))}
-        </div>
       </section>
     </main>
   );
