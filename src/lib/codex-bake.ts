@@ -200,21 +200,33 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
     return renderTemplate(v === 1 ? opts[0] : opts[1], vars, name);
   }
 
-  // {Var:fn()} family
-  const fnMatch = body.match(/^(\w+):(\w+)\(\)$/);
+  // {Var:fn()} / {Var:fn(arg)} family. Some localization strings pass
+  // literal icon counts through the function argument, e.g.
+  // `{energyPrefix:energyIcons(1)}`.
+  const fnMatch = body.match(/^(\w*):(\w+)\(([^)]*)\)$/);
   if (fnMatch) {
-    const [, name, fn] = fnMatch;
-    const v = looksLike(name, vars);
+    const [, name, fn, argRaw] = fnMatch;
+    const v = name ? looksLike(name, vars) : undefined;
+    const trimmedArg = argRaw.trim();
+    const parsedArg = trimmedArg === "" ? null : Number(trimmedArg);
+    const numericArg = parsedArg !== null && Number.isFinite(parsedArg) ? parsedArg : null;
+    const valueNumber = toNumber(v);
     // No data-side base value → assume the var is a runtime stack/counter
     // (e.g. PowerVar.Amount). Show the conventional `X` placeholder.
-    if (v === undefined) return "X";
+    if (v === undefined && numericArg === null) return "X";
     switch (fn) {
       case "energyIcons":
-        return typeof v === "number" ? `[energy:${v}]` : "X";
+        return numericArg !== null || valueNumber !== null
+          ? `[energy:${numericArg ?? valueNumber}]`
+          : "X";
       case "starIcons":
-        return typeof v === "number" ? `[star:${v}]` : "X";
+        return numericArg !== null || valueNumber !== null
+          ? `[star:${numericArg ?? valueNumber}]`
+          : "X";
       case "percentMore":
-        return typeof v === "number" ? `${v}%` : "X";
+        return numericArg !== null || valueNumber !== null
+          ? `${numericArg ?? valueNumber}%`
+          : "X";
       case "diff":
         return String(v);
       default:
