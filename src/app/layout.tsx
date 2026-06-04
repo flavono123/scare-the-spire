@@ -5,7 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleDocumentAttributes } from "@/components/locale-document-attributes";
 import { SiteNavbar } from "@/components/site-navbar";
-import { DEFAULT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
+import { getDefaultServiceMetadata } from "@/lib/service-metadata";
 import "./globals.css";
 
 // STS2 game fonts extracted from PCK
@@ -30,26 +30,8 @@ const gcBatang = localFont({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "슬서운 이야기",
-    template: "%s — 슬서운 이야기",
-  },
-  description: "슬레이 더 스파이어 2 패치노트, 백과사전, 커뮤니티",
+  ...getDefaultServiceMetadata("ko"),
   metadataBase: new URL("https://scare-the-spire.vercel.app"),
-  openGraph: {
-    title: "슬서운 이야기",
-    description: "슬레이 더 스파이어 2 패치노트, 백과사전, 커뮤니티",
-    siteName: "슬서운 이야기",
-    images: [DEFAULT_PAGE_OG_IMAGE],
-    locale: "ko_KR",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "슬서운 이야기",
-    description: "슬레이 더 스파이어 2 패치노트, 백과사전, 커뮤니티",
-    images: [DEFAULT_PAGE_OG_IMAGE.url],
-  },
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-icon.png",
