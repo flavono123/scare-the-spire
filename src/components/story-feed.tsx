@@ -366,16 +366,15 @@ function StoryExpanded({
 
         {story.linkedEntities?.map((linked) => {
           const isSTS1LinkedEntity = linked.game === "sts1" && isSTS1EntityType(linked.entityType);
-          const heading = isSTS1LinkedEntity && linked.entityType === "card"
-            ? "STS1에는 이런 카드가 있었다"
-            : "관련 항목";
 
           return (
             <div key={`${linked.game ?? "sts2"}-${linked.entityType}-${linked.entityId}`} className="space-y-3 border-t border-border/30 pt-3">
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <span>↳</span>
-                <span>{heading}</span>
-              </div>
+              {!isSTS1LinkedEntity && (
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span>↳</span>
+                  <span>관련 항목</span>
+                </div>
+              )}
               {isSTS1LinkedEntity ? (
                 <EntityInfoBlock
                   entityType={linked.entityType}
