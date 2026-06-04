@@ -8,10 +8,11 @@ const CONTEXTLESS_AMOUNT_POWER_IDS = new Set(["VITAL_SPARK"]);
 const AMOUNT_TEMPLATE_RE = /\{Amount(?::|})/;
 
 export function getPowerCompendiumDescription(power: CodexPower): string {
-  if (!CONTEXTLESS_AMOUNT_POWER_IDS.has(power.id) || !AMOUNT_TEMPLATE_RE.test(power.descriptionRaw ?? "")) {
+  const raw = power.descriptionRaw;
+  if (!raw || !CONTEXTLESS_AMOUNT_POWER_IDS.has(power.id) || !AMOUNT_TEMPLATE_RE.test(raw)) {
     return power.description;
   }
-  return bakeDescription(power.descriptionRaw, {
+  return bakeDescription(raw, {
     ...power.vars,
     Amount: "X",
   });
@@ -24,7 +25,7 @@ export function bakePowerAmountDescription(
   ascensionLevel = 0,
   ascensionThreshold = MONSTER_MOVE_ASCENSION_LEVEL,
 ): string | null {
-  if (!AMOUNT_TEMPLATE_RE.test(descriptionRaw ?? "")) return null;
+  if (!descriptionRaw || !AMOUNT_TEMPLATE_RE.test(descriptionRaw)) return null;
   const amountValue = getEffectiveDamageValue(amount ?? null, ascensionLevel, ascensionThreshold);
   if (amountValue == null) return null;
 
