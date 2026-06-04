@@ -45,7 +45,7 @@ export async function generateCompendiumBestiaryMetadata(
       return getCodexResourceOgMetadata(
         serviceLocale,
         gameUi.bestiaryTitle,
-        getCodexEncounterOgResource(encounter, monsters, serviceLocale),
+        getCodexEncounterOgResource(encounter, monsters, gameLocale),
       );
     }
   }
@@ -61,7 +61,7 @@ export async function generateCompendiumBestiaryMetadata(
       return getCodexResourceOgMetadata(
         serviceLocale,
         gameUi.bestiaryTitle,
-        getCodexMonsterOgResource(monster, serviceLocale),
+        getCodexMonsterOgResource(monster, gameUi),
       );
     }
   }

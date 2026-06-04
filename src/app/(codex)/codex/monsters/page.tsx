@@ -50,7 +50,7 @@ export async function generateMetadata({
       return getCodexResourceOgMetadata(
         serviceLocale,
         gameUi.bestiaryTitle,
-        getCodexMonsterOgResource(monster, serviceLocale),
+        getCodexMonsterOgResource(monster, gameUi),
       );
     }
   }

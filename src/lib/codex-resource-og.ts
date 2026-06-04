@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { stripCodexMarkup } from "@/lib/codex-search";
-import type { ServiceLocale } from "@/lib/i18n";
+import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import {
-  MONSTER_TYPE_CONFIG,
   type CodexEncounter,
   type CodexMonster,
 } from "@/lib/codex-types";
+import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { DEFAULT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 
 export type RouteSearchParamValue = string | string[] | undefined;
@@ -41,11 +41,9 @@ export function firstCodexImageUrl(
 
 export function getCodexMonsterOgResource(
   monster: CodexMonster,
-  serviceLocale: ServiceLocale,
+  gameUi: CodexGameUiLabels,
 ): CodexOgResource {
-  const typeLabel = serviceLocale === "ko"
-    ? MONSTER_TYPE_CONFIG[monster.type].label
-    : monster.type;
+  const typeLabel = gameUi.monsterTypes[monster.type].label || monster.type;
   const hpRange = monster.minHp == null
     ? null
     : monster.maxHp == null || monster.minHp === monster.maxHp
@@ -54,26 +52,51 @@ export function getCodexMonsterOgResource(
 
   return {
     name: monster.name,
-    description: serviceLocale === "ko"
-      ? hpRange ? `${typeLabel} 몬스터 · 체력 ${hpRange}` : `${typeLabel} 몬스터`
-      : hpRange ? `${typeLabel} monster · HP ${hpRange}` : `${typeLabel} monster`,
+    description: hpRange ? `${typeLabel} · ${hpRange}` : typeLabel,
     imageUrl: firstCodexImageUrl(monster.imageUrl, monster.bossImageUrl),
   };
+}
+
+const ENCOUNTER_CHARACTER_LABELS: Record<GameLocale, { subject: string; object: string }> = {
+  kor: { subject: "도전자", object: "도전자" },
+  eng: { subject: "the character", object: "the character" },
+  zhs: { subject: "角色", object: "角色" },
+  jpn: { subject: "キャラクター", object: "キャラクター" },
+  deu: { subject: "der Charakter", object: "den Charakter" },
+  fra: { subject: "le personnage", object: "le personnage" },
+  ita: { subject: "il personaggio", object: "il personaggio" },
+  spa: { subject: "el personaje", object: "el personaje" },
+  esp: { subject: "el personaje", object: "el personaje" },
+  ptb: { subject: "o personagem", object: "o personagem" },
+  rus: { subject: "персонаж", object: "персонажа" },
+  pol: { subject: "postać", object: "postać" },
+  tha: { subject: "ตัวละคร", object: "ตัวละคร" },
+  tur: { subject: "karakter", object: "karakter" },
+};
+
+function replaceEncounterPlaceholders(
+  text: string,
+  encounterName: string,
+  gameLocale: GameLocale,
+): string {
+  const character = ENCOUNTER_CHARACTER_LABELS[gameLocale] ?? ENCOUNTER_CHARACTER_LABELS.eng;
+  return text
+    .replaceAll("{encounter}", encounterName)
+    .replaceAll("{characterObject}", character.object)
+    .replaceAll("{character}", character.subject)
+    .replace(/\{characterGender:choose\([^)]*\):([^}|]*)(?:\|[^}]*)*\}/g, "$1");
 }
 
 export function getCodexEncounterOgResource(
   encounter: CodexEncounter,
   monsters: CodexMonster[],
-  serviceLocale: ServiceLocale,
+  gameLocale: GameLocale,
 ): CodexOgResource {
   const encounterMonsterAssets = encounter.monsters
     .map((monsterRef) => monsters.find((monster) => monster.id === monsterRef.id))
     .flatMap((monster) => monster ? [monster.imageUrl, monster.bossImageUrl] : []);
-  const characterLabel = serviceLocale === "ko" ? "도전자" : "the character";
   const lossText = plainCodexOgDescription(
-    encounter.lossText
-      .replaceAll("{encounter}", encounter.name)
-      .replaceAll("{character}", characterLabel),
+    replaceEncounterPlaceholders(encounter.lossText, encounter.name, gameLocale),
   );
 
   return {

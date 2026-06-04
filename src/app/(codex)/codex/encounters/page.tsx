@@ -38,7 +38,7 @@ export async function generateMetadata({
       return getCodexResourceOgMetadata(
         serviceLocale,
         serviceText.encountersView.title,
-        getCodexEncounterOgResource(encounter, monsters, serviceLocale),
+        getCodexEncounterOgResource(encounter, monsters, gameLocale),
       );
     }
   }
