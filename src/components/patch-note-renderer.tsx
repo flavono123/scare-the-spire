@@ -50,6 +50,7 @@ export interface EntityInfo {
   powerAmount?: DamageValue | null; // Contextual amount used by monster power applications.
   powerAmountAscensionLevel?: number;
   powerAmountAscensionThreshold?: number;
+  powerDescriptionVars?: Record<string, number | string>;
   enchantmentData?: CodexEnchantment; // Full enchantment data for rich preview
   afflictionData?: CodexAffliction; // Full affliction data for rich preview
   eventData?: CodexEvent; // Full event data for rich preview
@@ -686,6 +687,7 @@ function applyPreviewEntityContext(entity: EntityInfo): EntityInfo {
     entity.powerAmount,
     entity.powerAmountAscensionLevel,
     entity.powerAmountAscensionThreshold,
+    entity.powerDescriptionVars,
   );
   return {
     ...entity,

@@ -24,6 +24,7 @@ export function bakePowerAmountDescription(
   amount: DamageValue | null | undefined,
   ascensionLevel = 0,
   ascensionThreshold = MONSTER_MOVE_ASCENSION_LEVEL,
+  contextVars?: Record<string, number | string>,
 ): string | null {
   if (!descriptionRaw || !AMOUNT_TEMPLATE_RE.test(descriptionRaw)) return null;
   const amountValue = getEffectiveDamageValue(amount ?? null, ascensionLevel, ascensionThreshold);
@@ -31,6 +32,7 @@ export function bakePowerAmountDescription(
 
   return bakeDescription(descriptionRaw, {
     ...(vars ?? {}),
+    ...(contextVars ?? {}),
     Amount: amountValue,
   });
 }
@@ -40,6 +42,7 @@ export function applyPowerAmountForPreview(
   amount: DamageValue | null | undefined,
   ascensionLevel = 0,
   ascensionThreshold = MONSTER_MOVE_ASCENSION_LEVEL,
+  contextVars?: Record<string, number | string>,
 ): CodexPower {
   const description = bakePowerAmountDescription(
     power.descriptionRaw,
@@ -47,6 +50,7 @@ export function applyPowerAmountForPreview(
     amount,
     ascensionLevel,
     ascensionThreshold,
+    contextVars,
   );
   if (!description) return power;
 
@@ -57,6 +61,7 @@ export function applyPowerAmountForPreview(
     ...power,
     vars: {
       ...power.vars,
+      ...(contextVars ?? {}),
       Amount: amountValue,
     },
     description,

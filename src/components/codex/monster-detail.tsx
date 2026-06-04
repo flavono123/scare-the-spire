@@ -424,12 +424,14 @@ function MonsterInitialPowerPreview({
   powerById,
   visualBounds,
   ascensionLevel,
+  ownerName,
 }: {
   applications: readonly MonsterMovePowerApplication[];
   serviceLocale: ServiceLocale;
   powerById: Map<string, CodexPower>;
   visualBounds: MonsterStageVisualBounds | null;
   ascensionLevel: number;
+  ownerName: string;
 }) {
   if (applications.length === 0) return null;
 
@@ -449,7 +451,7 @@ function MonsterInitialPowerPreview({
         return (
           <EntityPreview
             key={`initial-stage-${application.powerId}-${application.target}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
-            entity={buildPowerEntity(application, power, ascensionLevel)}
+            entity={buildPowerEntity(application, power, ascensionLevel, ownerName)}
             serviceLocale={serviceLocale}
             forcePosition="above"
             linkClassName="relative inline-flex h-9 w-9 items-center justify-center rounded-sm outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-yellow-300/70 sm:h-10 sm:w-10"
@@ -558,12 +560,14 @@ function MoveApplicationTokens({
   serviceLocale,
   powerById,
   cardById,
+  ownerName,
 }: {
   powers: readonly MonsterMovePowerApplication[];
   cards: readonly MonsterMoveCardApplication[];
   serviceLocale: ServiceLocale;
   powerById: Map<string, CodexPower>;
   cardById: Map<string, CodexCard>;
+  ownerName: string;
 }) {
   const [monsterAscensionLevel] = useMonsterAscensionLevel();
 
@@ -574,7 +578,7 @@ function MoveApplicationTokens({
       {powers.map((application) => (
         <MoveApplicationToken
           key={`power-${application.powerId}-${application.target}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
-          entity={buildPowerEntity(application, powerById.get(application.powerId), monsterAscensionLevel)}
+          entity={buildPowerEntity(application, powerById.get(application.powerId), monsterAscensionLevel, ownerName)}
           imageUrl={application.imageUrl}
           label={serviceLocale === "ko" ? application.powerName : application.powerNameEn}
           amount={getPowerApplicationCounterAmount(application, powerById.get(application.powerId))}
@@ -695,10 +699,12 @@ function InitialPowerApplicationsRail({
   applications,
   serviceLocale,
   powerById,
+  ownerName,
 }: {
   applications: readonly MonsterMovePowerApplication[];
   serviceLocale: ServiceLocale;
   powerById: Map<string, CodexPower>;
+  ownerName: string;
 }) {
   const [monsterAscensionLevel] = useMonsterAscensionLevel();
 
@@ -714,7 +720,7 @@ function InitialPowerApplicationsRail({
         return (
           <EntityPreview
             key={`initial-${application.powerId}-${application.target}-${formatNumericValue(application.amount ?? { normal: null, ascension: null })}`}
-            entity={buildPowerEntity(application, power, monsterAscensionLevel)}
+            entity={buildPowerEntity(application, power, monsterAscensionLevel, ownerName)}
             serviceLocale={serviceLocale}
             linkClassName="block rounded-md border border-white/[0.07] bg-white/[0.025] px-2.5 py-2 transition-colors hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-yellow-300/70"
           >
@@ -1117,6 +1123,7 @@ function PatternMoveStateNode({
               serviceLocale={serviceLocale}
               powerById={powerById}
               cardById={cardById}
+              ownerName={monster.name}
             />
           </span>
         )}
@@ -1437,6 +1444,7 @@ export function MonsterDetail({
               powerById={powerById}
               visualBounds={stageVisualBounds}
               ascensionLevel={monsterAscensionLevel}
+              ownerName={monster.name}
             />
           </div>
 
@@ -1559,6 +1567,7 @@ export function MonsterDetail({
                 applications={monster.initialPowerApplications}
                 serviceLocale={serviceLocale}
                 powerById={powerById}
+                ownerName={monster.name}
               />
             </InfoRailSection>
           )}
@@ -1598,6 +1607,7 @@ export function MonsterDetail({
                             serviceLocale={serviceLocale}
                             powerById={powerById}
                             cardById={cardById}
+                            ownerName={monster.name}
                           />
                         </span>
                         <span className="flex shrink-0 flex-col items-end gap-1">
@@ -1889,8 +1899,10 @@ function buildPowerEntity(
   application: MonsterMovePowerApplication,
   power: CodexPower | undefined,
   ascensionLevel = 0,
+  ownerName?: string,
 ): EntityInfo {
   const href = `/compendium/powers?power=${application.powerId.toLowerCase()}`;
+  const powerDescriptionVars = getPowerApplicationDescriptionVars(application, ownerName);
   return {
     id: application.powerId,
     nameEn: power?.nameEn ?? application.powerNameEn,
@@ -1903,7 +1915,18 @@ function buildPowerEntity(
     powerAmount: application.amount,
     powerAmountAscensionLevel: ascensionLevel,
     powerAmountAscensionThreshold: MONSTER_MOVE_ASCENSION_LEVEL,
+    powerDescriptionVars,
   };
+}
+
+function getPowerApplicationDescriptionVars(
+  application: MonsterMovePowerApplication,
+  ownerName?: string,
+): Record<string, number | string> | undefined {
+  if (!ownerName) return undefined;
+  if (application.target === "self") return { OwnerName: ownerName };
+  if (application.target === "player") return { ApplierName: ownerName };
+  return undefined;
 }
 
 function buildCardEntity(
