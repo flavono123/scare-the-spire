@@ -479,7 +479,7 @@ const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> 
         const aeonglass = findPatchDiffMonster(monsters, "AEONGLASS");
         return serviceLocale === "ko"
           ? <><PatchDiffMonsterLink monster={monster} serviceLocale={serviceLocale}>문을 만드는 자</PatchDiffMonsterLink>가 3막 보스 자리에서 빠지고, 새 보스 <PatchDiffMonsterLink monster={aeonglass} serviceLocale={serviceLocale}>영겁의 모래시계</PatchDiffMonsterLink>로 교체됩니다. 전투는 문을 만드는 자의 네 행동 루프에서 감쇠, 눈 레이저, 강도 증가로 이어지는 새 패턴으로 바뀝니다.</>
-          : <><PatchDiffMonsterLink monster={monster} serviceLocale={serviceLocale}>Doormaker</PatchDiffMonsterLink> leaves the Act 3 boss slot and is replaced by the new boss <PatchDiffMonsterLink monster={aeonglass} serviceLocale={serviceLocale}>Aeonglass</PatchDiffMonsterLink>. The fight changes from Doormaker's four-move loop to the new Ebb, Eye Lasers, Increasing Intensity pattern.</>;
+          : <><PatchDiffMonsterLink monster={monster} serviceLocale={serviceLocale}>Doormaker</PatchDiffMonsterLink> leaves the Act 3 boss slot and is replaced by the new boss <PatchDiffMonsterLink monster={aeonglass} serviceLocale={serviceLocale}>Aeonglass</PatchDiffMonsterLink>. The fight changes from the four-move Doormaker loop to the new Ebb, Eye Lasers, Increasing Intensity pattern.</>;
       },
       before: {
         labelKo: "이전",
