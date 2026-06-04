@@ -9,9 +9,8 @@ import {
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
-  firstCodexImageUrl,
+  getCodexEncounterOgResource,
   getCodexResourceOgMetadata,
-  plainCodexOgDescription,
 } from "@/lib/codex-resource-og";
 import { EncounterDetail } from "@/components/codex/encounter-detail";
 
@@ -33,16 +32,11 @@ export async function generateMetadata({
   ]);
   const encounter = encounters.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!encounter) return {};
-  const encounterMonsterAssets = encounter.monsters
-    .map((monsterRef) => monsters.find((monster) => monster.id === monsterRef.id))
-    .flatMap((monster) => monster ? [monster.imageUrl, monster.bossImageUrl] : []);
-
-  return getCodexResourceOgMetadata(serviceLocale, serviceText.encountersView.title, {
-    name: encounter.name,
-    description: plainCodexOgDescription(encounter.lossText) ||
-      encounter.monsters.map((monster) => monster.name).join(", "),
-    imageUrl: firstCodexImageUrl(encounter.imageUrl, ...encounterMonsterAssets),
-  });
+  return getCodexResourceOgMetadata(
+    serviceLocale,
+    serviceText.encountersView.title,
+    getCodexEncounterOgResource(encounter, monsters, serviceLocale),
+  );
 }
 
 export default async function EncounterDetailPage({
