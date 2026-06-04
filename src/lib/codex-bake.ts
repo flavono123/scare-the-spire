@@ -240,6 +240,26 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
     }
   }
 
+  // Tolerate a small set of upstream localization typos like `{Summon:diff)}`.
+  const malformedFnMatch = body.match(/^(\w+):(\w+)\)$/);
+  if (malformedFnMatch) {
+    const [, name, fn] = malformedFnMatch;
+    const v = looksLike(name, vars);
+    if (v === undefined) return "X";
+    switch (fn) {
+      case "energyIcons":
+        return typeof v === "number" ? `[energy:${v}]` : "X";
+      case "starIcons":
+        return typeof v === "number" ? `[star:${v}]` : "X";
+      case "percentMore":
+        return typeof v === "number" ? `${v}%` : "X";
+      case "diff":
+        return String(v);
+      default:
+        return String(v);
+    }
+  }
+
   // {Var:show:a|b} — show the first branch when Var is truthy, otherwise
   // the second/empty branch. Upgrade-only text uses this in card templates.
   const showMatch = body.match(/^(\w+):show:([\s\S]*)$/);
@@ -271,6 +291,15 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
       if (v === undefined || v) return renderTemplate(opts[0], vars, name);
       return renderTemplate(opts[1], vars, name);
     }
+  }
+
+  // {InCombat:a} — upstream sometimes omits the empty false branch marker.
+  // The compendium renders out-of-combat descriptions, so missing data hides it.
+  const optionalRuntimeMatch = body.match(/^(InCombat):([\s\S]*)$/);
+  if (optionalRuntimeMatch) {
+    const [, name, rest] = optionalRuntimeMatch;
+    const v = looksLike(name, vars);
+    return renderTemplate(v ? rest : "", vars, name);
   }
 
   // Bare {Var}
