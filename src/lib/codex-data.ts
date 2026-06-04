@@ -1694,6 +1694,27 @@ function ancientTalkSpeaker(speaker: "ancient" | "character"): string {
   return speaker === "character" ? "char" : "ancient";
 }
 
+function ancientCharacterGender(group: string): string {
+  switch (group) {
+    case "Silent":
+    case "Necrobinder":
+      return "feminine";
+    case "Defect":
+    case "First Visit":
+    case "Returning":
+      return "neutral";
+    case "Ironclad":
+    case "Regent":
+    default:
+      return "masculine";
+  }
+}
+
+function renderAncientText(text: string, group: string): string {
+  return bakeDescription(text, { characterGender: ancientCharacterGender(group) })
+    .replace(/\[\/?font_size(?:=[^\]]*)?\]/g, "");
+}
+
 function mapAncient(
   kor: RawEvent,
   eng: RawEvent,
@@ -1711,10 +1732,13 @@ function mapAncient(
       dialogue[charKey] = (lines as RawDialogueLine[]).map((l) => ({
         order: l.order,
         speaker: l.speaker as "ancient" | "character",
-        text: gameText(
-          gameAncients,
-          `${kor.id}.talk.${group}.${l.order}.${ancientTalkSpeaker(l.speaker as "ancient" | "character")}`,
-          l.text,
+        text: renderAncientText(
+          gameText(
+            gameAncients,
+            `${kor.id}.talk.${group}.${l.order}.${ancientTalkSpeaker(l.speaker as "ancient" | "character")}`,
+            l.text,
+          ),
+          charKey,
         ),
       }));
     }
@@ -1726,12 +1750,15 @@ function mapAncient(
     nameEn: eng.name,
     epithet: gameText(gameAncients, `${kor.id}.epithet`, kor.epithet ?? ""),
     epithetEn: eng.epithet ?? "",
-    description: gameText(
-      gameAncients,
-      `${kor.id}.talk.firstVisitEver.0-0.ancient`,
-      kor.description,
+    description: renderAncientText(
+      gameText(
+        gameAncients,
+        `${kor.id}.talk.firstVisitEver.0-0.ancient`,
+        kor.description,
+      ),
+      "First Visit",
     ),
-    descriptionEn: eng.description,
+    descriptionEn: renderAncientText(eng.description, "First Visit"),
     act: (kor.act as EventAct) ?? null,
     relicIds: kor.relics ?? [],
     dialogue,
