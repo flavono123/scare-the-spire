@@ -315,7 +315,7 @@ export default async function OgImagesDevPage({ previewPath }: { previewPath?: s
       <div className="mb-6 rounded border border-yellow-500/30 bg-yellow-500/5 px-4 py-2">
         <span className="text-xs font-bold text-yellow-500">DEV ONLY</span>
         <span className="ml-2 text-xs text-muted-foreground">
-          페이지별 OG 이미지 매핑 현황
+          실제 링크 프리뷰와 정적 OG 이미지 매핑 현황
         </span>
       </div>
 
@@ -323,7 +323,7 @@ export default async function OgImagesDevPage({ previewPath }: { previewPath?: s
         <div>
           <h1 className="text-2xl font-bold text-zinc-50">OG 이미지 현황</h1>
           <p className="mt-1 text-sm text-zinc-400">
-            라우트 매핑 규칙과 실제 페이지 적용 이미지를 한 화면에서 확인합니다.
+            상단은 입력한 URL의 실제 링크 프리뷰, 하단은 query 없는 라우트 템플릿의 기본 이미지 현황입니다.
           </p>
         </div>
         <div className="grid grid-cols-4 gap-2 text-center">
@@ -364,12 +364,15 @@ export default async function OgImagesDevPage({ previewPath }: { previewPath?: s
             확인
           </button>
         </form>
+        <p className="mt-3 text-xs text-zinc-500">
+          카드와 리소스 query URL의 실제 og:title, og:description, og:image는 이 영역에서 확인합니다.
+        </p>
         {preview ? <OgMetadataPreviewCard preview={preview} /> : null}
       </section>
 
       <section className="mt-8">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-amber-300">매핑 규칙</h2>
+          <h2 className="text-lg font-semibold text-amber-300">정적 이미지 매핑 규칙</h2>
           <span className="text-xs text-zinc-500">{status.rules.length} rules</span>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
@@ -406,7 +409,7 @@ export default async function OgImagesDevPage({ previewPath }: { previewPath?: s
 
       <section className="mt-8">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-amber-300">기본 이미지</h2>
+          <h2 className="text-lg font-semibold text-amber-300">기본 이미지 라우트</h2>
           <span className="text-xs text-zinc-500">{status.defaultRows.length} pages</span>
         </div>
         <article className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
@@ -432,9 +435,12 @@ export default async function OgImagesDevPage({ previewPath }: { previewPath?: s
 
       <section className="mt-8">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-amber-300">페이지별 적용</h2>
+          <h2 className="text-lg font-semibold text-amber-300">정적 라우트 템플릿</h2>
           <span className="text-xs text-zinc-500">{status.rows.length} pages</span>
         </div>
+        <p className="mb-3 text-xs text-zinc-500">
+          이 목록은 query를 제외한 라우트 템플릿의 기본 OG 이미지입니다. 리소스별 동적 이미지는 상단 링크 프리뷰에서 확인합니다.
+        </p>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {status.rows.map((row) => (
             <article
