@@ -1,16 +1,16 @@
 export const dynamic = "force-static";
 
 import BasePage, { generateMetadata as generateBaseMetadata } from "../../codex/relics/page";
-import { defaultRouteSearchParams } from "../static-locale";
+import { defaultRouteSearchParams, type RouteSearchParams } from "../static-locale";
 
-export function generateMetadata() {
+export function generateMetadata({ searchParams }: { searchParams: RouteSearchParams }) {
   return generateBaseMetadata({
-    searchParams: defaultRouteSearchParams(),
+    searchParams: defaultRouteSearchParams(searchParams),
   });
 }
 
-export default function CompendiumRelicsPage() {
+export default function CompendiumRelicsPage({ searchParams }: { searchParams: RouteSearchParams }) {
   return BasePage({
-    searchParams: defaultRouteSearchParams(),
+    searchParams: defaultRouteSearchParams(searchParams),
   });
 }
