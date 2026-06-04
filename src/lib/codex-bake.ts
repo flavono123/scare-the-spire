@@ -171,6 +171,12 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
     const [, name, expectedRaw, rest] = chooseMatch;
     const opts = splitBranches(rest);
     const v = looksLike(name, vars);
+    const expectedOptions = expectedRaw.split("|");
+    if (expectedOptions.length > 1) {
+      const idx = v === undefined ? -1 : expectedOptions.findIndex((expected) => String(v) === expected);
+      return renderTemplate(opts[idx >= 0 ? idx : opts.length - 1] ?? opts[0] ?? "", vars, name);
+    }
+
     const expectedNumber = Number(expectedRaw);
     const expectedIsNumeric = Number.isFinite(expectedNumber);
     let matches = false;
