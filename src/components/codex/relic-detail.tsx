@@ -119,20 +119,34 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
   const variantPools = relic.variantImageUrls
     ? VARIANT_ORDER.filter((p) => relic.variantImageUrls![p])
     : [];
+  const iconVariants = relic.iconVariants ?? [];
   const [selectedVariant, setSelectedVariant] = useState<RelicPool>(
     initialVariant && relic.variantImageUrls?.[initialVariant] ? initialVariant : variantPools[0] ?? relic.pool,
   );
+  const [selectedIconVariantState, setSelectedIconVariantState] = useState<{ relicId: string; variantId: string | null }>({
+    relicId: relic.id,
+    variantId: iconVariants[0]?.id ?? null,
+  });
   const [showBeta, setShowBeta] = useState(initialShowBeta && Boolean(relic.betaImageUrl));
   const [commentCount, setCommentCount] = useState(0);
+  const selectedIconVariantId = selectedIconVariantState.relicId === relic.id
+    ? selectedIconVariantState.variantId
+    : iconVariants[0]?.id ?? null;
+  const selectedIconVariant = iconVariants.find((variant) => variant.id === selectedIconVariantId) ?? iconVariants[0] ?? null;
 
   const displayImageUrl = showBeta && relic.betaImageUrl
     ? relic.betaImageUrl
-    : relic.variantImageUrls
-    ? relic.variantImageUrls[selectedVariant] ?? null
-    : relic.imageUrl;
+    : selectedIconVariant?.imageUrl
+    ?? (relic.variantImageUrls
+      ? relic.variantImageUrls[selectedVariant] ?? null
+      : relic.imageUrl);
   const displayOutlinePool = showBeta && relic.betaImageUrl
     ? relic.pool
-    : relic.variantImageUrls ? selectedVariant : relic.pool;
+    : selectedIconVariant
+    ? relic.pool
+    : relic.variantImageUrls
+    ? selectedVariant
+    : relic.pool;
 
   const rarityColor = RELIC_RARITY_COLORS[relic.rarity];
   const poolColor = relic.pool !== "shared" ? getCharacterColor(relic.pool) : undefined;
@@ -306,6 +320,34 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
                       </button>
                     );
                   })}
+                </div>
+              )}
+
+              {iconVariants.length > 0 && (
+                <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5">
+                  <span className="font-game-title text-sm font-bold text-[#f1c94f] [text-shadow:2px_2px_0_rgba(0,0,0,0.82)]">
+                    {serviceLocale === "ko" ? "외형" : "Appearance"}
+                  </span>
+                  <div className="flex flex-wrap justify-center gap-1" role="group" aria-label={`${relic.name} ${serviceLocale === "ko" ? "외형" : "appearance"}`}>
+                    {iconVariants.map((variant) => {
+                      const isSelected = variant.id === selectedIconVariant?.id;
+                      return (
+                        <button
+                          key={variant.id}
+                          type="button"
+                          onClick={() => setSelectedIconVariantState({ relicId: relic.id, variantId: variant.id })}
+                          className="rounded border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-white/10"
+                          style={{
+                            backgroundColor: isSelected ? "rgba(241, 201, 79, 0.18)" : "rgba(255,255,255,0.03)",
+                            borderColor: isSelected ? "rgba(241, 201, 79, 0.55)" : "rgba(255,255,255,0.1)",
+                            color: isSelected ? "#f1c94f" : "#a1a1aa",
+                          }}
+                        >
+                          {serviceLocale === "ko" ? variant.labelKo : variant.labelEn}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 

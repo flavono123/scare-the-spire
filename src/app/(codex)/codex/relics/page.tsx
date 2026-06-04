@@ -41,6 +41,7 @@ export async function generateMetadata({
       imageUrl: firstCodexImageUrl(
         relic.imageUrl,
         ...(relic.variantImageUrls ? Object.values(relic.variantImageUrls) : []),
+        ...(relic.iconVariants ? relic.iconVariants.map((variant) => variant.imageUrl) : []),
         relic.betaImageUrl,
       ),
     });

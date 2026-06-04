@@ -178,6 +178,14 @@ export interface CodexRelic extends CodexLifecycle {
   imageUrl: string | null; // local path
   betaImageUrl: string | null; // local path
   variantImageUrls: Partial<Record<RelicPool, string>> | null; // character-specific image variants
+  iconVariants: RelicIconVariant[] | null; // relic-specific icon variants
+}
+
+export interface RelicIconVariant {
+  id: string;
+  labelKo: string;
+  labelEn: string;
+  imageUrl: string;
 }
 
 // Relic rarity display order and labels

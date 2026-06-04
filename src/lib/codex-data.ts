@@ -38,6 +38,7 @@ import {
   CardRarityKo,
   RelicRarityKo,
   RelicPool,
+  RelicIconVariant,
   PotionRarityKo,
   PotionPool,
   PowerType,
@@ -545,10 +546,43 @@ const VARIANT_SUFFIX_TO_POOL: Record<string, RelicPool> = {
   regent: "regent",
 };
 
+type RelicIconVariantSource = Omit<RelicIconVariant, "imageUrl"> & {
+  filename: string;
+};
+
+const RELIC_ICON_VARIANTS_BY_ID: Record<string, RelicIconVariantSource[]> = {
+  LOOMING_FRUIT: [
+    {
+      id: "cornucopia",
+      labelKo: "코르누코피아 있음",
+      labelEn: "Cornucopia",
+      filename: "looming_fruit.webp",
+    },
+    {
+      id: "no-cornucopia",
+      labelKo: "코르누코피아 없음",
+      labelEn: "No Cornucopia",
+      filename: "looming_fruit_2.webp",
+    },
+  ],
+};
+
+function getRelicIconVariants(id: string, files: Set<string>): RelicIconVariant[] | null {
+  const variants = RELIC_ICON_VARIANTS_BY_ID[id]
+    ?.filter((variant) => files.has(variant.filename))
+    .map(({ filename, ...variant }) => ({
+      ...variant,
+      imageUrl: `/images/sts2/relics/${filename}`,
+    }));
+
+  return variants && variants.length > 1 ? variants : null;
+}
+
 function mapRelic(
   kor: RawRelic,
   eng: RawRelic,
   variantMap: Partial<Record<RelicPool, string>> | null,
+  iconVariants: RelicIconVariant[] | null,
   betaImageUrl: string | null,
   gameRelics: GameLocalizationTable,
   gameLocale: GameLocale,
@@ -577,6 +611,7 @@ function mapRelic(
     imageUrl: variantMap ? null : baseUrl,
     betaImageUrl,
     variantImageUrls: variantMap,
+    iconVariants,
     introducedInPatch: kor.introducedInPatch,
     deprecated: kor.deprecated,
     deprecatedInPatch: kor.deprecatedInPatch,
@@ -637,13 +672,14 @@ export async function getCodexRelics(opts?: { gameLocale?: GameLocale }): Promis
     const baseMatch = kor.image_url?.match(/\/([^/]+)\.png$/);
     const baseName = baseMatch?.[1] ?? null;
     const variantMap = baseName ? variantsByBase.get(baseName) ?? null : null;
+    const iconVariants = getRelicIconVariants(kor.id, officialImageFiles);
     const imageFile = imageFilenameFromStaticUrl(kor.image_url);
     const betaImageUrl = betaImageUrlForFile(
       "relics-beta",
       betaImageFiles,
       imageFile,
     ) ?? betaImageUrlForFile("relics", officialImageFiles, imageFile, { exact: false });
-    return mapRelic(kor, eng, variantMap, betaImageUrl, gameRelics, gameLocale);
+    return mapRelic(kor, eng, variantMap, iconVariants, betaImageUrl, gameRelics, gameLocale);
   });
 }
 
