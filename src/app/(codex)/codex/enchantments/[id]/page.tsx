@@ -7,8 +7,12 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  findCodexResourceByRouteId,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { EnchantmentDetail } from "@/components/codex/enchantment-detail";
 
 export async function generateMetadata({
@@ -27,11 +31,11 @@ export async function generateMetadata({
     getCodexEnchantments({ gameLocale }),
     getCodexAfflictions({ gameLocale }),
   ]);
-  const ench = enchantments.find((e) => e.id.toLowerCase() === id.toLowerCase());
-  const affliction = afflictions.find((a) => a.id.toLowerCase() === id.toLowerCase());
+  const ench = findCodexResourceByRouteId(enchantments, id);
+  const affliction = findCodexResourceByRouteId(afflictions, id);
   const resource = ench ?? affliction;
   if (!resource) return {};
-  return getCodexMetadata(serviceLocale, `${resource.name} — ${serviceText.enchantmentsView.title}`);
+  return getCodexResourceOgMetadata(serviceLocale, serviceText.enchantmentsView.title, resource);
 }
 
 export default async function EnchantmentDetailPage({

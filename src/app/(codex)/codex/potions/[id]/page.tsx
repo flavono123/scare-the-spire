@@ -7,9 +7,13 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { PotionPool } from "@/lib/codex-types";
+import {
+  findCodexResourceByRouteId,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { PotionDetail } from "@/components/codex/potion-detail";
 
 export async function generateMetadata({
@@ -27,9 +31,9 @@ export async function generateMetadata({
     getCodexPotions({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-  const potion = potions.find((p) => p.id.toLowerCase() === id.toLowerCase());
+  const potion = findCodexResourceByRouteId(potions, id);
   if (!potion) return {};
-  return getCodexMetadata(serviceLocale, `${potion.name} — ${gameUi.potionLabTitle}`);
+  return getCodexResourceOgMetadata(serviceLocale, gameUi.potionLabTitle, potion);
 }
 
 export default async function PotionDetailPage({

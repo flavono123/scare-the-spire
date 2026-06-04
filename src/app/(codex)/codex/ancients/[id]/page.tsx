@@ -7,10 +7,13 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { AncientDetail } from "@/components/codex/ancient-detail";
 import type { CodexRelic } from "@/lib/codex-types";
+import {
+  findCodexResourceByRouteId,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -26,9 +29,9 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     getCodexAncients({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-  const ancient = ancients.find((a) => a.id.toLowerCase() === id.toLowerCase());
+  const ancient = findCodexResourceByRouteId(ancients, id);
   if (!ancient) return {};
-  return getCodexMetadata(serviceLocale, `${ancient.name} — ${gameUi.ancientsTitle}`);
+  return getCodexResourceOgMetadata(serviceLocale, gameUi.ancientsTitle, ancient);
 }
 
 export default async function AncientDetailPage({ params, searchParams }: Props) {

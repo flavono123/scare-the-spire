@@ -6,8 +6,13 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  firstCodexImageUrl,
+  getCodexResourceOgMetadata,
+  plainCodexOgDescription,
+} from "@/lib/codex-resource-og";
 import { EncounterDetail } from "@/components/codex/encounter-detail";
 
 export async function generateMetadata({
@@ -22,10 +27,22 @@ export async function generateMetadata({
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const encounters = await getCodexEncounters({ gameLocale });
+  const [encounters, monsters] = await Promise.all([
+    getCodexEncounters({ gameLocale }),
+    getCodexMonsters({ gameLocale }),
+  ]);
   const encounter = encounters.find((e) => e.id.toLowerCase() === id.toLowerCase());
   if (!encounter) return {};
-  return getCodexMetadata(serviceLocale, `${encounter.name} — ${serviceText.encountersView.title}`);
+  const encounterMonsterAssets = encounter.monsters
+    .map((monsterRef) => monsters.find((monster) => monster.id === monsterRef.id))
+    .flatMap((monster) => monster ? [monster.imageUrl, monster.bossImageUrl] : []);
+
+  return getCodexResourceOgMetadata(serviceLocale, serviceText.encountersView.title, {
+    name: encounter.name,
+    description: plainCodexOgDescription(encounter.lossText) ||
+      encounter.monsters.map((monster) => monster.name).join(", "),
+    imageUrl: firstCodexImageUrl(encounter.imageUrl, ...encounterMonsterAssets),
+  });
 }
 
 export default async function EncounterDetailPage({

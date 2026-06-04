@@ -28,6 +28,12 @@ export function plainCodexOgDescription(description: string | null | undefined):
   return stripCodexMarkup(description ?? "").replace(/\s+/g, " ").trim();
 }
 
+export function firstCodexImageUrl(
+  ...urls: Array<string | null | undefined>
+): string | null {
+  return urls.find((url): url is string => Boolean(url)) ?? null;
+}
+
 export function getCodexResourceOgMetadata(
   serviceLocale: ServiceLocale,
   collectionTitle: string,

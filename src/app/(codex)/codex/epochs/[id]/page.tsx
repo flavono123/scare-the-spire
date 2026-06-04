@@ -11,9 +11,12 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { loadAllEntities } from "@/lib/load-all-entities";
+import {
+  findCodexResourceByRouteId,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { EpochDetail } from "@/components/codex/epoch-detail";
 
 export async function generateMetadata({
@@ -31,9 +34,9 @@ export async function generateMetadata({
     getCodexEpochs({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-  const epoch = epochs.find((item) => item.id.toLowerCase() === id.toLowerCase());
+  const epoch = findCodexResourceByRouteId(epochs, id);
   if (!epoch) return {};
-  return getCodexMetadata(serviceLocale, `${epoch.name} — ${gameUi.epochsTitle}`);
+  return getCodexResourceOgMetadata(serviceLocale, gameUi.epochsTitle, epoch);
 }
 
 export default async function EpochDetailPage({

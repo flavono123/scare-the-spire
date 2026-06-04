@@ -7,8 +7,11 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  findCodexResourceByRouteId,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { PowerDetail } from "@/components/codex/power-detail";
 
 export async function generateMetadata({
@@ -26,9 +29,9 @@ export async function generateMetadata({
     getCodexPowers({ includeDeprecated: true, gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-  const power = powers.find((p) => p.id.toLowerCase() === id.toLowerCase());
+  const power = findCodexResourceByRouteId(powers, id);
   if (!power) return {};
-  return getCodexMetadata(serviceLocale, `${power.name} — ${gameUi.nav.powers}`);
+  return getCodexResourceOgMetadata(serviceLocale, gameUi.nav.powers, power);
 }
 
 export default async function PowerDetailPage({

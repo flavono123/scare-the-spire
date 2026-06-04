@@ -7,9 +7,14 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
+import { getCodexServiceMessages } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { RelicPool } from "@/lib/codex-types";
+import {
+  findCodexResourceByRouteId,
+  firstCodexImageUrl,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { RelicDetail } from "@/components/codex/relic-detail";
 
 export async function generateMetadata({
@@ -27,9 +32,17 @@ export async function generateMetadata({
     getCodexRelics({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-  const relic = relics.find((r) => r.id.toLowerCase() === id.toLowerCase());
+  const relic = findCodexResourceByRouteId(relics, id);
   if (!relic) return {};
-  return getCodexMetadata(serviceLocale, `${relic.name} — ${gameUi.relicCollectionTitle}`);
+  return getCodexResourceOgMetadata(serviceLocale, gameUi.relicCollectionTitle, {
+    name: relic.name,
+    description: relic.description,
+    imageUrl: firstCodexImageUrl(
+      relic.imageUrl,
+      ...(relic.variantImageUrls ? Object.values(relic.variantImageUrls) : []),
+      relic.betaImageUrl,
+    ),
+  });
 }
 
 export default async function RelicDetailPage({

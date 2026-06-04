@@ -14,8 +14,11 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  findCodexResourceByRouteId,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { EventDetail } from "@/components/codex/event-detail";
 
 export async function generateMetadata({
@@ -33,9 +36,9 @@ export async function generateMetadata({
     getCodexEvents({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
-  const event = events.find((e) => e.id.toLowerCase() === id.toLowerCase());
+  const event = findCodexResourceByRouteId(events, id);
   if (!event) return {};
-  return getCodexMetadata(serviceLocale, `${event.name} — ${gameUi.eventsTitle}`);
+  return getCodexResourceOgMetadata(serviceLocale, gameUi.eventsTitle, event);
 }
 
 export default async function EventDetailPage({

@@ -6,10 +6,31 @@ import {
   getGameLocaleFromSearchRecord,
   getServiceLocaleFromSearchRecord,
 } from "@/lib/i18n";
-import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
+import { MONSTER_TYPE_CONFIG, type CodexMonster } from "@/lib/codex-types";
+import {
+  firstCodexImageUrl,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { MonsterDetail } from "@/components/codex/monster-detail";
+
+function monsterOgDescription(monster: CodexMonster, serviceLocale: string): string {
+  const typeLabel = serviceLocale === "ko"
+    ? MONSTER_TYPE_CONFIG[monster.type].label
+    : monster.type;
+  const hpRange = monster.minHp == null
+    ? null
+    : monster.maxHp == null || monster.minHp === monster.maxHp
+    ? String(monster.minHp)
+    : `${monster.minHp}-${monster.maxHp}`;
+
+  if (serviceLocale === "ko") {
+    return hpRange ? `${typeLabel} 몬스터 · 체력 ${hpRange}` : `${typeLabel} 몬스터`;
+  }
+
+  return hpRange ? `${typeLabel} monster · HP ${hpRange}` : `${typeLabel} monster`;
+}
 
 export async function generateMetadata({
   params,
@@ -32,7 +53,11 @@ export async function generateMetadata({
     isPublicBestiaryMonster(m.id)
   ));
   if (!monster) return {};
-  return getCodexMetadata(serviceLocale, `${monster.name} — ${gameUi.bestiaryTitle}`);
+  return getCodexResourceOgMetadata(serviceLocale, gameUi.bestiaryTitle, {
+    name: monster.name,
+    description: monsterOgDescription(monster, serviceLocale),
+    imageUrl: firstCodexImageUrl(monster.imageUrl, monster.bossImageUrl),
+  });
 }
 
 export default async function MonsterDetailPage({
