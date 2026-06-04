@@ -82,6 +82,19 @@ function toNumber(value: VarValue | undefined): number | null {
   return null;
 }
 
+function formatNumber(value: number): string {
+  const rounded = Math.round(value * 1000) / 1000;
+  return Number.isInteger(rounded) ? String(rounded) : String(rounded).replace(/\.?0+$/, "");
+}
+
+function formatPercentMore(value: number): string {
+  return formatNumber(value >= 0 && value <= 2 ? (value - 1) * 100 : value);
+}
+
+function formatPercentLess(value: number): string {
+  return formatNumber(value >= 0 && value <= 2 ? (1 - value) * 100 : value);
+}
+
 function evaluateCondition(value: VarValue | undefined, predicate: string): boolean {
   if (value === undefined) return false;
 
@@ -231,7 +244,11 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
           : "X";
       case "percentMore":
         return numericArg !== null || valueNumber !== null
-          ? `${numericArg ?? valueNumber}%`
+          ? formatPercentMore(numericArg ?? valueNumber!)
+          : "X";
+      case "percentLess":
+        return numericArg !== null || valueNumber !== null
+          ? formatPercentLess(numericArg ?? valueNumber!)
           : "X";
       case "diff":
         return String(v);
@@ -252,7 +269,9 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
       case "starIcons":
         return typeof v === "number" ? `[star:${v}]` : "X";
       case "percentMore":
-        return typeof v === "number" ? `${v}%` : "X";
+        return typeof v === "number" ? formatPercentMore(v) : "X";
+      case "percentLess":
+        return typeof v === "number" ? formatPercentLess(v) : "X";
       case "diff":
         return String(v);
       default:
