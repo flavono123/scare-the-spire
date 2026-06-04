@@ -52,5 +52,24 @@
       "버그수정",
       "상태이상"
     ]
+  },
+  {
+    "id": "sts2-accelerant-catalyst-wordplay",
+    "game": "sts2",
+    "sentence": "촉진제에서 진제를 매로 바꾸면 촉매다",
+    "entityType": "card",
+    "entityId": "ACCELERANT",
+    "linkedEntities": [
+      {
+        "game": "sts1",
+        "entityType": "card",
+        "entityId": "catalyst"
+      }
+    ],
+    "tags": [
+      "STS1",
+      "사일런트",
+      "카드"
+    ]
   }
 ]
