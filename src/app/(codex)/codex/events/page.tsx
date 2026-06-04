@@ -17,6 +17,11 @@ import {
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  findCodexResourceByRouteId,
+  firstRouteSearchParam,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { EventList } from "@/components/codex/event-list";
 
 export const dynamic = "force-static";
@@ -29,7 +34,15 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const gameUi = await getCodexGameUiLabels(gameLocale);
+  const eventId = firstRouteSearchParam(resolvedSearchParams.event);
+  const [gameUi, events] = await Promise.all([
+    getCodexGameUiLabels(gameLocale),
+    eventId ? getCodexEvents({ gameLocale }) : Promise.resolve(null),
+  ]);
+  const event = events ? findCodexResourceByRouteId(events, eventId) : undefined;
+  if (event) {
+    return getCodexResourceOgMetadata(serviceLocale, gameUi.eventsTitle, event);
+  }
   return getCodexMetadata(serviceLocale, gameUi.eventsTitle);
 }
 

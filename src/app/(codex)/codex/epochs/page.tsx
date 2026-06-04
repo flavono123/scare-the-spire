@@ -16,6 +16,11 @@ import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { loadAllEntities } from "@/lib/load-all-entities";
+import {
+  findCodexResourceByRouteId,
+  firstRouteSearchParam,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { EpochLibrary } from "@/components/codex/epoch-library";
 
 export const dynamic = "force-static";
@@ -28,7 +33,15 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const gameUi = await getCodexGameUiLabels(gameLocale);
+  const epochId = firstRouteSearchParam(resolvedSearchParams.epoch);
+  const [gameUi, epochs] = await Promise.all([
+    getCodexGameUiLabels(gameLocale),
+    epochId ? getCodexEpochs({ gameLocale }) : Promise.resolve(null),
+  ]);
+  const epoch = epochs ? findCodexResourceByRouteId(epochs, epochId) : undefined;
+  if (epoch) {
+    return getCodexResourceOgMetadata(serviceLocale, gameUi.epochsTitle, epoch);
+  }
   return getCodexMetadata(serviceLocale, gameUi.epochsTitle);
 }
 

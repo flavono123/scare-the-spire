@@ -10,6 +10,12 @@ import {
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  findCodexResourceByRouteId,
+  firstCodexImageUrl,
+  firstRouteSearchParam,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { RelicLibrary } from "@/components/codex/relic-library";
 
 export const dynamic = "force-static";
@@ -22,7 +28,23 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const gameUi = await getCodexGameUiLabels(gameLocale);
+  const relicId = firstRouteSearchParam(resolvedSearchParams.relic);
+  const [gameUi, relics] = await Promise.all([
+    getCodexGameUiLabels(gameLocale),
+    relicId ? getCodexRelics({ gameLocale }) : Promise.resolve(null),
+  ]);
+  const relic = relics ? findCodexResourceByRouteId(relics, relicId) : undefined;
+  if (relic) {
+    return getCodexResourceOgMetadata(serviceLocale, gameUi.relicCollectionTitle, {
+      name: relic.name,
+      description: relic.description,
+      imageUrl: firstCodexImageUrl(
+        relic.imageUrl,
+        ...(relic.variantImageUrls ? Object.values(relic.variantImageUrls) : []),
+        relic.betaImageUrl,
+      ),
+    });
+  }
   return getCodexMetadata(serviceLocale, gameUi.relicCollectionTitle);
 }
 

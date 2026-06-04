@@ -10,6 +10,11 @@ import {
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  findCodexResourceByRouteId,
+  firstRouteSearchParam,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { PotionLibrary } from "@/components/codex/potion-library";
 
 export const dynamic = "force-static";
@@ -22,7 +27,15 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const gameUi = await getCodexGameUiLabels(gameLocale);
+  const potionId = firstRouteSearchParam(resolvedSearchParams.potion);
+  const [gameUi, potions] = await Promise.all([
+    getCodexGameUiLabels(gameLocale),
+    potionId ? getCodexPotions({ gameLocale }) : Promise.resolve(null),
+  ]);
+  const potion = potions ? findCodexResourceByRouteId(potions, potionId) : undefined;
+  if (potion) {
+    return getCodexResourceOgMetadata(serviceLocale, gameUi.potionLabTitle, potion);
+  }
   return getCodexMetadata(serviceLocale, gameUi.potionLabTitle);
 }
 

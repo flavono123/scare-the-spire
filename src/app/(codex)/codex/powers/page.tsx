@@ -10,6 +10,11 @@ import {
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  findCodexResourceByRouteId,
+  firstRouteSearchParam,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { PowerLibrary } from "@/components/codex/power-library";
 
 export const dynamic = "force-static";
@@ -22,7 +27,15 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const gameUi = await getCodexGameUiLabels(gameLocale);
+  const powerId = firstRouteSearchParam(resolvedSearchParams.power);
+  const [gameUi, powers] = await Promise.all([
+    getCodexGameUiLabels(gameLocale),
+    powerId ? getCodexPowers({ includeDeprecated: true, gameLocale }) : Promise.resolve(null),
+  ]);
+  const power = powers ? findCodexResourceByRouteId(powers, powerId) : undefined;
+  if (power) {
+    return getCodexResourceOgMetadata(serviceLocale, gameUi.nav.powers, power);
+  }
   return getCodexMetadata(serviceLocale, gameUi.nav.powers);
 }
 

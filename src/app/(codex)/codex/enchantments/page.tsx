@@ -10,6 +10,11 @@ import {
 } from "@/lib/i18n";
 import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  findCodexResourceByRouteId,
+  firstRouteSearchParam,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { EnchantmentLibrary } from "@/components/codex/enchantment-library";
 
 export const dynamic = "force-static";
@@ -19,8 +24,24 @@ export async function generateMetadata({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const enchantmentId = firstRouteSearchParam(resolvedSearchParams.enchantment);
+  const afflictionId = firstRouteSearchParam(resolvedSearchParams.affliction);
+  const [enchantments, afflictions] = enchantmentId || afflictionId
+    ? await Promise.all([
+        getCodexEnchantments({ gameLocale }),
+        getCodexAfflictions({ gameLocale }),
+      ])
+    : [null, null];
+  const resource = enchantmentId
+    ? findCodexResourceByRouteId(enchantments ?? [], enchantmentId)
+    : findCodexResourceByRouteId(afflictions ?? [], afflictionId);
+  if (resource) {
+    return getCodexResourceOgMetadata(serviceLocale, serviceText.enchantmentsView.title, resource);
+  }
   return getCodexMetadata(serviceLocale, serviceText.enchantmentsView.title);
 }
 
