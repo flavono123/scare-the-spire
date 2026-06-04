@@ -65,6 +65,7 @@ type MoveVisual = MonsterMoveVisual;
 
 interface MonsterAnimationPatchDiffBlockProps {
   monster: CodexMonster;
+  monsters?: readonly CodexMonster[];
   serviceLocale: ServiceLocale;
   patchId?: string;
   variant?: "full" | "compact";
@@ -74,6 +75,7 @@ interface MonsterAnimationPatchDiffBlockProps {
 interface MonsterPatchDiffSequence {
   labelKo: string;
   labelEn: string;
+  monsterId?: string;
   moves?: MoveVisual[];
   moveIds?: string[];
   hpOverride?: DamageValue | null;
@@ -85,7 +87,7 @@ interface MonsterPatchDiffSequence {
 interface MonsterPatchDiffSpec {
   titleKo: string;
   titleEn: string;
-  summary: (serviceLocale: ServiceLocale, monster: CodexMonster) => ReactNode;
+  summary: (serviceLocale: ServiceLocale, monster: CodexMonster, monsters: readonly CodexMonster[]) => ReactNode;
   before: MonsterPatchDiffSequence;
   after: MonsterPatchDiffSequence;
 }
@@ -315,7 +317,183 @@ const OLD_SKULKING_COLONY_MOVES: MoveVisual[] = [
   }),
 ];
 
+const OLD_DOORMAKER_V103_MOVES: MoveVisual[] = [
+  createMoveVisual({
+    id: "WHAT_IS_IT",
+    name: "What Is It",
+    nameEn: "What Is It",
+    intents: [{ type: "BuffIntent" }],
+  }),
+  createMoveVisual({
+    id: "BEAM",
+    name: "Beam",
+    nameEn: "Beam",
+    animationId: "attack",
+    damage: { normal: 31, ascension: 34 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "LaserBeam", repeat: SINGLE_ATTACK_REPEAT }],
+    damageChange: "removed",
+  }),
+  createMoveVisual({
+    id: "GET_BACK_IN",
+    name: "Get Back In",
+    nameEn: "Get Back In",
+    animationId: "attack",
+    damage: { normal: 40, ascension: 45 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "GetBackInMove", repeat: SINGLE_ATTACK_REPEAT }, { type: "DebuffIntent" }],
+    damageChange: "removed",
+    powerChange: "removed",
+  }),
+];
+
+const CURRENT_DOORMAKER_MOVES: MoveVisual[] = [
+  createMoveVisual({
+    id: "DRAMATIC_OPEN",
+    name: "극적인 개방",
+    nameEn: "Dramatic Open",
+    intents: [{ type: "BuffIntent" }],
+  }),
+  createMoveVisual({
+    id: "HUNGER",
+    name: "굶주림",
+    nameEn: "Hunger",
+    animationId: "attack",
+    damage: { normal: 30, ascension: 35 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "Hunger", repeat: SINGLE_ATTACK_REPEAT }],
+  }),
+  createMoveVisual({
+    id: "SCRUTINY",
+    name: "감시",
+    nameEn: "Scrutiny",
+    animationId: "attack",
+    damage: { normal: 24, ascension: 26 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "Scrutiny", repeat: SINGLE_ATTACK_REPEAT }],
+  }),
+  createMoveVisual({
+    id: "GRASP",
+    name: "움켜쥐기",
+    nameEn: "Grasp",
+    animationId: "attack",
+    damage: { normal: 10, ascension: 11 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "Grasp", repeat: SINGLE_ATTACK_REPEAT }],
+  }),
+];
+
+const OLD_AXEBOT_HP: DamageValue = { normal: 40, ascension: 42 };
+const OLD_AXEBOT_MOVES: MoveVisual[] = [
+  createMoveVisual({
+    id: "BOOT_UP",
+    name: "시동",
+    nameEn: "Boot Up",
+    block: { normal: 10, ascension: null },
+    intents: [{ type: "DefendIntent" }, { type: "BuffIntent" }],
+  }),
+  createMoveVisual({
+    id: "ONE_TWO",
+    name: "좌우 연타",
+    nameEn: "The One-Two",
+    animationId: "attack_double",
+    damage: { normal: 5, ascension: 6 },
+    intents: [{ type: "MultiAttackIntent", damageKey: "OneTwo", repeat: DOUBLE_ATTACK_REPEAT }],
+    damageChange: "removed",
+  }),
+  createMoveVisual({
+    id: "SHARPEN",
+    name: "도끼 갈기",
+    nameEn: "Sharpen",
+    intents: [{ type: "BuffIntent" }],
+    powers: [powerApplication("STRENGTH", "힘", "Strength", "Buff", "self", null)],
+    powerChange: "removed",
+  }),
+  createMoveVisual({
+    id: "HAMMER_UPPERCUT",
+    name: "망치 올려치기",
+    nameEn: "Hammer Uppercut",
+    animationId: "attack",
+    damage: { normal: 8, ascension: 10 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "HammerUppercut", repeat: SINGLE_ATTACK_REPEAT }, { type: "DebuffIntent" }],
+    powers: [
+      powerApplication("WEAK", "약화", "Weak", "Debuff", "player", { normal: 2, ascension: null }),
+      powerApplication("FRAIL", "손상", "Frail", "Debuff", "player", { normal: 2, ascension: null }),
+    ],
+    damageChange: "removed",
+  }),
+];
+
 const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> = {
+  "v0.103.0": {
+    DOORMAKER: {
+      titleKo: "문을 만드는 자 행동 재배치",
+      titleEn: "Doormaker Move Rearrangement",
+      summary: (serviceLocale, monster) => serviceLocale === "ko"
+        ? <>이전 패턴의 <PatchDiffMoveLink move={OLD_DOORMAKER_V103_MOVES[1]} monster={monster} serviceLocale={serviceLocale}>Beam</PatchDiffMoveLink>과 <PatchDiffMoveLink move={OLD_DOORMAKER_V103_MOVES[2]} monster={monster} serviceLocale={serviceLocale}>Get Back In</PatchDiffMoveLink>이 빠지고, 네 행동으로 재배치되었습니다. 이후 패턴은 피해량이 낮아지고 <PatchDiffPlainKeyword>디버프</PatchDiffPlainKeyword> 의도가 제거됩니다.</>
+        : <>The old <PatchDiffMoveLink move={OLD_DOORMAKER_V103_MOVES[1]} monster={monster} serviceLocale={serviceLocale}>Beam</PatchDiffMoveLink> and <PatchDiffMoveLink move={OLD_DOORMAKER_V103_MOVES[2]} monster={monster} serviceLocale={serviceLocale}>Get Back In</PatchDiffMoveLink> pattern is replaced by four rearranged moves. The new pattern lowers damage and removes <PatchDiffPlainKeyword>Debuff</PatchDiffPlainKeyword> intent.</>,
+      before: {
+        labelKo: "이전",
+        labelEn: "Before",
+        moves: OLD_DOORMAKER_V103_MOVES,
+      },
+      after: {
+        labelKo: "이후",
+        labelEn: "After",
+        moves: CURRENT_DOORMAKER_MOVES,
+        changes: {
+          DRAMATIC_OPEN: { powerChange: "added" },
+          HUNGER: { damageChange: "added" },
+          SCRUTINY: { damageChange: "added" },
+          GRASP: { damageChange: "added" },
+        },
+      },
+    },
+  },
+  "v0.104.0": {
+    AXEBOT: {
+      titleKo: "로봇 친구들 전투 리워크",
+      titleEn: "Axebots Encounter Rework",
+      summary: (serviceLocale, monster) => serviceLocale === "ko"
+        ? <>여러 약한 <PatchDiffMonsterLink monster={monster} serviceLocale={serviceLocale}>잘라봇</PatchDiffMonsterLink>이 나오는 전투에서, <PatchDiffPowerLink powerId="STOCK" serviceLocale={serviceLocale}>재고</PatchDiffPowerLink>를 가진 더 강한 단일 잘라봇 전투로 바뀌었습니다. 체력과 공격 피해가 크게 오르고, <PatchDiffMoveLink move={OLD_AXEBOT_MOVES[2]} monster={monster} serviceLocale={serviceLocale}>도끼 갈기</PatchDiffMoveLink> 행동은 사라집니다.</>
+        : <>The fight changes from multiple weaker <PatchDiffMonsterLink monster={monster} serviceLocale={serviceLocale}>Axebots</PatchDiffMonsterLink> into a stronger single Axebot with <PatchDiffPowerLink powerId="STOCK" serviceLocale={serviceLocale}>Stock</PatchDiffPowerLink>. HP and attack damage increase, and <PatchDiffMoveLink move={OLD_AXEBOT_MOVES[2]} monster={monster} serviceLocale={serviceLocale}>Sharpen</PatchDiffMoveLink> is removed.</>,
+      before: {
+        labelKo: "이전",
+        labelEn: "Before",
+        moves: OLD_AXEBOT_MOVES,
+        hpOverride: OLD_AXEBOT_HP,
+        initialPowerApplications: [],
+      },
+      after: {
+        labelKo: "이후",
+        labelEn: "After",
+        moveIds: ["HAMMER_UPPERCUT", "ONE_TWO", "BOOT_UP"],
+        changes: {
+          HAMMER_UPPERCUT: { animationId: "attack", damageChange: "added", powerChange: "added" },
+          ONE_TWO: { animationId: "attack_double", damageChange: "added" },
+          BOOT_UP: { blockChange: "added", powerChange: "added" },
+        },
+      },
+    },
+  },
+  "v0.105.0": {
+    DOORMAKER: {
+      titleKo: "3막 보스 교체",
+      titleEn: "Act 3 Boss Replacement",
+      summary: (serviceLocale, monster, monsters) => {
+        const aeonglass = findPatchDiffMonster(monsters, "AEONGLASS");
+        return serviceLocale === "ko"
+          ? <><PatchDiffMonsterLink monster={monster} serviceLocale={serviceLocale}>문을 만드는 자</PatchDiffMonsterLink>가 3막 보스 자리에서 빠지고, 새 보스 <PatchDiffMonsterLink monster={aeonglass} serviceLocale={serviceLocale}>영겁의 모래시계</PatchDiffMonsterLink>로 교체됩니다. 전투는 문을 만드는 자의 네 행동 루프에서 감쇠, 눈 레이저, 강도 증가로 이어지는 새 패턴으로 바뀝니다.</>
+          : <><PatchDiffMonsterLink monster={monster} serviceLocale={serviceLocale}>Doormaker</PatchDiffMonsterLink> leaves the Act 3 boss slot and is replaced by the new boss <PatchDiffMonsterLink monster={aeonglass} serviceLocale={serviceLocale}>Aeonglass</PatchDiffMonsterLink>. The fight changes from Doormaker's four-move loop to the new Ebb, Eye Lasers, Increasing Intensity pattern.</>;
+      },
+      before: {
+        labelKo: "이전",
+        labelEn: "Before",
+        moves: CURRENT_DOORMAKER_MOVES,
+      },
+      after: {
+        labelKo: "이후",
+        labelEn: "After",
+        monsterId: "AEONGLASS",
+        moveIds: ["EBB", "EYE_LASERS", "INCREASING_INTENSITY"],
+      },
+    },
+  },
   "v0.106.0": {
     INFESTED_PRISM: {
       titleKo: "감염된 프리즘 리워크",
@@ -425,6 +603,7 @@ const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> 
 
 export function MonsterAnimationPatchDiffBlock({
   monster,
+  monsters = [],
   serviceLocale,
   patchId = "v0.106.0",
   variant = "full",
@@ -447,19 +626,21 @@ export function MonsterAnimationPatchDiffBlock({
       <div className={compact ? "mt-2" : "relative left-1/2 mt-2 w-[min(96vw,72rem)] -translate-x-1/2"}>
         <div className={compact ? "" : "px-0"}>
           <p className="mb-3 font-game-text text-xs leading-relaxed text-zinc-400">
-            {spec.summary(serviceLocale, monster)}
+            {spec.summary(serviceLocale, monster, monsters)}
           </p>
 
           <div className="space-y-3">
             <MoveSequenceRail
               sequence={spec.before}
               monster={monster}
+              monsters={monsters}
               serviceLocale={serviceLocale}
               tone="before"
             />
             <MoveSequenceRail
               sequence={spec.after}
               monster={monster}
+              monsters={monsters}
               serviceLocale={serviceLocale}
               tone="after"
             />
@@ -484,6 +665,19 @@ function getMonsterPatchDiffSpec(monsterId: string, patchId: string): MonsterPat
 
 function normalizePatchId(patchId: string): string {
   return patchId.startsWith("v") ? patchId : `v${patchId}`;
+}
+
+function findPatchDiffMonster(monsters: readonly CodexMonster[], monsterId: string): CodexMonster | null {
+  return monsters.find((monster) => monster.id === monsterId) ?? null;
+}
+
+function getSequenceMonster(
+  sequence: MonsterPatchDiffSequence,
+  fallbackMonster: CodexMonster,
+  monsters: readonly CodexMonster[],
+): CodexMonster {
+  if (!sequence.monsterId) return fallbackMonster;
+  return findPatchDiffMonster(monsters, sequence.monsterId) ?? fallbackMonster;
 }
 
 type PatchDiffPowerVersionContext = "before" | "after";
@@ -518,6 +712,22 @@ const PATCH_DIFF_POWERS: Record<string, PatchDiffPowerPreviewData> = {
     type: "buff",
     descriptionKo: "이 생물은 한 턴에 체력을 [blue]20[/blue] 이상 잃을 수 없습니다.",
     descriptionEn: "This creature cannot lose more than [blue]20[/blue] HP each turn.",
+  },
+  STOCK: {
+    nameKo: "재고",
+    nameEn: "Stock",
+    imageUrl: "/images/sts2/powers/stock_power.webp",
+    type: "buff",
+    descriptionKo: "사망 시, 그 장소에 새로운 잘라봇을 소환합니다.",
+    descriptionEn: "When killed, a new Axebot is summoned in its place.",
+  },
+  STRENGTH: {
+    nameKo: "힘",
+    nameEn: "Strength",
+    imageUrl: "/images/sts2/powers/strength_power.webp",
+    type: "buff",
+    descriptionKo: "힘은 공격 카드의 피해량을 증가시킵니다.",
+    descriptionEn: "Strength adds additional damage to Attacks.",
   },
   VITAL_SPARK: {
     nameKo: "생명의 불꽃",
@@ -602,6 +812,65 @@ function PatchDiffInlinePreview({
 
 function PatchDiffPlainKeyword({ children }: { children: ReactNode }) {
   return <span className="font-game-title font-semibold spire-gold">{children}</span>;
+}
+
+function PatchDiffMonsterLink({
+  monster,
+  serviceLocale,
+  children,
+}: {
+  monster: CodexMonster | null;
+  serviceLocale: ServiceLocale;
+  children: ReactNode;
+}) {
+  if (!monster) return <PatchDiffPlainKeyword>{children}</PatchDiffPlainKeyword>;
+
+  const title = serviceLocale === "ko" ? monster.name : monster.nameEn;
+  const imageUrl = monster.bossImageUrl ?? monster.imageUrl;
+  const hp = formatMonsterHpLabel(monster);
+  const moveNames = monster.bestiaryMoves.length > 0
+    ? monster.bestiaryMoves
+      .filter((move) => !["NOTHING", "SPAWNED", "DEAD"].includes(move.id))
+      .slice(0, 4)
+      .map((move) => serviceLocale === "ko" ? move.name : move.nameEn)
+      .join(", ")
+    : null;
+
+  return (
+    <PatchDiffInlinePreview
+      href={localizeHref(`/compendium/bestiary?monster=${monster.id.toLowerCase()}`, serviceLocale)}
+      preview={() => (
+        <GameHoverTip title={title} style={{ minWidth: 260, maxWidth: 340 }}>
+          <span className="flex items-start gap-2.5">
+            {imageUrl && (
+              <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded bg-black/20">
+                <Image src={imageUrl} alt="" width={64} height={64} className="h-14 w-14 object-contain" />
+              </span>
+            )}
+            <span className="flex min-w-0 flex-col gap-1 font-game-text text-xs text-zinc-300">
+              {hp && <span className="font-game-title spire-gold">HP {hp}</span>}
+              {moveNames && <span>{moveNames}</span>}
+            </span>
+          </span>
+        </GameHoverTip>
+      )}
+    >
+      {children}
+    </PatchDiffInlinePreview>
+  );
+}
+
+function formatMonsterHpLabel(monster: CodexMonster): string | null {
+  if (monster.minHp == null || monster.minHp === 9999) return null;
+  const normal = monster.maxHp && monster.maxHp !== monster.minHp
+    ? `${monster.minHp}-${monster.maxHp}`
+    : `${monster.minHp}`;
+  const ascension = monster.minHpAscension != null
+    ? monster.maxHpAscension && monster.maxHpAscension !== monster.minHpAscension
+      ? `${monster.minHpAscension}-${monster.maxHpAscension}`
+      : `${monster.minHpAscension}`
+    : null;
+  return ascension ? `${normal} (${ascension})` : normal;
 }
 
 function InlineEnergyIcon({ amount = 1 }: { amount?: number }) {
@@ -802,16 +1071,19 @@ function PatchDiffMoveLink({
 function MoveSequenceRail({
   sequence,
   monster,
+  monsters,
   serviceLocale,
   tone,
 }: {
   sequence: MonsterPatchDiffSequence;
   monster: CodexMonster;
+  monsters: readonly CodexMonster[];
   serviceLocale: ServiceLocale;
   tone: "before" | "after";
 }) {
   const [ascensionLevel] = useMonsterAscensionLevel();
-  const moves = buildSequenceMoves(monster, sequence);
+  const sequenceMonster = getSequenceMonster(sequence, monster, monsters);
+  const moves = buildSequenceMoves(sequenceMonster, sequence);
   const label = serviceLocale === "ko" ? sequence.labelKo : sequence.labelEn;
   const effectNote = sequence.effectNote?.(serviceLocale, ascensionLevel);
 
@@ -831,7 +1103,7 @@ function MoveSequenceRail({
             <span key={move.id} className="flex shrink-0 items-center gap-1.5">
               <MovePanel
                 move={move}
-                monster={monster}
+                monster={sequenceMonster}
                 serviceLocale={serviceLocale}
                 hpOverride={sequence.hpOverride}
                 initialPowerApplications={sequence.initialPowerApplications}

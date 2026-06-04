@@ -77,6 +77,7 @@ export default async function MonsterDetailPage({
         gameUi={gameUi}
         backToListTitle={gameUi.bestiaryTitle}
         monster={monster}
+        monsters={monsters}
         encounters={encounters}
         afflictions={afflictions}
         cards={cards}

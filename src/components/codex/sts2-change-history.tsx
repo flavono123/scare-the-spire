@@ -29,6 +29,7 @@ interface STS2ChangeHistoryProps {
   introducedInPatch?: string;
   deprecatedInPatch?: string;
   monster?: CodexMonster;
+  monsters?: readonly CodexMonster[];
   emptyLabel: string;
 }
 
@@ -238,6 +239,7 @@ export function STS2ChangeHistory({
   introducedInPatch,
   deprecatedInPatch,
   monster,
+  monsters = [],
   emptyLabel,
 }: STS2ChangeHistoryProps) {
   const entries = useMemo<HistoryEntry[]>(() => {
@@ -375,6 +377,7 @@ export function STS2ChangeHistory({
             {showMonsterAnimationDiff && monster && (
               <MonsterAnimationPatchDiffBlock
                 monster={monster}
+                monsters={monsters}
                 serviceLocale={serviceLocale}
                 patchId={entry.patch}
                 variant={visualDiff?.variant ?? "compact"}

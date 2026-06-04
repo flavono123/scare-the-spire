@@ -1422,10 +1422,14 @@ export function PatchNoteRenderer({
       const variant = (monsterPatternDiffMatch[3] as "full" | "compact" | undefined) ?? "full";
       const monster = allEntities.find((entity) => entity.type === "monster" && entity.id === monsterId)?.monsterData;
       if (monster && hasMonsterAnimationPatchDiff(monsterId, patchId || "v0.106.0")) {
+        const monsters = allEntities
+          .filter((entity) => entity.type === "monster" && entity.monsterData)
+          .map((entity) => entity.monsterData!);
         elements.push(
           <MonsterAnimationPatchDiffBlock
             key={`monster-pattern-diff-${i}`}
             monster={monster}
+            monsters={monsters}
             serviceLocale={context.serviceLocale ?? "ko"}
             patchId={patchId || "v0.106.0"}
             variant={variant}

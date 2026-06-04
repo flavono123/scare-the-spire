@@ -491,6 +491,7 @@ export function MonsterLibrary({
               gameUi={gameUi}
               backToListTitle={title}
               monster={selectedMonster}
+              monsters={versionedMonsters}
               encounters={versionedEncounters}
               afflictions={afflictions}
               cards={versionedCards}

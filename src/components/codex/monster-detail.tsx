@@ -1135,6 +1135,7 @@ interface MonsterDetailProps {
   gameUi: CodexGameUiLabels;
   backToListTitle: string;
   monster: CodexMonster;
+  monsters?: CodexMonster[];
   encounters: CodexEncounter[];
   afflictions?: CodexAffliction[];
   cards?: CodexCard[];
@@ -1150,6 +1151,7 @@ export function MonsterDetail({
   gameUi,
   backToListTitle,
   monster,
+  monsters = [],
   encounters,
   afflictions = [],
   cards = [],
@@ -1632,6 +1634,7 @@ export function MonsterDetail({
               versionDiffs={versionDiffs}
               patches={patches}
               monster={monster}
+              monsters={monsters}
               introducedInPatch={monster.introducedInPatch}
               deprecatedInPatch={monster.deprecatedInPatch}
               emptyLabel={detailLabels.noPatchHistory}
