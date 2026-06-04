@@ -20,6 +20,8 @@ export type LocalePair = {
   serviceLocale: ServiceLocale;
 };
 
+export type RouteSearchParams = Promise<Record<string, string | string[] | undefined>>;
+
 export function getLocalePair(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE): LocalePair {
   return {
     gameLocale,
@@ -38,6 +40,17 @@ export function searchRecordForGameLocale(
   return {
     gl: gameLocale,
     _sl: serviceLocale,
+  };
+}
+
+export async function searchRecordForGameLocaleWithParams(
+  gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
+  searchParams?: RouteSearchParams,
+): Promise<Record<string, string | string[] | undefined>> {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  return {
+    ...resolvedSearchParams,
+    ...searchRecordForGameLocale(gameLocale),
   };
 }
 
