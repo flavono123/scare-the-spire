@@ -65,6 +65,7 @@ interface RenderCtx {
   // useful for ambiguous keywords like 약화/취약 where the inline keyword
   // tooltip is more useful than a power-page link.
   excludeEntityTerms?: ReadonlySet<string>;
+  excludeEntityTypes?: ReadonlySet<EntityInfo["type"]>;
 }
 
 function renderNodes(nodes: BBNode[], ctx: RenderCtx, prefix: string): ReactNode[] {
@@ -98,7 +99,7 @@ function renderNodes(nodes: BBNode[], ctx: RenderCtx, prefix: string): ReactNode
             ? findEntity(inner, ctx.lookup, node.param)
             : null;
         const matched = hinted ?? entity;
-        if (matched) {
+        if (matched && !ctx.excludeEntityTypes?.has(matched.type)) {
           // Don't link a relic to itself / enchantment to itself
           // (caller is responsible for filtering self via `excludeEntityTerms`)
           return (
@@ -199,6 +200,8 @@ export interface RichDescriptionProps {
   termDescriptions?: Record<string, string>;
   /** Don't turn these matched names into entity links (still rendered colored). */
   excludeEntityTerms?: ReadonlySet<string>;
+  /** Don't turn these matched resource kinds into entity links. */
+  excludeEntityTypes?: ReadonlySet<EntityInfo["type"]>;
   energyIcon?: string;
   className?: string;
 }
@@ -209,6 +212,7 @@ export function RichDescription({
   lookup,
   termDescriptions,
   excludeEntityTerms,
+  excludeEntityTypes,
   energyIcon = "/images/game-assets/card-misc/energy_colorless.png",
   className,
 }: RichDescriptionProps) {
@@ -234,6 +238,7 @@ export function RichDescription({
     setHoveredTerm,
     energyIcon,
     excludeEntityTerms,
+    excludeEntityTypes,
   };
 
   return <span className={className}>{renderNodes(nodes, ctx, "rd")}</span>;
