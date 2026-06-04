@@ -1072,6 +1072,10 @@ function normalizeEpochMarkup(text: string): string {
   return text.replace(/\[sine\]([^\[]+?)\[\/rainbow\]\[\/sine\]/g, "[sine][rainbow]$1[/rainbow][/sine]");
 }
 
+function renderEpochUnlockInfo(text: string): string {
+  return normalizeEpochMarkup(bakeDescription(text, { IsRevealed: 0 }));
+}
+
 function stripCodexMarkup(text: string): string {
   return text.replace(/\[\/?\w+(?::?\w*)*\]/g, " ");
 }
@@ -1217,8 +1221,8 @@ function mapEpoch(
     storyId: kor.story_id,
     affiliation: inferEpochPrimaryAffiliation(kor),
     affiliations: inferEpochAffiliations(kor, eng),
-    unlockInfo: normalizeEpochMarkup(selected.unlock_info),
-    unlockInfoEn: normalizeEpochMarkup(eng.unlock_info),
+    unlockInfo: renderEpochUnlockInfo(selected.unlock_info),
+    unlockInfoEn: renderEpochUnlockInfo(eng.unlock_info),
     unlockText: selected.unlock_text ? normalizeEpochMarkup(selected.unlock_text) : null,
     unlockTextEn: eng.unlock_text ? normalizeEpochMarkup(eng.unlock_text) : null,
     unlockConditions: inferEpochUnlockConditions(kor, eng),
