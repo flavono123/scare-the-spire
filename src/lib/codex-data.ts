@@ -1076,6 +1076,32 @@ function renderEpochUnlockInfo(text: string): string {
   return normalizeEpochMarkup(bakeDescription(text, { IsRevealed: 0 }));
 }
 
+interface EpochUnlockNameMaps {
+  potions: Map<string, string>;
+  events: Map<string, string>;
+}
+
+function buildEpochUnlockVars(kor: RawEpoch, names: EpochUnlockNameMaps): Record<string, string> {
+  const vars: Record<string, string> = {};
+
+  kor.unlocks_potions.forEach((potionId, index) => {
+    vars[`Potion${index + 1}`] = names.potions.get(potionId) ?? potionId;
+  });
+
+  const eventId = EPOCH_UNLOCK_EVENT_IDS[kor.id];
+  if (eventId) vars.Event = names.events.get(eventId) ?? eventId;
+
+  return vars;
+}
+
+function renderEpochUnlockText(
+  text: string,
+  kor: RawEpoch,
+  names: EpochUnlockNameMaps,
+): string {
+  return normalizeEpochMarkup(bakeDescription(text, buildEpochUnlockVars(kor, names)));
+}
+
 function stripCodexMarkup(text: string): string {
   return text.replace(/\[\/?\w+(?::?\w*)*\]/g, " ");
 }
@@ -1108,6 +1134,12 @@ const EPOCH_ANCIENT_AFFILIATIONS = [
 }[];
 
 const GENERAL_ANCIENTS_EPOCH_IDS = new Set(["RELIC2_EPOCH"]);
+
+const EPOCH_UNLOCK_EVENT_IDS: Partial<Record<string, string>> = {
+  EVENT1_EPOCH: "TRASH_HEAP",
+  EVENT2_EPOCH: "REFLECTIONS",
+  EVENT3_EPOCH: "COLORFUL_PHILOSOPHERS",
+};
 
 function inferEpochPrimaryAffiliation(kor: RawEpoch): EpochAffiliation {
   const storyAffiliation = kor.story_id ? EPOCH_CHARACTER_STORY_IDS[kor.story_id] : undefined;
@@ -1201,6 +1233,8 @@ function mapEpoch(
   eng: RawEpoch,
   selected: RawEpoch,
   eraMeta: Map<string, { name: string | null; year: string | null }>,
+  unlockNames: EpochUnlockNameMaps,
+  englishUnlockNames: EpochUnlockNameMaps,
   imageFiles: Set<string>,
 ): CodexEpoch {
   const group = epochEraGroup(kor.era);
@@ -1223,8 +1257,8 @@ function mapEpoch(
     affiliations: inferEpochAffiliations(kor, eng),
     unlockInfo: renderEpochUnlockInfo(selected.unlock_info),
     unlockInfoEn: renderEpochUnlockInfo(eng.unlock_info),
-    unlockText: selected.unlock_text ? normalizeEpochMarkup(selected.unlock_text) : null,
-    unlockTextEn: eng.unlock_text ? normalizeEpochMarkup(eng.unlock_text) : null,
+    unlockText: selected.unlock_text ? renderEpochUnlockText(selected.unlock_text, kor, unlockNames) : null,
+    unlockTextEn: eng.unlock_text ? renderEpochUnlockText(eng.unlock_text, kor, englishUnlockNames) : null,
     unlockConditions: inferEpochUnlockConditions(kor, eng),
     unlockRewards: inferEpochUnlockRewards(kor, eng),
     unlocksCards: kor.unlocks_cards ?? [],
@@ -1305,23 +1339,89 @@ function localizedEpoch(
   };
 }
 
+function buildEpochUnlockNameMaps(
+  korPotions: RawPotion[],
+  engPotions: RawPotion[],
+  korEvents: RawEvent[],
+  engEvents: RawEvent[],
+  potionText: GameLocalizationTable,
+  englishPotionText: GameLocalizationTable,
+  eventText: GameLocalizationTable,
+  englishEventText: GameLocalizationTable,
+  gameLocale: GameLocale,
+): EpochUnlockNameMaps {
+  const engPotionById = new Map(engPotions.map((potion) => [potion.id, potion]));
+  const potions = new Map<string, string>();
+  for (const kor of korPotions) {
+    const eng = engPotionById.get(kor.id) ?? kor;
+    potions.set(
+      kor.id,
+      localizedGameText(
+        potionText,
+        englishPotionText,
+        `${kor.id}.title`,
+        kor.name,
+        eng.name,
+        gameLocale,
+      ),
+    );
+  }
+
+  const korEventById = new Map(korEvents.map((event) => [event.id, event]));
+  const engEventById = new Map(engEvents.map((event) => [event.id, event]));
+  const events = new Map<string, string>();
+  for (const eventId of Object.values(EPOCH_UNLOCK_EVENT_IDS).filter((id): id is string => Boolean(id))) {
+    const kor = korEventById.get(eventId);
+    const eng = engEventById.get(eventId) ?? kor;
+    events.set(
+      eventId,
+      localizedGameText(
+        eventText,
+        englishEventText,
+        `${eventId}.title`,
+        kor?.name ?? eng?.name ?? eventId,
+        eng?.name ?? kor?.name ?? eventId,
+        gameLocale,
+      ),
+    );
+  }
+
+  return { potions, events };
+}
+
 export async function getCodexEpochs(opts?: { gameLocale?: GameLocale }): Promise<CodexEpoch[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
   const [
     korEpochs,
     engEpochs,
+    korPotions,
+    engPotions,
+    korEvents,
+    engEvents,
     epochText,
     englishEpochText,
     eraText,
     englishEraText,
+    potionText,
+    englishPotionText,
+    eventText,
+    englishEventText,
     imageFiles,
   ] = await Promise.all([
     readJson<RawEpoch[]>("kor/epochs.json"),
     readJson<RawEpoch[]>("eng/epochs.json"),
+    readJson<RawPotion[]>("kor/potions.json"),
+    readJson<RawPotion[]>("eng/potions.json"),
+    readJson<RawEvent[]>("kor/events.json"),
+    readJson<RawEvent[]>("eng/events.json"),
     readGameLocalizationTable(gameLocale, "epochs"),
     readGameLocalizationTable("eng", "epochs"),
     readGameLocalizationTable(gameLocale, "eras"),
     readGameLocalizationTable("eng", "eras"),
+    readGameLocalizationTable(gameLocale, "potions"),
+    readGameLocalizationTable("eng", "potions"),
+    readGameLocalizationTable(gameLocale, "events"),
+    readGameLocalizationTable("eng", "events"),
     scanImageSlugs("epochs"),
   ]);
 
@@ -1340,6 +1440,28 @@ export async function getCodexEpochs(opts?: { gameLocale?: GameLocale }): Promis
       year: current?.year ?? epoch.era_year ?? null,
     });
   }
+  const unlockNames = buildEpochUnlockNameMaps(
+    korPotions,
+    engPotions,
+    korEvents,
+    engEvents,
+    potionText,
+    englishPotionText,
+    eventText,
+    englishEventText,
+    gameLocale,
+  );
+  const englishUnlockNames = buildEpochUnlockNameMaps(
+    korPotions,
+    engPotions,
+    korEvents,
+    engEvents,
+    englishPotionText,
+    englishPotionText,
+    englishEventText,
+    englishEventText,
+    "eng",
+  );
 
   return korEpochs
     .map((kor) => {
@@ -1353,7 +1475,7 @@ export async function getCodexEpochs(opts?: { gameLocale?: GameLocale }): Promis
         englishEraText,
         gameLocale,
       );
-      return mapEpoch(kor, eng, selected, eraMeta, imageFiles);
+      return mapEpoch(kor, eng, selected, eraMeta, unlockNames, englishUnlockNames, imageFiles);
     })
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }
