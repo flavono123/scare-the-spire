@@ -818,22 +818,14 @@ function powerDescriptionText(
   fallbackRaw: string | null,
   fallbackDescription: string,
   vars: Record<string, number | string>,
-  gameLocale: GameLocale,
-): { raw: string; description?: string } {
-  const description = gameText(gamePowers, `${l10nBase}.description`, fallbackRaw ?? "");
+): { raw: string; description: string } {
+  const description = gameText(gamePowers, `${l10nBase}.description`, fallbackDescription);
   const smartDescription = gamePowers[`${l10nBase}.smartDescription`]?.replace("{OwnerName}'s[/gold]의", "{OwnerName}[/gold]의");
   if (smartDescription && (!smartDescription.includes("{OwnerName}") || vars.OwnerName)) {
-    return { raw: smartDescription };
+    return { raw: smartDescription, description: bakeDescription(description, vars) };
   }
 
-  if (smartDescription?.includes("{OwnerName}") && !vars.OwnerName && (gameLocale === "kor" || gameLocale === "eng")) {
-    return {
-      raw: fallbackRaw ?? fallbackDescription,
-      description: fallbackDescription,
-    };
-  }
-
-  return { raw: description };
+  return { raw: fallbackRaw ?? description, description: bakeDescription(description, vars) };
 }
 
 function mapPower(
@@ -841,6 +833,7 @@ function mapPower(
   eng: RawPower,
   betaImageUrl: string | null,
   gamePowers: GameLocalizationTable,
+  gamePowersEn: GameLocalizationTable,
   gameLocale: GameLocale,
 ): CodexPower {
   const vars = { ...(kor.vars ?? {}) };
@@ -848,24 +841,30 @@ function mapPower(
   if (gameLocale === "eng" && eng.vars) Object.assign(vars, eng.vars);
   if (gameLocale !== "kor" && gameLocale !== "eng") delete vars.OwnerName;
   const l10nBase = powerLocalizationBase(gamePowers, kor.id);
+  const l10nBaseEn = powerLocalizationBase(gamePowersEn, eng.id);
   const fallbackPower = gameLocale === "eng" ? eng : kor;
-  const rawEn = eng.description_raw ?? eng.description;
   const powerText = powerDescriptionText(
     gamePowers,
     l10nBase,
     fallbackPower.description_raw ?? fallbackPower.description,
     fallbackPower.description,
     vars,
-    gameLocale,
+  );
+  const powerTextEn = powerDescriptionText(
+    gamePowersEn,
+    l10nBaseEn,
+    eng.description_raw ?? eng.description,
+    eng.description,
+    varsEn,
   );
   return {
     id: kor.id,
     name: gameTitleText(gamePowers, `${l10nBase}.title`, kor.name, eng.name, gameLocale),
     nameEn: eng.name,
-    description: powerText.description ?? bakeDescription(powerText.raw ?? "", vars),
-    descriptionEn: bakeDescription(rawEn ?? "", varsEn),
+    description: powerText.description,
+    descriptionEn: powerTextEn.description,
     descriptionRaw: powerText.raw,
-    descriptionRawEn: rawEn,
+    descriptionRawEn: powerTextEn.raw,
     vars,
     type: kor.type as PowerType,
     stackType: (kor.stack_type ?? "None") as PowerStackType,
@@ -880,12 +879,13 @@ function mapPower(
 
 export async function getCodexPowers(opts?: { gameLocale?: GameLocale; includeDeprecated?: boolean }): Promise<CodexPower[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korPowers, engPowers, betaImageFiles, officialImageFiles, gamePowers] = await Promise.all([
+  const [korPowers, engPowers, betaImageFiles, officialImageFiles, gamePowers, gamePowersEn] = await Promise.all([
     readJson<RawPower[]>("kor/powers.json"),
     readJson<RawPower[]>("eng/powers.json"),
     scanImageFilenames("powers-beta"),
     scanImageFilenames("powers"),
     readGameLocalizationTable(gameLocale, "powers"),
+    readGameLocalizationTable("eng", "powers"),
   ]);
 
   const engById = new Map(engPowers.map((p) => [p.id, p]));
@@ -901,7 +901,7 @@ export async function getCodexPowers(opts?: { gameLocale?: GameLocale; includeDe
         betaImageFiles,
         imageFile,
       ) ?? betaImageUrlForFile("powers", officialImageFiles, imageFile, { exact: false });
-      return mapPower(kor, eng, betaImageUrl, gamePowers, gameLocale);
+      return mapPower(kor, eng, betaImageUrl, gamePowers, gamePowersEn, gameLocale);
     });
 }
 
