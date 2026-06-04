@@ -307,6 +307,21 @@ function localizedGameText(
   );
 }
 
+function localizedNullableGameText(
+  table: GameLocalizationTable,
+  englishTable: GameLocalizationTable,
+  key: string,
+  korFallback: string | null,
+  engFallback: string | null,
+  gameLocale: GameLocale,
+): string | null {
+  return gameNullableText(
+    table,
+    key,
+    gameLocale === "kor" ? korFallback : gameNullableText(englishTable, key, engFallback),
+  );
+}
+
 function buildMadScienceLabels(
   gameEvents: GameLocalizationTable,
   engEvents: GameLocalizationTable,
@@ -1219,16 +1234,98 @@ function mapEpoch(
   };
 }
 
+function localizedEpoch(
+  kor: RawEpoch,
+  eng: RawEpoch,
+  epochText: GameLocalizationTable,
+  englishEpochText: GameLocalizationTable,
+  eraText: GameLocalizationTable,
+  englishEraText: GameLocalizationTable,
+  gameLocale: GameLocale,
+): RawEpoch {
+  const id = kor.id;
+  const base = gameLocale === "kor" ? kor : eng;
+  const eraKey = `${epochEraGroup(kor.era).toUpperCase()}0`;
+
+  return {
+    ...base,
+    id,
+    title: localizedGameText(
+      epochText,
+      englishEpochText,
+      `${id}.title`,
+      kor.title,
+      eng.title,
+      gameLocale,
+    ),
+    description: localizedGameText(
+      epochText,
+      englishEpochText,
+      `${id}.description`,
+      kor.description,
+      eng.description,
+      gameLocale,
+    ),
+    era_name: localizedNullableGameText(
+      eraText,
+      englishEraText,
+      `${eraKey}.name`,
+      kor.era_name,
+      eng.era_name,
+      gameLocale,
+    ),
+    era_year: localizedNullableGameText(
+      eraText,
+      englishEraText,
+      `${eraKey}.year`,
+      kor.era_year,
+      eng.era_year,
+      gameLocale,
+    ),
+    unlock_info: localizedGameText(
+      epochText,
+      englishEpochText,
+      `${id}.unlockInfo`,
+      kor.unlock_info,
+      eng.unlock_info,
+      gameLocale,
+    ),
+    unlock_text: localizedNullableGameText(
+      epochText,
+      englishEpochText,
+      `${id}.unlockText`,
+      kor.unlock_text,
+      eng.unlock_text,
+      gameLocale,
+    ),
+  };
+}
+
 export async function getCodexEpochs(opts?: { gameLocale?: GameLocale }): Promise<CodexEpoch[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korEpochs, engEpochs, imageFiles] = await Promise.all([
+  const [
+    korEpochs,
+    engEpochs,
+    epochText,
+    englishEpochText,
+    eraText,
+    englishEraText,
+    imageFiles,
+  ] = await Promise.all([
     readJson<RawEpoch[]>("kor/epochs.json"),
     readJson<RawEpoch[]>("eng/epochs.json"),
+    readGameLocalizationTable(gameLocale, "epochs"),
+    readGameLocalizationTable("eng", "epochs"),
+    readGameLocalizationTable(gameLocale, "eras"),
+    readGameLocalizationTable("eng", "eras"),
     scanImageSlugs("epochs"),
   ]);
 
   const engById = new Map(engEpochs.map((epoch) => [epoch.id, epoch]));
-  const selectedEpochs = gameLocale === "kor" ? korEpochs : engEpochs;
+  const selectedEpochs = korEpochs.map((kor) => {
+    const eng = engById.get(kor.id) ?? kor;
+    return localizedEpoch(kor, eng, epochText, englishEpochText, eraText, englishEraText, gameLocale);
+  });
   const selectedById = new Map(selectedEpochs.map((epoch) => [epoch.id, epoch]));
   const eraMeta = new Map<string, { name: string | null; year: string | null }>();
   for (const epoch of selectedEpochs) {
@@ -1243,7 +1340,15 @@ export async function getCodexEpochs(opts?: { gameLocale?: GameLocale }): Promis
   return korEpochs
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
-      const selected = selectedById.get(kor.id) ?? (gameLocale === "kor" ? kor : eng);
+      const selected = selectedById.get(kor.id) ?? localizedEpoch(
+        kor,
+        eng,
+        epochText,
+        englishEpochText,
+        eraText,
+        englishEraText,
+        gameLocale,
+      );
       return mapEpoch(kor, eng, selected, eraMeta, imageFiles);
     })
     .sort((a, b) => a.sortOrder - b.sortOrder);
