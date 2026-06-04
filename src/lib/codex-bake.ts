@@ -157,23 +157,28 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
   const genericCondMatch = body.match(/^(\w+):cond:([\s\S]*)$/);
   if (genericCondMatch) {
     const [, name, rest] = genericCondMatch;
-    const questionIndex = findTopLevelQuestion(rest);
     const v = looksLike(name, vars);
+    const opts = splitBranches(rest);
 
-    if (questionIndex >= 0) {
-      const predicate = rest.slice(0, questionIndex);
-      const branches = splitBranches(rest.slice(questionIndex + 1));
-      if (branches.length < 2) return `{${body}}`;
-      return renderTemplate(
-        evaluateCondition(v, predicate) ? branches[0] : branches[1],
-        vars,
-        name,
-      );
+    if (opts.some((opt) => findTopLevelQuestion(opt) >= 0)) {
+      let fallback = "";
+      for (const opt of opts) {
+        const questionIndex = findTopLevelQuestion(opt);
+        if (questionIndex < 0) {
+          fallback = opt;
+          continue;
+        }
+
+        const predicate = opt.slice(0, questionIndex);
+        if (evaluateCondition(v, predicate)) {
+          return renderTemplate(opt.slice(questionIndex + 1), vars, name);
+        }
+      }
+      return renderTemplate(fallback, vars, name);
     }
 
-    const branches = splitBranches(rest);
-    if (branches.length < 2) return `{${body}}`;
-    return renderTemplate(v ? branches[0] : branches[1], vars, name);
+    if (opts.length < 2) return `{${body}}`;
+    return renderTemplate(v ? opts[0] : opts[1], vars, name);
   }
 
   // {Var:choose(N):a|b|...} — value equal to N picks the first branch,
