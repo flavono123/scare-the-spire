@@ -28,7 +28,7 @@ const SERVICE_METADATA_COPY: Record<ServiceLocale, ServiceMetadataCopy> = {
   },
   en: {
     siteDescription: "Slay the Spire 2 patch notes, Compendium, and community.",
-    patchesTitle: "Rich Changes",
+    patchesTitle: "Scare the Changes",
     patchesDescription: "Full rich Slay the Spire 2 patch notes.",
     chemicalXTitle: "Chemical X (formerly Twipter)",
     chemicalXDescription: "Full Slay the Spire 2 twips.",

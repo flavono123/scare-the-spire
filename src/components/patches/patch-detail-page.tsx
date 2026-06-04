@@ -22,7 +22,6 @@ import {
 import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
 import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import {
-  getServiceMetadataCopy,
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
 import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
@@ -741,11 +740,10 @@ export async function getPatchDetailMetadata({
   ]);
   const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
   const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
-  const copy = getServiceMetadataCopy(serviceLocale);
 
   return getServiceOgMetadata({
     serviceLocale,
-    title: `${copy.patchesTitle} ${title}`,
+    title,
     description,
     image: {
       url: patchArt.imageUrl,
