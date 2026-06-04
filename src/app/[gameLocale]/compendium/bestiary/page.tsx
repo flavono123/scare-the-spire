@@ -8,11 +8,12 @@ export const dynamic = "force-static";
 
 type Props = {
   params: Promise<LocaleRouteParams>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params, searchParams }: Props) {
   const { gameLocale } = await getLocalePairFromParams(params);
-  return generateCompendiumBestiaryMetadata(gameLocale);
+  return generateCompendiumBestiaryMetadata(gameLocale, await searchParams);
 }
 
 export default async function LocalizedPage({ params }: Props) {

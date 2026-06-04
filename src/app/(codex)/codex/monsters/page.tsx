@@ -15,6 +15,12 @@ import { getCodexMeta, getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } f
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
+import {
+  firstRouteSearchParam,
+  getCodexMonsterOgResource,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { MonsterLibrary } from "@/components/codex/monster-library";
 
 export const dynamic = "force-static";
@@ -27,7 +33,28 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const gameUi = await getCodexGameUiLabels(gameLocale);
+  const monsterId = firstRouteSearchParam(resolvedSearchParams.monster);
+  const [gameUi, monsters] = await Promise.all([
+    getCodexGameUiLabels(gameLocale),
+    monsterId ? getCodexMonsters({ gameLocale }) : Promise.resolve(null),
+  ]);
+
+  if (monsterId && monsters) {
+    const monster = monsters.find(
+      (item) =>
+        item.id.toLowerCase() === monsterId.toLowerCase() &&
+        item.showInCompendium &&
+        isPublicBestiaryMonster(item.id),
+    );
+    if (monster) {
+      return getCodexResourceOgMetadata(
+        serviceLocale,
+        gameUi.bestiaryTitle,
+        getCodexMonsterOgResource(monster, serviceLocale),
+      );
+    }
+  }
+
   return getCodexMetadata(serviceLocale, gameUi.bestiaryTitle);
 }
 

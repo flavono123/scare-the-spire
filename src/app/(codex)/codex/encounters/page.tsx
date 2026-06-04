@@ -9,6 +9,11 @@ import { getCodexMeta, getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } f
 import { getVersionsWithDiffs } from "@/lib/entity-versioning";
 import { getCodexMetadata, getCodexServiceMessages } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
+import {
+  firstRouteSearchParam,
+  getCodexEncounterOgResource,
+  getCodexResourceOgMetadata,
+} from "@/lib/codex-resource-og";
 import { EncounterLibrary } from "@/components/codex/encounter-library";
 
 export const dynamic = "force-static";
@@ -18,8 +23,26 @@ export async function generateMetadata({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const serviceLocale = getServiceLocaleFromSearchRecord(await searchParams);
+  const resolvedSearchParams = await searchParams;
+  const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
+  const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const encounterId = firstRouteSearchParam(resolvedSearchParams.encounter);
+  if (encounterId) {
+    const [encounters, monsters] = await Promise.all([
+      getCodexEncounters({ gameLocale }),
+      getCodexMonsters({ gameLocale }),
+    ]);
+    const encounter = encounters.find((item) => item.id.toLowerCase() === encounterId.toLowerCase());
+    if (encounter) {
+      return getCodexResourceOgMetadata(
+        serviceLocale,
+        serviceText.encountersView.title,
+        getCodexEncounterOgResource(encounter, monsters, serviceLocale),
+      );
+    }
+  }
+
   return getCodexMetadata(serviceLocale, serviceText.encountersView.title);
 }
 
