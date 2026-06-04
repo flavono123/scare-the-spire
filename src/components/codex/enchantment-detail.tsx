@@ -117,6 +117,8 @@ function getEnchantmentDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
+const ENCHANTMENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
+
 export function EnchantmentDetail(props: EnchantmentDetailProps) {
   const {
     serviceLocale,
@@ -239,6 +241,7 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
                   description={resource.description}
                   entities={entities}
                   excludeEntityTerms={excludeSelf}
+                  excludeEntityTypes={ENCHANTMENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                   className="block text-left"
                 />
               ) : (
@@ -284,6 +287,7 @@ export function EnchantmentDetail(props: EnchantmentDetailProps) {
                         description={resource.extraCardText}
                         entities={entities}
                         excludeEntityTerms={excludeSelf}
+                        excludeEntityTypes={ENCHANTMENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                       />
                     ) : (
                       <DescriptionText description={resource.extraCardText} />

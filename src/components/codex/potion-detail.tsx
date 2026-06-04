@@ -113,6 +113,8 @@ function getPotionDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
+const POTION_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
+
 export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, poolLabels, relatedCards = [], relatedEnchantments = [], relatedEvents = [], relatedPowers = [], patches, changes, versionDiffs, onClose, entities }: PotionDetailProps & { entities?: EntityInfo[] }) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getPotionDetailLabels(serviceLocale);
@@ -228,6 +230,7 @@ export function PotionDetail({ serviceLocale, gameUi, backToListTitle, potion, p
                   description={potion.description}
                   entities={entities}
                   excludeEntityTerms={excludeSelf}
+                  excludeEntityTypes={POTION_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                   className="block text-left"
                 />
               ) : (

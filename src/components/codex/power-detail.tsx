@@ -111,6 +111,8 @@ function getPowerHoverTipVariant(power: CodexPower): HoverTipVariant {
   return "default";
 }
 
+const POWER_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
+
 export function PowerDetail({
   serviceLocale,
   gameUi,
@@ -250,6 +252,7 @@ export function PowerDetail({
                   description={displayDescription}
                   entities={entities}
                   excludeEntityTerms={excludeSelf}
+                  excludeEntityTypes={POWER_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                   className="block text-left"
                 />
               ) : (

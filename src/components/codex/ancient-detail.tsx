@@ -58,7 +58,7 @@ function ancientBackgroundImageUrl(ancientId: string): string | null {
     : null;
 }
 
-const ANCIENT_DIALOGUE_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
+const ANCIENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
 
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
@@ -209,7 +209,7 @@ function DialogueViewer({
                     description={line.text}
                     entities={entities}
                     excludeEntityTerms={excludeSelf}
-                    excludeEntityTypes={ANCIENT_DIALOGUE_EXCLUDED_ENTITY_TYPES}
+                    excludeEntityTypes={ANCIENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                   />
                 ) : (
                   <DescriptionText description={line.text} />
@@ -392,6 +392,7 @@ export function AncientDetail({
                         description={ancient.description}
                         entities={entities}
                         excludeEntityTerms={excludeSelf}
+                        excludeEntityTypes={ANCIENT_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                       />
                     ) : (
                       <DescriptionText description={ancient.description} />

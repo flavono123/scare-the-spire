@@ -106,6 +106,7 @@ interface RelicDetailProps {
 
 // Game order: 아이언클래드, 사일런트, 리젠트, 네크로바인더, 디펙트
 const VARIANT_ORDER: RelicPool[] = ["ironclad", "silent", "regent", "necrobinder", "defect"];
+const RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
 export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poolLabels, initialVariant, initialShowBeta = false, onClose, entities, relatedCards = [], relatedEvents = [], relatedAncients = [], relatedEnchantments = [], relatedPowers = [], patches, changes, versionDiffs }: RelicDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getRelicDetailLabels(serviceLocale);
@@ -328,6 +329,7 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
                   description={relic.description}
                   entities={entities}
                   excludeEntityTerms={excludeSelf}
+                  excludeEntityTypes={RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                   className="block text-left"
                 />
               ) : (
@@ -369,6 +371,7 @@ export function RelicDetail({ serviceLocale, gameUi, backToListTitle, relic, poo
                         description={relic.flavor}
                         entities={entities}
                         excludeEntityTerms={excludeSelf}
+                        excludeEntityTypes={RELIC_DESCRIPTION_EXCLUDED_ENTITY_TYPES}
                       />
                     ) : (
                       <DescriptionText description={relic.flavor} />
