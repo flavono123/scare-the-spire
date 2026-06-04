@@ -1115,7 +1115,38 @@
         "after": "Reduced Strength gain",
         "diffType": "text"
       }
-    ]
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          { "id": "WHAT_IS_IT", "name": "What Is It", "nameEn": "What Is It" },
+          { "id": "BEAM", "name": "Beam", "nameEn": "Beam" },
+          { "id": "GET_BACK_IN", "name": "Get Back In", "nameEn": "Get Back In" }
+        ],
+        "after": [
+          { "id": "DRAMATIC_OPEN", "name": "극적인 개방", "nameEn": "Dramatic Open" },
+          { "id": "HUNGER", "name": "굶주림", "nameEn": "Hunger" },
+          { "id": "SCRUTINY", "name": "감시", "nameEn": "Scrutiny" },
+          { "id": "GRASP", "name": "움켜쥐기", "nameEn": "Grasp" }
+        ]
+      },
+      {
+        "field": "damageValues",
+        "before": {
+          "LaserBeam": { "normal": 31, "ascension": 34 },
+          "GetBackInMove": { "normal": 40, "ascension": 45 }
+        },
+        "after": {
+          "Hunger": { "normal": 30, "ascension": 35 },
+          "Scrutiny": { "normal": 24, "ascension": 26 },
+          "Grasp": { "normal": 10, "ascension": 11 }
+        }
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
   },
   {
     "id": "doormaker-v105-replaced",
@@ -1137,7 +1168,19 @@
         "afterKo": "영겁의 모래시계",
         "diffType": "rework"
       }
-    ]
+    ],
+    "fieldDiffs": [
+      { "field": "deprecatedInPatch", "before": null, "after": "v0.105.0" }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "AEONGLASS"
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
   },
   {
     "id": "conflagration-v104-rework",
@@ -1501,7 +1544,137 @@
         "after": "Single stronger Axebot",
         "diffType": "text"
       }
-    ]
+    ],
+    "fieldDiffs": [
+      { "field": "minHp", "before": 40, "after": 70 },
+      { "field": "maxHp", "before": 44, "after": 78 },
+      { "field": "minHpAscension", "before": 42, "after": 76 },
+      { "field": "maxHpAscension", "before": 46, "after": 86 },
+      {
+        "field": "damageValues",
+        "before": {
+          "OneTwo": { "normal": 5, "ascension": 6 },
+          "HammerUppercut": { "normal": 8, "ascension": 10 }
+        },
+        "after": {
+          "OneTwo": { "normal": 9, "ascension": 10 },
+          "HammerUppercut": { "normal": 12, "ascension": 14 }
+        }
+      },
+      {
+        "field": "blockValues",
+        "before": {
+          "BootUp": { "normal": 10, "ascension": null }
+        },
+        "after": {
+          "BootUp": { "normal": 10, "ascension": 15 }
+        }
+      },
+      {
+        "field": "moves",
+        "before": [
+          { "id": "BOOT_UP", "name": "시동", "nameEn": "Boot Up" },
+          { "id": "ONE_TWO", "name": "좌우 연타", "nameEn": "The One-Two" },
+          { "id": "SHARPEN", "name": "도끼 갈기", "nameEn": "Sharpen" },
+          { "id": "HAMMER_UPPERCUT", "name": "망치 올려치기", "nameEn": "Hammer Uppercut" }
+        ],
+        "after": [
+          {
+            "id": "BOOT_UP",
+            "name": "시동",
+            "nameEn": "Boot Up",
+            "kind": "move",
+            "actionTypes": ["defense", "buff"],
+            "intents": ["DefendIntent", "BuffIntent"],
+            "intentDetails": [{ "type": "DefendIntent" }, { "type": "BuffIntent" }],
+            "powerApplications": [{ "powerId": "STRENGTH", "powerName": "힘", "powerNameEn": "Strength", "powerType": "Buff", "target": "self", "amount": null, "imageUrl": "/images/sts2/powers/strength_power.webp" }],
+            "cardApplications": []
+          },
+          {
+            "id": "ONE_TWO",
+            "name": "좌우 연타",
+            "nameEn": "The One-Two",
+            "kind": "move",
+            "actionTypes": ["attack"],
+            "intents": ["MultiAttackIntent"],
+            "intentDetails": [{ "type": "MultiAttackIntent", "damageKey": "OneTwo", "repeat": { "normal": 2, "ascension": null } }],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "HAMMER_UPPERCUT",
+            "name": "망치 올려치기",
+            "nameEn": "Hammer Uppercut",
+            "kind": "move",
+            "actionTypes": ["attack", "debuff"],
+            "intents": ["SingleAttackIntent", "DebuffIntent"],
+            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "HammerUppercut", "repeat": { "normal": 1, "ascension": null } }, { "type": "DebuffIntent" }],
+            "powerApplications": [
+              { "powerId": "WEAK", "powerName": "약화", "powerNameEn": "Weak", "powerType": "Debuff", "target": "player", "amount": { "normal": 2, "ascension": null }, "imageUrl": "/images/sts2/powers/weak_power.webp" },
+              { "powerId": "FRAIL", "powerName": "손상", "powerNameEn": "Frail", "powerType": "Debuff", "target": "player", "amount": { "normal": 2, "ascension": null }, "imageUrl": "/images/sts2/powers/frail_power.webp" }
+            ],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          { "id": "BOOT_UP", "name": "시동", "nameEn": "Boot Up" },
+          { "id": "ONE_TWO", "name": "좌우 연타", "nameEn": "The One-Two" },
+          { "id": "SHARPEN", "name": "도끼 갈기", "nameEn": "Sharpen" },
+          { "id": "HAMMER_UPPERCUT", "name": "망치 올려치기", "nameEn": "Hammer Uppercut" }
+        ],
+        "after": [
+          {
+            "id": "BOOT_UP",
+            "name": "시동",
+            "nameEn": "Boot Up",
+            "kind": "move",
+            "actionTypes": ["defense", "buff"],
+            "intents": ["DefendIntent", "BuffIntent"],
+            "intentDetails": [{ "type": "DefendIntent" }, { "type": "BuffIntent" }],
+            "powerApplications": [{ "powerId": "STRENGTH", "powerName": "힘", "powerNameEn": "Strength", "powerType": "Buff", "target": "self", "amount": null, "imageUrl": "/images/sts2/powers/strength_power.webp" }],
+            "cardApplications": []
+          },
+          {
+            "id": "ONE_TWO",
+            "name": "좌우 연타",
+            "nameEn": "The One-Two",
+            "kind": "move",
+            "actionTypes": ["attack"],
+            "intents": ["MultiAttackIntent"],
+            "intentDetails": [{ "type": "MultiAttackIntent", "damageKey": "OneTwo", "repeat": { "normal": 2, "ascension": null } }],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "HAMMER_UPPERCUT",
+            "name": "망치 올려치기",
+            "nameEn": "Hammer Uppercut",
+            "kind": "move",
+            "actionTypes": ["attack", "debuff"],
+            "intents": ["SingleAttackIntent", "DebuffIntent"],
+            "intentDetails": [{ "type": "SingleAttackIntent", "damageKey": "HammerUppercut", "repeat": { "normal": 1, "ascension": null } }, { "type": "DebuffIntent" }],
+            "powerApplications": [
+              { "powerId": "WEAK", "powerName": "약화", "powerNameEn": "Weak", "powerType": "Debuff", "target": "player", "amount": { "normal": 2, "ascension": null }, "imageUrl": "/images/sts2/powers/weak_power.webp" },
+              { "powerId": "FRAIL", "powerName": "손상", "powerNameEn": "Frail", "powerType": "Debuff", "target": "player", "amount": { "normal": 2, "ascension": null }, "imageUrl": "/images/sts2/powers/frail_power.webp" }
+            ],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "initialPowerApplications",
+        "before": [],
+        "after": [
+          { "powerId": "STOCK", "powerName": "재고", "powerNameEn": "Stock", "powerType": "Buff", "target": "self", "amount": { "normal": 2, "ascension": null }, "imageUrl": "/images/sts2/powers/stock_power.webp" }
+        ]
+      }
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
   },
   {
     "id": "tag-team-v104-buff",
