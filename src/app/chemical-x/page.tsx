@@ -3,17 +3,24 @@ import { loadAllEntities } from "@/lib/load-all-entities";
 import { ChemicalXClient } from "@/components/chemicalx/chemicalx-client";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
-import { withPageOgImage } from "@/lib/page-og-images";
+import { CHEMICAL_X_PAGE_OG_IMAGE } from "@/lib/page-og-images";
+import {
+  getServiceMetadataCopy,
+  getServiceOgMetadata,
+} from "@/lib/service-metadata";
 import { getChemicalXPlaceholder } from "@/lib/borrowed-game-copy";
-import { serviceMessages } from "@/messages/service";
 
 export async function generateChemicalXMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ): Promise<Metadata> {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  return withPageOgImage({
-    title: serviceMessages[serviceLocale].chemicalX.title,
-  }, "/chemical-x");
+  const copy = getServiceMetadataCopy(serviceLocale);
+  return getServiceOgMetadata({
+    serviceLocale,
+    title: copy.chemicalXTitle,
+    description: copy.chemicalXDescription,
+    image: CHEMICAL_X_PAGE_OG_IMAGE,
+  });
 }
 
 export async function generateMetadata(): Promise<Metadata> {
