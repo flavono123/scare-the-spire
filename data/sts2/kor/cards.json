@@ -14171,7 +14171,7 @@
     "target": "Self",
     "color": "regent",
     "damage": null,
-    "block": 16,
+    "block": 15,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
