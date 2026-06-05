@@ -260,6 +260,20 @@ def resolve_locale_vars(vars_: dict[str, Any], lang: str) -> dict[str, int | flo
     return resolved
 
 
+VAR_REF_RE = re.compile(r"\{([A-Za-z_][A-Za-z0-9_]*)\}")
+
+
+def referenced_var_names(entry: dict[str, Any]) -> set[str]:
+    refs: set[str] = set()
+    for key, value in entry.items():
+        if not isinstance(value, str):
+            continue
+        if not (key.endswith("_raw") or key in ("description_raw", "description")):
+            continue
+        refs.update(VAR_REF_RE.findall(value))
+    return refs
+
+
 def merge_vars_into_file(json_path: Path, vars_by_id: dict[str, dict]) -> tuple[int, int]:
     """Update json_path's entries in place. Returns (updated, missing)."""
     data = json.loads(json_path.read_text(encoding="utf-8"))
@@ -275,6 +289,10 @@ def merge_vars_into_file(json_path: Path, vars_by_id: dict[str, dict]) -> tuple[
             missing += 1
             continue
         new_vars = resolve_locale_vars(raw_vars, lang)
+        old_vars = entry.get("vars") if isinstance(entry.get("vars"), dict) else {}
+        for name in referenced_var_names(entry):
+            if name not in new_vars and name in old_vars:
+                new_vars[name] = old_vars[name]
         # Only set non-empty vars; empty dict means we found nothing useful.
         entry["vars"] = new_vars
         updated += 1
