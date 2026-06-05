@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cacheBustSts2ImageUrl } from "@/lib/sts2-image-cache";
 
 export type PageOgImage = {
   url: string;
@@ -21,7 +22,7 @@ export const DEFAULT_PAGE_OG_IMAGE: PageOgImage = {
 };
 
 export const PATCH_NOTES_PAGE_OG_IMAGE: PageOgImage = {
-  url: "/images/sts2/og/patch-notes.jpg",
+  url: cacheBustSts2ImageUrl("/images/sts2/og/patch-notes.jpg"),
   width: 1200,
   height: 630,
   alt: "슬서운 이야기 패치 노트 — 필연적인 결과 Foregone Conclusion",
