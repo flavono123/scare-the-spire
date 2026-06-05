@@ -1,0 +1,4 @@
+interface:
+  display_name: "STS2 Compendium Patch QA"
+  short_description: "Verify Compendium patch/version behavior"
+  default_prompt: "Use $sts2-compendium-patch-qa to verify STS2 Compendium resource, lifecycle, hover, and patch-history behavior after a patch."
