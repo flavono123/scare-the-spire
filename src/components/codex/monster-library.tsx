@@ -164,7 +164,11 @@ export function MonsterLibrary({
   const selectedMonster = useMemo(() => {
     const activeMonsterId = useUrlSelection ? urlMonsterId : selectedMonsterId;
     return activeMonsterId
-      ? versionedMonsters.find((m) => m.id.toLowerCase() === activeMonsterId.toLowerCase()) ?? null
+      ? versionedMonsters.find((m) =>
+          m.id.toLowerCase() === activeMonsterId.toLowerCase() &&
+          m.showInCompendium &&
+          isPublicBestiaryMonster(m.id)
+        ) ?? null
       : null;
   }, [selectedMonsterId, useUrlSelection, urlMonsterId, versionedMonsters]);
 

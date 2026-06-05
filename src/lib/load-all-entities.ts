@@ -13,6 +13,7 @@ import {
 } from "@/lib/codex-data";
 import type { GameLocale } from "@/lib/i18n";
 import type { EntityInfo } from "@/components/patch-note-renderer";
+import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
 
 export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promise<EntityInfo[]> {
   const gameLocale = opts?.gameLocale;
@@ -106,15 +107,17 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
       type: "event" as const,
       eventData: e,
     })),
-    ...codexMonsters.map((m) => ({
-      id: m.id,
-      nameEn: m.nameEn,
-      nameKo: m.name,
-      imageUrl: m.bossImageUrl ?? m.imageUrl,
-      color: m.type,
-      type: "monster" as const,
-      monsterData: m,
-    })),
+    ...codexMonsters
+      .filter((m) => m.showInCompendium && isPublicBestiaryMonster(m.id))
+      .map((m) => ({
+        id: m.id,
+        nameEn: m.nameEn,
+        nameKo: m.name,
+        imageUrl: m.bossImageUrl ?? m.imageUrl,
+        color: m.type,
+        type: "monster" as const,
+        monsterData: m,
+      })),
     ...codexEncounters.map((e) => ({
       id: e.id,
       nameEn: e.nameEn,

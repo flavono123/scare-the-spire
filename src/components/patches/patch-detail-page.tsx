@@ -28,6 +28,7 @@ import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType } from "@/lib/types";
 import type { CodexMonster, DamageValue, MonsterActionType, MonsterMove } from "@/lib/codex-types";
+import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
 
 const PATCH_COPY: Record<ServiceLocale, {
   backToList: string;
@@ -803,6 +804,9 @@ export async function PatchDetailPage({
     }
   }
   const friendshipLabel = codexCards.find((card) => card.id === "FRIENDSHIP")?.name;
+  const publicCodexMonsters = codexMonsters.filter((monster) =>
+    monster.showInCompendium && isPublicBestiaryMonster(monster.id),
+  );
 
   // Build entity info for the renderer (cards + relics + potions)
   const entities: EntityInfo[] = [
@@ -883,7 +887,7 @@ export async function PatchDetailPage({
           eventOptionDesc: o.description,
         })),
     ),
-    ...codexMonsters.map((m) => ({
+    ...publicCodexMonsters.map((m) => ({
       id: m.id,
       nameEn: m.nameEn,
       nameKo: patchDisplayName(m.name, m.nameEn, gameLocale),
@@ -893,7 +897,7 @@ export async function PatchDetailPage({
       type: "monster" as const,
       monsterData: m,
     })),
-    ...buildPatchMonsterMoveEntities(codexMonsters, patch.version, gameLocale),
+    ...buildPatchMonsterMoveEntities(publicCodexMonsters, patch.version, gameLocale),
     ...codexEncounters.map((e) => ({
       id: e.id,
       nameEn: e.nameEn,
