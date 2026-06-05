@@ -74,5 +74,25 @@
       "사일런트",
       "카드"
     ]
+  },
+  {
+    "id": "sts2-touch-of-insanity-madness-card",
+    "game": "sts2",
+    "publishedAt": "2026-06-05",
+    "sentence": "광기의 포션은 원래 무색 카드였다",
+    "entityType": "potion",
+    "entityId": "TOUCH_OF_INSANITY",
+    "linkedEntities": [
+      {
+        "game": "sts1",
+        "entityType": "card",
+        "entityId": "madness"
+      }
+    ],
+    "tags": [
+      "STS1",
+      "무색",
+      "포션"
+    ]
   }
 ]
