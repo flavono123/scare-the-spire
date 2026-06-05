@@ -110,7 +110,7 @@ function plainPatchMarkdownForOg(markdown: string, serviceLocale: ServiceLocale)
   const withoutStructuralLines = localeFiltered
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("#"))
+    .filter((line) => line && !line.startsWith("#") && !/^\[monster-pattern-diff:[^\]]+\]$/i.test(line))
     .map((line) => line.replace(/^[-*+]\s+/, ""))
     .join(" ");
 
