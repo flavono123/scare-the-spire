@@ -318,19 +318,24 @@ function main() {
   // ── Check 4: Field path validation ──
   console.log("=== Check 4: Field path validation ===");
 
+  const lifecycleFields = ["introducedInPatch", "deprecated", "deprecatedInPatch"];
   const validCardFields = new Set([
     "cost", "type", "rarity", "description", "descriptionRaw",
     "damage", "block", "hitCount", "starCost", "isXCost", "isXStarCost",
     "maxUpgradeLevel", "vars", "keywords", "tags", "upgrade",
+    ...lifecycleFields,
   ]);
   const validRelicFields = new Set([
     "description", "descriptionRaw", "rarity", "pool", "flavor",
+    ...lifecycleFields,
   ]);
   const validPotionFields = new Set([
     "description", "descriptionRaw", "rarity", "pool",
+    ...lifecycleFields,
   ]);
   const validPowerFields = new Set([
     "description", "descriptionRaw", "vars", "type", "stackType", "allowNegative",
+    ...lifecycleFields,
   ]);
 
   const fieldSets: Record<string, Set<string>> = {
