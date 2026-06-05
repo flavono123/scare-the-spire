@@ -23,6 +23,7 @@
   {
     "id": "sts2-infested-prism-energy-vending-machine",
     "game": "sts2",
+    "publishedAt": "2026-06-05",
     "sentence": "프리즘은 원래 때리면 1코 주는 자판기였다",
     "entityType": "monster",
     "entityId": "INFESTED_PRISM",
@@ -36,6 +37,7 @@
   {
     "id": "sts2-wither-int-max-upgrades",
     "game": "sts2",
+    "publishedAt": "2026-06-05",
     "sentence": "침체는 플레이어가 2147483647 번 강화시킬 수 있었다",
     "entityType": "card",
     "entityId": "WITHER",
