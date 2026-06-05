@@ -122,6 +122,28 @@ interface RawCard {
   deprecatedInPatch?: string;
 }
 
+const CARD_VAR_FALLBACKS: Record<string, Record<string, number>> = {
+  BORROWED_TIME: { ExtraCost: 1 },
+  DOMINATE: { VulnerablePower: 1 },
+};
+
+const CARD_UPGRADE_FALLBACKS: Record<string, Record<string, string | number>> = {
+  DOMINATE: { vulnerablepower: "+1" },
+};
+
+function withCardVarFallbacks(id: string, vars: RawCard["vars"]): Record<string, number> {
+  return { ...(CARD_VAR_FALLBACKS[id] ?? {}), ...(vars ?? {}) };
+}
+
+function withCardUpgradeFallbacks(
+  id: string,
+  upgrade: RawCard["upgrade"],
+): RawCard["upgrade"] {
+  const fallbacks = CARD_UPGRADE_FALLBACKS[id];
+  if (!fallbacks) return upgrade;
+  return { ...fallbacks, ...(upgrade ?? {}) };
+}
+
 interface RawCharacter {
   id: string;
   name: string;
@@ -392,10 +414,11 @@ function mapCard(
   keywordLabels: Record<string, string>,
   gameLocale: GameLocale,
 ): CodexCard {
-  const vars = kor.vars ?? {};
+  const vars = withCardVarFallbacks(kor.id, kor.vars);
   const raw = gameText(gameCards, `${kor.id}.description`, kor.description_raw);
-  const varsEn = eng.vars ?? vars;
+  const varsEn = eng.vars ? withCardVarFallbacks(eng.id, eng.vars) : vars;
   const rawEn = eng.description_raw ?? eng.description;
+  const upgrade = withCardUpgradeFallbacks(kor.id, kor.upgrade);
   return {
     id: kor.id,
     name: gameTitleText(gameCards, `${kor.id}.title`, kor.name, eng.name, gameLocale),
@@ -422,8 +445,8 @@ function mapCard(
     keywordLabels,
     tags: kor.tags ?? [],
     appliedPowerIds: getAppliedPowerIds(eng),
-    upgrade: kor.upgrade,
-    maxUpgradeLevel: kor.max_upgrade_level ?? (kor.upgrade ? 1 : 0),
+    upgrade,
+    maxUpgradeLevel: kor.max_upgrade_level ?? (upgrade ? 1 : 0),
     imageUrl: codexCardImageUrl(kor),
     betaImageUrl: spireCodexImageToLocal(kor.beta_image_url),
     introducedInPatch: kor.introducedInPatch,
