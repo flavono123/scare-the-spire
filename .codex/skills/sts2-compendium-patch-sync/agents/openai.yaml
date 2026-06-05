@@ -1,0 +1,4 @@
+interface:
+  display_name: "STS2 Compendium Patch Sync"
+  short_description: "Apply PCK diffs to Compendium versions"
+  default_prompt: "Use $sts2-compendium-patch-sync to apply a Slay the Spire 2 patch's PCK diffs to Compendium resources and version history."
