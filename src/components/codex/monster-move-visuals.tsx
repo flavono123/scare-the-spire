@@ -688,6 +688,7 @@ export function MonsterAnimationPatchDiffBlock({
               monsters={monsters}
               serviceLocale={serviceLocale}
               tone="before"
+              bleed={!compact}
             />
             <MoveSequenceRail
               sequence={spec.after}
@@ -695,6 +696,7 @@ export function MonsterAnimationPatchDiffBlock({
               monsters={monsters}
               serviceLocale={serviceLocale}
               tone="after"
+              bleed={!compact}
             />
           </div>
         </div>
@@ -1126,22 +1128,25 @@ function MoveSequenceRail({
   monsters,
   serviceLocale,
   tone,
+  bleed = false,
 }: {
   sequence: MonsterPatchDiffSequence;
   monster: CodexMonster;
   monsters: readonly CodexMonster[];
   serviceLocale: ServiceLocale;
   tone: "before" | "after";
+  bleed?: boolean;
 }) {
   const [ascensionLevel] = useMonsterAscensionLevel();
   const sequenceMonster = getSequenceMonster(sequence, monster, monsters);
   const moves = buildSequenceMoves(sequenceMonster, sequence);
   const label = serviceLocale === "ko" ? sequence.labelKo : sequence.labelEn;
   const effectNote = sequence.effectNote?.(serviceLocale, ascensionLevel);
+  const labelClass = `font-game-title text-xs font-bold ${tone === "after" ? "text-green-300" : "text-red-300"}`;
 
   return (
-    <div className="grid gap-2 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:items-center">
-      <div className={`font-game-title text-xs font-bold ${tone === "after" ? "text-green-300" : "text-red-300"}`}>
+    <div className={bleed ? "relative grid gap-2 sm:block" : "grid gap-2 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:items-center"}>
+      <div className={bleed ? `${labelClass} sm:absolute sm:right-full sm:top-1/2 sm:mr-4 sm:-translate-y-1/2` : labelClass}>
         {label}
       </div>
       <div className="min-w-0">
