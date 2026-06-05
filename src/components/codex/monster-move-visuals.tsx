@@ -1143,10 +1143,52 @@ function MoveSequenceRail({
   const label = serviceLocale === "ko" ? sequence.labelKo : sequence.labelEn;
   const effectNote = sequence.effectNote?.(serviceLocale, ascensionLevel);
   const labelClass = `font-game-title text-xs font-bold ${tone === "after" ? "text-green-300" : "text-red-300"}`;
+  const moveRow = (
+    <div className="flex w-max flex-nowrap items-center gap-1.5">
+      {moves.map((move, index) => (
+        <span key={move.id} className="flex shrink-0 items-center gap-1.5">
+          <MovePanel
+            move={move}
+            monster={sequenceMonster}
+            serviceLocale={serviceLocale}
+            hpOverride={sequence.hpOverride}
+            initialPowerApplications={sequence.initialPowerApplications}
+          />
+          <Image
+            src={ARROW_ICON}
+            alt=""
+            width={16}
+            height={16}
+            className={`h-4 w-4 object-contain ${index === moves.length - 1 ? "opacity-90" : ""}`}
+          />
+        </span>
+      ))}
+    </div>
+  );
+
+  if (bleed) {
+    return (
+      <div className="min-w-0 overflow-x-auto pb-1">
+        <div className="mx-auto grid w-max grid-cols-[max-content_max-content] items-center gap-x-4 gap-y-1">
+          {effectNote && (
+            <div className="col-start-2 row-start-1 flex flex-wrap items-center gap-1.5 font-game-text text-[11px] leading-tight text-zinc-400">
+              {effectNote}
+            </div>
+          )}
+          <div className={`${labelClass} col-start-1 ${effectNote ? "row-start-2" : "row-start-1"}`}>
+            {label}
+          </div>
+          <div className={`col-start-2 ${effectNote ? "row-start-2" : "row-start-1"}`}>
+            {moveRow}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className={bleed ? "relative grid gap-2 sm:block" : "grid gap-2 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:items-center"}>
-      <div className={bleed ? `${labelClass} sm:absolute sm:right-full sm:top-1/2 sm:mr-4 sm:-translate-y-1/2` : labelClass}>
+    <div className="grid gap-2 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:items-center">
+      <div className={labelClass}>
         {label}
       </div>
       <div className="min-w-0">
@@ -1156,26 +1198,7 @@ function MoveSequenceRail({
           </div>
         )}
         <div className="min-w-0 overflow-x-auto pb-1">
-          <div className="mx-auto flex w-max flex-nowrap items-center gap-1.5">
-            {moves.map((move, index) => (
-              <span key={move.id} className="flex shrink-0 items-center gap-1.5">
-                <MovePanel
-                  move={move}
-                  monster={sequenceMonster}
-                  serviceLocale={serviceLocale}
-                  hpOverride={sequence.hpOverride}
-                  initialPowerApplications={sequence.initialPowerApplications}
-                />
-                <Image
-                  src={ARROW_ICON}
-                  alt=""
-                  width={16}
-                  height={16}
-                  className={`h-4 w-4 object-contain ${index === moves.length - 1 ? "opacity-90" : ""}`}
-                />
-              </span>
-            ))}
-          </div>
+          {moveRow}
         </div>
       </div>
     </div>
