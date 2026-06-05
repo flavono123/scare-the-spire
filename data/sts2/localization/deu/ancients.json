@@ -380,7 +380,7 @@
   "VAKUU.epithet": "Der erste Dämon",
   "VAKUU.loss": "{character} ist einen schlechten Handel mit [gold]Vakuu[/gold] eingegangen.",
   "VAKUU.talk.ANY.0-0r.ancient": "Wir suchen Ruhm im Spire, nicht wahr? Ich habe ein paar Vorschläge für dich...",
-  "VAKUU.talk.ANY.1-0r.ancient": "143. 143 Mal bist du hier gewesen.",
+  "VAKUU.talk.ANY.1-0r.ancient": "{Visits}. {Visits} Mal bist du hier gewesen.",
   "VAKUU.talk.ANY.2-0r.ancient": "Du verstehst, dass das [sine]niemals[/sine] endet?",
   "VAKUU.talk.DEFECT.0-0.ancient": "Du Kaputter, lass mich dich [sine]perfekt[/sine] machen.",
   "VAKUU.talk.DEFECT.1-0r.ancient": "Wundert es dich, dass deine Konstrukt-Kameraden dich tot sehen wollen?",

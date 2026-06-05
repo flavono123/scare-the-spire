@@ -892,7 +892,7 @@
   "ROYAL_GAMBLE.title": "Aposta Real",
   "RUPTURE.description": "Sempre que você perder PV no seu turno, receba {StrengthPower:diff()} de [gold]Força[/gold].",
   "RUPTURE.title": "Ruptura",
-  "SACRIFICE.description": "Se [gold]Ostheo[/gold] estiver vivo, ele é sacrificado e você recebe [gold]Proteção[/gold] equivalente ao dobro dos PV Máximos dele.",
+  "SACRIFICE.description": "Se [gold]Ostheo[/gold] estiver vivo, ele é sacrificado e você recebe [gold]Proteção[/gold] equivalente ao dobro dos PV Máximos dele.{InCombat:\n(Receba {IsOstyAlive:{CalculatedBlock:diff()}|0} de [gold]Proteção[/gold])|}",
   "SACRIFICE.title": "Sacrifício",
   "SALVO.description": "Cause {Damage:diff()} de dano.\n[gold]Mantenha[/gold] sua [gold]Mão[/gold] neste turno.",
   "SALVO.title": "Saraivada",

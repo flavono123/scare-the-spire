@@ -892,7 +892,7 @@
   "ROYAL_GAMBLE.title": "Pari royal",
   "RUPTURE.description": "Lorsque vous perdez des PV pendant votre tour, gagnez {StrengthPower:diff()} de [gold]Force[/gold].",
   "RUPTURE.title": "Rupture",
-  "SACRIFICE.description": "Si [gold]Titos[/gold] est en vie, il périt, et vous gagnez un montant d'[gold]Armure[/gold] égal au double de ses PV Max.",
+  "SACRIFICE.description": "Si [gold]Titos[/gold] est en vie, il périt, et vous gagnez un montant d'[gold]Armure[/gold] égal au double de ses PV Max.{InCombat:\n(Gagnez {IsOstyAlive:{CalculatedBlock:diff()}|0} d'[gold]Armure[/gold])|}",
   "SACRIFICE.title": "Sacrifice",
   "SALVO.description": "Infligez {Damage:diff()} dégâts.\n[gold]Retenez[/gold] votre [gold]Main[/gold] jusqu'au prochain tour.",
   "SALVO.title": "Salve",

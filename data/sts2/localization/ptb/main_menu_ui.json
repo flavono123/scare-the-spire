@@ -85,6 +85,8 @@
   "HOST.description": "Hospede uma partida padrão, diária ou personalizada para até quatro jogadores.",
   "HOST.title": "Hospedar",
   "HP_AMOUNT": "PV: {amount}",
+  "INTERNAL_ERROR.description": "Ocorreu um erro interno. Por favor, reporte este problema aos desenvolvedores.\n\nMais informações: {info}",
+  "INTERNAL_ERROR.title": "Erro Interno!",
   "INVALID_SAVE_POPUP.description_progress": "Houve um problema ao carregar o progresso.\n\nPor favor, envie um relatório de erro para que possamos corrigir o problema.",
   "INVALID_SAVE_POPUP.description_run": "Não foi possível carregar esta partida.\n\nPor favor, envie um relatório de erro para que possamos corrigir o problema.",
   "INVALID_SAVE_POPUP.description_settings": "Houve um problema ao carregar o arquivo de configurações.\n\nPor favor, envie um relatório de erro para que possamos corrigir o problema.",

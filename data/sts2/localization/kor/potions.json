@@ -83,6 +83,7 @@
   "LUCKY_TONIC.title": "행운의 활력소",
   "MAZALETHS_GIFT.description": "[gold]의식[/gold]을 [blue]{RitualPower}[/blue] 얻습니다.",
   "MAZALETHS_GIFT.title": "마잘레스의 선물",
+  "MOCK_DISCARD_AND_ADD_SHIVS_POTION.title": "가짜 버리기 후 단도 추가 포션",
   "OROBIC_ACID.description": "무작위 공격, 스킬, 파워 카드를 [gold]손[/gold]으로 가져옵니다. 이번 턴 동안 그 카드들을 비용 없이 사용할 수 있습니다.",
   "OROBIC_ACID.title": "오로바스산",
   "POISON_POTION.description": "[gold]중독[/gold]을 [blue]{PoisonPower}[/blue] 부여합니다.",

@@ -85,6 +85,7 @@
   "HOST.description": "ホストになります。スタンダード、デイリー、カスタムのいずれかを最大4人でプレイ可能です。",
   "HOST.title": "ホスト",
   "HP_AMOUNT": "HP: {amount}",
+  "INTERNAL_ERROR.description": "内部エラーが発生しました。この問題を開発者に報告してください。\n\n詳細: {info}",
   "INTERNAL_ERROR.title": "内部エラー！",
   "INVALID_SAVE_POPUP.description_progress": "進行状況のセーブファイルの読み込みに失敗しました。\n\n問題を修正するため、バグレポートの送信にご協力ください。",
   "INVALID_SAVE_POPUP.description_run": "このプレイのデータを読み込むことができません。\n\n問題を修正するため、バグレポートの送信にご協力ください。",

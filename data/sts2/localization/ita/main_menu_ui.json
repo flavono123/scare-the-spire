@@ -85,6 +85,8 @@
   "HOST.description": "Crea una partita standard, una sfida giornaliera o una partita personalizzata per un massimo di quattro giocatori.",
   "HOST.title": "Crea",
   "HP_AMOUNT": "PV: {amount}",
+  "INTERNAL_ERROR.description": "Si è verificato un errore interno. Ti invitiamo a segnalare il problema agli sviluppatori.\n\nMaggiori informazioni: {info}",
+  "INTERNAL_ERROR.title": "Errore interno!",
   "INVALID_SAVE_POPUP.description_progress": "Si è verificato un problema durante il caricamento dei progressi.\n\nSegnalaci l'errore e lo risolveremo.",
   "INVALID_SAVE_POPUP.description_run": "Impossibile caricare la partita.\n\nSegnalaci l'errore e lo risolveremo.",
   "INVALID_SAVE_POPUP.description_settings": "Si è verificato un problema durante il caricamento delle impostazioni.\n\nSegnalaci l'errore e lo risolveremo.",

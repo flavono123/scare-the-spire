@@ -380,7 +380,7 @@
   "VAKUU.epithet": "最初の悪魔",
   "VAKUU.loss": "{character}は[gold]ヴァクー[/gold]と不利な取引を結んだ。",
   "VAKUU.talk.ANY.0-0r.ancient": "スパイアで栄光をお求めですか？ あなたにいくつかご提案があるのですが……",
-  "VAKUU.talk.ANY.1-0r.ancient": "143回。 あなたがここへ来るのは143回目です。",
+  "VAKUU.talk.ANY.1-0r.ancient": "{Visits}回。 あなたがここへ来るのは{Visits}回目です。",
   "VAKUU.talk.ANY.2-0r.ancient": "お気づきですか？これが[sine]永遠に[/sine]終わらないことに。",
   "VAKUU.talk.DEFECT.0-0.ancient": "壊れたお方、私があなたを[sine]完璧[/sine]にしてさしあげましょう。",
   "VAKUU.talk.DEFECT.1-0r.ancient": "仲間の機械があなたの死を望んでいること、奇妙だとは思いませんか？",

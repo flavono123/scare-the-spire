@@ -216,7 +216,7 @@
   "ENDLESS_CONVEYOR.pages.LEAVE.description": "Twój głód jest już zaspokojony, więc ruszasz dalej w drogę.",
   "ENDLESS_CONVEYOR.pages.OBSERVE_CHEF.description": "Zachowujesz dystans, stojąc w mroku przy wejściu restauracji.\n\n[orange]Kucharz[/orange], niewzruszony, pracuje dalej. Jego zachowanie i dyscyplina inspiruje cię do zredukowania niepotrzebnych ruchów i emocji w walce.",
   "ENDLESS_CONVEYOR.title": "Niekończąca się uczta",
-  "ERROR.description": "Znaleziono błąd! Prosimy o zgłoszenie go, naciskając na przycisk „Opinia” w ustawieniach.",
+  "ERROR.description": "Znaleziono błąd! Aby go zgłosić, naciśnij przycisk „Opinia” w ustawieniach.",
   "ERROR.title": "Zablokowane",
   "FAKE_MERCHANT.loss": "{character} {characterGender:choose(masculine|feminine|neutral):poznał|poznała|poznał} gniew [gold]Handlarza???[/gold]",
   "FAKE_MERCHANT.pages.INITIAL.description": "Handlarz???",

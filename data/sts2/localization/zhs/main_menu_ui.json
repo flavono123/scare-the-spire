@@ -85,6 +85,8 @@
   "HOST.description": "创建最多 4 人的标准、每日或自定义游戏。",
   "HOST.title": "创建",
   "HP_AMOUNT": "生命值：{amount}",
+  "INTERNAL_ERROR.description": "发生了内部错误。请将这个问题汇报给开发者。\n\n更多信息：{info}",
+  "INTERNAL_ERROR.title": "内部错误！",
   "INVALID_SAVE_POPUP.description_progress": "加载存档文件时出现问题。\n\n请务必向我们提交一份Bug报告，以便我们修复此问题。",
   "INVALID_SAVE_POPUP.description_run": "无法加载这局游戏。\n\n请务必向我们提交一份Bug报告，以便我们修复此问题。",
   "INVALID_SAVE_POPUP.description_settings": "加载设置文件时出现问题。\n\n请务必向我们提交一份Bug报告，以便我们修复此问题。",

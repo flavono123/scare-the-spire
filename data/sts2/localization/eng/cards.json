@@ -907,7 +907,7 @@
   "ROYAL_GAMBLE.title": "Royal Gamble",
   "RUPTURE.description": "Whenever you lose HP on your turn, gain {StrengthPower:diff()} [gold]Strength[/gold].",
   "RUPTURE.title": "Rupture",
-  "SACRIFICE.description": "If [gold]Osty[/gold] is alive, he dies and you gain [gold]Block[/gold] equal to double his Max HP.",
+  "SACRIFICE.description": "If [gold]Osty[/gold] is alive, he dies and you gain [gold]Block[/gold] equal to double his Max HP.{InCombat:\n(Gain {IsOstyAlive:{CalculatedBlock:diff()}|0} [gold]Block[/gold])|}",
   "SACRIFICE.title": "Sacrifice",
   "SALVO.description": "Deal {Damage:diff()} damage.\n[gold]Retain[/gold] your [gold]Hand[/gold] this turn.",
   "SALVO.title": "Salvo",

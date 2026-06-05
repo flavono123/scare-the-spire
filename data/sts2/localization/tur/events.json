@@ -174,7 +174,7 @@
   "DOORS_OF_LIGHT_AND_DARK.pages.LIGHT.description": "[sine][gold]Işığın içine doğru...[/gold][/sine]\n\n[jitter]Işık kör ediyor!![/jitter] Ama aynı zamanda seni [gold]güçlendiriyor[/gold].\n\nYeniden [blue]Dip Rıhtımlar[/blue]’dasın.\nNasıl oldu bu? Hı?..",
   "DOORS_OF_LIGHT_AND_DARK.title": "Karanlığın ve Aydınlığın Kapıları",
   "DROWNING_BEACON.loss": "{character}, [gold]{event}[/gold] tarafından kör edildi.",
-  "DROWNING_BEACON.pages.BOTTLE.description": "Yakındaki bir şişeyi kullanarak [aqua]parlayan sıvıyı[/aqua] sakince toplarsın. Bu sırada deniz feneri ise huzur içinde çamurun içine gömülür.\n\nNeyse ki içerisinde değildin.",
+  "DROWNING_BEACON.pages.BOTTLE.description": "Yakındaki bir şişeyi kullanarak [aqua]parlayan sıvıyı[/aqua] sakince toplarsın. Bu sırada deniz feneri ise huzur içinde çamurun içine gömülür.\n\nNeyse ki içinde değildin.",
   "DROWNING_BEACON.pages.CLIMB.description": "Deniz fenerinin durmaksızın batışı seni tedirgin ederken tepesine tırmanırsın.\n\n[gold]Fener odasına[/gold] ulaştığında, merceği sökmeye başlarsın. Bu sırada [purple]anti-ışık[/purple] [jitter][red]yaşama gücünü emip tüketir[/red][/jitter]!\n\nNihayet onu zorla çıkarırsın; deniz feneri batmayı bırakır.",
   "DROWNING_BEACON.pages.INITIAL.description": "Kayalar ve durgun sulardan oluşan bir düş manzarasını aşarak ilerler, [sine]batmakta olan bir deniz feneriyle[/sine] yüz yüze gelirsin. Fener, [purple]anti-ışık[/purple] saçmaktadır.\n\nBurada birikmiş olan [aqua][sine]tekinsizce parlayan suyu[/sine][/aqua] şişeye doldurabilirsin ya da harap yapıya tırmanıp [gold]merceği[/gold] ele geçirebilirsin.",
   "DROWNING_BEACON.pages.INITIAL.options.BOTTLE.description": "[aqua]{Potion}[/aqua] elde et.",
