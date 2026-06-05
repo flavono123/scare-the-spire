@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import fs from "fs/promises";
 import path from "path";
 import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches } from "@/lib/data";
-import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients } from "@/lib/codex-data";
+import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs } from "@/lib/codex-data";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { readGameLocalizationTable, type GameLocalizationTable } from "@/lib/game-localization";
 import { loadAllEntities } from "@/lib/load-all-entities";
@@ -146,11 +146,6 @@ const PATCH_ENTITY_ALIASES_EN: Record<string, string[]> = {
   ASSASSIN_RUBY_RAIDER: ["Ruby Raider Assassin"],
   GREMLIN_MERC: ["Gremlin Mercenary"],
 };
-
-interface PatchEpoch {
-  id: string;
-  title: string;
-}
 
 const PATCH_EPOCH_LABEL_OVERRIDES: Record<string, {
   nameKo: string;
@@ -762,8 +757,7 @@ export async function PatchDetailPage({
   gameLocale: GameLocale;
 }) {
   const copy = PATCH_COPY[serviceLocale];
-  const epochsDir = path.join(process.cwd(), "public/images/sts2/epochs");
-  const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, korEpochData, engEpochData, gameEpochs, epochImageFiles, gameUi, gameKeywordLabels, gameHeadingLabels] = await Promise.all([
+  const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels] = await Promise.all([
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
@@ -776,13 +770,7 @@ export async function PatchDetailPage({
     getCodexMonsters({ gameLocale }),
     getCodexEncounters({ gameLocale }),
     getCodexAncients({ gameLocale }),
-    fs.readFile(path.join(process.cwd(), "data/sts2/kor/epochs.json"), "utf-8").then((raw) => JSON.parse(raw) as PatchEpoch[]),
-    fs.readFile(path.join(process.cwd(), "data/sts2/eng/epochs.json"), "utf-8").then((raw) => JSON.parse(raw) as PatchEpoch[]),
-    readGameLocalizationTable(gameLocale, "epochs"),
-    fs.readdir(epochsDir).then(
-      (files) => new Set(files.filter((file) => file.endsWith(".webp")).map((file) => file.replace(".webp", ""))),
-      () => new Set<string>(),
-    ),
+    getCodexEpochs({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
     getPatchGameKeywordLabels(gameLocale),
     getPatchGameHeadingLabels(gameLocale),
@@ -814,7 +802,6 @@ export async function PatchDetailPage({
       else ancientOwnersByRelicId.set(relicId, [ancient]);
     }
   }
-  const engEpochById = new Map(engEpochData.map((epoch) => [epoch.id, epoch]));
   const friendshipLabel = codexCards.find((card) => card.id === "FRIENDSHIP")?.name;
 
   // Build entity info for the renderer (cards + relics + potions)
@@ -926,27 +913,28 @@ export async function PatchDetailPage({
       type: "ancient" as const,
       ancientData: a,
     })),
-    ...korEpochData.map((e) => {
+    ...codexEpochs.map((e) => {
       const idLower = e.id.toLowerCase();
       const override = PATCH_EPOCH_LABEL_OVERRIDES[e.id];
-      const selectedEpochName = gameEpochs[`${e.id}.title`]
-        ?? (gameLocale === "kor" ? e.title : engEpochById.get(e.id)?.title ?? e.title);
+      const selectedEpochName = e.name;
       const selectedName = override ? friendshipLabel ?? selectedEpochName : selectedEpochName;
+      const nameEn = override?.nameEn ?? e.nameEn;
       return {
         id: e.id,
-        nameEn: override?.nameEn ?? engEpochById.get(e.id)?.title ?? e.title,
-        nameKo: patchDisplayName(selectedName, override?.nameEn ?? engEpochById.get(e.id)?.title ?? e.title, gameLocale),
+        nameEn,
+        nameKo: patchDisplayName(selectedName, nameEn, gameLocale),
         aliasesEn: override?.aliasesEn,
         aliasesKo: [
           override?.nameKo,
-          e.title,
+          e.name,
           selectedEpochName,
           ...(override?.aliasesKo ?? []),
         ].filter((alias): alias is string => Boolean(alias)),
-        imageUrl: epochImageFiles.has(idLower) ? `/images/sts2/epochs/${idLower}.webp` : null,
+        imageUrl: e.imageUrl,
         href: `/compendium/epochs?epoch=${idLower}`,
-        color: "epoch",
+        color: e.affiliation,
         type: "epoch" as const,
+        epochData: e,
       };
     }),
   ];
