@@ -230,7 +230,8 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
   const fnMatch = body.match(/^(\w*):(\w+)\(([^)]*)\)$/);
   if (fnMatch) {
     const [, name, fn, argRaw] = fnMatch;
-    const v = name ? looksLike(name, vars) : undefined;
+    const effectiveName = name || selfName || "";
+    const v = effectiveName ? looksLike(effectiveName, vars) : undefined;
     const trimmedArg = argRaw.trim();
     const parsedArg = trimmedArg === "" ? null : Number(trimmedArg);
     const numericArg = parsedArg !== null && Number.isFinite(parsedArg) ? parsedArg : null;
@@ -303,6 +304,16 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
     return "X";
   }
 
+  // {InCombat:a} — upstream sometimes omits the empty false branch marker.
+  // The compendium renders out-of-combat descriptions, so missing data hides it.
+  const optionalRuntimeMatch = body.match(/^(InCombat):([\s\S]*)$/);
+  if (optionalRuntimeMatch) {
+    const [, name, rest] = optionalRuntimeMatch;
+    const opts = splitBranches(rest);
+    const v = looksLike(name, vars);
+    return renderTemplate(v ? (opts[0] ?? "") : (opts[1] ?? ""), vars, name);
+  }
+
   // {Var:a|b|...} — generic two-branch fallback for BoolVar / IntVar
   // shorthand (e.g. {OnPlayer:내 턴|대상의 턴}). Picks branch 0 when the
   // value is truthy or absent, branch 1 when falsy.
@@ -315,15 +326,6 @@ function renderBody(body: string, vars: Vars, selfName: string | null): string {
       if (v === undefined || v) return renderTemplate(opts[0], vars, name);
       return renderTemplate(opts[1], vars, name);
     }
-  }
-
-  // {InCombat:a} — upstream sometimes omits the empty false branch marker.
-  // The compendium renders out-of-combat descriptions, so missing data hides it.
-  const optionalRuntimeMatch = body.match(/^(InCombat):([\s\S]*)$/);
-  if (optionalRuntimeMatch) {
-    const [, name, rest] = optionalRuntimeMatch;
-    const v = looksLike(name, vars);
-    return renderTemplate(v ? rest : "", vars, name);
   }
 
   // Bare {Var}
