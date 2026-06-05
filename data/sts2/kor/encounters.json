@@ -681,7 +681,7 @@
   },
   {
     "id": "LIVING_FOG_NORMAL",
-    "name": "사악한 가스",
+    "name": "살아있는 안개",
     "room_type": "Monster",
     "is_weak": false,
     "act": "Underdocks",

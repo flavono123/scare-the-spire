@@ -149,9 +149,14 @@ def build_entries(
             for cls in meta["monster_classes"]:
                 mid = snake_case_upper(cls)
                 monsters.append({"id": mid, "name": mon_name_by_id.get(mid) or mid})
-            out.append({
+            entry = {
                 "id": ent_id,
                 "name": lnode.get("title") or old.get("name"),
+            }
+            for lifecycle_key in ("introducedInPatch", "deprecated", "deprecatedInPatch"):
+                if old.get(lifecycle_key) is not None:
+                    entry[lifecycle_key] = old[lifecycle_key]
+            entry.update({
                 "room_type": meta["room_type"],
                 "is_weak": meta["is_weak"],
                 "act": act_label if act_label is not None else old.get("act"),
@@ -159,6 +164,7 @@ def build_entries(
                 "monsters": monsters if monsters else old.get("monsters", []),
                 "loss_text": lnode.get("loss") or old.get("loss_text"),
             })
+            out.append(entry)
 
         if ent_id not in old_kor_by_id:
             added.append(ent_id)
