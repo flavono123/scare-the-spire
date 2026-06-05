@@ -1155,25 +1155,27 @@ function MoveSequenceRail({
             {effectNote}
           </div>
         )}
-        <div className="flex min-w-0 flex-nowrap items-center gap-1.5 overflow-x-auto pb-1">
-          {moves.map((move, index) => (
-            <span key={move.id} className="flex shrink-0 items-center gap-1.5">
-              <MovePanel
-                move={move}
-                monster={sequenceMonster}
-                serviceLocale={serviceLocale}
-                hpOverride={sequence.hpOverride}
-                initialPowerApplications={sequence.initialPowerApplications}
-              />
-              <Image
-                src={ARROW_ICON}
-                alt=""
-                width={16}
-                height={16}
-                className={`h-4 w-4 object-contain ${index === moves.length - 1 ? "opacity-90" : ""}`}
-              />
-            </span>
-          ))}
+        <div className="min-w-0 overflow-x-auto pb-1">
+          <div className="mx-auto flex w-max flex-nowrap items-center gap-1.5">
+            {moves.map((move, index) => (
+              <span key={move.id} className="flex shrink-0 items-center gap-1.5">
+                <MovePanel
+                  move={move}
+                  monster={sequenceMonster}
+                  serviceLocale={serviceLocale}
+                  hpOverride={sequence.hpOverride}
+                  initialPowerApplications={sequence.initialPowerApplications}
+                />
+                <Image
+                  src={ARROW_ICON}
+                  alt=""
+                  width={16}
+                  height={16}
+                  className={`h-4 w-4 object-contain ${index === moves.length - 1 ? "opacity-90" : ""}`}
+                />
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </div>
