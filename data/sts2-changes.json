@@ -4434,12 +4434,6 @@
         "before": 2,
         "after": 3
       }
-    ],
-    "relatedEntities": [
-      {
-        "type": "monster",
-        "id": "OSTY"
-      }
     ]
   },
   {
@@ -4493,12 +4487,6 @@
         "after": "Affected",
         "afterKo": "적용",
         "diffType": "boolean"
-      }
-    ],
-    "relatedEntities": [
-      {
-        "type": "monster",
-        "id": "OSTY"
       }
     ]
   },
