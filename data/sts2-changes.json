@@ -4287,5 +4287,1386 @@
         "after": "매 턴 시작 시, {Energy:energyIcons()}를 얻습니다. [blue]{CombatCount}[/blue]번의 전투 후에 불이 꺼집니다. [gold]휴식 장소[/gold]에서 다시 [gold]불을 붙일[/gold] 수 있습니다."
       }
     ]
+  },
+  {
+    "id": "juggernaut-v107-buff",
+    "entityType": "card",
+    "entityId": "JUGGERNAUT",
+    "patch": "v0.107.0",
+    "date": "2026-06-04",
+    "character": "ironclad",
+    "summary": "Juggernaut damage increased from 5(7) to 6(8).",
+    "summaryKo": "절대적인 힘의 피해가 5(7)에서 6(8)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "damage",
+        "displayName": "Damage",
+        "displayNameKo": "피해",
+        "before": "5(7)",
+        "after": "6(8)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 얻을 때마다, 무작위 적에게 피해를 5 줍니다.",
+        "after": "[gold]방어도[/gold]를 얻을 때마다, 무작위 적에게 피해를 6 줍니다."
+      },
+      {
+        "field": "vars.JuggernautPower",
+        "before": 5,
+        "after": 6
+      },
+      {
+        "field": "vars.Juggernaut",
+        "before": 5,
+        "after": 6
+      }
+    ]
+  },
+  {
+    "id": "monarchs-gaze-v107-buff",
+    "entityType": "card",
+    "entityId": "MONARCHS_GAZE",
+    "patch": "v0.107.0",
+    "date": "2026-06-04",
+    "character": "regent",
+    "summary": "Monarch's Gaze cost decreased from 3(2) to 2(1).",
+    "summaryKo": "군주의 시선 비용이 3(2)에서 2(1)로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "cost",
+        "displayName": "Cost",
+        "displayNameKo": "비용",
+        "before": "3(2)",
+        "after": "2(1)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 3,
+        "after": 2
+      },
+      {
+        "field": "upgrade.cost",
+        "before": 2,
+        "after": 1
+      }
+    ]
+  },
+  {
+    "id": "reflect-v107-nerf",
+    "entityType": "card",
+    "entityId": "REFLECT",
+    "patch": "v0.107.0",
+    "date": "2026-06-04",
+    "character": "regent",
+    "summary": "Reflect Block decreased from 16(20) to 15(20).",
+    "summaryKo": "반사의 방어도가 16(20)에서 15(20)로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "block",
+        "displayName": "Block",
+        "displayNameKo": "방어도",
+        "before": "16(20)",
+        "after": "15(20)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 16 얻습니다.\n이번 턴에 막은 공격 피해는 공격한 적에게 반사됩니다.",
+        "after": "[gold]방어도[/gold]를 15 얻습니다.\n이번 턴에 막은 공격 피해는 공격한 적에게 반사됩니다."
+      },
+      {
+        "field": "block",
+        "before": 16,
+        "after": 15
+      },
+      {
+        "field": "vars.Block",
+        "before": 16,
+        "after": 15
+      },
+      {
+        "field": "upgrade.block",
+        "before": "+4",
+        "after": "+5"
+      }
+    ]
+  },
+  {
+    "id": "sic-em-v107-buff",
+    "entityType": "card",
+    "entityId": "SIC_EM",
+    "patch": "v0.107.0",
+    "date": "2026-06-04",
+    "character": "necrobinder",
+    "summary": "Sic 'Em Summon increased from 2(3) to 3(4).",
+    "summaryKo": "덮쳐!의 소환 수치가 2(3)에서 3(4)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "summon",
+        "displayName": "Summon",
+        "displayNameKo": "소환",
+        "before": "2(3)",
+        "after": "3(4)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]골골이[/gold]가 피해를 5 줍니다.\n이번 턴에 [gold]골골이[/gold]가 이 적을 공격할 때마다, [gold]소환[/gold] 2.",
+        "after": "[gold]골골이[/gold]가 피해를 5 줍니다.\n이번 턴에 [gold]골골이[/gold]가 이 적을 공격할 때마다, [gold]소환[/gold] 3."
+      },
+      {
+        "field": "vars.SicEmPower",
+        "before": 2,
+        "after": 3
+      },
+      {
+        "field": "vars.SicEm",
+        "before": 2,
+        "after": 3
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "OSTY"
+      }
+    ]
+  },
+  {
+    "id": "the-scythe-v107-buff",
+    "entityType": "card",
+    "entityId": "THE_SCYTHE",
+    "patch": "v0.107.0",
+    "date": "2026-06-04",
+    "character": "necrobinder",
+    "summary": "The Scythe permanent damage increase rose from 3(4) to 4(5).",
+    "summaryKo": "사신의 낫의 영구 피해 증가량이 3(4)에서 4(5)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "permanentIncrease",
+        "displayName": "Permanent Increase",
+        "displayNameKo": "영구 피해 증가",
+        "before": "3(4)",
+        "after": "4(5)",
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 13 줍니다.\n이 카드의 피해량이 영구적으로 3 증가합니다.",
+        "after": "피해를 13 줍니다.\n이 카드의 피해량이 영구적으로 4 증가합니다."
+      },
+      {
+        "field": "vars.Increase",
+        "before": 3,
+        "after": 4
+      }
+    ]
+  },
+  {
+    "id": "the-boot-v107-buff",
+    "entityType": "relic",
+    "entityId": "THE_BOOT",
+    "patch": "v0.107.0",
+    "date": "2026-06-04",
+    "character": null,
+    "summary": "The Boot now also raises Osty's low unblocked attack damage.",
+    "summaryKo": "장화가 이제 골골이의 낮은 막히지 않은 공격 피해에도 적용됩니다.",
+    "diffs": [
+      {
+        "attribute": "ostyAttacks",
+        "displayName": "Osty Attacks",
+        "displayNameKo": "골골이 공격",
+        "before": "Not affected",
+        "beforeKo": "미적용",
+        "after": "Affected",
+        "afterKo": "적용",
+        "diffType": "boolean"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "OSTY"
+      }
+    ]
+  },
+  {
+    "id": "aeonglass-v107-change",
+    "entityType": "monster",
+    "entityId": "AEONGLASS",
+    "patch": "v0.107.0",
+    "date": "2026-06-04",
+    "character": null,
+    "summary": "Aeonglass no longer applies Ebb on Ebb, and its Block moved from Increasing Intensity to Ebb.",
+    "summaryKo": "영겁의 모래시계는 감쇠 행동으로 더 이상 감쇠를 부여하지 않으며, 방어도 획득이 강도 증가에서 감쇠로 옮겨졌습니다.",
+    "diffs": [
+      {
+        "attribute": "ebbDebuff",
+        "displayName": "Ebb Debuff",
+        "displayNameKo": "감쇠 디버프",
+        "before": "Applied by Ebb",
+        "beforeKo": "감쇠 행동에서 적용",
+        "after": "Removed",
+        "afterKo": "제거",
+        "diffType": "text"
+      },
+      {
+        "attribute": "blockMove",
+        "displayName": "Block Move",
+        "displayNameKo": "방어도 행동",
+        "before": "Increasing Intensity",
+        "beforeKo": "강도 증가",
+        "after": "Ebb",
+        "afterKo": "감쇠",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "blockValues",
+        "before": {
+          "IncreasingIntensity": {
+            "normal": 33,
+            "ascension": null
+          }
+        },
+        "after": {
+          "Ebb": {
+            "normal": 33,
+            "ascension": null
+          }
+        }
+      },
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "EBB",
+            "name": "감쇠",
+            "nameEn": "Ebb",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Ebb",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "EBB",
+                "powerName": "감쇠",
+                "powerNameEn": "Ebb",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/ebb_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "EYE_LASERS",
+            "name": "눈 레이저",
+            "nameEn": "Eye Lasers",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "EyeLasers",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "INCREASING_INTENSITY",
+            "name": "강도 증가",
+            "nameEn": "Increasing Intensity",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff",
+              "defense"
+            ],
+            "intents": [
+              "StatusIntent",
+              "BuffIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "StatusIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": [
+              {
+                "cardId": "WITHER",
+                "cardName": "침체",
+                "cardNameEn": "Wither",
+                "cardType": "상태이상",
+                "cardRarity": "상태이상",
+                "cardColor": "status",
+                "applicationKind": "upgrade",
+                "amount": {
+                  "normal": 1,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/cards/wither.webp"
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "EBB",
+            "name": "감쇠",
+            "nameEn": "Ebb",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Ebb",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "EYE_LASERS",
+            "name": "눈 레이저",
+            "nameEn": "Eye Lasers",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "EyeLasers",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "INCREASING_INTENSITY",
+            "name": "강도 증가",
+            "nameEn": "Increasing Intensity",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "StatusIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "StatusIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": [
+              {
+                "cardId": "WITHER",
+                "cardName": "침체",
+                "cardNameEn": "Wither",
+                "cardType": "상태이상",
+                "cardRarity": "상태이상",
+                "cardColor": "status",
+                "applicationKind": "upgrade",
+                "amount": {
+                  "normal": 1,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/cards/wither.webp"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "EBB",
+            "name": "감쇠",
+            "nameEn": "Ebb",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "debuff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DebuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Ebb",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DebuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "EBB",
+                "powerName": "감쇠",
+                "powerNameEn": "Ebb",
+                "powerType": "Debuff",
+                "target": "player",
+                "amount": {
+                  "normal": 3,
+                  "ascension": null
+                },
+                "imageUrl": "/images/sts2/powers/ebb_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "EYE_LASERS",
+            "name": "눈 레이저",
+            "nameEn": "Eye Lasers",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "EyeLasers",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "INCREASING_INTENSITY",
+            "name": "강도 증가",
+            "nameEn": "Increasing Intensity",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff",
+              "defense"
+            ],
+            "intents": [
+              "StatusIntent",
+              "BuffIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "StatusIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": [
+              {
+                "cardId": "WITHER",
+                "cardName": "침체",
+                "cardNameEn": "Wither",
+                "cardType": "상태이상",
+                "cardRarity": "상태이상",
+                "cardColor": "status",
+                "applicationKind": "upgrade",
+                "amount": {
+                  "normal": 1,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/cards/wither.webp"
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "id": "EBB",
+            "name": "감쇠",
+            "nameEn": "Ebb",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "defense"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "DefendIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Ebb",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "DefendIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "EYE_LASERS",
+            "name": "눈 레이저",
+            "nameEn": "Eye Lasers",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "EyeLasers",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "INCREASING_INTENSITY",
+            "name": "강도 증가",
+            "nameEn": "Increasing Intensity",
+            "kind": "move",
+            "actionTypes": [
+              "debuff",
+              "buff"
+            ],
+            "intents": [
+              "StatusIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "StatusIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": null,
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": [
+              {
+                "cardId": "WITHER",
+                "cardName": "침체",
+                "cardNameEn": "Wither",
+                "cardType": "상태이상",
+                "cardRarity": "상태이상",
+                "cardColor": "status",
+                "applicationKind": "upgrade",
+                "amount": {
+                  "normal": 1,
+                  "ascension": 2
+                },
+                "imageUrl": "/images/sts2/cards/wither.webp"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "skulking-colony-v107-buff",
+    "entityType": "monster",
+    "entityId": "SKULKING_COLONY",
+    "patch": "v0.107.0",
+    "date": "2026-06-04",
+    "character": null,
+    "summary": "Skulking Colony gains one more Strength on high Ascension during Inertia.",
+    "summaryKo": "잠행 군체는 높은 승천의 관성 행동에서 힘을 1 더 얻습니다.",
+    "diffs": [
+      {
+        "attribute": "inertiaStrengthAscension",
+        "displayName": "Inertia Strength (High Ascension)",
+        "displayNameKo": "관성 힘 (높은 승천)",
+        "before": 3,
+        "after": 4,
+        "diffType": "number"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "moves",
+        "before": [
+          {
+            "id": "ZOOM",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ZOOM_MOVE_2",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "INERTIA",
+            "name": "관성",
+            "nameEn": "Inertia",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Inertia",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "PIERCING_STABS",
+            "name": "꿰뚫는 찌르기",
+            "nameEn": "Piercing Stabs",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "PiercingStabs",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "ZOOM",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ZOOM_MOVE_2",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "INERTIA",
+            "name": "관성",
+            "nameEn": "Inertia",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Inertia",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 4
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "PIERCING_STABS",
+            "name": "꿰뚫는 찌르기",
+            "nameEn": "Piercing Stabs",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "PiercingStabs",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      },
+      {
+        "field": "bestiaryMoves",
+        "before": [
+          {
+            "id": "ZOOM",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ZOOM_MOVE_2",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "INERTIA",
+            "name": "관성",
+            "nameEn": "Inertia",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Inertia",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 3
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "PIERCING_STABS",
+            "name": "꿰뚫는 찌르기",
+            "nameEn": "Piercing Stabs",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "PiercingStabs",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ],
+        "after": [
+          {
+            "id": "ZOOM",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "ZOOM_MOVE_2",
+            "name": "급가속",
+            "nameEn": "Zoom",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "SingleAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Zoom",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "INERTIA",
+            "name": "관성",
+            "nameEn": "Inertia",
+            "kind": "move",
+            "actionTypes": [
+              "attack",
+              "buff"
+            ],
+            "intents": [
+              "SingleAttackIntent",
+              "BuffIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "SingleAttackIntent",
+                "damageKey": "Inertia",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 1,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              },
+              {
+                "type": "BuffIntent",
+                "damageKey": null,
+                "blockKey": null,
+                "repeat": null,
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [
+              {
+                "powerId": "STRENGTH",
+                "powerName": "힘",
+                "powerNameEn": "Strength",
+                "powerType": "Buff",
+                "target": "self",
+                "amount": {
+                  "normal": 2,
+                  "ascension": 4
+                },
+                "imageUrl": "/images/sts2/powers/strength_power.webp"
+              }
+            ],
+            "cardApplications": []
+          },
+          {
+            "id": "PIERCING_STABS",
+            "name": "꿰뚫는 찌르기",
+            "nameEn": "Piercing Stabs",
+            "kind": "move",
+            "actionTypes": [
+              "attack"
+            ],
+            "intents": [
+              "MultiAttackIntent"
+            ],
+            "intentDetails": [
+              {
+                "type": "MultiAttackIntent",
+                "damageKey": "PiercingStabs",
+                "blockKey": null,
+                "repeat": {
+                  "normal": 2,
+                  "ascension": null
+                },
+                "repeatExpression": null
+              }
+            ],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "hurt",
+            "name": "피격",
+            "nameEn": "Hurt",
+            "kind": "animation",
+            "animationId": "hurt",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          },
+          {
+            "id": "die",
+            "name": "죽음",
+            "nameEn": "Die",
+            "kind": "animation",
+            "animationId": "die",
+            "actionTypes": [],
+            "intents": [],
+            "intentDetails": [],
+            "powerApplications": [],
+            "cardApplications": []
+          }
+        ]
+      }
+    ]
   }
 ]
