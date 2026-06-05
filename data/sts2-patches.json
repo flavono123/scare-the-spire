@@ -381,5 +381,18 @@
       { "type": "event", "id": "INFESTED_AUTOMATON" },
       { "type": "event", "id": "DENSE_VEGETATION" }
     ]
+  },
+  {
+    "id": "v0.107.0",
+    "version": "0.107.0",
+    "date": "2026-06-04",
+    "title": "Beta Patch Notes - v0.107.0",
+    "titleKo": "베타 패치 노트 - v0.107.0",
+    "type": "beta",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/714529243732640389",
+    "status": "building",
+    "summary": "Rich patch notes are being prepared from the Steam source.",
+    "summaryKo": "Steam 원문을 바탕으로 슬서운변경을 작성 중입니다.",
+    "hasBalanceChanges": true
   }
 ]
