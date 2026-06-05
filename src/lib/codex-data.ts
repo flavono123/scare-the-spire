@@ -1276,6 +1276,7 @@ function mapEpoch(
   unlockNames: EpochUnlockNameMaps,
   englishUnlockNames: EpochUnlockNameMaps,
   imageFiles: Set<string>,
+  betaImageFiles: Set<string>,
 ): CodexEpoch {
   const group = epochEraGroup(kor.era);
   const meta = eraMeta.get(group);
@@ -1306,6 +1307,7 @@ function mapEpoch(
     unlocksPotions: kor.unlocks_potions ?? [],
     expandsTimeline: kor.expands_timeline ?? [],
     imageUrl: imageFiles.has(imageKey) ? `/images/sts2/epochs/${imageKey}.webp` : null,
+    betaImageUrl: betaImageFiles.has(imageKey) ? `/images/sts2/epochs-beta/${imageKey}.webp` : null,
     introducedInPatch: kor.introducedInPatch,
     deprecated: kor.deprecated,
     deprecatedInPatch: kor.deprecatedInPatch,
@@ -1447,6 +1449,7 @@ export async function getCodexEpochs(opts?: { gameLocale?: GameLocale }): Promis
     eventText,
     englishEventText,
     imageFiles,
+    betaImageFiles,
   ] = await Promise.all([
     readJson<RawEpoch[]>("kor/epochs.json"),
     readJson<RawEpoch[]>("eng/epochs.json"),
@@ -1463,6 +1466,7 @@ export async function getCodexEpochs(opts?: { gameLocale?: GameLocale }): Promis
     readGameLocalizationTable(gameLocale, "events"),
     readGameLocalizationTable("eng", "events"),
     scanImageSlugs("epochs"),
+    scanImageSlugs("epochs-beta"),
   ]);
 
   const engById = new Map(engEpochs.map((epoch) => [epoch.id, epoch]));
@@ -1515,7 +1519,7 @@ export async function getCodexEpochs(opts?: { gameLocale?: GameLocale }): Promis
         englishEraText,
         gameLocale,
       );
-      return mapEpoch(kor, eng, selected, eraMeta, unlockNames, englishUnlockNames, imageFiles);
+      return mapEpoch(kor, eng, selected, eraMeta, unlockNames, englishUnlockNames, imageFiles, betaImageFiles);
     })
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }

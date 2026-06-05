@@ -623,6 +623,7 @@ export interface CodexEpoch extends CodexLifecycle {
   unlocksPotions: string[];
   expandsTimeline: string[];
   imageUrl: string | null;
+  betaImageUrl: string | null;
 }
 
 export const EPOCH_AFFILIATION_ORDER: EpochAffiliation[] = [

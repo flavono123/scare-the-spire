@@ -51,6 +51,10 @@ import { EpochDetail } from "./epoch-detail";
 import { VersionSelector } from "./version-selector";
 import { EVENT_FILTER_ICON, getCharacterTokenIcon } from "./codex-filter-assets";
 import {
+  notifyCodexUrlChange,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
+import {
   getEpochAffiliationColor,
   getEpochAffiliationLabel,
   getEpochUnlockConditionLabel,
@@ -90,6 +94,12 @@ interface EpochLibraryProps {
   versions?: string[];
   currentVersion?: string;
   entities?: EntityInfo[];
+  initialShowBeta?: boolean;
+}
+
+function isBetaArtParamEnabled(value: string | null): boolean {
+  const normalized = value?.toLowerCase();
+  return normalized === "true" || normalized === "1" || normalized === "yes";
 }
 
 export function EpochLibrary({
@@ -104,6 +114,7 @@ export function EpochLibrary({
   versions,
   currentVersion,
   entities,
+  initialShowBeta = false,
 }: EpochLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
@@ -115,11 +126,15 @@ export function EpochLibrary({
   const [unlockConditionSortDir, setUnlockConditionSortDir] = useState<FilterSortDir>("asc");
   const [unlockRewardSortDir, setUnlockRewardSortDir] = useState<FilterSortDir>("asc");
   const [selectedEpoch, setSelectedEpoch] = useState<CodexEpoch | null>(null);
+  const [showBeta, setShowBeta] = useState(initialShowBeta);
   const [urlReady, setUrlReady] = useState(false);
+  const urlBetaArt = useHydrationSafeSearchParam("beta", initialShowBeta ? "true" : null);
+  const activeShowBeta = urlBetaArt !== null ? isBetaArtParamEnabled(urlBetaArt) : showBeta;
   const versionedEpochs = useMemo(() => {
     if (!currentVersion || !selectedVersion) return epochs;
     return withEntityLifecycleForVersion(epochs, selectedVersion, { changes, entityType: "epoch" });
   }, [epochs, changes, currentVersion, selectedVersion]);
+  const hasBetaArt = versionedEpochs.some((epoch) => epoch.betaImageUrl);
 
   const selectEpoch = useCallback((epoch: CodexEpoch) => {
     setSelectedEpoch(epoch);
@@ -308,6 +323,20 @@ export function EpochLibrary({
     });
   }, []);
 
+  const setBetaArt = useCallback((next: boolean) => {
+    setShowBeta(next);
+    const url = new URL(window.location.href);
+    if (next) {
+      url.searchParams.set("beta", "true");
+    } else {
+      url.searchParams.delete("beta");
+    }
+    if (url.toString() !== window.location.href) {
+      window.history.pushState(null, "", url.toString());
+      notifyCodexUrlChange();
+    }
+  }, []);
+
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
   return (
@@ -375,6 +404,19 @@ export function EpochLibrary({
               })}
             </div>
           </FilterSection>
+
+          {hasBetaArt && (
+            <>
+              <div className="border-t border-white/10" />
+              <div className="flex flex-col gap-1">
+                <ToggleButton
+                  label={serviceText.cardsView.toggles.betaArt}
+                  active={activeShowBeta}
+                  onClick={() => setBetaArt(!activeShowBeta)}
+                />
+              </div>
+            </>
+          )}
         </>
       )}
     >
@@ -427,6 +469,7 @@ export function EpochLibrary({
                           epoch={epoch}
                           serviceLocale={serviceLocale}
                           messages={serviceText}
+                          showBeta={activeShowBeta}
                           onSelect={selectEpoch}
                         />
                       </div>
@@ -461,6 +504,8 @@ export function EpochLibrary({
               ancients={ancients}
               epochs={versionedEpochs}
               entities={entities}
+              initialShowBeta={activeShowBeta}
+              onShowBetaChange={setBetaArt}
               onClose={() => setSelectedEpoch(null)}
             />
           </div>
@@ -474,11 +519,13 @@ function EpochThumbnail({
   epoch,
   serviceLocale,
   messages,
+  showBeta,
   onSelect,
 }: {
   epoch: CodexEpoch;
   serviceLocale: ServiceLocale;
   messages: CodexServiceMessages;
+  showBeta: boolean;
   onSelect: (epoch: CodexEpoch) => void;
 }) {
   const eraLabel = formatEraLabel(epoch.eraName ?? epoch.eraGroup, epoch.eraYear, serviceLocale);
@@ -486,6 +533,7 @@ function EpochThumbnail({
   const rewardBadges = epoch.unlockRewards.filter((reward) => reward !== "none").slice(0, 1);
   const extraBadgeCount = Math.max(0, epoch.affiliations.length - affiliationBadges.length)
     + Math.max(0, epoch.unlockRewards.filter((reward) => reward !== "none").length - rewardBadges.length);
+  const imageUrl = showBeta && epoch.betaImageUrl ? epoch.betaImageUrl : epoch.imageUrl ?? epoch.betaImageUrl;
 
   return (
     <Link
@@ -499,10 +547,10 @@ function EpochThumbnail({
         epoch.deprecated ? "opacity-50 grayscale saturate-0" : ""
       }`}
     >
-      {epoch.imageUrl ? (
+      {imageUrl ? (
         <div className="absolute inset-0">
           <Image
-            src={epoch.imageUrl}
+            src={imageUrl}
             alt=""
             fill
             sizes="(max-width: 1280px) 100vw, 50vw"

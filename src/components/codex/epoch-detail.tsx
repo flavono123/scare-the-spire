@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -21,6 +21,8 @@ import type {
 import { DescriptionText } from "./codex-description";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { RichDescription } from "./rich-description";
+import { GameCheckboxToggle } from "./game-checkbox";
+import { notifyCodexUrlChange } from "./use-hydration-safe-search-param";
 import {
   getEpochAffiliationColor,
   getEpochAffiliationLabel,
@@ -100,6 +102,9 @@ interface EpochDetailProps {
   ancients?: CodexAncient[];
   epochs?: CodexEpoch[];
   entities?: EntityInfo[];
+  initialShowBeta?: boolean;
+  onShowBetaChange?: (showBeta: boolean) => void;
+  syncBetaSearchParam?: boolean;
   onClose?: () => void;
 }
 
@@ -114,11 +119,43 @@ export function EpochDetail({
   ancients = [],
   epochs = [],
   entities,
+  initialShowBeta = false,
+  onShowBetaChange,
+  syncBetaSearchParam = false,
   onClose,
 }: EpochDetailProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
   const detailLabels = getEpochDetailLabels(serviceLocale);
   const [commentCount, setCommentCount] = useState(0);
+  const [uncontrolledShowBeta, setUncontrolledShowBeta] = useState(() => initialShowBeta && Boolean(epoch.betaImageUrl));
+  const isShowBetaControlled = onShowBetaChange !== undefined;
+  const showBeta = isShowBetaControlled
+    ? initialShowBeta && Boolean(epoch.betaImageUrl)
+    : uncontrolledShowBeta;
+  const displayImageUrl = showBeta && epoch.betaImageUrl
+    ? epoch.betaImageUrl
+    : epoch.imageUrl ?? epoch.betaImageUrl;
+  const setShowBeta = useCallback((checked: boolean) => {
+    const next = checked && Boolean(epoch.betaImageUrl);
+    if (!isShowBetaControlled) setUncontrolledShowBeta(next);
+    onShowBetaChange?.(next);
+  }, [epoch.betaImageUrl, isShowBetaControlled, onShowBetaChange]);
+
+  useEffect(() => {
+    if (!syncBetaSearchParam) return;
+
+    const url = new URL(window.location.href);
+    if (showBeta) {
+      url.searchParams.set("beta", "true");
+    } else {
+      url.searchParams.delete("beta");
+    }
+
+    if (url.toString() !== window.location.href) {
+      window.history.replaceState(null, "", url.toString());
+      notifyCodexUrlChange();
+    }
+  }, [showBeta, syncBetaSearchParam]);
   const excludeSelf = useMemo(
     () => new Set([epoch.name, epoch.nameEn]),
     [epoch.name, epoch.nameEn],
@@ -187,15 +224,15 @@ export function EpochDetail({
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] lg:items-start">
-        <section className="flex min-h-[24rem] min-w-0 items-center justify-center py-2">
+        <section className="flex min-h-[24rem] min-w-0 flex-col items-center justify-center py-2">
           <div
             className="relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10"
             style={{ boxShadow: "inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.35)" }}
           >
             <div className="relative h-[36rem] w-full sm:h-auto sm:aspect-[16/10]">
-              {epoch.imageUrl ? (
+              {displayImageUrl ? (
                 <Image
-                  src={epoch.imageUrl}
+                  src={displayImageUrl}
                   alt={epoch.name}
                   fill
                   sizes="(max-width: 1024px) 100vw, 68vw"
@@ -236,6 +273,16 @@ export function EpochDetail({
               </div>
             </div>
           </div>
+          {epoch.betaImageUrl && (
+            <div className="mt-3 flex max-w-full justify-center">
+              <GameCheckboxToggle
+                checked={showBeta}
+                onCheckedChange={setShowBeta}
+                label={serviceText.cardsView.toggles.betaArt}
+                size="md"
+              />
+            </div>
+          )}
         </section>
 
         <aside className="flex flex-col gap-3">

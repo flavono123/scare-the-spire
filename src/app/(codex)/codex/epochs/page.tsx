@@ -21,6 +21,7 @@ import {
   firstRouteSearchParam,
   getCodexResourceOgMetadata,
 } from "@/lib/codex-resource-og";
+import { isBetaArtSearchParam } from "@/lib/codex-card-og";
 import { EpochLibrary } from "@/components/codex/epoch-library";
 
 export const dynamic = "force-static";
@@ -40,7 +41,11 @@ export async function generateMetadata({
   ]);
   const epoch = epochs ? findCodexResourceByRouteId(epochs, epochId) : undefined;
   if (epoch) {
-    return getCodexResourceOgMetadata(serviceLocale, gameUi.epochsTitle, epoch);
+    const useBetaArt = isBetaArtSearchParam(resolvedSearchParams.beta);
+    return getCodexResourceOgMetadata(serviceLocale, gameUi.epochsTitle, {
+      ...epoch,
+      imageUrl: useBetaArt ? epoch.betaImageUrl ?? epoch.imageUrl : epoch.imageUrl,
+    });
   }
   return getCodexMetadata(serviceLocale, gameUi.epochsTitle);
 }
@@ -53,6 +58,7 @@ export default async function CodexEpochsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
+  const initialShowBeta = isBetaArtSearchParam(resolvedSearchParams.beta);
   const [epochs, cards, relics, potions, ancients, patches, changes, versionDiffs, meta, entities, gameUi] = await Promise.all([
     getCodexEpochs({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
@@ -82,6 +88,7 @@ export default async function CodexEpochsPage({
         versions={versions}
         currentVersion={meta.version}
         entities={entities}
+        initialShowBeta={initialShowBeta}
       />
     </Suspense>
   );
