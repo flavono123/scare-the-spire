@@ -10,7 +10,7 @@
   {
     "id": "ENTANGLED",
     "name": "뒤엉킴",
-    "description": "비용이 [energy:1]만큼 증가합니다.",
+    "description": "비용이 X만큼 증가합니다.",
     "extra_card_text": "뒤엉킴",
     "is_stackable": false,
     "description_raw": "비용이 {Amount:energyIcons()}만큼 증가합니다."
@@ -18,8 +18,8 @@
   {
     "id": "GALVANIZED",
     "name": "전기 자극",
-    "description": "이 카드를 사용 시 피해를 [blue][Amount][/blue] 입습니다.",
-    "extra_card_text": "피해를 [Amount] 입습니다.",
+    "description": "이 카드를 사용 시 피해를 [blue]X[/blue] 입습니다.",
+    "extra_card_text": "피해를 {Amount} 입습니다.",
     "is_stackable": true,
     "description_raw": "이 카드를 사용 시 피해를 [blue]{Amount}[/blue] 입습니다."
   },
@@ -71,8 +71,8 @@
   {
     "id": "TAINTED",
     "name": "훼손됨",
-    "description": "사용 시 [gold]훼손됨[/gold]을 [blue][Amount][/blue] 얻습니다.",
-    "extra_card_text": "훼손됨을 [Amount] 얻습니다.",
+    "description": "사용 시 [gold]훼손됨[/gold]을 [blue]X[/blue] 얻습니다.",
+    "extra_card_text": "훼손됨을 {Amount} 얻습니다.",
     "is_stackable": true,
     "description_raw": "사용 시 [gold]훼손됨[/gold]을 [blue]{Amount}[/blue] 얻습니다."
   }

@@ -10,7 +10,7 @@
   {
     "id": "ENTANGLED",
     "name": "Entangled",
-    "description": "Costs an additional [energy:1].",
+    "description": "Costs an additional X.",
     "extra_card_text": "Entangled",
     "is_stackable": false,
     "description_raw": "Costs an additional {Amount:energyIcons()}."
@@ -18,8 +18,8 @@
   {
     "id": "GALVANIZED",
     "name": "Galvanized",
-    "description": "Take [blue][Amount][/blue] damage when this card is played.",
-    "extra_card_text": "Take [Amount] damage.",
+    "description": "Take [blue]X[/blue] damage when this card is played.",
+    "extra_card_text": "Take {Amount} damage.",
     "is_stackable": true,
     "description_raw": "Take [blue]{Amount}[/blue] damage when this card is played."
   },
@@ -74,8 +74,8 @@
   {
     "id": "TAINTED",
     "name": "Tainted",
-    "description": "Gain [blue][Amount][/blue] [gold]Tainted[/gold] when played.",
-    "extra_card_text": "Gain [Amount] Tainted.",
+    "description": "Gain [blue]X[/blue] [gold]Tainted[/gold] when played.",
+    "extra_card_text": "Gain {Amount} Tainted.",
     "is_stackable": true,
     "description_raw": "Gain [blue]{Amount}[/blue] [gold]Tainted[/gold] when played."
   }

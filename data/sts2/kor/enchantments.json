@@ -4,7 +4,7 @@
     "name": "숙련",
     "description": "[gold]방어도[/gold]를 [blue]X[/blue] 얻습니다.",
     "description_raw": "[gold]방어도[/gold]를 [blue]{Block:diff()}[/blue] 얻습니다.",
-    "extra_card_text": "[gold]방어도[/gold]를 X 얻습니다.",
+    "extra_card_text": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.",
     "card_type": null,
     "is_stackable": false,
     "image_url": "/images/sts2/enchantments/adroit.webp"
@@ -57,7 +57,7 @@
     "name": "주입",
     "description": "이 카드는 매 전투 시작 시 자동으로 사용됩니다.",
     "description_raw": "이 카드는 매 전투 시작 시 자동으로 사용됩니다.",
-    "extra_card_text": null,
+    "extra_card_text": "주입.",
     "card_type": "Skill",
     "is_stackable": false,
     "image_url": "/images/sts2/enchantments/imbued.webp"
@@ -67,7 +67,7 @@
     "name": "잉크투성이",
     "description": "이 카드의 피해량이 [blue]1[/blue] 증가하고, [gold]약화[/gold] 를 [blue]1[/blue] 부여합니다.",
     "description_raw": "이 카드의 피해량이 [blue]{Damage}[/blue] 증가하고, [gold]약화[/gold] 를 [blue]{WeakPower}[/blue] 부여합니다.",
-    "extra_card_text": "[gold]약화[/gold]를 [blue]1[/blue] 부여합니다.",
+    "extra_card_text": "{TargetType:choose(AllEnemies):모든 적에게 |}[gold]약화[/gold]를 [blue]{WeakPower}[/blue] 부여합니다.",
     "card_type": null,
     "is_stackable": false,
     "image_url": "/images/sts2/enchantments/inky.webp",
@@ -91,7 +91,7 @@
     "name": "기세",
     "description": "이 카드를 사용할 시 이번 전투 동안 이 카드의 피해량이 [blue]X[/blue] 증가합니다.",
     "description_raw": "이 카드를 사용할 시 이번 전투 동안 이 카드의 피해량이 [blue]{Amount}[/blue] 증가합니다.",
-    "extra_card_text": "이번 전투 동안 이 카드의 피해량이 X 증가합니다.",
+    "extra_card_text": "이번 전투 동안 이 카드의 피해량이 {Amount} 증가합니다.",
     "card_type": "Attack",
     "is_stackable": false,
     "image_url": "/images/sts2/enchantments/momentum.webp"
@@ -171,7 +171,7 @@
     "name": "발아",
     "description": "매 전투마다 이 카드를 처음 사용 시, X를 얻습니다.",
     "description_raw": "매 전투마다 이 카드를 처음 사용 시, {Amount:energyIcons()}를 얻습니다.",
-    "extra_card_text": "X를 얻습니다.",
+    "extra_card_text": "{Amount:energyIcons()}를 얻습니다.",
     "card_type": null,
     "is_stackable": false,
     "image_url": "/images/sts2/enchantments/sown.webp"
@@ -204,7 +204,7 @@
     "name": "신속",
     "description": "이 카드를 처음 사용 시, 카드를 [blue]X[/blue]장 뽑습니다.",
     "description_raw": "이 카드를 처음 사용 시, 카드를 [blue]{Amount}[/blue]장 뽑습니다.",
-    "extra_card_text": "이 카드를 처음 사용 시,\n카드를 X장 뽑습니다.",
+    "extra_card_text": "이 카드를 처음 사용 시,\n카드를 {Amount}장 뽑습니다.",
     "card_type": null,
     "is_stackable": false,
     "image_url": "/images/sts2/enchantments/swift.webp"

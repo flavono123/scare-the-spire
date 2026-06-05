@@ -626,7 +626,7 @@
   {
     "id": "ARSENAL",
     "name": "Arsenal",
-    "description": "Whenever you play a Colorless card, gain 1 [gold]Strength[/gold].",
+    "description": "Whenever you create a card, gain 1 [gold]Strength[/gold].",
     "description_raw": "Whenever you create a card, gain {ArsenalPower:diff()} [gold]Strength[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -1007,7 +1007,7 @@
   {
     "id": "BARRAGE",
     "name": "Barrage",
-    "description": "Deal 5 damage for each [gold]Channeled[/gold] Orb.[InCombat]",
+    "description": "Deal 5 damage for each [gold]Channeled[/gold] Orb.",
     "description_raw": "Deal {Damage:diff()} damage for each [gold]Channeled[/gold] Orb.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 1,
     "is_x_cost": null,
@@ -1311,7 +1311,7 @@
   {
     "id": "BEGONE",
     "name": "BEGONE!",
-    "description": "Deal 4 damage.\nChoose a card in your [gold]Hand[/gold] to [gold]Transform[/gold] into [gold]Minion Dive Bomb[/gold].",
+    "description": "Choose a card in your [gold]Hand[/gold] to [gold]Transform[/gold] into [gold]Minion Strike[/gold].",
     "description_raw": "Choose a card in your [gold]Hand[/gold] to [gold]Transform[/gold] into [gold]{IfUpgraded:show:Minion Strike+|Minion Strike}[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -1345,7 +1345,7 @@
   {
     "id": "BELIEVE_IN_YOU",
     "name": "Believe in You",
-    "description": "Another player gains [energy:3].",
+    "description": "Another player gains [energy:2].",
     "description_raw": "Another player gains {Energy:energyIcons()}.",
     "cost": 0,
     "is_x_cost": null,
@@ -1731,7 +1731,7 @@
   {
     "id": "BODY_SLAM",
     "name": "Body Slam",
-    "description": "Deal damage equal to your [gold]Block[/gold].[InCombat]",
+    "description": "Deal damage equal to your [gold]Block[/gold].",
     "description_raw": "Deal damage equal to your [gold]Block[/gold].{InCombat:\n(Deals {CalculatedDamage:diff()} damage)|}",
     "cost": 1,
     "is_x_cost": null,
@@ -1829,7 +1829,7 @@
   {
     "id": "BOMBARDMENT",
     "name": "Bombardment",
-    "description": "Deal 18 damage.\nAt the start of your turn, plays from the [gold]Exhaust Pile[/gold].",
+    "description": "Deal 18 damage.\nAt the start of your turn, if this is in your [gold]Exhaust Pile[/gold], play it.",
     "description_raw": "Deal {Damage:diff()} damage.\nAt the start of your turn, if this is in your [gold]Exhaust Pile[/gold], play it.",
     "cost": 3,
     "is_x_cost": null,
@@ -1970,7 +1970,7 @@
   {
     "id": "BORROWED_TIME",
     "name": "Borrowed Time",
-    "description": "Gain 4 energy. Cards cost an additional energy this turn.",
+    "description": "Gain [energy:4].\nCards cost an additional X this turn.",
     "description_raw": "Gain {Energy:energyIcons()}.\nCards cost an additional {ExtraCost:energyIcons()} this turn.",
     "cost": 1,
     "is_x_cost": null,
@@ -2996,7 +2996,7 @@
   {
     "id": "CHARGE",
     "name": "CHARGE!!",
-    "description": "Choose 2 cards in your [gold]Draw Pile[/gold] to [gold]Transform[/gold] into\n[gold]Minion Strikes[/gold].",
+    "description": "Choose 2 cards in your [gold]Draw Pile[/gold] to [gold]Transform[/gold] into\n[gold]Minion Dive Bombs[/gold].",
     "description_raw": "Choose {Cards:diff()} {Cards:plural:card|cards} in your [gold]Draw Pile[/gold] to [gold]Transform[/gold] into\n[gold]{Cards:plural:{IfUpgraded:show:Minion Dive Bomb+|Minion Dive Bomb}[/gold]|{IfUpgraded:show:Minion Dive Bombs+|Minion Dive Bombs}[/gold]}.",
     "cost": 1,
     "is_x_cost": null,
@@ -3125,7 +3125,7 @@
   {
     "id": "CINDER",
     "name": "Cinder",
-    "description": "Deal 17 damage.\n[gold]Exhaust[/gold] the top card of your [gold]Draw Pile[/gold].",
+    "description": "Deal 17 damage.\n[gold]Exhaust[/gold] 1 card at random.",
     "description_raw": "Deal {Damage:diff()} damage.\n[gold]Exhaust[/gold] 1 card at random.",
     "cost": 2,
     "is_x_cost": null,
@@ -3534,7 +3534,7 @@
   {
     "id": "COMPILE_DRIVER",
     "name": "Compile Driver",
-    "description": "Deal 7 damage.\nDraw 1 card for each unique Orb you have.[InCombat]",
+    "description": "Deal 7 damage.\nDraw 1 card for each unique Orb you have.",
     "description_raw": "Deal {Damage:diff()} damage.\nDraw 1 card for each unique Orb you have.{InCombat:\n(Draw {CalculatedCards:diff()} {CalculatedCards:plural:card|cards})|}",
     "cost": 1,
     "is_x_cost": null,
@@ -5192,7 +5192,7 @@
   {
     "id": "DEMONIC_SHIELD",
     "name": "Demonic Shield",
-    "description": "Lose 1 HP.\nGive another player [gold]Block[/gold] equal to your [gold]Block[/gold].[InCombat]",
+    "description": "Lose 1 HP.\nGive another player [gold]Block[/gold] equal to your [gold]Block[/gold].",
     "description_raw": "Lose {HpLoss:diff()} HP.\nGive another player [gold]Block[/gold] equal to your [gold]Block[/gold].{InCombat:\n(Gives {CalculatedBlock:diff()} [gold]Block[/gold])|}",
     "cost": 0,
     "is_x_cost": null,
@@ -5337,7 +5337,7 @@
   {
     "id": "DISCOVERY",
     "name": "Discovery",
-    "description": "Choose 1 of 3 random cards to add into your [gold]Hand[/gold]. It costs 0 [energy:1] this turn.",
+    "description": "Choose 1 of 3 random cards to add into your [gold]Hand[/gold]. It's free to play this turn.",
     "description_raw": "Choose 1 of 3 random cards to add into your [gold]Hand[/gold]. It's free to play this turn.",
     "cost": 1,
     "is_x_cost": null,
@@ -5501,7 +5501,7 @@
   {
     "id": "DOMINATE",
     "name": "Dominate",
-    "description": "Gain 1 [gold]Strength[/gold] for each [gold]Vulnerable[/gold] on the enemy.",
+    "description": "Apply X [gold]Vulnerable[/gold].\nGain 1 [gold]Strength[/gold] for each [gold]Vulnerable[/gold] on the enemy.",
     "description_raw": "Apply {VulnerablePower:diff()} [gold]Vulnerable[/gold].\nGain {StrengthPerVulnerable:diff()} [gold]Strength[/gold] for each [gold]Vulnerable[/gold] on the enemy.",
     "cost": 1,
     "is_x_cost": null,
@@ -5708,7 +5708,7 @@
   {
     "id": "DRUM_OF_BATTLE",
     "name": "Drum of Battle",
-    "description": "Draw 2 cards.\nWhen this card is [gold]Exhausted[/gold], gain 2 Energy.",
+    "description": "Draw 2 cards.\nWhen this card is [gold]Exhausted[/gold], gain [energy:2].",
     "description_raw": "Draw {Cards:diff()} {Cards:plural:card|cards}.\nWhen this card is [gold]Exhausted[/gold], gain {Energy:energyIcons()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -5743,7 +5743,7 @@
   {
     "id": "DUAL_WIELD",
     "name": "Dual Wield",
-    "description": "Choose an Attack or Power card. Add  copies|a copy} of that card into your [gold]Hand[/gold].",
+    "description": "Choose an Attack or Power card. Add a copy of that card into your [gold]Hand[/gold].",
     "description_raw": "Choose an Attack or Power card. Add {IfUpgraded:show:{Cards} copies|a copy} of that card into your [gold]Hand[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -6375,7 +6375,7 @@
   {
     "id": "EXPECT_A_FIGHT",
     "name": "Expect a Fight",
-    "description": "Gain [energy:1] for each Attack in your [gold]Hand[/gold].",
+    "description": "Gain [energy:1] for each Attack in your [gold]Hand[/gold].\nYou cannot gain\nadditional [energy:1] this turn.",
     "description_raw": "Gain {energyPrefix:energyIcons(1)} for each Attack in your [gold]Hand[/gold].\nYou cannot gain\nadditional {energyPrefix:energyIcons(1)} this turn.{InCombat:\n(Gain {CalculatedEnergy:energyIcons()})|}",
     "cost": 2,
     "is_x_cost": null,
@@ -6475,8 +6475,8 @@
   {
     "id": "EXTERMINATE",
     "name": "Exterminate",
-    "description": "Deal 3 damage 4 times to ALL enemies.",
-    "description_raw": "Deal {Damage:diff()} damage {Repeat:diff()} times to ALL enemies.",
+    "description": "Deal 3 damage to ALL enemies 4 times.",
+    "description_raw": "Deal {Damage:diff()} damage to ALL enemies {Repeat:diff()} times.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -6508,7 +6508,7 @@
   {
     "id": "FALLING_STAR",
     "name": "Falling Star",
-    "description": "Deal 7 damage.\nApply 1 [gold]Weak[/gold].\nApply 1 [gold]Vulnerable[/gold].",
+    "description": "Deal 8 damage.\nApply 1 [gold]Weak[/gold].\nApply 1 [gold]Vulnerable[/gold].",
     "description_raw": "Deal {Damage:diff()} damage.\nApply {WeakPower:diff()} [gold]Weak[/gold].\nApply {VulnerablePower:diff()} [gold]Vulnerable[/gold].",
     "cost": 0,
     "is_x_cost": null,
@@ -6988,7 +6988,7 @@
   {
     "id": "FINISHER",
     "name": "Finisher",
-    "description": "Deal 6 damage for each Attack already played this turn.[InCombat]",
+    "description": "Deal 6 damage for each Attack already played this turn.",
     "description_raw": "Deal {Damage:diff()} damage for each Attack already played this turn.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 1,
     "is_x_cost": null,
@@ -7054,7 +7054,7 @@
   {
     "id": "FLAK_CANNON",
     "name": "Flak Cannon",
-    "description": "[gold]Exhaust[/gold] ALL your [gold]Status[/gold] cards.\nDeal 8 damage to a random enemy for each card [gold]Exhausted[/gold].[InCombat]",
+    "description": "[gold]Exhaust[/gold] ALL your Status cards.\nDeal 8 damage to a random enemy for each card [gold]Exhausted[/gold].",
     "description_raw": "[gold]Exhaust[/gold] ALL your Status cards.\nDeal {Damage:diff()} damage to a random enemy for each card [gold]Exhausted[/gold].{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 2,
     "is_x_cost": null,
@@ -7122,7 +7122,7 @@
   {
     "id": "FLANKING",
     "name": "Flanking",
-    "description": "The enemy takes double damage from other players this turn.",
+    "description": "The enemy takes double attack damage from other players this turn.",
     "description_raw": "The enemy takes double attack damage from other players this turn.",
     "cost": 2,
     "is_x_cost": null,
@@ -7221,7 +7221,7 @@
   {
     "id": "FLECHETTES",
     "name": "Flechettes",
-    "description": "Deal 5 damage for each Skill in your [gold]Hand[/gold].[InCombat]",
+    "description": "Deal 5 damage for each Skill in your [gold]Hand[/gold].",
     "description_raw": "Deal {Damage:diff()} damage for each Skill in your [gold]Hand[/gold].{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 1,
     "is_x_cost": null,
@@ -8084,7 +8084,7 @@
   {
     "id": "GLITTERSTREAM",
     "name": "Glitterstream",
-    "description": "Gain 11 [gold]Block[/gold].\nNext turn, gain 4 [gold]Block[/gold].",
+    "description": "Gain 11 [gold]Block[/gold].\nNext turn, gain 5 [gold]Block[/gold].",
     "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nNext turn, gain {BlockNextTurn:diff()} [gold]Block[/gold].",
     "cost": 2,
     "is_x_cost": null,
@@ -8118,7 +8118,7 @@
   {
     "id": "GLOW",
     "name": "Glow",
-    "description": "Gain [star:1].\nDraw 2 cards.",
+    "description": "Gain [star:1].\nDraw 2 cards.\nNext turn, draw 2 cards.",
     "description_raw": "Gain {Stars:starIcons()}.\nDraw {Cards:diff()} {Cards:plural:card|cards}.\nNext turn, draw {Cards:diff()} {Cards:plural:card|cards}.",
     "cost": 1,
     "is_x_cost": null,
@@ -8191,7 +8191,7 @@
   {
     "id": "GOLD_AXE",
     "name": "Gold Axe",
-    "description": "Deal damage equal to the number of cards played this combat.[InCombat]",
+    "description": "Deal damage equal to the number of cards played this combat.",
     "description_raw": "Deal damage equal to the number of cards played this combat.{InCombat:\n(Deals {CalculatedDamage:diff()} damage)|}",
     "cost": 1,
     "is_x_cost": null,
@@ -8432,7 +8432,7 @@
   {
     "id": "GUIDING_STAR",
     "name": "Guiding Star",
-    "description": "Deal 12 damage.\nNext turn, draw 2 cards.",
+    "description": "Deal 12 damage.\nDraw 2 cards.",
     "description_raw": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
     "cost": 1,
     "is_x_cost": null,
@@ -8936,7 +8936,7 @@
   {
     "id": "HELIX_DRILL",
     "name": "Helix Drill",
-    "description": "Deal 3 damage for each [energy:1] previously spent this turn.[InCombat]",
+    "description": "Deal 3 damage for each [energy:1] previously spent this turn.",
     "description_raw": "Deal {Damage:diff()} damage for each {energyPrefix:energyIcons(1)} previously spent this turn.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 0,
     "is_x_cost": null,
@@ -9135,7 +9135,7 @@
   {
     "id": "HIDDEN_GEM",
     "name": "Hidden Gem",
-    "description": "A random card in your [gold]Draw Pile[/gold] gains [gold]Replay[/gold] 2.",
+    "description": "A random card without [gold]Replay[/gold] in your [gold]Draw Pile[/gold] gains [gold]Replay[/gold] 2.",
     "description_raw": "A random card without [gold]Replay[/gold] in your [gold]Draw Pile[/gold] gains [gold]Replay[/gold] {Replay:diff()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -9316,7 +9316,7 @@
   {
     "id": "HUDDLE_UP",
     "name": "Huddle Up",
-    "description": "ALL allies draw 2 cards.",
+    "description": "ALL players draw 2 cards.",
     "description_raw": "ALL players draw {Cards:diff()} cards.",
     "cost": 1,
     "is_x_cost": null,
@@ -9854,7 +9854,7 @@
   {
     "id": "ITERATION",
     "name": "Iteration",
-    "description": "The first time you draw a Status card each turn, draw 2 cards.",
+    "description": "The first time you draw a Status each turn, draw 2 cards.",
     "description_raw": "The first time you draw a Status each turn, draw {IterationPower:diff()} {IterationPower:plural:card|cards}.",
     "cost": 1,
     "is_x_cost": null,
@@ -10092,7 +10092,7 @@
   {
     "id": "KNIFE_TRAP",
     "name": "Knife Trap",
-    "description": "Play every [gold]Shiv[/gold] in your [gold]Exhaust Pile[/gold] on the enemy.[InCombat]",
+    "description": "Play every [gold]Shiv[/gold] in your [gold]Exhaust Pile[/gold] on the enemy.",
     "description_raw": "{IfUpgraded:show:[gold]Upgrade[/gold] and play|Play} every [gold]Shiv[/gold] in your [gold]Exhaust Pile[/gold] on the enemy.{InCombat:\n(Plays {CalculatedShivs:diff()} [gold]{CalculatedShivs:plural:Shiv|Shivs}[/gold])|}",
     "cost": 2,
     "is_x_cost": null,
@@ -10306,7 +10306,7 @@
   {
     "id": "LEADING_STRIKE",
     "name": "Leading Strike",
-    "description": "Deal 3 damage. Add 2 Shivs into your Hand.",
+    "description": "Deal 3 damage.\nAdd 2 [gold]Shivs[/gold] into your [gold]Hand[/gold].",
     "description_raw": "Deal {Damage:diff()} damage.\nAdd {Shivs:diff()} [gold]{Shivs:plural:Shiv|Shivs}[/gold] into your [gold]Hand[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -10627,7 +10627,7 @@
   {
     "id": "LUNAR_BLAST",
     "name": "Lunar Blast",
-    "description": "Deal 4 damage for each Skill already played this turn.[InCombat]",
+    "description": "Deal 4 damage for each Skill already played this turn.",
     "description_raw": "Deal {Damage:diff()} damage for each Skill already played this turn.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 0,
     "is_x_cost": null,
@@ -10693,8 +10693,8 @@
   {
     "id": "MAD_SCIENCE",
     "name": "Mad Science",
-    "description": "Skill|Power):Deal 12.|Gain 8 [gold]Block[/gold].|}[HasRider][Choking][Wisdom][Expertise][Curious]|Skill|Power):\n???|\n???|???}",
-    "description_raw": "{CardType:choose(Attack|Skill|Power):Deal {Damage:diff()} damage{Violence: {ViolenceHits:diff()} times|}.|Gain {Block:diff()} [gold]Block[/gold].|}{HasRider:{Sapping:\nApply {SappingWeak:diff()} [gold]Weak[/gold].\nApply {SappingVulnerable:diff()} [gold]Vulnerable[/gold].|}{Choking:\nWhenever you play a card this turn, the enemy loses {ChokingDamage:diff()} HP.|}{Energized:\nGain {EnergizedEnergy:energyIcons()}.|}{Wisdom:\nDraw {WisdomCards:diff()} cards.|}{Chaos:\nAdd a random card into your [gold]Hand[/gold]. It's free to play this turn.|}{Expertise:Gain {ExpertiseStrength:diff()} [gold]Strength[/gold].\nGain {ExpertiseDexterity:diff()} [gold]Dexterity[/gold].|}{Curious:Powers cost {CuriousReduction:diff()} {energyPrefix:energyIcons(1)} less.|}{Improvement:At the end of combat, [gold]Upgrade[/gold] a random card.|}|{CardType:choose(Attack|Skill|Power):\n???|\n???|???}}",
+    "description": "Deal 12 damage.",
+    "description_raw": "{CardType:choose(Attack|Skill|Power):Deal {Damage:diff()} damage{Violence: {ViolenceHits:diff()} times|}.|Gain {Block:diff()} [gold]Block[/gold].||???}{HasRider:{Sapping:\nApply {SappingWeak:diff()} [gold]Weak[/gold].\nApply {SappingVulnerable:diff()} [gold]Vulnerable[/gold].|}{Choking:\nWhenever you play a card this turn, the enemy loses {ChokingDamage:diff()} HP.|}{Energized:\nGain {EnergizedEnergy:energyIcons()}.|}{Wisdom:\nDraw {WisdomCards:diff()} cards.|}{Chaos:\nAdd a random card into your [gold]Hand[/gold]. It's free to play this turn.|}{Expertise:Gain {ExpertiseStrength:diff()} [gold]Strength[/gold].\nGain {ExpertiseDexterity:diff()} [gold]Dexterity[/gold].|}{Curious:Powers cost {CuriousReduction:diff()} {energyPrefix:energyIcons(1)} less.|}{Improvement:At the end of combat, [gold]Upgrade[/gold] a random card.|}|{CardType:choose(Attack|Skill|Power):\n???|\n???|???|???}}",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -11205,7 +11205,7 @@
   {
     "id": "MIND_BLAST",
     "name": "Mind Blast",
-    "description": "Deal damage equal to the number of cards in your [gold]Draw Pile[/gold].[InCombat]",
+    "description": "Deal damage equal to the number of cards in your [gold]Draw Pile[/gold].",
     "description_raw": "Deal damage equal to the number of cards in your [gold]Draw Pile[/gold].{InCombat:\n(Deals {CalculatedDamage:diff()} damage)|}",
     "cost": 1,
     "is_x_cost": null,
@@ -11387,7 +11387,7 @@
   {
     "id": "MIRAGE",
     "name": "Mirage",
-    "description": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.[InCombat]",
+    "description": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.",
     "description_raw": "Gain [gold]Block[/gold] equal to [gold]Poison[/gold] on ALL enemies.{InCombat:\n(Gain {CalculatedBlock:diff()} [gold]Block[/gold])|}",
     "cost": 1,
     "is_x_cost": null,
@@ -11940,7 +11940,7 @@
   {
     "id": "NO_ESCAPE",
     "name": "No Escape",
-    "description": "Apply 10 [gold]Doom[/gold], plus an additional 5 [gold]Doom[/gold] for every 10 [gold]Doom[/gold] already on this enemy.[IsTargeting]",
+    "description": "Apply 10 [gold]Doom[/gold], plus an additional 5 [gold]Doom[/gold] for every 10 [gold]Doom[/gold] already on this enemy.\n(Apply X [gold]Doom[/gold])",
     "description_raw": "Apply {CalculationBase:diff()} [gold]Doom[/gold], plus an additional {CalculationExtra:diff()} [gold]Doom[/gold] for every {DoomThreshold:diff()} [gold]Doom[/gold] already on this enemy.{IsTargeting:\n(Apply {CalculatedDoom:diff()} [gold]Doom[/gold])|}",
     "cost": 1,
     "is_x_cost": null,
@@ -12384,7 +12384,7 @@
   {
     "id": "PACTS_END",
     "name": "Pact's End",
-    "description": "Can only be played if you have 3 or more cards in your [gold]Exhaust Pile[/gold].\nDeal 17 damage to ALL enemies.",
+    "description": "If you have 3 or more cards in your [gold]Exhaust Pile[/gold],\ndeal 17 damage to ALL enemies.",
     "description_raw": "If you have {Cards:diff()} or more {Cards:plural:card|cards} in your [gold]Exhaust Pile[/gold],\ndeal {Damage:diff()} damage to ALL enemies.",
     "cost": 0,
     "is_x_cost": null,
@@ -13526,7 +13526,7 @@
   {
     "id": "PULL_FROM_BELOW",
     "name": "Pull from Below",
-    "description": "Deal 5 damage for each [gold]Ethereal[/gold] card played this combat.[InCombat]",
+    "description": "Deal 5 damage for each [gold]Ethereal[/gold] card played this combat.",
     "description_raw": "Deal {Damage:diff()} damage for each [gold]Ethereal[/gold] card played this combat.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 1,
     "is_x_cost": null,
@@ -13723,7 +13723,7 @@
   {
     "id": "RADIATE",
     "name": "Radiate",
-    "description": "Deal 3 damage to ALL enemies for each [star:1] gained this turn.[InCombat]",
+    "description": "Deal 3 damage to ALL enemies for each [star:1] gained this turn.",
     "description_raw": "Deal {Damage:diff()} damage to ALL enemies for each {Stars:starIcons()} gained this turn.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 0,
     "is_x_cost": null,
@@ -13887,7 +13887,7 @@
   {
     "id": "RATTLE",
     "name": "Rattle",
-    "description": "[gold]Osty[/gold] deals 7 damage.\nHits an additional time for each other time he has attacked this turn.[InCombat]",
+    "description": "[gold]Osty[/gold] deals 7 damage.\nHits an additional time for each other time he has attacked this turn.",
     "description_raw": "[gold]Osty[/gold] deals {OstyDamage:diff()} damage.\nHits an additional time for each other time he has attacked this turn.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 1,
     "is_x_cost": null,
@@ -14124,7 +14124,7 @@
   {
     "id": "REFINE_BLADE",
     "name": "Refine Blade",
-    "description": "[gold]Forge[/gold] 6.\nNext turn, gain [energy:1].",
+    "description": "[gold]Forge[/gold] 9.\nNext turn, gain [energy:1].",
     "description_raw": "[gold]Forge[/gold] {Forge:diff()}.\nNext turn, gain {Energy:energyIcons()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -14540,7 +14540,7 @@
   {
     "id": "ROCKET_PUNCH",
     "name": "Rocket Punch",
-    "description": "Deal 13 damage.\nDraw 1 card.\nWhen a Status card is created, reduce this card's cost to 0 [energy:1] this turn.",
+    "description": "Deal 13 damage.\nDraw 1 card.\nWhenever you create a Status, reduce this card's cost to 0 [energy:1] until played.",
     "description_raw": "Deal {Damage:diff()} damage.\nDraw {Cards:diff()} {Cards:plural:card|cards}.\nWhenever you create a Status, reduce this card's cost to 0 {energyPrefix:energyIcons(1)} until played.",
     "cost": 2,
     "is_x_cost": null,
@@ -14719,7 +14719,7 @@
     "id": "SACRIFICE",
     "name": "Sacrifice",
     "description": "If [gold]Osty[/gold] is alive, he dies and you gain [gold]Block[/gold] equal to double his Max HP.",
-    "description_raw": "If [gold]Osty[/gold] is alive, he dies and you gain [gold]Block[/gold] equal to double his Max HP.",
+    "description_raw": "If [gold]Osty[/gold] is alive, he dies and you gain [gold]Block[/gold] equal to double his Max HP.{InCombat:\n(Gain {IsOstyAlive:{CalculatedBlock:diff()}|0} [gold]Block[/gold])|}",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -16425,7 +16425,7 @@
   {
     "id": "SPEEDSTER",
     "name": "Speedster",
-    "description": "Whenever you draw a card during your turn, deal 1 damage to ALL enemies.",
+    "description": "Whenever you draw a card during your turn, deal 2 damage to ALL enemies.",
     "description_raw": "Whenever you draw a card during your turn, deal {SpeedsterPower:diff()} damage to ALL enemies.",
     "cost": 2,
     "is_x_cost": null,
@@ -16531,7 +16531,7 @@
   {
     "id": "SPITE",
     "name": "Spite",
-    "description": "Deal 6 damage.\nIf you lost HP this turn, draw 1 card.",
+    "description": "Deal 6 damage.\nIf you lost HP this turn,\nhits X times.",
     "description_raw": "Deal {Damage:diff()} damage.\nIf you lost HP this turn,\nhits {Repeat:diff()} times.",
     "cost": 0,
     "is_x_cost": null,
@@ -16624,7 +16624,7 @@
   {
     "id": "SPOILS_OF_BATTLE",
     "name": "Spoils of Battle",
-    "description": "[gold]Forge[/gold] 10.",
+    "description": "[gold]Forge[/gold] 5.\nDraw X card.",
     "description_raw": "[gold]Forge[/gold] {Forge:diff()}.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
     "cost": 1,
     "is_x_cost": null,
@@ -16801,7 +16801,7 @@
   {
     "id": "STACK",
     "name": "Stack",
-    "description": "Gain [gold]Block[/gold] equal to the number of cards in your [gold]Discard Pile[/gold]|}.[InCombat]",
+    "description": "Gain [gold]Block[/gold] equal to the number of cards in your [gold]Discard Pile[/gold].",
     "description_raw": "Gain [gold]Block[/gold] equal to the number of cards in your [gold]Discard Pile[/gold]{IfUpgraded:show: +{CalculationBase}|}.{InCombat:\n(Gain {CalculatedBlock:diff()} [gold]Block[/gold])|}",
     "cost": 1,
     "is_x_cost": null,
@@ -16898,7 +16898,7 @@
   {
     "id": "STOKE",
     "name": "Stoke",
-    "description": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nDraw a card for each card [gold]Exhausted[/gold].",
+    "description": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nAdd 1 random card into your [gold]Hand[/gold] for each card [gold]Exhausted[/gold].",
     "description_raw": "[gold]Exhaust[/gold] your [gold]Hand[/gold].\nAdd 1 random {IfUpgraded:show:[gold]Upgraded[/gold] |}card into your [gold]Hand[/gold] for each card [gold]Exhausted[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -17378,7 +17378,7 @@
   {
     "id": "SUMMON_FORTH",
     "name": "Summon Forth",
-    "description": "[gold]Forge[/gold] 8.\nPut [gold]Sovereign Blade[/gold] into your [gold]Hand[/gold] from anywhere.",
+    "description": "Put [gold]Sovereign Blade[/gold] into your [gold]Hand[/gold] from anywhere.\n[gold]Forge[/gold] 8.",
     "description_raw": "Put [gold]Sovereign Blade[/gold] into your [gold]Hand[/gold] from anywhere.\n[gold]Forge[/gold] {Forge:diff()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -17732,7 +17732,7 @@
   {
     "id": "SYNCHRONIZE",
     "name": "Synchronize",
-    "description": "Gain 2 [gold]Focus[/gold] this turn for each unique Orb you have.[InCombat]",
+    "description": "Gain 2 [gold]Focus[/gold] this turn for each unique Orb you have.",
     "description_raw": "Gain {CalculationExtra:diff()} [gold]Focus[/gold] this turn for each unique Orb you have.{InCombat:\n(Gain {CalculatedFocus:diff()} [gold]Focus[/gold])|}",
     "cost": 1,
     "is_x_cost": null,
@@ -17935,7 +17935,7 @@
   {
     "id": "TEAR_ASUNDER",
     "name": "Tear Asunder",
-    "description": "Deal 5 damage.\nHits an additional time for each time you lost HP this combat.[InCombat]",
+    "description": "Deal 5 damage.\nHits an additional time for each time you lost HP this combat.",
     "description_raw": "Deal {Damage:diff()} damage.\nHits an additional time for each time you lost HP this combat.{InCombat:\n(Hits {CalculatedHits:diff()} {CalculatedHits:plural:time|times})|}",
     "cost": 2,
     "is_x_cost": null,
@@ -18443,7 +18443,7 @@
   {
     "id": "TIMES_UP",
     "name": "Time's Up",
-    "description": "Deal damage equal to the enemy's [gold]Doom[/gold].[IsTargeting]",
+    "description": "Deal damage equal to the enemy's [gold]Doom[/gold].\n(Deals 1 damage)",
     "description_raw": "Deal damage equal to the enemy's [gold]Doom[/gold].{IsTargeting:\n(Deals {CalculatedDamage:diff()} damage)|}",
     "cost": 2,
     "is_x_cost": null,
@@ -18638,7 +18638,7 @@
   {
     "id": "TRASH_TO_TREASURE",
     "name": "Trash to Treasure",
-    "description": "Whenever you create a Status card, [gold]Channel[/gold] 1 random Orb.",
+    "description": "Whenever you create a Status, [gold]Channel[/gold] 1 random Orb.",
     "description_raw": "Whenever you create a Status, [gold]Channel[/gold] 1 random Orb.",
     "cost": 1,
     "is_x_cost": null,
@@ -19034,7 +19034,7 @@
   {
     "id": "UNTOUCHABLE",
     "name": "Untouchable",
-    "description": "Gain 6 Block.",
+    "description": "Gain 6 [gold]Block[/gold].",
     "description_raw": "Gain {Block:diff()} [gold]Block[/gold].",
     "cost": 2,
     "is_x_cost": null,
@@ -19368,7 +19368,7 @@
   {
     "id": "VOLTAIC",
     "name": "Voltaic",
-    "description": "[gold]Channel Lightning[/gold] equal to the [gold]Lightning[/gold] already [gold]Channeled[/gold] this combat.[InCombat]",
+    "description": "[gold]Channel Lightning[/gold] equal to the [gold]Lightning[/gold] already [gold]Channeled[/gold] this combat.",
     "description_raw": "[gold]Channel Lightning[/gold] equal to the [gold]Lightning[/gold] already [gold]Channeled[/gold] this combat.{InCombat:\n([gold]Channel[/gold] {CalculatedChannels:diff()} [gold]Lightning[/gold])|}",
     "cost": 3,
     "is_x_cost": null,
@@ -19837,7 +19837,7 @@
   {
     "id": "NOT_YET",
     "name": "Not Yet",
-    "description": "Heal [blue]10[/blue] HP.",
+    "description": "Heal 10 HP.",
     "description_raw": "Heal {Heal:diff()} HP.",
     "cost": 2,
     "is_x_cost": null,

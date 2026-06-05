@@ -182,7 +182,7 @@
   {
     "id": "BLACK_HOLE",
     "name": "Black Hole",
-    "description": "Whenever you spend or gain {singleStarIcon}, deal [blue]3[/blue] damage to ALL enemies.",
+    "description": "Whenever you spend or gain [star:1], deal [blue]3[/blue] damage to ALL enemies.",
     "description_raw": "Whenever you spend or gain {singleStarIcon}, deal [blue]{Amount}[/blue] damage to ALL enemies.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -304,7 +304,7 @@
   {
     "id": "CHILD_OF_THE_STARS",
     "name": "Child of the Stars",
-    "description": "Gain [blue]1[/blue] [gold]Block[/gold] for each {singleStarIcon} spent.",
+    "description": "Gain [blue]1[/blue] [gold]Block[/gold] for each [star:1] spent.",
     "description_raw": "Gain [blue]{Amount}[/blue] [gold]Block[/gold] for each {singleStarIcon} spent.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -373,7 +373,7 @@
     "id": "CONSUMING_SHADOW",
     "name": "Consuming Shadow",
     "description": "At the end of your turn, [gold]Evoke[/gold] your leftmost Orb.",
-    "description_raw": "At the end of your turn, [gold]Evoke[/gold] your {Amount:plural:|[blue]{}[/blue]} leftmost {Amount:plural:Orb|Orbs}.",
+    "description_raw": "At the end of your turn, [gold]Evoke[/gold] your {Amount:plural:|[blue]{}[/blue] }leftmost {Amount:plural:Orb|Orbs}.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -513,7 +513,7 @@
   {
     "id": "CURIOUS",
     "name": "Curious",
-    "description": "Powers cost [blue]1[/blue] {energyPrefix} less.",
+    "description": "Powers cost [blue]1[/blue] [energy:1] less.",
     "description_raw": "Powers cost [blue]{Amount}[/blue] {energyPrefix:energyIcons(1)} less.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -899,7 +899,7 @@
   {
     "id": "FERAL",
     "name": "Feral",
-    "description": "The first time you play a 0{energyPrefix} Attack each turn, return it to your [gold]Hand[/gold].",
+    "description": "The first time you play a 0[energy:1] Attack each turn, return it to your [gold]Hand[/gold].",
     "description_raw": "The first {Amount:plural:time|[blue]{}[/blue] times} you play a 0{energyPrefix:energyIcons(1)} Attack each turn, return it to your [gold]Hand[/gold].",
     "type": "Buff",
     "stack_type": "Counter",
@@ -921,8 +921,8 @@
   {
     "id": "FLANKING",
     "name": "Flanking",
-    "description": "Other allies deal [blue]2x[/blue] more attack damage to this enemy this turn.",
-    "description_raw": "Other allies deal [blue]{Amount}[/blue] times more attack damage to this enemy this turn.",
+    "description": "Other allies deal [blue]2x[/blue] the attack damage to this enemy this turn.",
+    "description_raw": "Other allies deal [blue]{Amount}x[/blue] the attack damage to this enemy this turn.",
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -1015,7 +1015,7 @@
   {
     "id": "FREE_ATTACK",
     "name": "Free Attack",
-    "description": "Your next Attack costs [blue]0[/blue] {energyPrefix}.",
+    "description": "Your next Attack costs [blue]0[/blue] [energy:1].",
     "description_raw": "Your next {Amount:plural:Attack costs|[blue]{}[/blue] Attacks cost} [blue]0[/blue] {energyPrefix:energyIcons(1)}.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -1026,7 +1026,7 @@
   {
     "id": "FREE_POWER",
     "name": "Free Power",
-    "description": "The next Power you play costs [blue]0[/blue] {energyPrefix}.",
+    "description": "The next Power you play costs [blue]0[/blue] [energy:1].",
     "description_raw": "The next {Amount:plural:Power|[blue]{}[/blue] Powers} you play {Amount:plural:costs|cost} [blue]0[/blue] {energyPrefix:energyIcons(1)}.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -1037,7 +1037,7 @@
   {
     "id": "FREE_SKILL",
     "name": "Free Skill",
-    "description": "The next Skill you play costs [blue]0[/blue] {energyPrefix}.",
+    "description": "The next Skill you play costs [blue]0[/blue] [energy:1].",
     "description_raw": "The next {Amount:plural:Skill|[blue]{}[/blue] Skills} you play {Amount:plural:costs|cost} [blue]0[/blue] {energyPrefix:energyIcons(1)}.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -1083,7 +1083,7 @@
   {
     "id": "GENESIS",
     "name": "Genesis",
-    "description": "At the start of your turn, gain {singleStarIcon}.",
+    "description": "At the start of your turn, gain [star:1].",
     "description_raw": "At the start of your turn, gain {Amount:starIcons()}.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -1175,7 +1175,7 @@
     "id": "HARD_TO_KILL",
     "name": "Hard to Kill",
     "description": "Reduce all damage taken and HP lost by [gold]Exoskeleton[/gold] to [blue]9[/blue].",
-    "description_raw": "Reduce all damage taken and HP lost by [gold]{OwnerName}[/gold] to [blue]9[/blue].",
+    "description_raw": "Reduce all damage taken and HP lost by [gold]{OwnerName}[/gold] to [blue]{Amount}[/blue].",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -1275,8 +1275,8 @@
   {
     "id": "HIGH_VOLTAGE",
     "name": "High Voltage",
-    "description": "At the start of this creature's turn, it gains [blue]2[/blue] [gold]Strength[/gold].",
-    "description_raw": "At the start of [gold]{OwnerName}'s[/gold] turn, it gains [blue]{Amount}[/blue] [gold]Strength[/gold].",
+    "description": "At the end of this creature's turn, it gains [blue]2[/blue] [gold]Strength[/gold].",
+    "description_raw": "At the end of [gold]{OwnerName}'s[/gold] turn, it gains [blue]{Amount}[/blue] [gold]Strength[/gold].",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -1400,7 +1400,7 @@
   {
     "id": "JUGGERNAUT",
     "name": "Juggernaut",
-    "description": "Whenever you gain [gold]Block[/gold], deal [blue]5[/blue] damage to a random enemy.",
+    "description": "Whenever you gain [gold]Block[/gold], deal [blue]6[/blue] damage to a random enemy.",
     "description_raw": "Whenever you gain [gold]Block[/gold], deal [blue]{Amount}[/blue] damage to a random enemy.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -1422,7 +1422,7 @@
   {
     "id": "KNOCKDOWN",
     "name": "Knockdown",
-    "description": "This creature takes [blue]{Amount}[/blue] times the damage from other players this turn.",
+    "description": "This creature takes [blue]X[/blue] times the damage from other players this turn.",
     "description_raw": "Other allies deal [blue]{Amount}[/blue] times more damage to this enemy this turn.",
     "type": "Debuff",
     "stack_type": "Counter",
@@ -2449,7 +2449,7 @@
   {
     "id": "STAR_NEXT_TURN",
     "name": "Star Next Turn",
-    "description": "Gain 1 {singleStarIcon} next turn.",
+    "description": "Gain 1 [star:1] next turn.",
     "description_raw": "Gain [blue]{Amount}[/blue] {singleStarIcon} next turn.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -2494,7 +2494,7 @@
     "id": "STRANGLE",
     "name": "Strangle",
     "description": "Whenever you play a card this turn, this enemy loses [blue]2[/blue] HP.",
-    "description_raw": "Whenever you play a card this turn, {OnPlayer:you lose|this enemy loses} [blue]{Amount}[/blue] HP.",
+    "description_raw": "Whenever you play a card this turn, this enemy loses [blue]{Amount}[/blue] HP.",
     "type": "Debuff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -2526,7 +2526,7 @@
   {
     "id": "SUBROUTINE",
     "name": "Subroutine",
-    "description": "Whenever you play a Power, gain [blue]1[/blue] {energyPrefix}.",
+    "description": "Whenever you play a Power, gain [blue]1[/blue] [energy:1].",
     "description_raw": "Whenever you play a Power, gain [blue]{Amount}[/blue] {Amount:energyIcons()}.",
     "type": "Buff",
     "stack_type": "Counter",
@@ -2592,8 +2592,8 @@
   {
     "id": "SWORD_SAGE",
     "name": "Sword Sage",
-    "description": "[gold]Sovereign Blade[/gold] now hits [blue]1[/blue] additional time.",
-    "description_raw": "[gold]Sovereign Blade[/gold] now hits [blue]{Amount}[/blue] additional {Amount:plural:time|times}.",
+    "description": "[gold]Sovereign Blade[/gold] gains [gold]Replay[/gold] [blue]1[/blue].",
+    "description_raw": "[gold]Sovereign Blade[/gold] gains [gold]Replay[/gold] [blue]{Amount}[/blue].",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
@@ -2706,7 +2706,7 @@
   {
     "id": "TERRITORIAL",
     "name": "Territorial",
-    "description": "At the end of [gold]Byrdonis's[/gold] turn, it gains [blue]1[/blue] [gold]Strength[/gold].",
+    "description": "At the end of this creature's turn, it gains [blue]1[/blue] [gold]Strength[/gold].",
     "description_raw": "At the end of [gold]{OwnerName}'s[/gold] turn, it gains [blue]{Amount}[/blue] [gold]Strength[/gold].",
     "type": "Buff",
     "stack_type": "Counter",
@@ -2752,7 +2752,7 @@
   {
     "id": "THE_SEALED_THRONE",
     "name": "The Sealed Throne",
-    "description": "Whenever you play a card, gain {singleStarIcon}.",
+    "description": "Whenever you play a card, gain [star:1].",
     "description_raw": "Whenever you play a card, gain {Amount:starIcons()}.",
     "type": "Buff",
     "stack_type": "Counter",
