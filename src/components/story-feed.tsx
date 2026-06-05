@@ -22,8 +22,17 @@ function stableHash(value: string) {
   return hash >>> 0;
 }
 
+function storyPublishedTime(story: Story) {
+  if (!story.publishedAt) return 0;
+  const time = Date.parse(story.publishedAt);
+  return Number.isFinite(time) ? time : 0;
+}
+
 function stableStoryOrder(stories: Story[]) {
   return [...stories].sort((a, b) => {
+    const publishedDiff = storyPublishedTime(b) - storyPublishedTime(a);
+    if (publishedDiff !== 0) return publishedDiff;
+
     const rankA = stableHash(a.id);
     const rankB = stableHash(b.id);
     return rankA - rankB || a.id.localeCompare(b.id);
@@ -466,6 +475,7 @@ function StoryCard({
   ensureUser,
   expanded,
   onToggle,
+  isLatestStory,
   likeCount,
   commentCount,
   engagementLoading,
@@ -486,6 +496,7 @@ function StoryCard({
   ensureUser: () => Promise<string | null>;
   expanded: boolean;
   onToggle: (storyId: string) => void;
+  isLatestStory: boolean;
   likeCount: number;
   commentCount: number;
   engagementLoading: boolean;
@@ -495,7 +506,17 @@ function StoryCard({
   const displayCommentCount = liveCommentCount ?? commentCount;
 
   return (
-    <article className="border-b border-border/50 last:border-b-0">
+    <article className="relative border-b border-border/50 last:border-b-0">
+      {isLatestStory && (
+        <Image
+          src="/images/sts2/relics/storybook.webp"
+          alt="새 이야기"
+          width={34}
+          height={34}
+          title="새 이야기"
+          className="pointer-events-none absolute right-[4.5rem] top-3 z-10 h-[34px] w-[34px] drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)]"
+        />
+      )}
       <div className="px-4 py-6">
         {/* Sentence + engagement */}
         <div className="flex items-center gap-3">
@@ -604,6 +625,10 @@ export function StoryFeed({
   }, [expandedIds]);
 
   const orderedStories = useMemo(() => stableStoryOrder(stories), [stories]);
+  const latestPublishedTime = useMemo(
+    () => Math.max(0, ...stories.map(storyPublishedTime)),
+    [stories],
+  );
 
   const cardMap = useMemo(() => new Map(cards.map((c) => [c.id, c])), [cards]);
   const relicMap = useMemo(() => new Map(relics.map((r) => [r.id, r])), [relics]);
@@ -649,6 +674,7 @@ export function StoryFeed({
             ensureUser={ensureUser}
             expanded={expandedIds.has(story.id)}
             onToggle={toggle}
+            isLatestStory={Boolean(story.publishedAt && storyPublishedTime(story) === latestPublishedTime)}
             likeCount={counts.likes[story.id] ?? 0}
             commentCount={counts.comments[story.id] ?? 0}
             engagementLoading={counts.loading}

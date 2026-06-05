@@ -211,6 +211,7 @@ export interface CodexMeta {
 export interface Story {
   id: string;
   game?: StoryGame;
+  publishedAt?: string;
   sentence: string;
   entityType?: StoryEntityType;
   entityId?: string;
