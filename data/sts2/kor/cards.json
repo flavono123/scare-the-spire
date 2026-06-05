@@ -9962,7 +9962,7 @@
   {
     "id": "JUGGERNAUT",
     "name": "절대적인 힘",
-    "description": "[gold]방어도[/gold]를 얻을 때마다,\n무작위 적에게\n피해를 6 줍니다.",
+    "description": "[gold]방어도[/gold]를 얻을 때마다, 무작위 적에게 피해를 6 줍니다.",
     "description_raw": "[gold]방어도[/gold]를 얻을 때마다,\n무작위 적에게\n피해를 {JuggernautPower:diff()} 줍니다.",
     "cost": 2,
     "is_x_cost": null,
@@ -14160,7 +14160,7 @@
   {
     "id": "REFLECT",
     "name": "반사",
-    "description": "[gold]방어도[/gold]를 15 얻습니다.\n이번 턴에 막은 공격 피해는\n공격한 적에게 반사됩니다.",
+    "description": "[gold]방어도[/gold]를 15 얻습니다.\n이번 턴에 막은 공격 피해는 공격한 적에게 반사됩니다.",
     "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n이번 턴에 막은 공격 피해는\n공격한 적에게 반사됩니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -15749,7 +15749,7 @@
   {
     "id": "SIC_EM",
     "name": "덮쳐!",
-    "description": "[gold]골골이[/gold]가 피해를 5 줍니다.\n이번 턴에 [gold]골골이[/gold]가\n이 적을 공격할 때마다,\n[gold]소환[/gold] 3.",
+    "description": "[gold]골골이[/gold]가 피해를 5 줍니다.\n이번 턴에 [gold]골골이[/gold]가 이 적을 공격할 때마다, [gold]소환[/gold] 3.",
     "description_raw": "[gold]골골이[/gold]가 피해를 {OstyDamage:diff()} 줍니다.\n이번 턴에 [gold]골골이[/gold]가\n이 적을 공격할 때마다,\n[gold]소환[/gold] {SicEmPower:diff()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -18173,7 +18173,7 @@
   {
     "id": "THE_SCYTHE",
     "name": "사신의 낫",
-    "description": "피해를 13 줍니다.\n이 카드의 피해량이\n영구적으로 4 증가합니다.",
+    "description": "피해를 13 줍니다.\n이 카드의 피해량이 영구적으로 4 증가합니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n이 카드의 피해량이\n영구적으로 {Increase:diff()} 증가합니다.",
     "cost": 2,
     "is_x_cost": null,
