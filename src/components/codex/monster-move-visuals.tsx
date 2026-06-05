@@ -675,8 +675,8 @@ export function MonsterAnimationPatchDiffBlock({
         </span>
         <span className="shrink-0 text-xs transition-transform group-open:rotate-180">⌄</span>
       </summary>
-      <div className={compact ? "mt-2" : "relative left-1/2 mt-2 w-[min(96vw,72rem)] -translate-x-1/2"}>
-        <div className={compact ? "" : "px-0"}>
+      <div className={compact ? "mt-2" : "mt-2 w-full max-w-full"}>
+        <div>
           <p className="mb-3 font-game-text text-xs leading-relaxed text-zinc-400">
             {spec.summary(serviceLocale, monster, monsters)}
           </p>
