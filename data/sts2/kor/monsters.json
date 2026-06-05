@@ -11977,53 +11977,6 @@
     "image_url": "/static/images/monsters/noisebot.png"
   },
   {
-    "id": "OSTY",
-    "name": "골골이",
-    "type": "Normal",
-    "show_in_compendium": true,
-    "min_hp": 1,
-    "max_hp": 1,
-    "min_hp_ascension": null,
-    "max_hp_ascension": null,
-    "moves": [
-      {
-        "id": "NOTHING",
-        "name": "Nothing",
-        "action_types": [],
-        "intents": [],
-        "intent_details": [],
-        "power_applications": [],
-        "card_applications": []
-      }
-    ],
-    "bestiary_moves": [
-      {
-        "id": "NOTHING",
-        "name": "Nothing",
-        "action_types": [],
-        "intents": [],
-        "intent_details": [],
-        "power_applications": [],
-        "card_applications": []
-      }
-    ],
-    "move_graph": {
-      "initial": null,
-      "confidence": "static",
-      "transitions": [
-        {
-          "from": "NOTHING",
-          "to": "NOTHING",
-          "chance": 100.0,
-          "kind": "fixed"
-        }
-      ]
-    },
-    "damage_values": null,
-    "block_values": null,
-    "image_url": "/static/images/monsters/osty.png"
-  },
-  {
     "id": "OVICOPTER",
     "name": "산란비충",
     "type": "Normal",

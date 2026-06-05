@@ -29,6 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data/sts2"
 DEFAULT_SOURCE = Path("/tmp/sts2-src")
 SKIP_PREFIXES = ("DEPRECATED_", "MOCK_", "ATTACK_MOVE_MONSTER", "BIG_DUMMY", "GENERIC")
+SKIP_IDS = {"OSTY"}
 
 MONSTER_NAMESPACES = [
     "MegaCrit.Sts2.Core.Models.Monsters",
@@ -755,6 +756,7 @@ def build_entries(
 ) -> tuple[list, list, list, list]:
     ids = sorted(set(loc_kor_by_id) | set(loc_eng_by_id))
     ids = [i for i in ids if not i.startswith(SKIP_PREFIXES)]
+    ids = [i for i in ids if i not in SKIP_IDS]
 
     old_kor_by_id = {e["id"]: e for e in existing_kor}
     old_eng_by_id = {e["id"]: e for e in existing_eng}
