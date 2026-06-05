@@ -1,4 +1,5 @@
 import { forwardRef, type CSSProperties, type ImgHTMLAttributes } from "react";
+import { cacheBustSts2ImageUrl } from "@/lib/sts2-image-cache";
 
 type StaticImageImport = {
   src: string;
@@ -20,7 +21,7 @@ type StaticImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "alt" | "heigh
 };
 
 function resolveImageSource(src: StaticImageProps["src"]) {
-  return typeof src === "string" ? src : src.src;
+  return cacheBustSts2ImageUrl(typeof src === "string" ? src : src.src);
 }
 
 function resolveImageDimension(

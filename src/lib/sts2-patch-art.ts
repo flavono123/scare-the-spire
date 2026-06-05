@@ -1,5 +1,6 @@
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { ServiceLocale } from "@/lib/i18n";
+import { cacheBustSts2ImageUrl } from "@/lib/sts2-image-cache";
 import type { STS2Patch, STS2PatchArt } from "@/lib/types";
 
 export interface ResolvedPatchArt {
@@ -99,6 +100,13 @@ function resolveFeaturedEntityArt(
   );
 }
 
+function withCacheBustedImage(art: ResolvedPatchArt): ResolvedPatchArt {
+  return {
+    ...art,
+    imageUrl: cacheBustSts2ImageUrl(art.imageUrl),
+  };
+}
+
 export function resolvePatchArt(
   patch: STS2Patch,
   entitiesByKey: Map<string, EntityInfo>,
@@ -106,8 +114,8 @@ export function resolvePatchArt(
 ): ResolvedPatchArt {
   if (patch.art) {
     const explicit = resolveExplicitPatchArt(patch.art, entitiesByKey, serviceLocale);
-    if (explicit) return explicit;
+    if (explicit) return withCacheBustedImage(explicit);
   }
 
-  return resolveFeaturedEntityArt(patch, entitiesByKey, serviceLocale) ?? defaultPatchArt(serviceLocale);
+  return withCacheBustedImage(resolveFeaturedEntityArt(patch, entitiesByKey, serviceLocale) ?? defaultPatchArt(serviceLocale));
 }
