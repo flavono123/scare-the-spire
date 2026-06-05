@@ -394,12 +394,15 @@
     "summaryKo": "잠행 군체와 영겁의 모래시계 적 밸런스 조정, 장화의 골골이 공격 적용, 절대적인 힘/군주의 시선/반사/덮쳐!/사신의 낫 카드 밸런스 변경.",
     "hasBalanceChanges": true,
     "art": {
-      "type": "card",
-      "id": "SIC_EM",
-      "alt": "Sic 'Em card art",
-      "altKo": "덮쳐! 카드 아트"
+      "type": "epoch",
+      "id": "IRONCLAD3_EPOCH",
+      "alt": "Devastation epoch art",
+      "altKo": "역사: 초토화"
     },
     "featuredEntities": [
+      { "type": "epoch", "id": "IRONCLAD3_EPOCH" },
+      { "type": "epoch", "id": "NECROBINDER2_EPOCH" },
+      { "type": "epoch", "id": "NECROBINDER5_EPOCH" },
       { "type": "monster", "id": "SKULKING_COLONY" },
       { "type": "monster", "id": "AEONGLASS" },
       { "type": "relic", "id": "THE_BOOT" },
