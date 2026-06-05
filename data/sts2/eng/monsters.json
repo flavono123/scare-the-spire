@@ -15,11 +15,11 @@
         "name": "Ebb",
         "action_types": [
           "attack",
-          "debuff"
+          "defense"
         ],
         "intents": [
           "SingleAttackIntent",
-          "DebuffIntent"
+          "DefendIntent"
         ],
         "intent_details": [
           {
@@ -31,19 +31,10 @@
             }
           },
           {
-            "type": "DebuffIntent"
+            "type": "DefendIntent"
           }
         ],
-        "power_applications": [
-          {
-            "power_id": "EBB",
-            "target": "player",
-            "amount": {
-              "normal": 3,
-              "ascension": null
-            }
-          }
-        ],
+        "power_applications": [],
         "card_applications": []
       },
       {
@@ -73,13 +64,11 @@
         "name": "Increasing Intensity",
         "action_types": [
           "debuff",
-          "buff",
-          "defense"
+          "buff"
         ],
         "intents": [
           "StatusIntent",
-          "BuffIntent",
-          "DefendIntent"
+          "BuffIntent"
         ],
         "intent_details": [
           {
@@ -87,9 +76,6 @@
           },
           {
             "type": "BuffIntent"
-          },
-          {
-            "type": "DefendIntent"
           }
         ],
         "power_applications": [
@@ -116,11 +102,11 @@
         "name": "Ebb",
         "action_types": [
           "attack",
-          "debuff"
+          "defense"
         ],
         "intents": [
           "SingleAttackIntent",
-          "DebuffIntent"
+          "DefendIntent"
         ],
         "intent_details": [
           {
@@ -132,19 +118,10 @@
             }
           },
           {
-            "type": "DebuffIntent"
+            "type": "DefendIntent"
           }
         ],
-        "power_applications": [
-          {
-            "power_id": "EBB",
-            "target": "player",
-            "amount": {
-              "normal": 3,
-              "ascension": null
-            }
-          }
-        ],
+        "power_applications": [],
         "card_applications": []
       },
       {
@@ -174,13 +151,11 @@
         "name": "Increasing Intensity",
         "action_types": [
           "debuff",
-          "buff",
-          "defense"
+          "buff"
         ],
         "intents": [
           "StatusIntent",
-          "BuffIntent",
-          "DefendIntent"
+          "BuffIntent"
         ],
         "intent_details": [
           {
@@ -188,9 +163,6 @@
           },
           {
             "type": "BuffIntent"
-          },
-          {
-            "type": "DefendIntent"
           }
         ],
         "power_applications": [
@@ -246,7 +218,7 @@
       }
     },
     "block_values": {
-      "IncreasingIntensity": {
+      "Ebb": {
         "normal": 33,
         "ascension": null
       }
@@ -14788,7 +14760,7 @@
             "target": "self",
             "amount": {
               "normal": 2,
-              "ascension": 3
+              "ascension": 4
             }
           }
         ],
@@ -14892,7 +14864,7 @@
             "target": "self",
             "amount": {
               "normal": 2,
-              "ascension": 3
+              "ascension": 4
             }
           }
         ],
