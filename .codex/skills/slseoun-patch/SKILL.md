@@ -15,6 +15,7 @@ Create or update STS2 rich patch notes. Steam is the source of truth for patch-n
 - Follow `docs/I18N.md` for patch-note locale behavior; `serviceLocale` selects the patch-note file, while game entity names and hover/link targets follow `gameLocale`.
 - Every meaningful edit gets its own speculative commit, following `AGENTS.md`.
 - Never construct a Steam store/news URL from the Steam API `gid`; use a real store URL from the announcement or user.
+- Before finalizing a ready patch that touches Compendium resources, run `.codex/skills/sts2-compendium-patch-sync/SKILL.md` after rich notes and asset extraction so PCK/DLL diffs, `data/sts2-changes.json`, and lifecycle/deprecated behavior are applied together.
 
 ## Steam Fetch
 
@@ -93,7 +94,8 @@ Rules:
    - `data/sts2-changes.json` is the SSOT for structured patch changes. Put player-facing `diffs`, machine-applicable `fieldDiffs`, cross-resource `relatedEntities`, and optional `visualDiff` on the same `STS2Change` record.
    - Do not hand-author `data/sts2-entity-versions.json`; `getEntityVersionDiffs()` derives version diffs from `data/sts2-changes.json`.
    - `data/sts2/meta.json`
-8. Commit each meaningful file group independently.
+8. Run `.codex/skills/sts2-compendium-patch-sync/SKILL.md` when the patch touched any Compendium resource, monster behavior, asset, localization, or deprecated/removed resource. Treat this as the post-patch guardrail before the patch becomes ready.
+9. Commit each meaningful file group independently.
 
 ## Compendium Versioning Contract
 
@@ -104,6 +106,7 @@ Every Codex resource changed by a patch needs machine-readable `fieldDiffs` in `
 - Patch-history rails may suppress raw field-diff prose when a curated visual diff exists, but the field diffs must still exist so old versions render correctly in the Compendium.
 - Context-free compendium pages should not bake action-specific amounts into resource descriptions. For example, a power description with `{Amount}` should show `X` unless a monster move, card, relic, or patch visual passes a concrete amount into the shared game hover tip.
 - If a resource needs patch-specific behavior beyond generic field reconstruction, add a small extension around the common versioning path instead of bypassing it.
+- For deprecated or removed resources, follow `.codex/skills/sts2-compendium-patch-sync/SKILL.md`: keep historical resource rows, add `deprecated` and `deprecatedInPatch` field diffs, render assets grayscale from the deprecated patch onward, and keep pre-deprecated versions colored and linkable.
 
 ## Patch Note I18N Contract
 
