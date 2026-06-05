@@ -5067,7 +5067,10 @@
           }
         ]
       }
-    ]
+    ],
+    "visualDiff": {
+      "type": "monster-pattern"
+    }
   },
   {
     "id": "ebb-v107-deprecated",

@@ -221,6 +221,35 @@ const OLD_AEONGLASS_MOVES: MoveVisual[] = [
   }),
 ];
 
+const AEONGLASS_V106_MOVES: MoveVisual[] = [
+  createMoveVisual({
+    id: "EBB",
+    name: "감쇠",
+    nameEn: "Ebb",
+    damage: { normal: 26, ascension: 32 },
+    intents: [{ type: "SingleAttackIntent", damageKey: "Ebb", repeat: SINGLE_ATTACK_REPEAT }, { type: "DebuffIntent" }],
+    powers: [powerApplication("EBB", "감쇠", "Ebb", "Debuff", "player", { normal: 3, ascension: null })],
+    powerChange: "removed",
+  }),
+  createMoveVisual({
+    id: "EYE_LASERS",
+    name: "눈 레이저",
+    nameEn: "Eye Lasers",
+    damage: { normal: 11, ascension: 12 },
+    intents: [{ type: "MultiAttackIntent", damageKey: "EyeLasers", repeat: DOUBLE_ATTACK_REPEAT }],
+  }),
+  createMoveVisual({
+    id: "INCREASING_INTENSITY",
+    name: "강도 증가",
+    nameEn: "Increasing Intensity",
+    block: { normal: 33, ascension: null },
+    intents: [{ type: "StatusIntent" }, { type: "BuffIntent" }, { type: "DefendIntent" }],
+    powers: [powerApplication("STRENGTH", "힘", "Strength", "Buff", "self", null)],
+    cards: [witherUpgradeApplication()],
+    blockChange: "removed",
+  }),
+];
+
 const OLD_HAUNTED_SHIP_MOVES: MoveVisual[] = [
   createMoveVisual({
     id: "HAUNT",
@@ -596,6 +625,29 @@ const MONSTER_PATCH_DIFFS: Record<string, Record<string, MonsterPatchDiffSpec>> 
         labelKo: "이후",
         labelEn: "After",
         moveIds: ["ZOOM", "ZOOM_MOVE_2", "INERTIA", "PIERCING_STABS"],
+      },
+    },
+  },
+  "v0.107.0": {
+    AEONGLASS: {
+      titleKo: "영겁의 모래시계 감쇠 재배치",
+      titleEn: "Aeonglass Ebb Reassignment",
+      summary: (serviceLocale, monster) => serviceLocale === "ko"
+        ? <><PatchDiffMoveLink move={AEONGLASS_V106_MOVES[0]} monster={monster} serviceLocale={serviceLocale}>감쇠</PatchDiffMoveLink>에서 <PatchDiffPowerLink powerId="EBB" serviceLocale={serviceLocale}>감쇠</PatchDiffPowerLink> 디버프가 빠지고, 대신 <PatchDiffPlainKeyword>방어도</PatchDiffPlainKeyword>가 붙습니다. <PatchDiffMoveLink move={AEONGLASS_V106_MOVES[2]} monster={monster} serviceLocale={serviceLocale}>강도 증가</PatchDiffMoveLink>는 더 이상 방어 행동이 아니고, 힘과 침체 강화만 남습니다.</>
+        : <><PatchDiffMoveLink move={AEONGLASS_V106_MOVES[0]} monster={monster} serviceLocale={serviceLocale}>Ebb</PatchDiffMoveLink> no longer applies the <PatchDiffPowerLink powerId="EBB" serviceLocale={serviceLocale}>Ebb</PatchDiffPowerLink> debuff and now gains <PatchDiffPlainKeyword>Block</PatchDiffPlainKeyword> instead. <PatchDiffMoveLink move={AEONGLASS_V106_MOVES[2]} monster={monster} serviceLocale={serviceLocale}>Increasing Intensity</PatchDiffMoveLink> is no longer a defensive move, keeping only Strength and Wither upgrade pressure.</>,
+      before: {
+        labelKo: "이전",
+        labelEn: "Before",
+        moves: AEONGLASS_V106_MOVES,
+      },
+      after: {
+        labelKo: "이후",
+        labelEn: "After",
+        moveIds: ["EBB", "EYE_LASERS", "INCREASING_INTENSITY"],
+        changes: {
+          EBB: { blockChange: "added" },
+          INCREASING_INTENSITY: { blockChange: "removed" },
+        },
       },
     },
   },
@@ -1651,6 +1703,20 @@ function cardApplication(
     applicationKind: "add",
     amount,
     imageUrl: cardId === "WITHER" ? "/images/sts2/cards-beta/wither.webp" : `/images/sts2/cards/${cardId.toLowerCase()}.webp`,
+  };
+}
+
+function witherUpgradeApplication(): MonsterMoveCardApplication {
+  return {
+    cardId: "WITHER",
+    cardName: "침체",
+    cardNameEn: "Wither",
+    cardType: "상태이상",
+    cardRarity: "상태이상",
+    cardColor: "status",
+    applicationKind: "upgrade",
+    amount: { normal: 1, ascension: 2 },
+    imageUrl: "/images/sts2/cards/wither.webp",
   };
 }
 
