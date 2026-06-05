@@ -5070,6 +5070,44 @@
     ]
   },
   {
+    "id": "ebb-v107-deprecated",
+    "entityType": "power",
+    "entityId": "EBB",
+    "patch": "v0.107.0",
+    "date": "2026-06-04",
+    "character": null,
+    "summary": "Ebb debuff removed from current gameplay.",
+    "summaryKo": "감쇠 디버프가 현재 게임플레이에서 제거되었습니다.",
+    "diffs": [
+      {
+        "attribute": "deprecated",
+        "displayName": "Deprecated",
+        "displayNameKo": "삭제",
+        "before": false,
+        "after": true,
+        "diffType": "boolean"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "deprecated",
+        "before": false,
+        "after": true
+      },
+      {
+        "field": "deprecatedInPatch",
+        "before": null,
+        "after": "v0.107.0"
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "monster",
+        "id": "AEONGLASS"
+      }
+    ]
+  },
+  {
     "id": "skulking-colony-v107-buff",
     "entityType": "monster",
     "entityId": "SKULKING_COLONY",

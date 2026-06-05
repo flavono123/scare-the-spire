@@ -767,6 +767,8 @@
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/ebb_power.png",
+    "deprecated": true,
+    "deprecatedInPatch": "v0.107.0",
     "vars": {}
   },
   {
