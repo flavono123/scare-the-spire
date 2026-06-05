@@ -141,6 +141,7 @@ export function PowerDetail({
     [power.name, power.nameEn],
   );
   const displayImageUrl = showBeta && power.betaImageUrl ? power.betaImageUrl : power.imageUrl;
+  const lifecycleClassName = power.deprecated ? " opacity-50 grayscale saturate-0" : "";
   const displayDescription = getPowerCompendiumDescription(power);
   const typeLabel = gameUi.powers.types[power.type].label || serviceText.labels.powerTypes[power.type].label;
   const stackLabel = serviceText.labels.powerStackTypes[power.stackType] ?? power.stackType;
@@ -218,7 +219,7 @@ export function PowerDetail({
                     alt={power.name}
                     width={160}
                     height={160}
-                    className="h-full w-full object-contain drop-shadow-lg"
+                    className={`h-full w-full object-contain drop-shadow-lg${lifecycleClassName}`}
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-2xl text-gray-600">

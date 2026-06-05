@@ -473,6 +473,7 @@ export function EntityPreview({
             title={previewEntity.nameKo}
             imageUrl={previewEntity.powerData.imageUrl}
             imageAlt={previewEntity.nameKo}
+            imageClassName={`h-14 w-14 object-contain${previewEntity.powerData.deprecated ? " opacity-50 grayscale saturate-0" : ""}`}
           >
             <DescriptionText description={previewEntity.powerData.description} />
           </GameResourcePreview>,
