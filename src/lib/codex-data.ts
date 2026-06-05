@@ -892,7 +892,11 @@ export async function getCodexPowers(opts?: { gameLocale?: GameLocale; includeDe
   const includeDeprecated = opts?.includeDeprecated ?? false;
 
   return korPowers
-    .filter((p) => (includeDeprecated || !p.deprecated) && hasPowerLocalizationTitle(gamePowers, p.id) && !(p.type === "None" && !p.description))
+    .filter((p) => (
+      (includeDeprecated || !p.deprecated) &&
+      (hasPowerLocalizationTitle(gamePowers, p.id) || (includeDeprecated && Boolean(p.deprecated))) &&
+      !(p.type === "None" && !p.description)
+    ))
     .map((kor) => {
       const eng = engById.get(kor.id) ?? kor;
       const imageFile = imageFilenameFromStaticUrl(kor.image_url);
