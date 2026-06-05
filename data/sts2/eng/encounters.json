@@ -681,7 +681,7 @@
   },
   {
     "id": "LIVING_FOG_NORMAL",
-    "name": "Evil Gas",
+    "name": "Living Fog",
     "room_type": "Monster",
     "is_weak": false,
     "act": "Underdocks",
