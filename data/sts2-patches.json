@@ -390,9 +390,24 @@
     "titleKo": "베타 패치 노트 - v0.107.0",
     "type": "beta",
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/714529243732640389",
-    "status": "building",
-    "summary": "Rich patch notes are being prepared from the Steam source.",
-    "summaryKo": "Steam 원문을 바탕으로 슬서운변경을 작성 중입니다.",
-    "hasBalanceChanges": true
+    "summary": "Enemy balance changes for Skulking Colony and Aeonglass, The Boot now applies to Osty attacks, and card balance updates for Juggernaut, Monarch's Gaze, Reflect, Sic 'Em, and The Scythe.",
+    "summaryKo": "잠행 군체와 영겁의 모래시계 적 밸런스 조정, 장화의 골골이 공격 적용, 절대적인 힘/군주의 시선/반사/덮쳐!/사신의 낫 카드 밸런스 변경.",
+    "hasBalanceChanges": true,
+    "art": {
+      "type": "card",
+      "id": "SIC_EM",
+      "alt": "Sic 'Em card art",
+      "altKo": "덮쳐! 카드 아트"
+    },
+    "featuredEntities": [
+      { "type": "monster", "id": "SKULKING_COLONY" },
+      { "type": "monster", "id": "AEONGLASS" },
+      { "type": "relic", "id": "THE_BOOT" },
+      { "type": "card", "id": "JUGGERNAUT" },
+      { "type": "card", "id": "MONARCHS_GAZE" },
+      { "type": "card", "id": "REFLECT" },
+      { "type": "card", "id": "SIC_EM" },
+      { "type": "card", "id": "THE_SCYTHE" }
+    ]
   }
 ]
