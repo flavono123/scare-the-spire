@@ -163,7 +163,7 @@
   "THE_LOST_AND_FORGOTTEN_NORMAL.loss": "{character} {characterGender:choose(masculine|feminine|neutral):stracił|straciła|stracił} chęci do życia przez [gold]Porzuconego i Zapomnianego[/gold].",
   "THE_LOST_AND_FORGOTTEN_NORMAL.title": "Porzucony i Zapomniany",
   "THE_OBSCURA_NORMAL.loss": "[gold]{encounter}[/gold] i jej iluzja zmiażdżyły {characterObject}.",
-  "THE_OBSCURA_NORMAL.title": "Zasłona",
+  "THE_OBSCURA_NORMAL.title": "Przysłona",
   "THIEVING_HOPPER_WEAK.customRewardDescription": "Odzyskaj ukradzioną kartę.",
   "THIEVING_HOPPER_WEAK.loss": "[gold]{encounter}[/gold] napadł na {characterObject}.",
   "THIEVING_HOPPER_WEAK.title": "Złodziejski Skoczek",

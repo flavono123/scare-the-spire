@@ -1,5 +1,5 @@
 {
-  "AXEBOTS_NORMAL.loss": "{character}ถูกตัดแยกชิ้นส่วนโดยพวก[gold]{encounter}[/gold]",
+  "AXEBOTS_NORMAL.loss": "{character}ถูกตัดแยกชิ้นส่วนโดย[gold]{encounter}[/gold]",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.loss": "{character}ถูก[gold]{encounter}[/gold]สังหารได้ไงก็ไม่รู้???",
   "BATTLEWORN_DUMMY_EVENT_ENCOUNTER.title": "หุ่นฝึกซ้อมโชกโชน",
   "BOWLBUGS_NORMAL.loss": "{character}ดันไปขวางทาง[gold]{encounter}[/gold]เข้าแล้ว",
@@ -15,6 +15,8 @@
   "CORPSE_SLUGS_WEAK.loss": "{character}ถูก[gold]{encounter}[/gold]รุมกินโต๊ะ",
   "CORPSE_SLUGS_WEAK.title": "ทากศพ",
   "CUBEX_CONSTRUCT_NORMAL.loss": "{character}ถูก[gold]{encounter}[/gold]ยิงเลเซอร์ใส่จนตาย",
+  "CULTISTS_NORMAL.loss": "{character}ถูกสังหารโดยพวก[gold]{encounter}[/gold] [sine]กาาาาา[/sine]...",
+  "CULTISTS_NORMAL.title": "สาวกคลั่งลัทธิ",
   "DECIMILLIPEDE_ELITE.loss": "{character}ไม่สามารถเอาชีวิตรอดจากอาณาเขตของ[gold]{encounter}[/gold]ได้",
   "DENSE_VEGETATION_EVENT_ENCOUNTER.loss": "{character}ถูก[gold]{encounter}[/gold]แพร่ระบาด",
   "DEPRECATED_ENCOUNTER.loss": "{character}เผชิญกับมอนสเตอร์ที่ถูกนำออกจากเกมไปแล้ว",
@@ -62,6 +64,7 @@
   "OWL_MAGISTRATE_NORMAL.title": "ฮูกพิพากษา",
   "PHANTASMAL_GARDENERS_ELITE.loss": "{character}ถูก[gold]{encounter}[/gold]ส่งไปที่ชอบที่ชอบ",
   "PHROG_PARASITE_ELITE.loss": "[gold]{encounter}[/gold]แผ่ขยายอาณานิคมเข้าร่างของ{character}",
+  "PHROG_PARASITE_ELITE.title": "ปรสิตกป",
   "PUNCH_CONSTRUCT_NORMAL.loss": "{character}แลกหมัดกับ[gold]{encounter}[/gold]",
   "PUNCH_CONSTRUCT_NORMAL.title": "จักรกลชกต่อย",
   "PUNCH_OFF_EVENT_ENCOUNTER.loss": "{character}เข้าไปขัดการดวลของ[gold]{encounter}[/gold] 2 ตัว",

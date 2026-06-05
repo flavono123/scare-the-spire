@@ -18,7 +18,7 @@
   "RINGING.title": "Résonance",
   "SMOG.description": "Vous ne pouvez plus jouer de [gold]Compétences[/gold] ce tour. Se dissipe à la fin du tour.",
   "SMOG.title": "Brouillard",
-  "TAINTED.description": "Lorsque vous jouez cette carte, gagnez [blue]{Amount}[/blue] de[gold]Souillure[/gold]",
+  "TAINTED.description": "Lorsque vous jouez cette carte, gagnez [blue]{Amount}[/blue] de [gold]Souillure[/gold]",
   "TAINTED.extraCardText": "Gagnez {Amount} de Souillure.",
   "TAINTED.title": "Souillée"
 }

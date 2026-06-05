@@ -380,7 +380,7 @@
   "VAKUU.epithet": "최초의 악마",
   "VAKUU.loss": "{character}는 [gold]바쿠[/gold]와 부당한 계약을 맺었습니다.",
   "VAKUU.talk.ANY.0-0r.ancient": "첨탑에서 영광을 찾고 있는 건가? 너에게 몇 가지 제안할 게 있다만...",
-  "VAKUU.talk.ANY.1-0r.ancient": "143번. 네가 이곳에 찾아온 횟수다.",
+  "VAKUU.talk.ANY.1-0r.ancient": "{Visits}번. 네가 이곳에 찾아온 횟수다.",
   "VAKUU.talk.ANY.2-0r.ancient": "이게 [sine]절대로[/sine] 끝나지 않으리란 사실을 깨달았나?",
   "VAKUU.talk.DEFECT.0-0.ancient": "망가진 자여, 내가 너를 [sine]완성[/sine]시켜주마.",
   "VAKUU.talk.DEFECT.1-0r.ancient": "같은 구조체들이 너의 죽음을 원한다는 게 이상하게 느껴지나?",

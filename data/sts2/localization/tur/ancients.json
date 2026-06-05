@@ -380,7 +380,7 @@
   "VAKUU.epithet": "İlk Şeytan",
   "VAKUU.loss": "{character}, [gold]Vakuu[/gold] ile kötü bir anlaşmaya girdi.",
   "VAKUU.talk.ANY.0-0r.ancient": "Spire'da şöhret arıyoruz, öyle mi? Sana birkaç teklifim var...",
-  "VAKUU.talk.ANY.1-0r.ancient": "143. 143 kez buraya geldin.",
+  "VAKUU.talk.ANY.1-0r.ancient": "{Visits}. {Visits} {Visits:plural:kez|kez} buraya geldin.",
   "VAKUU.talk.ANY.2-0r.ancient": "Bunun [sine]asla[/sine] sona ermeyeceğinin farkında mısın?",
   "VAKUU.talk.DEFECT.0-0.ancient": "Bozuk varlık, seni [sine]mükemmelleştirmeme[/sine] izin ver.",
   "VAKUU.talk.DEFECT.1-0r.ancient": "Yoldaş yapılarının ölümünü istemelerini garip bulmuyor musun?",

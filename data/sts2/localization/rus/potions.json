@@ -83,6 +83,7 @@
   "LUCKY_TONIC.title": "Бальзам удачи",
   "MAZALETHS_GIFT.description": "Дает [blue]{RitualPower}[/blue] [gold]{RitualPower:plural(ru):ритуал|ритуала|ритуалов}[/gold].",
   "MAZALETHS_GIFT.title": "Дар Мазалета",
+  "MOCK_DISCARD_AND_ADD_SHIVS_POTION.title": "Mock Discard and Add Shivs Potion",
   "OROBIC_ACID.description": "Добавляет в [gold]руку[/gold] случайные Атаку, Навык и Талант. В этом ходу они бесплатные.",
   "OROBIC_ACID.title": "Оробасинка",
   "POISON_POTION.description": "Накладывает [blue]{PoisonPower}[/blue] [gold]яда[/gold].",

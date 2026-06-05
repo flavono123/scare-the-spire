@@ -83,6 +83,7 @@
   "LUCKY_TONIC.title": "幸運のトニック",
   "MAZALETHS_GIFT.description": "[gold]儀式[/gold][blue]{RitualPower}[/blue]を得る。",
   "MAZALETHS_GIFT.title": "マザレスの贈り物",
+  "MOCK_DISCARD_AND_ADD_SHIVS_POTION.title": "テスト用ディスカード＆ナイフ追加ポーション",
   "OROBIC_ACID.description": "ランダムなアタック、スキル、パワーを1枚ずつ[gold]手札[/gold]に加える。このターン、それらをコストを支払わずにプレイできる。",
   "OROBIC_ACID.title": "オロビックの酸液",
   "POISON_POTION.description": "[gold]毒[/gold][blue]{PoisonPower}[/blue]を付与する。",
