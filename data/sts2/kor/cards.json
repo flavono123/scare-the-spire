@@ -9962,7 +9962,7 @@
   {
     "id": "JUGGERNAUT",
     "name": "절대적인 힘",
-    "description": "[gold]방어도[/gold]를 얻을 때마다, 무작위 적에게 피해를 5 줍니다.",
+    "description": "[gold]방어도[/gold]를 얻을 때마다, 무작위 적에게 피해를 6 줍니다.",
     "description_raw": "[gold]방어도[/gold]를 얻을 때마다,\n무작위 적에게\n피해를 {JuggernautPower:diff()} 줍니다.",
     "cost": 2,
     "is_x_cost": null,
@@ -9988,8 +9988,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "JuggernautPower": 5,
-      "Juggernaut": 5
+      "JuggernautPower": 6,
+      "Juggernaut": 6
     },
     "upgrade": {
       "juggernautpower": "+2"
@@ -11561,7 +11561,7 @@
     "name": "군주의 시선",
     "description": "적을 공격할 때마다, 대상 적이 이번 턴 동안 [gold]힘[/gold]을 1 잃습니다.",
     "description_raw": "적을 공격할 때마다,\n대상 적이 이번 턴 동안\n[gold]힘[/gold]을 {StrengthLoss:diff()} 잃습니다.",
-    "cost": 3,
+    "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -11583,7 +11583,7 @@
       "StrengthLoss": 1
     },
     "upgrade": {
-      "cost": 2
+      "cost": 1
     },
     "image_url": "/static/images/cards/monarchs_gaze.png",
     "beta_image_url": null
@@ -14160,7 +14160,7 @@
   {
     "id": "REFLECT",
     "name": "반사",
-    "description": "[gold]방어도[/gold]를 16 얻습니다.\n이번 턴에 막은 공격 피해는 공격한 적에게 반사됩니다.",
+    "description": "[gold]방어도[/gold]를 15 얻습니다.\n이번 턴에 막은 공격 피해는 공격한 적에게 반사됩니다.",
     "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n이번 턴에 막은 공격 피해는\n공격한 적에게 반사됩니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -14181,11 +14181,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 16,
+      "Block": 15,
       "StarCost": 3
     },
     "upgrade": {
-      "block": "+4"
+      "block": "+5"
     },
     "image_url": "/static/images/cards/reflect.png",
     "beta_image_url": "/static/images/cards/beta/reflect.png"
@@ -15749,7 +15749,7 @@
   {
     "id": "SIC_EM",
     "name": "덮쳐!",
-    "description": "[gold]골골이[/gold]가 피해를 5 줍니다.\n이번 턴에 [gold]골골이[/gold]가 이 적을 공격할 때마다, [gold]소환[/gold] 2.",
+    "description": "[gold]골골이[/gold]가 피해를 5 줍니다.\n이번 턴에 [gold]골골이[/gold]가 이 적을 공격할 때마다, [gold]소환[/gold] 3.",
     "description_raw": "[gold]골골이[/gold]가 피해를 {OstyDamage:diff()} 줍니다.\n이번 턴에 [gold]골골이[/gold]가\n이 적을 공격할 때마다,\n[gold]소환[/gold] {SicEmPower:diff()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -15778,8 +15778,8 @@
     "spawns_cards": null,
     "vars": {
       "OstyDamage": 5,
-      "SicEmPower": 2,
-      "SicEm": 2,
+      "SicEmPower": 3,
+      "SicEm": 3,
       "Damage": 5
     },
     "upgrade": {
@@ -18173,7 +18173,7 @@
   {
     "id": "THE_SCYTHE",
     "name": "사신의 낫",
-    "description": "피해를 13 줍니다.\n이 카드의 피해량이 영구적으로 3 증가합니다.",
+    "description": "피해를 13 줍니다.\n이 카드의 피해량이 영구적으로 4 증가합니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n이 카드의 피해량이\n영구적으로 {Increase:diff()} 증가합니다.",
     "cost": 2,
     "is_x_cost": null,
@@ -18196,7 +18196,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Increase": 3,
+      "Increase": 4,
       "Damage": 13,
       "baseDamage": 13
     },

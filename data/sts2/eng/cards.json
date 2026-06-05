@@ -9959,7 +9959,7 @@
   {
     "id": "JUGGERNAUT",
     "name": "Juggernaut",
-    "description": "Whenever you gain [gold]Block[/gold], deal 5 damage to a random enemy.",
+    "description": "Whenever you gain [gold]Block[/gold], deal 6 damage to a random enemy.",
     "description_raw": "Whenever you gain [gold]Block[/gold], deal {JuggernautPower:diff()} damage to a random enemy.",
     "cost": 2,
     "is_x_cost": null,
@@ -9985,8 +9985,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "JuggernautPower": 5,
-      "Juggernaut": 5
+      "JuggernautPower": 6,
+      "Juggernaut": 6
     },
     "upgrade": {
       "juggernautpower": "+2"
@@ -11558,7 +11558,7 @@
     "name": "Monarch's Gaze",
     "description": "Whenever you attack an enemy, it loses 1 [gold]Strength[/gold] this turn.",
     "description_raw": "Whenever you attack an enemy, it loses {StrengthLoss:diff()} [gold]Strength[/gold] this turn.",
-    "cost": 3,
+    "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -11580,7 +11580,7 @@
       "StrengthLoss": 1
     },
     "upgrade": {
-      "cost": 2
+      "cost": 1
     },
     "image_url": "/static/images/cards/monarchs_gaze.png",
     "beta_image_url": null
@@ -14157,7 +14157,7 @@
   {
     "id": "REFLECT",
     "name": "Reflect",
-    "description": "Gain 16 [gold]Block[/gold].\nBlocked attack damage is reflected to your attacker this turn.",
+    "description": "Gain 15 [gold]Block[/gold].\nBlocked attack damage is reflected to your attacker this turn.",
     "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nBlocked attack damage is reflected to your attacker this turn.",
     "cost": 1,
     "is_x_cost": null,
@@ -14178,11 +14178,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Block": 16,
+      "Block": 15,
       "StarCost": 3
     },
     "upgrade": {
-      "block": "+4"
+      "block": "+5"
     },
     "image_url": "/static/images/cards/reflect.png",
     "beta_image_url": "/static/images/cards/beta/reflect.png"
@@ -15744,7 +15744,7 @@
   {
     "id": "SIC_EM",
     "name": "Sic 'Em",
-    "description": "[gold]Osty[/gold] deals 5 damage.\nWhenever [gold]Osty[/gold] hits this enemy this turn, [gold]Summon[/gold] 2.",
+    "description": "[gold]Osty[/gold] deals 5 damage.\nWhenever [gold]Osty[/gold] hits this enemy this turn, [gold]Summon[/gold] 3.",
     "description_raw": "[gold]Osty[/gold] deals {OstyDamage:diff()} damage.\nWhenever [gold]Osty[/gold] hits this enemy this turn, [gold]Summon[/gold] {SicEmPower:diff()}.",
     "cost": 1,
     "is_x_cost": null,
@@ -15773,8 +15773,8 @@
     "spawns_cards": null,
     "vars": {
       "OstyDamage": 5,
-      "SicEmPower": 2,
-      "SicEm": 2,
+      "SicEmPower": 3,
+      "SicEm": 3,
       "Damage": 5
     },
     "upgrade": {
@@ -18167,7 +18167,7 @@
   {
     "id": "THE_SCYTHE",
     "name": "The Scythe",
-    "description": "Deal 13 damage.\nPermanently increase this card's damage by 3.",
+    "description": "Deal 13 damage.\nPermanently increase this card's damage by 4.",
     "description_raw": "Deal {Damage:diff()} damage.\nPermanently increase this card's damage by {Increase:diff()}.",
     "cost": 2,
     "is_x_cost": null,
@@ -18190,7 +18190,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Increase": 3,
+      "Increase": 4,
       "Damage": 13,
       "baseDamage": 13
     },
