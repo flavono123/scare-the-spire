@@ -38,6 +38,7 @@ Use both automated and manual review:
 
 Use these project-local skills as subroutines when scope matches:
 
+- `.codex/skills/sts2-compendium-patch-qa/SKILL.md`: run after STS2 PCK/game-data patch sync, Compendium `fieldDiffs`, versioning, lifecycle/deprecated handling, patch-history rails, or rich patch pages that touch Codex resources.
 - `.codex/skills/mobile-viewport-qa/SKILL.md`: run after mobile-sensitive UI, page layout, render surfaces, detail rails, hover previews, patch pages, profile UI, or responsive behavior changes.
 - `.codex/skills/animation-playback-qa/SKILL.md`: run after SpinePlayer, VFX, canvas, shader, video-like render surface, click-triggered animation, or replay behavior changes.
 
@@ -45,9 +46,9 @@ Load the sub-skill body only when needed, then follow its reporting rules in add
 
 ## Scope Mapping
 
-- Data-only STS2 entity changes: run `pnpm i18n:validate`, `pnpm codex:validate`, and any entity/reference validator touched by the data shape.
+- Data-only STS2 entity changes: run `pnpm i18n:validate`, `pnpm codex:validate`, any entity/reference validator touched by the data shape, and `sts2-compendium-patch-qa` when the change came from a patch, PCK extraction, versioned diff, lifecycle field, or deprecated resource.
 - Cross-reference or related-resource changes: run `pnpm i18n:validate`, `pnpm codex:validate-references`, relevant unit/static checks, and mobile QA if UI rails or detail pages changed.
-- Rich patch note changes: run `pnpm i18n:validate`, patch/link/reference validators, targeted render or Playwright checks for hover/link behavior, and mobile QA for patch routes.
+- Rich patch note changes: run `pnpm i18n:validate`, patch/link/reference validators, targeted render or Playwright checks for hover/link behavior, `sts2-compendium-patch-qa` when linked Codex resources changed or should have changed, and mobile QA for patch routes.
 - Frontend component changes: run `pnpm i18n:validate`, `pnpm lint`, targeted Playwright/spec checks, and mobile QA when layout or responsive behavior changed.
 - Animation/rendering changes: run `pnpm i18n:validate`, targeted static checks, `animation-playback-qa`, and mobile QA if the render surface must work on mobile.
 - Script, parser, or extraction changes: run `pnpm i18n:validate`, a representative script command or dry run, and validators for generated outputs affected by the script.
