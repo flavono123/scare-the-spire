@@ -42,6 +42,12 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
    pnpm sts2:index-images
    ```
    Use the `sts2-spine-assets` skill for dependency setup, coverage review, fallback policy, and VFX-specific notes.
+   `scripts/extract-epoch-portraits.py` must keep timeline art split by source:
+   official portraits go to `public/images/sts2/epochs/`, while placeholder/beta
+   portraits go to `public/images/sts2/epochs-beta/`. When a patch promotes an
+   epoch from beta/placeholder art to official art and the new PCK no longer
+   ships its placeholder file, restore the old placeholder from the pre-patch
+   commit into `epochs-beta/` instead of losing it.
    After event data changes, compare each `AncientEventModel.AllPossibleOptions`
    in `/tmp/sts2-src/MegaCrit.Sts2.Core.Models.Events/*.cs` against the
    corresponding `data/sts2/{eng,kor}/events.json` `relics` array. Ancient
@@ -66,6 +72,7 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
   This guards the relic index against new Ancient/Neow relics that exist in
   `relics.json` but are absent from `events.json` Ancient `relics` mappings.
 - For patch-note-only balance changes, record the structured change in `data/sts2-changes.json`. Put machine-applicable diffs in the same record's `fieldDiffs`; do not hand-author `data/sts2-entity-versions.json`.
+- When any `public/images/sts2/**` asset changes, make sure rendered UI and metadata either use `src/components/ui/static-image.tsx` or pass direct image URLs through `cacheBustSts2ImageUrl()`. The cache-buster comes from `data/sts2/meta.json`, so update the meta version before validating changed art.
 
 ## Verification
 
@@ -77,3 +84,4 @@ pnpm lint
 ```
 
 For visual asset or tooltip-sensitive updates, start the dev server and inspect the affected Codex and patch pages in the browser.
+For changed STS2 art, inspect at least one rendered `<img>` or OG/patch-art URL and confirm it includes the current `?v=vX.Y.Z` query parameter.

@@ -40,7 +40,8 @@ npx tsx scripts/generate-entity-diffs.ts --old <old-sts2-dir> --new data/sts2 --
    - `visualDiff` when a specialized renderer is useful
 5. Keep `fieldDiffs` complete enough for `src/lib/codex-versioning.ts` to reconstruct previous versions. Do not hand-author `data/sts2-entity-versions.json` or add one-off reconstruction inside detail components.
 6. Normalize Steam/game labels to Compendium labels: `enemy` becomes `monster`, and any legacy `blessing` change becomes `relic` when it is a Codex relic.
-7. Commit each meaningful data/UI/edit group immediately, following `AGENTS.md`.
+7. For changed art, keep official and beta/placeholder assets as separate served URLs. For epoch timeline art, official portraits belong under `public/images/sts2/epochs/` and beta/placeholder portraits belong under `public/images/sts2/epochs-beta/`; restore a pre-patch placeholder into `epochs-beta/` when the new PCK removed it.
+8. Commit each meaningful data/UI/edit group immediately, following `AGENTS.md`.
 
 ## Resource Coverage
 
@@ -105,5 +106,7 @@ For lifecycle/deprecated work, verify in the browser:
 - Previous/pre-deprecated version: the same resource is visible, linked, and colored.
 - Patch page hover previews match the version context.
 - Patch-history rails show the change and do not hide required structured history.
+
+For changed STS2 art, verify cache busting as part of the browser pass. Rendered `<img>` URLs and direct metadata/patch-art URLs must include the current `?v=vX.Y.Z` query parameter by using `StaticImage` or `cacheBustSts2ImageUrl()`.
 
 For a repeatable QA pass, run `.codex/skills/sts2-compendium-patch-qa/SKILL.md` after this skill once that sub-skill exists.

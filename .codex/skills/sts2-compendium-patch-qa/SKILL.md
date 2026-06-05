@@ -36,6 +36,7 @@ For every patch-touched resource:
 - Confirm monster behavior changes include concrete fields such as HP, damage/block values, moves, bestiary moves, initial powers, or encounter data instead of only prose.
 - Confirm `visualDiff` records, such as monster-pattern diffs, are backed by `fieldDiffs`.
 - Confirm no manual `data/sts2-entity-versions.json` edits or one-off component reconstruction were added.
+- For changed art, confirm official and beta/placeholder assets are not collapsed into one file. Epoch official art must live in `public/images/sts2/epochs/`; epoch beta/placeholder art must live in `public/images/sts2/epochs-beta/`, including restored pre-patch beta art when the current PCK no longer ships it.
 
 ## Deprecated Resource Checks
 
@@ -77,6 +78,14 @@ Verify:
 - Unknown gold terms render as styled text without broken modal links.
 - Buff and nerf labels use the project text-effect contract: green+sine for buffs, red+jitter for nerfs.
 - Deprecated resource previews match the patch/version context: grayscale from the deprecation patch onward, colored before it.
+- Changed STS2 art URLs include the current `?v=vX.Y.Z` cache-busting query parameter, either from `StaticImage` or `cacheBustSts2ImageUrl()`.
+
+For Compendium epoch art changes, also verify:
+
+- `/compendium/epochs` shows the normal official art by default.
+- `?beta=true` or the beta-art toggle shows `epochs-beta` art when available.
+- `/compendium/epochs/{id}?beta=true` uses the beta-art asset in the detail hero and metadata path.
+- Newly official epoch art from the patch still has its old beta/placeholder art available when historical art existed.
 
 ## Browser And Mobile Coverage
 
