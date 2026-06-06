@@ -14,6 +14,8 @@ import {
 } from "@/lib/codex-resource-og";
 import { EncounterDetail } from "@/components/codex/encounter-detail";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   params,
   searchParams,

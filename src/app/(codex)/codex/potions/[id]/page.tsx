@@ -16,6 +16,8 @@ import {
 } from "@/lib/codex-resource-og";
 import { PotionDetail } from "@/components/codex/potion-detail";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   params,
   searchParams,

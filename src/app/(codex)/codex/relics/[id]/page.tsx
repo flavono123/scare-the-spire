@@ -17,6 +17,8 @@ import {
 } from "@/lib/codex-resource-og";
 import { RelicDetail } from "@/components/codex/relic-detail";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   params,
   searchParams,

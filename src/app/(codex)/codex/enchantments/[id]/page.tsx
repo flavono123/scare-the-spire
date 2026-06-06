@@ -15,6 +15,8 @@ import {
 } from "@/lib/codex-resource-og";
 import { EnchantmentDetail } from "@/components/codex/enchantment-detail";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   params,
   searchParams,

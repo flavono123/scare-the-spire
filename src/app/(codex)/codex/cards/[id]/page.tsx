@@ -14,6 +14,8 @@ import {
 } from "@/lib/codex-card-og";
 import { CardDetail } from "@/components/codex/card-detail";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   params,
   searchParams,

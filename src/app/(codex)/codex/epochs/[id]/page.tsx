@@ -20,6 +20,8 @@ import {
 import { isBetaArtSearchParam } from "@/lib/codex-card-og";
 import { EpochDetail } from "@/components/codex/epoch-detail";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   params,
   searchParams,

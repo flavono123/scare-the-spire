@@ -21,6 +21,8 @@ import {
 } from "@/lib/codex-resource-og";
 import { EventDetail } from "@/components/codex/event-detail";
 
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   params,
   searchParams,
