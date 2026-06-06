@@ -54,7 +54,7 @@ function mergeCommentEntities(primary: EntityInfo[], fallback: EntityInfo[]): En
 async function fetchSts2CommentEntities(): Promise<EntityInfo[]> {
   if (cachedEntities) return cachedEntities;
   if (!pendingEntities) {
-    pendingEntities = fetch("/comment-entities/sts2")
+    pendingEntities = fetch("/generated/comment-entities-sts2.json")
       .then(async (res) => {
         if (!res.ok) {
           throw new Error(`Failed to load comment entities: ${res.status}`);

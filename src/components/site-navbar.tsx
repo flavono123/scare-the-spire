@@ -728,7 +728,7 @@ function GlobalSearch({
 
   const loadIndex = useCallback(async () => {
     if (loaded) return;
-    const response = await fetch("/api/search-index");
+    const response = await fetch("/generated/search-index.json");
     if (!response.ok) return;
     const data = await response.json() as { items?: SearchIndexItem[] };
     setItems(data.items ?? []);
