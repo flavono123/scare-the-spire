@@ -34,6 +34,33 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: "/generated/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=3600, s-maxage=31536000, stale-while-revalidate=86400",
+          },
+        ],
+      },
+      {
+        source: "/api/search-index",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=3600, s-maxage=31536000, stale-while-revalidate=86400",
+          },
+        ],
+      },
+      {
+        source: "/comment-entities/sts2",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=3600, s-maxage=31536000, stale-while-revalidate=86400",
+          },
+        ],
+      },
     ];
   },
 };
