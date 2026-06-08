@@ -201,12 +201,6 @@ function pushSamePathUrl(href: string): boolean {
   return true;
 }
 
-function isSamePathHref(href: string): boolean {
-  if (typeof window === "undefined") return false;
-  const targetUrl = new URL(href, window.location.href);
-  return targetUrl.origin === window.location.origin && targetUrl.pathname === window.location.pathname;
-}
-
 function searchResultKey(item: SearchIndexItem): string {
   return `${item.type}:${item.id}`;
 }
@@ -931,16 +925,9 @@ function GlobalSearch({
                   const isPending = pendingResult?.key === resultKey;
                   const hasPendingResult = pendingResult !== null;
                   return (
-                    <Link
+                    <a
                       key={resultKey}
                       href={href}
-                      prefetch={false}
-                      onFocus={() => {
-                        if (!hasPendingResult && !isSamePathHref(href)) router.prefetch(href);
-                      }}
-                      onPointerEnter={() => {
-                        if (!hasPendingResult && !isSamePathHref(href)) router.prefetch(href);
-                      }}
                       onClick={(event) => {
                         if (hasPendingResult) {
                           event.preventDefault();
@@ -980,7 +967,7 @@ function GlobalSearch({
                       {isPending && (
                         <GlobalSearchPendingIndicator />
                       )}
-                    </Link>
+                    </a>
                   );
                 })}
               </section>
