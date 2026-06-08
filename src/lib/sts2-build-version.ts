@@ -22,7 +22,11 @@ function compareBuild(a: string, b: string): number {
   return 0;
 }
 
-export function isBuildSupported(build: string): boolean {
+export function isBuildAtLeast(build: string, minimum: string): boolean {
   if (!build || build === "unknown") return false;
-  return compareBuild(build, MIN_SUPPORTED_BUILD) >= 0;
+  return compareBuild(build, minimum) >= 0;
+}
+
+export function isBuildSupported(build: string): boolean {
+  return isBuildAtLeast(build, MIN_SUPPORTED_BUILD);
 }

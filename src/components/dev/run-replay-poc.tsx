@@ -156,6 +156,10 @@ const BOSS_ASSETS: Record<
     outline: string;
   }
 > = {
+  aeonglass: {
+    node: "/images/sts2/boss-nodes/boss_node_aeonglass.webp",
+    outline: "/images/sts2/boss-nodes/boss_node_aeonglass_outline.webp",
+  },
   ceremonial_beast: {
     node: "/images/sts2/boss-nodes/boss_node_ceremonial_beast.webp",
     outline: "/images/sts2/boss-nodes/boss_node_ceremonial_beast_outline.webp",

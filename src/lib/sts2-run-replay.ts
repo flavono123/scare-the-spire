@@ -1,3 +1,5 @@
+import { isBuildAtLeast } from "@/lib/sts2-build-version";
+
 const INT_MAX = 2147483647;
 const INT_MIN = -2147483648;
 const MATCH_CAP = 256;
@@ -998,7 +1000,7 @@ const ACT_POOLS: Record<string, ActEncounterPool> = {
       "THE_LOST_AND_FORGOTTEN_NORMAL",
     ],
     elites: ["KNIGHTS_ELITE", "MECHA_KNIGHT_ELITE", "SOUL_NEXUS_ELITE"],
-    bosses: ["DOORMAKER_BOSS", "QUEEN_BOSS", "TEST_SUBJECT_BOSS"],
+    bosses: ["AEONGLASS_BOSS", "QUEEN_BOSS", "TEST_SUBJECT_BOSS"],
     events: [
       "BATTLEWORN_DUMMY",
       "GRAVE_OF_THE_FORGOTTEN",
@@ -1056,6 +1058,18 @@ const ENCOUNTER_TAGS: Record<string, readonly string[]> = {
 export const ACT_BOSS_POOL: Record<string, string[]> = Object.fromEntries(
   Object.entries(ACT_POOLS).map(([id, pool]) => [id, [...pool.bosses]]),
 );
+
+const LEGACY_GLORY_BOSSES: readonly string[] = [
+  "DOORMAKER_BOSS",
+  "QUEEN_BOSS",
+  "TEST_SUBJECT_BOSS",
+];
+const AEONGLASS_MIN_BUILD = "v0.105.0";
+
+function bossPoolForAct(actId: string, pool: ActEncounterPool, buildId: string): readonly string[] {
+  if (actId !== "ACT.GLORY") return pool.bosses;
+  return isBuildAtLeast(buildId, AEONGLASS_MIN_BUILD) ? pool.bosses : LEGACY_GLORY_BOSSES;
+}
 
 // Relic rarity sequences for `RunManager.InitializeNewRun` Populate calls.
 // `SharedRelicGrabBag.Populate(sharedRelics, upFront)` runs first, then each
@@ -1230,6 +1244,7 @@ export function simulateActsUpFront(
   isMultiplayer: boolean,
   hasDoubleBoss: boolean,
   characterIds: readonly string[],
+  buildId = "unknown",
 ): ActsSimulationResult {
   const numericSeed = toUint32(getDeterministicHashCode(seed));
   const upFront = new StsRng(numericSeed, "up_front");
@@ -1273,6 +1288,7 @@ export function simulateActsUpFront(
       lastActPool = null;
       continue;
     }
+    const bossPool = bossPoolForAct(actId, pool, buildId);
     const numRooms = pool.numRooms - (isMultiplayer ? 1 : 0);
 
     // 1. Events list shuffle. The contents of the shuffled list do not feed
@@ -1311,8 +1327,8 @@ export function simulateActsUpFront(
     }
 
     // 5. Boss = NextItem(AllBossEncounters).
-    const bossIdx = upFront.nextIntRange(0, pool.bosses.length);
-    const boss = pool.bosses[bossIdx];
+    const bossIdx = upFront.nextIntRange(0, bossPool.length);
+    const boss = bossPool[bossIdx];
     firstBossByAct.push(boss);
 
     // 6. Ancient = NextItem(unlockedAncients ∪ sharedSubset). We don't
@@ -1330,7 +1346,10 @@ export function simulateActsUpFront(
   // 7. DoubleBoss A10 — secondBoss = NextItem(AllBossEncounters except first).
   let secondBossOfFinalAct: string | null = null;
   if (hasDoubleBoss && lastFirstBoss && lastActPool) {
-    const candidates = lastActPool.bosses.filter((b) => b !== lastFirstBoss);
+    const finalActId = normalizeActId(acts[acts.length - 1] ?? "");
+    const candidates = bossPoolForAct(finalActId, lastActPool, buildId).filter(
+      (b) => b !== lastFirstBoss,
+    );
     if (candidates.length > 0) {
       const idx = upFront.nextIntRange(0, candidates.length);
       secondBossOfFinalAct = candidates[idx];
@@ -1367,6 +1386,7 @@ export function analyzeReplayRun(run: ReplayRun): ReplayAnalysis {
     isMultiplayer,
     hasDoubleBoss,
     characterIds,
+    run.build_id,
   );
   const finalActIndex = run.acts.length - 1;
 
