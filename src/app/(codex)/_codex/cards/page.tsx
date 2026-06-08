@@ -19,12 +19,6 @@ import {
 } from "@/lib/i18n";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
-import {
-  findCardByCodexRouteId,
-  firstSearchParam,
-  getCodexCardOgMetadata,
-  isBetaArtSearchParam,
-} from "@/lib/codex-card-og";
 import { CardLibrary } from "@/components/codex/card-library";
 
 export const dynamic = "force-static";
@@ -37,17 +31,7 @@ export async function generateMetadata({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const cardId = firstSearchParam(resolvedSearchParams.card);
-  const [gameUi, cards] = await Promise.all([
-    getCodexGameUiLabels(gameLocale),
-    cardId ? getCodexCards({ includeDeprecated: true, gameLocale }) : Promise.resolve(null),
-  ]);
-  const card = cards ? findCardByCodexRouteId(cards, cardId) : undefined;
-  if (card) {
-    return getCodexCardOgMetadata(serviceLocale, gameUi.cardLibraryTitle, card, {
-      useBetaArt: isBetaArtSearchParam(resolvedSearchParams.beta),
-    });
-  }
+  const gameUi = await getCodexGameUiLabels(gameLocale);
   return getCodexMetadata(serviceLocale, gameUi.cardLibraryTitle);
 }
 
@@ -59,8 +43,6 @@ export default async function CodexCardsPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const initialCardId = firstSearchParam(resolvedSearchParams.card) ?? null;
-  const initialShowBeta = isBetaArtSearchParam(resolvedSearchParams.beta);
   const [cards, characters, patches, changes, versionDiffs, meta, enchantments, afflictions, gameUi, ancients, events, monsters, potions, powers] =
     await Promise.all([
       getCodexCards({ includeDeprecated: true, gameLocale }),
@@ -100,8 +82,6 @@ export default async function CodexCardsPage({
         relatedMonsters={monsters}
         relatedPotions={potions}
         relatedPowers={powers}
-        initialCardId={initialCardId}
-        initialShowBeta={initialShowBeta}
       />
     </Suspense>
   );
