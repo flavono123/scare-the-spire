@@ -141,7 +141,7 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
       nameEn: e.nameEn,
       nameKo: e.name,
       imageUrl: e.imageUrl,
-      href: `/compendium/epochs?epoch=${e.id.toLowerCase()}`,
+      href: `/compendium/epochs/${e.id.toLowerCase()}`,
       color: e.affiliation,
       type: "epoch" as const,
       epochData: e,

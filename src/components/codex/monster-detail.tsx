@@ -1901,7 +1901,7 @@ function buildPowerEntity(
   ascensionLevel = 0,
   ownerName?: string,
 ): EntityInfo {
-  const href = `/compendium/powers?power=${application.powerId.toLowerCase()}`;
+  const href = `/compendium/powers/${application.powerId.toLowerCase()}`;
   const powerDescriptionVars = getPowerApplicationDescriptionVars(application, ownerName);
   return {
     id: application.powerId,
@@ -1985,7 +1985,7 @@ function afflictionToReferenceTarget(affliction: CodexAffliction): CodexReferenc
 }
 
 function powerToReferenceTarget(power: CodexPower): CodexReferenceTarget {
-  const href = `/compendium/powers?power=${power.id.toLowerCase()}`;
+  const href = `/compendium/powers/${power.id.toLowerCase()}`;
   return {
     href,
     id: power.id,

@@ -1137,7 +1137,7 @@ function enchantmentToReferenceTarget(enchantment: CodexEnchantment): CodexRefer
 }
 
 function monsterToReferenceTarget(monster: CodexMonster): CodexReferenceTarget {
-  const href = `/compendium/bestiary?monster=${monster.id.toLowerCase()}`;
+  const href = `/compendium/monsters/${monster.id.toLowerCase()}`;
   return {
     href,
     id: monster.id,

@@ -205,7 +205,7 @@ export function EncounterDetail({
                 return (
                   <Link
                     key={monsterRef.id}
-                    href={localizeHref(`/compendium/bestiary?monster=${monsterRef.id.toLowerCase()}`, serviceLocale)}
+                    href={localizeHref(`/compendium/monsters/${monsterRef.id.toLowerCase()}`, serviceLocale)}
                     className="group flex min-w-[7rem] flex-col items-center gap-2 text-center"
                   >
                     <div className="relative flex h-32 w-36 items-center justify-center sm:h-40 sm:w-44">

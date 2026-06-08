@@ -128,23 +128,23 @@ function sts2EntityHref(entity: EntityInfo): string | null {
     case "card":
       return `/compendium/cards/${entity.id.toLowerCase()}`;
     case "relic":
-      return `/compendium/relics?relic=${entity.id.toLowerCase()}`;
+      return `/compendium/relics/${entity.id.toLowerCase()}`;
     case "potion":
-      return `/compendium/potions?potion=${entity.id.toLowerCase()}`;
+      return `/compendium/potions/${entity.id.toLowerCase()}`;
     case "power":
-      return `/compendium/powers?power=${entity.id.toLowerCase()}`;
+      return `/compendium/powers/${entity.id.toLowerCase()}`;
     case "enchantment":
-      return `/compendium/enchantments?enchantment=${entity.id.toLowerCase()}`;
+      return `/compendium/enchantments/${entity.id.toLowerCase()}`;
     case "event":
       return `/compendium/events/${entity.id.toLowerCase()}`;
     case "monster":
-      return `/compendium/bestiary?monster=${entity.id.toLowerCase()}`;
+      return `/compendium/monsters/${entity.id.toLowerCase()}`;
     case "encounter":
-      return `/compendium/bestiary?view=encounters&encounter=${entity.id.toLowerCase()}`;
+      return `/compendium/encounters/${entity.id.toLowerCase()}`;
     case "ancient":
       return `/compendium/ancients/${entity.id.toLowerCase()}`;
     case "epoch":
-      return `/compendium/epochs?epoch=${entity.id.toLowerCase()}`;
+      return `/compendium/epochs/${entity.id.toLowerCase()}`;
     default:
       return null;
   }

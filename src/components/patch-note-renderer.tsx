@@ -278,19 +278,19 @@ export function EntityPreview({
 
   const hrefMap: Partial<Record<EntityType, string>> = {
     card: `/compendium/cards/${entity.id.toLowerCase()}`,
-    relic: `/compendium/relics?relic=${entity.id.toLowerCase()}`,
-    potion: `/compendium/potions?potion=${entity.id.toLowerCase()}`,
-    power: `/compendium/powers?power=${entity.id.toLowerCase()}`,
-    enchantment: `/compendium/enchantments?enchantment=${entity.id.toLowerCase()}`,
-    affliction: `/compendium/enchantments?affliction=${entity.id.toLowerCase()}`,
+    relic: `/compendium/relics/${entity.id.toLowerCase()}`,
+    potion: `/compendium/potions/${entity.id.toLowerCase()}`,
+    power: `/compendium/powers/${entity.id.toLowerCase()}`,
+    enchantment: `/compendium/enchantments/${entity.id.toLowerCase()}`,
+    affliction: `/compendium/enchantments/${entity.id.toLowerCase()}`,
     event: `/compendium/events/${entity.id.toLowerCase()}`,
-    monster: `/compendium/bestiary?monster=${entity.id.toLowerCase()}`,
+    monster: `/compendium/monsters/${entity.id.toLowerCase()}`,
     monsterMove: entity.monsterMoveMonsterData
-      ? `/compendium/bestiary?monster=${entity.monsterMoveMonsterData.id.toLowerCase()}`
+      ? `/compendium/monsters/${entity.monsterMoveMonsterData.id.toLowerCase()}`
       : undefined,
-    encounter: `/compendium/bestiary?view=encounters&encounter=${entity.id.toLowerCase()}`,
+    encounter: `/compendium/encounters/${entity.id.toLowerCase()}`,
     ancient: `/compendium/ancients/${entity.id.toLowerCase()}`,
-    epoch: `/compendium/epochs?epoch=${entity.id.toLowerCase()}`,
+    epoch: `/compendium/epochs/${entity.id.toLowerCase()}`,
   };
   const hrefBase = entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
   const href = hrefBase && serviceLocale && gameLocale

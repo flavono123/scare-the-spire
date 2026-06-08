@@ -892,7 +892,7 @@ function PatchDiffMonsterLink({
 
   return (
     <PatchDiffInlinePreview
-      href={localizeHref(`/compendium/bestiary?monster=${monster.id.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(`/compendium/monsters/${monster.id.toLowerCase()}`, serviceLocale)}
       preview={() => (
         <GameHoverTip title={title} style={{ minWidth: 260, maxWidth: 340 }}>
           <span className="flex items-start gap-2.5">
@@ -1011,7 +1011,7 @@ function PatchDiffPowerLink({
 
   return (
     <PatchDiffInlinePreview
-      href={localizeHref(`/compendium/powers?power=${powerId.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(`/compendium/powers/${powerId.toLowerCase()}`, serviceLocale)}
       preview={() => (
         <GameHoverTip
           title={title}
@@ -1105,7 +1105,7 @@ function PatchDiffMoveLink({
 
   return (
     <PatchDiffInlinePreview
-      href={localizeHref(`/compendium/bestiary?monster=${monster.id.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(`/compendium/monsters/${monster.id.toLowerCase()}`, serviceLocale)}
       preview={(nonce) => (
         <MonsterMoveHoverPreview
           move={move}
@@ -1626,7 +1626,7 @@ function PowerApplicationIcon({
 
   return (
     <Link
-      href={localizeHref(`/compendium/powers?power=${power.powerId.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(`/compendium/powers/${power.powerId.toLowerCase()}`, serviceLocale)}
       className={className}
       title={title}
     >

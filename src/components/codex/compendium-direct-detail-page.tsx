@@ -207,7 +207,7 @@ function buildEntityInfo(payload: CompendiumDetailPayload): EntityInfo[] {
       nameEn: epoch.nameEn,
       nameKo: epoch.name,
       imageUrl: epoch.imageUrl,
-      href: `/compendium/epochs?epoch=${epoch.id.toLowerCase()}`,
+      href: `/compendium/epochs/${epoch.id.toLowerCase()}`,
       color: epoch.affiliation,
       type: "epoch" as const,
       epochData: epoch,

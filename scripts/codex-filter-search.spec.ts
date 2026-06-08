@@ -109,7 +109,7 @@ test.describe("Unified topbar search", () => {
 
     await search.fill("재미가");
     await expect(page.getByText("연대기", { exact: true }).first()).toBeVisible();
-    await expect(page.locator('div.fixed.inset-0 a[href="/compendium/epochs?epoch=regent6_epoch"]').first()).toBeVisible();
+    await expect(page.locator('div.fixed.inset-0 a[href="/compendium/epochs/regent6_epoch"]').first()).toBeVisible();
 
     await search.fill("giant seamless mirror");
     await expect(page.getByText("이벤트", { exact: true }).first()).toBeVisible();
@@ -120,7 +120,7 @@ test.describe("Unified topbar search", () => {
     await expect(page.locator('div.fixed.inset-0 a[href="/compendium/cards/beacon_of_hope"]').first()).toBeVisible();
   });
 
-  test("opens same-library query results without rerouting through Next", async ({ page }) => {
+  test("opens direct epoch search results", async ({ page }) => {
     await openCompendium(page, "/compendium/epochs");
 
     const header = page.locator("header");
@@ -128,22 +128,13 @@ test.describe("Unified topbar search", () => {
     const search = page.locator('input[placeholder="통합 검색"]');
     await search.fill("불만");
 
-    const result = page.locator('div.fixed.inset-0 a[href="/compendium/epochs?epoch=regent6_epoch"]').first();
+    const result = page.locator('div.fixed.inset-0 a[href="/compendium/epochs/regent6_epoch"]').first();
     await expect(result).toBeVisible();
-
-    const routeRequests: string[] = [];
-    page.on("request", (request) => {
-      const url = request.url();
-      if (url.includes("/compendium/epochs") && url.includes("_rsc")) {
-        routeRequests.push(url);
-      }
-    });
 
     await result.click();
 
-    await expect(page.getByRole("dialog", { name: "불만" })).toBeVisible();
-    expect(page.url()).toContain("/compendium/epochs?epoch=regent6_epoch");
-    expect(routeRequests).toEqual([]);
+    await expect(page.getByRole("heading", { name: "불만" })).toBeVisible();
+    expect(page.url()).toContain("/compendium/epochs/regent6_epoch");
   });
 
   test("shows withering presence countdown while local result navigation is pending", async ({ page }) => {
@@ -165,7 +156,7 @@ test.describe("Unified topbar search", () => {
     const search = page.locator('input[placeholder="통합 검색"]');
     await search.fill("불만");
 
-    const result = page.locator('div.fixed.inset-0 a[href="/compendium/epochs?epoch=regent6_epoch"]').first();
+    const result = page.locator('div.fixed.inset-0 a[href="/compendium/epochs/regent6_epoch"]').first();
     await expect(result).toBeVisible();
 
     await result.click();

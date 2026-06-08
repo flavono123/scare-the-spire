@@ -38,7 +38,7 @@ function entityHref(entity: EntityInfo): string | null {
   if (entity.href) return entity.href;
 
   if (entity.type === "affliction") {
-    return `/compendium/enchantments?affliction=${entity.id.toLowerCase()}`;
+    return `/compendium/enchantments/${entity.id.toLowerCase()}`;
   }
 
   const path = TYPE_TO_COMPENDIUM_PATH[entity.type];
