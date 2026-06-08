@@ -2,6 +2,7 @@ import type { GameLocale } from "@/lib/i18n";
 
 type CodexNavGameLabelKey =
   | "cards"
+  | "keywords"
   | "relics"
   | "potions"
   | "powers"
@@ -16,6 +17,7 @@ type CodexNavGameLabelKey =
 const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, string>> = {
   deu: {
     cards: "Kartenbibliothek",
+    keywords: "Keywords",
     relics: "Reliktsammlung",
     potions: "Tranklabor",
     powers: "Macht",
@@ -27,6 +29,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   eng: {
     cards: "Card Library",
+    keywords: "Keywords",
     relics: "Relic Collection",
     potions: "Potion Lab",
     powers: "Power",
@@ -38,6 +41,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   esp: {
     cards: "Colección de cartas",
+    keywords: "Keywords",
     relics: "Relicario",
     potions: "Pocionero",
     powers: "Poder",
@@ -49,6 +53,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   fra: {
     cards: "Bibliothèque",
+    keywords: "Keywords",
     relics: "Reliquaire",
     potions: "Laboratoire",
     powers: "Pouvoir",
@@ -60,6 +65,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   ita: {
     cards: "Collezione delle carte",
+    keywords: "Keywords",
     relics: "Reliquiario",
     potions: "Laboratorio delle pozioni",
     powers: "Potere",
@@ -71,6 +77,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   jpn: {
     cards: "カードライブラリ",
+    keywords: "Keywords",
     relics: "レリック一覧",
     potions: "ポーションラボ",
     powers: "パワー",
@@ -82,6 +89,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   kor: {
     cards: "카드 목록",
+    keywords: "키워드",
     relics: "유물 모음집",
     potions: "포션 연구실",
     powers: "파워",
@@ -93,6 +101,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   pol: {
     cards: "Kolekcja kart",
+    keywords: "Keywords",
     relics: "Zbiór Artefaktów",
     potions: "Laboratorium Mikstur",
     powers: "Moc",
@@ -104,6 +113,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   ptb: {
     cards: "Biblioteca de Cartas",
+    keywords: "Keywords",
     relics: "Coleção de Relíquias",
     potions: "Laboratório de Poções",
     powers: "Poder",
@@ -115,6 +125,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   rus: {
     cards: "Библиотека карт",
+    keywords: "Keywords",
     relics: "Коллекция реликвий",
     potions: "Лаборатория",
     powers: "Талант",
@@ -126,6 +137,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   spa: {
     cards: "Biblioteca de cartas",
+    keywords: "Keywords",
     relics: "Colección de reliquias",
     potions: "Laboratorio de pociones",
     powers: "Poder",
@@ -137,6 +149,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   tha: {
     cards: "คลังการ์ด",
+    keywords: "Keywords",
     relics: "คลังเครื่องราง",
     potions: "ห้องทดลองยา",
     powers: "พลัง",
@@ -148,6 +161,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   tur: {
     cards: "Kart Kütüphanesi",
+    keywords: "Keywords",
     relics: "Kalıntı Koleksiyonu",
     potions: "İksir Laboratuvarı",
     powers: "Güç",
@@ -159,6 +173,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
   },
   zhs: {
     cards: "卡牌总览",
+    keywords: "Keywords",
     relics: "遗物收集",
     potions: "药水研究所",
     powers: "能力",

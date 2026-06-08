@@ -40,7 +40,6 @@ export type CodexGameUiLabels = {
     events: string;
     ancients: string;
     epochs: string;
-    keywords: string;
   };
   common: {
     rarity: string;
@@ -355,7 +354,6 @@ export async function getCodexGameUiLabels(
       events: eventsTitle,
       ancients: ancientsTitle,
       epochs: epochsTitle,
-      keywords: keywordsTitle,
     },
     common: {
       rarity: gameText(gameplay, "SORT_RARITY", "희귀도"),

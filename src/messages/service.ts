@@ -166,6 +166,7 @@ export const serviceMessages = {
     },
     codex: {
       cards: "카드",
+      keywords: "키워드",
       relics: "유물",
       potions: "포션",
       powers: "파워",
@@ -189,6 +190,7 @@ export const serviceMessages = {
         entries: "개 항목",
         items: "개",
         cards: "장",
+        keywords: "개",
         relics: "개",
         potions: "개",
         powers: "개",
@@ -669,6 +671,7 @@ export const serviceMessages = {
     },
     codex: {
       cards: "Cards",
+      keywords: "Keywords",
       relics: "Relics",
       potions: "Potions",
       powers: "Powers",
@@ -692,6 +695,7 @@ export const serviceMessages = {
         entries: "entries",
         items: "items",
         cards: "cards",
+        keywords: "keywords",
         relics: "relics",
         potions: "potions",
         powers: "powers",

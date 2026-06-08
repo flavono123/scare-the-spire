@@ -6,6 +6,7 @@ import Link from "next/link";
 const items = [
   { href: "/compendium", label: "전체 보기" },
   { href: "/compendium/cards", label: "카드" },
+  { href: "/compendium/keywords", label: "키워드" },
   { href: "/compendium/relics", label: "유물" },
   { href: "/compendium/potions", label: "포션" },
   { href: "/compendium/powers", label: "파워" },

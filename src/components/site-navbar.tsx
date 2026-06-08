@@ -36,6 +36,7 @@ import { pushCodexHistoryState } from "@/components/codex/use-hydration-safe-sea
 
 const sts2Items = [
   { href: "/compendium/cards", labelKey: "cards", icon: "/images/sts2/nav/stats_cards.png" },
+  { href: "/compendium/keywords", labelKey: "keywords", icon: "/images/sts2/icons/card_icon.webp" },
   { href: "/compendium/relics", labelKey: "relics", icon: "/images/sts2/relics/bing_bong.webp" },
   { href: "/compendium/potions", labelKey: "potions", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
   { href: "/compendium/powers", labelKey: "powers", icon: "/images/sts2/nav/unmovable_power_beta.webp" },
@@ -63,6 +64,7 @@ const devItems = [
 const searchTypeLabels = {
   ko: {
     card: "카드",
+    keyword: "키워드",
     relic: "유물",
     potion: "포션",
     power: "파워",
@@ -79,6 +81,7 @@ const searchTypeLabels = {
   },
   en: {
     card: "Card",
+    keyword: "Keyword",
     relic: "Relic",
     potion: "Potion",
     power: "Power",
@@ -114,6 +117,7 @@ const searchTypeOrder = [
   "patch",
   "story",
   "card",
+  "keyword",
   "relic",
   "potion",
   "power",
@@ -136,6 +140,7 @@ const searchTypeStyles: Record<keyof typeof searchTypeLabels.ko, {
   patch: { icon: "/images/sts2/nav/patch_notes_icon.png", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-400/30" },
   story: { icon: "/images/bone_tea.png", color: "text-cyan-200", bg: "bg-cyan-500/10", border: "border-cyan-400/30" },
   card: { icon: "/images/sts2/nav/stats_cards.png", color: "text-rose-200", bg: "bg-rose-500/10", border: "border-rose-400/30" },
+  keyword: { icon: "/images/sts2/icons/card_icon.webp", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-400/30" },
   relic: { icon: "/images/sts2/relics/bing_bong.webp", color: "text-yellow-200", bg: "bg-yellow-500/10", border: "border-yellow-400/30" },
   potion: { icon: "/images/sts2/potions/potion_shaped_rock.webp", color: "text-emerald-200", bg: "bg-emerald-500/10", border: "border-emerald-400/30" },
   power: { icon: "/images/sts2/nav/unmovable_power_beta.webp", color: "text-sky-200", bg: "bg-sky-500/10", border: "border-sky-400/30" },

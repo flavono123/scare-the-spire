@@ -29,6 +29,18 @@ const categories = [
     ],
   },
   {
+    href: "/compendium/keywords",
+    labelKey: "keywords",
+    count: 8,
+    description: null,
+    images: [
+      "/images/sts2/icons/card_icon.webp",
+      "/images/sts2/ui/hover_tip.png",
+      "/images/sts2/icons/star_icon.webp",
+      "/images/sts2/icons/gold_icon.webp",
+    ],
+  },
+  {
     href: "/compendium/relics",
     labelKey: "relics",
     count: 314,
@@ -150,6 +162,7 @@ export default async function CodexIndexPage({
   const gameUi = await getCodexGameUiLabels(gameLocale);
   const gameCategoryLabels: Partial<Record<(typeof categories)[number]["labelKey"], string>> = {
     cards: gameUi.cardLibraryTitle,
+    keywords: gameUi.nav.keywords,
     relics: gameUi.relicCollectionTitle,
     potions: gameUi.potionLabTitle,
     powers: gameUi.nav.powers,
@@ -229,6 +242,7 @@ export default async function CodexIndexPage({
 
 const ENGLISH_LABELS: Record<(typeof categories)[number]["labelKey"], string> = {
   cards: "Cards",
+  keywords: "Keywords",
   relics: "Relics",
   potions: "Potions",
   powers: "Powers",
