@@ -2,10 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { PostBlock } from "@/lib/chemical-types";
 import {
+  getCodexAfflictions,
   getCodexAncients,
   getCodexCards,
   getCodexEnchantments,
   getCodexEncounters,
+  getCodexEpochs,
   getCodexEvents,
   getCodexMonsters,
   getCodexPotions,
@@ -104,9 +106,11 @@ interface AdminSnapshot {
 
 const CODEX_PATHS: Record<string, string> = {
   ancient: "ancients",
+  affliction: "enchantments",
   card: "cards",
   encounter: "encounters",
   enchantment: "enchantments",
+  epoch: "epochs",
   event: "events",
   monster: "monsters",
   potion: "potions",
@@ -116,9 +120,11 @@ const CODEX_PATHS: Record<string, string> = {
 
 const CODEX_TYPE_LABELS: Record<string, string> = {
   ancient: "고대의 존재",
+  affliction: "고난",
   card: "카드",
   encounter: "전투",
   enchantment: "강화",
+  epoch: "연대기",
   event: "이벤트",
   monster: "몬스터",
   potion: "포션",
@@ -436,8 +442,10 @@ async function buildAdminEntityLookup(): Promise<AdminEntityLookup> {
     potions,
     powers,
     enchantments,
+    afflictions,
     events,
     ancients,
+    epochs,
     monsters,
     encounters,
   ] = await Promise.all([
@@ -446,8 +454,10 @@ async function buildAdminEntityLookup(): Promise<AdminEntityLookup> {
     getCodexPotions(),
     getCodexPowers(),
     getCodexEnchantments(),
+    getCodexAfflictions(),
     getCodexEvents(),
     getCodexAncients(),
+    getCodexEpochs(),
     getCodexMonsters(),
     getCodexEncounters(),
   ]);
@@ -458,12 +468,14 @@ async function buildAdminEntityLookup(): Promise<AdminEntityLookup> {
   addEntitiesToLookup(lookup, "potion", potions);
   addEntitiesToLookup(lookup, "power", powers);
   addEntitiesToLookup(lookup, "enchantment", enchantments);
+  addEntitiesToLookup(lookup, "affliction", afflictions);
   addEntitiesToLookup(lookup, "event", events.map((event) => ({
     id: event.id,
     name: event.name,
     nameEn: event.nameEn,
   })));
   addEntitiesToLookup(lookup, "ancient", ancients);
+  addEntitiesToLookup(lookup, "epoch", epochs);
   addEntitiesToLookup(lookup, "monster", monsters);
   addEntitiesToLookup(lookup, "encounter", encounters);
   return lookup;
@@ -622,8 +634,18 @@ function hrefForStoryId(storyId: string): string | null {
   if (!match) return null;
 
   const [, type, id] = match;
+  const normalizedId = encodeURIComponent(id.toLowerCase());
+
+  if (type === "monster") {
+    return productionHref(`/compendium/bestiary?monster=${normalizedId}`);
+  }
+
+  if (type === "encounter") {
+    return productionHref(`/compendium/bestiary?view=encounters&encounter=${normalizedId}`);
+  }
+
   const path = CODEX_PATHS[type];
-  return path ? productionHref(`/compendium/${path}/${id}`) : null;
+  return path ? productionHref(`/compendium/${path}/${normalizedId}`) : null;
 }
 
 function productionHref(path: string): string {
