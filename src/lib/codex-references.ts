@@ -7,12 +7,14 @@ import type {
   CodexEnchantment,
   CodexEncounter,
   CodexEvent,
+  CodexKeyword,
   CodexMonster,
   CodexPotion,
   CodexPower,
   CodexRelic,
   PotionRarityKo,
 } from "./codex-types";
+import { stripCodexMarkup } from "./codex-search";
 
 export const FUTURE_OF_POTIONS_EVENT_ID = "THE_FUTURE_OF_POTIONS";
 export const FUTURE_OF_POTIONS_EVENT_NAME_KO = "포션의 미래?";
@@ -253,6 +255,170 @@ export function getFuturePotionOutcomeIdsForPotion(
 
 export function getFuturePotionChoiceById(id: string): FuturePotionChoice | null {
   return FUTURE_OF_POTIONS_CHOICES.find((choice) => choice.id === id) ?? null;
+}
+
+const KEYWORD_DESCRIPTION_MATCHERS: Record<string, RegExp> = {
+  ETERNAL: /(^|[^0-9A-Za-z가-힣])영구($|[^0-9A-Za-z가-힣])|\beternal\b/i,
+  ETHEREAL: /휘발성|\bethereal\w*\b/i,
+  EXHAUST: /소멸|\bexhaust\w*\b/i,
+  INNATE: /선천성|\binnate\w*\b/i,
+  RETAIN: /보존|\bretain\w*\b/i,
+  SLY: /교활|\bsly\b/i,
+  UNPLAYABLE: /사용불가|\bunplayable\b/i,
+  REPLAY: /재사용|\breplay\w*\b/i,
+};
+
+function keywordMatcher(keyword: Pick<CodexKeyword, "id" | "name" | "nameEn">): RegExp {
+  const matcher = KEYWORD_DESCRIPTION_MATCHERS[keyword.id];
+  if (matcher) return matcher;
+  const terms = [keyword.name, keyword.nameEn]
+    .map((term) => term.trim())
+    .filter(Boolean)
+    .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  return new RegExp(terms.join("|") || "$.", "i");
+}
+
+function resourceTextMentionsKeyword(
+  keyword: Pick<CodexKeyword, "id" | "name" | "nameEn">,
+  values: Array<string | null | undefined>,
+): boolean {
+  const matcher = keywordMatcher(keyword);
+  return values.some((value) => {
+    if (!value) return false;
+    return matcher.test(stripCodexMarkup(value));
+  });
+}
+
+function cardHasPrintedKeyword(
+  keyword: Pick<CodexKeyword, "name" | "nameEn" | "source">,
+  card: Pick<CodexCard, "keywords" | "keywordLabels">,
+): boolean {
+  if (keyword.source !== "cardKeyword") return false;
+  const terms = new Set([keyword.name, keyword.nameEn].map((term) => term.trim().toLowerCase()));
+  return card.keywords.some((cardKeyword) => {
+    const selectedLabel = card.keywordLabels[cardKeyword] ?? cardKeyword;
+    return terms.has(cardKeyword.trim().toLowerCase()) || terms.has(selectedLabel.trim().toLowerCase());
+  });
+}
+
+export function getRelatedCardIdsForKeyword(
+  keyword: CodexKeyword,
+  cards: readonly CodexCard[],
+): string[] {
+  return cards
+    .filter((card) =>
+      cardHasPrintedKeyword(keyword, card) ||
+      resourceTextMentionsKeyword(keyword, [
+        card.description,
+        card.descriptionEn,
+        card.descriptionRaw,
+        card.descriptionRawEn,
+      ]),
+    )
+    .map((card) => card.id);
+}
+
+export function getRelatedRelicIdsForKeyword(
+  keyword: CodexKeyword,
+  relics: readonly CodexRelic[],
+): string[] {
+  return relics
+    .filter((relic) =>
+      resourceTextMentionsKeyword(keyword, [
+        relic.description,
+        relic.descriptionEn,
+        relic.descriptionRaw,
+        relic.descriptionRawEn,
+      ]),
+    )
+    .map((relic) => relic.id);
+}
+
+export function getRelatedPotionIdsForKeyword(
+  keyword: CodexKeyword,
+  potions: readonly CodexPotion[],
+): string[] {
+  return potions
+    .filter((potion) =>
+      resourceTextMentionsKeyword(keyword, [
+        potion.description,
+        potion.descriptionEn,
+        potion.descriptionRaw,
+        potion.descriptionRawEn,
+      ]),
+    )
+    .map((potion) => potion.id);
+}
+
+export function getRelatedPowerIdsForKeyword(
+  keyword: CodexKeyword,
+  powers: readonly CodexPower[],
+): string[] {
+  return powers
+    .filter((power) =>
+      resourceTextMentionsKeyword(keyword, [
+        power.description,
+        power.descriptionEn,
+        power.descriptionRaw,
+        power.descriptionRawEn,
+      ]),
+    )
+    .map((power) => power.id);
+}
+
+export function getRelatedEnchantmentIdsForKeyword(
+  keyword: CodexKeyword,
+  enchantments: readonly CodexEnchantment[],
+): string[] {
+  return enchantments
+    .filter((enchantment) =>
+      resourceTextMentionsKeyword(keyword, [
+        enchantment.description,
+        enchantment.descriptionEn,
+        enchantment.descriptionRaw,
+        enchantment.descriptionRawEn,
+        enchantment.extraCardText,
+        enchantment.extraCardTextEn,
+      ]),
+    )
+    .map((enchantment) => enchantment.id);
+}
+
+export function getRelatedAfflictionIdsForKeyword(
+  keyword: CodexKeyword,
+  afflictions: readonly CodexAffliction[],
+): string[] {
+  return afflictions
+    .filter((affliction) =>
+      resourceTextMentionsKeyword(keyword, [
+        affliction.description,
+        affliction.descriptionEn,
+        affliction.descriptionRaw,
+        affliction.descriptionRawEn,
+        affliction.extraCardText,
+        affliction.extraCardTextEn,
+      ]),
+    )
+    .map((affliction) => affliction.id);
+}
+
+export function getRelatedEventIdsForKeyword(
+  keyword: CodexKeyword,
+  events: readonly CodexEvent[],
+): string[] {
+  return events
+    .filter((event) =>
+      resourceTextMentionsKeyword(keyword, [
+        event.description,
+        event.descriptionEn,
+        ...(event.options ?? []).flatMap((option) => [option.title, option.description]),
+        ...(event.pages ?? []).flatMap((page) => [
+          page.description,
+          ...(page.options ?? []).flatMap((option) => [option.title, option.description]),
+        ]),
+      ]),
+    )
+    .map((event) => event.id);
 }
 
 export const EVENT_RELATED_CARD_IDS = {

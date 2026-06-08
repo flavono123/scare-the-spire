@@ -5,15 +5,23 @@ import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexServiceMessages } from "@/lib/codex-service";
-import { stripCodexMarkup } from "@/lib/codex-search";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
-import type { CodexCard, CodexKeyword } from "@/lib/codex-types";
+import type { CodexAffliction, CodexCard, CodexEnchantment, CodexEvent, CodexKeyword, CodexPotion, CodexPower, CodexRelic } from "@/lib/codex-types";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
-import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
+import { EntityReferenceGroupLinks, type CodexReferenceGroup, type CodexReferenceKind, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
 import { RichDescription } from "./rich-description";
+import {
+  getRelatedAfflictionIdsForKeyword,
+  getRelatedCardIdsForKeyword,
+  getRelatedEnchantmentIdsForKeyword,
+  getRelatedEventIdsForKeyword,
+  getRelatedPotionIdsForKeyword,
+  getRelatedPowerIdsForKeyword,
+  getRelatedRelicIdsForKeyword,
+} from "@/lib/codex-references";
 
 function MetaPill({ value, color }: { value: string; color?: string }) {
   return (
@@ -82,36 +90,13 @@ function keywordDetailLabels(serviceLocale: ServiceLocale) {
 
 const KEYWORD_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
 
-function normalizedTerms(keyword: CodexKeyword): string[] {
-  return Array.from(new Set([keyword.name, keyword.nameEn]
-    .map((term) => term.trim().toLowerCase())
-    .filter(Boolean)));
-}
-
-function cardMentionsKeyword(card: CodexCard, keyword: CodexKeyword): boolean {
-  const terms = normalizedTerms(keyword);
-  const labels = [...card.keywords, ...Object.values(card.keywordLabels)]
-    .map((label) => label.trim().toLowerCase())
-    .filter(Boolean);
-  if (labels.some((label) => terms.includes(label))) return true;
-
-  const descriptions = [
-    card.description,
-    card.descriptionEn,
-    card.descriptionRaw,
-    card.descriptionRawEn,
-  ].map((description) => stripCodexMarkup(description).toLowerCase());
-
-  return terms.some((term) => descriptions.some((description) => description.includes(term)));
-}
-
-function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {
+function cardToReferenceTarget(card: CodexCard, entity?: EntityInfo): CodexReferenceTarget {
   const href = `/compendium/cards/${card.id.toLowerCase()}`;
   return {
     href,
     id: card.id,
     title: card.name,
-    entity: {
+    entity: entity ?? {
       id: card.id,
       nameEn: card.nameEn,
       nameKo: card.name,
@@ -122,6 +107,29 @@ function cardToReferenceTarget(card: CodexCard): CodexReferenceTarget {
       cardData: card,
     },
   };
+}
+
+function entityHref(entity: EntityInfo, kind: CodexReferenceKind): string {
+  if (entity.href) return entity.href;
+  const path = kind === "affliction" ? "enchantments" : `${kind}s`;
+  return `/compendium/${path}/${entity.id.toLowerCase()}`;
+}
+
+function entityToReferenceTarget(entity: EntityInfo, kind: CodexReferenceKind): CodexReferenceTarget {
+  return {
+    href: entityHref(entity, kind),
+    id: entity.id,
+    title: entity.nameKo,
+    entity,
+  };
+}
+
+function dataById<T extends { id: string }>(values: readonly T[]): Map<string, T> {
+  return new Map(values.map((value) => [value.id, value]));
+}
+
+function entityByTypeAndId(entities: readonly EntityInfo[]): Map<string, EntityInfo> {
+  return new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
 }
 
 export function KeywordDetail({
@@ -142,12 +150,46 @@ export function KeywordDetail({
     [keyword.name, keyword.nameEn],
   );
   const relatedCardTargets = useMemo(
-    () => relatedCards
-      .filter((card) => cardMentionsKeyword(card, keyword))
-      .sort((a, b) => a.name.localeCompare(b.name, "ko"))
-      .map(cardToReferenceTarget),
-    [keyword, relatedCards],
+    () => {
+      const entityMap = entityByTypeAndId(entities ?? []);
+      const cardsById = dataById(relatedCards);
+      return getRelatedCardIdsForKeyword(keyword, relatedCards)
+        .map((cardId) => cardsById.get(cardId))
+        .filter((card): card is CodexCard => Boolean(card))
+        .sort((a, b) => a.name.localeCompare(b.name, "ko"))
+        .map((card) => cardToReferenceTarget(card, entityMap.get(`card:${card.id}`)));
+    },
+    [entities, keyword, relatedCards],
   );
+  const relatedResourceGroups = useMemo((): CodexReferenceGroup[] => {
+    const allEntities = entities ?? [];
+    const entityMap = entityByTypeAndId(allEntities);
+    const relics = allEntities.flatMap((entity) => entity.relicData ? [entity.relicData] : []) satisfies CodexRelic[];
+    const potions = allEntities.flatMap((entity) => entity.potionData ? [entity.potionData] : []) satisfies CodexPotion[];
+    const powers = allEntities.flatMap((entity) => entity.powerData ? [entity.powerData] : []) satisfies CodexPower[];
+    const enchantments = allEntities.flatMap((entity) => entity.enchantmentData ? [entity.enchantmentData] : []) satisfies CodexEnchantment[];
+    const afflictions = allEntities.flatMap((entity) => entity.afflictionData ? [entity.afflictionData] : []) satisfies CodexAffliction[];
+    const events = allEntities.flatMap((entity) => entity.eventData ? [entity.eventData] : []) satisfies CodexEvent[];
+
+    const targetsFor = (
+      kind: CodexReferenceKind,
+      ids: readonly string[],
+    ): CodexReferenceTarget[] => ids
+      .map((id) => entityMap.get(`${kind}:${id}`))
+      .filter((entity): entity is EntityInfo => Boolean(entity))
+      .sort((a, b) => a.nameKo.localeCompare(b.nameKo, "ko"))
+      .map((entity) => entityToReferenceTarget(entity, kind));
+
+    return [
+      { kind: "card", targets: relatedCardTargets },
+      { kind: "relic", targets: targetsFor("relic", getRelatedRelicIdsForKeyword(keyword, relics)) },
+      { kind: "potion", targets: targetsFor("potion", getRelatedPotionIdsForKeyword(keyword, potions)) },
+      { kind: "power", targets: targetsFor("power", getRelatedPowerIdsForKeyword(keyword, powers)) },
+      { kind: "enchantment", targets: targetsFor("enchantment", getRelatedEnchantmentIdsForKeyword(keyword, enchantments)) },
+      { kind: "affliction", targets: targetsFor("affliction", getRelatedAfflictionIdsForKeyword(keyword, afflictions)) },
+      { kind: "event", targets: targetsFor("event", getRelatedEventIdsForKeyword(keyword, events)) },
+    ];
+  }, [entities, keyword, relatedCardTargets]);
   const backTitle = backToListTitle ?? gameUi.nav.keywords;
 
   return (
@@ -214,7 +256,7 @@ export function KeywordDetail({
 
           <EntityReferenceGroupLinks
             gameUi={gameUi}
-            groups={[{ kind: "card", targets: relatedCardTargets }]}
+            groups={relatedResourceGroups}
             serviceLocale={serviceLocale}
           />
 
