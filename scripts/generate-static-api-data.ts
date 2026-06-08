@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import { buildSearchIndexPayload } from "../src/lib/search-index-data";
 import { loadAllEntities } from "../src/lib/load-all-entities";
+import { buildCompendiumDetailPayload } from "../src/lib/compendium-detail-payload-builder";
 
 type StaticJsonTarget = {
   path: string;
@@ -18,14 +19,16 @@ async function writeJson(target: StaticJsonTarget) {
 }
 
 async function main() {
-  const [searchIndex, commentEntities] = await Promise.all([
+  const [searchIndex, commentEntities, compendiumDetailPayload] = await Promise.all([
     buildSearchIndexPayload(),
     loadAllEntities(),
+    buildCompendiumDetailPayload(),
   ]);
 
   await Promise.all([
     writeJson({ path: "generated/search-index.json", data: searchIndex }),
     writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities }),
+    writeJson({ path: "generated/compendium-detail-kor.json", data: compendiumDetailPayload }),
     writeJson({ path: "api/search-index", data: searchIndex }),
     writeJson({ path: "comment-entities/sts2", data: commentEntities }),
   ]);
