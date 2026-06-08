@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { DonatedRunsSection } from "./donated-runs-section";
 import { MyRunsList } from "./my-runs-list";
+import { ProdRunsDevSection } from "./prod-runs-dev-section";
 import { RunUploadZone } from "./run-upload-zone";
 import { UploadTutorial } from "./upload-tutorial";
 
@@ -24,6 +25,7 @@ export function HistoryCourseLanding() {
         <MyRunsList refreshKey={refreshKey} />
         <DonatedRunsSection refreshKey={refreshKey} />
       </div>
+      <ProdRunsDevSection />
     </div>
   );
 }
