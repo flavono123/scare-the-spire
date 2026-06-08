@@ -1,12 +1,13 @@
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
-import BasePage, { generateMetadata as generateBaseMetadata, generateStaticParams as generateBaseStaticParams } from "../../../_codex/cards/[id]/page";
+import { generateCardStaticParams } from "@/lib/codex-static-params";
+import BasePage, { generateMetadata as generateBaseMetadata } from "../../../_codex/cards/[id]/page";
 
 export const generateMetadata = generateBaseMetadata;
 
 export async function generateStaticParams() {
-  return generateBaseStaticParams();
+  return generateCardStaticParams();
 }
 
 export default BasePage;

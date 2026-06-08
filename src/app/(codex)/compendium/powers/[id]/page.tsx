@@ -1,12 +1,13 @@
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
-import BasePage, { generateMetadata as generateBaseMetadata, generateStaticParams as generateBaseStaticParams } from "../../../_codex/powers/[id]/page";
+import { generatePowerStaticParams } from "@/lib/codex-static-params";
+import BasePage, { generateMetadata as generateBaseMetadata } from "../../../_codex/powers/[id]/page";
 
 export const generateMetadata = generateBaseMetadata;
 
 export async function generateStaticParams() {
-  return generateBaseStaticParams();
+  return generatePowerStaticParams();
 }
 
 export default BasePage;

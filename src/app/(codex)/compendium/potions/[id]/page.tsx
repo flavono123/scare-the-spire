@@ -1,12 +1,13 @@
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
-import BasePage, { generateMetadata as generateBaseMetadata, generateStaticParams as generateBaseStaticParams } from "../../../_codex/potions/[id]/page";
+import { generatePotionStaticParams } from "@/lib/codex-static-params";
+import BasePage, { generateMetadata as generateBaseMetadata } from "../../../_codex/potions/[id]/page";
 
 export const generateMetadata = generateBaseMetadata;
 
 export async function generateStaticParams() {
-  return generateBaseStaticParams();
+  return generatePotionStaticParams();
 }
 
 export default BasePage;

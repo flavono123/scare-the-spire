@@ -1,12 +1,13 @@
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
-import BasePage, { generateMetadata as generateBaseMetadata, generateStaticParams as generateBaseStaticParams } from "../../../_codex/enchantments/[id]/page";
+import { generateEnchantmentStaticParams } from "@/lib/codex-static-params";
+import BasePage, { generateMetadata as generateBaseMetadata } from "../../../_codex/enchantments/[id]/page";
 
 export const generateMetadata = generateBaseMetadata;
 
 export async function generateStaticParams() {
-  return generateBaseStaticParams();
+  return generateEnchantmentStaticParams();
 }
 
 export default BasePage;
