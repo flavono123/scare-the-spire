@@ -8,7 +8,7 @@ import {
   COLOR_CLASSES,
   EFFECT_CLASSES,
 } from "@/components/rich-text";
-import type { CodexCard, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch, DamageValue, MonsterMove } from "@/lib/codex-types";
+import type { CodexCard, CodexKeyword, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch, DamageValue, MonsterMove } from "@/lib/codex-types";
 import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -30,7 +30,7 @@ import {
 import { applyPowerAmountForPreview } from "@/components/codex/power-preview";
 
 // Entity types that can appear in patch notes
-export type EntityType = "card" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch";
+export type EntityType = "card" | "keyword" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch";
 
 export interface EntityInfo {
   id: string;
@@ -44,6 +44,7 @@ export interface EntityInfo {
   type: EntityType;
   cardPreviewUpgradeLevel?: number; // Patch-note token explicitly refers to an upgraded card, e.g. Largesse+.
   cardData?: CodexCard; // Full card data for rich preview
+  keywordData?: CodexKeyword; // Card keyword or static hover-tip concept preview data
   relicData?: CodexRelic; // Full relic data for rich preview
   potionData?: CodexPotion; // Full potion data for rich preview
   powerData?: CodexPower; // Full power data for rich preview
@@ -108,6 +109,7 @@ type PreviewPlacement = {
 
 function estimatePreviewSize(entity: EntityInfo): { width: number; height: number } {
   if (entity.type === "card" && entity.cardData) return { width: 156, height: 230 };
+  if (entity.type === "keyword" && entity.keywordData) return { width: 320, height: 140 };
   if (entity.type === "monsterMove") return { width: 280, height: 260 };
   if (entity.eventData && !entity.eventOptionDesc) return { width: 360, height: 180 };
   if (entity.epochData) return { width: 360, height: 180 };
@@ -278,6 +280,7 @@ export function EntityPreview({
 
   const hrefMap: Partial<Record<EntityType, string>> = {
     card: `/compendium/cards/${entity.id.toLowerCase()}`,
+    keyword: `/compendium/keywords/${entity.id.toLowerCase()}`,
     relic: `/compendium/relics/${entity.id.toLowerCase()}`,
     potion: `/compendium/potions/${entity.id.toLowerCase()}`,
     power: `/compendium/powers/${entity.id.toLowerCase()}`,
@@ -413,6 +416,13 @@ export function EntityPreview({
             />
           </span>,
           "card",
+        )
+      )}
+      {visible && previewEntity.type === "keyword" && previewEntity.keywordData && (
+        renderTooltip(
+          <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
+            <DescriptionText description={previewEntity.keywordData.description} />
+          </GameHoverTip>,
         )
       )}
       {visible && previewEntity.type === "relic" && previewEntity.relicData && (
@@ -613,7 +623,7 @@ export function EntityPreview({
           />,
         )
       )}
-      {visible && !entity.cardData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.monsterMoveData && !entity.encounterData && !entity.ancientData && !entity.epochData && entity.imageUrl && (
+      {visible && !entity.cardData && !entity.keywordData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.monsterMoveData && !entity.encounterData && !entity.ancientData && !entity.epochData && entity.imageUrl && (
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}

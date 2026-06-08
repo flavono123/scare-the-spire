@@ -22,6 +22,7 @@ export type SearchIndexPayload = {
 
 const TYPE_TO_COMPENDIUM_PATH: Partial<Record<EntityType, string>> = {
   card: "cards",
+  keyword: "keywords",
   relic: "relics",
   potion: "potions",
   power: "powers",
@@ -83,6 +84,19 @@ function entitySearchText(entity: EntityInfo): string {
       Object.values(card.keywordLabels).join(" "),
       card.tags.join(" "),
       card.appliedPowerIds.join(" "),
+    );
+  }
+
+  if (entity.keywordData) {
+    const keyword = entity.keywordData;
+    appendSearchParts(
+      parts,
+      keyword.description,
+      keyword.descriptionEn,
+      keyword.descriptionRaw,
+      keyword.descriptionRawEn,
+      keyword.source,
+      keyword.sourceId,
     );
   }
 
