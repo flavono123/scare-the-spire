@@ -73,6 +73,22 @@ export interface CodexCard extends CodexLifecycle {
   };
 }
 
+export type CodexKeywordSource = "cardKeyword" | "staticHoverTip";
+
+export interface CodexKeyword {
+  id: string;
+  name: string; // selected game locale
+  nameEn: string; // English
+  description: string; // selected game locale, with BBCode markup
+  descriptionEn: string; // English, with BBCode markup
+  descriptionRaw: string;
+  descriptionRawEn: string;
+  source: CodexKeywordSource;
+  sourceId: string;
+  imageUrl: null;
+  sortOrder: number;
+}
+
 export interface CodexCharacter {
   id: string;
   name: string; // Korean

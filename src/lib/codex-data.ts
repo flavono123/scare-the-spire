@@ -15,6 +15,7 @@ import { getForcedBestiaryAct, hasPlaceholderBestiaryArt } from "./bestiary-mons
 import { DEFAULT_GAME_LOCALE_BY_SERVICE, type GameLocale } from "./i18n";
 import {
   CodexCard,
+  CodexKeyword,
   CodexCharacter,
   CodexRelic,
   CodexPotion,
@@ -151,6 +152,12 @@ interface RawCharacter {
   image_url: string;
 }
 
+interface RawKeyword {
+  id: string;
+  name: string;
+  description: string;
+}
+
 interface MonsterPhobiaModeAsset {
   id: string;
   imageUrl: string;
@@ -260,6 +267,97 @@ function buildKeywordLabels(
     labels[koLabel] = gameKeywords[key] ?? koLabel;
   }
   return labels;
+}
+
+const CODEX_KEYWORD_ORDER = [
+  "ETERNAL",
+  "ETHEREAL",
+  "EXHAUST",
+  "INNATE",
+  "RETAIN",
+  "SLY",
+  "UNPLAYABLE",
+  "REPLAY",
+] as const;
+
+function keywordSortOrder(id: string): number {
+  const index = CODEX_KEYWORD_ORDER.indexOf(id as (typeof CODEX_KEYWORD_ORDER)[number]);
+  return index >= 0 ? index : CODEX_KEYWORD_ORDER.length;
+}
+
+function mapCardKeyword(
+  kor: RawKeyword,
+  eng: RawKeyword,
+  gameKeywords: GameLocalizationTable,
+  engKeywords: GameLocalizationTable,
+  gameLocale: GameLocale,
+): CodexKeyword | null {
+  const description = gameText(
+    gameKeywords,
+    `${kor.id}.description`,
+    gameLocale === "kor" ? kor.description : gameText(engKeywords, `${kor.id}.description`, eng.description),
+  );
+  const descriptionEn = gameText(engKeywords, `${eng.id}.description`, eng.description);
+  if (!description && !descriptionEn) return null;
+
+  return {
+    id: kor.id,
+    name: gameText(
+      gameKeywords,
+      `${kor.id}.title`,
+      gameTitleFallback(kor.name, eng.name, gameLocale),
+    ),
+    nameEn: gameText(engKeywords, `${eng.id}.title`, eng.name),
+    description,
+    descriptionEn,
+    descriptionRaw: description,
+    descriptionRawEn: descriptionEn,
+    source: "cardKeyword",
+    sourceId: kor.id,
+    imageUrl: null,
+    sortOrder: keywordSortOrder(kor.id),
+  };
+}
+
+function mapStaticHoverKeyword(
+  id: string,
+  sourceId: string,
+  gameStaticHoverTips: GameLocalizationTable,
+  engStaticHoverTips: GameLocalizationTable,
+  gameLocale: GameLocale,
+): CodexKeyword {
+  const titleKey = `${sourceId}.title`;
+  const descriptionKey = `${sourceId}.description`;
+  const korTitleFallback = gameText(gameStaticHoverTips, titleKey, id);
+  const engTitle = gameText(engStaticHoverTips, titleKey, id);
+  const korDescriptionFallback = gameText(gameStaticHoverTips, descriptionKey, "");
+  const engDescription = gameText(engStaticHoverTips, descriptionKey, korDescriptionFallback);
+
+  return {
+    id,
+    name: gameText(
+      gameStaticHoverTips,
+      titleKey,
+      gameTitleFallback(korTitleFallback, engTitle, gameLocale),
+    ),
+    nameEn: engTitle,
+    description: gameText(
+      gameStaticHoverTips,
+      descriptionKey,
+      gameLocale === "kor" ? korDescriptionFallback : engDescription,
+    ),
+    descriptionEn: engDescription,
+    descriptionRaw: gameText(
+      gameStaticHoverTips,
+      descriptionKey,
+      gameLocale === "kor" ? korDescriptionFallback : engDescription,
+    ),
+    descriptionRawEn: engDescription,
+    source: "staticHoverTip",
+    sourceId,
+    imageUrl: null,
+    sortOrder: keywordSortOrder(id),
+  };
 }
 
 function gameTitleFallback(korFallback: string, engFallback: string, gameLocale: GameLocale): string {
@@ -510,6 +608,37 @@ export async function getCodexCards(opts?: {
         };
       });
     });
+}
+
+export async function getCodexKeywords(opts?: { gameLocale?: GameLocale }): Promise<CodexKeyword[]> {
+  const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
+  const [
+    korKeywords,
+    engKeywords,
+    gameKeywords,
+    engGameKeywords,
+    gameStaticHoverTips,
+    engStaticHoverTips,
+  ] = await Promise.all([
+    readJson<RawKeyword[]>("kor/keywords.json"),
+    readJson<RawKeyword[]>("eng/keywords.json"),
+    readGameLocalizationTable(gameLocale, "card_keywords"),
+    readGameLocalizationTable("eng", "card_keywords"),
+    readGameLocalizationTable(gameLocale, "static_hover_tips"),
+    readGameLocalizationTable("eng", "static_hover_tips"),
+  ]);
+
+  const engById = new Map(engKeywords.map((keyword) => [keyword.id, keyword]));
+  const cardKeywords = korKeywords.flatMap((kor) => {
+    const eng = engById.get(kor.id) ?? kor;
+    const keyword = mapCardKeyword(kor, eng, gameKeywords, engGameKeywords, gameLocale);
+    return keyword ? [keyword] : [];
+  });
+
+  return [
+    ...cardKeywords,
+    mapStaticHoverKeyword("REPLAY", "REPLAY_STATIC", gameStaticHoverTips, engStaticHoverTips, gameLocale),
+  ].sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name, "ko"));
 }
 
 export async function getMadScienceBaseCard(opts?: {
