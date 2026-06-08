@@ -511,10 +511,10 @@ function StoryCard({
         <Image
           src="/images/sts2/relics/new_leaf.webp"
           alt="새 이야기"
-          width={24}
-          height={24}
+          width={20}
+          height={20}
           title="새 이야기"
-          className="pointer-events-none absolute right-8 top-4 z-10 h-6 w-6 drop-shadow-[0_2px_5px_rgba(0,0,0,0.45)] sm:right-12 sm:h-7 sm:w-7"
+          className="pointer-events-none absolute right-8 top-1 z-10 h-5 w-5 drop-shadow-[0_2px_5px_rgba(0,0,0,0.45)]"
         />
       )}
       <div className="px-4 py-6">

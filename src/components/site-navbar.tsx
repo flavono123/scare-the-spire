@@ -30,6 +30,7 @@ import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import { characterIconUrl } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
+import { pushCodexHistoryState } from "@/components/codex/use-hydration-safe-search-param";
 
 // --- Dropdown data ---
 
@@ -196,8 +197,7 @@ function pushSamePathUrl(href: string): boolean {
   const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
   if (nextUrl === currentUrl) return true;
 
-  window.history.pushState(null, "", nextUrl);
-  window.dispatchEvent(new PopStateEvent("popstate", { state: null }));
+  pushCodexHistoryState(nextUrl);
   return true;
 }
 

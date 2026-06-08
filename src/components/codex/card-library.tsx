@@ -40,7 +40,8 @@ import {
   getMadScienceVariantId,
 } from "@/lib/tinker-time";
 import {
-  notifyCodexUrlChange,
+  addCodexUrlChangeListener,
+  pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 
@@ -565,8 +566,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       url.searchParams.delete("beta");
     }
     if (url.toString() !== window.location.href) {
-      window.history.pushState(null, "", url.toString());
-      notifyCodexUrlChange();
+      pushCodexHistoryState(url);
     }
   }, [selectedCardId, showBeta, useUrlSelection]);
 
@@ -576,8 +576,7 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
       setUseUrlSelection(true);
       setSelectedCardId(null);
     };
-    window.addEventListener("popstate", handler);
-    return () => window.removeEventListener("popstate", handler);
+    return addCodexUrlChangeListener(handler);
   }, []);
 
   // Close modal on Escape

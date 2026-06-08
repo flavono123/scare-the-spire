@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
+import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -112,7 +113,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
       url.searchParams.delete("relic");
     }
     if (url.toString() !== window.location.href) {
-      window.history.pushState(null, "", url.toString());
+      pushCodexHistoryState(url);
     }
   }, [selectedRelic]);
 
@@ -128,8 +129,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
         setSelectedRelic(relic ?? null);
       }
     };
-    window.addEventListener("popstate", handler);
-    return () => window.removeEventListener("popstate", handler);
+    return addCodexUrlChangeListener(handler);
   }, [relics]);
 
   // Close modal on Escape

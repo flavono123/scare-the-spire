@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Image from "@/components/ui/static-image";
 import { useSearchParams } from "next/navigation";
+import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -224,7 +225,7 @@ export function EventList({
       url.searchParams.delete("event");
     }
     if (url.toString() !== window.location.href) {
-      window.history.pushState(null, "", url.toString());
+      pushCodexHistoryState(url);
     }
   }, [selectedEvent]);
 
@@ -235,8 +236,7 @@ export function EventList({
       if (!p) setSelectedEvent(null);
       else setSelectedEvent(events.find((e) => e.id.toLowerCase() === p.toLowerCase()) ?? null);
     };
-    window.addEventListener("popstate", handler);
-    return () => window.removeEventListener("popstate", handler);
+    return addCodexUrlChangeListener(handler);
   }, [events]);
 
   useEffect(() => {

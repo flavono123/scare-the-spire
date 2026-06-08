@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
+import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
@@ -124,7 +125,7 @@ export function EncounterLibrary({
       url.searchParams.delete("encounter");
     }
     if (url.toString() !== window.location.href) {
-      window.history.pushState(null, "", url.toString());
+      pushCodexHistoryState(url);
     }
   }, [selectedEncounter]);
 
@@ -139,8 +140,7 @@ export function EncounterLibrary({
         setSelectedEncounter(versionedEncounters.find((e) => e.id.toLowerCase() === param.toLowerCase()) ?? null);
       }
     };
-    window.addEventListener("popstate", handler);
-    return () => window.removeEventListener("popstate", handler);
+    return addCodexUrlChangeListener(handler);
   }, [versionedEncounters]);
 
   // Escape to close

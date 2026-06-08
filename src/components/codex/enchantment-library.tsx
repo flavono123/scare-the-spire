@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -125,7 +126,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
       url.searchParams.delete("affliction");
     }
     if (url.toString() !== window.location.href) {
-      window.history.pushState(null, "", url.toString());
+      pushCodexHistoryState(url);
     }
   }, [selectedResource]);
 
@@ -146,8 +147,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
       }
       setSelectedResource(null);
     };
-    window.addEventListener("popstate", handler);
-    return () => window.removeEventListener("popstate", handler);
+    return addCodexUrlChangeListener(handler);
   }, [afflictions, enchantments]);
 
   useEffect(() => {

@@ -51,7 +51,8 @@ import {
 } from "./codex-filter-drawer";
 import { VersionSelector } from "./version-selector";
 import {
-  notifyCodexUrlChange,
+  addCodexUrlChangeListener,
+  pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 
@@ -192,8 +193,7 @@ export function MonsterLibrary({
       url.searchParams.delete("monster");
     }
     if (url.toString() !== window.location.href) {
-      window.history.pushState(null, "", url.toString());
-      notifyCodexUrlChange();
+      pushCodexHistoryState(url);
     }
   }, [selectedMonsterId, useUrlSelection]);
 
@@ -203,8 +203,7 @@ export function MonsterLibrary({
       setUseUrlSelection(true);
       setSelectedMonsterId(null);
     };
-    window.addEventListener("popstate", handler);
-    return () => window.removeEventListener("popstate", handler);
+    return addCodexUrlChangeListener(handler);
   }, []);
 
   // Escape to close

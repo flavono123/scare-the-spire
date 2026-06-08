@@ -6,6 +6,7 @@ import Image from "@/components/ui/static-image";
 import { DescriptionText } from "./codex-description";
 import { PotionDetail } from "./potion-detail";
 import { GameHoverTip } from "./hover-tip";
+import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -152,7 +153,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
       url.searchParams.delete("potion");
     }
     if (url.toString() !== window.location.href) {
-      window.history.pushState(null, "", url.toString());
+      pushCodexHistoryState(url);
     }
   }, [selectedPotion]);
 
@@ -168,8 +169,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
         setSelectedPotion(potion ?? null);
       }
     };
-    window.addEventListener("popstate", handler);
-    return () => window.removeEventListener("popstate", handler);
+    return addCodexUrlChangeListener(handler);
   }, [potions]);
 
   // Close modal on Escape

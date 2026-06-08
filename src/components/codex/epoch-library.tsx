@@ -51,7 +51,8 @@ import { EpochDetail } from "./epoch-detail";
 import { VersionSelector } from "./version-selector";
 import { EVENT_FILTER_ICON, getCharacterTokenIcon } from "./codex-filter-assets";
 import {
-  notifyCodexUrlChange,
+  addCodexUrlChangeListener,
+  pushCodexHistoryState,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 import {
@@ -165,7 +166,7 @@ export function EpochLibrary({
       url.searchParams.delete("epoch");
     }
     if (url.toString() !== window.location.href) {
-      window.history.pushState(null, "", url.toString());
+      pushCodexHistoryState(url);
     }
   }, [selectedEpoch, urlReady]);
 
@@ -179,8 +180,7 @@ export function EpochLibrary({
         setSelectedEpoch(versionedEpochs.find((epoch) => epoch.id.toLowerCase() === epochParam.toLowerCase()) ?? null);
       }
     };
-    window.addEventListener("popstate", handler);
-    return () => window.removeEventListener("popstate", handler);
+    return addCodexUrlChangeListener(handler);
   }, [versionedEpochs]);
 
   useEffect(() => {
@@ -332,8 +332,7 @@ export function EpochLibrary({
       url.searchParams.delete("beta");
     }
     if (url.toString() !== window.location.href) {
-      window.history.pushState(null, "", url.toString());
-      notifyCodexUrlChange();
+      pushCodexHistoryState(url);
     }
   }, []);
 

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { AncientNodeRender } from "@/components/codex/ancient-node-render";
+import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -132,7 +133,7 @@ export function AncientList({
       url.searchParams.delete("ancient");
     }
     if (url.toString() !== window.location.href) {
-      window.history.pushState(null, "", url.toString());
+      pushCodexHistoryState(url);
     }
   }, [selectedAncient]);
 
@@ -147,8 +148,7 @@ export function AncientList({
         setSelectedAncient(ancient ?? null);
       }
     };
-    window.addEventListener("popstate", handler);
-    return () => window.removeEventListener("popstate", handler);
+    return addCodexUrlChangeListener(handler);
   }, [versionedAncients]);
 
   useEffect(() => {
