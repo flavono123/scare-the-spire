@@ -104,18 +104,16 @@ interface AdminSnapshot {
   engagementCounts: QueryState<EngagementCountRow[]>;
 }
 
-const CODEX_PATHS: Record<string, string> = {
-  ancient: "ancients",
-  affliction: "enchantments",
-  card: "cards",
-  encounter: "encounters",
-  enchantment: "enchantments",
-  epoch: "epochs",
-  event: "events",
-  monster: "monsters",
-  potion: "potions",
-  power: "powers",
-  relic: "relics",
+const CODEX_QUERY_TARGETS: Record<string, { path: string; param: string }> = {
+  ancient: { path: "ancients", param: "ancient" },
+  affliction: { path: "enchantments", param: "affliction" },
+  card: { path: "cards", param: "card" },
+  enchantment: { path: "enchantments", param: "enchantment" },
+  epoch: { path: "epochs", param: "epoch" },
+  event: { path: "events", param: "event" },
+  potion: { path: "potions", param: "potion" },
+  power: { path: "powers", param: "power" },
+  relic: { path: "relics", param: "relic" },
 };
 
 const CODEX_TYPE_LABELS: Record<string, string> = {
@@ -644,8 +642,10 @@ function hrefForStoryId(storyId: string): string | null {
     return productionHref(`/compendium/bestiary?view=encounters&encounter=${normalizedId}`);
   }
 
-  const path = CODEX_PATHS[type];
-  return path ? productionHref(`/compendium/${path}/${normalizedId}`) : null;
+  const target = CODEX_QUERY_TARGETS[type];
+  return target
+    ? productionHref(`/compendium/${target.path}?${target.param}=${normalizedId}`)
+    : null;
 }
 
 function productionHref(path: string): string {
