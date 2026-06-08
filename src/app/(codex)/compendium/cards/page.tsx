@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import BasePage, { generateMetadata as generateBaseMetadata } from "../../codex/cards/page";
+import BasePage, { generateMetadata as generateBaseMetadata } from "../../_codex/cards/page";
 import {
   DEFAULT_ROUTE_GAME_LOCALE,
   searchRecordForGameLocale,

@@ -1,4 +1,4 @@
-import BasePage, { generateMetadata as generateBaseMetadata } from "@/app/(codex)/codex/relics/page";
+import BasePage, { generateMetadata as generateBaseMetadata } from "@/app/(codex)/_codex/relics/page";
 import {
   getLocalePairFromParams,
   searchRecordForGameLocaleWithParams,

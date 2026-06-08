@@ -1,4 +1,4 @@
-import BasePage, { generateMetadata as generateBaseMetadata } from "@/app/(codex)/codex/potions/[id]/page";
+import BasePage, { generateMetadata as generateBaseMetadata } from "@/app/(codex)/_codex/potions/[id]/page";
 import { getLocalePairFromParams, searchRecordForGameLocale, type LocaleRouteParams } from "@/lib/locale-routing";
 
 export const dynamic = "force-static";

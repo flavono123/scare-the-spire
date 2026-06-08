@@ -1,6 +1,6 @@
 export const dynamic = "force-static";
 
-import BasePage, { generateMetadata as generateBaseMetadata } from "../../codex/events/page";
+import BasePage, { generateMetadata as generateBaseMetadata } from "../../_codex/events/page";
 import { defaultRouteSearchParams, type RouteSearchParams } from "../static-locale";
 
 export function generateMetadata({ searchParams }: { searchParams: RouteSearchParams }) {

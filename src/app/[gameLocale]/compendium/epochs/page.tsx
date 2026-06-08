@@ -1,4 +1,4 @@
-import BasePage, { generateMetadata as generateBaseMetadata } from "@/app/(codex)/codex/epochs/page";
+import BasePage, { generateMetadata as generateBaseMetadata } from "@/app/(codex)/_codex/epochs/page";
 import {
   getLocalePairFromParams,
   searchRecordForGameLocaleWithParams,
