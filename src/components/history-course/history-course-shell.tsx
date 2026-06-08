@@ -827,7 +827,12 @@ export function HistoryCourseShell({
 
   const onJumpToStep = useCallback(
     (targetActIndex: number, targetStep: number) => {
-      setGlobalMs(globalMsForStep(runTimeline, targetActIndex, targetStep));
+      setGlobalMs(
+        Math.min(
+          globalMsForStep(runTimeline, targetActIndex, targetStep) + stackStartOffsetMs(),
+          runTimeline.totalMs,
+        ),
+      );
       setPlaying(false);
     },
     [runTimeline],
