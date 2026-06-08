@@ -764,6 +764,13 @@ export default async function SupabaseAdminPage() {
           <div>
             <span className="text-xs font-bold text-yellow-400">DEV ONLY</span>
             <h1 className="mt-1 text-2xl font-bold">Supabase Admin</h1>
+            <Link
+              href="/dev/history-course-runs"
+              prefetch={false}
+              className="mt-2 inline-flex rounded-md border border-yellow-500/30 bg-yellow-500/10 px-2.5 py-1 text-xs font-semibold text-yellow-200 transition hover:bg-yellow-500/20"
+            >
+              역사 강의서 prod run 테스트
+            </Link>
           </div>
           <div className="text-right text-xs text-muted-foreground">
             <div>data: <code className="text-yellow-300">{ADMIN_DATA_ENV}</code></div>
