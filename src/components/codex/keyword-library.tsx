@@ -58,7 +58,6 @@ function KeywordTile({
   keyword: CodexKeyword;
   onClick: () => void;
 }) {
-  const sourceConfig = KEYWORD_SOURCE_CONFIG[keyword.source];
   return (
     <button
       type="button"
@@ -70,9 +69,6 @@ function KeywordTile({
         className="h-full w-full transition-[filter] group-hover:brightness-110 group-focus-visible:brightness-110"
         style={{ minWidth: 0, width: "100%", minHeight: 144 }}
       >
-        <span className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide" style={{ color: sourceConfig.color }}>
-          {keyword.sourceId}
-        </span>
         <DescriptionText description={keyword.description} className="block text-left line-clamp-3" />
       </GameHoverTip>
     </button>

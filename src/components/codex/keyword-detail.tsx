@@ -74,11 +74,9 @@ function keywordDetailLabels(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
     ? {
         englishName: "영어명",
-        source: "출처",
       }
     : {
         englishName: "English name",
-        source: "Source",
       };
 }
 
@@ -204,7 +202,6 @@ export function KeywordDetail({
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
                 <MetaPill value={sourceConfig.label[serviceLocale]} color={sourceConfig.color} />
-                <MetaPill value={keyword.sourceId} />
               </div>
               {keyword.nameEn !== keyword.name && (
                 <div>
@@ -212,10 +209,6 @@ export function KeywordDetail({
                   <div className="font-game-text text-sm text-gray-300">{keyword.nameEn}</div>
                 </div>
               )}
-              <div>
-                <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{labels.source}</div>
-                <div className="font-game-text text-sm text-gray-300">{keyword.sourceId}</div>
-              </div>
             </div>
           </section>
 
