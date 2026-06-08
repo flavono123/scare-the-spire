@@ -5,23 +5,6 @@ const nextConfig: NextConfig = {
     // Keep Vercel image transformations at zero on the free tier.
     unoptimized: true,
   },
-  async rewrites() {
-    const compendiumDetailRewrites = [
-      { source: "/compendium/ancients/:id", destination: "/compendium/ancients?ancient=:id" },
-      { source: "/compendium/enchantments/:id", destination: "/compendium/enchantments?enchantment=:id" },
-      { source: "/compendium/encounters/:id", destination: "/compendium/bestiary?view=encounters&encounter=:id" },
-      { source: "/compendium/epochs/:id", destination: "/compendium/epochs?epoch=:id" },
-      { source: "/compendium/events/:id", destination: "/compendium/events?event=:id" },
-      { source: "/compendium/monsters/:id", destination: "/compendium/bestiary?monster=:id" },
-      { source: "/compendium/potions/:id", destination: "/compendium/potions?potion=:id" },
-      { source: "/compendium/powers/:id", destination: "/compendium/powers?power=:id" },
-      { source: "/compendium/relics/:id", destination: "/compendium/relics?relic=:id" },
-    ];
-
-    return {
-      beforeFiles: compendiumDetailRewrites,
-    };
-  },
   async headers() {
     return [
       {

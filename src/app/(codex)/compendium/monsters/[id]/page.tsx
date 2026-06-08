@@ -1,6 +1,6 @@
 import { CompendiumDirectDetailPage } from "@/components/codex/compendium-direct-detail-page";
-import { generateCompendiumCardMetadata } from "@/lib/compendium-detail-metadata";
-import { generateCardStaticParams } from "@/lib/codex-static-params";
+import { generateMonsterStaticParams } from "@/lib/codex-static-params";
+import { generateCompendiumMonsterMetadata } from "@/lib/compendium-detail-metadata";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -11,14 +11,14 @@ type DetailProps = {
 
 export async function generateMetadata({ params }: DetailProps) {
   const { id } = await params;
-  return generateCompendiumCardMetadata(id);
+  return generateCompendiumMonsterMetadata(id);
 }
 
 export async function generateStaticParams() {
-  return generateCardStaticParams();
+  return generateMonsterStaticParams();
 }
 
-export default async function CompendiumCardDetailPage({ params }: DetailProps) {
+export default async function CompendiumMonsterDetailPage({ params }: DetailProps) {
   const { id } = await params;
-  return <CompendiumDirectDetailPage resourceType="cards" id={id} />;
+  return <CompendiumDirectDetailPage resourceType="monsters" id={id} />;
 }
