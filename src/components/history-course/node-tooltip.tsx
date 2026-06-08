@@ -41,6 +41,8 @@ export function NodeTooltip({
   const cardsGained = (entry.cards_gained ?? []).map((c) => c.id);
   const relicPicked = (entry.relic_choices ?? []).filter((c) => c.picked).map((c) => c.id);
   const potionPicked = (entry.potion_choices ?? []).filter((c) => c.picked).map((c) => c.id);
+  const potionUsed = entry.potion_used ?? [];
+  const potionDiscarded = entry.potion_discarded ?? [];
 
   const cardSkipped = (entry.card_choices ?? [])
     .filter((c) => !c.picked)
@@ -58,6 +60,8 @@ export function NodeTooltip({
     cardsGained.length > 0 ||
     relicPicked.length > 0 ||
     potionPicked.length > 0 ||
+    potionUsed.length > 0 ||
+    potionDiscarded.length > 0 ||
     goldGained > 0 ||
     cardRemoved.length > 0;
   const hasSkipped =
@@ -142,7 +146,13 @@ export function NodeTooltip({
                 <li key={`cg-${id}-${i}`}>▤ {localize("cards", id) ?? id}</li>
               ))}
               {potionPicked.map((id) => (
-                <li key={`p-${id}`}>⊓ {localize("potions", id) ?? id}</li>
+                <li key={`p-${id}`}>⊓ {localize("potions", id) ?? id} 획득</li>
+              ))}
+              {potionUsed.map((id, i) => (
+                <li key={`pu-${id}-${i}`}>⊓ {localize("potions", id) ?? id} 사용</li>
+              ))}
+              {potionDiscarded.map((id, i) => (
+                <li key={`pd-${id}-${i}`}>⊓ {localize("potions", id) ?? id} 버림</li>
               ))}
               {cardRemoved.map((id, i) => (
                 <li key={`cr-${id}-${i}`}>✕ {localize("cards", id) ?? id} 제거</li>

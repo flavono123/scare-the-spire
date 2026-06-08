@@ -52,6 +52,11 @@ function relicIconSrc(id: string): string {
   return `/images/sts2/relics/${slug}.webp`;
 }
 
+function potionIconSrc(id: string): string {
+  const slug = id.replace(/^POTION\./, "").toLowerCase();
+  return `/images/sts2/potions/${slug}.webp`;
+}
+
 function bossIconSrc(id: string): string {
   return `/images/sts2/bosses/${id.toLowerCase()}.webp`;
 }
@@ -108,6 +113,7 @@ interface TopBarProps {
    * fly-out lands into an empty spot instead of stacking on top of an
    * already-rendered icon. */
   hidingRelicIds?: ReadonlySet<string>;
+  hidingPotionIds?: ReadonlySet<string>;
   onOpenDeck: () => void;
   onOpenInfo: () => void;
 }
@@ -119,6 +125,7 @@ export function TopBar({
   cumulativeElapsedMs,
   totalRunMs,
   hidingRelicIds,
+  hidingPotionIds,
   onOpenDeck,
   onOpenInfo,
 }: TopBarProps) {
@@ -144,7 +151,11 @@ export function TopBar({
           />
           <HpChip hp={state.hp} maxHp={state.maxHp} />
           <GoldChip gold={state.gold} />
-          <PotionSlots count={state.potionSlots} />
+          <PotionSlots
+            count={state.potionSlots}
+            potions={state.potions}
+            hidingPotionIds={hidingPotionIds}
+          />
           <CurrentNodeChip
             entry={state.currentEntry}
             ancientInfo={state.ancientInfo}
@@ -380,9 +391,18 @@ function GoldChip({ gold }: { gold: number | null }) {
   );
 }
 
-function PotionSlots({ count }: { count: number }) {
+function PotionSlots({
+  count,
+  potions,
+  hidingPotionIds,
+}: {
+  count: number;
+  potions: (string | null)[];
+  hidingPotionIds?: ReadonlySet<string>;
+}) {
   return (
     <span
+      data-potion-bay
       className="relative inline-flex items-center gap-1 px-1"
       style={{
         // nine-slice keeps the chamfer corners at 8px so the slot bay matches
@@ -395,18 +415,41 @@ function PotionSlots({ count }: { count: number }) {
       }}
       aria-label={`포션 슬롯 ${count}개`}
     >
-      {Array.from({ length: count }).map((_, i) => (
-        <span key={i} className="relative inline-block h-6 w-5">
-          <Image
-            src="/images/sts2/ui/topbar/potion_placeholder.png"
-            alt=""
-            fill
-            sizes="20px"
-            className="object-contain opacity-90"
-            unoptimized
-          />
-        </span>
-      ))}
+      {Array.from({ length: count }).map((_, i) => {
+        const potionId = potions[i] ?? null;
+        const visiblePotionId =
+          potionId && !hidingPotionIds?.has(potionId) ? potionId : null;
+        const label = visiblePotionId
+          ? localize("potions", visiblePotionId) ?? visiblePotionId
+          : "빈 포션 슬롯";
+        return (
+          <span
+            key={i}
+            data-potion-slot-index={i}
+            className="relative inline-block h-6 w-5"
+            title={label}
+          >
+            <Image
+              src="/images/sts2/ui/topbar/potion_placeholder.png"
+              alt=""
+              fill
+              sizes="20px"
+              className="object-contain opacity-90"
+              unoptimized
+            />
+            {visiblePotionId && (
+              <Image
+                src={potionIconSrc(visiblePotionId)}
+                alt={label}
+                fill
+                sizes="20px"
+                className="object-contain drop-shadow-[0_0_6px_rgba(103,232,249,0.75)]"
+                unoptimized
+              />
+            )}
+          </span>
+        );
+      })}
     </span>
   );
 }

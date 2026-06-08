@@ -55,6 +55,11 @@ export function countStackItems(entry: ReplayHistoryEntry): number {
   const upgraded = (entry.upgraded_cards ?? []).length;
   const enchanted = (entry.cards_enchanted ?? []).length;
   const removed = (entry.cards_removed ?? []).filter((c) => c.id).length;
+  const potionsGained = (entry.potion_choices ?? []).filter(
+    (c) => c.picked && c.id,
+  ).length;
+  const potionsUsed = (entry.potion_used ?? []).length;
+  const potionsDiscarded = (entry.potion_discarded ?? []).length;
   const choices = entry.card_choices ?? [];
   const skipped =
     choices.length > 0 && !choices.some((c) => c.picked) && gained === 0
@@ -65,6 +70,7 @@ export function countStackItems(entry: ReplayHistoryEntry): number {
   ).length;
   return (
     damage + heal + maxUp + maxDown +
+    potionsUsed + potionsDiscarded + potionsGained +
     gained + upgraded + enchanted + removed + skipped + relics
   );
 }

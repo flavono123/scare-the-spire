@@ -66,6 +66,8 @@ export interface ReplayHistoryEntry {
   card_choices?: ReplayChoice[];
   relic_choices?: ReplayChoice[];
   potion_choices?: ReplayChoice[];
+  potion_used?: string[];
+  potion_discarded?: string[];
 }
 
 export interface ReplayEnchantment {
@@ -85,11 +87,18 @@ export interface ReplayRelic {
   ints?: Record<string, number>;
 }
 
+export interface ReplayPotion {
+  id: string;
+  slotIndex?: number;
+}
+
 export interface ReplayPlayer {
   id: number;
   character: string;
   deck: ReplayDeckCard[];
   relics: ReplayRelic[];
+  potions: ReplayPotion[];
+  maxPotionSlotCount?: number;
 }
 
 export interface ReplayModifier {
@@ -696,6 +705,8 @@ export function parseReplayRun(raw: string): ReplayRun {
     enchantment?: { id?: string; amount?: number };
     props?: { ints?: { name?: string; value?: number }[] };
   };
+  type RawReplayPlayer = ReplayPlayer & { max_potion_slot_count?: number };
+  type RawReplayPotion = ReplayPotion & { slot_index?: number };
   const parseCardRef = (card: RawReplayCard | undefined): ReplayCardRef | null => {
     if (typeof card?.id !== "string") return null;
     const ints: Record<string, number> = {};
@@ -740,43 +751,65 @@ export function parseReplayRun(raw: string): ReplayRun {
     start_time: typeof parsed.start_time === "number" ? parsed.start_time : undefined,
     acts: parsed.acts.filter((act): act is string => typeof act === "string"),
     players: Array.isArray(parsed.players)
-      ? parsed.players.map((player) => ({
-          id: typeof player?.id === "number" ? player.id : 0,
-          character: typeof player?.character === "string" ? player.character : "UNKNOWN",
-          deck: Array.isArray(player?.deck)
-            ? player.deck
-                .map((card) => parseCardRef(card as RawReplayCard))
-                .filter((card): card is ReplayDeckCard => typeof card?.id === "string")
-            : [],
-          relics: Array.isArray(player?.relics)
-            ? player.relics
-                .filter((relic): relic is ReplayRelic => typeof relic?.id === "string")
-                .map((relic) => {
-                  const props = (relic as { props?: { ints?: { name?: string; value?: number }[]; int_arrays?: { name?: string; value?: number[] }[] } }).props;
-                  const ints: Record<string, number> = {};
-                  for (const item of props?.ints ?? []) {
-                    if (typeof item?.name === "string" && typeof item.value === "number") {
-                      ints[item.name] = item.value;
+      ? parsed.players.map((player) => {
+          const rawPlayer = player as RawReplayPlayer;
+          return {
+            id: typeof player?.id === "number" ? player.id : 0,
+            character: typeof player?.character === "string" ? player.character : "UNKNOWN",
+            maxPotionSlotCount:
+              typeof player?.maxPotionSlotCount === "number"
+                ? player.maxPotionSlotCount
+                : typeof rawPlayer.max_potion_slot_count === "number"
+                  ? rawPlayer.max_potion_slot_count
+                  : undefined,
+            deck: Array.isArray(player?.deck)
+              ? player.deck
+                  .map((card) => parseCardRef(card as RawReplayCard))
+                  .filter((card): card is ReplayDeckCard => typeof card?.id === "string")
+              : [],
+            potions: Array.isArray(player?.potions)
+              ? player.potions
+                  .filter((potion): potion is RawReplayPotion => typeof potion?.id === "string")
+                  .map((potion) => ({
+                    id: potion.id,
+                    slotIndex:
+                      typeof potion.slotIndex === "number"
+                        ? potion.slotIndex
+                        : typeof potion.slot_index === "number"
+                          ? potion.slot_index
+                          : undefined,
+                  }))
+              : [],
+            relics: Array.isArray(player?.relics)
+              ? player.relics
+                  .filter((relic): relic is ReplayRelic => typeof relic?.id === "string")
+                  .map((relic) => {
+                    const props = (relic as { props?: { ints?: { name?: string; value?: number }[]; int_arrays?: { name?: string; value?: number[] }[] } }).props;
+                    const ints: Record<string, number> = {};
+                    for (const item of props?.ints ?? []) {
+                      if (typeof item?.name === "string" && typeof item.value === "number") {
+                        ints[item.name] = item.value;
+                      }
                     }
-                  }
-                  const intArrays: Record<string, number[]> = {};
-                  for (const item of props?.int_arrays ?? []) {
-                    if (typeof item?.name === "string" && Array.isArray(item.value)) {
-                      intArrays[item.name] = item.value.filter(
-                        (v): v is number => typeof v === "number",
-                      );
+                    const intArrays: Record<string, number[]> = {};
+                    for (const item of props?.int_arrays ?? []) {
+                      if (typeof item?.name === "string" && Array.isArray(item.value)) {
+                        intArrays[item.name] = item.value.filter(
+                          (v): v is number => typeof v === "number",
+                        );
+                      }
                     }
-                  }
-                  return {
-                    id: relic.id,
-                    floor_added_to_deck:
-                      typeof relic.floor_added_to_deck === "number" ? relic.floor_added_to_deck : undefined,
-                    ints: Object.keys(ints).length > 0 ? ints : undefined,
-                    intArrays: Object.keys(intArrays).length > 0 ? intArrays : undefined,
-                  };
-                })
-            : [],
-        }))
+                    return {
+                      id: relic.id,
+                      floor_added_to_deck:
+                        typeof relic.floor_added_to_deck === "number" ? relic.floor_added_to_deck : undefined,
+                      ints: Object.keys(ints).length > 0 ? ints : undefined,
+                      intArrays: Object.keys(intArrays).length > 0 ? intArrays : undefined,
+                    };
+                  })
+              : [],
+          };
+        })
       : [],
     modifiers: Array.isArray(parsed.modifiers)
       ? parsed.modifiers
@@ -821,6 +854,8 @@ export function parseReplayRun(raw: string): ReplayRun {
                 card_choices?: RawCardChoice[];
                 relic_choices?: RawSimpleChoice[];
                 potion_choices?: RawSimpleChoice[];
+                potion_used?: string[];
+                potion_discarded?: string[];
               }>;
             };
             const firstStats = Array.isArray(rawEntry.player_stats) ? rawEntry.player_stats[0] : undefined;
@@ -855,6 +890,8 @@ export function parseReplayRun(raw: string): ReplayRun {
                     .map((c) => ({ id: c.choice, picked: !!c.was_picked }))
                 : undefined;
             const pickUpgradedCards = (list: string[] | undefined): string[] | undefined =>
+              Array.isArray(list) ? list.filter((id): id is string => typeof id === "string") : undefined;
+            const pickStringList = (list: string[] | undefined): string[] | undefined =>
               Array.isArray(list) ? list.filter((id): id is string => typeof id === "string") : undefined;
             const pickEnchantments = (
               list:
@@ -906,6 +943,8 @@ export function parseReplayRun(raw: string): ReplayRun {
               card_choices: pickCardChoices(firstStats?.card_choices),
               relic_choices: pickSimpleChoices(firstStats?.relic_choices),
               potion_choices: pickSimpleChoices(firstStats?.potion_choices),
+              potion_used: pickStringList(firstStats?.potion_used),
+              potion_discarded: pickStringList(firstStats?.potion_discarded),
             };
           })
         : [],

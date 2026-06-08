@@ -38,6 +38,7 @@ export interface TopbarState {
   currentFloor: number;
   relics: RelicAtFloor[];
   potionSlots: number;
+  potions: (string | null)[];
   bossInfo: BossInfo;
   ancientInfo: AncientInfo;
   deck: { id: string; count: number; upgradeCount: number; firstFloor: number }[];
@@ -71,6 +72,7 @@ export function buildTopbarState(
       currentFloor: 1,
       relics: [],
       potionSlots: run.ascension >= 6 ? 2 : 3,
+      potions: Array.from({ length: run.ascension >= 6 ? 2 : 3 }, () => null),
       bossInfo: {
         firstBoss: null,
         secondBoss: null,
@@ -121,6 +123,15 @@ export function buildTopbarState(
     const bonus = POTION_SLOT_RELIC_BONUS[normalize(relic.id)];
     if (bonus) potionSlots += bonus;
   }
+  const finalFloor = run.map_point_history.reduce((sum, history) => sum + history.length, 0);
+  if (
+    currentFloor >= finalFloor &&
+    typeof player.maxPotionSlotCount === "number" &&
+    player.maxPotionSlotCount > 0
+  ) {
+    potionSlots = player.maxPotionSlotCount;
+  }
+  const potions = buildPotionSlotsAtFloor(run, currentFloor, potionSlots);
 
   const bossStepIndices = act.history
     .map((entry, i) => (entry.map_point_type === "boss" ? i : -1))
@@ -160,11 +171,70 @@ export function buildTopbarState(
     currentFloor,
     relics,
     potionSlots,
+    potions,
     bossInfo,
     ancientInfo,
     deck,
     deckCount,
   };
+}
+
+function removePotionFromSlots(slots: (string | null)[], id: string): boolean {
+  const needle = normalize(id);
+  const idx = slots.findIndex((slot) => (slot ? normalize(slot) === needle : false));
+  if (idx < 0) return false;
+  slots[idx] = null;
+  return true;
+}
+
+function addPotionToSlots(slots: (string | null)[], id: string): void {
+  const idx = slots.findIndex((slot) => slot === null);
+  if (idx < 0) return;
+  slots[idx] = id;
+}
+
+function exactFinalPotionSlots(run: ReplayRun, potionSlots: number): (string | null)[] | null {
+  const player = run.players[0];
+  if (!player || player.potions.length === 0) return null;
+  const slots = Array.from({ length: potionSlots }, () => null as string | null);
+  for (const potion of player.potions) {
+    const preferred =
+      typeof potion.slotIndex === "number" &&
+      potion.slotIndex >= 0 &&
+      potion.slotIndex < slots.length
+        ? potion.slotIndex
+        : slots.findIndex((slot) => slot === null);
+    if (preferred >= 0) slots[preferred] = potion.id;
+  }
+  return slots;
+}
+
+function buildPotionSlotsAtFloor(
+  run: ReplayRun,
+  currentFloor: number,
+  potionSlots: number,
+): (string | null)[] {
+  const slots = Array.from({ length: potionSlots }, () => null as string | null);
+  let floor = 1;
+  outer: for (const act of run.map_point_history) {
+    for (const entry of act) {
+      if (floor > currentFloor) break outer;
+      const remainingRemovals: string[] = [];
+      for (const id of [...(entry.potion_used ?? []), ...(entry.potion_discarded ?? [])]) {
+        if (!removePotionFromSlots(slots, id)) remainingRemovals.push(id);
+      }
+      for (const choice of entry.potion_choices ?? []) {
+        if (choice.picked && choice.id) addPotionToSlots(slots, choice.id);
+      }
+      for (const id of remainingRemovals) {
+        removePotionFromSlots(slots, id);
+      }
+      floor += 1;
+    }
+  }
+
+  const finalFloor = run.map_point_history.reduce((sum, history) => sum + history.length, 0);
+  return currentFloor >= finalFloor ? (exactFinalPotionSlots(run, potionSlots) ?? slots) : slots;
 }
 
 function buildDeckAtFloor(

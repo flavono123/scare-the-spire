@@ -120,6 +120,11 @@ function relicIconSrc(id: string): string {
   return `/images/sts2/relics/${slug}.webp`;
 }
 
+function potionIconSrc(id: string): string {
+  const slug = id.replace(/^POTION\./, "").toLowerCase();
+  return `/images/sts2/potions/${slug}.webp`;
+}
+
 // Build the minimal EntityInfo a relic icon needs to drive an EntityPreview
 // (rich tooltip + click-through to the codex relic page).
 function buildRelicEntityInfo(
@@ -279,7 +284,7 @@ function SummaryPanel({
         />
         <HpChip hp={topbarState.hp} maxHp={topbarState.maxHp} />
         <GoldChip gold={topbarState.gold} />
-        <PotionStrip slots={topbarState.potionSlots} />
+        <PotionStrip slots={topbarState.potionSlots} potions={topbarState.potions} />
         <ScoreChip win={run.win && ended} floor={finalFloor} />
         <TimeChip runTime={runTimeStr} />
         <div className="ml-auto text-right text-[11px] leading-snug text-zinc-400">
@@ -421,7 +426,13 @@ function GoldChip({ gold }: { gold: number | null }) {
 
 // Mirrors the topbar's PotionSlots — same nine-slice frame and placeholder
 // sprite so the summary header reads as the same widget the player saw mid-run.
-function PotionStrip({ slots }: { slots: number }) {
+function PotionStrip({
+  slots,
+  potions,
+}: {
+  slots: number;
+  potions: (string | null)[];
+}) {
   return (
     <div
       title={`포션 슬롯 ${slots}개`}
@@ -433,18 +444,34 @@ function PotionStrip({ slots }: { slots: number }) {
         borderWidth: "8px",
       }}
     >
-      {Array.from({ length: slots }).map((_, i) => (
-        <div key={i} className="relative h-6 w-5">
-          <Image
-            src="/images/sts2/ui/topbar/potion_placeholder.png"
-            alt=""
-            fill
-            sizes="20px"
-            className="object-contain opacity-90"
-            unoptimized
-          />
-        </div>
-      ))}
+      {Array.from({ length: slots }).map((_, i) => {
+        const potionId = potions[i] ?? null;
+        const label = potionId
+          ? localize("potions", potionId) ?? potionId
+          : "빈 포션 슬롯";
+        return (
+          <div key={i} className="relative h-6 w-5" title={label}>
+            <Image
+              src="/images/sts2/ui/topbar/potion_placeholder.png"
+              alt=""
+              fill
+              sizes="20px"
+              className="object-contain opacity-90"
+              unoptimized
+            />
+            {potionId && (
+              <Image
+                src={potionIconSrc(potionId)}
+                alt={label}
+                fill
+                sizes="20px"
+                className="object-contain drop-shadow-[0_0_6px_rgba(103,232,249,0.75)]"
+                unoptimized
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

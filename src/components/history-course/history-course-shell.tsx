@@ -191,6 +191,15 @@ function relicIconSrc(id: string): string {
   return `/images/sts2/relics/${slug}.webp`;
 }
 
+function potionIconSrc(id: string): string {
+  const slug = id.replace(/^POTION\./, "").toLowerCase();
+  return `/images/sts2/potions/${slug}.webp`;
+}
+
+function normalizeItemId(id: string): string {
+  return id.toUpperCase().split(".").pop() ?? id.toUpperCase();
+}
+
 // Some run exports list class starter cards/relics inside the Neow node's
 // cards_gained / relic_choices. Strip that pollution so the Neow stack
 // reads as 1 card + 1 relic at most. Filter heuristic:
@@ -254,6 +263,9 @@ const VERB_BY_KIND: Record<string, string> = {
   "card-skipped": "넘기기",
   "card-removed": "제거",
   "relic-gained": "획득",
+  "potion-gained": "획득",
+  "potion-used": "사용",
+  "potion-discarded": "버림",
   "hp-loss": "피해",
   "hp-heal": "회복",
   "max-hp-up": "최대 HP",
@@ -268,6 +280,9 @@ const TEXT_BY_KIND: Record<string, string | undefined> = {
   "card-skipped": "#a1a1aa",
   "card-removed": "#fca5a5",
   "relic-gained": "#fef3c7",
+  "potion-gained": "#a5f3fc",
+  "potion-used": "#93c5fd",
+  "potion-discarded": "#c4b5fd",
   "hp-loss": "#fca5a5",
   "hp-heal": "#86efac",
   "max-hp-up": "#fcd34d",
@@ -279,12 +294,15 @@ function buildStackItems(
   step: number,
   cardsById: Record<string, CodexCard>,
   onRelicLanded: (id: string) => void,
+  onPotionLanded: (id: string) => void,
 ): NodeStackItem[] {
   const items: NodeStackItem[] = [];
   const gainedIds = new Set<string>();
 
   const cardLabel = (id: string) =>
     localize("cards", id) ?? id.split(".").pop() ?? "?";
+  const potionLabel = (id: string) =>
+    localize("potions", id) ?? id.split(".").pop() ?? "?";
 
   const placeholderIcon = (
     <span aria-hidden className="inline-block h-8 w-8 shrink-0" />
@@ -302,6 +320,18 @@ function buildStackItems(
       className="h-8 w-8 shrink-0 object-contain"
       unoptimized
     />
+  );
+  const potionIcon = (id: string) => (
+    <div className="relative h-8 w-8 shrink-0">
+      <Image
+        src={potionIconSrc(id)}
+        alt=""
+        fill
+        sizes="32px"
+        className="object-contain drop-shadow-[0_0_8px_rgba(103,232,249,0.75)]"
+        unoptimized
+      />
+    </div>
   );
 
   // HP / max-HP changes always lead the stack — they're the immediate
@@ -350,6 +380,61 @@ function buildStackItems(
       textColor: TEXT_BY_KIND["max-hp-down"],
       postEffect: { kind: "fade" },
     });
+  }
+
+  const pickedPotionIds = (entry.potion_choices ?? [])
+    .filter((c) => c.picked && c.id)
+    .map((c) => c.id);
+  const pickedPotionCounts = new Map<string, number>();
+  for (const id of pickedPotionIds) {
+    const key = normalizeItemId(id);
+    pickedPotionCounts.set(key, (pickedPotionCounts.get(key) ?? 0) + 1);
+  }
+  const immediatePotionRemovals: Array<{ id: string; kind: "potion-used" | "potion-discarded" }> = [];
+  const delayedPotionRemovals: Array<{ id: string; kind: "potion-used" | "potion-discarded" }> = [];
+  const queuePotionRemoval = (id: string, kind: "potion-used" | "potion-discarded") => {
+    const key = normalizeItemId(id);
+    const gainedCount = pickedPotionCounts.get(key) ?? 0;
+    if (gainedCount > 0) {
+      pickedPotionCounts.set(key, gainedCount - 1);
+      delayedPotionRemovals.push({ id, kind });
+      return;
+    }
+    immediatePotionRemovals.push({ id, kind });
+  };
+  for (const id of entry.potion_used ?? []) queuePotionRemoval(id, "potion-used");
+  for (const id of entry.potion_discarded ?? []) queuePotionRemoval(id, "potion-discarded");
+  const pushPotionRemoval = (
+    removal: { id: string; kind: "potion-used" | "potion-discarded" },
+    suffix: string,
+  ) => {
+    items.push({
+      key: `s${step}-${suffix}-${items.length}-${removal.id}`,
+      kind: removal.kind,
+      icon: potionIcon(removal.id),
+      label: potionLabel(removal.id),
+      verb: VERB_BY_KIND[removal.kind],
+      textColor: TEXT_BY_KIND[removal.kind],
+      postEffect: { kind: "fade" },
+    });
+  };
+  for (const removal of immediatePotionRemovals) {
+    pushPotionRemoval(removal, "potion-rm");
+  }
+  for (const id of pickedPotionIds) {
+    items.push({
+      key: `s${step}-pg-${items.length}-${id}`,
+      kind: "potion-gained",
+      icon: potionIcon(id),
+      label: potionLabel(id),
+      verb: VERB_BY_KIND["potion-gained"],
+      textColor: TEXT_BY_KIND["potion-gained"],
+      postEffect: { kind: "fly", targetSelector: "[data-potion-bay]" },
+      onComplete: () => onPotionLanded(id),
+    });
+  }
+  for (const removal of delayedPotionRemovals) {
+    pushPotionRemoval(removal, "potion-rm-delayed");
   }
 
   // Same input list either way; only the verb / colour change between
@@ -594,8 +679,19 @@ export function HistoryCourseShell({
   const [pendingRelicIds, setPendingRelicIds] = useState<ReadonlySet<string>>(
     () => new Set(),
   );
+  const [pendingPotionIds, setPendingPotionIds] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
   const releaseRelicId = useCallback((id: string) => {
     setPendingRelicIds((prev) => {
+      if (!prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+  }, []);
+  const releasePotionId = useCallback((id: string) => {
+    setPendingPotionIds((prev) => {
       if (!prev.has(id)) return prev;
       const next = new Set(prev);
       next.delete(id);
@@ -607,8 +703,8 @@ export function HistoryCourseShell({
     if (!act || !replayReady) return [];
     const entry = act.history[step - 1];
     if (!entry) return [];
-    return buildStackItems(entry, step, cardsById, releaseRelicId);
-  }, [act, step, replayReady, cardsById, releaseRelicId]);
+    return buildStackItems(entry, step, cardsById, releaseRelicId, releasePotionId);
+  }, [act, step, replayReady, cardsById, releaseRelicId, releasePotionId]);
 
   // The relic ids that the *current step's* stack will fly into the topbar.
   // Derived from the sanitized history entry directly (NOT stepStackItems,
@@ -631,6 +727,27 @@ export function HistoryCourseShell({
       stepRelicIdsKey ? new Set(stepRelicIdsKey.split("|")) : new Set(),
     );
   }, [stepRelicIdsKey]);
+
+  const stepPotionIdsKey = useMemo(() => {
+    if (!act) return "";
+    const entry = act.history[step - 1];
+    if (!entry) return "";
+    const visiblePotionKeys = new Set(
+      topbarState.potions
+        .filter((id): id is string => Boolean(id))
+        .map((id) => normalizeItemId(id)),
+    );
+    return (entry.potion_choices ?? [])
+      .filter((c) => c.picked && c.id && visiblePotionKeys.has(normalizeItemId(c.id)))
+      .map((c) => c.id)
+      .join("|");
+  }, [act, step, topbarState.potions]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPendingPotionIds(
+      stepPotionIdsKey ? new Set(stepPotionIdsKey.split("|")) : new Set(),
+    );
+  }, [stepPotionIdsKey]);
 
   // Auto-open the summary panel exactly once when the run reaches its
   // last node. Dismissing the panel sets wasEndedRef back to false only
@@ -748,6 +865,7 @@ export function HistoryCourseShell({
           rate={rate}
           stackItems={stepStackItems}
           hidingRelicIds={pendingRelicIds}
+          hidingPotionIds={pendingPotionIds}
           topbarState={topbarState}
           cardsById={cardsById}
           relicsById={relicsById}
@@ -816,6 +934,7 @@ function Stage({
   rate,
   stackItems,
   hidingRelicIds,
+  hidingPotionIds,
   topbarState,
   cardsById,
   relicsById,
@@ -848,6 +967,7 @@ function Stage({
   rate: Rate;
   stackItems: NodeStackItem[];
   hidingRelicIds: ReadonlySet<string>;
+  hidingPotionIds: ReadonlySet<string>;
   topbarState: ReturnType<typeof buildTopbarState>;
   cardsById: Record<string, CodexCard>;
   relicsById: Record<string, CodexRelic>;
@@ -972,6 +1092,7 @@ function Stage({
         cumulativeElapsedMs={globalMs}
         totalRunMs={runTimeline.totalMs}
         hidingRelicIds={hidingRelicIds}
+        hidingPotionIds={hidingPotionIds}
         onOpenDeck={onOpenDeck}
         // Cog toggles the run-summary panel and auto-pauses playback.
         onOpenInfo={onOpenInfo}
@@ -1427,4 +1548,3 @@ function PauseIcon() {
     </svg>
   );
 }
-
