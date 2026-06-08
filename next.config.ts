@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
   async rewrites() {
     const compendiumDetailRewrites = [
       { source: "/compendium/ancients/:id", destination: "/compendium/ancients?ancient=:id" },
-      { source: "/compendium/cards/:id", destination: "/compendium/cards?modal=true&card=:id" },
       { source: "/compendium/enchantments/:id", destination: "/compendium/enchantments?enchantment=:id" },
       { source: "/compendium/encounters/:id", destination: "/compendium/bestiary?view=encounters&encounter=:id" },
       { source: "/compendium/epochs/:id", destination: "/compendium/epochs?epoch=:id" },
