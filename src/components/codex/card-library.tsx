@@ -42,6 +42,7 @@ import {
 import {
   addCodexUrlChangeListener,
   pushCodexHistoryState,
+  useHydrationSafePathname,
   useHydrationSafeSearchParam,
 } from "./use-hydration-safe-search-param";
 
@@ -136,6 +137,17 @@ function resolveCardListId(id: string): string {
 function findCardByListId(cards: CodexCard[], id: string): CodexCard | null {
   const resolvedId = resolveCardListId(id);
   return cards.find((c) => c.id.toLowerCase() === resolvedId.toLowerCase()) ?? null;
+}
+
+function getCardLibraryBasePath(pathname: string): string {
+  const match = pathname.match(/^(.*\/compendium\/cards)(?:\/[^/]+)?\/?$/);
+  return match?.[1] ?? "/compendium/cards";
+}
+
+function getModalCardIdFromPath(pathname: string, modalParam: string | null): string | null {
+  if (modalParam !== "true") return null;
+  const match = pathname.match(/\/compendium\/cards\/([^/]+)\/?$/);
+  return match ? decodeURIComponent(match[1]) : null;
 }
 
 import { CardTile } from "./card-tile";
@@ -529,10 +541,14 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
   };
 
   // Card detail modal
-  const urlCardId = useHydrationSafeSearchParam("card", initialCardId);
+  const urlPathname = useHydrationSafePathname();
+  const urlModal = useHydrationSafeSearchParam("modal");
+  const legacyUrlCardId = useHydrationSafeSearchParam("card", initialCardId);
   const urlBetaArt = useHydrationSafeSearchParam("beta", initialShowBeta ? "true" : null);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const urlPathCardId = useMemo(() => getModalCardIdFromPath(urlPathname, urlModal), [urlPathname, urlModal]);
+  const urlCardId = urlPathCardId ?? legacyUrlCardId;
   const urlBetaArtEnabled = isBetaArtParamEnabled(urlBetaArt);
   const activeShowBeta = useUrlSelection && urlBetaArt !== null ? urlBetaArtEnabled : showBeta;
   const selectedCard = useMemo(() => {
@@ -555,13 +571,17 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     if (useUrlSelection) return;
     const url = new URL(window.location.href);
     if (selectedCardId) {
-      url.searchParams.set("card", selectedCardId.toLowerCase());
+      url.pathname = `${getCardLibraryBasePath(url.pathname)}/${encodeURIComponent(selectedCardId.toLowerCase())}`;
+      url.searchParams.set("modal", "true");
+      url.searchParams.delete("card");
       if (showBeta) {
         url.searchParams.set("beta", "true");
       } else {
         url.searchParams.delete("beta");
       }
     } else {
+      url.pathname = getCardLibraryBasePath(url.pathname);
+      url.searchParams.delete("modal");
       url.searchParams.delete("card");
       url.searchParams.delete("beta");
     }
