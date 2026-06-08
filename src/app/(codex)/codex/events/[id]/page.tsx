@@ -22,6 +22,12 @@ import {
 import { EventDetail } from "@/components/codex/event-detail";
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const events = await getCodexEvents();
+  return events.map((event) => ({ id: event.id.toLowerCase() }));
+}
 
 export async function generateMetadata({
   params,

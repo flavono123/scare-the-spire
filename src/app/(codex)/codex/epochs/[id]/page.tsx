@@ -21,6 +21,12 @@ import { isBetaArtSearchParam } from "@/lib/codex-card-og";
 import { EpochDetail } from "@/components/codex/epoch-detail";
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const epochs = await getCodexEpochs();
+  return epochs.map((epoch) => ({ id: epoch.id.toLowerCase() }));
+}
 
 export async function generateMetadata({
   params,

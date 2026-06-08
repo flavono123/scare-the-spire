@@ -1,3 +1,4 @@
 export const dynamic = "force-static";
+export const dynamicParams = false;
 
-export { default, generateMetadata } from "../../../codex/ancients/[id]/page";
+export { default, generateMetadata, generateStaticParams } from "../../../codex/ancients/[id]/page";

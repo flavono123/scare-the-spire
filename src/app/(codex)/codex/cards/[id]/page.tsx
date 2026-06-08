@@ -15,6 +15,12 @@ import {
 import { CardDetail } from "@/components/codex/card-detail";
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const cards = await getCodexCards({ includeDeprecated: true });
+  return cards.map((card) => ({ id: card.id.toLowerCase() }));
+}
 
 export async function generateMetadata({
   params,

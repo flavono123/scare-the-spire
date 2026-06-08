@@ -18,6 +18,12 @@ import {
 import { RelicDetail } from "@/components/codex/relic-detail";
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const relics = await getCodexRelics();
+  return relics.map((relic) => ({ id: relic.id.toLowerCase() }));
+}
 
 export async function generateMetadata({
   params,

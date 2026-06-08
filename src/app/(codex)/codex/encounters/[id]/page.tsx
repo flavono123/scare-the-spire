@@ -15,6 +15,12 @@ import {
 import { EncounterDetail } from "@/components/codex/encounter-detail";
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const encounters = await getCodexEncounters();
+  return encounters.map((encounter) => ({ id: encounter.id.toLowerCase() }));
+}
 
 export async function generateMetadata({
   params,

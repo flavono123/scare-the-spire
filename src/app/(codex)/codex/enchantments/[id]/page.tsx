@@ -16,6 +16,15 @@ import {
 import { EnchantmentDetail } from "@/components/codex/enchantment-detail";
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const [enchantments, afflictions] = await Promise.all([
+    getCodexEnchantments(),
+    getCodexAfflictions(),
+  ]);
+  return [...enchantments, ...afflictions].map((resource) => ({ id: resource.id.toLowerCase() }));
+}
 
 export async function generateMetadata({
   params,

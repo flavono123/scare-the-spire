@@ -15,6 +15,12 @@ import {
 import { PowerDetail } from "@/components/codex/power-detail";
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const powers = await getCodexPowers({ includeDeprecated: true });
+  return powers.map((power) => ({ id: power.id.toLowerCase() }));
+}
 
 export async function generateMetadata({
   params,

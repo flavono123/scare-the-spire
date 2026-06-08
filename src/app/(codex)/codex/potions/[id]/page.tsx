@@ -17,6 +17,12 @@ import {
 import { PotionDetail } from "@/components/codex/potion-detail";
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const potions = await getCodexPotions();
+  return potions.map((potion) => ({ id: potion.id.toLowerCase() }));
+}
 
 export async function generateMetadata({
   params,

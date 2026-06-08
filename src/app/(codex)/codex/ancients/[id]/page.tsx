@@ -21,6 +21,12 @@ interface Props {
 }
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const ancients = await getCodexAncients();
+  return ancients.map((ancient) => ({ id: ancient.id.toLowerCase() }));
+}
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { id } = await params;
