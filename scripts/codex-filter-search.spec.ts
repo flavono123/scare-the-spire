@@ -150,12 +150,14 @@ test.describe("Unified topbar search", () => {
     await openCompendium(page, "/compendium/epochs");
 
     await page.evaluate(() => {
-      window.addEventListener("popstate", () => {
+      const slowLocalUrlChange = () => {
         const startedAt = performance.now();
         while (performance.now() - startedAt < 260) {
           // Simulate a slow detail render so the pending indicator has time to paint.
         }
-      });
+      };
+      window.addEventListener("popstate", slowLocalUrlChange);
+      window.addEventListener("codex:urlchange", slowLocalUrlChange);
     });
 
     const header = page.locator("header");
