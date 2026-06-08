@@ -39,6 +39,7 @@ export type CodexGameUiLabels = {
     events: string;
     ancients: string;
     epochs: string;
+    keywords: string;
   };
   common: {
     rarity: string;
@@ -332,6 +333,7 @@ export async function getCodexGameUiLabels(
     "역사",
   );
   const epochsTitle = gameLocale === "kor" ? "연대기" : gameEpochsTitle;
+  const keywordsTitle = gameLocale === "kor" ? "키워드" : "Keywords";
 
   return {
     compendiumTitle: gameText(mainMenu, "COMPENDIUM", "백과사전"),
@@ -351,6 +353,7 @@ export async function getCodexGameUiLabels(
       events: eventsTitle,
       ancients: ancientsTitle,
       epochs: epochsTitle,
+      keywords: keywordsTitle,
     },
     common: {
       rarity: gameText(gameplay, "SORT_RARITY", "희귀도"),
