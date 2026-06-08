@@ -1933,7 +1933,7 @@ function buildCardEntity(
   application: MonsterMoveCardApplication,
   card: CodexCard | undefined,
 ): EntityInfo {
-  const href = `/compendium/cards?card=${application.cardId.toLowerCase()}`;
+  const href = `/compendium/cards/${application.cardId.toLowerCase()}`;
   return {
     id: application.cardId,
     nameEn: card?.nameEn ?? application.cardNameEn,

@@ -1073,7 +1073,7 @@ function PatchDiffCardLink({
 
   return (
     <PatchDiffInlinePreview
-      href={localizeHref(`/compendium/cards?card=${cardId.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(`/compendium/cards/${cardId.toLowerCase()}`, serviceLocale)}
       preview={() => (
         <GameHoverTip title={title} style={{ minWidth: 220, maxWidth: 280 }}>
           {card?.imageUrl && (

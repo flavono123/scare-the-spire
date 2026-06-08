@@ -126,7 +126,7 @@ function EntityImage({ entityType, entityId, name, deprecated }: {
 function sts2EntityHref(entity: EntityInfo): string | null {
   switch (entity.type) {
     case "card":
-      return `/compendium/cards?card=${entity.id.toLowerCase()}`;
+      return `/compendium/cards/${entity.id.toLowerCase()}`;
     case "relic":
       return `/compendium/relics?relic=${entity.id.toLowerCase()}`;
     case "potion":

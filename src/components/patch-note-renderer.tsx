@@ -277,7 +277,7 @@ export function EntityPreview({
   }, [entity, forcePosition]);
 
   const hrefMap: Partial<Record<EntityType, string>> = {
-    card: `/compendium/cards?card=${entity.id.toLowerCase()}`,
+    card: `/compendium/cards/${entity.id.toLowerCase()}`,
     relic: `/compendium/relics?relic=${entity.id.toLowerCase()}`,
     potion: `/compendium/potions?potion=${entity.id.toLowerCase()}`,
     power: `/compendium/powers?power=${entity.id.toLowerCase()}`,
