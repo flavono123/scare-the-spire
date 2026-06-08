@@ -5,25 +5,24 @@ import BasePage, {
   generateMetadata as generateBaseMetadata,
   generateStaticParams,
 } from "../../../_codex/keywords/[id]/page";
-import { defaultRouteSearchParams, type RouteSearchParams } from "../../static-locale";
+import { defaultRouteSearchParams } from "../../static-locale";
 
 type DetailProps = {
   params: Promise<{ id: string }>;
-  searchParams: RouteSearchParams;
 };
 
 export { generateStaticParams };
 
-export function generateMetadata({ params, searchParams }: DetailProps) {
+export function generateMetadata({ params }: DetailProps) {
   return generateBaseMetadata({
     params,
-    searchParams: defaultRouteSearchParams(searchParams),
+    searchParams: defaultRouteSearchParams(),
   });
 }
 
-export default function CompendiumKeywordDetailPage({ params, searchParams }: DetailProps) {
+export default function CompendiumKeywordDetailPage({ params }: DetailProps) {
   return BasePage({
     params,
-    searchParams: defaultRouteSearchParams(searchParams),
+    searchParams: defaultRouteSearchParams(),
   });
 }
