@@ -1,4 +1,12 @@
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
-export { default, generateMetadata, generateStaticParams } from "../../../_codex/monsters/[id]/page";
+import BasePage, { generateMetadata as generateBaseMetadata, generateStaticParams as generateBaseStaticParams } from "../../../_codex/monsters/[id]/page";
+
+export const generateMetadata = generateBaseMetadata;
+
+export async function generateStaticParams() {
+  return generateBaseStaticParams();
+}
+
+export default BasePage;
