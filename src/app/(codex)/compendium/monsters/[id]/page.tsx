@@ -1,13 +1,28 @@
 import { generateMonsterStaticParams } from "@/lib/codex-static-params";
 import BasePage, { generateMetadata as generateBaseMetadata } from "../../../_codex/monsters/[id]/page";
+import { defaultRouteSearchParams } from "../../static-locale";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
-export const generateMetadata = generateBaseMetadata;
+type DetailProps = {
+  params: Promise<{ id: string }>;
+};
+
+export function generateMetadata({ params }: DetailProps) {
+  return generateBaseMetadata({
+    params,
+    searchParams: defaultRouteSearchParams(),
+  });
+}
 
 export async function generateStaticParams() {
   return generateMonsterStaticParams();
 }
 
-export default BasePage;
+export default function CompendiumMonsterDetailPage({ params }: DetailProps) {
+  return BasePage({
+    params,
+    searchParams: defaultRouteSearchParams(),
+  });
+}
