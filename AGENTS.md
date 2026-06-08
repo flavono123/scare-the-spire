@@ -6,6 +6,10 @@
 
 All task instructions must be followed by an immediate speculative commit after each modification. Do not batch changes — commit after every meaningful edit.
 
+## Broad File Changes
+
+Before creating many files, moving route trees, or making broad mechanical edits across many files, explain the expected scope and ask the user for approval first.
+
 ## Git Commit Language
 
 This repository is not a Krafton/PUBG/company work repository.
