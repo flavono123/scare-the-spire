@@ -164,6 +164,11 @@ export function getMadScienceVariantId(cardType: TinkerCardType): string {
   return MAD_SCIENCE_CARD_ID_BY_TYPE[cardType];
 }
 
+export function getTinkerCardTypeFromRunValue(value: number | undefined): TinkerCardType | null {
+  if (typeof value !== "number") return null;
+  return TINKER_CARD_TYPES[value - 1] ?? TINKER_CARD_TYPES[value] ?? null;
+}
+
 export function getTinkerCardTypeChoiceKey(cardType: TinkerCardType): string {
   return `TINKER_TIME.pages.CHOOSE_CARD_TYPE.options.${cardType}.title`;
 }

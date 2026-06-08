@@ -1,4 +1,9 @@
 import { isBuildAtLeast } from "@/lib/sts2-build-version";
+import {
+  getMadScienceVariantId,
+  getTinkerCardTypeFromRunValue,
+  MAD_SCIENCE_CARD_ID,
+} from "@/lib/tinker-time";
 
 const INT_MAX = 2147483647;
 const INT_MIN = -2147483648;
@@ -26,6 +31,19 @@ export interface ReplayChoice {
   picked: boolean;
 }
 
+export interface ReplayCardEnchantment {
+  id: string;
+  amount?: number;
+}
+
+export interface ReplayCardRef {
+  id?: string;
+  floor_added_to_deck?: number;
+  current_upgrade_level?: number;
+  enchantment?: ReplayCardEnchantment;
+  ints?: Record<string, number>;
+}
+
 export interface ReplayHistoryEntry {
   map_point_type: string;
   rooms: ReplayRoom[];
@@ -40,9 +58,9 @@ export interface ReplayHistoryEntry {
   gold_spent?: number;
   gold_lost?: number;
   gold_stolen?: number;
-  cards_gained?: { id?: string }[];
-  cards_lost?: { id?: string }[];
-  cards_removed?: { id?: string }[];
+  cards_gained?: ReplayCardRef[];
+  cards_lost?: ReplayCardRef[];
+  cards_removed?: ReplayCardRef[];
   upgraded_cards?: string[];
   cards_enchanted?: ReplayEnchantment[];
   card_choices?: ReplayChoice[];
@@ -56,10 +74,8 @@ export interface ReplayEnchantment {
   amount?: number;
 }
 
-export interface ReplayDeckCard {
+export interface ReplayDeckCard extends ReplayCardRef {
   id: string;
-  floor_added_to_deck?: number;
-  current_upgrade_level?: number;
 }
 
 export interface ReplayRelic {
@@ -673,6 +689,47 @@ export function parseReplayRun(raw: string): ReplayRun {
     throw new Error("STS2 .run 형식이 아닙니다.");
   }
 
+  type RawReplayCard = {
+    id?: string;
+    floor_added_to_deck?: number;
+    current_upgrade_level?: number;
+    enchantment?: { id?: string; amount?: number };
+    props?: { ints?: { name?: string; value?: number }[] };
+  };
+  const parseCardRef = (card: RawReplayCard | undefined): ReplayCardRef | null => {
+    if (typeof card?.id !== "string") return null;
+    const ints: Record<string, number> = {};
+    for (const item of card.props?.ints ?? []) {
+      if (typeof item?.name === "string" && typeof item.value === "number") {
+        ints[item.name] = item.value;
+      }
+    }
+    const normalizedId = normalizeIdentifier(card.id);
+    const tinkerType =
+      normalizedId === MAD_SCIENCE_CARD_ID
+        ? getTinkerCardTypeFromRunValue(ints.TinkerTimeType)
+        : null;
+    const parsedCard: ReplayCardRef = {
+      id: tinkerType ? getMadScienceVariantId(tinkerType) : card.id,
+    };
+    if (typeof card.floor_added_to_deck === "number") {
+      parsedCard.floor_added_to_deck = card.floor_added_to_deck;
+    }
+    if (typeof card.current_upgrade_level === "number") {
+      parsedCard.current_upgrade_level = card.current_upgrade_level;
+    }
+    if (typeof card.enchantment?.id === "string") {
+      parsedCard.enchantment = { id: card.enchantment.id };
+      if (typeof card.enchantment.amount === "number") {
+        parsedCard.enchantment.amount = card.enchantment.amount;
+      }
+    }
+    if (Object.keys(ints).length > 0) {
+      parsedCard.ints = ints;
+    }
+    return parsedCard;
+  };
+
   return {
     seed: parsed.seed,
     build_id: typeof parsed.build_id === "string" ? parsed.build_id : "unknown",
@@ -688,14 +745,8 @@ export function parseReplayRun(raw: string): ReplayRun {
           character: typeof player?.character === "string" ? player.character : "UNKNOWN",
           deck: Array.isArray(player?.deck)
             ? player.deck
+                .map((card) => parseCardRef(card as RawReplayCard))
                 .filter((card): card is ReplayDeckCard => typeof card?.id === "string")
-                .map((card) => ({
-                  id: card.id,
-                  floor_added_to_deck:
-                    typeof card.floor_added_to_deck === "number" ? card.floor_added_to_deck : undefined,
-                  current_upgrade_level:
-                    typeof card.current_upgrade_level === "number" ? card.current_upgrade_level : undefined,
-                }))
             : [],
           relics: Array.isArray(player?.relics)
             ? player.relics
@@ -759,9 +810,9 @@ export function parseReplayRun(raw: string): ReplayRun {
                 gold_spent?: number;
                 gold_lost?: number;
                 gold_stolen?: number;
-                cards_gained?: { id?: string }[];
-                cards_lost?: { id?: string }[];
-                cards_removed?: { id?: string }[];
+                cards_gained?: RawReplayCard[];
+                cards_lost?: RawReplayCard[];
+                cards_removed?: RawReplayCard[];
                 upgraded_cards?: string[];
                 cards_enchanted?: Array<{
                   card?: { id?: string; enchantment?: { id?: string; amount?: number } };
@@ -781,11 +832,11 @@ export function parseReplayRun(raw: string): ReplayRun {
               if (typeof nested === "number") return nested;
               return undefined;
             };
-            const pickCards = (list: { id?: string }[] | undefined) =>
+            const pickCards = (list: RawReplayCard[] | undefined) =>
               Array.isArray(list)
                 ? list
-                    .filter((c): c is { id: string } => typeof c?.id === "string")
-                    .map((c) => ({ id: c.id }))
+                    .map((c) => parseCardRef(c))
+                    .filter((c): c is ReplayCardRef => typeof c?.id === "string")
                 : undefined;
             const pickCardChoices = (list: RawCardChoice[] | undefined): ReplayChoice[] | undefined =>
               Array.isArray(list)
