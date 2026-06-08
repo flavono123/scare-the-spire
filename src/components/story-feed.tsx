@@ -509,12 +509,12 @@ function StoryCard({
     <article className="relative border-b border-border/50 last:border-b-0">
       {isLatestStory && (
         <Image
-          src="/images/sts2/relics/storybook.webp"
+          src="/images/sts2/relics/new_leaf.webp"
           alt="새 이야기"
-          width={34}
-          height={34}
+          width={24}
+          height={24}
           title="새 이야기"
-          className="pointer-events-none absolute right-[4.5rem] top-3 z-10 h-[34px] w-[34px] drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)]"
+          className="pointer-events-none absolute right-8 top-4 z-10 h-6 w-6 drop-shadow-[0_2px_5px_rgba(0,0,0,0.45)] sm:right-12 sm:h-7 sm:w-7"
         />
       )}
       <div className="px-4 py-6">
