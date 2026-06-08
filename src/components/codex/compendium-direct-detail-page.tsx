@@ -231,11 +231,9 @@ export function CompendiumDirectDetailPage({
 }: CompendiumDirectDetailPageProps) {
   const [payload, setPayload] = useState<CompendiumDetailPayload | null>(null);
   const [error, setError] = useState<Error | null>(null);
-  const [showBetaArt, setShowBetaArt] = useState(false);
 
   useEffect(() => {
     let active = true;
-    setShowBetaArt(isBetaSearchEnabled());
     fetchDetailPayload()
       .then((nextPayload) => {
         if (active) setPayload(nextPayload);
@@ -265,6 +263,7 @@ export function CompendiumDirectDetailPage({
   const { serviceLocale, gameUi, history, resources } = payload;
   const { patches, changes, versionDiffs } = history;
   const serviceText = getCodexServiceMessages(serviceLocale);
+  const showBetaArt = isBetaSearchEnabled();
 
   let detail: ReactNode = null;
 
