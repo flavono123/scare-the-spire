@@ -222,6 +222,7 @@ function locationMatchesSearchTarget(href: string): boolean {
 }
 
 const pendingPowerCounts = [6, 5, 4, 3, 2, 1] as const;
+const pendingNavigationPaintDelayMs = 80;
 
 function GlobalSearchPendingIndicator() {
   const [countIndex, setCountIndex] = useState(0);
@@ -799,7 +800,7 @@ function GlobalSearch({
         router.push(href);
       }
       waitForPendingSearchTarget(href);
-    }, 0);
+    }, pendingNavigationPaintDelayMs);
   }, [clearPendingTimers, closeSearch, router, waitForPendingSearchTarget]);
 
   useEffect(() => {
