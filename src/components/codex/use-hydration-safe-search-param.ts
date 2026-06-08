@@ -9,6 +9,11 @@ function readSearchParam(paramName: string): string | null {
   return new URL(window.location.href).searchParams.get(paramName);
 }
 
+function readPathname(): string {
+  if (typeof window === "undefined") return "";
+  return window.location.pathname;
+}
+
 export function addCodexUrlChangeListener(onStoreChange: () => void): () => void {
   if (typeof window === "undefined") return () => {};
 
@@ -53,6 +58,14 @@ export function useHydrationSafeSearchParam(
   return useSyncExternalStore(
     subscribeToUrlChanges,
     () => readSearchParam(paramName),
+    () => serverSnapshot,
+  );
+}
+
+export function useHydrationSafePathname(serverSnapshot = ""): string {
+  return useSyncExternalStore(
+    subscribeToUrlChanges,
+    readPathname,
     () => serverSnapshot,
   );
 }
