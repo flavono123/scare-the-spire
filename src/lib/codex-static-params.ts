@@ -6,6 +6,7 @@ import {
   getCodexEncounters,
   getCodexEpochs,
   getCodexEvents,
+  getCodexKeywords,
   getCodexMonsters,
   getCodexPotions,
   getCodexPowers,
@@ -45,6 +46,10 @@ export async function generateEpochStaticParams(): Promise<StaticIdParam[]> {
 
 export async function generateEventStaticParams(): Promise<StaticIdParam[]> {
   return idParams(await getCodexEvents());
+}
+
+export async function generateKeywordStaticParams(): Promise<StaticIdParam[]> {
+  return idParams(await getCodexKeywords());
 }
 
 export async function generateMonsterStaticParams(): Promise<StaticIdParam[]> {

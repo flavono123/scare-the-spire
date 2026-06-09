@@ -8,6 +8,7 @@ import type {
   CodexEncounter,
   CodexEpoch,
   CodexEvent,
+  CodexKeyword,
   CodexMonster,
   CodexPotion,
   CodexPower,
@@ -25,6 +26,7 @@ export type CompendiumDetailResourceType =
   | "encounters"
   | "epochs"
   | "events"
+  | "keywords"
   | "monsters"
   | "potions"
   | "powers"
@@ -43,6 +45,7 @@ export type CompendiumDetailPayload = {
     encounters: CodexEncounter[];
     epochs: CodexEpoch[];
     events: CodexEvent[];
+    keywords: CodexKeyword[];
     monsters: CodexMonster[];
     potions: CodexPotion[];
     powers: CodexPower[];
