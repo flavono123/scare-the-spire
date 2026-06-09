@@ -20,7 +20,7 @@ export function ShaNewsTeaser({
   return (
     <Link
       href={localizeHrefWithGameLocale("/sha-news", serviceLocale, gameLocale)}
-      className="group flex min-h-14 items-center gap-3 border border-purple-300/35 border-l-purple-200 bg-purple-500/10 px-3 py-2 shadow-[inset_3px_0_0_rgba(216,180,254,0.8)] transition-colors hover:border-purple-200/70 hover:bg-purple-500/15 sm:rounded-lg sm:px-4"
+      className="group flex min-h-14 items-center gap-3 border border-purple-300/35 bg-purple-500/10 px-3 py-2 transition-colors hover:border-purple-200/70 hover:bg-purple-500/15 sm:rounded-lg sm:px-4"
     >
       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-purple-200/30 bg-black/30 shadow-[0_0_0_1px_rgba(216,180,254,0.12)]">
         <Image

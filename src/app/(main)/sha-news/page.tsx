@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
-import { SHA_NEWS_ICON, SHA_NEWS_VERSION } from "@/lib/sha-news";
+import { SHA_NEWS_ENABLED, SHA_NEWS_ICON, SHA_NEWS_VERSION } from "@/lib/sha-news";
 import { serviceMessages } from "@/messages/service";
 
 export function generateShaNewsMetadata(
@@ -19,13 +20,15 @@ export function generateMetadata(): Metadata {
 export function renderShaNewsPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
+  if (!SHA_NEWS_ENABLED) notFound();
+
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const messages = serviceMessages[serviceLocale].shaNews;
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8 text-foreground sm:py-10">
       <header className="flex items-center gap-4">
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded border border-purple-200/35 bg-purple-500/10 shadow-[inset_3px_0_0_rgba(216,180,254,0.8)]">
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded border border-purple-200/35 bg-purple-500/10">
           <Image
             src={SHA_NEWS_ICON}
             alt=""
