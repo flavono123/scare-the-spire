@@ -114,6 +114,8 @@ interface TopBarProps {
    * already-rendered icon. */
   hidingRelicIds?: ReadonlySet<string>;
   hidingPotionIds?: ReadonlySet<string>;
+  heldPotionIds?: ReadonlySet<string>;
+  heldPotionSlots?: (string | null)[];
   onOpenDeck: () => void;
   onOpenInfo: () => void;
 }
@@ -126,6 +128,8 @@ export function TopBar({
   totalRunMs,
   hidingRelicIds,
   hidingPotionIds,
+  heldPotionIds,
+  heldPotionSlots,
   onOpenDeck,
   onOpenInfo,
 }: TopBarProps) {
@@ -155,6 +159,8 @@ export function TopBar({
             count={state.potionSlots}
             potions={state.potions}
             hidingPotionIds={hidingPotionIds}
+            heldPotionIds={heldPotionIds}
+            heldPotionSlots={heldPotionSlots}
           />
           <CurrentNodeChip
             entry={state.currentEntry}
@@ -395,10 +401,14 @@ function PotionSlots({
   count,
   potions,
   hidingPotionIds,
+  heldPotionIds,
+  heldPotionSlots,
 }: {
   count: number;
   potions: (string | null)[];
   hidingPotionIds?: ReadonlySet<string>;
+  heldPotionIds?: ReadonlySet<string>;
+  heldPotionSlots?: (string | null)[];
 }) {
   return (
     <span
@@ -417,8 +427,13 @@ function PotionSlots({
     >
       {Array.from({ length: count }).map((_, i) => {
         const potionId = potions[i] ?? null;
+        const heldPotionId = heldPotionSlots?.[i] ?? null;
+        const isHeld = Boolean(heldPotionId && heldPotionIds?.has(heldPotionId));
+        const displayedPotionId = isHeld ? heldPotionId : potionId;
         const visiblePotionId =
-          potionId && !hidingPotionIds?.has(potionId) ? potionId : null;
+          displayedPotionId && (isHeld || !hidingPotionIds?.has(displayedPotionId))
+            ? displayedPotionId
+            : null;
         const label = visiblePotionId
           ? localize("potions", visiblePotionId) ?? visiblePotionId
           : "빈 포션 슬롯";

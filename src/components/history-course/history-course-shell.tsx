@@ -311,6 +311,7 @@ function buildStackItems(
   cardsById: Record<string, CodexCard>,
   onRelicLanded: (id: string) => void,
   onPotionLanded: (id: string) => void,
+  onPotionRemoved: (id: string) => void,
 ): NodeStackItem[] {
   const items: NodeStackItem[] = [];
   const gainedIds = new Set<string>();
@@ -431,6 +432,7 @@ function buildStackItems(
       verb: VERB_BY_KIND[removal.kind],
       textColor: TEXT_BY_KIND[removal.kind],
       postEffect: { kind: "fade" },
+      onComplete: () => onPotionRemoved(removal.id),
     });
   };
   for (const removal of immediatePotionRemovals) {
@@ -558,6 +560,18 @@ function buildStackItems(
   return items;
 }
 
+function buildPreviousTopbarState(
+  analysis: Analysis,
+  actIndex: number,
+  step: number,
+): ReturnType<typeof buildTopbarState> | null {
+  if (step > 1) return buildTopbarState(analysis, actIndex, step - 1);
+  if (actIndex <= 0) return null;
+  const previousAct = analysis.acts[actIndex - 1];
+  if (!previousAct || previousAct.history.length === 0) return null;
+  return buildTopbarState(analysis, actIndex - 1, previousAct.history.length);
+}
+
 export function HistoryCourseShell({
   run,
   cardsById,
@@ -637,6 +651,10 @@ export function HistoryCourseShell({
     () => buildTopbarState(analysis, actIndex, step),
     [analysis, actIndex, step],
   );
+  const previousTopbarState = useMemo(
+    () => buildPreviousTopbarState(analysis, actIndex, step),
+    [analysis, actIndex, step],
+  );
 
   // Fire intros on window entry (false→true edge per act). Natural
   // progression sweeps through; large jumps land inside or outside the
@@ -697,6 +715,9 @@ export function HistoryCourseShell({
   const [pendingPotionIds, setPendingPotionIds] = useState<ReadonlySet<string>>(
     () => new Set(),
   );
+  const [pendingPotionRemovalIds, setPendingPotionRemovalIds] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
   const releaseRelicId = useCallback((id: string) => {
     setPendingRelicIds((prev) => {
       if (!prev.has(id)) return prev;
@@ -713,13 +734,28 @@ export function HistoryCourseShell({
       return next;
     });
   }, []);
+  const releasePotionRemovalId = useCallback((id: string) => {
+    setPendingPotionRemovalIds((prev) => {
+      if (!prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+  }, []);
 
   const stepStackItems = useMemo<NodeStackItem[]>(() => {
     if (!act || !replayReady) return [];
     const entry = act.history[step - 1];
     if (!entry) return [];
-    return buildStackItems(entry, step, cardsById, releaseRelicId, releasePotionId);
-  }, [act, step, replayReady, cardsById, releaseRelicId, releasePotionId]);
+    return buildStackItems(
+      entry,
+      step,
+      cardsById,
+      releaseRelicId,
+      releasePotionId,
+      releasePotionRemovalId,
+    );
+  }, [act, step, replayReady, cardsById, releaseRelicId, releasePotionId, releasePotionRemovalId]);
 
   // The relic ids that the *current step's* stack will fly into the topbar.
   // Derived from the sanitized history entry directly (NOT stepStackItems,
@@ -763,6 +799,26 @@ export function HistoryCourseShell({
       stepPotionIdsKey ? new Set(stepPotionIdsKey.split("|")) : new Set(),
     );
   }, [stepPotionIdsKey]);
+
+  const stepPotionRemovalIdsKey = useMemo(() => {
+    if (!act || !previousTopbarState) return "";
+    const entry = act.history[step - 1];
+    if (!entry) return "";
+    const previousPotionKeys = new Set(
+      previousTopbarState.potions
+        .filter((id): id is string => Boolean(id))
+        .map((id) => normalizeItemId(id)),
+    );
+    return [...(entry.potion_used ?? []), ...(entry.potion_discarded ?? [])]
+      .filter((id) => previousPotionKeys.has(normalizeItemId(id)))
+      .join("|");
+  }, [act, step, previousTopbarState]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPendingPotionRemovalIds(
+      stepPotionRemovalIdsKey ? new Set(stepPotionRemovalIdsKey.split("|")) : new Set(),
+    );
+  }, [stepPotionRemovalIdsKey]);
 
   // Auto-open the summary panel exactly once when the run reaches its
   // last node. Dismissing the panel sets wasEndedRef back to false only
@@ -886,6 +942,8 @@ export function HistoryCourseShell({
           stackItems={stepStackItems}
           hidingRelicIds={pendingRelicIds}
           hidingPotionIds={pendingPotionIds}
+          heldPotionIds={pendingPotionRemovalIds}
+          heldPotionSlots={previousTopbarState?.potions ?? []}
           topbarState={topbarState}
           cardsById={cardsById}
           relicsById={relicsById}
@@ -955,6 +1013,8 @@ function Stage({
   stackItems,
   hidingRelicIds,
   hidingPotionIds,
+  heldPotionIds,
+  heldPotionSlots,
   topbarState,
   cardsById,
   relicsById,
@@ -988,6 +1048,8 @@ function Stage({
   stackItems: NodeStackItem[];
   hidingRelicIds: ReadonlySet<string>;
   hidingPotionIds: ReadonlySet<string>;
+  heldPotionIds: ReadonlySet<string>;
+  heldPotionSlots: (string | null)[];
   topbarState: ReturnType<typeof buildTopbarState>;
   cardsById: Record<string, CodexCard>;
   relicsById: Record<string, CodexRelic>;
@@ -1113,6 +1175,8 @@ function Stage({
         totalRunMs={runTimeline.totalMs}
         hidingRelicIds={hidingRelicIds}
         hidingPotionIds={hidingPotionIds}
+        heldPotionIds={heldPotionIds}
+        heldPotionSlots={heldPotionSlots}
         onOpenDeck={onOpenDeck}
         // Cog toggles the run-summary panel and auto-pauses playback.
         onOpenInfo={onOpenInfo}
