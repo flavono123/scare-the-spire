@@ -12,8 +12,8 @@ export const serviceMessages = {
     shaNews: {
       title: "섀 소식",
       eyebrow: "서비스 알림",
-      teaserTitle: "새 기능과 공지를 따로 모읍니다",
-      teaserDescription: "슬서운이야기에 새로 열린 기능과 콘텐츠",
+      teaserTitle: "placeholder",
+      teaserDescription: "placeholder",
       viewAll: "전체 보기",
       metadata: {
         title: "섀 소식",
@@ -530,8 +530,8 @@ export const serviceMessages = {
     shaNews: {
       title: "Sha News",
       eyebrow: "Service Updates",
-      teaserTitle: "New site updates live here",
-      teaserDescription: "Fresh features and content from Scare the Spire",
+      teaserTitle: "placeholder",
+      teaserDescription: "placeholder",
       viewAll: "View all",
       metadata: {
         title: "Sha News",

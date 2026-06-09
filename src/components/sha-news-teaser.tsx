@@ -5,6 +5,7 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { SHA_NEWS_ICON, SHA_NEWS_VERSION } from "@/lib/sha-news";
 import { serviceMessages } from "@/messages/service";
 
 export function ShaNewsTeaser({
@@ -19,20 +20,23 @@ export function ShaNewsTeaser({
   return (
     <Link
       href={localizeHrefWithGameLocale("/sha-news", serviceLocale, gameLocale)}
-      className="group flex min-h-14 items-center gap-3 border border-border/70 bg-card/20 px-3 py-2 transition-colors hover:border-purple-300/40 hover:bg-purple-500/10 sm:rounded-lg sm:px-4"
+      className="group flex min-h-14 items-center gap-3 border border-purple-300/35 border-l-purple-200 bg-purple-500/10 px-3 py-2 shadow-[inset_3px_0_0_rgba(216,180,254,0.8)] transition-colors hover:border-purple-200/70 hover:bg-purple-500/15 sm:rounded-lg sm:px-4"
     >
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded bg-black/20">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-purple-200/30 bg-black/30 shadow-[0_0_0_1px_rgba(216,180,254,0.12)]">
         <Image
-          src="/images/sts2/monsters-render/byrdonis.webp"
+          src={SHA_NEWS_ICON}
           alt=""
-          width={46}
-          height={46}
-          className="h-11 w-11 object-contain object-bottom drop-shadow-[0_2px_5px_rgba(0,0,0,0.55)] transition-transform group-hover:scale-105"
+          width={28}
+          height={28}
+          className="h-7 w-7 object-contain drop-shadow-[0_2px_5px_rgba(0,0,0,0.55)] transition-transform group-hover:scale-105"
         />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[11px] font-semibold text-purple-200/80">
-          {messages.eyebrow}
+        <span className="flex items-center gap-2 text-[11px] font-semibold text-purple-100">
+          <span>{messages.eyebrow}</span>
+          <span className="rounded border border-purple-200/25 bg-black/25 px-1.5 py-0.5 text-[10px] leading-none text-purple-100/90">
+            {SHA_NEWS_VERSION}
+          </span>
         </span>
         <span className="block truncate text-sm font-bold text-zinc-100 sm:text-base">
           {messages.title}
