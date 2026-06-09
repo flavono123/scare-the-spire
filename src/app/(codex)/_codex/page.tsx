@@ -34,7 +34,7 @@ const categories = [
     count: 8,
     description: null,
     images: [
-      "/images/sts2/icons/card_icon.webp",
+      "/images/sts2/ui/topbar/submenu_history_icon.png",
       "/images/sts2/ui/hover_tip.png",
       "/images/sts2/icons/star_icon.webp",
       "/images/sts2/icons/gold_icon.webp",
