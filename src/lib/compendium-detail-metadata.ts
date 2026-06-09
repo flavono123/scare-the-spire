@@ -8,6 +8,7 @@ import {
   getCodexEncounters,
   getCodexEpochs,
   getCodexEvents,
+  getCodexKeywords,
   getCodexMonsters,
   getCodexPotions,
   getCodexPowers,
@@ -113,6 +114,16 @@ export async function generateCompendiumEventMetadata(id: string): Promise<Metad
   const event = findCodexResourceByRouteId(events, id);
   if (!event) return {};
   return getCodexResourceOgMetadata(SERVICE_LOCALE, gameUi.eventsTitle, event);
+}
+
+export async function generateCompendiumKeywordMetadata(id: string): Promise<Metadata> {
+  const [keywords, gameUi] = await Promise.all([
+    getCodexKeywords({ gameLocale: GAME_LOCALE }),
+    getCodexGameUiLabels(GAME_LOCALE),
+  ]);
+  const keyword = findCodexResourceByRouteId(keywords, id);
+  if (!keyword) return {};
+  return getCodexResourceOgMetadata(SERVICE_LOCALE, gameUi.nav.keywords, keyword);
 }
 
 export async function generateCompendiumMonsterMetadata(id: string): Promise<Metadata> {

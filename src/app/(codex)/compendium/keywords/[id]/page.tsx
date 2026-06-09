@@ -1,28 +1,24 @@
+import { CompendiumDirectDetailPage } from "@/components/codex/compendium-direct-detail-page";
+import { generateKeywordStaticParams } from "@/lib/codex-static-params";
+import { generateCompendiumKeywordMetadata } from "@/lib/compendium-detail-metadata";
+
 export const dynamic = "force-static";
 export const dynamicParams = false;
-
-import BasePage, {
-  generateMetadata as generateBaseMetadata,
-  generateStaticParams,
-} from "../../../_codex/keywords/[id]/page";
-import { defaultRouteSearchParams } from "../../static-locale";
 
 type DetailProps = {
   params: Promise<{ id: string }>;
 };
 
-export { generateStaticParams };
-
-export function generateMetadata({ params }: DetailProps) {
-  return generateBaseMetadata({
-    params,
-    searchParams: defaultRouteSearchParams(),
-  });
+export async function generateMetadata({ params }: DetailProps) {
+  const { id } = await params;
+  return generateCompendiumKeywordMetadata(id);
 }
 
-export default function CompendiumKeywordDetailPage({ params }: DetailProps) {
-  return BasePage({
-    params,
-    searchParams: defaultRouteSearchParams(),
-  });
+export async function generateStaticParams() {
+  return generateKeywordStaticParams();
+}
+
+export default async function CompendiumKeywordDetailPage({ params }: DetailProps) {
+  const { id } = await params;
+  return <CompendiumDirectDetailPage resourceType="keywords" id={id} />;
 }

@@ -7,6 +7,7 @@ import { EncounterDetail } from "@/components/codex/encounter-detail";
 import { EnchantmentDetail } from "@/components/codex/enchantment-detail";
 import { EpochDetail } from "@/components/codex/epoch-detail";
 import { EventDetail } from "@/components/codex/event-detail";
+import { KeywordDetail } from "@/components/codex/keyword-detail";
 import { MonsterDetail } from "@/components/codex/monster-detail";
 import { PotionDetail } from "@/components/codex/potion-detail";
 import { PowerDetail } from "@/components/codex/power-detail";
@@ -103,6 +104,7 @@ function buildEntityInfo(payload: CompendiumDetailPayload): EntityInfo[] {
     encounters,
     epochs,
     events,
+    keywords,
     monsters,
     potions,
     powers,
@@ -118,6 +120,16 @@ function buildEntityInfo(payload: CompendiumDetailPayload): EntityInfo[] {
       color: card.color,
       type: "card" as const,
       cardData: card,
+    })),
+    ...keywords.map((keyword) => ({
+      id: keyword.id,
+      nameEn: keyword.nameEn,
+      nameKo: keyword.name,
+      imageUrl: keyword.imageUrl,
+      href: `/compendium/keywords/${keyword.id.toLowerCase()}`,
+      color: keyword.source,
+      type: "keyword" as const,
+      keywordData: keyword,
     })),
     ...relics.map((relic) => ({
       id: relic.id,
@@ -442,6 +454,22 @@ export function CompendiumDirectDetailPage({
           patches={patches}
           changes={changes}
           versionDiffs={versionDiffs}
+        />
+      );
+    }
+  }
+
+  if (resourceType === "keywords") {
+    const keyword = findByRouteId(resources.keywords, id);
+    if (keyword) {
+      detail = (
+        <KeywordDetail
+          serviceLocale={serviceLocale}
+          gameUi={gameUi}
+          backToListTitle={gameUi.nav.keywords}
+          keyword={keyword}
+          relatedCards={resources.cards}
+          entities={entities}
         />
       );
     }
