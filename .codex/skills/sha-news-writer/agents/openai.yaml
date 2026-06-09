@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sha News Writer"
+  short_description: "Draft and publish 섀 소식 service update posts."
+  default_prompt: "Create a 섀 소식 entry from these update notes."
