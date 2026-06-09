@@ -10,6 +10,7 @@ import { CardActionIcon } from "@/components/history-course/card-action-icon";
 import { DeckModal } from "@/components/history-course/deck-modal";
 import {
   NodeActionStack,
+  PER_ITEM_MS,
   type NodeStackItem,
   type NodeStackItemKind,
 } from "@/components/history-course/node-action-stack";
@@ -205,6 +206,80 @@ function normalizeItemId(id: string): string {
   return id.toUpperCase().split(".").pop() ?? id.toUpperCase();
 }
 
+type PotionRemovalKind = "potion-used" | "potion-discarded";
+type PotionRemoval = { id: string; kind: PotionRemovalKind };
+
+function getPickedPotionIds(entry: ReplayHistoryEntry): string[] {
+  return (entry.potion_choices ?? [])
+    .filter((c) => c.picked && c.id)
+    .map((c) => c.id);
+}
+
+function splitPotionRemovals(entry: ReplayHistoryEntry): {
+  immediate: PotionRemoval[];
+  delayed: PotionRemoval[];
+} {
+  const pickedPotionCounts = new Map<string, number>();
+  for (const id of getPickedPotionIds(entry)) {
+    const key = normalizeItemId(id);
+    pickedPotionCounts.set(key, (pickedPotionCounts.get(key) ?? 0) + 1);
+  }
+
+  const immediate: PotionRemoval[] = [];
+  const delayed: PotionRemoval[] = [];
+  const queuePotionRemoval = (id: string, kind: PotionRemovalKind) => {
+    const key = normalizeItemId(id);
+    const gainedCount = pickedPotionCounts.get(key) ?? 0;
+    if (gainedCount > 0) {
+      pickedPotionCounts.set(key, gainedCount - 1);
+      delayed.push({ id, kind });
+      return;
+    }
+    immediate.push({ id, kind });
+  };
+
+  for (const id of entry.potion_used ?? []) queuePotionRemoval(id, "potion-used");
+  for (const id of entry.potion_discarded ?? []) queuePotionRemoval(id, "potion-discarded");
+
+  return { immediate, delayed };
+}
+
+function countPrePotionStackItems(entry: ReplayHistoryEntry): number {
+  return [
+    entry.damage_taken,
+    entry.hp_healed,
+    entry.max_hp_gained,
+    entry.max_hp_lost,
+  ].filter((value) => (value ?? 0) > 0).length;
+}
+
+function buildHeldPotionRemovalIds(
+  entry: ReplayHistoryEntry | undefined,
+  previousPotionSlots: (string | null)[],
+  nodeStackLocalMs: number,
+): ReadonlySet<string> {
+  const held = new Set<string>();
+  if (!entry) return held;
+
+  const previousPotionKeys = new Set(
+    previousPotionSlots
+      .filter((id): id is string => Boolean(id))
+      .map((id) => normalizeItemId(id)),
+  );
+  if (previousPotionKeys.size === 0) return held;
+
+  const removals = splitPotionRemovals(entry).immediate.filter((removal) =>
+    previousPotionKeys.has(normalizeItemId(removal.id)),
+  );
+  const prePotionItemCount = countPrePotionStackItems(entry);
+  removals.forEach((removal, index) => {
+    const itemEndMs = (prePotionItemCount + index + 1) * PER_ITEM_MS;
+    if (nodeStackLocalMs < itemEndMs) held.add(removal.id);
+  });
+
+  return held;
+}
+
 // Some run exports list class starter cards/relics inside the Neow node's
 // cards_gained / relic_choices. Strip that pollution so the Neow stack
 // reads as 1 card + 1 relic at most. Filter heuristic:
@@ -311,7 +386,6 @@ function buildStackItems(
   cardsById: Record<string, CodexCard>,
   onRelicLanded: (id: string) => void,
   onPotionLanded: (id: string) => void,
-  onPotionRemoved: (id: string) => void,
 ): NodeStackItem[] {
   const items: NodeStackItem[] = [];
   const gainedIds = new Set<string>();
@@ -398,32 +472,10 @@ function buildStackItems(
     });
   }
 
-  const pickedPotionIds = (entry.potion_choices ?? [])
-    .filter((c) => c.picked && c.id)
-    .map((c) => c.id);
-  const pickedPotionCounts = new Map<string, number>();
-  for (const id of pickedPotionIds) {
-    const key = normalizeItemId(id);
-    pickedPotionCounts.set(key, (pickedPotionCounts.get(key) ?? 0) + 1);
-  }
-  const immediatePotionRemovals: Array<{ id: string; kind: "potion-used" | "potion-discarded" }> = [];
-  const delayedPotionRemovals: Array<{ id: string; kind: "potion-used" | "potion-discarded" }> = [];
-  const queuePotionRemoval = (id: string, kind: "potion-used" | "potion-discarded") => {
-    const key = normalizeItemId(id);
-    const gainedCount = pickedPotionCounts.get(key) ?? 0;
-    if (gainedCount > 0) {
-      pickedPotionCounts.set(key, gainedCount - 1);
-      delayedPotionRemovals.push({ id, kind });
-      return;
-    }
-    immediatePotionRemovals.push({ id, kind });
-  };
-  for (const id of entry.potion_used ?? []) queuePotionRemoval(id, "potion-used");
-  for (const id of entry.potion_discarded ?? []) queuePotionRemoval(id, "potion-discarded");
-  const pushPotionRemoval = (
-    removal: { id: string; kind: "potion-used" | "potion-discarded" },
-    suffix: string,
-  ) => {
+  const pickedPotionIds = getPickedPotionIds(entry);
+  const { immediate: immediatePotionRemovals, delayed: delayedPotionRemovals } =
+    splitPotionRemovals(entry);
+  const pushPotionRemoval = (removal: PotionRemoval, suffix: string) => {
     items.push({
       key: `s${step}-${suffix}-${items.length}-${removal.id}`,
       kind: removal.kind,
@@ -432,7 +484,6 @@ function buildStackItems(
       verb: VERB_BY_KIND[removal.kind],
       textColor: TEXT_BY_KIND[removal.kind],
       postEffect: { kind: "fade" },
-      onComplete: () => onPotionRemoved(removal.id),
     });
   };
   for (const removal of immediatePotionRemovals) {
@@ -655,6 +706,12 @@ export function HistoryCourseShell({
     () => buildPreviousTopbarState(analysis, actIndex, step),
     [analysis, actIndex, step],
   );
+  const nodeStackLocalMs = Math.max(
+    0,
+    actLocalMs -
+      (actTimeline?.entries[step - 1]?.startMs ?? 0) -
+      stackStartOffsetMs(),
+  );
 
   // Fire intros on window entry (false→true edge per act). Natural
   // progression sweeps through; large jumps land inside or outside the
@@ -715,9 +772,6 @@ export function HistoryCourseShell({
   const [pendingPotionIds, setPendingPotionIds] = useState<ReadonlySet<string>>(
     () => new Set(),
   );
-  const [pendingPotionRemovalIds, setPendingPotionRemovalIds] = useState<ReadonlySet<string>>(
-    () => new Set(),
-  );
   const releaseRelicId = useCallback((id: string) => {
     setPendingRelicIds((prev) => {
       if (!prev.has(id)) return prev;
@@ -728,14 +782,6 @@ export function HistoryCourseShell({
   }, []);
   const releasePotionId = useCallback((id: string) => {
     setPendingPotionIds((prev) => {
-      if (!prev.has(id)) return prev;
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-  }, []);
-  const releasePotionRemovalId = useCallback((id: string) => {
-    setPendingPotionRemovalIds((prev) => {
       if (!prev.has(id)) return prev;
       const next = new Set(prev);
       next.delete(id);
@@ -753,9 +799,8 @@ export function HistoryCourseShell({
       cardsById,
       releaseRelicId,
       releasePotionId,
-      releasePotionRemovalId,
     );
-  }, [act, step, replayReady, cardsById, releaseRelicId, releasePotionId, releasePotionRemovalId]);
+  }, [act, step, replayReady, cardsById, releaseRelicId, releasePotionId]);
 
   // The relic ids that the *current step's* stack will fly into the topbar.
   // Derived from the sanitized history entry directly (NOT stepStackItems,
@@ -800,25 +845,15 @@ export function HistoryCourseShell({
     );
   }, [stepPotionIdsKey]);
 
-  const stepPotionRemovalIdsKey = useMemo(() => {
-    if (!act || !previousTopbarState) return "";
-    const entry = act.history[step - 1];
-    if (!entry) return "";
-    const previousPotionKeys = new Set(
-      previousTopbarState.potions
-        .filter((id): id is string => Boolean(id))
-        .map((id) => normalizeItemId(id)),
-    );
-    return [...(entry.potion_used ?? []), ...(entry.potion_discarded ?? [])]
-      .filter((id) => previousPotionKeys.has(normalizeItemId(id)))
-      .join("|");
-  }, [act, step, previousTopbarState]);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPendingPotionRemovalIds(
-      stepPotionRemovalIdsKey ? new Set(stepPotionRemovalIdsKey.split("|")) : new Set(),
-    );
-  }, [stepPotionRemovalIdsKey]);
+  const heldPotionRemovalIds = useMemo(
+    () =>
+      buildHeldPotionRemovalIds(
+        act?.history[step - 1],
+        previousTopbarState?.potions ?? [],
+        nodeStackLocalMs,
+      ),
+    [act, step, previousTopbarState?.potions, nodeStackLocalMs],
+  );
 
   // Auto-open the summary panel exactly once when the run reaches its
   // last node. Dismissing the panel sets wasEndedRef back to false only
@@ -937,12 +972,13 @@ export function HistoryCourseShell({
           introActive={introActive}
           introActIndex={introActIndex}
           introAct={introAct}
+          nodeStackLocalMs={nodeStackLocalMs}
           playing={playing}
           rate={rate}
           stackItems={stepStackItems}
           hidingRelicIds={pendingRelicIds}
           hidingPotionIds={pendingPotionIds}
-          heldPotionIds={pendingPotionRemovalIds}
+          heldPotionIds={heldPotionRemovalIds}
           heldPotionSlots={previousTopbarState?.potions ?? []}
           topbarState={topbarState}
           cardsById={cardsById}
@@ -1008,6 +1044,7 @@ function Stage({
   introActive,
   introActIndex,
   introAct,
+  nodeStackLocalMs,
   playing,
   rate,
   stackItems,
@@ -1043,6 +1080,7 @@ function Stage({
   introActive: boolean;
   introActIndex: number | null;
   introAct: Act | null;
+  nodeStackLocalMs: number;
   playing: boolean;
   rate: Rate;
   stackItems: NodeStackItem[];
@@ -1216,10 +1254,7 @@ function Stage({
       <NodeActionStack
         stageRef={stageRef}
         items={stackItems}
-        nodeLocalMs={Math.max(
-          0,
-          actLocalMs - (actTimeline?.entries[step - 1]?.startMs ?? 0) - stackStartOffsetMs(),
-        )}
+        nodeLocalMs={nodeStackLocalMs}
         hidden={transitProgress < 1}
       />
 
