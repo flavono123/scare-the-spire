@@ -16,6 +16,10 @@ import type {
   ReplayHistoryEntry,
   ReplayRun,
 } from "@/lib/sts2-run-replay";
+import {
+  getMadScienceVariantId,
+  getMadScienceVariantPartsFromId,
+} from "@/lib/tinker-time";
 import type { TopbarState } from "@/components/history-course/topbar-state";
 import { cn } from "@/lib/utils";
 
@@ -145,11 +149,16 @@ function buildRelicEntityInfo(
 
 function buildCardEntityInfo(card: CodexCard | undefined): EntityInfo | null {
   if (!card) return null;
+  const madScienceParts = getMadScienceVariantPartsFromId(card.id);
+  const linkId = madScienceParts
+    ? getMadScienceVariantId(madScienceParts.cardType)
+    : card.id;
   return {
-    id: card.id,
+    id: linkId,
     nameEn: card.nameEn,
     nameKo: card.name,
     imageUrl: card.imageUrl,
+    href: `/compendium/cards/${linkId.toLowerCase()}`,
     color: card.color,
     type: "card",
     cardData: card,

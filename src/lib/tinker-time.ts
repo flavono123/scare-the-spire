@@ -160,13 +160,41 @@ export function isTinkerRiderId(value: string): value is TinkerRiderId {
   return TINKER_RIDER_ID_SET.has(value as TinkerRiderId);
 }
 
-export function getMadScienceVariantId(cardType: TinkerCardType): string {
-  return MAD_SCIENCE_CARD_ID_BY_TYPE[cardType];
+export function getMadScienceVariantId(
+  cardType: TinkerCardType,
+  riderId?: TinkerRiderId | null,
+): string {
+  const typeId = MAD_SCIENCE_CARD_ID_BY_TYPE[cardType];
+  return riderId ? `${typeId}_${riderId}` : typeId;
 }
 
 export function getTinkerCardTypeFromRunValue(value: number | undefined): TinkerCardType | null {
   if (typeof value !== "number") return null;
   return TINKER_CARD_TYPES[value - 1] ?? TINKER_CARD_TYPES[value] ?? null;
+}
+
+export function getTinkerRiderFromRunValue(value: number | undefined): TinkerRiderId | null {
+  if (typeof value !== "number") return null;
+  return TINKER_RIDER_IDS[value - 1] ?? TINKER_RIDER_IDS[value] ?? null;
+}
+
+export function getMadScienceVariantPartsFromId(
+  id: string,
+): { cardType: TinkerCardType; riderId: TinkerRiderId | null } | null {
+  const normalized = id.replace(/^CARD\./i, "").toUpperCase();
+  if (normalized === MAD_SCIENCE_CARD_ID) {
+    return { cardType: MAD_SCIENCE_DEFAULT_TYPE, riderId: null };
+  }
+  for (const cardType of TINKER_CARD_TYPES) {
+    const typeId = MAD_SCIENCE_CARD_ID_BY_TYPE[cardType];
+    if (normalized === typeId) return { cardType, riderId: null };
+    for (const riderId of TINKER_RIDER_IDS_BY_TYPE[cardType]) {
+      if (normalized === getMadScienceVariantId(cardType, riderId)) {
+        return { cardType, riderId };
+      }
+    }
+  }
+  return null;
 }
 
 export function getTinkerCardTypeChoiceKey(cardType: TinkerCardType): string {
@@ -182,12 +210,7 @@ export function getTinkerRiderDescriptionKey(riderId: TinkerRiderId): string {
 }
 
 export function getMadScienceCardTypeFromId(id: string): TinkerCardType | null {
-  const normalized = id.toUpperCase();
-  if (normalized === MAD_SCIENCE_CARD_ID) return MAD_SCIENCE_DEFAULT_TYPE;
-  for (const [cardType, cardId] of Object.entries(MAD_SCIENCE_CARD_ID_BY_TYPE)) {
-    if (normalized === cardId) return cardType as TinkerCardType;
-  }
-  return null;
+  return getMadScienceVariantPartsFromId(id)?.cardType ?? null;
 }
 
 export function isMadScienceCardId(id: string): boolean {

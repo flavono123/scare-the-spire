@@ -10,6 +10,13 @@ import { getDonatedRun } from "@/lib/run-donation";
 import { loadRun, saveRun } from "@/lib/run-store";
 import { parseRunRouteSlug } from "@/lib/sts2-run-hash";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
+import {
+  getMadSciencePreviewCard,
+  getMadScienceVariantId,
+  getMadScienceVariantPartsFromId,
+  TINKER_RIDER_CHOICE_LABELS,
+  TINKER_RIDER_CHOICE_LABELS_EN,
+} from "@/lib/tinker-time";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 
@@ -24,6 +31,36 @@ type Status = "loading" | "ok" | "missing" | "invalid";
 
 function stripCardId(id: string): string {
   return id.includes(".") ? (id.split(".").pop() ?? id) : id;
+}
+
+function buildRunMadScienceCard(
+  replayId: string,
+  cardByLookupId: Map<string, CodexCard>,
+): CodexCard | null {
+  const stripped = stripCardId(replayId);
+  const parts = getMadScienceVariantPartsFromId(stripped);
+  if (!parts?.riderId) return null;
+
+  const baseId = getMadScienceVariantId(parts.cardType);
+  const baseCard = cardByLookupId.get(baseId);
+  if (!baseCard) return null;
+
+  const riderLabel =
+    baseCard.madScienceLabels?.riderChoiceLabels[parts.riderId] ??
+    TINKER_RIDER_CHOICE_LABELS[parts.riderId];
+  const riderLabelEn = TINKER_RIDER_CHOICE_LABELS_EN[parts.riderId];
+  return {
+    ...getMadSciencePreviewCard(
+      baseCard,
+      parts.cardType,
+      parts.riderId,
+      baseCard.typeLabel,
+    ),
+    id: stripped,
+    name: `${baseCard.name} · ${riderLabel}`,
+    nameEn: `${baseCard.nameEn} · ${riderLabelEn}`,
+    madScienceLabels: baseCard.madScienceLabels,
+  };
 }
 
 export function RunDetailLoader({ runId, allCards, allRelics }: Props) {
@@ -123,7 +160,9 @@ export function RunDetailLoader({ runId, allCards, allRelics }: Props) {
   for (const replayId of relevantIds) {
     const stripped = stripCardId(replayId);
     const card =
-      cardByLookupId.get(replayId) ?? cardByLookupId.get(stripped) ?? null;
+      cardByLookupId.get(replayId) ??
+      cardByLookupId.get(stripped) ??
+      buildRunMadScienceCard(replayId, cardByLookupId);
     if (card) cardsById[replayId] = card;
   }
 

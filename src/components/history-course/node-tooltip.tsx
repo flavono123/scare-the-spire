@@ -5,6 +5,11 @@ import type {
   ReplayActAnalysis,
   ReplayHistoryEntry,
 } from "@/lib/sts2-run-replay";
+import {
+  getMadScienceVariantPartsFromId,
+  MAD_SCIENCE_CARD_ID,
+  TINKER_RIDER_CHOICE_LABELS,
+} from "@/lib/tinker-time";
 
 // Hover tip used both on the replay map and inside the run summary's act
 // rows. Lifted out of run-replay-poc.tsx so the summary panel can reuse it
@@ -143,7 +148,7 @@ export function NodeTooltip({
                 <li key={`r-${id}`}>⊡ {localize("relics", id) ?? id}</li>
               ))}
               {cardsGained.map((id, i) => (
-                <li key={`cg-${id}-${i}`}>▤ {localize("cards", id) ?? id}</li>
+                <li key={`cg-${id}-${i}`}>▤ {cardLabel(id)}</li>
               ))}
               {potionPicked.map((id) => (
                 <li key={`p-${id}`}>⊓ {localize("potions", id) ?? id} 획득</li>
@@ -155,7 +160,7 @@ export function NodeTooltip({
                 <li key={`pd-${id}-${i}`}>⊓ {localize("potions", id) ?? id} 버림</li>
               ))}
               {cardRemoved.map((id, i) => (
-                <li key={`cr-${id}-${i}`}>✕ {localize("cards", id) ?? id} 제거</li>
+                <li key={`cr-${id}-${i}`}>✕ {cardLabel(id)} 제거</li>
               ))}
             </ul>
           </>
@@ -168,7 +173,7 @@ export function NodeTooltip({
             </div>
             <ul className="ml-3 space-y-0.5">
               {cardSkipped.map((id, i) => (
-                <li key={`cs-${id}-${i}`}>▤ {localize("cards", id) ?? id}</li>
+                <li key={`cs-${id}-${i}`}>▤ {cardLabel(id)}</li>
               ))}
               {relicSkipped.map((id) => (
                 <li key={`rs-${id}`}>⊡ {localize("relics", id) ?? id}</li>
@@ -182,6 +187,16 @@ export function NodeTooltip({
       </div>
     </div>
   );
+}
+
+function cardLabel(id: string | undefined): string {
+  if (!id) return "?";
+  const madScienceParts = getMadScienceVariantPartsFromId(id);
+  if (madScienceParts?.riderId) {
+    const baseName = localize("cards", MAD_SCIENCE_CARD_ID) ?? MAD_SCIENCE_CARD_ID;
+    return `${baseName} · ${TINKER_RIDER_CHOICE_LABELS[madScienceParts.riderId]}`;
+  }
+  return localize("cards", id) ?? id;
 }
 
 function describeNodeForTooltip(entry: ReplayHistoryEntry): {

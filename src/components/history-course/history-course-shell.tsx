@@ -24,6 +24,11 @@ import {
   type ReplayRun,
 } from "@/lib/sts2-run-replay";
 import {
+  getMadScienceVariantPartsFromId,
+  MAD_SCIENCE_CARD_ID,
+  TINKER_RIDER_CHOICE_LABELS,
+} from "@/lib/tinker-time";
+import {
   actPositionFromGlobalMs,
   buildRunTimeline,
   globalMsForStep,
@@ -289,6 +294,17 @@ const TEXT_BY_KIND: Record<string, string | undefined> = {
   "max-hp-down": "#fca5a5",
 };
 
+function replayCardLabel(id: string, cardsById?: Record<string, CodexCard>): string {
+  const card = cardsById?.[id];
+  if (card) return card.name;
+  const madScienceParts = getMadScienceVariantPartsFromId(id);
+  if (madScienceParts?.riderId) {
+    const baseName = localize("cards", MAD_SCIENCE_CARD_ID) ?? MAD_SCIENCE_CARD_ID;
+    return `${baseName} · ${TINKER_RIDER_CHOICE_LABELS[madScienceParts.riderId]}`;
+  }
+  return localize("cards", id) ?? id.split(".").pop() ?? "?";
+}
+
 function buildStackItems(
   entry: ReplayHistoryEntry,
   step: number,
@@ -299,8 +315,7 @@ function buildStackItems(
   const items: NodeStackItem[] = [];
   const gainedIds = new Set<string>();
 
-  const cardLabel = (id: string) =>
-    localize("cards", id) ?? id.split(".").pop() ?? "?";
+  const cardLabel = (id: string) => replayCardLabel(id, cardsById);
   const potionLabel = (id: string) =>
     localize("potions", id) ?? id.split(".").pop() ?? "?";
 

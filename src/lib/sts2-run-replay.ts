@@ -2,6 +2,8 @@ import { isBuildAtLeast } from "@/lib/sts2-build-version";
 import {
   getMadScienceVariantId,
   getTinkerCardTypeFromRunValue,
+  getTinkerRiderFromRunValue,
+  getTinkerRiderIdsForType,
   MAD_SCIENCE_CARD_ID,
 } from "@/lib/tinker-time";
 
@@ -720,8 +722,16 @@ export function parseReplayRun(raw: string): ReplayRun {
       normalizedId === MAD_SCIENCE_CARD_ID
         ? getTinkerCardTypeFromRunValue(ints.TinkerTimeType)
         : null;
+    const tinkerRider =
+      tinkerType && normalizedId === MAD_SCIENCE_CARD_ID
+        ? getTinkerRiderFromRunValue(ints.TinkerTimeRider)
+        : null;
+    const validTinkerRider =
+      tinkerType && tinkerRider && getTinkerRiderIdsForType(tinkerType).includes(tinkerRider)
+        ? tinkerRider
+        : null;
     const parsedCard: ReplayCardRef = {
-      id: tinkerType ? getMadScienceVariantId(tinkerType) : card.id,
+      id: tinkerType ? getMadScienceVariantId(tinkerType, validTinkerRider) : card.id,
     };
     if (typeof card.floor_added_to_deck === "number") {
       parsedCard.floor_added_to_deck = card.floor_added_to_deck;
