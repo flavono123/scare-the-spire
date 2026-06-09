@@ -9,6 +9,19 @@ export const serviceMessages = {
       chemicalX: "케미컬X",
       historyCourse: "역사 강의서",
     },
+    shaNews: {
+      title: "섀 소식",
+      eyebrow: "서비스 알림",
+      teaserTitle: "새 기능과 공지를 따로 모읍니다",
+      teaserDescription: "슬서운이야기에 새로 열린 기능과 콘텐츠",
+      viewAll: "전체 보기",
+      metadata: {
+        title: "섀 소식",
+        description: "슬서운이야기 서비스의 새 기능과 콘텐츠 소식",
+      },
+      emptyTitle: "알림판을 준비하는 중입니다",
+      emptyDescription: "새 기능, 새 이야기, 운영 공지를 패치노트와 따로 모아둘 예정입니다.",
+    },
     games: {
       sts2Codex: "STS2 백과사전",
       sts1: "STS1",
@@ -513,6 +526,19 @@ export const serviceMessages = {
       patches: "Patch Notes",
       chemicalX: "Chemical X",
       historyCourse: "History Course",
+    },
+    shaNews: {
+      title: "Sha News",
+      eyebrow: "Service Updates",
+      teaserTitle: "New site updates live here",
+      teaserDescription: "Fresh features and content from Scare the Spire",
+      viewAll: "View all",
+      metadata: {
+        title: "Sha News",
+        description: "New features and content updates for Scare the Spire",
+      },
+      emptyTitle: "The board is being prepared",
+      emptyDescription: "New features, new stories, and service notices will live here separately from patch notes.",
     },
     games: {
       sts2Codex: "STS2 Codex",
