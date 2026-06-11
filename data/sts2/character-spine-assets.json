@@ -19,6 +19,7 @@
       "die",
       "hurt",
       "idle_loop",
+      "process",
       "relaxed_loop"
     ],
     "bestiaryAnimations": [],
@@ -72,7 +73,10 @@
     "atlasUrl": "/spine/sts2/characters/ironclad/ironclad.atlas",
     "binaryUrl": "/spine/sts2/characters/ironclad/ironclad.skel",
     "textureUrls": [
-      "/spine/sts2/characters/ironclad/ironclad.png"
+      "/spine/sts2/characters/ironclad/ironclad.png",
+      "/spine/sts2/characters/ironclad/ironclad_2.png",
+      "/spine/sts2/characters/ironclad/ironclad_3.png",
+      "/spine/sts2/characters/ironclad/ironclad_4.png"
     ],
     "skin": null,
     "skins": [
@@ -80,12 +84,13 @@
     ],
     "animations": [
       "attack",
+      "attack_heavy",
       "cast",
       "die",
       "hurt",
       "idle_loop",
       "relaxed_loop",
-      "relaxed_loop2"
+      "weak_loop"
     ],
     "bestiaryAnimations": [],
     "idleAnimation": "idle_loop",
@@ -95,6 +100,7 @@
       ],
       "ATTACK": [
         "attack",
+        "attack_heavy",
         "cast",
         "idle_loop"
       ],
@@ -147,6 +153,7 @@
     "animations": [
       "attack",
       "cast",
+      "cast_mighty",
       "die",
       "hurt",
       "idle_loop",
@@ -162,6 +169,7 @@
       "ATTACK": [
         "attack",
         "cast",
+        "cast_mighty",
         "idle_loop"
       ],
       "HURT": [
@@ -213,6 +221,7 @@
     ],
     "animations": [
       "attack",
+      "attack_sovereign",
       "cast",
       "die",
       "hurt",
@@ -227,6 +236,7 @@
       ],
       "ATTACK": [
         "attack",
+        "attack_sovereign",
         "cast",
         "idle_loop"
       ],
