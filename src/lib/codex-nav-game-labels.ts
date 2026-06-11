@@ -1,6 +1,7 @@
 import type { GameLocale } from "@/lib/i18n";
 
 type CodexNavGameLabelKey =
+  | "characters"
   | "cards"
   | "keywords"
   | "relics"
@@ -16,6 +17,7 @@ type CodexNavGameLabelKey =
 // main_menu_ui, gameplay_ui, static_hover_tips, epochs.
 const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, string>> = {
   deu: {
+    characters: "Characters",
     cards: "Kartenbibliothek",
     keywords: "Keywords",
     relics: "Reliktsammlung",
@@ -28,6 +30,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "Geschichtskurs",
   },
   eng: {
+    characters: "Characters",
     cards: "Card Library",
     keywords: "Keywords",
     relics: "Relic Collection",
@@ -40,6 +43,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "History Course",
   },
   esp: {
+    characters: "Characters",
     cards: "Colección de cartas",
     keywords: "Keywords",
     relics: "Relicario",
@@ -52,6 +56,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "Clase de historia",
   },
   fra: {
+    characters: "Characters",
     cards: "Bibliothèque",
     keywords: "Keywords",
     relics: "Reliquaire",
@@ -64,6 +69,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "Manuel d'Histoire",
   },
   ita: {
+    characters: "Characters",
     cards: "Collezione delle carte",
     keywords: "Keywords",
     relics: "Reliquiario",
@@ -76,6 +82,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "Corso di Storia",
   },
   jpn: {
+    characters: "Characters",
     cards: "カードライブラリ",
     keywords: "Keywords",
     relics: "レリック一覧",
@@ -88,6 +95,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "歴史学教程",
   },
   kor: {
+    characters: "캐릭터",
     cards: "카드 목록",
     keywords: "키워드",
     relics: "유물 모음집",
@@ -100,6 +108,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "역사 강의서",
   },
   pol: {
+    characters: "Characters",
     cards: "Kolekcja kart",
     keywords: "Keywords",
     relics: "Zbiór Artefaktów",
@@ -112,6 +121,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "Podręcznik do historii",
   },
   ptb: {
+    characters: "Characters",
     cards: "Biblioteca de Cartas",
     keywords: "Keywords",
     relics: "Coleção de Relíquias",
@@ -124,6 +134,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "Estudos de História",
   },
   rus: {
+    characters: "Characters",
     cards: "Библиотека карт",
     keywords: "Keywords",
     relics: "Коллекция реликвий",
@@ -136,6 +147,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "Лекция по истории",
   },
   spa: {
+    characters: "Characters",
     cards: "Biblioteca de cartas",
     keywords: "Keywords",
     relics: "Colección de reliquias",
@@ -148,6 +160,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "Libro de historia",
   },
   tha: {
+    characters: "Characters",
     cards: "คลังการ์ด",
     keywords: "Keywords",
     relics: "คลังเครื่องราง",
@@ -160,6 +173,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "หลักสูตรประวัติศาสตร์",
   },
   tur: {
+    characters: "Characters",
     cards: "Kart Kütüphanesi",
     keywords: "Keywords",
     relics: "Kalıntı Koleksiyonu",
@@ -172,6 +186,7 @@ const CODEX_NAV_GAME_LABELS: Record<GameLocale, Record<CodexNavGameLabelKey, str
     historyCourse: "Tarih Dersi",
   },
   zhs: {
+    characters: "Characters",
     cards: "卡牌总览",
     keywords: "Keywords",
     relics: "遗物收集",
