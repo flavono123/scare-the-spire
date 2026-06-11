@@ -23,6 +23,7 @@ type LabelDescription = {
 
 export type CodexGameUiLabels = {
   compendiumTitle: string;
+  charactersTitle: string;
   cardLibraryTitle: string;
   relicCollectionTitle: string;
   potionLabTitle: string;
@@ -32,6 +33,7 @@ export type CodexGameUiLabels = {
   epochsTitle: string;
   nav: {
     cards: string;
+    characters: string;
     keywords: string;
     relics: string;
     potions: string;
@@ -326,6 +328,7 @@ export async function getCodexGameUiLabels(
   };
 
   const powerTitle = gameText(gameplay, "CARD_TYPE.POWER", "파워");
+  const charactersTitle = gameLocale === "kor" ? "캐릭터" : "Characters";
   const keywordsTitle = gameLocale === "kor" ? "키워드" : "Keywords";
   const eventsTitle = gameText(staticHoverTips, "ROOM_EVENT.title", "이벤트");
   const ancientsTitle = gameText(epochs, "RELIC2_EPOCH.title", gameText(staticHoverTips, "ROOM_ANCIENT.title", "고대의 존재"));
@@ -337,6 +340,7 @@ export async function getCodexGameUiLabels(
 
   return {
     compendiumTitle: gameText(mainMenu, "COMPENDIUM", "백과사전"),
+    charactersTitle,
     cardLibraryTitle: gameText(mainMenu, "COMPENDIUM_CARD_LIBRARY.title", "카드 목록"),
     relicCollectionTitle: gameText(mainMenu, "COMPENDIUM_RELIC_COLLECTION.title", "유물 모음집"),
     potionLabTitle: gameText(mainMenu, "COMPENDIUM_POTION_LAB.title", "포션 연구실"),
@@ -346,6 +350,7 @@ export async function getCodexGameUiLabels(
     epochsTitle,
     nav: {
       cards: gameText(mainMenu, "COMPENDIUM_CARD_LIBRARY.title", "카드 목록"),
+      characters: charactersTitle,
       keywords: keywordsTitle,
       relics: gameText(mainMenu, "COMPENDIUM_RELIC_COLLECTION.title", "유물 모음집"),
       potions: gameText(mainMenu, "COMPENDIUM_POTION_LAB.title", "포션 연구실"),
