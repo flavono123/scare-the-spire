@@ -5,6 +5,7 @@ import Link from "next/link";
 
 const items = [
   { href: "/compendium", label: "전체 보기" },
+  { href: "/compendium/characters", label: "캐릭터" },
   { href: "/compendium/cards", label: "카드" },
   { href: "/compendium/relics", label: "유물" },
   { href: "/compendium/potions", label: "포션" },
