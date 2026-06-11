@@ -96,7 +96,7 @@ export function CharacterList({
 
   const selectCharacter = useCallback((character: CodexCharacter) => {
     setSelectedCharacter(character);
-  }, []);
+  }, [setSelectedCharacter]);
 
   useEffect(() => {
     const url = new URL(window.location.href);
