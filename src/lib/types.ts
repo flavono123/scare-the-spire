@@ -62,6 +62,7 @@ export interface Change {
 
 export type StoryGame = "sts1" | "sts2";
 export type StoryEntityType =
+  | "character"
   | "card"
   | "relic"
   | "potion"
@@ -86,6 +87,7 @@ export interface LinkedEntity {
 export type PatchType = "release" | "hotfix" | "beta" | "stable";
 export type STS2EntityType = StoryEntityType | "enemy" | "blessing";
 export type STS2PatchFeaturedEntityType =
+  | "character"
   | "card"
   | "relic"
   | "potion"
