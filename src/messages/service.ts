@@ -178,6 +178,7 @@ export const serviceMessages = {
       },
     },
     codex: {
+      characters: "캐릭터",
       cards: "카드",
       keywords: "키워드",
       relics: "유물",
@@ -696,6 +697,7 @@ export const serviceMessages = {
       },
     },
     codex: {
+      characters: "Characters",
       cards: "Cards",
       keywords: "Keywords",
       relics: "Relics",
