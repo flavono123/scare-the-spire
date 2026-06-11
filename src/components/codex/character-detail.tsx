@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import { CircleDot, HeartCrack, Skull, Sword } from "lucide-react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
@@ -458,10 +458,15 @@ function CharacterAncientInteractions({
       ancient: ancients.find((item) => item.id === ancientId) ?? null,
     }));
   }, [ancients, character.ancientInteractions]);
-  const [activeAncientId, setActiveAncientId] = useState(groups[0]?.ancientId ?? "");
-  useEffect(() => {
-    setActiveAncientId(groups[0]?.ancientId ?? "");
-  }, [character.id, groups]);
+  const firstAncientId = groups[0]?.ancientId ?? "";
+  const [activeAncientSelection, setActiveAncientSelection] = useState(() => ({
+    characterId: character.id,
+    ancientId: firstAncientId,
+  }));
+  const activeAncientId =
+    activeAncientSelection.characterId === character.id
+      ? activeAncientSelection.ancientId
+      : firstAncientId;
   const activeGroup = groups.find((group) => group.ancientId === activeAncientId) ?? groups[0] ?? null;
 
   if (!activeGroup) {
@@ -480,7 +485,12 @@ function CharacterAncientInteractions({
               type="button"
               title={label}
               aria-pressed={active}
-              onClick={() => setActiveAncientId(group.ancientId)}
+              onClick={() =>
+                setActiveAncientSelection({
+                  characterId: character.id,
+                  ancientId: group.ancientId,
+                })
+              }
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border bg-white/[0.03] transition-colors hover:bg-white/10"
               style={{
                 borderColor: active ? "rgba(96,165,250,0.72)" : "rgba(255,255,255,0.1)",
