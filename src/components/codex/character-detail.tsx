@@ -695,8 +695,8 @@ function CharacterAncientInteractions({
 
   useEffect(() => {
     const scroller = scrollerRef.current;
-    updateScrollState();
-    if (!scroller) return undefined;
+    const animationFrame = window.requestAnimationFrame(updateScrollState);
+    if (!scroller) return () => window.cancelAnimationFrame(animationFrame);
 
     scroller.addEventListener("scroll", updateScrollState, { passive: true });
     window.addEventListener("resize", updateScrollState);
@@ -704,6 +704,7 @@ function CharacterAncientInteractions({
     resizeObserver?.observe(scroller);
 
     return () => {
+      window.cancelAnimationFrame(animationFrame);
       scroller.removeEventListener("scroll", updateScrollState);
       window.removeEventListener("resize", updateScrollState);
       resizeObserver?.disconnect();
