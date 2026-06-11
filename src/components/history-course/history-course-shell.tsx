@@ -140,7 +140,7 @@ function nodeSpriteSrc(entry: ReplayHistoryEntry): string {
   if (modelId === "ROOM.ANCIENT") return "/images/sts2/run-history/ancient.png";
   if (entry.map_point_type === "boss") {
     const bossKey = bossKeyFromEntry(entry);
-    if (bossKey) return `/images/sts2/bosses/${bossKey.toLowerCase()}.webp`;
+    if (bossKey) return `/images/sts2/run-history/${bossKey.toLowerCase()}.png`;
     return "/images/sts2/run-history/monster.png";
   }
   switch (entry.map_point_type) {
