@@ -72,7 +72,7 @@ function InfoRailSection({
 }) {
   return (
     <details
-      className="group rounded-lg border border-white/10 bg-black/20 px-4 py-3"
+      className="group min-w-0 rounded-lg border border-white/10 bg-black/20 px-4 py-3"
       open={defaultOpen}
     >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-game-title text-sm font-bold text-gray-200">
@@ -274,9 +274,9 @@ export function CharacterDetail({
         )}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
-        <section className="flex min-h-[30rem] flex-col items-center justify-center gap-5 py-4">
-          <div className="relative h-[24rem] w-full max-w-[44rem] sm:h-[28rem]">
+      <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
+        <section className="flex min-h-[30rem] min-w-0 flex-col items-center justify-center gap-5 py-4">
+          <div className="relative h-[24rem] w-full max-w-full sm:h-[28rem] lg:max-w-[44rem]">
             <div className="pointer-events-none absolute inset-x-8 bottom-0 h-24 rounded-[50%] bg-black/40 blur-2xl" />
             <MonsterSpineStage
               key={character.id}
@@ -294,7 +294,7 @@ export function CharacterDetail({
             />
           </div>
 
-          <div className="flex flex-wrap justify-center gap-2" role="group" aria-label={serviceLocale === "ko" ? "모션" : "Actions"}>
+          <div className="flex max-w-full flex-wrap justify-center gap-2" role="group" aria-label={serviceLocale === "ko" ? "모션" : "Actions"}>
             {availableActions.map((action) => {
               const active = action.id === selectedAction;
               const Icon = action.Icon;
@@ -324,8 +324,8 @@ export function CharacterDetail({
 
           <GameHoverTip
             title={character.name}
-            className="w-full max-w-[26rem]"
-            style={{ minWidth: 280 }}
+            className="w-full max-w-full sm:max-w-[26rem]"
+            style={{ minWidth: 0 }}
           >
             {entities ? (
               <RichDescription
@@ -341,8 +341,8 @@ export function CharacterDetail({
           </GameHoverTip>
         </section>
 
-        <aside className="flex flex-col gap-3">
-          <section className="rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+        <aside className="flex min-w-0 flex-col gap-3">
+          <section className="min-w-0 rounded-lg border border-white/10 bg-black/20 px-4 py-3">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
                 <MetaPill value={serviceLocale === "ko" ? "캐릭터" : "Character"} color={characterColor} />
