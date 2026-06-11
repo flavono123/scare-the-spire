@@ -311,6 +311,7 @@ function SummaryPanel({
             badges={badges}
             serviceLocale={serviceLocale}
             size="lg"
+            tipPlacement="below-right"
             className="justify-end pt-1"
           />
         </div>
