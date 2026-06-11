@@ -2,6 +2,7 @@ import {
   getCodexAfflictions,
   getCodexAncients,
   getCodexCards,
+  getCodexCharacters,
   getCodexEnchantments,
   getCodexEncounters,
   getCodexEpochs,
@@ -26,6 +27,10 @@ export async function generateAncientStaticParams(): Promise<StaticIdParam[]> {
 
 export async function generateCardStaticParams(): Promise<StaticIdParam[]> {
   return idParams(await getCodexCards({ includeDeprecated: true }));
+}
+
+export async function generateCharacterStaticParams(): Promise<StaticIdParam[]> {
+  return idParams(await getCodexCharacters());
 }
 
 export async function generateEnchantmentStaticParams(): Promise<StaticIdParam[]> {

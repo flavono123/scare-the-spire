@@ -4,6 +4,7 @@ import {
   getCodexAfflictions,
   getCodexAncients,
   getCodexCards,
+  getCodexCharacters,
   getCodexEnchantments,
   getCodexEncounters,
   getCodexEpochs,
@@ -43,6 +44,25 @@ export async function generateCompendiumCardMetadata(id: string): Promise<Metada
   const card = findCardByCodexRouteId(cards, id);
   if (!card) return {};
   return getCodexCardOgMetadata(SERVICE_LOCALE, gameUi.cardLibraryTitle, card);
+}
+
+export async function generateCompendiumCharacterMetadata(id: string): Promise<Metadata> {
+  const [characters, gameUi] = await Promise.all([
+    getCodexCharacters({ gameLocale: GAME_LOCALE }),
+    getCodexGameUiLabels(GAME_LOCALE),
+  ]);
+  const character = findCodexResourceByRouteId(characters, id);
+  if (!character) return {};
+  return getCodexResourceOgMetadata(SERVICE_LOCALE, gameUi.charactersTitle, {
+    name: character.name,
+    description: character.description,
+    imageUrl: firstCodexImageUrl(
+      character.combatImageUrl,
+      character.selectImageUrl,
+      character.imageUrl,
+      character.iconUrl,
+    ),
+  });
 }
 
 export async function generateCompendiumRelicMetadata(id: string): Promise<Metadata> {

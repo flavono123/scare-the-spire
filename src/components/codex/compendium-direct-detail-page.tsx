@@ -3,6 +3,7 @@
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { AncientDetail } from "@/components/codex/ancient-detail";
 import { CardDetail } from "@/components/codex/card-detail";
+import { CharacterDetail } from "@/components/codex/character-detail";
 import { EncounterDetail } from "@/components/codex/encounter-detail";
 import { EnchantmentDetail } from "@/components/codex/enchantment-detail";
 import { EpochDetail } from "@/components/codex/epoch-detail";
@@ -320,6 +321,28 @@ export function CompendiumDirectDetailPage({
           relatedAncients={resources.ancients}
           relatedEnchantments={resources.enchantments}
           relatedPowers={resources.powers}
+          patches={patches}
+          changes={changes}
+          versionDiffs={versionDiffs}
+        />
+      );
+    }
+  }
+
+  if (resourceType === "characters") {
+    const character = findByRouteId(resources.characters, id);
+    if (character) {
+      detail = (
+        <CharacterDetail
+          serviceLocale={serviceLocale}
+          gameUi={gameUi}
+          backToListTitle={gameUi.charactersTitle}
+          character={character}
+          characters={resources.characters}
+          cards={resources.cards}
+          relics={resources.relics}
+          ancients={resources.ancients}
+          entities={entities}
           patches={patches}
           changes={changes}
           versionDiffs={versionDiffs}

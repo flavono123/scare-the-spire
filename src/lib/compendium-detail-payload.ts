@@ -22,6 +22,7 @@ export const COMPENDIUM_DETAIL_PAYLOAD_PATH = "/generated/compendium-detail-kor.
 export type CompendiumDetailResourceType =
   | "ancients"
   | "cards"
+  | "characters"
   | "enchantments"
   | "encounters"
   | "epochs"
