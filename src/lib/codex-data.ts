@@ -148,8 +148,43 @@ function withCardUpgradeFallbacks(
 interface RawCharacter {
   id: string;
   name: string;
+  description: string;
+  starting_hp: number;
+  starting_gold: number;
+  max_energy: number;
+  orb_slots: number | null;
+  starting_deck: string[];
+  starting_relics: string[];
+  unlocks_after: string | null;
+  gender: string | null;
   color: string;
+  dialogue_color: string | null;
+  quotes: RawCharacterQuotes;
+  dialogues: RawCharacterAncientInteraction[];
   image_url: string;
+}
+
+interface RawCharacterQuotes {
+  event_death_prevention: string;
+  gold_monologue: string;
+  aroma_principle: string;
+  banter_alive: string;
+  banter_dead: string;
+  unlock_text?: string | null;
+  cards_modifier_title: string;
+  cards_modifier_description: string;
+}
+
+interface RawCharacterAncientInteraction {
+  ancient: string;
+  ancient_name: string;
+  lines: RawCharacterAncientDialogueLine[];
+}
+
+interface RawCharacterAncientDialogueLine {
+  order: number;
+  speaker: "ancient" | "char";
+  text: string;
 }
 
 interface RawKeyword {
@@ -898,22 +933,63 @@ export async function getCodexPotions(opts?: { gameLocale?: GameLocale }): Promi
   });
 }
 
-// Game order for characters
-const CHARACTER_ORDER = ["IRONCLAD", "SILENT", "DEFECT", "NECROBINDER", "REGENT"];
+// Game select order used by the Compendium.
+const CHARACTER_ORDER = ["IRONCLAD", "SILENT", "REGENT", "NECROBINDER", "DEFECT"];
+const CHARACTER_SLUGS: Record<string, string> = {
+  IRONCLAD: "ironclad",
+  SILENT: "silent",
+  REGENT: "regent",
+  NECROBINDER: "necrobinder",
+  DEFECT: "defect",
+};
 
 export async function getCodexCharacters(opts?: { gameLocale?: GameLocale }): Promise<CodexCharacter[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [raw, gameCharacters] = await Promise.all([
+  const [raw, engCharacters, spineAssets, gameCharacters] = await Promise.all([
     readJson<RawCharacter[]>("kor/characters.json"),
+    readJson<RawCharacter[]>("eng/characters.json"),
+    getCodexCharacterSpineAssets(),
     readGameLocalizationTable(gameLocale, "characters"),
   ]);
+  const engById = new Map(engCharacters.map((character) => [character.id, character]));
+  const spineById = new Map(spineAssets.map((asset) => [asset.id, asset]));
 
-  const mapped = raw.map((c) => ({
-    id: c.id,
-    name: gameText(gameCharacters, `${c.id}.title`, c.name),
-    color: c.color as CodexCharacter["color"],
-    imageUrl: spireCodexImageToLocal(c.image_url) ?? "",
-  }));
+  const mapped = raw.map((character) => {
+    const eng = engById.get(character.id) ?? character;
+    const slug = CHARACTER_SLUGS[character.id] ?? character.id.toLowerCase();
+    const imageUrl = spireCodexImageToLocal(character.image_url) ?? `/images/sts2/characters/char_select_${slug}.webp`;
+
+    return {
+      id: character.id,
+      name: gameTitleText(gameCharacters, `${character.id}.title`, character.name, eng.name, gameLocale),
+      nameEn: eng.name,
+      description: gameText(
+        gameCharacters,
+        `${character.id}.description`,
+        gameLocale === "kor" ? character.description : eng.description,
+      ),
+      descriptionEn: eng.description,
+      startingHp: character.starting_hp,
+      startingGold: character.starting_gold,
+      maxEnergy: character.max_energy,
+      orbSlots: character.orb_slots,
+      startingDeckIds: character.starting_deck,
+      startingRelicIds: character.starting_relics,
+      unlocksAfter: character.unlocks_after,
+      gender: character.gender,
+      color: character.color as CodexCharacter["color"],
+      dialogueColor: character.dialogue_color,
+      quotes: mapCharacterQuotes(character, eng, gameCharacters, gameLocale),
+      ancientInteractions: mapCharacterAncientInteractions(character),
+      imageUrl,
+      iconUrl: `/images/sts2/characters/character_icon_${slug}.webp`,
+      iconOutlineUrl: `/images/sts2/characters/character_icon_${slug}_outline.webp`,
+      selectImageUrl: `/images/sts2/characters/select_${slug}.webp`,
+      combatImageUrl: `/images/sts2/characters/combat_${slug}.webp`,
+      restImageUrl: `/images/sts2/characters/rest_${slug}.webp`,
+      spineAsset: spineById.get(character.id) ?? null,
+    };
+  });
 
   // Sort by game order
   mapped.sort((a, b) => {
@@ -923,6 +999,49 @@ export async function getCodexCharacters(opts?: { gameLocale?: GameLocale }): Pr
   });
 
   return mapped;
+}
+
+function mapCharacterQuotes(
+  character: RawCharacter,
+  eng: RawCharacter,
+  gameCharacters: GameLocalizationTable,
+  gameLocale: GameLocale,
+): CodexCharacter["quotes"] {
+  const quoteFallback = <K extends keyof RawCharacterQuotes>(key: K): string => {
+    const selected = gameLocale === "kor" ? character.quotes[key] : eng.quotes[key];
+    const fallback = selected ?? character.quotes[key] ?? eng.quotes[key] ?? "";
+    return String(fallback);
+  };
+
+  return {
+    eventDeathPrevention: gameText(gameCharacters, `${character.id}.eventDeathPrevention`, quoteFallback("event_death_prevention")),
+    goldMonologue: gameText(gameCharacters, `${character.id}.goldMonologue`, quoteFallback("gold_monologue")),
+    aromaPrinciple: gameText(gameCharacters, `${character.id}.aromaPrinciple`, quoteFallback("aroma_principle")),
+    banterAlive: gameText(gameCharacters, `${character.id}.banter.alive.endTurnPing`, quoteFallback("banter_alive")),
+    banterDead: gameText(gameCharacters, `${character.id}.banter.dead.endTurnPing`, quoteFallback("banter_dead")),
+    unlockText: gameText(gameCharacters, `${character.id}.unlockText`, quoteFallback("unlock_text")) || null,
+    cardsModifierTitle: gameText(gameCharacters, `${character.id}.cardsModifierTitle`, quoteFallback("cards_modifier_title")),
+    cardsModifierDescription: gameText(gameCharacters, `${character.id}.cardsModifierDescription`, quoteFallback("cards_modifier_description")),
+  };
+}
+
+function mapCharacterAncientInteractions(character: RawCharacter): CodexCharacter["ancientInteractions"] {
+  const counts = new Map<string, number>();
+  return character.dialogues.map((interaction) => {
+    const count = (counts.get(interaction.ancient) ?? 0) + 1;
+    counts.set(interaction.ancient, count);
+
+    return {
+      id: `${interaction.ancient}:${count}`,
+      ancientId: interaction.ancient,
+      ancientName: interaction.ancient_name,
+      lines: interaction.lines.map((line) => ({
+        order: line.order,
+        speaker: line.speaker === "char" ? "character" : "ancient",
+        text: line.text,
+      })),
+    };
+  });
 }
 
 export async function getCodexCharacterSpineAssets(): Promise<MonsterSpineAsset[]> {

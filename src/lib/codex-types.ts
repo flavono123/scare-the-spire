@@ -91,9 +91,53 @@ export interface CodexKeyword {
 
 export interface CodexCharacter {
   id: string;
-  name: string; // Korean
+  name: string; // selected game locale
+  nameEn: string; // English
+  description: string; // selected game locale, with BBCode markup
+  descriptionEn: string; // English, with BBCode markup
+  startingHp: number;
+  startingGold: number;
+  maxEnergy: number;
+  orbSlots: number | null;
+  startingDeckIds: string[];
+  startingRelicIds: string[];
+  unlocksAfter: string | null;
+  gender: string | null;
   color: CharacterColor;
+  dialogueColor: string | null;
+  quotes: CodexCharacterQuotes;
+  ancientInteractions: CharacterAncientInteraction[];
   imageUrl: string; // local path to char_select image
+  iconUrl: string; // local path to character icon
+  iconOutlineUrl: string; // local path to character outline icon
+  selectImageUrl: string; // local path to select pose
+  combatImageUrl: string; // local path to combat fallback image
+  restImageUrl: string; // local path to rest fallback image
+  spineAsset: MonsterSpineAsset | null;
+}
+
+export interface CodexCharacterQuotes {
+  eventDeathPrevention: string;
+  goldMonologue: string;
+  aromaPrinciple: string;
+  banterAlive: string;
+  banterDead: string;
+  unlockText: string | null;
+  cardsModifierTitle: string;
+  cardsModifierDescription: string;
+}
+
+export interface CharacterAncientInteraction {
+  id: string;
+  ancientId: string;
+  ancientName: string;
+  lines: CharacterAncientDialogueLine[];
+}
+
+export interface CharacterAncientDialogueLine {
+  order: number;
+  speaker: "ancient" | "character";
+  text: string;
 }
 
 // Filter category for card browsing
