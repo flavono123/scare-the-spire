@@ -22,6 +22,7 @@ export type SearchIndexPayload = {
 
 const TYPE_TO_COMPENDIUM_PATH: Partial<Record<EntityType, string>> = {
   card: "cards",
+  character: "characters",
   keyword: "keywords",
   relic: "relics",
   potion: "potions",
@@ -98,6 +99,30 @@ function entitySearchText(entity: EntityInfo): string {
       keyword.source,
       keyword.sourceId,
     );
+  }
+
+  if (entity.characterData) {
+    const character = entity.characterData;
+    appendSearchParts(
+      parts,
+      character.description,
+      character.descriptionEn,
+      character.startingHp,
+      character.startingGold,
+      character.maxEnergy,
+      character.orbSlots,
+      character.startingDeckIds.join(" "),
+      character.startingRelicIds.join(" "),
+      character.unlocksAfter,
+      character.gender,
+      Object.values(character.quotes).join(" "),
+    );
+    for (const interaction of character.ancientInteractions) {
+      appendSearchParts(parts, interaction.ancientId, interaction.ancientName);
+      for (const line of interaction.lines) {
+        appendSearchParts(parts, line.speaker, line.text);
+      }
+    }
   }
 
   if (entity.relicData) {
