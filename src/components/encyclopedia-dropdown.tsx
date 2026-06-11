@@ -6,7 +6,6 @@ import Link from "next/link";
 const items = [
   { href: "/compendium", label: "전체 보기" },
   { href: "/compendium/cards", label: "카드" },
-  { href: "/compendium/keywords", label: "키워드" },
   { href: "/compendium/relics", label: "유물" },
   { href: "/compendium/potions", label: "포션" },
   { href: "/compendium/powers", label: "파워" },
@@ -14,6 +13,7 @@ const items = [
   { href: "/compendium/bestiary", label: "몬스터 도감" },
   { href: "/compendium/ancients", label: "고대의 존재" },
   { href: "/compendium/epochs", label: "연대기" },
+  { href: "/compendium/keywords", label: "키워드" },
 ];
 
 export function EncyclopediaDropdown() {

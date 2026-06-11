@@ -36,7 +36,6 @@ import { pushCodexHistoryState } from "@/components/codex/use-hydration-safe-sea
 
 const sts2Items = [
   { href: "/compendium/cards", labelKey: "cards", icon: "/images/sts2/nav/stats_cards.png" },
-  { href: "/compendium/keywords", labelKey: "keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
   { href: "/compendium/relics", labelKey: "relics", icon: "/images/sts2/relics/bing_bong.webp" },
   { href: "/compendium/potions", labelKey: "potions", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
   { href: "/compendium/powers", labelKey: "powers", icon: "/images/sts2/nav/unmovable_power_beta.webp" },
@@ -45,6 +44,7 @@ const sts2Items = [
   { href: "/compendium/events", labelKey: "events", icon: "/images/sts2/nav/question_mark.png" },
   { href: "/compendium/ancients", labelKey: "ancients", icon: "/images/sts2/nav/stats_ancients.png" },
   { href: "/compendium/epochs", labelKey: "epochs", icon: "/images/sts2/relics/planisphere.webp" },
+  { href: "/compendium/keywords", labelKey: "keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
 ] as const;
 
 const sts1Items = [
