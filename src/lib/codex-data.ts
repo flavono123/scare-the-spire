@@ -980,7 +980,9 @@ export async function getCodexCharacters(opts?: { gameLocale?: GameLocale }): Pr
       color: character.color as CodexCharacter["color"],
       dialogueColor: character.dialogue_color,
       quotes: mapCharacterQuotes(character, eng, gameCharacters, gameLocale),
-      ancientInteractions: mapCharacterAncientInteractions(character),
+      ancientInteractions: mapCharacterAncientInteractions(
+        gameLocale === "kor" ? character : eng,
+      ),
       imageUrl,
       iconUrl: `/images/sts2/characters/character_icon_${slug}.webp`,
       iconOutlineUrl: `/images/sts2/characters/character_icon_${slug}_outline.webp`,
