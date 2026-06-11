@@ -113,6 +113,11 @@
         "die",
         "idle_loop",
         "attack"
+      ],
+      "HEAVY_ATTACK": [
+        "attack_heavy",
+        "idle_loop",
+        "attack"
       ]
     },
     "moveEffects": {
@@ -179,6 +184,12 @@
       ],
       "DIE": [
         "die",
+        "idle_loop",
+        "attack"
+      ],
+      "CAST": [
+        "cast_mighty",
+        "cast",
         "idle_loop",
         "attack"
       ]
@@ -249,10 +260,15 @@
         "die",
         "idle_loop",
         "attack"
+      ],
+      "SOVEREIGN_BLADE": [
+        "attack_sovereign",
+        "idle_loop",
+        "attack"
       ]
     },
     "moveEffects": {
-      "ATTACK": [
+      "SOVEREIGN_BLADE": [
         {
           "id": "VFX_SOVEREIGN_BLADE",
           "folder": "vfx_sovereign_blade",

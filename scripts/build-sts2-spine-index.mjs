@@ -225,19 +225,47 @@ const VFX_ALIASES = {
   VFX_LASER: "vfx_laser",
   VFX_MECHA_KNIGHT_SHIELD: "vfx_mecha_knight_shield",
   VFX_SCRATCH: "vfx_scratch",
+  VFX_SOVEREIGN_BLADE: "vfx_sovereign_blade",
 };
 
 const CHARACTER_ALIASES = {
   DEFECT: { folder: "defect", attackVfx: "VFX_LASER" },
-  IRONCLAD: { folder: "ironclad", attackVfx: "VFX_FLYING_SLASH" },
-  NECROBINDER: { folder: "necrobinder", attackVfx: "VFX_SCRATCH" },
-  REGENT: { folder: "regent", attackVfx: "VFX_SOVEREIGN_BLADE" },
+  IRONCLAD: {
+    folder: "ironclad",
+    attackVfx: "VFX_FLYING_SLASH",
+    specialActions: {
+      HEAVY_ATTACK: { animations: ["attack_heavy"] },
+    },
+  },
+  NECROBINDER: {
+    folder: "necrobinder",
+    attackVfx: "VFX_SCRATCH",
+    specialActions: {
+      CAST: { animations: ["cast_mighty", "cast"] },
+    },
+  },
+  REGENT: {
+    folder: "regent",
+    specialActions: {
+      SOVEREIGN_BLADE: { animations: ["attack_sovereign"], vfx: "VFX_SOVEREIGN_BLADE" },
+    },
+  },
   SILENT: { folder: "silent", attackVfx: "VFX_SCRATCH" },
 };
 
 const ANCIENT_SPINE_ALIASES = {
   NEOW: { folder: "neow_room" },
   TEZCATARA: { folder: "tezcatara" },
+};
+
+const SUPPLEMENTAL_MONSTER_ACTORS = {
+  OSTY: {
+    folder: "osty",
+    imageUrl: "/images/sts2/monsters/osty.webp",
+    moves: [
+      { id: "NOTHING", name: "대기", nameEn: "Nothing", description: "", descriptionEn: "" },
+    ],
+  },
 };
 
 function readJson(filePath) {
@@ -660,12 +688,33 @@ function characterActionCandidates(animationNames, needles, idleAnimation) {
   return unique([...preferNonIdle(matches), idleAnimation, animationNames[0]]);
 }
 
+function configuredCharacterActionCandidates(animationNames, action, idleAnimation) {
+  const exactMatches = action.animations.filter((animation) => animationNames.includes(animation));
+  if (exactMatches.length === 0) return [];
+  return unique([...exactMatches, idleAnimation, animationNames[0]]);
+}
+
 function buildCharacterAsset(character, actor, alias, vfxById) {
   const animationNames = actor.animations
     .map((animation) => animation.name)
     .filter((animation) => !animation.startsWith("_ignore/"));
   const idleAnimation = chooseIdleAnimation(animationNames);
   const attackVfx = alias.attackVfx ? vfxById.get(alias.attackVfx) : null;
+  const moveAnimations = {
+    IDLE: [idleAnimation],
+    ATTACK: characterActionCandidates(animationNames, ["attack", "slash", "strike", "stab", "shoot", "cast"], idleAnimation),
+    HURT: characterActionCandidates(animationNames, ["hurt", "hit", "damage"], idleAnimation),
+    DIE: characterActionCandidates(animationNames, ["die", "death", "dead"], idleAnimation),
+  };
+  const moveEffects = attackVfx ? { ATTACK: [attackVfx] } : {};
+
+  for (const [actionId, action] of Object.entries(alias.specialActions ?? {})) {
+    const candidates = configuredCharacterActionCandidates(animationNames, action, idleAnimation);
+    if (candidates.length === 0) continue;
+    moveAnimations[actionId] = candidates;
+    const effect = action.vfx ? vfxById.get(action.vfx) : null;
+    if (effect) moveEffects[actionId] = [effect];
+  }
 
   return {
     id: character.id,
@@ -680,13 +729,8 @@ function buildCharacterAsset(character, actor, alias, vfxById) {
     animations: animationNames,
     bestiaryAnimations: [],
     idleAnimation,
-    moveAnimations: {
-      IDLE: [idleAnimation],
-      ATTACK: characterActionCandidates(animationNames, ["attack", "slash", "strike", "stab", "shoot", "cast"], idleAnimation),
-      HURT: characterActionCandidates(animationNames, ["hurt", "hit", "damage"], idleAnimation),
-      DIE: characterActionCandidates(animationNames, ["die", "death", "dead"], idleAnimation),
-    },
-    moveEffects: attackVfx ? { ATTACK: [attackVfx] } : {},
+    moveAnimations,
+    moveEffects,
   };
 }
 
@@ -743,6 +787,15 @@ function buildAncientAssets() {
   return assets.sort((a, b) => a.id.localeCompare(b.id));
 }
 
+function insertSupplementalAsset(assets, asset) {
+  const index = assets.findIndex((entry) => entry.id.localeCompare(asset.id) > 0);
+  if (index === -1) {
+    assets.push(asset);
+  } else {
+    assets.splice(index, 0, asset);
+  }
+}
+
 function main() {
   const actors = buildActorMap(monsterRoot);
   const vfxAssets = buildVfxAssets();
@@ -769,6 +822,25 @@ function main() {
       continue;
     }
     assets.push(buildMonsterAsset(monster, actor, alias, vfxById));
+  }
+
+  for (const [id, config] of Object.entries(SUPPLEMENTAL_MONSTER_ACTORS)) {
+    if (assets.some((asset) => asset.id === id)) continue;
+    const actor = actors.get(config.folder);
+    if (!actor) continue;
+    insertSupplementalAsset(
+      assets,
+      buildMonsterAsset(
+        {
+          id,
+          image_url: config.imageUrl,
+          moves: config.moves,
+        },
+        actor,
+        MONSTER_ALIASES[id],
+        vfxById,
+      ),
+    );
   }
 
   writeJson(outVfxPath, vfxAssets);
