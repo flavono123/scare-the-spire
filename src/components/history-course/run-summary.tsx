@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { CardActionIcon } from "@/components/history-course/card-action-icon";
 import { NodeTooltip } from "@/components/history-course/node-tooltip";
+import { RunBadgeStrip } from "@/components/history-course/run-badge-strip";
 import {
   EntityPreview,
   type EntityInfo,
@@ -21,6 +22,7 @@ import {
   getMadScienceVariantPartsFromId,
 } from "@/lib/tinker-time";
 import type { TopbarState } from "@/components/history-course/topbar-state";
+import { useServiceLocale } from "@/hooks/use-service-locale";
 import { cn } from "@/lib/utils";
 
 // ============================================================================
@@ -248,7 +250,9 @@ function SummaryPanel({
   currentActIndex: number;
   currentStep: number;
 }) {
+  const serviceLocale = useServiceLocale();
   const character = run.players[0]?.character ?? "CHARACTER.IRONCLAD";
+  const badges = run.players[0]?.badges ?? [];
   const charLabel = characterLabel(character);
   const charIcon = characterIconSrc(character);
   const finalFloor = topbarState.currentFloor;
@@ -296,13 +300,19 @@ function SummaryPanel({
         <PotionStrip slots={topbarState.potionSlots} potions={topbarState.potions} />
         <ScoreChip win={run.win && ended} floor={finalFloor} />
         <TimeChip runTime={runTimeStr} />
-        <div className="ml-auto text-right text-[11px] leading-snug text-zinc-400">
+        <div className="ml-auto flex min-w-[190px] flex-col items-end gap-1.5 text-right text-[11px] leading-snug text-zinc-400">
           {dateStr && <div>{dateStr}</div>}
           <div>시드: {run.seed}</div>
           <div className="text-amber-200/80">
             {ended ? (run.win ? "승리" : "패배") : "진행 중"} · {finalFloor}층
           </div>
           <div className="text-zinc-500">v{run.build_id}</div>
+          <RunBadgeStrip
+            badges={badges}
+            serviceLocale={serviceLocale}
+            size="lg"
+            className="justify-end pt-1"
+          />
         </div>
       </header>
 

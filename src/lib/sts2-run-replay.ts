@@ -94,12 +94,20 @@ export interface ReplayPotion {
   slotIndex?: number;
 }
 
+export type ReplayBadgeRarity = "none" | "bronze" | "silver" | "gold";
+
+export interface ReplayBadge {
+  id: string;
+  rarity: ReplayBadgeRarity;
+}
+
 export interface ReplayPlayer {
   id: number;
   character: string;
   deck: ReplayDeckCard[];
   relics: ReplayRelic[];
   potions: ReplayPotion[];
+  badges: ReplayBadge[];
   maxPotionSlotCount?: number;
 }
 
@@ -709,6 +717,36 @@ export function parseReplayRun(raw: string): ReplayRun {
   };
   type RawReplayPlayer = ReplayPlayer & { max_potion_slot_count?: number };
   type RawReplayPotion = ReplayPotion & { slot_index?: number };
+  type RawReplayBadge = { id?: unknown; rarity?: unknown };
+  const parseBadgeRarity = (rarity: unknown): ReplayBadgeRarity | null => {
+    if (typeof rarity === "string") {
+      const normalized = rarity.toLowerCase();
+      if (
+        normalized === "none" ||
+        normalized === "bronze" ||
+        normalized === "silver" ||
+        normalized === "gold"
+      ) {
+        return normalized;
+      }
+      return null;
+    }
+    if (typeof rarity === "number") {
+      return (["none", "bronze", "silver", "gold"] as const)[rarity] ?? null;
+    }
+    return null;
+  };
+  const parseBadge = (badge: unknown): ReplayBadge | null => {
+    if (!badge || typeof badge !== "object") return null;
+    const rawBadge = badge as RawReplayBadge;
+    if (typeof rawBadge.id !== "string") return null;
+    const rarity = parseBadgeRarity(rawBadge.rarity) ?? "none";
+    if (rarity === "none") return null;
+    return {
+      id: rawBadge.id,
+      rarity,
+    };
+  };
   const parseCardRef = (card: RawReplayCard | undefined): ReplayCardRef | null => {
     if (typeof card?.id !== "string") return null;
     const ints: Record<string, number> = {};
@@ -789,6 +827,11 @@ export function parseReplayRun(raw: string): ReplayRun {
                           ? potion.slot_index
                           : undefined,
                   }))
+              : [],
+            badges: Array.isArray((player as { badges?: unknown }).badges)
+              ? ((player as { badges: unknown[] }).badges)
+                  .map(parseBadge)
+                  .filter((badge): badge is ReplayBadge => badge !== null)
               : [],
             relics: Array.isArray(player?.relics)
               ? player.relics

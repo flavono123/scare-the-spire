@@ -3,8 +3,9 @@
 import { Share2, Trash2, Undo2 } from "lucide-react";
 import Image from "next/image";
 import { useCallback } from "react";
+import { RunBadgeStrip } from "@/components/history-course/run-badge-strip";
 import { isBuildSupported } from "@/lib/sts2-build-version";
-import type { ReplayRun } from "@/lib/sts2-run-replay";
+import type { ReplayBadge, ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
@@ -56,6 +57,7 @@ export interface RunCardProps {
   totalFloors: number;
   runTimeSeconds: number | null;
   startTimeUnix?: number | null;
+  badges?: ReplayBadge[];
   onPick: () => void;
   onDelete?: () => void;
   // Share toggle. When provided, renders a button next to the trash:
@@ -81,6 +83,7 @@ export function runCardPropsFromReplay(
     totalFloors: totalFloorsReached(run),
     runTimeSeconds: run.run_time ?? null,
     startTimeUnix: run.start_time ?? null,
+    badges: run.players[0]?.badges ?? [],
   };
 }
 
@@ -91,6 +94,7 @@ export function RunCard({
   seed,
   runTimeSeconds,
   startTimeUnix,
+  badges = [],
   onPick,
   onDelete,
   onShare,
@@ -98,7 +102,8 @@ export function RunCard({
   variant,
   pending,
 }: RunCardProps) {
-  const copy = serviceMessages[useServiceLocale()].historyCourse.runCard;
+  const serviceLocale = useServiceLocale();
+  const copy = serviceMessages[serviceLocale].historyCourse.runCard;
   const supported = isBuildSupported(build);
   const portraitSrc = characterPortraitSrc(character);
   const showDate = variant === "mine" && startTimeUnix != null;
@@ -162,6 +167,13 @@ export function RunCard({
               {dateLabel && timeLabel && <span className="text-zinc-700">·</span>}
               {timeLabel && <span>{timeLabel}</span>}
             </div>
+            <RunBadgeStrip
+              badges={badges}
+              serviceLocale={serviceLocale}
+              size="sm"
+              max={4}
+              className="mt-2"
+            />
             {!supported && (
               <p className="mt-1 text-[10px] text-red-300/80">
                 {copy.unsupportedRemove}

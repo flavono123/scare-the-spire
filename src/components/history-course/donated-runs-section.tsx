@@ -107,6 +107,7 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
                   totalFloors={entry.total_floors}
                   runTimeSeconds={entry.run_time}
                   startTimeUnix={null}
+                  badges={entry.badges ?? []}
                   variant="shared"
                   onPick={() => router.push(`/history-course/${entry.id}`)}
                   onDelete={isOwn ? () => onUndo(entry.id) : undefined}

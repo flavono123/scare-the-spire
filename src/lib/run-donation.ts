@@ -1,6 +1,6 @@
 import { supabase, supabaseEnabled, supabaseEnv } from "./supabase";
 import { withSupabaseTimeout } from "./supabase-timeout";
-import type { ReplayRun } from "./sts2-run-replay";
+import type { ReplayBadge, ReplayRun } from "./sts2-run-replay";
 
 export interface DonatedRun {
   id: string;
@@ -13,6 +13,7 @@ export interface DonatedRun {
   start_time: number | null;
   run_time: number | null;
   acts_count: number;
+  badges: ReplayBadge[];
   created_at: string;
 }
 
@@ -29,6 +30,7 @@ export interface DonatedRunSummary {
   // Total floors visited across all acts. Pre-extracted at insert
   // time so the listing query doesn't have to parse the raw JSON.
   total_floors: number;
+  badges: ReplayBadge[];
   donor_user_id: string | null;
   created_at: string;
 }
@@ -50,6 +52,7 @@ function parsedMetaFromRun(run: ReplayRun) {
     run_time: run.run_time ?? null,
     acts_count: run.acts.length,
     total_floors: totalFloorsFromRun(run),
+    badges: run.players[0]?.badges ?? [],
   };
 }
 
@@ -154,7 +157,7 @@ export async function getDonatedRun(runId: string): Promise<DonatedRun | null> {
     supabase
       .from("runs")
       .select(
-        "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, created_at",
+        "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, badges, created_at",
       )
       .eq("id", runId)
       .eq("env", supabaseEnv)
@@ -229,7 +232,7 @@ export async function listRecentDonatedRuns(): Promise<DonatedRunSummary[]> {
     supabase
       .from("runs")
       .select(
-        "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at",
+        "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, badges, donor_user_id, created_at",
       )
       .eq("env", supabaseEnv)
       .order("created_at", { ascending: false })
