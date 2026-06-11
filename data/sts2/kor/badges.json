@@ -1,0 +1,406 @@
+[
+  {
+    "id": "BIG_DECK",
+    "slug": "big_deck",
+    "active": true,
+    "requiresWin": true,
+    "multiplayerOnly": false,
+    "sourceClass": "BigDeck",
+    "imageUrl": "/images/sts2/badges/big_deck.webp",
+    "title": null,
+    "description": null,
+    "rarities": {
+      "bronze": {
+        "title": "큰 덱",
+        "description": "카드 [blue]40[/blue]장 이상의 덱으로 승리했습니다."
+      },
+      "silver": {
+        "title": "거대한 덱",
+        "description": "카드 [blue]60[/blue]장 이상의 덱으로 승리했습니다."
+      },
+      "gold": {
+        "title": "초대형 덱",
+        "description": "카드 [blue]100[/blue]장 이상의 덱으로 승리했습니다."
+      }
+    }
+  },
+  {
+    "id": "CCCCOMBO",
+    "slug": "ccccombo",
+    "active": true,
+    "requiresWin": false,
+    "multiplayerOnly": false,
+    "sourceClass": "CccCombo",
+    "imageUrl": "/images/sts2/badges/ccccombo.webp",
+    "title": "코오오옴보",
+    "description": "한 턴에 카드를 [blue]20[/blue]장 사용했습니다.",
+    "rarities": {}
+  },
+  {
+    "id": "CURSES",
+    "slug": "curses",
+    "active": true,
+    "requiresWin": true,
+    "multiplayerOnly": false,
+    "sourceClass": "Curses",
+    "imageUrl": "/images/sts2/badges/curses.webp",
+    "title": "저주들!",
+    "description": "[blue]5[/blue]장 이상의 [red]저주[/red] 카드를 지닌 채로 승리했습니다.",
+    "rarities": {}
+  },
+  {
+    "id": "DAMAGE_LEADER",
+    "slug": "damage_leader",
+    "active": true,
+    "requiresWin": false,
+    "multiplayerOnly": true,
+    "sourceClass": "DamageLeader",
+    "imageUrl": "/images/sts2/badges/damage_leader.webp",
+    "title": "메인 딜러",
+    "description": "멀티플레이에서 적에게 가장 큰 피해를 입혔습니다.",
+    "rarities": {}
+  },
+  {
+    "id": "DEBUFFER",
+    "slug": "debuffer",
+    "active": true,
+    "requiresWin": false,
+    "multiplayerOnly": true,
+    "sourceClass": "Debuffer",
+    "imageUrl": "/images/sts2/badges/debuffer.webp",
+    "title": "디버퍼",
+    "description": "멀티플레이에서 적에게 가장 많은 디버프를 부여했습니다.",
+    "rarities": {}
+  },
+  {
+    "id": "DOUBLE_SNECKO",
+    "slug": "double_snecko",
+    "active": true,
+    "requiresWin": false,
+    "multiplayerOnly": false,
+    "sourceClass": "DoubleSnecko",
+    "imageUrl": "/images/sts2/badges/double_snecko.webp",
+    "title": "쌍네코",
+    "description": "가짜와 진짜 스네코의 눈을 모두 획득했습니다.",
+    "rarities": {}
+  },
+  {
+    "id": "ELITE",
+    "slug": "elite",
+    "active": true,
+    "requiresWin": false,
+    "multiplayerOnly": false,
+    "sourceClass": "EliteKiller",
+    "imageUrl": "/images/sts2/badges/elite.webp",
+    "title": null,
+    "description": null,
+    "rarities": {
+      "bronze": {
+        "title": "엘리트 헌터",
+        "description": "엘리트를 [blue]3[/blue]마리 이상 처치했습니다."
+      },
+      "silver": {
+        "title": "엘리트 킬러",
+        "description": "엘리트를 [blue]6[/blue]마리 이상 처치했습니다."
+      },
+      "gold": {
+        "title": "엘리트 슬레이어",
+        "description": "엘리트를 [blue]9[/blue]마리 이상 처치했습니다."
+      }
+    }
+  },
+  {
+    "id": "FAMISHED",
+    "slug": "famished",
+    "active": true,
+    "requiresWin": true,
+    "multiplayerOnly": false,
+    "sourceClass": "Famished",
+    "imageUrl": "/images/sts2/badges/famished.webp",
+    "title": "굶주림",
+    "description": "최대 체력이 시작 체력의 절반 이하로 감소한 상태에서 승리했습니다.",
+    "rarities": {}
+  },
+  {
+    "id": "FAVORITE_CARD",
+    "slug": "favorite_card",
+    "active": false,
+    "requiresWin": null,
+    "multiplayerOnly": null,
+    "sourceClass": null,
+    "imageUrl": "/images/sts2/badges/favorite_card.webp",
+    "title": "최애 카드",
+    "description": "한 번의 도전에서 같은 카드를 [blue]100[/blue]번 이상 사용하고 승리했습니다.",
+    "rarities": {}
+  },
+  {
+    "id": "GLUTTON",
+    "slug": "glutton",
+    "active": true,
+    "requiresWin": true,
+    "multiplayerOnly": false,
+    "sourceClass": "Glutton",
+    "imageUrl": "/images/sts2/badges/glutton.webp",
+    "title": null,
+    "description": null,
+    "rarities": {
+      "bronze": {
+        "title": "잘 먹었습니다",
+        "description": "최대 체력이 [blue]15[/blue] 이상 증가한 상태로 도전을 승리했습니다."
+      },
+      "silver": {
+        "title": "배부르네요",
+        "description": "최대 체력이 [blue]30[/blue] 이상 증가한 상태로 도전을 승리했습니다."
+      },
+      "gold": {
+        "title": "먹보",
+        "description": "최대 체력이 터무니없이 높은 상태로 도전을 승리했습니다 ([blue]50[/blue] 이상 증가했습니다)."
+      }
+    }
+  },
+  {
+    "id": "HEALER",
+    "slug": "healer",
+    "active": true,
+    "requiresWin": false,
+    "multiplayerOnly": true,
+    "sourceClass": "Healer",
+    "imageUrl": "/images/sts2/badges/healer.webp",
+    "title": null,
+    "description": null,
+    "rarities": {
+      "bronze": {
+        "title": "수리공",
+        "description": "아군을 1번 치료했습니다."
+      },
+      "silver": {
+        "title": "치유사",
+        "description": "아군을 2번 치료했습니다."
+      },
+      "gold": {
+        "title": "의사",
+        "description": "아군을 몇 번이고 끊임없이 치료했습니다 (최소 [blue]3[/blue]번 이상)."
+      }
+    }
+  },
+  {
+    "id": "HIGHLANDER",
+    "slug": "highlander",
+    "active": true,
+    "requiresWin": true,
+    "multiplayerOnly": false,
+    "sourceClass": "Highlander",
+    "imageUrl": "/images/sts2/badges/highlander.webp",
+    "title": "하이랜더",
+    "description": "똑같은 카드가 없는 덱으로 승리했습니다 (시작 카드 제외).",
+    "rarities": {}
+  },
+  {
+    "id": "HONED",
+    "slug": "honed",
+    "active": true,
+    "requiresWin": true,
+    "multiplayerOnly": false,
+    "sourceClass": "Honed",
+    "imageUrl": "/images/sts2/badges/honed.webp",
+    "title": "갈고닦음",
+    "description": "같은 카드가 [blue]5[/blue]장 이상 있는 덱으로 승리했습니다 (시작 카드 제외).",
+    "rarities": {}
+  },
+  {
+    "id": "ILIKESHINY",
+    "slug": "ilikeshiny",
+    "active": true,
+    "requiresWin": false,
+    "multiplayerOnly": false,
+    "sourceClass": "ILikeShiny",
+    "imageUrl": "/images/sts2/badges/ilikeshiny.webp",
+    "title": "빛나는 것이 좋아",
+    "description": "유물을 [blue]25[/blue]개 이상 수집했습니다.",
+    "rarities": {}
+  },
+  {
+    "id": "KACHING",
+    "slug": "kaching",
+    "active": true,
+    "requiresWin": false,
+    "multiplayerOnly": false,
+    "sourceClass": "KaChing",
+    "imageUrl": "/images/sts2/badges/kaching.webp",
+    "title": "카칭!",
+    "description": "상인을 통해 [blue]1,000[/blue] 이상의 [gold]골드[/gold]를 사용하세요.",
+    "rarities": {}
+  },
+  {
+    "id": "MONEY_MONEY",
+    "slug": "money_money",
+    "active": true,
+    "requiresWin": true,
+    "multiplayerOnly": false,
+    "sourceClass": "MoneyMoney",
+    "imageUrl": "/images/sts2/badges/money_money.webp",
+    "title": null,
+    "description": null,
+    "rarities": {
+      "bronze": {
+        "title": "돈 돈",
+        "description": "[blue]200[/blue] 이상의 [gold]골드[/gold]를 지닌 채로 승리했습니다."
+      },
+      "silver": {
+        "title": "골드의 비",
+        "description": "[blue]400[/blue] 이상의 [gold]골드[/gold]를 지닌 채로 승리했습니다."
+      },
+      "gold": {
+        "title": "골드가 좋아",
+        "description": "[blue]600[/blue] 이상의 [gold]골드[/gold]를 지닌 채로 승리했습니다."
+      }
+    }
+  },
+  {
+    "id": "MYSTERY_MACHINE",
+    "slug": "mystery_machine",
+    "active": true,
+    "requiresWin": false,
+    "multiplayerOnly": false,
+    "sourceClass": "MysteryMachine",
+    "imageUrl": "/images/sts2/badges/mystery_machine.webp",
+    "title": "미스터리 머신",
+    "description": "? 방을 [blue]15[/blue]번 이상 방문하세요.",
+    "rarities": {}
+  },
+  {
+    "id": "PERFECT",
+    "slug": "perfect",
+    "active": true,
+    "requiresWin": false,
+    "multiplayerOnly": false,
+    "sourceClass": "Perfect",
+    "imageUrl": "/images/sts2/badges/perfect.webp",
+    "title": null,
+    "description": null,
+    "rarities": {
+      "bronze": {
+        "title": "무결점",
+        "description": "체력을 잃지 않고 보스를 처치하세요."
+      },
+      "silver": {
+        "title": "최고",
+        "description": "체력을 잃지 않고 보스를 [blue]2[/blue]마리 처치하세요."
+      },
+      "gold": {
+        "title": "완벽",
+        "description": "체력을 잃지 않고 보스를 [blue]3[/blue]마리 처치하세요."
+      }
+    }
+  },
+  {
+    "id": "RESTFUL",
+    "slug": "restful",
+    "active": true,
+    "requiresWin": true,
+    "multiplayerOnly": false,
+    "sourceClass": "Restful",
+    "imageUrl": "/images/sts2/badges/restful.webp",
+    "title": "평화로움",
+    "description": "모든 휴식 장소에서 휴식을 취하고 승리했습니다.",
+    "rarities": {}
+  },
+  {
+    "id": "RESTLESS",
+    "slug": "restless",
+    "active": true,
+    "requiresWin": true,
+    "multiplayerOnly": false,
+    "sourceClass": "Restless",
+    "imageUrl": "/images/sts2/badges/restless.webp",
+    "title": "불안함",
+    "description": "휴식을 취하지 않고 도전을 승리했습니다.",
+    "rarities": {}
+  },
+  {
+    "id": "SPEEDY",
+    "slug": "speedy",
+    "active": true,
+    "requiresWin": true,
+    "multiplayerOnly": false,
+    "sourceClass": "Speedy",
+    "imageUrl": "/images/sts2/badges/speedy.webp",
+    "title": null,
+    "description": null,
+    "rarities": {
+      "bronze": {
+        "title": "빠름",
+        "description": "[blue]50[/blue]분 이내에 도전을 승리하세요."
+      },
+      "silver": {
+        "title": "더 빠름",
+        "description": "[blue]40[/blue]분 이내에 도전을 승리하세요."
+      },
+      "gold": {
+        "title": "엄청 빠름",
+        "description": "[blue]30[/blue]분 이내에 도전을 승리하세요."
+      }
+    }
+  },
+  {
+    "id": "TABLET",
+    "slug": "tablet",
+    "active": true,
+    "requiresWin": true,
+    "multiplayerOnly": false,
+    "sourceClass": "TabletBadge",
+    "imageUrl": "/images/sts2/badges/tablet.webp",
+    "title": "진리의 석판",
+    "description": "최대 체력이 [blue]1[/blue]인 상태로 승리하세요.",
+    "rarities": {}
+  },
+  {
+    "id": "TEAM_PLAYER",
+    "slug": "team_player",
+    "active": true,
+    "requiresWin": false,
+    "multiplayerOnly": true,
+    "sourceClass": "TeamPlayer",
+    "imageUrl": "/images/sts2/badges/team_player.webp",
+    "title": "팀 플레이어",
+    "description": "덱에 멀티플레이 전용 카드가 [blue]3[/blue]장 이상 포함되어 있습니다.",
+    "rarities": {}
+  },
+  {
+    "id": "TINY_DECK",
+    "slug": "tiny_deck",
+    "active": true,
+    "requiresWin": true,
+    "multiplayerOnly": false,
+    "sourceClass": "TinyDeck",
+    "imageUrl": "/images/sts2/badges/tiny_deck.webp",
+    "title": null,
+    "description": null,
+    "rarities": {
+      "bronze": {
+        "title": "작은 덱",
+        "description": "카드 [blue]20[/blue]장 이하의 덱으로 승리했습니다."
+      },
+      "silver": {
+        "title": "아주 작은 덱",
+        "description": "카드 [blue]10[/blue]장 이하의 덱으로 승리했습니다."
+      },
+      "gold": {
+        "title": "초소형",
+        "description": "카드 [blue]5[/blue]장 이하의 덱으로 승리했습니다."
+      }
+    }
+  },
+  {
+    "id": "WHOMPER",
+    "slug": "whomper",
+    "active": false,
+    "requiresWin": false,
+    "multiplayerOnly": false,
+    "sourceClass": "Whomper",
+    "imageUrl": "/images/sts2/badges/whomper.webp",
+    "title": "일격필살",
+    "description": "한 번의 공격으로 [blue]100[/blue]이 넘는 피해를 줬습니다.",
+    "rarities": {}
+  }
+]
