@@ -17,6 +17,18 @@ export const dynamic = "force-static";
 
 const categories = [
   {
+    href: "/compendium/characters",
+    labelKey: "characters",
+    count: 5,
+    description: null,
+    images: [
+      "/images/sts2/characters/character_icon_ironclad.webp",
+      "/images/sts2/characters/character_icon_silent.webp",
+      "/images/sts2/characters/character_icon_regent.webp",
+      "/images/sts2/characters/character_icon_necrobinder.webp",
+    ],
+  },
+  {
     href: "/compendium/cards",
     labelKey: "cards",
     count: 612,
@@ -161,6 +173,7 @@ export default async function CodexIndexPage({
   const messages = getCodexServiceMessages(serviceLocale);
   const gameUi = await getCodexGameUiLabels(gameLocale);
   const gameCategoryLabels: Partial<Record<(typeof categories)[number]["labelKey"], string>> = {
+    characters: gameUi.charactersTitle,
     cards: gameUi.cardLibraryTitle,
     keywords: gameUi.nav.keywords,
     relics: gameUi.relicCollectionTitle,
@@ -241,6 +254,7 @@ export default async function CodexIndexPage({
 }
 
 const ENGLISH_LABELS: Record<(typeof categories)[number]["labelKey"], string> = {
+  characters: "Characters",
   cards: "Cards",
   keywords: "Keywords",
   relics: "Relics",
