@@ -35,6 +35,7 @@ import { pushCodexHistoryState } from "@/components/codex/use-hydration-safe-sea
 // --- Dropdown data ---
 
 const sts2Items = [
+  { href: "/compendium/characters", labelKey: "characters", icon: "/images/sts2/characters/character_icon_ironclad.webp" },
   { href: "/compendium/cards", labelKey: "cards", icon: "/images/sts2/nav/stats_cards.png" },
   { href: "/compendium/relics", labelKey: "relics", icon: "/images/sts2/relics/bing_bong.webp" },
   { href: "/compendium/potions", labelKey: "potions", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
@@ -63,6 +64,7 @@ const devItems = [
 
 const searchTypeLabels = {
   ko: {
+    character: "캐릭터",
     card: "카드",
     keyword: "키워드",
     relic: "유물",
@@ -80,6 +82,7 @@ const searchTypeLabels = {
     story: "슬서운 이야기",
   },
   en: {
+    character: "Character",
     card: "Card",
     keyword: "Keyword",
     relic: "Relic",
@@ -116,6 +119,7 @@ type PendingSearchResult = {
 const searchTypeOrder = [
   "patch",
   "story",
+  "character",
   "card",
   "keyword",
   "relic",
@@ -139,6 +143,7 @@ const searchTypeStyles: Record<keyof typeof searchTypeLabels.ko, {
 }> = {
   patch: { icon: "/images/sts2/nav/patch_notes_icon.png", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-400/30" },
   story: { icon: "/images/bone_tea.png", color: "text-cyan-200", bg: "bg-cyan-500/10", border: "border-cyan-400/30" },
+  character: { icon: "/images/sts2/characters/character_icon_ironclad.webp", color: "text-red-200", bg: "bg-red-500/10", border: "border-red-400/30" },
   card: { icon: "/images/sts2/nav/stats_cards.png", color: "text-rose-200", bg: "bg-rose-500/10", border: "border-rose-400/30" },
   keyword: { icon: "/images/sts2/ui/topbar/submenu_history_icon.png", color: "text-amber-200", bg: "bg-amber-500/10", border: "border-amber-400/30" },
   relic: { icon: "/images/sts2/relics/bing_bong.webp", color: "text-yellow-200", bg: "bg-yellow-500/10", border: "border-yellow-400/30" },
