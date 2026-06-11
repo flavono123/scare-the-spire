@@ -1,5 +1,6 @@
 import {
   getCodexCards,
+  getCodexCharacters,
   getCodexKeywords,
   getCodexRelics,
   getCodexPotions,
@@ -20,6 +21,7 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
   const gameLocale = opts?.gameLocale;
   const [
     codexCards,
+    codexCharacters,
     codexKeywords,
     codexRelics,
     codexPotions,
@@ -33,6 +35,7 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
     codexEpochs,
   ] = await Promise.all([
     getCodexCards({ includeDeprecated: true, gameLocale }),
+    getCodexCharacters({ gameLocale }),
     getCodexKeywords({ gameLocale }),
     getCodexRelics({ gameLocale }),
     getCodexPotions({ gameLocale }),
@@ -55,6 +58,15 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
       color: c.color,
       type: "card" as const,
       cardData: c,
+    })),
+    ...codexCharacters.map((c) => ({
+      id: c.id,
+      nameEn: c.nameEn,
+      nameKo: c.name,
+      imageUrl: c.iconUrl || c.imageUrl,
+      color: c.id.toLowerCase(),
+      type: "character" as const,
+      characterData: c,
     })),
     ...codexKeywords.map((k) => ({
       id: k.id,
