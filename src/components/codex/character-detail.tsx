@@ -126,6 +126,21 @@ function formatLabel(template: string, values: Record<string, string | number>) 
   return template.replace(/\{(\w+)\}/g, (match, key) => String(values[key] ?? match));
 }
 
+function normalizeGameResourceId(id: string): string {
+  return id
+    .trim()
+    .split(/[.:/]/)
+    .pop()!
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1_$2")
+    .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+    .replace(/[\s-]+/g, "_")
+    .toUpperCase();
+}
+
+function resolveCodexResource<T extends { id: string }>(resources: ReadonlyMap<string, T>, gameId: string) {
+  return resources.get(gameId) ?? resources.get(gameId.toUpperCase()) ?? resources.get(normalizeGameResourceId(gameId)) ?? null;
+}
+
 interface CharacterDetailProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
@@ -175,8 +190,9 @@ export function CharacterDetail({
     ? characters.find((item) => item.id === character.unlocksAfter)?.name ?? character.unlocksAfter
     : null;
   const startingCardTargets = character.startingDeckIds.map((cardId, index) => {
-    const card = cardById.get(cardId) ?? null;
-    const href = `/compendium/cards/${cardId.toLowerCase()}`;
+    const card = resolveCodexResource(cardById, cardId);
+    const hrefId = card?.id ?? normalizeGameResourceId(cardId);
+    const href = `/compendium/cards/${hrefId.toLowerCase()}`;
     return {
       id: `${cardId}:${index}`,
       href,
@@ -196,8 +212,9 @@ export function CharacterDetail({
     };
   });
   const startingRelicTargets = character.startingRelicIds.map((relicId, index) => {
-    const relic = relicById.get(relicId) ?? null;
-    const href = `/compendium/relics/${relicId.toLowerCase()}`;
+    const relic = resolveCodexResource(relicById, relicId);
+    const hrefId = relic?.id ?? normalizeGameResourceId(relicId);
+    const href = `/compendium/relics/${hrefId.toLowerCase()}`;
     return {
       id: `${relicId}:${index}`,
       href,
