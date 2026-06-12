@@ -228,11 +228,17 @@ const VFX_ALIASES = {
   VFX_SOVEREIGN_BLADE: "vfx_sovereign_blade",
 };
 
+const VFX_PLAYBACK_OVERRIDES = {
+  VFX_SOVEREIGN_BLADE: {
+    idleAnimation: "attack",
+    durationSeconds: 0.9,
+  },
+};
+
 const CHARACTER_ALIASES = {
   DEFECT: { folder: "defect", attackVfx: "VFX_LASER" },
   IRONCLAD: {
     folder: "ironclad",
-    attackVfx: "VFX_FLYING_SLASH",
     specialActions: {
       HEAVY_ATTACK: { animations: ["attack_heavy"] },
     },
@@ -393,6 +399,13 @@ function buildVfxAssets() {
       entry.animations = parsed.animations.map((animation) => animation.name);
       entry.idleAnimation = chooseIdleAnimation(entry.animations);
       entry.durationSeconds = parsed.animations[0]?.duration ?? entry.durationSeconds;
+      const playbackOverride = VFX_PLAYBACK_OVERRIDES[id];
+      if (playbackOverride?.idleAnimation && entry.animations.includes(playbackOverride.idleAnimation)) {
+        entry.idleAnimation = playbackOverride.idleAnimation;
+      }
+      if (playbackOverride?.durationSeconds != null) {
+        entry.durationSeconds = playbackOverride.durationSeconds;
+      }
     } catch (error) {
       entry.usable = false;
       entry.parseError = error.message;

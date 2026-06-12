@@ -120,26 +120,7 @@
         "attack"
       ]
     },
-    "moveEffects": {
-      "ATTACK": [
-        {
-          "id": "VFX_FLYING_SLASH",
-          "folder": "vfx_flying_slash",
-          "source": "animations/vfx/vfx_flying_slash/flying_slash",
-          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
-          "binaryUrl": "/spine/sts2/vfx/vfx_flying_slash/flying_slash.skel",
-          "textureUrls": [
-            "/spine/sts2/vfx/flying_slash.png"
-          ],
-          "animations": [
-            "chain"
-          ],
-          "idleAnimation": "chain",
-          "durationSeconds": 0.5,
-          "usable": true
-        }
-      ]
-    }
+    "moveEffects": {}
   },
   {
     "id": "NECROBINDER",
@@ -288,7 +269,7 @@
             "idle_loop",
             "idle_loop2"
           ],
-          "idleAnimation": "idle_loop",
+          "idleAnimation": "attack",
           "durationSeconds": 0.9,
           "usable": true
         }

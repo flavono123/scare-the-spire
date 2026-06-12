@@ -165,7 +165,7 @@
       "idle_loop",
       "idle_loop2"
     ],
-    "idleAnimation": "idle_loop",
+    "idleAnimation": "attack",
     "durationSeconds": 0.9,
     "usable": true
   }
