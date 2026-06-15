@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
   formatCodexCount,
   getCodexServiceMessages,
@@ -17,6 +16,7 @@ import {
   type CodexAncient,
   type CodexCard,
   type CodexCharacter,
+  type CodexPotion,
   type CodexRelic,
 } from "@/lib/codex-types";
 import {
@@ -36,11 +36,11 @@ import { SearchBar } from "./search-bar";
 
 interface CharacterListProps {
   serviceLocale: ServiceLocale;
-  gameUi: CodexGameUiLabels;
   title: string;
   characters: CodexCharacter[];
   cards?: CodexCard[];
   relics?: CodexRelic[];
+  potions?: CodexPotion[];
   ancients?: CodexAncient[];
   patches?: STS2Patch[];
   changes?: STS2Change[];
@@ -50,11 +50,11 @@ interface CharacterListProps {
 
 export function CharacterList({
   serviceLocale,
-  gameUi,
   title,
   characters,
   cards = [],
   relics = [],
+  potions = [],
   ancients = [],
   patches,
   changes,
@@ -192,12 +192,12 @@ export function CharacterList({
           <div className="mx-4 my-8 w-full max-w-6xl">
             <CharacterDetail
               serviceLocale={serviceLocale}
-              gameUi={gameUi}
               backToListTitle={title}
               character={selectedCharacter}
               characters={characters}
               cards={cards}
               relics={relics}
+              potions={potions}
               ancients={ancients}
               onClose={() => setSelectedCharacter(null)}
               entities={entities}

@@ -7,7 +7,6 @@ import {
   Hammer,
   HeartCrack,
   Skull,
-  Sparkles,
   Sword,
   WandSparkles,
   type LucideIcon,
@@ -16,23 +15,21 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
-import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
   CHARACTER_COLORS,
-  characterOutlineFilter,
   type CharacterAncientInteraction,
   type CodexAncient,
   type CodexCard,
   type CodexCharacter,
+  type CodexPotion,
   type CodexRelic,
 } from "@/lib/codex-types";
-import type { EntityInfo } from "@/components/patch-note-renderer";
+import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import { DescriptionText } from "./codex-description";
-import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { GameHoverTip } from "./hover-tip";
 import { MonsterAscensionStepper, useMonsterAscensionLevel } from "./monster-ascension";
 import { MonsterSpineStage } from "./monster-spine-stage";
@@ -51,6 +48,16 @@ const CHARACTER_STAGE_VIEWPORT_PADDING = {
 const CHARACTER_WEARY_TRAVELER_ASCENSION_LEVEL = 2;
 const CHARACTER_ASCENDED_HP_PREVIEW_RATIO = 0.8;
 const HEALTH_BAR_CLIP_PATH = "polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%)";
+const CHARACTER_QUOTE_EVENT_IDS = {
+  goldMonologue: "SUNKEN_TREASURY",
+  aromaPrinciple: "AROMA_OF_CHAOS",
+} as const;
+const CHARACTER_QUOTE_ICON_URLS = {
+  eventDeathPrevention: "/images/sts2/ui/topbar/top_bar_heart.png",
+  goldMonologue: "/images/sts2/ui/topbar/top_bar_gold.png",
+  aromaPrinciple: "/images/sts2/run-history/event.png",
+  banterAlive: "/images/sts2/map/markers/map_ping.png",
+} as const;
 
 const ACTIONS: {
   id: CharacterActionId;
@@ -67,16 +74,21 @@ const ACTIONS: {
   { id: "DIE", labelKo: "사망", labelEn: "Defeat", Icon: Skull },
 ];
 
-function InfoMetric({ label, value, color }: { label: string; value: string | number; color?: string }) {
-  return (
-    <div className="min-w-0">
-      <dt className="text-[10px] uppercase tracking-wider text-gray-500">{label}</dt>
-      <dd className="font-game-text text-sm font-bold text-gray-200" style={color ? { color } : undefined}>
-        {value}
-      </dd>
-    </div>
-  );
+interface CharacterReferenceTarget {
+  id: string;
+  href: string;
+  title: string;
+  entity?: EntityInfo;
 }
+
+type CharacterQuoteRow = {
+  id: string;
+  title: string;
+  description: string;
+  text?: string | null;
+  iconUrl: string;
+  eventEntity?: EntityInfo;
+};
 
 function InfoRailSection({
   title,
@@ -105,35 +117,28 @@ function getCharacterDetailLabels(serviceLocale: ServiceLocale) {
   return serviceLocale === "ko"
     ? {
         englishName: "영어명",
-        resourceKind: "분류",
-        stats: {
-          hp: "체력",
-          gold: "골드",
-          energy: "에너지",
-          orbs: "구체",
-        },
-        ascensionHeal: "A2+ 고대의 존재 회복 80%",
-        startingDeck: "시작 덱",
-        startingRelics: "시작 유물",
+        startingCards: "시작 카드",
+        dedicatedRelicsAndPotions: "전용 유물, 포션",
+        relics: "유물",
+        potions: "포션",
         unlocksAfter: "{name} 플레이 후 해금",
         gameText: "게임 문구",
-        gameTextIntro: "게임 원본은 캐릭터별 대사를 아래 네 상황 키로 제공합니다.",
         quoteContexts: {
           eventDeathPrevention: {
             title: "죽음 방지",
-            description: "이벤트 선택지가 체력 0을 막아줄 때 말풍선으로 출력됩니다.",
+            description: "이벤트 선택지가 체력 0을 만들 수 있을 때 멀티플레이어에서 선택을 막는 말풍선입니다.",
           },
           goldMonologue: {
-            title: "가라앉은 금고",
-            description: "Sunken Treasury에서 골드를 바라보는 캐릭터 독백입니다.",
+            title: "가라앉은 보물",
+            description: "두 번째 보상 상자를 열 때 이벤트 설명에 삽입됩니다.",
           },
           aromaPrinciple: {
             title: "혼돈의 향기",
-            description: "Aroma of Chaos에서 정신을 붙잡기 위해 반복하는 핵심 원칙입니다.",
+            description: "통제 유지 선택 후 이벤트 설명에 삽입됩니다.",
           },
           banterAlive: {
-            title: "생존 재촉",
-            description: "생존 중 턴 종료를 기다릴 때 나오는 캐릭터별 재촉 대사입니다.",
+            title: "(멀티플레이어)핑",
+            description: "멀티플레이어에서 턴 종료 핑 말풍선으로 출력됩니다.",
           },
         },
         ancientInteractions: "고대의 존재 상호작용",
@@ -143,35 +148,28 @@ function getCharacterDetailLabels(serviceLocale: ServiceLocale) {
       }
     : {
         englishName: "English name",
-        resourceKind: "Kind",
-        stats: {
-          hp: "HP",
-          gold: "Gold",
-          energy: "Energy",
-          orbs: "Orbs",
-        },
-        ascensionHeal: "A2+ Ancient heal 80%",
-        startingDeck: "Starting deck",
-        startingRelics: "Starting relics",
+        startingCards: "Starting Cards",
+        dedicatedRelicsAndPotions: "Character Relics & Potions",
+        relics: "Relics",
+        potions: "Potions",
         unlocksAfter: "Unlocked after playing {name}",
         gameText: "Game text",
-        gameTextIntro: "The game provides character lines through these four situation keys.",
         quoteContexts: {
           eventDeathPrevention: {
             title: "Death prevention",
-            description: "Shown as a thought bubble when an event option prevents lethal damage.",
+            description: "Shown in multiplayer when an event option would reduce the player to 0 HP.",
           },
           goldMonologue: {
             title: "Sunken Treasury",
-            description: "Character monologue when looking at gold in Sunken Treasury.",
+            description: "Inserted into the event text after opening the second reward chest.",
           },
           aromaPrinciple: {
             title: "Aroma of Chaos",
-            description: "Core principle repeated to stay in control during Aroma of Chaos.",
+            description: "Inserted into the event text after choosing Maintain Control.",
           },
           banterAlive: {
-            title: "Alive ping",
-            description: "Character-specific prompt while alive and waiting to end the turn.",
+            title: "(Multiplayer) Ping",
+            description: "Shown as the end-turn ping speech bubble in multiplayer.",
           },
         },
         ancientInteractions: "Ancient Interactions",
@@ -203,7 +201,7 @@ function resolveCodexResource<T extends { id: string }>(resources: ReadonlyMap<s
 function buildStartingCardTargets(
   cardIds: readonly string[],
   cardById: ReadonlyMap<string, CodexCard>,
-): CodexReferenceTarget[] {
+): CharacterReferenceTarget[] {
   const grouped = new Map<string, { cardId: string; card: CodexCard | null; hrefId: string; count: number }>();
 
   for (const cardId of cardIds) {
@@ -240,42 +238,56 @@ function buildStartingCardTargets(
   });
 }
 
-function buildStartingRelicTargets(
-  relicIds: readonly string[],
-  relicById: ReadonlyMap<string, CodexRelic>,
-): CodexReferenceTarget[] {
-  return relicIds.map((relicId, index) => {
-    const relic = resolveCodexResource(relicById, relicId);
-    const hrefId = relic?.id ?? normalizeGameResourceId(relicId);
-    const href = `/compendium/relics/${hrefId.toLowerCase()}`;
+function buildDedicatedRelicTargets(relics: readonly CodexRelic[], characterPool: string): CharacterReferenceTarget[] {
+  return relics.filter((relic) => relic.pool === characterPool).map((relic) => {
+    const href = `/compendium/relics/${relic.id.toLowerCase()}`;
     return {
-      id: `${relicId}:${index}`,
+      id: `relic:${relic.id}`,
       href,
-      title: relic?.name ?? relicId,
-      entity: relic
-        ? {
-            id: relic.id,
-            nameEn: relic.nameEn,
-            nameKo: relic.name,
-            imageUrl: relic.imageUrl,
-            href,
-            color: relic.pool,
-            type: "relic" as const,
-            relicData: relic,
-          }
-        : undefined,
+      title: relic.name,
+      entity: {
+        id: relic.id,
+        nameEn: relic.nameEn,
+        nameKo: relic.name,
+        imageUrl: relic.imageUrl,
+        href,
+        color: relic.pool,
+        type: "relic" as const,
+        relicData: relic,
+      },
+    };
+  });
+}
+
+function buildDedicatedPotionTargets(potions: readonly CodexPotion[], characterPool: string): CharacterReferenceTarget[] {
+  return potions.filter((potion) => potion.pool === characterPool).map((potion) => {
+    const href = `/compendium/potions/${potion.id.toLowerCase()}`;
+    return {
+      id: `potion:${potion.id}`,
+      href,
+      title: potion.name,
+      entity: {
+        id: potion.id,
+        nameEn: potion.nameEn,
+        nameKo: potion.name,
+        imageUrl: potion.imageUrl,
+        href,
+        color: potion.pool,
+        type: "potion" as const,
+        potionData: potion,
+      },
     };
   });
 }
 
 interface CharacterDetailProps {
   serviceLocale: ServiceLocale;
-  gameUi: CodexGameUiLabels;
   backToListTitle: string;
   character: CodexCharacter;
   characters?: CodexCharacter[];
   cards?: CodexCard[];
   relics?: CodexRelic[];
+  potions?: CodexPotion[];
   ancients?: CodexAncient[];
   onClose?: () => void;
   entities?: EntityInfo[];
@@ -286,12 +298,12 @@ interface CharacterDetailProps {
 
 export function CharacterDetail({
   serviceLocale,
-  gameUi,
   backToListTitle,
   character,
   characters = [],
   cards = [],
   relics = [],
+  potions = [],
   ancients = [],
   onClose,
   entities,
@@ -312,23 +324,29 @@ export function CharacterDetail({
     [character.name, character.nameEn],
   );
   const cardById = useMemo(() => new Map(cards.map((card) => [card.id, card])), [cards]);
-  const relicById = useMemo(() => new Map(relics.map((relic) => [relic.id, relic])), [relics]);
-  const ancientById = useMemo(() => new Map(ancients.map((ancient) => [ancient.id, ancient])), [ancients]);
   const unlockCharacter = character.unlocksAfter
     ? characters.find((item) => item.id === character.unlocksAfter)?.name ?? character.unlocksAfter
     : null;
+  const eventEntityById = useMemo(() => {
+    const eventEntities = new Map<string, EntityInfo>();
+    for (const entity of entities ?? []) {
+      if (entity.type === "event") eventEntities.set(entity.id, entity);
+    }
+    return eventEntities;
+  }, [entities]);
   const startingCardTargets = useMemo(
     () => buildStartingCardTargets(character.startingDeckIds, cardById),
     [cardById, character.startingDeckIds],
   );
-  const startingRelicTargets = useMemo(
-    () => buildStartingRelicTargets(character.startingRelicIds, relicById),
-    [character.startingRelicIds, relicById],
+  const dedicatedRelicTargets = useMemo(
+    () => buildDedicatedRelicTargets(relics, characterPool),
+    [characterPool, relics],
   );
-  const ancientTargets = [...new Set(character.ancientInteractions.map((interaction) => interaction.ancientId))]
-    .map((ancientId) => ancientById.get(ancientId))
-    .filter((ancient): ancient is CodexAncient => Boolean(ancient))
-    .map(ancientToReferenceTarget);
+  const dedicatedPotionTargets = useMemo(
+    () => buildDedicatedPotionTargets(potions, characterPool),
+    [characterPool, potions],
+  );
+  const hasCharacterInfo = Boolean(character.nameEn || unlockCharacter);
   const availableActions = ACTIONS.filter((action) => {
     if (!character.spineAsset) return action.id === "IDLE";
     return (
@@ -337,28 +355,35 @@ export function CharacterDetail({
       Boolean(character.spineAsset.moveEffects[action.id]?.some((effect) => effect.usable !== false))
     );
   });
-  const quoteRows = [
+  const candidateQuoteRows: CharacterQuoteRow[] = [
     {
       id: "eventDeathPrevention",
       text: character.quotes.eventDeathPrevention,
+      iconUrl: CHARACTER_QUOTE_ICON_URLS.eventDeathPrevention,
       ...detailLabels.quoteContexts.eventDeathPrevention,
     },
     {
       id: "goldMonologue",
       text: character.quotes.goldMonologue,
+      iconUrl: CHARACTER_QUOTE_ICON_URLS.goldMonologue,
+      eventEntity: eventEntityById.get(CHARACTER_QUOTE_EVENT_IDS.goldMonologue),
       ...detailLabels.quoteContexts.goldMonologue,
     },
     {
       id: "aromaPrinciple",
       text: character.quotes.aromaPrinciple,
+      iconUrl: CHARACTER_QUOTE_ICON_URLS.aromaPrinciple,
+      eventEntity: eventEntityById.get(CHARACTER_QUOTE_EVENT_IDS.aromaPrinciple),
       ...detailLabels.quoteContexts.aromaPrinciple,
     },
     {
       id: "banterAlive",
       text: character.quotes.banterAlive,
+      iconUrl: CHARACTER_QUOTE_ICON_URLS.banterAlive,
       ...detailLabels.quoteContexts.banterAlive,
     },
-  ].filter((row): row is { id: string; title: string; description: string; text: string } => Boolean(row.text));
+  ];
+  const quoteRows = candidateQuoteRows.filter((row): row is CharacterQuoteRow & { text: string } => Boolean(row.text));
 
   return (
     <div className="mx-auto w-full max-w-6xl p-4 sm:p-6">
@@ -416,7 +441,6 @@ export function CharacterDetail({
               maxHp={character.startingHp}
               ascensionLevel={ascensionLevel}
               serviceLocale={serviceLocale}
-              ascensionHealLabel={detailLabels.ascensionHeal}
             />
           </div>
 
@@ -468,72 +492,69 @@ export function CharacterDetail({
         </section>
 
         <aside className="flex min-w-0 flex-col gap-3">
-          <section className="min-w-0 rounded-lg border border-white/10 bg-black/20 px-4 py-3">
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <Image
-                  src={character.iconUrl}
-                  alt=""
-                  width={42}
-                  height={42}
-                  className="h-10 w-10 object-contain"
-                  style={{ filter: characterOutlineFilter(characterPool) }}
-                />
-                <Image
-                  src={character.restImageUrl}
-                  alt=""
-                  width={70}
-                  height={70}
-                  className="h-12 w-16 object-contain opacity-75"
-                />
-                <div className="min-w-0">
-                  <div className="text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.resourceKind}</div>
-                  <div className="font-game-title text-sm font-bold" style={{ color: characterColor }}>
-                    {serviceLocale === "ko" ? "캐릭터" : "Character"}
+          {hasCharacterInfo && (
+            <section className="min-w-0 rounded-lg border border-white/10 bg-black/20 px-4 py-3">
+              <div className="space-y-3">
+                {character.nameEn && (
+                  <div>
+                    <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
+                    <div className="font-game-text text-sm text-gray-300">{character.nameEn}</div>
                   </div>
-                </div>
-              </div>
-              <dl className="grid grid-cols-2 gap-x-5 gap-y-2">
-                <InfoMetric label={detailLabels.stats.hp} value={character.startingHp} color={characterColor} />
-                <InfoMetric label={detailLabels.stats.gold} value={character.startingGold} />
-                <InfoMetric label={detailLabels.stats.energy} value={character.maxEnergy} />
-                {character.orbSlots !== null && (
-                  <InfoMetric label={detailLabels.stats.orbs} value={character.orbSlots} color={characterColor} />
                 )}
-              </dl>
-              {character.nameEn !== character.name && (
-                <div>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
-                  <div className="font-game-text text-sm text-gray-300">{character.nameEn}</div>
-                </div>
-              )}
-              {unlockCharacter && (
-                <div className="font-game-text text-xs text-gray-500">
-                  {formatLabel(detailLabels.unlocksAfter, { name: unlockCharacter })}
-                </div>
-              )}
-            </div>
-          </section>
+                {unlockCharacter && (
+                  <div className="font-game-text text-xs text-gray-500">
+                    {formatLabel(detailLabels.unlocksAfter, { name: unlockCharacter })}
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
 
-          <EntityReferenceGroupLinks
-            gameUi={gameUi}
-            serviceLocale={serviceLocale}
-            groups={[
-              { kind: "card", targets: startingCardTargets },
-              { kind: "relic", targets: startingRelicTargets },
-              { kind: "ancient", targets: ancientTargets },
-            ]}
-          />
+          <CharacterReferenceRail title={detailLabels.startingCards}>
+            <CharacterReferenceLine
+              iconUrl="/images/sts2/nav/stats_cards.png"
+              serviceLocale={serviceLocale}
+              targets={startingCardTargets}
+            />
+          </CharacterReferenceRail>
+
+          {(dedicatedRelicTargets.length > 0 || dedicatedPotionTargets.length > 0) && (
+            <CharacterReferenceRail title={detailLabels.dedicatedRelicsAndPotions}>
+              <div className="space-y-2">
+                <CharacterReferenceLine
+                  iconUrl="/images/sts2/relics/bing_bong.webp"
+                  label={detailLabels.relics}
+                  serviceLocale={serviceLocale}
+                  targets={dedicatedRelicTargets}
+                />
+                <CharacterReferenceLine
+                  iconUrl="/images/sts2/potions/potion_shaped_rock.webp"
+                  label={detailLabels.potions}
+                  serviceLocale={serviceLocale}
+                  targets={dedicatedPotionTargets}
+                />
+              </div>
+            </CharacterReferenceRail>
+          )}
 
           {quoteRows.length > 0 && (
             <InfoRailSection title={detailLabels.gameText}>
               <div className="space-y-2 font-game-text text-xs leading-relaxed text-gray-400">
-                <p>{detailLabels.gameTextIntro}</p>
                 {quoteRows.map((quote) => (
                   <div key={`${character.id}-quote-${quote.id}`} className="rounded-md border border-white/10 bg-white/[0.03] px-3 py-2.5">
                     <div className="mb-1.5 flex items-center gap-1.5 font-game-title text-sm font-bold text-gray-200">
-                      <Sparkles className="h-3.5 w-3.5 text-yellow-300" aria-hidden />
-                      <span>{quote.title}</span>
+                      <Image
+                        src={quote.iconUrl}
+                        alt=""
+                        width={18}
+                        height={18}
+                        className="h-4 w-4 object-contain"
+                      />
+                      <QuoteContextTitle
+                        title={quote.title}
+                        eventEntity={quote.eventEntity}
+                        serviceLocale={serviceLocale}
+                      />
                     </div>
                     <p className="mb-2 text-[11px] leading-relaxed text-gray-500">{quote.description}</p>
                     <div className="text-gray-300">
@@ -592,12 +613,10 @@ function CharacterStageHealthBar({
   maxHp,
   ascensionLevel,
   serviceLocale,
-  ascensionHealLabel,
 }: {
   maxHp: number;
   ascensionLevel: number;
   serviceLocale: ServiceLocale;
-  ascensionHealLabel: string;
 }) {
   const ascended = ascensionLevel >= CHARACTER_WEARY_TRAVELER_ASCENSION_LEVEL;
   const currentHp = ascended ? Math.round(maxHp * CHARACTER_ASCENDED_HP_PREVIEW_RATIO) : maxHp;
@@ -632,12 +651,85 @@ function CharacterStageHealthBar({
           {hpLabel}
         </span>
       </span>
-      {ascended && (
-        <span className="rounded bg-black/60 px-2 py-0.5 font-game-text text-[10px] font-bold text-blue-200 shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
-          {ascensionHealLabel}
-        </span>
-      )}
     </div>
+  );
+}
+
+function CharacterReferenceRail({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="w-full rounded-lg border border-white/10 bg-white/[0.04] p-4">
+      <div className="mb-2 font-game-title text-sm font-bold text-gray-200">{title}</div>
+      {children}
+    </section>
+  );
+}
+
+function CharacterReferenceLine({
+  iconUrl,
+  label,
+  serviceLocale,
+  targets,
+}: {
+  iconUrl: string;
+  label?: string;
+  serviceLocale: ServiceLocale;
+  targets: readonly CharacterReferenceTarget[];
+}) {
+  if (targets.length === 0) return null;
+
+  return (
+    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 font-game-text text-sm font-bold text-gray-300">
+      <Image
+        src={iconUrl}
+        alt=""
+        width={22}
+        height={22}
+        className="h-5 w-5 object-contain"
+      />
+      {label ? <span className="text-gray-400">{label}:</span> : null}
+      {targets.map((target, index) => {
+        const href = localizeHref(target.href, serviceLocale);
+        return (
+          <span key={target.id} className="inline-flex items-center gap-1">
+            {index > 0 ? <span className="text-gray-500">,</span> : null}
+            {target.entity ? (
+              <EntityPreview
+                entity={{ ...target.entity, href }}
+                preferEntityLocaleLabel={false}
+              >
+                {target.title}
+              </EntityPreview>
+            ) : (
+              <Link href={href} className="font-game-title text-yellow-200 hover:text-yellow-100">
+                {target.title}
+              </Link>
+            )}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+function QuoteContextTitle({
+  title,
+  eventEntity,
+  serviceLocale,
+}: {
+  title: string;
+  eventEntity?: EntityInfo;
+  serviceLocale: ServiceLocale;
+}) {
+  if (!eventEntity) return <span>{title}</span>;
+  const href = localizeHref(`/compendium/events/${eventEntity.id.toLowerCase()}`, serviceLocale);
+  return (
+    <EntityPreview
+      entity={{ ...eventEntity, href }}
+      linkClassName="font-game-title text-gray-200 underline-offset-2 hover:text-blue-200 hover:underline"
+      preferEntityLocaleLabel={false}
+    >
+      {title}
+    </EntityPreview>
   );
 }
 
@@ -856,23 +948,4 @@ function CharacterAncientInteractions({
       </div>
     </div>
   );
-}
-
-function ancientToReferenceTarget(ancient: CodexAncient): CodexReferenceTarget {
-  const href = `/compendium/ancients/${ancient.id.toLowerCase()}`;
-  return {
-    href,
-    id: ancient.id,
-    title: ancient.name,
-    entity: {
-      id: ancient.id,
-      nameEn: ancient.nameEn,
-      nameKo: ancient.name,
-      imageUrl: ancient.imageUrl,
-      href,
-      color: ancient.act ?? "ancient",
-      type: "ancient",
-      ancientData: ancient,
-    },
-  };
 }

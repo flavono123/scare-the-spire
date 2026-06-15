@@ -5,6 +5,7 @@ import {
   getCodexAncients,
   getCodexCards,
   getCodexCharacters,
+  getCodexPotions,
   getCodexRelics,
 } from "@/lib/codex-data";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -61,10 +62,11 @@ export default async function CodexCharactersPage({
   const resolvedSearchParams = await searchParams;
   const serviceLocale = getServiceLocaleFromSearchRecord(resolvedSearchParams);
   const gameLocale = getGameLocaleFromSearchRecord(resolvedSearchParams);
-  const [characters, cards, relics, ancients, patches, changes, versionDiffs, entities, gameUi] = await Promise.all([
+  const [characters, cards, relics, potions, ancients, patches, changes, versionDiffs, entities, gameUi] = await Promise.all([
     getCodexCharacters({ gameLocale }),
     getCodexCards({ includeDeprecated: true, gameLocale }),
     getCodexRelics({ gameLocale }),
+    getCodexPotions({ gameLocale }),
     getCodexAncients({ gameLocale }),
     getSTS2Patches(),
     getSTS2Changes(),
@@ -77,11 +79,11 @@ export default async function CodexCharactersPage({
     <Suspense>
       <CharacterList
         serviceLocale={serviceLocale}
-        gameUi={gameUi}
         title={gameUi.charactersTitle}
         characters={characters}
         cards={cards}
         relics={relics}
+        potions={potions}
         ancients={ancients}
         patches={patches}
         changes={changes}

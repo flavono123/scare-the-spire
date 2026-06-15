@@ -335,12 +335,12 @@ export function CompendiumDirectDetailPage({
       detail = (
         <CharacterDetail
           serviceLocale={serviceLocale}
-          gameUi={gameUi}
           backToListTitle={gameUi.charactersTitle}
           character={character}
           characters={resources.characters}
           cards={resources.cards}
           relics={resources.relics}
+          potions={resources.potions}
           ancients={resources.ancients}
           entities={entities}
           patches={patches}
