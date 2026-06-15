@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Suspense } from "react";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { CloudflareWebAnalytics } from "@/components/cloudflare-web-analytics";
 import { LocaleDocumentAttributes } from "@/components/locale-document-attributes";
 import { SiteNavbar } from "@/components/site-navbar";
 import { getDefaultServiceMetadata } from "@/lib/service-metadata";
@@ -63,8 +62,7 @@ export default function RootLayout({
           <SiteNavbar />
         </Suspense>
         {children}
-        <Analytics />
-        <SpeedInsights />
+        <CloudflareWebAnalytics />
       </body>
     </html>
   );
