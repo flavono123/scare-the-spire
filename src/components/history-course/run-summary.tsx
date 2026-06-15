@@ -23,6 +23,7 @@ import {
 } from "@/lib/tinker-time";
 import type { TopbarState } from "@/components/history-course/topbar-state";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { visibleRunBadgesAtFloor } from "@/lib/run-badge-timing";
 import { cn } from "@/lib/utils";
 
 // ============================================================================
@@ -256,6 +257,9 @@ function SummaryPanel({
   const charLabel = characterLabel(character);
   const charIcon = characterIconSrc(character);
   const finalFloor = topbarState.currentFloor;
+  const visibleBadges = ended
+    ? badges
+    : visibleRunBadgesAtFloor(run, finalFloor, ended);
   const runTimeStr = formatRunTime(run.run_time ?? 0);
   const dateStr = formatRunDate(run.start_time);
 
@@ -308,7 +312,7 @@ function SummaryPanel({
           </div>
           <div className="text-zinc-500">v{run.build_id}</div>
           <RunBadgeStrip
-            badges={badges}
+            badges={visibleBadges}
             serviceLocale={serviceLocale}
             size="lg"
             tipPlacement="below-right"
