@@ -165,8 +165,9 @@
       "idle_loop",
       "idle_loop2"
     ],
-    "idleAnimation": "attack",
+    "idleAnimation": "idle_loop",
     "durationSeconds": 0.9,
-    "usable": true
+    "usable": false,
+    "parseError": "Animation bounds are invalid in the web Spine runtime."
   }
 ]
