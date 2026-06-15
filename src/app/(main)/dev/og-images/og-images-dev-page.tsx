@@ -5,8 +5,9 @@ import {
   pageOgStatusLabel,
   type PageOgStatusRow,
 } from "@/lib/page-og-status";
+import { getSiteOrigin } from "@/lib/site-origin";
 
-const productionOrigin = "https://scare-the-spire.vercel.app";
+const productionOrigin = getSiteOrigin();
 
 type OgMetadataPreview = {
   inputPath: string;

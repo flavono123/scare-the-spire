@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleDocumentAttributes } from "@/components/locale-document-attributes";
 import { SiteNavbar } from "@/components/site-navbar";
 import { getDefaultServiceMetadata } from "@/lib/service-metadata";
+import { getSiteOrigin } from "@/lib/site-origin";
 import "./globals.css";
 
 // STS2 game fonts extracted from PCK
@@ -31,7 +32,7 @@ const gcBatang = localFont({
 
 export const metadata: Metadata = {
   ...getDefaultServiceMetadata("ko"),
-  metadataBase: new URL("https://scare-the-spire.vercel.app"),
+  metadataBase: new URL(getSiteOrigin()),
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-icon.png",

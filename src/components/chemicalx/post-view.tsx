@@ -12,6 +12,7 @@ import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 import { PostRenderer, buildEntityMap } from "./post-renderer";
 import { blocksToPlainText } from "@/lib/chemical-utils";
+import { getSiteDisplayOrigin } from "@/lib/site-origin";
 
 interface PostViewProps {
   postId: string;
@@ -27,6 +28,7 @@ function getTextClass(len: number): string {
 export function ChemicalXPostView({ postId, entities }: PostViewProps) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].chemicalX;
+  const siteDisplayOrigin = getSiteDisplayOrigin();
   const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
   const [post, setPost] = useState<ChemicalPost | null>(null);
   const [loading, setLoading] = useState(supabaseEnabled);
@@ -150,7 +152,7 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
             </span>
           </div>
           <span className="text-[11px] text-gray-600/60 tracking-wide">
-            scare-the-spire.vercel.app/chemical-x/{postId.slice(0, 8)}
+            {siteDisplayOrigin}/chemical-x/{postId.slice(0, 8)}
           </span>
         </div>
       </article>

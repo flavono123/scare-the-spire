@@ -16,6 +16,7 @@ import {
 } from "@/lib/codex-data";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
+import { getSiteOrigin } from "@/lib/site-origin";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -24,7 +25,7 @@ const ROW_LIMIT = 50;
 const STATS_SAMPLE_LIMIT = 1000;
 const COMMENT_ANALYSIS_LIMIT = 2000;
 const ADMIN_DATA_ENV = "production";
-const PRODUCTION_SITE_ORIGIN = "https://scare-the-spire.vercel.app";
+const PRODUCTION_SITE_ORIGIN = getSiteOrigin();
 
 interface CommentRow {
   id: string;

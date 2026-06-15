@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { saveRun } from "@/lib/run-store";
+import { getSiteOrigin } from "@/lib/site-origin";
 import { cn } from "@/lib/utils";
 
 interface ProdRunSummary {
@@ -32,7 +33,7 @@ interface ProdRunDetailResponse {
   message?: string;
 }
 
-const PRODUCTION_SITE_ORIGIN = "https://scare-the-spire.vercel.app";
+const PRODUCTION_SITE_ORIGIN = getSiteOrigin();
 
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat("ko-KR", {
