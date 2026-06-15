@@ -18,9 +18,10 @@ import { StorageUnavailableNotice } from "@/components/storage-unavailable-notic
 
 interface Props {
   refreshKey?: number;
+  query?: string;
 }
 
-export function DonatedRunsSection({ refreshKey = 0 }: Props) {
+export function DonatedRunsSection({ refreshKey = 0, query = "" }: Props) {
   const copy = serviceMessages[useServiceLocale()].historyCourse.lists;
   const router = useRouter();
   const { userId } = useAuth();
@@ -66,6 +67,8 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
   }
   const storageUnavailable = unavailable;
   const loading = runs === null && !storageUnavailable;
+  const hasQuery = query.trim().length > 0;
+  const filteredRuns = filterSharedRuns(runs ?? [], query);
 
   return (
     <section>
@@ -76,7 +79,7 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
             <>
               {" "}
               <span className="font-medium text-zinc-500">
-                ({runs.length > 99 ? "99+" : runs.length})
+                ({filteredRuns.length > 99 ? "99+" : filteredRuns.length})
               </span>
             </>
           )}
@@ -91,9 +94,14 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">
           <li>
-            <RandomPickCard runs={runs ?? []} userId={userId} />
+            <RandomPickCard runs={filteredRuns} userId={userId} />
           </li>
-          {(runs ?? []).map((entry) => {
+          {hasQuery && filteredRuns.length === 0 ? (
+            <li className="rounded-xl bg-zinc-900/40 px-4 py-6 text-center text-xs text-zinc-500 ring-1 ring-zinc-800 sm:col-span-2">
+              {copy.noResults}
+            </li>
+          ) : null}
+          {filteredRuns.map((entry) => {
             const isOwn = !!userId && entry.donor_user_id === userId;
             return (
               <li key={entry.id}>
@@ -108,6 +116,9 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
                   runTimeSeconds={entry.run_time}
                   startTimeUnix={null}
                   badges={entry.badges ?? []}
+                  highlightCard={entry.highlight_card}
+                  highlightRelic={entry.highlight_relic}
+                  noteBlocks={entry.note_blocks}
                   variant="shared"
                   onPick={() => router.push(`/history-course/${entry.id}`)}
                   onDelete={isOwn ? () => onUndo(entry.id) : undefined}
@@ -118,5 +129,27 @@ export function DonatedRunsSection({ refreshKey = 0 }: Props) {
         </ul>
       )}
     </section>
+  );
+}
+
+function filterSharedRuns(
+  runs: DonatedRunSummary[],
+  query: string,
+): DonatedRunSummary[] {
+  const text = query.trim().toLowerCase();
+  if (!text) return runs;
+  return runs.filter((entry) =>
+    [
+      entry.id,
+      entry.seed,
+      entry.character,
+      entry.build,
+      entry.highlight_card?.nameKo,
+      entry.highlight_card?.nameEn,
+      entry.highlight_relic?.nameKo,
+      entry.highlight_relic?.nameEn,
+    ]
+      .filter(Boolean)
+      .some((value) => String(value).toLowerCase().includes(text)),
   );
 }

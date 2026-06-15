@@ -8,6 +8,7 @@ import {
   donateRun,
   listMyDonatedRunIds,
 } from "@/lib/run-donation";
+import type { PostBlock } from "@/lib/chemical-types";
 import { deleteRun, listOwnRuns } from "@/lib/run-store";
 import { isBuildSupported, MIN_SUPPORTED_BUILD } from "@/lib/sts2-build-version";
 import { parseReplayRun, type ReplayRun } from "@/lib/sts2-run-replay";
@@ -21,15 +22,17 @@ interface Props {
   // re-hydrates from IDB. Internal mutations (delete/share/unshare)
   // are reconciled in local state without waiting for the bump.
   refreshKey?: number;
+  query?: string;
 }
 
 interface Entry {
   runId: string;
   raw: string;
   run: ReplayRun;
+  noteBlocks?: PostBlock[] | null;
 }
 
-export function MyRunsList({ refreshKey = 0 }: Props) {
+export function MyRunsList({ refreshKey = 0, query = "" }: Props) {
   const copy = serviceMessages[useServiceLocale()].historyCourse.lists;
   const router = useRouter();
   const { userId, ensureUser } = useAuth();
@@ -45,7 +48,12 @@ export function MyRunsList({ refreshKey = 0 }: Props) {
       for (const rec of records) {
         try {
           const run = parseReplayRun(rec.raw);
-          out.push({ runId: rec.runId, raw: rec.raw, run });
+          out.push({
+            runId: rec.runId,
+            raw: rec.raw,
+            run,
+            noteBlocks: rec.noteBlocks ?? null,
+          });
         } catch {
           // skip malformed
         }
@@ -138,6 +146,7 @@ export function MyRunsList({ refreshKey = 0 }: Props) {
   );
 
   if (entries === null) return null;
+  const filteredEntries = filterLocalEntries(entries, query);
 
   return (
     <section>
@@ -145,7 +154,7 @@ export function MyRunsList({ refreshKey = 0 }: Props) {
         <h2 className="text-sm font-bold text-zinc-200">
           {copy.myRuns}{" "}
           <span className="font-medium text-zinc-500">
-            ({entries.length > 99 ? "99+" : entries.length})
+            ({filteredEntries.length > 99 ? "99+" : filteredEntries.length})
           </span>
         </h2>
         <p className="text-[11px] text-zinc-500">
@@ -156,14 +165,19 @@ export function MyRunsList({ refreshKey = 0 }: Props) {
         <p className="rounded-xl bg-zinc-900/40 px-4 py-6 text-center text-xs text-zinc-500 ring-1 ring-zinc-800">
           {copy.emptyMine}
         </p>
+      ) : filteredEntries.length === 0 ? (
+        <p className="rounded-xl bg-zinc-900/40 px-4 py-6 text-center text-xs text-zinc-500 ring-1 ring-zinc-800">
+          {copy.noResults}
+        </p>
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">
-          {entries.map((entry) => {
+          {filteredEntries.map((entry) => {
             const shared = donatedIds.has(entry.runId);
             return (
               <li key={entry.runId}>
                 <RunCard
                   {...runCardPropsFromReplay(entry.run, entry.runId)}
+                  noteBlocks={entry.noteBlocks}
                   variant="mine"
                   onPick={() => handlePick(entry)}
                   onDelete={() => handleDelete(entry)}
@@ -181,4 +195,24 @@ export function MyRunsList({ refreshKey = 0 }: Props) {
       )}
     </section>
   );
+}
+
+function filterLocalEntries(entries: Entry[], query: string): Entry[] {
+  const text = query.trim().toLowerCase();
+  if (!text) return entries;
+  return entries.filter((entry) => {
+    const props = runCardPropsFromReplay(entry.run, entry.runId);
+    return [
+      entry.runId,
+      props.seed,
+      props.character,
+      props.build,
+      props.highlightCard?.nameKo,
+      props.highlightCard?.nameEn,
+      props.highlightRelic?.nameKo,
+      props.highlightRelic?.nameEn,
+    ]
+      .filter(Boolean)
+      .some((value) => String(value).toLowerCase().includes(text));
+  });
 }

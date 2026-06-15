@@ -3,7 +3,7 @@ import { stripCodexMarkup } from "@/lib/codex-search";
 import { getStories, getSTS2Patches, getSTS2Stories } from "@/lib/data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 
-export type SearchItemType = EntityType | "patch" | "story";
+export type SearchItemType = EntityType | "patch" | "story" | "historyCourse";
 
 export type SearchIndexItem = {
   id: string;
@@ -343,5 +343,16 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     href: `/#${story.id}`,
   }));
 
-  return { items: [...patchItems, ...storyItems, ...items] };
+  const historyCourseItems: SearchIndexItem[] = [{
+    id: "history-course",
+    type: "historyCourse",
+    title: "역사 강의서",
+    titleEn: "History Course",
+    description: "런 리플레이 시드 공유 카드 유물 뱃지 보상 run history seed replay card relic badge",
+    descriptionEn: "run history seed sharing replay card relic badge reward",
+    imageUrl: "/images/sts2/relics/history_course.webp",
+    href: "/history-course",
+  }];
+
+  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems] };
 }

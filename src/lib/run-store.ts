@@ -5,6 +5,8 @@
 // IDB record is always primary so the page works offline and without
 // a sid round-trip.
 
+import type { PostBlock } from "@/lib/chemical-types";
+
 const DB_NAME = "scare-the-spire";
 const DB_VERSION = 1;
 const STORE_RUNS = "runs";
@@ -23,6 +25,7 @@ export interface StoredRun {
   // Optional for backward compat with entries written before the
   // origin field existed. Treat absent origin as "upload".
   origin?: StoredRunOrigin;
+  noteBlocks?: PostBlock[] | null;
 }
 
 function openDb(): Promise<IDBDatabase> {
@@ -48,11 +51,13 @@ export async function saveRun(input: {
   runId: string;
   raw: string;
   origin?: StoredRunOrigin;
+  noteBlocks?: PostBlock[] | null;
 }): Promise<StoredRun> {
   const record: StoredRun = {
     runId: input.runId,
     raw: input.raw,
     origin: input.origin ?? "upload",
+    noteBlocks: input.noteBlocks ?? null,
     savedAt: Date.now(),
   };
   const db = await openDb();

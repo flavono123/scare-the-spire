@@ -1,5 +1,7 @@
 import { supabase, supabaseEnabled, supabaseEnv } from "./supabase";
 import { withSupabaseTimeout } from "./supabase-timeout";
+import type { PostBlock } from "./chemical-types";
+import { buildRunHighlights, type RunHighlightResource } from "./run-highlights";
 import type { ReplayBadge, ReplayRun } from "./sts2-run-replay";
 
 export interface DonatedRun {
@@ -14,6 +16,9 @@ export interface DonatedRun {
   run_time: number | null;
   acts_count: number;
   badges: ReplayBadge[];
+  highlight_card: RunHighlightResource | null;
+  highlight_relic: RunHighlightResource | null;
+  note_blocks: PostBlock[] | null;
   created_at: string;
 }
 
@@ -31,6 +36,9 @@ export interface DonatedRunSummary {
   // time so the listing query doesn't have to parse the raw JSON.
   total_floors: number;
   badges: ReplayBadge[];
+  highlight_card: RunHighlightResource | null;
+  highlight_relic: RunHighlightResource | null;
+  note_blocks: PostBlock[] | null;
   donor_user_id: string | null;
   created_at: string;
 }
@@ -41,7 +49,8 @@ function totalFloorsFromRun(run: ReplayRun): number {
   return total;
 }
 
-function parsedMetaFromRun(run: ReplayRun) {
+function parsedMetaFromRun(run: ReplayRun, runId: string) {
+  const highlights = buildRunHighlights(run, runId);
   return {
     seed: run.seed,
     build: run.build_id,
@@ -53,6 +62,9 @@ function parsedMetaFromRun(run: ReplayRun) {
     acts_count: run.acts.length,
     total_floors: totalFloorsFromRun(run),
     badges: run.players[0]?.badges ?? [],
+    highlight_card: highlights.card,
+    highlight_relic: highlights.relic,
+    note_blocks: null,
   };
 }
 
@@ -65,7 +77,7 @@ export async function donateRun(input: {
   if (!supabaseEnabled) {
     return { ok: false, alreadyDonated: false, message: "Supabase 연결이 설정되지 않았습니다." };
   }
-  const meta = parsedMetaFromRun(input.run);
+  const meta = parsedMetaFromRun(input.run, input.runId);
   const { error } = await withSupabaseTimeout(
     "runs.insert",
     supabase.from("runs").insert({
@@ -119,7 +131,7 @@ export async function donateRunsBatch(input: {
     raw: r.raw,
     donor_user_id: input.donorUserId,
     env: supabaseEnv,
-    ...parsedMetaFromRun(r.run),
+    ...parsedMetaFromRun(r.run, r.runId),
   }));
   // onConflict spans (id, env) — the composite PK after migration-009.
   // Same content-addressable runId in a different env is a fresh row;
@@ -157,7 +169,7 @@ export async function getDonatedRun(runId: string): Promise<DonatedRun | null> {
     supabase
       .from("runs")
       .select(
-        "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, badges, created_at",
+        "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, badges, highlight_card, highlight_relic, note_blocks, created_at",
       )
       .eq("id", runId)
       .eq("env", supabaseEnv)
@@ -232,7 +244,7 @@ export async function listRecentDonatedRuns(): Promise<DonatedRunSummary[]> {
     supabase
       .from("runs")
       .select(
-        "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, badges, donor_user_id, created_at",
+        "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, badges, highlight_card, highlight_relic, note_blocks, donor_user_id, created_at",
       )
       .eq("env", supabaseEnv)
       .order("created_at", { ascending: false })

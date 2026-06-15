@@ -140,6 +140,8 @@ export const serviceMessages = {
         undoConfirm: "이 런의 익명 공유를 취소합니다. URL은 더 이상 다른 기기에서 열리지 않습니다.",
         loadingSharedRuns: "공유 런을 불러오는 중...",
         unavailableTitle: "데이터베이스가 응답하지 않습니다",
+        searchPlaceholder: "시드, 캐릭터, 카드, 유물 검색",
+        noResults: "검색 결과가 없습니다",
       },
       runCard: {
         unsupportedTitle: "재현 미지원 빌드 — 클릭하면 목록에서 제거",
@@ -154,6 +156,9 @@ export const serviceMessages = {
         randomPickTitle: "공유된 런 중에서 무작위로 한 판",
         random: "무작위",
         ascension: "승천 {count}",
+        highlightCard: "카드",
+        highlightRelic: "유물",
+        notePlaceholder: "한마디 준비 중",
       },
       donation: {
         undoConfirm: "이 런의 익명 공유를 취소합니다. URL은 더 이상 다른 기기에서 열리지 않습니다.",
@@ -659,6 +664,8 @@ export const serviceMessages = {
         undoConfirm: "This will unshare the run. The URL will no longer open on other devices.",
         loadingSharedRuns: "Loading shared runs...",
         unavailableTitle: "No responses from database",
+        searchPlaceholder: "Search seed, character, card, or relic",
+        noResults: "No matching runs",
       },
       runCard: {
         unsupportedTitle: "Unsupported build — click to remove it from the list",
@@ -673,6 +680,9 @@ export const serviceMessages = {
         randomPickTitle: "Pick a random shared run",
         random: "Random",
         ascension: "Ascension {count}",
+        highlightCard: "Card",
+        highlightRelic: "Relic",
+        notePlaceholder: "One-line note coming soon",
       },
       donation: {
         undoConfirm: "This will unshare the run. The URL will no longer open on other devices.",

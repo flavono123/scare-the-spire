@@ -4,6 +4,13 @@ import { Share2, Trash2, Undo2 } from "lucide-react";
 import Image from "next/image";
 import { useCallback } from "react";
 import { RunBadgeStrip } from "@/components/history-course/run-badge-strip";
+import type { PostBlock } from "@/lib/chemical-types";
+import { blocksToPlainText } from "@/lib/chemical-utils";
+import {
+  buildRunHighlights,
+  runHighlightName,
+  type RunHighlightResource,
+} from "@/lib/run-highlights";
 import { isBuildSupported } from "@/lib/sts2-build-version";
 import type { ReplayBadge, ReplayRun } from "@/lib/sts2-run-replay";
 import { cn } from "@/lib/utils";
@@ -58,6 +65,9 @@ export interface RunCardProps {
   runTimeSeconds: number | null;
   startTimeUnix?: number | null;
   badges?: ReplayBadge[];
+  highlightCard?: RunHighlightResource | null;
+  highlightRelic?: RunHighlightResource | null;
+  noteBlocks?: PostBlock[] | null;
   onPick: () => void;
   onDelete?: () => void;
   // Share toggle. When provided, renders a button next to the trash:
@@ -73,6 +83,7 @@ export function runCardPropsFromReplay(
   run: ReplayRun,
   runId: string,
 ): Omit<RunCardProps, "onPick" | "variant"> {
+  const highlights = buildRunHighlights(run, runId);
   return {
     runId,
     character: run.players[0]?.character ?? "",
@@ -84,6 +95,8 @@ export function runCardPropsFromReplay(
     runTimeSeconds: run.run_time ?? null,
     startTimeUnix: run.start_time ?? null,
     badges: run.players[0]?.badges ?? [],
+    highlightCard: highlights.card,
+    highlightRelic: highlights.relic,
   };
 }
 
@@ -95,6 +108,9 @@ export function RunCard({
   runTimeSeconds,
   startTimeUnix,
   badges = [],
+  highlightCard,
+  highlightRelic,
+  noteBlocks,
   onPick,
   onDelete,
   onShare,
@@ -109,6 +125,8 @@ export function RunCard({
   const showDate = variant === "mine" && startTimeUnix != null;
   const dateLabel = showDate ? formatDate(startTimeUnix) : null;
   const timeLabel = formatRunTime(runTimeSeconds);
+  const noteText = formatNoteText(noteBlocks);
+  const hasHighlights = Boolean(highlightCard || highlightRelic);
 
   const onTrashClick = useCallback(
     (e: React.MouseEvent) => {
@@ -167,12 +185,34 @@ export function RunCard({
               {dateLabel && timeLabel && <span className="text-zinc-700">·</span>}
               {timeLabel && <span>{timeLabel}</span>}
             </div>
+            {hasHighlights && (
+              <div className="mt-2 grid grid-cols-2 gap-1.5">
+                <HighlightPill
+                  label={copy.highlightCard}
+                  highlight={highlightCard}
+                  serviceLocale={serviceLocale}
+                />
+                <HighlightPill
+                  label={copy.highlightRelic}
+                  highlight={highlightRelic}
+                  serviceLocale={serviceLocale}
+                />
+              </div>
+            )}
+            <p
+              className={cn(
+                "mt-2 truncate text-[11px] leading-4",
+                noteText ? "text-zinc-300" : "text-zinc-500",
+              )}
+            >
+              {noteText || copy.notePlaceholder}
+            </p>
             <RunBadgeStrip
               badges={badges}
               serviceLocale={serviceLocale}
               size="sm"
               max={4}
-              className="mt-2"
+              className="mt-1.5"
             />
             {!supported && (
               <p className="mt-1 text-[10px] text-red-300/80">
@@ -237,6 +277,54 @@ export function RunCard({
         </div>
       )}
     </div>
+  );
+}
+
+function formatNoteText(noteBlocks: PostBlock[] | null | undefined): string {
+  if (!noteBlocks?.length) return "";
+  const text = blocksToPlainText(noteBlocks).replace(/\s+/g, " ").trim();
+  if (text.length <= 30) return text;
+  return `${text.slice(0, 30)}...`;
+}
+
+function HighlightPill({
+  label,
+  highlight,
+  serviceLocale,
+}: {
+  label: string;
+  highlight?: RunHighlightResource | null;
+  serviceLocale: ReturnType<typeof useServiceLocale>;
+}) {
+  if (!highlight) {
+    return (
+      <span className="min-w-0 rounded-md bg-black/20 px-1.5 py-1 text-[10px] text-zinc-600 ring-1 ring-white/5">
+        {label}
+      </span>
+    );
+  }
+  return (
+    <span className="flex min-w-0 items-center gap-1.5 rounded-md bg-black/25 px-1.5 py-1 ring-1 ring-amber-300/10">
+      <span className="relative h-5 w-5 shrink-0">
+        {highlight.imageUrl && (
+          <Image
+            src={highlight.imageUrl}
+            alt=""
+            fill
+            sizes="20px"
+            className="object-contain"
+          />
+        )}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-[9px] font-bold leading-3 text-amber-300/70">
+          {label}
+        </span>
+        <span className="block truncate text-[10px] font-semibold leading-3 text-zinc-200">
+          {runHighlightName(highlight, serviceLocale)}
+        </span>
+      </span>
+    </span>
   );
 }
 

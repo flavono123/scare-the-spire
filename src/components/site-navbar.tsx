@@ -80,6 +80,7 @@ const searchTypeLabels = {
     epoch: "연대기",
     patch: "패치 노트",
     story: "슬서운 이야기",
+    historyCourse: "역사 강의서",
   },
   en: {
     character: "Character",
@@ -98,6 +99,7 @@ const searchTypeLabels = {
     epoch: "Epoch",
     patch: "Patch Note",
     story: "Story",
+    historyCourse: "History Course",
   },
 } as const;
 
@@ -133,6 +135,7 @@ const searchTypeOrder = [
   "ancient",
   "epoch",
   "monsterMove",
+  "historyCourse",
 ] as const satisfies readonly (keyof typeof searchTypeLabels.ko)[];
 
 const searchTypeStyles: Record<keyof typeof searchTypeLabels.ko, {
@@ -157,6 +160,7 @@ const searchTypeStyles: Record<keyof typeof searchTypeLabels.ko, {
   encounter: { icon: "/images/sts2/nav/happy_cultist.png", color: "text-stone-200", bg: "bg-stone-500/10", border: "border-stone-400/30" },
   ancient: { icon: "/images/sts2/nav/stats_ancients.png", color: "text-blue-200", bg: "bg-blue-500/10", border: "border-blue-400/30" },
   epoch: { icon: "/images/sts2/relics/planisphere.webp", color: "text-teal-200", bg: "bg-teal-500/10", border: "border-teal-400/30" },
+  historyCourse: { icon: "/images/sts2/relics/history_course.webp", color: "text-violet-200", bg: "bg-violet-500/10", border: "border-violet-400/30" },
 };
 
 function globalSearchFieldScore(value: string, query: string, weight: number): number | null {
