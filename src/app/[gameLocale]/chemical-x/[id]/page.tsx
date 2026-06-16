@@ -14,6 +14,6 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function LocalizedChemicalXPostPage({ params }: Props) {
-  const { gameLocale, id } = await getLocalePairFromParams(params);
-  return renderChemicalXPostPage(id, gameLocale);
+  const { id } = await getLocalePairFromParams(params);
+  return renderChemicalXPostPage(id);
 }

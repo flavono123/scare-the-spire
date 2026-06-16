@@ -13,10 +13,11 @@ import { serviceMessages } from "@/messages/service";
 import { PostRenderer, buildEntityMap } from "./post-renderer";
 import { blocksToPlainText } from "@/lib/chemical-utils";
 import { getSiteDisplayOrigin } from "@/lib/site-origin";
+import { useCommentEntities } from "@/hooks/use-comment-entities";
 
 interface PostViewProps {
   postId: string;
-  entities: EntityInfo[];
+  entities?: EntityInfo[];
 }
 
 function getTextClass(len: number): string {
@@ -34,7 +35,8 @@ export function ChemicalXPostView({ postId, entities }: PostViewProps) {
   const [loading, setLoading] = useState(supabaseEnabled);
   const [copied, setCopied] = useState(false);
   const [showTooltips, setShowTooltips] = useState(true);
-  const entityMap = useMemo(() => buildEntityMap(entities), [entities]);
+  const { entities: resolvedEntities } = useCommentEntities(entities);
+  const entityMap = useMemo(() => buildEntityMap(resolvedEntities), [resolvedEntities]);
 
   useEffect(() => {
     if (!supabaseEnabled) return;

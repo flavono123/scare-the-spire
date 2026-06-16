@@ -14,6 +14,6 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function LocalizedHistoryCourseRunPage({ params }: Props) {
-  const { gameLocale, runId } = await getLocalePairFromParams(params);
-  return renderHistoryCourseRunPage(runId, gameLocale);
+  const { runId } = await getLocalePairFromParams(params);
+  return renderHistoryCourseRunPage(runId);
 }
