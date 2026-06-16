@@ -17,6 +17,11 @@ Run the smallest QA set that credibly covers the implementation scope. Treat `do
 4. Run focused static checks:
    - `pnpm lint` when TypeScript, React, CSS, scripts, config, or data transforms changed.
    - `pnpm build` when routing, app layout, server/client boundaries, data loading, generated data, metadata, or deployment behavior changed.
+   - Cloudflare/OpenNext checks when `wrangler.jsonc`, `open-next.config.ts`, Workers scripts, runtime env behavior, static asset headers, server/client data loading, or deployment target behavior changed:
+     - `pnpm cf:preview` for local Workers runtime smoke.
+     - `pnpm exec wrangler deploy --dry-run --outdir /tmp/sts-worker-dry-run` after an OpenNext build to confirm final Worker bundle size and bindings.
+     - If targeting the Workers Free plan, treat gzip upload size above 3 MiB as a blocking failure unless the user explicitly accepts a paid-plan target.
+     - Smoke representative static, SSG, and dynamic routes plus cache headers for `_next/static`, `/images`, `/spine`, `/generated`, `/api/search-index`, and `/comment-entities/sts2`.
    - Domain validators such as `pnpm codex:validate` or `pnpm codex:validate-references` when Codex entity data, versions, references, hover links, or rich patch content changed.
 5. Run feature-specific tests or Playwright specs that directly cover the changed area. Prefer existing scripts in `scripts/*.spec.ts` over inventing new checks.
 6. Delegate to the linked QA skills below when their trigger conditions match.
@@ -52,6 +57,7 @@ Load the sub-skill body only when needed, then follow its reporting rules in add
 - Frontend component changes: run `pnpm i18n:validate`, `pnpm lint`, targeted Playwright/spec checks, and mobile QA when layout or responsive behavior changed.
 - Animation/rendering changes: run `pnpm i18n:validate`, targeted static checks, `animation-playback-qa`, and mobile QA if the render surface must work on mobile.
 - Script, parser, or extraction changes: run `pnpm i18n:validate`, a representative script command or dry run, and validators for generated outputs affected by the script.
+- Cloudflare Workers migration/runtime changes: run `pnpm i18n:validate`, `pnpm lint`, `pnpm build`, `pnpm cf:preview`, Wrangler dry-run upload size check, and route/cache smoke against the local Workers preview URL. Include dev-tool parity smoke when `NEXT_PUBLIC_ENABLE_DEV_TOOLS=1` is expected for local preview, and verify that production deploy scripts do not enable dev tools by default.
 
 ## Adding Sub-QA Skills
 
