@@ -13,7 +13,6 @@ import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { getCodexMetadata } from "@/lib/codex-service";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
-import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
 import { BestiaryLibrary } from "@/components/codex/bestiary-library";
 
 export const dynamic = "force-static";
