@@ -10,7 +10,7 @@ import { ReactNode } from "react";
 // =============================================================================
 
 const SLICE = { top: 43, right: 91, bottom: 32, left: 55 };
-const SCALE = 0.45; // 코덱스 페이지에 맞게 축소
+const SCALE = 0.55; // 코덱스 페이지에 맞게 축소
 
 const SRC: Record<HoverTipVariant, string> = {
   default: "/images/sts2/ui/hover_tip.png",
@@ -21,7 +21,7 @@ const SRC: Record<HoverTipVariant, string> = {
 export type HoverTipVariant = "default" | "buff" | "debuff";
 
 interface HoverTipProps {
-  title: ReactNode;
+  title: string;
   variant?: HoverTipVariant;
   icon?: string | null;
   children?: ReactNode;
@@ -44,8 +44,7 @@ export function GameHoverTip({
 
   // 게임 hover_tip: title 22px, description 22px — 동일 사이즈.
   // 카드 본문 폰트(380px 카드 × 7cqi = 26.6px)와 비슷한 크기.
-  const fontSize = 15;
-  const hasBody = Boolean(children);
+  const fontSize = 16;
 
   return (
     <div
@@ -77,10 +76,7 @@ export function GameHoverTip({
             color: "#EFC851",
             textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
             textAlign: "left",
-            paddingBottom: hasBody ? 3 : 0,
-            marginBottom: hasBody ? 4 : 0,
-            borderBottom: hasBody ? "1px solid rgba(239, 200, 81, 0.25)" : undefined,
-            whiteSpace: "pre-line",
+            marginBottom: 4,
           }}
         >
           <span>{title}</span>
@@ -98,12 +94,11 @@ export function GameHoverTip({
             style={{
               fontFamily: "var(--font-game-text)",
               fontSize,
-              lineHeight: 1.28,
+              lineHeight: 1.4,
               color: "#FFF6E2",
               textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
               textAlign: "left",
               textIndent: 0,
-              whiteSpace: "pre-line",
             }}
           >
             {children}
