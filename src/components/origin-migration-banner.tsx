@@ -2,11 +2,20 @@
 
 import { ExternalLink } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 
 const enabledValues = new Set(["1", "true"]);
+
+function subscribeToOriginChange() {
+  return () => {};
+}
+
+function readCurrentOrigin(): string | null {
+  if (typeof window === "undefined") return null;
+  return window.location.origin;
+}
 
 function normalizeOrigin(value: string | undefined): string | null {
   if (!value) return null;
@@ -21,16 +30,16 @@ export function OriginMigrationBanner() {
   const serviceLocale = useServiceLocale();
   const pathname = usePathname() ?? "/";
   const searchParams = useSearchParams();
-  const [currentOrigin, setCurrentOrigin] = useState<string | null>(null);
+  const currentOrigin = useSyncExternalStore(
+    subscribeToOriginChange,
+    readCurrentOrigin,
+    () => null,
+  );
   const copy = serviceMessages[serviceLocale].migration.cloudflareNotice;
   const noticeEnabled = enabledValues.has(
     process.env.NEXT_PUBLIC_SHOW_CLOUDFLARE_MIGRATION_NOTICE?.toLowerCase() ?? "",
   );
   const targetOrigin = normalizeOrigin(process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_ORIGIN);
-
-  useEffect(() => {
-    setCurrentOrigin(window.location.origin);
-  }, []);
 
   const targetHref = useMemo(() => {
     if (!targetOrigin) return null;
