@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Suspense } from "react";
 import { CloudflareWebAnalytics } from "@/components/cloudflare-web-analytics";
 import { LocaleDocumentAttributes } from "@/components/locale-document-attributes";
+import { OriginMigrationBanner } from "@/components/origin-migration-banner";
 import { SiteNavbar } from "@/components/site-navbar";
 import { getDefaultServiceMetadata } from "@/lib/service-metadata";
 import { getSiteOrigin } from "@/lib/site-origin";
@@ -59,6 +60,7 @@ export default function RootLayout({
       >
         <Suspense>
           <LocaleDocumentAttributes />
+          <OriginMigrationBanner />
           <SiteNavbar />
         </Suspense>
         {children}
