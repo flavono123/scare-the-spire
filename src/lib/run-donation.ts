@@ -69,32 +69,14 @@ function parsedMetaFromRun(run: ReplayRun, runId: string) {
   };
 }
 
-type SupabaseMaybeError = {
-  code?: string;
-  message?: string;
-};
-
 type RunRow = Partial<DonatedRunSummary & DonatedRun> & {
   raw?: string | null;
 };
 
-const RICH_RUN_DETAIL_COLUMNS =
-  "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, badges, highlight_card, highlight_relic, note_blocks, created_at";
 const LEGACY_RUN_DETAIL_COLUMNS =
   "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, created_at";
-const RICH_RUN_SUMMARY_COLUMNS =
-  "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, badges, highlight_card, highlight_relic, note_blocks, donor_user_id, created_at";
 const LEGACY_RUN_SUMMARY_COLUMNS =
   "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at";
-
-function isMissingColumnError(error: unknown): boolean {
-  return Boolean(
-    error
-      && typeof error === "object"
-      && "code" in error
-      && (error as SupabaseMaybeError).code === "42703",
-  );
-}
 
 function runReadEnvs(): string[] {
   if (devToolsEnabled() && supabaseEnv !== "production") {
@@ -149,23 +131,8 @@ async function selectDonatedRunForEnv(
   runId: string,
   env: string,
 ): Promise<{ data: DonatedRun | null; error: unknown }> {
-  const rich = await withSupabaseTimeout(
-    "runs.select.detail",
-    supabase
-      .from("runs")
-      .select(RICH_RUN_DETAIL_COLUMNS)
-      .eq("id", runId)
-      .eq("env", env)
-      .maybeSingle(),
-  ).catch((error) => ({ data: null, error }));
-
-  if (!rich.error) {
-    return { data: rich.data ? normalizeRunRow(rich.data as RunRow, runId) : null, error: null };
-  }
-  if (!isMissingColumnError(rich.error)) return { data: null, error: rich.error };
-
   const legacy = await withSupabaseTimeout(
-    "runs.select.detail.legacy",
+    "runs.select.detail",
     supabase
       .from("runs")
       .select(LEGACY_RUN_DETAIL_COLUMNS)
@@ -183,26 +150,8 @@ async function selectDonatedRunForEnv(
 async function selectRecentDonatedRunsForEnv(
   env: string,
 ): Promise<{ data: DonatedRunSummary[] | null; error: unknown }> {
-  const rich = await withSupabaseTimeout(
-    "runs.select.recent",
-    supabase
-      .from("runs")
-      .select(RICH_RUN_SUMMARY_COLUMNS)
-      .eq("env", env)
-      .order("created_at", { ascending: false })
-      .limit(RECENT_DONATED_RUNS_LIMIT),
-  ).catch((error) => ({ data: null, error }));
-
-  if (!rich.error) {
-    return {
-      data: ((rich.data ?? []) as RunRow[]).map(normalizeRunSummaryRow),
-      error: null,
-    };
-  }
-  if (!isMissingColumnError(rich.error)) return { data: null, error: rich.error };
-
   const legacy = await withSupabaseTimeout(
-    "runs.select.recent.legacy",
+    "runs.select.recent",
     supabase
       .from("runs")
       .select(LEGACY_RUN_SUMMARY_COLUMNS)
@@ -316,7 +265,7 @@ export async function getDonatedRun(runId: string): Promise<DonatedRun | null> {
   for (const env of runReadEnvs()) {
     const { data, error } = await selectDonatedRunForEnv(runId, env);
     if (data) return data;
-    if (error && !isMissingColumnError(error)) return null;
+    if (error) return null;
   }
   return null;
 }
