@@ -2,6 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "scare-the-spire",
   "main": ".open-next/worker.js",
+  "minify": true,
   "compatibility_date": "2026-06-15",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
