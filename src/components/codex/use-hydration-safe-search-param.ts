@@ -47,7 +47,7 @@ export function notifyCodexUrlChange(): void {
 
 export function pushCodexHistoryState(url: string | URL): void {
   if (typeof window === "undefined") return;
-  History.prototype.pushState.call(window.history, null, "", url.toString());
+  window.history.pushState(null, "", url.toString());
   notifyCodexUrlChange();
 }
 
