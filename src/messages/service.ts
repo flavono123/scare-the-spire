@@ -9,14 +9,6 @@ export const serviceMessages = {
       chemicalX: "케미컬X",
       historyCourse: "역사 강의서",
     },
-    migration: {
-      cloudflareNotice: {
-        label: "새 주소 병행 운영 중",
-        description: "Cloudflare 주소에서도 같은 서비스를 확인할 수 있습니다.",
-        action: "Cloudflare에서 열기",
-        ariaLabel: "Cloudflare 주소에서 현재 페이지 열기",
-      },
-    },
     shaNews: {
       title: "섀 소식",
       eyebrow: "서비스 알림",
@@ -540,14 +532,6 @@ export const serviceMessages = {
       patches: "Patch Notes",
       chemicalX: "Chemical X",
       historyCourse: "History Course",
-    },
-    migration: {
-      cloudflareNotice: {
-        label: "New address running in parallel",
-        description: "The same service is available on the Cloudflare address.",
-        action: "Open on Cloudflare",
-        ariaLabel: "Open the current page on the Cloudflare address",
-      },
     },
     shaNews: {
       title: "Sha News",
