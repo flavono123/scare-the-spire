@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { PostBlock } from "@/lib/chemical-types";
+import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   getCodexAfflictions,
   getCodexAncients,
@@ -759,7 +760,7 @@ export const metadata = {
 };
 
 export default async function SupabaseAdminPage() {
-  if (process.env.NODE_ENV === "production") {
+  if (!devToolsEnabled()) {
     notFound();
   }
 

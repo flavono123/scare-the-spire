@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { devToolsEnabled } from "@/lib/dev-tools";
 
 export const metadata = {
   title: "Supabase Admin — DEV",
@@ -10,7 +11,7 @@ export const metadata = {
 };
 
 export default async function SupabaseAdminPage() {
-  if (process.env.NODE_ENV !== "development") {
+  if (!devToolsEnabled()) {
     notFound();
   }
 

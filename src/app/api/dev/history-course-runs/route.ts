@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { devToolsEnabled } from "@/lib/dev-tools";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
@@ -27,7 +28,7 @@ function notFoundResponse() {
 }
 
 export async function GET() {
-  if (process.env.NODE_ENV !== "development") {
+  if (!devToolsEnabled()) {
     return notFoundResponse();
   }
 

@@ -27,6 +27,7 @@ import {
 import { detectGameLocaleFromNavigator } from "@/lib/locale-detection";
 import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
+import { devToolsEnabled } from "@/lib/dev-tools";
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import { characterIconUrl } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
@@ -1032,7 +1033,7 @@ export function SiteNavbar() {
     : pathGameLocale;
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const messages = serviceMessages[serviceLocale];
-  const showDevMenu = process.env.NODE_ENV === "development";
+  const showDevMenu = devToolsEnabled();
   const profile = useStoredUserProfile();
   const toyBoxItems = localizePlainNavItems(
     [

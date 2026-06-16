@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { devToolsEnabled } from "@/lib/dev-tools";
 import { supabase, supabaseEnabled } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import { parseRunRouteSlug } from "@/lib/sts2-run-hash";
@@ -31,7 +32,7 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ runId: string }> },
 ) {
-  if (process.env.NODE_ENV !== "development") {
+  if (!devToolsEnabled()) {
     return notFoundResponse();
   }
 

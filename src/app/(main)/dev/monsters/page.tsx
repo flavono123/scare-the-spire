@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "@/components/ui/static-image";
+import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   BESTIARY_DEV_MONSTER_GROUPS,
   getForcedBestiaryAct,
@@ -19,7 +20,7 @@ export const metadata = {
 };
 
 export default async function DevMonstersPage() {
-  if (process.env.NODE_ENV !== "development") {
+  if (!devToolsEnabled()) {
     notFound();
   }
 

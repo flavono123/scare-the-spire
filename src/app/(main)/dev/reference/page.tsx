@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { devToolsEnabled } from "@/lib/dev-tools";
 
 export const metadata = {
   title: "게임 레퍼런스 — DEV",
@@ -10,7 +11,7 @@ export const metadata = {
 };
 
 export default async function ReferencePage() {
-  if (process.env.NODE_ENV !== "development") {
+  if (!devToolsEnabled()) {
     notFound();
   }
 

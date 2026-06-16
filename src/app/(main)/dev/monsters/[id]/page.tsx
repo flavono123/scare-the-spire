@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { devToolsEnabled } from "@/lib/dev-tools";
 import {
   BESTIARY_DEV_MONSTER_GROUPS,
   getBestiaryDevMonsterGroup,
@@ -26,7 +27,7 @@ export default async function DevMonsterDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  if (process.env.NODE_ENV !== "development") {
+  if (!devToolsEnabled()) {
     notFound();
   }
 

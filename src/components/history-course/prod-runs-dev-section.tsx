@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { saveRun } from "@/lib/run-store";
+import { devToolsEnabled } from "@/lib/dev-tools";
 import { getSiteOrigin } from "@/lib/site-origin";
 import { cn } from "@/lib/utils";
 
@@ -58,7 +59,7 @@ function normalized(value: string): string {
 }
 
 export function ProdRunsDevSection() {
-  const isDev = process.env.NODE_ENV === "development";
+  const isDev = devToolsEnabled();
   const router = useRouter();
   const [runs, setRuns] = useState<ProdRunSummary[] | null>(null);
   const [count, setCount] = useState<number | null>(null);

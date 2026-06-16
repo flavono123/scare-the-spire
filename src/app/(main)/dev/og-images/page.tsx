@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { devToolsEnabled } from "@/lib/dev-tools";
 
 export const metadata = {
   title: "OG 이미지 현황 — DEV",
@@ -18,7 +19,7 @@ export default async function OgImagesDevPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  if (process.env.NODE_ENV !== "development") {
+  if (!devToolsEnabled()) {
     notFound();
   }
 
