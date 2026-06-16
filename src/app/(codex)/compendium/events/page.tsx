@@ -1,16 +1,16 @@
 export const dynamic = "force-static";
 
 import BasePage, { generateMetadata as generateBaseMetadata } from "../../_codex/events/page";
-import { defaultRouteSearchParams, type RouteSearchParams } from "../static-locale";
+import { defaultRouteSearchParams } from "../static-locale";
 
-export function generateMetadata({ searchParams }: { searchParams: RouteSearchParams }) {
+export function generateMetadata() {
   return generateBaseMetadata({
-    searchParams: defaultRouteSearchParams(searchParams),
+    searchParams: defaultRouteSearchParams(),
   });
 }
 
-export default function CompendiumEventsPage({ searchParams }: { searchParams: RouteSearchParams }) {
+export default function CompendiumEventsPage() {
   return BasePage({
-    searchParams: defaultRouteSearchParams(searchParams),
+    searchParams: defaultRouteSearchParams(),
   });
 }
