@@ -1,8 +1,9 @@
 import { supabase, supabaseEnabled, supabaseEnv } from "./supabase";
 import { withSupabaseTimeout } from "./supabase-timeout";
 import type { PostBlock } from "./chemical-types";
+import { devToolsEnabled } from "./dev-tools";
 import { buildRunHighlights, type RunHighlightResource } from "./run-highlights";
-import type { ReplayBadge, ReplayRun } from "./sts2-run-replay";
+import { parseReplayRun, type ReplayBadge, type ReplayRun } from "./sts2-run-replay";
 
 export interface DonatedRun {
   id: string;
@@ -65,6 +66,154 @@ function parsedMetaFromRun(run: ReplayRun, runId: string) {
     highlight_card: highlights.card,
     highlight_relic: highlights.relic,
     note_blocks: null,
+  };
+}
+
+type SupabaseMaybeError = {
+  code?: string;
+  message?: string;
+};
+
+type RunRow = Partial<DonatedRunSummary & DonatedRun> & {
+  raw?: string | null;
+};
+
+const RICH_RUN_DETAIL_COLUMNS =
+  "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, badges, highlight_card, highlight_relic, note_blocks, created_at";
+const LEGACY_RUN_DETAIL_COLUMNS =
+  "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, created_at";
+const RICH_RUN_SUMMARY_COLUMNS =
+  "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, badges, highlight_card, highlight_relic, note_blocks, donor_user_id, created_at";
+const LEGACY_RUN_SUMMARY_COLUMNS =
+  "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, donor_user_id, created_at";
+
+function isMissingColumnError(error: unknown): boolean {
+  return Boolean(
+    error
+      && typeof error === "object"
+      && "code" in error
+      && (error as SupabaseMaybeError).code === "42703",
+  );
+}
+
+function runReadEnvs(): string[] {
+  if (devToolsEnabled() && supabaseEnv !== "production") {
+    return [supabaseEnv, "production"];
+  }
+  return [supabaseEnv];
+}
+
+function parseRunSafely(raw: string | null | undefined): ReplayRun | null {
+  if (!raw) return null;
+  try {
+    return parseReplayRun(raw);
+  } catch {
+    return null;
+  }
+}
+
+function normalizeRunRow(row: RunRow, runId: string): DonatedRun {
+  const parsedRun = parseRunSafely(row.raw);
+  const highlights = parsedRun ? buildRunHighlights(parsedRun, runId) : null;
+  return {
+    id: row.id ?? runId,
+    raw: row.raw ?? "",
+    seed: row.seed ?? parsedRun?.seed ?? "",
+    build: row.build ?? parsedRun?.build_id ?? "",
+    character: row.character ?? parsedRun?.players[0]?.character ?? "",
+    ascension: row.ascension ?? parsedRun?.ascension ?? 0,
+    win: row.win ?? parsedRun?.win ?? false,
+    start_time: row.start_time ?? parsedRun?.start_time ?? null,
+    run_time: row.run_time ?? parsedRun?.run_time ?? null,
+    acts_count: row.acts_count ?? parsedRun?.acts.length ?? 0,
+    badges: row.badges ?? parsedRun?.players[0]?.badges ?? [],
+    highlight_card: row.highlight_card ?? highlights?.card ?? null,
+    highlight_relic: row.highlight_relic ?? highlights?.relic ?? null,
+    note_blocks: row.note_blocks ?? null,
+    created_at: row.created_at ?? new Date(0).toISOString(),
+  };
+}
+
+function normalizeRunSummaryRow(row: RunRow): DonatedRunSummary {
+  const runId = row.id ?? "";
+  const normalized = normalizeRunRow(row, runId);
+  const parsedRun = parseRunSafely(row.raw);
+  return {
+    ...normalized,
+    total_floors: row.total_floors ?? (parsedRun ? totalFloorsFromRun(parsedRun) : 0),
+    donor_user_id: row.donor_user_id ?? null,
+  };
+}
+
+async function selectDonatedRunForEnv(
+  runId: string,
+  env: string,
+): Promise<{ data: DonatedRun | null; error: unknown }> {
+  const rich = await withSupabaseTimeout(
+    "runs.select.detail",
+    supabase
+      .from("runs")
+      .select(RICH_RUN_DETAIL_COLUMNS)
+      .eq("id", runId)
+      .eq("env", env)
+      .maybeSingle(),
+  ).catch((error) => ({ data: null, error }));
+
+  if (!rich.error) {
+    return { data: rich.data ? normalizeRunRow(rich.data as RunRow, runId) : null, error: null };
+  }
+  if (!isMissingColumnError(rich.error)) return { data: null, error: rich.error };
+
+  const legacy = await withSupabaseTimeout(
+    "runs.select.detail.legacy",
+    supabase
+      .from("runs")
+      .select(LEGACY_RUN_DETAIL_COLUMNS)
+      .eq("id", runId)
+      .eq("env", env)
+      .maybeSingle(),
+  ).catch((error) => ({ data: null, error }));
+
+  return {
+    data: legacy.data ? normalizeRunRow(legacy.data as RunRow, runId) : null,
+    error: legacy.error ?? null,
+  };
+}
+
+async function selectRecentDonatedRunsForEnv(
+  env: string,
+): Promise<{ data: DonatedRunSummary[] | null; error: unknown }> {
+  const rich = await withSupabaseTimeout(
+    "runs.select.recent",
+    supabase
+      .from("runs")
+      .select(RICH_RUN_SUMMARY_COLUMNS)
+      .eq("env", env)
+      .order("created_at", { ascending: false })
+      .limit(RECENT_DONATED_RUNS_LIMIT),
+  ).catch((error) => ({ data: null, error }));
+
+  if (!rich.error) {
+    return {
+      data: ((rich.data ?? []) as RunRow[]).map(normalizeRunSummaryRow),
+      error: null,
+    };
+  }
+  if (!isMissingColumnError(rich.error)) return { data: null, error: rich.error };
+
+  const legacy = await withSupabaseTimeout(
+    "runs.select.recent.legacy",
+    supabase
+      .from("runs")
+      .select(LEGACY_RUN_SUMMARY_COLUMNS)
+      .eq("env", env)
+      .order("created_at", { ascending: false })
+      .limit(RECENT_DONATED_RUNS_LIMIT),
+  ).catch((error) => ({ data: null, error }));
+
+  return {
+    data: legacy.data ? (legacy.data as RunRow[]).map(normalizeRunSummaryRow) : null,
+    error: legacy.error ?? null,
   };
 }
 
@@ -164,19 +313,12 @@ export async function donateRunsBatch(input: {
 
 export async function getDonatedRun(runId: string): Promise<DonatedRun | null> {
   if (!supabaseEnabled) return null;
-  const { data, error } = await withSupabaseTimeout(
-    "runs.select.detail",
-    supabase
-      .from("runs")
-      .select(
-        "id, raw, seed, build, character, ascension, win, start_time, run_time, acts_count, badges, highlight_card, highlight_relic, note_blocks, created_at",
-      )
-      .eq("id", runId)
-      .eq("env", supabaseEnv)
-      .maybeSingle(),
-  ).catch(() => ({ data: null, error: new Error("timeout") }));
-  if (error || !data) return null;
-  return data as DonatedRun;
+  for (const env of runReadEnvs()) {
+    const { data, error } = await selectDonatedRunForEnv(runId, env);
+    if (data) return data;
+    if (error && !isMissingColumnError(error)) return null;
+  }
+  return null;
 }
 
 export async function isRunDonated(runId: string): Promise<boolean> {
@@ -239,19 +381,14 @@ const RECENT_DONATED_RUNS_LIMIT = 100;
 
 export async function listRecentDonatedRuns(): Promise<DonatedRunSummary[]> {
   if (!supabaseEnabled) return [];
-  const { data, error } = await withSupabaseTimeout(
-    "runs.select.recent",
-    supabase
-      .from("runs")
-      .select(
-        "id, seed, build, character, ascension, win, start_time, run_time, acts_count, total_floors, badges, highlight_card, highlight_relic, note_blocks, donor_user_id, created_at",
-      )
-      .eq("env", supabaseEnv)
-      .order("created_at", { ascending: false })
-      .limit(RECENT_DONATED_RUNS_LIMIT),
-  );
-  if (error || !data) throw error ?? new Error("공유된 런을 불러오지 못했습니다.");
-  return data as DonatedRunSummary[];
+  let lastError: unknown = null;
+  for (const env of runReadEnvs()) {
+    const { data, error } = await selectRecentDonatedRunsForEnv(env);
+    if (data?.length) return data;
+    if (error) lastError = error;
+  }
+  if (lastError) throw lastError;
+  return [];
 }
 
 export async function deleteDonatedRun(runId: string): Promise<boolean> {
