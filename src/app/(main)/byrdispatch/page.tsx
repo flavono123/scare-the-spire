@@ -18,6 +18,7 @@ import {
   getShaNewsEntries,
   SHA_NEWS_ENABLED,
   SHA_NEWS_ICON,
+  SHA_NEWS_NOTICE_ICON,
   type ShaNewsBullet,
   type ShaNewsSection,
   type ShaNewsStatus,
@@ -40,8 +41,6 @@ const STATUS_TOKENS: Record<ShaNewsStatus, { src: string; label: string }> = {
   wip: { src: "/images/sts2/powers/hammer_time_power.webp", label: "개발 중" },
   bug: { src: "/images/sts2/cards/infection.webp", label: "버그 수정" },
 };
-
-const NOTICE_ICON = "/images/sts2/powers/signal_boost_power.webp";
 
 const SERVICE_ICONS: Record<string, { href: string; icon: string }> = {
   "섀 소식": { href: "/byrdispatch", icon: SHA_NEWS_ICON },
@@ -122,7 +121,7 @@ function ServiceHeading({
   const content = (
     <>
       <TokenIcon
-        src={section.isNotice ? NOTICE_ICON : service?.icon ?? SHA_NEWS_ICON}
+        src={section.isNotice ? SHA_NEWS_NOTICE_ICON : service?.icon ?? SHA_NEWS_ICON}
         label={section.title}
         className={isChild ? "h-5 w-5" : "h-6 w-6"}
       />
@@ -282,16 +281,7 @@ export async function renderShaNewsPage(
         </div>
       </header>
 
-      {entries.length === 0 ? (
-        <section className="mt-8 border-t border-border/70 pt-6">
-          <h2 className="text-lg font-bold text-zinc-100">
-            {messages.emptyTitle}
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-zinc-400">
-            {messages.emptyDescription}
-          </p>
-        </section>
-      ) : (
+      {entries.length > 0 && (
         <div className="mt-8 space-y-8">
           {entries.map((entry) => (
             <article

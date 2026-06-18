@@ -2,8 +2,8 @@ import fs from "fs/promises";
 import path from "path";
 
 export const SHA_NEWS_ICON = "/images/sts2/relics/byrdpip.webp";
-export const SHA_NEWS_VERSION = "2026-06-09";
-export const SHA_NEWS_ENABLED = process.env.NODE_ENV !== "production";
+export const SHA_NEWS_NOTICE_ICON = "/images/sts2/powers/signal_boost_power.webp";
+export const SHA_NEWS_ENABLED = true;
 
 const SHA_NEWS_DIR = path.join(process.cwd(), "data/sha-news");
 const SHA_NEWS_FILE_RE = /^\d{4}-\d{2}-\d{2}\.md$/;
@@ -30,6 +30,11 @@ export type ShaNewsEntry = {
   sections: ShaNewsSection[];
   noticeSections: ShaNewsSection[];
   regularSections: ShaNewsSection[];
+};
+
+export type ShaNewsNotice = {
+  date: string;
+  text: string;
 };
 
 function normalizeStatus(value: string): ShaNewsStatus {
@@ -123,4 +128,13 @@ export async function getShaNewsEntries(): Promise<ShaNewsEntry[]> {
 
 export async function getLatestShaNewsEntry(): Promise<ShaNewsEntry | null> {
   return (await getShaNewsEntries())[0] ?? null;
+}
+
+export async function getLatestShaNewsNotice(): Promise<ShaNewsNotice | null> {
+  for (const entry of await getShaNewsEntries()) {
+    const text = entry.noticeSections[0]?.bullets[0]?.text;
+    if (text) return { date: entry.date, text };
+  }
+
+  return null;
 }
