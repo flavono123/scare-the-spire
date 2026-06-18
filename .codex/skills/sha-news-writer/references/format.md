@@ -48,8 +48,8 @@ Rules:
 Codex writes plain markdown with status markers; the app renderer owns visual styling.
 
 - `## 공지`: pink text/border treatment and the Signal Boost power token before the heading.
-- Service headings: aqua underlined links to the service route, plus a leading token/icon asset.
-- Child service headings: same aqua link treatment, but use the child service icon from navigation/dropdown assets.
+- Service headings: aqua links to the service route without underline styling, plus a leading token/icon asset.
+- Child service headings: same aqua no-underline link treatment, but use the child service icon from navigation/dropdown assets.
 - Individual game resources inside bullets: patch-note rich reference behavior with gold styling, game hover tip, link, and active game locale label.
 - `(new)`: render a New Leaf relic token after the heading or bullet.
 - `(개발 중)`: render a Hammer Time power token after the heading or bullet.

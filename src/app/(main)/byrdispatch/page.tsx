@@ -149,14 +149,16 @@ function ServiceHeading({
 }) {
   const isChild = section.level === 3;
   const service = serviceIconFor(section.title);
-  const headingClassName = isChild
-    ? "mt-4 flex items-center gap-2 text-base font-black"
-    : "mt-6 flex items-center gap-2 text-lg font-black";
+  const headingClassName = section.isNotice
+    ? "mt-0 flex items-center gap-2 text-lg font-black"
+    : isChild
+      ? "mt-4 flex items-center gap-2 text-base font-black"
+      : "mt-6 flex items-center gap-2 text-lg font-black";
   const canLink = Boolean(service?.href) && !section.isNotice;
   const titleClassName = section.isNotice
     ? "text-pink-100"
     : canLink
-      ? "text-cyan-200 underline decoration-cyan-200/35 underline-offset-4 transition-colors hover:text-cyan-100 hover:decoration-cyan-100/80"
+      ? "text-cyan-200 transition-colors hover:text-cyan-100"
       : "text-cyan-200";
   const content = (
     <>
@@ -262,7 +264,7 @@ function ShaNewsSectionList({
           key={section.title}
           className={
             notice
-              ? "border border-pink-300/35 bg-pink-500/10 px-4 py-3 shadow-[0_0_22px_rgba(244,114,182,0.08)]"
+              ? "border border-pink-300/35 bg-pink-500/10 px-4 pb-3 pt-0 shadow-[0_0_22px_rgba(244,114,182,0.08)]"
               : section.level === 3
                 ? "pl-5"
                 : undefined
