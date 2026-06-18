@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: cloudflare-workers-production
+  group: cloudflare-production
   cancel-in-progress: false
 
 env:
@@ -22,7 +22,7 @@ jobs:
     name: Deploy migration branch to Cloudflare Workers
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    environment: cloudflare-workers-production
+    environment: cloudflare-production
     env:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
       NEXT_PUBLIC_SITE_ORIGIN: ${{ vars.NEXT_PUBLIC_SITE_ORIGIN }}
