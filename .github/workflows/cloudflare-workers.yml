@@ -64,6 +64,25 @@ jobs:
 
       - name: Smoke deployed Cloudflare Worker
         run: |
-          curl --fail --silent --show-error --retry 5 --retry-delay 3 "$NEXT_PUBLIC_SITE_ORIGIN/" >/dev/null
-          curl --fail --silent --show-error --retry 5 --retry-delay 3 "$NEXT_PUBLIC_SITE_ORIGIN/compendium/cards" >/dev/null
-          curl --fail --silent --show-error --retry 5 --retry-delay 3 --head "$NEXT_PUBLIC_SITE_ORIGIN/generated/search-index.json" >/dev/null
+          origin="${NEXT_PUBLIC_SITE_ORIGIN%/}"
+
+          smoke() {
+            path="$1"
+            url="${origin}${path}"
+
+            for attempt in $(seq 1 30); do
+              status="$(curl --silent --show-error --output /dev/null --write-out "%{http_code}" "$url" || true)"
+              echo "smoke ${url}: HTTP ${status} (attempt ${attempt}/30)"
+              case "$status" in
+                2*|3*) return 0 ;;
+              esac
+              sleep 5
+            done
+
+            echo "smoke failed for ${url}"
+            return 1
+          }
+
+          smoke "/"
+          smoke "/compendium/cards"
+          smoke "/generated/search-index.json"
