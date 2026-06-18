@@ -1176,6 +1176,24 @@ function renderPlainTextWithMonsterMoveLinks(
 
 const MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
 
+function renderExternalMarkdownLink(
+  key: string,
+  label: string,
+  href: string,
+): ReactNode {
+  return (
+    <a
+      key={key}
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="text-cyan-200 underline decoration-cyan-200/40 underline-offset-2 transition-colors hover:text-cyan-100"
+    >
+      {label}
+    </a>
+  );
+}
+
 function renderMarkdownLinks(
   text: string,
   lookup: EntityLookup,
@@ -1197,17 +1215,7 @@ function renderMarkdownLinks(
       ));
     }
 
-    parts.push(
-      <a
-        key={`${keyPrefix}-link-${matchIndex}`}
-        href={match[2]}
-        target="_blank"
-        rel="noreferrer"
-        className="text-cyan-200 underline decoration-cyan-200/40 underline-offset-2 transition-colors hover:text-cyan-100"
-      >
-        {match[1]}
-      </a>,
-    );
+    parts.push(renderExternalMarkdownLink(`${keyPrefix}-link-${matchIndex}`, match[1], match[2]));
     lastIndex = index + match[0].length;
     matchIndex += 1;
   }
@@ -1293,6 +1301,38 @@ function enrichLine(
   key: string,
   context: RenderContext,
 ): ReactNode[] {
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let matchIndex = 0;
+
+  for (const match of text.matchAll(MARKDOWN_LINK_RE)) {
+    const index = match.index ?? 0;
+    if (index > lastIndex) {
+      parts.push(...renderBBNodes(
+        parseBBCode(text.slice(lastIndex, index)),
+        lookup,
+        `${key}-text-${matchIndex}`,
+        context,
+      ));
+    }
+
+    parts.push(renderExternalMarkdownLink(`${key}-link-${matchIndex}`, match[1], match[2]));
+    lastIndex = index + match[0].length;
+    matchIndex += 1;
+  }
+
+  if (lastIndex > 0) {
+    if (lastIndex < text.length) {
+      parts.push(...renderBBNodes(
+        parseBBCode(text.slice(lastIndex)),
+        lookup,
+        `${key}-tail`,
+        context,
+      ));
+    }
+    return parts;
+  }
+
   const nodes = parseBBCode(text);
   return renderBBNodes(nodes, lookup, key, context);
 }
