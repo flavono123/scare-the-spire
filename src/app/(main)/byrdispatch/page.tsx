@@ -254,7 +254,7 @@ export async function renderShaNewsPage(
 
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const messages = serviceMessages[serviceLocale].shaNews;
-  const commonMessages = serviceMessages[serviceLocale].common;
+  const commonMessages = serviceMessages[serviceLocale].codex.common;
   const [entries, entities, gameUi] = await Promise.all([
     getShaNewsEntries(),
     loadAllEntities({ gameLocale }),
