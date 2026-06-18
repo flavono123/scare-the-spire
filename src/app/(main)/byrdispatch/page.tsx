@@ -102,8 +102,9 @@ function StatusTokenIcon({
   return (
     <span
       aria-label={label}
+      data-tooltip={label}
       tabIndex={0}
-      className="group relative inline-flex h-5 w-5 shrink-0 items-center justify-center align-[-0.25em] outline-none"
+      className="byrdispatch-status-token h-5 w-5"
     >
       <Image
         src={src}
@@ -112,12 +113,6 @@ function StatusTokenIcon({
         height={20}
         className="h-full w-full object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]"
       />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-1 -translate-x-1/2 whitespace-nowrap border border-zinc-700 bg-zinc-950/95 px-2 py-1 text-[11px] font-semibold leading-none text-zinc-100 opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
-      >
-        {label}
-      </span>
     </span>
   );
 }
