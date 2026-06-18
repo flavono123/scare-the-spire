@@ -52,9 +52,10 @@ export function GameHoverTip({
   const fontSize = 16;
 
   return (
-    <div
+    <span
       className={className}
       style={{
+        display: "block",
         borderStyle: "solid",
         borderColor: "transparent",
         borderTopWidth: `${bt}px`,
@@ -71,8 +72,8 @@ export function GameHoverTip({
         ...style,
       }}
     >
-      <div>
-        <div
+      <span style={{ display: "block" }}>
+        <span
           className="flex items-center gap-2"
           style={{
             fontFamily: "var(--font-game-text)",
@@ -93,9 +94,9 @@ export function GameHoverTip({
               style={{ width: fontSize + 2, height: fontSize + 2, objectFit: "contain" }}
             />
           )}
-        </div>
+        </span>
         {betaArtImageUrl && (
-          <div className="mb-2 overflow-hidden rounded bg-black/25">
+          <span className="mb-2 block overflow-hidden rounded bg-black/25">
             <Image
               src={betaArtImageUrl}
               alt={betaArtAlt ?? ""}
@@ -103,11 +104,12 @@ export function GameHoverTip({
               height={146}
               className="h-auto w-full object-cover"
             />
-          </div>
+          </span>
         )}
         {children && (
-          <div
+          <span
             style={{
+              display: "block",
               fontFamily: "var(--font-game-text)",
               fontSize,
               lineHeight: 1.4,
@@ -118,10 +120,10 @@ export function GameHoverTip({
             }}
           >
             {children}
-          </div>
+          </span>
         )}
-      </div>
-    </div>
+      </span>
+    </span>
   );
 }
 
