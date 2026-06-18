@@ -174,6 +174,7 @@ function ShaNewsBulletLine({
       <div
         className={[
           "min-w-0 flex-1 text-sm leading-6",
+          "[&_.patch-note-content]:inline [&_.patch-note-content>p]:inline",
           notice
             ? "[&_.patch-note-content>p]:mb-0 [&_.patch-note-content>p]:text-pink-100"
             : "[&_.patch-note-content>p]:mb-0 [&_.patch-note-content>p]:text-zinc-300",
