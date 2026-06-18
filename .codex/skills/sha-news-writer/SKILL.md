@@ -1,11 +1,11 @@
 ---
 name: sha-news-writer
-description: Format, create, or update 섀 소식 service-update posts and notices for scare-the-spire from rough user notes. Use when the user asks to write, draft, publish, add, or normalize 섀 소식 / Sha News entries, especially markdown files under data/sha-news/YYYY-MM-DD.md, service notices, service update changelogs, deployment-date updates, rich keyword references, or optional screenshots/videos for service announcements.
+description: Format, create, or update 섀 소식 / byrdispatch service-update posts and notices for scare-the-spire from rough user notes. Use when the user asks to write, draft, publish, add, or normalize 섀 소식 / byrdispatch entries, especially markdown files under data/sha-news/YYYY-MM-DD.md, service notices, service update changelogs, deployment-date updates, service-link sections, rich game-resource references, token status badges, or optional screenshots/videos for service announcements.
 ---
 
 # sha-news-writer
 
-Turn rough service-update notes into canonical 섀 소식 markdown. The user owns the content; Codex owns formatting, validation, exact links/tooltips, and repository integration.
+Turn rough service-update notes into canonical 섀 소식 / byrdispatch markdown. The user owns the content; Codex owns formatting, validation, exact links/tooltips, token badges, and repository integration.
 
 ## Workflow
 
@@ -18,16 +18,19 @@ Turn rough service-update notes into canonical 섀 소식 markdown. The user own
    - Create `data/sha-news/` if absent.
    - Use one `# YYYY-MM-DD` heading.
    - Put `## 공지` first when the entry includes a site-wide notice.
-   - Use `## 서비스명` headings.
+   - Use `## 서비스명` headings and `### 하위 서비스명` headings.
    - Use one-line bullets only.
+   - Route/service English naming is `byrdispatch`; the canonical public route is `/byrdispatch`.
 5. Normalize user notes without inventing product facts.
    - Keep updates concise and factual.
    - Move notes into the closest allowed service section.
    - Keep notice bullets operational and time-bounded; do not invent exact dates, URLs, or migration guarantees.
+   - Preserve status markers such as `(new)`, `(개발 중)`, and `(버그)` when the user provides them; the renderer turns them into token badges.
    - Ask only if the target date or intended meaning is genuinely ambiguous.
 6. Add rich references only when verifiable in this repo.
    - Use patch-note BBCode syntax such as `[gold:card]광기[/gold]` or `[gold:relic]역사 강의서[/gold]`.
    - Verify game resources against extracted Codex data or existing comment/search entity data before adding a typed tag.
+   - Use typed tags for individual game resources, not service headings; game resource labels must follow the active game locale at render time.
    - If unsure, keep plain text.
 7. Handle media conservatively.
    - Default to no screenshots or video.

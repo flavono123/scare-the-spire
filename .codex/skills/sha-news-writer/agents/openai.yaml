@@ -1,4 +1,4 @@
 interface:
-  display_name: "Sha News Writer"
-  short_description: "Draft and publish 섀 소식 service update posts."
-  default_prompt: "Use $sha-news-writer to create a 섀 소식 entry from these update notes."
+  display_name: "byrdispatch Writer"
+  short_description: "Draft and publish 섀 소식 / byrdispatch updates."
+  default_prompt: "Use $sha-news-writer to create a byrdispatch entry from these update notes."
