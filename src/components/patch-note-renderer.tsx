@@ -153,6 +153,8 @@ function GameResourcePreview({
   imageHeight = 64,
   imageStyle,
   hoverTipStyle = { minWidth: 240, maxWidth: 320 },
+  betaArtImageUrl,
+  betaArtAlt,
   meta,
   children,
 }: {
@@ -165,6 +167,8 @@ function GameResourcePreview({
   imageHeight?: number;
   imageStyle?: CSSProperties;
   hoverTipStyle?: CSSProperties;
+  betaArtImageUrl?: string | null;
+  betaArtAlt?: string;
   meta?: ReactNode;
   children?: ReactNode;
 }) {
@@ -182,7 +186,12 @@ function GameResourcePreview({
           />
         </span>
       )}
-      <GameHoverTip title={title} style={hoverTipStyle}>
+      <GameHoverTip
+        title={title}
+        style={hoverTipStyle}
+        betaArtImageUrl={betaArtImageUrl}
+        betaArtAlt={betaArtAlt ?? imageAlt}
+      >
         {meta && (
           <span className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[12px]">
             {meta}
@@ -632,7 +641,9 @@ export function EntityPreview({
             imageClassName="h-full w-full rounded-lg object-cover"
             imageWidth={160}
             imageHeight={112}
-            hoverTipStyle={{ width: "max-content", maxWidth: 320, whiteSpace: "nowrap" }}
+            hoverTipStyle={{ width: "max-content", maxWidth: 360, whiteSpace: "nowrap" }}
+            betaArtImageUrl={entity.epochData.betaImageUrl}
+            betaArtAlt={`${entity.nameKo} 베타 아트`}
             meta={entity.epochData.eraName ? (
               <span className="text-blue-300">
                 {entity.epochData.eraYear ? `${entity.epochData.eraName} ${entity.epochData.eraYear}` : entity.epochData.eraName}

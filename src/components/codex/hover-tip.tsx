@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import Image from "@/components/ui/static-image";
 
 // =============================================================================
 // 게임 hover_tip 9-slice (scenes/ui/hover_tip.tscn)
@@ -24,6 +25,8 @@ interface HoverTipProps {
   title: string;
   variant?: HoverTipVariant;
   icon?: string | null;
+  betaArtImageUrl?: string | null;
+  betaArtAlt?: string;
   children?: ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -33,6 +36,8 @@ export function GameHoverTip({
   title,
   variant = "default",
   icon,
+  betaArtImageUrl,
+  betaArtAlt,
   children,
   className = "",
   style,
@@ -89,6 +94,17 @@ export function GameHoverTip({
             />
           )}
         </div>
+        {betaArtImageUrl && (
+          <div className="mb-2 overflow-hidden rounded bg-black/25">
+            <Image
+              src={betaArtImageUrl}
+              alt={betaArtAlt ?? ""}
+              width={260}
+              height={146}
+              className="h-auto w-full object-cover"
+            />
+          </div>
+        )}
         {children && (
           <div
             style={{
