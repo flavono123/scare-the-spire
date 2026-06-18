@@ -60,6 +60,29 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
+      - name: Compute Cloudflare build id
+        run: |
+          build_hash="$(
+            git ls-files -z -- \
+              package.json \
+              pnpm-lock.yaml \
+              next.config.ts \
+              open-next.config.ts \
+              wrangler.jsonc \
+              tsconfig.json \
+              postcss.config.mjs \
+              src \
+              data \
+              public \
+              scripts \
+              | xargs -0 shasum -a 256 \
+              | shasum -a 256 \
+              | cut -c1-20
+          )"
+
+          echo "NEXT_BUILD_ID=cf-${build_hash}" >> "$GITHUB_ENV"
+          echo "Cloudflare build id: cf-${build_hash}"
+
       - run: pnpm install --frozen-lockfile
 
       - run: pnpm i18n:validate

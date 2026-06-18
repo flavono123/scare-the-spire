@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
+const configuredBuildId = process.env.NEXT_BUILD_ID?.trim();
+
 const nextConfig: NextConfig = {
+  ...(configuredBuildId
+    ? {
+        generateBuildId: async () => configuredBuildId,
+      }
+    : {}),
   images: {
     // Keep Vercel image transformations at zero on the free tier.
     unoptimized: true,
