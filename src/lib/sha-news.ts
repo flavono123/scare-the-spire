@@ -8,11 +8,21 @@ export const SHA_NEWS_ENABLED = process.env.NODE_ENV !== "production";
 const SHA_NEWS_DIR = path.join(process.cwd(), "data/sha-news");
 const SHA_NEWS_FILE_RE = /^\d{4}-\d{2}-\d{2}\.md$/;
 const SHA_NEWS_NOTICE_SECTION = "공지";
+const SHA_NEWS_STATUS_RE = /\s*\((new|개발 중|버그)\)\s*$/;
+
+export type ShaNewsStatus = "new" | "wip" | "bug";
+
+export type ShaNewsBullet = {
+  text: string;
+  statuses: ShaNewsStatus[];
+};
 
 export type ShaNewsSection = {
   title: string;
-  bullets: string[];
+  level: 2 | 3;
+  bullets: ShaNewsBullet[];
   isNotice: boolean;
+  statuses: ShaNewsStatus[];
 };
 
 export type ShaNewsEntry = {
@@ -21,6 +31,29 @@ export type ShaNewsEntry = {
   noticeSections: ShaNewsSection[];
   regularSections: ShaNewsSection[];
 };
+
+function normalizeStatus(value: string): ShaNewsStatus {
+  if (value === "new") return "new";
+  if (value === "버그") return "bug";
+  return "wip";
+}
+
+function extractStatusMarkers(source: string): {
+  text: string;
+  statuses: ShaNewsStatus[];
+} {
+  const statuses: ShaNewsStatus[] = [];
+  let text = source.trim();
+  let match = text.match(SHA_NEWS_STATUS_RE);
+
+  while (match) {
+    statuses.unshift(normalizeStatus(match[1]));
+    text = text.slice(0, match.index).trimEnd();
+    match = text.match(SHA_NEWS_STATUS_RE);
+  }
+
+  return { text, statuses };
+}
 
 function parseShaNewsMarkdown(markdown: string, fallbackDate: string): ShaNewsEntry {
   const lines = markdown.split(/\r?\n/);
@@ -33,19 +66,23 @@ function parseShaNewsMarkdown(markdown: string, fallbackDate: string): ShaNewsEn
     const line = rawLine.trim();
     if (!line || line.startsWith("# ")) continue;
 
-    if (line.startsWith("## ")) {
-      const title = line.slice(3).trim();
+    if (line.startsWith("## ") || line.startsWith("### ")) {
+      const level: 2 | 3 = line.startsWith("### ") ? 3 : 2;
+      const rawTitle = line.slice(level + 1).trim();
+      const { text: title, statuses } = extractStatusMarkers(rawTitle);
       currentSection = {
         title,
+        level,
         bullets: [],
         isNotice: title === SHA_NEWS_NOTICE_SECTION,
+        statuses,
       };
       sections.push(currentSection);
       continue;
     }
 
     if (currentSection && line.startsWith("- ")) {
-      currentSection.bullets.push(line.slice(2).trim());
+      currentSection.bullets.push(extractStatusMarkers(line.slice(2)));
     }
   }
 
