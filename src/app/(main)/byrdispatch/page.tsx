@@ -102,9 +102,8 @@ function StatusTokenIcon({
   return (
     <span
       aria-label={label}
-      data-tooltip={label}
       tabIndex={0}
-      className="relative inline-flex h-5 w-5 shrink-0 items-center justify-center align-[-0.25em] outline-none after:pointer-events-none after:absolute after:bottom-full after:left-1/2 after:z-30 after:mb-1 after:-translate-x-1/2 after:whitespace-nowrap after:border after:border-zinc-700 after:bg-zinc-950/95 after:px-2 after:py-1 after:text-[11px] after:font-semibold after:leading-none after:text-zinc-100 after:opacity-0 after:shadow-lg after:transition-opacity after:content-[attr(data-tooltip)] hover:after:opacity-100 focus-visible:after:opacity-100"
+      className="group relative inline-flex h-5 w-5 shrink-0 items-center justify-center align-[-0.25em] outline-none"
     >
       <Image
         src={src}
@@ -113,6 +112,12 @@ function StatusTokenIcon({
         height={20}
         className="h-full w-full object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]"
       />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-1 -translate-x-1/2 whitespace-nowrap border border-zinc-700 bg-zinc-950/95 px-2 py-1 text-[11px] font-semibold leading-none text-zinc-100 opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+      >
+        {label}
+      </span>
     </span>
   );
 }
