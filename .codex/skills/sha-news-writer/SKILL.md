@@ -1,6 +1,6 @@
 ---
 name: sha-news-writer
-description: Format, create, or update 섀 소식 service-update posts for scare-the-spire from rough user notes. Use when the user asks to write, draft, publish, add, or normalize 섀 소식 / Sha News entries, especially markdown files under data/sha-news/YYYY-MM-DD.md, service update changelogs, deployment-date updates, rich keyword references, or optional screenshots/videos for service announcements.
+description: Format, create, or update 섀 소식 service-update posts and notices for scare-the-spire from rough user notes. Use when the user asks to write, draft, publish, add, or normalize 섀 소식 / Sha News entries, especially markdown files under data/sha-news/YYYY-MM-DD.md, service notices, service update changelogs, deployment-date updates, rich keyword references, or optional screenshots/videos for service announcements.
 ---
 
 # sha-news-writer
@@ -17,11 +17,13 @@ Turn rough service-update notes into canonical 섀 소식 markdown. The user own
 4. Create or update `data/sha-news/YYYY-MM-DD.md`.
    - Create `data/sha-news/` if absent.
    - Use one `# YYYY-MM-DD` heading.
+   - Put `## 공지` first when the entry includes a site-wide notice.
    - Use `## 서비스명` headings.
    - Use one-line bullets only.
 5. Normalize user notes without inventing product facts.
    - Keep updates concise and factual.
    - Move notes into the closest allowed service section.
+   - Keep notice bullets operational and time-bounded; do not invent exact dates, URLs, or migration guarantees.
    - Ask only if the target date or intended meaning is genuinely ambiguous.
 6. Add rich references only when verifiable in this repo.
    - Use patch-note BBCode syntax such as `[gold:card]광기[/gold]` or `[gold:relic]역사 강의서[/gold]`.

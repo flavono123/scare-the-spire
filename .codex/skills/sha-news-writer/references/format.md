@@ -5,6 +5,9 @@
 ```md
 # 2026-06-09
 
+## 공지
+- 곧 사이트 주소가 Cloudflare 기반 새 주소로 옮겨질 예정이다
+
 ## 공통
 - 홈에 [gold]섀 소식[/gold] 진입점을 추가했다
 - 섀 소식은 패치노트와 별도의 서비스 업데이트 알림판으로 분리했다
@@ -17,6 +20,8 @@ Rules:
 
 - The H1 is exactly the deployment date in `YYYY-MM-DD`.
 - H2 headings are service areas.
+- `## 공지` is optional, but when present it must be the first H2 section.
+- The renderer treats `## 공지` as a highlighted notice block above regular sections.
 - Bullets are one line each.
 - No intro paragraph.
 - No nested bullets.
@@ -26,6 +31,7 @@ Rules:
 
 Prefer these exact Korean headings:
 
+- `공지` — site-wide operational notices; always place first when used.
 - `공통`
 - `섀 소식`
 - `역사 강의서`
@@ -45,6 +51,9 @@ Use `기타` only when no section fits.
 배포일: 2026-06-09
 
 원문:
+공지
+- 곧 사이트가 Cloudflare 새 주소로 이동함
+
 공통
 - 홈에 섀 소식 진입점 만듦
 - byrdpip 아이콘 쓰고 패치노트랑 분리되게 함
@@ -56,6 +65,7 @@ Use `기타` only when no section fits.
 규칙:
 - 최종 결과는 data/sha-news/2026-06-09.md
 - # 2026-06-09
+- 공지가 있으면 ## 공지 를 첫 섹션으로 둠
 - ## 서비스명
 - bullet은 한 줄
 - 필요한 게임/서비스 항목은 기존 rich patch 문법으로 링크/툴팁 처리
