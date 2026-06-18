@@ -2,13 +2,10 @@ import Link from "next/link";
 import Image from "@/components/ui/static-image";
 import {
   getLatestShaNewsNotice,
-  SHA_NEWS_ENABLED,
   SHA_NEWS_NOTICE_ICON,
 } from "@/lib/sha-news";
 
 export async function ByrdispatchFloatingNotice() {
-  if (!SHA_NEWS_ENABLED) return null;
-
   const notice = await getLatestShaNewsNotice();
   if (!notice) return null;
 
@@ -26,6 +23,9 @@ export async function ByrdispatchFloatingNotice() {
           height={22}
           className="h-5 w-5 shrink-0 object-contain drop-shadow-[0_1px_4px_rgba(0,0,0,0.55)]"
         />
+        <span className="shrink-0 text-xs font-black text-pink-100 sm:text-sm">
+          공지:
+        </span>
         <span className="min-w-0 flex-1 truncate text-xs font-semibold sm:text-sm">
           {notice.text}
         </span>

@@ -4,7 +4,6 @@ import { StoryFeed } from "@/components/story-feed";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
-import { SHA_NEWS_ENABLED } from "@/lib/sha-news";
 
 export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
@@ -24,9 +23,7 @@ export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOC
   return (
     <div className="min-h-screen bg-background text-foreground">
       <main className="mx-auto max-w-2xl space-y-2">
-        {SHA_NEWS_ENABLED && (
-          <ShaNewsTeaser serviceLocale={serviceLocale} gameLocale={gameLocale} />
-        )}
+        <ShaNewsTeaser serviceLocale={serviceLocale} gameLocale={gameLocale} />
         {/* Feed */}
         <div className="rounded-lg border border-border bg-card/20">
           {mergedStories.length === 0 ? (

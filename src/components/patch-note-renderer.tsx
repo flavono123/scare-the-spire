@@ -1111,12 +1111,12 @@ function renderMarkdownBold(
   }
 
   if (lastIndex === 0) {
-    const plain = renderPlainTextWithMonsterMoveLinks(text, lookup, `${keyPrefix}-plain`, context);
+    const plain = renderMarkdownLinks(text, lookup, `${keyPrefix}-plain`, context);
     if (plain.length === 1 && typeof plain[0] === "string") return plain[0];
     return <span key={keyPrefix}>{plain}</span>;
   }
   if (lastIndex < text.length) {
-    parts.push(...renderPlainTextWithMonsterMoveLinks(
+    parts.push(...renderMarkdownLinks(
       text.slice(lastIndex),
       lookup,
       `${keyPrefix}-tail`,
@@ -1161,6 +1161,60 @@ function renderPlainTextWithMonsterMoveLinks(
 
   if (remaining) parts.push(remaining);
   return parts.length > 0 ? parts : [text];
+}
+
+const MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
+
+function renderMarkdownLinks(
+  text: string,
+  lookup: EntityLookup,
+  keyPrefix: string,
+  context: RenderContext,
+): ReactNode[] {
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let matchIndex = 0;
+
+  for (const match of text.matchAll(MARKDOWN_LINK_RE)) {
+    const index = match.index ?? 0;
+    if (index > lastIndex) {
+      parts.push(...renderPlainTextWithMonsterMoveLinks(
+        text.slice(lastIndex, index),
+        lookup,
+        `${keyPrefix}-text-${matchIndex}`,
+        context,
+      ));
+    }
+
+    parts.push(
+      <a
+        key={`${keyPrefix}-link-${matchIndex}`}
+        href={match[2]}
+        target="_blank"
+        rel="noreferrer"
+        className="text-cyan-200 underline decoration-cyan-200/40 underline-offset-2 transition-colors hover:text-cyan-100"
+      >
+        {match[1]}
+      </a>,
+    );
+    lastIndex = index + match[0].length;
+    matchIndex += 1;
+  }
+
+  if (lastIndex === 0) {
+    return renderPlainTextWithMonsterMoveLinks(text, lookup, `${keyPrefix}-plain`, context);
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(...renderPlainTextWithMonsterMoveLinks(
+      text.slice(lastIndex),
+      lookup,
+      `${keyPrefix}-tail`,
+      context,
+    ));
+  }
+
+  return parts;
 }
 
 function findMonsterMoveKeywordAt(

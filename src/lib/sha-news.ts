@@ -3,12 +3,12 @@ import path from "path";
 
 export const SHA_NEWS_ICON = "/images/sts2/relics/byrdpip.webp";
 export const SHA_NEWS_NOTICE_ICON = "/images/sts2/powers/signal_boost_power.webp";
-export const SHA_NEWS_ENABLED = true;
 
 const SHA_NEWS_DIR = path.join(process.cwd(), "data/sha-news");
 const SHA_NEWS_FILE_RE = /^\d{4}-\d{2}-\d{2}\.md$/;
 const SHA_NEWS_NOTICE_SECTION = "공지";
 const SHA_NEWS_STATUS_RE = /\s*\((new|개발 중|버그)\)\s*$/;
+const SHA_NEWS_MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
 
 export type ShaNewsStatus = "new" | "wip" | "bug";
 
@@ -143,7 +143,12 @@ export async function getLatestShaNewsEntry(): Promise<ShaNewsEntry | null> {
 export async function getLatestShaNewsNotice(): Promise<ShaNewsNotice | null> {
   for (const entry of await getShaNewsEntries()) {
     const text = entry.noticeSections[0]?.bullets[0]?.text;
-    if (text) return { date: entry.date, text };
+    if (text) {
+      return {
+        date: entry.date,
+        text: text.replace(SHA_NEWS_MARKDOWN_LINK_RE, "$1"),
+      };
+    }
   }
 
   return null;

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { PatchNoteRenderer, type EntityInfo } from "@/components/patch-note-renderer";
@@ -16,7 +15,6 @@ import { getCodexGameUiLabels, type CodexGameUiLabels } from "@/lib/codex-game-u
 import { loadAllEntities } from "@/lib/load-all-entities";
 import {
   getShaNewsEntries,
-  SHA_NEWS_ENABLED,
   SHA_NEWS_ICON,
   SHA_NEWS_NOTICE_ICON,
   type ShaNewsBullet,
@@ -301,8 +299,6 @@ function ShaNewsSectionList({
 export async function renderShaNewsPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  if (!SHA_NEWS_ENABLED) notFound();
-
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const messages = serviceMessages[serviceLocale].shaNews;
   const statusLabels = messages.status;
