@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { CommentSection } from "@/components/comment-section";
 import { PatchNoteRenderer, type EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import {
@@ -10,6 +11,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
+import { buildByrdispatchCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexGameUiLabels, type CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import {
@@ -170,7 +172,7 @@ function ShaNewsBulletLine({
             : "mt-2 h-1.5 w-1.5 shrink-0 bg-purple-200/80"
         }
       />
-      <span
+      <div
         className={[
           "min-w-0 flex-1 text-sm leading-6",
           notice
@@ -187,7 +189,7 @@ function ShaNewsBulletLine({
           preferEntityLocaleLabel
         />
         <StatusTokens statuses={bullet.statuses} />
-      </span>
+      </div>
     </li>
   );
 }
@@ -253,6 +255,7 @@ export async function renderShaNewsPage(
 
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const messages = serviceMessages[serviceLocale].shaNews;
+  const commonMessages = serviceMessages[serviceLocale].common;
   const [entries, entities, gameUi] = await Promise.all([
     getShaNewsEntries(),
     loadAllEntities({ gameLocale }),
@@ -325,6 +328,16 @@ export async function renderShaNewsPage(
           ))}
         </div>
       )}
+
+      <section className="mt-8 border-t border-border/70 pt-6">
+        <h2 className="mb-3 text-sm font-bold text-zinc-100">
+          {commonMessages.comments}
+        </h2>
+        <CommentSection
+          threadKey={buildByrdispatchCommentThreadKey()}
+          initialEntities={entities}
+        />
+      </section>
     </main>
   );
 }
