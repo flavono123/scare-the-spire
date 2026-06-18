@@ -6,7 +6,7 @@
 # 2026-06-09
 
 ## 공지
-- 곧 사이트 주소가 Cloudflare 기반 새 주소로 옮겨질 예정이다
+- 곧 사이트 주소가 [새 주소](https://example.com)로 옮겨질 예정이다
 
 ## 섀 소식 (new)
 - 홈에 [gold]섀 소식[/gold] 진입점을 추가했다
@@ -51,6 +51,7 @@ Codex writes plain markdown with status markers; the app renderer owns visual st
 - Service headings: aqua links to the service route without underline styling, plus a leading token/icon asset.
 - Child service headings: same aqua no-underline link treatment, but use the child service icon from navigation/dropdown assets.
 - Individual game resources inside bullets: patch-note rich reference behavior with gold styling, game hover tip, link, and active game locale label.
+- Epoch beta-art updates should use typed `[gold:epoch]...[/gold]` references; when the epoch has beta art, the game hover tip shows that beta art.
 - `(new)`: render a New Leaf relic token after the heading or bullet.
 - `(개발 중)`: render a Hammer Time power token after the heading or bullet.
 - `(버그)`: render an Infested power token after the heading or bullet.

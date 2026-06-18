@@ -26,6 +26,7 @@ Turn rough service-update notes into canonical 섀 소식 / byrdispatch markdown
    - Keep updates concise and factual.
    - Move notes into the closest allowed service section.
    - Keep notice bullets operational and time-bounded; do not invent exact dates, URLs, or migration guarantees.
+   - Write notice URLs as markdown links so users can click through.
    - Preserve status markers such as `(new)`, `(개발 중)`, and `(버그)` when the user provides them; the renderer turns them into token badges.
    - Treat `(버그)` as the Infested power token badge in rendered output.
    - Ask only if the target date or intended meaning is genuinely ambiguous.
@@ -33,6 +34,7 @@ Turn rough service-update notes into canonical 섀 소식 / byrdispatch markdown
    - Use patch-note BBCode syntax such as `[gold:card]광기[/gold]` or `[gold:relic]역사 강의서[/gold]`.
    - Verify game resources against extracted Codex data or existing comment/search entity data before adding a typed tag.
    - Use typed tags for individual game resources, not service headings; game resource labels must follow the active game locale at render time.
+   - For epoch beta-art updates, use typed `[gold:epoch]...[/gold]` references so hover tips can show the beta art when present.
    - If unsure, keep plain text.
 7. Handle media conservatively.
    - Default to no screenshots or video.
