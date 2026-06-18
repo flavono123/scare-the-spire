@@ -19,6 +19,7 @@ Turn rough service-update notes into canonical 섀 소식 / byrdispatch markdown
    - Use one `# YYYY-MM-DD` heading.
    - Put `## 공지` first when the entry includes a site-wide notice.
    - Use `## 서비스명` headings and `### 하위 서비스명` headings.
+   - Keep a parent `## 서비스명` heading even when it has no bullets if it groups child `###` sections.
    - Use one-line bullets only.
    - Route/service English naming is `byrdispatch`; the canonical public route is `/byrdispatch`.
 5. Normalize user notes without inventing product facts.
@@ -26,6 +27,7 @@ Turn rough service-update notes into canonical 섀 소식 / byrdispatch markdown
    - Move notes into the closest allowed service section.
    - Keep notice bullets operational and time-bounded; do not invent exact dates, URLs, or migration guarantees.
    - Preserve status markers such as `(new)`, `(개발 중)`, and `(버그)` when the user provides them; the renderer turns them into token badges.
+   - Treat `(버그)` as the Infested power token badge in rendered output.
    - Ask only if the target date or intended meaning is genuinely ambiguous.
 6. Add rich references only when verifiable in this repo.
    - Use patch-note BBCode syntax such as `[gold:card]광기[/gold]` or `[gold:relic]역사 강의서[/gold]`.

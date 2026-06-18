@@ -16,6 +16,7 @@
 - 공유 런 목록을 더 쉽게 확인할 수 있게 정리했다
 
 ## 백과사전
+
 ### 캐릭터 (new)
 - 캐릭터 정보를 볼 수 있는 페이지를 추가했다
 ```
@@ -28,11 +29,12 @@ Rules:
 - The renderer treats `## 공지` as a pink highlighted notice block above regular sections.
 - Use `## 서비스명` for top-level services.
 - Use `### 하위 서비스명` for child services inside a top-level service.
+- A top-level service H2 may have no bullets when it only groups child service H3 sections; keep the H2 visible.
 - Append `(new)`, `(개발 중)`, or `(버그)` to headings or bullets only when that status is true.
 - Bullets are one line each.
 - No intro paragraph.
 - No nested bullets.
-- No empty sections.
+- No empty child sections. Parent H2 grouping sections are allowed without bullets.
 
 ## Route and Service Naming
 
@@ -51,14 +53,15 @@ Codex writes plain markdown with status markers; the app renderer owns visual st
 - Individual game resources inside bullets: patch-note rich reference behavior with gold styling, game hover tip, link, and active game locale label.
 - `(new)`: render a New Leaf relic token after the heading or bullet.
 - `(개발 중)`: render a Hammer Time power token after the heading or bullet.
-- `(버그)`: render an Infection card/power token after the heading or bullet.
+- `(버그)`: render an Infested power token after the heading or bullet.
+- Status tokens expose hover tooltips: `새로운 기능`, `아직 개발 중`, `버그 수정`.
 
 Token/icon asset anchors:
 
 - Notice: `public/images/sts2/powers/signal_boost_power.webp`
 - New service/status: `public/images/sts2/relics/new_leaf.webp`
 - In progress: `public/images/sts2/powers/hammer_time_power.webp`
-- Bug fix: `public/images/sts2/cards/infection.webp`
+- Bug fix: `public/images/sts2/powers/infested_power.webp`
 - Compendium top-level service: use the STS2 desktop/app icon from the top navbar.
 - Compendium child services: use the icon token assets already used by the compendium dropdown.
 
