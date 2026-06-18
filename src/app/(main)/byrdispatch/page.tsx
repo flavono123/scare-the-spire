@@ -36,15 +36,17 @@ export function generateMetadata(): Metadata {
   return generateShaNewsMetadata();
 }
 
-const STATUS_TOKENS: Record<ShaNewsStatus, { src: string; label: string }> = {
-  new: { src: "/images/sts2/relics/new_leaf.webp", label: "새로 추가됨" },
-  wip: { src: "/images/sts2/powers/hammer_time_power.webp", label: "개발 중" },
-  bug: { src: "/images/sts2/cards/infection.webp", label: "버그 수정" },
+const STATUS_TOKEN_ASSETS: Record<ShaNewsStatus, { src: string }> = {
+  new: { src: "/images/sts2/relics/new_leaf.webp" },
+  wip: { src: "/images/sts2/powers/hammer_time_power.webp" },
+  bug: { src: "/images/sts2/powers/infested_power.webp" },
 };
 
-const SERVICE_ICONS: Record<string, { href: string; icon: string }> = {
+type ShaNewsStatusLabels = Readonly<Record<ShaNewsStatus, string>>;
+
+const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "섀 소식": { href: "/byrdispatch", icon: SHA_NEWS_ICON },
-  백과사전: { href: "/compendium", icon: "/images/sts2/icons/app_icon.png" },
+  백과사전: { href: null, icon: "/images/sts2/icons/app_icon.png" },
   캐릭터: { href: "/compendium/characters", icon: "/images/sts2/characters/character_icon_ironclad.webp" },
   카드: { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
   키워드: { href: "/compendium/keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
@@ -90,12 +92,47 @@ function TokenIcon({
   );
 }
 
-function StatusTokens({ statuses }: { statuses: ShaNewsStatus[] }) {
+function StatusTokenIcon({
+  src,
+  label,
+}: {
+  src: string;
+  label: string;
+}) {
+  return (
+    <span
+      aria-label={label}
+      data-tooltip={label}
+      tabIndex={0}
+      className="relative inline-flex h-5 w-5 shrink-0 items-center justify-center align-[-0.25em] outline-none after:pointer-events-none after:absolute after:bottom-full after:left-1/2 after:z-30 after:mb-1 after:-translate-x-1/2 after:whitespace-nowrap after:border after:border-zinc-700 after:bg-zinc-950/95 after:px-2 after:py-1 after:text-[11px] after:font-semibold after:leading-none after:text-zinc-100 after:opacity-0 after:shadow-lg after:transition-opacity after:content-[attr(data-tooltip)] hover:after:opacity-100 focus-visible:after:opacity-100"
+    >
+      <Image
+        src={src}
+        alt=""
+        width={20}
+        height={20}
+        className="h-full w-full object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]"
+      />
+    </span>
+  );
+}
+
+function StatusTokens({
+  statuses,
+  labels,
+}: {
+  statuses: ShaNewsStatus[];
+  labels: ShaNewsStatusLabels;
+}) {
   if (statuses.length === 0) return null;
   return (
     <span className="inline-flex items-center gap-1">
       {statuses.map((status) => (
-        <TokenIcon key={status} {...STATUS_TOKENS[status]} />
+        <StatusTokenIcon
+          key={status}
+          src={STATUS_TOKEN_ASSETS[status].src}
+          label={labels[status]}
+        />
       ))}
     </span>
   );
@@ -105,19 +142,24 @@ function ServiceHeading({
   section,
   serviceLocale,
   gameLocale,
+  statusLabels,
 }: {
   section: ShaNewsSection;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  statusLabels: ShaNewsStatusLabels;
 }) {
   const isChild = section.level === 3;
   const service = serviceIconFor(section.title);
   const headingClassName = isChild
     ? "mt-4 flex items-center gap-2 text-base font-black"
     : "mt-6 flex items-center gap-2 text-lg font-black";
-  const linkClassName = section.isNotice
+  const canLink = Boolean(service?.href) && !section.isNotice;
+  const titleClassName = section.isNotice
     ? "text-pink-100"
-    : "text-cyan-200 underline decoration-cyan-200/35 underline-offset-4 transition-colors hover:text-cyan-100 hover:decoration-cyan-100/80";
+    : canLink
+      ? "text-cyan-200 underline decoration-cyan-200/35 underline-offset-4 transition-colors hover:text-cyan-100 hover:decoration-cyan-100/80"
+      : "text-cyan-200";
   const content = (
     <>
       <TokenIcon
@@ -125,17 +167,17 @@ function ServiceHeading({
         label={section.title}
         className={isChild ? "h-5 w-5" : "h-6 w-6"}
       />
-      {service && !section.isNotice ? (
+      {canLink && service?.href ? (
         <Link
           href={localizeHrefWithGameLocale(service.href, serviceLocale, gameLocale)}
-          className={linkClassName}
+          className={titleClassName}
         >
           {section.title}
         </Link>
       ) : (
-        <span className={linkClassName}>{section.title}</span>
+        <span className={titleClassName}>{section.title}</span>
       )}
-      <StatusTokens statuses={section.statuses} />
+      <StatusTokens statuses={section.statuses} labels={statusLabels} />
     </>
   );
 
@@ -153,6 +195,7 @@ function ShaNewsBulletLine({
   gameUi,
   serviceLocale,
   gameLocale,
+  statusLabels,
 }: {
   bullet: ShaNewsBullet;
   notice: boolean;
@@ -160,6 +203,7 @@ function ShaNewsBulletLine({
   gameUi: CodexGameUiLabels;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  statusLabels: ShaNewsStatusLabels;
 }) {
   return (
     <li className="flex gap-2">
@@ -188,7 +232,7 @@ function ShaNewsBulletLine({
           gameLocale={gameLocale}
           preferEntityLocaleLabel
         />
-        <StatusTokens statuses={bullet.statuses} />
+        <StatusTokens statuses={bullet.statuses} labels={statusLabels} />
       </div>
     </li>
   );
@@ -201,6 +245,7 @@ function ShaNewsSectionList({
   gameUi,
   serviceLocale,
   gameLocale,
+  statusLabels,
 }: {
   sections: ShaNewsSection[];
   notice?: boolean;
@@ -208,6 +253,7 @@ function ShaNewsSectionList({
   gameUi: CodexGameUiLabels;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  statusLabels: ShaNewsStatusLabels;
 }) {
   if (sections.length === 0) return null;
 
@@ -228,20 +274,24 @@ function ShaNewsSectionList({
             section={section}
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
+            statusLabels={statusLabels}
           />
-          <ul className="mt-2 space-y-1.5 text-sm leading-6 text-zinc-300">
-            {section.bullets.map((bullet) => (
-              <ShaNewsBulletLine
-                key={bullet.text}
-                bullet={bullet}
-                notice={notice}
-                entities={entities}
-                gameUi={gameUi}
-                serviceLocale={serviceLocale}
-                gameLocale={gameLocale}
-              />
-            ))}
-          </ul>
+          {section.bullets.length > 0 && (
+            <ul className="mt-2 space-y-1.5 text-sm leading-6 text-zinc-300">
+              {section.bullets.map((bullet) => (
+                <ShaNewsBulletLine
+                  key={bullet.text}
+                  bullet={bullet}
+                  notice={notice}
+                  entities={entities}
+                  gameUi={gameUi}
+                  serviceLocale={serviceLocale}
+                  gameLocale={gameLocale}
+                  statusLabels={statusLabels}
+                />
+              ))}
+            </ul>
+          )}
         </section>
       ))}
     </div>
@@ -255,6 +305,7 @@ export async function renderShaNewsPage(
 
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
   const messages = serviceMessages[serviceLocale].shaNews;
+  const statusLabels = messages.status;
   const commonMessages = serviceMessages[serviceLocale].codex.common;
   const [entries, entities, gameUi] = await Promise.all([
     getShaNewsEntries(),
@@ -301,6 +352,7 @@ export async function renderShaNewsPage(
                     gameUi={gameUi}
                     serviceLocale={serviceLocale}
                     gameLocale={gameLocale}
+                    statusLabels={statusLabels}
                   />
                 </div>
               )}
@@ -312,6 +364,7 @@ export async function renderShaNewsPage(
                     gameUi={gameUi}
                     serviceLocale={serviceLocale}
                     gameLocale={gameLocale}
+                    statusLabels={statusLabels}
                   />
                 </div>
               )}

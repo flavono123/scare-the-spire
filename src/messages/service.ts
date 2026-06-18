@@ -16,6 +16,11 @@ export const serviceMessages = {
         title: "섀 소식",
         description: "슬서운이야기 서비스의 새 기능과 콘텐츠 소식",
       },
+      status: {
+        new: "새로운 기능",
+        wip: "아직 개발 중",
+        bug: "버그 수정",
+      },
     },
     games: {
       sts2Codex: "STS2 백과사전",
@@ -534,6 +539,11 @@ export const serviceMessages = {
       metadata: {
         title: "byrdispatch",
         description: "New features and content updates for Scare the Spire",
+      },
+      status: {
+        new: "New feature",
+        wip: "Still in development",
+        bug: "Bug fix",
       },
     },
     games: {

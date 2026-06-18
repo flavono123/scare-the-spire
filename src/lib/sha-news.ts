@@ -91,7 +91,17 @@ function parseShaNewsMarkdown(markdown: string, fallbackDate: string): ShaNewsEn
     }
   }
 
-  const populatedSections = sections.filter((section) => section.bullets.length > 0);
+  const populatedSections = sections.filter((section, index) => {
+    if (section.bullets.length > 0) return true;
+    if (section.level !== 2) return false;
+
+    for (const nextSection of sections.slice(index + 1)) {
+      if (nextSection.level === 2) return false;
+      if (nextSection.bullets.length > 0) return true;
+    }
+
+    return false;
+  });
   const noticeSections = populatedSections.filter((section) => section.isNotice);
   const regularSections = populatedSections.filter((section) => !section.isNotice);
 
