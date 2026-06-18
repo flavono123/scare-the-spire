@@ -40,6 +40,15 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      - name: Restore Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'open-next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*') }}
+          restore-keys: |
+            ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-
+            ${{ runner.os }}-next-
+
       - name: Validate Cloudflare production configuration
         run: |
           test -n "$CLOUDFLARE_ACCOUNT_ID"
