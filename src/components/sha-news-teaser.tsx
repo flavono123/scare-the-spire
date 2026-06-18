@@ -5,10 +5,14 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
-import { SHA_NEWS_ICON, SHA_NEWS_VERSION } from "@/lib/sha-news";
+import {
+  getLatestShaNewsEntry,
+  SHA_NEWS_ICON,
+  SHA_NEWS_VERSION,
+} from "@/lib/sha-news";
 import { serviceMessages } from "@/messages/service";
 
-export function ShaNewsTeaser({
+export async function ShaNewsTeaser({
   serviceLocale,
   gameLocale,
 }: {
@@ -16,6 +20,7 @@ export function ShaNewsTeaser({
   gameLocale: GameLocale;
 }) {
   const messages = serviceMessages[serviceLocale].shaNews;
+  const latestVersion = (await getLatestShaNewsEntry())?.date ?? SHA_NEWS_VERSION;
 
   return (
     <Link
@@ -35,7 +40,7 @@ export function ShaNewsTeaser({
         <span className="flex items-center gap-2 text-[11px] font-semibold text-purple-100">
           <span>{messages.eyebrow}</span>
           <span className="rounded border border-purple-200/25 bg-black/25 px-1.5 py-0.5 text-[10px] leading-none text-purple-100/90">
-            {SHA_NEWS_VERSION}
+            {latestVersion}
           </span>
         </span>
         <span className="block truncate text-sm font-bold text-zinc-100 sm:text-base">
