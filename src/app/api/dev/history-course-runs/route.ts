@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { devToolsEnabled } from "@/lib/dev-tools";
-import { supabase, supabaseEnabled } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -31,6 +29,11 @@ export async function GET() {
   if (!devToolsEnabled()) {
     return notFoundResponse();
   }
+
+  const [{ supabase, supabaseEnabled }, { withSupabaseTimeout }] = await Promise.all([
+    import("@/lib/supabase"),
+    import("@/lib/supabase-timeout"),
+  ]);
 
   if (!supabaseEnabled) {
     return NextResponse.json(

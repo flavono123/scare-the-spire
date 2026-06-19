@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { devToolsEnabled } from "@/lib/dev-tools";
-import { supabase, supabaseEnabled } from "@/lib/supabase";
-import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 import { parseRunRouteSlug } from "@/lib/sts2-run-hash";
 
 export const dynamic = "force-dynamic";
@@ -40,6 +38,11 @@ export async function GET(
   if (!parseRunRouteSlug(runId)) {
     return NextResponse.json({ message: "Invalid runId" }, { status: 400 });
   }
+
+  const [{ supabase, supabaseEnabled }, { withSupabaseTimeout }] = await Promise.all([
+    import("@/lib/supabase"),
+    import("@/lib/supabase-timeout"),
+  ]);
 
   if (!supabaseEnabled) {
     return NextResponse.json(
