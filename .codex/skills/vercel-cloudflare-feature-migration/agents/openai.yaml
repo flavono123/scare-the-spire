@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vercel to Cloudflare Fast Forward"
+  short_description: "Fast-forward feature/content changes to Cloudflare"
+  default_prompt: "Use $vercel-cloudflare-feature-migration to fast-forward Vercel main feature and content changes into the Cloudflare branch."
