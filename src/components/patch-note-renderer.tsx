@@ -1174,6 +1174,7 @@ function renderPlainTextWithMonsterMoveLinks(
   return parts.length > 0 ? parts : [text];
 }
 
+const MARKDOWN_IMAGE_RE = /^!\[([^\]\n]*)\]\(([^)\s]+)\)$/;
 const MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
 
 function renderExternalMarkdownLink(
@@ -1191,6 +1192,23 @@ function renderExternalMarkdownLink(
     >
       {label}
     </a>
+  );
+}
+
+function renderMarkdownImage(
+  key: string,
+  alt: string,
+  src: string,
+): ReactNode {
+  return (
+    <figure key={key} className="my-4 overflow-hidden rounded-md border border-border/70 bg-black/30">
+      <Image
+        src={src}
+        alt={alt || "Patch note image"}
+        loading="lazy"
+        className="h-auto w-full object-contain"
+      />
+    </figure>
   );
 }
 
@@ -1381,6 +1399,11 @@ function renderLine(
   if (trimmed.startsWith("# ")) {
     // Skip top-level heading (shown in page header)
     return null;
+  }
+
+  const imageMatch = trimmed.match(MARKDOWN_IMAGE_RE);
+  if (imageMatch) {
+    return renderMarkdownImage(key, imageMatch[1], imageMatch[2]);
   }
 
   // Bullet points. Preserve markdown indentation visually; the renderer keeps a
