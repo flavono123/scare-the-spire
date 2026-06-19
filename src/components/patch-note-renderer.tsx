@@ -153,6 +153,8 @@ function GameResourcePreview({
   imageHeight = 64,
   imageStyle,
   hoverTipStyle = { minWidth: 240, maxWidth: 320 },
+  betaArtImageUrl,
+  betaArtAlt,
   meta,
   children,
 }: {
@@ -165,6 +167,8 @@ function GameResourcePreview({
   imageHeight?: number;
   imageStyle?: CSSProperties;
   hoverTipStyle?: CSSProperties;
+  betaArtImageUrl?: string | null;
+  betaArtAlt?: string;
   meta?: ReactNode;
   children?: ReactNode;
 }) {
@@ -182,7 +186,12 @@ function GameResourcePreview({
           />
         </span>
       )}
-      <GameHoverTip title={title} style={hoverTipStyle}>
+      <GameHoverTip
+        title={title}
+        style={hoverTipStyle}
+        betaArtImageUrl={betaArtImageUrl}
+        betaArtAlt={betaArtAlt ?? imageAlt}
+      >
         {meta && (
           <span className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[12px]">
             {meta}
@@ -632,7 +641,9 @@ export function EntityPreview({
             imageClassName="h-full w-full rounded-lg object-cover"
             imageWidth={160}
             imageHeight={112}
-            hoverTipStyle={{ width: "max-content", maxWidth: 320, whiteSpace: "nowrap" }}
+            hoverTipStyle={{ width: "max-content", maxWidth: 360, whiteSpace: "nowrap" }}
+            betaArtImageUrl={entity.epochData.betaImageUrl}
+            betaArtAlt={`${entity.nameKo} 베타 아트`}
             meta={entity.epochData.eraName ? (
               <span className="text-blue-300">
                 {entity.epochData.eraYear ? `${entity.epochData.eraName} ${entity.epochData.eraYear}` : entity.epochData.eraName}
@@ -1111,12 +1122,12 @@ function renderMarkdownBold(
   }
 
   if (lastIndex === 0) {
-    const plain = renderPlainTextWithMonsterMoveLinks(text, lookup, `${keyPrefix}-plain`, context);
+    const plain = renderMarkdownLinks(text, lookup, `${keyPrefix}-plain`, context);
     if (plain.length === 1 && typeof plain[0] === "string") return plain[0];
     return <span key={keyPrefix}>{plain}</span>;
   }
   if (lastIndex < text.length) {
-    parts.push(...renderPlainTextWithMonsterMoveLinks(
+    parts.push(...renderMarkdownLinks(
       text.slice(lastIndex),
       lookup,
       `${keyPrefix}-tail`,
@@ -1161,6 +1172,68 @@ function renderPlainTextWithMonsterMoveLinks(
 
   if (remaining) parts.push(remaining);
   return parts.length > 0 ? parts : [text];
+}
+
+const MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
+
+function renderExternalMarkdownLink(
+  key: string,
+  label: string,
+  href: string,
+): ReactNode {
+  return (
+    <a
+      key={key}
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="text-cyan-200 underline decoration-cyan-200/40 underline-offset-2 transition-colors hover:text-cyan-100"
+    >
+      {label}
+    </a>
+  );
+}
+
+function renderMarkdownLinks(
+  text: string,
+  lookup: EntityLookup,
+  keyPrefix: string,
+  context: RenderContext,
+): ReactNode[] {
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let matchIndex = 0;
+
+  for (const match of text.matchAll(MARKDOWN_LINK_RE)) {
+    const index = match.index ?? 0;
+    if (index > lastIndex) {
+      parts.push(...renderPlainTextWithMonsterMoveLinks(
+        text.slice(lastIndex, index),
+        lookup,
+        `${keyPrefix}-text-${matchIndex}`,
+        context,
+      ));
+    }
+
+    parts.push(renderExternalMarkdownLink(`${keyPrefix}-link-${matchIndex}`, match[1], match[2]));
+    lastIndex = index + match[0].length;
+    matchIndex += 1;
+  }
+
+  if (lastIndex === 0) {
+    return renderPlainTextWithMonsterMoveLinks(text, lookup, `${keyPrefix}-plain`, context);
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(...renderPlainTextWithMonsterMoveLinks(
+      text.slice(lastIndex),
+      lookup,
+      `${keyPrefix}-tail`,
+      context,
+    ));
+  }
+
+  return parts;
 }
 
 function findMonsterMoveKeywordAt(
@@ -1228,6 +1301,38 @@ function enrichLine(
   key: string,
   context: RenderContext,
 ): ReactNode[] {
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let matchIndex = 0;
+
+  for (const match of text.matchAll(MARKDOWN_LINK_RE)) {
+    const index = match.index ?? 0;
+    if (index > lastIndex) {
+      parts.push(...renderBBNodes(
+        parseBBCode(text.slice(lastIndex, index)),
+        lookup,
+        `${key}-text-${matchIndex}`,
+        context,
+      ));
+    }
+
+    parts.push(renderExternalMarkdownLink(`${key}-link-${matchIndex}`, match[1], match[2]));
+    lastIndex = index + match[0].length;
+    matchIndex += 1;
+  }
+
+  if (lastIndex > 0) {
+    if (lastIndex < text.length) {
+      parts.push(...renderBBNodes(
+        parseBBCode(text.slice(lastIndex)),
+        lookup,
+        `${key}-tail`,
+        context,
+      ));
+    }
+    return parts;
+  }
+
   const nodes = parseBBCode(text);
   return renderBBNodes(nodes, lookup, key, context);
 }

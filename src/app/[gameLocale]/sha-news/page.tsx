@@ -1,19 +1,12 @@
-import {
-  generateShaNewsMetadata,
-  renderShaNewsPage,
-} from "@/app/(main)/sha-news/page";
+import { redirect } from "next/navigation";
 import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
+import { localizeHrefWithGameLocale } from "@/lib/i18n";
 
 type Props = {
   params: Promise<LocaleRouteParams>;
 };
 
-export async function generateMetadata({ params }: Props) {
-  const { gameLocale } = await getLocalePairFromParams(params);
-  return generateShaNewsMetadata(gameLocale);
-}
-
-export default async function LocalizedShaNewsPage({ params }: Props) {
-  const { gameLocale } = await getLocalePairFromParams(params);
-  return renderShaNewsPage(gameLocale);
+export default async function LegacyLocalizedShaNewsPage({ params }: Props) {
+  const { serviceLocale, gameLocale } = await getLocalePairFromParams(params);
+  redirect(localizeHrefWithGameLocale("/byrdispatch", serviceLocale, gameLocale));
 }

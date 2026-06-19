@@ -11,16 +11,16 @@ export const serviceMessages = {
     },
     shaNews: {
       title: "섀 소식",
-      eyebrow: "서비스 알림",
-      teaserTitle: "placeholder",
-      teaserDescription: "placeholder",
       viewAll: "전체 보기",
       metadata: {
         title: "섀 소식",
         description: "슬서운이야기 서비스의 새 기능과 콘텐츠 소식",
       },
-      emptyTitle: "알림판을 준비하는 중입니다",
-      emptyDescription: "새 기능, 새 이야기, 운영 공지를 패치노트와 따로 모아둘 예정입니다.",
+      status: {
+        new: "새로운 기능",
+        wip: "아직 개발 중",
+        bug: "버그 수정",
+      },
     },
     games: {
       sts2Codex: "STS2 백과사전",
@@ -534,17 +534,17 @@ export const serviceMessages = {
       historyCourse: "History Course",
     },
     shaNews: {
-      title: "Sha News",
-      eyebrow: "Service Updates",
-      teaserTitle: "placeholder",
-      teaserDescription: "placeholder",
+      title: "byrdispatch",
       viewAll: "View all",
       metadata: {
-        title: "Sha News",
+        title: "byrdispatch",
         description: "New features and content updates for Scare the Spire",
       },
-      emptyTitle: "The board is being prepared",
-      emptyDescription: "New features, new stories, and service notices will live here separately from patch notes.",
+      status: {
+        new: "New feature",
+        wip: "Still in development",
+        bug: "Bug fix",
+      },
     },
     games: {
       sts2Codex: "STS2 Codex",
