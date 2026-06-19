@@ -22,7 +22,10 @@ import { DescriptionText } from "./codex-description";
 import { EntityReferenceGroupLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { RichDescription } from "./rich-description";
 import { GameCheckboxToggle } from "./game-checkbox";
-import { notifyCodexUrlChange } from "./use-hydration-safe-search-param";
+import {
+  notifyCodexUrlChange,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
 import {
   getEpochAffiliationColor,
   getEpochAffiliationLabel,
@@ -91,6 +94,11 @@ function getEpochDetailLabels(serviceLocale: ServiceLocale) {
       };
 }
 
+function isBetaArtParamEnabled(value: string | null): boolean {
+  const normalized = value?.toLowerCase();
+  return normalized === "true" || normalized === "1" || normalized === "yes";
+}
+
 interface EpochDetailProps {
   serviceLocale: ServiceLocale;
   gameUi: CodexGameUiLabels;
@@ -128,10 +136,14 @@ export function EpochDetail({
   const detailLabels = getEpochDetailLabels(serviceLocale);
   const [commentCount, setCommentCount] = useState(0);
   const [uncontrolledShowBeta, setUncontrolledShowBeta] = useState(() => initialShowBeta && Boolean(epoch.betaImageUrl));
+  const urlBetaArt = useHydrationSafeSearchParam("beta", initialShowBeta ? "true" : null);
+  const searchParamShowBeta = syncBetaSearchParam && urlBetaArt !== null
+    ? isBetaArtParamEnabled(urlBetaArt)
+    : null;
   const isShowBetaControlled = onShowBetaChange !== undefined;
   const showBeta = isShowBetaControlled
     ? initialShowBeta && Boolean(epoch.betaImageUrl)
-    : uncontrolledShowBeta;
+    : (searchParamShowBeta ?? uncontrolledShowBeta) && Boolean(epoch.betaImageUrl);
   const displayImageUrl = showBeta && epoch.betaImageUrl
     ? epoch.betaImageUrl
     : epoch.imageUrl ?? epoch.betaImageUrl;
