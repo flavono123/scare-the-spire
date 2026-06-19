@@ -20,24 +20,48 @@ const SRC: Record<HoverTipVariant, string> = {
 };
 
 export type HoverTipVariant = "default" | "buff" | "debuff";
+export type HoverTipArtMode = "official" | "beta";
+
+export type HoverTipArt = {
+  mode: HoverTipArtMode;
+  imageUrl?: string | null;
+  betaImageUrl?: string | null;
+  alt?: string;
+  betaAlt?: string;
+  width?: number;
+  height?: number;
+  className?: string;
+};
 
 interface HoverTipProps {
   title: string;
   variant?: HoverTipVariant;
   icon?: string | null;
-  betaArtImageUrl?: string | null;
-  betaArtAlt?: string;
+  art?: HoverTipArt;
   children?: ReactNode;
   className?: string;
   style?: React.CSSProperties;
+}
+
+function selectedHoverTipArt(art?: HoverTipArt) {
+  if (!art) return null;
+  const imageUrl = art.mode === "beta" ? art.betaImageUrl : art.imageUrl;
+  if (!imageUrl) return null;
+
+  return {
+    imageUrl,
+    alt: art.mode === "beta" ? art.betaAlt ?? art.alt ?? "" : art.alt ?? "",
+    width: art.width ?? 260,
+    height: art.height ?? 146,
+    className: art.className ?? "h-auto w-full object-cover",
+  };
 }
 
 export function GameHoverTip({
   title,
   variant = "default",
   icon,
-  betaArtImageUrl,
-  betaArtAlt,
+  art,
   children,
   className = "",
   style,
@@ -50,6 +74,7 @@ export function GameHoverTip({
   // 게임 hover_tip: title 22px, description 22px — 동일 사이즈.
   // 카드 본문 폰트(380px 카드 × 7cqi = 26.6px)와 비슷한 크기.
   const fontSize = 16;
+  const selectedArt = selectedHoverTipArt(art);
 
   return (
     <span
@@ -95,14 +120,14 @@ export function GameHoverTip({
             />
           )}
         </span>
-        {betaArtImageUrl && (
+        {selectedArt && (
           <span className="mb-2 block overflow-hidden rounded bg-black/25">
             <Image
-              src={betaArtImageUrl}
-              alt={betaArtAlt ?? ""}
-              width={260}
-              height={146}
-              className="h-auto w-full object-cover"
+              src={selectedArt.imageUrl}
+              alt={selectedArt.alt}
+              width={selectedArt.width}
+              height={selectedArt.height}
+              className={selectedArt.className}
             />
           </span>
         )}

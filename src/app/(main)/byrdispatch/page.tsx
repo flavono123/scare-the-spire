@@ -231,6 +231,7 @@ function ShaNewsBulletLine({
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}
           preferEntityLocaleLabel
+          epochArtMode="beta"
         />
         <StatusTokens statuses={bullet.statuses} labels={statusLabels} />
       </div>
