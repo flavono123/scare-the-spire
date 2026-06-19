@@ -1,4 +1,4 @@
 interface:
   display_name: "byrdispatch Writer"
   short_description: "Draft and publish 섀 소식 / byrdispatch updates."
-  default_prompt: "Use $sha-news-writer to create a byrdispatch entry from these update notes."
+  default_prompt: "Use $byrdispatch-writer to create a byrdispatch entry from these update notes."

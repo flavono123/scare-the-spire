@@ -1,9 +1,9 @@
 ---
-name: sha-news-writer
-description: Format, create, or update 섀 소식 / byrdispatch service-update posts and notices for scare-the-spire from rough user notes. Use when the user asks to write, draft, publish, add, or normalize 섀 소식 / byrdispatch entries, especially markdown files under data/sha-news/YYYY-MM-DD.md, service notices, service update changelogs, deployment-date updates, service-link sections, rich game-resource references, token status badges, or optional screenshots/videos for service announcements.
+name: byrdispatch-writer
+description: Format, create, or update byrdispatch / 섀 소식 service-update posts and notices for scare-the-spire from rough user notes. Use when the user asks to write, draft, publish, add, or normalize byrdispatch / 섀 소식 entries, especially markdown files under data/sha-news/YYYY-MM-DD.md, service notices, service update changelogs, deployment-date updates, service-link sections, rich game-resource references, token status badges, or optional screenshots/videos for service announcements.
 ---
 
-# sha-news-writer
+# byrdispatch-writer
 
 Turn rough service-update notes into canonical 섀 소식 / byrdispatch markdown. The user owns the content; Codex owns formatting, validation, exact links/tooltips, token badges, and repository integration.
 
@@ -34,7 +34,8 @@ Turn rough service-update notes into canonical 섀 소식 / byrdispatch markdown
    - Use patch-note BBCode syntax such as `[gold:card]광기[/gold]` or `[gold:relic]역사 강의서[/gold]`.
    - Verify game resources against extracted Codex data or existing comment/search entity data before adding a typed tag.
    - Use typed tags for individual game resources, not service headings; game resource labels must follow the active game locale at render time.
-   - For epoch beta-art updates, use typed `[gold:epoch]...[/gold]` references so hover tips can show the beta art when present.
+   - For epoch beta-art updates, use typed `[gold:epoch]...[/gold]` references so byrdispatch renders the hover tip in beta-art mode when present.
+   - Beta-art mode selects the beta art instead of the official art; do not describe or expect both images to render together.
    - If unsure, keep plain text.
 7. Handle media conservatively.
    - Default to no screenshots or video.
