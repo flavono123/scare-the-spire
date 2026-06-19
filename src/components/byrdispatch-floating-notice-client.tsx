@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "@/components/ui/static-image";
-import { SHA_NEWS_NOTICE_ICON } from "@/lib/sha-news";
 
 function isByrdispatchNoticePage(pathname: string | null): boolean {
   const normalized = (pathname ?? "/").replace(/\/+$/, "") || "/";
@@ -11,8 +10,10 @@ function isByrdispatchNoticePage(pathname: string | null): boolean {
 }
 
 export function ByrdispatchFloatingNoticeClient({
+  noticeIconSrc,
   noticeText,
 }: {
+  noticeIconSrc: string;
   noticeText: string;
 }) {
   const pathname = usePathname();
@@ -26,7 +27,7 @@ export function ByrdispatchFloatingNoticeClient({
         aria-label="섀 소식 공지 보기"
       >
         <Image
-          src={SHA_NEWS_NOTICE_ICON}
+          src={noticeIconSrc}
           alt=""
           width={22}
           height={22}
