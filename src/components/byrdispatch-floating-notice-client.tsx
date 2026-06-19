@@ -2,22 +2,52 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import Image from "@/components/ui/static-image";
+import {
+  SHA_NEWS_LATEST_NOTICE_PATH,
+  SHA_NEWS_NOTICE_ICON,
+  type ShaNewsNotice,
+} from "@/lib/sha-news-static";
 
 function isByrdispatchNoticePage(pathname: string | null): boolean {
   const normalized = (pathname ?? "/").replace(/\/+$/, "") || "/";
   return /(^|\/)(?:byrdispatch|sha-news)$/.test(normalized);
 }
 
-export function ByrdispatchFloatingNoticeClient({
-  noticeIconSrc,
-  noticeText,
-}: {
-  noticeIconSrc: string;
-  noticeText: string;
-}) {
+function isShaNewsNotice(value: unknown): value is ShaNewsNotice {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as Partial<ShaNewsNotice>;
+  return typeof candidate.date === "string" && typeof candidate.text === "string";
+}
+
+export function ByrdispatchFloatingNoticeClient() {
   const pathname = usePathname();
-  if (isByrdispatchNoticePage(pathname)) return null;
+  const isNoticePage = isByrdispatchNoticePage(pathname);
+  const [noticeText, setNoticeText] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isNoticePage) return;
+
+    let ignore = false;
+
+    fetch(SHA_NEWS_LATEST_NOTICE_PATH, { cache: "force-cache" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((notice) => {
+        if (!ignore && isShaNewsNotice(notice)) {
+          setNoticeText(notice.text);
+        }
+      })
+      .catch(() => {
+        if (!ignore) setNoticeText(null);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [isNoticePage]);
+
+  if (isNoticePage || !noticeText) return null;
 
   return (
     <aside className="pointer-events-none fixed inset-x-0 bottom-3 z-50 px-3 sm:bottom-5">
@@ -27,7 +57,7 @@ export function ByrdispatchFloatingNoticeClient({
         aria-label="섀 소식 공지 보기"
       >
         <Image
-          src={noticeIconSrc}
+          src={SHA_NEWS_NOTICE_ICON}
           alt=""
           width={22}
           height={22}

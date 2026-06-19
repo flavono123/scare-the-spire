@@ -1,8 +1,12 @@
 import fs from "fs/promises";
 import path from "path";
+import {
+  SHA_NEWS_ICON,
+  SHA_NEWS_NOTICE_ICON,
+  type ShaNewsNotice,
+} from "@/lib/sha-news-static";
 
-export const SHA_NEWS_ICON = "/images/sts2/relics/byrdpip.webp";
-export const SHA_NEWS_NOTICE_ICON = "/images/sts2/powers/signal_boost_power.webp";
+export { SHA_NEWS_ICON, SHA_NEWS_NOTICE_ICON, type ShaNewsNotice };
 
 const SHA_NEWS_DIR = path.join(process.cwd(), "data/sha-news");
 const SHA_NEWS_FILE_RE = /^\d{4}-\d{2}-\d{2}\.md$/;
@@ -30,11 +34,6 @@ export type ShaNewsEntry = {
   sections: ShaNewsSection[];
   noticeSections: ShaNewsSection[];
   regularSections: ShaNewsSection[];
-};
-
-export type ShaNewsNotice = {
-  date: string;
-  text: string;
 };
 
 function normalizeStatus(value: string): ShaNewsStatus {

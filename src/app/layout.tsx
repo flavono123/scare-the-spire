@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Suspense } from "react";
-import { ByrdispatchFloatingNotice } from "@/components/byrdispatch-floating-notice";
+import { ByrdispatchFloatingNoticeClient } from "@/components/byrdispatch-floating-notice-client";
 import { CloudflareWebAnalytics } from "@/components/cloudflare-web-analytics";
 import { LocaleDocumentAttributes } from "@/components/locale-document-attributes";
 import { SiteNavbar } from "@/components/site-navbar";
@@ -63,7 +63,7 @@ export default function RootLayout({
           <SiteNavbar />
         </Suspense>
         {children}
-        <ByrdispatchFloatingNotice />
+        <ByrdispatchFloatingNoticeClient />
         <CloudflareWebAnalytics />
       </body>
     </html>
