@@ -420,10 +420,27 @@
     "title": "Major Update #2 - v0.107.1",
     "titleKo": "메이저 업데이트 #2 - v0.107.1",
     "type": "release",
-    "status": "building",
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/710026912607505280",
-    "summary": "Work in progress: Major Update #2 is live on Steam; asset sync, rich notes, and Codex link review are being prepared.",
-    "summaryKo": "작성 중: 메이저 업데이트 #2가 Steam에 공개되어 에셋 동기화, 리치 노트, 백과사전 링크 검수를 준비 중입니다.",
-    "hasBalanceChanges": true
+    "summary": "Major Update #2 pushes beta changes v0.104.0-v0.107.0 to main, reworks RNG, adds Steam Workshop and Bestiary, replaces Doormaker with Aeonglass, reworks Infested Prism, and includes cumulative balance, art, writing, and bug fixes.",
+    "summaryKo": "메이저 업데이트 #2 본섭 반영: v0.104.0~v0.107.0 베타 변경 누적, RNG 리워크, Steam Workshop과 몬스터 도감 추가, 문을 만드는 자의 영겁의 모래시계 교체, 감염된 프리즘 리워크, 밸런스·아트·문구·버그 수정.",
+    "hasBalanceChanges": true,
+    "art": {
+      "type": "epoch",
+      "id": "NEOW_EPOCH",
+      "alt": "Neow epoch art",
+      "altKo": "역사: 니오우"
+    },
+    "featuredEntities": [
+      { "type": "relic", "id": "NEOWS_BONES" },
+      { "type": "monster", "id": "AEONGLASS" },
+      { "type": "monster", "id": "INFESTED_PRISM" },
+      { "type": "monster", "id": "DOORMAKER" },
+      { "type": "relic", "id": "SCROLL_BOXES" },
+      { "type": "relic", "id": "SILKEN_TRESS" },
+      { "type": "relic", "id": "THE_BOOT" },
+      { "type": "card", "id": "FUSION" },
+      { "type": "card", "id": "PARRY" },
+      { "type": "card", "id": "SCARE" }
+    ]
   }
 ]
