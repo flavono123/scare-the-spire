@@ -105,6 +105,7 @@ def image_url_for(ent_id: str) -> str | None:
 
 
 _CHOOSE_RE = re.compile(r"^\w+:choose\([^)]*\):(.*)$")
+_PLURAL_RE = re.compile(r"^(\w+):plural:([^|]*)\|(.*)$")
 
 
 def _format_var(value: int | float) -> str:
@@ -114,6 +115,12 @@ def _format_var(value: int | float) -> str:
 def _repl_placeholder(m: re.Match, vars: dict[str, int | float] | None = None) -> str:
     body = m.group(0)[1:-1]
     key = body.split(":", 1)[0]
+    pm = _PLURAL_RE.match(body)
+    if pm:
+        plural_key, singular, plural = pm.groups()
+        value = vars.get(plural_key) if vars else None
+        return singular if value == 1 else plural
+
     if vars and key in vars:
         return _format_var(vars[key])
 
