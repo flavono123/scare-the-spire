@@ -412,5 +412,18 @@
       { "type": "card", "id": "SIC_EM" },
       { "type": "card", "id": "THE_SCYTHE" }
     ]
+  },
+  {
+    "id": "v0.107.1",
+    "version": "0.107.1",
+    "date": "2026-06-19",
+    "title": "Major Update #2 - v0.107.1",
+    "titleKo": "메이저 업데이트 #2 - v0.107.1",
+    "type": "release",
+    "status": "building",
+    "steamUrl": "https://store.steampowered.com/news/app/2868840/view/710026912607505280",
+    "summary": "Work in progress: Major Update #2 is live on Steam; asset sync, rich notes, and Codex link review are being prepared.",
+    "summaryKo": "작성 중: 메이저 업데이트 #2가 Steam에 공개되어 에셋 동기화, 리치 노트, 백과사전 링크 검수를 준비 중입니다.",
+    "hasBalanceChanges": true
   }
 ]
