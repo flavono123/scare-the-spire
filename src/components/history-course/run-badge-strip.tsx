@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { HoverTip } from "@/components/codex/hover-tip";
 import { RichText } from "@/components/rich-text";
 import StaticImage from "@/components/ui/static-image";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -112,15 +111,25 @@ function RunBadgeIcon({
       {hovered && (
         <span
           className={cn(
-            "pointer-events-none absolute top-full z-50 block w-max max-w-[220px] translate-y-1.5 text-left",
+            "pointer-events-none absolute top-full z-50 block w-[260px] translate-y-2 text-left",
             tipPlacement === "below-right" ? "right-0" : "left-0",
           )}
+          style={{
+            borderStyle: "solid",
+            borderWidth: 24,
+            borderImage:
+              "url('/images/sts2/ui/hover_tip.png') 24 fill / 24px / 0 stretch",
+            padding: "4px 8px",
+          }}
         >
-          <HoverTip title={badge.title} style={{ maxWidth: 220 }}>
-            {badge.description && (
+          <span className="block text-xs font-bold leading-5 text-[#FFD479]">
+            <RichText text={badge.title} />
+          </span>
+          {badge.description && (
+            <span className="mt-1 block text-[11px] font-medium leading-5 text-zinc-200">
               <RichText text={badge.description} />
-            )}
-          </HoverTip>
+            </span>
+          )}
         </span>
       )}
     </span>

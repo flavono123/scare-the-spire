@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import Image from "@/components/ui/static-image";
 
 // =============================================================================
 // 게임 hover_tip 9-slice (scenes/ui/hover_tip.tscn)
@@ -10,7 +11,7 @@ import { ReactNode } from "react";
 // =============================================================================
 
 const SLICE = { top: 43, right: 91, bottom: 32, left: 55 };
-const SCALE = 0.45; // 코덱스 페이지에 맞게 축소
+const SCALE = 0.55; // 코덱스 페이지에 맞게 축소
 
 const SRC: Record<HoverTipVariant, string> = {
   default: "/images/sts2/ui/hover_tip.png",
@@ -21,9 +22,11 @@ const SRC: Record<HoverTipVariant, string> = {
 export type HoverTipVariant = "default" | "buff" | "debuff";
 
 interface HoverTipProps {
-  title: ReactNode;
+  title: string;
   variant?: HoverTipVariant;
   icon?: string | null;
+  betaArtImageUrl?: string | null;
+  betaArtAlt?: string;
   children?: ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -33,6 +36,8 @@ export function GameHoverTip({
   title,
   variant = "default",
   icon,
+  betaArtImageUrl,
+  betaArtAlt,
   children,
   className = "",
   style,
@@ -44,13 +49,13 @@ export function GameHoverTip({
 
   // 게임 hover_tip: title 22px, description 22px — 동일 사이즈.
   // 카드 본문 폰트(380px 카드 × 7cqi = 26.6px)와 비슷한 크기.
-  const fontSize = 15;
-  const hasBody = Boolean(children);
+  const fontSize = 16;
 
   return (
-    <div
+    <span
       className={className}
       style={{
+        display: "block",
         borderStyle: "solid",
         borderColor: "transparent",
         borderTopWidth: `${bt}px`,
@@ -67,8 +72,8 @@ export function GameHoverTip({
         ...style,
       }}
     >
-      <div>
-        <div
+      <span style={{ display: "block" }}>
+        <span
           className="flex items-center gap-2"
           style={{
             fontFamily: "var(--font-game-text)",
@@ -77,10 +82,7 @@ export function GameHoverTip({
             color: "#EFC851",
             textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
             textAlign: "left",
-            paddingBottom: hasBody ? 3 : 0,
-            marginBottom: hasBody ? 4 : 0,
-            borderBottom: hasBody ? "1px solid rgba(239, 200, 81, 0.25)" : undefined,
-            whiteSpace: "pre-line",
+            marginBottom: 4,
           }}
         >
           <span>{title}</span>
@@ -92,25 +94,36 @@ export function GameHoverTip({
               style={{ width: fontSize + 2, height: fontSize + 2, objectFit: "contain" }}
             />
           )}
-        </div>
+        </span>
+        {betaArtImageUrl && (
+          <span className="mb-2 block overflow-hidden rounded bg-black/25">
+            <Image
+              src={betaArtImageUrl}
+              alt={betaArtAlt ?? ""}
+              width={260}
+              height={146}
+              className="h-auto w-full object-cover"
+            />
+          </span>
+        )}
         {children && (
-          <div
+          <span
             style={{
+              display: "block",
               fontFamily: "var(--font-game-text)",
               fontSize,
-              lineHeight: 1.28,
+              lineHeight: 1.4,
               color: "#FFF6E2",
               textShadow: "2px 2px 0 rgba(0,0,0,0.45)",
               textAlign: "left",
               textIndent: 0,
-              whiteSpace: "pre-line",
             }}
           >
             {children}
-          </div>
+          </span>
         )}
-      </div>
-    </div>
+      </span>
+    </span>
   );
 }
 
