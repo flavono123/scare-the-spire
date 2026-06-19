@@ -20,7 +20,7 @@ import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import type { EntityVersionDiff, STS2Patch } from "@/lib/types";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
-import { GameHoverTip } from "@/components/codex/hover-tip";
+import { GameHoverTip, type HoverTipArt, type HoverTipArtMode } from "@/components/codex/hover-tip";
 import {
   buildMonsterMoveVisual,
   hasMonsterAnimationPatchDiff,
@@ -82,6 +82,7 @@ type RenderContext = {
   currentVersion?: string;
   patches?: STS2Patch[];
   versionDiffs?: EntityVersionDiff[];
+  epochArtMode?: HoverTipArtMode;
 };
 
 // --- Entity Preview (hover card image) ---
@@ -153,8 +154,7 @@ function GameResourcePreview({
   imageHeight = 64,
   imageStyle,
   hoverTipStyle = { minWidth: 240, maxWidth: 320 },
-  betaArtImageUrl,
-  betaArtAlt,
+  hoverTipArt,
   meta,
   children,
 }: {
@@ -167,17 +167,18 @@ function GameResourcePreview({
   imageHeight?: number;
   imageStyle?: CSSProperties;
   hoverTipStyle?: CSSProperties;
-  betaArtImageUrl?: string | null;
-  betaArtAlt?: string;
+  hoverTipArt?: HoverTipArt;
   meta?: ReactNode;
   children?: ReactNode;
 }) {
+  const showImageFrame = Boolean(imageUrl) && !hoverTipArt;
+
   return (
     <span className="flex w-max max-w-[25rem] items-start gap-2.5">
-      {imageUrl && (
+      {showImageFrame && (
         <span className={imageFrameClassName}>
           <Image
-            src={imageUrl}
+            src={imageUrl!}
             alt={imageAlt}
             width={imageWidth}
             height={imageHeight}
@@ -189,8 +190,7 @@ function GameResourcePreview({
       <GameHoverTip
         title={title}
         style={hoverTipStyle}
-        betaArtImageUrl={betaArtImageUrl}
-        betaArtAlt={betaArtAlt ?? imageAlt}
+        art={hoverTipArt}
       >
         {meta && (
           <span className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[12px]">
@@ -247,6 +247,7 @@ export function EntityPreview({
   currentVersion,
   patches,
   versionDiffs,
+  epochArtMode = "official",
 }: {
   entity: EntityInfo;
   children: ReactNode;
@@ -262,6 +263,7 @@ export function EntityPreview({
   currentVersion?: string;
   patches?: STS2Patch[];
   versionDiffs?: EntityVersionDiff[];
+  epochArtMode?: HoverTipArtMode;
 }) {
   const [show, setShow] = useState(false);
   const [previewPressed, setPreviewPressed] = useState(false);
@@ -637,13 +639,17 @@ export function EntityPreview({
             title={entity.nameKo}
             imageUrl={entity.epochData.imageUrl}
             imageAlt={entity.nameKo}
-            imageFrameClassName="flex h-28 w-40 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-black/20"
-            imageClassName="h-full w-full rounded-lg object-cover"
-            imageWidth={160}
-            imageHeight={112}
             hoverTipStyle={{ width: "max-content", maxWidth: 360, whiteSpace: "nowrap" }}
-            betaArtImageUrl={entity.epochData.betaImageUrl}
-            betaArtAlt={`${entity.nameKo} 베타 아트`}
+            hoverTipArt={{
+              mode: epochArtMode,
+              imageUrl: entity.epochData.imageUrl,
+              betaImageUrl: entity.epochData.betaImageUrl,
+              alt: entity.nameKo,
+              betaAlt: `${entity.nameKo} 베타 아트`,
+              width: 320,
+              height: 224,
+              className: "h-auto w-80 rounded object-cover",
+            }}
             meta={entity.epochData.eraName ? (
               <span className="text-blue-300">
                 {entity.epochData.eraYear ? `${entity.epochData.eraName} ${entity.epochData.eraYear}` : entity.epochData.eraName}
@@ -1516,6 +1522,7 @@ export function PatchNoteRenderer({
   currentVersion,
   patches,
   versionDiffs,
+  epochArtMode,
 }: {
   markdown: string;
   entities?: EntityInfo[];
@@ -1530,6 +1537,7 @@ export function PatchNoteRenderer({
   currentVersion?: string;
   patches?: STS2Patch[];
   versionDiffs?: EntityVersionDiff[];
+  epochArtMode?: HoverTipArtMode;
 }) {
   const allEntities = useMemo(() => entities ?? cards ?? [], [entities, cards]);
   const lookup = useMemo(() => buildEntityLookup(allEntities), [allEntities]);
@@ -1545,8 +1553,9 @@ export function PatchNoteRenderer({
       currentVersion,
       patches,
       versionDiffs,
+      epochArtMode,
     }),
-    [currentVersion, gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, patchVersion, patches, preferEntityLocaleLabel, serviceLocale, versionDiffs],
+    [currentVersion, epochArtMode, gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, patchVersion, patches, preferEntityLocaleLabel, serviceLocale, versionDiffs],
   );
   const lines = withPatchChangeEffects(markdown).split("\n");
 
