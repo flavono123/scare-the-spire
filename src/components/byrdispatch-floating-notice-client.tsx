@@ -10,9 +10,28 @@ import {
   type ShaNewsNotice,
 } from "@/lib/sha-news-static";
 
+const MIGRATED_BYRDISPATCH_HOST = "scare-the-spire.flavono123.workers.dev";
+const configuredSiteHost = parseHost(process.env.NEXT_PUBLIC_SITE_ORIGIN);
+
+function parseHost(origin: string | undefined): string | null {
+  if (!origin) return null;
+
+  try {
+    return new URL(origin).hostname;
+  } catch {
+    return null;
+  }
+}
+
 function isByrdispatchNoticePage(pathname: string | null): boolean {
   const normalized = (pathname ?? "/").replace(/\/+$/, "") || "/";
   return /(^|\/)(?:byrdispatch|sha-news)$/.test(normalized);
+}
+
+function isMigratedByrdispatchHost(): boolean {
+  if (configuredSiteHost === MIGRATED_BYRDISPATCH_HOST) return true;
+  if (typeof window === "undefined") return false;
+  return window.location.hostname === MIGRATED_BYRDISPATCH_HOST;
 }
 
 function isShaNewsNotice(value: unknown): value is ShaNewsNotice {
@@ -24,10 +43,11 @@ function isShaNewsNotice(value: unknown): value is ShaNewsNotice {
 export function ByrdispatchFloatingNoticeClient() {
   const pathname = usePathname();
   const isNoticePage = isByrdispatchNoticePage(pathname);
+  const isMigratedHost = isMigratedByrdispatchHost();
   const [noticeText, setNoticeText] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isNoticePage) return;
+    if (isNoticePage || isMigratedHost) return;
 
     let ignore = false;
 
@@ -45,9 +65,9 @@ export function ByrdispatchFloatingNoticeClient() {
     return () => {
       ignore = true;
     };
-  }, [isNoticePage]);
+  }, [isNoticePage, isMigratedHost]);
 
-  if (isNoticePage || !noticeText) return null;
+  if (isNoticePage || isMigratedHost || !noticeText) return null;
 
   return (
     <aside className="pointer-events-none fixed inset-x-0 bottom-3 z-50 px-3 sm:bottom-5">
