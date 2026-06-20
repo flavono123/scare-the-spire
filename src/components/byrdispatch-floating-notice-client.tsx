@@ -5,33 +5,23 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "@/components/ui/static-image";
 import {
+  isByrdispatchMigrationNoticeText,
+  isByrdispatchMigrationTargetHost,
+  isConfiguredByrdispatchMigrationTargetHost,
   SHA_NEWS_LATEST_NOTICE_PATH,
   SHA_NEWS_NOTICE_ICON,
   type ShaNewsNotice,
 } from "@/lib/sha-news-static";
-
-const MIGRATED_BYRDISPATCH_HOST = "scare-the-spire.flavono123.workers.dev";
-const configuredSiteHost = parseHost(process.env.NEXT_PUBLIC_SITE_ORIGIN);
-
-function parseHost(origin: string | undefined): string | null {
-  if (!origin) return null;
-
-  try {
-    return new URL(origin).hostname;
-  } catch {
-    return null;
-  }
-}
 
 function isByrdispatchNoticePage(pathname: string | null): boolean {
   const normalized = (pathname ?? "/").replace(/\/+$/, "") || "/";
   return /(^|\/)(?:byrdispatch|sha-news)$/.test(normalized);
 }
 
-function isMigratedByrdispatchHost(): boolean {
-  if (configuredSiteHost === MIGRATED_BYRDISPATCH_HOST) return true;
+function isCurrentByrdispatchMigrationTargetHost(): boolean {
+  if (isConfiguredByrdispatchMigrationTargetHost()) return true;
   if (typeof window === "undefined") return false;
-  return window.location.hostname === MIGRATED_BYRDISPATCH_HOST;
+  return isByrdispatchMigrationTargetHost(window.location.hostname);
 }
 
 function isShaNewsNotice(value: unknown): value is ShaNewsNotice {
@@ -43,18 +33,22 @@ function isShaNewsNotice(value: unknown): value is ShaNewsNotice {
 export function ByrdispatchFloatingNoticeClient() {
   const pathname = usePathname();
   const isNoticePage = isByrdispatchNoticePage(pathname);
-  const isMigratedHost = isMigratedByrdispatchHost();
+  const isMigrationTargetHost = isCurrentByrdispatchMigrationTargetHost();
   const [noticeText, setNoticeText] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isNoticePage || isMigratedHost) return;
+    if (isNoticePage) return;
 
     let ignore = false;
 
     fetch(SHA_NEWS_LATEST_NOTICE_PATH, { cache: "force-cache" })
       .then((response) => (response.ok ? response.json() : null))
       .then((notice) => {
-        if (!ignore && isShaNewsNotice(notice)) {
+        if (
+          !ignore
+          && isShaNewsNotice(notice)
+          && !(isMigrationTargetHost && isByrdispatchMigrationNoticeText(notice.text))
+        ) {
           setNoticeText(notice.text);
         }
       })
@@ -65,9 +59,9 @@ export function ByrdispatchFloatingNoticeClient() {
     return () => {
       ignore = true;
     };
-  }, [isNoticePage, isMigratedHost]);
+  }, [isNoticePage, isMigrationTargetHost]);
 
-  if (isNoticePage || isMigratedHost || !noticeText) return null;
+  if (isNoticePage || !noticeText) return null;
 
   return (
     <aside className="pointer-events-none fixed inset-x-0 bottom-3 z-50 px-3 sm:bottom-5">

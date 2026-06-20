@@ -21,6 +21,10 @@ import {
   type ShaNewsSection,
   type ShaNewsStatus,
 } from "@/lib/sha-news";
+import {
+  isByrdispatchMigrationNoticeText,
+  isConfiguredByrdispatchMigrationTargetHost,
+} from "@/lib/sha-news-static";
 import { serviceMessages } from "@/messages/service";
 
 export function generateShaNewsMetadata(
@@ -299,6 +303,10 @@ function ShaNewsSectionList({
   );
 }
 
+function isMigrationNoticeSection(section: ShaNewsSection): boolean {
+  return section.bullets.some((bullet) => isByrdispatchMigrationNoticeText(bullet.text));
+}
+
 export async function renderShaNewsPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
@@ -306,6 +314,7 @@ export async function renderShaNewsPage(
   const messages = serviceMessages[serviceLocale].shaNews;
   const statusLabels = messages.status;
   const commonMessages = serviceMessages[serviceLocale].codex.common;
+  const hideMigrationNotice = isConfiguredByrdispatchMigrationTargetHost();
   const [entries, entities, gameUi] = await Promise.all([
     getShaNewsEntries(),
     loadAllEntities({ gameLocale }),
@@ -334,41 +343,47 @@ export async function renderShaNewsPage(
 
       {entries.length > 0 && (
         <div className="mt-8 space-y-8">
-          {entries.map((entry) => (
-            <article
-              key={entry.date}
-              className="border-t border-border/70 pt-6 first:border-t-0 first:pt-0"
-            >
-              <time className="text-sm font-black text-zinc-500" dateTime={entry.date}>
-                {entry.date}
-              </time>
-              {entry.noticeSections.length > 0 && (
-                <div className="mt-4">
-                  <ShaNewsSectionList
-                    sections={entry.noticeSections}
-                    notice
-                    entities={entities}
-                    gameUi={gameUi}
-                    serviceLocale={serviceLocale}
-                    gameLocale={gameLocale}
-                    statusLabels={statusLabels}
-                  />
-                </div>
-              )}
-              {entry.regularSections.length > 0 && (
-                <div className={entry.noticeSections.length > 0 ? "mt-5" : "mt-4"}>
-                  <ShaNewsSectionList
-                    sections={entry.regularSections}
-                    entities={entities}
-                    gameUi={gameUi}
-                    serviceLocale={serviceLocale}
-                    gameLocale={gameLocale}
-                    statusLabels={statusLabels}
-                  />
-                </div>
-              )}
-            </article>
-          ))}
+          {entries.map((entry) => {
+            const noticeSections = hideMigrationNotice
+              ? entry.noticeSections.filter((section) => !isMigrationNoticeSection(section))
+              : entry.noticeSections;
+
+            return (
+              <article
+                key={entry.date}
+                className="border-t border-border/70 pt-6 first:border-t-0 first:pt-0"
+              >
+                <time className="text-sm font-black text-zinc-500" dateTime={entry.date}>
+                  {entry.date}
+                </time>
+                {noticeSections.length > 0 && (
+                  <div className="mt-4">
+                    <ShaNewsSectionList
+                      sections={noticeSections}
+                      notice
+                      entities={entities}
+                      gameUi={gameUi}
+                      serviceLocale={serviceLocale}
+                      gameLocale={gameLocale}
+                      statusLabels={statusLabels}
+                    />
+                  </div>
+                )}
+                {entry.regularSections.length > 0 && (
+                  <div className={noticeSections.length > 0 ? "mt-5" : "mt-4"}>
+                    <ShaNewsSectionList
+                      sections={entry.regularSections}
+                      entities={entities}
+                      gameUi={gameUi}
+                      serviceLocale={serviceLocale}
+                      gameLocale={gameLocale}
+                      statusLabels={statusLabels}
+                    />
+                  </div>
+                )}
+              </article>
+            );
+          })}
         </div>
       )}
 
