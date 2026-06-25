@@ -8,6 +8,30 @@ const nextConfig: NextConfig = {
         generateBuildId: async () => configuredBuildId,
       }
     : {}),
+  async redirects() {
+    return [
+      {
+        source: "/ko",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/ko/:path*",
+        destination: "/:path*",
+        permanent: true,
+      },
+      {
+        source: "/kor",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/kor/:path*",
+        destination: "/:path*",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     // Keep Vercel image transformations at zero on the free tier.
     unoptimized: true,
