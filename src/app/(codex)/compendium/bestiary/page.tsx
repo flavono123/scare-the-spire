@@ -69,12 +69,8 @@ export async function generateCompendiumBestiaryMetadata(
   return getCodexMetadata(serviceLocale, gameUi.bestiaryTitle);
 }
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<SearchParamsRecord>;
-}): Promise<Metadata> {
-  return generateCompendiumBestiaryMetadata(DEFAULT_ROUTE_GAME_LOCALE, await searchParams);
+export async function generateMetadata(): Promise<Metadata> {
+  return generateCompendiumBestiaryMetadata();
 }
 
 export async function renderCompendiumBestiaryPage(
