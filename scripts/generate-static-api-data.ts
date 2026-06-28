@@ -19,16 +19,23 @@ async function writeJson(target: StaticJsonTarget) {
 }
 
 async function main() {
-  const [searchIndex, commentEntities, compendiumDetailPayload] = await Promise.all([
+  const [
+    searchIndex,
+    commentEntities,
+    koreanCompendiumDetailPayload,
+    englishCompendiumDetailPayload,
+  ] = await Promise.all([
     buildSearchIndexPayload(),
     loadAllEntities(),
-    buildCompendiumDetailPayload(),
+    buildCompendiumDetailPayload("ko"),
+    buildCompendiumDetailPayload("en"),
   ]);
 
   await Promise.all([
     writeJson({ path: "generated/search-index.json", data: searchIndex }),
     writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities }),
-    writeJson({ path: "generated/compendium-detail-kor.json", data: compendiumDetailPayload }),
+    writeJson({ path: "generated/compendium-detail-kor.json", data: koreanCompendiumDetailPayload }),
+    writeJson({ path: "generated/compendium-detail-eng.json", data: englishCompendiumDetailPayload }),
     writeJson({ path: "api/search-index", data: searchIndex }),
     writeJson({ path: "comment-entities/sts2", data: commentEntities }),
   ]);
