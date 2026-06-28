@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const configuredBuildId = process.env.NEXT_BUILD_ID?.trim();
 
 const nextConfig: NextConfig = {
-  staticPageGenerationTimeout: 180,
+  staticPageGenerationTimeout: 420,
   ...(configuredBuildId
     ? {
         generateBuildId: async () => configuredBuildId,
