@@ -1,7 +1,7 @@
-import { generateMetadata as generateBaseMetadata } from "@/app/(codex)/_codex/potions/[id]/page";
 import { LocalizedCompendiumDirectDetailPage } from "@/components/codex/localized-compendium-direct-detail-page";
 import { generateLocalizedStaticParams, generatePotionStaticParams } from "@/lib/codex-static-params";
-import { getLocalePairFromParams, searchRecordForGameLocale, type LocaleRouteParams } from "@/lib/locale-routing";
+import { generateCompendiumPotionMetadata } from "@/lib/compendium-detail-metadata";
+import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -14,11 +14,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { gameLocale, id } = await getLocalePairFromParams(params);
-  return generateBaseMetadata({
-    params: Promise.resolve({ id }),
-    searchParams: Promise.resolve(searchRecordForGameLocale(gameLocale)),
-  });
+  const { gameLocale, serviceLocale, id } = await getLocalePairFromParams(params);
+  return generateCompendiumPotionMetadata(id, { gameLocale, serviceLocale });
 }
 
 export default async function LocalizedDetailPage({ params }: Props) {
