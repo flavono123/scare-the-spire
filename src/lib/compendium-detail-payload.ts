@@ -17,7 +17,13 @@ import type {
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 
-export const COMPENDIUM_DETAIL_PAYLOAD_PATH = "/generated/compendium-detail-kor.json";
+export const COMPENDIUM_DETAIL_PAYLOAD_PATH_BY_SERVICE_LOCALE = {
+  ko: "/generated/compendium-detail-kor.json",
+  en: "/generated/compendium-detail-eng.json",
+} as const satisfies Record<ServiceLocale, string>;
+
+export const COMPENDIUM_DETAIL_PAYLOAD_PATH =
+  COMPENDIUM_DETAIL_PAYLOAD_PATH_BY_SERVICE_LOCALE.ko;
 
 export type CompendiumDetailResourceType =
   | "ancients"

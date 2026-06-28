@@ -23,19 +23,22 @@ async function main() {
   const [
     searchIndex,
     commentEntities,
-    compendiumDetailPayload,
+    koreanCompendiumDetailPayload,
+    englishCompendiumDetailPayload,
     latestShaNewsNotice,
   ] = await Promise.all([
     buildSearchIndexPayload(),
     loadAllEntities(),
-    buildCompendiumDetailPayload(),
+    buildCompendiumDetailPayload("ko"),
+    buildCompendiumDetailPayload("en"),
     getLatestShaNewsNotice(),
   ]);
 
   await Promise.all([
     writeJson({ path: "generated/search-index.json", data: searchIndex }),
     writeJson({ path: "generated/comment-entities-sts2.json", data: commentEntities }),
-    writeJson({ path: "generated/compendium-detail-kor.json", data: compendiumDetailPayload }),
+    writeJson({ path: "generated/compendium-detail-kor.json", data: koreanCompendiumDetailPayload }),
+    writeJson({ path: "generated/compendium-detail-eng.json", data: englishCompendiumDetailPayload }),
     writeJson({ path: "generated/latest-byrdispatch-notice.json", data: latestShaNewsNotice }),
     writeJson({ path: "api/search-index", data: searchIndex }),
     writeJson({ path: "comment-entities/sts2", data: commentEntities }),

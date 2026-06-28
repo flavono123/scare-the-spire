@@ -1,4 +1,5 @@
-import BasePage, { generateMetadata as generateBaseMetadata } from "@/app/(codex)/_codex/powers/[id]/page";
+import { generateMetadata as generateBaseMetadata } from "@/app/(codex)/_codex/powers/[id]/page";
+import { LocalizedCompendiumDirectDetailPage } from "@/components/codex/localized-compendium-direct-detail-page";
 import { generateLocalizedStaticParams, generatePowerStaticParams } from "@/lib/codex-static-params";
 import { getLocalePairFromParams, searchRecordForGameLocale, type LocaleRouteParams } from "@/lib/locale-routing";
 
@@ -22,8 +23,5 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function LocalizedDetailPage({ params }: Props) {
   const { gameLocale, id } = await getLocalePairFromParams(params);
-  return BasePage({
-    params: Promise.resolve({ id }),
-    searchParams: Promise.resolve(searchRecordForGameLocale(gameLocale)),
-  });
+  return <LocalizedCompendiumDirectDetailPage resourceType="powers" id={id} gameLocale={gameLocale} />;
 }

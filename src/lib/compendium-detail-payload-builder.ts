@@ -19,11 +19,13 @@ import { getEntityVersionDiffs, getSTS2Changes, getSTS2Patches } from "@/lib/dat
 import {
   DEFAULT_GAME_LOCALE_BY_SERVICE,
   DEFAULT_SERVICE_LOCALE,
+  type ServiceLocale,
 } from "@/lib/i18n";
 import type { CompendiumDetailPayload } from "@/lib/compendium-detail-payload";
 
-export async function buildCompendiumDetailPayload(): Promise<CompendiumDetailPayload> {
-  const serviceLocale = DEFAULT_SERVICE_LOCALE;
+export async function buildCompendiumDetailPayload(
+  serviceLocale: ServiceLocale = DEFAULT_SERVICE_LOCALE,
+): Promise<CompendiumDetailPayload> {
   const gameLocale = DEFAULT_GAME_LOCALE_BY_SERVICE[serviceLocale];
 
   const [

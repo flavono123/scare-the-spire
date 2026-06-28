@@ -26,20 +26,25 @@ import type { PotionPool, RelicPool } from "@/lib/codex-types";
 type CompendiumDirectDetailPageProps = {
   resourceType: CompendiumDetailResourceType;
   id: string;
+  payloadPath?: string;
 };
 
-let payloadPromise: Promise<CompendiumDetailPayload> | null = null;
+const payloadPromises = new Map<string, Promise<CompendiumDetailPayload>>();
 
-function fetchDetailPayload(): Promise<CompendiumDetailPayload> {
-  payloadPromise ??= fetch(COMPENDIUM_DETAIL_PAYLOAD_PATH)
+function fetchDetailPayload(payloadPath: string): Promise<CompendiumDetailPayload> {
+  const existingPromise = payloadPromises.get(payloadPath);
+  if (existingPromise) return existingPromise;
+
+  const nextPromise = fetch(payloadPath)
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`Failed to load ${COMPENDIUM_DETAIL_PAYLOAD_PATH}`);
+        throw new Error(`Failed to load ${payloadPath}`);
       }
       return response.json() as Promise<CompendiumDetailPayload>;
     });
 
-  return payloadPromise;
+  payloadPromises.set(payloadPath, nextPromise);
+  return nextPromise;
 }
 
 function findByRouteId<T extends { id: string }>(
@@ -241,13 +246,14 @@ function LoadingState({ label }: { label: string }) {
 export function CompendiumDirectDetailPage({
   resourceType,
   id,
+  payloadPath = COMPENDIUM_DETAIL_PAYLOAD_PATH,
 }: CompendiumDirectDetailPageProps) {
   const [payload, setPayload] = useState<CompendiumDetailPayload | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     let active = true;
-    fetchDetailPayload()
+    fetchDetailPayload(payloadPath)
       .then((nextPayload) => {
         if (active) setPayload(nextPayload);
       })
@@ -258,7 +264,7 @@ export function CompendiumDirectDetailPage({
     return () => {
       active = false;
     };
-  }, []);
+  }, [payloadPath]);
 
   const entities = useMemo(
     () => payload ? buildEntityInfo(payload) : [],

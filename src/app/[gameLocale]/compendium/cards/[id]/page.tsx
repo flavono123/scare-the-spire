@@ -1,4 +1,5 @@
-import BasePage, { generateMetadata as generateBaseMetadata } from "@/app/(codex)/_codex/cards/[id]/page";
+import { generateMetadata as generateBaseMetadata } from "@/app/(codex)/_codex/cards/[id]/page";
+import { LocalizedCompendiumDirectDetailPage } from "@/components/codex/localized-compendium-direct-detail-page";
 import { generateCardStaticParams, generateLocalizedStaticParams } from "@/lib/codex-static-params";
 import { getLocalePairFromParams, searchRecordForGameLocale, type LocaleRouteParams } from "@/lib/locale-routing";
 
@@ -32,10 +33,7 @@ export async function generateMetadata({ params, searchParams }: Props) {
   });
 }
 
-export default async function LocalizedDetailPage({ params, searchParams }: Props) {
+export default async function LocalizedDetailPage({ params }: Props) {
   const { gameLocale, id } = await getLocalePairFromParams(params);
-  return BasePage({
-    params: Promise.resolve({ id }),
-    searchParams: localizedSearchParams(gameLocale, searchParams),
-  });
+  return <LocalizedCompendiumDirectDetailPage resourceType="cards" id={id} gameLocale={gameLocale} />;
 }
