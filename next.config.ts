@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  staticPageGenerationTimeout: 180,
+  staticPageGenerationTimeout: 420,
   images: {
     // Keep Vercel image transformations at zero on the free tier.
     unoptimized: true,
