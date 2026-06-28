@@ -14,10 +14,10 @@ import {
   getCodexRelics,
 } from "@/lib/codex-data";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
-import { generateLocaleStaticParams } from "@/lib/locale-routing";
 
 type StaticIdParam = { id: string };
 type LocalizedStaticIdParam = StaticIdParam & { gameLocale: string };
+const STATIC_LOCALIZED_DETAIL_PARAMS = [{ gameLocale: "en" }] as const;
 
 function idParams(rows: { id: string }[]): StaticIdParam[] {
   return rows.map((row) => ({ id: row.id.toLowerCase() }));
@@ -26,12 +26,9 @@ function idParams(rows: { id: string }[]): StaticIdParam[] {
 export async function generateLocalizedStaticParams(
   generateParams: () => Promise<StaticIdParam[]>,
 ): Promise<LocalizedStaticIdParam[]> {
-  const [locales, params] = await Promise.all([
-    generateLocaleStaticParams(),
-    generateParams(),
-  ]);
+  const params = await generateParams();
 
-  return locales.flatMap((locale) =>
+  return STATIC_LOCALIZED_DETAIL_PARAMS.flatMap((locale) =>
     params.map((param) => ({
       ...locale,
       ...param,
