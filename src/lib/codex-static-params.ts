@@ -14,11 +14,29 @@ import {
   getCodexRelics,
 } from "@/lib/codex-data";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
+import { generateLocaleStaticParams } from "@/lib/locale-routing";
 
 type StaticIdParam = { id: string };
+type LocalizedStaticIdParam = StaticIdParam & { gameLocale: string };
 
 function idParams(rows: { id: string }[]): StaticIdParam[] {
   return rows.map((row) => ({ id: row.id.toLowerCase() }));
+}
+
+export async function generateLocalizedStaticParams(
+  generateParams: () => Promise<StaticIdParam[]>,
+): Promise<LocalizedStaticIdParam[]> {
+  const [locales, params] = await Promise.all([
+    generateLocaleStaticParams(),
+    generateParams(),
+  ]);
+
+  return locales.flatMap((locale) =>
+    params.map((param) => ({
+      ...locale,
+      ...param,
+    })),
+  );
 }
 
 export async function generateAncientStaticParams(): Promise<StaticIdParam[]> {
