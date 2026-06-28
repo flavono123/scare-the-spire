@@ -1,10 +1,16 @@
 import BasePage, { generateMetadata as generateBaseMetadata } from "@/app/(codex)/_codex/characters/[id]/page";
+import { generateCharacterStaticParams, generateLocalizedStaticParams } from "@/lib/codex-static-params";
 import { getLocalePairFromParams, searchRecordForGameLocale, type LocaleRouteParams } from "@/lib/locale-routing";
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
 type Props = {
   params: Promise<LocaleRouteParams<{ id: string }>>;
 };
+
+export async function generateStaticParams() {
+  return generateLocalizedStaticParams(generateCharacterStaticParams);
+}
 
 export async function generateMetadata({ params }: Props) {
   const { gameLocale, id } = await getLocalePairFromParams(params);

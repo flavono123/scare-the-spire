@@ -1,10 +1,16 @@
 import BasePage, { generateMetadata as generateBaseMetadata } from "@/app/(codex)/_codex/relics/[id]/page";
+import { generateLocalizedStaticParams, generateRelicStaticParams } from "@/lib/codex-static-params";
 import { getLocalePairFromParams, searchRecordForGameLocale, type LocaleRouteParams } from "@/lib/locale-routing";
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
 type Props = {
   params: Promise<LocaleRouteParams<{ id: string }>>;
 };
+
+export async function generateStaticParams() {
+  return generateLocalizedStaticParams(generateRelicStaticParams);
+}
 
 export async function generateMetadata({ params }: Props) {
   const { gameLocale, id } = await getLocalePairFromParams(params);
