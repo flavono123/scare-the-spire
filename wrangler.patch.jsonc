@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "scare-the-spire-patches",
+  "main": "workers/patch-worker.ts",
+  "minify": true,
+  "compatibility_date": "2026-06-15",
+  "assets": {
+    "directory": ".patch-worker/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

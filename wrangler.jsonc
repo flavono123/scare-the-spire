@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "scare-the-spire",
-  "main": ".open-next/worker.js",
+  "main": "workers/main-worker.ts",
   "minify": true,
   "compatibility_date": "2026-06-15",
   "compatibility_flags": ["nodejs_compat"],
@@ -9,6 +9,12 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "services": [
+    {
+      "binding": "PATCH_WORKER",
+      "service": "scare-the-spire-patches"
+    }
+  ],
   "observability": {
     "enabled": true
   }

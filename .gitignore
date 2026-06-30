@@ -17,6 +17,7 @@
 /.next/
 /out/
 /.open-next/
+/.patch-worker/
 /.wrangler/
 
 # production
