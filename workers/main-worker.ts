@@ -26,7 +26,7 @@ function isPatchWorkerPath(pathname: string): boolean {
   );
 }
 
-export default {
+const mainWorker = {
   fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
     const url = new URL(request.url);
     if (env.PATCH_WORKER && isPatchWorkerPath(url.pathname)) {
@@ -35,3 +35,5 @@ export default {
     return openNextWorker.fetch(request, env, ctx);
   },
 };
+
+export default mainWorker;

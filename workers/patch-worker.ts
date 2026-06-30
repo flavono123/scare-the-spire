@@ -14,7 +14,7 @@ function assetPathForUrl(url: URL): string {
   return url.pathname;
 }
 
-export default {
+const patchWorker = {
   fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     const assetUrl = new URL(request.url);
@@ -22,3 +22,5 @@ export default {
     return env.ASSETS.fetch(new Request(assetUrl, request));
   },
 };
+
+export default patchWorker;

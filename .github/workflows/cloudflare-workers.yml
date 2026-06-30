@@ -32,24 +32,105 @@ jobs:
       NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN: ${{ secrets.NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN || vars.NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect Cloudflare deployment scope
+        id: changes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          patch_changed=false
+          main_changed=false
+          patch_after_main=false
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            patch_changed=true
+            main_changed=true
+            patch_after_main=true
+            changed_files="workflow_dispatch"
+          else
+            base="${{ github.event.before }}"
+            if [[ -z "$base" || "$base" =~ ^0+$ ]]; then
+              base="$(git rev-list --max-parents=0 HEAD)"
+            fi
+
+            changed_files="$(git diff --name-only "$base" "$GITHUB_SHA")"
+
+            while IFS= read -r file; do
+              [[ -z "$file" ]] && continue
+
+              case "$file" in
+                AGENTS.md|docs/*|.codex/skills/*)
+                  ;;
+                data/sts2-patch-notes/*|data/sts2-patches.json|data/sts2-patch-local-resources.json|src/components/patch-note-renderer.tsx|src/components/patches/*|src/app/\(main\)/patches/*|src/app/\[gameLocale\]/patches/*|src/lib/sts2-patch-*.ts|scripts/build-patch-worker.tsx|scripts/dev-patch-proxy.mjs|workers/patch-worker.ts|wrangler.patch.jsonc)
+                  patch_changed=true
+                  ;;
+                data/sts2/*|data/sts2-changes.json|data/sts2-entity-versions.json|public/images/sts2/*|src/app/\(codex\)/*|src/app/\[gameLocale\]/compendium/*|src/components/codex/*|src/lib/codex-*.ts|src/lib/compendium-*.ts|scripts/generate-static-api-data.ts)
+                  main_changed=true
+                  patch_after_main=true
+                  ;;
+                package.json|pnpm-lock.yaml|next.config.*|open-next.config.*|postcss.config.*|tsconfig.json|src/app/globals.css|src/components/*|src/lib/*|scripts/*|workers/main-worker.ts|wrangler.jsonc)
+                  main_changed=true
+                  patch_changed=true
+                  patch_after_main=true
+                  ;;
+                data/*|public/*|src/*)
+                  main_changed=true
+                  ;;
+                *)
+                  ;;
+              esac
+            done <<< "$changed_files"
+          fi
+
+          deploy_any=false
+          if [[ "$patch_changed" == "true" || "$main_changed" == "true" || "$patch_after_main" == "true" ]]; then
+            deploy_any=true
+          fi
+
+          {
+            echo "patch=${patch_changed}"
+            echo "main=${main_changed}"
+            echo "patch_after_main=${patch_after_main}"
+            echo "deploy_any=${deploy_any}"
+          } >> "$GITHUB_OUTPUT"
+
+          {
+            echo "### Cloudflare deploy scope"
+            echo ""
+            echo "- patch_changed: ${patch_changed}"
+            echo "- main_changed: ${main_changed}"
+            echo "- patch_after_main: ${patch_after_main}"
+            echo ""
+            echo "Changed files:"
+            echo '```'
+            echo "$changed_files"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - uses: pnpm/action-setup@v4
+        if: steps.changes.outputs.deploy_any == 'true'
 
       - uses: actions/setup-node@v4
+        if: steps.changes.outputs.deploy_any == 'true'
         with:
           node-version: 22
           cache: pnpm
 
       - name: Restore Next.js build cache
+        if: steps.changes.outputs.main == 'true'
         uses: actions/cache@v4
         with:
           path: .next/cache
-          key: ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'open-next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*') }}
+          key: ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('package.json', 'next.config.*', 'open-next.config.*', 'wrangler.jsonc', 'tsconfig.json', 'src/**/*', 'data/**/*', 'public/**/*', 'scripts/**/*', 'workers/**/*') }}
           restore-keys: |
             ${{ runner.os }}-next-${{ hashFiles('pnpm-lock.yaml') }}-
             ${{ runner.os }}-next-
 
       - name: Validate Cloudflare production configuration
+        if: steps.changes.outputs.deploy_any == 'true'
         run: |
           test -n "$CLOUDFLARE_ACCOUNT_ID"
           test -n "$CLOUDFLARE_API_TOKEN"
@@ -61,6 +142,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Compute Cloudflare build id
+        if: steps.changes.outputs.main == 'true'
         run: |
           build_hash="$(
             git ls-files -z -- \
@@ -75,6 +157,7 @@ jobs:
               data \
               public \
               scripts \
+              workers/main-worker.ts \
               | xargs -0 shasum -a 256 \
               | shasum -a 256 \
               | cut -c1-20
@@ -84,17 +167,29 @@ jobs:
           echo "Cloudflare build id: cf-${build_hash}"
 
       - run: pnpm install --frozen-lockfile
+        if: steps.changes.outputs.deploy_any == 'true'
 
       - run: pnpm i18n:validate
+        if: steps.changes.outputs.deploy_any == 'true'
 
       - run: pnpm lint
+        if: steps.changes.outputs.deploy_any == 'true'
+
+      - name: Deploy patch Worker before main
+        if: steps.changes.outputs.patch == 'true'
+        run: pnpm cf:patch:deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PATCH_COMPENDIUM_MANIFEST_SOURCE: live
 
       - name: Deploy to Cloudflare Workers
+        if: steps.changes.outputs.main == 'true'
         run: pnpm cf:deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Smoke deployed Cloudflare Worker
+        if: steps.changes.outputs.main == 'true'
         run: |
           origin="${NEXT_PUBLIC_SITE_ORIGIN%/}"
 
@@ -118,3 +213,39 @@ jobs:
           smoke "/"
           smoke "/compendium/cards"
           smoke "/generated/search-index.json"
+          smoke "/generated/compendium-resource-manifest.json"
+
+      - name: Redeploy patch Worker after main
+        if: steps.changes.outputs.main == 'true' && steps.changes.outputs.patch_after_main == 'true'
+        run: pnpm cf:patch:deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PATCH_COMPENDIUM_MANIFEST_SOURCE: live
+
+      - name: Smoke deployed patch Worker routes
+        if: steps.changes.outputs.patch == 'true' || steps.changes.outputs.patch_after_main == 'true'
+        run: |
+          origin="${NEXT_PUBLIC_SITE_ORIGIN%/}"
+          latest="$(node -e 'const patches = require("./data/sts2-patches.json"); patches.sort((a, b) => b.date.localeCompare(a.date)); process.stdout.write(patches[0].version)')"
+
+          smoke() {
+            path="$1"
+            url="${origin}${path}"
+
+            for attempt in $(seq 1 30); do
+              status="$(curl --silent --show-error --output /dev/null --write-out "%{http_code}" "$url" || true)"
+              echo "smoke ${url}: HTTP ${status} (attempt ${attempt}/30)"
+              case "$status" in
+                2*|3*) return 0 ;;
+              esac
+              sleep 5
+            done
+
+            echo "smoke failed for ${url}"
+            return 1
+          }
+
+          smoke "/patches"
+          smoke "/patches/${latest}"
+          smoke "/en/patches/${latest}"
+          smoke "/_patches/patch.css"
