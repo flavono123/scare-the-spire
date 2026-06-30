@@ -20,6 +20,7 @@
     "patch:css": "tailwindcss -i src/app/globals.css -o .patch-worker/assets/_patches/patch.css --minify",
     "patch:dev": "pnpm cf:patch:preview",
     "patch:html": "tsx scripts/build-patch-worker.tsx",
+    "patch:test": "tsx scripts/check-patch-pending-links.tsx",
     "start": "next start",
     "lint": "eslint",
     "test:visual": "playwright test scripts/visual-check.spec.ts",

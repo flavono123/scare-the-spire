@@ -175,6 +175,9 @@ jobs:
       - run: pnpm lint
         if: steps.changes.outputs.deploy_any == 'true'
 
+      - run: pnpm patch:test
+        if: steps.changes.outputs.patch == 'true' || steps.changes.outputs.patch_after_main == 'true'
+
       - name: Deploy patch Worker before main
         if: steps.changes.outputs.patch == 'true'
         run: pnpm cf:patch:deploy
