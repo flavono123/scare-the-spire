@@ -1,3 +1,5 @@
+import fs from "fs/promises";
+import path from "path";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
 import {
   getCodexAfflictions,
@@ -44,6 +46,7 @@ export type CompendiumResourceManifest = {
 };
 
 type ResourceRow = { id: string };
+const GENERATED_MANIFEST_PATH = path.join(process.cwd(), "public/generated/compendium-resource-manifest.json");
 
 function manifestEntry(rows: ResourceRow[]): CompendiumResourceManifestEntry {
   const ids = rows.map((row) => row.id).sort((a, b) => a.localeCompare(b));
@@ -102,6 +105,16 @@ export async function buildCompendiumResourceManifest(): Promise<CompendiumResou
       epochs: manifestEntry(epochs),
     },
   };
+}
+
+export async function loadGeneratedCompendiumResourceManifest(): Promise<CompendiumResourceManifest> {
+  const raw = await fs.readFile(GENERATED_MANIFEST_PATH, "utf-8").catch((error: NodeJS.ErrnoException) => {
+    if (error.code === "ENOENT") return null;
+    throw error;
+  });
+
+  if (!raw) return buildCompendiumResourceManifest();
+  return JSON.parse(raw) as CompendiumResourceManifest;
 }
 
 export function compendiumManifestHasResource(

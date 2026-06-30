@@ -40,6 +40,7 @@ export interface EntityInfo {
   aliasesKo?: string[];
   imageUrl: string | null;
   href?: string | null;
+  availability?: "available" | "pending-compendium";
   color: string; // card color or pool
   type: EntityType;
   cardPreviewUpgradeLevel?: number; // Patch-note token explicitly refers to an upgraded card, e.g. Largesse+.
@@ -281,6 +282,7 @@ export function EntityPreview({
     () => reconstructPatchPreviewEntity(entity, patchVersion, currentVersion, versionDiffs, patches),
     [currentVersion, entity, patchVersion, patches, versionDiffs],
   );
+  const isPendingCompendium = previewEntity.availability === "pending-compendium";
 
   const handleMouseEnter = useCallback(() => {
     setPreviewNonce((value) => value + 1);
@@ -309,7 +311,7 @@ export function EntityPreview({
     ancient: `/compendium/ancients/${entity.id.toLowerCase()}`,
     epoch: `/compendium/epochs/${entity.id.toLowerCase()}`,
   };
-  const hrefBase = entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
+  const hrefBase = isPendingCompendium ? null : entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
   const href = hrefBase && serviceLocale && gameLocale
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : hrefBase;
@@ -317,6 +319,12 @@ export function EntityPreview({
     ? `${previewEntity.nameKo}${cardPreviewUpgradeSuffix(previewEntity)}`
     : children;
   const renderedLinkText = <span className="font-game-title">{linkText}</span>;
+  const resolvedLinkClassName = isPendingCompendium
+    ? [
+        linkClassName ?? DEFAULT_ENTITY_LINK_CLASS,
+        "text-fuchsia-200 decoration-dotted decoration-fuchsia-300/60 hover:text-fuchsia-100",
+      ].join(" ")
+    : linkClassName ?? DEFAULT_ENTITY_LINK_CLASS;
 
   const openTapPreview = useCallback((event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
     if (!useTapPreview) return;
@@ -388,7 +396,7 @@ export function EntityPreview({
       {!forceShow && href && (
         <Link
           href={href}
-          className={linkClassName ?? DEFAULT_ENTITY_LINK_CLASS}
+          className={resolvedLinkClassName}
           onClick={openTapPreview}
           aria-expanded={useTapPreview ? show : undefined}
         >
@@ -399,7 +407,7 @@ export function EntityPreview({
         <span
           role="button"
           tabIndex={0}
-          className={linkClassName ?? DEFAULT_ENTITY_LINK_CLASS}
+          className={resolvedLinkClassName}
           onClick={openTapPreview}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " ") {
@@ -418,6 +426,27 @@ export function EntityPreview({
           className="fixed inset-0 z-[110] cursor-default bg-black/35"
           onClick={() => setShow(false)}
         />
+      )}
+      {visible && isPendingCompendium && (
+        renderTooltip(
+          <GameResourcePreview
+            title={previewEntity.nameKo}
+            imageUrl={previewEntity.imageUrl}
+            imageAlt={previewEntity.nameKo}
+            imageClassName="h-14 w-14 rounded object-cover opacity-60 grayscale"
+            meta={(
+              <span className="rounded border border-fuchsia-400/30 bg-fuchsia-500/10 px-1.5 py-0.5 text-[11px] font-semibold text-fuchsia-200">
+                {serviceLocale === "en" ? "Compendium page in progress" : "모음집 준비 중"}
+              </span>
+            )}
+          >
+            <span className="text-sm text-zinc-300">
+              {serviceLocale === "en"
+                ? "This patch note can be published before the Compendium page is ready."
+                : "패치노트가 모음집 페이지보다 먼저 배포된 상태입니다."}
+            </span>
+          </GameResourcePreview>,
+        )
       )}
       {visible && previewEntity.type === "card" && previewEntity.cardData && (
         renderTooltip(
@@ -658,7 +687,7 @@ export function EntityPreview({
           />,
         )
       )}
-      {visible && !entity.cardData && !entity.characterData && !entity.keywordData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.monsterMoveData && !entity.encounterData && !entity.ancientData && !entity.epochData && entity.imageUrl && (
+      {visible && !isPendingCompendium && !entity.cardData && !entity.characterData && !entity.keywordData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.monsterMoveData && !entity.encounterData && !entity.ancientData && !entity.epochData && entity.imageUrl && (
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}

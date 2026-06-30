@@ -29,6 +29,8 @@ import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType } from "@/lib/types";
 import type { CodexMonster, DamageValue, MonsterActionType, MonsterMove } from "@/lib/codex-types";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
+import { loadGeneratedCompendiumResourceManifest } from "@/lib/compendium-resource-manifest";
+import { loadPatchLocalEntities } from "@/lib/patch-local-resources";
 
 const PATCH_COPY: Record<ServiceLocale, {
   backToList: string;
@@ -758,7 +760,7 @@ export async function PatchDetailPage({
   gameLocale: GameLocale;
 }) {
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels] = await Promise.all([
+  const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest] = await Promise.all([
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
@@ -775,6 +777,7 @@ export async function PatchDetailPage({
     getCodexGameUiLabels(gameLocale),
     getPatchGameKeywordLabels(gameLocale),
     getPatchGameHeadingLabels(gameLocale),
+    loadGeneratedCompendiumResourceManifest(),
   ]);
 
   const patch = patches.find((p) => p.version === version);
@@ -807,9 +810,14 @@ export async function PatchDetailPage({
   const publicCodexMonsters = codexMonsters.filter((monster) =>
     monster.showInCompendium && isPublicBestiaryMonster(monster.id),
   );
+  const patchLocalEntities = await loadPatchLocalEntities({
+    version: patch.version,
+    compendiumManifest,
+  });
 
   // Build entity info for the renderer (cards + relics + potions)
   const entities: EntityInfo[] = [
+    ...patchLocalEntities,
     ...codexCards.map((c) => ({
       id: c.id,
       nameEn: c.nameEn,
