@@ -283,6 +283,7 @@ export function EntityPreview({
     [currentVersion, entity, patchVersion, patches, versionDiffs],
   );
   const isPendingCompendium = previewEntity.availability === "pending-compendium";
+  const pendingStaticPreview = isPendingCompendium && !useTapPreview && !forceShow;
 
   const handleMouseEnter = useCallback(() => {
     setPreviewNonce((value) => value + 1);
@@ -356,7 +357,10 @@ export function EntityPreview({
     ? "relative z-50 mt-1"
     : useTapPreview
       ? "fixed z-[120] pointer-events-auto"
-    : `absolute ${previewHorizontalClass(placement.horizontal)} z-50 pointer-events-none ${placement.vertical === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
+      : [
+          `absolute ${previewHorizontalClass(placement.horizontal)} z-50 pointer-events-none ${placement.vertical === "above" ? "bottom-full mb-2" : "top-full mt-2"}`,
+          pendingStaticPreview ? "opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100" : "",
+        ].filter(Boolean).join(" ");
   const renderTooltip = (content: ReactNode, variant: "card" | "box" = "box") => (
     <span className={tooltipPos} style={useTapPreview ? tapPreviewStyle : undefined}>
       {useTapPreview ? (
@@ -385,7 +389,7 @@ export function EntityPreview({
   return (
     <span
       ref={ref}
-      className={forceShow ? "inline-block" : "relative inline"}
+      className={forceShow ? "inline-block" : pendingStaticPreview ? "group relative inline" : "relative inline"}
       onMouseEnter={() => {
         if (!useTapPreview) handleMouseEnter();
       }}
@@ -427,7 +431,7 @@ export function EntityPreview({
           onClick={() => setShow(false)}
         />
       )}
-      {visible && isPendingCompendium && (
+      {(visible || pendingStaticPreview) && isPendingCompendium && (
         renderTooltip(
           <GameResourcePreview
             title={previewEntity.nameKo}
