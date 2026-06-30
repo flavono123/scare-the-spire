@@ -27,6 +27,12 @@ This project uses local project skills instead of global home-directory skill in
 - Treat `.claude/skills` as the legacy/local Claude skill source and fallback reference.
 - Do not require or assume global home-directory skill installation for this project.
 
+## Cloudflare Patch Worker
+
+- The Cloudflare worktree may deploy patch notes before the main Compendium Worker catches up.
+- Follow `docs/PATCH_WORKER_DEPLOY_CONTRACT.md` when changing rich patch notes, patch-only assets, Compendium links, or Cloudflare patch deployment.
+- Pending Compendium resources in patch notes must render hover-only construction previews instead of clickable links to 404 pages.
+
 ## 기술 스택
 
 - **Framework**: Next.js 15 (App Router, TypeScript strict)

@@ -50,6 +50,26 @@ Index/detail behavior while `status: "building"`:
 
 Remove `status` or set it to `"ready"` when the enriched notes are published.
 
+## Cloudflare Patch-First Provisional Mode
+
+Use this in the Cloudflare worktree when rich patch notes need to publish before
+the main Compendium Worker has the matching pages and canonical assets.
+
+- Follow `docs/PATCH_WORKER_DEPLOY_CONTRACT.md`.
+- Rich notes may include new cards, relics, powers, or other Compendium
+  resources before the main Worker is ready only when those resources are also
+  represented in `data/sts2-patch-local-resources.json`.
+- Patch-local resources must use official game names from extracted data. Do not
+  invent names, descriptions, or artwork.
+- Patch-local provisional assets must live under `/_patches/*`; do not point to
+  guessed canonical `/images/sts2/*` paths before the main Compendium data owns
+  those assets.
+- Pending patch-local resources render hover-only construction previews and must
+  not link to Compendium pages until the deployed
+  `/generated/compendium-resource-manifest.json` contains the resource.
+- When the main Compendium Worker catches up, redeploy the patch Worker so the
+  manifest turns pending hover-only previews into normal Compendium links.
+
 ## Patch Representative Art
 
 Use `art` in `data/sts2-patches.json` to select one representative image for each ready patch. The same art appears on the patch index card and near the top of the patch detail page.
