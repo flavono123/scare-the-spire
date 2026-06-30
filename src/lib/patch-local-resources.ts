@@ -33,6 +33,7 @@ const COMPENDIUM_RESOURCE_TYPE_BY_ENTITY_TYPE: Partial<Record<EntityType, Compen
   affliction: "afflictions",
   event: "events",
   monster: "monsters",
+  monsterMove: "monsters",
   encounter: "encounters",
   ancient: "ancients",
   epoch: "epochs",

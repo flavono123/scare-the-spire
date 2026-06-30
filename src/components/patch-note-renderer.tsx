@@ -41,6 +41,7 @@ export interface EntityInfo {
   imageUrl: string | null;
   href?: string | null;
   availability?: "available" | "pending-compendium";
+  compendiumResourceId?: string;
   color: string; // card color or pool
   type: EntityType;
   cardPreviewUpgradeLevel?: number; // Patch-note token explicitly refers to an upgraded card, e.g. Largesse+.
@@ -284,6 +285,7 @@ export function EntityPreview({
   );
   const isPendingCompendium = previewEntity.availability === "pending-compendium";
   const pendingStaticPreview = isPendingCompendium && !useTapPreview && !forceShow;
+  const showResolvedPreview = visible && !isPendingCompendium;
 
   const handleMouseEnter = useCallback(() => {
     setPreviewNonce((value) => value + 1);
@@ -294,23 +296,26 @@ export function EntityPreview({
     setShow(true);
   }, [entity, forcePosition]);
 
+  const compendiumRouteId = (entity.compendiumResourceId ?? entity.id).toLowerCase();
   const hrefMap: Partial<Record<EntityType, string>> = {
-    card: `/compendium/cards/${entity.id.toLowerCase()}`,
-    character: `/compendium/characters/${entity.id.toLowerCase()}`,
-    keyword: `/compendium/keywords/${entity.id.toLowerCase()}`,
-    relic: `/compendium/relics/${entity.id.toLowerCase()}`,
-    potion: `/compendium/potions/${entity.id.toLowerCase()}`,
-    power: `/compendium/powers/${entity.id.toLowerCase()}`,
-    enchantment: `/compendium/enchantments/${entity.id.toLowerCase()}`,
-    affliction: `/compendium/enchantments/${entity.id.toLowerCase()}`,
-    event: `/compendium/events/${entity.id.toLowerCase()}`,
-    monster: `/compendium/monsters/${entity.id.toLowerCase()}`,
-    monsterMove: entity.monsterMoveMonsterData
+    card: `/compendium/cards/${compendiumRouteId}`,
+    character: `/compendium/characters/${compendiumRouteId}`,
+    keyword: `/compendium/keywords/${compendiumRouteId}`,
+    relic: `/compendium/relics/${compendiumRouteId}`,
+    potion: `/compendium/potions/${compendiumRouteId}`,
+    power: `/compendium/powers/${compendiumRouteId}`,
+    enchantment: `/compendium/enchantments/${compendiumRouteId}`,
+    affliction: `/compendium/enchantments/${compendiumRouteId}`,
+    event: `/compendium/events/${compendiumRouteId}`,
+    monster: `/compendium/monsters/${compendiumRouteId}`,
+    monsterMove: entity.compendiumResourceId
+      ? `/compendium/monsters/${compendiumRouteId}`
+      : entity.monsterMoveMonsterData
       ? `/compendium/monsters/${entity.monsterMoveMonsterData.id.toLowerCase()}`
       : undefined,
-    encounter: `/compendium/encounters/${entity.id.toLowerCase()}`,
-    ancient: `/compendium/ancients/${entity.id.toLowerCase()}`,
-    epoch: `/compendium/epochs/${entity.id.toLowerCase()}`,
+    encounter: `/compendium/encounters/${compendiumRouteId}`,
+    ancient: `/compendium/ancients/${compendiumRouteId}`,
+    epoch: `/compendium/epochs/${compendiumRouteId}`,
   };
   const hrefBase = isPendingCompendium ? null : entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
   const href = hrefBase && serviceLocale && gameLocale
@@ -452,7 +457,7 @@ export function EntityPreview({
           </GameResourcePreview>,
         )
       )}
-      {visible && previewEntity.type === "card" && previewEntity.cardData && (
+      {showResolvedPreview && previewEntity.type === "card" && previewEntity.cardData && (
         renderTooltip(
           <span className="block w-36 drop-shadow-2xl">
             <CardTile
@@ -465,7 +470,7 @@ export function EntityPreview({
           "card",
         )
       )}
-      {visible && previewEntity.type === "character" && previewEntity.characterData && (
+      {showResolvedPreview && previewEntity.type === "character" && previewEntity.characterData && (
         renderTooltip(
           <GameResourcePreview
             title={previewEntity.nameKo}
@@ -480,14 +485,14 @@ export function EntityPreview({
           </GameResourcePreview>,
         )
       )}
-      {visible && previewEntity.type === "keyword" && previewEntity.keywordData && (
+      {showResolvedPreview && previewEntity.type === "keyword" && previewEntity.keywordData && (
         renderTooltip(
           <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
             <DescriptionText description={previewEntity.keywordData.description} />
           </GameHoverTip>,
         )
       )}
-      {visible && previewEntity.type === "relic" && previewEntity.relicData && (
+      {showResolvedPreview && previewEntity.type === "relic" && previewEntity.relicData && (
         renderTooltip(
           <GameResourcePreview
             title={previewEntity.nameKo}
@@ -513,7 +518,7 @@ export function EntityPreview({
           </GameResourcePreview>,
         )
       )}
-      {visible && previewEntity.type === "potion" && previewEntity.potionData && (
+      {showResolvedPreview && previewEntity.type === "potion" && previewEntity.potionData && (
         renderTooltip(
           <GameResourcePreview
             title={previewEntity.nameKo}
@@ -539,7 +544,7 @@ export function EntityPreview({
           </GameResourcePreview>,
         )
       )}
-      {visible && previewEntity.type === "power" && previewEntity.powerData && (
+      {showResolvedPreview && previewEntity.type === "power" && previewEntity.powerData && (
         renderTooltip(
           <GameResourcePreview
             title={previewEntity.nameKo}
@@ -551,21 +556,21 @@ export function EntityPreview({
           </GameResourcePreview>,
         )
       )}
-      {visible && previewEntity.type === "enchantment" && previewEntity.enchantmentData && (
+      {showResolvedPreview && previewEntity.type === "enchantment" && previewEntity.enchantmentData && (
         renderTooltip(
           <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
             <DescriptionText description={previewEntity.enchantmentData.description} />
           </GameHoverTip>,
         )
       )}
-      {visible && previewEntity.type === "affliction" && previewEntity.afflictionData && (
+      {showResolvedPreview && previewEntity.type === "affliction" && previewEntity.afflictionData && (
         renderTooltip(
           <GameHoverTip title={previewEntity.nameKo} style={{ minWidth: 240, maxWidth: 320 }}>
             <DescriptionText description={previewEntity.afflictionData.description} />
           </GameHoverTip>,
         )
       )}
-      {visible && previewEntity.type === "event" && previewEntity.eventData && !previewEntity.eventOptionDesc && (
+      {showResolvedPreview && previewEntity.type === "event" && previewEntity.eventData && !previewEntity.eventOptionDesc && (
         renderTooltip(
           <GameResourcePreview
             title={previewEntity.nameKo}
@@ -579,7 +584,7 @@ export function EntityPreview({
           />,
         )
       )}
-      {visible && previewEntity.eventOptionDesc && (
+      {showResolvedPreview && previewEntity.eventOptionDesc && (
         renderTooltip(
           <GameResourcePreview
             title={previewEntity.nameKo}
@@ -590,7 +595,7 @@ export function EntityPreview({
           </GameResourcePreview>,
         )
       )}
-      {visible && entity.type === "monster" && entity.monsterData && (
+      {showResolvedPreview && entity.type === "monster" && entity.monsterData && (
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
@@ -616,7 +621,7 @@ export function EntityPreview({
           </GameResourcePreview>,
         )
       )}
-      {visible && entity.type === "monsterMove" && entity.monsterMoveData && entity.monsterMoveMonsterData && (
+      {showResolvedPreview && entity.type === "monsterMove" && entity.monsterMoveData && entity.monsterMoveMonsterData && (
         renderTooltip(
           <MonsterMoveKeywordPreview
             entity={entity}
@@ -625,7 +630,7 @@ export function EntityPreview({
           />,
         )
       )}
-      {visible && entity.type === "encounter" && entity.encounterData && (
+      {showResolvedPreview && entity.type === "encounter" && entity.encounterData && (
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
@@ -649,7 +654,7 @@ export function EntityPreview({
           </GameResourcePreview>,
         )
       )}
-      {visible && entity.type === "ancient" && entity.ancientData && (
+      {showResolvedPreview && entity.type === "ancient" && entity.ancientData && (
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
@@ -666,7 +671,7 @@ export function EntityPreview({
           </GameResourcePreview>,
         )
       )}
-      {visible && entity.type === "epoch" && entity.epochData && (
+      {showResolvedPreview && entity.type === "epoch" && entity.epochData && (
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
@@ -691,7 +696,7 @@ export function EntityPreview({
           />,
         )
       )}
-      {visible && !isPendingCompendium && !entity.cardData && !entity.characterData && !entity.keywordData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.monsterMoveData && !entity.encounterData && !entity.ancientData && !entity.epochData && entity.imageUrl && (
+      {showResolvedPreview && !entity.cardData && !entity.characterData && !entity.keywordData && !entity.relicData && !entity.potionData && !entity.powerData && !entity.enchantmentData && !entity.afflictionData && !entity.eventData && !entity.eventOptionDesc && !entity.monsterData && !entity.monsterMoveData && !entity.encounterData && !entity.ancientData && !entity.epochData && entity.imageUrl && (
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}

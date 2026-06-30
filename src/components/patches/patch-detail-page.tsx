@@ -29,8 +29,15 @@ import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType } from "@/lib/types";
 import type { CodexMonster, DamageValue, MonsterActionType, MonsterMove } from "@/lib/codex-types";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
-import { loadGeneratedCompendiumResourceManifest } from "@/lib/compendium-resource-manifest";
-import { loadPatchLocalEntities } from "@/lib/patch-local-resources";
+import {
+  compendiumManifestHasResource,
+  loadPatchBuildCompendiumResourceManifest,
+  type CompendiumResourceManifest,
+} from "@/lib/compendium-resource-manifest";
+import {
+  compendiumResourceTypeForEntityType,
+  loadPatchLocalEntities,
+} from "@/lib/patch-local-resources";
 
 const PATCH_COPY: Record<ServiceLocale, {
   backToList: string;
@@ -353,6 +360,39 @@ function filterPatchNoteEntities(markdown: string, entities: EntityInfo[]): Enti
   });
 }
 
+function compendiumResourceIdForPatchEntity(entity: EntityInfo): string | null {
+  if (entity.compendiumResourceId) return entity.compendiumResourceId;
+  if (entity.type === "monsterMove") return entity.monsterMoveMonsterData?.id ?? null;
+  if (entity.eventOptionDesc && entity.eventData) return entity.eventData.id;
+  return entity.id;
+}
+
+function applyCompendiumManifestAvailability(
+  entities: EntityInfo[],
+  manifest: CompendiumResourceManifest,
+): EntityInfo[] {
+  return entities.map((entity) => {
+    const resourceType = compendiumResourceTypeForEntityType(entity.type);
+    if (!resourceType) return entity;
+
+    const resourceId = compendiumResourceIdForPatchEntity(entity);
+    if (resourceId && compendiumManifestHasResource(manifest, resourceType, resourceId)) {
+      return {
+        ...entity,
+        compendiumResourceId: resourceId,
+        availability: entity.availability ?? "available",
+      };
+    }
+
+    return {
+      ...entity,
+      compendiumResourceId: resourceId ?? entity.compendiumResourceId,
+      availability: "pending-compendium",
+      href: null,
+    };
+  });
+}
+
 type PatchMonsterMoveOverride = {
   monsterId: string;
   id: string;
@@ -453,6 +493,7 @@ function buildMonsterMoveEntity(
     aliasesEn: options.aliasesEn,
     imageUrl: monster.bossImageUrl ?? monster.imageUrl,
     href: `/compendium/monsters/${monster.id.toLowerCase()}`,
+    compendiumResourceId: monster.id,
     color: monster.type,
     type: "monsterMove",
     monsterMoveData: move,
@@ -777,7 +818,7 @@ export async function PatchDetailPage({
     getCodexGameUiLabels(gameLocale),
     getPatchGameKeywordLabels(gameLocale),
     getPatchGameHeadingLabels(gameLocale),
-    loadGeneratedCompendiumResourceManifest(),
+    loadPatchBuildCompendiumResourceManifest(),
   ]);
 
   const patch = patches.find((p) => p.version === version);
@@ -816,7 +857,7 @@ export async function PatchDetailPage({
   });
 
   // Build entity info for the renderer (cards + relics + potions)
-  const entities: EntityInfo[] = [
+  const rawEntities: EntityInfo[] = [
     ...patchLocalEntities,
     ...codexCards.map((c) => ({
       id: c.id,
@@ -891,6 +932,8 @@ export async function PatchDetailPage({
           imageUrl: null,
           color: e.act ?? "none",
           type: "event" as const,
+          compendiumResourceId: e.id,
+          href: `/compendium/events/${e.id.toLowerCase()}`,
           eventData: e,
           eventOptionDesc: o.description,
         })),
@@ -950,6 +993,7 @@ export async function PatchDetailPage({
       };
     }),
   ];
+  const entities = applyCompendiumManifestAvailability(rawEntities, compendiumManifest);
 
   const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
   const versionLabel = getPatchVersionLabel(patch, serviceLocale);

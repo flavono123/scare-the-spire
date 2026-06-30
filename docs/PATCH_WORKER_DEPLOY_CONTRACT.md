@@ -29,6 +29,11 @@ but independently deployable surfaces.
 - Main builds publish `/generated/compendium-resource-manifest.json`.
 - Patch builds use the currently deployed manifest to decide whether each rich
   patch resource is linkable.
+- Set `PATCH_COMPENDIUM_MANIFEST_SOURCE=live` for patch-first CI deploys. The
+  build reads `PATCH_COMPENDIUM_MANIFEST_URL` when present, otherwise
+  `${NEXT_PUBLIC_SITE_ORIGIN}/generated/compendium-resource-manifest.json`.
+- If the live manifest cannot be read, patch builds fail closed by treating
+  Compendium resources as unavailable instead of enabling links from local data.
 - When a push changes both patch notes and Compendium content, deploy the patch
   Worker first with safe pending previews, deploy the main Worker, then redeploy
   the patch Worker to enable newly available links.

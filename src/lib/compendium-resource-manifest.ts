@@ -47,6 +47,7 @@ export type CompendiumResourceManifest = {
 
 type ResourceRow = { id: string };
 const GENERATED_MANIFEST_PATH = path.join(process.cwd(), "public/generated/compendium-resource-manifest.json");
+const PUBLIC_MANIFEST_PATH = "/generated/compendium-resource-manifest.json";
 
 function manifestEntry(rows: ResourceRow[]): CompendiumResourceManifestEntry {
   const ids = rows.map((row) => row.id).sort((a, b) => a.localeCompare(b));
@@ -107,6 +108,18 @@ export async function buildCompendiumResourceManifest(): Promise<CompendiumResou
   };
 }
 
+export function emptyCompendiumResourceManifest(): CompendiumResourceManifest {
+  const resources = {} as Record<CompendiumResourceType, CompendiumResourceManifestEntry>;
+  for (const type of COMPENDIUM_RESOURCE_TYPES) {
+    resources[type] = { ids: [], routeIds: [] };
+  }
+
+  return {
+    schemaVersion: 1,
+    resources,
+  };
+}
+
 export async function loadGeneratedCompendiumResourceManifest(): Promise<CompendiumResourceManifest> {
   const raw = await fs.readFile(GENERATED_MANIFEST_PATH, "utf-8").catch((error: NodeJS.ErrnoException) => {
     if (error.code === "ENOENT") return null;
@@ -117,10 +130,49 @@ export async function loadGeneratedCompendiumResourceManifest(): Promise<Compend
   return JSON.parse(raw) as CompendiumResourceManifest;
 }
 
+function liveCompendiumManifestUrl(): string | null {
+  const explicitUrl = process.env.PATCH_COMPENDIUM_MANIFEST_URL?.trim();
+  if (explicitUrl) return explicitUrl;
+
+  const origin = process.env.NEXT_PUBLIC_SITE_ORIGIN?.trim();
+  if (!origin) return null;
+  return new URL(PUBLIC_MANIFEST_PATH, origin.endsWith("/") ? origin : `${origin}/`).toString();
+}
+
+export async function loadLiveCompendiumResourceManifest(): Promise<CompendiumResourceManifest> {
+  const url = liveCompendiumManifestUrl();
+  if (!url) {
+    console.warn("PATCH_COMPENDIUM_MANIFEST_SOURCE=live set without NEXT_PUBLIC_SITE_ORIGIN or PATCH_COMPENDIUM_MANIFEST_URL; disabling patch compendium links.");
+    return emptyCompendiumResourceManifest();
+  }
+
+  try {
+    const response = await fetch(url, {
+      headers: { accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      console.warn(`Live compendium manifest returned HTTP ${response.status}; disabling patch compendium links.`);
+      return emptyCompendiumResourceManifest();
+    }
+    return await response.json() as CompendiumResourceManifest;
+  } catch (error) {
+    console.warn("Failed to read live compendium manifest; disabling patch compendium links.", error);
+    return emptyCompendiumResourceManifest();
+  }
+}
+
+export async function loadPatchBuildCompendiumResourceManifest(): Promise<CompendiumResourceManifest> {
+  if (process.env.PATCH_COMPENDIUM_MANIFEST_SOURCE === "live") {
+    return loadLiveCompendiumResourceManifest();
+  }
+  return loadGeneratedCompendiumResourceManifest();
+}
+
 export function compendiumManifestHasResource(
   manifest: CompendiumResourceManifest,
   type: CompendiumResourceType,
   id: string,
 ): boolean {
-  return manifest.resources[type].routeIds.includes(id.toLowerCase());
+  return manifest.resources[type]?.routeIds.includes(id.toLowerCase()) ?? false;
 }
