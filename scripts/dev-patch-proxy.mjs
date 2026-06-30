@@ -52,11 +52,9 @@ function contentType(filePath) {
 
 function assetPathForRequest(pathname) {
   const decoded = decodeURIComponent(pathname);
-  const relative = decoded === "/_patches" || decoded === "/patches" || /^\/[^/]+\/patches$/.test(decoded)
-    ? path.join(decoded.slice(1), "index.html")
-    : path.extname(decoded)
-      ? decoded.slice(1)
-      : path.join(decoded.slice(1), "index.html");
+  const relative = decoded.startsWith("/_patches/")
+    ? decoded.slice(1)
+    : path.join(decoded.replace(/\/$/, "").slice(1), "index.html");
   return path.normalize(path.join(patchAssetsDir, relative));
 }
 

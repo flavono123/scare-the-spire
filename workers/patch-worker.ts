@@ -5,13 +5,10 @@ type Env = {
 };
 
 function assetPathForUrl(url: URL): string {
-  if (url.pathname === "/patches" || /^\/[^/]+\/patches$/.test(url.pathname)) {
-    return `${url.pathname}/index.html`;
+  if (url.pathname.startsWith("/_patches/")) {
+    return url.pathname;
   }
-  if (!url.pathname.includes(".")) {
-    return `${url.pathname.replace(/\/$/, "")}/index.html`;
-  }
-  return url.pathname;
+  return `${url.pathname.replace(/\/$/, "")}/index.html`;
 }
 
 const patchWorker = {
