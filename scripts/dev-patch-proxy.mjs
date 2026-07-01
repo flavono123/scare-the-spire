@@ -1,4 +1,5 @@
 import http from "node:http";
+import net from "node:net";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { createReadStream } from "node:fs";
@@ -87,7 +88,10 @@ function proxyToMain(req, res) {
       port: mainPort,
       path: req.url,
       method: req.method,
-      headers: req.headers,
+      headers: {
+        ...req.headers,
+        host: `localhost:${mainPort}`,
+      },
     },
     (upstreamRes) => {
       res.writeHead(upstreamRes.statusCode ?? 502, upstreamRes.headers);
@@ -99,6 +103,41 @@ function proxyToMain(req, res) {
     res.end(`Main dev server unavailable: ${error.message}`);
   });
   req.pipe(upstream);
+}
+
+function writeUpgradeHeaders(upstream, req) {
+  upstream.write(`${req.method} ${req.url} HTTP/${req.httpVersion}\r\n`);
+  const headers = {
+    ...req.headers,
+    host: `localhost:${mainPort}`,
+  };
+
+  for (const [name, value] of Object.entries(headers)) {
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        upstream.write(`${name}: ${item}\r\n`);
+      }
+    } else if (value !== undefined) {
+      upstream.write(`${name}: ${value}\r\n`);
+    }
+  }
+
+  upstream.write("\r\n");
+}
+
+function proxyUpgradeToMain(req, socket, head) {
+  const upstream = net.connect(mainPort, "127.0.0.1", () => {
+    writeUpgradeHeaders(upstream, req);
+    if (head.length > 0) upstream.write(head);
+    upstream.pipe(socket);
+    socket.pipe(upstream);
+  });
+
+  upstream.on("error", () => {
+    if (socket.writable) {
+      socket.end("HTTP/1.1 502 Bad Gateway\r\nConnection: close\r\n\r\n");
+    }
+  });
 }
 
 runInitialPatchBuild();
@@ -117,6 +156,8 @@ server.listen(proxyPort, () => {
   console.log(`Patch/main dev proxy listening on http://localhost:${proxyPort}`);
   console.log(`Main Next dev server listening on http://localhost:${mainPort}`);
 });
+
+server.on("upgrade", proxyUpgradeToMain);
 
 function shutdown() {
   server.close();
