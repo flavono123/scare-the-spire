@@ -1,5 +1,4 @@
 import http from "node:http";
-import net from "node:net";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { createReadStream } from "node:fs";
@@ -105,43 +104,60 @@ function proxyToMain(req, res) {
   req.pipe(upstream);
 }
 
-function writeUpgradeHeaders(upstream, req) {
-  upstream.write(`${req.method} ${req.url} HTTP/${req.httpVersion}\r\n`);
-  const headers = {
-    ...req.headers,
-    host: `localhost:${mainPort}`,
-  };
-
-  for (const [name, value] of Object.entries(headers)) {
-    if (Array.isArray(value)) {
-      for (const item of value) {
-        upstream.write(`${name}: ${item}\r\n`);
-      }
-    } else if (value !== undefined) {
-      upstream.write(`${name}: ${value}\r\n`);
-    }
+function writeResponseHead(socket, response) {
+  socket.write(
+    `HTTP/${response.httpVersion} ${response.statusCode} ${response.statusMessage}\r\n`,
+  );
+  for (let index = 0; index < response.rawHeaders.length; index += 2) {
+    socket.write(`${response.rawHeaders[index]}: ${response.rawHeaders[index + 1]}\r\n`);
   }
-
-  upstream.write("\r\n");
+  socket.write("\r\n");
 }
 
 function proxyUpgradeToMain(req, socket, head) {
-  const upstream = net.connect(mainPort, "127.0.0.1", () => {
-    writeUpgradeHeaders(upstream, req);
-    if (head.length > 0) upstream.write(head);
-    upstream.pipe(socket);
-    socket.pipe(upstream);
+  const upstreamReq = http.request({
+    hostname: "127.0.0.1",
+    port: mainPort,
+    path: req.url,
+    method: req.method,
+    headers: {
+      ...req.headers,
+      host: `localhost:${mainPort}`,
+    },
   });
 
-  const closeBoth = () => {
-    upstream.destroy();
-    socket.destroy();
-  };
+  upstreamReq.on("upgrade", (upstreamRes, upstreamSocket, upstreamHead) => {
+    writeResponseHead(socket, upstreamRes);
+    if (upstreamHead.length > 0) socket.write(upstreamHead);
+    if (head.length > 0) upstreamSocket.write(head);
 
-  socket.on("error", closeBoth);
-  upstream.on("error", closeBoth);
-  socket.on("close", () => upstream.destroy());
-  upstream.on("close", () => socket.destroy());
+    const closeBoth = () => {
+      upstreamSocket.destroy();
+      socket.destroy();
+    };
+
+    socket.on("error", closeBoth);
+    upstreamSocket.on("error", closeBoth);
+    socket.on("close", () => upstreamSocket.destroy());
+    upstreamSocket.on("close", () => socket.destroy());
+
+    upstreamSocket.pipe(socket);
+    socket.pipe(upstreamSocket);
+  });
+
+  upstreamReq.on("response", (upstreamRes) => {
+    writeResponseHead(socket, upstreamRes);
+    upstreamRes.pipe(socket);
+  });
+
+  upstreamReq.on("error", () => {
+    if (socket.writable) {
+      socket.end("HTTP/1.1 502 Bad Gateway\r\nConnection: close\r\n\r\n");
+    }
+    socket.destroy();
+  });
+
+  upstreamReq.end();
 }
 
 runInitialPatchBuild();
