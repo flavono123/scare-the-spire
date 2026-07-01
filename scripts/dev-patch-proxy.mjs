@@ -133,11 +133,15 @@ function proxyUpgradeToMain(req, socket, head) {
     socket.pipe(upstream);
   });
 
-  upstream.on("error", () => {
-    if (socket.writable) {
-      socket.end("HTTP/1.1 502 Bad Gateway\r\nConnection: close\r\n\r\n");
-    }
-  });
+  const closeBoth = () => {
+    upstream.destroy();
+    socket.destroy();
+  };
+
+  socket.on("error", closeBoth);
+  upstream.on("error", closeBoth);
+  socket.on("close", () => upstream.destroy());
+  upstream.on("close", () => socket.destroy());
 }
 
 runInitialPatchBuild();

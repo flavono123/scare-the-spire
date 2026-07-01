@@ -147,6 +147,20 @@ function previewHorizontalClass(horizontal: PreviewPlacement["horizontal"]): str
   return "left-1/2 -translate-x-1/2";
 }
 
+function staticPreviewDesktopClass(placement: PreviewPlacement): string {
+  const horizontal =
+    placement.horizontal === "left"
+      ? "sm:left-0 sm:right-auto sm:translate-x-0"
+      : placement.horizontal === "right"
+        ? "sm:left-auto sm:right-0 sm:translate-x-0"
+        : "sm:left-1/2 sm:right-auto sm:-translate-x-1/2";
+  const vertical = placement.vertical === "above"
+    ? "sm:bottom-full sm:top-auto sm:mb-2"
+    : "sm:top-full sm:bottom-auto sm:mt-2";
+
+  return `sm:absolute ${horizontal} ${vertical}`;
+}
+
 function GameResourcePreview({
   title,
   imageUrl,
@@ -177,7 +191,7 @@ function GameResourcePreview({
   const showImageFrame = Boolean(imageUrl) && !hoverTipArt;
 
   return (
-    <span className="flex w-max max-w-[25rem] items-start gap-2.5">
+    <span className="flex w-max max-w-[calc(100vw-1.5rem)] items-start gap-2.5 sm:max-w-[25rem]">
       {showImageFrame && (
         <span className={imageFrameClassName}>
           <Image
@@ -366,10 +380,12 @@ export function EntityPreview({
     ? "relative z-50 mt-1"
     : useTapPreview
       ? "fixed z-[120] pointer-events-auto"
-      : [
-          `absolute ${previewHorizontalClass(placement.horizontal)} z-50 pointer-events-none ${placement.vertical === "above" ? "bottom-full mb-2" : "top-full mt-2"}`,
-          pendingStaticPreview ? "opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100" : "",
-        ].filter(Boolean).join(" ");
+      : pendingStaticPreview
+        ? [
+            "fixed left-3 right-3 top-16 z-50 pointer-events-none opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100",
+            staticPreviewDesktopClass(placement),
+          ].join(" ")
+        : `absolute ${previewHorizontalClass(placement.horizontal)} z-50 pointer-events-none ${placement.vertical === "above" ? "bottom-full mb-2" : "top-full mt-2"}`;
   const renderTooltip = (content: ReactNode, variant: "card" | "box" = "box") => (
     <span className={tooltipPos} style={useTapPreview ? tapPreviewStyle : undefined}>
       {useTapPreview ? (
