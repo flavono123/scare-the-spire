@@ -85,6 +85,7 @@ type RenderContext = {
   patches?: STS2Patch[];
   versionDiffs?: EntityVersionDiff[];
   epochArtMode?: HoverTipArtMode;
+  staticHoverPreviews?: boolean;
 };
 
 // --- Entity Preview (hover card image) ---
@@ -250,6 +251,7 @@ export function EntityPreview({
   patches,
   versionDiffs,
   epochArtMode = "official",
+  staticHoverPreviews = false,
 }: {
   entity: EntityInfo;
   children: ReactNode;
@@ -266,6 +268,7 @@ export function EntityPreview({
   patches?: STS2Patch[];
   versionDiffs?: EntityVersionDiff[];
   epochArtMode?: HoverTipArtMode;
+  staticHoverPreviews?: boolean;
 }) {
   const [show, setShow] = useState(false);
   const [previewPressed, setPreviewPressed] = useState(false);
@@ -284,8 +287,9 @@ export function EntityPreview({
     [currentVersion, entity, patchVersion, patches, versionDiffs],
   );
   const isPendingCompendium = previewEntity.availability === "pending-compendium";
-  const pendingStaticPreview = isPendingCompendium && !useTapPreview && !forceShow;
-  const showResolvedPreview = visible && !isPendingCompendium;
+  const staticPreview = staticHoverPreviews && !useTapPreview && !forceShow;
+  const pendingStaticPreview = (isPendingCompendium || staticPreview) && !useTapPreview && !forceShow;
+  const showResolvedPreview = (visible || staticPreview) && !isPendingCompendium;
 
   const handleMouseEnter = useCallback(() => {
     setPreviewNonce((value) => value + 1);
@@ -1561,6 +1565,7 @@ export function PatchNoteRenderer({
   patches,
   versionDiffs,
   epochArtMode,
+  staticHoverPreviews,
 }: {
   markdown: string;
   entities?: EntityInfo[];
@@ -1576,6 +1581,7 @@ export function PatchNoteRenderer({
   patches?: STS2Patch[];
   versionDiffs?: EntityVersionDiff[];
   epochArtMode?: HoverTipArtMode;
+  staticHoverPreviews?: boolean;
 }) {
   const allEntities = useMemo(() => entities ?? cards ?? [], [entities, cards]);
   const lookup = useMemo(() => buildEntityLookup(allEntities), [allEntities]);
@@ -1592,8 +1598,9 @@ export function PatchNoteRenderer({
       patches,
       versionDiffs,
       epochArtMode,
+      staticHoverPreviews,
     }),
-    [currentVersion, epochArtMode, gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, patchVersion, patches, preferEntityLocaleLabel, serviceLocale, versionDiffs],
+    [currentVersion, epochArtMode, gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, patchVersion, patches, preferEntityLocaleLabel, serviceLocale, staticHoverPreviews, versionDiffs],
   );
   const lines = withPatchChangeEffects(markdown).split("\n");
 

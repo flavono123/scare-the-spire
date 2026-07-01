@@ -795,10 +795,12 @@ export async function PatchDetailPage({
   version,
   serviceLocale,
   gameLocale,
+  staticHoverPreviews = false,
 }: {
   version: string;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  staticHoverPreviews?: boolean;
 }) {
   const copy = PATCH_COPY[serviceLocale];
   const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest] = await Promise.all([
@@ -1063,6 +1065,7 @@ export async function PatchDetailPage({
             currentVersion={codexMeta.version}
             patches={patches}
             versionDiffs={versionDiffs}
+            staticHoverPreviews={staticHoverPreviews}
           />
         </section>
       ) : (

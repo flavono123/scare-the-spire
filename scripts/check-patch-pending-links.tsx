@@ -17,6 +17,18 @@ function renderPatch(markdown: string, entities: EntityInfo[]): string {
   );
 }
 
+function renderStaticPatch(markdown: string, entities: EntityInfo[]): string {
+  return renderToStaticMarkup(
+    <PatchNoteRenderer
+      markdown={markdown}
+      entities={entities}
+      serviceLocale="en"
+      gameLocale="eng"
+      staticHoverPreviews
+    />,
+  );
+}
+
 const pendingCard: EntityInfo = {
   id: "FAKE_PATCH_LOCAL_CARD",
   nameEn: "Patch First Test Card",
@@ -45,5 +57,10 @@ const availableCard: EntityInfo = {
 
 const availableHtml = renderPatch("[gold:card]Bash[/gold]", [availableCard]);
 assert.match(availableHtml, /href="\/en\/compendium\/cards\/bash"/);
+
+const staticAvailableHtml = renderStaticPatch("[gold:card]Bash[/gold]", [availableCard]);
+assert.match(staticAvailableHtml, /href="\/en\/compendium\/cards\/bash"/);
+assert.match(staticAvailableHtml, /\/images\/sts2\/cards\/bash\.webp/);
+assert.doesNotMatch(staticAvailableHtml, /Compendium page in progress/);
 
 console.log("patch pending link regression passed");

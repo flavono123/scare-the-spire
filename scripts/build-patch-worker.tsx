@@ -185,7 +185,12 @@ async function main() {
       serviceLocale: "ko",
       gameLocale: "kor",
       metadata: await getPatchDetailMetadata({ version, serviceLocale: "ko" }),
-      element: await PatchDetailPage({ version, serviceLocale: "ko", gameLocale: "kor" }),
+      element: await PatchDetailPage({
+        version,
+        serviceLocale: "ko",
+        gameLocale: "kor",
+        staticHoverPreviews: true,
+      }),
     });
 
     for (const route of await localizedPatchRoutes(version)) {
@@ -199,6 +204,7 @@ async function main() {
           version,
           serviceLocale: route.serviceLocale,
           gameLocale: route.gameLocale,
+          staticHoverPreviews: true,
         }),
       });
     }
