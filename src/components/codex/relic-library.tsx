@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
-import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
+import {
+  addCodexUrlChangeListener,
+  pushCodexHistoryState,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -79,7 +82,7 @@ interface RelicLibraryProps {
 
 export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters, ancients, versions, currentVersion, patches, changes, versionDiffs, entities, relatedCards = [], relatedEvents = [], relatedEnchantments = [], relatedPowers = [] }: RelicLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const searchParams = useSearchParams();
+  const urlRelicId = useHydrationSafeSearchParam("relic");
   const [selectedPools, setSelectedPools] = useState<Set<RelicPoolFilter>>(new Set());
   const [selectedRarities, setSelectedRarities] = useState<Set<RelicRarityKo>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
@@ -91,56 +94,63 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
   });
   const hasBetaArt = relics.some((relic) => relic.betaImageUrl);
 
-  // Relic detail modal — initialize from ?relic= query param
-  const initialRelicId = searchParams.get("relic");
-  const [selectedRelic, setSelectedRelic] = useState<CodexRelic | null>(() => {
-    if (!initialRelicId) return null;
-    return relics.find((r) => r.id.toLowerCase() === initialRelicId.toLowerCase()) ?? null;
-  });
+  // Relic detail modal
+  const [selectedRelicOverride, setSelectedRelicOverride] = useState<CodexRelic | null>(null);
+  const [useUrlSelection, setUseUrlSelection] = useState(true);
   const [selectedVariantPool, setSelectedVariantPool] = useState<RelicPool | undefined>();
 
+  const urlSelectedRelic = useMemo(() => (
+    urlRelicId
+      ? relics.find((r) => r.id.toLowerCase() === urlRelicId.toLowerCase()) ?? null
+      : null
+  ), [relics, urlRelicId]);
+  const selectedRelic = useUrlSelection ? urlSelectedRelic : selectedRelicOverride;
+
   const selectRelic = useCallback((relic: CodexRelic, variantPool?: RelicPool) => {
-    setSelectedRelic(relic);
+    setUseUrlSelection(false);
+    setSelectedRelicOverride(relic);
     setSelectedVariantPool(variantPool);
-  }, [setSelectedRelic, setSelectedVariantPool]);
+  }, [setSelectedRelicOverride, setSelectedVariantPool, setUseUrlSelection]);
+
+  const closeSelectedRelic = useCallback(() => {
+    setUseUrlSelection(false);
+    setSelectedRelicOverride(null);
+    setSelectedVariantPool(undefined);
+  }, [setSelectedRelicOverride, setSelectedVariantPool, setUseUrlSelection]);
 
   // Update URL query param when modal opens/closes
   useEffect(() => {
+    if (useUrlSelection) return;
     const url = new URL(window.location.href);
-    if (selectedRelic) {
-      url.searchParams.set("relic", selectedRelic.id.toLowerCase());
+    if (selectedRelicOverride) {
+      url.searchParams.set("relic", selectedRelicOverride.id.toLowerCase());
     } else {
       url.searchParams.delete("relic");
     }
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }
-  }, [selectedRelic]);
+  }, [selectedRelicOverride, useUrlSelection]);
 
   // Handle browser back button
   useEffect(() => {
     const handler = () => {
-      const url = new URL(window.location.href);
-      const relicParam = url.searchParams.get("relic");
-      if (!relicParam) {
-        setSelectedRelic(null);
-      } else {
-        const relic = relics.find((r) => r.id.toLowerCase() === relicParam.toLowerCase());
-        setSelectedRelic(relic ?? null);
-      }
+      setUseUrlSelection(true);
+      setSelectedRelicOverride(null);
+      setSelectedVariantPool(undefined);
     };
     return addCodexUrlChangeListener(handler);
-  }, [relics]);
+  }, []);
 
   // Close modal on Escape
   useEffect(() => {
     if (!selectedRelic) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedRelic(null);
+      if (e.key === "Escape") closeSelectedRelic();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedRelic]);
+  }, [closeSelectedRelic, selectedRelic]);
 
   const versionedRelics = useMemo(() => {
     return versionCodexEntities(relics, "relic", {
@@ -444,7 +454,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedRelic(null);
+            if (e.target === e.currentTarget) closeSelectedRelic();
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
@@ -456,7 +466,7 @@ export function RelicLibrary({ serviceLocale, gameUi, title, relics, characters,
               poolLabels={poolLabels}
               initialVariant={selectedVariantPool}
               initialShowBeta={showBeta}
-              onClose={() => setSelectedRelic(null)}
+              onClose={closeSelectedRelic}
               entities={entities}
               relatedCards={relatedCards}
               relatedEvents={relatedEvents}

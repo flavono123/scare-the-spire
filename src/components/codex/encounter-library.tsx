@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import Image from "@/components/ui/static-image";
-import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
+import {
+  addCodexUrlChangeListener,
+  pushCodexHistoryState,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
@@ -73,7 +76,7 @@ export function EncounterLibrary({
   trailing,
 }: EncounterLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const searchParams = useSearchParams();
+  const urlEncounterId = useHydrationSafeSearchParam("encounter");
   const [selectedRoomTypes, setSelectedRoomTypes] = useState<Set<EncounterRoomType>>(new Set());
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [showWeakOnly, setShowWeakOnly] = useState(false);
@@ -110,48 +113,57 @@ export function EncounterLibrary({
   const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
   // Detail modal
-  const initialEncId = searchParams.get("encounter");
-  const [selectedEncounter, setSelectedEncounter] = useState<CodexEncounter | null>(() => {
-    if (!initialEncId) return null;
-    return encounters.find((e) => e.id.toLowerCase() === initialEncId.toLowerCase()) ?? null;
-  });
+  const [selectedEncounterOverride, setSelectedEncounterOverride] = useState<CodexEncounter | null>(null);
+  const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const urlSelectedEncounter = useMemo(() => (
+    urlEncounterId
+      ? versionedEncounters.find((e) => e.id.toLowerCase() === urlEncounterId.toLowerCase()) ?? null
+      : null
+  ), [urlEncounterId, versionedEncounters]);
+  const selectedEncounter = useUrlSelection ? urlSelectedEncounter : selectedEncounterOverride;
+
+  const selectEncounter = useCallback((encounter: CodexEncounter) => {
+    setUseUrlSelection(false);
+    setSelectedEncounterOverride(encounter);
+  }, [setSelectedEncounterOverride, setUseUrlSelection]);
+
+  const closeSelectedEncounter = useCallback(() => {
+    setUseUrlSelection(false);
+    setSelectedEncounterOverride(null);
+  }, [setSelectedEncounterOverride, setUseUrlSelection]);
 
   // URL sync
   useEffect(() => {
+    if (useUrlSelection) return;
     const url = new URL(window.location.href);
-    if (selectedEncounter) {
-      url.searchParams.set("encounter", selectedEncounter.id.toLowerCase());
+    if (selectedEncounterOverride) {
+      url.searchParams.set("encounter", selectedEncounterOverride.id.toLowerCase());
     } else {
       url.searchParams.delete("encounter");
     }
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }
-  }, [selectedEncounter]);
+  }, [selectedEncounterOverride, useUrlSelection]);
 
   // Browser back
   useEffect(() => {
     const handler = () => {
-      const url = new URL(window.location.href);
-      const param = url.searchParams.get("encounter");
-      if (!param) {
-        setSelectedEncounter(null);
-      } else {
-        setSelectedEncounter(versionedEncounters.find((e) => e.id.toLowerCase() === param.toLowerCase()) ?? null);
-      }
+      setUseUrlSelection(true);
+      setSelectedEncounterOverride(null);
     };
     return addCodexUrlChangeListener(handler);
-  }, [versionedEncounters]);
+  }, []);
 
   // Escape to close
   useEffect(() => {
     if (!selectedEncounter) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedEncounter(null);
+      if (e.key === "Escape") closeSelectedEncounter();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedEncounter]);
+  }, [closeSelectedEncounter, selectedEncounter]);
 
   // Filter
   const filtered = useMemo(() => {
@@ -347,7 +359,7 @@ export function EncounterLibrary({
                     monsterById={monsterById}
                     messages={serviceText}
                     gameUi={gameUi}
-                    onClick={() => setSelectedEncounter(enc)}
+                    onClick={() => selectEncounter(enc)}
                   />
                 ))}
               </div>
@@ -365,7 +377,7 @@ export function EncounterLibrary({
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedEncounter(null);
+            if (e.target === e.currentTarget) closeSelectedEncounter();
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
@@ -377,7 +389,7 @@ export function EncounterLibrary({
               monsters={versionedMonsters}
               patches={patches}
               changes={changes}
-              onClose={() => setSelectedEncounter(null)}
+              onClose={closeSelectedEncounter}
             />
           </div>
         </div>

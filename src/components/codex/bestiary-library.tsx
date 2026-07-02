@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { serviceMessages } from "@/messages/service";
@@ -15,6 +15,7 @@ import type {
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import { MonsterLibrary } from "./monster-library";
 import { EncounterLibrary } from "./encounter-library";
+import { useHydrationSafeSearchParam } from "./use-hydration-safe-search-param";
 
 type BestiaryView = "monsters" | "encounters";
 
@@ -48,18 +49,18 @@ export function BestiaryLibrary({
   versionDiffs,
 }: BestiaryLibraryProps) {
   const messages = serviceMessages[serviceLocale].codex;
-  const searchParams = useSearchParams();
+  const explicitView = useHydrationSafeSearchParam("view");
+  const urlEncounterId = useHydrationSafeSearchParam("encounter");
   const pathname = usePathname();
   const router = useRouter();
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
-  const explicitView = searchParams.get("view");
   const activeView: BestiaryView =
-    explicitView === "encounters" || searchParams.has("encounter")
+    explicitView === "encounters" || Boolean(urlEncounterId)
       ? "encounters"
       : "monsters";
 
   const setView = (view: BestiaryView) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(typeof window === "undefined" ? "" : window.location.search);
     params.set("view", view);
     if (view === "monsters") {
       params.delete("encounter");

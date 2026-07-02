@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
+import {
+  addCodexUrlChangeListener,
+  pushCodexHistoryState,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -91,7 +94,8 @@ interface EnchantmentLibraryProps {
 
 export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflictions = [], versions, currentVersion, patches, changes, versionDiffs, entities, cards, events, potions, powers, relics, monsters }: EnchantmentLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const searchParams = useSearchParams();
+  const urlEnchantmentId = useHydrationSafeSearchParam("enchantment");
+  const urlAfflictionId = useHydrationSafeSearchParam("affliction");
   const [selectedCardTypes, setSelectedCardTypes] = useState<Set<EnchantmentCardTypeFilter>>(new Set());
   const [stackableOnly, setStackableOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -99,27 +103,43 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
   const [cardTypeSortDir, setCardTypeSortDir] = useState<FilterSortDir>("asc");
 
   // Enchantment or affliction detail modal
-  const initialEnchId = searchParams.get("enchantment");
-  const initialAfflictionId = searchParams.get("affliction");
-  const [selectedResource, setSelectedResource] = useState<SelectedEnchantmentResource | null>(() => {
-    if (initialEnchId) {
-      const enchantment = enchantments.find((e) => e.id.toLowerCase() === initialEnchId.toLowerCase());
-      if (enchantment) return { kind: "enchantment", item: enchantment };
+  const [selectedResourceOverride, setSelectedResourceOverride] = useState<SelectedEnchantmentResource | null>(null);
+  const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const urlSelectedResource = useMemo<SelectedEnchantmentResource | null>(() => {
+    if (urlEnchantmentId) {
+      const enchantment = enchantments.find((e) => e.id.toLowerCase() === urlEnchantmentId.toLowerCase());
+      if (enchantment) {
+        return { kind: "enchantment", item: enchantment };
+      }
     }
-    if (initialAfflictionId) {
-      const affliction = afflictions.find((a) => a.id.toLowerCase() === initialAfflictionId.toLowerCase());
-      if (affliction) return { kind: "affliction", item: affliction };
+    if (urlAfflictionId) {
+      const affliction = afflictions.find((a) => a.id.toLowerCase() === urlAfflictionId.toLowerCase());
+      if (affliction) {
+        return { kind: "affliction", item: affliction };
+      }
     }
     return null;
-  });
+  }, [afflictions, enchantments, urlAfflictionId, urlEnchantmentId]);
+  const selectedResource = useUrlSelection ? urlSelectedResource : selectedResourceOverride;
+
+  const selectResource = useCallback((resource: SelectedEnchantmentResource) => {
+    setUseUrlSelection(false);
+    setSelectedResourceOverride(resource);
+  }, [setSelectedResourceOverride, setUseUrlSelection]);
+
+  const closeSelectedResource = useCallback(() => {
+    setUseUrlSelection(false);
+    setSelectedResourceOverride(null);
+  }, [setSelectedResourceOverride, setUseUrlSelection]);
 
   useEffect(() => {
+    if (useUrlSelection) return;
     const url = new URL(window.location.href);
-    if (selectedResource?.kind === "enchantment") {
-      url.searchParams.set("enchantment", selectedResource.item.id.toLowerCase());
+    if (selectedResourceOverride?.kind === "enchantment") {
+      url.searchParams.set("enchantment", selectedResourceOverride.item.id.toLowerCase());
       url.searchParams.delete("affliction");
-    } else if (selectedResource?.kind === "affliction") {
-      url.searchParams.set("affliction", selectedResource.item.id.toLowerCase());
+    } else if (selectedResourceOverride?.kind === "affliction") {
+      url.searchParams.set("affliction", selectedResourceOverride.item.id.toLowerCase());
       url.searchParams.delete("enchantment");
     } else {
       url.searchParams.delete("enchantment");
@@ -128,36 +148,24 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }
-  }, [selectedResource]);
+  }, [selectedResourceOverride, useUrlSelection]);
 
   useEffect(() => {
     const handler = () => {
-      const url = new URL(window.location.href);
-      const enchantmentParam = url.searchParams.get("enchantment");
-      const afflictionParam = url.searchParams.get("affliction");
-      if (enchantmentParam) {
-        const enchantment = enchantments.find((e) => e.id.toLowerCase() === enchantmentParam.toLowerCase());
-        setSelectedResource(enchantment ? { kind: "enchantment", item: enchantment } : null);
-        return;
-      }
-      if (afflictionParam) {
-        const affliction = afflictions.find((a) => a.id.toLowerCase() === afflictionParam.toLowerCase());
-        setSelectedResource(affliction ? { kind: "affliction", item: affliction } : null);
-        return;
-      }
-      setSelectedResource(null);
+      setUseUrlSelection(true);
+      setSelectedResourceOverride(null);
     };
     return addCodexUrlChangeListener(handler);
-  }, [afflictions, enchantments]);
+  }, []);
 
   useEffect(() => {
     if (!selectedResource) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedResource(null);
+      if (e.key === "Escape") closeSelectedResource();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedResource]);
+  }, [closeSelectedResource, selectedResource]);
 
   const versionedEnchantments = useMemo(() => {
     return versionCodexEntities(enchantments, "enchantment", {
@@ -347,7 +355,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
                     key={ench.id}
                     serviceLocale={serviceLocale}
                     resource={ench}
-                    onClick={() => setSelectedResource({ kind: "enchantment", item: ench })}
+                    onClick={() => selectResource({ kind: "enchantment", item: ench })}
                   />
                 ))}
               </div>
@@ -371,7 +379,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
                     key={affliction.id}
                     serviceLocale={serviceLocale}
                     resource={affliction}
-                    onClick={() => setSelectedResource({ kind: "affliction", item: affliction })}
+                    onClick={() => selectResource({ kind: "affliction", item: affliction })}
                   />
                 ))}
               </div>
@@ -391,7 +399,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedResource(null);
+            if (e.target === e.currentTarget) closeSelectedResource();
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
@@ -401,7 +409,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
                 gameUi={gameUi}
                 backToListTitle={serviceText.enchantmentsView.title}
                 enchantment={selectedResource.item}
-                onClose={() => setSelectedResource(null)}
+                onClose={closeSelectedResource}
                 entities={entities}
                 cards={cards}
                 events={events}
@@ -418,7 +426,7 @@ export function EnchantmentLibrary({ serviceLocale, gameUi, enchantments, afflic
                 gameUi={gameUi}
                 backToListTitle={serviceText.enchantmentsView.title}
                 affliction={selectedResource.item}
-                onClose={() => setSelectedResource(null)}
+                onClose={closeSelectedResource}
                 entities={entities}
                 monsters={monsters}
                 patches={patches}

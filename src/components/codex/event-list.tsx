@@ -2,8 +2,11 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Image from "@/components/ui/static-image";
-import { useSearchParams } from "next/navigation";
-import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
+import {
+  addCodexUrlChangeListener,
+  pushCodexHistoryState,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -204,47 +207,59 @@ export function EventList({
   versionDiffs,
 }: EventListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const searchParams = useSearchParams();
+  const urlEventId = useHydrationSafeSearchParam("event");
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion);
   const [actSortDir, setActSortDir] = useState<FilterSortDir>("asc");
 
   // Event detail modal
-  const initialEventId = searchParams.get("event");
-  const [selectedEvent, setSelectedEvent] = useState<CodexEvent | null>(() => {
-    if (!initialEventId) return null;
-    return events.find((e) => e.id.toLowerCase() === initialEventId.toLowerCase()) ?? null;
-  });
+  const [selectedEventOverride, setSelectedEventOverride] = useState<CodexEvent | null>(null);
+  const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const urlSelectedEvent = useMemo(() => (
+    urlEventId
+      ? events.find((e) => e.id.toLowerCase() === urlEventId.toLowerCase()) ?? null
+      : null
+  ), [events, urlEventId]);
+  const selectedEvent = useUrlSelection ? urlSelectedEvent : selectedEventOverride;
+
+  const selectEvent = useCallback((event: CodexEvent) => {
+    setUseUrlSelection(false);
+    setSelectedEventOverride(event);
+  }, [setSelectedEventOverride, setUseUrlSelection]);
+
+  const closeSelectedEvent = useCallback(() => {
+    setUseUrlSelection(false);
+    setSelectedEventOverride(null);
+  }, [setSelectedEventOverride, setUseUrlSelection]);
 
   useEffect(() => {
+    if (useUrlSelection) return;
     const url = new URL(window.location.href);
-    if (selectedEvent) {
-      url.searchParams.set("event", selectedEvent.id.toLowerCase());
+    if (selectedEventOverride) {
+      url.searchParams.set("event", selectedEventOverride.id.toLowerCase());
     } else {
       url.searchParams.delete("event");
     }
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }
-  }, [selectedEvent]);
+  }, [selectedEventOverride, useUrlSelection]);
 
   useEffect(() => {
     const handler = () => {
-      const url = new URL(window.location.href);
-      const p = url.searchParams.get("event");
-      if (!p) setSelectedEvent(null);
-      else setSelectedEvent(events.find((e) => e.id.toLowerCase() === p.toLowerCase()) ?? null);
+      setUseUrlSelection(true);
+      setSelectedEventOverride(null);
     };
     return addCodexUrlChangeListener(handler);
-  }, [events]);
+  }, []);
 
   useEffect(() => {
     if (!selectedEvent) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setSelectedEvent(null); };
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") closeSelectedEvent(); };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedEvent]);
+  }, [closeSelectedEvent, selectedEvent]);
 
   const versionedEvents = useMemo(() => {
     return versionCodexEntities(events, "event", {
@@ -416,7 +431,7 @@ export function EventList({
                           event={event}
                           messages={serviceText}
                           gameUi={gameUi}
-                          onClick={() => setSelectedEvent(event)}
+                          onClick={() => selectEvent(event)}
                         />
                       </div>
                     ))}
@@ -432,7 +447,7 @@ export function EventList({
       {selectedEvent && (
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
-          onClick={(e) => { if (e.target === e.currentTarget) setSelectedEvent(null); }}
+          onClick={(e) => { if (e.target === e.currentTarget) closeSelectedEvent(); }}
         >
           <div className="mx-4 my-4 w-full max-w-[92rem]">
             <EventDetail
@@ -448,7 +463,7 @@ export function EventList({
               patches={patches}
               changes={changes}
               versionDiffs={versionDiffs}
-              onClose={() => setSelectedEvent(null)}
+              onClose={closeSelectedEvent}
             />
           </div>
         </div>

@@ -2,9 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { AncientNodeRender } from "@/components/codex/ancient-node-render";
-import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
+import {
+  addCodexUrlChangeListener,
+  pushCodexHistoryState,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
@@ -96,20 +99,24 @@ export function AncientList({
   entities,
 }: AncientListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const searchParams = useSearchParams();
+  const urlAncientId = useHydrationSafeSearchParam("ancient");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
   const [selectedActs, setSelectedActs] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [actSortDir, setActSortDir] = useState<FilterSortDir>("asc");
-  const initialAncientId = searchParams.get("ancient");
-  const [selectedAncient, setSelectedAncient] = useState<CodexAncient | null>(() => {
-    if (!initialAncientId) return null;
-    return ancients.find((ancient) => ancient.id.toLowerCase() === initialAncientId.toLowerCase()) ?? null;
-  });
+  const [selectedAncientOverride, setSelectedAncientOverride] = useState<CodexAncient | null>(null);
+  const [useUrlSelection, setUseUrlSelection] = useState(true);
   const versionedAncients = useMemo(() => {
     if (!currentVersion || !selectedVersion) return ancients;
     return withEntityLifecycleForVersion(ancients, selectedVersion, { changes, entityType: "ancient" });
   }, [ancients, changes, currentVersion, selectedVersion]);
+
+  const urlSelectedAncient = useMemo(() => (
+    urlAncientId
+      ? versionedAncients.find((ancient) => ancient.id.toLowerCase() === urlAncientId.toLowerCase()) ?? null
+      : null
+  ), [urlAncientId, versionedAncients]);
+  const selectedAncient = useUrlSelection ? urlSelectedAncient : selectedAncientOverride;
 
   const relicById = useMemo(
     () => new Map(relics.map((relic) => [relic.id, relic])),
@@ -123,43 +130,44 @@ export function AncientList({
   }, [relicById, selectedAncient]);
 
   const selectAncient = useCallback((ancient: CodexAncient) => {
-    setSelectedAncient(ancient);
-  }, []);
+    setUseUrlSelection(false);
+    setSelectedAncientOverride(ancient);
+  }, [setSelectedAncientOverride, setUseUrlSelection]);
+
+  const closeSelectedAncient = useCallback(() => {
+    setUseUrlSelection(false);
+    setSelectedAncientOverride(null);
+  }, [setSelectedAncientOverride, setUseUrlSelection]);
 
   useEffect(() => {
+    if (useUrlSelection) return;
     const url = new URL(window.location.href);
-    if (selectedAncient) {
-      url.searchParams.set("ancient", selectedAncient.id.toLowerCase());
+    if (selectedAncientOverride) {
+      url.searchParams.set("ancient", selectedAncientOverride.id.toLowerCase());
     } else {
       url.searchParams.delete("ancient");
     }
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }
-  }, [selectedAncient]);
+  }, [selectedAncientOverride, useUrlSelection]);
 
   useEffect(() => {
     const handler = () => {
-      const url = new URL(window.location.href);
-      const ancientParam = url.searchParams.get("ancient");
-      if (!ancientParam) {
-        setSelectedAncient(null);
-      } else {
-        const ancient = versionedAncients.find((item) => item.id.toLowerCase() === ancientParam.toLowerCase());
-        setSelectedAncient(ancient ?? null);
-      }
+      setUseUrlSelection(true);
+      setSelectedAncientOverride(null);
     };
     return addCodexUrlChangeListener(handler);
-  }, [versionedAncients]);
+  }, []);
 
   useEffect(() => {
     if (!selectedAncient) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedAncient(null);
+      if (e.key === "Escape") closeSelectedAncient();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedAncient]);
+  }, [closeSelectedAncient, selectedAncient]);
 
   const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
@@ -320,7 +328,7 @@ export function AncientList({
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedAncient(null);
+            if (e.target === e.currentTarget) closeSelectedAncient();
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
@@ -331,7 +339,7 @@ export function AncientList({
               ancient={selectedAncient}
               cards={cards}
               relics={selectedAncientRelics}
-              onClose={() => setSelectedAncient(null)}
+              onClose={closeSelectedAncient}
               entities={entities}
               patches={patches}
               changes={changes}

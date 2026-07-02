@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { useSearchParams } from "next/navigation";
 import Image from "@/components/ui/static-image";
 import { DescriptionText } from "./codex-description";
 import { PotionDetail } from "./potion-detail";
 import { GameHoverTip } from "./hover-tip";
-import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
+import {
+  addCodexUrlChangeListener,
+  pushCodexHistoryState,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -119,7 +122,7 @@ interface PotionLibraryProps {
 
 export function PotionLibrary({ serviceLocale, gameUi, title, potions, characters, versions, currentVersion, patches, changes, versionDiffs, relatedCards = [], relatedEnchantments = [], relatedEvents = [], relatedPowers = [], entities }: PotionLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const searchParams = useSearchParams();
+  const urlPotionId = useHydrationSafeSearchParam("potion");
   const [selectedPools, setSelectedPools] = useState<Set<PotionPool>>(
     new Set()
   );
@@ -137,50 +140,58 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
     future: "asc",
   });
 
-  // Potion detail modal — initialize from ?potion= query param
-  const initialPotionId = searchParams.get("potion");
-  const [selectedPotion, setSelectedPotion] = useState<CodexPotion | null>(() => {
-    if (!initialPotionId) return null;
-    return potions.find((p) => p.id.toLowerCase() === initialPotionId.toLowerCase()) ?? null;
-  });
+  // Potion detail modal
+  const [selectedPotionOverride, setSelectedPotionOverride] = useState<CodexPotion | null>(null);
+  const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const urlSelectedPotion = useMemo(() => (
+    urlPotionId
+      ? potions.find((p) => p.id.toLowerCase() === urlPotionId.toLowerCase()) ?? null
+      : null
+  ), [potions, urlPotionId]);
+  const selectedPotion = useUrlSelection ? urlSelectedPotion : selectedPotionOverride;
+
+  const selectPotion = useCallback((potion: CodexPotion) => {
+    setUseUrlSelection(false);
+    setSelectedPotionOverride(potion);
+  }, [setSelectedPotionOverride, setUseUrlSelection]);
+
+  const closeSelectedPotion = useCallback(() => {
+    setUseUrlSelection(false);
+    setSelectedPotionOverride(null);
+  }, [setSelectedPotionOverride, setUseUrlSelection]);
 
   // Update URL query param when modal opens/closes
   useEffect(() => {
+    if (useUrlSelection) return;
     const url = new URL(window.location.href);
-    if (selectedPotion) {
-      url.searchParams.set("potion", selectedPotion.id.toLowerCase());
+    if (selectedPotionOverride) {
+      url.searchParams.set("potion", selectedPotionOverride.id.toLowerCase());
     } else {
       url.searchParams.delete("potion");
     }
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }
-  }, [selectedPotion]);
+  }, [selectedPotionOverride, useUrlSelection]);
 
   // Handle browser back button
   useEffect(() => {
     const handler = () => {
-      const url = new URL(window.location.href);
-      const potionParam = url.searchParams.get("potion");
-      if (!potionParam) {
-        setSelectedPotion(null);
-      } else {
-        const potion = potions.find((p) => p.id.toLowerCase() === potionParam.toLowerCase());
-        setSelectedPotion(potion ?? null);
-      }
+      setUseUrlSelection(true);
+      setSelectedPotionOverride(null);
     };
     return addCodexUrlChangeListener(handler);
-  }, [potions]);
+  }, []);
 
   // Close modal on Escape
   useEffect(() => {
     if (!selectedPotion) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedPotion(null);
+      if (e.key === "Escape") closeSelectedPotion();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedPotion]);
+  }, [closeSelectedPotion, selectedPotion]);
 
   const versionedPotions = useMemo(() => {
     return versionCodexEntities(potions, "potion", {
@@ -446,7 +457,7 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
                   <PotionTile
                     key={potion.id}
                     potion={potion}
-                    onClick={() => setSelectedPotion(potion)}
+                    onClick={() => selectPotion(potion)}
                   />
                 ))}
               </div>
@@ -466,11 +477,11 @@ export function PotionLibrary({ serviceLocale, gameUi, title, potions, character
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedPotion(null);
+            if (e.target === e.currentTarget) closeSelectedPotion();
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
-            <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} potion={selectedPotion} poolLabels={poolLabels} relatedCards={relatedCards} relatedEnchantments={relatedEnchantments} relatedEvents={relatedEvents} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} entities={entities} onClose={() => setSelectedPotion(null)} />
+            <PotionDetail serviceLocale={serviceLocale} gameUi={gameUi} backToListTitle={title} potion={selectedPotion} poolLabels={poolLabels} relatedCards={relatedCards} relatedEnchantments={relatedEnchantments} relatedEvents={relatedEvents} relatedPowers={relatedPowers} patches={patches} changes={changes} versionDiffs={versionDiffs} entities={entities} onClose={closeSelectedPotion} />
           </div>
         </div>
       )}

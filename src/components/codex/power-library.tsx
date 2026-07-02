@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
+import {
+  addCodexUrlChangeListener,
+  pushCodexHistoryState,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -67,7 +70,7 @@ interface PowerLibraryProps {
 
 export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [], relics = [], potions = [], enchantments = [], events = [], monsters = [], versions, currentVersion, patches, changes, versionDiffs, entities }: PowerLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const searchParams = useSearchParams();
+  const urlPowerId = useHydrationSafeSearchParam("power");
   const [selectedTypes, setSelectedTypes] = useState<Set<PowerType>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVersion, setSelectedVersion] = useState(currentVersion ?? "");
@@ -76,26 +79,37 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
   const hasBetaArt = powers.some((power) => power.betaImageUrl);
 
   // Power detail modal
-  const initialPowerId = searchParams.get("power");
-  const [selectedPowerId, setSelectedPowerId] = useState<string | null>(initialPowerId);
+  const [selectedPowerIdOverride, setSelectedPowerIdOverride] = useState<string | null>(null);
+  const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const selectedPowerId = useUrlSelection ? urlPowerId : selectedPowerIdOverride;
+
+  const selectPower = useCallback((powerId: string) => {
+    setUseUrlSelection(false);
+    setSelectedPowerIdOverride(powerId);
+  }, [setSelectedPowerIdOverride, setUseUrlSelection]);
+
+  const closeSelectedPower = useCallback(() => {
+    setUseUrlSelection(false);
+    setSelectedPowerIdOverride(null);
+  }, [setSelectedPowerIdOverride, setUseUrlSelection]);
 
   useEffect(() => {
+    if (useUrlSelection) return;
     const url = new URL(window.location.href);
-    if (selectedPowerId) {
-      url.searchParams.set("power", selectedPowerId.toLowerCase());
+    if (selectedPowerIdOverride) {
+      url.searchParams.set("power", selectedPowerIdOverride.toLowerCase());
     } else {
       url.searchParams.delete("power");
     }
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }
-  }, [selectedPowerId]);
+  }, [selectedPowerIdOverride, useUrlSelection]);
 
   useEffect(() => {
     const handler = () => {
-      const url = new URL(window.location.href);
-      const param = url.searchParams.get("power");
-      setSelectedPowerId(param);
+      setUseUrlSelection(true);
+      setSelectedPowerIdOverride(null);
     };
     return addCodexUrlChangeListener(handler);
   }, []);
@@ -103,11 +117,11 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
   useEffect(() => {
     if (!selectedPowerId) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedPowerId(null);
+      if (e.key === "Escape") closeSelectedPower();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedPowerId]);
+  }, [closeSelectedPower, selectedPowerId]);
 
   const versionedPowers = useMemo(() => {
     return versionCodexEntities(powers, "power", {
@@ -280,7 +294,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
                     gameUi={gameUi}
                     power={power}
                     showBeta={showBeta}
-                    onClick={() => setSelectedPowerId(power.id)}
+                    onClick={() => selectPower(power.id)}
                   />
                 ))}
               </div>
@@ -300,7 +314,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setSelectedPowerId(null);
+            if (e.target === e.currentTarget) closeSelectedPower();
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
@@ -320,7 +334,7 @@ export function PowerLibrary({ serviceLocale, gameUi, title, powers, cards = [],
               relatedEnchantments={enchantments}
               relatedEvents={events}
               relatedMonsters={monsters}
-              onClose={() => setSelectedPowerId(null)}
+              onClose={closeSelectedPower}
             />
           </div>
         </div>

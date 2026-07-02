@@ -1,8 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
+import {
+  addCodexUrlChangeListener,
+  pushCodexHistoryState,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import {
@@ -84,28 +87,40 @@ export function KeywordLibrary({
   entities,
 }: KeywordLibraryProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const searchParams = useSearchParams();
+  const urlKeywordId = useHydrationSafeSearchParam("keyword");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSources, setSelectedSources] = useState<Set<CodexKeyword["source"]>>(new Set());
-  const initialKeywordId = searchParams.get("keyword");
-  const [selectedKeywordId, setSelectedKeywordId] = useState<string | null>(initialKeywordId);
+  const [selectedKeywordIdOverride, setSelectedKeywordIdOverride] = useState<string | null>(null);
+  const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const selectedKeywordId = useUrlSelection ? urlKeywordId : selectedKeywordIdOverride;
+
+  const selectKeyword = useCallback((keywordId: string) => {
+    setUseUrlSelection(false);
+    setSelectedKeywordIdOverride(keywordId);
+  }, [setSelectedKeywordIdOverride, setUseUrlSelection]);
+
+  const closeSelectedKeyword = useCallback(() => {
+    setUseUrlSelection(false);
+    setSelectedKeywordIdOverride(null);
+  }, [setSelectedKeywordIdOverride, setUseUrlSelection]);
 
   useEffect(() => {
+    if (useUrlSelection) return;
     const url = new URL(window.location.href);
-    if (selectedKeywordId) {
-      url.searchParams.set("keyword", selectedKeywordId.toLowerCase());
+    if (selectedKeywordIdOverride) {
+      url.searchParams.set("keyword", selectedKeywordIdOverride.toLowerCase());
     } else {
       url.searchParams.delete("keyword");
     }
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }
-  }, [selectedKeywordId]);
+  }, [selectedKeywordIdOverride, useUrlSelection]);
 
   useEffect(() => {
     const handler = () => {
-      const url = new URL(window.location.href);
-      setSelectedKeywordId(url.searchParams.get("keyword"));
+      setUseUrlSelection(true);
+      setSelectedKeywordIdOverride(null);
     };
     return addCodexUrlChangeListener(handler);
   }, []);
@@ -113,11 +128,11 @@ export function KeywordLibrary({
   useEffect(() => {
     if (!selectedKeywordId) return;
     const handler = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSelectedKeywordId(null);
+      if (event.key === "Escape") closeSelectedKeyword();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedKeywordId]);
+  }, [closeSelectedKeyword, selectedKeywordId]);
 
   const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
@@ -225,7 +240,7 @@ export function KeywordLibrary({
                     <KeywordTile
                       key={keyword.id}
                       keyword={keyword}
-                      onClick={() => setSelectedKeywordId(keyword.id)}
+                      onClick={() => selectKeyword(keyword.id)}
                     />
                   ))}
                 </div>
@@ -245,7 +260,7 @@ export function KeywordLibrary({
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(event) => {
-            if (event.target === event.currentTarget) setSelectedKeywordId(null);
+            if (event.target === event.currentTarget) closeSelectedKeyword();
           }}
         >
           <div className="my-8 mx-4 w-full max-w-6xl">
@@ -256,7 +271,7 @@ export function KeywordLibrary({
               keyword={selectedKeyword}
               relatedCards={cards}
               entities={entities}
-              onClose={() => setSelectedKeywordId(null)}
+              onClose={closeSelectedKeyword}
             />
           </div>
         </div>

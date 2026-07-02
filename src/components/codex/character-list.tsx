@@ -3,8 +3,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
+import {
+  addCodexUrlChangeListener,
+  pushCodexHistoryState,
+  useHydrationSafeSearchParam,
+} from "./use-hydration-safe-search-param";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import {
   formatCodexCount,
@@ -63,13 +66,16 @@ export function CharacterList({
   entities,
 }: CharacterListProps) {
   const serviceText = getCodexServiceMessages(serviceLocale);
-  const searchParams = useSearchParams();
+  const urlCharacterId = useHydrationSafeSearchParam("character");
   const [searchQuery, setSearchQuery] = useState("");
-  const initialCharacterId = searchParams.get("character");
-  const [selectedCharacter, setSelectedCharacter] = useState<CodexCharacter | null>(() => {
-    if (!initialCharacterId) return null;
-    return characters.find((character) => character.id.toLowerCase() === initialCharacterId.toLowerCase()) ?? null;
-  });
+  const [selectedCharacterOverride, setSelectedCharacterOverride] = useState<CodexCharacter | null>(null);
+  const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const urlSelectedCharacter = useMemo(() => (
+    urlCharacterId
+      ? characters.find((character) => character.id.toLowerCase() === urlCharacterId.toLowerCase()) ?? null
+      : null
+  ), [characters, urlCharacterId]);
+  const selectedCharacter = useUrlSelection ? urlSelectedCharacter : selectedCharacterOverride;
   const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
   const filteredCharacters = useMemo(() => {
     if (!searchText) return characters;
@@ -96,43 +102,44 @@ export function CharacterList({
   }, [characters, searchText]);
 
   const selectCharacter = useCallback((character: CodexCharacter) => {
-    setSelectedCharacter(character);
-  }, [setSelectedCharacter]);
+    setUseUrlSelection(false);
+    setSelectedCharacterOverride(character);
+  }, [setSelectedCharacterOverride, setUseUrlSelection]);
+
+  const closeSelectedCharacter = useCallback(() => {
+    setUseUrlSelection(false);
+    setSelectedCharacterOverride(null);
+  }, [setSelectedCharacterOverride, setUseUrlSelection]);
 
   useEffect(() => {
+    if (useUrlSelection) return;
     const url = new URL(window.location.href);
-    if (selectedCharacter) {
-      url.searchParams.set("character", selectedCharacter.id.toLowerCase());
+    if (selectedCharacterOverride) {
+      url.searchParams.set("character", selectedCharacterOverride.id.toLowerCase());
     } else {
       url.searchParams.delete("character");
     }
     if (url.toString() !== window.location.href) {
       pushCodexHistoryState(url);
     }
-  }, [selectedCharacter]);
+  }, [selectedCharacterOverride, useUrlSelection]);
 
   useEffect(() => {
     const handler = () => {
-      const url = new URL(window.location.href);
-      const characterParam = url.searchParams.get("character");
-      if (!characterParam) {
-        setSelectedCharacter(null);
-      } else {
-        const character = characters.find((item) => item.id.toLowerCase() === characterParam.toLowerCase());
-        setSelectedCharacter(character ?? null);
-      }
+      setUseUrlSelection(true);
+      setSelectedCharacterOverride(null);
     };
     return addCodexUrlChangeListener(handler);
-  }, [characters]);
+  }, []);
 
   useEffect(() => {
     if (!selectedCharacter) return;
     const handler = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSelectedCharacter(null);
+      if (event.key === "Escape") closeSelectedCharacter();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [selectedCharacter]);
+  }, [closeSelectedCharacter, selectedCharacter]);
 
   const { sidebarOpen, setSidebarOpen, isMobile } = useCodexFilterDrawer();
 
@@ -187,7 +194,7 @@ export function CharacterList({
           aria-label={selectedCharacter.name}
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm"
           onClick={(event) => {
-            if (event.target === event.currentTarget) setSelectedCharacter(null);
+            if (event.target === event.currentTarget) closeSelectedCharacter();
           }}
         >
           <div className="mx-4 my-8 w-full max-w-6xl">
@@ -200,7 +207,7 @@ export function CharacterList({
               relics={relics}
               potions={potions}
               ancients={ancients}
-              onClose={() => setSelectedCharacter(null)}
+              onClose={closeSelectedCharacter}
               entities={entities}
               patches={patches}
               changes={changes}
