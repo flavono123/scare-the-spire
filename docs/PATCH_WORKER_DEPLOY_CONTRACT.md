@@ -37,3 +37,23 @@ but independently deployable surfaces.
 - When a push changes both patch notes and Compendium content, deploy the patch
   Worker first with safe pending previews, deploy the main Worker, then redeploy
   the patch Worker to enable newly available links.
+
+## Static-First Routing Target
+
+- The production target for a custom domain is direct route dispatch, not main
+  Worker service-binding dispatch:
+  - `example.com/_patches/*` -> `scare-the-spire-patches`
+  - `example.com/patches*` -> `scare-the-spire-patches`
+  - `example.com/*` -> `scare-the-spire`
+- Keep the main Worker `PATCH_WORKER` service binding as a workers.dev and
+  rollback fallback. The fallback preserves same-origin patch pages when
+  Cloudflare route priority cannot dispatch by path, but it is not the final
+  Worker-invocation-minimizing shape.
+- The patch Worker must remain asset-first: generated HTML, CSS, fonts, images,
+  and provisional assets live in `.patch-worker/assets` and are served through
+  the `ASSETS` binding. Runtime code may map clean URLs to `index.html`, but it
+  must not render patch markdown or query Compendium data at request time.
+- Do not add `/patches*` to the main OpenNext static/SSR surface as the primary
+  production path. Patch routes may be present in Next as development wrappers
+  and Vercel compatibility, but Cloudflare production should prefer the static
+  patch Worker route once a custom domain route is available.
