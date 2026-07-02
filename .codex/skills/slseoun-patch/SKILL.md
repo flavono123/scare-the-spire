@@ -50,6 +50,62 @@ Index/detail behavior while `status: "building"`:
 
 Remove `status` or set it to `"ready"` when the enriched notes are published.
 
+## Fast WIP Publishing
+
+Use this first when the skill is invoked for a newly published Steam patch and
+the user has not explicitly asked to stay local-only.
+
+1. Identify only the source facts needed for a shell entry: version, title,
+   date, type, and real Steam URL.
+2. Add or update the shell entry in `data/sts2-patches.json` with
+   `status: "building"` and WIP summaries.
+3. Commit the shell entry immediately.
+4. Deploy the WIP to Vercel first from the main worktree.
+5. Then propagate the same WIP to the Cloudflare worktree and deploy Cloudflare.
+   Use `.codex/skills/vercel-cloudflare-feature-migration/SKILL.md` when that
+   workflow is applicable.
+
+This step should be fast and factual. Do not wait for Korean enrichment,
+representative art, current-game extraction, or Compendium synchronization
+before publishing the WIP shell.
+
+## Multi-Turn Rich Note Loop
+
+After the WIP shell is live, expect iterative work with the user instead of a
+single perfect pass.
+
+- Run the patch notes locally and keep the user reviewing the rendered page over
+  multiple turns.
+- Publish partial improvements as they become coherent, but keep the patch in
+  `status: "building"` until the rich notes, current-game assets, Compendium
+  data, and validation are ready.
+- Deploy every iteration in this order: Vercel first, then Cloudflare.
+- For Cloudflare, prefer patch-only deploys when the changed files only affect
+  patch pages. If both patch notes and Compendium data change, publish the patch
+  surface first in a safe provisional state, deploy the main Compendium surface,
+  then redeploy the patch surface so newly available links activate.
+
+## Cloudflare Patch-First Provisional Mode
+
+Use this in the Cloudflare worktree when rich patch notes need to publish before
+the main Compendium Worker has the matching pages and canonical assets.
+
+- Follow the Cloudflare worktree's `docs/PATCH_WORKER_DEPLOY_CONTRACT.md` when
+  it exists.
+- Rich notes may include new cards, relics, powers, or other Compendium
+  resources before the main Worker is ready only when those resources are also
+  represented in `data/sts2-patch-local-resources.json`.
+- Patch-local resources must use official game names from extracted data. Do not
+  invent names, descriptions, or artwork.
+- Patch-local provisional assets must live under `/_patches/*`; do not point to
+  guessed canonical `/images/sts2/*` paths before the main Compendium data owns
+  those assets.
+- Pending patch-local resources render hover-only construction previews and must
+  not link to Compendium pages until the deployed
+  `/generated/compendium-resource-manifest.json` contains the resource.
+- When the main Compendium Worker catches up, redeploy the patch Worker so the
+  manifest turns pending hover-only previews into normal Compendium links.
+
 ## Patch Representative Art
 
 Use `art` in `data/sts2-patches.json` to select one representative image for each ready patch. The same art appears on the patch index card and near the top of the patch detail page.
