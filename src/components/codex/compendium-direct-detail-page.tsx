@@ -15,6 +15,7 @@ import { PowerDetail } from "@/components/codex/power-detail";
 import { RelicDetail } from "@/components/codex/relic-detail";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import {
   COMPENDIUM_DETAIL_PAYLOAD_PATH,
   type CompendiumDetailPayload,
@@ -132,7 +133,7 @@ function buildEntityInfo(payload: CompendiumDetailPayload): EntityInfo[] {
       nameEn: keyword.nameEn,
       nameKo: keyword.name,
       imageUrl: keyword.imageUrl,
-      href: `/compendium/keywords/${keyword.id.toLowerCase()}`,
+      href: buildCompendiumResourceHref("keyword", keyword.id),
       color: keyword.source,
       type: "keyword" as const,
       keywordData: keyword,
@@ -225,7 +226,7 @@ function buildEntityInfo(payload: CompendiumDetailPayload): EntityInfo[] {
       nameEn: epoch.nameEn,
       nameKo: epoch.name,
       imageUrl: epoch.imageUrl,
-      href: `/compendium/epochs/${epoch.id.toLowerCase()}`,
+      href: buildCompendiumResourceHref("epoch", epoch.id),
       color: epoch.affiliation,
       type: "epoch" as const,
       epochData: epoch,

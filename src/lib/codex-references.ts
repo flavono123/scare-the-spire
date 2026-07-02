@@ -15,14 +15,15 @@ import type {
   PotionRarityKo,
 } from "./codex-types";
 import { stripCodexMarkup } from "./codex-search";
+import { buildCompendiumResourceHref } from "./compendium-resource-links";
 
 export const FUTURE_OF_POTIONS_EVENT_ID = "THE_FUTURE_OF_POTIONS";
 export const FUTURE_OF_POTIONS_EVENT_NAME_KO = "포션의 미래?";
-export const FUTURE_OF_POTIONS_EVENT_PATH = "/compendium/events/the_future_of_potions";
+export const FUTURE_OF_POTIONS_EVENT_PATH = buildCompendiumResourceHref("event", FUTURE_OF_POTIONS_EVENT_ID);
 
 export const TINKER_TIME_EVENT_ID = "TINKER_TIME";
 export const TINKER_TIME_EVENT_NAME_KO = "땜질 시간";
-export const TINKER_TIME_EVENT_PATH = "/compendium/events/tinker_time";
+export const TINKER_TIME_EVENT_PATH = buildCompendiumResourceHref("event", TINKER_TIME_EVENT_ID);
 
 export type FuturePotionCardRarity = Extract<CardRarityKo, "일반" | "고급" | "희귀">;
 export type FuturePotionCardType = Extract<CardTypeKo, "공격" | "스킬" | "파워">;

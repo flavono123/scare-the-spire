@@ -14,6 +14,7 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { Badge } from "@/components/ui/badge";
 import {
   PatchNoteRenderer,
@@ -492,7 +493,7 @@ function buildMonsterMoveEntity(
     aliasesKo: options.aliasesKo,
     aliasesEn: options.aliasesEn,
     imageUrl: monster.bossImageUrl ?? monster.imageUrl,
-    href: `/compendium/monsters/${monster.id.toLowerCase()}`,
+    href: buildCompendiumResourceHref("monster", monster.id),
     compendiumResourceId: monster.id,
     color: monster.type,
     type: "monsterMove",
@@ -935,7 +936,7 @@ export async function PatchDetailPage({
           color: e.act ?? "none",
           type: "event" as const,
           compendiumResourceId: e.id,
-          href: `/compendium/events/${e.id.toLowerCase()}`,
+          href: buildCompendiumResourceHref("event", e.id),
           eventData: e,
           eventOptionDesc: o.description,
         })),
@@ -988,7 +989,7 @@ export async function PatchDetailPage({
           ...(override?.aliasesKo ?? []),
         ].filter((alias): alias is string => Boolean(alias)),
         imageUrl: e.imageUrl,
-        href: `/compendium/epochs/${idLower}`,
+        href: buildCompendiumResourceHref("epoch", idLower),
         color: e.affiliation,
         type: "epoch" as const,
         epochData: e,

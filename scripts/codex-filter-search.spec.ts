@@ -109,15 +109,15 @@ test.describe("Unified topbar search", () => {
 
     await search.fill("재미가");
     await expect(page.getByText("연대기", { exact: true }).first()).toBeVisible();
-    await expect(page.locator('div.fixed.inset-0 a[href="/compendium/epochs/regent6_epoch"]').first()).toBeVisible();
+    await expect(page.locator('div.fixed.inset-0 a[href="/compendium/epochs?epoch=regent6_epoch"]').first()).toBeVisible();
 
     await search.fill("giant seamless mirror");
     await expect(page.getByText("이벤트", { exact: true }).first()).toBeVisible();
-    await expect(page.locator('div.fixed.inset-0 a[href="/compendium/events/reflections"]').first()).toBeVisible();
+    await expect(page.locator('div.fixed.inset-0 a[href="/compendium/events?event=reflections"]').first()).toBeVisible();
 
     await search.fill("gain block");
     await expect(page.getByText("카드", { exact: true }).first()).toBeVisible();
-    await expect(page.locator('div.fixed.inset-0 a[href="/compendium/cards/beacon_of_hope"]').first()).toBeVisible();
+    await expect(page.locator('div.fixed.inset-0 a[href="/compendium/cards?card=beacon_of_hope"]').first()).toBeVisible();
   });
 
   test("opens direct epoch search results", async ({ page }) => {
@@ -128,13 +128,13 @@ test.describe("Unified topbar search", () => {
     const search = page.locator('input[placeholder="통합 검색"]');
     await search.fill("불만");
 
-    const result = page.locator('div.fixed.inset-0 a[href="/compendium/epochs/regent6_epoch"]').first();
+    const result = page.locator('div.fixed.inset-0 a[href="/compendium/epochs?epoch=regent6_epoch"]').first();
     await expect(result).toBeVisible();
 
     await result.click();
 
     await expect(page.getByRole("heading", { name: "불만" })).toBeVisible();
-    expect(page.url()).toContain("/compendium/epochs/regent6_epoch");
+    expect(page.url()).toContain("/compendium/epochs?epoch=regent6_epoch");
   });
 
   test("shows withering presence countdown while local result navigation is pending", async ({ page }) => {
@@ -156,7 +156,7 @@ test.describe("Unified topbar search", () => {
     const search = page.locator('input[placeholder="통합 검색"]');
     await search.fill("불만");
 
-    const result = page.locator('div.fixed.inset-0 a[href="/compendium/epochs/regent6_epoch"]').first();
+    const result = page.locator('div.fixed.inset-0 a[href="/compendium/epochs?epoch=regent6_epoch"]').first();
     await expect(result).toBeVisible();
 
     await result.click();

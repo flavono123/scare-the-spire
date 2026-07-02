@@ -24,6 +24,7 @@ import {
 import type { TopbarState } from "@/components/history-course/topbar-state";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { visibleRunBadgesAtFloor } from "@/lib/run-badge-timing";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { cn } from "@/lib/utils";
 
 // ============================================================================
@@ -161,7 +162,7 @@ function buildCardEntityInfo(card: CodexCard | undefined): EntityInfo | null {
     nameEn: card.nameEn,
     nameKo: card.name,
     imageUrl: card.imageUrl,
-    href: `/compendium/cards/${linkId.toLowerCase()}`,
+    href: buildCompendiumResourceHref("card", linkId),
     color: card.color,
     type: "card",
     cardData: card,
@@ -834,7 +835,7 @@ function DeckEntry({
       {...(tracksFloor ? hoverHandlers : {})}
     >
       <Link
-        href={`/compendium/cards/${entity.id.toLowerCase()}`}
+        href={buildCompendiumResourceHref("card", entity.id)}
         className="shrink-0"
         aria-label={`${entity.nameKo} 카드 페이지`}
       >

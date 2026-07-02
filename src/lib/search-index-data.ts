@@ -1,5 +1,6 @@
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { stripCodexMarkup } from "@/lib/codex-search";
+import { buildCompendiumResourceHref, type CompendiumResourceLinkType } from "@/lib/compendium-resource-links";
 import { getStories, getSTS2Patches, getSTS2Stories } from "@/lib/data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 
@@ -20,32 +21,28 @@ export type SearchIndexPayload = {
   items: SearchIndexItem[];
 };
 
-const TYPE_TO_COMPENDIUM_PATH: Partial<Record<EntityType, string>> = {
-  card: "cards",
-  character: "characters",
-  keyword: "keywords",
-  relic: "relics",
-  potion: "potions",
-  power: "powers",
-  enchantment: "enchantments",
-  affliction: "enchantments",
-  event: "events",
-  monster: "monsters",
-  encounter: "encounters",
-  ancient: "ancients",
-  epoch: "epochs",
+const TYPE_TO_COMPENDIUM_LINK_TYPE: Partial<Record<EntityType, CompendiumResourceLinkType>> = {
+  card: "card",
+  character: "character",
+  keyword: "keyword",
+  relic: "relic",
+  potion: "potion",
+  power: "power",
+  enchantment: "enchantment",
+  affliction: "affliction",
+  event: "event",
+  monster: "monster",
+  encounter: "encounter",
+  ancient: "ancient",
+  epoch: "epoch",
 };
 
 function entityHref(entity: EntityInfo): string | null {
   if (entity.href) return entity.href;
 
-  if (entity.type === "affliction") {
-    return `/compendium/enchantments/${entity.id.toLowerCase()}`;
-  }
-
-  const path = TYPE_TO_COMPENDIUM_PATH[entity.type];
-  if (!path) return null;
-  return `/compendium/${path}/${entity.id.toLowerCase()}`;
+  const linkType = TYPE_TO_COMPENDIUM_LINK_TYPE[entity.type];
+  if (!linkType) return null;
+  return buildCompendiumResourceHref(linkType, entity.id);
 }
 
 function cleanSearchText(value: string | number | null | undefined): string {

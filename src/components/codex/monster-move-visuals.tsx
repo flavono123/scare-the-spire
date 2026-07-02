@@ -13,6 +13,7 @@ import type {
 } from "@/lib/codex-types";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { TinyCardIcon } from "@/components/history-course/card-action-icon";
 import { DescriptionText } from "@/components/codex/codex-description";
 import { TEXT_CREAM, TEXT_GREEN } from "@/lib/sts2-card-style";
@@ -892,7 +893,7 @@ function PatchDiffMonsterLink({
 
   return (
     <PatchDiffInlinePreview
-      href={localizeHref(`/compendium/monsters/${monster.id.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(buildCompendiumResourceHref("monster", monster.id), serviceLocale)}
       preview={() => (
         <GameHoverTip title={title} style={{ minWidth: 260, maxWidth: 340 }}>
           <span className="flex items-start gap-2.5">
@@ -1011,7 +1012,7 @@ function PatchDiffPowerLink({
 
   return (
     <PatchDiffInlinePreview
-      href={localizeHref(`/compendium/powers/${powerId.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(buildCompendiumResourceHref("power", powerId), serviceLocale)}
       preview={() => (
         <GameHoverTip
           title={title}
@@ -1073,7 +1074,7 @@ function PatchDiffCardLink({
 
   return (
     <PatchDiffInlinePreview
-      href={localizeHref(`/compendium/cards/${cardId.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(buildCompendiumResourceHref("card", cardId), serviceLocale)}
       preview={() => (
         <GameHoverTip title={title} style={{ minWidth: 220, maxWidth: 280 }}>
           {card?.imageUrl && (
@@ -1105,7 +1106,7 @@ function PatchDiffMoveLink({
 
   return (
     <PatchDiffInlinePreview
-      href={localizeHref(`/compendium/monsters/${monster.id.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(buildCompendiumResourceHref("monster", monster.id), serviceLocale)}
       preview={(nonce) => (
         <MonsterMoveHoverPreview
           move={move}
@@ -1626,7 +1627,7 @@ function PowerApplicationIcon({
 
   return (
     <Link
-      href={localizeHref(`/compendium/powers/${power.powerId.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(buildCompendiumResourceHref("power", power.powerId), serviceLocale)}
       className={className}
       title={title}
     >

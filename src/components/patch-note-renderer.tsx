@@ -11,6 +11,7 @@ import {
 import type { CodexCard, CodexKeyword, CodexCharacter, CodexRelic, CodexPotion, CodexPower, CodexEnchantment, CodexAffliction, CodexEvent, CodexMonster, CodexEncounter, CodexAncient, CodexEpoch, DamageValue, MonsterMove } from "@/lib/codex-types";
 import { RELIC_RARITY_LABELS, RELIC_RARITY_COLORS, POOL_LABELS, POTION_RARITY_CONFIG, MONSTER_TYPE_CONFIG, ENCOUNTER_ROOM_TYPE_CONFIG, EVENT_ACT_CONFIG, EVENT_ACT_UNKNOWN, getCharacterColor, characterOutlineFilter, type RelicFilterPool } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import {
   localizeHrefWithGameLocale,
   type GameLocale,
@@ -316,24 +317,24 @@ export function EntityPreview({
 
   const compendiumRouteId = (entity.compendiumResourceId ?? entity.id).toLowerCase();
   const hrefMap: Partial<Record<EntityType, string>> = {
-    card: `/compendium/cards/${compendiumRouteId}`,
-    character: `/compendium/characters/${compendiumRouteId}`,
-    keyword: `/compendium/keywords/${compendiumRouteId}`,
-    relic: `/compendium/relics/${compendiumRouteId}`,
-    potion: `/compendium/potions/${compendiumRouteId}`,
-    power: `/compendium/powers/${compendiumRouteId}`,
-    enchantment: `/compendium/enchantments/${compendiumRouteId}`,
-    affliction: `/compendium/enchantments/${compendiumRouteId}`,
-    event: `/compendium/events/${compendiumRouteId}`,
-    monster: `/compendium/monsters/${compendiumRouteId}`,
+    card: buildCompendiumResourceHref("card", compendiumRouteId),
+    character: buildCompendiumResourceHref("character", compendiumRouteId),
+    keyword: buildCompendiumResourceHref("keyword", compendiumRouteId),
+    relic: buildCompendiumResourceHref("relic", compendiumRouteId),
+    potion: buildCompendiumResourceHref("potion", compendiumRouteId),
+    power: buildCompendiumResourceHref("power", compendiumRouteId),
+    enchantment: buildCompendiumResourceHref("enchantment", compendiumRouteId),
+    affliction: buildCompendiumResourceHref("affliction", compendiumRouteId),
+    event: buildCompendiumResourceHref("event", compendiumRouteId),
+    monster: buildCompendiumResourceHref("monster", compendiumRouteId),
     monsterMove: entity.compendiumResourceId
-      ? `/compendium/monsters/${compendiumRouteId}`
+      ? buildCompendiumResourceHref("monster", compendiumRouteId)
       : entity.monsterMoveMonsterData
-      ? `/compendium/monsters/${entity.monsterMoveMonsterData.id.toLowerCase()}`
+      ? buildCompendiumResourceHref("monster", entity.monsterMoveMonsterData.id)
       : undefined,
-    encounter: `/compendium/encounters/${compendiumRouteId}`,
-    ancient: `/compendium/ancients/${compendiumRouteId}`,
-    epoch: `/compendium/epochs/${compendiumRouteId}`,
+    encounter: buildCompendiumResourceHref("encounter", compendiumRouteId),
+    ancient: buildCompendiumResourceHref("ancient", compendiumRouteId),
+    epoch: buildCompendiumResourceHref("epoch", compendiumRouteId),
   };
   const hrefBase = isPendingCompendium ? null : entity.href === null ? null : entity.href ?? hrefMap[entity.type] ?? null;
   const href = hrefBase && serviceLocale && gameLocale

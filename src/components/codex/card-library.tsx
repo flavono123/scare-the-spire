@@ -571,9 +571,9 @@ export function CardLibrary({ serviceLocale, gameUi, cards, characters, versions
     if (useUrlSelection) return;
     const url = new URL(window.location.href);
     if (selectedCardId) {
-      url.pathname = `${getCardLibraryBasePath(url.pathname)}/${encodeURIComponent(selectedCardId.toLowerCase())}`;
-      url.searchParams.set("modal", "true");
-      url.searchParams.delete("card");
+      url.pathname = getCardLibraryBasePath(url.pathname);
+      url.searchParams.set("card", selectedCardId.toLowerCase());
+      url.searchParams.delete("modal");
       if (showBeta) {
         url.searchParams.set("beta", "true");
       } else {

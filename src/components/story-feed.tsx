@@ -5,6 +5,7 @@ import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import type { Story, Card, Change, Relic, Potion, LinkedEntity, STS2Change, STS2Patch, StoryEntityType } from "@/lib/types";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useAuth } from "@/hooks/use-auth";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
@@ -126,25 +127,25 @@ function EntityImage({ entityType, entityId, name, deprecated }: {
 function sts2EntityHref(entity: EntityInfo): string | null {
   switch (entity.type) {
     case "card":
-      return `/compendium/cards/${entity.id.toLowerCase()}`;
+      return buildCompendiumResourceHref("card", entity.id);
     case "relic":
-      return `/compendium/relics/${entity.id.toLowerCase()}`;
+      return buildCompendiumResourceHref("relic", entity.id);
     case "potion":
-      return `/compendium/potions/${entity.id.toLowerCase()}`;
+      return buildCompendiumResourceHref("potion", entity.id);
     case "power":
-      return `/compendium/powers/${entity.id.toLowerCase()}`;
+      return buildCompendiumResourceHref("power", entity.id);
     case "enchantment":
-      return `/compendium/enchantments/${entity.id.toLowerCase()}`;
+      return buildCompendiumResourceHref("enchantment", entity.id);
     case "event":
-      return `/compendium/events/${entity.id.toLowerCase()}`;
+      return buildCompendiumResourceHref("event", entity.id);
     case "monster":
-      return `/compendium/monsters/${entity.id.toLowerCase()}`;
+      return buildCompendiumResourceHref("monster", entity.id);
     case "encounter":
-      return `/compendium/encounters/${entity.id.toLowerCase()}`;
+      return buildCompendiumResourceHref("encounter", entity.id);
     case "ancient":
-      return `/compendium/ancients/${entity.id.toLowerCase()}`;
+      return buildCompendiumResourceHref("ancient", entity.id);
     case "epoch":
-      return `/compendium/epochs/${entity.id.toLowerCase()}`;
+      return buildCompendiumResourceHref("epoch", entity.id);
     default:
       return null;
   }

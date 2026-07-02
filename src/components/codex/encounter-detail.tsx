@@ -7,6 +7,7 @@ import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import type { STS2Change, STS2Patch } from "@/lib/types";
 import { getBestiaryDisplayMonsterType } from "@/lib/bestiary-monster-policy";
@@ -205,7 +206,7 @@ export function EncounterDetail({
                 return (
                   <Link
                     key={monsterRef.id}
-                    href={localizeHref(`/compendium/monsters/${monsterRef.id.toLowerCase()}`, serviceLocale)}
+                    href={localizeHref(buildCompendiumResourceHref("monster", monsterRef.id), serviceLocale)}
                     className="group flex min-w-[7rem] flex-col items-center gap-2 text-center"
                   >
                     <div className="relative flex h-32 w-36 items-center justify-center sm:h-40 sm:w-44">

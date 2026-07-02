@@ -25,6 +25,7 @@ import {
 } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
   CodexLibraryShell,
@@ -226,7 +227,7 @@ function CharacterCard({
 
   return (
     <Link
-      href={localizeHref(`/compendium/characters/${character.id.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(buildCompendiumResourceHref("character", character.id), serviceLocale)}
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
         event.preventDefault();

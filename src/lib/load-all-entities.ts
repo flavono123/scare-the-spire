@@ -16,6 +16,7 @@ import {
 import type { GameLocale } from "@/lib/i18n";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 
 export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promise<EntityInfo[]> {
   const gameLocale = opts?.gameLocale;
@@ -73,7 +74,7 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
       nameEn: k.nameEn,
       nameKo: k.name,
       imageUrl: k.imageUrl,
-      href: `/compendium/keywords/${k.id.toLowerCase()}`,
+      href: buildCompendiumResourceHref("keyword", k.id),
       color: k.source,
       type: "keyword" as const,
       keywordData: k,
@@ -166,7 +167,7 @@ export async function loadAllEntities(opts?: { gameLocale?: GameLocale }): Promi
       nameEn: e.nameEn,
       nameKo: e.name,
       imageUrl: e.imageUrl,
-      href: `/compendium/epochs/${e.id.toLowerCase()}`,
+      href: buildCompendiumResourceHref("epoch", e.id),
       color: e.affiliation,
       type: "epoch" as const,
       epochData: e,

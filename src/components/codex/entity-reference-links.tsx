@@ -2,6 +2,7 @@
 
 import Image from "@/components/ui/static-image";
 import type { ReactNode } from "react";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -222,7 +223,7 @@ function toPreviewEntity(
   kind: CodexReferenceKind,
   serviceLocale: ServiceLocale,
 ): EntityInfo {
-  const href = localizeHref(target.href, serviceLocale);
+  const href = localizeHref(buildCompendiumResourceHref(kind, target.id), serviceLocale);
   return {
     ...target.entity,
     id: target.entity?.id ?? target.id,

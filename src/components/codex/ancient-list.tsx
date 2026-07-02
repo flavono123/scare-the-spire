@@ -7,6 +7,7 @@ import { AncientNodeRender } from "@/components/codex/ancient-node-render";
 import { addCodexUrlChangeListener, pushCodexHistoryState } from "./use-hydration-safe-search-param";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
@@ -360,7 +361,7 @@ function AncientCard({
 }) {
   return (
     <Link
-      href={localizeHref(`/compendium/ancients/${ancient.id.toLowerCase()}`, serviceLocale)}
+      href={localizeHref(buildCompendiumResourceHref("ancient", ancient.id), serviceLocale)}
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
         event.preventDefault();

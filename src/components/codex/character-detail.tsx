@@ -18,6 +18,7 @@ import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexServiceMessages } from "@/lib/codex-service";
 import type { ServiceLocale } from "@/lib/i18n";
 import { localizeHref } from "@/lib/i18n";
+import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { EntityVersionDiff, STS2Change, STS2Patch } from "@/lib/types";
 import {
   CHARACTER_COLORS,
@@ -721,7 +722,7 @@ function QuoteContextTitle({
   serviceLocale: ServiceLocale;
 }) {
   if (!eventEntity) return <span>{title}</span>;
-  const href = localizeHref(`/compendium/events/${eventEntity.id.toLowerCase()}`, serviceLocale);
+  const href = localizeHref(buildCompendiumResourceHref("event", eventEntity.id), serviceLocale);
   return (
     <EntityPreview
       entity={{ ...eventEntity, href }}
