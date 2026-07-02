@@ -16,10 +16,14 @@ import {
   GAME_LOCALE_PATH_SEGMENTS,
   gameLocaleFromPathSegment,
   getServiceLocaleForGameLocale,
+  localizeHrefWithGameLocale,
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
+import { DEFAULT_USER_PROFILE, characterIconUrl } from "@/lib/user-profile";
 import { getSiteOrigin } from "@/lib/site-origin";
+import { serviceMessages } from "@/messages/service";
 
 type StaticPatchRoute = {
   pathname: string;
@@ -55,32 +59,138 @@ function metadataImage(metadata: StaticPatchRoute["metadata"]): string | null {
   return typeof image.url === "string" ? image.url : null;
 }
 
-function StaticPatchHeader({ serviceLocale }: { serviceLocale: ServiceLocale }) {
-  const copy = serviceLocale === "ko"
-    ? {
-        brand: "슬서운 이야기",
-        patches: "패치 노트",
-        compendium: "모음집",
-        chemical: "케미컬 X",
-      }
-    : {
-        brand: "Scare the Spire",
-        patches: "Patch Notes",
-        compendium: "Compendium",
-        chemical: "Chemical X",
-      };
+function StaticNavIconLink({
+  href,
+  icon,
+  label,
+  active = false,
+  iconSize = 22,
+}: {
+  href: string;
+  icon: string;
+  label: string;
+  active?: boolean;
+  iconSize?: number;
+}) {
+  return (
+    <a
+      href={href}
+      aria-label={label}
+      title={label}
+      className={`group inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border transition-colors ${
+        active
+          ? "border-yellow-500/35 bg-yellow-500/10"
+          : "border-transparent hover:border-yellow-500/25 hover:bg-white/[0.05]"
+      }`}
+    >
+      <img
+        src={icon}
+        alt=""
+        width={iconSize}
+        height={iconSize}
+        className="object-contain transition-transform group-hover:scale-110"
+        style={{ width: iconSize, height: iconSize }}
+      />
+    </a>
+  );
+}
+
+function StaticPatchHeader({
+  serviceLocale,
+  gameLocale,
+}: {
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+}) {
+  const messages = serviceMessages[serviceLocale];
+  const patchHref = localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale);
+  const chemicalHref = localizeHrefWithGameLocale("/chemical-x", serviceLocale, gameLocale);
+  const historyHref = localizeHrefWithGameLocale("/history-course", serviceLocale, gameLocale);
+  const compendiumHref = localizeHrefWithGameLocale("/compendium/cards", serviceLocale, gameLocale);
+  const profileHref = localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale);
+  const searchCopy = serviceLocale === "ko" ? "통합 검색" : "Unified search";
+  const toyBoxLabel = serviceLocale === "ko" ? "장난감 상자" : "Toy Box";
+  const historyLabel = getCodexNavGameLabel(gameLocale, "historyCourse") ?? messages.nav.historyCourse;
 
   return (
-    <header className="border-b border-border bg-background/95">
-      <div className="mx-auto flex max-w-5xl items-center gap-4 px-4 py-3">
-        <a href="/" className="font-game-title text-sm font-bold text-foreground">
-          {copy.brand}
-        </a>
-        <nav className="ml-auto flex items-center gap-3 text-xs font-semibold text-muted-foreground">
-          <a className="text-yellow-300" href="/patches">{copy.patches}</a>
-          <a className="transition-colors hover:text-foreground" href="/compendium/cards">{copy.compendium}</a>
-          <a className="transition-colors hover:text-foreground" href="/chemical-x">{copy.chemical}</a>
-        </nav>
+    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
+      <div className="mx-auto flex h-12 items-center gap-1.5 px-2 sm:gap-2 sm:px-4">
+        <div className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2">
+          <a
+            href={localizeHrefWithGameLocale("/", serviceLocale, gameLocale)}
+            className="flex shrink-0 items-center gap-1 text-sm font-bold text-yellow-500 sm:gap-1.5 sm:text-base"
+          >
+            <img
+              src="/images/bone_tea.png"
+              alt=""
+              width={22}
+              height={22}
+              className="h-[18px] w-[18px] object-contain sm:h-[22px] sm:w-[22px]"
+            />
+            <span className="max-[560px]:sr-only">{messages.brand}</span>
+          </a>
+
+          <StaticNavIconLink
+            href={patchHref}
+            icon="/images/sts2/nav/patch_notes_icon.png"
+            label={messages.nav.patches}
+            active
+          />
+
+          <a
+            href={chemicalHref}
+            aria-label={toyBoxLabel}
+            title={toyBoxLabel}
+            className="group inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-transparent transition-colors hover:border-yellow-500/25 hover:bg-white/[0.05]"
+          >
+            <img
+              src="/images/sts2/relics/toy_box.webp"
+              alt=""
+              width={24}
+              height={24}
+              className="h-6 w-6 object-contain transition-transform group-hover:scale-110"
+            />
+          </a>
+        </div>
+
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-0.5 sm:gap-1">
+          <div
+            className="hidden h-9 min-w-0 flex-1 items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-2.5 text-left text-sm text-muted-foreground sm:flex sm:max-w-[18rem] lg:max-w-[22rem]"
+            aria-hidden="true"
+          >
+            <svg className="h-4 w-4 shrink-0 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+            <span className="min-w-0 flex-1 truncate">{searchCopy}</span>
+            <kbd className="hidden shrink-0 rounded border border-white/10 bg-black/20 px-1.5 py-0.5 font-mono text-[10px] text-gray-500 sm:inline">
+              ⌘K
+            </kbd>
+          </div>
+
+          <StaticNavIconLink
+            href={compendiumHref}
+            icon="/images/sts2/icons/app_icon.png"
+            label={messages.games.sts2Codex}
+            iconSize={24}
+          />
+          <StaticNavIconLink
+            href={historyHref}
+            icon="/images/sts2/relics/history_course.webp"
+            label={historyLabel}
+            iconSize={24}
+          />
+          <StaticNavIconLink
+            href={profileHref}
+            icon={characterIconUrl(DEFAULT_USER_PROFILE.characterId)}
+            label={messages.profile.navLabel}
+            iconSize={24}
+          />
+        </div>
+      </div>
+      <div className="sr-only">
+        <a href={chemicalHref}>{messages.nav.chemicalX}</a>
+        <a href={historyHref}>{historyLabel}</a>
       </div>
     </header>
   );
@@ -101,7 +211,7 @@ function renderShell(route: StaticPatchRoute): string {
   const lang = route.serviceLocale === "ko" ? "ko" : "en";
   const app = renderToStaticMarkup(
     <>
-      <StaticPatchHeader serviceLocale={route.serviceLocale} />
+      <StaticPatchHeader serviceLocale={route.serviceLocale} gameLocale={route.gameLocale} />
       <main>{route.element}</main>
     </>,
   );
@@ -111,7 +221,7 @@ function renderShell(route: StaticPatchRoute): string {
       lang={lang}
       data-service-locale={route.serviceLocale}
       data-game-locale={route.gameLocale}
-      className="dark"
+      className="dark patch-static-fonts"
     >
       <head>
         <meta charSet="utf-8" />
@@ -119,6 +229,7 @@ function renderShell(route: StaticPatchRoute): string {
         <title>{title}</title>
         {description && <meta name="description" content={description} />}
         <link rel="canonical" href={canonicalUrl} />
+        <link rel="preload" href="/fonts/GyeonggiCheonnyeonBatangBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="stylesheet" href="/_patches/patch.css" />
         <link rel="icon" href="/favicon.ico" />
         <meta property="og:title" content={title} />
