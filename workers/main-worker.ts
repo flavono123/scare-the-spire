@@ -70,7 +70,16 @@ async function maybeServeStaticCompendiumPage(request: Request, env: Env, url: U
   assetUrl.pathname = assetPath;
   assetUrl.search = "";
 
-  const assetResponse = await env.ASSETS.fetch(new Request(assetUrl, request));
+  let assetResponse = await env.ASSETS.fetch(new Request(assetUrl, request));
+  if ([301, 302, 307, 308].includes(assetResponse.status)) {
+    const location = assetResponse.headers.get("Location");
+    if (location?.startsWith("/_cf_static_pages/")) {
+      const redirectedAssetUrl = new URL(request.url);
+      redirectedAssetUrl.pathname = location;
+      redirectedAssetUrl.search = "";
+      assetResponse = await env.ASSETS.fetch(new Request(redirectedAssetUrl, request));
+    }
+  }
   if (assetResponse.status === 404) return null;
 
   const headers = new Headers(assetResponse.headers);
