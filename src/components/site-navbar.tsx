@@ -25,43 +25,20 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { detectGameLocaleFromNavigator } from "@/lib/locale-detection";
-import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import { devToolsEnabled } from "@/lib/dev-tools";
 import { useStoredUserProfile } from "@/hooks/use-user-profile";
 import { characterIconUrl } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
 import { pushCodexHistoryState } from "@/components/codex/use-hydration-safe-search-param";
-
-// --- Dropdown data ---
-
-const sts2Items = [
-  { href: "/compendium/characters", labelKey: "characters", icon: "/images/sts2/characters/character_icon_ironclad.webp" },
-  { href: "/compendium/cards", labelKey: "cards", icon: "/images/sts2/nav/stats_cards.png" },
-  { href: "/compendium/relics", labelKey: "relics", icon: "/images/sts2/relics/bing_bong.webp" },
-  { href: "/compendium/potions", labelKey: "potions", icon: "/images/sts2/potions/potion_shaped_rock.webp" },
-  { href: "/compendium/powers", labelKey: "powers", icon: "/images/sts2/nav/unmovable_power_beta.webp" },
-  { href: "/compendium/enchantments", labelKey: "enchantments", icon: "/images/sts2/enchantments/souls_power.webp" },
-  { href: "/compendium/bestiary", labelKey: "monsters", icon: "/images/sts2/nav/happy_cultist.png" },
-  { href: "/compendium/events", labelKey: "events", icon: "/images/sts2/nav/question_mark.png" },
-  { href: "/compendium/ancients", labelKey: "ancients", icon: "/images/sts2/nav/stats_ancients.png" },
-  { href: "/compendium/epochs", labelKey: "epochs", icon: "/images/sts2/relics/planisphere.webp" },
-  { href: "/compendium/keywords", labelKey: "keywords", icon: "/images/sts2/ui/topbar/submenu_history_icon.png" },
-] as const;
-
-const sts1Items = [
-  { href: "/cards", labelKey: "cards", icon: "/images/sts2/nav/stats_cards.png" },
-  { href: "/relics", labelKey: "relics", icon: "/images/sts2/relics/snecko_eye.webp" },
-  { href: "/potions", labelKey: "potions", icon: "/images/sts2/nav/stats_potions.png" },
-] as const;
-
-const devItems = [
-  { href: "/dev/admin", label: "어드민", icon: "/images/sts2/nav/question_mark.png" },
-  { href: "/dev/monsters", label: "몬스터 정리", icon: "/images/sts2/nav/happy_cultist.png" },
-  { href: "/dev/og-images", label: "OG 이미지 프리뷰", icon: "/images/sts2/nav/patch_notes_icon.png" },
-  { href: "/dev/text-effects", label: "텍스트 효과", icon: "/images/sts2/nav/patch_notes_icon.png" },
-  { href: "/dev/reference", label: "레퍼런스", icon: "/images/sts2/nav/stats_cards.png" },
-] as const;
+import {
+  getToyBoxNavItems,
+  legacySts1NavItems,
+  localizeCodexNavItems,
+  sts1NavItems,
+  sts2NavItems,
+  type NavDropdownItem,
+} from "@/lib/site-nav-items";
 
 const searchTypeLabels = {
   ko: {
@@ -265,11 +242,6 @@ function GlobalSearchPendingIndicator() {
   );
 }
 
-type CodexLabelKey = {
-  [Key in keyof typeof serviceMessages.ko.codex]:
-    (typeof serviceMessages.ko.codex)[Key] extends string ? Key : never;
-}[keyof typeof serviceMessages.ko.codex];
-
 const serviceLanguageLocales = ["kor", "eng"] as const satisfies readonly GameLocale[];
 
 const gameOnlyLanguageLocales = [
@@ -324,46 +296,6 @@ function writeLocalePreferenceCookies(gameLocale: GameLocale) {
   const cookieSuffix = `Max-Age=${LOCALE_COOKIE_MAX_AGE}; Path=/; SameSite=Lax`;
   document.cookie = `${SERVICE_LOCALE_COOKIE}=${serviceLocale}; ${cookieSuffix}`;
   document.cookie = `${GAME_LOCALE_COOKIE}=${gameLocale}; ${cookieSuffix}`;
-}
-
-function localizeNavItems<T extends { href: string; labelKey: CodexLabelKey; icon: string }>(
-  items: readonly T[],
-  serviceLocale: ServiceLocale,
-  gameLocale: GameLocale,
-  options?: { useGameLabels?: boolean },
-) {
-  const messages = serviceMessages[serviceLocale];
-  return items.map((item) => ({
-    href: localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale),
-    label: options?.useGameLabels
-      ? getCodexNavGameLabel(gameLocale, item.labelKey) ?? messages.codex[item.labelKey]
-      : messages.codex[item.labelKey],
-    icon: item.icon,
-  }));
-}
-
-function localizePlainNavItems<T extends { href: string; label: string; icon: string }>(
-  items: readonly T[],
-  serviceLocale: ServiceLocale,
-  gameLocale: GameLocale,
-) {
-  return items.map((item) => ({
-    href: localizeHrefWithGameLocale(item.href, serviceLocale, gameLocale),
-    label: item.label,
-    icon: item.icon,
-  }));
-}
-
-function legacySts1NavItems<T extends { href: string; labelKey: CodexLabelKey; icon: string }>(
-  items: readonly T[],
-  serviceLocale: ServiceLocale,
-) {
-  const messages = serviceMessages[serviceLocale];
-  return items.map((item) => ({
-    href: item.href,
-    label: messages.codex[item.labelKey],
-    icon: item.icon,
-  }));
 }
 
 // --- Nav icon with game-style tooltip ---
@@ -448,7 +380,7 @@ function GameDropdown({
 }: {
   icon: string;
   alt: string;
-  items: { href: string; label: string; icon: string }[];
+  items: NavDropdownItem[];
   align?: "left" | "right";
 }) {
   const [open, setOpen] = useState(false);
@@ -1035,23 +967,7 @@ export function SiteNavbar() {
   const messages = serviceMessages[serviceLocale];
   const showDevMenu = devToolsEnabled();
   const profile = useStoredUserProfile();
-  const toyBoxItems = localizePlainNavItems(
-    [
-      {
-        href: "/chemical-x",
-        label: messages.nav.chemicalX,
-        icon: "/images/sts2/relics/chemical_x.webp",
-      },
-      {
-        href: "/history-course",
-        label: getCodexNavGameLabel(gameLocale, "historyCourse") ?? messages.nav.historyCourse,
-        icon: "/images/sts2/relics/history_course.webp",
-      },
-      ...(showDevMenu ? devItems : []),
-    ],
-    serviceLocale,
-    gameLocale,
-  );
+  const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale, showDevMenu });
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
@@ -1097,13 +1013,13 @@ export function SiteNavbar() {
           <GameDropdown
             icon="/images/sts2/icons/app_icon.png"
             alt={messages.games.sts2Codex}
-            items={localizeNavItems(sts2Items, serviceLocale, gameLocale, { useGameLabels: true })}
+            items={localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true })}
             align="right"
           />
           <GameDropdown
             icon="/images/sts1_app_icon.png"
             alt={messages.games.sts1}
-            items={legacySts1NavItems(sts1Items, serviceLocale)}
+            items={legacySts1NavItems(sts1NavItems, serviceLocale)}
             align="right"
           />
           <NavIconLink
