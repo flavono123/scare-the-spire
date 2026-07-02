@@ -2,7 +2,6 @@
 
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import Image from "@/components/ui/static-image";
-import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
 import { buildCodexCommentThreadKey } from "@/lib/comment-threads";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -212,7 +211,7 @@ export function EpochDetail({
   return (
     <div className={rootClassName}>
       <div className="mb-4 flex items-center justify-between gap-3">
-        <Link
+        <a
           href={localizeHref("/compendium/epochs", serviceLocale)}
           className="text-sm text-gray-400 transition-colors hover:text-gray-200"
           onClick={(event) => {
@@ -223,7 +222,7 @@ export function EpochDetail({
           }}
         >
           ← {backToListTitle ?? gameUi.epochsTitle}
-        </Link>
+        </a>
         {onClose && (
           <button
             onClick={onClose}
