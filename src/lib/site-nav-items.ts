@@ -45,6 +45,23 @@ export const devNavItems = [
   { href: "/dev/reference", label: "레퍼런스", icon: "/images/sts2/nav/stats_cards.png" },
 ] as const;
 
+export const serviceLanguageNavLocales = ["kor", "eng"] as const satisfies readonly GameLocale[];
+
+export const gameOnlyLanguageNavLocales = [
+  "zhs",
+  "deu",
+  "esp",
+  "fra",
+  "ita",
+  "jpn",
+  "pol",
+  "ptb",
+  "rus",
+  "spa",
+  "tha",
+  "tur",
+] as const satisfies readonly GameLocale[];
+
 export function localizeCodexNavItems<T extends { href: string; labelKey: CodexLabelKey; icon: string }>(
   items: readonly T[],
   serviceLocale: ServiceLocale,

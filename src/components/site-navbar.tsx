@@ -33,8 +33,10 @@ import { serviceMessages } from "@/messages/service";
 import { pushCodexHistoryState } from "@/components/codex/use-hydration-safe-search-param";
 import {
   getToyBoxNavItems,
+  gameOnlyLanguageNavLocales,
   legacySts1NavItems,
   localizeCodexNavItems,
+  serviceLanguageNavLocales,
   sts1NavItems,
   sts2NavItems,
   type NavDropdownItem,
@@ -241,23 +243,6 @@ function GlobalSearchPendingIndicator() {
     </span>
   );
 }
-
-const serviceLanguageLocales = ["kor", "eng"] as const satisfies readonly GameLocale[];
-
-const gameOnlyLanguageLocales = [
-  "zhs",
-  "deu",
-  "esp",
-  "fra",
-  "ita",
-  "jpn",
-  "pol",
-  "ptb",
-  "rus",
-  "spa",
-  "tha",
-  "tur",
-] as const satisfies readonly GameLocale[];
 
 function languageHref(
   pathname: string,
@@ -497,7 +482,7 @@ function LanguageDropdown({
           role="menu"
           className="absolute right-0 top-full z-50 mt-1 max-h-[min(32rem,calc(100vh-4rem))] w-[14.5rem] overflow-y-auto rounded-md border border-border bg-background/95 py-1 shadow-xl"
         >
-          {serviceLanguageLocales.map((locale) => {
+          {serviceLanguageNavLocales.map((locale) => {
             const active = locale === value;
             const href = languageHref(
               pathname,
@@ -533,7 +518,7 @@ function LanguageDropdown({
               only game locale
             </span>
           </div>
-          {gameOnlyLanguageLocales.map((locale) => {
+          {gameOnlyLanguageNavLocales.map((locale) => {
             const active = locale === value;
             const href = languageHref(
               pathname,

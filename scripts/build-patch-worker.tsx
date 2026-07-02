@@ -14,16 +14,27 @@ import {
 } from "@/components/patches/patch-list-page";
 import {
   GAME_LOCALE_PATH_SEGMENTS,
+  GAME_LOCALE_NATIVE_LABELS,
   gameLocaleFromPathSegment,
   getServiceLocaleForGameLocale,
   localizeHrefWithGameLocale,
+  switchGameLocaleHref,
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
-import { getCodexNavGameLabel } from "@/lib/codex-nav-game-labels";
 import { DEFAULT_USER_PROFILE, characterIconUrl } from "@/lib/user-profile";
 import { getSiteOrigin } from "@/lib/site-origin";
 import { serviceMessages } from "@/messages/service";
+import {
+  gameOnlyLanguageNavLocales,
+  getToyBoxNavItems,
+  legacySts1NavItems,
+  localizeCodexNavItems,
+  serviceLanguageNavLocales,
+  sts1NavItems,
+  sts2NavItems,
+  type NavDropdownItem,
+} from "@/lib/site-nav-items";
 
 type StaticPatchRoute = {
   pathname: string;
@@ -95,22 +106,148 @@ function StaticNavIconLink({
   );
 }
 
+function StaticGameDropdown({
+  icon,
+  alt,
+  items,
+  align = "right",
+}: {
+  icon: string;
+  alt: string;
+  items: NavDropdownItem[];
+  align?: "left" | "right";
+}) {
+  return (
+    <details data-static-nav-dropdown className="patch-static-dropdown relative group">
+      <summary
+        className="flex cursor-pointer items-center gap-0.5 rounded-md px-1 py-1 transition-colors hover:bg-white/5 sm:gap-1 sm:px-1.5"
+        title={alt}
+        aria-label={alt}
+      >
+        <img
+          src={icon}
+          alt={alt}
+          width={28}
+          height={28}
+          className="h-6 w-6 rounded-sm object-contain brightness-90 transition-all group-open:brightness-125 hover:brightness-110 sm:h-7 sm:w-7"
+        />
+        <svg
+          className="hidden h-3 w-3 text-muted-foreground transition-transform group-open:rotate-180 sm:block"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+          aria-hidden="true"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </summary>
+      <div
+        className={`absolute top-full z-50 mt-1 min-w-[140px] rounded-md border border-border bg-background py-1 shadow-lg ${
+          align === "right" ? "right-0" : "left-0"
+        }`}
+      >
+        {items.map((item) => (
+          <a
+            key={item.href}
+            href={item.href}
+            className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+          >
+            <img src={item.icon} alt="" width={18} height={18} className="shrink-0 object-contain" />
+            <span className="whitespace-nowrap">{item.label}</span>
+          </a>
+        ))}
+      </div>
+    </details>
+  );
+}
+
+function StaticLanguageDropdown({
+  pathname,
+  value,
+  label,
+}: {
+  pathname: string;
+  value: GameLocale;
+  label: string;
+}) {
+  return (
+    <details data-static-nav-dropdown className="patch-static-dropdown relative group">
+      <summary
+        className="flex h-8 min-w-[4.5rem] max-w-[5.5rem] cursor-pointer items-center justify-between gap-1 rounded-md border border-border bg-background/80 px-2 text-left text-xs font-semibold text-foreground shadow-sm transition-colors hover:bg-white/5 sm:min-w-[5.75rem] sm:max-w-[8.25rem] sm:gap-2 sm:px-2.5 sm:text-sm"
+        aria-label={label}
+        title={label}
+      >
+        <span className="truncate">{GAME_LOCALE_NATIVE_LABELS[value]}</span>
+        <svg
+          className="h-3.5 w-3.5 shrink-0 text-yellow-400 transition-transform group-open:rotate-180 sm:h-4 sm:w-4"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <path d="M10 14.5 3.5 5.5h13L10 14.5Z" />
+        </svg>
+      </summary>
+      <div className="absolute right-0 top-full z-50 mt-1 max-h-[min(32rem,calc(100vh-4rem))] w-[14.5rem] overflow-y-auto rounded-md border border-border bg-background/95 py-1 shadow-xl">
+        {serviceLanguageNavLocales.map((locale) => (
+          <a
+            key={locale}
+            href={switchGameLocaleHref(pathname, locale)}
+            aria-current={locale === value ? "true" : undefined}
+            className={`flex items-center justify-between gap-3 px-3 py-2 text-sm transition-colors ${
+              locale === value
+                ? "bg-yellow-500/10 text-yellow-300"
+                : "text-foreground hover:bg-white/5"
+            }`}
+          >
+            <span className="truncate text-base font-semibold" title={GAME_LOCALE_NATIVE_LABELS[locale]}>
+              {GAME_LOCALE_NATIVE_LABELS[locale]}
+            </span>
+          </a>
+        ))}
+        <div className="my-1 border-t border-border/70 px-3 pb-1 pt-2">
+          <span className="text-[9px] font-semibold uppercase tracking-wide text-amber-200/70">
+            only game locale
+          </span>
+        </div>
+        {gameOnlyLanguageNavLocales.map((locale) => (
+          <a
+            key={locale}
+            href={switchGameLocaleHref(pathname, locale)}
+            aria-current={locale === value ? "true" : undefined}
+            className={`block px-3 py-2 text-sm transition-colors ${
+              locale === value
+                ? "bg-yellow-500/10 text-yellow-300"
+                : "text-foreground hover:bg-white/5"
+            }`}
+          >
+            <span className="block truncate text-base font-semibold" title={GAME_LOCALE_NATIVE_LABELS[locale]}>
+              {GAME_LOCALE_NATIVE_LABELS[locale]}
+            </span>
+          </a>
+        ))}
+      </div>
+    </details>
+  );
+}
+
 function StaticPatchHeader({
   serviceLocale,
   gameLocale,
+  pathname,
 }: {
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  pathname: string;
 }) {
   const messages = serviceMessages[serviceLocale];
   const patchHref = localizeHrefWithGameLocale("/patches", serviceLocale, gameLocale);
-  const chemicalHref = localizeHrefWithGameLocale("/chemical-x", serviceLocale, gameLocale);
-  const historyHref = localizeHrefWithGameLocale("/history-course", serviceLocale, gameLocale);
-  const compendiumHref = localizeHrefWithGameLocale("/compendium/cards", serviceLocale, gameLocale);
   const profileHref = localizeHrefWithGameLocale("/profile", serviceLocale, gameLocale);
   const searchCopy = serviceLocale === "ko" ? "통합 검색" : "Unified search";
   const toyBoxLabel = serviceLocale === "ko" ? "장난감 상자" : "Toy Box";
-  const historyLabel = getCodexNavGameLabel(gameLocale, "historyCourse") ?? messages.nav.historyCourse;
+  const toyBoxItems = getToyBoxNavItems({ serviceLocale, gameLocale });
+  const sts2Items = localizeCodexNavItems(sts2NavItems, serviceLocale, gameLocale, { useGameLabels: true });
+  const sts1Items = legacySts1NavItems(sts1NavItems, serviceLocale);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-sm">
@@ -137,20 +274,12 @@ function StaticPatchHeader({
             active
           />
 
-          <a
-            href={chemicalHref}
-            aria-label={toyBoxLabel}
-            title={toyBoxLabel}
-            className="group inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-transparent transition-colors hover:border-yellow-500/25 hover:bg-white/[0.05]"
-          >
-            <img
-              src="/images/sts2/relics/toy_box.webp"
-              alt=""
-              width={24}
-              height={24}
-              className="h-6 w-6 object-contain transition-transform group-hover:scale-110"
-            />
-          </a>
+          <StaticGameDropdown
+            icon="/images/sts2/relics/toy_box.webp"
+            alt={toyBoxLabel}
+            items={toyBoxItems}
+            align="left"
+          />
         </div>
 
         <div className="flex min-w-0 flex-1 items-center justify-end gap-0.5 sm:gap-1">
@@ -168,17 +297,24 @@ function StaticPatchHeader({
             </kbd>
           </div>
 
-          <StaticNavIconLink
-            href={compendiumHref}
+          <div className="hidden xl:block">
+            <StaticLanguageDropdown
+              pathname={pathname}
+              value={gameLocale}
+              label={messages.languageSelect}
+            />
+          </div>
+          <StaticGameDropdown
             icon="/images/sts2/icons/app_icon.png"
-            label={messages.games.sts2Codex}
-            iconSize={24}
+            alt={messages.games.sts2Codex}
+            items={sts2Items}
+            align="right"
           />
-          <StaticNavIconLink
-            href={historyHref}
-            icon="/images/sts2/relics/history_course.webp"
-            label={historyLabel}
-            iconSize={24}
+          <StaticGameDropdown
+            icon="/images/sts1_app_icon.png"
+            alt={messages.games.sts1}
+            items={sts1Items}
+            align="right"
           />
           <StaticNavIconLink
             href={profileHref}
@@ -189,8 +325,15 @@ function StaticPatchHeader({
         </div>
       </div>
       <div className="sr-only">
-        <a href={chemicalHref}>{messages.nav.chemicalX}</a>
-        <a href={historyHref}>{historyLabel}</a>
+        {toyBoxItems.map((item) => (
+          <a key={item.href} href={item.href}>{item.label}</a>
+        ))}
+        {sts2Items.map((item) => (
+          <a key={item.href} href={item.href}>{item.label}</a>
+        ))}
+        {sts1Items.map((item) => (
+          <a key={item.href} href={item.href}>{item.label}</a>
+        ))}
       </div>
     </header>
   );
@@ -211,8 +354,17 @@ function renderShell(route: StaticPatchRoute): string {
   const lang = route.serviceLocale === "ko" ? "ko" : "en";
   const app = renderToStaticMarkup(
     <>
-      <StaticPatchHeader serviceLocale={route.serviceLocale} gameLocale={route.gameLocale} />
+      <StaticPatchHeader
+        serviceLocale={route.serviceLocale}
+        gameLocale={route.gameLocale}
+        pathname={route.pathname}
+      />
       <main>{route.element}</main>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `document.addEventListener("toggle",function(e){var d=e.target;if(!(d instanceof HTMLDetailsElement)||!d.matches("[data-static-nav-dropdown]")||!d.open)return;document.querySelectorAll("details[data-static-nav-dropdown][open]").forEach(function(o){if(o!==d)o.removeAttribute("open")})},true);document.addEventListener("pointerdown",function(e){document.querySelectorAll("details[data-static-nav-dropdown][open]").forEach(function(d){if(!d.contains(e.target))d.removeAttribute("open")})});document.addEventListener("keydown",function(e){if(e.key==="Escape")document.querySelectorAll("details[data-static-nav-dropdown][open]").forEach(function(d){d.removeAttribute("open")})});`,
+        }}
+      />
     </>,
   );
 

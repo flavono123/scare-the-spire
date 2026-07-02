@@ -40,6 +40,14 @@
   --font-gc-batang: "STS GC Batang";
 }
 
+.patch-static-dropdown > summary {
+  list-style: none;
+}
+
+.patch-static-dropdown > summary::-webkit-details-marker {
+  display: none;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 .byrdispatch-status-token {
