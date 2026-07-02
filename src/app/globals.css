@@ -2,6 +2,44 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@font-face {
+  font-family: "STS Spectral";
+  src: url("/fonts/spectral_bold.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "STS Kreon";
+  src: url("/fonts/kreon_regular.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "STS Kreon";
+  src: url("/fonts/kreon_bold.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "STS GC Batang";
+  src: url("/fonts/GyeonggiCheonnyeonBatangBold.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.patch-static-fonts {
+  --font-spectral: "STS Spectral";
+  --font-kreon: "STS Kreon";
+  --font-gc-batang: "STS GC Batang";
+}
+
 @custom-variant dark (&:is(.dark *));
 
 .byrdispatch-status-token {
