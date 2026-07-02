@@ -4,6 +4,7 @@ import path from "node:path";
 const projectRoot = process.cwd();
 const patchAssetsDir = path.join(projectRoot, ".patch-worker", "assets");
 const publicDir = path.join(projectRoot, "public");
+const appDir = path.join(projectRoot, "src", "app");
 
 const copied = new Set();
 
@@ -55,10 +56,16 @@ async function copyPublicAsset(publicPath) {
   if (copied.has(publicPath)) return;
 
   const relativePath = publicPath.slice(1);
-  const sourcePath = path.join(publicDir, relativePath);
+  const publicSourcePath = path.join(publicDir, relativePath);
+  const appSourcePath = path.join(appDir, relativePath);
   const destinationPath = path.join(patchAssetsDir, relativePath);
+  const sourcePath = await fs.stat(publicSourcePath)
+    .then(() => publicSourcePath)
+    .catch(async () => {
+      await fs.stat(appSourcePath);
+      return appSourcePath;
+    });
 
-  await fs.stat(sourcePath);
   await fs.mkdir(path.dirname(destinationPath), { recursive: true });
   await fs.copyFile(sourcePath, destinationPath);
   copied.add(publicPath);
