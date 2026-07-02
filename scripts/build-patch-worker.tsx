@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-css-tags, @next/next/no-head-element, @next/next/no-html-link-for-pages */
+/* eslint-disable @next/next/no-css-tags, @next/next/no-head-element, @next/next/no-img-element */
 import fs from "fs/promises";
 import path from "path";
 import React, { type ReactNode } from "react";
