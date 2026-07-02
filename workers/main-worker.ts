@@ -2,7 +2,12 @@ type PatchWorkerBinding = {
   fetch(request: Request): Promise<Response>;
 };
 
+type AssetsBinding = {
+  fetch(request: Request): Promise<Response>;
+};
+
 type Env = {
+  ASSETS?: AssetsBinding;
   PATCH_WORKER?: PatchWorkerBinding;
 };
 
@@ -26,12 +31,74 @@ function isPatchWorkerPath(pathname: string): boolean {
   );
 }
 
+const STATIC_COMPENDIUM_SEGMENTS = new Set([
+  "ancients",
+  "bestiary",
+  "cards",
+  "characters",
+  "enchantments",
+  "epochs",
+  "events",
+  "keywords",
+  "potions",
+  "powers",
+  "relics",
+]);
+
+function staticCompendiumAssetPath(pathname: string, request: Request, url: URL): string | null {
+  const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
+  const parts = normalizedPathname.split("/").filter(Boolean);
+  const compendiumIndex = parts.indexOf("compendium");
+  if (compendiumIndex < 0 || compendiumIndex + 2 !== parts.length) return null;
+  if (compendiumIndex > 1) return null;
+
+  const segment = parts[compendiumIndex + 1];
+  if (!STATIC_COMPENDIUM_SEGMENTS.has(segment)) return null;
+
+  const isRscRequest = request.headers.get("rsc") === "1" || url.searchParams.has("_rsc");
+  const extension = isRscRequest ? "rsc" : "html";
+  return `/_cf_static_pages/${parts.join("/")}.${extension}`;
+}
+
+async function maybeServeStaticCompendiumPage(request: Request, env: Env, url: URL): Promise<Response | null> {
+  if (!env.ASSETS || (request.method !== "GET" && request.method !== "HEAD")) return null;
+
+  const assetPath = staticCompendiumAssetPath(url.pathname, request, url);
+  if (!assetPath) return null;
+
+  const assetUrl = new URL(request.url);
+  assetUrl.pathname = assetPath;
+  assetUrl.search = "";
+
+  const assetResponse = await env.ASSETS.fetch(new Request(assetUrl, request));
+  if (assetResponse.status === 404) return null;
+
+  const headers = new Headers(assetResponse.headers);
+  headers.set("Cache-Control", "public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400");
+  headers.set("x-cf-static-page", "compendium");
+  if (assetPath.endsWith(".rsc")) {
+    headers.set("Content-Type", "text/x-component; charset=utf-8");
+  } else {
+    headers.set("Content-Type", "text/html; charset=utf-8");
+  }
+
+  return new Response(request.method === "HEAD" ? null : assetResponse.body, {
+    status: assetResponse.status,
+    statusText: assetResponse.statusText,
+    headers,
+  });
+}
+
 const mainWorker = {
-  fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
     const url = new URL(request.url);
     if (env.PATCH_WORKER && isPatchWorkerPath(url.pathname)) {
       return env.PATCH_WORKER.fetch(request);
     }
+
+    const staticCompendiumResponse = await maybeServeStaticCompendiumPage(request, env, url);
+    if (staticCompendiumResponse) return staticCompendiumResponse;
+
     return openNextWorker.fetch(request, env, ctx);
   },
 };

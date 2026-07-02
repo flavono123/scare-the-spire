@@ -1,0 +1,66 @@
+import { mkdirSync, readdirSync, copyFileSync, rmSync, statSync } from "node:fs";
+import path from "node:path";
+
+const appDir = path.join(".next", "server", "app");
+const outDir = path.join(".open-next", "assets", "_cf_static_pages");
+const compendiumSegments = new Set([
+  "ancients",
+  "bestiary",
+  "cards",
+  "characters",
+  "enchantments",
+  "epochs",
+  "events",
+  "keywords",
+  "potions",
+  "powers",
+  "relics",
+]);
+
+function walk(dir, files = []) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      walk(fullPath, files);
+    } else {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
+
+function staticPageRelativePath(file) {
+  const relative = path.relative(appDir, file);
+  const parsed = path.parse(relative);
+  if (parsed.ext !== ".html" && parsed.ext !== ".rsc") return null;
+
+  const parts = parsed.dir.split(path.sep).filter(Boolean);
+  const compendiumIndex = parts.indexOf("compendium");
+  if (compendiumIndex < 0 || compendiumIndex > 1) return null;
+  if (!compendiumSegments.has(parsed.name)) return null;
+
+  return path.join(parsed.dir, `${parsed.name}${parsed.ext}`);
+}
+
+if (!statSync(appDir, { throwIfNoEntry: false })?.isDirectory()) {
+  throw new Error(`${appDir} does not exist. Run the Next/OpenNext build before copying static pages.`);
+}
+
+rmSync(outDir, { recursive: true, force: true });
+
+let count = 0;
+for (const file of walk(appDir)) {
+  const relative = staticPageRelativePath(file);
+  if (!relative) continue;
+
+  const output = path.join(outDir, relative);
+  mkdirSync(path.dirname(output), { recursive: true });
+  copyFileSync(file, output);
+  count += 1;
+}
+
+if (count === 0) {
+  throw new Error("No compendium static HTML/RSC files were copied.");
+}
+
+console.log(`Copied ${count} compendium static page asset(s) to ${outDir}`);
