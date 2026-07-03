@@ -31,7 +31,7 @@
     "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 절단되었습니다."
   },
   {
-    "id": "BATTLEWORN_DUMMY_EVENT_ENCOUNTER",
+    "id": "BATTLEWORN_DUMMY_EVENT_V1_ENCOUNTER",
     "name": "전투로 손상된 훈련 인형",
     "room_type": "Monster",
     "is_weak": false,
@@ -41,17 +41,39 @@
       {
         "id": "BATTLE_FRIEND_V1",
         "name": "전투 친구 V1.0"
-      },
+      }
+    ],
+    "loss_text": "{character}는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???"
+  },
+  {
+    "id": "BATTLEWORN_DUMMY_EVENT_V2_ENCOUNTER",
+    "name": "전투로 손상된 훈련 인형",
+    "room_type": "Monster",
+    "is_weak": false,
+    "act": null,
+    "tags": null,
+    "monsters": [
       {
         "id": "BATTLE_FRIEND_V2",
         "name": "전투 친구 V2.0"
-      },
+      }
+    ],
+    "loss_text": "{character}는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???"
+  },
+  {
+    "id": "BATTLEWORN_DUMMY_EVENT_V3_ENCOUNTER",
+    "name": "전투로 손상된 훈련 인형",
+    "room_type": "Monster",
+    "is_weak": false,
+    "act": null,
+    "tags": null,
+    "monsters": [
       {
         "id": "BATTLE_FRIEND_V3",
         "name": "전투 친구 V3.0"
       }
     ],
-    "loss_text": "왠지는 알 수 없지만 [gold]{encounter}[/gold]가 {character}를 처치했습니다???"
+    "loss_text": "{character}는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???"
   },
   {
     "id": "BOWLBUGS_NORMAL",
@@ -1183,7 +1205,10 @@
     "room_type": "Monster",
     "is_weak": false,
     "act": "Act 1 - Overgrowth",
-    "tags": null,
+    "tags": [
+      "Jaxfruit",
+      "Slimes"
+    ],
     "monsters": [
       {
         "id": "LEAF_SLIME_S",
@@ -1259,7 +1284,8 @@
     "is_weak": false,
     "act": "Act 1 - Overgrowth",
     "tags": [
-      "Mushroom"
+      "Mushroom",
+      "Jaxfruit"
     ],
     "monsters": [
       {

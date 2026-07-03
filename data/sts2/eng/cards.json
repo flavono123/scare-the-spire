@@ -1564,6 +1564,78 @@
     "beta_image_url": "/static/images/cards/beta/blade_of_ink.png"
   },
   {
+    "id": "BLADE_SYMPHONY",
+    "name": "Blade Symphony",
+    "description": "Add 2 [gold]Shivs[/gold] to ALL player's [gold]Hands[/gold].",
+    "description_raw": "Add {Cards:diff()} [gold]{Cards:plural:Shiv|Shivs}[/gold] to ALL player's [gold]Hands[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AllAllies",
+    "color": "silent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": [
+      "SHIV"
+    ],
+    "vars": {
+      "Cards": 2
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/blade_symphony.png"
+  },
+  {
+    "id": "BLAZE",
+    "name": "Blaze",
+    "description": "Give another player 5 [gold]Strength[/gold].",
+    "description_raw": "Give another player {StrengthPower:diff()} [gold]Strength[/gold].",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AnyAlly",
+    "color": "ironclad",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Strength",
+        "amount": 5
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "StrengthPower": 5,
+      "Strength": 5
+    },
+    "upgrade": {
+      "strength": "+2"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/blaze.png"
+  },
+  {
     "id": "BLIGHT_STRIKE",
     "name": "Blight Strike",
     "description": "Deal 8 damage.\nApply [gold]Doom[/gold] equal to damage dealt.",
@@ -2631,6 +2703,39 @@
     "beta_image_url": null
   },
   {
+    "id": "CACOPHONY",
+    "name": "Cacophony",
+    "description": "Every 33 cards drawn by ALL players, deal 66 damage to a random enemy.",
+    "description_raw": "Every {Cards:diff()} cards drawn by ALL players, deal {Damage:diff()} damage to a random enemy.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "necrobinder",
+    "damage": 66,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 33,
+      "Damage": 66
+    },
+    "upgrade": {
+      "damage": "+33"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cacophony.png"
+  },
+  {
     "id": "CALAMITY",
     "name": "Calamity",
     "description": "Whenever you play an Attack, add a random Attack into your [gold]Hand[/gold].",
@@ -3566,6 +3671,44 @@
     "beta_image_url": null
   },
   {
+    "id": "CONCOCT",
+    "name": "Concoct",
+    "description": "Choose another player. Whenever their Attacks deal unblocked damage this turn, they apply 3 [gold]Poison[/gold].",
+    "description_raw": "Choose another player. Whenever their Attacks deal unblocked damage this turn, they apply {ConcoctPower:diff()} [gold]Poison[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AnyAlly",
+    "color": "silent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Concoct",
+        "amount": 3
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "ConcoctPower": 3,
+      "Concoct": 3
+    },
+    "upgrade": {
+      "concoctpower": "+1"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/concoct.png"
+  },
+  {
     "id": "CONFLAGRATION",
     "name": "Conflagration",
     "description": "Deal 2 damage to ALL enemies 4 times.",
@@ -3629,6 +3772,40 @@
     },
     "image_url": "/static/images/cards/conqueror.png",
     "beta_image_url": "/static/images/cards/beta/conqueror.png"
+  },
+  {
+    "id": "CONSTELLATION",
+    "name": "Constellation",
+    "description": "Another player draws 1 card, gains 1, and gains 9 [gold]Block[/gold].",
+    "description_raw": "Another player draws {Cards:diff()} {Cards:plural:card|cards}, gains {Energy:energyIcons()}, and gains {Block:diff()} [gold]Block[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": 2,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AnyAlly",
+    "color": "regent",
+    "damage": null,
+    "block": 9,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 1,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 1,
+      "Energy": 1,
+      "Block": 9
+    },
+    "upgrade": {
+      "block": "+3"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/constellation.png"
   },
   {
     "id": "CONSUMING_SHADOW",
@@ -6506,6 +6683,46 @@
     "beta_image_url": null
   },
   {
+    "id": "FADE",
+    "name": "Fade",
+    "description": "Another player gains 6 [gold]Dexterity[/gold] this turn.",
+    "description_raw": "Another player gains {DexterityPower:diff()} [gold]Dexterity[/gold] this turn.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AnyAlly",
+    "color": "silent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Dexterity",
+        "amount": 6
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Retain"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "DexterityPower": 6,
+      "Dexterity": 6
+    },
+    "upgrade": {
+      "dexterity": "+3"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/fade.png"
+  },
+  {
     "id": "FALLING_STAR",
     "name": "Falling Star",
     "description": "Deal 8 damage.\nApply 1 [gold]Weak[/gold].\nApply 1 [gold]Vulnerable[/gold].",
@@ -9061,6 +9278,38 @@
     "beta_image_url": null
   },
   {
+    "id": "HIBERNATE",
+    "name": "Hibernate",
+    "description": "This turn, your [gold]Frost[/gold] grants ALL allies [gold]Block[/gold].\nChannel 2 [gold]Frost[/gold].",
+    "description_raw": "This turn, your [gold]Frost[/gold] grants ALL allies [gold]Block[/gold].\nChannel {Repeat:diff()} [gold]Frost[/gold].",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "defect",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Repeat": 2
+    },
+    "upgrade": {
+      "repeat": "+1"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/hibernate.png"
+  },
+  {
     "id": "HIDDEN_CACHE",
     "name": "Hidden Cache",
     "description": "Gain [star:1].\nNext turn, gain [star:3].",
@@ -9482,6 +9731,46 @@
     },
     "image_url": "/static/images/cards/ignition.png",
     "beta_image_url": "/static/images/cards/beta/ignition.png"
+  },
+  {
+    "id": "IMITATION_LEARNING",
+    "name": "Imitation Learning",
+    "description": "Choose another player.\nThe next 2 times they play a Power, you play a copy of it.",
+    "description_raw": "Choose another player.\nThe next {ImitationLearningPower:diff()} times they play a Power, you play a copy of it.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "AnyAlly",
+    "color": "defect",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "ImitationLearning",
+        "amount": 2
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "ImitationLearningPower": 2,
+      "ImitationLearning": 2
+    },
+    "upgrade": {
+      "imitationlearningpower": "+1"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/imitation_learning.png"
   },
   {
     "id": "IMPATIENCE",
@@ -11168,6 +11457,38 @@
     "beta_image_url": null
   },
   {
+    "id": "MIDNIGHT",
+    "name": "Midnight",
+    "description": "Deal 99 damage.\nCosts 1 less  for each card [gold]Exhausted[/gold] this combat by ANYONE.",
+    "description_raw": "Deal {Damage:diff()} damage.\nCosts 1 less {energyPrefix:energyIcons(1)} for each card [gold]Exhausted[/gold] this combat by ANYONE.",
+    "cost": 12,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Rare",
+    "target": "AnyEnemy",
+    "color": "ironclad",
+    "damage": 99,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 99
+    },
+    "upgrade": {
+      "damage": "+21"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/midnight.png"
+  },
+  {
     "id": "MIMIC",
     "name": "Mimic",
     "description": "Gain [gold]Block[/gold] equal to the [gold]Block[/gold] on another player.",
@@ -12213,6 +12534,44 @@
     "beta_image_url": "/static/images/cards/beta/omnislice.png"
   },
   {
+    "id": "ONE_FOR_ALL",
+    "name": "One for All",
+    "description": "EVERYONE'S 0  Attacks deal 3 additional damage.",
+    "description_raw": "EVERYONE'S 0 {energyPrefix:energyIcons(1)} Attacks deal {OneForAllPower:diff()} additional damage.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "AllAllies",
+    "color": "defect",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "OneForAll",
+        "amount": 3
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "OneForAllPower": 3,
+      "OneForAll": 3
+    },
+    "upgrade": {
+      "oneforallpower": "+1"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/one_for_all.png"
+  },
+  {
     "id": "ONE_TWO_PUNCH",
     "name": "One-Two Punch",
     "description": "This turn, your next Attack is played an extra time.",
@@ -12346,6 +12705,40 @@
     },
     "image_url": "/static/images/cards/outmaneuver.png",
     "beta_image_url": "/static/images/cards/beta/outmaneuver.png"
+  },
+  {
+    "id": "OUTRAGE",
+    "name": "Outrage",
+    "description": "Deal 9 damage.\nAdd a copy of this card into EVERYONE'S [gold]Discard Pile[/gold].",
+    "description_raw": "Deal {Damage:diff()} damage.\nAdd a copy of this card into EVERYONE'S [gold]Discard Pile[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "ironclad",
+    "damage": 9,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": [
+      "OUTRAGE"
+    ],
+    "vars": {
+      "Damage": 9
+    },
+    "upgrade": {
+      "damage": "+4"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/outrage.png"
   },
   {
     "id": "OVERCLOCK",
@@ -12967,6 +13360,38 @@
     },
     "image_url": "/static/images/cards/pinpoint.png",
     "beta_image_url": null
+  },
+  {
+    "id": "PLOT",
+    "name": "Plot",
+    "description": "Next turn, ALL players draw 2 cards.",
+    "description_raw": "Next turn, ALL players draw {Cards} cards.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AllAllies",
+    "color": "regent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 2
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/plot.png"
   },
   {
     "id": "POISONED_STAB",
@@ -16319,6 +16744,43 @@
     "beta_image_url": "/static/images/cards/beta/soul_storm.png"
   },
   {
+    "id": "SOULBOUND",
+    "name": "Soulbound",
+    "description": "Choose an ally.\nWhenever you create a [gold]Soul[/gold], add a [gold]Soul[/gold] to their [gold]Draw Pile[/gold].",
+    "description_raw": "Choose an ally.\nWhenever you create a [gold]Soul[/gold], add a [gold]Soul[/gold] to their [gold]Draw Pile[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Uncommon",
+    "target": "AnyAlly",
+    "color": "necrobinder",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Soulbound",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": [
+      "SOUL"
+    ],
+    "vars": null,
+    "upgrade": {
+      "add_innate": 1
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/soulbound.png"
+  },
+  {
     "id": "SOVEREIGN_BLADE",
     "name": "Sovereign Blade",
     "description": "Deal 10 damage.",
@@ -18066,6 +18528,39 @@
     "beta_image_url": "/static/images/cards/beta/tesla_coil.png"
   },
   {
+    "id": "THE_BALL",
+    "name": "The Ball",
+    "description": "Deal 10 damage.\nIncrease this card's damage by 15 this combat and give it to a random ally.",
+    "description_raw": "Deal {Damage:diff()} damage.\nIncrease this card's damage by {Increase:diff()} this combat and give it to a random ally.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "colorless",
+    "damage": 10,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 10,
+      "Increase": 15
+    },
+    "upgrade": {
+      "increase": "+10"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_ball.png"
+  },
+  {
     "id": "THE_BOMB",
     "name": "The Bomb",
     "description": "At the end of 3 turns, deal 40 damage to ALL enemies.",
@@ -18932,6 +19427,43 @@
     },
     "image_url": "/static/images/cards/undeath.png",
     "beta_image_url": "/static/images/cards/beta/undeath.png"
+  },
+  {
+    "id": "UNDERWORLD",
+    "name": "Underworld",
+    "description": "Whenever other players deal attack damage this turn, apply that much [gold]Doom[/gold].",
+    "description_raw": "Whenever other players deal attack damage this turn, apply that much [gold]Doom[/gold].",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "necrobinder",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Underworld",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": {
+      "remove_exhaust": 1
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/underworld.png"
   },
   {
     "id": "UNLEASH",

@@ -4488,6 +4488,14 @@
         ],
         "power_applications": [
           {
+            "power_id": "STRENGTH",
+            "target": "self",
+            "amount": {
+              "normal": 2,
+              "ascension": null
+            }
+          },
+          {
             "power_id": "PERSONAL_HIVE",
             "target": "self",
             "amount": {
@@ -4500,14 +4508,6 @@
             "target": "self",
             "amount": {
               "normal": 1,
-              "ascension": null
-            }
-          },
-          {
-            "power_id": "STRENGTH",
-            "target": "self",
-            "amount": {
-              "normal": 2,
               "ascension": null
             }
           }
@@ -4576,6 +4576,14 @@
         ],
         "power_applications": [
           {
+            "power_id": "STRENGTH",
+            "target": "self",
+            "amount": {
+              "normal": 2,
+              "ascension": null
+            }
+          },
+          {
             "power_id": "PERSONAL_HIVE",
             "target": "self",
             "amount": {
@@ -4588,14 +4596,6 @@
             "target": "self",
             "amount": {
               "normal": 1,
-              "ascension": null
-            }
-          },
-          {
-            "power_id": "STRENGTH",
-            "target": "self",
-            "amount": {
-              "normal": 2,
               "ascension": null
             }
           }
@@ -11445,6 +11445,10 @@
       {
         "id": "RAM",
         "name": "들이받기"
+      },
+      {
+        "id": "WAR_CHANT",
+        "name": "전투가"
       }
     ],
     "bestiary_moves": [
@@ -11459,6 +11463,10 @@
       {
         "id": "RAM",
         "name": "들이받기"
+      },
+      {
+        "id": "WAR_CHANT",
+        "name": "전투가"
       }
     ],
     "move_graph": null,
@@ -20247,7 +20255,7 @@
     "damage_values": {
       "Tackle": {
         "normal": 18,
-        "ascension": 19
+        "ascension": 22
       },
       "SoulBeam": {
         "normal": 8,
@@ -20255,7 +20263,7 @@
       },
       "WeakTackle": {
         "normal": 14,
-        "ascension": 15
+        "ascension": 16
       }
     },
     "block_values": null,
@@ -20596,7 +20604,7 @@
       },
       {
         "id": "DIZZY",
-        "name": "Dizzy",
+        "name": "어지러움",
         "action_types": [
           "special"
         ],
@@ -20683,6 +20691,32 @@
               "normal": 1,
               "ascension": null
             }
+          }
+        ],
+        "power_applications": [],
+        "card_applications": []
+      },
+      {
+        "id": "STUNNED",
+        "name": "기절함",
+        "action_types": [],
+        "intents": [],
+        "intent_details": [],
+        "power_applications": [],
+        "card_applications": []
+      },
+      {
+        "id": "DIZZY",
+        "name": "어지러움",
+        "action_types": [
+          "special"
+        ],
+        "intents": [
+          "StunIntent"
+        ],
+        "intent_details": [
+          {
+            "type": "StunIntent"
           }
         ],
         "power_applications": [],
