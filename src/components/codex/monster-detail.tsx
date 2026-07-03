@@ -1275,6 +1275,7 @@ export function MonsterDetail({
   const selectedMove = moveSummaries.find((summary) => summary.move.id === selectedMoveId) ?? defaultSelectedMove;
   const selectedAccent = selectedMove ? getMoveToneColor(selectedMove.tone, typeConfig.color) : typeConfig.color;
   const imageSrc = monster.imageUrl ?? monster.bossImageUrl;
+  const hasStageAsset = Boolean(monster.spineAsset || imageSrc);
   const stageVisualBounds = stageVisualBoundsState.monsterId === monster.id ? stageVisualBoundsState.bounds : null;
   const skinParts = getMonsterSkinParts(monster.spineAsset);
   const [commentCount, setCommentCount] = useState(0);
@@ -1406,7 +1407,7 @@ export function MonsterDetail({
                 fallbackImageClassName="absolute inset-0 z-10 h-full w-full translate-y-[8%] scale-[0.92] object-contain drop-shadow-2xl"
                 onVisualBoundsChange={handleStageVisualBoundsChange}
               />
-            ) : imageSrc ? (
+            ) : hasStageAsset ? (
               <MonsterSpineStage
                 asset={monster.spineAsset}
                 fallbackImageUrl={imageSrc}
