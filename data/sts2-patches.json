@@ -452,8 +452,26 @@
     "type": "beta",
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/688635449342693610",
     "status": "building",
-    "summary": "Rich patch notes are being prepared from the Steam source. This beta patch includes balance, multiplayer, UI, art, bug fix, performance, and modding changes.",
-    "summaryKo": "Steam 원문을 바탕으로 슬서운변경을 작성 중입니다. 이번 베타 패치는 밸런스, 멀티플레이어, UI, 아트, 버그 수정, 성능, 모딩 변경을 포함합니다.",
-    "hasBalanceChanges": true
+    "summary": "New multiplayer cards for every class, balance changes for Ironclad/Silent/Regent/Necrobinder/Defect, Doom timing fixes, new Wither portrait art, Aeonglass and Gremlin animation updates, Epoch art, bug fixes, performance compression, and modding improvements.",
+    "summaryKo": "전 캐릭터 멀티플레이 신규 카드, 아이언클래드/사일런트/리젠트/네크로바인더/디펙트 밸런스 변경, 종말 처리 순서 수정, 침체 초상화, 영겁의 모래시계와 그렘린 애니메이션 업데이트, 역사 삽화, 버그 수정, 성능 압축, 모딩 개선.",
+    "hasBalanceChanges": true,
+    "art": {
+      "type": "epoch",
+      "id": "IRONCLAD5_EPOCH",
+      "alt": "Ablaze epoch art",
+      "altKo": "역사: 타오르다"
+    },
+    "featuredEntities": [
+      { "type": "card", "id": "MIDNIGHT" },
+      { "type": "card", "id": "BLADE_SYMPHONY" },
+      { "type": "card", "id": "CONSTELLATION" },
+      { "type": "card", "id": "UNDERWORLD" },
+      { "type": "card", "id": "HIBERNATE" },
+      { "type": "card", "id": "THE_BALL" },
+      { "type": "monster", "id": "AEONGLASS" },
+      { "type": "monster", "id": "GREMLIN_MERC" },
+      { "type": "card", "id": "WITHER" },
+      { "type": "potion", "id": "REGEN_POTION" }
+    ]
   }
 ]
