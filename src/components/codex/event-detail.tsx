@@ -1956,7 +1956,7 @@ export function EventDetail({
           card,
           href: `/compendium/cards/${id.toLowerCase()}`,
           id,
-          title: `${card.name}(${typeLabel})`,
+          title: card.name,
         };
       })
     : [];
