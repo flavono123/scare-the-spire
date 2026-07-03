@@ -98,7 +98,32 @@ const ROCKET_TRACKS = {
   ],
 };
 
+const AEONGLASS_IDLE_TRACKS = [
+  spineTrack(0, "idle_loop"),
+  spineTrack(1, "_track1/rings_normal"),
+];
+
+const AEONGLASS_TRACKS = {
+  EBB: aeonglassMove("attack_heavy", "_track1/rings_attack_heavy"),
+  EYE_LASERS: aeonglassMove("attack_double", "_track1/rings_attack_double"),
+  INCREASING_INTENSITY: aeonglassMove("wither", "_track1/rings_normal"),
+  hurt: aeonglassMove("hurt", "_track1/rings_normal"),
+  die: aeonglassMove("die", "_track1/rings_die"),
+};
+
 const MONSTER_ALIASES = {
+  AEONGLASS: {
+    folder: "aeonglass",
+    idleTracks: AEONGLASS_IDLE_TRACKS,
+    moveAnimations: {
+      EBB: ["attack_heavy", "idle_loop"],
+      EYE_LASERS: ["attack_double", "idle_loop"],
+      INCREASING_INTENSITY: ["wither", "idle_loop"],
+      hurt: ["hurt", "idle_loop"],
+      die: ["die", "idle_loop"],
+    },
+    moveAnimationTracks: AEONGLASS_TRACKS,
+  },
   BOWLBUG_EGG: { folder: "bowlbug", skin: "cocoon", tags: ["shared-actor", "variant-skin"] },
   BOWLBUG_NECTAR: { folder: "bowlbug", skin: "goop", tags: ["shared-actor", "variant-skin"] },
   BOWLBUG_ROCK: { folder: "bowlbug", skin: "rock", tags: ["shared-actor", "variant-skin"] },
@@ -465,6 +490,13 @@ function kaiserCrabRightMove(animation, idleAnimation = "right/idle_loop") {
     spineTrack(1, "left/idle_loop"),
     spineTrack(2, animation, { loop: false, idleAnimation }),
     spineTrack(3, "reactions/attack_right", { loop: false }),
+  ];
+}
+
+function aeonglassMove(bodyAnimation, ringAnimation) {
+  return [
+    spineTrack(0, bodyAnimation, { loop: false, idleAnimation: "idle_loop" }),
+    spineTrack(1, ringAnimation, { loop: false, idleAnimation: "_track1/rings_normal" }),
   ];
 }
 

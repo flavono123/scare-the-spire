@@ -1,15 +1,5 @@
 [
   {
-    "id": "AEONGLASS",
-    "imageSlug": null,
-    "renderStatus": "static-only",
-    "renderTags": [
-      "no-renderable-spine-actor"
-    ],
-    "fallbackImageUrl": null,
-    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
-  },
-  {
     "id": "BATTLE_FRIEND_V1",
     "imageSlug": "battle_friend_v1",
     "renderStatus": "static-only",
