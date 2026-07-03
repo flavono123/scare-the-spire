@@ -7,6 +7,7 @@ import { ByrdispatchFloatingNotice } from "@/components/byrdispatch-floating-not
 import { LocaleDocumentAttributes } from "@/components/locale-document-attributes";
 import { SiteNavbar } from "@/components/site-navbar";
 import { getDefaultServiceMetadata } from "@/lib/service-metadata";
+import { SITE_METADATA_BASE } from "@/lib/site-origin";
 import "./globals.css";
 
 // STS2 game fonts extracted from PCK
@@ -32,7 +33,7 @@ const gcBatang = localFont({
 
 export const metadata: Metadata = {
   ...getDefaultServiceMetadata("ko"),
-  metadataBase: new URL("https://scare-the-spire.vercel.app"),
+  metadataBase: SITE_METADATA_BASE,
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-icon.png",

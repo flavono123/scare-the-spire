@@ -3,6 +3,7 @@ import { getCodexMetadata } from "@/lib/codex-service";
 import { stripCodexMarkup } from "@/lib/codex-search";
 import type { ServiceLocale } from "@/lib/i18n";
 import { DEFAULT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
+import { absoluteSiteUrl, SITE_METADATA_BASE } from "@/lib/site-origin";
 import {
   getMadScienceCardTypeFromId,
   getMadScienceVariantId,
@@ -44,9 +45,10 @@ export function getCodexCardOgMetadata(
 ): Metadata {
   const metadata = getCodexMetadata(serviceLocale, `${card.name} — ${cardLibraryTitle}`);
   const description = cardOgDescription(card.description);
-  const imageUrl = opts?.useBetaArt && card.betaImageUrl
+  const rawImageUrl = opts?.useBetaArt && card.betaImageUrl
     ? card.betaImageUrl
     : card.imageUrl ?? card.betaImageUrl ?? DEFAULT_PAGE_OG_IMAGE.url;
+  const imageUrl = absoluteSiteUrl(rawImageUrl);
   const image = {
     url: imageUrl,
     width: 1000,
@@ -56,6 +58,7 @@ export function getCodexCardOgMetadata(
 
   return {
     ...metadata,
+    metadataBase: SITE_METADATA_BASE,
     description,
     openGraph: {
       title: card.name,

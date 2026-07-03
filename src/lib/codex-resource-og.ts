@@ -8,6 +8,7 @@ import {
 } from "@/lib/codex-types";
 import type { CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { DEFAULT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
+import { absoluteSiteUrl, SITE_METADATA_BASE } from "@/lib/site-origin";
 
 export type RouteSearchParamValue = string | string[] | undefined;
 
@@ -113,7 +114,7 @@ export function getCodexResourceOgMetadata(
 ): Metadata {
   const metadata = getCodexMetadata(serviceLocale, `${resource.name} — ${collectionTitle}`);
   const description = plainCodexOgDescription(resource.description) || metadata.description;
-  const imageUrl = resource.imageUrl ?? DEFAULT_PAGE_OG_IMAGE.url;
+  const imageUrl = absoluteSiteUrl(resource.imageUrl ?? DEFAULT_PAGE_OG_IMAGE.url);
   const image = {
     url: imageUrl,
     alt: resource.name,
@@ -121,6 +122,7 @@ export function getCodexResourceOgMetadata(
 
   return {
     ...metadata,
+    metadataBase: SITE_METADATA_BASE,
     description,
     openGraph: {
       title: resource.name,

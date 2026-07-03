@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { SITE_ORIGIN } from "@/lib/site-origin";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -10,6 +11,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/codex", "/compendium", "/chemical-x", "/dev"],
       },
     ],
-    host: "https://scare-the-spire.vercel.app",
+    host: SITE_ORIGIN,
   };
 }
