@@ -3,6 +3,21 @@ import path from "node:path";
 
 const appDir = path.join(".next", "server", "app");
 const outDir = path.join(".open-next", "assets", "_cf_static_pages");
+const gameLocalePathSegments = new Set([
+  "en",
+  "zh",
+  "ja",
+  "de",
+  "fr",
+  "it",
+  "es",
+  "es-419",
+  "pt",
+  "ru",
+  "pl",
+  "th",
+  "tr",
+]);
 const compendiumSegments = new Set([
   "ancients",
   "bestiary",
@@ -37,6 +52,10 @@ function staticPageRelativePath(file) {
   if (parsed.ext !== ".html" && parsed.ext !== ".rsc") return null;
 
   const parts = parsed.dir.split(path.sep).filter(Boolean);
+  if (parts.length === 0 && (parsed.name === "index" || gameLocalePathSegments.has(parsed.name))) {
+    return `${parsed.name}${parsed.ext}`;
+  }
+
   const compendiumIndex = parts.indexOf("compendium");
   if (compendiumIndex < 0 || compendiumIndex > 1) return null;
   if (!compendiumSegments.has(parsed.name)) return null;
