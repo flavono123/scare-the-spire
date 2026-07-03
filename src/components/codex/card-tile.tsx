@@ -35,6 +35,7 @@ import {
 } from "@/lib/sts2-card-style";
 import { CardEngagementStatsOverlay } from "./engagement-stats";
 import { resolveSts2EnergyIcon } from "@/lib/sts2-energy-icons";
+import { getMadScienceRenderedCardName } from "@/lib/tinker-time";
 
 type StaticImageProps = ComponentProps<typeof StaticImage>;
 
@@ -504,6 +505,7 @@ export const CardTile = memo(function CardTile({
   const effectiveUpgradeLevel = hasCardUpgrade(card) ? requestedUpgradeLevel : 0;
   const isUpgraded = effectiveUpgradeLevel > 0;
   const maxUpgradeLevel = getCardMaxUpgradeLevel(card);
+  const renderedCardName = getMadScienceRenderedCardName(card);
   const titleUpgradeSuffix = isUpgraded
     ? maxUpgradeLevel > 1 ? `+${effectiveUpgradeLevel}` : "+"
     : "";
@@ -902,7 +904,7 @@ export const CardTile = memo(function CardTile({
             {imageSrc && !imgError ? (
               <Image
                 src={imageSrc}
-                alt={card.name}
+                alt={renderedCardName}
                 fill
                 className="object-cover object-center"
                 sizes={`${cardWidth}px`}
@@ -1009,7 +1011,7 @@ export const CardTile = memo(function CardTile({
                 ...(titleStroke as CSSProperties),
               }}
             >
-              {card.name}{titleUpgradeSuffix}
+              {renderedCardName}{titleUpgradeSuffix}
             </span>
           </div>
 
@@ -1091,7 +1093,7 @@ export const CardTile = memo(function CardTile({
           {imageSrc && !imgError ? (
             <Image
               src={imageSrc}
-              alt={card.name}
+              alt={renderedCardName}
               fill
               className="object-contain object-center"
               sizes={`${cardWidth}px`}
@@ -1161,7 +1163,7 @@ export const CardTile = memo(function CardTile({
               ...(titleStroke as CSSProperties),
             }}
           >
-            {card.name}{titleUpgradeSuffix}
+            {renderedCardName}{titleUpgradeSuffix}
           </span>
         </div>
 

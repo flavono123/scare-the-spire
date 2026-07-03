@@ -35,6 +35,7 @@ import {
   getDefaultTinkerRiderForType,
   getMadScienceCardTypeFromId,
   getMadSciencePreviewCard,
+  getMadScienceRenderedCardName,
   getTinkerRiderIdsForType,
   MAD_SCIENCE_DEFAULT_RIDER,
   MAD_SCIENCE_DEFAULT_TYPE,
@@ -332,6 +333,11 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
     )
     : card;
   const upgradePreviewCard = getRemovedUpgradePreviewCard(previewCard, versionDiffs);
+  const renderedPreviewName = getMadScienceRenderedCardName(previewCard);
+  const renderedPreviewNameEn = getMadScienceRenderedCardName({
+    id: previewCard.id,
+    name: previewCard.nameEn,
+  });
 
   // 게임 CanEnchant 룰 그대로 적용 (카드별 가능 인챈트만 표시)
   const eligibleEnchantments = enchantments.filter((e) => canEnchantCard(e, previewCard));
@@ -1007,10 +1013,10 @@ export function CardDetail({ serviceLocale, gameUi, card, enchantments, afflicti
                   <MetaPill key={pill.value} value={pill.value} color={pill.color} />
                 ))}
               </div>
-              {previewCard.nameEn !== previewCard.name && (
+              {renderedPreviewNameEn !== renderedPreviewName && (
                 <div>
                   <div className="mb-1 text-[10px] uppercase tracking-wider text-gray-500">{detailLabels.englishName}</div>
-                  <div className="font-game-text text-sm text-gray-300">{previewCard.nameEn}</div>
+                  <div className="font-game-text text-sm text-gray-300">{renderedPreviewNameEn}</div>
                 </div>
               )}
             </div>
