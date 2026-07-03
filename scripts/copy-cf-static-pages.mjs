@@ -81,7 +81,7 @@ for (const file of walk(appDir)) {
 }
 
 if (count === 0) {
-  throw new Error("No compendium static HTML/RSC files were copied.");
+  throw new Error("No Cloudflare static HTML/RSC files were copied.");
 }
 
-console.log(`Copied ${count} compendium static page asset(s) to ${outDir}`);
+console.log(`Copied ${count} Cloudflare static page asset(s) to ${outDir}`);
