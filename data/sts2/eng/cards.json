@@ -14789,7 +14789,7 @@
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
-    "star_cost": 3,
+    "star_cost": 2,
     "type": "Skill",
     "rarity": "Uncommon",
     "target": "AllEnemies",
@@ -20195,7 +20195,7 @@
       "Damage": 3
     },
     "upgrade": null,
-    "image_url": null,
+    "image_url": "/static/images/cards/wither1.png",
     "beta_image_url": "/static/images/cards/beta/wither.png",
     "max_upgrade_level": 0
   },

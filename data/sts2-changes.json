@@ -6155,6 +6155,11 @@
     ],
     "fieldDiffs": [
       {
+        "field": "starCost",
+        "before": 3,
+        "after": 2
+      },
+      {
         "field": "vars.StarCost",
         "before": 3,
         "after": 2
