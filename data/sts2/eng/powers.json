@@ -1134,7 +1134,9 @@
     "stack_type": "Single",
     "allow_negative": null,
     "image_url": "/static/images/powers/guarded_power.png",
-    "vars": {}
+    "vars": {
+      "DamageDecrease": 0.5
+    }
   },
   {
     "id": "HAILSTORM",
@@ -2657,7 +2659,10 @@
     "stack_type": "Single",
     "allow_negative": null,
     "image_url": "/static/images/powers/tank_power.png",
-    "vars": {}
+    "vars": {
+      "DamageIncrease": 1.5,
+      "DamageDecrease": 0.5
+    }
   },
   {
     "id": "TEMPORARY_DEXTERITY",

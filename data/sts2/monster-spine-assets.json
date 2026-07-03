@@ -1843,7 +1843,15 @@
       "hurt_stunned",
       "spawn",
       "stunned_loop",
-      "wake_up"
+      "wake_up",
+      "_no_bag/awake_loop",
+      "_no_bag/die",
+      "_no_bag/flee",
+      "_no_bag/hurt_awake",
+      "_no_bag/hurt_stunned",
+      "_no_bag/spawn",
+      "_no_bag/stunned_loop",
+      "_no_bag/wake_up"
     ],
     "bestiaryAnimations": [
       "die"
@@ -1854,10 +1862,13 @@
         "spawned",
         "spawn",
         "wake_up",
+        "_no_bag/spawn",
+        "_no_bag/wake_up",
         "awake_loop"
       ],
       "FLEE": [
         "flee",
+        "_no_bag/flee",
         "awake_loop"
       ],
       "die": [
@@ -6859,6 +6870,19 @@
         "hidden_attack",
         "unburrow_attack",
         "idle_loop"
+      ],
+      "STUNNED": [
+        "stunned",
+        "stunned_hurt",
+        "stunned_loop",
+        "stun",
+        "idle_loop",
+        "attack"
+      ],
+      "DIZZY": [
+        "dizzy",
+        "idle_loop",
+        "attack"
       ],
       "hurt": [
         "hurt",

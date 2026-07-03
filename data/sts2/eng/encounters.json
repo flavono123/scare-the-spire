@@ -31,7 +31,7 @@
     "loss_text": "{character} was dismembered by an [gold]{encounter}[/gold]."
   },
   {
-    "id": "BATTLEWORN_DUMMY_EVENT_ENCOUNTER",
+    "id": "BATTLEWORN_DUMMY_EVENT_V1_ENCOUNTER",
     "name": "Battleworn Dummy",
     "room_type": "Monster",
     "is_weak": false,
@@ -41,11 +41,33 @@
       {
         "id": "BATTLE_FRIEND_V1",
         "name": "Battle Friend V1.0"
-      },
+      }
+    ],
+    "loss_text": "{character} was somehow killed by [gold]{encounter}[/gold]???"
+  },
+  {
+    "id": "BATTLEWORN_DUMMY_EVENT_V2_ENCOUNTER",
+    "name": "Battleworn Dummy",
+    "room_type": "Monster",
+    "is_weak": false,
+    "act": null,
+    "tags": null,
+    "monsters": [
       {
         "id": "BATTLE_FRIEND_V2",
         "name": "Battle Friend V2.0"
-      },
+      }
+    ],
+    "loss_text": "{character} was somehow killed by [gold]{encounter}[/gold]???"
+  },
+  {
+    "id": "BATTLEWORN_DUMMY_EVENT_V3_ENCOUNTER",
+    "name": "Battleworn Dummy",
+    "room_type": "Monster",
+    "is_weak": false,
+    "act": null,
+    "tags": null,
+    "monsters": [
       {
         "id": "BATTLE_FRIEND_V3",
         "name": "Battle Friend V3.0"
@@ -1183,7 +1205,10 @@
     "room_type": "Monster",
     "is_weak": false,
     "act": "Act 1 - Overgrowth",
-    "tags": null,
+    "tags": [
+      "Jaxfruit",
+      "Slimes"
+    ],
     "monsters": [
       {
         "id": "LEAF_SLIME_S",
@@ -1259,7 +1284,8 @@
     "is_weak": false,
     "act": "Act 1 - Overgrowth",
     "tags": [
-      "Mushroom"
+      "Mushroom",
+      "Jaxfruit"
     ],
     "monsters": [
       {

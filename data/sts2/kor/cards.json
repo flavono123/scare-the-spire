@@ -1564,6 +1564,78 @@
     "beta_image_url": "/static/images/cards/beta/blade_of_ink.png"
   },
   {
+    "id": "BLADE_SYMPHONY",
+    "name": "칼날 교향곡",
+    "description": "모든 플레이어의 [gold]손[/gold]에\n[gold]단도[/gold]를 2장 추가합니다.",
+    "description_raw": "모든 플레이어의 [gold]손[/gold]에\n[gold]단도[/gold]를 {Cards:diff()}장 추가합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AllAllies",
+    "color": "silent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": [
+      "SHIV"
+    ],
+    "vars": {
+      "Cards": 2
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/blade_symphony.png"
+  },
+  {
+    "id": "BLAZE",
+    "name": "맹화",
+    "description": "다른 플레이어에게\n[gold]힘[/gold]을 5 줍니다.",
+    "description_raw": "다른 플레이어에게\n[gold]힘[/gold]을 {StrengthPower:diff()} 줍니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AnyAlly",
+    "color": "ironclad",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Strength",
+        "amount": 5
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "StrengthPower": 5,
+      "Strength": 5
+    },
+    "upgrade": {
+      "strength": "+2"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/blaze.png"
+  },
+  {
     "id": "BLIGHT_STRIKE",
     "name": "역병 타격",
     "description": "피해를 8 줍니다.\n가한 피해량만큼\n[gold]종말[/gold]을 부여합니다.",
@@ -2631,6 +2703,39 @@
     "beta_image_url": null
   },
   {
+    "id": "CACOPHONY",
+    "name": "Cacophony",
+    "description": "Every 33 cards drawn by ALL players, deal 66 damage to a random enemy.",
+    "description_raw": "Every {Cards:diff()} cards drawn by ALL players, deal {Damage:diff()} damage to a random enemy.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "Self",
+    "color": "necrobinder",
+    "damage": 66,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 33,
+      "Damage": 66
+    },
+    "upgrade": {
+      "damage": "+33"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/cacophony.png"
+  },
+  {
     "id": "CALAMITY",
     "name": "재앙",
     "description": "공격 카드를 사용할 때마다,\n무작위 공격 카드를\n1장 [gold]손[/gold]으로 가져옵니다.",
@@ -3566,6 +3671,44 @@
     "beta_image_url": null
   },
   {
+    "id": "CONCOCT",
+    "name": "조제",
+    "description": "다른 플레이어를 선택합니다. 이번 턴 동안 대상의 공격 카드가 막히지 않은 피해를 줄 때마다, [gold]중독[/gold]을 3 부여합니다.",
+    "description_raw": "다른 플레이어를 선택합니다. 이번 턴 동안 대상의 공격 카드가 막히지 않은 피해를 줄 때마다, [gold]중독[/gold]을 {ConcoctPower:diff()} 부여합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AnyAlly",
+    "color": "silent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Concoct",
+        "amount": 3
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "ConcoctPower": 3,
+      "Concoct": 3
+    },
+    "upgrade": {
+      "concoctpower": "+1"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/concoct.png"
+  },
+  {
     "id": "CONFLAGRATION",
     "name": "대화재",
     "description": "모든 적에게\n피해를 2만큼 4번 줍니다.",
@@ -3629,6 +3772,40 @@
     },
     "image_url": "/static/images/cards/conqueror.png",
     "beta_image_url": "/static/images/cards/beta/conqueror.png"
+  },
+  {
+    "id": "CONSTELLATION",
+    "name": "Constellation",
+    "description": "Another player draws 1 card, gains 1, and gains 9 [gold]Block[/gold].",
+    "description_raw": "Another player draws {Cards:diff()} {Cards:plural:card|cards}, gains {Energy:energyIcons()}, and gains {Block:diff()} [gold]Block[/gold].",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": 2,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AnyAlly",
+    "color": "regent",
+    "damage": null,
+    "block": 9,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": 1,
+    "energy_gain": 1,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 1,
+      "Energy": 1,
+      "Block": 9
+    },
+    "upgrade": {
+      "block": "+3"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/constellation.png"
   },
   {
     "id": "CONSUMING_SHADOW",
@@ -6507,6 +6684,46 @@
     "beta_image_url": null
   },
   {
+    "id": "FADE",
+    "name": "희미해지기",
+    "description": "이번 턴 동안\n다른 플레이어가\n[gold]민첩[/gold]을 6 얻습니다.",
+    "description_raw": "이번 턴 동안\n다른 플레이어가\n[gold]민첩[/gold]을 {DexterityPower:diff()} 얻습니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AnyAlly",
+    "color": "silent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Dexterity",
+        "amount": 6
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Retain"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "DexterityPower": 6,
+      "Dexterity": 6
+    },
+    "upgrade": {
+      "dexterity": "+3"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/fade.png"
+  },
+  {
     "id": "FALLING_STAR",
     "name": "별똥별",
     "description": "피해를 8 줍니다.\n[gold]약화[/gold]를 1 부여합니다.\n[gold]취약[/gold]을 1 부여합니다.",
@@ -9064,6 +9281,38 @@
     "beta_image_url": null
   },
   {
+    "id": "HIBERNATE",
+    "name": "동면",
+    "description": "이번 턴 동안, 내 [gold]냉기[/gold]가\n모든 아군에게\n[gold]방어도[/gold]를 제공합니다.\n[gold]냉기[/gold]를 2번 영창합니다.",
+    "description_raw": "이번 턴 동안, 내 [gold]냉기[/gold]가\n모든 아군에게\n[gold]방어도[/gold]를 제공합니다.\n[gold]냉기[/gold]를 {Repeat:diff()}번 영창합니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "defect",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Repeat": 2
+    },
+    "upgrade": {
+      "repeat": "+1"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/hibernate.png"
+  },
+  {
     "id": "HIDDEN_CACHE",
     "name": "비밀 상자",
     "description": "[star:1]을 얻습니다.\n다음 턴에,\n[star:3]을 얻습니다.",
@@ -9485,6 +9734,46 @@
     },
     "image_url": "/static/images/cards/ignition.png",
     "beta_image_url": "/static/images/cards/beta/ignition.png"
+  },
+  {
+    "id": "IMITATION_LEARNING",
+    "name": "모방 학습",
+    "description": "다른 플레이어를 선택합니다.\n대상이 다음 2번\n파워 카드를 사용 시,\n그 복사본을 사용합니다.",
+    "description_raw": "다른 플레이어를 선택합니다.\n대상이 다음 {ImitationLearningPower:diff()}번\n파워 카드를 사용 시,\n그 복사본을 사용합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Rare",
+    "target": "AnyAlly",
+    "color": "defect",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "ImitationLearning",
+        "amount": 2
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "ImitationLearningPower": 2,
+      "ImitationLearning": 2
+    },
+    "upgrade": {
+      "imitationlearningpower": "+1"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/imitation_learning.png"
   },
   {
     "id": "IMPATIENCE",
@@ -11171,6 +11460,38 @@
     "beta_image_url": null
   },
   {
+    "id": "MIDNIGHT",
+    "name": "심야",
+    "description": "피해를 99 줍니다.\n이번 전투 동안 [gold]소멸[/gold]한\n모두의 카드 1장당\n비용이 1  감소합니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n이번 전투 동안 [gold]소멸[/gold]한\n모두의 카드 1장당\n비용이 1 {energyPrefix:energyIcons(1)} 감소합니다.",
+    "cost": 12,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Rare",
+    "target": "AnyEnemy",
+    "color": "ironclad",
+    "damage": 99,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 99
+    },
+    "upgrade": {
+      "damage": "+21"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/midnight.png"
+  },
+  {
     "id": "MIMIC",
     "name": "흉내내기",
     "description": "다른 플레이어의 [gold]방어도[/gold]와\n동일한 만큼의\n[gold]방어도[/gold]를 얻습니다.",
@@ -12216,6 +12537,44 @@
     "beta_image_url": "/static/images/cards/beta/omnislice.png"
   },
   {
+    "id": "ONE_FOR_ALL",
+    "name": "모두를 위한 하나",
+    "description": "모두의 비용이 0 인\n공격 카드의 피해량이\n3 증가합니다.",
+    "description_raw": "모두의 비용이 0 {energyPrefix:energyIcons(1)}인\n공격 카드의 피해량이\n{OneForAllPower:diff()} 증가합니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Rare",
+    "target": "AllAllies",
+    "color": "defect",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "OneForAll",
+        "amount": 3
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "OneForAllPower": 3,
+      "OneForAll": 3
+    },
+    "upgrade": {
+      "oneforallpower": "+1"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/one_for_all.png"
+  },
+  {
     "id": "ONE_TWO_PUNCH",
     "name": "원투 펀치",
     "description": "이번 턴에, 다음에\n사용하는 공격 카드가\n1번 추가로 사용됩니다.",
@@ -12349,6 +12708,40 @@
     },
     "image_url": "/static/images/cards/outmaneuver.png",
     "beta_image_url": "/static/images/cards/beta/outmaneuver.png"
+  },
+  {
+    "id": "OUTRAGE",
+    "name": "광분",
+    "description": "피해를 9 줍니다.\n모두의 [gold]버린 카드 더미[/gold]에\n이 카드의 복사본을\n1장 추가합니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n모두의 [gold]버린 카드 더미[/gold]에\n이 카드의 복사본을\n1장 추가합니다.",
+    "cost": 0,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "ironclad",
+    "damage": 9,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": [
+      "OUTRAGE"
+    ],
+    "vars": {
+      "Damage": 9
+    },
+    "upgrade": {
+      "damage": "+4"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/outrage.png"
   },
   {
     "id": "OVERCLOCK",
@@ -12970,6 +13363,38 @@
     },
     "image_url": "/static/images/cards/pinpoint.png",
     "beta_image_url": null
+  },
+  {
+    "id": "PLOT",
+    "name": "구상",
+    "description": "다음 턴에,\n모든 플레이어가\n카드를 2장 뽑습니다.",
+    "description_raw": "다음 턴에,\n모든 플레이어가\n카드를 {Cards}장 뽑습니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "AllAllies",
+    "color": "regent",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Cards": 2
+    },
+    "upgrade": {
+      "cards": "+1"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/plot.png"
   },
   {
     "id": "POISONED_STAB",
@@ -16324,6 +16749,43 @@
     "beta_image_url": "/static/images/cards/beta/soul_storm.png"
   },
   {
+    "id": "SOULBOUND",
+    "name": "Soulbound",
+    "description": "Choose an ally.\nWhenever you create a [gold]Soul[/gold], add a [gold]Soul[/gold] to their [gold]Draw Pile[/gold].",
+    "description_raw": "Choose an ally.\nWhenever you create a [gold]Soul[/gold], add a [gold]Soul[/gold] to their [gold]Draw Pile[/gold].",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Power",
+    "rarity": "Uncommon",
+    "target": "AnyAlly",
+    "color": "necrobinder",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Soulbound",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": [
+      "SOUL"
+    ],
+    "vars": null,
+    "upgrade": {
+      "add_innate": 1
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/soulbound.png"
+  },
+  {
     "id": "SOVEREIGN_BLADE",
     "name": "군주의 칼날",
     "description": "피해를 10 줍니다.",
@@ -18072,6 +18534,39 @@
     "beta_image_url": "/static/images/cards/beta/tesla_coil.png"
   },
   {
+    "id": "THE_BALL",
+    "name": "공",
+    "description": "피해를 10 줍니다.\n이번 전투 동안 이 카드의\n피해량이 15 증가하고\n무작위 아군에게\n이 카드를 줍니다.",
+    "description_raw": "피해를 {Damage:diff()} 줍니다.\n이번 전투 동안 이 카드의\n피해량이 {Increase:diff()} 증가하고\n무작위 아군에게\n이 카드를 줍니다.",
+    "cost": 1,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Attack",
+    "rarity": "Uncommon",
+    "target": "AnyEnemy",
+    "color": "colorless",
+    "damage": 10,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": null,
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": null,
+    "tags": null,
+    "spawns_cards": null,
+    "vars": {
+      "Damage": 10,
+      "Increase": 15
+    },
+    "upgrade": {
+      "increase": "+10"
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/the_ball.png"
+  },
+  {
     "id": "THE_BOMB",
     "name": "폭탄",
     "description": "3턴 후 턴 종료 시,\n모든 적에게\n피해를 40 줍니다.",
@@ -18940,6 +19435,43 @@
     },
     "image_url": "/static/images/cards/undeath.png",
     "beta_image_url": "/static/images/cards/beta/undeath.png"
+  },
+  {
+    "id": "UNDERWORLD",
+    "name": "지하세계",
+    "description": "다른 플레이어가 이번 턴 동안\n공격 피해를 가할 때마다,\n그와 동일한 만큼의\n[gold]종말[/gold]을 부여합니다.",
+    "description_raw": "다른 플레이어가 이번 턴 동안\n공격 피해를 가할 때마다,\n그와 동일한 만큼의\n[gold]종말[/gold]을 부여합니다.",
+    "cost": 2,
+    "is_x_cost": null,
+    "is_x_star_cost": null,
+    "star_cost": null,
+    "type": "Skill",
+    "rarity": "Uncommon",
+    "target": "Self",
+    "color": "necrobinder",
+    "damage": null,
+    "block": null,
+    "hit_count": null,
+    "powers_applied": [
+      {
+        "power": "Underworld",
+        "amount": 1
+      }
+    ],
+    "cards_draw": null,
+    "energy_gain": null,
+    "hp_loss": null,
+    "keywords": [
+      "Exhaust"
+    ],
+    "tags": null,
+    "spawns_cards": null,
+    "vars": null,
+    "upgrade": {
+      "remove_exhaust": 1
+    },
+    "image_url": null,
+    "beta_image_url": "/static/images/cards/beta/underworld.png"
   },
   {
     "id": "UNLEASH",
