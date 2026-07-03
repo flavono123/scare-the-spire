@@ -116,6 +116,11 @@ function formatVariantName(baseName: string, variantLabel: string): string {
   return `${baseName}${separator}(${variantLabel})`;
 }
 
+export function getMadScienceRenderedCardName(card: Pick<CodexCard, "id" | "name">): string {
+  if (!isMadScienceCardId(card.id)) return card.name;
+  return card.name.replace(/\s*\([^)]*\)\s*$/, "");
+}
+
 export const TINKER_DYNAMIC_TEXT_VALUES: Record<string, string> = {
   Block: "8",
   ChokingDamage: "6",
@@ -233,6 +238,7 @@ export function getTinkerRiderIdsForType(cardType: TinkerCardType): readonly Tin
 }
 
 export function getDefaultTinkerRiderForType(cardType: TinkerCardType): TinkerRiderId {
+  if (cardType === "ATTACK") return "VIOLENCE";
   if (cardType === "SKILL") return "CHAOS";
   return TINKER_RIDER_IDS_BY_TYPE[cardType][0];
 }
