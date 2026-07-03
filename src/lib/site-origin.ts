@@ -1,16 +1,33 @@
-export const DEFAULT_SITE_ORIGIN = "https://scare-the-spire.vercel.app";
+export const DEFAULT_SITE_ORIGIN = "https://scare-the-spire.flavono123.workers.dev";
 
-export function getSiteOrigin(): string {
-  const configuredOrigin = process.env.NEXT_PUBLIC_SITE_ORIGIN?.trim();
-  if (!configuredOrigin) return DEFAULT_SITE_ORIGIN;
+function normalizeSiteOrigin(value: string | undefined): string | null {
+  if (!value) return null;
 
   try {
-    return new URL(configuredOrigin).origin;
+    return new URL(value).origin;
   } catch {
-    return DEFAULT_SITE_ORIGIN;
+    return null;
   }
 }
 
+export function getSiteOrigin(): string {
+  return (
+    normalizeSiteOrigin(process.env.NEXT_PUBLIC_SITE_ORIGIN) ??
+    normalizeSiteOrigin(process.env.NEXT_PUBLIC_SITE_URL) ??
+    normalizeSiteOrigin(process.env.SITE_URL) ??
+    DEFAULT_SITE_ORIGIN
+  );
+}
+
+export const SITE_ORIGIN = getSiteOrigin();
+
+export const SITE_METADATA_BASE = new URL(SITE_ORIGIN);
+
 export function getSiteDisplayOrigin(): string {
-  return getSiteOrigin().replace(/^https?:\/\//, "");
+  return SITE_ORIGIN.replace(/^https?:\/\//, "");
+}
+
+export function absoluteSiteUrl(url: string): string {
+  if (/^[a-z][a-z0-9+.-]*:/i.test(url)) return url;
+  return new URL(url.startsWith("/") ? url : `/${url}`, SITE_METADATA_BASE).toString();
 }

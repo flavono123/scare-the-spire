@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { absoluteSiteUrl, SITE_METADATA_BASE } from "@/lib/site-origin";
 import { cacheBustSts2ImageUrl } from "@/lib/sts2-image-cache";
 
 export type PageOgImage = {
@@ -103,10 +104,15 @@ export function getPageOgImage(pathname: string): PageOgImage {
 }
 
 export function withPageOgImage(metadata: Metadata, pathname: string): Metadata {
-  const image = getPageOgImage(pathname);
+  const rawImage = getPageOgImage(pathname);
+  const image = {
+    ...rawImage,
+    url: absoluteSiteUrl(rawImage.url),
+  };
 
   return {
     ...metadata,
+    metadataBase: SITE_METADATA_BASE,
     openGraph: {
       ...(metadata.openGraph ?? {}),
       images: [image],

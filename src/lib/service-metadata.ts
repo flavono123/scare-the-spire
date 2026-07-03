@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ServiceLocale } from "@/lib/i18n";
 import { DEFAULT_PAGE_OG_IMAGE, type PageOgImage } from "@/lib/page-og-images";
+import { absoluteSiteUrl, SITE_METADATA_BASE } from "@/lib/site-origin";
 import { serviceMessages } from "@/messages/service";
 
 type ServiceMetadataCopy = {
@@ -45,6 +46,13 @@ export function getServiceBrand(serviceLocale: ServiceLocale): string {
   return serviceMessages[serviceLocale].brand;
 }
 
+function absoluteServiceOgImage<T extends ServiceOgImage>(image: T): T {
+  return {
+    ...image,
+    url: absoluteSiteUrl(image.url),
+  };
+}
+
 export function getServiceTitle(
   serviceLocale: ServiceLocale,
   pageTitle?: string,
@@ -58,8 +66,10 @@ export function getDefaultServiceMetadata(
 ): Metadata {
   const brand = getServiceBrand(serviceLocale);
   const description = getServiceMetadataCopy(serviceLocale).siteDescription;
+  const image = absoluteServiceOgImage(DEFAULT_PAGE_OG_IMAGE);
 
   return {
+    metadataBase: SITE_METADATA_BASE,
     title: {
       default: brand,
       template: `%s - ${brand}`,
@@ -69,7 +79,7 @@ export function getDefaultServiceMetadata(
       title: brand,
       description,
       siteName: brand,
-      images: [DEFAULT_PAGE_OG_IMAGE],
+      images: [image],
       locale: serviceLocale === "ko" ? "ko_KR" : "en_US",
       type: "website",
     },
@@ -77,7 +87,7 @@ export function getDefaultServiceMetadata(
       card: "summary_large_image",
       title: brand,
       description,
-      images: [DEFAULT_PAGE_OG_IMAGE.url],
+      images: [image.url],
     },
   };
 }
@@ -95,8 +105,10 @@ export function getServiceOgMetadata({
 }): Metadata {
   const fullTitle = getServiceTitle(serviceLocale, title);
   const brand = getServiceBrand(serviceLocale);
+  const ogImage = absoluteServiceOgImage(image);
 
   return {
+    metadataBase: SITE_METADATA_BASE,
     title: {
       absolute: fullTitle,
     },
@@ -105,7 +117,7 @@ export function getServiceOgMetadata({
       title: fullTitle,
       description,
       siteName: brand,
-      images: [image],
+      images: [ogImage],
       locale: serviceLocale === "ko" ? "ko_KR" : "en_US",
       type: "website",
     },
@@ -113,7 +125,7 @@ export function getServiceOgMetadata({
       card: "summary_large_image",
       title: fullTitle,
       description,
-      images: [image.url],
+      images: [ogImage.url],
     },
   };
 }

@@ -6,7 +6,7 @@ import { CloudflareWebAnalytics } from "@/components/cloudflare-web-analytics";
 import { LocaleDocumentAttributes } from "@/components/locale-document-attributes";
 import { SiteNavbar } from "@/components/site-navbar";
 import { getDefaultServiceMetadata } from "@/lib/service-metadata";
-import { getSiteOrigin } from "@/lib/site-origin";
+import { SITE_METADATA_BASE } from "@/lib/site-origin";
 import "./globals.css";
 
 // STS2 game fonts extracted from PCK
@@ -32,7 +32,7 @@ const gcBatang = localFont({
 
 export const metadata: Metadata = {
   ...getDefaultServiceMetadata("ko"),
-  metadataBase: new URL(getSiteOrigin()),
+  metadataBase: SITE_METADATA_BASE,
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-icon.png",
