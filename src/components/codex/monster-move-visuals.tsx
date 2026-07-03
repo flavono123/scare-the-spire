@@ -816,7 +816,7 @@ const PATCH_DIFF_POWERS: Record<string, PatchDiffPowerPreviewData> = {
 };
 
 const PATCH_DIFF_CARDS: Record<string, { nameKo: string; nameEn: string; imageUrl: string; typeKo: string; typeEn: string }> = {
-  WITHER: { nameKo: "침체", nameEn: "Wither", imageUrl: "/images/sts2/cards-beta/wither.webp", typeKo: "상태이상", typeEn: "Status" },
+  WITHER: { nameKo: "침체", nameEn: "Wither", imageUrl: "/images/sts2/cards/wither1.webp", typeKo: "상태이상", typeEn: "Status" },
 };
 
 function getPatchDiffMoveVisual(monster: CodexMonster, moveId: string, fallback?: MoveVisual): MoveVisual | null {
@@ -1733,7 +1733,7 @@ function cardApplication(
     cardColor: "status",
     applicationKind: "add",
     amount,
-    imageUrl: cardId === "WITHER" ? "/images/sts2/cards-beta/wither.webp" : `/images/sts2/cards/${cardId.toLowerCase()}.webp`,
+    imageUrl: cardId === "WITHER" ? "/images/sts2/cards/wither1.webp" : `/images/sts2/cards/${cardId.toLowerCase()}.webp`,
   };
 }
 
