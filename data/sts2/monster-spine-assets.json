@@ -1,5 +1,165 @@
 [
   {
+    "id": "AEONGLASS",
+    "source": "animations/monsters/aeonglass/aeonglass",
+    "renderStatus": "spine",
+    "renderTags": [],
+    "atlasUrl": "/spine/sts2/monsters/aeonglass/aeonglass.atlas",
+    "binaryUrl": "/spine/sts2/monsters/aeonglass/aeonglass.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/aeonglass/aeonglass.png",
+      "/spine/sts2/monsters/aeonglass/aeonglass_2.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_double",
+      "attack_heavy",
+      "die",
+      "hurt",
+      "idle_loop",
+      "wither",
+      "_ignore/ring_rotations_step1",
+      "_ignore/ring_rotations_step2",
+      "_track1/empty",
+      "_track1/rings_attack_double",
+      "_track1/rings_attack_heavy",
+      "_track1/rings_die",
+      "_track1/rings_normal"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
+    "idleAnimation": "idle_loop",
+    "idleTracks": [
+      {
+        "track": 0,
+        "animation": "idle_loop"
+      },
+      {
+        "track": 1,
+        "animation": "_track1/rings_normal"
+      }
+    ],
+    "moveAnimations": {
+      "EBB": [
+        "attack_heavy",
+        "idle_loop"
+      ],
+      "EYE_LASERS": [
+        "attack_double",
+        "idle_loop"
+      ],
+      "INCREASING_INTENSITY": [
+        "wither",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
+      ]
+    },
+    "moveAnimationTracks": {
+      "EBB": [
+        {
+          "track": 0,
+          "animation": "attack_heavy",
+          "loop": false,
+          "idleAnimation": "idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "_track1/rings_attack_heavy",
+          "loop": false,
+          "idleAnimation": "_track1/rings_normal"
+        }
+      ],
+      "EYE_LASERS": [
+        {
+          "track": 0,
+          "animation": "attack_double",
+          "loop": false,
+          "idleAnimation": "idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "_track1/rings_attack_double",
+          "loop": false,
+          "idleAnimation": "_track1/rings_normal"
+        }
+      ],
+      "INCREASING_INTENSITY": [
+        {
+          "track": 0,
+          "animation": "wither",
+          "loop": false,
+          "idleAnimation": "idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "_track1/rings_normal",
+          "loop": false,
+          "idleAnimation": "_track1/rings_normal"
+        }
+      ],
+      "hurt": [
+        {
+          "track": 0,
+          "animation": "hurt",
+          "loop": false,
+          "idleAnimation": "idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "_track1/rings_normal",
+          "loop": false,
+          "idleAnimation": "_track1/rings_normal"
+        }
+      ],
+      "die": [
+        {
+          "track": 0,
+          "animation": "die",
+          "loop": false,
+          "idleAnimation": "idle_loop"
+        },
+        {
+          "track": 1,
+          "animation": "_track1/rings_die",
+          "loop": false,
+          "idleAnimation": "_track1/rings_normal"
+        }
+      ]
+    },
+    "moveEffects": {
+      "EYE_LASERS": [
+        {
+          "id": "VFX_LASER",
+          "folder": "vfx_laser",
+          "source": "animations/vfx/vfx_laser/laser",
+          "atlasUrl": "/spine/sts2/vfx/spine-vfx.atlas",
+          "binaryUrl": "/spine/sts2/vfx/vfx_laser/laser.skel",
+          "textureUrls": [
+            "/spine/sts2/vfx/laser.png"
+          ],
+          "animations": [
+            "animation"
+          ],
+          "idleAnimation": "animation",
+          "durationSeconds": 0.347,
+          "usable": true
+        }
+      ]
+    }
+  },
+  {
     "id": "ARCHITECT",
     "source": "animations/monsters/architect/architect",
     "renderStatus": "spine",
