@@ -5697,5 +5697,971 @@
         ]
       }
     ]
+  },
+  {
+    "id": "colossus-v108-nerf",
+    "entityType": "card",
+    "entityId": "COLOSSUS",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "ironclad",
+    "summary": "Colossus Block decreased from 5(8) to 4(7).",
+    "summaryKo": "거상의 방어도 획득량이 5(8)에서 4(7)로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "5(8) Block",
+        "beforeKo": "방어도 5(8)",
+        "after": "4(7) Block",
+        "afterKo": "방어도 4(7)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 5 얻습니다.\n이번 턴에 [gold]취약[/gold] 상태의\n적에게서 받는 피해량이\n50% 감소합니다.",
+        "after": "[gold]방어도[/gold]를 4 얻습니다.\n이번 턴에 [gold]취약[/gold] 상태의\n적에게서 받는 피해량이\n50% 감소합니다."
+      },
+      {
+        "field": "block",
+        "before": 5,
+        "after": 4
+      },
+      {
+        "field": "vars.Block",
+        "before": 5,
+        "after": 4
+      }
+    ]
+  },
+  {
+    "id": "crimson-mantle-v108-nerf",
+    "entityType": "card",
+    "entityId": "CRIMSON_MANTLE",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "ironclad",
+    "summary": "Crimson Mantle Block decreased from 8(10) to 7(10).",
+    "summaryKo": "핏빛 망토의 방어도 획득량이 8(10)에서 7(10)로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "8(10) Block",
+        "beforeKo": "방어도 8(10)",
+        "after": "7(10) Block",
+        "afterKo": "방어도 7(10)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "내 턴 시작 시,\n체력을 1 잃고\n[gold]방어도[/gold]를 8 얻습니다.",
+        "after": "내 턴 시작 시,\n체력을 1 잃고\n[gold]방어도[/gold]를 7 얻습니다."
+      },
+      {
+        "field": "vars.CrimsonMantlePower",
+        "before": 8,
+        "after": 7
+      },
+      {
+        "field": "vars.CrimsonMantle",
+        "before": 8,
+        "after": 7
+      },
+      {
+        "field": "upgrade.crimsonmantlepower",
+        "before": "+2",
+        "after": "+3"
+      }
+    ]
+  },
+  {
+    "id": "howl-from-beyond-v108-buff",
+    "entityType": "card",
+    "entityId": "HOWL_FROM_BEYOND",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "ironclad",
+    "summary": "Howl from Beyond damage increased from 16(21) to 18(24).",
+    "summaryKo": "저편의 울음소리의 피해량이 16(21)에서 18(24)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "16(21) damage",
+        "beforeKo": "피해 16(21)",
+        "after": "18(24) damage",
+        "afterKo": "피해 18(24)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "모든 적에게\n피해를 16 줍니다.\n내 턴 종료 시, 이 카드가\n[gold]소멸된 카드 더미[/gold]에 있다면,\n사용합니다.",
+        "after": "모든 적에게\n피해를 18 줍니다.\n내 턴 종료 시, 이 카드가\n[gold]소멸된 카드 더미[/gold]에 있다면,\n사용합니다."
+      },
+      {
+        "field": "damage",
+        "before": 16,
+        "after": 18
+      },
+      {
+        "field": "vars.Damage",
+        "before": 16,
+        "after": 18
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+5",
+        "after": "+6"
+      }
+    ]
+  },
+  {
+    "id": "setup-strike-v108-buff",
+    "entityType": "card",
+    "entityId": "SETUP_STRIKE",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "ironclad",
+    "summary": "Setup Strike Strength gain increased from 2(3) to 3(4).",
+    "summaryKo": "사전 타격의 힘 획득량이 2(3)에서 3(4)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "2(3) Strength",
+        "beforeKo": "힘 2(3)",
+        "after": "3(4) Strength",
+        "afterKo": "힘 3(4)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 7 줍니다.\n이번 턴 동안\n[gold]힘[/gold]을 2 얻습니다.",
+        "after": "피해를 7 줍니다.\n이번 턴 동안\n[gold]힘[/gold]을 3 얻습니다."
+      },
+      {
+        "field": "vars.StrengthPower",
+        "before": 2,
+        "after": 3
+      },
+      {
+        "field": "vars.Strength",
+        "before": 2,
+        "after": 3
+      }
+    ]
+  },
+  {
+    "id": "outbreak-v108-rework",
+    "entityType": "card",
+    "entityId": "OUTBREAK",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "silent",
+    "summary": "Outbreak now triggers whenever Poison is applied, dealing 3(4) damage.",
+    "summaryKo": "발병이 이제 중독을 부여할 때마다 발동하며 피해량은 3(4)입니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Every 3 Poison applications, 11(15) damage",
+        "beforeKo": "중독 3회마다 피해 11(15)",
+        "after": "Every Poison application, 3(4) damage",
+        "afterKo": "중독 부여마다 피해 3(4)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]중독[/gold]을 3번 부여할 때마다, 모든 적에게\n피해를 11 줍니다.",
+        "after": "[gold]중독[/gold]을 부여할 때마다, 모든 적에게\n피해를 3 줍니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]중독[/gold]을 {Repeat:choose(1):부여할|{Repeat:diff()}번 부여할} 때마다, 모든 적에게\n피해를 {OutbreakPower:diff()} 줍니다.",
+        "after": "[gold]중독[/gold]을 부여할 때마다, 모든 적에게\n피해를 {OutbreakPower:diff()} 줍니다."
+      },
+      {
+        "field": "vars.Repeat",
+        "before": 3
+      },
+      {
+        "field": "vars.OutbreakPower",
+        "before": 11,
+        "after": 3
+      },
+      {
+        "field": "vars.Outbreak",
+        "before": 11,
+        "after": 3
+      },
+      {
+        "field": "upgrade.outbreakpower",
+        "before": "+4",
+        "after": "+1"
+      }
+    ]
+  },
+  {
+    "id": "anticipate-v108-buff",
+    "entityType": "card",
+    "entityId": "ANTICIPATE",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "silent",
+    "summary": "Anticipate upgraded Dexterity increased from 3 to 4.",
+    "summaryKo": "예측의 강화 시 민첩 획득량이 3에서 4로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "2(3) Dexterity",
+        "beforeKo": "민첩 2(3)",
+        "after": "2(4) Dexterity",
+        "afterKo": "민첩 2(4)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "upgrade.dexterity",
+        "before": "+1",
+        "after": "+2"
+      }
+    ]
+  },
+  {
+    "id": "flick-flack-v108-buff",
+    "entityType": "card",
+    "entityId": "FLICK_FLACK",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "silent",
+    "summary": "Flick-Flack damage increased from 6(8) to 7(9).",
+    "summaryKo": "재주넘기의 피해량이 6(8)에서 7(9)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "6(8) damage",
+        "beforeKo": "피해 6(8)",
+        "after": "7(9) damage",
+        "afterKo": "피해 7(9)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "모든 적에게\n피해를 6 줍니다.",
+        "after": "모든 적에게\n피해를 7 줍니다."
+      },
+      {
+        "field": "damage",
+        "before": 6,
+        "after": 7
+      },
+      {
+        "field": "vars.Damage",
+        "before": 6,
+        "after": 7
+      }
+    ]
+  },
+  {
+    "id": "tracking-v108-nerf",
+    "entityType": "card",
+    "entityId": "TRACKING",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "silent",
+    "summary": "Tracking now makes Weak enemies take 50% more Attack damage instead of double damage.",
+    "summaryKo": "추적은 이제 약화된 적이 공격으로부터 두 배가 아니라 50% 더 많은 피해를 받게 합니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Double Attack damage",
+        "beforeKo": "공격 피해 2배",
+        "after": "50% more Attack damage",
+        "afterKo": "공격 피해 50% 증가",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]약화[/gold] 상태의 적이\n공격 카드로 받는 피해가\n2배가 됩니다.",
+        "after": "[gold]약화[/gold] 상태의 적이\n공격 카드로 받는 피해가\n50% 증가합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]약화[/gold] 상태의 적이\n공격 카드로 받는 피해가\n2배가 됩니다.",
+        "after": "[gold]약화[/gold] 상태의 적이\n공격 카드로 받는 피해가\n50% 증가합니다."
+      }
+    ]
+  },
+  {
+    "id": "devastate-v108-buff",
+    "entityType": "card",
+    "entityId": "DEVASTATE",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "regent",
+    "summary": "Devastate damage increased from 30(40) to 35(45).",
+    "summaryKo": "초토화의 피해량이 30(40)에서 35(45)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "30(40) damage",
+        "beforeKo": "피해 30(40)",
+        "after": "35(45) damage",
+        "afterKo": "피해 35(45)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 30 줍니다.",
+        "after": "피해를 35 줍니다."
+      },
+      {
+        "field": "damage",
+        "before": 30,
+        "after": 35
+      },
+      {
+        "field": "vars.Damage",
+        "before": 30,
+        "after": 35
+      }
+    ]
+  },
+  {
+    "id": "divine-destiny-v108-buff",
+    "entityType": "relic",
+    "entityId": "DIVINE_DESTINY",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "regent",
+    "summary": "Divine Destiny Star gain increased from 6 to 7.",
+    "summaryKo": "신성한 운명의 별 획득량이 6에서 7로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "6 Stars",
+        "beforeKo": "별 6",
+        "after": "7 Stars",
+        "afterKo": "별 7",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "매 전투 시작 시, [star:6]을 얻습니다.",
+        "after": "매 전투 시작 시, [star:7]을 얻습니다."
+      }
+    ]
+  },
+  {
+    "id": "minion-sacrifice-v108-nerf",
+    "entityType": "card",
+    "entityId": "MINION_SACRIFICE",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "regent",
+    "summary": "Minion Sacrifice Block decreased from 8(11) to 7(10).",
+    "summaryKo": "하수인 희생의 방어도 획득량이 8(11)에서 7(10)으로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "8(11) Block",
+        "beforeKo": "방어도 8(11)",
+        "after": "7(10) Block",
+        "afterKo": "방어도 7(10)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]방어도[/gold]를 8 얻습니다.",
+        "after": "[gold]방어도[/gold]를 7 얻습니다."
+      },
+      {
+        "field": "block",
+        "before": 8,
+        "after": 7
+      },
+      {
+        "field": "vars.Block",
+        "before": 8,
+        "after": 7
+      }
+    ],
+    "relatedEntities": [
+      {
+        "type": "card",
+        "id": "GUARDS"
+      }
+    ]
+  },
+  {
+    "id": "resonance-v108-buff",
+    "entityType": "card",
+    "entityId": "RESONANCE",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "regent",
+    "summary": "Resonance Star cost decreased from 3 to 2.",
+    "summaryKo": "공진의 별 비용이 3에서 2로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "3 Stars",
+        "beforeKo": "별 3",
+        "after": "2 Stars",
+        "afterKo": "별 2",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "vars.StarCost",
+        "before": 3,
+        "after": 2
+      }
+    ]
+  },
+  {
+    "id": "haunt-v108-buff",
+    "entityType": "card",
+    "entityId": "HAUNT",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "necrobinder",
+    "summary": "Haunt HP loss increased from 6(8) to 7(9).",
+    "summaryKo": "출몰의 HP 손실량이 6(8)에서 7(9)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "6(8) HP loss",
+        "beforeKo": "HP 손실 6(8)",
+        "after": "7(9) HP loss",
+        "afterKo": "HP 손실 7(9)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]영혼[/gold]을 사용할 때마다,\n무작위 적이\n체력을 6 잃습니다.",
+        "after": "[gold]영혼[/gold]을 사용할 때마다,\n무작위 적이\n체력을 7 잃습니다."
+      },
+      {
+        "field": "vars.HpLoss",
+        "before": 6,
+        "after": 7
+      }
+    ]
+  },
+  {
+    "id": "reave-v108-buff",
+    "entityType": "card",
+    "entityId": "REAVE",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "necrobinder",
+    "summary": "Reave damage increased from 9(11) to 10(13).",
+    "summaryKo": "강탈의 피해량이 9(11)에서 10(13)으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "9(11) damage",
+        "beforeKo": "피해 9(11)",
+        "after": "10(13) damage",
+        "afterKo": "피해 10(13)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 9 줍니다.\n[gold]뽑을 카드 더미[/gold]에\n[gold]영혼[/gold]을 1장 추가합니다.",
+        "after": "피해를 10 줍니다.\n[gold]뽑을 카드 더미[/gold]에\n[gold]영혼[/gold]을 1장 추가합니다."
+      },
+      {
+        "field": "damage",
+        "before": 9,
+        "after": 10
+      },
+      {
+        "field": "vars.Damage",
+        "before": 9,
+        "after": 10
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+2",
+        "after": "+3"
+      }
+    ]
+  },
+  {
+    "id": "soul-storm-v108-buff",
+    "entityType": "card",
+    "entityId": "SOUL_STORM",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "necrobinder",
+    "summary": "Soul Storm additional damage increased from 2(3) to 4(6).",
+    "summaryKo": "영혼 폭풍의 영혼당 추가 피해량이 2(3)에서 4(6)으로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "2(3) extra damage per Soul",
+        "beforeKo": "영혼당 추가 피해 2(3)",
+        "after": "4(6) extra damage per Soul",
+        "afterKo": "영혼당 추가 피해 4(6)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 11 줍니다.\n[gold]소멸된 카드 더미[/gold]에 있는\n[gold]영혼[/gold] 1장당 피해량이\n2 증가합니다.",
+        "after": "피해를 13 줍니다.\n[gold]소멸된 카드 더미[/gold]에 있는\n[gold]영혼[/gold] 1장당 피해량이\n4 증가합니다."
+      },
+      {
+        "field": "vars.ExtraDamage",
+        "before": 2,
+        "after": 4
+      },
+      {
+        "field": "vars.CalculatedDamage",
+        "before": 11,
+        "after": 13
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+1"
+      },
+      {
+        "field": "upgrade.extradamage",
+        "before": "+1",
+        "after": "+2"
+      }
+    ]
+  },
+  {
+    "id": "fuel-v108-nerf",
+    "entityType": "card",
+    "entityId": "FUEL",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "defect",
+    "summary": "Fuel no longer draws cards, and its upgrade now grants 1 additional Energy.",
+    "summaryKo": "연료는 더 이상 카드를 뽑지 않으며, 강화 시 에너지를 1 추가로 얻습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Gain Energy and draw 1(2)",
+        "beforeKo": "에너지 획득 및 1(2)장 뽑기",
+        "after": "Gain Energy; upgrade grants +1 Energy",
+        "afterKo": "에너지 획득, 강화 시 에너지 +1",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[energy:1]를 얻습니다.\n카드를 1장 뽑습니다.",
+        "after": "[energy:1]를 얻습니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "{Energy:energyIcons()}를 얻습니다.\n카드를 {Cards:diff()}장 뽑습니다.",
+        "after": "{Energy:energyIcons()}를 얻습니다."
+      },
+      {
+        "field": "vars.Cards",
+        "before": 1
+      },
+      {
+        "field": "upgrade.cards",
+        "before": "+1"
+      },
+      {
+        "field": "upgrade.energy",
+        "after": "+1"
+      }
+    ]
+  },
+  {
+    "id": "momentum-strike-v108-buff",
+    "entityType": "card",
+    "entityId": "MOMENTUM_STRIKE",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "defect",
+    "summary": "Momentum Strike damage increased from 10(13) to 11(15).",
+    "summaryKo": "추진 타격의 피해량이 10(13)에서 11(15)로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "10(13) damage",
+        "beforeKo": "피해 10(13)",
+        "after": "11(15) damage",
+        "afterKo": "피해 11(15)",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "피해를 10 줍니다.\n이 카드의 비용이\n0 [energy:1]으로 감소합니다.",
+        "after": "피해를 11 줍니다.\n이 카드의 비용이\n0 [energy:1]으로 감소합니다."
+      },
+      {
+        "field": "damage",
+        "before": 10,
+        "after": 11
+      },
+      {
+        "field": "vars.Damage",
+        "before": 10,
+        "after": 11
+      },
+      {
+        "field": "upgrade.damage",
+        "before": "+3",
+        "after": "+4"
+      }
+    ]
+  },
+  {
+    "id": "shatter-v108-change",
+    "entityType": "card",
+    "entityId": "SHATTER",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "defect",
+    "summary": "Shatter now Exhausts.",
+    "summaryKo": "산산조각이 이제 소멸합니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "No Exhaust",
+        "beforeKo": "소멸 없음",
+        "after": "Exhausts",
+        "afterKo": "소멸",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "keywords",
+        "before": [],
+        "after": [
+          "소멸"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "flanking-v108-rarity",
+    "entityType": "card",
+    "entityId": "FLANKING",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "silent",
+    "summary": "Flanking rarity increased from Uncommon to Rare.",
+    "summaryKo": "측면 공격의 등급이 고급에서 희귀로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Uncommon",
+        "beforeKo": "고급",
+        "after": "Rare",
+        "afterKo": "희귀",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "고급",
+        "after": "희귀"
+      }
+    ]
+  },
+  {
+    "id": "ignition-v108-rarity",
+    "entityType": "card",
+    "entityId": "IGNITION",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "defect",
+    "summary": "Ignition rarity decreased from Rare to Uncommon.",
+    "summaryKo": "점화의 등급이 희귀에서 고급으로 감소했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Rare",
+        "beforeKo": "희귀",
+        "after": "Uncommon",
+        "afterKo": "고급",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "rarity",
+        "before": "희귀",
+        "after": "고급"
+      }
+    ]
+  },
+  {
+    "id": "beacon-of-hope-v108-nerf",
+    "entityType": "card",
+    "entityId": "BEACON_OF_HOPE",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "colorless",
+    "summary": "Beacon of Hope cost increased from 1 to 2.",
+    "summaryKo": "희망의 등불의 비용이 1에서 2로 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Cost 1",
+        "beforeKo": "비용 1",
+        "after": "Cost 2",
+        "afterKo": "비용 2",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "cost",
+        "before": 1,
+        "after": 2
+      }
+    ]
+  },
+  {
+    "id": "outbreak-power-v108-rework",
+    "entityType": "power",
+    "entityId": "OUTBREAK",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "silent",
+    "summary": "Outbreak power now deals its damage whenever Poison is applied.",
+    "summaryKo": "발병 파워가 이제 중독을 부여할 때마다 피해를 줍니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Every 3 Poison applications",
+        "beforeKo": "중독 3회 부여마다",
+        "after": "Whenever Poison is applied",
+        "afterKo": "중독 부여 시마다",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]중독[/gold]을 [blue]10[/blue]번 부여할 때마다, 모든 적에게 피해를 줍니다.",
+        "after": "[gold]중독[/gold]을 부여할 때마다, 모든 적에게 피해를 [blue]3[/blue] 줍니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]중독[/gold]을 [blue]{Repeat}[/blue]번 부여할 때마다, 모든 적에게 피해를 [blue]{Amount}[/blue] 줍니다.",
+        "after": "[gold]중독[/gold]을 부여할 때마다, 모든 적에게 피해를 [blue]{Amount}[/blue] 줍니다."
+      },
+      {
+        "field": "vars.Repeat",
+        "before": 3
+      },
+      {
+        "field": "vars.Amount",
+        "after": 3
+      }
+    ]
+  },
+  {
+    "id": "tracking-power-v108-nerf",
+    "entityType": "power",
+    "entityId": "TRACKING",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "silent",
+    "summary": "Tracking power now increases Weak-target Attack damage by 50% instead of doubling it.",
+    "summaryKo": "추적 파워가 이제 약화 대상 공격 피해를 두 배가 아니라 50% 증가시킵니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Double Attack damage",
+        "beforeKo": "공격 피해 2배",
+        "after": "50% more Attack damage",
+        "afterKo": "공격 피해 50% 증가",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "[gold]약화[/gold] 상태의 적이 공격 카드로 받는 피해가 [blue]2[/blue]배가 됩니다.",
+        "after": "[gold]약화[/gold] 상태의 적이 공격 카드로 받는 피해가 [blue]50%[/blue] 증가합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "[gold]약화[/gold] 상태의 적이 공격 카드로 받는 피해가 [blue]{Amount}[/blue]배가 됩니다.",
+        "after": "[gold]약화[/gold] 상태의 적이 공격 카드로 받는 피해가 [blue]{Amount}%[/blue] 증가합니다."
+      },
+      {
+        "field": "vars.Amount",
+        "after": 50
+      }
+    ]
+  },
+  {
+    "id": "tank-power-v108-rework",
+    "entityType": "power",
+    "entityId": "TANK",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "ironclad",
+    "summary": "Tank power now makes the owner take 50% more damage instead of double damage, while allies still take 50% less.",
+    "summaryKo": "탱커 파워는 이제 사용자가 받는 피해를 두 배가 아니라 50% 증가시키며, 아군 피해 감소는 50%로 유지됩니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Owner takes double damage",
+        "beforeKo": "본인 받는 피해 2배",
+        "after": "Owner takes 50% more damage",
+        "afterKo": "본인 받는 피해 50% 증가",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "description",
+        "before": "적에게 받는 피해가 2배가 됩니다. 아군이 적에게 받는 피해가 절반이 됩니다.",
+        "after": "적에게 받는 피해가 [blue]50%[/blue] 증가합니다. 아군이 적에게 받는 피해가 [blue]50%[/blue] 감소합니다."
+      },
+      {
+        "field": "descriptionRaw",
+        "before": "적에게 받는 피해가 2배가 됩니다. 아군이 적에게 받는 피해가 절반이 됩니다.",
+        "after": "적에게 받는 피해가 [blue]{DamageIncrease:percentMore()}%[/blue] 증가합니다. 아군이 적에게 받는 피해가 [blue]{DamageDecrease:percentLess()}%[/blue] 감소합니다."
+      }
+    ]
+  },
+  {
+    "id": "torch-head-amalgam-v108-buff",
+    "entityType": "monster",
+    "entityId": "TORCH_HEAD_AMALGAM",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": null,
+    "summary": "Torch Head Amalgam deals more damage at high Ascension.",
+    "summaryKo": "횃불머리 융합체의 높은 승천 피해량이 증가했습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "A9+ Weak Tackle 15, Tackle 19",
+        "beforeKo": "승천 9+ 약한 태클 15, 태클 19",
+        "after": "A9+ Weak Tackle 16, Tackle 22",
+        "afterKo": "승천 9+ 약한 태클 16, 태클 22",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "damageValues",
+        "before": {
+          "Tackle": {
+            "normal": 18,
+            "ascension": 19
+          },
+          "SoulBeam": {
+            "normal": 8,
+            "ascension": 8
+          },
+          "WeakTackle": {
+            "normal": 14,
+            "ascension": 15
+          }
+        },
+        "after": {
+          "Tackle": {
+            "normal": 18,
+            "ascension": 22
+          },
+          "SoulBeam": {
+            "normal": 8,
+            "ascension": 8
+          },
+          "WeakTackle": {
+            "normal": 14,
+            "ascension": 16
+          }
+        }
+      }
+    ]
   }
 ]
