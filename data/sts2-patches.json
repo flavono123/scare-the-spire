@@ -451,7 +451,6 @@
     "titleKo": "베타 패치 노트 - v0.108.0",
     "type": "beta",
     "steamUrl": "https://store.steampowered.com/news/app/2868840/view/688635449342693610",
-    "status": "building",
     "summary": "New multiplayer cards for every class, balance changes for Ironclad/Silent/Regent/Necrobinder/Defect, Doom timing fixes, new Wither portrait art, Aeonglass and Gremlin animation updates, Epoch art, bug fixes, performance compression, and modding improvements.",
     "summaryKo": "전 캐릭터 멀티플레이 신규 카드, 아이언클래드/사일런트/리젠트/네크로바인더/디펙트 밸런스 변경, 종말 처리 순서 수정, 침체 초상화, 영겁의 모래시계와 그렘린 애니메이션 업데이트, 역사 삽화, 버그 수정, 성능 압축, 모딩 개선.",
     "hasBalanceChanges": true,
