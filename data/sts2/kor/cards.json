@@ -511,7 +511,7 @@
     "spawns_cards": null,
     "vars": {
       "DexterityPower": 2,
-      "Dexterity": 3
+      "Dexterity": 2
     },
     "upgrade": {
       "dexterity": "+2"
@@ -1145,7 +1145,7 @@
     "name": "희망의 등불",
     "description": "내 턴 동안 [gold]방어도[/gold]를 얻을\n때마다, 다른 플레이어가\n그 절반만큼\n[gold]방어도[/gold]를 얻습니다.",
     "description_raw": "내 턴 동안 [gold]방어도[/gold]를 얻을\n때마다, 다른 플레이어가\n그 절반만큼\n[gold]방어도[/gold]를 얻습니다.",
-    "cost": 1,
+    "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -3526,7 +3526,7 @@
   {
     "id": "COLOSSUS",
     "name": "거상",
-    "description": "[gold]방어도[/gold]를 5 얻습니다.\n이번 턴에 [gold]취약[/gold] 상태의\n적에게서 받는 피해량이\n50% 감소합니다.",
+    "description": "[gold]방어도[/gold]를 4 얻습니다.\n이번 턴에 [gold]취약[/gold] 상태의\n적에게서 받는 피해량이\n50% 감소합니다.",
     "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.\n이번 턴에 [gold]취약[/gold] 상태의\n적에게서 받는 피해량이\n50% 감소합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -3537,7 +3537,7 @@
     "target": "Self",
     "color": "ironclad",
     "damage": null,
-    "block": 5,
+    "block": 4,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -3548,7 +3548,7 @@
     "spawns_cards": null,
     "vars": {
       "Colossus": 1,
-      "Block": 5
+      "Block": 4
     },
     "upgrade": {
       "block": "+3"
@@ -4224,7 +4224,7 @@
   {
     "id": "CRIMSON_MANTLE",
     "name": "핏빛 망토",
-    "description": "내 턴 시작 시,\n체력을 1 잃고\n[gold]방어도[/gold]를 8 얻습니다.",
+    "description": "내 턴 시작 시,\n체력을 1 잃고\n[gold]방어도[/gold]를 7 얻습니다.",
     "description_raw": "내 턴 시작 시,\n체력을 1 잃고\n[gold]방어도[/gold]를 {CrimsonMantlePower:diff()} 얻습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -4250,11 +4250,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CrimsonMantlePower": 8,
-      "CrimsonMantle": 8
+      "CrimsonMantlePower": 7,
+      "CrimsonMantle": 7
     },
     "upgrade": {
-      "crimsonmantlepower": "+2"
+      "crimsonmantlepower": "+3"
     },
     "image_url": "/static/images/cards/crimson_mantle.png",
     "beta_image_url": "/static/images/cards/beta/crimson_mantle.png"
@@ -5406,7 +5406,7 @@
   {
     "id": "DEVASTATE",
     "name": "초토화",
-    "description": "피해를 30 줍니다.",
+    "description": "피해를 35 줍니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -5416,7 +5416,7 @@
     "rarity": "고급",
     "target": "AnyEnemy",
     "color": "regent",
-    "damage": 30,
+    "damage": 35,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -5427,7 +5427,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 30,
+      "Damage": 35,
       "StarCost": 4
     },
     "upgrade": {
@@ -7347,7 +7347,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "스킬",
-    "rarity": "고급",
+    "rarity": "희귀",
     "target": "AnyEnemy",
     "color": "silent",
     "damage": null,
@@ -7473,7 +7473,7 @@
   {
     "id": "FLICK_FLACK",
     "name": "재주넘기",
-    "description": "모든 적에게\n피해를 6 줍니다.",
+    "description": "모든 적에게\n피해를 7 줍니다.",
     "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -7496,7 +7496,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 6
+      "Damage": 7
     },
     "upgrade": {
       "damage": "+2"
@@ -7859,8 +7859,8 @@
   {
     "id": "FUEL",
     "name": "연료",
-    "description": "[energy:1]를 얻습니다.\n카드를 1장 뽑습니다.",
-    "description_raw": "{Energy:energyIcons()}를 얻습니다.\n카드를 {Cards:diff()}장 뽑습니다.",
+    "description": "[energy:1]를 얻습니다.",
+    "description_raw": "{Energy:energyIcons()}를 얻습니다.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -7873,7 +7873,7 @@
     "block": null,
     "hit_count": null,
     "powers_applied": null,
-    "cards_draw": 1,
+    "cards_draw": null,
     "energy_gain": 1,
     "hp_loss": null,
     "keywords": [
@@ -7882,11 +7882,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Energy": 1,
-      "Cards": 1
+      "Energy": 1
     },
     "upgrade": {
-      "cards": "+1"
+      "energy": "+1"
     },
     "image_url": "/static/images/cards/fuel.png",
     "beta_image_url": "/static/images/cards/beta/fuel.png"
@@ -8920,7 +8919,7 @@
   {
     "id": "HAUNT",
     "name": "출몰",
-    "description": "[gold]영혼[/gold]을 사용할 때마다,\n무작위 적이\n체력을 6 잃습니다.",
+    "description": "[gold]영혼[/gold]을 사용할 때마다,\n무작위 적이\n체력을 7 잃습니다.",
     "description_raw": "[gold]영혼[/gold]을 사용할 때마다,\n무작위 적이\n체력을 {HpLoss:diff()} 잃습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -8936,14 +8935,14 @@
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
-    "hp_loss": 6,
+    "hp_loss": 7,
     "keywords": null,
     "tags": null,
     "spawns_cards": [
       "SOUL"
     ],
     "vars": {
-      "HpLoss": 6
+      "HpLoss": 7
     },
     "upgrade": {
       "hploss": "+2"
@@ -9536,7 +9535,7 @@
   {
     "id": "HOWL_FROM_BEYOND",
     "name": "저편의 울음소리",
-    "description": "모든 적에게\n피해를 16 줍니다.\n내 턴 종료 시, 이 카드가\n[gold]소멸된 카드 더미[/gold]에 있다면,\n사용합니다.",
+    "description": "모든 적에게\n피해를 18 줍니다.\n내 턴 종료 시, 이 카드가\n[gold]소멸된 카드 더미[/gold]에 있다면,\n사용합니다.",
     "description_raw": "모든 적에게\n피해를 {Damage:diff()} 줍니다.\n내 턴 종료 시, 이 카드가\n[gold]소멸된 카드 더미[/gold]에 있다면,\n사용합니다.",
     "cost": 3,
     "is_x_cost": null,
@@ -9546,7 +9545,7 @@
     "rarity": "고급",
     "target": "AllEnemies",
     "color": "ironclad",
-    "damage": 16,
+    "damage": 18,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -9557,10 +9556,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 16
+      "Damage": 18
     },
     "upgrade": {
-      "damage": "+5"
+      "damage": "+6"
     },
     "image_url": "/static/images/cards/howl_from_beyond.png",
     "beta_image_url": null
@@ -9713,7 +9712,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "스킬",
-    "rarity": "희귀",
+    "rarity": "고급",
     "target": "AnyAlly",
     "color": "defect",
     "damage": null,
@@ -11637,7 +11636,7 @@
   {
     "id": "MINION_SACRIFICE",
     "name": "하수인 희생",
-    "description": "[gold]방어도[/gold]를 8 얻습니다.",
+    "description": "[gold]방어도[/gold]를 7 얻습니다.",
     "description_raw": "[gold]방어도[/gold]를 {Block:diff()} 얻습니다.",
     "cost": 0,
     "is_x_cost": null,
@@ -11648,7 +11647,7 @@
     "target": "Self",
     "color": "token",
     "damage": null,
-    "block": 8,
+    "block": 7,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -11662,7 +11661,7 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Block": 8
+      "Block": 7
     },
     "upgrade": {
       "block": "+3"
@@ -11846,7 +11845,7 @@
   {
     "id": "MOMENTUM_STRIKE",
     "name": "추진 타격",
-    "description": "피해를 10 줍니다.\n이 카드의 비용이\n0 [energy:1]으로 감소합니다.",
+    "description": "피해를 11 줍니다.\n이 카드의 비용이\n0 [energy:1]으로 감소합니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n이 카드의 비용이\n0 {energyPrefix:energyIcons(1)}으로 감소합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -11856,7 +11855,7 @@
     "rarity": "일반",
     "target": "AnyEnemy",
     "color": "defect",
-    "damage": 10,
+    "damage": 11,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -11869,10 +11868,10 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Damage": 10
+      "Damage": 11
     },
     "upgrade": {
-      "damage": "+3"
+      "damage": "+4"
     },
     "image_url": "/static/images/cards/momentum_strike.png",
     "beta_image_url": null
@@ -12641,8 +12640,8 @@
   {
     "id": "OUTBREAK",
     "name": "발병",
-    "description": "[gold]중독[/gold]을 3번 부여할 때마다, 모든 적에게\n피해를 11 줍니다.",
-    "description_raw": "[gold]중독[/gold]을 {Repeat:choose(1):부여할|{Repeat:diff()}번 부여할} 때마다, 모든 적에게\n피해를 {OutbreakPower:diff()} 줍니다.",
+    "description": "[gold]중독[/gold]을 부여할 때마다, 모든 적에게\n피해를 3 줍니다.",
+    "description_raw": "[gold]중독[/gold]을 부여할 때마다, 모든 적에게\n피해를 {OutbreakPower:diff()} 줍니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -12657,7 +12656,7 @@
     "powers_applied": [
       {
         "power": "발병",
-        "amount": 11
+        "amount": 3
       }
     ],
     "cards_draw": null,
@@ -12667,12 +12666,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Repeat": 3,
-      "OutbreakPower": 11,
-      "Outbreak": 11
+      "OutbreakPower": 3,
+      "Outbreak": 3
     },
     "upgrade": {
-      "outbreakpower": "+4"
+      "outbreakpower": "+1"
     },
     "image_url": "/static/images/cards/outbreak.png",
     "beta_image_url": "/static/images/cards/beta/outbreak.png"
@@ -14451,7 +14449,7 @@
   {
     "id": "REAVE",
     "name": "강탈",
-    "description": "피해를 9 줍니다.\n[gold]뽑을 카드 더미[/gold]에\n[gold]영혼[/gold]을 1장 추가합니다.",
+    "description": "피해를 10 줍니다.\n[gold]뽑을 카드 더미[/gold]에\n[gold]영혼[/gold]을 1장 추가합니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n[gold]뽑을 카드 더미[/gold]에\n[gold]{IfUpgraded:show:영혼+|영혼}[/gold]을 1장 추가합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -14461,7 +14459,7 @@
     "rarity": "일반",
     "target": "AnyEnemy",
     "color": "necrobinder",
-    "damage": 9,
+    "damage": 10,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -14474,11 +14472,11 @@
       "SOUL"
     ],
     "vars": {
-      "Damage": 9,
+      "Damage": 10,
       "Cards": 1
     },
     "upgrade": {
-      "damage": "+2"
+      "damage": "+3"
     },
     "image_url": "/static/images/cards/reave.png",
     "beta_image_url": null
@@ -14817,7 +14815,7 @@
     "vars": {
       "StrengthPower": 1,
       "Strength": 1,
-      "StarCost": 3
+      "StarCost": 2
     },
     "upgrade": {
       "strengthpower": "+1"
@@ -15697,7 +15695,7 @@
   {
     "id": "SETUP_STRIKE",
     "name": "사전 타격",
-    "description": "피해를 7 줍니다.\n이번 턴 동안\n[gold]힘[/gold]을 2 얻습니다.",
+    "description": "피해를 7 줍니다.\n이번 턴 동안\n[gold]힘[/gold]을 3 얻습니다.",
     "description_raw": "피해를 {Damage:diff()} 줍니다.\n이번 턴 동안\n[gold]힘[/gold]을 {StrengthPower:diff()} 얻습니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -15726,8 +15724,8 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 7,
-      "StrengthPower": 2,
-      "Strength": 2
+      "StrengthPower": 3,
+      "Strength": 3
     },
     "upgrade": {
       "damage": "+2",
@@ -15987,7 +15985,9 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "소멸"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": {
@@ -16714,7 +16714,7 @@
   {
     "id": "SOUL_STORM",
     "name": "영혼 폭풍",
-    "description": "피해를 11 줍니다.\n[gold]소멸된 카드 더미[/gold]에 있는\n[gold]영혼[/gold] 1장당 피해량이\n2 증가합니다.",
+    "description": "피해를 13 줍니다.\n[gold]소멸된 카드 더미[/gold]에 있는\n[gold]영혼[/gold] 1장당 피해량이\n4 증가합니다.",
     "description_raw": "피해를 {CalculatedDamage:diff()} 줍니다.\n[gold]소멸된 카드 더미[/gold]에 있는\n[gold]영혼[/gold] 1장당 피해량이\n{ExtraDamage:diff()} 증가합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -16738,12 +16738,11 @@
     ],
     "vars": {
       "CalculationBase": 9,
-      "ExtraDamage": 2,
-      "CalculatedDamage": 11
+      "ExtraDamage": 4,
+      "CalculatedDamage": 13
     },
     "upgrade": {
-      "damage": "+1",
-      "extradamage": "+1"
+      "extradamage": "+2"
     },
     "image_url": "/static/images/cards/soul_storm.png",
     "beta_image_url": "/static/images/cards/beta/soul_storm.png"
@@ -18333,8 +18332,8 @@
   {
     "id": "TANK",
     "name": "탱커",
-    "description": "적에게 받는 피해가\n2배가 됩니다.\n아군이 적에게 받는 피해가\n절반이 됩니다.",
-    "description_raw": "적에게 받는 피해가\n2배가 됩니다.\n아군이 적에게 받는 피해가\n절반이 됩니다.",
+    "description": "적에게 받는 피해가\n50% 증가합니다.\n아군이 적에게 받는 피해가\n50% 감소합니다.",
+    "description_raw": "적에게 받는 피해가\n{DamageIncrease:percentMore()}% 증가합니다.\n아군이 적에게 받는 피해가\n{DamageDecrease:percentLess()}% 감소합니다.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -18353,7 +18352,10 @@
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
-    "vars": null,
+    "vars": {
+      "DamageIncrease": 1.5,
+      "DamageDecrease": 0.5
+    },
     "upgrade": {
       "cost": 0
     },
@@ -19075,8 +19077,8 @@
   {
     "id": "TRACKING",
     "name": "추적",
-    "description": "[gold]약화[/gold] 상태의 적이\n공격 카드로 받는 피해가\n2배가 됩니다.",
-    "description_raw": "[gold]약화[/gold] 상태의 적이\n공격 카드로 받는 피해가\n2배가 됩니다.",
+    "description": "[gold]약화[/gold] 상태의 적이\n공격 카드로 받는 피해가\n50% 증가합니다.",
+    "description_raw": "[gold]약화[/gold] 상태의 적이\n공격 카드로 받는 피해가\n50% 증가합니다.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,

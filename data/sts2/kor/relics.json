@@ -790,7 +790,7 @@
   {
     "id": "DIVINE_DESTINY",
     "name": "신성한 운명",
-    "description": "매 전투 시작 시, [star:6]을 얻습니다.",
+    "description": "매 전투 시작 시, [star:7]을 얻습니다.",
     "description_raw": "매 전투 시작 시, {Stars:starIcons()}을 얻습니다.",
     "flavor": "[red]이 유물에 관한 자세한 내용은 추후 공개될 예정입니다...[/red]",
     "rarity": "시작 유물",

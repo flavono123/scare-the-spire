@@ -1719,14 +1719,14 @@
   {
     "id": "OUTBREAK",
     "name": "Outbreak",
-    "description": "Every [blue]10[/blue] times you apply [gold]Poison[/gold], deal damage to ALL enemies.",
-    "description_raw": "Every [blue]{Repeat}[/blue] times you apply [gold]Poison[/gold], deal [blue]{Amount}[/blue] damage to ALL enemies.",
+    "description": "Whenever you apply [gold]Poison[/gold], deal [blue]3[/blue] damage to ALL enemies.",
+    "description_raw": "Whenever you apply [gold]Poison[/gold], deal [blue]{Amount}[/blue] damage to ALL enemies.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/outbreak_power.png",
     "vars": {
-      "Repeat": 3
+      "Amount": 3
     }
   },
   {
@@ -2653,8 +2653,8 @@
   {
     "id": "TANK",
     "name": "Tank",
-    "description": "Take double damage from enemies. Allies take half damage from enemies.",
-    "description_raw": "Take double damage from enemies. Allies take half damage from enemies.",
+    "description": "Take [blue]50%[/blue] more damage from enemies. Allies take [blue]50%[/blue] less damage from enemies.",
+    "description_raw": "Take [blue]{DamageIncrease:percentMore()}%[/blue] more damage from enemies. Allies take [blue]{DamageDecrease:percentLess()}%[/blue] less damage from enemies.",
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
@@ -2827,13 +2827,15 @@
   {
     "id": "TRACKING",
     "name": "Tracking",
-    "description": "[gold]Weak[/gold] enemies take [blue]2[/blue] times more damage from Attacks.",
-    "description_raw": "[gold]Weak[/gold] enemies take [blue]{Amount}[/blue] times more damage from Attacks.",
+    "description": "[gold]Weak[/gold] enemies take [blue]50%[/blue] more damage from Attacks.",
+    "description_raw": "[gold]Weak[/gold] enemies take [blue]{Amount}%[/blue] more damage from Attacks.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/tracking_power.png",
-    "vars": {}
+    "vars": {
+      "Amount": 50
+    }
   },
   {
     "id": "TRASH_TO_TREASURE",

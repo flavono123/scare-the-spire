@@ -1719,14 +1719,14 @@
   {
     "id": "OUTBREAK",
     "name": "발병",
-    "description": "[gold]중독[/gold]을 [blue]10[/blue]번 부여할 때마다, 모든 적에게 피해를 줍니다.",
-    "description_raw": "[gold]중독[/gold]을 [blue]{Repeat}[/blue]번 부여할 때마다, 모든 적에게 피해를 [blue]{Amount}[/blue] 줍니다.",
+    "description": "[gold]중독[/gold]을 부여할 때마다, 모든 적에게 피해를 [blue]3[/blue] 줍니다.",
+    "description_raw": "[gold]중독[/gold]을 부여할 때마다, 모든 적에게 피해를 [blue]{Amount}[/blue] 줍니다.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/outbreak_power.png",
     "vars": {
-      "Repeat": 3
+      "Amount": 3
     }
   },
   {
@@ -2653,8 +2653,8 @@
   {
     "id": "TANK",
     "name": "탱커",
-    "description": "적에게 받는 피해가 2배가 됩니다. 아군이 적에게 받는 피해가 절반이 됩니다.",
-    "description_raw": "적에게 받는 피해가 2배가 됩니다. 아군이 적에게 받는 피해가 절반이 됩니다.",
+    "description": "적에게 받는 피해가 [blue]50%[/blue] 증가합니다. 아군이 적에게 받는 피해가 [blue]50%[/blue] 감소합니다.",
+    "description_raw": "적에게 받는 피해가 [blue]{DamageIncrease:percentMore()}%[/blue] 증가합니다. 아군이 적에게 받는 피해가 [blue]{DamageDecrease:percentLess()}%[/blue] 감소합니다.",
     "type": "Buff",
     "stack_type": "Single",
     "allow_negative": null,
@@ -2827,13 +2827,15 @@
   {
     "id": "TRACKING",
     "name": "추적",
-    "description": "[gold]약화[/gold] 상태의 적이 공격 카드로 받는 피해가 [blue]2[/blue]배가 됩니다.",
-    "description_raw": "[gold]약화[/gold] 상태의 적이 공격 카드로 받는 피해가 [blue]{Amount}[/blue]배가 됩니다.",
+    "description": "[gold]약화[/gold] 상태의 적이 공격 카드로 받는 피해가 [blue]50%[/blue] 증가합니다.",
+    "description_raw": "[gold]약화[/gold] 상태의 적이 공격 카드로 받는 피해가 [blue]{Amount}%[/blue] 증가합니다.",
     "type": "Buff",
     "stack_type": "Counter",
     "allow_negative": null,
     "image_url": "/static/images/powers/tracking_power.png",
-    "vars": {}
+    "vars": {
+      "Amount": 50
+    }
   },
   {
     "id": "TRASH_TO_TREASURE",

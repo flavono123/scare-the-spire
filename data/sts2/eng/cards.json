@@ -484,7 +484,7 @@
   {
     "id": "ANTICIPATE",
     "name": "Anticipate",
-    "description": "Gain 3 [gold]Dexterity[/gold] this turn.",
+    "description": "Gain 2 [gold]Dexterity[/gold] this turn.",
     "description_raw": "Gain {DexterityPower:diff()} [gold]Dexterity[/gold] this turn.",
     "cost": 0,
     "is_x_cost": null,
@@ -510,8 +510,8 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "DexterityPower": 3,
-      "Dexterity": 3
+      "DexterityPower": 2,
+      "Dexterity": 2
     },
     "upgrade": {
       "dexterity": "+2"
@@ -1145,7 +1145,7 @@
     "name": "Beacon of Hope",
     "description": "Whenever you gain [gold]Block[/gold] on your turn, other players gain half that much [gold]Block[/gold].",
     "description_raw": "Whenever you gain [gold]Block[/gold] on your turn, other players gain half that much [gold]Block[/gold].",
-    "cost": 1,
+    "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
     "star_cost": null,
@@ -3526,7 +3526,7 @@
   {
     "id": "COLOSSUS",
     "name": "Colossus",
-    "description": "Gain 5 [gold]Block[/gold].\nYou receive 50% less damage from [gold]Vulnerable[/gold] enemies this turn.",
+    "description": "Gain 4 [gold]Block[/gold].\nYou receive 50% less damage from [gold]Vulnerable[/gold] enemies this turn.",
     "description_raw": "Gain {Block:diff()} [gold]Block[/gold].\nYou receive 50% less damage from [gold]Vulnerable[/gold] enemies this turn.",
     "cost": 1,
     "is_x_cost": null,
@@ -3537,7 +3537,7 @@
     "target": "Self",
     "color": "ironclad",
     "damage": null,
-    "block": 5,
+    "block": 4,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -3548,7 +3548,7 @@
     "spawns_cards": null,
     "vars": {
       "Colossus": 1,
-      "Block": 5
+      "Block": 4
     },
     "upgrade": {
       "block": "+3"
@@ -4224,7 +4224,7 @@
   {
     "id": "CRIMSON_MANTLE",
     "name": "Crimson Mantle",
-    "description": "At the start of your turn, lose 1 HP and gain 8 [gold]Block[/gold].",
+    "description": "At the start of your turn, lose 1 HP and gain 7 [gold]Block[/gold].",
     "description_raw": "At the start of your turn, lose 1 HP and gain {CrimsonMantlePower:diff()} [gold]Block[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -4250,11 +4250,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "CrimsonMantlePower": 8,
-      "CrimsonMantle": 8
+      "CrimsonMantlePower": 7,
+      "CrimsonMantle": 7
     },
     "upgrade": {
-      "crimsonmantlepower": "+2"
+      "crimsonmantlepower": "+3"
     },
     "image_url": "/static/images/cards/crimson_mantle.png",
     "beta_image_url": "/static/images/cards/beta/crimson_mantle.png"
@@ -5405,7 +5405,7 @@
   {
     "id": "DEVASTATE",
     "name": "Devastate",
-    "description": "Deal 30 damage.",
+    "description": "Deal 35 damage.",
     "description_raw": "Deal {Damage:diff()} damage.",
     "cost": 1,
     "is_x_cost": null,
@@ -5415,7 +5415,7 @@
     "rarity": "Uncommon",
     "target": "AnyEnemy",
     "color": "regent",
-    "damage": 30,
+    "damage": 35,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -5426,7 +5426,7 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 30,
+      "Damage": 35,
       "StarCost": 4
     },
     "upgrade": {
@@ -7346,7 +7346,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Skill",
-    "rarity": "Uncommon",
+    "rarity": "Rare",
     "target": "AnyEnemy",
     "color": "silent",
     "damage": null,
@@ -7856,8 +7856,8 @@
   {
     "id": "FUEL",
     "name": "Fuel",
-    "description": "Gain [energy:1].\nDraw 1 card.",
-    "description_raw": "Gain {Energy:energyIcons()}.\nDraw {Cards:diff()} {Cards:plural:card|cards}.",
+    "description": "Gain [energy:1].",
+    "description_raw": "Gain {Energy:energyIcons()}.",
     "cost": 0,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -7870,7 +7870,7 @@
     "block": null,
     "hit_count": null,
     "powers_applied": null,
-    "cards_draw": 1,
+    "cards_draw": null,
     "energy_gain": 1,
     "hp_loss": null,
     "keywords": [
@@ -7879,11 +7879,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Energy": 1,
-      "Cards": 1
+      "Energy": 1
     },
     "upgrade": {
-      "cards": "+1"
+      "energy": "+1"
     },
     "image_url": "/static/images/cards/fuel.png",
     "beta_image_url": "/static/images/cards/beta/fuel.png"
@@ -8917,7 +8916,7 @@
   {
     "id": "HAUNT",
     "name": "Haunt",
-    "description": "Whenever you play a [gold]Soul[/gold], a random enemy loses 6 HP.",
+    "description": "Whenever you play a [gold]Soul[/gold], a random enemy loses 7 HP.",
     "description_raw": "Whenever you play a [gold]Soul[/gold], a random enemy loses {HpLoss:diff()} HP.",
     "cost": 1,
     "is_x_cost": null,
@@ -8933,14 +8932,14 @@
     "powers_applied": null,
     "cards_draw": null,
     "energy_gain": null,
-    "hp_loss": 6,
+    "hp_loss": 7,
     "keywords": null,
     "tags": null,
     "spawns_cards": [
       "SOUL"
     ],
     "vars": {
-      "HpLoss": 6
+      "HpLoss": 7
     },
     "upgrade": {
       "hploss": "+2"
@@ -9533,7 +9532,7 @@
   {
     "id": "HOWL_FROM_BEYOND",
     "name": "Howl from Beyond",
-    "description": "Deal 16 damage to ALL enemies.\nAt the end of your turn, if this is in your [gold]Exhaust Pile[/gold], play it.",
+    "description": "Deal 18 damage to ALL enemies.\nAt the end of your turn, if this is in your [gold]Exhaust Pile[/gold], play it.",
     "description_raw": "Deal {Damage:diff()} damage to ALL enemies.\nAt the end of your turn, if this is in your [gold]Exhaust Pile[/gold], play it.",
     "cost": 3,
     "is_x_cost": null,
@@ -9543,7 +9542,7 @@
     "rarity": "Uncommon",
     "target": "AllEnemies",
     "color": "ironclad",
-    "damage": 16,
+    "damage": 18,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -9554,10 +9553,10 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Damage": 16
+      "Damage": 18
     },
     "upgrade": {
-      "damage": "+5"
+      "damage": "+6"
     },
     "image_url": "/static/images/cards/howl_from_beyond.png",
     "beta_image_url": null
@@ -9710,7 +9709,7 @@
     "is_x_star_cost": null,
     "star_cost": null,
     "type": "Skill",
-    "rarity": "Rare",
+    "rarity": "Uncommon",
     "target": "AnyAlly",
     "color": "defect",
     "damage": null,
@@ -11634,7 +11633,7 @@
   {
     "id": "MINION_SACRIFICE",
     "name": "Minion Sacrifice",
-    "description": "Gain 8 [gold]Block[/gold].",
+    "description": "Gain 7 [gold]Block[/gold].",
     "description_raw": "Gain {Block:diff()} [gold]Block[/gold].",
     "cost": 0,
     "is_x_cost": null,
@@ -11645,7 +11644,7 @@
     "target": "Self",
     "color": "token",
     "damage": null,
-    "block": 8,
+    "block": 7,
     "hit_count": null,
     "powers_applied": null,
     "cards_draw": null,
@@ -11659,7 +11658,7 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Block": 8
+      "Block": 7
     },
     "upgrade": {
       "block": "+3"
@@ -11843,7 +11842,7 @@
   {
     "id": "MOMENTUM_STRIKE",
     "name": "Momentum Strike",
-    "description": "Deal 10 damage.\nReduce this card's cost to 0 [energy:1].",
+    "description": "Deal 11 damage.\nReduce this card's cost to 0 [energy:1].",
     "description_raw": "Deal {Damage:diff()} damage.\nReduce this card's cost to 0 {energyPrefix:energyIcons(1)}.",
     "cost": 1,
     "is_x_cost": null,
@@ -11853,7 +11852,7 @@
     "rarity": "Common",
     "target": "AnyEnemy",
     "color": "defect",
-    "damage": 10,
+    "damage": 11,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -11866,10 +11865,10 @@
     ],
     "spawns_cards": null,
     "vars": {
-      "Damage": 10
+      "Damage": 11
     },
     "upgrade": {
-      "damage": "+3"
+      "damage": "+4"
     },
     "image_url": "/static/images/cards/momentum_strike.png",
     "beta_image_url": null
@@ -12638,8 +12637,8 @@
   {
     "id": "OUTBREAK",
     "name": "Outbreak",
-    "description": "Every 3 times you apply [gold]Poison[/gold], deal 11 damage to ALL enemies.",
-    "description_raw": "Every {Repeat:plural:time|{Repeat:diff()} times} you apply [gold]Poison[/gold], deal {OutbreakPower:diff()} damage to ALL enemies.",
+    "description": "Whenever you apply [gold]Poison[/gold], deal 3 damage to ALL enemies.",
+    "description_raw": "Whenever you apply [gold]Poison[/gold], deal {OutbreakPower:diff()} damage to ALL enemies.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -12654,7 +12653,7 @@
     "powers_applied": [
       {
         "power": "Outbreak",
-        "amount": 11
+        "amount": 3
       }
     ],
     "cards_draw": null,
@@ -12664,12 +12663,11 @@
     "tags": null,
     "spawns_cards": null,
     "vars": {
-      "Repeat": 3,
-      "OutbreakPower": 11,
-      "Outbreak": 11
+      "OutbreakPower": 3,
+      "Outbreak": 3
     },
     "upgrade": {
-      "outbreakpower": "+4"
+      "outbreakpower": "+1"
     },
     "image_url": "/static/images/cards/outbreak.png",
     "beta_image_url": "/static/images/cards/beta/outbreak.png"
@@ -14448,7 +14446,7 @@
   {
     "id": "REAVE",
     "name": "Reave",
-    "description": "Deal 9 damage.\nAdd a [gold]Soul[/gold] into your [gold]Draw Pile[/gold].",
+    "description": "Deal 10 damage.\nAdd a [gold]Soul[/gold] into your [gold]Draw Pile[/gold].",
     "description_raw": "Deal {Damage:diff()} damage.\nAdd a [gold]{IfUpgraded:show:Soul+|Soul}[/gold] into your [gold]Draw Pile[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -14458,7 +14456,7 @@
     "rarity": "Common",
     "target": "AnyEnemy",
     "color": "necrobinder",
-    "damage": 9,
+    "damage": 10,
     "block": null,
     "hit_count": null,
     "powers_applied": null,
@@ -14471,11 +14469,11 @@
       "SOUL"
     ],
     "vars": {
-      "Damage": 9,
+      "Damage": 10,
       "Cards": 1
     },
     "upgrade": {
-      "damage": "+2"
+      "damage": "+3"
     },
     "image_url": "/static/images/cards/reave.png",
     "beta_image_url": null
@@ -14814,7 +14812,7 @@
     "vars": {
       "StrengthPower": 1,
       "Strength": 1,
-      "StarCost": 3
+      "StarCost": 2
     },
     "upgrade": {
       "strengthpower": "+1"
@@ -15692,7 +15690,7 @@
   {
     "id": "SETUP_STRIKE",
     "name": "Setup Strike",
-    "description": "Deal 7 damage.\nGain 2 [gold]Strength[/gold] this turn.",
+    "description": "Deal 7 damage.\nGain 3 [gold]Strength[/gold] this turn.",
     "description_raw": "Deal {Damage:diff()} damage.\nGain {StrengthPower:diff()} [gold]Strength[/gold] this turn.",
     "cost": 1,
     "is_x_cost": null,
@@ -15721,8 +15719,8 @@
     "spawns_cards": null,
     "vars": {
       "Damage": 7,
-      "StrengthPower": 2,
-      "Strength": 2
+      "StrengthPower": 3,
+      "Strength": 3
     },
     "upgrade": {
       "damage": "+2",
@@ -15982,7 +15980,9 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": null,
+    "keywords": [
+      "Exhaust"
+    ],
     "tags": null,
     "spawns_cards": null,
     "vars": {
@@ -16709,7 +16709,7 @@
   {
     "id": "SOUL_STORM",
     "name": "Soul Storm",
-    "description": "Deal 11 damage.\nDeals 2 additional damage for each [gold]Soul[/gold] in your [gold]Exhaust Pile[/gold].",
+    "description": "Deal 13 damage.\nDeals 4 additional damage for each [gold]Soul[/gold] in your [gold]Exhaust Pile[/gold].",
     "description_raw": "Deal {CalculatedDamage:diff()} damage.\nDeals {ExtraDamage:diff()} additional damage for each [gold]Soul[/gold] in your [gold]Exhaust Pile[/gold].",
     "cost": 1,
     "is_x_cost": null,
@@ -16733,12 +16733,11 @@
     ],
     "vars": {
       "CalculationBase": 9,
-      "ExtraDamage": 2,
-      "CalculatedDamage": 11
+      "ExtraDamage": 4,
+      "CalculatedDamage": 13
     },
     "upgrade": {
-      "damage": "+1",
-      "extradamage": "+1"
+      "extradamage": "+2"
     },
     "image_url": "/static/images/cards/soul_storm.png",
     "beta_image_url": "/static/images/cards/beta/soul_storm.png"
@@ -18327,8 +18326,8 @@
   {
     "id": "TANK",
     "name": "Tank",
-    "description": "Take double damage from enemies.\nAllies take half damage from enemies.",
-    "description_raw": "Take double damage from enemies.\nAllies take half damage from enemies.",
+    "description": "Take 50% more damage from enemies.\nAllies take 50% less damage from enemies.",
+    "description_raw": "Take {DamageIncrease:percentMore()}% more damage from enemies.\nAllies take {DamageDecrease:percentLess()}% less damage from enemies.",
     "cost": 1,
     "is_x_cost": null,
     "is_x_star_cost": null,
@@ -18347,7 +18346,10 @@
     "keywords": null,
     "tags": null,
     "spawns_cards": null,
-    "vars": null,
+    "vars": {
+      "DamageIncrease": 1.5,
+      "DamageDecrease": 0.5
+    },
     "upgrade": {
       "cost": 0
     },
@@ -19069,8 +19071,8 @@
   {
     "id": "TRACKING",
     "name": "Tracking",
-    "description": "[gold]Weak[/gold] enemies take double damage from Attacks.",
-    "description_raw": "[gold]Weak[/gold] enemies take double damage from Attacks.",
+    "description": "[gold]Weak[/gold] enemies take 50% more damage from Attacks.",
+    "description_raw": "[gold]Weak[/gold] enemies take 50% more damage from Attacks.",
     "cost": 2,
     "is_x_cost": null,
     "is_x_star_cost": null,
