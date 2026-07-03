@@ -31,6 +31,22 @@ function isPatchWorkerPath(pathname: string): boolean {
   );
 }
 
+const GAME_LOCALE_PATH_SEGMENTS = new Set([
+  "en",
+  "zh",
+  "ja",
+  "de",
+  "fr",
+  "it",
+  "es",
+  "es-419",
+  "pt",
+  "ru",
+  "pl",
+  "th",
+  "tr",
+]);
+
 const STATIC_COMPENDIUM_SEGMENTS = new Set([
   "ancients",
   "bestiary",
@@ -47,6 +63,83 @@ const STATIC_COMPENDIUM_SEGMENTS = new Set([
   "relics",
 ]);
 
+function isRscRequest(request: Request, url: URL): boolean {
+  return request.headers.get("rsc") === "1" || url.searchParams.has("_rsc");
+}
+
+function isDocumentRequest(request: Request, url: URL): boolean {
+  if (isRscRequest(request, url)) return false;
+
+  const accept = request.headers.get("accept");
+  return !accept || accept.includes("text/html") || accept.includes("*/*");
+}
+
+function localePathSegmentForLanguageTag(languageTag: string): string | null {
+  const tag = languageTag.toLowerCase();
+  if (tag === "ko" || tag.startsWith("ko-")) return "";
+  if (tag === "zh" || tag.startsWith("zh-")) return "zh";
+  if (tag === "es-419" || tag.startsWith("es-419-")) return "es-419";
+  if (tag === "pt-br" || tag.startsWith("pt-br-")) return "pt";
+
+  const primary = tag.split("-")[0];
+  if (GAME_LOCALE_PATH_SEGMENTS.has(primary)) return primary;
+  return null;
+}
+
+function preferredLocalePathSegment(request: Request): string {
+  const acceptLanguage = request.headers.get("accept-language");
+  if (!acceptLanguage) return "";
+
+  const candidates = acceptLanguage
+    .split(",")
+    .map((part, index) => {
+      const [tag = "", ...parameters] = part.trim().split(";");
+      const qParameter = parameters.find((parameter) => parameter.trim().startsWith("q="));
+      const q = qParameter ? Number(qParameter.trim().slice(2)) : 1;
+      return {
+        index,
+        q: Number.isFinite(q) ? q : 0,
+        tag: tag.trim(),
+      };
+    })
+    .filter((candidate) => candidate.tag && candidate.q > 0)
+    .sort((a, b) => b.q - a.q || a.index - b.index);
+
+  for (const candidate of candidates) {
+    const pathSegment = localePathSegmentForLanguageTag(candidate.tag);
+    if (pathSegment !== null) return pathSegment;
+  }
+
+  return "";
+}
+
+function maybeRedirectRootToPreferredLocale(request: Request, url: URL): Response | null {
+  if ((request.method !== "GET" && request.method !== "HEAD") || url.pathname !== "/") return null;
+  if (!isDocumentRequest(request, url)) return null;
+
+  const pathSegment = preferredLocalePathSegment(request);
+  if (!pathSegment) return null;
+
+  const redirectUrl = new URL(request.url);
+  redirectUrl.pathname = `/${pathSegment}`;
+  return Response.redirect(redirectUrl.toString(), 302);
+}
+
+function staticHomeAssetPath(pathname: string, request: Request, url: URL): string | null {
+  const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
+  const isHomePath = normalizedPathname === "/";
+  const maybeLocalePath = normalizedPathname.slice(1);
+
+  if (!isHomePath && (!maybeLocalePath || maybeLocalePath.includes("/") || !GAME_LOCALE_PATH_SEGMENTS.has(maybeLocalePath))) {
+    return null;
+  }
+
+  const extension = isRscRequest(request, url) ? "rsc" : "html";
+  return isHomePath
+    ? `/_cf_static_pages/index.${extension}`
+    : `/_cf_static_pages/${maybeLocalePath}.${extension}`;
+}
+
 function staticCompendiumAssetPath(pathname: string, request: Request, url: URL): string | null {
   const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
   const parts = normalizedPathname.split("/").filter(Boolean);
@@ -57,16 +150,17 @@ function staticCompendiumAssetPath(pathname: string, request: Request, url: URL)
   const segment = parts[compendiumIndex + 1];
   if (!STATIC_COMPENDIUM_SEGMENTS.has(segment)) return null;
 
-  const isRscRequest = request.headers.get("rsc") === "1" || url.searchParams.has("_rsc");
-  const extension = isRscRequest ? "rsc" : "html";
+  const extension = isRscRequest(request, url) ? "rsc" : "html";
   return `/_cf_static_pages/${parts.join("/")}.${extension}`;
 }
 
-async function maybeServeStaticCompendiumPage(request: Request, env: Env, url: URL): Promise<Response | null> {
+async function fetchStaticPageAsset(
+  request: Request,
+  env: Env,
+  assetPath: string,
+  pageType: string,
+): Promise<Response | null> {
   if (!env.ASSETS || (request.method !== "GET" && request.method !== "HEAD")) return null;
-
-  const assetPath = staticCompendiumAssetPath(url.pathname, request, url);
-  if (!assetPath) return null;
 
   const assetUrl = new URL(request.url);
   assetUrl.pathname = assetPath;
@@ -86,7 +180,7 @@ async function maybeServeStaticCompendiumPage(request: Request, env: Env, url: U
 
   const headers = new Headers(assetResponse.headers);
   headers.set("Cache-Control", "public, max-age=0, s-maxage=31536000, stale-while-revalidate=86400");
-  headers.set("x-cf-static-page", "compendium");
+  headers.set("x-cf-static-page", pageType);
   if (assetPath.endsWith(".rsc")) {
     headers.set("Content-Type", "text/x-component; charset=utf-8");
   } else {
@@ -100,12 +194,28 @@ async function maybeServeStaticCompendiumPage(request: Request, env: Env, url: U
   });
 }
 
+async function maybeServeStaticHomePage(request: Request, env: Env, url: URL): Promise<Response | null> {
+  const assetPath = staticHomeAssetPath(url.pathname, request, url);
+  return assetPath ? fetchStaticPageAsset(request, env, assetPath, "home") : null;
+}
+
+async function maybeServeStaticCompendiumPage(request: Request, env: Env, url: URL): Promise<Response | null> {
+  const assetPath = staticCompendiumAssetPath(url.pathname, request, url);
+  return assetPath ? fetchStaticPageAsset(request, env, assetPath, "compendium") : null;
+}
+
 const mainWorker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContextLike): Promise<Response> {
     const url = new URL(request.url);
+    const localeRedirect = maybeRedirectRootToPreferredLocale(request, url);
+    if (localeRedirect) return localeRedirect;
+
     if (env.PATCH_WORKER && isPatchWorkerPath(url.pathname)) {
       return env.PATCH_WORKER.fetch(request);
     }
+
+    const staticHomeResponse = await maybeServeStaticHomePage(request, env, url);
+    if (staticHomeResponse) return staticHomeResponse;
 
     const staticCompendiumResponse = await maybeServeStaticCompendiumPage(request, env, url);
     if (staticCompendiumResponse) return staticCompendiumResponse;
