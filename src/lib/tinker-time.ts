@@ -61,6 +61,12 @@ export const TINKER_CARD_TYPE_CHOICE_LABELS_EN: Record<TinkerCardType, string> =
   POWER: "Gadget",
 };
 
+const TINKER_CARD_TYPE_LABEL_EN: Record<TinkerCardType, string> = {
+  ATTACK: "Attack",
+  SKILL: "Skill",
+  POWER: "Power",
+};
+
 export const TINKER_RIDER_CHOICE_LABELS: Record<TinkerRiderId, string> = {
   SAPPING: "탈력",
   VIOLENCE: "폭력",
@@ -101,9 +107,14 @@ export const TINKER_CARD_IMAGE_BY_TYPE: Record<TinkerCardType, string> = {
   POWER: "/images/sts2/cards/mad_science_power.webp",
 };
 
-export const MAD_SCIENCE_DEFAULT_TYPE: TinkerCardType = "ATTACK";
-export const MAD_SCIENCE_DEFAULT_RIDER: TinkerRiderId = "SAPPING";
+export const MAD_SCIENCE_DEFAULT_TYPE: TinkerCardType = "SKILL";
+export const MAD_SCIENCE_DEFAULT_RIDER: TinkerRiderId = "CHAOS";
 export const MAD_SCIENCE_DEFAULT_IMAGE_URL = TINKER_CARD_IMAGE_BY_TYPE[MAD_SCIENCE_DEFAULT_TYPE];
+
+function formatVariantName(baseName: string, variantLabel: string): string {
+  const separator = /[\x00-\x7F]$/.test(baseName) ? " " : "";
+  return `${baseName}${separator}(${variantLabel})`;
+}
 
 export const TINKER_DYNAMIC_TEXT_VALUES: Record<string, string> = {
   Block: "8",
@@ -222,6 +233,7 @@ export function getTinkerRiderIdsForType(cardType: TinkerCardType): readonly Tin
 }
 
 export function getDefaultTinkerRiderForType(cardType: TinkerCardType): TinkerRiderId {
+  if (cardType === "SKILL") return "CHAOS";
   return TINKER_RIDER_IDS_BY_TYPE[cardType][0];
 }
 
@@ -361,6 +373,8 @@ export function getMadSciencePreviewCard(
     hitCount: riderId === "VIOLENCE" ? MAD_SCIENCE_DYNAMIC_VARS.ViolenceHits : null,
     imageUrl: TINKER_CARD_IMAGE_BY_TYPE[cardType],
     madScienceBaseDescriptionRaw,
+    name: formatVariantName(card.name, typeLabel),
+    nameEn: formatVariantName(card.nameEn, TINKER_CARD_TYPE_LABEL_EN[cardType]),
     type: TINKER_CARD_TYPE_TO_KO[cardType],
     typeLabel,
     vars,
