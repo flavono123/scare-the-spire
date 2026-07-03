@@ -6414,6 +6414,37 @@
     ]
   },
   {
+    "id": "legion-of-bone-v108-change",
+    "entityType": "card",
+    "entityId": "LEGION_OF_BONE",
+    "patch": "v0.108.0",
+    "date": "2026-07-03",
+    "character": "necrobinder",
+    "summary": "Legion of Bone no longer Exhausts.",
+    "summaryKo": "해골 군단이 더 이상 소멸하지 않습니다.",
+    "diffs": [
+      {
+        "attribute": "change",
+        "displayName": "Change",
+        "displayNameKo": "변경",
+        "before": "Exhausts",
+        "beforeKo": "소멸",
+        "after": "No Exhaust",
+        "afterKo": "소멸 없음",
+        "diffType": "text"
+      }
+    ],
+    "fieldDiffs": [
+      {
+        "field": "keywords",
+        "before": [
+          "소멸"
+        ],
+        "after": []
+      }
+    ]
+  },
+  {
     "id": "flanking-v108-rarity",
     "entityType": "card",
     "entityId": "FLANKING",

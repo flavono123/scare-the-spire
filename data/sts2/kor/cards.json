@@ -10723,9 +10723,7 @@
     "cards_draw": null,
     "energy_gain": null,
     "hp_loss": null,
-    "keywords": [
-      "소멸"
-    ],
+    "keywords": [],
     "tags": null,
     "spawns_cards": null,
     "vars": {
