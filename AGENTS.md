@@ -39,7 +39,7 @@ This project uses local project skills instead of global home-directory skill in
 - **UI**: shadcn/ui + Tailwind CSS v4
 - **Data**: JSON files in `data/`
 - **Package Manager**: pnpm
-- **Deploy**: Vercel (SSG)
+- **Deploy**: Cloudflare Workers (OpenNext + static patch Worker)
 
 ## 프로젝트 구조
 

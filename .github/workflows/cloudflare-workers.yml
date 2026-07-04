@@ -3,7 +3,7 @@ name: Cloudflare Workers Production
 on:
   push:
     branches:
-      - codex/cloudflare-workers-migration
+      - main
   workflow_dispatch:
 
 permissions:
@@ -19,7 +19,7 @@ env:
 
 jobs:
   deploy:
-    name: Deploy migration branch to Cloudflare Workers
+    name: Deploy main to Cloudflare Workers
     runs-on: ubuntu-latest
     timeout-minutes: 60
     environment: cloudflare-production
