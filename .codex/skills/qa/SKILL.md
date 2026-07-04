@@ -21,6 +21,9 @@ Run the smallest QA set that credibly covers the implementation scope. Treat `do
      - `pnpm cf:preview` for local Workers runtime smoke.
      - `pnpm exec wrangler deploy --dry-run --outdir /tmp/sts-worker-dry-run` after an OpenNext build to confirm final Worker bundle size and bindings.
      - If targeting the Workers Free plan, treat gzip upload size above 3 MiB as a blocking failure unless the user explicitly accepts a paid-plan target.
+     - Review the changed request path for Workers Free risk: 10 ms CPU time per HTTP request, 128 MB memory per isolate, 50 subrequests per invocation, 100,000 requests per day, and startup/runtime rendering risk.
+     - Treat new request-time markdown rendering, large JSON parsing, unbounded loops over game data, search index construction, image processing, or route fan-out fetches as blocking unless the work is precomputed, cached, or bounded to a small constant.
+     - If logs/preview output show `exceededResources`, Error 1102, exceeded CPU/memory, or likely 503 behavior, report it as a functional failure rather than an ops-only concern.
      - Smoke representative static, SSG, and dynamic routes plus cache headers for `_next/static`, `/images`, `/spine`, `/generated`, `/api/search-index`, and `/comment-entities/sts2`.
    - Domain validators such as `pnpm codex:validate` or `pnpm codex:validate-references` when Codex entity data, versions, references, hover links, or rich patch content changed.
 5. Run feature-specific tests or Playwright specs that directly cover the changed area. Prefer existing scripts in `scripts/*.spec.ts` over inventing new checks.
@@ -57,7 +60,8 @@ Load the sub-skill body only when needed, then follow its reporting rules in add
 - Frontend component changes: run `pnpm i18n:validate`, `pnpm lint`, targeted Playwright/spec checks, and mobile QA when layout or responsive behavior changed.
 - Animation/rendering changes: run `pnpm i18n:validate`, targeted static checks, `animation-playback-qa`, and mobile QA if the render surface must work on mobile.
 - Script, parser, or extraction changes: run `pnpm i18n:validate`, a representative script command or dry run, and validators for generated outputs affected by the script.
-- Cloudflare Workers migration/runtime changes: run `pnpm i18n:validate`, `pnpm lint`, `pnpm build`, `pnpm cf:preview`, Wrangler dry-run upload size check, and route/cache smoke against the local Workers preview URL. Include dev-tool parity smoke when `NEXT_PUBLIC_ENABLE_DEV_TOOLS=1` is expected for local preview, and verify that production deploy scripts do not enable dev tools by default.
+- Cloudflare Workers migration/runtime changes: run `pnpm i18n:validate`, `pnpm lint`, `pnpm build`, `pnpm cf:preview`, Wrangler dry-run upload size check, Free-tier CPU/memory/subrequest/request-count risk review, and route/cache smoke against the local Workers preview URL. Include dev-tool parity smoke when `NEXT_PUBLIC_ENABLE_DEV_TOOLS=1` is expected for local preview, and verify that production deploy scripts do not enable dev tools by default.
+- Patch Worker deployment changes: run `pnpm patch:build`, `pnpm patch:test`, `pnpm cf:patch:preview` when practical, and verify the patch Worker remains asset-first with no request-time patch markdown rendering or Compendium data querying.
 
 ## Adding Sub-QA Skills
 
