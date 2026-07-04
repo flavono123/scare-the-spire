@@ -56,6 +56,16 @@ Use this in the Cloudflare worktree when rich patch notes need to publish before
 the main Compendium Worker has the matching pages and canonical assets.
 
 - Follow `docs/PATCH_WORKER_DEPLOY_CONTRACT.md`.
+- Build and validate patch pages through the separate static patch Worker path:
+  `pnpm patch:build`, `pnpm patch:test`, then `pnpm cf:patch:preview` or
+  `pnpm cf:patch:deploy`.
+- Current production routing reaches the patch Worker through the main Worker's
+  `PATCH_WORKER` service binding for `/patches*` and `/_patches*`. Keep this as
+  the workers.dev/rollback fallback; future custom-domain direct routing is
+  documented in `docs/CLOUDFLARE_CUSTOM_DOMAIN_ROUTING.md`.
+- Keep patch publishing asset-first. Do not add request-time patch markdown
+  rendering, Compendium data queries, large JSON parsing, or OpenNext SSR work
+  to serve ready patch pages.
 - Rich notes may include new cards, relics, powers, or other Compendium
   resources before the main Worker is ready only when those resources are also
   represented in `data/sts2-patch-local-resources.json`.
@@ -69,6 +79,8 @@ the main Compendium Worker has the matching pages and canonical assets.
   `/generated/compendium-resource-manifest.json` contains the resource.
 - When the main Compendium Worker catches up, redeploy the patch Worker so the
   manifest turns pending hover-only previews into normal Compendium links.
+- Treat Cloudflare Workers Free resource risk as a release blocker for patch
+  pages: the patch Worker should only dispatch static assets at request time.
 
 ## Patch Representative Art
 
@@ -198,6 +210,18 @@ pnpm lint
 ```
 
 For tooltip/link changes, inspect the patch detail page in the browser and hover several cards, relics, powers, and unknown keyword-only highlights.
+
+For Cloudflare patch-first publishing, run:
+
+```bash
+pnpm patch:build
+pnpm patch:test
+pnpm cf:patch:preview
+```
+
+Confirm the preview serves `/patches`, `/patches/{version}`, and `/_patches/*`
+assets from the patch Worker without request-time markdown rendering or broken
+pending Compendium links.
 
 For ready-state patch page changes, run `$mobile-viewport-qa` after the browser smoke checks on both `/patches` and `/patches/{version}`. Use `main` as the render selector and a non-matching controls selector unless the page has a route-specific QA selector:
 
