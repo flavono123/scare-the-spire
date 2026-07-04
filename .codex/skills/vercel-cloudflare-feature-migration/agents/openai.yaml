@@ -1,4 +1,0 @@
-interface:
-  display_name: "Vercel to Cloudflare Feature Migration"
-  short_description: "Migrate app behavior across runtimes"
-  default_prompt: "Use $vercel-cloudflare-feature-migration to plan runtime behavior migration from Vercel to Cloudflare."
