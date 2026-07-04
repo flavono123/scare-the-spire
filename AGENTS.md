@@ -30,16 +30,49 @@ This project uses local project skills instead of global home-directory skill in
 ## Cloudflare Patch Worker
 
 - The Cloudflare worktree may deploy patch notes before the main Compendium Worker catches up.
+- Current Cloudflare production routing sends `/patches*` and `/_patches*`
+  through the main Worker's `PATCH_WORKER` service binding to the separate
+  `scare-the-spire-patches` Worker.
+- The patch Worker must stay asset-first/static-first: build patch HTML,
+  CSS, images, and `/_patches/*` assets ahead of time, then only map request
+  paths to static asset files at runtime.
 - Follow `docs/PATCH_WORKER_DEPLOY_CONTRACT.md` when changing rich patch notes, patch-only assets, Compendium links, or Cloudflare patch deployment.
+- Future custom-domain route dispatch is documented in `docs/CLOUDFLARE_CUSTOM_DOMAIN_ROUTING.md`; keep AGENTS focused on the current guardrails and link to that document instead of duplicating DNS details here.
 - Pending Compendium resources in patch notes must render hover-only construction previews instead of clickable links to 404 pages.
+
+## Cloudflare Free Tier Guardrails
+
+This service targets Cloudflare Workers Free unless the user explicitly accepts
+a paid-plan tradeoff. For every feature addition or runtime behavior change,
+evaluate whether it can cause Cloudflare `exceededResources`, Error 1102, or a
+503 under production traffic.
+
+- Keep Workers thin. Prefer static generation, static assets, cached JSON, and
+  request-time path dispatch over SSR, markdown rendering, large JSON parsing,
+  data joins, image work, or search indexing inside a Worker request.
+- Treat Workers Free limits as design constraints: 10 ms CPU time per HTTP
+  request, 128 MB memory per isolate, 3 MiB gzip Worker bundle size, 50
+  subrequests per invocation, and 100,000 requests per day.
+- Do not add request-time work that scales with total cards, relics, patch
+  notes, comments, or search documents unless it is precomputed, cached, or
+  bounded to a small constant.
+- Avoid new Cloudflare products or storage patterns that make the service
+  unfavorable on the Free plan. Check current Cloudflare docs before relying on
+  quotas, billing assumptions, or paid-only limits.
+- For Cloudflare runtime/config changes, verify bundle size and bindings with a
+  Wrangler dry run after the OpenNext build; gzip upload size above 3 MiB is a
+  blocking issue unless the target plan changes.
+- Patch routes are especially latency-sensitive after release. Keep
+  `pnpm patch:build` output static and use `pnpm patch:test` to ensure pending
+  Compendium links fail closed.
 
 ## 기술 스택
 
-- **Framework**: Next.js 15 (App Router, TypeScript strict)
+- **Framework**: Next.js 16 (App Router, TypeScript strict)
 - **UI**: shadcn/ui + Tailwind CSS v4
 - **Data**: JSON files in `data/`
 - **Package Manager**: pnpm
-- **Deploy**: Cloudflare Workers (OpenNext + static patch Worker)
+- **Deploy**: Cloudflare Workers Free target (`@opennextjs/cloudflare` main Worker + separate static patch Worker)
 
 ## 프로젝트 구조
 
