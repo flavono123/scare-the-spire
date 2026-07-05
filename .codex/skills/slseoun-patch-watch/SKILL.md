@@ -62,8 +62,8 @@ Do not use `{token} chip` styling. Tokens belong in the title.
   `준비 시간` treatment.
 - `작업 도구`: title token
   `/images/sts2/powers/animated/tools_of_the_trade_power_tilt.webp`; title text
-  is the version label, with `powers.TOOLS_OF_THE_TRADE_POWER.title` available
-  as the stage badge/copy.
+  is the version label. Do not add a separate `작업 도구` chip; the title token
+  already carries the stage identity.
 - `패치노트`: title token
   `/images/sts2/nav/patch_notes_icon.png`; title text is the version label.
 
