@@ -73,11 +73,11 @@ const PATCH_STAGE_TOKENS: Record<PatchVisualStage, {
     alt: { ko: "미지", en: "Unknown" },
   },
   building: {
-    src: "/images/sts2/powers/animated/tools_of_the_trade_power.webp",
+    src: "/images/sts2/powers/animated/tools_of_the_trade_power_tilt.webp",
     alt: { ko: "작업 도구", en: "Tools of the Trade" },
   },
   ready: {
-    src: "/images/sts2/nav/animated/patch_notes_icon.webp",
+    src: "/images/sts2/nav/animated/patch_notes_icon_reveal.webp",
     alt: { ko: "패치 노트", en: "Patch Notes" },
   },
 };
