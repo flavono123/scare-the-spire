@@ -71,10 +71,11 @@ Asset state as of 2026-07-05:
 - `sleep.webp` is animated: WebP animation, 16 frames.
 - `unknown.webp` is animated: WebP animation, 20 frames.
 - `tools_of_the_trade_power.webp` source is static, but the patch index uses a
-  generated 8-frame animated token that tilts left/right with a mechanical
-  click.
+  generated 19-frame animated token that clicks into left and right tilt
+  positions.
 - `patch_notes_icon.png` source is static, but the patch index uses a generated
-  8-frame animated token that reveals the rolled scroll from top to bottom.
+  19-frame animated token that starts as a rolled scroll, opens from top to
+  bottom, then bounces slightly after fully opening.
 
 Keep these as static build-time assets or CSS-driven presentation from existing
 game/service art. Do not generate or transform animated assets inside a Worker
