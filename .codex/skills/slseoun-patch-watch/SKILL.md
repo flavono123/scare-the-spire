@@ -59,22 +59,26 @@ Do not use `{token} chip` styling. Tokens belong in the title.
   from `cards.DELAY.title`; description from `bestiary.DESCRIPTION.placeholder`,
   replacing the monster subject with "이 패치" / "this patch".
 - `작업 도구`: title token
-  `/images/sts2/powers/tools_of_the_trade_power.webp`; title text is the version
-  label, with `powers.TOOLS_OF_THE_TRADE_POWER.title` available as the stage
-  badge/copy.
-- `패치노트`: title token `/images/sts2/nav/patch_notes_icon.png`; title text is
-  the version label.
+  `/images/sts2/powers/animated/tools_of_the_trade_power.webp`; title text is
+  the version label, with `powers.TOOLS_OF_THE_TRADE_POWER.title` available as
+  the stage badge/copy.
+- `패치노트`: title token
+  `/images/sts2/nav/animated/patch_notes_icon.webp`; title text is the version
+  label.
 
-Asset investigation as of 2026-07-05:
+Asset state as of 2026-07-05:
 
 - `sleep.webp` is animated: WebP animation, 16 frames.
 - `unknown.webp` is animated: WebP animation, 20 frames.
-- `tools_of_the_trade_power.webp` is static: one WebP frame.
-- `patch_notes_icon.png` is static: one PNG frame.
+- `tools_of_the_trade_power.webp` source is static, but the patch index uses a
+  generated 8-frame animated token that tilts left/right with a mechanical
+  click.
+- `patch_notes_icon.png` source is static, but the patch index uses a generated
+  8-frame animated token that reveals the rolled scroll from top to bottom.
 
-If animated `작업 도구` or `패치노트` tokens are desired later, create them as
-static build-time assets or CSS-driven presentation from existing game/service
-art. Do not generate or transform animated assets inside a Worker request.
+Keep these as static build-time assets or CSS-driven presentation from existing
+game/service art. Do not generate or transform animated assets inside a Worker
+request.
 
 ## Stage Art Defaults
 
