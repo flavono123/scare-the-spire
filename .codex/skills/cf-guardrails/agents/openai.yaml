@@ -1,0 +1,4 @@
+interface:
+  display_name: "CF Guardrails"
+  short_description: "Check Cloudflare Free runtime limits"
+  default_prompt: "Use $cf-guardrails to check Cloudflare Free runtime limits."
