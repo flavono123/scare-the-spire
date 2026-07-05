@@ -77,7 +77,7 @@ const PATCH_STAGE_TOKENS: Record<PatchVisualStage, {
     alt: { ko: "작업 도구", en: "Tools of the Trade" },
   },
   ready: {
-    src: "/images/sts2/nav/animated/patch_notes_icon_reveal.webp",
+    src: "/images/sts2/nav/patch_notes_icon.png",
     alt: { ko: "패치 노트", en: "Patch Notes" },
   },
 };
