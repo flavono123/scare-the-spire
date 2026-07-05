@@ -1,67 +1,106 @@
 ---
 name: slseoun-patch-watch
-description: Publish or update a pre-Steam Slay the Spire 2 patch waiting placeholder for 슬서운변경. Use when an expected STS2 patch has not appeared yet but the patch index should show that the service is waiting, especially around the two-week Friday KST patch window; skip this skill when Steam patch notes are already live and use slseoun-patch shell-first mode instead.
+description: Publish or update pre-Steam Slay the Spire 2 patch index stages for 슬서운변경. Use when an expected STS2 patch has not appeared yet, when the expected KST patch window has slipped, or when preparing the static index state before switching to slseoun-patch shell-first mode.
 ---
 
 # slseoun-patch-watch
 
-Create the pre-patch placeholder that appears before there is any Steam patch
-URL or patch-note prose. This is distinct from `slseoun-patch` WIP/building:
+Create and maintain the patch-index states that exist before rich patch notes are
+ready. This skill covers only static index/page data. Do not add request-time
+Worker work; load `.codex/skills/cf-guardrails/SKILL.md` for any runtime,
+Worker, OpenNext, or asset-pipeline change.
 
-- `watching`: the patch is expected, but Steam has not published it yet.
-- `building`: Steam has published the patch and we are actively producing rich notes.
-- `ready`: rich patch notes are published.
+## Stage Flow
 
-## Naming And Visual Contract
+Use this flow for the top of the patch index:
 
-- Data status: `status: "watching"`.
-- Korean label: `패치 대기 중`.
-- English label: `Awaiting patch`.
-- Visual tone: amber/warm, non-clickable, and not grayscale. Grayscale is
-  reserved for `status: "building"` after the real Steam patch exists.
-- Do not show a Steam original chip while `steamUrl` is `null`.
-- Do not create markdown files under `data/sts2-patch-notes/` for a waiting
-  placeholder.
+1. `준비 시간`: expected patch day is approaching, usually the day before the
+   Friday KST patch window.
+2. `지연`: optional. The expected Friday KST window has passed, but Steam has
+   not published an announcement yet.
+3. `작업 도구`: Steam has published the patch and the rich patch-note work is in
+   progress. This replaces the old WIP/building wording.
+4. `패치노트`: rich patch notes are ready.
 
-## When To Use
+Skip `준비 시간` or `지연` when an unscheduled patch is already live. In that
+case go straight to `$slseoun-patch` shell-first mode, publish `작업 도구`,
+push immediately, and continue patch-note work without waiting for deployment
+success.
 
-Use this when the expected patch window arrives but Steam has not published the
-patch yet. The usual expectation is every two weeks on Friday around 09:00-10:00
-KST, but recent patches may slip toward 12:00-13:00 KST.
+## Data Contract
 
-Skip this step when Steam has already published the patch. In that case go
-straight to `$slseoun-patch` Shell-First Mode and publish `status: "building"`.
+- `준비 시간`: `status: "watching"`, `watchStage: "prep_time"`,
+  `steamUrl: null`, no markdown file under `data/sts2-patch-notes/`.
+- `지연`: `status: "watching"`, `watchStage: "delay"`, `steamUrl: null`, no
+  markdown file under `data/sts2-patch-notes/`.
+- `작업 도구`: `status: "building"`, real version/date if known, real
+  `steamUrl` when available. A temporary or non-functional Steam link is
+  acceptable for a local/example state, but not for real published patch data.
+- `패치노트`: default/ready state with rich patch markdown and static patch
+  Worker assets built ahead of time.
+
+Patch index entries should stay compact:
+
+- Title: `{token} {stage title or version}`
+- Description: one short line, usually the patch title for real patches or
+  borrowed game-locale copy for pre-Steam stages
+- Date
+- Index art: card art, epoch/history art, event art, or a static service image
+
+Do not use `{token} chip` styling. Tokens belong in the title.
+
+## Tokens And Copy
+
+- `준비 시간`: title token
+  `/images/sts2/intents/animated/sleep.webp`; title text from
+  `cards.PREP_TIME.title`; description from `timeline.REMINDER_TEXT`, replacing
+  the epoch subject with "오늘의 패치" / "Today's patch".
+- `지연`: title token `/images/sts2/intents/animated/unknown.webp`; title text
+  from `cards.DELAY.title`; description from `bestiary.DESCRIPTION.placeholder`,
+  replacing the monster subject with "이 패치" / "this patch".
+- `작업 도구`: title token
+  `/images/sts2/powers/tools_of_the_trade_power.webp`; title text is the version
+  label, with `powers.TOOLS_OF_THE_TRADE_POWER.title` available as the stage
+  badge/copy.
+- `패치노트`: title token `/images/sts2/nav/patch_notes_icon.png`; title text is
+  the version label.
+
+Asset investigation as of 2026-07-05:
+
+- `sleep.webp` is animated: WebP animation, 16 frames.
+- `unknown.webp` is animated: WebP animation, 20 frames.
+- `tools_of_the_trade_power.webp` is static: one WebP frame.
+- `patch_notes_icon.png` is static: one PNG frame.
+
+If animated `작업 도구` or `패치노트` tokens are desired later, create them as
+static build-time assets or CSS-driven presentation from existing game/service
+art. Do not generate or transform animated assets inside a Worker request.
+
+## Stage Art Defaults
+
+- `준비 시간`: `art: { "type": "card", "id": "PREP_TIME" }`
+- `지연`: `art: { "type": "card", "id": "DELAY" }`
+- `작업 도구`: `art: { "type": "card", "id": "TOOLS_OF_THE_TRADE" }`
+- `패치노트`: use the real patch's strongest history/card/event art, or the
+  service patch-note token only when no game art is appropriate.
 
 ## Workflow
 
 1. Check Steam announcements once with the `$slseoun-patch` fetch command. If a
-   real patch exists, stop this skill and switch to shell-first mode.
-2. Add or update a single top-of-index placeholder in `data/sts2-patches.json`:
-   - Use `status: "watching"`.
-   - Use `steamUrl: null`.
-   - Use `versionLabelKo: "다음 패치"` and `versionLabel: "Next patch"` unless
-     the user provided a known public version label.
-   - Use a stable synthetic `version`, such as `expected-YYYY-MM-DD`, only
-     while the real version is unknown.
-   - Use the expected KST date in `date`.
-   - Use `type: "beta"` unless the user or official source indicates another
-     patch type.
-   - Keep `hasBalanceChanges: false` until Steam confirms the patch contents.
-   - Use short factual summaries: `Steam 패치를 기다리는 중입니다.` /
-     `Waiting for the Steam patch.`
-3. Commit this placeholder immediately.
-4. Push immediately so Cloudflare can publish the index state. Do not wait for
-   deployment success before continuing other work.
+   real patch exists, stop this skill and switch to `$slseoun-patch`.
+2. Add or update the top-of-index placeholder in `data/sts2-patches.json`.
+   Prefer one active pre-Steam stage in production. Multiple stages may be used
+   temporarily as local examples.
+3. Commit immediately.
+4. Push immediately so Cloudflare can publish the static index state. Do not
+   wait for deployment success before continuing other work.
 5. When Steam publishes the patch, replace the placeholder with the real patch
-   metadata in `$slseoun-patch` Shell-First Mode:
-   - Replace synthetic `version` and labels with the real version/title/date.
-   - Set `status: "building"`.
-   - Set the real `steamUrl`.
-   - Commit and push that WIP state immediately, then continue rich-note work.
+   metadata, set `status: "building"`, commit and push that state immediately,
+   then continue rich-note work in `$slseoun-patch`.
 
 ## Validation
 
-For a waiting-only placeholder, run:
+For waiting/building index changes, run:
 
 ```bash
 pnpm i18n:validate
@@ -71,6 +110,6 @@ pnpm patch:test
 ```
 
 If time is critical, `pnpm patch:build` and `pnpm patch:test` are the minimum
-checks before pushing the patch Worker. Load `.codex/skills/cf-guardrails/SKILL.md`
-when touching Worker/runtime behavior; the page must remain static and must not
-add request-time Worker work.
+checks before pushing the patch Worker. The output must remain static-first and
+must not add request-time Cloudflare Worker CPU, memory, subrequest, or bundle
+size risk.
