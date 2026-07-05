@@ -57,7 +57,9 @@ Do not use `{token} chip` styling. Tokens belong in the title.
   the epoch subject with "오늘의 패치" / "Today's patch".
 - `지연`: title token `/images/sts2/intents/animated/unknown.webp`; title text
   from `cards.DELAY.title`; description from `bestiary.DESCRIPTION.placeholder`,
-  replacing the monster subject with "이 패치" / "this patch".
+  replacing the monster subject with "이 패치" / "this patch". Render this
+  stage in the same muted grayscale treatment as `작업 도구`, not the amber
+  `준비 시간` treatment.
 - `작업 도구`: title token
   `/images/sts2/powers/animated/tools_of_the_trade_power_tilt.webp`; title text
   is the version label, with `powers.TOOLS_OF_THE_TRADE_POWER.title` available
