@@ -100,6 +100,43 @@ function findVarKey(vars: Record<string, number>, name: string): string | undefi
     : Object.keys(vars).find((k) => k.toLowerCase() === name.toLowerCase());
 }
 
+function getTemplateVarKeys(raw: string, vars: Record<string, number>): string[] {
+  const keys: string[] = [];
+  const seen = new Set<string>();
+  const templateVarRe = /\{(\w+)(?=[:}])/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = templateVarRe.exec(raw)) !== null) {
+    const key = findVarKey(vars, match[1]);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    keys.push(key);
+  }
+
+  return keys;
+}
+
+function stripPowerSuffix(name: string): string {
+  return name.toLowerCase().replace(/power$/, "");
+}
+
+function findUpgradeVarKey(
+  vars: Record<string, number>,
+  name: string,
+  templateVarKeys: string[],
+): string | undefined {
+  const lowerName = name.toLowerCase();
+  const exactTemplateKey = templateVarKeys.find((key) => key.toLowerCase() === lowerName);
+  if (exactTemplateKey) return exactTemplateKey;
+
+  const powerTemplateKey = templateVarKeys.find(
+    (key) => stripPowerSuffix(key) === lowerName,
+  );
+  if (powerTemplateKey) return powerTemplateKey;
+
+  return findVarKey(vars, name);
+}
+
 function findMatchingBrace(input: string, start: number): number {
   let depth = 0;
   for (let i = start; i < input.length; i++) {
@@ -210,12 +247,13 @@ export function renderCardDescription(
   const finalVars: Record<string, number> = { ...card.vars };
   const upgradeChanged = new Set<string>();
   const enchantChanged = new Set<string>();
+  const templateVarKeys = getTemplateVarKeys(raw, finalVars);
 
   if (upgradeLevel > 0 && card.upgrade) {
     for (const [key, diff] of Object.entries(card.upgrade)) {
       if (typeof diff === "string" && /^[+-]\d+/.test(diff)) {
         const delta = parseInt(diff, 10) * upgradeLevel;
-        const varKey = findVarKey(finalVars, key);
+        const varKey = findUpgradeVarKey(finalVars, key, templateVarKeys);
         if (varKey && delta !== 0) {
           finalVars[varKey] = (finalVars[varKey] ?? 0) + delta;
           upgradeChanged.add(varKey.toLowerCase());
