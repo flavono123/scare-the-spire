@@ -1,11 +1,11 @@
 ---
 name: byrdispatch-writer
-description: Format, create, or update byrdispatch / 섀 소식 service-update posts and notices for scare-the-spire from rough user notes. Use when the user asks to write, draft, publish, add, or normalize byrdispatch / 섀 소식 entries, especially markdown files under data/sha-news/YYYY-MM-DD.md, service notices, service update changelogs, deployment-date updates, service-link sections, rich game-resource references, token status badges, or optional screenshots/videos for service announcements.
+description: Format, create, or update byrdispatch / 섀소식 service-update posts and notices for scare-the-spire from rough user notes. Use when the user asks to write, draft, publish, add, or normalize byrdispatch / 섀소식 entries, especially markdown files under data/byrdispatch/YYYY-MM-DD.md, service notices, service update changelogs, deployment-date updates, service-link sections, rich game-resource references, token status badges, or optional screenshots/videos for service announcements.
 ---
 
 # byrdispatch-writer
 
-Turn rough service-update notes into canonical 섀 소식 / byrdispatch markdown. The user owns the content; Codex owns formatting, validation, exact links/tooltips, token badges, and repository integration.
+Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown. The user owns the content; Codex owns formatting, validation, exact links/tooltips, token badges, and repository integration.
 
 ## Workflow
 
@@ -14,8 +14,8 @@ Turn rough service-update notes into canonical 섀 소식 / byrdispatch markdown
    - If missing, use today's date only after saying that assumption.
 2. Read `docs/I18N.md` before editing user-visible service text.
 3. Read `references/format.md` for the canonical markdown contract and examples.
-4. Create or update `data/sha-news/YYYY-MM-DD.md`.
-   - Create `data/sha-news/` if absent.
+4. Create or update `data/byrdispatch/YYYY-MM-DD.md`.
+   - Create `data/byrdispatch/` if absent.
    - Use one `# YYYY-MM-DD` heading.
    - Put `## 공지` first when the entry includes a site-wide notice.
    - Use `## 서비스명` headings and `### 하위 서비스명` headings.
@@ -40,7 +40,7 @@ Turn rough service-update notes into canonical 섀 소식 / byrdispatch markdown
 7. Handle media conservatively.
    - Default to no screenshots or video.
    - Add media only when the user asks for it or the update is primarily visual/interactive.
-   - Store media under `public/images/sha-news/YYYY-MM-DD/`.
+   - Store media under `public/images/byrdispatch/YYYY-MM-DD/`.
 8. Commit every meaningful edit separately, following repository `AGENTS.md`.
 9. Run focused validation:
    - Always run `pnpm i18n:validate`.
@@ -77,7 +77,7 @@ When capturing media:
 - Use Playwright against a local route.
 - Prefer mobile and one desktop viewport only when both are relevant.
 - Use stable filenames such as `home-entry-mobile.png`.
-- Reference media from markdown with root-relative paths, e.g. `![홈 섀 소식 진입점](/images/sha-news/2026-06-09/home-entry-mobile.png)`.
+- Reference media from markdown with root-relative paths, e.g. `![홈 섀소식 진입점](/images/byrdispatch/2026-06-09/home-entry-mobile.png)`.
 
 ## Reference Files
 

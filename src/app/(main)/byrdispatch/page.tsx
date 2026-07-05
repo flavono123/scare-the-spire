@@ -14,40 +14,40 @@ import { buildByrdispatchCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexGameUiLabels, type CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import {
-  getShaNewsEntries,
-  SHA_NEWS_ICON,
-  SHA_NEWS_NOTICE_ICON,
-  type ShaNewsBullet,
-  type ShaNewsSection,
-  type ShaNewsStatus,
-} from "@/lib/sha-news";
+  getByrdispatchEntries,
+  BYRDISPATCH_ICON,
+  BYRDISPATCH_NOTICE_ICON,
+  type ByrdispatchBullet,
+  type ByrdispatchSection,
+  type ByrdispatchStatus,
+} from "@/lib/byrdispatch";
 import {
   isByrdispatchMigrationNoticeText,
   isConfiguredByrdispatchMigrationTargetHost,
-} from "@/lib/sha-news-static";
+} from "@/lib/byrdispatch-static";
 import { serviceMessages } from "@/messages/service";
 
-export function generateShaNewsMetadata(
+export function generateByrdispatchMetadata(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ): Metadata {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  return serviceMessages[serviceLocale].shaNews.metadata;
+  return serviceMessages[serviceLocale].byrdispatch.metadata;
 }
 
 export function generateMetadata(): Metadata {
-  return generateShaNewsMetadata();
+  return generateByrdispatchMetadata();
 }
 
-const STATUS_TOKEN_ASSETS: Record<ShaNewsStatus, { src: string }> = {
+const STATUS_TOKEN_ASSETS: Record<ByrdispatchStatus, { src: string }> = {
   new: { src: "/images/sts2/relics/new_leaf.webp" },
   wip: { src: "/images/sts2/powers/hammer_time_power.webp" },
   bug: { src: "/images/sts2/powers/infested_power.webp" },
 };
 
-type ShaNewsStatusLabels = Readonly<Record<ShaNewsStatus, string>>;
+type ByrdispatchStatusLabels = Readonly<Record<ByrdispatchStatus, string>>;
 
 const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
-  "섀 소식": { href: "/byrdispatch", icon: SHA_NEWS_ICON },
+  "섀소식": { href: "/byrdispatch", icon: BYRDISPATCH_ICON },
   백과사전: { href: null, icon: "/images/sts2/icons/app_icon.png" },
   캐릭터: { href: "/compendium/characters", icon: "/images/sts2/characters/character_icon_ironclad.webp" },
   카드: { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
@@ -123,8 +123,8 @@ function StatusTokens({
   statuses,
   labels,
 }: {
-  statuses: ShaNewsStatus[];
-  labels: ShaNewsStatusLabels;
+  statuses: ByrdispatchStatus[];
+  labels: ByrdispatchStatusLabels;
 }) {
   if (statuses.length === 0) return null;
   return (
@@ -146,10 +146,10 @@ function ServiceHeading({
   gameLocale,
   statusLabels,
 }: {
-  section: ShaNewsSection;
+  section: ByrdispatchSection;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
-  statusLabels: ShaNewsStatusLabels;
+  statusLabels: ByrdispatchStatusLabels;
 }) {
   const isChild = section.level === 3;
   const service = serviceIconFor(section.title);
@@ -167,7 +167,7 @@ function ServiceHeading({
   const content = (
     <>
       <TokenIcon
-        src={section.isNotice ? SHA_NEWS_NOTICE_ICON : service?.icon ?? SHA_NEWS_ICON}
+        src={section.isNotice ? BYRDISPATCH_NOTICE_ICON : service?.icon ?? BYRDISPATCH_ICON}
         label={section.title}
         className={isChild ? "h-5 w-5" : "h-6 w-6"}
       />
@@ -192,7 +192,7 @@ function ServiceHeading({
   return <h2 className={headingClassName}>{content}</h2>;
 }
 
-function ShaNewsBulletLine({
+function ByrdispatchBulletLine({
   bullet,
   notice,
   entities,
@@ -201,13 +201,13 @@ function ShaNewsBulletLine({
   gameLocale,
   statusLabels,
 }: {
-  bullet: ShaNewsBullet;
+  bullet: ByrdispatchBullet;
   notice: boolean;
   entities: EntityInfo[];
   gameUi: CodexGameUiLabels;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
-  statusLabels: ShaNewsStatusLabels;
+  statusLabels: ByrdispatchStatusLabels;
 }) {
   return (
     <li className="flex gap-2">
@@ -243,7 +243,7 @@ function ShaNewsBulletLine({
   );
 }
 
-function ShaNewsSectionList({
+function ByrdispatchSectionList({
   sections,
   notice = false,
   entities,
@@ -252,13 +252,13 @@ function ShaNewsSectionList({
   gameLocale,
   statusLabels,
 }: {
-  sections: ShaNewsSection[];
+  sections: ByrdispatchSection[];
   notice?: boolean;
   entities: EntityInfo[];
   gameUi: CodexGameUiLabels;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
-  statusLabels: ShaNewsStatusLabels;
+  statusLabels: ByrdispatchStatusLabels;
 }) {
   if (sections.length === 0) return null;
 
@@ -284,7 +284,7 @@ function ShaNewsSectionList({
           {section.bullets.length > 0 && (
             <ul className="mt-2 space-y-1.5 text-sm leading-6 text-zinc-300">
               {section.bullets.map((bullet) => (
-                <ShaNewsBulletLine
+                <ByrdispatchBulletLine
                   key={bullet.text}
                   bullet={bullet}
                   notice={notice}
@@ -303,20 +303,20 @@ function ShaNewsSectionList({
   );
 }
 
-function isMigrationNoticeSection(section: ShaNewsSection): boolean {
+function isMigrationNoticeSection(section: ByrdispatchSection): boolean {
   return section.bullets.some((bullet) => isByrdispatchMigrationNoticeText(bullet.text));
 }
 
-export async function renderShaNewsPage(
+export async function renderByrdispatchPage(
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  const messages = serviceMessages[serviceLocale].shaNews;
+  const messages = serviceMessages[serviceLocale].byrdispatch;
   const statusLabels = messages.status;
   const commonMessages = serviceMessages[serviceLocale].codex.common;
   const hideMigrationNotice = isConfiguredByrdispatchMigrationTargetHost();
   const [entries, entities, gameUi] = await Promise.all([
-    getShaNewsEntries(),
+    getByrdispatchEntries(),
     loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
   ]);
@@ -326,7 +326,7 @@ export async function renderShaNewsPage(
       <header className="flex items-center gap-4">
         <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded border border-purple-200/35 bg-purple-500/10">
           <Image
-            src={SHA_NEWS_ICON}
+            src={BYRDISPATCH_ICON}
             alt=""
             width={42}
             height={42}
@@ -358,7 +358,7 @@ export async function renderShaNewsPage(
                 </time>
                 {noticeSections.length > 0 && (
                   <div className="mt-4">
-                    <ShaNewsSectionList
+                    <ByrdispatchSectionList
                       sections={noticeSections}
                       notice
                       entities={entities}
@@ -371,7 +371,7 @@ export async function renderShaNewsPage(
                 )}
                 {entry.regularSections.length > 0 && (
                   <div className={noticeSections.length > 0 ? "mt-5" : "mt-4"}>
-                    <ShaNewsSectionList
+                    <ByrdispatchSectionList
                       sections={entry.regularSections}
                       entities={entities}
                       gameUi={gameUi}
@@ -400,6 +400,6 @@ export async function renderShaNewsPage(
   );
 }
 
-export default async function ShaNewsPage() {
-  return renderShaNewsPage();
+export default async function ByrdispatchPage() {
+  return renderByrdispatchPage();
 }

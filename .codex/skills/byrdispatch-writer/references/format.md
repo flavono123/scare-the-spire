@@ -1,4 +1,4 @@
-# 섀 소식 Format Reference
+# 섀소식 Format Reference
 
 ## Canonical Markdown
 
@@ -8,9 +8,9 @@
 ## 공지
 - 곧 사이트 주소가 [새 주소](https://example.com)로 옮겨질 예정이다
 
-## 섀 소식 (new)
-- 홈에 [gold]섀 소식[/gold] 진입점을 추가했다
-- 섀 소식은 패치노트와 별도의 서비스 업데이트 알림판으로 분리했다
+## 섀소식 (new)
+- 홈에 [gold]섀소식[/gold] 진입점을 추가했다
+- 섀소식은 패치노트와 별도의 서비스 업데이트 알림판으로 분리했다
 
 ## 역사 강의서
 - 공유 런 목록을 더 쉽게 확인할 수 있게 정리했다
@@ -40,8 +40,8 @@ Rules:
 
 - Public route: `/byrdispatch`
 - English service name: `byrdispatch`
-- Korean service name: `섀 소식`
-- Data files remain under `data/sha-news/YYYY-MM-DD.md`.
+- Korean service name: `섀소식`
+- Data files remain under `data/byrdispatch/YYYY-MM-DD.md`.
 
 ## Rendered Styling Contract
 
@@ -73,7 +73,7 @@ Prefer these exact Korean headings:
 
 - `공지` — site-wide operational notices; always place first when used.
 - `공통`
-- `섀 소식`
+- `섀소식`
 - `역사 강의서`
 - `백과사전`
 - `케미컬X`
@@ -86,7 +86,7 @@ Use `기타` only when no section fits.
 ## User Prompt Template
 
 ```md
-섀 소식 작성해줘.
+섀소식 작성해줘.
 
 배포일: 2026-06-09
 
@@ -95,7 +95,7 @@ Use `기타` only when no section fits.
 - 곧 사이트가 Cloudflare 새 주소로 이동함
 
 공통
-- 홈에 섀 소식 진입점 만듦
+- 홈에 섀소식 진입점 만듦
 - byrdpip 아이콘 쓰고 패치노트랑 분리되게 함
 
 역사 강의서
@@ -103,7 +103,7 @@ Use `기타` only when no section fits.
 - 개발용 런 조회 API 추가
 
 규칙:
-- 최종 결과는 data/sha-news/2026-06-09.md
+- 최종 결과는 data/byrdispatch/2026-06-09.md
 - # 2026-06-09
 - 공지가 있으면 ## 공지 를 첫 섹션으로 둠
 - 서비스는 ## 서비스명, 하위 서비스는 ### 하위 서비스명
@@ -129,7 +129,7 @@ Use typed tags only when verified:
 Do not gold-tag services. Services are rendered as aqua links by heading:
 
 ```md
-## 섀 소식 (new)
+## 섀소식 (new)
 ## 백과사전
 ### 카드
 ```
@@ -153,16 +153,16 @@ Screenshot request:
 
 ```md
 미디어:
-- 홈 섀 소식 진입점 모바일 스크린샷
+- 홈 섀소식 진입점 모바일 스크린샷
 - route: /
 - viewport: iPhone 13 mini
-- output: /images/sha-news/2026-06-09/home-entry-mobile.png
+- output: /images/byrdispatch/2026-06-09/home-entry-mobile.png
 ```
 
 Markdown reference:
 
 ```md
-![홈 섀 소식 진입점](/images/sha-news/2026-06-09/home-entry-mobile.png)
+![홈 섀소식 진입점](/images/byrdispatch/2026-06-09/home-entry-mobile.png)
 ```
 
 ## Normalization Examples
@@ -171,7 +171,7 @@ Input:
 
 ```md
 공통
-- sha news 만들었음
+- byrdispatch 만들었음
 - 패치노트랑 헷갈리지 않게 함
 ```
 
@@ -179,6 +179,6 @@ Output:
 
 ```md
 ## 공통
-- 홈에 [gold]섀 소식[/gold] 진입점을 추가했다
-- 섀 소식을 패치노트와 별도의 서비스 업데이트 알림판으로 구분했다
+- 홈에 [gold]섀소식[/gold] 진입점을 추가했다
+- 섀소식을 패치노트와 별도의 서비스 업데이트 알림판으로 구분했다
 ```

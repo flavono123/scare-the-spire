@@ -8,14 +8,14 @@ import {
   isByrdispatchMigrationNoticeText,
   isByrdispatchMigrationTargetHost,
   isConfiguredByrdispatchMigrationTargetHost,
-  SHA_NEWS_LATEST_NOTICE_PATH,
-  SHA_NEWS_NOTICE_ICON,
-  type ShaNewsNotice,
-} from "@/lib/sha-news-static";
+  BYRDISPATCH_LATEST_NOTICE_PATH,
+  BYRDISPATCH_NOTICE_ICON,
+  type ByrdispatchNotice,
+} from "@/lib/byrdispatch-static";
 
 function isByrdispatchNoticePage(pathname: string | null): boolean {
   const normalized = (pathname ?? "/").replace(/\/+$/, "") || "/";
-  return /(^|\/)(?:byrdispatch|sha-news)$/.test(normalized);
+  return /(^|\/)byrdispatch$/.test(normalized);
 }
 
 function isCurrentByrdispatchMigrationTargetHost(): boolean {
@@ -24,9 +24,9 @@ function isCurrentByrdispatchMigrationTargetHost(): boolean {
   return isByrdispatchMigrationTargetHost(window.location.hostname);
 }
 
-function isShaNewsNotice(value: unknown): value is ShaNewsNotice {
+function isByrdispatchNotice(value: unknown): value is ByrdispatchNotice {
   if (!value || typeof value !== "object") return false;
-  const candidate = value as Partial<ShaNewsNotice>;
+  const candidate = value as Partial<ByrdispatchNotice>;
   return typeof candidate.date === "string" && typeof candidate.text === "string";
 }
 
@@ -41,12 +41,12 @@ export function ByrdispatchFloatingNoticeClient() {
 
     let ignore = false;
 
-    fetch(SHA_NEWS_LATEST_NOTICE_PATH, { cache: "force-cache" })
+    fetch(BYRDISPATCH_LATEST_NOTICE_PATH, { cache: "force-cache" })
       .then((response) => (response.ok ? response.json() : null))
       .then((notice) => {
         if (
           !ignore
-          && isShaNewsNotice(notice)
+          && isByrdispatchNotice(notice)
           && !(isMigrationTargetHost && isByrdispatchMigrationNoticeText(notice.text))
         ) {
           setNoticeText(notice.text);
@@ -68,10 +68,10 @@ export function ByrdispatchFloatingNoticeClient() {
       <Link
         href="/byrdispatch"
         className="pointer-events-auto mx-auto flex max-w-2xl items-center gap-2 border border-pink-300/45 bg-pink-500/20 px-3 py-2 text-pink-50 shadow-[0_0_24px_rgba(244,114,182,0.18)] backdrop-blur transition-colors hover:border-pink-200/70 hover:bg-pink-500/25"
-        aria-label="섀 소식 공지 보기"
+        aria-label="섀소식 공지 보기"
       >
         <Image
-          src={SHA_NEWS_NOTICE_ICON}
+          src={BYRDISPATCH_NOTICE_ICON}
           alt=""
           width={22}
           height={22}
@@ -84,7 +84,7 @@ export function ByrdispatchFloatingNoticeClient() {
           {noticeText}
         </span>
         <span className="shrink-0 text-xs font-black text-pink-100 underline decoration-pink-200/45 underline-offset-4">
-          섀 소식
+          섀소식
         </span>
       </Link>
     </aside>

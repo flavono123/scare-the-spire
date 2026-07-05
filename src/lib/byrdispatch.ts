@@ -1,42 +1,42 @@
 import fs from "fs/promises";
 import path from "path";
 import {
-  SHA_NEWS_ICON,
-  SHA_NEWS_NOTICE_ICON,
-  type ShaNewsNotice,
-} from "@/lib/sha-news-static";
+  BYRDISPATCH_ICON,
+  BYRDISPATCH_NOTICE_ICON,
+  type ByrdispatchNotice,
+} from "@/lib/byrdispatch-static";
 
-export { SHA_NEWS_ICON, SHA_NEWS_NOTICE_ICON, type ShaNewsNotice };
+export { BYRDISPATCH_ICON, BYRDISPATCH_NOTICE_ICON, type ByrdispatchNotice };
 
-const SHA_NEWS_DIR = path.join(process.cwd(), "data/sha-news");
-const SHA_NEWS_FILE_RE = /^\d{4}-\d{2}-\d{2}\.md$/;
-const SHA_NEWS_NOTICE_SECTION = "공지";
-const SHA_NEWS_STATUS_RE = /\s*\((new|개발 중|버그)\)\s*$/;
-const SHA_NEWS_MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
+const BYRDISPATCH_DIR = path.join(process.cwd(), "data/byrdispatch");
+const BYRDISPATCH_FILE_RE = /^\d{4}-\d{2}-\d{2}\.md$/;
+const BYRDISPATCH_NOTICE_SECTION = "공지";
+const BYRDISPATCH_STATUS_RE = /\s*\((new|개발 중|버그)\)\s*$/;
+const BYRDISPATCH_MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
 
-export type ShaNewsStatus = "new" | "wip" | "bug";
+export type ByrdispatchStatus = "new" | "wip" | "bug";
 
-export type ShaNewsBullet = {
+export type ByrdispatchBullet = {
   text: string;
-  statuses: ShaNewsStatus[];
+  statuses: ByrdispatchStatus[];
 };
 
-export type ShaNewsSection = {
+export type ByrdispatchSection = {
   title: string;
   level: 2 | 3;
-  bullets: ShaNewsBullet[];
+  bullets: ByrdispatchBullet[];
   isNotice: boolean;
-  statuses: ShaNewsStatus[];
+  statuses: ByrdispatchStatus[];
 };
 
-export type ShaNewsEntry = {
+export type ByrdispatchEntry = {
   date: string;
-  sections: ShaNewsSection[];
-  noticeSections: ShaNewsSection[];
-  regularSections: ShaNewsSection[];
+  sections: ByrdispatchSection[];
+  noticeSections: ByrdispatchSection[];
+  regularSections: ByrdispatchSection[];
 };
 
-function normalizeStatus(value: string): ShaNewsStatus {
+function normalizeStatus(value: string): ByrdispatchStatus {
   if (value === "new") return "new";
   if (value === "버그") return "bug";
   return "wip";
@@ -44,27 +44,27 @@ function normalizeStatus(value: string): ShaNewsStatus {
 
 function extractStatusMarkers(source: string): {
   text: string;
-  statuses: ShaNewsStatus[];
+  statuses: ByrdispatchStatus[];
 } {
-  const statuses: ShaNewsStatus[] = [];
+  const statuses: ByrdispatchStatus[] = [];
   let text = source.trim();
-  let match = text.match(SHA_NEWS_STATUS_RE);
+  let match = text.match(BYRDISPATCH_STATUS_RE);
 
   while (match) {
     statuses.unshift(normalizeStatus(match[1]));
     text = text.slice(0, match.index).trimEnd();
-    match = text.match(SHA_NEWS_STATUS_RE);
+    match = text.match(BYRDISPATCH_STATUS_RE);
   }
 
   return { text, statuses };
 }
 
-function parseShaNewsMarkdown(markdown: string, fallbackDate: string): ShaNewsEntry {
+function parseByrdispatchMarkdown(markdown: string, fallbackDate: string): ByrdispatchEntry {
   const lines = markdown.split(/\r?\n/);
   const h1 = lines.find((line) => line.startsWith("# "))?.slice(2).trim();
   const date = h1 && /^\d{4}-\d{2}-\d{2}$/.test(h1) ? h1 : fallbackDate;
-  const sections: ShaNewsSection[] = [];
-  let currentSection: ShaNewsSection | null = null;
+  const sections: ByrdispatchSection[] = [];
+  let currentSection: ByrdispatchSection | null = null;
 
   for (const rawLine of lines) {
     const line = rawLine.trim();
@@ -78,7 +78,7 @@ function parseShaNewsMarkdown(markdown: string, fallbackDate: string): ShaNewsEn
         title,
         level,
         bullets: [],
-        isNotice: title === SHA_NEWS_NOTICE_SECTION,
+        isNotice: title === BYRDISPATCH_NOTICE_SECTION,
         statuses,
       };
       sections.push(currentSection);
@@ -112,10 +112,10 @@ function parseShaNewsMarkdown(markdown: string, fallbackDate: string): ShaNewsEn
   };
 }
 
-export async function getShaNewsEntries(): Promise<ShaNewsEntry[]> {
+export async function getByrdispatchEntries(): Promise<ByrdispatchEntry[]> {
   let filenames: string[];
   try {
-    filenames = await fs.readdir(SHA_NEWS_DIR);
+    filenames = await fs.readdir(BYRDISPATCH_DIR);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
     throw error;
@@ -123,10 +123,10 @@ export async function getShaNewsEntries(): Promise<ShaNewsEntry[]> {
 
   const entries = await Promise.all(
     filenames
-      .filter((filename) => SHA_NEWS_FILE_RE.test(filename))
+      .filter((filename) => BYRDISPATCH_FILE_RE.test(filename))
       .map(async (filename) => {
-        const markdown = await fs.readFile(path.join(SHA_NEWS_DIR, filename), "utf-8");
-        return parseShaNewsMarkdown(markdown, filename.slice(0, -3));
+        const markdown = await fs.readFile(path.join(BYRDISPATCH_DIR, filename), "utf-8");
+        return parseByrdispatchMarkdown(markdown, filename.slice(0, -3));
       }),
   );
 
@@ -135,17 +135,17 @@ export async function getShaNewsEntries(): Promise<ShaNewsEntry[]> {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export async function getLatestShaNewsEntry(): Promise<ShaNewsEntry | null> {
-  return (await getShaNewsEntries())[0] ?? null;
+export async function getLatestByrdispatchEntry(): Promise<ByrdispatchEntry | null> {
+  return (await getByrdispatchEntries())[0] ?? null;
 }
 
-export async function getLatestShaNewsNotice(): Promise<ShaNewsNotice | null> {
-  for (const entry of await getShaNewsEntries()) {
+export async function getLatestByrdispatchNotice(): Promise<ByrdispatchNotice | null> {
+  for (const entry of await getByrdispatchEntries()) {
     const text = entry.noticeSections[0]?.bullets[0]?.text;
     if (text) {
       return {
         date: entry.date,
-        text: text.replace(SHA_NEWS_MARKDOWN_LINK_RE, "$1"),
+        text: text.replace(BYRDISPATCH_MARKDOWN_LINK_RE, "$1"),
       };
     }
   }

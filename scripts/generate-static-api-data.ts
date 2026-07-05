@@ -4,7 +4,7 @@ import { buildSearchIndexPayload } from "../src/lib/search-index-data";
 import { loadAllEntities } from "../src/lib/load-all-entities";
 import { buildCompendiumDetailPayload } from "../src/lib/compendium-detail-payload-builder";
 import { buildCompendiumResourceManifest } from "../src/lib/compendium-resource-manifest";
-import { getLatestShaNewsNotice } from "../src/lib/sha-news";
+import { getLatestByrdispatchNotice } from "../src/lib/byrdispatch";
 
 type StaticJsonTarget = {
   path: string;
@@ -27,14 +27,14 @@ async function main() {
     koreanCompendiumDetailPayload,
     englishCompendiumDetailPayload,
     compendiumResourceManifest,
-    latestShaNewsNotice,
+    latestByrdispatchNotice,
   ] = await Promise.all([
     buildSearchIndexPayload(),
     loadAllEntities(),
     buildCompendiumDetailPayload("ko"),
     buildCompendiumDetailPayload("en"),
     buildCompendiumResourceManifest(),
-    getLatestShaNewsNotice(),
+    getLatestByrdispatchNotice(),
   ]);
 
   await Promise.all([
@@ -43,7 +43,7 @@ async function main() {
     writeJson({ path: "generated/compendium-detail-kor.json", data: koreanCompendiumDetailPayload }),
     writeJson({ path: "generated/compendium-detail-eng.json", data: englishCompendiumDetailPayload }),
     writeJson({ path: "generated/compendium-resource-manifest.json", data: compendiumResourceManifest }),
-    writeJson({ path: "generated/latest-byrdispatch-notice.json", data: latestShaNewsNotice }),
+    writeJson({ path: "generated/latest-byrdispatch-notice.json", data: latestByrdispatchNotice }),
     writeJson({ path: "api/search-index", data: searchIndex }),
     writeJson({ path: "comment-entities/sts2", data: commentEntities }),
   ]);

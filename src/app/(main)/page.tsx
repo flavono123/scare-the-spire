@@ -1,5 +1,5 @@
 import { getStories, getSTS2Stories, getCards, getRelics, getPotions, getChanges, getSTS2Changes, getSTS2Patches } from "@/lib/data";
-import { ShaNewsTeaser } from "@/components/sha-news-teaser";
+import { ByrdispatchTeaser } from "@/components/byrdispatch-teaser";
 import { StoryFeed } from "@/components/story-feed";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
@@ -23,7 +23,7 @@ export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOC
   return (
     <div className="min-h-screen bg-background text-foreground">
       <main className="mx-auto max-w-2xl space-y-2">
-        <ShaNewsTeaser serviceLocale={serviceLocale} gameLocale={gameLocale} />
+        <ByrdispatchTeaser serviceLocale={serviceLocale} gameLocale={gameLocale} />
         {/* Feed */}
         <div className="rounded-lg border border-border bg-card/20">
           {mergedStories.length === 0 ? (

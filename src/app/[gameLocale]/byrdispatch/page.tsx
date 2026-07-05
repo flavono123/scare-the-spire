@@ -1,6 +1,6 @@
 import {
-  generateShaNewsMetadata,
-  renderShaNewsPage,
+  generateByrdispatchMetadata,
+  renderByrdispatchPage,
 } from "@/app/(main)/byrdispatch/page";
 import { getLocalePairFromParams, type LocaleRouteParams } from "@/lib/locale-routing";
 
@@ -10,10 +10,10 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   const { gameLocale } = await getLocalePairFromParams(params);
-  return generateShaNewsMetadata(gameLocale);
+  return generateByrdispatchMetadata(gameLocale);
 }
 
-export default async function LocalizedShaNewsPage({ params }: Props) {
+export default async function LocalizedByrdispatchPage({ params }: Props) {
   const { gameLocale } = await getLocalePairFromParams(params);
-  return renderShaNewsPage(gameLocale);
+  return renderByrdispatchPage(gameLocale);
 }

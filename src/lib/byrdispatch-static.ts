@@ -1,9 +1,9 @@
-export const SHA_NEWS_ICON = "/images/sts2/relics/byrdpip.webp";
-export const SHA_NEWS_NOTICE_ICON = "/images/sts2/powers/signal_boost_power.webp";
-export const SHA_NEWS_LATEST_NOTICE_PATH = "/generated/latest-byrdispatch-notice.json";
+export const BYRDISPATCH_ICON = "/images/sts2/relics/byrdpip.webp";
+export const BYRDISPATCH_NOTICE_ICON = "/images/sts2/powers/signal_boost_power.webp";
+export const BYRDISPATCH_LATEST_NOTICE_PATH = "/generated/latest-byrdispatch-notice.json";
 export const BYRDISPATCH_MIGRATION_TARGET_HOST = "scare-the-spire.flavono123.workers.dev";
 
-export type ShaNewsNotice = {
+export type ByrdispatchNotice = {
   date: string;
   text: string;
 };

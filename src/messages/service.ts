@@ -9,11 +9,11 @@ export const serviceMessages = {
       chemicalX: "케미컬X",
       historyCourse: "역사 강의서",
     },
-    shaNews: {
-      title: "섀 소식",
+    byrdispatch: {
+      title: "섀소식",
       viewAll: "전체 보기",
       metadata: {
-        title: "섀 소식",
+        title: "섀소식",
         description: "슬서운이야기 서비스의 새 기능과 콘텐츠 소식",
       },
       status: {
@@ -533,7 +533,7 @@ export const serviceMessages = {
       chemicalX: "Chemical X",
       historyCourse: "History Course",
     },
-    shaNews: {
+    byrdispatch: {
       title: "byrdispatch",
       viewAll: "View all",
       metadata: {

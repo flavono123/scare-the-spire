@@ -5,17 +5,17 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
-import { SHA_NEWS_ICON } from "@/lib/sha-news";
+import { BYRDISPATCH_ICON } from "@/lib/byrdispatch";
 import { serviceMessages } from "@/messages/service";
 
-export function ShaNewsTeaser({
+export function ByrdispatchTeaser({
   serviceLocale,
   gameLocale,
 }: {
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
-  const messages = serviceMessages[serviceLocale].shaNews;
+  const messages = serviceMessages[serviceLocale].byrdispatch;
 
   return (
     <Link
@@ -24,7 +24,7 @@ export function ShaNewsTeaser({
     >
       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-purple-200/30 bg-black/30 shadow-[0_0_0_1px_rgba(216,180,254,0.12)]">
         <Image
-          src={SHA_NEWS_ICON}
+          src={BYRDISPATCH_ICON}
           alt=""
           width={28}
           height={28}
