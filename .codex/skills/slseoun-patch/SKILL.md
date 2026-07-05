@@ -56,7 +56,7 @@ Use this when Steam has published the patch but rich notes are not ready yet.
 2. Keep `steamUrl` live.
 3. Set `status` to `"building"` so the index/detail UI shows the `작업 도구`
    stage while the patch is being prepared.
-4. Mark the summary as work-in-progress in Korean and English instead of pretending the rich notes are done.
+4. Mark the summary as being prepared in Korean and English instead of pretending the rich notes are done.
 5. Do not add placeholder rich note markdown unless there is real content.
 6. Commit this shell separately before asset extraction or translation work.
 7. Push immediately after the shell commit so Cloudflare can deploy the

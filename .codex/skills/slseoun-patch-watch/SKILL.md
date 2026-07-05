@@ -19,7 +19,7 @@ Use this flow for the top of the patch index:
 2. `지연`: optional. The expected Friday KST window has passed, but Steam has
    not published an announcement yet.
 3. `작업 도구`: Steam has published the patch and the rich patch-note work is in
-   progress. This replaces the old WIP/building wording.
+   progress. This replaces the old public wording for the `building` state.
 4. `패치노트`: rich patch notes are ready.
 
 Skip `준비 시간` or `지연` when an unscheduled patch is already live. In that
