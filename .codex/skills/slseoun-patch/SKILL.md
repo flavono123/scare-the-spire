@@ -24,9 +24,11 @@ Create or update STS2 rich patch notes. Steam is the source of truth for patch-n
 Patch release work is speed-first:
 
 1. If the expected patch window arrives but Steam has not published anything,
-   use `.codex/skills/slseoun-patch-watch/SKILL.md` to publish a `watching`
-   placeholder (`패치 대기 중` / `Awaiting patch`) on the index.
-2. As soon as Steam publishes the patch, publish the real WIP shell first:
+   use `.codex/skills/slseoun-patch-watch/SKILL.md` to publish the static
+   `준비 시간` stage, or the optional `지연` stage after the expected Friday KST
+   window slips.
+2. As soon as Steam publishes the patch, publish the real `작업 도구` shell
+   first:
    create/update the `data/sts2-patches.json` entry with `status: "building"`,
    commit it, push it, and continue. Do not wait for Cloudflare deployment
    success before starting the rich-note work.
@@ -52,20 +54,26 @@ Use this when Steam has published the patch but rich notes are not ready yet.
 
 1. Add or update the `data/sts2-patches.json` entry with the real version/date/title/type/Steam URL.
 2. Keep `steamUrl` live.
-3. Set `status` to `"building"` so the index/detail UI labels the patch as being prepared.
+3. Set `status` to `"building"` so the index/detail UI shows the `작업 도구`
+   stage while the patch is being prepared.
 4. Mark the summary as work-in-progress in Korean and English instead of pretending the rich notes are done.
 5. Do not add placeholder rich note markdown unless there is real content.
 6. Commit this shell separately before asset extraction or translation work.
-7. Push immediately after the shell commit so Cloudflare can deploy the WIP
-   state. Do not wait for deployment success; continue the patch-note work.
+7. Push immediately after the shell commit so Cloudflare can deploy the
+   `작업 도구` state. Do not wait for deployment success; continue the
+   patch-note work.
 
 Index/detail behavior while `status: "building"`:
 
 - The index card is not a link to the local detail page.
-- The index card still shows one muted grayscale thumbnail. If no `art` is present yet, the UI falls back to the default STS2 banner; do not omit the thumbnail area in WIP.
+- The index card still shows one muted grayscale thumbnail. If no `art` is
+  present yet, the UI falls back to the default STS2 banner; do not omit the
+  thumbnail area in the `작업 도구` shell.
 - Keep the normal type/balance chips, but render them in disabled gray.
 - The only colored action is the Steam original chip; it links to `steamUrl` and opens the real Steam source.
-- The body shows gray per-letter sine text for "작성 중" / "Building"; do not add a separate "작성 중" chip.
+- The title uses the static `tools_of_the_trade_power.webp` token plus the
+  version label. Show the game-localized `작업 도구` / `Tools of the Trade`
+  stage label as the disabled gray stage badge.
 - The card footer shows the date only.
 - The detail page renders a stronger building state when markdown files are absent, but should not add another Steam link while building.
 
