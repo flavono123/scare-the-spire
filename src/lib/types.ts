@@ -126,6 +126,7 @@ export interface STS2Patch {
   titleKo: string;
   type: PatchType;
   status?: "ready" | "building" | "watching";
+  watchStage?: "prep_time" | "delay";
   steamUrl: string | null;
   summary: string;
   summaryKo: string;
