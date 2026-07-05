@@ -15,7 +15,7 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
 - Repo output: `data/sts2/**`, `public/images/sts2/**`, `public/spine/sts2/**`, `data/sts2/meta.json`
 - Legacy source skill: `.claude/skills/update-game-assets/SKILL.md` if deeper parser notes are needed.
 
-## Required Workflow
+## Fast Patch Workflow
 
 1. Confirm the local game install has updated to the target patch version by reading `release_info.json`.
 2. Decompile the current DLL:
@@ -24,24 +24,37 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
    rm -rf /tmp/sts2-src
    PATH="$HOME/.dotnet/tools:$PATH" ilspycmd -p -o /tmp/sts2-src "$DLL"
    ```
-3. Refresh extracted assets and parsed structural data:
+3. Refresh localization and structural data first. This is the minimum path for
+   fast rich patch work:
    ```bash
    pnpm i18n:sync
-   python3 scripts/extract-card-portraits.py --force
-   env PYTHONPATH=/tmp/sts2-spine-deps:. PYTHONDONTWRITEBYTECODE=1 python3 scripts/extract-epoch-portraits.py --force
-   env PYTHONPATH=. python3.12 scripts/extract-map-assets.py --force
-   env PYTHONPATH=. python3.12 scripts/extract-boss-icons.py --force
    python3 scripts/parse-enchantments.py
    python3 scripts/parse-monsters.py
    python3 scripts/parse-encounters.py
    python3 scripts/parse-entity-vars.py
-   env PYTHONPATH=. python3.12 scripts/extract-sts2-ancient-assets.py --force
-   PYTHONPATH=/tmp/sts2-spine-deps PYTHONDONTWRITEBYTECODE=1 python3 scripts/extract-sts2-spine-assets.py --force
-   PYTHONPATH=/tmp/sts2-spine-deps PYTHONDONTWRITEBYTECODE=1 python3 scripts/extract-sts2-spine-assets.py --kind ancients --force
+   ```
+4. Refresh only the likely affected assets. Do not pass `--force` by default:
+   ```bash
+   python3 scripts/extract-card-portraits.py
+   env PYTHONPATH=/tmp/sts2-spine-deps:. PYTHONDONTWRITEBYTECODE=1 python3 scripts/extract-epoch-portraits.py
+   env PYTHONPATH=. python3.12 scripts/extract-map-assets.py
+   env PYTHONPATH=. python3.12 scripts/extract-boss-icons.py
+   env PYTHONPATH=. python3.12 scripts/extract-sts2-ancient-assets.py
+   ```
+   Use `python3 scripts/extract-card-portraits.py --diff-only` only when a
+   patch may have replaced existing card art. Use `--force` only for a targeted
+   full rebuild or after confirming changed existing assets. If any asset
+   command writes files, run `pnpm sts2:index-images` after the asset pass.
+5. Run Spine extraction only when monsters, ancients, VFX, bestiary rendering,
+   or Spine assets may have changed:
+   ```bash
+   PYTHONPATH=/tmp/sts2-spine-deps PYTHONDONTWRITEBYTECODE=1 python3 scripts/extract-sts2-spine-assets.py
+   PYTHONPATH=/tmp/sts2-spine-deps PYTHONDONTWRITEBYTECODE=1 python3 scripts/extract-sts2-spine-assets.py --kind ancients
    node scripts/build-sts2-spine-index.mjs
    pnpm sts2:index-images
    ```
-   Use the `sts2-spine-assets` skill for dependency setup, coverage review, fallback policy, and VFX-specific notes.
+   Use the `sts2-spine-assets` skill for dependency setup, coverage review,
+   fallback policy, and VFX-specific notes.
    `scripts/extract-epoch-portraits.py` must keep timeline art split by source:
    official portraits go to `public/images/sts2/epochs/`, while placeholder/beta
    portraits go to `public/images/sts2/epochs-beta/`. When a patch promotes an
@@ -53,14 +66,33 @@ Extract current STS2 game files and refresh Codex data from the local Steam inst
    corresponding `data/sts2/{eng,kor}/events.json` `relics` array. Ancient
    relics not listed there will disappear from the relic index's Ancient
    subgroups.
-4. Apply incremental Codex entity diffs for patch-note changes that scripts cannot infer:
+6. Apply incremental Codex entity diffs for patch-note changes that scripts cannot infer:
    - Cards: `data/sts2/{eng,kor}/cards.json`
    - Relics: `data/sts2/{eng,kor}/relics.json`
    - Potions: `data/sts2/{eng,kor}/potions.json`
    - Powers: `data/sts2/{eng,kor}/powers.json`
    - Events/enchantments/monsters/encounters when patch notes mention changes not covered by parsers
-5. Update `data/sts2/meta.json` to the extracted game version and current extraction date.
-6. Review diffs before each commit. Commit after each meaningful edit, matching `AGENTS.md`.
+7. Update `data/sts2/meta.json` to the extracted game version and current extraction date.
+8. Review diffs before each commit. Commit after each meaningful edit, matching `AGENTS.md`.
+
+## Asset Extraction Rules
+
+- Card portraits are WebP-first. `scripts/extract-card-portraits.py` uses
+  existing `.webp` files as the skip marker and does not write `.png` files
+  unless `--write-png` is explicitly passed.
+- The repository currently serves/tracks card portrait `.webp` files, not card
+  portrait `.png` files. Do not create or commit card PNG intermediates during
+  normal patch work.
+- Existing non-card PNG files under `public/images/sts2/**` are UI, map,
+  run-history, intent, or patch-specific assets. Treat them separately from
+  card portrait intermediates.
+- The patch Worker copies public assets referenced by generated patch HTML/CSS.
+  Do not add unreferenced PNG intermediates to patch pages.
+- Omit `--force` on extractors for the first pass. Most asset extractors skip
+  existing outputs without `--force`, which is the desired fast path for patch
+  notes that mainly change text, numbers, or new resources.
+- Use targeted `--force` or script-specific filters only after Steam notes,
+  extracted data, or visual QA indicates existing art actually changed.
 
 ## Regression Guards
 
