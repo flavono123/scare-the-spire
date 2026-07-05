@@ -16,6 +16,24 @@ Create or update STS2 rich patch notes. Steam is the source of truth for patch-n
 - Every meaningful edit gets its own speculative commit, following `AGENTS.md`.
 - Never construct a Steam store/news URL from the Steam API `gid`; use a real store URL from the announcement or user.
 - Before finalizing a ready patch that touches Compendium resources, run `.codex/skills/sts2-compendium-patch-sync/SKILL.md` after rich notes and asset extraction so PCK/DLL diffs, `data/sts2-changes.json`, and lifecycle/deprecated behavior are applied together.
+- Do not spend time preserving or checking any Vercel deployment path. Cloudflare Workers and the static patch Worker are the only deployment targets for this workflow.
+
+## Publish Order
+
+Patch release work is speed-first:
+
+1. If the expected patch window arrives but Steam has not published anything,
+   use `.codex/skills/slseoun-patch-watch/SKILL.md` to publish a `watching`
+   placeholder (`패치 대기 중` / `Awaiting patch`) on the index.
+2. As soon as Steam publishes the patch, publish the real WIP shell first:
+   create/update the `data/sts2-patches.json` entry with `status: "building"`,
+   commit it, push it, and continue. Do not wait for Cloudflare deployment
+   success before starting the rich-note work.
+3. Produce the rich patch notes quickly and expect follow-up correction. A
+   useful first published version is preferred over trying to make every Korean
+   nuance, tooltip, and expression perfect in one turn.
+4. When rich notes and required data sync are ready, remove `status` or set it
+   to `"ready"`, commit, push, and run the matching patch Worker checks.
 
 ## Steam Fetch
 
@@ -37,6 +55,8 @@ Use this when Steam has published the patch but rich notes are not ready yet.
 4. Mark the summary as work-in-progress in Korean and English instead of pretending the rich notes are done.
 5. Do not add placeholder rich note markdown unless there is real content.
 6. Commit this shell separately before asset extraction or translation work.
+7. Push immediately after the shell commit so Cloudflare can deploy the WIP
+   state. Do not wait for deployment success; continue the patch-note work.
 
 Index/detail behavior while `status: "building"`:
 
@@ -108,17 +128,23 @@ Rules:
 ## Full Rich Patch Workflow
 
 1. Fetch raw Steam contents for the target version.
-2. Save structured English notes to `data/sts2-patch-notes/{version}.md`:
+2. If Shell-First Mode has not already been committed and pushed for this
+   patch, do it now before writing rich notes.
+3. Save structured English notes to `data/sts2-patch-notes/{version}.md`:
    - Use the Steam title exactly as `# ...`.
    - Skip greetings, community fluff, image placeholders, and unrelated promo text.
    - Use `##`/`###` sections and bullet items.
    - Preserve numeric values exactly, including upgrade notation like `5(7)`.
    - This is also a rich note file, not raw plain text. Add Codex keyword markup for cards, relics, powers, events, monsters, ancients, and important game terms so `/en` and other game-only locale pages keep hover/link previews.
-3. Commit the English notes.
-4. Run or verify `update-game-assets` for the patched game version.
-5. Translate/enrich Korean notes at `data/sts2-patch-notes/{version}.ko.md`.
-6. Update `data/sts2-patches.json` with factual summaries, `hasBalanceChanges`, representative `art`, and any useful `featuredEntities` fallback shortlist.
-7. Apply machine-readable data changes:
+4. Commit the English notes.
+5. Run or verify the fast path in `update-game-assets` for the patched game
+   version. Skip heavyweight asset refreshes unless the patch or diff indicates
+   that those assets changed.
+6. Translate/enrich Korean notes at `data/sts2-patch-notes/{version}.ko.md`.
+   Prefer a fast, factual first pass with correct entity markup over a perfect
+   final tone in one turn.
+7. Update `data/sts2-patches.json` with factual summaries, `hasBalanceChanges`, representative `art`, and any useful `featuredEntities` fallback shortlist.
+8. Apply machine-readable data changes:
    - `data/sts2/{eng,kor}/cards.json`
    - `data/sts2/{eng,kor}/relics.json`
    - `data/sts2/{eng,kor}/potions.json`
@@ -126,8 +152,9 @@ Rules:
    - `data/sts2-changes.json` is the SSOT for structured patch changes. Put player-facing `diffs`, machine-applicable `fieldDiffs`, cross-resource `relatedEntities`, and optional `visualDiff` on the same `STS2Change` record.
    - Do not hand-author `data/sts2-entity-versions.json`; `getEntityVersionDiffs()` derives version diffs from `data/sts2-changes.json`.
    - `data/sts2/meta.json`
-8. Run `.codex/skills/sts2-compendium-patch-sync/SKILL.md` when the patch touched any Compendium resource, monster behavior, asset, localization, or deprecated/removed resource. Treat this as the post-patch guardrail before the patch becomes ready.
-9. Commit each meaningful file group independently.
+9. Run `.codex/skills/sts2-compendium-patch-sync/SKILL.md` when the patch touched any Compendium resource, monster behavior, asset, localization, or deprecated/removed resource. Treat this as the post-patch guardrail before the patch becomes ready.
+10. Commit each meaningful file group independently and push publishable milestones
+    quickly.
 
 ## Compendium Versioning Contract
 
