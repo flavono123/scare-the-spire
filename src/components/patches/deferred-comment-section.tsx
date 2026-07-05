@@ -46,9 +46,15 @@ export function DeferredCommentSection({
     return (
       <div
         ref={mountRef}
-        className="h-4 w-24 rounded bg-muted/20"
-        aria-hidden="true"
-      />
+        data-patch-comment-root
+        data-thread-key={threadKey}
+        className="space-y-3"
+      >
+        <div
+          className="h-4 w-24 rounded bg-muted/20"
+          aria-hidden="true"
+        />
+      </div>
     );
   }
 

@@ -45,6 +45,14 @@ type StaticPatchRoute = {
 };
 
 const outDir = path.join(process.cwd(), ".patch-worker/assets");
+const patchCommentsClientPath = path.join(
+  process.cwd(),
+  "src/components/patches/patch-comments-client.js",
+);
+
+function escapeInlineJson(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}
 
 function metadataTitle(metadata: StaticPatchRoute["metadata"], fallback: string): string {
   const title = metadata.title;
@@ -393,10 +401,22 @@ function renderShell(route: StaticPatchRoute): string {
       </head>
       <body
         className="font-service antialiased bg-background text-foreground"
-        dangerouslySetInnerHTML={{ __html: app }}
+        dangerouslySetInnerHTML={{
+          __html: `${app}<script id="sts-patch-comments-config" type="application/json">${escapeInlineJson({
+            supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+            supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
+            supabaseEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
+          })}</script><script src="/_patches/patch-comments.js" defer></script>`,
+        }}
       />
     </html>,
   )}`;
+}
+
+async function writePatchCommentsClient() {
+  const destinationPath = path.join(outDir, "_patches/patch-comments.js");
+  await fs.mkdir(path.dirname(destinationPath), { recursive: true });
+  await fs.copyFile(patchCommentsClientPath, destinationPath);
 }
 
 async function writeRoute(route: StaticPatchRoute) {
@@ -420,6 +440,8 @@ async function localizedPatchRoutes(version?: string) {
 }
 
 async function main() {
+  await writePatchCommentsClient();
+
   const versions = await generatePatchDetailStaticParams();
   const routes: StaticPatchRoute[] = [
     {
