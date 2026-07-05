@@ -3,6 +3,7 @@ import fs from "fs/promises";
 import path from "path";
 import React, { type ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { loadEnvConfig } from "@next/env";
 import {
   PatchDetailPage,
   generatePatchDetailStaticParams,
@@ -43,6 +44,8 @@ type StaticPatchRoute = {
   element: ReactNode;
   metadata: Awaited<ReturnType<typeof getPatchDetailMetadata>> | ReturnType<typeof getPatchListMetadata>;
 };
+
+loadEnvConfig(process.cwd());
 
 const outDir = path.join(process.cwd(), ".patch-worker/assets");
 const patchCommentsClientPath = path.join(
