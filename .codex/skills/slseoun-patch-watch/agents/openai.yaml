@@ -1,0 +1,4 @@
+interface:
+  display_name: "Slseoun Patch Watch"
+  short_description: "Publish pre-patch waiting placeholders"
+  default_prompt: "Use $slseoun-patch-watch to publish a pre-patch waiting placeholder."
