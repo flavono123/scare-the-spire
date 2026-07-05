@@ -71,5 +71,6 @@ pnpm patch:test
 ```
 
 If time is critical, `pnpm patch:build` and `pnpm patch:test` are the minimum
-checks before pushing the patch Worker. The page must remain static and must not
+checks before pushing the patch Worker. Load `.codex/skills/cf-guardrails/SKILL.md`
+when touching Worker/runtime behavior; the page must remain static and must not
 add request-time Worker work.
