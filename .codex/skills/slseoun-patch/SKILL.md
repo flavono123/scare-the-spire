@@ -72,9 +72,9 @@ Index/detail behavior while `status: "building"`:
 - Keep the normal type/balance chips, but render them in disabled gray.
 - The only colored action is the Steam original chip; it links to `steamUrl` and opens the real Steam source.
 - The title uses the animated
-  `powers/animated/tools_of_the_trade_power.webp` token plus the version label.
-  Show the game-localized `작업 도구` / `Tools of the Trade` stage label as the
-  disabled gray stage badge.
+  `powers/animated/tools_of_the_trade_power_tilt.webp` token plus the version
+  label. Show the game-localized `작업 도구` / `Tools of the Trade` stage label
+  as the disabled gray stage badge.
 - The card footer shows the date only.
 - The detail page renders a stronger building state when markdown files are absent, but should not add another Steam link while building.
 
