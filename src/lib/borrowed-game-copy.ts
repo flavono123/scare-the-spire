@@ -32,6 +32,129 @@ export interface PatchStageGameCopy {
   workToolsTitle: string;
 }
 
+interface LocalizedPhraseReplacement {
+  from: string;
+  to: string;
+}
+
+const PATCH_PREP_TIME_DESCRIPTION_REPLACEMENTS: Partial<Record<GameLocale, LocalizedPhraseReplacement>> = {
+  deu: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural:Epoche wartet|Epochen warten}",
+    to: "Der heutige Patch wartet",
+  },
+  eng: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural:Epoch is|Epochs are} waiting to be revealed...",
+    to: "Today's patch is waiting to be revealed ...",
+  },
+  esp: {
+    from: "Hay {RevealableEpochCount} {RevealableEpochCount:plural:era|eras} que aún debes revelar...",
+    to: "El parche de hoy aún debe revelarse...",
+  },
+  fra: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural:Ère reste|Ères restent}",
+    to: "Le patch du jour reste",
+  },
+  ita: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural:Epoca|Epoche} da rivelare...",
+    to: "La patch di oggi deve ancora essere rivelata...",
+  },
+  jpn: {
+    from: "{RevealableEpochCount}つの断章",
+    to: "今日のパッチ",
+  },
+  kor: {
+    from: "{RevealableEpochCount}개의 역사가 드러나기를 기다리고 있습니다...",
+    to: "오늘의 패치가 드러나기를 기다리고 있습니다 ...",
+  },
+  pol: {
+    from: "{RevealableEpochCount:plural:Została 1 Epoka|Zostały {RevealableEpochCount} Epoki|Zostało {RevealableEpochCount} Epok} do odkrycia...",
+    to: "Dzisiejszy patch czeka na odkrycie...",
+  },
+  ptb: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural:Época ainda pode ser revelada...|Épocas ainda podem ser reveladas...}",
+    to: "O patch de hoje ainda pode ser revelado...",
+  },
+  rus: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural(ru):эпоха ожидает|эпохи ожидают|эпох ожидают}",
+    to: "Сегодняшний патч ожидает",
+  },
+  spa: {
+    from: "Puedes revelar {RevealableEpochCount} {RevealableEpochCount:plural:Época|Épocas} más...",
+    to: "El parche de hoy aún puede revelarse...",
+  },
+  tha: {
+    from: "",
+    to: "รอการเปิดเผยแพตช์ของวันนี้...",
+  },
+  tur: {
+    from: "{RevealableEpochCount} {RevealableEpochCount:plural:Çağ|Çağ}",
+    to: "Bugünün yaması",
+  },
+  zhs: {
+    from: "{RevealableEpochCount}个历史节点",
+    to: "今天的补丁",
+  },
+};
+
+const PATCH_DELAY_DESCRIPTION_REPLACEMENTS: Partial<Record<GameLocale, LocalizedPhraseReplacement>> = {
+  deu: {
+    from: "diesem Monster",
+    to: "diesem Patch",
+  },
+  eng: {
+    from: "Information on this monster is yet to be revealed...",
+    to: "Information on this patch is yet to be revealed ...",
+  },
+  esp: {
+    from: "este monstruo",
+    to: "este parche",
+  },
+  fra: {
+    from: "ce monstre",
+    to: "ce patch",
+  },
+  ita: {
+    from: "questo mostro",
+    to: "questa patch",
+  },
+  jpn: {
+    from: "このモンスター",
+    to: "このパッチ",
+  },
+  kor: {
+    from: "이 몬스터에 관한 정보는 아직 드러나지 않았습니다...",
+    to: "이 패치에 관한 정보는 아직 드러나지 않았습니다 ...",
+  },
+  pol: {
+    from: "tym potworze",
+    to: "tym patchu",
+  },
+  ptb: {
+    from: "esta criatura",
+    to: "este patch",
+  },
+  rus: {
+    from: "этом существе",
+    to: "этом патче",
+  },
+  spa: {
+    from: "este monstruo",
+    to: "este parche",
+  },
+  tha: {
+    from: "มอนสเตอร์ตัวนี้",
+    to: "แพตช์นี้",
+  },
+  tur: {
+    from: "Bu canavar",
+    to: "Bu yama",
+  },
+  zhs: {
+    from: "这个怪物",
+    to: "这个补丁",
+  },
+};
+
 async function readGameTextWithEnglishFallback(
   gameLocale: GameLocale,
   tableName: string,
@@ -103,42 +226,29 @@ function patchPrepTimeDescription(
   gameLocale: GameLocale,
   timelineReminder: string,
 ): string {
-  if (gameLocale === "kor") {
-    return timelineReminder.replace(
-      "{RevealableEpochCount}개의 역사가 드러나기를 기다리고 있습니다...",
-      "오늘의 패치가 드러나기를 기다리고 있습니다 ...",
-    );
+  const replacement = PATCH_PREP_TIME_DESCRIPTION_REPLACEMENTS[gameLocale];
+  if (!replacement) return "Today's patch is waiting to be revealed ...";
+  if (!replacement.from) return replacement.to;
+  if (!timelineReminder.includes(replacement.from)) {
+    return gameLocale === "eng"
+      ? "Today's patch is waiting to be revealed ..."
+      : replacement.to;
   }
-
-  if (gameLocale === "eng") {
-    return timelineReminder.replace(
-      "{RevealableEpochCount} {RevealableEpochCount:plural:Epoch is|Epochs are} waiting to be revealed...",
-      "Today's patch is waiting to be revealed ...",
-    );
-  }
-
-  return "Today's patch is waiting to be revealed ...";
+  return timelineReminder.replace(replacement.from, replacement.to);
 }
 
 function patchDelayDescription(
   gameLocale: GameLocale,
   bestiaryPlaceholder: string,
 ): string {
-  if (gameLocale === "kor") {
-    return bestiaryPlaceholder.replace(
-      "이 몬스터에 관한 정보는 아직 드러나지 않았습니다...",
-      "이 패치에 관한 정보는 아직 드러나지 않았습니다 ...",
-    );
+  const replacement = PATCH_DELAY_DESCRIPTION_REPLACEMENTS[gameLocale];
+  if (!replacement) return "Information on this patch is yet to be revealed ...";
+  if (!bestiaryPlaceholder.includes(replacement.from)) {
+    return gameLocale === "eng"
+      ? "Information on this patch is yet to be revealed ..."
+      : replacement.to;
   }
-
-  if (gameLocale === "eng") {
-    return bestiaryPlaceholder.replace(
-      "Information on this monster is yet to be revealed...",
-      "Information on this patch is yet to be revealed ...",
-    );
-  }
-
-  return "Information on this patch is yet to be revealed ...";
+  return bestiaryPlaceholder.replace(replacement.from, replacement.to);
 }
 
 export async function getPatchStageGameCopy(
