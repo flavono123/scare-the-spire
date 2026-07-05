@@ -262,9 +262,6 @@ export async function PatchListPage({
                   <Badge variant="outline" className="border-zinc-700 bg-zinc-900/50 text-zinc-500">
                     {copy.types[patch.type]}
                   </Badge>
-                  <Badge variant="outline" className="border-zinc-700 bg-zinc-900/50 text-zinc-500">
-                    {patchStageCopy.workToolsTitle || copy.building}
-                  </Badge>
                   {patch.hasBalanceChanges && (
                     <Badge variant="outline" className="border-zinc-700 bg-zinc-900/50 text-zinc-500">
                       {copy.balance}
