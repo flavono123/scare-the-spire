@@ -472,5 +472,20 @@
       { "type": "card", "id": "WITHER" },
       { "type": "potion", "id": "REGEN_POTION" }
     ]
+  },
+  {
+    "id": "expected-2026-07-17",
+    "version": "expected-2026-07-17",
+    "versionLabel": "Next patch",
+    "versionLabelKo": "다음 패치",
+    "date": "2026-07-17",
+    "title": "Awaiting next Steam patch",
+    "titleKo": "다음 Steam 패치 대기 중",
+    "type": "beta",
+    "status": "watching",
+    "steamUrl": null,
+    "summary": "Waiting for the Steam patch.",
+    "summaryKo": "Steam 패치를 기다리는 중입니다.",
+    "hasBalanceChanges": false
   }
 ]
