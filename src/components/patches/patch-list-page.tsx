@@ -203,31 +203,45 @@ export async function PatchListPage({
           const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
 
           if (isWatching) {
-            const stageCopy = watchStage === "delay" ? patchStageCopy.delay : patchStageCopy.prepTime;
+            const isDelay = watchStage === "delay";
+            const stageCopy = isDelay ? patchStageCopy.delay : patchStageCopy.prepTime;
+            const cardClassName = isDelay
+              ? "block rounded-lg border border-zinc-800 bg-zinc-950/35 p-4 shadow-inner"
+              : "block rounded-lg border border-amber-500/30 bg-amber-950/10 p-4 shadow-inner";
+            const titleClassName = isDelay
+              ? "text-lg font-semibold text-zinc-500"
+              : "text-lg font-semibold text-amber-200/80";
+            const badgeClassName = isDelay
+              ? "border-zinc-700 bg-zinc-900/50 text-zinc-500"
+              : "border-amber-500/30 bg-amber-500/10 text-amber-300";
+            const descriptionClassName = isDelay
+              ? "mt-1 text-sm font-medium text-zinc-500"
+              : "mt-1 text-sm font-medium text-amber-100/75";
+            const dateClassName = isDelay ? "mt-2 text-xs text-zinc-600" : "mt-2 text-xs text-amber-100/45";
             return (
               <article
                 key={patch.id}
-                className="block rounded-lg border border-amber-500/30 bg-amber-950/10 p-4 shadow-inner"
+                className={cardClassName}
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <PatchStageTitle
                     stage={visualStage}
                     text={stageCopy.title}
                     serviceLocale={serviceLocale}
-                    className="text-lg font-semibold text-amber-200/80"
+                    className={titleClassName}
                   />
-                  <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-300">
+                  <Badge variant="outline" className={badgeClassName}>
                     {copy.types[patch.type]}
                   </Badge>
                   {patch.hasBalanceChanges && (
-                    <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-300">
+                    <Badge variant="outline" className={badgeClassName}>
                       {copy.balance}
                     </Badge>
                   )}
                 </div>
-                <p className="mt-1 text-sm font-medium text-amber-100/75">{stageCopy.description}</p>
-                <p className="mt-2 text-xs text-amber-100/45">{patch.date}</p>
-                <PatchArtPreview art={patchArt} priority={index === 0} tone="watching" />
+                <p className={descriptionClassName}>{stageCopy.description}</p>
+                <p className={dateClassName}>{patch.date}</p>
+                <PatchArtPreview art={patchArt} priority={index === 0} tone={isDelay ? "building" : "watching"} />
               </article>
             );
           }
