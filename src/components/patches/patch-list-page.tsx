@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
 import Image from "@/components/ui/static-image";
 import { Badge } from "@/components/ui/badge";
 import { getSTS2Patches } from "@/lib/data";
@@ -17,14 +16,13 @@ import {
 } from "@/lib/service-metadata";
 import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
-import type { PatchType } from "@/lib/types";
+import type { PatchType, STS2Patch } from "@/lib/types";
+import { getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
 
 const PATCH_COPY: Record<ServiceLocale, {
   title: string;
   description: string;
   balance: string;
-  watching: string;
-  watchingBody: string;
   building: string;
   steamOriginal: string;
   types: Record<PatchType, string>;
@@ -33,9 +31,7 @@ const PATCH_COPY: Record<ServiceLocale, {
     title: "패치 노트",
     description: "슬레이 더 스파이어 2 전체 패치 히스토리와 밸런스 변경 이력",
     balance: "밸런스",
-    watching: "패치 대기 중",
-    watchingBody: "Steam 패치를 기다리는 중입니다.",
-    building: "작성 중",
+    building: "작업 도구",
     steamOriginal: "Steam 원문",
     types: {
       release: "출시",
@@ -48,9 +44,7 @@ const PATCH_COPY: Record<ServiceLocale, {
     title: "Patch Notes",
     description: "Full Slay the Spire 2 patch history and balance changes.",
     balance: "Balance",
-    watching: "Awaiting patch",
-    watchingBody: "Waiting for the Steam patch.",
-    building: "Building",
+    building: "Tools of the Trade",
     steamOriginal: "Steam original",
     types: {
       release: "Release",
@@ -61,18 +55,66 @@ const PATCH_COPY: Record<ServiceLocale, {
   },
 };
 
-function SineText({ text }: { text: string }) {
+type PatchVisualStage = "prep_time" | "delay" | "building" | "ready";
+type PatchWatchStage = NonNullable<STS2Patch["watchStage"]>;
+
+const DEFAULT_WATCH_STAGE: PatchWatchStage = "prep_time";
+
+const PATCH_STAGE_TOKENS: Record<PatchVisualStage, {
+  src: string;
+  alt: Record<ServiceLocale, string>;
+}> = {
+  prep_time: {
+    src: "/images/sts2/intents/animated/sleep.webp",
+    alt: { ko: "수면", en: "Sleep" },
+  },
+  delay: {
+    src: "/images/sts2/intents/animated/unknown.webp",
+    alt: { ko: "미지", en: "Unknown" },
+  },
+  building: {
+    src: "/images/sts2/powers/tools_of_the_trade_power.webp",
+    alt: { ko: "작업 도구", en: "Tools of the Trade" },
+  },
+  ready: {
+    src: "/images/sts2/nav/patch_notes_icon.png",
+    alt: { ko: "패치 노트", en: "Patch Notes" },
+  },
+};
+
+function patchWatchStage(patch: STS2Patch): PatchWatchStage {
+  return patch.watchStage ?? DEFAULT_WATCH_STAGE;
+}
+
+function patchVisualStage(patch: STS2Patch): PatchVisualStage {
+  if (patch.status === "watching") return patchWatchStage(patch);
+  if (patch.status === "building") return "building";
+  return "ready";
+}
+
+function PatchStageTitle({
+  stage,
+  text,
+  serviceLocale,
+  className = "text-lg font-semibold",
+}: {
+  stage: PatchVisualStage;
+  text: string;
+  serviceLocale: ServiceLocale;
+  className?: string;
+}) {
+  const token = PATCH_STAGE_TOKENS[stage];
+
   return (
-    <span className="rich-sine">
-      {Array.from(text).map((char, i) => (
-        <span
-          key={`${char}-${i}`}
-          className="rich-sine-letter"
-          style={{ "--rich-sine-index": i } as CSSProperties}
-        >
-          {char}
-        </span>
-      ))}
+    <span className={`inline-flex min-w-0 items-center gap-2 ${className}`}>
+      <Image
+        src={token.src}
+        alt={token.alt[serviceLocale]}
+        width={24}
+        height={24}
+        className="h-6 w-6 shrink-0 object-contain"
+      />
+      <span className="min-w-0">{text}</span>
     </span>
   );
 }
@@ -137,9 +179,10 @@ export async function PatchListPage({
   gameLocale: GameLocale;
 }) {
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, entities] = await Promise.all([
+  const [patches, entities, patchStageCopy] = await Promise.all([
     getSTS2Patches(),
     loadAllEntities({ gameLocale }),
+    getPatchStageGameCopy(gameLocale),
   ]);
   const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
 
@@ -155,16 +198,24 @@ export async function PatchListPage({
           const versionLabel = getPatchVersionLabel(patch, serviceLocale);
           const isWatching = patch.status === "watching";
           const isBuilding = patch.status === "building";
+          const visualStage = patchVisualStage(patch);
+          const watchStage = isWatching ? patchWatchStage(patch) : null;
           const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
 
           if (isWatching) {
+            const stageCopy = watchStage === "delay" ? patchStageCopy.delay : patchStageCopy.prepTime;
             return (
               <article
                 key={patch.id}
                 className="block rounded-lg border border-amber-500/30 bg-amber-950/10 p-4 shadow-inner"
               >
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-lg font-semibold text-amber-200/80">{versionLabel}</span>
+                  <PatchStageTitle
+                    stage={visualStage}
+                    text={stageCopy.title}
+                    serviceLocale={serviceLocale}
+                    className="text-lg font-semibold text-amber-200/80"
+                  />
                   <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-300">
                     {copy.types[patch.type]}
                   </Badge>
@@ -174,11 +225,7 @@ export async function PatchListPage({
                     </Badge>
                   )}
                 </div>
-                <p className="mt-1 text-sm font-medium text-amber-100/75">{title}</p>
-                <div className="mt-3 text-sm font-semibold text-amber-300">
-                  {copy.watching}
-                </div>
-                <p className="mt-1 text-xs text-amber-100/55">{copy.watchingBody}</p>
+                <p className="mt-1 text-sm font-medium text-amber-100/75">{stageCopy.description}</p>
                 <p className="mt-2 text-xs text-amber-100/45">{patch.date}</p>
                 <PatchArtPreview art={patchArt} priority={index === 0} tone="watching" />
               </article>
@@ -192,9 +239,17 @@ export async function PatchListPage({
                 className="block rounded-lg border border-zinc-800 bg-zinc-950/35 p-4 shadow-inner"
               >
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-lg font-semibold text-zinc-500">{versionLabel}</span>
+                  <PatchStageTitle
+                    stage="building"
+                    text={versionLabel}
+                    serviceLocale={serviceLocale}
+                    className="text-lg font-semibold text-zinc-500"
+                  />
                   <Badge variant="outline" className="border-zinc-700 bg-zinc-900/50 text-zinc-500">
                     {copy.types[patch.type]}
+                  </Badge>
+                  <Badge variant="outline" className="border-zinc-700 bg-zinc-900/50 text-zinc-500">
+                    {patchStageCopy.workToolsTitle || copy.building}
                   </Badge>
                   {patch.hasBalanceChanges && (
                     <Badge variant="outline" className="border-zinc-700 bg-zinc-900/50 text-zinc-500">
@@ -211,9 +266,6 @@ export async function PatchListPage({
                   )}
                 </div>
                 <p className="mt-1 text-sm font-medium text-zinc-500">{title}</p>
-                <div className="mt-3 text-sm font-semibold text-zinc-500">
-                  <SineText text={copy.building} />
-                </div>
                 <p className="mt-2 text-xs text-zinc-600">{patch.date}</p>
                 <PatchArtPreview art={patchArt} priority={index === 0} tone="building" />
               </article>
@@ -228,7 +280,11 @@ export async function PatchListPage({
               className="block rounded-lg border border-border bg-card/50 p-4 hover:border-yellow-500/40 hover:bg-card/80 transition-colors"
             >
               <div className="flex items-center gap-2">
-                <span className="text-lg font-semibold">{versionLabel}</span>
+                <PatchStageTitle
+                  stage="ready"
+                  text={versionLabel}
+                  serviceLocale={serviceLocale}
+                />
                 <Badge variant="outline" className={PATCH_TYPE_CLASSES[patch.type]}>
                   {copy.types[patch.type]}
                 </Badge>
