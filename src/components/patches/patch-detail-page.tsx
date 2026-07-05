@@ -44,6 +44,9 @@ const PATCH_COPY: Record<ServiceLocale, {
   backToList: string;
   steamOriginal: string;
   missing: string;
+  watchingBadge: string;
+  watchingTitle: string;
+  watchingBody: string;
   buildingBadge: string;
   buildingTitle: string;
   buildingBody: string;
@@ -54,6 +57,9 @@ const PATCH_COPY: Record<ServiceLocale, {
     backToList: "패치 목록",
     steamOriginal: "Steam 원문",
     missing: "패치 노트 원문이 아직 준비되지 않았습니다.",
+    watchingBadge: "대기 중",
+    watchingTitle: "Steam 패치를 기다리는 중입니다.",
+    watchingBody: "아직 공식 패치가 공개되지 않았습니다. 패치가 나오면 먼저 작성 중 상태로 전환하고, 이후 rich 패치노트를 게시합니다.",
     buildingBadge: "작성 중",
     buildingTitle: "슬서운변경을 만드는 중입니다.",
     buildingBody: "Steam 패치는 공개됐고, 이 페이지에는 번역·링크·툴팁 검수가 끝난 rich 패치노트를 게시합니다.",
@@ -69,6 +75,9 @@ const PATCH_COPY: Record<ServiceLocale, {
     backToList: "Patch list",
     steamOriginal: "Steam original",
     missing: "Patch notes are not ready yet.",
+    watchingBadge: "Awaiting",
+    watchingTitle: "Waiting for the Steam patch.",
+    watchingBody: "The official patch is not live yet. Once it appears, this page will move to Building first, then publish the enriched notes.",
     buildingBadge: "Building",
     buildingTitle: "Rich patch notes are being prepared.",
     buildingBody: "The Steam patch is live; this page will show the enriched translation after link and tooltip review.",
@@ -1001,6 +1010,7 @@ export async function PatchDetailPage({
   const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
   const versionLabel = getPatchVersionLabel(patch, serviceLocale);
   const rendererEntities = filterPatchNoteEntities(markdown, entities);
+  const isWatching = patch.status === "watching";
   const isBuilding = patch.status === "building";
   const entitiesByKey = new Map(entities.map((entity) => [`${entity.type}:${entity.id}`, entity]));
   const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
@@ -1026,6 +1036,11 @@ export async function PatchDetailPage({
           <Badge variant="outline" className={PATCH_TYPE_CLASSES[patch.type]}>
             {copy.types[patch.type]}
           </Badge>
+          {isWatching && (
+            <Badge variant="outline" className="bg-amber-500/10 text-amber-300 border-amber-400/40">
+              {copy.watchingBadge}
+            </Badge>
+          )}
           {isBuilding && (
             <Badge variant="outline" className="bg-fuchsia-500/10 text-fuchsia-300 border-fuchsia-400/40">
               {copy.buildingBadge}
@@ -1035,7 +1050,7 @@ export async function PatchDetailPage({
         <p className="mt-1 text-lg font-medium">{title}</p>
         <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">
           <span>{patch.date}</span>
-          {patch.steamUrl && !isBuilding && (
+          {patch.steamUrl && !isBuilding && !isWatching && (
             <a
               href={patch.steamUrl}
               target="_blank"
@@ -1071,7 +1086,12 @@ export async function PatchDetailPage({
         </section>
       ) : (
         <div className="mt-8 rounded-lg border border-border bg-card/30 p-6 text-center text-sm text-muted-foreground">
-          {isBuilding ? (
+          {isWatching ? (
+            <>
+              <p className="font-medium text-foreground">{copy.watchingTitle}</p>
+              <p className="mt-2">{copy.watchingBody}</p>
+            </>
+          ) : isBuilding ? (
             <>
               <p className="font-medium text-foreground">{copy.buildingTitle}</p>
               <p className="mt-2">{copy.buildingBody}</p>

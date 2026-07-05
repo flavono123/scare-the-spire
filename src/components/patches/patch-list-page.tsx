@@ -23,6 +23,8 @@ const PATCH_COPY: Record<ServiceLocale, {
   title: string;
   description: string;
   balance: string;
+  watching: string;
+  watchingBody: string;
   building: string;
   steamOriginal: string;
   types: Record<PatchType, string>;
@@ -31,6 +33,8 @@ const PATCH_COPY: Record<ServiceLocale, {
     title: "패치 노트",
     description: "슬레이 더 스파이어 2 전체 패치 히스토리와 밸런스 변경 이력",
     balance: "밸런스",
+    watching: "패치 대기 중",
+    watchingBody: "Steam 패치를 기다리는 중입니다.",
     building: "작성 중",
     steamOriginal: "Steam 원문",
     types: {
@@ -44,6 +48,8 @@ const PATCH_COPY: Record<ServiceLocale, {
     title: "Patch Notes",
     description: "Full Slay the Spire 2 patch history and balance changes.",
     balance: "Balance",
+    watching: "Awaiting patch",
+    watchingBody: "Waiting for the Steam patch.",
     building: "Building",
     steamOriginal: "Steam original",
     types: {
@@ -81,12 +87,18 @@ const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
 function PatchArtPreview({
   art,
   priority = false,
-  muted = false,
+  tone = "normal",
 }: {
   art: ResolvedPatchArt;
   priority?: boolean;
-  muted?: boolean;
+  tone?: "normal" | "building" | "watching";
 }) {
+  const imageClassName = {
+    normal: "h-full w-full object-cover",
+    building: "h-full w-full object-cover grayscale opacity-45 saturate-0",
+    watching: "h-full w-full object-cover opacity-75 sepia saturate-150",
+  }[tone];
+
   return (
     <div
       className="mt-3 aspect-[16/7] overflow-hidden rounded-md border border-border/70 bg-zinc-950"
@@ -100,7 +112,7 @@ function PatchArtPreview({
         loading={priority ? undefined : "lazy"}
         fetchPriority={priority ? "high" : "low"}
         priority={priority}
-        className={muted ? "h-full w-full object-cover grayscale opacity-45 saturate-0" : "h-full w-full object-cover"}
+        className={imageClassName}
         style={{ objectPosition: art.objectPosition }}
       />
     </div>
@@ -141,8 +153,37 @@ export async function PatchListPage({
         {sorted.map((patch, index) => {
           const title = serviceLocale === "ko" ? patch.titleKo : patch.title;
           const versionLabel = getPatchVersionLabel(patch, serviceLocale);
+          const isWatching = patch.status === "watching";
           const isBuilding = patch.status === "building";
           const patchArt = resolvePatchArt(patch, entitiesByKey, serviceLocale);
+
+          if (isWatching) {
+            return (
+              <article
+                key={patch.id}
+                className="block rounded-lg border border-amber-500/30 bg-amber-950/10 p-4 shadow-inner"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-lg font-semibold text-amber-200/80">{versionLabel}</span>
+                  <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-300">
+                    {copy.types[patch.type]}
+                  </Badge>
+                  {patch.hasBalanceChanges && (
+                    <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-300">
+                      {copy.balance}
+                    </Badge>
+                  )}
+                </div>
+                <p className="mt-1 text-sm font-medium text-amber-100/75">{title}</p>
+                <div className="mt-3 text-sm font-semibold text-amber-300">
+                  {copy.watching}
+                </div>
+                <p className="mt-1 text-xs text-amber-100/55">{copy.watchingBody}</p>
+                <p className="mt-2 text-xs text-amber-100/45">{patch.date}</p>
+                <PatchArtPreview art={patchArt} priority={index === 0} tone="watching" />
+              </article>
+            );
+          }
 
           if (isBuilding) {
             return (
@@ -174,7 +215,7 @@ export async function PatchListPage({
                   <SineText text={copy.building} />
                 </div>
                 <p className="mt-2 text-xs text-zinc-600">{patch.date}</p>
-                <PatchArtPreview art={patchArt} priority={index === 0} muted />
+                <PatchArtPreview art={patchArt} priority={index === 0} tone="building" />
               </article>
             );
           }
