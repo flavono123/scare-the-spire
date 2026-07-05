@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Implementation"
+  short_description: "Build features with game-first constraints"
+  default_prompt: "Use $feature-implementation to implement or change a service feature."
