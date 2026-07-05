@@ -3,7 +3,7 @@
 
 Reads the Godot 4.x PCK file directly (no GDRE Tools needed),
     finds card portrait .import -> .ctex mappings, extracts WebP data
-    from GST2 compressed textures, and writes PNG + WebP outputs.
+    from GST2 compressed textures, and writes WebP outputs.
 
 Usage:
     python3 scripts/extract-card-portraits.py [options]
@@ -13,8 +13,9 @@ Options:
     --output DIR     Output directory (default: public/images/sts2/cards/)
     --beta-output DIR  Beta art output directory (default: public/images/sts2/cards-beta/)
     --dry-run        List files without extracting
-    --diff-only      Only show cards where official art differs from beta art
+    --diff-only      Only show new/changed art
     --force          Overwrite existing files
+    --write-png      Also write PNG intermediates next to the served WebP files
     --character NAME Only extract for a specific character (e.g., ironclad, silent)
 """
 
@@ -367,6 +368,7 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="List files without extracting")
     parser.add_argument("--diff-only", action="store_true", help="Only show new/changed art")
     parser.add_argument("--force", action="store_true", help="Overwrite existing files")
+    parser.add_argument("--write-png", action="store_true", help="Also write PNG intermediates next to WebP outputs")
     parser.add_argument("--character", help="Only extract for a specific character")
     args = parser.parse_args()
 
@@ -429,11 +431,11 @@ def main():
         for portrait in sorted(group, key=lambda p: p.name):
             out_path = os.path.join(out_dir, f"{portrait.name}.png")
             webp_path = os.path.join(out_dir, f"{portrait.name}.webp")
-            exists = os.path.exists(out_path)
+            exists = os.path.exists(webp_path)
 
             if args.dry_run:
                 status = "EXISTS" if exists else "NEW"
-                print(f"  [{status}] {label}/{portrait.character}/{portrait.name}.png")
+                print(f"  [{status}] {label}/{portrait.character}/{portrait.name}.webp")
                 continue
 
             if exists and not args.force and not args.diff_only:
@@ -446,32 +448,42 @@ def main():
                 print(f"  [FAIL] {portrait.name} (could not extract from ctex)")
                 continue
 
+            webp_data = png_to_webp(png_data)
+            if webp_data is None:
+                stats["failed"] += 1
+                print(f"  [FAIL] {portrait.name} (could not convert to WebP; Pillow is required)")
+                continue
+
+            should_write = False
             if exists and args.diff_only:
                 # Compare with existing
-                with open(out_path, "rb") as f:
+                with open(webp_path, "rb") as f:
                     existing = f.read()
-                if existing == png_data:
+                if existing == webp_data:
                     stats["skipped"] += 1
                     continue
                 # Check by image content hash (size may differ due to PNG compression)
                 existing_hash = hashlib.md5(existing).hexdigest()
-                new_hash = hashlib.md5(png_data).hexdigest()
+                new_hash = hashlib.md5(webp_data).hexdigest()
                 if existing_hash == new_hash:
                     stats["skipped"] += 1
                     continue
-                print(f"  [UPDATED] {label}/{portrait.name}.png ({portrait.character})")
+                print(f"  [UPDATED] {label}/{portrait.name}.webp ({portrait.character})")
                 stats["updated"] += 1
+                should_write = True
             elif not exists:
-                print(f"  [NEW] {label}/{portrait.name}.png ({portrait.character})")
+                print(f"  [NEW] {label}/{portrait.name}.webp ({portrait.character})")
                 stats["new"] += 1
+                should_write = True
+            else:
+                should_write = True
 
-            if not args.diff_only or not exists or stats["updated"] > 0:
-                with open(out_path, "wb") as f:
-                    f.write(png_data)
-                webp_data = png_to_webp(png_data)
-                if webp_data is not None:
-                    with open(webp_path, "wb") as f:
-                        f.write(webp_data)
+            if should_write:
+                if args.write_png:
+                    with open(out_path, "wb") as f:
+                        f.write(png_data)
+                with open(webp_path, "wb") as f:
+                    f.write(webp_data)
                 stats["extracted"] += 1
 
     reader.close()
