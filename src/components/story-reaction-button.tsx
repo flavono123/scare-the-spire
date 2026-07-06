@@ -27,6 +27,7 @@ const CENTER_RADIUS = 28;
 const OUTER_RADIUS = 118;
 const WEDGE_RADIUS = 66;
 const SELECTED_WEDGE_RADIUS = 76;
+const VIEWPORT_MARGIN = 8;
 const WEDGE_ASSET = "/images/sts2/ui/emote/wedge_2.png";
 const WEDGE_SHADOW_ASSET = "/images/sts2/ui/emote/wedge_shadow.png";
 const MARKER_ASSET = "/images/sts2/map/markers/map_marker_ironclad.png";
@@ -94,6 +95,7 @@ export function StoryReactionButton({
   const [authPending, setAuthPending] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [hoveredReaction, setHoveredReaction] = useState<StoryReactionType | null>(null);
+  const [wheelOffset, setWheelOffset] = useState({ left: -96, top: -202 });
 
   const pending = !authReady || loading || authPending;
   const blocked = unavailable;
@@ -102,6 +104,28 @@ export function StoryReactionButton({
   const activeWheelReaction = hoveredReaction ?? selectedReaction ?? null;
   const markerAngle = activeWheelReaction ? reactionAngle(activeWheelReaction) - 90 : 0;
   const triggerLabel = serviceLocale === "ko" ? "반응" : "Reaction";
+
+  const updateWheelOffset = useCallback(() => {
+    const rect = triggerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    const desiredLeft = (rect.width - WHEEL_SIZE) / 2;
+    const viewportLeft = rect.left + desiredLeft;
+    const clampedViewportLeft = Math.min(
+      Math.max(VIEWPORT_MARGIN, viewportLeft),
+      Math.max(VIEWPORT_MARGIN, window.innerWidth - WHEEL_SIZE - VIEWPORT_MARGIN),
+    );
+    const spaceAbove = rect.top;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const top = spaceAbove < WHEEL_SIZE && spaceBelow > spaceAbove
+      ? rect.height + VIEWPORT_MARGIN
+      : -202;
+
+    setWheelOffset({
+      left: desiredLeft + (clampedViewportLeft - viewportLeft),
+      top,
+    });
+  }, []);
 
   const handleSelect = useCallback(async (reactionType: StoryReactionType) => {
     if (disabled) return;
@@ -176,6 +200,7 @@ export function StoryReactionButton({
       return;
     }
     if (disabled) return;
+    updateWheelOffset();
     setOpen((value) => !value);
     setHoveredReaction(null);
   };
@@ -184,6 +209,7 @@ export function StoryReactionButton({
     if (event.pointerType === "mouse" || disabled) return;
     event.preventDefault();
     ignoreNextClickRef.current = true;
+    updateWheelOffset();
     setOpen(true);
     setDragging(true);
     setHoveredReaction(null);
@@ -281,8 +307,8 @@ export function StoryReactionButton({
         <div
           ref={rootRef}
           role="menu"
-          className="absolute -right-[92px] -top-[202px] z-50 touch-none select-none"
-          style={{ width: WHEEL_SIZE, height: WHEEL_SIZE }}
+          className="absolute z-50 touch-none select-none"
+          style={{ width: WHEEL_SIZE, height: WHEEL_SIZE, left: wheelOffset.left, top: wheelOffset.top }}
           onPointerMove={(event) => setHoveredReaction(reactionFromPoint(rootRef.current, event.clientX, event.clientY))}
           onPointerLeave={() => {
             if (!dragging) setHoveredReaction(null);
