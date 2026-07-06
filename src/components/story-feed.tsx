@@ -9,11 +9,12 @@ import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useAuth } from "@/hooks/use-auth";
 import { useEngagementCounts } from "@/hooks/use-engagement-counts";
-import { LikeButton } from "@/components/like-button";
+import { StoryReactionButton } from "@/components/story-reaction-button";
 import { CommentSection } from "@/components/comment-section";
 import { EngagementSummary } from "@/components/engagement-summary";
 import { VersionDiffLine } from "@/components/codex/sts2-change-history";
 import { CardTile } from "@/components/codex/card-tile";
+import type { StoryReactionCounts } from "@/lib/reactions";
 
 function stableHash(value: string) {
   let hash = 0;
@@ -476,8 +477,8 @@ function StoryCard({
   ensureUser,
   expanded,
   onToggle,
-  isLatestStory,
   likeCount,
+  reactionCounts,
   commentCount,
   engagementLoading,
   engagementUnavailable,
@@ -497,8 +498,8 @@ function StoryCard({
   ensureUser: () => Promise<string | null>;
   expanded: boolean;
   onToggle: (storyId: string) => void;
-  isLatestStory: boolean;
   likeCount: number;
+  reactionCounts: StoryReactionCounts;
   commentCount: number;
   engagementLoading: boolean;
   engagementUnavailable: boolean;
@@ -508,16 +509,6 @@ function StoryCard({
 
   return (
     <article className="relative border-b border-border/50 last:border-b-0">
-      {isLatestStory && (
-        <Image
-          src="/images/sts2/relics/new_leaf.webp"
-          alt="새 이야기"
-          width={20}
-          height={20}
-          title="새 이야기"
-          className="pointer-events-none absolute right-8 top-1 z-10 h-5 w-5 drop-shadow-[0_2px_5px_rgba(0,0,0,0.45)]"
-        />
-      )}
       <div className="px-4 py-6">
         {/* Sentence + engagement */}
         <div className="flex items-center gap-3">
@@ -536,10 +527,11 @@ function StoryCard({
             </p>
           </button>
           <div className="shrink-0">
-            <LikeButton
+            <StoryReactionButton
               storyId={story.id}
               userId={userId}
-              initialCount={likeCount}
+              initialCounts={reactionCounts}
+              initialTotal={likeCount}
               authReady={authReady}
               userStatusLoading="lazy"
               ensureUser={ensureUser}
@@ -626,10 +618,6 @@ export function StoryFeed({
   }, [expandedIds]);
 
   const orderedStories = useMemo(() => stableStoryOrder(stories), [stories]);
-  const latestPublishedTime = useMemo(
-    () => Math.max(0, ...stories.map(storyPublishedTime)),
-    [stories],
-  );
 
   const cardMap = useMemo(() => new Map(cards.map((c) => [c.id, c])), [cards]);
   const relicMap = useMemo(() => new Map(relics.map((r) => [r.id, r])), [relics]);
@@ -675,8 +663,8 @@ export function StoryFeed({
             ensureUser={ensureUser}
             expanded={expandedIds.has(story.id)}
             onToggle={toggle}
-            isLatestStory={Boolean(story.publishedAt && storyPublishedTime(story) === latestPublishedTime)}
             likeCount={counts.likes[story.id] ?? 0}
+            reactionCounts={counts.reactions[story.id] ?? {}}
             commentCount={counts.comments[story.id] ?? 0}
             engagementLoading={counts.loading}
             engagementUnavailable={counts.unavailable}
