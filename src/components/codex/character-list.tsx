@@ -78,10 +78,10 @@ const DEFAULT_CHARACTER_SELECT_FRAME = {
 
 const CHARACTER_SELECT_FRAME: Record<string, typeof DEFAULT_CHARACTER_SELECT_FRAME> = {
   defect: {
-    scale: 1.5,
-    translateX: "-1%",
-    translateY: "-3%",
-    transformOrigin: "54% 48%",
+    scale: 3.05,
+    translateX: "-2%",
+    translateY: "3%",
+    transformOrigin: "54% 39%",
     fallbackFocus: "55% center",
   },
   ironclad: {
@@ -92,21 +92,21 @@ const CHARACTER_SELECT_FRAME: Record<string, typeof DEFAULT_CHARACTER_SELECT_FRA
     fallbackFocus: "53% center",
   },
   necrobinder: {
-    scale: 1.58,
-    translateX: "4%",
-    translateY: "-2%",
+    scale: 2.24,
+    translateX: "8%",
+    translateY: "-3%",
     transformOrigin: "58% 48%",
     fallbackFocus: "62% center",
   },
   regent: {
-    scale: 1.24,
-    translateX: "0%",
-    translateY: "-2%",
-    transformOrigin: "52% 48%",
+    scale: 1.62,
+    translateX: "5%",
+    translateY: "-3%",
+    transformOrigin: "54% 48%",
     fallbackFocus: "52% center",
   },
   silent: {
-    scale: 1.22,
+    scale: 1.28,
     translateX: "-1%",
     translateY: "-2%",
     transformOrigin: "58% 48%",
