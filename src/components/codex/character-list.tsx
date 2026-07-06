@@ -330,6 +330,7 @@ function CharacterRow({
   const color = CHARACTER_COLORS[characterPool] ?? "#eab308";
   const faceFocus = CHARACTER_FACE_FOCUS[characterPool] ?? "60% 35%";
   const activeFocus = CHARACTER_ACTIVE_FOCUS[characterPool] ?? "56% center";
+  const activeStillImageUrl = character.characterSelectSpineAsset?.textureUrls[0] ?? character.selectImageUrl;
   const rowStyle: CSSProperties = {
     background: `linear-gradient(90deg, rgba(5,5,8,0.98) 0%, ${color}1f 48%, rgba(5,5,8,0.94) 100%)`,
   };
@@ -389,7 +390,7 @@ function CharacterRow({
           {character.characterSelectSpineAsset ? (
             <MonsterSpineStage
               asset={character.characterSelectSpineAsset}
-              fallbackImageUrl={character.selectImageUrl}
+              fallbackImageUrl={activeStillImageUrl}
               fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain object-center opacity-95 drop-shadow-[0_24px_40px_rgba(0,0,0,0.65)]"
               imagePriority={index === 0}
               showLoadingLabel={false}
@@ -401,7 +402,7 @@ function CharacterRow({
             />
           ) : (
             <Image
-              src={character.selectImageUrl}
+              src={activeStillImageUrl}
               alt=""
               fill
               className="object-contain opacity-95 drop-shadow-[0_24px_40px_rgba(0,0,0,0.65)]"
