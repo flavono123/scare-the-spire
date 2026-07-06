@@ -76,6 +76,13 @@ const DEFAULT_CHARACTER_SELECT_FRAME = {
   fallbackFocus: "56% center",
 };
 
+const DEFAULT_CHARACTER_INACTIVE_FRAME = {
+  scale: 1,
+  translateX: "0%",
+  translateY: "0%",
+  transformOrigin: "center center",
+};
+
 const CHARACTER_SELECT_FRAME: Record<string, typeof DEFAULT_CHARACTER_SELECT_FRAME> = {
   defect: {
     scale: 6.6,
@@ -92,10 +99,10 @@ const CHARACTER_SELECT_FRAME: Record<string, typeof DEFAULT_CHARACTER_SELECT_FRA
     fallbackFocus: "53% center",
   },
   necrobinder: {
-    scale: 2.24,
-    translateX: "8%",
-    translateY: "-3%",
-    transformOrigin: "58% 48%",
+    scale: 2.78,
+    translateX: "24%",
+    translateY: "-4%",
+    transformOrigin: "61% 48%",
     fallbackFocus: "62% center",
   },
   regent: {
@@ -111,6 +118,21 @@ const CHARACTER_SELECT_FRAME: Record<string, typeof DEFAULT_CHARACTER_SELECT_FRA
     translateY: "-2%",
     transformOrigin: "58% 48%",
     fallbackFocus: "57% center",
+  },
+};
+
+const CHARACTER_INACTIVE_FRAME: Record<string, typeof DEFAULT_CHARACTER_INACTIVE_FRAME> = {
+  defect: {
+    scale: 1.85,
+    translateX: "-3%",
+    translateY: "0%",
+    transformOrigin: "52% 35%",
+  },
+  regent: {
+    scale: 1.48,
+    translateX: "2%",
+    translateY: "0%",
+    transformOrigin: "54% 36%",
   },
 };
 
@@ -377,9 +399,15 @@ function CharacterRow({
   const faceFocus = CHARACTER_FACE_FOCUS[characterPool] ?? "60% 35%";
   const activeFocus = CHARACTER_ACTIVE_FOCUS[characterPool] ?? "56% center";
   const selectFrame = CHARACTER_SELECT_FRAME[characterPool] ?? DEFAULT_CHARACTER_SELECT_FRAME;
+  const inactiveFrame = CHARACTER_INACTIVE_FRAME[characterPool] ?? DEFAULT_CHARACTER_INACTIVE_FRAME;
   const activeStageStyle: CSSProperties = {
     transform: `translate3d(${selectFrame.translateX}, ${selectFrame.translateY}, 0) scale(${selectFrame.scale})`,
     transformOrigin: selectFrame.transformOrigin,
+  };
+  const inactiveImageStyle: CSSProperties = {
+    objectPosition: faceFocus,
+    transform: `translate3d(${inactiveFrame.translateX}, ${inactiveFrame.translateY}, 0) scale(${inactiveFrame.scale})`,
+    transformOrigin: inactiveFrame.transformOrigin,
   };
   const rowStyle: CSSProperties = {
     background: `linear-gradient(90deg, rgba(5,5,8,0.98) 0%, ${color}1f 48%, rgba(5,5,8,0.94) 100%)`,
@@ -431,7 +459,7 @@ function CharacterRow({
           fill
           loading={index < 3 ? "eager" : "lazy"}
           className="h-full w-full object-cover drop-shadow-[0_18px_28px_rgba(0,0,0,0.65)]"
-          style={{ objectPosition: faceFocus }}
+          style={inactiveImageStyle}
         />
       </div>
 
