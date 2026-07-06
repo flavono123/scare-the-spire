@@ -95,12 +95,14 @@ function StaticNavIconLink({
   label,
   active = false,
   iconSize = 22,
+  profileCharacterIcon = false,
 }: {
   href: string;
   icon: string;
   label: string;
   active?: boolean;
   iconSize?: number;
+  profileCharacterIcon?: boolean;
 }) {
   return (
     <a
@@ -118,6 +120,7 @@ function StaticNavIconLink({
         alt=""
         width={iconSize}
         height={iconSize}
+        data-profile-character-icon={profileCharacterIcon ? "" : undefined}
         className="object-contain transition-transform group-hover:scale-110"
         style={{ width: iconSize, height: iconSize }}
       />
@@ -340,6 +343,7 @@ function StaticPatchHeader({
             icon={characterIconUrl(DEFAULT_USER_PROFILE.characterId)}
             label={messages.profile.navLabel}
             iconSize={24}
+            profileCharacterIcon
           />
         </div>
       </div>

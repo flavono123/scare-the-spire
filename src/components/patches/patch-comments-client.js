@@ -3,6 +3,13 @@
   const PROFILE_KEY = "sts-user-profile";
   const QUERY_TIMEOUT_MS = 8000;
   const AUTH_TIMEOUT_MS = 8000;
+  const CHARACTER_ICON_SLUGS = {
+    IRONCLAD: "ironclad",
+    SILENT: "silent",
+    REGENT: "regent",
+    NECROBINDER: "necrobinder",
+    DEFECT: "defect",
+  };
 
   const MESSAGES = {
     ko: {
@@ -61,6 +68,30 @@
 
   function renderText(value) {
     return escapeHtml(value).replace(/\n/g, "<br>");
+  }
+
+  function characterIconUrl(characterId) {
+    const slug = CHARACTER_ICON_SLUGS[characterId] ?? CHARACTER_ICON_SLUGS.NECROBINDER;
+    return `/images/sts2/characters/character_icon_${slug}.webp`;
+  }
+
+  function readStoredCharacterIconUrl() {
+    try {
+      const raw = window.localStorage.getItem(PROFILE_KEY);
+      const characterId = raw ? JSON.parse(raw)?.characterId : null;
+      return characterIconUrl(typeof characterId === "string" ? characterId : "NECROBINDER");
+    } catch {
+      return characterIconUrl("NECROBINDER");
+    }
+  }
+
+  function syncProfileCharacterIcon() {
+    const iconUrl = readStoredCharacterIconUrl();
+    document.querySelectorAll("[data-profile-character-icon]").forEach((image) => {
+      if (image instanceof HTMLImageElement && image.getAttribute("src") !== iconUrl) {
+        image.src = iconUrl;
+      }
+    });
   }
 
   function timeoutFetch(operation, input, init = {}, timeoutMs = QUERY_TIMEOUT_MS) {
@@ -458,6 +489,11 @@
   }
 
   function main() {
+    syncProfileCharacterIcon();
+    window.addEventListener("storage", (event) => {
+      if (event.key === null || event.key === PROFILE_KEY) syncProfileCharacterIcon();
+    });
+
     const roots = Array.from(document.querySelectorAll("[data-patch-comment-root]"));
     if (roots.length === 0) return;
 

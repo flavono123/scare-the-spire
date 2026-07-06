@@ -81,6 +81,11 @@ async function main() {
     "/favicon.ico",
     "/apple-icon.png",
     "/site.webmanifest",
+    "/images/sts2/characters/character_icon_defect.webp",
+    "/images/sts2/characters/character_icon_ironclad.webp",
+    "/images/sts2/characters/character_icon_necrobinder.webp",
+    "/images/sts2/characters/character_icon_regent.webp",
+    "/images/sts2/characters/character_icon_silent.webp",
   ]);
 
   for (const filePath of sourceFiles) {
