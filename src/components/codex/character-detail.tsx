@@ -37,7 +37,7 @@ import { MonsterSpineStage } from "./monster-spine-stage";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
-type CharacterActionId = "IDLE" | "ATTACK" | "HEAVY_ATTACK" | "CAST" | "SOVEREIGN_BLADE" | "HURT" | "DIE";
+type CharacterActionId = "IDLE" | "ATTACK" | "HEAVY_ATTACK" | "CAST" | "POWER_UP" | "SOVEREIGN_BLADE" | "HURT" | "DIE";
 
 const CHARACTER_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
 const CHARACTER_STAGE_VIEWPORT_PADDING = {
@@ -70,6 +70,7 @@ const ACTIONS: {
   { id: "ATTACK", labelKo: "공격", labelEn: "Attack", Icon: Sword },
   { id: "HEAVY_ATTACK", labelKo: "강공격", labelEn: "Heavy Attack", Icon: Hammer },
   { id: "CAST", labelKo: "시전", labelEn: "Cast", Icon: WandSparkles },
+  { id: "POWER_UP", labelKo: "파워 업", labelEn: "Power Up", Icon: WandSparkles },
   { id: "SOVEREIGN_BLADE", labelKo: "군주의 칼날", labelEn: "Sovereign Blade", Icon: Crown },
   { id: "HURT", labelKo: "피격", labelEn: "Hurt", Icon: HeartCrack },
   { id: "DIE", labelKo: "사망", labelEn: "Defeat", Icon: Skull },

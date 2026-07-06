@@ -258,7 +258,13 @@ const VFX_DISABLED_REASONS = {
 };
 
 const CHARACTER_ALIASES = {
-  DEFECT: { folder: "defect", attackVfx: "VFX_LASER" },
+  DEFECT: {
+    folder: "defect",
+    attackVfx: "VFX_LASER",
+    specialActions: {
+      POWER_UP: { animations: ["process"] },
+    },
+  },
   IRONCLAD: {
     folder: "ironclad",
     specialActions: {

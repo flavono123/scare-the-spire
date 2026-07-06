@@ -42,6 +42,11 @@
         "die",
         "idle_loop",
         "attack"
+      ],
+      "POWER_UP": [
+        "process",
+        "idle_loop",
+        "attack"
       ]
     },
     "moveEffects": {
