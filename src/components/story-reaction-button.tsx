@@ -23,14 +23,96 @@ import {
 } from "@/lib/reactions";
 
 const WHEEL_SIZE = 220;
-const CENTER_RADIUS = 28;
-const OUTER_RADIUS = 118;
-const WEDGE_RADIUS = 66;
-const SELECTED_WEDGE_RADIUS = 76;
+const SCENE_SIZE = 500;
+const SCENE_CENTER = SCENE_SIZE / 2;
+const SCENE_SCALE = WHEEL_SIZE / SCENE_SIZE;
+const CENTER_RADIUS = 70 * SCENE_SCALE;
+const OUTER_RADIUS = 250 * SCENE_SCALE;
+const SELECTED_WEDGE_LIFT = 25;
 const VIEWPORT_MARGIN = 8;
 const WEDGE_ASSET = "/images/sts2/ui/emote/wedge_2.png";
 const WEDGE_SHADOW_ASSET = "/images/sts2/ui/emote/wedge_shadow.png";
 const MARKER_ASSET = "/images/sts2/map/markers/map_marker_ironclad.png";
+
+type SceneRect = readonly [left: number, top: number, right: number, bottom: number];
+
+const REACTION_WHEEL_LAYOUT: Array<{
+  type: StoryReactionType;
+  rotation: number;
+  icon: SceneRect;
+  iconRotation: number;
+  shadow: SceneRect;
+  wedge: SceneRect;
+}> = [
+  {
+    type: "exclamation",
+    rotation: 0,
+    wedge: [79.3333, -94, 261.333, 94],
+    icon: [-42, -35.5, 42, 35.5],
+    iconRotation: 0,
+    shadow: [-80.3332, -83.3333, 101.667, 104.667],
+  },
+  {
+    type: "skull",
+    rotation: 45,
+    wedge: [122, -11.3333, 304, 176.667],
+    icon: [-59.1802, 0.0452347, 24.8198, 81.0452],
+    iconRotation: -45,
+    shadow: [-75.9151, -94.0001, 106.085, 93.9998],
+  },
+  {
+    type: "thumb_down",
+    rotation: 90,
+    wedge: [92.6667, 78, 274.667, 266],
+    icon: [-40, 40, 44, 124],
+    iconRotation: -90,
+    shadow: [-80.3335, -104.667, 101.666, 83.3333],
+  },
+  {
+    type: "sad_slime",
+    rotation: 135,
+    wedge: [8.66666, 120.667, 190.667, 308.667],
+    icon: [4.4594, 62.2706, 88.4594, 146.271],
+    iconRotation: -135,
+    shadow: [-91.0001, -109.085, 90.9996, 78.9151],
+  },
+  {
+    type: "question_mark",
+    rotation: 180,
+    wedge: [-83.3333, 94, 98.6667, 282],
+    icon: [42, 42, 126, 126],
+    iconRotation: -180,
+    shadow: [-101.667, -104.667, 80.3336, 83.3336],
+  },
+  {
+    type: "heart",
+    rotation: 225,
+    wedge: [-124.667, 12.6667, 57.3333, 200.667],
+    icon: [56.0782, -11.9756, 140.078, 59.0244],
+    iconRotation: -225,
+    shadow: [-106.085, -94.0002, 75.9146, 93.9998],
+  },
+  {
+    type: "thumb_up",
+    rotation: 270,
+    wedge: [-95.3333, -76.6667, 86.6667, 111.333],
+    icon: [36, -39, 120, 45],
+    iconRotation: -270,
+    shadow: [-101.667, -83.3332, 80.3331, 104.667],
+  },
+  {
+    type: "happy_cultist",
+    rotation: 315,
+    wedge: [-10, -120, 172, 67.9999],
+    icon: [0.923874, -57.2304, 85.9239, 26.7696],
+    iconRotation: -315,
+    shadow: [-91, -78.915, 90.9998, 109.085],
+  },
+];
+
+function scene(value: number): number {
+  return value * SCENE_SCALE;
+}
 
 function reactionFromPoint(root: HTMLDivElement | null, clientX: number, clientY: number): StoryReactionType | null {
   if (!root) return null;
@@ -49,17 +131,39 @@ function reactionAngle(reactionType: StoryReactionType): number {
   return Math.max(0, STORY_REACTIONS.findIndex((reaction) => reaction.type === reactionType)) * 45;
 }
 
-function wedgeStyle(index: number, selected: boolean): CSSProperties {
-  const angle = index * 45;
-  const radians = (angle * Math.PI) / 180;
-  const radius = selected ? SELECTED_WEDGE_RADIUS : WEDGE_RADIUS;
-  const x = Math.cos(radians) * radius;
-  const y = Math.sin(radians) * radius;
+function rectSize(rect: SceneRect) {
+  return {
+    width: scene(rect[2] - rect[0]),
+    height: scene(rect[3] - rect[1]),
+  };
+}
+
+function wedgeStyle(layout: (typeof REACTION_WHEEL_LAYOUT)[number], selected: boolean): CSSProperties {
+  const radians = (layout.rotation * Math.PI) / 180;
+  const lift = selected ? SELECTED_WEDGE_LIFT : 0;
+  const liftX = Math.cos(radians) * lift;
+  const liftY = Math.sin(radians) * lift;
+  const { width, height } = rectSize(layout.wedge);
 
   return {
-    left: "50%",
-    top: "50%",
-    transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${angle}deg)`,
+    height,
+    left: scene(SCENE_CENTER + layout.wedge[0] + liftX),
+    top: scene(SCENE_CENTER + layout.wedge[1] + liftY),
+    transform: `rotate(${layout.rotation}deg)`,
+    transformOrigin: "0 0",
+    width,
+  };
+}
+
+function childStyle(parent: SceneRect, child: SceneRect, rotation = 0): CSSProperties {
+  const parentSize = rectSize(parent);
+  return {
+    height: scene(child[3] - child[1]),
+    left: parentSize.width / 2 + scene(child[0]),
+    top: parentSize.height / 2 + scene(child[1]),
+    transform: rotation ? `rotate(${rotation}deg)` : undefined,
+    transformOrigin: "0 0",
+    width: scene(child[2] - child[0]),
   };
 }
 
@@ -216,11 +320,14 @@ export function StoryReactionButton({
   };
 
   const renderedReactions = useMemo(
-    () => STORY_REACTIONS.map((reaction, index) => {
-      const angle = index * 45;
+    () => REACTION_WHEEL_LAYOUT.map((layout) => {
+      const reaction = storyReactionByType(layout.type);
       const selected = activeWheelReaction === reaction.type;
       const label = serviceLocale === "ko" ? reaction.labelKo : reaction.labelEn;
       const count = counts[reaction.type] ?? 0;
+      const wedgeSize = rectSize(layout.wedge);
+      const iconStyle = childStyle(layout.wedge, layout.icon, layout.iconRotation);
+      const shadowStyle = childStyle(layout.wedge, layout.shadow);
 
       return (
         <button
@@ -228,10 +335,10 @@ export function StoryReactionButton({
           type="button"
           aria-label={count > 0 ? `${label} ${count}` : label}
           className={cn(
-            "absolute h-[100px] w-[96px] border-0 bg-transparent p-0 transition-transform duration-75 ease-out",
+            "absolute border-0 bg-transparent p-0 transition-[left,top,opacity] duration-75 ease-out",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-100/70",
           )}
-          style={wedgeStyle(index, selected)}
+          style={wedgeStyle(layout, selected)}
           onClick={(event) => {
             event.stopPropagation();
             void handleSelect(reaction.type);
@@ -242,27 +349,28 @@ export function StoryReactionButton({
           <Image
             src={WEDGE_SHADOW_ASSET}
             alt=""
-            width={96}
-            height={100}
+            width={Math.round(wedgeSize.width)}
+            height={Math.round(wedgeSize.height)}
             aria-hidden
-            className="absolute inset-0 h-full w-full object-contain opacity-40"
+            className="absolute object-contain opacity-40"
+            style={shadowStyle}
           />
           <Image
             src={WEDGE_ASSET}
             alt=""
-            width={96}
-            height={100}
+            width={Math.round(wedgeSize.width)}
+            height={Math.round(wedgeSize.height)}
             aria-hidden
             className={cn("absolute inset-0 h-full w-full object-contain transition-opacity", selected ? "opacity-75" : "opacity-35")}
           />
           <Image
             src={reaction.asset}
             alt=""
-            width={44}
-            height={44}
+            width={Math.round(Number(iconStyle.width))}
+            height={Math.round(Number(iconStyle.height))}
             aria-hidden
-            className="absolute left-1/2 top-1/2 h-11 w-11 -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-[0_2px_1px_rgba(0,0,0,0.35)]"
-            style={{ transform: `translate(-50%, -50%) rotate(${-angle}deg)` }}
+            className="absolute object-contain drop-shadow-[0_2px_1px_rgba(0,0,0,0.35)]"
+            style={iconStyle}
           />
         </button>
       );
@@ -315,16 +423,23 @@ export function StoryReactionButton({
           }}
           onPointerDown={(event) => event.stopPropagation()}
         >
-          <div className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-100/10 blur-[1px]" />
+          <div className="absolute inset-0 rounded-full bg-black/55" />
           {renderedReactions}
           <Image
             src={MARKER_ASSET}
             alt=""
-            width={32}
-            height={32}
+            width={Math.round(scene(48))}
+            height={Math.round(scene(48))}
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 object-contain opacity-95"
-            style={{ transform: `translate(-50%, -50%) rotate(${markerAngle}deg)` }}
+            className="pointer-events-none absolute object-contain opacity-95"
+            style={{
+              height: scene(48),
+              left: scene(SCENE_CENTER - 24),
+              top: scene(SCENE_CENTER - 24),
+              transform: `rotate(${markerAngle}deg)`,
+              transformOrigin: `${scene(24)}px ${scene(24)}px`,
+              width: scene(48),
+            }}
           />
         </div>
       )}
