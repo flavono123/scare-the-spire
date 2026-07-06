@@ -102,7 +102,7 @@ export function StoryReactionButton({
   const disabled = pending || blocked || (!userId && !ensureUser);
   const triggerReaction = storyReactionByType(selectedReaction ?? DEFAULT_STORY_REACTION);
   const activeWheelReaction = hoveredReaction ?? selectedReaction ?? null;
-  const markerAngle = activeWheelReaction ? reactionAngle(activeWheelReaction) - 90 : 0;
+  const markerAngle = activeWheelReaction ? reactionAngle(activeWheelReaction) - 90 : -90;
   const triggerLabel = serviceLocale === "ko" ? "반응" : "Reaction";
 
   const updateWheelOffset = useCallback(() => {
@@ -323,10 +323,7 @@ export function StoryReactionButton({
             width={32}
             height={32}
             aria-hidden
-            className={cn(
-              "pointer-events-none absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 object-contain transition-opacity",
-              activeWheelReaction ? "opacity-95" : "opacity-0",
-            )}
+            className="pointer-events-none absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 object-contain opacity-95"
             style={{ transform: `translate(-50%, -50%) rotate(${markerAngle}deg)` }}
           />
         </div>
