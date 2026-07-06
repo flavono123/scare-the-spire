@@ -49,12 +49,12 @@
 }
 
 .game-inspect-cursor {
-  cursor: url("/images/sts2/ui/cursor_inspect.png") 12 12, pointer;
+  cursor: url("/images/sts2/ui/cursor_inspect.png") 12 12, pointer !important;
 }
 
 @media (hover: none), (pointer: coarse) {
   .game-inspect-cursor {
-    cursor: pointer;
+    cursor: pointer !important;
   }
 }
 
