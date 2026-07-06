@@ -99,10 +99,10 @@ const CHARACTER_SELECT_FRAME: Record<string, typeof DEFAULT_CHARACTER_SELECT_FRA
     fallbackFocus: "53% center",
   },
   necrobinder: {
-    scale: 2.78,
-    translateX: "24%",
+    scale: 2.9,
+    translateX: "34%",
     translateY: "-4%",
-    transformOrigin: "61% 48%",
+    transformOrigin: "64% 48%",
     fallbackFocus: "62% center",
   },
   regent: {
