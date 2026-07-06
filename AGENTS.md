@@ -6,6 +6,14 @@
 
 All task instructions must be followed by an immediate speculative commit after each modification. Do not batch changes — commit after every meaningful edit.
 
+## Branch and Deployment Defaults
+
+- Do not create or switch branches or worktrees unless the user explicitly asks for it.
+- By default, work on the `main` branch and make speculative commits directly there.
+- Deploy through CI by pushing the `main` branch. Do not run ad hoc `wrangler deploy` scripts.
+- Do not run builds for simple patch Worker or `byrdispatch` deployment tasks.
+- Run builds only when the main Worker or assets change.
+
 ## Broad File Changes
 
 Before creating many files, moving route trees, or making broad mechanical edits across many files, explain the expected scope and ask the user for approval first.
