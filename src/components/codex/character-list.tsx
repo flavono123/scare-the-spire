@@ -78,10 +78,10 @@ const DEFAULT_CHARACTER_SELECT_FRAME = {
 
 const CHARACTER_SELECT_FRAME: Record<string, typeof DEFAULT_CHARACTER_SELECT_FRAME> = {
   defect: {
-    scale: 3.05,
+    scale: 5.8,
     translateX: "-2%",
-    translateY: "3%",
-    transformOrigin: "54% 39%",
+    translateY: "4%",
+    transformOrigin: "54% 37%",
     fallbackFocus: "55% center",
   },
   ironclad: {
@@ -99,9 +99,9 @@ const CHARACTER_SELECT_FRAME: Record<string, typeof DEFAULT_CHARACTER_SELECT_FRA
     fallbackFocus: "62% center",
   },
   regent: {
-    scale: 1.62,
-    translateX: "5%",
-    translateY: "-3%",
+    scale: 2,
+    translateX: "8%",
+    translateY: "-4%",
     transformOrigin: "54% 48%",
     fallbackFocus: "52% center",
   },
