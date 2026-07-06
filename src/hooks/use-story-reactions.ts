@@ -60,20 +60,20 @@ export function useStoryReactions(
   const [fetchedCounts, setFetchedCounts] = useState<StoryReactionCounts>({});
   const [optimisticDelta, setOptimisticDelta] = useState<StoryReactionCounts>({});
   const [selectedReaction, setSelectedReaction] = useState<StoryReactionType | null>(null);
-  const [countLoading, setCountLoading] = useState(supabaseEnabled && initialCounts === undefined);
+  const [fetchedCountLoading, setFetchedCountLoading] = useState(supabaseEnabled);
   const [resolvedUserStatusKey, setResolvedUserStatusKey] = useState<string | null>(null);
   const [unavailable, setUnavailable] = useState(false);
 
   const baseCounts = initialCounts ?? fetchedCounts;
   const counts = useMemo(() => mergeStoryReactionCounts(baseCounts, optimisticDelta), [baseCounts, optimisticDelta]);
   const total = Math.max(0, sumCounts(counts) || initialTotal || 0);
+  const countLoading = initialCounts === undefined && fetchedCountLoading;
   const userStatusKey = userId ? `${storyId}:${userId}` : null;
   const userStatusLoading = supabaseEnabled && !!userStatusKey && resolvedUserStatusKey !== userStatusKey;
   const loading = countLoading || (userStatusLoadingMode === "eager" && userStatusLoading);
 
   useEffect(() => {
     if (initialCounts !== undefined) {
-      setCountLoading(false);
       return;
     }
     if (!supabaseEnabled) return;
@@ -90,11 +90,11 @@ export function useStoryReactions(
         if (error) throw error;
         setFetchedCounts(rowsToCounts((data ?? []) as Array<{ reaction_type: unknown }>));
         setUnavailable(false);
-        setCountLoading(false);
+        setFetchedCountLoading(false);
       })
       .catch(() => {
         setUnavailable(true);
-        setCountLoading(false);
+        setFetchedCountLoading(false);
       });
   }, [storyId, initialCounts]);
 
