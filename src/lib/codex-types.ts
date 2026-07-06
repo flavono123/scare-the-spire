@@ -63,6 +63,11 @@ export interface CodexCard extends CodexLifecycle {
   appliedPowerIds: string[]; // Canonical power ids applied or granted by this card
   upgrade: Record<string, string | number> | null;
   maxUpgradeLevel: number;
+  specialUpgrade?: {
+    upgrade: Record<string, string | number>;
+    maxLevel: number;
+    imageUrls?: string[]; // index 0 is base art; the last entry repeats for higher levels
+  };
   imageUrl: string | null; // local path
   betaImageUrl: string | null; // local path
   madScienceLabels?: {

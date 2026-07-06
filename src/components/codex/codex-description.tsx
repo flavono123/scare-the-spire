@@ -221,15 +221,18 @@ function colorUpgradeOnlyBranches(input: string): string {
 }
 
 export function hasCardUpgrade(
-  card: Pick<CodexCard, "upgrade" | "descriptionRaw">,
+  card: Pick<CodexCard, "upgrade" | "descriptionRaw" | "specialUpgrade">,
 ): boolean {
-  return card.upgrade != null || /\{IfUpgraded:show:/.test(card.descriptionRaw ?? "");
+  return card.upgrade != null ||
+    card.specialUpgrade != null ||
+    /\{IfUpgraded:show:/.test(card.descriptionRaw ?? "");
 }
 
 export function getCardMaxUpgradeLevel(
-  card: Pick<CodexCard, "upgrade" | "descriptionRaw" | "maxUpgradeLevel">,
+  card: Pick<CodexCard, "upgrade" | "descriptionRaw" | "maxUpgradeLevel" | "specialUpgrade">,
 ): number {
   if (!hasCardUpgrade(card)) return 0;
+  if (card.specialUpgrade) return Math.max(1, Math.floor(card.specialUpgrade.maxLevel || 1));
   return Math.max(1, Math.floor(card.maxUpgradeLevel || 1));
 }
 
@@ -249,8 +252,10 @@ export function renderCardDescription(
   const enchantChanged = new Set<string>();
   const templateVarKeys = getTemplateVarKeys(raw, finalVars);
 
-  if (upgradeLevel > 0 && card.upgrade) {
-    for (const [key, diff] of Object.entries(card.upgrade)) {
+  const upgrade = card.upgrade ?? card.specialUpgrade?.upgrade ?? null;
+
+  if (upgradeLevel > 0 && upgrade) {
+    for (const [key, diff] of Object.entries(upgrade)) {
       if (typeof diff === "string" && /^[+-]\d+/.test(diff)) {
         const delta = parseInt(diff, 10) * upgradeLevel;
         const varKey = findUpgradeVarKey(finalVars, key, templateVarKeys);

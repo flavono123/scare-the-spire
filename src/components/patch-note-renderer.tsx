@@ -20,7 +20,7 @@ import {
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import type { EntityVersionDiff, STS2Patch } from "@/lib/types";
 import { CardTile } from "@/components/codex/card-tile";
-import { DescriptionText } from "@/components/codex/codex-description";
+import { DescriptionText, getCardMaxUpgradeLevel } from "@/components/codex/codex-description";
 import { GameHoverTip, type HoverTipArt, type HoverTipArtMode } from "@/components/codex/hover-tip";
 import {
   buildMonsterMoveVisual,
@@ -963,7 +963,7 @@ function withCardPreviewUpgrade(entity: EntityInfo, level: number): EntityInfo {
 function cardPreviewUpgradeSuffix(entity: EntityInfo): string {
   const level = entity.cardPreviewUpgradeLevel ?? 0;
   if (entity.type !== "card" || level <= 0) return "";
-  const maxUpgradeLevel = entity.cardData?.maxUpgradeLevel ?? 1;
+  const maxUpgradeLevel = entity.cardData ? getCardMaxUpgradeLevel(entity.cardData) : 1;
   return maxUpgradeLevel > 1 ? `+${level}` : "+";
 }
 

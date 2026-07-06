@@ -396,6 +396,19 @@ function getUpgradeKeywords(
   ));
 }
 
+function getCardDisplayImageUrl(
+  card: CodexCard,
+  upgradeLevel: number,
+  showBeta: boolean,
+): string | null {
+  if (showBeta && card.betaImageUrl) return card.betaImageUrl;
+  const upgradeImages = card.specialUpgrade?.imageUrls;
+  if (upgradeLevel > 0 && upgradeImages?.length) {
+    return upgradeImages[Math.min(upgradeLevel, upgradeImages.length - 1)];
+  }
+  return card.imageUrl ?? card.betaImageUrl ?? null;
+}
+
 // =============================================================================
 // Fonts
 // =============================================================================
@@ -493,16 +506,12 @@ export const CardTile = memo(function CardTile({
   const cardWidth = width ?? CARD_WIDTH_PRESET[size];
 
   // === Derived values ===
-  let imageSrc: string | null = null;
-  if (showBeta && card.betaImageUrl) imageSrc = card.betaImageUrl;
-  else if (card.imageUrl) imageSrc = card.imageUrl;
-  else if (card.betaImageUrl) imageSrc = card.betaImageUrl;
-
   const requestedUpgradeLevel = Math.max(
     0,
     Math.floor(upgradeLevel ?? (showUpgrade ? 1 : 0)),
   );
   const effectiveUpgradeLevel = hasCardUpgrade(card) ? requestedUpgradeLevel : 0;
+  const imageSrc = getCardDisplayImageUrl(card, effectiveUpgradeLevel, showBeta);
   const isUpgraded = effectiveUpgradeLevel > 0;
   const maxUpgradeLevel = getCardMaxUpgradeLevel(card);
   const renderedCardName = getMadScienceRenderedCardName(card);

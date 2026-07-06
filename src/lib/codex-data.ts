@@ -132,6 +132,19 @@ const CARD_UPGRADE_FALLBACKS: Record<string, Record<string, string | number>> = 
   DOMINATE: { vulnerablepower: "+1" },
 };
 
+const CARD_SPECIAL_UPGRADES: Record<string, NonNullable<CodexCard["specialUpgrade"]>> = {
+  // Wither uses FakeUpgradeLevel in-game: 0 -> wither1, 1 -> wither2, 2+ -> wither3; damage rises by 3 each level.
+  WITHER: {
+    upgrade: { damage: "+3" },
+    maxLevel: 99,
+    imageUrls: [
+      "/images/sts2/cards/wither1.webp",
+      "/images/sts2/cards/wither2.webp",
+      "/images/sts2/cards/wither3.webp",
+    ],
+  },
+};
+
 function withCardVarFallbacks(id: string, vars: RawCard["vars"]): Record<string, number> {
   return { ...(CARD_VAR_FALLBACKS[id] ?? {}), ...(vars ?? {}) };
 }
@@ -580,6 +593,7 @@ function mapCard(
     appliedPowerIds: getAppliedPowerIds(eng),
     upgrade,
     maxUpgradeLevel: kor.max_upgrade_level ?? (upgrade ? 1 : 0),
+    specialUpgrade: CARD_SPECIAL_UPGRADES[kor.id],
     imageUrl: codexCardImageUrl(kor),
     betaImageUrl: spireCodexImageToLocal(kor.beta_image_url),
     introducedInPatch: kor.introducedInPatch,
