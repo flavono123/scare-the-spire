@@ -348,7 +348,7 @@ function CharacterRow({
         event.preventDefault();
         onSelect(character);
       }}
-      className={`group relative isolate block w-full overflow-hidden text-left outline-none transition-[min-height,opacity,filter] duration-500 ease-out focus-visible:ring-2 focus-visible:ring-yellow-400/70 ${
+      className={`group relative isolate block w-full overflow-hidden text-left outline-none transition-[min-height,opacity,filter] duration-500 ease-out focus-visible:outline-none ${
         active
           ? "min-h-[26rem] opacity-100 saturate-100 sm:min-h-[31rem] lg:min-h-[34rem]"
           : "min-h-[8.75rem] opacity-70 saturate-[0.72] hover:opacity-100 hover:saturate-100 sm:min-h-[10rem] lg:min-h-[11.25rem]"
