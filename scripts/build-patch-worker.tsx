@@ -52,6 +52,14 @@ const patchCommentsClientPath = path.join(
   process.cwd(),
   "src/components/patches/patch-comments-client.js",
 );
+const patchStaticSpineClientPath = path.join(
+  process.cwd(),
+  "src/components/patches/patch-static-spine-client.js",
+);
+const spinePlayerClientPath = path.join(
+  process.cwd(),
+  "node_modules/@esotericsoftware/spine-player/dist/iife/spine-player.min.js",
+);
 
 function escapeInlineJson(value: unknown): string {
   return JSON.stringify(value).replace(/</g, "\\u003c");
@@ -409,17 +417,24 @@ function renderShell(route: StaticPatchRoute): string {
             supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
             supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
             supabaseEnv: process.env.NEXT_PUBLIC_SUPABASE_ENV ?? "production",
-          })}</script><script src="/_patches/patch-comments.js" defer></script>`,
+          })}</script><script src="/_patches/patch-static-spine.js" defer></script><script src="/_patches/patch-comments.js" defer></script>`,
         }}
       />
     </html>,
   )}`;
 }
 
-async function writePatchCommentsClient() {
-  const destinationPath = path.join(outDir, "_patches/patch-comments.js");
-  await fs.mkdir(path.dirname(destinationPath), { recursive: true });
-  await fs.copyFile(patchCommentsClientPath, destinationPath);
+async function writePatchClientAssets() {
+  const clientAssets = [
+    [patchCommentsClientPath, path.join(outDir, "_patches/patch-comments.js")],
+    [patchStaticSpineClientPath, path.join(outDir, "_patches/patch-static-spine.js")],
+    [spinePlayerClientPath, path.join(outDir, "_patches/spine-player.min.js")],
+  ] as const;
+
+  for (const [sourcePath, destinationPath] of clientAssets) {
+    await fs.mkdir(path.dirname(destinationPath), { recursive: true });
+    await fs.copyFile(sourcePath, destinationPath);
+  }
 }
 
 async function writeRoute(route: StaticPatchRoute) {
@@ -443,7 +458,7 @@ async function localizedPatchRoutes(version?: string) {
 }
 
 async function main() {
-  await writePatchCommentsClient();
+  await writePatchClientAssets();
 
   const versions = await generatePatchDetailStaticParams();
   const routes: StaticPatchRoute[] = [

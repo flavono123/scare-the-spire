@@ -1333,6 +1333,7 @@ function MovePreviewSurface({
   const stageMoveNonce = selectedMoveNonce + loopNonce;
   const stageMounted = !loopAnimation || stageInView;
   const fallbackImageUrl = monster.bossImageUrl ?? monster.imageUrl;
+  const staticSpineAsset = monster.spineAsset ? JSON.stringify(monster.spineAsset) : undefined;
   const surfaceClass = compact
     ? "relative mb-0 block h-44 w-full overflow-hidden rounded bg-black/10"
     : "relative mb-2 block h-56 overflow-hidden rounded bg-black/25";
@@ -1394,13 +1395,21 @@ function MovePreviewSurface({
               loopSelectedMove={loopAnimation}
             />
           ) : fallbackImageUrl ? (
-            <Image
-              src={fallbackImageUrl}
-              alt={monster.name}
-              width={640}
-              height={640}
-              className="absolute inset-0 h-full w-full object-contain opacity-80"
-            />
+            <>
+              <Image
+                src={fallbackImageUrl}
+                alt={monster.name}
+                width={640}
+                height={640}
+                className="absolute inset-0 h-full w-full object-contain opacity-80 transition-opacity duration-300"
+                data-static-spine-fallback={staticSpineAsset ? "true" : undefined}
+              />
+              <StaticSpinePreviewStage
+                assetJson={staticSpineAsset}
+                moveId={stageMoveId}
+                monsterName={monster.name}
+              />
+            </>
           ) : null}
         </span>
         <span className="relative z-40 flex items-center justify-center">
@@ -1419,6 +1428,29 @@ function MovePreviewSurface({
         />
       </span>
     </span>
+  );
+}
+
+function StaticSpinePreviewStage({
+  assetJson,
+  moveId,
+  monsterName,
+}: {
+  assetJson?: string;
+  moveId: string;
+  monsterName: string;
+}) {
+  if (!assetJson) return null;
+
+  return (
+    <span
+      className="sts2-static-spine-stage sts2-spine-stage pointer-events-none absolute inset-0 z-20 opacity-0 transition-opacity duration-300"
+      data-static-spine-preview="true"
+      data-static-spine-asset={assetJson}
+      data-static-spine-move-id={moveId}
+      data-static-spine-monster-name={monsterName}
+      aria-hidden="true"
+    />
   );
 }
 
