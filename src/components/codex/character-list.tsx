@@ -78,7 +78,7 @@ const DEFAULT_CHARACTER_SELECT_FRAME = {
 
 const CHARACTER_SELECT_FRAME: Record<string, typeof DEFAULT_CHARACTER_SELECT_FRAME> = {
   defect: {
-    scale: 5.8,
+    scale: 6.6,
     translateX: "-2%",
     translateY: "4%",
     transformOrigin: "54% 37%",
