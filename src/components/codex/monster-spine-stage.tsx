@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
+import { memo, useEffect, useMemo, useRef, useState, type CSSProperties, type MutableRefObject } from "react";
 import type { Skin, SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
 import Image from "@/components/ui/static-image";
 import type { MonsterPhobiaModeScene, MonsterSpineAsset, MonsterSpineEffectAsset, MonsterSpineTrackAnimation } from "@/lib/codex-types";
@@ -24,6 +24,7 @@ interface MonsterSpineStageProps {
   viewportTransitionTime?: number;
   viewportPadding?: SpineViewportPadding;
   fallbackImageClassName?: string;
+  fallbackImageStyle?: CSSProperties;
   loopSelectedMove?: boolean;
   onVisualBoundsChange?: (bounds: MonsterStageVisualBounds | null) => void;
 }
@@ -78,6 +79,7 @@ function MonsterSpineStageComponent({
   viewportTransitionTime,
   viewportPadding,
   fallbackImageClassName,
+  fallbackImageStyle,
   loopSelectedMove = false,
   onVisualBoundsChange,
 }: MonsterSpineStageProps) {
@@ -280,6 +282,7 @@ function MonsterSpineStageComponent({
           width={640}
           height={640}
           className={fallbackImageClassName ?? "absolute inset-0 z-10 h-full w-full object-contain drop-shadow-2xl"}
+          style={fallbackImageStyle}
           priority={imagePriority}
           onLoad={() => reportImageVisualBounds(fallbackImageRef.current, containerRef.current, onVisualBoundsChange)}
         />

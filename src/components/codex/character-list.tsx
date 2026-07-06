@@ -68,6 +68,52 @@ const CHARACTER_ACTIVE_FOCUS: Record<string, string> = {
   silent: "57% center",
 };
 
+const DEFAULT_CHARACTER_SELECT_FRAME = {
+  scale: 1.2,
+  translateX: "0%",
+  translateY: "-1%",
+  transformOrigin: "center center",
+  fallbackFocus: "56% center",
+};
+
+const CHARACTER_SELECT_FRAME: Record<string, typeof DEFAULT_CHARACTER_SELECT_FRAME> = {
+  defect: {
+    scale: 1.5,
+    translateX: "-1%",
+    translateY: "-3%",
+    transformOrigin: "54% 48%",
+    fallbackFocus: "55% center",
+  },
+  ironclad: {
+    scale: 1.18,
+    translateX: "-1%",
+    translateY: "-2%",
+    transformOrigin: "52% 48%",
+    fallbackFocus: "53% center",
+  },
+  necrobinder: {
+    scale: 1.58,
+    translateX: "4%",
+    translateY: "-2%",
+    transformOrigin: "58% 48%",
+    fallbackFocus: "62% center",
+  },
+  regent: {
+    scale: 1.24,
+    translateX: "0%",
+    translateY: "-2%",
+    transformOrigin: "52% 48%",
+    fallbackFocus: "52% center",
+  },
+  silent: {
+    scale: 1.22,
+    translateX: "-1%",
+    translateY: "-2%",
+    transformOrigin: "58% 48%",
+    fallbackFocus: "57% center",
+  },
+};
+
 const CHARACTER_SELECT_VIEWPORT_PADDING = {
   padLeft: "0%",
   padRight: "0%",
@@ -330,7 +376,11 @@ function CharacterRow({
   const color = CHARACTER_COLORS[characterPool] ?? "#eab308";
   const faceFocus = CHARACTER_FACE_FOCUS[characterPool] ?? "60% 35%";
   const activeFocus = CHARACTER_ACTIVE_FOCUS[characterPool] ?? "56% center";
-  const activeStillImageUrl = character.characterSelectSpineAsset?.textureUrls[0] ?? character.selectImageUrl;
+  const selectFrame = CHARACTER_SELECT_FRAME[characterPool] ?? DEFAULT_CHARACTER_SELECT_FRAME;
+  const activeStageStyle: CSSProperties = {
+    transform: `translate3d(${selectFrame.translateX}, ${selectFrame.translateY}, 0) scale(${selectFrame.scale})`,
+    transformOrigin: selectFrame.transformOrigin,
+  };
   const rowStyle: CSSProperties = {
     background: `linear-gradient(90deg, rgba(5,5,8,0.98) 0%, ${color}1f 48%, rgba(5,5,8,0.94) 100%)`,
   };
@@ -369,7 +419,7 @@ function CharacterRow({
           fill
           loading={index < 2 ? "eager" : "lazy"}
           className={`absolute inset-0 z-0 object-cover object-center transition-all duration-700 ${
-            active ? "scale-100 opacity-90" : "scale-105 opacity-35"
+            active ? "scale-110 opacity-90" : "scale-105 opacity-35"
           }`}
         />
       )}
@@ -386,26 +436,32 @@ function CharacterRow({
       </div>
 
       {active && (
-        <div className="absolute inset-0 z-10">
+        <div className="absolute inset-0 z-10 overflow-hidden">
           {character.characterSelectSpineAsset ? (
-            <MonsterSpineStage
-              asset={character.characterSelectSpineAsset}
-              fallbackImageUrl={activeStillImageUrl}
-              fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain object-center opacity-95 drop-shadow-[0_24px_40px_rgba(0,0,0,0.65)]"
-              imagePriority={index === 0}
-              showLoadingLabel={false}
-              viewportPadding={CHARACTER_SELECT_VIEWPORT_PADDING}
-              monsterName={character.name}
-              selectedMoveId="IDLE"
-              className="pointer-events-none absolute inset-0"
-              loopSelectedMove
-            />
+            <div
+              className="pointer-events-none absolute inset-0 transition-transform duration-500 ease-out"
+              style={activeStageStyle}
+            >
+              <MonsterSpineStage
+                asset={character.characterSelectSpineAsset}
+                fallbackImageUrl={character.selectImageUrl}
+                fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-cover opacity-80 blur-[1px] drop-shadow-[0_24px_40px_rgba(0,0,0,0.65)]"
+                fallbackImageStyle={{ objectPosition: selectFrame.fallbackFocus }}
+                imagePriority={index === 0}
+                showLoadingLabel={false}
+                viewportPadding={CHARACTER_SELECT_VIEWPORT_PADDING}
+                monsterName={character.name}
+                selectedMoveId="IDLE"
+                className="relative h-full w-full"
+                loopSelectedMove
+              />
+            </div>
           ) : (
             <Image
-              src={activeStillImageUrl}
+              src={character.selectImageUrl}
               alt=""
               fill
-              className="object-contain opacity-95 drop-shadow-[0_24px_40px_rgba(0,0,0,0.65)]"
+              className="object-cover opacity-95 drop-shadow-[0_24px_40px_rgba(0,0,0,0.65)]"
               style={{ objectPosition: activeFocus }}
             />
           )}
