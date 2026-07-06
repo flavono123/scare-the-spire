@@ -2660,6 +2660,18 @@
   "ui/combat": [
     "block.png"
   ],
+  "ui/emote": [
+    "exclaim.png",
+    "happy_cultist.png",
+    "heart.png",
+    "question.png",
+    "skull.png",
+    "slime_sad.png",
+    "thumb_down.png",
+    "thumb_up.png",
+    "wedge_2.png",
+    "wedge_shadow.png"
+  ],
   "ui/topbar": [
     "potion_placeholder.png",
     "submenu_history_icon.png",
