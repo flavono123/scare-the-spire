@@ -1,16 +1,6 @@
 "use client";
 
 import { type ReactNode, type WheelEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  CircleDot,
-  Crown,
-  Hammer,
-  HeartCrack,
-  Skull,
-  Sword,
-  WandSparkles,
-  type LucideIcon,
-} from "lucide-react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
 import { CommentSection } from "@/components/comment-section";
@@ -64,16 +54,15 @@ const ACTIONS: {
   id: CharacterActionId;
   labelKo: string;
   labelEn: string;
-  Icon: LucideIcon;
 }[] = [
-  { id: "IDLE", labelKo: "대기", labelEn: "Idle", Icon: CircleDot },
-  { id: "ATTACK", labelKo: "공격", labelEn: "Attack", Icon: Sword },
-  { id: "HEAVY_ATTACK", labelKo: "강공격", labelEn: "Heavy Attack", Icon: Hammer },
-  { id: "CAST", labelKo: "시전", labelEn: "Cast", Icon: WandSparkles },
-  { id: "POWER_UP", labelKo: "파워 업", labelEn: "Power Up", Icon: WandSparkles },
-  { id: "SOVEREIGN_BLADE", labelKo: "군주의 칼날", labelEn: "Sovereign Blade", Icon: Crown },
-  { id: "HURT", labelKo: "피격", labelEn: "Hurt", Icon: HeartCrack },
-  { id: "DIE", labelKo: "사망", labelEn: "Defeat", Icon: Skull },
+  { id: "IDLE", labelKo: "대기", labelEn: "Idle" },
+  { id: "ATTACK", labelKo: "공격", labelEn: "Attack" },
+  { id: "HEAVY_ATTACK", labelKo: "강공격", labelEn: "Heavy Attack" },
+  { id: "CAST", labelKo: "시전", labelEn: "Cast" },
+  { id: "POWER_UP", labelKo: "파워 업", labelEn: "Power Up" },
+  { id: "SOVEREIGN_BLADE", labelKo: "군주의 칼날", labelEn: "Sovereign Blade" },
+  { id: "HURT", labelKo: "피격", labelEn: "Hurt" },
+  { id: "DIE", labelKo: "사망", labelEn: "Defeat" },
 ];
 
 interface CharacterReferenceTarget {
@@ -449,7 +438,6 @@ export function CharacterDetail({
           <div className="flex max-w-full flex-wrap justify-center gap-2" role="group" aria-label={serviceLocale === "ko" ? "모션" : "Actions"}>
             {availableActions.map((action) => {
               const active = action.id === selectedAction;
-              const Icon = action.Icon;
               return (
                 <button
                   key={action.id}
@@ -460,14 +448,13 @@ export function CharacterDetail({
                     setSelectedAction(action.id);
                     setSelectedActionNonce((value) => value + 1);
                   }}
-                  className="inline-flex h-9 items-center gap-1.5 rounded-md border px-3 font-game-text text-xs font-bold transition-colors hover:bg-white/10"
+                  className="inline-flex h-9 items-center rounded-md border px-3 font-game-text text-xs font-bold transition-colors hover:bg-white/10"
                   style={{
                     borderColor: active ? characterColor : "rgba(255,255,255,0.12)",
                     backgroundColor: active ? `${characterColor}24` : "rgba(255,255,255,0.04)",
                     color: active ? characterColor : "#d4d4d8",
                   }}
                 >
-                  <Icon className="h-4 w-4" aria-hidden />
                   <span>{serviceLocale === "ko" ? action.labelKo : action.labelEn}</span>
                 </button>
               );
