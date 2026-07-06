@@ -27,9 +27,10 @@ from lib.pck import PCKReader, default_pck_path  # noqa: E402
 
 IMPORT_RE = re.compile(r'path(?:\.\w+)?\s*=\s*"res://([^"]+)"')
 DEFAULT_KINDS = ("monsters", "vfx")
-AVAILABLE_KINDS = ("monsters", "vfx", "characters", "ancients", "event-backgrounds")
+AVAILABLE_KINDS = ("monsters", "vfx", "characters", "character-select", "ancients", "event-backgrounds")
 PCK_PREFIX_BY_KIND = {
     "ancients": "animations/backgrounds/",
+    "character-select": "animations/character_select/",
     "characters": "animations/characters/",
     "event-backgrounds": "animations/backgrounds/",
     "monsters": "animations/monsters/",
@@ -41,6 +42,12 @@ ANCIENT_SPINE_PREFIXES = {
 }
 EVENT_BACKGROUND_SPINE_PREFIXES = {
     "animations/backgrounds/fake_merchant_room/top/fake_merchant_top",
+}
+CHARACTER_SELECT_STATIC_IMPORTS = {
+    "animations/character_select/silent/character_select_silent_bg.png.import": "character_select_silent_bg.webp",
+    "animations/character_select/necrobinder/character_select_necrobinder_bg.png.import": "character_select_necrobinder_bg.webp",
+    "images/vfx/characters/necro_character_select_fire_shape.png.import": "necro_character_select_fire_shape.webp",
+    "images/vfx/characters/osty_character_select_fire_shape.png.import": "osty_character_select_fire_shape.webp",
 }
 
 
@@ -112,6 +119,35 @@ def extract_png_import(reader: PCKReader, import_path: str, out_path: Path) -> s
     out_path.parent.mkdir(parents=True, exist_ok=True)
     image.save(out_path)
     return target
+
+
+def extract_webp_import(reader: PCKReader, import_path: str, out_path: Path, force: bool) -> bool:
+    if out_path.exists() and not force:
+        return False
+
+    raw_import = reader.read_file(import_path)
+    target = parse_import_file(raw_import)
+    if not target or target not in reader.entries:
+        raise FileNotFoundError(f"{import_path}: texture target not found: {target}")
+
+    image = ctex_to_image(reader.read_file(target))
+    if image is None:
+        raise RuntimeError(f"{import_path}: could not decode texture target: {target}")
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    image.save(out_path, "WEBP", quality=95, method=6)
+    return True
+
+
+def extract_character_select_static_images(reader: PCKReader, force: bool) -> int:
+    out_dir = REPO_ROOT / "public/images/sts2/character-select"
+    written = 0
+    for import_path, filename in CHARACTER_SELECT_STATIC_IMPORTS.items():
+        if import_path not in reader.entries:
+            continue
+        if extract_webp_import(reader, import_path, out_dir / filename, force):
+            written += 1
+    return written
 
 
 def atlas_page_names(atlas_path: Path) -> list[str]:
@@ -245,6 +281,9 @@ def main() -> int:
             for actor in actors:
                 extract_actor(reader, actor, kind, out_root)
             print(f"extracted {len(actors)} {kind} Spine actors to {out_root / kind}")
+            if kind == "character-select":
+                written = extract_character_select_static_images(reader, args.force)
+                print(f"extracted {written} character-select static images")
 
     return 0
 
