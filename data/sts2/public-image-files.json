@@ -1064,6 +1064,12 @@
     "wither.webp",
     "wrought_in_war.webp"
   ],
+  "character-select": [
+    "character_select_necrobinder_bg.webp",
+    "character_select_silent_bg.webp",
+    "necro_character_select_fire_shape.webp",
+    "osty_character_select_fire_shape.webp"
+  ],
   "characters": [
     "char_select_button_mask.webp",
     "char_select_defect_locked.webp",
@@ -2165,6 +2171,9 @@
   "powers-beta": [
     "smoggy_power.webp",
     "unmovable_power.webp"
+  ],
+  "powers/animated": [
+    "tools_of_the_trade_power_tilt.webp"
   ],
   "relics": [
     "akabeko.webp",

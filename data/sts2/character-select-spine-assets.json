@@ -1,0 +1,150 @@
+[
+  {
+    "id": "DEFECT",
+    "source": "animations/character_select/defect/characterselect_defect",
+    "renderStatus": "spine",
+    "renderTags": [
+      "character-select-background"
+    ],
+    "atlasUrl": "/spine/sts2/character-select/defect/characterselect_defect.atlas",
+    "binaryUrl": "/spine/sts2/character-select/defect/characterselect_defect.skel",
+    "textureUrls": [
+      "/spine/sts2/character-select/defect/characterselect_defect.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "animation"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "animation",
+    "moveAnimations": {
+      "IDLE": [
+        "animation"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "IRONCLAD",
+    "source": "animations/character_select/ironclad/characterselect_ironclad",
+    "renderStatus": "spine",
+    "renderTags": [
+      "character-select-background"
+    ],
+    "atlasUrl": "/spine/sts2/character-select/ironclad/characterselect_ironclad.atlas",
+    "binaryUrl": "/spine/sts2/character-select/ironclad/characterselect_ironclad.skel",
+    "textureUrls": [
+      "/spine/sts2/character-select/ironclad/characterselect_ironclad.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "animation"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "animation",
+    "moveAnimations": {
+      "IDLE": [
+        "animation"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "NECROBINDER",
+    "source": "animations/character_select/necrobinder/characterselect_necrobinder",
+    "renderStatus": "spine",
+    "renderTags": [
+      "character-select-background"
+    ],
+    "atlasUrl": "/spine/sts2/character-select/necrobinder/characterselect_necrobinder.atlas",
+    "binaryUrl": "/spine/sts2/character-select/necrobinder/characterselect_necrobinder.skel",
+    "textureUrls": [
+      "/spine/sts2/character-select/necrobinder/characterselect_necrobinder.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "animation"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "animation",
+    "moveAnimations": {
+      "IDLE": [
+        "animation"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "REGENT",
+    "source": "animations/character_select/regent/characterselect_regent",
+    "renderStatus": "spine",
+    "renderTags": [
+      "character-select-background"
+    ],
+    "atlasUrl": "/spine/sts2/character-select/regent/characterselect_regent.atlas",
+    "binaryUrl": "/spine/sts2/character-select/regent/characterselect_regent.skel",
+    "textureUrls": [
+      "/spine/sts2/character-select/regent/characterselect_regent.png"
+    ],
+    "skin": "normal",
+    "skins": [
+      "default",
+      "amogus constellation",
+      "cultist constellation",
+      "deca outline",
+      "normal",
+      "sentry constellation",
+      "shapes constellation",
+      "snecko constellation",
+      "spheric guardian constellation"
+    ],
+    "animations": [
+      "animation"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "animation",
+    "moveAnimations": {
+      "IDLE": [
+        "animation"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "SILENT",
+    "source": "animations/character_select/silent/characterselect_silent",
+    "renderStatus": "spine",
+    "renderTags": [
+      "character-select-background"
+    ],
+    "atlasUrl": "/spine/sts2/character-select/silent/characterselect_silent.atlas",
+    "binaryUrl": "/spine/sts2/character-select/silent/characterselect_silent.skel",
+    "textureUrls": [
+      "/spine/sts2/character-select/silent/characterselect_silent.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "animation"
+    ],
+    "bestiaryAnimations": [],
+    "idleAnimation": "animation",
+    "moveAnimations": {
+      "IDLE": [
+        "animation"
+      ]
+    },
+    "moveEffects": {}
+  }
+]
