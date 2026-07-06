@@ -103,9 +103,7 @@ export function CharacterList({
   ), [characters, urlCharacterId]);
   const selectedCharacter = useUrlSelection ? urlSelectedCharacter : selectedCharacterOverride;
   const rowRefs = useRef(new Map<string, HTMLAnchorElement>());
-  const [activeCharacterId, setActiveCharacterId] = useState<string | null>(
-    () => characters[0]?.id ?? null,
-  );
+  const [activeCharacterOverrideId, setActiveCharacterOverrideId] = useState<string | null>(null);
   const searchText = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
   const filteredCharacters = useMemo(() => {
     if (!searchText) return characters;
@@ -130,6 +128,15 @@ export function CharacterList({
       );
     });
   }, [characters, searchText]);
+  const activeCharacterId = useMemo(() => {
+    if (activeCharacterOverrideId && filteredCharacters.some((character) => character.id === activeCharacterOverrideId)) {
+      return activeCharacterOverrideId;
+    }
+    if (urlSelectedCharacter && filteredCharacters.some((character) => character.id === urlSelectedCharacter.id)) {
+      return urlSelectedCharacter.id;
+    }
+    return filteredCharacters[0]?.id ?? null;
+  }, [activeCharacterOverrideId, filteredCharacters, urlSelectedCharacter]);
   const relicById = useMemo(
     () => new Map(relics.map((relic) => [relic.id, relic])),
     [relics],
@@ -167,21 +174,6 @@ export function CharacterList({
   }, []);
 
   useEffect(() => {
-    if (urlSelectedCharacter) {
-      setActiveCharacterId(urlSelectedCharacter.id);
-    }
-  }, [urlSelectedCharacter]);
-
-  useEffect(() => {
-    if (filteredCharacters.length === 0) {
-      setActiveCharacterId(null);
-      return;
-    }
-    if (activeCharacterId && filteredCharacters.some((character) => character.id === activeCharacterId)) return;
-    setActiveCharacterId(filteredCharacters[0].id);
-  }, [activeCharacterId, filteredCharacters]);
-
-  useEffect(() => {
     if (!selectedCharacter) return;
     const handler = (event: KeyboardEvent) => {
       if (event.key === "Escape") closeSelectedCharacter();
@@ -198,13 +190,13 @@ export function CharacterList({
     );
     const nextIndex = (currentIndex + delta + filteredCharacters.length) % filteredCharacters.length;
     const nextCharacter = filteredCharacters[nextIndex];
-    setActiveCharacterId(nextCharacter.id);
+    setActiveCharacterOverrideId(nextCharacter.id);
     window.requestAnimationFrame(() => {
       const row = rowRefs.current.get(nextCharacter.id);
       row?.focus({ preventScroll: true });
       row?.scrollIntoView({ block: "nearest", behavior: "smooth" });
     });
-  }, [activeCharacterId, filteredCharacters]);
+  }, [activeCharacterId, filteredCharacters, setActiveCharacterOverrideId]);
 
   useEffect(() => {
     if (selectedCharacter) return;
@@ -218,10 +210,10 @@ export function CharacterList({
         moveActiveCharacter(-1);
       } else if (event.key === "Home" && filteredCharacters.length > 0) {
         event.preventDefault();
-        setActiveCharacterId(filteredCharacters[0].id);
+        setActiveCharacterOverrideId(filteredCharacters[0].id);
       } else if (event.key === "End" && filteredCharacters.length > 0) {
         event.preventDefault();
-        setActiveCharacterId(filteredCharacters[filteredCharacters.length - 1].id);
+        setActiveCharacterOverrideId(filteredCharacters[filteredCharacters.length - 1].id);
       }
     };
     window.addEventListener("keydown", handler);
@@ -269,7 +261,7 @@ export function CharacterList({
                   serviceLocale={serviceLocale}
                   active={character.id === activeCharacterId}
                   index={index}
-                  setActiveCharacterId={setActiveCharacterId}
+                  setActiveCharacterId={setActiveCharacterOverrideId}
                   setRowRef={(node) => {
                     if (node) rowRefs.current.set(character.id, node);
                     else rowRefs.current.delete(character.id);
