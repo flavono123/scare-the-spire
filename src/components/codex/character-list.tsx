@@ -100,9 +100,9 @@ const CHARACTER_SELECT_FRAME: Record<string, typeof DEFAULT_CHARACTER_SELECT_FRA
   },
   necrobinder: {
     scale: 2.9,
-    translateX: "34%",
+    translateX: "48%",
     translateY: "-4%",
-    transformOrigin: "64% 48%",
+    transformOrigin: "68% 48%",
     fallbackFocus: "62% center",
   },
   regent: {
@@ -142,9 +142,6 @@ const CHARACTER_SELECT_VIEWPORT_PADDING = {
   padTop: "0%",
   padBottom: "0%",
 } as const;
-
-const HEART_ICON = "/images/sts2/ui/topbar/top_bar_heart.png";
-const GOLD_ICON = "/images/sts2/ui/topbar/top_bar_gold.png";
 
 export function CharacterList({
   serviceLocale,
@@ -205,11 +202,6 @@ export function CharacterList({
     }
     return filteredCharacters[0]?.id ?? null;
   }, [activeCharacterOverrideId, filteredCharacters, urlSelectedCharacter]);
-  const relicById = useMemo(
-    () => new Map(relics.map((relic) => [relic.id, relic])),
-    [relics],
-  );
-
   const selectCharacter = useCallback((character: CodexCharacter) => {
     setUseUrlSelection(false);
     setSelectedCharacterOverride(character);
@@ -325,7 +317,6 @@ export function CharacterList({
                 <CharacterRow
                   key={character.id}
                   character={character}
-                  startingRelic={relicById.get(character.startingRelicIds[0]) ?? null}
                   serviceLocale={serviceLocale}
                   active={character.id === activeCharacterId}
                   index={index}
@@ -377,7 +368,6 @@ export function CharacterList({
 
 function CharacterRow({
   character,
-  startingRelic,
   serviceLocale,
   active,
   index,
@@ -386,7 +376,6 @@ function CharacterRow({
   onSelect,
 }: {
   character: CodexCharacter;
-  startingRelic: CodexRelic | null;
   serviceLocale: ServiceLocale;
   active: boolean;
   index: number;
@@ -504,82 +493,14 @@ function CharacterRow({
       <div className={`absolute inset-0 z-20 bg-gradient-to-t from-black/55 via-transparent to-black/25 transition-opacity duration-500 ${active ? "opacity-100" : "opacity-60"}`} />
 
       <div className="absolute inset-y-0 left-0 z-30 flex w-full max-w-2xl flex-col justify-center px-4 py-4 sm:px-8 lg:px-10">
-        <div className={`flex items-center gap-3 transition-all duration-500 ${active ? "translate-x-0" : "-translate-x-1"}`}>
-          <Image
-            src={character.iconUrl}
-            alt=""
-            width={52}
-            height={52}
-            className={`${active ? "h-12 w-12" : "h-9 w-9"} shrink-0 object-contain drop-shadow-[0_5px_10px_rgba(0,0,0,0.65)] transition-all duration-500`}
-          />
-          <div className="min-w-0">
-            <h2
-              className={`${active ? "text-4xl sm:text-5xl lg:text-6xl" : "text-2xl sm:text-3xl"} truncate font-game-title leading-none drop-shadow-[0_3px_2px_rgba(0,0,0,0.75)] transition-all duration-500`}
-              style={{ color }}
-            >
-              {character.name}
-            </h2>
-            {character.nameEn !== character.name && (
-              <p className={`${active ? "mt-1 text-sm" : "mt-0.5 text-[11px]"} truncate font-game-text text-zinc-300/80 transition-all duration-500`}>
-                {character.nameEn}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className={`${active ? "mt-4" : "mt-2"} flex flex-wrap items-center gap-3 font-game-text text-sm text-zinc-100 transition-all duration-500 sm:gap-5`}>
-          <CharacterStat iconUrl={HEART_ICON} label={`${character.startingHp}/${character.startingHp}`} tone="text-red-200" />
-          <CharacterStat iconUrl={GOLD_ICON} label={`${character.startingGold}`} tone="text-yellow-200" />
-          <span className="text-zinc-300/80">
-            {character.startingDeckIds.length}
-            {serviceLocale === "ko" ? "장" : " cards"}
-          </span>
-        </div>
-
-        <p className={`${active ? "mt-5 max-w-xl text-base leading-relaxed sm:text-lg" : "mt-2 max-w-lg text-xs leading-snug sm:text-sm"} line-clamp-3 font-game-text text-zinc-100/90 drop-shadow-[0_2px_2px_rgba(0,0,0,0.75)] transition-all duration-500`}>
-          {stripCodexMarkup(character.description)}
-        </p>
-
-        {active && startingRelic && (
-          <div className="mt-5 flex max-w-xl items-center gap-3 font-game-text text-sm text-zinc-100/90">
-            {startingRelic.imageUrl && (
-              <Image
-                src={startingRelic.imageUrl}
-                alt=""
-                width={54}
-                height={54}
-                className="h-12 w-12 shrink-0 object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.65)]"
-              />
-            )}
-            <div className="min-w-0">
-              <div className="truncate font-game-title text-xl leading-tight" style={{ color }}>
-                {startingRelic.name}
-              </div>
-              <p className="line-clamp-2 text-xs leading-relaxed text-zinc-200/85 sm:text-sm">
-                {stripCodexMarkup(startingRelic.description)}
-              </p>
-            </div>
-          </div>
-        )}
+        <h2
+          className={`${active ? "text-4xl sm:text-5xl lg:text-6xl" : "text-2xl sm:text-3xl"} truncate font-game-title leading-none drop-shadow-[0_3px_2px_rgba(0,0,0,0.75)] transition-all duration-500`}
+          style={{ color }}
+        >
+          {character.name}
+        </h2>
       </div>
     </Link>
-  );
-}
-
-function CharacterStat({
-  iconUrl,
-  label,
-  tone,
-}: {
-  iconUrl: string;
-  label: string;
-  tone: string;
-}) {
-  return (
-    <span className={`inline-flex items-center gap-1.5 tabular-nums ${tone}`}>
-      <Image src={iconUrl} alt="" width={24} height={24} className="h-5 w-5 object-contain" />
-      {label}
-    </span>
   );
 }
 
