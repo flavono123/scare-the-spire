@@ -8,20 +8,20 @@ interface CodexFilterDrawerState {
   isMobile: boolean;
 }
 
-export function useCodexFilterDrawer(): CodexFilterDrawerState {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+export function useCodexFilterDrawer(defaultDesktopOpen = true): CodexFilterDrawerState {
+  const [sidebarOpen, setSidebarOpen] = useState(defaultDesktopOpen);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
     const update = (e: { matches: boolean }) => {
       setIsMobile(e.matches);
-      setSidebarOpen(!e.matches);
+      setSidebarOpen(e.matches ? false : defaultDesktopOpen);
     };
     update(mq);
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
-  }, []);
+  }, [defaultDesktopOpen]);
 
   return { sidebarOpen, setSidebarOpen, isMobile };
 }

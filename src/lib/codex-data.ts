@@ -956,17 +956,29 @@ const CHARACTER_SLUGS: Record<string, string> = {
   NECROBINDER: "necrobinder",
   DEFECT: "defect",
 };
+const CHARACTER_SELECT_BACKGROUNDS: Record<string, string> = {
+  SILENT: "/images/sts2/character-select/character_select_silent_bg.webp",
+  NECROBINDER: "/images/sts2/character-select/character_select_necrobinder_bg.webp",
+};
+const CHARACTER_SELECT_VFX_IMAGES: Record<string, string[]> = {
+  NECROBINDER: [
+    "/images/sts2/character-select/necro_character_select_fire_shape.webp",
+    "/images/sts2/character-select/osty_character_select_fire_shape.webp",
+  ],
+};
 
 export async function getCodexCharacters(opts?: { gameLocale?: GameLocale }): Promise<CodexCharacter[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [raw, engCharacters, spineAssets, gameCharacters] = await Promise.all([
+  const [raw, engCharacters, spineAssets, characterSelectSpineAssets, gameCharacters] = await Promise.all([
     readJson<RawCharacter[]>("kor/characters.json"),
     readJson<RawCharacter[]>("eng/characters.json"),
     getCodexCharacterSpineAssets(),
+    getCodexCharacterSelectSpineAssets(),
     readGameLocalizationTable(gameLocale, "characters"),
   ]);
   const engById = new Map(engCharacters.map((character) => [character.id, character]));
   const spineById = new Map(spineAssets.map((asset) => [asset.id, asset]));
+  const characterSelectSpineById = new Map(characterSelectSpineAssets.map((asset) => [asset.id, asset]));
 
   const mapped = raw.map((character) => {
     const eng = engById.get(character.id) ?? character;
@@ -1001,8 +1013,11 @@ export async function getCodexCharacters(opts?: { gameLocale?: GameLocale }): Pr
       iconUrl: `/images/sts2/characters/character_icon_${slug}.webp`,
       iconOutlineUrl: `/images/sts2/characters/character_icon_${slug}_outline.webp`,
       selectImageUrl: `/images/sts2/characters/select_${slug}.webp`,
+      selectBackgroundImageUrl: CHARACTER_SELECT_BACKGROUNDS[character.id] ?? null,
+      selectVfxImageUrls: CHARACTER_SELECT_VFX_IMAGES[character.id] ?? [],
       combatImageUrl: `/images/sts2/characters/combat_${slug}.webp`,
       restImageUrl: `/images/sts2/characters/rest_${slug}.webp`,
+      characterSelectSpineAsset: characterSelectSpineById.get(character.id) ?? null,
       spineAsset: spineById.get(character.id) ?? null,
     };
   });
@@ -1062,6 +1077,10 @@ function mapCharacterAncientInteractions(character: RawCharacter): CodexCharacte
 
 export async function getCodexCharacterSpineAssets(): Promise<MonsterSpineAsset[]> {
   return readJson<MonsterSpineAsset[]>("character-spine-assets.json").catch(() => []);
+}
+
+export async function getCodexCharacterSelectSpineAssets(): Promise<MonsterSpineAsset[]> {
+  return readJson<MonsterSpineAsset[]>("character-select-spine-assets.json").catch(() => []);
 }
 
 export async function getCodexAncientSpineAssets(): Promise<MonsterSpineAsset[]> {

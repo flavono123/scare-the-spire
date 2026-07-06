@@ -116,8 +116,11 @@ export interface CodexCharacter {
   iconUrl: string; // local path to character icon
   iconOutlineUrl: string; // local path to character outline icon
   selectImageUrl: string; // local path to select pose
+  selectBackgroundImageUrl: string | null; // local path to character select background image
+  selectVfxImageUrls: string[]; // local paths to character select overlay VFX textures
   combatImageUrl: string; // local path to combat fallback image
   restImageUrl: string; // local path to rest fallback image
+  characterSelectSpineAsset: MonsterSpineAsset | null;
   spineAsset: MonsterSpineAsset | null;
 }
 
