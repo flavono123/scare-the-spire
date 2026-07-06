@@ -48,6 +48,16 @@
   display: none;
 }
 
+.game-inspect-cursor {
+  cursor: url("/images/sts2/ui/cursor_inspect.png") 12 12, pointer;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .game-inspect-cursor {
+    cursor: pointer;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 .byrdispatch-status-token {

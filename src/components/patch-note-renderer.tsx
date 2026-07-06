@@ -93,6 +93,11 @@ type RenderContext = {
 
 const DEFAULT_ENTITY_LINK_CLASS =
   "font-game-title font-semibold spire-gold hover:text-yellow-300 underline decoration-yellow-500/30 underline-offset-2 transition-colors cursor-pointer";
+const GAME_INSPECT_CURSOR_CLASS = "game-inspect-cursor";
+
+function withGameInspectCursor(className: string): string {
+  return [className, GAME_INSPECT_CURSOR_CLASS].filter(Boolean).join(" ");
+}
 
 function useCoarsePointer(): boolean {
   const [isCoarsePointer, setIsCoarsePointer] = useState(false);
@@ -344,12 +349,13 @@ export function EntityPreview({
     ? `${previewEntity.nameKo}${cardPreviewUpgradeSuffix(previewEntity)}`
     : children;
   const renderedLinkText = <span className="font-game-title">{linkText}</span>;
-  const resolvedLinkClassName = isPendingCompendium
+  const baseLinkClassName = isPendingCompendium
     ? [
         linkClassName ?? DEFAULT_ENTITY_LINK_CLASS,
         "text-fuchsia-200 decoration-dotted decoration-fuchsia-300/60 hover:text-fuchsia-100",
       ].join(" ")
     : linkClassName ?? DEFAULT_ENTITY_LINK_CLASS;
+  const resolvedLinkClassName = href ? withGameInspectCursor(baseLinkClassName) : baseLinkClassName;
 
   const openTapPreview = useCallback((event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
     if (!useTapPreview) return;
