@@ -93,30 +93,25 @@ function storyReactionTotal(
 function storyRecommendedScore(
   story: Story,
   counts: ReturnType<typeof useEngagementCounts>,
-  now: number,
 ) {
   const reactions = storyReactionTotal(story.id, counts);
   const comments = counts.comments[story.id] ?? 0;
-  const publishedAt = storyPublishedTime(story);
-  const ageHours = publishedAt > 0 ? Math.max(0, (now - publishedAt) / 36e5) : 240;
-  const freshness = Math.max(0, 16 - ageHours / 6);
   const communityBase = story.community ? 2 : 0;
 
-  return reactions * 4 + comments * 6 + freshness + communityBase;
+  return reactions * 4 + comments * 6 + communityBase;
 }
 
 function stableStoryOrder(
   stories: Story[],
   sortMode: StorySortMode,
   counts: ReturnType<typeof useEngagementCounts>,
-  now: number,
 ) {
   return [...stories].sort((a, b) => {
     if (sortMode === "comments") {
       const commentDiff = (counts.comments[b.id] ?? 0) - (counts.comments[a.id] ?? 0);
       if (commentDiff !== 0) return commentDiff;
     } else if (sortMode === "recommended") {
-      const scoreDiff = storyRecommendedScore(b, counts, now) - storyRecommendedScore(a, counts, now);
+      const scoreDiff = storyRecommendedScore(b, counts) - storyRecommendedScore(a, counts);
       if (scoreDiff !== 0) return scoreDiff;
     }
 
@@ -891,7 +886,7 @@ export function StoryFeed({
     const filteredStories = searchTerm
       ? allStories.filter((story) => storySearchText(story).includes(searchTerm))
       : allStories;
-    return stableStoryOrder(filteredStories, sortMode, counts, Date.now());
+    return stableStoryOrder(filteredStories, sortMode, counts);
   }, [allStories, counts, searchTerm, sortMode]);
 
   const cardMap = useMemo(() => new Map(cards.map((c) => [c.id, c])), [cards]);
