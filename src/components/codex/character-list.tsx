@@ -143,6 +143,8 @@ const CHARACTER_SELECT_VIEWPORT_PADDING = {
   padBottom: "0%",
 } as const;
 
+const CHARACTER_SPINE_MOUNT_DELAY_MS = 260;
+
 export function CharacterList({
   serviceLocale,
   title,
@@ -161,6 +163,7 @@ export function CharacterList({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCharacterOverride, setSelectedCharacterOverride] = useState<CodexCharacter | null>(null);
   const [useUrlSelection, setUseUrlSelection] = useState(true);
+  const [animatedCharacterId, setAnimatedCharacterId] = useState<string | null>(null);
   const urlSelectedCharacter = useMemo(() => (
     urlCharacterId
       ? characters.find((character) => character.id.toLowerCase() === urlCharacterId.toLowerCase()) ?? null
@@ -202,6 +205,18 @@ export function CharacterList({
     }
     return filteredCharacters[0]?.id ?? null;
   }, [activeCharacterOverrideId, filteredCharacters, urlSelectedCharacter]);
+
+  useEffect(() => {
+    setAnimatedCharacterId(null);
+    if (!activeCharacterId) return undefined;
+
+    const timeoutId = window.setTimeout(() => {
+      setAnimatedCharacterId(activeCharacterId);
+    }, CHARACTER_SPINE_MOUNT_DELAY_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [activeCharacterId]);
+
   const selectCharacter = useCallback((character: CodexCharacter) => {
     setUseUrlSelection(false);
     setSelectedCharacterOverride(character);
@@ -319,6 +334,7 @@ export function CharacterList({
                   character={character}
                   serviceLocale={serviceLocale}
                   active={character.id === activeCharacterId}
+                  animateSpine={character.id === animatedCharacterId}
                   index={index}
                   setActiveCharacterId={setActiveCharacterOverrideId}
                   setRowRef={(node) => {
@@ -370,6 +386,7 @@ function CharacterRow({
   character,
   serviceLocale,
   active,
+  animateSpine,
   index,
   setActiveCharacterId,
   setRowRef,
@@ -378,6 +395,7 @@ function CharacterRow({
   character: CodexCharacter;
   serviceLocale: ServiceLocale;
   active: boolean;
+  animateSpine: boolean;
   index: number;
   setActiveCharacterId: (characterId: string) => void;
   setRowRef: (node: HTMLAnchorElement | null) => void;
@@ -454,7 +472,7 @@ function CharacterRow({
 
       {active && (
         <div className="absolute inset-0 z-10 overflow-hidden">
-          {character.characterSelectSpineAsset ? (
+          {animateSpine && character.characterSelectSpineAsset ? (
             <div
               className="pointer-events-none absolute inset-0 transition-transform duration-500 ease-out"
               style={activeStageStyle}
