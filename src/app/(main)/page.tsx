@@ -20,6 +20,10 @@ export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOC
     loadAllEntities({ gameLocale }),
   ]);
   const mergedStories = [...stories, ...sts2Stories];
+  const referencedPatchLineIds = new Set(
+    mergedStories.flatMap((story) => story.patchLineId ? [story.patchLineId] : []),
+  );
+  const referencedSts2PatchLines = sts2PatchLines.filter((line) => referencedPatchLineIds.has(line.id));
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -41,7 +45,7 @@ export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOC
               changes={changes}
               sts2Changes={sts2Changes}
               sts2Patches={sts2Patches}
-              sts2PatchLines={sts2PatchLines}
+              sts2PatchLines={referencedSts2PatchLines}
               sts2Entities={sts2Entities}
             />
           )}

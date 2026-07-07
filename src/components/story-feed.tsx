@@ -27,6 +27,14 @@ type StorySortMode = "recommended" | "comments" | "latest";
 const STORY_DRAFT_MAX_LENGTH = 120;
 const STORY_SORT_OPTIONS: StorySortMode[] = ["recommended", "comments", "latest"];
 
+let fullPatchLinesPromise: Promise<STS2PatchLine[]> | null = null;
+
+function loadFullSts2PatchLines(): Promise<STS2PatchLine[]> {
+  fullPatchLinesPromise ??= import("../../data/sts2-patch-lines.json")
+    .then((module) => module.default as STS2PatchLine[]);
+  return fullPatchLinesPromise;
+}
+
 function storyFeedCopy(serviceLocale: ServiceLocale) {
   if (serviceLocale === "ko") {
     return {
@@ -992,6 +1000,7 @@ export function StoryFeed({
   const [sortMode, setSortMode] = useState<StorySortMode>("recommended");
   const [searchQuery, setSearchQuery] = useState("");
   const [composerOpen, setComposerOpen] = useState(false);
+  const [loadedPatchLines, setLoadedPatchLines] = useState<STS2PatchLine[] | null>(null);
   const didMountRef = useRef(false);
 
   const toggle = useCallback((storyId: string) => {
@@ -1023,7 +1032,8 @@ export function StoryFeed({
     window.history.replaceState(null, "", nextUrl);
   }, [expandedIds]);
 
-  const patchLineMap = useMemo(() => new Map(sts2PatchLines.map((line) => [line.id, line])), [sts2PatchLines]);
+  const patchLineOptions = loadedPatchLines ?? sts2PatchLines;
+  const patchLineMap = useMemo(() => new Map(patchLineOptions.map((line) => [line.id, line])), [patchLineOptions]);
   const allStories = useMemo(() => {
     const byId = new Map(stories.map((story) => [story.id, story]));
     for (const story of communityStories.stories) {
@@ -1037,6 +1047,25 @@ export function StoryFeed({
     }
     return Array.from(byId.values());
   }, [communityStories.stories, stories]);
+  const hasMissingPatchLine = useMemo(
+    () => allStories.some((story) => story.patchLineId && !patchLineMap.has(story.patchLineId)),
+    [allStories, patchLineMap],
+  );
+
+  useEffect(() => {
+    if (loadedPatchLines || (!composerOpen && !hasMissingPatchLine)) return;
+    let cancelled = false;
+    loadFullSts2PatchLines()
+      .then((lines) => {
+        if (!cancelled) setLoadedPatchLines(lines);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadedPatchLines(sts2PatchLines);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [composerOpen, hasMissingPatchLine, loadedPatchLines, sts2PatchLines]);
   const searchTerm = searchQuery.trim().toLocaleLowerCase();
   const orderedStories = useMemo(() => {
     const filteredStories = searchTerm
@@ -1077,7 +1106,7 @@ export function StoryFeed({
           ensureUser={ensureUser}
           unavailable={communityStories.unavailable}
           loading={communityStories.loading}
-          patchLines={sts2PatchLines}
+          patchLines={patchLineOptions}
           onAdd={communityStories.add}
           onClose={() => setComposerOpen(false)}
         />
