@@ -143,7 +143,7 @@ const CHARACTER_SELECT_VIEWPORT_PADDING = {
   padBottom: "0%",
 } as const;
 
-const CHARACTER_SPINE_MOUNT_DELAY_MS = 260;
+const CHARACTER_SPINE_MOUNT_DELAY_MS = 560;
 
 export function CharacterList({
   serviceLocale,
