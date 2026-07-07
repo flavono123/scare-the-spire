@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
-import { PenLine, Search } from "lucide-react";
-import type { Story, Card, Change, Relic, Potion, LinkedEntity, STS2Change, STS2Patch, StoryEntityType } from "@/lib/types";
+import { PenLine, Search, X } from "lucide-react";
+import type { Story, Card, Change, Relic, Potion, LinkedEntity, STS2Change, STS2Patch, STS2PatchLine, StoryEntityType } from "@/lib/types";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import type { EntityInfo } from "@/components/patch-note-renderer";
@@ -17,7 +17,6 @@ import { CommentSection } from "@/components/comment-section";
 import { EngagementSummary } from "@/components/engagement-summary";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
-import { VersionDiffLine } from "@/components/codex/sts2-change-history";
 import { CardTile } from "@/components/codex/card-tile";
 import type { StoryReactionCounts } from "@/lib/reactions";
 import { supabaseEnabled } from "@/lib/supabase";
@@ -33,8 +32,13 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
     return {
       write: "작성",
       writing: "...",
+      newStory: "새 이야기 작성",
+      close: "닫기",
       nickname: "닉네임",
       storyPlaceholder: "슬서운 이야기를 입력하세요",
+      patchLineSearchPlaceholder: "카드, 몬스터, 패치 내용 검색",
+      patchLineRequired: "참조할 패치 내용을 한 줄 선택하세요",
+      selectedPatchLine: "참조할 변경",
       searchPlaceholder: "검색",
       noResults: "검색 결과가 없습니다",
       storageUnavailable: "데이터베이스가 응답하지 않습니다",
@@ -48,13 +52,18 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
   }
 
   return {
-    write: "Write",
-    writing: "...",
-    nickname: "Nickname",
-    storyPlaceholder: "Write a Slseoun story",
-    searchPlaceholder: "Search",
-    noResults: "No stories found",
-    storageUnavailable: "No responses from database",
+      write: "Write",
+      writing: "...",
+      newStory: "New story",
+      close: "Close",
+      nickname: "Nickname",
+      storyPlaceholder: "Write a Slseoun story",
+      patchLineSearchPlaceholder: "Search cards, monsters, or patch text",
+      patchLineRequired: "Select one patch note line to reference",
+      selectedPatchLine: "Referenced change",
+      searchPlaceholder: "Search",
+      noResults: "No stories found",
+      storageUnavailable: "No responses from database",
     communityLoading: "Loading...",
     sort: {
       recommended: "Recommended",
@@ -124,11 +133,14 @@ function stableStoryOrder(
   });
 }
 
-function storySearchText(story: Story) {
+function storySearchText(story: Story, patchLineMap: Map<string, STS2PatchLine>) {
+  const patchLine = story.patchLineId ? patchLineMap.get(story.patchLineId) : undefined;
   return [
     story.sentence,
     story.authorName,
     story.source,
+    story.patchLineId,
+    patchLine?.searchText,
     story.game,
     story.entityType,
     story.entityId,
@@ -160,24 +172,6 @@ function DiffLine({ diff }: { diff: Change["diffs"][0] }) {
       <span className="text-red-400 font-medium">{String(diff.before)}</span>
       <span className="text-muted-foreground">→</span>
       <span className="text-green-400 font-medium">{String(diff.after)}</span>
-    </div>
-  );
-}
-
-function STS2DiffLine({ diff, serviceLocale }: { diff: STS2Change["diffs"][0]; serviceLocale: ServiceLocale }) {
-  const before = serviceLocale === "ko" ? diff.beforeKo ?? diff.before : diff.before ?? diff.beforeKo;
-  const after = serviceLocale === "ko" ? diff.afterKo ?? diff.after : diff.after ?? diff.afterKo;
-  const displayName = serviceLocale === "ko" ? diff.displayNameKo || diff.displayName : diff.displayName || diff.displayNameKo;
-
-  return (
-    <div className="flex items-center gap-1.5 text-sm">
-      {diff.upgraded && (
-        <span className="rounded bg-green-500/10 px-1 text-[10px] font-medium text-green-400">+</span>
-      )}
-      <span className="shrink-0 whitespace-nowrap text-muted-foreground">{displayName}</span>
-      <span className="font-medium text-red-400">{String(before)}</span>
-      <span className="text-muted-foreground">→</span>
-      <span className="font-medium text-green-400">{String(after)}</span>
     </div>
   );
 }
@@ -362,17 +356,32 @@ function EntityInfoBlock({ entityType, entityId, card, relic, potion, label }: {
   );
 }
 
-function patchHref(change: STS2Change | undefined, story: Story): string | null {
-  const patch = change?.patch ?? story.source;
+function patchHrefFromId(patch: string | undefined): string | null {
   if (!patch) return null;
   return `/patches/${patch.replace(/^v/, "")}`;
 }
 
-function STS2ChangeBlock({ change, story, patch, serviceLocale }: { change?: STS2Change; story: Story; patch?: STS2Patch; serviceLocale: ServiceLocale }) {
-  const href = patchHref(change, story);
-  const patchLabel = change?.patch ?? story.source;
-  const summary = serviceLocale === "ko" ? change?.summaryKo ?? change?.summary : change?.summary ?? change?.summaryKo;
-  const fieldDiffs = change?.fieldDiffs ?? [];
+function STS2PatchLineBlock({
+  patchLine,
+  change,
+  story,
+  patch,
+  serviceLocale,
+}: {
+  patchLine?: STS2PatchLine;
+  change?: STS2Change;
+  story: Story;
+  patch?: STS2Patch;
+  serviceLocale: ServiceLocale;
+}) {
+  const patchId = patchLine?.patch ?? change?.patch ?? story.source;
+  const href = patchHrefFromId(patchId);
+  const patchLabel = patchId;
+  const fallbackSummary = serviceLocale === "ko" ? change?.summaryKo ?? change?.summary : change?.summary ?? change?.summaryKo;
+  const lineText = serviceLocale === "ko"
+    ? patchLine?.textKo ?? patchLine?.textEn
+    : patchLine?.textEn ?? patchLine?.textKo;
+  const section = patchLine?.section ?? [];
 
   return (
     <div className="rounded-lg border border-border bg-card/30 p-4">
@@ -388,23 +397,11 @@ function STS2ChangeBlock({ change, story, patch, serviceLocale }: { change?: STS
           <span className="text-xs text-muted-foreground">{change?.date ?? patch?.date}</span>
         )}
       </div>
-      {summary && (
-        <p className="mb-2 text-xs text-muted-foreground">{summary}</p>
+      {section.length > 0 && (
+        <p className="mb-1 text-[11px] text-muted-foreground/80">{section.join(" / ")}</p>
       )}
-      {change && (
-        <div className="space-y-1">
-          {fieldDiffs.length > 0
-            ? fieldDiffs.map((diff, index) => (
-                <VersionDiffLine
-                  key={`${change.id}-${diff.field}-${diff.upgraded ? "upgraded" : "base"}-${index}`}
-                  diff={diff}
-                  serviceLocale={serviceLocale}
-                />
-              ))
-            : change.diffs.map((d, i) => (
-                <STS2DiffLine key={i} diff={d} serviceLocale={serviceLocale} />
-              ))}
-        </div>
+      {(lineText ?? fallbackSummary) && (
+        <p className="text-sm leading-relaxed text-muted-foreground">{lineText ?? fallbackSummary}</p>
       )}
     </div>
   );
@@ -452,6 +449,7 @@ function StoryExpanded({
   sts2EntityMap,
   sts2ChangeMap,
   sts2PatchMap,
+  patchLineMap,
 }: {
   story: Story;
   serviceLocale: ServiceLocale;
@@ -463,6 +461,7 @@ function StoryExpanded({
   sts2EntityMap: Map<string, EntityInfo>;
   sts2ChangeMap: Map<string, STS2Change>;
   sts2PatchMap: Map<string, STS2Patch>;
+  patchLineMap: Map<string, STS2PatchLine>;
 }) {
   const hasEntity = story.entityType && story.entityId;
   const isSTS2 = story.game === "sts2";
@@ -470,14 +469,16 @@ function StoryExpanded({
   if (isSTS2) {
     const entity = hasEntity ? sts2EntityMap.get(`${story.entityType}:${story.entityId}`) : undefined;
     const change = story.changeId ? sts2ChangeMap.get(story.changeId) : undefined;
-    const patch = change?.patch ? sts2PatchMap.get(change.patch) : story.source ? sts2PatchMap.get(story.source) : undefined;
+    const patchLine = story.patchLineId ? patchLineMap.get(story.patchLineId) : undefined;
+    const patchId = patchLine?.patch ?? change?.patch ?? story.source;
+    const patch = patchId ? sts2PatchMap.get(patchId) : undefined;
     const primaryLabel = story.tags?.includes("삭제") ? "삭제됨" : undefined;
 
     return (
       <div className="space-y-3">
         <STS2EntityInfoBlock entity={entity} label={primaryLabel} serviceLocale={serviceLocale} />
-        {(change || story.source) && (
-          <STS2ChangeBlock change={change} story={story} patch={patch} serviceLocale={serviceLocale} />
+        {(patchLine || change || story.source) && (
+          <STS2PatchLineBlock patchLine={patchLine} change={change} story={story} patch={patch} serviceLocale={serviceLocale} />
         )}
 
         {story.linkedEntities?.map((linked) => {
@@ -577,6 +578,7 @@ function StoryCard({
   sts2EntityMap,
   sts2ChangeMap,
   sts2PatchMap,
+  patchLineMap,
   userId,
   authReady,
   ensureUser,
@@ -598,6 +600,7 @@ function StoryCard({
   sts2EntityMap: Map<string, EntityInfo>;
   sts2ChangeMap: Map<string, STS2Change>;
   sts2PatchMap: Map<string, STS2Patch>;
+  patchLineMap: Map<string, STS2PatchLine>;
   userId: string | null;
   authReady: boolean;
   ensureUser: () => Promise<string | null>;
@@ -665,6 +668,7 @@ function StoryCard({
               sts2EntityMap={sts2EntityMap}
               sts2ChangeMap={sts2ChangeMap}
               sts2PatchMap={sts2PatchMap}
+              patchLineMap={patchLineMap}
             />
             <CommentSection threadKey={story.id} onCountChange={setLiveCommentCount} />
           </div>
@@ -674,14 +678,50 @@ function StoryCard({
   );
 }
 
-function StoryComposer({
+function normalizeStoryLookupText(value: string) {
+  return value
+    .normalize("NFKC")
+    .toLocaleLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function patchLineDisplayText(patchLine: STS2PatchLine, serviceLocale: ServiceLocale) {
+  return serviceLocale === "ko"
+    ? patchLine.textKo || patchLine.textEn || ""
+    : patchLine.textEn || patchLine.textKo || "";
+}
+
+function filterPatchLines(
+  patchLines: STS2PatchLine[],
+  query: string,
+  serviceLocale: ServiceLocale,
+) {
+  const terms = normalizeStoryLookupText(query).split(/\s+/).filter(Boolean);
+  const candidates = [...patchLines].reverse();
+  if (terms.length === 0) return candidates.slice(0, 12);
+
+  return candidates
+    .filter((patchLine) => {
+      const text = normalizeStoryLookupText([
+        patchLine.searchText,
+        patchLineDisplayText(patchLine, serviceLocale),
+      ].join(" "));
+      return terms.every((term) => text.includes(term));
+    })
+    .slice(0, 24);
+}
+
+function StoryComposerModal({
   serviceLocale,
   userId,
   authReady,
   ensureUser,
   unavailable,
   loading,
+  patchLines,
   onAdd,
+  onClose,
 }: {
   serviceLocale: ServiceLocale;
   userId: string | null;
@@ -689,7 +729,9 @@ function StoryComposer({
   ensureUser: () => Promise<string | null>;
   unavailable: boolean;
   loading: boolean;
-  onAdd: (sentence: string, nickname: string, activeUserId?: string) => Promise<void>;
+  patchLines: STS2PatchLine[];
+  onAdd: (sentence: string, nickname: string, patchLine: STS2PatchLine, activeUserId?: string) => Promise<void>;
+  onClose: () => void;
 }) {
   const copy = storyFeedCopy(serviceLocale);
   const profileFallback = useMemo(
@@ -699,14 +741,28 @@ function StoryComposer({
   const { profile } = useUserProfile(profileFallback);
   const [sentence, setSentence] = useState("");
   const [nickname, setNickname] = useState(profile.nickname);
+  const [patchLineQuery, setPatchLineQuery] = useState("");
+  const [selectedPatchLine, setSelectedPatchLine] = useState<STS2PatchLine | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     setNickname(profile.nickname);
   }, [profile.nickname]);
 
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
+  const filteredPatchLines = useMemo(
+    () => filterPatchLines(patchLines, patchLineQuery, serviceLocale),
+    [patchLineQuery, patchLines, serviceLocale],
+  );
   const trimmedSentence = sentence.trim();
-  const disabled = !authReady || !supabaseEnabled || unavailable || submitting || trimmedSentence.length < 2 || !nickname.trim();
+  const disabled = !authReady || !supabaseEnabled || unavailable || submitting || trimmedSentence.length < 2 || !nickname.trim() || !selectedPatchLine;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -715,60 +771,135 @@ function StoryComposer({
     setSubmitting(true);
     try {
       const activeUserId = userId ?? await ensureUser();
-      if (!activeUserId) return;
-      await onAdd(trimmedSentence, nickname, activeUserId);
+      if (!activeUserId || !selectedPatchLine) return;
+      await onAdd(trimmedSentence, nickname, selectedPatchLine, activeUserId);
       setSentence("");
+      setSelectedPatchLine(null);
+      onClose();
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2 border-b border-border/50 px-4 py-4">
-      {unavailable || !supabaseEnabled ? (
-        <StorageUnavailableNotice compact title={copy.storageUnavailable} className="pb-1 pt-0" />
-      ) : null}
-      <div className="flex items-start gap-2">
-        <textarea
-          value={sentence}
-          onChange={(event) => setSentence(event.target.value.slice(0, STORY_DRAFT_MAX_LENGTH))}
-          placeholder={copy.storyPlaceholder}
-          maxLength={STORY_DRAFT_MAX_LENGTH}
-          rows={2}
-          disabled={!authReady || !supabaseEnabled || unavailable}
-          className="min-h-16 flex-1 resize-none rounded-md border border-border/70 bg-background/60 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-yellow-500/40 disabled:opacity-40"
-        />
-        <button
-          type="submit"
-          disabled={disabled}
-          title={copy.write}
-          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border/70 bg-card/40 text-muted-foreground transition-colors hover:border-yellow-500/40 hover:text-yellow-400 disabled:opacity-30"
-        >
-          {submitting ? <EngagementSpinner size={16} /> : <PenLine size={16} />}
-          <span className="sr-only">{submitting ? copy.writing : copy.write}</span>
-        </button>
-      </div>
-      <div className="flex items-center gap-2">
-        <input
-          type="text"
-          value={nickname}
-          onChange={(event) => setNickname(event.target.value.slice(0, 20))}
-          placeholder={copy.nickname}
-          maxLength={20}
-          disabled={!authReady || !supabaseEnabled || unavailable}
-          className="h-8 min-w-0 flex-1 rounded-md border border-border/60 bg-background/50 px-2.5 text-xs text-muted-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-yellow-500/40 disabled:opacity-40"
-        />
-        <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
-          {sentence.length}/{STORY_DRAFT_MAX_LENGTH}
-        </span>
-        {loading && (
-          <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-muted-foreground">
-            <EngagementSpinner size={12} />
-            {copy.communityLoading}
-          </span>
-        )}
-      </div>
-    </form>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-3 py-6 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="flex max-h-[90vh] w-full max-w-lg flex-col rounded-lg border border-border bg-background shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
+          <h2 className="text-sm font-semibold">{copy.newStory}</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+            title={copy.close}
+          >
+            <X size={16} />
+            <span className="sr-only">{copy.close}</span>
+          </button>
+        </div>
+
+        <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4">
+          {unavailable || !supabaseEnabled ? (
+            <StorageUnavailableNotice compact title={copy.storageUnavailable} />
+          ) : null}
+
+          <textarea
+            value={sentence}
+            onChange={(event) => setSentence(event.target.value.slice(0, STORY_DRAFT_MAX_LENGTH))}
+            placeholder={copy.storyPlaceholder}
+            maxLength={STORY_DRAFT_MAX_LENGTH}
+            rows={3}
+            disabled={!authReady || !supabaseEnabled || unavailable}
+            className="min-h-24 w-full resize-none rounded-md border border-border/70 bg-background/60 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-yellow-500/40 disabled:opacity-40"
+          />
+
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={nickname}
+              onChange={(event) => setNickname(event.target.value.slice(0, 20))}
+              placeholder={copy.nickname}
+              maxLength={20}
+              disabled={!authReady || !supabaseEnabled || unavailable}
+              className="h-8 min-w-0 flex-1 rounded-md border border-border/60 bg-background/50 px-2.5 text-xs text-muted-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-yellow-500/40 disabled:opacity-40"
+            />
+            <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
+              {sentence.length}/{STORY_DRAFT_MAX_LENGTH}
+            </span>
+            {loading && (
+              <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-muted-foreground">
+                <EngagementSpinner size={12} />
+                {copy.communityLoading}
+              </span>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <label className="relative block">
+              <Search size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="search"
+                value={patchLineQuery}
+                onChange={(event) => setPatchLineQuery(event.target.value)}
+                placeholder={copy.patchLineSearchPlaceholder}
+                className="h-9 w-full rounded-md border border-border/70 bg-background/40 pl-8 pr-2.5 text-xs text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-yellow-500/40"
+              />
+            </label>
+
+            {selectedPatchLine ? (
+              <div className="rounded-md border border-yellow-500/25 bg-yellow-500/5 px-3 py-2">
+                <p className="mb-1 text-[11px] text-yellow-500">{copy.selectedPatchLine}</p>
+                <p className="text-xs text-muted-foreground">
+                  <span className="text-foreground">{selectedPatchLine.patch}</span>
+                  <span className="mx-1.5 text-muted-foreground/60">·</span>
+                  {patchLineDisplayText(selectedPatchLine, serviceLocale)}
+                </p>
+              </div>
+            ) : (
+              <p className="text-[11px] text-muted-foreground">{copy.patchLineRequired}</p>
+            )}
+
+            <div className="max-h-64 overflow-y-auto rounded-md border border-border/60 bg-card/20">
+              {filteredPatchLines.map((patchLine) => (
+                <button
+                  key={patchLine.id}
+                  type="button"
+                  onClick={() => setSelectedPatchLine(patchLine)}
+                  className={`block w-full border-b border-border/40 px-3 py-2 text-left last:border-b-0 transition-colors hover:bg-white/5 ${
+                    selectedPatchLine?.id === patchLine.id ? "bg-white/10" : ""
+                  }`}
+                >
+                  <span className="mb-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+                    <span className="font-medium text-yellow-500">{patchLine.patch}</span>
+                    {patchLine.section.length > 0 && <span>{patchLine.section.join(" / ")}</span>}
+                  </span>
+                  <span className="block text-xs leading-relaxed text-foreground">
+                    {patchLineDisplayText(patchLine, serviceLocale)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end gap-2 border-t border-border/60 px-4 py-3">
+          <button
+            type="submit"
+            disabled={disabled}
+            className="inline-flex h-9 items-center gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-xs font-medium text-yellow-400 transition-colors hover:bg-yellow-500/15 disabled:opacity-30"
+          >
+            {submitting ? <EngagementSpinner size={14} /> : <PenLine size={14} />}
+            {submitting ? copy.writing : copy.write}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 
@@ -778,12 +909,14 @@ function StoryFeedToolbar({
   onSortModeChange,
   searchQuery,
   onSearchQueryChange,
+  onOpenComposer,
 }: {
   serviceLocale: ServiceLocale;
   sortMode: StorySortMode;
   onSortModeChange: (sortMode: StorySortMode) => void;
   searchQuery: string;
   onSearchQueryChange: (query: string) => void;
+  onOpenComposer: () => void;
 }) {
   const copy = storyFeedCopy(serviceLocale);
 
@@ -805,16 +938,26 @@ function StoryFeedToolbar({
           </button>
         ))}
       </div>
-      <label className="relative block min-w-0 sm:w-52">
-        <Search size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-        <input
-          type="search"
-          value={searchQuery}
-          onChange={(event) => onSearchQueryChange(event.target.value)}
-          placeholder={copy.searchPlaceholder}
-          className="h-8 w-full rounded-md border border-border/70 bg-background/40 pl-8 pr-2.5 text-xs text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-yellow-500/40"
-        />
-      </label>
+      <div className="flex min-w-0 items-center gap-2">
+        <label className="relative block min-w-0 flex-1 sm:w-52">
+          <Search size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(event) => onSearchQueryChange(event.target.value)}
+            placeholder={copy.searchPlaceholder}
+            className="h-8 w-full rounded-md border border-border/70 bg-background/40 pl-8 pr-2.5 text-xs text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-yellow-500/40"
+          />
+        </label>
+        <button
+          type="button"
+          onClick={onOpenComposer}
+          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-border/70 bg-card/40 px-2.5 text-xs text-muted-foreground transition-colors hover:border-yellow-500/40 hover:text-yellow-400"
+        >
+          <PenLine size={14} />
+          <span>{copy.newStory}</span>
+        </button>
+      </div>
     </div>
   );
 }
@@ -828,6 +971,7 @@ export function StoryFeed({
   changes,
   sts2Changes = [],
   sts2Patches = [],
+  sts2PatchLines = [],
   sts2Entities = [],
 }: {
   serviceLocale?: ServiceLocale;
@@ -838,6 +982,7 @@ export function StoryFeed({
   changes: Change[];
   sts2Changes?: STS2Change[];
   sts2Patches?: STS2Patch[];
+  sts2PatchLines?: STS2PatchLine[];
   sts2Entities?: EntityInfo[];
 }) {
   const { userId, ready: authReady, ensureUser } = useAuth();
@@ -846,6 +991,7 @@ export function StoryFeed({
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set());
   const [sortMode, setSortMode] = useState<StorySortMode>("recommended");
   const [searchQuery, setSearchQuery] = useState("");
+  const [composerOpen, setComposerOpen] = useState(false);
   const didMountRef = useRef(false);
 
   const toggle = useCallback((storyId: string) => {
@@ -877,17 +1023,27 @@ export function StoryFeed({
     window.history.replaceState(null, "", nextUrl);
   }, [expandedIds]);
 
-  const allStories = useMemo(
-    () => [...stories, ...communityStories.stories],
-    [communityStories.stories, stories],
-  );
+  const patchLineMap = useMemo(() => new Map(sts2PatchLines.map((line) => [line.id, line])), [sts2PatchLines]);
+  const allStories = useMemo(() => {
+    const byId = new Map(stories.map((story) => [story.id, story]));
+    for (const story of communityStories.stories) {
+      const existing = byId.get(story.id);
+      byId.set(story.id, existing ? {
+        ...existing,
+        ...story,
+        tags: story.tags ?? existing.tags,
+        linkedEntities: story.linkedEntities ?? existing.linkedEntities,
+      } : story);
+    }
+    return Array.from(byId.values());
+  }, [communityStories.stories, stories]);
   const searchTerm = searchQuery.trim().toLocaleLowerCase();
   const orderedStories = useMemo(() => {
     const filteredStories = searchTerm
-      ? allStories.filter((story) => storySearchText(story).includes(searchTerm))
+      ? allStories.filter((story) => storySearchText(story, patchLineMap).includes(searchTerm))
       : allStories;
     return stableStoryOrder(filteredStories, sortMode, counts);
-  }, [allStories, counts, searchTerm, sortMode]);
+  }, [allStories, counts, patchLineMap, searchTerm, sortMode]);
 
   const cardMap = useMemo(() => new Map(cards.map((c) => [c.id, c])), [cards]);
   const relicMap = useMemo(() => new Map(relics.map((r) => [r.id, r])), [relics]);
@@ -913,21 +1069,26 @@ export function StoryFeed({
 
   return (
     <div>
-      <StoryComposer
-        serviceLocale={serviceLocale}
-        userId={userId}
-        authReady={authReady}
-        ensureUser={ensureUser}
-        unavailable={communityStories.unavailable}
-        loading={communityStories.loading}
-        onAdd={communityStories.add}
-      />
+      {composerOpen && (
+        <StoryComposerModal
+          serviceLocale={serviceLocale}
+          userId={userId}
+          authReady={authReady}
+          ensureUser={ensureUser}
+          unavailable={communityStories.unavailable}
+          loading={communityStories.loading}
+          patchLines={sts2PatchLines}
+          onAdd={communityStories.add}
+          onClose={() => setComposerOpen(false)}
+        />
+      )}
       <StoryFeedToolbar
         serviceLocale={serviceLocale}
         sortMode={sortMode}
         onSortModeChange={setSortMode}
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
+        onOpenComposer={() => setComposerOpen(true)}
       />
       <div className="divide-y divide-border/50">
         {orderedStories.length === 0 ? (
@@ -949,6 +1110,7 @@ export function StoryFeed({
             sts2EntityMap={sts2EntityMap}
             sts2ChangeMap={sts2ChangeMap}
             sts2PatchMap={sts2PatchMap}
+            patchLineMap={patchLineMap}
             userId={userId}
             authReady={authReady}
             ensureUser={ensureUser}

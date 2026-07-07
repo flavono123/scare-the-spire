@@ -1,4 +1,4 @@
-import { getStories, getSTS2Stories, getCards, getRelics, getPotions, getChanges, getSTS2Changes, getSTS2Patches } from "@/lib/data";
+import { getStories, getSTS2Stories, getCards, getRelics, getPotions, getChanges, getSTS2Changes, getSTS2Patches, getSTS2PatchLines } from "@/lib/data";
 import { ByrdispatchTeaser } from "@/components/byrdispatch-teaser";
 import { StoryFeed } from "@/components/story-feed";
 import { loadAllEntities } from "@/lib/load-all-entities";
@@ -7,7 +7,7 @@ import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 
 export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  const [stories, sts2Stories, cards, relics, potions, changes, sts2Changes, sts2Patches, sts2Entities] = await Promise.all([
+  const [stories, sts2Stories, cards, relics, potions, changes, sts2Changes, sts2Patches, sts2PatchLines, sts2Entities] = await Promise.all([
     getStories(),
     getSTS2Stories(),
     getCards(),
@@ -16,6 +16,7 @@ export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOC
     getChanges(),
     getSTS2Changes(),
     getSTS2Patches(),
+    getSTS2PatchLines(),
     loadAllEntities({ gameLocale }),
   ]);
   const mergedStories = [...stories, ...sts2Stories];
@@ -40,6 +41,7 @@ export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOC
               changes={changes}
               sts2Changes={sts2Changes}
               sts2Patches={sts2Patches}
+              sts2PatchLines={sts2PatchLines}
               sts2Entities={sts2Entities}
             />
           )}
