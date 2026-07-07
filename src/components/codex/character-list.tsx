@@ -207,7 +207,6 @@ export function CharacterList({
   }, [activeCharacterOverrideId, filteredCharacters, urlSelectedCharacter]);
 
   useEffect(() => {
-    setAnimatedCharacterId(null);
     if (!activeCharacterId) return undefined;
 
     const timeoutId = window.setTimeout(() => {
@@ -334,7 +333,7 @@ export function CharacterList({
                   character={character}
                   serviceLocale={serviceLocale}
                   active={character.id === activeCharacterId}
-                  animateSpine={character.id === animatedCharacterId}
+                  animateSpine={character.id === activeCharacterId && character.id === animatedCharacterId}
                   index={index}
                   setActiveCharacterId={setActiveCharacterOverrideId}
                   setRowRef={(node) => {
