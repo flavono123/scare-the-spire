@@ -92,17 +92,17 @@ const CHARACTER_SELECT_FRAME: Record<string, typeof DEFAULT_CHARACTER_SELECT_FRA
     fallbackFocus: "55% center",
   },
   ironclad: {
-    scale: 1.18,
-    translateX: "-1%",
+    scale: 1.34,
+    translateX: "14%",
     translateY: "-2%",
-    transformOrigin: "52% 48%",
+    transformOrigin: "58% 48%",
     fallbackFocus: "53% center",
   },
   necrobinder: {
-    scale: 2.9,
-    translateX: "48%",
+    scale: 3.04,
+    translateX: "72%",
     translateY: "-4%",
-    transformOrigin: "68% 48%",
+    transformOrigin: "78% 48%",
     fallbackFocus: "62% center",
   },
   regent: {
