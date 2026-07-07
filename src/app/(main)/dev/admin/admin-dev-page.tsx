@@ -185,12 +185,8 @@ async function readSupabase<T>(
   }
 }
 
-function isMissingSchemaItem(error: string | undefined, name: string): boolean {
-  return !!error && error.toLowerCase().includes(name.toLowerCase());
-}
-
 async function readComments(): Promise<QueryState<CommentRow[]>> {
-  const richResult = await readSupabase<CommentRow[]>(
+  return readSupabase<CommentRow[]>(
     "admin.comments",
     supabase
       .from("comments")
@@ -200,32 +196,10 @@ async function readComments(): Promise<QueryState<CommentRow[]>> {
       .limit(ROW_LIMIT),
     [],
   );
-
-  if (!isMissingSchemaItem(richResult.error, "content_blocks")) {
-    return richResult;
-  }
-
-  const legacyResult = await readSupabase<Omit<CommentRow, "content_blocks">[]>(
-    "admin.comments.legacy",
-    supabase
-      .from("comments")
-      .select("id, story_id, user_id, nickname, content, env, created_at", { count: "exact" })
-      .eq("env", ADMIN_DATA_ENV)
-      .order("created_at", { ascending: false })
-      .limit(ROW_LIMIT),
-    [],
-  );
-
-  return {
-    data: legacyResult.data.map((row) => ({ ...row, content_blocks: null })),
-    count: legacyResult.count,
-    error: legacyResult.error,
-    note: legacyResult.error ? undefined : "`content_blocks` 컬럼 없이 조회했습니다.",
-  };
 }
 
 async function readCommentsForAnalysis(): Promise<QueryState<CommentRow[]>> {
-  const richResult = await readSupabase<CommentRow[]>(
+  const result = await readSupabase<CommentRow[]>(
     "admin.comments.analysis",
     supabase
       .from("comments")
@@ -236,40 +210,16 @@ async function readCommentsForAnalysis(): Promise<QueryState<CommentRow[]>> {
     [],
   );
 
-  if (!isMissingSchemaItem(richResult.error, "content_blocks")) {
-    return {
-      ...richResult,
-      note: (richResult.count ?? 0) > richResult.data.length
-        ? `최근 ${richResult.data.length.toLocaleString("ko-KR")}개 기준입니다.`
-        : "전체 댓글 기준입니다.",
-    };
-  }
-
-  const legacyResult = await readSupabase<Omit<CommentRow, "content_blocks">[]>(
-    "admin.comments.analysis.legacy",
-    supabase
-      .from("comments")
-      .select("id, story_id, user_id, nickname, content, env, created_at", { count: "exact" })
-      .eq("env", ADMIN_DATA_ENV)
-      .order("created_at", { ascending: false })
-      .limit(COMMENT_ANALYSIS_LIMIT),
-    [],
-  );
-
   return {
-    data: legacyResult.data.map((row) => ({ ...row, content_blocks: null })),
-    count: legacyResult.count,
-    error: legacyResult.error,
-    note: legacyResult.error
-      ? undefined
-      : (legacyResult.count ?? 0) > legacyResult.data.length
-        ? `최근 ${legacyResult.data.length.toLocaleString("ko-KR")}개 기준입니다.`
-        : "`content_blocks` 컬럼 없이 전체 댓글 기준입니다.",
+    ...result,
+    note: (result.count ?? 0) > result.data.length
+      ? `최근 ${result.data.length.toLocaleString("ko-KR")}개 기준입니다.`
+      : "전체 댓글 기준입니다.",
   };
 }
 
 async function readCommentLikes(): Promise<QueryState<CommentLikeRow[]>> {
-  const result = await readSupabase<CommentLikeRow[]>(
+  return readSupabase<CommentLikeRow[]>(
     "admin.comment_likes",
     supabase
       .from("comment_likes")
@@ -277,16 +227,6 @@ async function readCommentLikes(): Promise<QueryState<CommentLikeRow[]>> {
       .limit(STATS_SAMPLE_LIMIT),
     [],
   );
-
-  if (!isMissingSchemaItem(result.error, "comment_likes")) {
-    return result;
-  }
-
-  return {
-    data: [],
-    count: 0,
-    note: "`comment_likes` 테이블이 현재 Supabase 스키마에 없습니다.",
-  };
 }
 
 async function loadAdminSnapshot(): Promise<AdminSnapshot | null> {

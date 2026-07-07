@@ -5,8 +5,6 @@ import type { PostBlock } from "@/lib/chemical-types";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
-let richCommentColumnSupported: boolean | null = null;
-
 export interface Comment {
   id: string;
   story_id: string;
@@ -69,44 +67,17 @@ export function useComments(storyId: string, userId: string | null): UseComments
         user_id: activeUserId,
         nickname,
         content,
+        content_blocks: contentBlocks ?? null,
         env: supabaseEnv,
       };
 
-      const tryInsert = async (includeRichBlocks: boolean) => {
-        const payload = includeRichBlocks
-          ? { ...basePayload, content_blocks: contentBlocks ?? null }
-          : basePayload;
-        return withSupabaseTimeout(
-          "comments.insert",
-          supabase.from("comments").insert(payload).select().single(),
-        );
-      };
-
-      let result;
-      try {
-        result = richCommentColumnSupported === false
-          ? await tryInsert(false)
-          : await tryInsert(true);
-      } catch {
+      const result = await withSupabaseTimeout(
+        "comments.insert",
+        supabase.from("comments").insert(basePayload).select().single(),
+      ).catch(() => {
         setUnavailable(true);
-        throw new Error("Comment storage unavailable");
-      }
-
-      const shouldRetryWithoutRichColumn = !!result.error
-        && richCommentColumnSupported !== false
-        && result.error.message.toLowerCase().includes("content_blocks");
-
-      if (shouldRetryWithoutRichColumn) {
-        richCommentColumnSupported = false;
-        try {
-          result = await tryInsert(false);
-        } catch {
-          setUnavailable(true);
-          throw new Error("Comment storage unavailable");
-        }
-      } else if (!result.error && richCommentColumnSupported === null) {
-        richCommentColumnSupported = true;
-      }
+        return { data: null, error: new Error("Comment storage unavailable") };
+      });
 
       if (result.error) {
         setUnavailable(true);

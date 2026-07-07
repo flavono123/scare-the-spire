@@ -231,10 +231,6 @@
     return response.json();
   }
 
-  function isMissingCommentLikes(error) {
-    return error?.status === 404 && String(error.body ?? "").includes("comment_likes");
-  }
-
   function commentsPath(threadKey, config) {
     const params = new URLSearchParams({
       select: "*",
@@ -359,22 +355,18 @@
     const liked = new Set();
 
     if (commentIds.length > 0) {
-      try {
-        const likes = await restRequest(config, commentLikesPath(commentIds));
-        for (const row of likes ?? []) {
-          likeCounts.set(row.comment_id, (likeCounts.get(row.comment_id) ?? 0) + 1);
-        }
+      const likes = await restRequest(config, commentLikesPath(commentIds));
+      for (const row of likes ?? []) {
+        likeCounts.set(row.comment_id, (likeCounts.get(row.comment_id) ?? 0) + 1);
+      }
 
-        if (userId) {
-          const ownLikes = await restRequest(config, commentLikesPath(commentIds, userId), {
-            token: session.access_token,
-          });
-          for (const row of ownLikes ?? []) {
-            liked.add(row.comment_id);
-          }
+      if (userId) {
+        const ownLikes = await restRequest(config, commentLikesPath(commentIds, userId), {
+          token: session.access_token,
+        });
+        for (const row of ownLikes ?? []) {
+          liked.add(row.comment_id);
         }
-      } catch (error) {
-        if (!isMissingCommentLikes(error)) throw error;
       }
     }
 
@@ -443,25 +435,21 @@
         if (likeButton) {
           const commentId = likeButton.dataset.commentLike;
           if (!commentId) return;
-          try {
-            if (state.liked.has(commentId)) {
-              const params = new URLSearchParams({
-                comment_id: `eq.${commentId}`,
-                user_id: `eq.${sessionUserId(session)}`,
-              });
-              await restRequest(config, `comment_likes?${params.toString()}`, {
-                method: "DELETE",
-                token: session.access_token,
-              });
-            } else {
-              await restRequest(config, "comment_likes", {
-                method: "POST",
-                token: session.access_token,
-                body: { comment_id: commentId, user_id: sessionUserId(session) },
-              });
-            }
-          } catch (error) {
-            if (!isMissingCommentLikes(error)) throw error;
+          if (state.liked.has(commentId)) {
+            const params = new URLSearchParams({
+              comment_id: `eq.${commentId}`,
+              user_id: `eq.${sessionUserId(session)}`,
+            });
+            await restRequest(config, `comment_likes?${params.toString()}`, {
+              method: "DELETE",
+              token: session.access_token,
+            });
+          } else {
+            await restRequest(config, "comment_likes", {
+              method: "POST",
+              token: session.access_token,
+              body: { comment_id: commentId, user_id: sessionUserId(session) },
+            });
           }
         }
 
