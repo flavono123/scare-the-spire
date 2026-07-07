@@ -216,6 +216,8 @@ export interface Story {
   game?: StoryGame;
   publishedAt?: string;
   sentence: string;
+  authorName?: string;
+  community?: boolean;
   entityType?: StoryEntityType;
   entityId?: string;
   changeId?: string;
