@@ -22,6 +22,10 @@ resources, rich patch notes, mobile layout, animation, or QA.
    - Prioritize extracted game assets in `public/images/sts2/**`.
    - Prioritize extracted game locale and terminology in `data/sts2/**`.
    - Do not invent game names, labels, or translations when game locale exists.
+4. If the feature changes Supabase schema, tables, RLS policies, RPCs, indexes,
+   or migration SQL, load `.codex/skills/supabase-migrations/SKILL.md`.
+   Historical Supabase SQL through migration 014 was applied manually; new
+   schema changes after 014 must use CLI migrations under `supabase/migrations/`.
 
 ## Game-First Product Rules
 

@@ -35,6 +35,12 @@ This project uses local project skills instead of global home-directory skill in
 - Treat `.claude/skills` as the legacy/local Claude skill source and fallback reference.
 - Do not require or assume global home-directory skill installation for this project.
 
+## Supabase Migrations
+
+- Supabase SQL through `supabase/migration-014-community-stories.sql` has already been applied manually to the linked project.
+- Treat `supabase/setup.sql`, `supabase/migrate-env.sql`, and `supabase/migration-002-*.sql` through `supabase/migration-014-*.sql` as historical baseline files, not pending CLI migrations.
+- For new schema changes after 014, use `.codex/skills/supabase-migrations/SKILL.md` and create/apply migrations with the Supabase CLI under `supabase/migrations/`.
+
 ## Cloudflare Patch Worker
 
 - The Cloudflare worktree may deploy patch notes before the main Compendium Worker catches up.
