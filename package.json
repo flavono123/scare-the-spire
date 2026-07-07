@@ -29,6 +29,7 @@
     "codex:diff": "tsx scripts/generate-entity-diffs.ts",
     "codex:validate": "tsx scripts/validate-entity-versions.ts",
     "codex:validate-references": "tsx scripts/validate-codex-references.ts",
+    "sts2:patch-lines": "tsx scripts/generate-sts2-patch-lines.ts",
     "sts2:index-images": "node scripts/build-sts2-public-image-file-index.mjs",
     "sts2:render-encounters": "node scripts/render-sts2-encounter-spine-portraits.mjs",
     "sts2:render-monsters": "node scripts/render-sts2-monster-spine-portraits.mjs",

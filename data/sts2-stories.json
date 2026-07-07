@@ -6,6 +6,7 @@
     "entityType": "monster",
     "entityId": "DOORMAKER",
     "changeId": "doormaker-v105-replaced",
+    "patchLineId": "v0.105.0:line-002-monster-doormaker-monster-aeonglass",
     "linkedEntities": [
       {
         "entityType": "monster",
@@ -28,6 +29,7 @@
     "entityType": "monster",
     "entityId": "INFESTED_PRISM",
     "changeId": "infested-prism-v106-rework",
+    "patchLineId": "v0.106.0:line-032-monster-infested-prism",
     "source": "v0.106.0",
     "tags": [
       "리워크",
@@ -42,6 +44,7 @@
     "entityType": "card",
     "entityId": "WITHER",
     "changeId": "wither-v1061-upgrade-fix",
+    "patchLineId": "v0.106.1:line-002-card-wither",
     "linkedEntities": [
       {
         "entityType": "monster",

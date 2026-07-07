@@ -172,6 +172,26 @@ export interface STS2Change {
   visualDiff?: STS2ChangeVisualDiff;
 }
 
+export interface STS2PatchLineEntityRef {
+  type: STS2PatchFeaturedEntityType;
+  id: string;
+  label: string;
+}
+
+export interface STS2PatchLine {
+  id: string;
+  patch: string;
+  version: string;
+  date: string;
+  section: string[];
+  markdownKo: string;
+  markdownEn?: string;
+  textKo: string;
+  textEn?: string;
+  entityRefs: STS2PatchLineEntityRef[];
+  searchText: string;
+}
+
 // =============================================================================
 // Entity versioning — machine-applicable diffs for reconstructing past versions
 // =============================================================================
@@ -221,6 +241,7 @@ export interface Story {
   entityType?: StoryEntityType;
   entityId?: string;
   changeId?: string;
+  patchLineId?: string;
   linkedEntities?: LinkedEntity[];
   tags?: string[];
   /** Patch reference for text-only stories without entity links */

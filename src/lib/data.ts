@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import type { Card, Change, Story, Relic, Potion, CardClass, CardType, CharacterClass, PotionRarity, STS2Patch, STS2Change, EntityVersionDiff, CodexMeta } from "./types";
+import type { Card, Change, Story, Relic, Potion, CardClass, CardType, CharacterClass, PotionRarity, STS2Patch, STS2Change, STS2PatchLine, EntityVersionDiff, CodexMeta } from "./types";
 import { normalizeVersionedEntityType } from "./codex-versioning";
 
 function toSlug(name: string, cardClass?: string): string {
@@ -125,6 +125,12 @@ export async function getSTS2Patches(): Promise<STS2Patch[]> {
 export async function getSTS2Changes(): Promise<STS2Change[]> {
   return JSON.parse(
     await fs.readFile(path.join(DATA_DIR, "sts2-changes.json"), "utf-8"),
+  );
+}
+
+export async function getSTS2PatchLines(): Promise<STS2PatchLine[]> {
+  return JSON.parse(
+    await fs.readFile(path.join(DATA_DIR, "sts2-patch-lines.json"), "utf-8"),
   );
 }
 
