@@ -1,0 +1,4 @@
+interface:
+  display_name: "History Course QA"
+  short_description: "Verify run replay accuracy across local .run files"
+  default_prompt: "Use $history-course-qa to verify History Course seeded replay accuracy against local run history files."
