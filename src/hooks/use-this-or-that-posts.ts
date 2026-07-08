@@ -199,7 +199,7 @@ export function useThisOrThatPost(postId: string): UseThisOrThatPostReturn {
         .select("*")
         .eq("id", postId)
         .eq("env", supabaseEnv)
-        .single(),
+        .maybeSingle(),
     )
       .then(({ data, error }) => {
         if (error) throw error;
