@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { supabase, supabaseEnabled, supabaseEnv } from "@/lib/supabase";
 import { withSupabaseTimeout } from "@/lib/supabase-timeout";
 
@@ -24,6 +24,7 @@ export function useThisOrThatLikes(
   const [liked, setLiked] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(supabaseEnabled && postIds.length > 0);
   const [unavailable, setUnavailable] = useState(!supabaseEnabled);
+  const mutationVersion = useRef(0);
   const key = useMemo(() => postIdKey(postIds), [postIds]);
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export function useThisOrThatLikes(
     }
 
     let cancelled = false;
+    const requestMutationVersion = mutationVersion.current;
 
     const countQuery = withSupabaseTimeout(
       "this_or_that_post_like_counts.select",
@@ -59,6 +61,10 @@ export function useThisOrThatLikes(
         if (countResult.error) throw countResult.error;
         if (likedResult.error) throw likedResult.error;
         if (cancelled) return;
+        if (requestMutationVersion !== mutationVersion.current) {
+          setLoading(false);
+          return;
+        }
 
         const nextCounts: Record<string, number> = {};
         for (const row of countResult.data ?? []) {
@@ -91,6 +97,7 @@ export function useThisOrThatLikes(
     if (!supabaseEnabled || !activeUserId) return;
 
     const currentlyLiked = liked.has(postId);
+    mutationVersion.current += 1;
     setLiked((prev) => {
       const next = new Set(prev);
       if (currentlyLiked) next.delete(postId);
