@@ -20,6 +20,11 @@ export interface HistoryCourseLandingGameCopy {
   heroQuote: string;
 }
 
+export interface ThisOrThatGameCopy {
+  title: string;
+  prompt: string;
+}
+
 export interface PatchStageGameCopy {
   prepTime: {
     title: string;
@@ -318,5 +323,19 @@ export async function getHistoryCourseLandingGameCopy(
     title: relicTitle,
     runHistoryLabel,
     heroQuote: replaceLanternKeyTerm(quote, gameLocale, runHistoryLabel),
+  };
+}
+
+export async function getThisOrThatGameCopy(
+  gameLocale: GameLocale,
+): Promise<ThisOrThatGameCopy> {
+  const [title, description] = await Promise.all([
+    readGameTextWithEnglishFallback(gameLocale, "events", "THIS_OR_THAT.title"),
+    readGameTextWithEnglishFallback(gameLocale, "events", "THIS_OR_THAT.pages.INITIAL.description"),
+  ]);
+
+  return {
+    title: title || "This or That?",
+    prompt: extractDialogueLine(description),
   };
 }
