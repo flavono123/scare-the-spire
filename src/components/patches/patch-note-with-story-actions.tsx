@@ -1,28 +1,41 @@
 "use client";
 
 import { useMemo, useState, type ComponentProps, type ReactNode } from "react";
-import { PenLine } from "lucide-react";
+import { X } from "lucide-react";
 import {
   PatchNoteRenderer,
 } from "@/components/patch-note-renderer";
-import { StoryComposerModal } from "@/components/story-composer-modal";
+import { StoryComposerModal, patchLineDisplayText } from "@/components/story-composer-modal";
+import { StoryTokenIcon } from "@/components/story-token-icon";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import type { ServiceLocale } from "@/lib/i18n";
-import type { STS2PatchLine } from "@/lib/types";
+import type { STS2PatchLine, Story } from "@/lib/types";
 
 type PatchNoteRendererProps = ComponentProps<typeof PatchNoteRenderer>;
 
 function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
   if (serviceLocale === "ko") {
     return {
+      title: "이 변경의 이야기",
+      open: "이 변경의 이야기 보기",
       write: "이 변경으로 이야기 쓰기",
+      close: "닫기",
+      empty: "아직 이 변경으로 쓴 이야기가 없습니다",
+      staticStory: "슬서운 이야기",
+      communityStory: "작성됨",
       countLabel: (count: number) => `이 변경의 이야기 ${count}개`,
     };
   }
 
   return {
+    title: "Stories for this change",
+    open: "View stories for this change",
     write: "Write story from this change",
+    close: "Close",
+    empty: "No stories have been written from this change yet",
+    staticStory: "Slseoun story",
+    communityStory: "Posted",
     countLabel: (count: number) => `${count} stories for this change`,
   };
 }
@@ -30,11 +43,11 @@ function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
 function PatchLineStoryAction({
   count,
   serviceLocale,
-  onWrite,
+  onOpen,
 }: {
   count: number;
   serviceLocale?: ServiceLocale;
-  onWrite: () => void;
+  onOpen: () => void;
 }) {
   const copy = patchLineStoryCopy(serviceLocale);
 
@@ -44,7 +57,7 @@ function PatchLineStoryAction({
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();
-        onWrite();
+        onOpen();
       }}
       data-patch-line-story-action
       className={`inline-flex h-5 items-center gap-1 rounded border px-1.5 align-baseline text-[10px] leading-none tabular-nums transition-colors ${
@@ -52,16 +65,16 @@ function PatchLineStoryAction({
           ? "border-yellow-400/35 bg-yellow-400/10 text-yellow-200 hover:border-yellow-300/60 hover:bg-yellow-400/15"
           : "border-cyan-300/20 bg-cyan-400/5 text-cyan-100/65 hover:border-cyan-300/45 hover:bg-cyan-400/10 hover:text-cyan-100"
       }`}
-      title={copy.write}
-      aria-label={`${copy.write}. ${copy.countLabel(count)}`}
+      title={copy.open}
+      aria-label={`${copy.open}. ${copy.countLabel(count)}`}
     >
-      <PenLine size={11} aria-hidden="true" />
+      <StoryTokenIcon size={13} />
       <span>{count}</span>
     </button>
   );
 }
 
-function countStoriesByPatchLine(stories: { patchLineId?: string; community?: boolean }[]) {
+function countStoriesByPatchLine(stories: { patchLineId?: string }[]) {
   const counts = new Map<string, number>();
   for (const story of stories) {
     if (!story.patchLineId) continue;
@@ -70,22 +83,126 @@ function countStoriesByPatchLine(stories: { patchLineId?: string; community?: bo
   return counts;
 }
 
+function storyPublishedTime(story: Story) {
+  if (!story.publishedAt) return 0;
+  const time = Date.parse(story.publishedAt);
+  return Number.isFinite(time) ? time : 0;
+}
+
+function sortPatchLineStories(stories: Story[]) {
+  return [...stories].sort((a, b) => {
+    const timeDiff = storyPublishedTime(b) - storyPublishedTime(a);
+    if (timeDiff !== 0) return timeDiff;
+    return a.id.localeCompare(b.id);
+  });
+}
+
+function PatchLineStoriesPanel({
+  patchLine,
+  stories,
+  serviceLocale,
+  onClose,
+  onWrite,
+}: {
+  patchLine: STS2PatchLine;
+  stories: Story[];
+  serviceLocale: ServiceLocale;
+  onClose: () => void;
+  onWrite: () => void;
+}) {
+  const copy = patchLineStoryCopy(serviceLocale);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 px-3 py-6 backdrop-blur-sm sm:items-center"
+      role="dialog"
+      aria-modal="true"
+      aria-label={copy.title}
+      onClick={onClose}
+    >
+      <div
+        className="flex max-h-[86vh] w-full max-w-lg flex-col rounded-lg border border-border bg-background shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
+          <div className="min-w-0">
+            <h2 className="text-sm font-semibold">{copy.title}</h2>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              <span className="font-medium text-yellow-500">{patchLine.patch}</span>
+              <span className="mx-1.5 text-muted-foreground/60">·</span>
+              {copy.countLabel(stories.length)}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+            title={copy.close}
+          >
+            <X size={16} />
+            <span className="sr-only">{copy.close}</span>
+          </button>
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+          <div className="rounded-md border border-yellow-500/25 bg-yellow-500/5 px-3 py-2 text-xs leading-relaxed text-foreground">
+            {patchLineDisplayText(patchLine, serviceLocale)}
+          </div>
+
+          <div className="mt-3 space-y-2">
+            {stories.length > 0 ? stories.map((story) => (
+              <article
+                key={story.id}
+                className="rounded-md border border-border/60 bg-card/25 px-3 py-2.5"
+              >
+                <p className="text-sm leading-relaxed text-foreground">{story.sentence}</p>
+                <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
+                  <span>{story.community ? copy.communityStory : copy.staticStory}</span>
+                  {story.authorName && <span>{story.authorName}</span>}
+                  {story.publishedAt && <span>{story.publishedAt}</span>}
+                </p>
+              </article>
+            )) : (
+              <p className="rounded-md border border-dashed border-border/70 px-3 py-5 text-center text-xs text-muted-foreground">
+                {copy.empty}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end border-t border-border/60 px-4 py-3">
+          <button
+            type="button"
+            onClick={onWrite}
+            className="inline-flex h-9 items-center gap-2 rounded-md border border-yellow-500/35 bg-yellow-500/10 px-3 text-xs font-medium text-yellow-300 transition-colors hover:border-yellow-400/60 hover:bg-yellow-500/15 hover:text-yellow-200"
+          >
+            <StoryTokenIcon size={16} />
+            {copy.write}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function PatchNoteWithStoryActions({
   patchId,
   patchLines,
-  staticStoryCounts,
+  staticStories,
   storyPlaceholder,
   ...rendererProps
 }: PatchNoteRendererProps & {
   patchId: string;
   patchLines: STS2PatchLine[];
-  staticStoryCounts: Record<string, number>;
+  staticStories: Story[];
   storyPlaceholder: string;
 }) {
   const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
   const communityStories = useCommunityStories(userId, { source: patchId, limit: 200 });
   const [activePatchLineId, setActivePatchLineId] = useState<string | null>(null);
+  const [composerPatchLineId, setComposerPatchLineId] = useState<string | null>(null);
   const patchLineIds = useMemo(() => new Set(patchLines.map((patchLine) => patchLine.id)), [patchLines]);
+  const staticStoryCounts = useMemo(() => countStoriesByPatchLine(staticStories), [staticStories]);
   const communityStoryCounts = useMemo(() => {
     const scopedStories = communityStories.stories.filter((story) =>
       story.community && story.patchLineId && patchLineIds.has(story.patchLineId),
@@ -96,16 +213,28 @@ export function PatchNoteWithStoryActions({
     () => patchLines.find((patchLine) => patchLine.id === activePatchLineId) ?? null,
     [activePatchLineId, patchLines],
   );
+  const composerPatchLine = useMemo(
+    () => patchLines.find((patchLine) => patchLine.id === composerPatchLineId) ?? null,
+    [composerPatchLineId, patchLines],
+  );
+  const activePatchLineStories = useMemo(() => {
+    if (!activePatchLine) return [];
+    const communityPatchLineStories = communityStories.stories.filter((story) =>
+      story.community && story.patchLineId === activePatchLine.id,
+    );
+    const staticPatchLineStories = staticStories.filter((story) => story.patchLineId === activePatchLine.id);
+    return sortPatchLineStories([...communityPatchLineStories, ...staticPatchLineStories]);
+  }, [activePatchLine, communityStories.stories, staticStories]);
   const patchLineActions = useMemo(() => {
     const actions = new Map<string, ReactNode>();
     for (const patchLine of patchLines) {
-      const count = (staticStoryCounts[patchLine.id] ?? 0) + (communityStoryCounts.get(patchLine.id) ?? 0);
+      const count = (staticStoryCounts.get(patchLine.id) ?? 0) + (communityStoryCounts.get(patchLine.id) ?? 0);
       actions.set(
         patchLine.id,
         <PatchLineStoryAction
           count={count}
           serviceLocale={rendererProps.serviceLocale}
-          onWrite={() => setActivePatchLineId(patchLine.id)}
+          onOpen={() => setActivePatchLineId(patchLine.id)}
         />,
       );
     }
@@ -120,6 +249,18 @@ export function PatchNoteWithStoryActions({
         patchLineActions={patchLineActions}
       />
       {activePatchLine && (
+        <PatchLineStoriesPanel
+          patchLine={activePatchLine}
+          stories={activePatchLineStories}
+          serviceLocale={rendererProps.serviceLocale ?? "ko"}
+          onClose={() => setActivePatchLineId(null)}
+          onWrite={() => {
+            setComposerPatchLineId(activePatchLine.id);
+            setActivePatchLineId(null);
+          }}
+        />
+      )}
+      {composerPatchLine && (
         <StoryComposerModal
           serviceLocale={rendererProps.serviceLocale ?? "ko"}
           storyPlaceholder={storyPlaceholder}
@@ -129,9 +270,9 @@ export function PatchNoteWithStoryActions({
           unavailable={authUnavailable || communityStories.unavailable}
           loading={communityStories.loading}
           patchLines={patchLines}
-          initialPatchLineId={activePatchLine.id}
+          initialPatchLineId={composerPatchLine.id}
           onAdd={communityStories.add}
-          onClose={() => setActivePatchLineId(null)}
+          onClose={() => setComposerPatchLineId(null)}
         />
       )}
     </>

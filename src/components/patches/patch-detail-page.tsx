@@ -842,12 +842,9 @@ export async function PatchDetailPage({
   const patchId = patch.id;
   const patchLines = allPatchLines.filter((line) => line.patch === patchId);
   const patchLineIds = new Set(patchLines.map((line) => line.id));
-  const staticStoryCounts = sts2Stories.reduce<Record<string, number>>((counts, story) => {
-    if (story.patchLineId && patchLineIds.has(story.patchLineId)) {
-      counts[story.patchLineId] = (counts[story.patchLineId] ?? 0) + 1;
-    }
-    return counts;
-  }, {});
+  const staticPatchLineStories = sts2Stories.filter((story) =>
+    story.patchLineId && patchLineIds.has(story.patchLineId),
+  );
 
   let markdown = "";
   const koPath = path.join(NOTES_DIR, `v${patch.version}.ko.md`);
@@ -1097,7 +1094,7 @@ export async function PatchDetailPage({
             staticHoverPreviews={staticHoverPreviews}
             patchId={patchId}
             patchLines={patchLines}
-            staticStoryCounts={staticStoryCounts}
+            staticStories={staticPatchLineStories}
             storyPlaceholder={storyPlaceholder}
           />
         </section>
