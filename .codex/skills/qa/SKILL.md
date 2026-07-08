@@ -1,6 +1,6 @@
 ---
 name: qa
-description: Integrated repository QA coordinator for scare-the-spire. Use when the user invokes $qa or asks for implementation-scoped QA, final verification, regression checks, or "QA this change"; always verifies docs/I18N.md policy and delegates to project QA skills such as mobile-viewport-qa and animation-playback-qa when the touched implementation scope requires them.
+description: Integrated repository QA coordinator for scare-the-spire. Use when the user invokes $qa or asks for implementation-scoped QA, final verification, regression checks, or "QA this change"; always verifies docs/I18N.md policy and delegates to project QA skills such as mobile-viewport-qa, animation-playback-qa, and history-course-qa when the touched implementation scope requires them.
 ---
 
 # QA
@@ -46,6 +46,7 @@ Use these project-local skills as subroutines when scope matches:
 - `.codex/skills/sts2-compendium-patch-qa/SKILL.md`: run after STS2 PCK/game-data patch sync, Compendium `fieldDiffs`, versioning, lifecycle/deprecated handling, patch-history rails, or rich patch pages that touch Codex resources.
 - `.codex/skills/mobile-viewport-qa/SKILL.md`: run after mobile-sensitive UI, page layout, render surfaces, detail rails, hover previews, patch pages, profile UI, or responsive behavior changes.
 - `.codex/skills/animation-playback-qa/SKILL.md`: run after SpinePlayer, VFX, canvas, shader, video-like render surface, click-triggered animation, or replay behavior changes.
+- `.codex/skills/history-course-qa/SKILL.md`: run after History Course seeded replay logic, `src/lib/sts2-run-replay.ts`, `/history-course` map/topbar/reward replay UI, `.run` upload parsing, or build-version RNG branching changes.
 
 Load the sub-skill body only when needed, then follow its reporting rules in addition to this skill's summary.
 
@@ -56,6 +57,7 @@ Load the sub-skill body only when needed, then follow its reporting rules in add
 - Rich patch note changes: run `pnpm i18n:validate`, patch/link/reference validators, targeted render or Playwright checks for hover/link behavior, `sts2-compendium-patch-qa` when linked Codex resources changed or should have changed, and mobile QA for patch routes.
 - Frontend component changes: run `pnpm i18n:validate`, `pnpm lint`, targeted Playwright/spec checks, and mobile QA when layout or responsive behavior changed.
 - Animation/rendering changes: run `pnpm i18n:validate`, targeted static checks, `animation-playback-qa`, and mobile QA if the render surface must work on mobile.
+- History Course replay changes: run `pnpm i18n:validate`, `pnpm lint`, targeted TypeScript checks, `history-course-qa`, targeted `scripts/history-course-*.spec.ts` when UI or reward rendering changed, and mobile QA when `/history-course` layout, topbar, map, or tooltip behavior changed.
 - Script, parser, or extraction changes: run `pnpm i18n:validate`, a representative script command or dry run, and validators for generated outputs affected by the script.
 - Cloudflare Workers migration/runtime changes: load `$cf-guardrails`, then run `pnpm i18n:validate`, `pnpm lint`, `pnpm build`, `pnpm cf:preview`, Wrangler dry-run upload size check, guardrail risk review, and route/cache smoke against the local Workers preview URL. Include dev-tool parity smoke when `NEXT_PUBLIC_ENABLE_DEV_TOOLS=1` is expected for local preview, and verify that production deploy scripts do not enable dev tools by default.
 - Patch Worker deployment changes: load `$cf-guardrails`, run `pnpm patch:build`, `pnpm patch:test`, `pnpm cf:patch:preview` when practical, and verify the patch Worker remains asset-first with no request-time patch markdown rendering or Compendium data querying.
