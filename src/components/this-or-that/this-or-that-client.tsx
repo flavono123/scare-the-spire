@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState, useCallback } from "react";
-import { Plus } from "lucide-react";
 import Image from "@/components/ui/static-image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
@@ -19,6 +18,7 @@ import {
 } from "@/lib/this-or-that";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
+import { StoryWriteIcon } from "@/components/story-token-icon";
 import { ThisOrThatComposerModal } from "@/components/this-or-that/composer-modal";
 import { ThisOrThatPostCard } from "@/components/this-or-that/post-card";
 
@@ -101,6 +101,7 @@ export function ThisOrThatClient({
       {composerOpen && (
         <ThisOrThatComposerModal
           entities={entities}
+          gameLocale={gameLocale}
           placeholder={prompt || copy.reasonPlaceholder}
           authReady={ready}
           storageUnavailable={storageUnavailable}
@@ -143,7 +144,7 @@ export function ThisOrThatClient({
               onClick={() => setComposerOpen(true)}
               className="ml-auto inline-flex h-9 shrink-0 items-center gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-xs font-semibold text-yellow-300 transition-colors hover:bg-yellow-500/20"
             >
-              <Plus size={15} />
+              <StoryWriteIcon size={15} />
               {copy.create}
             </button>
           )}

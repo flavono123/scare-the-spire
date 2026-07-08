@@ -5,16 +5,19 @@ import { X } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import type { GameLocale } from "@/lib/i18n";
 import {
   entityToThisOrThatRef,
   isSameThisOrThatResource,
   type ThisOrThatResourceRef,
 } from "@/lib/this-or-that";
 import { serviceMessages } from "@/messages/service";
+import { StoryWriteIcon } from "@/components/story-token-icon";
 import { ThisOrThatResourcePicker } from "@/components/this-or-that/resource-picker";
 
 export function ThisOrThatComposerModal({
   entities,
+  gameLocale,
   placeholder,
   authReady,
   storageUnavailable,
@@ -23,6 +26,7 @@ export function ThisOrThatComposerModal({
   onClose,
 }: {
   entities: EntityInfo[];
+  gameLocale: GameLocale;
   placeholder: string;
   authReady: boolean;
   storageUnavailable: boolean;
@@ -70,7 +74,7 @@ export function ThisOrThatComposerModal({
     >
       <form
         onSubmit={handleSubmit}
-        className="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-lg border border-border bg-background shadow-2xl"
+        className="flex max-h-[90vh] w-full max-w-4xl flex-col rounded-lg border border-border bg-background shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
@@ -95,6 +99,7 @@ export function ThisOrThatComposerModal({
               onChange={setLeftEntity}
               placeholder={copy.searchPlaceholder}
               exclude={rightEntity}
+              gameLocale={gameLocale}
             />
             <ThisOrThatResourcePicker
               entities={entities}
@@ -103,17 +108,24 @@ export function ThisOrThatComposerModal({
               onChange={setRightEntity}
               placeholder={copy.searchPlaceholder}
               exclude={leftEntity}
+              gameLocale={gameLocale}
             />
           </div>
 
-          <textarea
-            value={reason}
-            onChange={(event) => setReason(event.target.value)}
-            placeholder={placeholder}
-            maxLength={500}
-            rows={4}
-            className="min-h-28 w-full resize-y rounded-md border border-border/70 bg-zinc-900/70 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-yellow-500/40"
-          />
+          <label className="relative block">
+            {!reason && (
+              <span className="pointer-events-none absolute left-3 top-2.5 max-w-[calc(100%-1.5rem)] truncate font-game-title text-sm text-muted-foreground rich-jitter">
+                {placeholder}
+              </span>
+            )}
+            <textarea
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
+              maxLength={500}
+              rows={4}
+              className="min-h-28 w-full resize-y rounded-md border border-border/70 bg-zinc-900/70 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors focus:border-yellow-500/40"
+            />
+          </label>
         </div>
 
         <div className="flex items-center justify-between gap-3 border-t border-border/60 px-4 py-3">
@@ -125,7 +137,7 @@ export function ThisOrThatComposerModal({
             disabled={!canSubmit}
             className="inline-flex h-9 items-center gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-xs font-semibold text-yellow-300 transition-colors hover:bg-yellow-500/20 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {submitting && <EngagementSpinner size={14} />}
+            {submitting ? <EngagementSpinner size={14} /> : <StoryWriteIcon size={15} />}
             {submitting ? "..." : copy.submit}
           </button>
         </div>

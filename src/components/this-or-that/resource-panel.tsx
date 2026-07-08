@@ -36,20 +36,22 @@ export function ThisOrThatResourcePanel({
   serviceLocale,
   gameLocale,
   size = "compact",
+  assetOnly = false,
 }: {
   entity: EntityInfo;
   sideLabel: string;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   size?: "compact" | "large";
+  assetOnly?: boolean;
 }) {
   const characterColor = getCharacterColor(entity.color);
   const isLarge = size === "large";
   const hrefBase = getThisOrThatEntityHref(entity);
-  const href = hrefBase
+  const href = !assetOnly && hrefBase
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : null;
-  const cardWidth = isLarge ? 260 : 126;
+  const cardWidth = isLarge ? 260 : assetOnly ? 154 : 126;
   const preview = entity.cardData ? (
     <CardTile
       card={entity.cardData}
@@ -61,8 +63,9 @@ export function ThisOrThatResourcePanel({
     />
   ) : (
     <span className={cn(
-      "block [&_.game-hover-tip]:shadow-2xl",
-      isLarge ? "[&_.game-hover-tip]:max-w-[360px]" : "[&_.game-hover-tip]:max-w-[260px]",
+      "block origin-center [&_.game-hover-tip]:shadow-2xl",
+      assetOnly && "scale-[0.58] sm:scale-[0.64]",
+      !assetOnly && (isLarge ? "[&_.game-hover-tip]:max-w-[360px]" : "scale-[0.76] [&_.game-hover-tip]:max-w-[260px]"),
     )}>
       <EntityPreview
         entity={entity}
@@ -76,7 +79,8 @@ export function ThisOrThatResourcePanel({
   );
 
   const content = (
-    <span className="block space-y-2">
+    <span className={cn("block", assetOnly ? "h-full" : "space-y-2")}>
+      {!assetOnly && (
         <span className="flex items-center justify-between gap-2">
           <span className="font-service text-[11px] font-semibold uppercase text-muted-foreground">
             {sideLabel}
@@ -92,14 +96,19 @@ export function ThisOrThatResourcePanel({
             <span className="truncate">{entityTypeLabel(entity.type, serviceLocale)}</span>
           </span>
         </span>
+      )}
 
         <span className={cn(
-          "flex min-h-36 items-center justify-center overflow-visible rounded-md bg-black/20 p-2",
+          "flex items-center justify-center rounded-md bg-black/20",
+          assetOnly
+            ? "h-full min-h-56 overflow-hidden p-1"
+            : "min-h-36 overflow-visible p-2",
           isLarge && "min-h-72 py-4",
         )}>
           {preview}
         </span>
 
+      {!assetOnly && (
         <span className="block min-w-0">
           <span className={cn(
             "block truncate font-game-title font-semibold text-zinc-100",
@@ -113,12 +122,16 @@ export function ThisOrThatResourcePanel({
             </span>
           )}
         </span>
+      )}
       </span>
   );
 
   if (!href) {
     return (
-      <span className="block h-full rounded-lg border border-border bg-card/35 p-3 text-left">
+      <span className={cn(
+        "block h-full rounded-lg border border-border bg-card/35 text-left",
+        assetOnly ? "p-0" : "p-3",
+      )}>
         {content}
       </span>
     );

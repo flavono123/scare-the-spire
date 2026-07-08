@@ -7,7 +7,9 @@ import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { matchEntities } from "@/lib/chemical-utils";
 import { getCharacterColor } from "@/lib/codex-types";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import type { GameLocale } from "@/lib/i18n";
 import { serviceMessages } from "@/messages/service";
+import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-panel";
 
 function entityTypeLabels(serviceLocale: ReturnType<typeof useServiceLocale>): Partial<Record<EntityType, string>> {
   const codex = serviceMessages[serviceLocale].codex;
@@ -35,6 +37,7 @@ export function ThisOrThatResourcePicker({
   onChange,
   placeholder,
   exclude,
+  gameLocale,
 }: {
   entities: EntityInfo[];
   label: string;
@@ -42,6 +45,7 @@ export function ThisOrThatResourcePicker({
   onChange: (entity: EntityInfo | null) => void;
   placeholder: string;
   exclude?: EntityInfo | null;
+  gameLocale: GameLocale;
 }) {
   const serviceLocale = useServiceLocale();
   const labels = entityTypeLabels(serviceLocale);
@@ -68,31 +72,21 @@ export function ThisOrThatResourcePicker({
 
       <div className="rounded-lg border border-border bg-card/30">
         {value ? (
-          <div className="flex w-full items-center gap-2 px-3 py-2">
-            {value.imageUrl && (
-              <Image
-                src={value.imageUrl}
-                alt=""
-                width={34}
-                height={34}
-                className="h-8 w-8 shrink-0 rounded object-contain"
-              />
-            )}
-            <span className="min-w-0 flex-1">
-              <span className="block truncate font-game-title text-sm text-zinc-100">
-                {value.nameKo}
-              </span>
-              <span className="block truncate text-[11px] text-muted-foreground">
-                {labels[value.type] ?? value.type}
-              </span>
-            </span>
+          <div className="relative p-2">
+            <ThisOrThatResourcePanel
+              entity={value}
+              sideLabel={label}
+              serviceLocale={serviceLocale}
+              gameLocale={gameLocale}
+              assetOnly
+            />
             <button
               type="button"
               onClick={() => {
                 onChange(null);
                 setQuery("");
               }}
-              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-white/5 hover:text-yellow-300"
+              className="absolute right-3 top-3 z-10 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded bg-black/70 text-muted-foreground transition-colors hover:bg-black hover:text-yellow-300"
               title={serviceLocale === "ko" ? "선택 해제" : "Clear selection"}
             >
               <X size={14} />
