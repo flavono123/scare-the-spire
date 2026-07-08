@@ -61,6 +61,7 @@ const searchTypeLabels = {
     patch: "패치 노트",
     story: "슬서운 이야기",
     historyCourse: "역사 강의서",
+    thisOrThat: "이거 아님 저거?",
   },
   en: {
     character: "Character",
@@ -80,6 +81,7 @@ const searchTypeLabels = {
     patch: "Patch Note",
     story: "Story",
     historyCourse: "History Course",
+    thisOrThat: "This or That?",
   },
 } as const;
 
@@ -116,6 +118,7 @@ const searchTypeOrder = [
   "epoch",
   "monsterMove",
   "historyCourse",
+  "thisOrThat",
 ] as const satisfies readonly (keyof typeof searchTypeLabels.ko)[];
 
 const searchTypeStyles: Record<keyof typeof searchTypeLabels.ko, {
@@ -141,6 +144,7 @@ const searchTypeStyles: Record<keyof typeof searchTypeLabels.ko, {
   ancient: { icon: "/images/sts2/nav/stats_ancients.png", color: "text-blue-200", bg: "bg-blue-500/10", border: "border-blue-400/30" },
   epoch: { icon: "/images/sts2/relics/planisphere.webp", color: "text-teal-200", bg: "bg-teal-500/10", border: "border-teal-400/30" },
   historyCourse: { icon: "/images/sts2/relics/history_course.webp", color: "text-violet-200", bg: "bg-violet-500/10", border: "border-violet-400/30" },
+  thisOrThat: { icon: "/images/sts2/relics/choices_paradox.webp", color: "text-blue-200", bg: "bg-blue-500/10", border: "border-blue-400/30" },
 };
 
 function globalSearchFieldScore(value: string, query: string, weight: number): number | null {

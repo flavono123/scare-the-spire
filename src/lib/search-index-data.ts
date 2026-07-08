@@ -4,7 +4,7 @@ import { buildCompendiumResourceHref, type CompendiumResourceLinkType } from "@/
 import { getStories, getSTS2Patches, getSTS2Stories } from "@/lib/data";
 import { loadAllEntities } from "@/lib/load-all-entities";
 
-export type SearchItemType = EntityType | "patch" | "story" | "historyCourse";
+export type SearchItemType = EntityType | "patch" | "story" | "historyCourse" | "thisOrThat";
 
 export type SearchIndexItem = {
   id: string;
@@ -351,5 +351,16 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     href: "/history-course",
   }];
 
-  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems] };
+  const thisOrThatItems: SearchIndexItem[] = [{
+    id: "this-or-that",
+    type: "thisOrThat",
+    title: "이거 아님 저거?",
+    titleEn: "This or That?",
+    description: "리소스 비교 대전 선택 이거 저거 카드 유물 포션 이벤트",
+    descriptionEn: "resource comparison matchup this that card relic potion event",
+    imageUrl: "/images/sts2/relics/choices_paradox.webp",
+    href: "/this-or-that",
+  }];
+
+  return { items: [...patchItems, ...storyItems, ...items, ...historyCourseItems, ...thisOrThatItems] };
 }

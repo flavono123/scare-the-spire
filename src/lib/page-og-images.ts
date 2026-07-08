@@ -43,6 +43,13 @@ export const HISTORY_COURSE_PAGE_OG_IMAGE: PageOgImage = {
   alt: "히스토리 코스 — 보물 지도 Spoils Map",
 };
 
+export const THIS_OR_THAT_PAGE_OG_IMAGE: PageOgImage = {
+  url: "/images/sts2/events/this_or_that.webp",
+  width: 3440,
+  height: 1616,
+  alt: "이거 아님 저거? — This or That?",
+};
+
 export const PAGE_OG_IMAGE_RULES = [
   {
     pattern: "/chemical-x",
@@ -63,6 +70,16 @@ export const PAGE_OG_IMAGE_RULES = [
     pattern: "/history-course/*",
     label: "히스토리 코스 상세",
     image: HISTORY_COURSE_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/this-or-that",
+    label: "이거 아님 저거?",
+    image: THIS_OR_THAT_PAGE_OG_IMAGE,
+  },
+  {
+    pattern: "/this-or-that/*",
+    label: "이거 아님 저거? 상세",
+    image: THIS_OR_THAT_PAGE_OG_IMAGE,
   },
   {
     pattern: "/patches",

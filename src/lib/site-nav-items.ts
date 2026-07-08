@@ -124,6 +124,11 @@ export function getToyBoxNavItems({
         label: getCodexNavGameLabel(gameLocale, "historyCourse") ?? messages.nav.historyCourse,
         icon: "/images/sts2/relics/history_course.webp",
       },
+      {
+        href: "/this-or-that",
+        label: messages.nav.thisOrThat,
+        icon: "/images/sts2/relics/choices_paradox.webp",
+      },
       ...(showDevMenu ? devNavItems : []),
     ],
     serviceLocale,

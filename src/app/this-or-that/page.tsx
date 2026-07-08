@@ -3,6 +3,7 @@ import { ThisOrThatClient } from "@/components/this-or-that/this-or-that-client"
 import { getThisOrThatGameCopy } from "@/lib/borrowed-game-copy";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
+import { THIS_OR_THAT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { getServiceOgMetadata } from "@/lib/service-metadata";
 import { loadThisOrThatEntities } from "@/lib/this-or-that-data";
 import { serviceMessages } from "@/messages/service";
@@ -16,6 +17,7 @@ export async function generateThisOrThatMetadata(
     serviceLocale,
     title: gameCopy.title,
     description: serviceMessages[serviceLocale].thisOrThat.metadata.description,
+    image: THIS_OR_THAT_PAGE_OG_IMAGE,
   });
 }
 
