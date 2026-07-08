@@ -33,7 +33,6 @@ export function useThisOrThatLikes(
     }
 
     let cancelled = false;
-    setLoading(true);
 
     const countQuery = withSupabaseTimeout(
       "this_or_that_post_like_counts.select",
