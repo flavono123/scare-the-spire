@@ -40,6 +40,7 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
       deleteConfirm: "이 이야기를 삭제할까요?",
       searchPlaceholder: "검색",
       noResults: "검색 결과가 없습니다",
+      communityUnavailable: "커뮤니티 이야기를 불러오지 못했습니다",
       sort: {
         recommended: "추천",
         comments: "댓글",
@@ -54,6 +55,7 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
     deleteConfirm: "Delete this story?",
     searchPlaceholder: "Search",
     noResults: "No stories found",
+    communityUnavailable: "Could not load community stories",
     sort: {
       recommended: "Recommended",
       comments: "Comments",
@@ -933,8 +935,6 @@ export function StoryFeed({
           userId={userId}
           authReady={authReady}
           ensureUser={ensureUser}
-          unavailable={communityStories.unavailable}
-          loading={communityStories.loading}
           patchLines={patchLineOptions}
           onAdd={communityStories.add}
           onClose={() => setComposerOpen(false)}
@@ -948,6 +948,11 @@ export function StoryFeed({
         onSearchQueryChange={setSearchQuery}
         onOpenComposer={() => setComposerOpen(true)}
       />
+      {communityStories.unavailable && (
+        <p className="mt-3 rounded-md border border-amber-400/20 bg-amber-400/5 px-3 py-2 text-xs text-amber-200/85">
+          {storyFeedCopy(serviceLocale).communityUnavailable}
+        </p>
+      )}
       <div className="divide-y divide-border/50">
         {orderedStories.length === 0 ? (
           <div className="px-4 py-12 text-center text-sm text-muted-foreground">

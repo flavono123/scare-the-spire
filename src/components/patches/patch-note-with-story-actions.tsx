@@ -23,6 +23,7 @@ function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
       write: "이 변경으로 이야기 쓰기",
       close: "닫기",
       empty: "아직 이 변경으로 쓴 이야기가 없습니다",
+      communityUnavailable: "커뮤니티 이야기를 불러오지 못했습니다",
       staticStory: "슬서운 이야기",
       communityStory: "작성됨",
       countLabel: (count: number) => `이 변경의 이야기 ${count}개`,
@@ -36,6 +37,7 @@ function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
     write: "Write story from this change",
     close: "Close",
     empty: "No stories have been written from this change yet",
+    communityUnavailable: "Could not load community stories",
     staticStory: "Slseoun story",
     communityStory: "Posted",
     countLabel: (count: number) => `${count} stories for this change`,
@@ -45,16 +47,18 @@ function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
 function PatchLineStoryAction({
   count,
   serviceLocale,
+  storiesUnavailable,
   onOpen,
   onWrite,
 }: {
   count: number;
   serviceLocale?: ServiceLocale;
+  storiesUnavailable: boolean;
   onOpen: () => void;
   onWrite: () => void;
 }) {
   const copy = patchLineStoryCopy(serviceLocale);
-  const actionLabel = count > 0 ? copy.open : copy.openEmpty;
+  const actionLabel = count > 0 || storiesUnavailable ? copy.open : copy.openEmpty;
 
   return (
     <button
@@ -62,7 +66,7 @@ function PatchLineStoryAction({
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();
-        if (count > 0) onOpen();
+        if (count > 0 || storiesUnavailable) onOpen();
         else onWrite();
       }}
       data-patch-line-story-action
@@ -107,12 +111,14 @@ function PatchLineStoriesPanel({
   patchLine,
   stories,
   serviceLocale,
+  communityUnavailable,
   onClose,
   onWrite,
 }: {
   patchLine: STS2PatchLine;
   stories: Story[];
   serviceLocale: ServiceLocale;
+  communityUnavailable: boolean;
   onClose: () => void;
   onWrite: () => void;
 }) {
@@ -154,6 +160,12 @@ function PatchLineStoriesPanel({
           <div className="rounded-md border border-yellow-500/25 bg-yellow-500/5 px-3 py-2 text-xs leading-relaxed text-foreground">
             {patchLineDisplayText(patchLine, serviceLocale)}
           </div>
+
+          {communityUnavailable && (
+            <p className="mt-3 rounded-md border border-amber-400/20 bg-amber-400/5 px-3 py-2 text-xs text-amber-200/85">
+              {copy.communityUnavailable}
+            </p>
+          )}
 
           <div className="mt-3 space-y-2">
             {stories.length > 0 ? stories.map((story) => (
@@ -203,7 +215,7 @@ export function PatchNoteWithStoryActions({
   staticStories: Story[];
   storyPlaceholder: string;
 }) {
-  const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
+  const { userId, ready: authReady, ensureUser } = useAuth();
   const communityStories = useCommunityStories(userId, { source: patchId, limit: 200 });
   const [activePatchLineId, setActivePatchLineId] = useState<string | null>(null);
   const [composerPatchLineId, setComposerPatchLineId] = useState<string | null>(null);
@@ -240,6 +252,7 @@ export function PatchNoteWithStoryActions({
         <PatchLineStoryAction
           count={count}
           serviceLocale={rendererProps.serviceLocale}
+          storiesUnavailable={communityStories.unavailable}
           onOpen={() => setActivePatchLineId(patchLine.id)}
           onWrite={() => setComposerPatchLineId(patchLine.id)}
         />,
@@ -260,6 +273,7 @@ export function PatchNoteWithStoryActions({
           patchLine={activePatchLine}
           stories={activePatchLineStories}
           serviceLocale={rendererProps.serviceLocale ?? "ko"}
+          communityUnavailable={communityStories.unavailable}
           onClose={() => setActivePatchLineId(null)}
           onWrite={() => {
             setComposerPatchLineId(activePatchLine.id);
@@ -274,8 +288,6 @@ export function PatchNoteWithStoryActions({
           userId={userId}
           authReady={authReady}
           ensureUser={ensureUser}
-          unavailable={authUnavailable || communityStories.unavailable}
-          loading={communityStories.loading}
           patchLines={patchLines}
           initialPatchLineId={composerPatchLine.id}
           onAdd={communityStories.add}

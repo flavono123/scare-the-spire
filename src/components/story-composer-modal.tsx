@@ -6,7 +6,6 @@ import type { ServiceLocale } from "@/lib/i18n";
 import type { STS2PatchLine } from "@/lib/types";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { EngagementSpinner } from "@/components/engagement-spinner";
-import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { StoryWriteIcon } from "@/components/story-token-icon";
 import { supabaseEnabled } from "@/lib/supabase";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
@@ -24,8 +23,8 @@ function storyComposerCopy(serviceLocale: ServiceLocale) {
       nickname: "닉네임",
       patchLineSearchPlaceholder: "카드, 몬스터, 패치 내용 검색",
       patchLineRequired: "참조할 패치 내용을 한 줄 선택하세요",
-      storageUnavailable: "데이터베이스가 응답하지 않습니다",
-      communityLoading: "불러오는 중...",
+      storageDisabled: "데이터베이스 설정이 없어 작성할 수 없습니다",
+      writeUnavailable: "이야기를 저장하지 못했습니다",
     };
   }
 
@@ -38,8 +37,8 @@ function storyComposerCopy(serviceLocale: ServiceLocale) {
     nickname: "Nickname",
     patchLineSearchPlaceholder: "Search cards, monsters, or patch text",
     patchLineRequired: "Select one patch note line to reference",
-    storageUnavailable: "No responses from database",
-    communityLoading: "Loading...",
+    storageDisabled: "Database is not configured",
+    writeUnavailable: "Could not save the story",
   };
 }
 
@@ -83,8 +82,6 @@ export function StoryComposerModal({
   userId,
   authReady,
   ensureUser,
-  unavailable,
-  loading,
   patchLines,
   initialPatchLineId,
   onAdd,
@@ -95,8 +92,6 @@ export function StoryComposerModal({
   userId: string | null;
   authReady: boolean;
   ensureUser: () => Promise<string | null>;
-  unavailable: boolean;
-  loading: boolean;
   patchLines: STS2PatchLine[];
   initialPatchLineId?: string;
   onAdd: (sentence: string, nickname: string, patchLine: STS2PatchLine, activeUserId?: string) => Promise<void>;
@@ -117,6 +112,7 @@ export function StoryComposerModal({
   const [patchLineQuery, setPatchLineQuery] = useState("");
   const [selectedPatchLine, setSelectedPatchLine] = useState<STS2PatchLine | null>(initialPatchLine);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     setNickname(profile.nickname);
@@ -139,20 +135,26 @@ export function StoryComposerModal({
     [patchLineQuery, patchLines, serviceLocale],
   );
   const trimmedSentence = sentence.trim();
-  const disabled = !authReady || !supabaseEnabled || unavailable || submitting || trimmedSentence.length < 2 || !nickname.trim() || !selectedPatchLine;
+  const disabled = !authReady || !supabaseEnabled || submitting || trimmedSentence.length < 2 || !nickname.trim() || !selectedPatchLine;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (disabled) return;
 
+    setSubmitError(null);
     setSubmitting(true);
     try {
       const activeUserId = userId ?? await ensureUser();
-      if (!activeUserId || !selectedPatchLine) return;
+      if (!activeUserId || !selectedPatchLine) {
+        setSubmitError(copy.writeUnavailable);
+        return;
+      }
       await onAdd(trimmedSentence, nickname, selectedPatchLine, activeUserId);
       setSentence("");
       setSelectedPatchLine(null);
       onClose();
+    } catch {
+      setSubmitError(copy.writeUnavailable);
     } finally {
       setSubmitting(false);
     }
@@ -182,17 +184,13 @@ export function StoryComposerModal({
         </div>
 
         <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4">
-          {unavailable || !supabaseEnabled ? (
-            <StorageUnavailableNotice compact title={copy.storageUnavailable} />
-          ) : null}
-
           <textarea
             value={sentence}
             onChange={(event) => setSentence(event.target.value.slice(0, STORY_DRAFT_MAX_LENGTH))}
             placeholder={storyPlaceholder}
             maxLength={STORY_DRAFT_MAX_LENGTH}
             rows={3}
-            disabled={!authReady || !supabaseEnabled || unavailable}
+            disabled={!authReady || !supabaseEnabled}
             className="min-h-24 w-full resize-none rounded-md border border-border/70 bg-background/60 px-3 py-2 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-yellow-500/40 disabled:opacity-40"
           />
 
@@ -203,18 +201,12 @@ export function StoryComposerModal({
               onChange={(event) => setNickname(event.target.value.slice(0, 20))}
               placeholder={copy.nickname}
               maxLength={20}
-              disabled={!authReady || !supabaseEnabled || unavailable}
+              disabled={!authReady || !supabaseEnabled}
               className="h-8 min-w-0 flex-1 rounded-md border border-border/60 bg-background/50 px-2.5 text-xs text-muted-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-yellow-500/40 disabled:opacity-40"
             />
             <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
               {sentence.length}/{STORY_DRAFT_MAX_LENGTH}
             </span>
-            {loading && (
-              <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-muted-foreground">
-                <EngagementSpinner size={12} />
-                {copy.communityLoading}
-              </span>
-            )}
           </div>
 
           <div className="space-y-2">
@@ -274,6 +266,11 @@ export function StoryComposerModal({
         </div>
 
         <div className="flex items-center justify-end gap-2 border-t border-border/60 px-4 py-3">
+          {(!supabaseEnabled || submitError) && (
+            <span className="mr-auto text-[11px] text-amber-300">
+              {!supabaseEnabled ? copy.storageDisabled : submitError}
+            </span>
+          )}
           <button
             type="submit"
             disabled={disabled}
