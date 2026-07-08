@@ -72,57 +72,62 @@ export function PatchLineReferenceBlock({
   const versionLabel = patch ? getPatchVersionLabel(patch, serviceLocale) : patchLine.patch;
   const title = patch ? (serviceLocale === "ko" ? patch.titleKo : patch.title) : null;
   const href = clickable ? localizeHref(patchLineHref(patchLine), serviceLocale) : null;
-  const body = (
-    <>
-      <div className="flex min-w-0 items-start gap-2.5">
-        <PatchArtThumbnail art={art} className={compact ? "h-9 w-12" : undefined} />
-        <div className="min-w-0">
-          <p className={cn("font-medium text-yellow-500", compact ? "text-xs" : "text-sm")}>
-            <span>{versionLabel}</span>
-            {title && (
-              <span className="ml-1.5 text-muted-foreground">
-                {title}
-              </span>
-            )}
-          </p>
-          {patchLine.section.length > 0 && (
-            <p className="mt-0.5 text-[11px] text-muted-foreground/75">
-              {patchLine.section.join(" / ")}
-            </p>
+  const header = (
+    <div className="flex min-w-0 items-start gap-2.5">
+      <PatchArtThumbnail art={art} className={compact ? "h-9 w-12" : undefined} />
+      <div className="min-w-0">
+        <p className={cn("font-medium text-yellow-500/90", compact ? "text-xs" : "text-sm")}>
+          <span>{versionLabel}</span>
+          {title && (
+            <span className="ml-1.5 text-muted-foreground">
+              {title}
+            </span>
           )}
-        </div>
+        </p>
+        {patchLine.section.length > 0 && (
+          <p className="mt-0.5 text-[11px] text-muted-foreground/75">
+            {patchLine.section.join(" / ")}
+          </p>
+        )}
       </div>
-      <p className={cn("mt-2 leading-relaxed text-foreground", compact ? "text-xs" : "text-sm")}>
-        <PatchLineReferenceText patchLine={patchLine} serviceLocale={serviceLocale} />
-      </p>
-    </>
+    </div>
   );
-  const blockClassName = cn(
-    "block rounded-md border border-yellow-500/25 bg-yellow-500/5 px-3 py-2 text-left",
-    href && "transition-colors hover:border-yellow-500/45 hover:bg-yellow-500/10",
-    trailingAction && "pr-10",
+  const lineClassName = cn(
+    "block rounded px-2 py-1.5 text-left leading-relaxed text-muted-foreground",
+    "transition-colors hover:bg-white/[0.035] hover:text-foreground",
+    "focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-500/30",
+    compact ? "text-xs" : "text-sm",
+  );
+  const line = (
+    <span className={lineClassName}>
+      <PatchLineReferenceText patchLine={patchLine} serviceLocale={serviceLocale} />
+    </span>
+  );
+  const rootClassName = cn(
+    "relative space-y-1.5",
+    trailingAction && "pr-8",
     className,
   );
 
   return (
-    <div className="relative">
+    <div className={rootClassName}>
+      {header}
       {href ? (
         <Link
           href={href}
           prefetch={false}
-          className={blockClassName}
+          className="block"
           data-patch-line-reference
           data-patch-line-id={patchLine.id}
         >
-          {body}
+          {line}
         </Link>
       ) : (
         <div
-          className={blockClassName}
           data-patch-line-reference
           data-patch-line-id={patchLine.id}
         >
-          {body}
+          {line}
         </div>
       )}
       {trailingAction}
