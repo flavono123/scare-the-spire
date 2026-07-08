@@ -237,6 +237,7 @@ export interface Story {
   publishedAt?: string;
   sentence: string;
   authorName?: string;
+  authorUserId?: string;
   community?: boolean;
   entityType?: StoryEntityType;
   entityId?: string;

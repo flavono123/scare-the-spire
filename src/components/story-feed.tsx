@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
-import { PenLine, Search, X } from "lucide-react";
+import { PenLine, Search, Trash2, X } from "lucide-react";
 import type { Story, Card, Change, Relic, Potion, LinkedEntity, STS2Change, STS2Patch, STS2PatchLine, StoryEntityType } from "@/lib/types";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
@@ -40,13 +40,15 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
     return {
       write: "작성",
       writing: "...",
-      newStory: "새 이야기 작성",
+      newStory: "쓰기",
       close: "닫기",
+      deleteStory: "삭제",
+      deleteConfirm: "이 이야기를 삭제할까요?",
+      clearPatchLine: "참조 해제",
       nickname: "닉네임",
-      storyPlaceholder: "슬서운 이야기를 입력하세요",
+      storyPlaceholder: "이제 이야기 더 말한다!",
       patchLineSearchPlaceholder: "카드, 몬스터, 패치 내용 검색",
       patchLineRequired: "참조할 패치 내용을 한 줄 선택하세요",
-      selectedPatchLine: "참조할 변경",
       searchPlaceholder: "검색",
       noResults: "검색 결과가 없습니다",
       storageUnavailable: "데이터베이스가 응답하지 않습니다",
@@ -60,18 +62,20 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
   }
 
   return {
-      write: "Write",
-      writing: "...",
-      newStory: "New story",
-      close: "Close",
-      nickname: "Nickname",
-      storyPlaceholder: "Write a Slseoun story",
-      patchLineSearchPlaceholder: "Search cards, monsters, or patch text",
-      patchLineRequired: "Select one patch note line to reference",
-      selectedPatchLine: "Referenced change",
-      searchPlaceholder: "Search",
-      noResults: "No stories found",
-      storageUnavailable: "No responses from database",
+    write: "Write",
+    writing: "...",
+    newStory: "Write",
+    close: "Close",
+    deleteStory: "Delete",
+    deleteConfirm: "Delete this story?",
+    clearPatchLine: "Clear reference",
+    nickname: "Nickname",
+    storyPlaceholder: "Now tell more story!!",
+    patchLineSearchPlaceholder: "Search cards, monsters, or patch text",
+    patchLineRequired: "Select one patch note line to reference",
+    searchPlaceholder: "Search",
+    noResults: "No stories found",
+    storageUnavailable: "No responses from database",
     communityLoading: "Loading...",
     sort: {
       recommended: "Recommended",
@@ -93,6 +97,44 @@ function storyPublishedTime(story: Story) {
   if (!story.publishedAt) return 0;
   const time = Date.parse(story.publishedAt);
   return Number.isFinite(time) ? time : 0;
+}
+
+function formatShortDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}.${month}.${day}`;
+}
+
+function formatShortTime(date: Date) {
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+
+function isSameLocalDate(a: Date, b: Date) {
+  return a.getFullYear() === b.getFullYear()
+    && a.getMonth() === b.getMonth()
+    && a.getDate() === b.getDate();
+}
+
+function formatStoryPublishedAt(publishedAt: string, serviceLocale: ServiceLocale) {
+  const date = new Date(publishedAt);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const now = new Date();
+  if (isSameLocalDate(date, now)) {
+    return formatShortTime(date);
+  }
+
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const startOfDate = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+  const dayDiff = Math.floor((startOfToday - startOfDate) / 86_400_000);
+  if (dayDiff >= 1 && dayDiff <= 6) {
+    return serviceLocale === "ko" ? `${dayDiff}일 전` : `${dayDiff}d ago`;
+  }
+
+  return formatShortDate(date);
 }
 
 function reactionTotal(counts: StoryReactionCounts | undefined) {
@@ -592,6 +634,8 @@ function StoryCard({
   ensureUser,
   expanded,
   onToggle,
+  canDelete,
+  onDelete,
   likeCount,
   reactionCounts,
   commentCount,
@@ -614,6 +658,8 @@ function StoryCard({
   ensureUser: () => Promise<string | null>;
   expanded: boolean;
   onToggle: (storyId: string) => void;
+  canDelete: boolean;
+  onDelete: (storyId: string) => Promise<void>;
   likeCount: number;
   reactionCounts: StoryReactionCounts;
   commentCount: number;
@@ -621,34 +667,62 @@ function StoryCard({
   engagementUnavailable: boolean;
 }) {
   const [liveCommentCount, setLiveCommentCount] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const displayCommentCount = liveCommentCount ?? commentCount;
-  const dateLocale = serviceLocale === "ko" ? "ko-KR" : "en-US";
+  const copy = storyFeedCopy(serviceLocale);
+  const publishedLabel = story.publishedAt ? formatStoryPublishedAt(story.publishedAt, serviceLocale) : "";
+
+  const handleDelete = async () => {
+    if (!canDelete || deleting || !window.confirm(copy.deleteConfirm)) return;
+    setDeleting(true);
+    try {
+      await onDelete(story.id);
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <article className="relative border-b border-border/50 last:border-b-0">
       <div className="px-4 py-6">
         {/* Sentence + engagement */}
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => onToggle(story.id)}
-            className="flex-1 min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
-          >
-            <p className="text-lg sm:text-xl font-medium leading-snug text-center">
-              &ldquo;{story.sentence}&rdquo;
-              <EngagementSummary
-                commentCount={displayCommentCount}
-                loading={engagementLoading}
-                unavailable={engagementUnavailable}
-                className="ml-2"
-              />
-            </p>
-            {story.community && (
-              <p className="mt-1 text-center text-[11px] text-muted-foreground">
-                {story.authorName}
-                {story.publishedAt ? ` · ${new Date(story.publishedAt).toLocaleDateString(dateLocale)}` : ""}
+          <div className="min-w-0 flex-1">
+            <button
+              onClick={() => onToggle(story.id)}
+              className="w-full cursor-pointer hover:opacity-80 transition-opacity"
+            >
+              <p className="text-lg sm:text-xl font-medium leading-snug text-center">
+                &ldquo;{story.sentence}&rdquo;
+                <EngagementSummary
+                  commentCount={displayCommentCount}
+                  loading={engagementLoading}
+                  unavailable={engagementUnavailable}
+                  className="ml-2"
+                />
               </p>
+            </button>
+            {story.community && (
+              <div className="mt-1 flex items-center justify-center gap-2 text-[11px] text-muted-foreground">
+                <span>
+                  {story.authorName}
+                  {publishedLabel ? ` · ${publishedLabel}` : ""}
+                </span>
+                {canDelete && (
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    disabled={deleting}
+                    className="inline-flex h-5 w-5 items-center justify-center rounded text-muted-foreground/70 transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:pointer-events-none disabled:opacity-40"
+                    title={copy.deleteStory}
+                  >
+                    {deleting ? <EngagementSpinner size={12} /> : <Trash2 size={12} />}
+                    <span className="sr-only">{copy.deleteStory}</span>
+                  </button>
+                )}
+              </div>
             )}
-          </button>
+          </div>
           <div className="shrink-0">
             <StoryReactionButton
               storyId={story.id}
@@ -861,8 +935,16 @@ function StoryComposerModal({
             </label>
 
             {selectedPatchLine ? (
-              <div className="rounded-md border border-yellow-500/25 bg-yellow-500/5 px-3 py-2">
-                <p className="mb-1 text-[11px] text-yellow-500">{copy.selectedPatchLine}</p>
+              <div className="relative rounded-md border border-yellow-500/25 bg-yellow-500/5 px-3 py-2 pr-9">
+                <button
+                  type="button"
+                  onClick={() => setSelectedPatchLine(null)}
+                  className="absolute right-1.5 top-1.5 inline-flex h-6 w-6 items-center justify-center rounded text-yellow-500/80 transition-colors hover:bg-yellow-500/10 hover:text-yellow-300"
+                  title={copy.clearPatchLine}
+                >
+                  <X size={14} />
+                  <span className="sr-only">{copy.clearPatchLine}</span>
+                </button>
                 <p className="text-xs text-muted-foreground">
                   <span className="text-foreground">{selectedPatchLine.patch}</span>
                   <span className="mx-1.5 text-muted-foreground/60">·</span>
@@ -960,7 +1042,7 @@ function StoryFeedToolbar({
         <button
           type="button"
           onClick={onOpenComposer}
-          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-border/70 bg-card/40 px-2.5 text-xs text-muted-foreground transition-colors hover:border-yellow-500/40 hover:text-yellow-400"
+          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-cyan-300/50 bg-cyan-400/15 px-3 text-xs font-semibold text-cyan-100 shadow-[0_0_18px_rgba(34,211,238,0.14)] transition-colors hover:border-cyan-200/70 hover:bg-cyan-400/25 hover:text-white"
         >
           <PenLine size={14} />
           <span>{copy.newStory}</span>
@@ -1145,6 +1227,8 @@ export function StoryFeed({
             ensureUser={ensureUser}
             expanded={expandedIds.has(story.id)}
             onToggle={toggle}
+            canDelete={Boolean(story.community && userId && story.authorUserId === userId)}
+            onDelete={communityStories.remove}
             likeCount={counts.likes[story.id] ?? 0}
             reactionCounts={counts.reactions[story.id] ?? {}}
             commentCount={counts.comments[story.id] ?? 0}

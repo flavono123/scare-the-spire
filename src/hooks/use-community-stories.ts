@@ -31,10 +31,17 @@ interface UseCommunityStoriesReturn {
   loading: boolean;
   unavailable: boolean;
   add: (sentence: string, nickname: string, patchLine: STS2PatchLine, activeUserId?: string) => Promise<void>;
+  remove: (storyId: string, activeUserId?: string) => Promise<void>;
 }
 
 function communityStoryId(id: string): string {
   return `${COMMUNITY_STORY_ID_PREFIX}${id}`;
+}
+
+function communityRowIdFromStoryId(storyId: string): string | null {
+  return storyId.startsWith(COMMUNITY_STORY_ID_PREFIX)
+    ? storyId.slice(COMMUNITY_STORY_ID_PREFIX.length)
+    : null;
 }
 
 function parseTags(value: unknown): string[] | undefined {
@@ -67,6 +74,7 @@ function rowToStory(row: CommunityStoryRow): Story {
     publishedAt: row.created_at,
     sentence: row.sentence,
     authorName: row.nickname,
+    authorUserId: row.user_id ?? undefined,
     community: !row.static_story_id,
     entityType: row.entity_type ? row.entity_type as StoryEntityType : undefined,
     entityId: row.entity_id ?? undefined,
@@ -193,10 +201,36 @@ export function useCommunityStories(userId: string | null): UseCommunityStoriesR
     [userId],
   );
 
+  const remove = useCallback(
+    async (storyId: string, activeUserId = userId) => {
+      const rowId = communityRowIdFromStoryId(storyId);
+      if (!activeUserId || !supabaseEnabled || !rowId) return;
+
+      const { error } = await withSupabaseTimeout(
+        "community_stories.delete",
+        supabase
+          .from("community_stories")
+          .delete()
+          .eq("id", rowId)
+          .eq("user_id", activeUserId)
+          .eq("env", supabaseEnv),
+      ).catch(() => ({ error: new Error("timeout") }));
+
+      if (error) {
+        setUnavailable(true);
+        throw new Error(error.message);
+      }
+
+      setRows((prev) => prev.filter((row) => row.id !== rowId));
+    },
+    [userId],
+  );
+
   return {
     stories: rows.map(rowToStory),
     loading,
     unavailable,
     add,
+    remove,
   };
 }
