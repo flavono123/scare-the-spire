@@ -4,7 +4,7 @@ import Image from "@/components/ui/static-image";
 import type { Metadata } from "next";
 import fs from "fs/promises";
 import path from "path";
-import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches } from "@/lib/data";
+import { getCodexMeta, getEntityVersionDiffs, getSTS2Patches, getSTS2PatchLines, getSTS2Stories } from "@/lib/data";
 import { getCodexCards, getCodexRelics, getCodexPotions, getCodexPowers, getCodexEnchantments, getCodexEvents, getCodexMonsters, getCodexEncounters, getCodexAncients, getCodexEpochs } from "@/lib/codex-data";
 import { getCodexGameUiLabels } from "@/lib/codex-game-ui";
 import { readGameLocalizationTable, type GameLocalizationTable } from "@/lib/game-localization";
@@ -17,9 +17,9 @@ import {
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
 import { Badge } from "@/components/ui/badge";
 import {
-  PatchNoteRenderer,
   type EntityInfo,
 } from "@/components/patch-note-renderer";
+import { PatchNoteWithStoryActions } from "@/components/patches/patch-note-with-story-actions";
 import { DeferredCommentSection } from "@/components/patches/deferred-comment-section";
 import { buildPatchCommentThreadKey } from "@/lib/comment-threads";
 import {
@@ -28,6 +28,7 @@ import {
 import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
 import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType } from "@/lib/types";
+import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
 import type { CodexMonster, DamageValue, MonsterActionType, MonsterMove } from "@/lib/codex-types";
 import { isPublicBestiaryMonster } from "@/lib/bestiary-monster-policy";
 import {
@@ -813,7 +814,7 @@ export async function PatchDetailPage({
   staticHoverPreviews?: boolean;
 }) {
   const copy = PATCH_COPY[serviceLocale];
-  const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest] = await Promise.all([
+  const [patches, versionDiffs, codexMeta, codexCards, codexRelics, codexPotions, codexPowers, codexEnchantments, codexEvents, codexMonsters, codexEncounters, codexAncients, codexEpochs, gameUi, gameKeywordLabels, gameHeadingLabels, compendiumManifest, allPatchLines, sts2Stories, storyPlaceholder] = await Promise.all([
     getSTS2Patches(),
     getEntityVersionDiffs(),
     getCodexMeta(),
@@ -831,10 +832,22 @@ export async function PatchDetailPage({
     getPatchGameKeywordLabels(gameLocale),
     getPatchGameHeadingLabels(gameLocale),
     loadPatchBuildCompendiumResourceManifest(),
+    getSTS2PatchLines(),
+    getSTS2Stories(),
+    getStoryComposerPlaceholder(gameLocale),
   ]);
 
   const patch = patches.find((p) => p.version === version);
   if (!patch) notFound();
+  const patchId = patch.id;
+  const patchLines = allPatchLines.filter((line) => line.patch === patchId);
+  const patchLineIds = new Set(patchLines.map((line) => line.id));
+  const staticStoryCounts = sts2Stories.reduce<Record<string, number>>((counts, story) => {
+    if (story.patchLineId && patchLineIds.has(story.patchLineId)) {
+      counts[story.patchLineId] = (counts[story.patchLineId] ?? 0) + 1;
+    }
+    return counts;
+  }, {});
 
   let markdown = "";
   const koPath = path.join(NOTES_DIR, `v${patch.version}.ko.md`);
@@ -1068,7 +1081,7 @@ export async function PatchDetailPage({
       {/* Patch notes body */}
       {markdown ? (
         <section className="mt-6">
-          <PatchNoteRenderer
+          <PatchNoteWithStoryActions
             markdown={markdown}
             entities={rendererEntities}
             gameUi={gameUi}
@@ -1082,6 +1095,10 @@ export async function PatchDetailPage({
             patches={patches}
             versionDiffs={versionDiffs}
             staticHoverPreviews={staticHoverPreviews}
+            patchId={patchId}
+            patchLines={patchLines}
+            staticStoryCounts={staticStoryCounts}
+            storyPlaceholder={storyPlaceholder}
           />
         </section>
       ) : (

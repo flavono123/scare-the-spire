@@ -18,7 +18,7 @@ import {
   type ServiceLocale,
 } from "@/lib/i18n";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
-import type { EntityVersionDiff, STS2Patch } from "@/lib/types";
+import type { EntityVersionDiff, STS2Patch, STS2PatchLine } from "@/lib/types";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText, getCardMaxUpgradeLevel } from "@/components/codex/codex-description";
 import { GameHoverTip, type HoverTipArt, type HoverTipArtMode } from "@/components/codex/hover-tip";
@@ -838,6 +838,23 @@ function withPatchChangeEffects(markdown: string): string {
   });
 }
 
+function normalizePatchLineContent(text: string): string {
+  return text.replace(/\s+/g, " ")
+    .trim();
+}
+
+function patchLineMarkdownForService(patchLine: STS2PatchLine, serviceLocale: ServiceLocale | undefined): string {
+  return serviceLocale === "ko"
+    ? patchLine.markdownKo || patchLine.markdownEn || ""
+    : patchLine.markdownEn || patchLine.markdownKo || "";
+}
+
+function patchLineContentKeyFromRenderedLine(line: string): string | null {
+  const bulletMatch = line.match(/^\s*-\s+(.*)$/);
+  if (!bulletMatch) return null;
+  return normalizePatchLineContent(bulletMatch[1]);
+}
+
 // --- Entity Lookup ---
 
 export interface EntityLookup {
@@ -1433,6 +1450,10 @@ function renderLine(
   lookup: EntityLookup,
   key: string,
   context: RenderContext,
+  options: {
+    patchLineAction?: ReactNode;
+    patchLineId?: string;
+  } = {},
 ): ReactNode {
   const trimmed = line.trimStart();
 
@@ -1487,10 +1508,16 @@ function renderLine(
     return (
       <li
         key={key}
+        data-patch-line-id={options.patchLineId}
         className={`text-sm ${bulletClass} mb-1 list-outside`}
         style={{ marginLeft: `${1 + indentLevel * 1.25}rem` }}
       >
         {enrichLine(bulletMatch[2], lookup, key, context)}
+        {options.patchLineAction && (
+          <span className="ml-2 inline-flex align-baseline">
+            {options.patchLineAction}
+          </span>
+        )}
       </li>
     );
   }
@@ -1589,6 +1616,8 @@ export function PatchNoteRenderer({
   versionDiffs,
   epochArtMode,
   staticHoverPreviews,
+  patchLines = [],
+  patchLineActions,
 }: {
   markdown: string;
   entities?: EntityInfo[];
@@ -1605,6 +1634,8 @@ export function PatchNoteRenderer({
   versionDiffs?: EntityVersionDiff[];
   epochArtMode?: HoverTipArtMode;
   staticHoverPreviews?: boolean;
+  patchLines?: STS2PatchLine[];
+  patchLineActions?: ReadonlyMap<string, ReactNode>;
 }) {
   const allEntities = useMemo(() => entities ?? cards ?? [], [entities, cards]);
   const lookup = useMemo(() => buildEntityLookup(allEntities), [allEntities]);
@@ -1625,6 +1656,14 @@ export function PatchNoteRenderer({
     }),
     [currentVersion, epochArtMode, gameHeadingLabels, gameKeywordLabels, gameLocale, gameUi, patchVersion, patches, preferEntityLocaleLabel, serviceLocale, staticHoverPreviews, versionDiffs],
   );
+  const patchLineByRenderedContent = useMemo(() => {
+    const map = new Map<string, STS2PatchLine>();
+    for (const patchLine of patchLines) {
+      const key = normalizePatchLineContent(withPatchChangeEffects(patchLineMarkdownForService(patchLine, serviceLocale)));
+      if (key && !map.has(key)) map.set(key, patchLine);
+    }
+    return map;
+  }, [patchLines, serviceLocale]);
   const lines = withPatchChangeEffects(markdown).split("\n");
 
   // Group consecutive list items into <ul> containers
@@ -1715,9 +1754,14 @@ export function PatchNoteRenderer({
         ? currentMonsterContext
         : [];
     const lineContext = preferredMonsterIds.length > 0 ? { ...context, preferredMonsterIds } : context;
+    const patchLine = patchLineByRenderedContent.get(patchLineContentKeyFromRenderedLine(lines[i]) ?? "");
+    const patchLineAction = patchLine ? patchLineActions?.get(patchLine.id) : undefined;
 
     if (/^\s*-\s+/.test(lines[i])) {
-      listBuffer.push(renderLine(lines[i], lookup, `line-${i}`, lineContext));
+      listBuffer.push(renderLine(lines[i], lookup, `line-${i}`, lineContext, {
+        patchLineAction,
+        patchLineId: patchLine?.id,
+      }));
       wasInList = true;
     } else {
       flushList();

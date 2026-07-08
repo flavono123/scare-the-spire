@@ -34,6 +34,11 @@ interface UseCommunityStoriesReturn {
   remove: (storyId: string, activeUserId?: string) => Promise<void>;
 }
 
+interface UseCommunityStoriesOptions {
+  source?: string;
+  limit?: number;
+}
+
 function communityStoryId(id: string): string {
   return `${COMMUNITY_STORY_ID_PREFIX}${id}`;
 }
@@ -97,23 +102,30 @@ function uniqueRows(rows: CommunityStoryRow[]): CommunityStoryRow[] {
   return unique;
 }
 
-export function useCommunityStories(userId: string | null): UseCommunityStoriesReturn {
+export function useCommunityStories(
+  userId: string | null,
+  options: UseCommunityStoriesOptions = {},
+): UseCommunityStoriesReturn {
   const [rows, setRows] = useState<CommunityStoryRow[]>([]);
   const [loading, setLoading] = useState(supabaseEnabled);
   const [unavailable, setUnavailable] = useState(false);
+  const source = options.source;
+  const limit = options.limit ?? COMMUNITY_STORY_LIMIT;
 
   useEffect(() => {
     if (!supabaseEnabled) return;
     let cancelled = false;
+    let query = supabase
+      .from("community_stories")
+      .select("id,user_id,static_story_id,nickname,sentence,game,entity_type,entity_id,change_id,patch_line_id,source,tags,linked_entities,created_at,env")
+      .eq("env", supabaseEnv)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+    if (source) query = query.eq("source", source);
 
     withSupabaseTimeout(
       "community_stories.select",
-      supabase
-        .from("community_stories")
-        .select("id,user_id,static_story_id,nickname,sentence,game,entity_type,entity_id,change_id,patch_line_id,source,tags,linked_entities,created_at,env")
-        .eq("env", supabaseEnv)
-        .order("created_at", { ascending: false })
-        .limit(COMMUNITY_STORY_LIMIT),
+      query,
     )
       .then(({ data, error }) => {
         if (error) throw error;
@@ -140,7 +152,8 @@ export function useCommunityStories(userId: string | null): UseCommunityStoriesR
         (payload) => {
           const nextRow = payload.new as CommunityStoryRow;
           if (nextRow.env !== supabaseEnv) return;
-          setRows((prev) => uniqueRows([nextRow, ...prev]).slice(0, COMMUNITY_STORY_LIMIT));
+          if (source && nextRow.source !== source) return;
+          setRows((prev) => uniqueRows([nextRow, ...prev]).slice(0, limit));
         },
       )
       .subscribe((status) => {
@@ -153,7 +166,7 @@ export function useCommunityStories(userId: string | null): UseCommunityStoriesR
       cancelled = true;
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [limit, source]);
 
   const add = useCallback(
     async (sentence: string, nickname: string, patchLine: STS2PatchLine, activeUserId = userId) => {
