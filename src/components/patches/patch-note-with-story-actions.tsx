@@ -259,7 +259,7 @@ export function PatchNoteWithStoryActions({
       );
     }
     return actions;
-  }, [communityStoryCounts, patchLines, rendererProps.serviceLocale, staticStoryCounts]);
+  }, [communityStories.unavailable, communityStoryCounts, patchLines, rendererProps.serviceLocale, staticStoryCounts]);
 
   return (
     <>
