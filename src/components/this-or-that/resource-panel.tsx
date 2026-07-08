@@ -1,10 +1,13 @@
 "use client";
 
-import Image from "@/components/ui/static-image";
+import Link from "next/link";
+import { CardTile } from "@/components/codex/card-tile";
 import { EntityPreview, type EntityInfo, type EntityType } from "@/components/patch-note-renderer";
 import { getCharacterColor } from "@/lib/codex-types";
 import { cn } from "@/lib/utils";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
+import { localizeHrefWithGameLocale } from "@/lib/i18n";
+import { getThisOrThatEntityHref } from "@/lib/this-or-that";
 import { serviceMessages } from "@/messages/service";
 
 function entityTypeLabel(entityType: EntityType, serviceLocale: ServiceLocale): string {
@@ -27,17 +30,6 @@ function entityTypeLabel(entityType: EntityType, serviceLocale: ServiceLocale): 
   return labels[entityType] ?? entityType;
 }
 
-function imageClassName(entity: EntityInfo, size: "compact" | "large"): string {
-  const base = size === "large" ? "h-48 sm:h-64" : "h-28";
-  if (entity.type === "event" || entity.type === "epoch" || entity.type === "encounter") {
-    return `${base} w-full rounded-md object-cover`;
-  }
-  if (entity.type === "monster" || entity.type === "character" || entity.type === "ancient") {
-    return `${base} w-full rounded-md object-contain`;
-  }
-  return `${base} w-full object-contain`;
-}
-
 export function ThisOrThatResourcePanel({
   entity,
   sideLabel,
@@ -53,18 +45,38 @@ export function ThisOrThatResourcePanel({
 }) {
   const characterColor = getCharacterColor(entity.color);
   const isLarge = size === "large";
-
-  return (
-    <EntityPreview
-      entity={entity}
+  const hrefBase = getThisOrThatEntityHref(entity);
+  const href = hrefBase
+    ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
+    : null;
+  const cardWidth = isLarge ? 260 : 126;
+  const preview = entity.cardData ? (
+    <CardTile
+      card={entity.cardData}
       serviceLocale={serviceLocale}
-      gameLocale={gameLocale}
-      linkClassName={cn(
-        "block h-full rounded-lg border border-border bg-card/35 p-3 text-left transition-colors",
-        "hover:border-yellow-500/35 hover:bg-card/50 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70",
-      )}
-    >
-      <span className="block space-y-2">
+      showUpgrade={false}
+      showBeta={false}
+      width={cardWidth}
+      interactive={false}
+    />
+  ) : (
+    <span className={cn(
+      "block [&_.game-hover-tip]:shadow-2xl",
+      isLarge ? "[&_.game-hover-tip]:max-w-[360px]" : "[&_.game-hover-tip]:max-w-[260px]",
+    )}>
+      <EntityPreview
+        entity={entity}
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+        forceShow
+      >
+        <span />
+      </EntityPreview>
+    </span>
+  );
+
+  const content = (
+    <span className="block space-y-2">
         <span className="flex items-center justify-between gap-2">
           <span className="font-service text-[11px] font-semibold uppercase text-muted-foreground">
             {sideLabel}
@@ -81,20 +93,11 @@ export function ThisOrThatResourcePanel({
           </span>
         </span>
 
-        <span className="flex items-center justify-center overflow-hidden rounded-md bg-black/20">
-          {entity.imageUrl ? (
-            <Image
-              src={entity.imageUrl}
-              alt={entity.nameKo}
-              width={isLarge ? 420 : 220}
-              height={isLarge ? 280 : 160}
-              className={imageClassName(entity, size)}
-            />
-          ) : (
-            <span className={cn("flex w-full items-center justify-center text-muted-foreground", isLarge ? "h-64" : "h-28")}>
-              ?
-            </span>
-          )}
+        <span className={cn(
+          "flex min-h-36 items-center justify-center overflow-visible rounded-md bg-black/20 p-2",
+          isLarge && "min-h-72 py-4",
+        )}>
+          {preview}
         </span>
 
         <span className="block min-w-0">
@@ -111,6 +114,25 @@ export function ThisOrThatResourcePanel({
           )}
         </span>
       </span>
-    </EntityPreview>
+  );
+
+  if (!href) {
+    return (
+      <span className="block h-full rounded-lg border border-border bg-card/35 p-3 text-left">
+        {content}
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "block h-full rounded-lg border border-border bg-card/35 p-3 text-left transition-colors",
+        "hover:border-yellow-500/35 hover:bg-card/50 focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70",
+      )}
+    >
+      {content}
+    </Link>
   );
 }

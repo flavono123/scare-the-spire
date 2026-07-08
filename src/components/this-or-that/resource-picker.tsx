@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { X } from "lucide-react";
 import Image from "@/components/ui/static-image";
 import type { EntityInfo, EntityType } from "@/components/patch-note-renderer";
 import { matchEntities } from "@/lib/chemical-utils";
@@ -38,7 +39,7 @@ export function ThisOrThatResourcePicker({
   entities: EntityInfo[];
   label: string;
   value: EntityInfo | null;
-  onChange: (entity: EntityInfo) => void;
+  onChange: (entity: EntityInfo | null) => void;
   placeholder: string;
   exclude?: EntityInfo | null;
 }) {
@@ -63,20 +64,11 @@ export function ThisOrThatResourcePicker({
         <span className="font-service text-sm font-semibold text-zinc-300">
           {label}
         </span>
-        {value && (
-          <span className="max-w-[70%] truncate font-game-title text-sm text-yellow-300">
-            {value.nameKo}
-          </span>
-        )}
       </div>
 
       <div className="rounded-lg border border-border bg-card/30">
-        {value && (
-          <button
-            type="button"
-            onClick={() => setQuery(value.nameKo)}
-            className="flex w-full items-center gap-2 border-b border-border/70 px-3 py-2 text-left transition-colors hover:bg-white/[0.03]"
-          >
+        {value ? (
+          <div className="flex w-full items-center gap-2 px-3 py-2">
             {value.imageUrl && (
               <Image
                 src={value.imageUrl}
@@ -94,18 +86,29 @@ export function ThisOrThatResourcePicker({
                 {labels[value.type] ?? value.type}
               </span>
             </span>
-          </button>
+            <button
+              type="button"
+              onClick={() => {
+                onChange(null);
+                setQuery("");
+              }}
+              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-white/5 hover:text-yellow-300"
+              title={serviceLocale === "ko" ? "선택 해제" : "Clear selection"}
+            >
+              <X size={14} />
+            </button>
+          </div>
+        ) : (
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={placeholder}
+            className="w-full bg-transparent px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-1 focus:ring-yellow-500/40"
+          />
         )}
 
-        <input
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={placeholder}
-          className="w-full bg-transparent px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-1 focus:ring-yellow-500/40"
-        />
-
-        {hasQuery && matches.length > 0 && (
+        {!value && hasQuery && matches.length > 0 && (
           <div className="max-h-72 overflow-y-auto border-t border-border/70">
             {matches.map((entity) => {
               const characterColor = getCharacterColor(entity.color);
