@@ -29,10 +29,6 @@ export function useThisOrThatLikes(
   useEffect(() => {
     if (!supabaseEnabled) return;
     if (postIds.length === 0) {
-      setCounts({});
-      setLiked(new Set());
-      setLoading(false);
-      setUnavailable(false);
       return;
     }
 
