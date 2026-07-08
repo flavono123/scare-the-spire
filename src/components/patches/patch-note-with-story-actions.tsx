@@ -19,6 +19,7 @@ function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
     return {
       title: "이 변경의 이야기",
       open: "이 변경의 이야기 보기",
+      openEmpty: "이 변경으로 이야기 쓰기",
       write: "이 변경으로 이야기 쓰기",
       close: "닫기",
       empty: "아직 이 변경으로 쓴 이야기가 없습니다",
@@ -31,6 +32,7 @@ function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
   return {
     title: "Stories for this change",
     open: "View stories for this change",
+    openEmpty: "Write story from this change",
     write: "Write story from this change",
     close: "Close",
     empty: "No stories have been written from this change yet",
@@ -44,12 +46,15 @@ function PatchLineStoryAction({
   count,
   serviceLocale,
   onOpen,
+  onWrite,
 }: {
   count: number;
   serviceLocale?: ServiceLocale;
   onOpen: () => void;
+  onWrite: () => void;
 }) {
   const copy = patchLineStoryCopy(serviceLocale);
+  const actionLabel = count > 0 ? copy.open : copy.openEmpty;
 
   return (
     <button
@@ -57,18 +62,19 @@ function PatchLineStoryAction({
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();
-        onOpen();
+        if (count > 0) onOpen();
+        else onWrite();
       }}
       data-patch-line-story-action
       className={`inline-flex h-5 items-center gap-1 rounded border px-1 align-baseline text-[10px] leading-none tabular-nums transition-colors focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/50 ${
         count > 0
-          ? "border-transparent bg-transparent text-yellow-100/45 opacity-70 hover:border-yellow-400/20 hover:bg-yellow-400/5 hover:text-yellow-100/85 hover:opacity-100"
-          : "border-transparent bg-transparent text-muted-foreground/30 opacity-45 hover:border-white/10 hover:bg-white/[0.03] hover:text-muted-foreground/75 hover:opacity-100"
+          ? "border-yellow-400/10 bg-yellow-400/[0.035] text-yellow-100/60 opacity-85 hover:border-yellow-400/25 hover:bg-yellow-400/[0.07] hover:text-yellow-100/90 hover:opacity-100"
+          : "border-cyan-300/14 bg-cyan-300/[0.035] text-cyan-100/55 opacity-80 hover:border-cyan-200/30 hover:bg-cyan-300/[0.075] hover:text-cyan-50/90 hover:opacity-100"
       }`}
-      title={copy.open}
-      aria-label={`${copy.open}. ${copy.countLabel(count)}`}
+      title={actionLabel}
+      aria-label={`${actionLabel}. ${copy.countLabel(count)}`}
     >
-      <StoryStatIcon size={14} className={count > 0 ? "opacity-65" : "opacity-35"} />
+      <StoryStatIcon size={14} className={count > 0 ? "opacity-75" : "opacity-60"} />
       <span>{count}</span>
     </button>
   );
@@ -235,6 +241,7 @@ export function PatchNoteWithStoryActions({
           count={count}
           serviceLocale={rendererProps.serviceLocale}
           onOpen={() => setActivePatchLineId(patchLine.id)}
+          onWrite={() => setComposerPatchLineId(patchLine.id)}
         />,
       );
     }
