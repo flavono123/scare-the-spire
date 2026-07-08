@@ -37,6 +37,7 @@ export function ThisOrThatLikeButton({
         className,
       )}
       title={label}
+      aria-label={label}
       aria-pressed={liked}
     >
       {unavailable ? (
