@@ -15,10 +15,12 @@ import { StoryReactionButton } from "@/components/story-reaction-button";
 import { CommentSection } from "@/components/comment-section";
 import { EngagementSummary } from "@/components/engagement-summary";
 import { EngagementSpinner } from "@/components/engagement-spinner";
+import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryWriteIcon } from "@/components/story-token-icon";
 import { CardTile } from "@/components/codex/card-tile";
 import type { StoryReactionCounts } from "@/lib/reactions";
+import { serviceMessages } from "@/messages/service";
 
 type StorySortMode = "recommended" | "comments" | "latest";
 
@@ -40,7 +42,6 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
       deleteConfirm: "이 이야기를 삭제할까요?",
       searchPlaceholder: "검색",
       noResults: "검색 결과가 없습니다",
-      communityUnavailable: "커뮤니티 이야기를 불러오지 못했습니다",
       sort: {
         recommended: "추천",
         comments: "댓글",
@@ -55,7 +56,6 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
     deleteConfirm: "Delete this story?",
     searchPlaceholder: "Search",
     noResults: "No stories found",
-    communityUnavailable: "Could not load community stories",
     sort: {
       recommended: "Recommended",
       comments: "Comments",
@@ -948,48 +948,47 @@ export function StoryFeed({
         onSearchQueryChange={setSearchQuery}
         onOpenComposer={() => setComposerOpen(true)}
       />
-      {communityStories.unavailable && (
-        <p className="mt-3 rounded-md border border-amber-400/20 bg-amber-400/5 px-3 py-2 text-xs text-amber-200/85">
-          {storyFeedCopy(serviceLocale).communityUnavailable}
-        </p>
+      {communityStories.unavailable ? (
+        <StorageUnavailableNotice title={serviceMessages[serviceLocale].comments.unavailableTitle} />
+      ) : (
+        <div className="divide-y divide-border/50">
+          {orderedStories.length === 0 ? (
+            <div className="px-4 py-12 text-center text-sm text-muted-foreground">
+              {storyFeedCopy(serviceLocale).noResults}
+            </div>
+          ) : orderedStories.map((story) => {
+            const key = isSTS1EntityType(story.entityType) && story.entityId ? `${story.entityType}:${story.entityId}` : "";
+            return (
+              <StoryCard
+                key={story.id}
+                story={story}
+                serviceLocale={serviceLocale}
+                entityChanges={entityChangeIndex.get(key) ?? []}
+                cardMap={cardMap}
+                relicMap={relicMap}
+                potionMap={potionMap}
+                changeMap={changeMap}
+                sts2EntityMap={sts2EntityMap}
+                sts2ChangeMap={sts2ChangeMap}
+                sts2PatchMap={sts2PatchMap}
+                patchLineMap={patchLineMap}
+                userId={userId}
+                authReady={authReady}
+                ensureUser={ensureUser}
+                expanded={expandedIds.has(story.id)}
+                onToggle={toggle}
+                canDelete={Boolean(story.community && userId && story.authorUserId === userId)}
+                onDelete={communityStories.remove}
+                likeCount={counts.likes[story.id] ?? 0}
+                reactionCounts={counts.reactions[story.id] ?? {}}
+                commentCount={counts.comments[story.id] ?? 0}
+                engagementLoading={counts.loading}
+                engagementUnavailable={counts.unavailable}
+              />
+            );
+          })}
+        </div>
       )}
-      <div className="divide-y divide-border/50">
-        {orderedStories.length === 0 ? (
-          <div className="px-4 py-12 text-center text-sm text-muted-foreground">
-            {storyFeedCopy(serviceLocale).noResults}
-          </div>
-        ) : orderedStories.map((story) => {
-        const key = isSTS1EntityType(story.entityType) && story.entityId ? `${story.entityType}:${story.entityId}` : "";
-        return (
-          <StoryCard
-            key={story.id}
-            story={story}
-            serviceLocale={serviceLocale}
-            entityChanges={entityChangeIndex.get(key) ?? []}
-            cardMap={cardMap}
-            relicMap={relicMap}
-            potionMap={potionMap}
-            changeMap={changeMap}
-            sts2EntityMap={sts2EntityMap}
-            sts2ChangeMap={sts2ChangeMap}
-            sts2PatchMap={sts2PatchMap}
-            patchLineMap={patchLineMap}
-            userId={userId}
-            authReady={authReady}
-            ensureUser={ensureUser}
-            expanded={expandedIds.has(story.id)}
-            onToggle={toggle}
-            canDelete={Boolean(story.community && userId && story.authorUserId === userId)}
-            onDelete={communityStories.remove}
-            likeCount={counts.likes[story.id] ?? 0}
-            reactionCounts={counts.reactions[story.id] ?? {}}
-            commentCount={counts.comments[story.id] ?? 0}
-            engagementLoading={counts.loading}
-            engagementUnavailable={counts.unavailable}
-          />
-        );
-      })}
-      </div>
     </div>
   );
 }

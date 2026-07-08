@@ -156,11 +156,7 @@ export function useCommunityStories(
           setRows((prev) => uniqueRows([nextRow, ...prev]).slice(0, limit));
         },
       )
-      .subscribe((status) => {
-        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
-          setUnavailable(true);
-        }
-      });
+      .subscribe();
 
     return () => {
       cancelled = true;
@@ -202,10 +198,7 @@ export function useCommunityStories(
           .single(),
       ).catch(() => ({ data: null, error: new Error("timeout") }));
 
-      if (error) {
-        setUnavailable(true);
-        throw new Error(error.message);
-      }
+      if (error) throw new Error(error.message);
 
       if (data) {
         setRows((prev) => uniqueRows([data as CommunityStoryRow, ...prev]).slice(0, COMMUNITY_STORY_LIMIT));
@@ -229,10 +222,7 @@ export function useCommunityStories(
           .eq("env", supabaseEnv),
       ).catch(() => ({ error: new Error("timeout") }));
 
-      if (error) {
-        setUnavailable(true);
-        throw new Error(error.message);
-      }
+      if (error) throw new Error(error.message);
 
       setRows((prev) => prev.filter((row) => row.id !== rowId));
     },

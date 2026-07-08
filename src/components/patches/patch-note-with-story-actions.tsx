@@ -5,12 +5,14 @@ import { X } from "lucide-react";
 import {
   PatchNoteRenderer,
 } from "@/components/patch-note-renderer";
+import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { StoryComposerModal, patchLineDisplayText } from "@/components/story-composer-modal";
 import { StoryStatIcon, StoryWriteIcon } from "@/components/story-token-icon";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { STS2PatchLine, Story } from "@/lib/types";
+import { serviceMessages } from "@/messages/service";
 
 type PatchNoteRendererProps = ComponentProps<typeof PatchNoteRenderer>;
 
@@ -23,7 +25,6 @@ function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
       write: "이 변경으로 이야기 쓰기",
       close: "닫기",
       empty: "아직 이 변경으로 쓴 이야기가 없습니다",
-      communityUnavailable: "커뮤니티 이야기를 불러오지 못했습니다",
       staticStory: "슬서운 이야기",
       communityStory: "작성됨",
       countLabel: (count: number) => `이 변경의 이야기 ${count}개`,
@@ -37,7 +38,6 @@ function patchLineStoryCopy(serviceLocale: ServiceLocale | undefined) {
     write: "Write story from this change",
     close: "Close",
     empty: "No stories have been written from this change yet",
-    communityUnavailable: "Could not load community stories",
     staticStory: "Slseoun story",
     communityStory: "Posted",
     countLabel: (count: number) => `${count} stories for this change`,
@@ -161,31 +161,33 @@ function PatchLineStoriesPanel({
             {patchLineDisplayText(patchLine, serviceLocale)}
           </div>
 
-          {communityUnavailable && (
-            <p className="mt-3 rounded-md border border-amber-400/20 bg-amber-400/5 px-3 py-2 text-xs text-amber-200/85">
-              {copy.communityUnavailable}
-            </p>
-          )}
-
-          <div className="mt-3 space-y-2">
-            {stories.length > 0 ? stories.map((story) => (
-              <article
-                key={story.id}
-                className="rounded-md border border-border/60 bg-card/25 px-3 py-2.5"
-              >
-                <p className="text-sm leading-relaxed text-foreground">{story.sentence}</p>
-                <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
-                  <span>{story.community ? copy.communityStory : copy.staticStory}</span>
-                  {story.authorName && <span>{story.authorName}</span>}
-                  {story.publishedAt && <span>{story.publishedAt}</span>}
+          {communityUnavailable ? (
+            <StorageUnavailableNotice
+              compact
+              className="mt-3"
+              title={serviceMessages[serviceLocale].comments.unavailableTitle}
+            />
+          ) : (
+            <div className="mt-3 space-y-2">
+              {stories.length > 0 ? stories.map((story) => (
+                <article
+                  key={story.id}
+                  className="rounded-md border border-border/60 bg-card/25 px-3 py-2.5"
+                >
+                  <p className="text-sm leading-relaxed text-foreground">{story.sentence}</p>
+                  <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
+                    <span>{story.community ? copy.communityStory : copy.staticStory}</span>
+                    {story.authorName && <span>{story.authorName}</span>}
+                    {story.publishedAt && <span>{story.publishedAt}</span>}
+                  </p>
+                </article>
+              )) : (
+                <p className="rounded-md border border-dashed border-border/70 px-3 py-5 text-center text-xs text-muted-foreground">
+                  {copy.empty}
                 </p>
-              </article>
-            )) : (
-              <p className="rounded-md border border-dashed border-border/70 px-3 py-5 text-center text-xs text-muted-foreground">
-                {copy.empty}
-              </p>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-end border-t border-border/60 px-4 py-3">
