@@ -107,11 +107,21 @@ export function PatchLineReferenceBlock({
   return (
     <div className="relative">
       {href ? (
-        <Link href={href} prefetch={false} className={blockClassName}>
+        <Link
+          href={href}
+          prefetch={false}
+          className={blockClassName}
+          data-patch-line-reference
+          data-patch-line-id={patchLine.id}
+        >
           {body}
         </Link>
       ) : (
-        <div className={blockClassName}>
+        <div
+          className={blockClassName}
+          data-patch-line-reference
+          data-patch-line-id={patchLine.id}
+        >
           {body}
         </div>
       )}

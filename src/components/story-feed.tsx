@@ -788,6 +788,7 @@ function StoryDetailModal({
       role="dialog"
       aria-modal="true"
       aria-label={copy.storyDetail}
+      data-story-detail-modal
       onClick={onClose}
     >
       <article
