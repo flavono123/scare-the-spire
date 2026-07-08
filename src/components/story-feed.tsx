@@ -40,13 +40,12 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
     return {
       write: "작성",
       writing: "...",
-      newStory: "쓰기",
+      newStory: "이야기 쓰기",
       close: "닫기",
       deleteStory: "삭제",
       deleteConfirm: "이 이야기를 삭제할까요?",
       clearPatchLine: "참조 해제",
       nickname: "닉네임",
-      storyPlaceholder: "이제 이야기 더 말한다!",
       patchLineSearchPlaceholder: "카드, 몬스터, 패치 내용 검색",
       patchLineRequired: "참조할 패치 내용을 한 줄 선택하세요",
       searchPlaceholder: "검색",
@@ -64,13 +63,12 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
   return {
     write: "Write",
     writing: "...",
-    newStory: "Write",
+    newStory: "Write story",
     close: "Close",
     deleteStory: "Delete",
     deleteConfirm: "Delete this story?",
     clearPatchLine: "Clear reference",
     nickname: "Nickname",
-    storyPlaceholder: "Now tell more story!!",
     patchLineSearchPlaceholder: "Search cards, monsters, or patch text",
     patchLineRequired: "Select one patch note line to reference",
     searchPlaceholder: "Search",
@@ -796,6 +794,7 @@ function filterPatchLines(
 
 function StoryComposerModal({
   serviceLocale,
+  storyPlaceholder,
   userId,
   authReady,
   ensureUser,
@@ -806,6 +805,7 @@ function StoryComposerModal({
   onClose,
 }: {
   serviceLocale: ServiceLocale;
+  storyPlaceholder: string;
   userId: string | null;
   authReady: boolean;
   ensureUser: () => Promise<string | null>;
@@ -894,7 +894,7 @@ function StoryComposerModal({
           <textarea
             value={sentence}
             onChange={(event) => setSentence(event.target.value.slice(0, STORY_DRAFT_MAX_LENGTH))}
-            placeholder={copy.storyPlaceholder}
+            placeholder={storyPlaceholder}
             maxLength={STORY_DRAFT_MAX_LENGTH}
             rows={3}
             disabled={!authReady || !supabaseEnabled || unavailable}
@@ -1054,6 +1054,7 @@ function StoryFeedToolbar({
 
 export function StoryFeed({
   serviceLocale = "ko",
+  storyPlaceholder,
   stories,
   cards,
   relics,
@@ -1065,6 +1066,7 @@ export function StoryFeed({
   sts2Entities = [],
 }: {
   serviceLocale?: ServiceLocale;
+  storyPlaceholder: string;
   stories: Story[];
   cards: Card[];
   relics: Relic[];
@@ -1183,6 +1185,7 @@ export function StoryFeed({
       {composerOpen && (
         <StoryComposerModal
           serviceLocale={serviceLocale}
+          storyPlaceholder={storyPlaceholder}
           userId={userId}
           authReady={authReady}
           ensureUser={ensureUser}

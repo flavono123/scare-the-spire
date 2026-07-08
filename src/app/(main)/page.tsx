@@ -4,10 +4,11 @@ import { StoryFeed } from "@/components/story-feed";
 import { loadAllEntities } from "@/lib/load-all-entities";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
+import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
 
 export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  const [stories, sts2Stories, cards, relics, potions, changes, sts2Changes, sts2Patches, sts2PatchLines, sts2Entities] = await Promise.all([
+  const [stories, sts2Stories, cards, relics, potions, changes, sts2Changes, sts2Patches, sts2PatchLines, sts2Entities, storyPlaceholder] = await Promise.all([
     getStories(),
     getSTS2Stories(),
     getCards(),
@@ -18,6 +19,7 @@ export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOC
     getSTS2Patches(),
     getSTS2PatchLines(),
     loadAllEntities({ gameLocale }),
+    getStoryComposerPlaceholder(gameLocale),
   ]);
   const mergedStories = [...stories, ...sts2Stories];
   const referencedPatchLineIds = new Set(
@@ -38,6 +40,7 @@ export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOC
           ) : (
             <StoryFeed
               serviceLocale={serviceLocale}
+              storyPlaceholder={storyPlaceholder}
               stories={mergedStories}
               cards={cards}
               relics={relics}
