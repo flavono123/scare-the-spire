@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
-import { PenLine, Search, Trash2 } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 import type { Story, Card, Change, Relic, Potion, LinkedEntity, STS2Change, STS2Patch, STS2PatchLine, StoryEntityType } from "@/lib/types";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
@@ -16,6 +16,7 @@ import { CommentSection } from "@/components/comment-section";
 import { EngagementSummary } from "@/components/engagement-summary";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 import { StoryComposerModal } from "@/components/story-composer-modal";
+import { StoryTokenIcon } from "@/components/story-token-icon";
 import { CardTile } from "@/components/codex/card-tile";
 import type { StoryReactionCounts } from "@/lib/reactions";
 
@@ -787,7 +788,7 @@ function StoryFeedToolbar({
           onClick={onOpenComposer}
           className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-cyan-300/50 bg-cyan-400/15 px-3 text-xs font-semibold text-cyan-100 shadow-[0_0_18px_rgba(34,211,238,0.14)] transition-colors hover:border-cyan-200/70 hover:bg-cyan-400/25 hover:text-white"
         >
-          <PenLine size={14} />
+          <StoryTokenIcon size={16} />
           <span>{copy.newStory}</span>
         </button>
       </div>

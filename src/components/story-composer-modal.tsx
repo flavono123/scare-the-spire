@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { PenLine, Search, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import type { ServiceLocale } from "@/lib/i18n";
 import type { STS2PatchLine } from "@/lib/types";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import { StoryTokenIcon } from "@/components/story-token-icon";
 import { supabaseEnabled } from "@/lib/supabase";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 
@@ -278,7 +279,7 @@ export function StoryComposerModal({
             disabled={disabled}
             className="inline-flex h-9 items-center gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-xs font-medium text-yellow-400 transition-colors hover:bg-yellow-500/15 disabled:opacity-30"
           >
-            {submitting ? <EngagementSpinner size={14} /> : <PenLine size={14} />}
+            {submitting ? <EngagementSpinner size={14} /> : <StoryTokenIcon size={16} />}
             {submitting ? copy.writing : copy.write}
           </button>
         </div>
