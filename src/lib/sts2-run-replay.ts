@@ -11,6 +11,15 @@ const INT_MAX = 2147483647;
 const INT_MIN = -2147483648;
 const MATCH_CAP = 256;
 const MAP_COLUMNS = 7;
+const MEGA_RANDOM_MIN_BUILD = "v0.107.1";
+
+type RngAlgorithm = "legacy-dotnet" | "mega-random";
+
+interface ReplayRandom {
+  nextInt(maxExclusive: number): number;
+  nextRange(minInclusive: number, maxExclusive: number): number;
+  nextDouble(): number;
+}
 
 export type ReplayMapPointType =
   | "ancient"
@@ -213,7 +222,7 @@ interface MapPointTypeCounts {
   pointTypesThatIgnoreRules: Set<ReplayMapPointType>;
 }
 
-class DotNetRandom {
+class DotNetRandom implements ReplayRandom {
   private static readonly MBIG = 2147483647;
   private static readonly MSEED = 161803398;
 
@@ -291,13 +300,117 @@ class DotNetRandom {
   }
 }
 
+class MegaRandom implements ReplayRandom {
+  private static readonly UINT64_BITS = BigInt(64);
+  private static readonly UINT64_MASK = BigInt("18446744073709551615");
+  private static readonly SPLITMIX_INCREMENT = BigInt("11400714819323198485");
+  private static readonly SPLITMIX_MUL_1 = BigInt("13787848793156543929");
+  private static readonly SPLITMIX_MUL_2 = BigInt("10723151780598845931");
+  private static readonly DOUBLE_INCREMENT = 1.1102230246251565e-16;
+  private static readonly FIVE = BigInt(5);
+  private static readonly NINE = BigInt(9);
+  private static readonly SEVENTEEN = BigInt(17);
+
+  private s0 = BigInt(0);
+  private s1 = BigInt(0);
+  private s2 = BigInt(0);
+  private s3 = BigInt(0);
+
+  constructor(seed: number) {
+    this.reinitialise(BigInt(seed >>> 0));
+  }
+
+  nextInt(maxExclusive: number): number {
+    if (maxExclusive <= 0) {
+      throw new RangeError("maxExclusive must be positive");
+    }
+    return this.nextInner(maxExclusive);
+  }
+
+  nextRange(minInclusive: number, maxExclusive: number): number {
+    if (minInclusive >= maxExclusive) {
+      throw new RangeError("minInclusive must be lower than maxExclusive");
+    }
+    return this.nextInner(maxExclusive - minInclusive) + minInclusive;
+  }
+
+  nextDouble(): number {
+    return Number(this.nextULongInner() >> BigInt(11)) * MegaRandom.DOUBLE_INCREMENT;
+  }
+
+  private reinitialise(seed: bigint): void {
+    let state = seed;
+    [state, this.s0] = MegaRandom.splitmix64(state);
+    [state, this.s1] = MegaRandom.splitmix64(state);
+    [state, this.s2] = MegaRandom.splitmix64(state);
+    [state, this.s3] = MegaRandom.splitmix64(state);
+  }
+
+  private static splitmix64(state: bigint): [bigint, bigint] {
+    const nextState = MegaRandom.add64(state, MegaRandom.SPLITMIX_INCREMENT);
+    let value = nextState;
+    value = MegaRandom.mul64(value ^ (value >> BigInt(30)), MegaRandom.SPLITMIX_MUL_1);
+    value = MegaRandom.mul64(value ^ (value >> BigInt(27)), MegaRandom.SPLITMIX_MUL_2);
+    return [nextState, (value ^ (value >> BigInt(31))) & MegaRandom.UINT64_MASK];
+  }
+
+  private nextULongInner(): bigint {
+    let s0 = this.s0;
+    let s1 = this.s1;
+    let s2 = this.s2;
+    let s3 = this.s3;
+
+    const result = MegaRandom.mul64(
+      MegaRandom.rotateLeft64(MegaRandom.mul64(s1, MegaRandom.FIVE), 7),
+      MegaRandom.NINE,
+    );
+    const t = (s1 << MegaRandom.SEVENTEEN) & MegaRandom.UINT64_MASK;
+
+    s2 = (s2 ^ s0) & MegaRandom.UINT64_MASK;
+    s3 = (s3 ^ s1) & MegaRandom.UINT64_MASK;
+    s1 = (s1 ^ s2) & MegaRandom.UINT64_MASK;
+    s0 = (s0 ^ s3) & MegaRandom.UINT64_MASK;
+    s2 = (s2 ^ t) & MegaRandom.UINT64_MASK;
+    s3 = MegaRandom.rotateLeft64(s3, 45);
+
+    this.s0 = s0;
+    this.s1 = s1;
+    this.s2 = s2;
+    this.s3 = s3;
+    return result;
+  }
+
+  private nextInner(maxExclusive: number): number {
+    return Math.trunc(this.nextDouble() * maxExclusive);
+  }
+
+  private static add64(a: bigint, b: bigint): bigint {
+    return (a + b) & MegaRandom.UINT64_MASK;
+  }
+
+  private static mul64(a: bigint, b: bigint): bigint {
+    return (a * b) & MegaRandom.UINT64_MASK;
+  }
+
+  private static rotateLeft64(value: bigint, shift: number): bigint {
+    const amount = BigInt(shift);
+    return (
+      ((value << amount) & MegaRandom.UINT64_MASK) |
+      (value >> (MegaRandom.UINT64_BITS - amount))
+    ) & MegaRandom.UINT64_MASK;
+  }
+}
+
 class StsRng {
   readonly seed: number;
-  private readonly random: DotNetRandom;
+  private readonly random: ReplayRandom;
 
-  constructor(seed: number, name?: string) {
+  constructor(seed: number, name?: string, algorithm: RngAlgorithm = "legacy-dotnet") {
     this.seed = name ? addUint32(seed, toUint32(getDeterministicHashCode(name))) : seed >>> 0;
-    this.random = new DotNetRandom(toInt32(this.seed));
+    this.random =
+      algorithm === "mega-random"
+        ? new MegaRandom(this.seed)
+        : new DotNetRandom(toInt32(this.seed));
   }
 
   nextInt(maxExclusive = INT_MAX): number {
@@ -1214,6 +1327,10 @@ function bossPoolForAct(actId: string, pool: ActEncounterPool, buildId: string):
   return isBuildAtLeast(buildId, AEONGLASS_MIN_BUILD) ? pool.bosses : LEGACY_GLORY_BOSSES;
 }
 
+function rngAlgorithmForBuild(buildId: string): RngAlgorithm {
+  return isBuildAtLeast(buildId, MEGA_RANDOM_MIN_BUILD) ? "mega-random" : "legacy-dotnet";
+}
+
 // Relic rarity sequences for `RunManager.InitializeNewRun` Populate calls.
 // `SharedRelicGrabBag.Populate(sharedRelics, upFront)` runs first, then each
 // player's `PopulateRelicGrabBagIfNecessary` populates a *filtered* pool of
@@ -1390,7 +1507,8 @@ export function simulateActsUpFront(
   buildId = "unknown",
 ): ActsSimulationResult {
   const numericSeed = toUint32(getDeterministicHashCode(seed));
-  const upFront = new StsRng(numericSeed, "up_front");
+  const rngAlgorithm = rngAlgorithmForBuild(buildId);
+  const upFront = new StsRng(numericSeed, "up_front", rngAlgorithm);
 
   // === RunManager.InitializeNewRun ===
   // 1. SharedRelicGrabBag.Populate(unlocked shared relics, upFront)
@@ -1650,30 +1768,31 @@ function buildGeneratedMap(
 ): GeneratedActMap {
   const config = ACT_CONFIGS[actId];
   const seed = toUint32(getDeterministicHashCode(run.seed));
+  const rngAlgorithm = rngAlgorithmForBuild(run.build_id);
   const hasSecondBoss = actIndex === run.acts.length - 1 && run.ascension >= 10;
   const isMultiplayer = run.players.length > 1;
   const variant = chooseActMapVariant(run, actStartFloor, actEndFloor);
 
   if (variant === "golden_path") {
     // Golden Path uses no RNG; pass a dummy one. Seed is deterministic regardless.
-    const rng = new StsRng(seed, `act_${actIndex + 1}_golden_path`);
+    const rng = new StsRng(seed, `act_${actIndex + 1}_golden_path`, rngAlgorithm);
     const counts = config.getCounts(rng, run.ascension);
     return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "golden_path", isMultiplayer);
   }
 
   if (variant === "spoils") {
-    const rng = new StsRng(seed, "spoils_map");
+    const rng = new StsRng(seed, "spoils_map", rngAlgorithm);
     const counts = config.getCounts(rng, run.ascension);
     return new GeneratedActMap(rng, config, counts, false, hasSecondBoss, "spoils", isMultiplayer);
   }
 
-  const baseRng = new StsRng(seed, `act_${actIndex + 1}_map`);
+  const baseRng = new StsRng(seed, `act_${actIndex + 1}_map`, rngAlgorithm);
   const baseCounts = config.getCounts(baseRng, run.ascension);
   let map = new GeneratedActMap(baseRng, config, baseCounts, false, hasSecondBoss, "standard", isMultiplayer);
 
   if (modifierIds.has("BIG_GAME_HUNTER")) {
     const eliteCount = map.getAllMapPoints().filter((point) => point.type === "elite").length;
-    const overrideRng = new StsRng(seed, `act_${actIndex + 1}_map`);
+    const overrideRng = new StsRng(seed, `act_${actIndex + 1}_map`, rngAlgorithm);
     const overrideCounts: MapPointTypeCounts = {
       numElites: Math.round(eliteCount * 2.5),
       numShops: baseCounts.numShops,
