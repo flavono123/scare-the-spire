@@ -7,7 +7,9 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
+import { useAuth } from "@/hooks/use-auth";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useThisOrThatPost } from "@/hooks/use-this-or-that-posts";
 import type { GameLocale } from "@/lib/i18n";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
@@ -16,6 +18,7 @@ import {
   resolveThisOrThatPost,
 } from "@/lib/this-or-that";
 import { serviceMessages } from "@/messages/service";
+import { ThisOrThatLikeButton } from "@/components/this-or-that/like-button";
 import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-panel";
 
 export function ThisOrThatPostView({
@@ -29,12 +32,21 @@ export function ThisOrThatPostView({
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].thisOrThat;
+  const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
   const { post, loading, unavailable } = useThisOrThatPost(postId);
+  const postIds = useMemo(() => post ? [post.id] : [], [post]);
+  const likes = useThisOrThatLikes(postIds, userId);
   const entityMap = useMemo(() => buildThisOrThatEntityMap(entities), [entities]);
   const resolvedPost = useMemo(
     () => (post ? resolveThisOrThatPost(post, entityMap) : null),
     [entityMap, post],
   );
+  const handleToggleLike = async () => {
+    if (!post) return;
+    const activeUserId = userId ?? await ensureUser();
+    if (!activeUserId) return;
+    await likes.toggle(post.id, activeUserId);
+  };
 
   if (unavailable) {
     return <StorageUnavailableNotice title={copy.unavailableTitle} />;
@@ -96,9 +108,20 @@ export function ThisOrThatPostView({
             <span className="truncate text-sm font-semibold text-zinc-300">
               {resolvedPost.post.nickname}
             </span>
-            <span className="shrink-0 text-xs text-muted-foreground">
-              {new Date(resolvedPost.post.created_at).toLocaleDateString(serviceLocale === "ko" ? "ko-KR" : "en-US")}
-            </span>
+            <div className="flex shrink-0 items-center gap-2">
+              <ThisOrThatLikeButton
+                count={likes.counts[resolvedPost.post.id] ?? 0}
+                liked={likes.liked.has(resolvedPost.post.id)}
+                loading={likes.loading}
+                unavailable={likes.unavailable}
+                disabled={!authReady || authUnavailable}
+                onToggle={handleToggleLike}
+                label={copy.like}
+              />
+              <span className="text-xs text-muted-foreground">
+                {new Date(resolvedPost.post.created_at).toLocaleDateString(serviceLocale === "ko" ? "ko-KR" : "en-US")}
+              </span>
+            </div>
           </div>
           <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-zinc-300">
             {resolvedPost.post.reason}

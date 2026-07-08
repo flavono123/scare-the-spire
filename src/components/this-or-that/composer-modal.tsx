@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, type FormEvent } from "react";
 import { X } from "lucide-react";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { EngagementSpinner } from "@/components/engagement-spinner";
@@ -52,7 +52,7 @@ export function ThisOrThatComposerModal({
     && trimmedReason.length <= 500
     && !submitting;
 
-  const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!leftRef || !rightRef || !canSubmit) return;
     const saved = await onSubmit({

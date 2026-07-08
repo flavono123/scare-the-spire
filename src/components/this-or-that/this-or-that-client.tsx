@@ -1,25 +1,26 @@
 "use client";
 
 import { useMemo, useState, useCallback } from "react";
+import { Plus } from "lucide-react";
 import Image from "@/components/ui/static-image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useThisOrThatPosts } from "@/hooks/use-this-or-that-posts";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import type { GameLocale } from "@/lib/i18n";
 import {
   buildThisOrThatEntityMap,
-  entityToThisOrThatRef,
-  isSameThisOrThatResource,
   resolveThisOrThatPost,
+  type ThisOrThatResourceRef,
 } from "@/lib/this-or-that";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
 import { serviceMessages } from "@/messages/service";
+import { ThisOrThatComposerModal } from "@/components/this-or-that/composer-modal";
 import { ThisOrThatPostCard } from "@/components/this-or-that/post-card";
-import { ThisOrThatResourcePicker } from "@/components/this-or-that/resource-picker";
 
 export function ThisOrThatClient({
   entities,
@@ -46,50 +47,36 @@ export function ThisOrThatClient({
     () => posts.map((post) => resolveThisOrThatPost(post, entityMap)),
     [entityMap, posts],
   );
-  const [leftEntity, setLeftEntity] = useState<EntityInfo | null>(null);
-  const [rightEntity, setRightEntity] = useState<EntityInfo | null>(null);
-  const [reason, setReason] = useState("");
+  const postIds = useMemo(() => posts.map((post) => post.id), [posts]);
+  const likes = useThisOrThatLikes(postIds, userId);
+  const [composerOpen, setComposerOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [nickname, setNickname] = useState(profile.nickname);
 
-  const leftRef = leftEntity ? entityToThisOrThatRef(leftEntity) : null;
-  const rightRef = rightEntity ? entityToThisOrThatRef(rightEntity) : null;
-  const trimmedReason = reason.trim();
-  const canSubmit =
-    ready
-    && !authUnavailable
-    && !unavailable
-    && Boolean(leftRef)
-    && Boolean(rightRef)
-    && !isSameThisOrThatResource(leftRef, rightRef)
-    && trimmedReason.length >= 2
-    && trimmedReason.length <= 500
-    && nickname.trim().length >= 1
-    && nickname.trim().length <= 20
-    && !submitting;
-
-  const handleSubmit = useCallback(async () => {
-    if (!leftRef || !rightRef || !canSubmit) return;
+  const handleSubmit = useCallback(async ({
+    left,
+    right,
+    reason,
+  }: {
+    left: ThisOrThatResourceRef;
+    right: ThisOrThatResourceRef;
+    reason: string;
+  }) => {
     setSubmitting(true);
     try {
       const activeUserId = userId ?? await ensureUser();
-      if (!activeUserId) return;
+      if (!activeUserId) return false;
       const post = await add({
-        left: leftRef,
-        right: rightRef,
+        left,
+        right,
         reason,
-        nickname,
+        nickname: profile.nickname,
         activeUserId,
       });
-      if (post) {
-        setLeftEntity(null);
-        setRightEntity(null);
-        setReason("");
-      }
+      return Boolean(post);
     } finally {
       setSubmitting(false);
     }
-  }, [add, canSubmit, ensureUser, leftRef, nickname, reason, rightRef, userId]);
+  }, [add, ensureUser, profile.nickname, userId]);
 
   const handleDelete = useCallback(
     (postId: string) => {
@@ -98,10 +85,31 @@ export function ThisOrThatClient({
     [remove],
   );
 
+  const handleToggleLike = useCallback(
+    async (postId: string) => {
+      const activeUserId = userId ?? await ensureUser();
+      if (!activeUserId) return;
+      await likes.toggle(postId, activeUserId);
+    },
+    [ensureUser, likes, userId],
+  );
+
   const storageUnavailable = authUnavailable || unavailable;
 
   return (
     <div className="space-y-6">
+      {composerOpen && (
+        <ThisOrThatComposerModal
+          entities={entities}
+          placeholder={prompt || copy.reasonPlaceholder}
+          authReady={ready}
+          storageUnavailable={storageUnavailable}
+          submitting={submitting}
+          onSubmit={handleSubmit}
+          onClose={() => setComposerOpen(false)}
+        />
+      )}
+
       <header className="relative overflow-hidden rounded-lg border border-border bg-card/25">
         <Image
           src="/images/sts2/events/this_or_that.webp"
@@ -129,66 +137,22 @@ export function ThisOrThatClient({
               </p>
             )}
           </div>
+          {!storageUnavailable && (
+            <button
+              type="button"
+              onClick={() => setComposerOpen(true)}
+              className="ml-auto inline-flex h-9 shrink-0 items-center gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-xs font-semibold text-yellow-300 transition-colors hover:bg-yellow-500/20"
+            >
+              <Plus size={15} />
+              {copy.create}
+            </button>
+          )}
         </div>
       </header>
 
       {storageUnavailable ? (
         <StorageUnavailableNotice title={copy.unavailableTitle} />
-      ) : (
-        <section className="rounded-lg border border-border bg-card/25 p-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <ThisOrThatResourcePicker
-              entities={entities}
-              label={copy.leftLabel}
-              value={leftEntity}
-              onChange={setLeftEntity}
-              placeholder={copy.searchPlaceholder}
-              exclude={rightEntity}
-            />
-            <ThisOrThatResourcePicker
-              entities={entities}
-              label={copy.rightLabel}
-              value={rightEntity}
-              onChange={setRightEntity}
-              placeholder={copy.searchPlaceholder}
-              exclude={leftEntity}
-            />
-          </div>
-
-          <div className="mt-4 space-y-2">
-            <input
-              key={profile.nickname}
-              type="text"
-              value={nickname}
-              onChange={(event) => setNickname(event.target.value)}
-              placeholder={copy.nicknamePlaceholder}
-              maxLength={20}
-              className="w-full rounded bg-zinc-800 px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-1 focus:ring-yellow-500/50"
-            />
-            <textarea
-              value={reason}
-              onChange={(event) => setReason(event.target.value)}
-              placeholder={copy.reasonPlaceholder}
-              maxLength={500}
-              rows={4}
-              className="min-h-24 w-full resize-y rounded bg-zinc-800 px-3 py-2 text-sm leading-relaxed text-foreground outline-none placeholder:text-muted-foreground focus:ring-1 focus:ring-yellow-500/50"
-            />
-            <div className="flex items-center gap-3">
-              <span className={`font-mono text-xs ${trimmedReason.length > 500 ? "text-red-400" : "text-muted-foreground"}`}>
-                {trimmedReason.length}/500
-              </span>
-              <button
-                type="button"
-                onClick={handleSubmit}
-                disabled={!canSubmit}
-                className="ml-auto rounded bg-yellow-500/20 px-3 py-1.5 text-sm font-semibold text-yellow-300 transition-colors hover:bg-yellow-500/30 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                {submitting ? "..." : copy.submit}
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
+      ) : null}
 
       {!storageUnavailable && (
         <div className="flex items-center justify-between">
@@ -201,7 +165,7 @@ export function ThisOrThatClient({
       {storageUnavailable ? null : loading ? (
         <ContentLoadingNotice label={copy.loading} />
       ) : (
-        <div className="space-y-3">
+        <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
           {resolvedPosts.map((resolvedPost) => (
             <ThisOrThatPostCard
               key={resolvedPost.post.id}
@@ -209,7 +173,13 @@ export function ThisOrThatClient({
               serviceLocale={serviceLocale}
               gameLocale={gameLocale}
               isOwner={resolvedPost.post.user_id === userId}
+              likeCount={likes.counts[resolvedPost.post.id] ?? 0}
+              liked={likes.liked.has(resolvedPost.post.id)}
+              likesLoading={likes.loading}
+              likesUnavailable={likes.unavailable}
+              canLike={ready && !authUnavailable}
               onDelete={handleDelete}
+              onToggleLike={handleToggleLike}
             />
           ))}
         </div>

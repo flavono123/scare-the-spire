@@ -6,6 +6,7 @@ import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import type { ThisOrThatResolvedPost } from "@/lib/this-or-that";
 import { serviceMessages } from "@/messages/service";
+import { ThisOrThatLikeButton } from "@/components/this-or-that/like-button";
 import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-panel";
 
 function formatRelativeTime(template: string, count: number): string {
@@ -35,13 +36,25 @@ export function ThisOrThatPostCard({
   serviceLocale,
   gameLocale,
   isOwner,
+  likeCount,
+  liked,
+  likesLoading,
+  likesUnavailable,
+  canLike,
   onDelete,
+  onToggleLike,
 }: {
   resolvedPost: ThisOrThatResolvedPost;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   isOwner: boolean;
+  likeCount: number;
+  liked: boolean;
+  likesLoading: boolean;
+  likesUnavailable: boolean;
+  canLike: boolean;
   onDelete: (postId: string) => void;
+  onToggleLike: (postId: string) => void;
 }) {
   const { post, leftEntity, rightEntity } = resolvedPost;
   const copy = serviceMessages[serviceLocale].thisOrThat;
@@ -51,7 +64,7 @@ export function ThisOrThatPostCard({
   if (!leftEntity || !rightEntity) return null;
 
   return (
-    <article className="group rounded-lg border border-border bg-card/25 px-4 py-3 transition-colors hover:border-yellow-500/20">
+    <article className="group flex h-full flex-col rounded-lg border border-border bg-card/25 px-4 py-3 transition-colors hover:border-yellow-500/20">
       <div className="mb-3 flex items-center justify-between gap-3">
         <div className="min-w-0">
           <span className="block truncate text-sm font-semibold text-zinc-300">
@@ -62,6 +75,16 @@ export function ThisOrThatPostCard({
           </span>
         </div>
         <div className="flex items-center gap-2">
+          <ThisOrThatLikeButton
+            count={likeCount}
+            liked={liked}
+            loading={likesLoading}
+            unavailable={likesUnavailable}
+            disabled={!canLike}
+            onToggle={() => onToggleLike(post.id)}
+            label={copy.like}
+            className="px-1.5"
+          />
           <Link
             href={href}
             prefetch={false}
