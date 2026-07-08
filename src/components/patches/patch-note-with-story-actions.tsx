@@ -66,10 +66,10 @@ function PatchLineStoryAction({
         else onWrite();
       }}
       data-patch-line-story-action
-      className={`inline-flex h-5 items-center gap-1 rounded border px-1 align-baseline text-[10px] leading-none tabular-nums transition-colors focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/50 ${
+      className={`inline-flex h-5 items-center gap-1 rounded border px-1 align-baseline text-[10px] leading-none tabular-nums transition-colors focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#fb923c]/50 ${
         count > 0
-          ? "border-yellow-400/10 bg-yellow-400/[0.035] text-yellow-100/60 opacity-85 hover:border-yellow-400/25 hover:bg-yellow-400/[0.07] hover:text-yellow-100/90 hover:opacity-100"
-          : "border-cyan-300/14 bg-cyan-300/[0.035] text-cyan-100/55 opacity-80 hover:border-cyan-200/30 hover:bg-cyan-300/[0.075] hover:text-cyan-50/90 hover:opacity-100"
+          ? "border-[#fb923c]/16 bg-[#fb923c]/[0.045] text-[#fed7aa]/65 opacity-85 hover:border-[#fb923c]/32 hover:bg-[#fb923c]/[0.08] hover:text-[#fed7aa] hover:opacity-100"
+          : "border-[#fb923c]/14 bg-[#fb923c]/[0.035] text-[#fed7aa]/55 opacity-80 hover:border-[#fb923c]/28 hover:bg-[#fb923c]/[0.075] hover:text-[#fed7aa]/90 hover:opacity-100"
       }`}
       title={actionLabel}
       aria-label={`${actionLabel}. ${copy.countLabel(count)}`}
