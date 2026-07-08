@@ -366,14 +366,17 @@ function GameDropdown({
   alt,
   items,
   align = "right",
+  variant = "default",
 }: {
   icon: string;
   alt: string;
   items: NavDropdownItem[];
   align?: "left" | "right";
+  variant?: "default" | "toyBox";
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const isToyBox = variant === "toyBox";
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -411,26 +414,35 @@ function GameDropdown({
       </button>
       {open && (
         <div
-          className={`absolute top-full mt-1 min-w-[140px] rounded-md border border-border bg-background shadow-lg py-1 z-50 ${
+          className={`absolute top-full mt-1 rounded-md border border-border bg-background shadow-lg py-1 z-50 ${
+            isToyBox ? "min-w-[190px]" : "min-w-[140px]"
+          } ${
             align === "right" ? "right-0" : "left-0"
           }`}
         >
+          {isToyBox && (
+            <div className="border-b border-border/60 px-3 pb-2 pt-1.5 font-service text-xs font-semibold text-zinc-300">
+              {alt}
+            </div>
+          )}
           {items.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               prefetch={false}
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+              className={`flex items-center gap-2.5 px-3 text-sm text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground ${
+                isToyBox ? "py-2 font-service" : "py-1.5"
+              }`}
             >
               <Image
                 src={item.icon}
                 alt=""
-                width={18}
-                height={18}
-                className="object-contain shrink-0"
+                width={isToyBox ? 24 : 18}
+                height={isToyBox ? 24 : 18}
+                className={`${isToyBox ? "h-6 w-6" : ""} shrink-0 object-contain`}
               />
-              {item.label}
+              <span className="min-w-0 truncate">{item.label}</span>
             </Link>
           ))}
         </div>
@@ -991,6 +1003,7 @@ export function SiteNavbar() {
             alt={serviceLocale === "ko" ? "장난감 상자" : "Toy Box"}
             items={toyBoxItems}
             align="left"
+            variant="toyBox"
           />
         </div>
 
