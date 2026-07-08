@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { CardTile } from "@/components/codex/card-tile";
+import { DescriptionText } from "@/components/codex/codex-description";
+import { GameHoverTip } from "@/components/codex/hover-tip";
 import { EntityPreview, type EntityInfo, type EntityType } from "@/components/patch-note-renderer";
+import Image from "@/components/ui/static-image";
 import { getCharacterColor } from "@/lib/codex-types";
 import { cn } from "@/lib/utils";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
@@ -30,6 +33,46 @@ function entityTypeLabel(entityType: EntityType, serviceLocale: ServiceLocale): 
   return labels[entityType] ?? entityType;
 }
 
+function assetOnlyDescription(entity: EntityInfo): string | null {
+  return entity.relicData?.description
+    ?? entity.potionData?.description
+    ?? entity.powerData?.description
+    ?? entity.enchantmentData?.description
+    ?? entity.afflictionData?.description
+    ?? entity.keywordData?.description
+    ?? entity.characterData?.description
+    ?? entity.eventOptionDesc
+    ?? null;
+}
+
+function AssetOnlyNonCardPreview({ entity }: { entity: EntityInfo }) {
+  const description = assetOnlyDescription(entity);
+  if (!description) return null;
+
+  return (
+    <span className="relative flex h-full w-full items-center justify-center p-2">
+      {entity.imageUrl && (
+        <span className="absolute right-3 top-3 z-10 flex h-12 w-12 items-center justify-center rounded-lg bg-black/25 drop-shadow-xl">
+          <Image
+            src={entity.imageUrl}
+            alt=""
+            width={48}
+            height={48}
+            className="max-h-11 max-w-11 object-contain"
+          />
+        </span>
+      )}
+      <GameHoverTip
+        title={entity.nameKo}
+        className="w-full"
+        style={{ width: "100%", minWidth: 0, maxWidth: "100%" }}
+      >
+        <DescriptionText description={description} className="block pr-10 text-left text-[13px] leading-snug" />
+      </GameHoverTip>
+    </span>
+  );
+}
+
 export function ThisOrThatResourcePanel({
   entity,
   sideLabel,
@@ -52,6 +95,9 @@ export function ThisOrThatResourcePanel({
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : null;
   const cardWidth = isLarge ? 260 : assetOnly ? 154 : 126;
+  const assetOnlyNonCardPreview = assetOnly && !entity.cardData
+    ? <AssetOnlyNonCardPreview entity={entity} />
+    : null;
   const preview = entity.cardData ? (
     <CardTile
       card={entity.cardData}
@@ -61,10 +107,12 @@ export function ThisOrThatResourcePanel({
       width={cardWidth}
       interactive={false}
     />
+  ) : assetOnlyNonCardPreview ? (
+    assetOnlyNonCardPreview
   ) : (
     <span className={cn(
       "block origin-center [&_.game-hover-tip]:shadow-2xl",
-      assetOnly && "scale-[0.58] sm:scale-[0.64]",
+      assetOnly && "scale-[0.68] sm:scale-[0.74]",
       !assetOnly && (isLarge ? "[&_.game-hover-tip]:max-w-[360px]" : "scale-[0.76] [&_.game-hover-tip]:max-w-[260px]"),
     )}>
       <EntityPreview
