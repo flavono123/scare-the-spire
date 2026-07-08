@@ -15,9 +15,10 @@ import {
   getServiceOgMetadata,
 } from "@/lib/service-metadata";
 import { getPatchVersionLabel } from "@/lib/sts2-patch-labels";
-import { resolvePatchArt, type ResolvedPatchArt } from "@/lib/sts2-patch-art";
+import { resolvePatchArt } from "@/lib/sts2-patch-art";
 import type { PatchType, STS2Patch } from "@/lib/types";
 import { getPatchStageGameCopy } from "@/lib/borrowed-game-copy";
+import { PatchArtPreview } from "@/components/patches/patch-art";
 
 const PATCH_COPY: Record<ServiceLocale, {
   title: string;
@@ -125,41 +126,6 @@ const PATCH_TYPE_CLASSES: Record<PatchType, string> = {
   stable: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
   hotfix: "bg-orange-500/15 text-orange-400 border-orange-500/30",
 };
-
-function PatchArtPreview({
-  art,
-  priority = false,
-  tone = "normal",
-}: {
-  art: ResolvedPatchArt;
-  priority?: boolean;
-  tone?: "normal" | "building" | "watching";
-}) {
-  const imageClassName = {
-    normal: "h-full w-full object-cover",
-    building: "h-full w-full object-cover grayscale opacity-45 saturate-0",
-    watching: "h-full w-full object-cover opacity-75 sepia saturate-150",
-  }[tone];
-
-  return (
-    <div
-      className="mt-3 aspect-[16/7] overflow-hidden rounded-md border border-border/70 bg-zinc-950"
-      aria-label="패치 대표 아트"
-    >
-      <Image
-        src={art.imageUrl}
-        alt={art.alt}
-        width={960}
-        height={420}
-        loading={priority ? undefined : "lazy"}
-        fetchPriority={priority ? "high" : "low"}
-        priority={priority}
-        className={imageClassName}
-        style={{ objectPosition: art.objectPosition }}
-      />
-    </div>
-  );
-}
 
 export function getPatchListMetadata(serviceLocale: ServiceLocale): Metadata {
   const copy = getServiceMetadataCopy(serviceLocale);

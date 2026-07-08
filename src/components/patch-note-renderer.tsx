@@ -17,6 +17,8 @@ import {
   type GameLocale,
   type ServiceLocale,
 } from "@/lib/i18n";
+import { patchLineAnchorId } from "@/lib/patch-line-links";
+import { patchLineMarkdownForService, withPatchChangeEffects } from "@/lib/patch-line-display";
 import { reconstructEntityAtVersion } from "@/lib/entity-versioning";
 import type { EntityVersionDiff, STS2Patch, STS2PatchLine } from "@/lib/types";
 import { CardTile } from "@/components/codex/card-tile";
@@ -827,26 +829,9 @@ function gameHeadingLabel(text: string, context: RenderContext): string {
   return context.gameHeadingLabels?.[labelKey(text)] ?? text;
 }
 
-const PATCH_CHANGE_TAG_RE = /\(([^)\n]*(?:\bbuff\b|\bnerf\b)[^)\n]*)\)(?=:)/gi;
-
-function withPatchChangeEffects(markdown: string): string {
-  return markdown.replace(PATCH_CHANGE_TAG_RE, (_match, inner: string) => {
-    const tagged = inner
-      .replace(/\bbuff\b/gi, (value) => `[green][sine]${value}[/sine][/green]`)
-      .replace(/\bnerf\b/gi, (value) => `[red][jitter]${value}[/jitter][/red]`);
-    return `(${tagged})`;
-  });
-}
-
 function normalizePatchLineContent(text: string): string {
   return text.replace(/\s+/g, " ")
     .trim();
-}
-
-function patchLineMarkdownForService(patchLine: STS2PatchLine, serviceLocale: ServiceLocale | undefined): string {
-  return serviceLocale === "ko"
-    ? patchLine.markdownKo || patchLine.markdownEn || ""
-    : patchLine.markdownEn || patchLine.markdownKo || "";
 }
 
 function patchLineContentKeyFromRenderedLine(line: string): string | null {
@@ -1508,6 +1493,7 @@ function renderLine(
     return (
       <li
         key={key}
+        id={options.patchLineId ? patchLineAnchorId(options.patchLineId) : undefined}
         data-patch-line-id={options.patchLineId}
         className={`text-sm ${bulletClass} mb-1 list-outside`}
         style={{ marginLeft: `${1 + indentLevel * 1.25}rem` }}

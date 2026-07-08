@@ -3,12 +3,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import type { ServiceLocale } from "@/lib/i18n";
-import type { STS2PatchLine } from "@/lib/types";
+import type { STS2Patch, STS2PatchLine } from "@/lib/types";
+import type { EntityInfo } from "@/components/patch-note-renderer";
 import { useUserProfile } from "@/hooks/use-user-profile";
 import { EngagementSpinner } from "@/components/engagement-spinner";
+import { PatchLineReferenceBlock, PatchLineReferenceText } from "@/components/patch-line-reference";
 import { StoryWriteIcon } from "@/components/story-token-icon";
 import { supabaseEnabled } from "@/lib/supabase";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
+import { patchLineDisplayText } from "@/lib/patch-line-display";
 
 const STORY_DRAFT_MAX_LENGTH = 120;
 
@@ -50,12 +53,6 @@ function normalizeStoryLookupText(value: string) {
     .trim();
 }
 
-export function patchLineDisplayText(patchLine: STS2PatchLine, serviceLocale: ServiceLocale) {
-  return serviceLocale === "ko"
-    ? patchLine.textKo || patchLine.textEn || ""
-    : patchLine.textEn || patchLine.textKo || "";
-}
-
 function filterPatchLines(
   patchLines: STS2PatchLine[],
   query: string,
@@ -83,6 +80,8 @@ export function StoryComposerModal({
   authReady,
   ensureUser,
   patchLines,
+  patches,
+  entities,
   initialPatchLineId,
   onAdd,
   onClose,
@@ -93,6 +92,8 @@ export function StoryComposerModal({
   authReady: boolean;
   ensureUser: () => Promise<string | null>;
   patchLines: STS2PatchLine[];
+  patches?: STS2Patch[];
+  entities?: EntityInfo[];
   initialPatchLineId?: string;
   onAdd: (sentence: string, nickname: string, patchLine: STS2PatchLine, activeUserId?: string) => Promise<void>;
   onClose: () => void;
@@ -222,22 +223,24 @@ export function StoryComposerModal({
             </label>
 
             {selectedPatchLine ? (
-              <div className="relative rounded-md border border-yellow-500/25 bg-yellow-500/5 px-3 py-2 pr-9">
-                <button
-                  type="button"
-                  onClick={() => setSelectedPatchLine(null)}
-                  className="absolute right-1.5 top-1.5 inline-flex h-6 w-6 items-center justify-center rounded text-yellow-500/80 transition-colors hover:bg-yellow-500/10 hover:text-yellow-300"
-                  title={copy.clearPatchLine}
-                >
-                  <X size={14} />
-                  <span className="sr-only">{copy.clearPatchLine}</span>
-                </button>
-                <p className="text-xs text-muted-foreground">
-                  <span className="text-foreground">{selectedPatchLine.patch}</span>
-                  <span className="mx-1.5 text-muted-foreground/60">·</span>
-                  {patchLineDisplayText(selectedPatchLine, serviceLocale)}
-                </p>
-              </div>
+              <PatchLineReferenceBlock
+                patchLine={selectedPatchLine}
+                serviceLocale={serviceLocale}
+                patches={patches}
+                entities={entities}
+                compact
+                trailingAction={(
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPatchLine(null)}
+                    className="absolute right-1.5 top-1.5 inline-flex h-6 w-6 items-center justify-center rounded text-yellow-500/80 transition-colors hover:bg-yellow-500/10 hover:text-yellow-300"
+                    title={copy.clearPatchLine}
+                  >
+                    <X size={14} />
+                    <span className="sr-only">{copy.clearPatchLine}</span>
+                  </button>
+                )}
+              />
             ) : (
               <p className="text-[11px] text-muted-foreground">{copy.patchLineRequired}</p>
             )}
@@ -257,7 +260,7 @@ export function StoryComposerModal({
                     {patchLine.section.length > 0 && <span>{patchLine.section.join(" / ")}</span>}
                   </span>
                   <span className="block text-xs leading-relaxed text-foreground">
-                    {patchLineDisplayText(patchLine, serviceLocale)}
+                    <PatchLineReferenceText patchLine={patchLine} serviceLocale={serviceLocale} />
                   </span>
                 </button>
               ))}

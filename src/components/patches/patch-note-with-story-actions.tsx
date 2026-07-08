@@ -5,13 +5,14 @@ import { X } from "lucide-react";
 import {
   PatchNoteRenderer,
 } from "@/components/patch-note-renderer";
+import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
-import { StoryComposerModal, patchLineDisplayText } from "@/components/story-composer-modal";
+import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryStatIcon, StoryWriteIcon } from "@/components/story-token-icon";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import type { ServiceLocale } from "@/lib/i18n";
-import type { STS2PatchLine, Story } from "@/lib/types";
+import type { STS2Patch, STS2PatchLine, Story } from "@/lib/types";
 import { serviceMessages } from "@/messages/service";
 
 type PatchNoteRendererProps = ComponentProps<typeof PatchNoteRenderer>;
@@ -111,6 +112,8 @@ function PatchLineStoriesPanel({
   patchLine,
   stories,
   serviceLocale,
+  patches,
+  entities,
   communityUnavailable,
   onClose,
   onWrite,
@@ -118,6 +121,8 @@ function PatchLineStoriesPanel({
   patchLine: STS2PatchLine;
   stories: Story[];
   serviceLocale: ServiceLocale;
+  patches?: STS2Patch[];
+  entities?: PatchNoteRendererProps["entities"];
   communityUnavailable: boolean;
   onClose: () => void;
   onWrite: () => void;
@@ -157,9 +162,13 @@ function PatchLineStoriesPanel({
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
-          <div className="rounded-md border border-yellow-500/25 bg-yellow-500/5 px-3 py-2 text-xs leading-relaxed text-foreground">
-            {patchLineDisplayText(patchLine, serviceLocale)}
-          </div>
+          <PatchLineReferenceBlock
+            patchLine={patchLine}
+            serviceLocale={serviceLocale}
+            patches={patches}
+            entities={entities}
+            compact
+          />
 
           {communityUnavailable ? (
             <StorageUnavailableNotice
@@ -275,6 +284,8 @@ export function PatchNoteWithStoryActions({
           patchLine={activePatchLine}
           stories={activePatchLineStories}
           serviceLocale={rendererProps.serviceLocale ?? "ko"}
+          patches={rendererProps.patches}
+          entities={rendererProps.entities ?? rendererProps.cards}
           communityUnavailable={communityStories.unavailable}
           onClose={() => setActivePatchLineId(null)}
           onWrite={() => {
@@ -291,6 +302,8 @@ export function PatchNoteWithStoryActions({
           authReady={authReady}
           ensureUser={ensureUser}
           patchLines={patchLines}
+          patches={rendererProps.patches}
+          entities={rendererProps.entities ?? rendererProps.cards}
           initialPatchLineId={composerPatchLine.id}
           onAdd={communityStories.add}
           onClose={() => setComposerPatchLineId(null)}

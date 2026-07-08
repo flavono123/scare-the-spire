@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "@/components/ui/static-image";
 import Link from "next/link";
-import { Search, Trash2 } from "lucide-react";
+import { Search, Trash2, X } from "lucide-react";
 import type { Story, Card, Change, Relic, Potion, LinkedEntity, STS2Change, STS2Patch, STS2PatchLine, StoryEntityType } from "@/lib/types";
 import { localizeHref, type ServiceLocale } from "@/lib/i18n";
 import { buildCompendiumResourceHref } from "@/lib/compendium-resource-links";
@@ -15,6 +15,7 @@ import { StoryReactionButton } from "@/components/story-reaction-button";
 import { CommentSection } from "@/components/comment-section";
 import { EngagementSummary } from "@/components/engagement-summary";
 import { EngagementSpinner } from "@/components/engagement-spinner";
+import { PatchLineReferenceBlock } from "@/components/patch-line-reference";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { StoryComposerModal } from "@/components/story-composer-modal";
 import { StoryWriteIcon } from "@/components/story-token-icon";
@@ -38,6 +39,8 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
   if (serviceLocale === "ko") {
     return {
       newStory: "이야기 쓰기",
+      storyDetail: "슬서운 이야기",
+      close: "닫기",
       deleteStory: "삭제",
       deleteConfirm: "이 이야기를 삭제할까요?",
       searchPlaceholder: "검색",
@@ -52,6 +55,8 @@ function storyFeedCopy(serviceLocale: ServiceLocale) {
 
   return {
     newStory: "Write story",
+    storyDetail: "Slseoun story",
+    close: "Close",
     deleteStory: "Delete",
     deleteConfirm: "Delete this story?",
     searchPlaceholder: "Search",
@@ -396,21 +401,32 @@ function STS2PatchLineBlock({
   story,
   patch,
   serviceLocale,
+  patches,
+  entities,
 }: {
   patchLine?: STS2PatchLine;
   change?: STS2Change;
   story: Story;
   patch?: STS2Patch;
   serviceLocale: ServiceLocale;
+  patches?: STS2Patch[];
+  entities?: EntityInfo[];
 }) {
-  const patchId = patchLine?.patch ?? change?.patch ?? story.source;
+  if (patchLine) {
+    return (
+      <PatchLineReferenceBlock
+        patchLine={patchLine}
+        serviceLocale={serviceLocale}
+        patches={patches}
+        entities={entities}
+      />
+    );
+  }
+
+  const patchId = change?.patch ?? story.source;
   const href = patchHrefFromId(patchId);
   const patchLabel = patchId;
   const fallbackSummary = serviceLocale === "ko" ? change?.summaryKo ?? change?.summary : change?.summary ?? change?.summaryKo;
-  const lineText = serviceLocale === "ko"
-    ? patchLine?.textKo ?? patchLine?.textEn
-    : patchLine?.textEn ?? patchLine?.textKo;
-  const section = patchLine?.section ?? [];
 
   return (
     <div className="rounded-lg border border-border bg-card/30 p-4">
@@ -426,11 +442,8 @@ function STS2PatchLineBlock({
           <span className="text-xs text-muted-foreground">{change?.date ?? patch?.date}</span>
         )}
       </div>
-      {section.length > 0 && (
-        <p className="mb-1 text-[11px] text-muted-foreground/80">{section.join(" / ")}</p>
-      )}
-      {(lineText ?? fallbackSummary) && (
-        <p className="text-sm leading-relaxed text-muted-foreground">{lineText ?? fallbackSummary}</p>
+      {fallbackSummary && (
+        <p className="text-sm leading-relaxed text-muted-foreground">{fallbackSummary}</p>
       )}
     </div>
   );
@@ -479,6 +492,8 @@ function StoryExpanded({
   sts2ChangeMap,
   sts2PatchMap,
   patchLineMap,
+  sts2Patches,
+  sts2Entities,
 }: {
   story: Story;
   serviceLocale: ServiceLocale;
@@ -491,6 +506,8 @@ function StoryExpanded({
   sts2ChangeMap: Map<string, STS2Change>;
   sts2PatchMap: Map<string, STS2Patch>;
   patchLineMap: Map<string, STS2PatchLine>;
+  sts2Patches: STS2Patch[];
+  sts2Entities: EntityInfo[];
 }) {
   const hasEntity = story.entityType && story.entityId;
   const isSTS2 = story.game === "sts2";
@@ -507,7 +524,15 @@ function StoryExpanded({
       <div className="space-y-3">
         <STS2EntityInfoBlock entity={entity} label={primaryLabel} serviceLocale={serviceLocale} />
         {(patchLine || change || story.source) && (
-          <STS2PatchLineBlock patchLine={patchLine} change={change} story={story} patch={patch} serviceLocale={serviceLocale} />
+          <STS2PatchLineBlock
+            patchLine={patchLine}
+            change={change}
+            story={story}
+            patch={patch}
+            serviceLocale={serviceLocale}
+            patches={sts2Patches}
+            entities={sts2Entities}
+          />
         )}
 
         {story.linkedEntities?.map((linked) => {
@@ -599,20 +624,10 @@ function StoryExpanded({
 function StoryCard({
   story,
   serviceLocale,
-  entityChanges,
-  cardMap,
-  relicMap,
-  potionMap,
-  changeMap,
-  sts2EntityMap,
-  sts2ChangeMap,
-  sts2PatchMap,
-  patchLineMap,
   userId,
   authReady,
   ensureUser,
-  expanded,
-  onToggle,
+  onOpen,
   canDelete,
   onDelete,
   likeCount,
@@ -623,20 +638,10 @@ function StoryCard({
 }: {
   story: Story;
   serviceLocale: ServiceLocale;
-  entityChanges: Change[];
-  cardMap: Map<string, Card>;
-  relicMap: Map<string, Relic>;
-  potionMap: Map<string, Potion>;
-  changeMap: Map<string, Change>;
-  sts2EntityMap: Map<string, EntityInfo>;
-  sts2ChangeMap: Map<string, STS2Change>;
-  sts2PatchMap: Map<string, STS2Patch>;
-  patchLineMap: Map<string, STS2PatchLine>;
   userId: string | null;
   authReady: boolean;
   ensureUser: () => Promise<string | null>;
-  expanded: boolean;
-  onToggle: (storyId: string) => void;
+  onOpen: (storyId: string) => void;
   canDelete: boolean;
   onDelete: (storyId: string) => Promise<void>;
   likeCount: number;
@@ -645,9 +650,7 @@ function StoryCard({
   engagementLoading: boolean;
   engagementUnavailable: boolean;
 }) {
-  const [liveCommentCount, setLiveCommentCount] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
-  const displayCommentCount = liveCommentCount ?? commentCount;
   const copy = storyFeedCopy(serviceLocale);
   const publishedLabel = story.publishedAt ? formatStoryPublishedAt(story.publishedAt, serviceLocale) : "";
 
@@ -668,13 +671,13 @@ function StoryCard({
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
             <button
-              onClick={() => onToggle(story.id)}
+              onClick={() => onOpen(story.id)}
               className="w-full cursor-pointer hover:opacity-80 transition-opacity"
             >
               <p className="text-lg sm:text-xl font-medium leading-snug text-center">
                 &ldquo;{story.sentence}&rdquo;
                 <EngagementSummary
-                  commentCount={displayCommentCount}
+                  commentCount={commentCount}
                   loading={engagementLoading}
                   unavailable={engagementUnavailable}
                   className="ml-2"
@@ -714,28 +717,149 @@ function StoryCard({
             />
           </div>
         </div>
-
-        {/* Expanded: entity info, all changes, linked entities, comments */}
-        {expanded && (
-          <div className="mt-4 space-y-3">
-            <StoryExpanded
-              story={story}
-              serviceLocale={serviceLocale}
-              entityChanges={entityChanges}
-              cardMap={cardMap}
-              relicMap={relicMap}
-              potionMap={potionMap}
-              changeMap={changeMap}
-              sts2EntityMap={sts2EntityMap}
-              sts2ChangeMap={sts2ChangeMap}
-              sts2PatchMap={sts2PatchMap}
-              patchLineMap={patchLineMap}
-            />
-            <CommentSection threadKey={story.id} onCountChange={setLiveCommentCount} />
-          </div>
-        )}
       </div>
     </article>
+  );
+}
+
+function StoryDetailModal({
+  story,
+  serviceLocale,
+  entityChanges,
+  cardMap,
+  relicMap,
+  potionMap,
+  changeMap,
+  sts2EntityMap,
+  sts2ChangeMap,
+  sts2PatchMap,
+  patchLineMap,
+  sts2Patches,
+  sts2Entities,
+  userId,
+  authReady,
+  ensureUser,
+  likeCount,
+  reactionCounts,
+  commentCount,
+  engagementLoading,
+  engagementUnavailable,
+  onCommentCountChange,
+  onClose,
+}: {
+  story: Story;
+  serviceLocale: ServiceLocale;
+  entityChanges: Change[];
+  cardMap: Map<string, Card>;
+  relicMap: Map<string, Relic>;
+  potionMap: Map<string, Potion>;
+  changeMap: Map<string, Change>;
+  sts2EntityMap: Map<string, EntityInfo>;
+  sts2ChangeMap: Map<string, STS2Change>;
+  sts2PatchMap: Map<string, STS2Patch>;
+  patchLineMap: Map<string, STS2PatchLine>;
+  sts2Patches: STS2Patch[];
+  sts2Entities: EntityInfo[];
+  userId: string | null;
+  authReady: boolean;
+  ensureUser: () => Promise<string | null>;
+  likeCount: number;
+  reactionCounts: StoryReactionCounts;
+  commentCount: number;
+  engagementLoading: boolean;
+  engagementUnavailable: boolean;
+  onCommentCountChange: (storyId: string, count: number) => void;
+  onClose: () => void;
+}) {
+  const copy = storyFeedCopy(serviceLocale);
+  const publishedLabel = story.publishedAt ? formatStoryPublishedAt(story.publishedAt, serviceLocale) : "";
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[70] flex items-end justify-center bg-black/70 px-3 py-6 backdrop-blur-sm sm:items-center"
+      role="dialog"
+      aria-modal="true"
+      aria-label={copy.storyDetail}
+      onClick={onClose}
+    >
+      <article
+        className="flex max-h-[88vh] w-full max-w-2xl flex-col rounded-lg border border-border bg-background shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
+          <h2 className="text-sm font-semibold">{copy.storyDetail}</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+            title={copy.close}
+          >
+            <X size={16} />
+            <span className="sr-only">{copy.close}</span>
+          </button>
+        </div>
+
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4">
+          <div className="flex items-start gap-3">
+            <div className="min-w-0 flex-1 text-center">
+              <p className="text-xl font-medium leading-snug sm:text-2xl">
+                &ldquo;{story.sentence}&rdquo;
+                <EngagementSummary
+                  commentCount={commentCount}
+                  loading={engagementLoading}
+                  unavailable={engagementUnavailable}
+                  className="ml-2"
+                />
+              </p>
+              {story.community && (
+                <p className="mt-1 text-[11px] text-muted-foreground">
+                  {story.authorName}
+                  {publishedLabel ? ` · ${publishedLabel}` : ""}
+                </p>
+              )}
+            </div>
+            <StoryReactionButton
+              storyId={story.id}
+              userId={userId}
+              initialCounts={reactionCounts}
+              initialTotal={likeCount}
+              authReady={authReady}
+              userStatusLoading="lazy"
+              ensureUser={ensureUser}
+            />
+          </div>
+
+          <StoryExpanded
+            story={story}
+            serviceLocale={serviceLocale}
+            entityChanges={entityChanges}
+            cardMap={cardMap}
+            relicMap={relicMap}
+            potionMap={potionMap}
+            changeMap={changeMap}
+            sts2EntityMap={sts2EntityMap}
+            sts2ChangeMap={sts2ChangeMap}
+            sts2PatchMap={sts2PatchMap}
+            patchLineMap={patchLineMap}
+            sts2Patches={sts2Patches}
+            sts2Entities={sts2Entities}
+          />
+
+          <CommentSection
+            threadKey={story.id}
+            onCountChange={(count) => onCommentCountChange(story.id, count)}
+          />
+        </div>
+      </article>
+    </div>
   );
 }
 
@@ -826,26 +950,25 @@ export function StoryFeed({
   const { userId, ready: authReady, ensureUser } = useAuth();
   const communityStories = useCommunityStories(userId);
   const counts = useEngagementCounts();
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set());
+  const [activeStoryId, setActiveStoryId] = useState<string | null>(null);
+  const [commentCountOverrides, setCommentCountOverrides] = useState<Record<string, number>>({});
   const [sortMode, setSortMode] = useState<StorySortMode>("recommended");
   const [searchQuery, setSearchQuery] = useState("");
   const [composerOpen, setComposerOpen] = useState(false);
   const [loadedPatchLines, setLoadedPatchLines] = useState<STS2PatchLine[] | null>(null);
   const didMountRef = useRef(false);
 
-  const toggle = useCallback((storyId: string) => {
-    setExpandedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(storyId)) next.delete(storyId);
-      else next.add(storyId);
-      return next;
-    });
+  const handleCommentCountChange = useCallback((storyId: string, count: number) => {
+    setCommentCountOverrides((prev) => ({
+      ...prev,
+      [storyId]: count,
+    }));
   }, []);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
     if (hash) {
-      queueMicrotask(() => setExpandedIds(new Set(hash.split(","))));
+      queueMicrotask(() => setActiveStoryId(hash.split(",")[0] ?? null));
     }
   }, []);
 
@@ -855,12 +978,11 @@ export function StoryFeed({
       return;
     }
 
-    const hash = [...expandedIds].join(",");
-    const nextUrl = hash
-      ? `#${hash}`
+    const nextUrl = activeStoryId
+      ? `#${activeStoryId}`
       : `${window.location.pathname}${window.location.search}`;
     window.history.replaceState(null, "", nextUrl);
-  }, [expandedIds]);
+  }, [activeStoryId]);
 
   const patchLineOptions = loadedPatchLines ?? sts2PatchLines;
   const patchLineMap = useMemo(() => new Map(patchLineOptions.map((line) => [line.id, line])), [patchLineOptions]);
@@ -903,6 +1025,10 @@ export function StoryFeed({
       : allStories;
     return stableStoryOrder(filteredStories, sortMode, counts);
   }, [allStories, counts, patchLineMap, searchTerm, sortMode]);
+  const activeStory = useMemo(
+    () => activeStoryId ? allStories.find((story) => story.id === activeStoryId) ?? null : null,
+    [activeStoryId, allStories],
+  );
 
   const cardMap = useMemo(() => new Map(cards.map((c) => [c.id, c])), [cards]);
   const relicMap = useMemo(() => new Map(relics.map((r) => [r.id, r])), [relics]);
@@ -925,6 +1051,9 @@ export function StoryFeed({
     }
     return idx;
   }, [changes]);
+  const activeStoryEntityKey = activeStory && isSTS1EntityType(activeStory.entityType) && activeStory.entityId
+    ? `${activeStory.entityType}:${activeStory.entityId}`
+    : "";
 
   return (
     <div>
@@ -936,8 +1065,37 @@ export function StoryFeed({
           authReady={authReady}
           ensureUser={ensureUser}
           patchLines={patchLineOptions}
+          patches={sts2Patches}
+          entities={sts2Entities}
           onAdd={communityStories.add}
           onClose={() => setComposerOpen(false)}
+        />
+      )}
+      {activeStory && (
+        <StoryDetailModal
+          story={activeStory}
+          serviceLocale={serviceLocale}
+          entityChanges={entityChangeIndex.get(activeStoryEntityKey) ?? []}
+          cardMap={cardMap}
+          relicMap={relicMap}
+          potionMap={potionMap}
+          changeMap={changeMap}
+          sts2EntityMap={sts2EntityMap}
+          sts2ChangeMap={sts2ChangeMap}
+          sts2PatchMap={sts2PatchMap}
+          patchLineMap={patchLineMap}
+          sts2Patches={sts2Patches}
+          sts2Entities={sts2Entities}
+          userId={userId}
+          authReady={authReady}
+          ensureUser={ensureUser}
+          likeCount={counts.likes[activeStory.id] ?? 0}
+          reactionCounts={counts.reactions[activeStory.id] ?? {}}
+          commentCount={commentCountOverrides[activeStory.id] ?? counts.comments[activeStory.id] ?? 0}
+          engagementLoading={counts.loading}
+          engagementUnavailable={counts.unavailable}
+          onCommentCountChange={handleCommentCountChange}
+          onClose={() => setActiveStoryId(null)}
         />
       )}
       <StoryFeedToolbar
@@ -956,37 +1114,24 @@ export function StoryFeed({
             <div className="px-4 py-12 text-center text-sm text-muted-foreground">
               {storyFeedCopy(serviceLocale).noResults}
             </div>
-          ) : orderedStories.map((story) => {
-            const key = isSTS1EntityType(story.entityType) && story.entityId ? `${story.entityType}:${story.entityId}` : "";
-            return (
+          ) : orderedStories.map((story) => (
               <StoryCard
                 key={story.id}
                 story={story}
                 serviceLocale={serviceLocale}
-                entityChanges={entityChangeIndex.get(key) ?? []}
-                cardMap={cardMap}
-                relicMap={relicMap}
-                potionMap={potionMap}
-                changeMap={changeMap}
-                sts2EntityMap={sts2EntityMap}
-                sts2ChangeMap={sts2ChangeMap}
-                sts2PatchMap={sts2PatchMap}
-                patchLineMap={patchLineMap}
                 userId={userId}
                 authReady={authReady}
                 ensureUser={ensureUser}
-                expanded={expandedIds.has(story.id)}
-                onToggle={toggle}
+                onOpen={setActiveStoryId}
                 canDelete={Boolean(story.community && userId && story.authorUserId === userId)}
                 onDelete={communityStories.remove}
                 likeCount={counts.likes[story.id] ?? 0}
                 reactionCounts={counts.reactions[story.id] ?? {}}
-                commentCount={counts.comments[story.id] ?? 0}
+                commentCount={commentCountOverrides[story.id] ?? counts.comments[story.id] ?? 0}
                 engagementLoading={counts.loading}
                 engagementUnavailable={counts.unavailable}
               />
-            );
-          })}
+          ))}
         </div>
       )}
     </div>
