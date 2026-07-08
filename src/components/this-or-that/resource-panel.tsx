@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { CardTile } from "@/components/codex/card-tile";
 import { DescriptionText } from "@/components/codex/codex-description";
-import { GameHoverTip } from "@/components/codex/hover-tip";
 import { EntityPreview, type EntityInfo, type EntityType } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import { getCharacterColor } from "@/lib/codex-types";
@@ -52,23 +51,42 @@ function AssetOnlyNonCardPreview({ entity }: { entity: EntityInfo }) {
   return (
     <span className="relative flex h-full w-full items-center justify-center p-2">
       {entity.imageUrl && (
-        <span className="absolute right-3 top-3 z-10 flex h-12 w-12 items-center justify-center rounded-lg bg-black/25 drop-shadow-xl">
+        <span className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-lg bg-black/25 drop-shadow-xl">
           <Image
             src={entity.imageUrl}
             alt=""
-            width={48}
-            height={48}
-            className="max-h-11 max-w-11 object-contain"
+            width={40}
+            height={40}
+            className="max-h-9 max-w-9 object-contain"
           />
         </span>
       )}
-      <GameHoverTip
-        title={entity.nameKo}
-        className="w-full"
-        style={{ width: "100%", minWidth: 0, maxWidth: "100%" }}
+      <span
+        className="block w-full font-game-text text-zinc-100"
+        style={{
+          borderStyle: "solid",
+          borderColor: "transparent",
+          borderTopWidth: 11,
+          borderRightWidth: 18,
+          borderBottomWidth: 10,
+          borderLeftWidth: 15,
+          borderImageSource: "url('/images/sts2/ui/hover_tip.png')",
+          borderImageSlice: "43 91 32 55 fill",
+          borderImageWidth: "11px 18px 10px 15px",
+          boxSizing: "border-box",
+        }}
       >
-        <DescriptionText description={description} className="block pr-10 text-left text-[13px] leading-snug" />
-      </GameHoverTip>
+        <span
+          className="block pr-9 text-left text-[13px] font-bold leading-snug text-[#EFC851]"
+          style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.45)", wordBreak: "keep-all" }}
+        >
+          {entity.nameKo}
+        </span>
+        <DescriptionText
+          description={description}
+          className="mt-1 block pr-9 text-left text-[12px] leading-snug text-[#FFF6E2] [word-break:keep-all]"
+        />
+      </span>
     </span>
   );
 }
