@@ -277,7 +277,7 @@ export function StoryComposerModal({
           <button
             type="submit"
             disabled={disabled}
-            className="inline-flex h-9 items-center gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-xs font-medium text-yellow-400 transition-colors hover:bg-yellow-500/15 disabled:opacity-30"
+            className="inline-flex h-9 items-center gap-2 rounded-md border border-[#fb923c]/35 bg-[#fb923c]/10 px-3 text-xs font-medium text-[#fb923c] transition-colors hover:bg-[#fb923c]/16 hover:text-[#fed7aa] disabled:opacity-30"
           >
             {submitting ? <EngagementSpinner size={14} /> : <StoryWriteIcon size={16} />}
             {submitting ? copy.writing : copy.write}

@@ -786,7 +786,7 @@ function StoryFeedToolbar({
         <button
           type="button"
           onClick={onOpenComposer}
-          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-cyan-300/50 bg-cyan-400/15 px-3 text-xs font-semibold text-cyan-100 shadow-[0_0_18px_rgba(34,211,238,0.14)] transition-colors hover:border-cyan-200/70 hover:bg-cyan-400/25 hover:text-white"
+          className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-[#fb923c]/50 bg-[#fb923c]/15 px-3 text-xs font-semibold text-[#fed7aa] shadow-[0_0_18px_rgba(251,146,60,0.14)] transition-colors hover:border-[#fb923c]/75 hover:bg-[#fb923c]/25 hover:text-white"
         >
           <StoryWriteIcon size={16} />
           <span>{copy.newStory}</span>

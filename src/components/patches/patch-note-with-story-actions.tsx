@@ -180,7 +180,7 @@ function PatchLineStoriesPanel({
           <button
             type="button"
             onClick={onWrite}
-            className="inline-flex h-9 items-center gap-2 rounded-md border border-yellow-500/35 bg-yellow-500/10 px-3 text-xs font-medium text-yellow-300 transition-colors hover:border-yellow-400/60 hover:bg-yellow-500/15 hover:text-yellow-200"
+            className="inline-flex h-9 items-center gap-2 rounded-md border border-[#fb923c]/45 bg-[#fb923c]/12 px-3 text-xs font-medium text-[#fb923c] transition-colors hover:border-[#fb923c]/70 hover:bg-[#fb923c]/20 hover:text-[#fed7aa]"
           >
             <StoryWriteIcon size={16} />
             {copy.write}
