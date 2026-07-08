@@ -6,7 +6,7 @@ import {
   PatchNoteRenderer,
 } from "@/components/patch-note-renderer";
 import { StoryComposerModal, patchLineDisplayText } from "@/components/story-composer-modal";
-import { StoryTokenIcon } from "@/components/story-token-icon";
+import { StoryStatIcon, StoryWriteIcon } from "@/components/story-token-icon";
 import { useAuth } from "@/hooks/use-auth";
 import { useCommunityStories } from "@/hooks/use-community-stories";
 import type { ServiceLocale } from "@/lib/i18n";
@@ -60,15 +60,15 @@ function PatchLineStoryAction({
         onOpen();
       }}
       data-patch-line-story-action
-      className={`inline-flex h-5 items-center gap-1 rounded border px-1.5 align-baseline text-[10px] leading-none tabular-nums transition-colors ${
+      className={`inline-flex h-5 items-center gap-1 rounded border px-1 align-baseline text-[10px] leading-none tabular-nums transition-colors focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/50 ${
         count > 0
-          ? "border-yellow-400/35 bg-yellow-400/10 text-yellow-200 hover:border-yellow-300/60 hover:bg-yellow-400/15"
-          : "border-cyan-300/20 bg-cyan-400/5 text-cyan-100/65 hover:border-cyan-300/45 hover:bg-cyan-400/10 hover:text-cyan-100"
+          ? "border-transparent bg-transparent text-yellow-100/45 opacity-70 hover:border-yellow-400/20 hover:bg-yellow-400/5 hover:text-yellow-100/85 hover:opacity-100"
+          : "border-transparent bg-transparent text-muted-foreground/30 opacity-45 hover:border-white/10 hover:bg-white/[0.03] hover:text-muted-foreground/75 hover:opacity-100"
       }`}
       title={copy.open}
       aria-label={`${copy.open}. ${copy.countLabel(count)}`}
     >
-      <StoryTokenIcon size={13} />
+      <StoryStatIcon size={14} className={count > 0 ? "opacity-65" : "opacity-35"} />
       <span>{count}</span>
     </button>
   );
@@ -176,7 +176,7 @@ function PatchLineStoriesPanel({
             onClick={onWrite}
             className="inline-flex h-9 items-center gap-2 rounded-md border border-yellow-500/35 bg-yellow-500/10 px-3 text-xs font-medium text-yellow-300 transition-colors hover:border-yellow-400/60 hover:bg-yellow-500/15 hover:text-yellow-200"
           >
-            <StoryTokenIcon size={16} />
+            <StoryWriteIcon size={16} />
             {copy.write}
           </button>
         </div>

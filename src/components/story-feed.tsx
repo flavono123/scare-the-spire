@@ -16,7 +16,7 @@ import { CommentSection } from "@/components/comment-section";
 import { EngagementSummary } from "@/components/engagement-summary";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 import { StoryComposerModal } from "@/components/story-composer-modal";
-import { StoryTokenIcon } from "@/components/story-token-icon";
+import { StoryWriteIcon } from "@/components/story-token-icon";
 import { CardTile } from "@/components/codex/card-tile";
 import type { StoryReactionCounts } from "@/lib/reactions";
 
@@ -788,7 +788,7 @@ function StoryFeedToolbar({
           onClick={onOpenComposer}
           className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-cyan-300/50 bg-cyan-400/15 px-3 text-xs font-semibold text-cyan-100 shadow-[0_0_18px_rgba(34,211,238,0.14)] transition-colors hover:border-cyan-200/70 hover:bg-cyan-400/25 hover:text-white"
         >
-          <StoryTokenIcon size={16} />
+          <StoryWriteIcon size={16} />
           <span>{copy.newStory}</span>
         </button>
       </div>
