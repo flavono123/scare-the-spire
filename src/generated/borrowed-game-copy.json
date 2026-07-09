@@ -1,0 +1,324 @@
+{
+  "kor": {
+    "chemicalXPlaceholder": "오, 이 차는 무례한 사람들에게 내어지는 차입니다...",
+    "historyCourseLanding": {
+      "title": "역사 강의서",
+      "runHistoryLabel": "도전 이력",
+      "heroQuote": "“그 도전 이력을 찾으러 사방팔방 뒤지고 있었다네! 혹시 실례가 아니라면...”"
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "준비 시간",
+        "description": "오늘의 패치가 드러나기를 기다리고 있습니다 ..."
+      },
+      "delay": {
+        "title": "지연",
+        "description": "이 패치에 관한 정보는 아직 드러나지 않았습니다 ..."
+      },
+      "workToolsTitle": "작업 도구"
+    },
+    "thisOrThat": {
+      "title": "이거 아님 저거?",
+      "prompt": "날카롭게 긁어대는 목소리가 아래쪽에서 속삭입니다."
+    }
+  },
+  "eng": {
+    "chemicalXPlaceholder": "Oh, this tea is for the discourteous...",
+    "historyCourseLanding": {
+      "title": "History Course",
+      "runHistoryLabel": "Run History",
+      "heroQuote": "“Been looking all over for that Run History! Now if you don't mind...”"
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "Prep Time",
+        "description": "Today's patch is waiting to be revealed ..."
+      },
+      "delay": {
+        "title": "Delay",
+        "description": "Information on this patch is yet to be revealed ..."
+      },
+      "workToolsTitle": "Tools of the Trade"
+    },
+    "thisOrThat": {
+      "title": "This or That?",
+      "prompt": "a scratched-up voice whispers from below."
+    }
+  },
+  "zhs": {
+    "chemicalXPlaceholder": "啊，这是专门给无礼之人准备的茶……",
+    "historyCourseLanding": {
+      "title": "历史课",
+      "runHistoryLabel": "历史记录",
+      "heroQuote": "“我找这把历史记录可把这里翻了个遍！你要是不介意的话……”"
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "准备时间",
+        "description": "今天的补丁即将被揭晓……"
+      },
+      "delay": {
+        "title": "拖延",
+        "description": "这个补丁的信息还没有揭晓……"
+      },
+      "workToolsTitle": "必备工具"
+    },
+    "thisOrThat": {
+      "title": "这个还是那个？",
+      "prompt": "一个嘶哑的声音从地下传来，向你低语。"
+    }
+  },
+  "jpn": {
+    "chemicalXPlaceholder": "なるほど、これは無作法者に振る舞われるお茶らしい……。",
+    "historyCourseLanding": {
+      "title": "歴史学教程",
+      "runHistoryLabel": "プレイ履歴",
+      "heroQuote": "「そのプレイ履歴、ずっと探していたんだ！ 悪いが、返してくれないか？」"
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "ウォームアップ",
+        "description": "今日のパッチが明らかになる時を待っている……"
+      },
+      "delay": {
+        "title": "ディレイ",
+        "description": "このパッチの詳細はまだ明かされていない……"
+      },
+      "workToolsTitle": "商売道具"
+    },
+    "thisOrThat": {
+      "title": "こっちか、そっちか？",
+      "prompt": "穴の奥底から、しゃがれた声がささやく。"
+    }
+  },
+  "deu": {
+    "chemicalXPlaceholder": "Oh, dieser Tee ist für die Unhöflichen...",
+    "historyCourseLanding": {
+      "title": "Geschichtskurs",
+      "runHistoryLabel": "Run-Historie",
+      "heroQuote": "“Diesen Run-Historie hab ich überall gesucht! Nun, wenn es dir nichts ausmacht...”"
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "Vorbereitungszeit",
+        "description": "Der heutige Patch wartet darauf, enthüllt zu werden..."
+      },
+      "delay": {
+        "title": "Verzögern",
+        "description": "Informationen zu diesem Patch müssen noch aufgedeckt werden..."
+      },
+      "workToolsTitle": "Handwerkszeug"
+    },
+    "thisOrThat": {
+      "title": "Dies oder Das?",
+      "prompt": "flüstert eine aufgekratzte Stimme von unten."
+    }
+  },
+  "fra": {
+    "chemicalXPlaceholder": "Ah, c’est le thé des malpolis...",
+    "historyCourseLanding": {
+      "title": "Manuel d'Histoire",
+      "runHistoryLabel": "Historique",
+      "heroQuote": "Historique: « La voilà, je la cherchais partout ! Si tu permets... »"
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "Échauffement",
+        "description": "Le patch du jour reste à découvrir..."
+      },
+      "delay": {
+        "title": "Délai",
+        "description": "Les informations concernant ce patch restent à découvrir..."
+      },
+      "workToolsTitle": "Savoir-faire"
+    },
+    "thisOrThat": {
+      "title": "Ceci ou Cela ?",
+      "prompt": "chuchote une voix rauque d’en-dessous."
+    }
+  },
+  "ita": {
+    "chemicalXPlaceholder": "Oh, questo tè è per chi non conosce le buone maniere...",
+    "historyCourseLanding": {
+      "title": "Corso di Storia",
+      "runHistoryLabel": "Storico partite",
+      "heroQuote": "Storico partite: \"L'ho cercata dappertutto! Se non ti dispiace...\""
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "Tempo di Preparazione",
+        "description": "La patch di oggi deve ancora essere rivelata..."
+      },
+      "delay": {
+        "title": "Ritardo",
+        "description": "Le informazioni su questa patch devono essere ancora svelate..."
+      },
+      "workToolsTitle": "Ferri del Mestiere"
+    },
+    "thisOrThat": {
+      "title": "Sinistra o destra",
+      "prompt": "Sussurra una voce roca dal basso."
+    }
+  },
+  "spa": {
+    "chemicalXPlaceholder": "Ah, el té de la descortesía...",
+    "historyCourseLanding": {
+      "title": "Libro de historia",
+      "runHistoryLabel": "Historial",
+      "heroQuote": "—¡He estado buscando esa Historial por todas partes! Si fueras tan amable..."
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "Preparativos",
+        "description": "El parche de hoy aún puede revelarse..."
+      },
+      "delay": {
+        "title": "Demora",
+        "description": "La información de este parche aún no está disponible..."
+      },
+      "workToolsTitle": "Útiles del oficio"
+    },
+    "thisOrThat": {
+      "title": "¿Izquierda o derecha?",
+      "prompt": "—¿Izquierda o derecha?"
+    }
+  },
+  "esp": {
+    "chemicalXPlaceholder": "Oh, este té es para quienes no tienen cortesía.",
+    "historyCourseLanding": {
+      "title": "Clase de historia",
+      "runHistoryLabel": "Historial de partidas",
+      "heroQuote": "Historial de partidas: —¡La estuve buscando por todas partes! Si no te importa..."
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "Hora de prepararse",
+        "description": "El parche de hoy aún debe revelarse..."
+      },
+      "delay": {
+        "title": "Demora",
+        "description": "Aún falta revelar la información de este parche…"
+      },
+      "workToolsTitle": "Herramientas del oficio"
+    },
+    "thisOrThat": {
+      "title": "¿Izquierda o derecha?",
+      "prompt": "Susurra una voz ronca desde abajo."
+    }
+  },
+  "ptb": {
+    "chemicalXPlaceholder": "Oh, este chá é pela descortesia...",
+    "historyCourseLanding": {
+      "title": "Estudos de História",
+      "runHistoryLabel": "Histórico de Partidas",
+      "heroQuote": "“Estive procurando esta Histórico de Partidas por toda a parte! Se você não se importa...”"
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "Preparativos",
+        "description": "O patch de hoje ainda pode ser revelado..."
+      },
+      "delay": {
+        "title": "Postergar",
+        "description": "Informações sobre este patch ainda serão reveladas..."
+      },
+      "workToolsTitle": "Ferramentas do Ofício"
+    },
+    "thisOrThat": {
+      "title": "Isto ou Aquilo?",
+      "prompt": "Pergunta uma voz rouca de dentro do buraco."
+    }
+  },
+  "rus": {
+    "chemicalXPlaceholder": "Оказывается, это чай для грубиянов…",
+    "historyCourseLanding": {
+      "title": "Лекция по истории",
+      "runHistoryLabel": "История вылазок",
+      "heroQuote": "История вылазок: «О! А я как раз его ищу! Спасибо за помощь!»"
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "Подготовка",
+        "description": "Сегодняшний патч ожидает открытия…"
+      },
+      "delay": {
+        "title": "Задержка",
+        "description": "Подробности об этом патче еще предстоит раскрыть…"
+      },
+      "workToolsTitle": "Знаток дела"
+    },
+    "thisOrThat": {
+      "title": "Первое или второе?",
+      "prompt": "вопрошает хриплый голос."
+    }
+  },
+  "pol": {
+    "chemicalXPlaceholder": "Oj, to herbata dla nieuprzejmych...",
+    "historyCourseLanding": {
+      "title": "Podręcznik do historii",
+      "runHistoryLabel": "Historia wypraw",
+      "heroQuote": "„Wszędzie szukałem tego Historia wypraw! A teraz, jeżeli nie masz nic przeciwko...”"
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "Naostrzenie",
+        "description": "Dzisiejszy patch czeka na odkrycie..."
+      },
+      "delay": {
+        "title": "Opóźnienie",
+        "description": "Jeszcze nie odkryto informacji o tym patchu..."
+      },
+      "workToolsTitle": "Narzędzia pracy"
+    },
+    "thisOrThat": {
+      "title": "To czy tamto?",
+      "prompt": "„To... czy tamto?”."
+    }
+  },
+  "tha": {
+    "chemicalXPlaceholder": "โอ้ ชานี้สำหรับผู้ที่ไร้มารยาท...",
+    "historyCourseLanding": {
+      "title": "หลักสูตรประวัติศาสตร์",
+      "runHistoryLabel": "ประวัติการเดินทาง",
+      "heroQuote": "ประวัติการเดินทาง: “Been looking all over for that key! Now if you don't mind...”"
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "ช่วงเตรียมการ",
+        "description": "รอการเปิดเผยแพตช์ของวันนี้..."
+      },
+      "delay": {
+        "title": "หน่วงเวลา",
+        "description": "รอการเปิดเผยข้อมูลของแพตช์นี้..."
+      },
+      "workToolsTitle": "สรรพอุปกรณ์"
+    },
+    "thisOrThat": {
+      "title": "อันนี้หรืออันนั้น?",
+      "prompt": "เสียงกระซิบแหบแห้งออกมาจากเบื้องล่าง"
+    }
+  },
+  "tur": {
+    "chemicalXPlaceholder": "Ah... bu çay, nezaketsizler içindir...",
+    "historyCourseLanding": {
+      "title": "Tarih Dersi",
+      "runHistoryLabel": "Oyun Geçmişi",
+      "heroQuote": "“Her yerde bu Oyun Geçmişi arıyordum! Müsaade edersen alayım...”"
+    },
+    "patchStage": {
+      "prepTime": {
+        "title": "Hazırlık Vakti",
+        "description": "Bugünün yaması ortaya çıkarılmayı bekliyor..."
+      },
+      "delay": {
+        "title": "Geciktir",
+        "description": "Bu yama hakkındaki bilgiler henüz açığa çıkmadı..."
+      },
+      "workToolsTitle": "Ustalık Aletleri"
+    },
+    "thisOrThat": {
+      "title": "Bu mu? Şu mu?",
+      "prompt": "“Bu mu? Şu mu?”"
+    }
+  }
+}
