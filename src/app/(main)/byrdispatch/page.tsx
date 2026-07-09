@@ -230,6 +230,26 @@ function ByrdispatchRichText({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
 }) {
+  const renderTextSegment = (segment: string, key: string) => {
+    const leadingWhitespace = segment.match(/^\s+/)?.[0] ?? "";
+    const content = segment.slice(leadingWhitespace.length);
+    if (!content) return leadingWhitespace;
+
+    return (
+      <Fragment key={key}>
+        {leadingWhitespace}
+        <PatchNoteRenderer
+          markdown={content}
+          entities={entities}
+          gameUi={gameUi}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          preferEntityLocaleLabel
+          epochArtMode="beta"
+        />
+      </Fragment>
+    );
+  };
   const parts: ReactNode[] = [];
   let lastIndex = 0;
   let matchIndex = 0;
@@ -240,18 +260,7 @@ function ByrdispatchRichText({
     const href = SERVICE_REFERENCE_LINKS[label];
 
     if (index > lastIndex) {
-      parts.push(
-        <PatchNoteRenderer
-          key={`text-${matchIndex}`}
-          markdown={text.slice(lastIndex, index)}
-          entities={entities}
-          gameUi={gameUi}
-          serviceLocale={serviceLocale}
-          gameLocale={gameLocale}
-          preferEntityLocaleLabel
-          epochArtMode="beta"
-        />,
-      );
+      parts.push(renderTextSegment(text.slice(lastIndex, index), `text-${matchIndex}`));
     }
 
     parts.push(href ? (
@@ -283,18 +292,7 @@ function ByrdispatchRichText({
   }
 
   if (lastIndex < text.length) {
-    parts.push(
-      <PatchNoteRenderer
-        key="tail"
-        markdown={text.slice(lastIndex)}
-        entities={entities}
-        gameUi={gameUi}
-        serviceLocale={serviceLocale}
-        gameLocale={gameLocale}
-        preferEntityLocaleLabel
-        epochArtMode="beta"
-      />,
-    );
+    parts.push(renderTextSegment(text.slice(lastIndex), "tail"));
   }
 
   return <span className="inline">{parts}</span>;

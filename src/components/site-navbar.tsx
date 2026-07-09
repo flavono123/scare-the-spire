@@ -581,6 +581,7 @@ function InitialLocaleDetector() {
     if (searchParams.has("gl")) return;
     if (getLocalePreference()) return;
 
+    const currentHash = window.location.hash;
     const detectedGameLocale = detectGameLocaleFromNavigator(navigator);
     const targetHref = languageHref(
       pathname,
@@ -591,7 +592,7 @@ function InitialLocaleDetector() {
     const currentHref = `${pathname}${currentSearch ? `?${currentSearch}` : ""}`;
 
     if (targetHref !== currentHref) {
-      router.replace(targetHref);
+      router.replace(`${targetHref}${currentHash}`);
     }
   }, [pathname, router, searchParams]);
 
