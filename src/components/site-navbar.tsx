@@ -610,14 +610,15 @@ function LocaleCanonicalizer({
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    const currentHash = window.location.hash;
     const legacyGameLocale = searchParams.get("gl");
     if (legacyGameLocale && isGameLocale(legacyGameLocale)) {
       router.replace(
-        languageHref(
+        `${languageHref(
           pathname,
           new URLSearchParams(searchParams.toString()),
           legacyGameLocale,
-        ),
+        )}${currentHash}`,
       );
       return;
     }
@@ -633,11 +634,11 @@ function LocaleCanonicalizer({
     }
 
     router.replace(
-      languageHref(
+      `${languageHref(
         pathname,
         new URLSearchParams(searchParams.toString()),
         savedGameLocale,
-      ),
+      )}${currentHash}`,
     );
   }, [gameLocale, pathname, router, searchParams, serviceLocale]);
 
