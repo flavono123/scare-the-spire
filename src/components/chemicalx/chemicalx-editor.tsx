@@ -1,11 +1,17 @@
 "use client";
 
 import { useCallback, useRef } from "react";
+import dynamic from "next/dynamic";
 import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { PostBlock } from "@/lib/chemical-types";
-import { RichContentEditor } from "@/components/rich-content-editor";
+import type { RichContentEditorProps } from "@/components/rich-content-editor";
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
+
+const RichContentEditor = dynamic<RichContentEditorProps>(
+  () => import("@/components/rich-content-editor").then((mod) => mod.RichContentEditor),
+  { ssr: false },
+);
 
 interface ChemicalXEditorProps {
   entities: EntityInfo[];

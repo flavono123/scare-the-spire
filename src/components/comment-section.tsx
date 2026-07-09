@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import Image from "@/components/ui/static-image";
 import type { EntityInfo } from "@/components/patch-note-renderer";
-import { RichContentEditor } from "@/components/rich-content-editor";
+import type { RichContentEditorProps } from "@/components/rich-content-editor";
 import { PostRenderer, buildEntityMap } from "@/components/chemicalx/post-renderer";
 import { GOLD_TERM_DESC, KEYWORD_DESC } from "@/components/codex/codex-description";
 import {
@@ -26,6 +27,11 @@ import { serviceMessages } from "@/messages/service";
 import { EngagementSpinner } from "@/components/engagement-spinner";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { DEFAULT_USER_PROFILE } from "@/lib/user-profile";
+
+const RichContentEditor = dynamic<RichContentEditorProps>(
+  () => import("@/components/rich-content-editor").then((mod) => mod.RichContentEditor),
+  { ssr: false },
+);
 
 function getDraftKey(threadKey: string): string {
   return `sts-comment-draft:${threadKey}`;

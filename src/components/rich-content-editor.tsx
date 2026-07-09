@@ -188,7 +188,7 @@ function clearDraft(draftKey: string) {
   sessionStorage.removeItem(draftKey);
 }
 
-interface RichContentEditorProps {
+export interface RichContentEditorProps {
   entities: EntityInfo[];
   onSubmit: (blocks: PostBlock[]) => Promise<void>;
   placeholder: string;
