@@ -62,22 +62,11 @@ function AssetOnlyNonCardPreview({
       "relative flex h-full w-full items-center justify-center",
       isLarge ? "p-2 sm:p-3" : "p-0.5",
     )}>
-      {entity.imageUrl && (
-        <span className={cn(
-          "absolute z-10 flex items-center justify-center rounded-lg bg-black/25 drop-shadow-xl",
-          isLarge ? "right-6 top-6 h-14 w-14" : "right-3 top-3 h-10 w-10",
-        )}>
-          <Image
-            src={entity.imageUrl}
-            alt=""
-            width={iconSize}
-            height={iconSize}
-            className={cn("object-contain", isLarge ? "max-h-12 max-w-12" : "max-h-9 max-w-9")}
-          />
-        </span>
-      )}
       <span
-        className="block w-full font-game-text text-zinc-100"
+        className={cn(
+          "relative flex w-full flex-col justify-center font-game-text text-zinc-100",
+          isLarge ? "min-h-80" : "min-h-36",
+        )}
         style={{
           borderStyle: "solid",
           borderColor: "transparent",
@@ -91,6 +80,20 @@ function AssetOnlyNonCardPreview({
           boxSizing: "border-box",
         }}
       >
+        {entity.imageUrl && (
+          <span className={cn(
+            "absolute z-10 flex items-center justify-center rounded-lg bg-black/25 drop-shadow-xl",
+            isLarge ? "right-4 top-4 h-14 w-14" : "right-3 top-3 h-10 w-10",
+          )}>
+            <Image
+              src={entity.imageUrl}
+              alt=""
+              width={iconSize}
+              height={iconSize}
+              className={cn("object-contain", isLarge ? "max-h-12 max-w-12" : "max-h-9 max-w-9")}
+            />
+          </span>
+        )}
         <span
           className={cn(
             "block text-left font-bold leading-snug text-[#EFC851]",
@@ -139,6 +142,7 @@ export function ThisOrThatResourcePanel({
   const assetOnlyNonCardPreview = assetOnly && !entity.cardData
     ? <AssetOnlyNonCardPreview entity={entity} size={size} />
     : null;
+  const hasAssetOnlyNonCardPreview = Boolean(assetOnlyNonCardPreview);
   const preview = entity.cardData ? (
     <CardTile
       card={entity.cardData}
@@ -171,7 +175,9 @@ export function ThisOrThatResourcePanel({
     const assetContent = (
       <span className={cn(
         "flex h-full w-full items-center justify-center overflow-hidden",
-        isLarge ? "min-h-[28rem]" : "min-h-52",
+        isLarge
+          ? hasAssetOnlyNonCardPreview ? "min-h-[22rem]" : "min-h-[28rem]"
+          : hasAssetOnlyNonCardPreview ? "min-h-40" : "min-h-52",
       )}>
         {preview}
       </span>
