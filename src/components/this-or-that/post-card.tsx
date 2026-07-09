@@ -77,6 +77,10 @@ export function ThisOrThatPostCard({
   const stopClick = useCallback((event: MouseEvent<HTMLElement>) => {
     event.stopPropagation();
   }, []);
+  const handleOpenFromControl = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    openPost();
+  }, [openPost]);
   const handleCopy = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     const url = new URL(href, window.location.origin).toString();
@@ -105,13 +109,15 @@ export function ThisOrThatPostCard({
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-2" onClick={stopClick}>
-          <span
-            className="inline-flex items-center gap-1 text-xs text-muted-foreground"
+          <button
+            type="button"
+            onClick={handleOpenFromControl}
+            className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-yellow-400"
             title={copy.commentsTitle}
           >
             <MessageCircle size={15} />
             <span className="tabular-nums">{commentCount}</span>
-          </span>
+          </button>
           <span onClick={stopClick}>
             <ThisOrThatLikeButton
               count={likeCount}

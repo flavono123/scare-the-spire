@@ -113,44 +113,34 @@ export function ThisOrThatClient({
         />
       )}
 
-      <header className="relative overflow-hidden rounded-lg border border-border bg-card/25">
+      <header className="flex items-center gap-4">
         <Image
-          src="/images/sts2/events/this_or_that.webp"
-          alt=""
-          width={3440}
-          height={1616}
-          className="absolute inset-0 h-full w-full object-cover opacity-30"
+          src="/images/sts2/relics/choices_paradox.webp"
+          alt={title}
+          width={56}
+          height={56}
+          className="h-14 w-14 shrink-0 object-contain drop-shadow"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/30" />
-        <div className="relative flex items-center gap-3 px-4 py-5">
-          <Image
-            src="/images/sts2/relics/choices_paradox.webp"
-            alt=""
-            width={44}
-            height={44}
-            className="h-11 w-11 shrink-0 object-contain drop-shadow"
-          />
-          <div className="min-w-0">
-            <h1 className="font-service text-2xl font-black text-zinc-50">
-              {title}
-            </h1>
-            {prompt && (
-              <p className="mt-1 line-clamp-2 font-game-title text-sm text-blue-200">
-                {prompt}
-              </p>
-            )}
-          </div>
-          {!storageUnavailable && (
-            <button
-              type="button"
-              onClick={() => setComposerOpen(true)}
-              className="ml-auto inline-flex h-9 shrink-0 items-center gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-xs font-semibold text-yellow-300 transition-colors hover:bg-yellow-500/20"
-            >
-              <StoryWriteIcon size={15} />
-              {copy.create}
-            </button>
+        <div className="min-w-0">
+          <h1 className="text-3xl font-black tracking-tight text-zinc-50">
+            {title}
+          </h1>
+          {prompt && (
+            <p className="mt-1 line-clamp-2 max-w-2xl text-sm leading-6 text-zinc-400">
+              {prompt}
+            </p>
           )}
         </div>
+        {!storageUnavailable && (
+          <button
+            type="button"
+            onClick={() => setComposerOpen(true)}
+            className="ml-auto inline-flex h-9 shrink-0 items-center gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-xs font-semibold text-yellow-300 transition-colors hover:bg-yellow-500/20"
+          >
+            <StoryWriteIcon size={15} />
+            {copy.create}
+          </button>
+        )}
       </header>
 
       {storageUnavailable ? (
