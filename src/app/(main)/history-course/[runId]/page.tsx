@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { RunDetailLoader } from "@/components/history-course/run-detail-loader";
+import { DeferredRunDetailLoader } from "@/components/history-course/deferred-run-detail-loader";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { withPageOgImage } from "@/lib/page-og-images";
@@ -26,7 +26,7 @@ export const dynamic = "force-dynamic";
 export async function renderHistoryCourseRunPage(
   runId: string,
 ) {
-  return <RunDetailLoader runId={runId} />;
+  return <DeferredRunDetailLoader runId={runId} />;
 }
 
 export default async function HistoryCourseRunPage({

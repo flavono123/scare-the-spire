@@ -24,7 +24,7 @@ import {
 import { useServiceLocale } from "@/hooks/use-service-locale";
 import { serviceMessages } from "@/messages/service";
 
-interface Props {
+export interface RunDetailLoaderProps {
   runId: string;
   allCards?: CodexCard[];
   allRelics?: CodexRelic[];
@@ -90,7 +90,7 @@ function buildRunMadScienceCard(
   };
 }
 
-export function RunDetailLoader({ runId, allCards, allRelics }: Props) {
+export function RunDetailLoader({ runId, allCards, allRelics }: RunDetailLoaderProps) {
   const copy = serviceMessages[useServiceLocale()].historyCourse.detail;
   const initialLookup =
     allCards?.length && allRelics?.length ? { allCards, allRelics } : null;
