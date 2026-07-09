@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import { CommentSection } from "@/components/comment-section";
 import { PatchNoteRenderer, type EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
@@ -73,6 +73,20 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "댓글": { href: null, icon: "/images/sts2/relics/storybook.webp" },
   "개발/운영": { href: null, icon: "/images/sts2/relics/toolbox.webp" },
 };
+
+const SERVICE_REFERENCE_LINKS: Record<string, string> = {
+  "슬더스2 패치노트": "/patches",
+  패치노트: "/patches",
+  "패치 노트": "/patches",
+  "슬서운 이야기": "/",
+  섀소식: "/byrdispatch",
+  백과사전: "/compendium",
+  "역사 강의서": "/history-course",
+  "이거 아님 저거?": "/this-or-that",
+  "케미컬X": "/chemical-x",
+};
+
+const SERVICE_REFERENCE_RE = /(슬더스2 패치노트|이거 아님 저거\?|역사 강의서|슬서운 이야기|패치노트|패치 노트|케미컬X|백과사전|섀소식)\(서비스\)/g;
 
 function normalizeServiceTitle(title: string): string {
   return title
@@ -203,6 +217,89 @@ function ServiceHeading({
   return <h2 className={headingClassName}>{content}</h2>;
 }
 
+function ByrdispatchRichText({
+  text,
+  entities,
+  gameUi,
+  serviceLocale,
+  gameLocale,
+}: {
+  text: string;
+  entities: EntityInfo[];
+  gameUi: CodexGameUiLabels;
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+}) {
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let matchIndex = 0;
+
+  for (const match of text.matchAll(SERVICE_REFERENCE_RE)) {
+    const index = match.index ?? 0;
+    const label = match[1];
+    const href = SERVICE_REFERENCE_LINKS[label];
+
+    if (index > lastIndex) {
+      parts.push(
+        <PatchNoteRenderer
+          key={`text-${matchIndex}`}
+          markdown={text.slice(lastIndex, index)}
+          entities={entities}
+          gameUi={gameUi}
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          preferEntityLocaleLabel
+          epochArtMode="beta"
+        />,
+      );
+    }
+
+    parts.push(href ? (
+      <Link
+        key={`service-${matchIndex}`}
+        href={localizeHrefWithGameLocale(href, serviceLocale, gameLocale)}
+        className="font-semibold text-cyan-200 transition-colors hover:text-cyan-100"
+      >
+        {match[0]}
+      </Link>
+    ) : match[0]);
+
+    lastIndex = index + match[0].length;
+    matchIndex += 1;
+  }
+
+  if (lastIndex === 0) {
+    return (
+      <PatchNoteRenderer
+        markdown={text}
+        entities={entities}
+        gameUi={gameUi}
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+        preferEntityLocaleLabel
+        epochArtMode="beta"
+      />
+    );
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(
+      <PatchNoteRenderer
+        key="tail"
+        markdown={text.slice(lastIndex)}
+        entities={entities}
+        gameUi={gameUi}
+        serviceLocale={serviceLocale}
+        gameLocale={gameLocale}
+        preferEntityLocaleLabel
+        epochArtMode="beta"
+      />,
+    );
+  }
+
+  return <span className="inline">{parts}</span>;
+}
+
 function ByrdispatchBulletLine({
   bullet,
   notice,
@@ -220,14 +317,19 @@ function ByrdispatchBulletLine({
   gameLocale: GameLocale;
   statusLabels: ByrdispatchStatusLabels;
 }) {
+  const childBullet = bullet.depth > 0;
   return (
-    <li className="flex gap-2">
+    <li className={["flex gap-2", childBullet ? "ml-5" : ""].filter(Boolean).join(" ")}>
       <span
         aria-hidden
         className={
           notice
-            ? "mt-2 h-1.5 w-1.5 shrink-0 bg-pink-200"
-            : "mt-2 h-1.5 w-1.5 shrink-0 bg-purple-200/80"
+            ? childBullet
+              ? "mt-2.5 h-1 w-1 shrink-0 rounded-full border border-pink-200"
+              : "mt-2 h-1.5 w-1.5 shrink-0 bg-pink-200"
+            : childBullet
+              ? "mt-2.5 h-1 w-1 shrink-0 rounded-full border border-purple-200/80"
+              : "mt-2 h-1.5 w-1.5 shrink-0 bg-purple-200/80"
         }
       />
       <div
@@ -239,14 +341,12 @@ function ByrdispatchBulletLine({
             : "[&_.patch-note-content>p]:mb-0 [&_.patch-note-content>p]:text-zinc-300",
         ].join(" ")}
       >
-        <PatchNoteRenderer
-          markdown={bullet.text}
+        <ByrdispatchRichText
+          text={bullet.text}
           entities={entities}
           gameUi={gameUi}
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}
-          preferEntityLocaleLabel
-          epochArtMode="beta"
         />
         <StatusTokens statuses={bullet.statuses} labels={statusLabels} />
       </div>
@@ -255,8 +355,13 @@ function ByrdispatchBulletLine({
 }
 
 function ByrdispatchMediaBlock({ media }: { media: ByrdispatchMedia }) {
+  const compact = media.src.includes("/story-reaction-palette.");
   return (
-    <figure className="mt-3 overflow-hidden rounded-lg border border-border/70 bg-zinc-950/70">
+    <figure className={[
+      "mt-3 overflow-hidden rounded-lg border border-border/70 bg-zinc-950/70",
+      compact ? "mx-auto w-1/2 max-w-[220px]" : "",
+    ].filter(Boolean).join(" ")}
+    >
       <Image
         src={media.src}
         alt={media.alt}

@@ -19,6 +19,7 @@ export type ByrdispatchStatus = "new" | "wip" | "bug";
 
 export type ByrdispatchBullet = {
   text: string;
+  depth: number;
   statuses: ByrdispatchStatus[];
 };
 
@@ -100,8 +101,13 @@ function parseByrdispatchMarkdown(markdown: string, fallbackDate: string): Byrdi
       continue;
     }
 
-    if (currentSection && line.startsWith("- ")) {
-      const bullet = extractStatusMarkers(line.slice(2));
+    const bulletMatch = rawLine.match(/^(\s*)-\s+(.*)$/);
+    if (currentSection && bulletMatch) {
+      const indent = bulletMatch[1].replace(/\t/g, "  ").length;
+      const bullet = {
+        ...extractStatusMarkers(bulletMatch[2]),
+        depth: Math.min(Math.floor(indent / 2), 3),
+      };
       currentSection.bullets.push(bullet);
       currentSection.items.push({ type: "bullet", bullet });
       continue;
