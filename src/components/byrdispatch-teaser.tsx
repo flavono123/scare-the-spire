@@ -11,9 +11,11 @@ import { serviceMessages } from "@/messages/service";
 export function ByrdispatchTeaser({
   serviceLocale,
   gameLocale,
+  latestDate,
 }: {
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  latestDate?: string;
 }) {
   const messages = serviceMessages[serviceLocale].byrdispatch;
 
@@ -35,6 +37,11 @@ export function ByrdispatchTeaser({
         <span className="block truncate text-sm font-bold text-zinc-100 sm:text-base">
           {messages.title}
         </span>
+        {latestDate && (
+          <span className="mt-0.5 block truncate text-xs font-semibold text-purple-200/80">
+            {messages.latestDate.replace("{date}", latestDate)}
+          </span>
+        )}
       </span>
       <span className="shrink-0 text-xs font-semibold text-purple-200 transition-colors group-hover:text-purple-100">
         {messages.viewAll}

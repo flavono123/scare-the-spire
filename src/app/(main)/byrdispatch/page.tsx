@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Fragment } from "react";
 import { CommentSection } from "@/components/comment-section";
 import { PatchNoteRenderer, type EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
@@ -18,7 +19,9 @@ import {
   BYRDISPATCH_ICON,
   BYRDISPATCH_NOTICE_ICON,
   type ByrdispatchBullet,
+  type ByrdispatchMedia,
   type ByrdispatchSection,
+  type ByrdispatchSectionItem,
   type ByrdispatchStatus,
 } from "@/lib/byrdispatch";
 import {
@@ -48,8 +51,10 @@ type ByrdispatchStatusLabels = Readonly<Record<ByrdispatchStatus, string>>;
 
 const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "공통": { href: null, icon: BYRDISPATCH_ICON },
+  "슬서운 이야기": { href: "/", icon: "/images/sts2/relics/storybook.webp" },
   "섀소식": { href: "/byrdispatch", icon: BYRDISPATCH_ICON },
   "패치노트": { href: "/patches", icon: "/images/sts2/nav/patch_notes_icon.png" },
+  "패치 노트": { href: "/patches", icon: "/images/sts2/nav/patch_notes_icon.png" },
   백과사전: { href: null, icon: "/images/sts2/icons/app_icon.png" },
   캐릭터: { href: "/compendium/characters", icon: "/images/sts2/characters/character_icon_ironclad.webp" },
   카드: { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
@@ -249,6 +254,65 @@ function ByrdispatchBulletLine({
   );
 }
 
+function ByrdispatchMediaBlock({ media }: { media: ByrdispatchMedia }) {
+  return (
+    <figure className="mt-3 overflow-hidden rounded-lg border border-border/70 bg-zinc-950/70">
+      <Image
+        src={media.src}
+        alt={media.alt}
+        title={media.title}
+        width={1280}
+        height={776}
+        loading="lazy"
+        className="w-full object-cover"
+      />
+      {media.alt && (
+        <figcaption className="border-t border-border/60 px-3 py-2 text-xs font-medium text-zinc-400">
+          {media.alt}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+function ByrdispatchSectionItemLine({
+  item,
+  notice,
+  entities,
+  gameUi,
+  serviceLocale,
+  gameLocale,
+  statusLabels,
+}: {
+  item: ByrdispatchSectionItem;
+  notice: boolean;
+  entities: EntityInfo[];
+  gameUi: CodexGameUiLabels;
+  serviceLocale: ServiceLocale;
+  gameLocale: GameLocale;
+  statusLabels: ByrdispatchStatusLabels;
+}) {
+  if (item.type === "image") {
+    return (
+      <li className="block">
+        <ByrdispatchMediaBlock media={item.media} />
+      </li>
+    );
+  }
+
+  return (
+    <ByrdispatchBulletLine
+      bullet={item.bullet}
+      notice={notice}
+      entities={entities}
+      gameUi={gameUi}
+      serviceLocale={serviceLocale}
+      gameLocale={gameLocale}
+      statusLabels={statusLabels}
+    />
+  );
+}
+
 function ByrdispatchSectionList({
   sections,
   notice = false,
@@ -287,19 +351,22 @@ function ByrdispatchSectionList({
             gameLocale={gameLocale}
             statusLabels={statusLabels}
           />
-          {section.bullets.length > 0 && (
+          {section.items.length > 0 && (
             <ul className="mt-2 space-y-1.5 text-sm leading-6 text-zinc-300">
-              {section.bullets.map((bullet) => (
-                <ByrdispatchBulletLine
-                  key={bullet.text}
-                  bullet={bullet}
-                  notice={notice}
-                  entities={entities}
-                  gameUi={gameUi}
-                  serviceLocale={serviceLocale}
-                  gameLocale={gameLocale}
-                  statusLabels={statusLabels}
-                />
+              {section.items.map((item, index) => (
+                <Fragment
+                  key={item.type === "bullet" ? `bullet-${item.bullet.text}` : `image-${item.media.src}-${index}`}
+                >
+                  <ByrdispatchSectionItemLine
+                    item={item}
+                    notice={notice}
+                    entities={entities}
+                    gameUi={gameUi}
+                    serviceLocale={serviceLocale}
+                    gameLocale={gameLocale}
+                    statusLabels={statusLabels}
+                  />
+                </Fragment>
               ))}
             </ul>
           )}
@@ -357,11 +424,17 @@ export async function renderByrdispatchPage(
             return (
               <article
                 key={entry.date}
-                className="border-t border-border/70 pt-6 first:border-t-0 first:pt-0"
+                id={entry.date}
+                tabIndex={-1}
+                className="scroll-mt-20 border-t border-border/70 pt-6 outline-none first:border-t-0 first:pt-0 target:bg-purple-500/[0.04] target:ring-1 target:ring-purple-300/25"
               >
-                <time className="text-sm font-black text-zinc-500" dateTime={entry.date}>
-                  {entry.date}
-                </time>
+                <Link
+                  href={`#${entry.date}`}
+                  className="inline-flex text-sm font-black text-zinc-500 transition-colors hover:text-purple-200"
+                  aria-label={`${entry.date} 섀소식 링크`}
+                >
+                  <time dateTime={entry.date}>{entry.date}</time>
+                </Link>
                 {noticeSections.length > 0 && (
                   <div className="mt-4">
                     <ByrdispatchSectionList

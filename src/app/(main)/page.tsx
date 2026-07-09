@@ -5,10 +5,11 @@ import { loadAllEntities } from "@/lib/load-all-entities";
 import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
+import { getLatestByrdispatchEntry } from "@/lib/byrdispatch";
 
 export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE) {
   const serviceLocale = getServiceLocaleForGameLocale(gameLocale);
-  const [stories, sts2Stories, cards, relics, potions, changes, sts2Changes, sts2Patches, sts2PatchLines, sts2Entities, storyPlaceholder] = await Promise.all([
+  const [stories, sts2Stories, cards, relics, potions, changes, sts2Changes, sts2Patches, sts2PatchLines, sts2Entities, storyPlaceholder, latestByrdispatchEntry] = await Promise.all([
     getStories(),
     getSTS2Stories(),
     getCards(),
@@ -20,6 +21,7 @@ export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOC
     getSTS2PatchLines(),
     loadAllEntities({ gameLocale }),
     getStoryComposerPlaceholder(gameLocale),
+    getLatestByrdispatchEntry(),
   ]);
   const mergedStories = [...stories, ...sts2Stories];
   const referencedPatchLineIds = new Set(
@@ -30,7 +32,11 @@ export async function renderHome(gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOC
   return (
     <div className="min-h-screen bg-background text-foreground">
       <main className="mx-auto max-w-2xl space-y-2">
-        <ByrdispatchTeaser serviceLocale={serviceLocale} gameLocale={gameLocale} />
+        <ByrdispatchTeaser
+          serviceLocale={serviceLocale}
+          gameLocale={gameLocale}
+          latestDate={latestByrdispatchEntry?.date}
+        />
         {/* Feed */}
         <div className="rounded-lg border border-border bg-card/20">
           {mergedStories.length === 0 ? (

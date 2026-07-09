@@ -13,6 +13,7 @@ export const serviceMessages = {
     byrdispatch: {
       title: "섀소식",
       viewAll: "전체 보기",
+      latestDate: "최신 {date}",
       metadata: {
         title: "섀소식",
         description: "슬서운이야기 서비스의 새 기능과 콘텐츠 소식",
@@ -567,6 +568,7 @@ export const serviceMessages = {
     byrdispatch: {
       title: "byrdispatch",
       viewAll: "View all",
+      latestDate: "Latest {date}",
       metadata: {
         title: "byrdispatch",
         description: "New features and content updates for Scare the Spire",

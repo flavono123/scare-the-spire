@@ -13,6 +13,7 @@ const BYRDISPATCH_FILE_RE = /^\d{4}-\d{2}-\d{2}\.md$/;
 const BYRDISPATCH_NOTICE_SECTION = "공지";
 const BYRDISPATCH_STATUS_RE = /\s*\((new|개발 중|버그)\)\s*$/;
 const BYRDISPATCH_MARKDOWN_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
+const BYRDISPATCH_IMAGE_RE = /^!\[([^\]\n]*)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)$/;
 
 export type ByrdispatchStatus = "new" | "wip" | "bug";
 
@@ -21,10 +22,22 @@ export type ByrdispatchBullet = {
   statuses: ByrdispatchStatus[];
 };
 
+export type ByrdispatchMedia = {
+  alt: string;
+  src: string;
+  title?: string;
+};
+
+export type ByrdispatchSectionItem =
+  | { type: "bullet"; bullet: ByrdispatchBullet }
+  | { type: "image"; media: ByrdispatchMedia };
+
 export type ByrdispatchSection = {
   title: string;
   level: 2 | 3;
   bullets: ByrdispatchBullet[];
+  media: ByrdispatchMedia[];
+  items: ByrdispatchSectionItem[];
   isNotice: boolean;
   statuses: ByrdispatchStatus[];
 };
@@ -78,6 +91,8 @@ function parseByrdispatchMarkdown(markdown: string, fallbackDate: string): Byrdi
         title,
         level,
         bullets: [],
+        media: [],
+        items: [],
         isNotice: title === BYRDISPATCH_NOTICE_SECTION,
         statuses,
       };
@@ -86,17 +101,31 @@ function parseByrdispatchMarkdown(markdown: string, fallbackDate: string): Byrdi
     }
 
     if (currentSection && line.startsWith("- ")) {
-      currentSection.bullets.push(extractStatusMarkers(line.slice(2)));
+      const bullet = extractStatusMarkers(line.slice(2));
+      currentSection.bullets.push(bullet);
+      currentSection.items.push({ type: "bullet", bullet });
+      continue;
+    }
+
+    const imageMatch = line.match(BYRDISPATCH_IMAGE_RE);
+    if (currentSection && imageMatch) {
+      const media = {
+        alt: imageMatch[1],
+        src: imageMatch[2],
+        title: imageMatch[3],
+      };
+      currentSection.media.push(media);
+      currentSection.items.push({ type: "image", media });
     }
   }
 
   const populatedSections = sections.filter((section, index) => {
-    if (section.bullets.length > 0) return true;
+    if (section.items.length > 0) return true;
     if (section.level !== 2) return false;
 
     for (const nextSection of sections.slice(index + 1)) {
       if (nextSection.level === 2) return false;
-      if (nextSection.bullets.length > 0) return true;
+      if (nextSection.items.length > 0) return true;
     }
 
     return false;
