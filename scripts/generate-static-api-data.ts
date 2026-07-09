@@ -15,11 +15,22 @@ type StaticJsonTarget = {
 };
 
 const publicDir = path.join(process.cwd(), "public");
+const spinePlayerClientPath = path.join(
+  process.cwd(),
+  "node_modules/@esotericsoftware/spine-player/dist/iife/spine-player.min.js",
+);
 
 async function writeJson(target: StaticJsonTarget) {
   const filePath = path.join(publicDir, target.path);
   await fs.mkdir(path.dirname(filePath), { recursive: true });
   await fs.writeFile(filePath, `${JSON.stringify(target.data)}\n`);
+  console.log(`Wrote ${path.relative(process.cwd(), filePath)}`);
+}
+
+async function copyPublicFile(sourcePath: string, publicPath: string) {
+  const filePath = path.join(publicDir, publicPath);
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  await fs.copyFile(sourcePath, filePath);
   console.log(`Wrote ${path.relative(process.cwd(), filePath)}`);
 }
 
@@ -66,6 +77,7 @@ async function main() {
     writeJson({ path: "api/search-index", data: searchIndex }),
     writeJson({ path: "comment-entities/sts2", data: commentEntities }),
     ...thisOrThatResourceTargets.map(writeJson),
+    copyPublicFile(spinePlayerClientPath, "generated/spine-player.min.js"),
   ]);
 }
 

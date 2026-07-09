@@ -1,8 +1,12 @@
 "use client";
 
 import { memo, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import type { SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
 import Image from "@/components/ui/static-image";
+import {
+  loadSpinePlayerRuntime,
+  type SpinePlayer,
+  type SpinePlayerConfig,
+} from "@/lib/spine-player-runtime";
 import { measureSpinePlayerVisualBounds, type MonsterStageVisualBounds } from "./monster-spine-stage";
 
 interface DecimillipedeSpineStageProps {
@@ -290,7 +294,7 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
     let readyCount = 0;
     setLoadState("loading");
 
-    void import("@esotericsoftware/spine-player")
+    void loadSpinePlayerRuntime()
       .then(({ SpinePlayer: SpinePlayerCtor }) => {
         for (const part of visibleParts) {
           const parent = mountedPartRefs[part.id];

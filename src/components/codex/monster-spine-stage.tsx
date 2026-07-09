@@ -1,8 +1,14 @@
 "use client";
 
 import { memo, useEffect, useMemo, useRef, useState, type CSSProperties, type MutableRefObject } from "react";
-import type { Skin, SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-player";
 import Image from "@/components/ui/static-image";
+import {
+  loadSpinePlayerRuntime,
+  type SpinePhysics,
+  type SpinePlayer,
+  type SpinePlayerConfig,
+  type SpineSkinCtor,
+} from "@/lib/spine-player-runtime";
 import type { MonsterPhobiaModeScene, MonsterSpineAsset, MonsterSpineEffectAsset, MonsterSpineTrackAnimation } from "@/lib/codex-types";
 import { MonsterPhobiaSceneStage } from "./monster-phobia-scene-stage";
 
@@ -31,8 +37,6 @@ interface MonsterSpineStageProps {
 
 type LoadState = "loading" | "ready" | "error";
 type SpinePlayerCtor = new (element: HTMLElement, config: SpinePlayerConfig) => SpinePlayer;
-type SpineSkinCtor = new (name: string) => Skin;
-type SpinePhysics = typeof import("@esotericsoftware/spine-player")["Physics"];
 type SpineViewportPadding = {
   padLeft?: string;
   padRight?: string;
@@ -90,7 +94,6 @@ function MonsterSpineStageComponent({
   const playerRef = useRef<SpinePlayer | null>(null);
   const vfxPlayerRef = useRef<SpinePlayer | null>(null);
   const vfxTimeoutRef = useRef<number | null>(null);
-  const playerCtorRef = useRef<SpinePlayerCtor | null>(null);
   const [loadState, setLoadState] = useState<LoadState>(asset ? "loading" : "error");
   const showStaticPhobiaMode = showPhobiaMode && Boolean(phobiaModeImageUrl);
   const [availableAnimations, setAvailableAnimations] = useState<string[]>(asset?.animations ?? []);
@@ -115,10 +118,9 @@ function MonsterSpineStageComponent({
     let player: SpinePlayer | null = null;
     const parent = containerRef.current;
 
-    void import("@esotericsoftware/spine-player")
+    void loadSpinePlayerRuntime()
       .then(({ SpinePlayer: SpinePlayerCtor, Skin: SpineSkinCtor, Physics }) => {
         if (disposed || !containerRef.current) return;
-        playerCtorRef.current = SpinePlayerCtor;
         const viewport = getMonsterViewport(asset, viewportTransitionTime, viewportPadding);
 
         player = new SpinePlayerCtor(parent, {
@@ -216,10 +218,9 @@ function MonsterSpineStageComponent({
     const parent = vfxContainerRef.current;
     clearVfx(vfxPlayerRef, vfxContainerRef, vfxTimeoutRef);
 
-    void import("@esotericsoftware/spine-player")
+    void loadSpinePlayerRuntime()
       .then(({ SpinePlayer: SpinePlayerCtor }) => {
         if (disposed || !vfxContainerRef.current) return;
-        playerCtorRef.current = SpinePlayerCtor;
 
         const vfxPlayer = new SpinePlayerCtor(parent, {
           binaryUrl: effect.binaryUrl,
