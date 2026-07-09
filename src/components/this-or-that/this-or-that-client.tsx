@@ -2,11 +2,11 @@
 
 import { useMemo, useState, useCallback } from "react";
 import Image from "@/components/ui/static-image";
-import type { EntityInfo } from "@/components/patch-note-renderer";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { useThisOrThatEntities } from "@/hooks/use-this-or-that-entities";
 import { useThisOrThatCommentCounts } from "@/hooks/use-this-or-that-comment-counts";
 import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useThisOrThatPosts } from "@/hooks/use-this-or-that-posts";
@@ -24,12 +24,10 @@ import { ThisOrThatComposerModal } from "@/components/this-or-that/composer-moda
 import { ThisOrThatPostCard } from "@/components/this-or-that/post-card";
 
 export function ThisOrThatClient({
-  entities,
   gameLocale,
   title,
   prompt,
 }: {
-  entities: EntityInfo[];
   gameLocale: GameLocale;
   title: string;
   prompt: string;
@@ -38,6 +36,11 @@ export function ThisOrThatClient({
   const copy = serviceMessages[serviceLocale].thisOrThat;
   const { userId, ready, unavailable: authUnavailable, ensureUser } = useAuth();
   const { posts, loading, unavailable, add, remove } = useThisOrThatPosts(userId);
+  const {
+    entities,
+    loading: resourcesLoading,
+    error: resourcesError,
+  } = useThisOrThatEntities(gameLocale);
   const profileFallback = useMemo(
     () => ({ ...DEFAULT_USER_PROFILE, nickname: copy.defaultNickname }),
     [copy.defaultNickname],
@@ -97,6 +100,7 @@ export function ThisOrThatClient({
   );
 
   const storageUnavailable = authUnavailable || unavailable;
+  const contentLoading = loading || resourcesLoading;
 
   return (
     <div className="space-y-6">
@@ -134,7 +138,9 @@ export function ThisOrThatClient({
         {!storageUnavailable && (
           <button
             type="button"
-            onClick={() => setComposerOpen(true)}
+            onClick={() => {
+              if (!resourcesLoading && !resourcesError) setComposerOpen(true);
+            }}
             className="ml-auto inline-flex h-9 shrink-0 items-center gap-2 rounded-md border border-yellow-500/30 bg-yellow-500/10 px-3 text-xs font-semibold text-yellow-300 transition-colors hover:bg-yellow-500/20"
           >
             <StoryWriteIcon size={15} />
@@ -155,7 +161,7 @@ export function ThisOrThatClient({
         </div>
       )}
 
-      {storageUnavailable ? null : loading ? (
+      {storageUnavailable ? null : contentLoading ? (
         <ContentLoadingNotice label={copy.loading} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">

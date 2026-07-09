@@ -6,6 +6,8 @@ import { buildCompendiumDetailPayload } from "../src/lib/compendium-detail-paylo
 import { buildCompendiumResourceManifest } from "../src/lib/compendium-resource-manifest";
 import { getLatestByrdispatchNotice } from "../src/lib/byrdispatch";
 import { getSTS2PatchLines } from "../src/lib/data";
+import { GAME_LOCALES } from "../src/lib/i18n";
+import { loadThisOrThatEntities } from "../src/lib/this-or-that-data";
 
 type StaticJsonTarget = {
   path: string;
@@ -21,6 +23,17 @@ async function writeJson(target: StaticJsonTarget) {
   console.log(`Wrote ${path.relative(process.cwd(), filePath)}`);
 }
 
+async function buildThisOrThatResourceTargets(): Promise<StaticJsonTarget[]> {
+  const targets: StaticJsonTarget[] = [];
+  for (const gameLocale of GAME_LOCALES) {
+    targets.push({
+      path: `generated/this-or-that-resources-${gameLocale}.json`,
+      data: await loadThisOrThatEntities({ gameLocale }),
+    });
+  }
+  return targets;
+}
+
 async function main() {
   const [
     searchIndex,
@@ -30,6 +43,7 @@ async function main() {
     compendiumResourceManifest,
     latestByrdispatchNotice,
     sts2PatchLines,
+    thisOrThatResourceTargets,
   ] = await Promise.all([
     buildSearchIndexPayload(),
     loadAllEntities(),
@@ -38,6 +52,7 @@ async function main() {
     buildCompendiumResourceManifest(),
     getLatestByrdispatchNotice(),
     getSTS2PatchLines(),
+    buildThisOrThatResourceTargets(),
   ]);
 
   await Promise.all([
@@ -50,6 +65,7 @@ async function main() {
     writeJson({ path: "generated/sts2-patch-lines.json", data: sts2PatchLines }),
     writeJson({ path: "api/search-index", data: searchIndex }),
     writeJson({ path: "comment-entities/sts2", data: commentEntities }),
+    ...thisOrThatResourceTargets.map(writeJson),
   ]);
 }
 

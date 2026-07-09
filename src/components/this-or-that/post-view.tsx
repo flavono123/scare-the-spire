@@ -3,12 +3,12 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import type { EntityInfo } from "@/components/patch-note-renderer";
 import { CommentSection } from "@/components/comment-section";
 import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { useThisOrThatEntities } from "@/hooks/use-this-or-that-entities";
 import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useThisOrThatPost } from "@/hooks/use-this-or-that-posts";
 import type { GameLocale } from "@/lib/i18n";
@@ -23,12 +23,10 @@ import { ThisOrThatResourcePanel } from "@/components/this-or-that/resource-pane
 
 export function ThisOrThatPostView({
   postId,
-  entities,
   gameLocale,
   title,
 }: {
   postId: string;
-  entities: EntityInfo[];
   gameLocale: GameLocale;
   title: string;
 }) {
@@ -36,6 +34,10 @@ export function ThisOrThatPostView({
   const copy = serviceMessages[serviceLocale].thisOrThat;
   const { userId, ready: authReady, unavailable: authUnavailable, ensureUser } = useAuth();
   const { post, loading, unavailable } = useThisOrThatPost(postId);
+  const {
+    entities,
+    loading: resourcesLoading,
+  } = useThisOrThatEntities(gameLocale);
   const postIds = useMemo(() => post ? [post.id] : [], [post]);
   const likes = useThisOrThatLikes(postIds, userId);
   const entityMap = useMemo(() => buildThisOrThatEntityMap(entities), [entities]);
@@ -54,7 +56,7 @@ export function ThisOrThatPostView({
     return <StorageUnavailableNotice title={copy.unavailableTitle} />;
   }
 
-  if (loading) {
+  if (loading || resourcesLoading) {
     return <ContentLoadingNotice label={copy.loading} />;
   }
 

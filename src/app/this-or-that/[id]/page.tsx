@@ -5,7 +5,6 @@ import { getServiceLocaleForGameLocale, type GameLocale } from "@/lib/i18n";
 import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { THIS_OR_THAT_PAGE_OG_IMAGE } from "@/lib/page-og-images";
 import { getServiceOgMetadata } from "@/lib/service-metadata";
-import { loadThisOrThatEntities } from "@/lib/this-or-that-data";
 import { serviceMessages } from "@/messages/service";
 
 export async function generateThisOrThatPostMetadata(
@@ -35,16 +34,12 @@ export async function renderThisOrThatPostPage(
   id: string,
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  const [entities, gameCopy] = await Promise.all([
-    loadThisOrThatEntities({ gameLocale }),
-    getThisOrThatGameCopy(gameLocale),
-  ]);
+  const gameCopy = await getThisOrThatGameCopy(gameLocale);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
       <ThisOrThatPostView
         postId={id}
-        entities={entities}
         gameLocale={gameLocale}
         title={gameCopy.title}
       />
