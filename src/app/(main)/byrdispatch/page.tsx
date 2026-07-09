@@ -68,6 +68,7 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   "고대의 존재": { href: "/compendium/ancients", icon: "/images/sts2/nav/stats_ancients.png" },
   연대기: { href: "/compendium/epochs", icon: "/images/sts2/relics/planisphere.webp" },
   "케미컬X": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
+  "케미컬엑스": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "역사 강의서": { href: "/history-course", icon: "/images/sts2/relics/history_course.webp" },
   "이거 아님 저거?": { href: "/this-or-that", icon: "/images/sts2/relics/choices_paradox.webp" },
   "댓글": { href: null, icon: "/images/sts2/relics/storybook.webp" },
@@ -75,7 +76,6 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
 };
 
 const SERVICE_REFERENCE_LINKS: Record<string, string> = {
-  "슬더스2 패치노트": "/patches",
   패치노트: "/patches",
   "패치 노트": "/patches",
   "슬서운 이야기": "/",
@@ -84,9 +84,10 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
   "역사 강의서": "/history-course",
   "이거 아님 저거?": "/this-or-that",
   "케미컬X": "/chemical-x",
+  "케미컬엑스": "/chemical-x",
 };
 
-const SERVICE_REFERENCE_RE = /(슬더스2 패치노트|이거 아님 저거\?|역사 강의서|슬서운 이야기|패치노트|패치 노트|케미컬X|백과사전|섀소식)\(서비스\)/g;
+const SERVICE_REFERENCE_RE = /(이거 아님 저거\?|역사 강의서|슬서운 이야기|패치노트|패치 노트|케미컬X|케미컬엑스|백과사전|섀소식)/g;
 
 function normalizeServiceTitle(title: string): string {
   return title
@@ -258,18 +259,26 @@ function ByrdispatchRichText({
     const index = match.index ?? 0;
     const label = match[1];
     const href = SERVICE_REFERENCE_LINKS[label];
+    const service = serviceIconFor(label);
 
     if (index > lastIndex) {
       parts.push(renderTextSegment(text.slice(lastIndex, index), `text-${matchIndex}`));
     }
 
-    parts.push(href ? (
+    parts.push(href && service ? (
       <Link
         key={`service-${matchIndex}`}
         href={localizeHrefWithGameLocale(href, serviceLocale, gameLocale)}
-        className="font-semibold text-cyan-200 transition-colors hover:text-cyan-100"
+        className="inline-flex items-center gap-1 align-[-0.2em] font-semibold text-cyan-200 transition-colors hover:text-cyan-100"
       >
-        {match[0]}
+        <Image
+          src={service.icon}
+          alt=""
+          width={16}
+          height={16}
+          className="inline-block h-4 w-4 shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]"
+        />
+        <span>{match[0]}</span>
       </Link>
     ) : match[0]);
 
