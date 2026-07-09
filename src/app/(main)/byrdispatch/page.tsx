@@ -357,7 +357,7 @@ function ByrdispatchMediaBlock({ media }: { media: ByrdispatchMedia }) {
   return (
     <figure className={[
       "mt-3 overflow-hidden rounded-lg border border-border/70 bg-zinc-950/70",
-      compact ? "mx-auto w-1/2 max-w-[220px]" : "",
+      compact ? "mx-auto w-1/2" : "",
     ].filter(Boolean).join(" ")}
     >
       <Image
