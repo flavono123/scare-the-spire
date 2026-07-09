@@ -56,9 +56,9 @@
       "/spine/sts2/vfx/flying_slash.png"
     ],
     "animations": [
-      "chain"
+      "flying_slash"
     ],
-    "idleAnimation": "chain",
+    "idleAnimation": "flying_slash",
     "durationSeconds": 0.5,
     "usable": true
   },
@@ -72,9 +72,9 @@
       "/spine/sts2/vfx/gaze.png"
     ],
     "animations": [
-      "chain"
+      "gaze"
     ],
-    "idleAnimation": "chain",
+    "idleAnimation": "gaze",
     "durationSeconds": 0.5,
     "usable": true
   },
@@ -88,9 +88,10 @@
       "/spine/sts2/vfx/infested_boss_explosion.png"
     ],
     "animations": [
-      "chain"
+      "animation",
+      "empty"
     ],
-    "idleAnimation": "chain",
+    "idleAnimation": "animation",
     "durationSeconds": 0.5,
     "usable": true
   },
@@ -140,9 +141,9 @@
       "/spine/sts2/vfx/scratch.png"
     ],
     "animations": [
-      "animation"
+      "scratch"
     ],
-    "idleAnimation": "animation",
+    "idleAnimation": "scratch",
     "durationSeconds": 0.347,
     "usable": true
   },
