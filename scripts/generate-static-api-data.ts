@@ -5,6 +5,7 @@ import { loadAllEntities } from "../src/lib/load-all-entities";
 import { buildCompendiumDetailPayload } from "../src/lib/compendium-detail-payload-builder";
 import { buildCompendiumResourceManifest } from "../src/lib/compendium-resource-manifest";
 import { getLatestByrdispatchNotice } from "../src/lib/byrdispatch";
+import { getSTS2PatchLines } from "../src/lib/data";
 
 type StaticJsonTarget = {
   path: string;
@@ -28,6 +29,7 @@ async function main() {
     englishCompendiumDetailPayload,
     compendiumResourceManifest,
     latestByrdispatchNotice,
+    sts2PatchLines,
   ] = await Promise.all([
     buildSearchIndexPayload(),
     loadAllEntities(),
@@ -35,6 +37,7 @@ async function main() {
     buildCompendiumDetailPayload("en"),
     buildCompendiumResourceManifest(),
     getLatestByrdispatchNotice(),
+    getSTS2PatchLines(),
   ]);
 
   await Promise.all([
@@ -44,6 +47,7 @@ async function main() {
     writeJson({ path: "generated/compendium-detail-eng.json", data: englishCompendiumDetailPayload }),
     writeJson({ path: "generated/compendium-resource-manifest.json", data: compendiumResourceManifest }),
     writeJson({ path: "generated/latest-byrdispatch-notice.json", data: latestByrdispatchNotice }),
+    writeJson({ path: "generated/sts2-patch-lines.json", data: sts2PatchLines }),
     writeJson({ path: "api/search-index", data: searchIndex }),
     writeJson({ path: "comment-entities/sts2", data: commentEntities }),
   ]);
