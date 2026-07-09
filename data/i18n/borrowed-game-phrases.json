@@ -30,7 +30,7 @@
     "sourceText": "{RevealableEpochCount}개의 역사가 드러나기를 기다리고 있습니다...",
     "serviceText": "오늘의 패치가 드러나기를 기다리고 있습니다 ...",
     "serviceFiles": [
-      "src/lib/borrowed-game-copy.ts"
+      "src/generated/borrowed-game-copy.json"
     ],
     "replacements": [
       {
@@ -49,7 +49,7 @@
     "sourceText": "{RevealableEpochCount} {RevealableEpochCount:plural:Epoch is|Epochs are} waiting to be revealed...",
     "serviceText": "Today's patch is waiting to be revealed ...",
     "serviceFiles": [
-      "src/lib/borrowed-game-copy.ts"
+      "src/generated/borrowed-game-copy.json"
     ],
     "replacements": [
       {
@@ -68,7 +68,7 @@
     "sourceText": "이 몬스터에 관한 정보는 아직 드러나지 않았습니다...",
     "serviceText": "이 패치에 관한 정보는 아직 드러나지 않았습니다 ...",
     "serviceFiles": [
-      "src/lib/borrowed-game-copy.ts"
+      "src/generated/borrowed-game-copy.json"
     ],
     "replacements": [
       {
@@ -87,7 +87,7 @@
     "sourceText": "Information on this monster is yet to be revealed...",
     "serviceText": "Information on this patch is yet to be revealed ...",
     "serviceFiles": [
-      "src/lib/borrowed-game-copy.ts"
+      "src/generated/borrowed-game-copy.json"
     ],
     "replacements": [
       {
