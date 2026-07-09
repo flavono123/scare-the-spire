@@ -20,13 +20,16 @@ Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown.
    - Put `## 공지` first when the entry includes a site-wide notice.
    - Use `## 서비스명` headings and `### 하위 서비스명` headings.
    - Keep a parent `## 서비스명` heading even when it has no bullets if it groups child `###` sections.
-   - Use one-line bullets only.
+   - Use one-line bullets by default.
+   - Preserve one nested bullet level (`  -`) when the user provides it or explicitly asks for child examples/details.
    - Route/service English naming is `byrdispatch`; the canonical public route is `/byrdispatch`.
 5. Normalize user notes without inventing product facts.
    - Keep updates concise and factual.
+   - When the user says to preserve exact wording, keep the visible text verbatim; do not rewrite spacing, phrasing, status labels, or parenthetical notes.
    - Move notes into the closest allowed service section.
    - Keep notice bullets operational and time-bounded; do not invent exact dates, URLs, or migration guarantees.
    - Write notice URLs as markdown links so users can click through.
+   - Preserve literal `(서비스)` markers on service references inside bullets. The renderer styles these as aqua service links, e.g. `패치노트(서비스)` and `케미컬X(서비스)`.
    - Preserve status markers such as `(new)`, `(개발 중)`, and `(버그)` when the user provides them; the renderer turns them into token badges.
    - Treat `(버그)` as the Infested power token badge in rendered output.
    - Ask only if the target date or intended meaning is genuinely ambiguous.
@@ -41,6 +44,8 @@ Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown.
    - Default to no screenshots or video.
    - Add media only when the user asks for it or the update is primarily visual/interactive.
    - Store media under `public/images/byrdispatch/YYYY-MM-DD/`.
+   - Reference rendered media with root-relative paths such as `/images/byrdispatch/YYYY-MM-DD/name.png`.
+   - For compact reaction/like palette images, keep the image centered and render it at about half the normal media width when requested.
 8. Commit every meaningful edit separately, following repository `AGENTS.md`.
 9. Run focused validation:
    - Always run `pnpm i18n:validate`.
