@@ -192,9 +192,9 @@
             "/spine/sts2/vfx/scratch.png"
           ],
           "animations": [
-            "animation"
+            "scratch"
           ],
-          "idleAnimation": "animation",
+          "idleAnimation": "scratch",
           "durationSeconds": 0.347,
           "usable": true
         }
@@ -312,9 +312,9 @@
             "/spine/sts2/vfx/scratch.png"
           ],
           "animations": [
-            "animation"
+            "scratch"
           ],
-          "idleAnimation": "animation",
+          "idleAnimation": "scratch",
           "durationSeconds": 0.347,
           "usable": true
         }
