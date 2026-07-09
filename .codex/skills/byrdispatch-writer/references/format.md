@@ -52,7 +52,8 @@ Codex writes plain markdown with status markers; the app renderer owns visual st
 - `## 공지`: pink text/border treatment and the Signal Boost power token before the heading.
 - Service headings: aqua links to the service route without underline styling, plus a leading token/icon asset.
 - Child service headings: same aqua no-underline link treatment, but use the child service icon from navigation/dropdown assets.
-- Service references inside bullets use a literal `(서비스)` marker, e.g. `패치노트(서비스)` or `케미컬X(서비스)`. The renderer preserves the full text and turns the marked phrase into an aqua service link.
+- Service references inside bullets are written as visible service names in plain text. The renderer turns recognized service names into aqua links with a leading token asset.
+- Do not add `(서비스)` markers. If a service mention has a qualifier, the qualifier stays plain and only the service name is styled, e.g. `슬더스2 패치노트` styles only `패치노트`.
 - Individual game resources inside bullets: patch-note rich reference behavior with gold styling, game hover tip, link, and active game locale label.
 - Epoch beta-art updates should use typed `[gold:epoch]...[/gold]` references; byrdispatch renders those hover tips in beta-art mode.
 - Beta-art mode shows the beta art instead of the official art. It must not render both images together.
@@ -119,7 +120,8 @@ Use `기타` only when no section fits.
 - 버그 수정은 제목이나 bullet 뒤에 (버그)
 - bullet은 한 줄
 - 필요한 게임/서비스 항목은 기존 rich patch 문법으로 링크/툴팁 처리
-- 서비스 본문 참조는 `패치노트(서비스)`처럼 `(서비스)`를 붙이면 아쿠아 서비스 링크로 렌더됨
+- 서비스 본문 참조는 `패치노트`, `케미컬X`처럼 서비스명을 그대로 쓰고 `(서비스)`를 붙이지 않음
+- `슬더스2 패치노트`처럼 앞에 설명이 붙으면 `슬더스2`는 평문이고 `패치노트`만 토큰과 아쿠아 링크로 렌더됨
 - 사용자가 원문 유지 지시를 주면 문장 표현을 바꾸지 않음
 - 사용자가 2단계 bullet을 주면 그대로 보존
 - 확실하지 않은 레퍼런스는 태그를 만들지 말고 평문으로 둬
@@ -179,7 +181,7 @@ Compact reaction palette media:
 
 ```md
 - 좋아요 기능에 기존 룬십이면체 대신 멀티플레이어 감정 표현을 적용합니다. (이미지)
-  - 사용성이 괜찮으면 댓글, 케미컬X(서비스) 전체의 좋아요 기능으로 확장합니다.
+  - 사용성이 괜찮으면 댓글, 케미컬X 전체의 좋아요 기능으로 확장합니다.
 
 ![](/images/byrdispatch/2026-07-09/story-reaction-palette.png)
 ```

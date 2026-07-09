@@ -29,7 +29,8 @@ Turn rough service-update notes into canonical 섀소식 / byrdispatch markdown.
    - Move notes into the closest allowed service section.
    - Keep notice bullets operational and time-bounded; do not invent exact dates, URLs, or migration guarantees.
    - Write notice URLs as markdown links so users can click through.
-   - Preserve literal `(서비스)` markers on service references inside bullets. The renderer styles these as aqua service links, e.g. `패치노트(서비스)` and `케미컬X(서비스)`.
+   - Do not add `(서비스)` markers. Refer to services by their visible service name in plain text; the renderer styles recognized service names as aqua links with a leading token asset.
+   - When a service mention has a qualifier, keep the qualifier plain and let only the service name style, e.g. `슬더스2 패치노트` styles only `패치노트`.
    - Preserve status markers such as `(new)`, `(개발 중)`, and `(버그)` when the user provides them; the renderer turns them into token badges.
    - Treat `(버그)` as the Infested power token badge in rendered output.
    - Ask only if the target date or intended meaning is genuinely ambiguous.
