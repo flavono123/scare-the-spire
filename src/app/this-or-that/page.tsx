@@ -34,7 +34,7 @@ export async function renderThisOrThatPage(
   ]);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6">
+    <div className="mx-auto max-w-6xl px-4 py-6">
       <ThisOrThatClient
         entities={entities}
         gameLocale={gameLocale}

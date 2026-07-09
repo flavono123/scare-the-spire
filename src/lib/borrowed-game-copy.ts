@@ -198,6 +198,10 @@ function extractDialogueLine(text: string): string {
   return lines.find((line) => /^[“"«「„—]/.test(line)) ?? "";
 }
 
+function extractLastPlainLine(text: string): string {
+  return stripGameMarkup(lastNonEmptyLine(text));
+}
+
 function replaceLanternKeyTerm(
   quote: string,
   gameLocale: GameLocale,
@@ -336,6 +340,6 @@ export async function getThisOrThatGameCopy(
 
   return {
     title: title || "This or That?",
-    prompt: extractDialogueLine(description),
+    prompt: extractLastPlainLine(description) || extractDialogueLine(description),
   };
 }

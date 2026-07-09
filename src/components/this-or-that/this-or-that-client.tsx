@@ -7,6 +7,7 @@ import { ContentLoadingNotice } from "@/components/content-loading-notice";
 import { StorageUnavailableNotice } from "@/components/storage-unavailable-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useServiceLocale } from "@/hooks/use-service-locale";
+import { useThisOrThatCommentCounts } from "@/hooks/use-this-or-that-comment-counts";
 import { useThisOrThatLikes } from "@/hooks/use-this-or-that-likes";
 import { useThisOrThatPosts } from "@/hooks/use-this-or-that-posts";
 import { useUserProfile } from "@/hooks/use-user-profile";
@@ -49,6 +50,7 @@ export function ThisOrThatClient({
   );
   const postIds = useMemo(() => posts.map((post) => post.id), [posts]);
   const likes = useThisOrThatLikes(postIds, userId);
+  const comments = useThisOrThatCommentCounts(postIds);
   const [composerOpen, setComposerOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -178,6 +180,7 @@ export function ThisOrThatClient({
               liked={likes.liked.has(resolvedPost.post.id)}
               likesLoading={likes.loading}
               likesUnavailable={likes.unavailable}
+              commentCount={comments.counts[resolvedPost.post.id] ?? 0}
               canLike={ready && !authUnavailable}
               onDelete={handleDelete}
               onToggleLike={handleToggleLike}

@@ -44,20 +44,35 @@ function assetOnlyDescription(entity: EntityInfo): string | null {
     ?? null;
 }
 
-function AssetOnlyNonCardPreview({ entity }: { entity: EntityInfo }) {
+function AssetOnlyNonCardPreview({
+  entity,
+  size,
+}: {
+  entity: EntityInfo;
+  size: "compact" | "large";
+}) {
   const description = assetOnlyDescription(entity);
   if (!description) return null;
 
+  const isLarge = size === "large";
+  const iconSize = isLarge ? 58 : 40;
+
   return (
-    <span className="relative flex h-full w-full items-center justify-center p-2">
+    <span className={cn(
+      "relative flex h-full w-full items-center justify-center",
+      isLarge ? "p-2 sm:p-3" : "p-0.5",
+    )}>
       {entity.imageUrl && (
-        <span className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-lg bg-black/25 drop-shadow-xl">
+        <span className={cn(
+          "absolute z-10 flex items-center justify-center rounded-lg bg-black/25 drop-shadow-xl",
+          isLarge ? "right-6 top-6 h-14 w-14" : "right-3 top-3 h-10 w-10",
+        )}>
           <Image
             src={entity.imageUrl}
             alt=""
-            width={40}
-            height={40}
-            className="max-h-9 max-w-9 object-contain"
+            width={iconSize}
+            height={iconSize}
+            className={cn("object-contain", isLarge ? "max-h-12 max-w-12" : "max-h-9 max-w-9")}
           />
         </span>
       )}
@@ -77,14 +92,20 @@ function AssetOnlyNonCardPreview({ entity }: { entity: EntityInfo }) {
         }}
       >
         <span
-          className="block pr-9 text-left text-[13px] font-bold leading-snug text-[#EFC851]"
+          className={cn(
+            "block text-left font-bold leading-snug text-[#EFC851]",
+            isLarge ? "pr-14 text-lg" : "pr-9 text-[13px]",
+          )}
           style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.45)", wordBreak: "keep-all" }}
         >
           {entity.nameKo}
         </span>
         <DescriptionText
           description={description}
-          className="mt-1 block pr-9 text-left text-[12px] leading-snug text-[#FFF6E2] [word-break:keep-all]"
+          className={cn(
+            "mt-1 block text-left leading-snug text-[#FFF6E2] [word-break:keep-all]",
+            isLarge ? "pr-14 text-base" : "pr-9 text-[12px]",
+          )}
         />
       </span>
     </span>
@@ -98,6 +119,7 @@ export function ThisOrThatResourcePanel({
   gameLocale,
   size = "compact",
   assetOnly = false,
+  linkAsset = false,
 }: {
   entity: EntityInfo;
   sideLabel: string;
@@ -105,16 +127,17 @@ export function ThisOrThatResourcePanel({
   gameLocale: GameLocale;
   size?: "compact" | "large";
   assetOnly?: boolean;
+  linkAsset?: boolean;
 }) {
   const characterColor = getCharacterColor(entity.color);
   const isLarge = size === "large";
   const hrefBase = getThisOrThatEntityHref(entity);
-  const href = !assetOnly && hrefBase
+  const href = (!assetOnly || linkAsset) && hrefBase
     ? localizeHrefWithGameLocale(hrefBase, serviceLocale, gameLocale)
     : null;
-  const cardWidth = isLarge ? 260 : assetOnly ? 154 : 126;
+  const cardWidth = isLarge ? 300 : assetOnly ? 164 : 126;
   const assetOnlyNonCardPreview = assetOnly && !entity.cardData
-    ? <AssetOnlyNonCardPreview entity={entity} />
+    ? <AssetOnlyNonCardPreview entity={entity} size={size} />
     : null;
   const preview = entity.cardData ? (
     <CardTile
@@ -144,51 +167,74 @@ export function ThisOrThatResourcePanel({
     </span>
   );
 
-  const content = (
-    <span className={cn("block", assetOnly ? "h-full" : "space-y-2")}>
-      {!assetOnly && (
-        <span className="flex items-center justify-between gap-2">
-          <span className="font-service text-[11px] font-semibold uppercase text-muted-foreground">
-            {sideLabel}
-          </span>
-          <span className="flex min-w-0 items-center gap-1.5 text-[11px] text-muted-foreground">
-            {characterColor && (
-              <span
-                aria-hidden="true"
-                className="h-2 w-2 shrink-0 rounded-full"
-                style={{ backgroundColor: characterColor }}
-              />
-            )}
-            <span className="truncate">{entityTypeLabel(entity.type, serviceLocale)}</span>
-          </span>
+  if (assetOnly) {
+    const assetContent = (
+      <span className={cn(
+        "flex h-full w-full items-center justify-center overflow-hidden",
+        isLarge ? "min-h-[28rem]" : "min-h-52",
+      )}>
+        {preview}
+      </span>
+    );
+
+    if (!href) {
+      return (
+        <span className="block h-full text-left">
+          {assetContent}
         </span>
-      )}
+      );
+    }
+
+    return (
+      <Link
+        href={href}
+        title={entity.nameKo}
+        className="block h-full text-left focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-400/70"
+      >
+        {assetContent}
+      </Link>
+    );
+  }
+
+  const content = (
+    <span className="block space-y-2">
+      <span className="flex items-center justify-between gap-2">
+        <span className="font-service text-[11px] font-semibold uppercase text-muted-foreground">
+          {sideLabel}
+        </span>
+        <span className="flex min-w-0 items-center gap-1.5 text-[11px] text-muted-foreground">
+          {characterColor && (
+            <span
+              aria-hidden="true"
+              className="h-2 w-2 shrink-0 rounded-full"
+              style={{ backgroundColor: characterColor }}
+            />
+          )}
+          <span className="truncate">{entityTypeLabel(entity.type, serviceLocale)}</span>
+        </span>
+      </span>
 
         <span className={cn(
           "flex items-center justify-center rounded-md bg-black/20",
-          assetOnly
-            ? "h-full min-h-56 overflow-hidden p-1"
-            : "min-h-36 overflow-visible p-2",
+          "min-h-36 overflow-visible p-2",
           isLarge && "min-h-72 py-4",
         )}>
           {preview}
         </span>
 
-      {!assetOnly && (
-        <span className="block min-w-0">
-          <span className={cn(
-            "block truncate font-game-title font-semibold text-zinc-100",
-            isLarge ? "text-lg" : "text-sm",
-          )}>
-            {entity.nameKo}
-          </span>
-          {entity.nameEn && (
-            <span className="block truncate text-[11px] text-muted-foreground">
-              {entity.nameEn}
-            </span>
-          )}
+      <span className="block min-w-0">
+        <span className={cn(
+          "block truncate font-game-title font-semibold text-zinc-100",
+          isLarge ? "text-lg" : "text-sm",
+        )}>
+          {entity.nameKo}
         </span>
-      )}
+        {entity.nameEn && (
+          <span className="block truncate text-[11px] text-muted-foreground">
+            {entity.nameEn}
+          </span>
+        )}
+      </span>
       </span>
   );
 

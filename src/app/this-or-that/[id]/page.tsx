@@ -35,7 +35,10 @@ export async function renderThisOrThatPostPage(
   id: string,
   gameLocale: GameLocale = DEFAULT_ROUTE_GAME_LOCALE,
 ) {
-  const entities = await loadThisOrThatEntities({ gameLocale });
+  const [entities, gameCopy] = await Promise.all([
+    loadThisOrThatEntities({ gameLocale }),
+    getThisOrThatGameCopy(gameLocale),
+  ]);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
@@ -43,6 +46,7 @@ export async function renderThisOrThatPostPage(
         postId={id}
         entities={entities}
         gameLocale={gameLocale}
+        title={gameCopy.title}
       />
     </div>
   );

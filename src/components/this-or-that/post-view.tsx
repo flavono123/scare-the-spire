@@ -25,10 +25,12 @@ export function ThisOrThatPostView({
   postId,
   entities,
   gameLocale,
+  title,
 }: {
   postId: string;
   entities: EntityInfo[];
   gameLocale: GameLocale;
+  title: string;
 }) {
   const serviceLocale = useServiceLocale();
   const copy = serviceMessages[serviceLocale].thisOrThat;
@@ -64,7 +66,7 @@ export function ThisOrThatPostView({
           href={localizeHrefWithGameLocale("/this-or-that", serviceLocale, gameLocale)}
           className="text-sm text-yellow-400 underline-offset-4 hover:underline"
         >
-          {copy.backToIndex}
+          {title}
         </Link>
       </div>
     );
@@ -79,17 +81,44 @@ export function ThisOrThatPostView({
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-yellow-400"
       >
         <ArrowLeft size={16} />
-        {copy.backToIndex}
+        {title}
       </Link>
 
-      <article className="overflow-hidden rounded-lg border border-border bg-card/25">
-        <div className="grid gap-3 p-4 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-stretch">
+      <article className="space-y-5">
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <h1 className="whitespace-pre-wrap break-words font-game-title text-2xl font-semibold leading-snug spire-gold md:text-3xl">
+              {resolvedPost.post.reason}
+            </h1>
+            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+              <span className="truncate">{resolvedPost.post.nickname}</span>
+              <span aria-hidden="true">·</span>
+              <span>
+                {new Date(resolvedPost.post.created_at).toLocaleDateString(serviceLocale === "ko" ? "ko-KR" : "en-US")}
+              </span>
+            </div>
+          </div>
+          <ThisOrThatLikeButton
+            count={likes.counts[resolvedPost.post.id] ?? 0}
+            liked={likes.liked.has(resolvedPost.post.id)}
+            loading={likes.loading}
+            unavailable={likes.unavailable}
+            disabled={!authReady || authUnavailable}
+            onToggle={handleToggleLike}
+            label={copy.like}
+            className="shrink-0"
+          />
+        </header>
+
+        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-stretch">
           <ThisOrThatResourcePanel
             entity={leftEntity}
             sideLabel={copy.leftLabel}
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
             size="large"
+            assetOnly
+            linkAsset
           />
           <div className="flex items-center justify-center font-game-title text-2xl font-black text-yellow-500/80 md:w-12">
             VS
@@ -100,32 +129,9 @@ export function ThisOrThatPostView({
             serviceLocale={serviceLocale}
             gameLocale={gameLocale}
             size="large"
+            assetOnly
+            linkAsset
           />
-        </div>
-
-        <div className="border-t border-border px-4 py-4">
-          <div className="mb-2 flex items-center justify-between gap-3">
-            <span className="truncate text-sm font-semibold text-zinc-300">
-              {resolvedPost.post.nickname}
-            </span>
-            <div className="flex shrink-0 items-center gap-2">
-              <ThisOrThatLikeButton
-                count={likes.counts[resolvedPost.post.id] ?? 0}
-                liked={likes.liked.has(resolvedPost.post.id)}
-                loading={likes.loading}
-                unavailable={likes.unavailable}
-                disabled={!authReady || authUnavailable}
-                onToggle={handleToggleLike}
-                label={copy.like}
-              />
-              <span className="text-xs text-muted-foreground">
-                {new Date(resolvedPost.post.created_at).toLocaleDateString(serviceLocale === "ko" ? "ko-KR" : "en-US")}
-              </span>
-            </div>
-          </div>
-          <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-zinc-300">
-            {resolvedPost.post.reason}
-          </p>
         </div>
       </article>
 

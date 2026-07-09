@@ -2,7 +2,7 @@
 
 import { useCallback, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Link2, Trash2 } from "lucide-react";
+import { Check, Link2, MessageCircle, Trash2 } from "lucide-react";
 import type { GameLocale, ServiceLocale } from "@/lib/i18n";
 import { localizeHrefWithGameLocale } from "@/lib/i18n";
 import type { ThisOrThatResolvedPost } from "@/lib/this-or-that";
@@ -41,6 +41,7 @@ export function ThisOrThatPostCard({
   liked,
   likesLoading,
   likesUnavailable,
+  commentCount,
   canLike,
   onDelete,
   onToggleLike,
@@ -53,6 +54,7 @@ export function ThisOrThatPostCard({
   liked: boolean;
   likesLoading: boolean;
   likesUnavailable: boolean;
+  commentCount: number;
   canLike: boolean;
   onDelete: (postId: string) => void;
   onToggleLike: (postId: string) => void;
@@ -95,7 +97,7 @@ export function ThisOrThatPostCard({
     >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <h2 className="line-clamp-2 font-game-title text-xl font-semibold leading-snug spire-gold">
+          <h2 className="line-clamp-2 font-game-title text-base font-semibold leading-snug spire-gold">
             {post.reason}
           </h2>
           <span className="mt-1 block text-xs text-muted-foreground">
@@ -103,6 +105,13 @@ export function ThisOrThatPostCard({
           </span>
         </div>
         <div className="flex shrink-0 items-center gap-2" onClick={stopClick}>
+          <span
+            className="inline-flex items-center gap-1 text-xs text-muted-foreground"
+            title={copy.commentsTitle}
+          >
+            <MessageCircle size={15} />
+            <span className="tabular-nums">{commentCount}</span>
+          </span>
           <span onClick={stopClick}>
             <ThisOrThatLikeButton
               count={likeCount}
@@ -159,8 +168,8 @@ export function ThisOrThatPostCard({
         />
       </div>
 
-      <div className="mt-auto flex justify-end pt-3">
-        <span className="max-w-[70%] truncate rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[11px] text-muted-foreground">
+      <div className="mt-auto flex justify-end pt-2">
+        <span className="max-w-[70%] truncate text-[11px] text-muted-foreground/80">
           {post.nickname}
         </span>
       </div>
