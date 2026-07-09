@@ -7,7 +7,7 @@ import { buildCompendiumResourceManifest } from "../src/lib/compendium-resource-
 import { getLatestByrdispatchNotice } from "../src/lib/byrdispatch";
 import { getSTS2PatchLines } from "../src/lib/data";
 import { GAME_LOCALES } from "../src/lib/i18n";
-import { loadThisOrThatEntities } from "../src/lib/this-or-that-data";
+import { loadCompactThisOrThatEntities } from "../src/lib/this-or-that-data";
 
 type StaticJsonTarget = {
   path: string;
@@ -39,7 +39,7 @@ async function buildThisOrThatResourceTargets(): Promise<StaticJsonTarget[]> {
   for (const gameLocale of GAME_LOCALES) {
     targets.push({
       path: `generated/this-or-that-resources-${gameLocale}.json`,
-      data: await loadThisOrThatEntities({ gameLocale }),
+      data: await loadCompactThisOrThatEntities({ gameLocale }),
     });
   }
   return targets;
