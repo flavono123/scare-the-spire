@@ -135,7 +135,7 @@ export function ThisOrThatClient({
               {title}
             </h1>
             {prompt && (
-              <p className="mt-1 truncate font-game-title text-sm text-blue-200">
+              <p className="mt-1 line-clamp-2 font-game-title text-sm text-blue-200">
                 {prompt}
               </p>
             )}
