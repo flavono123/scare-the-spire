@@ -292,7 +292,9 @@ export const DecimillipedeSpineStage = memo(function DecimillipedeSpineStage({
     const createdPlayers: SpinePlayer[] = [];
     const mountedPartRefs = { ...partRefs.current };
     let readyCount = 0;
-    setLoadState("loading");
+    queueMicrotask(() => {
+      if (!disposed) setLoadState("loading");
+    });
 
     void loadSpinePlayerRuntime()
       .then(({ SpinePlayer: SpinePlayerCtor }) => {

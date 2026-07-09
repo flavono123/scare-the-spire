@@ -36,7 +36,6 @@ interface MonsterSpineStageProps {
 }
 
 type LoadState = "loading" | "ready" | "error";
-type SpinePlayerCtor = new (element: HTMLElement, config: SpinePlayerConfig) => SpinePlayer;
 type SpineViewportPadding = {
   padLeft?: string;
   padRight?: string;

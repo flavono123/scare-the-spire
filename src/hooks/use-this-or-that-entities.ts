@@ -5,6 +5,7 @@ import type { EntityInfo } from "@/components/patch-note-renderer";
 import type { GameLocale } from "@/lib/i18n";
 
 type EntityLoadState = {
+  gameLocale: GameLocale;
   entities: EntityInfo[];
   loading: boolean;
   error: Error | null;
@@ -30,6 +31,7 @@ function loadThisOrThatStaticEntities(gameLocale: GameLocale): Promise<EntityInf
 
 export function useThisOrThatEntities(gameLocale: GameLocale): EntityLoadState {
   const [state, setState] = useState<EntityLoadState>({
+    gameLocale,
     entities: [],
     loading: true,
     error: null,
@@ -37,28 +39,32 @@ export function useThisOrThatEntities(gameLocale: GameLocale): EntityLoadState {
 
   useEffect(() => {
     let disposed = false;
-    setState((current) => ({
-      entities: current.entities,
-      loading: true,
-      error: null,
-    }));
 
     void loadThisOrThatStaticEntities(gameLocale)
       .then((entities) => {
         if (disposed) return;
-        setState({ entities, loading: false, error: null });
+        setState({ gameLocale, entities, loading: false, error: null });
       })
       .catch((error: unknown) => {
         if (disposed) return;
         const nextError = error instanceof Error ? error : new Error(String(error));
         console.warn(nextError.message, nextError);
-        setState({ entities: [], loading: false, error: nextError });
+        setState({ gameLocale, entities: [], loading: false, error: nextError });
       });
 
     return () => {
       disposed = true;
     };
   }, [gameLocale]);
+
+  if (state.gameLocale !== gameLocale) {
+    return {
+      gameLocale,
+      entities: state.entities,
+      loading: true,
+      error: null,
+    };
+  }
 
   return state;
 }
