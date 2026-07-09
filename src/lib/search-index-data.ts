@@ -356,8 +356,8 @@ export async function buildSearchIndexPayload(): Promise<SearchIndexPayload> {
     type: "thisOrThat",
     title: "이거 아님 저거?",
     titleEn: "This or That?",
-    description: "리소스 비교 대전 선택 이거 저거 카드 유물 포션 이벤트",
-    descriptionEn: "resource comparison matchup this that card relic potion event",
+    description: "리소스 비교 이거저거 선택 이거 저거 카드 유물 포션 이벤트",
+    descriptionEn: "resource comparison thisat this that card relic potion event",
     imageUrl: "/images/sts2/relics/choices_paradox.webp",
     href: "/this-or-that",
   }];
