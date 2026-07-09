@@ -178,6 +178,14 @@ jobs:
       - run: pnpm patch:test
         if: steps.changes.outputs.patch == 'true' || steps.changes.outputs.patch_after_main == 'true'
 
+      - name: Build main Worker for Cloudflare
+        if: steps.changes.outputs.main == 'true'
+        run: pnpm cf:build
+
+      - name: Check main Worker size
+        if: steps.changes.outputs.main == 'true'
+        run: pnpm cf:size
+
       - name: Deploy patch Worker before main
         if: steps.changes.outputs.patch == 'true'
         run: pnpm cf:patch:deploy
@@ -187,7 +195,7 @@ jobs:
 
       - name: Deploy to Cloudflare Workers
         if: steps.changes.outputs.main == 'true'
-        run: pnpm cf:deploy
+        run: pnpm cf:deploy:built
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
