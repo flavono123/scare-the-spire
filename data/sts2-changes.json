@@ -2078,18 +2078,13 @@
     "fieldDiffs": [
       {
         "field": "description",
-        "before": "피해를 11 줍니다.\n내 턴 동안 뽑은 카드 1장당 피해량이 3 증가합니다.",
-        "after": "피해를 12 줍니다.\n내 턴 동안 뽑은 카드\n1장당 피해량이\n4 증가합니다."
+        "before": "피해를 8 줍니다.\n내 턴 동안 뽑은 카드 1장당 피해량이 3 증가합니다.",
+        "after": "피해를 8 줍니다.\n내 턴 동안 뽑은 카드\n1장당 피해량이\n4 증가합니다."
       },
       {
         "field": "vars.ExtraDamage",
         "before": 3,
         "after": 4
-      },
-      {
-        "field": "vars.CalculatedDamage",
-        "before": 11,
-        "after": 12
       },
       {
         "field": "upgrade.extradamage",

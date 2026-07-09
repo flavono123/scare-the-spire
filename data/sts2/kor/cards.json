@@ -4664,7 +4664,7 @@
   {
     "id": "DEATH_MARCH",
     "name": "죽음의 행진",
-    "description": "피해를 12 줍니다.\n내 턴 동안 뽑은 카드\n1장당 피해량이\n4 증가합니다.",
+    "description": "피해를 8 줍니다.\n내 턴 동안 뽑은 카드\n1장당 피해량이\n4 증가합니다.",
     "description_raw": "피해를 {CalculatedDamage:diff()} 줍니다.\n내 턴 동안 뽑은 카드\n1장당 피해량이\n{ExtraDamage:diff()} 증가합니다.",
     "cost": 1,
     "is_x_cost": null,
@@ -4687,10 +4687,10 @@
     "vars": {
       "CalculationBase": 8,
       "ExtraDamage": 4,
-      "CalculatedDamage": 12
+      "CalculatedDamage": 8
     },
     "upgrade": {
-      "damage": "+1",
+      "calculateddamage": "+1",
       "calculationbase": "+1",
       "extradamage": "+2"
     },

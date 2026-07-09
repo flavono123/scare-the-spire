@@ -4663,7 +4663,7 @@
   {
     "id": "DEATH_MARCH",
     "name": "Death March",
-    "description": "Deal 12 damage.\nDeals 4 additional damage for each card drawn during your turn.",
+    "description": "Deal 8 damage.\nDeals 4 additional damage for each card drawn during your turn.",
     "description_raw": "Deal {CalculatedDamage:diff()} damage.\nDeals {ExtraDamage:diff()} additional damage for each card drawn during your turn.",
     "cost": 1,
     "is_x_cost": null,
@@ -4686,10 +4686,10 @@
     "vars": {
       "CalculationBase": 8,
       "ExtraDamage": 4,
-      "CalculatedDamage": 12
+      "CalculatedDamage": 8
     },
     "upgrade": {
-      "damage": "+1",
+      "calculateddamage": "+1",
       "calculationbase": "+1",
       "extradamage": "+2"
     },
