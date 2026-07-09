@@ -47,7 +47,9 @@ const STATUS_TOKEN_ASSETS: Record<ByrdispatchStatus, { src: string }> = {
 type ByrdispatchStatusLabels = Readonly<Record<ByrdispatchStatus, string>>;
 
 const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
+  "공통": { href: null, icon: BYRDISPATCH_ICON },
   "섀소식": { href: "/byrdispatch", icon: BYRDISPATCH_ICON },
+  "패치노트": { href: "/patches", icon: "/images/sts2/nav/patch_notes_icon.png" },
   백과사전: { href: null, icon: "/images/sts2/icons/app_icon.png" },
   캐릭터: { href: "/compendium/characters", icon: "/images/sts2/characters/character_icon_ironclad.webp" },
   카드: { href: "/compendium/cards", icon: "/images/sts2/nav/stats_cards.png" },
@@ -60,7 +62,11 @@ const SERVICE_ICONS: Record<string, { href: string | null; icon: string }> = {
   이벤트: { href: "/compendium/events", icon: "/images/sts2/nav/question_mark.png" },
   "고대의 존재": { href: "/compendium/ancients", icon: "/images/sts2/nav/stats_ancients.png" },
   연대기: { href: "/compendium/epochs", icon: "/images/sts2/relics/planisphere.webp" },
+  "케미컬X": { href: "/chemical-x", icon: "/images/sts2/relics/chemical_x.webp" },
   "역사 강의서": { href: "/history-course", icon: "/images/sts2/relics/history_course.webp" },
+  "이거 아님 저거?": { href: "/this-or-that", icon: "/images/sts2/relics/choices_paradox.webp" },
+  "댓글": { href: null, icon: "/images/sts2/relics/storybook.webp" },
+  "개발/운영": { href: null, icon: "/images/sts2/relics/toolbox.webp" },
 };
 
 function normalizeServiceTitle(title: string): string {
