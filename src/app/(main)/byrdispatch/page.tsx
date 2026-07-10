@@ -266,7 +266,7 @@ function ByrdispatchRichText({
     const isComposerAction = match[0] === STORY_COMPOSER_ACTION_TOKEN;
     const label = match[1];
     const href = SERVICE_REFERENCE_LINKS[label];
-    const service = serviceIconFor(label);
+    const service = label ? serviceIconFor(label) : null;
 
     if (index > lastIndex) {
       parts.push(renderTextSegment(text.slice(lastIndex, index), `text-${matchIndex}`));
