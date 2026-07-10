@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
 import { CommentSection } from "@/components/comment-section";
+import { ByrdispatchStoryComposerButton } from "@/components/byrdispatch-story-composer-button";
 import { PatchNoteRenderer, type EntityInfo } from "@/components/patch-note-renderer";
 import Image from "@/components/ui/static-image";
 import {
@@ -14,6 +15,7 @@ import { DEFAULT_ROUTE_GAME_LOCALE } from "@/lib/locale-routing";
 import { buildByrdispatchCommentThreadKey } from "@/lib/comment-threads";
 import { getCodexGameUiLabels, type CodexGameUiLabels } from "@/lib/codex-game-ui";
 import { loadAllEntities } from "@/lib/load-all-entities";
+import { getStoryComposerPlaceholder } from "@/lib/sts2-game-ui-copy";
 import {
   getByrdispatchEntries,
   BYRDISPATCH_ICON,
@@ -88,6 +90,8 @@ const SERVICE_REFERENCE_LINKS: Record<string, string> = {
 };
 
 const SERVICE_REFERENCE_RE = /(이거 아님 저거\?|역사 강의서|슬서운 이야기|패치노트|패치 노트|케미컬X|케미컬엑스|백과사전|섀소식)/g;
+const STORY_COMPOSER_ACTION_TOKEN = "[새 이야기 쓰기 버튼 노출/링크]";
+const INLINE_ACTION_RE = new RegExp(`${STORY_COMPOSER_ACTION_TOKEN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}|${SERVICE_REFERENCE_RE.source}`, "g");
 
 function normalizeServiceTitle(title: string): string {
   return title
@@ -224,12 +228,14 @@ function ByrdispatchRichText({
   gameUi,
   serviceLocale,
   gameLocale,
+  storyPlaceholder,
 }: {
   text: string;
   entities: EntityInfo[];
   gameUi: CodexGameUiLabels;
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
+  storyPlaceholder: string;
 }) {
   const renderTextSegment = (segment: string, key: string) => {
     const leadingWhitespace = segment.match(/^\s+/)?.[0] ?? "";
@@ -255,8 +261,9 @@ function ByrdispatchRichText({
   let lastIndex = 0;
   let matchIndex = 0;
 
-  for (const match of text.matchAll(SERVICE_REFERENCE_RE)) {
+  for (const match of text.matchAll(INLINE_ACTION_RE)) {
     const index = match.index ?? 0;
+    const isComposerAction = match[0] === STORY_COMPOSER_ACTION_TOKEN;
     const label = match[1];
     const href = SERVICE_REFERENCE_LINKS[label];
     const service = serviceIconFor(label);
@@ -265,7 +272,14 @@ function ByrdispatchRichText({
       parts.push(renderTextSegment(text.slice(lastIndex, index), `text-${matchIndex}`));
     }
 
-    parts.push(href && service ? (
+    parts.push(isComposerAction ? (
+      <ByrdispatchStoryComposerButton
+        key={`story-composer-${matchIndex}`}
+        serviceLocale={serviceLocale}
+        storyPlaceholder={storyPlaceholder}
+        entities={entities}
+      />
+    ) : href && service ? (
       <Link
         key={`service-${matchIndex}`}
         href={localizeHrefWithGameLocale(href, serviceLocale, gameLocale)}
@@ -315,6 +329,7 @@ function ByrdispatchBulletLine({
   serviceLocale,
   gameLocale,
   statusLabels,
+  storyPlaceholder,
 }: {
   bullet: ByrdispatchBullet;
   notice: boolean;
@@ -323,6 +338,7 @@ function ByrdispatchBulletLine({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   statusLabels: ByrdispatchStatusLabels;
+  storyPlaceholder: string;
 }) {
   const childBullet = bullet.depth > 0;
   return (
@@ -354,6 +370,7 @@ function ByrdispatchBulletLine({
           gameUi={gameUi}
           serviceLocale={serviceLocale}
           gameLocale={gameLocale}
+          storyPlaceholder={storyPlaceholder}
         />
         <StatusTokens statuses={bullet.statuses} labels={statusLabels} />
       </div>
@@ -395,6 +412,7 @@ function ByrdispatchSectionItemLine({
   serviceLocale,
   gameLocale,
   statusLabels,
+  storyPlaceholder,
 }: {
   item: ByrdispatchSectionItem;
   notice: boolean;
@@ -403,6 +421,7 @@ function ByrdispatchSectionItemLine({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   statusLabels: ByrdispatchStatusLabels;
+  storyPlaceholder: string;
 }) {
   if (item.type === "image") {
     return (
@@ -421,6 +440,7 @@ function ByrdispatchSectionItemLine({
       serviceLocale={serviceLocale}
       gameLocale={gameLocale}
       statusLabels={statusLabels}
+      storyPlaceholder={storyPlaceholder}
     />
   );
 }
@@ -433,6 +453,7 @@ function ByrdispatchSectionList({
   serviceLocale,
   gameLocale,
   statusLabels,
+  storyPlaceholder,
 }: {
   sections: ByrdispatchSection[];
   notice?: boolean;
@@ -441,6 +462,7 @@ function ByrdispatchSectionList({
   serviceLocale: ServiceLocale;
   gameLocale: GameLocale;
   statusLabels: ByrdispatchStatusLabels;
+  storyPlaceholder: string;
 }) {
   if (sections.length === 0) return null;
 
@@ -477,6 +499,7 @@ function ByrdispatchSectionList({
                     serviceLocale={serviceLocale}
                     gameLocale={gameLocale}
                     statusLabels={statusLabels}
+                    storyPlaceholder={storyPlaceholder}
                   />
                 </Fragment>
               ))}
@@ -500,10 +523,11 @@ export async function renderByrdispatchPage(
   const statusLabels = messages.status;
   const commonMessages = serviceMessages[serviceLocale].codex.common;
   const hideMigrationNotice = isConfiguredByrdispatchMigrationTargetHost();
-  const [entries, entities, gameUi] = await Promise.all([
+  const [entries, entities, gameUi, storyPlaceholder] = await Promise.all([
     getByrdispatchEntries(),
     loadAllEntities({ gameLocale }),
     getCodexGameUiLabels(gameLocale),
+    getStoryComposerPlaceholder(gameLocale),
   ]);
 
   return (
@@ -557,6 +581,7 @@ export async function renderByrdispatchPage(
                       serviceLocale={serviceLocale}
                       gameLocale={gameLocale}
                       statusLabels={statusLabels}
+                      storyPlaceholder={storyPlaceholder}
                     />
                   </div>
                 )}
@@ -569,6 +594,7 @@ export async function renderByrdispatchPage(
                       serviceLocale={serviceLocale}
                       gameLocale={gameLocale}
                       statusLabels={statusLabels}
+                      storyPlaceholder={storyPlaceholder}
                     />
                   </div>
                 )}
