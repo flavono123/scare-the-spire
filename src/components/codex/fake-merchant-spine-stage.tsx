@@ -169,7 +169,7 @@ export function FakeMerchantSpineStage({ fallbackImageUrl }: { fallbackImageUrl:
   }, []);
 
   return (
-    <div className="absolute inset-0 overflow-hidden bg-black" aria-hidden>
+    <div className="absolute inset-0 overflow-hidden bg-black" data-fake-merchant-spine-stage aria-hidden>
       <Image
         src={fallbackImageUrl}
         alt=""
