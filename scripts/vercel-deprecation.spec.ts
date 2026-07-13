@@ -28,6 +28,7 @@ test("renders the Korean migration landing for an unknown path", async ({ page }
 
   expect(response?.status()).toBe(404);
   await expect(page.locator("[data-migration-not-found]")).toBeVisible();
+  await expect(page.locator(".byrdispatch-floating-notice")).toBeHidden();
   await expect(
     page.getByRole("heading", { name: "슬서운이야기는 새 사이트로 이전했습니다" }),
   ).toBeVisible();
