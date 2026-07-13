@@ -9,6 +9,11 @@ const GAME_VIEWPORT_WIDTH = 1920;
 const GAME_VIEWPORT_HEIGHT = 1080;
 const TARGET_FRAME_SECONDS = 1 / 30;
 const MAX_DEVICE_PIXEL_RATIO = 1.5;
+const WEBGL_CONFIG: WebGLContextAttributes = {
+  alpha: true,
+  antialias: true,
+  preserveDrawingBuffer: false,
+};
 
 interface FakeMerchantLayerConfig {
   atlasUrl: string;
@@ -62,6 +67,10 @@ export function FakeMerchantSpineStage({ fallbackImageUrl }: { fallbackImageUrl:
   useEffect(() => {
     const canvasElement = canvasRef.current;
     if (!canvasElement) return;
+    if (!prepareWebGl(canvasElement)) {
+      const fallbackFrame = requestAnimationFrame(() => setLoadState("error"));
+      return () => cancelAnimationFrame(fallbackFrame);
+    }
 
     let disposed = false;
     let spineCanvas: SpineCanvas | null = null;
@@ -71,6 +80,7 @@ export function FakeMerchantSpineStage({ fallbackImageUrl }: { fallbackImageUrl:
     let renderedReducedMotionFrame = false;
     let isIntersecting = true;
     let isDocumentVisible = !document.hidden;
+    let hasMarkedReady = false;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const intersectionObserver = new IntersectionObserver(([entry]) => {
@@ -90,11 +100,7 @@ export function FakeMerchantSpineStage({ fallbackImageUrl }: { fallbackImageUrl:
         if (disposed || !canvasRef.current) return;
 
         spineCanvas = new runtime.SpineCanvas(canvasElement, {
-          webglConfig: {
-            alpha: true,
-            antialias: true,
-            preserveDrawingBuffer: false,
-          },
+          webglConfig: WEBGL_CONFIG,
           app: {
             loadAssets: (app) => {
               for (const layer of FAKE_MERCHANT_LAYERS) {
@@ -137,7 +143,10 @@ export function FakeMerchantSpineStage({ fallbackImageUrl }: { fallbackImageUrl:
               renderLayers(app, layers);
               shouldRender = false;
               renderedReducedMotionFrame = reducedMotion;
-              setLoadState("ready");
+              if (!hasMarkedReady) {
+                hasMarkedReady = true;
+                setLoadState("ready");
+              }
             },
             error: (_app, errors) => {
               if (disposed) return;
@@ -183,6 +192,12 @@ export function FakeMerchantSpineStage({ fallbackImageUrl }: { fallbackImageUrl:
         className={`absolute inset-0 h-full w-full transition-opacity duration-300 ${loadState === "ready" ? "opacity-100" : "opacity-0"}`}
       />
     </div>
+  );
+}
+
+function prepareWebGl(canvas: HTMLCanvasElement) {
+  return Boolean(
+    canvas.getContext("webgl2", WEBGL_CONFIG) ?? canvas.getContext("webgl", WEBGL_CONFIG),
   );
 }
 
