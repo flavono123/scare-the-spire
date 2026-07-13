@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import {
   generateLocaleStaticParams,
   getLocalePairFromParams,
   type LocaleRouteParams,
 } from "@/lib/locale-routing";
+import { gameLocaleFromPathSegment } from "@/lib/i18n";
 import { getDefaultServiceMetadata } from "@/lib/service-metadata";
 
 export const generateStaticParams = generateLocaleStaticParams;
-export const dynamicParams = false;
 
 type Props = {
   params: Promise<LocaleRouteParams>;
@@ -18,8 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return getDefaultServiceMetadata(serviceLocale);
 }
 
-export default function GameLocaleLayout({
+export default async function GameLocaleLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+  params,
+}: Readonly<{ children: React.ReactNode; params: Promise<LocaleRouteParams> }>) {
+  const { gameLocale } = await params;
+  if (!gameLocaleFromPathSegment(gameLocale)) notFound();
+
   return <>{children}</>;
 }
