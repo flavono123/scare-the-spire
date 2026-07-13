@@ -29,11 +29,20 @@ from lib.pck import PCKReader, default_pck_path  # noqa: E402
 
 IMPORT_RE = re.compile(r'path(?:\.\w+)?\s*=\s*"res://([^"]+)"')
 DEFAULT_KINDS = ("monsters", "vfx")
-AVAILABLE_KINDS = ("monsters", "vfx", "characters", "character-select", "ancients", "event-backgrounds")
+AVAILABLE_KINDS = (
+    "monsters",
+    "vfx",
+    "characters",
+    "character-select",
+    "ancients",
+    "event-backgrounds",
+    "encounter-backgrounds",
+)
 PCK_PREFIX_BY_KIND = {
     "ancients": "animations/backgrounds/",
     "character-select": "animations/character_select/",
     "characters": "animations/characters/",
+    "encounter-backgrounds": "scenes/backgrounds/queen_boss/",
     "event-backgrounds": "animations/backgrounds/",
     "monsters": "animations/monsters/",
     "vfx": "animations/vfx/",
