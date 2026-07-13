@@ -621,7 +621,7 @@
     const mirror = options.mode === "mirror";
     const logicalWidth = mirror ? 1920 : 2560;
     const logicalHeight = mirror ? 1080 : 1200;
-    const context = canvas.getContext("2d", { alpha: true, desynchronized: true });
+    const context = canvas.getContext("2d", { alpha: true });
     if (!context) throw new Error("Canvas 2D is unavailable for event VFX");
     const scene = await hydrateScene(options.sceneUrl, 0);
     const baseImage = mirror ? await loadImage(options.baseImageUrl) : null;
