@@ -32,6 +32,7 @@ import { RichText } from "@/components/rich-text";
 import { CardTile } from "@/components/codex/card-tile";
 import { GameChoiceFrame } from "@/components/codex/event-choice-frame";
 import { FakeMerchantSpineStage } from "@/components/codex/fake-merchant-spine-stage";
+import { EventVfxStage } from "@/components/codex/event-vfx-stage";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import {
   getDefaultTinkerRiderForType,
@@ -99,6 +100,49 @@ const TABLET_OF_TRUTH_MAX_HP_REMAINING_LABEL_KO = "현재 최대 체력 - 1";
 const TABLET_OF_TRUTH_MAX_HP_REMAINING_LABEL_EN = "current Max HP - 1";
 const TRIAL_CHOICES_PAGE_ID = "__TRIAL_CHOICES__";
 const EVENT_VFX_ROOT = "/images/sts2/event-vfx";
+
+const EVENT_VFX_SCENE_IDS = new Set([
+  "ABYSSAL_BATHS",
+  "BUGSLAYER",
+  "BYRDONIS_NEST",
+  "COLORFUL_PHILOSOPHERS",
+  "COLOSSAL_FLOWER",
+  "CRYSTAL_SPHERE",
+  "DENSE_VEGETATION",
+  "DOLL_ROOM",
+  "DOORS_OF_LIGHT_AND_DARK",
+  "DROWNING_BEACON",
+  "ENDLESS_CONVEYOR",
+  "GRAVE_OF_THE_FORGOTTEN",
+  "HUNGRY_FOR_MUSHROOMS",
+  "INFESTED_AUTOMATON",
+  "LOST_WISP",
+  "MORPHIC_GROVE",
+  "POTION_COURIER",
+  "PUNCH_OFF",
+  "RANWID_THE_ELDER",
+  "RELIC_TRADER",
+  "SELF_HELP_BOOK",
+  "SPIRALING_WHIRLPOOL",
+  "SUNKEN_TREASURY",
+  "SYMBIOTE",
+  "TABLET_OF_TRUTH",
+  "TEA_MASTER",
+  "THE_FUTURE_OF_POTIONS",
+  "THE_LEGENDS_WERE_TRUE",
+  "THIS_OR_THAT",
+  "TRIAL",
+  "UNREST_SITE",
+  "WAR_HISTORIAN_REPY",
+  "WATERLOGGED_SCRIPTORIUM",
+  "WHISPERING_HOLLOW",
+]);
+
+function getEventVfxSceneSlug(eventId: string, trialNpc: TrialNpcOverlay | null): string | null {
+  if (!EVENT_VFX_SCENE_IDS.has(eventId)) return null;
+  if (eventId === "TRIAL" && trialNpc) return `trial_${trialNpc.caseId.toLowerCase()}`;
+  return eventId.toLowerCase();
+}
 
 const BATTLEWORN_DUMMY_SETTINGS: Record<string, { hp: number; titleEn: string; titleKo: string }> = {
   SETTING_1: { hp: 75, titleEn: "75 HP", titleKo: "체력 75" },
@@ -1176,6 +1220,7 @@ function resolveEventOptionPage(
 // --- Option card (static) ---
 function OptionCard({
   backgroundImageUrl,
+  onClick,
   onHoverEnd,
   onHoverStart,
   onPreviewChange,
@@ -1183,6 +1228,7 @@ function OptionCard({
   preview,
 }: {
   backgroundImageUrl?: string | null;
+  onClick?: () => void;
   onHoverEnd?: () => void;
   onHoverStart?: () => void;
   onPreviewChange?: (preview: EventPreview | null) => void;
@@ -1192,6 +1238,7 @@ function OptionCard({
   return (
     <GameChoiceFrame
       backgroundImageUrl={backgroundImageUrl}
+      onClick={onClick}
       onHoverEnd={onHoverEnd}
       onHoverStart={onHoverStart}
       preview={preview}
@@ -1254,6 +1301,7 @@ export function EventContentViewer({
   madScienceBaseCard,
   messages,
   onPreviewChange,
+  onVfxTrigger,
   onTrialNpcChange,
   potions,
   relics = [],
@@ -1264,6 +1312,7 @@ export function EventContentViewer({
   madScienceBaseCard?: CodexCard | null;
   messages: CodexServiceMessages;
   onPreviewChange?: (preview: EventPreview | null) => void;
+  onVfxTrigger?: (optionId: string) => void;
   onTrialNpcChange?: (overlay: TrialNpcOverlay | null) => void;
   potions?: CodexPotion[];
   relics?: CodexRelic[];
@@ -1495,13 +1544,14 @@ export function EventContentViewer({
 
   const navigateTo = useCallback(
     (optionId: string) => {
+      onVfxTrigger?.(optionId);
       const visitCount = history.filter((h) => h.optionId === optionId).length;
       const resolved = resolveEventOptionPage(event.id, currentPageId, optionId, visitCount, pageMap);
       if (!resolved) return;
       onPreviewChange?.(null);
       setHistory((prev) => [...prev, { pageId: resolved, optionId }]);
     },
-    [currentPageId, event.id, history, onPreviewChange, pageMap],
+    [currentPageId, event.id, history, onPreviewChange, onVfxTrigger, pageMap],
   );
 
   const goBack = useCallback(() => {
@@ -1540,6 +1590,7 @@ export function EventContentViewer({
         <OptionCard
           key={opt.id}
           backgroundImageUrl={null}
+          onClick={onVfxTrigger ? () => onVfxTrigger(opt.id) : undefined}
           onHoverEnd={restoreTrialNpc}
           onHoverStart={showTrialNpc}
           option={opt}
@@ -1808,12 +1859,14 @@ function GameViewportEventArt({
   imageUrl,
   overlays,
   priority,
+  viewportOverlay,
 }: {
   children?: ReactNode;
   eventName: string;
   imageUrl: string;
   overlays: EventArtOverlay[];
   priority: boolean;
+  viewportOverlay?: ReactNode;
 }) {
   return (
     <div className="absolute left-1/2 top-1/2 aspect-video w-full -translate-x-1/2 -translate-y-1/2 overflow-hidden sm:inset-0 sm:aspect-auto sm:w-auto sm:translate-x-0 sm:translate-y-0">
@@ -1829,6 +1882,7 @@ function GameViewportEventArt({
         <EventArtLayers overlays={overlays} />
         {children}
       </div>
+      {viewportOverlay}
     </div>
   );
 }
@@ -1941,7 +1995,10 @@ export function EventDetail({
   const [preview, setPreview] = useState<EventPreview | null>(null);
   const [commentCount, setCommentCount] = useState(0);
   const [trialNpcOverlay, setTrialNpcOverlay] = useState<TrialNpcOverlay | null>(null);
-  const artOverlays = EVENT_ART_OVERLAYS[event.id] ?? [];
+  const [eventVfxBurstSignal, setEventVfxBurstSignal] = useState(0);
+  const eventVfxSceneSlug = getEventVfxSceneSlug(event.id, trialNpcOverlay);
+  const isMirrorVfx = event.id === "REFLECTIONS";
+  const artOverlays = eventVfxSceneSlug ? [] : EVENT_ART_OVERLAYS[event.id] ?? [];
   const useFakeMerchantSpineArt = event.id === "FAKE_MERCHANT";
   const eventSpineOverlays = EVENT_SPINE_OVERLAYS[event.id] ?? [];
   const eventImageUrl = event.id === "TRIAL"
@@ -2084,8 +2141,23 @@ export function EventDetail({
                   imageUrl={eventImageUrl}
                   overlays={artOverlays}
                   priority={Boolean(onClose)}
+                  viewportOverlay={isMirrorVfx ? (
+                    <EventVfxStage
+                      baseImageUrl={eventImageUrl}
+                      mode="mirror"
+                      sceneSlug="mirror"
+                    />
+                  ) : null}
                 >
-                  {trialNpcOverlay && <TrialNpcBackground overlay={trialNpcOverlay} />}
+                  {trialNpcOverlay && !eventVfxSceneSlug && <TrialNpcBackground overlay={trialNpcOverlay} />}
+                  {eventVfxSceneSlug && (
+                    <EventVfxStage
+                      burstSignal={event.id === "DENSE_VEGETATION" ? eventVfxBurstSignal : 0}
+                      offsetX={event.id === "TRIAL" && trialNpcOverlay ? 292 : 268}
+                      offsetY={event.id === "TRIAL" && trialNpcOverlay ? 68 : 49}
+                      sceneSlug={eventVfxSceneSlug}
+                    />
+                  )}
                 </GameViewportEventArt>
               ) : (
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(96,165,250,0.20),transparent_34%),linear-gradient(135deg,#111827,#050505_65%)]" />
@@ -2113,6 +2185,11 @@ export function EventDetail({
                       messages={serviceText}
                       onPreviewChange={setPreview}
                       onTrialNpcChange={setTrialNpcOverlay}
+                      onVfxTrigger={event.id === "DENSE_VEGETATION" ? (optionId) => {
+                        if (optionId === "TRUDGE_ON") {
+                          setEventVfxBurstSignal((signal) => signal + 1);
+                        }
+                      } : undefined}
                       potions={potions}
                       relics={relics}
                     />
