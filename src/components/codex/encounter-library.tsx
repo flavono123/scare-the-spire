@@ -25,6 +25,7 @@ import {
   EVENT_ACT_ORDER,
 } from "@/lib/codex-types";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
+import { expandEncounterFormations } from "@/lib/encounter-compositions";
 import { versionCodexEntities } from "@/lib/codex-versioning";
 import { SearchBar } from "./search-bar";
 import {
@@ -413,7 +414,11 @@ function EncounterTile({
   onClick: () => void;
 }) {
   const roomConfig = ENCOUNTER_ROOM_TYPE_CONFIG[encounter.roomType];
-  const representativeImageUrl = getRepresentativeEncounterImageUrl(encounter.imageUrl);
+  const representativeImageUrl = encounter.scene?.backgroundUrl
+    ?? getRepresentativeEncounterImageUrl(encounter.imageUrl);
+  const formationCount = encounter.compositions
+    ? expandEncounterFormations(encounter).length
+    : null;
 
   // Deduplicate monster display (some encounters list same monster multiple times)
   const uniqueMonsters = Array.from(
@@ -485,9 +490,15 @@ function EncounterTile({
 
       {/* Monster names */}
       <div className="hidden sm:flex flex-wrap gap-1 shrink-0 max-w-48">
-        {uniqueMonsters.map((m) => (
-          <span key={m.id} className="font-game-text text-[10px] text-gray-400 bg-white/5 px-1.5 py-0.5 rounded">{m.name}</span>
-        ))}
+        {formationCount != null ? (
+          <span className="rounded bg-amber-500/10 px-1.5 py-0.5 font-game-text text-[10px] text-amber-200">
+            {messages.encountersView.formationCount.replace("{count}", String(formationCount))}
+          </span>
+        ) : (
+          uniqueMonsters.map((m) => (
+            <span key={m.id} className="font-game-text text-[10px] text-gray-400 bg-white/5 px-1.5 py-0.5 rounded">{m.name}</span>
+          ))
+        )}
       </div>
     </button>
   );
