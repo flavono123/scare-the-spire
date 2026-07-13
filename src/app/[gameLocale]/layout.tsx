@@ -7,6 +7,7 @@ import {
 import { getDefaultServiceMetadata } from "@/lib/service-metadata";
 
 export const generateStaticParams = generateLocaleStaticParams;
+export const dynamicParams = false;
 
 type Props = {
   params: Promise<LocaleRouteParams>;
