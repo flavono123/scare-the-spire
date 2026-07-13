@@ -388,6 +388,7 @@ interface TrialNpcOverlay {
 interface ImageEventArtOverlay {
   alt: string;
   className: string;
+  coordinateSpace?: "frame" | "portrait";
   fill?: boolean;
   height?: number;
   kind?: "image";
@@ -398,6 +399,7 @@ interface ImageEventArtOverlay {
 
 interface SpriteSheetEventArtOverlay {
   className: string;
+  coordinateSpace?: "frame" | "portrait";
   frameHeight: number;
   frameWidth: number;
   framesX: number;
@@ -427,6 +429,12 @@ const EVENT_PORTRAIT_RECT_WIDTH = 2560;
 const EVENT_PORTRAIT_RECT_HEIGHT = 1200;
 const EVENT_PORTRAIT_IMAGE_WIDTH = 3440;
 const EVENT_PORTRAIT_IMAGE_HEIGHT = 1616;
+const EVENT_GAME_VIEWPORT_WIDTH = 1920;
+const EVENT_GAME_VIEWPORT_HEIGHT = 1080;
+const EVENT_PORTRAIT_SCALE = 1.04;
+// Source: default_event_layout.tscn. The layout root is shifted up by 39 px,
+// while the 2560x1200 Portrait rect is centered 44 px lower inside that root.
+const EVENT_PORTRAIT_CENTER_Y = 5;
 const EVENT_PORTRAIT_IMAGE_SCALE = Math.min(
   EVENT_PORTRAIT_RECT_WIDTH / EVENT_PORTRAIT_IMAGE_WIDTH,
   EVENT_PORTRAIT_RECT_HEIGHT / EVENT_PORTRAIT_IMAGE_HEIGHT,
@@ -435,6 +443,15 @@ const EVENT_PORTRAIT_RENDERED_IMAGE_WIDTH = EVENT_PORTRAIT_IMAGE_WIDTH * EVENT_P
 const EVENT_PORTRAIT_RENDERED_IMAGE_HEIGHT = EVENT_PORTRAIT_IMAGE_HEIGHT * EVENT_PORTRAIT_IMAGE_SCALE;
 const EVENT_PORTRAIT_RENDERED_IMAGE_LEFT = (EVENT_PORTRAIT_RECT_WIDTH - EVENT_PORTRAIT_RENDERED_IMAGE_WIDTH) / 2;
 const EVENT_PORTRAIT_RENDERED_IMAGE_TOP = (EVENT_PORTRAIT_RECT_HEIGHT - EVENT_PORTRAIT_RENDERED_IMAGE_HEIGHT) / 2;
+
+const EVENT_GAME_VIEWPORT_PORTRAIT_STYLE: CSSProperties = {
+  height: `${(EVENT_PORTRAIT_RECT_HEIGHT / EVENT_GAME_VIEWPORT_HEIGHT) * 100}%`,
+  left: "50%",
+  top: `calc(50% + ${(EVENT_PORTRAIT_CENTER_Y / EVENT_GAME_VIEWPORT_HEIGHT) * 100}%)`,
+  transform: `translate(-50%, -50%) scale(${EVENT_PORTRAIT_SCALE})`,
+  transformOrigin: "center",
+  width: `${(EVENT_PORTRAIT_RECT_WIDTH / EVENT_GAME_VIEWPORT_WIDTH) * 100}%`,
+};
 
 type EventVfxAnchor = "default" | "trial";
 
@@ -470,6 +487,36 @@ function eventVfxRect({
     left: `${((centerX - scaledWidth / 2 - EVENT_PORTRAIT_RENDERED_IMAGE_LEFT) / EVENT_PORTRAIT_RENDERED_IMAGE_WIDTH) * 100}%`,
     top: `${((centerY - scaledHeight / 2 - EVENT_PORTRAIT_RENDERED_IMAGE_TOP) / EVENT_PORTRAIT_RENDERED_IMAGE_HEIGHT) * 100}%`,
     width: `${(scaledWidth / EVENT_PORTRAIT_RENDERED_IMAGE_WIDTH) * 100}%`,
+  };
+}
+
+function eventPortraitVfxRect({
+  anchor = "default",
+  height,
+  scale,
+  width,
+  x,
+  y,
+}: {
+  anchor?: EventVfxAnchor;
+  height: number;
+  scale: number;
+  width: number;
+  x: number;
+  y: number;
+}): CSSProperties {
+  const anchorConfig = EVENT_VFX_ANCHORS[anchor];
+  const totalScale = scale * anchorConfig.scale;
+  const scaledWidth = width * totalScale;
+  const scaledHeight = height * totalScale;
+  const centerX = anchorConfig.x + x * anchorConfig.scale;
+  const centerY = anchorConfig.y + y * anchorConfig.scale;
+
+  return {
+    height: `${(scaledHeight / EVENT_PORTRAIT_RECT_HEIGHT) * 100}%`,
+    left: `${((centerX - scaledWidth / 2) / EVENT_PORTRAIT_RECT_WIDTH) * 100}%`,
+    top: `${((centerY - scaledHeight / 2) / EVENT_PORTRAIT_RECT_HEIGHT) * 100}%`,
+    width: `${(scaledWidth / EVENT_PORTRAIT_RECT_WIDTH) * 100}%`,
   };
 }
 
@@ -510,6 +557,7 @@ function eventVfxSpriteOverlay({
 function eventVfxSpriteSheetOverlay({
   anchor,
   className = "",
+  coordinateSpace = "frame",
   frameHeight,
   frameWidth,
   framesX,
@@ -523,6 +571,7 @@ function eventVfxSpriteSheetOverlay({
 }: {
   anchor?: EventVfxAnchor;
   className?: string;
+  coordinateSpace?: "frame" | "portrait";
   frameHeight: number;
   frameWidth: number;
   framesX: number;
@@ -536,6 +585,7 @@ function eventVfxSpriteSheetOverlay({
 }): EventArtOverlay {
   return {
     className: `pointer-events-none absolute bg-no-repeat ${className}`.trim(),
+    coordinateSpace,
     frameHeight,
     frameWidth,
     framesX,
@@ -544,7 +594,9 @@ function eventVfxSpriteSheetOverlay({
     kind: "sprite-sheet",
     src,
     style: {
-      ...eventVfxRect({ anchor, height: frameHeight, scale, width: frameWidth, x, y }),
+      ...(coordinateSpace === "portrait"
+        ? eventPortraitVfxRect({ anchor, height: frameHeight, scale, width: frameWidth, x, y })
+        : eventVfxRect({ anchor, height: frameHeight, scale, width: frameWidth, x, y })),
       ...style,
     },
   };
@@ -855,6 +907,7 @@ const EVENT_ART_OVERLAYS: Record<string, EventArtOverlay[]> = {
   TABLET_OF_TRUTH: [
     eventVfxSpriteSheetOverlay({
       className: "opacity-95 drop-shadow-[0_0_18px_rgba(255,214,110,0.25)]",
+      coordinateSpace: "portrait",
       frameHeight: 266,
       frameWidth: 266,
       framesX: 8,
@@ -1806,6 +1859,57 @@ function EventSpriteSheetOverlay({ overlay }: { overlay: SpriteSheetEventArtOver
   );
 }
 
+function EventArtLayers({ overlays }: { overlays: EventArtOverlay[] }) {
+  return overlays.map((overlay, overlayIndex) => (
+    overlay.kind === "sprite-sheet" ? (
+      <EventSpriteSheetOverlay
+        key={`${overlay.src}-${overlayIndex}`}
+        overlay={overlay}
+      />
+    ) : (
+      <Image
+        key={`${overlay.src}-${overlayIndex}`}
+        src={overlay.src}
+        alt={overlay.alt}
+        fill={overlay.fill}
+        width={overlay.width}
+        height={overlay.height}
+        className={overlay.className}
+        style={overlay.style}
+        aria-hidden={overlay.alt === "" ? true : undefined}
+      />
+    )
+  ));
+}
+
+function GameViewportEventArt({
+  eventName,
+  imageUrl,
+  overlays,
+  priority,
+}: {
+  eventName: string;
+  imageUrl: string;
+  overlays: EventArtOverlay[];
+  priority: boolean;
+}) {
+  return (
+    <div className="absolute left-1/2 top-1/2 aspect-video w-full -translate-x-1/2 -translate-y-1/2 overflow-hidden sm:inset-0 sm:aspect-auto sm:w-auto sm:translate-x-0 sm:translate-y-0">
+      <div className="absolute" style={EVENT_GAME_VIEWPORT_PORTRAIT_STYLE}>
+        <Image
+          src={imageUrl}
+          alt={eventName}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1536px) calc(100vw - 3rem), 1472px"
+          className="object-contain"
+          priority={priority}
+        />
+        <EventArtLayers overlays={overlays} />
+      </div>
+    </div>
+  );
+}
+
 function TrialNpcBackground({ overlay }: { overlay: TrialNpcOverlay }) {
   const npcOverlay = eventVfxSpriteOverlay({
     anchor: "trial",
@@ -1915,6 +2019,13 @@ export function EventDetail({
   const [commentCount, setCommentCount] = useState(0);
   const [trialNpcOverlay, setTrialNpcOverlay] = useState<TrialNpcOverlay | null>(null);
   const artOverlays = EVENT_ART_OVERLAYS[event.id] ?? [];
+  const useGameViewportArt = event.id === "TABLET_OF_TRUTH";
+  const portraitArtOverlays = useGameViewportArt
+    ? artOverlays.filter((overlay) => overlay.coordinateSpace === "portrait")
+    : [];
+  const frameArtOverlays = useGameViewportArt
+    ? artOverlays.filter((overlay) => overlay.coordinateSpace !== "portrait")
+    : artOverlays;
   const eventSpineOverlays = EVENT_SPINE_OVERLAYS[event.id] ?? [];
   const eventImageUrl = event.id === "TRIAL"
     ? "/images/sts2/events/trial_started.webp"
@@ -1933,7 +2044,7 @@ export function EventDetail({
     ? "flex min-h-[22rem] min-w-0 items-center justify-center py-1"
     : "flex min-h-[22rem] min-w-0 items-center justify-center py-2";
   const stageFrameClassName = isModal
-    ? "relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10 lg:max-w-[min(100%,calc((100vh-21rem)*3440/1616))]"
+    ? `relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10 ${useGameViewportArt ? "lg:max-w-[min(100%,calc((100vh-21rem)*16/9))]" : "lg:max-w-[min(100%,calc((100vh-21rem)*3440/1616))]"}`
     : "relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10";
   const textPanelClassName = isModal
     ? "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[2%] sm:right-[3.5%] sm:top-[3%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[560px]"
@@ -2040,8 +2151,15 @@ export function EventDetail({
             className={stageFrameClassName}
             style={{ boxShadow: `inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.35)` }}
           >
-            <div className="relative h-[34rem] w-full sm:h-auto sm:aspect-[3440/1616]">
-              {eventImageUrl ? (
+            <div className={`relative h-[34rem] w-full sm:h-auto ${useGameViewportArt ? "sm:aspect-video" : "sm:aspect-[3440/1616]"}`}>
+              {eventImageUrl && useGameViewportArt ? (
+                <GameViewportEventArt
+                  eventName={event.name}
+                  imageUrl={eventImageUrl}
+                  overlays={portraitArtOverlays}
+                  priority={Boolean(onClose)}
+                />
+              ) : eventImageUrl ? (
                 <Image
                   src={eventImageUrl}
                   alt={event.name}
@@ -2053,26 +2171,7 @@ export function EventDetail({
               ) : (
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_35%,rgba(96,165,250,0.20),transparent_34%),linear-gradient(135deg,#111827,#050505_65%)]" />
               )}
-              {artOverlays.map((overlay, overlayIndex) => (
-                overlay.kind === "sprite-sheet" ? (
-                  <EventSpriteSheetOverlay
-                    key={`${overlay.src}-${overlayIndex}`}
-                    overlay={overlay}
-                  />
-                ) : (
-                  <Image
-                    key={`${overlay.src}-${overlayIndex}`}
-                    src={overlay.src}
-                    alt={overlay.alt}
-                    fill={overlay.fill}
-                    width={overlay.width}
-                    height={overlay.height}
-                    className={overlay.className}
-                    style={overlay.style}
-                    aria-hidden={overlay.alt === "" ? true : undefined}
-                  />
-                )
-              ))}
+              <EventArtLayers overlays={frameArtOverlays} />
               {trialNpcOverlay && <TrialNpcBackground overlay={trialNpcOverlay} />}
               {eventSpineOverlays.map((config) => (
                 <EventSpineOverlay key={config.asset.id} config={config} />
