@@ -16,6 +16,23 @@ SPEC.loader.exec_module(parse_monsters)
 
 
 class ParseMonsterMoveGraphTests(unittest.TestCase):
+    def test_sample_merge_only_replaces_selected_graphs(self) -> None:
+        existing = [
+            {"id": "SAMPLE", "name": "old", "move_graph": None},
+            {"id": "UNTOUCHED", "name": "keep", "move_graph": {"initial": "OLD"}},
+        ]
+        generated = [
+            {"id": "SAMPLE", "name": "new", "move_graph": {"initial": "NEW"}},
+            {"id": "UNTOUCHED", "name": "changed", "move_graph": {"initial": "CHANGED"}},
+        ]
+
+        merged = parse_monsters.merge_move_graph_samples(existing, generated, {"SAMPLE"})
+
+        self.assertEqual(merged, [
+            {"id": "SAMPLE", "name": "old", "move_graph": {"initial": "NEW"}},
+            existing[1],
+        ])
+
     def test_keeps_terminal_entry_point_without_transitions(self) -> None:
         graph = parse_monsters.parse_move_graph("""
             MoveState moveState = new MoveState("EXPLODE_MOVE", ExplodeMove);

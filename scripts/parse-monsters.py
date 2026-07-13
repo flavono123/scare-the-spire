@@ -1004,6 +1004,19 @@ def write_json(path: Path, data) -> None:
         f.write("\n")
 
 
+def merge_move_graph_samples(existing: list[dict], generated: list[dict], sample_ids: set[str]) -> list[dict]:
+    generated_by_id = {entry["id"]: entry for entry in generated}
+    return [
+        {
+            **entry,
+            "move_graph": generated_by_id[entry["id"]].get("move_graph"),
+        }
+        if entry["id"] in sample_ids and entry["id"] in generated_by_id
+        else entry
+        for entry in existing
+    ]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Parse monsters from PCK + DLL source.")
     ap.add_argument("--pck", default=default_pck_path())
@@ -1043,6 +1056,9 @@ def main() -> int:
         source,
         move_graph_sample_ids,
     )
+    if move_graph_sample_ids is not None:
+        kor_out = merge_move_graph_samples(existing_kor, kor_out, move_graph_sample_ids)
+        eng_out = merge_move_graph_samples(existing_eng, eng_out, move_graph_sample_ids)
 
     print(f"Monsters: {len(kor_out)} entries")
     if added:
