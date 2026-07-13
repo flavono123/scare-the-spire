@@ -5,6 +5,8 @@ const REDIRECT_TARGET =
   process.env.VERCEL_DEPRECATION_LOCAL_TARGET_ORIGIN ?? "http://127.0.0.1:3101";
 const PRODUCTION_TARGET = "https://scare-the-spire.flavono123.workers.dev";
 
+test.use({ locale: "ko-KR" });
+
 test("redirects a known legacy page with its path and query intact", async ({ request }) => {
   const response = await request.get(`${BASE}/patches?version=0.108.0`, {
     maxRedirects: 0,
