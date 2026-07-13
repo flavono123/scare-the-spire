@@ -867,6 +867,7 @@ function PatternStateTransitionDiagram({
       ref={viewportRef}
       className={`relative max-w-full touch-none overflow-hidden rounded-md border border-white/10 bg-black/15 select-none ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
       style={{ height: viewportHeight }}
+      data-monster-pattern-diagram={monster.id}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerEnd}
@@ -2263,7 +2264,7 @@ function buildRandomClusterPatternDiagramModel(
         color: DIAGRAM_ARROW_COLOR,
         isLoop: true,
         label: text.reroll,
-        labelX: boxRight + 36,
+        labelX: (boxRight + 36 + boxX + boxWidth * 0.68) / 2,
         labelY: loopY + 12,
       }),
     ],
@@ -2354,7 +2355,7 @@ function buildConditionalClusterPatternDiagramModel(
         marker: "conditional",
         isLoop: true,
         label: text.reevaluate,
-        labelX: outerRight + 38,
+        labelX: (outerRight + 38 + outerX + outerWidth * 0.7) / 2,
         labelY: loopY + 12,
       }),
     ],

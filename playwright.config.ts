@@ -6,6 +6,7 @@ export default defineConfig({
     "visual-check.spec.ts",
     "potion-tooltip-position.spec.ts",
     "monster-qa.spec.ts",
+    "monster-intent-fsm.spec.ts",
     "history-course-shell.spec.ts",
     "history-course-rewards.spec.ts",
     "phase4-visual.spec.ts",
