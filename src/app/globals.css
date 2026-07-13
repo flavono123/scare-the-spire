@@ -4,6 +4,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+body:has([data-migration-not-found]) .byrdispatch-floating-notice {
+  display: none;
+}
+
 .byrdispatch-status-token {
   position: relative;
   display: inline-flex;
