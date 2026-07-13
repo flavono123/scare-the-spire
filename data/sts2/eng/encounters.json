@@ -1235,7 +1235,51 @@
         "name": "Slithering Strangler"
       }
     ],
-    "loss_text": "{character} was suffocated by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was suffocated by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "SNAPPING_JAXFRUIT",
+        "weight": 1,
+        "slots": [
+          [
+            "SNAPPING_JAXFRUIT"
+          ],
+          [
+            "SLITHERING_STRANGLER"
+          ]
+        ]
+      },
+      {
+        "id": "MEDIUM_SLIME",
+        "weight": 1,
+        "slots": [
+          [
+            "LEAF_SLIME_M",
+            "TWIG_SLIME_M"
+          ],
+          [
+            "SLITHERING_STRANGLER"
+          ]
+        ]
+      },
+      {
+        "id": "SMALL_SLIMES",
+        "weight": 1,
+        "slots": [
+          [
+            "LEAF_SLIME_S",
+            "TWIG_SLIME_S"
+          ],
+          [
+            "LEAF_SLIME_S",
+            "TWIG_SLIME_S"
+          ],
+          [
+            "SLITHERING_STRANGLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SLUDGE_SPINNER_WEAK",

@@ -1235,7 +1235,51 @@
         "name": "미끈거리는 교살마"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 질식사했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 질식사했습니다.",
+    "compositions": [
+      {
+        "id": "SNAPPING_JAXFRUIT",
+        "weight": 1,
+        "slots": [
+          [
+            "SNAPPING_JAXFRUIT"
+          ],
+          [
+            "SLITHERING_STRANGLER"
+          ]
+        ]
+      },
+      {
+        "id": "MEDIUM_SLIME",
+        "weight": 1,
+        "slots": [
+          [
+            "LEAF_SLIME_M",
+            "TWIG_SLIME_M"
+          ],
+          [
+            "SLITHERING_STRANGLER"
+          ]
+        ]
+      },
+      {
+        "id": "SMALL_SLIMES",
+        "weight": 1,
+        "slots": [
+          [
+            "LEAF_SLIME_S",
+            "TWIG_SLIME_S"
+          ],
+          [
+            "LEAF_SLIME_S",
+            "TWIG_SLIME_S"
+          ],
+          [
+            "SLITHERING_STRANGLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SLUDGE_SPINNER_WEAK",
