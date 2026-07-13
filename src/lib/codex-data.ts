@@ -56,6 +56,8 @@ import {
   DamageValue,
   EncounterRoomType,
   EncounterMonsterRef,
+  EncounterComposition,
+  EncounterSceneAsset,
 } from "./codex-types";
 import {
   getDefaultTinkerRiderForType,
@@ -2466,6 +2468,12 @@ interface RawEncounterMonster {
   name: string;
 }
 
+interface RawEncounterComposition {
+  id: string;
+  weight: number;
+  slots: string[][];
+}
+
 interface RawEncounter {
   id: string;
   name: string;
@@ -2474,6 +2482,7 @@ interface RawEncounter {
   act: string | null;
   tags: string[] | null;
   monsters: RawEncounterMonster[];
+  compositions?: RawEncounterComposition[];
   loss_text: string;
   introducedInPatch?: string;
   deprecated?: boolean;
@@ -2499,20 +2508,33 @@ function mapEncounter(
   gameMonsters: GameLocalizationTable,
   engGameMonsters: GameLocalizationTable,
   gameLocale: GameLocale,
+  scene: EncounterSceneAsset | null,
 ): CodexEncounter {
-  const monsters: EncounterMonsterRef[] = kor.monsters.map((km, i) => {
-    const displayId = ENCOUNTER_MONSTER_REF_OVERRIDES[km.id] ?? km.id;
-    const nameEn = gameText(engGameMonsters, `${displayId}.name`, eng.monsters[i]?.name ?? km.name);
+  const korMonsterNames = new Map(kor.monsters.map((monster) => [monster.id, monster.name]));
+  const engMonsterNames = new Map(eng.monsters.map((monster) => [monster.id, monster.name]));
+  const monsterRef = (monsterId: string): EncounterMonsterRef => {
+    const displayId = ENCOUNTER_MONSTER_REF_OVERRIDES[monsterId] ?? monsterId;
+    const nameEn = gameText(
+      engGameMonsters,
+      `${displayId}.name`,
+      engMonsterNames.get(monsterId) ?? korMonsterNames.get(monsterId) ?? monsterId,
+    );
     return {
       id: displayId,
       name: gameText(
         gameMonsters,
         `${displayId}.name`,
-        gameTitleFallback(km.name, nameEn, gameLocale),
+        gameTitleFallback(korMonsterNames.get(monsterId) ?? nameEn, nameEn, gameLocale),
       ),
       nameEn,
     };
-  });
+  };
+  const monsters = kor.monsters.map((monster) => monsterRef(monster.id));
+  const compositions: EncounterComposition[] | null = kor.compositions?.map((composition) => ({
+    id: composition.id,
+    weight: composition.weight,
+    slots: composition.slots.map((slot) => slot.map(monsterRef)),
+  })) ?? null;
 
   // Check for boss encounter image
   let imageUrl: string | null = ENCOUNTER_IMAGE_OVERRIDES[kor.id] ?? null;
@@ -2530,8 +2552,10 @@ function mapEncounter(
     act: (kor.act as EventAct | null),
     tags: kor.tags,
     monsters,
+    compositions,
     lossText: gameText(gameEncounters, `${kor.id}.loss`, kor.loss_text),
     imageUrl,
+    scene,
     introducedInPatch: kor.introducedInPatch,
     deprecated: kor.deprecated,
     deprecatedInPatch: kor.deprecatedInPatch,
@@ -2540,9 +2564,18 @@ function mapEncounter(
 
 export async function getCodexEncounters(opts?: { gameLocale?: GameLocale }): Promise<CodexEncounter[]> {
   const gameLocale = opts?.gameLocale ?? DEFAULT_CODEX_GAME_LOCALE;
-  const [korEncounters, engEncounters, bossFiles, gameEncounters, gameMonsters, engGameMonsters] = await Promise.all([
+  const [
+    korEncounters,
+    engEncounters,
+    sceneAssets,
+    bossFiles,
+    gameEncounters,
+    gameMonsters,
+    engGameMonsters,
+  ] = await Promise.all([
     readJson<RawEncounter[]>("kor/encounters.json"),
     readJson<RawEncounter[]>("eng/encounters.json"),
+    readJson<EncounterSceneAsset[]>("encounter-scene-assets.json").catch(() => []),
     scanImageSlugs("bosses"),
     readGameLocalizationTable(gameLocale, "encounters"),
     readGameLocalizationTable(gameLocale, "monsters"),
@@ -2550,9 +2583,19 @@ export async function getCodexEncounters(opts?: { gameLocale?: GameLocale }): Pr
   ]);
 
   const engById = new Map(engEncounters.map((e) => [e.id, e]));
+  const sceneById = new Map(sceneAssets.map((scene) => [scene.id, scene]));
 
   return korEncounters.map((kor) => {
     const eng = engById.get(kor.id) ?? kor;
-    return mapEncounter(kor, eng, bossFiles, gameEncounters, gameMonsters, engGameMonsters, gameLocale);
+    return mapEncounter(
+      kor,
+      eng,
+      bossFiles,
+      gameEncounters,
+      gameMonsters,
+      engGameMonsters,
+      gameLocale,
+      sceneById.get(kor.id) ?? null,
+    );
   });
 }
