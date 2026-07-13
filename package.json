@@ -37,6 +37,7 @@
     "sts2:index-images": "node scripts/build-sts2-public-image-file-index.mjs",
     "sts2:render-encounters": "node scripts/render-sts2-encounter-spine-portraits.mjs",
     "sts2:render-monsters": "node scripts/render-sts2-monster-spine-portraits.mjs",
+    "sts2:extract-event-vfx": "uv run --with pillow --with texture2ddecoder python scripts/extract-event-vfx-scenes.py",
     "i18n:sync": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/sync-game-localization.py",
     "i18n:validate": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate-i18n.py",
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
