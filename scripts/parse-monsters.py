@@ -323,19 +323,67 @@ def split_top_level_args(args: str) -> list[str]:
     return out
 
 
-def parse_weight(args: list[str]) -> float | None:
-    if len(args) < 2:
-        return 1.0
-    candidate = args[-1]
-    m = re.fullmatch(r"(?P<num>\d+(?:\.\d+)?)f?", candidate)
-    if m:
-        return float(m.group("num"))
-    m = re.fullmatch(r"\(\)\s*=>\s*(?P<num>\d+(?:\.\d+)?)f?", candidate)
-    if m:
-        return float(m.group("num"))
-    if "=>" in candidate:
-        return None
-    return 1.0
+def parse_float_literal(value: str) -> float | None:
+    m = re.fullmatch(r"(?P<num>\d+(?:\.\d+)?)(?:f|m)?", value.strip())
+    return float(m.group("num")) if m else None
+
+
+def parse_random_branch_args(args: list[str]) -> dict:
+    """Decode RandomBranchState.AddBranch overloads from decompiled C#."""
+    rule_args = args[1:]
+    weight = 1.0
+    weight_expression = None
+
+    if rule_args:
+        candidate = rule_args[-1].strip()
+        lambda_match = re.fullmatch(r"\(\)\s*=>\s*(?P<expr>.+)", candidate)
+        if lambda_match:
+            expression = lambda_match.group("expr").strip()
+            literal = parse_float_literal(expression)
+            weight = literal
+            weight_expression = None if literal is not None else expression
+            rule_args = rule_args[:-1]
+        elif len(args) >= 3 and (candidate.endswith(("f", "m")) or "." in candidate):
+            literal = parse_float_literal(candidate)
+            if literal is not None:
+                weight = literal
+                rule_args = rule_args[:-1]
+
+    repeat_type = "forever"
+    max_repeats = None
+    cooldown = 0
+    repeat_arg_index = next(
+        (index for index, value in enumerate(rule_args) if "MoveRepeatType." in value),
+        None,
+    )
+
+    if repeat_arg_index is not None:
+        repeat_name = rule_args[repeat_arg_index].split("MoveRepeatType.", 1)[1].strip()
+        repeat_type = {
+            "CanRepeatForever": "forever",
+            "CanRepeatXTimes": "max_consecutive",
+            "CannotRepeat": "cannot_repeat",
+            "UseOnlyOnce": "once",
+        }.get(repeat_name, "forever")
+        integers = [int(value) for value in rule_args[:repeat_arg_index] if value.isdigit()]
+        if integers:
+            cooldown = integers[0]
+    else:
+        integers = [int(value) for value in rule_args if value.isdigit()]
+        if integers:
+            repeat_type = "max_consecutive"
+            if len(integers) == 1:
+                max_repeats = integers[0]
+            else:
+                cooldown, max_repeats = integers[0], integers[1]
+
+    return {
+        "weight": weight,
+        "weight_expression": weight_expression,
+        "repeat": repeat_type,
+        "max_repeats": max_repeats,
+        "cooldown": cooldown,
+    }
 
 
 def parse_move_graph(text: str) -> dict | None:
@@ -360,7 +408,8 @@ def parse_move_graph(text: str) -> dict | None:
     }
     initial_matches = list(_INITIAL_STATE_RE.finditer(text))
     initial_var = initial_matches[-1].group("var") if initial_matches else None
-    initial = move_vars.get(initial_var) if initial_var else None
+    state_vars = {**move_vars, **branch_vars, **conditional_branch_vars}
+    initial = state_vars.get(initial_var) if initial_var else None
 
     followups: dict[str, str] = {}
     for m in _FOLLOWUP_RE.finditer(text):
@@ -386,13 +435,10 @@ def parse_move_graph(text: str) -> dict | None:
         target_var = args[0]
         if target_var not in move_vars:
             continue
-        repeat_text = " ".join(args[1:])
+        branch_rule = parse_random_branch_args(args)
         random_branches.setdefault(branch_var, []).append({
             "target_var": target_var,
-            "weight": parse_weight(args),
-            "cannot_repeat": "CannotRepeat" in repeat_text,
-            "use_only_once": "UseOnlyOnce" in repeat_text,
-            "cooldown": len(args) > 2 and args[1].isdigit() and int(args[1]) > 0,
+            **branch_rule,
         })
 
     conditional_branches: dict[str, list[dict]] = {}
@@ -402,7 +448,7 @@ def parse_move_graph(text: str) -> dict | None:
         if not args:
             continue
         target_var = args[0]
-        if branch_var in conditional_branch_vars and target_var in move_vars:
+        if branch_var in conditional_branch_vars and target_var in state_vars:
             conditional_branches.setdefault(branch_var, []).append({
                 "target_var": target_var,
                 "condition": simplify_condition(args[1]) if len(args) > 1 else None,
@@ -411,15 +457,74 @@ def parse_move_graph(text: str) -> dict | None:
     transitions: list[dict] = []
     confidence = "static"
 
+    random_state_entries: dict[str, list[dict]] = {}
+    for branch_var, entries in random_branches.items():
+        known_weights = [entry["weight"] for entry in entries if entry["weight"] is not None]
+        total = sum(known_weights)
+        random_state_entries[branch_var] = []
+        for entry in entries:
+            weight = entry["weight"]
+            if weight is None or entry["repeat"] in {"max_consecutive", "once"} or entry["cooldown"] > 0:
+                confidence = "partial"
+            random_state_entries[branch_var].append({
+                "to": state_vars[entry["target_var"]],
+                "weight": weight,
+                "weightExpression": entry["weight_expression"],
+                "baseChance": round((weight / total) * 100, 1) if weight is not None and total > 0 else None,
+                "repeat": entry["repeat"],
+                "maxRepeats": entry["max_repeats"],
+                "cooldown": entry["cooldown"],
+            })
+
+    states: list[dict] = []
+    declarations: list[tuple[int, str, str]] = []
+    declarations.extend((m.start(), m.group("var"), "move") for m in _MOVE_VAR_RE.finditer(text))
+    declarations.extend((m.start(), m.group("var"), "move") for m in _MOVE_PROPERTY_RE.finditer(text))
+    declarations.extend((m.start(), m.group("var"), "random") for m in _RANDOM_BRANCH_VAR_RE.finditer(text))
+    declarations.extend((m.start(), m.group("var"), "conditional") for m in _CONDITIONAL_BRANCH_VAR_RE.finditer(text))
+    seen_state_vars: set[str] = set()
+    for _, state_var, state_kind in sorted(declarations):
+        if state_var in seen_state_vars or state_var not in state_vars:
+            continue
+        seen_state_vars.add(state_var)
+        if state_kind == "move":
+            next_var = followups.get(state_var)
+            states.append({
+                "id": state_vars[state_var],
+                "kind": "move",
+                "next": state_vars.get(next_var) if next_var else None,
+            })
+        elif state_kind == "random":
+            states.append({
+                "id": state_vars[state_var],
+                "kind": "random",
+                "branches": random_state_entries.get(state_var, []),
+            })
+        else:
+            confidence = "partial"
+            states.append({
+                "id": state_vars[state_var],
+                "kind": "conditional",
+                "branches": [
+                    {
+                        "to": state_vars[entry["target_var"]],
+                        "condition": entry["condition"],
+                    }
+                    for entry in conditional_branches.get(state_var, [])
+                ],
+            })
+
     def add_random_transitions(from_var: str, branch_var: str) -> None:
         nonlocal confidence
         entries = random_branches.get(branch_var, [])
         weighted = []
         for entry in entries:
             weight = entry["weight"]
-            if entry["target_var"] == from_var and (entry["cannot_repeat"] or entry["cooldown"]):
+            if entry["target_var"] == from_var and (
+                entry["repeat"] in {"cannot_repeat", "once"} or entry["cooldown"] > 0
+            ):
                 weight = 0.0
-            if entry["use_only_once"] or weight is None:
+            if entry["repeat"] in {"max_consecutive", "once"} or entry["cooldown"] > 0 or weight is None:
                 confidence = "partial"
             weighted.append((entry, weight))
 
@@ -445,6 +550,8 @@ def parse_move_graph(text: str) -> dict | None:
         elif target_var in conditional_branches:
             confidence = "partial"
             for entry in conditional_branches[target_var]:
+                if entry["target_var"] not in move_vars:
+                    continue
                 transitions.append({
                     "from": from_id,
                     "to": move_vars[entry["target_var"]],
@@ -469,6 +576,8 @@ def parse_move_graph(text: str) -> dict | None:
     elif initial_var in conditional_branches:
         confidence = "partial"
         for entry in conditional_branches[initial_var]:
+            if entry["target_var"] not in move_vars:
+                continue
             transitions.append({
                 "from": "__START__",
                 "to": move_vars[entry["target_var"]],
@@ -477,12 +586,13 @@ def parse_move_graph(text: str) -> dict | None:
                 "condition": entry["condition"],
             })
 
-    if not transitions:
+    if not states:
         return None
     return {
         "initial": initial,
         "confidence": confidence,
         "transitions": transitions,
+        "states": states,
     }
 
 
@@ -753,6 +863,7 @@ def build_entries(
     existing_kor: list,
     existing_eng: list,
     source_root: Path,
+    move_graph_sample_ids: set[str] | None = None,
 ) -> tuple[list, list, list, list]:
     ids = sorted(set(loc_kor_by_id) | set(loc_eng_by_id))
     ids = [i for i in ids if not i.startswith(SKIP_PREFIXES)]
@@ -781,6 +892,8 @@ def build_entries(
             show_in_compendium = parse_show_in_compendium(text)
             bestiary_move_ids = build_bestiary_move_ids(move_ids, text)
             move_graph = parse_move_graph(text)
+            if move_graph_sample_ids is not None and ent_id not in move_graph_sample_ids:
+                move_graph = old_kor_by_id.get(ent_id, {}).get("move_graph")
         else:
             hp = {"min_hp": None, "max_hp": None, "min_hp_ascension": None, "max_hp_ascension": None}
             move_ids, damage_values, block_values = [], {}, {}
@@ -896,6 +1009,10 @@ def main() -> int:
     ap.add_argument("--pck", default=default_pck_path())
     ap.add_argument("--source", default=str(DEFAULT_SOURCE))
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument(
+        "--move-graph-samples",
+        help="Comma-separated monster IDs whose move graphs should be refreshed; other graphs stay unchanged.",
+    )
     args = ap.parse_args()
 
     source = Path(args.source)
@@ -913,8 +1030,18 @@ def main() -> int:
     existing_kor = json.loads((DATA_DIR / "kor/monsters.json").read_text() or "[]")
     existing_eng = json.loads((DATA_DIR / "eng/monsters.json").read_text() or "[]")
 
+    move_graph_sample_ids = (
+        {value.strip().upper() for value in args.move_graph_samples.split(",") if value.strip()}
+        if args.move_graph_samples
+        else None
+    )
     kor_out, eng_out, added, removed = build_entries(
-        loc_kor, loc_eng, existing_kor, existing_eng, source
+        loc_kor,
+        loc_eng,
+        existing_kor,
+        existing_eng,
+        source,
+        move_graph_sample_ids,
     )
 
     print(f"Monsters: {len(kor_out)} entries")
