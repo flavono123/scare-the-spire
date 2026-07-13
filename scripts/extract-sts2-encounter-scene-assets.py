@@ -113,6 +113,7 @@ def primary_texture_path(scene_text: str) -> str:
             textures[id_match.group("id")] = path_match.group("path")
 
     for block in re.split(r"(?=\[node )", scene_text):
+        block = block.lstrip()
         if not block.startswith("[node ") or 'type="TextureRect"' not in block.splitlines()[0]:
             continue
         assignment = TEXTURE_ASSIGNMENT_RE.search(block)
