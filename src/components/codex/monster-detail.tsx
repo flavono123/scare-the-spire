@@ -2101,10 +2101,11 @@ function buildTerminalPatternDiagramModel(
   const initialId = monster.moveGraph?.initial;
   const initialState = states.find((state) => state.id === initialId && state.kind === "move");
   if (!initialState) return null;
+  const text = getIntentFsmText(serviceLocale);
 
   const node = buildStructuredPatternNode(initialState.id, 156, 92, true);
-  const start = buildPatternEntryNode("__START__", serviceLocale === "ko" ? "시작" : "START", 26, 124, "start");
-  const end = buildPatternEntryNode("__END__", serviceLocale === "ko" ? "종료" : "END", 374, 124, "end");
+  const start = buildPatternEntryNode("__START__", text.start, 26, 124, "start");
+  const end = buildPatternEntryNode("__END__", text.end, 374, 124, "end");
 
   return {
     width: 470,
@@ -2142,6 +2143,7 @@ function buildFixedLoopPatternDiagramModel(
   const moveById = new Map(states.filter((state) => state.kind === "move").map((state) => [state.id, state]));
   const initialId = monster.moveGraph?.initial;
   if (!initialId || !moveById.has(initialId)) return null;
+  const text = getIntentFsmText(serviceLocale);
 
   const orderedIds: string[] = [];
   const seen = new Set<string>();
@@ -2158,7 +2160,7 @@ function buildFixedLoopPatternDiagramModel(
   const nodeY = 100;
   const nodes = orderedIds.map((id, index) => buildStructuredPatternNode(id, 148 + index * 196, nodeY, id === initialId));
   const nodeById = new Map(nodes.map((node) => [node.id, node]));
-  const start = buildPatternEntryNode("__START__", serviceLocale === "ko" ? "시작" : "START", 24, 132, "start");
+  const start = buildPatternEntryNode("__START__", text.start, 24, 132, "start");
   const edges: PatternDiagramEdge[] = [
     buildStructuredPatternEdge({
       key: "fixed-loop-start",
@@ -2216,6 +2218,7 @@ function buildRandomClusterPatternDiagramModel(
 ): PatternDiagramModel | null {
   const randomState = states.find((state) => state.kind === "random");
   if (!randomState || randomState.branches.length === 0) return null;
+  const text = getIntentFsmText(serviceLocale);
 
   const boxX = 140;
   const boxY = 58;
@@ -2232,13 +2235,11 @@ function buildRandomClusterPatternDiagramModel(
   const boxWidth = 40 + nodes.length * DIAGRAM_CELL_WIDTH + Math.max(0, nodes.length - 1) * 32;
   const boxHeight = 184;
   const boxRight = boxX + boxWidth;
-  const start = buildPatternEntryNode("__START__", serviceLocale === "ko" ? "시작" : "START", 24, 158, "start");
+  const start = buildPatternEntryNode("__START__", text.start, 24, 158, "start");
   const initialNode = nodes.find((node) => node.id === monster.moveGraph?.initial) ?? nodes[0];
   const loopY = boxY - 28;
   const effectiveChance = getEqualCannotRepeatNextChance(randomState.branches);
-  const boxLabel = serviceLocale === "ko"
-    ? `무작위 · 직전 행동 제외${effectiveChance == null ? "" : ` · 다음 각 ${formatChancePercent(effectiveChance)}`}`
-    : `Random · excludes previous${effectiveChance == null ? "" : ` · ${formatChancePercent(effectiveChance)} each next`}`;
+  const boxLabel = `${text.random} · ${text.excludesPrevious}${effectiveChance == null ? "" : ` · ${formatIntentFsmTemplate(text.nextEach, { chance: formatChancePercent(effectiveChance) })}`}`;
 
   return {
     width: boxRight + 78,
@@ -2261,7 +2262,7 @@ function buildRandomClusterPatternDiagramModel(
         path: `M ${boxRight} ${boxY + boxHeight * 0.62} H ${boxRight + 36} V ${loopY} H ${boxX + boxWidth * 0.68} V ${boxY}`,
         color: DIAGRAM_ARROW_COLOR,
         isLoop: true,
-        label: serviceLocale === "ko" ? "재추첨" : "Reroll",
+        label: text.reroll,
         labelX: boxRight + 36,
         labelY: loopY + 12,
       }),
@@ -2292,6 +2293,7 @@ function buildConditionalClusterPatternDiagramModel(
   const randomConditionBranch = conditionalState.branches.find((branch) => stateById.get(branch.to)?.kind === "random");
   const randomState = randomConditionBranch ? stateById.get(randomConditionBranch.to) : null;
   if (!randomState || randomState.kind !== "random") return null;
+  const text = getIntentFsmText(serviceLocale);
   const directBranches = conditionalState.branches.filter((branch) => stateById.get(branch.to)?.kind === "move");
 
   const outerX = 140;
@@ -2322,12 +2324,12 @@ function buildConditionalClusterPatternDiagramModel(
     )
   ));
   const nodes = [...randomNodes, ...directNodes];
-  const start = buildPatternEntryNode("__START__", serviceLocale === "ko" ? "시작" : "START", 24, 163, "start");
+  const start = buildPatternEntryNode("__START__", text.start, 24, 163, "start");
   const outerRight = outerX + outerWidth;
   const loopY = outerY - 28;
   const randomConditionLabel = formatConditionalBranchLabel(randomConditionBranch?.condition ?? null, serviceLocale);
   const randomChance = randomState.branches[0]?.baseChance;
-  const randomLabel = `${randomConditionLabel} · ${serviceLocale === "ko" ? "무작위" : "Random"}${randomChance == null ? "" : ` · ${formatChancePercent(randomChance)}`}`;
+  const randomLabel = `${randomConditionLabel} · ${text.random}${randomChance == null ? "" : ` · ${formatChancePercent(randomChance)}`}`;
 
   return {
     width: outerRight + 82,
@@ -2351,7 +2353,7 @@ function buildConditionalClusterPatternDiagramModel(
         color: DIAGRAM_CONDITIONAL_COLOR,
         marker: "conditional",
         isLoop: true,
-        label: serviceLocale === "ko" ? "다시 판정" : "Re-evaluate",
+        label: text.reevaluate,
         labelX: outerRight + 38,
         labelY: loopY + 12,
       }),
@@ -2364,7 +2366,7 @@ function buildConditionalClusterPatternDiagramModel(
         y: outerY,
         width: outerWidth,
         height: outerHeight,
-        label: serviceLocale === "ko" ? "조건 · 행동 후 다시 판정" : "Conditional · re-evaluate after each move",
+        label: text.conditionalReevaluation,
         kind: "conditional",
       },
       {
@@ -2437,18 +2439,19 @@ function buildStructuredPatternEdge({
 }
 
 function formatRandomBranchAnnotation(branch: MonsterMoveGraphRandomBranch, serviceLocale: ServiceLocale): string {
+  const text = getIntentFsmText(serviceLocale);
   const chance = branch.baseChance == null ? "?" : formatChancePercent(branch.baseChance);
   const repeatLabel = (() => {
-    if (branch.repeat === "cannot_repeat") return serviceLocale === "ko" ? "연속 ≤1" : "≤1 consecutive";
+    if (branch.repeat === "cannot_repeat") return formatIntentFsmTemplate(text.consecutiveLimit, { limit: "1" });
     if (branch.repeat === "max_consecutive") {
       const limit = branch.maxRepeats ?? "?";
-      return serviceLocale === "ko" ? `연속 ≤${limit}` : `≤${limit} consecutive`;
+      return formatIntentFsmTemplate(text.consecutiveLimit, { limit: String(limit) });
     }
-    if (branch.repeat === "once") return serviceLocale === "ko" ? "전투당 1회" : "Once per combat";
-    if (branch.cooldown > 0) return serviceLocale === "ko" ? `재사용 ${branch.cooldown}턴` : `Cooldown ${branch.cooldown}`;
-    return serviceLocale === "ko" ? "연속 허용" : "Can repeat";
+    if (branch.repeat === "once") return text.oncePerCombat;
+    if (branch.cooldown > 0) return formatIntentFsmTemplate(text.cooldown, { turns: String(branch.cooldown) });
+    return text.canRepeat;
   })();
-  return `${chance} · ${repeatLabel}`;
+  return `${formatIntentFsmTemplate(text.baseChance, { chance })} · ${repeatLabel}`;
 }
 
 function getEqualCannotRepeatNextChance(branches: MonsterMoveGraphRandomBranch[]): number | null {
@@ -2459,9 +2462,21 @@ function getEqualCannotRepeatNextChance(branches: MonsterMoveGraphRandomBranch[]
 }
 
 function formatConditionalBranchLabel(condition: string | null, serviceLocale: ServiceLocale): string {
-  if (condition === "CanFabricate") return serviceLocale === "ko" ? "제작 가능" : "Can fabricate";
-  if (condition === "!CanFabricate") return serviceLocale === "ko" ? "제작 불가" : "Cannot fabricate";
-  return condition ?? (serviceLocale === "ko" ? "조건" : "Condition");
+  const text = getIntentFsmText(serviceLocale);
+  if (condition === "CanFabricate") return text.canFabricate;
+  if (condition === "!CanFabricate") return text.cannotFabricate;
+  return condition ?? text.condition;
+}
+
+function getIntentFsmText(serviceLocale: ServiceLocale) {
+  return serviceMessages[serviceLocale].codex.monstersView.intentFsm;
+}
+
+function formatIntentFsmTemplate(template: string, values: Record<string, string>): string {
+  return Object.entries(values).reduce(
+    (result, [key, value]) => result.replace(`{${key}}`, value),
+    template,
+  );
 }
 
 function buildPatternDiagramModel(
@@ -3251,12 +3266,13 @@ function inferTransitionKind(transition: MonsterMoveTransition): MonsterMoveTran
 }
 
 function getPatternKindLabel(kind: PatternKind, serviceLocale: ServiceLocale): string {
+  const intentFsm = getIntentFsmText(serviceLocale);
   const labels: Record<PatternKind, { ko: string; en: string }> = {
-    linear: { ko: "비순환", en: "Non-repeating" },
+    linear: { ko: intentFsm.nonRepeatingKind, en: intentFsm.nonRepeatingKind },
     fixed: { ko: "고정 반복", en: "Fixed" },
     random: { ko: "무작위", en: "Random" },
     conditional: { ko: "조건부", en: "Conditional" },
-    mixed: { ko: "조건 + 무작위", en: "Conditional + Random" },
+    mixed: { ko: intentFsm.conditionalRandomKind, en: intentFsm.conditionalRandomKind },
     unknown: { ko: "미확인", en: "Unknown" },
   };
   return serviceLocale === "ko" ? labels[kind].ko : labels[kind].en;
