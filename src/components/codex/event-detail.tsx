@@ -1766,6 +1766,7 @@ function EventSpriteSheetOverlay({ overlay }: { overlay: SpriteSheetEventArtOver
 
   return (
     <span
+      data-event-sprite-sheet={overlay.src}
       className={overlay.className}
       style={{
         ...overlay.style,
@@ -2067,7 +2068,10 @@ export function EventDetail({
             className={stageFrameClassName}
             style={{ boxShadow: `inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.35)` }}
           >
-            <div className="relative h-[34rem] w-full sm:h-auto sm:aspect-video">
+            <div
+              data-event-art-stage={event.id}
+              className="relative h-[34rem] w-full sm:h-auto sm:aspect-video"
+            >
               {useFakeMerchantSpineArt ? (
                 <div className="absolute left-1/2 top-1/2 aspect-video w-full -translate-x-1/2 -translate-y-1/2 overflow-hidden sm:inset-0 sm:aspect-auto sm:w-auto sm:translate-x-0 sm:translate-y-0">
                   <FakeMerchantSpineStage
