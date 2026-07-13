@@ -7,12 +7,7 @@ export type { SpinePlayer, SpinePlayerConfig } from "@esotericsoftware/spine-pla
 export type SpinePlayerCtor = new (element: HTMLElement, config: SpinePlayerConfig) => SpinePlayer;
 export type SpineSkinCtor = new (name: string) => Skin;
 export type SpinePhysics = typeof import("@esotericsoftware/spine-player")["Physics"];
-
-type SpinePlayerRuntime = {
-  SpinePlayer: SpinePlayerCtor;
-  Skin: SpineSkinCtor;
-  Physics: SpinePhysics;
-};
+export type SpinePlayerRuntime = typeof import("@esotericsoftware/spine-player");
 
 declare global {
   interface Window {
