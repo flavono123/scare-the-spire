@@ -5147,7 +5147,7 @@
     ],
     "move_graph": {
       "initial": "fabricateBranch",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
           "from": "FABRICATE",
