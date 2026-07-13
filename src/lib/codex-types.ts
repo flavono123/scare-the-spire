@@ -847,10 +847,52 @@ export interface MonsterMoveTransition {
   condition?: string | null;
 }
 
+export type MonsterMoveGraphStateKind = "move" | "random" | "conditional";
+export type MonsterMoveRepeatRule = "forever" | "max_consecutive" | "cannot_repeat" | "once";
+
+export interface MonsterMoveGraphRandomBranch {
+  to: string;
+  weight: number | null;
+  weightExpression: string | null;
+  baseChance: number | null;
+  repeat: MonsterMoveRepeatRule;
+  maxRepeats: number | null;
+  cooldown: number;
+}
+
+export interface MonsterMoveGraphConditionalBranch {
+  to: string;
+  condition: string | null;
+}
+
+export interface MonsterMoveGraphMoveState {
+  id: string;
+  kind: "move";
+  next: string | null;
+}
+
+export interface MonsterMoveGraphRandomState {
+  id: string;
+  kind: "random";
+  branches: MonsterMoveGraphRandomBranch[];
+}
+
+export interface MonsterMoveGraphConditionalState {
+  id: string;
+  kind: "conditional";
+  branches: MonsterMoveGraphConditionalBranch[];
+}
+
+export type MonsterMoveGraphState =
+  | MonsterMoveGraphMoveState
+  | MonsterMoveGraphRandomState
+  | MonsterMoveGraphConditionalState;
+
 export interface MonsterMoveGraph {
   initial: string | null;
   confidence: "static" | "partial";
   transitions: MonsterMoveTransition[];
+  states?: MonsterMoveGraphState[];
 }
 
 export interface MonsterSpineEffectAsset {
