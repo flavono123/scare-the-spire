@@ -205,6 +205,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "EBB",
+          "kind": "move",
+          "next": "EYE_LASERS"
+        },
+        {
+          "id": "EYE_LASERS",
+          "kind": "move",
+          "next": "INCREASING_INTENSITY"
+        },
+        {
+          "id": "INCREASING_INTENSITY",
+          "kind": "move",
+          "next": "EBB"
+        }
       ]
     },
     "damage_values": {
@@ -5129,7 +5146,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "fabricateBranch",
       "confidence": "partial",
       "transitions": [
         {
@@ -5159,6 +5176,61 @@
           "chance": null,
           "kind": "conditional",
           "condition": "!CanFabricate"
+        }
+      ],
+      "states": [
+        {
+          "id": "FABRICATE",
+          "kind": "move",
+          "next": "fabricateBranch"
+        },
+        {
+          "id": "FABRICATING_STRIKE",
+          "kind": "move",
+          "next": "fabricateBranch"
+        },
+        {
+          "id": "DISINTEGRATE",
+          "kind": "move",
+          "next": "fabricateBranch"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "FABRICATE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "forever",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "FABRICATING_STRIKE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "forever",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
+        },
+        {
+          "id": "fabricateBranch",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "RAND",
+              "condition": "CanFabricate"
+            },
+            {
+              "to": "DISINTEGRATE",
+              "condition": "!CanFabricate"
+            }
+          ]
         }
       ]
     },
@@ -7053,7 +7125,18 @@
         "card_applications": []
       }
     ],
-    "move_graph": null,
+    "move_graph": {
+      "initial": "EXPLODE",
+      "confidence": "static",
+      "transitions": [],
+      "states": [
+        {
+          "id": "EXPLODE",
+          "kind": "move",
+          "next": null
+        }
+      ]
+    },
     "damage_values": {
       "Explode": {
         "normal": 8,
@@ -16520,6 +16603,56 @@
           "to": "MAELSTROM",
           "chance": 50.0,
           "kind": "random"
+        }
+      ],
+      "states": [
+        {
+          "id": "SOUL_BURN",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "MAELSTROM",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "DRAIN_LIFE",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "SOUL_BURN",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "MAELSTROM",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "DRAIN_LIFE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
