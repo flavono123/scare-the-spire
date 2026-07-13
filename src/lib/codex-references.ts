@@ -16,6 +16,7 @@ import type {
 } from "./codex-types";
 import { stripCodexMarkup } from "./codex-search";
 import { buildCompendiumResourceHref } from "./compendium-resource-links";
+import { getEncounterMonsterIds } from "./encounter-compositions";
 
 export const FUTURE_OF_POTIONS_EVENT_ID = "THE_FUTURE_OF_POTIONS";
 export const FUTURE_OF_POTIONS_EVENT_NAME_KO = "포션의 미래?";
@@ -1075,30 +1076,20 @@ export function getRelatedEventIdsForPower(
 
 export function getRelatedEncounterIdsForMonster(
   monsterId: string,
-  encounters: readonly Pick<CodexEncounter, "id" | "monsters">[],
+  encounters: readonly Pick<CodexEncounter, "id" | "monsters" | "compositions">[],
 ): string[] {
   const normalizedMonsterId = monsterId.toUpperCase();
   return encounters
     .filter((encounter) =>
-      encounter.monsters.some((monster) => monster.id.toUpperCase() === normalizedMonsterId),
+      getEncounterMonsterIds(encounter).some((id) => id.toUpperCase() === normalizedMonsterId),
     )
     .map((encounter) => encounter.id);
 }
 
 export function getRelatedMonsterIdsForEncounter(
-  encounter: Pick<CodexEncounter, "monsters">,
+  encounter: Pick<CodexEncounter, "monsters" | "compositions">,
 ): string[] {
-  const seen = new Set<string>();
-  const monsterIds: string[] = [];
-
-  for (const monster of encounter.monsters) {
-    const normalizedMonsterId = monster.id.toUpperCase();
-    if (seen.has(normalizedMonsterId)) continue;
-    seen.add(normalizedMonsterId);
-    monsterIds.push(monster.id);
-  }
-
-  return monsterIds;
+  return getEncounterMonsterIds(encounter);
 }
 
 function invertEventRelations(

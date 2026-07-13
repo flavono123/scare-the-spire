@@ -59,7 +59,9 @@ export function expandEncounterFormations(encounter: CodexEncounter): EncounterF
   });
 }
 
-export function getEncounterMonsterIds(encounter: CodexEncounter): string[] {
+export function getEncounterMonsterIds(
+  encounter: Pick<CodexEncounter, "monsters" | "compositions">,
+): string[] {
   const ids = new Set<string>();
   if (encounter.compositions?.length) {
     for (const composition of encounter.compositions) {
