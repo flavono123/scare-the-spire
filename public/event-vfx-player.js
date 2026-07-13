@@ -288,6 +288,7 @@
     }
     scene._images = images;
     scene._tints = new Map();
+    scene._tintPixels = 0;
     scene._nodes = scene.nodes
       .map((node, index) => ({ node, index, z: number(node.props, "z_index", 0) }))
       .sort((a, b) => a.z - b.z || a.index - b.index)
@@ -329,6 +330,8 @@
 
   function tintedImage(scene, image, texture, tint) {
     if (tint.r > 0.96 && tint.g > 0.96 && tint.b > 0.96) return image;
+    const pixels = texture.width * texture.height;
+    if (pixels > 512 * 512 || scene._tintPixels + pixels > 4 * 1024 * 1024) return image;
     const red = Math.round(clamp(tint.r, 0, 1) * 15) * 17;
     const green = Math.round(clamp(tint.g, 0, 1) * 15) * 17;
     const blue = Math.round(clamp(tint.b, 0, 1) * 15) * 17;
@@ -347,6 +350,7 @@
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.globalCompositeOperation = "source-over";
     scene._tints.set(key, canvas);
+    scene._tintPixels += pixels;
     return canvas;
   }
 
