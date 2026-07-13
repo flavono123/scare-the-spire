@@ -1,0 +1,90 @@
+[
+  {
+    "id": "SLITHERING_STRANGLER_NORMAL",
+    "backgroundUrl": "/images/sts2/encounter-scenes/overgrowth-a.webp",
+    "sourceScene": "scenes/backgrounds/overgrowth/overgrowth_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_00_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_01_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_02_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_03_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_bg_04_a.tscn",
+      "scenes/backgrounds/overgrowth/layers/overgrowth_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "fireflies"
+    },
+    "backgroundSpineAsset": null,
+    "monsterSlots": []
+  },
+  {
+    "id": "QUEEN_BOSS",
+    "backgroundUrl": "/images/sts2/encounter-scenes/queen-boss-a.webp",
+    "sourceScene": "scenes/backgrounds/queen_boss/queen_boss_background.tscn",
+    "sourceLayers": [
+      "scenes/backgrounds/queen_boss/layers/queen_boss_bg_00_a.tscn",
+      "scenes/backgrounds/queen_boss/layers/queen_boss_bg_01_a.tscn",
+      "scenes/backgrounds/queen_boss/layers/queen_boss_bg_02_a.tscn",
+      "scenes/backgrounds/queen_boss/layers/queen_boss_bg_03_a.tscn",
+      "scenes/backgrounds/queen_boss/layers/queen_fg_a.tscn"
+    ],
+    "ambientVfx": {
+      "kind": "queen",
+      "lightTextureUrl": "/images/sts2/encounter-scenes/queen-light.webp"
+    },
+    "backgroundSpineAsset": {
+      "id": "QUEEN_BOSS_CAGES",
+      "source": "scenes/backgrounds/queen_boss/false_queen_cages",
+      "renderStatus": "spine",
+      "renderTags": [
+        "encounter-background"
+      ],
+      "atlasUrl": "/spine/sts2/encounter-backgrounds/false_queen_cages/false_queen_cages.atlas",
+      "binaryUrl": "/spine/sts2/encounter-backgrounds/false_queen_cages/false_queen_cages.skel",
+      "textureUrls": [
+        "/spine/sts2/encounter-backgrounds/false_queen_cages/false_queen_cages.png"
+      ],
+      "skin": null,
+      "skins": [
+        "default"
+      ],
+      "viewport": {
+        "x": -1.000244140625,
+        "y": -2881.00048828125,
+        "width": 6146.0009765625,
+        "height": 2894.234375,
+        "padLeft": "0%",
+        "padRight": "0%",
+        "padTop": "0%",
+        "padBottom": "0%"
+      },
+      "animations": [
+        "animation"
+      ],
+      "bestiaryAnimations": [],
+      "idleAnimation": "animation",
+      "moveAnimations": {},
+      "moveEffects": {}
+    },
+    "monsterSlots": [
+      {
+        "monsterId": "TORCH_HEAD_AMALGAM",
+        "sourcePosition": {
+          "x": 1207,
+          "y": 709
+        },
+        "x": 0.6286458333333333,
+        "y": 0.6564814814814814
+      },
+      {
+        "monsterId": "QUEEN",
+        "sourcePosition": {
+          "x": 1606,
+          "y": 695
+        },
+        "x": 0.8364583333333333,
+        "y": 0.6435185185185185
+      }
+    ]
+  }
+]
