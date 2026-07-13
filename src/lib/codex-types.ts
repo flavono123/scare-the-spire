@@ -1056,6 +1056,33 @@ export interface EncounterMonsterRef {
   nameEn: string; // English
 }
 
+export interface EncounterComposition {
+  id: string;
+  weight: number;
+  slots: EncounterMonsterRef[][];
+}
+
+export type EncounterSceneAmbientVfx =
+  | { kind: "fireflies" }
+  | { kind: "queen"; lightTextureUrl: string };
+
+export interface EncounterSceneMonsterSlot {
+  monsterId: string;
+  sourcePosition: { x: number; y: number };
+  x: number;
+  y: number;
+}
+
+export interface EncounterSceneAsset {
+  id: string;
+  backgroundUrl: string;
+  sourceScene: string;
+  sourceLayers: string[];
+  ambientVfx: EncounterSceneAmbientVfx;
+  backgroundSpineAsset: MonsterSpineAsset | null;
+  monsterSlots: EncounterSceneMonsterSlot[];
+}
+
 export interface CodexEncounter extends CodexLifecycle {
   id: string;
   name: string;        // Korean
@@ -1065,8 +1092,10 @@ export interface CodexEncounter extends CodexLifecycle {
   act: EventAct | null;
   tags: string[] | null;
   monsters: EncounterMonsterRef[];
+  compositions: EncounterComposition[] | null;
   lossText: string;
   imageUrl: string | null;
+  scene: EncounterSceneAsset | null;
 }
 
 export const MONSTER_TYPE_ORDER: MonsterType[] = ["Normal", "Elite", "Boss"];
