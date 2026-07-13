@@ -474,6 +474,11 @@ export const serviceMessages = {
         weakOnly: "쉬운 전투만",
         weakEncounter: "쉬운 전투",
         monsterComposition: "몬스터 구성",
+        formationCount: "가능한 편성 {count}개",
+        formationIndicator: "편성 {current}/{total}",
+        previousFormation: "이전 편성",
+        nextFormation: "다음 편성",
+        appearanceChance: "등장 확률 {chance}",
         lossText: "패배 시",
       },
       ancientsView: {
@@ -1029,6 +1034,11 @@ export const serviceMessages = {
         weakOnly: "Weak encounters only",
         weakEncounter: "Weak encounter",
         monsterComposition: "Monster Composition",
+        formationCount: "{count} possible formations",
+        formationIndicator: "Formation {current}/{total}",
+        previousFormation: "Previous formation",
+        nextFormation: "Next formation",
+        appearanceChance: "Appearance chance {chance}",
         lossText: "On Loss",
       },
       ancientsView: {
