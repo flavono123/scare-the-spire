@@ -20,6 +20,8 @@ import type {
   DamageValue,
   MonsterMove,
   MonsterMoveCardApplication,
+  MonsterMoveGraphRandomBranch,
+  MonsterMoveGraphState,
   MonsterMoveIntentDetail,
   MonsterMovePowerApplication,
   MonsterMovePowerTarget,
@@ -112,7 +114,7 @@ interface AttackRepeatInfo {
   isMulti: boolean;
 }
 
-type PatternKind = "fixed" | "random" | "conditional" | "mixed" | "unknown";
+type PatternKind = "linear" | "fixed" | "random" | "conditional" | "mixed" | "unknown";
 
 interface PatternPhase {
   id: string;
@@ -144,6 +146,17 @@ interface PatternDiagramNode {
   height: number;
   isInitial: boolean;
   phaseId: string | null;
+  annotation?: string | null;
+}
+
+interface PatternDiagramEntryNode {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  kind: "start" | "end";
 }
 
 interface PatternDiagramEdge {
@@ -174,6 +187,8 @@ interface PatternDiagramChoiceBox {
   y: number;
   width: number;
   height: number;
+  label?: string | null;
+  kind?: "random" | "conditional";
 }
 
 interface PatternDiagramPan {
@@ -198,6 +213,7 @@ interface PatternDiagramPhaseConnector {
 interface PatternDiagramModel {
   width: number;
   height: number;
+  entryNodes: PatternDiagramEntryNode[];
   nodes: PatternDiagramNode[];
   edges: PatternDiagramEdge[];
   phaseBoxes: PatternDiagramPhaseBox[];
@@ -873,10 +889,20 @@ function PatternStateTransitionDiagram({
               top: box.y,
               width: box.width,
               height: box.height,
-              border: "1px solid rgba(239, 200, 81, 0.28)",
+              border: `1px solid ${box.kind === "conditional" ? "rgba(255, 69, 69, 0.42)" : "rgba(239, 200, 81, 0.34)"}`,
               backgroundColor: "rgba(7, 9, 20, 0.22)",
             }}
-          />
+          >
+            {box.label && (
+              <span
+                className="absolute left-3 top-2 max-w-[calc(100%-1.5rem)] truncate font-game-title text-[11px] font-bold"
+                style={{ color: box.kind === "conditional" ? DIAGRAM_CONDITIONAL_COLOR : DIAGRAM_ARROW_COLOR }}
+                title={box.label}
+              >
+                {box.label}
+              </span>
+            )}
+          </div>
         ))}
         {diagram.phaseBoxes.map((box) => (
           <div
@@ -1004,6 +1030,25 @@ function PatternStateTransitionDiagram({
           </span>
         ))}
 
+        {diagram.entryNodes.map((entry) => (
+          <div
+            key={entry.id}
+            className="pointer-events-none absolute z-10 flex items-center justify-center rounded-full border font-game-title text-[10px] font-black tracking-[0.08em]"
+            style={{
+              left: entry.x,
+              top: entry.y,
+              width: entry.width,
+              height: entry.height,
+              borderColor: entry.kind === "start" ? "rgba(96, 165, 250, 0.72)" : "rgba(161, 161, 170, 0.58)",
+              backgroundColor: entry.kind === "start" ? "rgba(30, 64, 175, 0.22)" : "rgba(39, 39, 42, 0.42)",
+              color: entry.kind === "start" ? BESTIARY_START_COLOR : "#a1a1aa",
+            }}
+            data-pattern-entry={entry.kind}
+          >
+            {entry.label}
+          </div>
+        ))}
+
         {diagram.nodes.map((node) => (
           <PatternMoveStateNode
             key={node.id}
@@ -1089,6 +1134,14 @@ function PatternMoveStateNode({
         }
       }}
     >
+      {node.annotation && (
+        <span
+          className="pointer-events-none absolute -top-5 left-1/2 z-20 max-w-[calc(100%+2rem)] -translate-x-1/2 whitespace-nowrap font-game-title text-[10px] font-bold text-[#efc851]"
+          title={node.annotation}
+        >
+          {node.annotation}
+        </span>
+      )}
       <span className="relative z-10 flex h-full min-w-0 flex-col items-center justify-center gap-1">
         <span className="flex max-w-full flex-wrap items-center justify-center gap-x-1 gap-y-0.5">
           {attackMetric && (
@@ -1315,7 +1368,8 @@ export function MonsterDetail({
     .map((powerId) => powerById.get(powerId))
     .filter((power): power is CodexPower => Boolean(power))
     .map(powerToReferenceTarget);
-  const patternRail = transitionRows.length > 0 ? (
+  const hasStructuredMoveGraph = (monster.moveGraph?.states?.length ?? 0) > 0;
+  const patternRail = transitionRows.length > 0 || hasStructuredMoveGraph ? (
     <InfoRailSection title={monsterText.actionGraph}>
       <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-gray-400">
         <span>{getPatternKindLabel(patternSummary.kind, serviceLocale)}</span>
@@ -2015,12 +2069,410 @@ function getPowerTargetLabel(target: MonsterMovePowerTarget, serviceLocale: Serv
   return labels[target][serviceLocale];
 }
 
+const STRUCTURED_FSM_SAMPLE_IDS = new Set(["GAS_BOMB", "AEONGLASS", "SOUL_NEXUS", "FABRICATOR"]);
+
+function buildStructuredSamplePatternDiagramModel(
+  monster: CodexMonster,
+  serviceLocale: ServiceLocale,
+): PatternDiagramModel | null {
+  const states = monster.moveGraph?.states;
+  if (!STRUCTURED_FSM_SAMPLE_IDS.has(monster.id) || !states || states.length === 0) return null;
+
+  if (monster.id === "GAS_BOMB") {
+    return buildTerminalPatternDiagramModel(monster, states, serviceLocale);
+  }
+  if (monster.id === "AEONGLASS") {
+    return buildFixedLoopPatternDiagramModel(monster, states, serviceLocale);
+  }
+  if (monster.id === "SOUL_NEXUS") {
+    return buildRandomClusterPatternDiagramModel(monster, states, serviceLocale);
+  }
+  if (monster.id === "FABRICATOR") {
+    return buildConditionalClusterPatternDiagramModel(monster, states, serviceLocale);
+  }
+  return null;
+}
+
+function buildTerminalPatternDiagramModel(
+  monster: CodexMonster,
+  states: MonsterMoveGraphState[],
+  serviceLocale: ServiceLocale,
+): PatternDiagramModel | null {
+  const initialId = monster.moveGraph?.initial;
+  const initialState = states.find((state) => state.id === initialId && state.kind === "move");
+  if (!initialState) return null;
+
+  const node = buildStructuredPatternNode(initialState.id, 156, 92, true);
+  const start = buildPatternEntryNode("__START__", serviceLocale === "ko" ? "시작" : "START", 26, 124, "start");
+  const end = buildPatternEntryNode("__END__", serviceLocale === "ko" ? "종료" : "END", 374, 124, "end");
+
+  return {
+    width: 470,
+    height: 260,
+    entryNodes: [start, end],
+    nodes: [node],
+    edges: [
+      buildStructuredPatternEdge({
+        key: "terminal-start",
+        from: start.id,
+        to: node.id,
+        path: `M ${start.x + start.width} ${start.y + start.height / 2} H ${node.x}`,
+        color: BESTIARY_START_COLOR,
+        marker: "start",
+      }),
+      buildStructuredPatternEdge({
+        key: "terminal-end",
+        from: node.id,
+        to: end.id,
+        path: `M ${node.x + node.width} ${node.y + node.height / 2} H ${end.x}`,
+        color: "#a1a1aa",
+      }),
+    ],
+    phaseBoxes: [],
+    choiceBoxes: [],
+    phaseConnectors: [],
+  };
+}
+
+function buildFixedLoopPatternDiagramModel(
+  monster: CodexMonster,
+  states: MonsterMoveGraphState[],
+  serviceLocale: ServiceLocale,
+): PatternDiagramModel | null {
+  const moveById = new Map(states.filter((state) => state.kind === "move").map((state) => [state.id, state]));
+  const initialId = monster.moveGraph?.initial;
+  if (!initialId || !moveById.has(initialId)) return null;
+
+  const orderedIds: string[] = [];
+  const seen = new Set<string>();
+  let currentId: string | null = initialId;
+  while (currentId && !seen.has(currentId)) {
+    const state = moveById.get(currentId);
+    if (!state) break;
+    seen.add(currentId);
+    orderedIds.push(currentId);
+    currentId = state.next;
+  }
+  if (orderedIds.length === 0) return null;
+
+  const nodeY = 100;
+  const nodes = orderedIds.map((id, index) => buildStructuredPatternNode(id, 148 + index * 196, nodeY, id === initialId));
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
+  const start = buildPatternEntryNode("__START__", serviceLocale === "ko" ? "시작" : "START", 24, 132, "start");
+  const edges: PatternDiagramEdge[] = [
+    buildStructuredPatternEdge({
+      key: "fixed-loop-start",
+      from: start.id,
+      to: initialId,
+      path: `M ${start.x + start.width} ${start.y + start.height / 2} H ${nodeById.get(initialId)!.x}`,
+      color: BESTIARY_START_COLOR,
+      marker: "start",
+    }),
+  ];
+
+  orderedIds.forEach((id) => {
+    const state = moveById.get(id);
+    const from = nodeById.get(id);
+    const to = state?.next ? nodeById.get(state.next) : null;
+    if (!from || !to) return;
+    if (to.x > from.x) {
+      edges.push(buildStructuredPatternEdge({
+        key: `${id}-${to.id}`,
+        from: id,
+        to: to.id,
+        path: `M ${from.x + from.width} ${from.y + from.height / 2} H ${to.x}`,
+        color: DIAGRAM_ARROW_COLOR,
+      }));
+      return;
+    }
+
+    const returnY = 34;
+    edges.push(buildStructuredPatternEdge({
+      key: `${id}-${to.id}-return`,
+      from: id,
+      to: to.id,
+      path: `M ${from.x + from.width / 2} ${from.y} V ${returnY} H ${to.x + to.width / 2} V ${to.y}`,
+      color: DIAGRAM_ARROW_COLOR,
+      isLoop: true,
+    }));
+  });
+
+  return {
+    width: nodes[nodes.length - 1].x + DIAGRAM_CELL_WIDTH + 64,
+    height: 270,
+    entryNodes: [start],
+    nodes,
+    edges,
+    phaseBoxes: [],
+    choiceBoxes: [],
+    phaseConnectors: [],
+  };
+}
+
+function buildRandomClusterPatternDiagramModel(
+  monster: CodexMonster,
+  states: MonsterMoveGraphState[],
+  serviceLocale: ServiceLocale,
+): PatternDiagramModel | null {
+  const randomState = states.find((state) => state.kind === "random");
+  if (!randomState || randomState.branches.length === 0) return null;
+
+  const boxX = 140;
+  const boxY = 58;
+  const nodeY = 126;
+  const nodes = randomState.branches.map((branch, index) => (
+    buildStructuredPatternNode(
+      branch.to,
+      boxX + 20 + index * 180,
+      nodeY,
+      branch.to === monster.moveGraph?.initial,
+      formatRandomBranchAnnotation(branch, serviceLocale),
+    )
+  ));
+  const boxWidth = 40 + nodes.length * DIAGRAM_CELL_WIDTH + Math.max(0, nodes.length - 1) * 32;
+  const boxHeight = 184;
+  const boxRight = boxX + boxWidth;
+  const start = buildPatternEntryNode("__START__", serviceLocale === "ko" ? "시작" : "START", 24, 158, "start");
+  const initialNode = nodes.find((node) => node.id === monster.moveGraph?.initial) ?? nodes[0];
+  const loopY = boxY - 28;
+  const effectiveChance = getEqualCannotRepeatNextChance(randomState.branches);
+  const boxLabel = serviceLocale === "ko"
+    ? `무작위 · 직전 행동 제외${effectiveChance == null ? "" : ` · 다음 각 ${formatChancePercent(effectiveChance)}`}`
+    : `Random · excludes previous${effectiveChance == null ? "" : ` · ${formatChancePercent(effectiveChance)} each next`}`;
+
+  return {
+    width: boxRight + 78,
+    height: 310,
+    entryNodes: [start],
+    nodes,
+    edges: [
+      buildStructuredPatternEdge({
+        key: "random-start",
+        from: start.id,
+        to: initialNode.id,
+        path: `M ${start.x + start.width} ${start.y + start.height / 2} H ${initialNode.x}`,
+        color: BESTIARY_START_COLOR,
+        marker: "start",
+      }),
+      buildStructuredPatternEdge({
+        key: "random-reroll",
+        from: randomState.id,
+        to: randomState.id,
+        path: `M ${boxRight} ${boxY + boxHeight * 0.62} H ${boxRight + 36} V ${loopY} H ${boxX + boxWidth * 0.68} V ${boxY}`,
+        color: DIAGRAM_ARROW_COLOR,
+        isLoop: true,
+        label: serviceLocale === "ko" ? "재추첨" : "Reroll",
+        labelX: boxRight + 36,
+        labelY: loopY + 12,
+      }),
+    ],
+    phaseBoxes: [],
+    choiceBoxes: [{
+      id: randomState.id,
+      x: boxX,
+      y: boxY,
+      width: boxWidth,
+      height: boxHeight,
+      label: boxLabel,
+      kind: "random",
+    }],
+    phaseConnectors: [],
+  };
+}
+
+function buildConditionalClusterPatternDiagramModel(
+  monster: CodexMonster,
+  states: MonsterMoveGraphState[],
+  serviceLocale: ServiceLocale,
+): PatternDiagramModel | null {
+  const conditionalState = states.find((state) => state.kind === "conditional" && state.id === monster.moveGraph?.initial)
+    ?? states.find((state) => state.kind === "conditional");
+  if (!conditionalState || conditionalState.kind !== "conditional") return null;
+  const stateById = new Map(states.map((state) => [state.id, state]));
+  const randomConditionBranch = conditionalState.branches.find((branch) => stateById.get(branch.to)?.kind === "random");
+  const randomState = randomConditionBranch ? stateById.get(randomConditionBranch.to) : null;
+  if (!randomState || randomState.kind !== "random") return null;
+  const directBranches = conditionalState.branches.filter((branch) => stateById.get(branch.to)?.kind === "move");
+
+  const outerX = 140;
+  const outerY = 54;
+  const outerWidth = 624;
+  const outerHeight = 250;
+  const randomBoxX = 170;
+  const randomBoxY = 102;
+  const randomBoxWidth = 374;
+  const randomBoxHeight = 158;
+  const nodeY = 142;
+  const randomNodes = randomState.branches.map((branch, index) => (
+    buildStructuredPatternNode(
+      branch.to,
+      randomBoxX + 18 + index * 178,
+      nodeY,
+      false,
+      formatRandomBranchAnnotation(branch, serviceLocale),
+    )
+  ));
+  const directNodes = directBranches.map((branch, index) => (
+    buildStructuredPatternNode(
+      branch.to,
+      584,
+      nodeY + index * (DIAGRAM_CELL_HEIGHT + 22),
+      false,
+      formatConditionalBranchLabel(branch.condition, serviceLocale),
+    )
+  ));
+  const nodes = [...randomNodes, ...directNodes];
+  const start = buildPatternEntryNode("__START__", serviceLocale === "ko" ? "시작" : "START", 24, 163, "start");
+  const outerRight = outerX + outerWidth;
+  const loopY = outerY - 28;
+  const randomConditionLabel = formatConditionalBranchLabel(randomConditionBranch?.condition ?? null, serviceLocale);
+  const randomChance = randomState.branches[0]?.baseChance;
+  const randomLabel = `${randomConditionLabel} · ${serviceLocale === "ko" ? "무작위" : "Random"}${randomChance == null ? "" : ` · ${formatChancePercent(randomChance)}`}`;
+
+  return {
+    width: outerRight + 82,
+    height: 344,
+    entryNodes: [start],
+    nodes,
+    edges: [
+      buildStructuredPatternEdge({
+        key: "conditional-start",
+        from: start.id,
+        to: conditionalState.id,
+        path: `M ${start.x + start.width} ${start.y + start.height / 2} H ${outerX}`,
+        color: BESTIARY_START_COLOR,
+        marker: "start",
+      }),
+      buildStructuredPatternEdge({
+        key: "conditional-reevaluate",
+        from: conditionalState.id,
+        to: conditionalState.id,
+        path: `M ${outerRight} ${outerY + outerHeight * 0.62} H ${outerRight + 38} V ${loopY} H ${outerX + outerWidth * 0.7} V ${outerY}`,
+        color: DIAGRAM_CONDITIONAL_COLOR,
+        marker: "conditional",
+        isLoop: true,
+        label: serviceLocale === "ko" ? "다시 판정" : "Re-evaluate",
+        labelX: outerRight + 38,
+        labelY: loopY + 12,
+      }),
+    ],
+    phaseBoxes: [],
+    choiceBoxes: [
+      {
+        id: conditionalState.id,
+        x: outerX,
+        y: outerY,
+        width: outerWidth,
+        height: outerHeight,
+        label: serviceLocale === "ko" ? "조건 · 행동 후 다시 판정" : "Conditional · re-evaluate after each move",
+        kind: "conditional",
+      },
+      {
+        id: randomState.id,
+        x: randomBoxX,
+        y: randomBoxY,
+        width: randomBoxWidth,
+        height: randomBoxHeight,
+        label: randomLabel,
+        kind: "random",
+      },
+    ],
+    phaseConnectors: [],
+  };
+}
+
+function buildStructuredPatternNode(
+  id: string,
+  x: number,
+  y: number,
+  isInitial: boolean,
+  annotation: string | null = null,
+): PatternDiagramNode {
+  return {
+    id,
+    x,
+    y,
+    width: DIAGRAM_CELL_WIDTH,
+    height: DIAGRAM_CELL_HEIGHT,
+    isInitial,
+    phaseId: null,
+    annotation,
+  };
+}
+
+function buildPatternEntryNode(
+  id: string,
+  label: string,
+  x: number,
+  y: number,
+  kind: "start" | "end",
+): PatternDiagramEntryNode {
+  return { id, label, x, y, width: 66, height: 32, kind };
+}
+
+function buildStructuredPatternEdge({
+  key,
+  from,
+  to,
+  path,
+  color,
+  marker = "normal",
+  isLoop = false,
+  label = null,
+  labelX = 0,
+  labelY = 0,
+}: {
+  key: string;
+  from: string;
+  to: string;
+  path: string;
+  color: string;
+  marker?: PatternDiagramEdge["marker"];
+  isLoop?: boolean;
+  label?: string | null;
+  labelX?: number;
+  labelY?: number;
+}): PatternDiagramEdge {
+  return { key, from, to, path, color, marker, isLoop, label, labelX, labelY };
+}
+
+function formatRandomBranchAnnotation(branch: MonsterMoveGraphRandomBranch, serviceLocale: ServiceLocale): string {
+  const chance = branch.baseChance == null ? "?" : formatChancePercent(branch.baseChance);
+  const repeatLabel = (() => {
+    if (branch.repeat === "cannot_repeat") return serviceLocale === "ko" ? "연속 ≤1" : "≤1 consecutive";
+    if (branch.repeat === "max_consecutive") {
+      const limit = branch.maxRepeats ?? "?";
+      return serviceLocale === "ko" ? `연속 ≤${limit}` : `≤${limit} consecutive`;
+    }
+    if (branch.repeat === "once") return serviceLocale === "ko" ? "전투당 1회" : "Once per combat";
+    if (branch.cooldown > 0) return serviceLocale === "ko" ? `재사용 ${branch.cooldown}턴` : `Cooldown ${branch.cooldown}`;
+    return serviceLocale === "ko" ? "연속 허용" : "Can repeat";
+  })();
+  return `${chance} · ${repeatLabel}`;
+}
+
+function getEqualCannotRepeatNextChance(branches: MonsterMoveGraphRandomBranch[]): number | null {
+  if (branches.length < 2 || branches.some((branch) => branch.repeat !== "cannot_repeat" || branch.weight == null)) return null;
+  const firstWeight = branches[0].weight;
+  if (branches.some((branch) => branch.weight !== firstWeight)) return null;
+  return Math.round((1000 / (branches.length - 1))) / 10;
+}
+
+function formatConditionalBranchLabel(condition: string | null, serviceLocale: ServiceLocale): string {
+  if (condition === "CanFabricate") return serviceLocale === "ko" ? "제작 가능" : "Can fabricate";
+  if (condition === "!CanFabricate") return serviceLocale === "ko" ? "제작 불가" : "Cannot fabricate";
+  return condition ?? (serviceLocale === "ko" ? "조건" : "Condition");
+}
+
 function buildPatternDiagramModel(
   monster: CodexMonster,
   rows: TransitionTableRow[],
   phases: PatternPhase[],
   serviceLocale: ServiceLocale,
 ): PatternDiagramModel | null {
+  const structuredSample = buildStructuredSamplePatternDiagramModel(monster, serviceLocale);
+  if (structuredSample) return structuredSample;
+
   if (monster.id === "DECIMILLIPEDE_SEGMENT") {
     return buildDecimillipedePatternDiagramModel(rows, serviceLocale);
   }
@@ -2135,6 +2587,7 @@ function buildPatternDiagramModel(
   return {
     width: Math.max(360, maxRight),
     height: Math.max(180, cursorY + DIAGRAM_PAD - DIAGRAM_ROW_GAP),
+    entryNodes: [],
     nodes,
     edges,
     phaseBoxes,
@@ -2303,6 +2756,7 @@ function buildDecimillipedePatternDiagramModel(
   return {
     width: x3 + DIAGRAM_CELL_WIDTH + DIAGRAM_PAD,
     height: bottomY + DIAGRAM_CELL_HEIGHT + DIAGRAM_PAD,
+    entryNodes: [],
     nodes,
     edges,
     phaseBoxes: [],
@@ -2600,6 +3054,8 @@ function buildChoiceBoxes(
       y: minY,
       width: maxX - minX,
       height: maxY - minY,
+      label: null,
+      kind: sourceTransitions.some((transition) => transition.kind === "conditional") ? "conditional" : "random",
     }];
   });
 }
@@ -2662,7 +3118,8 @@ function buildMonsterActionMoves(monster: CodexMonster): MonsterMove[] {
 
 function buildPatternSummary(monster: CodexMonster): PatternSummary {
   const transitions = getDisplayPatternTransitions(monster);
-  if (transitions.length === 0) {
+  const structuredStates = monster.moveGraph?.states ?? [];
+  if (transitions.length === 0 && structuredStates.length === 0) {
     return { kind: "unknown", hasPhases: false, phases: [] };
   }
   if (monster.id === "DECIMILLIPEDE_SEGMENT") {
@@ -2670,9 +3127,15 @@ function buildPatternSummary(monster: CodexMonster): PatternSummary {
   }
 
   const kinds = new Set(transitions.map((transition) => transition.kind ?? inferTransitionKind(transition)));
-  const hasRandom = kinds.has("random");
-  const hasConditional = kinds.has("conditional");
-  const kind: PatternKind = hasRandom && hasConditional
+  const hasRandom = kinds.has("random") || structuredStates.some((state) => state.kind === "random");
+  const hasConditional = kinds.has("conditional") || structuredStates.some((state) => state.kind === "conditional");
+  const isLinear = structuredStates.length > 0
+    && !hasRandom
+    && !hasConditional
+    && structuredStates.every((state) => state.kind !== "move" || state.next == null);
+  const kind: PatternKind = isLinear
+    ? "linear"
+    : hasRandom && hasConditional
     ? "mixed"
     : hasConditional ? "conditional"
       : hasRandom ? "random"
@@ -2789,10 +3252,11 @@ function inferTransitionKind(transition: MonsterMoveTransition): MonsterMoveTran
 
 function getPatternKindLabel(kind: PatternKind, serviceLocale: ServiceLocale): string {
   const labels: Record<PatternKind, { ko: string; en: string }> = {
+    linear: { ko: "비순환", en: "Non-repeating" },
     fixed: { ko: "고정 반복", en: "Fixed" },
     random: { ko: "무작위", en: "Random" },
     conditional: { ko: "조건부", en: "Conditional" },
-    mixed: { ko: "혼합", en: "Mixed" },
+    mixed: { ko: "조건 + 무작위", en: "Conditional + Random" },
     unknown: { ko: "미확인", en: "Unknown" },
   };
   return serviceLocale === "ko" ? labels[kind].ko : labels[kind].en;
