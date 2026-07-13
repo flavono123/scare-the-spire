@@ -9,6 +9,10 @@ test.use({ locale: "ko-KR" });
 
 test("redirects a known legacy page with its path and query intact", async ({ request }) => {
   const response = await request.get(`${BASE}/patches?version=0.108.0`, {
+    headers: {
+      "x-vercel-deprecation-local-test": "1",
+      "x-vercel-deprecation-local-target-origin": REDIRECT_TARGET,
+    },
     maxRedirects: 0,
   });
 
