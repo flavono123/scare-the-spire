@@ -31,6 +31,10 @@ import {
   MonsterMoveHoverPreview,
 } from "@/components/codex/monster-move-visuals";
 import { applyPowerAmountForPreview } from "@/components/codex/power-preview";
+import {
+  expandEncounterFormations,
+  formatEncounterProbability,
+} from "@/lib/encounter-compositions";
 
 // Entity types that can appear in patch notes
 export type EntityType = "card" | "character" | "keyword" | "relic" | "potion" | "power" | "enchantment" | "affliction" | "event" | "monster" | "monsterMove" | "encounter" | "ancient" | "epoch";
@@ -663,7 +667,7 @@ export function EntityPreview({
         renderTooltip(
           <GameResourcePreview
             title={entity.nameKo}
-            imageUrl={entity.imageUrl}
+            imageUrl={entity.encounterData.scene?.backgroundUrl ?? entity.imageUrl}
             imageAlt={entity.nameKo}
             meta={(
               <>
@@ -679,7 +683,19 @@ export function EntityPreview({
               </>
             )}
           >
-            {Array.from(new Map(entity.encounterData.monsters.map((m) => [m.id, m])).values()).map((m) => m.name).join(", ")}
+            <div className="space-y-1">
+              {expandEncounterFormations(entity.encounterData).map((formation) => (
+                <div key={formation.id} className="flex items-start justify-between gap-3 text-xs">
+                  <span>{formation.monsters.map((monster) => monster.name).join(" + ")}</span>
+                  <span className="shrink-0 text-amber-300/90">
+                    {formatEncounterProbability(
+                      formation.probability,
+                      serviceLocale === "en" ? "en-US" : "ko-KR",
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
           </GameResourcePreview>,
         )
       )}
