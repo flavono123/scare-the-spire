@@ -37,6 +37,15 @@ _ISWEAK_RE = re.compile(r"public\s+override\s+bool\s+IsWeak\s*=>\s*true\s*;")
 _MONSTER_REF_RE = re.compile(r"ModelDb\.Monster<(?P<cls>\w+)>\(\)")
 _ENCOUNTER_REF_RE = re.compile(r"ModelDb\.Encounter<(?P<cls>\w+)>\(\)")
 _TAG_RE = re.compile(r"EncounterTag\.(?P<tag>\w+)")
+_MONSTER_ARRAY_RE = re.compile(
+    r"private\s+static\s+readonly\s+MonsterModel\[\]\s+(?P<name>_\w+)\s*="
+    r".*?\{(?P<body>.*?)\};",
+    re.DOTALL,
+)
+_RANDOM_ENUM_SWITCH_RE = re.compile(
+    r"switch\s*\(base\.Rng\.NextItem\(Enum\.GetValues<(?P<enum>\w+)>\(\)\)\)"
+)
+_SPAN_ASSIGNMENT_RE = re.compile(r"span\[[^\]]+\]\s*=\s*(?P<value>[^;]+);")
 
 
 def pascal_case(snake: str) -> str:
@@ -70,12 +79,111 @@ def build_act_index(source_root: Path) -> dict[str, str]:
     return index
 
 
+def extract_braced_block(text: str, opening_brace: int) -> tuple[str, int] | None:
+    """Return a balanced C# brace block and the index after its closing brace."""
+    if opening_brace < 0 or opening_brace >= len(text) or text[opening_brace] != "{":
+        return None
+    depth = 0
+    for index in range(opening_brace, len(text)):
+        if text[index] == "{":
+            depth += 1
+        elif text[index] == "}":
+            depth -= 1
+            if depth == 0:
+                return text[opening_brace + 1 : index], index + 1
+    return None
+
+
+def parse_monster_arrays(text: str) -> dict[str, list[str]]:
+    arrays: dict[str, list[str]] = {}
+    for match in _MONSTER_ARRAY_RE.finditer(text):
+        arrays[match.group("name")] = [
+            monster.group("cls") for monster in _MONSTER_REF_RE.finditer(match.group("body"))
+        ]
+    return arrays
+
+
+def parse_random_enum_compositions(text: str) -> list[dict] | None:
+    """Parse equal-weight enum branches into weighted, ordered monster slots."""
+    switch_match = _RANDOM_ENUM_SWITCH_RE.search(text)
+    if switch_match is None:
+        return None
+
+    enum_name = switch_match.group("enum")
+    enum_match = re.search(rf"private\s+enum\s+{re.escape(enum_name)}\s*\{{", text)
+    if enum_match is None:
+        return None
+    enum_block = extract_braced_block(text, enum_match.end() - 1)
+    if enum_block is None:
+        return None
+    enum_values = re.findall(r"\b[A-Za-z_]\w*\b", enum_block[0])
+    if not enum_values:
+        return None
+
+    switch_open = text.find("{", switch_match.end())
+    switch_block = extract_braced_block(text, switch_open)
+    if switch_block is None:
+        return None
+    switch_body, switch_end = switch_block
+    arrays = parse_monster_arrays(text)
+    compositions: list[dict] = []
+
+    for branch_name in enum_values:
+        branch_match = re.search(
+            rf"case\s+{re.escape(enum_name)}\.{re.escape(branch_name)}\s*:",
+            switch_body,
+        )
+        if branch_match is None:
+            return None
+        next_branch = re.search(
+            rf"(?:case\s+{re.escape(enum_name)}\.\w+\s*:|default\s*:)",
+            switch_body[branch_match.end() :],
+        )
+        branch_end = (
+            branch_match.end() + next_branch.start() if next_branch is not None else len(switch_body)
+        )
+        branch_body = switch_body[branch_match.end() : branch_end]
+        slots: list[list[str]] = []
+        for assignment in _SPAN_ASSIGNMENT_RE.finditer(branch_body):
+            value = assignment.group("value").strip()
+            monster_match = _MONSTER_REF_RE.fullmatch(value)
+            if monster_match is not None:
+                slots.append([monster_match.group("cls")])
+                continue
+            array_match = re.fullmatch(r"base\.Rng\.NextItem\((?P<name>_\w+)\)", value)
+            if array_match is not None and arrays.get(array_match.group("name")):
+                slots.append(arrays[array_match.group("name")])
+                continue
+            return None
+        if not slots:
+            return None
+        compositions.append(
+            {
+                "id": snake_case_upper(branch_name),
+                "weight": 1,
+                "slots": [[snake_case_upper(monster) for monster in slot] for slot in slots],
+            }
+        )
+
+    tail = text[switch_end :]
+    tail_end = tail.find("return ")
+    if tail_end >= 0:
+        tail = tail[:tail_end]
+    trailing_monsters = [match.group("cls") for match in _MONSTER_REF_RE.finditer(tail)]
+    for composition in compositions:
+        composition["slots"].extend(
+            [[snake_case_upper(monster)] for monster in trailing_monsters]
+        )
+    return compositions
+
+
 def parse_encounter_meta(text: str) -> dict:
     rt = _ROOMTYPE_RE.search(text)
     out = {
         "room_type": rt.group("rt") if rt else "Monster",
         "is_weak": bool(_ISWEAK_RE.search(text)),
         "monster_classes": [],
+        "compositions": parse_random_enum_compositions(text),
         "tags": [],
     }
     # Scan the whole file for monster references so that indirected helpers
@@ -131,7 +239,13 @@ def build_entries(
         if cs is not None:
             meta = parse_encounter_meta(cs.read_text())
         else:
-            meta = {"room_type": "Monster", "is_weak": False, "monster_classes": [], "tags": []}
+            meta = {
+                "room_type": "Monster",
+                "is_weak": False,
+                "monster_classes": [],
+                "compositions": None,
+                "tags": [],
+            }
 
         act_label = act_index.get(ent_id)
 
@@ -164,6 +278,10 @@ def build_entries(
                 "monsters": monsters if monsters else old.get("monsters", []),
                 "loss_text": lnode.get("loss") or old.get("loss_text"),
             })
+            if meta["compositions"] is not None:
+                entry["compositions"] = meta["compositions"]
+            elif old.get("compositions") is not None:
+                entry["compositions"] = old["compositions"]
             out.append(entry)
 
         if ent_id not in old_kor_by_id:
