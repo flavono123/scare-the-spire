@@ -92,16 +92,17 @@ export function isLegacyPublicPagePath(pathname: string): boolean {
 
 export function shouldRedirectLegacyPage({
   hostname,
+  localTestMode = isLocalRedirectTestMode(),
   method,
   pathname,
   now = Date.now(),
 }: {
   hostname: string;
+  localTestMode?: boolean;
   method: string;
   pathname: string;
   now?: number;
 }): boolean {
-  const localTestMode = isLocalRedirectTestMode();
   return (
     (localTestMode || hostname.toLowerCase() === LEGACY_PRODUCTION_HOST)
     && (method === "GET" || method === "HEAD")
@@ -110,8 +111,12 @@ export function shouldRedirectLegacyPage({
   );
 }
 
-export function buildMigrationDestination(pathname: string, search: string): URL {
-  const destination = new URL(pathname, migrationTargetOrigin());
+export function buildMigrationDestination(
+  pathname: string,
+  search: string,
+  targetOrigin = migrationTargetOrigin(),
+): URL {
+  const destination = new URL(pathname, targetOrigin);
   destination.search = search;
   return destination;
 }
