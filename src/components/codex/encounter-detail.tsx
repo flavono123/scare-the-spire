@@ -21,6 +21,7 @@ import {
 import { getRelatedMonsterIdsForEncounter } from "@/lib/codex-references";
 import { DescriptionText } from "./codex-description";
 import { DecimillipedeSpineStage } from "./decimillipede-spine-stage";
+import { EncounterSceneStage } from "./encounter-scene-stage";
 import { EntityReferenceLinks, type CodexReferenceTarget } from "./entity-reference-links";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
@@ -156,7 +157,15 @@ export function EncounterDetail({
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start">
         <section className="flex min-h-[28rem] flex-col items-center justify-center gap-5 py-4">
-          {encounter.id === "DECIMILLIPEDE_ELITE" && (
+          {encounter.scene && (
+            <EncounterSceneStage
+              encounter={encounter}
+              monsters={monsters}
+              serviceLocale={serviceLocale}
+            />
+          )}
+
+          {!encounter.scene && encounter.id === "DECIMILLIPEDE_ELITE" && (
             <div
               className="relative flex h-56 w-full max-w-4xl items-center justify-center sm:h-72 lg:h-80"
               data-encounter-detail-render
@@ -176,7 +185,7 @@ export function EncounterDetail({
             </div>
           )}
 
-          {representativeImageUrl && encounter.id !== "DECIMILLIPEDE_ELITE" && (
+          {!encounter.scene && representativeImageUrl && encounter.id !== "DECIMILLIPEDE_ELITE" && (
             <div className="relative flex h-48 w-full max-w-4xl items-center justify-center sm:h-64">
               <div
                 className="absolute bottom-8 left-[14%] right-[14%] h-8 rounded-[50%] blur-xl"
@@ -193,7 +202,7 @@ export function EncounterDetail({
             </div>
           )}
 
-          {!representativeImageUrl && encounter.id !== "DECIMILLIPEDE_ELITE" && (
+          {!encounter.scene && !representativeImageUrl && encounter.id !== "DECIMILLIPEDE_ELITE" && (
             <div className="flex w-full flex-wrap items-end justify-center gap-x-6 gap-y-4">
               {uniqueMonsters.map((monsterRef) => {
                 const monster = monsterById.get(monsterRef.id);
