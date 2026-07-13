@@ -31,7 +31,7 @@ OUT_ROOT = ROOT / "public/images/sts2/encounter-scenes"
 MANIFEST_PATH = ROOT / "data/sts2/encounter-scene-assets.json"
 EXT_RESOURCE_RE = re.compile(r"\[ext_resource[^\]]+\]")
 RESOURCE_PATH_RE = re.compile(r'path="res://(?P<path>[^"]+)"')
-RESOURCE_ID_RE = re.compile(r'id="(?P<id>[^"]+)"')
+RESOURCE_ID_RE = re.compile(r'(?:^|\s)id="(?P<id>[^"]+)"')
 TEXTURE_ASSIGNMENT_RE = re.compile(r'texture\s*=\s*ExtResource\("(?P<id>[^"]+)"\)')
 BACKGROUND_LAYER_RE = re.compile(r"_bg_(?P<group>\d+)_(?P<variant>[a-z])\.tscn$")
 FOREGROUND_LAYER_RE = re.compile(r"_fg_(?P<variant>[a-z])\.tscn$")
