@@ -2021,8 +2021,8 @@ export function EventDetail({
     ? "relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10 lg:max-w-[min(100%,calc((100vh-21rem)*16/9))]"
     : "relative min-w-0 w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10";
   const textPanelClassName = isModal
-    ? "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[2%] sm:right-[3.5%] sm:top-[3%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[560px]"
-    : "absolute inset-x-4 bottom-4 top-4 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]";
+    ? "absolute inset-x-4 bottom-4 top-4 z-30 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[2%] sm:right-[3.5%] sm:top-[3%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[560px]"
+    : "absolute inset-x-4 bottom-4 top-4 z-30 flex min-w-0 flex-col sm:inset-x-auto sm:bottom-[6%] sm:right-[3.5%] sm:top-[7%] sm:w-[45%] sm:min-w-[380px] sm:max-w-[540px]";
   const relatedMadScienceCards = event.id === TINKER_TIME_EVENT_ID && madScienceBaseCard
     ? TINKER_CARD_TYPES.map((cardType) => {
         const id = getMadScienceVariantId(cardType);

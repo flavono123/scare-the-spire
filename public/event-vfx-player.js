@@ -287,6 +287,7 @@
       }
     }
     scene._images = images;
+    scene._tints = new Map();
     scene._nodes = scene.nodes
       .map((node, index) => ({ node, index, z: number(node.props, "z_index", 0) }))
       .sort((a, b) => a.z - b.z || a.index - b.index)
@@ -324,6 +325,29 @@
     } else {
       context.drawImage(image, -width / 2, -height / 2, width, height);
     }
+  }
+
+  function tintedImage(scene, image, texture, tint) {
+    if (tint.r > 0.96 && tint.g > 0.96 && tint.b > 0.96) return image;
+    const red = Math.round(clamp(tint.r, 0, 1) * 15) * 17;
+    const green = Math.round(clamp(tint.g, 0, 1) * 15) * 17;
+    const blue = Math.round(clamp(tint.b, 0, 1) * 15) * 17;
+    const key = `${texture.src}:${red}:${green}:${blue}`;
+    const cached = scene._tints.get(key);
+    if (cached) return cached;
+    if (scene._tints.size >= 24) return image;
+    const canvas = document.createElement("canvas");
+    canvas.width = texture.width;
+    canvas.height = texture.height;
+    const context = canvas.getContext("2d");
+    if (!context) return image;
+    context.drawImage(image, 0, 0);
+    context.globalCompositeOperation = "source-in";
+    context.fillStyle = `rgb(${red} ${green} ${blue})`;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.globalCompositeOperation = "source-over";
+    scene._tints.set(key, canvas);
+    return canvas;
   }
 
   function animationMaterial(scene, value) {
@@ -453,7 +477,13 @@
       const flip = props.particle_flag_rotate_y === true ? Math.cos(progress * TAU) : 1;
       context.scale(particleScale * flip, particleScale);
       context.globalAlpha = clamp(particleColor.a, 0, 1);
-      drawImageCentered(context, image, source, sourceWidth, sourceHeight);
+      drawImageCentered(
+        context,
+        tintedImage(scene, image, texture, particleColor),
+        source,
+        sourceWidth,
+        sourceHeight,
+      );
       context.restore();
     }
     context.restore();
