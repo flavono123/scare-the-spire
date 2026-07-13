@@ -16,6 +16,8 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+from PIL import Image
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
@@ -41,7 +43,15 @@ ANCIENT_SPINE_PREFIXES = {
     "animations/backgrounds/tezcatara/tezcatara",
 }
 EVENT_BACKGROUND_SPINE_PREFIXES = {
+    "animations/backgrounds/fake_merchant_room/bottom/shop_fake_merchant_bottom",
+    "animations/backgrounds/fake_merchant_room/bottom/shop_fake_merchant_bottom_cutter",
     "animations/backgrounds/fake_merchant_room/top/fake_merchant_top",
+}
+SPINE_TEXTURE_SCALE_BY_PREFIX = {
+    # These two atlases are displayed at roughly half scale in fake_merchant.tscn.
+    # Keeping their source dimensions would decode to about 140 MiB in the browser.
+    "animations/backgrounds/fake_merchant_room/bottom/shop_fake_merchant_bottom": 0.5,
+    "animations/backgrounds/fake_merchant_room/bottom/shop_fake_merchant_bottom_cutter": 0.5,
 }
 CHARACTER_SELECT_STATIC_IMPORTS = {
     "animations/character_select/silent/character_select_silent_bg.png.import": "character_select_silent_bg.webp",
@@ -106,7 +116,7 @@ def extract_binary_import(reader: PCKReader, import_path: str, out_path: Path) -
     return target
 
 
-def extract_png_import(reader: PCKReader, import_path: str, out_path: Path) -> str:
+def extract_png_import(reader: PCKReader, import_path: str, out_path: Path, scale: float = 1.0) -> str:
     raw_import = reader.read_file(import_path)
     target = parse_import_file(raw_import)
     if not target or target not in reader.entries:
@@ -116,9 +126,30 @@ def extract_png_import(reader: PCKReader, import_path: str, out_path: Path) -> s
     if image is None:
         raise RuntimeError(f"{import_path}: could not decode texture target: {target}")
 
+    if scale != 1.0:
+        image = image.resize(
+            (round(image.width * scale), round(image.height * scale)),
+            Image.Resampling.LANCZOS,
+        )
+
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    image.save(out_path)
+    image.save(out_path, optimize=scale != 1.0)
     return target
+
+
+def scale_atlas(atlas_path: Path, scale: float) -> None:
+    geometry_fields = {"bounds", "offset", "offsets", "orig", "size", "xy"}
+    scaled_lines: list[str] = []
+    for line in atlas_path.read_text("utf-8").splitlines():
+        field, separator, raw_values = line.partition(":")
+        if separator and field in geometry_fields:
+            values = [value.strip() for value in raw_values.split(",")]
+            try:
+                line = f"{field}:{','.join(str(round(int(value) * scale)) for value in values)}"
+            except ValueError:
+                pass
+        scaled_lines.append(line)
+    atlas_path.write_text("\n".join(scaled_lines) + "\n", "utf-8")
 
 
 def extract_webp_import(reader: PCKReader, import_path: str, out_path: Path, force: bool) -> bool:
@@ -243,13 +274,16 @@ def extract_actor(reader: PCKReader, actor: SpineActorImport, kind: str, out_roo
     out_dir = output_folder_for(actor, kind, out_root)
     atlas_path = out_dir / f"{atlas_base_name}.atlas"
     extract_binary_import(reader, f"{actor.atlas_prefix}.atlas.import", atlas_path)
+    texture_scale = SPINE_TEXTURE_SCALE_BY_PREFIX.get(actor.atlas_prefix, 1.0)
+    if texture_scale != 1.0:
+        scale_atlas(atlas_path, texture_scale)
     extract_binary_import(reader, f"{actor.skel_prefix}.skel.import", out_dir / f"{skel_base_name}.skel")
     page_names = atlas_page_names(atlas_path) or [f"{atlas_base_name}.png"]
     for page_name in page_names:
         page_import = f"{actor_dir}/{page_name}.import"
         if page_import not in reader.entries and page_name == f"{atlas_base_name}.png":
             page_import = f"{actor.atlas_prefix}.png.import"
-        extract_png_import(reader, page_import, out_dir / page_name)
+        extract_png_import(reader, page_import, out_dir / page_name, texture_scale)
 
 
 def main() -> int:
