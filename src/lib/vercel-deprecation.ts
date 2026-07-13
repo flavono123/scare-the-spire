@@ -1,6 +1,8 @@
 const LEGACY_PRODUCTION_HOST = "scare-the-spire.vercel.app";
 const MIGRATION_TARGET_ORIGIN = "https://scare-the-spire.flavono123.workers.dev";
 const MIGRATION_START_AT = Date.parse("2026-07-16T00:00:00+09:00");
+const LOCAL_TEST_MODE_ENV = "VERCEL_DEPRECATION_LOCAL_TEST";
+const LOCAL_TEST_TARGET_ENV = "VERCEL_DEPRECATION_LOCAL_TARGET_ORIGIN";
 
 const GAME_LOCALE_PATH_SEGMENTS = new Set([
   "en",
@@ -51,6 +53,26 @@ function stripGameLocalePathSegment(segments: string[]): string[] {
   return segments.slice(1);
 }
 
+function isLocalRedirectTestMode(): boolean {
+  return (
+    process.env.NODE_ENV === "development"
+    && process.env[LOCAL_TEST_MODE_ENV] === "1"
+  );
+}
+
+function migrationTargetOrigin(): string {
+  if (!isLocalRedirectTestMode()) return MIGRATION_TARGET_ORIGIN;
+
+  const configuredOrigin = process.env[LOCAL_TEST_TARGET_ENV];
+  if (!configuredOrigin) return MIGRATION_TARGET_ORIGIN;
+
+  try {
+    return new URL(configuredOrigin).origin;
+  } catch {
+    return MIGRATION_TARGET_ORIGIN;
+  }
+}
+
 function isCompendiumPath(segments: string[]): boolean {
   if (segments.length === 1) return true;
   if (segments.length === 2) return COMPENDIUM_RESOURCES.has(segments[1]);
@@ -79,16 +101,17 @@ export function shouldRedirectLegacyPage({
   pathname: string;
   now?: number;
 }): boolean {
+  const localTestMode = isLocalRedirectTestMode();
   return (
-    hostname.toLowerCase() === LEGACY_PRODUCTION_HOST
+    (localTestMode || hostname.toLowerCase() === LEGACY_PRODUCTION_HOST)
     && (method === "GET" || method === "HEAD")
-    && now >= MIGRATION_START_AT
+    && (localTestMode || now >= MIGRATION_START_AT)
     && isLegacyPublicPagePath(pathname)
   );
 }
 
 export function buildMigrationDestination(pathname: string, search: string): URL {
-  const destination = new URL(pathname, MIGRATION_TARGET_ORIGIN);
+  const destination = new URL(pathname, migrationTargetOrigin());
   destination.search = search;
   return destination;
 }
