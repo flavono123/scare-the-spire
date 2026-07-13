@@ -11,6 +11,16 @@ const CASES = [
   { id: "FABRICATOR", slug: "fabricator", nodeCount: 3, edgeCount: 2, hasEnd: false },
 ] as const;
 
+const MOBILE_PRESETS = [
+  { name: "iphone-13-mini", width: 375, height: 812, dpr: 3 },
+  { name: "iphone-mainstream", width: 390, height: 844, dpr: 3 },
+  { name: "iphone-pro-max", width: 430, height: 932, dpr: 3 },
+  { name: "android-compact", width: 360, height: 800, dpr: 3 },
+  { name: "pixel-mainstream", width: 412, height: 915, dpr: 2.625 },
+  { name: "android-large", width: 432, height: 960, dpr: 3 },
+  { name: "android-xl", width: 480, height: 1040, dpr: 2.75 },
+] as const;
+
 async function expectNoNodeOverlap(nodes: Locator) {
   const boxes = await nodes.evaluateAll((elements) => elements.map((element) => {
     const box = element.getBoundingClientRect();
@@ -46,3 +56,66 @@ for (const sample of CASES) {
     await diagram.screenshot({ path: `test-results/monster-intent-fsm-${sample.slug}.png` });
   });
 }
+
+test("representative monster intent FSMs — mobile viewports", async ({ browser }) => {
+  test.setTimeout(180_000);
+
+  for (const preset of MOBILE_PRESETS) {
+    const context = await browser.newContext({
+      locale: "ko-KR",
+      viewport: { width: preset.width, height: preset.height },
+      deviceScaleFactor: preset.dpr,
+      hasTouch: true,
+      isMobile: true,
+    });
+    const page = await context.newPage();
+
+    for (const sample of CASES) {
+      await page.goto(`${BASE}/compendium/monsters/${sample.slug}`);
+      const diagram = page.locator(`[data-monster-pattern-diagram="${sample.id}"]`);
+      await expect(diagram).toBeVisible();
+      await diagram.evaluate((element) => element.scrollIntoView({ block: "center" }));
+
+      const layout = await diagram.evaluate((element) => {
+        const rect = element.getBoundingClientRect();
+        const visibleWidth = Math.max(0, Math.min(window.innerWidth, rect.right) - Math.max(0, rect.left));
+        const visibleHeight = Math.max(0, Math.min(window.innerHeight, rect.bottom) - Math.max(0, rect.top));
+        return {
+          bodyWidth: document.body.scrollWidth,
+          documentWidth: document.documentElement.scrollWidth,
+          rectWidth: rect.width,
+          rectHeight: rect.height,
+          visibleWidth,
+          visibleHeight,
+        };
+      });
+
+      expect(layout.documentWidth).toBeLessThanOrEqual(preset.width + 2);
+      expect(layout.bodyWidth).toBeLessThanOrEqual(preset.width + 2);
+      expect(layout.rectWidth).toBeLessThanOrEqual(preset.width);
+      expect(layout.visibleWidth).toBeGreaterThanOrEqual(Math.min(300, preset.width * 0.78));
+      expect(layout.visibleHeight).toBeGreaterThanOrEqual(Math.min(240, layout.rectHeight));
+      await expectNoNodeOverlap(diagram.locator('[data-pattern-node="true"]'));
+
+      if (sample.id === "FABRICATOR") {
+        await diagram.screenshot({
+          path: `test-results/monster-intent-fsm-mobile-${preset.name}.png`,
+        });
+        const canvas = diagram.locator(":scope > div").first();
+        const beforeDrag = await canvas.getAttribute("style");
+        const box = await diagram.boundingBox();
+        expect(box).not.toBeNull();
+        if (box) {
+          const y = box.y + box.height / 2;
+          await page.mouse.move(box.x + box.width - 32, y);
+          await page.mouse.down();
+          await page.mouse.move(box.x + 40, y, { steps: 5 });
+          await page.mouse.up();
+        }
+        await expect(canvas).not.toHaveAttribute("style", beforeDrag ?? "");
+      }
+    }
+
+    await context.close();
+  }
+});
