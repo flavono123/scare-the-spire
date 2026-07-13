@@ -31,6 +31,7 @@ import {
 import { RichText } from "@/components/rich-text";
 import { CardTile } from "@/components/codex/card-tile";
 import { GameChoiceFrame } from "@/components/codex/event-choice-frame";
+import { FakeMerchantSpineStage } from "@/components/codex/fake-merchant-spine-stage";
 import { MonsterSpineStage } from "@/components/codex/monster-spine-stage";
 import {
   getDefaultTinkerRiderForType,
@@ -627,32 +628,6 @@ const FLAIL_KNIGHT_EVENT_SPINE_ASSET: MonsterSpineAsset = {
   moveEffects: {},
 };
 
-const FAKE_MERCHANT_EVENT_SPINE_ASSET: MonsterSpineAsset = {
-  id: "FAKE_MERCHANT_MONSTER",
-  source: "animations/backgrounds/fake_merchant_room/top/fake_merchant_top",
-  renderStatus: "spine",
-  renderTags: ["event-background"],
-  atlasUrl: "/spine/sts2/event-backgrounds/fake_merchant_room/top/fake_merchant_top.atlas",
-  binaryUrl: "/spine/sts2/event-backgrounds/fake_merchant_room/top/fake_merchant_top.skel",
-  textureUrls: ["/spine/sts2/event-backgrounds/fake_merchant_room/top/fake_merchant_top.png"],
-  skin: null,
-  skins: ["default", "outline"],
-  animations: [
-    "attack",
-    "attack_multi",
-    "attack_throw",
-    "buff",
-    "combat_idle_loop",
-    "die",
-    "hurt",
-    "idle_loop",
-  ],
-  bestiaryAnimations: ["hurt", "die"],
-  idleAnimation: "idle_loop",
-  moveAnimations: {},
-  moveEffects: {},
-};
-
 const EVENT_SPINE_OVERLAYS: Record<string, EventSpineOverlayConfig[]> = {
   THE_LANTERN_KEY: [
     {
@@ -660,14 +635,6 @@ const EVENT_SPINE_OVERLAYS: Record<string, EventSpineOverlayConfig[]> = {
       className: "left-[5%] top-[9%] h-[84%] w-[44%] opacity-95 drop-shadow-[0_24px_34px_rgba(0,0,0,0.62)]",
       fallbackImageUrl: "/images/sts2/monsters-render/flail_knight.webp",
       monsterName: "철퇴 기사",
-    },
-  ],
-  FAKE_MERCHANT: [
-    {
-      asset: FAKE_MERCHANT_EVENT_SPINE_ASSET,
-      className: "left-[8%] top-[7%] h-[82%] w-[39%] opacity-95 drop-shadow-[0_24px_34px_rgba(0,0,0,0.62)]",
-      fallbackImageUrl: "/images/sts2/npcs/fake_merchant.webp",
-      monsterName: "상?인",
     },
   ],
 };
@@ -2019,7 +1986,8 @@ export function EventDetail({
   const [commentCount, setCommentCount] = useState(0);
   const [trialNpcOverlay, setTrialNpcOverlay] = useState<TrialNpcOverlay | null>(null);
   const artOverlays = EVENT_ART_OVERLAYS[event.id] ?? [];
-  const useGameViewportArt = event.id === "TABLET_OF_TRUTH";
+  const useFakeMerchantSpineArt = event.id === "FAKE_MERCHANT";
+  const useGameViewportArt = event.id === "TABLET_OF_TRUTH" || useFakeMerchantSpineArt;
   const portraitArtOverlays = useGameViewportArt
     ? artOverlays.filter((overlay) => overlay.coordinateSpace === "portrait")
     : [];
@@ -2152,7 +2120,13 @@ export function EventDetail({
             style={{ boxShadow: `inset 0 0 120px rgba(96, 165, 250, 0.08), 0 16px 60px rgba(0, 0, 0, 0.35)` }}
           >
             <div className={`relative h-[34rem] w-full sm:h-auto ${useGameViewportArt ? "sm:aspect-video" : "sm:aspect-[3440/1616]"}`}>
-              {eventImageUrl && useGameViewportArt ? (
+              {useFakeMerchantSpineArt ? (
+                <div className="absolute left-1/2 top-1/2 aspect-video w-full -translate-x-1/2 -translate-y-1/2 overflow-hidden sm:inset-0 sm:aspect-auto sm:w-auto sm:translate-x-0 sm:translate-y-0">
+                  <FakeMerchantSpineStage
+                    fallbackImageUrl={eventImageUrl ?? "/images/sts2/npcs/fake_merchant.webp"}
+                  />
+                </div>
+              ) : eventImageUrl && useGameViewportArt ? (
                 <GameViewportEventArt
                   eventName={event.name}
                   imageUrl={eventImageUrl}
