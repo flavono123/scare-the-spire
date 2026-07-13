@@ -14,6 +14,7 @@ export default defineConfig({
     "enchantment-stat-combinations.spec.ts",
     "codex-filter-search.spec.ts",
     "mobile-ux.spec.ts",
+    "vercel-deprecation.spec.ts",
   ],
   timeout: 30_000,
   use: {
