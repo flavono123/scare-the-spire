@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function GameLocaleLayout({
   children,
   params,
-}: Readonly<{ children: React.ReactNode; params: Promise<LocaleRouteParams> }>) {
+}: Readonly<{ children: React.ReactNode; params: Promise<{ gameLocale: string }> }>) {
   const { gameLocale } = await params;
   if (!gameLocaleFromPathSegment(gameLocale)) notFound();
 
