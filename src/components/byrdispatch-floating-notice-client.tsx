@@ -20,7 +20,7 @@ export function ByrdispatchFloatingNoticeClient({
   if (isByrdispatchNoticePage(pathname)) return null;
 
   return (
-    <aside className="pointer-events-none fixed inset-x-0 bottom-3 z-50 px-3 sm:bottom-5">
+    <aside className="byrdispatch-floating-notice pointer-events-none fixed inset-x-0 bottom-3 z-50 px-3 sm:bottom-5">
       <Link
         href="/byrdispatch"
         className="pointer-events-auto mx-auto flex max-w-2xl items-center gap-2 border border-pink-300/45 bg-pink-500/20 px-3 py-2 text-pink-50 shadow-[0_0_24px_rgba(244,114,182,0.18)] backdrop-blur transition-colors hover:border-pink-200/70 hover:bg-pink-500/25"
