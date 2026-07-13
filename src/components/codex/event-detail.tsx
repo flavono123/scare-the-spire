@@ -2123,7 +2123,7 @@ export function EventDetail({
               {useFakeMerchantSpineArt ? (
                 <div className="absolute left-1/2 top-1/2 aspect-video w-full -translate-x-1/2 -translate-y-1/2 overflow-hidden sm:inset-0 sm:aspect-auto sm:w-auto sm:translate-x-0 sm:translate-y-0">
                   <FakeMerchantSpineStage
-                    fallbackImageUrl={eventImageUrl ?? "/images/sts2/npcs/fake_merchant.webp"}
+                    fallbackImageUrl="/images/sts2/events/fake_merchant.webp"
                   />
                 </div>
               ) : eventImageUrl && useGameViewportArt ? (
