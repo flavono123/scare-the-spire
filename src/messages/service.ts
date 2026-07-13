@@ -22,6 +22,13 @@ export const serviceMessages = {
         bug: "버그 수정",
       },
     },
+    migrationNotFound: {
+      eyebrow: "이전 사이트 안내",
+      title: "슬서운이야기는 새 사이트로 이전했습니다",
+      description:
+        "요청한 주소는 이전 사이트에서 찾을 수 없습니다. 새 사이트에서 계속 둘러보세요.",
+      cta: "새 사이트로 이동",
+    },
     games: {
       sts2Codex: "STS2 백과사전",
       sts1: "STS1",
@@ -545,6 +552,13 @@ export const serviceMessages = {
         wip: "Still in development",
         bug: "Bug fix",
       },
+    },
+    migrationNotFound: {
+      eyebrow: "Site migration",
+      title: "Scare the Spire has moved",
+      description:
+        "This address was not found on the old site. Continue browsing on the new site.",
+      cta: "Go to the new site",
     },
     games: {
       sts2Codex: "STS2 Codex",
