@@ -101,6 +101,7 @@ class ParseMonsterMoveGraphTests(unittest.TestCase):
         """)
 
         self.assertEqual(graph["initial"], "fabricateBranch")
+        self.assertEqual(graph["confidence"], "static")
         conditional = next(state for state in graph["states"] if state["id"] == "fabricateBranch")
         self.assertEqual(conditional["branches"], [
             {"to": "RAND", "condition": "CanFabricate"},

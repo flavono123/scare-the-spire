@@ -464,7 +464,7 @@ def parse_move_graph(text: str) -> dict | None:
         random_state_entries[branch_var] = []
         for entry in entries:
             weight = entry["weight"]
-            if weight is None or entry["repeat"] in {"max_consecutive", "once"} or entry["cooldown"] > 0:
+            if weight is None:
                 confidence = "partial"
             random_state_entries[branch_var].append({
                 "to": state_vars[entry["target_var"]],
@@ -501,7 +501,6 @@ def parse_move_graph(text: str) -> dict | None:
                 "branches": random_state_entries.get(state_var, []),
             })
         else:
-            confidence = "partial"
             states.append({
                 "id": state_vars[state_var],
                 "kind": "conditional",
@@ -524,7 +523,7 @@ def parse_move_graph(text: str) -> dict | None:
                 entry["repeat"] in {"cannot_repeat", "once"} or entry["cooldown"] > 0
             ):
                 weight = 0.0
-            if entry["repeat"] in {"max_consecutive", "once"} or entry["cooldown"] > 0 or weight is None:
+            if weight is None:
                 confidence = "partial"
             weighted.append((entry, weight))
 
@@ -548,7 +547,6 @@ def parse_move_graph(text: str) -> dict | None:
         elif target_var in random_branches:
             add_random_transitions(from_var, target_var)
         elif target_var in conditional_branches:
-            confidence = "partial"
             for entry in conditional_branches[target_var]:
                 if entry["target_var"] not in move_vars:
                     continue
@@ -574,7 +572,6 @@ def parse_move_graph(text: str) -> dict | None:
                 "kind": "random",
             })
     elif initial_var in conditional_branches:
-        confidence = "partial"
         for entry in conditional_branches[initial_var]:
             if entry["target_var"] not in move_vars:
                 continue
