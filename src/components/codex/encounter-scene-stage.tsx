@@ -17,6 +17,7 @@ import type {
   EncounterSceneMonsterSlot,
 } from "@/lib/codex-types";
 import { serviceMessages } from "@/messages/service";
+import { FakeMerchantEncounterSpineLayer } from "./fake-merchant-spine-stage";
 import { MonsterSpineStage } from "./monster-spine-stage";
 
 interface EncounterSceneStageProps {
@@ -79,6 +80,7 @@ export function EncounterSceneStage({
   const chance = formatEncounterProbability(formation.probability, locale);
   const formationLabel = formation.monsters.map((monster) => monster.name).join(" + ");
   const chanceLabel = labels.appearanceChance.replace("{chance}", chance);
+  const usesFakeMerchantBackground = encounter.id === "FAKE_MERCHANT_EVENT_ENCOUNTER";
 
   const moveFormation = (offset: number) => {
     setFormationSelection({
@@ -90,16 +92,25 @@ export function EncounterSceneStage({
   return (
     <div className="w-full" data-encounter-scene>
       <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-black shadow-2xl">
-        <Image
-          src={scene.backgroundUrl}
-          alt=""
-          fill
-          priority
-          sizes="(min-width: 1024px) 704px, 100vw"
-          className="object-cover"
-        />
+        {!usesFakeMerchantBackground && (
+          <Image
+            src={scene.backgroundUrl}
+            alt=""
+            fill
+            priority
+            sizes="(min-width: 1024px) 704px, 100vw"
+            className="object-cover"
+          />
+        )}
 
         <EncounterAmbientVfx encounter={encounter} />
+
+        {usesFakeMerchantBackground && (
+          <FakeMerchantEncounterSpineLayer
+            layer="bottom"
+            className="z-10"
+          />
+        )}
 
         {scene.backgroundSpineAsset && (
           <div className="pointer-events-none absolute inset-0 z-10" data-encounter-background-spine>
@@ -144,6 +155,13 @@ export function EncounterSceneStage({
             </span>
           </Link>
         ))}
+
+        {usesFakeMerchantBackground && (
+          <FakeMerchantEncounterSpineLayer
+            layer="cutter"
+            className="z-30"
+          />
+        )}
 
         <div
           className="absolute bottom-2 left-1/2 z-40 flex max-w-[calc(100%-1rem)] -translate-x-1/2 items-center gap-1.5 rounded-lg border border-white/10 bg-black/70 p-1.5 shadow-lg backdrop-blur-sm sm:bottom-3"
