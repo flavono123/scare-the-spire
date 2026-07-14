@@ -1073,6 +1073,33 @@ export interface EncounterSceneMonsterSlot {
   y: number;
 }
 
+export interface EncounterSceneCombatMonsterLayout {
+  monsterId: string;
+  sourceScene: string;
+  bounds: {
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+    width: number;
+    height: number;
+  };
+  visualPosition: { x: number; y: number };
+  visualScale: { x: number; y: number };
+}
+
+export interface EncounterSceneCombatLayout {
+  coordinateSize: { width: number; height: number };
+  cameraScaling: number;
+  cameraOffset: { x: number; y: number };
+  usesFixedSlots: boolean;
+  enemyRegionWidth: number;
+  enemyGap: number;
+  enemyMinStart: number;
+  enemyBaselineY: number;
+  monsters: EncounterSceneCombatMonsterLayout[];
+}
+
 export interface EncounterSceneAsset {
   id: string;
   backgroundUrl: string;
@@ -1081,6 +1108,7 @@ export interface EncounterSceneAsset {
   ambientVfx: EncounterSceneAmbientVfx;
   backgroundSpineAsset: MonsterSpineAsset | null;
   monsterSlots: EncounterSceneMonsterSlot[];
+  combatLayout: EncounterSceneCombatLayout;
 }
 
 export interface CodexEncounter extends CodexLifecycle {
