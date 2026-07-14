@@ -12,8 +12,8 @@ const CASES = [
     monsterNameEn: "Gas Bomb",
     moveNames: [{ ko: "폭발", en: "Explode" }],
     nodeCount: 1,
-    branchNodeCount: 0,
     edgeCount: 2,
+    edgeLabelCount: 0,
     hasEnd: true,
   },
   {
@@ -27,8 +27,8 @@ const CASES = [
       { ko: "강도 증가", en: "Increasing Intensity" },
     ],
     nodeCount: 3,
-    branchNodeCount: 0,
     edgeCount: 4,
+    edgeLabelCount: 0,
     hasEnd: false,
   },
   {
@@ -42,8 +42,8 @@ const CASES = [
       { ko: "생명 흡수", en: "Drain Life" },
     ],
     nodeCount: 3,
-    branchNodeCount: 0,
     edgeCount: 7,
+    edgeLabelCount: 6,
     hasEnd: false,
   },
   {
@@ -57,8 +57,8 @@ const CASES = [
       { ko: "해체", en: "Disintegrate" },
     ],
     nodeCount: 3,
-    branchNodeCount: 2,
-    edgeCount: 8,
+    edgeCount: 12,
+    edgeLabelCount: 12,
     hasEnd: false,
   },
 ] as const;
@@ -99,34 +99,53 @@ for (const sample of CASES) {
     await expect(diagram).toBeVisible();
     await expect(page.getByRole("heading", { level: 1, name: sample.monsterNameKo })).toBeVisible();
     await expect(page.getByText(sample.monsterNameEn, { exact: true }).first()).toBeVisible();
-    await expect(diagram.locator('[data-pattern-entry="start"]')).toBeVisible();
+    await expect(diagram.locator('[data-pattern-entry="start"]')).toHaveCount(0);
     await expect(diagram.locator('[data-pattern-entry="end"]')).toHaveCount(sample.hasEnd ? 1 : 0);
 
     const nodes = diagram.locator('[data-pattern-node="true"]');
     await expect(nodes).toHaveCount(sample.nodeCount);
-    await expect(diagram.locator("[data-pattern-branch-node]")).toHaveCount(sample.branchNodeCount);
+    await expect(diagram.locator("[data-pattern-branch-node]")).toHaveCount(0);
     const edges = diagram.locator("svg > path[data-pattern-edge-from]");
     await expect(edges).toHaveCount(sample.edgeCount);
-    await expect(diagram.locator("[data-pattern-edge-label]")).toHaveCount(sample.edgeCount);
+    await expect(diagram.locator("[data-pattern-edge-label]")).toHaveCount(sample.edgeLabelCount);
+    await expect(diagram.getByText("100%", { exact: true })).toHaveCount(0);
     const edgeStyles = await edges.evaluateAll((elements) => elements.map((element) => ({
       stroke: element.getAttribute("stroke"),
       markerEnd: element.getAttribute("marker-end"),
+      path: element.getAttribute("d"),
     })));
     expect(edgeStyles.every((style) => style.stroke === "#efc851")).toBe(true);
     expect(edgeStyles.every((style) => style.markerEnd?.includes("arrow-normal"))).toBe(true);
+    expect(edgeStyles.every((style) => style.path?.includes(" C "))).toBe(true);
+    expect(edgeStyles.every((style) => !/[HV]/.test(style.path ?? ""))).toBe(true);
     await expect(diagram.locator('marker[id$="-arrow-normal"] path')).toHaveAttribute("fill", "#efc851");
-    await expectNoNodeOverlap(diagram.locator('[data-pattern-node="true"], [data-pattern-branch-node]'));
+    await expectNoNodeOverlap(diagram.locator('[data-pattern-node="true"]'));
     for (const moveName of sample.moveNames) {
       await expect(diagram.getByText(moveName.ko, { exact: true })).toBeVisible();
       await expect(diagram.getByText(moveName.en, { exact: true })).toBeVisible();
     }
     if (sample.id === "SOUL_NEXUS") {
-      const transitionPairs = await edges.evaluateAll((elements) => elements.map((element) => ({
+      const transitions = await edges.evaluateAll((elements) => elements.map((element) => ({
         from: element.getAttribute("data-pattern-edge-from"),
         to: element.getAttribute("data-pattern-edge-to"),
+        path: element.getAttribute("d"),
       })));
-      expect(transitionPairs.filter((edge) => edge.from !== "__START__").every((edge) => edge.from !== edge.to)).toBe(true);
+      expect(transitions.filter((edge) => edge.from !== "__START__").every((edge) => edge.from !== edge.to)).toBe(true);
+      expectEveryBranchToShareItsOrigin(transitions.filter((edge) => edge.from !== "__START__"));
       await expect(diagram.getByText("50%", { exact: true })).toHaveCount(6);
+    }
+    if (sample.id === "FABRICATOR") {
+      const transitions = await edges.evaluateAll((elements) => elements.map((element) => ({
+        from: element.getAttribute("data-pattern-edge-from"),
+        to: element.getAttribute("data-pattern-edge-to"),
+        path: element.getAttribute("d"),
+      })));
+      expectEveryBranchToShareItsOrigin(transitions);
+      expect(transitions.filter((edge) => edge.from === edge.to)).toHaveLength(3);
+      await expect(diagram.getByText("제작 가능(Y) · 50%", { exact: true })).toHaveCount(8);
+      await expect(diagram.getByText("제작 불가(N)", { exact: true })).toHaveCount(4);
+      await expect(diagram.getByText("제작 가능?", { exact: true })).toHaveCount(0);
+      await expect(diagram.getByText("무작위", { exact: true })).toHaveCount(0);
     }
 
     await diagram.screenshot({ path: `test-results/monster-intent-fsm-${sample.slug}.png` });
@@ -195,3 +214,19 @@ test("representative monster intent FSMs — mobile viewports", async ({ browser
     await context.close();
   }
 });
+
+function expectEveryBranchToShareItsOrigin(
+  transitions: Array<{ from: string | null; path: string | null }>,
+) {
+  const originsBySource = new Map<string, Set<string>>();
+  transitions.forEach((transition) => {
+    if (!transition.from || !transition.path) return;
+    const origin = transition.path.match(/^M\s+(-?[\d.]+)\s+(-?[\d.]+)/)?.slice(1).join(",");
+    if (!origin) return;
+    const origins = originsBySource.get(transition.from) ?? new Set<string>();
+    origins.add(origin);
+    originsBySource.set(transition.from, origins);
+  });
+
+  originsBySource.forEach((origins) => expect(origins.size).toBe(1));
+}
