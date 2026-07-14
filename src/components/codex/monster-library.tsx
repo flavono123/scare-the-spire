@@ -20,6 +20,7 @@ import {
 } from "@/lib/codex-types";
 import { fuzzyMatchCodexText } from "@/lib/codex-search";
 import { versionCodexEntities } from "@/lib/codex-versioning";
+import { pickRandomMonsterPreviewMoveId } from "@/lib/monster-spine-preview";
 import {
   BESTIARY_FORCED_ACTS,
   getBestiaryDisplayMonsterType,
@@ -547,7 +548,7 @@ function MonsterTile({
       className={`group relative flex items-center gap-2 rounded-md px-2.5 py-2 transition-colors hover:bg-white/[0.06] ${
         monster.deprecated ? "opacity-50 grayscale saturate-0" : ""
       }`}
-      onMouseEnter={() => setHoverMoveId(pickHoverMoveId(monster))}
+      onMouseEnter={() => setHoverMoveId(pickRandomMonsterPreviewMoveId(monster))}
       onMouseLeave={() => setHoverMoveId(undefined)}
     >
       <button
@@ -653,20 +654,4 @@ function getDisplayMonsterType(monster: CodexMonster): MonsterType {
 
 function hasSkinVariants(monster: CodexMonster): boolean {
   return hasMonsterSkinParts(monster);
-}
-
-function getMeaningfulMoves(monster: CodexMonster) {
-  return monster.bestiaryMoves.filter(
-    (m) => m.id !== "NOTHING" && m.id !== "SPAWNED" && m.id !== "DEAD",
-  );
-}
-
-function pickHoverMoveId(monster: CodexMonster): string | null {
-  const playableMoves = getMeaningfulMoves(monster).filter((move) => {
-    const moveAnimations = monster.spineAsset?.moveAnimations[move.id] ?? [];
-    const moveEffects = monster.spineAsset?.moveEffects[move.id] ?? [];
-    return moveAnimations.length > 0 || moveEffects.some((effect) => effect.usable !== false);
-  });
-  const candidates: (string | null)[] = [null, ...playableMoves.map((move) => move.id)];
-  return candidates[Math.floor(Math.random() * candidates.length)] ?? null;
 }
