@@ -8,6 +8,11 @@ const encounters = await getCodexEncounters({ gameLocale: "kor" });
 const strangler = encounters.find((encounter) => encounter.id === "SLITHERING_STRANGLER_NORMAL");
 assert.ok(strangler, "Strangler and Friend encounter must exist");
 assert.equal(strangler.compositions?.length, 3, "DLL enum branches must remain distinct");
+assert.equal(strangler.scene?.combatLayout.coordinateSize.width, 1920);
+assert.equal(
+  strangler.scene?.combatLayout.monsters.find((monster) => monster.monsterId === "SLITHERING_STRANGLER")?.bounds.height,
+  220,
+);
 
 const formations = expandEncounterFormations(strangler);
 const actualFormations = formations.map((formation) => ({
@@ -36,6 +41,8 @@ const queen = encounters.find((encounter) => encounter.id === "QUEEN_BOSS");
 assert.ok(queen?.scene, "Queen boss must load its custom scene");
 assert.equal(queen.scene.ambientVfx.kind, "queen");
 assert.equal(queen.scene.backgroundSpineAsset?.idleAnimation, "animation");
+assert.equal(queen.scene.combatLayout.cameraScaling, 0.9);
+assert.deepEqual(queen.scene.combatLayout.cameraOffset, { x: 0, y: 60 });
 assert.deepEqual(
   queen.scene.monsterSlots.map((slot) => [slot.monsterId, slot.sourcePosition.x, slot.sourcePosition.y]),
   [
