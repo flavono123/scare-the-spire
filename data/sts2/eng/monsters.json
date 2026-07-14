@@ -317,6 +317,13 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "NOTHING",
+          "kind": "move",
+          "next": "NOTHING"
+        }
       ]
     },
     "damage_values": null,
@@ -389,6 +396,13 @@
           "to": "KILLSHOT",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "KILLSHOT",
+          "kind": "move",
+          "next": "KILLSHOT"
         }
       ]
     },
@@ -624,6 +638,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "BOOT_UP",
+          "kind": "move",
+          "next": "HAMMER_UPPERCUT"
+        },
+        {
+          "id": "ONE_TWO",
+          "kind": "move",
+          "next": "HAMMER_UPPERCUT"
+        },
+        {
+          "id": "HAMMER_UPPERCUT",
+          "kind": "move",
+          "next": "ONE_TWO"
+        }
       ]
     },
     "damage_values": {
@@ -787,6 +818,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "SWING_1",
+          "kind": "move",
+          "next": "SWING_2"
+        },
+        {
+          "id": "SWING_2",
+          "kind": "move",
+          "next": "BIG_SWING"
+        },
+        {
+          "id": "BIG_SWING",
+          "kind": "move",
+          "next": "SWING_1"
+        }
       ]
     },
     "damage_values": {
@@ -848,6 +896,13 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "NOTHING",
+          "kind": "move",
+          "next": "NOTHING"
+        }
       ]
     },
     "damage_values": null,
@@ -905,6 +960,13 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "NOTHING",
+          "kind": "move",
+          "next": "NOTHING"
+        }
       ]
     },
     "damage_values": null,
@@ -961,6 +1023,13 @@
           "to": "NOTHING",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "NOTHING",
+          "kind": "move",
+          "next": "NOTHING"
         }
       ]
     },
@@ -1054,6 +1123,13 @@
           "to": "BITE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "BITE",
+          "kind": "move",
+          "next": "BITE"
         }
       ]
     },
@@ -1246,6 +1322,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "THRASH",
+          "kind": "move",
+          "next": "BUFF"
+        },
+        {
+          "id": "BUFF",
+          "kind": "move",
+          "next": "THRASH2"
+        },
+        {
+          "id": "THRASH2",
+          "kind": "move",
+          "next": "THRASH2"
+        }
       ]
     },
     "damage_values": {
@@ -1359,7 +1452,7 @@
     ],
     "move_graph": {
       "initial": "HEADBUTT",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
           "from": "HEADBUTT",
@@ -1380,6 +1473,32 @@
           "to": "HEADBUTT",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "HEADBUTT",
+          "kind": "move",
+          "next": "POST_HEADBUTT"
+        },
+        {
+          "id": "DIZZY",
+          "kind": "move",
+          "next": "HEADBUTT"
+        },
+        {
+          "id": "POST_HEADBUTT",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "DIZZY",
+              "condition": "IsOffBalance"
+            },
+            {
+              "to": "HEADBUTT",
+              "condition": "!IsOffBalance"
+            }
+          ]
         }
       ]
     },
@@ -1527,6 +1646,18 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "THRASH",
+          "kind": "move",
+          "next": "TOXIC_SPIT"
+        },
+        {
+          "id": "TOXIC_SPIT",
+          "kind": "move",
+          "next": "THRASH"
+        }
       ]
     },
     "damage_values": {
@@ -1636,6 +1767,18 @@
           "to": "BEAT",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "BEAT",
+          "kind": "move",
+          "next": "ROAR"
+        },
+        {
+          "id": "ROAR",
+          "kind": "move",
+          "next": "BEAT"
         }
       ]
     },
@@ -1853,6 +1996,28 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "SLEEP",
+          "kind": "move",
+          "next": "WAKE"
+        },
+        {
+          "id": "WAKE",
+          "kind": "move",
+          "next": "SLASHES"
+        },
+        {
+          "id": "SLEEP_MOVE_2",
+          "kind": "move",
+          "next": "SLASHES"
+        },
+        {
+          "id": "SLASHES",
+          "kind": "move",
+          "next": "SLASHES"
+        }
       ]
     },
     "damage_values": {
@@ -1991,6 +2156,18 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "PECK",
+          "kind": "move",
+          "next": "SWOOP"
+        },
+        {
+          "id": "SWOOP",
+          "kind": "move",
+          "next": "PECK"
+        }
       ]
     },
     "damage_values": {
@@ -2082,6 +2259,13 @@
           "to": "NOTHING",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "NOTHING",
+          "kind": "move",
+          "next": "NOTHING"
         }
       ]
     },
@@ -2213,6 +2397,18 @@
           "to": "DARK_STRIKE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "INCANTATION",
+          "kind": "move",
+          "next": "DARK_STRIKE"
+        },
+        {
+          "id": "DARK_STRIKE",
+          "kind": "move",
+          "next": "DARK_STRIKE"
         }
       ]
     },
@@ -2596,6 +2792,38 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "STAMP",
+          "kind": "move",
+          "next": "PLOW"
+        },
+        {
+          "id": "PLOW",
+          "kind": "move",
+          "next": "PLOW"
+        },
+        {
+          "id": "STUN",
+          "kind": "move",
+          "next": "BEAST_CRY"
+        },
+        {
+          "id": "BEAST_CRY",
+          "kind": "move",
+          "next": "STOMP"
+        },
+        {
+          "id": "STOMP",
+          "kind": "move",
+          "next": "CRUSH"
+        },
+        {
+          "id": "CRUSH",
+          "kind": "move",
+          "next": "BEAST_CRY"
+        }
       ]
     },
     "damage_values": {
@@ -2737,6 +2965,18 @@
           "to": "CLAMP",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "CLAMP",
+          "kind": "move",
+          "next": "SCREECH"
+        },
+        {
+          "id": "SCREECH",
+          "kind": "move",
+          "next": "CLAMP"
         }
       ]
     },
@@ -2960,6 +3200,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "WHIP_SLAP",
+          "kind": "move",
+          "next": "GLOMP"
+        },
+        {
+          "id": "GLOMP",
+          "kind": "move",
+          "next": "GOOP"
+        },
+        {
+          "id": "GOOP",
+          "kind": "move",
+          "next": "WHIP_SLAP"
+        }
       ]
     },
     "damage_values": {
@@ -3091,6 +3348,18 @@
           "to": "FIRE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "FIRE",
+          "kind": "move",
+          "next": "RELOAD"
+        },
+        {
+          "id": "RELOAD",
+          "kind": "move",
+          "next": "FIRE"
         }
       ]
     },
@@ -3437,6 +3706,33 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "THRASH",
+          "kind": "move",
+          "next": "ENLARGING_STRIKE"
+        },
+        {
+          "id": "ENLARGING_STRIKE",
+          "kind": "move",
+          "next": "BUG_STING"
+        },
+        {
+          "id": "BUG_STING",
+          "kind": "move",
+          "next": "ADAPT"
+        },
+        {
+          "id": "ADAPT",
+          "kind": "move",
+          "next": "GUARDED_STRIKE"
+        },
+        {
+          "id": "GUARDED_STRIKE",
+          "kind": "move",
+          "next": "THRASH"
+        }
       ]
     },
     "damage_values": {
@@ -3764,6 +4060,28 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "CHARGE_UP",
+          "kind": "move",
+          "next": "REPEATER_BLAST"
+        },
+        {
+          "id": "REPEATER_BLAST",
+          "kind": "move",
+          "next": "REPEATER_BLAST_MOVE_2"
+        },
+        {
+          "id": "REPEATER_BLAST_MOVE_2",
+          "kind": "move",
+          "next": "EXPEL"
+        },
+        {
+          "id": "EXPEL",
+          "kind": "move",
+          "next": "REPEATER_BLAST"
+        }
       ]
     },
     "damage_values": {
@@ -3913,6 +4231,18 @@
           "to": "DARK_STRIKE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "INCANTATION",
+          "kind": "move",
+          "next": "DARK_STRIKE"
+        },
+        {
+          "id": "DARK_STRIKE",
+          "kind": "move",
+          "next": "DARK_STRIKE"
         }
       ]
     },
@@ -4224,6 +4554,66 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "WRITHE",
+          "kind": "move",
+          "next": "CONSTRICT"
+        },
+        {
+          "id": "BULK",
+          "kind": "move",
+          "next": "WRITHE"
+        },
+        {
+          "id": "CONSTRICT",
+          "kind": "move",
+          "next": "BULK"
+        },
+        {
+          "id": "DEAD",
+          "kind": "move",
+          "next": "REATTACH"
+        },
+        {
+          "id": "REATTACH",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "WRITHE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "BULK",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "CONSTRICT",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
+        }
       ]
     },
     "damage_values": {
@@ -4377,6 +4767,18 @@
           "to": "SAVAGE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "FORBIDDEN_INCANTATION",
+          "kind": "move",
+          "next": "SAVAGE"
+        },
+        {
+          "id": "SAVAGE",
+          "kind": "move",
+          "next": "SAVAGE"
         }
       ]
     },
@@ -4686,6 +5088,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "PHEROMONE_SPIT",
+          "kind": "move",
+          "next": "BEES"
+        },
+        {
+          "id": "BEES",
+          "kind": "move",
+          "next": "SPEAR"
+        },
+        {
+          "id": "SPEAR",
+          "kind": "move",
+          "next": "PHEROMONE_SPIT"
+        }
       ]
     },
     "damage_values": {
@@ -4865,8 +5284,8 @@
       }
     ],
     "move_graph": {
-      "initial": null,
-      "confidence": "partial",
+      "initial": "INIT_MOVE",
+      "confidence": "static",
       "transitions": [
         {
           "from": "SKITTER",
@@ -4912,6 +5331,69 @@
           "chance": null,
           "kind": "conditional",
           "condition": "base.Creature.SlotName == \"third\""
+        }
+      ],
+      "states": [
+        {
+          "id": "SKITTER",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "MANDIBLES",
+          "kind": "move",
+          "next": "ENRAGE"
+        },
+        {
+          "id": "ENRAGE",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "SKITTER",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "MANDIBLES",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
+        },
+        {
+          "id": "INIT_MOVE",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "SKITTER",
+              "condition": "base.Creature.SlotName == \"first\""
+            },
+            {
+              "to": "MANDIBLES",
+              "condition": "base.Creature.SlotName == \"second\""
+            },
+            {
+              "to": "ENRAGE",
+              "condition": "base.Creature.SlotName == \"third\""
+            },
+            {
+              "to": "RAND",
+              "condition": "base.Creature.SlotName == \"fourth\""
+            }
+          ]
         }
       ]
     },
@@ -5010,6 +5492,13 @@
           "to": "DISTRACT",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "DISTRACT",
+          "kind": "move",
+          "next": "DISTRACT"
         }
       ]
     },
@@ -5542,6 +6031,103 @@
           "chance": 33.3,
           "kind": "random"
         }
+      ],
+      "states": [
+        {
+          "id": "SWIPE",
+          "kind": "move",
+          "next": "RAND_MOVE"
+        },
+        {
+          "id": "SPEW_COINS",
+          "kind": "move",
+          "next": "RAND_MOVE"
+        },
+        {
+          "id": "THROW_RELIC",
+          "kind": "move",
+          "next": "RAND_ATTACK_MOVE"
+        },
+        {
+          "id": "ENRAGE",
+          "kind": "move",
+          "next": "RAND_MOVE"
+        },
+        {
+          "id": "RAND_MOVE",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "SWIPE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 25.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "SPEW_COINS",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 25.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "THROW_RELIC",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 25.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "ENRAGE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 25.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 3
+            }
+          ]
+        },
+        {
+          "id": "RAND_ATTACK_MOVE",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "SWIPE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "SPEW_COINS",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "THROW_RELIC",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
+        }
       ]
     },
     "damage_values": {
@@ -5653,6 +6239,18 @@
           "to": "FLEE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "SPAWNED",
+          "kind": "move",
+          "next": "FLEE"
+        },
+        {
+          "id": "FLEE",
+          "kind": "move",
+          "next": "FLEE"
         }
       ]
     },
@@ -5832,38 +6430,88 @@
         {
           "from": "FLAIL",
           "to": "WAR_CHANT",
-          "chance": 20.0,
+          "chance": 33.3,
           "kind": "random"
         },
         {
           "from": "FLAIL",
           "to": "FLAIL",
-          "chance": 40.0,
+          "chance": 33.3,
           "kind": "random"
         },
         {
           "from": "FLAIL",
           "to": "RAM",
-          "chance": 40.0,
+          "chance": 33.3,
           "kind": "random"
         },
         {
           "from": "RAM",
           "to": "WAR_CHANT",
-          "chance": 20.0,
+          "chance": 33.3,
           "kind": "random"
         },
         {
           "from": "RAM",
           "to": "FLAIL",
-          "chance": 40.0,
+          "chance": 33.3,
           "kind": "random"
         },
         {
           "from": "RAM",
           "to": "RAM",
-          "chance": 40.0,
+          "chance": 33.3,
           "kind": "random"
+        }
+      ],
+      "states": [
+        {
+          "id": "WAR_CHANT",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "FLAIL",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAM",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "WAR_CHANT",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "FLAIL",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "max_consecutive",
+              "maxRepeats": 2,
+              "cooldown": 0
+            },
+            {
+              "to": "RAM",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "max_consecutive",
+              "maxRepeats": 2,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -6062,7 +6710,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "INITIAL",
       "confidence": "static",
       "transitions": [
         {
@@ -6112,6 +6760,80 @@
           "to": "SMASH",
           "chance": 50.0,
           "kind": "random"
+        }
+      ],
+      "states": [
+        {
+          "id": "VULNERABLE_SPORES",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "FRAIL_SPORES",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "SMASH",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "VULNERABLE_SPORES",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 3
+            },
+            {
+              "to": "FRAIL_SPORES",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 2
+            },
+            {
+              "to": "SMASH",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
+        },
+        {
+          "id": "INITIAL",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "FRAIL_SPORES",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 2
+            },
+            {
+              "to": "SMASH",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -6338,6 +7060,52 @@
           "to": "SWIPE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "ILLUSION",
+          "kind": "move",
+          "next": "SWIPE"
+        },
+        {
+          "id": "SWIPE",
+          "kind": "move",
+          "next": "BRANCH"
+        },
+        {
+          "id": "SWIPE_RANDOM",
+          "kind": "move",
+          "next": "HEADBUTT"
+        },
+        {
+          "id": "HEADBUTT",
+          "kind": "move",
+          "next": "SWIPE"
+        },
+        {
+          "id": "BRANCH",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "SWIPE_RANDOM",
+              "weight": 0.4,
+              "weightExpression": null,
+              "baseChance": 40.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "HEADBUTT",
+              "weight": 0.6,
+              "weightExpression": null,
+              "baseChance": 60.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -6584,6 +7352,56 @@
           "to": "LASH",
           "chance": 33.3,
           "kind": "random"
+        }
+      ],
+      "states": [
+        {
+          "id": "TACKLE",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "LATCH",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "LASH",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "LATCH",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "max_consecutive",
+              "maxRepeats": 2,
+              "cooldown": 0
+            },
+            {
+              "to": "TACKLE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "max_consecutive",
+              "maxRepeats": 2,
+              "cooldown": 0
+            },
+            {
+              "to": "LASH",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "max_consecutive",
+              "maxRepeats": 2,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -6841,7 +7659,7 @@
     ],
     "move_graph": {
       "initial": "TONGUE_LASH",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
           "from": "FOR_THE_QUEEN",
@@ -6874,6 +7692,42 @@
           "to": "TONGUE_LASH",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "FOR_THE_QUEEN",
+          "kind": "move",
+          "next": "HALF_HEALTH"
+        },
+        {
+          "id": "STRIKE_DOWN_EVIL",
+          "kind": "move",
+          "next": "FOR_THE_QUEEN"
+        },
+        {
+          "id": "TONGUE_LASH",
+          "kind": "move",
+          "next": "STRIKE_DOWN_EVIL"
+        },
+        {
+          "id": "BEETLE_CHARGE",
+          "kind": "move",
+          "next": "TONGUE_LASH"
+        },
+        {
+          "id": "HALF_HEALTH",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "TONGUE_LASH",
+              "condition": "HasBeetleCharged || base.Creature.CurrentHp >= base.Creature.MaxHp / 2"
+            },
+            {
+              "to": "BEETLE_CHARGE",
+              "condition": "!HasBeetleCharged && base.Creature.CurrentHp < base.Creature.MaxHp / 2"
+            }
+          ]
         }
       ]
     },
@@ -7056,6 +7910,23 @@
           "to": "ACID_GOOP",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "FIRST_ACID_GOOP",
+          "kind": "move",
+          "next": "INHALE"
+        },
+        {
+          "id": "ACID_GOOP",
+          "kind": "move",
+          "next": "FIRST_ACID_GOOP"
+        },
+        {
+          "id": "INHALE",
+          "kind": "move",
+          "next": "ACID_GOOP"
         }
       ]
     },
@@ -7411,6 +8282,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "THUNDER_STRIKE",
+          "kind": "move",
+          "next": "GALVANIC_BURST"
+        },
+        {
+          "id": "SHOCKING_SLAP",
+          "kind": "move",
+          "next": "THUNDER_STRIKE"
+        },
+        {
+          "id": "GALVANIC_BURST",
+          "kind": "move",
+          "next": "SHOCKING_SLAP"
+        }
       ]
     },
     "damage_values": {
@@ -7663,6 +8551,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "GIMME",
+          "kind": "move",
+          "next": "DOUBLE_SMASH"
+        },
+        {
+          "id": "DOUBLE_SMASH",
+          "kind": "move",
+          "next": "HEHE"
+        },
+        {
+          "id": "HEHE",
+          "kind": "move",
+          "next": "GIMME"
+        }
       ]
     },
     "damage_values": {
@@ -7756,6 +8661,13 @@
           "to": "GUARD",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "GUARD",
+          "kind": "move",
+          "next": "GUARD"
         }
       ]
     },
@@ -7983,6 +8895,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "SWIPE",
+          "kind": "move",
+          "next": "STOMP"
+        },
+        {
+          "id": "STOMP",
+          "kind": "move",
+          "next": "SWIPE"
+        },
+        {
+          "id": "HAUNT",
+          "kind": "move",
+          "next": "SWIPE"
+        }
       ]
     },
     "damage_values": {
@@ -8158,13 +9087,13 @@
         {
           "from": "TENDERIZING_GOOP",
           "to": "BITE",
-          "chance": 33.3,
+          "chance": 50.0,
           "kind": "random"
         },
         {
           "from": "TENDERIZING_GOOP",
           "to": "PUNCTURE",
-          "chance": 66.7,
+          "chance": 50.0,
           "kind": "random"
         },
         {
@@ -8176,14 +9105,55 @@
         {
           "from": "PUNCTURE",
           "to": "BITE",
-          "chance": 33.3,
+          "chance": 50.0,
           "kind": "random"
         },
         {
           "from": "PUNCTURE",
           "to": "PUNCTURE",
-          "chance": 66.7,
+          "chance": 50.0,
           "kind": "random"
+        }
+      ],
+      "states": [
+        {
+          "id": "TENDERIZING_GOOP",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "BITE",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "PUNCTURE",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "BITE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "PUNCTURE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "max_consecutive",
+              "maxRepeats": 2,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -8465,6 +9435,28 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "JAB",
+          "kind": "move",
+          "next": "RADIATE"
+        },
+        {
+          "id": "RADIATE",
+          "kind": "move",
+          "next": "WHIRLWIND"
+        },
+        {
+          "id": "WHIRLWIND",
+          "kind": "move",
+          "next": "PULSATE"
+        },
+        {
+          "id": "PULSATE",
+          "kind": "move",
+          "next": "JAB"
+        }
       ]
     },
     "damage_values": {
@@ -8657,6 +9649,71 @@
           "to": "WHIRLWIND",
           "chance": 100.0,
           "kind": "random"
+        }
+      ],
+      "states": [
+        {
+          "id": "JAB",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "WHIRLWIND",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "PIERCING_GAZE",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "INIT_RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "JAB",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "max_consecutive",
+              "maxRepeats": 2,
+              "cooldown": 0
+            },
+            {
+              "to": "WHIRLWIND",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "PIERCING_GAZE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "WHIRLWIND",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -8861,6 +9918,23 @@
           "to": "QUICK_SLASH",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "QUICK_SLASH",
+          "kind": "move",
+          "next": "BOOMERANG"
+        },
+        {
+          "id": "BOOMERANG",
+          "kind": "move",
+          "next": "POWER_DANCE"
+        },
+        {
+          "id": "POWER_DANCE",
+          "kind": "move",
+          "next": "QUICK_SLASH"
         }
       ]
     },
@@ -9168,6 +10242,28 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "ORB_OF_FRAILTY",
+          "kind": "move",
+          "next": "ORB_OF_WEAKNESS"
+        },
+        {
+          "id": "ORB_OF_WEAKNESS",
+          "kind": "move",
+          "next": "BEAM"
+        },
+        {
+          "id": "BEAM",
+          "kind": "move",
+          "next": "RITUAL"
+        },
+        {
+          "id": "RITUAL",
+          "kind": "move",
+          "next": "ORB_OF_FRAILTY"
+        }
       ]
     },
     "damage_values": {
@@ -9404,7 +10500,7 @@
     ],
     "move_graph": {
       "initial": "CURSE_OF_KNOWLEDGE",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
           "from": "CURSE_OF_KNOWLEDGE",
@@ -9437,6 +10533,42 @@
           "chance": null,
           "kind": "conditional",
           "condition": "_curseOfKnowledgeCounter >= 3"
+        }
+      ],
+      "states": [
+        {
+          "id": "CURSE_OF_KNOWLEDGE",
+          "kind": "move",
+          "next": "SLAP"
+        },
+        {
+          "id": "SLAP",
+          "kind": "move",
+          "next": "KNOWLEDGE_OVERWHELMING"
+        },
+        {
+          "id": "KNOWLEDGE_OVERWHELMING",
+          "kind": "move",
+          "next": "PONDER"
+        },
+        {
+          "id": "PONDER",
+          "kind": "move",
+          "next": "CurseOfKnowledgeBranch"
+        },
+        {
+          "id": "CurseOfKnowledgeBranch",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "CURSE_OF_KNOWLEDGE",
+              "condition": "_curseOfKnowledgeCounter < 3"
+            },
+            {
+              "to": "SLAP",
+              "condition": "_curseOfKnowledgeCounter >= 3"
+            }
+          ]
         }
       ]
     },
@@ -9751,7 +10883,7 @@
     ],
     "move_graph": {
       "initial": "SLEEP",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
           "from": "SLEEP",
@@ -9790,6 +10922,47 @@
           "to": "SLASH",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "SLEEP",
+          "kind": "move",
+          "next": "SLEEP_BRANCH"
+        },
+        {
+          "id": "SLASH",
+          "kind": "move",
+          "next": "DISEMBOWEL"
+        },
+        {
+          "id": "SLASH2",
+          "kind": "move",
+          "next": "SOUL_SIPHON"
+        },
+        {
+          "id": "DISEMBOWEL",
+          "kind": "move",
+          "next": "SLASH2"
+        },
+        {
+          "id": "SOUL_SIPHON",
+          "kind": "move",
+          "next": "SLASH"
+        },
+        {
+          "id": "SLEEP_BRANCH",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "SLEEP",
+              "condition": "base.Creature.HasPower<AsleepPower>()"
+            },
+            {
+              "to": "SLASH",
+              "condition": "!base.Creature.HasPower<AsleepPower>()"
+            }
+          ]
         }
       ]
     },
@@ -9938,6 +11111,18 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "CLUMP_SHOT",
+          "kind": "move",
+          "next": "STICKY_SHOT"
+        },
+        {
+          "id": "STICKY_SHOT",
+          "kind": "move",
+          "next": "CLUMP_SHOT"
+        }
       ]
     },
     "damage_values": {
@@ -10057,7 +11242,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "RAND",
       "confidence": "static",
       "transitions": [
         {
@@ -10083,6 +11268,42 @@
           "to": "GOOP",
           "chance": 50.0,
           "kind": "random"
+        }
+      ],
+      "states": [
+        {
+          "id": "TACKLE",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "GOOP",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "TACKLE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "GOOP",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -10300,6 +11521,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "ADVANCED_GAS",
+          "kind": "move",
+          "next": "BLOAT"
+        },
+        {
+          "id": "BLOAT",
+          "kind": "move",
+          "next": "SUPER_GAS_BLAST"
+        },
+        {
+          "id": "SUPER_GAS_BLAST",
+          "kind": "move",
+          "next": "BLOAT"
+        }
       ]
     },
     "damage_values": {
@@ -10450,7 +11688,7 @@
     ],
     "move_graph": {
       "initial": "SHIELD_SLAM",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
           "from": "SHIELD_SLAM",
@@ -10471,6 +11709,32 @@
           "to": "SMASH",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "SHIELD_SLAM",
+          "kind": "move",
+          "next": "SHIELD_SLAM_BRANCH"
+        },
+        {
+          "id": "SHIELD_SLAM_BRANCH",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "SHIELD_SLAM",
+              "condition": "GetAllyCount() > 0"
+            },
+            {
+              "to": "SMASH",
+              "condition": "GetAllyCount() == 0"
+            }
+          ]
+        },
+        {
+          "id": "SMASH",
+          "kind": "move",
+          "next": "SMASH"
         }
       ]
     },
@@ -10709,6 +11973,23 @@
           "to": "POUNCE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "WEB_CANNON",
+          "kind": "move",
+          "next": "CURL_AND_GROW"
+        },
+        {
+          "id": "POUNCE",
+          "kind": "move",
+          "next": "WEB_CANNON"
+        },
+        {
+          "id": "CURL_AND_GROW",
+          "kind": "move",
+          "next": "POUNCE"
         }
       ]
     },
@@ -10998,6 +12279,33 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "POWER_SHIELD",
+          "kind": "move",
+          "next": "DAMPEN"
+        },
+        {
+          "id": "DAMPEN",
+          "kind": "move",
+          "next": "RAM"
+        },
+        {
+          "id": "PREP",
+          "kind": "move",
+          "next": "MAGIC_BOMB"
+        },
+        {
+          "id": "MAGIC_BOMB",
+          "kind": "move",
+          "next": "RAM"
+        },
+        {
+          "id": "RAM",
+          "kind": "move",
+          "next": "PREP"
+        }
       ]
     },
     "damage_values": {
@@ -11177,7 +12485,7 @@
     ],
     "move_graph": {
       "initial": "CLAW",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
           "from": "RIP_AND_TEAR",
@@ -11194,19 +12502,13 @@
         {
           "from": "ROAR",
           "to": "RIP_AND_TEAR",
-          "chance": 33.3,
-          "kind": "random"
-        },
-        {
-          "from": "ROAR",
-          "to": "ROAR",
-          "chance": 33.3,
+          "chance": 50.0,
           "kind": "random"
         },
         {
           "from": "ROAR",
           "to": "CLAW",
-          "chance": 33.3,
+          "chance": 50.0,
           "kind": "random"
         },
         {
@@ -11220,6 +12522,56 @@
           "to": "ROAR",
           "chance": 50.0,
           "kind": "random"
+        }
+      ],
+      "states": [
+        {
+          "id": "RIP_AND_TEAR",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "ROAR",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "CLAW",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "RIP_AND_TEAR",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "ROAR",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "once",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "CLAW",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -11476,6 +12828,28 @@
           "to": "FLAMETHROWER",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "CHARGE",
+          "kind": "move",
+          "next": "FLAMETHROWER"
+        },
+        {
+          "id": "FLAMETHROWER",
+          "kind": "move",
+          "next": "WINDUP"
+        },
+        {
+          "id": "WINDUP",
+          "kind": "move",
+          "next": "HEAVY_CLEAVE"
+        },
+        {
+          "id": "HEAVY_CLEAVE",
+          "kind": "move",
+          "next": "FLAMETHROWER"
         }
       ]
     },
@@ -11755,8 +13129,8 @@
       }
     ],
     "move_graph": {
-      "initial": null,
-      "confidence": "partial",
+      "initial": "INIT_MOVE",
+      "confidence": "static",
       "transitions": [
         {
           "from": "TOXIC",
@@ -11789,6 +13163,37 @@
           "chance": null,
           "kind": "conditional",
           "condition": "base.Creature.SlotName == \"second\""
+        }
+      ],
+      "states": [
+        {
+          "id": "TOXIC",
+          "kind": "move",
+          "next": "BITE"
+        },
+        {
+          "id": "BITE",
+          "kind": "move",
+          "next": "SUCK"
+        },
+        {
+          "id": "SUCK",
+          "kind": "move",
+          "next": "TOXIC"
+        },
+        {
+          "id": "INIT_MOVE",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "TOXIC",
+              "condition": "base.Creature.SlotName == \"first\""
+            },
+            {
+              "to": "SUCK",
+              "condition": "base.Creature.SlotName == \"second\""
+            }
+          ]
         }
       ]
     },
@@ -11942,8 +13347,8 @@
       }
     ],
     "move_graph": {
-      "initial": null,
-      "confidence": "partial",
+      "initial": "INIT_MOVE",
+      "confidence": "static",
       "transitions": [
         {
           "from": "BUTT",
@@ -11983,6 +13388,41 @@
           "chance": null,
           "kind": "conditional",
           "condition": "((Nibbit)base.Creature.Monster).IsFront"
+        }
+      ],
+      "states": [
+        {
+          "id": "BUTT",
+          "kind": "move",
+          "next": "SLICE"
+        },
+        {
+          "id": "SLICE",
+          "kind": "move",
+          "next": "HISS"
+        },
+        {
+          "id": "HISS",
+          "kind": "move",
+          "next": "BUTT"
+        },
+        {
+          "id": "INIT_MOVE",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "BUTT",
+              "condition": "((Nibbit)base.Creature.Monster).IsAlone"
+            },
+            {
+              "to": "HISS",
+              "condition": "!((Nibbit)base.Creature.Monster).IsFront"
+            },
+            {
+              "to": "SLICE",
+              "condition": "((Nibbit)base.Creature.Monster).IsFront"
+            }
+          ]
         }
       ]
     },
@@ -12060,6 +13500,13 @@
           "to": "NOISE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "NOISE",
+          "kind": "move",
+          "next": "NOISE"
         }
       ]
     },
@@ -12266,7 +13713,7 @@
     ],
     "move_graph": {
       "initial": "LAY_EGGS",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
           "from": "LAY_EGGS",
@@ -12299,6 +13746,42 @@
           "to": "SMASH",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "LAY_EGGS",
+          "kind": "move",
+          "next": "SMASH"
+        },
+        {
+          "id": "SMASH",
+          "kind": "move",
+          "next": "TENDERIZER"
+        },
+        {
+          "id": "TENDERIZER",
+          "kind": "move",
+          "next": "SUMMON_BRANCH_STATE"
+        },
+        {
+          "id": "NUTRITIONAL_PASTE",
+          "kind": "move",
+          "next": "SMASH"
+        },
+        {
+          "id": "SUMMON_BRANCH_STATE",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "LAY_EGGS",
+              "condition": "CanLay"
+            },
+            {
+              "to": "NUTRITIONAL_PASTE",
+              "condition": "!CanLay"
+            }
+          ]
         }
       ]
     },
@@ -12568,6 +14051,28 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "MAGISTRATE_SCRUTINY",
+          "kind": "move",
+          "next": "PECK_ASSAULT"
+        },
+        {
+          "id": "PECK_ASSAULT",
+          "kind": "move",
+          "next": "JUDICIAL_FLIGHT"
+        },
+        {
+          "id": "JUDICIAL_FLIGHT",
+          "kind": "move",
+          "next": "VERDICT"
+        },
+        {
+          "id": "VERDICT",
+          "kind": "move",
+          "next": "MAGISTRATE_SCRUTINY"
+        }
       ]
     },
     "damage_values": {
@@ -12627,6 +14132,13 @@
           "to": "NOTHING",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "NOTHING",
+          "kind": "move",
+          "next": "NOTHING"
         }
       ]
     },
@@ -12700,6 +14212,13 @@
           "to": "SLAM",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "SLAM",
+          "kind": "move",
+          "next": "SLAM"
         }
       ]
     },
@@ -12920,8 +14439,8 @@
       }
     ],
     "move_graph": {
-      "initial": null,
-      "confidence": "partial",
+      "initial": "INIT_MOVE",
+      "confidence": "static",
       "transitions": [
         {
           "from": "BITE",
@@ -12974,6 +14493,50 @@
           "chance": null,
           "kind": "conditional",
           "condition": "base.Creature.SlotName == \"fourth\""
+        }
+      ],
+      "states": [
+        {
+          "id": "BITE",
+          "kind": "move",
+          "next": "LASH"
+        },
+        {
+          "id": "LASH",
+          "kind": "move",
+          "next": "FLAIL"
+        },
+        {
+          "id": "FLAIL",
+          "kind": "move",
+          "next": "ENLARGE"
+        },
+        {
+          "id": "ENLARGE",
+          "kind": "move",
+          "next": "BITE"
+        },
+        {
+          "id": "INIT_MOVE",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "FLAIL",
+              "condition": "base.Creature.SlotName == \"first\""
+            },
+            {
+              "to": "BITE",
+              "condition": "base.Creature.SlotName == \"second\""
+            },
+            {
+              "to": "LASH",
+              "condition": "base.Creature.SlotName == \"third\""
+            },
+            {
+              "to": "ENLARGE",
+              "condition": "base.Creature.SlotName == \"fourth\""
+            }
+          ]
         }
       ]
     },
@@ -13126,6 +14689,42 @@
           "to": "INFECT",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "INFECT",
+          "kind": "move",
+          "next": "LASH"
+        },
+        {
+          "id": "LASH",
+          "kind": "move",
+          "next": "INFECT"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "INFECT",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "LASH",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -13332,6 +14931,23 @@
           "to": "STRONG_PUNCH",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "READY",
+          "kind": "move",
+          "next": "FAST_PUNCH"
+        },
+        {
+          "id": "STRONG_PUNCH",
+          "kind": "move",
+          "next": "READY"
+        },
+        {
+          "id": "FAST_PUNCH",
+          "kind": "move",
+          "next": "STRONG_PUNCH"
         }
       ]
     },
@@ -13611,7 +15227,7 @@
     ],
     "move_graph": {
       "initial": "PUPPET_STRINGS",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
           "from": "PUPPET_STRINGS",
@@ -13664,6 +15280,66 @@
           "to": "OFF_WITH_YOUR_HEAD",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "PUPPET_STRINGS",
+          "kind": "move",
+          "next": "YOU_ARE_MINE"
+        },
+        {
+          "id": "YOU_ARE_MINE",
+          "kind": "move",
+          "next": "YOURE_MINE_NOW_BRANCH"
+        },
+        {
+          "id": "YOURE_MINE_NOW_BRANCH",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "BURN_BRIGHT_FOR_ME",
+              "condition": "!HasAmalgamDied"
+            },
+            {
+              "to": "OFF_WITH_YOUR_HEAD",
+              "condition": "HasAmalgamDied"
+            }
+          ]
+        },
+        {
+          "id": "BURN_BRIGHT_FOR_ME",
+          "kind": "move",
+          "next": "BURN_BRIGHT_FOR_ME_BRANCH"
+        },
+        {
+          "id": "BURN_BRIGHT_FOR_ME_BRANCH",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "BURN_BRIGHT_FOR_ME",
+              "condition": "!HasAmalgamDied"
+            },
+            {
+              "to": "OFF_WITH_YOUR_HEAD",
+              "condition": "HasAmalgamDied"
+            }
+          ]
+        },
+        {
+          "id": "OFF_WITH_YOUR_HEAD",
+          "kind": "move",
+          "next": "EXECUTION"
+        },
+        {
+          "id": "EXECUTION",
+          "kind": "move",
+          "next": "ENRAGE"
+        },
+        {
+          "id": "ENRAGE",
+          "kind": "move",
+          "next": "OFF_WITH_YOUR_HEAD"
         }
       ]
     },
@@ -13950,6 +15626,33 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "TARGETING_RETICLE",
+          "kind": "move",
+          "next": "PRECISION_BEAM"
+        },
+        {
+          "id": "PRECISION_BEAM",
+          "kind": "move",
+          "next": "CHARGE_UP"
+        },
+        {
+          "id": "CHARGE_UP",
+          "kind": "move",
+          "next": "LASER"
+        },
+        {
+          "id": "LASER",
+          "kind": "move",
+          "next": "RECHARGE"
+        },
+        {
+          "id": "RECHARGE",
+          "kind": "move",
+          "next": "TARGETING_RETICLE"
+        }
       ]
     },
     "damage_values": {
@@ -14161,13 +15864,13 @@
         {
           "from": "CHEW",
           "to": "CHOMP",
-          "chance": 33.3,
+          "chance": 50.0,
           "kind": "random"
         },
         {
           "from": "CHEW",
           "to": "CHEW",
-          "chance": 66.7,
+          "chance": 50.0,
           "kind": "random"
         },
         {
@@ -14175,6 +15878,47 @@
           "to": "CHEW",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "CHOMP",
+          "kind": "move",
+          "next": "MORE_TEETH"
+        },
+        {
+          "id": "CHEW",
+          "kind": "move",
+          "next": "rand"
+        },
+        {
+          "id": "MORE_TEETH",
+          "kind": "move",
+          "next": "CHEW"
+        },
+        {
+          "id": "rand",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "CHOMP",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "CHEW",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "max_consecutive",
+              "maxRepeats": 2,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -14386,6 +16130,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "SEA_KICK",
+          "kind": "move",
+          "next": "SPINNING_KICK"
+        },
+        {
+          "id": "SPINNING_KICK",
+          "kind": "move",
+          "next": "BUBBLE_BURP"
+        },
+        {
+          "id": "BUBBLE_BURP",
+          "kind": "move",
+          "next": "SEA_KICK"
+        }
       ]
     },
     "damage_values": {
@@ -14530,6 +16291,18 @@
           "to": "PRESSURIZE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "PRESSURIZE",
+          "kind": "move",
+          "next": "JET"
+        },
+        {
+          "id": "JET",
+          "kind": "move",
+          "next": "PRESSURIZE"
         }
       ]
     },
@@ -14704,6 +16477,23 @@
           "to": "CHOMP",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "SHRINKER",
+          "kind": "move",
+          "next": "CHOMP"
+        },
+        {
+          "id": "CHOMP",
+          "kind": "move",
+          "next": "STOMP"
+        },
+        {
+          "id": "STOMP",
+          "kind": "move",
+          "next": "CHOMP"
         }
       ]
     },
@@ -14964,6 +16754,28 @@
           "to": "ZOOM",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "ZOOM",
+          "kind": "move",
+          "next": "ZOOM_MOVE_2"
+        },
+        {
+          "id": "ZOOM_MOVE_2",
+          "kind": "move",
+          "next": "INERTIA"
+        },
+        {
+          "id": "INERTIA",
+          "kind": "move",
+          "next": "PIERCING_STABS"
+        },
+        {
+          "id": "PIERCING_STABS",
+          "kind": "move",
+          "next": "ZOOM"
         }
       ]
     },
@@ -15229,6 +17041,28 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "VOMIT_ICHOR",
+          "kind": "move",
+          "next": "FURIOUS_PUMMELING"
+        },
+        {
+          "id": "LEECHING_HUG",
+          "kind": "move",
+          "next": "SMOTHER"
+        },
+        {
+          "id": "SMOTHER",
+          "kind": "move",
+          "next": "VOMIT_ICHOR"
+        },
+        {
+          "id": "FURIOUS_PUMMELING",
+          "kind": "move",
+          "next": "LEECHING_HUG"
+        }
       ]
     },
     "damage_values": {
@@ -15434,6 +17268,47 @@
           "to": "CONSTRICT",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "CONSTRICT",
+          "kind": "move",
+          "next": "rand"
+        },
+        {
+          "id": "THWACK",
+          "kind": "move",
+          "next": "CONSTRICT"
+        },
+        {
+          "id": "LASH",
+          "kind": "move",
+          "next": "CONSTRICT"
+        },
+        {
+          "id": "rand",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "THWACK",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "forever",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "LASH",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "forever",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -15660,6 +17535,56 @@
           "chance": 50.0,
           "kind": "random"
         }
+      ],
+      "states": [
+        {
+          "id": "OIL_SPRAY",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "SLAM",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAGE",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "OIL_SPRAY",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "SLAM",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "RAGE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
+        }
       ]
     },
     "damage_values": {
@@ -15800,7 +17725,7 @@
     ],
     "move_graph": {
       "initial": "SNORE",
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
           "from": "SNORE",
@@ -15821,6 +17746,32 @@
           "to": "ROLL_OUT",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "SNORE",
+          "kind": "move",
+          "next": "SNORE_NEXT"
+        },
+        {
+          "id": "ROLL_OUT",
+          "kind": "move",
+          "next": "ROLL_OUT"
+        },
+        {
+          "id": "SNORE_NEXT",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "SNORE",
+              "condition": "base.Creature.HasPower<SlumberPower>()"
+            },
+            {
+              "to": "ROLL_OUT",
+              "condition": "!base.Creature.HasPower<SlumberPower>()"
+            }
+          ]
         }
       ]
     },
@@ -15946,6 +17897,13 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "ENERGY_ORB",
+          "kind": "move",
+          "next": "ENERGY_ORB"
+        }
       ]
     },
     "damage_values": {
@@ -16063,6 +18021,18 @@
           "to": "TACKLE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "SPAWNED",
+          "kind": "move",
+          "next": "TACKLE"
+        },
+        {
+          "id": "TACKLE",
+          "kind": "move",
+          "next": "TACKLE"
         }
       ]
     },
@@ -16377,6 +18347,33 @@
           "to": "BECKON",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "BECKON",
+          "kind": "move",
+          "next": "DE_GAS"
+        },
+        {
+          "id": "DE_GAS",
+          "kind": "move",
+          "next": "GAZE"
+        },
+        {
+          "id": "GAZE",
+          "kind": "move",
+          "next": "FADE"
+        },
+        {
+          "id": "FADE",
+          "kind": "move",
+          "next": "SCREAM"
+        },
+        {
+          "id": "SCREAM",
+          "kind": "move",
+          "next": "BECKON"
         }
       ]
     },
@@ -16839,13 +18836,13 @@
         {
           "from": "SOUL_SLASH",
           "to": "SOUL_SLASH",
-          "chance": 66.7,
+          "chance": 50.0,
           "kind": "random"
         },
         {
           "from": "SOUL_SLASH",
           "to": "SOUL_FLAME",
-          "chance": 33.3,
+          "chance": 50.0,
           "kind": "random"
         },
         {
@@ -16853,6 +18850,47 @@
           "to": "SOUL_SLASH",
           "chance": 100.0,
           "kind": "random"
+        }
+      ],
+      "states": [
+        {
+          "id": "HEX",
+          "kind": "move",
+          "next": "SOUL_SLASH"
+        },
+        {
+          "id": "SOUL_SLASH",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "SOUL_FLAME",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "SOUL_SLASH",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "max_consecutive",
+              "maxRepeats": 2,
+              "cooldown": 0
+            },
+            {
+              "to": "SOUL_FLAME",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -17062,6 +19100,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "PROTRUDING_SPIKES",
+          "kind": "move",
+          "next": "SPIKE_EXPLOSION"
+        },
+        {
+          "id": "SPIKE_EXPLOSION",
+          "kind": "move",
+          "next": "TONGUE_LASH"
+        },
+        {
+          "id": "TONGUE_LASH",
+          "kind": "move",
+          "next": "PROTRUDING_SPIKES"
+        }
       ]
     },
     "damage_values": {
@@ -17171,6 +19226,13 @@
           "to": "STAB",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "STAB",
+          "kind": "move",
+          "next": "STAB"
         }
       ]
     },
@@ -17408,6 +19470,28 @@
           "to": "CRASH",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "CRASH",
+          "kind": "move",
+          "next": "THRASH"
+        },
+        {
+          "id": "THRASH",
+          "kind": "move",
+          "next": "CRASH"
+        },
+        {
+          "id": "STUN",
+          "kind": "move",
+          "next": "TERROR"
+        },
+        {
+          "id": "TERROR",
+          "kind": "move",
+          "next": "CRASH"
         }
       ]
     },
@@ -18110,6 +20194,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "SMASH",
+          "kind": "move",
+          "next": "BEAM"
+        },
+        {
+          "id": "BEAM",
+          "kind": "move",
+          "next": "BARRAGE"
+        },
+        {
+          "id": "BARRAGE",
+          "kind": "move",
+          "next": "SMASH"
+        }
       ]
     },
     "damage_values": {
@@ -18334,6 +20435,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "CRASH",
+          "kind": "move",
+          "next": "FLAME_BEAM"
+        },
+        {
+          "id": "FLAME_BEAM",
+          "kind": "move",
+          "next": "BARRAGE"
+        },
+        {
+          "id": "BARRAGE",
+          "kind": "move",
+          "next": "CRASH"
+        }
       ]
     },
     "damage_values": {
@@ -18557,6 +20675,23 @@
           "to": "BASH",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "BASH",
+          "kind": "move",
+          "next": "FLAME_BEAM"
+        },
+        {
+          "id": "FLAME_BEAM",
+          "kind": "move",
+          "next": "BARRAGE"
+        },
+        {
+          "id": "BARRAGE",
+          "kind": "move",
+          "next": "BASH"
         }
       ]
     },
@@ -18875,6 +21010,18 @@
           "to": "MIASMA",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "MIASMA",
+          "kind": "move",
+          "next": "DREAD"
+        },
+        {
+          "id": "DREAD",
+          "kind": "move",
+          "next": "MIASMA"
         }
       ]
     },
@@ -19195,6 +21342,33 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "LIQUIFY_GROUND",
+          "kind": "move",
+          "next": "THRASH"
+        },
+        {
+          "id": "THRASH",
+          "kind": "move",
+          "next": "LUNGING_BITE"
+        },
+        {
+          "id": "THRASH_MOVE_2",
+          "kind": "move",
+          "next": "THRASH"
+        },
+        {
+          "id": "LUNGING_BITE",
+          "kind": "move",
+          "next": "SALIVATE"
+        },
+        {
+          "id": "SALIVATE",
+          "kind": "move",
+          "next": "THRASH_MOVE_2"
+        }
       ]
     },
     "damage_values": {
@@ -19354,6 +21528,18 @@
           "to": "DEBILITATING_SMOG",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "DEBILITATING_SMOG",
+          "kind": "move",
+          "next": "EYE_LASERS"
+        },
+        {
+          "id": "EYE_LASERS",
+          "kind": "move",
+          "next": "DEBILITATING_SMOG"
         }
       ]
     },
@@ -19608,6 +21794,61 @@
           "to": "SAIL",
           "chance": 50.0,
           "kind": "random"
+        }
+      ],
+      "states": [
+        {
+          "id": "ILLUSION",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "PIERCING_GAZE",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "SAIL",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "HARDENING_STRIKE",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "PIERCING_GAZE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "SAIL",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "HARDENING_STRIKE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 33.3,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -19922,6 +22163,33 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "THIEVERY",
+          "kind": "move",
+          "next": "FLUTTER"
+        },
+        {
+          "id": "NAB",
+          "kind": "move",
+          "next": "ESCAPE"
+        },
+        {
+          "id": "HAT_TRICK",
+          "kind": "move",
+          "next": "NAB"
+        },
+        {
+          "id": "FLUTTER",
+          "kind": "move",
+          "next": "HAT_TRICK"
+        },
+        {
+          "id": "ESCAPE",
+          "kind": "move",
+          "next": "ESCAPE"
+        }
       ]
     },
     "damage_values": {
@@ -20117,8 +22385,8 @@
       }
     ],
     "move_graph": {
-      "initial": null,
-      "confidence": "partial",
+      "initial": "INIT_MOVE",
+      "confidence": "static",
       "transitions": [
         {
           "from": "SPIKE_SPIT",
@@ -20151,6 +22419,37 @@
           "chance": null,
           "kind": "conditional",
           "condition": "((Toadpole)base.Creature.Monster).IsFront"
+        }
+      ],
+      "states": [
+        {
+          "id": "SPIKE_SPIT",
+          "kind": "move",
+          "next": "WHIRL"
+        },
+        {
+          "id": "WHIRL",
+          "kind": "move",
+          "next": "SPIKEN"
+        },
+        {
+          "id": "SPIKEN",
+          "kind": "move",
+          "next": "SPIKE_SPIT"
+        },
+        {
+          "id": "INIT_MOVE",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "WHIRL",
+              "condition": "!((Toadpole)base.Creature.Monster).IsFront"
+            },
+            {
+              "to": "SPIKEN",
+              "condition": "((Toadpole)base.Creature.Monster).IsFront"
+            }
+          ]
         }
       ]
     },
@@ -20434,6 +22733,33 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "TACKLE",
+          "kind": "move",
+          "next": "TACKLE_2"
+        },
+        {
+          "id": "TACKLE_2",
+          "kind": "move",
+          "next": "BEAM"
+        },
+        {
+          "id": "BEAM",
+          "kind": "move",
+          "next": "TACKLE_3"
+        },
+        {
+          "id": "TACKLE_3",
+          "kind": "move",
+          "next": "TACKLE_4"
+        },
+        {
+          "id": "TACKLE_4",
+          "kind": "move",
+          "next": "BEAM"
+        }
       ]
     },
     "damage_values": {
@@ -20570,6 +22896,18 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "HATCH",
+          "kind": "move",
+          "next": "NIBBLE"
+        },
+        {
+          "id": "NIBBLE",
+          "kind": "move",
+          "next": "NIBBLE"
+        }
       ]
     },
     "damage_values": {
@@ -20689,6 +23027,18 @@
           "to": "HOUNDS",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "TRACK",
+          "kind": "move",
+          "next": "HOUNDS"
+        },
+        {
+          "id": "HOUNDS",
+          "kind": "move",
+          "next": "HOUNDS"
         }
       ]
     },
@@ -20935,6 +23285,28 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "BITE",
+          "kind": "move",
+          "next": "BURROW"
+        },
+        {
+          "id": "BURROW",
+          "kind": "move",
+          "next": "BELOW"
+        },
+        {
+          "id": "BELOW",
+          "kind": "move",
+          "next": "BELOW"
+        },
+        {
+          "id": "DIZZY",
+          "kind": "move",
+          "next": "BITE"
+        }
       ]
     },
     "damage_values": {
@@ -21130,6 +23502,23 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "UNLOAD",
+          "kind": "move",
+          "next": "UNLOAD_MOVE_2"
+        },
+        {
+          "id": "UNLOAD_MOVE_2",
+          "kind": "move",
+          "next": "RELOAD"
+        },
+        {
+          "id": "RELOAD",
+          "kind": "move",
+          "next": "UNLOAD"
+        }
       ]
     },
     "damage_values": {
@@ -21255,13 +23644,13 @@
         {
           "from": "POKEY_POUNCE",
           "to": "POKEY_POUNCE",
-          "chance": 66.7,
+          "chance": 50.0,
           "kind": "random"
         },
         {
           "from": "POKEY_POUNCE",
           "to": "STICKY_SHOT",
-          "chance": 33.3,
+          "chance": 50.0,
           "kind": "random"
         },
         {
@@ -21269,6 +23658,42 @@
           "to": "POKEY_POUNCE",
           "chance": 100.0,
           "kind": "random"
+        }
+      ],
+      "states": [
+        {
+          "id": "POKEY_POUNCE",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "STICKY_SHOT",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "POKEY_POUNCE",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "max_consecutive",
+              "maxRepeats": 2,
+              "cooldown": 0
+            },
+            {
+              "to": "STICKY_SHOT",
+              "weight": 1.0,
+              "weightExpression": null,
+              "baseChance": 50.0,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -21347,6 +23772,13 @@
           "to": "TACKLE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "TACKLE",
+          "kind": "move",
+          "next": "TACKLE"
         }
       ]
     },
@@ -21547,7 +23979,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "RAND",
       "confidence": "partial",
       "transitions": [
         {
@@ -21623,12 +24055,6 @@
           "kind": "random"
         },
         {
-          "from": "CALL_FOR_BACKUP",
-          "to": "CALL_FOR_BACKUP",
-          "chance": null,
-          "kind": "random"
-        },
-        {
           "from": "__START__",
           "to": "SCRATCH",
           "chance": null,
@@ -21651,6 +24077,70 @@
           "to": "CALL_FOR_BACKUP",
           "chance": null,
           "kind": "random"
+        }
+      ],
+      "states": [
+        {
+          "id": "SCRATCH",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "DISEASE_BITE",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "SCREECH",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "CALL_FOR_BACKUP",
+          "kind": "move",
+          "next": "RAND"
+        },
+        {
+          "id": "RAND",
+          "kind": "random",
+          "branches": [
+            {
+              "to": "SCRATCH",
+              "weight": null,
+              "weightExpression": "(!CanSummon()) ? 1f : (1f / 12f)",
+              "baseChance": null,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "DISEASE_BITE",
+              "weight": null,
+              "weightExpression": "(!CanSummon()) ? 1f : (1f / 12f)",
+              "baseChance": null,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 0
+            },
+            {
+              "to": "SCREECH",
+              "weight": null,
+              "weightExpression": "(!CanSummon()) ? 1f : (1f / 12f)",
+              "baseChance": null,
+              "repeat": "cannot_repeat",
+              "maxRepeats": null,
+              "cooldown": 3
+            },
+            {
+              "to": "CALL_FOR_BACKUP",
+              "weight": null,
+              "weightExpression": "(!CanSummon()) ? 0f : 0.75f",
+              "baseChance": null,
+              "repeat": "once",
+              "maxRepeats": null,
+              "cooldown": 0
+            }
+          ]
         }
       ]
     },
@@ -21918,6 +24408,28 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "INK_BLOT",
+          "kind": "move",
+          "next": "INKY_LANCE"
+        },
+        {
+          "id": "INKY_LANCE",
+          "kind": "move",
+          "next": "DISMEMBER"
+        },
+        {
+          "id": "DISMEMBER",
+          "kind": "move",
+          "next": "PREPARE"
+        },
+        {
+          "id": "PREPARE",
+          "kind": "move",
+          "next": "INK_BLOT"
+        }
       ]
     },
     "damage_values": {
@@ -22141,6 +24653,23 @@
           "to": "SWIPE",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "GRASPING_VINES",
+          "kind": "move",
+          "next": "CHOMP"
+        },
+        {
+          "id": "SWIPE",
+          "kind": "move",
+          "next": "GRASPING_VINES"
+        },
+        {
+          "id": "CHOMP",
+          "kind": "move",
+          "next": "SWIPE"
         }
       ]
     },
@@ -22700,6 +25229,48 @@
           "chance": 100.0,
           "kind": "fixed"
         }
+      ],
+      "states": [
+        {
+          "id": "PRESSURIZE",
+          "kind": "move",
+          "next": "STOMP"
+        },
+        {
+          "id": "STOMP",
+          "kind": "move",
+          "next": "RAM"
+        },
+        {
+          "id": "RAM",
+          "kind": "move",
+          "next": "SIPHON"
+        },
+        {
+          "id": "SIPHON",
+          "kind": "move",
+          "next": "PRESSURE_GUN"
+        },
+        {
+          "id": "PRESSURE_GUN",
+          "kind": "move",
+          "next": "PRESSURE_UP"
+        },
+        {
+          "id": "PRESSURE_UP",
+          "kind": "move",
+          "next": "STOMP"
+        },
+        {
+          "id": "ABOUT_TO_BLOW",
+          "kind": "move",
+          "next": "EXPLODE"
+        },
+        {
+          "id": "EXPLODE",
+          "kind": "move",
+          "next": "EXPLODE"
+        }
       ]
     },
     "damage_values": {
@@ -22851,7 +25422,7 @@
     ],
     "move_graph": {
       "initial": null,
-      "confidence": "partial",
+      "confidence": "static",
       "transitions": [
         {
           "from": "NASTY_BITE",
@@ -22892,6 +25463,45 @@
           "chance": null,
           "kind": "conditional",
           "condition": "base.Creature.SlotName == \"wriggler4\""
+        }
+      ],
+      "states": [
+        {
+          "id": "NASTY_BITE",
+          "kind": "move",
+          "next": "WRIGGLE"
+        },
+        {
+          "id": "WRIGGLE",
+          "kind": "move",
+          "next": "NASTY_BITE"
+        },
+        {
+          "id": "SPAWNED",
+          "kind": "move",
+          "next": "INIT_MOVE"
+        },
+        {
+          "id": "INIT_MOVE",
+          "kind": "conditional",
+          "branches": [
+            {
+              "to": "NASTY_BITE",
+              "condition": "base.Creature.SlotName == \"wriggler1\""
+            },
+            {
+              "to": "WRIGGLE",
+              "condition": "base.Creature.SlotName == \"wriggler2\""
+            },
+            {
+              "to": "NASTY_BITE",
+              "condition": "base.Creature.SlotName == \"wriggler3\""
+            },
+            {
+              "to": "WRIGGLE",
+              "condition": "base.Creature.SlotName == \"wriggler4\""
+            }
+          ]
         }
       ]
     },
@@ -22970,6 +25580,13 @@
           "to": "ZAP",
           "chance": 100.0,
           "kind": "fixed"
+        }
+      ],
+      "states": [
+        {
+          "id": "ZAP",
+          "kind": "move",
+          "next": "ZAP"
         }
       ]
     },
