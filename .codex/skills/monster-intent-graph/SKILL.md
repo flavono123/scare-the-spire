@@ -1,85 +1,62 @@
 ---
 name: monster-intent-graph
-description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+description: Extract, verify, mock up, implement, or revise Slay the Spire 2 monster intent FSM graphs and phase layouts. Use when changing monster move-pattern extraction, intent graph routing, start nodes, random or conditional transitions, reversible phases, progressive boss phases, Graphviz mockups, or representative intent-graph QA in scare-the-spire.
 ---
 
 # Monster Intent Graph
 
-## Overview
+Treat the game DLL/PCK and extracted locale as the source of truth. Use Graphviz
+only as an offline layout oracle; ship hand-authored SVG geometry and existing
+static game assets, not a Graphviz runtime dependency.
 
-[TODO: 1-2 sentences explaining what this skill enables]
+Read [references/layout-rules.md](references/layout-rules.md) before changing a
+graph, phase classifier, or route.
 
-## Structuring This Skill
+## Workflow
 
-[TODO: Choose the structure that best fits this skill's purpose. Common patterns:
+1. Inspect `data/sts2/{kor,eng}/monsters.json` and the matching decompiled
+   `MegaCrit.Sts2.Core.Models.Monsters/*.cs` source. Confirm the initial state,
+   follow-ups, random repeat rules, conditions, and lifecycle callbacks.
+2. Fix extraction before presentation when the extracted graph disagrees with
+   source. Never hand-correct a probability or transition for visual
+   convenience.
+3. Normalize the graph into action states, transition edges, a visible start
+   entry, and optional phase containers.
+4. Classify action topology and phase topology separately. Derive the class
+   from graph structure and source semantics, not the monster ID.
+5. Generate a Graphviz mockup with final node dimensions and placeholder game
+   assets. Review edge size, ports, labels, crossings, and phase direction.
+6. Reproduce the accepted geometry in the TypeScript renderer with cubic SVG
+   paths. Keep arrowhead and edge colors identical and omit `100%` labels.
+7. Add representative Playwright assertions for topology, direction, start
+   visibility, labels, overlap, and mobile containment.
 
-**1. Workflow-Based** (best for sequential processes)
-- Works well when there are clear step-by-step procedures
-- Example: DOCX skill with "Workflow Decision Tree" -> "Reading" -> "Creating" -> "Editing"
-- Structure: ## Overview -> ## Workflow Decision Tree -> ## Step 1 -> ## Step 2...
+## Classification
 
-**2. Task-Based** (best for tool collections)
-- Works well when the skill offers different operations/capabilities
-- Example: PDF skill with "Quick Start" -> "Merge PDFs" -> "Split PDFs" -> "Extract Text"
-- Structure: ## Overview -> ## Quick Start -> ## Task Category 1 -> ## Task Category 2...
+- **No phase container**: terminal, one-way sequence, fixed cycle, or random
+  cluster without a lifecycle or combat-mode boundary.
+- **Reversible conditional phases**: combat can move between phase containers
+  in both directions after reevaluating a condition. Stack phase containers
+  vertically and show both directed phase transitions. Fabricator's
+  `CanFabricate` / `!CanFabricate` modes are the reference case.
+- **Progressive phases**: leaving a phase is irreversible during the fight.
+  Place phase containers left to right and show only forward connectors.
+  Test Subject's death-and-respawn forms are the reference case.
 
-**3. Reference/Guidelines** (best for standards or specifications)
-- Works well for brand guidelines, coding standards, or requirements
-- Example: Brand styling with "Brand Guidelines" -> "Colors" -> "Typography" -> "Features"
-- Structure: ## Overview -> ## Guidelines -> ## Specifications -> ## Usage...
+Use strongly connected components as evidence, but include lifecycle state
+changes that occur outside `FollowUpState` (death, respawn, summoned ally death,
+or immediate move replacement). Do not mistake disconnected extracted loops for
+independent phases before checking those callbacks.
 
-**4. Capabilities-Based** (best for integrated systems)
-- Works well when the skill provides multiple interrelated features
-- Example: Product Management with "Core Capabilities" -> numbered capability list
-- Structure: ## Overview -> ## Core Capabilities -> ### 1. Feature -> ### 2. Feature...
+## Iteration Rule
 
-Patterns can be mixed and matched as needed. Most skills combine patterns (e.g., start with task-based, add workflow for complex operations).
+When a newly audited monster does not fit, update this skill's classification or
+layout rule and the generic implementation before adding per-monster behavior.
+Allow a monster-ID exception only when the game source itself is structurally
+irregular and the exception cites that source in code and tests.
 
-Delete this entire "Structuring This Skill" section when done - it's just guidance.]
+## Cloudflare Boundary
 
-## [TODO: Replace with the first main section based on chosen structure]
-
-[TODO: Add content here. See examples in existing skills:
-- Code samples for technical skills
-- Decision trees for complex workflows
-- Concrete examples with realistic user requests
-- References to scripts/templates/references as needed]
-
-## Resources (optional)
-
-Create only the resource directories this skill actually needs. Delete this section if no resources are required.
-
-### scripts/
-Executable code (Python/Bash/etc.) that can be run directly to perform specific operations.
-
-**Examples from other skills:**
-- PDF skill: `fill_fillable_fields.py`, `extract_form_field_info.py` - utilities for PDF manipulation
-- DOCX skill: `document.py`, `utilities.py` - Python modules for document processing
-
-**Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
-
-**Note:** Scripts may be executed without loading into context, but can still be read by Codex for patching or environment adjustments.
-
-### references/
-Documentation and reference material intended to be loaded into context to inform Codex's process and thinking.
-
-**Examples from other skills:**
-- Product management: `communication.md`, `context_building.md` - detailed workflow guides
-- BigQuery: API reference documentation and query examples
-- Finance: Schema documentation, company policies
-
-**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that Codex should reference while working.
-
-### assets/
-Files not intended to be loaded into context, but rather used within the output Codex produces.
-
-**Examples from other skills:**
-- Brand styling: PowerPoint template files (.pptx), logo files
-- Frontend builder: HTML/React boilerplate project directories
-- Typography: Font files (.ttf, .woff2)
-
-**Appropriate for:** Templates, boilerplate code, document templates, images, icons, fonts, or any files meant to be copied or used in the final output.
-
----
-
-**Not every skill requires all three types of resources.**
+Keep graph derivation in extraction/build steps or bounded client-side geometry.
+Do not parse all monsters, run Graphviz, or perform layout search in a Worker
+request. Reuse extracted static JSON and existing game assets.
