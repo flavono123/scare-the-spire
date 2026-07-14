@@ -1128,7 +1128,7 @@ function PatternMoveStateNode({
   const hasApplications = Boolean(move && (move.powerApplications.length > 0 || move.cardApplications.length > 0));
   const hasPrimaryContent = Boolean(attackMetric || blockEntry || hasApplications || standaloneIntents.length > 0);
   const showStateName = Boolean(move && !attackMetric && !blockEntry && !hasApplications);
-  const showStructuredStateName = STRUCTURED_FSM_SAMPLE_IDS.has(monster.id);
+  const showStructuredStateName = node.width === STRUCTURED_DIAGRAM_NODE_WIDTH && node.height === STRUCTURED_DIAGRAM_NODE_HEIGHT;
   const title = move ? `${move.name}${move.nameEn !== move.name ? ` / ${move.nameEn}` : ""}` : getMoveName(monster, node.id);
 
   return (
@@ -2108,28 +2108,19 @@ function getPowerTargetLabel(target: MonsterMovePowerTarget, serviceLocale: Serv
   return labels[target][serviceLocale];
 }
 
-const STRUCTURED_FSM_SAMPLE_IDS = new Set(["GAS_BOMB", "AEONGLASS", "SOUL_NEXUS", "FABRICATOR"]);
-
-function buildStructuredSamplePatternDiagramModel(
+function buildStructuredPatternDiagramModel(
   monster: CodexMonster,
+  phases: PatternPhase[],
   serviceLocale: ServiceLocale,
 ): PatternDiagramModel | null {
   const states = monster.moveGraph?.states;
-  if (!STRUCTURED_FSM_SAMPLE_IDS.has(monster.id) || !states || states.length === 0) return null;
+  if (!states || states.length === 0) return null;
 
-  if (monster.id === "GAS_BOMB") {
-    return buildTerminalPatternDiagramModel(monster, states, serviceLocale);
-  }
-  if (monster.id === "AEONGLASS") {
-    return buildFixedLoopPatternDiagramModel(monster, states, serviceLocale);
-  }
-  if (monster.id === "SOUL_NEXUS") {
-    return buildRandomClusterPatternDiagramModel(monster, states, serviceLocale);
-  }
-  if (monster.id === "FABRICATOR") {
-    return buildConditionalClusterPatternDiagramModel(monster, states, serviceLocale);
-  }
-  return null;
+  return buildProgressivePhasePatternDiagramModel(monster, states, phases, serviceLocale)
+    ?? buildConditionalClusterPatternDiagramModel(monster, states, serviceLocale)
+    ?? buildRandomClusterPatternDiagramModel(monster, states, serviceLocale)
+    ?? buildFixedLoopPatternDiagramModel(monster, states, serviceLocale)
+    ?? buildTerminalPatternDiagramModel(monster, states, serviceLocale);
 }
 
 function buildTerminalPatternDiagramModel(
@@ -2137,6 +2128,7 @@ function buildTerminalPatternDiagramModel(
   states: MonsterMoveGraphState[],
   serviceLocale: ServiceLocale,
 ): PatternDiagramModel | null {
+  if (states.length !== 1) return null;
   const initialId = monster.moveGraph?.initial;
   const initialState = states.find((state) => state.id === initialId && state.kind === "move");
   if (!initialState) return null;
@@ -2180,6 +2172,7 @@ function buildFixedLoopPatternDiagramModel(
   serviceLocale: ServiceLocale,
 ): PatternDiagramModel | null {
   const moveById = new Map(states.filter((state) => state.kind === "move").map((state) => [state.id, state]));
+  if (moveById.size !== states.length) return null;
   const initialId = monster.moveGraph?.initial;
   if (!initialId || !moveById.has(initialId)) return null;
   const orderedIds: string[] = [];
@@ -2375,6 +2368,165 @@ function buildRandomClusterPatternDiagramModel(
   };
 }
 
+function buildProgressivePhasePatternDiagramModel(
+  monster: CodexMonster,
+  states: MonsterMoveGraphState[],
+  phases: PatternPhase[],
+  serviceLocale: ServiceLocale,
+): PatternDiagramModel | null {
+  if (phases.length < 2) return null;
+
+  const stateById = new Map(states.map((state) => [state.id, state]));
+  const phaseByMoveId = new Map<string, string>();
+  phases.forEach((phase) => phase.moveIds.forEach((moveId) => phaseByMoveId.set(moveId, phase.id)));
+  const initialId = monster.moveGraph?.initial;
+  if (!initialId || !phaseByMoveId.has(initialId)) return null;
+
+  const bridgeState = states.find((state) => {
+    if (state.kind !== "move" || phaseByMoveId.has(state.id) || !state.next) return false;
+    const next = stateById.get(state.next);
+    if (!next || next.kind !== "conditional") return false;
+    const targetPhases = new Set(next.branches.map((branch) => phaseByMoveId.get(branch.to)).filter(Boolean));
+    return targetPhases.size >= 2;
+  });
+  if (!bridgeState || bridgeState.kind !== "move") return null;
+
+  const boxWidth = 220;
+  const phaseGap = 84;
+  const phaseStartX = 96;
+  const phaseTop = 54;
+  const nodeTopPadding = 52;
+  const nodeGap = 36;
+  const phaseBottomPadding = 24;
+  const phaseHeights = phases.map((phase) => (
+    nodeTopPadding
+    + phase.moveIds.length * STRUCTURED_DIAGRAM_NODE_HEIGHT
+    + Math.max(0, phase.moveIds.length - 1) * nodeGap
+    + phaseBottomPadding
+  ));
+  const maxPhaseHeight = Math.max(...phaseHeights);
+  const nodeById = new Map<string, PatternDiagramNode>();
+  const phaseBoxes = phases.map((phase, phaseIndex) => {
+    const height = phaseHeights[phaseIndex];
+    const x = phaseStartX + phaseIndex * (boxWidth + phaseGap);
+    const y = phaseTop + (maxPhaseHeight - height) / 2;
+    phase.moveIds.forEach((moveId, moveIndex) => {
+      const node = buildStructuredPatternNode(
+        moveId,
+        x + (boxWidth - STRUCTURED_DIAGRAM_NODE_WIDTH) / 2,
+        y + nodeTopPadding + moveIndex * (STRUCTURED_DIAGRAM_NODE_HEIGHT + nodeGap),
+        moveId === initialId,
+      );
+      node.phaseId = phase.id;
+      nodeById.set(moveId, node);
+    });
+    return {
+      id: phase.id,
+      label: serviceLocale === "ko" ? `페이즈 ${phase.label}` : `Phase ${phase.label}`,
+      x,
+      y,
+      width: boxWidth,
+      height,
+      color: DIAGRAM_PHASE_COLOR,
+    };
+  });
+
+  const edges = phases.flatMap((phase) => phase.moveIds.flatMap((moveId) => {
+    const moveState = stateById.get(moveId);
+    if (!moveState || moveState.kind !== "move" || !moveState.next) return [];
+    const from = nodeById.get(moveId);
+    const to = nodeById.get(moveState.next);
+    if (!from || !to || from.phaseId !== to.phaseId) return [];
+
+    if (from.id === to.id) {
+      return [buildStructuredPatternEdge({
+        key: `${from.id}-${to.id}`,
+        from: from.id,
+        to: to.id,
+        path: `M ${from.x + from.width} ${from.y + 36} C ${from.x + from.width + 42} ${from.y + 18} ${from.x + from.width + 42} ${from.y + 96} ${from.x + from.width} ${from.y + 78}`,
+        color: DIAGRAM_ARROW_COLOR,
+        isLoop: true,
+      })];
+    }
+
+    if (to.y > from.y) {
+      const x = from.x + from.width / 2;
+      const startY = from.y + from.height;
+      const endY = to.y;
+      const curve = Math.max(18, (endY - startY) * 0.45);
+      return [buildStructuredPatternEdge({
+        key: `${from.id}-${to.id}`,
+        from: from.id,
+        to: to.id,
+        path: `M ${x} ${startY} C ${x} ${startY + curve} ${x} ${endY - curve} ${x} ${endY}`,
+        color: DIAGRAM_ARROW_COLOR,
+      })];
+    }
+
+    const box = phaseBoxes.find((phaseBox) => phaseBox.id === from.phaseId);
+    if (!box) return [];
+    const startY = from.y + from.height / 2;
+    const endY = to.y + to.height / 2;
+    const channelX = box.x + 8;
+    return [buildStructuredPatternEdge({
+      key: `${from.id}-${to.id}`,
+      from: from.id,
+      to: to.id,
+      path: `M ${from.x} ${startY} C ${channelX} ${startY} ${channelX} ${endY} ${to.x} ${endY}`,
+      color: DIAGRAM_ARROW_COLOR,
+      isLoop: true,
+    })];
+  }));
+
+  const initialNode = nodeById.get(initialId);
+  if (!initialNode) return null;
+  const start = buildPatternStartEntryNode(
+    getIntentFsmText(serviceLocale).start,
+    20,
+    initialNode.y + initialNode.height / 2 - 21,
+  );
+  const initialMidY = initialNode.y + initialNode.height / 2;
+  edges.unshift(buildStructuredPatternEdge({
+    key: `start-${initialId}`,
+    from: "__START__",
+    to: initialId,
+    path: `M ${start.x + start.width} ${initialMidY} C 70 ${initialMidY} 82 ${initialMidY} ${initialNode.x} ${initialMidY}`,
+    color: DIAGRAM_ARROW_COLOR,
+  }));
+
+  const bridgeMove = getMonsterMove(monster, bridgeState.id);
+  const bridgeMoveName = serviceLocale === "ko"
+    ? bridgeMove?.name ?? bridgeState.id
+    : bridgeMove?.nameEn ?? bridgeMove?.name ?? bridgeState.id;
+  const connectorLabel = serviceLocale === "ko" ? `체력 0 → ${bridgeMoveName}` : `0 HP → ${bridgeMoveName}`;
+  const phaseConnectors = phaseBoxes.flatMap((box, index) => {
+    const next = phaseBoxes[index + 1];
+    if (!next) return [];
+    const startX = box.x + box.width;
+    const endX = next.x;
+    const y = phaseTop + maxPhaseHeight / 2;
+    const curve = (endX - startX) * 0.42;
+    return [{
+      key: `${box.id}-${next.id}`,
+      path: `M ${startX} ${y} C ${startX + curve} ${y} ${endX - curve} ${y} ${endX} ${y}`,
+      label: connectorLabel,
+      labelX: (startX + endX) / 2,
+      labelY: y - 14,
+    }];
+  });
+
+  return {
+    width: phaseStartX + phases.length * boxWidth + (phases.length - 1) * phaseGap + 48,
+    height: phaseTop + maxPhaseHeight + 54,
+    entryNodes: [start],
+    nodes: Array.from(nodeById.values()),
+    edges,
+    phaseBoxes,
+    choiceBoxes: [],
+    phaseConnectors,
+  };
+}
+
 function buildConditionalClusterPatternDiagramModel(
   monster: CodexMonster,
   states: MonsterMoveGraphState[],
@@ -2387,139 +2539,130 @@ function buildConditionalClusterPatternDiagramModel(
   const randomConditionBranch = conditionalState.branches.find((branch) => stateById.get(branch.to)?.kind === "random");
   const randomState = randomConditionBranch ? stateById.get(randomConditionBranch.to) : null;
   if (!randomState || randomState.kind !== "random") return null;
-  const text = getIntentFsmText(serviceLocale);
   const directBranches = conditionalState.branches.filter((branch) => stateById.get(branch.to)?.kind === "move");
 
   if (randomState.branches.length !== 2 || directBranches.length !== 1) return null;
-  const randomNodes = randomState.branches.map((branch, index) => buildStructuredPatternNode(
-    branch.to,
-    index === 0 ? 100 : 520,
-    90,
-    false,
-  ));
-  const directNode = buildStructuredPatternNode(directBranches[0].to, 310, 390, false);
+  const randomNodes = randomState.branches.map((branch, index) => buildStructuredPatternNode(branch.to, index === 0 ? 110 : 546, 190, false));
+  const directNode = buildStructuredPatternNode(directBranches[0].to, 328, 512, false);
   const nodes = [...randomNodes, directNode];
-  const [fabricateNode, strikeNode] = randomNodes;
-  const randomChanceLabel = formatChancePercent(randomState.branches[0].baseChance ?? 50);
-  const canFabricateLabel = `${text.canFabricate}(Y)`;
-  const cannotFabricateLabel = serviceLocale === "ko" ? "불가(N)" : "No (N)";
-  const fabricateSourceX = fabricateNode.x + fabricateNode.width / 2;
-  const fabricateSourceY = fabricateNode.y + fabricateNode.height;
-  const strikeSourceX = strikeNode.x + strikeNode.width / 2;
-  const strikeSourceY = strikeNode.y + strikeNode.height;
-  const directSourceX = directNode.x + directNode.width / 2;
-  const directSourceY = directNode.y;
+  const [leftNode, rightNode] = randomNodes;
+  const chanceByMoveId = new Map(randomState.branches.map((branch) => [
+    branch.to,
+    formatChancePercent(branch.baseChance ?? 50),
+  ]));
+  const leftChance = chanceByMoveId.get(leftNode.id) ?? "50%";
+  const rightChance = chanceByMoveId.get(rightNode.id) ?? "50%";
+  const text = getIntentFsmText(serviceLocale);
+  const canPhaseLabel = serviceLocale === "ko" ? `${text.canFabricate}(Y)` : `${text.canFabricate} (Y)`;
+  const cannotPhaseLabel = serviceLocale === "ko" ? "불가(N)" : "Cannot fabricate (N)";
+  const start = buildPatternStartEntryNode(text.start, 389, 22);
+  const startX = start.x + start.width / 2;
+  const startY = start.y + start.height;
+  const leftCenterX = leftNode.x + leftNode.width / 2;
+  const rightCenterX = rightNode.x + rightNode.width / 2;
 
   return {
     width: 820,
-    height: 580,
-    entryNodes: [],
+    height: 680,
+    entryNodes: [start],
     nodes,
     edges: [
       buildStructuredPatternEdge({
-        key: `${fabricateNode.id}-${fabricateNode.id}`,
-        from: fabricateNode.id,
-        to: fabricateNode.id,
-        path: `M ${fabricateSourceX} ${fabricateSourceY} C 20 240 20 58 ${fabricateNode.x} ${fabricateNode.y + fabricateNode.height / 2}`,
+        key: `start-${leftNode.id}`,
+        from: "__START__",
+        to: leftNode.id,
+        path: `M ${startX} ${startY} C ${startX} 116 260 126 ${leftCenterX} ${leftNode.y}`,
+        color: DIAGRAM_ARROW_COLOR,
+        chanceLabel: leftChance,
+        chanceLabelX: 286,
+        chanceLabelY: 128,
+      }),
+      buildStructuredPatternEdge({
+        key: `start-${rightNode.id}`,
+        from: "__START__",
+        to: rightNode.id,
+        path: `M ${startX} ${startY} C ${startX} 116 560 126 ${rightCenterX} ${rightNode.y}`,
+        color: DIAGRAM_ARROW_COLOR,
+        chanceLabel: rightChance,
+        chanceLabelX: 534,
+        chanceLabelY: 128,
+      }),
+      buildStructuredPatternEdge({
+        key: `${leftNode.id}-${leftNode.id}`,
+        from: leftNode.id,
+        to: leftNode.id,
+        path: `M ${leftNode.x} ${leftNode.y + 76} C 62 ${leftNode.y + 96} 62 ${leftNode.y + 8} ${leftNode.x} ${leftNode.y + 30}`,
         color: DIAGRAM_ARROW_COLOR,
         isLoop: true,
-        label: canFabricateLabel,
-        labelX: fabricateSourceX,
-        labelY: 226,
-        chanceLabel: randomChanceLabel,
-        chanceLabelX: 54,
-        chanceLabelY: 205,
+        chanceLabel: leftChance,
+        chanceLabelX: 70,
+        chanceLabelY: leftNode.y + 53,
       }),
       buildStructuredPatternEdge({
-        key: `${fabricateNode.id}-${strikeNode.id}`,
-        from: fabricateNode.id,
-        to: strikeNode.id,
-        path: `M ${fabricateSourceX} ${fabricateSourceY} C 292 250 492 250 ${strikeSourceX} ${strikeSourceY}`,
+        key: `${leftNode.id}-${rightNode.id}`,
+        from: leftNode.id,
+        to: rightNode.id,
+        path: `M ${leftNode.x + leftNode.width} ${leftNode.y + 78} C 350 324 470 324 ${rightNode.x} ${rightNode.y + 78}`,
         color: DIAGRAM_ARROW_COLOR,
-        chanceLabel: randomChanceLabel,
-        chanceLabelX: 392,
-        chanceLabelY: 242,
+        chanceLabel: rightChance,
+        chanceLabelX: 410,
+        chanceLabelY: 320,
       }),
       buildStructuredPatternEdge({
-        key: `${fabricateNode.id}-${directNode.id}`,
-        from: fabricateNode.id,
-        to: directNode.id,
-        path: `M ${fabricateSourceX} ${fabricateSourceY} C ${fabricateSourceX} 298 290 340 ${directSourceX} ${directSourceY}`,
-        color: DIAGRAM_ARROW_COLOR,
-        label: cannotFabricateLabel,
-        labelX: 265,
-        labelY: 322,
-      }),
-      buildStructuredPatternEdge({
-        key: `${strikeNode.id}-${fabricateNode.id}`,
-        from: strikeNode.id,
-        to: fabricateNode.id,
-        path: `M ${strikeSourceX} ${strikeSourceY} C 492 310 292 310 ${fabricateSourceX} ${fabricateSourceY}`,
-        color: DIAGRAM_ARROW_COLOR,
-        chanceLabel: randomChanceLabel,
-        chanceLabelX: 392,
-        chanceLabelY: 300,
-      }),
-      buildStructuredPatternEdge({
-        key: `${strikeNode.id}-${strikeNode.id}`,
-        from: strikeNode.id,
-        to: strikeNode.id,
-        path: `M ${strikeSourceX} ${strikeSourceY} C 800 240 800 58 ${strikeNode.x + strikeNode.width} ${strikeNode.y + strikeNode.height / 2}`,
+        key: `${rightNode.id}-${leftNode.id}`,
+        from: rightNode.id,
+        to: leftNode.id,
+        path: `M ${rightNode.x} ${rightNode.y + 36} C 470 152 350 152 ${leftNode.x + leftNode.width} ${leftNode.y + 36}`,
         color: DIAGRAM_ARROW_COLOR,
         isLoop: true,
-        label: canFabricateLabel,
-        labelX: strikeSourceX,
-        labelY: 226,
-        chanceLabel: randomChanceLabel,
-        chanceLabelX: 766,
-        chanceLabelY: 205,
+        chanceLabel: leftChance,
+        chanceLabelX: 410,
+        chanceLabelY: 156,
       }),
       buildStructuredPatternEdge({
-        key: `${strikeNode.id}-${directNode.id}`,
-        from: strikeNode.id,
-        to: directNode.id,
-        path: `M ${strikeSourceX} ${strikeSourceY} C ${strikeSourceX} 298 494 340 ${directSourceX} ${directSourceY}`,
+        key: `${rightNode.id}-${rightNode.id}`,
+        from: rightNode.id,
+        to: rightNode.id,
+        path: `M ${rightNode.x + rightNode.width} ${rightNode.y + 30} C 758 ${rightNode.y + 8} 758 ${rightNode.y + 96} ${rightNode.x + rightNode.width} ${rightNode.y + 76}`,
         color: DIAGRAM_ARROW_COLOR,
-        label: cannotFabricateLabel,
-        labelX: 520,
-        labelY: 322,
-      }),
-      buildStructuredPatternEdge({
-        key: `${directNode.id}-${fabricateNode.id}`,
-        from: directNode.id,
-        to: fabricateNode.id,
-        path: `M ${directSourceX} ${directSourceY} C 315 326 285 230 ${fabricateNode.x + fabricateNode.width} ${fabricateNode.y + fabricateNode.height / 2}`,
-        color: DIAGRAM_ARROW_COLOR,
-        label: canFabricateLabel,
-        labelX: directSourceX,
-        labelY: 370,
-        chanceLabel: randomChanceLabel,
-        chanceLabelX: 315,
-        chanceLabelY: 260,
-      }),
-      buildStructuredPatternEdge({
-        key: `${directNode.id}-${strikeNode.id}`,
-        from: directNode.id,
-        to: strikeNode.id,
-        path: `M ${directSourceX} ${directSourceY} C 469 326 499 230 ${strikeNode.x} ${strikeNode.y + strikeNode.height / 2}`,
-        color: DIAGRAM_ARROW_COLOR,
-        chanceLabel: randomChanceLabel,
-        chanceLabelX: 469,
-        chanceLabelY: 260,
+        isLoop: true,
+        chanceLabel: rightChance,
+        chanceLabelX: 750,
+        chanceLabelY: rightNode.y + 53,
       }),
       buildStructuredPatternEdge({
         key: `${directNode.id}-${directNode.id}`,
         from: directNode.id,
         to: directNode.id,
-        path: `M ${directSourceX} ${directSourceY} C 260 ${directSourceY} 260 552 ${directSourceX} ${directNode.y + directNode.height}`,
+        path: `M ${directNode.x} ${directNode.y + 78} C 288 ${directNode.y + 96} 288 ${directNode.y + 10} ${directNode.x} ${directNode.y + 34}`,
         color: DIAGRAM_ARROW_COLOR,
         isLoop: true,
-        label: cannotFabricateLabel,
-        labelX: 270,
-        labelY: 470,
+      }),
+      buildStructuredPatternEdge({
+        key: "phase-can-cannot",
+        from: "__PHASE_CAN__",
+        to: "__PHASE_CANNOT__",
+        path: "M 132 384 C 92 420 176 508 276 540",
+        color: DIAGRAM_ARROW_COLOR,
+        label: "N",
+        labelX: 138,
+        labelY: 458,
+      }),
+      buildStructuredPatternEdge({
+        key: "phase-cannot-can",
+        from: "__PHASE_CANNOT__",
+        to: "__PHASE_CAN__",
+        path: "M 544 568 C 692 538 780 454 700 384",
+        color: DIAGRAM_ARROW_COLOR,
+        label: "Y",
+        labelX: 704,
+        labelY: 478,
       }),
     ],
-    phaseBoxes: [],
+    phaseBoxes: [
+      { id: "can", label: canPhaseLabel, x: 46, y: 100, width: 728, height: 284, color: DIAGRAM_ARROW_COLOR },
+      { id: "cannot", label: cannotPhaseLabel, x: 276, y: 472, width: 268, height: 180, color: DIAGRAM_ARROW_COLOR },
+    ],
     choiceBoxes: [],
     phaseConnectors: [],
   };
@@ -2634,8 +2777,8 @@ function buildPatternDiagramModel(
   phases: PatternPhase[],
   serviceLocale: ServiceLocale,
 ): PatternDiagramModel | null {
-  const structuredSample = buildStructuredSamplePatternDiagramModel(monster, serviceLocale);
-  if (structuredSample) return structuredSample;
+  const structuredDiagram = buildStructuredPatternDiagramModel(monster, phases, serviceLocale);
+  if (structuredDiagram) return structuredDiagram;
 
   if (monster.id === "DECIMILLIPEDE_SEGMENT") {
     return buildDecimillipedePatternDiagramModel(rows, serviceLocale);
