@@ -14,6 +14,7 @@ const CASES = [
     nodeCount: 1,
     edgeCount: 2,
     edgeLabelCount: 0,
+    chanceLabelCount: 0,
     hasEnd: true,
   },
   {
@@ -29,6 +30,7 @@ const CASES = [
     nodeCount: 3,
     edgeCount: 4,
     edgeLabelCount: 0,
+    chanceLabelCount: 0,
     hasEnd: false,
   },
   {
@@ -44,6 +46,7 @@ const CASES = [
     nodeCount: 3,
     edgeCount: 7,
     edgeLabelCount: 6,
+    chanceLabelCount: 0,
     hasEnd: false,
   },
   {
@@ -57,8 +60,9 @@ const CASES = [
       { ko: "해체", en: "Disintegrate" },
     ],
     nodeCount: 3,
-    edgeCount: 12,
-    edgeLabelCount: 12,
+    edgeCount: 9,
+    edgeLabelCount: 6,
+    chanceLabelCount: 6,
     hasEnd: false,
   },
 ] as const;
@@ -108,6 +112,7 @@ for (const sample of CASES) {
     const edges = diagram.locator("svg > path[data-pattern-edge-from]");
     await expect(edges).toHaveCount(sample.edgeCount);
     await expect(diagram.locator("[data-pattern-edge-label]")).toHaveCount(sample.edgeLabelCount);
+    await expect(diagram.locator("[data-pattern-edge-chance-label]")).toHaveCount(sample.chanceLabelCount);
     await expect(diagram.getByText("100%", { exact: true })).toHaveCount(0);
     const edgeStyles = await edges.evaluateAll((elements) => elements.map((element) => ({
       stroke: element.getAttribute("stroke"),
@@ -141,9 +146,11 @@ for (const sample of CASES) {
         path: element.getAttribute("d"),
       })));
       expectEveryBranchToShareItsOrigin(transitions);
+      expect(transitions.some((edge) => edge.from === "__START__")).toBe(false);
       expect(transitions.filter((edge) => edge.from === edge.to)).toHaveLength(3);
-      await expect(diagram.getByText("제작 가능(Y) · 50%", { exact: true })).toHaveCount(8);
-      await expect(diagram.getByText("제작 불가(N)", { exact: true })).toHaveCount(4);
+      await expect(diagram.getByText("제작 가능(Y)", { exact: true })).toHaveCount(3);
+      await expect(diagram.getByText("50%", { exact: true })).toHaveCount(6);
+      await expect(diagram.getByText("불가(N)", { exact: true })).toHaveCount(3);
       await expect(diagram.getByText("제작 가능?", { exact: true })).toHaveCount(0);
       await expect(diagram.getByText("무작위", { exact: true })).toHaveCount(0);
     }
