@@ -1754,6 +1754,7 @@ const DIAGRAM_CELL_HEIGHT = 96;
 const DIAGRAM_H_GAP = 32;
 const DIAGRAM_V_GAP = 24;
 const DIAGRAM_PAD = 58;
+const DIAGRAM_ENTRY_OFFSET = 92;
 const DIAGRAM_ROW_GAP = 76;
 const DIAGRAM_VIEWPORT_MIN_HEIGHT = 270;
 const DIAGRAM_VIEWPORT_HEIGHT_EXTRA = 42;
@@ -2110,9 +2111,17 @@ function buildStructuredPatternDiagramModel(
   const states = monster.moveGraph?.states;
   if (!states || states.length === 0) return null;
 
-  return buildProgressivePhasePatternDiagramModel(monster, states, phases, serviceLocale)
-    ?? buildConditionalClusterPatternDiagramModel(monster, states, serviceLocale)
-    ?? buildRandomClusterPatternDiagramModel(monster, states, serviceLocale)
+  const progressive = buildProgressivePhasePatternDiagramModel(monster, states, phases, serviceLocale);
+  if (progressive) return progressive;
+  const conditionalCluster = buildConditionalClusterPatternDiagramModel(monster, states, serviceLocale);
+  if (conditionalCluster) return conditionalCluster;
+
+  const hasConditionalStart = monster.moveGraph?.transitions.some((transition) => (
+    transition.from === "__START__" && transition.condition
+  ));
+  if (hasConditionalStart) return null;
+
+  return buildRandomClusterPatternDiagramModel(monster, states, serviceLocale)
     ?? buildFixedLoopPatternDiagramModel(monster, states, serviceLocale)
     ?? buildTerminalPatternDiagramModel(monster, states, serviceLocale);
 }
@@ -2811,10 +2820,15 @@ function buildPatternDiagramModel(
     return buildDecimillipedePatternDiagramModel(rows, serviceLocale);
   }
 
+  const startRows = rows.filter((row) => row.isStart && !isHiddenDiagramMove(row.to));
   const transitions = rows.filter((row) => !row.isStart && row.from !== "__START__" && row.to !== "__START__");
-  const initialMoveId = monster.moveGraph?.initial ?? rows.find((row) => row.isStart)?.to ?? null;
+  const initialMoveId = startRows[0]?.to
+    ?? (monster.moveGraph?.initial && !isHiddenDiagramMove(monster.moveGraph.initial) ? monster.moveGraph.initial : null)
+    ?? null;
+  const initialMoveIds = new Set(startRows.map((row) => row.to));
   const nodeIds = new Set<string>();
   if (initialMoveId) nodeIds.add(initialMoveId);
+  startRows.forEach((row) => nodeIds.add(row.to));
   transitions.forEach((transition) => {
     nodeIds.add(transition.from);
     nodeIds.add(transition.to);
@@ -2833,7 +2847,7 @@ function buildPatternDiagramModel(
   const nodes: PatternDiagramNode[] = [];
   const phaseBoxes: PatternDiagramPhaseBox[] = [];
   let cursorY = DIAGRAM_PAD;
-  let maxRight = DIAGRAM_PAD + DIAGRAM_CELL_WIDTH;
+  let maxRight = DIAGRAM_PAD + DIAGRAM_ENTRY_OFFSET + DIAGRAM_CELL_WIDTH;
 
   groups.forEach((group) => {
     const groupNodeSet = new Set(group.nodeIds);
@@ -2878,7 +2892,7 @@ function buildPatternDiagramModel(
       const columnHeight = columnNodeIds.length * DIAGRAM_CELL_HEIGHT + Math.max(0, columnNodeIds.length - 1) * DIAGRAM_V_GAP;
       const columnTop = nodeAreaTop + (maxColumnHeight - columnHeight) / 2;
       columnNodeIds.forEach((nodeId, index) => {
-        const x = DIAGRAM_PAD + depth * (DIAGRAM_CELL_WIDTH + DIAGRAM_H_GAP);
+        const x = DIAGRAM_PAD + DIAGRAM_ENTRY_OFFSET + depth * (DIAGRAM_CELL_WIDTH + DIAGRAM_H_GAP);
         const y = columnTop + index * (DIAGRAM_CELL_HEIGHT + DIAGRAM_V_GAP);
         nodes.push({
           id: nodeId,
@@ -2886,7 +2900,7 @@ function buildPatternDiagramModel(
           y,
           width: DIAGRAM_CELL_WIDTH,
           height: DIAGRAM_CELL_HEIGHT,
-          isInitial: nodeId === initialMoveId,
+          isInitial: initialMoveIds.has(nodeId) || nodeId === initialMoveId,
           phaseId: phaseAssignments.get(nodeId) ?? null,
         });
         maxRight = Math.max(maxRight, x + DIAGRAM_CELL_WIDTH + DIAGRAM_PAD);
@@ -2914,14 +2928,47 @@ function buildPatternDiagramModel(
   });
 
   const nodeById = new Map(nodes.map((node) => [node.id, node]));
-  const edges = buildDiagramEdges(transitions, nodeById);
+  const startTargetNodes = startRows
+    .map((row) => nodeById.get(row.to))
+    .filter((node): node is PatternDiagramNode => Boolean(node));
+  const fallbackInitialNode = initialMoveId ? nodeById.get(initialMoveId) : null;
+  const entryTargetNodes = startTargetNodes.length > 0
+    ? startTargetNodes
+    : fallbackInitialNode
+      ? [fallbackInitialNode]
+      : [];
+  const entryMidY = entryTargetNodes.length > 0
+    ? entryTargetNodes.reduce((sum, node) => sum + node.y + node.height / 2, 0) / entryTargetNodes.length
+    : DIAGRAM_PAD + DIAGRAM_CELL_HEIGHT / 2;
+  const start = buildPatternStartEntryNode(
+    getIntentFsmText(serviceLocale).start,
+    18,
+    entryMidY - 11,
+  );
+  const displayedStartRows = startRows.length > 0
+    ? startRows
+    : fallbackInitialNode
+      ? [{
+          key: `__START__-${fallbackInitialNode.id}`,
+          from: "__START__",
+          to: fallbackInitialNode.id,
+          chance: 100,
+          isStart: true,
+          kind: "start" as const,
+          condition: null,
+        }]
+      : [];
+  const edges = [
+    ...buildDiagramStartEdges(start, displayedStartRows, nodeById),
+    ...buildDiagramEdges(transitions, nodeById),
+  ];
   const choiceBoxes = buildChoiceBoxes(transitions, nodeById);
   const phaseConnectors = buildPhaseConnectors(phaseBoxes);
 
   return {
     width: Math.max(360, maxRight),
     height: Math.max(180, cursorY + DIAGRAM_PAD - DIAGRAM_ROW_GAP),
-    entryNodes: [],
+    entryNodes: displayedStartRows.length > 0 ? [start] : [],
     nodes,
     edges,
     phaseBoxes,
@@ -3281,6 +3328,9 @@ function buildDiagramEdge(
   const marker = kind === "conditional" ? "conditional" : "normal";
   const laneOffset = laneIndex * 16 + (index % 2) * 4;
   const label = getDiagramEdgeLabel(transition);
+  const chanceLabel = transition.condition && transition.chance != null && transition.chance !== 100
+    ? formatChancePercent(transition.chance)
+    : null;
   const isLoop = from.id === to.id || to.x <= from.x;
   let path: string;
   let labelX: number;
@@ -3288,30 +3338,29 @@ function buildDiagramEdge(
 
   if (from.id === to.id) {
     const startX = from.x + from.width;
-    const startY = from.y + from.height / 2;
-    const loopX = startX + 34 + laneOffset;
-    const loopY = from.y - 16 - laneOffset * 0.45;
-    const endX = from.x + from.width * 0.58;
-    const endY = from.y;
-    path = `M ${startX} ${startY} H ${loopX} V ${loopY} H ${endX} V ${endY}`;
-    labelX = loopX;
-    labelY = loopY - 8;
+    const startY = from.y + from.height * 0.38;
+    const endX = from.x + from.width;
+    const endY = from.y + from.height * 0.68;
+    const loopX = startX + 42 + laneOffset;
+    path = `M ${startX} ${startY} C ${loopX} ${startY - 34} ${loopX} ${endY + 34} ${endX} ${endY}`;
+    labelX = loopX + 2;
+    labelY = from.y + from.height / 2;
   } else if (to.x > from.x + from.width / 2) {
     const startX = from.x + from.width;
     const startY = from.y + from.height / 2;
     const endX = to.x;
     const endY = to.y + to.height / 2;
-    const midX = (startX + endX) / 2 + laneOffset;
-    path = `M ${startX} ${startY} H ${midX} V ${endY} H ${endX}`;
-    labelX = midX;
+    const curve = Math.max(24, (endX - startX) * 0.42) + laneOffset;
+    path = `M ${startX} ${startY} C ${startX + curve} ${startY} ${endX - curve} ${endY} ${endX} ${endY}`;
+    labelX = (startX + endX) / 2;
     labelY = (startY + endY) / 2;
   } else if (to.x + to.width < from.x + from.width / 2) {
     const startX = from.x + from.width / 2;
     const startY = from.y;
     const endX = to.x + to.width / 2;
     const endY = to.y;
-    const loopY = Math.min(from.y, to.y) - 22 - laneOffset * 0.45;
-    path = `M ${startX} ${startY} V ${loopY} H ${endX} V ${endY}`;
+    const loopY = Math.min(from.y, to.y) - 32 - laneOffset * 0.55;
+    path = `M ${startX} ${startY} C ${startX} ${loopY} ${endX} ${loopY} ${endX} ${endY}`;
     labelX = (startX + endX) / 2;
     labelY = loopY - 8;
   } else {
@@ -3319,8 +3368,8 @@ function buildDiagramEdge(
     const startY = from.y + from.height / 2;
     const endX = to.x + to.width;
     const endY = to.y + to.height / 2;
-    const channelX = Math.max(startX, endX) + 38 + laneOffset;
-    path = `M ${startX} ${startY} H ${channelX} V ${endY} H ${endX}`;
+    const channelX = Math.max(startX, endX) + 42 + laneOffset;
+    path = `M ${startX} ${startY} C ${channelX} ${startY} ${channelX} ${endY} ${endX} ${endY}`;
     labelX = channelX;
     labelY = (startY + endY) / 2;
   }
@@ -3334,9 +3383,44 @@ function buildDiagramEdge(
     marker,
     isLoop,
     label,
+    tooltip: transition.conditionTooltip ?? null,
     labelX,
     labelY,
+    chanceLabel,
+    chanceLabelX: chanceLabel ? labelX : undefined,
+    chanceLabelY: chanceLabel ? labelY + 18 : undefined,
   };
+}
+
+function buildDiagramStartEdges(
+  start: PatternDiagramEntryNode,
+  rows: TransitionTableRow[],
+  nodeById: Map<string, PatternDiagramNode>,
+): PatternDiagramEdge[] {
+  const originX = start.x + start.width;
+  const originY = start.y + start.height / 2;
+  return rows.flatMap((row, index) => {
+    const target = nodeById.get(row.to);
+    if (!target) return [];
+    const endX = target.x;
+    const endY = target.y + target.height / 2;
+    const horizontal = Math.max(34, (endX - originX) * 0.42);
+    const conditional = Boolean(row.condition);
+    const label = getDiagramEdgeLabel(row);
+    return [{
+      key: `entry-${row.key}-${index}`,
+      from: "__START__",
+      to: row.to,
+      path: `M ${originX} ${originY} C ${originX + horizontal} ${originY} ${endX - horizontal} ${endY} ${endX} ${endY}`,
+      color: conditional ? DIAGRAM_CONDITIONAL_COLOR : DIAGRAM_ARROW_COLOR,
+      marker: conditional ? "conditional" : "normal",
+      isLoop: false,
+      label,
+      tooltip: row.conditionTooltip ?? null,
+      labelX: (originX + endX) / 2,
+      labelY: (originY + endY) / 2 + (index % 2 === 0 ? -10 : 10),
+    }];
+  });
 }
 
 function buildPhaseConnectors(phaseBoxes: PatternDiagramPhaseBox[]): PatternDiagramPhaseConnector[] {
@@ -3348,10 +3432,8 @@ function buildPhaseConnectors(phaseBoxes: PatternDiagramPhaseBox[]): PatternDiag
     const fromY = box.y + box.height;
     const toX = next.x + next.width / 2;
     const toY = next.y;
-    const midY = (fromY + toY) / 2;
-    const path = fromX === toX
-      ? `M ${fromX} ${fromY} V ${toY}`
-      : `M ${fromX} ${fromY} V ${midY} H ${toX} V ${toY}`;
+    const curve = Math.max(28, (toY - fromY) * 0.45);
+    const path = `M ${fromX} ${fromY} C ${fromX} ${fromY + curve} ${toX} ${toY - curve} ${toX} ${toY}`;
     return [{ key: `${box.id}-${next.id}`, path }];
   });
 }
@@ -3421,7 +3503,7 @@ function formatChancePercent(chance: number): string {
 }
 
 function isHiddenDiagramMove(moveId: string): boolean {
-  return moveId === "DEAD" || moveId === "SPAWNED" || moveId === "__START__";
+  return moveId === "DEAD" || moveId === "__START__";
 }
 
 function sanitizeSvgId(value: string): string {
@@ -3432,7 +3514,7 @@ function buildMonsterActionMoves(monster: CodexMonster): MonsterMove[] {
   const byId = new Map<string, MonsterMove>();
   const addMove = (move: MonsterMove | undefined) => {
     if (!move) return;
-    if ((move.id === "DEAD" && monster.id !== "DECIMILLIPEDE_SEGMENT") || move.id === "SPAWNED") return;
+    if (move.id === "DEAD" && monster.id !== "DECIMILLIPEDE_SEGMENT") return;
     if (!byId.has(move.id)) byId.set(move.id, move);
   };
 
