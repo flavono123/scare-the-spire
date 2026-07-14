@@ -109,6 +109,31 @@ class ParseMonsterMoveGraphTests(unittest.TestCase):
         ])
         random_state = next(state for state in graph["states"] if state["id"] == "RAND")
         self.assertEqual([branch["to"] for branch in random_state["branches"]], ["FABRICATE", "FABRICATING_STRIKE"])
+        for source in ("FABRICATE", "FABRICATING_STRIKE", "DISINTEGRATE", "__START__"):
+            source_edges = [edge for edge in graph["transitions"] if edge["from"] == source]
+            self.assertEqual(source_edges, [
+                {
+                    "from": source,
+                    "to": "FABRICATE",
+                    "chance": 50.0,
+                    "kind": "conditional",
+                    "condition": "CanFabricate",
+                },
+                {
+                    "from": source,
+                    "to": "FABRICATING_STRIKE",
+                    "chance": 50.0,
+                    "kind": "conditional",
+                    "condition": "CanFabricate",
+                },
+                {
+                    "from": source,
+                    "to": "DISINTEGRATE",
+                    "chance": None,
+                    "kind": "conditional",
+                    "condition": "!CanFabricate",
+                },
+            ])
 
 
 if __name__ == "__main__":

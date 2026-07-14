@@ -513,13 +513,13 @@ def parse_move_graph(text: str) -> dict | None:
                 ],
             })
 
-    def add_random_transitions(from_var: str, branch_var: str) -> None:
+    def random_targets(from_var: str | None, branch_var: str) -> list[tuple[str, float | None]]:
         nonlocal confidence
         entries = random_branches.get(branch_var, [])
         weighted = []
         for entry in entries:
             weight = entry["weight"]
-            if entry["target_var"] == from_var and (
+            if from_var is not None and entry["target_var"] == from_var and (
                 entry["repeat"] in {"cannot_repeat", "once"} or entry["cooldown"] > 0
             ):
                 weight = 0.0
@@ -529,59 +529,84 @@ def parse_move_graph(text: str) -> dict | None:
 
         known_weights = [weight for _, weight in weighted if weight is not None]
         total = sum(known_weights)
+        targets: list[tuple[str, float | None]] = []
         for entry, weight in weighted:
             if weight == 0:
                 continue
             chance = round((weight / total) * 100, 1) if weight is not None and total > 0 else None
-            transitions.append({
-                "from": move_vars[from_var],
-                "to": move_vars[entry["target_var"]],
-                "chance": chance,
-                "kind": "random",
-            })
+            targets.append((entry["target_var"], chance))
+        return targets
+
+    def resolve_transitions(
+        source_id: str,
+        source_var: str | None,
+        target_var: str,
+        *,
+        condition: str | None = None,
+        chance: float | None = 100.0,
+        visited: set[str] | None = None,
+    ) -> None:
+        """Flatten nested branch states while retaining every branch constraint."""
+        visited = set(visited or ())
+        if target_var in visited:
+            return
+        visited.add(target_var)
+
+        if target_var in move_vars:
+            is_conditional = condition is not None
+            is_random = chance is None or chance < 100
+            transition = {
+                "from": source_id,
+                "to": move_vars[target_var],
+                "chance": chance if is_random else (None if is_conditional else 100.0),
+                "kind": "conditional" if is_conditional else ("random" if is_random else "fixed"),
+            }
+            if condition is not None:
+                transition["condition"] = condition
+            transitions.append(transition)
+            return
+
+        if target_var in random_branches:
+            for nested_target, nested_chance in random_targets(source_var, target_var):
+                combined_chance = (
+                    None
+                    if chance is None or nested_chance is None
+                    else round(chance * nested_chance / 100, 1)
+                )
+                resolve_transitions(
+                    source_id,
+                    source_var,
+                    nested_target,
+                    condition=condition,
+                    chance=combined_chance,
+                    visited=visited,
+                )
+            return
+
+        if target_var in conditional_branches:
+            for entry in conditional_branches[target_var]:
+                nested_condition = entry["condition"]
+                combined_condition = (
+                    f"({condition}) && ({nested_condition})"
+                    if condition and nested_condition
+                    else condition or nested_condition
+                )
+                resolve_transitions(
+                    source_id,
+                    source_var,
+                    entry["target_var"],
+                    condition=combined_condition,
+                    chance=chance,
+                    visited=visited,
+                )
 
     for from_var, from_id in move_vars.items():
         target_var = followups.get(from_var)
-        if target_var in move_vars:
-            transitions.append({"from": from_id, "to": move_vars[target_var], "chance": 100.0, "kind": "fixed"})
-        elif target_var in random_branches:
-            add_random_transitions(from_var, target_var)
-        elif target_var in conditional_branches:
-            for entry in conditional_branches[target_var]:
-                if entry["target_var"] not in move_vars:
-                    continue
-                transitions.append({
-                    "from": from_id,
-                    "to": move_vars[entry["target_var"]],
-                    "chance": None,
-                    "kind": "conditional",
-                    "condition": entry["condition"],
-                })
+        if target_var:
+            resolve_transitions(from_id, from_var, target_var)
 
-    if initial_var in random_branches:
-        entries = random_branches[initial_var]
-        total = sum(entry["weight"] for entry in entries if entry["weight"] is not None)
-        if any(entry["weight"] is None for entry in entries):
-            confidence = "partial"
-        for entry in entries:
-            weight = entry["weight"]
-            transitions.append({
-                "from": "__START__",
-                "to": move_vars[entry["target_var"]],
-                "chance": round((weight / total) * 100, 1) if weight is not None and total > 0 else None,
-                "kind": "random",
-            })
-    elif initial_var in conditional_branches:
-        for entry in conditional_branches[initial_var]:
-            if entry["target_var"] not in move_vars:
-                continue
-            transitions.append({
-                "from": "__START__",
-                "to": move_vars[entry["target_var"]],
-                "chance": None,
-                "kind": "conditional",
-                "condition": entry["condition"],
-            })
+    if initial_var and initial_var not in move_vars:
+        resolve_transitions("__START__", None, initial_var)
 
     if not states:
         return None
