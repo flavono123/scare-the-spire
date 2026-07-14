@@ -29,6 +29,8 @@ from scripts.lib.pck import PCKReader, default_pck_path  # noqa: E402
 
 OUT_ROOT = ROOT / "public/images/sts2/encounter-scenes"
 MANIFEST_PATH = ROOT / "data/sts2/encounter-scene-assets.json"
+ENCOUNTERS_PATH = ROOT / "data/sts2/eng/encounters.json"
+DEFAULT_SOURCE = Path("/tmp/sts2-src")
 EXT_RESOURCE_RE = re.compile(r"\[ext_resource[^\]]+\]")
 RESOURCE_PATH_RE = re.compile(r'path="res://(?P<path>[^"]+)"')
 RESOURCE_ID_RE = re.compile(r'(?:^|\s)id="(?P<id>[^"]+)"')
@@ -39,14 +41,34 @@ NODE_HEADER_RE = re.compile(r'^\[node\s+name="(?P<name>[^"]+)"[^\]]*\]$', re.MUL
 VECTOR2_RE_TEMPLATE = r"^{property}\s*=\s*Vector2\((?P<x>[-+\deE.]+),\s*(?P<y>[-+\deE.]+)\)$"
 FLOAT_RE_TEMPLATE = r"^{property}\s*=\s*(?P<value>[-+\deE.]+)$"
 COMBAT_COORDINATE_SIZE = {"width": 1920, "height": 1080}
+ACT_BACKGROUND_TITLES = {
+    "Act 1 - Overgrowth": "overgrowth",
+    "Act 2 - Hive": "hive",
+    "Act 3 - Glory": "glory",
+    "Underdocks": "underdocks",
+}
+# Event combats inherit the parent event's act background. These relationships
+# come from the event classes referenced by each ActModel.AllEvents list.
+EVENT_BACKGROUND_TITLES = {
+    "BATTLEWORN_DUMMY_EVENT_V1_ENCOUNTER": "glory",
+    "BATTLEWORN_DUMMY_EVENT_V2_ENCOUNTER": "glory",
+    "BATTLEWORN_DUMMY_EVENT_V3_ENCOUNTER": "glory",
+    "DENSE_VEGETATION_EVENT_ENCOUNTER": "overgrowth",
+    "MYSTERIOUS_KNIGHT_EVENT_ENCOUNTER": "hive",
+    "PUNCH_OFF_EVENT_ENCOUNTER": "underdocks",
+}
+MONSTER_REF_OVERRIDES = {
+    "DECIMILLIPEDE_SEGMENT_BACK": "DECIMILLIPEDE_SEGMENT",
+    "DECIMILLIPEDE_SEGMENT_FRONT": "DECIMILLIPEDE_SEGMENT",
+    "DECIMILLIPEDE_SEGMENT_MIDDLE": "DECIMILLIPEDE_SEGMENT",
+}
 
 
 @dataclass(frozen=True)
 class SceneTarget:
     encounter_id: str
     title: str
-    output_name: str
-    monster_ids: tuple[str, ...]
+    monster_sources: tuple[tuple[str, str], ...]
     camera_scaling: float = 1.0
     camera_offset: tuple[float, float] = (0.0, 0.0)
     uses_fixed_slots: bool = False
@@ -60,31 +82,9 @@ class SceneTarget:
     def layer_prefix(self) -> str:
         return f"scenes/backgrounds/{self.title}/layers/"
 
-
-TARGETS = (
-    SceneTarget(
-        encounter_id="SLITHERING_STRANGLER_NORMAL",
-        title="overgrowth",
-        output_name="overgrowth-a.webp",
-        monster_ids=(
-            "SNAPPING_JAXFRUIT",
-            "LEAF_SLIME_M",
-            "TWIG_SLIME_M",
-            "LEAF_SLIME_S",
-            "TWIG_SLIME_S",
-            "SLITHERING_STRANGLER",
-        ),
-    ),
-    SceneTarget(
-        encounter_id="QUEEN_BOSS",
-        title="queen_boss",
-        output_name="queen-boss-a.webp",
-        monster_ids=("TORCH_HEAD_AMALGAM", "QUEEN"),
-        camera_scaling=0.9,
-        camera_offset=(0.0, 60.0),
-        uses_fixed_slots=True,
-    ),
-)
+    @property
+    def output_name(self) -> str:
+        return f"{self.title.replace('_', '-')}-a.webp"
 
 
 def parse_args() -> argparse.Namespace:
@@ -92,6 +92,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--pck", default=default_pck_path(), help="Path to Slay the Spire 2.pck")
     parser.add_argument("--output-root", default=str(OUT_ROOT), help="Static background output directory")
     parser.add_argument("--manifest", default=str(MANIFEST_PATH), help="Scene manifest output path")
+    parser.add_argument("--encounters", default=str(ENCOUNTERS_PATH), help="Extracted encounter JSON")
+    parser.add_argument("--source", default=str(DEFAULT_SOURCE), help="Decompiled game source root")
     parser.add_argument("--force", action="store_true", help="Rewrite unchanged outputs")
     parser.add_argument("--dry-run", action="store_true", help="List outputs without writing files")
     return parser.parse_args()
@@ -174,7 +176,15 @@ def float_property(block: str, property_name: str, default: float = 0.0) -> floa
 
 
 def creature_combat_layout(reader: PCKReader, monster_id: str) -> dict[str, object]:
-    scene_path = f"scenes/creature_visuals/{monster_id.lower()}.tscn"
+    return creature_source_combat_layout(reader, monster_id, monster_id)
+
+
+def creature_source_combat_layout(
+    reader: PCKReader,
+    monster_id: str,
+    source_monster_id: str,
+) -> dict[str, object]:
+    scene_path = f"scenes/creature_visuals/{source_monster_id.lower()}.tscn"
     scene_text = reader.read_file(scene_path).decode("utf-8", errors="replace")
     bounds_block = node_block(scene_text, "Bounds")
     visuals_block = node_block(scene_text, "Visuals")
@@ -208,7 +218,11 @@ def combat_layout(reader: PCKReader, target: SceneTarget) -> dict[str, object]:
         "enemyGap": 70,
         "enemyMinStart": 150,
         "enemyBaselineY": 740,
-        "monsters": [creature_combat_layout(reader, monster_id) for monster_id in target.monster_ids],
+        "monsters": [
+            creature_source_combat_layout(reader, monster_id, source_monster_id)
+            for monster_id, source_monster_id in target.monster_sources
+            if f"scenes/creature_visuals/{source_monster_id.lower()}.tscn" in reader.entries
+        ],
     }
 
 
@@ -228,7 +242,12 @@ def composite_scene(reader: PCKReader, layer_paths: list[str]) -> Image.Image:
     canvas: Image.Image | None = None
     for layer_path in layer_paths:
         scene_text = reader.read_file(layer_path).decode("utf-8", errors="replace")
-        texture_path = primary_texture_path(scene_text)
+        try:
+            texture_path = primary_texture_path(scene_text)
+        except RuntimeError:
+            # Some foregrounds are Spine/particle-only. Their source remains in
+            # the manifest, while compatible Spine overlays are handled apart.
+            continue
         layer = decode_import_image(reader, f"{texture_path}.import")
         if canvas is None:
             canvas = Image.new("RGBA", layer.size)
@@ -292,15 +311,154 @@ def queen_background_spine_asset() -> dict[str, object]:
     }
 
 
+def pascal_case(snake: str) -> str:
+    return "".join(word.capitalize() for word in snake.split("_"))
+
+
+def encounter_source_path(source_root: Path, encounter_id: str) -> Path:
+    return source_root / "MegaCrit.Sts2.Core.Models.Encounters" / f"{pascal_case(encounter_id)}.cs"
+
+
+def source_method_body(source: str, method_name: str) -> str | None:
+    match = re.search(rf"{re.escape(method_name)}\s*\(\)\s*\{{", source)
+    if match is None:
+        return None
+    opening = match.end() - 1
+    depth = 0
+    for index in range(opening, len(source)):
+        if source[index] == "{":
+            depth += 1
+        elif source[index] == "}":
+            depth -= 1
+            if depth == 0:
+                return source[opening + 1 : index]
+    return None
+
+
+def source_camera_scaling(source: str) -> float:
+    body = source_method_body(source, "GetCameraScaling")
+    if body is None:
+        return 1.0
+    match = re.search(r"return\s+(?P<value>[-+\d.]+)f?\s*;", body)
+    return float(match.group("value")) if match is not None else 1.0
+
+
+def source_camera_offset(source: str) -> tuple[float, float]:
+    body = source_method_body(source, "GetCameraOffset")
+    if body is None or "Vector2.Zero" in body:
+        return (0.0, 0.0)
+    if match := re.search(
+        r"new\s+Vector2\((?P<x>[-+\d.]+)f?,\s*(?P<y>[-+\d.]+)f?\)",
+        body,
+    ):
+        return (float(match.group("x")), float(match.group("y")))
+
+    x = 0.0
+    y = 0.0
+    for direction, value in re.findall(
+        r"Vector2\.(Down|Up|Left|Right)\s*\*\s*([-+\d.]+)f?",
+        body,
+    ):
+        amount = float(value)
+        if direction == "Down":
+            y += amount
+        elif direction == "Up":
+            y -= amount
+        elif direction == "Left":
+            x -= amount
+        else:
+            x += amount
+    return (x, y)
+
+
+def encounter_monster_sources(encounter: dict[str, object]) -> tuple[tuple[str, str], ...]:
+    source_ids: list[str] = []
+    for composition in encounter.get("compositions", []) or []:
+        for slot in composition.get("slots", []):
+            source_ids.extend(slot)
+    if not source_ids:
+        source_ids.extend(monster["id"] for monster in encounter.get("monsters", []))
+
+    sources_by_display_id: dict[str, str] = {}
+    for source_id in source_ids:
+        display_id = MONSTER_REF_OVERRIDES.get(source_id, source_id)
+        sources_by_display_id.setdefault(display_id, source_id)
+    return tuple(sources_by_display_id.items())
+
+
+def encounter_markers(reader: PCKReader, encounter_id: str) -> list[dict[str, object]]:
+    scene_path = f"scenes/encounters/{encounter_id.lower()}.tscn"
+    if scene_path not in reader.entries:
+        return []
+    scene_text = reader.read_file(scene_path).decode("utf-8", errors="replace")
+    markers: list[dict[str, object]] = []
+    for block in re.split(r"(?=\[node )", scene_text):
+        header = block.splitlines()[0] if block else ""
+        if 'type="Marker2D"' not in header:
+            continue
+        name_match = re.search(r'name="(?P<name>[^"]+)"', header)
+        if name_match is None:
+            continue
+        position = vector2_property(block, "position", (0.0, 0.0))
+        markers.append(
+            {
+                "slotName": name_match.group("name"),
+                "sourcePosition": position,
+                "x": position["x"] / COMBAT_COORDINATE_SIZE["width"],
+                "y": position["y"] / COMBAT_COORDINATE_SIZE["height"],
+            }
+        )
+    return markers
+
+
+def build_targets(encounters_path: Path, source_root: Path) -> list[SceneTarget]:
+    encounters = json.loads(encounters_path.read_text())
+    targets: list[SceneTarget] = []
+    for encounter in encounters:
+        monster_sources = encounter_monster_sources(encounter)
+        if not monster_sources:
+            continue
+        source_path = encounter_source_path(source_root, encounter["id"])
+        source = source_path.read_text() if source_path.is_file() else ""
+        has_custom_background = bool(
+            re.search(r"HasCustomBackground\s*=>\s*true", source)
+        )
+        title = (
+            encounter["id"].lower()
+            if has_custom_background
+            else ACT_BACKGROUND_TITLES.get(encounter.get("act"))
+            or EVENT_BACKGROUND_TITLES.get(encounter["id"])
+        )
+        if title is None:
+            continue
+        targets.append(
+            SceneTarget(
+                encounter_id=encounter["id"],
+                title=title,
+                monster_sources=monster_sources,
+                camera_scaling=source_camera_scaling(source),
+                camera_offset=source_camera_offset(source),
+                uses_fixed_slots="HasScene => true" in source,
+            )
+        )
+    return targets
+
+
 def main() -> int:
     args = parse_args()
     output_root = Path(args.output_root)
     manifest_path = Path(args.manifest)
+    encounters_path = Path(args.encounters)
+    source_root = Path(args.source)
     manifest: list[dict[str, object]] = []
     written = 0
 
     with PCKReader(args.pck) as reader:
-        for target in TARGETS:
+        targets = build_targets(encounters_path, source_root)
+        background_outputs: dict[str, tuple[Path, list[str]]] = {}
+        for target in targets:
+            if target.title in background_outputs:
+                continue
             layer_paths = choose_layer_scenes(reader, target)
             output_path = output_root / target.output_name
             if write_if_changed(
@@ -310,17 +468,27 @@ def main() -> int:
                 force=args.force,
             ):
                 written += 1
+            background_outputs[target.title] = (output_path, layer_paths)
+
+        for target in targets:
+            output_path, layer_paths = background_outputs[target.title]
+            markers = encounter_markers(reader, target.encounter_id) if target.uses_fixed_slots else []
 
             entry: dict[str, object] = {
                 "id": target.encounter_id,
                 "backgroundUrl": public_url(output_path),
                 "sourceScene": target.scene_path,
                 "sourceLayers": layer_paths,
-                "ambientVfx": {"kind": "fireflies"},
+                "ambientVfx": {
+                    "kind": "fireflies"
+                    if target.title in {"overgrowth", "ceremonial_beast_boss"}
+                    else "none"
+                },
                 "backgroundSpineAsset": None,
-                "monsterSlots": [],
+                "monsterSlots": markers,
                 "combatLayout": combat_layout(reader, target),
             }
+            entry["combatLayout"]["usesFixedSlots"] = bool(markers)
 
             if target.encounter_id == "QUEEN_BOSS":
                 light_output_path = output_root / "queen-light.webp"
@@ -342,20 +510,6 @@ def main() -> int:
                             "lightTextureUrl": public_url(light_output_path),
                         },
                         "backgroundSpineAsset": queen_background_spine_asset(),
-                        "monsterSlots": [
-                            {
-                                "monsterId": "TORCH_HEAD_AMALGAM",
-                                "sourcePosition": {"x": 1207, "y": 709},
-                                "x": 1207 / 1920,
-                                "y": 709 / 1080,
-                            },
-                            {
-                                "monsterId": "QUEEN",
-                                "sourcePosition": {"x": 1606, "y": 695},
-                                "x": 1606 / 1920,
-                                "y": 695 / 1080,
-                            },
-                        ],
                     }
                 )
 
@@ -365,7 +519,10 @@ def main() -> int:
     if write_if_changed(manifest_path, manifest_data, dry_run=args.dry_run, force=args.force):
         written += 1
 
-    print(f"encounter scenes={len(manifest)} written={written}")
+    print(
+        f"encounter scenes={len(manifest)} "
+        f"backgrounds={len({entry['backgroundUrl'] for entry in manifest})} written={written}"
+    )
     return 0
 
 
