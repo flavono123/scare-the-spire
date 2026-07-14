@@ -23,19 +23,13 @@ import { EntityPreview, type EntityInfo } from "@/components/patch-note-renderer
 import { DescriptionText } from "./codex-description";
 import { GameHoverTip } from "./hover-tip";
 import { MonsterAscensionStepper, useMonsterAscensionLevel } from "./monster-ascension";
-import { MonsterSpineStage } from "./monster-spine-stage";
+import { CharacterSpineStage } from "./character-spine-stage";
 import { RichDescription } from "./rich-description";
 import { STS2ChangeHistory } from "./sts2-change-history";
 
 type CharacterActionId = "IDLE" | "ATTACK" | "HEAVY_ATTACK" | "CAST" | "POWER_UP" | "SOVEREIGN_BLADE" | "HURT" | "DIE";
 
 const CHARACTER_DESCRIPTION_EXCLUDED_ENTITY_TYPES = new Set<EntityInfo["type"]>(["epoch"]);
-const CHARACTER_STAGE_VIEWPORT_PADDING = {
-  padLeft: "14%",
-  padRight: "14%",
-  padTop: "10%",
-  padBottom: "0%",
-} as const;
 const CHARACTER_WEARY_TRAVELER_ASCENSION_LEVEL = 2;
 const CHARACTER_ASCENDED_HP_PREVIEW_RATIO = 0.8;
 const HEALTH_BAR_CLIP_PATH = "polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%)";
@@ -414,17 +408,12 @@ export function CharacterDetail({
               />
             </div>
             <div className="pointer-events-none absolute inset-x-8 bottom-0 h-24 rounded-[50%] bg-black/40 blur-2xl" />
-            <MonsterSpineStage
+            <CharacterSpineStage
               key={character.id}
-              asset={character.spineAsset}
-              fallbackImageUrl={character.combatImageUrl}
-              monsterName={character.name}
+              character={character}
               selectedMoveId={selectedAction}
               selectedMoveNonce={selectedActionNonce}
               imagePriority
-              showLoadingLabel={false}
-              viewportTransitionTime={0}
-              viewportPadding={CHARACTER_STAGE_VIEWPORT_PADDING}
               fallbackImageClassName="absolute inset-0 z-10 h-full w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.55)]"
               className="relative h-full w-full"
             />
