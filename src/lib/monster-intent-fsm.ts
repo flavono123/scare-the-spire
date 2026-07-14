@@ -463,6 +463,14 @@ const CONDITION_TEXT: Record<string, {
     ko: { label: "지정된 시작", tooltip: "전투 구성에서 시작 행동 인덱스를 지정한 경우입니다." },
     en: { label: "Preset start", tooltip: "Used when the encounter specifies a starting move index." },
   },
+  "_stockOverrideAmount.HasValue": {
+    ko: { label: "재고를 소모해 부활", tooltip: "잘라봇이 재고를 소모해 부활한 개체라면 시동으로 시작합니다." },
+    en: { label: "Revived from Stock", tooltip: "A replacement Axebot revived by spending Stock opens with Boot Up." },
+  },
+  "!(_stockOverrideAmount.HasValue)": {
+    ko: { label: "최초 등장", tooltip: "재고를 소모해 부활한 개체가 아닌 최초 잘라봇은 해머 어퍼컷으로 시작합니다." },
+    en: { label: "Initial spawn", tooltip: "The initial Axebot, before any Stock revival, opens with Hammer Uppercut." },
+  },
   CanFabricate: {
     ko: {
       label: "제작 가능",
