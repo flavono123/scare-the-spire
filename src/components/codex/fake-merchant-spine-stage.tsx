@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { AnimationState, Skeleton, SpineCanvas } from "@esotericsoftware/spine-player";
 import Image from "@/components/ui/static-image";
 import { loadSpinePlayerRuntime, type SpinePlayerRuntime } from "@/lib/spine-player-runtime";
@@ -24,13 +24,15 @@ interface FakeMerchantLayerConfig {
   y: number;
 }
 
+type FakeMerchantLayerId = "bottom" | "merchant" | "cutter";
+
 interface FakeMerchantLayer {
   animationState: AnimationState;
   skeleton: Skeleton;
 }
 
-const FAKE_MERCHANT_LAYERS: readonly FakeMerchantLayerConfig[] = [
-  {
+const FAKE_MERCHANT_LAYERS: Record<FakeMerchantLayerId, FakeMerchantLayerConfig> = {
+  bottom: {
     atlasUrl: "/spine/sts2/event-backgrounds/fake_merchant_room/bottom/shop_fake_merchant_bottom.atlas",
     binaryUrl: "/spine/sts2/event-backgrounds/fake_merchant_room/bottom/shop_fake_merchant_bottom.skel",
     animation: "idle_loop",
@@ -39,7 +41,7 @@ const FAKE_MERCHANT_LAYERS: readonly FakeMerchantLayerConfig[] = [
     x: -10,
     y: 20,
   },
-  {
+  merchant: {
     atlasUrl: "/spine/sts2/event-backgrounds/fake_merchant_room/top/fake_merchant_top.atlas",
     binaryUrl: "/spine/sts2/event-backgrounds/fake_merchant_room/top/fake_merchant_top.skel",
     animation: "idle_loop",
@@ -48,7 +50,7 @@ const FAKE_MERCHANT_LAYERS: readonly FakeMerchantLayerConfig[] = [
     x: 1303,
     y: 761,
   },
-  {
+  cutter: {
     atlasUrl: "/spine/sts2/event-backgrounds/fake_merchant_room/bottom/shop_fake_merchant_bottom_cutter.atlas",
     binaryUrl: "/spine/sts2/event-backgrounds/fake_merchant_room/bottom/shop_fake_merchant_bottom_cutter.skel",
     animation: "idle_loop",
@@ -56,11 +58,61 @@ const FAKE_MERCHANT_LAYERS: readonly FakeMerchantLayerConfig[] = [
     x: -10,
     y: 20,
   },
-] as const;
+};
+const ALL_FAKE_MERCHANT_LAYER_IDS = ["bottom", "merchant", "cutter"] as const;
+const ENCOUNTER_LAYER_IDS = {
+  bottom: ["bottom"],
+  cutter: ["cutter"],
+} as const satisfies Record<"bottom" | "cutter", readonly FakeMerchantLayerId[]>;
 
 type LoadState = "loading" | "ready" | "error";
 
 export function FakeMerchantSpineStage({ fallbackImageUrl }: { fallbackImageUrl: string }) {
+  return (
+    <FakeMerchantSpineCanvas
+      layerIds={ALL_FAKE_MERCHANT_LAYER_IDS}
+      fallback={(
+        <Image
+          src={fallbackImageUrl}
+          alt=""
+          fill
+          sizes="(max-width: 1536px) 100vw, 1472px"
+          className="object-cover"
+        />
+      )}
+      className="bg-black"
+      dataAttribute="data-fake-merchant-spine-stage"
+    />
+  );
+}
+
+export function FakeMerchantEncounterSpineLayer({
+  layer,
+  className = "",
+}: {
+  layer: Extract<FakeMerchantLayerId, "bottom" | "cutter">;
+  className?: string;
+}) {
+  return (
+    <FakeMerchantSpineCanvas
+      layerIds={ENCOUNTER_LAYER_IDS[layer]}
+      className={className}
+      dataAttribute={`data-fake-merchant-encounter-${layer}`}
+    />
+  );
+}
+
+function FakeMerchantSpineCanvas({
+  layerIds,
+  fallback = null,
+  className = "",
+  dataAttribute,
+}: {
+  layerIds: readonly FakeMerchantLayerId[];
+  fallback?: ReactNode;
+  className?: string;
+  dataAttribute: string;
+}) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [loadState, setLoadState] = useState<LoadState>("loading");
 
@@ -103,14 +155,17 @@ export function FakeMerchantSpineStage({ fallbackImageUrl }: { fallbackImageUrl:
           webglConfig: WEBGL_CONFIG,
           app: {
             loadAssets: (app) => {
-              for (const layer of FAKE_MERCHANT_LAYERS) {
+              for (const layerId of layerIds) {
+                const layer = FAKE_MERCHANT_LAYERS[layerId];
                 app.assetManager.loadBinary(layer.binaryUrl);
                 app.assetManager.loadTextureAtlas(layer.atlasUrl);
               }
             },
             initialize: (app) => {
               if (disposed) return;
-              layers = FAKE_MERCHANT_LAYERS.map((layer) => createLayer(runtime, app, layer));
+              layers = layerIds.map((layerId) => (
+                createLayer(runtime, app, FAKE_MERCHANT_LAYERS[layerId])
+              ));
             },
             update: (_app, delta) => {
               if (disposed || !isIntersecting || !isDocumentVisible || layers.length === 0) {
@@ -175,17 +230,21 @@ export function FakeMerchantSpineStage({ fallbackImageUrl }: { fallbackImageUrl:
       spineCanvas = null;
       layers = [];
     };
-  }, []);
+  }, [layerIds]);
+
+  const dataAttributes = { [dataAttribute]: "" };
 
   return (
-    <div className="absolute inset-0 overflow-hidden bg-black" data-fake-merchant-spine-stage aria-hidden>
-      <Image
-        src={fallbackImageUrl}
-        alt=""
-        fill
-        sizes="(max-width: 1536px) 100vw, 1472px"
-        className={`object-cover transition-opacity duration-300 ${loadState === "ready" ? "opacity-0" : "opacity-100"}`}
-      />
+    <div
+      className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}
+      {...dataAttributes}
+      aria-hidden
+    >
+      {fallback && (
+        <div className={`absolute inset-0 transition-opacity duration-300 ${loadState === "ready" ? "opacity-0" : "opacity-100"}`}>
+          {fallback}
+        </div>
+      )}
       <canvas
         ref={canvasRef}
         data-fake-merchant-spine
