@@ -617,7 +617,7 @@
       }
     ],
     "move_graph": {
-      "initial": "HAMMER_UPPERCUT",
+      "initial": "BOOT_UP",
       "confidence": "static",
       "transitions": [
         {
@@ -637,6 +637,20 @@
           "to": "ONE_TWO",
           "chance": 100.0,
           "kind": "fixed"
+        },
+        {
+          "from": "__START__",
+          "to": "BOOT_UP",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "_stockOverrideAmount.HasValue"
+        },
+        {
+          "from": "__START__",
+          "to": "HAMMER_UPPERCUT",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "!(_stockOverrideAmount.HasValue)"
         }
       ],
       "states": [
@@ -887,7 +901,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "NOTHING",
       "confidence": "static",
       "transitions": [
         {
@@ -951,7 +965,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "NOTHING",
       "confidence": "static",
       "transitions": [
         {
@@ -1015,7 +1029,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "NOTHING",
       "confidence": "static",
       "transitions": [
         {
@@ -2251,7 +2265,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "NOTHING",
       "confidence": "static",
       "transitions": [
         {
@@ -2951,7 +2965,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "SCREECH",
       "confidence": "static",
       "transitions": [
         {
@@ -2965,6 +2979,20 @@
           "to": "CLAMP",
           "chance": 100.0,
           "kind": "fixed"
+        },
+        {
+          "from": "__START__",
+          "to": "SCREECH",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "_screamFirst"
+        },
+        {
+          "from": "__START__",
+          "to": "CLAMP",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "!_screamFirst"
         }
       ],
       "states": [
@@ -3179,7 +3207,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "WHIP_SLAP",
       "confidence": "static",
       "transitions": [
         {
@@ -3199,6 +3227,27 @@
           "to": "WHIP_SLAP",
           "chance": 100.0,
           "kind": "fixed"
+        },
+        {
+          "from": "__START__",
+          "to": "WHIP_SLAP",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "StarterMoveIdx % 3 == 0"
+        },
+        {
+          "from": "__START__",
+          "to": "GLOMP",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "StarterMoveIdx % 3 == 1"
+        },
+        {
+          "from": "__START__",
+          "to": "GOOP",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "StarterMoveIdx % 3 == 2"
         }
       ],
       "states": [
@@ -4509,7 +4558,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "WRITHE",
       "confidence": "static",
       "transitions": [
         {
@@ -4553,6 +4602,27 @@
           "to": "REATTACH",
           "chance": 100.0,
           "kind": "fixed"
+        },
+        {
+          "from": "__START__",
+          "to": "WRITHE",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "StarterMoveIdx % 3 == 0"
+        },
+        {
+          "from": "__START__",
+          "to": "BULK",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "StarterMoveIdx % 3 == 1"
+        },
+        {
+          "from": "__START__",
+          "to": "CONSTRICT",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "StarterMoveIdx % 3 == 2"
         }
       ],
       "states": [
@@ -9693,7 +9763,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "WHIRLWIND",
       "confidence": "static",
       "transitions": [
         {
@@ -9719,6 +9789,20 @@
           "to": "WHIRLWIND",
           "chance": 100.0,
           "kind": "fixed"
+        },
+        {
+          "from": "__START__",
+          "to": "WHIRLWIND",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "_middleInklet"
+        },
+        {
+          "from": "__START__",
+          "to": "JAB",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "!_middleInklet"
         }
       ],
       "states": [
@@ -9968,7 +10052,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "POWER_DANCE",
       "confidence": "static",
       "transitions": [
         {
@@ -9988,6 +10072,20 @@
           "to": "QUICK_SLASH",
           "chance": 100.0,
           "kind": "fixed"
+        },
+        {
+          "from": "__START__",
+          "to": "POWER_DANCE",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "StartsWithDance"
+        },
+        {
+          "from": "__START__",
+          "to": "QUICK_SLASH",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "!StartsWithDance"
         }
       ],
       "states": [
@@ -14194,7 +14292,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "NOTHING",
       "confidence": "static",
       "transitions": [
         {
@@ -14981,7 +15079,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "FAST_PUNCH",
       "confidence": "static",
       "transitions": [
         {
@@ -15001,6 +15099,20 @@
           "to": "STRONG_PUNCH",
           "chance": 100.0,
           "kind": "fixed"
+        },
+        {
+          "from": "__START__",
+          "to": "FAST_PUNCH",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "StartsWithFastPunch"
+        },
+        {
+          "from": "__START__",
+          "to": "READY",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "!StartsWithFastPunch"
         }
       ],
       "states": [
@@ -15922,7 +16034,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "CHOMP",
       "confidence": "static",
       "transitions": [
         {
@@ -15948,6 +16060,27 @@
           "to": "CHEW",
           "chance": 100.0,
           "kind": "fixed"
+        },
+        {
+          "from": "__START__",
+          "to": "CHOMP",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "StarterMoveIdx % 3 == 0"
+        },
+        {
+          "from": "__START__",
+          "to": "CHEW",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "StarterMoveIdx % 3 == 1"
+        },
+        {
+          "from": "__START__",
+          "to": "MORE_TEETH",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "StarterMoveIdx % 3 == 2"
         }
       ],
       "states": [
@@ -24128,25 +24261,50 @@
           "from": "__START__",
           "to": "SCRATCH",
           "chance": null,
-          "kind": "random"
+          "kind": "conditional",
+          "condition": "StarterMoveIndex == -1"
         },
         {
           "from": "__START__",
           "to": "DISEASE_BITE",
           "chance": null,
-          "kind": "random"
+          "kind": "conditional",
+          "condition": "StarterMoveIndex == -1"
         },
         {
           "from": "__START__",
           "to": "SCREECH",
           "chance": null,
-          "kind": "random"
+          "kind": "conditional",
+          "condition": "StarterMoveIndex == -1"
         },
         {
           "from": "__START__",
           "to": "CALL_FOR_BACKUP",
           "chance": null,
-          "kind": "random"
+          "kind": "conditional",
+          "condition": "StarterMoveIndex == -1"
+        },
+        {
+          "from": "__START__",
+          "to": "SCRATCH",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "(!(StarterMoveIndex == -1)) && (StarterMoveIndex % 3 == 0)"
+        },
+        {
+          "from": "__START__",
+          "to": "DISEASE_BITE",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "(!(StarterMoveIndex == -1)) && (StarterMoveIndex % 3 == 1)"
+        },
+        {
+          "from": "__START__",
+          "to": "SCREECH",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "(!(StarterMoveIndex == -1)) && (StarterMoveIndex % 3 == 2)"
         }
       ],
       "states": [
@@ -25491,7 +25649,7 @@
       }
     ],
     "move_graph": {
-      "initial": null,
+      "initial": "SPAWNED",
       "confidence": "static",
       "transitions": [
         {
@@ -25533,6 +25691,41 @@
           "chance": null,
           "kind": "conditional",
           "condition": "base.Creature.SlotName == \"wriggler4\""
+        },
+        {
+          "from": "__START__",
+          "to": "SPAWNED",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "StartStunned"
+        },
+        {
+          "from": "__START__",
+          "to": "NASTY_BITE",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "(!StartStunned) && (base.Creature.SlotName == \"wriggler1\")"
+        },
+        {
+          "from": "__START__",
+          "to": "WRIGGLE",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "(!StartStunned) && (base.Creature.SlotName == \"wriggler2\")"
+        },
+        {
+          "from": "__START__",
+          "to": "NASTY_BITE",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "(!StartStunned) && (base.Creature.SlotName == \"wriggler3\")"
+        },
+        {
+          "from": "__START__",
+          "to": "WRIGGLE",
+          "chance": null,
+          "kind": "conditional",
+          "condition": "(!StartStunned) && (base.Creature.SlotName == \"wriggler4\")"
         }
       ],
       "states": [
