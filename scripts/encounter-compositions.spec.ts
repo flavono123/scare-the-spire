@@ -88,13 +88,15 @@ async function main() {
 
   const monsters = await getCodexMonsters({ gameLocale: "kor" });
   const monsterById = new Map(monsters.map((monster) => [monster.id, monster]));
-  for (const monsterId of [
-    ...new Set(
-      stranglerFormations.flatMap((formation) => formation.monsters.map((monster) => monster.id)),
-    ),
-    "TORCH_HEAD_AMALGAM",
-    "QUEEN",
-  ]) {
+  const encounterMonsterIds = new Set(
+    encounters.filter((encounter) => encounter.compositions?.length).flatMap((encounter) => (
+      expandEncounterFormations(encounter).flatMap(
+        (formation) => formation.monsters.map((monster) => monster.id),
+      )
+    )),
+  );
+  assert.equal(encounterMonsterIds.size, 96);
+  for (const monsterId of encounterMonsterIds) {
     const monster = monsterById.get(monsterId);
     assert.ok(monster?.spineAsset, `${monsterId} must render through an idle Spine asset`);
     assert.ok(monster.spineAsset.idleAnimation, `${monsterId} must have an idle animation`);
