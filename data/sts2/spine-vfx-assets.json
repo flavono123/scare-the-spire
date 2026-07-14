@@ -9,11 +9,12 @@
       "/spine/sts2/vfx/adrenaline.png",
       "/spine/sts2/vfx/adrenaline_2.png"
     ],
-    "animations": [],
+    "animations": [
+      "adrenaline"
+    ],
     "idleAnimation": "adrenaline",
-    "durationSeconds": 0.75,
-    "usable": false,
-    "parseError": "String in string table must not be null."
+    "durationSeconds": 0.5,
+    "usable": true
   },
   {
     "id": "VFX_BITE",
@@ -24,11 +25,12 @@
     "textureUrls": [
       "/spine/sts2/vfx/attackbite.png"
     ],
-    "animations": [],
-    "idleAnimation": "attackbite",
-    "durationSeconds": 0.75,
-    "usable": false,
-    "parseError": "String in string table must not be null."
+    "animations": [
+      "bite"
+    ],
+    "idleAnimation": "bite",
+    "durationSeconds": 0.433,
+    "usable": true
   },
   {
     "id": "VFX_CHAIN",
@@ -59,7 +61,7 @@
       "flying_slash"
     ],
     "idleAnimation": "flying_slash",
-    "durationSeconds": 0.5,
+    "durationSeconds": 0.333,
     "usable": true
   },
   {
@@ -92,7 +94,7 @@
       "empty"
     ],
     "idleAnimation": "animation",
-    "durationSeconds": 0.5,
+    "durationSeconds": 0.667,
     "usable": true
   },
   {
@@ -144,7 +146,7 @@
       "scratch"
     ],
     "idleAnimation": "scratch",
-    "durationSeconds": 0.347,
+    "durationSeconds": 0.167,
     "usable": true
   },
   {

@@ -80,6 +80,11 @@ class SpineActorImport:
 MANUAL_ACTOR_IMPORTS = {
     "monsters": (
         SpineActorImport(
+            skel_prefix="animations/backgrounds/fake_merchant_room/top/fake_merchant_top",
+            atlas_prefix="animations/backgrounds/fake_merchant_room/top/fake_merchant_top",
+            output_folder="fake_merchant_monster",
+        ),
+        SpineActorImport(
             skel_prefix="animations/monsters/decimillipede/decimillipede1",
             atlas_prefix="animations/monsters/decimillipede/decimillipede_front",
             output_folder="decimillipede_front",

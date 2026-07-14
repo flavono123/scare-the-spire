@@ -2199,6 +2199,7 @@ type MonsterPowerDisplay = Pick<MonsterMovePowerApplication, "powerId" | "powerN
 type MonsterCardDisplay = Pick<MonsterMoveCardApplication, "cardId" | "cardName" | "cardNameEn" | "cardType" | "cardRarity" | "cardColor" | "imageUrl">;
 
 const MONSTER_IMAGE_OVERRIDES: Record<string, string> = {
+  FAKE_MERCHANT_MONSTER: "/images/sts2/npcs/fake_merchant.webp",
   DECIMILLIPEDE_SEGMENT: "/images/sts2/monsters-render/decimillipede.webp",
 };
 

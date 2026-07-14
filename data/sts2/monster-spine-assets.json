@@ -741,7 +741,7 @@
             "flying_slash"
           ],
           "idleAnimation": "flying_slash",
-          "durationSeconds": 0.5,
+          "durationSeconds": 0.333,
           "usable": true
         },
         {
@@ -757,7 +757,7 @@
             "scratch"
           ],
           "idleAnimation": "scratch",
-          "durationSeconds": 0.347,
+          "durationSeconds": 0.167,
           "usable": true
         }
       ]
@@ -1982,6 +1982,86 @@
     "moveEffects": {}
   },
   {
+    "id": "FAKE_MERCHANT_MONSTER",
+    "source": "animations/backgrounds/fake_merchant_room/top/fake_merchant_top",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-event-actor"
+    ],
+    "atlasUrl": "/spine/sts2/monsters/fake_merchant_monster/fake_merchant_top.atlas",
+    "binaryUrl": "/spine/sts2/monsters/fake_merchant_monster/fake_merchant_top.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/fake_merchant_monster/fake_merchant_top.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default",
+      "outline"
+    ],
+    "animations": [
+      "attack",
+      "attack_multi",
+      "attack_throw",
+      "buff",
+      "combat_idle_loop",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
+    "idleAnimation": "combat_idle_loop",
+    "moveAnimations": {
+      "SWIPE": [
+        "swipe",
+        "attack",
+        "attack_multi",
+        "attack_throw",
+        "buff",
+        "combat_idle_loop"
+      ],
+      "SPEW_COINS": [
+        "spew_coins",
+        "spewcoins",
+        "spew-coins",
+        "buff",
+        "attack",
+        "attack_multi",
+        "attack_throw",
+        "combat_idle_loop"
+      ],
+      "THROW_RELIC": [
+        "throw_relic",
+        "throwrelic",
+        "throw-relic",
+        "attack",
+        "attack_multi",
+        "attack_throw",
+        "buff",
+        "combat_idle_loop"
+      ],
+      "ENRAGE": [
+        "enrage",
+        "buff",
+        "attack",
+        "attack_multi",
+        "attack_throw",
+        "combat_idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "combat_idle_loop"
+      ],
+      "die": [
+        "die",
+        "combat_idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
     "id": "FAT_GREMLIN",
     "source": "animations/monsters/fat_gremlin/fat_gremlin",
     "renderStatus": "spine",
@@ -2472,7 +2552,7 @@
             "empty"
           ],
           "idleAnimation": "animation",
-          "durationSeconds": 0.5,
+          "durationSeconds": 0.667,
           "usable": true
         }
       ]
@@ -3033,7 +3113,7 @@
             "flying_slash"
           ],
           "idleAnimation": "flying_slash",
-          "durationSeconds": 0.5,
+          "durationSeconds": 0.333,
           "usable": true
         },
         {
@@ -3049,7 +3129,7 @@
             "scratch"
           ],
           "idleAnimation": "scratch",
-          "durationSeconds": 0.347,
+          "durationSeconds": 0.167,
           "usable": true
         }
       ]
@@ -3335,7 +3415,7 @@
             "flying_slash"
           ],
           "idleAnimation": "flying_slash",
-          "durationSeconds": 0.5,
+          "durationSeconds": 0.333,
           "usable": true
         },
         {
@@ -3351,7 +3431,7 @@
             "scratch"
           ],
           "idleAnimation": "scratch",
-          "durationSeconds": 0.347,
+          "durationSeconds": 0.167,
           "usable": true
         }
       ],
@@ -3369,7 +3449,7 @@
             "flying_slash"
           ],
           "idleAnimation": "flying_slash",
-          "durationSeconds": 0.5,
+          "durationSeconds": 0.333,
           "usable": true
         },
         {
@@ -3385,7 +3465,7 @@
             "scratch"
           ],
           "idleAnimation": "scratch",
-          "durationSeconds": 0.347,
+          "durationSeconds": 0.167,
           "usable": true
         }
       ]
@@ -3857,7 +3937,7 @@
             "scratch"
           ],
           "idleAnimation": "scratch",
-          "durationSeconds": 0.347,
+          "durationSeconds": 0.167,
           "usable": true
         }
       ]
@@ -5892,7 +5972,7 @@
             "flying_slash"
           ],
           "idleAnimation": "flying_slash",
-          "durationSeconds": 0.5,
+          "durationSeconds": 0.333,
           "usable": true
         },
         {
@@ -5908,7 +5988,7 @@
             "scratch"
           ],
           "idleAnimation": "scratch",
-          "durationSeconds": 0.347,
+          "durationSeconds": 0.167,
           "usable": true
         }
       ]
@@ -5991,7 +6071,7 @@
             "empty"
           ],
           "idleAnimation": "animation",
-          "durationSeconds": 0.5,
+          "durationSeconds": 0.667,
           "usable": true
         }
       ]
@@ -6221,7 +6301,7 @@
             "scratch"
           ],
           "idleAnimation": "scratch",
-          "durationSeconds": 0.347,
+          "durationSeconds": 0.167,
           "usable": true
         }
       ]
@@ -7382,7 +7462,7 @@
             "scratch"
           ],
           "idleAnimation": "scratch",
-          "durationSeconds": 0.347,
+          "durationSeconds": 0.167,
           "usable": true
         }
       ]
@@ -7662,7 +7742,7 @@
             "empty"
           ],
           "idleAnimation": "animation",
-          "durationSeconds": 0.5,
+          "durationSeconds": 0.667,
           "usable": true
         }
       ]

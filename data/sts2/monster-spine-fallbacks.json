@@ -70,16 +70,6 @@
     "reason": "No renderable animations/monsters Spine actor was found in the PCK."
   },
   {
-    "id": "FAKE_MERCHANT_MONSTER",
-    "imageSlug": null,
-    "renderStatus": "static-only",
-    "renderTags": [
-      "no-renderable-spine-actor"
-    ],
-    "fallbackImageUrl": null,
-    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
-  },
-  {
     "id": "GAZING_MOTH",
     "imageSlug": null,
     "renderStatus": "static-only",

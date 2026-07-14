@@ -143,6 +143,12 @@ const MONSTER_ALIASES = {
   },
   CUBEX_CONSTRUCT: { folder: "cubex_construct", tags: ["variant-skin"] },
   DAMP_CULTIST: { folder: "cultists", skin: "slug", tags: ["shared-actor", "variant-skin"] },
+  FAKE_MERCHANT_MONSTER: {
+    folder: "fake_merchant_monster",
+    source: "animations/backgrounds/fake_merchant_room/top/fake_merchant_top",
+    idleAnimation: "combat_idle_loop",
+    tags: ["shared-event-actor"],
+  },
   FLYCONID: { folder: "flying_mushrooms", tags: ["image-slug-alias"] },
   GLOBE_HEAD: { folder: "globe_head", tags: ["image-slug-alias"] },
   ROCKET: {
@@ -341,7 +347,11 @@ function parseSkeleton({ folder, root, sharedAtlasFile = null }) {
   const atlas = new TextureAtlas(fs.readFileSync(atlasPath, "utf8"));
   const loader = new AtlasAttachmentLoader(atlas);
   const binary = new SkeletonBinary(loader);
-  const skeleton = binary.readSkeletonData(fs.readFileSync(path.join(dir, skelFile)));
+  // Copy Node's pooled Buffer into a zero-offset Uint8Array. SpineBinary reads
+  // the backing ArrayBuffer directly, so a pooled byteOffset can parse data
+  // from another file and make this generated index nondeterministic.
+  const skeletonBytes = new Uint8Array(fs.readFileSync(path.join(dir, skelFile)));
+  const skeleton = binary.readSkeletonData(skeletonBytes);
 
   return {
     folder,
@@ -716,7 +726,7 @@ function buildMonsterAsset(monster, actor, alias, vfxById) {
 
   return {
     id: monster.id,
-    source: `animations/monsters/${actor.folder}/${actor.base}`,
+    source: alias?.source ?? `animations/monsters/${actor.folder}/${actor.base}`,
     renderStatus: alias?.renderStatus ?? "spine",
     renderTags: alias?.tags ?? [],
     atlasUrl: `/spine/sts2/monsters/${actor.folder}/${actor.atlasFile}`,

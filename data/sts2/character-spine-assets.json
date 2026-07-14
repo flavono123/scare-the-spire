@@ -195,7 +195,7 @@
             "scratch"
           ],
           "idleAnimation": "scratch",
-          "durationSeconds": 0.347,
+          "durationSeconds": 0.167,
           "usable": true
         }
       ]
@@ -315,7 +315,7 @@
             "scratch"
           ],
           "idleAnimation": "scratch",
-          "durationSeconds": 0.347,
+          "durationSeconds": 0.167,
           "usable": true
         }
       ]
