@@ -2396,17 +2396,37 @@ function buildProgressivePhasePatternDiagramModel(
   });
   if (!bridgeMoveId) return null;
 
-  const boxWidth = 220;
-  const phaseGap = 84;
-  const phaseStartX = 96;
+  const bridgeTargets = conditionalTransitions
+    .filter((transition) => transition.from === bridgeMoveId)
+    .map((transition) => transition.to);
+  const orderedPhaseMoveIds = phases.map((phase, phaseIndex) => {
+    const moveIdSet = new Set(phase.moveIds);
+    const entryId = phaseIndex === 0
+      ? initialId
+      : bridgeTargets.find((targetId) => moveIdSet.has(targetId)) ?? phase.moveIds[0];
+    const ordered: string[] = [];
+    const seen = new Set<string>();
+    let currentId: string | null | undefined = entryId;
+    while (currentId && moveIdSet.has(currentId) && !seen.has(currentId)) {
+      ordered.push(currentId);
+      seen.add(currentId);
+      const state = stateById.get(currentId);
+      currentId = state?.kind === "move" ? state.next : null;
+    }
+    return [...ordered, ...phase.moveIds.filter((moveId) => !seen.has(moveId))];
+  });
+
+  const boxWidth = 190;
+  const phaseGap = 72;
+  const phaseStartX = 72;
   const phaseTop = 54;
   const nodeTopPadding = 52;
   const nodeGap = 36;
   const phaseBottomPadding = 24;
-  const phaseHeights = phases.map((phase) => (
+  const phaseHeights = orderedPhaseMoveIds.map((moveIds) => (
     nodeTopPadding
-    + phase.moveIds.length * STRUCTURED_DIAGRAM_NODE_HEIGHT
-    + Math.max(0, phase.moveIds.length - 1) * nodeGap
+    + moveIds.length * STRUCTURED_DIAGRAM_NODE_HEIGHT
+    + Math.max(0, moveIds.length - 1) * nodeGap
     + phaseBottomPadding
   ));
   const maxPhaseHeight = Math.max(...phaseHeights);
@@ -2415,7 +2435,7 @@ function buildProgressivePhasePatternDiagramModel(
     const height = phaseHeights[phaseIndex];
     const x = phaseStartX + phaseIndex * (boxWidth + phaseGap);
     const y = phaseTop + (maxPhaseHeight - height) / 2;
-    phase.moveIds.forEach((moveId, moveIndex) => {
+    orderedPhaseMoveIds[phaseIndex].forEach((moveId, moveIndex) => {
       const node = buildStructuredPatternNode(
         moveId,
         x + (boxWidth - STRUCTURED_DIAGRAM_NODE_WIDTH) / 2,
@@ -2487,7 +2507,7 @@ function buildProgressivePhasePatternDiagramModel(
   if (!initialNode) return null;
   const start = buildPatternStartEntryNode(
     text.start,
-    20,
+    12,
     initialNode.y + initialNode.height / 2 - 21,
   );
   const initialMidY = initialNode.y + initialNode.height / 2;
@@ -2521,7 +2541,7 @@ function buildProgressivePhasePatternDiagramModel(
   });
 
   return {
-    width: phaseStartX + phases.length * boxWidth + (phases.length - 1) * phaseGap + 48,
+    width: phaseStartX + phases.length * boxWidth + (phases.length - 1) * phaseGap + 36,
     height: phaseTop + maxPhaseHeight + 54,
     entryNodes: [start],
     nodes: Array.from(nodeById.values()),

@@ -207,6 +207,15 @@ for (const sample of CASES) {
       expect(phaseRects[1].right).toBeLessThan(phaseRects[2].left);
       await expect(diagram.getByText("체력 0 → 부활", { exact: true })).toHaveCount(2);
 
+      const phaseThreeOrder = await Promise.all([
+        diagram.getByRole("button", { name: "찢어발기기 / Lacerate" }).boundingBox(),
+        diagram.getByRole("button", { name: "거센 덮치기 / Big Pounce" }).boundingBox(),
+        diagram.getByRole("button", { name: "타오르는 포효 / Burning Growl" }).boundingBox(),
+      ]);
+      expect(phaseThreeOrder.every(Boolean)).toBe(true);
+      expect(phaseThreeOrder[0]!.y).toBeLessThan(phaseThreeOrder[1]!.y);
+      expect(phaseThreeOrder[1]!.y).toBeLessThan(phaseThreeOrder[2]!.y);
+
       const phaseConnectorPaths = await diagram.locator("[data-pattern-phase-connector]").evaluateAll((elements) => (
         elements.map((element) => element.getAttribute("d"))
       ));
