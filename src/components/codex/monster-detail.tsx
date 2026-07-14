@@ -2988,7 +2988,7 @@ function buildDecimillipedePatternDiagramModel(
   const topY = 116;
   const bottomY = 356;
   const localHGap = 74;
-  const x1 = DIAGRAM_PAD;
+  const x1 = DIAGRAM_PAD + DIAGRAM_ENTRY_OFFSET;
   const x2 = x1 + DIAGRAM_CELL_WIDTH + localHGap;
   const x3 = x2 + DIAGRAM_CELL_WIDTH + localHGap;
   const nodes: PatternDiagramNode[] = [
@@ -3019,6 +3019,7 @@ function buildDecimillipedePatternDiagramModel(
     labelX: number,
     labelY: number,
     kind: MonsterMoveTransitionKind = "fixed",
+    tooltip: string | null = null,
   ): PatternDiagramEdge => ({
     key,
     from,
@@ -3028,6 +3029,7 @@ function buildDecimillipedePatternDiagramModel(
     marker: kind === "conditional" ? "conditional" : "normal",
     isLoop: to === "WRITHE" && from === "BULK",
     label,
+    tooltip,
     labelX,
     labelY,
   });
@@ -3042,20 +3044,32 @@ function buildDecimillipedePatternDiagramModel(
   const mainY = writhe.y + writhe.height / 2;
   const bottomMainY = dead.y + dead.height / 2;
   const topLoopY = writhe.y - 58;
-  const conditionBusY = writhe.y + writhe.height + 48;
-  const writheConditionX = writhe.x + 32;
-  const constrictConditionX = constrict.x + constrict.width * 0.36;
-  const bulkConditionX = bulk.x + bulk.width * 0.24;
-  const deadConditionX = dead.x + 38;
   const randomLaneY1 = writhe.y + writhe.height + 78;
   const randomLaneY2 = randomLaneY1 + 28;
   const randomLaneY3 = randomLaneY2 + 28;
+  const start = buildPatternStartEntryNode(getIntentFsmText(serviceLocale).start, 18, mainY - 11);
+  const explicitStartRows = rows.filter((row) => row.isStart && nodeById.has(row.to));
+  const startRows = explicitStartRows.length > 0
+    ? explicitStartRows
+    : [{
+        key: "decimillipede-start",
+        from: "__START__",
+        to: "WRITHE",
+        chance: 100,
+        isStart: true,
+        kind: "start" as const,
+        condition: null,
+      }];
+  const conditionTooltip = serviceLocale === "ko"
+    ? "현재 체력이 0이 되면 일반 행동 순환을 중단하고 죽음 상태로 전이합니다."
+    : "When current HP reaches 0, the normal action loop stops and transitions to the Dead state.";
   const edges: PatternDiagramEdge[] = [
+    ...buildDiagramStartEdges(start, startRows, nodeById),
     edge(
       "decimillipede-writhe-constrict",
       "WRITHE",
       "CONSTRICT",
-      `M ${writhe.x + writhe.width} ${mainY} H ${constrict.x}`,
+      `M ${writhe.x + writhe.width} ${mainY} C ${writhe.x + writhe.width + 30} ${mainY} ${constrict.x - 30} ${mainY} ${constrict.x} ${mainY}`,
       null,
       (writhe.x + writhe.width + constrict.x) / 2,
       mainY - 8,
@@ -3064,7 +3078,7 @@ function buildDecimillipedePatternDiagramModel(
       "decimillipede-constrict-bulk",
       "CONSTRICT",
       "BULK",
-      `M ${constrict.x + constrict.width} ${mainY} H ${bulk.x}`,
+      `M ${constrict.x + constrict.width} ${mainY} C ${constrict.x + constrict.width + 30} ${mainY} ${bulk.x - 30} ${mainY} ${bulk.x} ${mainY}`,
       null,
       (constrict.x + constrict.width + bulk.x) / 2,
       mainY - 8,
@@ -3073,31 +3087,49 @@ function buildDecimillipedePatternDiagramModel(
       "decimillipede-bulk-writhe",
       "BULK",
       "WRITHE",
-      `M ${bulk.x + bulk.width / 2} ${bulk.y} V ${topLoopY} H ${writhe.x + writhe.width / 2} V ${writhe.y}`,
+      `M ${bulk.x + bulk.width / 2} ${bulk.y} C ${bulk.x + bulk.width / 2} ${topLoopY} ${writhe.x + writhe.width / 2} ${topLoopY} ${writhe.x + writhe.width / 2} ${writhe.y}`,
       null,
       (bulk.x + writhe.x + writhe.width) / 2,
       topLoopY - 8,
     ),
     edge(
-      "decimillipede-zero-hp-dead",
+      "decimillipede-writhe-zero-hp-dead",
       "WRITHE",
       "DEAD",
-      [
-        `M ${writheConditionX} ${writhe.y + writhe.height} V ${conditionBusY}`,
-        `M ${constrictConditionX} ${constrict.y + constrict.height} V ${conditionBusY}`,
-        `M ${bulkConditionX} ${bulk.y + bulk.height} V ${conditionBusY}`,
-        `M ${bulkConditionX} ${conditionBusY} H ${deadConditionX} V ${dead.y}`,
-      ].join(" "),
+      `M ${writhe.x + writhe.width * 0.28} ${writhe.y + writhe.height} C ${writhe.x + 18} 270 ${dead.x + dead.width * 0.28} 304 ${dead.x + dead.width * 0.28} ${dead.y}`,
       conditionLabel,
-      (deadConditionX + constrictConditionX) / 2,
-      conditionBusY - 6,
+      writhe.x + 12,
+      278,
       "conditional",
+      conditionTooltip,
+    ),
+    edge(
+      "decimillipede-constrict-zero-hp-dead",
+      "CONSTRICT",
+      "DEAD",
+      `M ${constrict.x + constrict.width * 0.42} ${constrict.y + constrict.height} C ${constrict.x + 24} 282 ${dead.x + dead.width * 0.5} 304 ${dead.x + dead.width * 0.5} ${dead.y}`,
+      conditionLabel,
+      (constrict.x + dead.x + dead.width) / 2,
+      286,
+      "conditional",
+      conditionTooltip,
+    ),
+    edge(
+      "decimillipede-bulk-zero-hp-dead",
+      "BULK",
+      "DEAD",
+      `M ${bulk.x + bulk.width * 0.3} ${bulk.y + bulk.height} C ${bulk.x - 16} 294 ${dead.x + dead.width * 0.74} 294 ${dead.x + dead.width * 0.74} ${dead.y}`,
+      conditionLabel,
+      (bulk.x + dead.x + dead.width) / 2,
+      308,
+      "conditional",
+      conditionTooltip,
     ),
     edge(
       "decimillipede-dead-reattach",
       "DEAD",
       "REATTACH",
-      `M ${dead.x + dead.width} ${bottomMainY} H ${reattach.x}`,
+      `M ${dead.x + dead.width} ${bottomMainY} C ${dead.x + dead.width + 30} ${bottomMainY} ${reattach.x - 30} ${bottomMainY} ${reattach.x} ${bottomMainY}`,
       null,
       (dead.x + dead.width + reattach.x) / 2,
       bottomMainY - 8,
@@ -3106,7 +3138,7 @@ function buildDecimillipedePatternDiagramModel(
       "decimillipede-reattach-writhe",
       "REATTACH",
       "WRITHE",
-      `M ${reattach.x + reattach.width * 0.18} ${reattach.y} V ${randomLaneY1} H ${writhe.x + writhe.width / 2} V ${writhe.y + writhe.height}`,
+      `M ${reattach.x + reattach.width * 0.18} ${reattach.y} C ${reattach.x - 12} ${randomLaneY1} ${writhe.x + writhe.width / 2} ${randomLaneY1} ${writhe.x + writhe.width / 2} ${writhe.y + writhe.height}`,
       randomLabel,
       (reattach.x + writhe.x + writhe.width) / 2,
       randomLaneY1 + 12,
@@ -3116,7 +3148,7 @@ function buildDecimillipedePatternDiagramModel(
       "decimillipede-reattach-constrict",
       "REATTACH",
       "CONSTRICT",
-      `M ${reattach.x + reattach.width / 2} ${reattach.y} V ${randomLaneY2} H ${constrict.x + constrict.width / 2} V ${constrict.y + constrict.height}`,
+      `M ${reattach.x + reattach.width / 2} ${reattach.y} C ${reattach.x + reattach.width / 2} ${randomLaneY2} ${constrict.x + constrict.width / 2} ${randomLaneY2} ${constrict.x + constrict.width / 2} ${constrict.y + constrict.height}`,
       randomLabel,
       reattach.x + reattach.width / 2 + 32,
       randomLaneY2 + 12,
@@ -3126,7 +3158,7 @@ function buildDecimillipedePatternDiagramModel(
       "decimillipede-reattach-bulk",
       "REATTACH",
       "BULK",
-      `M ${reattach.x + reattach.width * 0.82} ${reattach.y} V ${randomLaneY3} H ${bulk.x + bulk.width / 2} V ${bulk.y + bulk.height}`,
+      `M ${reattach.x + reattach.width * 0.82} ${reattach.y} C ${reattach.x + reattach.width + 48} ${randomLaneY3} ${bulk.x + bulk.width / 2} ${randomLaneY3} ${bulk.x + bulk.width / 2} ${bulk.y + bulk.height}`,
       randomLabel,
       (reattach.x + bulk.x + bulk.width) / 2,
       randomLaneY3 + 12,
@@ -3137,7 +3169,7 @@ function buildDecimillipedePatternDiagramModel(
   return {
     width: x3 + DIAGRAM_CELL_WIDTH + DIAGRAM_PAD,
     height: bottomY + DIAGRAM_CELL_HEIGHT + DIAGRAM_PAD,
-    entryNodes: [],
+    entryNodes: [start],
     nodes,
     edges,
     phaseBoxes: [],
@@ -3405,20 +3437,21 @@ function buildDiagramStartEdges(
     const endX = target.x;
     const endY = target.y + target.height / 2;
     const horizontal = Math.max(34, (endX - originX) * 0.42);
+    const spread = (index - (rows.length - 1) / 2) * 30;
     const conditional = Boolean(row.condition);
     const label = getDiagramEdgeLabel(row);
     return [{
       key: `entry-${row.key}-${index}`,
       from: "__START__",
       to: row.to,
-      path: `M ${originX} ${originY} C ${originX + horizontal} ${originY} ${endX - horizontal} ${endY} ${endX} ${endY}`,
+      path: `M ${originX} ${originY} C ${originX + horizontal} ${originY + spread} ${endX - horizontal} ${endY + spread} ${endX} ${endY}`,
       color: conditional ? DIAGRAM_CONDITIONAL_COLOR : DIAGRAM_ARROW_COLOR,
       marker: conditional ? "conditional" : "normal",
       isLoop: false,
       label,
       tooltip: row.conditionTooltip ?? null,
       labelX: (originX + endX) / 2,
-      labelY: (originY + endY) / 2 + (index % 2 === 0 ? -10 : 10),
+      labelY: (originY + endY) / 2 + spread * 0.7,
     }];
   });
 }
