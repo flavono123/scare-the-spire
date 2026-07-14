@@ -140,6 +140,8 @@ interface TransitionTableRow {
   isStart: boolean;
   kind: MonsterMoveTransitionKind | "start" | "unknown";
   condition: string | null;
+  conditionLabel?: string | null;
+  conditionTooltip?: string | null;
 }
 
 interface PatternDiagramNode {
@@ -1285,7 +1287,10 @@ export function MonsterDetail({
   );
   const moveSummaries = useMemo(() => buildMoveSummaries(monster, meaningfulMoves), [monster, meaningfulMoves]);
   const moveSummaryById = useMemo(() => new Map(moveSummaries.map((summary) => [summary.move.id, summary])), [moveSummaries]);
-  const transitionRows = useMemo(() => buildTransitionTableRows(monster), [monster]);
+  const transitionRows = useMemo(
+    () => buildTransitionTableRows(monster, serviceLocale),
+    [monster, serviceLocale],
+  );
   const patternSummary = useMemo(() => buildPatternSummary(monster), [monster]);
   const loopLength = useMemo(() => getFixedLoopLength(monster), [monster]);
   const firstMoveId = monster.moveGraph?.initial ?? null;
@@ -2359,62 +2364,29 @@ function buildRandomClusterPatternDiagramModel(
 
 function buildProgressivePhasePatternDiagramModel(
   monster: CodexMonster,
-  states: MonsterMoveGraphState[],
+  _states: MonsterMoveGraphState[],
   phases: PatternPhase[],
   serviceLocale: ServiceLocale,
 ): PatternDiagramModel | null {
   if (phases.length < 2) return null;
 
   const text = getIntentFsmText(serviceLocale);
-  const stateById = new Map(states.map((state) => [state.id, state]));
   const phaseByMoveId = new Map<string, string>();
   phases.forEach((phase) => phase.moveIds.forEach((moveId) => phaseByMoveId.set(moveId, phase.id)));
-  const initialId = monster.moveGraph?.initial;
+  const initialId = phases[0]?.entryMoveId;
   if (!initialId || !phaseByMoveId.has(initialId)) return null;
 
-  const conditionalTransitions = monster.moveGraph?.transitions
-    .filter((transition) => transition.kind === "conditional") ?? [];
-  const bridgeMoveId = Array.from(new Set(conditionalTransitions.map((transition) => transition.from))).find((sourceId) => {
-    if (phaseByMoveId.has(sourceId)) return false;
-    const conditionalTargets = conditionalTransitions
-      .filter((transition) => transition.from === sourceId)
-      .map((transition) => transition.to);
-    const targetPhases = new Set(conditionalTargets.map((targetId) => phaseByMoveId.get(targetId)).filter(Boolean));
-    return targetPhases.size >= 2;
-  });
-  if (!bridgeMoveId) return null;
-
-  const bridgeTargets = conditionalTransitions
-    .filter((transition) => transition.from === bridgeMoveId)
-    .map((transition) => transition.to);
-  const orderedPhaseMoveIds = phases.map((phase, phaseIndex) => {
-    const moveIdSet = new Set(phase.moveIds);
-    const entryId = phaseIndex === 0
-      ? initialId
-      : bridgeTargets.find((targetId) => moveIdSet.has(targetId)) ?? phase.moveIds[0];
-    const ordered: string[] = [];
-    const seen = new Set<string>();
-    let currentId: string | null | undefined = entryId;
-    while (currentId && moveIdSet.has(currentId) && !seen.has(currentId)) {
-      ordered.push(currentId);
-      seen.add(currentId);
-      const state = stateById.get(currentId);
-      currentId = state?.kind === "move" ? state.next : null;
-    }
-    return [...ordered, ...phase.moveIds.filter((moveId) => !seen.has(moveId))];
-  });
-
-  const boxWidth = 190;
-  const phaseGap = 72;
-  const phaseStartX = 72;
+  const boxWidth = 238;
+  const phaseGap = 112;
+  const phaseStartX = 88;
   const phaseTop = 54;
   const nodeTopPadding = 52;
   const nodeGap = 36;
   const phaseBottomPadding = 24;
-  const phaseHeights = orderedPhaseMoveIds.map((moveIds) => (
+  const phaseHeights = phases.map((phase) => (
     nodeTopPadding
-    + moveIds.length * STRUCTURED_DIAGRAM_NODE_HEIGHT
-    + Math.max(0, moveIds.length - 1) * nodeGap
+    + phase.moveIds.length * STRUCTURED_DIAGRAM_NODE_HEIGHT
+    + Math.max(0, phase.moveIds.length - 1) * nodeGap
     + phaseBottomPadding
   ));
   const maxPhaseHeight = Math.max(...phaseHeights);
@@ -2423,12 +2395,12 @@ function buildProgressivePhasePatternDiagramModel(
     const height = phaseHeights[phaseIndex];
     const x = phaseStartX + phaseIndex * (boxWidth + phaseGap);
     const y = phaseTop + (maxPhaseHeight - height) / 2;
-    orderedPhaseMoveIds[phaseIndex].forEach((moveId, moveIndex) => {
+    phase.moveIds.forEach((moveId, moveIndex) => {
       const node = buildStructuredPatternNode(
         moveId,
         x + (boxWidth - STRUCTURED_DIAGRAM_NODE_WIDTH) / 2,
         y + nodeTopPadding + moveIndex * (STRUCTURED_DIAGRAM_NODE_HEIGHT + nodeGap),
-        moveId === initialId,
+        moveId === phase.entryMoveId,
       );
       node.phaseId = phase.id;
       nodeById.set(moveId, node);
@@ -2444,21 +2416,34 @@ function buildProgressivePhasePatternDiagramModel(
     };
   });
 
-  const edges = phases.flatMap((phase) => phase.moveIds.flatMap((moveId) => {
-    const moveState = stateById.get(moveId);
-    if (!moveState || moveState.kind !== "move" || !moveState.next) return [];
-    const from = nodeById.get(moveId);
-    const to = nodeById.get(moveState.next);
+  const edges = (monster.moveGraph?.transitions ?? []).flatMap((transition, transitionIndex) => {
+    if (transition.from === "__START__") return [];
+    const from = nodeById.get(transition.from);
+    const to = nodeById.get(transition.to);
     if (!from || !to || from.phaseId !== to.phaseId) return [];
+    const condition = getMonsterIntentConditionDescriptor(transition.condition, serviceLocale);
+    const color = transition.kind === "conditional" ? DIAGRAM_CONDITIONAL_COLOR : DIAGRAM_ARROW_COLOR;
+    const marker = transition.kind === "conditional" ? "conditional" : "normal";
+    const chanceLabel = transition.chance != null && transition.chance < 100
+      ? formatChancePercent(transition.chance)
+      : null;
 
     if (from.id === to.id) {
       return [buildStructuredPatternEdge({
-        key: `${from.id}-${to.id}`,
+        key: `${from.id}-${to.id}-${transitionIndex}`,
         from: from.id,
         to: to.id,
-        path: `M ${from.x + from.width} ${from.y + 36} C ${from.x + from.width + 42} ${from.y + 18} ${from.x + from.width + 42} ${from.y + 96} ${from.x + from.width} ${from.y + 78}`,
-        color: DIAGRAM_ARROW_COLOR,
+        path: `M ${from.x + from.width} ${from.y + 36} C ${from.x + from.width + 30} ${from.y + 22} ${from.x + from.width + 30} ${from.y + 94} ${from.x + from.width} ${from.y + 78}`,
+        color,
+        marker,
         isLoop: true,
+        label: condition?.label ?? null,
+        tooltip: condition?.tooltip ?? null,
+        labelX: from.x + from.width + 32,
+        labelY: from.y + from.height / 2,
+        chanceLabel,
+        chanceLabelX: from.x + from.width + 32,
+        chanceLabelY: from.y + from.height / 2 + (condition ? 20 : 0),
       })];
     }
 
@@ -2468,11 +2453,19 @@ function buildProgressivePhasePatternDiagramModel(
       const endY = to.y;
       const curve = Math.max(18, (endY - startY) * 0.45);
       return [buildStructuredPatternEdge({
-        key: `${from.id}-${to.id}`,
+        key: `${from.id}-${to.id}-${transitionIndex}`,
         from: from.id,
         to: to.id,
         path: `M ${x} ${startY} C ${x} ${startY + curve} ${x} ${endY - curve} ${x} ${endY}`,
-        color: DIAGRAM_ARROW_COLOR,
+        color,
+        marker,
+        label: condition?.label ?? null,
+        tooltip: condition?.tooltip ?? null,
+        labelX: x + 42,
+        labelY: (startY + endY) / 2,
+        chanceLabel,
+        chanceLabelX: x - 38,
+        chanceLabelY: (startY + endY) / 2,
       })];
     }
 
@@ -2482,39 +2475,51 @@ function buildProgressivePhasePatternDiagramModel(
     const endY = to.y + to.height / 2;
     const channelX = box.x + 8;
     return [buildStructuredPatternEdge({
-      key: `${from.id}-${to.id}`,
+      key: `${from.id}-${to.id}-${transitionIndex}`,
       from: from.id,
       to: to.id,
       path: `M ${from.x} ${startY} C ${channelX} ${startY} ${channelX} ${endY} ${to.x} ${endY}`,
-      color: DIAGRAM_ARROW_COLOR,
+      color,
+      marker,
       isLoop: true,
+      label: condition?.label ?? null,
+      tooltip: condition?.tooltip ?? null,
+      labelX: channelX - 8,
+      labelY: (startY + endY) / 2,
+      chanceLabel,
+      chanceLabelX: channelX + 20,
+      chanceLabelY: (startY + endY) / 2,
     })];
-  }));
+  });
 
   const initialNode = nodeById.get(initialId);
   if (!initialNode) return null;
   const start = buildPatternStartEntryNode(
     text.start,
-    12,
-    initialNode.y + initialNode.height / 2 - 21,
+    14,
+    initialNode.y + initialNode.height / 2 - 11,
   );
   const initialMidY = initialNode.y + initialNode.height / 2;
   edges.unshift(buildStructuredPatternEdge({
     key: `start-${initialId}`,
     from: "__START__",
     to: initialId,
-    path: `M ${start.x + start.width} ${initialMidY} C 70 ${initialMidY} 82 ${initialMidY} ${initialNode.x} ${initialMidY}`,
+    path: `M ${start.x + start.width} ${initialMidY} C 74 ${initialMidY} 80 ${initialMidY} ${initialNode.x} ${initialMidY}`,
     color: DIAGRAM_ARROW_COLOR,
   }));
 
-  const bridgeMove = getMonsterMove(monster, bridgeMoveId);
-  const bridgeMoveName = serviceLocale === "ko"
-    ? bridgeMove?.name ?? bridgeMoveId
-    : bridgeMove?.nameEn ?? bridgeMove?.name ?? bridgeMoveId;
-  const connectorLabel = `${text.zeroHp} → ${bridgeMoveName}`;
   const phaseConnectors = phaseBoxes.flatMap((box, index) => {
     const next = phaseBoxes[index + 1];
     if (!next) return [];
+    const nextPhase = phases[index + 1];
+    const condition = getMonsterIntentConditionDescriptor(nextPhase.incomingCondition, serviceLocale);
+    const bridgeMove = nextPhase.bridgeMoveId ? getMonsterMove(monster, nextPhase.bridgeMoveId) : null;
+    const bridgeMoveName = bridgeMove
+      ? serviceLocale === "ko" ? bridgeMove.name : bridgeMove.nameEn
+      : null;
+    const connectorLabel = bridgeMoveName && condition
+      ? `${bridgeMoveName} → ${condition.label}`
+      : bridgeMoveName ?? condition?.label ?? `${text.phase} ${nextPhase.label}`;
     const startX = box.x + box.width;
     const endX = next.x;
     const y = phaseTop + maxPhaseHeight / 2;
@@ -2523,6 +2528,7 @@ function buildProgressivePhasePatternDiagramModel(
       key: `${box.id}-${next.id}`,
       path: `M ${startX} ${y} C ${startX + curve} ${y} ${endX - curve} ${y} ${endX} ${y}`,
       label: connectorLabel,
+      tooltip: condition?.tooltip ?? connectorLabel,
       labelX: (startX + endX) / 2,
       labelY: y - 14,
     }];
@@ -2724,6 +2730,7 @@ function buildPatternStartEntryNode(
   return {
     id: "__START__",
     label,
+    tooltip: transition.conditionTooltip ?? null,
     x,
     y,
     width: 54,
@@ -3402,7 +3409,7 @@ function getDiagramOrder(nodeId: string, nodeIds: string[], order: Map<string, n
 }
 
 function getDiagramEdgeLabel(row: TransitionTableRow): string | null {
-  if (row.condition) return row.condition;
+  if (row.condition) return row.conditionLabel ?? row.condition;
   if (row.kind === "random") {
     if (row.chance === 100) return null;
     return row.chance == null ? "?" : formatChancePercent(row.chance);
@@ -3722,7 +3729,7 @@ function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-function buildTransitionTableRows(monster: CodexMonster): TransitionTableRow[] {
+function buildTransitionTableRows(monster: CodexMonster, serviceLocale: ServiceLocale): TransitionTableRow[] {
   const transitions = getDisplayPatternTransitions(monster);
   const hasExplicitStart = transitions.some((transition) => transition.from === "__START__");
   const rows: TransitionTableRow[] = [];
@@ -3740,6 +3747,7 @@ function buildTransitionTableRows(monster: CodexMonster): TransitionTableRow[] {
   }
 
   transitions.forEach((transition, index) => {
+    const condition = getMonsterIntentConditionDescriptor(transition.condition, serviceLocale);
     rows.push({
       key: `${transition.from}-${transition.to}-${transition.chance ?? "unknown"}-${index}`,
       from: transition.from,
@@ -3748,6 +3756,8 @@ function buildTransitionTableRows(monster: CodexMonster): TransitionTableRow[] {
       isStart: transition.from === "__START__",
       kind: transition.from === "__START__" ? "start" : transition.kind ?? inferTransitionKind(transition),
       condition: transition.condition ?? null,
+      conditionLabel: condition?.label ?? null,
+      conditionTooltip: condition?.tooltip ?? null,
     });
   });
 
