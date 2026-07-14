@@ -2384,15 +2384,17 @@ function buildProgressivePhasePatternDiagramModel(
   const initialId = monster.moveGraph?.initial;
   if (!initialId || !phaseByMoveId.has(initialId)) return null;
 
-  const bridgeState = states.find((state) => {
-    if (state.kind !== "move" || phaseByMoveId.has(state.id)) return false;
-    const conditionalTargets = monster.moveGraph?.transitions
-      .filter((transition) => transition.from === state.id && transition.kind === "conditional")
-      .map((transition) => transition.to) ?? [];
+  const conditionalTransitions = monster.moveGraph?.transitions
+    .filter((transition) => transition.kind === "conditional") ?? [];
+  const bridgeMoveId = Array.from(new Set(conditionalTransitions.map((transition) => transition.from))).find((sourceId) => {
+    if (phaseByMoveId.has(sourceId)) return false;
+    const conditionalTargets = conditionalTransitions
+      .filter((transition) => transition.from === sourceId)
+      .map((transition) => transition.to);
     const targetPhases = new Set(conditionalTargets.map((targetId) => phaseByMoveId.get(targetId)).filter(Boolean));
     return targetPhases.size >= 2;
   });
-  if (!bridgeState || bridgeState.kind !== "move") return null;
+  if (!bridgeMoveId) return null;
 
   const boxWidth = 220;
   const phaseGap = 84;
@@ -2497,10 +2499,10 @@ function buildProgressivePhasePatternDiagramModel(
     color: DIAGRAM_ARROW_COLOR,
   }));
 
-  const bridgeMove = getMonsterMove(monster, bridgeState.id);
+  const bridgeMove = getMonsterMove(monster, bridgeMoveId);
   const bridgeMoveName = serviceLocale === "ko"
-    ? bridgeMove?.name ?? bridgeState.id
-    : bridgeMove?.nameEn ?? bridgeMove?.name ?? bridgeState.id;
+    ? bridgeMove?.name ?? bridgeMoveId
+    : bridgeMove?.nameEn ?? bridgeMove?.name ?? bridgeMoveId;
   const connectorLabel = `${text.zeroHp} → ${bridgeMoveName}`;
   const phaseConnectors = phaseBoxes.flatMap((box, index) => {
     const next = phaseBoxes[index + 1];
