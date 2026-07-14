@@ -917,6 +917,7 @@ function PatternStateTransitionDiagram({
           <div
             key={box.id}
             className="pointer-events-none absolute z-0"
+            data-pattern-phase={box.id}
             style={{
               left: box.x,
               top: box.y,
