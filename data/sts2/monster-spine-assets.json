@@ -356,6 +356,150 @@
     "moveEffects": {}
   },
   {
+    "id": "BATTLE_FRIEND_V1",
+    "source": "animations/monsters/battleworn_dummy/battleworn_dummy",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "variant-skin"
+    ],
+    "atlasUrl": "/spine/sts2/monsters/battleworn_dummy/battleworn_dummy.atlas",
+    "binaryUrl": "/spine/sts2/monsters/battleworn_dummy/battleworn_dummy.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/battleworn_dummy/battleworn_dummy.png"
+    ],
+    "skin": "v1",
+    "skins": [
+      "default",
+      "v1",
+      "v2",
+      "v3"
+    ],
+    "animations": [
+      "dead_loop",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "NOTHING": [
+        "nothing",
+        "idle_loop",
+        "dead_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "BATTLE_FRIEND_V2",
+    "source": "animations/monsters/battleworn_dummy/battleworn_dummy",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "variant-skin"
+    ],
+    "atlasUrl": "/spine/sts2/monsters/battleworn_dummy/battleworn_dummy.atlas",
+    "binaryUrl": "/spine/sts2/monsters/battleworn_dummy/battleworn_dummy.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/battleworn_dummy/battleworn_dummy.png"
+    ],
+    "skin": "v2",
+    "skins": [
+      "default",
+      "v1",
+      "v2",
+      "v3"
+    ],
+    "animations": [
+      "dead_loop",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "NOTHING": [
+        "nothing",
+        "idle_loop",
+        "dead_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "BATTLE_FRIEND_V3",
+    "source": "animations/monsters/battleworn_dummy/battleworn_dummy",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "variant-skin"
+    ],
+    "atlasUrl": "/spine/sts2/monsters/battleworn_dummy/battleworn_dummy.atlas",
+    "binaryUrl": "/spine/sts2/monsters/battleworn_dummy/battleworn_dummy.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/battleworn_dummy/battleworn_dummy.png"
+    ],
+    "skin": "v2",
+    "skins": [
+      "default",
+      "v1",
+      "v2",
+      "v3"
+    ],
+    "animations": [
+      "dead_loop",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "NOTHING": [
+        "nothing",
+        "idle_loop",
+        "dead_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
     "id": "BOWLBUG_EGG",
     "source": "animations/monsters/bowlbug/bowlbug",
     "renderStatus": "spine",
@@ -1714,6 +1858,77 @@
       ],
       "die": [
         "die",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "DECIMILLIPEDE_SEGMENT",
+    "source": "animations/monsters/decimillipede_front/decimillipede1",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "encounter-segment"
+    ],
+    "atlasUrl": "/spine/sts2/monsters/decimillipede_front/decimillipede_front.atlas",
+    "binaryUrl": "/spine/sts2/monsters/decimillipede_front/decimillipede1.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/decimillipede_front/decimillipede.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "dead_loop",
+      "dead_static",
+      "hurt",
+      "idle_loop",
+      "regenerate",
+      "wither",
+      "alt_track/writhe_attack",
+      "alt_track/writhe_die",
+      "alt_track/writhe_idle"
+    ],
+    "bestiaryAnimations": [
+      "hurt"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "WRITHE": [
+        "writhe",
+        "alt_track/writhe_attack",
+        "alt_track/writhe_die",
+        "idle_loop",
+        "dead_loop"
+      ],
+      "BULK": [
+        "bulk",
+        "alt_track/writhe_attack",
+        "idle_loop",
+        "dead_loop"
+      ],
+      "CONSTRICT": [
+        "constrict",
+        "alt_track/writhe_attack",
+        "idle_loop",
+        "dead_loop"
+      ],
+      "DEAD": [
+        "dead",
+        "dead_loop",
+        "dead_static",
+        "idle_loop"
+      ],
+      "REATTACH": [
+        "reattach",
+        "alt_track/writhe_attack",
+        "idle_loop",
+        "dead_loop"
+      ],
+      "hurt": [
+        "hurt",
         "idle_loop"
       ]
     },
@@ -3998,6 +4213,83 @@
         "heavy-cleave",
         "attack_cleave",
         "attack_flame",
+        "idle_loop"
+      ],
+      "hurt": [
+        "hurt",
+        "idle_loop"
+      ],
+      "die": [
+        "die",
+        "idle_loop"
+      ]
+    },
+    "moveEffects": {}
+  },
+  {
+    "id": "MYSTERIOUS_KNIGHT",
+    "source": "animations/monsters/flail_knight/flailknight",
+    "renderStatus": "spine",
+    "renderTags": [
+      "shared-actor",
+      "event-variant"
+    ],
+    "atlasUrl": "/spine/sts2/monsters/flail_knight/flailknight.atlas",
+    "binaryUrl": "/spine/sts2/monsters/flail_knight/flailknight.skel",
+    "textureUrls": [
+      "/spine/sts2/monsters/flail_knight/flailknight.png"
+    ],
+    "skin": null,
+    "skins": [
+      "default"
+    ],
+    "animations": [
+      "attack_breaker",
+      "attack_flail",
+      "attack_ram",
+      "buff",
+      "die",
+      "hurt",
+      "idle_loop"
+    ],
+    "bestiaryAnimations": [
+      "hurt",
+      "die"
+    ],
+    "idleAnimation": "idle_loop",
+    "moveAnimations": {
+      "BREAKER": [
+        "breaker",
+        "attack_breaker",
+        "buff",
+        "attack_flail",
+        "attack_ram",
+        "idle_loop"
+      ],
+      "FLAIL": [
+        "flail",
+        "attack_flail",
+        "buff",
+        "attack_breaker",
+        "attack_ram",
+        "idle_loop"
+      ],
+      "RAM": [
+        "ram",
+        "attack_ram",
+        "attack_breaker",
+        "attack_flail",
+        "buff",
+        "idle_loop"
+      ],
+      "WAR_CHANT": [
+        "war_chant",
+        "warchant",
+        "war-chant",
+        "buff",
+        "attack_breaker",
+        "attack_flail",
+        "attack_ram",
         "idle_loop"
       ],
       "hurt": [

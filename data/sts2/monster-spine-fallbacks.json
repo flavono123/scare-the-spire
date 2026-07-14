@@ -1,35 +1,5 @@
 [
   {
-    "id": "BATTLE_FRIEND_V1",
-    "imageSlug": "battle_friend_v1",
-    "renderStatus": "static-only",
-    "renderTags": [
-      "no-renderable-spine-actor"
-    ],
-    "fallbackImageUrl": "/static/images/monsters/battle_friend_v1.png",
-    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
-  },
-  {
-    "id": "BATTLE_FRIEND_V2",
-    "imageSlug": "battle_friend_v2",
-    "renderStatus": "static-only",
-    "renderTags": [
-      "no-renderable-spine-actor"
-    ],
-    "fallbackImageUrl": "/static/images/monsters/battle_friend_v2.png",
-    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
-  },
-  {
-    "id": "BATTLE_FRIEND_V3",
-    "imageSlug": "battle_friend_v3",
-    "renderStatus": "static-only",
-    "renderTags": [
-      "no-renderable-spine-actor"
-    ],
-    "fallbackImageUrl": "/static/images/monsters/battle_friend_v3.png",
-    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
-  },
-  {
     "id": "BYRDONIS_NEST",
     "imageSlug": null,
     "renderStatus": "static-only",
@@ -81,16 +51,6 @@
   },
   {
     "id": "GEM_EATER",
-    "imageSlug": null,
-    "renderStatus": "static-only",
-    "renderTags": [
-      "no-renderable-spine-actor"
-    ],
-    "fallbackImageUrl": null,
-    "reason": "No renderable animations/monsters Spine actor was found in the PCK."
-  },
-  {
-    "id": "MYSTERIOUS_KNIGHT",
     "imageSlug": null,
     "renderStatus": "static-only",
     "renderTags": [

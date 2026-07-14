@@ -126,6 +126,21 @@ const MONSTER_ALIASES = {
     },
     moveAnimationTracks: AEONGLASS_TRACKS,
   },
+  BATTLE_FRIEND_V1: {
+    folder: "battleworn_dummy",
+    skin: "v1",
+    tags: ["shared-actor", "variant-skin"],
+  },
+  BATTLE_FRIEND_V2: {
+    folder: "battleworn_dummy",
+    skin: "v2",
+    tags: ["shared-actor", "variant-skin"],
+  },
+  BATTLE_FRIEND_V3: {
+    folder: "battleworn_dummy",
+    skin: "v2",
+    tags: ["shared-actor", "variant-skin"],
+  },
   BOWLBUG_EGG: { folder: "bowlbug", skin: "cocoon", tags: ["shared-actor", "variant-skin"] },
   BOWLBUG_NECTAR: { folder: "bowlbug", skin: "goop", tags: ["shared-actor", "variant-skin"] },
   BOWLBUG_ROCK: { folder: "bowlbug", skin: "rock", tags: ["shared-actor", "variant-skin"] },
@@ -143,6 +158,10 @@ const MONSTER_ALIASES = {
   },
   CUBEX_CONSTRUCT: { folder: "cubex_construct", tags: ["variant-skin"] },
   DAMP_CULTIST: { folder: "cultists", skin: "slug", tags: ["shared-actor", "variant-skin"] },
+  DECIMILLIPEDE_SEGMENT: {
+    folder: "decimillipede_front",
+    tags: ["shared-actor", "encounter-segment"],
+  },
   FAKE_MERCHANT_MONSTER: {
     folder: "fake_merchant_monster",
     source: "animations/backgrounds/fake_merchant_room/top/fake_merchant_top",
@@ -151,6 +170,10 @@ const MONSTER_ALIASES = {
   },
   FLYCONID: { folder: "flying_mushrooms", tags: ["image-slug-alias"] },
   GLOBE_HEAD: { folder: "globe_head", tags: ["image-slug-alias"] },
+  MYSTERIOUS_KNIGHT: {
+    folder: "flail_knight",
+    tags: ["shared-actor", "event-variant"],
+  },
   ROCKET: {
     folder: "kaiser_crab",
     tags: ["shared-actor", "kaiser-crab", "kaiser-crab-right"],
@@ -912,7 +935,9 @@ function main() {
   const ancientAssets = buildAncientAssets();
   const characterAssets = buildCharacterAssets(vfxById);
   const characterSelectAssets = buildCharacterSelectAssets();
-  const monsters = readJson(monstersPath).filter((monster) => monster.show_in_compendium !== false);
+  const monsters = readJson(monstersPath).filter((monster) => (
+    monster.show_in_compendium !== false || MONSTER_ALIASES[monster.id]
+  ));
   const assets = [];
   const missing = [];
 
