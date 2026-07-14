@@ -35,6 +35,10 @@ RESOURCE_ID_RE = re.compile(r'(?:^|\s)id="(?P<id>[^"]+)"')
 TEXTURE_ASSIGNMENT_RE = re.compile(r'texture\s*=\s*ExtResource\("(?P<id>[^"]+)"\)')
 BACKGROUND_LAYER_RE = re.compile(r"_bg_(?P<group>\d+)_(?P<variant>[a-z])\.tscn$")
 FOREGROUND_LAYER_RE = re.compile(r"_fg_(?P<variant>[a-z])\.tscn$")
+NODE_HEADER_RE = re.compile(r'^\[node\s+name="(?P<name>[^"]+)"[^\]]*\]$', re.MULTILINE)
+VECTOR2_RE_TEMPLATE = r"^{property}\s*=\s*Vector2\((?P<x>[-+\deE.]+),\s*(?P<y>[-+\deE.]+)\)$"
+FLOAT_RE_TEMPLATE = r"^{property}\s*=\s*(?P<value>[-+\deE.]+)$"
+COMBAT_COORDINATE_SIZE = {"width": 1920, "height": 1080}
 
 
 @dataclass(frozen=True)
@@ -42,6 +46,10 @@ class SceneTarget:
     encounter_id: str
     title: str
     output_name: str
+    monster_ids: tuple[str, ...]
+    camera_scaling: float = 1.0
+    camera_offset: tuple[float, float] = (0.0, 0.0)
+    uses_fixed_slots: bool = False
     variant: str = "a"
 
     @property
@@ -58,11 +66,23 @@ TARGETS = (
         encounter_id="SLITHERING_STRANGLER_NORMAL",
         title="overgrowth",
         output_name="overgrowth-a.webp",
+        monster_ids=(
+            "SNAPPING_JAXFRUIT",
+            "LEAF_SLIME_M",
+            "TWIG_SLIME_M",
+            "LEAF_SLIME_S",
+            "TWIG_SLIME_S",
+            "SLITHERING_STRANGLER",
+        ),
     ),
     SceneTarget(
         encounter_id="QUEEN_BOSS",
         title="queen_boss",
         output_name="queen-boss-a.webp",
+        monster_ids=("TORCH_HEAD_AMALGAM", "QUEEN"),
+        camera_scaling=0.9,
+        camera_offset=(0.0, 60.0),
+        uses_fixed_slots=True,
     ),
 )
 
@@ -121,6 +141,75 @@ def primary_texture_path(scene_text: str) -> str:
             return textures[assignment.group("id")]
 
     raise RuntimeError("layer scene has no primary TextureRect resource")
+
+
+def node_block(scene_text: str, node_name: str) -> str:
+    matches = list(NODE_HEADER_RE.finditer(scene_text))
+    for index, match in enumerate(matches):
+        if match.group("name") != node_name:
+            continue
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(scene_text)
+        return scene_text[match.start() : end]
+    raise RuntimeError(f"scene has no {node_name} node")
+
+
+def vector2_property(block: str, property_name: str, default: tuple[float, float]) -> dict[str, float]:
+    match = re.search(
+        VECTOR2_RE_TEMPLATE.format(property=re.escape(property_name)),
+        block,
+        re.MULTILINE,
+    )
+    if match is None:
+        return {"x": default[0], "y": default[1]}
+    return {"x": float(match.group("x")), "y": float(match.group("y"))}
+
+
+def float_property(block: str, property_name: str, default: float = 0.0) -> float:
+    match = re.search(
+        FLOAT_RE_TEMPLATE.format(property=re.escape(property_name)),
+        block,
+        re.MULTILINE,
+    )
+    return float(match.group("value")) if match is not None else default
+
+
+def creature_combat_layout(reader: PCKReader, monster_id: str) -> dict[str, object]:
+    scene_path = f"scenes/creature_visuals/{monster_id.lower()}.tscn"
+    scene_text = reader.read_file(scene_path).decode("utf-8", errors="replace")
+    bounds_block = node_block(scene_text, "Bounds")
+    visuals_block = node_block(scene_text, "Visuals")
+    left = float_property(bounds_block, "offset_left")
+    top = float_property(bounds_block, "offset_top")
+    right = float_property(bounds_block, "offset_right")
+    bottom = float_property(bounds_block, "offset_bottom")
+    return {
+        "monsterId": monster_id,
+        "sourceScene": scene_path,
+        "bounds": {
+            "left": left,
+            "top": top,
+            "right": right,
+            "bottom": bottom,
+            "width": right - left,
+            "height": bottom - top,
+        },
+        "visualPosition": vector2_property(visuals_block, "position", (0.0, 0.0)),
+        "visualScale": vector2_property(visuals_block, "scale", (1.0, 1.0)),
+    }
+
+
+def combat_layout(reader: PCKReader, target: SceneTarget) -> dict[str, object]:
+    return {
+        "coordinateSize": COMBAT_COORDINATE_SIZE,
+        "cameraScaling": target.camera_scaling,
+        "cameraOffset": {"x": target.camera_offset[0], "y": target.camera_offset[1]},
+        "usesFixedSlots": target.uses_fixed_slots,
+        "enemyRegionWidth": 960,
+        "enemyGap": 70,
+        "enemyMinStart": 150,
+        "enemyBaselineY": 740,
+        "monsters": [creature_combat_layout(reader, monster_id) for monster_id in target.monster_ids],
+    }
 
 
 def decode_import_image(reader: PCKReader, import_path: str) -> Image.Image:
@@ -230,6 +319,7 @@ def main() -> int:
                 "ambientVfx": {"kind": "fireflies"},
                 "backgroundSpineAsset": None,
                 "monsterSlots": [],
+                "combatLayout": combat_layout(reader, target),
             }
 
             if target.encounter_id == "QUEEN_BOSS":
