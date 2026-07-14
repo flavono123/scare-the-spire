@@ -15,7 +15,145 @@
       "kind": "fireflies"
     },
     "backgroundSpineAsset": null,
-    "monsterSlots": []
+    "monsterSlots": [],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 1.0,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "usesFixedSlots": false,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "SNAPPING_JAXFRUIT",
+          "sourceScene": "scenes/creature_visuals/snapping_jaxfruit.tscn",
+          "bounds": {
+            "left": -115.0,
+            "top": -254.0,
+            "right": 115.0,
+            "bottom": 0.0,
+            "width": 230.0,
+            "height": 254.0
+          },
+          "visualPosition": {
+            "x": 10.0,
+            "y": -23.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        },
+        {
+          "monsterId": "LEAF_SLIME_M",
+          "sourceScene": "scenes/creature_visuals/leaf_slime_m.tscn",
+          "bounds": {
+            "left": -100.0,
+            "top": -143.0,
+            "right": 100.0,
+            "bottom": 0.0,
+            "width": 200.0,
+            "height": 143.0
+          },
+          "visualPosition": {
+            "x": 0.0,
+            "y": -24.0
+          },
+          "visualScale": {
+            "x": 0.45,
+            "y": 0.45
+          }
+        },
+        {
+          "monsterId": "TWIG_SLIME_M",
+          "sourceScene": "scenes/creature_visuals/twig_slime_m.tscn",
+          "bounds": {
+            "left": -106.0,
+            "top": -166.0,
+            "right": 106.0,
+            "bottom": 0.0,
+            "width": 212.0,
+            "height": 166.0
+          },
+          "visualPosition": {
+            "x": -6.0,
+            "y": -10.0
+          },
+          "visualScale": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        {
+          "monsterId": "LEAF_SLIME_S",
+          "sourceScene": "scenes/creature_visuals/leaf_slime_s.tscn",
+          "bounds": {
+            "left": -77.0,
+            "top": -102.0,
+            "right": 77.0,
+            "bottom": 0.0,
+            "width": 154.0,
+            "height": 102.0
+          },
+          "visualPosition": {
+            "x": -4.7683716e-07,
+            "y": -22.0
+          },
+          "visualScale": {
+            "x": 0.273444,
+            "y": 0.273444
+          }
+        },
+        {
+          "monsterId": "TWIG_SLIME_S",
+          "sourceScene": "scenes/creature_visuals/twig_slime_s.tscn",
+          "bounds": {
+            "left": -70.0,
+            "top": -106.0,
+            "right": 70.0,
+            "bottom": 0.0,
+            "width": 140.0,
+            "height": 106.0
+          },
+          "visualPosition": {
+            "x": 1.0,
+            "y": -23.999998
+          },
+          "visualScale": {
+            "x": 0.275,
+            "y": 0.275
+          }
+        },
+        {
+          "monsterId": "SLITHERING_STRANGLER",
+          "sourceScene": "scenes/creature_visuals/slithering_strangler.tscn",
+          "bounds": {
+            "left": -99.0,
+            "top": -220.0,
+            "right": 99.0,
+            "bottom": 0.0,
+            "width": 198.0,
+            "height": 220.0
+          },
+          "visualPosition": {
+            "x": 15.0,
+            "y": -23.0
+          },
+          "visualScale": {
+            "x": 0.3,
+            "y": 0.3
+          }
+        }
+      ]
+    }
   },
   {
     "id": "QUEEN_BOSS",
@@ -85,6 +223,64 @@
         "x": 0.8364583333333333,
         "y": 0.6435185185185185
       }
-    ]
+    ],
+    "combatLayout": {
+      "coordinateSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cameraScaling": 0.9,
+      "cameraOffset": {
+        "x": 0.0,
+        "y": 60.0
+      },
+      "usesFixedSlots": true,
+      "enemyRegionWidth": 960,
+      "enemyGap": 70,
+      "enemyMinStart": 150,
+      "enemyBaselineY": 740,
+      "monsters": [
+        {
+          "monsterId": "TORCH_HEAD_AMALGAM",
+          "sourceScene": "scenes/creature_visuals/torch_head_amalgam.tscn",
+          "bounds": {
+            "left": -175.0,
+            "top": -316.0,
+            "right": 175.0,
+            "bottom": 0.0,
+            "width": 350.0,
+            "height": 316.0
+          },
+          "visualPosition": {
+            "x": 22.0,
+            "y": -18.0
+          },
+          "visualScale": {
+            "x": 0.15,
+            "y": 0.15
+          }
+        },
+        {
+          "monsterId": "QUEEN",
+          "sourceScene": "scenes/creature_visuals/queen.tscn",
+          "bounds": {
+            "left": -158.0,
+            "top": -497.0,
+            "right": 158.0,
+            "bottom": 0.0,
+            "width": 316.0,
+            "height": 497.0
+          },
+          "visualPosition": {
+            "x": 11.999996,
+            "y": -26.0
+          },
+          "visualScale": {
+            "x": 0.14,
+            "y": 0.14
+          }
+        }
+      ]
+    }
   }
 ]
