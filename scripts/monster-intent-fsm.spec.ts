@@ -270,7 +270,8 @@ for (const sample of CASES) {
       expect(phaseRects).toHaveLength(3);
       expect(phaseRects[0].right).toBeLessThan(phaseRects[1].left);
       expect(phaseRects[1].right).toBeLessThan(phaseRects[2].left);
-      await expect(diagram.getByText("체력 0 → 부활", { exact: true })).toHaveCount(2);
+      await expect(diagram.getByText("부활 → 두 번째 형태", { exact: true })).toHaveCount(1);
+      await expect(diagram.getByText("부활 → 세 번째 형태", { exact: true })).toHaveCount(1);
 
       const phaseThreeOrder = await Promise.all([
         diagram.getByRole("button", { name: "찢어발기기 / Lacerate" }).boundingBox(),
