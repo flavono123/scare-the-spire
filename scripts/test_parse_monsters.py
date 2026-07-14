@@ -208,6 +208,35 @@ class ParseMonsterMoveGraphTests(unittest.TestCase):
             ],
         )
 
+    def test_extracts_early_return_and_fallback_initial_states(self) -> None:
+        graph = parse_monsters.parse_move_graph("""
+            MoveState scratch = new MoveState("SCRATCH_MOVE", ScratchMove);
+            MoveState bite = new MoveState("BITE_MOVE", BiteMove);
+            RandomBranchState random = new RandomBranchState("RAND");
+            random.AddBranch(scratch, MoveRepeatType.CannotRepeat, 1f);
+            random.AddBranch(bite, MoveRepeatType.CannotRepeat, 1f);
+            if (StarterMoveIndex == -1)
+            {
+                return new MonsterMoveStateMachine(list, random);
+            }
+            return new MonsterMoveStateMachine(list, (StarterMoveIndex % 2) switch
+            {
+                0 => scratch,
+                _ => bite,
+            });
+        """)
+
+        self.assertEqual(graph["initial"], "RAND")
+        self.assertEqual(
+            [(edge["to"], edge["condition"]) for edge in graph["transitions"]],
+            [
+                ("SCRATCH", "StarterMoveIndex == -1"),
+                ("BITE", "StarterMoveIndex == -1"),
+                ("SCRATCH", "(!(StarterMoveIndex == -1)) && (StarterMoveIndex % 2 == 0)"),
+                ("BITE", "(!(StarterMoveIndex == -1)) && (StarterMoveIndex % 2 == 1)"),
+            ],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

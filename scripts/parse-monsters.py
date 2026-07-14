@@ -117,6 +117,19 @@ def _balanced_span(text: str, start: int) -> int:
     return -1
 
 
+def _balanced_brace_span(text: str, start: int) -> int:
+    """Given an index of '{', return the index of matching '}'; -1 if none."""
+    depth = 0
+    for index in range(start, len(text)):
+        if text[index] == "{":
+            depth += 1
+        elif text[index] == "}":
+            depth -= 1
+            if depth == 0:
+                return index
+    return -1
+
+
 def pascal_case(snake: str) -> str:
     return "".join(w.capitalize() for w in snake.split("_"))
 
@@ -391,7 +404,44 @@ def parse_initial_state_variants(text: str, state_vars: dict[str, str]) -> list[
     return_matches = list(re.finditer(r"\breturn\s+(?P<expression>.*?);", body, re.DOTALL))
     if not return_matches:
         return []
-    return parse_initial_state_expression(return_matches[-1].group("expression"), body, state_vars)
+    variants: list[tuple[str, str | None]] = []
+    prior_return_conditions: list[str] = []
+    for return_match in return_matches:
+        return_condition = enclosing_if_condition(body, return_match.start())
+        if return_condition:
+            prior_return_conditions.append(return_condition)
+        elif prior_return_conditions:
+            return_condition = " && ".join(invert_condition(condition) for condition in prior_return_conditions)
+        nested_variants = parse_initial_state_expression(return_match.group("expression"), body, state_vars)
+        for state_var, nested_condition in nested_variants:
+            combined_condition = (
+                f"({return_condition}) && ({nested_condition})"
+                if return_condition and nested_condition
+                else return_condition or nested_condition
+            )
+            variants.append((state_var, combined_condition))
+    return variants
+
+
+def enclosing_if_condition(body: str, position: int) -> str | None:
+    """Return the innermost block-form `if` condition enclosing a position."""
+    candidates: list[tuple[int, str]] = []
+    for match in re.finditer(r"\bif\s*\(", body):
+        open_paren = body.find("(", match.start())
+        close_paren = _balanced_span(body, open_paren)
+        if close_paren < 0:
+            continue
+        open_brace = body.find("{", close_paren)
+        if open_brace < 0:
+            continue
+        close_brace = _balanced_brace_span(body, open_brace)
+        if open_brace < position < close_brace:
+            candidates.append((open_brace, simplify_condition(body[open_paren + 1 : close_paren]) or ""))
+    return max(candidates, default=(0, None), key=lambda candidate: candidate[0])[1]
+
+
+def invert_condition(condition: str) -> str:
+    return f"!{condition}" if re.fullmatch(r"\w+", condition) else f"!({condition})"
 
 
 def parse_initial_state_expression(
@@ -452,7 +502,7 @@ def parse_initial_state_expression(
             if token in state_vars
         ]
         if len(candidates) >= 2:
-            false_condition = f"!{condition}" if re.fullmatch(r"\w+", condition) else f"!({condition})"
+            false_condition = invert_condition(condition)
             return [(candidates[0], simplify_condition(condition)), (candidates[1], false_condition)]
 
     candidates = [token for token in re.findall(r"\b\w+\b", expression) if token in state_vars]
