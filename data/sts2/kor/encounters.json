@@ -13,7 +13,18 @@
         "name": "영겁의 모래시계"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}의 방해를 친절하게 받아들이지 않았습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 {character}의 방해를 친절하게 받아들이지 않았습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "AEONGLASS"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "AXEBOTS_NORMAL",
@@ -28,7 +39,18 @@
         "name": "잘라봇"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 절단되었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 절단되었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "AXEBOT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BATTLEWORN_DUMMY_EVENT_V1_ENCOUNTER",
@@ -43,7 +65,18 @@
         "name": "전투 친구 V1.0"
       }
     ],
-    "loss_text": "{character}는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???"
+    "loss_text": "{character}는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "BATTLE_FRIEND_V1"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BATTLEWORN_DUMMY_EVENT_V2_ENCOUNTER",
@@ -58,7 +91,18 @@
         "name": "전투 친구 V2.0"
       }
     ],
-    "loss_text": "{character}는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???"
+    "loss_text": "{character}는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "BATTLE_FRIEND_V2"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BATTLEWORN_DUMMY_EVENT_V3_ENCOUNTER",
@@ -73,7 +117,18 @@
         "name": "전투 친구 V3.0"
       }
     ],
-    "loss_text": "{character}는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???"
+    "loss_text": "{character}는 알 수 없는 방법으로 [gold]{encounter}[/gold]에게 패배했습니다???",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "BATTLE_FRIEND_V3"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BOWLBUGS_NORMAL",
@@ -102,7 +157,99 @@
         "name": "그릇벌레 (바위)"
       }
     ],
-    "loss_text": "{character}는 분주한 [gold]{encounter}[/gold]에 의해 저지되었습니다."
+    "loss_text": "{character}는 분주한 [gold]{encounter}[/gold]에 의해 저지되었습니다.",
+    "compositions": [
+      {
+        "id": "OPTION_01",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_EGG"
+          ],
+          [
+            "BOWLBUG_SILK"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_02",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_EGG"
+          ],
+          [
+            "BOWLBUG_NECTAR"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_03",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_SILK"
+          ],
+          [
+            "BOWLBUG_EGG"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_04",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_SILK"
+          ],
+          [
+            "BOWLBUG_NECTAR"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_05",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_NECTAR"
+          ],
+          [
+            "BOWLBUG_EGG"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_06",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_NECTAR"
+          ],
+          [
+            "BOWLBUG_SILK"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BOWLBUGS_WEAK",
@@ -127,7 +274,33 @@
         "name": "그릇벌레 (바위)"
       }
     ],
-    "loss_text": "{character}는 분주한 [gold]{encounter}[/gold]에 의해 저지되었습니다."
+    "loss_text": "{character}는 분주한 [gold]{encounter}[/gold]에 의해 저지되었습니다.",
+    "compositions": [
+      {
+        "id": "OPTION_01",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_EGG"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_02",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_NECTAR"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BYGONE_EFFIGY_ELITE",
@@ -142,7 +315,18 @@
         "name": "옛 시대의 우상"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 반으로 잘렸습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 반으로 잘렸습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "BYGONE_EFFIGY"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BYRDONIS_ELITE",
@@ -157,7 +341,18 @@
         "name": "섀도니스"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}로부터 자신의 아이들을 보호했습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 {character}로부터 자신의 아이들을 보호했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "BYRDONIS"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CEREMONIAL_BEAST_BOSS",
@@ -172,7 +367,18 @@
         "name": "의식의 신수"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 안식에 들었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 안식에 들었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CEREMONIAL_BEAST"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CHOMPERS_NORMAL",
@@ -189,7 +395,21 @@
         "name": "먹깨비"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 잘근잘근 씹혀 죽었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 잘근잘근 씹혀 죽었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CHOMPER"
+          ],
+          [
+            "CHOMPER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CONSTRUCT_MENAGERIE_NORMAL",
@@ -208,7 +428,24 @@
         "name": "큐브형 구조체"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}를 으깨버렸습니다."
+    "loss_text": "[gold]{encounter}[/gold]이 {character}를 으깨버렸습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "PUNCH_CONSTRUCT"
+          ],
+          [
+            "CUBEX_CONSTRUCT"
+          ],
+          [
+            "CUBEX_CONSTRUCT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CORPSE_SLUGS_NORMAL",
@@ -225,7 +462,24 @@
         "name": "시체 민달팽이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}를 마음껏 먹어치웠습니다."
+    "loss_text": "[gold]{encounter}[/gold]이 {character}를 마음껏 먹어치웠습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CORPSE_SLUG"
+          ],
+          [
+            "CORPSE_SLUG"
+          ],
+          [
+            "CORPSE_SLUG"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CORPSE_SLUGS_WEAK",
@@ -242,7 +496,21 @@
         "name": "시체 민달팽이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}를 마음껏 먹어치웠습니다."
+    "loss_text": "[gold]{encounter}[/gold]이 {character}를 마음껏 먹어치웠습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CORPSE_SLUG"
+          ],
+          [
+            "CORPSE_SLUG"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CUBEX_CONSTRUCT_NORMAL",
@@ -257,7 +525,18 @@
         "name": "큐브형 구조체"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 레이저에 의해 사망했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]의 레이저에 의해 사망했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CUBEX_CONSTRUCT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CULTISTS_NORMAL",
@@ -276,7 +555,21 @@
         "name": "흠뻑 젖은 광신자"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 살해당했습니다. [sine]까아아악[/sine]..."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 살해당했습니다. [sine]까아아악[/sine]...",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CALCIFIED_CULTIST"
+          ],
+          [
+            "DAMP_CULTIST"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "DECIMILLIPEDE_ELITE",
@@ -299,7 +592,24 @@
         "name": "DECIMILLIPEDE_SEGMENT_BACK"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 영역에서 살아남지 못했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]의 영역에서 살아남지 못했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "DECIMILLIPEDE_SEGMENT_FRONT"
+          ],
+          [
+            "DECIMILLIPEDE_SEGMENT_MIDDLE"
+          ],
+          [
+            "DECIMILLIPEDE_SEGMENT_BACK"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "DENSE_VEGETATION_EVENT_ENCOUNTER",
@@ -314,7 +624,27 @@
         "name": "꿈틀벌레"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 감염되었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 감염되었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "WRIGGLER"
+          ],
+          [
+            "WRIGGLER"
+          ],
+          [
+            "WRIGGLER"
+          ],
+          [
+            "WRIGGLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "DEVOTED_SCULPTOR_WEAK",
@@ -329,7 +659,18 @@
         "name": "열정적인 조각가"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 산산조각이 났습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 산산조각이 났습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "DEVOTED_SCULPTOR"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "DOORMAKER_BOSS",
@@ -361,7 +702,18 @@
         "name": "곤충술사"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 벌침에 쏘여 사망했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]의 벌침에 쏘여 사망했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "ENTOMANCER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "EXOSKELETONS_NORMAL",
@@ -378,7 +730,27 @@
         "name": "갑각충"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 뼈와 살이 분리되었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 뼈와 살이 분리되었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "EXOSKELETON"
+          ],
+          [
+            "EXOSKELETON"
+          ],
+          [
+            "EXOSKELETON"
+          ],
+          [
+            "EXOSKELETON"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "EXOSKELETONS_WEAK",
@@ -395,7 +767,24 @@
         "name": "갑각충"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 뼈와 살이 분리되었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 뼈와 살이 분리되었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "EXOSKELETON"
+          ],
+          [
+            "EXOSKELETON"
+          ],
+          [
+            "EXOSKELETON"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FABRICATOR_NORMAL",
@@ -410,7 +799,18 @@
         "name": "조립 전문가"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 로봇들에게 지져졌습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]의 로봇들에게 지져졌습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FABRICATOR"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FAKE_MERCHANT_EVENT_ENCOUNTER",
@@ -425,7 +825,18 @@
         "name": "상?인"
       }
     ],
-    "loss_text": "{character}는 [gold][b]{encounter}[/b][/gold]의 분노를 마주했습니다."
+    "loss_text": "{character}는 [gold][b]{encounter}[/b][/gold]의 분노를 마주했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FAKE_MERCHANT_MONSTER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FLYCONID_NORMAL",
@@ -451,7 +862,33 @@
         "name": "날개버섯"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 흡수되었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 흡수되었습니다.",
+    "compositions": [
+      {
+        "id": "OPTION_01",
+        "weight": 1,
+        "slots": [
+          [
+            "LEAF_SLIME_M"
+          ],
+          [
+            "FLYCONID"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_02",
+        "weight": 1,
+        "slots": [
+          [
+            "TWIG_SLIME_M"
+          ],
+          [
+            "FLYCONID"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FLYCONID_WEAK",
@@ -480,7 +917,18 @@
         "name": "톱니눈"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 환상에 의해 집중하지 못했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]의 환상에 의해 집중하지 못했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FOGMOG"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FOSSIL_STALKER_NORMAL",
@@ -495,7 +943,18 @@
         "name": "화석 매복자"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 습격당했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 습격당했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FOSSIL_STALKER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FROG_KNIGHT_NORMAL",
@@ -510,7 +969,18 @@
         "name": "개구리 기사"
       }
     ],
-    "loss_text": "용맹한 [gold]{encounter}[/gold]가 {character}에게 승리했습니다."
+    "loss_text": "용맹한 [gold]{encounter}[/gold]가 {character}에게 승리했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FROG_KNIGHT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FUZZY_WURM_CRAWLER_WEAK",
@@ -527,7 +997,18 @@
         "name": "복슬지렁이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]가 {character}에게 침을 뱉었습니다."
+    "loss_text": "[gold]{encounter}[/gold]가 {character}에게 침을 뱉었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FUZZY_WURM_CRAWLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "GLOBE_HEAD_NORMAL",
@@ -542,7 +1023,18 @@
         "name": "구체 머리"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 감전시켰습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 {character}를 감전시켰습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "GLOBE_HEAD"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "GREMLIN_MERC_NORMAL",
@@ -565,7 +1057,18 @@
         "name": "교활한 그렘린"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 털렸습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 털렸습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "GREMLIN_MERC"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "HAUNTED_SHIP_NORMAL",
@@ -580,7 +1083,18 @@
         "name": "유령선"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]은 {character}를 마구 짓밟았습니다."
+    "loss_text": "[gold]{encounter}[/gold]은 {character}를 마구 짓밟았습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "HAUNTED_SHIP"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "HUNTER_KILLER_NORMAL",
@@ -595,7 +1109,18 @@
         "name": "사냥꾼 살해자"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 뼈와 살이 분리되었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 뼈와 살이 분리되었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "HUNTER_KILLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "INFESTED_PRISMS_ELITE",
@@ -610,7 +1135,18 @@
         "name": "감염된 프리즘"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 저지당했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 저지당했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "INFESTED_PRISM"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "INKLETS_NORMAL",
@@ -625,7 +1161,24 @@
         "name": "잉클릿"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]들은 {character}를 통과시키지 않았습니다."
+    "loss_text": "[gold]{encounter}[/gold]들은 {character}를 통과시키지 않았습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "INKLET"
+          ],
+          [
+            "INKLET"
+          ],
+          [
+            "INKLET"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "KAISER_CRAB_BOSS",
@@ -644,7 +1197,21 @@
         "name": "로켓"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 사방에서 공격했습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 {character}를 사방에서 공격했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CRUSHER"
+          ],
+          [
+            "ROCKET"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "KNIGHTS_ELITE",
@@ -669,7 +1236,24 @@
         "name": "마법 기사"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 살해당했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 살해당했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FLAIL_KNIGHT"
+          ],
+          [
+            "SPECTRAL_KNIGHT"
+          ],
+          [
+            "MAGI_KNIGHT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "KNOWLEDGE_DEMON_BOSS",
@@ -684,7 +1268,18 @@
         "name": "지식의 악마"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}에게 압도적인 지식의 저주를 내렸습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 {character}에게 압도적인 지식의 저주를 내렸습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "KNOWLEDGE_DEMON"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "LAGAVULIN_MATRIARCH_BOSS",
@@ -699,7 +1294,18 @@
         "name": "라가불린 대모"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 반으로 썰렸습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 반으로 썰렸습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "LAGAVULIN_MATRIARCH"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "LIVING_FOG_NORMAL",
@@ -718,7 +1324,18 @@
         "name": "가스 폭탄"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 악취를 견디지 못했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]의 악취를 견디지 못했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "LIVING_FOG"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "LOUSE_PROGENITOR_NORMAL",
@@ -733,7 +1350,18 @@
         "name": "태초의 공벌레"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 무력화되었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 무력화되었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "LOUSE_PROGENITOR"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "MAWLER_NORMAL",
@@ -748,7 +1376,18 @@
         "name": "장수아귀"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 맛있는 한 끼 식사가 되었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]의 맛있는 한 끼 식사가 되었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "MAWLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "MECHA_KNIGHT_ELITE",
@@ -763,7 +1402,18 @@
         "name": "기계 기사"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 찔리고 불태워졌습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 찔리고 불태워졌습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "MECHA_KNIGHT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "MYSTERIOUS_KNIGHT_EVENT_ENCOUNTER",
@@ -778,7 +1428,18 @@
         "name": "수수께끼의 기사"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 열쇠를 가져가려고 했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]의 열쇠를 가져가려고 했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "MYSTERIOUS_KNIGHT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "MYTES_NORMAL",
@@ -793,7 +1454,21 @@
         "name": "진듸기"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 둘러싸였습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 둘러싸였습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "MYTE"
+          ],
+          [
+            "MYTE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "NIBBITS_NORMAL",
@@ -808,7 +1483,21 @@
         "name": "깨작이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}를 두들겨 팼습니다."
+    "loss_text": "[gold]{encounter}[/gold]이 {character}를 두들겨 팼습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "NIBBIT"
+          ],
+          [
+            "NIBBIT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "NIBBITS_WEAK",
@@ -825,7 +1514,18 @@
         "name": "깨작이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]가 {character}를 두들겨 팼습니다."
+    "loss_text": "[gold]{encounter}[/gold]가 {character}를 두들겨 팼습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "NIBBIT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "OVERGROWTH_CRAWLERS",
@@ -847,7 +1547,21 @@
         "name": "복슬지렁이"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]이 {character}를 마음껏 먹어치웠습니다."
+    "loss_text": "[gold]{encounter}[/gold]이 {character}를 마음껏 먹어치웠습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SHRINKER_BEETLE"
+          ],
+          [
+            "FUZZY_WURM_CRAWLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "OVERGROWTH_WILDLIFE",
@@ -876,7 +1590,18 @@
         "name": "튼튼한 알"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 자식들을 위한 먹이가 되었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]의 자식들을 위한 먹이가 되었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "OVICOPTER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "OWL_MAGISTRATE_NORMAL",
@@ -891,7 +1616,18 @@
         "name": "올빼미 판관"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]에 의해 {character}의 사형이 선고되었습니다."
+    "loss_text": "[gold]{encounter}[/gold]에 의해 {character}의 사형이 선고되었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "OWL_MAGISTRATE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "PHANTASMAL_GARDENERS_ELITE",
@@ -906,7 +1642,27 @@
         "name": "허깨비 정원사"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 안식에 들었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 안식에 들었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "PHANTASMAL_GARDENER"
+          ],
+          [
+            "PHANTASMAL_GARDENER"
+          ],
+          [
+            "PHANTASMAL_GARDENER"
+          ],
+          [
+            "PHANTASMAL_GARDENER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "PHROG_PARASITE_ELITE",
@@ -925,7 +1681,18 @@
         "name": "꿈틀벌레"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}에게로 자신의 군체를 확장시켰습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 {character}에게로 자신의 군체를 확장시켰습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "PHROG_PARASITE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "PUNCH_CONSTRUCT_NORMAL",
@@ -940,7 +1707,18 @@
         "name": "권투형 구조체"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]와 주먹다짐을 했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]와 주먹다짐을 했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "PUNCH_CONSTRUCT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "PUNCH_OFF_EVENT_ENCOUNTER",
@@ -955,7 +1733,21 @@
         "name": "권투형 구조체"
       }
     ],
-    "loss_text": "{character}는 두 [gold]{encounter}[/gold]의 싸움을 방해했습니다."
+    "loss_text": "{character}는 두 [gold]{encounter}[/gold]의 싸움을 방해했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "PUNCH_CONSTRUCT"
+          ],
+          [
+            "PUNCH_CONSTRUCT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "QUEEN_BOSS",
@@ -974,7 +1766,21 @@
         "name": "횃불머리 융합체"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]은 {character}의 일부를 그녀의 수집품에 추가했습니다."
+    "loss_text": "[gold]{encounter}[/gold]은 {character}의 일부를 그녀의 수집품에 추가했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "TORCH_HEAD_AMALGAM"
+          ],
+          [
+            "QUEEN"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "RUBY_RAIDERS_NORMAL",
@@ -1005,7 +1811,909 @@
         "name": "추적 습격자"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold] 무리에게 집단 구타를 당했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold] 무리에게 집단 구타를 당했습니다.",
+    "compositions": [
+      {
+        "id": "OPTION_01",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_02",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_03",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_04",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_05",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_06",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_07",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_08",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_09",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_10",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_11",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_12",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_13",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_14",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_15",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_16",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_17",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_18",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_19",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_20",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_21",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_22",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_23",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_24",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_25",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_26",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_27",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_28",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_29",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_30",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_31",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_32",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_33",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_34",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_35",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_36",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_37",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_38",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_39",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_40",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_41",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_42",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_43",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_44",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_45",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_46",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_47",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_48",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_49",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_50",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_51",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_52",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_53",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_54",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_55",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_56",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_57",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_58",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_59",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_60",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SCROLLS_OF_BITING_NORMAL",
@@ -1022,7 +2730,27 @@
         "name": "물어뜯는 두루마리"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]들은 {character}를 갈기갈기 찢어버렸습니다."
+    "loss_text": "[gold]{encounter}[/gold]들은 {character}를 갈기갈기 찢어버렸습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SCROLL_OF_BITING"
+          ],
+          [
+            "SCROLL_OF_BITING"
+          ],
+          [
+            "SCROLL_OF_BITING"
+          ],
+          [
+            "SCROLL_OF_BITING"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SCROLLS_OF_BITING_WEAK",
@@ -1039,7 +2767,24 @@
         "name": "물어뜯는 두루마리"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]들은 {character}를 갈기갈기 찢어버렸습니다."
+    "loss_text": "[gold]{encounter}[/gold]들은 {character}를 갈기갈기 찢어버렸습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SCROLL_OF_BITING"
+          ],
+          [
+            "SCROLL_OF_BITING"
+          ],
+          [
+            "SCROLL_OF_BITING"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SEAPUNK_NORMAL",
@@ -1060,7 +2805,21 @@
         "name": "석회화된 광신자"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]들에게 패배했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]들에게 패배했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CALCIFIED_CULTIST"
+          ],
+          [
+            "SEAPUNK"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SEAPUNK_WEAK",
@@ -1077,7 +2836,18 @@
         "name": "불량 해초"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 때려눕혔습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 {character}를 때려눕혔습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SEAPUNK"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SEWER_CLAM_NORMAL",
@@ -1092,7 +2862,18 @@
         "name": "시궁창 조개"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 통째로 삼켜버렸습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 {character}를 통째로 삼켜버렸습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SEWER_CLAM"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SHRINKER_BEETLE_WEAK",
@@ -1109,7 +2890,18 @@
         "name": "압축벌레"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 간식이 됐습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]의 간식이 됐습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SHRINKER_BEETLE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SKULKING_COLONY_ELITE",
@@ -1124,7 +2916,18 @@
         "name": "잠행 군체"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 흡수당했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 흡수당했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SKULKING_COLONY"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SLIMED_BERSERKER_NORMAL",
@@ -1139,7 +2942,18 @@
         "name": "슬라임 광전사"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 흡수되었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 흡수되었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SLIMED_BERSERKER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SLIMES_NORMAL",
@@ -1168,7 +2982,45 @@
         "name": "나뭇잎 슬라임 (중)"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 쓰러졌습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 쓰러졌습니다.",
+    "compositions": [
+      {
+        "id": "OPTION_01",
+        "weight": 1,
+        "slots": [
+          [
+            "TWIG_SLIME_M"
+          ],
+          [
+            "LEAF_SLIME_M"
+          ],
+          [
+            "LEAF_SLIME_S"
+          ],
+          [
+            "TWIG_SLIME_S"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_02",
+        "weight": 1,
+        "slots": [
+          [
+            "TWIG_SLIME_M"
+          ],
+          [
+            "LEAF_SLIME_M"
+          ],
+          [
+            "TWIG_SLIME_S"
+          ],
+          [
+            "LEAF_SLIME_S"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SLIMES_WEAK",
@@ -1197,7 +3049,69 @@
         "name": "가지 슬라임 (중)"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 쓰러졌습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 쓰러졌습니다.",
+    "compositions": [
+      {
+        "id": "OPTION_01",
+        "weight": 1,
+        "slots": [
+          [
+            "LEAF_SLIME_S"
+          ],
+          [
+            "LEAF_SLIME_M"
+          ],
+          [
+            "TWIG_SLIME_S"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_02",
+        "weight": 1,
+        "slots": [
+          [
+            "LEAF_SLIME_S"
+          ],
+          [
+            "TWIG_SLIME_M"
+          ],
+          [
+            "TWIG_SLIME_S"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_03",
+        "weight": 1,
+        "slots": [
+          [
+            "TWIG_SLIME_S"
+          ],
+          [
+            "LEAF_SLIME_M"
+          ],
+          [
+            "LEAF_SLIME_S"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_04",
+        "weight": 1,
+        "slots": [
+          [
+            "TWIG_SLIME_S"
+          ],
+          [
+            "TWIG_SLIME_M"
+          ],
+          [
+            "LEAF_SLIME_S"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SLITHERING_STRANGLER_NORMAL",
@@ -1294,7 +3208,18 @@
         "name": "오물팽이"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]를 이길 수 없었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]를 이길 수 없었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SLUDGE_SPINNER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SLUMBERING_BEETLE_NORMAL",
@@ -1319,7 +3244,24 @@
         "name": "그릇벌레 (실크)"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]를 방해했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]를 방해했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_SILK"
+          ],
+          [
+            "SLUMBERING_BEETLE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SNAPPING_JAXFRUIT_NORMAL",
@@ -1341,7 +3283,21 @@
         "name": "날개버섯"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]들과 충돌했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]들과 충돌했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SNAPPING_JAXFRUIT"
+          ],
+          [
+            "FLYCONID"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SOUL_FYSH_BOSS",
@@ -1356,7 +3312,18 @@
         "name": "영혼 물교기"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 파멸로 이끌었습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 {character}를 파멸로 이끌었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SOUL_FYSH"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SOUL_NEXUS_ELITE",
@@ -1371,7 +3338,18 @@
         "name": "영혼 결합체"
       }
     ],
-    "loss_text": "{character}는 잊힌 전장에서 [gold]{encounter}[/gold]에 의해 사망했습니다."
+    "loss_text": "{character}는 잊힌 전장에서 [gold]{encounter}[/gold]에 의해 사망했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SOUL_NEXUS"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SPINY_TOAD_NORMAL",
@@ -1386,7 +3364,18 @@
         "name": "가시두꺼비"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 가시를 뚫지 못했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]의 가시를 뚫지 못했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SPINY_TOAD"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TERROR_EEL_ELITE",
@@ -1401,7 +3390,18 @@
         "name": "공포 장어"
       }
     ],
-    "loss_text": "{character}에게 [gold]{encounter}[/gold]는 너무 무서웠습니다."
+    "loss_text": "{character}에게 [gold]{encounter}[/gold]는 너무 무서웠습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "TERROR_EEL"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TEST_SUBJECT_BOSS",
@@ -1416,7 +3416,18 @@
         "name": "실험체 #C{Count}"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 충성스럽게 {character}로부터 자신의 주인들을 지켰습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 충성스럽게 {character}로부터 자신의 주인들을 지켰습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "TEST_SUBJECT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "THE_ARCHITECT_EVENT_ENCOUNTER",
@@ -1431,7 +3442,18 @@
         "name": "아키텍트"
       }
     ],
-    "loss_text": "봐선 안되는 것이었습니다."
+    "loss_text": "봐선 안되는 것이었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "ARCHITECT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "THE_INSATIABLE_BOSS",
@@ -1446,7 +3468,18 @@
         "name": "탐"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]은 {character}를 먹어치웠습니다. 그리고 아직도 굶주려 있습니다..."
+    "loss_text": "[gold]{encounter}[/gold]은 {character}를 먹어치웠습니다. 그리고 아직도 굶주려 있습니다...",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "THE_INSATIABLE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "THE_KIN_BOSS",
@@ -1465,7 +3498,24 @@
         "name": "혈족 사제"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]의 뛰어난 전략에 의해 완패했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]의 뛰어난 전략에 의해 완패했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "KIN_FOLLOWER"
+          ],
+          [
+            "KIN_FOLLOWER"
+          ],
+          [
+            "KIN_PRIEST"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "THE_LOST_AND_FORGOTTEN_NORMAL",
@@ -1484,7 +3534,21 @@
         "name": "잊힌 자"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}의 삶의 의지를 빼앗았습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 {character}의 삶의 의지를 빼앗았습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "THE_LOST"
+          ],
+          [
+            "THE_FORGOTTEN"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "THE_OBSCURA_NORMAL",
@@ -1503,7 +3567,18 @@
         "name": "투사된 공포"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]와 그것의 환영에 의해 박살났습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]와 그것의 환영에 의해 박살났습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "THE_OBSCURA"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "THIEVING_HOPPER_WEAK",
@@ -1520,7 +3595,18 @@
         "name": "폴짝이 도적"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]은 {character}를 털어먹었습니다."
+    "loss_text": "[gold]{encounter}[/gold]은 {character}를 털어먹었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "THIEVING_HOPPER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TOADPOLES_WEAK",
@@ -1535,7 +3621,21 @@
         "name": "올챙이"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]을 처리하지 못했습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]을 처리하지 못했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "TOADPOLE"
+          ],
+          [
+            "TOADPOLE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TUNNELER_NORMAL",
@@ -1557,7 +3657,21 @@
         "name": "먹깨비"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 끝장냈습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 {character}를 끝장냈습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CHOMPER"
+          ],
+          [
+            "TUNNELER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TUNNELER_WEAK",
@@ -1574,7 +3688,18 @@
         "name": "땅굴충"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 얻어맞았습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 얻어맞았습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "TUNNELER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TURRET_OPERATOR_WEAK",
@@ -1593,7 +3718,21 @@
         "name": "포탑 사수"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]는 {character}를 벌집으로 만들었습니다."
+    "loss_text": "[gold]{encounter}[/gold]는 {character}를 벌집으로 만들었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "LIVING_SHIELD"
+          ],
+          [
+            "TURRET_OPERATOR"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TWO_TAILED_RATS_NORMAL",
@@ -1608,7 +3747,24 @@
         "name": "두꼬리쥐"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 둘러싸였습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에게 둘러싸였습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "TWO_TAILED_RAT"
+          ],
+          [
+            "TWO_TAILED_RAT"
+          ],
+          [
+            "TWO_TAILED_RAT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "VANTOM_BOSS",
@@ -1623,7 +3779,18 @@
         "name": "밴텀"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 잉클릿으로 변해버렸습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]에 의해 잉클릿으로 변해버렸습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "VANTOM"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "VINE_SHAMBLER_NORMAL",
@@ -1638,7 +3805,18 @@
         "name": "휘청거리는 덩굴"
       }
     ],
-    "loss_text": "{character}는 [gold]{encounter}[/gold]로부터 도망칠 수 없었습니다."
+    "loss_text": "{character}는 [gold]{encounter}[/gold]로부터 도망칠 수 없었습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "VINE_SHAMBLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "WATERFALL_GIANT_BOSS",
@@ -1653,6 +3831,17 @@
         "name": "폭포 거인"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold]은 {character}로부터 지하 선착장을 정화했습니다."
+    "loss_text": "[gold]{encounter}[/gold]은 {character}로부터 지하 선착장을 정화했습니다.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "WATERFALL_GIANT"
+          ]
+        ]
+      }
+    ]
   }
 ]

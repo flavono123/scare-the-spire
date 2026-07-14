@@ -13,7 +13,18 @@
         "name": "Aeonglass"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold] didn't take kindly to {character}'s disturbance."
+    "loss_text": "[gold]{encounter}[/gold] didn't take kindly to {character}'s disturbance.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "AEONGLASS"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "AXEBOTS_NORMAL",
@@ -28,7 +39,18 @@
         "name": "Axebot"
       }
     ],
-    "loss_text": "{character} was dismembered by an [gold]{encounter}[/gold]."
+    "loss_text": "{character} was dismembered by an [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "AXEBOT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BATTLEWORN_DUMMY_EVENT_V1_ENCOUNTER",
@@ -43,7 +65,18 @@
         "name": "Battle Friend V1.0"
       }
     ],
-    "loss_text": "{character} was somehow killed by [gold]{encounter}[/gold]???"
+    "loss_text": "{character} was somehow killed by [gold]{encounter}[/gold]???",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "BATTLE_FRIEND_V1"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BATTLEWORN_DUMMY_EVENT_V2_ENCOUNTER",
@@ -58,7 +91,18 @@
         "name": "Battle Friend V2.0"
       }
     ],
-    "loss_text": "{character} was somehow killed by [gold]{encounter}[/gold]???"
+    "loss_text": "{character} was somehow killed by [gold]{encounter}[/gold]???",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "BATTLE_FRIEND_V2"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BATTLEWORN_DUMMY_EVENT_V3_ENCOUNTER",
@@ -73,7 +117,18 @@
         "name": "Battle Friend V3.0"
       }
     ],
-    "loss_text": "{character} was somehow killed by [gold]{encounter}[/gold]???"
+    "loss_text": "{character} was somehow killed by [gold]{encounter}[/gold]???",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "BATTLE_FRIEND_V3"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BOWLBUGS_NORMAL",
@@ -102,7 +157,99 @@
         "name": "Bowlbug (Rock)"
       }
     ],
-    "loss_text": "{character} got in the way of a busy [gold]{encounter}[/gold]."
+    "loss_text": "{character} got in the way of a busy [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "OPTION_01",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_EGG"
+          ],
+          [
+            "BOWLBUG_SILK"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_02",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_EGG"
+          ],
+          [
+            "BOWLBUG_NECTAR"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_03",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_SILK"
+          ],
+          [
+            "BOWLBUG_EGG"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_04",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_SILK"
+          ],
+          [
+            "BOWLBUG_NECTAR"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_05",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_NECTAR"
+          ],
+          [
+            "BOWLBUG_EGG"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_06",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_NECTAR"
+          ],
+          [
+            "BOWLBUG_SILK"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BOWLBUGS_WEAK",
@@ -127,7 +274,33 @@
         "name": "Bowlbug (Rock)"
       }
     ],
-    "loss_text": "{character} got in the way of some busy [gold]{encounter}[/gold]."
+    "loss_text": "{character} got in the way of some busy [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "OPTION_01",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_EGG"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_02",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_NECTAR"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BYGONE_EFFIGY_ELITE",
@@ -142,7 +315,18 @@
         "name": "Bygone Effigy"
       }
     ],
-    "loss_text": "{character} was sliced in half by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was sliced in half by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "BYGONE_EFFIGY"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "BYRDONIS_ELITE",
@@ -157,7 +341,18 @@
         "name": "Byrdonis"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold] protected its children from {character}."
+    "loss_text": "[gold]{encounter}[/gold] protected its children from {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "BYRDONIS"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CEREMONIAL_BEAST_BOSS",
@@ -172,7 +367,18 @@
         "name": "Ceremonial Beast"
       }
     ],
-    "loss_text": "{character} was put to rest by the [gold]{encounter}[/gold]."
+    "loss_text": "{character} was put to rest by the [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CEREMONIAL_BEAST"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CHOMPERS_NORMAL",
@@ -189,7 +395,21 @@
         "name": "Chomper"
       }
     ],
-    "loss_text": "{character} was chomped to death by [gold]{encounter}[/gold]."
+    "loss_text": "{character} was chomped to death by [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CHOMPER"
+          ],
+          [
+            "CHOMPER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CONSTRUCT_MENAGERIE_NORMAL",
@@ -208,7 +428,24 @@
         "name": "Cubex Construct"
       }
     ],
-    "loss_text": "The [gold]{encounter}[/gold] crushed {character}."
+    "loss_text": "The [gold]{encounter}[/gold] crushed {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "PUNCH_CONSTRUCT"
+          ],
+          [
+            "CUBEX_CONSTRUCT"
+          ],
+          [
+            "CUBEX_CONSTRUCT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CORPSE_SLUGS_NORMAL",
@@ -225,7 +462,24 @@
         "name": "Corpse Slug"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold] feasted on {character}."
+    "loss_text": "[gold]{encounter}[/gold] feasted on {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CORPSE_SLUG"
+          ],
+          [
+            "CORPSE_SLUG"
+          ],
+          [
+            "CORPSE_SLUG"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CORPSE_SLUGS_WEAK",
@@ -242,7 +496,21 @@
         "name": "Corpse Slug"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold] feasted on {character}."
+    "loss_text": "[gold]{encounter}[/gold] feasted on {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CORPSE_SLUG"
+          ],
+          [
+            "CORPSE_SLUG"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CUBEX_CONSTRUCT_NORMAL",
@@ -257,7 +525,18 @@
         "name": "Cubex Construct"
       }
     ],
-    "loss_text": "{character} was lasered to death by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was lasered to death by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CUBEX_CONSTRUCT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "CULTISTS_NORMAL",
@@ -276,7 +555,21 @@
         "name": "Damp Cultist"
       }
     ],
-    "loss_text": "{character} was slain by some [gold]{encounter}[/gold]. [sine]Caaaaw[/sine]..."
+    "loss_text": "{character} was slain by some [gold]{encounter}[/gold]. [sine]Caaaaw[/sine]...",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CALCIFIED_CULTIST"
+          ],
+          [
+            "DAMP_CULTIST"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "DECIMILLIPEDE_ELITE",
@@ -299,7 +592,24 @@
         "name": "DECIMILLIPEDE_SEGMENT_BACK"
       }
     ],
-    "loss_text": "{character} couldn't survive [gold]{encounter}[/gold]'s domain."
+    "loss_text": "{character} couldn't survive [gold]{encounter}[/gold]'s domain.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "DECIMILLIPEDE_SEGMENT_FRONT"
+          ],
+          [
+            "DECIMILLIPEDE_SEGMENT_MIDDLE"
+          ],
+          [
+            "DECIMILLIPEDE_SEGMENT_BACK"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "DENSE_VEGETATION_EVENT_ENCOUNTER",
@@ -314,7 +624,27 @@
         "name": "Wriggler"
       }
     ],
-    "loss_text": "{character} was infested by [gold]{encounter}[/gold]."
+    "loss_text": "{character} was infested by [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "WRIGGLER"
+          ],
+          [
+            "WRIGGLER"
+          ],
+          [
+            "WRIGGLER"
+          ],
+          [
+            "WRIGGLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "DEVOTED_SCULPTOR_WEAK",
@@ -329,7 +659,18 @@
         "name": "Devoted Sculptor"
       }
     ],
-    "loss_text": "{character} was smashed to pieces by [gold]{encounter}[/gold]."
+    "loss_text": "{character} was smashed to pieces by [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "DEVOTED_SCULPTOR"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "DOORMAKER_BOSS",
@@ -361,7 +702,18 @@
         "name": "Entomancer"
       }
     ],
-    "loss_text": "{character} was stung to death by an [gold]{encounter}[/gold]."
+    "loss_text": "{character} was stung to death by an [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "ENTOMANCER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "EXOSKELETONS_NORMAL",
@@ -378,7 +730,27 @@
         "name": "Exoskeleton"
       }
     ],
-    "loss_text": "{character} was eviscerated by [gold]{encounter}[/gold]."
+    "loss_text": "{character} was eviscerated by [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "EXOSKELETON"
+          ],
+          [
+            "EXOSKELETON"
+          ],
+          [
+            "EXOSKELETON"
+          ],
+          [
+            "EXOSKELETON"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "EXOSKELETONS_WEAK",
@@ -395,7 +767,24 @@
         "name": "Exoskeleton"
       }
     ],
-    "loss_text": "{character} was eviscerated by some [gold]{encounter}[/gold]."
+    "loss_text": "{character} was eviscerated by some [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "EXOSKELETON"
+          ],
+          [
+            "EXOSKELETON"
+          ],
+          [
+            "EXOSKELETON"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FABRICATOR_NORMAL",
@@ -410,7 +799,18 @@
         "name": "Fabricator"
       }
     ],
-    "loss_text": "{character} was zapped by a [gold]{encounter}[/gold]'s bots."
+    "loss_text": "{character} was zapped by a [gold]{encounter}[/gold]'s bots.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FABRICATOR"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FAKE_MERCHANT_EVENT_ENCOUNTER",
@@ -425,7 +825,18 @@
         "name": "The Merchant???"
       }
     ],
-    "loss_text": "{character} faced the wrath of [gold]{encounter}[/gold]"
+    "loss_text": "{character} faced the wrath of [gold]{encounter}[/gold]",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FAKE_MERCHANT_MONSTER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FLYCONID_NORMAL",
@@ -451,7 +862,33 @@
         "name": "Flyconid"
       }
     ],
-    "loss_text": "{character} was absorbed by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was absorbed by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "OPTION_01",
+        "weight": 1,
+        "slots": [
+          [
+            "LEAF_SLIME_M"
+          ],
+          [
+            "FLYCONID"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_02",
+        "weight": 1,
+        "slots": [
+          [
+            "TWIG_SLIME_M"
+          ],
+          [
+            "FLYCONID"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FLYCONID_WEAK",
@@ -480,7 +917,18 @@
         "name": "Eye with Teeth"
       }
     ],
-    "loss_text": "{character} was distracted by a [gold]{encounter}[/gold]'s illusions."
+    "loss_text": "{character} was distracted by a [gold]{encounter}[/gold]'s illusions.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FOGMOG"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FOSSIL_STALKER_NORMAL",
@@ -495,7 +943,18 @@
         "name": "Fossil Stalker"
       }
     ],
-    "loss_text": "{character} was ambushed by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was ambushed by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FOSSIL_STALKER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FROG_KNIGHT_NORMAL",
@@ -510,7 +969,18 @@
         "name": "Frog Knight"
       }
     ],
-    "loss_text": "A valiant [gold]{encounter}[/gold] triumphed over {character}."
+    "loss_text": "A valiant [gold]{encounter}[/gold] triumphed over {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FROG_KNIGHT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "FUZZY_WURM_CRAWLER_WEAK",
@@ -527,7 +997,18 @@
         "name": "Fuzzy Wurm Crawler"
       }
     ],
-    "loss_text": "A [gold]{encounter}[/gold] spat on {character}."
+    "loss_text": "A [gold]{encounter}[/gold] spat on {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FUZZY_WURM_CRAWLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "GLOBE_HEAD_NORMAL",
@@ -542,7 +1023,18 @@
         "name": "Globe Head"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold] zapped {character}."
+    "loss_text": "[gold]{encounter}[/gold] zapped {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "GLOBE_HEAD"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "GREMLIN_MERC_NORMAL",
@@ -565,7 +1057,18 @@
         "name": "Sneaky Gremlin"
       }
     ],
-    "loss_text": "{character} got mugged by [gold]{encounter}[/gold]."
+    "loss_text": "{character} got mugged by [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "GREMLIN_MERC"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "HAUNTED_SHIP_NORMAL",
@@ -580,7 +1083,18 @@
         "name": "Haunted Ship"
       }
     ],
-    "loss_text": "A [gold]{encounter}[/gold] stomped all over {character}."
+    "loss_text": "A [gold]{encounter}[/gold] stomped all over {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "HAUNTED_SHIP"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "HUNTER_KILLER_NORMAL",
@@ -595,7 +1109,18 @@
         "name": "Hunter Killer"
       }
     ],
-    "loss_text": "{character} was disemboweled by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was disemboweled by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "HUNTER_KILLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "INFESTED_PRISMS_ELITE",
@@ -610,7 +1135,18 @@
         "name": "Infested Prism"
       }
     ],
-    "loss_text": "{character} was stopped by an [gold]{encounter}[/gold]."
+    "loss_text": "{character} was stopped by an [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "INFESTED_PRISM"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "INKLETS_NORMAL",
@@ -625,7 +1161,24 @@
         "name": "Inklet"
       }
     ],
-    "loss_text": "Some [gold]{encounter}[/gold] wouldn't let {character} pass."
+    "loss_text": "Some [gold]{encounter}[/gold] wouldn't let {character} pass.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "INKLET"
+          ],
+          [
+            "INKLET"
+          ],
+          [
+            "INKLET"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "KAISER_CRAB_BOSS",
@@ -644,7 +1197,21 @@
         "name": "Rocket"
       }
     ],
-    "loss_text": "The [gold]{encounter}[/gold] struck {character} from all sides."
+    "loss_text": "The [gold]{encounter}[/gold] struck {character} from all sides.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CRUSHER"
+          ],
+          [
+            "ROCKET"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "KNIGHTS_ELITE",
@@ -669,7 +1236,24 @@
         "name": "Magi Knight"
       }
     ],
-    "loss_text": "{character} was slain by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was slain by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "FLAIL_KNIGHT"
+          ],
+          [
+            "SPECTRAL_KNIGHT"
+          ],
+          [
+            "MAGI_KNIGHT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "KNOWLEDGE_DEMON_BOSS",
@@ -684,7 +1268,18 @@
         "name": "Knowledge Demon"
       }
     ],
-    "loss_text": "The [gold]{encounter}[/gold] cursed {character} with overwhelming knowledge."
+    "loss_text": "The [gold]{encounter}[/gold] cursed {character} with overwhelming knowledge.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "KNOWLEDGE_DEMON"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "LAGAVULIN_MATRIARCH_BOSS",
@@ -699,7 +1294,18 @@
         "name": "Lagavulin Matriarch"
       }
     ],
-    "loss_text": "{character} was cut in half by the [gold]{encounter}[/gold]."
+    "loss_text": "{character} was cut in half by the [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "LAGAVULIN_MATRIARCH"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "LIVING_FOG_NORMAL",
@@ -718,7 +1324,18 @@
         "name": "Gas Bomb"
       }
     ],
-    "loss_text": "{character} couldn't bear the stench of some [gold]{encounter}[/gold]."
+    "loss_text": "{character} couldn't bear the stench of some [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "LIVING_FOG"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "LOUSE_PROGENITOR_NORMAL",
@@ -733,7 +1350,18 @@
         "name": "Louse Progenitor"
       }
     ],
-    "loss_text": "{character} was paralyzed by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was paralyzed by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "LOUSE_PROGENITOR"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "MAWLER_NORMAL",
@@ -748,7 +1376,18 @@
         "name": "Mawler"
       }
     ],
-    "loss_text": "{character} became a delicious meal for a [gold]{encounter}[/gold]."
+    "loss_text": "{character} became a delicious meal for a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "MAWLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "MECHA_KNIGHT_ELITE",
@@ -763,7 +1402,18 @@
         "name": "Mecha Knight"
       }
     ],
-    "loss_text": "{character} was stabbed and burned by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was stabbed and burned by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "MECHA_KNIGHT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "MYSTERIOUS_KNIGHT_EVENT_ENCOUNTER",
@@ -778,7 +1428,18 @@
         "name": "Mysterious Knight"
       }
     ],
-    "loss_text": "{character} tried to take a [gold]{encounter}[/gold]'s key."
+    "loss_text": "{character} tried to take a [gold]{encounter}[/gold]'s key.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "MYSTERIOUS_KNIGHT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "MYTES_NORMAL",
@@ -793,7 +1454,21 @@
         "name": "Myte"
       }
     ],
-    "loss_text": "{character} was swarmed by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was swarmed by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "MYTE"
+          ],
+          [
+            "MYTE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "NIBBITS_NORMAL",
@@ -808,7 +1483,21 @@
         "name": "Nibbit"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold] beat up {character}."
+    "loss_text": "[gold]{encounter}[/gold] beat up {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "NIBBIT"
+          ],
+          [
+            "NIBBIT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "NIBBITS_WEAK",
@@ -825,7 +1514,18 @@
         "name": "Nibbit"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold] beat up {character}."
+    "loss_text": "[gold]{encounter}[/gold] beat up {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "NIBBIT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "OVERGROWTH_CRAWLERS",
@@ -847,7 +1547,21 @@
         "name": "Fuzzy Wurm Crawler"
       }
     ],
-    "loss_text": "Some [gold]{encounter}[/gold] feasted on {character}."
+    "loss_text": "Some [gold]{encounter}[/gold] feasted on {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SHRINKER_BEETLE"
+          ],
+          [
+            "FUZZY_WURM_CRAWLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "OVERGROWTH_WILDLIFE",
@@ -876,7 +1590,18 @@
         "name": "Tough Egg"
       }
     ],
-    "loss_text": "{character} became food for an [gold]{encounter}[/gold]'s children."
+    "loss_text": "{character} became food for an [gold]{encounter}[/gold]'s children.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "OVICOPTER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "OWL_MAGISTRATE_NORMAL",
@@ -891,7 +1616,18 @@
         "name": "Owl Magistrate"
       }
     ],
-    "loss_text": "{character} was sentenced to death by an [gold]{encounter}[/gold]."
+    "loss_text": "{character} was sentenced to death by an [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "OWL_MAGISTRATE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "PHANTASMAL_GARDENERS_ELITE",
@@ -906,7 +1642,27 @@
         "name": "Phantasmal Gardener"
       }
     ],
-    "loss_text": "{character} was put to rest by the [gold]{encounter}[/gold]."
+    "loss_text": "{character} was put to rest by the [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "PHANTASMAL_GARDENER"
+          ],
+          [
+            "PHANTASMAL_GARDENER"
+          ],
+          [
+            "PHANTASMAL_GARDENER"
+          ],
+          [
+            "PHANTASMAL_GARDENER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "PHROG_PARASITE_ELITE",
@@ -925,7 +1681,18 @@
         "name": "Wriggler"
       }
     ],
-    "loss_text": "A [gold]{encounter}[/gold] spread its colony to {character}."
+    "loss_text": "A [gold]{encounter}[/gold] spread its colony to {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "PHROG_PARASITE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "PUNCH_CONSTRUCT_NORMAL",
@@ -940,7 +1707,18 @@
         "name": "Punch Construct"
       }
     ],
-    "loss_text": "{character} engaged in fisticuffs with a [gold]{encounter}[/gold]."
+    "loss_text": "{character} engaged in fisticuffs with a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "PUNCH_CONSTRUCT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "PUNCH_OFF_EVENT_ENCOUNTER",
@@ -955,7 +1733,21 @@
         "name": "Punch Construct"
       }
     ],
-    "loss_text": "{character} interrupted a bout between two [gold]{encounter}[/gold]."
+    "loss_text": "{character} interrupted a bout between two [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "PUNCH_CONSTRUCT"
+          ],
+          [
+            "PUNCH_CONSTRUCT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "QUEEN_BOSS",
@@ -974,7 +1766,21 @@
         "name": "Torch Head Amalgam"
       }
     ],
-    "loss_text": "The [gold]{encounter}[/gold] added a piece of {character} to her collection."
+    "loss_text": "The [gold]{encounter}[/gold] added a piece of {character} to her collection.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "TORCH_HEAD_AMALGAM"
+          ],
+          [
+            "QUEEN"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "RUBY_RAIDERS_NORMAL",
@@ -1005,7 +1811,909 @@
         "name": "Tracker Raider"
       }
     ],
-    "loss_text": "{character} got jumped by a group of [gold]{encounter}[/gold]."
+    "loss_text": "{character} got jumped by a group of [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "OPTION_01",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_02",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_03",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_04",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_05",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_06",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_07",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_08",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_09",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_10",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_11",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_12",
+        "weight": 1,
+        "slots": [
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_13",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_14",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_15",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_16",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_17",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_18",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_19",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_20",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_21",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_22",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_23",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_24",
+        "weight": 1,
+        "slots": [
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_25",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_26",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_27",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_28",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_29",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_30",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_31",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_32",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_33",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_34",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_35",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_36",
+        "weight": 1,
+        "slots": [
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_37",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_38",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_39",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_40",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_41",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_42",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_43",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_44",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_45",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_46",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_47",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_48",
+        "weight": 1,
+        "slots": [
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_49",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_50",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_51",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_52",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_53",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_54",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_55",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_56",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_57",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_58",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "AXE_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_59",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "ASSASSIN_RUBY_RAIDER"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_60",
+        "weight": 1,
+        "slots": [
+          [
+            "TRACKER_RUBY_RAIDER"
+          ],
+          [
+            "CROSSBOW_RUBY_RAIDER"
+          ],
+          [
+            "BRUTE_RUBY_RAIDER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SCROLLS_OF_BITING_NORMAL",
@@ -1022,7 +2730,27 @@
         "name": "Scroll of Biting"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold] tore {character} to shreds."
+    "loss_text": "[gold]{encounter}[/gold] tore {character} to shreds.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SCROLL_OF_BITING"
+          ],
+          [
+            "SCROLL_OF_BITING"
+          ],
+          [
+            "SCROLL_OF_BITING"
+          ],
+          [
+            "SCROLL_OF_BITING"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SCROLLS_OF_BITING_WEAK",
@@ -1039,7 +2767,24 @@
         "name": "Scroll of Biting"
       }
     ],
-    "loss_text": "Some [gold]{encounter}[/gold] tore {character} to shreds."
+    "loss_text": "Some [gold]{encounter}[/gold] tore {character} to shreds.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SCROLL_OF_BITING"
+          ],
+          [
+            "SCROLL_OF_BITING"
+          ],
+          [
+            "SCROLL_OF_BITING"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SEAPUNK_NORMAL",
@@ -1060,7 +2805,21 @@
         "name": "Calcified Cultist"
       }
     ],
-    "loss_text": "{character} was defeated by some [gold]{encounter}[/gold]."
+    "loss_text": "{character} was defeated by some [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CALCIFIED_CULTIST"
+          ],
+          [
+            "SEAPUNK"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SEAPUNK_WEAK",
@@ -1077,7 +2836,18 @@
         "name": "Seapunk"
       }
     ],
-    "loss_text": "A [gold]{encounter}[/gold] clobbered {character}."
+    "loss_text": "A [gold]{encounter}[/gold] clobbered {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SEAPUNK"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SEWER_CLAM_NORMAL",
@@ -1092,7 +2862,18 @@
         "name": "Sewer Clam"
       }
     ],
-    "loss_text": "{character} was gobbled up by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was gobbled up by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SEWER_CLAM"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SHRINKER_BEETLE_WEAK",
@@ -1109,7 +2890,18 @@
         "name": "Shrinker Beetle"
       }
     ],
-    "loss_text": "A [gold]{encounter}[/gold] snacked on {character}."
+    "loss_text": "A [gold]{encounter}[/gold] snacked on {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SHRINKER_BEETLE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SKULKING_COLONY_ELITE",
@@ -1124,7 +2916,18 @@
         "name": "Skulking Colony"
       }
     ],
-    "loss_text": "{character} was absorbed by a [gold]{encounter}[/gold]"
+    "loss_text": "{character} was absorbed by a [gold]{encounter}[/gold]",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SKULKING_COLONY"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SLIMED_BERSERKER_NORMAL",
@@ -1139,7 +2942,18 @@
         "name": "Slimed Berserker"
       }
     ],
-    "loss_text": "{character} was absorbed into a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was absorbed into a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SLIMED_BERSERKER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SLIMES_NORMAL",
@@ -1168,7 +2982,45 @@
         "name": "Leaf Slime (M)"
       }
     ],
-    "loss_text": "{character} was felled by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was felled by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "OPTION_01",
+        "weight": 1,
+        "slots": [
+          [
+            "TWIG_SLIME_M"
+          ],
+          [
+            "LEAF_SLIME_M"
+          ],
+          [
+            "LEAF_SLIME_S"
+          ],
+          [
+            "TWIG_SLIME_S"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_02",
+        "weight": 1,
+        "slots": [
+          [
+            "TWIG_SLIME_M"
+          ],
+          [
+            "LEAF_SLIME_M"
+          ],
+          [
+            "TWIG_SLIME_S"
+          ],
+          [
+            "LEAF_SLIME_S"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SLIMES_WEAK",
@@ -1197,7 +3049,69 @@
         "name": "Twig Slime (M)"
       }
     ],
-    "loss_text": "{character} was felled by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} was felled by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "OPTION_01",
+        "weight": 1,
+        "slots": [
+          [
+            "LEAF_SLIME_S"
+          ],
+          [
+            "LEAF_SLIME_M"
+          ],
+          [
+            "TWIG_SLIME_S"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_02",
+        "weight": 1,
+        "slots": [
+          [
+            "LEAF_SLIME_S"
+          ],
+          [
+            "TWIG_SLIME_M"
+          ],
+          [
+            "TWIG_SLIME_S"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_03",
+        "weight": 1,
+        "slots": [
+          [
+            "TWIG_SLIME_S"
+          ],
+          [
+            "LEAF_SLIME_M"
+          ],
+          [
+            "LEAF_SLIME_S"
+          ]
+        ]
+      },
+      {
+        "id": "OPTION_04",
+        "weight": 1,
+        "slots": [
+          [
+            "TWIG_SLIME_S"
+          ],
+          [
+            "TWIG_SLIME_M"
+          ],
+          [
+            "LEAF_SLIME_S"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SLITHERING_STRANGLER_NORMAL",
@@ -1294,7 +3208,18 @@
         "name": "Sludge Spinner"
       }
     ],
-    "loss_text": "{character} couldn't defeat a [gold]{encounter}[/gold]."
+    "loss_text": "{character} couldn't defeat a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SLUDGE_SPINNER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SLUMBERING_BEETLE_NORMAL",
@@ -1319,7 +3244,24 @@
         "name": "Bowlbug (Silk)"
       }
     ],
-    "loss_text": "{character} interrupted a [gold]{encounter}[/gold]."
+    "loss_text": "{character} interrupted a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "BOWLBUG_ROCK"
+          ],
+          [
+            "BOWLBUG_SILK"
+          ],
+          [
+            "SLUMBERING_BEETLE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SNAPPING_JAXFRUIT_NORMAL",
@@ -1341,7 +3283,21 @@
         "name": "Flyconid"
       }
     ],
-    "loss_text": "{character} ran afoul of some [gold]{encounter}[/gold]."
+    "loss_text": "{character} ran afoul of some [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SNAPPING_JAXFRUIT"
+          ],
+          [
+            "FLYCONID"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SOUL_FYSH_BOSS",
@@ -1356,7 +3312,18 @@
         "name": "Soul Fysh"
       }
     ],
-    "loss_text": "A [gold]{encounter}[/gold] beckoned {character} to their doom."
+    "loss_text": "A [gold]{encounter}[/gold] beckoned {character} to their doom.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SOUL_FYSH"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SOUL_NEXUS_ELITE",
@@ -1371,7 +3338,18 @@
         "name": "Soul Nexus"
       }
     ],
-    "loss_text": "{character} died to a [gold]{encounter}[/gold] on a forgotten battlefield."
+    "loss_text": "{character} died to a [gold]{encounter}[/gold] on a forgotten battlefield.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SOUL_NEXUS"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "SPINY_TOAD_NORMAL",
@@ -1386,7 +3364,18 @@
         "name": "Spiny Toad"
       }
     ],
-    "loss_text": "{character} couldn't pierce the [gold]{encounter}[/gold]'s spikes."
+    "loss_text": "{character} couldn't pierce the [gold]{encounter}[/gold]'s spikes.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "SPINY_TOAD"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TERROR_EEL_ELITE",
@@ -1401,7 +3390,18 @@
         "name": "Terror Eel"
       }
     ],
-    "loss_text": "A [gold]{encounter}[/gold] was too terrifying for {character}."
+    "loss_text": "A [gold]{encounter}[/gold] was too terrifying for {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "TERROR_EEL"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TEST_SUBJECT_BOSS",
@@ -1416,7 +3416,18 @@
         "name": "Test Subject #C{Count}"
       }
     ],
-    "loss_text": "A [gold]{encounter}[/gold] loyally guarded its masters from {character}."
+    "loss_text": "A [gold]{encounter}[/gold] loyally guarded its masters from {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "TEST_SUBJECT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "THE_ARCHITECT_EVENT_ENCOUNTER",
@@ -1431,7 +3442,18 @@
         "name": "The Architect"
       }
     ],
-    "loss_text": "You shouldn't be seeing this."
+    "loss_text": "You shouldn't be seeing this.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "ARCHITECT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "THE_INSATIABLE_BOSS",
@@ -1446,7 +3468,18 @@
         "name": "The Insatiable"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold] devoured {character}. And yet, it still hungers..."
+    "loss_text": "[gold]{encounter}[/gold] devoured {character}. And yet, it still hungers...",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "THE_INSATIABLE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "THE_KIN_BOSS",
@@ -1465,7 +3498,24 @@
         "name": "Kin Priest"
       }
     ],
-    "loss_text": "{character} was annihilated by [gold]{encounter}[/gold]'s superior strategy."
+    "loss_text": "{character} was annihilated by [gold]{encounter}[/gold]'s superior strategy.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "KIN_FOLLOWER"
+          ],
+          [
+            "KIN_FOLLOWER"
+          ],
+          [
+            "KIN_PRIEST"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "THE_LOST_AND_FORGOTTEN_NORMAL",
@@ -1484,7 +3534,21 @@
         "name": "The Forgotten"
       }
     ],
-    "loss_text": "The [gold]{encounter}[/gold] stole {character}'s will to live."
+    "loss_text": "The [gold]{encounter}[/gold] stole {character}'s will to live.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "THE_LOST"
+          ],
+          [
+            "THE_FORGOTTEN"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "THE_OBSCURA_NORMAL",
@@ -1503,7 +3567,18 @@
         "name": "Parafright"
       }
     ],
-    "loss_text": "[gold]{encounter}[/gold] and its illusion smashed {character}."
+    "loss_text": "[gold]{encounter}[/gold] and its illusion smashed {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "THE_OBSCURA"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "THIEVING_HOPPER_WEAK",
@@ -1520,7 +3595,18 @@
         "name": "Thieving Hopper"
       }
     ],
-    "loss_text": "A [gold]{encounter}[/gold] mugged {character}."
+    "loss_text": "A [gold]{encounter}[/gold] mugged {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "THIEVING_HOPPER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TOADPOLES_WEAK",
@@ -1535,7 +3621,21 @@
         "name": "Toadpole"
       }
     ],
-    "loss_text": "{character} couldn't deal with some [gold]{encounter}[/gold]."
+    "loss_text": "{character} couldn't deal with some [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "TOADPOLE"
+          ],
+          [
+            "TOADPOLE"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TUNNELER_NORMAL",
@@ -1557,7 +3657,21 @@
         "name": "Chomper"
       }
     ],
-    "loss_text": "A [gold]{encounter}[/gold] finished off {character}."
+    "loss_text": "A [gold]{encounter}[/gold] finished off {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "CHOMPER"
+          ],
+          [
+            "TUNNELER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TUNNELER_WEAK",
@@ -1574,7 +3688,18 @@
         "name": "Tunneler"
       }
     ],
-    "loss_text": "{character} got whacked by a [gold]{encounter}[/gold]."
+    "loss_text": "{character} got whacked by a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "TUNNELER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TURRET_OPERATOR_WEAK",
@@ -1593,7 +3718,21 @@
         "name": "Turret Operator"
       }
     ],
-    "loss_text": "A [gold]{encounter}[/gold] riddled {character} full of holes."
+    "loss_text": "A [gold]{encounter}[/gold] riddled {character} full of holes.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "LIVING_SHIELD"
+          ],
+          [
+            "TURRET_OPERATOR"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "TWO_TAILED_RATS_NORMAL",
@@ -1608,7 +3747,24 @@
         "name": "Two-Tailed Rat"
       }
     ],
-    "loss_text": "{character} was swarmed by some [gold]{encounter}[/gold]."
+    "loss_text": "{character} was swarmed by some [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "TWO_TAILED_RAT"
+          ],
+          [
+            "TWO_TAILED_RAT"
+          ],
+          [
+            "TWO_TAILED_RAT"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "VANTOM_BOSS",
@@ -1623,7 +3779,18 @@
         "name": "Vantom"
       }
     ],
-    "loss_text": "{character} was turned into an Inklet by the [gold]{encounter}[/gold]."
+    "loss_text": "{character} was turned into an Inklet by the [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "VANTOM"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "VINE_SHAMBLER_NORMAL",
@@ -1638,7 +3805,18 @@
         "name": "Vine Shambler"
       }
     ],
-    "loss_text": "{character} couldn't escape a [gold]{encounter}[/gold]."
+    "loss_text": "{character} couldn't escape a [gold]{encounter}[/gold].",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "VINE_SHAMBLER"
+          ]
+        ]
+      }
+    ]
   },
   {
     "id": "WATERFALL_GIANT_BOSS",
@@ -1653,6 +3831,17 @@
         "name": "Waterfall Giant"
       }
     ],
-    "loss_text": "The [gold]{encounter}[/gold] cleansed the Underdocks of {character}."
+    "loss_text": "The [gold]{encounter}[/gold] cleansed the Underdocks of {character}.",
+    "compositions": [
+      {
+        "id": "FIXED",
+        "weight": 1,
+        "slots": [
+          [
+            "WATERFALL_GIANT"
+          ]
+        ]
+      }
+    ]
   }
 ]
