@@ -167,7 +167,7 @@ def parse_string_arrays(text: str) -> dict[str, list[str]]:
         arrays[match.group("name")] = re.findall(r'"([^"]*)"', match.group("body"))
     slots_match = re.search(
         r"IReadOnlyList<string>\s+Slots\s*=>.*?new\s+string\[\d+\]\s*"
-        r"\{(?P<body>.*?)\};",
+        r"\{(?P<body>.*?)\}\s*\)?;",
         text,
         re.DOTALL,
     )
