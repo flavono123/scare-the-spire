@@ -13,8 +13,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import sys
+from fractions import Fraction
+from itertools import permutations, product
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -38,14 +41,22 @@ _MONSTER_REF_RE = re.compile(r"ModelDb\.Monster<(?P<cls>\w+)>\(\)")
 _ENCOUNTER_REF_RE = re.compile(r"ModelDb\.Encounter<(?P<cls>\w+)>\(\)")
 _TAG_RE = re.compile(r"EncounterTag\.(?P<tag>\w+)")
 _MONSTER_ARRAY_RE = re.compile(
-    r"private\s+static\s+readonly\s+MonsterModel\[\]\s+(?P<name>_\w+)\s*="
-    r".*?\{(?P<body>.*?)\};",
+    r"(?:private\s+)?static\s+(?:readonly\s+)?MonsterModel\[\]\s+(?P<name>\w+)\s*"
+    r"(?:=|=>)\s*new\s+MonsterModel\[\d+\]\s*\{(?P<body>.*?)\};",
     re.DOTALL,
 )
 _RANDOM_ENUM_SWITCH_RE = re.compile(
     r"switch\s*\(base\.Rng\.NextItem\(Enum\.GetValues<(?P<enum>\w+)>\(\)\)\)"
 )
 _SPAN_ASSIGNMENT_RE = re.compile(r"span\[[^\]]+\]\s*=\s*(?P<value>[^;]+);")
+_TUPLE_VALUE_RE = re.compile(
+    r"\(\s*(?P<value>(?:ModelDb\.Monster<\w+>\(\)|"
+    r"base\.Rng\.NextItem\(\w+\)|[a-z]\w*)(?:\.ToMutable\(\))?)\s*,"
+)
+_DIRECT_VARIABLE_RE = re.compile(
+    r"\b(?P<name>[a-z]\w*)\s*=\s*(?:\([^;=]+\))?"
+    r"ModelDb\.Monster<(?P<class>\w+)>\(\)\.ToMutable\(\)\s*;"
+)
 
 
 def pascal_case(snake: str) -> str:
@@ -101,6 +112,284 @@ def parse_monster_arrays(text: str) -> dict[str, list[str]]:
             monster.group("cls") for monster in _MONSTER_REF_RE.finditer(match.group("body"))
         ]
     return arrays
+
+
+def generate_monsters_body(text: str) -> str | None:
+    match = re.search(r"GenerateMonsters\s*\(\)\s*\{", text)
+    if match is None:
+        return None
+    block = extract_braced_block(text, match.end() - 1)
+    return block[0] if block is not None else None
+
+
+def tuple_values(text: str) -> list[str]:
+    return [match.group("value") for match in _TUPLE_VALUE_RE.finditer(text)]
+
+
+def direct_variable_monsters(body: str) -> dict[str, str]:
+    return {
+        match.group("name"): match.group("class")
+        for match in _DIRECT_VARIABLE_RE.finditer(body)
+    }
+
+
+def monster_id(monster_class: str) -> str:
+    return snake_case_upper(monster_class)
+
+
+def resolve_slot_options(
+    value: str,
+    arrays: dict[str, list[str]],
+    variables: dict[str, str],
+) -> list[str] | None:
+    value = value.removesuffix(".ToMutable()")
+    if match := re.fullmatch(r"ModelDb\.Monster<(?P<class>\w+)>\(\)", value):
+        return [match.group("class")]
+    if match := re.fullmatch(r"base\.Rng\.NextItem\((?P<name>\w+)\)", value):
+        return arrays.get(match.group("name"))
+    if value in variables:
+        return [variables[value]]
+    return None
+
+
+def weighted_compositions(
+    outcomes: list[tuple[list[str], Fraction]],
+    *,
+    fixed_id: str = "FIXED",
+) -> list[dict] | None:
+    if not outcomes:
+        return None
+
+    combined: dict[tuple[str, ...], Fraction] = {}
+    for monsters, probability in outcomes:
+        key = tuple(monsters)
+        combined[key] = combined.get(key, Fraction()) + probability
+
+    denominator = math.lcm(*(probability.denominator for probability in combined.values()))
+    raw_weights = [
+        probability.numerator * (denominator // probability.denominator)
+        for probability in combined.values()
+    ]
+    divisor = math.gcd(*raw_weights)
+    normalized_weights = [weight // divisor for weight in raw_weights]
+    multiple = len(combined) > 1
+
+    return [
+        {
+            "id": f"OPTION_{index:02d}" if multiple else fixed_id,
+            "weight": normalized_weights[index - 1],
+            "slots": [[monster_id(monster)] for monster in monsters],
+        }
+        for index, monsters in enumerate(combined, start=1)
+    ]
+
+
+def parse_constrained_random_compositions(text: str, body: str) -> list[dict] | None:
+    selection = re.search(r"(?P<name>_\w+)\.Keys\.Where\(", body)
+    loop = re.search(r"for\s*\(int\s+\w+\s*=\s*0;\s*\w+\s*<\s*(?P<count>\d+);", body)
+    if selection is None or loop is None:
+        return None
+
+    dictionary_name = selection.group("name")
+    declaration = re.search(
+        rf"Dictionary<MonsterModel,\s*int>\s+{re.escape(dictionary_name)}\s*=\s*"
+        r"new\s+Dictionary<MonsterModel,\s*int>\s*\{",
+        text,
+    )
+    if declaration is None:
+        return None
+    dictionary_block = extract_braced_block(text, declaration.end() - 1)
+    if dictionary_block is None:
+        return None
+    limits = [
+        (match.group("class"), int(match.group("count")))
+        for match in re.finditer(
+            r"ModelDb\.Monster<(?P<class>\w+)>\(\)\s*,\s*(?P<count>\d+)",
+            dictionary_block[0],
+        )
+    ]
+    if not limits:
+        return None
+
+    loop_start = body.find(loop.group(0))
+    prefix_values = tuple_values(body[:loop_start])
+    variables = direct_variable_monsters(body)
+    prefix: list[str] = []
+    for value in prefix_values:
+        options = resolve_slot_options(value, parse_monster_arrays(text), variables)
+        if options is None or len(options) != 1:
+            return None
+        prefix.append(options[0])
+
+    outcomes: list[tuple[list[str], Fraction]] = []
+
+    def visit(sequence: list[str], counts: dict[str, int], probability: Fraction) -> None:
+        if len(sequence) == int(loop.group("count")):
+            outcomes.append((prefix + sequence, probability))
+            return
+        valid = [(monster, limit) for monster, limit in limits if counts.get(monster, 0) < limit]
+        for monster, _limit in valid:
+            next_counts = dict(counts)
+            next_counts[monster] = next_counts.get(monster, 0) + 1
+            visit(sequence + [monster], next_counts, probability / len(valid))
+
+    visit([], {}, Fraction(1))
+    return weighted_compositions(outcomes)
+
+
+def parse_without_replacement_compositions(
+    text: str,
+    body: str,
+) -> list[dict] | None:
+    arrays = parse_monster_arrays(text)
+    copy_match = re.search(
+        r"List<MonsterModel>\s+(?P<list>\w+)\s*=\s*(?P<array>_\w+)\.ToList\(\)\s*;",
+        body,
+    )
+    if copy_match is None or copy_match.group("array") not in arrays:
+        return None
+    list_name = copy_match.group("list")
+    choice_variables = re.findall(
+        rf"MonsterModel\s+(\w+)\s*=\s*base\.Rng\.NextItem\({re.escape(list_name)}\)\s*;",
+        body,
+    )
+    if len(choice_variables) < 2:
+        return None
+
+    values = [
+        match.group("value")
+        for match in re.finditer(
+            r"\.Add\(\s*\(\s*(?P<value>(?:base\.Rng\.NextItem\(\w+\)|[a-z]\w*)"
+            r"(?:\.ToMutable\(\))?)\s*,",
+            body,
+        )
+    ]
+    if not values:
+        return None
+
+    outcomes: list[tuple[list[str], Fraction]] = []
+    source = arrays[copy_match.group("array")]
+    for selected in permutations(source, len(choice_variables)):
+        selected_by_variable = dict(zip(choice_variables, selected, strict=True))
+        slot_options: list[list[str]] = []
+        for value in values:
+            value = value.removesuffix(".ToMutable()")
+            if value in selected_by_variable:
+                slot_options.append([selected_by_variable[value]])
+                continue
+            options = resolve_slot_options(value, arrays, {})
+            if not options:
+                return None
+            slot_options.append(options)
+        combinations = list(product(*slot_options))
+        probability = Fraction(1, math.perm(len(source), len(choice_variables)) * len(combinations))
+        outcomes.extend((list(monsters), probability) for monsters in combinations)
+    return weighted_compositions(outcomes)
+
+
+def parse_boolean_compositions(text: str, body: str) -> list[dict] | None:
+    flag_match = re.search(r"bool\s+(?P<flag>\w+)\s*=\s*base\.Rng\.NextBool\(\)\s*;", body)
+    if flag_match is None:
+        return None
+    flag = flag_match.group("flag")
+    conditional_variables = {
+        match.group("name"): (match.group("true"), match.group("false"))
+        for match in re.finditer(
+            rf"MonsterModel\s+(?P<name>\w+)\s*=\s*\({re.escape(flag)}\s*\?\s*"
+            r"\(\(MonsterModel\)ModelDb\.Monster<(?P<true>\w+)>\(\)\)\s*:\s*"
+            r"\(\(MonsterModel\)ModelDb\.Monster<(?P<false>\w+)>\(\)\)\)\s*;",
+            body,
+        )
+    }
+    if not conditional_variables:
+        return None
+
+    return_start = body.rfind("return ")
+    values = tuple_values(body[return_start:]) if return_start >= 0 else []
+    arrays = parse_monster_arrays(text)
+    outcomes: list[tuple[list[str], Fraction]] = []
+    for truthy in (True, False):
+        variables = direct_variable_monsters(body)
+        variables.update({name: choices[0 if truthy else 1] for name, choices in conditional_variables.items()})
+        monsters: list[str] = []
+        for value in values:
+            options = resolve_slot_options(value, arrays, variables)
+            if options is None or len(options) != 1:
+                return None
+            monsters.append(options[0])
+        outcomes.append((monsters, Fraction(1, 2)))
+    return weighted_compositions(outcomes)
+
+
+def parse_return_compositions(text: str, body: str) -> list[dict] | None:
+    return_start = body.rfind("return ")
+    if return_start < 0:
+        return None
+    values = tuple_values(body[return_start:])
+    if not values:
+        return None
+
+    arrays = parse_monster_arrays(text)
+    variables = direct_variable_monsters(body)
+    slot_options: list[list[str]] = []
+    for value in values:
+        options = resolve_slot_options(value, arrays, variables)
+        if not options:
+            return None
+        slot_options.append(options)
+    combinations = list(product(*slot_options))
+    probability = Fraction(1, len(combinations))
+    return weighted_compositions([(list(monsters), probability) for monsters in combinations])
+
+
+def parse_list_composition(text: str, body: str) -> list[dict] | None:
+    arrays = parse_monster_arrays(text)
+    variables = direct_variable_monsters(body)
+    values = [match.group("value") for match in _SPAN_ASSIGNMENT_RE.finditer(body)]
+    values.extend(
+        match.group("value")
+        for match in re.finditer(
+            r"\.Add\(\s*\(\s*(?P<value>(?:ModelDb\.Monster<\w+>\(\)|[a-z]\w*)"
+            r"(?:\.ToMutable\(\))?)\s*,",
+            body,
+        )
+    )
+    if not values:
+        return None
+
+    monsters: list[str] = []
+    for value in values:
+        options = resolve_slot_options(value, arrays, variables)
+        if options is None or len(options) != 1:
+            return None
+        monsters.append(options[0])
+    return weighted_compositions([(monsters, Fraction(1))])
+
+
+def parse_foreach_slot_composition(text: str, body: str) -> list[dict] | None:
+    if "foreach (string slot in Slots)" not in body:
+        return None
+    monster_match = re.search(r"ModelDb\.Monster<(?P<class>\w+)>\(\)\.ToMutable\(\)", body)
+    slot_count = re.search(r"Slots\s*=>.*?new\s+string\[(?P<count>\d+)\]", text, re.DOTALL)
+    if monster_match is None or slot_count is None:
+        return None
+    monsters = [monster_match.group("class")] * int(slot_count.group("count"))
+    return weighted_compositions([(monsters, Fraction(1))])
+
+
+def parse_encounter_compositions(text: str) -> list[dict] | None:
+    body = generate_monsters_body(text)
+    if body is None:
+        return None
+    return (
+        parse_random_enum_compositions(text)
+        or parse_constrained_random_compositions(text, body)
+        or parse_without_replacement_compositions(text, body)
+        or parse_boolean_compositions(text, body)
+        or parse_return_compositions(text, body)
+        or parse_foreach_slot_composition(text, body)
+        or parse_list_composition(text, body)
+    )
 
 
 def parse_random_enum_compositions(text: str) -> list[dict] | None:
@@ -183,7 +472,7 @@ def parse_encounter_meta(text: str) -> dict:
         "room_type": rt.group("rt") if rt else "Monster",
         "is_weak": bool(_ISWEAK_RE.search(text)),
         "monster_classes": [],
-        "compositions": parse_random_enum_compositions(text),
+        "compositions": parse_encounter_compositions(text),
         "tags": [],
     }
     # Scan the whole file for monster references so that indirected helpers
