@@ -15,6 +15,8 @@ const CASES = [
     edgeCount: 2,
     edgeLabelCount: 0,
     chanceLabelCount: 0,
+    phaseCount: 0,
+    phaseConnectorCount: 0,
     hasEnd: true,
   },
   {
@@ -31,6 +33,8 @@ const CASES = [
     edgeCount: 4,
     edgeLabelCount: 0,
     chanceLabelCount: 0,
+    phaseCount: 0,
+    phaseConnectorCount: 0,
     hasEnd: false,
   },
   {
@@ -47,6 +51,8 @@ const CASES = [
     edgeCount: 7,
     edgeLabelCount: 6,
     chanceLabelCount: 0,
+    phaseCount: 0,
+    phaseConnectorCount: 0,
     hasEnd: false,
   },
   {
@@ -61,8 +67,31 @@ const CASES = [
     ],
     nodeCount: 3,
     edgeCount: 9,
-    edgeLabelCount: 6,
+    edgeLabelCount: 2,
     chanceLabelCount: 6,
+    phaseCount: 2,
+    phaseConnectorCount: 0,
+    hasEnd: false,
+  },
+  {
+    id: "TEST_SUBJECT",
+    slug: "test_subject",
+    monsterNameKo: "실험체 #C{Count}",
+    monsterNameEn: "Test Subject #C{Count}",
+    moveNames: [
+      { ko: "물기", en: "Bite" },
+      { ko: "두개골 강타", en: "Skull Bash" },
+      { ko: "발톱 연타", en: "Multi-Claw" },
+      { ko: "찢어발기기", en: "Lacerate" },
+      { ko: "거센 덮치기", en: "Big Pounce" },
+      { ko: "타오르는 포효", en: "Burning Growl" },
+    ],
+    nodeCount: 6,
+    edgeCount: 7,
+    edgeLabelCount: 0,
+    chanceLabelCount: 0,
+    phaseCount: 3,
+    phaseConnectorCount: 2,
     hasEnd: false,
   },
 ] as const;
@@ -103,8 +132,10 @@ for (const sample of CASES) {
     await expect(diagram).toBeVisible();
     await expect(page.getByRole("heading", { level: 1, name: sample.monsterNameKo })).toBeVisible();
     await expect(page.getByText(sample.monsterNameEn, { exact: true }).first()).toBeVisible();
-    await expect(diagram.locator('[data-pattern-entry="start"]')).toHaveCount(0);
+    await expect(diagram.locator('[data-pattern-entry="start"]')).toHaveCount(1);
     await expect(diagram.locator('[data-pattern-entry="end"]')).toHaveCount(sample.hasEnd ? 1 : 0);
+    await expect(diagram.locator("[data-pattern-phase]")).toHaveCount(sample.phaseCount);
+    await expect(diagram.locator("[data-pattern-phase-connector]")).toHaveCount(sample.phaseConnectorCount);
 
     const nodes = diagram.locator('[data-pattern-node="true"]');
     await expect(nodes).toHaveCount(sample.nodeCount);
@@ -145,14 +176,42 @@ for (const sample of CASES) {
         to: element.getAttribute("data-pattern-edge-to"),
         path: element.getAttribute("d"),
       })));
-      expectEveryBranchToShareItsOrigin(transitions);
-      expect(transitions.some((edge) => edge.from === "__START__")).toBe(false);
+      expectEveryBranchToShareItsOrigin(transitions.filter((edge) => edge.from === "__START__"));
+      expect(transitions.filter((edge) => edge.from === "__START__")).toHaveLength(2);
       expect(transitions.filter((edge) => edge.from === edge.to)).toHaveLength(3);
-      await expect(diagram.getByText("제작 가능(Y)", { exact: true })).toHaveCount(3);
+      expect(transitions.filter((edge) => edge.from?.startsWith("__PHASE_") && edge.to?.startsWith("__PHASE_"))).toHaveLength(2);
+      await expect(diagram.getByText("제작 가능(Y)", { exact: true })).toHaveCount(1);
       await expect(diagram.getByText("50%", { exact: true })).toHaveCount(6);
-      await expect(diagram.getByText("불가(N)", { exact: true })).toHaveCount(3);
+      await expect(diagram.getByText("불가(N)", { exact: true })).toHaveCount(1);
       await expect(diagram.getByText("제작 가능?", { exact: true })).toHaveCount(0);
       await expect(diagram.getByText("무작위", { exact: true })).toHaveCount(0);
+
+      const phaseRects = await diagram.locator("[data-pattern-phase]").evaluateAll((elements) => elements.map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { id: element.getAttribute("data-pattern-phase"), top: rect.top, centerX: rect.left + rect.width / 2 };
+      }));
+      const canPhase = phaseRects.find((phase) => phase.id === "can");
+      const cannotPhase = phaseRects.find((phase) => phase.id === "cannot");
+      expect(canPhase).toBeDefined();
+      expect(cannotPhase).toBeDefined();
+      expect(canPhase!.top).toBeLessThan(cannotPhase!.top);
+      expect(Math.abs(canPhase!.centerX - cannotPhase!.centerX)).toBeLessThanOrEqual(1);
+    }
+    if (sample.id === "TEST_SUBJECT") {
+      const phaseRects = await diagram.locator("[data-pattern-phase]").evaluateAll((elements) => elements.map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { left: rect.left, right: rect.right };
+      }));
+      expect(phaseRects).toHaveLength(3);
+      expect(phaseRects[0].right).toBeLessThan(phaseRects[1].left);
+      expect(phaseRects[1].right).toBeLessThan(phaseRects[2].left);
+      await expect(diagram.getByText("체력 0 → 부활", { exact: true })).toHaveCount(2);
+
+      const phaseConnectorPaths = await diagram.locator("[data-pattern-phase-connector]").evaluateAll((elements) => (
+        elements.map((element) => element.getAttribute("d"))
+      ));
+      expect(phaseConnectorPaths.every((path) => path?.includes(" C "))).toBe(true);
+      expect(phaseConnectorPaths.every((path) => !/[HV]/.test(path ?? ""))).toBe(true);
     }
 
     await diagram.screenshot({ path: `test-results/monster-intent-fsm-${sample.slug}.png` });
@@ -199,10 +258,12 @@ test("representative monster intent FSMs — mobile viewports", async ({ browser
       expect(layout.visibleHeight).toBeGreaterThanOrEqual(Math.min(240, layout.rectHeight));
       await expectNoNodeOverlap(diagram.locator('[data-pattern-node="true"]'));
 
-      if (sample.id === "FABRICATOR") {
+      if (sample.id === "FABRICATOR" || sample.id === "TEST_SUBJECT") {
         await diagram.screenshot({
-          path: `test-results/monster-intent-fsm-mobile-${preset.name}.png`,
+          path: `test-results/monster-intent-fsm-mobile-${sample.slug}-${preset.name}.png`,
         });
+      }
+      if (sample.id === "FABRICATOR") {
         const canvas = diagram.locator(":scope > div").first();
         const beforeDrag = await canvas.getAttribute("style");
         const box = await diagram.boundingBox();
