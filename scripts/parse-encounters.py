@@ -126,6 +126,15 @@ def tuple_values(text: str) -> list[str]:
     return [match.group("value") for match in _TUPLE_VALUE_RE.finditer(text)]
 
 
+def span_tuple_values(text: str) -> list[str]:
+    values: list[str] = []
+    for assignment in _SPAN_ASSIGNMENT_RE.finditer(text):
+        nested_values = tuple_values(assignment.group("value"))
+        if nested_values:
+            values.append(nested_values[0])
+    return values
+
+
 def direct_variable_monsters(body: str) -> dict[str, str]:
     return {
         match.group("name"): match.group("class")
@@ -212,7 +221,7 @@ def parse_constrained_random_compositions(text: str, body: str) -> list[dict] | 
         return None
 
     loop_start = body.find(loop.group(0))
-    prefix_values = tuple_values(body[:loop_start])
+    prefix_values = span_tuple_values(body[:loop_start])
     variables = direct_variable_monsters(body)
     prefix: list[str] = []
     for value in prefix_values:
@@ -345,7 +354,7 @@ def parse_return_compositions(text: str, body: str) -> list[dict] | None:
 def parse_list_composition(text: str, body: str) -> list[dict] | None:
     arrays = parse_monster_arrays(text)
     variables = direct_variable_monsters(body)
-    values = [match.group("value") for match in _SPAN_ASSIGNMENT_RE.finditer(body)]
+    values = span_tuple_values(body)
     values.extend(
         match.group("value")
         for match in re.finditer(
